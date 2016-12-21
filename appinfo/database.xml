@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<database>
+
+	<name>*dbname*</name>
+	<create>true</create>
+	<overwrite>false</overwrite>
+
+	<charset>utf8</charset>
+
+	<table>
+
+		<name>*dbprefix*teams_teams</name>
+
+		<declaration>
+			<field>
+				<name>id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<autoincrement>true</autoincrement>
+				<unsigned>true</unsigned>
+				<primary>true</primary>
+				<length>8</length>
+			</field>
+
+			<field>
+				<name>name</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+
+			<field>
+				<name>owner</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+
+			<index>
+				<name>teams_name_owner</name>
+				<field>
+					<name>name</name>
+				</field>
+				<field>
+					<name>owner</name>
+				</field>
+			</index>
+
+		</declaration>
+
+	</table>
+
+	<table>
+
+		<name>*dbprefix*teams_members</name>
+
+		<declaration>
+			<!--<field>
+				<name>id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<autoincrement>true</autoincrement>
+				<unsigned>true</unsigned>
+				<primary>true</primary>
+				<length>8</length>
+			</field>-->
+
+			<field>
+				<name>team_id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<unsigned>true</unsigned>
+				<length>8</length>
+			</field>
+
+			<field>
+				<name>user_id</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+
+			<field>
+				<name>status</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>128</length>
+			</field>
+
+			<index>
+				<name>unique_membership</name>
+				<primary>true</primary>
+				<unique>true</unique>
+				<field>
+					<name>user_id</name>
+				</field>
+				<field>
+					<name>team_id</name>
+				</field>
+			</index>
+
+		</declaration>
+
+	</table>
+
+</database>

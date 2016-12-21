@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<info>
+	<id>teams</id>
+	<name>Teams</name>
+	<description>Manage your teams and share with them</description>
+	<version>0.1</version>
+	<licence>AGPL</licence>
+	<author>Morris Jobke</author>
+	<namespace>Teams</namespace>
+
+	<dependencies>
+		<nextcloud min-version="11" max-version="12"/>
+	</dependencies>
+</info>
