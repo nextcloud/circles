@@ -1,0 +1,25 @@
+#loading_members {
+	height: 50px;
+	margin: 0 auto;
+	padding: 20px;
+}
+
+#app-navigation .navigation-element {
+	padding: 3px 12px;
+}
+
+#app-navigation .navigation-element input {
+	width: 100%;
+	box-sizing: border-box;
+}
+
+#app-content {
+	padding: 3px 12px;
+}
+
+#app-navigation .header {
+	padding: 0 12px;
+	line-height: 44px;
+	min-height: 44px;
+	border-bottom: 1px solid #eee;
+}
