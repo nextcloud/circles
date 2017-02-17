@@ -31,6 +31,7 @@ class Member {
 	private $groupid;
 	private $userid;
 	private $level;
+	private $status;
 	private $creation;
 
 	public function __construct() {
@@ -45,6 +46,7 @@ class Member {
 	public function getGroupId() {
 		return $this->userid;
 	}
+
 
 	public function setUserId($userid) {
 		$this->userid = $userid;
@@ -61,6 +63,15 @@ class Member {
 
 	public function getLevel() {
 		return $this->level;
+	}
+
+
+	public function setStatus($status) {
+		$this->status = $status;
+	}
+
+	public function getStatus() {
+		return $this->status;
 	}
 
 
