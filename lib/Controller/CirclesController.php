@@ -44,6 +44,8 @@ class CirclesController extends Controller {
 	private $userId;
 	/** @var IL10N */
 	private $l10n;
+	/** @var ConfigService */
+	private $configService;
 	/** @var MiscService */
 	private $miscService;
 
@@ -52,12 +54,14 @@ class CirclesController extends Controller {
 		IRequest $request,
 		$userId,
 		IL10N $l10n,
+		ConfigService $configService,
 		MiscService $miscService
 	) {
 		parent::__construct($appName, $request);
 
 		$this->userId = $userId;
 		$this->l10n = $l10n;
+		$this->configService = $configService;
 		$this->miscService = $miscService;
 	}
 

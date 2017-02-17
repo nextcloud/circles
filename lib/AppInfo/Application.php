@@ -58,14 +58,14 @@ class Application extends App {
 		);
 
 
-//		$container->registerService(
-//			'ConfigService', function ($c) {
-//			return new ConfigService(
-//				$c->query('AppName'), $c->query('CoreConfig'), $c->query('UserId'),
-//				$c->query('MiscService')
-//			);
-//		}
-//		);
+		$container->registerService(
+			'ConfigService', function ($c) {
+			return new ConfigService(
+				$c->query('AppName'), $c->query('CoreConfig'), $c->query('UserId'),
+				$c->query('MiscService')
+			);
+		}
+		);
 
 //		$container->registerService(
 //			'ApiService', function ($c) {
@@ -82,7 +82,7 @@ class Application extends App {
 //		$container->registerService(
 //			'SettingsController', function ($c) {
 //			return new SettingsController(
-//				$c->query('AppName'), $c->query('Request'), $c->query('ConfigService'),
+//				$c->query('AppName'), $2c->query('Request'), $c->query('ConfigService'),
 //				$c->query('MiscService')
 //			);
 //		}
@@ -92,6 +92,7 @@ class Application extends App {
 			'NavigationController', function ($c) {
 			return new NavigationController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
+				$c->query('ConfigService'),
 				$c->query('MiscService')
 			);
 		}
@@ -101,6 +102,7 @@ class Application extends App {
 			'CirclesController', function ($c) {
 			return new CirclesController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
+				$c->query('ConfigService'),
 				$c->query('MiscService')
 			);
 		}
