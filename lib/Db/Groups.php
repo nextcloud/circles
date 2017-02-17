@@ -39,6 +39,7 @@ class Groups extends Entity {
 	public $creation;
 	public $members;
 
+
 	public function __construct(Group $item = null) {
 		if ($item != null) {
 			$this->setId($item->getId());

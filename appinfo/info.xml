@@ -3,7 +3,7 @@
 	  xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
 	<id>circles</id>
 	<name>Circles</name>
-	<summary>Circles</summary>
+	<summary>Bring cloud-users closer</summary>
 	<description>Circles</description>
 	<version>0.0.3</version>
 	<licence>agpl</licence>
