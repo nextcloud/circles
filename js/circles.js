@@ -18,7 +18,7 @@ var Circles = {
 		var result = {status: -1};
 		$.ajax({
 			method: 'PUT',
-			url: OC.linkTo('circles', 'circles.php'),
+			url: OC.generateUrl(OC.linkTo('circles', 'circles')),
 			data: {
 				name: name
 			}
