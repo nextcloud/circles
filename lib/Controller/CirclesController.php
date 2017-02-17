@@ -37,20 +37,6 @@ class CirclesController extends Controller {
 		$this->miscService = $miscService;
 	}
 
-	/**
-	 * @NoCSRFRequired
-	 * @NoAdminRequired
-	 * @NoSubAdminRequired
-	 *
-	 * @return TemplateResponse
-	 */
-	public function navigate() {
-
-		return new TemplateResponse(
-			'circles', 'navigate', [
-					 ]
-		);
-	}
 
 	/**
 	 * @NoAdminRequired
@@ -60,7 +46,21 @@ class CirclesController extends Controller {
 	 *
 	 * @return DataResponse
 	 */
-//	public function create($name) {
+	public function create($name) {
+
+		$result = array(
+			'name'   => $name,
+			'status' => 1,
+			'error'  => ''
+		);
+
+		//return $result;
+
+		return new DataResponse(
+			$result,
+			Http::STATUS_CREATED
+		);
+
 //		try {
 //			$id = $this->dbHandler->createTeam($name, $this->userId);
 //		} catch (TeamExists $e) {
@@ -79,7 +79,8 @@ class CirclesController extends Controller {
 //			],
 //			Http::STATUS_CREATED
 //		);
-//	}
+	}
+
 
 	/**
 	 * @NoAdminRequired
@@ -113,6 +114,7 @@ class CirclesController extends Controller {
 //		);
 //	}
 
+
 	/**
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
@@ -138,6 +140,8 @@ class CirclesController extends Controller {
 //			Http::STATUS_INTERNAL_SERVER_ERROR
 //		);
 //	}
+
+
 	/**
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
@@ -156,6 +160,7 @@ class CirclesController extends Controller {
 //			Http::STATUS_OK
 //		);
 //	}
+
 
 	/**
 	 * @NoAdminRequired
@@ -196,6 +201,7 @@ class CirclesController extends Controller {
 //		}
 //	}
 
+
 	/**
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
@@ -221,6 +227,7 @@ class CirclesController extends Controller {
 //			Http::STATUS_CREATED
 //		);
 //	}
+
 
 	/**
 	 * @NoAdminRequired

@@ -2,6 +2,7 @@
 
 namespace OCA\Circles\AppInfo;
 
+use \OCA\Circles\Controller\NavigationController;
 use \OCA\Circles\Controller\CirclesController;
 
 //use \OCA\Circles\Service\ConfigService;
@@ -65,6 +66,15 @@ class Application extends App {
 //		);
 
 		$container->registerService(
+			'NavigationController', function ($c) {
+			return new NavigationController(
+				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
+				$c->query('MiscService')
+			);
+		}
+		);
+
+		$container->registerService(
 			'CirclesController', function ($c) {
 			return new CirclesController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
@@ -72,7 +82,6 @@ class Application extends App {
 			);
 		}
 		);
-
 
 		/**
 		 * Mapper
@@ -140,9 +149,9 @@ class Application extends App {
 						 'id'    => $this->appName,
 						 'order' => 5,
 						 'href'  => \OC::$server->getURLGenerator()
-												->linkToRoute('circles.Circles.navigate'),
+												->linkToRoute('circles.Navigation.navigate'),
 						 'icon'  => \OC::$server->getURLGenerator()
-												->imagePath($this->appName, 'app.svg'),
+												->imagePath($this->appName, 'circles.svg'),
 						 'name'  => \OC::$server->getL10N($this->appName)
 												->t('Circles')
 					 ];

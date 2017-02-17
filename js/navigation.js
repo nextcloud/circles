@@ -17,6 +17,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
+$(document).ready(function () {
+
+	Circles.Navigation = {
+
+		init: function () {
+
+			Circles.init();
+
+			$('#circles_new').on('keyup', function (e) {
+				if (e.which == 13) {
+					Circles.Navigation.createCircle();
+
+				}
+			});
+		},
+
+
+		createCircle: function () {
+			console.log("creating: " + $('#circles_new').val());
+			Circles.createCircle($('#circles_new').val(), Circles.Navigation.createCircleResult);
+		},
+
+
+		createCircleResult: function (result) {
+			console.log("result: " + result.status);
+		}
+
+	};
+
+	Circles.Navigation.init();
+
+});
+
+
 //
 // $(document).ready(function() {
 // 	var removeMember = function() {
@@ -105,59 +141,14 @@
 // 				$teamsNavigation.append(
 // 					$('<li>').append(
 // 						$('<a>').data('navigation', team.id).append(
-// 							$('<span>').addClass('no-icon').text(team.name + ' by ' + team.owner + ' (' + team.status + ')')
-// 						).on('click', openTeam)
-// 					)
-// 				);
-// 			});
-// 		}
-// 	).fail(function(){
-// 		// TODO on failure
-// 	});
-//
-// 	var createTeam = function(e){
-// 		if (e.keyCode === 13) {
-// 			$.ajax({
-// 				method: 'PUT',
-// 				url: OC.linkTo('teams', 'teams'),
-// 				data: {
-// 					name: $('#newTeam').val()
-// 				}
-// 			}).done(function() {
-// 				// TODO re-render in JS
-// 				location.reload();
-// 			}).fail(function(){
-// 				// TODO on failure
-// 			});
-// 		}
-// 	};
-//
-// 	$('#newTeam').on('keyup', createTeam);
-//
-//
-//
-// 	var addMember = function(e){
-// 		if (e.keyCode === 13) {
-// 			var teamId = $('#app-navigation').find('.active').first().data('navigation');
-//
-// 			$.ajax({
-// 				method: 'PUT',
-// 				url: OC.linkTo('teams', 'teams/' + teamId + '/members'),
-// 				data: {
-// 					userId: $('#addMember').val()
-// 				}
-// 			}).done(function() {
-// 				// TODO re-render in JS
-// 				location.reload();
-// 				$('#addMember').val('');
-// 			}).fail(function(){
-// 				// TODO on failure
-// 			});
-// 		}
-// 	};
-//
-// 	$('#addMember').on('keyup', addMember);
-//
-//
-//
-// });
+// 							$('<span>').addClass('no-icon').text(team.name + ' by ' + team.owner
+// + ' (' + team.status + ')') ).on('click', openTeam) ) ); }); } ).fail(function(){ // TODO on
+// failure });  var createTeam = function(e){ if (e.keyCode === 13) { $.ajax({ method: 'PUT', url:
+// OC.linkTo('teams', 'teams'), data: { name: $('#newTeam').val() } }).done(function() { // TODO
+// re-render in JS location.reload(); }).fail(function(){ // TODO on failure }); } };
+// $('#newTeam').on('keyup', createTeam);    var addMember = function(e){ if (e.keyCode === 13) {
+// var teamId = $('#app-navigation').find('.active').first().data('navigation');  $.ajax({ method:
+// 'PUT', url: OC.linkTo('teams', 'teams/' + teamId + '/members'), data: { userId:
+// $('#addMember').val() } }).done(function() { // TODO re-render in JS location.reload();
+// $('#addMember').val(''); }).fail(function(){ // TODO on failure }); } };
+// $('#addMember').on('keyup', addMember);    });

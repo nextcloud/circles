@@ -19,7 +19,9 @@
  *
  */
 
+script('circles', 'circles');
 script('circles', 'navigation');
+
 style('circles', 'navigation');
 
 ?>
@@ -27,10 +29,9 @@ style('circles', 'navigation');
 
 <div id="app-navigation">
 	<div class="navigation-element">
-		<label for="newTeam" class="hidden-visually"><?php p($l->t('New team')); ?></label>
-		<input id="newTeam" type="text" placeholder="<?php p($l->t('New team')); ?>"/>
+		<input id="circles_new" type="text" placeholder="<?php p($l->t('New circle')); ?>"/>
 	</div>
-	<ul class="teams"></ul>
+	<div id="circles_list"></div>
 </div>
 
 <div id="app-content">

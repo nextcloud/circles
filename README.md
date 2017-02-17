@@ -15,3 +15,10 @@ It's based on an invitation concept and requests could be initiated from both si
 user and circle admin needs to mutually accept membership before shares to a circle show up for the clouduser.
 
 ![example screenshot](example.png)
+
+
+
+
+### Credits
+
+App Icon by [http://www.flaticon.com/authors/madebyoliver](Madebyoliver) under Creative Commons BY 3.0

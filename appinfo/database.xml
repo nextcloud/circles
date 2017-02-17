@@ -40,6 +40,12 @@
 				<notnull>true</notnull>
 				<length>8</length>
 			</field>
+
+			<field>
+				<name>creation</name>
+				<type>timestamp</type>
+				<notnull>true</notnull>
+			</field>
 		</declaration>
 	</table>
 
@@ -75,6 +81,13 @@
 				<notnull>true</notnull>
 				<length>8</length>
 			</field>
+
+			<field>
+				<name>creation</name>
+				<type>timestamp</type>
+				<notnull>true</notnull>
+			</field>
+
 
 			<index>
 				<name>unique_membership</name>

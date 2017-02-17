@@ -21,7 +21,8 @@
 
 return [
 	'routes' => [
-		['name' => 'Circles#navigate', 'url' => '/', 'verb' => 'GET'],
+		['name' => 'Navigation#navigate', 'url' => '/', 'verb' => 'GET'],
+		['name' => 'Circles#create', 'url' => 'circles.php', 'verb' => 'PUT'],
 		//		['name' => 'Teams#listTeams', 'url' => '/teams', 'verb' => 'GET'],
 		//		['name' => 'Teams#create', 'url' => '/teams', 'verb' => 'PUT'],
 		//		['name' => 'Teams#update', 'url' => '/teams/{id}', 'verb' => 'POST', 'requirements' => ['id' => '\d+'],],
