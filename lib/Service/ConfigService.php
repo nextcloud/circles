@@ -32,10 +32,7 @@ class ConfigService {
 
 
 	const CIRCLES_ALLOW_CIRCLES = 'allow_circles';
-	const CIRCLES_PERSONAL = 1;
-	const CIRCLES_HIDDEN = 2;
-	const CIRCLES_PRIVATE = 4;
-	const CIRCLES_PUBLIC = 8;
+
 
 	private $defaults = [
 		self:: CIRCLES_ALLOW_CIRCLES => 15,
