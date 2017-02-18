@@ -79,7 +79,7 @@ class Circle {
 
 
 	public function setType($type) {
-		$this->type = $type;
+		$this->type = (int) $type;
 
 		return $this;
 	}
