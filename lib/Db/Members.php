@@ -32,7 +32,7 @@ use OCP\AppFramework\Db\Entity;
 class Members extends Entity {
 
 
-	public $groupid;
+	public $circleid;
 	public $userid;
 	public $level;
 	public $status;
@@ -41,7 +41,7 @@ class Members extends Entity {
 
 	public function __construct(Member $item = null) {
 		if ($item != null) {
-			$this->setGroupId($item->getGroupId());
+			$this->setCircleId($item->getCircleId());
 			$this->setUserId($item->getUserId());
 			$this->setLevel($item->getLevel());
 			$this->setStatus($item->getStatus());

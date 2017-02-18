@@ -28,7 +28,9 @@ namespace OCA\Circles\Model;
 
 class Member {
 
-	private $groupid;
+	const LEVEL_ADMIN = 9;
+
+	private $circleid;
 	private $userid;
 	private $level;
 	private $status;
@@ -38,14 +40,14 @@ class Member {
 	}
 
 
-	public function setGroupId($groupid) {
-		$this->groupid = $groupid;
+	public function setCircleId($circleid) {
+		$this->circleid = $circleid;
 
 		return $this;
 	}
 
-	public function getGroupId() {
-		return $this->groupid;
+	public function getCircleId() {
+		return $this->circleid;
 	}
 
 

@@ -27,19 +27,21 @@
 namespace OCA\Circles\Db;
 
 use \OCA\Circles\Model\iError;
-use \OCA\Circles\Model\Group;
+use \OCA\Circles\Model\Circle;
+use \OCA\Circles\Model\Member;
 
 use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\IDBConnection;
 use OCP\AppFramework\Db\Mapper;
 
-class GroupsMapper extends Mapper {
+class CirclesMapper extends Mapper {
 
-	const TABLENAME = 'circles_groups';
+	const TABLENAME = 'circles_circles';
+
 	private $miscService;
 
 	public function __construct(IDBConnection $db, $miscService) {
-		parent::__construct($db, self::TABLENAME, 'OCA\Circles\Db\Groups');
+		parent::__construct($db, self::TABLENAME, 'OCA\Circles\Db\Circles');
 		$this->miscService = $miscService;
 
 	}
@@ -54,11 +56,50 @@ class GroupsMapper extends Mapper {
 		}
 	}
 
-	public function create(Group $group, &$iError = '') {
+
+	public function findAllByUserLevel(Member $member, $level, $type = '') {
+		try {
+			$sql = sprintf(
+				"SELECT g.id, g.name, g.description, g.type, UNIX_TIMESTAMP(g.creation) AS utc, "
+				. "UNIX_TIMESTAMP(m.creation) AS joined, m.user_id, m.level, m.status "
+				. "FROM *PREFIX*%s AS g, *PREFIX*%s AS m WHERE g.id=m.circle_id AND m.user_id=? AND m.level=? %s",
+				self::TABLENAME, MembersMapper::TABLENAME, (($type !== '') ? ' AND g.type=?' : '')
+			);
+			$result = $this->findEntities($sql, [$member->getUserId(), $level, $type]);
+
+			return $result;
+		} catch (DoesNotExistException $ne) {
+			return null;
+		}
+	}
+
+	public function create(Circle $circle, Member $owner, &$iError = '') {
 		if ($iError === '') {
 			$iError = new iError();
 		}
 
+		if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
+			$result = $this->findAllByUserLevel($owner, Member::LEVEL_ADMIN, $circle->getType());
+			$this->miscService->log("____" . var_export($result, true));
+
+			foreach ($result AS $entry) {
+				$this->miscService->log("____" . var_export($entry, true));
+			}
+		} else {
+			try {
+				$sql = sprintf(
+					"SELECT id FROM *PREFIX*%s WHERE LCASE(name)=? AND type!=%d",
+					self::TABLENAME, Circle::CIRCLES_PERSONAL
+				);
+
+				$this->findEntity($sql, [strtolower($circle->getName())]);
+
+				return false;
+			} catch (MultipleObjectsReturnedException $me) {
+				return false;
+			} catch (DoesNotExistException $ne) {
+			}
+		}
 
 		$sql = sprintf(
 			'INSERT INTO *PREFIX*%s (name, description, type, creation) VALUES (?, ?, ?, NOW())',
@@ -66,7 +107,7 @@ class GroupsMapper extends Mapper {
 		);
 
 		$result = $this->execute(
-			$sql, [$group->getName(), $group->getDescription(), $group->getType()]
+			$sql, [$circle->getName(), $circle->getDescription(), $circle->getType()]
 		);
 
 		$this->miscService->log("_____" . var_export($result, true));

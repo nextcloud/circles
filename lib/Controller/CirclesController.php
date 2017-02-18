@@ -30,7 +30,7 @@ use \OCA\Circles\Service\MiscService;
 use \OCA\Circles\Service\ConfigService;
 use \OCA\Circles\Service\DatabaseService;
 use \OCA\Circles\Model\iError;
-use \OCA\Circles\Model\Group;
+use \OCA\Circles\Model\Circle;
 use \OCA\Circles\Model\Member;
 
 
@@ -93,17 +93,17 @@ class CirclesController extends Controller {
 			  ->setLevel(9)
 			  ->setStatus('test');
 
-		$group = new Group();
-		$group->setName($name)
+		$circle = new Circle();
+		$circle->setName($name)
 			  ->setType($type)
 			  ->setMembers([$owner]);
 
-		if ($groupid = $this->databaseService->getGroupsMapper()
-											 ->create($group, $iError)
+		if ($circleid = $this->databaseService->getCirclesMapper()
+											 ->create($circle, $owner, $iError) === true
 		) {
-			$owner->setGroupId($groupid);
+			$owner->setCircleId($circleid);
 			if ($this->databaseService->getMembersMapper()
-									  ->create($owner, $iError)
+									  ->create($owner, $iError) === true
 			) {
 				return new DataResponse(
 					[
@@ -116,8 +116,8 @@ class CirclesController extends Controller {
 				);
 
 			} else {
-				$this->databaseService->getGroupsMapper()
-									  ->destroy($created_group, $iError);
+				$this->databaseService->getCirclesMapper()
+									  ->destroy($circleid, $iError);
 			}
 		}
 

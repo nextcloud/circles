@@ -43,12 +43,12 @@ class MembersMapper extends Mapper {
 		$this->miscService = $miscService;
 	}
 
-	public function findAllFromGroup($groupid) {
+	public function findAllFromCircle($circleid) {
 
 		try {
-			$sql = sprintf('SELECT * FROM *PREFIX*%s WHERE group_id = ?', self::TABLENAME);
+			$sql = sprintf('SELECT * FROM *PREFIX*%s WHERE circle_id = ?', self::TABLENAME);
 
-			return $this->findEntity($sql, [$groupid]);
+			return $this->findEntity($sql, [$circleid]);
 		} catch (DoesNotExistException $dnee) {
 			return null;
 		}
@@ -62,13 +62,16 @@ class MembersMapper extends Mapper {
 
 
 		$sql = sprintf(
-			'INSERT INTO *PREFIX*%s (group_id, user_id, level, status, creation) VALUES (?, ?, ?, ?, NOW())',
+			'INSERT INTO *PREFIX*%s (circle_id, user_id, level, status, creation) VALUES (?, ?, ?, ?, NOW())',
 			self::TABLENAME
 		);
 
 		return $this->execute(
 			$sql,
-			[$member->getGroupId(), $member->getUserId(), $member->getLevel(), $member->getStatus()]
+			[
+				$member->getCircleId(), $member->getUserId(), $member->getLevel(),
+				$member->getStatus()
+			]
 		);
 
 

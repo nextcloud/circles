@@ -28,24 +28,24 @@
 namespace OCA\Circles\Service;
 
 
-use OCA\Circles\Db\GroupsMapper;
+use OCA\Circles\Db\CirclesMapper;
 use OCA\Circles\Db\MembersMapper;
 
 class DatabaseService {
 
-	private $groupsMapper;
+	private $circlesMapper;
 	private $membersMapper;
 
-	function __construct($groupsMapper, $membersMapper) {
-		$this->groupsMapper = $groupsMapper;
+	function __construct($circlesMapper, $membersMapper) {
+		$this->circlesMapper = $circlesMapper;
 		$this->membersMapper = $membersMapper;
 	}
 
 	/**
-	 * @return GroupsMapper
+	 * @return CirclesMapper
 	 */
-	public function getGroupsMapper() {
-		return $this->groupsMapper;
+	public function getCirclesMapper() {
+		return $this->circlesMapper;
 	}
 
 	/**

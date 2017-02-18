@@ -26,7 +26,12 @@
 
 namespace OCA\Circles\Model;
 
-class Group {
+class Circle {
+
+	const CIRCLES_PERSONAL = 1;
+	const CIRCLES_HIDDEN = 2;
+	const CIRCLES_PRIVATE = 4;
+	const CIRCLES_PUBLIC = 8;
 
 	private $id;
 	private $name;

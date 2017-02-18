@@ -26,10 +26,10 @@
 
 namespace OCA\Circles\Db;
 
-use \OCA\Circles\Model\Group;
+use \OCA\Circles\Model\Circle;
 use OCP\AppFramework\Db\Entity;
 
-class Groups extends Entity {
+class Circles extends Entity {
 
 
 	public $id;
@@ -40,7 +40,7 @@ class Groups extends Entity {
 	public $members;
 
 
-	public function __construct(Group $item = null) {
+	public function __construct(Circle $item = null) {
 		if ($item != null) {
 			$this->setId($item->getId());
 			$this->setName($item->getName());

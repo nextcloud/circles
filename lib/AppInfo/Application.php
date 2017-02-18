@@ -29,7 +29,7 @@ namespace OCA\Circles\AppInfo;
 use \OCA\Circles\Controller\NavigationController;
 use \OCA\Circles\Controller\CirclesController;
 
-use \OCA\Circles\Db\GroupsMapper;
+use \OCA\Circles\Db\CirclesMapper;
 use \OCA\Circles\Db\MembersMapper;
 use \OCA\Circles\Service\DatabaseService;
 use \OCA\Circles\Service\ConfigService;
@@ -73,7 +73,7 @@ class Application extends App {
 		$container->registerService(
 			'DatabaseService', function ($c) {
 			return new DatabaseService(
-				$c->query('GroupsMapper'),
+				$c->query('CirclesMapper'),
 				$c->query('MembersMapper')
 			);
 		}
@@ -125,8 +125,8 @@ class Application extends App {
 		 * Mapper
 		 */
 		$container->registerService(
-			'GroupsMapper', function ($c) {
-			return new GroupsMapper(
+			'CirclesMapper', function ($c) {
+			return new CirclesMapper(
 				$c->query('ServerContainer')
 				  ->getDatabaseConnection(), $c->query('MiscService')
 			);
