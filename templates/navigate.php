@@ -33,8 +33,42 @@ style('circles', 'navigation');
 
 
 <div id="app-navigation">
-	<div class="navigation-element">
-		<input id="circles_new" type="text" placeholder="<?php p($l->t('New circle')); ?>"/>
+	<div class="navigation-element" style="height: 250px;">
+		<input id="circles_new_name" type="text"
+			   placeholder="<?php p($l->t('Create a new circle')); ?>"/>
+		<select id="circles_new_type" style="display: none;">
+			<?php if ($_['allowed_circles']['personal']) { ?>
+				<option value="personal">Create a Personal Circle</option><?php } ?>
+			<?php if ($_['allowed_circles']['hidden']) { ?>
+				<option value="hidden">Create an Hidden Circle</option><?php } ?>
+			<?php if ($_['allowed_circles']['private']) { ?>
+				<option value="private">Create a Private Circle</option><?php } ?>
+			<?php if ($_['allowed_circles']['public']) { ?>
+				<option value="public">Create a Public Circle</option><?php } ?>
+		</select>
+		<input id="circles_new_submit" type="submit" value="Creation" style="display: none;"/>
+
+		<div id="circles_new_type_definition" style="display: none;">
+			<div id="circles_new_type_personal"><b>A Personal Circle is a list of users known only
+					to
+					yourself.</b><br/>Use this if you want to send messsage or share thing
+				repeatedly to the same group of people.
+			</div>
+			<div id="circles_new_type_hidden"><b>An Hidden Circle is an open group that can be
+					protected by
+					a password.</b><br/>Select this circle to create a community not displayed as a
+				Public Circle.
+			</div>
+			<div id="circles_new_type_public"><b>A Public Circle is an open group visible to anyone
+					that dare to join. </b><br/>Your circle will be visible to everyone and everyone
+				will be able to join the circle.
+			</div>
+			<div id="circles_new_type_private"><b>A Private Circle require invitation or a
+					confirmation
+					from an admin.</b> <br/>This is the best circle if you are looking for privacy
+				when sharing your files or your ideas.
+			</div>
+		</div>
 	</div>
 	<div id="circles_list"></div>
 </div>

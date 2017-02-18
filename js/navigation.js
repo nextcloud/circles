@@ -30,20 +30,59 @@ $(document).ready(function () {
 
 		init: function () {
 
+			var self = this;
+			self.hideAllCircleHelp();
+			self.showCircleHelp();
+			$('#circles_new_type').hide();
+			$('#circles_new_submit').hide();
+			$('#circles_new_type_definition').hide();
+
 			Circles.init();
 
-			$('#circles_new').on('keyup', function (e) {
-				if (e.which == 13) {
-					Circles.Navigation.createCircle();
 
+			$('#circles_new_name').on('keyup', function (e) {
+				if ($('#circles_new_name').val() != '') {
+					$('#circles_new_type').fadeIn(300);
+					$('#circles_new_submit').fadeIn(500);
+					$('#circles_new_type_definition').fadeIn(700);
+				}
+				else {
+					$('#circles_new_type').fadeOut(700);
+					$('#circles_new_submit').fadeOut(500);
+					$('#circles_new_type_definition').fadeOut(300);
 				}
 			});
+
+			$('#circles_new_type').on('change', function () {
+				self.hideAllCircleHelp(300);
+				self.showCircleHelp();
+			});
+
+			$('#circles_new_submit').on('click', function () {
+				Circles.Navigation.createCircle($('#circles_new_name').val(),
+					$('#circles_new_type').val());
+			});
+
 		},
 
 
-		createCircle: function () {
-			console.log("creating: " + $('#circles_new').val());
-			Circles.createCircle($('#circles_new').val(), Circles.Navigation.createCircleResult);
+		hideAllCircleHelp: function (delay) {
+			if (!delay) delay = 0;
+			$('#circles_new_type_personal').fadeOut(delay);
+			$('#circles_new_type_hidden').fadeOut(delay);
+			$('#circles_new_type_private').fadeOut(delay);
+			$('#circles_new_type_public').fadeOut(delay);
+		},
+
+		showCircleHelp: function () {
+			$('#circles_new_type_' + ($('#circles_new_type option:selected').val())).fadeIn(300);
+		},
+
+
+		createCircle: function (name, type) {
+
+			console.log("creating: " + name + " " + type);
+			Circles.createCircle(name, type, Circles.Navigation.createCircleResult);
 		},
 
 

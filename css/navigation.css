@@ -4,11 +4,11 @@
 	padding: 20px;
 }
 
-#app-navigation .navigation-element {
+#app-navigation .navigation-element, #app-navigation .navigation-element option {
 	padding: 3px 12px;
 }
 
-#app-navigation .navigation-element input {
+#app-navigation .navigation-element input, #app-navigation .navigation-element select, #app-navigation .navigation-element option {
 	width: 100%;
 	box-sizing: border-box;
 }
@@ -22,4 +22,13 @@
 	line-height: 44px;
 	min-height: 44px;
 	border-bottom: 1px solid #eee;
+}
+
+
+#circles_new_type_definition div {
+	margin-top: 20px;
+	position: absolute;
+	width: 220px;
+	color: #47474799;
+	word-wrap: break-word;
 }
