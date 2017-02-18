@@ -29,6 +29,9 @@ namespace OCA\Circles\AppInfo;
 use \OCA\Circles\Controller\NavigationController;
 use \OCA\Circles\Controller\CirclesController;
 
+use \OCA\Circles\Db\GroupsMapper;
+use \OCA\Circles\Db\MembersMapper;
+use \OCA\Circles\Service\DatabaseService;
 use \OCA\Circles\Service\ConfigService;
 use \OCA\Circles\Service\MiscService;
 use OCP\AppFramework\App;
@@ -63,6 +66,15 @@ class Application extends App {
 			return new ConfigService(
 				$c->query('AppName'), $c->query('CoreConfig'), $c->query('UserId'),
 				$c->query('MiscService')
+			);
+		}
+		);
+
+		$container->registerService(
+			'DatabaseService', function ($c) {
+			return new DatabaseService(
+				$c->query('GroupsMapper'),
+				$c->query('MembersMapper')
 			);
 		}
 		);
@@ -103,6 +115,7 @@ class Application extends App {
 			return new CirclesController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
 				$c->query('ConfigService'),
+				$c->query('DatabaseService'),
 				$c->query('MiscService')
 			);
 		}
@@ -111,14 +124,24 @@ class Application extends App {
 		/**
 		 * Mapper
 		 */
-//		$container->registerService(
-//			'DepositionFilesMapper', function ($c) {
-//			return new DepositionFilesMapper(
-//				$c->query('ServerContainer')
-//				  ->getDatabaseConnection()
-//			);
-//		}
-//		);
+		$container->registerService(
+			'GroupsMapper', function ($c) {
+			return new GroupsMapper(
+				$c->query('ServerContainer')
+				  ->getDatabaseConnection(), $c->query('MiscService')
+			);
+		}
+		);
+
+		$container->registerService(
+			'MembersMapper', function ($c) {
+			return new MembersMapper(
+				$c->query('ServerContainer')
+				  ->getDatabaseConnection(), $c->query('MiscService')
+			);
+		}
+		);
+
 
 		// Translates
 		$container->registerService(

@@ -28,6 +28,12 @@ namespace OCA\Circles\Controller;
 
 use \OCA\Circles\Service\MiscService;
 use \OCA\Circles\Service\ConfigService;
+use \OCA\Circles\Service\DatabaseService;
+use \OCA\Circles\Model\iError;
+use \OCA\Circles\Model\Group;
+use \OCA\Circles\Model\Member;
+
+
 use \OCA\Circles\Exceptions\TeamDoesNotExists;
 use \OCA\Circles\Exceptions\TeamExists;
 use OC\AppFramework\Http;
@@ -46,6 +52,8 @@ class CirclesController extends Controller {
 	private $l10n;
 	/** @var ConfigService */
 	private $configService;
+	/** @var DatabaseService */
+	private $databaseService;
 	/** @var MiscService */
 	private $miscService;
 
@@ -55,6 +63,7 @@ class CirclesController extends Controller {
 		$userId,
 		IL10N $l10n,
 		ConfigService $configService,
+		DatabaseService $databaseService,
 		MiscService $miscService
 	) {
 		parent::__construct($appName, $request);
@@ -62,6 +71,7 @@ class CirclesController extends Controller {
 		$this->userId = $userId;
 		$this->l10n = $l10n;
 		$this->configService = $configService;
+		$this->databaseService = $databaseService;
 		$this->miscService = $miscService;
 	}
 
