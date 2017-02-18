@@ -36,6 +36,7 @@ use OCP\AppFramework\Db\Mapper;
 class MembersMapper extends Mapper {
 
 	const TABLENAME = 'circles_members';
+
 	private $miscService;
 
 	public function __construct(IDBConnection $db, $miscService) {
@@ -60,21 +61,24 @@ class MembersMapper extends Mapper {
 			$iError = new iError();
 		}
 
-
 		$sql = sprintf(
 			'INSERT INTO *PREFIX*%s (circle_id, user_id, level, status, creation) VALUES (?, ?, ?, ?, NOW())',
 			self::TABLENAME
 		);
 
-		return $this->execute(
-			$sql,
-			[
-				$member->getCircleId(), $member->getUserId(), $member->getLevel(),
-				$member->getStatus()
-			]
-		);
+		try {
+			$this->execute(
+				$sql,
+				[
+					$member->getCircleId(), $member->getUserId(), $member->getLevel(),
+					$member->getStatus()
+				]
+			);
+		} catch (\Exception $e) {
+			return false;
+		}
 
-
+		return true;
 	}
 }
 

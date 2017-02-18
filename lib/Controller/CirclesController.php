@@ -89,19 +89,16 @@ class CirclesController extends Controller {
 		$iError = new iError();
 
 		$owner = new Member();
-		$owner->setUserId($this->userId)
-			  ->setLevel(9)
-			  ->setStatus('test');
+		$owner->setUserId($this->userId);
 
 		$circle = new Circle();
 		$circle->setName($name)
-			  ->setType($type)
-			  ->setMembers([$owner]);
+			   ->setType($type)
+			   ->setMembers([$owner]);
 
-		if ($circleid = $this->databaseService->getCirclesMapper()
-											 ->create($circle, $owner, $iError) === true
+		if ($this->databaseService->getCirclesMapper()
+								  ->create($circle, $owner, $iError) === true
 		) {
-			$owner->setCircleId($circleid);
 			if ($this->databaseService->getMembersMapper()
 									  ->create($owner, $iError) === true
 			) {
@@ -117,7 +114,7 @@ class CirclesController extends Controller {
 
 			} else {
 				$this->databaseService->getCirclesMapper()
-									  ->destroy($circleid, $iError);
+									  ->destroy($circle, $iError);
 			}
 		}
 
