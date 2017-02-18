@@ -103,7 +103,7 @@
 			<field>
 				<name>status</name>
 				<type>text</type>
-				<notnull>true</notnull>
+				<notnull>false</notnull>
 				<length>8</length>
 			</field>
 
@@ -112,7 +112,6 @@
 				<type>timestamp</type>
 				<notnull>true</notnull>
 			</field>
-
 
 			<index>
 				<name>unique_membership</name>
