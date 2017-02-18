@@ -35,21 +35,24 @@ class Member {
 	private $creation;
 
 	public function __construct() {
-
 	}
 
 
 	public function setGroupId($groupid) {
 		$this->groupid = $groupid;
+
+		return $this;
 	}
 
 	public function getGroupId() {
-		return $this->userid;
+		return $this->groupid;
 	}
 
 
 	public function setUserId($userid) {
 		$this->userid = $userid;
+
+		return $this;
 	}
 
 	public function getUserId() {
@@ -59,6 +62,8 @@ class Member {
 
 	public function setLevel($level) {
 		$this->level = $level;
+
+		return $this;
 	}
 
 	public function getLevel() {
@@ -68,6 +73,8 @@ class Member {
 
 	public function setStatus($status) {
 		$this->status = $status;
+
+		return $this;
 	}
 
 	public function getStatus() {
@@ -77,6 +84,8 @@ class Member {
 
 	public function setCreation($creation) {
 		$this->creation = $creation;
+
+		return $this;
 	}
 
 	public function getCreation() {

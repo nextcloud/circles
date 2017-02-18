@@ -42,6 +42,8 @@ class Group {
 
 	public function setId($id) {
 		$this->id = $id;
+
+		return $this;
 	}
 
 	public function getId() {
@@ -51,6 +53,8 @@ class Group {
 
 	public function setName($name) {
 		$this->name = $name;
+
+		return $this;
 	}
 
 	public function getName() {
@@ -60,6 +64,8 @@ class Group {
 
 	public function setDescription($description) {
 		$this->description = $description;
+
+		return $this;
 	}
 
 	public function getDescription() {
@@ -69,6 +75,8 @@ class Group {
 
 	public function setType($type) {
 		$this->type = $type;
+
+		return $this;
 	}
 
 	public function getType() {
@@ -78,6 +86,8 @@ class Group {
 
 	public function setCreation($creation) {
 		$this->creation = $creation;
+
+		return $this;
 	}
 
 	public function getCreation() {
@@ -87,6 +97,8 @@ class Group {
 
 	public function setMembers($members) {
 		$this->members = $members;
+
+		return $this;
 	}
 
 	public function getMembers() {
