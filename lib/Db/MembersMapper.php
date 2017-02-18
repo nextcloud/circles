@@ -26,6 +26,9 @@
 
 namespace OCA\Circles\Db;
 
+use \OCA\Circles\Model\iError;
+use \OCA\Circles\Model\Member;
+
 use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\IDBConnection;
 use OCP\AppFramework\Db\Mapper;
@@ -33,9 +36,11 @@ use OCP\AppFramework\Db\Mapper;
 class MembersMapper extends Mapper {
 
 	const TABLENAME = 'circles_members';
+	private $miscService;
 
-	public function __construct(IDBConnection $db) {
+	public function __construct(IDBConnection $db, $miscService) {
 		parent::__construct($db, self::TABLENAME, 'OCA\Circles\Db\Members');
+		$this->miscService = $miscService;
 	}
 
 	public function findAllFromGroup($groupid) {
@@ -49,5 +54,24 @@ class MembersMapper extends Mapper {
 		}
 	}
 
+	public function create(Member $member, &$iError = '') {
+
+		if ($iError === '') {
+			$iError = new iError();
+		}
+
+
+		$sql = sprintf(
+			'INSERT INTO *PREFIX*%s (group_id, user_id, level, status, creation) VALUES (?, ?, ?, ?, NOW())',
+			self::TABLENAME
+		);
+
+		return $this->execute(
+			$sql,
+			[$member->getGroupId(), $member->getUserId(), $member->getLevel(), $member->getStatus()]
+		);
+
+
+	}
 }
 
