@@ -50,5 +50,6 @@ class Groups extends Entity {
 			$this->setMembers($item->getMembers());
 		}
 	}
+
 }
 
