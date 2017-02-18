@@ -32,7 +32,7 @@
 	<charset>utf8</charset>
 
 	<table>
-		<name>*dbprefix*circles_groups</name>
+		<name>*dbprefix*circles_circles</name>
 
 		<declaration>
 			<field>
@@ -61,9 +61,9 @@
 
 			<field>
 				<name>type</name>
-				<type>text</type>
+				<type>integer</type>
 				<notnull>true</notnull>
-				<length>8</length>
+				<length>2</length>
 			</field>
 
 			<field>
@@ -79,7 +79,7 @@
 
 		<declaration>
 			<field>
-				<name>group_id</name>
+				<name>circle_id</name>
 				<type>integer</type>
 				<notnull>true</notnull>
 				<unsigned>true</unsigned>
@@ -119,7 +119,7 @@
 				<primary>true</primary>
 				<unique>true</unique>
 				<field>
-					<name>group_id</name>
+					<name>circle_id</name>
 				</field>
 				<field>
 					<name>user_id</name>
