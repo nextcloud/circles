@@ -57,15 +57,22 @@ class CirclesMapper extends Mapper {
 	}
 
 
-	public function findAllByUserLevel(Member $member, $level, $type = '') {
+	public function findCirclesByUser(Member $member, $type = 0, $level = 0) {
+
+		$type = (int)$type;
+		$level = (int)$level;
+
 		try {
 			$sql = sprintf(
 				"SELECT g.id, g.name, g.description, g.type, UNIX_TIMESTAMP(g.creation) AS utc, "
 				. "UNIX_TIMESTAMP(m.creation) AS joined, m.user_id, m.level, m.status "
-				. "FROM *PREFIX*%s AS g, *PREFIX*%s AS m WHERE g.id=m.circle_id AND m.user_id=? AND m.level=? %s",
-				self::TABLENAME, MembersMapper::TABLENAME, (($type !== '') ? ' AND g.type=?' : '')
+				. "FROM *PREFIX*%s AS g, *PREFIX*%s AS m WHERE g.id=m.circle_id AND m.user_id=? %s %s",
+				self::TABLENAME, MembersMapper::TABLENAME,
+				(($type !== '') ? ' AND g.type=' . $type : ''),
+				(($level > 0) ? ' AND m.level>=' . $level : '')
 			);
-			$result = $this->findEntities($sql, [$member->getUserId(), $level, $type]);
+
+			$result = $this->execute($sql, [$member->getUserId()]);
 
 			return $result;
 		} catch (DoesNotExistException $ne) {
@@ -73,17 +80,23 @@ class CirclesMapper extends Mapper {
 		}
 	}
 
-	public function create(Circle $circle, Member $owner, &$iError = '') {
+	public function create(Circle &$circle, Member &$owner, &$iError = '') {
+
 		if ($iError === '') {
 			$iError = new iError();
 		}
 
+
 		if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
-			$result = $this->findAllByUserLevel($owner, Member::LEVEL_ADMIN, $circle->getType());
-			$this->miscService->log("____" . var_export($result, true));
+
+			$result = $this->findCirclesByUser($owner, $circle->getType(), Member::LEVEL_ADMIN);
 
 			foreach ($result AS $entry) {
-				$this->miscService->log("____" . var_export($entry, true));
+				if ($entry['name'] === $circle->getName()) {
+					$iError->setMessage('duplicate name');
+
+					return false;
+				}
 			}
 		} else {
 			try {
@@ -94,8 +107,12 @@ class CirclesMapper extends Mapper {
 
 				$this->findEntity($sql, [strtolower($circle->getName())]);
 
+				$iError->setMessage('duplicate name');
+
 				return false;
 			} catch (MultipleObjectsReturnedException $me) {
+				$iError->setMessage('duplicate name');
+
 				return false;
 			} catch (DoesNotExistException $ne) {
 			}
@@ -110,9 +127,22 @@ class CirclesMapper extends Mapper {
 			$sql, [$circle->getName(), $circle->getDescription(), $circle->getType()]
 		);
 
-		$this->miscService->log("_____" . var_export($result, true));
+		$circleid = $this->db->lastInsertId(self::TABLENAME);
+		if ($circleid < 1) {
+			$iError->setMessage('issue creating circle');
 
-		return $this->db->lastInsertId(self::TABLENAME);
+			return false;
+		}
+
+		$circle->setId($circleid);
+		$owner->setLevel(9)
+			  ->setCircleId($circleid);
+
+		return true;
+	}
+
+	public function destroy(Circle $circle) {
+		$this->delete(new Circles($circle));
 	}
 
 }
