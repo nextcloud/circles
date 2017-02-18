@@ -31,10 +31,14 @@ use OCP\IConfig;
 class ConfigService {
 
 
-	const CIRCLES_ALLOW_HIDDEN_CIRCLES = 'allow_hidden_circles';
+	const CIRCLES_ALLOW_CIRCLES = 'allow_circles';
+	const CIRCLES_PERSONAL = 1;
+	const CIRCLES_HIDDEN = 2;
+	const CIRCLES_PRIVATE = 4;
+	const CIRCLES_PUBLIC = 8;
 
 	private $defaults = [
-		self:: CIRCLES_ALLOW_HIDDEN_CIRCLES => '1'
+		self:: CIRCLES_ALLOW_CIRCLES => 15,
 	];
 
 	private $appName;
@@ -43,11 +47,25 @@ class ConfigService {
 
 	private $miscService;
 
+	private $allowed_circle = -1;
+
 	public function __construct($appName, IConfig $config, $userId, MiscService $miscService) {
 		$this->appName = $appName;
 		$this->config = $config;
 		$this->userId = $userId;
 		$this->miscService = $miscService;
+	}
+
+
+	/**
+	 *
+	 */
+	public function isCircleAllowed($type) {
+		if ($this->allowed_circle === -1) {
+			$this->allowed_circle = $this->getAppValue(self::CIRCLES_ALLOW_CIRCLES);
+		}
+
+		return ((int)$type & (int)$this->allowed_circle);
 	}
 
 	/**

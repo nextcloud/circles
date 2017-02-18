@@ -75,8 +75,19 @@ class NavigationController extends Controller {
 	 */
 	public function navigate() {
 
+		$data = [
+			'allowed_circles' => [
+				'personal' => $this->configService->isCircleAllowed(
+					ConfigService::CIRCLES_PERSONAL
+				),
+				'hidden'   => $this->configService->isCircleAllowed(ConfigService::CIRCLES_HIDDEN),
+				'private'  => $this->configService->isCircleAllowed(ConfigService::CIRCLES_PRIVATE),
+				'public'   => $this->configService->isCircleAllowed(ConfigService::CIRCLES_PUBLIC)
+			]
+		];
+
 		return new TemplateResponse(
-			'circles', 'navigate', []
+			'circles', 'navigate', $data
 		);
 	}
 
