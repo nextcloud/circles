@@ -28,6 +28,7 @@ namespace OCA\Circles\Controller;
 
 use \OCA\Circles\Service\MiscService;
 use \OCA\Circles\Service\ConfigService;
+use \OCA\Circles\Model\Circle;
 use \OCA\Circles\Exceptions\TeamDoesNotExists;
 use \OCA\Circles\Exceptions\TeamExists;
 use OC\AppFramework\Http;
@@ -76,15 +77,22 @@ class NavigationController extends Controller {
 	public function navigate() {
 
 		$data = [
-			'allowed_circles' => [
-				'personal' => $this->configService->isCircleAllowed(
-					ConfigService::CIRCLES_PERSONAL
+			'allowed_circles' => array(
+				Circle::CIRCLES_PERSONAL => $this->configService->isCircleAllowed(
+					Circle::CIRCLES_PERSONAL
 				),
-				'hidden'   => $this->configService->isCircleAllowed(ConfigService::CIRCLES_HIDDEN),
-				'private'  => $this->configService->isCircleAllowed(ConfigService::CIRCLES_PRIVATE),
-				'public'   => $this->configService->isCircleAllowed(ConfigService::CIRCLES_PUBLIC)
-			]
+				Circle::CIRCLES_HIDDEN   => $this->configService->isCircleAllowed(
+					Circle::CIRCLES_HIDDEN
+				),
+				Circle::CIRCLES_PRIVATE  => $this->configService->isCircleAllowed(
+					Circle::CIRCLES_PRIVATE
+				),
+				Circle::CIRCLES_PUBLIC   => $this->configService->isCircleAllowed(
+					Circle::CIRCLES_PUBLIC
+				),
+			)
 		];
+
 
 		return new TemplateResponse(
 			'circles', 'navigate', $data

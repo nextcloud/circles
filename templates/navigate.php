@@ -37,14 +37,52 @@ style('circles', 'navigation');
 		<input id="circles_new_name" type="text"
 			   placeholder="<?php p($l->t('Create a new circle')); ?>"/>
 		<select id="circles_new_type" style="display: none;">
-			<?php if ($_['allowed_circles']['personal']) { ?>
-				<option value="personal">Create a Personal Circle</option><?php } ?>
-			<?php if ($_['allowed_circles']['hidden']) { ?>
-				<option value="hidden">Create an Hidden Circle</option><?php } ?>
-			<?php if ($_['allowed_circles']['private']) { ?>
-				<option value="private">Create a Private Circle</option><?php } ?>
-			<?php if ($_['allowed_circles']['public']) { ?>
-				<option value="public">Create a Public Circle</option><?php } ?>
+
+			<?php
+
+			// Personal Circle
+			if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PERSONAL]) {
+				print_unescaped(
+					sprintf(
+						'<option value="%d">%s</option>',
+						\OCA\Circles\Model\Circle::CIRCLES_PERSONAL,
+						"Create a Personal Circle"
+					)
+				);
+			}
+
+			// Hidden Circle
+			if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_HIDDEN]) {
+				print_unescaped(
+					sprintf(
+						'<option value="%d">%s</option>', \OCA\Circles\Model\Circle::CIRCLES_HIDDEN,
+						"Create an Hidden Circle"
+					)
+				);
+			}
+
+			// Private Circle
+			if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PRIVATE]) {
+				print_unescaped(
+					sprintf(
+						'<option value="%d">%s</option>',
+						\OCA\Circles\Model\Circle::CIRCLES_PRIVATE,
+						"Create a Private Circle"
+					)
+				);
+			}
+
+			// Public Circle
+			if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PUBLIC]) {
+				print_unescaped(
+					sprintf(
+						'<option value="%d">%s</option>', \OCA\Circles\Model\Circle::CIRCLES_PUBLIC,
+						"Create a Public Circle"
+					)
+				);
+			}
+			?>
+
 		</select>
 		<input id="circles_new_submit" type="submit" value="Creation" style="display: none;"/>
 
