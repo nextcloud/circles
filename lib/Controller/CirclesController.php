@@ -84,39 +84,53 @@ class CirclesController extends Controller {
 	 *
 	 * @return DataResponse
 	 */
-	public function create($name) {
+	public function create($name, $type) {
 
-		$result = array(
-			'name'   => $name,
-			'status' => 1,
-			'error'  => ''
-		);
+		$iError = new iError();
 
-		//return $result;
+		$owner = new Member();
+		$owner->setUserId($this->userId)
+			  ->setLevel(9)
+			  ->setStatus('test');
+
+		$group = new Group();
+		$group->setName($name)
+			  ->setType($type)
+			  ->setMembers([$owner]);
+
+		if ($groupid = $this->databaseService->getGroupsMapper()
+											 ->create($group, $iError)
+		) {
+			$owner->setGroupId($groupid);
+			if ($this->databaseService->getMembersMapper()
+									  ->create($owner, $iError)
+			) {
+				return new DataResponse(
+					[
+						'name'   => $name,
+						'type'   => $type,
+						'status' => 1,
+						'error'  => ''
+					],
+					Http::STATUS_CREATED
+				);
+
+			} else {
+				$this->databaseService->getGroupsMapper()
+									  ->destroy($created_group, $iError);
+			}
+		}
 
 		return new DataResponse(
-			$result,
-			Http::STATUS_CREATED
+			[
+				'name'   => $name,
+				'type'   => $type,
+				'status' => 0,
+				'error'  => $iError->toArray()
+			],
+			Http::STATUS_CONFLICT
 		);
 
-//		try {
-//			$id = $this->dbHandler->createTeam($name, $this->userId);
-//		} catch (TeamExists $e) {
-//			return new DataResponse(
-//				[
-//					'message' => (string)$this->l10n->t('Team already exists.')
-//				],
-//				Http::STATUS_CONFLICT
-//			);
-//		}
-//		return new DataResponse(
-//			[
-//				'id' => $id,
-//				'name' => $name,
-//				'owner' => $this->userId,
-//			],
-//			Http::STATUS_CREATED
-//		);
 	}
 
 
@@ -303,3 +317,4 @@ class CirclesController extends Controller {
 //		);
 //	}
 }
+

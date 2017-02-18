@@ -38,14 +38,15 @@ var Circles = {
 	},
 
 
-	createCircle: function (name, callback) {
+	createCircle: function (name, type, callback) {
 
 		var result = {status: -1};
 		$.ajax({
 			method: 'PUT',
 			url: OC.generateUrl(OC.linkTo('circles', 'circles')),
 			data: {
-				name: name
+				name: name,
+				type: type
 			}
 		}).done(function (res) {
 			Circles.onCallback(callback, res);
