@@ -26,19 +26,21 @@
 
 $(document).ready(function () {
 
-	Circles.Navigation = {
+	Navigation = {
+
+		api: null,
+		self: null,
 
 		init: function () {
 
-			var self = this;
-			self.hideAllCircleHelp();
-			self.showCircleHelp();
+			self = this;
+			api = OCA.Circles.api;
+
+			this.hideAllCircleHelp();
+			this.showCircleHelp();
 			$('#circles_new_type').hide();
 			$('#circles_new_submit').hide();
 			$('#circles_new_type_definition').hide();
-
-			Circles.init();
-
 
 			$('#circles_new_name').on('keyup', function (e) {
 				if ($('#circles_new_name').val() != '') {
@@ -59,19 +61,20 @@ $(document).ready(function () {
 			});
 
 			$('#circles_new_submit').on('click', function () {
-				Circles.Navigation.createCircle($('#circles_new_name').val(),
+				self.createCircle($('#circles_new_name').val(),
 					$('#circles_new_type').val());
 			});
 
+			Notification.onSuccess('Navigation loaded !');
 		},
 
 
 		hideAllCircleHelp: function (delay) {
 			if (!delay) delay = 0;
-			$('#circles_new_type_personal').fadeOut(delay);
-			$('#circles_new_type_hidden').fadeOut(delay);
-			$('#circles_new_type_private').fadeOut(delay);
-			$('#circles_new_type_public').fadeOut(delay);
+			$('#circles_new_type_1').fadeOut(delay);
+			$('#circles_new_type_2').fadeOut(delay);
+			$('#circles_new_type_4').fadeOut(delay);
+			$('#circles_new_type_8').fadeOut(delay);
 		},
 
 		showCircleHelp: function () {
@@ -82,17 +85,60 @@ $(document).ready(function () {
 		createCircle: function (name, type) {
 
 			console.log("creating: " + name + " " + type);
-			Circles.createCircle(name, type, Circles.Navigation.createCircleResult);
+			api.createCircle(name, type, this.createCircleResult);
 		},
 
 
 		createCircleResult: function (result) {
-			console.log("result: " + result.status);
+
+			var str = 'Circle';
+			switch (result.type) {
+				case '1':
+					str = 'Personal circle';
+					break;
+				case '2':
+					str = 'Hidden circle';
+					break;
+				case '4':
+					str = 'Private circle';
+					break;
+				case '8':
+					str = 'Public circle';
+					break;
+			}
+
+			if (result.status == 1)
+				Notification.onSuccess(str + " '" + result.name + "' created");
+			else
+				Notification.onFail(
+					str + " '" + result.name + "' NOT created: " + result.error.message);
+
+
 		}
 
 	};
 
-	Circles.Navigation.init();
+	Notification = {
+
+		notyf: null,
+
+		init: function () {
+			this.notyf = new Notyf();
+		},
+
+		onSuccess: function (text) {
+			this.notyf.confirm(text);
+		},
+
+		onFail: function (text) {
+			this.notyf.alert(text);
+		}
+
+
+	};
+
+	Notification.init();
+	Navigation.init();
 
 });
 
