@@ -28,6 +28,14 @@ namespace OCA\Circles\Model;
 
 class iError {
 
+	const CIRCLE_CREATION_TYPE_DISABLED = 181;
+
+	const CIRCLE_CREATION_DUPLICATE_NAME = 304;
+	const CIRCLE_CREATION_MULTIPLE_NAME = 309;
+
+	const CIRCLE_INSERT_CIRCLE_DATABASE = 329;
+
+
 	private $message;
 	private $code;
 

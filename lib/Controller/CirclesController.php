@@ -86,6 +86,22 @@ class CirclesController extends Controller {
 	 */
 	public function create($name, $type) {
 
+		if (!$this->configService->isCircleAllowed((int)$type)) {
+			$iError = new iError();
+			$iError->setCode(iError::CIRCLE_CREATION_TYPE_DISABLED)
+				   ->setMessage("The creation of this type of circle is not allowed");
+
+			return new DataResponse(
+				[
+					'name'   => $name,
+					'type'   => $type,
+					'status' => 0,
+					'error'  => $iError->toArray()
+				],
+				Http::STATUS_NON_AUTHORATIVE_INFORMATION
+			);
+		}
+
 		$iError = new iError();
 
 		$owner = new Member();
