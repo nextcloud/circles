@@ -28,7 +28,7 @@ namespace OCA\Circles\Controller;
 
 use \OCA\Circles\Service\MiscService;
 use \OCA\Circles\Service\ConfigService;
-use \OCA\Circles\Service\DatabaseService;
+use \OCA\Circles\Service\CirclesService;
 use \OCA\Circles\Model\iError;
 use \OCA\Circles\Model\Circle;
 use \OCA\Circles\Model\Member;
@@ -52,8 +52,8 @@ class CirclesController extends Controller {
 	private $l10n;
 	/** @var ConfigService */
 	private $configService;
-	/** @var DatabaseService */
-	private $databaseService;
+	/** @var CirclesService */
+	private $circlesService;
 	/** @var MiscService */
 	private $miscService;
 
@@ -63,7 +63,7 @@ class CirclesController extends Controller {
 		$userId,
 		IL10N $l10n,
 		ConfigService $configService,
-		DatabaseService $databaseService,
+		CirclesService $circlesService,
 		MiscService $miscService
 	) {
 		parent::__construct($appName, $request);
@@ -71,7 +71,7 @@ class CirclesController extends Controller {
 		$this->userId = $userId;
 		$this->l10n = $l10n;
 		$this->configService = $configService;
-		$this->databaseService = $databaseService;
+		$this->circlesService = $circlesService;
 		$this->miscService = $miscService;
 	}
 
@@ -86,62 +86,29 @@ class CirclesController extends Controller {
 	 */
 	public function create($name, $type) {
 
-		if (!$this->configService->isCircleAllowed((int)$type)) {
+		if (substr($name, 0, 1) === '_') {
 			$iError = new iError();
-			$iError->setCode(iError::CIRCLE_CREATION_TYPE_DISABLED)
-				   ->setMessage("The creation of this type of circle is not allowed");
-
-			return new DataResponse(
-				[
-					'name'   => $name,
-					'type'   => $type,
-					'status' => 0,
-					'error'  => $iError->toArray()
-				],
-				Http::STATUS_NON_AUTHORATIVE_INFORMATION
-			);
-		}
-
-		$iError = new iError();
-
-		$owner = new Member();
-		$owner->setUserId($this->userId);
-
-		$circle = new Circle();
-		$circle->setName($name)
-			   ->setType($type)
-			   ->setMembers([$owner]);
-
-		if ($this->databaseService->getCirclesMapper()
-								  ->create($circle, $owner, $iError) === true
-		) {
-			if ($this->databaseService->getMembersMapper()
-									  ->create($owner, $iError) === true
-			) {
-				return new DataResponse(
-					[
-						'name'   => $name,
-						'type'   => $type,
-						'status' => 1,
-						'error'  => ''
-					],
-					Http::STATUS_CREATED
-				);
-
-			} else {
-				$this->databaseService->getCirclesMapper()
-									  ->destroy($circle, $iError);
-			}
-		}
-
-		return new DataResponse(
-			[
+			$iError->setCode(iError::CIRCLE_CREATION_FIRST_CHAR)
+				   ->setMessage("The name of your circle cannot start with this character");
+			$result = [
 				'name'   => $name,
 				'type'   => $type,
 				'status' => 0,
 				'error'  => $iError->toArray()
-			],
-			Http::STATUS_NON_AUTHORATIVE_INFORMATION
+			];
+		} else {
+			$result = $this->circlesService->createCircle($name, $type);
+		}
+
+		if ($result['status'] === 1) {
+			$status = Http::STATUS_CREATED;
+		} else {
+			$status = Http::STATUS_NON_AUTHORATIVE_INFORMATION;
+		}
+
+		return new DataResponse(
+			$result,
+			$status
 		);
 
 	}
