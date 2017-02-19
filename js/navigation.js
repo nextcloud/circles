@@ -112,7 +112,7 @@ $(document).ready(function () {
 				Notification.onSuccess(str + " '" + result.name + "' created");
 			else
 				Notification.onFail(
-					str + " '" + result.name + "' NOT created: " + result.error.message);
+					str + " '" + result.name + "' NOT created: " + ((result.error) ? result.error.message : 'no error message'));
 		}
 
 	};

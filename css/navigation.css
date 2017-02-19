@@ -24,11 +24,35 @@
 	border-bottom: 1px solid #eee;
 }
 
-
 #circles_new_type_definition div {
 	margin-top: 20px;
 	position: absolute;
-	width: 220px;
-	color: #47474799;
+	width: 255px;
+	color: #474747b0;
 	word-wrap: break-word;
+}
+
+#circles_list {
+	border-top: solid 1px #ddd;
+}
+
+#circles_list div {
+	position: relative;
+	padding: 15px;
+	border-bottom: solid 1px #ddd;
+	color: #555;
+}
+
+#circles_list div .icon-view-next {
+	width: 30px;
+	right: 2px;
+	height: 10px;
+	position: absolute;
+	border-bottom: 0px;
+	top: 2px;
+}
+
+#app-navigation {
+	border-right: 1px solid #ddd;
+	width: 280px;
 }

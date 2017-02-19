@@ -24,18 +24,19 @@
  *
  */
 
-script('circles', 'notyf');
 script('circles', 'circles');
-script('circles', 'navigation');
 
+script('circles', 'notyf');
 style('circles', 'notyf');
+
+script('circles', 'navigation');
 style('circles', 'navigation');
 
 ?>
 
 
-<div id="app-navigation">
-	<div class="navigation-element" style="height: 250px;">
+<div id="app-navigation" style="background: #0000000a;">
+	<div class="navigation-element" style="height: 300px;">
 		<input id="circles_new_name" type="text"
 			   placeholder="<?php p($l->t('Create a new circle')); ?>"/>
 		<select id="circles_new_type" style="display: none;">
@@ -110,13 +111,26 @@ style('circles', 'navigation');
 			</div>
 		</div>
 	</div>
-	<div id="circles_list"></div>
+	<div id="circles_list">
+		<div>Personal Circle
+			<div class="icon-view-next"></div>
+		</div>
+
+		<div>Hidden Circles</div>
+		<div>Private Circle</div>
+		<div>Public Circle</div>
+	</div>
 </div>
+
+<div id="app-navigation" style="background: #00000005;">
+	saddsadsa
+</div>
+
 
 <div id="app-content">
 	<div id="emptycontent">
-		<div class="icon-user"></div>
-		<h2><?php p($l->t('No team selected')); ?></h2>
+		<div class="icon-circles"></div>
+		<h2><?php p($l->t('No circle selected')); ?></h2>
 	</div>
 
 	<div id="container" class="hidden">
@@ -126,5 +140,6 @@ style('circles', 'navigation');
 		<ul class="memberList"></ul>
 	</div>
 
-	<div id="loading_members" class="icon-loading hidden"></div>
+	<div id="loading_members" class="icon-loading hidden">
+	</div>
 </div>
