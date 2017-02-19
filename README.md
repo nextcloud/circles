@@ -19,20 +19,24 @@ Your circle will be visible to everyone and everyone will be able to join the ci
 
 
 ***
-### API
+# API
 
 ```php
-const CIRCLES_PERSONAL = 1;
-const CIRCLES_HIDDEN = 2;
-const CIRCLES_PRIVATE = 4;
-const CIRCLES_PUBLIC = 8;
+CIRCLES_PERSONAL is 1 or 'personal';
+CIRCLES_HIDDEN is 2 or 'hidden';
+CIRCLES_PRIVATE is 4 or 'private';
+CIRCLES_PUBLIC is 8 or 'public';
 ```
 ***
+
+
+
+### Javascript - list of API calls:
 
 How to include the Circles.js in your templates:
 >      <?php script('circles', 'circles'); ?>
 
-and a list of the calls to the API from the Javascript with few examples:
+
 
 **Create a Circle**
 >     OCA.Circles.api.createCircle(name, type, callback);
@@ -44,7 +48,17 @@ function creationDone(result)
 }     
 ```
 
-### Credits
+
+
+
+### PHP - list of API calls
+
+** Create a Circle**
+>     OCA\Circles\Api\Circles::createCircle($name, $type);
+
+
+
+# Credits
 
 App Icon by [http://www.flaticon.com/authors/madebyoliver](Madebyoliver) under Creative Commons BY 3.0
 
