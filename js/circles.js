@@ -28,42 +28,54 @@
 //
 
 
-var Circles = {
+(function () {
 
 
-	init: function () {
-		console.log("init Circles");
+	/**
+	 * @constructs Circles
+	 */
+	var Circles = function () {
+		this.initialize();
+	};
+
+	Circles.prototype = {
 
 
-	},
+		initialize: function () {
 
+			var self = this;
+			console.log("init Circles");
 
-	createCircle: function (name, type, callback) {
+			this.createCircle = function (name, type, callback) {
 
-		var result = {status: -1};
-		$.ajax({
-			method: 'PUT',
-			url: OC.generateUrl(OC.linkTo('circles', 'circles')),
-			data: {
-				name: name,
-				type: type
-			}
-		}).done(function (res) {
-			Circles.onCallback(callback, res);
-		}).fail(function () {
-			Circles.onCallback(callback, result);
-		});
-	},
+				var result = {status: -1};
+				$.ajax({
+					method: 'PUT',
+					url: OC.generateUrl(OC.linkTo('circles', 'circles')),
+					data: {
+						name: name,
+						type: type
+					}
+				}).done(function (res) {
+					self.onCallback(callback, res);
+				}).fail(function () {
+					self.onCallback(callback, result);
+				});
+			};
 
+			this.onCallback = function (callback, result) {
+				if (callback && (typeof callback === "function")) {
+					callback(result);
+				}
+			};
 
-	onCallback: function (callback, result) {
-
-		if (callback && (typeof callback === "function")) {
-			callback(result);
 		}
-	}
 
+	};
 
-}
+	OCA.Circles = Circles;
+	OCA.Circles.api = new Circles();
+
+})();
 
 
