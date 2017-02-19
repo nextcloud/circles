@@ -26,6 +26,7 @@
 
 namespace OCA\Circles\Service;
 
+use OCA\Circles\Model\Circle;
 use OCP\IConfig;
 
 class ConfigService {
@@ -35,7 +36,7 @@ class ConfigService {
 
 
 	private $defaults = [
-		self:: CIRCLES_ALLOW_CIRCLES => 15,
+		self::CIRCLES_ALLOW_CIRCLES => Circle::CIRCLES_ALL,
 	];
 
 	private $appName;

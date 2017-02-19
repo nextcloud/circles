@@ -93,7 +93,8 @@ class CirclesMapper extends Mapper {
 
 			foreach ($result AS $entry) {
 				if ($entry['name'] === $circle->getName()) {
-					$iError->setMessage('duplicate name');
+					$iError->setCode(iError::CIRCLE_CREATION_DUPLICATE_NAME)
+						   ->setMessage('duplicate name');
 
 					return false;
 				}
@@ -106,12 +107,13 @@ class CirclesMapper extends Mapper {
 				);
 
 				$this->findEntity($sql, [strtolower($circle->getName())]);
-
-				$iError->setMessage('duplicate name');
+				$iError->setCode(iError::CIRCLE_CREATION_DUPLICATE_NAME)
+					   ->setMessage('duplicate name');
 
 				return false;
 			} catch (MultipleObjectsReturnedException $me) {
-				$iError->setMessage('duplicate name');
+				$iError->setCode(iError::CIRCLE_CREATION_MULTIPLE_NAME)
+					   ->setMessage('multiple name - fatal error');
 
 				return false;
 			} catch (DoesNotExistException $ne) {
@@ -129,7 +131,8 @@ class CirclesMapper extends Mapper {
 
 		$circleid = $this->db->lastInsertId(self::TABLENAME);
 		if ($circleid < 1) {
-			$iError->setMessage('issue creating circle');
+			$iError->setCode(iError::CIRCLE_INSERT_CIRCLE_DATABASE)
+				   ->setMessage('issue creating circle - fatal error');
 
 			return false;
 		}

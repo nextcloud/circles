@@ -44,7 +44,6 @@
 		initialize: function () {
 
 			var self = this;
-			console.log("init Circles");
 
 			this.createCircle = function (name, type, callback) {
 

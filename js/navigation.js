@@ -28,6 +28,7 @@ $(document).ready(function () {
 
 	Navigation = {
 
+
 		api: null,
 		self: null,
 
@@ -83,8 +84,6 @@ $(document).ready(function () {
 
 
 		createCircle: function (name, type) {
-
-			console.log("creating: " + name + " " + type);
 			api.createCircle(name, type, this.createCircleResult);
 		},
 
@@ -123,7 +122,9 @@ $(document).ready(function () {
 		notyf: null,
 
 		init: function () {
-			this.notyf = new Notyf();
+			this.notyf = new Notyf({
+				delay: 5000
+			});
 		},
 
 		onSuccess: function (text) {
