@@ -125,7 +125,7 @@ class CirclesController extends Controller {
 				'status' => 0,
 				'error'  => $iError->toArray()
 			],
-			Http::STATUS_CONFLICT
+			Http::STATUS_NON_AUTHORATIVE_INFORMATION
 		);
 
 	}

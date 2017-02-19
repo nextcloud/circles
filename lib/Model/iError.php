@@ -28,20 +28,20 @@ namespace OCA\Circles\Model;
 
 class iError {
 
-	private $messages = array();
+	private $message;
 	private $code;
 
 	function __construct() {
 	}
 
 	public function setMessage($message) {
-		array_push($this->messages, $message);
+		$this->message = $message;
 
 		return $this;
 	}
 
-	public function getMessages() {
-		return $this->messages;
+	public function getMessage() {
+		return $this->message;
 	}
 
 
@@ -58,8 +58,8 @@ class iError {
 
 	public function toArray() {
 		return array(
-			'code'     => $this->getCode(),
-			'messages' => $this->getMessages()
+			'code'    => $this->getCode(),
+			'message' => $this->getMessage()
 		);
 	}
 

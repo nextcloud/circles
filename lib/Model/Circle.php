@@ -33,6 +33,8 @@ class Circle {
 	const CIRCLES_PRIVATE = 4;
 	const CIRCLES_PUBLIC = 8;
 
+	const CIRCLES_ALL = 15;
+
 	private $id;
 	private $name;
 	private $description;
@@ -79,7 +81,7 @@ class Circle {
 
 
 	public function setType($type) {
-		$this->type = (int) $type;
+		$this->type = (int)$type;
 
 		return $this;
 	}
