@@ -37,6 +37,7 @@ $(document).ready(function () {
 			self = this;
 			api = OCA.Circles.api;
 
+
 			this.hideAllCircleHelp();
 			this.showCircleHelp();
 			$('#circles_new_type').hide();
@@ -66,7 +67,8 @@ $(document).ready(function () {
 					$('#circles_new_type').val());
 			});
 
-			Notification.onSuccess('Navigation loaded !');
+			$('.icon-circles').css('background-image',
+				'url(' + OC.imagePath('circles', 'colored') + ')');
 		},
 
 
@@ -111,8 +113,6 @@ $(document).ready(function () {
 			else
 				Notification.onFail(
 					str + " '" + result.name + "' NOT created: " + result.error.message);
-
-
 		}
 
 	};
