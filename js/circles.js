@@ -62,7 +62,7 @@
 				});
 			};
 
-			this.listCircle = function (type, callback) {
+			this.listCircles = function (type, callback) {
 				var result = {status: -1};
 				$.ajax({
 					method: 'GET',
@@ -70,6 +70,19 @@
 					data: {
 						type: type
 					}
+				}).done(function (res) {
+					self.onCallback(callback, res);
+				}).fail(function () {
+					self.onCallback(callback, result);
+				});
+			};
+
+			this.detailsCircle = function(circleid, callback)
+			{
+				var result = {status: -1};
+				$.ajax({
+					method: 'GET',
+					url: OC.generateUrl(OC.linkTo('circles', 'circles/' + circleid)),
 				}).done(function (res) {
 					self.onCallback(callback, res);
 				}).fail(function () {

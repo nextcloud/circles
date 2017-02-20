@@ -41,8 +41,30 @@ How to include the Circles.js in your templates:
 **Create a Circle**
 >     OCA.Circles.api.createCircle(name, type, callback);
 ```javascript
-OCA.Circles.api.createCircle('test-public', 8, creationDone);
+OCA.Circles.api.createCircle('test-public', 'public', creationDone);
 function creationDone(result)
+{
+	console.log('status: ' + JSON.stringify(result));
+}     
+```
+
+
+**Listing Circles**
+>     OCA.Circles.api.listCircle(type, callback);
+```javascript
+OCA.Circles.api.listCircles('all', listingDone);
+function listingDone(result)
+{
+	console.log('status: ' + JSON.stringify(result));
+}     
+```
+
+
+**Details of a Circle**
+>     OCA.Circles.api.detailsCircle(circle_id, callback);
+```javascript
+OCA.Circles.api.detailsCircle(42, detailsCircleResult);
+function detailsCircleResult(result)
 {
 	console.log('status: ' + JSON.stringify(result));
 }     
@@ -51,11 +73,21 @@ function creationDone(result)
 
 
 
+
 ### PHP - list of API calls
 
-** Create a Circle**
+**Create a Circle**
 >     $result = OCA\Circles\Api\Circles::createCircle($name, $type);
 
+
+
+**Listing Circles**
+>     $result = OCA\Circles\Api\Circles::listCircles($name, $type);
+
+
+
+**Details of a Circle**
+>     $result = OCA\Circles\Api\Circles::detailsCircle($circle_id);
 
 
 # Credits

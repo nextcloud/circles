@@ -43,4 +43,22 @@ class Circles {
 				 ->createCircle($name, $type);
 	}
 
+
+	public static function listCircles($type) {
+		$c = self::getContainer();
+
+		return $c->query('CirclesService')
+				 ->listCircles($type);
+	}
+
+
+	public static function detailsCircle($circle_id) {
+		$c = self::getContainer();
+
+		return $c->query('CirclesService')
+				 ->detailsCircle($circle_id);
+	}
+
+
+
 }
