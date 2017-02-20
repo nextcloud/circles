@@ -45,7 +45,7 @@ class Members extends Entity {
 			$this->setUserId($item->getUserId());
 			$this->setLevel($item->getLevel());
 			$this->setStatus($item->getStatus());
-			$this->setCreation($item->getCreation());
+			$this->setCreation($item->getJoined());
 		}
 	}
 }

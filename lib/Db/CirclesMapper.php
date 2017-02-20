@@ -57,28 +57,67 @@ class CirclesMapper extends Mapper {
 	}
 
 
-	public function findCirclesByUser(Member $member, $type = 0, $level = 0) {
+	public function findCirclesByUser($userId, $type, $level = 0) {
 
 		$type = (int)$type;
 		$level = (int)$level;
 
+		$orTypes = array();
+		if (Circle::CIRCLES_PERSONAL & (int)$type) {
+			array_push($orTypes, '(g.type=' . Circle::CIRCLES_PERSONAL . ')');
+		}
+		if (Circle::CIRCLES_HIDDEN & (int)$type) {
+			array_push(
+				$orTypes,
+				'(g.type=' . Circle::CIRCLES_HIDDEN . ' AND m.level=' . Member::LEVEL_ADMIN
+				. ')'
+			);
+		}
+		if (Circle::CIRCLES_PRIVATE & (int)$type) {
+			array_push($orTypes, '(g.type=' . Circle::CIRCLES_PRIVATE . ')');
+		}
+		if (Circle::CIRCLES_PUBLIC & (int)$type) {
+			array_push($orTypes, '(g.type=' . Circle::CIRCLES_PUBLIC . ')');
+		}
+
+		if (sizeof($orTypes) === 0) {
+			return null;
+		}
+
+		$sqlTypes = implode(' OR ', $orTypes);
+
 		try {
 			$sql = sprintf(
-				"SELECT g.id, g.name, g.description, g.type, UNIX_TIMESTAMP(g.creation) AS utc, "
-				. "UNIX_TIMESTAMP(m.creation) AS joined, m.user_id, m.level, m.status "
-				. "FROM *PREFIX*%s AS g, *PREFIX*%s AS m WHERE g.id=m.circle_id AND m.user_id=? %s %s",
-				self::TABLENAME, MembersMapper::TABLENAME,
-				(($type !== '') ? ' AND g.type=' . $type : ''),
-				(($level > 0) ? ' AND m.level>=' . $level : '')
+				"SELECT g.id, g.name, g.description, g.type, UNIX_TIMESTAMP(g.creation) AS creation, "
+				. "UNIX_TIMESTAMP(u.creation) AS joined, u.level, u.status, "
+				. "o.user_id AS owner, "
+				. "COUNT(m.user_id) AS count "
+				. "FROM (*PREFIX*%s AS g, *PREFIX*%s AS u, *PREFIX*%s AS o) "
+				. " LEFT JOIN *PREFIX*%s AS m ON g.id=m.circle_id AND m.status='"
+				. Member::STATUS_MEMBER . "'"
+				. " WHERE g.id=u.circle_id AND u.user_id=? "
+				. " AND g.id=o.circle_id AND o.level=" . Member::LEVEL_ADMIN
+				. " %s "
+				. " GROUP BY g.id ORDER BY g.id DESC "
+				,
+				self::TABLENAME, MembersMapper::TABLENAME, MembersMapper::TABLENAME,
+				MembersMapper::TABLENAME,
+				"AND ($sqlTypes)"
 			);
 
-			$result = $this->execute($sql, [$member->getUserId()]);
+			$result = $this->execute($sql, [$userId]);
 
-			return $result;
+			$data = [];
+			foreach ($result as $entry) {
+				$data[] = Circle::fromArray($entry);
+			}
+
+			return $data;
 		} catch (DoesNotExistException $ne) {
 			return null;
 		}
 	}
+
 
 	public function create(Circle &$circle, Member &$owner, &$iError = '') {
 
@@ -89,10 +128,12 @@ class CirclesMapper extends Mapper {
 
 		if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
 
-			$result = $this->findCirclesByUser($owner, $circle->getType(), Member::LEVEL_ADMIN);
+			$list = $this->findCirclesByUser(
+				$owner->getUserId(), $circle->getType(), Member::LEVEL_ADMIN
+			);
 
-			foreach ($result AS $entry) {
-				if ($entry['name'] === $circle->getName()) {
+			foreach ($list AS $item) {
+				if ($item->getName() === $circle->getName()) {
 					$iError->setCode(iError::CIRCLE_CREATION_DUPLICATE_NAME)
 						   ->setMessage('duplicate name');
 
@@ -121,11 +162,11 @@ class CirclesMapper extends Mapper {
 		}
 
 		$sql = sprintf(
-			'INSERT INTO *PREFIX*%s (name, description, type, creation) VALUES (?, ?, ?, NOW())',
+			'INSERT INTO *PREFIX*%s(name, description, type, creation) VALUES(?, ?, ?, NOW())',
 			self::TABLENAME
 		);
 
-		$result = $this->execute(
+		$this->execute(
 			$sql, [$circle->getName(), $circle->getDescription(), $circle->getType()]
 		);
 

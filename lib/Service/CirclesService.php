@@ -57,18 +57,7 @@ class CirclesService {
 
 	public function createCircle($name, $type) {
 
-		if ($type === 'personal') {
-			$type = Circle::CIRCLES_PERSONAL;
-		}
-		if ($type === 'hidden') {
-			$type = Circle::CIRCLES_HIDDEN;
-		}
-		if ($type === 'private') {
-			$type = Circle::CIRCLES_PRIVATE;
-		}
-		if ($type === 'public') {
-			$type = Circle::CIRCLES_PUBLIC;
-		}
+		self::convertTypeStringToBitValue($type);
 
 		if (!$this->configService->isCircleAllowed((int)$type)) {
 			$iError = new iError();
@@ -86,7 +75,8 @@ class CirclesService {
 		$iError = new iError();
 
 		$owner = new Member();
-		$owner->setUserId($this->userId);
+		$owner->setUserId($this->userId)
+			  ->setStatus(Member::STATUS_MEMBER);
 
 		$circle = new Circle();
 		$circle->setName($name)
@@ -118,6 +108,58 @@ class CirclesService {
 			'status' => 0,
 			'error'  => $iError->toArray()
 		];
+	}
+
+
+	public function listCircles($type) {
+
+		self::convertTypeStringToBitValue($type);
+
+		if (!$this->configService->isCircleAllowed((int)$type)) {
+			$iError = new iError();
+			$iError->setCode(iError::CIRCLE_CREATION_TYPE_DISABLED)
+				   ->setMessage("The listing of this type of circle is not allowed");
+
+			return [
+				'type'   => $type,
+				'status' => 0,
+				'error'  => $iError->toArray()
+			];
+		}
+
+		$iError = new iError();
+
+		$user = new Member();
+		$user->setUserId($this->userId);
+
+		$data = $this->databaseService->getCirclesMapper()
+									  ->findCirclesByUser($this->userId, $type, 0);
+
+		return [
+			'type'   => $type,
+			'data'   => $data,
+			'status' => 1,
+			'error'  => $iError->toArray()
+		];
+	}
+
+
+	public static function convertTypeStringToBitValue(&$type) {
+		if (strtolower($type) === 'personal') {
+			$type = Circle::CIRCLES_PERSONAL;
+		}
+		if (strtolower($type) === 'hidden') {
+			$type = Circle::CIRCLES_HIDDEN;
+		}
+		if (strtolower($type) === 'private') {
+			$type = Circle::CIRCLES_PRIVATE;
+		}
+		if (strtolower($type) === 'public') {
+			$type = Circle::CIRCLES_PUBLIC;
+		}
+		if (strtolower($type) === 'all') {
+			$type = Circle::CIRCLES_ALL;
+		}
 	}
 
 }

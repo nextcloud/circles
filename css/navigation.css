@@ -41,18 +41,65 @@
 	padding: 15px;
 	border-bottom: solid 1px #ddd;
 	color: #555;
+	cursor: pointer;
+	background: #f1c76e33;
+	-webkit-transition: background-color 0.5s ease-in;
+	transition: background-color 0.5s ease-in;
+	font-weight: normal;
 }
 
-#circles_list div .icon-view-next {
-	width: 30px;
-	right: 2px;
-	height: 10px;
-	position: absolute;
-	border-bottom: 0px;
-	top: 2px;
+#circles_list div:hover {
+	background: #f1c76e44;
+}
+
+#circles_list .selected {
+	background: #f1c76e66 !important;
+	font-weight: bold !important;
 }
 
 #app-navigation {
-	border-right: 1px solid #ddd;
 	width: 280px;
+	border-right: 1px solid #ddd;
+}
+
+#app-navigation.noborder {
+	border: 0px !important;
+}
+
+#app-navigation.circles {
+	overflow-y: auto;
+	-webkit-transition: background-color 0.5s ease-in;
+	transition: background-color 0.5s ease-in;
+}
+
+
+#app-navigation.selected {
+	background: #f1c76e66 !important;
+}
+
+.navigation-element {
+	border-right: 1px solid #ddd;
+	background: #f1c76e11;
+}
+
+/* circles */
+.circle {
+	border: solid 1px #555;
+	border-radius: 4px;
+	box-shadow: 3px 3px 4px #88888888;
+	margin: 10px;
+	margin-bottom: 0px;
+	padding: 5px;
+	background: #eee;
+}
+
+div.circle .title {
+	font-weight: bold;
+	color: #333333dd;
+	font-style: italic;
+}
+
+div.circle .owner, div.circle .resume {
+	font-size: 11px;
+	color: #333333bb;
 }

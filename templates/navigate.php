@@ -35,7 +35,7 @@ style('circles', 'navigation');
 ?>
 
 
-<div id="app-navigation" style="background: #0000000a;">
+<div id="app-navigation" class="noborder" style="background: #0000000a;">
 	<div class="navigation-element" style="height: 300px;">
 		<input id="circles_new_name" type="text"
 			   placeholder="<?php p($l->t('Create a new circle')); ?>"/>
@@ -112,20 +112,38 @@ style('circles', 'navigation');
 		</div>
 	</div>
 	<div id="circles_list">
-		<div>Personal Circle
-			<div class="icon-view-next"></div>
-		</div>
 
-		<div>Hidden Circles</div>
-		<div>Private Circle</div>
-		<div>Public Circle</div>
+		<?php
+		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PERSONAL]) {
+			print_unescaped('<div circle-type="personal">Personal Circles</div>');
+		}
+
+		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_HIDDEN]) {
+			print_unescaped('<div circle-type="hidden">Hidden Circles</div>');
+		}
+
+		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PRIVATE]) {
+			print_unescaped('<div circle-type="private">Private Circles</div>');
+		}
+
+		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PUBLIC]) {
+			print_unescaped('<div circle-type="public">Public Circles</div>');
+		}
+		?>
+
 	</div>
+	<div class="navigation-element" style="height: 100%"></div>
+
 </div>
 
-<div id="app-navigation" style="background: #00000005;">
-	saddsadsa
+<div id="app-navigation" class="circles">
 </div>
 
+<script id="tmpl_circle" type="text/template">
+			<div class="title">%title%</div>
+			<div class="owner">Owner: %owner% (%type%, %status%)</div>
+			<div class="resume">%count% members since %creation%</div>
+</script>
 
 <div id="app-content">
 	<div id="emptycontent">

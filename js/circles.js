@@ -62,6 +62,21 @@
 				});
 			};
 
+			this.listCircle = function (type, callback) {
+				var result = {status: -1};
+				$.ajax({
+					method: 'GET',
+					url: OC.generateUrl(OC.linkTo('circles', 'circles')),
+					data: {
+						type: type
+					}
+				}).done(function (res) {
+					self.onCallback(callback, res);
+				}).fail(function () {
+					self.onCallback(callback, result);
+				});
+			};
+
 			this.onCallback = function (callback, result) {
 				if (callback && (typeof callback === "function")) {
 					callback(result);

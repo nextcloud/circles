@@ -28,7 +28,7 @@ return [
 	'routes' => [
 		['name' => 'Navigation#navigate', 'url' => '/', 'verb' => 'GET'],
 		['name' => 'Circles#create', 'url' => '/circles', 'verb' => 'PUT'],
-		//		['name' => 'Teams#listTeams', 'url' => '/teams', 'verb' => 'GET'],
+		['name' => 'Circles#listCircles', 'url' => '/circles', 'verb' => 'GET'],
 		//		['name' => 'Teams#create', 'url' => '/teams', 'verb' => 'PUT'],
 		//		['name' => 'Teams#update', 'url' => '/teams/{id}', 'verb' => 'POST', 'requirements' => ['id' => '\d+'],],
 		//		['name' => 'Teams#delete', 'url' => '/teams/{id}', 'verb' => 'DELETE', 'requirements' => ['id' => '\d+'],],

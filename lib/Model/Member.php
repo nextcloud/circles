@@ -26,15 +26,21 @@
 
 namespace OCA\Circles\Model;
 
-class Member {
+class Member implements \JsonSerializable {
 
 	const LEVEL_ADMIN = 9;
+
+	const STATUS_INVITED = 'invite';
+	const STATUS_REQUEST = 'request';
+	const STATUS_MEMBER = 'member';
+	const STATUS_BLOCKED = 'blocked';
+	const STATUS_KICKED = 'kicked';
 
 	private $circleid;
 	private $userid;
 	private $level;
 	private $status;
-	private $creation;
+	private $joined;
 
 	public function __construct() {
 	}
@@ -84,16 +90,25 @@ class Member {
 	}
 
 
-	public function setCreation($creation) {
-		$this->creation = $creation;
+	public function setJoined($joined) {
+		$this->joined = $joined;
 
 		return $this;
 	}
 
-	public function getCreation() {
-		return $this->creation;
+	public function getJoined() {
+		return $this->joined;
 	}
 
+	public function jsonSerialize() {
+		return array(
+			'circleid' => $this->getCircleId(),
+			'userid'   => $this->getUserId(),
+			'level'    => $this->getLevel(),
+			'status'   => $this->getStatus(),
+			'joined'   => $this->getJoined()
+		);
+	}
 
 	public function toString() {
 		return "toString ?";
