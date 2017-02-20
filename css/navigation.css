@@ -68,13 +68,19 @@
 
 #app-navigation.circles {
 	overflow-y: auto;
+}
+
+#app-navigation.circles, #app-navigation.circles .circle, #app-navigation.circles .selected {
 	-webkit-transition: background-color 0.5s ease-in;
 	transition: background-color 0.5s ease-in;
 }
 
-
 #app-navigation.selected {
 	background: #f1c76e66 !important;
+}
+
+#app-navigation.circles .selected {
+	background: #a279ff66;
 }
 
 .navigation-element {

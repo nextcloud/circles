@@ -119,11 +119,11 @@ $(document).ready(function () {
 		//
 		// Circles List
 		displayCirclesList: function (type) {
-			api.listCircle(type, this.listCircleResult);
+			api.listCircles(type, this.listCirclesResult);
 		},
 
 
-		listCircleResult: function (result) {
+		listCirclesResult: function (result) {
 
 			if (result.status < 1) {
 				Notification.onFail(
@@ -137,7 +137,7 @@ $(document).ready(function () {
 			var data = result.data;
 			for (var i = 0; i < data.length; i++) {
 
-			//	var curr = self.getCurrentCircleTemplate(data[i].id);
+				//	var curr = self.getCurrentCircleTemplate(data[i].id);
 
 				var tmpl = $('#tmpl_circle').html();
 
@@ -148,14 +148,47 @@ $(document).ready(function () {
 				tmpl = tmpl.replace(/%count%/, data[i].count);
 				tmpl = tmpl.replace(/%creation%/, data[i].creation);
 
-			//	if (curr == null) {
-					$('#app-navigation.circles').append(
-						'<div class="circle" circle-id="' + data[i].id + '">' + tmpl + '</div>');
-			//	} else {
-			//		$(curr).html(tmpl);
-			//	}
+				//	if (curr == null) {
+				$('#app-navigation.circles').append(
+					'<div class="circle" circle-id="' + data[i].id + '">' + tmpl + '</div>');
+				//	} else {
+				//		$(curr).html(tmpl);
+				//	}
 			}
+
+			$('#app-navigation.circles').children('.circle').on('click', function () {
+				self.selectCircle($(this).attr('circle-id'));
+			});
 		},
+
+
+		selectCircle: function (circleid) {
+
+			api.detailsCircle(circleid, this.selectCircleResult);
+		},
+
+
+		selectCircleResult: function (result) {
+
+			console.log(JSON.stringify(result));
+
+			if (result.status < 1) {
+				Notification.onFail(
+					'Issue while retreiving the details of a circle: ' +
+					((result.error) ? result.error.message : 'no error message'));
+				return;
+			}
+
+
+			$('#app-navigation.circles').children('.circle').each(function () {
+				if ($(this).attr('circle-id') == result.circle_id)
+					$(this).addClass('selected');
+				else
+					$(this).removeClass('selected');
+			});
+
+		},
+
 
 		// getCurrentCircleTemplate: function (id) {
 		//
