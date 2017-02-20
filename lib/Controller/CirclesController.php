@@ -135,6 +135,32 @@ class CirclesController extends Controller {
 		return new DataResponse($result, $status);
 	}
 
+
+	/**
+	 * @NoAdminRequired
+	 * @NoSubAdminRequired
+	 *
+	 * @param string $name
+	 *
+	 * @return DataResponse
+	 */
+	public function detailsCircle($id) {
+
+		$result = $this->circlesService->detailsCircle($id);
+
+		if ($result['status'] === 1) {
+			$status = Http::STATUS_CREATED;
+		} else {
+			$status = Http::STATUS_NON_AUTHORATIVE_INFORMATION;
+		}
+
+		return new DataResponse($result, $status);
+	}
+
+
+
+
+
 	/**
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
