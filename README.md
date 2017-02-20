@@ -54,7 +54,7 @@ function creationDone(result)
 ### PHP - list of API calls
 
 ** Create a Circle**
->     OCA\Circles\Api\Circles::createCircle($name, $type);
+>     $result = OCA\Circles\Api\Circles::createCircle($name, $type);
 
 
 
