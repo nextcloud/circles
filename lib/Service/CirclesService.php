@@ -144,6 +144,26 @@ class CirclesService {
 	}
 
 
+	public function detailsCircle($circleid) {
+
+		$iError = new iError();
+
+		$user = new Member();
+		$user->setUserId($this->userId);
+
+		$data = $this->databaseService->getCirclesMapper()
+									  ->getDetailsFromCircle($user, $circleid, $iError);
+
+		return [
+			'circle_id' => $circleid,
+			'data'      => $data,
+			'status'    => 1,
+			'error'     => $iError->toArray()
+		];
+
+	}
+
+
 	public static function convertTypeStringToBitValue(&$type) {
 		if (strtolower($type) === 'personal') {
 			$type = Circle::CIRCLES_PERSONAL;
