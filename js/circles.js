@@ -62,6 +62,7 @@
 				});
 			};
 
+
 			this.listCircles = function (type, callback) {
 				var result = {status: -1};
 				$.ajax({
@@ -77,8 +78,8 @@
 				});
 			};
 
-			this.detailsCircle = function(circleid, callback)
-			{
+
+			this.detailsCircle = function (circleid, callback) {
 				var result = {status: -1};
 				$.ajax({
 					method: 'GET',
@@ -89,6 +90,7 @@
 					self.onCallback(callback, result);
 				});
 			};
+
 
 			this.onCallback = function (callback, result) {
 				if (callback && (typeof callback === "function")) {
