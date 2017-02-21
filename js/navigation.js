@@ -31,6 +31,7 @@ $(document).ready(function () {
 
 		api: null,
 		self: null,
+		currentCircle: 0,
 
 		init: function () {
 
@@ -179,14 +180,15 @@ $(document).ready(function () {
 				return;
 			}
 
-
 			$('#app-navigation.circles').children('.circle').each(function () {
 				if ($(this).attr('circle-id') == result.circle_id)
 					$(this).addClass('selected');
 				else
 					$(this).removeClass('selected');
 			});
-
+			$('#emptycontent').hide(800);
+			$('#mainui').fadeIn(800);
+			self.currentCircle = result.circle_id;
 		},
 
 

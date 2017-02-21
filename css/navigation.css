@@ -6,11 +6,13 @@
 
 #app-navigation .navigation-element, #app-navigation .navigation-element option {
 	padding: 3px 12px;
+	background: #f6edd8;
 }
 
 #app-navigation .navigation-element input, #app-navigation .navigation-element select, #app-navigation .navigation-element option {
 	width: 100%;
 	box-sizing: border-box;
+	background: #ffffffaa
 }
 
 #app-content {
@@ -33,27 +35,30 @@
 }
 
 #circles_list {
-	border-top: solid 1px #ddd;
+	border-top: solid 1px #cccccc88;
+	position: absolute;
+	width: 100%;
+	bottom: 120px;
 }
 
 #circles_list div {
 	position: relative;
 	padding: 15px;
-	border-bottom: solid 1px #ddd;
+	border-bottom: solid 1px #cccccc88;
 	color: #555;
 	cursor: pointer;
-	background: #f1c76e33;
+	background: #f8e7c3;
 	-webkit-transition: background-color 0.5s ease-in;
 	transition: background-color 0.5s ease-in;
 	font-weight: normal;
 }
 
 #circles_list div:hover {
-	background: #f1c76e44;
+	background: #f8dda1;
 }
 
 #circles_list .selected {
-	background: #f1c76e66 !important;
+	background: #def6bc !important;
 	font-weight: bold !important;
 }
 
@@ -76,11 +81,11 @@
 }
 
 #app-navigation.selected {
-	background: #f1c76e66 !important;
+	background: #def6bc !important;
 }
 
 #app-navigation.circles .selected {
-	background: #a279ff66;
+	background: #e4dcfb;
 }
 
 .navigation-element {
@@ -91,8 +96,8 @@
 /* circles */
 .circle {
 	border: solid 1px #555;
-	border-radius: 4px;
-	box-shadow: 3px 3px 4px #88888888;
+	border-radius: 2px;
+	box-shadow: 2px 2px 2px #88888888;
 	margin: 10px;
 	margin-bottom: 0px;
 	padding: 5px;
@@ -108,4 +113,43 @@ div.circle .title {
 div.circle .owner, div.circle .resume {
 	font-size: 11px;
 	color: #333333bb;
+}
+
+/** members **/
+
+#mainui {
+	display: none;
+}
+
+#mainui #memberdetails {
+	position: absolute;
+	top: 200px;
+	width: 240px;
+	right: 30px;
+
+}
+
+#mainui #memberdetails #addmember {
+	width: 240px;
+}
+
+#mainui #details {
+	background: #bbb;
+	position: absolute;
+	right: 15px;
+	top: 15px;
+	border: solid 1px #cccccc88;
+	border-radius: 5px;
+	width: 260px;
+	box-shadow: 3px 3px 4px #88888888;
+	height: 160px;
+}
+
+#mainui #members {
+	background: #eee;
+	position: absolute;
+	bottom: 15px;
+	right: 300px;
+	left: 15px;
+	top: 15px;
 }
