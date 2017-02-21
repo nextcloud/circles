@@ -28,7 +28,10 @@ namespace OCA\Circles\Model;
 
 class Member implements \JsonSerializable {
 
-	const LEVEL_ADMIN = 9;
+	const LEVEL_MEMBER = 1;
+	const LEVEL_MODERATOR = 6;
+	const LEVEL_ADMIN = 8;
+	const LEVEL_OWNER = 9;
 
 	const STATUS_INVITED = 'invite';
 	const STATUS_REQUEST = 'request';
@@ -40,6 +43,7 @@ class Member implements \JsonSerializable {
 	private $userid;
 	private $level;
 	private $status;
+	private $note;
 	private $joined;
 
 	public function __construct() {
@@ -79,6 +83,17 @@ class Member implements \JsonSerializable {
 	}
 
 
+	public function setNote($note) {
+		$this->note = $note;
+
+		return $this;
+	}
+
+	public function getNote() {
+		return $this->note;
+	}
+
+
 	public function setStatus($status) {
 		$this->status = $status;
 
@@ -109,6 +124,21 @@ class Member implements \JsonSerializable {
 			'joined'   => $this->getJoined()
 		);
 	}
+
+
+	public static function fromArray($arr) {
+		$member = new Member();
+
+		$member->setCircleId($arr['circle_id']);
+		$member->setUserId($arr['user_id']);
+		$member->setLevel($arr['level']);
+		$member->setStatus($arr['status']);
+		$member->setNote($arr['note']);
+		$member->setJoined($arr['joined']);
+
+		return $member;
+	}
+
 
 	public function toString() {
 		return "toString ?";
