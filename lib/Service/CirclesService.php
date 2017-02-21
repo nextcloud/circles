@@ -148,15 +148,22 @@ class CirclesService {
 
 		$iError = new iError();
 
-		$user = new Member();
-		$user->setUserId($this->userId);
+		$circle = $this->databaseService->getCirclesMapper()
+										->getDetailsFromCircle($this->userId, $circleid, $iError);
 
-		$data = $this->databaseService->getCirclesMapper()
-									  ->getDetailsFromCircle($user, $circleid, $iError);
+		if ($circle->getUser()
+				   ->getLevel() >= Member::LEVEL_MEMBER
+		) {
+			$members = $this->databaseService->getMembersMapper()
+											 ->getMembersFromCircle(
+												 $circleid, $iError
+											 );
+			$circle->setMembers($members);
+		}
 
 		return [
 			'circle_id' => $circleid,
-			'data'      => $data,
+			'details'   => $circle,
 			'status'    => 1,
 			'error'     => $iError->toArray()
 		];

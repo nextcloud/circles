@@ -43,17 +43,51 @@ class MembersMapper extends Mapper {
 		parent::__construct($db, self::TABLENAME, 'OCA\Circles\Db\Members');
 		$this->miscService = $miscService;
 	}
+//
+//	public function findAllFromCircle($circleid) {
+//
+//		try {
+//			$sql = sprintf('SELECT * FROM *PREFIX*%s WHERE circle_id = ?', self::TABLENAME);
+//
+//			return $this->findEntity($sql, [$circleid]);
+//		} catch (DoesNotExistException $dnee) {
+//			return null;
+//		}
+//	}
 
-	public function findAllFromCircle($circleid) {
+
+	public function getMembersFromCircle($circleId, $moderator = false, &$iError = '') {
+
+		if ($iError === '') {
+			$iError = new iError();
+		}
+
+		$circleId = (int)$circleId;
 
 		try {
-			$sql = sprintf('SELECT * FROM *PREFIX*%s WHERE circle_id = ?', self::TABLENAME);
+			$sql = sprintf(
+				"SELECT m.circle_id, m.user_id, m.level, m.status, m.creation AS joined %s "
+				. "FROM *PREFIX*%s AS m "
+				. " WHERE m.circle_id=%d ORDER BY m.user_id ASC "
+				,
+				(($moderator) ? ', m.note ' : ''),
+				self::TABLENAME, $circleId
+			);
 
-			return $this->findEntity($sql, [$circleid]);
-		} catch (DoesNotExistException $dnee) {
+			$result = $this->execute($sql, [$circleId]);
+
+			$data = [];
+			foreach ($result as $entry) {
+				$data[] = Member::fromArray($entry);
+			}
+
+			return $data;
+		} catch (DoesNotExistException $ne) {
 			return null;
 		}
+
 	}
+
 
 	public function create(Member $member, &$iError = '') {
 
