@@ -35,8 +35,8 @@ style('circles', 'navigation');
 ?>
 
 
-<div id="app-navigation" class="noborder" style="background: #0000000a;">
-	<div class="navigation-element" style="height: 300px;">
+<div id="app-navigation" class="noborder" style="position: relative">
+	<div class="navigation-element" style="height: 100%; padding-top: 15px">
 		<input id="circles_new_name" type="text"
 			   placeholder="<?php p($l->t('Create a new circle')); ?>"/>
 		<select id="circles_new_type" style="display: none;">
@@ -132,7 +132,6 @@ style('circles', 'navigation');
 		?>
 
 	</div>
-	<div class="navigation-element" style="height: 100%"></div>
 
 </div>
 
@@ -140,24 +139,30 @@ style('circles', 'navigation');
 </div>
 
 <script id="tmpl_circle" type="text/template">
-			<div class="title">%title%</div>
-			<div class="owner">Owner: %owner% (%type%, %status%)</div>
-			<div class="resume">%count% members since %creation%</div>
+	<div class="title">%title%</div>
+	<div class="owner">Owner: %owner% (%type%, %status%)</div>
+	<div class="resume">%count% members since %creation%</div>
 </script>
 
-<div id="app-content">
+<div id="app-content" style="position: relative">
 	<div id="emptycontent">
 		<div class="icon-circles"></div>
 		<h2><?php p($l->t('No circle selected')); ?></h2>
 	</div>
 
-	<div id="container" class="hidden">
-		<label for="addMember" class="hidden-visually"><?php p($l->t('Add team member')); ?></label>
-		<input id="addMember" type="text" placeholder="<?php p($l->t('Add team member')); ?>"/>
+	<div id="mainui">
 
-		<ul class="memberList"></ul>
-	</div>
+		<div id="details">
+		</div>
 
-	<div id="loading_members" class="icon-loading hidden">
+
+		<div id="memberdetails">
+			<input id="addmember" type="text"
+				   placeholder="<?php p($l->t('Add a new member')); ?>"/>
+			<ul class="memberList"></ul>
+		</div>
+
+		<div id="members">
+		</div>
 	</div>
 </div>
