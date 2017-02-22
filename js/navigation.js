@@ -81,6 +81,23 @@ $(document).ready(function () {
 			$('.icon-circles').css('background-image',
 				'url(' + OC.imagePath('circles', 'colored') + ')');
 
+			//$('#addmember').on('key')
+			$('#addmember').on('input propertychange paste focus', function () {
+				// if ($('#zendialog_creator_search').val().trim() == '')
+				// 	zenodoDialog.searchCreatorResult(null);
+				// else
+				$.get(OC.linkToOCS('apps/files_sharing/api/v1') + 'sharees',
+					{
+						format: 'json',
+						search: $(this).val().trim(),
+						perPage: 200,
+						itemType: 'principals'
+					}, self.searchMembersResult);
+			}).blur(function () {
+				//$('#members_search_result').fadeOut(400);
+			});
+
+			$('#members_search_result').hide();
 		},
 
 
@@ -120,6 +137,13 @@ $(document).ready(function () {
 		//
 		// Circles List
 		displayCirclesList: function (type) {
+			$('#app-navigation.circles').show('slide', 800);
+			$('#emptycontent').show(800);
+			$('#mainui').fadeOut(800);
+			$('#app-navigation.circles').children().each(function () {
+				if ($(this).attr('id') != 'circles_search')
+					$(this).remove();
+			});
 			api.listCircles(type, this.listCirclesResult);
 		},
 
@@ -133,7 +157,6 @@ $(document).ready(function () {
 				return;
 			}
 
-			$('#app-navigation.circles').children().remove();
 
 			var data = result.data;
 			for (var i = 0; i < data.length; i++) {
@@ -164,14 +187,17 @@ $(document).ready(function () {
 
 
 		selectCircle: function (circleid) {
-
 			api.detailsCircle(circleid, this.selectCircleResult);
 		},
 
 
 		selectCircleResult: function (result) {
 
-			console.log(JSON.stringify(result));
+			$('#mainui #memberslist .table').children('tr').each(function () {
+				if ($(this).attr('class') != 'header')
+					$(this).remove();
+			});
+
 
 			if (result.status < 1) {
 				Notification.onFail(
@@ -189,8 +215,58 @@ $(document).ready(function () {
 			$('#emptycontent').hide(800);
 			$('#mainui').fadeIn(800);
 			self.currentCircle = result.circle_id;
+
+			var members = result.details.members;
+			for (var i = 0; i < members.length; i++) {
+
+				var tmpl = $('#tmpl_member').html();
+
+				tmpl = tmpl.replace(/%username%/, members[i].userid);
+				tmpl = tmpl.replace(/%level%/, members[i].level_string);
+				tmpl = tmpl.replace(/%status%/, members[i].status);
+				tmpl = tmpl.replace(/%joined%/, members[i].joined);
+				tmpl = tmpl.replace(/%note%/,
+					((members[i].note) ? members[i].note : ''));
+
+				$('#mainui #memberslist .table').append(tmpl);
+			}
 		},
 
+
+		searchMembersResult: function (response) {
+			console.log(JSON.stringify(response));
+
+			if (response == null ||
+				(response.ocs.data.users == 0 && response.ocs.data.exact.users == 0))
+				$('#members_search_result').fadeOut(300);
+
+			else {
+				$('#members_search_result').children().remove();
+
+				$.each(response.ocs.data.exact.users, function (index, value) {
+					$('#members_search_result').append(
+						'<div class="members_search exact" searchresult="' +
+						value.value.shareWith +
+						'">' + value.label + '   (' +
+						value.value.shareWith + ')</div>');
+				});
+				$.each(response.ocs.data.users, function (index, value) {
+					$('#members_search_result').append(
+						'<div class="members_search" searchresult="' + value.value.shareWith +
+						'">' + value.label + '   (' +
+						value.value.shareWith + ')</div>');
+				});
+
+				$('#members_search_result').children().first().css('border-top-width', '0px');
+
+				$('DIV.zendialog_result').on('click', function () {
+					zenodoDialog.localCreator($(this).attr('searchresult'));
+				});
+				$('#members_search_result').fadeIn(300);
+			}
+
+
+		},
 
 		// getCurrentCircleTemplate: function (id) {
 		//

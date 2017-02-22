@@ -9,7 +9,12 @@
 	background: #f6edd8;
 }
 
-#app-navigation .navigation-element input, #app-navigation .navigation-element select, #app-navigation .navigation-element option {
+#app-navigation input#circles_search {
+	margin: 15px;
+	width: 285px;
+}
+
+#app-navigation input, #app-navigation select, #app-navigation option {
 	width: 100%;
 	box-sizing: border-box;
 	background: #ffffffaa
@@ -58,12 +63,12 @@
 }
 
 #circles_list .selected {
-	background: #def6bc !important;
+	background: #c1e3a6 !important;
 	font-weight: bold !important;
 }
 
 #app-navigation {
-	width: 280px;
+	width: 300px;
 	border-right: 1px solid #ddd;
 }
 
@@ -73,6 +78,7 @@
 
 #app-navigation.circles {
 	overflow-y: auto;
+	width: 320px;
 }
 
 #app-navigation.circles, #app-navigation.circles .circle, #app-navigation.circles .selected {
@@ -81,11 +87,11 @@
 }
 
 #app-navigation.selected {
-	background: #def6bc !important;
+	background: #c1e3a6 !important;
 }
 
 #app-navigation.circles .selected {
-	background: #e4dcfb;
+	background: #b5d1e5;
 }
 
 .navigation-element {
@@ -102,16 +108,21 @@
 	margin-bottom: 0px;
 	padding: 5px;
 	background: #eee;
+	padding-bottom: 8px;
 }
 
 div.circle .title {
 	font-weight: bold;
+	font-size: 13px;
 	color: #333333dd;
+	margin-left: 10px;
 	font-style: italic;
 }
 
-div.circle .owner, div.circle .resume {
+div.circle .owner, div.circle .type, div.circle .resume {
+	margin-left: 20px;
 	font-size: 11px;
+	margin-bottom: -4px;
 	color: #333333bb;
 }
 
@@ -121,35 +132,86 @@ div.circle .owner, div.circle .resume {
 	display: none;
 }
 
-#mainui #memberdetails {
+#mainui #rightpanel {
 	position: absolute;
-	top: 200px;
-	width: 240px;
-	right: 30px;
+	top: 0px;
+	width: 400px;
+	background: #eee;
+	border-left: solid 1px #ccc;
+	right: 0px;
+	bottom: 0px;
 
 }
 
-#mainui #memberdetails #addmember {
-	width: 240px;
-}
-
-#mainui #details {
-	background: #bbb;
-	position: absolute;
-	right: 15px;
-	top: 15px;
+#mainui #rightpanel #circledetails {
+	background: #b5d1e5;
 	border: solid 1px #cccccc88;
-	border-radius: 5px;
-	width: 260px;
+	border-radius: 3px;
 	box-shadow: 3px 3px 4px #88888888;
 	height: 160px;
+	margin: 15px;
 }
 
-#mainui #members {
-	background: #eee;
+#mainui #rightpanel #addmember {
+	margin: 15px;
+	width: 370px;
+}
+
+#mainui #memberslist {
 	position: absolute;
 	bottom: 15px;
-	right: 300px;
+	right: 415px;
 	left: 15px;
 	top: 15px;
+	overflow-y: auto;
+}
+
+#mainui #memberslist .table {
+	width: 100%;
+}
+
+#mainui #memberslist .header td {
+	font-weight: bold;
+	padding: 10px;
+}
+
+#mainui #memberslist .entry td {
+	padding: 3px;
+	border-bottom: solid 1px #eee;
+	color: #555;
+}
+
+#members_search_result {
+	position: absolute;
+	z-index: 5;
+	margin: 15px;
+	border-radius: 4px;
+	border: solid 1px #00000066;
+	color: #000000aa;
+	background: #ffffffdd;
+	width: 350px;
+	max-height: 300px;
+	padding: 5px;
+	overflow-y: auto;
+}
+
+#members_search_result > #mainui #rightpanel #addmember {
+	position: relative;
+	top: 5px;
+
+}
+
+.members_search {
+	padding: 5px;
+	border-top: solid 1px #777;
+}
+
+.members_search.exact {
+	background: #eee;
+}
+
+#emptycontent {
+	position: absolute;
+	z-index: -99;
+	left: 200px;
 }

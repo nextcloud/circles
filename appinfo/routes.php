@@ -34,6 +34,8 @@ return [
 					'requirements' => ['id' => '\d+'],
 				],
 
+		['name' => 'Members#search', 'url' => '/members', 'verb' => 'GET'],
+
 
 		//		['name' => 'Teams#create', 'url' => '/teams', 'verb' => 'PUT'],
 		//		['name' => 'Teams#update', 'url' => '/teams/{id}', 'verb' => 'POST', 'requirements' => ['id' => '\d+'],],
