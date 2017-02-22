@@ -135,34 +135,64 @@ style('circles', 'navigation');
 
 </div>
 
-<div id="app-navigation" class="circles">
+<div id="app-navigation" class="circles" style="display: none;">
+	<input id="circles_search" type="text"
+		   placeholder="<?php p($l->t('Search circles')); ?>"/>
 </div>
 
 <script id="tmpl_circle" type="text/template">
 	<div class="title">%title%</div>
-	<div class="owner">Owner: %owner% (%type%, %status%)</div>
-	<div class="resume">%count% members since %creation%</div>
+	<div class="type"><b>%type%</b> (%status%)</div>
+	<div class="owner"><b>Owner:</b> %owner%</div>
+	<div class="resume"><b>%count% members</b> since %creation%</div>
 </script>
 
+<div id="emptycontent">
+	<div class="icon-circles"></div>
+	<h2><?php p($l->t('No circle selected')); ?></h2>
+</div>
+
 <div id="app-content" style="position: relative">
-	<div id="emptycontent">
-		<div class="icon-circles"></div>
-		<h2><?php p($l->t('No circle selected')); ?></h2>
-	</div>
 
 	<div id="mainui">
 
-		<div id="details">
+		<div id="memberslist">
+			<table class="table">
+				<tr class="header">
+					<td class="username">Username</td>
+					<td class="level">Level</td>
+					<td class="status">Status</td>
+					<td class="joined">Joined</td>
+					<td class="note">Notes</td>
+				</tr>
+			</table>
+
+			<script id="tmpl_member" type="text/template">
+				<tr class="entry">
+					<td class="username">%username%</td>
+					<td class="level">%level%</td>
+					<td class="status">%status%</td>
+					<td class="joined">%joined%</td>
+					<td class="note">%note%</td>
+				</tr>
+			</script>
+
 		</div>
 
+		<div id="rightpanel">
+			<div id="circledetails">
 
-		<div id="memberdetails">
+			</div>
+
 			<input id="addmember" type="text"
 				   placeholder="<?php p($l->t('Add a new member')); ?>"/>
-			<ul class="memberList"></ul>
+			<div id="members_search_result">
+
+			</div>
+
+			<div id="memberdetails"></div>
 		</div>
 
-		<div id="members">
-		</div>
+
 	</div>
 </div>
