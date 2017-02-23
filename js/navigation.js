@@ -40,7 +40,6 @@ $(document).ready(function () {
 			self = this;
 			api = OCA.Circles.api;
 
-
 			$('#circles_new_type_definition div').fadeOut(0);
 			$('#circles_new_type_' + ($('#circles_new_type option:selected').val())).fadeIn(0);
 
@@ -49,6 +48,12 @@ $(document).ready(function () {
 			$('#circles_new_type_definition').hide();
 
 			$('#circles_new_name').on('keyup', function (e) {
+				self.currentCircle = 0;
+				$('#app-navigation.circles').hide('slide', 800);
+				$('#circles_list div').removeClass('selected');
+				$('#emptycontent').show(800);
+				$('#mainui').fadeOut(800);
+
 				if ($('#circles_new_name').val() != '') {
 					$('#circles_new_type').fadeIn(300);
 					$('#circles_new_submit').fadeIn(500);
@@ -62,24 +67,25 @@ $(document).ready(function () {
 			});
 
 			$('#circles_new_type').on('change', function () {
+
+				self.currentCircle = 0;
+				$('#app-navigation.circles').hide('slide', 800);
+				$('#circles_list div').removeClass('selected');
+				$('#emptycontent').show(800);
+				$('#mainui').fadeOut(800);
+
 				$('#circles_new_type_definition div').fadeOut(300);
 				$('#circles_new_type_' + ($('#circles_new_type option:selected').val())).fadeIn(
 					300);
 			});
 
 			$('#circles_new_submit').on('click', function () {
-				self.createCircle($('#circles_new_type').val(), $('#circles_new_name').val());
+				api.createCircle($('#circles_new_type').val(), $('#circles_new_name').val(),
+					self.createCircleResult);
 			});
 
 			$('#circles_list div').on('click', function () {
-				self.currCirclesType = $(this).attr('circle-type');
-				self.displayCirclesList(self.currCirclesType);
-				self.lastSearch = '';
-				$('#circles_search').val('');
-
-				$('#app-navigation.circles').addClass('selected');
-				$('#circles_list div').removeClass('selected');
-				$(this).addClass('selected');
+				self.displayCirclesList($(this).attr('circle-type'));
 			});
 
 			$('#circles_search').on('input propertychange paste focus', function () {
@@ -112,13 +118,7 @@ $(document).ready(function () {
 		},
 
 
-		createCircle: function (type, name) {
-			api.createCircle(type, name, this.createCircleResult);
-		},
-
-
 		createCircleResult: function (result) {
-
 			var str = 'Circle';
 			switch (result.type) {
 				case '1':
@@ -135,8 +135,11 @@ $(document).ready(function () {
 					break;
 			}
 
-			if (result.status == 1)
+			if (result.status == 1) {
 				Notification.onSuccess(str + " '" + result.name + "' created");
+				self.displayCirclesList(result.circle.type);
+				self.selectCircle(result.circle.id);
+			}
 			else
 				Notification.onFail(
 					str + " '" + result.name + "' NOT created: " +
@@ -148,14 +151,30 @@ $(document).ready(function () {
 		//
 		// Circles List
 		displayCirclesList: function (type) {
+
+			self.currCirclesType = type;
+			self.lastSearch = '';
+
+			self.currentCircle = 0;
 			$('#app-navigation.circles').show('slide', 800);
 			$('#emptycontent').show(800);
 			$('#mainui').fadeOut(800);
+
+			$('#circles_search').val('');
+
+			$('#app-navigation.circles').addClass('selected');
+			$('#circles_list div').removeClass('selected');
+
+			$('#circles_list').children().each(function () {
+				if ($(this).attr('circle-type') == type.toLowerCase())
+					$(this).addClass('selected');
+			});
+
 			$('#app-navigation.circles').children().each(function () {
 				if ($(this).attr('id') != 'circles_search')
 					$(this).remove();
 			});
-			api.listCircles(type, this.listCirclesResult);
+			api.listCircles(type, self.listCirclesResult);
 		},
 
 
@@ -326,103 +345,3 @@ $(document).ready(function () {
 
 });
 
-
-//
-// $(document).ready(function() {
-// 	var removeMember = function() {
-// 		var teamId = $('#app-navigation').find('.active').first().data('navigation'),
-// 			memberId = $(this).data('user_id');
-//
-// 		$.ajax({
-// 			method: 'DELETE',
-// 			url: OC.linkTo('teams', 'teams/' + teamId + '/members'),
-// 			data: {
-// 				userId: memberId
-// 			}
-// 		}).done(function() {
-// 			// TODO re-render in JS
-// 			location.reload();
-// 		}).fail(function(){
-// 			// TODO on failure
-// 		});
-// 	};
-//
-// 	var openTeam = function() {
-// 		var teamId = $(this).data('navigation');
-// 		$('#app-navigation').find('.active').removeClass('active');
-// 		$(this).addClass('active');
-//
-// 		$('#emptycontent').addClass('hidden');
-// 		$('#loading_members').removeClass('hidden');
-// 		$('#container').addClass('hidden');
-// 		$('#container').find('.memberList').empty();
-//
-// 		$.get(
-// 			OC.linkTo('teams', 'teams/' + teamId + '/members'),
-// 			[],
-// 			function(result) {
-// 				$('#loading_members').addClass('hidden');
-//
-// 				var $memberList = $('#container').find('.memberList');
-//
-// 				_.each(result.members, function(member){
-// 					$memberList.append(
-// 						$('<li>')
-// 							.data('user_id', member.user_id)
-// 							.text(member.user_id + ' (' + member.status + ')')
-// 							.on('click', removeMember)
-// 					);
-// 				});
-//
-// 				$('#container').removeClass('hidden');
-// 			}
-// 		).fail(function(){
-// 			// TODO on failure
-// 			$('#loading_members').addClass('hidden');
-// 			$('#emptycontent').removeClass('hidden');
-// 		});
-// 	};
-//
-// 	$('#app-navigation').find('a').on('click', openTeam);
-//
-// 	$.get(
-// 		OC.linkTo('teams', 'teams'),
-// 		[],
-// 		function(result) {
-// 			$navigation = $('#app-navigation');
-// 			$teamsNavigation = $navigation.find('.teams');
-//
-// 			$teamsNavigation.append(
-// 				$('<li>').addClass('header').text('My teams')
-// 			);
-//
-// 			_.each(result.myTeams, function(team){
-// 				$teamsNavigation.append(
-// 					$('<li>').append(
-// 						$('<a>').data('navigation', team.id).append(
-// 							$('<span>').addClass('no-icon').text(team.name)
-// 						).on('click', openTeam)
-// 					)
-// 				);
-// 			});
-//
-//
-// 			$teamsNavigation.append(
-// 				$('<li>').addClass('header').text('Other teams')
-// 			);
-//
-// 			_.each(result.otherTeams, function(team){
-// 				$teamsNavigation.append(
-// 					$('<li>').append(
-// 						$('<a>').data('navigation', team.id).append(
-// 							$('<span>').addClass('no-icon').text(team.name + ' by ' + team.owner
-// + ' (' + team.status + ')') ).on('click', openTeam) ) ); }); } ).fail(function(){ // TODO on
-// failure });  var createTeam = function(e){ if (e.keyCode === 13) { $.ajax({ method: 'PUT', url:
-// OC.linkTo('teams', 'teams'), data: { name: $('#newTeam').val() } }).done(function() { // TODO
-// re-render in JS location.reload(); }).fail(function(){ // TODO on failure }); } };
-// $('#newTeam').on('keyup', createTeam);    var addMember = function(e){ if (e.keyCode === 13) {
-// var teamId = $('#app-navigation').find('.active').first().data('navigation');  $.ajax({ method:
-// 'PUT', url: OC.linkTo('teams', 'teams/' + teamId + '/members'), data: { userId:
-// $('#addMember').val() } }).done(function() { // TODO re-render in JS location.reload();
-// $('#addMember').val(''); }).fail(function(){ // TODO on failure }); } };
-// $('#addMember').on('keyup', addMember);    });

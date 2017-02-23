@@ -47,8 +47,7 @@ style('circles', 'navigation');
 			if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PERSONAL]) {
 				print_unescaped(
 					sprintf(
-						'<option value="%d">%s</option>',
-						\OCA\Circles\Model\Circle::CIRCLES_PERSONAL,
+						'<option value="%s">%s</option>', 'personal',
 						"Create a Personal Circle"
 					)
 				);
@@ -58,7 +57,7 @@ style('circles', 'navigation');
 			if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_HIDDEN]) {
 				print_unescaped(
 					sprintf(
-						'<option value="%d">%s</option>', \OCA\Circles\Model\Circle::CIRCLES_HIDDEN,
+						'<option value="%s">%s</option>', 'hidden',
 						"Create an Hidden Circle"
 					)
 				);
@@ -68,8 +67,7 @@ style('circles', 'navigation');
 			if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PRIVATE]) {
 				print_unescaped(
 					sprintf(
-						'<option value="%d">%s</option>',
-						\OCA\Circles\Model\Circle::CIRCLES_PRIVATE,
+						'<option value="%s">%s</option>', 'private',
 						"Create a Private Circle"
 					)
 				);
@@ -79,7 +77,7 @@ style('circles', 'navigation');
 			if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PUBLIC]) {
 				print_unescaped(
 					sprintf(
-						'<option value="%d">%s</option>', \OCA\Circles\Model\Circle::CIRCLES_PUBLIC,
+						'<option value="%s">%s</option>', 'public',
 						"Create a Public Circle"
 					)
 				);
@@ -90,22 +88,22 @@ style('circles', 'navigation');
 		<input id="circles_new_submit" type="submit" value="Creation" style="display: none;"/>
 
 		<div id="circles_new_type_definition" style="display: none;">
-			<div id="circles_new_type_1"><b>A Personal Circle is a list of users known only
+			<div id="circles_new_type_personal"><b>A Personal Circle is a list of users known only
 					to
 					yourself.</b><br/>Use this if you want to send messsage or share thing
 				repeatedly to the same group of people.
 			</div>
-			<div id="circles_new_type_2"><b>An Hidden Circle is an open group that can be
+			<div id="circles_new_type_hidden"><b>An Hidden Circle is an open group that can be
 					protected by
 					a password.</b><br/>Select this circle to create a community not displayed as a
 				Public Circle.
 			</div>
-			<div id="circles_new_type_4"><b>A Private Circle require invitation or a
+			<div id="circles_new_type_private"><b>A Private Circle require invitation or a
 					confirmation
 					from an admin.</b> <br/>This is the best circle if you are looking for privacy
 				when sharing your files or your ideas.
 			</div>
-			<div id="circles_new_type_8"><b>A Public Circle is an open group visible to anyone
+			<div id="circles_new_type_public"><b>A Public Circle is an open group visible to anyone
 					that dare to join. </b><br/>Your circle will be visible to everyone and everyone
 				will be able to join the circle.
 			</div>

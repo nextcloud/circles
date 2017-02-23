@@ -91,6 +91,7 @@ class CirclesService {
 			) {
 				return [
 					'name'   => $name,
+					'circle' => $circle,
 					'type'   => $type,
 					'status' => 1,
 					'error'  => ''
@@ -142,8 +143,6 @@ class CirclesService {
 			'error'  => $iError->toArray()
 		];
 	}
-
-
 
 
 	public function detailsCircle($circleid) {

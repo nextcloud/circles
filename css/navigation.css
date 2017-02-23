@@ -17,7 +17,7 @@
 #app-navigation input, #app-navigation select, #app-navigation option {
 	width: 100%;
 	box-sizing: border-box;
-	background: #ffffffaa
+	background: #ffffffaa !important;
 }
 
 #app-content {

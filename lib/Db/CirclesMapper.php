@@ -115,6 +115,8 @@ class CirclesMapper extends Mapper {
 				}
 			}
 
+			$this->miscService->log(var_export($data, true));
+
 			return $data;
 		} catch (DoesNotExistException $ne) {
 			return null;
@@ -195,14 +197,13 @@ class CirclesMapper extends Mapper {
 				$owner->getUserId(), $circle->getType(), $circle->getName(), Member::LEVEL_OWNER
 			);
 
-			if (sizeof($list) > 0) {
-//			foreach ($list AS $item) {
-//				if ($item->getName() === $circle->getName()) {
-				$iError->setCode(iError::CIRCLE_CREATION_DUPLICATE_NAME)
-					   ->setMessage('duplicate name');
+			foreach ($list AS $item) {
+				if ($item->getName() === $circle->getName()) {
+					$iError->setCode(iError::CIRCLE_CREATION_DUPLICATE_NAME)
+						   ->setMessage('duplicate name');
 
-				return false;
-//				}
+					return false;
+				}
 			}
 		} else {
 			try {
@@ -226,7 +227,7 @@ class CirclesMapper extends Mapper {
 		}
 
 		$sql = sprintf(
-			'INSERT INTO * PREFIX *%s(name, description, type, creation) VALUES(?, ?, ?, NOW())',
+			'INSERT INTO *PREFIX*%s (name, description, type, creation) VALUES(?, ?, ?, NOW())',
 			self::TABLENAME
 		);
 
