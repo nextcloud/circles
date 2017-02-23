@@ -151,6 +151,10 @@ class CirclesService {
 		$circle = $this->databaseService->getCirclesMapper()
 										->getDetailsFromCircle($this->userId, $circleid, $iError);
 
+		if ($circle === null) {
+			return null;
+		}
+
 		if ($circle->getUser()
 				   ->getLevel() >= Member::LEVEL_MEMBER
 		) {
