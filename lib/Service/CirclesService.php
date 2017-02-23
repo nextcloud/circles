@@ -55,24 +55,18 @@ class CirclesService {
 	}
 
 
-	public function createCircle($type, $name) {
+	public function createCircle($type, $name, &$iError = '') {
+
+		$iError = new iError();
 
 		self::convertTypeStringToBitValue($type);
 
 		if (!$this->configService->isCircleAllowed((int)$type)) {
-			$iError = new iError();
 			$iError->setCode(iError::CIRCLE_CREATION_TYPE_DISABLED)
 				   ->setMessage("The creation of this type of circle is not allowed");
 
-			return [
-				'name'   => $name,
-				'type'   => $type,
-				'status' => 0,
-				'error'  => $iError->toArray()
-			];
+			return null;
 		}
-
-		$iError = new iError();
 
 		$owner = new Member();
 		$owner->setUserId($this->userId)
@@ -89,30 +83,18 @@ class CirclesService {
 			if ($this->databaseService->getMembersMapper()
 									  ->create($owner, $iError) === true
 			) {
-				return [
-					'name'   => $name,
-					'circle' => $circle,
-					'type'   => $type,
-					'status' => 1,
-					'error'  => ''
-				];
-
+				return $circle;
 			} else {
 				$this->databaseService->getCirclesMapper()
 									  ->destroy($circle, $iError);
 			}
 		}
 
-		return [
-			'name'   => $name,
-			'type'   => $type,
-			'status' => 0,
-			'error'  => $iError->toArray()
-		];
+		return null;
 	}
 
 
-	public function listCircles($type, $name = '') {
+	public function listCircles($type, $name = '', &$iError = '') {
 
 		self::convertTypeStringToBitValue($type);
 
@@ -121,58 +103,37 @@ class CirclesService {
 			$iError->setCode(iError::CIRCLE_CREATION_TYPE_DISABLED)
 				   ->setMessage("The listing of this type of circle is not allowed");
 
-			return [
-				'type'   => $type,
-				'status' => 0,
-				'error'  => $iError->toArray()
-			];
+			return null;
 		}
-
-		$iError = new iError();
-
-		$user = new Member();
-		$user->setUserId($this->userId);
 
 		$data = $this->databaseService->getCirclesMapper()
 									  ->findCirclesByUser($this->userId, $type, $name, 0);
 
-		return [
-			'type'   => $type,
-			'data'   => $data,
-			'status' => 1,
-			'error'  => $iError->toArray()
-		];
+		return $data;
 	}
 
 
-	public function detailsCircle($circleid) {
+	public function detailsCircle($circleid, &$iError) {
 
 		$iError = new iError();
 
 		$circle = $this->databaseService->getCirclesMapper()
 										->getDetailsFromCircle($this->userId, $circleid, $iError);
 
-		if ($circle === null) {
-			return null;
+		if ($circle !== null) {
+
+			if ($circle->getUser()
+					   ->getLevel() >= Member::LEVEL_MEMBER
+			) {
+				$members = $this->databaseService->getMembersMapper()
+												 ->getMembersFromCircle(
+													 $circleid, $iError
+												 );
+				$circle->setMembers($members);
+			}
 		}
 
-		if ($circle->getUser()
-				   ->getLevel() >= Member::LEVEL_MEMBER
-		) {
-			$members = $this->databaseService->getMembersMapper()
-											 ->getMembersFromCircle(
-												 $circleid, $iError
-											 );
-			$circle->setMembers($members);
-		}
-
-		return [
-			'circle_id' => $circleid,
-			'details'   => $circle,
-			'status'    => 1,
-			'error'     => $iError->toArray()
-		];
-
+		return $circle;
 	}
 
 

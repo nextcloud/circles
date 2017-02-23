@@ -86,29 +86,35 @@ class CirclesController extends Controller {
 	 */
 	public function create($type, $name) {
 
+		$data = null;
 		if (substr($name, 0, 1) === '_') {
 			$iError = new iError();
 			$iError->setCode(iError::CIRCLE_CREATION_FIRST_CHAR)
 				   ->setMessage("The name of your circle cannot start with this character");
-			$result = [
-				'name'   => $name,
-				'type'   => $type,
-				'status' => 0,
-				'error'  => $iError->toArray()
-			];
 		} else {
-			$result = $this->circlesService->createCircle($type, $name);
+			$data = $this->circlesService->createCircle($type, $name, $iError);
 		}
 
-		if ($result['status'] === 1) {
-			$status = Http::STATUS_CREATED;
-		} else {
-			$status = Http::STATUS_NON_AUTHORATIVE_INFORMATION;
+		if ($data === null) {
+			return
+				new DataResponse(
+					[
+						'name'   => $name,
+						'type'   => $type,
+						'status' => 0,
+						'error'  => $iError->toArray()
+					],
+					Http::STATUS_NON_AUTHORATIVE_INFORMATION
+				);
 		}
 
 		return new DataResponse(
-			$result,
-			$status
+			[
+				'name'   => $name,
+				'circle' => $data,
+				'type'   => $type,
+				'status' => 1
+			], Http::STATUS_CREATED
 		);
 
 	}
@@ -124,15 +130,28 @@ class CirclesController extends Controller {
 	 */
 	public function listCircles($type, $name = '') {
 
-		$result = $this->circlesService->listCircles($type, $name);
+		$data = $this->circlesService->listCircles($type, $name, $iError);
 
-		if ($result['status'] === 1) {
-			$status = Http::STATUS_CREATED;
-		} else {
-			$status = Http::STATUS_NON_AUTHORATIVE_INFORMATION;
+		if ($data === null) {
+			return
+				new DataResponse(
+					[
+						'type'   => $type,
+						'status' => 0,
+						'error'  => $iError->toArray()
+					],
+					Http::STATUS_NON_AUTHORATIVE_INFORMATION
+				);
+
 		}
 
-		return new DataResponse($result, $status);
+		return new DataResponse(
+			[
+				'type'   => $type,
+				'data'   => $data,
+				'status' => 1
+			], Http::STATUS_CREATED
+		);
 	}
 
 
@@ -146,15 +165,29 @@ class CirclesController extends Controller {
 	 */
 	public function detailsCircle($id) {
 
-		$result = $this->circlesService->detailsCircle($id);
+		$data = $this->circlesService->detailsCircle($id, $iError);
 
-		if ($result['status'] === 1) {
-			$status = Http::STATUS_CREATED;
-		} else {
-			$status = Http::STATUS_NON_AUTHORATIVE_INFORMATION;
+		if ($data === null) {
+			return
+				new DataResponse(
+					[
+						'circle_id' => $id,
+						'status'    => 0,
+						'error'     => $iError->toArray()
+					],
+					Http::STATUS_NON_AUTHORATIVE_INFORMATION
+				);
+
 		}
 
-		return new DataResponse($result, $status);
+		return new DataResponse(
+			[
+
+				'circle_id' => $id,
+				'details'   => $data,
+				'status'    => 1
+			], Http::STATUS_CREATED
+		);
 	}
 
 
