@@ -26,6 +26,7 @@
 
 namespace OCA\Circles\Api;
 
+use OCA\Circles\Model\Circle;
 use OCP\Share;
 
 
@@ -41,13 +42,18 @@ class Sharees {
 	public static function search($search, $limit, $offset) {
 		$c = self::getContainer();
 
-		$result['circles'][] = [
-			'label' => 'labell !',
-			'value' => [
-				'shareType' => Share::SHARE_TYPE_CIRCLE,
-				'shareWith' => 10
-			],
-		];
+		$data = $c->query('CirclesService')
+					->listCircles(Circle::CIRCLES_ALL, $search);
+
+		foreach ($data as $entry) {
+			$result['circles'][] = [
+				'label' => $entry->getName(),
+				'value' => [
+					'shareType' => Share::SHARE_TYPE_CIRCLE,
+					'shareWith' => $entry->getId()
+				],
+			];
+		}
 
 		return $result;
 	}
