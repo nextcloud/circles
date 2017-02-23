@@ -55,7 +55,7 @@ class CirclesService {
 	}
 
 
-	public function createCircle($name, $type) {
+	public function createCircle($type, $name) {
 
 		self::convertTypeStringToBitValue($type);
 
@@ -111,7 +111,7 @@ class CirclesService {
 	}
 
 
-	public function listCircles($type) {
+	public function listCircles($type, $name = '') {
 
 		self::convertTypeStringToBitValue($type);
 
@@ -133,7 +133,7 @@ class CirclesService {
 		$user->setUserId($this->userId);
 
 		$data = $this->databaseService->getCirclesMapper()
-									  ->findCirclesByUser($this->userId, $type, 0);
+									  ->findCirclesByUser($this->userId, $type, $name, 0);
 
 		return [
 			'type'   => $type,
@@ -142,6 +142,8 @@ class CirclesService {
 			'error'  => $iError->toArray()
 		];
 	}
+
+
 
 
 	public function detailsCircle($circleid) {

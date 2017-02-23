@@ -31,7 +31,9 @@ $(document).ready(function () {
 
 		api: null,
 		self: null,
+		currCirclesType: '',
 		currentCircle: 0,
+		lastSearch: '',
 
 		init: function () {
 
@@ -66,17 +68,29 @@ $(document).ready(function () {
 			});
 
 			$('#circles_new_submit').on('click', function () {
-				self.createCircle($('#circles_new_name').val(),
-					$('#circles_new_type').val());
+				self.createCircle($('#circles_new_type').val(), $('#circles_new_name').val());
 			});
 
 			$('#circles_list div').on('click', function () {
-				self.displayCirclesList($(this).attr('circle-type'))
+				self.currCirclesType = $(this).attr('circle-type');
+				self.displayCirclesList(self.currCirclesType);
+				self.lastSearch = '';
+				$('#circles_search').val('');
+
 				$('#app-navigation.circles').addClass('selected');
 				$('#circles_list div').removeClass('selected');
 				$(this).addClass('selected');
 			});
 
+			$('#circles_search').on('input propertychange paste focus', function () {
+				if (self.lastSearch == $(this).val().trim())
+					return;
+
+				self.lastSearch = $(this).val().trim();
+				api.searchCircles(self.currCirclesType, $(this).val().trim(),
+					self.listCirclesResult);
+
+			});
 
 			$('.icon-circles').css('background-image',
 				'url(' + OC.imagePath('circles', 'colored') + ')');
@@ -98,8 +112,8 @@ $(document).ready(function () {
 		},
 
 
-		createCircle: function (name, type) {
-			api.createCircle(name, type, this.createCircleResult);
+		createCircle: function (type, name) {
+			api.createCircle(type, name, this.createCircleResult);
 		},
 
 
@@ -154,6 +168,10 @@ $(document).ready(function () {
 				return;
 			}
 
+			$('#app-navigation.circles').children().each(function () {
+				if ($(this).attr('id') != 'circles_search')
+					$(this).remove();
+			});
 
 			var data = result.data;
 			for (var i = 0; i < data.length; i++) {
@@ -232,7 +250,6 @@ $(document).ready(function () {
 
 		searchMembersResult: function (response) {
 
-			console.log(JSON.stringify(response));
 			if (response == null ||
 				(response.ocs.data.users == 0 && response.ocs.data.exact.users == 0))
 				$('#members_search_result').fadeOut(300);
@@ -252,7 +269,7 @@ $(document).ready(function () {
 					var line = value.label + '   (' + value.value.shareWith + ')';
 					if (currSearch.length > 0) line =
 						line.replace(new RegExp('(' + currSearch + ')', 'gi'), '<b>$1</b>');
-					
+
 					$('#members_search_result').append(
 						'<div class="members_search" searchresult="' + value.value.shareWith +
 						'">' + line + '</div>');

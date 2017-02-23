@@ -84,7 +84,7 @@ class CirclesController extends Controller {
 	 *
 	 * @return DataResponse
 	 */
-	public function create($name, $type) {
+	public function create($type, $name) {
 
 		if (substr($name, 0, 1) === '_') {
 			$iError = new iError();
@@ -97,7 +97,7 @@ class CirclesController extends Controller {
 				'error'  => $iError->toArray()
 			];
 		} else {
-			$result = $this->circlesService->createCircle($name, $type);
+			$result = $this->circlesService->createCircle($type, $name);
 		}
 
 		if ($result['status'] === 1) {
@@ -122,9 +122,9 @@ class CirclesController extends Controller {
 	 *
 	 * @return DataResponse
 	 */
-	public function listCircles($type) {
+	public function listCircles($type, $name = '') {
 
-		$result = $this->circlesService->listCircles($type);
+		$result = $this->circlesService->listCircles($type, $name);
 
 		if ($result['status'] === 1) {
 			$status = Http::STATUS_CREATED;

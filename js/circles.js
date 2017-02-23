@@ -45,15 +45,15 @@
 
 			var self = this;
 
-			this.createCircle = function (name, type, callback) {
+			this.createCircle = function (type, name, callback) {
 
 				var result = {status: -1};
 				$.ajax({
 					method: 'PUT',
 					url: OC.generateUrl(OC.linkTo('circles', 'circles')),
 					data: {
-						name: name,
-						type: type
+						type: type,
+						name: name
 					}
 				}).done(function (res) {
 					self.onCallback(callback, res);
@@ -70,6 +70,23 @@
 					url: OC.generateUrl(OC.linkTo('circles', 'circles')),
 					data: {
 						type: type
+					}
+				}).done(function (res) {
+					self.onCallback(callback, res);
+				}).fail(function () {
+					self.onCallback(callback, result);
+				});
+			};
+
+
+			this.searchCircles = function (type, name, callback) {
+				var result = {status: -1};
+				$.ajax({
+					method: 'GET',
+					url: OC.generateUrl(OC.linkTo('circles', 'circles')),
+					data: {
+						type: type,
+						name: name
 					}
 				}).done(function (res) {
 					self.onCallback(callback, res);

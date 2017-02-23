@@ -57,7 +57,7 @@ class CirclesMapper extends Mapper {
 	}
 
 
-	public function findCirclesByUser($userId, $type, $level = 0) {
+	public function findCirclesByUser($userId, $type, $name = '', $level = 0) {
 
 		$type = (int)$type;
 		$level = (int)$level;
@@ -110,7 +110,9 @@ class CirclesMapper extends Mapper {
 
 			$data = [];
 			foreach ($result as $entry) {
-				$data[] = Circle::fromArray($entry);
+				if ($name === '' || stripos($entry['name'], $name) !== false) {
+					$data[] = Circle::fromArray($entry);
+				}
 			}
 
 			return $data;
@@ -190,16 +192,17 @@ class CirclesMapper extends Mapper {
 		if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
 
 			$list = $this->findCirclesByUser(
-				$owner->getUserId(), $circle->getType(), Member::LEVEL_OWNER
+				$owner->getUserId(), $circle->getType(), $circle->getName(), Member::LEVEL_OWNER
 			);
 
-			foreach ($list AS $item) {
-				if ($item->getName() === $circle->getName()) {
-					$iError->setCode(iError::CIRCLE_CREATION_DUPLICATE_NAME)
-						   ->setMessage('duplicate name');
+			if (sizeof($list) > 0) {
+//			foreach ($list AS $item) {
+//				if ($item->getName() === $circle->getName()) {
+				$iError->setCode(iError::CIRCLE_CREATION_DUPLICATE_NAME)
+					   ->setMessage('duplicate name');
 
-					return false;
-				}
+				return false;
+//				}
 			}
 		} else {
 			try {
