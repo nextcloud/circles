@@ -83,9 +83,6 @@ $(document).ready(function () {
 
 			//$('#addmember').on('key')
 			$('#addmember').on('input propertychange paste focus', function () {
-				// if ($('#zendialog_creator_search').val().trim() == '')
-				// 	zenodoDialog.searchCreatorResult(null);
-				// else
 				$.get(OC.linkToOCS('apps/files_sharing/api/v1') + 'sharees',
 					{
 						format: 'json',
@@ -94,7 +91,7 @@ $(document).ready(function () {
 						itemType: 'principals'
 					}, self.searchMembersResult);
 			}).blur(function () {
-				//$('#members_search_result').fadeOut(400);
+				$('#members_search_result').fadeOut(400);
 			});
 
 			$('#members_search_result').hide();
@@ -234,27 +231,31 @@ $(document).ready(function () {
 
 
 		searchMembersResult: function (response) {
-			console.log(JSON.stringify(response));
 
+			console.log(JSON.stringify(response));
 			if (response == null ||
 				(response.ocs.data.users == 0 && response.ocs.data.exact.users == 0))
 				$('#members_search_result').fadeOut(300);
 
 			else {
+				var currSearch = $('#addmember').val().trim();
 				$('#members_search_result').children().remove();
 
 				$.each(response.ocs.data.exact.users, function (index, value) {
 					$('#members_search_result').append(
 						'<div class="members_search exact" searchresult="' +
-						value.value.shareWith +
-						'">' + value.label + '   (' +
+						value.value.shareWith + '">' + value.label + '   (' +
 						value.value.shareWith + ')</div>');
 				});
+
 				$.each(response.ocs.data.users, function (index, value) {
+					var line = value.label + '   (' + value.value.shareWith + ')';
+					if (currSearch.length > 0) line =
+						line.replace(new RegExp('(' + currSearch + ')', 'gi'), '<b>$1</b>');
+					
 					$('#members_search_result').append(
 						'<div class="members_search" searchresult="' + value.value.shareWith +
-						'">' + value.label + '   (' +
-						value.value.shareWith + ')</div>');
+						'">' + line + '</div>');
 				});
 
 				$('#members_search_result').children().first().css('border-top-width', '0px');
