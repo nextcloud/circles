@@ -44,16 +44,31 @@ class Sharees {
 		$c = self::getContainer();
 
 		$data = $c->query('CirclesService')
-					->listCircles(Circle::CIRCLES_ALL, $search, Member::STATUS_MEMBER);
+				  ->listCircles(Circle::CIRCLES_ALL, $search, Member::LEVEL_MEMBER);
+
+		$result = array(
+			'exact'   => ['circles'],
+			'circles' => []
+		);
 
 		foreach ($data as $entry) {
-			$result['circles'][] = [
-				'label' => $entry->getName(),
-				'value' => [
-					'shareType' => Share::SHARE_TYPE_CIRCLE,
-					'shareWith' => $entry->getId()
-				],
-			];
+			if (strtolower($entry->getName()) === strtolower($search)) {
+				$result['exact']['circles'][] = [
+					'label' => $entry->getName(),
+					'value' => [
+						'shareType' => Share::SHARE_TYPE_CIRCLE,
+						'shareWith' => $entry->getId()
+					],
+				];
+			} else {
+				$result['circles'][] = [
+					'label' => $entry->getName(),
+					'value' => [
+						'shareType' => Share::SHARE_TYPE_CIRCLE,
+						'shareWith' => $entry->getId()
+					],
+				];
+			}
 		}
 
 		return $result;
