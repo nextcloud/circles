@@ -33,10 +33,11 @@ class ConfigService {
 
 
 	const CIRCLES_ALLOW_CIRCLES = 'allow_circles';
-
+	const CIRCLES_SWAP_TO_TEAMS = 'swap_to_teams';
 
 	private $defaults = [
 		self::CIRCLES_ALLOW_CIRCLES => Circle::CIRCLES_ALL,
+		self::CIRCLES_SWAP_TO_TEAMS => '1'
 	];
 
 	private $appName;
@@ -54,6 +55,14 @@ class ConfigService {
 		$this->miscService = $miscService;
 	}
 
+
+	public function isTeams() {
+		if ($this->getAppValue(self::CIRCLES_SWAP_TO_TEAMS) === '1') {
+			return true;
+		}
+
+		return false;
+	}
 
 	/**
 	 *

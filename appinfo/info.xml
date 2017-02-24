@@ -2,7 +2,7 @@
 <info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	  xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
 	<id>circles</id>
-	<name>Circles</name>
+	<name>Circles / Teams</name>
 	<summary>Bring cloud-users closer</summary>
 	<description>Circles</description>
 	<version>0.0.7</version>

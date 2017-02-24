@@ -45,6 +45,11 @@ class Application extends App {
 
 	/** @var string */
 	private $appName;
+	/** @var string */
+	private $navName;
+	/** @var string */
+	private $navIcon;
+
 
 	/**
 	 * @param array $params
@@ -225,6 +230,18 @@ class Application extends App {
 
 	public function registerNavigation() {
 
+		if ($this->getContainer()
+				 ->query('ConfigService')
+				 ->isTeams()
+		) {
+			$this->navIcon = 'teams.svg';
+			$this->navName = \OC::$server->getL10N($this->appName)
+								->t('Teams');
+		} else {
+			$this->navIcon = 'circles.svg';
+			$this->navName = \OC::$server->getL10N($this->appName)
+								->t('Circles');
+		}
 		$this->getContainer()
 			 ->getServer()
 			 ->getNavigationManager()
@@ -236,9 +253,8 @@ class Application extends App {
 						 'href'  => \OC::$server->getURLGenerator()
 												->linkToRoute('circles.Navigation.navigate'),
 						 'icon'  => \OC::$server->getURLGenerator()
-												->imagePath($this->appName, 'circles.svg'),
-						 'name'  => \OC::$server->getL10N($this->appName)
-												->t('Circles')
+												->imagePath($this->appName, $this->navIcon),
+						 'name'  => $this->navName
 					 ];
 				 }
 			 );
