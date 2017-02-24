@@ -99,8 +99,6 @@ class ShareByCircleProvider implements IShareProvider {
 		$this->misc = $app->getContainer()
 						  ->query('MiscService');
 
-		$this->misc->log("____ OK OK OK ");
-
 		$this->urlGenerator = $urlGenerator;
 	}
 

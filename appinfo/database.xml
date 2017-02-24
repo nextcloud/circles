@@ -115,7 +115,7 @@
 			</field>
 
 			<field>
-				<name>creation</name>
+				<name>joined</name>
 				<type>timestamp</type>
 				<notnull>true</notnull>
 			</field>

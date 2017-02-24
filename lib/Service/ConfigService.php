@@ -37,7 +37,7 @@ class ConfigService {
 
 	private $defaults = [
 		self::CIRCLES_ALLOW_CIRCLES => Circle::CIRCLES_ALL,
-		self::CIRCLES_SWAP_TO_TEAMS => '1'
+		self::CIRCLES_SWAP_TO_TEAMS => '0'
 	];
 
 	private $appName;

@@ -81,7 +81,7 @@ class CirclesService {
 								  ->create($circle, $owner, $iError) === true
 		) {
 			if ($this->databaseService->getMembersMapper()
-									  ->create($owner, $iError) === true
+									  ->add($owner, $iError) === true
 			) {
 				return $circle;
 			} else {
@@ -94,7 +94,7 @@ class CirclesService {
 	}
 
 
-	public function listCircles($type, $name = '', &$iError = '') {
+	public function listCircles($type, $name = '', $level = 0, &$iError = '') {
 
 		self::convertTypeStringToBitValue($type);
 
@@ -106,8 +106,15 @@ class CirclesService {
 			return null;
 		}
 
-		$data = $this->databaseService->getCirclesMapper()
-									  ->findCirclesByUser($this->userId, $type, $name, 0);
+		$result = $this->databaseService->getCirclesMapper()
+										->findCirclesByUser($this->userId, $type, '', $level);
+
+		$data = [];
+		foreach ($result as $item) {
+			if ($name === '' || stripos($item->getName(), $name) !== false) {
+				$data[] = $item;
+			}
+		}
 
 		return $data;
 	}
@@ -118,7 +125,7 @@ class CirclesService {
 		$iError = new iError();
 
 		$circle = $this->databaseService->getCirclesMapper()
-										->getDetailsFromCircle($this->userId, $circleid, $iError);
+										->getDetailsFromCircle($circleid, $this->userId, $iError);
 
 		if ($circle !== null) {
 
@@ -127,7 +134,10 @@ class CirclesService {
 			) {
 				$members = $this->databaseService->getMembersMapper()
 												 ->getMembersFromCircle(
-													 $circleid, $iError
+													 $circleid, ($circle->getUser()
+																		->getLevel()
+																 >= Member::LEVEL_MODERATOR),
+													 $iError
 												 );
 				$circle->setMembers($members);
 			}

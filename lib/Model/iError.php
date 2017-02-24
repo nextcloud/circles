@@ -36,6 +36,11 @@ class iError {
 
 	const CIRCLE_INSERT_CIRCLE_DATABASE = 329;
 
+	const MEMBER_DOES_NOT_EXIST = 421;
+	const MEMBER_CIRCLE_MULTIPLE_ENTRY = 432;
+	const MEMBER_NOT_EXIST = 435;
+	const MEMBER_NEEDS_MODERATOR_RIGHTS = 438;
+	const MEMBER_ALREADY_IN_CIRCLE = 442;
 
 	private $message;
 	private $code;

@@ -29,13 +29,16 @@ return [
 		['name' => 'Navigation#navigate', 'url' => '/', 'verb' => 'GET'],
 		['name' => 'Circles#create', 'url' => '/circles', 'verb' => 'PUT'],
 		['name' => 'Circles#listCircles', 'url' => '/circles', 'verb' => 'GET'],
-				[
-					'name'         => 'Circles#detailsCircle', 'url' => '/circles/{id}', 'verb' => 'GET',
-					'requirements' => ['id' => '\d+'],
-				],
+		[
+			'name'         => 'Circles#detailsCircle', 'url' => '/circles/{id}', 'verb' => 'GET',
+			'requirements' => ['id' => '\d+'],
+		],
 
-		['name' => 'Members#search', 'url' => '/members', 'verb' => 'GET'],
-
+		['name' => 'Members#search', 'url' => '/circles/{id}/members', 'verb' => 'GET'],
+		[
+			'name'         => 'Members#add', 'url' => '/circles/{id}/members', 'verb' => 'PUT',
+			'requirements' => ['circleid' => '\d+'],
+		],
 
 		//		['name' => 'Teams#create', 'url' => '/teams', 'verb' => 'PUT'],
 		//		['name' => 'Teams#update', 'url' => '/teams/{id}', 'verb' => 'POST', 'requirements' => ['id' => '\d+'],],

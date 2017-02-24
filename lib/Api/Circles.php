@@ -44,11 +44,11 @@ class Circles {
 	}
 
 
-	public static function listCircles($type) {
+	public static function listCircles($type, $level = 0) {
 		$c = self::getContainer();
 
 		return $c->query('CirclesService')
-				 ->listCircles($type);
+				 ->listCircles($type, $level);
 	}
 
 
@@ -58,7 +58,6 @@ class Circles {
 		return $c->query('CirclesService')
 				 ->detailsCircle($circle_id);
 	}
-
 
 
 }

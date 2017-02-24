@@ -109,6 +109,22 @@
 			};
 
 
+			this.addMember = function (circleid, member, callback) {
+				var result = {status: -1};
+				$.ajax({
+					method: 'PUT',
+					url: OC.generateUrl(OC.linkTo('circles', 'circles/' + circleid + '/members')),
+					data: {
+						name: member
+					}
+				}).done(function (res) {
+					self.onCallback(callback, res);
+				}).fail(function () {
+					self.onCallback(callback, result);
+				});
+			}
+
+
 			this.onCallback = function (callback, result) {
 				if (callback && (typeof callback === "function")) {
 					callback(result);

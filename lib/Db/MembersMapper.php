@@ -56,6 +56,36 @@ class MembersMapper extends Mapper {
 //	}
 
 
+	public function getMemberFromCircle($circleId, $userId, $iError = '') {
+
+		if ($iError === '') {
+			$iError = new iError();
+		}
+
+		$circleId = (int)$circleId;
+
+		try {
+			$sql = sprintf(
+				"SELECT circle_id, user_id, level, status, note, joined FROM *PREFIX*%s WHERE circle_id=? AND user_id=?",
+				self::TABLENAME
+			);
+
+			$entry = $this->findEntity($sql, [$circleId, $userId]);
+			$member = $entry->toModel();
+
+			return $member;
+		} catch (MultipleObjectsReturnedException $me) {
+			$iError->setCode(iError::MEMBER_CIRCLE_MULTIPLE_ENTRY)
+				   ->setMessage('multiple name - fatal error');
+		} catch (DoesNotExistException $ne) {
+			$iError->setCode(iError::MEMBER_NOT_EXIST)
+				   ->setMessage('member does not exist');
+		}
+
+		return null;
+	}
+
+
 	public function getMembersFromCircle($circleId, $moderator = false, &$iError = '') {
 
 		if ($iError === '') {
@@ -66,7 +96,7 @@ class MembersMapper extends Mapper {
 
 		try {
 			$sql = sprintf(
-				"SELECT m.circle_id, m.user_id, m.level, m.status, m.creation AS joined %s "
+				"SELECT m.circle_id, m.user_id, m.level, m.status, m.joined %s "
 				. "FROM *PREFIX*%s AS m "
 				. " WHERE m.circle_id=%d ORDER BY m.user_id ASC "
 				,
@@ -89,14 +119,14 @@ class MembersMapper extends Mapper {
 	}
 
 
-	public function create(Member $member, &$iError = '') {
+	public function add(Member $member, &$iError = '') {
 
 		if ($iError === '') {
 			$iError = new iError();
 		}
 
 		$sql = sprintf(
-			'INSERT INTO *PREFIX*%s (circle_id, user_id, level, status, creation) VALUES (?, ?, ?, ?, NOW())',
+			'INSERT INTO *PREFIX*%s (circle_id, user_id, level, status, joined) VALUES (?, ?, ?, ?, NOW())',
 			self::TABLENAME
 		);
 

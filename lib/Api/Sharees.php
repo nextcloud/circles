@@ -27,6 +27,7 @@
 namespace OCA\Circles\Api;
 
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Member;
 use OCP\Share;
 
 
@@ -43,7 +44,7 @@ class Sharees {
 		$c = self::getContainer();
 
 		$data = $c->query('CirclesService')
-					->listCircles(Circle::CIRCLES_ALL, $search);
+					->listCircles(Circle::CIRCLES_ALL, $search, Member::STATUS_MEMBER);
 
 		foreach ($data as $entry) {
 			$result['circles'][] = [

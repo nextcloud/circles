@@ -103,6 +103,7 @@ class Application extends App {
 			'MembersService', function ($c) {
 			return new MembersService(
 				$c->query('UserId'), $c->query('L10N'),
+				$c->query('UserManager'),
 				$c->query('ConfigService'),
 				$c->query('DatabaseService'),
 				$c->query('MiscService')
@@ -236,11 +237,11 @@ class Application extends App {
 		) {
 			$this->navIcon = 'teams.svg';
 			$this->navName = \OC::$server->getL10N($this->appName)
-								->t('Teams');
+										 ->t('Teams');
 		} else {
 			$this->navIcon = 'circles.svg';
 			$this->navName = \OC::$server->getL10N($this->appName)
-								->t('Circles');
+										 ->t('Circles');
 		}
 		$this->getContainer()
 			 ->getServer()

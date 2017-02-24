@@ -84,33 +84,58 @@ class MembersController extends Controller {
 	 *
 	 * @return DataResponse
 	 */
-	public function search($name) {
-
-//		if (substr($name, 0, 1) === '_') {
-//			$iError = new iError();
-//			$iError->setCode(iError::CIRCLE_CREATION_FIRST_CHAR)
-//				   ->setMessage("The name of your circle cannot start with this character");
-//			$result = [
-//				'name'   => $name,
-//				'type'   => $type,
-//				'status' => 0,
-//				'error'  => $iError->toArray()
-//			];
+//	public function search($name) {
+//
+//		$result = $this->membersService->searchMembers($name);
+//
+//		if ($result['status'] === 1) {
+//			$status = Http::STATUS_CREATED;
 //		} else {
+//			$status = Http::STATUS_NON_AUTHORATIVE_INFORMATION;
+//		}
+//
+//		return new DataResponse(
+//			$result,
+//			$status
+//		);
+//
+//	}
 
-		$result = $this->membersService->searchMembers($name);
 
-		if ($result['status'] === 1) {
-			$status = Http::STATUS_CREATED;
-		} else {
-			$status = Http::STATUS_NON_AUTHORATIVE_INFORMATION;
+	/**
+	 * @NoAdminRequired
+	 * @NoSubAdminRequired
+	 *
+	 * @param string $name
+	 *
+	 * @return DataResponse
+	 */
+	public function add($id, $name) {
+
+		$data = $this->membersService->addMember($id, $name, $iError);
+
+		if ($data === null) {
+			return
+				new DataResponse(
+					[
+						'circle_id' => $id,
+						'name'      => $name,
+						'status'    => 0,
+						'error'     => $iError->toArray()
+					],
+					Http::STATUS_NON_AUTHORATIVE_INFORMATION
+				);
+
 		}
 
 		return new DataResponse(
-			$result,
-			$status
+			[
+				'circle_id' => $id,
+				'name'      => $name,
+				'members'   => $data,
+				'status'    => 1
+			], Http::STATUS_CREATED
 		);
-
 	}
 
 

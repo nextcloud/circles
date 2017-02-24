@@ -232,7 +232,6 @@ $(document).ready(function () {
 					$(this).remove();
 			});
 
-
 			if (result.status < 1) {
 				Notification.onFail(
 					'Issue while retreiving the details of a circle: ' +
@@ -250,20 +249,7 @@ $(document).ready(function () {
 			$('#mainui').fadeIn(800);
 			self.currentCircle = result.circle_id;
 
-			var members = result.details.members;
-			for (var i = 0; i < members.length; i++) {
-
-				var tmpl = $('#tmpl_member').html();
-
-				tmpl = tmpl.replace(/%username%/, members[i].userid);
-				tmpl = tmpl.replace(/%level%/, members[i].level_string);
-				tmpl = tmpl.replace(/%status%/, members[i].status);
-				tmpl = tmpl.replace(/%joined%/, members[i].joined);
-				tmpl = tmpl.replace(/%note%/,
-					((members[i].note) ? members[i].note : ''));
-
-				$('#mainui #memberslist .table').append(tmpl);
-			}
+			self.displayMembers(result.details.members);
 		},
 
 
@@ -296,14 +282,53 @@ $(document).ready(function () {
 
 				$('#members_search_result').children().first().css('border-top-width', '0px');
 
-				$('DIV.zendialog_result').on('click', function () {
-					zenodoDialog.localCreator($(this).attr('searchresult'));
+				$('.members_search').on('click', function () {
+					api.addMember(self.currentCircle, $(this).attr('searchresult'),
+						self.addMemberResult);
 				});
 				$('#members_search_result').fadeIn(300);
 			}
 
+		},
+
+
+		addMemberResult: function (result) {
+
+			if (result.status == 1) {
+				Notification.onSuccess(
+					"Member '" + result.name + "' successfully added to the circle");
+				self.displayMembers(result.members);
+			}
+			else
+				Notification.onFail(
+					"Member '" + result.name + "' NOT added to the circle: " +
+					((result.error) ? result.error.message : 'no error message'));
 
 		},
+
+
+		displayMembers: function (members) {
+
+			$('#mainui #memberslist .table').children('tr').each(function () {
+				if ($(this).attr('class') != 'header')
+					$(this).remove();
+			});
+
+			for (var i = 0; i < members.length; i++) {
+
+				var tmpl = $('#tmpl_member').html();
+
+				tmpl = tmpl.replace(/%username%/, members[i].userid);
+				tmpl = tmpl.replace(/%level%/, members[i].level_string);
+				tmpl = tmpl.replace(/%status%/, members[i].status);
+				tmpl = tmpl.replace(/%joined%/, members[i].joined);
+				tmpl = tmpl.replace(/%note%/,
+					((members[i].note) ? members[i].note : ''));
+
+				$('#mainui #memberslist .table').append(tmpl);
+			}
+		},
+
 
 		// getCurrentCircleTemplate: function (id) {
 		//

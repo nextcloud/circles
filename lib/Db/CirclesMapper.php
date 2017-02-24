@@ -89,7 +89,7 @@ class CirclesMapper extends Mapper {
 		try {
 			$sql = sprintf(
 				"SELECT c.id, c.name, c.description, c.type, UNIX_TIMESTAMP(c.creation) AS creation, "
-				. "UNIX_TIMESTAMP(u.creation) AS joined, u.level, u.status, "
+				. "UNIX_TIMESTAMP(u.joined) AS joined, u.level, u.status, "
 				. "o.user_id AS owner, "
 				. "COUNT(m.user_id) AS count "
 				. "FROM (*PREFIX*%s AS c, *PREFIX*%s AS u, *PREFIX*%s AS o) "
@@ -110,12 +110,12 @@ class CirclesMapper extends Mapper {
 
 			$data = [];
 			foreach ($result as $entry) {
-				if ($name === '' || stripos($entry['name'], $name) !== false) {
+				if ($name === '' || strtolower($entry['name']) === strtolower($name)) {
 					$data[] = Circle::fromArray($entry);
 				}
 			}
 
-			$this->miscService->log(var_export($data, true));
+		//	$this->miscService->log(var_export($data, true));
 
 			return $data;
 		} catch (DoesNotExistException $ne) {
@@ -124,7 +124,7 @@ class CirclesMapper extends Mapper {
 	}
 
 
-	public function getDetailsFromCircle($userId, $circleId, &$iError = '') {
+	public function getDetailsFromCircle($circleId, $userId, &$iError = '') {
 
 		if ($iError === '') {
 			$iError = new iError();
@@ -152,7 +152,7 @@ class CirclesMapper extends Mapper {
 		try {
 			$sql = sprintf(
 				"SELECT c.id, c.name, c.description, c.type, UNIX_TIMESTAMP(c.creation) AS creation, "
-				. "UNIX_TIMESTAMP(u.creation) AS joined, u.level, u.status, "
+				. "UNIX_TIMESTAMP(u.joined) AS joined, u.level, u.status, "
 				. "o.user_id AS owner, "
 				. "COUNT(m.user_id) AS count "
 				. "FROM (*PREFIX*%s AS c, *PREFIX*%s AS u, *PREFIX*%s AS o) "
@@ -197,13 +197,11 @@ class CirclesMapper extends Mapper {
 				$owner->getUserId(), $circle->getType(), $circle->getName(), Member::LEVEL_OWNER
 			);
 
-			foreach ($list AS $item) {
-				if ($item->getName() === $circle->getName()) {
-					$iError->setCode(iError::CIRCLE_CREATION_DUPLICATE_NAME)
-						   ->setMessage('duplicate name');
+			if (sizeof($list) > 0) {
+				$iError->setCode(iError::CIRCLE_CREATION_DUPLICATE_NAME)
+					   ->setMessage('duplicate name');
 
-					return false;
-				}
+				return false;
 			}
 		} else {
 			try {

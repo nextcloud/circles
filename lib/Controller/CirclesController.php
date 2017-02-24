@@ -130,7 +130,7 @@ class CirclesController extends Controller {
 	 */
 	public function listCircles($type, $name = '') {
 
-		$data = $this->circlesService->listCircles($type, $name, $iError);
+		$data = $this->circlesService->listCircles($type, $name, Member::LEVEL_NONE, $iError);
 
 		if ($data === null) {
 			return
