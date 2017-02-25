@@ -120,7 +120,7 @@ class CirclesService {
 	}
 
 
-	public function detailsCircle($circleid, &$iError) {
+	public function detailsCircle($circleid, &$iError = '') {
 
 		$iError = new iError();
 

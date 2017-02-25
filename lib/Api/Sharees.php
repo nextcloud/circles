@@ -57,6 +57,7 @@ class Sharees {
 					'label' => $entry->getName(),
 					'value' => [
 						'shareType' => Share::SHARE_TYPE_CIRCLE,
+						'circleInfo' => $entry->getInfo(),
 						'shareWith' => $entry->getId()
 					],
 				];
@@ -65,6 +66,7 @@ class Sharees {
 					'label' => $entry->getName(),
 					'value' => [
 						'shareType' => Share::SHARE_TYPE_CIRCLE,
+						'circleInfo' => $entry->getInfo(),
 						'shareWith' => $entry->getId()
 					],
 				];
