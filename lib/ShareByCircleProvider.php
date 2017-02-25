@@ -241,7 +241,89 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @since 9.0.0
 	 */
 	public function getSharesBy($userId, $shareType, $node, $reshares, $limit, $offset) {
-		// TODO: Implement getSharesBy() method.
+		$this->misc->log("CircleProvider: getSharesBy");
+		$qb = $this->dbConnection->getQueryBuilder();
+		$qb->select(
+			's.id', 's.share_type', 's.share_with', 's.uid_owner', 's.uid_initiator', 's.parent',
+			's.item_type', 's.item_source', 's.item_target', 's.file_source', 's.file_target',
+			's.permissions', 's.stime', 's.accepted', 's.expiration', 's.token', 's.mail_send',
+			'c.type AS circle_type', 'c.name AS circle_name'
+		)
+		   ->from('share', 's')
+		   ->from(CirclesMapper::TABLENAME, 'c');
+
+		$qb->andWhere(
+			$qb->expr()
+			   ->eq('s.share_with', 'c.id')
+		);
+
+		$qb->andWhere(
+			$qb->expr()
+			   ->eq('s.share_type', $qb->createNamedParameter(\OCP\Share::SHARE_TYPE_CIRCLE))
+		);
+
+		/**
+		 * Reshares for this user are shares where they are the owner.
+		 */
+		if ($reshares === false) {
+			//Special case for old shares created via the web UI
+			$or1 = $qb->expr()
+					  ->andX(
+						  $qb->expr()
+							 ->eq('s.uid_owner', $qb->createNamedParameter($userId)),
+						  $qb->expr()
+							 ->isNull('s.uid_initiator')
+					  );
+
+			$qb->andWhere(
+				$qb->expr()
+				   ->orX(
+					   $qb->expr()
+						  ->eq('s.uid_initiator', $qb->createNamedParameter($userId)),
+					   $or1
+				   )
+			);
+		} else {
+			$qb->andWhere(
+				$qb->expr()
+				   ->orX(
+					   $qb->expr()
+						  ->eq('s.uid_owner', $qb->createNamedParameter($userId)),
+					   $qb->expr()
+						  ->eq('s.uid_initiator', $qb->createNamedParameter($userId))
+				   )
+			);
+		}
+
+		if ($node !== null) {
+			$qb->andWhere(
+				$qb->expr()
+				   ->eq('s.file_source', $qb->createNamedParameter($node->getId()))
+			);
+		}
+
+		if ($limit !== -1) {
+			$qb->setMaxResults($limit);
+		}
+
+		$qb->setFirstResult($offset);
+		$qb->orderBy('s.id');
+
+		$cursor = $qb->execute();
+		$shares = [];
+		while ($data = $cursor->fetch()) {
+			$this->misc->log("___" . var_export($data, true));
+			$data['share_with'] =
+				sprintf(
+					'%s (%s)', $data['circle_name'], Circle::TypeLongSring($data['circle_type'])
+				);
+//			$data['share_with_displayname'] =
+//				sprintf('%s (%s)', $data['name'], Circle::TypeLongSring($data['type']));
+			$shares[] = $this->createShareObject($data);
+		}
+		$cursor->closeCursor();
+
+		return $shares;
 	}
 
 	/**
