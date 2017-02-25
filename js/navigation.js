@@ -33,7 +33,8 @@ $(document).ready(function () {
 		self: null,
 		currCirclesType: '',
 		currentCircle: 0,
-		lastSearch: '',
+		lastSearchCircle: '',
+		lastSearchUser: '',
 
 		init: function () {
 
@@ -89,10 +90,10 @@ $(document).ready(function () {
 			});
 
 			$('#circles_search').on('input propertychange paste focus', function () {
-				if (self.lastSearch == $(this).val().trim())
+				if (self.lastSearchCircle == $(this).val().trim())
 					return;
 
-				self.lastSearch = $(this).val().trim();
+				self.lastSearchCircle = $(this).val().trim();
 				api.searchCircles(self.currCirclesType, $(this).val().trim(),
 					self.listCirclesResult);
 
@@ -103,6 +104,12 @@ $(document).ready(function () {
 
 			//$('#addmember').on('key')
 			$('#addmember').on('input propertychange paste focus', function () {
+
+				if (self.lastSearchUser == $(this).val().trim())
+					return;
+
+				self.lastSearchUser = $(this).val().trim();
+
 				$.get(OC.linkToOCS('apps/files_sharing/api/v1') + 'sharees',
 					{
 						format: 'json',
@@ -153,7 +160,8 @@ $(document).ready(function () {
 		displayCirclesList: function (type) {
 
 			self.currCirclesType = type;
-			self.lastSearch = '';
+			self.lastSearchCircle = '';
+			self.lastSearchUser = '';
 
 			self.currentCircle = 0;
 			$('#app-navigation.circles').show('slide', 800);
@@ -161,6 +169,7 @@ $(document).ready(function () {
 			$('#mainui').fadeOut(800);
 
 			$('#circles_search').val('');
+			$('#addmember').val('');
 
 			$('#app-navigation.circles').addClass('selected');
 			$('#circles_list div').removeClass('selected');
@@ -221,6 +230,9 @@ $(document).ready(function () {
 
 
 		selectCircle: function (circleid) {
+			self.lastSearchUser = '';
+			$('#addmember').val('');
+
 			api.detailsCircle(circleid, this.selectCircleResult);
 		},
 
