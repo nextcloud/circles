@@ -42,6 +42,7 @@ class Circle implements \JsonSerializable {
 	private $description;
 	private $type;
 	private $typeString;
+	private $typeLongString;
 	private $creation;
 	private $count;
 	private $members;
@@ -105,6 +106,8 @@ class Circle implements \JsonSerializable {
 	public function setType($type) {
 		$this->type = (int)$type;
 		$this->setTypeString(self::TypeSring($type));
+		$this->setTypeLongString(self::TypeLongSring($type));
+		$this->setInfo($this->getTypeLongString());
 
 		return $this;
 	}
@@ -121,6 +124,23 @@ class Circle implements \JsonSerializable {
 
 	public function getTypeString() {
 		return $this->typeString;
+	}
+
+	public function setTypeLongString($str) {
+		$this->typeLongString = $str;
+	}
+
+	public function getTypeLongString() {
+		return $this->typeLongString;
+	}
+
+
+	public function setInfo($str) {
+		$this->info = $str;
+	}
+
+	public function getInfo() {
+		return $this->info;
 	}
 
 
@@ -209,6 +229,20 @@ class Circle implements \JsonSerializable {
 				return 'Public';
 		}
 	}
+
+	public static function TypeLongSring($type) {
+		switch ($type) {
+			case 1:
+				return 'Personal Circle';
+			case 2:
+				return 'Hidden Circle';
+			case 4:
+				return 'Private Circle';
+			case 8:
+				return 'Public Circle';
+		}
+	}
+
 }
 
 
