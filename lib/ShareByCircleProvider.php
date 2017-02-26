@@ -113,7 +113,7 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @since 9.0.0
 	 */
 	public function identifier() {
-		return 'ocShareByCircle';
+		return 'ocCircleShare';
 	}
 
 	/**
@@ -178,7 +178,19 @@ class ShareByCircleProvider implements IShareProvider {
 	 */
 	public function update(IShare $share) {
 		$this->misc->log("CircleProvider: update");
-		// TODO: Implement update() method.
+
+		$qb = $this->dbConnection->getQueryBuilder();
+		$qb->update('share')
+		   ->where(
+			   $qb->expr()
+				  ->eq('id', $qb->createNamedParameter($share->getId()))
+		   )
+		   ->set('permissions', $qb->createNamedParameter($share->getPermissions()))
+		   ->set('uid_owner', $qb->createNamedParameter($share->getShareOwner()))
+		   ->set('uid_initiator', $qb->createNamedParameter($share->getSharedBy()))
+		   ->execute();
+
+		return $share;
 	}
 
 	/**
@@ -190,7 +202,13 @@ class ShareByCircleProvider implements IShareProvider {
 	 */
 	public function delete(IShare $share) {
 		$this->misc->log("CircleProvider: delete");
-		// TODO: Implement delete() method.
+		$qb = $this->dbConnection->getQueryBuilder();
+		$qb->delete('share')
+		   ->where(
+			   $qb->expr()
+				  ->eq('id', $qb->createNamedParameter($share->getId()))
+		   );
+		$qb->execute();
 	}
 
 	/**
@@ -404,8 +422,34 @@ class ShareByCircleProvider implements IShareProvider {
 	public function getShareById($id, $recipientId = null) {
 		$this->misc->log("CircleProvider: getShareById");
 
+		$qb = $this->dbConnection->getQueryBuilder();
 
-		// TODO: Implement getShareById() method.
+		$qb->select('*')
+		   ->from('share')
+		   ->where(
+			   $qb->expr()
+				  ->eq('id', $qb->createNamedParameter($id))
+		   )
+		   ->andWhere(
+			   $qb->expr()
+				  ->eq('share_type', $qb->createNamedParameter(\OCP\Share::SHARE_TYPE_CIRCLE))
+		   );
+
+		$cursor = $qb->execute();
+		$data = $cursor->fetch();
+		$cursor->closeCursor();
+
+		if ($data === false) {
+			throw new ShareNotFound();
+		}
+
+		try {
+			$share = $this->createShareObject($data);
+		} catch (InvalidShare $e) {
+			throw new ShareNotFound();
+		}
+
+		return $share;
 	}
 
 
@@ -490,8 +534,7 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @since 9.0.0
 	 */
 	public function getShareByToken($token) {
-		$this->misc->log("CircleProvider: getShareByToken");
-		// TODO: Implement getShareByToken() method.
+		return;
 	}
 
 	/**
@@ -518,8 +561,7 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @since 9.1.0
 	 */
 	public function groupDeleted($gid) {
-		$this->misc->log("CircleProvider: groupDeleted");
-		// TODO: Implement groupDeleted() method.
+		return;
 	}
 
 	/**
@@ -533,8 +575,7 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @since 9.1.0
 	 */
 	public function userDeletedFromGroup($uid, $gid) {
-		$this->misc->log("CircleProvider: userDeletedFromGroup");
-		// TODO: Implement userDeletedFromGroup() method.
+		return;
 	}
 
 
@@ -597,7 +638,6 @@ class ShareByCircleProvider implements IShareProvider {
 		$data = $cursor->fetch();
 		$cursor->closeCursor();
 
-		$this->misc->log("______ " . var_export($data, true));
 		if ($data === false) {
 			throw new ShareNotFound;
 		}
