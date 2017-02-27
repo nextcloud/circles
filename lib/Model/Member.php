@@ -148,7 +148,7 @@ class Member implements \JsonSerializable {
 		$member->setUserId($arr['user_id']);
 		$member->setLevel($arr['level']);
 		$member->setStatus($arr['status']);
-		$member->setNote($arr['note']);
+		if (key_exists('note', $arr)) $member->setNote($arr['note']);
 		$member->setJoined($arr['joined']);
 
 		return $member;
