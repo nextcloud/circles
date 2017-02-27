@@ -29,7 +29,9 @@ namespace OCA\Circles;
 
 
 use OCA\Circles\Db\CirclesMapper;
+use OCA\Circles\Db\MembersMapper;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Member;
 use OCP\Files\Folder;
 use OCP\Files\Node;
 use OCP\Files\IRootFolder;
@@ -157,6 +159,7 @@ class ShareByCircleProvider implements IShareProvider {
 			$share->getNodeType(),
 			$share->getSharedWith(),
 			$share->getSharedBy(),
+			$share->getTarget(),
 			$share->getShareOwner(),
 			$share->getPermissions(),
 			$share->getToken()
@@ -206,7 +209,16 @@ class ShareByCircleProvider implements IShareProvider {
 		$qb->delete('share')
 		   ->where(
 			   $qb->expr()
-				  ->eq('id', $qb->createNamedParameter($share->getId()))
+				  ->eq(
+					  'id', $qb->createNamedParameter($share->getId())
+				  )
+		   )
+		   ->andWhere(
+			   $qb->expr()
+				  ->eq(
+					  'share_type',
+					  $qb->createNamedParameter(\OCP\Share::SHARE_TYPE_CIRCLE)
+				  )
 		   );
 		$qb->execute();
 	}
@@ -223,7 +235,8 @@ class ShareByCircleProvider implements IShareProvider {
 	 */
 	public function deleteFromSelf(IShare $share, $recipient) {
 		$this->misc->log("CircleProvider: deleteFromSelf");
-		// TODO: Implement deleteFromSelf() method.
+		$share->setPermissions(0);
+		$this->move($share, $recipient, true);
 	}
 
 	/**
@@ -238,9 +251,115 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @return \OCP\Share\IShare
 	 * @since 9.0.0
 	 */
-	public function move(IShare $share, $recipient) {
+	public function move(IShare $share, $recipient, $unshare = false) {
 		$this->misc->log("CircleProvider: move");
-		// TODO: Implement move() method.
+
+		// Check if there is a usergroup share
+		$qb = $this->dbConnection->getQueryBuilder();
+		$stmt = $qb->select('id', 'parent')
+				   ->from('share')
+				   ->where(
+					   $qb->expr()
+						  ->eq(
+							  'share_type', $qb->createNamedParameter(\OCP\Share::SHARE_TYPE_CIRCLE)
+						  )
+				   )
+				   ->andWhere(
+					   $qb->expr()
+						  ->eq('share_with', $qb->createNamedParameter($recipient))
+				   )
+				   ->andWhere(
+					   $qb->expr()
+						  ->orX(
+							  $qb->expr()
+								 ->eq('parent', $qb->createNamedParameter($share->getId())),
+							  $qb->expr()
+								 ->eq('id', $qb->createNamedParameter($share->getId()))
+						  )
+				   )
+				   ->andWhere(
+					   $qb->expr()
+						  ->orX(
+							  $qb->expr()
+								 ->eq('item_type', $qb->createNamedParameter('file')),
+							  $qb->expr()
+								 ->eq('item_type', $qb->createNamedParameter('folder'))
+						  )
+				   )
+				   ->setMaxResults(2)
+				   ->orderBy('id')
+				   ->execute();
+
+		$parentid = 0;
+		while ($data = $stmt->fetch()) {
+			if ($data['parent'] === $share->getId()) {
+				$parentid = $data['id'];
+			}
+			if ($data['id'] === $share->getId()) {
+				$parentid = $data['id'];
+			}
+		}
+		$stmt->closeCursor();
+
+		if ($parentid === 0) {
+			// no parent - create one
+			$qb = $this->dbConnection->getQueryBuilder();
+			$qb->insert('share')
+			   ->values(
+				   [
+					   'share_type'    => $qb->createNamedParameter(\OCP\Share::SHARE_TYPE_CIRCLE),
+					   'share_with'    => $qb->createNamedParameter($recipient),
+					   'uid_owner'     => $qb->createNamedParameter($share->getShareOwner()),
+					   'uid_initiator' => $qb->createNamedParameter($share->getSharedBy()),
+					   'parent'        => $qb->createNamedParameter($share->getId()),
+					   'item_type'     => $qb->createNamedParameter(
+						   $share->getNode() instanceof File ? 'file' : 'folder'
+					   ),
+					   'item_source'   => $qb->createNamedParameter(
+						   $share->getNode()
+								 ->getId()
+					   ),
+					   'file_source'   => $qb->createNamedParameter(
+						   $share->getNode()
+								 ->getId()
+					   ),
+					   'file_target'   => $qb->createNamedParameter($share->getTarget()),
+					   'permissions'   => $qb->createNamedParameter($share->getPermissions()),
+					   'stime'         => $qb->createNamedParameter(
+						   $share->getShareTime()
+								 ->getTimestamp()
+					   ),
+				   ]
+			   )
+			   ->execute();
+		} else {
+			// already a parent - update
+			$qb = $this->dbConnection->getQueryBuilder();
+			$qb->update('share');
+
+			if ($unshare === true) {
+				$qb->set('permissions', $qb->createNamedParameter($share->getPermissions()));
+			} else {
+				$qb->set('file_target', $qb->createNamedParameter($share->getTarget()));
+			}
+
+			$qb->where(
+				$qb->expr()
+				   ->eq('id', $qb->createNamedParameter($parentid))
+			);
+
+			if ($unshare !== true) {
+				$qb->andWhere(
+					$qb->expr()
+					   ->gt('permissions', $qb->createNamedParameter(0))
+				);
+			}
+
+			$qb->execute();
+		}
+
+		return $share;
+
 	}
 
 	/**
@@ -258,54 +377,83 @@ class ShareByCircleProvider implements IShareProvider {
 		$this->misc->log("CircleProvider: getSharesInFolder");
 
 		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->select('*')
+		$qb->select(
+			's.id', 's.share_type', 's.share_with', 's.uid_owner', 's.uid_initiator', 's.parent',
+			's.item_type', 's.item_source', 's.item_target', 's.file_source', 's.file_target',
+			's.permissions', 's.stime', 's.accepted', 's.expiration', 's.token', 's.mail_send'
+		)
 		   ->from('share', 's')
+		   ->from(MembersMapper::TABLENAME, 'm')
 		   ->andWhere(
 			   $qb->expr()
 				  ->orX(
 					  $qb->expr()
-						 ->eq('item_type', $qb->createNamedParameter('file')),
+						 ->eq('s.item_type', $qb->createNamedParameter('file')),
 					  $qb->expr()
-						 ->eq('item_type', $qb->createNamedParameter('folder'))
+						 ->eq('s.item_type', $qb->createNamedParameter('folder'))
 				  )
+		   );
+
+		$qb->andWhere(
+			$qb->expr()
+			   ->eq('s.share_type', $qb->createNamedParameter(\OCP\Share::SHARE_TYPE_CIRCLE))
+		)
+		   ->andWhere(
+			   $qb->expr()
+				  ->eq('s.share_with', 'm.circle_id')
 		   )
 		   ->andWhere(
 			   $qb->expr()
-				  ->eq('share_type', $qb->createNamedParameter(\OCP\Share::SHARE_TYPE_CIRCLE))
+				  ->eq('m.user_id', $qb->createNamedParameter($userId))
+		   )
+		   ->andWhere(
+			   $qb->expr()
+				  ->gte('m.level', $qb->createNamedParameter(Member::LEVEL_MEMBER))
 		   );
+
+//		$qb->andWhere(
+//			$qb->expr()
+//			->orX(
+//				$qb->expr()
+//				   ->eq('s.uid_owner', $qb->createNamedParameter($userId)),
+//				$qb->expr()
+//				   ->eq('s.item_type', $qb->createNamedParameter('folder'))
+//			)
+//		);
 
 		/**
 		 * Reshares for this user are shares where they are the owner.
 		 */
-		if ($reshares === false) {
-			$qb->andWhere(
-				$qb->expr()
-				   ->eq('uid_initiator', $qb->createNamedParameter($userId))
-			);
-		} else {
-			$qb->andWhere(
-				$qb->expr()
-				   ->orX(
-					   $qb->expr()
-						  ->eq('uid_owner', $qb->createNamedParameter($userId)),
-					   $qb->expr()
-						  ->eq('uid_initiator', $qb->createNamedParameter($userId))
-				   )
-			);
-		}
-
-		$qb->innerJoin('s', 'filecache', 'f', 's.file_source = f.fileid');
-		$qb->andWhere(
-			$qb->expr()
-			   ->eq('f.parent', $qb->createNamedParameter($node->getId()))
-		);
+//		if ($reshares === false) {
+//			$qb->andWhere(
+//				$qb->expr()
+//				   ->eq('uid_initiator', $qb->createNamedParameter($userId))
+//			);
+//		} else {
+//			$qb->andWhere(
+//				$qb->expr()
+//				   ->orX(
+//					   $qb->expr()
+//						  ->eq('uid_owner', $qb->createNamedParameter($userId)),
+//					   $qb->expr()
+//						  ->eq('uid_initiator', $qb->createNamedParameter($userId))
+//				   )
+//			);
+//		}
+//
+//		$qb->innerJoin('s', 'filecache', 'f', 's.file_source = f.fileid');
+//		$qb->andWhere(
+//			$qb->expr()
+//			   ->eq('f.parent', $qb->createNamedParameter($node->getId()))
+//		);
 
 		$qb->orderBy('id');
 
+//		$this->misc->log('sql: ' . $qb->getSQL());
 		$cursor = $qb->execute();
 		$shares = [];
 		while ($data = $cursor->fetch()) {
-			$shares[$data['fileid']][] = $this->createShareObject($data);
+			$shares[$data['file_source']][] = $this->createShareObject($data);
 		}
 		$cursor->closeCursor();
 
@@ -345,7 +493,7 @@ class ShareByCircleProvider implements IShareProvider {
 
 		$qb->andWhere(
 			$qb->expr()
-			   ->eq('s.share_type', $qb->createNamedParameter(\OCP\Share::SHARE_TYPE_CIRCLE))
+			   ->eq('share_type', $qb->createNamedParameter(\OCP\Share::SHARE_TYPE_CIRCLE))
 		);
 
 		/**
@@ -356,16 +504,16 @@ class ShareByCircleProvider implements IShareProvider {
 			$or1 = $qb->expr()
 					  ->andX(
 						  $qb->expr()
-							 ->eq('s.uid_owner', $qb->createNamedParameter($userId)),
+							 ->eq('uid_owner', $qb->createNamedParameter($userId)),
 						  $qb->expr()
-							 ->isNull('s.uid_initiator')
+							 ->isNull('uid_initiator')
 					  );
 
 			$qb->andWhere(
 				$qb->expr()
 				   ->orX(
 					   $qb->expr()
-						  ->eq('s.uid_initiator', $qb->createNamedParameter($userId)),
+						  ->eq('uid_initiator', $qb->createNamedParameter($userId)),
 					   $or1
 				   )
 			);
@@ -374,10 +522,17 @@ class ShareByCircleProvider implements IShareProvider {
 				$qb->expr()
 				   ->orX(
 					   $qb->expr()
-						  ->eq('s.uid_owner', $qb->createNamedParameter($userId)),
+						  ->eq('uid_owner', $qb->createNamedParameter($userId)),
 					   $qb->expr()
-						  ->eq('s.uid_initiator', $qb->createNamedParameter($userId))
+						  ->eq('uid_initiator', $qb->createNamedParameter($userId))
 				   )
+			);
+		}
+
+		if ($node !== null) {
+			$qb->andWhere(
+				$qb->expr()
+				   ->eq('file_source', $qb->createNamedParameter($node->getId()))
 			);
 		}
 
@@ -485,11 +640,36 @@ class ShareByCircleProvider implements IShareProvider {
 
 		//Get shares directly with this user
 		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->select('*')
-		   ->from('share');
-
-		// Order by id
-		$qb->orderBy('id');
+		$qb->select(
+			's.*',
+			'f.fileid', 'f.path', 'f.permissions AS f_permissions', 'f.storage', 'f.path_hash',
+			'f.parent AS f_parent', 'f.name', 'f.mimetype', 'f.mimepart', 'f.size', 'f.mtime',
+			'f.storage_mtime', 'f.encrypted', 'f.unencrypted_size', 'f.etag', 'f.checksum',
+			's2.id AS parent_id', 's2.file_target AS parent_target',
+			's2.permissions AS parent_perms'
+		)
+		   ->selectAlias('st.id', 'storage_string_id')
+		   ->from('share', 's')
+		   ->from('circles_members', 'm')
+		   ->leftJoin(
+			   's', 'filecache', 'f', $qb->expr()
+										 ->eq('s.file_source', 'f.fileid')
+		   )
+		   ->leftJoin(
+			   'f', 'storages', 'st', $qb->expr()
+										 ->eq('f.storage', 'st.numeric_id')
+		   )
+		   ->leftJoin(
+			   's', 'share', 's2', $qb->expr()
+									  ->eq('s.id', 's2.parent') . ' AND ' . $qb->expr()
+																			   ->eq(
+																				   's2.share_with',
+																				   $qb->createNamedParameter(
+																					   $userId
+																				   )
+																			   )
+		   )
+		   ->orderBy('s.id');
 
 		// Set limit and offset
 		if ($limit !== -1) {
@@ -499,25 +679,34 @@ class ShareByCircleProvider implements IShareProvider {
 
 		$qb->where(
 			$qb->expr()
-			   ->eq('share_type', $qb->createNamedParameter(\OCP\Share::SHARE_TYPE_EMAIL))
-		);
-		$qb->andWhere(
-			$qb->expr()
-			   ->eq('share_with', $qb->createNamedParameter($userId))
-		);
-
-		// Filter by node if provided
-		if ($node !== null) {
-			$qb->andWhere(
-				$qb->expr()
-				   ->eq('file_source', $qb->createNamedParameter($node->getId()))
-			);
-		}
+			   ->eq('s.share_type', $qb->createNamedParameter(\OCP\Share::SHARE_TYPE_CIRCLE))
+		)
+		   ->andWhere(
+			   $qb->expr()
+				  ->eq('m.circle_id', 's.share_with')
+		   )
+		   ->andWhere(
+			   $qb->expr()
+				  ->eq('m.user_id', $qb->createNamedParameter($userId))
+		   )
+		   ->andWhere(
+			   $qb->expr()
+				  ->gte('m.level', $qb->createNamedParameter(Member::LEVEL_MEMBER))
+		   );
 
 		$cursor = $qb->execute();
 
 		while ($data = $cursor->fetch()) {
-			$shares[] = $this->createShareObject($data);
+			if ($data['parent_id'] > 0) {
+				if ($data['parent_perms'] === '0') {
+					continue;
+				}
+
+				$data['file_target'] = $data['parent_target'];
+			}
+			if ($this->isAccessibleResult($data)) {
+				$shares[] = $this->createShareObject($data);
+			}
 		}
 		$cursor->closeCursor();
 
@@ -536,6 +725,45 @@ class ShareByCircleProvider implements IShareProvider {
 	public function getShareByToken($token) {
 		return;
 	}
+
+
+	public function getChildren(\OCP\Share\IShare $parent) {
+		$children = [];
+
+		$qb = $this->dbConnection->getQueryBuilder();
+		$qb->select('*')
+		   ->from('share')
+		   ->where(
+			   $qb->expr()
+				  ->eq('parent', $qb->createNamedParameter($parent->getId()))
+		   )
+		   ->andWhere(
+			   $qb->expr()
+				  ->in(
+					  'share_type',
+					  $qb->createNamedParameter(\OCP\Share::SHARE_TYPE_CIRCLE)
+				  )
+		   )
+		   ->andWhere(
+			   $qb->expr()
+				  ->orX(
+					  $qb->expr()
+						 ->eq('item_type', $qb->createNamedParameter('file')),
+					  $qb->expr()
+						 ->eq('item_type', $qb->createNamedParameter('folder'))
+				  )
+		   )
+		   ->orderBy('id');
+
+		$cursor = $qb->execute();
+		while ($data = $cursor->fetch()) {
+			$children[] = $this->createShare($data);
+		}
+		$cursor->closeCursor();
+
+		return $children;
+	}
+
 
 	/**
 	 * A user is deleted from the system
@@ -593,7 +821,7 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @return int
 	 */
 	private function addShareToDB(
-		$itemSource, $itemType, $shareWith, $sharedBy, $uidOwner, $permissions, $token
+		$itemSource, $itemType, $shareWith, $sharedBy, $fileTarget, $uidOwner, $permissions, $token
 	) {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$qb->insert('share')
@@ -601,13 +829,13 @@ class ShareByCircleProvider implements IShareProvider {
 		   ->setValue('item_type', $qb->createNamedParameter($itemType))
 		   ->setValue('item_source', $qb->createNamedParameter($itemSource))
 		   ->setValue('file_source', $qb->createNamedParameter($itemSource))
+		   ->setValue('file_target', $qb->createNamedParameter($fileTarget))
 		   ->setValue('share_with', $qb->createNamedParameter($shareWith))
 		   ->setValue('uid_owner', $qb->createNamedParameter($uidOwner))
 		   ->setValue('uid_initiator', $qb->createNamedParameter($sharedBy))
 		   ->setValue('permissions', $qb->createNamedParameter($permissions))
 		   ->setValue('token', $qb->createNamedParameter($token))
 		   ->setValue('stime', $qb->createNamedParameter(time()));
-
 		$qb->execute();
 		$id = $qb->getLastInsertId();
 
@@ -668,23 +896,45 @@ class ShareByCircleProvider implements IShareProvider {
 		$share->setShareTime($shareTime);
 		$share->setSharedWith($data['share_with']);
 
-		if ($data['uid_initiator'] !== null) {
-			$share->setShareOwner($data['uid_owner']);
-			$share->setSharedBy($data['uid_initiator']);
-		} else {
-			//OLD SHARE
-			$share->setSharedBy($data['uid_owner']);
-			$path = $this->getNode($share->getSharedBy(), (int)$data['file_source']);
-
-			$owner = $path->getOwner();
-			$share->setShareOwner($owner->getUID());
-		}
+		$share->setSharedBy($data['uid_initiator']);
+		$share->setShareOwner($data['uid_owner']);
 
 		$share->setNodeId((int)$data['file_source']);
 		$share->setNodeType($data['item_type']);
 
+//		if (isset($data['f_permissions'])) {
+//			$entryData = $data;
+//			$entryData['permissions'] = $entryData['f_permissions'];
+//			$entryData['parent'] = $entryData['f_parent'];;
+//			$share->setNodeCacheEntry(Cache::cacheEntryFromData($entryData,
+//																\OC::$server->getMimeTypeLoader()));
+//		}
+
 		$share->setProviderId($this->identifier());
 
 		return $share;
+	}
+
+
+	/**
+	 * Returns whether the given database result can be interpreted as
+	 * a share with accessible file (not trashed, not deleted)
+	 */
+	private function isAccessibleResult($data) {
+		// exclude shares leading to deleted file entries
+		if ($data['fileid'] === null) {
+			return false;
+		}
+
+		// exclude shares leading to trashbin on home storages
+		$pathSections = explode('/', $data['path'], 2);
+		// FIXME: would not detect rare md5'd home storage case properly
+		if ($pathSections[0] !== 'files'
+			&& explode(':', $data['storage_string_id'], 2)[0] === 'home'
+		) {
+			return false;
+		}
+
+		return true;
 	}
 }
