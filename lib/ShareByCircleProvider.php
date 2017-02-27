@@ -129,26 +129,62 @@ class ShareByCircleProvider implements IShareProvider {
 	public function create(IShare $share) {
 		$this->misc->log("CircleProvider: create");
 
-		$shareWith = $share->getSharedWith();
-		/*
-		 * Check if file is not already shared with the remote user
-		 */
-		$alreadyShared = $this->getSharedWith(
-			$shareWith, \OCP\Share::SHARE_TYPE_CIRCLE, $share->getNode(), 1, 0
-		);
-		if (!empty($alreadyShared)) {
-			$message = 'Sharing %s failed, this item is already shared with %s';
+		$qb = $this->dbConnection->getQueryBuilder();
+		$exists = $qb->select('id')
+					 ->from('share')
+					 ->where(
+						 $qb->expr()
+							->eq(
+								'share_type',
+								$qb->createNamedParameter(\OCP\Share::SHARE_TYPE_CIRCLE)
+							)
+					 )
+					 ->andWhere(
+						 $qb->expr()
+							->eq('share_with', $qb->createNamedParameter($share->getSharedWith()))
+					 )
+					 ->andWhere(
+						 $qb->expr()
+							->eq(
+								'file_source', $qb->createNamedParameter(
+								$share->getNode()
+									  ->getId()
+							)
+							)
+					 )
+					 ->andWhere(
+						 $qb->expr()
+							->isNull('parent')
+					 )
+					 ->andWhere(
+						 $qb->expr()
+							->orX(
+								$qb->expr()
+								   ->eq('item_type', $qb->createNamedParameter('file')),
+								$qb->expr()
+								   ->eq('item_type', $qb->createNamedParameter('folder'))
+							)
+					 )
+					 ->setMaxResults(1)
+					 ->execute();
+
+		$data = $exists->fetch();
+		$exists->closeCursor();
+
+		if (sizeof($data) > 0) {
+			$message = 'Sharing %s failed, this item is already shared with this circle';
 			$message_t = $this->l->t(
-				'Sharing %s failed, this item is already shared with %s', array(
-																			$share->getNode()
-																				  ->getName(),
-																			$shareWith
-																		)
+				'Sharing %s failed, this item is already shared with this circle', array(
+																					 $share->getNode(
+																					 )
+																						   ->getName(
+																						   )
+																				 )
 			);
 			$this->logger->debug(
 				sprintf(
 					$message, $share->getNode()
-									->getName(), $shareWith
+									->getName(), $share->getSharedWith()
 				), ['app' => 'circles']
 			);
 			throw new \Exception($message_t);
