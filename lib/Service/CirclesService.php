@@ -107,7 +107,7 @@ class CirclesService {
 		}
 
 		$result = $this->databaseService->getCirclesMapper()
-										->findCirclesByUser($this->userId, $type, '', $level);
+										->findCirclesByUser($this->userId, $type, $name, $level);
 
 		$data = [];
 		foreach ($result as $item) {

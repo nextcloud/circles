@@ -166,10 +166,10 @@ class CirclesMapper extends Mapper {
 
 		$result = [];
 		while ($data = $cursor->fetch()) {
-	//		if ($name === '' || strtolower($data['name']) === strtolower($name)) {
+			//		if ($name === '' || strtolower($data['name']) === strtolower($name)) {
 
-				$this->miscService->log("__" . var_export($data, true));
-				$result[] = Circle::fromArray($data);
+			$this->miscService->log("__" . var_export($data, true));
+			$result[] = Circle::fromArray($data);
 //			}
 		}
 		$cursor->closeCursor();
@@ -251,12 +251,15 @@ class CirclesMapper extends Mapper {
 				$owner->getUserId(), $circle->getType(), $circle->getName(), Member::LEVEL_OWNER
 			);
 
-			if (sizeof($list) > 0) {
-				$iError->setCode(iError::CIRCLE_CREATION_DUPLICATE_NAME)
-					   ->setMessage('duplicate name');
+			foreach ($list as $test) {
+				if (stripos($test->getName(), $circle->getName) !== false) {
+					$iError->setCode(iError::CIRCLE_CREATION_DUPLICATE_NAME)
+						   ->setMessage('duplicate name');
 
-				return false;
+					return false;
+				}
 			}
+
 		} else {
 			try {
 				$sql = sprintf(

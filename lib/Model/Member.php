@@ -34,11 +34,12 @@ class Member implements \JsonSerializable {
 	const LEVEL_ADMIN = 8;
 	const LEVEL_OWNER = 9;
 
-	const STATUS_INVITED = 'invite';
-	const STATUS_REQUEST = 'request';
-	const STATUS_MEMBER = 'member';
-	const STATUS_BLOCKED = 'blocked';
-	const STATUS_KICKED = 'kicked';
+	const STATUS_NONMEMBER = 'Unknown';
+	const STATUS_INVITED = 'Invited';
+	const STATUS_REQUEST = 'Requesting';
+	const STATUS_MEMBER = 'Member';
+	const STATUS_BLOCKED = 'Blocked';
+	const STATUS_KICKED = 'Kicked';
 
 	private $circleid;
 	private $userid;
@@ -109,7 +110,11 @@ class Member implements \JsonSerializable {
 
 
 	public function setStatus($status) {
-		$this->status = $status;
+		if (is_null($status)) {
+			$this->status = self::STATUS_NONMEMBER;
+		} else {
+			$this->status = $status;
+		}
 
 		return $this;
 	}
@@ -148,7 +153,9 @@ class Member implements \JsonSerializable {
 		$member->setUserId($arr['user_id']);
 		$member->setLevel($arr['level']);
 		$member->setStatus($arr['status']);
-		if (key_exists('note', $arr)) $member->setNote($arr['note']);
+		if (key_exists('note', $arr)) {
+			$member->setNote($arr['note']);
+		}
 		$member->setJoined($arr['joined']);
 
 		return $member;
@@ -158,7 +165,7 @@ class Member implements \JsonSerializable {
 	public static function LevelSring($level) {
 		switch ($level) {
 			case 0:
-				return 'Non-member';
+				return 'Not a member';
 			case 1:
 				return 'Member';
 			case 6:

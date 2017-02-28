@@ -35,6 +35,7 @@ use OCA\Circles\Model\Member;
 use OCP\Files\Folder;
 use OCP\Files\Node;
 use OCP\Files\IRootFolder;
+use OC\Files\Cache\Cache;
 use OC\Share20\Share;
 use OCP\Share\IShare;
 use OCP\Share\Exceptions\ShareNotFound;
@@ -460,22 +461,22 @@ class ShareByCircleProvider implements IShareProvider {
 		/**
 		 * Reshares for this user are shares where they are the owner.
 		 */
-//		if ($reshares === false) {
-//			$qb->andWhere(
-//				$qb->expr()
-//				   ->eq('uid_initiator', $qb->createNamedParameter($userId))
-//			);
-//		} else {
-//			$qb->andWhere(
-//				$qb->expr()
-//				   ->orX(
-//					   $qb->expr()
-//						  ->eq('uid_owner', $qb->createNamedParameter($userId)),
-//					   $qb->expr()
-//						  ->eq('uid_initiator', $qb->createNamedParameter($userId))
-//				   )
-//			);
-//		}
+		if ($reshares === false) {
+			$qb->andWhere(
+				$qb->expr()
+				   ->eq('uid_initiator', $qb->createNamedParameter($userId))
+			);
+		} else {
+			$qb->andWhere(
+				$qb->expr()
+				   ->orX(
+					   $qb->expr()
+						  ->eq('uid_owner', $qb->createNamedParameter($userId)),
+					   $qb->expr()
+						  ->eq('uid_initiator', $qb->createNamedParameter($userId))
+				   )
+			);
+		}
 //
 //		$qb->innerJoin('s', 'filecache', 'f', 's.file_source = f.fileid');
 //		$qb->andWhere(
@@ -536,22 +537,9 @@ class ShareByCircleProvider implements IShareProvider {
 		 * Reshares for this user are shares where they are the owner.
 		 */
 		if ($reshares === false) {
-			//Special case for old shares created via the web UI
-			$or1 = $qb->expr()
-					  ->andX(
-						  $qb->expr()
-							 ->eq('uid_owner', $qb->createNamedParameter($userId)),
-						  $qb->expr()
-							 ->isNull('uid_initiator')
-					  );
-
 			$qb->andWhere(
 				$qb->expr()
-				   ->orX(
-					   $qb->expr()
-						  ->eq('uid_initiator', $qb->createNamedParameter($userId)),
-					   $or1
-				   )
+				   ->eq('uid_initiator', $qb->createNamedParameter($userId))
 			);
 		} else {
 			$qb->andWhere(
@@ -589,6 +577,7 @@ class ShareByCircleProvider implements IShareProvider {
 		$cursor = $qb->execute();
 		$shares = [];
 		while ($data = $cursor->fetch()) {
+
 			$data['share_with'] =
 				sprintf(
 					'%s (%s)', $data['circle_name'], Circle::TypeLongSring($data['circle_type'])
@@ -704,14 +693,7 @@ class ShareByCircleProvider implements IShareProvider {
 																					   $userId
 																				   )
 																			   )
-		   )
-		   ->orderBy('s.id');
-
-		// Set limit and offset
-		if ($limit !== -1) {
-			$qb->setMaxResults($limit);
-		}
-		$qb->setFirstResult($offset);
+		   );
 
 		$qb->where(
 			$qb->expr()
@@ -728,7 +710,22 @@ class ShareByCircleProvider implements IShareProvider {
 		   ->andWhere(
 			   $qb->expr()
 				  ->gte('m.level', $qb->createNamedParameter(Member::LEVEL_MEMBER))
+		   )
+		   ->andWhere(
+			   $qb->expr()
+				  ->orX(
+					  $qb->expr()
+						 ->eq('s.item_type', $qb->createNamedParameter('file')),
+					  $qb->expr()
+						 ->eq('s.item_type', $qb->createNamedParameter('folder'))
+				  )
 		   );
+
+		// Set limit and offset
+		if ($limit !== -1) {
+			$qb->setMaxResults($limit);
+		}
+		$qb->setFirstResult($offset);
 
 		$cursor = $qb->execute();
 
@@ -921,30 +918,37 @@ class ShareByCircleProvider implements IShareProvider {
 	 */
 	private function createShareObject($data) {
 
+		$this->misc->log(var_export($data, true));
 		$share = new Share($this->rootFolder, $this->userManager);
 		$share->setId((int)$data['id'])
 			  ->setShareType((int)$data['share_type'])
 			  ->setPermissions((int)$data['permissions'])
-			  ->setTarget($data['file_target']);
+			  ->setTarget($data['file_target'])
+			  ->setMailSend((bool)$data['mail_send']);
+
 
 		$shareTime = new \DateTime();
 		$shareTime->setTimestamp((int)$data['stime']);
 		$share->setShareTime($shareTime);
-		$share->setSharedWith($data['share_with']);
 
+		$share->setSharedWith($data['share_with']);
 		$share->setSharedBy($data['uid_initiator']);
 		$share->setShareOwner($data['uid_owner']);
 
 		$share->setNodeId((int)$data['file_source']);
 		$share->setNodeType($data['item_type']);
 
-//		if (isset($data['f_permissions'])) {
-//			$entryData = $data;
-//			$entryData['permissions'] = $entryData['f_permissions'];
-//			$entryData['parent'] = $entryData['f_parent'];;
-//			$share->setNodeCacheEntry(Cache::cacheEntryFromData($entryData,
-//																\OC::$server->getMimeTypeLoader()));
-//		}
+		if (isset($data['f_permissions'])) {
+			$entryData = $data;
+			$entryData['permissions'] = $entryData['f_permissions'];
+			$entryData['parent'] = $entryData['f_parent'];
+			$share->setNodeCacheEntry(
+				Cache::cacheEntryFromData(
+					$entryData,
+					\OC::$server->getMimeTypeLoader()
+				)
+			);
+		}
 
 		$share->setProviderId($this->identifier());
 

@@ -202,7 +202,8 @@ class Circle implements \JsonSerializable {
 		$circle->setDescription($arr['description']);
 		$circle->setType($arr['type']);
 		$circle->setCreation($arr['creation']);
-		$circle->setCount($arr['count']);
+		if (key_exists('count', $arr))
+			$circle->setCount($arr['count']);
 
 		$owner = new Member();
 		$owner->setUserId($arr['owner']);

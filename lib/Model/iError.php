@@ -41,6 +41,8 @@ class iError {
 	const MEMBER_NOT_EXIST = 435;
 	const MEMBER_NEEDS_MODERATOR_RIGHTS = 438;
 	const MEMBER_ALREADY_IN_CIRCLE = 442;
+	const MEMBER_NOT_IN_CIRCLE = 443;
+	const MEMBER_CANT_REMOVE_OWNER = 483;
 
 	private $message;
 	private $code;
