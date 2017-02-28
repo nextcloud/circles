@@ -104,7 +104,7 @@
 				<name>status</name>
 				<type>text</type>
 				<notnull>false</notnull>
-				<length>8</length>
+				<length>15</length>
 			</field>
 
 			<field>
