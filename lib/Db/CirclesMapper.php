@@ -74,7 +74,6 @@ class CirclesMapper extends Mapper {
 		$level = (int)$level;
 		$circleId = (int)$circleId;
 
-
 		$qb = $this->db->getQueryBuilder();
 		$qb->select(
 			'c.id', 'c.name', 'c.description', 'c.type', 'c.creation',
@@ -235,9 +234,10 @@ class CirclesMapper extends Mapper {
 		if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
 
 			$list = $this->findCirclesByUser(
-				$owner->getUserId(), $circle->getType(), $circle->getName(), Member::LEVEL_OWNER
+				$owner->getUserId(), Circle::CIRCLES_PERSONAL, $circle->getName(),
+				Member::LEVEL_OWNER
 			);
-			
+
 			foreach ($list as $test) {
 				if ($test->getName() === $circle->getName()) {
 					$iError->setCode(iError::CIRCLE_CREATION_DUPLICATE_NAME)
@@ -248,36 +248,35 @@ class CirclesMapper extends Mapper {
 			}
 
 		} else {
-			try {
-				$sql = sprintf(
-					"SELECT id FROM *PREFIX*%s WHERE LCASE(name)=? AND type!=%d",
-					self::TABLENAME, Circle::CIRCLES_PERSONAL
-				);
 
-				$this->findEntity($sql, [strtolower($circle->getName())]);
-				$iError->setCode(iError::CIRCLE_CREATION_DUPLICATE_NAME)
-					   ->setMessage('duplicate name');
+			$list = $this->findCirclesByUser(
+				$owner->getUserId(), Circle::CIRCLES_ALL, $circle->getName(),
+				Member::LEVEL_OWNER
+			);
 
-				return false;
-			} catch (MultipleObjectsReturnedException $me) {
-				$iError->setCode(iError::CIRCLE_CREATION_MULTIPLE_NAME)
-					   ->setMessage('multiple name - fatal error');
+			foreach ($list as $test) {
+				if ($test->getType() !== Circle::CIRCLES_PERSONAL
+					&& $test->getName() === $circle->getName()
+				) {
+					$iError->setCode(iError::CIRCLE_CREATION_DUPLICATE_NAME)
+						   ->setMessage('duplicate name');
 
-				return false;
-			} catch (DoesNotExistException $ne) {
+					return false;
+				}
 			}
 		}
 
-		$sql = sprintf(
-			'INSERT INTO *PREFIX*%s (name, description, type, creation) VALUES(?, ?, ?, NOW())',
-			self::TABLENAME
-		);
 
-		$this->execute(
-			$sql, [$circle->getName(), $circle->getDescription(), $circle->getType()]
-		);
+		$qb = $this->db->getQueryBuilder();
+		$qb->insert(self::TABLENAME)
+		   ->setValue('name', $qb->createNamedParameter($circle->getName()))
+		   ->setValue('description', $qb->createNamedParameter($circle->getDescription()))
+		   ->setValue('type', $qb->createNamedParameter($circle->getType()))
+		   ->setValue('creation', 'CURRENT_TIMESTAMP()');
+		$qb->execute();
+		$circleid = $qb->getLastInsertId();
 
-		$circleid = $this->db->lastInsertId(self::TABLENAME);
+
 		if ($circleid < 1) {
 			$iError->setCode(iError::CIRCLE_INSERT_CIRCLE_DATABASE)
 				   ->setMessage('issue creating circle - fatal error');
