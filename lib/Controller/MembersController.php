@@ -139,5 +139,40 @@ class MembersController extends Controller {
 	}
 
 
+	/**
+	 * @NoAdminRequired
+	 * @NoSubAdminRequired
+	 *
+	 * @param string $name
+	 *
+	 * @return DataResponse
+	 */
+	public function remove($id, $member) {
+
+		$data = $this->membersService->removeMember($id, $member, $iError);
+		if ($data === null) {
+			return
+				new DataResponse(
+					[
+						'circle_id' => $id,
+						'name'      => $member,
+						'status'    => 0,
+						'error'     => $iError->toArray()
+					],
+					Http::STATUS_NON_AUTHORATIVE_INFORMATION
+				);
+		}
+
+		return new DataResponse(
+			[
+				'circle_id' => $id,
+				'name'      => $member,
+				'members'   => $data,
+				'status'    => 1
+			], Http::STATUS_CREATED
+		);
+	}
+
+
 }
 

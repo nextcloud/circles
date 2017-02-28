@@ -144,5 +144,32 @@ class MembersMapper extends Mapper {
 
 		return true;
 	}
+
+
+	public function remove(Member $member, &$iError = '') {
+
+		if ($iError === '') {
+			$iError = new iError();
+		}
+
+		$sql = sprintf(
+			'DELETE FROM *PREFIX*%s WHERE circle_id=? AND user_id=?',
+			self::TABLENAME
+		);
+
+		try {
+			$this->execute(
+				$sql,
+				[
+					$member->getCircleId(), $member->getUserId()
+				]
+			);
+		} catch (\Exception $e) {
+			return false;
+		}
+
+		return true;
+	}
+
 }
 

@@ -37,7 +37,12 @@ return [
 		['name' => 'Members#search', 'url' => '/circles/{id}/members', 'verb' => 'GET'],
 		[
 			'name'         => 'Members#add', 'url' => '/circles/{id}/members', 'verb' => 'PUT',
-			'requirements' => ['circleid' => '\d+'],
+			'requirements' => ['id' => '\d+'],
+		],
+		[
+			'name'         => 'Members#remove', 'url' => '/circles/{id}/members',
+			'verb'         => 'DELETE',
+			'requirements' => ['id' => '\d+'],
 		],
 
 		//		['name' => 'Teams#create', 'url' => '/teams', 'verb' => 'PUT'],

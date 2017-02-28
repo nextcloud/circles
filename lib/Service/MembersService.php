@@ -150,4 +150,63 @@ class MembersService {
 									 );
 	}
 
+	public function removeMember($circleid, $name, &$iError = '') {
+
+		if ($iError === '' || $iError === null) {
+			$iError = new iError();
+		}
+
+		$ismod = $this->databaseService->getMembersMapper()
+									   ->getMemberFromCircle($circleid, $this->userId, $iError);
+
+		if ($ismod === null) {
+			return null;
+		}
+
+		if ($ismod->getLevel() < Member::LEVEL_MODERATOR) {
+			$iError->setCode(iError::MEMBER_NEEDS_MODERATOR_RIGHTS)
+				   ->setMessage("You have not enough rights");
+
+			return null;
+		}
+
+		$curr = $this->databaseService->getMembersMapper()
+									  ->getMemberFromCircle($circleid, $name);
+		if ($curr === null) {
+			$iError->setCode(iError::MEMBER_NOT_IN_CIRCLE)
+				   ->setMessage("This user is not a member of this circle");
+
+			return null;
+		}
+
+		if ($curr->getLevel() === Member::LEVEL_OWNER) {
+			$iError->setCode(iError::MEMBER_CANT_REMOVE_OWNER)
+				   ->setMessage("This user is the owner of the circle");
+
+			return null;
+
+		}
+
+		$member = new Member();
+		$member->setCircleId($circleid);
+		$member->setUserId($name);
+
+		if (!$this->databaseService->getMembersMapper()
+								   ->remove($member, $iError)
+		) {
+			return null;
+		}
+
+		$circle = $this->databaseService->getCirclesMapper()
+										->getDetailsFromCircle($circleid, $this->userId, $iError);
+
+		return $this->databaseService->getMembersMapper()
+									 ->getMembersFromCircle(
+										 $circleid, ($circle->getUser()
+															->getLevel()
+													 >= Member::LEVEL_MODERATOR),
+										 $iError
+									 );
+	}
+
 }

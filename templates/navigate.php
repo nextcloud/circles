@@ -127,8 +127,9 @@ style('circles', 'navigation');
 		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PUBLIC]) {
 			print_unescaped('<div circle-type="public">Public Circles</div>');
 		}
-		?>
 
+		?>
+		<div circle-type="all">All Circles</div>
 	</div>
 
 </div>
@@ -140,9 +141,9 @@ style('circles', 'navigation');
 
 <script id="tmpl_circle" type="text/template">
 	<div class="title">%title%</div>
-	<div class="type"><b>%type%</b> (%status%)</div>
+	<div class="type"><b>%type%</b> (%status%, %level_string%)</div>
 	<div class="owner"><b>Owner:</b> %owner%</div>
-	<div class="resume"><b>%count% members</b> since %creation%</div>
+	<div class="resume"><b>Created</b> on %creation%</div>
 </script>
 
 <div id="emptycontent">
@@ -162,16 +163,18 @@ style('circles', 'navigation');
 					<td class="status">Status</td>
 					<td class="joined">Joined</td>
 					<td class="note">Notes</td>
+					<td></td>
 				</tr>
 			</table>
 
 			<script id="tmpl_member" type="text/template">
-				<tr class="entry">
+				<tr class="entry" member-id="%username%" member-level="%level%">
 					<td class="username">%username%</td>
-					<td class="level">%level%</td>
+					<td class="level">%levelstring%</td>
 					<td class="status">%status%</td>
 					<td class="joined">%joined%</td>
 					<td class="note">%note%</td>
+					<td class="delete">delete</td>
 				</tr>
 			</script>
 
@@ -181,6 +184,9 @@ style('circles', 'navigation');
 			<div id="circledetails">
 
 			</div>
+
+			<input id="joincircle" type="submit"
+				   value="<?php p($l->t('Join this circle')); ?>"/>
 
 			<input id="addmember" type="text"
 				   placeholder="<?php p($l->t('Add a new member')); ?>"/>

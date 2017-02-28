@@ -125,6 +125,22 @@
 			}
 
 
+			this.removeMember = function (circleid, member, callback) {
+				var result = {status: -1};
+				$.ajax({
+					method: 'DELETE',
+					url: OC.generateUrl(OC.linkTo('circles', 'circles/' + circleid + '/members')),
+					data: {
+						member: member
+					}
+				}).done(function (res) {
+					self.onCallback(callback, res);
+				}).fail(function () {
+					self.onCallback(callback, result);
+				});
+			}
+
+
 			this.onCallback = function (callback, result) {
 				if (callback && (typeof callback === "function")) {
 					callback(result);

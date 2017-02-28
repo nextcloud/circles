@@ -96,13 +96,15 @@ $(document).ready(function () {
 				self.lastSearchCircle = $(this).val().trim();
 				api.searchCircles(self.currCirclesType, $(this).val().trim(),
 					self.listCirclesResult);
-
 			});
 
 			$('.icon-circles').css('background-image',
 				'url(' + OC.imagePath('circles', 'colored') + ')');
 
-			//$('#addmember').on('key')
+			$('#joincircle').on('click', function () {
+				console.log('click');
+			});
+
 			$('#addmember').on('input propertychange paste focus', function () {
 
 				if (self.lastSearchUser == $(this).val().trim())
@@ -121,6 +123,7 @@ $(document).ready(function () {
 				$('#members_search_result').fadeOut(400);
 			});
 
+			$('#addmember').hide();
 			$('#members_search_result').hide();
 		},
 
@@ -212,6 +215,7 @@ $(document).ready(function () {
 				tmpl = tmpl.replace(/%type%/, data[i].type);
 				tmpl = tmpl.replace(/%owner%/, data[i].owner.userid);
 				tmpl = tmpl.replace(/%status%/, data[i].user.status);
+				tmpl = tmpl.replace(/%level_string%/, data[i].user.level_string);
 				tmpl = tmpl.replace(/%count%/, data[i].count);
 				tmpl = tmpl.replace(/%creation%/, data[i].creation);
 
@@ -309,6 +313,7 @@ $(document).ready(function () {
 			if (result.status == 1) {
 				Notification.onSuccess(
 					"Member '" + result.name + "' successfully added to the circle");
+
 				self.displayMembers(result.members);
 			}
 			else
@@ -330,8 +335,9 @@ $(document).ready(function () {
 
 				var tmpl = $('#tmpl_member').html();
 
-				tmpl = tmpl.replace(/%username%/, members[i].userid);
-				tmpl = tmpl.replace(/%level%/, members[i].level_string);
+				tmpl = tmpl.replace(/%username%/g, members[i].userid);
+				tmpl = tmpl.replace(/%level%/g, members[i].level);
+				tmpl = tmpl.replace(/%levelstring%/g, members[i].level_string);
 				tmpl = tmpl.replace(/%status%/, members[i].status);
 				tmpl = tmpl.replace(/%joined%/, members[i].joined);
 				tmpl = tmpl.replace(/%note%/,
@@ -339,8 +345,36 @@ $(document).ready(function () {
 
 				$('#mainui #memberslist .table').append(tmpl);
 			}
+
+			$('#mainui #memberslist .table').children().each(function () {
+				if ($(this).attr('member-level') == '9')
+					$(this).children('.delete').hide(0);
+			});
+
+			$('#mainui #memberslist .table .delete').on('click', function () {
+				var member = $(this).parent().attr('member-id');
+				api.removeMember(self.currentCircle, member, self.removeMemberResult);
+			});
 		},
 
+
+		removeMemberResult: function (result) {
+			if (result.status == 1) {
+
+				$('#mainui #memberslist .table').children().each(function () {
+					if ($(this).attr('member-id') == result.name)
+						$(this).hide(300);
+				});
+
+				Notification.onSuccess(
+					"Member '" + result.name + "' successfully removed from the circle");
+			}
+			else
+				Notification.onFail(
+					"Member '" + result.name + "' NOT removed from the circle: " +
+					((result.error) ? result.error.message : 'no error message'));
+
+		}
 
 		// getCurrentCircleTemplate: function (id) {
 		//
