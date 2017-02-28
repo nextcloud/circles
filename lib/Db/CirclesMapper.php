@@ -62,65 +62,119 @@ class CirclesMapper extends Mapper {
 		$type = (int)$type;
 		$level = (int)$level;
 
-		$orTypes = array();
+		$qb = $this->db->getQueryBuilder();
+		$qb->select(
+			'c.id', 'c.name', 'c.description', 'c.type', 'c.creation',
+			'u.joined', 'u.level', 'u.status'
+		)
+		   ->selectAlias('o.user_id', 'owner')
+		   ->from(self::TABLENAME, 'c')
+		   ->from(MembersMapper::TABLENAME, 'o')
+		   ->where(
+			   $qb->expr()
+				  ->eq('c.id', 'o.circle_id'),
+			   $qb->expr()
+				  ->eq('o.level', $qb->createNamedParameter(Member::LEVEL_OWNER))
+		   );
+
+		$qb->leftJoin(
+			'c', MembersMapper::TABLENAME, 'u',
+			$qb->expr()
+			   ->andX(
+				   $qb->expr()
+					  ->eq('c.id', 'u.circle_id'),
+				   $qb->expr()
+					  ->eq('u.user_id', $qb->createNamedParameter($userId))
+			   )
+		);
+
+		$orTypesArray = [];
 		if (Circle::CIRCLES_PERSONAL & (int)$type) {
 			array_push(
-				$orTypes,
-				'(c.type=' . Circle::CIRCLES_PERSONAL . ' AND u.level=' . Member::LEVEL_OWNER
-				. ')'
+				$orTypesArray,
+				$qb->expr()
+				   ->andX(
+					   $qb->expr()
+						  ->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_PERSONAL)),
+					   $qb->expr()
+						  ->eq('o.user_id', $qb->createNamedParameter($userId))
+				   )
 			);
 		}
+
 		if (Circle::CIRCLES_HIDDEN & (int)$type) {
-			array_push($orTypes, '(c.type=' . Circle::CIRCLES_HIDDEN . ')');
+			array_push(
+				$orTypesArray, $qb->expr()
+								  ->andX(
+									  $qb->expr()
+										 ->eq(
+											 'c.type',
+											 $qb->createNamedParameter(Circle::CIRCLES_HIDDEN)
+										 ),
+									  $qb->expr()
+										 ->orX(
+											 $qb->expr()
+												->gte(
+													'u.level',
+													$qb->createNamedParameter(Member::LEVEL_MEMBER)
+												),
+											 $qb->expr()
+												->eq(
+													'c.name',
+													$qb->createNamedParameter($name)
+												)
+										 )
+								  )
+			);
 		}
 		if (Circle::CIRCLES_PRIVATE & (int)$type) {
-			array_push($orTypes, '(c.type=' . Circle::CIRCLES_PRIVATE . ')');
+			array_push(
+				$orTypesArray, $qb->expr()
+								  ->eq(
+									  'c.type',
+									  $qb->createNamedParameter(Circle::CIRCLES_PRIVATE)
+								  )
+			);
 		}
 		if (Circle::CIRCLES_PUBLIC & (int)$type) {
-			array_push($orTypes, '(c.type=' . Circle::CIRCLES_PUBLIC . ')');
-		}
-
-		if (sizeof($orTypes) === 0) {
-			return null;
-		}
-
-		$sqlTypes = implode(' OR ', $orTypes);
-
-		try {
-			$sql = sprintf(
-				"SELECT c.id, c.name, c.description, c.type, UNIX_TIMESTAMP(c.creation) AS creation, "
-				. "UNIX_TIMESTAMP(u.joined) AS joined, u.level, u.status, "
-				. "o.user_id AS owner, "
-				. "COUNT(m.user_id) AS count "
-				. "FROM (*PREFIX*%s AS c, *PREFIX*%s AS u, *PREFIX*%s AS o) "
-				. " LEFT JOIN *PREFIX*%s AS m ON c.id=m.circle_id AND m.status='"
-				. Member::STATUS_MEMBER . "'"
-				. " WHERE c.id=u.circle_id AND u.user_id=? AND u.level>=%d"
-				. " AND c.id=o.circle_id AND o.level=" . Member::LEVEL_OWNER
-				. " %s "
-				. " GROUP BY c.id ORDER BY c.id DESC "
-				,
-				self::TABLENAME, MembersMapper::TABLENAME, MembersMapper::TABLENAME,
-				MembersMapper::TABLENAME,
-				$level,
-				"AND ($sqlTypes)"
+			array_push(
+				$orTypesArray, $qb->expr()
+								  ->eq(
+									  'c.type',
+									  $qb->createNamedParameter(Circle::CIRCLES_PUBLIC)
+								  )
 			);
+		}
 
-			$result = $this->execute($sql, [$userId]);
-
-			$data = [];
-			foreach ($result as $entry) {
-				if ($name === '' || strtolower($entry['name']) === strtolower($name)) {
-					$data[] = Circle::fromArray($entry);
-				}
-			}
-
-		//	$this->miscService->log(var_export($data, true));
-
-			return $data;
-		} catch (DoesNotExistException $ne) {
+		if (sizeof($orTypesArray) === 0) {
 			return null;
 		}
+
+		$orXTypes = $qb->expr()
+					   ->orX();
+
+		foreach ($orTypesArray as $orTypes) {
+			$orXTypes->add($orTypes);
+		}
+
+		$qb->andWhere($orXTypes);
+
+		$qb->groupBy('c.id');
+		$qb->orderBy('c.name', 'ASC');
+
+		$cursor = $qb->execute();
+
+		$result = [];
+		while ($data = $cursor->fetch()) {
+	//		if ($name === '' || strtolower($data['name']) === strtolower($name)) {
+
+				$this->miscService->log("__" . var_export($data, true));
+				$result[] = Circle::fromArray($data);
+//			}
+		}
+		$cursor->closeCursor();
+
+		return $result;
 	}
 
 
