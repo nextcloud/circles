@@ -115,7 +115,7 @@ class MembersService {
 
 
 		$circle = $this->databaseService->getCirclesMapper()
-										->getDetailsFromCircle($circleid, $this->userId, $iError);
+										->getDetailsFromCircle($this->userId, $circleid, $iError);
 
 		$member = new Member();
 		$member->setCircleId($circleid);
@@ -198,7 +198,7 @@ class MembersService {
 		}
 
 		$circle = $this->databaseService->getCirclesMapper()
-										->getDetailsFromCircle($circleid, $this->userId, $iError);
+										->getDetailsFromCircle($this->userId, $circleid, $iError);
 
 		return $this->databaseService->getMembersMapper()
 									 ->getMembersFromCircle(

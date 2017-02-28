@@ -57,10 +57,23 @@ class CirclesMapper extends Mapper {
 	}
 
 
-	public function findCirclesByUser($userId, $type, $name = '', $level = 0) {
+	/**
+	 * Returns all circle from a user point-of-view
+	 *
+	 * @param $userId
+	 * @param $type
+	 * @param string $name
+	 * @param int $level
+	 * @param int $circleId
+	 *
+	 * @return array|null
+	 */
+	public function findCirclesByUser($userId, $type, $name = '', $level = 0, $circleId = -1) {
 
 		$type = (int)$type;
 		$level = (int)$level;
+		$circleId = (int)$circleId;
+
 
 		$qb = $this->db->getQueryBuilder();
 		$qb->select(
@@ -76,6 +89,21 @@ class CirclesMapper extends Mapper {
 			   $qb->expr()
 				  ->eq('o.level', $qb->createNamedParameter(Member::LEVEL_OWNER))
 		   );
+
+
+		if ($level > 0) {
+			$qb->andWhere(
+				$qb->expr()
+				   ->gte('u.level', $qb->createNamedParameter($level))
+			);
+		}
+		if ($circleId > 0) {
+			$qb->andWhere(
+				$qb->expr()
+				   ->eq('c.id', $qb->createNamedParameter($circleId))
+			);
+		}
+
 
 		$qb->leftJoin(
 			'c', MembersMapper::TABLENAME, 'u',
@@ -166,11 +194,7 @@ class CirclesMapper extends Mapper {
 
 		$result = [];
 		while ($data = $cursor->fetch()) {
-			//		if ($name === '' || strtolower($data['name']) === strtolower($name)) {
-
-			$this->miscService->log("__" . var_export($data, true));
 			$result[] = Circle::fromArray($data);
-//			}
 		}
 		$cursor->closeCursor();
 
@@ -178,63 +202,27 @@ class CirclesMapper extends Mapper {
 	}
 
 
-	public function getDetailsFromCircle($circleId, $userId, &$iError = '') {
+	/**
+	 * Returns details about a circle.
+	 *
+	 * @param string $userId
+	 * @param int $circleId
+	 * @param iError $iError
+	 *
+	 * @return array|null
+	 */
+	public function getDetailsFromCircle($userId, $circleId, &$iError = '') {
 
 		if ($iError === '') {
 			$iError = new iError();
 		}
 
-		$circleId = (int)$circleId;
-
-		$orTypes = array();
-		array_push(
-			$orTypes,
-			'(c.type=' . Circle::CIRCLES_PERSONAL . ' AND u.level=' . Member::LEVEL_OWNER
-			. ')'
-		);
-		array_push($orTypes, '(c.type=' . Circle::CIRCLES_HIDDEN . ')');
-		array_push($orTypes, '(c.type=' . Circle::CIRCLES_PRIVATE . ')');
-		array_push($orTypes, '(c.type=' . Circle::CIRCLES_PUBLIC . ')');
-
-		if (sizeof($orTypes) === 0) {
+		$result = $this->findCirclesByUser($userId, Circle::CIRCLES_ALL, '', 0, $circleId);
+		if (sizeof($result) !== 1) {
 			return null;
 		}
 
-		$sqlTypes = implode(' OR ', $orTypes);
-
-
-		try {
-			$sql = sprintf(
-				"SELECT c.id, c.name, c.description, c.type, UNIX_TIMESTAMP(c.creation) AS creation, "
-				. "UNIX_TIMESTAMP(u.joined) AS joined, u.level, u.status, "
-				. "o.user_id AS owner, "
-				. "COUNT(m.user_id) AS count "
-				. "FROM (*PREFIX*%s AS c, *PREFIX*%s AS u, *PREFIX*%s AS o) "
-				. " LEFT JOIN *PREFIX*%s AS m ON c.id=m.circle_id AND m.status='"
-				. Member::STATUS_MEMBER . "'"
-				. " WHERE c.id=u.circle_id AND u.user_id=? AND c.id=%d"
-				. " AND c.id=o.circle_id AND o.level=" . Member::LEVEL_OWNER
-				. " %s "
-				. " GROUP BY c.id ORDER BY c.id DESC "
-				,
-				self::TABLENAME, MembersMapper::TABLENAME, MembersMapper::TABLENAME,
-				MembersMapper::TABLENAME,
-				$circleId,
-				"AND ($sqlTypes)"
-			);
-
-			$result = $this->execute($sql, [$userId]);
-
-			$data = null;
-			foreach ($result as $entry) {
-				$data = Circle::fromArray($entry);
-			}
-
-			return $data;
-		} catch (DoesNotExistException $ne) {
-			return null;
-		}
-
+		return $result;
 	}
 
 
@@ -244,15 +232,14 @@ class CirclesMapper extends Mapper {
 			$iError = new iError();
 		}
 
-
 		if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
 
 			$list = $this->findCirclesByUser(
 				$owner->getUserId(), $circle->getType(), $circle->getName(), Member::LEVEL_OWNER
 			);
-
+			
 			foreach ($list as $test) {
-				if (stripos($test->getName(), $circle->getName) !== false) {
+				if ($test->getName() === $circle->getName()) {
 					$iError->setCode(iError::CIRCLE_CREATION_DUPLICATE_NAME)
 						   ->setMessage('duplicate name');
 

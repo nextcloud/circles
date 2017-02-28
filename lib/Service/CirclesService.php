@@ -125,7 +125,7 @@ class CirclesService {
 		$iError = new iError();
 
 		$circle = $this->databaseService->getCirclesMapper()
-										->getDetailsFromCircle($circleid, $this->userId, $iError);
+										->getDetailsFromCircle($this->userId, $circleid, $iError);
 
 		if ($circle !== null) {
 
