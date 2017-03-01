@@ -104,8 +104,27 @@ class MembersService {
 			return null;
 		}
 
-		if ($this->databaseService->getMembersMapper()
-								  ->getMemberFromCircle($circleid, $name) !== null
+		$member = $this->databaseService->getMembersMapper()
+										->getMemberFromCircle($circleid, $name);
+
+		$circle = $this->databaseService->getCirclesMapper()
+										->getDetailsFromCircle($this->userId, $circleid, $iError);
+
+		if ($member === null) {
+			$member = new Member();
+			$member->setCircleId($circle->getId());
+			$member->setUserId($name);
+			$member->setLevel(Member::LEVEL_NONE);
+			$member->setStatus(Member::STATUS_NONMEMBER);
+
+			$this->databaseService->getMembersMapper()
+								  ->add(
+									  $member, $iError
+								  );
+		}
+
+		if ($member->getLevel() > Member::LEVEL_NONE
+			|| $member->getStatus() !== Member::STATUS_NONMEMBER
 		) {
 			$iError->setCode(iError::MEMBER_ALREADY_IN_CIRCLE)
 				   ->setMessage("This user is already in the circle");
@@ -113,11 +132,6 @@ class MembersService {
 			return null;
 		}
 
-
-		$circle = $this->databaseService->getCirclesMapper()
-										->getDetailsFromCircle($this->userId, $circleid, $iError);
-
-		$member = new Member();
 		$member->setCircleId($circleid);
 		$member->setUserId($name);
 
@@ -136,7 +150,7 @@ class MembersService {
 		}
 
 		if (!$this->databaseService->getMembersMapper()
-								   ->add($member, $iError)
+								   ->editMember($member, $iError)
 		) {
 			return null;
 		}

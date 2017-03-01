@@ -35,6 +35,7 @@ class iError {
 	const CIRCLE_CREATION_MULTIPLE_NAME = 309;
 
 	const CIRCLE_INSERT_CIRCLE_DATABASE = 329;
+	const CIRCLE_NOT_EXISTS = 341;
 
 	const MEMBER_DOES_NOT_EXIST = 421;
 	const MEMBER_CIRCLE_MULTIPLE_ENTRY = 432;
@@ -43,6 +44,10 @@ class iError {
 	const MEMBER_ALREADY_IN_CIRCLE = 442;
 	const MEMBER_NOT_IN_CIRCLE = 443;
 	const MEMBER_CANT_REMOVE_OWNER = 483;
+
+	const MEMBER_IS_NOT_INVITED = 491;
+	const MEMBER_IS_BLOCKED = 492;
+	const MEMBER_IS_OWNER = 493;
 
 	private $message;
 	private $code;

@@ -145,19 +145,36 @@ div.circle .owner, div.circle .type, div.circle .resume {
 }
 
 #mainui #rightpanel #circledetails {
-/*	background: #b5d1e5;
-	border: solid 1px #cccccc88;
-	border-radius: 3px;
-	box-shadow: 3px 3px 4px #88888888;*/
+	/*	background: #b5d1e5;
+		border: solid 1px #cccccc88;
+		border-radius: 3px;
+		box-shadow: 3px 3px 4px #88888888;*/
 	height: 160px;
 	margin: 15px;
 }
 
-#mainui #rightpanel #addmember, #mainui #rightpanel #joincircle {
+#mainui #rightpanel #addmember, #mainui #rightpanel #joincircle, #mainui #rightpanel #leavecircle {
 	margin-left: 15px;
 	margin-right: 15px;
 	margin-top: 15px;
 	width: 370px;
+}
+
+#joincircle_acceptinvit, #joincircle_rejectinvit {
+	margin-left: 15px;
+	margin-right: 5px;
+	width: 170px;
+}
+
+#joincircle_rejectinvit {
+	margin-left: 5px;
+	margin-right: 15px;
+	width: 170px;
+}
+
+#joincircle_invit, #joincircle_request {
+	margin-left: 30px;
+	margin-bottom: 15px;
 }
 
 #mainui #memberslist {

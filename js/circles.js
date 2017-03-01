@@ -122,7 +122,7 @@
 				}).fail(function () {
 					self.onCallback(callback, result);
 				});
-			}
+			};
 
 
 			this.removeMember = function (circleid, member, callback) {
@@ -138,7 +138,35 @@
 				}).fail(function () {
 					self.onCallback(callback, result);
 				});
-			}
+			};
+
+
+			this.joinCircle = function (circleid, callback) {
+				var result = {status: -1};
+				$.ajax({
+					method: 'GET',
+					url: OC.generateUrl(OC.linkTo('circles', 'circles/' + circleid + '/join')),
+					data: {}
+				}).done(function (res) {
+					self.onCallback(callback, res);
+				}).fail(function () {
+					self.onCallback(callback, result);
+				});
+			};
+
+
+			this.leaveCircle = function (circleid, callback) {
+				var result = {status: -1};
+				$.ajax({
+					method: 'GET',
+					url: OC.generateUrl(OC.linkTo('circles', 'circles/' + circleid + '/leave')),
+					data: {}
+				}).done(function (res) {
+					self.onCallback(callback, res);
+				}).fail(function () {
+					self.onCallback(callback, result);
+				});
+			};
 
 
 			this.onCallback = function (callback, result) {

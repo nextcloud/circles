@@ -918,14 +918,13 @@ class ShareByCircleProvider implements IShareProvider {
 	 */
 	private function createShareObject($data) {
 
-		$this->misc->log(var_export($data, true));
+		//$this->misc->log(var_export($data, true));
 		$share = new Share($this->rootFolder, $this->userManager);
 		$share->setId((int)$data['id'])
 			  ->setShareType((int)$data['share_type'])
 			  ->setPermissions((int)$data['permissions'])
 			  ->setTarget($data['file_target'])
 			  ->setMailSend((bool)$data['mail_send']);
-
 
 		$shareTime = new \DateTime();
 		$shareTime->setTimestamp((int)$data['stime']);

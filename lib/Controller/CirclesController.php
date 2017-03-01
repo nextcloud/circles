@@ -128,7 +128,7 @@ class CirclesController extends Controller {
 	 *
 	 * @return DataResponse
 	 */
-	public function listCircles($type, $name = '') {
+	public function list($type, $name = '') {
 
 		$data = $this->circlesService->listCircles($type, $name, Member::LEVEL_NONE, $iError);
 
@@ -163,7 +163,7 @@ class CirclesController extends Controller {
 	 *
 	 * @return DataResponse
 	 */
-	public function detailsCircle($id) {
+	public function details($id) {
 
 		$data = $this->circlesService->detailsCircle($id, $iError);
 
@@ -182,9 +182,43 @@ class CirclesController extends Controller {
 
 		return new DataResponse(
 			[
-
 				'circle_id' => $id,
 				'details'   => $data,
+				'status'    => 1
+			], Http::STATUS_CREATED
+		);
+	}
+
+
+	/**
+	 * @NoAdminRequired
+	 * @NoSubAdminRequired
+	 *
+	 * @param string $name
+	 *
+	 * @return DataResponse
+	 */
+	public function join($id) {
+
+		$data = $this->circlesService->joinCircle($id, $iError);
+
+		if ($data === null) {
+			return
+				new DataResponse(
+					[
+						'circle_id' => $id,
+						'status'    => 0,
+						'error'     => $iError->toArray()
+					],
+					Http::STATUS_NON_AUTHORATIVE_INFORMATION
+				);
+
+		}
+
+		return new DataResponse(
+			[
+				'circle_id' => $id,
+				'member'    => $data,
 				'status'    => 1
 			], Http::STATUS_CREATED
 		);
@@ -194,37 +228,46 @@ class CirclesController extends Controller {
 
 
 
+
 	/**
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
-	 * @param int $id
 	 * @param string $name
 	 *
 	 * @return DataResponse
 	 */
-//	public function rename($id, $name) {
-//
-//		$affectedRows = $this->dbHandler->updateTeam($id, $this->userId, $name);
-//
-//		if ($affectedRows === 1) {
-//			return new DataResponse(
-//				[
-//					'id' => $id,
-//					'name' => $name,
-//					'owner' => $this->userId,
-//				],
-//				Http::STATUS_OK
-//			);
-//		}
-//
-//		return new DataResponse(
-//			[
-//				'message' => (string)$this->l10n->t('Unable to update team name.')
-//			],
-//			Http::STATUS_FORBIDDEN
-//		);
-//	}
+	public function leave($id) {
+
+		$data = $this->circlesService->leaveCircle($id, $iError);
+
+		if ($data === null) {
+			return
+				new DataResponse(
+					[
+						'circle_id' => $id,
+						'status'    => 0,
+						'error'     => $iError->toArray()
+					],
+					Http::STATUS_NON_AUTHORATIVE_INFORMATION
+				);
+
+		}
+
+		return new DataResponse(
+			[
+				'circle_id' => $id,
+				'member'    => $data,
+				'status'    => 1
+			], Http::STATUS_CREATED
+		);
+	}
+
+
+
+
+
+
 
 
 	/**
@@ -254,127 +297,5 @@ class CirclesController extends Controller {
 //	}
 
 
-	/**
-	 * @NoAdminRequired
-	 * @NoSubAdminRequired
-	 *
-	 * @return DataResponse
-	 */
-//	public function listTeams() {
-//		$myTeams = $this->dbHandler->getTeamsByAdmin($this->userId);
-//		$otherTeams = $this->dbHandler->getTeamsByMember($this->userId);
-//
-//		return new DataResponse(
-//			[
-//				'myTeams' => $myTeams,
-//				'otherTeams' => $otherTeams,
-//			],
-//			Http::STATUS_OK
-//		);
-//	}
-
-
-	/**
-	 * @NoAdminRequired
-	 * @NoSubAdminRequired
-	 *
-	 * @param int $id
-	 *
-	 * @return DataResponse
-	 */
-//	public function listMembers($id) {
-//		if (!(
-//			$this->dbHandler->isOwner($id, $this->userId) ||
-//			$this->dbHandler->isMember($id, $this->userId)
-//			)) {
-//			return new DataResponse(
-//				[
-//					'message' => (string)$this->l10n->t('User is not owner nor member of the team.')
-//				],
-//				Http::STATUS_FORBIDDEN
-//			);
-//		}
-//
-//		try {
-//			$members = $this->dbHandler->getMembers($id);
-//			return new DataResponse(
-//				[
-//					'members' => $members,
-//				],
-//				Http::STATUS_OK
-//			);
-//		} catch (TeamDoesNotExists $e){
-//			return new DataResponse(
-//				[
-//					'message' => (string)$this->l10n->t('Team does not exist.')
-//				],
-//				Http::STATUS_NOT_FOUND
-//			);
-//		}
-//	}
-
-
-	/**
-	 * @NoAdminRequired
-	 * @NoSubAdminRequired
-	 *
-	 * @param int $id
-	 * @param string $userId user id of new member
-	 *
-	 * @return DataResponse
-	 */
-//	public function addMember($id, $userId) {
-//		if (!$this->dbHandler->isOwner($id, $this->userId)) {
-//			return new DataResponse(
-//				[
-//					'message' => (string)$this->l10n->t('User is not owner of the team.')
-//				],
-//				Http::STATUS_FORBIDDEN
-//			);
-//		}
-//
-//		$this->dbHandler->addMember($id, $userId);
-//		return new DataResponse(
-//			[],
-//			Http::STATUS_CREATED
-//		);
-//	}
-
-
-	/**
-	 * @NoAdminRequired
-	 * @NoSubAdminRequired
-	 *
-	 * @param int $id
-	 * @param string $userId user id of member
-	 *
-	 * @return DataResponse
-	 */
-//	public function removeMember($id, $userId) {
-//		if (!$this->dbHandler->isOwner($id, $this->userId)) {
-//			return new DataResponse(
-//				[
-//					'message' => (string)$this->l10n->t('User is not owner of the team.')
-//				],
-//				Http::STATUS_FORBIDDEN
-//			);
-//		}
-//
-//		$affectedRows = $this->dbHandler->removeMember($id, $userId);
-//
-//		if ($affectedRows === 1) {
-//			return new DataResponse(
-//				[],
-//				Http::STATUS_NO_CONTENT
-//			);
-//		}
-//
-//		return new DataResponse(
-//			[
-//				'message' => (string)$this->l10n->t('Unable to remove team member.') . $affectedRows
-//			],
-//			Http::STATUS_INTERNAL_SERVER_ERROR
-//		);
-//	}
 }
 

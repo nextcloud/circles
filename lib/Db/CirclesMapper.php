@@ -208,7 +208,7 @@ class CirclesMapper extends Mapper {
 	 * @param int $circleId
 	 * @param iError $iError
 	 *
-	 * @return array|null
+	 * @return Circle
 	 */
 	public function getDetailsFromCircle($userId, $circleId, &$iError = '') {
 

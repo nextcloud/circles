@@ -147,6 +147,137 @@ class CirclesService {
 	}
 
 
+	public function joinCircle($circleid, &$iError = '') {
+
+		$iError = new iError();
+		$circle = $this->databaseService->getCirclesMapper()
+										->getDetailsFromCircle($this->userId, $circleid, $iError);
+
+		if ($circle === null) {
+			$iError = new iError();
+			$iError->setCode(iError::CIRCLE_NOT_EXISTS)
+				   ->setMessage("This circle does not exist");
+
+			return null;
+		}
+
+		$member = $this->databaseService->getMembersMapper()
+										->getMemberFromCircle(
+											$circle->getId(), $this->userId, $iError
+										);
+
+		if ($member === null) {
+			$member = new Member();
+			$member->setCircleId($circle->getId());
+			$member->setUserId($this->userId);
+			$member->setLevel(Member::LEVEL_NONE);
+			$member->setStatus(Member::STATUS_NONMEMBER);
+
+			$this->databaseService->getMembersMapper()
+								  ->add(
+									  $member, $iError
+								  );
+		}
+
+		if ($member->getLevel() > 0) {
+			$iError = new iError();
+			$iError->setCode(iError::MEMBER_ALREADY_IN_CIRCLE)
+				   ->setMessage("You are already a member of this circle");
+
+			return null;
+		}
+
+		if ($member->getStatus() === Member::STATUS_BLOCKED) {
+			$iError = new iError();
+			$iError->setCode(iError::MEMBER_IS_BLOCKED)
+				   ->setMessage("You are blocked from this circle");
+
+			return null;
+		}
+
+		if ($member->getStatus() === Member::STATUS_NONMEMBER
+			|| $member->getStatus() === Member::STATUS_KICKED
+		) {
+			if ($circle->getType() === Circle::CIRCLES_HIDDEN
+				|| $circle->getType() === Circle::CIRCLES_PUBLIC
+			) {
+				$member->setStatus(Member::STATUS_MEMBER);
+				$member->setLevel(Member::LEVEL_MEMBER);
+			} else if ($circle->getType() === Circle::CIRCLES_PRIVATE) {
+				$member->setStatus(Member::STATUS_REQUEST);
+			} else {
+				$iError = new iError();
+				$iError->setCode(iError::MEMBER_IS_NOT_INVITED)
+					   ->setMessage("You are not invited into this circle");
+
+				return null;
+			}
+		}
+
+		if ($member->getStatus() === Member::STATUS_INVITED) {
+			$member->setStatus(Member::STATUS_MEMBER);
+			$member->setLevel(Member::LEVEL_MEMBER);
+		}
+
+		$this->databaseService->getMembersMapper()
+							  ->editMember(
+								  $member,
+								  $iError
+							  );
+
+		return $member;
+	}
+
+
+	public function leaveCircle($circleid, &$iError = '') {
+
+		$iError = new iError();
+		$circle = $this->databaseService->getCirclesMapper()
+										->getDetailsFromCircle($this->userId, $circleid, $iError);
+
+		if ($circle === null) {
+			$iError = new iError();
+			$iError->setCode(iError::CIRCLE_NOT_EXISTS)
+				   ->setMessage("This circle does not exist");
+
+			return null;
+		}
+
+		$member = $this->databaseService->getMembersMapper()
+										->getMemberFromCircle(
+											$circle->getId(), $this->userId, $iError
+										);
+
+		if ($member === null || $member->getLevel() === 0) {
+			$iError = new iError();
+			$iError->setCode(iError::MEMBER_DOES_NOT_EXIST)
+				   ->setMessage("You are not member of this circle");
+
+			return null;
+		}
+
+
+		if ($member->getLevel() === Member::LEVEL_OWNER) {
+			$iError = new iError();
+			$iError->setCode(iError::MEMBER_IS_OWNER)
+				   ->setMessage("As the owner, you cannot leave this circle");
+
+			return null;
+		}
+
+		$member->setStatus(Member::STATUS_NONMEMBER);
+		$member->setLevel(Member::LEVEL_NONE);
+
+		$this->databaseService->getMembersMapper()
+							  ->editMember(
+								  $member,
+								  $iError
+							  );
+
+		return $member;
+	}
+
+
 	public static function convertTypeStringToBitValue(&$type) {
 		if (strtolower($type) === 'personal') {
 			$type = Circle::CIRCLES_PERSONAL;

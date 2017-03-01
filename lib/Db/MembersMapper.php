@@ -95,6 +95,10 @@ class MembersMapper extends Mapper {
 		   ->where(
 			   $qb->expr()
 				  ->eq('circle_id', $qb->createNamedParameter($circleId))
+		   )
+		   ->andwhere(
+			   $qb->expr()
+				  ->neq('status', $qb->createNamedParameter(Member::STATUS_NONMEMBER))
 		   );
 
 		$cursor = $qb->execute();
@@ -110,6 +114,32 @@ class MembersMapper extends Mapper {
 		$cursor->closeCursor();
 
 		return $result;
+	}
+
+
+	public function editMember(Member $member, &$iError = '') {
+
+		if ($iError === '') {
+			$iError = new iError();
+		}
+
+		$qb = $this->db->getQueryBuilder();
+		$qb->update(self::TABLENAME);
+		$qb->set('level', $qb->createNamedParameter($member->getLevel()));
+		$qb->set('status', $qb->createNamedParameter($member->getStatus()));
+		$qb->where(
+			$qb->expr()
+			   ->andX(
+				   $qb->expr()
+					  ->eq('circle_id', $qb->createNamedParameter($member->getCircleId())),
+				   $qb->expr()
+					  ->eq('user_id', $qb->createNamedParameter($member->getUserId()))
+			   )
+		);
+
+		$qb->execute();
+
+		return true;
 	}
 
 

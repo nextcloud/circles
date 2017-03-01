@@ -185,8 +185,20 @@ style('circles', 'navigation');
 
 			</div>
 
+
+			<div id="joincircle_invit">You have a pending invitation to join this circle</div>
+			<input id="joincircle_acceptinvit" type="submit"
+				   value="<?php p($l->t('Accept the invitation')); ?>"/>
+			<input id="joincircle_rejectinvit" type="submit"
+				   value="<?php p($l->t('Reject the invitation')); ?>"/>
+
+			<div id="joincircle_request">You have a pending request to join this circle</div>
+
 			<input id="joincircle" type="submit"
 				   value="<?php p($l->t('Join this circle')); ?>"/>
+
+			<input id="leavecircle" type="submit"
+				   value="<?php p($l->t('Leave this circle')); ?>"/>
 
 			<input id="addmember" type="text"
 				   placeholder="<?php p($l->t('Add a new member')); ?>"/>

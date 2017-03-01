@@ -28,12 +28,19 @@ return [
 	'routes' => [
 		['name' => 'Navigation#navigate', 'url' => '/', 'verb' => 'GET'],
 		['name' => 'Circles#create', 'url' => '/circles', 'verb' => 'PUT'],
-		['name' => 'Circles#listCircles', 'url' => '/circles', 'verb' => 'GET'],
+		['name' => 'Circles#list', 'url' => '/circles', 'verb' => 'GET'],
 		[
-			'name'         => 'Circles#detailsCircle', 'url' => '/circles/{id}', 'verb' => 'GET',
+			'name'         => 'Circles#details', 'url' => '/circles/{id}', 'verb' => 'GET',
 			'requirements' => ['id' => '\d+'],
 		],
-
+		[
+			'name'         => 'Circles#join', 'url' => '/circles/{id}/join', 'verb' => 'GET',
+			'requirements' => ['id' => '\d+'],
+		],
+		[
+			'name'         => 'Circles#leave', 'url' => '/circles/{id}/leave', 'verb' => 'GET',
+			'requirements' => ['id' => '\d+'],
+		],
 		['name' => 'Members#search', 'url' => '/circles/{id}/members', 'verb' => 'GET'],
 		[
 			'name'         => 'Members#add', 'url' => '/circles/{id}/members', 'verb' => 'PUT',

@@ -134,6 +134,8 @@ class Member implements \JsonSerializable {
 		return $this->joined;
 	}
 
+
+
 	public function jsonSerialize() {
 		return array(
 			'circleid'     => $this->getCircleId(),
