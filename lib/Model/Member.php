@@ -147,6 +147,11 @@ class Member implements \JsonSerializable {
 
 
 	public static function fromArray($arr) {
+
+		if (!is_array($arr)) {
+			return null;
+		}
+
 		$member = new Member();
 
 		$member->setCircleId($arr['circle_id']);

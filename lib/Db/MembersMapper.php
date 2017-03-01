@@ -43,20 +43,9 @@ class MembersMapper extends Mapper {
 		parent::__construct($db, self::TABLENAME, 'OCA\Circles\Db\Members');
 		$this->miscService = $miscService;
 	}
-//
-//	public function findAllFromCircle($circleid) {
-//
-//		try {
-//			$sql = sprintf('SELECT * FROM *PREFIX*%s WHERE circle_id = ?', self::TABLENAME);
-//
-//			return $this->findEntity($sql, [$circleid]);
-//		} catch (DoesNotExistException $dnee) {
-//			return null;
-//		}
-//	}
 
 
-	public function getMemberFromCircle($circleId, $userId, $iError = '') {
+	public function getMemberFromCircle($circleId, $userId, &$iError = '') {
 
 		if ($iError === '') {
 			$iError = new iError();
@@ -64,25 +53,29 @@ class MembersMapper extends Mapper {
 
 		$circleId = (int)$circleId;
 
-		try {
-			$sql = sprintf(
-				"SELECT circle_id, user_id, level, status, note, joined FROM *PREFIX*%s WHERE circle_id=? AND user_id=?",
-				self::TABLENAME
-			);
+		$qb = $this->db->getQueryBuilder();
+		$qb->select(
+			'circle_id', 'user_id', 'level', 'status', 'note', 'joined'
+		)
+		   ->from(self::TABLENAME)
+		   ->where(
+			   $qb->expr()
+				  ->eq('circle_id', $qb->createNamedParameter($circleId))
+		   );
 
-			$entry = $this->findEntity($sql, [$circleId, $userId]);
-			$member = $entry->toModel();
+		$qb->andWhere(
+			$qb->expr()
+			   ->eq('user_id', $qb->createNamedParameter($userId))
+		);
 
-			return $member;
-		} catch (MultipleObjectsReturnedException $me) {
-			$iError->setCode(iError::MEMBER_CIRCLE_MULTIPLE_ENTRY)
-				   ->setMessage('multiple name - fatal error');
-		} catch (DoesNotExistException $ne) {
-			$iError->setCode(iError::MEMBER_NOT_EXIST)
-				   ->setMessage('member does not exist');
-		}
+		$cursor = $qb->setMaxResults(1)
+					 ->execute();
 
-		return null;
+		$data = $cursor->fetch();
+		$member = Member::fromArray($data);
+		$cursor->closeCursor();
+
+		return $member;
 	}
 
 
@@ -94,28 +87,29 @@ class MembersMapper extends Mapper {
 
 		$circleId = (int)$circleId;
 
-		try {
-			$sql = sprintf(
-				"SELECT m.circle_id, m.user_id, m.level, m.status, m.joined %s "
-				. "FROM *PREFIX*%s AS m "
-				. " WHERE m.circle_id=%d ORDER BY m.user_id ASC "
-				,
-				(($moderator) ? ', m.note ' : ''),
-				self::TABLENAME, $circleId
-			);
+		$qb = $this->db->getQueryBuilder();
+		$qb->select(
+			'circle_id', 'user_id', 'level', 'status', 'note', 'joined'
+		)
+		   ->from(self::TABLENAME)
+		   ->where(
+			   $qb->expr()
+				  ->eq('circle_id', $qb->createNamedParameter($circleId))
+		   );
 
-			$result = $this->execute($sql, [$circleId]);
+		$cursor = $qb->execute();
 
-			$data = [];
-			foreach ($result as $entry) {
-				$data[] = Member::fromArray($entry);
+		$result = [];
+		while ($data = $cursor->fetch()) {
+			if ($moderator !== true) {
+				$data['note'] = '';
 			}
 
-			return $data;
-		} catch (DoesNotExistException $ne) {
-			return null;
+			$result[] = Member::fromArray($data);
 		}
+		$cursor->closeCursor();
 
+		return $result;
 	}
 
 
@@ -125,22 +119,15 @@ class MembersMapper extends Mapper {
 			$iError = new iError();
 		}
 
-		$sql = sprintf(
-			'INSERT INTO *PREFIX*%s (circle_id, user_id, level, status, joined) VALUES (?, ?, ?, ?, NOW())',
-			self::TABLENAME
-		);
-
-		try {
-			$this->execute(
-				$sql,
-				[
-					$member->getCircleId(), $member->getUserId(), $member->getLevel(),
-					$member->getStatus()
-				]
-			);
-		} catch (\Exception $e) {
-			return false;
-		}
+		$qb = $this->db->getQueryBuilder();
+		$qb->insert(self::TABLENAME)
+		   ->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
+		   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
+		   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
+		   ->setValue('status', $qb->createNamedParameter($member->getStatus()))
+		   ->setValue('note', $qb->createNamedParameter($member->getNote()))
+		   ->setValue('joined', 'CURRENT_TIMESTAMP()');
+		$qb->execute();
 
 		return true;
 	}
@@ -152,21 +139,16 @@ class MembersMapper extends Mapper {
 			$iError = new iError();
 		}
 
-		$sql = sprintf(
-			'DELETE FROM *PREFIX*%s WHERE circle_id=? AND user_id=?',
-			self::TABLENAME
-		);
+		$qb = $this->db->getQueryBuilder();
+		$qb->delete(self::TABLENAME)
+		   ->where(
+			   $qb->expr()
+				  ->eq('circle_id', $qb->createNamedParameter($member->getCircleId())),
+			   $qb->expr()
+				  ->eq('user_id', $qb->createNamedParameter($member->getUserId()))
+		   );
 
-		try {
-			$this->execute(
-				$sql,
-				[
-					$member->getCircleId(), $member->getUserId()
-				]
-			);
-		} catch (\Exception $e) {
-			return false;
-		}
+		$qb->execute();
 
 		return true;
 	}
