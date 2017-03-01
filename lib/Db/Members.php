@@ -24,6 +24,46 @@
  *
  */
 
-$app = new \OCA\Circles\AppInfo\Application();
+namespace OCA\Circles\Db;
 
-$app->registerNavigation();
+use \OCA\Circles\Model\Member;
+use OCP\AppFramework\Db\Entity;
+
+class Members extends Entity {
+
+
+	public $circleId;
+	public $userId;
+	public $level;
+	public $status;
+	public $note;
+	public $joined;
+
+	public function __construct(Member $item = null) {
+		if ($item != null) {
+			$this->setCircleId($item->getCircleId());
+			$this->setUserId($item->getUserId());
+			$this->setLevel($item->getLevel());
+			$this->setStatus($item->getStatus());
+			$this->setNote($item->getNote());
+			$this->setJoined($item->getJoined());
+		}
+	}
+
+	/**
+	 * @return Member
+	 */
+	public function toModel() {
+		$member = new Member();
+
+		$member->setCircleId($this->getCircleId());
+		$member->setUserId($this->getUserId());
+		$member->setLevel($this->getLevel());
+		$member->setStatus($this->getStatus());
+		$member->setNote($this->getNote());
+		$member->setJoined($this->getJoined());
+
+		return $member;
+	}
+}
+

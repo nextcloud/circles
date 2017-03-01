@@ -1,7 +1,12 @@
 <?php
 /**
- * @copyright Copyright (c) 2016 Morris Jobke <hey@morrisjobke.de>
+ * Circles - bring cloud-users closer
  *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author Maxence Lange <maxence@pontapreta.net>
+ * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,13 +26,37 @@
 
 return [
 	'routes' => [
-		['name' => 'Teams#show', 'url' => '/', 'verb' => 'GET'],
-		['name' => 'Teams#listTeams', 'url' => '/teams', 'verb' => 'GET'],
-		['name' => 'Teams#create', 'url' => '/teams', 'verb' => 'PUT'],
-		['name' => 'Teams#update', 'url' => '/teams/{id}', 'verb' => 'POST', 'requirements' => ['id' => '\d+'],],
-		['name' => 'Teams#delete', 'url' => '/teams/{id}', 'verb' => 'DELETE', 'requirements' => ['id' => '\d+'],],
-		['name' => 'Teams#listMembers', 'url' => '/teams/{id}/members', 'verb' => 'GET', 'requirements' => ['id' => '\d+'],],
-		['name' => 'Teams#addMember', 'url' => '/teams/{id}/members', 'verb' => 'PUT', 'requirements' => ['id' => '\d+'],],
-		['name' => 'Teams#removeMember', 'url' => '/teams/{id}/members', 'verb' => 'DELETE', 'requirements' => ['id' => '\d+'],],
+		['name' => 'Navigation#navigate', 'url' => '/', 'verb' => 'GET'],
+		['name' => 'Circles#create', 'url' => '/circles', 'verb' => 'PUT'],
+		['name' => 'Circles#list', 'url' => '/circles', 'verb' => 'GET'],
+		[
+			'name'         => 'Circles#details', 'url' => '/circles/{id}', 'verb' => 'GET',
+			'requirements' => ['id' => '\d+'],
+		],
+		[
+			'name'         => 'Circles#join', 'url' => '/circles/{id}/join', 'verb' => 'GET',
+			'requirements' => ['id' => '\d+'],
+		],
+		[
+			'name'         => 'Circles#leave', 'url' => '/circles/{id}/leave', 'verb' => 'GET',
+			'requirements' => ['id' => '\d+'],
+		],
+		['name' => 'Members#search', 'url' => '/circles/{id}/members', 'verb' => 'GET'],
+		[
+			'name'         => 'Members#add', 'url' => '/circles/{id}/members', 'verb' => 'PUT',
+			'requirements' => ['id' => '\d+'],
+		],
+		[
+			'name'         => 'Members#remove', 'url' => '/circles/{id}/members',
+			'verb'         => 'DELETE',
+			'requirements' => ['id' => '\d+'],
+		],
+
+		//		['name' => 'Teams#create', 'url' => '/teams', 'verb' => 'PUT'],
+		//		['name' => 'Teams#update', 'url' => '/teams/{id}', 'verb' => 'POST', 'requirements' => ['id' => '\d+'],],
+		//		['name' => 'Teams#delete', 'url' => '/teams/{id}', 'verb' => 'DELETE', 'requirements' => ['id' => '\d+'],],
+		//		['name' => 'Teams#listMembers', 'url' => '/teams/{id}/members', 'verb' => 'GET', 'requirements' => ['id' => '\d+'],],
+		//		['name' => 'Teams#addMember', 'url' => '/teams/{id}/members', 'verb' => 'PUT', 'requirements' => ['id' => '\d+'],],
+		//		['name' => 'Teams#removeMember', 'url' => '/teams/{id}/members', 'verb' => 'DELETE', 'requirements' => ['id' => '\d+'],],
 	],
 ];

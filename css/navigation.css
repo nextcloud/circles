@@ -1,0 +1,247 @@
+#loading_members {
+	height: 50px;
+	margin: 0 auto;
+	padding: 20px;
+	padding: 20px;
+}
+
+#app-navigation .navigation-element, #app-navigation .navigation-element option {
+	padding: 3px 12px;
+	background: #f6edd8;
+}
+
+#app-navigation input#circles_search {
+	margin: 15px;
+	width: 285px;
+}
+
+#app-navigation input, #app-navigation select, #app-navigation option {
+	width: 100%;
+	box-sizing: border-box;
+	background: #ffffffaa !important;
+}
+
+#app-content {
+	padding: 3px 12px;
+}
+
+#app-navigation .header {
+	padding: 0 12px;
+	line-height: 44px;
+	min-height: 44px;
+	border-bottom: 1px solid #eee;
+}
+
+#circles_new_type_definition div {
+	margin-top: 20px;
+	position: absolute;
+	width: 255px;
+	color: #474747b0;
+	word-wrap: break-word;
+}
+
+#circles_list {
+	border-top: solid 1px #cccccc88;
+	position: absolute;
+	width: 100%;
+	bottom: 120px;
+}
+
+#circles_list div {
+	position: relative;
+	padding: 15px;
+	border-bottom: solid 1px #cccccc88;
+	color: #555;
+	cursor: pointer;
+	background: #f8e7c3;
+	-webkit-transition: background-color 0.5s ease-in;
+	transition: background-color 0.5s ease-in;
+	font-weight: normal;
+}
+
+#circles_list div:hover {
+	background: #f8dda1;
+}
+
+#circles_list .selected {
+	background: #c1e3a6 !important;
+	font-weight: bold !important;
+}
+
+#app-navigation {
+	width: 300px;
+	border-right: 1px solid #ddd;
+}
+
+#app-navigation.noborder {
+	border: 0px !important;
+}
+
+#app-navigation.circles {
+	overflow-y: auto;
+	width: 320px;
+}
+
+#app-navigation.circles, #app-navigation.circles .circle, #app-navigation.circles .selected {
+	-webkit-transition: background-color 0.5s ease-in;
+	transition: background-color 0.5s ease-in;
+}
+
+#app-navigation.selected {
+	background: #c1e3a6 !important;
+}
+
+#app-navigation.circles .selected {
+	background: #b5d1e5;
+}
+
+.navigation-element {
+	border-right: 1px solid #ddd;
+	background: #f1c76e11;
+}
+
+/* circles */
+.circle {
+	border: solid 1px #555;
+	border-radius: 2px;
+	box-shadow: 2px 2px 2px #88888888;
+	margin: 10px;
+	margin-bottom: 0px;
+	padding: 5px;
+	background: #eee;
+	padding-bottom: 8px;
+}
+
+div.circle .title {
+	font-weight: bold;
+	font-size: 13px;
+	color: #333333dd;
+	margin-left: 10px;
+	font-style: italic;
+}
+
+div.circle .owner, div.circle .type, div.circle .resume {
+	margin-left: 20px;
+	font-size: 11px;
+	margin-bottom: -4px;
+	color: #333333bb;
+}
+
+/** members **/
+
+#mainui {
+	display: none;
+}
+
+#mainui #rightpanel {
+	position: absolute;
+	top: 0px;
+	width: 400px;
+	background: #eee;
+	border-left: solid 1px #ccc;
+	right: 0px;
+	bottom: 0px;
+
+}
+
+#mainui #rightpanel #circledetails {
+	/*	background: #b5d1e5;
+		border: solid 1px #cccccc88;
+		border-radius: 3px;
+		box-shadow: 3px 3px 4px #88888888;*/
+	height: 160px;
+	margin: 15px;
+}
+
+#mainui #rightpanel #addmember, #mainui #rightpanel #joincircle, #mainui #rightpanel #leavecircle {
+	margin-left: 15px;
+	margin-right: 15px;
+	margin-top: 15px;
+	width: 370px;
+}
+
+#joincircle_acceptinvit, #joincircle_rejectinvit {
+	margin-left: 15px;
+	margin-right: 5px;
+	width: 170px;
+}
+
+#joincircle_rejectinvit {
+	margin-left: 5px;
+	margin-right: 15px;
+	width: 170px;
+}
+
+#joincircle_invit, #joincircle_request {
+	margin-left: 30px;
+	margin-bottom: 15px;
+}
+
+#mainui #memberslist {
+	position: absolute;
+	bottom: 15px;
+	right: 415px;
+	left: 15px;
+	top: 15px;
+	overflow-y: auto;
+}
+
+#mainui #memberslist .table {
+	width: 100%;
+}
+
+#mainui #memberslist .header td {
+	font-weight: bold;
+	padding: 10px;
+}
+
+#mainui #memberslist .entry td {
+	padding: 3px;
+	border-bottom: solid 1px #eee;
+	color: #555;
+}
+
+#members_search_result {
+	z-index: 5;
+	margin-left: 15px;
+	margin-right: 15px;
+	border-radius: 3px;
+	border: solid 1px #00000022;
+	color: #000000aa;
+	background: #ffffffdd;
+	max-height: 300px;
+	overflow-y: auto;
+}
+
+#members_search_result > #mainui #rightpanel #addmember {
+	position: relative;
+	top: 5px;
+
+}
+
+.members_search {
+	padding: 10px;
+	border-top: solid 1px #00000022;
+	-webkit-transition: background-color 0.2s ease-in;
+	transition: background-color 0.2s ease-in;
+}
+
+.members_search:hover {
+	background: #fafafa;
+	-webkit-transition: background-color 0.2s ease-in;
+	transition: background-color 0.2s ease-in;
+}
+
+.members_search.exact {
+	background: #eee;
+}
+
+#emptycontent {
+	position: absolute;
+	z-index: -99;
+	left: 200px;
+}
+
+.delete {
+	font-size: 11px;
+}

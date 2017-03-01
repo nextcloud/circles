@@ -1,13 +1,23 @@
 <?xml version="1.0"?>
-<info>
-	<id>teams</id>
-	<name>Teams</name>
-	<description>Manage your teams and share with them</description>
-	<version>0.1</version>
-	<licence>AGPL</licence>
+<info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	  xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
+	<id>circles</id>
+	<name>Circles / Teams</name>
+	<summary>Bring cloud-users closer</summary>
+	<description>Circles</description>
+	<version>0.0.9</version>
+	<licence>agpl</licence>
 	<author>Morris Jobke</author>
-	<namespace>Teams</namespace>
-
+	<author>Maxence Lange</author>
+	<documentation>
+		<admin>https://github.com/nextcloud-gmbh/circles/wiki</admin>
+	</documentation>
+	<category>tools</category>
+	<category>files</category>
+	<website>https://github.com/nextcloud-gmbh/circles</website>
+	<bugs>https://github.com/nextcloud-gmbh/circles/issues</bugs>
+	<repository type="git">https://github.com/nextcloud-gmbh/circles.git</repository>
+	<!--<screenshot>https://raw.githubusercontent.com/nextcloud-gmbh/circles/master/screenshots/circlespng</screenshot>-->
 	<dependencies>
 		<nextcloud min-version="11" max-version="12"/>
 	</dependencies>

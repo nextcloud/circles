@@ -24,6 +24,40 @@
  *
  */
 
-$app = new \OCA\Circles\AppInfo\Application();
+namespace OCA\Circles\Api;
 
-$app->registerNavigation();
+
+class Circles {
+
+
+	static protected function getContainer() {
+		$app = new \OCA\Circles\AppInfo\Application();
+
+		return $app->getContainer();
+	}
+
+	public static function createCircle($name, $type) {
+		$c = self::getContainer();
+
+		return $c->query('CirclesService')
+				 ->createCircle($name, $type);
+	}
+
+
+	public static function listCircles($type, $level = 0) {
+		$c = self::getContainer();
+
+		return $c->query('CirclesService')
+				 ->listCircles($type, $level);
+	}
+
+
+	public static function detailsCircle($circle_id) {
+		$c = self::getContainer();
+
+		return $c->query('CirclesService')
+				 ->detailsCircle($circle_id);
+	}
+
+
+}

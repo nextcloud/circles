@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Circles - bring cloud-users closer
  *
@@ -24,6 +25,34 @@
  *
  */
 
-$app = new \OCA\Circles\AppInfo\Application();
+namespace OCA\Circles\Service;
 
-$app->registerNavigation();
+
+use OCA\Circles\Db\CirclesMapper;
+use OCA\Circles\Db\MembersMapper;
+
+class DatabaseService {
+
+	private $circlesMapper;
+	private $membersMapper;
+
+	function __construct($circlesMapper, $membersMapper) {
+		$this->circlesMapper = $circlesMapper;
+		$this->membersMapper = $membersMapper;
+	}
+
+	/**
+	 * @return CirclesMapper
+	 */
+	public function getCirclesMapper() {
+		return $this->circlesMapper;
+	}
+
+	/**
+	 * @return MembersMapper
+	 */
+	public function getMembersMapper() {
+		return $this->membersMapper;
+	}
+
+}

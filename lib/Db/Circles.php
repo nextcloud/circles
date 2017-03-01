@@ -24,6 +24,32 @@
  *
  */
 
-$app = new \OCA\Circles\AppInfo\Application();
+namespace OCA\Circles\Db;
 
-$app->registerNavigation();
+use \OCA\Circles\Model\Circle;
+use OCP\AppFramework\Db\Entity;
+
+class Circles extends Entity {
+
+
+	public $id;
+	public $name;
+	public $description;
+	public $type;
+	public $creation;
+	public $members;
+
+
+	public function __construct(Circle $item = null) {
+		if ($item != null) {
+			$this->setId($item->getId());
+			$this->setName($item->getName());
+			$this->setDescription($item->getDescription());
+			$this->setType($item->getType());
+			$this->setCreation($item->getCreation());
+			$this->setMembers($item->getMembers());
+		}
+	}
+
+}
+
