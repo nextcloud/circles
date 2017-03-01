@@ -124,7 +124,8 @@ class MembersService {
 		}
 
 		if ($member->getLevel() > Member::LEVEL_NONE
-			|| $member->getStatus() !== Member::STATUS_NONMEMBER
+			|| ($member->getStatus() !== Member::STATUS_NONMEMBER
+				&& $member->getStatus() !== Member::STATUS_REQUEST)
 		) {
 			$iError->setCode(iError::MEMBER_ALREADY_IN_CIRCLE)
 				   ->setMessage("This user is already in the circle");
@@ -144,8 +145,13 @@ class MembersService {
 				break;
 
 			case Circle::CIRCLES_PRIVATE:
-				$member->setLevel(Member::LEVEL_NONE);
-				$member->setStatus(Member::STATUS_INVITED);
+				if ($member->getStatus() === Member::STATUS_REQUEST) {
+					$member->setLevel(Member::LEVEL_MEMBER);
+					$member->setStatus(Member::STATUS_MEMBER);
+				} else {
+					$member->setLevel(Member::LEVEL_NONE);
+					$member->setStatus(Member::STATUS_INVITED);
+				}
 				break;
 		}
 
