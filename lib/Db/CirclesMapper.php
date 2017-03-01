@@ -221,7 +221,7 @@ class CirclesMapper extends Mapper {
 			return null;
 		}
 
-		return $result;
+		return $result[0];
 	}
 
 
