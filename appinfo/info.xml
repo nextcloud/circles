@@ -2,23 +2,35 @@
 <info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	  xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
 	<id>circles</id>
-	<name>Circles / Teams</name>
-	<summary>Bring cloud-users closer</summary>
-	<description>Circles</description>
+	<name>Circles</name>
+	<summary>Bring cloud-users closer together.</summary>
+	<description><![CDATA[Circles allows your users to create their own groups of users/colleagues/friends.
+Those groups of users (or circles) can then be used by any other app for sharing purpose (files, social feed, status update, messaging, ...).
+
+Differents type of circles can be created:
+
+- A Personal Circle is a list of users known only to yourself.
+Use this if you want to send messsage or share thing repeatedly to the same group of people.
+- Hidden Circle is an open group that can be protected by a password.
+Select this circle to create a community not displayed as a Public Circle.
+- A Private Circle require an invitation or a confirmation from an admin.
+This is the best circle if you are looking for privacy when sharing your files or your ideas.
+- A Public Circle is an open group visible to anyone that dare to join.
+Your circle will be visible to everyone and everyone will be able to join the circle.]]></description>
 	<version>0.0.9</version>
-	<licence>agpl</licence>
+	<licence>AGPL</licence>
 	<author>Morris Jobke</author>
 	<author>Maxence Lange</author>
 	<documentation>
-		<admin>https://github.com/nextcloud-gmbh/circles/wiki</admin>
+		<admin>https://github.com/nextcloud/circles/wiki</admin>
 	</documentation>
 	<category>tools</category>
 	<category>files</category>
-	<website>https://github.com/nextcloud-gmbh/circles</website>
-	<bugs>https://github.com/nextcloud-gmbh/circles/issues</bugs>
-	<repository type="git">https://github.com/nextcloud-gmbh/circles.git</repository>
-	<!--<screenshot>https://raw.githubusercontent.com/nextcloud-gmbh/circles/master/screenshots/circlespng</screenshot>-->
+	<website>https://github.com/nextcloud/circles</website>
+	<bugs>https://github.com/nextcloud/circles/issues</bugs>
+	<repository type="git">https://github.com/nextcloud/circles.git</repository>
+	<screenshot>https://raw.githubusercontent.com/nextcloud/circles/master/screenshots/1.png</screenshot>
 	<dependencies>
-		<nextcloud min-version="11" max-version="12"/>
+		<nextcloud min-version="12" max-version="12"/>
 	</dependencies>
 </info>
