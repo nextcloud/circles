@@ -26,9 +26,10 @@
 
 namespace OCA\Circles\Db;
 
-use \OCA\Circles\Model\iError;
-use \OCA\Circles\Model\Circle;
-use \OCA\Circles\Model\Member;
+use OCA\Circles\Exceptions\CircleAlreadyExistsException;
+use OCA\Circles\Exceptions\CircleCreationException;
+use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Member;
 
 use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\IDBConnection;
@@ -46,15 +47,15 @@ class CirclesMapper extends Mapper {
 
 	}
 
-	public function find($id) {
-		try {
-			$sql = sprintf('SELECT * FROM *PREFIX*%s WHERE id = ?', self::TABLENAME);
-
-			return $this->findEntity($sql, [$id]);
-		} catch (DoesNotExistException $dnee) {
-			return null;
-		}
-	}
+//	public function find($id) {
+//		try {
+//			$sql = sprintf('SELECT * FROM *PREFIX*%s WHERE id = ?', self::TABLENAME);
+//
+//			return $this->findEntity($sql, [$id]);
+//		} catch (DoesNotExistException $dnee) {
+//			return null;
+//		}
+//	}
 
 
 	/**
@@ -193,7 +194,9 @@ class CirclesMapper extends Mapper {
 
 		$result = [];
 		while ($data = $cursor->fetch()) {
-			$result[] = Circle::fromArray($data);
+			if (stripos($data['name'], $name) !== false) {
+				$result[] = Circle::fromArray($data);
+			}
 		}
 		$cursor->closeCursor();
 
@@ -206,15 +209,10 @@ class CirclesMapper extends Mapper {
 	 *
 	 * @param string $userId
 	 * @param int $circleId
-	 * @param iError $iError
 	 *
 	 * @return Circle
 	 */
-	public function getDetailsFromCircle($userId, $circleId, &$iError = '') {
-
-		if ($iError === '') {
-			$iError = new iError();
-		}
+	public function getDetailsFromCircle($userId, $circleId) {
 
 		$result = $this->findCirclesByUser($userId, Circle::CIRCLES_ALL, '', 0, $circleId);
 		if (sizeof($result) !== 1) {
@@ -225,11 +223,15 @@ class CirclesMapper extends Mapper {
 	}
 
 
-	public function create(Circle &$circle, Member &$owner, &$iError = '') {
-
-		if ($iError === '') {
-			$iError = new iError();
-		}
+	/**
+	 * @param Circle $circle
+	 * @param Member $owner
+	 *
+	 * @return bool
+	 * @throws CircleAlreadyExistsException
+	 * @throws CircleCreationException
+	 */
+	public function create(Circle &$circle, Member &$owner) {
 
 		if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
 
@@ -240,30 +242,31 @@ class CirclesMapper extends Mapper {
 
 			foreach ($list as $test) {
 				if ($test->getName() === $circle->getName()) {
-					$iError->setCode(iError::CIRCLE_CREATION_DUPLICATE_NAME)
-						   ->setMessage('duplicate name');
-
-					return false;
+					throw new CircleAlreadyExistsException();
 				}
 			}
 
 		} else {
 
-			$list = $this->findCirclesByUser(
-				$owner->getUserId(), Circle::CIRCLES_ALL, $circle->getName(),
-				Member::LEVEL_OWNER
-			);
+			$qb = $this->db->getQueryBuilder();
+			$qb->select(
+				'c.id', 'c.name', 'c.type'
+			)
+			   ->from(self::TABLENAME, 'c')
+			   ->where(
+				   $qb->expr()
+					  ->neq('c.type', $qb->createNamedParameter(Circle::CIRCLES_PERSONAL))
+			   );
 
-			foreach ($list as $test) {
-				if ($test->getType() !== Circle::CIRCLES_PERSONAL
-					&& $test->getName() === $circle->getName()
-				) {
-					$iError->setCode(iError::CIRCLE_CREATION_DUPLICATE_NAME)
-						   ->setMessage('duplicate name');
+			$cursor = $qb->execute();
 
-					return false;
+			while ($data = $cursor->fetch()) {
+				if (strtolower($data['name']) === strtolower($circle->getName())) {
+					throw new CircleAlreadyExistsException();
 				}
 			}
+			$cursor->closeCursor();
+
 		}
 
 
@@ -278,21 +281,34 @@ class CirclesMapper extends Mapper {
 
 
 		if ($circleid < 1) {
-			$iError->setCode(iError::CIRCLE_INSERT_CIRCLE_DATABASE)
-				   ->setMessage('issue creating circle - fatal error');
-
-			return false;
+			throw new CircleCreationException();
 		}
 
 		$circle->setId($circleid);
-		$owner->setLevel(9)
+		$owner->setLevel(Member::LEVEL_OWNER)
+			  ->setStatus(Member::STATUS_MEMBER)
 			  ->setCircleId($circleid);
 
 		return true;
 	}
 
+
+	/**
+	 * remove a circle
+	 *
+	 * @param Circle $circle
+	 */
 	public function destroy(Circle $circle) {
-		$this->delete(new Circles($circle));
+		$qb = $this->db->getQueryBuilder();
+		$qb->delete(self::TABLENAME)
+		   ->where(
+			   $qb->expr()
+				  ->eq(
+					  'id', $qb->createNamedParameter($circle->getId())
+				  )
+		   );
+
+		$qb->execute();
 	}
 
 }

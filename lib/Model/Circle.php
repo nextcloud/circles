@@ -202,45 +202,57 @@ class Circle implements \JsonSerializable {
 		$circle->setDescription($arr['description']);
 		$circle->setType($arr['type']);
 		$circle->setCreation($arr['creation']);
-		if (key_exists('count', $arr))
+		if (key_exists('count', $arr)) {
 			$circle->setCount($arr['count']);
+		}
 
-		$owner = new Member();
-		$owner->setUserId($arr['owner']);
-		$circle->setOwner($owner);
+		if (key_exists('owner', $arr)) {
+			$owner = new Member();
+			$owner->setUserId($arr['owner']);
+			$circle->setOwner($owner);
+		}
 
-		$user = new Member();
-		$user->setStatus($arr['status']);
-		$user->setLevel($arr['level']);
-		$user->setJoined($arr['joined']);
-		$circle->setUser($user);
+		if (key_exists('status', $arr)
+			&& key_exists('level', $arr)
+			&& key_exists('joined', $arr)
+		) {
+			$user = new Member();
+			$user->setStatus($arr['status']);
+			$user->setLevel($arr['level']);
+			$user->setJoined($arr['joined']);
+			$circle->setUser($user);
+		}
 
 		return $circle;
 	}
 
 	public static function TypeSring($type) {
 		switch ($type) {
-			case 1:
+			case self::CIRCLES_PERSONAL:
 				return 'Personal';
-			case 2:
+			case self::CIRCLES_HIDDEN:
 				return 'Hidden';
-			case 4:
+			case self::CIRCLES_PRIVATE:
 				return 'Private';
-			case 8:
+			case self::CIRCLES_PUBLIC:
 				return 'Public';
+			case self::CIRCLES_ALL:
+				return 'All';
 		}
 	}
 
 	public static function TypeLongSring($type) {
 		switch ($type) {
-			case 1:
+			case self::CIRCLES_PERSONAL:
 				return 'Personal Circle';
-			case 2:
+			case self::CIRCLES_HIDDEN:
 				return 'Hidden Circle';
-			case 4:
+			case self::CIRCLES_PRIVATE:
 				return 'Private Circle';
-			case 8:
+			case self::CIRCLES_PUBLIC:
 				return 'Public Circle';
+			case self::CIRCLES_ALL:
+				return 'All Circles';
 		}
 	}
 

@@ -86,7 +86,7 @@ class CirclesService {
 				return $circle;
 			} else {
 				$this->databaseService->getCirclesMapper()
-									  ->destroy($circle, $iError);
+									  ->destroy($circle);
 			}
 		}
 
@@ -163,7 +163,9 @@ class CirclesService {
 
 		$member = $this->databaseService->getMembersMapper()
 										->getMemberFromCircle(
-											$circle->getId(), $this->userId, $iError
+											$circle->getId(), $this->userId, ($circle->getUser()
+																					 ->getLevel()
+																			  >= Member::LEVEL_MODERATOR)
 										);
 
 		if ($member === null) {
@@ -245,7 +247,10 @@ class CirclesService {
 
 		$member = $this->databaseService->getMembersMapper()
 										->getMemberFromCircle(
-											$circle->getId(), $this->userId, $iError
+											$circle->getId(), $this->userId,
+											($circle->getUser()
+													->getLevel()
+											 >= Member::LEVEL_MODERATOR)
 										);
 
 		if ($member === null || $member->getLevel() === 0) {

@@ -54,7 +54,7 @@ class Member implements \JsonSerializable {
 
 
 	public function setCircleId($circleid) {
-		$this->circleid = $circleid;
+		$this->circleid = (int)$circleid;
 
 		return $this;
 	}
@@ -76,8 +76,8 @@ class Member implements \JsonSerializable {
 
 
 	public function setLevel($level) {
-		$this->level = $level;
-		$this->setLevelString(self::LevelSring($level));
+		$this->level = (int)$level;
+		$this->setLevelString(self::LevelSring($this->level));
 
 		return $this;
 	}
@@ -135,7 +135,6 @@ class Member implements \JsonSerializable {
 	}
 
 
-
 	public function jsonSerialize() {
 		return array(
 			'circleid'     => $this->getCircleId(),
@@ -163,7 +162,9 @@ class Member implements \JsonSerializable {
 		if (key_exists('note', $arr)) {
 			$member->setNote($arr['note']);
 		}
-		$member->setJoined($arr['joined']);
+		if (key_exists('joined', $arr)) {
+			$member->setJoined($arr['joined']);
+		}
 
 		return $member;
 	}
@@ -171,15 +172,15 @@ class Member implements \JsonSerializable {
 
 	public static function LevelSring($level) {
 		switch ($level) {
-			case 0:
+			case self::LEVEL_NONE:
 				return 'Not a member';
-			case 1:
+			case self::LEVEL_MEMBER:
 				return 'Member';
-			case 6:
+			case self::LEVEL_MODERATOR:
 				return 'Moderator';
-			case 8:
+			case self::LEVEL_ADMIN:
 				return 'Admin';
-			case 9:
+			case self::LEVEL_OWNER:
 				return 'Owner';
 		}
 	}

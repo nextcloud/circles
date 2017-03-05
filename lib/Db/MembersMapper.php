@@ -26,8 +26,11 @@
 
 namespace OCA\Circles\Db;
 
-use \OCA\Circles\Model\iError;
-use \OCA\Circles\Model\Member;
+use Doctrine\DBAL\Driver\PDOException;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use OCA\Circles\Exceptions\MemberAlreadyExistsException;
+use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Member;
 
 use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\IDBConnection;
@@ -45,11 +48,8 @@ class MembersMapper extends Mapper {
 	}
 
 
-	public function getMemberFromCircle($circleId, $userId, &$iError = '') {
+	public function getMemberFromCircle($circleId, $userId, $moderator = false) {
 
-		if ($iError === '') {
-			$iError = new iError();
-		}
 
 		$circleId = (int)$circleId;
 
@@ -72,6 +72,11 @@ class MembersMapper extends Mapper {
 					 ->execute();
 
 		$data = $cursor->fetch();
+
+		if ($moderator !== true) {
+			unset($data['note']);
+		}
+
 		$member = Member::fromArray($data);
 		$cursor->closeCursor();
 
@@ -79,11 +84,7 @@ class MembersMapper extends Mapper {
 	}
 
 
-	public function getMembersFromCircle($circleId, $moderator = false, &$iError = '') {
-
-		if ($iError === '') {
-			$iError = new iError();
-		}
+	public function getMembersFromCircle($circleId, $moderator = false) {
 
 		$circleId = (int)$circleId;
 
@@ -106,7 +107,7 @@ class MembersMapper extends Mapper {
 		$result = [];
 		while ($data = $cursor->fetch()) {
 			if ($moderator !== true) {
-				$data['note'] = '';
+				unset($data['note']);
 			}
 
 			$result[] = Member::fromArray($data);
@@ -117,11 +118,7 @@ class MembersMapper extends Mapper {
 	}
 
 
-	public function editMember(Member $member, &$iError = '') {
-
-		if ($iError === '') {
-			$iError = new iError();
-		}
+	public function editMember(Member $member) {
 
 		$qb = $this->db->getQueryBuilder();
 		$qb->update(self::TABLENAME);
@@ -143,31 +140,34 @@ class MembersMapper extends Mapper {
 	}
 
 
-	public function add(Member $member, &$iError = '') {
+	public function add(Member $member) {
 
-		if ($iError === '') {
-			$iError = new iError();
+		try {
+			$qb = $this->db->getQueryBuilder();
+			$qb->insert(self::TABLENAME)
+			   ->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
+			   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
+			   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
+			   ->setValue('status', $qb->createNamedParameter($member->getStatus()))
+			   ->setValue('note', $qb->createNamedParameter($member->getNote()))
+			   ->setValue('joined', 'CURRENT_TIMESTAMP()');
+			$qb->execute();
+		} catch (UniqueConstraintViolationException $e) {
+			throw new MemberAlreadyExistsException();
 		}
-
-		$qb = $this->db->getQueryBuilder();
-		$qb->insert(self::TABLENAME)
-		   ->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
-		   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
-		   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
-		   ->setValue('status', $qb->createNamedParameter($member->getStatus()))
-		   ->setValue('note', $qb->createNamedParameter($member->getNote()))
-		   ->setValue('joined', 'CURRENT_TIMESTAMP()');
-		$qb->execute();
 
 		return true;
 	}
 
 
-	public function remove(Member $member, &$iError = '') {
-
-		if ($iError === '') {
-			$iError = new iError();
-		}
+	/**
+	 * Remove a member from a circle.
+	 *
+	 * @param Member $member
+	 *
+	 * @return bool
+	 */
+	public function remove(Member $member) {
 
 		$qb = $this->db->getQueryBuilder();
 		$qb->delete(self::TABLENAME)
@@ -183,5 +183,25 @@ class MembersMapper extends Mapper {
 		return true;
 	}
 
+	/**
+	 * remove all members/owner from a circle
+	 *
+	 * @param Circle $circle
+	 *
+	 * @return bool
+	 */
+	public function removeAllFromCircle(Circle $circle) {
+		$qb = $this->db->getQueryBuilder();
+		$qb->delete(self::TABLENAME)
+		   ->where(
+			   $qb->expr()
+				  ->eq('circle_id', $qb->createNamedParameter($circle->getId()))
+		   );
+
+		$qb->execute();
+
+		return true;
+
+	}
 }
 
