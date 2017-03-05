@@ -4,23 +4,26 @@
 
 ![](https://raw.githubusercontent.com/nextcloud/circles/master/screenshots/1.png)
 
-Circles allows your users to create their own groups of users/colleagues/friends.
-Those groups of users (or circles) can then be used by any other app for sharing purpose
-(files, social feed, status update, messaging, ...)
+Circles allows your users to create their own groups of users/colleagues/friends. 
+Those groups of users (or circles) can then be used by any other app for sharing purpose 
+(files, social feed, status update, messaging, ...) through the Circles API
 
 Differents type of circles can be created:
 
 
-- A Personal Circle is a list of users known only to yourself.
-Use this if you want to send messsage or share thing repeatedly to the same group of people.
-- Hidden Circle is an open group that can be protected by a password.
-Select this circle to create a community not displayed as a Public Circle.
-- A Private Circle require an invitation or a confirmation from an admin.
-This is the best circle if you are looking for privacy when sharing your files or your ideas.
-- A Public Circle is an open group visible to anyone that dare to join.
-Your circle will be visible to everyone and everyone will be able to join the circle.
+- A **Personal Circle** is a list of users known only to yourself. 
+Use this if you want to send messsages or share things repeatedly to the same group of people. 
+Only you will know the members list of a personal circle.
+- A **Public Circle** is an open group visible to anyone in the cloud, and everyone will be able to join it. 
+- An **Hidden Circle** is an open group that can be protected by a password. 
+Select this circle to create a public community that will not be displayed to everyone like the Public Circle.
+- A **Private Circle** require an invitation or a confirmation from an admin, This way you can create a team or a group of people.
+his is the best circle if you are looking for privacy when sharing your files or else.
 
+***
+# Compatibility
 
+This app is **not** compatible with the basic version of nextcloud. 
 
 ***
 # API
