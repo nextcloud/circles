@@ -1,5 +1,7 @@
 # Nextcloud Circles
 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nextcloud/circles/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/nextcloud/circles/?branch=master)
+
 **Bring cloud-users closer together.**
 
 ![](https://raw.githubusercontent.com/nextcloud/circles/master/screenshots/1.png)
