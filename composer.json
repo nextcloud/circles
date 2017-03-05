@@ -1,0 +1,25 @@
+{
+  "name": "nextcloud/circles",
+  "description": "circles",
+  "minimum-stability": "stable",
+  "license": "agpl",
+  "authors": [
+    {
+      "name": "Maxence Lange",
+      "email": "maxence@nextcloud.com"
+    }
+  ],
+  "require": {
+    "phpunit/phpunit": "6.0.8"
+  },
+  "config": {
+    "vendor-dir": "lib/composer",
+    "optimize-autoloader": true
+  },
+  "autoload": {
+    "psr-4": {
+      "UpdateServer\\": "src/",
+      "Tests\\": "tests/unit/"
+    }
+  }
+}
