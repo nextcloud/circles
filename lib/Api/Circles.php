@@ -32,7 +32,7 @@ use OCA\Circles\AppInfo\Application;
 class Circles {
 
 
-	static protected function getContainer() {
+	protected static function getContainer() {
 		$app = new Application();
 
 		return $app->getContainer();
@@ -54,11 +54,11 @@ class Circles {
 	}
 
 
-	public static function detailsCircle($circle_id) {
+	public static function detailsCircle($circleId) {
 		$c = self::getContainer();
 
 		return $c->query('CirclesService')
-				 ->detailsCircle($circle_id);
+				 ->detailsCircle($circleId);
 	}
 
 

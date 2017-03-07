@@ -63,14 +63,14 @@ class Application extends App {
 		 * Services
 		 */
 		$container->registerService(
-			'MiscService', function ($c) {
+			'MiscService', function($c) {
 			return new MiscService($c->query('Logger'), $c->query('AppName'));
 		}
 		);
 
 
 		$container->registerService(
-			'ConfigService', function ($c) {
+			'ConfigService', function($c) {
 			return new ConfigService(
 				$c->query('AppName'), $c->query('CoreConfig'), $c->query('UserId'),
 				$c->query('MiscService')
@@ -79,7 +79,7 @@ class Application extends App {
 		);
 
 		$container->registerService(
-			'DatabaseService', function ($c) {
+			'DatabaseService', function($c) {
 			return new DatabaseService(
 				$c->query('CirclesMapper'),
 				$c->query('MembersMapper')
@@ -88,7 +88,7 @@ class Application extends App {
 		);
 
 		$container->registerService(
-			'CirclesService', function ($c) {
+			'CirclesService', function($c) {
 			return new CirclesService(
 				$c->query('UserId'), $c->query('L10N'),
 				$c->query('ConfigService'),
@@ -99,7 +99,7 @@ class Application extends App {
 		);
 
 		$container->registerService(
-			'MembersService', function ($c) {
+			'MembersService', function($c) {
 			return new MembersService(
 				$c->query('UserId'), $c->query('L10N'),
 				$c->query('UserManager'),
@@ -110,53 +110,40 @@ class Application extends App {
 		}
 		);
 
-//		$container->registerService(
-//			'ApiService', function ($c) {
-//			return new ApiService(
-//				$c->query('ConfigService'), $c->query('FileService'), $c->query('MiscService')
-//			);
-//		}
-//		);
-
 
 		/**
 		 * Controllers
 		 */
-//		$container->registerService(
-//			'SettingsController', function ($c) {
-//			return new SettingsController(
-//				$c->query('AppName'), $2c->query('Request'), $c->query('ConfigService'),
-//				$c->query('MiscService')
-//			);
-//		}
-//		);
-
 		$container->registerService(
-			'NavigationController', function ($c) {
+			'NavigationController', function($c) {
 			return new NavigationController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
 				$c->query('ConfigService'),
+				$c->query('CirclesService'),
+				$c->query('MembersService'),
 				$c->query('MiscService')
 			);
 		}
 		);
 
 		$container->registerService(
-			'CirclesController', function ($c) {
+			'CirclesController', function($c) {
 			return new CirclesController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
 				$c->query('ConfigService'),
 				$c->query('CirclesService'),
+				$c->query('MembersService'),
 				$c->query('MiscService')
 			);
 		}
 		);
 
 		$container->registerService(
-			'MembersController', function ($c) {
+			'MembersController', function($c) {
 			return new MembersController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
 				$c->query('ConfigService'),
+				$c->query('CirclesService'),
 				$c->query('MembersService'),
 				$c->query('MiscService')
 			);
@@ -167,7 +154,7 @@ class Application extends App {
 		 * Mapper
 		 */
 		$container->registerService(
-			'CirclesMapper', function ($c) {
+			'CirclesMapper', function($c) {
 			return new CirclesMapper(
 				$c->query('ServerContainer')
 				  ->getDatabaseConnection(), $c->query('MiscService')
@@ -176,7 +163,7 @@ class Application extends App {
 		);
 
 		$container->registerService(
-			'MembersMapper', function ($c) {
+			'MembersMapper', function($c) {
 			return new MembersMapper(
 				$c->query('ServerContainer')
 				  ->getDatabaseConnection(), $c->query('MiscService')
@@ -187,7 +174,7 @@ class Application extends App {
 
 		// Translates
 		$container->registerService(
-			'L10N', function ($c) {
+			'L10N', function($c) {
 			return $c->query('ServerContainer')
 					 ->getL10N($c->query('AppName'));
 		}
@@ -197,20 +184,20 @@ class Application extends App {
 		 * Core
 		 */
 		$container->registerService(
-			'Logger', function ($c) {
+			'Logger', function($c) {
 			return $c->query('ServerContainer')
 					 ->getLogger();
 		}
 		);
 		$container->registerService(
-			'CoreConfig', function ($c) {
+			'CoreConfig', function($c) {
 			return $c->query('ServerContainer')
 					 ->getConfig();
 		}
 		);
 
 		$container->registerService(
-			'UserId', function ($c) {
+			'UserId', function($c) {
 			$user = $c->query('ServerContainer')
 					  ->getUserSession()
 					  ->getUser();
@@ -220,7 +207,7 @@ class Application extends App {
 		);
 
 		$container->registerService(
-			'UserManager', function ($c) {
+			'UserManager', function($c) {
 			return $c->query('ServerContainer')
 					 ->getUserManager();
 		}
@@ -239,7 +226,7 @@ class Application extends App {
 			 ->getServer()
 			 ->getNavigationManager()
 			 ->add(
-				 function () {
+				 function() {
 					 return [
 						 'id'    => $this->appName,
 						 'order' => 5,
@@ -252,14 +239,5 @@ class Application extends App {
 				 }
 			 );
 	}
-
-
-//
-//	public function registerSettingsAdmin() {
-//		\OCP\App::registerAdmin(
-//			$this->getContainer()
-//				 ->query('AppName'), 'lib/admin'
-//		);
-//	}
 }
 

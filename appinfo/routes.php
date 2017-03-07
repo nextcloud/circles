@@ -51,12 +51,5 @@ return [
 			'verb'         => 'DELETE',
 			'requirements' => ['id' => '\d+'],
 		],
-
-		//		['name' => 'Teams#create', 'url' => '/teams', 'verb' => 'PUT'],
-		//		['name' => 'Teams#update', 'url' => '/teams/{id}', 'verb' => 'POST', 'requirements' => ['id' => '\d+'],],
-		//		['name' => 'Teams#delete', 'url' => '/teams/{id}', 'verb' => 'DELETE', 'requirements' => ['id' => '\d+'],],
-		//		['name' => 'Teams#listMembers', 'url' => '/teams/{id}/members', 'verb' => 'GET', 'requirements' => ['id' => '\d+'],],
-		//		['name' => 'Teams#addMember', 'url' => '/teams/{id}/members', 'verb' => 'PUT', 'requirements' => ['id' => '\d+'],],
-		//		['name' => 'Teams#removeMember', 'url' => '/teams/{id}/members', 'verb' => 'DELETE', 'requirements' => ['id' => '\d+'],],
 	],
 ];

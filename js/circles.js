@@ -26,7 +26,8 @@
 //
 //
 //
-
+/** global: OC */
+/** global: OCA */
 
 (function () {
 
