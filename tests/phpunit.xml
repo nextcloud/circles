@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <phpunit bootstrap="bootstrap.php">
-	<testsuites>
-		<testsuite>
-			<directory>.</directory>
-		</testsuite>
-	</testsuites>
+	<testsuite>
+		<directory>.</directory>
+	</testsuite>
+	<filter>
+		<whitelist>
+			<directory suffix=".php">../appinfo</directory>
+			<directory suffix=".php">../lib</directory>
+		</whitelist>
+	</filter>
 </phpunit>
