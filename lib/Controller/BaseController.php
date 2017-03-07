@@ -1,6 +1,4 @@
 <?php
-use OCP\AppFramework\Controller;
-
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -60,6 +58,18 @@ class BaseController extends Controller {
 	protected $miscService;
 
 
+	/**
+	 * BaseController constructor.
+	 *
+	 * @param string $appName
+	 * @param IRequest $request
+	 * @param $userId
+	 * @param IL10N $l10n
+	 * @param ConfigService $configService
+	 * @param CirclesService $circlesService
+	 * @param MembersService $membersService
+	 * @param MiscService $miscService
+	 */
 	public function __construct(
 		$appName,
 		IRequest $request,

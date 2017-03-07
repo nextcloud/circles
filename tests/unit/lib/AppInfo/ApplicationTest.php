@@ -28,9 +28,7 @@ namespace OCA\Circles\Tests\AppInfo;
 
 
 use OCA\Circles\AppInfo\Application;
-use OCA\Circles\Controller\NavigationController;
-use OCA\Circles\Controller\CirclesController;
-use OCA\Circles\Controller\MembersController;
+use OCA\Circles\Controller\BaseController;
 use OCA\Circles\Db\CirclesMapper;
 use OCA\Circles\Db\MembersMapper;
 use OCA\Circles\Service\DatabaseService;
@@ -38,6 +36,7 @@ use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\MembersService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
+use OCP\AppFramework\Controller;
 
 
 /**
@@ -71,9 +70,9 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase {
 			//	array(IL10N::class),
 
 			// controller
-			array(NavigationController::class),
-			array('CirclesController', CirclesController::class),
-			array('MembersController', MembersController::class),
+			array('NavigationController', BaseController::class),
+			array('CirclesController', BaseController::class),
+			array('MembersController', BaseController::class),
 
 			// mapper
 			array('CirclesMapper', CirclesMapper::class),

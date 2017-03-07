@@ -28,44 +28,10 @@ namespace OCA\Circles\Controller;
 
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
-use \OCA\Circles\Service\MiscService;
-use \OCA\Circles\Service\ConfigService;
-use \OCA\Circles\Service\CirclesService;
-use \OCA\Circles\Model\Member;
-
-
+use OCA\Circles\Model\Member;
 use OCP\AppFramework\Http\DataResponse;
 
 class CirclesController extends BaseController {
-
-//	/** @var string */
-//	private $userId;
-//	/** @var IL10N */
-//	private $l10n;
-//	/** @var ConfigService */
-//	private $configService;
-//
-//	/** @var MiscService */
-//	private $miscService;
-//
-//	public function __construct(
-//		$appName,
-//		IRequest $request,
-//		$userId,
-//		IL10N $l10n,
-//		ConfigService $configService,
-//		CirclesService $circlesService,
-//		MiscService $miscService
-//	) {
-//		parent::__construct($appName, $request);
-//
-//		$this->userId = $userId;
-//		$this->l10n = $l10n;
-//		$this->configService = $configService;
-//		$this->circlesService = $circlesService;
-//		$this->miscService = $miscService;
-//	}
-
 
 	/**
 	 * @NoAdminRequired
@@ -78,7 +44,6 @@ class CirclesController extends BaseController {
 	 */
 	public function create($type, $name) {
 
-		$data = null;
 		if (substr($name, 0, 1) === '_') {
 			return $this->fail(
 				[
@@ -90,9 +55,16 @@ class CirclesController extends BaseController {
 			);
 		}
 
-
 		try {
 			$data = $this->circlesService->createCircle($type, $name);
+
+			return $this->success(
+				[
+					'name'   => $name,
+					'circle' => $data,
+					'type'   => $type
+				]
+			);
 		} catch (\Exception $e) {
 			return $this->fail(
 				[
@@ -103,14 +75,6 @@ class CirclesController extends BaseController {
 			);
 
 		}
-
-		return $this->success(
-			[
-				'name'   => $name,
-				'circle' => $data,
-				'type'   => $type
-			]
-		);
 	}
 
 
@@ -127,6 +91,13 @@ class CirclesController extends BaseController {
 
 		try {
 			$data = $this->circlesService->listCircles($type, $name, Member::LEVEL_NONE);
+
+			return $this->success(
+				[
+					'type' => $type,
+					'data' => $data
+				]
+			);
 		} catch (CircleTypeDisabledException $e) {
 			return
 				$this->fail(
@@ -137,12 +108,6 @@ class CirclesController extends BaseController {
 				);
 		}
 
-		return $this->success(
-			[
-				'type' => $type,
-				'data' => $data
-			]
-		);
 	}
 
 
@@ -160,7 +125,14 @@ class CirclesController extends BaseController {
 
 		try {
 			$data = $this->circlesService->detailsCircle($id);
-		} catch (CircleDoesNotExistException $e) {
+
+			return $this->success(
+				[
+					'circle_id' => $id,
+					'details'   => $data
+				]
+			);
+		} catch (\Exception $e) {
 			return
 				$this->fail(
 					[
@@ -170,12 +142,6 @@ class CirclesController extends BaseController {
 				);
 		}
 
-		return $this->success(
-			[
-				'circle_id' => $id,
-				'details'   => $data
-			]
-		);
 	}
 
 
@@ -193,6 +159,13 @@ class CirclesController extends BaseController {
 
 		try {
 			$data = $this->circlesService->joinCircle($id);
+
+			return $this->success(
+				[
+					'circle_id' => $id,
+					'member'    => $data
+				]
+			);
 		} catch (\Exception $e) {
 			return $this->fail(
 				[
@@ -201,13 +174,6 @@ class CirclesController extends BaseController {
 				]
 			);
 		}
-
-		return $this->success(
-			[
-				'circle_id' => $id,
-				'member'    => $data
-			]
-		);
 	}
 
 
@@ -224,6 +190,13 @@ class CirclesController extends BaseController {
 	public function leave($id) {
 		try {
 			$data = $this->circlesService->leaveCircle($id);
+
+			return $this->success(
+				[
+					'circle_id' => $id,
+					'member'    => $data
+				]
+			);
 		} catch (\Exception $e) {
 			return $this->fail(
 				[
@@ -233,12 +206,6 @@ class CirclesController extends BaseController {
 			);
 		}
 
-		return $this->success(
-			[
-				'circle_id' => $id,
-				'member'    => $data
-			]
-		);
 	}
 
 

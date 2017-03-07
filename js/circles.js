@@ -23,9 +23,6 @@
  *
  */
 
-//
-//
-//
 /** global: OC */
 /** global: OCA */
 

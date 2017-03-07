@@ -29,6 +29,7 @@ namespace OCA\Circles\Db;
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleCreationException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
+use OCA\Circles\Exceptions\ConfigNoCircleAvailable;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 
@@ -47,16 +48,6 @@ class CirclesMapper extends Mapper {
 
 	}
 
-//	public function find($id) {
-//		try {
-//			$sql = sprintf('SELECT * FROM *PREFIX*%s WHERE id = ?', self::TABLENAME);
-//
-//			return $this->findEntity($sql, [$id]);
-//		} catch (DoesNotExistException $dnee) {
-//			return null;
-//		}
-//	}
-
 
 	/**
 	 * Returns all circle from a user point-of-view
@@ -67,7 +58,8 @@ class CirclesMapper extends Mapper {
 	 * @param int $level
 	 * @param int $circleId
 	 *
-	 * @return Circle[]|null
+	 * @return Circle[]
+	 * @throws ConfigNoCircleAvailable
 	 */
 	public function findCirclesByUser($userId, $type, $name = '', $level = 0, $circleId = -1) {
 
@@ -180,7 +172,7 @@ class CirclesMapper extends Mapper {
 		}
 
 		if (sizeof($orTypesArray) === 0) {
-			return null;
+			throw new ConfigNoCircleAvailable();
 		}
 
 		$orXTypes = $qb->expr()
@@ -218,10 +210,16 @@ class CirclesMapper extends Mapper {
 	 *
 	 * @return Circle
 	 * @throws CircleDoesNotExistException
+	 * @throws ConfigNoCircleAvailable
 	 */
 	public function getDetailsFromCircle($userId, $circleId) {
 
-		$result = $this->findCirclesByUser($userId, Circle::CIRCLES_ALL, '', 0, $circleId);
+		try {
+			$result = $this->findCirclesByUser($userId, Circle::CIRCLES_ALL, '', 0, $circleId);
+		} catch (ConfigNoCircleAvailable $e) {
+			throw $e;
+		}
+
 		if (sizeof($result) !== 1) {
 			throw new CircleDoesNotExistException(
 				"The circle does not exist or is hidden to the user"
@@ -239,15 +237,20 @@ class CirclesMapper extends Mapper {
 	 * @return bool
 	 * @throws CircleAlreadyExistsException
 	 * @throws CircleCreationException
+	 * @throws ConfigNoCircleAvailable
 	 */
 	public function create(Circle &$circle, Member &$owner) {
 
 		if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
 
-			$list = $this->findCirclesByUser(
-				$owner->getUserId(), Circle::CIRCLES_PERSONAL, $circle->getName(),
-				Member::LEVEL_OWNER
-			);
+			try {
+				$list = $this->findCirclesByUser(
+					$owner->getUserId(), Circle::CIRCLES_PERSONAL, $circle->getName(),
+					Member::LEVEL_OWNER
+				);
+			} catch (ConfigNoCircleAvailable $e) {
+				throw $e;
+			}
 
 			foreach ($list as $test) {
 				if ($test->getName() === $circle->getName()) {

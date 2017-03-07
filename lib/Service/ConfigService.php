@@ -41,12 +41,19 @@ class ConfigService {
 		self::CIRCLES_SWAP_TO_TEAMS => '0'
 	];
 
+	/** @var string */
 	private $appName;
 
+	/** @var IConfig */
 	private $config;
 
+	/** @var string */
+	private $userId;
+
+	/** @var MiscService */
 	private $miscService;
 
+	/** @var int */
 	private $allowed_circle = -1;
 
 	public function __construct($appName, IConfig $config, $userId, MiscService $miscService) {

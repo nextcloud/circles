@@ -46,7 +46,7 @@ class Sharees {
 	 * @param $limit
 	 * @param $offset
 	 *
-	 * @return array<string, array>
+	 * @return array<string,array>
 	 */
 	public static function search($search, $limit, $offset) {
 		$c = self::getContainer();
