@@ -1,6 +1,6 @@
 <?php
 /**
- * Circles - bring cloud-users closer
+ * Circles - Bring cloud-users closer together.
  *
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
@@ -231,6 +231,7 @@ class CirclesMapperTest extends \PHPUnit_Framework_TestCase {
 
 		return null;
 	}
+
 
 	private function createCircleTest($name, $type, $owner, $create = true) {
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Circles - bring cloud-users closer
+ * Circles - Bring cloud-users closer together.
  *
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
@@ -26,16 +26,13 @@
 
 namespace OCA\Circles\Tests\Api;
 
-use OCA\Circles\Api\Circles;
-
 class CirclesTest extends \PHPUnit_Framework_TestCase {
 
-	protected function setUp() {}
-//
-//	public function testTest() {
-//		$this->assertSame(2, Circles::oui('ok'));
-//	}
+	protected function setUp() {
+	}
 
+	public function testTest() {
+	}
 
 
 }

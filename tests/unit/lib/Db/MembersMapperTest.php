@@ -1,6 +1,6 @@
 <?php
 /**
- * Circles - bring cloud-users closer
+ * Circles - Bring cloud-users closer together.
  *
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
@@ -27,10 +27,8 @@
 
 namespace OCA\Circles\Tests\Db;
 
-use OCA\Circles\Db\Members;
 use OCA\Circles\Db\MembersMapper;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
-use OCA\Circles\Exceptions\TeamExists;
 use OCA\Circles\Model\Member;
 
 
@@ -47,7 +45,7 @@ class MembersMapperTest extends \PHPUnit_Framework_TestCase {
 
 	const TEST_CIRCLE_ID = 9999998;
 
-	/** @var \OCA\Circles\Db\MembersMapper|\PHPUnit_Framework_MockObject_MockObject */
+	/** @var \OCA\Circles\Db\MembersMapper|PHPUnit_Framework_MockObject_MockObject */
 	protected $membersMapper;
 
 	protected function setUp() {
