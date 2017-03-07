@@ -26,11 +26,11 @@
 
 namespace OCA\Circles\Exceptions;
 
-class MemberAlreadyExistsException extends \Exception {
+class MemberIsBlockedException extends \Exception {
 
 	public function __construct($message = "", $code = 0, \Exception $previous = null) {
 		if ($message === '')
-			$message = 'This user is already a member of the circle';
+			$message = 'This member is blocked';
 
 		parent::__construct($message, $code, $previous);
 	}

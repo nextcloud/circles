@@ -26,14 +26,15 @@
 
 namespace OCA\Circles\Exceptions;
 
-class MemberAlreadyExistsException extends \Exception {
+use Exception;
+
+class MemberDoesNotExistException extends \Exception {
 
 	public function __construct($message = "", $code = 0, \Exception $previous = null) {
 		if ($message === '')
-			$message = 'This user is already a member of the circle';
+			$message = 'This member does not exist';
 
 		parent::__construct($message, $code, $previous);
 	}
-
 }
 
