@@ -208,23 +208,24 @@ class CirclesMapper extends Mapper {
 			return null;
 		}
 
-		$sqb = $qb->expr();
-		$sqb->andX(
-			$qb->expr()
-			   ->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_HIDDEN)),
-			$qb->expr()
-			   ->orX(
-				   $this->buildWithMemberLevel($qb, 'u.level', Member::LEVEL_MEMBER),
-				   $qb->expr()
-					  ->gte(
-						  'u.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)
-					  ),
-				   $qb->expr()
-					  ->eq('c.id', $qb->createNamedParameter($circleId)),
-				   $qb->expr()
-					  ->eq('c.name', $qb->createNamedParameter($name))
-			   )
-		);
+		$sqb = $qb->expr()
+				  ->andX(
+					  $qb->expr()
+						 ->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_HIDDEN)),
+					  $qb->expr()
+						 ->orX(
+							 $qb->expr()
+								->gte(
+									'u.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)
+								),
+							 $qb->expr()
+								->eq('c.id', $qb->createNamedParameter($circleId)),
+							 $qb->expr()
+								->eq('c.name', $qb->createNamedParameter($name))
+						 )
+				  );
+
+		return $sqb;
 	}
 
 
