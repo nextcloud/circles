@@ -99,20 +99,21 @@ class MembersService {
 			throw new NoUserException("The selected user does not exist");
 		}
 
+		// we check that this->userId is moderator
 		try {
-			$ismod = $this->databaseService->getMembersMapper()
-										   ->getMemberFromCircle($circleId, $this->userId);
+			$this->databaseService->getMembersMapper()
+								  ->getMemberFromCircle($circleId, $this->userId)
+								  ->isModerator();
 		} catch (MemberDoesNotExistException $e) {
 			throw $e;
-		}
-
-		if ($ismod->getLevel() < Member::LEVEL_MODERATOR) {
+		} catch (MemberIsNotModeratorException $e) {
 			throw new MemberIsNotModeratorException("You are not moderator of this circle");
 		}
 
 		try {
 			$member = $this->databaseService->getMembersMapper()
 											->getMemberFromCircle($circleId, $name);
+
 		} catch (MemberDoesNotExistException $e) {
 			$member = new Member();
 			$member->setCircleId($circleId);
@@ -143,23 +144,10 @@ class MembersService {
 		$member->setCircleId($circleId);
 		$member->setUserId($name);
 
-		switch ($circle->getType()) {
-			case Circle::CIRCLES_PERSONAL:
-			case Circle::CIRCLES_HIDDEN:
-			case Circle::CIRCLES_PUBLIC:
-				$member->setLevel(Member::LEVEL_MEMBER);
-				$member->setStatus(Member::STATUS_MEMBER);
-				break;
-
-			case Circle::CIRCLES_PRIVATE:
-				if ($member->getStatus() === Member::STATUS_REQUEST) {
-					$member->setLevel(Member::LEVEL_MEMBER);
-					$member->setStatus(Member::STATUS_MEMBER);
-				} else {
-					$member->setLevel(Member::LEVEL_NONE);
-					$member->setStatus(Member::STATUS_INVITED);
-				}
-				break;
+		if ($circle->getType() === Circle::CIRCLES_PRIVATE) {
+			self::InviteMemberToPrivateCircle($member);
+		} else {
+			self::AddMemberToCircle($member);
 		}
 
 		$this->databaseService->getMembersMapper()
@@ -172,6 +160,32 @@ class MembersService {
 													 >= Member::LEVEL_MODERATOR)
 									 );
 	}
+
+
+	/**
+	 * Invite a Member to a private Circle, or accept his request.
+	 *
+	 * @param $member
+	 */
+	public static function InviteMemberToPrivateCircle(&$member) {
+		if ($member->getStatus() === Member::STATUS_REQUEST) {
+			self::AddMemberToCircle($member);
+		} else {
+			$member->setLevel(Member::LEVEL_NONE);
+			$member->setStatus(Member::STATUS_INVITED);
+		}
+	}
+
+	/**
+	 * add a member to a circle.
+	 *
+	 * @param $member
+	 */
+	public static function AddMemberToCircle(&$member) {
+		$member->setLevel(Member::LEVEL_MEMBER);
+		$member->setStatus(Member::STATUS_MEMBER);
+	}
+
 
 	/**
 	 * @param $circleId

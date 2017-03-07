@@ -26,13 +26,13 @@
 
 namespace OCA\Circles\Exceptions;
 
-use Exception;
 
 class MemberDoesNotExistException extends \Exception {
 
 	public function __construct($message = "", $code = 0, \Exception $previous = null) {
-		if ($message === '')
+		if ($message === '') {
 			$message = 'This member does not exist';
+		}
 
 		parent::__construct($message, $code, $previous);
 	}

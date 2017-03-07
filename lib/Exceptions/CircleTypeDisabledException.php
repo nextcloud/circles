@@ -26,7 +26,6 @@
 
 namespace OCA\Circles\Exceptions;
 
-use Exception;
 
 class CircleTypeDisabledException extends \Exception {
 

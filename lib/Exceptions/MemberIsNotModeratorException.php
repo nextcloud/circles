@@ -29,8 +29,9 @@ namespace OCA\Circles\Exceptions;
 class MemberIsNotModeratorException extends \Exception {
 
 	public function __construct($message = "", $code = 0, \Exception $previous = null) {
-		if ($message === '')
+		if ($message === '') {
 			$message = 'This member is not a moderator';
+		}
 
 		parent::__construct($message, $code, $previous);
 	}

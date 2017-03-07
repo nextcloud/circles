@@ -29,8 +29,9 @@ namespace OCA\Circles\Exceptions;
 class CircleCreationException extends \Exception {
 
 	public function __construct($message = "", $code = 0, \Exception $previous = null) {
-		if ($message === '')
+		if ($message === '') {
 			$message = 'Unknown exception during Circle Creation';
+		}
 
 		parent::__construct($message, $code, $previous);
 	}

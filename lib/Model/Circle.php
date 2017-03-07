@@ -48,7 +48,6 @@ class Circle implements \JsonSerializable {
 	private $typeString;
 	private $typeLongString;
 	private $creation;
-	private $count;
 	private $members;
 	private $info;
 
@@ -160,16 +159,6 @@ class Circle implements \JsonSerializable {
 	}
 
 
-	public function setCount($count) {
-		$this->count = $count;
-
-		return $this;
-	}
-
-	public function getCount() {
-		return $this->count;
-	}
-
 	public function setMembers($members) {
 		$this->members = $members;
 
@@ -194,7 +183,6 @@ class Circle implements \JsonSerializable {
 			'description' => $this->getDescription(),
 			'type'        => $this->getTypeString(),
 			'creation'    => $this->getCreation(),
-			'count'       => $this->getCount(),
 			'members'     => $this->getMembers()
 		);
 	}
@@ -207,29 +195,59 @@ class Circle implements \JsonSerializable {
 		$circle->setDescription($arr['description']);
 		$circle->setType($arr['type']);
 		$circle->setCreation($arr['creation']);
-		if (key_exists('count', $arr)) {
-			$circle->setCount($arr['count']);
-		}
+//		if (key_exists('count', $arr)) {
+//			$circle->setCount($arr['count']);
+//		}
 
-		if (key_exists('owner', $arr)) {
-			$owner = new Member();
-			$owner->setUserId($arr['owner']);
-			$circle->setOwner($owner);
-		}
-
-		if (key_exists('status', $arr)
-			&& key_exists('level', $arr)
-			&& key_exists('joined', $arr)
-		) {
-			$user = new Member();
-			$user->setStatus($arr['status']);
-			$user->setLevel($arr['level']);
-			$user->setJoined($arr['joined']);
-			$circle->setUser($user);
-		}
+		$circle->setOwner(self::getOwnerMemberFromArray($arr));
+		$circle->setUser(self::getUserMemberFromArray($arr));
 
 		return $circle;
 	}
+
+
+	/**
+	 * return Owner Infos from Array
+	 *
+	 * @param $array
+	 *
+	 * @return null|Member
+	 */
+	private static function getOwnerMemberFromArray($array) {
+		if (key_exists('owner', $array)) {
+			$owner = new Member();
+			$owner->setUserId($array['owner']);
+
+			return $owner;
+		}
+
+		return null;
+	}
+
+	/**
+	 * return User Infos from Array
+	 *
+	 * @param $array
+	 *
+	 * @return null|Member
+	 */
+	private static function getUserMemberFromArray($array) {
+
+		if (key_exists('status', $array)
+			&& key_exists('level', $array)
+			&& key_exists('joined', $array)
+		) {
+			$user = new Member();
+			$user->setStatus($array['status']);
+			$user->setLevel($array['level']);
+			$user->setJoined($array['joined']);
+
+			return $user;
+		}
+
+		return null;
+	}
+
 
 	public static function TypeString($type) {
 		switch ($type) {
@@ -248,6 +266,11 @@ class Circle implements \JsonSerializable {
 		return 'none';
 	}
 
+	/**
+	 * @param $type
+	 *
+	 * @return string
+	 */
 	public static function TypeLongString($type) {
 		switch ($type) {
 			case self::CIRCLES_PERSONAL:

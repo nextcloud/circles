@@ -230,18 +230,11 @@ class Application extends App {
 
 	public function registerNavigation() {
 
-		if ($this->getContainer()
-				 ->query('ConfigService')
-				 ->isTeams()
-		) {
-			$this->navIcon = 'teams.svg';
-			$this->navName = \OC::$server->getL10N($this->appName)
-										 ->t('Teams');
-		} else {
-			$this->navIcon = 'circles.svg';
-			$this->navName = \OC::$server->getL10N($this->appName)
-										 ->t('Circles');
-		}
+
+		$this->navIcon = 'circles.svg';
+		$this->navName = \OC::$server->getL10N($this->appName)
+									 ->t('Circles');
+
 		$this->getContainer()
 			 ->getServer()
 			 ->getNavigationManager()
