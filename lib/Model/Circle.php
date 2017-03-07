@@ -160,15 +160,15 @@ class Circle implements \JsonSerializable {
 	}
 
 
-	public function setCount($count) {
-		$this->count = $count;
-
-		return $this;
-	}
-
-	public function getCount() {
-		return $this->count;
-	}
+//	public function setCount($count) {
+//		$this->count = $count;
+//
+//		return $this;
+//	}
+//
+//	public function getCount() {
+//		return $this->count;
+//	}
 
 	public function setMembers($members) {
 		$this->members = $members;
@@ -194,7 +194,6 @@ class Circle implements \JsonSerializable {
 			'description' => $this->getDescription(),
 			'type'        => $this->getTypeString(),
 			'creation'    => $this->getCreation(),
-			'count'       => $this->getCount(),
 			'members'     => $this->getMembers()
 		);
 	}
@@ -207,9 +206,9 @@ class Circle implements \JsonSerializable {
 		$circle->setDescription($arr['description']);
 		$circle->setType($arr['type']);
 		$circle->setCreation($arr['creation']);
-		if (key_exists('count', $arr)) {
-			$circle->setCount($arr['count']);
-		}
+//		if (key_exists('count', $arr)) {
+//			$circle->setCount($arr['count']);
+//		}
 
 		$circle->setOwner(self::getOwnerMemberFromArray($arr));
 		$circle->setUser(self::getUserMemberFromArray($arr));
@@ -223,7 +222,7 @@ class Circle implements \JsonSerializable {
 	 *
 	 * @param $array
 	 *
-	 * @return mixed
+	 * @return null|Member
 	 */
 	private static function getOwnerMemberFromArray($array) {
 		if (key_exists('owner', $array)) {
@@ -232,6 +231,8 @@ class Circle implements \JsonSerializable {
 
 			return $owner;
 		}
+
+		return null;
 	}
 
 	/**
