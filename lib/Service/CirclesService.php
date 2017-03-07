@@ -71,9 +71,10 @@ class CirclesService {
 	 * @param $name
 	 *
 	 * @return Circle
-	 * @throws CircleTypeDisabledException
 	 * @throws CircleAlreadyExistsException
 	 * @throws CircleCreationException
+	 * @throws CircleTypeDisabledException
+	 * @throws ConfigNoCircleAvailable
 	 */
 	public function createCircle($type, $name) {
 

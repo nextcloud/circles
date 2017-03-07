@@ -55,7 +55,7 @@ $(document).ready(function () {
 			$('#circles_new_submit').hide();
 			$('#circles_new_type_definition').hide();
 
-			$('#circles_new_name').on('keyup', function (e) {
+			$('#circles_new_name').on('keyup', function () {
 				currentCircle = 0;
 				currentCircleLevel = 0;
 
@@ -64,7 +64,7 @@ $(document).ready(function () {
 				$('#emptycontent').show(800);
 				$('#mainui').fadeOut(800);
 
-				if ($('#circles_new_name').val() != '') {
+				if ($('#circles_new_name').val() !== '') {
 					$('#circles_new_type').fadeIn(300);
 					$('#circles_new_submit').fadeIn(500);
 					$('#circles_new_type_definition').fadeIn(700);
@@ -101,8 +101,9 @@ $(document).ready(function () {
 			});
 
 			$('#circles_search').on('input propertychange paste focus', function () {
-				if (lastSearchCircle == $(this).val().trim())
+				if (lastSearchCircle == $(this).val().trim()) {
 					return;
+				}
 
 				lastSearchCircle = $(this).val().trim();
 				api.searchCircles(currCirclesType, $(this).val().trim(),
@@ -130,8 +131,9 @@ $(document).ready(function () {
 
 			$('#addmember').on('input propertychange paste focus', function () {
 
-				if (lastSearchUser == $(this).val().trim())
+				if (lastSearchUser == $(this).val().trim()) {
 					return;
+				}
 
 				lastSearchUser = $(this).val().trim();
 
@@ -163,6 +165,8 @@ $(document).ready(function () {
 						break;
 					case '8':
 						str = 'Public circle';
+						break;
+					default:
 						break;
 				}
 
@@ -201,13 +205,15 @@ $(document).ready(function () {
 				$('#circles_list div').removeClass('selected');
 
 				$('#circles_list').children().each(function () {
-					if ($(this).attr('circle-type') == type.toLowerCase())
+					if ($(this).attr('circle-type') == type.toLowerCase()) {
 						$(this).addClass('selected');
+					}
 				});
 
 				$('#app-navigation.circles').children().each(function () {
-					if ($(this).attr('id') != 'circles_search')
+					if ($(this).attr('id') != 'circles_search') {
 						$(this).remove();
+					}
 				});
 				api.listCircles(type, self.listCirclesResult);
 			};
@@ -223,8 +229,9 @@ $(document).ready(function () {
 				}
 
 				$('#app-navigation.circles').children().each(function () {
-					if ($(this).attr('id') != 'circles_search')
+					if ($(this).attr('id') != 'circles_search') {
 						$(this).remove();
+					}
 				});
 
 				var data = result.data;
@@ -267,8 +274,9 @@ $(document).ready(function () {
 			this.selectCircleResult = function (result) {
 
 				$('#mainui #memberslist .table').children('tr').each(function () {
-					if ($(this).attr('class') != 'header')
+					if ($(this).attr('class') != 'header') {
 						$(this).remove();
+					}
 				});
 
 				if (result.status < 1) {
@@ -279,20 +287,22 @@ $(document).ready(function () {
 				}
 
 				$('#app-navigation.circles').children('.circle').each(function () {
-					if ($(this).attr('circle-id') == result.circle_id)
+					if ($(this).attr('circle-id') == result.circle_id) {
 						$(this).addClass('selected');
-					else
+					} else {
 						$(this).removeClass('selected');
+					}
 				});
 				$('#emptycontent').hide(800);
 				$('#mainui').fadeIn(800);
 				self.currentCircle = result.circle_id;
 				self.currentCircleLevel = result.details.user.level;
 
-				if (result.details.user.level < 6)
+				if (result.details.user.level < 6) {
 					$('#addmember').hide();
-				else
+				} else {
 					$('#addmember').show();
+				}
 
 				$('#joincircle_acceptinvit').hide();
 				$('#joincircle_rejectinvit').hide();
@@ -332,9 +342,9 @@ $(document).ready(function () {
 			this.searchMembersResult = function (response) {
 
 				if (response == null ||
-					(response.ocs.data.users == 0 && response.ocs.data.exact.users == 0))
+					(response.ocs.data.users === 0 && response.ocs.data.exact.users === 0)) {
 					$('#members_search_result').fadeOut(300);
-
+				}
 				else {
 					var currSearch = $('#addmember').val().trim();
 					$('#members_search_result').children().remove();
@@ -348,8 +358,10 @@ $(document).ready(function () {
 
 					$.each(response.ocs.data.users, function (index, value) {
 						var line = value.label + '   (' + value.value.shareWith + ')';
-						if (currSearch.length > 0) line =
-							line.replace(new RegExp('(' + currSearch + ')', 'gi'), '<b>$1</b>');
+						if (currSearch.length > 0) {
+							line =
+								line.replace(new RegExp('(' + currSearch + ')', 'gi'), '<b>$1</b>');
+						}
 
 						$('#members_search_result').append(
 							'<div class="members_search" searchresult="' + value.value.shareWith +
@@ -376,11 +388,11 @@ $(document).ready(function () {
 
 					self.displayMembers(result.members);
 				}
-				else
+				else {
 					OCA.notification.onFail(
 						"Member '" + result.name + "' NOT added to the circle: " +
 						((result.error) ? result.error : 'no error message'));
-
+				}
 			};
 
 
@@ -391,7 +403,7 @@ $(document).ready(function () {
 						$(this).remove();
 				});
 
-				if (members == null) {
+				if (members === null) {
 					$('#mainui #memberslist .table').hide(200);
 					return;
 				}
@@ -413,8 +425,9 @@ $(document).ready(function () {
 				}
 
 				$('#mainui #memberslist .table').children().each(function () {
-					if ($(this).attr('member-level') == '9' || self.currentCircleLevel < 6)
+					if ($(this).attr('member-level') == '9' || self.currentCircleLevel < 6) {
 						$(this).children('.delete').hide(0);
+					}
 				});
 
 				$('#mainui #memberslist .table .delete').on('click', function () {
@@ -428,8 +441,9 @@ $(document).ready(function () {
 				if (result.status == 1) {
 
 					$('#mainui #memberslist .table').children().each(function () {
-						if ($(this).attr('member-id') == result.name)
+						if ($(this).attr('member-id') == result.name) {
 							$(this).hide(300);
+						}
 					});
 
 					OCA.notification.onSuccess(
@@ -447,16 +461,18 @@ $(document).ready(function () {
 				if (result.status == 1) {
 
 					$('#mainui #memberslist .table').children().each(function () {
-						if ($(this).attr('member-id') == result.name)
+						if ($(this).attr('member-id') == result.name) {
 							$(this).hide(300);
+						}
 					});
 
-					if (result.member.level == 1)
+					if (result.member.level == 1) {
 						OCA.notification.onSuccess(
 							"You have successfully joined this circle");
-					else
+					} else {
 						OCA.notification.onSuccess(
 							"You have requested an invitation to join this circle");
+					}
 					self.selectCircle(result.circle_id);
 
 				}
@@ -479,10 +495,11 @@ $(document).ready(function () {
 
 					self.selectCircle(result.circle_id);
 				}
-				else
+				else {
 					OCA.notification.onFail(
 						"Cannot leave this circle: " +
 						((result.error) ? result.error : 'no error message'));
+				}
 			};
 
 			// getCurrentCircleTemplate: function (id) {
@@ -511,19 +528,18 @@ $(document).ready(function () {
 
 		initialize: function () {
 
-			notyf = null;
-
-			this.notyf = new Notyf({
+			//noinspection SpellCheckingInspection
+			var notyf = new Notyf({
 				delay: 5000
 			});
 
 			this.onSuccess = function (text) {
-				this.notyf.confirm(text);
+				notyf.confirm(text);
 			};
 
 			this.onFail = function (text) {
-				this.notyf.alert(text);
-			}
+				notyf.alert(text);
+			};
 
 		}
 
