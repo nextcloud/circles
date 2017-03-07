@@ -1,6 +1,6 @@
 <?php
 /**
- * Circles - bring cloud-users closer
+ * Circles - Bring cloud-users closer together.
  *
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
@@ -26,6 +26,7 @@
 
 namespace OCA\Circles\Api;
 
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCP\Share;
@@ -35,11 +36,18 @@ class Sharees {
 
 
 	static protected function getContainer() {
-		$app = new \OCA\Circles\AppInfo\Application();
+		$app = new Application();
 
 		return $app->getContainer();
 	}
 
+	/**
+	 * @param $search
+	 * @param $limit
+	 * @param $offset
+	 *
+	 * @return array
+	 */
 	public static function search($search, $limit, $offset) {
 		$c = self::getContainer();
 

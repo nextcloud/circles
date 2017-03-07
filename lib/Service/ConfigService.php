@@ -1,6 +1,6 @@
 <?php
 /**
- * Circles - bring cloud-users closer
+ * Circles - Bring cloud-users closer together.
  *
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
@@ -28,6 +28,7 @@ namespace OCA\Circles\Service;
 
 use OCA\Circles\Model\Circle;
 use OCP\IConfig;
+use OCP\Util;
 
 class ConfigService {
 
@@ -65,7 +66,11 @@ class ConfigService {
 	}
 
 	/**
+	 * returns if this type of circle is allowed by the current configuration.
 	 *
+	 * @param $type
+	 *
+	 * @return int
 	 */
 	public function isCircleAllowed($type) {
 		if ($this->allowed_circle === -1) {
@@ -98,10 +103,10 @@ class ConfigService {
 	 * @param string $key
 	 * @param string $value
 	 *
-	 * @return string
+	 * @return void
 	 */
 	public function setAppValue($key, $value) {
-		return $this->config->setAppValue($this->appName, $key, $value);
+		$this->config->setAppValue($this->appName, $key, $value);
 	}
 
 	/**
@@ -172,7 +177,7 @@ class ConfigService {
 	 * @return string|integer
 	 */
 	public function getCloudVersion($complete = false) {
-		$ver = \OCP\Util::getVersion();
+		$ver = Util::getVersion();
 
 		if ($complete) {
 			return implode('.', $ver);

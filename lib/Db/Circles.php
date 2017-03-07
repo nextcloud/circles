@@ -1,6 +1,6 @@
 <?php
 /**
- * Circles - bring cloud-users closer
+ * Circles - Bring cloud-users closer together.
  *
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
@@ -40,6 +40,11 @@ class Circles extends Entity {
 	public $members;
 
 
+	/**
+	 * Circles constructor.
+	 *
+	 * @param Circle|null $item
+	 */
 	public function __construct(Circle $item = null) {
 		if ($item != null) {
 			$this->setId($item->getId());

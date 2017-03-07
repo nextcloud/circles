@@ -1,5 +1,5 @@
 /*
- * Circles - bring cloud-users closer
+ * Circles - Bring cloud-users closer together.
  *
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
@@ -170,7 +170,7 @@ $(document).ready(function () {
 			else
 				Notification.onFail(
 					str + " '" + result.name + "' NOT created: " +
-					((result.error) ? result.error.message : 'no error message'));
+					((result.error) ? result.error : 'no error message'));
 		},
 
 
@@ -214,7 +214,7 @@ $(document).ready(function () {
 			if (result.status < 1) {
 				Notification.onFail(
 					'Issue while retreiving the list of the Circles: ' +
-					((result.error) ? result.error.message : 'no error message'));
+					((result.error) ? result.error : 'no error message'));
 				return;
 			}
 
@@ -270,7 +270,7 @@ $(document).ready(function () {
 			if (result.status < 1) {
 				Notification.onFail(
 					'Issue while retreiving the details of a circle: ' +
-					((result.error) ? result.error.message : 'no error message'));
+					((result.error) ? result.error : 'no error message'));
 				return;
 			}
 
@@ -375,7 +375,7 @@ $(document).ready(function () {
 			else
 				Notification.onFail(
 					"Member '" + result.name + "' NOT added to the circle: " +
-					((result.error) ? result.error.message : 'no error message'));
+					((result.error) ? result.error : 'no error message'));
 
 		},
 
@@ -434,7 +434,7 @@ $(document).ready(function () {
 			else
 				Notification.onFail(
 					"Member '" + result.name + "' NOT removed from the circle: " +
-					((result.error) ? result.error.message : 'no error message'));
+					((result.error) ? result.error : 'no error message'));
 
 		},
 
@@ -459,7 +459,7 @@ $(document).ready(function () {
 			else
 				Notification.onFail(
 					"Cannot join this circle: " +
-					((result.error) ? result.error.message : 'no error message'));
+					((result.error) ? result.error : 'no error message'));
 		},
 
 		leaveCircleResult: function (result) {
@@ -478,7 +478,7 @@ $(document).ready(function () {
 			else
 				Notification.onFail(
 					"Cannot leave this circle: " +
-					((result.error) ? result.error.message : 'no error message'));
+					((result.error) ? result.error : 'no error message'));
 		},
 
 		// getCurrentCircleTemplate: function (id) {

@@ -1,6 +1,6 @@
 <?php
 /**
- * Circles - bring cloud-users closer
+ * Circles - Bring cloud-users closer together.
  *
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
@@ -29,19 +29,11 @@ namespace OCA\Circles\Controller;
 use \OCA\Circles\Service\MiscService;
 use \OCA\Circles\Service\ConfigService;
 use \OCA\Circles\Service\MembersService;
-use \OCA\Circles\Model\iError;
-use \OCA\Circles\Model\Circle;
-use \OCA\Circles\Model\Member;
 
-
-use \OCA\Circles\Exceptions\TeamDoesNotExists;
-use \OCA\Circles\Exceptions\TeamExists;
 use OC\AppFramework\Http;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
-use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IL10N;
-use OCP\ILogger;
 use OCP\IRequest;
 
 class MembersController extends Controller {
@@ -106,26 +98,26 @@ class MembersController extends Controller {
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
+	 * @param $id
 	 * @param string $name
 	 *
 	 * @return DataResponse
 	 */
 	public function add($id, $name) {
 
-		$data = $this->membersService->addMember($id, $name, $iError);
-
-		if ($data === null) {
+		try {
+			$data = $this->membersService->addMember($id, $name);
+		} catch (\Exception $e) {
 			return
 				new DataResponse(
 					[
 						'circle_id' => $id,
 						'name'      => $name,
 						'status'    => 0,
-						'error'     => $iError->toArray()
+						'error'     => $e->getMessage()
 					],
 					Http::STATUS_NON_AUTHORATIVE_INFORMATION
 				);
-
 		}
 
 		return new DataResponse(
@@ -143,21 +135,25 @@ class MembersController extends Controller {
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
-	 * @param string $name
+	 * @param $id
+	 * @param $member
 	 *
 	 * @return DataResponse
+	 * @internal param string $name
+	 *
 	 */
 	public function remove($id, $member) {
 
-		$data = $this->membersService->removeMember($id, $member, $iError);
-		if ($data === null) {
+		try {
+			$data = $this->membersService->removeMember($id, $member);
+		} catch (\Exception $e) {
 			return
 				new DataResponse(
 					[
 						'circle_id' => $id,
 						'name'      => $member,
 						'status'    => 0,
-						'error'     => $iError->toArray()
+						'error'     => $e->getMessage()
 					],
 					Http::STATUS_NON_AUTHORATIVE_INFORMATION
 				);

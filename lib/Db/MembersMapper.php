@@ -1,6 +1,6 @@
 <?php
 /**
- * Circles - bring cloud-users closer
+ * Circles - Bring cloud-users closer together.
  *
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
@@ -26,13 +26,12 @@
 
 namespace OCA\Circles\Db;
 
-use Doctrine\DBAL\Driver\PDOException;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
+use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 
-use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\IDBConnection;
 use OCP\AppFramework\Db\Mapper;
 
@@ -48,8 +47,15 @@ class MembersMapper extends Mapper {
 	}
 
 
+	/**
+	 * @param $circleId
+	 * @param $userId
+	 * @param bool $moderator
+	 *
+	 * @return null|Member
+	 * @throws MemberDoesNotExistException
+	 */
 	public function getMemberFromCircle($circleId, $userId, $moderator = false) {
-
 
 		$circleId = (int)$circleId;
 
@@ -80,10 +86,22 @@ class MembersMapper extends Mapper {
 		$member = Member::fromArray($data);
 		$cursor->closeCursor();
 
+		if ($member === null) {
+			throw new MemberDoesNotExistException();
+		}
+
 		return $member;
 	}
 
 
+	/**
+	 * get members list from a circle. If moderator, returns also notes about each member.
+	 *
+	 * @param $circleId
+	 * @param bool $moderator
+	 *
+	 * @return array
+	 */
 	public function getMembersFromCircle($circleId, $moderator = false) {
 
 		$circleId = (int)$circleId;

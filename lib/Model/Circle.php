@@ -1,6 +1,6 @@
 <?php
 /**
- * Circles - bring cloud-users closer
+ * Circles - Bring cloud-users closer together.
  *
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
@@ -37,7 +37,11 @@ class Circle implements \JsonSerializable {
 
 	private $id;
 	private $name;
+
+	/** @var Member */
 	private $owner;
+
+	/** @var Member */
 	private $user;
 	private $description;
 	private $type;
@@ -46,6 +50,7 @@ class Circle implements \JsonSerializable {
 	private $creation;
 	private $count;
 	private $members;
+	private $info;
 
 	public function __construct() {
 
@@ -105,8 +110,8 @@ class Circle implements \JsonSerializable {
 
 	public function setType($type) {
 		$this->type = (int)$type;
-		$this->setTypeString(self::TypeSring($type));
-		$this->setTypeLongString(self::TypeLongSring($type));
+		$this->setTypeString(self::TypeString($type));
+		$this->setTypeLongString(self::TypeLongString($type));
 		$this->setInfo($this->getTypeLongString());
 
 		return $this;
@@ -226,7 +231,7 @@ class Circle implements \JsonSerializable {
 		return $circle;
 	}
 
-	public static function TypeSring($type) {
+	public static function TypeString($type) {
 		switch ($type) {
 			case self::CIRCLES_PERSONAL:
 				return 'Personal';
@@ -239,9 +244,11 @@ class Circle implements \JsonSerializable {
 			case self::CIRCLES_ALL:
 				return 'All';
 		}
+
+		return 'none';
 	}
 
-	public static function TypeLongSring($type) {
+	public static function TypeLongString($type) {
 		switch ($type) {
 			case self::CIRCLES_PERSONAL:
 				return 'Personal Circle';
@@ -254,6 +261,8 @@ class Circle implements \JsonSerializable {
 			case self::CIRCLES_ALL:
 				return 'All Circles';
 		}
+
+		return 'none';
 	}
 
 }

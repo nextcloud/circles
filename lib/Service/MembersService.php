@@ -27,8 +27,13 @@
 namespace OCA\Circles\Service;
 
 
+use OC\User\NoUserException;
+use OCA\Circles\Exceptions\CircleDoesNotExistException;
+use OCA\Circles\Exceptions\MemberAlreadyExistsException;
+use OCA\Circles\Exceptions\MemberDoesNotExistException;
+use OCA\Circles\Exceptions\MemberIsNotModeratorException;
+use OCA\Circles\Exceptions\MemberIsOwnerException;
 use \OCA\Circles\Model\Circle;
-use \OCA\Circles\Model\iError;
 use \OCA\Circles\Model\Member;
 use OCP\IL10N;
 use OCP\IUserManager;
@@ -77,63 +82,65 @@ class MembersService {
 //		return $result;
 //	}
 
-	public function addMember($circleid, $name, &$iError = '') {
-
-		if ($iError === '' || $iError === null) {
-			$iError = new iError();
-		}
+	/**
+	 * @param $circleId
+	 * @param $name
+	 *
+	 * @return array
+	 * @throws CircleDoesNotExistException
+	 * @throws MemberAlreadyExistsException
+	 * @throws MemberDoesNotExistException
+	 * @throws MemberIsNotModeratorException
+	 * @throws NoUserException
+	 */
+	public function addMember($circleId, $name) {
 
 		if (!$this->userManager->userExists($name)) {
-			$iError->setCode(iError::MEMBER_DOES_NOT_EXIST)
-				   ->setMessage("The selected user does not exist");
-
-			return null;
+			throw new NoUserException("The selected user does not exist");
 		}
 
-		$ismod = $this->databaseService->getMembersMapper()
-									   ->getMemberFromCircle($circleid, $this->userId, $iError);
-
-		if ($ismod === null) {
-			return null;
+		try {
+			$ismod = $this->databaseService->getMembersMapper()
+										   ->getMemberFromCircle($circleId, $this->userId);
+		} catch (MemberDoesNotExistException $e) {
+			throw $e;
 		}
 
 		if ($ismod->getLevel() < Member::LEVEL_MODERATOR) {
-			$iError->setCode(iError::MEMBER_NEEDS_MODERATOR_RIGHTS)
-				   ->setMessage("You have not enough rights");
-
-			return null;
+			throw new MemberIsNotModeratorException("You are not moderator of this circle");
 		}
 
-		$member = $this->databaseService->getMembersMapper()
-										->getMemberFromCircle($circleid, $name);
-
-		$circle = $this->databaseService->getCirclesMapper()
-										->getDetailsFromCircle($this->userId, $circleid, $iError);
-
-		if ($member === null) {
+		try {
+			$member = $this->databaseService->getMembersMapper()
+											->getMemberFromCircle($circleId, $name);
+		} catch (MemberDoesNotExistException $e) {
 			$member = new Member();
-			$member->setCircleId($circle->getId());
+			$member->setCircleId($circleId);
 			$member->setUserId($name);
 			$member->setLevel(Member::LEVEL_NONE);
 			$member->setStatus(Member::STATUS_NONMEMBER);
 
 			$this->databaseService->getMembersMapper()
 								  ->add(
-									  $member, $iError
+									  $member
 								  );
+		}
+
+		try {
+			$circle = $this->databaseService->getCirclesMapper()
+											->getDetailsFromCircle($this->userId, $circleId);
+		} catch (CircleDoesNotExistException $e) {
+			throw $e;
 		}
 
 		if ($member->getLevel() > Member::LEVEL_NONE
 			|| ($member->getStatus() !== Member::STATUS_NONMEMBER
 				&& $member->getStatus() !== Member::STATUS_REQUEST)
 		) {
-			$iError->setCode(iError::MEMBER_ALREADY_IN_CIRCLE)
-				   ->setMessage("This user is already in the circle");
-
-			return null;
+			throw new MemberAlreadyExistsException();
 		}
 
-		$member->setCircleId($circleid);
+		$member->setCircleId($circleId);
 		$member->setUserId($name);
 
 		switch ($circle->getType()) {
@@ -155,77 +162,65 @@ class MembersService {
 				break;
 		}
 
-		if (!$this->databaseService->getMembersMapper()
-								   ->editMember($member, $iError)
-		) {
-			return null;
-		}
+		$this->databaseService->getMembersMapper()
+							  ->editMember($member);
 
 		return $this->databaseService->getMembersMapper()
 									 ->getMembersFromCircle(
-										 $circleid, ($circle->getUser()
+										 $circleId, ($circle->getUser()
 															->getLevel()
-													 >= Member::LEVEL_MODERATOR),
-										 $iError
+													 >= Member::LEVEL_MODERATOR)
 									 );
 	}
 
-	public function removeMember($circleid, $name, &$iError = '') {
+	/**
+	 * @param $circleId
+	 * @param $name
+	 *
+	 * @return array
+	 * @throws MemberDoesNotExistException
+	 * @throws MemberIsNotModeratorException
+	 * @throws MemberIsOwnerException
+	 */
+	public function removeMember($circleId, $name) {
 
-		if ($iError === '' || $iError === null) {
-			$iError = new iError();
+		try {
+			$ismod = $this->databaseService->getMembersMapper()
+										   ->getMemberFromCircle($circleId, $this->userId);
+		} catch (MemberDoesNotExistException $e) {
+			throw $e;
 		}
 
-		$ismod = $this->databaseService->getMembersMapper()
-									   ->getMemberFromCircle($circleid, $this->userId, $iError);
-
-		if ($ismod === null) {
-			return null;
-		}
 
 		if ($ismod->getLevel() < Member::LEVEL_MODERATOR) {
-			$iError->setCode(iError::MEMBER_NEEDS_MODERATOR_RIGHTS)
-				   ->setMessage("You have not enough rights");
-
-			return null;
+			throw new MemberIsNotModeratorException("You are not moderator of this circle");
 		}
 
-		$curr = $this->databaseService->getMembersMapper()
-									  ->getMemberFromCircle($circleid, $name);
-		if ($curr === null) {
-			$iError->setCode(iError::MEMBER_NOT_IN_CIRCLE)
-				   ->setMessage("This user is not a member of this circle");
-
-			return null;
+		try {
+			$member = $this->databaseService->getMembersMapper()
+											->getMemberFromCircle($circleId, $name);
+		} catch (MemberDoesNotExistException $e) {
+			throw $e;
 		}
 
-		if ($curr->getLevel() === Member::LEVEL_OWNER) {
-			$iError->setCode(iError::MEMBER_CANT_REMOVE_OWNER)
-				   ->setMessage("This user is the owner of the circle");
 
-			return null;
-
+		if ($member->getLevel() === Member::LEVEL_OWNER) {
+			throw new MemberIsOwnerException();
 		}
 
-		$member = new Member();
-		$member->setCircleId($circleid);
-		$member->setUserId($name);
-
-		if (!$this->databaseService->getMembersMapper()
-								   ->remove($member, $iError)
-		) {
-			return null;
-		}
+		$this->databaseService->getMembersMapper()
+							  ->remove($member);
 
 		$circle = $this->databaseService->getCirclesMapper()
-										->getDetailsFromCircle($this->userId, $circleid, $iError);
+										->getDetailsFromCircle(
+											$this->userId, $circleId
+										);
 
 		return $this->databaseService->getMembersMapper()
 									 ->getMembersFromCircle(
-										 $circleid, ($circle->getUser()
+										 $circleId, ($circle->getUser()
 															->getLevel()
-													 >= Member::LEVEL_MODERATOR),
-										 $iError
+													 >= Member::LEVEL_MODERATOR)
 									 );
 	}
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Circles - bring cloud-users closer
+ * Circles - Bring cloud-users closer together.
  *
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
@@ -26,22 +26,18 @@
 
 namespace OCA\Circles\Controller;
 
+use OCA\Circles\Exceptions\CircleDoesNotExistException;
+use OCA\Circles\Exceptions\CircleTypeDisabledException;
 use \OCA\Circles\Service\MiscService;
 use \OCA\Circles\Service\ConfigService;
 use \OCA\Circles\Service\CirclesService;
-use \OCA\Circles\Model\iError;
-use \OCA\Circles\Model\Circle;
 use \OCA\Circles\Model\Member;
 
 
-use \OCA\Circles\Exceptions\TeamDoesNotExists;
-use \OCA\Circles\Exceptions\TeamExists;
 use OC\AppFramework\Http;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
-use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IL10N;
-use OCP\ILogger;
 use OCP\IRequest;
 
 class CirclesController extends Controller {
@@ -80,6 +76,7 @@ class CirclesController extends Controller {
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
+	 * @param $type
 	 * @param string $name
 	 *
 	 * @return DataResponse
@@ -88,21 +85,29 @@ class CirclesController extends Controller {
 
 		$data = null;
 		if (substr($name, 0, 1) === '_') {
-			$iError = new iError();
-			$iError->setCode(iError::CIRCLE_CREATION_FIRST_CHAR)
-				   ->setMessage("The name of your circle cannot start with this character");
-		} else {
-			$data = $this->circlesService->createCircle($type, $name, $iError);
-		}
-
-		if ($data === null) {
 			return
 				new DataResponse(
 					[
 						'name'   => $name,
 						'type'   => $type,
 						'status' => 0,
-						'error'  => $iError->toArray()
+						'error'  => "The name of your circle cannot start with this character"
+					],
+					Http::STATUS_NON_AUTHORATIVE_INFORMATION
+				);
+		}
+
+
+		try {
+			$data = $this->circlesService->createCircle($type, $name);
+		} catch (\Exception $e) {
+			return
+				new DataResponse(
+					[
+						'name'   => $name,
+						'type'   => $type,
+						'status' => 0,
+						'error'  => $e->getMessage()
 					],
 					Http::STATUS_NON_AUTHORATIVE_INFORMATION
 				);
@@ -124,25 +129,25 @@ class CirclesController extends Controller {
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
+	 * @param $type
 	 * @param string $name
 	 *
 	 * @return DataResponse
 	 */
 	public function list($type, $name = '') {
 
-		$data = $this->circlesService->listCircles($type, $name, Member::LEVEL_NONE, $iError);
-
-		if ($data === null) {
+		try {
+			$data = $this->circlesService->listCircles($type, $name, Member::LEVEL_NONE);
+		} catch (CircleTypeDisabledException $e) {
 			return
 				new DataResponse(
 					[
 						'type'   => $type,
 						'status' => 0,
-						'error'  => $iError->toArray()
+						'error'  => $e->getMessage()
 					],
 					Http::STATUS_NON_AUTHORATIVE_INFORMATION
 				);
-
 		}
 
 		return new DataResponse(
@@ -159,25 +164,26 @@ class CirclesController extends Controller {
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
-	 * @param string $name
+	 * @param $id
 	 *
 	 * @return DataResponse
+	 * @internal param string $name
+	 *
 	 */
 	public function details($id) {
 
-		$data = $this->circlesService->detailsCircle($id, $iError);
-
-		if ($data === null) {
+		try {
+			$data = $this->circlesService->detailsCircle($id);
+		} catch (CircleDoesNotExistException $e) {
 			return
 				new DataResponse(
 					[
 						'circle_id' => $id,
 						'status'    => 0,
-						'error'     => $iError->toArray()
+						'error'     => $e->getMessage()
 					],
 					Http::STATUS_NON_AUTHORATIVE_INFORMATION
 				);
-
 		}
 
 		return new DataResponse(
@@ -194,25 +200,26 @@ class CirclesController extends Controller {
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
-	 * @param string $name
+	 * @param $id
 	 *
 	 * @return DataResponse
+	 * @internal param string $name
+	 *
 	 */
 	public function join($id) {
 
-		$data = $this->circlesService->joinCircle($id, $iError);
-
-		if ($data === null) {
+		try {
+			$data = $this->circlesService->joinCircle($id);
+		} catch (\Exception $e) {
 			return
 				new DataResponse(
 					[
 						'circle_id' => $id,
 						'status'    => 0,
-						'error'     => $iError->toArray()
+						'error'     => $e->getMessage()
 					],
 					Http::STATUS_NON_AUTHORATIVE_INFORMATION
 				);
-
 		}
 
 		return new DataResponse(
@@ -225,33 +232,29 @@ class CirclesController extends Controller {
 	}
 
 
-
-
-
-
 	/**
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
-	 * @param string $name
+	 * @param $id
 	 *
 	 * @return DataResponse
+	 * @internal param string $name
+	 *
 	 */
 	public function leave($id) {
-
-		$data = $this->circlesService->leaveCircle($id, $iError);
-
-		if ($data === null) {
+		try {
+			$data = $this->circlesService->leaveCircle($id);
+		} catch (\Exception $e) {
 			return
 				new DataResponse(
 					[
 						'circle_id' => $id,
 						'status'    => 0,
-						'error'     => $iError->toArray()
+						'error'     => $e->getMessage()
 					],
 					Http::STATUS_NON_AUTHORATIVE_INFORMATION
 				);
-
 		}
 
 		return new DataResponse(

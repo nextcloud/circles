@@ -1,6 +1,6 @@
 <?php
 /**
- * Circles - bring cloud-users closer
+ * Circles - Bring cloud-users closer together.
  *
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
@@ -39,7 +39,6 @@ use \OCA\Circles\Service\MembersService;
 use \OCA\Circles\Service\ConfigService;
 use \OCA\Circles\Service\MiscService;
 use OCP\AppFramework\App;
-use OCP\Util;
 
 class Application extends App {
 

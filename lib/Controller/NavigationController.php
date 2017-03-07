@@ -1,6 +1,6 @@
 <?php
 /**
- * Circles - bring cloud-users closer
+ * Circles - Bring cloud-users closer together.
  *
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
@@ -29,14 +29,9 @@ namespace OCA\Circles\Controller;
 use \OCA\Circles\Service\MiscService;
 use \OCA\Circles\Service\ConfigService;
 use \OCA\Circles\Model\Circle;
-use \OCA\Circles\Exceptions\TeamDoesNotExists;
-use \OCA\Circles\Exceptions\TeamExists;
-use OC\AppFramework\Http;
 use OCP\AppFramework\Controller;
-use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IL10N;
-use OCP\ILogger;
 use OCP\IRequest;
 
 class NavigationController extends Controller {

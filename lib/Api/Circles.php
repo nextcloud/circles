@@ -1,6 +1,6 @@
 <?php
 /**
- * Circles - bring cloud-users closer
+ * Circles - Bring cloud-users closer together.
  *
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
@@ -27,11 +27,13 @@
 namespace OCA\Circles\Api;
 
 
+use OCA\Circles\AppInfo\Application;
+
 class Circles {
 
 
 	static protected function getContainer() {
-		$app = new \OCA\Circles\AppInfo\Application();
+		$app = new Application();
 
 		return $app->getContainer();
 	}

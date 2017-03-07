@@ -1,6 +1,6 @@
 <?php
 /**
- * Circles - bring cloud-users closer
+ * Circles - Bring cloud-users closer together.
  *
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
@@ -28,10 +28,10 @@ namespace OCA\Circles\Db;
 
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleCreationException;
+use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 
-use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\IDBConnection;
 use OCP\AppFramework\Db\Mapper;
 
@@ -67,7 +67,7 @@ class CirclesMapper extends Mapper {
 	 * @param int $level
 	 * @param int $circleId
 	 *
-	 * @return array|null
+	 * @return Circle[]|null
 	 */
 	public function findCirclesByUser($userId, $type, $name = '', $level = 0, $circleId = -1) {
 
@@ -148,6 +148,11 @@ class CirclesMapper extends Mapper {
 												),
 											 $qb->expr()
 												->eq(
+													'c.id',
+													$qb->createNamedParameter($circleId)
+												),
+											 $qb->expr()
+												->eq(
 													'c.name',
 													$qb->createNamedParameter($name)
 												)
@@ -194,7 +199,7 @@ class CirclesMapper extends Mapper {
 
 		$result = [];
 		while ($data = $cursor->fetch()) {
-			if (stripos($data['name'], $name) !== false) {
+			if ($name === '' || stripos($data['name'], $name) !== false) {
 				$result[] = Circle::fromArray($data);
 			}
 		}
@@ -211,12 +216,15 @@ class CirclesMapper extends Mapper {
 	 * @param int $circleId
 	 *
 	 * @return Circle
+	 * @throws CircleDoesNotExistException
 	 */
 	public function getDetailsFromCircle($userId, $circleId) {
 
 		$result = $this->findCirclesByUser($userId, Circle::CIRCLES_ALL, '', 0, $circleId);
 		if (sizeof($result) !== 1) {
-			return null;
+			throw new CircleDoesNotExistException(
+				"The circle does not exist or is hidden to the user"
+			);
 		}
 
 		return $result[0];

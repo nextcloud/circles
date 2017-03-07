@@ -1,6 +1,6 @@
 <?php
 /**
- * Circles - bring cloud-users closer
+ * Circles - Bring cloud-users closer together.
  *
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
@@ -28,10 +28,13 @@
 namespace OCA\Circles;
 
 
+use OC\Share20\Exception\InvalidShare;
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CirclesMapper;
 use OCA\Circles\Db\MembersMapper;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
+use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\Files\Node;
 use OCP\Files\IRootFolder;
@@ -101,7 +104,7 @@ class ShareByCircleProvider implements IShareProvider {
 		$this->l = $l;
 		$this->logger = $logger;
 
-		$app = new \OCA\Circles\AppInfo\Application();
+		$app = new Application();
 		$this->misc = $app->getContainer()
 						  ->query('MiscService');
 
@@ -113,7 +116,6 @@ class ShareByCircleProvider implements IShareProvider {
 	 * Return the identifier of this provider.
 	 *
 	 * @return string Containing only [a-zA-Z0-9]
-	 * @since 9.0.0
 	 */
 	public function identifier() {
 		return 'ocCircleShare';
@@ -124,8 +126,8 @@ class ShareByCircleProvider implements IShareProvider {
 	 *
 	 * @param \OCP\Share\IShare $share
 	 *
-	 * @return \OCP\Share\IShare The share object
-	 * @since 9.0.0
+	 * @return IShare The share object
+	 * @throws \Exception
 	 */
 	public function create(IShare $share) {
 		$this->misc->log("CircleProvider: create");
@@ -171,8 +173,16 @@ class ShareByCircleProvider implements IShareProvider {
 
 		$data = $exists->fetch();
 		$exists->closeCursor();
+		$this->misc->log('______   ' . var_export($data, true));
 
-		if (sizeof($data) > 0) {
+		$this->misc->log('______   ' . $qb->getSQL());
+		$this->misc->log(
+			'______   ' . \OCP\Share::SHARE_TYPE_CIRCLE . '   ' . $share->getSharedWith() . '   '
+			.
+				$share->getNode()
+					  ->getId());
+
+		if ($data !== false && sizeof($data) > 0) {
 			$message = 'Sharing %s failed, this item is already shared with this circle';
 			$message_t = $this->l->t(
 				'Sharing %s failed, this item is already shared with this circle', array(
@@ -214,7 +224,6 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @param \OCP\Share\IShare $share
 	 *
 	 * @return \OCP\Share\IShare The share object
-	 * @since 9.0.0
 	 */
 	public function update(IShare $share) {
 		$this->misc->log("CircleProvider: update");
@@ -237,8 +246,6 @@ class ShareByCircleProvider implements IShareProvider {
 	 * Delete a share
 	 *
 	 * @param \OCP\Share\IShare $share
-	 *
-	 * @since 9.0.0
 	 */
 	public function delete(IShare $share) {
 		$this->misc->log("CircleProvider: delete");
@@ -267,14 +274,13 @@ class ShareByCircleProvider implements IShareProvider {
 	 *
 	 * @param \OCP\Share\IShare $share
 	 * @param string $recipient UserId of the recipient
-	 *
-	 * @since 9.0.0
 	 */
 	public function deleteFromSelf(IShare $share, $recipient) {
 		$this->misc->log("CircleProvider: deleteFromSelf");
 		$share->setPermissions(0);
 		$this->move($share, $recipient, true);
 	}
+
 
 	/**
 	 * Move a share as a recipient.
@@ -286,7 +292,6 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @param string $recipient userId of recipient
 	 *
 	 * @return \OCP\Share\IShare
-	 * @since 9.0.0
 	 */
 	public function move(IShare $share, $recipient, $unshare = false) {
 		$this->misc->log("CircleProvider: move");
@@ -327,18 +332,18 @@ class ShareByCircleProvider implements IShareProvider {
 				   ->orderBy('id')
 				   ->execute();
 
-		$parentid = 0;
+		$parentId = 0;
 		while ($data = $stmt->fetch()) {
 			if ($data['parent'] === $share->getId()) {
-				$parentid = $data['id'];
+				$parentId = $data['id'];
 			}
 			if ($data['id'] === $share->getId()) {
-				$parentid = $data['id'];
+				$parentId = $data['id'];
 			}
 		}
 		$stmt->closeCursor();
 
-		if ($parentid === 0) {
+		if ($parentId === 0) {
 			// no parent - create one
 			$qb = $this->dbConnection->getQueryBuilder();
 			$qb->insert('share')
@@ -382,7 +387,7 @@ class ShareByCircleProvider implements IShareProvider {
 
 			$qb->where(
 				$qb->expr()
-				   ->eq('id', $qb->createNamedParameter($parentid))
+				   ->eq('id', $qb->createNamedParameter($parentId))
 			);
 
 			if ($unshare !== true) {
@@ -408,7 +413,6 @@ class ShareByCircleProvider implements IShareProvider {
 	 *     shares where $user is the initiator
 	 *
 	 * @return \OCP\Share\IShare[]
-	 * @since 11.0.0
 	 */
 	public function getSharesInFolder($userId, Folder $node, $reshares) {
 		$this->misc->log("CircleProvider: getSharesInFolder");
@@ -509,7 +513,6 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @param int $offset
 	 *
 	 * @return \OCP\Share\IShare[]
-	 * @since 9.0.0
 	 */
 	public function getSharesBy($userId, $shareType, $node, $reshares, $limit, $offset) {
 		$this->misc->log("CircleProvider: getSharesBy");
@@ -580,7 +583,7 @@ class ShareByCircleProvider implements IShareProvider {
 
 			$data['share_with'] =
 				sprintf(
-					'%s (%s)', $data['circle_name'], Circle::TypeLongSring($data['circle_type'])
+					'%s (%s)', $data['circle_name'], Circle::TypeLongString($data['circle_type'])
 				);
 			$shares[] = $this->createShareObject($data);
 		}
@@ -597,7 +600,6 @@ class ShareByCircleProvider implements IShareProvider {
 	 *
 	 * @return \OCP\Share\IShare
 	 * @throws ShareNotFound
-	 * @since 9.0.0
 	 */
 	public function getShareById($id, $recipientId = null) {
 		$this->misc->log("CircleProvider: getShareById");
@@ -639,11 +641,12 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @param Node $path
 	 *
 	 * @return \OCP\Share\IShare[]
-	 * @since 9.0.0
 	 */
 	public function getSharesByPath(Node $path) {
 		$this->misc->log("CircleProvider: getSharesByPath");
+
 		// TODO: Implement getSharesByPath() method.
+		return null;
 	}
 
 	/**
@@ -656,10 +659,10 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @param int $offset
 	 *
 	 * @return \OCP\Share\IShare[]
-	 * @since 9.0.0
 	 */
 	public function getSharedWith($userId, $shareType, $node, $limit, $offset) {
 		$this->misc->log("CircleProvider: getSharedWith");
+
 		/** @var IShare[] $shares */
 		$shares = [];
 
@@ -753,10 +756,9 @@ class ShareByCircleProvider implements IShareProvider {
 	 *
 	 * @return \OCP\Share\IShare
 	 * @throws ShareNotFound
-	 * @since 9.0.0
 	 */
 	public function getShareByToken($token) {
-		return;
+		return null;
 	}
 
 
@@ -804,8 +806,6 @@ class ShareByCircleProvider implements IShareProvider {
 	 *
 	 * @param string $uid
 	 * @param int $shareType
-	 *
-	 * @since 9.1.0
 	 */
 	public function userDeleted($uid, $shareType) {
 		$this->misc->log("CircleProvider: userDeleted");
@@ -818,8 +818,6 @@ class ShareByCircleProvider implements IShareProvider {
 	 * Providers not handling group shares should just return
 	 *
 	 * @param string $gid
-	 *
-	 * @since 9.1.0
 	 */
 	public function groupDeleted($gid) {
 		return;
@@ -832,8 +830,6 @@ class ShareByCircleProvider implements IShareProvider {
 	 *
 	 * @param string $uid
 	 * @param string $gid
-	 *
-	 * @since 9.1.0
 	 */
 	public function userDeletedFromGroup($uid, $gid) {
 		return;
