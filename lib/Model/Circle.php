@@ -48,7 +48,6 @@ class Circle implements \JsonSerializable {
 	private $typeString;
 	private $typeLongString;
 	private $creation;
-	private $count;
 	private $members;
 	private $info;
 
@@ -159,16 +158,6 @@ class Circle implements \JsonSerializable {
 		return $this->creation;
 	}
 
-
-//	public function setCount($count) {
-//		$this->count = $count;
-//
-//		return $this;
-//	}
-//
-//	public function getCount() {
-//		return $this->count;
-//	}
 
 	public function setMembers($members) {
 		$this->members = $members;
