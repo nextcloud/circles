@@ -67,7 +67,8 @@ class CircleTest extends \PHPUnit_Framework_TestCase {
 		$members = array($owner, $user);
 
 
-		$model = Circle::fromArray(
+		$model = new Circle();
+		$model->fromArray(
 			array(
 				'id'          => 1,
 				'name'        => 'test',
@@ -80,9 +81,8 @@ class CircleTest extends \PHPUnit_Framework_TestCase {
 				'level'       => $user->getLevel(),
 				'joined'      => $user->getJoined()
 			)
-		);
-
-		$model->setMembers($members);
+		)
+			  ->setMembers($members);
 
 		$this->assertSame(1, $model->getId());
 		$this->assertSame(
@@ -105,6 +105,6 @@ class CircleTest extends \PHPUnit_Framework_TestCase {
 		$this->assertSame(Circle::CIRCLES_ALL, $model->getType());
 		$this->assertSame($date, $model->getCreation());
 		$this->assertSame($members, $model->getMembers());
-	//	$this->assertSame(2, $model->getCount());
+		//	$this->assertSame(2, $model->getCount());
 	}
 }

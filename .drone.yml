@@ -3,11 +3,11 @@ pipeline:
     image: nextcloudci/php7.0:php7.0-2
     environment:
     - APP_NAME=circles
-    - CORE_BRANCH=master
+    - CORE_BRANCH=shares-circles
     - DB=sqlite
     commands:
       - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
-      - bash ./before_install.sh circles master sqlite
+      - bash ./before_install.sh $APP_NAME $CORE_BRANCH $DB
 
       # Run phpunit tests
       - cd tests/

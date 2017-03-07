@@ -52,7 +52,6 @@ class Circle implements \JsonSerializable {
 	private $info;
 
 	public function __construct() {
-
 	}
 
 
@@ -187,52 +186,47 @@ class Circle implements \JsonSerializable {
 		);
 	}
 
-	public static function fromArray($arr) {
-		$circle = new Circle();
-		$circle->setId($arr['id']);
+	/**
+	 * set all infos from an Array.
+	 *
+	 * @param $arr
+	 *
+	 * @return $this
+	 */
+	public function fromArray($arr) {
+		$this->setId($arr['id']);
+		$this->setName($arr['name']);
+		$this->setDescription($arr['description']);
+		$this->setType($arr['type']);
+		$this->setCreation($arr['creation']);
 
-		$circle->setName($arr['name']);
-		$circle->setDescription($arr['description']);
-		$circle->setType($arr['type']);
-		$circle->setCreation($arr['creation']);
-//		if (key_exists('count', $arr)) {
-//			$circle->setCount($arr['count']);
-//		}
+		$this->setOwnerMemberFromArray($arr);
+		$this->setUserMemberFromArray($arr);
 
-		$circle->setOwner(self::getOwnerMemberFromArray($arr));
-		$circle->setUser(self::getUserMemberFromArray($arr));
-
-		return $circle;
+		return $this;
 	}
 
 
 	/**
-	 * return Owner Infos from Array
+	 * set Owner Infos from Array
 	 *
 	 * @param $array
-	 *
-	 * @return null|Member
 	 */
-	private static function getOwnerMemberFromArray($array) {
+	private function setOwnerMemberFromArray($array) {
 		if (key_exists('owner', $array)) {
 			$owner = new Member();
 			$owner->setUserId($array['owner']);
-
-			return $owner;
+			$this->setOwner($owner);
 		}
-
-		return null;
 	}
 
+
 	/**
-	 * return User Infos from Array
+	 * set User Infos from Array
 	 *
 	 * @param $array
-	 *
-	 * @return null|Member
 	 */
-	private static function getUserMemberFromArray($array) {
-
+	private function setUserMemberFromArray($array) {
 		if (key_exists('status', $array)
 			&& key_exists('level', $array)
 			&& key_exists('joined', $array)
@@ -241,11 +235,8 @@ class Circle implements \JsonSerializable {
 			$user->setStatus($array['status']);
 			$user->setLevel($array['level']);
 			$user->setJoined($array['joined']);
-
-			return $user;
+			$this->setUser($user);
 		}
-
-		return null;
 	}
 
 
