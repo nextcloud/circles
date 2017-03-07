@@ -145,9 +145,9 @@ class MembersService {
 		$member->setUserId($name);
 
 		if ($circle->getType() === Circle::CIRCLES_PRIVATE) {
-			self::InviteMemberToPrivateCircle($member);
+			$this->inviteMemberToPrivateCircle($member);
 		} else {
-			self::AddMemberToCircle($member);
+			$this->addMemberToCircle($member);
 		}
 
 		$this->databaseService->getMembersMapper()
@@ -167,7 +167,7 @@ class MembersService {
 	 *
 	 * @param $member
 	 */
-	public static function InviteMemberToPrivateCircle(&$member) {
+	private function inviteMemberToPrivateCircle(&$member) {
 		if ($member->getStatus() === Member::STATUS_REQUEST) {
 			self::AddMemberToCircle($member);
 		} else {
@@ -181,7 +181,7 @@ class MembersService {
 	 *
 	 * @param $member
 	 */
-	public static function AddMemberToCircle(&$member) {
+	private function addMemberToCircle(&$member) {
 		$member->setLevel(Member::LEVEL_MEMBER);
 		$member->setStatus(Member::STATUS_MEMBER);
 	}

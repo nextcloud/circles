@@ -52,7 +52,8 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 		$members = array($owner, $user);
 
-		$model = Circle::fromArray(
+		$model = new Circle();
+		$model->fromArray(
 			array(
 				'id'          => 1,
 				'name'        => 'test',
@@ -61,8 +62,8 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 				'creation'    => $date,
 				'count'       => sizeof($members),
 			)
-		);
-		$model->setMembers($members);
+		)
+			  ->setMembers($members);
 
 		$item = new Circles($model);
 
