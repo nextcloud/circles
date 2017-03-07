@@ -26,6 +26,8 @@
 
 namespace OCA\Circles\Model;
 
+use OCA\Circles\Exceptions\MemberIsNotModeratorException;
+
 class Member implements \JsonSerializable {
 
 	const LEVEL_NONE = 0;
@@ -134,6 +136,14 @@ class Member implements \JsonSerializable {
 		return $this->joined;
 	}
 
+	public function isModerator() {
+		if ($this->getLevel() >= self::LEVEL_MODERATOR) {
+			return true;
+		}
+
+		throw new MemberIsNotModeratorException();
+
+	}
 
 	public function jsonSerialize() {
 		return array(

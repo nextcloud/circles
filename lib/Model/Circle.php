@@ -248,6 +248,11 @@ class Circle implements \JsonSerializable {
 		return 'none';
 	}
 
+	/**
+	 * @param $type
+	 *
+	 * @return string
+	 */
 	public static function TypeLongString($type) {
 		switch ($type) {
 			case self::CIRCLES_PERSONAL:
