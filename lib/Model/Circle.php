@@ -167,11 +167,7 @@ class Circle implements \JsonSerializable {
 	public function getMembers() {
 		return $this->members;
 	}
-
-
-	public function toString() {
-		return "toString ?";
-	}
+	
 
 	public function jsonSerialize() {
 		return array(

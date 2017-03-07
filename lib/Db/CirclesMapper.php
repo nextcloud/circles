@@ -204,36 +204,27 @@ class CirclesMapper extends Mapper {
 		IQueryBuilder $qb, int $type, int $circleId, string $name
 	) {
 
-		if (Circle::CIRCLES_HIDDEN & (int)$type) {
-			return $qb->expr()
-					  ->andX(
-						  $qb->expr()
-							 ->eq(
-								 'c.type',
-								 $qb->createNamedParameter(Circle::CIRCLES_HIDDEN)
-							 ),
-						  $qb->expr()
-							 ->orX(
-								 $qb->expr()
-									->gte(
-										'u.level',
-										$qb->createNamedParameter(Member::LEVEL_MEMBER)
-									),
-								 $qb->expr()
-									->eq(
-										'c.id',
-										$qb->createNamedParameter($circleId)
-									),
-								 $qb->expr()
-									->eq(
-										'c.name',
-										$qb->createNamedParameter($name)
-									)
-							 )
-					  );
+		if (!(Circle::CIRCLES_HIDDEN & (int)$type)) {
+			return null;
 		}
 
-		return null;
+		$sqb = $qb->expr();
+		$sqb->andX(
+			$qb->expr()
+			   ->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_HIDDEN)),
+			$qb->expr()
+			   ->orX(
+				   $this->buildWithMemberLevel($qb, 'u.level', Member::LEVEL_MEMBER),
+				   $qb->expr()
+					  ->gte(
+						  'u.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)
+					  ),
+				   $qb->expr()
+					  ->eq('c.id', $qb->createNamedParameter($circleId)),
+				   $qb->expr()
+					  ->eq('c.name', $qb->createNamedParameter($name))
+			   )
+		);
 	}
 
 
@@ -361,7 +352,7 @@ class CirclesMapper extends Mapper {
 
 
 	/**
-	 * returns is the circle is already in database
+	 * returns if the circle is already in database
 	 *
 	 * @param Circle $circle
 	 * @param Member $owner
@@ -371,39 +362,51 @@ class CirclesMapper extends Mapper {
 	public function isCircleUnique(Circle $circle, Member $owner) {
 
 		if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
+			return $this->isPersonalCircleUnique($circle, $owner);
+		}
 
-			$list = $this->findCirclesByUser(
-				$owner->getUserId(), Circle::CIRCLES_PERSONAL, $circle->getName(),
-				Member::LEVEL_OWNER
-			);
+		$qb = $this->db->getQueryBuilder();
+		$qb->select(
+			'c.id', 'c.name', 'c.type'
+		)
+		   ->from(self::TABLENAME, 'c')
+		   ->where(
+			   $qb->expr()
+				  ->neq('c.type', $qb->createNamedParameter(Circle::CIRCLES_PERSONAL))
+		   );
 
-			foreach ($list as $test) {
-				if ($test->getName() === $circle->getName()) {
-					return false;
-				}
+		$cursor = $qb->execute();
+
+		while ($data = $cursor->fetch()) {
+			if (strtolower($data['name']) === strtolower($circle->getName())) {
+				return false;
 			}
+		}
+		$cursor->closeCursor();
 
-		} else {
+		return true;
+	}
 
-			$qb = $this->db->getQueryBuilder();
-			$qb->select(
-				'c.id', 'c.name', 'c.type'
-			)
-			   ->from(self::TABLENAME, 'c')
-			   ->where(
-				   $qb->expr()
-					  ->neq('c.type', $qb->createNamedParameter(Circle::CIRCLES_PERSONAL))
-			   );
 
-			$cursor = $qb->execute();
+	/**
+	 * return if the personal circle is unique
+	 *
+	 * @param Circle $circle
+	 * @param Member $owner
+	 *
+	 * @return bool
+	 */
+	private function isPersonalCircleUnique(Circle $circle, Member $owner) {
 
-			while ($data = $cursor->fetch()) {
-				if (strtolower($data['name']) === strtolower($circle->getName())) {
-					return false;
-				}
+		$list = $this->findCirclesByUser(
+			$owner->getUserId(), Circle::CIRCLES_PERSONAL, $circle->getName(),
+			Member::LEVEL_OWNER
+		);
+
+		foreach ($list as $test) {
+			if ($test->getName() === $circle->getName()) {
+				return false;
 			}
-			$cursor->closeCursor();
-
 		}
 
 		return true;
