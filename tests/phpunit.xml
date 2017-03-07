@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <phpunit bootstrap="bootstrap.php">
 	<testsuite>
-		<directory>.</directory>
+		<directory suffix='Test.php'>.</directory>
 	</testsuite>
 	<filter>
 		<whitelist>
