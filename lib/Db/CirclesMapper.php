@@ -144,7 +144,7 @@ class CirclesMapper extends Mapper {
 	 * @param string $field
 	 * @param int $circleId
 	 */
-	private function buildWithCircleId(IQueryBuilder &$qb, string $field, int $circleId) {
+	private function buildWithCircleId(IQueryBuilder & $qb, string $field, int $circleId) {
 		if ($circleId > 0) {
 			$qb->andWhere(
 				$qb->expr()
@@ -159,7 +159,7 @@ class CirclesMapper extends Mapper {
 	 * @param string $field
 	 * @param int $level
 	 */
-	private function buildWithMemberLevel(IQueryBuilder &$qb, string $field, int $level) {
+	private function buildWithMemberLevel(IQueryBuilder & $qb, string $field, int $level) {
 		if ($level > 0) {
 			$qb->andWhere(
 				$qb->expr()
@@ -304,7 +304,7 @@ class CirclesMapper extends Mapper {
 	 * @throws CircleCreationException
 	 * @throws ConfigNoCircleAvailable
 	 */
-	public function create(Circle &$circle, Member &$owner) {
+	public function create(Circle & $circle, Member & $owner) {
 
 		if (!$this->isCircleUnique($circle, $owner)) {
 			throw new CircleAlreadyExistsException();
