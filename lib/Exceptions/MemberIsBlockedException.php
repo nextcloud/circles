@@ -29,8 +29,9 @@ namespace OCA\Circles\Exceptions;
 class MemberIsBlockedException extends \Exception {
 
 	public function __construct($message = "", $code = 0, \Exception $previous = null) {
-		if ($message === '')
+		if ($message === '') {
 			$message = 'This member is blocked';
+		}
 
 		parent::__construct($message, $code, $previous);
 	}
