@@ -24,45 +24,17 @@
  *
  */
 
-namespace OCA\Circles\Controller;
+namespace OCA\Circles\Exceptions;
 
-use \OCA\Circles\Model\Circle;
-use OCP\AppFramework\Http\TemplateResponse;
+class ConfigNoCircleAvailable extends \Exception {
 
-class NavigationController extends BaseController {
+	public function __construct($message = "", $code = 0, \Exception $previous = null) {
+		if ($message === '') {
+			$message = 'No type of circle are selected in the global configuration of the app';
+		}
 
-
-	/**
-	 * @NoCSRFRequired
-	 * @NoAdminRequired
-	 * @NoSubAdminRequired
-	 *
-	 * @return TemplateResponse
-	 */
-	public function navigate() {
-
-		$data = [
-			'allowed_circles' => array(
-				Circle::CIRCLES_PERSONAL => $this->configService->isCircleAllowed(
-					Circle::CIRCLES_PERSONAL
-				),
-				Circle::CIRCLES_HIDDEN   => $this->configService->isCircleAllowed(
-					Circle::CIRCLES_HIDDEN
-				),
-				Circle::CIRCLES_PRIVATE  => $this->configService->isCircleAllowed(
-					Circle::CIRCLES_PRIVATE
-				),
-				Circle::CIRCLES_PUBLIC   => $this->configService->isCircleAllowed(
-					Circle::CIRCLES_PUBLIC
-				),
-			)
-		];
-
-
-		return new TemplateResponse(
-			'circles', 'navigate', $data
-		);
+		parent::__construct($message, $code, $previous);
 	}
 
-
 }
+

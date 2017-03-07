@@ -26,12 +26,15 @@
 
 namespace OCA\Circles\Db;
 
+use Doctrine\DBAL\Query\QueryBuilder;
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleCreationException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
+use OCA\Circles\Exceptions\ConfigNoCircleAvailable;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 
+use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 use OCP\AppFramework\Db\Mapper;
 
@@ -47,16 +50,6 @@ class CirclesMapper extends Mapper {
 
 	}
 
-//	public function find($id) {
-//		try {
-//			$sql = sprintf('SELECT * FROM *PREFIX*%s WHERE id = ?', self::TABLENAME);
-//
-//			return $this->findEntity($sql, [$id]);
-//		} catch (DoesNotExistException $dnee) {
-//			return null;
-//		}
-//	}
-
 
 	/**
 	 * Returns all circle from a user point-of-view
@@ -67,7 +60,8 @@ class CirclesMapper extends Mapper {
 	 * @param int $level
 	 * @param int $circleId
 	 *
-	 * @return Circle[]|null
+	 * @return Circle[]
+	 * @throws ConfigNoCircleAvailable
 	 */
 	public function findCirclesByUser($userId, $type, $name = '', $level = 0, $circleId = -1) {
 
@@ -90,20 +84,8 @@ class CirclesMapper extends Mapper {
 				  ->eq('o.level', $qb->createNamedParameter(Member::LEVEL_OWNER))
 		   );
 
-
-		if ($level > 0) {
-			$qb->andWhere(
-				$qb->expr()
-				   ->gte('u.level', $qb->createNamedParameter($level))
-			);
-		}
-		if ($circleId > 0) {
-			$qb->andWhere(
-				$qb->expr()
-				   ->eq('c.id', $qb->createNamedParameter($circleId))
-			);
-		}
-
+		$this->buildWithMemberLevel($qb, 'u.level', $level);
+		$this->buildWithCircleId($qb, 'c.id', $circleId);
 
 		$qb->leftJoin(
 			'c', MembersMapper::TABLENAME, 'u',
@@ -117,70 +99,17 @@ class CirclesMapper extends Mapper {
 		);
 
 		$orTypesArray = [];
-		if (Circle::CIRCLES_PERSONAL & (int)$type) {
-			array_push(
-				$orTypesArray,
-				$qb->expr()
-				   ->andX(
-					   $qb->expr()
-						  ->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_PERSONAL)),
-					   $qb->expr()
-						  ->eq('o.user_id', $qb->createNamedParameter($userId))
-				   )
-			);
-		}
+		array_push($orTypesArray, $this->generateTypeEntryForCirclePersonal($qb, $type, $userId));
+		array_push(
+			$orTypesArray, $this->generateTypeEntryForCircleHidden($qb, $type, $circleId, $name)
+		);
+		array_push($orTypesArray, $this->generateTypeEntryForCirclePrivate($qb, $type));
+		array_push($orTypesArray, $this->generateTypeEntryForCirclePublic($qb, $type));
 
-		if (Circle::CIRCLES_HIDDEN & (int)$type) {
-			array_push(
-				$orTypesArray, $qb->expr()
-								  ->andX(
-									  $qb->expr()
-										 ->eq(
-											 'c.type',
-											 $qb->createNamedParameter(Circle::CIRCLES_HIDDEN)
-										 ),
-									  $qb->expr()
-										 ->orX(
-											 $qb->expr()
-												->gte(
-													'u.level',
-													$qb->createNamedParameter(Member::LEVEL_MEMBER)
-												),
-											 $qb->expr()
-												->eq(
-													'c.id',
-													$qb->createNamedParameter($circleId)
-												),
-											 $qb->expr()
-												->eq(
-													'c.name',
-													$qb->createNamedParameter($name)
-												)
-										 )
-								  )
-			);
-		}
-		if (Circle::CIRCLES_PRIVATE & (int)$type) {
-			array_push(
-				$orTypesArray, $qb->expr()
-								  ->eq(
-									  'c.type',
-									  $qb->createNamedParameter(Circle::CIRCLES_PRIVATE)
-								  )
-			);
-		}
-		if (Circle::CIRCLES_PUBLIC & (int)$type) {
-			array_push(
-				$orTypesArray, $qb->expr()
-								  ->eq(
-									  'c.type',
-									  $qb->createNamedParameter(Circle::CIRCLES_PUBLIC)
-								  )
-			);
-		}
+		$orTypesArray = array_filter($orTypesArray);
 
 		if (sizeof($orTypesArray) === 0) {
-			return null;
+			throw new ConfigNoCircleAvailable();
 		}
 
 		$orXTypes = $qb->expr()
@@ -211,6 +140,134 @@ class CirclesMapper extends Mapper {
 
 
 	/**
+	 * @param IQueryBuilder $qb
+	 * @param string $field
+	 * @param int $circleId
+	 */
+	private function buildWithCircleId(IQueryBuilder &$qb, string $field, int $circleId) {
+		if ($circleId > 0) {
+			$qb->andWhere(
+				$qb->expr()
+				   ->eq($field, $qb->createNamedParameter($circleId))
+			);
+		}
+	}
+
+
+	/**
+	 * @param IQueryBuilder $qb
+	 * @param string $field
+	 * @param int $level
+	 */
+	private function buildWithMemberLevel(IQueryBuilder &$qb, string $field, int $level) {
+		if ($level > 0) {
+			$qb->andWhere(
+				$qb->expr()
+				   ->gte($field, $qb->createNamedParameter($level))
+			);
+		}
+	}
+
+
+	/**
+	 * @param IQueryBuilder $qb
+	 * @param int $type
+	 * @param int|string $userId
+	 *
+	 * @return \OCP\DB\QueryBuilder\ICompositeExpression
+	 */
+	private function generateTypeEntryForCirclePersonal(IQueryBuilder $qb, int $type, string $userId
+	) {
+		if (Circle::CIRCLES_PERSONAL & (int)$type) {
+			return $qb->expr()
+					  ->andX(
+						  $qb->expr()
+							 ->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_PERSONAL)),
+						  $qb->expr()
+							 ->eq('o.user_id', $qb->createNamedParameter($userId))
+
+					  );
+		}
+
+		return null;
+	}
+
+	/**
+	 * @param IQueryBuilder $qb
+	 * @param int $type
+	 * @param int $circleId
+	 * @param string $name
+	 *
+	 * @return string
+	 */
+	private function generateTypeEntryForCircleHidden(
+		IQueryBuilder $qb, int $type, int $circleId, string $name
+	) {
+
+		if (!(Circle::CIRCLES_HIDDEN & (int)$type)) {
+			return null;
+		}
+
+		$sqb = $qb->expr()
+				  ->andX(
+					  $qb->expr()
+						 ->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_HIDDEN)),
+					  $qb->expr()
+						 ->orX(
+							 $qb->expr()
+								->gte(
+									'u.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)
+								),
+							 $qb->expr()
+								->eq('c.id', $qb->createNamedParameter($circleId)),
+							 $qb->expr()
+								->eq('c.name', $qb->createNamedParameter($name))
+						 )
+				  );
+
+		return $sqb;
+	}
+
+
+	/**
+	 * @param IQueryBuilder $qb
+	 * @param int $type
+	 *
+	 * @return string
+	 */
+	private function generateTypeEntryForCirclePrivate(IQueryBuilder $qb, int $type) {
+
+		if (Circle::CIRCLES_PRIVATE & (int)$type) {
+			return $qb->expr()
+					  ->eq(
+						  'c.type',
+						  $qb->createNamedParameter(Circle::CIRCLES_PRIVATE)
+					  );
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * @param IQueryBuilder $qb
+	 * @param int $type
+	 *
+	 * @return string
+	 */
+	private function generateTypeEntryForCirclePublic(IQueryBuilder $qb, int $type) {
+		if (Circle::CIRCLES_PUBLIC & (int)$type) {
+			return $qb->expr()
+					  ->eq(
+						  'c.type',
+						  $qb->createNamedParameter(Circle::CIRCLES_PUBLIC)
+					  );
+		}
+
+		return null;
+	}
+
+	/**
 	 * Returns details about a circle.
 	 *
 	 * @param string $userId
@@ -218,10 +275,16 @@ class CirclesMapper extends Mapper {
 	 *
 	 * @return Circle
 	 * @throws CircleDoesNotExistException
+	 * @throws ConfigNoCircleAvailable
 	 */
 	public function getDetailsFromCircle($userId, $circleId) {
 
-		$result = $this->findCirclesByUser($userId, Circle::CIRCLES_ALL, '', 0, $circleId);
+		try {
+			$result = $this->findCirclesByUser($userId, Circle::CIRCLES_ALL, '', 0, $circleId);
+		} catch (ConfigNoCircleAvailable $e) {
+			throw $e;
+		}
+
 		if (sizeof($result) !== 1) {
 			throw new CircleDoesNotExistException(
 				"The circle does not exist or is hidden to the user"
@@ -239,45 +302,13 @@ class CirclesMapper extends Mapper {
 	 * @return bool
 	 * @throws CircleAlreadyExistsException
 	 * @throws CircleCreationException
+	 * @throws ConfigNoCircleAvailable
 	 */
 	public function create(Circle &$circle, Member &$owner) {
 
-		if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
-
-			$list = $this->findCirclesByUser(
-				$owner->getUserId(), Circle::CIRCLES_PERSONAL, $circle->getName(),
-				Member::LEVEL_OWNER
-			);
-
-			foreach ($list as $test) {
-				if ($test->getName() === $circle->getName()) {
-					throw new CircleAlreadyExistsException();
-				}
-			}
-
-		} else {
-
-			$qb = $this->db->getQueryBuilder();
-			$qb->select(
-				'c.id', 'c.name', 'c.type'
-			)
-			   ->from(self::TABLENAME, 'c')
-			   ->where(
-				   $qb->expr()
-					  ->neq('c.type', $qb->createNamedParameter(Circle::CIRCLES_PERSONAL))
-			   );
-
-			$cursor = $qb->execute();
-
-			while ($data = $cursor->fetch()) {
-				if (strtolower($data['name']) === strtolower($circle->getName())) {
-					throw new CircleAlreadyExistsException();
-				}
-			}
-			$cursor->closeCursor();
-
+		if (!$this->isCircleUnique($circle, $owner)) {
+			throw new CircleAlreadyExistsException();
 		}
-
 
 		$qb = $this->db->getQueryBuilder();
 		$qb->insert(self::TABLENAME)
@@ -286,17 +317,17 @@ class CirclesMapper extends Mapper {
 		   ->setValue('type', $qb->createNamedParameter($circle->getType()))
 		   ->setValue('creation', 'CURRENT_TIMESTAMP()');
 		$qb->execute();
-		$circleid = $qb->getLastInsertId();
+		$circleId = $qb->getLastInsertId();
 
 
-		if ($circleid < 1) {
+		if ($circleId < 1) {
 			throw new CircleCreationException();
 		}
 
-		$circle->setId($circleid);
+		$circle->setId($circleId);
 		$owner->setLevel(Member::LEVEL_OWNER)
 			  ->setStatus(Member::STATUS_MEMBER)
-			  ->setCircleId($circleid);
+			  ->setCircleId($circleId);
 
 		return true;
 	}
@@ -320,5 +351,66 @@ class CirclesMapper extends Mapper {
 		$qb->execute();
 	}
 
+
+	/**
+	 * returns if the circle is already in database
+	 *
+	 * @param Circle $circle
+	 * @param Member $owner
+	 *
+	 * @return bool
+	 */
+	public function isCircleUnique(Circle $circle, Member $owner) {
+
+		if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
+			return $this->isPersonalCircleUnique($circle, $owner);
+		}
+
+		$qb = $this->db->getQueryBuilder();
+		$qb->select(
+			'c.id', 'c.name', 'c.type'
+		)
+		   ->from(self::TABLENAME, 'c')
+		   ->where(
+			   $qb->expr()
+				  ->neq('c.type', $qb->createNamedParameter(Circle::CIRCLES_PERSONAL))
+		   );
+
+		$cursor = $qb->execute();
+
+		while ($data = $cursor->fetch()) {
+			if (strtolower($data['name']) === strtolower($circle->getName())) {
+				return false;
+			}
+		}
+		$cursor->closeCursor();
+
+		return true;
+	}
+
+
+	/**
+	 * return if the personal circle is unique
+	 *
+	 * @param Circle $circle
+	 * @param Member $owner
+	 *
+	 * @return bool
+	 */
+	private function isPersonalCircleUnique(Circle $circle, Member $owner) {
+
+		$list = $this->findCirclesByUser(
+			$owner->getUserId(), Circle::CIRCLES_PERSONAL, $circle->getName(),
+			Member::LEVEL_OWNER
+		);
+
+		foreach ($list as $test) {
+			if ($test->getName() === $circle->getName()) {
+				return false;
+			}
+		}
+
+		return true;
+	}
 }
 

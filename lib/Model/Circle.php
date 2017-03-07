@@ -169,10 +169,6 @@ class Circle implements \JsonSerializable {
 	}
 
 
-	public function toString() {
-		return "toString ?";
-	}
-
 	public function jsonSerialize() {
 		return array(
 			'id'          => $this->getId(),

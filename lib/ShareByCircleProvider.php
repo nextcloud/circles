@@ -28,7 +28,7 @@
 namespace OCA\Circles;
 
 
-use OC\Share20\Exception\InvalidShare;
+use \OC\Share20\Exception\InvalidShare;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CirclesMapper;
 use OCA\Circles\Db\MembersMapper;
@@ -173,14 +173,7 @@ class ShareByCircleProvider implements IShareProvider {
 
 		$data = $exists->fetch();
 		$exists->closeCursor();
-		$this->misc->log('______   ' . var_export($data, true));
 
-		$this->misc->log('______   ' . $qb->getSQL());
-		$this->misc->log(
-			'______   ' . \OCP\Share::SHARE_TYPE_CIRCLE . '   ' . $share->getSharedWith() . '   '
-			.
-				$share->getNode()
-					  ->getId());
 
 		if ($data !== false && sizeof($data) > 0) {
 			$message = 'Sharing %s failed, this item is already shared with this circle';

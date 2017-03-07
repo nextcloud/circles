@@ -158,6 +158,12 @@ class MembersMapper extends Mapper {
 	}
 
 
+	/**
+	 * @param Member $member
+	 *
+	 * @return bool
+	 * @throws MemberAlreadyExistsException
+	 */
 	public function add(Member $member) {
 
 		try {

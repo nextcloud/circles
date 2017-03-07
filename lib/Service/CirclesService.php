@@ -31,6 +31,7 @@ use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleCreationException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
+use OCA\Circles\Exceptions\ConfigNoCircleAvailable;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\MemberIsBlockedException;
@@ -70,9 +71,10 @@ class CirclesService {
 	 * @param $name
 	 *
 	 * @return Circle
-	 * @throws CircleTypeDisabledException
 	 * @throws CircleAlreadyExistsException
 	 * @throws CircleCreationException
+	 * @throws CircleTypeDisabledException
+	 * @throws ConfigNoCircleAvailable
 	 */
 	public function createCircle($type, $name) {
 
@@ -98,6 +100,8 @@ class CirclesService {
 								  ->add($owner);
 
 
+		} catch (ConfigNoCircleAvailable $e) {
+			throw $e;
 		} catch (CircleAlreadyExistsException $e) {
 			$this->databaseService->getCirclesMapper()
 								  ->destroy($circle);
@@ -151,6 +155,7 @@ class CirclesService {
 	 *
 	 * @return Circle
 	 * @throws CircleDoesNotExistException
+	 * @throws ConfigNoCircleAvailable
 	 * @internal param $circleId
 	 * @internal param string $iError
 	 */
@@ -171,6 +176,8 @@ class CirclesService {
 												 );
 				$circle->setMembers($members);
 			}
+		} catch (ConfigNoCircleAvailable $e) {
+			throw $e;
 		} catch (CircleDoesNotExistException $e) {
 			throw $e;
 		}
@@ -186,6 +193,7 @@ class CirclesService {
 	 *
 	 * @return null|Member
 	 * @throws CircleDoesNotExistException
+	 * @throws ConfigNoCircleAvailable
 	 * @throws MemberAlreadyExistsException
 	 * @throws MemberIsBlockedException
 	 * @throws MemberIsNotInvitedException
@@ -253,6 +261,8 @@ class CirclesService {
 			$this->databaseService->getMembersMapper()
 								  ->editMember($member);
 
+		} catch (ConfigNoCircleAvailable $e) {
+			throw $e;
 		} catch (CircleDoesNotExistException $e) {
 			throw $e;
 		}
@@ -268,6 +278,7 @@ class CirclesService {
 	 *
 	 * @return null|Member
 	 * @throws CircleDoesNotExistException
+	 * @throws ConfigNoCircleAvailable
 	 * @throws MemberDoesNotExistException
 	 * @throws MemberIsOwnerException
 	 */
@@ -305,6 +316,8 @@ class CirclesService {
 									  $member
 								  );
 
+		} catch (ConfigNoCircleAvailable $e) {
+			throw $e;
 		} catch (CircleDoesNotExistException $e) {
 			throw $e;
 		}

@@ -40,10 +40,22 @@ use OCP\IUserManager;
 
 class MembersService {
 
+	/** @var string */
 	private $userId;
+
+	/** @var IL10N */
 	private $l10n;
+
+	/** @var IUserManager */
+	private $userManager;
+
+	/** @var ConfigService */
 	private $configService;
+
+	/** @var DatabaseService */
 	private $databaseService;
+
+	/** @var MiscService */
 	private $miscService;
 
 	public function __construct(

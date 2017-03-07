@@ -35,7 +35,7 @@ use OCP\Share;
 class Sharees {
 
 
-	static protected function getContainer() {
+	protected static function getContainer() {
 		$app = new Application();
 
 		return $app->getContainer();
@@ -46,7 +46,7 @@ class Sharees {
 	 * @param $limit
 	 * @param $offset
 	 *
-	 * @return array
+	 * @return array<string,array>
 	 */
 	public static function search($search, $limit, $offset) {
 		$c = self::getContainer();
@@ -64,18 +64,18 @@ class Sharees {
 				$result['exact']['circles'][] = [
 					'label' => $entry->getName(),
 					'value' => [
-						'shareType' => Share::SHARE_TYPE_CIRCLE,
+						'shareType'  => Share::SHARE_TYPE_CIRCLE,
 						'circleInfo' => $entry->getInfo(),
-						'shareWith' => $entry->getId()
+						'shareWith'  => $entry->getId()
 					],
 				];
 			} else {
 				$result['circles'][] = [
 					'label' => $entry->getName(),
 					'value' => [
-						'shareType' => Share::SHARE_TYPE_CIRCLE,
+						'shareType'  => Share::SHARE_TYPE_CIRCLE,
 						'circleInfo' => $entry->getInfo(),
-						'shareWith' => $entry->getId()
+						'shareWith'  => $entry->getId()
 					],
 				];
 			}

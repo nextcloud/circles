@@ -26,72 +26,9 @@
 
 namespace OCA\Circles\Controller;
 
-use \OCA\Circles\Service\MiscService;
-use \OCA\Circles\Service\ConfigService;
-use \OCA\Circles\Service\MembersService;
-
-use OC\AppFramework\Http;
-use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
-use OCP\IL10N;
-use OCP\IRequest;
 
-class MembersController extends Controller {
-
-	/** @var string */
-	private $userId;
-	/** @var IL10N */
-	private $l10n;
-	/** @var ConfigService */
-	private $configService;
-	/** @var MembersService */
-	private $membersService;
-	/** @var MiscService */
-	private $miscService;
-
-	public function __construct(
-		$appName,
-		IRequest $request,
-		$userId,
-		IL10N $l10n,
-		ConfigService $configService,
-		MembersService $membersService,
-		MiscService $miscService
-	) {
-		parent::__construct($appName, $request);
-
-		$this->userId = $userId;
-		$this->l10n = $l10n;
-		$this->configService = $configService;
-		$this->membersService = $membersService;
-		$this->miscService = $miscService;
-	}
-
-
-	/**
-	 * @NoAdminRequired
-	 * @NoSubAdminRequired
-	 *
-	 * @param string $name
-	 *
-	 * @return DataResponse
-	 */
-//	public function search($name) {
-//
-//		$result = $this->membersService->searchMembers($name);
-//
-//		if ($result['status'] === 1) {
-//			$status = Http::STATUS_CREATED;
-//		} else {
-//			$status = Http::STATUS_NON_AUTHORATIVE_INFORMATION;
-//		}
-//
-//		return new DataResponse(
-//			$result,
-//			$status
-//		);
-//
-//	}
+class MembersController extends BaseController {
 
 
 	/**
@@ -108,25 +45,21 @@ class MembersController extends Controller {
 		try {
 			$data = $this->membersService->addMember($id, $name);
 		} catch (\Exception $e) {
-			return
-				new DataResponse(
-					[
-						'circle_id' => $id,
-						'name'      => $name,
-						'status'    => 0,
-						'error'     => $e->getMessage()
-					],
-					Http::STATUS_NON_AUTHORATIVE_INFORMATION
-				);
+			return $this->fail(
+				[
+					'circle_id' => $id,
+					'name'      => $name,
+					'error'     => $e->getMessage()
+				]
+			);
 		}
 
-		return new DataResponse(
+		return $this->success(
 			[
 				'circle_id' => $id,
 				'name'      => $name,
-				'members'   => $data,
-				'status'    => 1
-			], Http::STATUS_CREATED
+				'members'   => $data
+			]
 		);
 	}
 
@@ -148,24 +81,21 @@ class MembersController extends Controller {
 			$data = $this->membersService->removeMember($id, $member);
 		} catch (\Exception $e) {
 			return
-				new DataResponse(
+				$this->fail(
 					[
 						'circle_id' => $id,
 						'name'      => $member,
-						'status'    => 0,
 						'error'     => $e->getMessage()
-					],
-					Http::STATUS_NON_AUTHORATIVE_INFORMATION
+					]
 				);
 		}
 
-		return new DataResponse(
+		return $this->success(
 			[
 				'circle_id' => $id,
 				'name'      => $member,
 				'members'   => $data,
-				'status'    => 1
-			], Http::STATUS_CREATED
+			]
 		);
 	}
 
