@@ -69,7 +69,7 @@
 			<field>
 				<name>creation</name>
 				<type>timestamp</type>
-				<notnull>true</notnull>
+				<default>CURRENT_TIMESTAMP</default>
 			</field>
 		</declaration>
 	</table>
@@ -117,7 +117,7 @@
 			<field>
 				<name>joined</name>
 				<type>timestamp</type>
-				<notnull>true</notnull>
+				<default>CURRENT_TIMESTAMP</default>
 			</field>
 
 			<index>
