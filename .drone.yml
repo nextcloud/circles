@@ -1,5 +1,5 @@
 pipeline:
-  phpunit-test:
+  signed-off-check:
     image: nextcloudci/php7.0:php7.0-2
     environment:
     - APP_NAME=circles
@@ -13,6 +13,25 @@ pipeline:
     when:
       matrix:
         TESTS: signed-off-check
+
+  phpunit-test:
+    image: nextcloudci/php7.0:php7.0-2
+    environment:
+    - APP_NAME=circles
+    - CORE_BRANCH=shares-circles
+    - DB=sqlite
+    commands:
+    - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
+    - bash ./before_install.sh $APP_NAME $CORE_BRANCH $DB
+    - cd ../server/
+    - ./occ app:enable $APP_NAME
+    - cd apps/$APP_NAME/tests/
+    - phpunit --configuration phpunit.xml
+    when:
+      matrix:
+        TESTS: phpunit-test
+
 matrix:
   include:
     - TESTS: signed-off-check
+    - TESTS: phpunit-test
