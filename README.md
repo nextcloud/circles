@@ -2,6 +2,7 @@
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nextcloud/circles/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/nextcloud/circles/?branch=master)
 [![Build Status](https://drone.nextcloud.com/api/badges/nextcloud/circles/status.svg)](https://drone.nextcloud.com/nextcloud/circles)
+[![Code Coverage](https://scrutinizer-ci.com/g/nextcloud/circles/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/nextcloud/circles/?branch=master)
 
 **Bring cloud-users closer together.**
 
