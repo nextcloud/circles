@@ -26,12 +26,14 @@ pipeline:
     - cd ../server/
     - ./occ app:enable $APP_NAME
     - cd apps/$APP_NAME/tests/
+
     - phpunit --configuration phpunit.xml
 
-    after_script:
-    - wget https://scrutinizer-ci.com/ocular.phar
-    - php ocular.phar code-coverage:upload --format=php-clover coverage.xml
-    - bash <(curl -s https://codecov.io/bash) -f coverage.xml -t ff710fa8-260c-4a61-bdd3-0771d6aea5b5
+    - wget https://codecov.io/bash -O codecov.sh
+#    - wget https://scrutinizer-ci.com/ocular.phar
+#    - php ocular.phar code-coverage:upload --format=php-clover _output/coverage.xml
+    - bash codecov.sh -B $DRONE_BRANCH -C $DRONE_COMMIT -t ff710fa8-260c-4a61-bdd3-0771d6aea5b5
+#    - bash <(curl -s https://codecov.io/bash) -f _output/coverage.xml -t ff710fa8-260c-4a61-bdd3-0771d6aea5b5
     when:
       matrix:
         TESTS: phpunit-test
