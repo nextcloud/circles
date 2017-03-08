@@ -193,11 +193,7 @@ class CirclesService {
 	 * @param $circleId
 	 *
 	 * @return null|Member
-	 * @throws CircleDoesNotExistException
-	 * @throws ConfigNoCircleAvailable
-	 * @throws MemberAlreadyExistsException
-	 * @throws MemberIsBlockedException
-	 * @throws MemberIsNotInvitedException
+	 * @throws \Exception
 	 */
 	public function joinCircle($circleId) {
 
@@ -212,9 +208,7 @@ class CirclesService {
 				$member = $this->databaseService->getMembersMapper()
 												->getMemberFromCircle(
 													$circle->getId(), $this->userId,
-													($circle->getUser()
-															->getLevel()
-													 >= Member::LEVEL_MODERATOR)
+													false
 												);
 
 			} catch (MemberDoesNotExistException $m) {
@@ -228,7 +222,9 @@ class CirclesService {
 									  ->add($member);
 			}
 
-			$this->isAllowedToJoin($member);
+
+			$member->hasToBeAbleToJoinTheCircle();
+
 			switch ($circle->getType()) {
 				case Circle::CIRCLES_HIDDEN:
 				case Circle::CIRCLES_PUBLIC:
@@ -247,13 +243,7 @@ class CirclesService {
 			$this->databaseService->getMembersMapper()
 								  ->editMember($member);
 
-		} catch (MemberAlreadyExistsException $e) {
-			throw $e;
-		} catch (MemberIsBlockedException $e) {
-			throw $e;
-		} catch (ConfigNoCircleAvailable $e) {
-			throw $e;
-		} catch (CircleDoesNotExistException $e) {
+		} catch (\Exception $e) {
 			throw $e;
 		}
 
@@ -261,23 +251,7 @@ class CirclesService {
 	}
 
 
-	/**
-	 * @param $member
-	 *
-	 * @throws MemberAlreadyExistsException
-	 * @throws MemberIsBlockedException
-	 */
-	private function isAllowedToJoin($member) {
 
-		if ($member->getLevel() > 0) {
-			throw new MemberAlreadyExistsException("You are already a member of this circle");
-		}
-
-		if ($member->getStatus() === Member::STATUS_BLOCKED) {
-			throw new MemberIsBlockedException("You are blocked from this circle");
-		}
-
-	}
 
 	private function memberJoinOpenCircle(&$member) {
 
@@ -338,9 +312,7 @@ class CirclesService {
 			}
 
 
-			if ($member->getLevel() === Member::LEVEL_OWNER) {
-				throw new MemberIsOwnerException("As the owner, you cannot leave this circle");
-			}
+			$member->cantBeOwner();
 
 
 			$member->setStatus(Member::STATUS_NONMEMBER);
@@ -351,9 +323,7 @@ class CirclesService {
 									  $member
 								  );
 
-		} catch (ConfigNoCircleAvailable $e) {
-			throw $e;
-		} catch (CircleDoesNotExistException $e) {
+		} catch (\Exception $e) {
 			throw $e;
 		}
 
