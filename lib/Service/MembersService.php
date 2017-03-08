@@ -75,25 +75,6 @@ class MembersService {
 	}
 
 
-//	public function searchMembers($name) {
-//		$iError = new iError();
-//
-//		$result = $this->userManager->get($name);
-//		$this->miscService->log("___" . var_export($result, true));
-////		if ($user != null) {
-////
-////			$realname = $user->getDisplayName();
-//
-//		$result = [
-//			'name'   => $name,
-//			'result' => $result,
-//			'status' => 1,
-//			'error'  => $iError->toArray()
-//		];
-//
-//		return $result;
-//	}
-
 	/**
 	 * @param $circleId
 	 * @param $name
@@ -146,20 +127,21 @@ class MembersService {
 			throw $e;
 		}
 
-		if ($member->getLevel() > Member::LEVEL_NONE
-			|| ($member->getStatus() !== Member::STATUS_NONMEMBER
-				&& $member->getStatus() !== Member::STATUS_REQUEST)
-		) {
+		if ($this->memberAlreadyExist($member)) {
 			throw new MemberAlreadyExistsException();
 		}
 
 		$member->setCircleId($circleId);
 		$member->setUserId($name);
 
-		if ($circle->getType() === Circle::CIRCLES_PRIVATE) {
-			$this->inviteMemberToPrivateCircle($member);
-		} else {
-			$this->addMemberToCircle($member);
+		switch ($circle->getType()) {
+			case Circle::CIRCLES_PRIVATE:
+				$this->inviteMemberToPrivateCircle($member);
+				break;
+
+			default:
+				$this->addMemberToCircle($member);
+				break;
 		}
 
 		$this->databaseService->getMembersMapper()
@@ -173,6 +155,17 @@ class MembersService {
 									 );
 	}
 
+
+	private function memberAlreadyExist($member) {
+		if ($member->getLevel() > Member::LEVEL_NONE
+			|| ($member->getStatus() !== Member::STATUS_NONMEMBER
+				&& $member->getStatus() !== Member::STATUS_REQUEST)
+		) {
+			return true;
+		}
+
+		return false;
+	}
 
 	/**
 	 * Invite a Member to a private Circle, or accept his request.

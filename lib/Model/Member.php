@@ -26,6 +26,7 @@
 
 namespace OCA\Circles\Model;
 
+use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberIsNotModeratorException;
 
 class Member implements \JsonSerializable {
@@ -142,8 +143,9 @@ class Member implements \JsonSerializable {
 		}
 
 		throw new MemberIsNotModeratorException();
-
 	}
+
+
 
 	public function jsonSerialize() {
 		return array(
