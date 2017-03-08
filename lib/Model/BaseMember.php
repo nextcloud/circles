@@ -59,9 +59,13 @@ class BaseMember {
 	/** @var string */
 	private $joined;
 
-	public function __construct($circleId, $userId) {
-		$this->setCircleId($circleId);
-		$this->setUserId($userId);
+	public function __construct($circleId = -1, $userId = '') {
+		if ($circleId > -1) {
+			$this->setCircleId($circleId);
+		}
+		if ($userId !== '') {
+			$this->setUserId($userId);
+		}
 		$this->setLevel(Member::LEVEL_NONE);
 		$this->setStatus(Member::STATUS_NONMEMBER);
 
@@ -136,4 +140,27 @@ class BaseMember {
 	public function getJoined() {
 		return $this->joined;
 	}
+
+
+	/**
+	 * @param array $arr
+	 *
+	 * @return null
+	 */
+	public function fromArray($arr) {
+		$this->setCircleId($arr['circle_id']);
+		$this->setUserId($arr['user_id']);
+		$this->setLevel($arr['level']);
+		$this->setStatus($arr['status']);
+		if (key_exists('note', $arr)) {
+			$this->setNote($arr['note']);
+		}
+		if (key_exists('joined', $arr)) {
+			$this->setJoined($arr['joined']);
+		}
+
+		return $this;
+	}
+
+
 }

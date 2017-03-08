@@ -65,7 +65,8 @@ class MembersMapperTest extends \PHPUnit_Framework_TestCase {
 
 	public function testMembers() {
 
-		$member1 = Member::fromArray(
+		$member1 = new Member();
+		$member1->fromArray(
 			array(
 				'circle_id' => self::TEST_CIRCLE_ID,
 				'user_id'   => self::TEST_MEMBER_1,
@@ -75,7 +76,8 @@ class MembersMapperTest extends \PHPUnit_Framework_TestCase {
 			)
 		);
 
-		$member2 = Member::fromArray(
+		$member2 = new Member();
+		$member2->fromArray(
 			array(
 				'circle_id' => self::TEST_CIRCLE_ID,
 				'user_id'   => self::TEST_MEMBER_2,

@@ -78,17 +78,17 @@ class MembersMapper extends Mapper {
 					 ->execute();
 
 		$data = $cursor->fetch();
+		if ($data === false) {
+			throw new MemberDoesNotExistException();
+		}
 
 		if ($moderator !== true) {
 			unset($data['note']);
 		}
 
-		$member = Member::fromArray($data);
+		$member = new Member();
+		$member->fromArray($data);
 		$cursor->closeCursor();
-
-		if ($member === null) {
-			throw new MemberDoesNotExistException();
-		}
 
 		return $member;
 	}
@@ -134,7 +134,9 @@ class MembersMapper extends Mapper {
 					unset($data['note']);
 				}
 
-				$result[] = Member::fromArray($data);
+				$member = new Member();
+				$member->fromArray($data);
+				$result[] = $member;
 			}
 			$cursor->closeCursor();
 		} catch (MemberDoesNotExistException $e) {
@@ -172,17 +174,23 @@ class MembersMapper extends Mapper {
 	 * Insert Member into database.
 	 *
 	 * @param Member $member
+	 *
+	 * @throws MemberAlreadyExistsException
 	 */
 	public function add(Member $member) {
 
-		$qb = $this->db->getQueryBuilder();
-		$qb->insert(self::TABLENAME)
-		   ->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
-		   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
-		   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
-		   ->setValue('status', $qb->createNamedParameter($member->getStatus()))
-		   ->setValue('note', $qb->createNamedParameter($member->getNote()));
-		$qb->execute();
+		try {
+			$qb = $this->db->getQueryBuilder();
+			$qb->insert(self::TABLENAME)
+			   ->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
+			   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
+			   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
+			   ->setValue('status', $qb->createNamedParameter($member->getStatus()))
+			   ->setValue('note', $qb->createNamedParameter($member->getNote()));
+			$qb->execute();
+		} catch (UniqueConstraintViolationException $e) {
+			throw new MemberAlreadyExistsException();
+		}
 	}
 
 

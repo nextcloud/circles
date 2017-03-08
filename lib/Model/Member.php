@@ -172,29 +172,6 @@ class Member extends BaseMember implements \JsonSerializable {
 	}
 
 
-	public static function fromArray($arr) {
-
-		if (!is_array($arr)) {
-			return null;
-		}
-
-		$member = new Member();
-
-		$member->setCircleId($arr['circle_id']);
-		$member->setUserId($arr['user_id']);
-		$member->setLevel($arr['level']);
-		$member->setStatus($arr['status']);
-		if (key_exists('note', $arr)) {
-			$member->setNote($arr['note']);
-		}
-		if (key_exists('joined', $arr)) {
-			$member->setJoined($arr['joined']);
-		}
-
-		return $member;
-	}
-
-
 	public static function levelString($level) {
 		switch ($level) {
 			case self::LEVEL_NONE:
@@ -212,10 +189,6 @@ class Member extends BaseMember implements \JsonSerializable {
 		return 'none';
 	}
 
-
-	public function toString() {
-		return "toString ?";
-	}
 }
 
 

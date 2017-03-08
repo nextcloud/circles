@@ -56,7 +56,8 @@ class MemberTest extends \PHPUnit_Framework_TestCase {
 
 		$date = date("Y-m-d H:i:s");
 
-		$member = Member::fromArray(
+		$member = new Member();
+		$member->fromArray(
 			array(
 				'circle_id' => 1,
 				'user_id'   => 'test',

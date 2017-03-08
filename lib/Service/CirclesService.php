@@ -164,7 +164,6 @@ class CirclesService {
 		try {
 			$circle = $this->dbService->getCirclesMapper()
 									  ->getDetailsFromCircle($this->userId, $circleId);
-
 			if ($circle->getUser()
 					   ->getLevel() >= Member::LEVEL_MEMBER
 			) {
@@ -197,7 +196,6 @@ class CirclesService {
 									  ->getDetailsFromCircle(
 										  $this->userId, $circleId
 									  );
-
 			try {
 				$member = $this->dbService->getMembersMapper()
 										  ->getMemberFromCircle(
@@ -208,12 +206,10 @@ class CirclesService {
 				$this->dbService->getMembersMapper()
 								->add($member);
 			}
-
 			$member->hasToBeAbleToJoinTheCircle();
 			$member->joinCircle($circle->getType());
 			$this->dbService->getMembersMapper()
 							->editMember($member);
-
 		} catch (\Exception $e) {
 			throw $e;
 		}
