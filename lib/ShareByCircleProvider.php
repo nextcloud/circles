@@ -681,14 +681,18 @@ class ShareByCircleProvider implements IShareProvider {
 										 ->eq('f.storage', 'st.numeric_id')
 		   )
 		   ->leftJoin(
-			   's', 'share', 's2', $qb->expr()
-									  ->eq('s.id', 's2.parent') . ' AND ' . $qb->expr()
-																			   ->eq(
-																				   's2.share_with',
-																				   $qb->createNamedParameter(
-																					   $userId
-																				   )
-																			   )
+			   's', 'share', 's2',
+			   $qb->expr()
+				  ->andX(
+					  $qb->expr()
+						 ->eq('s.id', 's2.parent'), $qb->expr()
+													   ->eq(
+														   's2.share_with',
+														   $qb->createNamedParameter(
+															   $userId
+														   )
+													   )
+				  )
 		   );
 
 		$qb->where(
