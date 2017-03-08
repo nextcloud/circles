@@ -33,6 +33,7 @@ use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailable;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
+use OCA\Circles\Exceptions\MemberCantJoinPersonalCircle;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\MemberIsBlockedException;
 use OCA\Circles\Exceptions\MemberIsNotInvitedException;
@@ -227,40 +228,29 @@ class CirclesService {
 									  ->add($member);
 			}
 
+			$this->isAllowedToJoin($member);
+			switch ($circle->getType()) {
+				case Circle::CIRCLES_HIDDEN:
+				case Circle::CIRCLES_PUBLIC:
+					$this->memberJoinOpenCircle($member);
+					break;
 
-			if ($member->getLevel() > 0) {
-				throw new MemberAlreadyExistsException("You are already a member of this circle");
-			}
+				case Circle::CIRCLES_PRIVATE:
+					$this->memberJoinPrivateCircle($member);
+					break;
 
-
-			if ($member->getStatus() === Member::STATUS_BLOCKED) {
-				throw new MemberIsBlockedException("You are blocked from this circle");
-			}
-
-
-			if ($member->getStatus() === Member::STATUS_NONMEMBER
-				|| $member->getStatus() === Member::STATUS_KICKED
-			) {
-				if ($circle->getType() === Circle::CIRCLES_HIDDEN
-					|| $circle->getType() === Circle::CIRCLES_PUBLIC
-				) {
-					$member->setStatus(Member::STATUS_MEMBER);
-					$member->setLevel(Member::LEVEL_MEMBER);
-				} else if ($circle->getType() === Circle::CIRCLES_PRIVATE) {
-					$member->setStatus(Member::STATUS_REQUEST);
-				} else {
-					throw new MemberIsNotInvitedException("You are not invited into this circle");
-				}
-			}
-
-			if ($member->getStatus() === Member::STATUS_INVITED) {
-				$member->setStatus(Member::STATUS_MEMBER);
-				$member->setLevel(Member::LEVEL_MEMBER);
+				case Circle::CIRCLES_PERSONAL:
+					throw new MemberCantJoinPersonalCircle();
+					break;
 			}
 
 			$this->databaseService->getMembersMapper()
 								  ->editMember($member);
 
+		} catch (MemberAlreadyExistsException $e) {
+			throw $e;
+		} catch (MemberIsBlockedException $e) {
+			throw $e;
 		} catch (ConfigNoCircleAvailable $e) {
 			throw $e;
 		} catch (CircleDoesNotExistException $e) {
@@ -268,6 +258,51 @@ class CirclesService {
 		}
 
 		return $member;
+	}
+
+
+	/**
+	 * @param $member
+	 *
+	 * @throws MemberAlreadyExistsException
+	 * @throws MemberIsBlockedException
+	 */
+	private function isAllowedToJoin($member) {
+
+		if ($member->getLevel() > 0) {
+			throw new MemberAlreadyExistsException("You are already a member of this circle");
+		}
+
+		if ($member->getStatus() === Member::STATUS_BLOCKED) {
+			throw new MemberIsBlockedException("You are blocked from this circle");
+		}
+
+	}
+
+	private function memberJoinOpenCircle(&$member) {
+
+		if ($member->getStatus() === Member::STATUS_NONMEMBER
+			|| $member->getStatus() === Member::STATUS_KICKED
+		) {
+			$member->setStatus(Member::STATUS_MEMBER);
+			$member->setLevel(Member::LEVEL_MEMBER);
+		}
+	}
+
+
+	private function memberJoinPrivateCircle(&$member) {
+
+		switch ($member->getStatus()) {
+			case Member::STATUS_NONMEMBER:
+			case Member::STATUS_KICKED:
+				$member->setStatus(Member::STATUS_REQUEST);
+				break;
+
+			case Member::STATUS_INVITED:
+				$member->setStatus(Member::STATUS_MEMBER);
+				$member->setLevel(Member::LEVEL_MEMBER);
+				break;
+		}
 	}
 
 
@@ -332,6 +367,7 @@ class CirclesService {
 	 * @param $circle
 	 */
 	public function removeCircle($circle) {
+
 		$this->databaseService->getMembersMapper()
 							  ->removeAllFromCircle($circle);
 		$this->databaseService->getCirclesMapper()
