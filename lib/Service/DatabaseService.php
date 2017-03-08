@@ -36,7 +36,7 @@ class DatabaseService {
 	private $circlesMapper;
 	private $membersMapper;
 
-	function __construct($circlesMapper, $membersMapper) {
+	public function __construct($circlesMapper, $membersMapper) {
 		$this->circlesMapper = $circlesMapper;
 		$this->membersMapper = $membersMapper;
 	}

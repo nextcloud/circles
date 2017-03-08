@@ -301,7 +301,6 @@ class CirclesMapper extends Mapper {
 	 * @return bool
 	 * @throws CircleAlreadyExistsException
 	 * @throws CircleCreationException
-	 * @throws ConfigNoCircleAvailable
 	 */
 	public function create(Circle & $circle, Member & $owner) {
 
@@ -316,8 +315,7 @@ class CirclesMapper extends Mapper {
 		   ->setValue('type', $qb->createNamedParameter($circle->getType()));
 		$qb->execute();
 		$circleId = $qb->getLastInsertId();
-
-
+		
 		if ($circleId < 1) {
 			throw new CircleCreationException();
 		}

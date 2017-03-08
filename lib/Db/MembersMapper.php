@@ -26,7 +26,7 @@
 
 namespace OCA\Circles\Db;
 
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use \Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Model\Circle;
@@ -98,41 +98,51 @@ class MembersMapper extends Mapper {
 	 * get members list from a circle. If moderator, returns also notes about each member.
 	 *
 	 * @param $circleId
-	 * @param bool $moderator
+	 * @param Member $user
 	 *
 	 * @return array
+	 * @internal param Member $member
+	 * @internal param bool $moderator
+	 *
 	 */
-	public function getMembersFromCircle($circleId, $moderator = false) {
+	public function getMembersFromCircle($circleId, Member $user) {
 
-		$circleId = (int)$circleId;
+		try {
+			$user->hasToBeMember();
 
-		$qb = $this->db->getQueryBuilder();
-		$qb->select(
-			'circle_id', 'user_id', 'level', 'status', 'note', 'joined'
-		)
-		   ->from(self::TABLENAME)
-		   ->where(
-			   $qb->expr()
-				  ->eq('circle_id', $qb->createNamedParameter($circleId))
-		   )
-		   ->andwhere(
-			   $qb->expr()
-				  ->neq('status', $qb->createNamedParameter(Member::STATUS_NONMEMBER))
-		   );
+			$circleId = (int)$circleId;
 
-		$cursor = $qb->execute();
+			$qb = $this->db->getQueryBuilder();
+			$qb->select(
+				'circle_id', 'user_id', 'level', 'status', 'note', 'joined'
+			)
+			   ->from(self::TABLENAME)
+			   ->where(
+				   $qb->expr()
+					  ->eq('circle_id', $qb->createNamedParameter($circleId))
+			   )
+			   ->andwhere(
+				   $qb->expr()
+					  ->neq('status', $qb->createNamedParameter(Member::STATUS_NONMEMBER))
+			   );
 
-		$result = [];
-		while ($data = $cursor->fetch()) {
-			if ($moderator !== true) {
-				unset($data['note']);
+			$cursor = $qb->execute();
+
+			$result = [];
+			while ($data = $cursor->fetch()) {
+				if (!$user->isModerator()) {
+					unset($data['note']);
+				}
+
+				$result[] = Member::fromArray($data);
 			}
-
-			$result[] = Member::fromArray($data);
+			$cursor->closeCursor();
+		} catch (MemberDoesNotExistException $e) {
+			throw new $e;
 		}
-		$cursor->closeCursor();
 
 		return $result;
+
 	}
 
 

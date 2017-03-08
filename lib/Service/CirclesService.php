@@ -32,24 +32,39 @@ use OCA\Circles\Exceptions\CircleCreationException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailable;
-use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberCantJoinPersonalCircle;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
-use OCA\Circles\Exceptions\MemberIsBlockedException;
-use OCA\Circles\Exceptions\MemberIsNotInvitedException;
-use OCA\Circles\Exceptions\MemberIsOwnerException;
 use \OCA\Circles\Model\Circle;
 use \OCA\Circles\Model\Member;
 use OCP\IL10N;
 
 class CirclesService {
 
+	/** @var string */
 	private $userId;
+
+	/** @var IL10N */
 	private $l10n;
+
+	/** @var ConfigService */
 	private $configService;
-	private $databaseService;
+
+	/** @var DatabaseService */
+	private $dbService;
+
+	/** @var MiscService */
 	private $miscService;
 
+
+	/**
+	 * CirclesService constructor.
+	 *
+	 * @param $userId
+	 * @param IL10N $l10n
+	 * @param ConfigService $configService
+	 * @param DatabaseService $databaseService
+	 * @param MiscService $miscService
+	 */
 	public function __construct(
 		$userId,
 		IL10N $l10n,
@@ -60,7 +75,7 @@ class CirclesService {
 		$this->userId = $userId;
 		$this->l10n = $l10n;
 		$this->configService = $configService;
-		$this->databaseService = $databaseService;
+		$this->dbService = $databaseService;
 		$this->miscService = $miscService;
 	}
 
@@ -68,20 +83,16 @@ class CirclesService {
 	/**
 	 * Create circle using this->userId as owner
 	 *
-	 * @param $type
-	 * @param $name
+	 * @param int $type
+	 * @param string $name
 	 *
 	 * @return Circle
-	 * @throws CircleAlreadyExistsException
-	 * @throws CircleCreationException
 	 * @throws CircleTypeDisabledException
-	 * @throws ConfigNoCircleAvailable
+	 * @throws \Exception
 	 */
 	public function createCircle($type, $name) {
 
-		self::convertTypeStringToBitValue($type);
-
-		if (!$this->configService->isCircleAllowed((int)$type)) {
+		if (!$this->configService->isCircleAllowed($type)) {
 			throw new CircleTypeDisabledException();
 		}
 
@@ -95,21 +106,14 @@ class CirclesService {
 			   ->setMembers([$owner]);
 
 		try {
-			$this->databaseService->getCirclesMapper()
-								  ->create($circle, $owner);
-			$this->databaseService->getMembersMapper()
-								  ->add($owner);
+			$this->dbService->getCirclesMapper()
+							->create($circle, $owner);
+			$this->dbService->getMembersMapper()
+							->add($owner);
 
-
-		} catch (ConfigNoCircleAvailable $e) {
-			throw $e;
-		} catch (CircleAlreadyExistsException $e) {
-			$this->databaseService->getCirclesMapper()
-								  ->destroy($circle);
-			throw $e;
-		} catch (CircleCreationException $e) {
-			$this->databaseService->getCirclesMapper()
-								  ->destroy($circle);
+		} catch (\Exception $e) {
+			$this->dbService->getCirclesMapper()
+							->destroy($circle);
 			throw $e;
 		}
 
@@ -129,20 +133,16 @@ class CirclesService {
 	 */
 	public function listCircles($type, $name = '', $level = 0) {
 
-		self::convertTypeStringToBitValue($type);
-
 		if (!$this->configService->isCircleAllowed((int)$type)) {
 			throw new CircleTypeDisabledException();
 		}
 
-		$result = $this->databaseService->getCirclesMapper()
-										->findCirclesByUser($this->userId, $type, $name, $level);
+		$result = $this->dbService->getCirclesMapper()
+								  ->findCirclesByUser($this->userId, $type, $name, $level);
 
 		$data = [];
 		foreach ($result as $item) {
-			if ($name === '' || stripos($item->getName(), $name) !== false) {
-				$data[] = $item;
-			}
+			$data[] = $item;
 		}
 
 		return $data;
@@ -155,31 +155,26 @@ class CirclesService {
 	 * @param $circleId
 	 *
 	 * @return Circle
-	 * @throws CircleDoesNotExistException
-	 * @throws ConfigNoCircleAvailable
+	 * @throws \Exception
 	 * @internal param $circleId
 	 * @internal param string $iError
 	 */
 	public function detailsCircle($circleId) {
 
 		try {
-			$circle = $this->databaseService->getCirclesMapper()
-											->getDetailsFromCircle($this->userId, $circleId);
+			$circle = $this->dbService->getCirclesMapper()
+									  ->getDetailsFromCircle($this->userId, $circleId);
 
 			if ($circle->getUser()
 					   ->getLevel() >= Member::LEVEL_MEMBER
 			) {
-				$members = $this->databaseService->getMembersMapper()
-												 ->getMembersFromCircle(
-													 $circleId, ($circle->getUser()
-																		->getLevel()
-																 >= Member::LEVEL_MODERATOR)
-												 );
+				$members = $this->dbService->getMembersMapper()
+										   ->getMembersFromCircle(
+											   $circleId, $circle->getUser()
+										   );
 				$circle->setMembers($members);
 			}
-		} catch (ConfigNoCircleAvailable $e) {
-			throw $e;
-		} catch (CircleDoesNotExistException $e) {
+		} catch (\Exception $e) {
 			throw $e;
 		}
 
@@ -199,17 +194,17 @@ class CirclesService {
 
 		try {
 
-			$circle = $this->databaseService->getCirclesMapper()
-											->getDetailsFromCircle(
-												$this->userId, $circleId
-											);
+			$circle = $this->dbService->getCirclesMapper()
+									  ->getDetailsFromCircle(
+										  $this->userId, $circleId
+									  );
 
 			try {
-				$member = $this->databaseService->getMembersMapper()
-												->getMemberFromCircle(
-													$circle->getId(), $this->userId,
-													false
-												);
+				$member = $this->dbService->getMembersMapper()
+										  ->getMemberFromCircle(
+											  $circle->getId(), $this->userId,
+											  false
+										  );
 
 			} catch (MemberDoesNotExistException $m) {
 				$member = new Member();
@@ -218,8 +213,8 @@ class CirclesService {
 				$member->setLevel(Member::LEVEL_NONE);
 				$member->setStatus(Member::STATUS_NONMEMBER);
 
-				$this->databaseService->getMembersMapper()
-									  ->add($member);
+				$this->dbService->getMembersMapper()
+								->add($member);
 			}
 
 
@@ -228,11 +223,11 @@ class CirclesService {
 			switch ($circle->getType()) {
 				case Circle::CIRCLES_HIDDEN:
 				case Circle::CIRCLES_PUBLIC:
-					$this->memberJoinOpenCircle($member);
+					$member->joinOpenCircle();
 					break;
 
 				case Circle::CIRCLES_PRIVATE:
-					$this->memberJoinPrivateCircle($member);
+					$member->joinPrivateCircle();
 					break;
 
 				case Circle::CIRCLES_PERSONAL:
@@ -240,8 +235,8 @@ class CirclesService {
 					break;
 			}
 
-			$this->databaseService->getMembersMapper()
-								  ->editMember($member);
+			$this->dbService->getMembersMapper()
+							->editMember($member);
 
 		} catch (\Exception $e) {
 			throw $e;
@@ -251,77 +246,31 @@ class CirclesService {
 	}
 
 
-
-
-	private function memberJoinOpenCircle(&$member) {
-
-		if ($member->getStatus() === Member::STATUS_NONMEMBER
-			|| $member->getStatus() === Member::STATUS_KICKED
-		) {
-			$member->setStatus(Member::STATUS_MEMBER);
-			$member->setLevel(Member::LEVEL_MEMBER);
-		}
-	}
-
-
-	private function memberJoinPrivateCircle(&$member) {
-
-		switch ($member->getStatus()) {
-			case Member::STATUS_NONMEMBER:
-			case Member::STATUS_KICKED:
-				$member->setStatus(Member::STATUS_REQUEST);
-				break;
-
-			case Member::STATUS_INVITED:
-				$member->setStatus(Member::STATUS_MEMBER);
-				$member->setLevel(Member::LEVEL_MEMBER);
-				break;
-		}
-	}
-
-
 	/**
 	 * Leave a circle.
 	 *
 	 * @param $circleId
 	 *
 	 * @return null|Member
-	 * @throws CircleDoesNotExistException
-	 * @throws ConfigNoCircleAvailable
-	 * @throws MemberDoesNotExistException
-	 * @throws MemberIsOwnerException
+	 * @throws \Exception
 	 */
 	public function leaveCircle($circleId) {
 
 		try {
-			$circle = $this->databaseService->getCirclesMapper()
-											->getDetailsFromCircle(
-												$this->userId, $circleId
-											);
+			$circle = $this->dbService->getCirclesMapper()
+									  ->getDetailsFromCircle($this->userId, $circleId);
 
-			$member = $this->databaseService->getMembersMapper()
-											->getMemberFromCircle(
-												$circle->getId(), $this->userId,
-												($circle->getUser()
-														->getLevel()
-												 >= Member::LEVEL_MODERATOR)
-											);
+			$member = $this->dbService->getMembersMapper()
+									  ->getMemberFromCircle($circle->getId(), $this->userId, false);
 
-			if ($member === null || $member->getLevel() === 0) {
-				throw new MemberDoesNotExistException("You are not member of this circle");
-			}
-
-
+			$member->hasToBeMember();
 			$member->cantBeOwner();
-
 
 			$member->setStatus(Member::STATUS_NONMEMBER);
 			$member->setLevel(Member::LEVEL_NONE);
 
-			$this->databaseService->getMembersMapper()
-								  ->editMember(
-									  $member
-								  );
+			$this->dbService->getMembersMapper()
+							->editMember($member);
 
 		} catch (\Exception $e) {
 			throw $e;
@@ -338,34 +287,11 @@ class CirclesService {
 	 */
 	public function removeCircle($circle) {
 
-		$this->databaseService->getMembersMapper()
-							  ->removeAllFromCircle($circle);
-		$this->databaseService->getCirclesMapper()
-							  ->destroy($circle);
+		$this->dbService->getMembersMapper()
+						->removeAllFromCircle($circle);
+		$this->dbService->getCirclesMapper()
+						->destroy($circle);
 	}
 
-
-	/**
-	 * Convert a Type in String to its Bit Value
-	 *
-	 * @param $type
-	 */
-	public static function convertTypeStringToBitValue(&$type) {
-		if (strtolower($type) === 'personal') {
-			$type = Circle::CIRCLES_PERSONAL;
-		}
-		if (strtolower($type) === 'hidden') {
-			$type = Circle::CIRCLES_HIDDEN;
-		}
-		if (strtolower($type) === 'private') {
-			$type = Circle::CIRCLES_PRIVATE;
-		}
-		if (strtolower($type) === 'public') {
-			$type = Circle::CIRCLES_PUBLIC;
-		}
-		if (strtolower($type) === 'all') {
-			$type = Circle::CIRCLES_ALL;
-		}
-	}
 
 }
