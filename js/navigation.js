@@ -25,6 +25,7 @@
 
 /** global: OC */
 /** global: OCA */
+/** global: Notyf */
 
 $(document).ready(function () {
 
@@ -175,10 +176,11 @@ $(document).ready(function () {
 					self.displayCirclesList(result.circle.type);
 					self.selectCircle(result.circle.id);
 				}
-				else
+				else {
 					OCA.notification.onFail(
 						str + " '" + result.name + "' NOT created: " +
 						((result.error) ? result.error : 'no error message'));
+				}
 			};
 
 
@@ -341,7 +343,7 @@ $(document).ready(function () {
 
 			this.searchMembersResult = function (response) {
 
-				if (response == null ||
+				if (response === null ||
 					(response.ocs.data.users === 0 && response.ocs.data.exact.users === 0)) {
 					$('#members_search_result').fadeOut(300);
 				}
@@ -399,8 +401,9 @@ $(document).ready(function () {
 			this.displayMembers = function (members) {
 
 				$('#mainui #memberslist .table').children('tr').each(function () {
-					if ($(this).attr('class') != 'header')
+					if ($(this).attr('class') != 'header') {
 						$(this).remove();
+					}
 				});
 
 				if (members === null) {
@@ -449,10 +452,11 @@ $(document).ready(function () {
 					OCA.notification.onSuccess(
 						"Member '" + result.name + "' successfully removed from the circle");
 				}
-				else
+				else {
 					OCA.notification.onFail(
 						"Member '" + result.name + "' NOT removed from the circle: " +
 						((result.error) ? result.error : 'no error message'));
+				}
 
 			};
 
@@ -476,18 +480,20 @@ $(document).ready(function () {
 					self.selectCircle(result.circle_id);
 
 				}
-				else
+				else {
 					OCA.notification.onFail(
 						"Cannot join this circle: " +
 						((result.error) ? result.error : 'no error message'));
+				}
 			};
 
 			this.leaveCircleResult = function (result) {
 				if (result.status == 1) {
 
 					$('#mainui #memberslist .table').children().each(function () {
-						if ($(this).attr('member-id') == result.name)
+						if ($(this).attr('member-id') == result.name) {
 							$(this).hide(300);
+						}
 					});
 
 					OCA.notification.onSuccess(

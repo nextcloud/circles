@@ -27,6 +27,7 @@
 namespace OCA\Circles\Model;
 
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
+use OCA\Circles\Exceptions\MemberCantJoinPersonalCircle;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\MemberIsBlockedException;
 use OCA\Circles\Exceptions\MemberIsNotModeratorException;
@@ -38,7 +39,7 @@ class Member extends BaseMember implements \JsonSerializable {
 
 	public function setLevel($level) {
 		parent::setLevel($level);
-		$this->setLevelString(self::LevelSring($this->getLevel()));
+		$this->setLevelString(self::levelString($this->getLevel()));
 
 		return $this;
 	}
@@ -55,9 +56,31 @@ class Member extends BaseMember implements \JsonSerializable {
 
 
 	/**
+	 * @param int $circleType
+	 *
+	 * @throws MemberCantJoinPersonalCircle
+	 */
+	public function joinCircle($circleType) {
+
+		switch ($circleType) {
+			case Circle::CIRCLES_HIDDEN:
+			case Circle::CIRCLES_PUBLIC:
+				$this->joinOpenCircle();
+				break;
+
+			case Circle::CIRCLES_PRIVATE:
+				$this->joinPrivateCircle();
+				break;
+
+			case Circle::CIRCLES_PERSONAL:
+				throw new MemberCantJoinPersonalCircle();
+		}
+	}
+
+	/**
 	 * Update status of member like he joined a public circle.
 	 */
-	public function joinOpenCircle() {
+	private function joinOpenCircle() {
 
 		if ($this->getStatus() === Member::STATUS_NONMEMBER
 			|| $this->getStatus() === Member::STATUS_KICKED
@@ -71,7 +94,7 @@ class Member extends BaseMember implements \JsonSerializable {
 	 * Update status of member like he joined a private circle
 	 * (invite/request)
 	 */
-	public function joinPrivateCircle() {
+	private function joinPrivateCircle() {
 
 		switch ($this->getStatus()) {
 			case Member::STATUS_NONMEMBER:
@@ -172,7 +195,7 @@ class Member extends BaseMember implements \JsonSerializable {
 	}
 
 
-	public static function LevelSring($level) {
+	public static function levelString($level) {
 		switch ($level) {
 			case self::LEVEL_NONE:
 				return 'Not a member';

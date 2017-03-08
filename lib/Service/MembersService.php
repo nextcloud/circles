@@ -154,15 +154,17 @@ class MembersService {
 	}
 
 
+	/**
+	 * return if member already exists
+	 * @param $member
+	 *
+	 * @return bool
+	 */
 	private function memberAlreadyExist($member) {
-		if ($member->getLevel() > Member::LEVEL_NONE
-			|| ($member->getStatus() !== Member::STATUS_NONMEMBER
-				&& $member->getStatus() !== Member::STATUS_REQUEST)
-		) {
-			return true;
-		}
-
-		return false;
+		return ($member->getLevel() > Member::LEVEL_NONE
+				|| ($member->getStatus() !== Member::STATUS_NONMEMBER
+					&& $member->getStatus() !== Member::STATUS_REQUEST)
+		);
 	}
 
 	/**

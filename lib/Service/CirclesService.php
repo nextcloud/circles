@@ -193,7 +193,6 @@ class CirclesService {
 	public function joinCircle($circleId) {
 
 		try {
-
 			$circle = $this->dbService->getCirclesMapper()
 									  ->getDetailsFromCircle(
 										  $this->userId, $circleId
@@ -202,39 +201,16 @@ class CirclesService {
 			try {
 				$member = $this->dbService->getMembersMapper()
 										  ->getMemberFromCircle(
-											  $circle->getId(), $this->userId,
-											  false
+											  $circle->getId(), $this->userId
 										  );
-
 			} catch (MemberDoesNotExistException $m) {
-				$member = new Member();
-				$member->setCircleId($circle->getId());
-				$member->setUserId($this->userId);
-				$member->setLevel(Member::LEVEL_NONE);
-				$member->setStatus(Member::STATUS_NONMEMBER);
-
+				$member = new Member($circle->getId(), $this->userId);
 				$this->dbService->getMembersMapper()
 								->add($member);
 			}
 
-
 			$member->hasToBeAbleToJoinTheCircle();
-
-			switch ($circle->getType()) {
-				case Circle::CIRCLES_HIDDEN:
-				case Circle::CIRCLES_PUBLIC:
-					$member->joinOpenCircle();
-					break;
-
-				case Circle::CIRCLES_PRIVATE:
-					$member->joinPrivateCircle();
-					break;
-
-				case Circle::CIRCLES_PERSONAL:
-					throw new MemberCantJoinPersonalCircle();
-					break;
-			}
-
+			$member->joinCircle($circle->getType());
 			$this->dbService->getMembersMapper()
 							->editMember($member);
 
@@ -259,19 +235,14 @@ class CirclesService {
 		try {
 			$circle = $this->dbService->getCirclesMapper()
 									  ->getDetailsFromCircle($this->userId, $circleId);
-
 			$member = $this->dbService->getMembersMapper()
 									  ->getMemberFromCircle($circle->getId(), $this->userId, false);
-
 			$member->hasToBeMember();
 			$member->cantBeOwner();
-
 			$member->setStatus(Member::STATUS_NONMEMBER);
 			$member->setLevel(Member::LEVEL_NONE);
-
 			$this->dbService->getMembersMapper()
 							->editMember($member);
-
 		} catch (\Exception $e) {
 			throw $e;
 		}

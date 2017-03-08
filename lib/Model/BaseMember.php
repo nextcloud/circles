@@ -41,14 +41,30 @@ class BaseMember {
 	const STATUS_BLOCKED = 'Blocked';
 	const STATUS_KICKED = 'Kicked';
 
+	/** @var int */
 	private $circleId;
+
+	/** @var string */
 	private $userId;
+
+	/** @var int */
 	private $level;
+
+	/** @var string */
 	private $status;
+
+	/** @var string */
 	private $note;
+
+	/** @var string */
 	private $joined;
 
-	public function __construct() {
+	public function __construct($circleId, $userId) {
+		$this->setCircleId($circleId);
+		$this->setUserId($userId);
+		$this->setLevel(Member::LEVEL_NONE);
+		$this->setStatus(Member::STATUS_NONMEMBER);
+
 	}
 
 

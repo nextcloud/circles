@@ -43,12 +43,11 @@ class Sharees {
 
 	/**
 	 * @param $search
-	 * @param $limit
-	 * @param $offset
 	 *
 	 * @return array<string,array>
 	 */
-	public static function search($search, $limit, $offset) {
+//	public static function search($search, $limit, $offset) {
+	public static function search($search) {
 		$c = self::getContainer();
 
 		$data = $c->query('CirclesService')

@@ -26,7 +26,7 @@
 
 namespace OCA\Circles\Db;
 
-use \Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Model\Circle;
@@ -169,27 +169,20 @@ class MembersMapper extends Mapper {
 
 
 	/**
-	 * @param Member $member
+	 * Insert Member into database.
 	 *
-	 * @return bool
-	 * @throws MemberAlreadyExistsException
+	 * @param Member $member
 	 */
 	public function add(Member $member) {
 
-		try {
-			$qb = $this->db->getQueryBuilder();
-			$qb->insert(self::TABLENAME)
-			   ->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
-			   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
-			   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
-			   ->setValue('status', $qb->createNamedParameter($member->getStatus()))
-			   ->setValue('note', $qb->createNamedParameter($member->getNote()));
-			$qb->execute();
-		} catch (UniqueConstraintViolationException $e) {
-			throw new MemberAlreadyExistsException();
-		}
-
-		return true;
+		$qb = $this->db->getQueryBuilder();
+		$qb->insert(self::TABLENAME)
+		   ->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
+		   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
+		   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
+		   ->setValue('status', $qb->createNamedParameter($member->getStatus()))
+		   ->setValue('note', $qb->createNamedParameter($member->getNote()));
+		$qb->execute();
 	}
 
 

@@ -43,8 +43,8 @@ class Circle extends BaseCircle implements \JsonSerializable {
 
 	public function setType($type) {
 		parent::setType($type);
-		$this->setTypeString(self::TypeString($type));
-		$this->setTypeLongString(self::TypeLongString($type));
+		$this->setTypeString(self::typeString($type));
+		$this->setTypeLongString(self::typeLongString($type));
 		$this->setInfo($this->getTypeLongString());
 
 		return $this;
@@ -136,7 +136,7 @@ class Circle extends BaseCircle implements \JsonSerializable {
 	}
 
 
-	public static function TypeString($type) {
+	public static function typeString($type) {
 		switch ($type) {
 			case self::CIRCLES_PERSONAL:
 				return 'Personal';
@@ -158,7 +158,7 @@ class Circle extends BaseCircle implements \JsonSerializable {
 	 *
 	 * @return string
 	 */
-	public static function TypeLongString($type) {
+	public static function typeLongString($type) {
 		switch ($type) {
 			case self::CIRCLES_PERSONAL:
 				return 'Personal Circle';
