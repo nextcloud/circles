@@ -34,7 +34,6 @@ style('circles', 'navigation');
 
 ?>
 
-
 <div id="app-navigation" class="noborder" style="position: relative">
 	<div class="navigation-element" style="height: 100%; padding-top: 15px">
 		<input id="circles_new_name" type="text"
