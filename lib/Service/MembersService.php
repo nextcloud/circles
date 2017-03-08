@@ -96,7 +96,7 @@ class MembersService {
 		try {
 			$this->databaseService->getMembersMapper()
 								  ->getMemberFromCircle($circleId, $this->userId)
-								  ->isModerator();
+								  ->hasToBeModerator();
 		} catch (MemberDoesNotExistException $e) {
 			throw $e;
 		} catch (MemberIsNotModeratorException $e) {
@@ -206,13 +206,12 @@ class MembersService {
 		try {
 			$ismod = $this->databaseService->getMembersMapper()
 										   ->getMemberFromCircle($circleId, $this->userId);
+
+		$ismod->hasToBeModerator();
 		} catch (MemberDoesNotExistException $e) {
 			throw $e;
-		}
-
-
-		if ($ismod->getLevel() < Member::LEVEL_MODERATOR) {
-			throw new MemberIsNotModeratorException("You are not moderator of this circle");
+		} catch (MemberIsNotModeratorException $e) {
+			throw $e;
 		}
 
 		try {

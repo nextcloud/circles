@@ -28,6 +28,7 @@ namespace OCA\Circles\Model;
 
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberIsNotModeratorException;
+use OCA\Circles\Exceptions\MemberIsOwnerException;
 
 class Member implements \JsonSerializable {
 
@@ -137,15 +138,41 @@ class Member implements \JsonSerializable {
 		return $this->joined;
 	}
 
-	public function isModerator() {
-		if ($this->getLevel() >= self::LEVEL_MODERATOR) {
-			return true;
+	/**
+	 * @throws MemberIsNotModeratorException
+	 */
+	public function hasToBeModerator() {
+		if ($this->getLevel() < self::LEVEL_MODERATOR) {
+			throw new MemberIsNotModeratorException();
 		}
-
-		throw new MemberIsNotModeratorException();
 	}
 
 
+	/**
+	 * @throws MemberIsOwnerException
+	 */
+	public function cantBeOwner() {
+		if ($this->getLevel() === self::LEVEL_OWNER) {
+			throw new MemberIsOwnerException();
+		}
+	}
+
+	/**
+	 * @param $member
+	 *
+	 * @throws MemberAlreadyExistsException
+	 * @throws MemberIsBlockedException
+	 */
+	public function hasToBeAbleToJoinTheCircle() {
+
+		if ($this->getLevel() > 0) {
+			throw new MemberAlreadyExistsException("You are already a member of this circle");
+		}
+
+		if ($this->getStatus() === Member::STATUS_BLOCKED) {
+			throw new MemberIsBlockedException("You are blocked from this circle");
+		}
+	}
 
 	public function jsonSerialize() {
 		return array(

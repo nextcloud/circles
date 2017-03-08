@@ -26,7 +26,7 @@
 
 namespace OCA\Circles\Model;
 
-class Circle implements \JsonSerializable {
+class Circle extends BaseCircle implements \JsonSerializable {
 
 	const CIRCLES_PERSONAL = 1;
 	const CIRCLES_HIDDEN = 2;
@@ -35,88 +35,19 @@ class Circle implements \JsonSerializable {
 
 	const CIRCLES_ALL = 15;
 
-	private $id;
-	private $name;
-
-	/** @var Member */
-	private $owner;
-
-	/** @var Member */
-	private $user;
-	private $description;
-	private $type;
+	/** @var string */
 	private $typeString;
+
+	/** @var string */
 	private $typeLongString;
-	private $creation;
-	private $members;
-	private $info;
-
-	public function __construct() {
-	}
-
-
-	public function setId($id) {
-		$this->id = $id;
-
-		return $this;
-	}
-
-	public function getId() {
-		return $this->id;
-	}
-
-
-	public function setName($name) {
-		$this->name = $name;
-
-		return $this;
-	}
-
-	public function getName() {
-		return $this->name;
-	}
-
-
-	public function getOwner() {
-		return $this->owner;
-	}
-
-	public function setOwner($owner) {
-		$this->owner = $owner;
-	}
-
-
-	public function getUser() {
-		return $this->user;
-	}
-
-	public function setUser($user) {
-		$this->user = $user;
-	}
-
-
-	public function setDescription($description) {
-		$this->description = $description;
-
-		return $this;
-	}
-
-	public function getDescription() {
-		return $this->description;
-	}
-
 
 	public function setType($type) {
-		$this->type = (int)$type;
+		parent::setType($type);
 		$this->setTypeString(self::TypeString($type));
 		$this->setTypeLongString(self::TypeLongString($type));
 		$this->setInfo($this->getTypeLongString());
 
 		return $this;
-	}
-
-	public function getType() {
-		return $this->type;
 	}
 
 	public function setTypeString($str) {
@@ -135,37 +66,6 @@ class Circle implements \JsonSerializable {
 
 	public function getTypeLongString() {
 		return $this->typeLongString;
-	}
-
-
-	public function setInfo($str) {
-		$this->info = $str;
-	}
-
-	public function getInfo() {
-		return $this->info;
-	}
-
-
-	public function setCreation($creation) {
-		$this->creation = $creation;
-
-		return $this;
-	}
-
-	public function getCreation() {
-		return $this->creation;
-	}
-
-
-	public function setMembers($members) {
-		$this->members = $members;
-
-		return $this;
-	}
-
-	public function getMembers() {
-		return $this->members;
 	}
 
 

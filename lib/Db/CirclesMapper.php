@@ -236,7 +236,6 @@ class CirclesMapper extends Mapper {
 	 * @return string
 	 */
 	private function generateTypeEntryForCirclePrivate(IQueryBuilder $qb, int $type) {
-
 		if (Circle::CIRCLES_PRIVATE & (int)$type) {
 			return $qb->expr()
 					  ->eq(
