@@ -1,8 +1,8 @@
 # Nextcloud Circles
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nextcloud/circles/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/nextcloud/circles/?branch=master)
+[![codecov](https://codecov.io/gh/nextcloud/circles/branch/master/graph/badge.svg)](https://codecov.io/gh/nextcloud/circles)
 [![Build Status](https://drone.nextcloud.com/api/badges/nextcloud/circles/status.svg)](https://drone.nextcloud.com/nextcloud/circles)
-[![Code Coverage](https://scrutinizer-ci.com/g/nextcloud/circles/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/nextcloud/circles/?branch=master)
 
 **Bring cloud-users closer together.**
 
