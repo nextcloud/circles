@@ -28,7 +28,7 @@ pipeline:
     - cd apps/$APP_NAME/tests/
     - phpunit --configuration phpunit.xml
 
-    # coverage
+    after_script:
     - wget https://scrutinizer-ci.com/ocular.phar
     - php ocular.phar code-coverage:upload --format=php-clover coverage.xml
     - bash <(curl -s https://codecov.io/bash) -f coverage.xml -t ff710fa8-260c-4a61-bdd3-0771d6aea5b5
