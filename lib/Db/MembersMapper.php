@@ -173,8 +173,7 @@ class MembersMapper extends Mapper {
 			   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
 			   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
 			   ->setValue('status', $qb->createNamedParameter($member->getStatus()))
-			   ->setValue('note', $qb->createNamedParameter($member->getNote()))
-			   ->setValue('joined', 'CURRENT_TIMESTAMP()');
+			   ->setValue('note', $qb->createNamedParameter($member->getNote()));
 			$qb->execute();
 		} catch (UniqueConstraintViolationException $e) {
 			throw new MemberAlreadyExistsException();

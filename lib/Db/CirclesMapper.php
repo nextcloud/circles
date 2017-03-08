@@ -314,8 +314,7 @@ class CirclesMapper extends Mapper {
 		$qb->insert(self::TABLENAME)
 		   ->setValue('name', $qb->createNamedParameter($circle->getName()))
 		   ->setValue('description', $qb->createNamedParameter($circle->getDescription()))
-		   ->setValue('type', $qb->createNamedParameter($circle->getType()))
-		   ->setValue('creation', 'CURRENT_TIMESTAMP()');
+		   ->setValue('type', $qb->createNamedParameter($circle->getType()));
 		$qb->execute();
 		$circleId = $qb->getLastInsertId();
 
