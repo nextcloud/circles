@@ -55,6 +55,15 @@ class Member extends BaseMember implements \JsonSerializable {
 	}
 
 
+	public function inviteToCircle($circleType) {
+		if ($circleType === Circle::CIRCLES_PRIVATE) {
+			return $this->inviteIntoPrivateCircle();
+		}
+
+		return $this->addMemberToCircle();
+	}
+
+
 	/**
 	 * @param int $circleType
 	 *
@@ -65,7 +74,7 @@ class Member extends BaseMember implements \JsonSerializable {
 		switch ($circleType) {
 			case Circle::CIRCLES_HIDDEN:
 			case Circle::CIRCLES_PUBLIC:
-				return $this->joinOpenCircle();
+				return $this->addMemberToCircle();
 
 			case Circle::CIRCLES_PRIVATE:
 				return $this->joinPrivateCircle();
@@ -74,18 +83,25 @@ class Member extends BaseMember implements \JsonSerializable {
 		throw new MemberCantJoinCircle();
 	}
 
+
 	/**
 	 * Update status of member like he joined a public circle.
 	 */
-	private function joinOpenCircle() {
+	private function addMemberToCircle() {
 
 		if ($this->getStatus() === Member::STATUS_NONMEMBER
 			|| $this->getStatus() === Member::STATUS_KICKED
 		) {
-			$this->setStatus(Member::STATUS_MEMBER);
-			$this->setLevel(Member::LEVEL_MEMBER);
+			$this->setAsAMember(Member::LEVEL_MEMBER);
 		}
 	}
+
+
+	private function setAsAMember($level = 1) {
+		$this->setStatus(Member::STATUS_MEMBER);
+		$this->setLevel($level);
+	}
+
 
 	/**
 	 * Update status of member like he joined a private circle
@@ -100,12 +116,24 @@ class Member extends BaseMember implements \JsonSerializable {
 				break;
 
 			case Member::STATUS_INVITED:
-				$this->setStatus(Member::STATUS_MEMBER);
-				$this->setLevel(Member::LEVEL_MEMBER);
+				$this->setAsAMember(Member::LEVEL_MEMBER);
 				break;
 		}
 	}
 
+
+	private function inviteIntoPrivateCircle() {
+		switch ($this->getStatus()) {
+			case Member::STATUS_NONMEMBER:
+			case Member::STATUS_KICKED:
+				$this->setStatus(Member::STATUS_INVITED);
+				break;
+
+			case Member::STATUS_REQUEST:
+				$this->setAsAMember(Member::LEVEL_MEMBER);
+				break;
+		}
+	}
 
 	public function isMember() {
 		return ($this->getLevel() >= self::LEVEL_MEMBER);

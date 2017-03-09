@@ -145,7 +145,7 @@ class BaseMember {
 	/**
 	 * @param array $arr
 	 *
-	 * @return null
+	 * @return BaseMember
 	 */
 	public function fromArray($arr) {
 		$this->setCircleId($arr['circle_id']);

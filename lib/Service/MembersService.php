@@ -108,16 +108,7 @@ class MembersService {
 
 		$member->setCircleId($circleId);
 		$member->setUserId($name);
-
-		switch ($circle->getType()) {
-			case Circle::CIRCLES_PRIVATE:
-				$this->inviteMemberToPrivateCircle($member);
-				break;
-
-			default:
-				$this->addMemberToCircle($member);
-				break;
-		}
+		$member->inviteToCircle($circle->getType());
 
 		$this->dbMembers->editMember($member);
 
@@ -169,30 +160,6 @@ class MembersService {
 				|| ($member->getStatus() !== Member::STATUS_NONMEMBER
 					&& $member->getStatus() !== Member::STATUS_REQUEST)
 		);
-	}
-
-	/**
-	 * Invite a Member to a private Circle, or accept his request.
-	 *
-	 * @param $member
-	 */
-	private function inviteMemberToPrivateCircle(&$member) {
-		if ($member->getStatus() === Member::STATUS_REQUEST) {
-			self::AddMemberToCircle($member);
-		} else {
-			$member->setLevel(Member::LEVEL_NONE);
-			$member->setStatus(Member::STATUS_INVITED);
-		}
-	}
-
-	/**
-	 * add a member to a circle.
-	 *
-	 * @param $member
-	 */
-	private function addMemberToCircle(&$member) {
-		$member->setLevel(Member::LEVEL_MEMBER);
-		$member->setStatus(Member::STATUS_MEMBER);
 	}
 
 
