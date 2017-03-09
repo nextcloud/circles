@@ -97,12 +97,6 @@ class Member extends BaseMember implements \JsonSerializable {
 	}
 
 
-	private function setAsAMember($level = 1) {
-		$this->setStatus(Member::STATUS_MEMBER);
-		$this->setLevel($level);
-	}
-
-
 	/**
 	 * Update status of member like he joined a private circle
 	 * (invite/request)
@@ -135,13 +129,7 @@ class Member extends BaseMember implements \JsonSerializable {
 		}
 	}
 
-	public function isMember() {
-		return ($this->getLevel() >= self::LEVEL_MEMBER);
-	}
 
-	public function isModerator() {
-		return ($this->getLevel() >= self::LEVEL_MODERATOR);
-	}
 
 	/**
 	 * @throws MemberIsNotModeratorException

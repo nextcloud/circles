@@ -128,7 +128,7 @@ class MembersMapper extends Mapper {
 			$cursor = $qb->execute();
 			$result = [];
 			while ($data = $cursor->fetch()) {
-				if (!$user->isModerator()) {
+				if (!$user->isLevel(Member::LEVEL_MODERATOR)) {
 					unset($data['note']);
 				}
 

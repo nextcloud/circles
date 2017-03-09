@@ -142,6 +142,16 @@ class BaseMember {
 	}
 
 
+	public function isLevel($level) {
+		return ($this->getLevel() >= $level);
+	}
+
+	protected function setAsAMember($level = 1) {
+		$this->setStatus(Member::STATUS_MEMBER);
+		$this->setLevel($level);
+	}
+
+
 	/**
 	 * @param array $arr
 	 *

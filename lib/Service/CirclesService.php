@@ -156,7 +156,7 @@ class CirclesService {
 		try {
 			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
 			if ($circle->getUser()
-					   ->isMember()
+					   ->isMember(Member::LEVEL_MEMBER)
 			) {
 				$members = $this->dbMembers->getMembersFromCircle(
 					$circleId, $circle->getUser()
