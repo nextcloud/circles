@@ -35,39 +35,18 @@ class Circle extends BaseCircle implements \JsonSerializable {
 
 	const CIRCLES_ALL = 15;
 
-	/** @var string */
-	private $typeString;
-
-	/** @var string */
-	private $typeLongString;
-
-	public function setType($type) {
-		parent::setType($type);
-		$this->setTypeString(self::typeString($type));
-		$this->setTypeLongString(self::typeLongString($type));
-		$this->setInfo($this->getTypeLongString());
-
-		return $this;
-	}
-
-	public function setTypeString($str) {
-		$this->typeString = $str;
-
-		return $this;
-	}
-
 	public function getTypeString() {
-		return $this->typeString;
-	}
-
-	public function setTypeLongString($str) {
-		$this->typeLongString = $str;
+		return self::typeString($this->getType());
 	}
 
 	public function getTypeLongString() {
-		return $this->typeLongString;
+		return self::typeLongString($this->getType());
 	}
 
+
+	public function getInfo() {
+		return $this->getTypeLongString();
+	}
 
 	public function jsonSerialize() {
 		return array(

@@ -54,7 +54,6 @@ class CirclesController extends BaseController {
 				$data = $this->circlesService->createCircle($type, $name);
 
 				return $this->success(['name' => $name, 'circle' => $data, 'type' => $type]);
-
 			} catch (\Exception $e) {
 				$error = $e->getMessage();
 			}

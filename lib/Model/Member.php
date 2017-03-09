@@ -163,8 +163,8 @@ class Member extends BaseMember implements \JsonSerializable {
 
 	public function jsonSerialize() {
 		return array(
-			'circleid'     => $this->getCircleId(),
-			'userid'       => $this->getUserId(),
+			'circle_id'    => $this->getCircleId(),
+			'user_id'      => $this->getUserId(),
 			'level'        => $this->getLevel(),
 			'level_string' => $this->getLevelString(),
 			'status'       => $this->getStatus(),

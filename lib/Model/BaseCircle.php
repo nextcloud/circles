@@ -131,15 +131,6 @@ class BaseCircle {
 	}
 
 
-	public function setInfo($str) {
-		$this->info = $str;
-
-		return $this;
-	}
-
-	public function getInfo() {
-		return $this->info;
-	}
 
 
 	public function setCreation($creation) {

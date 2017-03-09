@@ -250,7 +250,7 @@ $(document).ready(function () {
 
 					tmpl = tmpl.replace(/%title%/, data[i].name);
 					tmpl = tmpl.replace(/%type%/, data[i].type);
-					tmpl = tmpl.replace(/%owner%/, data[i].owner.userid);
+					tmpl = tmpl.replace(/%owner%/, data[i].owner.user_id);
 					tmpl = tmpl.replace(/%status%/, data[i].user.status);
 					tmpl = tmpl.replace(/%level_string%/, data[i].user.level_string);
 					tmpl = tmpl.replace(/%count%/, data[i].count);
@@ -270,11 +270,11 @@ $(document).ready(function () {
 			};
 
 
-			this.selectCircle = function (circleid) {
+			this.selectCircle = function (circle_id) {
 				lastSearchUser = '';
 				$('#addmember').val('');
 
-				api.detailsCircle(circleid, this.selectCircleResult);
+				api.detailsCircle(circle_id, this.selectCircleResult);
 			};
 
 
@@ -421,7 +421,7 @@ $(document).ready(function () {
 
 					var tmpl = $('#tmpl_member').html();
 
-					tmpl = tmpl.replace(/%username%/g, members[i].userid);
+					tmpl = tmpl.replace(/%username%/g, members[i].user_id);
 					tmpl = tmpl.replace(/%level%/g, members[i].level);
 					tmpl = tmpl.replace(/%levelstring%/g, members[i].level_string);
 					tmpl = tmpl.replace(/%status%/, members[i].status);
