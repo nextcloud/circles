@@ -289,7 +289,7 @@ class CirclesMapper extends Mapper {
 	 * @throws CircleDoesNotExistException
 	 * @throws ConfigNoCircleAvailable
 	 */
-	public function getDetailsFromCircle($userId, $circleId) {
+	public function getDetailsFromCircle($circleId, $userId) {
 
 		try {
 			$result = $this->findCirclesByUser($userId, Circle::CIRCLES_ALL, '', 0, $circleId);

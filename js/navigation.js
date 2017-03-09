@@ -48,52 +48,57 @@ $(document).ready(function () {
 			var lastSearchCircle = '';
 			var lastSearchUser = '';
 
+			var divNewTypeDefinition = $('#circles_new_type_definition');
+			var divNewType = $('#circles_new_type');
+			var divNewSubmit = $('#circles_new_submit');
+			var divNewName = $('#circles_new_name');
+			var divNavigation = $('#app-navigation.circles');
 
-			$('#circles_new_type_definition div').fadeOut(0);
-			$('#circles_new_type_' + ($('#circles_new_type option:selected').val())).fadeIn(0);
+			divNewTypeDefinition.children('div').fadeOut(0);
+			$('#circles_new_type_' + divNewType.children('option:selected').val()).fadeIn(0);
 
-			$('#circles_new_type').hide();
-			$('#circles_new_submit').hide();
-			$('#circles_new_type_definition').hide();
+			divNewType.hide();
+			divNewSubmit.hide();
+			divNewTypeDefinition.hide();
 
-			$('#circles_new_name').on('keyup', function () {
+			divNewName.on('keyup', function () {
 				currentCircle = 0;
 				currentCircleLevel = 0;
 
-				$('#app-navigation.circles').hide('slide', 800);
+				divNavigation.hide('slide', 800);
 				$('#circles_list div').removeClass('selected');
 				$('#emptycontent').show(800);
 				$('#mainui').fadeOut(800);
 
-				if ($('#circles_new_name').val() !== '') {
-					$('#circles_new_type').fadeIn(300);
-					$('#circles_new_submit').fadeIn(500);
-					$('#circles_new_type_definition').fadeIn(700);
+				if (divNewName.val() !== '') {
+					divNewType.fadeIn(300);
+					divNewSubmit.fadeIn(500);
+					divNewTypeDefinition.fadeIn(700);
 				}
 				else {
-					$('#circles_new_type').fadeOut(700);
-					$('#circles_new_submit').fadeOut(500);
-					$('#circles_new_type_definition').fadeOut(300);
+					divNewType.fadeOut(700);
+					divNewSubmit.fadeOut(500);
+					divNewTypeDefinition.fadeOut(300);
 				}
 			});
 
-			$('#circles_new_type').on('change', function () {
+			divNewType.on('change', function () {
 
 				currentCircle = 0;
 				currentCircleLevel = 0;
 
-				$('#app-navigation.circles').hide('slide', 800);
+				divNavigation.hide('slide', 800);
 				$('#circles_list div').removeClass('selected');
 				$('#emptycontent').show(800);
 				$('#mainui').fadeOut(800);
 
-				$('#circles_new_type_definition div').fadeOut(300);
-				$('#circles_new_type_' + ($('#circles_new_type option:selected').val())).fadeIn(
+				divNewTypeDefinition.children('div').fadeOut(300);
+				$('#circles_new_type_' + divNewType.children('option:selected').val()).fadeIn(
 					300);
 			});
 
-			$('#circles_new_submit').on('click', function () {
-				api.createCircle($('#circles_new_type').val(), $('#circles_new_name').val(),
+			divNewSubmit.on('click', function () {
+				api.createCircle(divNewType.val(), divNewName.val(),
 					self.createCircleResult);
 			});
 
@@ -189,21 +194,21 @@ $(document).ready(function () {
 			// Circles List
 			this.displayCirclesList = function (type) {
 
-				self.currCirclesType = type;
-				self.lastSearchCircle = '';
-				self.lastSearchUser = '';
+				currCirclesType = type;
+				lastSearchCircle = '';
+				lastSearchUser = '';
 
-				self.currentCircle = 0;
-				self.currentCircleLevel = 0;
+				currentCircle = 0;
+				currentCircleLevel = 0;
 
-				$('#app-navigation.circles').show('slide', 800);
+				divNavigation.show('slide', 800);
 				$('#emptycontent').show(800);
 				$('#mainui').fadeOut(800);
 
 				$('#circles_search').val('');
 				$('#addmember').val('');
 
-				$('#app-navigation.circles').addClass('selected');
+				divNavigation.addClass('selected');
 				$('#circles_list div').removeClass('selected');
 
 				$('#circles_list').children().each(function () {
@@ -212,7 +217,7 @@ $(document).ready(function () {
 					}
 				});
 
-				$('#app-navigation.circles').children().each(function () {
+				divNavigation.children().each(function () {
 					if ($(this).attr('id') != 'circles_search') {
 						$(this).remove();
 					}
@@ -230,7 +235,7 @@ $(document).ready(function () {
 					return;
 				}
 
-				$('#app-navigation.circles').children().each(function () {
+				divNavigation.children().each(function () {
 					if ($(this).attr('id') != 'circles_search') {
 						$(this).remove();
 					}
@@ -252,21 +257,21 @@ $(document).ready(function () {
 					tmpl = tmpl.replace(/%creation%/, data[i].creation);
 
 					//	if (curr == null) {
-					$('#app-navigation.circles').append(
+					divNavigation.append(
 						'<div class="circle" circle-id="' + data[i].id + '">' + tmpl + '</div>');
 					//	} else {
 					//		$(curr).html(tmpl);
 					//	}
 				}
 
-				$('#app-navigation.circles').children('.circle').on('click', function () {
+				divNavigation.children('.circle').on('click', function () {
 					self.selectCircle($(this).attr('circle-id'));
 				});
 			};
 
 
 			this.selectCircle = function (circleid) {
-				self.lastSearchUser = '';
+				lastSearchUser = '';
 				$('#addmember').val('');
 
 				api.detailsCircle(circleid, this.selectCircleResult);
@@ -288,7 +293,7 @@ $(document).ready(function () {
 					return;
 				}
 
-				$('#app-navigation.circles').children('.circle').each(function () {
+				divNavigation.children('.circle').each(function () {
 					if ($(this).attr('circle-id') == result.circle_id) {
 						$(this).addClass('selected');
 					} else {
@@ -297,8 +302,8 @@ $(document).ready(function () {
 				});
 				$('#emptycontent').hide(800);
 				$('#mainui').fadeIn(800);
-				self.currentCircle = result.circle_id;
-				self.currentCircleLevel = result.details.user.level;
+				currentCircle = result.circle_id;
+				currentCircleLevel = result.details.user.level;
 
 				if (result.details.user.level < 6) {
 					$('#addmember').hide();
@@ -373,7 +378,7 @@ $(document).ready(function () {
 					$('#members_search_result').children().first().css('border-top-width', '0px');
 
 					$('.members_search').on('click', function () {
-						api.addMember(self.currentCircle, $(this).attr('searchresult'),
+						api.addMember(currentCircle, $(this).attr('searchresult'),
 							self.addMemberResult);
 					});
 					$('#members_search_result').fadeIn(300);
@@ -428,14 +433,14 @@ $(document).ready(function () {
 				}
 
 				$('#mainui #memberslist .table').children().each(function () {
-					if ($(this).attr('member-level') == '9' || self.currentCircleLevel < 6) {
+					if ($(this).attr('member-level') == '9' || currentCircleLevel < 6) {
 						$(this).children('.delete').hide(0);
 					}
 				});
 
 				$('#mainui #memberslist .table .delete').on('click', function () {
 					var member = $(this).parent().attr('member-id');
-					api.removeMember(self.currentCircle, member, self.removeMemberResult);
+					api.removeMember(currentCircle, member, self.removeMemberResult);
 				});
 			};
 

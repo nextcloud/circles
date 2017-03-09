@@ -194,7 +194,7 @@ class Application extends App {
 	 * @param $container
 	 */
 	private static function registerCores(& $container) {
-		
+
 		$container->registerService(
 			'Logger', function($c) {
 			return $c->query('ServerContainer')

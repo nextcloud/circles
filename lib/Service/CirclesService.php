@@ -154,7 +154,7 @@ class CirclesService {
 	public function detailsCircle($circleId) {
 
 		try {
-			$circle = $this->dbCircles->getDetailsFromCircle($this->userId, $circleId);
+			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
 			if ($circle->getUser()
 					   ->isMember()
 			) {
@@ -182,7 +182,7 @@ class CirclesService {
 	public function joinCircle($circleId) {
 
 		try {
-			$circle = $this->dbCircles->getDetailsFromCircle($this->userId, $circleId);
+			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
 
 			try {
 				$member = $this->dbMembers->getMemberFromCircle($circle->getId(), $this->userId);
@@ -214,7 +214,7 @@ class CirclesService {
 	public function leaveCircle($circleId) {
 
 		try {
-			$circle = $this->dbCircles->getDetailsFromCircle($this->userId, $circleId);
+			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
 			$member = $this->dbMembers->getMemberFromCircle($circle->getId(), $this->userId, false);
 			$member->hasToBeMember();
 			$member->cantBeOwner();

@@ -87,49 +87,23 @@ class MembersService {
 	 * @param $name
 	 *
 	 * @return array
-	 * @throws CircleDoesNotExistException
-	 * @throws MemberAlreadyExistsException
-	 * @throws MemberDoesNotExistException
-	 * @throws MemberIsNotModeratorException
-	 * @throws NoUserException
+	 * @throws \Exception
 	 */
 	public function addMember($circleId, $name) {
 
-		if (!$this->userManager->userExists($name)) {
-			throw new NoUserException("The selected user does not exist");
-		}
-
 		// we check that this->userId is moderator
 		try {
+			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
 			$this->dbMembers->getMemberFromCircle($circleId, $this->userId)
 							->hasToBeModerator();
-		} catch (MemberDoesNotExistException $e) {
-			throw $e;
-		} catch (MemberIsNotModeratorException $e) {
-			throw new MemberIsNotModeratorException("You are not moderator of this circle");
-		}
-
-		try {
-			$member = $this->dbMembers->getMemberFromCircle($circleId, $name);
-
-		} catch (MemberDoesNotExistException $e) {
-			$member = new Member();
-			$member->setCircleId($circleId);
-			$member->setUserId($name);
-			$member->setLevel(Member::LEVEL_NONE);
-			$member->setStatus(Member::STATUS_NONMEMBER);
-
-			$this->dbMembers->add($member);
-		}
-
-		try {
-			$circle = $this->dbCircles->getDetailsFromCircle($this->userId, $circleId);
-		} catch (CircleDoesNotExistException $e) {
+		} catch (\Exception $e) {
 			throw $e;
 		}
 
-		if ($this->memberAlreadyExist($member)) {
-			throw new MemberAlreadyExistsException();
+		try {
+			$member = $this->getFreshNewMember($circleId, $name);
+		} catch (\Exception $e) {
+			throw $e;
 		}
 
 		$member->setCircleId($circleId);
@@ -148,6 +122,38 @@ class MembersService {
 		$this->dbMembers->editMember($member);
 
 		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getUser());
+	}
+
+
+	/**
+	 * Check if a fresh member can be generated (by addMember)
+	 *
+	 * @param $circleId
+	 * @param $name
+	 *
+	 * @return null|Member
+	 * @throws MemberAlreadyExistsException
+	 * @throws NoUserException
+	 */
+	private function getFreshNewMember($circleId, $name) {
+
+		if (!$this->userManager->userExists($name)) {
+			throw new NoUserException("The selected user does not exist");
+		}
+
+		try {
+			$member = $this->dbMembers->getMemberFromCircle($circleId, $name);
+
+		} catch (MemberDoesNotExistException $e) {
+			$member = new Member($name, $circleId);
+			$this->dbMembers->add($member);
+		}
+
+		if ($this->memberAlreadyExist($member)) {
+			throw new MemberAlreadyExistsException();
+		}
+
+		return $member;
 	}
 
 
@@ -214,7 +220,7 @@ class MembersService {
 		}
 
 		$this->dbMembers->remove($member);
-		$circle = $this->dbCircles->getDetailsFromCircle($this->userId, $circleId);
+		$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
 
 		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getUser());
 	}
