@@ -46,8 +46,6 @@ class Application extends App {
 	private $appName;
 	/** @var string */
 	private $navName;
-	/** @var string */
-	private $navIcon;
 
 
 	/**
@@ -216,12 +214,8 @@ class Application extends App {
 
 
 	public function registerNavigation() {
-
-
-		$this->navIcon = 'circles.svg';
 		$this->navName = \OC::$server->getL10N($this->appName)
 									 ->t('Circles');
-
 		$this->getContainer()
 			 ->getServer()
 			 ->getNavigationManager()
@@ -233,7 +227,9 @@ class Application extends App {
 						 'href'  => \OC::$server->getURLGenerator()
 												->linkToRoute('circles.Navigation.navigate'),
 						 'icon'  => \OC::$server->getURLGenerator()
-												->imagePath($this->appName, $this->navIcon),
+												->imagePath(
+													$this->navName, 'circles.svg'
+												),
 						 'name'  => $this->navName
 					 ];
 				 }

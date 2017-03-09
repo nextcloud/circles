@@ -44,40 +44,23 @@ class CirclesController extends BaseController {
 	 * @return DataResponse
 	 */
 	public function create($type, $name) {
-
 		$type = self::convertTypeStringToBitValue($type);
 
 		if (substr($name, 0, 1) === '_') {
-			return $this->fail(
-				[
-					'type'  => $type,
-					'name'  => $name,
-					'error' => "The name of your circle cannot start with this character"
-				]
+			$error = "The name of your circle cannot start with this character";
+		} else {
 
-			);
+			try {
+				$data = $this->circlesService->createCircle($type, $name);
+
+				return $this->success(['name' => $name, 'circle' => $data, 'type' => $type]);
+
+			} catch (\Exception $e) {
+				$error = $e->getMessage();
+			}
 		}
 
-		try {
-			$data = $this->circlesService->createCircle($type, $name);
-
-			return $this->success(
-				[
-					'name'   => $name,
-					'circle' => $data,
-					'type'   => $type
-				]
-			);
-		} catch (\Exception $e) {
-			return $this->fail(
-				[
-					'type'  => $type,
-					'name'  => $name,
-					'error' => $e->getMessage()
-				]
-			);
-
-		}
+		return $this->fail(['type' => $type, 'name' => $name, 'error' => $error]);
 	}
 
 
@@ -91,28 +74,16 @@ class CirclesController extends BaseController {
 	 * @return DataResponse
 	 */
 	public function list($type, $name = '') {
-
 		$type = self::convertTypeStringToBitValue($type);
 
 		try {
 			$data = $this->circlesService->listCircles($type, $name, Member::LEVEL_NONE);
 
-			return $this->success(
-				[
-					'type' => $type,
-					'data' => $data
-				]
-			);
+			return $this->success(['type' => $type, 'data' => $data]);
 		} catch (CircleTypeDisabledException $e) {
-			return
-				$this->fail(
-					[
-						'type'  => $type,
-						'error' => $e->getMessage()
-					]
-				);
-		}
 
+			return $this->fail(['type' => $type, 'error' => $e->getMessage()]);
+		}
 	}
 
 
@@ -127,24 +98,13 @@ class CirclesController extends BaseController {
 	 *
 	 */
 	public function details($id) {
-
 		try {
 			$data = $this->circlesService->detailsCircle($id);
 
-			return $this->success(
-				[
-					'circle_id' => $id,
-					'details'   => $data
-				]
-			);
+			return $this->success(['circle_id' => $id, 'details' => $data]);
 		} catch (\Exception $e) {
-			return
-				$this->fail(
-					[
-						'circle_id' => $id,
-						'error'     => $e->getMessage()
-					]
-				);
+
+			return $this->fail(['circle_id' => $id, 'error' => $e->getMessage()]);
 		}
 
 	}
@@ -161,23 +121,13 @@ class CirclesController extends BaseController {
 	 *
 	 */
 	public function join($id) {
-
 		try {
 			$data = $this->circlesService->joinCircle($id);
 
-			return $this->success(
-				[
-					'circle_id' => $id,
-					'member'    => $data
-				]
-			);
+			return $this->success(['circle_id' => $id, 'member' => $data]);
 		} catch (\Exception $e) {
-			return $this->fail(
-				[
-					'circle_id' => $id,
-					'error'     => $e->getMessage()
-				]
-			);
+
+			return $this->fail(['circle_id' => $id, 'error' => $e->getMessage()]);
 		}
 	}
 
@@ -196,19 +146,10 @@ class CirclesController extends BaseController {
 		try {
 			$data = $this->circlesService->leaveCircle($id);
 
-			return $this->success(
-				[
-					'circle_id' => $id,
-					'member'    => $data
-				]
-			);
+			return $this->success(['circle_id' => $id, 'member' => $data]);
 		} catch (\Exception $e) {
-			return $this->fail(
-				[
-					'circle_id' => $id,
-					'error'     => $e->getMessage()
-				]
-			);
+
+			return $this->fail(['circle_id' => $id, 'error' => $e->getMessage()]);
 		}
 
 	}

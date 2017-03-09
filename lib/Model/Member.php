@@ -110,6 +110,10 @@ class Member extends BaseMember implements \JsonSerializable {
 	}
 
 
+	public function isMember() {
+		return ($this->getLevel() >= self::LEVEL_MEMBER);
+	}
+
 	public function isModerator() {
 		return ($this->getLevel() >= self::LEVEL_MODERATOR);
 	}

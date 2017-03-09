@@ -59,12 +59,12 @@ class BaseMember {
 	/** @var string */
 	private $joined;
 
-	public function __construct($circleId = -1, $userId = '') {
-		if ($circleId > -1) {
-			$this->setCircleId($circleId);
-		}
+	public function __construct($userId = '', $circleId = -1) {
 		if ($userId !== '') {
 			$this->setUserId($userId);
+		}
+		if ($circleId > -1) {
+			$this->setCircleId($circleId);
 		}
 		$this->setLevel(Member::LEVEL_NONE);
 		$this->setStatus(Member::STATUS_NONMEMBER);

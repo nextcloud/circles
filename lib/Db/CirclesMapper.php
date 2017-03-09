@@ -26,9 +26,7 @@
 
 namespace OCA\Circles\Db;
 
-use Doctrine\DBAL\Query\QueryBuilder;
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
-use OCA\Circles\Exceptions\CircleCreationException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailable;
 use OCA\Circles\Model\Circle;
@@ -203,26 +201,21 @@ class CirclesMapper extends Mapper {
 	private function generateTypeEntryForCircleHidden(
 		IQueryBuilder $qb, int $type, int $circleId, string $name
 	) {
-
 		if (!(Circle::CIRCLES_HIDDEN & (int)$type)) {
 			return null;
 		}
 
+		$expr = $qb->expr;
 		$sqb = $qb->expr()
 				  ->andX(
-					  $qb->expr()
-						 ->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_HIDDEN)),
-					  $qb->expr()
-						 ->orX(
-							 $qb->expr()
-								->gte(
-									'u.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)
-								),
-							 $qb->expr()
-								->eq('c.id', $qb->createNamedParameter($circleId)),
-							 $qb->expr()
-								->eq('c.name', $qb->createNamedParameter($name))
-						 )
+					  $expr->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_HIDDEN)),
+					  $expr->orX(
+						  $expr->gte(
+							  'u.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)
+						  ),
+						  $expr->eq('c.id', $qb->createNamedParameter($circleId)),
+						  $expr->eq('c.name', $qb->createNamedParameter($name))
+					  )
 				  );
 
 		return $sqb;
@@ -300,7 +293,6 @@ class CirclesMapper extends Mapper {
 	 *
 	 * @return bool
 	 * @throws CircleAlreadyExistsException
-	 * @throws CircleCreationException
 	 */
 	public function create(Circle & $circle, Member & $owner) {
 
@@ -315,10 +307,6 @@ class CirclesMapper extends Mapper {
 		   ->setValue('type', $qb->createNamedParameter($circle->getType()));
 		$qb->execute();
 		$circleId = $qb->getLastInsertId();
-		
-		if ($circleId < 1) {
-			throw new CircleCreationException();
-		}
 
 		$circle->setId($circleId);
 		$owner->setLevel(Member::LEVEL_OWNER)

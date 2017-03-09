@@ -55,7 +55,13 @@ class BaseCircle {
 	/** @var string */
 	private $info;
 
-	public function __construct() {
+	public function __construct($type = -1, $name = '') {
+		if ($type > -1) {
+			$this->type = $type;
+		}
+		if ($name !== '') {
+			$this->name = $name;
+		}
 	}
 
 
