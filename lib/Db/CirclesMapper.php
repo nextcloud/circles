@@ -66,8 +66,9 @@ class CirclesMapper extends Mapper {
 		$type = (int)$type;
 		$level = (int)$level;
 		$circleId = (int)$circleId;
-
 		$qb = $this->db->getQueryBuilder();
+		$expr = $qb->expr();
+
 		$qb->select(
 			'c.id', 'c.name', 'c.description', 'c.type', 'c.creation',
 			'u.joined', 'u.level', 'u.status'
@@ -76,10 +77,8 @@ class CirclesMapper extends Mapper {
 		   ->from(self::TABLENAME, 'c')
 		   ->from(MembersMapper::TABLENAME, 'o')
 		   ->where(
-			   $qb->expr()
-				  ->eq('c.id', 'o.circle_id'),
-			   $qb->expr()
-				  ->eq('o.level', $qb->createNamedParameter(Member::LEVEL_OWNER))
+			   $expr->eq('c.id', 'o.circle_id'),
+			   $expr->eq('o.level', $qb->createNamedParameter(Member::LEVEL_OWNER))
 		   );
 
 		$this->buildWithMemberLevel($qb, 'u.level', $level);
@@ -87,13 +86,10 @@ class CirclesMapper extends Mapper {
 
 		$qb->leftJoin(
 			'c', MembersMapper::TABLENAME, 'u',
-			$qb->expr()
-			   ->andX(
-				   $qb->expr()
-					  ->eq('c.id', 'u.circle_id'),
-				   $qb->expr()
-					  ->eq('u.user_id', $qb->createNamedParameter($userId))
-			   )
+			$expr->andX(
+				$expr->eq('c.id', 'u.circle_id'),
+				$expr->eq('u.user_id', $qb->createNamedParameter($userId))
+			)
 		);
 
 		$orTypesArray = [];
@@ -110,8 +106,7 @@ class CirclesMapper extends Mapper {
 			throw new ConfigNoCircleAvailable();
 		}
 
-		$orXTypes = $qb->expr()
-					   ->orX();
+		$orXTypes = $expr->orX();
 
 		foreach ($orTypesArray as $orTypes) {
 			$orXTypes->add($orTypes);
@@ -205,18 +200,17 @@ class CirclesMapper extends Mapper {
 			return null;
 		}
 
-		$expr = $qb->expr;
-		$sqb = $qb->expr()
-				  ->andX(
-					  $expr->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_HIDDEN)),
-					  $expr->orX(
-						  $expr->gte(
-							  'u.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)
-						  ),
-						  $expr->eq('c.id', $qb->createNamedParameter($circleId)),
-						  $expr->eq('c.name', $qb->createNamedParameter($name))
-					  )
-				  );
+		$expr = $qb->expr();
+		$sqb = $expr->andX(
+			$expr->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_HIDDEN)),
+			$expr->orX(
+				$expr->gte(
+					'u.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)
+				),
+				$expr->eq('c.id', $qb->createNamedParameter($circleId)),
+				$expr->eq('c.name', $qb->createNamedParameter($name))
+			)
+		);
 
 		return $sqb;
 	}

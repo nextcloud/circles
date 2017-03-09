@@ -76,7 +76,7 @@ class CirclesService {
 		$this->configService = $configService;
 		$this->miscService = $miscService;
 
-		$this->dbCircle = $databaseService->getCirclesMapper();
+		$this->dbCircles = $databaseService->getCirclesMapper();
 		$this->dbMembers = $databaseService->getMembersMapper();
 	}
 

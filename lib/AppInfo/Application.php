@@ -44,8 +44,6 @@ class Application extends App {
 
 	/** @var string */
 	private $appName;
-	/** @var string */
-	private $navName;
 
 
 	/**
@@ -214,23 +212,22 @@ class Application extends App {
 
 
 	public function registerNavigation() {
-		$this->navName = \OC::$server->getL10N($this->appName)
-									 ->t('Circles');
+
 		$this->getContainer()
 			 ->getServer()
 			 ->getNavigationManager()
 			 ->add(
 				 function() {
+					 $urlGen = \OC::$server->getURLGenerator();
+					 $navName = \OC::$server->getL10N($this->appName)
+											->t('Circles');
+
 					 return [
 						 'id'    => $this->appName,
 						 'order' => 5,
-						 'href'  => \OC::$server->getURLGenerator()
-												->linkToRoute('circles.Navigation.navigate'),
-						 'icon'  => \OC::$server->getURLGenerator()
-												->imagePath(
-													$this->navName, 'circles.svg'
-												),
-						 'name'  => $this->navName
+						 'href'  => $urlGen->linkToRoute('circles.Navigation.navigate'),
+						 'icon'  => $urlGen->imagePath($this->appName, 'circles.svg'),
+						 'name'  => $navName
 					 ];
 				 }
 			 );
