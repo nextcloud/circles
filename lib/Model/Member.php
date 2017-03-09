@@ -27,7 +27,7 @@
 namespace OCA\Circles\Model;
 
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
-use OCA\Circles\Exceptions\MemberCantJoinPersonalCircle;
+use OCA\Circles\Exceptions\MemberCantJoinCircle;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\MemberIsBlockedException;
 use OCA\Circles\Exceptions\MemberIsNotModeratorException;
@@ -58,23 +58,20 @@ class Member extends BaseMember implements \JsonSerializable {
 	/**
 	 * @param int $circleType
 	 *
-	 * @throws MemberCantJoinPersonalCircle
+	 * @throws MemberCantJoinCircle
 	 */
 	public function joinCircle($circleType) {
 
 		switch ($circleType) {
 			case Circle::CIRCLES_HIDDEN:
 			case Circle::CIRCLES_PUBLIC:
-				$this->joinOpenCircle();
-				break;
+				return $this->joinOpenCircle();
 
 			case Circle::CIRCLES_PRIVATE:
-				$this->joinPrivateCircle();
-				break;
-
-			case Circle::CIRCLES_PERSONAL:
-				throw new MemberCantJoinPersonalCircle();
+				return $this->joinPrivateCircle();
 		}
+
+		throw new MemberCantJoinCircle();
 	}
 
 	/**

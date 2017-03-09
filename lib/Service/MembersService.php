@@ -28,6 +28,8 @@ namespace OCA\Circles\Service;
 
 
 use OC\User\NoUserException;
+use OCA\Circles\Db\CirclesMapper;
+use OCA\Circles\Db\MembersMapper;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
@@ -52,8 +54,11 @@ class MembersService {
 	/** @var ConfigService */
 	private $configService;
 
-	/** @var DatabaseService */
-	private $databaseService;
+	/** @var CirclesMapper */
+	private $dbCircles;
+
+	/** @var MembersMapper */
+	private $dbMembers;
 
 	/** @var MiscService */
 	private $miscService;
@@ -70,8 +75,10 @@ class MembersService {
 		$this->l10n = $l10n;
 		$this->userManager = $userManager;
 		$this->configService = $configService;
-		$this->databaseService = $databaseService;
 		$this->miscService = $miscService;
+
+		$this->dbCircles = $databaseService->getCirclesMapper();
+		$this->dbMembers = $databaseService->getMembersMapper();
 	}
 
 
@@ -94,9 +101,8 @@ class MembersService {
 
 		// we check that this->userId is moderator
 		try {
-			$this->databaseService->getMembersMapper()
-								  ->getMemberFromCircle($circleId, $this->userId)
-								  ->hasToBeModerator();
+			$this->dbMembers->getMemberFromCircle($circleId, $this->userId)
+							->hasToBeModerator();
 		} catch (MemberDoesNotExistException $e) {
 			throw $e;
 		} catch (MemberIsNotModeratorException $e) {
@@ -104,8 +110,7 @@ class MembersService {
 		}
 
 		try {
-			$member = $this->databaseService->getMembersMapper()
-											->getMemberFromCircle($circleId, $name);
+			$member = $this->dbMembers->getMemberFromCircle($circleId, $name);
 
 		} catch (MemberDoesNotExistException $e) {
 			$member = new Member();
@@ -114,15 +119,11 @@ class MembersService {
 			$member->setLevel(Member::LEVEL_NONE);
 			$member->setStatus(Member::STATUS_NONMEMBER);
 
-			$this->databaseService->getMembersMapper()
-								  ->add(
-									  $member
-								  );
+			$this->dbMembers->add($member);
 		}
 
 		try {
-			$circle = $this->databaseService->getCirclesMapper()
-											->getDetailsFromCircle($this->userId, $circleId);
+			$circle = $this->dbCircles->getDetailsFromCircle($this->userId, $circleId);
 		} catch (CircleDoesNotExistException $e) {
 			throw $e;
 		}
@@ -144,18 +145,15 @@ class MembersService {
 				break;
 		}
 
-		$this->databaseService->getMembersMapper()
-							  ->editMember($member);
+		$this->dbMembers->editMember($member);
 
-		return $this->databaseService->getMembersMapper()
-									 ->getMembersFromCircle(
-										 $circleId, $circle->getUser()
-									 );
+		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getUser());
 	}
 
 
 	/**
 	 * return if member already exists
+	 *
 	 * @param $member
 	 *
 	 * @return bool
@@ -197,47 +195,28 @@ class MembersService {
 	 * @param $name
 	 *
 	 * @return array
-	 * @throws MemberDoesNotExistException
-	 * @throws MemberIsNotModeratorException
-	 * @throws MemberIsOwnerException
+	 * @throws \Exception
 	 */
 	public function removeMember($circleId, $name) {
 
 		try {
-			$ismod = $this->databaseService->getMembersMapper()
-										   ->getMemberFromCircle($circleId, $this->userId);
-
-			$ismod->hasToBeModerator();
-		} catch (MemberDoesNotExistException $e) {
-			throw $e;
-		} catch (MemberIsNotModeratorException $e) {
+			$isMod = $this->dbMembers->getMemberFromCircle($circleId, $this->userId);
+			$isMod->hasToBeModerator();
+		} catch (\Exception $e) {
 			throw $e;
 		}
 
 		try {
-			$member = $this->databaseService->getMembersMapper()
-											->getMemberFromCircle($circleId, $name);
-		} catch (MemberDoesNotExistException $e) {
+			$member = $this->dbMembers->getMemberFromCircle($circleId, $name);
+			$member->cantBeOwner();
+		} catch (\Exception $e) {
 			throw $e;
 		}
 
+		$this->dbMembers->remove($member);
+		$circle = $this->dbCircles->getDetailsFromCircle($this->userId, $circleId);
 
-		if ($member->getLevel() === Member::LEVEL_OWNER) {
-			throw new MemberIsOwnerException();
-		}
-
-		$this->databaseService->getMembersMapper()
-							  ->remove($member);
-
-		$circle = $this->databaseService->getCirclesMapper()
-										->getDetailsFromCircle(
-											$this->userId, $circleId
-										);
-
-		return $this->databaseService->getMembersMapper()
-									 ->getMembersFromCircle(
-										 $circleId, $circle->getUser()
-									 );
+		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getUser());
 	}
 
 }

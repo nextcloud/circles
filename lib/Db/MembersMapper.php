@@ -58,22 +58,7 @@ class MembersMapper extends Mapper {
 	public function getMemberFromCircle($circleId, $userId, $moderator = false) {
 
 		$circleId = (int)$circleId;
-
-		$qb = $this->db->getQueryBuilder();
-		$qb->select(
-			'circle_id', 'user_id', 'level', 'status', 'note', 'joined'
-		)
-		   ->from(self::TABLENAME)
-		   ->where(
-			   $qb->expr()
-				  ->eq('circle_id', $qb->createNamedParameter($circleId))
-		   );
-
-		$qb->andWhere(
-			$qb->expr()
-			   ->eq('user_id', $qb->createNamedParameter($userId))
-		);
-
+		$qb = $this->getMemberFromCircleSql($circleId, $userId);
 		$cursor = $qb->setMaxResults(1)
 					 ->execute();
 
@@ -95,6 +80,34 @@ class MembersMapper extends Mapper {
 
 
 	/**
+	 * Generate SQL Request for getMemberFromCircle()
+	 *
+	 * @param $circleId
+	 * @param $userId
+	 *
+	 * @return \OCP\DB\QueryBuilder\IQueryBuilder
+	 */
+	private function getMemberFromCircleSql($circleId, $userId) {
+
+		$qb = $this->db->getQueryBuilder();
+		$expr = $qb->expr();
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$qb->select(
+			'circle_id', 'user_id', 'level', 'status', 'note', 'joined'
+		)
+		   ->from(self::TABLENAME)
+		   ->where(
+			   $expr->eq('circle_id', $qb->createNamedParameter($circleId))
+		   )
+		   ->andWhere(
+			   $expr->eq('user_id', $qb->createNamedParameter($userId))
+		   );
+
+		return $qb;
+	}
+
+	/**
 	 * get members list from a circle. If moderator, returns also notes about each member.
 	 *
 	 * @param $circleId
@@ -107,27 +120,12 @@ class MembersMapper extends Mapper {
 	 */
 	public function getMembersFromCircle($circleId, Member $user) {
 
+		$circleId = (int)$circleId;
 		try {
 			$user->hasToBeMember();
 
-			$circleId = (int)$circleId;
-
-			$qb = $this->db->getQueryBuilder();
-			$qb->select(
-				'circle_id', 'user_id', 'level', 'status', 'note', 'joined'
-			)
-			   ->from(self::TABLENAME)
-			   ->where(
-				   $qb->expr()
-					  ->eq('circle_id', $qb->createNamedParameter($circleId))
-			   )
-			   ->andwhere(
-				   $qb->expr()
-					  ->neq('status', $qb->createNamedParameter(Member::STATUS_NONMEMBER))
-			   );
-
+			$qb = $this->getMembersFromCircleSql($circleId);
 			$cursor = $qb->execute();
-
 			$result = [];
 			while ($data = $cursor->fetch()) {
 				if (!$user->isModerator()) {
@@ -139,6 +137,7 @@ class MembersMapper extends Mapper {
 				$result[] = $member;
 			}
 			$cursor->closeCursor();
+
 		} catch (MemberDoesNotExistException $e) {
 			throw new $e;
 		}
@@ -148,21 +147,49 @@ class MembersMapper extends Mapper {
 	}
 
 
+	/**
+	 * Return SQL for getMembersFromCircle.
+	 *
+	 * @param $circleId
+	 *
+	 * @return \OCP\DB\QueryBuilder\IQueryBuilder
+	 */
+	private function getMembersFromCircleSql($circleId) {
+		$qb = $this->db->getQueryBuilder();
+		$expr = $qb->expr();
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$qb->select(
+			'circle_id', 'user_id', 'level', 'status', 'note', 'joined'
+		)
+		   ->from(self::TABLENAME)
+		   ->where(
+			   $expr->eq('circle_id', $qb->createNamedParameter($circleId))
+		   )
+		   ->andwhere(
+			   $expr->neq('status', $qb->createNamedParameter(Member::STATUS_NONMEMBER))
+		   );
+
+		return $qb;
+	}
+
 	public function editMember(Member $member) {
 
 		$qb = $this->db->getQueryBuilder();
-		$qb->update(self::TABLENAME);
-		$qb->set('level', $qb->createNamedParameter($member->getLevel()));
-		$qb->set('status', $qb->createNamedParameter($member->getStatus()));
-		$qb->where(
-			$qb->expr()
-			   ->andX(
-				   $qb->expr()
-					  ->eq('circle_id', $qb->createNamedParameter($member->getCircleId())),
-				   $qb->expr()
-					  ->eq('user_id', $qb->createNamedParameter($member->getUserId()))
-			   )
-		);
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$qb->update(self::TABLENAME)
+		   ->set('level', $qb->createNamedParameter($member->getLevel()))
+		   ->set('status', $qb->createNamedParameter($member->getStatus()))
+		   ->where(
+			   $qb->expr()
+				  ->andX(
+					  $qb->expr()
+						 ->eq('circle_id', $qb->createNamedParameter($member->getCircleId())),
+					  $qb->expr()
+						 ->eq('user_id', $qb->createNamedParameter($member->getUserId()))
+				  )
+		   );
 
 		$qb->execute();
 
@@ -204,6 +231,8 @@ class MembersMapper extends Mapper {
 	public function remove(Member $member) {
 
 		$qb = $this->db->getQueryBuilder();
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->delete(self::TABLENAME)
 		   ->where(
 			   $qb->expr()

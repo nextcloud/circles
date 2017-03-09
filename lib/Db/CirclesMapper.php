@@ -66,9 +66,39 @@ class CirclesMapper extends Mapper {
 		$type = (int)$type;
 		$level = (int)$level;
 		$circleId = (int)$circleId;
+		$qb = $this->findCirclesByUserSql($userId, $type, $name, $level, $circleId);
+		$cursor = $qb->execute();
+
+		$result = [];
+		while ($data = $cursor->fetch()) {
+			if ($name === '' || stripos($data['name'], $name) !== false) {
+				$circle = new Circle();
+				$result[] = $circle->fromArray($data);
+			}
+		}
+		$cursor->closeCursor();
+
+		return $result;
+	}
+
+
+	/**
+	 * Returns SQL for findCirclesByUser
+	 *
+	 * @param $userId
+	 * @param $type
+	 * @param $name
+	 * @param $level
+	 * @param $circleId
+	 *
+	 * @return IQueryBuilder
+	 * @throws ConfigNoCircleAvailable
+	 */
+	private function findCirclesByUserSql($userId, $type, $name, $level, $circleId) {
 		$qb = $this->db->getQueryBuilder();
 		$expr = $qb->expr();
 
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select(
 			'c.id', 'c.name', 'c.description', 'c.type', 'c.creation',
 			'u.joined', 'u.level', 'u.status'
@@ -79,18 +109,27 @@ class CirclesMapper extends Mapper {
 		   ->where(
 			   $expr->eq('c.id', 'o.circle_id'),
 			   $expr->eq('o.level', $qb->createNamedParameter(Member::LEVEL_OWNER))
+		   )
+		   ->leftJoin(
+			   'c', MembersMapper::TABLENAME, 'u',
+			   $expr->andX(
+				   $expr->eq('c.id', 'u.circle_id'),
+				   $expr->eq('u.user_id', $qb->createNamedParameter($userId))
+			   )
 		   );
 
 		$this->buildWithMemberLevel($qb, 'u.level', $level);
 		$this->buildWithCircleId($qb, 'c.id', $circleId);
+		$this->buildWithOrXTypes($qb, $userId, $type, $name, $circleId);
 
-		$qb->leftJoin(
-			'c', MembersMapper::TABLENAME, 'u',
-			$expr->andX(
-				$expr->eq('c.id', 'u.circle_id'),
-				$expr->eq('u.user_id', $qb->createNamedParameter($userId))
-			)
-		);
+		$qb->groupBy('c.id');
+		$qb->orderBy('c.name', 'ASC');
+
+		return $qb;
+	}
+
+
+	private function buildWithOrXTypes(&$qb, $userId, $type, $name, $circleId) {
 
 		$orTypesArray = [];
 		array_push($orTypesArray, $this->generateTypeEntryForCirclePersonal($qb, $type, $userId));
@@ -106,31 +145,15 @@ class CirclesMapper extends Mapper {
 			throw new ConfigNoCircleAvailable();
 		}
 
-		$orXTypes = $expr->orX();
+		$orXTypes = $qb->expr()
+					   ->orX();
 
 		foreach ($orTypesArray as $orTypes) {
 			$orXTypes->add($orTypes);
 		}
 
 		$qb->andWhere($orXTypes);
-
-		$qb->groupBy('c.id');
-		$qb->orderBy('c.name', 'ASC');
-
-		$cursor = $qb->execute();
-
-		$result = [];
-		while ($data = $cursor->fetch()) {
-			if ($name === '' || stripos($data['name'], $name) !== false) {
-				$circle = new Circle();
-				$result[] = $circle->fromArray($data);
-			}
-		}
-		$cursor->closeCursor();
-
-		return $result;
 	}
-
 
 	/**
 	 * @param IQueryBuilder $qb
@@ -172,6 +195,8 @@ class CirclesMapper extends Mapper {
 	private function generateTypeEntryForCirclePersonal(IQueryBuilder $qb, int $type, string $userId
 	) {
 		if (Circle::CIRCLES_PERSONAL & (int)$type) {
+
+			/** @noinspection PhpMethodParametersCountMismatchInspection */
 			return $qb->expr()
 					  ->andX(
 						  $qb->expr()
@@ -201,6 +226,7 @@ class CirclesMapper extends Mapper {
 		}
 
 		$expr = $qb->expr();
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$sqb = $expr->andX(
 			$expr->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_HIDDEN)),
 			$expr->orX(
@@ -344,16 +370,7 @@ class CirclesMapper extends Mapper {
 			return $this->isPersonalCircleUnique($circle, $owner);
 		}
 
-		$qb = $this->db->getQueryBuilder();
-		$qb->select(
-			'c.id', 'c.name', 'c.type'
-		)
-		   ->from(self::TABLENAME, 'c')
-		   ->where(
-			   $qb->expr()
-				  ->neq('c.type', $qb->createNamedParameter(Circle::CIRCLES_PERSONAL))
-		   );
-
+		$qb = $this->isCircleUniqueSql();
 		$cursor = $qb->execute();
 
 		while ($data = $cursor->fetch()) {
@@ -364,6 +381,28 @@ class CirclesMapper extends Mapper {
 		$cursor->closeCursor();
 
 		return true;
+	}
+
+
+	/**
+	 * Return SQL for isCircleUnique();
+	 *
+	 * @return IQueryBuilder
+	 */
+	private function isCircleUniqueSql() {
+		$qb = $this->db->getQueryBuilder();
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$qb->select(
+			'c.id', 'c.name', 'c.type'
+		)
+		   ->from(self::TABLENAME, 'c')
+		   ->where(
+			   $qb->expr()
+				  ->neq('c.type', $qb->createNamedParameter(Circle::CIRCLES_PERSONAL))
+		   );
+
+		return $qb;
 	}
 
 

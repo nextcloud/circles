@@ -26,11 +26,11 @@
 
 namespace OCA\Circles\Exceptions;
 
-class MemberCantJoinPersonalCircle extends \Exception {
+class MemberCantJoinCircle extends \Exception {
 
 	public function __construct($message = "", $code = 0, \Exception $previous = null) {
 		if ($message === '') {
-			$message = 'Member cannot join a personal circle';
+			$message = 'You cannot join this circle';
 		}
 
 		parent::__construct($message, $code, $previous);
