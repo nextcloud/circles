@@ -26,7 +26,7 @@
 
 script('circles', 'circles');
 
-script('circles', 'notyf');
+script('circles', 'vendor/notyf');
 style('circles', 'notyf');
 
 script('circles', 'navigation');

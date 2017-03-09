@@ -65,7 +65,8 @@ class MembersMapperTest extends \PHPUnit_Framework_TestCase {
 
 	public function testMembers() {
 
-		$member1 = Member::fromArray(
+		$member1 = new Member();
+		$member1->fromArray(
 			array(
 				'circle_id' => self::TEST_CIRCLE_ID,
 				'user_id'   => self::TEST_MEMBER_1,
@@ -75,7 +76,8 @@ class MembersMapperTest extends \PHPUnit_Framework_TestCase {
 			)
 		);
 
-		$member2 = Member::fromArray(
+		$member2 = new Member();
+		$member2->fromArray(
 			array(
 				'circle_id' => self::TEST_CIRCLE_ID,
 				'user_id'   => self::TEST_MEMBER_2,
@@ -124,14 +126,14 @@ class MembersMapperTest extends \PHPUnit_Framework_TestCase {
 
 		//
 		// list of members from a circle (moderator)
-		$membersList = $this->membersMapper->getMembersFromCircle(self::TEST_CIRCLE_ID, true);
+		$membersList = $this->membersMapper->getMembersFromCircle(self::TEST_CIRCLE_ID, $member2);
 		$this->assertCount(2, $membersList);
 		if (sizeof($membersList) > 0) {
 			$this->assertSame('test note', $membersList[0]->getNote());
 		}
 
 		// list of members from a circle (mom-moderator)
-		$membersList = $this->membersMapper->getMembersFromCircle(self::TEST_CIRCLE_ID, false);
+		$membersList = $this->membersMapper->getMembersFromCircle(self::TEST_CIRCLE_ID, $member1);
 		$this->assertCount(2, $membersList);
 		if (sizeof($membersList) > 0) {
 			$this->assertSame(null, $membersList[0]->getNote());
@@ -156,7 +158,7 @@ class MembersMapperTest extends \PHPUnit_Framework_TestCase {
 		$this->assertSame($result1->getStatus(), Member::STATUS_NONMEMBER);
 
 		$this->assertCount(
-			1, $this->membersMapper->getMembersFromCircle(self::TEST_CIRCLE_ID, false)
+			1, $this->membersMapper->getMembersFromCircle(self::TEST_CIRCLE_ID, $member2)
 		);
 
 		$this->membersMapper->remove($member1);

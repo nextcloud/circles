@@ -44,10 +44,6 @@ class Application extends App {
 
 	/** @var string */
 	private $appName;
-	/** @var string */
-	private $navName;
-	/** @var string */
-	private $navIcon;
 
 
 	/**
@@ -59,9 +55,28 @@ class Application extends App {
 		$container = $this->getContainer();
 		$this->appName = $container->query('AppName');
 
-		/**
-		 * Services
-		 */
+		self::registerServices($container);
+		self::registerControllers($container);
+		self::registerMappers($container);
+		self::registerCores($container);
+
+		// Translates
+		$container->registerService(
+			'L10N', function($c) {
+			return $c->query('ServerContainer')
+					 ->getL10N($c->query('AppName'));
+		}
+		);
+	}
+
+
+	/**
+	 * Register Containers
+	 *
+	 * @param $container
+	 */
+	private function registerServices(& $container) {
+
 		$container->registerService(
 			'MiscService', function($c) {
 			return new MiscService($c->query('Logger'), $c->query('AppName'));
@@ -81,8 +96,7 @@ class Application extends App {
 		$container->registerService(
 			'DatabaseService', function($c) {
 			return new DatabaseService(
-				$c->query('CirclesMapper'),
-				$c->query('MembersMapper')
+				$c->query('CirclesMapper'), $c->query('MembersMapper')
 			);
 		}
 		);
@@ -90,10 +104,8 @@ class Application extends App {
 		$container->registerService(
 			'CirclesService', function($c) {
 			return new CirclesService(
-				$c->query('UserId'), $c->query('L10N'),
-				$c->query('ConfigService'),
-				$c->query('DatabaseService'),
-				$c->query('MiscService')
+				$c->query('UserId'), $c->query('L10N'), $c->query('ConfigService'),
+				$c->query('DatabaseService'), $c->query('MiscService')
 			);
 		}
 		);
@@ -101,27 +113,27 @@ class Application extends App {
 		$container->registerService(
 			'MembersService', function($c) {
 			return new MembersService(
-				$c->query('UserId'), $c->query('L10N'),
-				$c->query('UserManager'),
-				$c->query('ConfigService'),
-				$c->query('DatabaseService'),
-				$c->query('MiscService')
+				$c->query('UserId'), $c->query('L10N'), $c->query('UserManager'),
+				$c->query('ConfigService'), $c->query('DatabaseService'), $c->query('MiscService')
 			);
 		}
 		);
+	}
 
 
-		/**
-		 * Controllers
-		 */
+	/**
+	 * Register Controllers
+	 *
+	 * @param $container
+	 */
+	private static function registerControllers(& $container) {
+
 		$container->registerService(
 			'NavigationController', function($c) {
 			return new NavigationController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
-				$c->query('ConfigService'),
-				$c->query('CirclesService'),
-				$c->query('MembersService'),
-				$c->query('MiscService')
+				$c->query('ConfigService'), $c->query('CirclesService'),
+				$c->query('MembersService'), $c->query('MiscService')
 			);
 		}
 		);
@@ -130,10 +142,8 @@ class Application extends App {
 			'CirclesController', function($c) {
 			return new CirclesController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
-				$c->query('ConfigService'),
-				$c->query('CirclesService'),
-				$c->query('MembersService'),
-				$c->query('MiscService')
+				$c->query('ConfigService'), $c->query('CirclesService'),
+				$c->query('MembersService'), $c->query('MiscService')
 			);
 		}
 		);
@@ -142,17 +152,21 @@ class Application extends App {
 			'MembersController', function($c) {
 			return new MembersController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
-				$c->query('ConfigService'),
-				$c->query('CirclesService'),
-				$c->query('MembersService'),
-				$c->query('MiscService')
+				$c->query('ConfigService'), $c->query('CirclesService'),
+				$c->query('MembersService'), $c->query('MiscService')
 			);
 		}
 		);
 
-		/**
-		 * Mapper
-		 */
+	}
+
+
+	/**
+	 * Register Mappers
+	 *
+	 * @param $container
+	 */
+	private static function registerMappers(& $container) {
 		$container->registerService(
 			'CirclesMapper', function($c) {
 			return new CirclesMapper(
@@ -171,18 +185,16 @@ class Application extends App {
 		}
 		);
 
+	}
 
-		// Translates
-		$container->registerService(
-			'L10N', function($c) {
-			return $c->query('ServerContainer')
-					 ->getL10N($c->query('AppName'));
-		}
-		);
 
-		/**
-		 * Core
-		 */
+	/**
+	 * Register Cores
+	 *
+	 * @param $container
+	 */
+	private static function registerCores(& $container) {
+
 		$container->registerService(
 			'Logger', function($c) {
 			return $c->query('ServerContainer')
@@ -215,26 +227,26 @@ class Application extends App {
 	}
 
 
+	/**
+	 * Register Navigation Tab
+	 */
 	public function registerNavigation() {
-
-
-		$this->navIcon = 'circles.svg';
-		$this->navName = \OC::$server->getL10N($this->appName)
-									 ->t('Circles');
 
 		$this->getContainer()
 			 ->getServer()
 			 ->getNavigationManager()
 			 ->add(
 				 function() {
+					 $urlGen = \OC::$server->getURLGenerator();
+					 $navName = \OC::$server->getL10N($this->appName)
+											->t('Circles');
+
 					 return [
 						 'id'    => $this->appName,
 						 'order' => 5,
-						 'href'  => \OC::$server->getURLGenerator()
-												->linkToRoute('circles.Navigation.navigate'),
-						 'icon'  => \OC::$server->getURLGenerator()
-												->imagePath($this->appName, $this->navIcon),
-						 'name'  => $this->navName
+						 'href'  => $urlGen->linkToRoute('circles.Navigation.navigate'),
+						 'icon'  => $urlGen->imagePath($this->appName, 'circles.svg'),
+						 'name'  => $navName
 					 ];
 				 }
 			 );

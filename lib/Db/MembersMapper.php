@@ -58,99 +58,138 @@ class MembersMapper extends Mapper {
 	public function getMemberFromCircle($circleId, $userId, $moderator = false) {
 
 		$circleId = (int)$circleId;
-
-		$qb = $this->db->getQueryBuilder();
-		$qb->select(
-			'circle_id', 'user_id', 'level', 'status', 'note', 'joined'
-		)
-		   ->from(self::TABLENAME)
-		   ->where(
-			   $qb->expr()
-				  ->eq('circle_id', $qb->createNamedParameter($circleId))
-		   );
-
-		$qb->andWhere(
-			$qb->expr()
-			   ->eq('user_id', $qb->createNamedParameter($userId))
-		);
-
+		$qb = $this->getMemberFromCircleSql($circleId, $userId);
 		$cursor = $qb->setMaxResults(1)
 					 ->execute();
 
 		$data = $cursor->fetch();
+		if ($data === false) {
+			throw new MemberDoesNotExistException();
+		}
 
 		if ($moderator !== true) {
 			unset($data['note']);
 		}
 
-		$member = Member::fromArray($data);
+		$member = new Member();
+		$member->fromArray($data);
 		$cursor->closeCursor();
-
-		if ($member === null) {
-			throw new MemberDoesNotExistException();
-		}
 
 		return $member;
 	}
 
 
 	/**
-	 * get members list from a circle. If moderator, returns also notes about each member.
+	 * Generate SQL Request for getMemberFromCircle()
 	 *
 	 * @param $circleId
-	 * @param bool $moderator
+	 * @param $userId
 	 *
-	 * @return array
+	 * @return \OCP\DB\QueryBuilder\IQueryBuilder
 	 */
-	public function getMembersFromCircle($circleId, $moderator = false) {
-
-		$circleId = (int)$circleId;
+	private function getMemberFromCircleSql($circleId, $userId) {
 
 		$qb = $this->db->getQueryBuilder();
+		$expr = $qb->expr();
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select(
 			'circle_id', 'user_id', 'level', 'status', 'note', 'joined'
 		)
 		   ->from(self::TABLENAME)
 		   ->where(
-			   $qb->expr()
-				  ->eq('circle_id', $qb->createNamedParameter($circleId))
+			   $expr->eq('circle_id', $qb->createNamedParameter($circleId))
 		   )
-		   ->andwhere(
-			   $qb->expr()
-				  ->neq('status', $qb->createNamedParameter(Member::STATUS_NONMEMBER))
+		   ->andWhere(
+			   $expr->eq('user_id', $qb->createNamedParameter($userId))
 		   );
 
-		$cursor = $qb->execute();
-
-		$result = [];
-		while ($data = $cursor->fetch()) {
-			if ($moderator !== true) {
-				unset($data['note']);
-			}
-
-			$result[] = Member::fromArray($data);
-		}
-		$cursor->closeCursor();
-
-		return $result;
+		return $qb;
 	}
 
+	/**
+	 * get members list from a circle. If moderator, returns also notes about each member.
+	 *
+	 * @param $circleId
+	 * @param Member $user
+	 *
+	 * @return array
+	 * @internal param Member $member
+	 * @internal param bool $moderator
+	 *
+	 */
+	public function getMembersFromCircle($circleId, Member $user) {
+
+		$circleId = (int)$circleId;
+		try {
+			$user->hasToBeMember();
+
+			$qb = $this->getMembersFromCircleSql($circleId);
+			$cursor = $qb->execute();
+			$result = [];
+			while ($data = $cursor->fetch()) {
+				if (!$user->isModerator()) {
+					unset($data['note']);
+				}
+
+				$member = new Member();
+				$member->fromArray($data);
+				$result[] = $member;
+			}
+			$cursor->closeCursor();
+
+		} catch (MemberDoesNotExistException $e) {
+			throw new $e;
+		}
+
+		return $result;
+
+	}
+
+
+	/**
+	 * Return SQL for getMembersFromCircle.
+	 *
+	 * @param $circleId
+	 *
+	 * @return \OCP\DB\QueryBuilder\IQueryBuilder
+	 */
+	private function getMembersFromCircleSql($circleId) {
+		$qb = $this->db->getQueryBuilder();
+		$expr = $qb->expr();
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$qb->select(
+			'circle_id', 'user_id', 'level', 'status', 'note', 'joined'
+		)
+		   ->from(self::TABLENAME)
+		   ->where(
+			   $expr->eq('circle_id', $qb->createNamedParameter($circleId))
+		   )
+		   ->andwhere(
+			   $expr->neq('status', $qb->createNamedParameter(Member::STATUS_NONMEMBER))
+		   );
+
+		return $qb;
+	}
 
 	public function editMember(Member $member) {
 
 		$qb = $this->db->getQueryBuilder();
-		$qb->update(self::TABLENAME);
-		$qb->set('level', $qb->createNamedParameter($member->getLevel()));
-		$qb->set('status', $qb->createNamedParameter($member->getStatus()));
-		$qb->where(
-			$qb->expr()
-			   ->andX(
-				   $qb->expr()
-					  ->eq('circle_id', $qb->createNamedParameter($member->getCircleId())),
-				   $qb->expr()
-					  ->eq('user_id', $qb->createNamedParameter($member->getUserId()))
-			   )
-		);
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$qb->update(self::TABLENAME)
+		   ->set('level', $qb->createNamedParameter($member->getLevel()))
+		   ->set('status', $qb->createNamedParameter($member->getStatus()))
+		   ->where(
+			   $qb->expr()
+				  ->andX(
+					  $qb->expr()
+						 ->eq('circle_id', $qb->createNamedParameter($member->getCircleId())),
+					  $qb->expr()
+						 ->eq('user_id', $qb->createNamedParameter($member->getUserId()))
+				  )
+		   );
 
 		$qb->execute();
 
@@ -159,9 +198,10 @@ class MembersMapper extends Mapper {
 
 
 	/**
+	 * Insert Member into database.
+	 *
 	 * @param Member $member
 	 *
-	 * @return bool
 	 * @throws MemberAlreadyExistsException
 	 */
 	public function add(Member $member) {
@@ -178,8 +218,6 @@ class MembersMapper extends Mapper {
 		} catch (UniqueConstraintViolationException $e) {
 			throw new MemberAlreadyExistsException();
 		}
-
-		return true;
 	}
 
 
@@ -193,6 +231,8 @@ class MembersMapper extends Mapper {
 	public function remove(Member $member) {
 
 		$qb = $this->db->getQueryBuilder();
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->delete(self::TABLENAME)
 		   ->where(
 			   $qb->expr()

@@ -54,7 +54,7 @@ class ConfigService {
 	private $miscService;
 
 	/** @var int */
-	private $allowed_circle = -1;
+	private $allowedCircle = -1;
 
 	public function __construct($appName, IConfig $config, $userId, MiscService $miscService) {
 		$this->appName = $appName;
@@ -64,14 +64,6 @@ class ConfigService {
 	}
 
 
-	public function isTeams() {
-		if ($this->getAppValue(self::CIRCLES_SWAP_TO_TEAMS) === '1') {
-			return true;
-		}
-
-		return false;
-	}
-
 	/**
 	 * returns if this type of circle is allowed by the current configuration.
 	 *
@@ -80,11 +72,11 @@ class ConfigService {
 	 * @return int
 	 */
 	public function isCircleAllowed($type) {
-		if ($this->allowed_circle === -1) {
-			$this->allowed_circle = $this->getAppValue(self::CIRCLES_ALLOW_CIRCLES);
+		if ($this->allowedCircle === -1) {
+			$this->allowedCircle = (int) $this->getAppValue(self::CIRCLES_ALLOW_CIRCLES);
 		}
 
-		return ((int)$type & (int)$this->allowed_circle);
+		return ((int)$type & (int)$this->allowedCircle);
 	}
 
 	/**

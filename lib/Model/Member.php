@@ -27,69 +27,22 @@
 namespace OCA\Circles\Model;
 
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
+use OCA\Circles\Exceptions\MemberCantJoinCircle;
+use OCA\Circles\Exceptions\MemberDoesNotExistException;
+use OCA\Circles\Exceptions\MemberIsBlockedException;
 use OCA\Circles\Exceptions\MemberIsNotModeratorException;
 use OCA\Circles\Exceptions\MemberIsOwnerException;
 
-class Member implements \JsonSerializable {
+class Member extends BaseMember implements \JsonSerializable {
 
-	const LEVEL_NONE = 0;
-	const LEVEL_MEMBER = 1;
-	const LEVEL_MODERATOR = 6;
-	const LEVEL_ADMIN = 8;
-	const LEVEL_OWNER = 9;
-
-	const STATUS_NONMEMBER = 'Unknown';
-	const STATUS_INVITED = 'Invited';
-	const STATUS_REQUEST = 'Requesting';
-	const STATUS_MEMBER = 'Member';
-	const STATUS_BLOCKED = 'Blocked';
-	const STATUS_KICKED = 'Kicked';
-
-	private $circleid;
-	private $userid;
-	private $level;
 	private $levelString;
-	private $status;
-	private $note;
-	private $joined;
-
-	public function __construct() {
-	}
-
-
-	public function setCircleId($circleid) {
-		$this->circleid = (int)$circleid;
-
-		return $this;
-	}
-
-	public function getCircleId() {
-		return $this->circleid;
-	}
-
-
-	public function setUserId($userid) {
-		$this->userid = $userid;
-
-		return $this;
-	}
-
-	public function getUserId() {
-		return $this->userid;
-	}
-
 
 	public function setLevel($level) {
-		$this->level = (int)$level;
-		$this->setLevelString(self::LevelSring($this->level));
+		parent::setLevel($level);
+		$this->setLevelString(self::levelString($this->getLevel()));
 
 		return $this;
 	}
-
-	public function getLevel() {
-		return $this->level;
-	}
-
 
 	public function setLevelString($str) {
 		$this->levelString = $str;
@@ -102,40 +55,64 @@ class Member implements \JsonSerializable {
 	}
 
 
-	public function setNote($note) {
-		$this->note = $note;
+	/**
+	 * @param int $circleType
+	 *
+	 * @throws MemberCantJoinCircle
+	 */
+	public function joinCircle($circleType) {
 
-		return $this;
-	}
+		switch ($circleType) {
+			case Circle::CIRCLES_HIDDEN:
+			case Circle::CIRCLES_PUBLIC:
+				return $this->joinOpenCircle();
 
-	public function getNote() {
-		return $this->note;
-	}
-
-
-	public function setStatus($status) {
-		if (is_null($status)) {
-			$this->status = self::STATUS_NONMEMBER;
-		} else {
-			$this->status = $status;
+			case Circle::CIRCLES_PRIVATE:
+				return $this->joinPrivateCircle();
 		}
 
-		return $this;
+		throw new MemberCantJoinCircle();
 	}
 
-	public function getStatus() {
-		return $this->status;
+	/**
+	 * Update status of member like he joined a public circle.
+	 */
+	private function joinOpenCircle() {
+
+		if ($this->getStatus() === Member::STATUS_NONMEMBER
+			|| $this->getStatus() === Member::STATUS_KICKED
+		) {
+			$this->setStatus(Member::STATUS_MEMBER);
+			$this->setLevel(Member::LEVEL_MEMBER);
+		}
+	}
+
+	/**
+	 * Update status of member like he joined a private circle
+	 * (invite/request)
+	 */
+	private function joinPrivateCircle() {
+
+		switch ($this->getStatus()) {
+			case Member::STATUS_NONMEMBER:
+			case Member::STATUS_KICKED:
+				$this->setStatus(Member::STATUS_REQUEST);
+				break;
+
+			case Member::STATUS_INVITED:
+				$this->setStatus(Member::STATUS_MEMBER);
+				$this->setLevel(Member::LEVEL_MEMBER);
+				break;
+		}
 	}
 
 
-	public function setJoined($joined) {
-		$this->joined = $joined;
-
-		return $this;
+	public function isMember() {
+		return ($this->getLevel() >= self::LEVEL_MEMBER);
 	}
 
-	public function getJoined() {
-		return $this->joined;
+	public function isModerator() {
+		return ($this->getLevel() >= self::LEVEL_MODERATOR);
 	}
 
 	/**
@@ -144,6 +121,16 @@ class Member implements \JsonSerializable {
 	public function hasToBeModerator() {
 		if ($this->getLevel() < self::LEVEL_MODERATOR) {
 			throw new MemberIsNotModeratorException();
+		}
+	}
+
+
+	/**
+	 * @throws MemberDoesNotExistException
+	 */
+	public function hasToBeMember() {
+		if ($this->getLevel() < self::LEVEL_MEMBER) {
+			throw new MemberDoesNotExistException();
 		}
 	}
 
@@ -176,8 +163,8 @@ class Member implements \JsonSerializable {
 
 	public function jsonSerialize() {
 		return array(
-			'circleid'     => $this->getCircleId(),
-			'userid'       => $this->getUserId(),
+			'circle_id'    => $this->getCircleId(),
+			'user_id'      => $this->getUserId(),
 			'level'        => $this->getLevel(),
 			'level_string' => $this->getLevelString(),
 			'status'       => $this->getStatus(),
@@ -186,30 +173,7 @@ class Member implements \JsonSerializable {
 	}
 
 
-	public static function fromArray($arr) {
-
-		if (!is_array($arr)) {
-			return null;
-		}
-
-		$member = new Member();
-
-		$member->setCircleId($arr['circle_id']);
-		$member->setUserId($arr['user_id']);
-		$member->setLevel($arr['level']);
-		$member->setStatus($arr['status']);
-		if (key_exists('note', $arr)) {
-			$member->setNote($arr['note']);
-		}
-		if (key_exists('joined', $arr)) {
-			$member->setJoined($arr['joined']);
-		}
-
-		return $member;
-	}
-
-
-	public static function LevelSring($level) {
+	public static function levelString($level) {
 		switch ($level) {
 			case self::LEVEL_NONE:
 				return 'Not a member';
@@ -226,10 +190,6 @@ class Member implements \JsonSerializable {
 		return 'none';
 	}
 
-
-	public function toString() {
-		return "toString ?";
-	}
 }
 
 

@@ -40,7 +40,6 @@ class NavigationController extends BaseController {
 	 * @return TemplateResponse
 	 */
 	public function navigate() {
-
 		$data = [
 			'allowed_circles' => array(
 				Circle::CIRCLES_PERSONAL => $this->configService->isCircleAllowed(
@@ -57,7 +56,6 @@ class NavigationController extends BaseController {
 				),
 			)
 		];
-
 
 		return new TemplateResponse(
 			'circles', 'navigate', $data

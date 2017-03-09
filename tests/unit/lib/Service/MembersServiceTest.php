@@ -27,6 +27,7 @@
 namespace OCA\Circles\Tests\Service;
 
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\MemberIsNotModeratorException;
@@ -166,10 +167,14 @@ class MembersServiceTest extends \PHPUnit_Framework_TestCase {
 						$this->membersService2->addMember($circle->getId(), self::TEST_MEMBER_2);
 						$this->assertSame(true, false, 'addMember should not be accessible');
 					} catch (MemberDoesNotExistException $c) {
+					} catch (CircleDoesNotExistException $c) {
 					} catch (\Exception $e) {
 						$this->assertSame(
-							true, false, 'Should returns MemberDoesNotExistException'
+							true, false,
+							'Should returns MemberDoesNotExistException or CircleDoesNotExistException '
+							. $e->getMessage()
 						);
+
 					}
 
 					// adding the member from the owner pov
@@ -197,6 +202,7 @@ class MembersServiceTest extends \PHPUnit_Framework_TestCase {
 						$this->membersService2->addMember($circle->getId(), self::TEST_MEMBER_2);
 						$this->assertSame(true, false, 'addMember should not be accessible');
 					} catch (MemberIsNotModeratorException $c) {
+					} catch (CircleDoesNotExistException $c) {
 					} catch (\Exception $e) {
 						$this->assertSame(
 							true, false, 'Should returns MemberIsNotModeratorException'
