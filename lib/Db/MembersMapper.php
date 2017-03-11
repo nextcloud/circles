@@ -119,12 +119,10 @@ class MembersMapper extends Mapper {
 	 *
 	 */
 	public function getMembersFromCircle($circleId, Member $user) {
-
-		$circleId = (int)$circleId;
 		try {
 			$user->hasToBeMember();
 
-			$qb = $this->getMembersFromCircleSql($circleId);
+			$qb = $this->getMembersFromCircleSql((int)$circleId);
 			$cursor = $qb->execute();
 			$result = [];
 			while ($data = $cursor->fetch()) {
@@ -143,7 +141,6 @@ class MembersMapper extends Mapper {
 		}
 
 		return $result;
-
 	}
 
 

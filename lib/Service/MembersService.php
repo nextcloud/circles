@@ -91,7 +91,6 @@ class MembersService {
 	 */
 	public function addMember($circleId, $name) {
 
-		// we check that this->userId is moderator
 		try {
 			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
 			$this->dbMembers->getMemberFromCircle($circleId, $this->userId)
@@ -105,11 +104,7 @@ class MembersService {
 		} catch (\Exception $e) {
 			throw $e;
 		}
-
-		$member->setCircleId($circleId);
-		$member->setUserId($name);
 		$member->inviteToCircle($circle->getType());
-
 		$this->dbMembers->editMember($member);
 
 		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getUser());

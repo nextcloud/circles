@@ -35,25 +35,6 @@ use OCA\Circles\Exceptions\MemberIsOwnerException;
 
 class Member extends BaseMember implements \JsonSerializable {
 
-	private $levelString;
-
-	public function setLevel($level) {
-		parent::setLevel($level);
-		$this->setLevelString(self::levelString($this->getLevel()));
-
-		return $this;
-	}
-
-	public function setLevelString($str) {
-		$this->levelString = $str;
-
-		return $this;
-	}
-
-	public function getLevelString() {
-		return $this->levelString;
-	}
-
 
 	public function inviteToCircle($circleType) {
 		if ($circleType === Circle::CIRCLES_PRIVATE) {
@@ -189,22 +170,6 @@ class Member extends BaseMember implements \JsonSerializable {
 	}
 
 
-	public static function levelString($level) {
-		switch ($level) {
-			case self::LEVEL_NONE:
-				return 'Not a member';
-			case self::LEVEL_MEMBER:
-				return 'Member';
-			case self::LEVEL_MODERATOR:
-				return 'Moderator';
-			case self::LEVEL_ADMIN:
-				return 'Admin';
-			case self::LEVEL_OWNER:
-				return 'Owner';
-		}
-
-		return 'none';
-	}
 
 }
 
