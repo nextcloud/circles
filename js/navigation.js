@@ -167,7 +167,7 @@ $(document).ready(function () {
 				});
 
 				$('#addmember').on('input propertychange paste focus', function () {
-					self.searchMembersRequest($(this).val().trim())
+					self.searchMembersRequest($(this).val().trim());
 				}).blur(function () {
 					divMembersSearchResult.fadeOut(400);
 				});
@@ -178,33 +178,36 @@ $(document).ready(function () {
 			//
 			//
 			this.createCircleResult = function (result) {
-				var str = 'Circle';
-				switch (result.type) {
-					case '1':
-						str = 'Personal circle';
-						break;
-					case '2':
-						str = 'Hidden circle';
-						break;
-					case '4':
-						str = 'Private circle';
-						break;
-					case '8':
-						str = 'Public circle';
-						break;
-					default:
-						break;
-				}
+				var str = this.getStringTypeFromType(result.type);
 
 				if (result.status == 1) {
 					OCA.notification.onSuccess(str + " '" + result.name + "' created");
 					self.displayCirclesList(result.circle.type);
 					self.selectCircle(result.circle.id);
+					return;
 				}
-				else {
-					OCA.notification.onFail(
-						str + " '" + result.name + "' NOT created: " +
-						((result.error) ? result.error : 'no error message'));
+
+				OCA.notification.onFail(
+					str + " '" + result.name + "' NOT created: " +
+					((result.error) ? result.error : 'no error message'));
+			};
+
+
+			//
+			//
+			//
+			this.getStringTypeFromType = function (type) {
+				switch (type) {
+					case '1':
+						return 'Personal circle';
+					case '2':
+						return 'Hidden circle';
+					case '4':
+						return 'Private circle';
+					case '8':
+						return 'Public circle';
+					default:
+						return 'Circle';
 				}
 			};
 
