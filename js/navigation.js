@@ -66,6 +66,10 @@ $(document).ready(function () {
 			var divJoinCircle = $('#joincircle');
 			var divLeaveCircle = $('#leavecircle');
 
+			/**
+			 *
+			 * @constructor
+			 */
 			this.UIReset = function () {
 				divNewTypeDefinition.children('div').fadeOut(0);
 				$('#circles_new_type_' + divNewType.children('option:selected').val()).fadeIn(0);
@@ -80,7 +84,9 @@ $(document).ready(function () {
 				divMembersSearchResult.hide();
 			};
 
-
+			/**
+			 *
+			 */
 			this.initTweaks = function () {
 				$.fn.emptyTable = function () {
 					this.children('tr').each(function () {
@@ -88,7 +94,7 @@ $(document).ready(function () {
 							$(this).remove();
 						}
 					});
-				}
+				};
 
 				// $.fn.hideEntry = function () {
 				// 	this.children('tr').each(function () {
@@ -99,42 +105,18 @@ $(document).ready(function () {
 				// }
 			};
 
+
+			/**
+			 *
+			 */
 			this.initAnimationNewCircle = function () {
 
 				divNewName.on('keyup', function () {
-					currentCircle = 0;
-					currentCircleLevel = 0;
-
-					divNavigation.hide('slide', 800);
-					divCirclesList.children('div').removeClass('selected');
-					divEmptyContent.show(800);
-					divMainUI.fadeOut(800);
-
-					if (divNewName.val() !== '') {
-						divNewType.fadeIn(300);
-						divNewSubmit.fadeIn(500);
-						divNewTypeDefinition.fadeIn(700);
-					}
-					else {
-						divNewType.fadeOut(700);
-						divNewSubmit.fadeOut(500);
-						divNewTypeDefinition.fadeOut(300);
-					}
+					self.onEventNewCircleName();
 				});
 
 				divNewType.on('change', function () {
-
-					currentCircle = 0;
-					currentCircleLevel = 0;
-
-					divNavigation.hide('slide', 800);
-					divCirclesList.children('div').removeClass('selected');
-					divEmptyContent.show(800);
-					divMainUI.fadeOut(800);
-
-					divNewTypeDefinition.children('div').fadeOut(300);
-					$('#circles_new_type_' + divNewType.children('option:selected').val()).fadeIn(
-						300);
+					self.onEventNewCircleType();
 				});
 
 				divNewSubmit.on('click', function () {
@@ -142,6 +124,56 @@ $(document).ready(function () {
 						self.createCircleResult);
 				});
 
+			};
+
+
+			/**
+			 *
+			 */
+			this.onEventNewCircle = function () {
+
+				currentCircle = 0;
+				currentCircleLevel = 0;
+
+				divNavigation.hide('slide', 800);
+				divCirclesList.children('div').removeClass('selected');
+				divEmptyContent.show(800);
+				divMainUI.fadeOut(800);
+			};
+
+			/**
+			 *
+			 */
+			this.onEventNewCircleName = function () {
+				this.onEventNewCircle();
+				this.displayOptionsNewCircle((divNewName.val() !== ''));
+			};
+
+			/**
+			 *
+			 */
+			this.onEventNewCircleType = function () {
+				this.onEventNewCircle();
+				divNewTypeDefinition.children('div').fadeOut(300);
+				$('#circles_new_type_' + divNewType.children('option:selected').val()).fadeIn(
+					300);
+			};
+
+			/**
+			 *
+			 * @param display
+			 */
+			this.displayOptionsNewCircle = function (display) {
+				if (display) {
+					divNewType.fadeIn(300);
+					divNewSubmit.fadeIn(500);
+					divNewTypeDefinition.fadeIn(700);
+				}
+				else {
+					divNewType.fadeOut(700);
+					divNewSubmit.fadeOut(500);
+					divNewTypeDefinition.fadeOut(300);
+				}
 			};
 
 
@@ -167,6 +199,9 @@ $(document).ready(function () {
 			};
 
 
+			/**
+			 *
+			 */
 			this.initExperienceManagerMembers = function () {
 				$('#joincircle').on('click', function () {
 					api.joinCircle(currentCircle, self.joinCircleResult);
@@ -192,11 +227,12 @@ $(document).ready(function () {
 			};
 
 
-			//
-			//
-			//
+			/**
+			 *
+			 * @param result
+			 */
 			this.createCircleResult = function (result) {
-				var str = this.getStringTypeFromType(result.type);
+				var str = self.getStringTypeFromType(result.type);
 
 				if (result.status == 1) {
 					OCA.notification.onSuccess(str + " '" + result.name + "' created");
@@ -211,9 +247,11 @@ $(document).ready(function () {
 			};
 
 
-			//
-			//
-			//
+			/**
+			 *
+			 * @param type
+			 * @returns {*}
+			 */
 			this.getStringTypeFromType = function (type) {
 				switch (type) {
 					case '1':
@@ -224,15 +262,16 @@ $(document).ready(function () {
 						return 'Private circle';
 					case '8':
 						return 'Public circle';
-					default:
-						return 'Circle';
 				}
+
+				return 'Circle';
 			};
 
 
-			//
-			//
-			// Circles List
+			/**
+			 *
+			 * @param type
+			 */
 			this.displayCirclesList = function (type) {
 
 				currCirclesType = type;
@@ -249,24 +288,37 @@ $(document).ready(function () {
 				$('#circles_search').val('');
 				$('#addmember').val('');
 
-				divNavigation.addClass('selected');
-				divCirclesList.children('div').removeClass('selected');
+				this.UIresetCirclesList(type);
+				api.listCircles(type, self.listCirclesResult);
+			};
 
+
+			/**
+			 *
+			 * @constructor
+			 */
+			this.UIresetCirclesList = function (type) {
+
+				divCirclesList.children('div').removeClass('selected');
 				divCirclesList.children().each(function () {
 					if ($(this).attr('circle-type') == type.toLowerCase()) {
 						$(this).addClass('selected');
 					}
 				});
 
+				divNavigation.addClass('selected');
 				divNavigation.children().each(function () {
 					if ($(this).attr('id') != 'circles_search') {
 						$(this).remove();
 					}
 				});
-				api.listCircles(type, self.listCirclesResult);
 			};
 
 
+			/**
+			 *
+			 * @param result
+			 */
 			this.listCirclesResult = function (result) {
 
 				if (result.status < 1) {
@@ -276,33 +328,11 @@ $(document).ready(function () {
 					return;
 				}
 
-				divNavigation.children().each(function () {
-					if ($(this).attr('id') != 'circles_search') {
-						$(this).remove();
-					}
-				});
-
 				var data = result.data;
 				for (var i = 0; i < data.length; i++) {
-
-					//	var curr = self.getCurrentCircleTemplate(data[i].id);
-
-					var tmpl = $('#tmpl_circle').html();
-
-					tmpl = tmpl.replace(/%title%/, data[i].name);
-					tmpl = tmpl.replace(/%type%/, data[i].type);
-					tmpl = tmpl.replace(/%owner%/, data[i].owner.user_id);
-					tmpl = tmpl.replace(/%status%/, data[i].user.status);
-					tmpl = tmpl.replace(/%level_string%/, data[i].user.level_string);
-					tmpl = tmpl.replace(/%count%/, data[i].count);
-					tmpl = tmpl.replace(/%creation%/, data[i].creation);
-
-					//	if (curr == null) {
+					var tmpl = self.generateTmplCircle(data[i]);
 					divNavigation.append(
 						'<div class="circle" circle-id="' + data[i].id + '">' + tmpl + '</div>');
-					//	} else {
-					//		$(curr).html(tmpl);
-					//	}
 				}
 
 				divNavigation.children('.circle').on('click', function () {
@@ -311,6 +341,30 @@ $(document).ready(function () {
 			};
 
 
+			/**
+			 *
+			 * @returns {*|jQuery}
+			 * @param entry
+			 */
+			this.generateTmplCircle = function (entry) {
+				var tmpl = $('#tmpl_circle').html();
+
+				tmpl = tmpl.replace(/%title%/, entry.name);
+				tmpl = tmpl.replace(/%type%/, entry.type);
+				tmpl = tmpl.replace(/%owner%/, entry.owner.user_id);
+				tmpl = tmpl.replace(/%status%/, entry.user.status);
+				tmpl = tmpl.replace(/%level_string%/, entry.user.level_string);
+				tmpl = tmpl.replace(/%count%/, entry.count);
+				tmpl = tmpl.replace(/%creation%/, entry.creation);
+
+				return tmpl;
+			};
+
+
+			/**
+			 *
+			 * @param circle_id
+			 */
 			this.selectCircle = function (circle_id) {
 				lastSearchUser = '';
 				$('#addmember').val('');
@@ -384,6 +438,10 @@ $(document).ready(function () {
 			};
 
 
+			/**
+			 *
+			 * @param search
+			 */
 			this.searchMembersRequest = function (search) {
 
 				if (lastSearchUser == search) {
@@ -400,6 +458,7 @@ $(document).ready(function () {
 						itemType: 'principals'
 					}, self.searchMembersResult);
 			};
+
 
 			this.searchMembersResult = function (response) {
 
@@ -448,13 +507,11 @@ $(document).ready(function () {
 					OCA.notification.onSuccess(
 						"Member '" + result.name + "' successfully added to the circle");
 
-					self.displayMembers(result.members);
+					return self.displayMembers(result.members);
 				}
-				else {
-					OCA.notification.onFail(
-						"Member '" + result.name + "' NOT added to the circle: " +
-						((result.error) ? result.error : 'no error message'));
-				}
+				OCA.notification.onFail(
+					"Member '" + result.name + "' NOT added to the circle: " +
+					((result.error) ? result.error : 'no error message'));
 			};
 
 
@@ -507,12 +564,12 @@ $(document).ready(function () {
 
 					OCA.notification.onSuccess(
 						"Member '" + result.name + "' successfully removed from the circle");
+					return;
 				}
-				else {
-					OCA.notification.onFail(
-						"Member '" + result.name + "' NOT removed from the circle: " +
-						((result.error) ? result.error : 'no error message'));
-				}
+
+				OCA.notification.onFail(
+					"Member '" + result.name + "' NOT removed from the circle: " +
+					((result.error) ? result.error : 'no error message'));
 
 			};
 
@@ -533,14 +590,13 @@ $(document).ready(function () {
 						OCA.notification.onSuccess(
 							"You have requested an invitation to join this circle");
 					}
-					self.selectCircle(result.circle_id);
+					return self.selectCircle(result.circle_id);
+				}
 
-				}
-				else {
-					OCA.notification.onFail(
-						"Cannot join this circle: " +
-						((result.error) ? result.error : 'no error message'));
-				}
+				OCA.notification.onFail(
+					"Cannot join this circle: " +
+					((result.error) ? result.error : 'no error message'));
+
 			};
 
 			this.leaveCircleResult = function (result) {
