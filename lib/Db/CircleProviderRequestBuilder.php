@@ -205,8 +205,8 @@ class CircleProviderRequestBuilder {
 				   $expr->eq('s.share_with', 'c.id'),
 				   $expr->eq('s.parent', $qb->createNamedParameter($shareId))
 			   )
-		   )
-		   ->orderBy('c.circle_name');
+		   );
+		   //->orderBy('c.circle_name');
 	}
 
 
