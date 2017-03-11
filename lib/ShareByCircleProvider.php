@@ -281,7 +281,7 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	 * @param bool $reshares Also get the shares where $user is the owner instead of just the
 	 *     shares where $user is the initiator
 	 *
-	 * @return IShare[]
+	 * @return Share[]
 	 */
 	public function getSharesInFolder($userId, Folder $node, $reshares) {
 		$this->misc->log("CircleProvider: getSharesInFolder");
@@ -310,9 +310,7 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	 * @param int $limit The maximum number of shares to be returned, -1 for all shares
 	 * @param int $offset
 	 *
-	 * @return IShare[]
-	 * @internal param bool $reshares Also get the shares where $user is the owner instead of just
-	 *     the shares where $user is the initiator
+	 * @return Share[]
 	 */
 	public function getSharesBy($userId, $shareType, $node, $reShares, $limit, $offset) {
 		$qb = $this->getBaseSelectSql();
@@ -341,7 +339,7 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	 *
 	 * @param $data
 	 *
-	 * @return mixed
+	 * @return array<string,string>
 	 */
 	private function editShareEntry($data) {
 		$data['share_with'] =
@@ -357,7 +355,7 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	 * @param int $shareId
 	 * @param string|null $recipientId
 	 *
-	 * @return IShare
+	 * @return Share
 	 * @throws ShareNotFound
 	 */
 	public function getShareById($shareId, $recipientId = null) {
@@ -381,7 +379,7 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	 *
 	 * @param Node $path
 	 *
-	 * @return IShare[]
+	 * @return IShare[]|null
 	 */
 	public function getSharesByPath(Node $path) {
 		return null;
@@ -397,7 +395,7 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	 * @param int $limit The max number of entries returned, -1 for all
 	 * @param int $offset
 	 *
-	 * @return IShare[]
+	 * @return IShare[]|null
 	 */
 	public function getSharedWith($userId, $shareType, $node, $limit, $offset) {
 
@@ -421,6 +419,9 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	}
 
 
+	/**
+	 * @param $data
+	 */
 	private static function editShareFromParentEntry(& $data) {
 		if ($data['parent_id'] > 0) {
 			if ($data['parent_perms'] === '0') {
@@ -501,28 +502,27 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	 *
 	 * @param array $data
 	 *
-	 * @return IShare
+	 * @return Share
 	 */
 	private function createShareObject($data) {
 
 		$share = new Share($this->rootFolder, $this->userManager);
 		$share->setId((int)$data['id'])
-			  ->setShareType((int)$data['share_type'])
 			  ->setPermissions((int)$data['permissions'])
-			  ->setTarget($data['file_target'])
-			  ->setMailSend((bool)$data['mail_send']);
+			  ->setNodeType($data['item_type']);
 
-		$shareTime = new \DateTime();
-		$shareTime->setTimestamp((int)$data['stime']);
-		$share->setShareTime($shareTime);
+		$share->setNodeId((int)$data['file_source'])
+			  ->setTarget($data['file_target']);
 
-		$share->setSharedWith($data['share_with']);
-		$share->setSharedBy($data['uid_initiator']);
-		$share->setShareOwner($data['uid_owner']);
+		$this->assignShareObjectSharesProperties($share, $data);
+		$this->assignShareObjectPropertiesFromParent($share, $data);
 
-		$share->setNodeId((int)$data['file_source']);
-		$share->setNodeType($data['item_type']);
+		$share->setProviderId($this->identifier());
 
+		return $share;
+	}
+
+	private function assignShareObjectPropertiesFromParent(& $share, $data) {
 		if (isset($data['f_permissions'])) {
 			$entryData = $data;
 			$entryData['permissions'] = $entryData['f_permissions'];
@@ -534,12 +534,19 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 				)
 			);
 		}
-
-		$share->setProviderId($this->identifier());
-
-		return $share;
 	}
 
+
+	private function assignShareObjectSharesProperties(& $share, $data) {
+		$shareTime = new \DateTime();
+		$shareTime->setTimestamp((int)$data['stime']);
+
+		$share->setShareTime($shareTime);
+		$share->setSharedWith($data['share_with'])
+			  ->setSharedBy($data['uid_initiator'])
+			  ->setShareOwner($data['uid_owner'])
+			  ->setShareType((int)$data['share_type']);
+	}
 
 	/**
 	 * Returns whether the given database result can be interpreted as
@@ -548,7 +555,7 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	 * Complete copy/paste from others ShareProvider
 	 *
 	 * @param $data
-	 *
+	 *F
 	 * @return bool
 	 */
 	private static function isAccessibleResult($data) {
@@ -557,13 +564,9 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 		}
 
 		$pathSections = explode('/', $data['path'], 2);
-		if ($pathSections[0] !== 'files'
-			&& explode(':', $data['storage_string_id'], 2)[0] === 'home'
-		) {
-			return false;
-		}
 
-		return true;
+		return ($pathSections[0] !== 'files'
+				&& explode(':', $data['storage_string_id'], 2)[0] === 'home');
 	}
 
 

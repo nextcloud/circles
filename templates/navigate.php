@@ -156,7 +156,7 @@ style('circles', 'navigation');
 	<div id="mainui">
 
 		<div id="memberslist">
-			<table class="table">
+			<table id="memberslist_table">
 				<tr class="header">
 					<td class="username">Username</td>
 					<td class="level">Level</td>

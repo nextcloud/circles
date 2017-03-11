@@ -186,7 +186,7 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	overflow-y: auto;
 }
 
-#mainui #memberslist .table {
+#memberslist_table {
 	width: 100%;
 }
 
