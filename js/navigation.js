@@ -81,6 +81,24 @@ $(document).ready(function () {
 			};
 
 
+			this.initTweaks = function () {
+				$.fn.emptyTable = function () {
+					this.children('tr').each(function () {
+						if ($(this).attr('class') != 'header') {
+							$(this).remove();
+						}
+					});
+				}
+
+				// $.fn.hideEntry = function () {
+				// 	this.children('tr').each(function () {
+				// 		if ($(this).attr('class') != 'header') {
+				// 			$(this).remove();
+				// 		}
+				// 	});
+				// }
+			};
+
 			this.initAnimationNewCircle = function () {
 
 				divNewName.on('keyup', function () {
@@ -303,11 +321,7 @@ $(document).ready(function () {
 
 			this.selectCircleResult = function (result) {
 
-				divMainUIMembers.children('tr').each(function () {
-					if ($(this).attr('class') != 'header') {
-						$(this).remove();
-					}
-				});
+				divMainUIMembers.emptyTable();
 
 				if (result.status < 1) {
 					OCA.notification.onFail(
@@ -446,11 +460,7 @@ $(document).ready(function () {
 
 			this.displayMembers = function (members) {
 
-				divMainUIMembers.children('tr').each(function () {
-					if ($(this).attr('class') != 'header') {
-						$(this).remove();
-					}
-				});
+				divMainUIMembers.emptyTable();
 
 				if (members === null) {
 					divMainUIMembers.hide(200);
@@ -558,6 +568,7 @@ $(document).ready(function () {
 			/**
 			 * Inits
 			 */
+			this.initTweaks();
 			this.UIReset();
 			this.initAnimationNewCircle();
 			this.initExperienceCirclesList();
