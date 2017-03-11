@@ -69,12 +69,10 @@ class CircleProviderRequestBuilder {
 	 * @param $circleId
 	 */
 	protected function limitToCircle(& $qb, $circleId) {
+		$expr = $qb->expr();
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? 's.' : '';
 
-		$qb->andWhere(
-			$qb->expr()
-			   ->eq($pf . 'share_with', $qb->createNamedParameter($circleId))
-		);
+		$qb->andWhere($expr->eq($pf . 'share_with', $qb->createNamedParameter($circleId)));
 	}
 
 
@@ -88,9 +86,7 @@ class CircleProviderRequestBuilder {
 		$expr = $qb->expr();
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? 's.' : '';
 
-		$qb->andWhere(
-			$expr->eq($pf . 'id', $qb->createNamedParameter($shareId))
-		);
+		$qb->andWhere($expr->eq($pf . 'id', $qb->createNamedParameter($shareId)));
 	}
 
 
@@ -152,12 +148,10 @@ class CircleProviderRequestBuilder {
 	 * @param $fileId
 	 */
 	protected function limitToFile(& $qb, $fileId) {
+		$expr = $qb->expr();
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? 's.' : '';
 
-		$qb->andWhere(
-			$qb->expr()
-			   ->eq($pf . 'file_source', $qb->createNamedParameter($fileId))
-		);
+		$qb->andWhere($expr->eq($pf . 'file_source', $qb->createNamedParameter($fileId)));
 	}
 
 
@@ -211,8 +205,8 @@ class CircleProviderRequestBuilder {
 				   $expr->eq('s.share_with', 'c.id'),
 				   $expr->eq('s.parent', $qb->createNamedParameter($shareId))
 			   )
-		   );
-		// ->orderBy('c.circle_name');
+		   )
+		   ->orderBy('c.circle_name');
 	}
 
 
@@ -286,8 +280,9 @@ class CircleProviderRequestBuilder {
 	 * @return IQueryBuilder
 	 */
 	protected function getBaseSelectSql($shareId = -1) {
-
 		$qb = $this->dbConnection->getQueryBuilder();
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select(
 			's.id', 's.share_type', 's.share_with', 's.uid_owner', 's.uid_initiator',
 			's.parent', 's.item_type', 's.item_source', 's.item_target', 's.file_source',
@@ -304,8 +299,9 @@ class CircleProviderRequestBuilder {
 
 
 	protected function getCompleteSelectSql() {
-
 		$qb = $this->dbConnection->getQueryBuilder();
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select(
 			's.*', 'f.fileid', 'f.path', 'f.permissions AS f_permissions', 'f.storage',
 			'f.path_hash', 'f.parent AS f_parent', 'f.name', 'f.mimetype', 'f.mimepart',

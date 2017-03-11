@@ -211,14 +211,13 @@ class CirclesMapper extends Mapper {
 	private function generateTypeEntryForCirclePersonal(IQueryBuilder $qb, int $type, string $userId
 	) {
 		if (Circle::CIRCLES_PERSONAL & (int)$type) {
+			$expr = $qb->expr();
 
 			/** @noinspection PhpMethodParametersCountMismatchInspection */
 			return $qb->expr()
 					  ->andX(
-						  $qb->expr()
-							 ->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_PERSONAL)),
-						  $qb->expr()
-							 ->eq('o.user_id', $qb->createNamedParameter($userId))
+						  $expr->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_PERSONAL)),
+						  $expr->eq('o.user_id', $qb->createNamedParameter($userId))
 
 					  );
 		}

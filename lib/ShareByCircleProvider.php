@@ -28,7 +28,6 @@
 namespace OCA\Circles;
 
 
-use \OC\Share20\Exception\InvalidShare;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleProviderRequestBuilder;
 use OCA\Circles\Model\Circle;
@@ -47,7 +46,7 @@ use OCP\IURLGenerator;
 use OCP\Security\ISecureRandom;
 use OCP\IUserManager;
 
-class CircleProvider extends CircleProviderRequestBuilder implements IShareProvider {
+class ShareByCircleProvider extends CircleProviderRequestBuilder implements IShareProvider {
 
 	private $misc;
 
@@ -129,7 +128,7 @@ class CircleProvider extends CircleProviderRequestBuilder implements IShareProvi
 		$data = $exists->fetch();
 		$exists->closeCursor();
 
-		if ($data !== false && sizeof($data) > 0) {
+		if ($data !== false) {
 			throw $this->errorShareAlreadyExist($share);
 		}
 
@@ -182,12 +181,10 @@ class CircleProvider extends CircleProviderRequestBuilder implements IShareProvi
 	 * @param string $userId
 	 */
 	public function deleteFromSelf(IShare $share, $userId) {
-		$childId = $this->getShareChildId($share, $userId, true);
+		$childId = $this->getShareChildId($share, $userId);
 
 		$qb = $this->getBaseUpdateSql();
 		$qb->set('permissions', $qb->createNamedParameter(0));
-		// Overkill
-		// $this->limitToShareChildren($qb, $userId, $share->getId());
 		$this->limitToShare($qb, $childId);
 
 		$qb->execute();
@@ -205,11 +202,10 @@ class CircleProvider extends CircleProviderRequestBuilder implements IShareProvi
 	 */
 	public function move(IShare $share, $userId) {
 
-		$childId = $this->getShareChildId($share, $userId, true);
+		$childId = $this->getShareChildId($share, $userId);
 
 		$qb = $this->getBaseUpdateSql();
 		$qb->set('file_target', $qb->createNamedParameter($share->getTarget()));
-		$this->limitToShareChildren($qb, $userId, $share->getId());
 		$this->limitToShare($qb, $childId);
 		$qb->execute();
 
@@ -376,13 +372,7 @@ class CircleProvider extends CircleProviderRequestBuilder implements IShareProvi
 			throw new ShareNotFound();
 		}
 
-		try {
-			$share = $this->createShareObject($data);
-		} catch (InvalidShare $e) {
-			throw new ShareNotFound();
-		}
-
-		return $share;
+		return $this->createShareObject($data);
 	}
 
 
@@ -410,7 +400,6 @@ class CircleProvider extends CircleProviderRequestBuilder implements IShareProvi
 	 * @return IShare[]
 	 */
 	public function getSharedWith($userId, $shareType, $node, $limit, $offset) {
-		$this->misc->log("CircleProvider: getSharedWith " . $userId . '   ' . $shareType);
 
 		$qb = $this->getCompleteSelectSql();
 		$this->linkToMember($qb, $userId);
@@ -464,7 +453,6 @@ class CircleProvider extends CircleProviderRequestBuilder implements IShareProvi
 	 *
 	 * @param IShare $parent
 	 *
-	 * @deprecated
 	 * @return array
 	 */
 	public function getChildren(IShare $parent) {
@@ -509,13 +497,11 @@ class CircleProvider extends CircleProviderRequestBuilder implements IShareProvi
 
 
 	/**
-	 * Create a share object from an database row
+	 * Create a share object
 	 *
 	 * @param array $data
 	 *
 	 * @return IShare
-	 * @throws InvalidShare
-	 * @throws ShareNotFound
 	 */
 	private function createShareObject($data) {
 
