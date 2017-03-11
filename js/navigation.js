@@ -146,7 +146,7 @@ $(document).ready(function () {
 
 				lastSearchUser = $(this).val().trim();
 
-				$.get(OC.linkToOCS('apps/files_sharing/api/v', 1) + 'sharees',
+				$.get(OC.linkToOCS('apps/files_sharing/api/v1', 1) + 'sharees',
 					{
 						format: 'json',
 						search: $(this).val().trim(),
