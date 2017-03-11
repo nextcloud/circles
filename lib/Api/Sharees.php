@@ -42,6 +42,8 @@ class Sharees {
 	}
 
 	/**
+	 * returns circles with
+	 *
 	 * @param $search
 	 *
 	 * @return array<string,array>
@@ -52,36 +54,38 @@ class Sharees {
 
 		$data = $c->query('CirclesService')
 				  ->listCircles(Circle::CIRCLES_ALL, $search, Member::LEVEL_MEMBER);
-
 		$result = array(
 			'exact'   => ['circles'],
 			'circles' => []
 		);
 
 		foreach ($data as $entry) {
-			if (strtolower($entry->getName()) === strtolower($search)) {
-				$result['exact']['circles'][] = [
-					'label' => $entry->getName(),
-					'value' => [
-						'shareType'  => Share::SHARE_TYPE_CIRCLE,
-						'circleInfo' => $entry->getInfo(),
-						'shareWith'  => $entry->getId()
-					],
-				];
-			} else {
-				$result['circles'][] = [
-					'label' => $entry->getName(),
-					'value' => [
-						'shareType'  => Share::SHARE_TYPE_CIRCLE,
-						'circleInfo' => $entry->getInfo(),
-						'shareWith'  => $entry->getId()
-					],
-				];
-			}
+			self::addResultEntry(
+				$result, $entry, (strtolower($entry->getName()) === strtolower($search))
+			);
 		}
 
 		return $result;
 	}
 
+
+	private static function addResultEntry(& $result, $entry, $exact = false) {
+
+		$arr = [
+			'label' => $entry->getName(),
+			'value' => [
+				'shareType'  => Share::SHARE_TYPE_CIRCLE,
+				'circleInfo' => $entry->getInfo(),
+				'shareWith'  => $entry->getId()
+			],
+		];
+
+		if ($exact) {
+			$result['exact']['circles'][] = $arr;
+		} else {
+			$result['circles'][] = $arr;
+		}
+
+	}
 
 }
