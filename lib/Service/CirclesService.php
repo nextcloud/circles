@@ -130,9 +130,8 @@ class CirclesService {
 			throw new CircleTypeDisabledException();
 		}
 
-		$result = $this->dbCircles->findCirclesByUser($this->userId, $type, $name, $level);
-
 		$data = [];
+		$result = $this->dbCircles->findCirclesByUser($this->userId, $type, $name, $level);
 		foreach ($result as $item) {
 			$data[] = $item;
 		}
@@ -156,7 +155,7 @@ class CirclesService {
 		try {
 			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
 			if ($circle->getUser()
-					   ->isMember()
+					   ->isLevel(Member::LEVEL_MEMBER)
 			) {
 				$members = $this->dbMembers->getMembersFromCircle(
 					$circleId, $circle->getUser()

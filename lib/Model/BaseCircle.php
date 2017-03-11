@@ -52,9 +52,6 @@ class BaseCircle {
 	/** @var Member[] */
 	private $members;
 
-	/** @var string */
-	private $info;
-
 	public function __construct($type = -1, $name = '') {
 		if ($type > -1) {
 			$this->type = $type;
@@ -121,7 +118,7 @@ class BaseCircle {
 
 
 	public function setType($type) {
-		$this->type = $type;
+		$this->type = (int)$type;
 
 		return $this;
 	}
@@ -129,8 +126,6 @@ class BaseCircle {
 	public function getType() {
 		return $this->type;
 	}
-
-
 
 
 	public function setCreation($creation) {

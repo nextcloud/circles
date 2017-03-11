@@ -48,6 +48,8 @@ class Circle extends BaseCircle implements \JsonSerializable {
 		return $this->getTypeLongString();
 	}
 
+
+
 	public function jsonSerialize() {
 		return array(
 			'id'          => $this->getId(),
@@ -87,7 +89,7 @@ class Circle extends BaseCircle implements \JsonSerializable {
 	 *
 	 * @param $array
 	 */
-	private function setOwnerMemberFromArray($array) {
+	private function setOwnerMemberFromArray(& $array) {
 		if (key_exists('owner', $array)) {
 			$owner = new Member();
 			$owner->setUserId($array['owner']);
@@ -101,7 +103,7 @@ class Circle extends BaseCircle implements \JsonSerializable {
 	 *
 	 * @param $array
 	 */
-	private function setUserMemberFromArray($array) {
+	private function setUserMemberFromArray(& $array) {
 		if (key_exists('status', $array)
 			&& key_exists('level', $array)
 			&& key_exists('joined', $array)

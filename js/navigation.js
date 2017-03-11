@@ -53,6 +53,9 @@ $(document).ready(function () {
 			var divNewSubmit = $('#circles_new_submit');
 			var divNewName = $('#circles_new_name');
 			var divNavigation = $('#app-navigation.circles');
+			var divCirclesList = $('#circles_list');
+			var divEmptyContent = $('#emptycontent');
+			var divMainUI = $('#mainui');
 
 			divNewTypeDefinition.children('div').fadeOut(0);
 			$('#circles_new_type_' + divNewType.children('option:selected').val()).fadeIn(0);
@@ -66,9 +69,9 @@ $(document).ready(function () {
 				currentCircleLevel = 0;
 
 				divNavigation.hide('slide', 800);
-				$('#circles_list div').removeClass('selected');
-				$('#emptycontent').show(800);
-				$('#mainui').fadeOut(800);
+				divCirclesList.children('div').removeClass('selected');
+				divEmptyContent.show(800);
+				divMainUI.fadeOut(800);
 
 				if (divNewName.val() !== '') {
 					divNewType.fadeIn(300);
@@ -88,9 +91,9 @@ $(document).ready(function () {
 				currentCircleLevel = 0;
 
 				divNavigation.hide('slide', 800);
-				$('#circles_list div').removeClass('selected');
-				$('#emptycontent').show(800);
-				$('#mainui').fadeOut(800);
+				divCirclesList.children('div').removeClass('selected');
+				divEmptyContent.show(800);
+				divMainUI.fadeOut(800);
 
 				divNewTypeDefinition.children('div').fadeOut(300);
 				$('#circles_new_type_' + divNewType.children('option:selected').val()).fadeIn(
@@ -102,7 +105,7 @@ $(document).ready(function () {
 					self.createCircleResult);
 			});
 
-			$('#circles_list div').on('click', function () {
+			divCirclesList.children('div').on('click', function () {
 				self.displayCirclesList($(this).attr('circle-type'));
 			});
 
@@ -143,7 +146,7 @@ $(document).ready(function () {
 
 				lastSearchUser = $(this).val().trim();
 
-				$.get(OC.linkToOCS('apps/files_sharing/api/v1') + 'sharees',
+				$.get(OC.linkToOCS('apps/files_sharing/api/v1', 1) + 'sharees',
 					{
 						format: 'json',
 						search: $(this).val().trim(),
@@ -202,16 +205,16 @@ $(document).ready(function () {
 				currentCircleLevel = 0;
 
 				divNavigation.show('slide', 800);
-				$('#emptycontent').show(800);
-				$('#mainui').fadeOut(800);
+				divEmptyContent.show(800);
+				divMainUI.fadeOut(800);
 
 				$('#circles_search').val('');
 				$('#addmember').val('');
 
 				divNavigation.addClass('selected');
-				$('#circles_list div').removeClass('selected');
+				divCirclesList.children('div').removeClass('selected');
 
-				$('#circles_list').children().each(function () {
+				divCirclesList.children().each(function () {
 					if ($(this).attr('circle-type') == type.toLowerCase()) {
 						$(this).addClass('selected');
 					}
@@ -300,8 +303,8 @@ $(document).ready(function () {
 						$(this).removeClass('selected');
 					}
 				});
-				$('#emptycontent').hide(800);
-				$('#mainui').fadeIn(800);
+				divEmptyContent.hide(800);
+				divMainUI.fadeIn(800);
 				currentCircle = result.circle_id;
 				currentCircleLevel = result.details.user.level;
 

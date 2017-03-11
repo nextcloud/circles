@@ -35,23 +35,13 @@ use OCA\Circles\Exceptions\MemberIsOwnerException;
 
 class Member extends BaseMember implements \JsonSerializable {
 
-	private $levelString;
 
-	public function setLevel($level) {
-		parent::setLevel($level);
-		$this->setLevelString(self::levelString($this->getLevel()));
+	public function inviteToCircle($circleType) {
+		if ($circleType === Circle::CIRCLES_PRIVATE) {
+			return $this->inviteIntoPrivateCircle();
+		}
 
-		return $this;
-	}
-
-	public function setLevelString($str) {
-		$this->levelString = $str;
-
-		return $this;
-	}
-
-	public function getLevelString() {
-		return $this->levelString;
+		return $this->addMemberToCircle();
 	}
 
 
@@ -65,7 +55,7 @@ class Member extends BaseMember implements \JsonSerializable {
 		switch ($circleType) {
 			case Circle::CIRCLES_HIDDEN:
 			case Circle::CIRCLES_PUBLIC:
-				return $this->joinOpenCircle();
+				return $this->addMemberToCircle();
 
 			case Circle::CIRCLES_PRIVATE:
 				return $this->joinPrivateCircle();
@@ -74,18 +64,19 @@ class Member extends BaseMember implements \JsonSerializable {
 		throw new MemberCantJoinCircle();
 	}
 
+
 	/**
 	 * Update status of member like he joined a public circle.
 	 */
-	private function joinOpenCircle() {
+	private function addMemberToCircle() {
 
 		if ($this->getStatus() === Member::STATUS_NONMEMBER
 			|| $this->getStatus() === Member::STATUS_KICKED
 		) {
-			$this->setStatus(Member::STATUS_MEMBER);
-			$this->setLevel(Member::LEVEL_MEMBER);
+			$this->setAsAMember(Member::LEVEL_MEMBER);
 		}
 	}
+
 
 	/**
 	 * Update status of member like he joined a private circle
@@ -100,20 +91,26 @@ class Member extends BaseMember implements \JsonSerializable {
 				break;
 
 			case Member::STATUS_INVITED:
-				$this->setStatus(Member::STATUS_MEMBER);
-				$this->setLevel(Member::LEVEL_MEMBER);
+				$this->setAsAMember(Member::LEVEL_MEMBER);
 				break;
 		}
 	}
 
 
-	public function isMember() {
-		return ($this->getLevel() >= self::LEVEL_MEMBER);
+	private function inviteIntoPrivateCircle() {
+		switch ($this->getStatus()) {
+			case Member::STATUS_NONMEMBER:
+			case Member::STATUS_KICKED:
+				$this->setStatus(Member::STATUS_INVITED);
+				break;
+
+			case Member::STATUS_REQUEST:
+				$this->setAsAMember(Member::LEVEL_MEMBER);
+				break;
+		}
 	}
 
-	public function isModerator() {
-		return ($this->getLevel() >= self::LEVEL_MODERATOR);
-	}
+
 
 	/**
 	 * @throws MemberIsNotModeratorException
@@ -173,22 +170,6 @@ class Member extends BaseMember implements \JsonSerializable {
 	}
 
 
-	public static function levelString($level) {
-		switch ($level) {
-			case self::LEVEL_NONE:
-				return 'Not a member';
-			case self::LEVEL_MEMBER:
-				return 'Member';
-			case self::LEVEL_MODERATOR:
-				return 'Moderator';
-			case self::LEVEL_ADMIN:
-				return 'Admin';
-			case self::LEVEL_OWNER:
-				return 'Owner';
-		}
-
-		return 'none';
-	}
 
 }
 

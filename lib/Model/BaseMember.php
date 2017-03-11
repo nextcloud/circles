@@ -142,10 +142,20 @@ class BaseMember {
 	}
 
 
+	public function isLevel($level) {
+		return ($this->getLevel() >= $level);
+	}
+
+	protected function setAsAMember($level = 1) {
+		$this->setStatus(Member::STATUS_MEMBER);
+		$this->setLevel($level);
+	}
+
+
 	/**
 	 * @param array $arr
 	 *
-	 * @return null
+	 * @return BaseMember
 	 */
 	public function fromArray($arr) {
 		$this->setCircleId($arr['circle_id']);
@@ -163,4 +173,25 @@ class BaseMember {
 	}
 
 
+	public function getLevelString() {
+		return self::levelString($this->getLevel());
+	}
+
+
+	public static function levelString($level) {
+		switch ($level) {
+			case self::LEVEL_NONE:
+				return 'Not a member';
+			case self::LEVEL_MEMBER:
+				return 'Member';
+			case self::LEVEL_MODERATOR:
+				return 'Moderator';
+			case self::LEVEL_ADMIN:
+				return 'Admin';
+			case self::LEVEL_OWNER:
+				return 'Owner';
+		}
+
+		return 'none';
+	}
 }

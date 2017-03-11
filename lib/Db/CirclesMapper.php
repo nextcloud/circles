@@ -131,16 +131,7 @@ class CirclesMapper extends Mapper {
 
 	private function buildWithOrXTypes(&$qb, $userId, $type, $name, $circleId) {
 
-		$orTypesArray = [];
-		array_push($orTypesArray, $this->generateTypeEntryForCirclePersonal($qb, $type, $userId));
-		array_push(
-			$orTypesArray, $this->generateTypeEntryForCircleHidden($qb, $type, $circleId, $name)
-		);
-		array_push($orTypesArray, $this->generateTypeEntryForCirclePrivate($qb, $type));
-		array_push($orTypesArray, $this->generateTypeEntryForCirclePublic($qb, $type));
-
-		$orTypesArray = array_filter($orTypesArray);
-
+		$orTypesArray = $this->fillOrXTypes($qb, $userId, $type, $name, $circleId);
 		if (sizeof($orTypesArray) === 0) {
 			throw new ConfigNoCircleAvailable();
 		}
@@ -153,6 +144,31 @@ class CirclesMapper extends Mapper {
 		}
 
 		$qb->andWhere($orXTypes);
+	}
+
+
+	/**
+	 * fill with sql conditions for each type of circles.
+	 *
+	 * @param $qb
+	 * @param $userId
+	 * @param $type
+	 * @param $name
+	 * @param $circleId
+	 *
+	 * @return array
+	 */
+	private function fillOrXTypes(&$qb, $userId, $type, $name, $circleId) {
+
+		$orTypesArray = [];
+		array_push($orTypesArray, $this->generateTypeEntryForCirclePersonal($qb, $type, $userId));
+		array_push(
+			$orTypesArray, $this->generateTypeEntryForCircleHidden($qb, $type, $circleId, $name)
+		);
+		array_push($orTypesArray, $this->generateTypeEntryForCirclePrivate($qb, $type));
+		array_push($orTypesArray, $this->generateTypeEntryForCirclePublic($qb, $type));
+
+		return array_filter($orTypesArray);
 	}
 
 	/**
@@ -195,14 +211,13 @@ class CirclesMapper extends Mapper {
 	private function generateTypeEntryForCirclePersonal(IQueryBuilder $qb, int $type, string $userId
 	) {
 		if (Circle::CIRCLES_PERSONAL & (int)$type) {
+			$expr = $qb->expr();
 
 			/** @noinspection PhpMethodParametersCountMismatchInspection */
 			return $qb->expr()
 					  ->andX(
-						  $qb->expr()
-							 ->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_PERSONAL)),
-						  $qb->expr()
-							 ->eq('o.user_id', $qb->createNamedParameter($userId))
+						  $expr->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_PERSONAL)),
+						  $expr->eq('o.user_id', $qb->createNamedParameter($userId))
 
 					  );
 		}

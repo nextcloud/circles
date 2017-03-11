@@ -80,34 +80,6 @@ class MembersMapper extends Mapper {
 
 
 	/**
-	 * Generate SQL Request for getMemberFromCircle()
-	 *
-	 * @param $circleId
-	 * @param $userId
-	 *
-	 * @return \OCP\DB\QueryBuilder\IQueryBuilder
-	 */
-	private function getMemberFromCircleSql($circleId, $userId) {
-
-		$qb = $this->db->getQueryBuilder();
-		$expr = $qb->expr();
-
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->select(
-			'circle_id', 'user_id', 'level', 'status', 'note', 'joined'
-		)
-		   ->from(self::TABLENAME)
-		   ->where(
-			   $expr->eq('circle_id', $qb->createNamedParameter($circleId))
-		   )
-		   ->andWhere(
-			   $expr->eq('user_id', $qb->createNamedParameter($userId))
-		   );
-
-		return $qb;
-	}
-
-	/**
 	 * get members list from a circle. If moderator, returns also notes about each member.
 	 *
 	 * @param $circleId
@@ -119,16 +91,14 @@ class MembersMapper extends Mapper {
 	 *
 	 */
 	public function getMembersFromCircle($circleId, Member $user) {
-
-		$circleId = (int)$circleId;
 		try {
 			$user->hasToBeMember();
 
-			$qb = $this->getMembersFromCircleSql($circleId);
+			$qb = $this->getMembersFromCircleSql((int)$circleId);
 			$cursor = $qb->execute();
 			$result = [];
 			while ($data = $cursor->fetch()) {
-				if (!$user->isModerator()) {
+				if (!$user->isLevel(Member::LEVEL_MODERATOR)) {
 					unset($data['note']);
 				}
 
@@ -143,7 +113,26 @@ class MembersMapper extends Mapper {
 		}
 
 		return $result;
+	}
 
+
+	/**
+	 * Generate SQL Request for getMemberFromCircle()
+	 *
+	 * @param $circleId
+	 * @param $userId
+	 *
+	 * @return \OCP\DB\QueryBuilder\IQueryBuilder
+	 */
+	private function getMemberFromCircleSql($circleId, $userId) {
+		$qb = $this->getMembersFromCircleSqlBase($circleId);
+		$expr = $qb->expr();
+
+		$qb->andWhere(
+			$expr->eq('user_id', $qb->createNamedParameter($userId))
+		);
+
+		return $qb;
 	}
 
 
@@ -155,6 +144,29 @@ class MembersMapper extends Mapper {
 	 * @return \OCP\DB\QueryBuilder\IQueryBuilder
 	 */
 	private function getMembersFromCircleSql($circleId) {
+		$qb = $this->getMembersFromCircleSqlBase($circleId);
+		$expr = $qb->expr();
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$qb->andwhere(
+			$expr->neq('status', $qb->createNamedParameter(Member::STATUS_NONMEMBER))
+		);
+
+		return $qb;
+	}
+
+
+	/**
+	 *
+	 * Return the base select request for both
+	 * getMembersFromCircleSql()
+	 * getMemberFromCircleSql()
+	 *
+	 * @param $circleId
+	 *
+	 * @return \OCP\DB\QueryBuilder\IQueryBuilder
+	 */
+	private function getMembersFromCircleSqlBase($circleId) {
 		$qb = $this->db->getQueryBuilder();
 		$expr = $qb->expr();
 
@@ -165,14 +177,19 @@ class MembersMapper extends Mapper {
 		   ->from(self::TABLENAME)
 		   ->where(
 			   $expr->eq('circle_id', $qb->createNamedParameter($circleId))
-		   )
-		   ->andwhere(
-			   $expr->neq('status', $qb->createNamedParameter(Member::STATUS_NONMEMBER))
 		   );
 
 		return $qb;
 	}
 
+
+	/**
+	 * update database entry for a specific Member.
+	 *
+	 * @param Member $member
+	 *
+	 * @return bool
+	 */
 	public function editMember(Member $member) {
 
 		$qb = $this->db->getQueryBuilder();
