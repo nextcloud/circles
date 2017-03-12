@@ -27,15 +27,67 @@
 /** global: OCA */
 /** global: Notyf */
 
+var api = OCA.Circles.api;
+var curr = {
+	circlesType: '',
+	circle: 0,
+	circleLevel: 0,
+	searchCircle: '',
+	searchUser: ''
+};
+
+
+var nav = {
+
+	displayCirclesList: function (type) {
+
+		curr.circlesType = type;
+		curr.searchCircle = '';
+		curr.searchUser = '';
+
+		curr.circle = 0;
+		curr.circleLevel = 0;
+
+		navdiv.navigation.show('slide', 800);
+		navdiv.emptyContent.show(800);
+		navdiv.mainUI.fadeOut(800);
+
+		$('#circles_search').val('');
+		$('#addmember').val('');
+
+		this.UIresetCirclesList(type);
+		api.listCircles(type, self.listCirclesResult);
+	},
+
+	selectCircle: function (circle_id) {
+		curr.searchUser = '';
+		navdiv.addMember.val('');
+
+		api.detailsCircle(circle_id, this.selectCircleResult);
+	}
+
+
+};
+
+
 $(document).ready(function () {
 
 	/**
 	 * @constructs Navigation
 	 */
-	var Navigation = function () {
-		this.initialize();
 
-	};
+
+
+	var Navigation = function () {
+
+			$.extend(Navigation.prototype, curr);
+			$.extend(Navigation.prototype, nav);
+			$.extend(Navigation.prototype, navdiv);
+			$.extend(Navigation.prototype, actions);
+
+			this.initialize();
+
+		} || {};
 
 
 	Navigation.prototype = {
@@ -43,55 +95,23 @@ $(document).ready(function () {
 
 		initialize: function () {
 
-			var api = OCA.Circles.api;
-			//	var actions = OCA.Circles.actions;
-
 			var self = this;
 
-			var currCirclesType = '';
-			var currentCircle = 0;
-			var currentCircleLevel = 0;
-			var lastSearchCircle = '';
-			var lastSearchUser = '';
+			navdiv.initElements();
+			navdiv.initUI();
 
-			var divNewTypeDefinition = $('#circles_new_type_definition');
-			var divNewType = $('#circles_new_type');
-			var divNewSubmit = $('#circles_new_submit');
-			var divNewName = $('#circles_new_name');
-			var divNavigation = $('#app-navigation.circles');
-			var divCirclesList = $('#circles_list');
-			var divEmptyContent = $('#emptycontent');
-			var divMainUI = $('#mainui');
-			var divMainUIMembers = $('#memberslist_table');
-			var divMembersSearchResult = $('#members_search_result');
-
-			var divJoinCircleAccept = $('#joincircle_acceptinvit');
-			var divJoinCircleReject = $('#joincircle_rejectinvit');
-			var divJoinCircleRequest = $('#joincircle_request');
-			var divJoinCircleInvite = $('#joincircle_invit');
-			var divJoinCircle = $('#joincircle');
-			var divLeaveCircle = $('#leavecircle');
-			var divAddMember = $('#addmember');
-
-
-			/**
-			 *
-			 * @constructor
-			 */
-			this.UIReset = function () {
-				divNewTypeDefinition.children('div').fadeOut(0);
-				$('#circles_new_type_' + divNewType.children('option:selected').val()).fadeIn(
-					0);
-
-				divNewType.hide();
-				divNewSubmit.hide();
-				divNewTypeDefinition.hide();
-
-				$('.icon-circles').css('background-image',
-					'url(' + OC.imagePath('circles', 'colored') + ')');
-
-				divMembersSearchResult.hide();
-			};
+			//
+			// /**
+			//  *
+			//  * @constructor
+			//  */
+			// this.UIReset = function () {
+			// 	navdiv.newTypeDefinition.children('div').fadeOut(0);
+			// 	$('#circles_new_type_' +
+			// navdiv.newType.children('option:selected').val()).fadeIn( 0);
+			// navdiv.newType.hide(); navdiv.newSubmit.hide(); navdiv.newTypeDefinition.hide();
+			// $('.icon-circles').css('background-image', 'url(' + OC.imagePath('circles',
+			// 'colored') + ')');  navdiv.membersSearchResult.hide(); };
 
 			/**
 			 *
@@ -109,133 +129,77 @@ $(document).ready(function () {
 			};
 
 
-			this.initExperienceMembersManagment = function () {
-				divJoinCircle.on('click', function () {
-					api.joinCircle(currentCircle, self.joinCircleResult);
-				});
-
-				divLeaveCircle.on('click', function () {
-					api.leaveCircle(currentCircle, self.leaveCircleResult);
-				});
-
-				divJoinCircleAccept.on('click', function () {
-					api.joinCircle(currentCircle, self.joinCircleResult);
-				});
-
-				divJoinCircleReject.on('click', function () {
-					api.leaveCircle(currentCircle, self.leaveCircleResult);
-				});
-
-				divAddMember.on('input propertychange paste focus', function () {
-					self.searchMembersRequest($(this).val().trim());
-				}).blur(function () {
-					divMembersSearchResult.fadeOut(400);
-				});
-			};
-
-
-			this.displayMembersInteraction = function (details) {
-				if (details.user.level < 6) {
-					divAddMember.hide();
-				} else {
-					divAddMember.show();
-				}
-
-				this.displayNonMemberInteraction(details);
-
-				if (details.user.level == 9) {
-					divJoinCircle.hide();
-					divLeaveCircle.hide();
-					return;
-				}
-
-				if (details.user.level >= 1) {
-					divJoinCircle.hide();
-					divLeaveCircle.show();
-				}
-
-			};
+			//
+			// this.displayMembersInteraction = function (details) {
+			// 	if (details.user.level < 6) {
+			// 		divAddMember.hide();
+			// 	} else {
+			// 		divAddMember.show();
+			// 	}
+			//
+			// 	this.displayNonMemberInteraction(details);
+			//
+			// 	if (details.user.level == 9) {
+			// 		navdiv.joinCircle.hide();
+			// 		navdiv.leaveCircle.hide();
+			// 		return;
+			// 	}
+			//
+			// 	if (details.user.level >= 1) {
+			// 		navdiv.joinCircle.hide();
+			// 		navdiv.leaveCircle.show();
+			// 	}
+			//
+			// };
 
 
 			this.displayNonMemberInteraction = function (details) {
-				divJoinCircleAccept.hide();
-				divJoinCircleReject.hide();
-				divJoinCircleRequest.hide();
-				divJoinCircleInvite.hide();
+				navdiv.joinCircleAccept.hide();
+				navdiv.joinCircleReject.hide();
+				navdiv.joinCircleRequest.hide();
+				navdiv.joinCircleInvite.hide();
 
 				if (details.user.status == 'Invited') {
-					divJoinCircleInvite.show();
-					divJoinCircleAccept.show();
-					divJoinCircleReject.show();
-					divJoinCircle.hide();
-					divLeaveCircle.hide();
+					navdiv.joinCircleInvite.show();
+					navdiv.joinCircleAccept.show();
+					navdiv.joinCircleReject.show();
+					navdiv.joinCircle.hide();
+					navdiv.leaveCircle.hide();
 					return;
 				}
 
 				if (details.user.status == 'Requesting') {
-					divJoinCircleRequest.show();
-					divJoinCircle.hide();
-					divLeaveCircle.show();
+					navdiv.joinCircleRequest.show();
+					navdiv.joinCircle.hide();
+					navdiv.leaveCircle.show();
 					return;
 				}
 
-				divJoinCircle.show();
-				divLeaveCircle.hide();
+				navdiv.joinCircle.show();
+				navdiv.leaveCircle.hide();
 			};
 
 
-			/**
-			 *
-			 */
-			this.initAnimationNewCircle = function () {
+			// /**
+			//  *
+			//  */
+			// this.initAnimationNewCircle = function () {
+			//
+			// 	navdiv.newName.on('keyup', function () {
+			// 		self.onEventNewCircleName();
+			// 	});
+			//
+			// 	navdiv.newType.on('change', function () {
+			// 		self.onEventNewCircleType();
+			// 	});
+			//
+			// 	navdiv.newSubmit.on('click', function () {
+			// 		api.createCircle(navdiv.newType.val(), navdiv.newName.val(),
+			// 			self.createCircleResult);
+			// 	});
+			//
+			// };
 
-				divNewName.on('keyup', function () {
-					self.onEventNewCircleName();
-				});
-
-				divNewType.on('change', function () {
-					self.onEventNewCircleType();
-				});
-
-				divNewSubmit.on('click', function () {
-					api.createCircle(divNewType.val(), divNewName.val(),
-						self.createCircleResult);
-				});
-
-			};
-
-
-			/**
-			 *
-			 */
-			this.onEventNewCircle = function () {
-
-				currentCircle = 0;
-				currentCircleLevel = 0;
-
-				divNavigation.hide('slide', 800);
-				divCirclesList.children('div').removeClass('selected');
-				divEmptyContent.show(800);
-				divMainUI.fadeOut(800);
-			};
-
-			/**
-			 *
-			 */
-			this.onEventNewCircleName = function () {
-				this.onEventNewCircle();
-				this.displayOptionsNewCircle((divNewName.val() !== ''));
-			};
-
-			/**
-			 *
-			 */
-			this.onEventNewCircleType = function () {
-				this.onEventNewCircle();
-				divNewTypeDefinition.children('div').fadeOut(300);
-				$('#circles_new_type_' + divNewType.children('option:selected').val()).fadeIn(
-					300);
-			};
 
 			/**
 			 *
@@ -243,14 +207,14 @@ $(document).ready(function () {
 			 */
 			this.displayOptionsNewCircle = function (display) {
 				if (display) {
-					divNewType.fadeIn(300);
-					divNewSubmit.fadeIn(500);
-					divNewTypeDefinition.fadeIn(700);
+					navdiv.newType.fadeIn(300);
+					navdiv.newSubmit.fadeIn(500);
+					navdiv.newTypeDefinition.fadeIn(700);
 				}
 				else {
-					divNewType.fadeOut(700);
-					divNewSubmit.fadeOut(500);
-					divNewTypeDefinition.fadeOut(300);
+					navdiv.newType.fadeOut(700);
+					navdiv.newSubmit.fadeOut(500);
+					navdiv.newTypeDefinition.fadeOut(300);
 				}
 			};
 
@@ -260,61 +224,20 @@ $(document).ready(function () {
 			 */
 			this.initExperienceCirclesList = function () {
 
-				divCirclesList.children('div').on('click', function () {
+				navdiv.circlesList.children('div').on('click', function () {
 					self.displayCirclesList($(this).attr('circle-type'));
 				});
 
 				$('#circles_search').on('input propertychange paste focus', function () {
-					if (lastSearchCircle == $(this).val().trim()) {
+					if (curr.searchCircle == $(this).val().trim()) {
 						return;
 					}
 
-					lastSearchCircle = $(this).val().trim();
-					api.searchCircles(currCirclesType, $(this).val().trim(),
+					curr.searchCircle = $(this).val().trim();
+					api.searchCircles(curr.circlesType, $(this).val().trim(),
 						self.listCirclesResult);
 				});
 
-			};
-
-
-			/**
-			 *
-			 * @param result
-			 */
-			this.createCircleResult = function (result) {
-				var str = self.getStringTypeFromType(result.type);
-
-				if (result.status == 1) {
-					OCA.notification.onSuccess(str + " '" + result.name + "' created");
-					self.displayCirclesList(result.circle.type);
-					self.selectCircle(result.circle.id);
-					return;
-				}
-
-				OCA.notification.onFail(
-					str + " '" + result.name + "' NOT created: " +
-					((result.error) ? result.error : 'no error message'));
-			};
-
-
-			/**
-			 *
-			 * @param type
-			 * @returns {*}
-			 */
-			this.getStringTypeFromType = function (type) {
-				switch (type) {
-					case '1':
-						return 'Personal circle';
-					case '2':
-						return 'Hidden circle';
-					case '4':
-						return 'Private circle';
-					case '8':
-						return 'Public circle';
-				}
-
-				return 'Circle';
 			};
 
 
@@ -324,16 +247,16 @@ $(document).ready(function () {
 			 */
 			this.displayCirclesList = function (type) {
 
-				currCirclesType = type;
-				lastSearchCircle = '';
-				lastSearchUser = '';
+				curr.circlesType = type;
+				curr.searchCircle = '';
+				curr.searchUser = '';
 
-				currentCircle = 0;
-				currentCircleLevel = 0;
+				curr.circle = 0;
+				curr.circleLevel = 0;
 
-				divNavigation.show('slide', 800);
-				divEmptyContent.show(800);
-				divMainUI.fadeOut(800);
+				navdiv.navigation.show('slide', 800);
+				navdiv.emptyContent.show(800);
+				navdiv.mainUI.fadeOut(800);
 
 				$('#circles_search').val('');
 				$('#addmember').val('');
@@ -349,15 +272,15 @@ $(document).ready(function () {
 			 */
 			this.UIresetCirclesList = function (type) {
 
-				divCirclesList.children('div').removeClass('selected');
-				divCirclesList.children().each(function () {
+				navdiv.circlesList.children('div').removeClass('selected');
+				navdiv.circlesList.children().each(function () {
 					if ($(this).attr('circle-type') == type.toLowerCase()) {
 						$(this).addClass('selected');
 					}
 				});
 
-				divNavigation.addClass('selected');
-				divNavigation.children().each(function () {
+				navdiv.navigation.addClass('selected');
+				navdiv.navigation.children().each(function () {
 					if ($(this).attr('id') != 'circles_search') {
 						$(this).remove();
 					}
@@ -381,12 +304,12 @@ $(document).ready(function () {
 				var data = result.data;
 				for (var i = 0; i < data.length; i++) {
 					var tmpl = self.generateTmplCircle(data[i]);
-					divNavigation.append(
+					navdiv.navigation.append(
 						'<div class="circle" circle-id="' + data[i].id + '">' + tmpl +
 						'</div>');
 				}
 
-				divNavigation.children('.circle').on('click', function () {
+				navdiv.navigation.children('.circle').on('click', function () {
 					self.selectCircle($(this).attr('circle-id'));
 				});
 			};
@@ -411,22 +334,22 @@ $(document).ready(function () {
 				return tmpl;
 			};
 
-
-			/**
-			 *
-			 * @param circle_id
-			 */
-			this.selectCircle = function (circle_id) {
-				lastSearchUser = '';
-				$('#addmember').val('');
-
-				api.detailsCircle(circle_id, this.selectCircleResult);
-			};
-
+			//
+			// /**
+			//  *
+			//  * @param circle_id
+			//  */
+			// this.selectCircle = function (circle_id) {
+			// 	curr.searchUser = '';
+			// 	$('#addmember').val('');
+			//
+			// 	api.detailsCircle(circle_id, this.selectCircleResult);
+			// };
+			//
 
 			this.selectCircleResult = function (result) {
 
-				divMainUIMembers.emptyTable();
+				navdiv.mainUIMembers.emptyTable();
 
 				if (result.status < 1) {
 					OCA.notification.onFail(
@@ -435,110 +358,110 @@ $(document).ready(function () {
 					return;
 				}
 
-				divNavigation.children('.circle').removeClass('selected');
-				divNavigation.children(".circle[circle-id='" + result.circle_id + "']").each(
+				navdiv.navigation.children('.circle').removeClass('selected');
+				navdiv.navigation.children(".circle[circle-id='" + result.circle_id + "']").each(
 					function () {
 						$(this).addClass('selected');
 					});
 
-				divEmptyContent.hide(800);
-				divMainUI.fadeIn(800);
-				currentCircle = result.circle_id;
-				currentCircleLevel = result.details.user.level;
+				navdiv.emptyContent.hide(800);
+				navdiv.mainUI.fadeIn(800);
+				curr.circle = result.circle_id;
+				curr.circleLevel = result.details.user.level;
 
 				self.displayMembersInteraction(result.details);
 				self.displayMembers(result.details.members);
 			};
 
-
-			/**
-			 *
-			 * @param search
-			 */
-			this.searchMembersRequest = function (search) {
-
-				if (lastSearchUser == search) {
-					return;
-				}
-
-				lastSearchUser = search;
-
-				$.get(OC.linkToOCS('apps/files_sharing/api/v1', 1) + 'sharees',
-					{
-						format: 'json',
-						search: search,
-						perPage: 200,
-						itemType: 'principals'
-					}, self.searchMembersResult);
-			};
-
-
-			this.searchMembersResult = function (response) {
-
-				if (response === null ||
-					(response.ocs.data.users === 0 && response.ocs.data.exact.users === 0)) {
-					divMembersSearchResult.fadeOut(300);
-					return;
-				}
-
-				divMembersSearchResult.children().remove();
-
-				self.searchMembersResultFill(response.ocs.data.exact.users,
-					response.ocs.data.users);
-
-				$('.members_search').on('click', function () {
-					api.addMember(currentCircle, $(this).attr('searchresult'),
-						self.addMemberResult);
-				});
-				divMembersSearchResult.fadeIn(300);
-
-			};
-
-
-			this.searchMembersResultFill = function (exact, partial) {
-				$.each(exact, function (index, value) {
-					divMembersSearchResult.append(
-						'<div class="members_search exact" searchresult="' +
-						value.value.shareWith + '">' + value.label + '   (' +
-						value.value.shareWith + ')</div>');
-				});
-
-				$.each(partial, function (index, value) {
-					var currSearch = $('#addmember').val().trim();
-					var line = value.label + '   (' + value.value.shareWith + ')';
-					if (currSearch.length > 0) {
-						line =
-							line.replace(new RegExp('(' + currSearch + ')', 'gi'),
-								'<b>$1</b>');
-					}
-
-					divMembersSearchResult.append(
-						'<div class="members_search" searchresult="' +
-						value.value.shareWith +
-						'">' + line + '</div>');
-				});
-
-				divMembersSearchResult.children().first().css('border-top-width', '0px');
-			};
+			//
+			// /**
+			//  *
+			//  * @param search
+			//  */
+			// this.searchMembersRequest = function (search) {
+			//
+			// 	if (curr.searchUser == search) {
+			// 		return;
+			// 	}
+			//
+			// 	curr.searchUser = search;
+			//
+			// 	$.get(OC.linkToOCS('apps/files_sharing/api/v1', 1) + 'sharees',
+			// 		{
+			// 			format: 'json',
+			// 			search: search,
+			// 			perPage: 200,
+			// 			itemType: 'principals'
+			// 		}, self.searchMembersResult);
+			// };
+			//
+			//
+			// this.searchMembersResult = function (response) {
+			//
+			// 	if (response === null ||
+			// 		(response.ocs.data.users === 0 && response.ocs.data.exact.users === 0)) {
+			// 		navdiv.membersSearchResult.fadeOut(300);
+			// 		return;
+			// 	}
+			//
+			// 	navdiv.membersSearchResult.children().remove();
+			//
+			// 	self.searchMembersResultFill(response.ocs.data.exact.users,
+			// 		response.ocs.data.users);
+			//
+			// 	$('.members_search').on('click', function () {
+			// 		api.addMember(curr.circle, $(this).attr('searchresult'),
+			// 			self.addMemberResult);
+			// 	});
+			// 	navdiv.membersSearchResult.fadeIn(300);
+			//
+			// };
 
 
-			/**
-			 *
-			 * @param result
-			 */
-			this.addMemberResult = function (result) {
+			// this.searchMembersResultFill = function (exact, partial) {
+			// 	$.each(exact, function (index, value) {
+			// 		navdiv.membersSearchResult.append(
+			// 			'<div class="members_search exact" searchresult="' +
+			// 			value.value.shareWith + '">' + value.label + '   (' +
+			// 			value.value.shareWith + ')</div>');
+			// 	});
+			//
+			// 	$.each(partial, function (index, value) {
+			// 		var currSearch = $('#addmember').val().trim();
+			// 		var line = value.label + '   (' + value.value.shareWith + ')';
+			// 		if (currSearch.length > 0) {
+			// 			line =
+			// 				line.replace(new RegExp('(' + currSearch + ')', 'gi'),
+			// 					'<b>$1</b>');
+			// 		}
+			//
+			// 		navdiv.membersSearchResult.append(
+			// 			'<div class="members_search" searchresult="' +
+			// 			value.value.shareWith +
+			// 			'">' + line + '</div>');
+			// 	});
+			//
+			// 	navdiv.membersSearchResult.children().first().css('border-top-width', '0px');
+			// };
 
-				if (result.status == 1) {
-					OCA.notification.onSuccess(
-						"Member '" + result.name + "' successfully added to the circle");
 
-					self.displayMembers(result.members);
-					return;
-				}
-				OCA.notification.onFail(
-					"Member '" + result.name + "' NOT added to the circle: " +
-					((result.error) ? result.error : 'no error message'));
-			};
+			// /**
+			//  *
+			//  * @param result
+			//  */
+			// this.addMemberResult = function (result) {
+			//
+			// 	if (result.status == 1) {
+			// 		OCA.notification.onSuccess(
+			// 			"Member '" + result.name + "' successfully added to the circle");
+			//
+			// 		self.displayMembers(result.members);
+			// 		return;
+			// 	}
+			// 	OCA.notification.onFail(
+			// 		"Member '" + result.name + "' NOT added to the circle: " +
+			// 		((result.error) ? result.error : 'no error message'));
+			// };
 
 
 			this.generateTmplMember = function (entry) {
@@ -555,56 +478,13 @@ $(document).ready(function () {
 			};
 
 
-			this.displayMembers = function (members) {
 
-				divMainUIMembers.emptyTable();
-
-				if (members === null) {
-					divMainUIMembers.hide(200);
-					return;
-				}
-
-				divMainUIMembers.show(200);
-				for (var i = 0; i < members.length; i++) {
-					divMainUIMembers.append(this.generateTmplMember(members[i]));
-				}
-
-				if (currentCircleLevel >= 6) {
-					divMainUIMembers.children("[member-level!='9']").each(function () {
-						$(this).children('.delete').show(0);
-					});
-
-					divMainUIMembers.children('.delete').on('click', function () {
-						var member = $(this).parent().attr('member-id');
-						api.removeMember(currentCircle, member, self.removeMemberResult);
-					});
-				}
-
-			};
-
-
-			this.removeMemberResult = function (result) {
-				if (result.status == 1) {
-
-					divMainUIMembers.children("[member-id='" + result.name + "']").each(
-						function () {
-							$(this).hide(300);
-						});
-					OCA.notification.onSuccess(
-						"Member '" + result.name + "' successfully removed from the circle");
-					return;
-				}
-
-				OCA.notification.onFail(
-					"Member '" + result.name + "' NOT removed from the circle: " +
-					((result.error) ? result.error : 'no error message'));
-			};
 
 
 			this.joinCircleResult = function (result) {
 				if (result.status == 1) {
 
-					divMainUIMembers.children("[member-id='" + result.name + "']").each(
+					navdiv.mainUIMembers.children("[member-id='" + result.name + "']").each(
 						function () {
 							$(this).hide(300);
 						});
@@ -629,7 +509,7 @@ $(document).ready(function () {
 			this.leaveCircleResult = function (result) {
 				if (result.status == 1) {
 
-					divMainUIMembers.children("[member-id='" + result.name + "']").each(
+					navdiv.mainUIMembers.children("[member-id='" + result.name + "']").each(
 						function () {
 							$(this).hide(300);
 						});
@@ -651,10 +531,10 @@ $(document).ready(function () {
 			 * Inits
 			 */
 			this.initTweaks();
-			this.UIReset();
+		//	this.UIReset();
 			this.initAnimationNewCircle();
 			this.initExperienceCirclesList();
-			this.initExperienceMembersManagment();
+			// this.initExperienceMembersManagment();
 		}
 	};
 
