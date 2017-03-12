@@ -121,7 +121,7 @@ class MembersMapperTest extends \PHPUnit_Framework_TestCase {
 			$this->membersMapper->getMemberFromCircle(
 				self::TEST_CIRCLE_ID, $member1->getUserId(), false
 			);
-		$this->assertSame(null, $result1->getNote());
+		$this->assertSame('', $result1->getNote());
 
 
 		//
@@ -136,7 +136,7 @@ class MembersMapperTest extends \PHPUnit_Framework_TestCase {
 		$membersList = $this->membersMapper->getMembersFromCircle(self::TEST_CIRCLE_ID, $member1);
 		$this->assertCount(2, $membersList);
 		if (sizeof($membersList) > 0) {
-			$this->assertSame(null, $membersList[0]->getNote());
+			$this->assertSame('', $membersList[0]->getNote());
 		}
 
 

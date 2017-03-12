@@ -29,7 +29,11 @@ script('circles', 'circles');
 script('circles', 'vendor/notyf');
 style('circles', 'notyf');
 
-script('circles', 'navigation');
+script('circles', 'circles.app.elements');
+script('circles', 'circles.app.actions');
+script('circles', 'circles.app.navigation');
+script('circles', 'circles.app');
+
 style('circles', 'navigation');
 
 ?>
@@ -174,7 +178,7 @@ style('circles', 'navigation');
 					<td class="status">%status%</td>
 					<td class="joined">%joined%</td>
 					<td class="note">%note%</td>
-					<td class="delete">delete</td>
+					<td class="delete" style="display: none;">delete</td>
 				</tr>
 			</script>
 

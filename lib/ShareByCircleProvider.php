@@ -395,7 +395,7 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	 * @param int $limit The max number of entries returned, -1 for all
 	 * @param int $offset
 	 *
-	 * @return IShare[]|null
+	 * @return array|IShare[]
 	 */
 	public function getSharedWith($userId, $shareType, $node, $limit, $offset) {
 

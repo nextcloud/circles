@@ -116,4 +116,4 @@ function detailsCircleResult(result)
 
 # Credits
 
-App Icon by [http://www.flaticon.com/authors/madebyoliver](Madebyoliver) under Creative Commons BY 3.0
+App Icon by [Madebyoliver](http://www.flaticon.com/authors/madebyoliver) under Creative Commons BY 3.0
