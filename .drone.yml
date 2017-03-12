@@ -47,6 +47,7 @@ pipeline:
       - DB=sqlite
     commands:
       # Pre-setup steps
+      - apt update && apt-get -y install php5-xdebug
       - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
       - bash ./before_install.sh $APP_NAME $CORE_BRANCH $DB
       - cd ../server
@@ -68,6 +69,7 @@ pipeline:
       - DB=mysql
     commands:
       # Pre-setup steps
+      - yum -y install wget
       - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
       - bash ./before_install.sh $APP_NAME $CORE_BRANCH $DB
       - cd ../server
