@@ -42,8 +42,8 @@ pipeline:
   php5.6:
     image: nextcloudci/php5.6:php5.6-3
     environment:
-      - APP_NAME=deck
-      - CORE_BRANCH=master
+      - APP_NAME=circles
+      - CORE_BRANCH=shares-circles
       - DB=sqlite
     commands:
       # Pre-setup steps
@@ -63,8 +63,8 @@ pipeline:
   php5.6:
     image: nextcloudci/php7.1:php7.1-11
     environment:
-      - APP_NAME=deck
-      - CORE_BRANCH=master
+      - APP_NAME=circles
+      - CORE_BRANCH=shares-circles
       - DB=mysql
     commands:
       # Pre-setup steps
@@ -87,4 +87,4 @@ matrix:
     - TESTS: phpunit-php7.0
     - TESTS: php7.1
     - TESTS: php5.6
-    
+
