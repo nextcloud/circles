@@ -409,6 +409,7 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 		$shares = [];
 		while ($data = $cursor->fetch()) {
 			self::editShareFromParentEntry($data);
+
 			if (self::isAccessibleResult($data)) {
 				$shares[] = $this->createShareObject($data);
 			}
@@ -522,6 +523,7 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 		return $share;
 	}
 
+
 	private function assignShareObjectPropertiesFromParent(& $share, $data) {
 		if (isset($data['f_permissions'])) {
 			$entryData = $data;
@@ -552,10 +554,9 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	 * Returns whether the given database result can be interpreted as
 	 * a share with accessible file (not trashed, not deleted)
 	 *
-	 * Complete copy/paste from others ShareProvider
-	 *
 	 * @param $data
 	 *F
+	 *
 	 * @return bool
 	 */
 	private static function isAccessibleResult($data) {
@@ -563,10 +564,8 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 			return false;
 		}
 
-		$pathSections = explode('/', $data['path'], 2);
-
-		return ($pathSections[0] !== 'files'
-				&& explode(':', $data['storage_string_id'], 2)[0] === 'home');
+		return (!(explode('/', $data['path'], 2)[0] !== 'files'
+				  && explode(':', $data['storage_string_id'], 2)[0] === 'home'));
 	}
 
 
