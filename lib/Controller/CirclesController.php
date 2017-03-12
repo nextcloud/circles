@@ -72,7 +72,7 @@ class CirclesController extends BaseController {
 	 *
 	 * @return DataResponse
 	 */
-	public function list($type, $name = '') {
+	public function listing($type, $name = '') {
 		$type = self::convertTypeStringToBitValue($type);
 
 		try {

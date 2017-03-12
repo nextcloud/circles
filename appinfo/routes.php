@@ -28,7 +28,7 @@ return [
 	'routes' => [
 		['name' => 'Navigation#navigate', 'url' => '/', 'verb' => 'GET'],
 		['name' => 'Circles#create', 'url' => '/circles', 'verb' => 'PUT'],
-		['name' => 'Circles#list', 'url' => '/circles', 'verb' => 'GET'],
+		['name' => 'Circles#listing', 'url' => '/circles', 'verb' => 'GET'],
 		[
 			'name'         => 'Circles#details', 'url' => '/circles/{id}', 'verb' => 'GET',
 			'requirements' => ['id' => '\d+'],
