@@ -29,9 +29,11 @@ script('circles', 'circles');
 script('circles', 'vendor/notyf');
 style('circles', 'notyf');
 
-script('circles', 'navigation.elements');
-script('circles', 'navigation.actions');
-script('circles', 'navigation');
+script('circles', 'circles.app.elements');
+script('circles', 'circles.app.actions');
+script('circles', 'circles.app.navigation');
+script('circles', 'circles.app');
+
 style('circles', 'navigation');
 
 ?>

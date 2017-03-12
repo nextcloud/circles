@@ -41,6 +41,7 @@ var elements = {
 	newName: null,
 	navigation: null,
 	circlesList: null,
+	circlesSearch: null,
 	emptyContent: null,
 	mainUI: null,
 	mainUIMembers: null,
@@ -63,6 +64,7 @@ var elements = {
 		elements.newName = $('#circles_new_name');
 		elements.navigation = $('#app-navigation.circles');
 		elements.circlesList = $('#circles_list');
+		elements.circlesSearch = $('#circles_search');
 		elements.emptyContent = $('#emptycontent');
 		elements.mainUI = $('#mainui');
 		elements.mainUIMembers = $('#memberslist_table');
@@ -75,8 +77,17 @@ var elements = {
 		elements.joinCircle = $('#joincircle');
 		elements.leaveCircle = $('#leavecircle');
 		elements.addMember = $('#addmember');
+	},
 
-		this.initElementsActions();
+
+	initTweaks: function () {
+		$.fn.emptyTable = function () {
+			this.children('tr').each(function () {
+				if ($(this).attr('class') != 'header') {
+					$(this).remove();
+				}
+			});
+		};
 	},
 
 
@@ -96,31 +107,25 @@ var elements = {
 	},
 
 
-	initElementsActions: function () {
+	/**
+	 *
+	 */
+	initExperienceCirclesList: function () {
 
-		elements.joinCircle.on('click', function () {
-			api.joinCircle(curr.circle, actions.joinCircleResult);
+		elements.circlesList.children('div').on('click', function () {
+			nav.displayCirclesList($(this).attr('circle-type'));
 		});
 
-		elements.leaveCircle.on('click', function () {
-			api.leaveCircle(curr.circle, actions.leaveCircleResult);
-		});
+		this.circlesSearch.on('input propertychange paste focus', function () {
+			var search = $(this).val().trim();
+			if (curr.searchCircle == search) {
+				return;
+			}
 
-		elements.joinCircleAccept.on('click', function () {
-			api.joinCircle(curr.circle, actions.joinCircleResult);
-		});
-
-		elements.joinCircleReject.on('click', function () {
-			api.leaveCircle(curr.circle, actions.leaveCircleResult);
-		});
-
-		elements.addMember.on('input propertychange paste focus', function () {
-			actions.searchMembersRequest($(this).val().trim());
-		}).blur(function () {
-			elements.membersSearchResult.fadeOut(400);
+			curr.searchCircle = search;
+			api.searchCircles(curr.circlesType, search, actions.listCirclesResult);
 		});
 	},
-
 
 	/**
 	 *
@@ -140,7 +145,8 @@ var elements = {
 				actions.createCircleResult);
 		});
 
-	},
+	}
+	,
 
 
 	fillMembersSearch: function (exact, partial) {
@@ -179,31 +185,52 @@ var elements = {
 	},
 
 
-	displayMembers: function (members) {
+	resetCirclesList: function () {
 
-		elements.mainUIMembers.emptyTable();
+		elements.navigation.addClass('selected');
+		elements.navigation.children().each(function () {
+			if ($(this).attr('id') != 'circles_search') {
+				$(this).remove();
+			}
+		});
+	},
 
-		if (members === null) {
-			elements.mainUIMembers.hide(200);
-			return;
-		}
 
-		elements.mainUIMembers.show(200);
-		for (var i = 0; i < members.length; i++) {
-			elements.mainUIMembers.append(this.generateTmplMember(members[i]));
-		}
-
-		if (curr.circleLevel >= 6) {
-			elements.mainUIMembers.children("[member-level!='9']").each(function () {
-				$(this).children('.delete').show(0);
+	removeMemberslistEntry: function (membername) {
+		this.mainUIMembers.children("[member-id='" + membername + "']").each(
+			function () {
+				$(this).hide(300);
 			});
+	},
 
-			elements.mainUIMembers.children('.delete').on('click', function () {
-				var member = $(this).parent().attr('member-id');
-				api.removeMember(curr.circle, member, actions.removeMemberResult);
-			});
-		}
 
-	}
+	generateTmplCircle: function (entry) {
+		var tmpl = $('#tmpl_circle').html();
+
+		tmpl = tmpl.replace(/%title%/, entry.name);
+		tmpl = tmpl.replace(/%type%/, entry.type);
+		tmpl = tmpl.replace(/%owner%/, entry.owner.user_id);
+		tmpl = tmpl.replace(/%status%/, entry.user.status);
+		tmpl = tmpl.replace(/%level_string%/, entry.user.level_string);
+		tmpl = tmpl.replace(/%count%/, entry.count);
+		tmpl = tmpl.replace(/%creation%/, entry.creation);
+
+		return tmpl;
+	},
+
+
+	generateTmplMember: function (entry) {
+		var tmpl = $('#tmpl_member').html();
+
+		tmpl = tmpl.replace(/%username%/g, entry.user_id);
+		tmpl = tmpl.replace(/%level%/g, entry.level);
+		tmpl = tmpl.replace(/%levelstring%/g, entry.level_string);
+		tmpl = tmpl.replace(/%status%/, entry.status);
+		tmpl = tmpl.replace(/%joined%/, entry.joined);
+		tmpl = tmpl.replace(/%note%/, entry.note);
+
+		return tmpl;
+	},
+
 
 };
