@@ -174,7 +174,7 @@ style('circles', 'navigation');
 					<td class="status">%status%</td>
 					<td class="joined">%joined%</td>
 					<td class="note">%note%</td>
-					<td class="delete">delete</td>
+					<td class="delete" style="display: none;">delete</td>
 				</tr>
 			</script>
 

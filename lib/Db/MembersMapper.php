@@ -68,7 +68,7 @@ class MembersMapper extends Mapper {
 		}
 
 		if ($moderator !== true) {
-			unset($data['note']);
+			$data['note'] = '';
 		}
 
 		$member = new Member();
@@ -99,7 +99,7 @@ class MembersMapper extends Mapper {
 			$result = [];
 			while ($data = $cursor->fetch()) {
 				if (!$user->isLevel(Member::LEVEL_MODERATOR)) {
-					unset($data['note']);
+					$data['note'] = '';
 				}
 
 				$member = new Member();
