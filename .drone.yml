@@ -14,7 +14,7 @@ pipeline:
       matrix:
         TESTS: signed-off-check
 
-  phpunit-test:
+  phpunit-php7.0:
     image: nextcloudci/php7.0:php7.0-2
     environment:
     - APP_NAME=circles
@@ -37,11 +37,54 @@ pipeline:
 
     when:
       matrix:
-        TESTS: phpunit-test
+        TESTS: phpunit-php7.0
 
+  php5.6:
+    image: nextcloudci/php5.6:php5.6-3
+    environment:
+      - APP_NAME=deck
+      - CORE_BRANCH=master
+      - DB=sqlite
+    commands:
+      # Pre-setup steps
+      - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
+      - bash ./before_install.sh $APP_NAME $CORE_BRANCH $DB
+      - cd ../server
+      - ./occ app:enable $APP_NAME
+      - cd apps/$APP_NAME/tests/
 
+      # phpunit
+      - phpunit --configuration phpunit.xml
+
+    when:
+      matrix:
+        TESTS: php5.6
+
+  php5.6:
+    image: nextcloudci/php7.1:php7.1-11
+    environment:
+      - APP_NAME=deck
+      - CORE_BRANCH=master
+      - DB=mysql
+    commands:
+      # Pre-setup steps
+      - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
+      - bash ./before_install.sh $APP_NAME $CORE_BRANCH $DB
+      - cd ../server
+      - ./occ app:enable $APP_NAME
+      - cd apps/$APP_NAME/tests/
+
+      # phpunit
+      - phpunit --configuration phpunit.xml
+
+    when:
+      matrix:
+        TESTS: php7.1
 
 matrix:
   include:
     - TESTS: signed-off-check
-    - TESTS: phpunit-test
+    - TESTS: phpunit-php7.0
+    - TESTS: php7.1
+    - TESTS: php5.6
+    
