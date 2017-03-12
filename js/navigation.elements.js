@@ -23,9 +23,17 @@
  *
  */
 
+/** global: OC */
+/** global: OCA */
+/** global: Notyf */
 
-var navdiv = {
+/** global: nav */
+/** global: actions */
+/** global: curr */
+/** global: api */
 
+
+var elements = {
 
 	newTypeDefinition: null,
 	newType: null,
@@ -49,67 +57,67 @@ var navdiv = {
 
 	initElements: function () {
 
-		navdiv.newTypeDefinition = $('#circles_new_type_definition');
-		navdiv.newType = $('#circles_new_type');
-		navdiv.newSubmit = $('#circles_new_submit');
-		navdiv.newName = $('#circles_new_name');
-		navdiv.navigation = $('#app-navigation.circles');
-		navdiv.circlesList = $('#circles_list');
-		navdiv.emptyContent = $('#emptycontent');
-		navdiv.mainUI = $('#mainui');
-		navdiv.mainUIMembers = $('#memberslist_table');
-		navdiv.membersSearchResult = $('#members_search_result');
+		elements.newTypeDefinition = $('#circles_new_type_definition');
+		elements.newType = $('#circles_new_type');
+		elements.newSubmit = $('#circles_new_submit');
+		elements.newName = $('#circles_new_name');
+		elements.navigation = $('#app-navigation.circles');
+		elements.circlesList = $('#circles_list');
+		elements.emptyContent = $('#emptycontent');
+		elements.mainUI = $('#mainui');
+		elements.mainUIMembers = $('#memberslist_table');
+		elements.membersSearchResult = $('#members_search_result');
 
-		navdiv.joinCircleAccept = $('#joincircle_acceptinvit');
-		navdiv.joinCircleReject = $('#joincircle_rejectinvit');
-		navdiv.joinCircleRequest = $('#joincircle_request');
-		navdiv.joinCircleInvite = $('#joincircle_invit');
-		navdiv.joinCircle = $('#joincircle');
-		navdiv.leaveCircle = $('#leavecircle');
-		navdiv.addMember = $('#addmember');
+		elements.joinCircleAccept = $('#joincircle_acceptinvit');
+		elements.joinCircleReject = $('#joincircle_rejectinvit');
+		elements.joinCircleRequest = $('#joincircle_request');
+		elements.joinCircleInvite = $('#joincircle_invit');
+		elements.joinCircle = $('#joincircle');
+		elements.leaveCircle = $('#leavecircle');
+		elements.addMember = $('#addmember');
 
 		this.initElementsActions();
 	},
 
 
 	initUI: function () {
-		navdiv.newTypeDefinition.children('div').fadeOut(0);
-		$('#circles_new_type_' + navdiv.newType.children('option:selected').val()).fadeIn(
+		elements.newTypeDefinition.children('div').fadeOut(0);
+		$('#circles_new_type_' + elements.newType.children('option:selected').val()).fadeIn(
 			0);
 
-		navdiv.newType.hide();
-		navdiv.newSubmit.hide();
-		navdiv.newTypeDefinition.hide();
+		elements.newType.hide();
+		elements.newSubmit.hide();
+		elements.newTypeDefinition.hide();
 
 		$('.icon-circles').css('background-image',
 			'url(' + OC.imagePath('circles', 'colored') + ')');
 
-		navdiv.membersSearchResult.hide();
+		elements.membersSearchResult.hide();
 	},
 
 
 	initElementsActions: function () {
 
-		navdiv.joinCircle.on('click', function () {
+		elements.joinCircle.on('click', function () {
 			api.joinCircle(curr.circle, actions.joinCircleResult);
 		});
 
-		navdiv.leaveCircle.on('click', function () {
+		elements.leaveCircle.on('click', function () {
 			api.leaveCircle(curr.circle, actions.leaveCircleResult);
 		});
 
-		navdiv.joinCircleAccept.on('click', function () {
+		elements.joinCircleAccept.on('click', function () {
 			api.joinCircle(curr.circle, actions.joinCircleResult);
 		});
 
-		navdiv.joinCircleReject.on('click', function () {
+		elements.joinCircleReject.on('click', function () {
 			api.leaveCircle(curr.circle, actions.leaveCircleResult);
 		});
 
-		navdiv.addMember.on('input propertychange paste focus', function () {
+		elements.addMember.on('input propertychange paste focus', function () {
 			actions.searchMembersRequest($(this).val().trim());
 		}).blur(function () {
-			navdiv.membersSearchResult.fadeOut(400);
+			elements.membersSearchResult.fadeOut(400);
 		});
 	},
 
@@ -119,16 +127,16 @@ var navdiv = {
 	 */
 	initAnimationNewCircle: function () {
 
-		navdiv.newName.on('keyup', function () {
+		elements.newName.on('keyup', function () {
 			actions.onEventNewCircleName();
 		});
 
-		navdiv.newType.on('change', function () {
+		elements.newType.on('change', function () {
 			actions.onEventNewCircleType();
 		});
 
-		navdiv.newSubmit.on('click', function () {
-			api.createCircle(navdiv.newType.val(), navdiv.newName.val(),
+		elements.newSubmit.on('click', function () {
+			api.createCircle(elements.newType.val(), elements.newName.val(),
 				actions.createCircleResult);
 		});
 
@@ -138,13 +146,13 @@ var navdiv = {
 	fillMembersSearch: function (exact, partial) {
 		this.fillExactMembersSearch(exact);
 		this.fillPartialMembersSearch(partial);
-		navdiv.membersSearchResult.children().first().css('border-top-width', '0px');
+		elements.membersSearchResult.children().first().css('border-top-width', '0px');
 	},
 
 	fillExactMembersSearch: function (exact) {
 
 		$.each(exact, function (index, value) {
-			navdiv.membersSearchResult.append(
+			elements.membersSearchResult.append(
 				'<div class="members_search exact" searchresult="' +
 				value.value.shareWith + '">' + value.label + '   (' +
 				value.value.shareWith + ')</div>');
@@ -162,7 +170,7 @@ var navdiv = {
 						'<b>$1</b>');
 			}
 
-			navdiv.membersSearchResult.append(
+			elements.membersSearchResult.append(
 				'<div class="members_search" searchresult="' +
 				value.value.shareWith +
 				'">' + line + '</div>');
@@ -173,24 +181,24 @@ var navdiv = {
 
 	displayMembers: function (members) {
 
-		navdiv.mainUIMembers.emptyTable();
+		elements.mainUIMembers.emptyTable();
 
 		if (members === null) {
-			navdiv.mainUIMembers.hide(200);
+			elements.mainUIMembers.hide(200);
 			return;
 		}
 
-		navdiv.mainUIMembers.show(200);
+		elements.mainUIMembers.show(200);
 		for (var i = 0; i < members.length; i++) {
-			navdiv.mainUIMembers.append(this.generateTmplMember(members[i]));
+			elements.mainUIMembers.append(this.generateTmplMember(members[i]));
 		}
 
 		if (curr.circleLevel >= 6) {
-			navdiv.mainUIMembers.children("[member-level!='9']").each(function () {
+			elements.mainUIMembers.children("[member-level!='9']").each(function () {
 				$(this).children('.delete').show(0);
 			});
 
-			navdiv.mainUIMembers.children('.delete').on('click', function () {
+			elements.mainUIMembers.children('.delete').on('click', function () {
 				var member = $(this).parent().attr('member-id');
 				api.removeMember(curr.circle, member, actions.removeMemberResult);
 			});

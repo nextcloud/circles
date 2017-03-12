@@ -27,6 +27,10 @@
 /** global: OCA */
 /** global: Notyf */
 
+/** global: nav */
+/** global: elements */
+/** global: curr */
+/** global: api */
 
 
 var actions = {
@@ -50,22 +54,22 @@ var actions = {
 
 		displayMembersInteraction: function (details) {
 			if (details.user.level < 6) {
-				navdiv.addMember.hide();
+				elements.addMember.hide();
 			} else {
-				navdiv.addMember.show();
+				elements.addMember.show();
 			}
 
 			this.displayNonMemberInteraction(details);
 
 			if (details.user.level == 9) {
-				navdiv.joinCircle.hide();
-				navdiv.leaveCircle.hide();
+				elements.joinCircle.hide();
+				elements.leaveCircle.hide();
 				return;
 			}
 
 			if (details.user.level >= 1) {
-				navdiv.joinCircle.hide();
-				navdiv.leaveCircle.show();
+				elements.joinCircle.hide();
+				elements.leaveCircle.show();
 			}
 
 		},
@@ -97,19 +101,19 @@ var actions = {
 
 			if (response === null ||
 				(response.ocs.data.users === 0 && response.ocs.data.exact.users === 0)) {
-				navdiv.membersSearchResult.fadeOut(300);
+				elements.membersSearchResult.fadeOut(300);
 				return;
 			}
 
-			navdiv.membersSearchResult.children().remove();
+			elements.membersSearchResult.children().remove();
 
-			navdiv.fillMembersSearch(response.ocs.data.exact.users, response.ocs.data.users);
+			elements.fillMembersSearch(response.ocs.data.exact.users, response.ocs.data.users);
 
 			$('.members_search').on('click', function () {
 				api.addMember(curr.circle, $(this).attr('searchresult'),
 					actions.addMemberResult);
 			});
-			navdiv.membersSearchResult.fadeIn(300);
+			elements.membersSearchResult.fadeIn(300);
 
 		},
 
@@ -120,7 +124,7 @@ var actions = {
 				OCA.notification.onSuccess(
 					"Member '" + result.name + "' successfully added to the circle");
 
-				navdiv.displayMembers(result.members);
+				elements.displayMembers(result.members);
 				return;
 			}
 			OCA.notification.onFail(
@@ -139,16 +143,17 @@ var actions = {
 					return 'Private circle';
 				case '8':
 					return 'Public circle';
+				default:
+					return 'Circle';
 			}
 
-			return 'Circle';
 		},
 
 
 		removeMemberResult: function (result) {
 			if (result.status == 1) {
 
-				navdiv.mainUIMembers.children("[member-id='" + result.name + "']").each(
+				elements.mainUIMembers.children("[member-id='" + result.name + "']").each(
 					function () {
 						$(this).hide(300);
 					});
@@ -171,10 +176,10 @@ var actions = {
 			curr.circle = 0;
 			curr.circleLevel = 0;
 
-			navdiv.navigation.hide('slide', 800);
-			navdiv.circlesList.children('div').removeClass('selected');
-			navdiv.emptyContent.show(800);
-			navdiv.mainUI.fadeOut(800);
+			elements.navigation.hide('slide', 800);
+			elements.circlesList.children('div').removeClass('selected');
+			elements.emptyContent.show(800);
+			elements.mainUI.fadeOut(800);
 		}
 		,
 
@@ -183,7 +188,7 @@ var actions = {
 		 */
 		onEventNewCircleName: function () {
 			this.onEventNewCircle();
-			this.displayOptionsNewCircle((navdiv.newName.val() !== ''));
+			this.displayOptionsNewCircle((elements.newName.val() !== ''));
 		}
 		,
 
@@ -192,8 +197,8 @@ var actions = {
 		 */
 		onEventNewCircleType: function () {
 			this.onEventNewCircle();
-			navdiv.newTypeDefinition.children('div').fadeOut(300);
-			$('#circles_new_type_' + navdiv.newType.children('option:selected').val()).fadeIn(
+			elements.newTypeDefinition.children('div').fadeOut(300);
+			$('#circles_new_type_' + elements.newType.children('option:selected').val()).fadeIn(
 				300);
 		}
 
