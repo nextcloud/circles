@@ -119,7 +119,7 @@ class MembersMapper extends Mapper {
 	/**
 	 * Generate SQL Request for getMemberFromCircle()
 	 *
-	 * @param $circleId
+	 * @param integer $circleId
 	 * @param $userId
 	 *
 	 * @return \OCP\DB\QueryBuilder\IQueryBuilder
@@ -139,7 +139,7 @@ class MembersMapper extends Mapper {
 	/**
 	 * Return SQL for getMembersFromCircle.
 	 *
-	 * @param $circleId
+	 * @param integer $circleId
 	 *
 	 * @return \OCP\DB\QueryBuilder\IQueryBuilder
 	 */

@@ -73,7 +73,7 @@ class ConfigService {
 	 */
 	public function isCircleAllowed($type) {
 		if ($this->allowedCircle === -1) {
-			$this->allowedCircle = (int) $this->getAppValue(self::CIRCLES_ALLOW_CIRCLES);
+			$this->allowedCircle = (int)$this->getAppValue(self::CIRCLES_ALLOW_CIRCLES);
 		}
 
 		return ((int)$type & (int)$this->allowedCircle);

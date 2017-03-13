@@ -217,7 +217,7 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	 * return the child ID of a share
 	 *
 	 * @param IShare $share
-	 * @param $userId
+	 * @param string $userId
 	 *
 	 * @return bool
 	 */
