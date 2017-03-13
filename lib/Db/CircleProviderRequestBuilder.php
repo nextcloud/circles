@@ -66,7 +66,7 @@ class CircleProviderRequestBuilder {
 	 * Limit the request to a Circle.
 	 *
 	 * @param $qb
-	 * @param $circleId
+	 * @param integer $circleId
 	 */
 	protected function limitToCircle(& $qb, $circleId) {
 		$expr = $qb->expr();
@@ -167,7 +167,7 @@ class CircleProviderRequestBuilder {
 	 * limit the request to a userId
 	 *
 	 * @param $qb
-	 * @param $userId
+	 * @param string $userId
 	 * @param bool $reShares
 	 */
 	protected function limitToShareOwner(& $qb, $userId, $reShares = false) {
@@ -193,7 +193,7 @@ class CircleProviderRequestBuilder {
 	 * @deprecated
 	 *
 	 * @param $qb
-	 * @param $shareId
+	 * @param integer $shareId
 	 */
 	protected function linkCircleField(& $qb, $shareId) {
 		$expr = $qb->expr();
@@ -228,7 +228,7 @@ class CircleProviderRequestBuilder {
 	 * Link to members (userId) of circle
 	 *
 	 * @param $qb
-	 * @param $userId
+	 * @param string $userId
 	 */
 	protected function linkToMember(& $qb, $userId) {
 		$expr = $qb->expr();
@@ -244,7 +244,7 @@ class CircleProviderRequestBuilder {
 	 * Link to storage/filecache
 	 *
 	 * @param $qb
-	 * @param $userId
+	 * @param string $userId
 	 */
 	protected function linkToFileCache(& $qb, $userId) {
 		$expr = $qb->expr();
