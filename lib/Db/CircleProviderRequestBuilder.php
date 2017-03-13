@@ -356,7 +356,7 @@ class CircleProviderRequestBuilder {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$expr = $qb->expr();
 
-		$qb->update('share', 's')
+		$qb->update('share')
 		   ->where($expr->eq('share_type', $qb->createNamedParameter(Share::SHARE_TYPE_CIRCLE)));
 
 		return $qb;
