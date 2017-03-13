@@ -14,7 +14,7 @@
 		<!--<log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>-->
 	</logging>
 	<listeners>
-		<listener class="Env" file="TestSuiteListener.php"/>
+		<listener class="OCA\Circles\Tests\Env" file="TestSuiteListener.php"/>
 	</listeners>
 
 </phpunit>

@@ -24,36 +24,17 @@
  *
  */
 
+
 namespace OCA\Circles\Tests\Api;
 
-use OCA\Circles\Api\Circles;
-use OCA\Circles\Tests\Env;
-
-class CirclesTest extends \PHPUnit_Framework_TestCase {
-
+class ShareesTest extends \PHPUnit_Framework_TestCase {
 
 	protected function setUp() {
+
+	}
+
+	public function testTest() {
 	}
 
 
-	public function testCircleCreation() {
-		$type = 'personal';
-		$name = '_test_1';
-
-		$userManager = \OC::$server->getUserManager();
-		$userSession = \OC::$server->getUserSession();
-
-		Env::setUser(Env::ENV_TEST_OWNER1);
-
-		$userSession->setUser($userManager->get(Env::ENV_TEST_OWNER1));
-
-		$this->assertNotNull(
-			$userSession->getUser()
-						->getUID()
-		);
-
-		$result = Circles::createCircle($type, $name);
-
-		var_export($result);
-	}
 }

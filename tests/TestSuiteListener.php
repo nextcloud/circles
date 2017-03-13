@@ -24,7 +24,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-class Env implements PHPUnit_Framework_TestListener {
+
+namespace OCA\Circles\Tests;
+
+
+class Env implements \PHPUnit_Framework_TestListener {
 
 
 	const ENV_TEST_OWNER1 = '_test_circles_owner1';
@@ -33,30 +37,30 @@ class Env implements PHPUnit_Framework_TestListener {
 	/** @var array<string> */
 	private $users;
 
-	public function addError(PHPUnit_Framework_Test $test, Exception $e, $time) {
+	public function addError(\PHPUnit_Framework_Test $test, \Exception $e, $time) {
 	}
 
 	public function addFailure(
-		PHPUnit_Framework_Test $test, PHPUnit_Framework_AssertionFailedError $e, $time
+		\PHPUnit_Framework_Test $test, \PHPUnit_Framework_AssertionFailedError $e, $time
 	) {
 	}
 
-	public function addIncompleteTest(PHPUnit_Framework_Test $test, Exception $e, $time) {
+	public function addIncompleteTest(\PHPUnit_Framework_Test $test, \Exception $e, $time) {
 	}
 
-	public function addRiskyTest(PHPUnit_Framework_Test $test, Exception $e, $time) {
+	public function addRiskyTest(\PHPUnit_Framework_Test $test, \Exception $e, $time) {
 	}
 
-	public function addSkippedTest(PHPUnit_Framework_Test $test, Exception $e, $time) {
+	public function addSkippedTest(\PHPUnit_Framework_Test $test, \Exception $e, $time) {
 	}
 
-	public function startTest(PHPUnit_Framework_Test $test) {
+	public function startTest(\PHPUnit_Framework_Test $test) {
 	}
 
-	public function endTest(PHPUnit_Framework_Test $test, $time) {
+	public function endTest(\PHPUnit_Framework_Test $test, $time) {
 	}
 
-	public function startTestSuite(PHPUnit_Framework_TestSuite $suite) {
+	public function startTestSuite(\PHPUnit_Framework_TestSuite $suite) {
 		if ($suite->getName() !== '.') {
 			return;
 		}
@@ -66,14 +70,15 @@ class Env implements PHPUnit_Framework_TestListener {
 			self::ENV_TEST_OWNER1,
 			self::ENV_TEST_OWNER2
 		];
+
 		foreach ($this->users AS $UID) {
-			if ($userManager->userExists($UID) === null) {
+			if ($userManager->userExists($UID) === false) {
 				$userManager->createUser($UID, $UID);
 			}
 		}
 	}
 
-	public function endTestSuite(PHPUnit_Framework_TestSuite $suite) {
+	public function endTestSuite(\PHPUnit_Framework_TestSuite $suite) {
 		if ($suite->getName() !== '.') {
 			return;
 		}
@@ -95,8 +100,8 @@ class Env implements PHPUnit_Framework_TestListener {
 
 		$userSession = \OC::$server->getUserSession();
 		$userSession->setUser(
-			OC::$server->getUserManager()
-					   ->get($which)
+			\OC::$server->getUserManager()
+						->get($which)
 		);
 
 		return $userSession->getUser()
@@ -104,9 +109,6 @@ class Env implements PHPUnit_Framework_TestListener {
 
 	}
 
-	public function teardown() {
-
-	}
 }
 
 
