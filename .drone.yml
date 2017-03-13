@@ -141,6 +141,39 @@ pipeline:
       matrix:
         TESTS: mysql-php7.1
 
+services:
+  cache:
+    image: redis
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_USER=oc_autotest
+      - POSTGRES_PASSWORD=oc_autotest
+    when:
+      matrix:
+        DB: pgsql
+  mysql:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=owncloud
+      - MYSQL_USER=oc_autotest
+      - MYSQL_PASSWORD=owncloud
+      - MYSQL_DATABASE=oc_autotest
+    when:
+      matrix:
+        DB: mysql
+  mysqlmb4:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=owncloud
+      - MYSQL_USER=oc_autotest
+      - MYSQL_PASSWORD=owncloud
+      - MYSQL_DATABASE=oc_autotest
+    command: [ "--innodb_large_prefix=true", "--innodb_file_format=barracuda", "--innodb_file_per_table=true" ]
+    when:
+      matrix:
+        DB: mysqlmb4
+
 matrix:
   include:
     - TESTS: signed-off-check
