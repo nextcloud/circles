@@ -55,7 +55,8 @@ pipeline:
     - phpunit --configuration phpunit.xml
     when:
       matrix:
-        TESTS: mysql-php7.0
+        DB: mysql
+        PHP: 7.0
 
   sqlite-php5.6:
     image: nextcloudci/php5.6:php5.6-3
@@ -178,9 +179,11 @@ matrix:
   include:
     - TESTS: signed-off-check
     - TESTS: phpunit-sqlite-php7.0
-    - TESTS: mysql-php7.0
-    - TESTS: sqlite-php7.1
-    - TESTS: mysql-php7.1
-    - TESTS: sqlite-php5.6
+#    - TESTS: mysql-php7.0
+#    - TESTS: sqlite-php7.1
+#    - TESTS: mysql-php7.1
+#    - TESTS: sqlite-php5.6
+    - DB: mysql
+      PHP: 5.6
 #    - TESTS: mysql-php5.6
 
