@@ -30,6 +30,7 @@ namespace OCA\Circles\Service;
 use OCA\Circles\Db\CirclesMapper;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
+use OCA\Circles\Exceptions\MemberIsNotOwnerException;
 use \OCA\Circles\Model\Circle;
 use \OCA\Circles\Model\Member;
 use OCP\IL10N;
@@ -107,7 +108,7 @@ class CirclesService {
 			$this->dbCircles->create($circle, $owner);
 			$this->dbMembers->add($owner);
 		} catch (\Exception $e) {
-			$this->dbCircles->destroy($circle);
+			$this->dbCircles->destroy($circle->getId());
 			throw $e;
 		}
 
@@ -234,12 +235,22 @@ class CirclesService {
 	/**
 	 * destroy a circle.
 	 *
-	 * @param $circle
+	 * @param int $circleId
+	 *
+	 * @throws MemberIsNotOwnerException
 	 */
-	public function removeCircle($circle) {
+	public function removeCircle($circleId) {
 
-		$this->dbMembers->removeAllFromCircle($circle);
-		$this->dbCircles->destroy($circle);
+		try {
+			$member = $this->dbMembers->getMemberFromCircle($circleId, $this->userId, false);
+			$member->hasToBeOwner();
+
+			$this->dbMembers->removeAllFromCircle($circleId);
+			$this->dbCircles->destroy($circleId);
+
+		} catch (MemberIsNotOwnerException $e) {
+			throw $e;
+		}
 	}
 
 
