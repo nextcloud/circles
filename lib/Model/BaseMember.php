@@ -174,12 +174,7 @@ class BaseMember {
 
 
 	public function getLevelString() {
-		return self::levelString($this->getLevel());
-	}
-
-
-	public static function levelString($level) {
-		switch ($level) {
+		switch ($this->getLevel()) {
 			case self::LEVEL_NONE:
 				return 'Not a member';
 			case self::LEVEL_MEMBER:
