@@ -34,6 +34,9 @@ class Env implements \PHPUnit_Framework_TestListener {
 	const ENV_TEST_OWNER1 = '_test_circles_owner1';
 	const ENV_TEST_OWNER2 = '_test_circles_owner2';
 
+	const ENV_TEST_USER1 = '_test_circles_user1';
+	const ENV_TEST_USER2 = '_test_circles_user2';
+
 	/** @var array<string> */
 	private $users;
 
@@ -68,7 +71,9 @@ class Env implements \PHPUnit_Framework_TestListener {
 		$userManager = \OC::$server->getUserManager();
 		$this->users = [
 			self::ENV_TEST_OWNER1,
-			self::ENV_TEST_OWNER2
+			self::ENV_TEST_OWNER2,
+			self::ENV_TEST_USER1,
+			self::ENV_TEST_USER2
 		];
 
 		foreach ($this->users AS $UID) {
@@ -107,6 +112,11 @@ class Env implements \PHPUnit_Framework_TestListener {
 		return $userSession->getUser()
 						   ->getUID();
 
+	}
+
+	public static function logout() {
+		$userSession = \OC::$server->getUserSession();
+		$userSession->setUser(null);
 	}
 
 }

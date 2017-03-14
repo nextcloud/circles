@@ -178,7 +178,7 @@ class CirclesServiceTest extends \PHPUnit_Framework_TestCase {
 
 		// test creating an identical personal circle (and remove it)
 		$this->circlesService2->removeCircle(
-			$this->circlesService2->createCircle(Circle::CIRCLES_PERSONAL, '__test_personal')
+			$this->circlesService2->createCircle(Circle::CIRCLES_PERSONAL, '__test_personal')->getId()
 		);
 
 
@@ -410,7 +410,7 @@ class CirclesServiceTest extends \PHPUnit_Framework_TestCase {
 		);
 
 		foreach ($circles as $circle) {
-			$this->circlesService1->removeCircle($circle);
+			$this->circlesService1->removeCircle($circle->getId());
 
 			// Can we leave a non-existing circle ?
 			try {
