@@ -287,7 +287,7 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 		$this->misc->log("CircleProvider: getSharesInFolder");
 
 		$qb = $this->getBaseSelectSql();
-		$this->linkToMember($qb, $userId);
+		$this->limitToShareOwner($qb, $userId, true);
 		$cursor = $qb->execute();
 
 		$shares = [];
@@ -314,7 +314,7 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	 */
 	public function getSharesBy($userId, $shareType, $node, $reShares, $limit, $offset) {
 		$qb = $this->getBaseSelectSql();
-		$this->limitToOwner($qb, $userId, $reShares);
+		$this->limitToShareOwner($qb, $userId, $reShares);
 
 		if ($node !== null) {
 			$this->limitToFile($qb, $node->getId());
@@ -343,7 +343,7 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	 */
 	private function editShareEntry($data) {
 		$data['share_with'] =
-			sprintf('%s (%s)', $data['circle_name'], Circle::TypeLongString($data['circle_type']));
+			sprintf('%s (%s, %s)', $data['circle_name'], Circle::TypeLongString($data['circle_type']), $data['circle_owner']);
 
 		return $data;
 	}

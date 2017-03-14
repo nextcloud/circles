@@ -44,7 +44,6 @@ class CirclesController extends BaseController {
 	 * @return DataResponse
 	 */
 	public function create($type, $name) {
-		$type = self::convertTypeStringToBitValue($type);
 
 		if (substr($name, 0, 1) === '_') {
 			$error = "The name of your circle cannot start with this character";
@@ -73,7 +72,6 @@ class CirclesController extends BaseController {
 	 * @return DataResponse
 	 */
 	public function listing($type, $name = '') {
-		$type = self::convertTypeStringToBitValue($type);
 
 		try {
 			$data = $this->circlesService->listCircles($type, $name, Member::LEVEL_NONE);
@@ -154,30 +152,6 @@ class CirclesController extends BaseController {
 	}
 
 
-	/**
-	 * Convert a Type in String to its Bit Value
-	 *
-	 * @param $type
-	 *
-	 * @return int
-	 */
-	public static function convertTypeStringToBitValue($type) {
-		if (strtolower($type) === 'personal') {
-			return Circle::CIRCLES_PERSONAL;
-		}
-		if (strtolower($type) === 'hidden') {
-			return Circle::CIRCLES_HIDDEN;
-		}
-		if (strtolower($type) === 'private') {
-			return Circle::CIRCLES_PRIVATE;
-		}
-		if (strtolower($type) === 'public') {
-			return Circle::CIRCLES_PUBLIC;
-		}
-		if (strtolower($type) === 'all') {
-			return Circle::CIRCLES_ALL;
-		}
-	}
 
 }
 

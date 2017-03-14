@@ -170,7 +170,7 @@ class CircleProviderRequestBuilder {
 	 * @param $userId
 	 * @param bool $reShares
 	 */
-	protected function limitToOwner(& $qb, $userId, $reShares = false) {
+	protected function limitToShareOwner(& $qb, $userId, $reShares = false) {
 		$expr = $qb->expr();
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? 's.' : '';
 
@@ -184,7 +184,6 @@ class CircleProviderRequestBuilder {
 				)
 			);
 		}
-
 	}
 
 
@@ -206,7 +205,22 @@ class CircleProviderRequestBuilder {
 				   $expr->eq('s.parent', $qb->createNamedParameter($shareId))
 			   )
 		   );
-		   //->orderBy('c.circle_name');
+		//->orderBy('c.circle_name');
+	}
+
+
+	/**
+	 * @param $qb
+	 */
+	protected function linkToCircleOwner(& $qb) {
+		$expr = $qb->expr();
+
+		$qb->leftJoin(
+			'c', 'circles_members', 'mo', $expr->andX(
+			$expr->eq('c.id', 'mo.circle_id'),
+			$expr->eq('mo.level', $qb->createNamedParameter(Member::LEVEL_OWNER))
+		)
+		);
 	}
 
 
@@ -287,8 +301,10 @@ class CircleProviderRequestBuilder {
 			's.id', 's.share_type', 's.share_with', 's.uid_owner', 's.uid_initiator',
 			's.parent', 's.item_type', 's.item_source', 's.item_target', 's.file_source',
 			's.file_target', 's.permissions', 's.stime', 's.accepted', 's.expiration',
-			's.token', 's.mail_send', 'c.type AS circle_type', 'c.name AS circle_name'
+			's.token', 's.mail_send', 'c.type AS circle_type', 'c.name AS circle_name',
+			'mo.user_id AS circle_owner'
 		);
+		$this->linkToCircleOwner($qb);
 		$this->linkToShare($qb);
 
 		// TODO: Left-join circle and REMOVE this line
@@ -328,8 +344,8 @@ class CircleProviderRequestBuilder {
 				   $expr->eq('s.item_type', $qb->createNamedParameter('folder'))
 			   )
 		   );
-
 	}
+
 
 	/**
 	 * generate and return a base sql request.
@@ -356,7 +372,7 @@ class CircleProviderRequestBuilder {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$expr = $qb->expr();
 
-		$qb->update('share', 's')
+		$qb->update('share')
 		   ->where($expr->eq('share_type', $qb->createNamedParameter(Share::SHARE_TYPE_CIRCLE)));
 
 		return $qb;
