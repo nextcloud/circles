@@ -281,7 +281,7 @@ class MembersServiceTest extends \PHPUnit_Framework_TestCase {
 
 
 		foreach ($circles as $circle) {
-			$this->circlesService1->removeCircle($circle);
+			$this->circlesService1->removeCircle($circle->getId());
 		}
 	}
 

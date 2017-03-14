@@ -38,19 +38,19 @@ class Circles {
 		return $app->getContainer();
 	}
 
-	public static function createCircle($name, $type) {
+	public static function createCircle($type, $name) {
 		$c = self::getContainer();
 
 		return $c->query('CirclesService')
-				 ->createCircle($name, $type);
+				 ->createCircle($type, $name);
 	}
 
 
-	public static function listCircles($type, $level = 0) {
+	public static function listCircles($type, $name = '', $level = 0) {
 		$c = self::getContainer();
 
 		return $c->query('CirclesService')
-				 ->listCircles($type, $level);
+				 ->listCircles($type, $name, $level);
 	}
 
 
@@ -61,5 +61,20 @@ class Circles {
 				 ->detailsCircle($circleId);
 	}
 
+
+	public static function deleteCircle($circleId) {
+		$c = self::getContainer();
+
+		return $c->query('CirclesService')
+				 ->removeCircle($circleId);
+	}
+
+
+	public static function addMember($circleId, $userId) {
+		$c = self::getContainer();
+
+		return $c->query('MembersService')
+				 ->addMember($circleId, $userId);
+	}
 
 }

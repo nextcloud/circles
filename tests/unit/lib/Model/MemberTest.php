@@ -26,6 +26,10 @@
 
 namespace OCA\Circles\Tests\Model;
 
+use OCA\Circles\Exceptions\MemberCantJoinCircle;
+use OCA\Circles\Exceptions\MemberIsBlockedException;
+use OCA\Circles\Exceptions\MemberIsNotOwnerException;
+use OCA\Circles\Model\Circle;
 use \OCA\Circles\Model\Member;
 
 
@@ -56,17 +60,18 @@ class MemberTest extends \PHPUnit_Framework_TestCase {
 
 		$date = date("Y-m-d H:i:s");
 
-		$member = new Member();
-		$member->fromArray(
-			array(
-				'circle_id' => 1,
-				'user_id'   => 'test',
-				'level'     => Member::LEVEL_OWNER,
-				'status'    => Member::STATUS_MEMBER,
-				'note'      => 'test note',
-				'joined'    => $date
-			)
+		$entry = array(
+			'circle_id'    => 1,
+			'user_id'      => 'test',
+			'level'        => Member::LEVEL_OWNER,
+			'level_string' => 'Owner',
+			'status'       => Member::STATUS_MEMBER,
+			'note'         => 'test note',
+			'joined'       => $date
 		);
+
+		$member = new Member();
+		$member->fromArray($entry);
 
 		$this->assertSame(1, $member->getCircleId());
 		$this->assertSame('test', $member->getUserID());
@@ -75,5 +80,49 @@ class MemberTest extends \PHPUnit_Framework_TestCase {
 		$this->assertSame('test note', $member->getNote());
 		$this->assertSame($date, $member->getJoined());
 		$this->assertSame('Owner', $member->getLevelString());
+
+		$json = json_encode($member);
+		$result = json_decode($json, true);
+
+		$this->assertSame($result, $entry);
+
+		$member->setLevel(-1);
+		$this->assertSame('none', $member->getLevelString());
+		$member->setLevel(Member::LEVEL_NONE);
+		$this->assertSame('Not a member', $member->getLevelString());
+		$member->setLevel(Member::LEVEL_MEMBER);
+		$this->assertSame('Member', $member->getLevelString());
+		$member->setLevel(Member::LEVEL_MODERATOR);
+		$this->assertSame('Moderator', $member->getLevelString());
+		$member->setLevel(Member::LEVEL_ADMIN);
+		$this->assertSame('Admin', $member->getLevelString());
+
+		try {
+			$member->hasToBeOwner();
+			$this->assertSame(true, false, 'Should return Exception');
+		} catch (MemberIsNotOwnerException $e) {
+		} catch (\Exception $e) {
+			$this->assertSame(true, false, 'Should return MemberIsNotOwnerException');
+		}
+
+		try {
+			$member->joinCircle(Circle::CIRCLES_PERSONAL);
+			$this->assertSame(true, false, 'Should return Exception');
+		} catch (MemberCantJoinCircle $e) {
+		} catch (\Exception $e) {
+			$this->assertSame(true, false, 'Should return MemberCantJoinCircle');
+		}
+
+		$member->setLevel(Member::LEVEL_NONE);
+		$member->setStatus(Member::STATUS_BLOCKED);
+		try {
+			$member->hasToBeAbleToJoinTheCircle();
+			$this->assertSame(true, false, 'Should return Exception');
+		} catch (MemberIsBlockedException $e) {
+		} catch (\Exception $e) {
+			$this->assertSame(true, false, 'Should return MemberIsBlockedException');
+		}
+
+
 	}
 }

@@ -355,15 +355,17 @@ class CirclesMapper extends Mapper {
 	/**
 	 * remove a circle
 	 *
-	 * @param Circle $circle
+	 * @param int $circleId
+	 *
+	 * @internal param Circle $circle
 	 */
-	public function destroy(Circle $circle) {
+	public function destroy($circleId) {
 		$qb = $this->db->getQueryBuilder();
 		$qb->delete(self::TABLENAME)
 		   ->where(
 			   $qb->expr()
 				  ->eq(
-					  'id', $qb->createNamedParameter($circle->getId())
+					  'id', $qb->createNamedParameter($circleId)
 				  )
 		   );
 

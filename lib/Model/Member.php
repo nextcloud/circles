@@ -31,6 +31,7 @@ use OCA\Circles\Exceptions\MemberCantJoinCircle;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\MemberIsBlockedException;
 use OCA\Circles\Exceptions\MemberIsNotModeratorException;
+use OCA\Circles\Exceptions\MemberIsNotOwnerException;
 use OCA\Circles\Exceptions\MemberIsOwnerException;
 
 class Member extends BaseMember implements \JsonSerializable {
@@ -111,13 +112,22 @@ class Member extends BaseMember implements \JsonSerializable {
 	}
 
 
-
 	/**
 	 * @throws MemberIsNotModeratorException
 	 */
 	public function hasToBeModerator() {
 		if ($this->getLevel() < self::LEVEL_MODERATOR) {
 			throw new MemberIsNotModeratorException();
+		}
+	}
+
+
+	/**
+	 * @throws MemberIsNotModeratorException
+	 */
+	public function hasToBeOwner() {
+		if ($this->getLevel() < self::LEVEL_OWNER) {
+			throw new MemberIsNotOwnerException();
 		}
 	}
 
@@ -165,10 +175,10 @@ class Member extends BaseMember implements \JsonSerializable {
 			'level'        => $this->getLevel(),
 			'level_string' => $this->getLevelString(),
 			'status'       => $this->getStatus(),
+			'note'         => $this->getNote(),
 			'joined'       => $this->getJoined()
 		);
 	}
-
 
 
 }

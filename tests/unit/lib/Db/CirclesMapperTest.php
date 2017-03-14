@@ -214,8 +214,8 @@ class CirclesMapperTest extends \PHPUnit_Framework_TestCase {
 		//
 		// we delete everything
 		foreach ($circles AS $circle) {
-			$this->membersMapper->removeAllFromCircle($circle);
-			$this->circlesMapper->destroy($circle);
+			$this->membersMapper->removeAllFromCircle($circle->getId());
+			$this->circlesMapper->destroy($circle->getId());
 		}
 
 	}

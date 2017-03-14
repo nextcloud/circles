@@ -36,7 +36,20 @@ class Circle extends BaseCircle implements \JsonSerializable {
 	const CIRCLES_ALL = 15;
 
 	public function getTypeString() {
-		return self::typeString($this->getType());
+		switch ($this->getType()) {
+			case self::CIRCLES_PERSONAL:
+				return 'Personal';
+			case self::CIRCLES_HIDDEN:
+				return 'Hidden';
+			case self::CIRCLES_PRIVATE:
+				return 'Private';
+			case self::CIRCLES_PUBLIC:
+				return 'Public';
+			case self::CIRCLES_ALL:
+				return 'All';
+		}
+
+		return 'none';
 	}
 
 	public function getTypeLongString() {
@@ -47,7 +60,6 @@ class Circle extends BaseCircle implements \JsonSerializable {
 	public function getInfo() {
 		return $this->getTypeLongString();
 	}
-
 
 
 	public function jsonSerialize() {
@@ -116,23 +128,6 @@ class Circle extends BaseCircle implements \JsonSerializable {
 		}
 	}
 
-
-	public static function typeString($type) {
-		switch ($type) {
-			case self::CIRCLES_PERSONAL:
-				return 'Personal';
-			case self::CIRCLES_HIDDEN:
-				return 'Hidden';
-			case self::CIRCLES_PRIVATE:
-				return 'Private';
-			case self::CIRCLES_PUBLIC:
-				return 'Public';
-			case self::CIRCLES_ALL:
-				return 'All';
-		}
-
-		return 'none';
-	}
 
 	/**
 	 * @param $type
