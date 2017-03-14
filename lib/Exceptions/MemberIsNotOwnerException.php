@@ -24,40 +24,17 @@
  *
  */
 
+namespace OCA\Circles\Exceptions;
 
-namespace OCA\Circles\Tests\Api;
+class MemberIsNotOwnerException extends \Exception {
 
-use OCA\Circles\Api\Circles;
-use OCA\Circles\Api\Sharees;
-use OCA\Circles\Model\Circle;
-use OCA\Circles\Tests\Env;
+	public function __construct($message = "", $code = 0, \Exception $previous = null) {
+		if ($message === '') {
+			$message = 'This member is not the owner of the circle';
+		}
 
-class ShareesTest extends \PHPUnit_Framework_TestCase {
-
-	const CIRCLE_NAME = '_search';
-	private $circle;
-
-	protected function setUp() {
-		Env::setUser(Env::ENV_TEST_OWNER1);
-		$this->circle = Circles::createCircle(Circle::CIRCLES_PUBLIC, self::CIRCLE_NAME);
-		Circles::addMember($this->circle->getId(), Env::ENV_TEST_USER1);
-		Env::logout();
+		parent::__construct($message, $code, $previous);
 	}
-
-	protected function tearDown() {
-		Env::setUser(Env::ENV_TEST_OWNER1);
-		Circles::deleteCircle($this->circle->getId());
-		Env::logout();
-	}
-
-	public function testSearch() {
-		Env::setUser(Env::ENV_TEST_USER1);
-		$result = Sharees::search('sea');
-		$this->assertSame(self::CIRCLE_NAME, $result['circles'][0]['label']);
-		$result = Sharees::search('_search');
-		$this->assertSame(self::CIRCLE_NAME, $result['exact']['circles'][0]['label']);
-		Env::logout();
-	}
-
 
 }
+

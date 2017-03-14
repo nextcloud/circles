@@ -266,16 +266,16 @@ class MembersMapper extends Mapper {
 	/**
 	 * remove all members/owner from a circle
 	 *
-	 * @param Circle $circle
+	 * @param int $circleId
 	 *
 	 * @return bool
 	 */
-	public function removeAllFromCircle(Circle $circle) {
+	public function removeAllFromCircle($circleId) {
 		$qb = $this->db->getQueryBuilder();
 		$qb->delete(self::TABLENAME)
 		   ->where(
 			   $qb->expr()
-				  ->eq('circle_id', $qb->createNamedParameter($circle->getId()))
+				  ->eq('circle_id', $qb->createNamedParameter($circleId))
 		   );
 
 		$qb->execute();

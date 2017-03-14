@@ -27,37 +27,43 @@
 
 namespace OCA\Circles\Tests\Api;
 
-use OCA\Circles\Api\Circles;
-use OCA\Circles\Api\Sharees;
-use OCA\Circles\Model\Circle;
+
+use OCA\Circles\Controller\NavigationController;
 use OCA\Circles\Tests\Env;
 
-class ShareesTest extends \PHPUnit_Framework_TestCase {
+class NavigationControllerTest extends \PHPUnit_Framework_TestCase {
 
-	const CIRCLE_NAME = '_search';
-	private $circle;
+
+	/** @var array<Circle> */
+	private $navController;
 
 	protected function setUp() {
-		Env::setUser(Env::ENV_TEST_OWNER1);
-		$this->circle = Circles::createCircle(Circle::CIRCLES_PUBLIC, self::CIRCLE_NAME);
-		Circles::addMember($this->circle->getId(), Env::ENV_TEST_USER1);
-		Env::logout();
-	}
 
-	protected function tearDown() {
-		Env::setUser(Env::ENV_TEST_OWNER1);
-		Circles::deleteCircle($this->circle->getId());
-		Env::logout();
-	}
-
-	public function testSearch() {
 		Env::setUser(Env::ENV_TEST_USER1);
-		$result = Sharees::search('sea');
-		$this->assertSame(self::CIRCLE_NAME, $result['circles'][0]['label']);
-		$result = Sharees::search('_search');
-		$this->assertSame(self::CIRCLE_NAME, $result['exact']['circles'][0]['label']);
-		Env::logout();
+		$this->navController = new NavigationController(
+
+
+			'circles', $this->getMockBuilder('\OCP\IRequest')
+							->getMock(), Env::ENV_TEST_USER1, $this->getMockBuilder('\OCP\IL10N')
+																   ->getMock(),
+			$this->getMockBuilder('\OCA\Circles\Service\ConfigService')
+				 ->disableOriginalConstructor()
+				 ->getMock(), $this->getMockBuilder('\OCA\Circles\Service\CirclesService')
+								   ->disableOriginalConstructor()
+								   ->getMock(),
+			$this->getMockBuilder('\OCA\Circles\Service\MembersService')
+				 ->disableOriginalConstructor()
+				 ->getMock(), $this->getMockBuilder('\OCA\Circles\Service\MiscService')
+								   ->disableOriginalConstructor()
+								   ->getMock()
+
+		);
 	}
 
+
+	public function testNavigate() {
+
+		$this->assertNotNull($this->navController->navigate());
+	}
 
 }

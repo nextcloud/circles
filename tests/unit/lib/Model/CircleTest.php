@@ -84,6 +84,10 @@ class CircleTest extends \PHPUnit_Framework_TestCase {
 		)
 			  ->setMembers($members);
 
+
+		$this->assertNotFalse(json_encode($model));
+
+		//$this->assertSame()
 		$this->assertSame(1, $model->getId());
 		$this->assertSame(
 			'owner', $model->getOwner()
@@ -106,5 +110,29 @@ class CircleTest extends \PHPUnit_Framework_TestCase {
 		$this->assertSame($date, $model->getCreation());
 		$this->assertSame($members, $model->getMembers());
 		//	$this->assertSame(2, $model->getCount());
+
+
+		$this->assertSame('Personal Circle', Circle::typeLongString(Circle::CIRCLES_PERSONAL));
+		$this->assertSame('Hidden Circle', Circle::typeLongString(Circle::CIRCLES_HIDDEN));
+		$this->assertSame('Private Circle', Circle::typeLongString(Circle::CIRCLES_PRIVATE));
+		$this->assertSame('Public Circle', Circle::typeLongString(Circle::CIRCLES_PUBLIC));
+		$this->assertSame('All Circles', Circle::typeLongString(Circle::CIRCLES_ALL));
+		$this->assertSame('none', Circle::typeLongString(-1));
+
+
+		$model->setType(Circle::CIRCLES_PERSONAL);
+		$this->assertSame('Personal', $model->getTypeString());
+		$model->setType(Circle::CIRCLES_HIDDEN);
+		$this->assertSame('Hidden', $model->getTypeString());
+		$model->setType(Circle::CIRCLES_PRIVATE);
+		$this->assertSame('Private', $model->getTypeString());
+		$model->setType(Circle::CIRCLES_PUBLIC);
+		$this->assertSame('Public', $model->getTypeString());
+		$model->setType(Circle::CIRCLES_ALL);
+		$this->assertSame('All', $model->getTypeString());
+		$model->setType(-1);
+		$this->assertSame('none', $model->getTypeString());
+
+
 	}
 }

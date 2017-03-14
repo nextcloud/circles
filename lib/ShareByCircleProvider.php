@@ -284,8 +284,6 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	 * @return Share[]
 	 */
 	public function getSharesInFolder($userId, Folder $node, $reshares) {
-		$this->misc->log("CircleProvider: getSharesInFolder");
-
 		$qb = $this->getBaseSelectSql();
 		$this->limitToShareOwner($qb, $userId, true);
 		$cursor = $qb->execute();
@@ -470,7 +468,6 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	 * @param int $shareType
 	 */
 	public function userDeleted($uid, $shareType) {
-		$this->misc->log("CircleProvider: userDeleted");
 		// TODO: Implement userDeleted() method.
 	}
 

@@ -195,6 +195,7 @@ class CircleProviderRequestBuilder {
 	 * @param $qb
 	 * @param $shareId
 	 */
+	// TODO - put this as a leftjoin
 	protected function linkCircleField(& $qb, $shareId) {
 		$expr = $qb->expr();
 
