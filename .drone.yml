@@ -88,6 +88,7 @@ pipeline:
     commands:
       # Pre-setup steps
       - apt update && apt-get -y install php5-xdebug
+      - apt-get -y install mysql-client
       - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
       - bash ./before_install.sh $APP_NAME $CORE_BRANCH $DB
       - cd ../server
