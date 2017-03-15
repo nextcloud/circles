@@ -91,6 +91,8 @@ pipeline:
       - apt-get -y install mysql-client
       - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
       - bash ./before_install.sh $APP_NAME $CORE_BRANCH $DB
+      - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/core_install.sh
+      - bash ./core_install.sh $DB
       - cd ../server
       - ./occ app:enable $APP_NAME
       - cd apps/$APP_NAME/tests/
