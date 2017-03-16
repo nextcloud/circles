@@ -61,8 +61,12 @@ class NavigationControllerTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
-	public function testNavigate() {
+	protected function tearDrop() {
+		Env::logout();
+	}
 
+
+	public function testNavigate() {
 		$this->assertNotNull($this->navController->navigate());
 	}
 
