@@ -37,6 +37,9 @@ var curr = {
 	circlesType: '',
 	circle: 0,
 	circleLevel: 0,
+	member: '',
+	memberLevel: 0,
+	memberStatus: '',
 	searchCircle: '',
 	searchUser: ''
 };
@@ -47,9 +50,6 @@ $(document).ready(function () {
 	/**
 	 * @constructs Navigation
 	 */
-
-
-
 	var Navigation = function () {
 
 		$.extend(Navigation.prototype, curr);
@@ -69,8 +69,8 @@ $(document).ready(function () {
 			elements.initTweaks();
 			elements.initAnimationNewCircle();
 			elements.initExperienceCirclesList();
+			elements.initExperienceMemberDetails();
 			actions.initActions();
-
 		}
 	};
 

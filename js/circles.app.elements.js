@@ -65,18 +65,24 @@ var elements = {
 		elements.navigation = $('#app-navigation.circles');
 		elements.circlesList = $('#circles_list');
 		elements.circlesSearch = $('#circles_search');
+		elements.circlesDetails = $('#circle_details');
 		elements.emptyContent = $('#emptycontent');
 		elements.mainUI = $('#mainui');
 		elements.mainUIMembers = $('#memberslist_table');
 		elements.membersSearchResult = $('#members_search_result');
+		elements.memberDetails = $('#memberdetails');
+		elements.memberRequest = $('#member_request');
 
+		elements.joinCircleInteraction = $('#sjoincircle_interact');
 		elements.joinCircleAccept = $('#joincircle_acceptinvit');
 		elements.joinCircleReject = $('#joincircle_rejectinvit');
 		elements.joinCircleRequest = $('#joincircle_request');
 		elements.joinCircleInvite = $('#joincircle_invit');
 		elements.joinCircle = $('#joincircle');
 		elements.leaveCircle = $('#leavecircle');
+		elements.rightPanel = $('#rightpanel');
 		elements.addMember = $('#addmember');
+		elements.remMember = $('#remmember');
 	},
 
 
@@ -103,6 +109,12 @@ var elements = {
 		$('.icon-circles').css('background-image',
 			'url(' + OC.imagePath('circles', 'colored') + ')');
 
+
+		var theme = $('#body-user').find('#header').css('background-color');
+		elements.circlesList.css('background-color', theme);
+		elements.circlesDetails.css('background-color', theme);
+		elements.rightPanel.css('background-color', theme);
+
 		elements.membersSearchResult.hide();
 	},
 
@@ -127,6 +139,15 @@ var elements = {
 		});
 	},
 
+
+	initExperienceMemberDetails: function () {
+		elements.memberRequest.hide();
+		elements.remMember.on('click', function () {
+			api.removeMember(curr.circle, curr.member, actions.removeMemberResult);
+		});
+	},
+
+
 	/**
 	 *
 	 */
@@ -145,8 +166,7 @@ var elements = {
 				actions.createCircleResult);
 		});
 
-	}
-	,
+	},
 
 
 	fillMembersSearch: function (exact, partial) {
@@ -168,7 +188,7 @@ var elements = {
 
 	fillPartialMembersSearch: function (partial) {
 		$.each(partial, function (index, value) {
-			var currSearch = $('#addmember').val().trim();
+			var currSearch = elements.addMember.val().trim();
 			var line = value.label + '   (' + value.value.shareWith + ')';
 			if (currSearch.length > 0) {
 				line =
@@ -207,13 +227,13 @@ var elements = {
 	generateTmplCircle: function (entry) {
 		var tmpl = $('#tmpl_circle').html();
 
-		tmpl = tmpl.replace(/%title%/, entry.name);
-		tmpl = tmpl.replace(/%type%/, entry.type);
-		tmpl = tmpl.replace(/%owner%/, entry.owner.user_id);
-		tmpl = tmpl.replace(/%status%/, entry.user.status);
-		tmpl = tmpl.replace(/%level_string%/, entry.user.level_string);
-		tmpl = tmpl.replace(/%count%/, entry.count);
-		tmpl = tmpl.replace(/%creation%/, entry.creation);
+		tmpl = tmpl.replace(/%title%/g, entry.name);
+		tmpl = tmpl.replace(/%type%/g, entry.type);
+		tmpl = tmpl.replace(/%owner%/g, entry.owner.user_id);
+		tmpl = tmpl.replace(/%status%/g, entry.user.status);
+		tmpl = tmpl.replace(/%level_string%/g, entry.user.level_string);
+		tmpl = tmpl.replace(/%count%/g, entry.count);
+		tmpl = tmpl.replace(/%creation%/g, entry.creation);
 
 		return tmpl;
 	},
@@ -225,12 +245,12 @@ var elements = {
 		tmpl = tmpl.replace(/%username%/g, entry.user_id);
 		tmpl = tmpl.replace(/%level%/g, entry.level);
 		tmpl = tmpl.replace(/%levelstring%/g, entry.level_string);
-		tmpl = tmpl.replace(/%status%/, entry.status);
-		tmpl = tmpl.replace(/%joined%/, entry.joined);
-		tmpl = tmpl.replace(/%note%/, entry.note);
+		tmpl = tmpl.replace(/%status%/g, entry.status);
+		tmpl = tmpl.replace(/%joined%/g, entry.joined);
+		tmpl = tmpl.replace(/%note%/g, entry.note);
 
 		return tmpl;
-	},
+	}
 
 
 };

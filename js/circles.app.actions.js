@@ -41,14 +41,25 @@ var actions = {
 		this.initElementsCircleActions();
 	},
 
+
 	initElementsMemberActions: function () {
 
 		elements.addMember.on('input propertychange paste focus', function () {
-			actions.searchMembersRequest($(this).val().trim());
+			var search = $(this).val().trim();
+			if (search === '') {
+				elements.membersSearchResult.fadeOut(400);
+				return;
+			}
+
+			actions.searchMembersRequest(search);
+			if (elements.membersSearchResult.children().length === 0) {
+				elements.membersSearchResult.fadeOut(400);
+			} else {
+				elements.membersSearchResult.fadeIn(400);
+			}
 		}).blur(function () {
 			elements.membersSearchResult.fadeOut(400);
 		});
-
 	},
 
 
@@ -111,8 +122,7 @@ var actions = {
 		elements.joinCircleReject.on('click', function () {
 			api.leaveCircle(curr.circle, actions.leaveCircleResult);
 		});
-	}
-	,
+	},
 
 
 	createCircleResult: function (result) {
@@ -152,6 +162,7 @@ var actions = {
 		curr.circle = result.circle_id;
 		curr.circleLevel = result.details.user.level;
 
+		nav.displayCircleDetails(result.details);
 		nav.displayMembersInteraction(result.details);
 		nav.displayMembers(result.details.members);
 	},
@@ -213,13 +224,13 @@ var actions = {
 
 	searchMembersResult: function (response) {
 
+		elements.membersSearchResult.children().remove();
+
 		if (response === null ||
-			(response.ocs.data.users === 0 && response.ocs.data.exact.users === 0)) {
-			elements.membersSearchResult.fadeOut(300);
+			(response.ocs.data.users.length === 0 && response.ocs.data.exact.users.length === 0)) {
+			elements.membersSearchResult.fadeOut(0);
 			return;
 		}
-
-		elements.membersSearchResult.children().remove();
 
 		elements.fillMembersSearch(response.ocs.data.exact.users, response.ocs.data.users);
 
@@ -228,7 +239,6 @@ var actions = {
 				actions.addMemberResult);
 		});
 		elements.membersSearchResult.fadeIn(300);
-
 	},
 
 
@@ -266,6 +276,7 @@ var actions = {
 	removeMemberResult: function (result) {
 		if (result.status == 1) {
 
+			elements.rightPanel.fadeOut(300);
 			elements.mainUIMembers.children("[member-id='" + result.name + "']").each(
 				function () {
 					$(this).hide(300);
@@ -294,6 +305,7 @@ var actions = {
 		elements.mainUI.fadeOut(800);
 	},
 
+
 	/**
 	 *
 	 */
@@ -301,6 +313,7 @@ var actions = {
 		this.onEventNewCircle();
 		nav.displayOptionsNewCircle((elements.newName.val() !== ''));
 	},
+
 
 	/**
 	 *
