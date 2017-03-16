@@ -218,7 +218,11 @@ class CirclesService {
 		try {
 			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
 			$member = $this->dbMembers->getMemberFromCircle($circle->getId(), $this->userId, false);
-			$member->hasToBeMember();
+
+			if (!$member->isAlmostMember()) {
+				$member->hasToBeMember();
+			}
+
 			$member->cantBeOwner();
 			$member->setStatus(Member::STATUS_NONMEMBER);
 			$member->setLevel(Member::LEVEL_NONE);

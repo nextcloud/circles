@@ -64,14 +64,16 @@ class Circle extends BaseCircle implements \JsonSerializable {
 
 	public function jsonSerialize() {
 		return array(
-			'id'          => $this->getId(),
-			'name'        => $this->getName(),
-			'owner'       => $this->getOwner(),
-			'user'        => $this->getUser(),
-			'description' => $this->getDescription(),
-			'type'        => $this->getTypeString(),
-			'creation'    => $this->getCreation(),
-			'members'     => $this->getMembers()
+			'id'             => $this->getId(),
+			'name'           => $this->getName(),
+			'owner'          => $this->getOwner(),
+			'user'           => $this->getUser(),
+			'description'    => $this->getDescription(),
+			'type'           => $this->getTypeString(),
+			'creation'       => $this->getCreation(),
+			'typeString'     => $this->getTypeString(),
+			'typeLongString' => $this->getTypeLongString(),
+			'members'        => $this->getMembers()
 		);
 	}
 
