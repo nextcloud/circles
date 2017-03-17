@@ -70,7 +70,7 @@ $(document).ready(function () {
 			elements.initAnimationNewCircle();
 			elements.initExperienceCirclesList();
 			elements.initExperienceMemberDetails();
-			actions.initActions();
+			nav.initNavigation();
 		}
 	};
 

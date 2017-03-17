@@ -109,7 +109,6 @@ var elements = {
 		$('.icon-circles').css('background-image',
 			'url(' + OC.imagePath('circles', 'colored') + ')');
 
-
 		var theme = $('#body-user').find('#header').css('background-color');
 		elements.circlesList.css('background-color', theme);
 		elements.circlesDetails.css('background-color', theme);
@@ -145,6 +144,14 @@ var elements = {
 		elements.remMember.on('click', function () {
 			api.removeMember(curr.circle, curr.member, actions.removeMemberResult);
 		});
+
+		$('#joincircle_acceptrequest').on('click', function () {
+			api.addMember(curr.circle, curr.member, actions.addMemberResult);
+		});
+		$('#joincircle_rejectrequest').on('click', function () {
+			api.removeMember(curr.circle, curr.member, actions.removeMemberResult);
+		});
+
 	},
 
 

@@ -36,51 +36,24 @@
 var actions = {
 
 
-	initActions: function () {
-		this.initElementsMemberActions();
-		this.initElementsCircleActions();
-	},
-
-
-	initElementsMemberActions: function () {
-
-		elements.addMember.on('input propertychange paste focus', function () {
-			var search = $(this).val().trim();
-			if (search === '') {
-				elements.membersSearchResult.fadeOut(400);
-				return;
-			}
-
-			actions.searchMembersRequest(search);
-			if (elements.membersSearchResult.children().length === 0) {
-				elements.membersSearchResult.fadeOut(400);
-			} else {
-				elements.membersSearchResult.fadeIn(400);
-			}
-		}).blur(function () {
-			elements.membersSearchResult.fadeOut(400);
-		});
-	},
-
 
 	joinCircleResult: function (result) {
-		if (result.status == 1) {
-
-			elements.removeMemberslistEntry(result.name);
-			if (result.member.level == 1) {
-				OCA.notification.onSuccess(
-					"You have successfully joined this circle");
-			} else {
-				OCA.notification.onSuccess(
-					"You have requested an invitation to join this circle");
-			}
-			actions.selectCircle(result.circle_id);
+		if (result.status === 0) {
+			OCA.notification.onFail(
+				"Cannot join this circle: " +
+				((result.error) ? result.error : 'no error message'));
 			return;
 		}
 
-		OCA.notification.onFail(
-			"Cannot join this circle: " +
-			((result.error) ? result.error : 'no error message'));
+		elements.removeMemberslistEntry(result.name);
+		if (result.member.level == 1) {
+			OCA.notification.onSuccess(
+				"You have successfully joined this circle");
+		} else {
+			OCA.notification.onSuccess(
+				"You have requested an invitation to join this circle");
+		}
+		actions.selectCircle(result.circle_id);
 	},
 
 
@@ -105,24 +78,6 @@ var actions = {
 	},
 
 
-	initElementsCircleActions: function () {
-
-		elements.joinCircle.on('click', function () {
-			api.joinCircle(curr.circle, actions.joinCircleResult);
-		});
-
-		elements.leaveCircle.on('click', function () {
-			api.leaveCircle(curr.circle, actions.leaveCircleResult);
-		});
-
-		elements.joinCircleAccept.on('click', function () {
-			api.joinCircle(curr.circle, actions.joinCircleResult);
-		});
-
-		elements.joinCircleReject.on('click', function () {
-			api.leaveCircle(curr.circle, actions.leaveCircleResult);
-		});
-	},
 
 
 	createCircleResult: function (result) {

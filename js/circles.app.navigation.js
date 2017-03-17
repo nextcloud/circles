@@ -35,6 +35,54 @@
 
 var nav = {
 
+
+
+	initNavigation: function () {
+		this.initElementsMemberNavigation();
+		this.initElementsCircleNavigation();
+	},
+
+
+	initElementsMemberNavigation: function () {
+
+		elements.addMember.on('input propertychange paste focus', function () {
+			var search = $(this).val().trim();
+			if (search === '') {
+				elements.membersSearchResult.fadeOut(400);
+				return;
+			}
+
+			actions.searchMembersRequest(search);
+			if (elements.membersSearchResult.children().length === 0) {
+				elements.membersSearchResult.fadeOut(400);
+			} else {
+				elements.membersSearchResult.fadeIn(400);
+			}
+		}).blur(function () {
+			elements.membersSearchResult.fadeOut(400);
+		});
+	},
+
+	initElementsCircleNavigation: function () {
+
+		elements.joinCircle.on('click', function () {
+			api.joinCircle(curr.circle, actions.joinCircleResult);
+		});
+
+		elements.leaveCircle.on('click', function () {
+			api.leaveCircle(curr.circle, actions.leaveCircleResult);
+		});
+
+		elements.joinCircleAccept.on('click', function () {
+			api.joinCircle(curr.circle, actions.joinCircleResult);
+		});
+
+		elements.joinCircleReject.on('click', function () {
+			api.leaveCircle(curr.circle, actions.leaveCircleResult);
+		});
+	},
+
+
 	displayCirclesList: function (type) {
 
 		curr.circlesType = type;
