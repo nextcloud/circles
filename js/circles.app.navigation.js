@@ -35,6 +35,54 @@
 
 var nav = {
 
+
+
+	initNavigation: function () {
+		this.initElementsMemberNavigation();
+		this.initElementsCircleNavigation();
+	},
+
+
+	initElementsMemberNavigation: function () {
+
+		elements.addMember.on('input propertychange paste focus', function () {
+			var search = $(this).val().trim();
+			if (search === '') {
+				elements.membersSearchResult.fadeOut(400);
+				return;
+			}
+
+			actions.searchMembersRequest(search);
+			if (elements.membersSearchResult.children().length === 0) {
+				elements.membersSearchResult.fadeOut(400);
+			} else {
+				elements.membersSearchResult.fadeIn(400);
+			}
+		}).blur(function () {
+			elements.membersSearchResult.fadeOut(400);
+		});
+	},
+
+	initElementsCircleNavigation: function () {
+
+		elements.joinCircle.on('click', function () {
+			api.joinCircle(curr.circle, actions.joinCircleResult);
+		});
+
+		elements.leaveCircle.on('click', function () {
+			api.leaveCircle(curr.circle, actions.leaveCircleResult);
+		});
+
+		elements.joinCircleAccept.on('click', function () {
+			api.joinCircle(curr.circle, actions.joinCircleResult);
+		});
+
+		elements.joinCircleReject.on('click', function () {
+			api.leaveCircle(curr.circle, actions.leaveCircleResult);
+		});
+	},
+
+
 	displayCirclesList: function (type) {
 
 		curr.circlesType = type;
@@ -86,6 +134,9 @@ var nav = {
 
 	displayMembers: function (members) {
 
+		elements.remMember.fadeOut(300);
+		elements.rightPanel.fadeOut(300);
+
 		elements.mainUIMembers.emptyTable();
 		if (members === null) {
 			elements.mainUIMembers.hide(200);
@@ -94,25 +145,55 @@ var nav = {
 
 		elements.mainUIMembers.show(200);
 		for (var i = 0; i < members.length; i++) {
-			elements.mainUIMembers.append(elements.generateTmplMember(members[i]));
+			var tmpl = elements.generateTmplMember(members[i]);
+			elements.mainUIMembers.append(tmpl);
 		}
 
-		this.displayMembersAsModerator();
+		$('tr.entry').on('click', function () {
+			nav.displayMemberDetails($(this).attr('member-id'), $(this).attr('member-level'),
+				$(this).attr('member-levelstring'), $(this).attr('member-status'));
+		});
 	},
 
 
-	displayMembersAsModerator: function () {
-		if (curr.circleLevel >= 6) {
+	displayMemberDetails: function (id, level, levelstring, status) {
 
-			elements.mainUIMembers.children("[member-level!='9']").each(function () {
-				$(this).children('.delete').show(0);
+		level = parseInt(level);
+		curr.member = id;
+		curr.memberLevel = level;
+		curr.memberStatus = status;
 
-				var member = $(this).attr('member-id');
-				$(this).children('.delete').on('click', function () {
-					api.removeMember(curr.circle, member, actions.removeMemberResult);
-				});
-			});
+		elements.rightPanel.fadeIn(300);
+		elements.memberDetails.children('#member_name').text(id);
+		if (level === 0) {
+			levelstring += ' / ' + status;
 		}
+		elements.memberDetails.children('#member_levelstatus').text(levelstring);
+
+		this.displayMemberDetailsAsModerator();
+	},
+
+
+	displayMemberDetailsAsModerator: function () {
+		if (curr.circleLevel >= 6 && curr.memberLevel < curr.circleLevel) {
+			if (curr.memberStatus == 'Requesting') {
+				elements.memberRequest.fadeIn(300);
+				elements.remMember.fadeOut(300);
+			}
+			else {
+				elements.memberRequest.fadeOut(300);
+				elements.remMember.fadeIn(300);
+			}
+		} else {
+			elements.remMember.fadeOut(300);
+			elements.memberRequest.fadeOut(300);
+		}
+	},
+
+
+	displayCircleDetails: function (details) {
+		elements.circlesDetails.children('#name').text(details.name);
+		elements.circlesDetails.children('#type').text(details.typeLongString);
 	},
 
 
@@ -123,6 +204,7 @@ var nav = {
 			elements.addMember.show();
 		}
 
+		elements.joinCircleInteraction.hide();
 		this.displayNonMemberInteraction(details);
 
 		if (details.user.level == 9) {
@@ -136,6 +218,7 @@ var nav = {
 			elements.leaveCircle.show();
 		}
 	},
+
 
 	displayNonMemberInteraction: function (details) {
 		elements.joinCircleAccept.hide();
@@ -157,7 +240,9 @@ var nav = {
 		elements.leaveCircle.hide();
 	},
 
+
 	displayInvitedMemberInteraction: function () {
+		elements.joinCircleInteraction.show();
 		elements.joinCircleInvite.show();
 		elements.joinCircleAccept.show();
 		elements.joinCircleReject.show();
@@ -166,6 +251,7 @@ var nav = {
 	},
 
 	displayRequestingMemberInteraction: function () {
+		elements.joinCircleInteraction.show();
 		elements.joinCircleRequest.show();
 		elements.joinCircle.hide();
 		elements.leaveCircle.show();

@@ -146,6 +146,13 @@ class BaseMember {
 		return ($this->getLevel() >= $level);
 	}
 
+
+	public function isAlmostMember() {
+		return ($this->getStatus() === Member::STATUS_INVITED
+				|| $this->getStatus() === Member::STATUS_REQUEST);
+	}
+
+
 	protected function setAsAMember($level = 1) {
 		$this->setStatus(Member::STATUS_MEMBER);
 		$this->setLevel($level);

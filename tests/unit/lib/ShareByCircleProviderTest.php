@@ -24,50 +24,21 @@
  *
  */
 
-
 namespace OCA\Circles\Tests\Api;
 
 
-use OCA\Circles\Controller\NavigationController;
 use OCA\Circles\Tests\Env;
 
-class NavigationControllerTest extends \PHPUnit_Framework_TestCase {
+class ShareByCircleProviderTest extends \PHPUnit_Framework_TestCase {
 
-
-	/** @var array<Circle> */
-	private $navController;
 
 	protected function setUp() {
-
 		Env::setUser(Env::ENV_TEST_USER1);
-		$this->navController = new NavigationController(
-
-
-			'circles', $this->getMockBuilder('\OCP\IRequest')
-							->getMock(), Env::ENV_TEST_USER1, $this->getMockBuilder('\OCP\IL10N')
-																   ->getMock(),
-			$this->getMockBuilder('\OCA\Circles\Service\ConfigService')
-				 ->disableOriginalConstructor()
-				 ->getMock(), $this->getMockBuilder('\OCA\Circles\Service\CirclesService')
-								   ->disableOriginalConstructor()
-								   ->getMock(),
-			$this->getMockBuilder('\OCA\Circles\Service\MembersService')
-				 ->disableOriginalConstructor()
-				 ->getMock(), $this->getMockBuilder('\OCA\Circles\Service\MiscService')
-								   ->disableOriginalConstructor()
-								   ->getMock()
-
-		);
 	}
 
 
 	protected function tearDrop() {
 		Env::logout();
-	}
-
-
-	public function testNavigate() {
-		$this->assertNotNull($this->navController->navigate());
 	}
 
 }
