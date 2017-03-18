@@ -36,6 +36,9 @@ class ShareByCircleProviderTest extends \PHPUnit_Framework_TestCase {
 		Env::setUser(Env::ENV_TEST_USER1);
 	}
 
+	public function testEmpty() {
+		$this->assertSame(true, true);
+	}
 
 	protected function tearDrop() {
 		Env::logout();

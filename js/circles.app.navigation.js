@@ -36,10 +36,11 @@
 var nav = {
 
 
-
 	initNavigation: function () {
 		this.initElementsMemberNavigation();
 		this.initElementsCircleNavigation();
+
+		this.displayCirclesList('all');
 	},
 
 
