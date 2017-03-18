@@ -254,7 +254,6 @@ var actions = {
 		curr.circle = 0;
 		curr.circleLevel = 0;
 
-		elements.navigation.hide('slide', 800);
 		elements.circlesList.children('div').removeClass('selected');
 		elements.emptyContent.show(800);
 		elements.mainUI.fadeOut(800);
