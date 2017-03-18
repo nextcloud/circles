@@ -38,26 +38,6 @@ pipeline:
       matrix:
         TESTS: phpunit-sqlite-php7.0
 
-  mysql-php7.0:
-    image: nextcloudci/php7.0:php7.0-2
-    environment:
-    - APP_NAME=circles
-    - CORE_BRANCH=shares-circles
-    - DB=mysql
-    commands:
-    - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
-    - bash ./before_install.sh $APP_NAME $CORE_BRANCH $DB
-    - cd ../server/
-    - ./occ app:enable $APP_NAME
-    - cd apps/$APP_NAME/tests/
-
-    # phpunit
-    - phpunit --configuration phpunit.xml
-    when:
-      matrix:
-        DB: mysql
-        PHP: 7.0
-
   sqlite-php5.6:
     image: nextcloudci/php5.6:php5.6-3
     environment:
@@ -78,30 +58,6 @@ pipeline:
     when:
       matrix:
         TESTS: sqlite-php5.6
-
-  mysql-php5.6:
-    image: nextcloudci/php5.6:php5.6-3
-    environment:
-      - APP_NAME=circles
-      - CORE_BRANCH=shares-circles
-      - DB=mysql
-    commands:
-      # Pre-setup steps
-      - apt update && apt-get -y install php5-xdebug
-      - apt-get -y install mysql-client
-      - wget https://raw.githubusercontent.com/nextcloud/circles/tests/before_install.sh
-      - bash USEDOCKER=1 ./before_install.sh $APP_NAME $CORE_BRANCH $DB
-
-      - cd ../server
-      - ./occ app:enable $APP_NAME
-      - cd apps/$APP_NAME/tests/
-
-      # phpunit
-      - phpunit --configuration phpunit.xml
-    when:
-      matrix:
-        DB: mysql
-        PHP: 5.6
 
   sqlite-php7.1:
     image: nextcloudci/php7.1:php7.1-11
@@ -124,27 +80,6 @@ pipeline:
       matrix:
         DB: sqlite
         PHP: 7.1
-
-  mysql-php7.1:
-    image: nextcloudci/php7.1:php7.1-11
-    environment:
-      - APP_NAME=circles
-      - CORE_BRANCH=shares-circles
-      - DB=mysql
-    commands:
-      # Pre-setup steps
-      - yum -y install wget
-      - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
-      - bash ./before_install.sh $APP_NAME $CORE_BRANCH $DB
-      - cd ../server
-      - ./occ app:enable $APP_NAME
-      - cd apps/$APP_NAME/tests/
-
-      # phpunit
-      - phpunit --configuration phpunit.xml
-    when:
-      matrix:
-        TESTS: mysql-php7.1
 
 services:
   cache:

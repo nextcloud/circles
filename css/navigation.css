@@ -41,7 +41,7 @@
 #circles_list, #circles_list .lightenbg {
 	position: absolute;
 	width: 100%;
-	bottom: 120px;
+	top: 300px;
 }
 
 #circles_list div {
