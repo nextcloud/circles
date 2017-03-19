@@ -9,6 +9,9 @@ OC.L10N.register(
     "Reject the invitation" : "Die Einladung ablehnen",
     "Join this circle" : "Diesem Kreis beitreten",
     "Leave this circle" : "Diesen Kreis verlassen",
-    "Add a new member" : "Ein neues Mitglied hinzufügen"
+    "Add a member" : "Ein Mitglied hinzufügen",
+    "Kick this member" : "Das Mitglied entfernen",
+    "Accept the request" : "Die Anfrage akzeptieren",
+    "Reject the request" : "Die Anfrage ablehnen"
 },
 "nplurals=2; plural=(n != 1);");

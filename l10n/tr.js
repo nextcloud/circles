@@ -9,6 +9,9 @@ OC.L10N.register(
     "Reject the invitation" : "Çağrıyı reddet",
     "Join this circle" : "Çevreye katıl",
     "Leave this circle" : "Çevreden ayrıl",
-    "Add a new member" : "Üye ekle"
+    "Add a member" : "Üye ekle",
+    "Kick this member" : "Üyelikten çıkar",
+    "Accept the request" : "İsteği onayla",
+    "Reject the request" : "İsteği reddet"
 },
 "nplurals=2; plural=(n > 1);");
