@@ -9,6 +9,9 @@ OC.L10N.register(
     "Reject the invitation" : "Meghívás elutasítása",
     "Join this circle" : "Csatlakozás a körhöz",
     "Leave this circle" : "Kör elhagyása",
-    "Add a new member" : "Új tag felvétele"
+    "Add a member" : "Tag felvétele",
+    "Kick this member" : "A tag kirúgása",
+    "Accept the request" : "Kérés elfogadása",
+    "Reject the request" : "Kérés elutasítása"
 },
 "nplurals=2; plural=(n != 1);");
