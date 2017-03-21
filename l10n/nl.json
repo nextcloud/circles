@@ -7,6 +7,9 @@
     "Reject the invitation" : "Verwerp de uitnodiging",
     "Join this circle" : "Word lid van deze kring",
     "Leave this circle" : "Verlaat deze kring",
-    "Add a new member" : "Voeg een nieuw lid toe"
+    "Add a member" : "Voeg een lid toe",
+    "Kick this member" : "Gooi dit lid weg",
+    "Accept the request" : "Accepteer het verzoek",
+    "Reject the request" : "Verwerp het verzoek"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
