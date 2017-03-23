@@ -9,6 +9,9 @@ OC.L10N.register(
     "Reject the invitation" : "Hafna boðinu",
     "Join this circle" : "Taka þátt í þessum hring",
     "Leave this circle" : "Ganga úr þessum hring",
-    "Add a new member" : "Bæta við nýjum meðlimi"
+    "Add a member" : "Bæta við meðlimi",
+    "Kick this member" : "Henda þessum meðlimi út",
+    "Accept the request" : "Samþykkja beiðnina",
+    "Reject the request" : "Hafna beiðninni"
 },
 "nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);");
