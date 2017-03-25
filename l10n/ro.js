@@ -8,7 +8,6 @@ OC.L10N.register(
     "Accept the invitation" : "Acceptă invitația",
     "Reject the invitation" : "Respinge invitația",
     "Join this circle" : "Alătură-te acestui cerc",
-    "Leave this circle" : "Părăsește acest cerc",
-    "Add a new member" : "Adaugă un nou membru"
+    "Leave this circle" : "Părăsește acest cerc"
 },
 "nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));");

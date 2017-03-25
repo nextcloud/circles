@@ -8,7 +8,6 @@ OC.L10N.register(
     "Accept the invitation" : "Aceitar o convite",
     "Reject the invitation" : "Rejeitar o convite",
     "Join this circle" : "Junte-se ao círculo",
-    "Leave this circle" : "Deixe este círculo",
-    "Add a new member" : "Adicionar um novo membro"
+    "Leave this circle" : "Deixe este círculo"
 },
 "nplurals=2; plural=(n > 1);");
