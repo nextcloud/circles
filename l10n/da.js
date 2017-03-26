@@ -8,6 +8,10 @@ OC.L10N.register(
     "Accept the invitation" : "Accepter invitationen",
     "Reject the invitation" : "Afvis invitationen",
     "Join this circle" : "Bliv en del af denne cirkel",
-    "Leave this circle" : "Forlad denne cirkel"
+    "Leave this circle" : "Forlad denne cirkel",
+    "Add a member" : "Tilføj et medlem",
+    "Kick this member" : "Fjern dette medlem",
+    "Accept the request" : "Accepter anmodning",
+    "Reject the request" : "Avis anmodningen"
 },
 "nplurals=2; plural=(n != 1);");
