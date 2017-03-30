@@ -129,6 +129,15 @@ class CirclesMapper extends Mapper {
 	}
 
 
+	/**
+	 * @param IQueryBuilder $qb
+	 * @param $userId
+	 * @param $type
+	 * @param $name
+	 * @param $circleId
+	 *
+	 * @throws ConfigNoCircleAvailable
+	 */
 	private function buildWithOrXTypes(&$qb, $userId, $type, $name, $circleId) {
 
 		$orTypesArray = $this->fillOrXTypes($qb, $userId, $type, $name, $circleId);
