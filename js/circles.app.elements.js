@@ -89,7 +89,7 @@ var elements = {
 	initTweaks: function () {
 		$.fn.emptyTable = function () {
 			this.children('tr').each(function () {
-				if ($(this).attr('class') != 'header') {
+				if ($(this).attr('class') !== 'header') {
 					$(this).remove();
 				}
 			});
@@ -129,7 +129,7 @@ var elements = {
 
 		this.circlesSearch.on('input propertychange paste focus', function () {
 			var search = $(this).val().trim();
-			if (curr.searchCircle == search) {
+			if (curr.searchCircle === search) {
 				return;
 			}
 
@@ -216,7 +216,7 @@ var elements = {
 
 		elements.navigation.addClass('selected');
 		elements.navigation.children().each(function () {
-			if ($(this).attr('id') != 'circles_search') {
+			if ($(this).attr('id') !== 'circles_search') {
 				$(this).remove();
 			}
 		});

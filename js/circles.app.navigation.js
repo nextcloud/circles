@@ -109,7 +109,7 @@ var nav = {
 	resetCirclesTypeSelection: function (type) {
 		elements.circlesList.children('div').removeClass('selected');
 		elements.circlesList.children().each(function () {
-			if ($(this).attr('circle-type') == type.toLowerCase()) {
+			if ($(this).attr('circle-type') === type.toLowerCase()) {
 				$(this).addClass('selected');
 			}
 		});
@@ -177,7 +177,7 @@ var nav = {
 
 	displayMemberDetailsAsModerator: function () {
 		if (curr.circleLevel >= 6 && curr.memberLevel < curr.circleLevel) {
-			if (curr.memberStatus == 'Requesting') {
+			if (curr.memberStatus === 'Requesting') {
 				elements.memberRequest.fadeIn(300);
 				elements.remMember.fadeOut(300);
 			}
@@ -208,7 +208,7 @@ var nav = {
 		elements.joinCircleInteraction.hide();
 		this.displayNonMemberInteraction(details);
 
-		if (details.user.level == 9) {
+		if (details.user.level === 9) {
 			elements.joinCircle.hide();
 			elements.leaveCircle.hide();
 			return;
@@ -227,12 +227,12 @@ var nav = {
 		elements.joinCircleRequest.hide();
 		elements.joinCircleInvite.hide();
 
-		if (details.user.status == 'Invited') {
+		if (details.user.status === 'Invited') {
 			this.displayInvitedMemberInteraction();
 			return;
 		}
 
-		if (details.user.status == 'Requesting') {
+		if (details.user.status === 'Requesting') {
 			this.displayRequestingMemberInteraction();
 			return;
 		}
