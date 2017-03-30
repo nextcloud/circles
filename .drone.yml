@@ -3,7 +3,7 @@ pipeline:
     image: nextcloudci/php7.0:php7.0-2
     environment:
     - APP_NAME=circles
-    - CORE_BRANCH=shares-circles
+    - CORE_BRANCH=master
     - DB=sqlite
     commands:
       - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
@@ -18,7 +18,7 @@ pipeline:
     image: nextcloudci/php7.0:php7.0-2
     environment:
     - APP_NAME=circles
-    - CORE_BRANCH=shares-circles
+    - CORE_BRANCH=master
     - DB=sqlite
     commands:
     - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
@@ -42,7 +42,7 @@ pipeline:
     image: nextcloudci/php5.6:php5.6-3
     environment:
       - APP_NAME=circles
-      - CORE_BRANCH=shares-circles
+      - CORE_BRANCH=master
       - DB=sqlite
     commands:
       # Pre-setup steps
@@ -63,7 +63,7 @@ pipeline:
     image: nextcloudci/php7.1:php7.1-11
     environment:
       - APP_NAME=circles
-      - CORE_BRANCH=shares-circles
+      - CORE_BRANCH=master
       - DB=sqlite
     commands:
       # Pre-setup steps
