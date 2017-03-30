@@ -28,13 +28,5 @@ namespace OCA\Circles\Exceptions;
 
 class CircleDoesNotExistException extends \Exception {
 
-	public function __construct($message = "", $code = 0, \Exception $previous = null) {
-		if ($message === '') {
-			$message = 'The circle does not exist';
-		}
-
-		parent::__construct($message, $code, $previous);
-	}
-
 }
 

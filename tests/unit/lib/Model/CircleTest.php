@@ -56,9 +56,9 @@ class CircleTest extends \PHPUnit_Framework_TestCase {
 		$date = date("Y-m-d H:i:s");
 		$joined = date("H:i:s Y-m-d");
 
-		$owner = new Member();
+		$owner = new Member($this->l10n);
 		$owner->setUserId('owner');
-		$user = new Member();
+		$user = new Member($this->l10n);
 		$user->setUserID('user');
 		$user->setStatus(Member::STATUS_MEMBER);
 		$user->setLevel(Member::LEVEL_MEMBER);

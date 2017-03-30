@@ -167,11 +167,12 @@ class Application extends App {
 	 * @param $container
 	 */
 	private static function registerMappers(& $container) {
+
 		$container->registerService(
 			'CirclesMapper', function($c) {
 			return new CirclesMapper(
 				$c->query('ServerContainer')
-				  ->getDatabaseConnection(), $c->query('MiscService')
+				  ->getDatabaseConnection(), $c->query('L10N'), $c->query('MiscService')
 			);
 		}
 		);
@@ -180,7 +181,7 @@ class Application extends App {
 			'MembersMapper', function($c) {
 			return new MembersMapper(
 				$c->query('ServerContainer')
-				  ->getDatabaseConnection(), $c->query('MiscService')
+				  ->getDatabaseConnection(), $c->query('L10N'), $c->query('MiscService')
 			);
 		}
 		);

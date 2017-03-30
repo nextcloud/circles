@@ -127,12 +127,14 @@ class MembersService {
 			$member = $this->dbMembers->getMemberFromCircle($circleId, $name);
 
 		} catch (MemberDoesNotExistException $e) {
-			$member = new Member($name, $circleId);
+			$member = new Member($this->l10n, $name, $circleId);
 			$this->dbMembers->add($member);
 		}
 
 		if ($this->memberAlreadyExist($member)) {
-			throw new MemberAlreadyExistsException();
+			throw new MemberAlreadyExistsException(
+				$this->l10n->t('This user is already a member of the circle')
+			);
 		}
 
 		return $member;

@@ -26,12 +26,14 @@
 
 namespace OCA\Circles\Db;
 
+use OC\L10N\L10N;
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailable;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 
+use OCA\Circles\Service\MiscService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 use OCP\AppFramework\Db\Mapper;
@@ -40,12 +42,16 @@ class CirclesMapper extends Mapper {
 
 	const TABLENAME = 'circles_circles';
 
+	/** @var L10N */
+	private $l10n;
+
+	/** @var MiscService */
 	private $miscService;
 
-	public function __construct(IDBConnection $db, $miscService) {
+	public function __construct(IDBConnection $db, $l10n, $miscService) {
 		parent::__construct($db, self::TABLENAME, 'OCA\Circles\Db\Circles');
+		$this->l10n = $l10n;
 		$this->miscService = $miscService;
-
 	}
 
 
@@ -142,7 +148,11 @@ class CirclesMapper extends Mapper {
 
 		$orTypesArray = $this->fillOrXTypes($qb, $userId, $type, $name, $circleId);
 		if (sizeof($orTypesArray) === 0) {
-			throw new ConfigNoCircleAvailable();
+			throw new ConfigNoCircleAvailable(
+				$this->l10n->t(
+					'No type of circle are selected in the global configuration of the app'
+				)
+			);
 		}
 
 		$orXTypes = $qb->expr()
@@ -323,7 +333,7 @@ class CirclesMapper extends Mapper {
 
 		if (sizeof($result) !== 1) {
 			throw new CircleDoesNotExistException(
-				"The circle does not exist or is hidden to the user"
+				$this->l10n->t("The circle does not exist or is hidden to the user")
 			);
 		}
 
@@ -341,7 +351,9 @@ class CirclesMapper extends Mapper {
 	public function create(Circle & $circle, Member & $owner) {
 
 		if (!$this->isCircleUnique($circle, $owner)) {
-			throw new CircleAlreadyExistsException();
+			throw new CircleAlreadyExistsException(
+				$this->l10n->t('A circle with that name already exist')
+			);
 		}
 
 		$qb = $this->db->getQueryBuilder();

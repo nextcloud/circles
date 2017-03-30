@@ -76,10 +76,10 @@ class CirclesMapperTest extends \PHPUnit_Framework_TestCase {
 
 	public function testCircles() {
 
-		$owner1 = new Member();
+		$owner1 = new Member($this->l10n);
 		$owner1->setUserId(self::TEST_CIRCLE_OWNER1);
 
-		$owner2 = new Member();
+		$owner2 = new Member($this->l10n);
 		$owner2->setUserId(self::TEST_CIRCLE_OWNER2);
 
 		// creating circles.
@@ -156,7 +156,7 @@ class CirclesMapperTest extends \PHPUnit_Framework_TestCase {
 
 
 		// create user (for hidden circle)
-		$user1 = new Member();
+		$user1 = new Member($this->l10n);
 		$user1->setUserId(self::TEST_CIRCLE_USER1);
 		$user1->setCircleId(
 			self::getTestFromCircles('__test_hidden', $circles)
@@ -184,7 +184,7 @@ class CirclesMapperTest extends \PHPUnit_Framework_TestCase {
 
 
 		// create user (for personal circle)
-		$user1 = new Member();
+		$user1 = new Member($this->l10n);
 		$user1->setUserId(self::TEST_CIRCLE_USER1);
 		$user1->setCircleId(
 			self::getTestFromCircles('__test_personal', $circles)

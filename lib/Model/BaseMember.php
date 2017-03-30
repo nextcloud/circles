@@ -26,6 +26,8 @@
 
 namespace OCA\Circles\Model;
 
+use OC\L10N\L10N;
+
 class BaseMember {
 
 	const LEVEL_NONE = 0;
@@ -44,6 +46,10 @@ class BaseMember {
 	/** @var int */
 	private $circleId;
 
+
+	/** @var L10N */
+	protected $l10n;
+
 	/** @var string */
 	private $userId;
 
@@ -59,7 +65,9 @@ class BaseMember {
 	/** @var string */
 	private $joined;
 
-	public function __construct($userId = '', $circleId = -1) {
+	public function __construct($l10n, $userId = '', $circleId = -1) {
+		$this->l10n = $l10n;
+
 		if ($userId !== '') {
 			$this->setUserId($userId);
 		}

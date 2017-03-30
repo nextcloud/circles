@@ -45,9 +45,9 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 		$date = date("Y-m-d H:i:s");
 
-		$owner = new Member();
+		$owner = new Member($this->l10n);
 		$owner->setUserId('owner');
-		$user = new Member();
+		$user = new Member($this->l10n);
 		$user->setUserID('user');
 
 		$members = array($owner, $user);

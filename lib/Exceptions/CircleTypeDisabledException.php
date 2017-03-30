@@ -29,14 +29,6 @@ namespace OCA\Circles\Exceptions;
 
 class CircleTypeDisabledException extends \Exception {
 
-	public function __construct($message = "", $code = 0, \Exception $previous = null) {
-		if ($message === '') {
-			$message = 'The creation of this type of circle is not allowed';
-		}
-
-		parent::__construct($message, $code, $previous);
-	}
-
 }
 
 

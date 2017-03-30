@@ -62,7 +62,7 @@ class Member extends BaseMember implements \JsonSerializable {
 				return $this->joinPrivateCircle();
 		}
 
-		throw new MemberCantJoinCircle();
+		throw new MemberCantJoinCircle($this->l10n->t('You cannot join this circle'));
 	}
 
 
@@ -117,7 +117,9 @@ class Member extends BaseMember implements \JsonSerializable {
 	 */
 	public function hasToBeModerator() {
 		if ($this->getLevel() < self::LEVEL_MODERATOR) {
-			throw new MemberIsNotModeratorException();
+			throw new MemberIsNotModeratorException(
+				$this->l10n->t('This member is not a moderator')
+			);
 		}
 	}
 
@@ -127,7 +129,9 @@ class Member extends BaseMember implements \JsonSerializable {
 	 */
 	public function hasToBeOwner() {
 		if ($this->getLevel() < self::LEVEL_OWNER) {
-			throw new MemberIsNotOwnerException();
+			throw new MemberIsNotOwnerException(
+				$this->l10n->t('This member is not the owner of the circle')
+			);
 		}
 	}
 
@@ -137,7 +141,7 @@ class Member extends BaseMember implements \JsonSerializable {
 	 */
 	public function hasToBeMember() {
 		if ($this->getLevel() < self::LEVEL_MEMBER) {
-			throw new MemberDoesNotExistException();
+			throw new MemberDoesNotExistException($this->l10n->t('This member does not exist'));
 		}
 	}
 
@@ -147,36 +151,40 @@ class Member extends BaseMember implements \JsonSerializable {
 	 */
 	public function cantBeOwner() {
 		if ($this->getLevel() === self::LEVEL_OWNER) {
-			throw new MemberIsOwnerException();
+			throw new MemberIsOwnerException(
+				$this->l10n->t('This member is the owner of the circle')
+			);
 		}
 	}
 
 	/**
-	 * @param $member
-	 *
 	 * @throws MemberAlreadyExistsException
 	 * @throws MemberIsBlockedException
 	 */
 	public function hasToBeAbleToJoinTheCircle() {
 
 		if ($this->getLevel() > 0) {
-			throw new MemberAlreadyExistsException("You are already a member of this circle");
+			throw new MemberAlreadyExistsException(
+				$this->l10n->t("You are already a member of this circle")
+			);
 		}
 
 		if ($this->getStatus() === Member::STATUS_BLOCKED) {
-			throw new MemberIsBlockedException("You are blocked from this circle");
+			throw new MemberIsBlockedException(
+				$this->l10n->t("You are blocked from this circle")
+			);
 		}
 	}
 
 	public function jsonSerialize() {
 		return array(
-			'circle_id'    => $this->getCircleId(),
-			'user_id'      => $this->getUserId(),
-			'level'        => $this->getLevel(),
+			'circle_id' => $this->getCircleId(),
+			'user_id' => $this->getUserId(),
+			'level' => $this->getLevel(),
 			'level_string' => $this->getLevelString(),
-			'status'       => $this->getStatus(),
-			'note'         => $this->getNote(),
-			'joined'       => $this->getJoined()
+			'status' => $this->getStatus(),
+			'note' => $this->getNote(),
+			'joined' => $this->getJoined()
 		);
 	}
 
