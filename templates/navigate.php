@@ -52,7 +52,7 @@ style('circles', 'navigation');
 				print_unescaped(
 					sprintf(
 						'<option value="%s">%s</option>', 'personal',
-						"Create a Personal Circle"
+						$l->t("Create a Personal Circle")
 					)
 				);
 			}
@@ -62,7 +62,7 @@ style('circles', 'navigation');
 				print_unescaped(
 					sprintf(
 						'<option value="%s">%s</option>', 'hidden',
-						"Create an Hidden Circle"
+						$l->t("Create an Hidden Circle")
 					)
 				);
 			}
@@ -72,7 +72,7 @@ style('circles', 'navigation');
 				print_unescaped(
 					sprintf(
 						'<option value="%s">%s</option>', 'private',
-						"Create a Private Circle"
+						$l->t("Create a Private Circle")
 					)
 				);
 			}
@@ -82,7 +82,7 @@ style('circles', 'navigation');
 				print_unescaped(
 					sprintf(
 						'<option value="%s">%s</option>', 'public',
-						"Create a Public Circle"
+						$l->t("Create a Public Circle")
 					)
 				);
 			}
@@ -92,24 +92,57 @@ style('circles', 'navigation');
 		<input id="circles_new_submit" type="submit" value="Creation" style="display: none;"/>
 
 		<div id="circles_new_type_definition" style="display: none;">
-			<div id="circles_new_type_personal"><b>A Personal Circle is a list of users known only
-					to
-					yourself.</b><br/>Use this if you want to send messsage or share thing
-				repeatedly to the same group of people.
+			<div id="circles_new_type_personal"><b>
+					<?php p(
+						$l->t(
+							"A Personal Circle is a list of users known only to yourself."
+						)
+					); ?>
+				</b><br/>
+				<?php p(
+					$l->t(
+						"Use this if you want to send messsage or share thing
+				repeatedly to the same group of people."
+					)
+				); ?>
 			</div>
-			<div id="circles_new_type_hidden"><b>An Hidden Circle is an open group that can be
-					protected by
-					a password.</b><br/>Select this circle to create a community not displayed as a
-				Public Circle.
+			<div id="circles_new_type_hidden"><b>
+					<?php p(
+						$l->t(
+							"An Hidden Circle is an open group that can be
+					protected by a password."
+						)
+					); ?></b><br/><?php p(
+					$l->t(
+						"Select this circle to create a community not displayed as a
+				Public Circle."
+					)
+				); ?>
 			</div>
-			<div id="circles_new_type_private"><b>A Private Circle require invitation or a
-					confirmation
-					from an admin.</b> <br/>This is the best circle if you are looking for privacy
-				when sharing your files or your ideas.
+			<div id="circles_new_type_private"><b><?php p(
+						$l->t(
+							"A Private Circle require invitation or a
+					confirmation from an admin."
+						)
+					); ?>
+				</b><br/><?php p(
+					$l->t(
+						"This is the best circle if you are looking for privacy
+				when sharing your files or your ideas."
+					)
+				); ?>
 			</div>
-			<div id="circles_new_type_public"><b>A Public Circle is an open group visible to anyone
-					that dare to join. </b><br/>Your circle will be visible to everyone and everyone
-				will be able to join the circle.
+			<div id="circles_new_type_public"><b><?php p(
+						$l->t(
+							"A Public Circle is an open group visible to anyone
+					that dare to join."
+						)
+					); ?></b><br/><?php p(
+					$l->t(
+						"Your circle will be visible to everyone and everyone
+				will be able to join the circle."
+					)
+				); ?>
 			</div>
 		</div>
 	</div>
@@ -117,19 +150,19 @@ style('circles', 'navigation');
 
 		<?php
 		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PERSONAL]) {
-			print_unescaped('<div circle-type="personal">Personal Circles</div>');
+			print_unescaped('<div circle-type="personal">' . $l->t('Personal Circles') . '</div>');
 		}
 
 		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_HIDDEN]) {
-			print_unescaped('<div circle-type="hidden">Hidden Circles</div>');
+			print_unescaped('<div circle-type="hidden">' . $l->t('Hidden Circles') . '</div>');
 		}
 
 		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PRIVATE]) {
-			print_unescaped('<div circle-type="private">Private Circles</div>');
+			print_unescaped('<div circle-type="private">' . $l->t('Private Circles') . '</div>');
 		}
 
 		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PUBLIC]) {
-			print_unescaped('<div circle-type="public">Public Circles</div>');
+			print_unescaped('<div circle-type="public">' . $l->t('Public Circles') . '</div>');
 		}
 
 		?>
@@ -164,7 +197,7 @@ style('circles', 'navigation');
 			<div id="type"></div>
 
 
-			<div id="joincircle_invit">You have a pending invitation to join this circle</div>
+			<div id="joincircle_invit"><?php p($l->t("You have a pending invitation to join this circle")); ?></div>
 			<div id="joincircle_interact">
 				<input id="joincircle_acceptinvit" type="submit"
 					   value="<?php p($l->t('Accept the invitation')); ?>"/>
@@ -226,5 +259,4 @@ style('circles', 'navigation');
 	</div>
 
 
-</div>
 </div>

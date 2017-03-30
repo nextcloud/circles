@@ -341,7 +341,10 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	 */
 	private function editShareEntry($data) {
 		$data['share_with'] =
-			sprintf('%s (%s, %s)', $data['circle_name'], Circle::TypeLongString($data['circle_type']), $data['circle_owner']);
+			sprintf(
+				'%s (%s, %s)', $data['circle_name'], Circle::TypeLongString($data['circle_type']),
+				$data['circle_owner']
+			);
 
 		return $data;
 	}
@@ -442,8 +445,8 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	 */
 	public function getShareByToken($token) {
 		return null;
-	}/** @noinspection PhpUnusedParameterInspection */
-	/** @noinspection PhpUnusedParameterInspection */
+	}
+
 
 
 	/**
@@ -521,6 +524,10 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	}
 
 
+	/**
+	 * @param IShare $share
+	 * @param $data
+	 */
 	private function assignShareObjectPropertiesFromParent(& $share, $data) {
 		if (isset($data['f_permissions'])) {
 			$entryData = $data;
@@ -536,6 +543,10 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	}
 
 
+	/**
+	 * @param IShare $share
+	 * @param $data
+	 */
 	private function assignShareObjectSharesProperties(& $share, $data) {
 		$shareTime = new \DateTime();
 		$shareTime->setTimestamp((int)$data['stime']);

@@ -26,9 +26,7 @@
 
 namespace OCA\Circles\Controller;
 
-use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
-use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCP\AppFramework\Http\DataResponse;
 
@@ -46,7 +44,7 @@ class CirclesController extends BaseController {
 	public function create($type, $name) {
 
 		if (substr($name, 0, 1) === '_') {
-			$error = "The name of your circle cannot start with this character";
+			$error = $this->l10n->t("The name of your circle cannot start with this character");
 		} else {
 
 			try {
@@ -150,7 +148,6 @@ class CirclesController extends BaseController {
 		}
 
 	}
-
 
 
 }
