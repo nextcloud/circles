@@ -42,7 +42,7 @@
 				<autoincrement>true</autoincrement>
 				<unsigned>true</unsigned>
 				<primary>true</primary>
-				<length>8</length>
+				<length>4</length>
 			</field>
 
 			<field>
@@ -83,7 +83,7 @@
 				<type>integer</type>
 				<notnull>true</notnull>
 				<unsigned>true</unsigned>
-				<length>8</length>
+				<length>4</length>
 			</field>
 
 			<field>
@@ -134,4 +134,56 @@
 		</declaration>
 
 	</table>
+
+	<table>
+		<name>*dbprefix*circles_shares</name>
+
+		<declaration>
+			<field>
+				<name>id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<autoincrement>true</autoincrement>
+				<unsigned>true</unsigned>
+				<primary>true</primary>
+				<length>4</length>
+			</field>
+
+			<field>
+				<name>circle_id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<unsigned>true</unsigned>
+				<length>4</length>
+			</field>
+
+			<field>
+				<name>source</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>15</length>
+			</field>
+
+			<field>
+				<name>type</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<length>2</length>
+			</field>
+
+			<field>
+				<name>item</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>2000</length>
+			</field>
+
+			<field>
+				<name>creation</name>
+				<type>timestamp</type>
+				<default>CURRENT_TIMESTAMP</default>
+			</field>
+		</declaration>
+	</table>
+
 </database>
