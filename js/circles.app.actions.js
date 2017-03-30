@@ -36,29 +36,28 @@
 var actions = {
 
 
-
 	joinCircleResult: function (result) {
 		if (result.status === 0) {
 			OCA.notification.onFail(
-				"Cannot join this circle: " +
-				((result.error) ? result.error : 'no error message'));
+				t('circles', "Cannot join this circle") + ': ' +
+				((result.error) ? result.error : t('circles', 'no error message')));
 			return;
 		}
 
 		elements.removeMemberslistEntry(result.name);
-		if (result.member.level == 1) {
+		if (result.member.level === 1) {
 			OCA.notification.onSuccess(
-				"You have successfully joined this circle");
+				t('circles', "You have successfully joined this circle"));
 		} else {
 			OCA.notification.onSuccess(
-				"You have requested an invitation to join this circle");
+				t('circles', "You have requested an invitation to join this circle"));
 		}
 		actions.selectCircle(result.circle_id);
 	},
 
 
 	leaveCircleResult: function (result) {
-		if (result.status == 1) {
+		if (result.status === 1) {
 
 			elements.mainUIMembers.children("[member-id='" + result.name + "']").each(
 				function () {
@@ -67,32 +66,30 @@ var actions = {
 
 			actions.selectCircle(result.circle_id);
 			OCA.notification.onSuccess(
-				"You have successfully left this circle");
+				t('circles', "You have successfully left this circle"));
 			return;
 		}
 
 		OCA.notification.onFail(
-			"Cannot leave this circle: " +
-			((result.error) ? result.error : 'no error message'));
+			t('circles', "Cannot leave this circle") + ': ' +
+			((result.error) ? result.error : t('circles', 'no error message')));
 
 	},
 
 
-
-
 	createCircleResult: function (result) {
-		var str = actions.getStringTypeFromType(result.type);
+		var type = actions.getStringTypeFromType(result.type);
 
-		if (result.status == 1) {
-			OCA.notification.onSuccess(str + " '" + result.name + "' created");
+		if (result.status === 1) {
+			OCA.notification.onSuccess(t('circles', " {type} '{name}' created", {type: type, name: result.name}));
 			nav.displayCirclesList(result.circle.type);
 			actions.selectCircle(result.circle.id);
 			return;
 		}
 
 		OCA.notification.onFail(
-			str + " '" + result.name + "' NOT created: " +
-			((result.error) ? result.error : 'no error message'));
+			t('circles', " {type} '{name}' NOT created", {type: type, name: result.name}) + ': ' +
+			((result.error) ? result.error : t('circles', 'no error message')));
 	},
 
 
@@ -101,8 +98,8 @@ var actions = {
 		elements.mainUIMembers.emptyTable();
 		if (result.status < 1) {
 			OCA.notification.onFail(
-				'Issue while retreiving the details of a circle: ' +
-				((result.error) ? result.error : 'no error message'));
+				t('circles', 'Issue while retrieving the details of a circle') + '" ' +
+				((result.error) ? result.error : t('circles', 'no error message')));
 			return;
 		}
 
@@ -127,8 +124,8 @@ var actions = {
 
 		if (result.status < 1) {
 			OCA.notification.onFail(
-				'Issue while retreiving the list of the Circles: ' +
-				((result.error) ? result.error : 'no error message'));
+				t('circles', 'Issue while retrieving the list of circles') + '; ' +
+				((result.error) ? result.error : t('circles', 'no error message')));
 			return;
 		}
 
@@ -161,7 +158,7 @@ var actions = {
 	 */
 	searchMembersRequest: function (search) {
 
-		if (curr.searchUser == search) {
+		if (curr.searchUser === search) {
 			return;
 		}
 
@@ -199,37 +196,37 @@ var actions = {
 
 	addMemberResult: function (result) {
 
-		if (result.status == 1) {
+		if (result.status === 1) {
 			OCA.notification.onSuccess(
-				"Member '" + result.name + "' successfully added to the circle");
+				t('circles', "Member '{name}' successfully added to the circle", {name: result.name}));
 
 			nav.displayMembers(result.members);
 			return;
 		}
 		OCA.notification.onFail(
-			"Member '" + result.name + "' NOT added to the circle: " +
-			((result.error) ? result.error : 'no error message'));
+			t('circles', "Member '{name}' NOT added to the circle", {name: result.name}) + ': ' +
+			((result.error) ? result.error : t('circles', 'no error message')));
 	},
 
 
 	getStringTypeFromType: function (type) {
 		switch (type) {
 			case '1':
-				return 'Personal circle';
+				return t('circles', 'Personal circle');
 			case '2':
-				return 'Hidden circle';
+				return t('circles', 'Hidden circle');
 			case '4':
-				return 'Private circle';
+				return t('circles', 'Private circle');
 			case '8':
-				return 'Public circle';
+				return t('circles', 'Public circle');
 		}
 
-		return 'Circle';
+		return t('circles', 'Circle');
 	},
 
 
 	removeMemberResult: function (result) {
-		if (result.status == 1) {
+		if (result.status === 1) {
 
 			elements.rightPanel.fadeOut(300);
 			elements.mainUIMembers.children("[member-id='" + result.name + "']").each(
@@ -237,13 +234,13 @@ var actions = {
 					$(this).hide(300);
 				});
 			OCA.notification.onSuccess(
-				"Member '" + result.name + "' successfully removed from the circle");
+				t('circles', "Member '{name}' successfully removed from the circle", {name: result.name}));
 			return;
 		}
 
 		OCA.notification.onFail(
-			"Member '" + result.name + "' NOT removed from the circle: " +
-			((result.error) ? result.error : 'no error message'));
+			t('circles', "Member '{name}' NOT removed from the circle", {name: result.name}) + ': ' +
+			((result.error) ? result.error : t('circles', 'no error message')));
 	},
 
 
