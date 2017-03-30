@@ -54,7 +54,7 @@ class Members extends Entity {
 	 * @return Member
 	 */
 	public function toModel() {
-		$member = new Member();
+		$member = new Member($this->l10n);
 
 		$member->setCircleId($this->getCircleId());
 		$member->setUserId($this->getUserId());

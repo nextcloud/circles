@@ -28,14 +28,6 @@ namespace OCA\Circles\Exceptions;
 
 class CircleAlreadyExistsException extends \Exception {
 
-	public function __construct($message = "", $code = 0, \Exception $previous = null) {
-		if ($message === '') {
-			$message = 'A circle with this name already exist';
-		}
-
-		parent::__construct($message, $code, $previous);
-	}
-
 }
 
 

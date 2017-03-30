@@ -27,10 +27,12 @@
 namespace OCA\Circles\Db;
 
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use OC\L10N\L10N;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Model\Member;
 
+use OCA\Circles\Service\MiscService;
 use OCP\IDBConnection;
 use OCP\AppFramework\Db\Mapper;
 
@@ -38,10 +40,16 @@ class MembersMapper extends Mapper {
 
 	const TABLENAME = 'circles_members';
 
+	/** @var L10N */
+	private $l10n;
+
+	/** @var MiscService */
 	private $miscService;
 
-	public function __construct(IDBConnection $db, $miscService) {
+
+	public function __construct(IDBConnection $db, $l10n, $miscService) {
 		parent::__construct($db, self::TABLENAME, 'OCA\Circles\Db\Members');
+		$this->l10n = $l10n;
 		$this->miscService = $miscService;
 	}
 
@@ -63,14 +71,14 @@ class MembersMapper extends Mapper {
 
 		$data = $cursor->fetch();
 		if ($data === false) {
-			throw new MemberDoesNotExistException();
+			throw new MemberDoesNotExistException($this->l10n->t('This member does not exist'));
 		}
 
 		if ($moderator !== true) {
 			$data['note'] = '';
 		}
 
-		$member = new Member();
+		$member = new Member($this->l10n);
 		$member->fromArray($data);
 		$cursor->closeCursor();
 
@@ -101,7 +109,7 @@ class MembersMapper extends Mapper {
 					$data['note'] = '';
 				}
 
-				$member = new Member();
+				$member = new Member($this->l10n);
 				$member->fromArray($data);
 				$result[] = $member;
 			}
@@ -232,7 +240,9 @@ class MembersMapper extends Mapper {
 			   ->setValue('note', $qb->createNamedParameter($member->getNote()));
 			$qb->execute();
 		} catch (UniqueConstraintViolationException $e) {
-			throw new MemberAlreadyExistsException();
+			throw new MemberAlreadyExistsException(
+				$this->l10n->t('This user is already a member of the circle')
+			);
 		}
 	}
 

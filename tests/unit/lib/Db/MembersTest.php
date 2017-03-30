@@ -43,7 +43,7 @@ class MembersTest extends \PHPUnit_Framework_TestCase {
 
 		$date = date("Y-m-d H:i:s");
 
-		$model = new Member();
+		$model = new Member($this->l10n);
 		$model->fromArray(
 			array(
 				'circle_id' => 1,

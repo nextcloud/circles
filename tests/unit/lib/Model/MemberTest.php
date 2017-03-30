@@ -70,7 +70,7 @@ class MemberTest extends \PHPUnit_Framework_TestCase {
 			'joined'       => $date
 		);
 
-		$member = new Member();
+		$member = new Member($this->l10n);
 		$member->fromArray($entry);
 
 		$this->assertSame(1, $member->getCircleId());

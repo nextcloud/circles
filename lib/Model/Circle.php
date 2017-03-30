@@ -105,7 +105,7 @@ class Circle extends BaseCircle implements \JsonSerializable {
 	 */
 	private function setOwnerMemberFromArray(& $array) {
 		if (key_exists('owner', $array)) {
-			$owner = new Member();
+			$owner = new Member($this->l10n);
 			$owner->setUserId($array['owner']);
 			$this->setOwner($owner);
 		}
@@ -122,7 +122,7 @@ class Circle extends BaseCircle implements \JsonSerializable {
 			&& key_exists('level', $array)
 			&& key_exists('joined', $array)
 		) {
-			$user = new Member();
+			$user = new Member($this->l10n);
 			$user->setStatus($array['status']);
 			$user->setLevel($array['level']);
 			$user->setJoined($array['joined']);

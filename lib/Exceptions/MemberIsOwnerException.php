@@ -28,13 +28,5 @@ namespace OCA\Circles\Exceptions;
 
 class MemberIsOwnerException extends \Exception {
 
-	public function __construct($message = "", $code = 0, \Exception $previous = null) {
-		if ($message === '') {
-			$message = 'This member is the owner of the circle';
-		}
-
-		parent::__construct($message, $code, $previous);
-	}
-
 }
 

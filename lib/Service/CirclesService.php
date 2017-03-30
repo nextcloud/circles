@@ -96,10 +96,12 @@ class CirclesService {
 		self::convertTypeStringToBitValue($type);
 
 		if (!$this->configService->isCircleAllowed($type)) {
-			throw new CircleTypeDisabledException();
+			throw new CircleTypeDisabledException(
+				$this->l10n->t('The creation of this type of circle is not allowed')
+			);
 		}
 
-		$owner = new Member($this->userId);
+		$owner = new Member($this->l10n, $this->userId);
 		$owner->setStatus(Member::STATUS_MEMBER);
 		$circle = new Circle($type, $name);
 		$circle->setMembers([$owner]);
@@ -130,7 +132,9 @@ class CirclesService {
 		self::convertTypeStringToBitValue($type);
 
 		if (!$this->configService->isCircleAllowed((int)$type)) {
-			throw new CircleTypeDisabledException();
+			throw new CircleTypeDisabledException(
+				$this->l10n->t('The creation of this type of circle is not allowed')
+			);
 		}
 
 		$data = [];
@@ -189,7 +193,7 @@ class CirclesService {
 			try {
 				$member = $this->dbMembers->getMemberFromCircle($circle->getId(), $this->userId);
 			} catch (MemberDoesNotExistException $m) {
-				$member = new Member($this->userId, $circle->getId());
+				$member = new Member($this->l10n, $this->userId, $circle->getId());
 				$this->dbMembers->add($member);
 			}
 
