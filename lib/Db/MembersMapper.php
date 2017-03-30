@@ -29,7 +29,6 @@ namespace OCA\Circles\Db;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
-use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 
 use OCP\IDBConnection;

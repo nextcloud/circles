@@ -33,6 +33,7 @@ use OCA\Circles\Model\Member;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 use OCP\Share;
+use OCP\Share\IShare;
 
 class CircleProviderRequestBuilder {
 
@@ -65,7 +66,7 @@ class CircleProviderRequestBuilder {
 	/**
 	 * Limit the request to a Circle.
 	 *
-	 * @param $qb
+	 * @param IQueryBuilder $qb
 	 * @param integer $circleId
 	 */
 	protected function limitToCircle(& $qb, $circleId) {
@@ -79,7 +80,7 @@ class CircleProviderRequestBuilder {
 	/**
 	 * Limit the request to the Share by its Id.
 	 *
-	 * @param $qb
+	 * @param IQueryBuilder $qb
 	 * @param $shareId
 	 */
 	protected function limitToShare(& $qb, $shareId) {
@@ -93,7 +94,7 @@ class CircleProviderRequestBuilder {
 	/**
 	 * Limit the request to the top share (no children)
 	 *
-	 * @param $qb
+	 * @param IQueryBuilder $qb
 	 */
 	protected function limitToShareParent(& $qb) {
 		$expr = $qb->expr();
@@ -105,7 +106,7 @@ class CircleProviderRequestBuilder {
 	/**
 	 * limit the request to the children of a share
 	 *
-	 * @param $qb
+	 * @param IQueryBuilder $qb
 	 * @param $userId
 	 * @param int $parentId
 	 */
@@ -125,13 +126,14 @@ class CircleProviderRequestBuilder {
 	 * limit the request to the share itself AND its children.
 	 * perfect if you want to delete everything related to a share
 	 *
-	 * @param $qb
+	 * @param IQueryBuilder $qb
 	 * @param $circleId
 	 */
 	protected function limitToShareAndChildren(& $qb, $circleId) {
 		$expr = $qb->expr();
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? 's.' : '';
 
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->andWhere(
 			$expr->orX(
 				$expr->eq($pf . 'parent', $qb->createNamedParameter($circleId)),
@@ -155,6 +157,11 @@ class CircleProviderRequestBuilder {
 	}
 
 
+	/**
+	 * @param IQueryBuilder $qb
+	 * @param int $limit
+	 * @param int $offset
+	 */
 	protected function limitToPage(& $qb, $limit = -1, $offset = 0) {
 		if ($limit !== -1) {
 			$qb->setMaxResults($limit);
@@ -166,7 +173,7 @@ class CircleProviderRequestBuilder {
 	/**
 	 * limit the request to a userId
 	 *
-	 * @param $qb
+	 * @param IQueryBuilder $qb
 	 * @param string $userId
 	 * @param bool $reShares
 	 */
@@ -177,6 +184,7 @@ class CircleProviderRequestBuilder {
 		if ($reShares === false) {
 			$qb->andWhere($expr->eq($pf . 'uid_initiator', $qb->createNamedParameter($userId)));
 		} else {
+			/** @noinspection PhpMethodParametersCountMismatchInspection */
 			$qb->andWhere(
 				$expr->orX(
 					$expr->eq($pf . 'uid_owner', $qb->createNamedParameter($userId)),
@@ -192,13 +200,14 @@ class CircleProviderRequestBuilder {
 	 *
 	 * @deprecated
 	 *
-	 * @param $qb
+	 * @param IQueryBuilder $qb
 	 * @param integer $shareId
 	 */
 	// TODO - put this as a leftjoin
 	protected function linkCircleField(& $qb, $shareId) {
 		$expr = $qb->expr();
 
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->from(CirclesMapper::TABLENAME, 'c')
 		   ->andWhere(
 			   $expr->orX(
@@ -211,11 +220,12 @@ class CircleProviderRequestBuilder {
 
 
 	/**
-	 * @param $qb
+	 * @param IQueryBuilder $qb
 	 */
 	protected function linkToCircleOwner(& $qb) {
 		$expr = $qb->expr();
 
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->leftJoin(
 			'c', 'circles_members', 'mo', $expr->andX(
 			$expr->eq('c.id', 'mo.circle_id'),
@@ -228,7 +238,7 @@ class CircleProviderRequestBuilder {
 	/**
 	 * Link to members (userId) of circle
 	 *
-	 * @param $qb
+	 * @param IQueryBuilder $qb
 	 * @param string $userId
 	 */
 	protected function linkToMember(& $qb, $userId) {
@@ -244,12 +254,13 @@ class CircleProviderRequestBuilder {
 	/**
 	 * Link to storage/filecache
 	 *
-	 * @param $qb
+	 * @param IQueryBuilder $qb
 	 * @param string $userId
 	 */
 	protected function linkToFileCache(& $qb, $userId) {
 		$expr = $qb->expr();
 
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->leftJoin('s', 'filecache', 'f', $expr->eq('s.file_source', 'f.fileid'))
 		   ->leftJoin('f', 'storages', 'st', $expr->eq('f.storage', 'st.numeric_id'))
 		   ->leftJoin(
@@ -264,7 +275,7 @@ class CircleProviderRequestBuilder {
 	/**
 	 * add share to the database and return the ID
 	 *
-	 * @param $share
+	 * @param IShare $share
 	 *
 	 * @return IQueryBuilder
 	 */
@@ -334,9 +345,13 @@ class CircleProviderRequestBuilder {
 	}
 
 
+	/**
+	 * @param IQueryBuilder $qb
+	 */
 	private function linkToShare(& $qb) {
 		$expr = $qb->expr();
 
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->from('share', 's')
 		   ->where($expr->eq('s.share_type', $qb->createNamedParameter(Share::SHARE_TYPE_CIRCLE)))
 		   ->andWhere(

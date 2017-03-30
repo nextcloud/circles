@@ -30,12 +30,8 @@ namespace OCA\Circles\Service;
 use OC\User\NoUserException;
 use OCA\Circles\Db\CirclesMapper;
 use OCA\Circles\Db\MembersMapper;
-use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
-use OCA\Circles\Exceptions\MemberIsNotModeratorException;
-use OCA\Circles\Exceptions\MemberIsOwnerException;
-use \OCA\Circles\Model\Circle;
 use \OCA\Circles\Model\Member;
 use OCP\IL10N;
 use OCP\IUserManager;
@@ -124,7 +120,7 @@ class MembersService {
 	private function getFreshNewMember($circleId, $name) {
 
 		if (!$this->userManager->userExists($name)) {
-			throw new NoUserException("The selected user does not exist");
+			throw new NoUserException($this->l10n->t("The selected user does not exist"));
 		}
 
 		try {
@@ -146,7 +142,7 @@ class MembersService {
 	/**
 	 * return if member already exists
 	 *
-	 * @param $member
+	 * @param Member $member
 	 *
 	 * @return bool
 	 */

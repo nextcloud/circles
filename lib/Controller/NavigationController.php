@@ -62,5 +62,6 @@ class NavigationController extends BaseController {
 		);
 	}
 
-
 }
+
+
