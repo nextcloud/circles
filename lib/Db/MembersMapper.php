@@ -59,7 +59,7 @@ class MembersMapper extends Mapper {
 	 * @param $userId
 	 * @param bool $moderator
 	 *
-	 * @return null|Member
+	 * @return Member
 	 * @throws MemberDoesNotExistException
 	 */
 	public function getMemberFromCircle($circleId, $userId, $moderator = false) {
