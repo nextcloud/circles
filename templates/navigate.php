@@ -101,16 +101,14 @@ style('circles', 'navigation');
 				</b><br/>
 				<?php p(
 					$l->t(
-						"Use this if you want to send messsage or share thing
-				repeatedly to the same group of people."
+						"Use this if you want to send messsage or share thing repeatedly to the same group of people."
 					)
 				); ?>
 			</div>
 			<div id="circles_new_type_hidden"><b>
 					<?php p(
 						$l->t(
-							"An Hidden Circle is an open group that can be
-					protected by a password."
+							"An Hidden Circle is an open group that can be protected by a password."
 						)
 					); ?></b><br/><?php p(
 					$l->t(
@@ -121,26 +119,22 @@ style('circles', 'navigation');
 			</div>
 			<div id="circles_new_type_private"><b><?php p(
 						$l->t(
-							"A Private Circle require invitation or a
-					confirmation from an admin."
+							"A Private Circle require invitation or a confirmation from an admin."
 						)
 					); ?>
 				</b><br/><?php p(
 					$l->t(
-						"This is the best circle if you are looking for privacy
-				when sharing your files or your ideas."
+						"This is the best circle if you are looking for privacy when sharing your files or your ideas."
 					)
 				); ?>
 			</div>
 			<div id="circles_new_type_public"><b><?php p(
 						$l->t(
-							"A Public Circle is an open group visible to anyone
-					that dare to join."
+							"A Public Circle is an open group visible to anyone that dare to join."
 						)
 					); ?></b><br/><?php p(
 					$l->t(
-						"Your circle will be visible to everyone and everyone
-				will be able to join the circle."
+						"Your circle will be visible to everyone and everyone will be able to join the circle."
 					)
 				); ?>
 			</div>
@@ -197,7 +191,9 @@ style('circles', 'navigation');
 			<div id="type"></div>
 
 
-			<div id="joincircle_invit"><?php p($l->t("You have a pending invitation to join this circle")); ?></div>
+			<div id="joincircle_invit"><?php p(
+					$l->t("You have a pending invitation to join this circle")
+				); ?></div>
 			<div id="joincircle_interact">
 				<input id="joincircle_acceptinvit" type="submit"
 					   value="<?php p($l->t('Accept the invitation')); ?>"/>
