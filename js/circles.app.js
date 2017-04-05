@@ -58,6 +58,7 @@ $(document).ready(function () {
 		$.extend(Navigation.prototype, actions);
 
 		this.init();
+		this.initTransifex();
 	};
 
 
@@ -71,6 +72,31 @@ $(document).ready(function () {
 			elements.initExperienceCirclesList();
 			elements.initExperienceMemberDetails();
 			nav.initNavigation();
+		},
+
+		initTransifex: function () {
+			t('circles', 'Personal Circle');
+			t('circles', 'Hidden Circle');
+			t('circles', 'Private Circle');
+			t('circles', 'Public Circle');
+
+			t('circles', 'Personal');
+			t('circles', 'Hidden');
+			t('circles', 'Private');
+			t('circles', 'Public');
+
+			t('circles', 'Not a member');
+			t('circles', 'Member');
+			t('circles', 'Moderator');
+			t('circles', 'Admin');
+			t('circles', 'Owner');
+
+
+			t('circles', 'Unknown');
+			t('circles', 'Invited');
+			t('circles', 'Requesting');
+			t('circles', 'Blocked');
+			t('circles', 'Kicked');
 		}
 	};
 

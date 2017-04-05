@@ -194,7 +194,7 @@ var nav = {
 
 	displayCircleDetails: function (details) {
 		elements.circlesDetails.children('#name').text(details.name);
-		elements.circlesDetails.children('#type').text(details.typeLongString);
+		elements.circlesDetails.children('#type').text(t('circles', details.typeLongString));
 	},
 
 
