@@ -77,14 +77,15 @@
 			};
 
 
-			this.searchCircles = function (type, name, callback) {
+			this.searchCircles = function (type, name, level, callback) {
 				var result = {status: -1};
 				$.ajax({
 					method: 'GET',
 					url: OC.generateUrl(OC.linkTo('circles', 'circles')),
 					data: {
 						type: type,
-						name: name
+						name: name,
+						level: level
 					}
 				}).done(function (res) {
 					self.onCallback(callback, res);

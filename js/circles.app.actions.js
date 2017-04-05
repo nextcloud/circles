@@ -81,14 +81,20 @@ var actions = {
 		var type = actions.getStringTypeFromType(result.type);
 
 		if (result.status === 1) {
-			OCA.notification.onSuccess(t('circles', " {type} '{name}' created", {type: type, name: result.name}));
+			OCA.notification.onSuccess(t('circles', " {type} '{name}' created", {
+				type: type,
+				name: result.name
+			}));
 			nav.displayCirclesList(result.circle.type);
 			actions.selectCircle(result.circle.id);
 			return;
 		}
 
 		OCA.notification.onFail(
-			t('circles', " {type} '{name}' NOT created", {type: type, name: result.name}) + ': ' +
+			t('circles', " {type} '{name}' NOT created", {
+				type: type,
+				name: result.name
+			}) + ': ' +
 			((result.error) ? result.error : t('circles', 'no error message')));
 	},
 
@@ -198,7 +204,8 @@ var actions = {
 
 		if (result.status === 1) {
 			OCA.notification.onSuccess(
-				t('circles', "Member '{name}' successfully added to the circle", {name: result.name}));
+				t('circles', "Member '{name}' successfully added to the circle",
+					{name: result.name}));
 
 			nav.displayMembers(result.members);
 			return;
@@ -234,12 +241,14 @@ var actions = {
 					$(this).hide(300);
 				});
 			OCA.notification.onSuccess(
-				t('circles', "Member '{name}' successfully removed from the circle", {name: result.name}));
+				t('circles', "Member '{name}' successfully removed from the circle",
+					{name: result.name}));
 			return;
 		}
 
 		OCA.notification.onFail(
-			t('circles', "Member '{name}' NOT removed from the circle", {name: result.name}) + ': ' +
+			t('circles', "Member '{name}' NOT removed from the circle", {name: result.name}) +
+			': ' +
 			((result.error) ? result.error : t('circles', 'no error message')));
 	},
 

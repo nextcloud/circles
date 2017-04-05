@@ -41,6 +41,7 @@ var curr = {
 	memberLevel: 0,
 	memberStatus: '',
 	searchCircle: '',
+	searchFilter: 0,
 	searchUser: ''
 };
 

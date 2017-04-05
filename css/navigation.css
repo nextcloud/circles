@@ -9,9 +9,15 @@
 	padding: 3px 12px;
 }
 
-#app-navigation input#circles_search {
+#app-navigation input#circles_search, #app-navigation select#circles_filters {
 	margin: 15px;
 	width: 285px;
+}
+
+#app-navigation select#circles_filters {
+	margin-top: 0px;
+	font-style: italic;
+	color: #777777;
 }
 
 #app-navigation input, #app-navigation select, #app-navigation option {

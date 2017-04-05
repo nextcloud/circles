@@ -65,6 +65,7 @@ var elements = {
 		elements.navigation = $('#app-navigation.circles');
 		elements.circlesList = $('#circles_list');
 		elements.circlesSearch = $('#circles_search');
+		elements.circlesFilters = $('#circles_filters');
 		elements.circlesDetails = $('#circle_details');
 		elements.emptyContent = $('#emptycontent');
 		elements.mainUI = $('#mainui');
@@ -127,14 +128,26 @@ var elements = {
 			nav.displayCirclesList($(this).attr('circle-type'));
 		});
 
-		this.circlesSearch.on('input propertychange paste focus', function () {
+		this.circlesSearch.on('input property paste focus', function () {
 			var search = $(this).val().trim();
 			if (curr.searchCircle === search) {
 				return;
 			}
 
 			curr.searchCircle = search;
-			api.searchCircles(curr.circlesType, search, actions.listCirclesResult);
+			api.searchCircles(curr.circlesType, curr.searchCircle, curr.searchFilter,
+				actions.listCirclesResult);
+		});
+
+		this.circlesFilters.on('input property paste focus', function () {
+			var searchFilter = $(this).val();
+			if (curr.searchFilter === searchFilter) {
+				return;
+			}
+
+			curr.searchFilter = searchFilter;
+			api.searchCircles(curr.circlesType, curr.searchCircle, curr.searchFilter,
+				actions.listCirclesResult);
 		});
 	},
 
@@ -198,15 +211,12 @@ var elements = {
 			var currSearch = elements.addMember.val().trim();
 			var line = value.label + '   (' + value.value.shareWith + ')';
 			if (currSearch.length > 0) {
-				line =
-					line.replace(new RegExp('(' + currSearch + ')', 'gi'),
-						'<b>$1</b>');
+				line = line.replace(new RegExp('(' + currSearch + ')', 'gi'), '<b>$1</b>');
 			}
 
 			elements.membersSearchResult.append(
-				'<div class="members_search" searchresult="' +
-				value.value.shareWith +
-				'">' + line + '</div>');
+				'<div class="members_search" searchresult="' + value.value.shareWith + '">' + line +
+				'</div>');
 		});
 
 	},
@@ -216,7 +226,8 @@ var elements = {
 
 		elements.navigation.addClass('selected');
 		elements.navigation.children().each(function () {
-			if ($(this).attr('id') !== 'circles_search') {
+			if ($(this).attr('id') !== 'circles_search' &&
+				$(this).attr('id') !== 'circles_filters') {
 				$(this).remove();
 			}
 		});

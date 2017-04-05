@@ -158,9 +158,9 @@ style('circles', 'navigation');
 		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PUBLIC]) {
 			print_unescaped('<div circle-type="public">' . $l->t('Public Circles') . '</div>');
 		}
-
 		?>
-		<div circle-type="all">All Circles</div>
+
+		<div circle-type="all"><?php p($l->t('All Circles')); ?></div>
 	</div>
 
 </div>
@@ -168,12 +168,18 @@ style('circles', 'navigation');
 <div id="app-navigation" class="circles" style="display: none;">
 	<input id="circles_search" type="text"
 		   placeholder="<?php p($l->t('Search circles')); ?>"/>
+	<select id="circles_filters">
+		<option value="0"><?php p($l->t('No filter')); ?></option>
+		<option value="1"><?php p($l->t('Circles where you are member')); ?></option>
+		<option value="9"><?php p($l->t('Circles you are owning')); ?></option>
+	</select>
+
 </div>
 
 <script id="tmpl_circle" type="text/template">
 	<div class="title">%title%</div>
 	<div class="type"><b>%type%</b> (%status%, %level_string%)</div>
-	<div class="owner"><b>Owner:</b> %owner%</div>
+	<div class="owner"><b><?php p($l->t('Owner')); ?>:</b> %owner%</div>
 </script>
 
 <div id="emptycontent">
@@ -218,10 +224,10 @@ style('circles', 'navigation');
 		<div id="memberslist">
 			<table id="memberslist_table">
 				<tr class="header">
-					<td class="username">Username</td>
-					<td class="level">Level</td>
-					<td class="status">Status</td>
-					<td class="joined">Joined</td>
+					<td class="username"><?php p($l->t('Username')); ?></td>
+					<td class="level"><?php p($l->t('Level')); ?></td>
+					<td class="status"><?php p($l->t('Status')); ?></td>
+					<td class="joined"><?php p($l->t('Joined')); ?></td>
 				</tr>
 			</table>
 
@@ -249,7 +255,6 @@ style('circles', 'navigation');
 						   value="<?php p($l->t('Reject the request')); ?>"/>
 				</div>
 			</div>
-
 
 		</div>
 	</div>
