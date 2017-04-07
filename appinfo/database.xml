@@ -172,6 +172,20 @@
 			</field>
 
 			<field>
+				<name>author</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>32</length>
+			</field>
+
+			<field>
+				<name>sharer</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>32</length>
+			</field>
+
+			<field>
 				<name>item</name>
 				<type>text</type>
 				<notnull>true</notnull>

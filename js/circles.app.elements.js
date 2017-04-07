@@ -258,10 +258,10 @@ var elements = {
 		var tmpl = $('#tmpl_circle').html();
 
 		tmpl = tmpl.replace(/%title%/g, entry.name);
-		tmpl = tmpl.replace(/%type%/g, entry.type);
+		tmpl = tmpl.replace(/%type%/g, t('circles', entry.type));
 		tmpl = tmpl.replace(/%owner%/g, entry.owner.user_id);
-		tmpl = tmpl.replace(/%status%/g, entry.user.status);
-		tmpl = tmpl.replace(/%level_string%/g, entry.user.level_string);
+		tmpl = tmpl.replace(/%status%/g, t('circles', entry.user.status));
+		tmpl = tmpl.replace(/%level_string%/g, t('circles', entry.user.level_string));
 		tmpl = tmpl.replace(/%count%/g, entry.count);
 		tmpl = tmpl.replace(/%creation%/g, entry.creation);
 
