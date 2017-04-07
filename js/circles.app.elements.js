@@ -128,6 +128,13 @@ var elements = {
 			nav.displayCirclesList($(this).attr('circle-type'));
 		});
 
+		this.initExperienceCirclesListFromSearch();
+		this.initExperienceCirclesListFromFilter();
+	},
+
+
+	initExperienceCirclesListFromSearch: function () {
+
 		this.circlesSearch.on('input property paste focus', function () {
 			var search = $(this).val().trim();
 			if (curr.searchCircle === search) {
@@ -138,6 +145,10 @@ var elements = {
 			api.searchCircles(curr.circlesType, curr.searchCircle, curr.searchFilter,
 				actions.listCirclesResult);
 		});
+	},
+
+
+	initExperienceCirclesListFromFilter: function () {
 
 		this.circlesFilters.on('input property paste focus', function () {
 			var searchFilter = $(this).val();
@@ -149,6 +160,7 @@ var elements = {
 			api.searchCircles(curr.circlesType, curr.searchCircle, curr.searchFilter,
 				actions.listCirclesResult);
 		});
+
 	},
 
 

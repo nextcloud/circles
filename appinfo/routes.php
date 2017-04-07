@@ -51,5 +51,10 @@ return [
 			'verb'         => 'DELETE',
 			'requirements' => ['id' => '\d+'],
 		],
+		[
+			'name'         => 'Shares#new', 'url' => '/circles/{id}/share', 'verb' => 'PUT',
+			'requirements' => ['id' => '\d+'],
+		],
+
 	],
 ];

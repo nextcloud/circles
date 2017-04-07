@@ -61,20 +61,20 @@
 			};
 
 
-			this.listCircles = function (type, callback) {
-				var result = {status: -1};
-				$.ajax({
-					method: 'GET',
-					url: OC.generateUrl(OC.linkTo('circles', 'circles')),
-					data: {
-						type: type
-					}
-				}).done(function (res) {
-					self.onCallback(callback, res);
-				}).fail(function () {
-					self.onCallback(callback, result);
-				});
-			};
+			// this.listCircles = function (type, callback) {
+			// 	var result = {status: -1};
+			// 	$.ajax({
+			// 		method: 'GET',
+			// 		url: OC.generateUrl(OC.linkTo('circles', 'circles')),
+			// 		data: {
+			// 			type: type
+			// 		}
+			// 	}).done(function (res) {
+			// 		self.onCallback(callback, res);
+			// 	}).fail(function () {
+			// 		self.onCallback(callback, result);
+			// 	});
+			// };
 
 
 			this.searchCircles = function (type, name, level, callback) {
@@ -160,6 +160,24 @@
 					method: 'GET',
 					url: OC.generateUrl(OC.linkTo('circles', 'circles/' + circleid + '/leave')),
 					data: {}
+				}).done(function (res) {
+					self.onCallback(callback, res);
+				}).fail(function () {
+					self.onCallback(callback, result);
+				});
+			};
+
+
+			this.shareToCircle = function (circleId, source, type, item, callback) {
+				var result = {status: -1};
+				$.ajax({
+					method: 'PUT',
+					url: OC.generateUrl(OC.linkTo('circles', 'circles/' + circleId + '/share')),
+					data: {
+						source: source,
+						type: type,
+						item: item
+					}
 				}).done(function (res) {
 					self.onCallback(callback, res);
 				}).fail(function () {

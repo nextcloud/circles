@@ -32,6 +32,7 @@ use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MembersService;
 
 use OCA\Circles\Service\MiscService;
+use OCA\Circles\Service\SharesService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\IL10N;
@@ -54,6 +55,9 @@ class BaseController extends Controller {
 	/** @var MembersService */
 	protected $membersService;
 
+	/** @var MembersService */
+	protected $sharesService;
+
 	/** @var MiscService */
 	protected $miscService;
 
@@ -68,6 +72,7 @@ class BaseController extends Controller {
 	 * @param ConfigService $configService
 	 * @param CirclesService $circlesService
 	 * @param MembersService $membersService
+	 * @param SharesService $sharesService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
@@ -78,6 +83,7 @@ class BaseController extends Controller {
 		ConfigService $configService,
 		CirclesService $circlesService,
 		MembersService $membersService,
+		SharesService $sharesService,
 		MiscService $miscService
 	) {
 		parent::__construct($appName, $request);
@@ -87,6 +93,7 @@ class BaseController extends Controller {
 		$this->configService = $configService;
 		$this->circlesService = $circlesService;
 		$this->membersService = $membersService;
+		$this->sharesService = $sharesService;
 		$this->miscService = $miscService;
 	}
 

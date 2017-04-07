@@ -52,7 +52,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 		$members = array($owner, $user);
 
-		$model = new Circle();
+		$model = new Circle($this->l10n);
 		$model->fromArray(
 			array(
 				'id'          => 1,

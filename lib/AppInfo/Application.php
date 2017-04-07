@@ -31,6 +31,7 @@ use \OCA\Circles\Controller\CirclesController;
 use \OCA\Circles\Controller\MembersController;
 
 
+use OCA\Circles\Controller\SharesController;
 use \OCA\Circles\Db\CirclesMapper;
 use \OCA\Circles\Db\MembersMapper;
 use \OCA\Circles\Service\DatabaseService;
@@ -38,6 +39,7 @@ use \OCA\Circles\Service\CirclesService;
 use \OCA\Circles\Service\MembersService;
 use \OCA\Circles\Service\ConfigService;
 use \OCA\Circles\Service\MiscService;
+use OCA\Circles\Service\SharesService;
 use OCP\AppFramework\App;
 
 class Application extends App {
@@ -118,6 +120,15 @@ class Application extends App {
 			);
 		}
 		);
+
+		$container->registerService(
+			'SharesService', function($c) {
+			return new SharesService(
+				$c->query('UserId'), $c->query('L10N'), $c->query('UserManager'),
+				$c->query('ConfigService'), $c->query('DatabaseService'), $c->query('MiscService')
+			);
+		}
+		);
 	}
 
 
@@ -133,7 +144,7 @@ class Application extends App {
 			return new NavigationController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
 				$c->query('ConfigService'), $c->query('CirclesService'),
-				$c->query('MembersService'), $c->query('MiscService')
+				$c->query('MembersService'), $c->query('SharesService'), $c->query('MiscService')
 			);
 		}
 		);
@@ -143,7 +154,7 @@ class Application extends App {
 			return new CirclesController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
 				$c->query('ConfigService'), $c->query('CirclesService'),
-				$c->query('MembersService'), $c->query('MiscService')
+				$c->query('MembersService'), $c->query('SharesService'), $c->query('MiscService')
 			);
 		}
 		);
@@ -153,7 +164,17 @@ class Application extends App {
 			return new MembersController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
 				$c->query('ConfigService'), $c->query('CirclesService'),
-				$c->query('MembersService'), $c->query('MiscService')
+				$c->query('MembersService'), $c->query('SharesService'), $c->query('MiscService')
+			);
+		}
+		);
+
+		$container->registerService(
+			'SharesController', function($c) {
+			return new SharesController(
+				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
+				$c->query('ConfigService'), $c->query('CirclesService'),
+				$c->query('MembersService'), $c->query('SharesService'), $c->query('MiscService')
 			);
 		}
 		);

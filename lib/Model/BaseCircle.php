@@ -31,6 +31,10 @@ class BaseCircle {
 	/** @var int */
 	private $id;
 
+
+	/** @var L10N */
+	protected $l10n;
+
 	/** @var string */
 	private $name;
 
@@ -52,7 +56,10 @@ class BaseCircle {
 	/** @var Member[] */
 	private $members;
 
-	public function __construct($type = -1, $name = '') {
+
+	public function __construct($l10n, $type = -1, $name = '') {
+		$this->l10n = $l10n;
+
 		if ($type > -1) {
 			$this->type = $type;
 		}

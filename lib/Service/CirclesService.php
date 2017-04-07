@@ -28,6 +28,7 @@ namespace OCA\Circles\Service;
 
 
 use OCA\Circles\Db\CirclesMapper;
+use OCA\Circles\Db\MembersMapper;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\MemberIsNotOwnerException;
@@ -103,7 +104,7 @@ class CirclesService {
 
 		$owner = new Member($this->l10n, $this->userId);
 		$owner->setStatus(Member::STATUS_MEMBER);
-		$circle = new Circle($type, $name);
+		$circle = new Circle($this->l10n, $type, $name);
 		$circle->setMembers([$owner]);
 
 		try {

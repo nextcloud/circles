@@ -60,16 +60,6 @@ function creationDone(result)
 ```
 
 
-**Listing Circles**
->     OCA.Circles.api.listCircle(type, callback);
-```javascript
-OCA.Circles.api.listCircles('all', listingDone);
-function listingDone(result)
-{
-	console.log('status: ' + JSON.stringify(result));
-}     
-```
-
 
 
 **Searching Circles**

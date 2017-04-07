@@ -235,7 +235,7 @@ class CirclesMapperTest extends \PHPUnit_Framework_TestCase {
 
 	private function createCircleTest($name, $type, $owner, $create = true) {
 
-		$circle = new Circle();
+		$circle = new Circle($this->l10n);
 		$circle->setName($name);
 		$circle->setDescription('description');
 		$circle->setType($type);
