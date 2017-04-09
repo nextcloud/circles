@@ -35,6 +35,7 @@ OC.L10N.register(
     "Owner" : "Propriétaire",
     "Unknown" : "Inconnu",
     "Invited" : "Invité",
+    "Requesting" : "Demande en cours",
     "Blocked" : "Bloqué",
     "Kicked" : "Exclu",
     "Circles" : "Cercles",
