@@ -85,6 +85,7 @@ OC.L10N.register(
     "Username" : "Nombre de usuario",
     "Level" : "Nivel",
     "Status" : "Estatus",
+    "Joined" : "Se ha unido",
     "Kick this member" : "Sacar a este miembro",
     "Accept the request" : "Aceptar la solicitud",
     "Reject the request" : "Rechazar solicitud"
