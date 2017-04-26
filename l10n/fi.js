@@ -77,6 +77,7 @@ OC.L10N.register(
     "Leave this circle" : "Poistu tästä piiristä",
     "Add a member" : "Lisää jäsen",
     "Username" : "Käyttäjätunnus",
+    "Level" : "Taso",
     "Status" : "Tila",
     "Joined" : "Liittynyt",
     "Kick this member" : "Erota jäsen",
