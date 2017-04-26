@@ -57,7 +57,7 @@ class CircleProviderRequestBuilder {
 		$qb = $this->getBaseSelectSql();
 		$this->limitToShareParent($qb);
 		$this->limitToCircle($qb, $circleId);
-		$this->limitToFile($qb, $fileId);
+		$this->limitToFiles($qb, $fileId);
 
 		return $qb;
 	}
@@ -149,11 +149,20 @@ class CircleProviderRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param $fileId
 	 */
-	protected function limitToFile(& $qb, $fileId) {
+	protected function limitToFiles(& $qb, $files) {
+
+		if (!is_array($files)) {
+			$files = array($files);
+		}
+
 		$expr = $qb->expr();
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? 's.' : '';
-
-		$qb->andWhere($expr->eq($pf . 'file_source', $qb->createNamedParameter($fileId)));
+		$qb->andWhere(
+			$expr->in(
+				$pf . 'file_source',
+				$qb->createNamedParameter($files, IQueryBuilder::PARAM_INT_ARRAY)
+			)
+		);
 	}
 
 
@@ -236,7 +245,7 @@ class CircleProviderRequestBuilder {
 
 
 	/**
-	 * Link to members (userId) of circle
+	 * Link to member (userId) of circle
 	 *
 	 * @param IQueryBuilder $qb
 	 * @param string $userId
@@ -248,6 +257,19 @@ class CircleProviderRequestBuilder {
 		   ->andWhere($expr->eq('s.share_with', 'm.circle_id'))
 		   ->andWhere($expr->eq('m.user_id', $qb->createNamedParameter($userId)))
 		   ->andWhere($expr->gte('m.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)));
+	}
+
+
+	/**
+	 * Link to all members of circle
+	 *
+	 * @param IQueryBuilder $qb
+	 */
+	protected function joinCircleMembers(& $qb) {
+		$expr = $qb->expr();
+
+		$qb->from(MembersMapper::TABLENAME, 'm')
+		   ->andWhere($expr->eq('s.share_with', 'm.circle_id'));
 	}
 
 
@@ -317,10 +339,30 @@ class CircleProviderRequestBuilder {
 			'mo.user_id AS circle_owner'
 		);
 		$this->linkToCircleOwner($qb);
-		$this->linkToShare($qb);
+		$this->joinShare($qb);
 
 		// TODO: Left-join circle and REMOVE this line
 		$this->linkCircleField($qb, $shareId);
+
+		return $qb;
+	}
+
+
+	/**
+	 * Generate and return a base sql request
+	 * This one should be used to retrieve a complete list of users (ie. access list).
+	 *
+	 * @return IQueryBuilder
+	 */
+	protected function getAccessListBaseSelectSql() {
+		$qb = $this->dbConnection->getQueryBuilder();
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$qb->select(
+			'm.user_id', 's.file_source', 's.file_target'
+		);
+		$this->joinCircleMembers($qb);
+		$this->joinShare($qb);
 
 		return $qb;
 	}
@@ -339,7 +381,7 @@ class CircleProviderRequestBuilder {
 		)
 		   ->selectAlias('st.id', 'storage_string_id');
 
-		$this->linkToShare($qb);
+		$this->joinShare($qb);
 
 		return $qb;
 	}
@@ -348,7 +390,7 @@ class CircleProviderRequestBuilder {
 	/**
 	 * @param IQueryBuilder $qb
 	 */
-	private function linkToShare(& $qb) {
+	private function joinShare(& $qb) {
 		$expr = $qb->expr();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
