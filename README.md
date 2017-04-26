@@ -25,11 +25,6 @@ Select this circle to create a public community that will not be displayed to ev
 his is the best circle if you are looking for privacy when sharing your files or else.
 
 ***
-# Compatibility
-
-This app is **not** compatible with the basic version of nextcloud. 
-
-***
 # API
 
 ```php
