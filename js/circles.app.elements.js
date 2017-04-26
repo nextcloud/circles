@@ -212,8 +212,8 @@ var elements = {
 		$.each(exact, function (index, value) {
 			elements.membersSearchResult.append(
 				'<div class="members_search exact" searchresult="' +
-				value.value.shareWith + '">' + value.label + '   (' +
-				value.value.shareWith + ')</div>');
+				escapeHTML(value.value.shareWith) + '">' + escapeHTML(value.label) + '   (' +
+				escapeHTML(value.value.shareWith) + ')</div>');
 		});
 
 	},
@@ -221,13 +221,13 @@ var elements = {
 	fillPartialMembersSearch: function (partial) {
 		$.each(partial, function (index, value) {
 			var currSearch = elements.addMember.val().trim();
-			var line = value.label + '   (' + value.value.shareWith + ')';
+			var line = escapeHTML(value.label) + '   (' + escapeHTML(value.value.shareWith) + ')';
 			if (currSearch.length > 0) {
 				line = line.replace(new RegExp('(' + currSearch + ')', 'gi'), '<b>$1</b>');
 			}
 
 			elements.membersSearchResult.append(
-				'<div class="members_search" searchresult="' + value.value.shareWith + '">' + line +
+				'<div class="members_search" searchresult="' + escapeHTML(value.value.shareWith) + '">' + line +
 				'</div>');
 		});
 
@@ -247,7 +247,7 @@ var elements = {
 
 
 	removeMemberslistEntry: function (membername) {
-		this.mainUIMembers.children("[member-id='" + membername + "']").each(
+		this.mainUIMembers.children("[member-id='" + escapeHTML(membername) + "']").each(
 			function () {
 				$(this).hide(300);
 			});
@@ -257,13 +257,12 @@ var elements = {
 	generateTmplCircle: function (entry) {
 		var tmpl = $('#tmpl_circle').html();
 
-		tmpl = tmpl.replace(/%title%/g, entry.name);
-		tmpl = tmpl.replace(/%type%/g, t('circles', entry.type));
-		tmpl = tmpl.replace(/%owner%/g, entry.owner.user_id);
-		tmpl = tmpl.replace(/%status%/g, t('circles', entry.user.status));
-		tmpl = tmpl.replace(/%level_string%/g, t('circles', entry.user.level_string));
-		tmpl = tmpl.replace(/%count%/g, entry.count);
-		tmpl = tmpl.replace(/%creation%/g, entry.creation);
+		tmpl = tmpl.replace(/%title%/g, escapeHTML(entry.name));
+		tmpl = tmpl.replace(/%type%/g, t('circles', escapeHTML(entry.type)));
+		tmpl = tmpl.replace(/%owner%/g, escapeHTML(entry.owner.user_id));
+		tmpl = tmpl.replace(/%status%/g, t('circles', escapeHTML(entry.user.status)));
+		tmpl = tmpl.replace(/%level_string%/g, t('circles', escapeHTML(entry.user.level_string)));
+		tmpl = tmpl.replace(/%creation%/g, escapeHTML(entry.creation));
 
 		return tmpl;
 	},
@@ -272,12 +271,11 @@ var elements = {
 	generateTmplMember: function (entry) {
 		var tmpl = $('#tmpl_member').html();
 
-		tmpl = tmpl.replace(/%username%/g, entry.user_id);
-		tmpl = tmpl.replace(/%level%/g, entry.level);
-		tmpl = tmpl.replace(/%levelstring%/g, entry.level_string);
-		tmpl = tmpl.replace(/%status%/g, entry.status);
-		tmpl = tmpl.replace(/%joined%/g, entry.joined);
-		tmpl = tmpl.replace(/%note%/g, entry.note);
+		tmpl = tmpl.replace(/%username%/g, escapeHTML(entry.user_id));
+		tmpl = tmpl.replace(/%level%/g, escapeHTML(entry.level));
+		tmpl = tmpl.replace(/%levelstring%/g, escapeHTML(entry.level_string));
+		tmpl = tmpl.replace(/%status%/g, escapeHTML(entry.status));
+		tmpl = tmpl.replace(/%joined%/g, escapeHTML(entry.joined));
 
 		return tmpl;
 	}
