@@ -31,6 +31,7 @@ namespace OCA\Circles;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleProviderRequestBuilder;
 use OCA\Circles\Model\Circle;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\Files\Folder;
 use OCP\Files\Node;
 use OCP\Files\IRootFolder;
@@ -315,7 +316,7 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 		$this->limitToShareOwner($qb, $userId, $reShares);
 
 		if ($node !== null) {
-			$this->limitToFile($qb, $node->getId());
+			$this->limitToFiles($qb, $node->getId());
 		}
 
 		$this->limitToPage($qb, $limit, $offset);
@@ -446,7 +447,6 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	public function getShareByToken($token) {
 		return null;
 	}
-
 
 
 	/**
@@ -595,4 +595,64 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 		return new \Exception($message_t);
 	}
 
+
+	/**
+	 * Get the access list to the array of provided nodes.
+	 *
+	 * @see IManager::getAccessList() for sample docs
+	 *
+	 * @param Node[] $nodes The list of nodes to get access for
+	 * @param bool $currentAccess If current access is required (like for removed shares that might
+	 *     get revived later)
+	 *
+	 * @return array
+	 * @since 12
+	 */
+	public function getAccessList($nodes, $currentAccess) {
+
+		$ids = [];
+		foreach ($nodes as $node) {
+			$ids[] = $node->getId();
+		}
+
+		$qb = $this->getAccessListBaseSelectSql();
+		$this->limitToFiles($qb, $ids);
+
+		$users = $this->parseAccessListResult($qb);
+
+		if ($currentAccess === false) {
+			$users = array_keys($users);
+		}
+
+		return ['users' => $users];
+	}
+
+
+	/**
+	 * return array regarding getAccessList format.
+	 * ie. \OC\Share20\Manager::getAccessList()
+	 *
+	 * @param $qb
+	 *
+	 * @return array
+	 */
+	private function parseAccessListResult($qb) {
+
+		$cursor = $qb->execute();
+		$users = [];
+
+		while ($row = $cursor->fetch()) {
+			$userId = $row['user_id'];
+
+			if (!key_exists($userId, $users)) {
+				$users[$userId] = [
+					'node_id'   => $row['file_source'],
+					'node_path' => $row['file_target']
+				];
+			}
+		}
+		$cursor->closeCursor();
+
+		return $users;
+	}
 }
