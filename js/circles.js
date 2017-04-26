@@ -48,7 +48,7 @@
 				var result = {status: -1};
 				$.ajax({
 					method: 'PUT',
-					url: OC.generateUrl(OC.linkTo('circles', 'circles')),
+					url: OC.generateUrl('/apps/circles/circles'),
 					data: {
 						type: type,
 						name: name
@@ -81,7 +81,7 @@
 				var result = {status: -1};
 				$.ajax({
 					method: 'GET',
-					url: OC.generateUrl(OC.linkTo('circles', 'circles')),
+					url: OC.generateUrl('/apps/circles/circles'),
 					data: {
 						type: type,
 						name: name,
@@ -99,7 +99,7 @@
 				var result = {status: -1};
 				$.ajax({
 					method: 'GET',
-					url: OC.generateUrl(OC.linkTo('circles', 'circles/' + circleid)),
+					url: OC.generateUrl('/apps/circles/circles/' + circleid),
 				}).done(function (res) {
 					self.onCallback(callback, res);
 				}).fail(function () {
@@ -112,7 +112,7 @@
 				var result = {status: -1};
 				$.ajax({
 					method: 'PUT',
-					url: OC.generateUrl(OC.linkTo('circles', 'circles/' + circleid + '/members')),
+					url: OC.generateUrl('/apps/circles/circles/' + circleid + '/members'),
 					data: {
 						name: member
 					}
@@ -128,7 +128,7 @@
 				var result = {status: -1};
 				$.ajax({
 					method: 'DELETE',
-					url: OC.generateUrl(OC.linkTo('circles', 'circles/' + circleid + '/members')),
+					url: OC.generateUrl('/apps/circles/circles/' + circleid + '/members'),
 					data: {
 						member: member
 					}
@@ -144,7 +144,7 @@
 				var result = {status: -1};
 				$.ajax({
 					method: 'GET',
-					url: OC.generateUrl(OC.linkTo('circles', 'circles/' + circleid + '/join')),
+					url: OC.generateUrl('/apps/circles/circles/' + circleid + '/join'),
 					data: {}
 				}).done(function (res) {
 					self.onCallback(callback, res);
@@ -158,7 +158,7 @@
 				var result = {status: -1};
 				$.ajax({
 					method: 'GET',
-					url: OC.generateUrl(OC.linkTo('circles', 'circles/' + circleid + '/leave')),
+					url: OC.generateUrl('/apps/circles/circles/' + circleid + '/leave'),
 					data: {}
 				}).done(function (res) {
 					self.onCallback(callback, res);
@@ -172,7 +172,7 @@
 				var result = {status: -1};
 				$.ajax({
 					method: 'PUT',
-					url: OC.generateUrl(OC.linkTo('circles', 'circles/' + circleId + '/share')),
+					url: OC.generateUrl('/apps/circles/circles/' + circleId + '/share'),
 					data: {
 						source: source,
 						type: type,
