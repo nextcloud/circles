@@ -172,7 +172,7 @@
 				var result = {status: -1};
 				$.ajax({
 					method: 'PUT',
-					url: OC.generateUrl('/apps/circles/circles/' + circleid + '/share'),
+					url: OC.generateUrl('/apps/circles/circles/' + circleId + '/share'),
 					data: {
 						source: source,
 						type: type,
