@@ -31,7 +31,7 @@ OC.L10N.register(
     "Not a member" : "Kein Mitglied",
     "Member" : "Mitglied",
     "Moderator" : "Moderator",
-    "Admin" : "Admin",
+    "Admin" : "Administrator",
     "Owner" : "Eigentümer",
     "Unknown" : "Unbekannt",
     "Invited" : "Eingeladen",
