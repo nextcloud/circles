@@ -191,7 +191,7 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	color: #555;
 }
 
-#mainui #joincircle, #mainui #leavecircle, #joincircle_interact {
+#mainui #joincircle, #mainui #leavecircle, #mainui #destroycircle, #joincircle_interact {
 	margin-left: 15px;
 	margin-right: 15px;
 	margin-top: 15px;

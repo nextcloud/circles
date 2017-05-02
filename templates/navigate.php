@@ -208,6 +208,8 @@ style('circles', 'navigation');
 			</div>
 
 			<div id="joincircle_request">You have a pending request to join this circle</div>
+			<input id="destroycircle" type="submit"
+				   value="<?php p($l->t('Destroy this circle')); ?>"/>
 			<input id="joincircle" type="submit"
 				   value="<?php p($l->t('Join this circle')); ?>"/>
 			<input id="leavecircle" type="submit"

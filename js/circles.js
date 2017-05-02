@@ -95,11 +95,11 @@
 			};
 
 
-			this.detailsCircle = function (circleid, callback) {
+			this.detailsCircle = function (circleId, callback) {
 				var result = {status: -1};
 				$.ajax({
 					method: 'GET',
-					url: OC.generateUrl('/apps/circles/circles/' + circleid),
+					url: OC.generateUrl('/apps/circles/circles/' + circleId),
 				}).done(function (res) {
 					self.onCallback(callback, res);
 				}).fail(function () {
@@ -108,11 +108,11 @@
 			};
 
 
-			this.addMember = function (circleid, member, callback) {
+			this.addMember = function (circleId, member, callback) {
 				var result = {status: -1};
 				$.ajax({
 					method: 'PUT',
-					url: OC.generateUrl('/apps/circles/circles/' + circleid + '/members'),
+					url: OC.generateUrl('/apps/circles/circles/' + circleId + '/members'),
 					data: {
 						name: member
 					}
@@ -124,11 +124,11 @@
 			};
 
 
-			this.removeMember = function (circleid, member, callback) {
+			this.removeMember = function (circleId, member, callback) {
 				var result = {status: -1};
 				$.ajax({
 					method: 'DELETE',
-					url: OC.generateUrl('/apps/circles/circles/' + circleid + '/members'),
+					url: OC.generateUrl('/apps/circles/circles/' + circleId + '/members'),
 					data: {
 						member: member
 					}
@@ -140,11 +140,11 @@
 			};
 
 
-			this.joinCircle = function (circleid, callback) {
+			this.joinCircle = function (circleId, callback) {
 				var result = {status: -1};
 				$.ajax({
 					method: 'GET',
-					url: OC.generateUrl('/apps/circles/circles/' + circleid + '/join'),
+					url: OC.generateUrl('/apps/circles/circles/' + circleId + '/join'),
 					data: {}
 				}).done(function (res) {
 					self.onCallback(callback, res);
@@ -154,11 +154,25 @@
 			};
 
 
-			this.leaveCircle = function (circleid, callback) {
+			this.leaveCircle = function (circleId, callback) {
 				var result = {status: -1};
 				$.ajax({
 					method: 'GET',
-					url: OC.generateUrl('/apps/circles/circles/' + circleid + '/leave'),
+					url: OC.generateUrl('/apps/circles/circles/' + circleId + '/leave'),
+					data: {}
+				}).done(function (res) {
+					self.onCallback(callback, res);
+				}).fail(function () {
+					self.onCallback(callback, result);
+				});
+			};
+
+
+			this.destroyCircle = function (circleId, callback) {
+				var result = {status: -1};
+				$.ajax({
+					method: 'DELETE',
+					url: OC.generateUrl('/apps/circles/circles/' + circleId),
 					data: {}
 				}).done(function (res) {
 					self.onCallback(callback, res);

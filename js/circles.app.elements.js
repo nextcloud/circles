@@ -53,6 +53,7 @@ var elements = {
 	joinCircleInvite: null,
 	joinCircle: null,
 	leaveCircle: null,
+	destroyCircle: null,
 	addMember: null,
 
 
@@ -81,6 +82,8 @@ var elements = {
 		elements.joinCircleInvite = $('#joincircle_invit');
 		elements.joinCircle = $('#joincircle');
 		elements.leaveCircle = $('#leavecircle');
+		elements.destroyCircle = $('#destroycircle');
+
 		elements.rightPanel = $('#rightpanel');
 		elements.addMember = $('#addmember');
 		elements.remMember = $('#remmember');
@@ -227,7 +230,8 @@ var elements = {
 			}
 
 			elements.membersSearchResult.append(
-				'<div class="members_search" searchresult="' + escapeHTML(value.value.shareWith) + '">' + line +
+				'<div class="members_search" searchresult="' + escapeHTML(value.value.shareWith) +
+				'">' + line +
 				'</div>');
 		});
 

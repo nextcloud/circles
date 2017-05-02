@@ -44,7 +44,7 @@ var actions = {
 			return;
 		}
 
-		elements.removeMemberslistEntry(result.name);
+		elements.removeMemberslistEntry(result.member.user_id);
 		if (result.member.level === 1) {
 			OCA.notification.onSuccess(
 				t('circles', "You have successfully joined this circle"));
@@ -73,7 +73,21 @@ var actions = {
 		OCA.notification.onFail(
 			t('circles', "Cannot leave this circle") + ': ' +
 			((result.error) ? result.error : t('circles', 'no error message')));
+	},
 
+
+	destroyCircleResult: function (result) {
+		if (result.status === 1) {
+
+			actions.unselectCircle(result.circle_id);
+			OCA.notification.onSuccess(
+				t('circles', "You have successfully destroyed this circle"));
+			return;
+		}
+
+		OCA.notification.onFail(
+			t('circles', "Cannot destroy this circle") + ': ' +
+			((result.error) ? result.error : t('circles', 'no error message')));
 	},
 
 
@@ -155,6 +169,17 @@ var actions = {
 		elements.addMember.val('');
 
 		api.detailsCircle(circle_id, actions.selectCircleResult);
+	},
+
+
+	unselectCircle: function (circle_id) {
+		elements.mainUIMembers.emptyTable();
+		elements.navigation.children(".circle[circle-id='" + circle_id + "']").remove();
+		elements.emptyContent.show(800);
+		elements.mainUI.fadeOut(800);
+
+		curr.circle = 0;
+		curr.circleLevel = 0;
 	},
 
 

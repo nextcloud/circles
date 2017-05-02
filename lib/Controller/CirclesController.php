@@ -150,5 +150,27 @@ class CirclesController extends BaseController {
 	}
 
 
+	/**
+	 * @NoAdminRequired
+	 * @NoSubAdminRequired
+	 *
+	 * @param $id
+	 *
+	 * @return DataResponse
+	 * @internal param string $name
+	 *
+	 */
+	public function destroy($id) {
+		try {
+			$this->circlesService->removeCircle($id);
+
+			return $this->success(['circle_id' => $id]);
+		} catch (\Exception $e) {
+			return $this->fail(['circle_id' => $id, 'error' => $e->getMessage()]);
+		}
+
+	}
+
+
 }
 

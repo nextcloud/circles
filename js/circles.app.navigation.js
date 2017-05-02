@@ -74,6 +74,17 @@ var nav = {
 			api.leaveCircle(curr.circle, actions.leaveCircleResult);
 		});
 
+		elements.destroyCircle.on('click', function () {
+			OC.dialogs.confirm(
+				t('circles', 'Are you sure you want to destroy this circle ?'),
+				t('circles', 'Please confirm'),
+				function (e) {
+					if (e === true) {
+						api.destroyCircle(curr.circle, actions.destroyCircleResult);
+					}
+				});
+		});
+
 		elements.joinCircleAccept.on('click', function () {
 			api.joinCircle(curr.circle, actions.joinCircleResult);
 		});
