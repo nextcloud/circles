@@ -128,7 +128,7 @@ class CirclesMapper extends Mapper {
 		$this->buildWithCircleId($qb, 'c.id', $circleId);
 		$this->buildWithOrXTypes($qb, $userId, $type, $name, $circleId);
 
-		$qb->groupBy('c.id');
+		//	$qb->groupBy('c.id');
 		$qb->orderBy('c.name', 'ASC');
 
 		return $qb;
