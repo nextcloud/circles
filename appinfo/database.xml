@@ -69,7 +69,6 @@
 			<field>
 				<name>creation</name>
 				<type>timestamp</type>
-				<default>CURRENT_TIMESTAMP</default>
 			</field>
 		</declaration>
 	</table>
@@ -117,7 +116,6 @@
 			<field>
 				<name>joined</name>
 				<type>timestamp</type>
-				<default>CURRENT_TIMESTAMP</default>
 			</field>
 
 			<index>
@@ -201,7 +199,6 @@
 			<field>
 				<name>creation</name>
 				<type>timestamp</type>
-				<default>CURRENT_TIMESTAMP</default>
 			</field>
 		</declaration>
 	</table>

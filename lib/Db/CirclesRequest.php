@@ -57,7 +57,8 @@ class CirclesRequest extends CirclesRequestBuilder {
 		   ->setValue('type', $qb->createNamedParameter($share->getType()))
 		   ->setValue('author', $qb->createNamedParameter($share->getAuthor()))
 		   ->setValue('sharer', $qb->createNamedParameter($share->getSharer()))
-		   ->setValue('item', $qb->createNamedParameter($share->getItem(true)));
+		   ->setValue('item', $qb->createNamedParameter($share->getItem(true)))
+		   ->setValue('creation', $qb->createNamedParameter(time()));
 
 		$qb->execute();
 	}

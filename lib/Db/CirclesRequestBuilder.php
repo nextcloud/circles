@@ -42,7 +42,6 @@ class CirclesRequestBuilder {
 	protected $dbConnection;
 
 
-
 	/**
 	 * Base of the Sql Insert request
 	 *
@@ -50,7 +49,8 @@ class CirclesRequestBuilder {
 	 */
 	protected function getBaseInsertSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->insert('circles_shares');
+		$qb->insert('circles_shares')
+		   ->setValue('creation', $qb->createNamedParameter(time()));
 
 		return $qb;
 	}
