@@ -33,6 +33,7 @@ use \OCA\Circles\Controller\MembersController;
 
 use OCA\Circles\Controller\SharesController;
 use \OCA\Circles\Db\CirclesMapper;
+use OCA\Circles\Db\CirclesRequest;
 use \OCA\Circles\Db\MembersMapper;
 use \OCA\Circles\Service\DatabaseService;
 use \OCA\Circles\Service\CirclesService;
@@ -60,6 +61,7 @@ class Application extends App {
 		self::registerServices($container);
 		self::registerControllers($container);
 		self::registerMappers($container);
+		self::registerDatabaseRequesters($container);
 		self::registerCores($container);
 
 		// Translates
@@ -124,8 +126,7 @@ class Application extends App {
 		$container->registerService(
 			'SharesService', function($c) {
 			return new SharesService(
-				$c->query('UserId'), $c->query('L10N'), $c->query('UserManager'),
-				$c->query('ConfigService'), $c->query('DatabaseService'), $c->query('MiscService')
+				$c->query('UserId'), $c->query('CirclesRequest'), $c->query('MiscService')
 			);
 		}
 		);
@@ -181,6 +182,22 @@ class Application extends App {
 
 	}
 
+
+	/**
+	 * Register Request Builders
+	 */
+	private static function registerDatabaseRequesters(& $container) {
+
+		$container->registerService(
+			'CirclesRequest', function($c) {
+			return new CirclesRequest(
+				$c->query('ServerContainer')
+				  ->getDatabaseConnection(), $c->query('MiscService')
+			);
+		}
+		);
+
+	}
 
 	/**
 	 * Register Mappers

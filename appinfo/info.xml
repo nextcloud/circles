@@ -17,7 +17,7 @@ Select this circle to create a community not displayed as a Public Circle.
 This is the best circle if you are looking for privacy when sharing your files or your ideas.
 - A Public Circle is an open group visible to anyone that dare to join.
 Your circle will be visible to everyone and everyone will be able to join the circle.]]></description>
-	<version>0.9.4</version>
+	<version>0.9.5</version>
 	<licence>AGPL</licence>
 	<author>Maxence Lange</author>
 	<documentation>

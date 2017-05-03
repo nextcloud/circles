@@ -150,6 +150,12 @@
 			</field>
 
 			<field>
+				<name>item_id</name>
+				<type>integer</type>
+				<length>4</length>
+			</field>
+
+			<field>
 				<name>circle_id</name>
 				<type>integer</type>
 				<notnull>true</notnull>

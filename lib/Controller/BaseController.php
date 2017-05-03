@@ -67,7 +67,7 @@ class BaseController extends Controller {
 	 *
 	 * @param string $appName
 	 * @param IRequest $request
-	 * @param $userId
+	 * @param string $userId
 	 * @param IL10N $l10n
 	 * @param ConfigService $configService
 	 * @param CirclesService $circlesService

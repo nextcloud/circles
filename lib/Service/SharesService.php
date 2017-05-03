@@ -27,30 +27,17 @@
 namespace OCA\Circles\Service;
 
 
-use OCA\Circles\Db\CirclesMapper;
-use OCA\Circles\Db\MembersMapper;
-use OCP\IL10N;
-use OCP\IUserManager;
+use OCA\Circles\Db\CirclesRequest;
+use OCA\Circles\Model\Share;
+
 
 class SharesService {
 
 	/** @var string */
 	private $userId;
 
-	/** @var IL10N */
-	private $l10n;
-
-	/** @var IUserManager */
-	private $userManager;
-
-	/** @var ConfigService */
-	private $configService;
-
-	/** @var CirclesMapper */
-	private $dbCircles;
-
-	/** @var MembersMapper */
-	private $dbMembers;
+	/** @var CirclesRequest */
+	private $circlesRequest;
 
 	/** @var MiscService */
 	private $miscService;
@@ -59,36 +46,51 @@ class SharesService {
 	/**
 	 * SharesService constructor.
 	 *
-	 * @param $userId
-	 * @param IL10N $l10n
-	 * @param IUserManager $userManager
-	 * @param ConfigService $configService
-	 * @param DatabaseService $databaseService
+	 * @param string $userId
+	 * @param CirclesRequest $circlesRequest
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$userId,
-		IL10N $l10n,
-		IUserManager $userManager,
-		ConfigService $configService,
-		DatabaseService $databaseService,
+		string $userId,
+		CirclesRequest $circlesRequest,
 		MiscService $miscService
 	) {
 		$this->userId = $userId;
-		$this->l10n = $l10n;
-		$this->userManager = $userManager;
-		$this->configService = $configService;
+		$this->circlesRequest = $circlesRequest;
 		$this->miscService = $miscService;
-
-		$this->dbCircles = $databaseService->getCirclesMapper();
-		$this->dbMembers = $databaseService->getMembersMapper();
 	}
 
 
 	public function new($circleId, $source, $type, $item) {
-		$this->miscService->log("__" . $circleId . ' ' . $source . ' ' . $type . ' ' . json_encode($item));
+		$this->miscService->log(
+			"__" . $circleId . ' ' . $source . ' ' . $type . ' ' . json_encode($item)
+		);
+
+		$share = new Share($source, $type);
+		$share->setCircleId($circleId);
+		$share->setItem($item);
+
+		$share->setAuthor($this->userId);
+
+		$this->circlesRequest->createShare($share);
 
 		return true;
 	}
+
+//	public function reshare($circleId, $source, $type, $shareid) {
+//		$this->miscService->log(
+//			"__reshare" . $circleId . ' ' . $source . ' ' . $type . ' ' . json_encode($item)
+//		);
+//
+//		$share = new Share($source, $type);
+//		$share->setCircleId($circleId);
+//		$share->setItem($item);
+//
+//		$share->setAuthor($this->userId);
+//
+//		$this->circlesRequest->createShare($share);
+//
+//		return true;
+//	}
 
 }
