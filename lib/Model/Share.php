@@ -123,12 +123,12 @@ class Share implements \JsonSerializable {
 	}
 
 	/**
-	 * @param bool $json
+	 * @param bool $asJson
 	 *
 	 * @return array|string
 	 */
-	public function getItem(bool $json = false) {
-		if ($json) {
+	public function getItem(bool $asJson = false) {
+		if ($asJson) {
 			return json_encode($this->item);
 		}
 
