@@ -28,6 +28,8 @@ namespace OCA\Circles\Service;
 
 
 use OCA\Circles\Db\CirclesRequest;
+use OCA\Circles\Exceptions\BroadcasterIsNotCompatible;
+use OCA\Circles\IBroadcaster;
 use OCA\Circles\Model\Share;
 
 
@@ -60,22 +62,31 @@ class SharesService {
 		$this->miscService = $miscService;
 	}
 
-
-	public function new($circleId, $source, $type, $item) {
-		$this->miscService->log(
-			"__" . $circleId . ' ' . $source . ' ' . $type . ' ' . json_encode($item)
-		);
-
+	public function new(
+		int $circleId, string $source, string $type, array $item, string $broadcast = null
+	) {
 		$share = new Share($source, $type);
 		$share->setCircleId($circleId);
 		$share->setItem($item);
-
 		$share->setAuthor($this->userId);
 
 		$this->circlesRequest->createShare($share);
 
+		if ($broadcast !== null) {
+			$broadcaster = \OC::$server->query($broadcast);
+			if (!($broadcaster instanceof IBroadcaster)) {
+				throw new BroadcasterIsNotCompatible();
+			}
+
+			$broadcaster->init();
+
+			$userId = 'cult';
+			$broadcaster->broadcast($userId, $share);
+		}
+
 		return true;
 	}
+
 
 //	public function reshare($circleId, $source, $type, $shareid) {
 //		$this->miscService->log(

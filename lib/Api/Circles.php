@@ -28,6 +28,7 @@ namespace OCA\Circles\Api;
 
 
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\IBroadcaster;
 
 class Circles {
 
@@ -67,6 +68,16 @@ class Circles {
 
 		return $c->query('CirclesService')
 				 ->removeCircle($circleId);
+	}
+
+
+	public static function shareToCircle(
+		int $circleId, string $source, string $type, array $item, string $broadcaster
+	) {
+		$c = self::getContainer();
+
+		return $c->query('SharesService')
+				 ->new($circleId, $source, $type, $item, $broadcaster);
 	}
 
 
