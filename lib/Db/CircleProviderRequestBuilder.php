@@ -314,7 +314,7 @@ class CircleProviderRequestBuilder {
 		   ->setValue('uid_initiator', $qb->createNamedParameter($share->getSharedBy()))
 		   ->setValue('permissions', $qb->createNamedParameter($share->getPermissions()))
 		   ->setValue('token', $qb->createNamedParameter($share->getToken()))
-		   ->setValue('stime', $qb->createNamedParameter(time()));
+		   ->setValue('stime', $qb->createFunction('NOW()'));
 
 		return $qb;
 	}

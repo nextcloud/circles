@@ -69,7 +69,6 @@
 			<field>
 				<name>creation</name>
 				<type>timestamp</type>
-				<default>CURRENT_TIMESTAMP</default>
 			</field>
 		</declaration>
 	</table>
@@ -117,7 +116,6 @@
 			<field>
 				<name>joined</name>
 				<type>timestamp</type>
-				<default>CURRENT_TIMESTAMP</default>
 			</field>
 
 			<index>
@@ -146,6 +144,12 @@
 				<autoincrement>true</autoincrement>
 				<unsigned>true</unsigned>
 				<primary>true</primary>
+				<length>4</length>
+			</field>
+
+			<field>
+				<name>item_id</name>
+				<type>integer</type>
 				<length>4</length>
 			</field>
 
@@ -186,16 +190,22 @@
 			</field>
 
 			<field>
+				<name>header</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>4000</length>
+			</field>
+
+			<field>
 				<name>item</name>
 				<type>text</type>
 				<notnull>true</notnull>
-				<length>2000</length>
+				<length>4000</length>
 			</field>
 
 			<field>
 				<name>creation</name>
 				<type>timestamp</type>
-				<default>CURRENT_TIMESTAMP</default>
 			</field>
 		</declaration>
 	</table>

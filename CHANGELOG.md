@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 
 
+## 0.9.5
+
+- small rework on database
+- fixing UI bug.
+- API: creation of new share items
+- API: listing members of a circle
+
 ## 0.9.4
 
 - Fixed an SQL error (#51)
