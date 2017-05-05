@@ -238,7 +238,7 @@ class MembersMapper extends Mapper {
 			   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
 			   ->setValue('status', $qb->createNamedParameter($member->getStatus()))
 			   ->setValue('note', $qb->createNamedParameter($member->getNote()))
-			   ->setValue('joined', $qb->createNamedParameter(time()));
+			   ->setValue('joined', $qb->createFunction('NOW()'));
 
 			$qb->execute();
 		} catch (UniqueConstraintViolationException $e) {
