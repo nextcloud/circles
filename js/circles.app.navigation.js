@@ -222,6 +222,7 @@ var nav = {
 		if (details.user.level === 9) {
 			elements.joinCircle.hide();
 			elements.leaveCircle.hide();
+			elements.destroyCircle.show();
 			return;
 		}
 
@@ -250,6 +251,7 @@ var nav = {
 
 		elements.joinCircle.show();
 		elements.leaveCircle.hide();
+		elements.destroyCircle.hide();
 	},
 
 
@@ -260,6 +262,7 @@ var nav = {
 		elements.joinCircleReject.show();
 		elements.joinCircle.hide();
 		elements.leaveCircle.hide();
+		elements.destroyCircle.hide();
 	},
 
 	displayRequestingMemberInteraction: function () {
@@ -267,6 +270,7 @@ var nav = {
 		elements.joinCircleRequest.show();
 		elements.joinCircle.hide();
 		elements.leaveCircle.show();
+		elements.destroyCircle.hide();
 	}
 
 };
