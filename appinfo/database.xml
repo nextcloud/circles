@@ -190,10 +190,17 @@
 			</field>
 
 			<field>
+				<name>header</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>4000</length>
+			</field>
+
+			<field>
 				<name>item</name>
 				<type>text</type>
 				<notnull>true</notnull>
-				<length>2000</length>
+				<length>4000</length>
 			</field>
 
 			<field>
