@@ -69,11 +69,15 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$qb = $this->getMembersSelectSql(Member::LEVEL_MEMBER);
 		$this->limitToCircle($qb, $circleId);
 
-		$cursor = $qb->execute();
+		$this->joinCircles($qb, 'm.circle_id');
+		$qb->selectAlias('c.name', 'circle_name');
 
 		$users = [];
+		$cursor = $qb->execute();
 		while ($data = $cursor->fetch()) {
-			$users[] = $this->parseMembersSelectSql($data);
+			$entry = $this->parseMembersSelectSql($data);
+			$entry['circle_name'] = $data['circle_name'];
+			$users[] = $entry;
 		}
 		$cursor->closeCursor();
 

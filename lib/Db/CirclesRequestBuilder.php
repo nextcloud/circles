@@ -37,11 +37,27 @@ use OCP\Share\IShare;
 
 class CirclesRequestBuilder {
 
+	const TABLE_CIRCLES = 'circles_circles';
+	const TABLE_MEMBERS = 'circles_members';
 
 	/** @var IDBConnection */
 	protected $dbConnection;
 
 	private $default_select_alias;
+
+
+	/**
+	 * Join the Circles table
+	 *
+	 * @param $qb
+	 */
+	protected function joinCircles(& $qb, $field) {
+		$expr = $qb->expr();
+
+		$qb->from(self::TABLE_CIRCLES, 'c')
+		   ->andWhere($expr->eq('c.id', $field));
+	}
+
 
 	/**
 	 * Limit the request to the Share by its Id.
@@ -87,7 +103,6 @@ class CirclesRequestBuilder {
 		$this->default_select_alias = 'm';
 
 		return $qb;
-
 	}
 
 	protected function parseMembersSelectSql(array $data) {

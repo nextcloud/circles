@@ -68,7 +68,7 @@ class SharesService {
 		$share = new Share($source, $type);
 		$share->setCircleId($circleId);
 		$share->setItem($item);
-		$share->setAuthor($this->userId);
+		$share->setAuthor($this->userId); 
 
 		$this->circlesRequest->createShare($share);
 
@@ -82,6 +82,7 @@ class SharesService {
 
 			$users = $this->circlesRequest->getAudience($circleId);
 			foreach ($users AS $user) {
+				$share->setCircleName($user['circle_name']);
 				$broadcaster->broadcast($user['uid'], $share);
 			}
 		}

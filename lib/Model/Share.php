@@ -35,6 +35,9 @@ class Share implements \JsonSerializable {
 	private $circleId;
 
 	/** @var string */
+	private $circleName;
+
+	/** @var string */
 	private $author;
 
 	/** @var string */
@@ -78,6 +81,21 @@ class Share implements \JsonSerializable {
 	 */
 	public function getCircleId() {
 		return $this->circleId;
+	}
+
+
+	/**
+	 * @param string $circleName
+	 */
+	public function setCircleName(string $circleName) {
+		$this->circleName = $circleName;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getCircleName() {
+		return $this->circleName;
 	}
 
 
@@ -157,13 +175,14 @@ class Share implements \JsonSerializable {
 
 	public function jsonSerialize() {
 		return array(
-			'circle_id' => $this->getCircleId(),
-			'source'    => $this->getSource(),
-			'type'      => $this->getType(),
-			'author'    => $this->getAuthor(),
-			'sharer'    => $this->getSharer(),
-			'item'      => $this->getItem(),
-			'creation'  => $this->getCreation(),
+			'circle_id'   => $this->getCircleId(),
+			'circle_name' => $this->getCircleName(),
+			'source'      => $this->getSource(),
+			'type'        => $this->getType(),
+			'author'      => $this->getAuthor(),
+			'sharer'      => $this->getSharer(),
+			'item'        => $this->getItem(),
+			'creation'    => $this->getCreation(),
 		);
 	}
 
@@ -173,6 +192,9 @@ class Share implements \JsonSerializable {
 
 		$share = new Share($arr['source'], $arr['type']);
 		$share->setCircleId($arr['circle_id']);
+		if (key_exists('circle_name', $arr)) {
+			$share->setCircleName($arr['circle_name']);
+		}
 
 		$share->setAuthor($arr['author']);
 		$share->setSharer($arr['sharer']);
