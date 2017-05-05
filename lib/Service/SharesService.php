@@ -80,8 +80,10 @@ class SharesService {
 
 			$broadcaster->init();
 
-			$userId = 'cult';
-			$broadcaster->broadcast($userId, $share);
+			$users = $this->circlesRequest->getAudience($circleId);
+			foreach ($users AS $user) {
+				$broadcaster->broadcast($user['uid'], $share);
+			}
 		}
 
 		return true;
