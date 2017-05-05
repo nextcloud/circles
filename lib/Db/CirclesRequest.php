@@ -29,6 +29,7 @@ namespace OCA\Circles\Db;
 
 
 use OCA\Circles\Db\CirclesRequestBuilder;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Share;
 use OCA\Circles\Service\MiscService;
 use OCP\IDBConnection;
@@ -51,16 +52,33 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 	public function createShare(Share $share) {
 
-		$qb = $this->getBaseInsertSql();
+		$qb = $this->getSharesInsertSql();
 		$qb->setValue('circle_id', $qb->createNamedParameter($share->getCircleId()))
 		   ->setValue('source', $qb->createNamedParameter($share->getSource()))
 		   ->setValue('type', $qb->createNamedParameter($share->getType()))
 		   ->setValue('author', $qb->createNamedParameter($share->getAuthor()))
 		   ->setValue('sharer', $qb->createNamedParameter($share->getSharer()))
 		   ->setValue('item', $qb->createNamedParameter($share->getItem(true)))
-		   ->setValue('creation', $qb->createNamedParameter(time()));
+		   ->setValue('creation', $qb->createFunction('NOW()'));
 
 		$qb->execute();
 	}
+
+
+	public function getAudience($circleId) {
+		$qb = $this->getMembersSelectSql(Member::LEVEL_MEMBER);
+		$this->limitToCircle($qb, $circleId);
+
+		$cursor = $qb->execute();
+
+		$users = [];
+		while ($data = $cursor->fetch()) {
+			$users[] = $this->parseMembersSelectSql($data);
+		}
+		$cursor->closeCursor();
+
+		return $users;
+	}
+
 
 }

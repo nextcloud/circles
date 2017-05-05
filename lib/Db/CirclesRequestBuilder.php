@@ -41,19 +41,63 @@ class CirclesRequestBuilder {
 	/** @var IDBConnection */
 	protected $dbConnection;
 
+	private $default_select_alias;
+
+	/**
+	 * Limit the request to the Share by its Id.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param $circleId
+	 */
+	protected function limitToCircle(& $qb, $circleId) {
+		$expr = $qb->expr();
+		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
+
+		$qb->andWhere($expr->eq($pf . 'circle_id', $qb->createNamedParameter($circleId)));
+	}
+
 
 	/**
 	 * Base of the Sql Insert request
 	 *
 	 * @return IQueryBuilder
 	 */
-	protected function getBaseInsertSql() {
+	protected function getSharesInsertSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$qb->insert('circles_shares')
-		   ->setValue('creation', $qb->createNamedParameter(time()));
+		   ->setValue('creation', $qb->createFunction('NOW()'));
 
 		return $qb;
 	}
 
+
+	/**
+	 * @param int $level
+	 *
+	 * @return IQueryBuilder
+	 */
+	protected function getMembersSelectSql(int $level = Member::LEVEL_MEMBER) {
+		$qb = $this->dbConnection->getQueryBuilder();
+		$expr = $qb->expr();
+
+		$qb->select('user_id', 'circle_id', 'level', 'status', 'joined')
+		   ->from('circles_members', 'm')
+		   ->where($expr->gte('m.level', $qb->createNamedParameter($level)));
+
+		$this->default_select_alias = 'm';
+
+		return $qb;
+
+	}
+
+	protected function parseMembersSelectSql(array $data) {
+		return [
+			'uid'      => $data['user_id'],
+			'circleId' => $data['circle_id'],
+			'level'    => $data['level'],
+			'status'   => $data['status'],
+			'joined'   => $data['joined']
+		];
+	}
 
 }

@@ -139,7 +139,11 @@ class Share implements \JsonSerializable {
 	/**
 	 * @param int $creation
 	 */
-	public function setCreation(int $creation) {
+	public function setCreation($creation) {
+		if ($creation === null) {
+			return;
+		}
+
 		$this->creation = $creation;
 	}
 
@@ -163,5 +167,19 @@ class Share implements \JsonSerializable {
 		);
 	}
 
+	public static function fromJSON($json) {
+
+		$arr = json_decode($json, true);
+
+		$share = new Share($arr['source'], $arr['type']);
+		$share->setCircleId($arr['circle_id']);
+
+		$share->setAuthor($arr['author']);
+		$share->setSharer($arr['sharer']);
+		$share->setItem($arr['item']);
+		$share->setCreation($arr['creation']);
+
+		return $share;
+	}
 
 }
