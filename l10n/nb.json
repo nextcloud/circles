@@ -5,6 +5,7 @@
     "You have requested an invitation to join this circle" : "Du har forespurt en invitasjon til denne sirkelen",
     "You have successfully left this circle" : "Du har forlatt denne sirkelen",
     "Cannot leave this circle" : "Kan ikke forlate denne sirkelen",
+    "Cannot destroy this circle" : "Kan ikke ødelegge denne sirkelen",
     " {type} '{name}' created" : " {type} '{name}' opprettet",
     " {type} '{name}' NOT created" : " {type} '{name}' IKKE opprettet",
     "Issue while retrieving the details of a circle" : "Feil ved innhenting av sirkeldetaljer",
