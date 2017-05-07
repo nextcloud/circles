@@ -7,6 +7,7 @@ OC.L10N.register(
     "You have requested an invitation to join this circle" : "Έχετε κάνει αίτημα για πρόσκληση για να συνδεθείτε σε αυτόν τον κύκλο",
     "You have successfully left this circle" : "Έχετε αποσυνδεθεί από αυτό τον κύκλο επιτυχώς",
     "Cannot leave this circle" : "Δεν μπορείτε να αποσυνδεθείτε από αυτόν τον κύκλο",
+    "Cannot destroy this circle" : "Δεν μπορεί να καταστραφεί αυτός ο κύκλος",
     " {type} '{name}' created" : " {type} '{name}' δημιουργήθηκε",
     " {type} '{name}' NOT created" : " {type} '{name}' ΔΕΝ δημιουργήθηκε",
     "Issue while retrieving the details of a circle" : "Πρόβλημα κατά την ανάκτηση των λεπτομερειών από έναν κύκλο",
