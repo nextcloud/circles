@@ -76,7 +76,7 @@ var nav = {
 
 		elements.destroyCircle.on('click', function () {
 			OC.dialogs.confirm(
-				t('circles', 'Are you sure you want to destroy this circle ?'),
+				t('circles', 'Are you sure you want to destroy this circle?'),
 				t('circles', 'Please confirm'),
 				function (e) {
 					if (e === true) {
