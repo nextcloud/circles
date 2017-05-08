@@ -1,7 +1,7 @@
 OC.L10N.register(
     "circles",
     {
-    "Cannot join this circle" : "Não é possível juntar-se a este círculo",
+    "Cannot join this circle" : "Não foi possível juntar-se a este círculo",
     "no error message" : "Nenhuma mensagem de erro",
     "You have successfully joined this circle" : "Você juntou-se com sucesso a este círculo",
     "You have requested an invitation to join this circle" : "Você solicitou um convite para juntar-se a este círculo",
