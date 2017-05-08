@@ -333,7 +333,7 @@ class CirclesMapper extends Mapper {
 
 		if (sizeof($result) !== 1) {
 			throw new CircleDoesNotExistException(
-				$this->l10n->t("The circle does not exist or is hidden to the user")
+				$this->l10n->t("The circle does not exist or is hidden")
 			);
 		}
 
@@ -352,7 +352,7 @@ class CirclesMapper extends Mapper {
 
 		if (!$this->isCircleUnique($circle, $owner)) {
 			throw new CircleAlreadyExistsException(
-				$this->l10n->t('A circle with that name already exist')
+				$this->l10n->t('A circle with that name exists')
 			);
 		}
 

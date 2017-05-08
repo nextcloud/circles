@@ -139,15 +139,15 @@ class Circle extends BaseCircle implements \JsonSerializable {
 	public static function typeLongString($type) {
 		switch ($type) {
 			case self::CIRCLES_PERSONAL:
-				return 'Personal Circle';
+				return 'Personal circle';
 			case self::CIRCLES_HIDDEN:
-				return 'Hidden Circle';
+				return 'Hidden circle';
 			case self::CIRCLES_PRIVATE:
-				return 'Private Circle';
+				return 'Private circle';
 			case self::CIRCLES_PUBLIC:
-				return 'Public Circle';
+				return 'Public circle';
 			case self::CIRCLES_ALL:
-				return 'All Circles';
+				return 'All circles';
 		}
 
 		return 'none';

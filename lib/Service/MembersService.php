@@ -120,7 +120,7 @@ class MembersService {
 	private function getFreshNewMember($circleId, $name) {
 
 		if (!$this->userManager->userExists($name)) {
-			throw new NoUserException($this->l10n->t("The selected user does not exist"));
+			throw new NoUserException($this->l10n->t("This user does not exist"));
 		}
 
 		try {

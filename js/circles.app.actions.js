@@ -51,7 +51,7 @@ var actions = {
 				t('circles', "You have successfully joined this circle"));
 		} else {
 			OCA.notification.onSuccess(
-				t('circles', "You have requested an invitation to join this circle"));
+				t('circles', "You have requested to join this circle"));
 		}
 		actions.selectCircle(result.circle_id);
 	},
@@ -82,12 +82,12 @@ var actions = {
 
 			actions.unselectCircle(result.circle_id);
 			OCA.notification.onSuccess(
-				t('circles', "You have successfully destroyed this circle"));
+				t('circles', "You have successfully deleted this circle"));
 			return;
 		}
 
 		OCA.notification.onFail(
-			t('circles', "Cannot destroy this circle") + ': ' +
+			t('circles', "Cannot delete this circle") + ': ' +
 			((result.error) ? result.error : t('circles', 'no error message')));
 	},
 
@@ -106,7 +106,7 @@ var actions = {
 		}
 
 		OCA.notification.onFail(
-			t('circles', " {type} '{name}' NOT created", {
+			t('circles', " {type} '{name}' could not be created", {
 				type: type,
 				name: result.name
 			}) + ': ' +
@@ -119,7 +119,7 @@ var actions = {
 		elements.mainUIMembers.emptyTable();
 		if (result.status < 1) {
 			OCA.notification.onFail(
-				t('circles', 'Issue while retrieving the details of a circle') + '" ' +
+				t('circles', 'Issue while retrieving the details of this circle') + '" ' +
 				((result.error) ? result.error : t('circles', 'no error message')));
 			return;
 		}
@@ -237,7 +237,7 @@ var actions = {
 			return;
 		}
 		OCA.notification.onFail(
-			t('circles', "Member '{name}' NOT added to the circle", {name: result.name}) + ': ' +
+			t('circles', "Member '{name}' could not be added to the circle", {name: result.name}) + ': ' +
 			((result.error) ? result.error : t('circles', 'no error message')));
 	},
 
@@ -273,7 +273,7 @@ var actions = {
 		}
 
 		OCA.notification.onFail(
-			t('circles', "Member '{name}' NOT removed from the circle", {name: result.name}) +
+			t('circles', "Member '{name}' could not be removed from the circle", {name: result.name}) +
 			': ' +
 			((result.error) ? result.error : t('circles', 'no error message')));
 	},

@@ -52,7 +52,7 @@ style('circles', 'navigation');
 				print_unescaped(
 					sprintf(
 						'<option value="%s">%s</option>', 'personal',
-						$l->t("Create a Personal Circle")
+						$l->t("Create a personal circle")
 					)
 				);
 			}
@@ -62,7 +62,7 @@ style('circles', 'navigation');
 				print_unescaped(
 					sprintf(
 						'<option value="%s">%s</option>', 'hidden',
-						$l->t("Create an Hidden Circle")
+						$l->t("Create an hidden circle")
 					)
 				);
 			}
@@ -72,7 +72,7 @@ style('circles', 'navigation');
 				print_unescaped(
 					sprintf(
 						'<option value="%s">%s</option>', 'private',
-						$l->t("Create a Private Circle")
+						$l->t("Create a private circle")
 					)
 				);
 			}
@@ -82,7 +82,7 @@ style('circles', 'navigation');
 				print_unescaped(
 					sprintf(
 						'<option value="%s">%s</option>', 'public',
-						$l->t("Create a Public Circle")
+						$l->t("Create a public circle")
 					)
 				);
 			}
@@ -95,42 +95,41 @@ style('circles', 'navigation');
 			<div id="circles_new_type_personal"><b>
 					<?php p(
 						$l->t(
-							"A Personal Circle is a list of users known only to yourself."
+							"A personal circle is a list of users known only to the owner."
 						)
 					); ?>
 				</b><br/>
 				<?php p(
 					$l->t(
-						"Use this if you want to send messsage or share thing repeatedly to the same group of people."
+						"This is the right option if you want to do recurrent sharing with the same group of people."
 					)
 				); ?>
 			</div>
 			<div id="circles_new_type_hidden"><b>
 					<?php p(
 						$l->t(
-							"An Hidden Circle is an open group that can be protected by a password."
+							"An hidden circle is an open group that can be protected by a password."
 						)
 					); ?></b><br/><?php p(
 					$l->t(
-						"Select this circle to create a community not displayed as a
-				Public Circle."
+						"Select this circle to create a community not displayed as a public circle."
 					)
 				); ?>
 			</div>
 			<div id="circles_new_type_private"><b><?php p(
 						$l->t(
-							"A Private Circle require invitation or a confirmation from an admin."
+							"A private circle requires invitation or confirmation by an admin."
 						)
 					); ?>
 				</b><br/><?php p(
 					$l->t(
-						"This is the best circle if you are looking for privacy when sharing your files or your ideas."
+						"This is the right circle if you are looking for privacy when sharing your files or ideas."
 					)
 				); ?>
 			</div>
 			<div id="circles_new_type_public"><b><?php p(
 						$l->t(
-							"A Public Circle is an open group visible to anyone that dare to join."
+							"A public circle is an open group visible to anyone willing to join."
 						)
 					); ?></b><br/><?php p(
 					$l->t(
@@ -144,23 +143,23 @@ style('circles', 'navigation');
 
 		<?php
 		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PERSONAL]) {
-			print_unescaped('<div circle-type="personal">' . $l->t('Personal Circles') . '</div>');
+			print_unescaped('<div circle-type="personal">' . $l->t('personal circles') . '</div>');
 		}
 
 		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_HIDDEN]) {
-			print_unescaped('<div circle-type="hidden">' . $l->t('Hidden Circles') . '</div>');
+			print_unescaped('<div circle-type="hidden">' . $l->t('hidden circles') . '</div>');
 		}
 
 		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PRIVATE]) {
-			print_unescaped('<div circle-type="private">' . $l->t('Private Circles') . '</div>');
+			print_unescaped('<div circle-type="private">' . $l->t('private circles') . '</div>');
 		}
 
 		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PUBLIC]) {
-			print_unescaped('<div circle-type="public">' . $l->t('Public Circles') . '</div>');
+			print_unescaped('<div circle-type="public">' . $l->t('public circles') . '</div>');
 		}
 		?>
 
-		<div circle-type="all"><?php p($l->t('All Circles')); ?></div>
+		<div circle-type="all"><?php p($l->t('All circles')); ?></div>
 	</div>
 
 </div>
@@ -170,8 +169,8 @@ style('circles', 'navigation');
 		   placeholder="<?php p($l->t('Search circles')); ?>"/>
 	<select id="circles_filters">
 		<option value="0"><?php p($l->t('No filter')); ?></option>
-		<option value="1"><?php p($l->t('Circles where you are member')); ?></option>
-		<option value="9"><?php p($l->t('Circles you are owning')); ?></option>
+		<option value="1"><?php p($l->t('Circles you belong to')); ?></option>
+		<option value="9"><?php p($l->t('Circles you own')); ?></option>
 	</select>
 
 </div>
@@ -198,18 +197,18 @@ style('circles', 'navigation');
 
 
 			<div id="joincircle_invit"><?php p(
-					$l->t("You have a pending invitation to join this circle")
+					$l->t("Pending invitation to join this circle")
 				); ?></div>
 			<div id="joincircle_interact">
 				<input id="joincircle_acceptinvit" type="submit"
 					   value="<?php p($l->t('Accept the invitation')); ?>"/>
 				<input id="joincircle_rejectinvit" type="submit"
-					   value="<?php p($l->t('Reject the invitation')); ?>"/>
+					   value="<?php p($l->t('Decline the invitation')); ?>"/>
 			</div>
 
 			<div id="joincircle_request">You have a pending request to join this circle</div>
 			<input id="destroycircle" type="submit"
-				   value="<?php p($l->t('Destroy this circle')); ?>"/>
+				   value="<?php p($l->t('Delete this circle')); ?>"/>
 			<input id="joincircle" type="submit"
 				   value="<?php p($l->t('Join this circle')); ?>"/>
 			<input id="leavecircle" type="submit"
@@ -254,7 +253,7 @@ style('circles', 'navigation');
 					<input id="joincircle_acceptrequest" type="submit"
 						   value="<?php p($l->t('Accept the request')); ?>"/>
 					<input id="joincircle_rejectrequest" type="submit"
-						   value="<?php p($l->t('Reject the request')); ?>"/>
+						   value="<?php p($l->t('Dismiss the request')); ?>"/>
 				</div>
 			</div>
 

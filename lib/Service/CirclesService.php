@@ -98,7 +98,7 @@ class CirclesService {
 
 		if (!$this->configService->isCircleAllowed($type)) {
 			throw new CircleTypeDisabledException(
-				$this->l10n->t('The creation of this type of circle is not allowed')
+				$this->l10n->t('You cannot create this type of circle')
 			);
 		}
 
@@ -134,7 +134,7 @@ class CirclesService {
 
 		if (!$this->configService->isCircleAllowed((int)$type)) {
 			throw new CircleTypeDisabledException(
-				$this->l10n->t('The creation of this type of circle is not allowed')
+				$this->l10n->t('You cannot display this type of circle')
 			);
 		}
 
