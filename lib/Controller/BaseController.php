@@ -55,7 +55,7 @@ class BaseController extends Controller {
 	/** @var MembersService */
 	protected $membersService;
 
-	/** @var MembersService */
+	/** @var SharesService */
 	protected $sharesService;
 
 	/** @var MiscService */
