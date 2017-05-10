@@ -77,7 +77,7 @@ class Circles {
 		$c = self::getContainer();
 
 		return $c->query('SharesService')
-				 ->new($circleId, $source, $type, $item, $broadcaster);
+				 ->newShare($circleId, $source, $type, $item, $broadcaster);
 	}
 
 

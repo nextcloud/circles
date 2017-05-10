@@ -62,7 +62,7 @@ class SharesService {
 		$this->miscService = $miscService;
 	}
 
-	public function new(
+	public function newShare(
 		int $circleId, string $source, string $type, array $item, string $broadcast = null
 	) {
 		$share = new Share($source, $type);

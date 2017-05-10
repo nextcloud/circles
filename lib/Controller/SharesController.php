@@ -44,10 +44,10 @@ class SharesController extends BaseController {
 	 * @internal param string $name
 	 *
 	 */
-	public function new($id, $source, $type, $item) {
+	public function newShare($id, $source, $type, $item) {
 
 		try {
-			$this->sharesService->new($id, $source, $type, $item);
+			$this->sharesService->newShare($id, $source, $type, $item);
 		} catch (\Exception $e) {
 			return $this->fail(
 				[

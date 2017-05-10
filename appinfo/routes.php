@@ -56,7 +56,7 @@ return [
 			'requirements' => ['id' => '\d+'],
 		],
 		[
-			'name'         => 'Shares#new', 'url' => '/circles/{id}/share', 'verb' => 'PUT',
+			'name'         => 'Shares#newShare', 'url' => '/circles/{id}/share', 'verb' => 'PUT',
 			'requirements' => ['id' => '\d+'],
 		],
 
