@@ -4,11 +4,9 @@ OC.L10N.register(
     "Cannot join this circle" : "不能加入此圈子",
     "no error message" : "没有错误信息",
     "You have successfully joined this circle" : "你已成功加入此圈子",
-    "You have requested an invitation to join this circle" : "你需要一份邀请才能加入此圈子",
     "You have successfully left this circle" : "你已成功退出此圈子",
     "Cannot leave this circle" : "不能退出此圈子",
     " {type} '{name}' created" : " {type} '{name}'  已创建",
-    " {type} '{name}' NOT created" : " {type} '{name}' 未创建",
     "Personal circle" : "个人圈子",
     "Hidden circle" : "隐藏圈子",
     "Private circle" : "私密圈子",
@@ -33,15 +31,12 @@ OC.L10N.register(
     "You are already a member of this circle" : "您已经是此圈子的成员",
     "Create a new circle" : "创建一个新圈子",
     "Search circles" : "搜索圈子",
-    "Circles where you are member" : "您所在的圈子",
     "No circle selected" : "没有圈子被选择",
     "Accept the invitation" : "接受邀请",
-    "Reject the invitation" : "拒绝邀请",
     "Join this circle" : "加入这个圈子",
     "Leave this circle" : "离开这个圈子",
     "Add a member" : "加一个成员",
     "Kick this member" : "踢开这个成员",
-    "Accept the request" : "接受这个请求",
-    "Reject the request" : "拒绝这个请求"
+    "Accept the request" : "接受这个请求"
 },
 "nplurals=1; plural=0;");

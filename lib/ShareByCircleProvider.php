@@ -406,6 +406,10 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 		$this->linkToFileCache($qb, $userId);
 		$this->limitToPage($qb, $limit, $offset);
 
+		if ($node !== null) {
+			$this->limitToFiles($qb, [$node->getId()]);
+		}
+
 		$cursor = $qb->execute();
 
 		$shares = [];
