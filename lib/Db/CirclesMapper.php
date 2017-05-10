@@ -150,7 +150,7 @@ class CirclesMapper extends Mapper {
 		if (sizeof($orTypesArray) === 0) {
 			throw new ConfigNoCircleAvailable(
 				$this->l10n->t(
-					'No type of circle are selected in the global configuration of the app'
+					'You cannot use the Circles Application until your administrator has allowed at least one type of circles'
 				)
 			);
 		}

@@ -171,7 +171,7 @@ class Member extends BaseMember implements \JsonSerializable {
 
 		if ($this->getStatus() === Member::STATUS_BLOCKED) {
 			throw new MemberIsBlockedException(
-				$this->l10n->t("You are blocked from this circle")
+				$this->l10n->t("You have been blocked from this circle")
 			);
 		}
 	}

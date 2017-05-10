@@ -112,7 +112,7 @@ style('circles', 'navigation');
 						)
 					); ?></b><br/><?php p(
 					$l->t(
-						"Select this circle to create a community not displayed as a public circle."
+						"Users won't be able to find this Circle using Nextcloud search engine."
 					)
 				); ?>
 			</div>
