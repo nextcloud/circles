@@ -292,7 +292,27 @@ class MembersMapper extends Mapper {
 		$qb->execute();
 
 		return true;
+	}
 
+
+	/**
+	 * remove all members/owner from a circle
+	 *
+	 * @param string $userId
+	 *
+	 * @return bool
+	 */
+	public function removeAllFromUserId($userId) {
+		$qb = $this->db->getQueryBuilder();
+		$qb->delete(self::TABLENAME)
+		   ->where(
+			   $qb->expr()
+				  ->eq('user_id', $qb->createNamedParameter($userId))
+		   );
+
+		$qb->execute();
+
+		return true;
 	}
 }
 

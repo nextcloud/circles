@@ -185,4 +185,15 @@ class MembersService {
 		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getUser());
 	}
 
+
+	/**
+	 * When a user is removed, remove him from all Circles
+	 *
+	 * @param $userId
+	 */
+	public function removeUser($userId) {
+		$this->dbMembers->removeAllFromUserId($userId);
+	}
+
+
 }
