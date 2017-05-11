@@ -2,12 +2,22 @@
 All notable changes to this project will be documented in this file.
 
 
+## 0.9.6
+
+- Shares: Take Nodes into account.
+- API: returns circle name.
+- misc: removing memberships when user is deleted.
+- misc: bugfixes.
+- misc: review all texts. 
+
+
 ## 0.9.5
 
 - small rework on database
 - fixing UI bug.
 - API: creation of new share items
 - API: listing members of a circle
+
 
 ## 0.9.4
 
