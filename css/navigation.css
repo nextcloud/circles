@@ -44,6 +44,10 @@
 	word-wrap: break-word;
 }
 
+SELECT.select_none {
+	font-style: italic;
+}
+
 #circles_list, #circles_list .lightenbg {
 	position: absolute;
 	width: 100%;

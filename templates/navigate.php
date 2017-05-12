@@ -43,8 +43,10 @@ style('circles', 'navigation');
 	<div class="navigation-element" style="height: 100%; padding-top: 15px">
 		<input id="circles_new_name" type="text"
 			   placeholder="<?php p($l->t('Create a new circle')); ?>"/>
-		<select id="circles_new_type" style="display: none;">
-
+		<select id="circles_new_type" style="display: none;" class="select_none">
+			<option value="" style="font-style: italic">&nbsp;&nbsp;&nbsp;&nbsp;<?php p(
+					$l->t("Select a type of circle")
+				); ?></option>
 			<?php
 
 			// Personal Circle

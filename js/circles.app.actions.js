@@ -237,7 +237,8 @@ var actions = {
 			return;
 		}
 		OCA.notification.onFail(
-			t('circles', "Member '{name}' could not be added to the circle", {name: result.name}) + ': ' +
+			t('circles', "Member '{name}' could not be added to the circle", {name: result.name}) +
+			': ' +
 			((result.error) ? result.error : t('circles', 'no error message')));
 	},
 
@@ -273,7 +274,8 @@ var actions = {
 		}
 
 		OCA.notification.onFail(
-			t('circles', "Member '{name}' could not be removed from the circle", {name: result.name}) +
+			t('circles', "Member '{name}' could not be removed from the circle",
+				{name: result.name}) +
 			': ' +
 			((result.error) ? result.error : t('circles', 'no error message')));
 	},
@@ -307,8 +309,15 @@ var actions = {
 	onEventNewCircleType: function () {
 		this.onEventNewCircle();
 		elements.newTypeDefinition.children('div').fadeOut(300);
-		$('#circles_new_type_' + elements.newType.children('option:selected').val()).fadeIn(
-			300);
+		var selectedType = elements.newType.children('option:selected').val();
+		if (selectedType === '') {
+			elements.newType.addClass('select_none');
+		}
+		else {
+			elements.newType.removeClass('select_none');
+			$('#circles_new_type_' + selectedType).fadeIn(
+				300);
+		}
 	}
 
 

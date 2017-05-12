@@ -96,6 +96,12 @@ class CirclesService {
 	public function createCircle($type, $name) {
 		self::convertTypeStringToBitValue($type);
 
+		if ($type === "") {
+			throw new CircleTypeDisabledException(
+				$this->l10n->t('You need a specify a type of circle')
+			);
+		}
+
 		if (!$this->configService->isCircleAllowed($type)) {
 			throw new CircleTypeDisabledException(
 				$this->l10n->t('You cannot create this type of circle')
