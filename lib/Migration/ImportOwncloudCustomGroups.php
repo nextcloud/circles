@@ -179,7 +179,7 @@ class ImportOwncloudCustomGroups implements IRepairStep {
 	 * @param IOutput $output
 	 */
 	public function updateShares(IOutput $output) {
-		$output->info('Creating memberships');
+		$output->info('Update shares from custom groups to circles');
 
 		$select = $this->connection->getQueryBuilder();
 		$select->select('*')
