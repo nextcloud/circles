@@ -29,6 +29,7 @@ use OCP\IConfig;
 use OCP\IDBConnection;
 use OCP\Migration\IOutput;
 use OCP\Migration\IRepairStep;
+use OCP\Share;
 
 /**
  * Class ImportOwncloudCustomGroups
@@ -44,7 +45,9 @@ class ImportOwncloudCustomGroups implements IRepairStep {
 	protected $config;
 
 	/** @var array */
-	protected $circles = [];
+	protected $circlesById = [];
+	/** @var array */
+	protected $circlesByUri = [];
 
 	public function __construct(IDBConnection $connection, IConfig $config) {
 		$this->connection = $connection;
@@ -71,6 +74,7 @@ class ImportOwncloudCustomGroups implements IRepairStep {
 
 		$this->createCircles($output);
 		$this->createMemberships($output);
+		$this->updateShares($output);
 
 		$this->config->setAppValue('circles', 'imported_custom_groups', 'true');
 	}
@@ -104,7 +108,8 @@ class ImportOwncloudCustomGroups implements IRepairStep {
 			$insert->execute();
 			$output->advance();
 
-			$this->circles[$row['groud_id']] = $insert->getLastInsertId();
+			$this->circlesById[$row['groud_id']] = $insert->getLastInsertId();
+			$this->circlesByUri[$row['uri']] = $this->circlesById[$row['groud_id']];
 		}
 
 		$result->closeCursor();
@@ -136,17 +141,66 @@ class ImportOwncloudCustomGroups implements IRepairStep {
 		$result = $select->execute();
 
 		while ($row = $result->fetch()) {
-			if (!isset($this->circles[$row['group_id']])) {
+			if (!isset($this->circlesById[$row['group_id']])) {
 				// Stray membership
 				continue;
 			}
 
-			$insert->setParameter('circle_id', $this->circles[$row['group_id']])
+			$insert->setParameter('circle_id', $this->circlesById[$row['group_id']])
 				->setParameter('user_id', $row['user_id'])
 				->setParameter('level', (int) $row['role'] === 1 ? Member::LEVEL_OWNER : Member::LEVEL_MEMBER)
 				->setParameter('status', 'Member');
 
 			$insert->execute();
+			$output->advance();
+		}
+
+		$result->closeCursor();
+		$output->finishProgress();
+	}
+
+	/**
+	 * Update shares
+	 * - type 7 instead of 1
+	 * - with circle ID instead of `customgroup_` + group URI
+	 *
+	 * @param IOutput $output
+	 */
+	public function updateShares(IOutput $output) {
+		$output->info('Creating memberships');
+
+		$select = $this->connection->getQueryBuilder();
+		$select->select('*')
+			->from('share')
+			->where($select->expr()->eq('share_type', $select->createNamedParameter(Share::SHARE_TYPE_GROUP)));
+
+		$update = $this->connection->getQueryBuilder();
+		$update->update('share')
+			->set('share_type', $update->createParameter('type'))
+			->set('share_with', $update->createParameter('with'))
+			->where($update->expr()->eq('id', $update->createParameter('id')));
+
+		$output->startProgress();
+		$result = $select->execute();
+
+		while ($row = $result->fetch()) {
+			$with = $row['share_with'];
+			if (strpos($with, 'customgroup_') !== 0) {
+				// Stray membership
+				continue;
+			}
+
+			$groupUri = substr($with, strlen('customgroup_'));
+			if ($groupUri === '' || !isset($this->circlesByUri[$groupUri])) {
+				// Not a customgroup
+				continue;
+			}
+
+			$update->setParameter('type', Share::SHARE_TYPE_CIRCLE)
+				->setParameter('with', $this->circlesByUri[$groupUri])
+				->setParameter('id', $row['id']);
+
+			$update->execute();
 			$output->advance();
 		}
 
