@@ -48,6 +48,8 @@ class ImportOwncloudCustomGroups implements IRepairStep {
 	protected $circlesById = [];
 	/** @var array */
 	protected $circlesByUri = [];
+	/** @var array */
+	protected $circleHasAdmin = [];
 
 	public function __construct(IDBConnection $connection, IConfig $config) {
 		$this->connection = $connection;
@@ -146,9 +148,19 @@ class ImportOwncloudCustomGroups implements IRepairStep {
 				continue;
 			}
 
+			$level = (int) $row['role'] === 1 ? Member::LEVEL_OWNER : Member::LEVEL_MEMBER;
+
+			if ($level === Member::LEVEL_OWNER) {
+				if (isset($this->circleHasAdmin[$this->circlesById[$row['group_id']]])) {
+					$level = Member::LEVEL_MODERATOR;
+				} else {
+					$this->circleHasAdmin[$this->circlesById[$row['group_id']]] = $row['user_id'];
+				}
+			}
+
 			$insert->setParameter('circle_id', $this->circlesById[$row['group_id']])
 				->setParameter('user_id', $row['user_id'])
-				->setParameter('level', (int) $row['role'] === 1 ? Member::LEVEL_OWNER : Member::LEVEL_MEMBER)
+				->setParameter('level', $level)
 				->setParameter('status', 'Member');
 
 			$insert->execute();
