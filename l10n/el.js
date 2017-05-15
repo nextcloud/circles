@@ -10,6 +10,7 @@ OC.L10N.register(
     "You have successfully deleted this circle" : "Διαγράψατε τον κύκλο επιτυχώς",
     "Cannot delete this circle" : "Αδυναμία διαγραφής κύκλου",
     " {type} '{name}' created" : " {type} '{name}' δημιουργήθηκε",
+    " {type} '{name}' could not be created" : "Δεν ήταν δυνατή η δημιουργία {type} '{name}'",
     "Issue while retrieving the list of circles" : "Πρόβλημα κατά την ανάκτηση της λίστας με τους κύκλους",
     "Member '{name}' successfully added to the circle" : "Το μέλος '{name}' προστέθηκε επιτυχώς στον κύκλο",
     "Personal circle" : "Προσωπικός κύκλος",
