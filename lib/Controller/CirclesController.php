@@ -171,6 +171,25 @@ class CirclesController extends BaseController {
 
 	}
 
+	/**
+	 * @NoAdminRequired
+	 * @NoSubAdminRequired
+	 *
+	 * @param $id
+	 *
+	 * @return DataResponse
+	 * @internal param string $name
+	 *
+	 */
+	public function link($id, $link) {
+		try {
+			$data = $this->circlesService->linkCircle($id, $link);
+
+			return $this->success(['circle_id' => $id, 'link' => $data]);
+		} catch (\Exception $e) {
+			return $this->fail(['circle_id' => $id, 'error' => $e->getMessage()]);
+		}
+	}
 
 }
 
