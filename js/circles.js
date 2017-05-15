@@ -99,7 +99,7 @@
 				var result = {status: -1};
 				$.ajax({
 					method: 'GET',
-					url: OC.generateUrl('/apps/circles/circles/' + circleId),
+					url: OC.generateUrl('/apps/circles/circles/' + circleId)
 				}).done(function (res) {
 					self.onCallback(callback, res);
 				}).fail(function () {
@@ -191,6 +191,22 @@
 						source: source,
 						type: type,
 						item: item
+					}
+				}).done(function (res) {
+					self.onCallback(callback, res);
+				}).fail(function () {
+					self.onCallback(callback, result);
+				});
+			};
+
+
+			this.linkCircle = function (circleId, link, callback) {
+				var result = {status: -1};
+				$.ajax({
+					method: 'PUT',
+					url: OC.generateUrl('/apps/circles/circles/' + circleId + '/link'),
+					data: {
+						link: link
 					}
 				}).done(function (res) {
 					self.onCallback(callback, res);

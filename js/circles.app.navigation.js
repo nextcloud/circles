@@ -38,6 +38,7 @@ var nav = {
 
 	initNavigation: function () {
 		this.initElementsMemberNavigation();
+		this.initElementsLinkCircleNavigation();
 		this.initElementsCircleNavigation();
 
 		this.displayCirclesList('all');
@@ -61,6 +62,20 @@ var nav = {
 			}
 		}).blur(function () {
 			elements.membersSearchResult.fadeOut(400);
+		});
+	},
+
+
+	initElementsLinkCircleNavigation: function () {
+
+		elements.linkCircle.on('keydown', function (e) {
+
+			if (e.keyCode !== 13) {
+				return;
+			}
+
+			api.linkCircle(curr.circle, elements.linkCircle.val(), actions.linkCircleResult);
+			elements.linkCircle.val('');
 		});
 	},
 
@@ -110,6 +125,7 @@ var nav = {
 
 		elements.circlesSearch.val('');
 		elements.addMember.val('');
+		elements.linkCircle.val('');
 
 		this.resetCirclesTypeSelection(type);
 		elements.resetCirclesList();
@@ -214,6 +230,12 @@ var nav = {
 			elements.addMember.hide();
 		} else {
 			elements.addMember.show();
+		}
+
+		if (details.type === 'Personal' || details.user.level < 9) {
+			elements.linkCircle.hide();
+		} else {
+			elements.linkCircle.show();
 		}
 
 		elements.joinCircleInteraction.hide();

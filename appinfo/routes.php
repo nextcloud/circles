@@ -25,6 +25,9 @@
  */
 
 return [
+	'ocs'    => [
+		['name' => 'Federated#receiveItem', 'url' => '/api/v2/remote/{token}', 'verb' => 'POST']
+	],
 	'routes' => [
 		['name' => 'Navigation#navigate', 'url' => '/', 'verb' => 'GET'],
 		['name' => 'Circles#create', 'url' => '/circles', 'verb' => 'PUT'],
@@ -45,6 +48,7 @@ return [
 			'name'         => 'Circles#leave', 'url' => '/circles/{id}/leave', 'verb' => 'GET',
 			'requirements' => ['id' => '\d+'],
 		],
+		['name' => 'Circles#link', 'url' => '/circles/{id}/link', 'verb' => 'PUT'],
 		['name' => 'Members#search', 'url' => '/circles/{id}/members', 'verb' => 'GET'],
 		[
 			'name'         => 'Members#add', 'url' => '/circles/{id}/members', 'verb' => 'PUT',

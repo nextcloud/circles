@@ -26,6 +26,7 @@
 
 namespace OCA\Circles\AppInfo;
 
+use OCA\Circles\Controller\FederatedController;
 use \OCA\Circles\Controller\NavigationController;
 use \OCA\Circles\Controller\CirclesController;
 use \OCA\Circles\Controller\MembersController;
@@ -155,6 +156,7 @@ class Application extends App {
 		}
 		);
 
+
 		$container->registerService(
 			'CirclesController', function(IAppContainer $c) {
 			return new CirclesController(
@@ -178,6 +180,16 @@ class Application extends App {
 		$container->registerService(
 			'SharesController', function(IAppContainer $c) {
 			return new SharesController(
+				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
+				$c->query('ConfigService'), $c->query('CirclesService'),
+				$c->query('MembersService'), $c->query('SharesService'), $c->query('MiscService')
+			);
+		}
+		);
+
+		$container->registerService(
+			'FederatedController', function(IAppContainer $c) {
+			return new FederatedController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
 				$c->query('ConfigService'), $c->query('CirclesService'),
 				$c->query('MembersService'), $c->query('SharesService'), $c->query('MiscService')

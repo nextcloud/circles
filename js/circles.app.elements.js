@@ -42,11 +42,16 @@ var elements = {
 	navigation: null,
 	circlesList: null,
 	circlesSearch: null,
+	circlesFilters: null,
+	circlesDetails: null,
 	emptyContent: null,
 	mainUI: null,
 	mainUIMembers: null,
 	membersSearchResult: null,
+	memberDetails: null,
+	memberRequest: null,
 
+	joinCircleInteraction: null,
 	joinCircleAccept: null,
 	joinCircleReject: null,
 	joinCircleRequest: null,
@@ -54,7 +59,11 @@ var elements = {
 	joinCircle: null,
 	leaveCircle: null,
 	destroyCircle: null,
+
+	rightPanel: null,
 	addMember: null,
+	remMember: null,
+	linkCircle: null,
 
 
 	initElements: function () {
@@ -87,6 +96,7 @@ var elements = {
 		elements.rightPanel = $('#rightpanel');
 		elements.addMember = $('#addmember');
 		elements.remMember = $('#remmember');
+		elements.linkCircle = $('#linkcircle');
 	},
 
 
@@ -210,6 +220,7 @@ var elements = {
 		elements.membersSearchResult.children().first().css('border-top-width', '0px');
 	},
 
+
 	fillExactMembersSearch: function (exact) {
 
 		$.each(exact, function (index, value) {
@@ -220,6 +231,7 @@ var elements = {
 		});
 
 	},
+
 
 	fillPartialMembersSearch: function (partial) {
 		$.each(partial, function (index, value) {

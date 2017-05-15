@@ -164,10 +164,17 @@ var actions = {
 		});
 	},
 
+	linkCircleResult: function (result) {
+
+		console.log("!!!! " + JSON.stringify(result));
+
+	},
+
 
 	selectCircle: function (circle_id) {
 		curr.searchUser = '';
 		elements.addMember.val('');
+		elements.linkCircle.val('');
 
 		api.detailsCircle(circle_id, actions.selectCircleResult);
 	},

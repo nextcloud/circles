@@ -270,6 +270,21 @@ class CirclesService {
 
 
 	/**
+	 * link to a circle.
+	 *
+	 * @param int $circleId
+	 * @param string $link
+	 *
+	 * @return bool
+	 */
+	public function linkCircle($circleId, $link) {
+		$this->miscService->log("----" . $circleId . ' -- ' . $link);
+
+		return true;
+	}
+
+
+	/**
 	 * Convert a Type in String to its Bit Value
 	 *
 	 * @param $type
