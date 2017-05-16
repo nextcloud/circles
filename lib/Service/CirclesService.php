@@ -27,14 +27,17 @@
 namespace OCA\Circles\Service;
 
 
+use OCA\Circles\BackgroundJob\FederatedCircle;
 use OCA\Circles\Db\CirclesMapper;
 use OCA\Circles\Db\MembersMapper;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
+use OCA\Circles\Exceptions\FederatedCircleLinkFormatException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\MemberIsNotOwnerException;
 use \OCA\Circles\Model\Circle;
 use \OCA\Circles\Model\Member;
 use OCP\IL10N;
+use Punic\Exception;
 
 class CirclesService {
 
@@ -268,20 +271,6 @@ class CirclesService {
 		}
 	}
 
-
-	/**
-	 * link to a circle.
-	 *
-	 * @param int $circleId
-	 * @param string $link
-	 *
-	 * @return bool
-	 */
-	public function linkCircle($circleId, $link) {
-		$this->miscService->log("----" . $circleId . ' -- ' . $link);
-
-		return true;
-	}
 
 
 	/**
