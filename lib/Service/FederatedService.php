@@ -28,17 +28,18 @@ namespace OCA\Circles\Service;
 
 
 use Exception;
-use GuzzleHttp\Exception\ClientException;
 use OC\Http\Client\ClientService;
 use OCA\Circles\Db\CirclesMapper;
 use OCA\Circles\Db\MembersMapper;
 use OCA\Circles\Exceptions\FederatedCircleLinkFormatException;
 use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 use OCA\Circles\Exceptions\CircleTypeNotValid;
+use OCA\Circles\Exceptions\FederatedRemoteCircleDoesNotExistException;
+use OCA\Circles\Exceptions\FederatedRemoteDoesNotAllowException;
 use OCA\Circles\Exceptions\MemberIsNotAdminException;
 use OCA\Circles\Model\Circle;
-use OCA\Circles\Model\Member;
 use OCP\IL10N;
+use Sabre\HTTP\ClientException;
 
 class FederatedService {
 
@@ -149,7 +150,7 @@ class FederatedService {
 			$remote = 'https://' . $remote;
 		}
 
-		return rtrim($remote, '/') . '/ocs/v2.php/apps/circles/api/v2/link/';
+		return rtrim($remote, '/') . '/index.php/apps/circles/circles/link/';
 	}
 
 
@@ -158,7 +159,7 @@ class FederatedService {
 	 * @param $remoteAddress
 	 * @param $remoteCircle
 	 *
-	 * @return int
+	 * @return integer
 	 * @throws Exception
 	 */
 	private function requestLinkWithCircle(Circle $circle, $remoteAddress, $remoteCircle) {
@@ -166,24 +167,50 @@ class FederatedService {
 			"create link : " . $remoteCircle . ' - ' . $remoteAddress . ' - ' . $circle->getId()
 		);
 
-		$args = ['circleName' => $remoteCircle];
+		$args = [
+			'source'     => $circle->getId(),
+			'circleName' => $remoteCircle
+		];
 
 		$client = $this->clientService->newClient();
 		try {
-			$toto = $client->post(
+			$request = $client->put(
 				$this->generateLinkRemoteURL($remoteAddress), [
 																'body'            => $args,
 																'timeout'         => 10,
 																'connect_timeout' => 10,
 															]
 			);
-			$this->miscService->log("RESULT: " . var_export($toto, true));
+
+			$result = json_decode($request->getBody(), true);
+			$this->requestLinkStatus($result);
 
 			return 1;
-		} catch (ClientException $e) {
+		} catch (Exception $e) {
 			throw $e;
 		}
 	}
 
+
+	private function requestLinkStatus($result) {
+
+		if ($result['status'] === 1) {
+			return;
+		}
+
+		if ($result['reason'] === 'federated_not_allowed') {
+			throw new FederatedRemoteDoesNotAllowException(
+				$this->l10n->t('Federated circles are not allowed on the remote Nextcloud')
+			);
+		}
+
+		if ($result['reason'] === 'circle_does_not_exist') {
+			throw new FederatedRemoteCircleDoesNotExistException(
+				$this->l10n->t('The requested remote circle does not exist')
+			);
+		}
+
+		throw new Exception();
+	}
 
 }

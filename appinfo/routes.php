@@ -26,8 +26,7 @@
 
 return [
 	'ocs'    => [
-		['name' => 'Federated#receiveItem', 'url' => '/api/v2/item/{token}', 'verb' => 'POST'],
-		['name' => 'Federated#requestedLink', 'url' => '/api/v2/link/', 'verb' => 'POST']
+
 	],
 	'routes' => [
 		['name' => 'Navigation#navigate', 'url' => '/', 'verb' => 'GET'],
@@ -50,6 +49,8 @@ return [
 			'requirements' => ['id' => '\d+'],
 		],
 		['name' => 'Circles#link', 'url' => '/circles/{id}/link', 'verb' => 'PUT'],
+		['name' => 'Federated#requestedLink', 'url' => '/circles/link/', 'verb' => 'PUT'],
+		['name' => 'Federated#receiveItem', 'url' => '/circles/item/{token}', 'verb' => 'PUT'],
 		['name' => 'Members#search', 'url' => '/circles/{id}/members', 'verb' => 'GET'],
 		[
 			'name'         => 'Members#add', 'url' => '/circles/{id}/members', 'verb' => 'PUT',
