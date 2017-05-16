@@ -186,7 +186,7 @@ class CirclesController extends BaseController {
 
 			return $this->success(['circle_id' => $id, 'link' => $link, 'remote' => $remote]);
 		} catch (\Exception $e) {
-			return $this->fail(['circle_id' => $id, 'error' => $e->getMessage()]);
+			return $this->fail(['circle_id' => $id, 'link' => $link, 'error' => $e->getMessage()]);
 		}
 	}
 
