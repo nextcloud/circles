@@ -75,7 +75,6 @@ var nav = {
 			}
 
 			api.linkCircle(curr.circle, elements.linkCircle.val(), actions.linkCircleResult);
-			elements.linkCircle.val('');
 		});
 	},
 
