@@ -38,10 +38,19 @@ use OCA\Circles\Exceptions\FederatedRemoteCircleDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedRemoteDoesNotAllowException;
 use OCA\Circles\Exceptions\MemberIsNotAdminException;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\FederatedLink;
 use OCP\IL10N;
 use Sabre\HTTP\ClientException;
 
 class FederatedService {
+
+
+	const STATUS_ERROR = 0;
+	const STATUS_LINK_DOWN = 1;
+	const STATUS_REQUEST_DECLINED = 3;
+	const STATUS_REQUEST_SENT = 6;
+	const STATUS_LINK_UP = 9;
+
 
 	/** @var string */
 	private $userId;
@@ -168,7 +177,8 @@ class FederatedService {
 		);
 
 		$args = [
-			'source'     => $circle->getId(),
+			'sourceId'     => $circle->getId(),
+			'sourceName'   => $circle->getName(),
 			'circleName' => $remoteCircle
 		];
 
@@ -185,7 +195,9 @@ class FederatedService {
 			$result = json_decode($request->getBody(), true);
 			$this->requestLinkStatus($result);
 
-			return 1;
+			$this->miscService->log("_____RESULT: " . var_export($result, true));
+
+			return $result['status'];
 		} catch (Exception $e) {
 			throw $e;
 		}
@@ -194,7 +206,9 @@ class FederatedService {
 
 	private function requestLinkStatus($result) {
 
-		if ($result['status'] === 1) {
+		if ($result['status'] === self::STATUS_REQUEST_SENT
+			|| $result['status'] === self::STATUS_LINK_UP
+		) {
 			return;
 		}
 
@@ -211,6 +225,26 @@ class FederatedService {
 		}
 
 		throw new Exception();
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 * @param $source
+	 * @param FederatedLink $link
+	 *
+	 * @return bool
+	 */
+	public function initiateLink(Circle $circle, FederatedLink &$link) {
+
+		$token = '';
+		for ($i = 0; $i <= 5; $i++) {
+			$token .= uniqid('', true);
+		}
+
+		$link->setToken($token);
+
+		return ($circle->getType() === Circle::CIRCLES_PUBLIC);
 	}
 
 }

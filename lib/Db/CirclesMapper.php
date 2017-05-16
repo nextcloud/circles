@@ -342,13 +342,43 @@ class CirclesMapper extends Mapper {
 
 
 	/**
+	 * @param $circleName
+	 *
+	 * @return Circle|null
+	 */
+	public function getDetailsFromCircleByName($circleName) {
+		$qb = $this->isCircleUniqueSql();
+		$expr = $qb->expr();
+
+		$qb->andWhere($expr->iLike('c.name', $qb->createNamedParameter($circleName)));
+		$qb->andWhere($expr->neq('c.type', $qb->createNamedParameter(Circle::CIRCLES_PERSONAL)));
+
+		$cursor = $qb->execute();
+		$data = $cursor->fetch();
+		$cursor->closeCursor();
+
+		if ($data === false) {
+			return null;
+		}
+
+		$circle = new Circle();
+		$circle->setId($data['id']);
+		$circle->setType($data['type']);
+
+		return $circle;
+	}
+
+
+	/**
 	 * @param Circle $circle
 	 * @param Member $owner
 	 *
 	 * @return bool
 	 * @throws CircleAlreadyExistsException
 	 */
-	public function create(Circle & $circle, Member & $owner) {
+	public function create(
+		Circle & $circle, Member & $owner
+	) {
 
 		if (!$this->isCircleUnique($circle, $owner)) {
 			throw new CircleAlreadyExistsException(
@@ -382,7 +412,9 @@ class CirclesMapper extends Mapper {
 	 *
 	 * @internal param Circle $circle
 	 */
-	public function destroy($circleId) {
+	public function destroy(
+		$circleId
+	) {
 		$qb = $this->db->getQueryBuilder();
 		$qb->delete(self::TABLENAME)
 		   ->where(
@@ -404,7 +436,9 @@ class CirclesMapper extends Mapper {
 	 *
 	 * @return bool
 	 */
-	public function isCircleUnique(Circle $circle, Member $owner) {
+	public function isCircleUnique(
+		Circle $circle, Member $owner
+	) {
 
 		if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
 			return $this->isPersonalCircleUnique($circle, $owner);
@@ -454,7 +488,9 @@ class CirclesMapper extends Mapper {
 	 *
 	 * @return bool
 	 */
-	private function isPersonalCircleUnique(Circle $circle, Member $owner) {
+	private function isPersonalCircleUnique(
+		Circle $circle, Member $owner
+	) {
 
 		$list = $this->findCirclesByUser(
 			$owner->getUserId(), Circle::CIRCLES_PERSONAL, $circle->getName(),

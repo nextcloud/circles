@@ -184,8 +184,8 @@ class CirclesService {
 		}
 
 		return $circle;
-
 	}
+
 
 	/**
 	 * Join a circle.
@@ -272,6 +272,14 @@ class CirclesService {
 	}
 
 
+	/**
+	 * @param $circleName
+	 *
+	 * @return Circle|null
+	 */
+	public function infoCircleByName($circleName) {
+		return $this->dbCircles->getDetailsFromCircleByName($circleName);
+	}
 
 	/**
 	 * Convert a Type in String to its Bit Value
