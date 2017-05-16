@@ -177,8 +177,8 @@ class FederatedService {
 		);
 
 		$args = [
-			'sourceId'     => $circle->getId(),
-			'sourceName'   => $circle->getName(),
+			'sourceId'   => $circle->getId(),
+			'sourceName' => $circle->getName(),
 			'circleName' => $remoteCircle
 		];
 
@@ -244,7 +244,12 @@ class FederatedService {
 
 		$link->setToken($token);
 
-		return ($circle->getType() === Circle::CIRCLES_PUBLIC);
+//		$link->setStatus(
+//			($circle->getType()
+//			 === Circle::CIRCLES_PUBLIC) ? FederatedService::STATUS_LINK_UP : FederatedService::STATUS_REQUEST_SENT
+//		);
+//($link->isLinkUp());
+		return true;
 	}
 
 }

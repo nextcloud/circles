@@ -27,7 +27,6 @@
 namespace OCA\Circles\Controller;
 
 use OC\AppFramework\Http;
-use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Service\FederatedService;
 use OCA\Circles\Service\CirclesService;
@@ -37,7 +36,6 @@ use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\SharesService;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\IL10N;
-use OCP\IRequest;
 
 class FederatedController extends BaseController {
 
@@ -70,6 +68,8 @@ class FederatedController extends BaseController {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
+	 * @param $sourceId
+	 * @param $sourceName
 	 * @param string $circleName
 	 *
 	 * @return DataResponse
@@ -77,47 +77,48 @@ class FederatedController extends BaseController {
 	public function requestedLink($sourceId, $sourceName, $circleName) {
 
 		if (!$this->configService->isFederatedAllowed()) {
-			return new DataResponse(
-				[
-					'status' => FederatedService::STATUS_ERROR,
-					'reason' => 'federated_not_allowed'
-				],
-				Http::STATUS_OK
-			);
+			return $this->federatedFail('federated_not_allowed');
 		}
 
 		$circle = $this->circlesService->infoCircleByName($circleName);
 		if ($circle === null) {
-			return new DataResponse(
-				[
-					'status' => FederatedService::STATUS_ERROR,
-					'reason' => 'circle_does_not_exist'
-				],
-				Http::STATUS_OK
-			);
+			return $this->federatedFail('circle_does_not_exist');
 		}
 
 		$link = new FederatedLink();
 		$link->setRemoteCircleId($sourceId)
 			 ->setRemoteCircleName($sourceName);
-		
-		if (!$this->federatedService->initiateLink($circle, $link)) {
-			return new DataResponse(
-				[
-					'status' => FederatedService::STATUS_LINK_UP,
-					'token'  => $link->getToken()
-				],
-				Http::STATUS_OK
-			);
+
+		if ($this->federatedService->initiateLink($circle, $link)) {
+			return $this->federatedSuccess(['status' => $link->getStatus()], $link);
 		} else {
-			return new DataResponse(
-				[
-					'status' => FederatedService::STATUS_REQUEST_SENT,
-					'token'  => $link->getToken()
-				],
-				Http::STATUS_OK
-			);
+			return $this->federatedFail('link_failed');
 		}
 	}
 
+
+	/** @noinspection PhpSignatureMismatchDuringInheritanceInspection */
+	/**
+	 * @param array $data
+	 * @param FederatedLink $link
+	 *
+	 * @return DataResponse
+	 */
+	protected function federatedSuccess($data, $link) {
+		return new DataResponse(
+			array_merge($data, ['token' => $link->getToken()], Http::STATUS_OK)
+		);
+
+	}
+
+
+	protected function federatedFail($reason) {
+		return new DataResponse(
+			[
+				'status' => FederatedService::STATUS_ERROR,
+				'reason' => $reason
+			],
+			Http::STATUS_OK
+		);
+	}
 }
