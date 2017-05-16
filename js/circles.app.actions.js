@@ -167,7 +167,18 @@ var actions = {
 	linkCircleResult: function (result) {
 
 		console.log("!!!! " + JSON.stringify(result));
+		if (result.status === 1) {
+			OCA.notification.onSuccess(t('circles', "A link to {link} has been requested.", {
+				link: result.link
+			}));
+			return;
+		}
 
+		OCA.notification.onFail(
+			t('circles', "A link to {link} could not be initiated", {
+				link: result.link
+			}) + ': ' +
+			((result.error) ? result.error : t('circles', 'no error message')));
 	},
 
 

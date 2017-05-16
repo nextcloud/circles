@@ -210,4 +210,60 @@
 		</declaration>
 	</table>
 
+	<table>
+		<name>*dbprefix*circles_federated</name>
+
+		<declaration>
+			<field>
+				<name>id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<autoincrement>true</autoincrement>
+				<unsigned>true</unsigned>
+				<primary>true</primary>
+				<length>3</length>
+			</field>
+
+			<field>
+				<name>status</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<length>1</length>
+			</field>
+
+			<field>
+				<name>local_circle_id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<length>4</length>
+			</field>
+
+			<field>
+				<name>remote_circle_id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<length>4</length>
+			</field>
+
+			<field>
+				<name>remote_address</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>128</length>
+			</field>
+
+			<field>
+				<name>token</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+
+			<field>
+				<name>creation</name>
+				<type>timestamp</type>
+			</field>
+		</declaration>
+	</table>
+
 </database>

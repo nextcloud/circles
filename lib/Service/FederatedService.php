@@ -27,16 +27,16 @@
 namespace OCA\Circles\Service;
 
 
+use Exception;
 use GuzzleHttp\Exception\ClientException;
 use OC\Http\Client\ClientService;
-use OCA\Circles\BackgroundJob\FederatedCircle;
 use OCA\Circles\Db\CirclesMapper;
 use OCA\Circles\Db\MembersMapper;
 use OCA\Circles\Exceptions\FederatedCircleLinkFormatException;
-use OCA\Circles\Exceptions\FederatedSourceCircleTypeNotValid;
+use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
+use OCA\Circles\Exceptions\CircleTypeNotValid;
 use OCA\Circles\Exceptions\MemberIsNotAdminException;
 use OCA\Circles\Model\Circle;
-use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
 use OCP\IL10N;
 
@@ -106,39 +106,41 @@ class FederatedService {
 	 * @param string $link
 	 *
 	 * @return bool
+	 * @throws Exception
 	 * @throws FederatedCircleLinkFormatException
-	 * @throws FederatedSourceCircleTypeNotValid
+	 * @throws CircleTypeNotValid
 	 * @throws MemberIsNotAdminException
 	 */
 	public function linkCircle($circleId, $link) {
 
+		if (!$this->configService->isFederatedAllowed()) {
+			throw new FederatedCircleNotAllowedException(
+				$this->l10n->t("Federated circles are not allowed on this Nextcloud")
+			);
+		}
+
 		if (strpos($link, '@') === false) {
-			throw new FederatedCircleLinkFormatException("Link format is not valid");
-		}
-
-		// check circle type (personal can't link)
-		$circle = $this->circlesService->detailsCircle($circleId);
-		if (!$circle->getUser()
-					->isLevel(Member::LEVEL_ADMIN)
-		) {
-			throw new MemberIsNotAdminException("You are not admin of this circle");
-		}
-
-		if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
-			throw new FederatedSourceCircleTypeNotValid(
-				"The type of this circle cannot be linked to an other circle"
+			throw new FederatedCircleLinkFormatException(
+				$this->l10n->t("Federated link does not have a valid format")
 			);
 		}
 
 		list($remoteCircle, $remoteAddress) = explode('@', $link, 2);
-		$this->requestLinkWithCircle($circle, $remoteAddress, $remoteCircle);
+		try {
 
-		return true;
+			$circle = $this->circlesService->detailsCircle($circleId);
+			$circle->getUser()
+				   ->hasToBeAdmin();
+			$circle->cantBePersonal();
+
+			return $this->requestLinkWithCircle($circle, $remoteAddress, $remoteCircle);
+		} catch (Exception $e) {
+			throw $e;
+		}
 	}
 
 	/**
 	 * @param string $remote
-	 * @param string $circleName
 	 *
 	 * @return string
 	 */
@@ -155,25 +157,31 @@ class FederatedService {
 	 * @param Circle $circle
 	 * @param $remoteAddress
 	 * @param $remoteCircle
+	 *
+	 * @return int
+	 * @throws Exception
 	 */
 	private function requestLinkWithCircle(Circle $circle, $remoteAddress, $remoteCircle) {
 		$this->miscService->log(
 			"create link : " . $remoteCircle . ' - ' . $remoteAddress . ' - ' . $circle->getId()
 		);
 
-
 		$args = ['circleName' => $remoteCircle];
 
 		$client = $this->clientService->newClient();
 		try {
-			$client->post(
+			$toto = $client->post(
 				$this->generateLinkRemoteURL($remoteAddress), [
 																'body'            => $args,
 																'timeout'         => 10,
 																'connect_timeout' => 10,
 															]
 			);
+			$this->miscService->log("RESULT: " . var_export($toto, true));
+
+			return 1;
 		} catch (ClientException $e) {
+			throw $e;
 		}
 	}
 

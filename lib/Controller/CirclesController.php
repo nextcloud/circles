@@ -27,7 +27,6 @@
 namespace OCA\Circles\Controller;
 
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
-use OCA\Circles\Model\Member;
 use OCP\AppFramework\Http\DataResponse;
 
 class CirclesController extends BaseController {
@@ -66,6 +65,7 @@ class CirclesController extends BaseController {
 	 *
 	 * @param $type
 	 * @param string $name
+	 * @param int $level
 	 *
 	 * @return DataResponse
 	 */
@@ -168,7 +168,6 @@ class CirclesController extends BaseController {
 		} catch (\Exception $e) {
 			return $this->fail(['circle_id' => $id, 'error' => $e->getMessage()]);
 		}
-
 	}
 
 
@@ -183,9 +182,9 @@ class CirclesController extends BaseController {
 	 */
 	public function link($id, $link) {
 		try {
-			$data = $this->federatedService->linkCircle($id, $link);
+			$remote = $this->federatedService->linkCircle($id, $link);
 
-			return $this->success(['circle_id' => $id, 'link' => $data]);
+			return $this->success(['circle_id' => $id, 'link' => $link, 'remote' => $remote]);
 		} catch (\Exception $e) {
 			return $this->fail(['circle_id' => $id, 'error' => $e->getMessage()]);
 		}

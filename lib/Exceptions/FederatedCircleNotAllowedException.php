@@ -26,7 +26,7 @@
 
 namespace OCA\Circles\Exceptions;
 
-class FederatedSourceCircleTypeNotValid extends \Exception {
+class FederatedCircleNotAllowedException extends \Exception {
 
 }
 
