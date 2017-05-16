@@ -27,6 +27,8 @@
 namespace OCA\Circles\Service;
 
 
+use GuzzleHttp\Exception\ClientException;
+use OC\Http\Client\ClientService;
 use OCA\Circles\BackgroundJob\FederatedCircle;
 use OCA\Circles\Db\CirclesMapper;
 use OCA\Circles\Db\MembersMapper;
@@ -34,6 +36,7 @@ use OCA\Circles\Exceptions\FederatedCircleLinkFormatException;
 use OCA\Circles\Exceptions\FederatedSourceCircleTypeNotValid;
 use OCA\Circles\Exceptions\MemberIsNotAdminException;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
 use OCP\IL10N;
 
@@ -57,6 +60,9 @@ class FederatedService {
 	/** @var MembersMapper */
 	private $dbMembers;
 
+	/** @var ClientService */
+	private $clientService;
+
 	/** @var MiscService */
 	private $miscService;
 
@@ -69,6 +75,7 @@ class FederatedService {
 	 * @param ConfigService $configService
 	 * @param DatabaseService $databaseService
 	 * @param CirclesService $circlesService
+	 * @param ClientService $clientService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
@@ -77,12 +84,14 @@ class FederatedService {
 		ConfigService $configService,
 		DatabaseService $databaseService,
 		CirclesService $circlesService,
+		ClientService $clientService,
 		MiscService $miscService
 	) {
 		$this->userId = $userId;
 		$this->l10n = $l10n;
 		$this->configService = $configService;
 		$this->circlesService = $circlesService;
+		$this->clientService = $clientService;
 		$this->miscService = $miscService;
 
 		$this->dbCircles = $databaseService->getCirclesMapper();
@@ -103,7 +112,6 @@ class FederatedService {
 	 */
 	public function linkCircle($circleId, $link) {
 
-
 		if (strpos($link, '@') === false) {
 			throw new FederatedCircleLinkFormatException("Link format is not valid");
 		}
@@ -122,19 +130,51 @@ class FederatedService {
 			);
 		}
 
-		list($linkCircle, $linkCloud) = explode("@", $link, 2);
-		$this->requestLinkWithCircle($circle, $linkCircle, $linkCloud);
+		list($remoteCircle, $remoteAddress) = explode('@', $link, 2);
+		$this->requestLinkWithCircle($circle, $remoteAddress, $remoteCircle);
 
 		return true;
 	}
 
+	/**
+	 * @param string $remote
+	 * @param string $circleName
+	 *
+	 * @return string
+	 */
+	private function generateLinkRemoteURL($remote) {
+		if (strpos($remote, 'http') !== 0) {
+			$remote = 'https://' . $remote;
+		}
 
-	private function requestLinkWithCircle(Circle $circle, $linkCircle, $linkCloud) {
+		return rtrim($remote, '/') . '/ocs/v2.php/apps/circles/api/v2/link/';
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 * @param $remoteAddress
+	 * @param $remoteCircle
+	 */
+	private function requestLinkWithCircle(Circle $circle, $remoteAddress, $remoteCircle) {
 		$this->miscService->log(
-			"create link : " . $linkCircle . ' - ' . $linkCloud . ' - ' . var_export(
-				$circle->getId(), true
-			)
+			"create link : " . $remoteCircle . ' - ' . $remoteAddress . ' - ' . $circle->getId()
 		);
+
+
+		$args = ['circleName' => $remoteCircle];
+
+		$client = $this->clientService->newClient();
+		try {
+			$client->post(
+				$this->generateLinkRemoteURL($remoteAddress), [
+																'body'            => $args,
+																'timeout'         => 10,
+																'connect_timeout' => 10,
+															]
+			);
+		} catch (ClientException $e) {
+		}
 	}
 
 

@@ -26,7 +26,8 @@
 
 return [
 	'ocs'    => [
-		['name' => 'Federated#receiveItem', 'url' => '/api/v2/remote/{token}', 'verb' => 'POST']
+		['name' => 'Federated#receiveItem', 'url' => '/api/v2/item/{token}', 'verb' => 'POST'],
+		['name' => 'Federated#requestedLink', 'url' => '/api/v2/link/', 'verb' => 'POST']
 	],
 	'routes' => [
 		['name' => 'Navigation#navigate', 'url' => '/', 'verb' => 'GET'],

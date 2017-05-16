@@ -26,6 +26,8 @@
 
 namespace OCA\Circles\Model;
 
+use OC\L10N\L10N;
+
 class BaseCircle {
 
 	/** @var int */
@@ -56,6 +58,8 @@ class BaseCircle {
 	/** @var Member[] */
 	private $members;
 
+	/** @var FederatedLink[] */
+	private $links;
 
 	public function __construct($l10n, $type = -1, $name = '') {
 		$this->l10n = $l10n;
@@ -156,5 +160,33 @@ class BaseCircle {
 		return $this->members;
 	}
 
+
+	public function getRemote() {
+		return $this->links;
+	}
+
+	public function addRemote($link) {
+		array_push($this->links, $link);
+	}
+
+	public function getRemoteFromToken($token) {
+		foreach ($this->links AS $link) {
+			if ($link->getToken() === $token) {
+				return $link;
+			}
+		}
+
+		return null;
+	}
+
+	public function getRemoveFromAddressAndId($address, $id) {
+		foreach ($this->links AS $link) {
+			if ($link->getAddress() === $address && $link->getRemoteCircleId() === $id) {
+				return $link;
+			}
+		}
+
+		return null;
+	}
 
 }
