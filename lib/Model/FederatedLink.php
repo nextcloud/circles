@@ -73,9 +73,13 @@ class FederatedLink implements \JsonSerializable {
 
 	/**
 	 * @param string $address
+	 *
+	 * @return FederatedLink
 	 */
 	public function setAddress(string $address) {
 		$this->address = $address;
+
+		return $this;
 	}
 
 	/**
@@ -88,9 +92,13 @@ class FederatedLink implements \JsonSerializable {
 
 	/**
 	 * @param int $circleId
+	 *
+	 * @return FederatedLink
 	 */
 	public function setRemoteCircleId(int $circleId) {
 		$this->remoteCircleId = $circleId;
+
+		return $this;
 	}
 
 	/**
@@ -103,9 +111,13 @@ class FederatedLink implements \JsonSerializable {
 
 	/**
 	 * @param string $circleName
+	 *
+	 * @return FederatedLink
 	 */
 	public function setRemoteCircleName(string $circleName) {
 		$this->remoteCircleName = $circleName;
+
+		return $this;
 	}
 
 	/**
@@ -118,9 +130,13 @@ class FederatedLink implements \JsonSerializable {
 
 	/**
 	 * @param int $status
+	 *
+	 * @return FederatedLink
 	 */
 	public function setStatus(int $status) {
 		$this->status = $status;
+
+		return $this;
 	}
 
 	/**
@@ -133,13 +149,17 @@ class FederatedLink implements \JsonSerializable {
 
 	/**
 	 * @param int $creation
+	 *
+	 * @return FederatedLink
 	 */
 	public function setCreation($creation) {
 		if ($creation === null) {
-			return;
+			return $this;
 		}
 
 		$this->creation = $creation;
+
+		return $this;
 	}
 
 	/**

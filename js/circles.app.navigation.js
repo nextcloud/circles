@@ -27,6 +27,7 @@
 /** global: OCA */
 /** global: Notyf */
 
+/** global: actions */
 /** global: nav */
 /** global: elements */
 /** global: curr */

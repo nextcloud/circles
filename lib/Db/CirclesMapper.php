@@ -361,7 +361,7 @@ class CirclesMapper extends Mapper {
 			return null;
 		}
 
-		$circle = new Circle();
+		$circle = new Circle($this->l10n);
 		$circle->setId($data['id']);
 		$circle->setType($data['type']);
 
