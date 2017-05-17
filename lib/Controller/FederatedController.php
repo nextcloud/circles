@@ -91,6 +91,10 @@ class FederatedController extends BaseController {
 			return $this->federatedFail('duplicate_unique_id');
 		}
 
+		if ($this->federatedService->getLink($circle->getId(), $uniqueId) !== null) {
+			return $this->federatedFail('duplicate_link');
+		}
+
 		$link = new FederatedLink();
 		$link->setToken($token)
 			 ->setUniqueId($uniqueId)

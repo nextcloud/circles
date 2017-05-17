@@ -255,7 +255,13 @@ class FederatedService {
 
 		if ($result['reason'] === 'duplicate_unique_id') {
 			throw new FederatedRemoteDoesNotAllowException(
-				$this->l10n->t('It seems that you are trying to link a circle to himself')
+				$this->l10n->t('It seems that you are trying to link a circle to itself')
+			);
+		}
+
+		if ($result['reason'] === 'duplicate_link') {
+			throw new FederatedRemoteDoesNotAllowException(
+				$this->l10n->t('This link exists already')
 			);
 		}
 
@@ -286,6 +292,17 @@ class FederatedService {
 		}
 
 		return $this->federatedLinksRequest->create($link);
+	}
+
+
+	/**
+	 * @param $circleId
+	 * @param $uniqueId
+	 *
+	 * @return FederatedLink
+	 */
+	public function getLink($circleId, $uniqueId) {
+		return $this->federatedLinksRequest->get($circleId, $uniqueId);
 	}
 
 }

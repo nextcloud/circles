@@ -38,6 +38,8 @@ use OCP\Share\IShare;
 
 class FederatedLinksRequestBuilder {
 
+	const TABLE_FEDERATED = 'circles_federated';
+
 	/** @var IDBConnection */
 	protected $dbConnection;
 
@@ -63,7 +65,7 @@ class FederatedLinksRequestBuilder {
 	 */
 	protected function getLinksInsertSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->insert('circles_federated')
+		$qb->insert(self::TABLE_FEDERATED)
 		   ->setValue('creation', $qb->createFunction('NOW()'));
 
 		return $qb;
@@ -77,11 +79,24 @@ class FederatedLinksRequestBuilder {
 	 */
 	protected function getLinksUpdateSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->update('circles_federated');
-		
+		$qb->update(self::TABLE_FEDERATED);
+
 		return $qb;
 	}
 
+
+	/**
+	 * Base of the Sql Select request
+	 *
+	 * @return IQueryBuilder
+	 */
+	protected function getLinksSelectSql() {
+		$qb = $this->dbConnection->getQueryBuilder();
+		$qb->select('f.id', 'f.unique_id', 'f.status', 'f.address', 'f.token', 'f.circle_id')
+		   ->from(self::TABLE_FEDERATED, 'f');
+
+		return $qb;
+	}
 
 	/**
 	 * Base of the Sql Delete request
@@ -90,7 +105,7 @@ class FederatedLinksRequestBuilder {
 	 */
 	protected function getLinksDeleteSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->delete('circles_federated');
+		$qb->delete(self::TABLE_FEDERATED);
 
 		return $qb;
 	}

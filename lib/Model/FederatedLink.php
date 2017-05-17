@@ -36,6 +36,9 @@ class FederatedLink implements \JsonSerializable {
 	const STATUS_REQUEST_SENT = 6;
 	const STATUS_LINK_UP = 9;
 
+	/** @var int */
+	private $id;
+
 	/** @var string */
 	private $token;
 
@@ -65,6 +68,25 @@ class FederatedLink implements \JsonSerializable {
 
 
 	public function __construct() {
+	}
+
+
+	/**
+	 * @param int $id
+	 *
+	 * @return FederatedLink
+	 */
+	public function setId(int $id) {
+		$this->id = $id;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getId() {
+		return $this->id;
 	}
 
 
