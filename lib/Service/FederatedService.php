@@ -168,7 +168,6 @@ class FederatedService {
 
 			$link = new FederatedLink();
 			$link->setCircleId($circleId)
-				 ->setCircleName($circle->getName())
 				 ->setLocalAddress($this->serverHost)
 				 ->setAddress($remoteAddress)
 				 ->setRemoteCircleName($remoteCircle)
@@ -176,7 +175,7 @@ class FederatedService {
 				 ->generateToken();
 
 			$this->federatedLinksRequest->create($link);
-			$this->requestLink($link);
+			$this->requestLink($circle, $link);
 
 		} catch (Exception $e) {
 			$this->federatedLinksRequest->delete($link);
@@ -185,6 +184,7 @@ class FederatedService {
 
 		return $link;
 	}
+
 
 	/**
 	 * @param string $remote
@@ -201,16 +201,17 @@ class FederatedService {
 
 
 	/**
+	 * @param Circle $circle
 	 * @param FederatedLink $link
 	 *
 	 * @return int
 	 * @throws Exception
 	 */
-	private function requestLink(FederatedLink &$link) {
+	private function requestLink(Circle $circle, FederatedLink &$link) {
 		$args = [
 			'token'      => $link->getToken(),
-			'sourceName' => $link->getCircleName(),
-			'sourceId'   => $link->getCircleId(),
+			'uniqueId'   => $circle->getUniqueId(),
+			'sourceName' => $circle->getName(),
 			'linkTo'     => $link->getRemoteCircleName(),
 			'address'    => $link->getLocalAddress()
 		];
@@ -228,7 +229,7 @@ class FederatedService {
 			$result = json_decode($request->getBody(), true);
 			$this->parsingRequestLinkResult($result);
 			$link->setStatus($result['status']);
-			$link->setRemoteCircleId($result['circleId']);
+			$link->setUniqueId($result['uniqueId']);
 			$this->federatedLinksRequest->update($link);
 
 			return true;

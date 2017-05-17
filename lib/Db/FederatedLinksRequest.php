@@ -38,7 +38,7 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 			$qb = $this->getLinksInsertSql();
 			$qb->setValue('status', $qb->createNamedParameter($link->getStatus()))
 			   ->setValue('circle_id', $qb->createNamedParameter($link->getCircleId()))
-			   ->setValue('remote_circle_id', $qb->createNamedParameter($link->getRemoteCircleId()))
+			   ->setValue('unique_id', $qb->createNamedParameter($link->getUniqueId()))
 			   ->setValue('address', $qb->createNamedParameter($link->getAddress()))
 			   ->setValue('token', $qb->createNamedParameter($link->getToken()));
 
@@ -56,8 +56,8 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 		$expr = $qb->expr();
 
 		$qb->set('status', $qb->createNamedParameter($link->getStatus()));
-		if ($link->getRemoteCircleId() > 0) {
-			$qb->set('remote_circle_id', $qb->createNamedParameter($link->getRemoteCircleId()));
+		if ($link->getUniqueId() !== '') {
+			$qb->set('unique_id', $qb->createNamedParameter($link->getUniqueId()));
 		}
 
 		$qb->where(
@@ -73,7 +73,6 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 
 	public function delete(FederatedLink $link) {
 
-		$this->miscService->log("DELETRE !! " . var_export($link, true));
 		if ($link === null) {
 			return;
 		}

@@ -106,7 +106,7 @@ class CirclesMapper extends Mapper {
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select(
-			'c.id', 'c.name', 'c.description', 'c.type', 'c.creation',
+			'c.id', 'c.unique_id', 'c.name', 'c.description', 'c.type', 'c.creation',
 			'u.joined', 'u.level', 'u.status'
 		)
 		   ->selectAlias('o.user_id', 'owner')
@@ -364,6 +364,7 @@ class CirclesMapper extends Mapper {
 		$circle = new Circle($this->l10n);
 		$circle->setId($data['id']);
 		$circle->setType($data['type']);
+		$circle->setUniqueId($data['unique_id']);
 
 		return $circle;
 	}
@@ -384,8 +385,10 @@ class CirclesMapper extends Mapper {
 			);
 		}
 
+		$circle->generateUniqueId();
 		$qb = $this->db->getQueryBuilder();
 		$qb->insert(self::TABLENAME)
+		   ->setValue('unique_id', $qb->createNamedParameter($circle->getUniqueId()))
 		   ->setValue('name', $qb->createNamedParameter($circle->getName()))
 		   ->setValue('description', $qb->createNamedParameter($circle->getDescription()))
 		   ->setValue('type', $qb->createNamedParameter($circle->getType()))
@@ -462,7 +465,7 @@ class CirclesMapper extends Mapper {
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select(
-			'c.id', 'c.name', 'c.type'
+			'c.id', 'c.unique_id', 'c.name', 'c.type'
 		)
 		   ->from(self::TABLENAME, 'c')
 		   ->where(

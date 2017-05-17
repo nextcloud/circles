@@ -69,14 +69,14 @@ class FederatedController extends BaseController {
 	 * @NoCSRFRequired
 	 *
 	 * @param $token
-	 * @param $sourceId
+	 * @param $uniqueId
 	 * @param $sourceName
 	 * @param $linkTo
 	 * @param $address
 	 *
 	 * @return DataResponse
 	 */
-	public function requestedLink($token, $sourceId, $sourceName, $linkTo, $address) {
+	public function requestedLink($token, $uniqueId, $sourceName, $linkTo, $address) {
 
 		if (!$this->configService->isFederatedAllowed()) {
 			return $this->federatedFail('federated_not_allowed');
@@ -89,12 +89,14 @@ class FederatedController extends BaseController {
 
 		$link = new FederatedLink();
 		$link->setToken($token)
-			 ->setRemoteCircleId($sourceId)
+			 ->setUniqueId($uniqueId)
 			 ->setRemoteCircleName($sourceName)
 			 ->setAddress($address);
 
 		if ($this->federatedService->initiateLink($circle, $link)) {
-			return $this->federatedSuccess(['status' => $link->getStatus(), 'circleId' => $link->getCircleId()], $link);
+			return $this->federatedSuccess(
+				['status' => $link->getStatus(), 'uniqueId' => $circle->getUniqueId()], $link
+			);
 		} else {
 			return $this->federatedFail('link_failed');
 		}

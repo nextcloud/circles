@@ -38,6 +38,9 @@ class BaseCircle {
 	protected $l10n;
 
 	/** @var string */
+	private $uniqueId;
+
+	/** @var string */
 	private $name;
 
 	/** @var Member */
@@ -83,6 +86,29 @@ class BaseCircle {
 		return $this->id;
 	}
 
+
+	/**
+	 * @param string $uniqueId
+	 *
+	 * @return $this
+	 */
+	public function setUniqueId(string $uniqueId) {
+		$this->uniqueId = $uniqueId;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getUniqueId() {
+		return $this->uniqueId;
+	}
+
+	public function generateUniqueId() {
+		$uniqueId = bin2hex(openssl_random_pseudo_bytes(24));
+		$this->setUniqueId($uniqueId);
+	}
 
 	public function setName($name) {
 		$this->name = $name;
@@ -181,7 +207,7 @@ class BaseCircle {
 
 	public function getRemoteFromAddressAndId($address, $id) {
 		foreach ($this->links AS $link) {
-			if ($link->getAddress() === $address && $link->getRemoteCircleId() === $id) {
+			if ($link->getAddress() === $address && $link->getUniqueId() === $id) {
 				return $link;
 			}
 		}

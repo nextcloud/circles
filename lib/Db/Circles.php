@@ -33,6 +33,7 @@ class Circles extends Entity {
 
 
 	public $id;
+	public $uniqueid;
 	public $name;
 	public $description;
 	public $type;
@@ -48,6 +49,7 @@ class Circles extends Entity {
 	public function __construct(Circle $item = null) {
 		if ($item != null) {
 			$this->setId($item->getId());
+			$this->setUniqueId($item->getUniqueId());
 			$this->setName($item->getName());
 			$this->setDescription($item->getDescription());
 			$this->setType($item->getType());

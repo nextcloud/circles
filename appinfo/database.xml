@@ -46,6 +46,13 @@
 			</field>
 
 			<field>
+				<name>unique_id</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+
+			<field>
 				<name>name</name>
 				<type>text</type>
 				<notnull>true</notnull>

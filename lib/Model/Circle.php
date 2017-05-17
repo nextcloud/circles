@@ -90,6 +90,7 @@ class Circle extends BaseCircle implements \JsonSerializable {
 	public function fromArray($arr) {
 		$this->setId($arr['id']);
 		$this->setName($arr['name']);
+		$this->setUniqueId($arr['unique_id']);
 		$this->setDescription($arr['description']);
 		$this->setType($arr['type']);
 		$this->setCreation($arr['creation']);
