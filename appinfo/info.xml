@@ -37,6 +37,7 @@ Your circle will be visible to everyone and everyone will be able to join the ci
 
 	<repair-steps>
 		<post-migration>
+		  <step>OCA\Circles\Migration\UpdateShareTimeToTimestamp</step>
 			<step>OCA\Circles\Migration\ImportOwncloudCustomGroups</step>
 		</post-migration>
 	</repair-steps>
