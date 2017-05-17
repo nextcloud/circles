@@ -200,13 +200,13 @@
 			};
 
 
-			this.linkCircle = function (circleId, link, callback) {
+			this.linkCircle = function (circleId, remote, callback) {
 				var result = {status: -1};
 				$.ajax({
 					method: 'PUT',
 					url: OC.generateUrl('/apps/circles/circles/' + circleId + '/link'),
 					data: {
-						link: link
+						remote: remote
 					}
 				}).done(function (res) {
 					self.onCallback(callback, res);

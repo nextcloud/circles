@@ -176,17 +176,19 @@ class CirclesController extends BaseController {
 	 * @NoSubAdminRequired
 	 *
 	 * @param $id
-	 * @param $link
+	 * @param $remote
 	 *
 	 * @return DataResponse
 	 */
-	public function link($id, $link) {
+	public function link($id, $remote) {
 		try {
-			$remote = $this->federatedService->linkCircle($id, $link);
+			$link = $this->federatedService->linkCircle($id, $remote);
 
-			return $this->success(['circle_id' => $id, 'link' => $link, 'remote' => $remote]);
+			return $this->success(['circle_id' => $id, 'remote' => $remote, 'link' => $link]);
 		} catch (\Exception $e) {
-			return $this->fail(['circle_id' => $id, 'link' => $link, 'error' => $e->getMessage()]);
+			return $this->fail(
+				['circle_id' => $id, 'remote' => $remote, 'error' => $e->getMessage()]
+			);
 		}
 	}
 

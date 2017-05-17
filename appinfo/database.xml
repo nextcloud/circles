@@ -232,21 +232,20 @@
 			</field>
 
 			<field>
-				<name>local_circle_id</name>
+				<name>circle_id</name>
 				<type>integer</type>
 				<notnull>true</notnull>
 				<length>4</length>
 			</field>
 
 			<field>
-				<name>remote_circle_id</name>
-				<type>integer</type>
-				<notnull>true</notnull>
-				<length>4</length>
+				<name>unique_id</name>
+				<type>text</type>
+				<length>64</length>
 			</field>
 
 			<field>
-				<name>remote_address</name>
+				<name>address</name>
 				<type>text</type>
 				<notnull>true</notnull>
 				<length>128</length>
@@ -254,6 +253,13 @@
 
 			<field>
 				<name>token</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+
+			<field>
+				<name>key</name>
 				<type>text</type>
 				<notnull>true</notnull>
 				<length>64</length>

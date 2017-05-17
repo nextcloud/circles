@@ -30,10 +30,12 @@ namespace OCA\Circles\Service;
 use Exception;
 use OC\Http\Client\ClientService;
 use OCA\Circles\Db\CirclesMapper;
+use OCA\Circles\Db\FederatedLinksRequest;
 use OCA\Circles\Db\MembersMapper;
 use OCA\Circles\Exceptions\FederatedCircleLinkFormatException;
 use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 use OCA\Circles\Exceptions\CircleTypeNotValid;
+use OCA\Circles\Exceptions\FederatedLinkCreationIssue;
 use OCA\Circles\Exceptions\FederatedRemoteCircleDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedRemoteDoesNotAllowException;
 use OCA\Circles\Exceptions\MemberIsNotAdminException;
@@ -42,13 +44,6 @@ use OCA\Circles\Model\FederatedLink;
 use OCP\IL10N;
 
 class FederatedService {
-
-
-	const STATUS_ERROR = 0;
-	const STATUS_LINK_DOWN = 1;
-	const STATUS_REQUEST_DECLINED = 3;
-	const STATUS_REQUEST_SENT = 6;
-	const STATUS_LINK_UP = 9;
 
 
 	/** @var string */
@@ -62,6 +57,9 @@ class FederatedService {
 
 	/** @var CirclesService */
 	private $circlesService;
+
+	/** @var FederatedLinksRequest */
+	private $federatedLinksRequest;
 
 	/** @var CirclesMapper */
 	private $dbCircles;
@@ -84,6 +82,7 @@ class FederatedService {
 	 * @param ConfigService $configService
 	 * @param DatabaseService $databaseService
 	 * @param CirclesService $circlesService
+	 * @param FederatedLinksRequest $federatedLinksRequest
 	 * @param string $serverHost
 	 * @param ClientService $clientService
 	 * @param MiscService $miscService
@@ -94,6 +93,7 @@ class FederatedService {
 		ConfigService $configService,
 		DatabaseService $databaseService,
 		CirclesService $circlesService,
+		FederatedLinksRequest $federatedLinksRequest,
 		string $serverHost,
 		ClientService $clientService,
 		MiscService $miscService
@@ -102,6 +102,7 @@ class FederatedService {
 		$this->l10n = $l10n;
 		$this->configService = $configService;
 		$this->circlesService = $circlesService;
+		$this->federatedLinksRequest = $federatedLinksRequest;
 		$this->serverHost = $serverHost;
 		$this->clientService = $clientService;
 
@@ -116,15 +117,16 @@ class FederatedService {
 	 * link to a circle.
 	 *
 	 * @param int $circleId
-	 * @param string $link
+	 * @param string $remote
 	 *
-	 * @return bool
 	 * @throws Exception
 	 * @throws FederatedCircleLinkFormatException
 	 * @throws CircleTypeNotValid
 	 * @throws MemberIsNotAdminException
+	 *
+	 * @return FederatedLink
 	 */
-	public function linkCircle($circleId, $link) {
+	public function linkCircle($circleId, $remote) {
 
 		if (!$this->configService->isFederatedAllowed()) {
 			throw new FederatedCircleNotAllowedException(
@@ -132,14 +134,32 @@ class FederatedService {
 			);
 		}
 
-		if (strpos($link, '@') === false) {
+		if (strpos($remote, '@') === false) {
 			throw new FederatedCircleLinkFormatException(
 				$this->l10n->t("Federated link does not have a valid format")
 			);
 		}
 
-		list($remoteCircle, $remoteAddress) = explode('@', $link, 2);
 		try {
+			return $this->requestLinkWithCircle($circleId, $remote);
+		} catch (Exception $e) {
+			throw $e;
+		}
+	}
+
+
+	/**
+	 * @param $circleId
+	 * @param $remote
+	 *
+	 * @return FederatedLink
+	 * @throws Exception
+	 */
+	private function requestLinkWithCircle($circleId, $remote) {
+
+		$link = null;
+		try {
+			list($remoteCircle, $remoteAddress) = explode('@', $remote, 2);
 
 			$circle = $this->circlesService->detailsCircle($circleId);
 			$circle->getUser()
@@ -147,16 +167,23 @@ class FederatedService {
 			$circle->cantBePersonal();
 
 			$link = new FederatedLink();
-			$link->setRemoteCircleName($remoteCircle)
+			$link->setCircleId($circleId)
+				 ->setCircleName($circle->getName())
 				 ->setLocalAddress($this->serverHost)
-				 ->setLocalCircleName($circle->getName())
 				 ->setAddress($remoteAddress)
+				 ->setRemoteCircleName($remoteCircle)
+				 ->setStatus(FederatedLink::STATUS_LINK_SETUP)
 				 ->generateToken();
 
-			return $this->requestLinkWithCircle($link);
+			$this->federatedLinksRequest->create($link);
+			$this->requestLink($link);
+
 		} catch (Exception $e) {
+			$this->federatedLinksRequest->delete($link);
 			throw $e;
 		}
+
+		return $link;
 	}
 
 	/**
@@ -179,13 +206,13 @@ class FederatedService {
 	 * @return int
 	 * @throws Exception
 	 */
-	private function requestLinkWithCircle(FederatedLink $link) {
-
+	private function requestLink(FederatedLink &$link) {
 		$args = [
-			'token'   => $link->getToken(),
-			'source'  => $link->getLocalCircleName(),
-			'linkTo'  => $link->getRemoteCircleName(),
-			'address' => $link->getLocalAddress()
+			'token'      => $link->getToken(),
+			'sourceName' => $link->getCircleName(),
+			'sourceId'   => $link->getCircleId(),
+			'linkTo'     => $link->getRemoteCircleName(),
+			'address'    => $link->getLocalAddress()
 		];
 
 		$client = $this->clientService->newClient();
@@ -199,21 +226,22 @@ class FederatedService {
 			);
 
 			$result = json_decode($request->getBody(), true);
-			$this->requestLinkStatus($result);
+			$this->parsingRequestLinkResult($result);
+			$link->setStatus($result['status']);
+			$link->setRemoteCircleId($result['circleId']);
+			$this->federatedLinksRequest->update($link);
 
-			$this->miscService->log("_____RESULT: " . var_export($result, true));
-
-			return $result['status'];
+			return true;
 		} catch (Exception $e) {
 			throw $e;
 		}
 	}
 
 
-	private function requestLinkStatus($result) {
+	private function parsingRequestLinkResult($result) {
 
-		if ($result['status'] === self::STATUS_REQUEST_SENT
-			|| $result['status'] === self::STATUS_LINK_UP
+		if ($result['status'] === FederatedLink::STATUS_REQUEST_SENT
+			|| $result['status'] === FederatedLink::STATUS_LINK_UP
 		) {
 			return;
 		}
@@ -242,19 +270,15 @@ class FederatedService {
 	 */
 	public function initiateLink(Circle $circle, FederatedLink &$link) {
 
-//		$token = '';
-//		for ($i = 0; $i <= 5; $i++) {
-//			$token .= uniqid('', true);
-//		}
-//
-//		$link->setToken($token);
+		$link->setCircleId($circle->getId());
 
-		$link->setStatus(self::STATUS_REQUEST_SENT);
-//			($circle->getType()
-//			 === Circle::CIRCLES_PUBLIC) ? FederatedService::STATUS_LINK_UP : FederatedService::STATUS_REQUEST_SENT
-//		);
-//($link->isLinkUp());
-		return true;
+		if ($circle->getType() === Circle::CIRCLES_PUBLIC) {
+			$link->setStatus(FederatedLink::STATUS_LINK_UP);
+		} else {
+			$link->setStatus(FederatedLink::STATUS_REQUEST_SENT);
+		}
+
+		return $this->federatedLinksRequest->create($link);
 	}
 
 }

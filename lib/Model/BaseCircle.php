@@ -179,7 +179,7 @@ class BaseCircle {
 		return null;
 	}
 
-	public function getRemoveFromAddressAndId($address, $id) {
+	public function getRemoteFromAddressAndId($address, $id) {
 		foreach ($this->links AS $link) {
 			if ($link->getAddress() === $address && $link->getRemoteCircleId() === $id) {
 				return $link;

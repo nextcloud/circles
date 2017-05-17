@@ -29,6 +29,13 @@ namespace OCA\Circles\Model;
 class FederatedLink implements \JsonSerializable {
 
 
+	const STATUS_ERROR = 0;
+	const STATUS_LINK_DOWN = 1;
+	const STATUS_LINK_SETUP = 2;
+	const STATUS_REQUEST_DECLINED = 4;
+	const STATUS_REQUEST_SENT = 6;
+	const STATUS_LINK_UP = 9;
+
 	/** @var string */
 	private $token;
 
@@ -43,6 +50,9 @@ class FederatedLink implements \JsonSerializable {
 
 	/** @var int */
 	private $creation;
+
+	/** @var int */
+	private $circleId;
 
 	/** @var int */
 	private $remoteCircleId;
@@ -80,11 +90,7 @@ class FederatedLink implements \JsonSerializable {
 	 * @return string
 	 */
 	public function generateToken() {
-		$token = '';
-		for ($i = 0; $i <= 5; $i++) {
-			$token .= uniqid('', true);
-		}
-
+		$token = bin2hex(openssl_random_pseudo_bytes(24));
 		$this->setToken($token);
 
 		return $token;
@@ -134,6 +140,25 @@ class FederatedLink implements \JsonSerializable {
 	 *
 	 * @return FederatedLink
 	 */
+	public function setCircleId(int $circleId) {
+		$this->circleId = $circleId;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getCircleId() {
+		return $this->circleId;
+	}
+
+
+	/**
+	 * @param int $circleId
+	 *
+	 * @return FederatedLink
+	 */
 	public function setRemoteCircleId(int $circleId) {
 		$this->remoteCircleId = $circleId;
 
@@ -172,7 +197,7 @@ class FederatedLink implements \JsonSerializable {
 	 *
 	 * @return FederatedLink
 	 */
-	public function setLocalCircleName(string $circleName) {
+	public function setCircleName(string $circleName) {
 		$this->localCircleName = $circleName;
 
 		return $this;
@@ -181,7 +206,7 @@ class FederatedLink implements \JsonSerializable {
 	/**
 	 * @return string
 	 */
-	public function getLocalCircleName() {
+	public function getCircleName() {
 		return $this->localCircleName;
 	}
 

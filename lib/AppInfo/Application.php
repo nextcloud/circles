@@ -35,6 +35,7 @@ use \OCA\Circles\Controller\MembersController;
 use OCA\Circles\Controller\SharesController;
 use \OCA\Circles\Db\CirclesMapper;
 use OCA\Circles\Db\CirclesRequest;
+use OCA\Circles\Db\FederatedLinksRequest;
 use \OCA\Circles\Db\MembersMapper;
 use OCA\Circles\Events\UserEvents;
 use \OCA\Circles\Service\DatabaseService;
@@ -143,7 +144,8 @@ class Application extends App {
 			return new FederatedService(
 				$c->query('UserId'), $c->query('L10N'), $c->query('ConfigService'),
 				$c->query('DatabaseService'), $c->query('CirclesService'),
-				$c->query('ServerHost'), $c->query('HTTPClientService'), $c->query('MiscService')
+				$c->query('FederatedLinksRequest'), $c->query('ServerHost'),
+				$c->query('HTTPClientService'), $c->query('MiscService')
 			);
 		}
 		);
@@ -231,6 +233,16 @@ class Application extends App {
 			);
 		}
 		);
+
+		$container->registerService(
+			'FederatedLinksRequest', function(IAppContainer $c) {
+			return new FederatedLinksRequest(
+				$c->query('ServerContainer')
+				  ->getDatabaseConnection(), $c->query('MiscService')
+			);
+		}
+		);
+
 
 	}
 

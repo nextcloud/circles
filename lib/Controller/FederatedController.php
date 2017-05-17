@@ -69,13 +69,14 @@ class FederatedController extends BaseController {
 	 * @NoCSRFRequired
 	 *
 	 * @param $token
-	 * @param $source
+	 * @param $sourceId
+	 * @param $sourceName
 	 * @param $linkTo
 	 * @param $address
 	 *
 	 * @return DataResponse
 	 */
-	public function requestedLink($token, $source, $linkTo, $address) {
+	public function requestedLink($token, $sourceId, $sourceName, $linkTo, $address) {
 
 		if (!$this->configService->isFederatedAllowed()) {
 			return $this->federatedFail('federated_not_allowed');
@@ -88,18 +89,18 @@ class FederatedController extends BaseController {
 
 		$link = new FederatedLink();
 		$link->setToken($token)
-			 ->setRemoteCircleName($source)
+			 ->setRemoteCircleId($sourceId)
+			 ->setRemoteCircleName($sourceName)
 			 ->setAddress($address);
 
 		if ($this->federatedService->initiateLink($circle, $link)) {
-			return $this->federatedSuccess(['status' => $link->getStatus()], $link);
+			return $this->federatedSuccess(['status' => $link->getStatus(), 'circleId' => $link->getCircleId()], $link);
 		} else {
 			return $this->federatedFail('link_failed');
 		}
 	}
 
 
-	/** @noinspection PhpSignatureMismatchDuringInheritanceInspection */
 	/**
 	 * @param array $data
 	 * @param FederatedLink $link
@@ -117,7 +118,7 @@ class FederatedController extends BaseController {
 	protected function federatedFail($reason) {
 		return new DataResponse(
 			[
-				'status' => FederatedService::STATUS_ERROR,
+				'status' => FederatedLink::STATUS_ERROR,
 				'reason' => $reason
 			],
 			Http::STATUS_OK

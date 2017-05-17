@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -24,25 +25,30 @@
  *
  */
 
-
 namespace OCA\Circles\Db;
 
 
-use OCA\Circles\Db\CirclesRequestBuilder;
+use Doctrine\DBAL\Query\QueryBuilder;
 use OCA\Circles\Model\Member;
-use OCA\Circles\Model\Share;
 use OCA\Circles\Service\MiscService;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
+use OCP\Share;
+use OCP\Share\IShare;
 
-class CirclesRequest extends CirclesRequestBuilder {
+class FederatedLinksRequestBuilder {
+
+	/** @var IDBConnection */
+	protected $dbConnection;
 
 	/** @var MiscService */
-	private $miscService;
+	protected $miscService;
 
 	/**
 	 * CirclesRequest constructor.
 	 *
 	 * @param IDBConnection $connection
+	 * @param MiscService $miscService
 	 */
 	public function __construct(IDBConnection $connection, MiscService $miscService) {
 		$this->dbConnection = $connection;
@@ -50,38 +56,42 @@ class CirclesRequest extends CirclesRequestBuilder {
 	}
 
 
-	public function createShare(Share $share) {
+	/**
+	 * Base of the Sql Insert request
+	 *
+	 * @return IQueryBuilder
+	 */
+	protected function getLinksInsertSql() {
+		$qb = $this->dbConnection->getQueryBuilder();
+		$qb->insert('circles_federated')
+		   ->setValue('creation', $qb->createFunction('NOW()'));
 
-		$qb = $this->getSharesInsertSql();
-		$qb->setValue('circle_id', $qb->createNamedParameter($share->getCircleId()))
-		   ->setValue('source', $qb->createNamedParameter($share->getSource()))
-		   ->setValue('type', $qb->createNamedParameter($share->getType()))
-		   ->setValue('author', $qb->createNamedParameter($share->getAuthor()))
-		   ->setValue('sharer', $qb->createNamedParameter($share->getSharer()))
-		   ->setValue('item', $qb->createNamedParameter($share->getItem(true)));
-
-		$qb->execute();
+		return $qb;
 	}
 
 
-	public function getAudience($circleId) {
-		$qb = $this->getMembersSelectSql(Member::LEVEL_MEMBER);
-		$this->limitToCircle($qb, $circleId);
-
-		$this->joinCircles($qb, 'm.circle_id');
-		$qb->selectAlias('c.name', 'circle_name');
-
-		$users = [];
-		$cursor = $qb->execute();
-		while ($data = $cursor->fetch()) {
-			$entry = $this->parseMembersSelectSql($data);
-			$entry['circle_name'] = $data['circle_name'];
-			$users[] = $entry;
-		}
-		$cursor->closeCursor();
-
-		return $users;
+	/**
+	 * Base of the Sql Update request
+	 *
+	 * @return IQueryBuilder
+	 */
+	protected function getLinksUpdateSql() {
+		$qb = $this->dbConnection->getQueryBuilder();
+		$qb->update('circles_federated');
+		
+		return $qb;
 	}
 
 
+	/**
+	 * Base of the Sql Delete request
+	 *
+	 * @return IQueryBuilder
+	 */
+	protected function getLinksDeleteSql() {
+		$qb = $this->dbConnection->getQueryBuilder();
+		$qb->delete('circles_federated');
+
+		return $qb;
+	}
 }

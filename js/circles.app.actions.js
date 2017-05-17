@@ -169,24 +169,24 @@ var actions = {
 		//elements.linkCircle.val('');
 		if (result.status !== 1) {
 			OCA.notification.onFail(
-				t('circles', "A link to <b>{link}</b> could not be initiated", {
-					link: result.link
+				t('circles', "A link to <b>{remote}</b> could not be initiated", {
+					remote: result.remote
 				}) + ': ' +
 				((result.error) ? result.error : t('circles', 'no error message')));
 			return;
 		}
 
-		if (result.remote === 6) {
+		if (result.link.status === 6) {
 			OCA.notification.onSuccess(
-				t('circles', "A link to <b>{link}</b> has been requested.", {
-					link: result.link
+				t('circles', "A link to <b>{remote}</b> has been requested.", {
+					remote: result.remote
 				}));
 		}
 
-		if (result.remote === 9) {
+		if (result.link.status === 9) {
 			OCA.notification.onSuccess(
-				t('circles', "the link to <b>{link}</b> is now up and running.", {
-					link: result.link
+				t('circles', "the link to <b>{remote}</b> is now up and running.", {
+					remote: result.remote
 				}));
 		}
 
