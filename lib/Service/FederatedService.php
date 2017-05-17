@@ -253,6 +253,12 @@ class FederatedService {
 			);
 		}
 
+		if ($result['reason'] === 'duplicate_unique_id') {
+			throw new FederatedRemoteDoesNotAllowException(
+				$this->l10n->t('It seems that you are trying to link a circle to himself')
+			);
+		}
+
 		if ($result['reason'] === 'circle_does_not_exist') {
 			throw new FederatedRemoteCircleDoesNotExistException(
 				$this->l10n->t('The requested remote circle does not exist')
