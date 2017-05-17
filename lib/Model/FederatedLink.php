@@ -35,6 +35,9 @@ class FederatedLink implements \JsonSerializable {
 	/** @var string */
 	private $address;
 
+	/** @var string */
+	private $localAddress;
+
 	/** @var int */
 	private $status;
 
@@ -46,6 +49,9 @@ class FederatedLink implements \JsonSerializable {
 
 	/** @var string */
 	private $remoteCircleName;
+
+	/** @var string */
+	private $localCircleName;
 
 
 	public function __construct() {
@@ -70,6 +76,20 @@ class FederatedLink implements \JsonSerializable {
 		return $this->token;
 	}
 
+	/**
+	 * @return string
+	 */
+	public function generateToken() {
+		$token = '';
+		for ($i = 0; $i <= 5; $i++) {
+			$token .= uniqid('', true);
+		}
+
+		$this->setToken($token);
+
+		return $token;
+	}
+
 
 	/**
 	 * @param string $address
@@ -87,6 +107,25 @@ class FederatedLink implements \JsonSerializable {
 	 */
 	public function getAddress() {
 		return $this->address;
+	}
+
+
+	/**
+	 * @param string $address
+	 *
+	 * @return FederatedLink
+	 */
+	public function setLocalAddress(string $address) {
+		$this->localAddress = $address;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getLocalAddress() {
+		return $this->localAddress;
 	}
 
 
@@ -125,6 +164,25 @@ class FederatedLink implements \JsonSerializable {
 	 */
 	public function getRemoteCircleName() {
 		return $this->remoteCircleName;
+	}
+
+
+	/**
+	 * @param string $circleName
+	 *
+	 * @return FederatedLink
+	 */
+	public function setLocalCircleName(string $circleName) {
+		$this->localCircleName = $circleName;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getLocalCircleName() {
+		return $this->localCircleName;
 	}
 
 

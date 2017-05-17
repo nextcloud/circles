@@ -143,7 +143,7 @@ class Application extends App {
 			return new FederatedService(
 				$c->query('UserId'), $c->query('L10N'), $c->query('ConfigService'),
 				$c->query('DatabaseService'), $c->query('CirclesService'),
-				$c->query('HTTPClientService'), $c->query('MiscService')
+				$c->query('ServerHost'), $c->query('HTTPClientService'), $c->query('MiscService')
 			);
 		}
 		);
@@ -304,6 +304,15 @@ class Application extends App {
 			'HTTPClientService', function(IAppContainer $c) {
 			return $c->query('ServerContainer')
 					 ->getHTTPClientService();
+		}
+		);
+
+
+		$container->registerService(
+			'ServerHost', function(IAppContainer $c) {
+			return $c->query('ServerContainer')
+					 ->getRequest()
+					 ->getServerHost();
 		}
 		);
 

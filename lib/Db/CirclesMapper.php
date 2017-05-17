@@ -376,9 +376,7 @@ class CirclesMapper extends Mapper {
 	 * @return bool
 	 * @throws CircleAlreadyExistsException
 	 */
-	public function create(
-		Circle & $circle, Member & $owner
-	) {
+	public function create(Circle & $circle, Member & $owner) {
 
 		if (!$this->isCircleUnique($circle, $owner)) {
 			throw new CircleAlreadyExistsException(
@@ -412,9 +410,7 @@ class CirclesMapper extends Mapper {
 	 *
 	 * @internal param Circle $circle
 	 */
-	public function destroy(
-		$circleId
-	) {
+	public function destroy($circleId) {
 		$qb = $this->db->getQueryBuilder();
 		$qb->delete(self::TABLENAME)
 		   ->where(
@@ -436,9 +432,7 @@ class CirclesMapper extends Mapper {
 	 *
 	 * @return bool
 	 */
-	public function isCircleUnique(
-		Circle $circle, Member $owner
-	) {
+	public function isCircleUnique(Circle $circle, Member $owner) {
 
 		if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
 			return $this->isPersonalCircleUnique($circle, $owner);

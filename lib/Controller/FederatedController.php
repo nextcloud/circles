@@ -68,26 +68,28 @@ class FederatedController extends BaseController {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
-	 * @param $sourceId
-	 * @param $sourceName
-	 * @param string $circleName
+	 * @param $token
+	 * @param $source
+	 * @param $linkTo
+	 * @param $address
 	 *
 	 * @return DataResponse
 	 */
-	public function requestedLink($sourceId, $sourceName, $circleName) {
+	public function requestedLink($token, $source, $linkTo, $address) {
 
 		if (!$this->configService->isFederatedAllowed()) {
 			return $this->federatedFail('federated_not_allowed');
 		}
 
-		$circle = $this->circlesService->infoCircleByName($circleName);
+		$circle = $this->circlesService->infoCircleByName($linkTo);
 		if ($circle === null) {
 			return $this->federatedFail('circle_does_not_exist');
 		}
 
 		$link = new FederatedLink();
-		$link->setRemoteCircleId($sourceId)
-			 ->setRemoteCircleName($sourceName);
+		$link->setToken($token)
+			 ->setRemoteCircleName($source)
+			 ->setAddress($address);
 
 		if ($this->federatedService->initiateLink($circle, $link)) {
 			return $this->federatedSuccess(['status' => $link->getStatus()], $link);
@@ -106,7 +108,7 @@ class FederatedController extends BaseController {
 	 */
 	protected function federatedSuccess($data, $link) {
 		return new DataResponse(
-			array_merge($data, ['token' => $link->getToken()], Http::STATUS_OK)
+			array_merge($data, ['token' => $link->getToken()]), Http::STATUS_OK
 		);
 
 	}
