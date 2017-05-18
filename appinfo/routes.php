@@ -51,6 +51,7 @@ return [
 		['name' => 'Circles#link', 'url' => '/circles/{id}/link', 'verb' => 'PUT'],
 		['name' => 'Federated#requestedLink', 'url' => '/circles/link/', 'verb' => 'PUT'],
 		['name' => 'Federated#receiveItem', 'url' => '/circles/item/{token}', 'verb' => 'PUT'],
+		['name' => 'Federated#broadcastItem', 'url' => '/circles/test', 'verb' => 'PUT'],
 		['name' => 'Members#search', 'url' => '/circles/{id}/members', 'verb' => 'GET'],
 		[
 			'name'         => 'Members#add', 'url' => '/circles/{id}/members', 'verb' => 'PUT',

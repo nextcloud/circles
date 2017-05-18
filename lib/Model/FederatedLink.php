@@ -275,6 +275,17 @@ class FederatedLink implements \JsonSerializable {
 	}
 
 
+	public function isValid() {
+
+		if ($this->getStatus() === FederatedLink::STATUS_REQUEST_SENT
+			|| $this->getStatus() === FederatedLink::STATUS_LINK_UP
+		) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public function jsonSerialize() {
 		return array(
 			'token'    => $this->getToken(),

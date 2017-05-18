@@ -216,8 +216,33 @@ class FederatedService {
 			'address'    => $link->getLocalAddress()
 		];
 
+
+//		$this->miscService->log(microtime());
+//		$ch = curl_init();
+//
+//		curl_setopt($ch, CURLOPT_URL, 'https://92i.kh.ro/test.php');
+//		curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
+//		curl_setopt($ch, CURLOPT_TIMEOUT_MS, 30000);
+//		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 30000);
+//
+//		curl_exec($ch);
+//		curl_close($ch);
+//
+//		$this->miscService->log(microtime());
+
 		$client = $this->clientService->newClient();
+
+		// TEST TEST TEST
 		try {
+			$client->put(
+				'http://nextcloud/index.php/apps/circles/circles/test', [
+				'body'            => $args,
+				'timeout'         => 10,
+				'connect_timeout' => 10,
+			]
+			);
+
+
 			$request = $client->put(
 				$this->generateLinkRemoteURL($link->getAddress()), [
 																	 'body'            => $args,
@@ -227,8 +252,12 @@ class FederatedService {
 			);
 
 			$result = json_decode($request->getBody(), true);
-			$this->parsingRequestLinkResult($result);
+
 			$link->setStatus($result['status']);
+			if (!$link->isValid()) {
+				$this->parsingRequestLinkResult($result);
+			}
+
 			$link->setUniqueId($result['uniqueId']);
 			$this->federatedLinksRequest->update($link);
 
@@ -240,12 +269,6 @@ class FederatedService {
 
 
 	private function parsingRequestLinkResult($result) {
-
-		if ($result['status'] === FederatedLink::STATUS_REQUEST_SENT
-			|| $result['status'] === FederatedLink::STATUS_LINK_UP
-		) {
-			return;
-		}
 
 		if ($result['reason'] === 'federated_not_allowed') {
 			throw new FederatedRemoteDoesNotAllowException(

@@ -112,20 +112,61 @@ class FederatedController extends BaseController {
 
 
 	/**
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 */
+	public function broadcastItem() {
+
+		$this->miscService->log("BroadItem start");
+
+		// We don't want to keep the connection with the client up and running
+		// as he might have others things to do
+		$this->asyncAndLeaveClientOutOfThis('done');
+
+		sleep(15);
+		$this->miscService->log("BroadItem end");
+		exit();
+	}
+
+	/**
+	 * Hacky way to async the rest of the process without keeping client on hold.
+	 *
+	 * @param string $result
+	 */
+	private function asyncAndLeaveClientOutOfThis($result = '') {
+		if (ob_get_contents() !== false) {
+			ob_end_clean();
+		}
+
+		header("Connection: close");
+		ignore_user_abort();
+		ob_start();
+		echo($result);
+		$size = ob_get_length();
+		header("Content-Length: $size");
+		ob_end_flush();
+		flush();
+	}
+
+	/**
 	 * @param array $data
 	 * @param FederatedLink $link
 	 *
 	 * @return DataResponse
 	 */
-	protected function federatedSuccess($data, $link) {
+	private function federatedSuccess($data, $link) {
 		return new DataResponse(
 			array_merge($data, ['token' => $link->getToken()]), Http::STATUS_OK
 		);
 
 	}
 
-
-	protected function federatedFail($reason) {
+	/**
+	 * @param $reason
+	 *
+	 * @return DataResponse
+	 */
+	private function federatedFail($reason) {
 		return new DataResponse(
 			[
 				'status' => FederatedLink::STATUS_ERROR,
