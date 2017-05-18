@@ -26,12 +26,16 @@
 
 namespace OCA\Circles\Controller;
 
+use OCA\Circles\Model\Share;
 use OCP\AppFramework\Http\DataResponse;
 
 class SharesController extends BaseController {
 
 
 	/**
+	 * Called by the JavaScript API when creating a new Share item that will be
+	 * broadcasted to the circle itself, and any other circle linked to it.
+	 *
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
@@ -44,10 +48,14 @@ class SharesController extends BaseController {
 	 * @internal param string $name
 	 *
 	 */
-	public function newShare($id, $source, $type, $item) {
+	public function create($id, $source, $type, $item) {
 
 		try {
-			$this->sharesService->newShare($id, $source, $type, $item);
+			$share = new Share($source, $type);
+			$share->setCircleId($id);
+			$share->setItem($item);
+
+			$this->sharesService->shareItem($share);
 		} catch (\Exception $e) {
 			return $this->fail(
 				[

@@ -29,6 +29,7 @@ namespace OCA\Circles\Api;
 
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\IBroadcaster;
+use OCA\Circles\Model\Share;
 
 class Circles {
 
@@ -76,8 +77,12 @@ class Circles {
 	) {
 		$c = self::getContainer();
 
+		$share = new Share($source, $type);
+		$share->setCircleId($circleId);
+		$share->setItem($item);
+
 		return $c->query('SharesService')
-				 ->newShare($circleId, $source, $type, $item, $broadcaster);
+				 ->shareItem($share, $broadcaster);
 	}
 
 

@@ -172,11 +172,16 @@ class CirclesController extends BaseController {
 
 
 	/**
+	 * link()
+	 *
+	 * Called from the UI to create a initiate the process of linking 2 [remote] circles.
+	 * $remote format: <circle_name>@<remote_host>
+	 *
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
-	 * @param $id
-	 * @param $remote
+	 * @param int $id
+	 * @param string $remote
 	 *
 	 * @return DataResponse
 	 */

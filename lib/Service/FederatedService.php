@@ -114,7 +114,14 @@ class FederatedService {
 
 
 	/**
+	 * linkCircle()
+	 *
 	 * link to a circle.
+	 * Function will check if settings allow Federated links between circles, and the format of
+	 * the link ($remote). If no exception, a request to the remote circle will be initiated
+	 * using requestLinkWithCircle()
+	 *
+	 * $remote format: <circle_name>@<remote_host>
 	 *
 	 * @param int $circleId
 	 * @param string $remote
@@ -149,6 +156,13 @@ class FederatedService {
 
 
 	/**
+	 * requestLinkWithCircle()
+	 *
+	 * Using CircleId, function will get more infos from the database.
+	 * Will check if author is not admin and initiate a FederatedLink, save it
+	 * in the database and send a request to the remote circle using requestLink()
+	 * If any issue, entry is removed from the database.
+	 *
 	 * @param $circleId
 	 * @param $remote
 	 *
@@ -201,6 +215,9 @@ class FederatedService {
 
 
 	/**
+	 * requestLink()
+	 *
+	 *
 	 * @param Circle $circle
 	 * @param FederatedLink $link
 	 *
@@ -216,33 +233,10 @@ class FederatedService {
 			'address'    => $link->getLocalAddress()
 		];
 
-
-//		$this->miscService->log(microtime());
-//		$ch = curl_init();
-//
-//		curl_setopt($ch, CURLOPT_URL, 'https://92i.kh.ro/test.php');
-//		curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
-//		curl_setopt($ch, CURLOPT_TIMEOUT_MS, 30000);
-//		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 30000);
-//
-//		curl_exec($ch);
-//		curl_close($ch);
-//
-//		$this->miscService->log(microtime());
-
 		$client = $this->clientService->newClient();
 
 		// TEST TEST TEST
 		try {
-			$client->put(
-				'http://nextcloud/index.php/apps/circles/circles/test', [
-				'body'            => $args,
-				'timeout'         => 10,
-				'connect_timeout' => 10,
-			]
-			);
-
-
 			$request = $client->put(
 				$this->generateLinkRemoteURL($link->getAddress()), [
 																	 'body'            => $args,
@@ -299,6 +293,8 @@ class FederatedService {
 
 
 	/**
+	 * Create a new link into database and assign the correct status.
+	 *
 	 * @param Circle $circle
 	 * @param FederatedLink $link
 	 *

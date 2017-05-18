@@ -41,6 +41,8 @@ class SharesService {
 	/** @var CirclesRequest */
 	private $circlesRequest;
 
+	/** @var FederatedService */
+	private $federatedService;
 	/** @var MiscService */
 	private $miscService;
 
@@ -50,25 +52,44 @@ class SharesService {
 	 *
 	 * @param string $userId
 	 * @param CirclesRequest $circlesRequest
+	 * @param FederatedService $federatedService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
 		string $userId,
 		CirclesRequest $circlesRequest,
+		FederatedService $federatedService,
 		MiscService $miscService
 	) {
 		$this->userId = $userId;
 		$this->circlesRequest = $circlesRequest;
+		$this->federatedService = $federatedService;
 		$this->miscService = $miscService;
 	}
 
-	public function newShare(
-		int $circleId, string $source, string $type, array $item, string $broadcast = null
-	) {
-		$share = new Share($source, $type);
-		$share->setCircleId($circleId);
-		$share->setItem($item);
-		$share->setAuthor($this->userId); 
+
+	/**
+	 * shareItem()
+	 *
+	 * Share a Share item locally, and spread it live if a broadcaster is set.
+	 * Function will also initiate the federated broadcast to linked circles.
+	 *
+	 * @param Share $share
+	 * @param string|null $broadcast
+	 *
+	 * @return bool
+	 * @throws BroadcasterIsNotCompatible
+	 */
+	public function shareItem(Share $share, string $broadcast = null) {
+
+		$share->setAuthor($this->userId);
+		// TODO: VERIFIER QUE L'UTILISATEUR EST BIEN MEMBRE
+		// creer l'item localement, tenter de broadcaster is possible.
+		// et lancer une requete en local pour initialiser un partage federated en async
+		// en precisant qu'il a deja ete broadcaste en local
+// federatedController->shareFederatedItem()
+	// $circle = $this->
+	//	$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
 
 		$this->circlesRequest->createShare($share);
 
@@ -80,15 +101,28 @@ class SharesService {
 
 			$broadcaster->init();
 
-			$users = $this->circlesRequest->getAudience($circleId);
+			$users = $this->circlesRequest->getAudience($share->getCircleId());
 			foreach ($users AS $user) {
 				$share->setCircleName($user['circle_name']);
 				$broadcaster->broadcast($user['uid'], $share);
 			}
 		}
 
+		$this->shareItemToFederatedLinks($share, $broadcast);
+
 		return true;
 	}
+
+
+
+
+	public function shareItemToFederatedLinks(Share $share, string $broadcast = null) {
+
+		//$circles = $this->circlesRequest->getFederatedLinks($share->getCircle());
+// TODO, envoyer une requete http sur le broadcaster local en precisant qu'il a deja ete broadcaste en local
+		//broadcastItem()
+	}
+
 
 
 //	public function reshare($circleId, $source, $type, $shareid) {

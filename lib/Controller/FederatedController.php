@@ -65,14 +65,20 @@ class FederatedController extends BaseController {
 
 
 	/**
+	 * requestedLink()
+	 *
+	 * Called when a remote circle want to create a link.
+	 * The function check if it is possible first; then create a link- object
+	 * and sent it to be saved in the database.
+	 *
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
-	 * @param $token
-	 * @param $uniqueId
-	 * @param $sourceName
-	 * @param $linkTo
-	 * @param $address
+	 * @param string $token
+	 * @param string $uniqueId
+	 * @param string $sourceName
+	 * @param string $linkTo
+	 * @param string $address
 	 *
 	 * @return DataResponse
 	 */
@@ -112,10 +118,18 @@ class FederatedController extends BaseController {
 
 
 	/**
+	 * shareFederatedItem()
+	 *
+	 * Note: this function will close the request mid-run from the client but will still
+	 * running its process.
+	 * Called by a remote circle to broadcast a Share item, the function will save the item
+	 * in the database and broadcast it locally. A status response is sent to the remote to free
+	 * the remote process before starting to broadcast the item to other federated links.
+	 *
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function broadcastItem() {
+	public function shareFederatedItem() {
 
 		$this->miscService->log("BroadItem start");
 
@@ -149,6 +163,9 @@ class FederatedController extends BaseController {
 	}
 
 	/**
+	 * send a positive response to a request with an array of data, and confirm
+	 * the identity of the link with a token
+	 *
 	 * @param array $data
 	 * @param FederatedLink $link
 	 *
@@ -162,7 +179,9 @@ class FederatedController extends BaseController {
 	}
 
 	/**
-	 * @param $reason
+	 * send a negative response to a request, with a reason of the failure.
+	 *
+	 * @param string $reason
 	 *
 	 * @return DataResponse
 	 */
