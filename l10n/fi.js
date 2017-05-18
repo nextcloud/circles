@@ -59,6 +59,7 @@ OC.L10N.register(
     "You cannot display this type of circle" : "Et voi näyttää tämän tyyppistä piiriä",
     "This user does not exist" : "Tätä käyttäjää ei ole olemassa",
     "Create a new circle" : "Luo uusi piiri",
+    "Select a type of circle" : "Valitse piirin tyyppi",
     "Create a personal circle" : "Luo henkilökohtainen piiri",
     "Create an hidden circle" : "Luo piilotettu piiri",
     "Create a private circle" : "Luo yksityinen piiri",
