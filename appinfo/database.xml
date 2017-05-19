@@ -170,9 +170,9 @@
 
 			<field>
 				<name>type</name>
-				<type>integer</type>
+				<type>text</type>
 				<notnull>true</notnull>
-				<length>2</length>
+				<length>15</length>
 			</field>
 
 			<field>
