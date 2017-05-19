@@ -100,6 +100,7 @@ var actions = {
 				type: type,
 				name: result.name
 			}));
+			elements.emptyCircleCreation();
 			nav.displayCirclesList(result.circle.type);
 			actions.selectCircle(result.circle.id);
 			return;

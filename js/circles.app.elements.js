@@ -214,6 +214,11 @@ var elements = {
 	},
 
 
+	emptyCircleCreation: function () {
+		elements.newName.val('');
+		elements.newType.val('');
+	},
+
 	fillMembersSearch: function (exact, partial) {
 		this.fillExactMembersSearch(exact);
 		this.fillPartialMembersSearch(partial);

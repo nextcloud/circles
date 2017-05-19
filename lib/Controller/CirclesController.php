@@ -42,7 +42,9 @@ class CirclesController extends BaseController {
 	 */
 	public function create($type, $name) {
 
-		if (substr($name, 0, 1) === '_') {
+		if (strlen($name) < 3) {
+			$error = $this->l10n->t("The name of your circle must contain at least 3 characters");
+		} elseif (substr($name, 0, 1) === '_') {
 			$error = $this->l10n->t("The name of your circle cannot start with this character");
 		} else {
 
