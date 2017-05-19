@@ -177,9 +177,9 @@
 
 			<field>
 				<name>type</name>
-				<type>integer</type>
-				<notnull>true</notnull>
-				<length>2</length>
+				<type>text</type>
+				<notnull>false</notnull>
+				<length>15</length>
 			</field>
 
 			<field>
@@ -199,7 +199,7 @@
 			<field>
 				<name>header</name>
 				<type>text</type>
-				<notnull>true</notnull>
+				<notnull>false</notnull>
 				<length>4000</length>
 			</field>
 
