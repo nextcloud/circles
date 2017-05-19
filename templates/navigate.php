@@ -103,7 +103,7 @@ style('circles', 'navigation');
 				</b><br/>
 				<?php p(
 					$l->t(
-						"This is the right option if you want to do recurrent sharing with the same group of people."
+						"This is the right option if you want to do recurrent sharing with the same group."
 					)
 				); ?>
 			</div>
@@ -114,7 +114,7 @@ style('circles', 'navigation');
 						)
 					); ?></b><br/><?php p(
 					$l->t(
-						"Users won't be able to find this Circle using Nextcloud search engine."
+						"Users won't be able to find this circle using the Nextcloud search engine."
 					)
 				); ?>
 			</div>
@@ -135,7 +135,7 @@ style('circles', 'navigation');
 						)
 					); ?></b><br/><?php p(
 					$l->t(
-						"Your circle will be visible to everyone and everyone will be able to join the circle."
+						"Everyone will be able to see and join your circle."
 					)
 				); ?>
 			</div>
