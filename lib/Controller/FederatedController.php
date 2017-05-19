@@ -84,7 +84,7 @@ class FederatedController extends BaseController {
 	 */
 	public function requestedLink($token, $uniqueId, $sourceName, $linkTo, $address) {
 
-		if (!$this->configService->isFederatedAllowed()) {
+		if ($uniqueId === '' || !$this->configService->isFederatedAllowed()) {
 			return $this->federatedFail('federated_not_allowed');
 		}
 
@@ -118,6 +118,33 @@ class FederatedController extends BaseController {
 
 
 	/**
+	 * initFederatedDelivery()
+	 *
+	 * Note: this function will close the request mid-run from the client but will still
+	 * running its process.
+	 * Called by locally, the function will get the payload by its uniqueId from the database, and
+	 * will deliver it to each remotes linked to the circle the payload belongs to.
+	 * A status response is sent to free the client process before starting to broadcast the item
+	 * to other federated links.
+	 *
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 */
+	public function initFederatedDelivery($uniqueId) {
+
+		$this->miscService->log("initFederatedDelivery start " . $uniqueId);
+
+		// We don't want to keep the connection with the client up and running
+		// as he might have others things to do
+		$this->asyncAndLeaveClientOutOfThis('done');
+
+		sleep(15);
+		$this->miscService->log("initFederatedDelivery end");
+		exit();
+	}
+
+
+	/**
 	 * shareFederatedItem()
 	 *
 	 * Note: this function will close the request mid-run from the client but will still
@@ -129,16 +156,16 @@ class FederatedController extends BaseController {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 */
-	public function shareFederatedItem() {
+	public function receiveFederatedDelivery() {
 
-		$this->miscService->log("BroadItem start");
+		$this->miscService->log("receiveFederatedDelivery start");
 
 		// We don't want to keep the connection with the client up and running
 		// as he might have others things to do
 		$this->asyncAndLeaveClientOutOfThis('done');
 
 		sleep(15);
-		$this->miscService->log("BroadItem end");
+		$this->miscService->log("receiveFederatedDelivery end");
 		exit();
 	}
 

@@ -134,7 +134,8 @@ class Application extends App {
 		$container->registerService(
 			'SharesService', function(IAppContainer $c) {
 			return new SharesService(
-				$c->query('UserId'), $c->query('CirclesRequest'), $c->query('FederatedService'), $c->query('MiscService')
+				$c->query('UserId'), $c->query('CirclesRequest'), $c->query('FederatedService'),
+				$c->query('MiscService')
 			);
 		}
 		);
@@ -228,8 +229,8 @@ class Application extends App {
 		$container->registerService(
 			'CirclesRequest', function(IAppContainer $c) {
 			return new CirclesRequest(
-				$c->query('ServerContainer')
-				  ->getDatabaseConnection(), $c->query('MiscService')
+				$c->query('L10N'), $c->query('ServerContainer')
+									 ->getDatabaseConnection(), $c->query('MiscService')
 			);
 		}
 		);

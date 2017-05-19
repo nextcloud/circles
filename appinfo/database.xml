@@ -155,9 +155,9 @@
 			</field>
 
 			<field>
-				<name>item_id</name>
-				<type>integer</type>
-				<length>4</length>
+				<name>unique_id</name>
+				<type>text</type>
+				<length>32</length>
 			</field>
 
 			<field>
@@ -204,7 +204,7 @@
 			</field>
 
 			<field>
-				<name>item</name>
+				<name>payload</name>
 				<type>text</type>
 				<notnull>true</notnull>
 				<length>4000</length>

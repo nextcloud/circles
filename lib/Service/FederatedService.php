@@ -213,6 +213,19 @@ class FederatedService {
 		return rtrim($remote, '/') . '/index.php/apps/circles/circles/link/';
 	}
 
+	/**
+	 * @param string $remote
+	 *
+	 * @return string
+	 */
+	private function generatePayloadDeliveryURL($remote) {
+		if (strpos($remote, 'http') !== 0) {
+			$remote = 'http://' . $remote;
+		}
+
+		return rtrim($remote, '/') . '/index.php/apps/circles/circles/payload/';
+	}
+
 
 	/**
 	 * requestLink()
@@ -322,6 +335,33 @@ class FederatedService {
 	 */
 	public function getLink($circleId, $uniqueId) {
 		return $this->federatedLinksRequest->get($circleId, $uniqueId);
+	}
+
+
+	public function initiateRemoteShare($token) {
+		$args = [
+			'token' => $token,
+		];
+
+		$client = $this->clientService->newClient();
+
+		// TEST TEST TEST
+		try {
+			$request = $client->get(
+				$this->generatePayloadDeliveryURL($this->serverHost), [
+																		'body'            => $args,
+																		'timeout'         => 10,
+																		'connect_timeout' => 10,
+																	]
+			);
+
+			$result = json_decode($request->getBody(), true);
+			$this->miscService->log("RESULT: " . $result);
+
+			return true;
+		} catch (Exception $e) {
+			throw $e;
+		}
 	}
 
 }

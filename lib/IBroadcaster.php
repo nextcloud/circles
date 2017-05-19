@@ -4,7 +4,7 @@
 namespace OCA\Circles;
 
 
-use OCA\Circles\Model\Share;
+use OCA\Circles\Model\Frame;
 
 interface IBroadcaster {
 
@@ -17,8 +17,10 @@ interface IBroadcaster {
 	 * broadcast $share to $userId.
 	 *
 	 * @param string $userId
-	 * @param Share $share
+	 * @param Frame $frame
+	 *
+	 * @return
 	 */
-	public function broadcast(string $userId, Share $share);
+	public function broadcast(string $userId, Frame $frame);
 
 }

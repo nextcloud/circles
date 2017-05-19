@@ -30,7 +30,8 @@ namespace OCA\Circles\Service;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Exceptions\BroadcasterIsNotCompatible;
 use OCA\Circles\IBroadcaster;
-use OCA\Circles\Model\Share;
+use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Frame;
 
 
 class SharesService {
@@ -69,54 +70,65 @@ class SharesService {
 
 
 	/**
-	 * shareItem()
+	 * createFrame()
 	 *
-	 * Share a Share item locally, and spread it live if a broadcaster is set.
+	 * Save the Frame containing the Payload.
+	 * The Payload will be shared locally, and spread it live if a Broadcaster is set.
 	 * Function will also initiate the federated broadcast to linked circles.
 	 *
-	 * @param Share $share
+	 * @param Frame $frame
 	 * @param string|null $broadcast
 	 *
 	 * @return bool
 	 * @throws BroadcasterIsNotCompatible
 	 */
-	public function shareItem(Share $share, string $broadcast = null) {
+	public function createFrame(Frame $frame, string $broadcast = null) {
 
-		$share->setAuthor($this->userId);
+		$frame->setAuthor($this->userId);
+
 		// TODO: VERIFIER QUE L'UTILISATEUR EST BIEN MEMBRE
-		// creer l'item localement, tenter de broadcaster is possible.
-		// et lancer une requete en local pour initialiser un partage federated en async
-		// en precisant qu'il a deja ete broadcaste en local
-// federatedController->shareFederatedItem()
-	// $circle = $this->
-	//	$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
+		$circle = $this->circlesRequest->getDetails($frame->getCircleId(), $this->userId);
+		$frame->setCircleName($circle->getName());
 
-		$this->circlesRequest->createShare($share);
+		$this->circlesRequest->createShare($frame);
+		$this->broadcastItem($broadcast, $frame);
 
-		if ($broadcast !== null) {
-			$broadcaster = \OC::$server->query($broadcast);
-			if (!($broadcaster instanceof IBroadcaster)) {
-				throw new BroadcasterIsNotCompatible();
-			}
-
-			$broadcaster->init();
-
-			$users = $this->circlesRequest->getAudience($share->getCircleId());
-			foreach ($users AS $user) {
-				$share->setCircleName($user['circle_name']);
-				$broadcaster->broadcast($user['uid'], $share);
-			}
-		}
-
-		$this->shareItemToFederatedLinks($share, $broadcast);
+		$this->federatedService->initiateRemoteShare($frame->getUniqueId());
 
 		return true;
 	}
 
 
+	/**
+	 * broadcast the Share item using a IBroadcaster, usually set by the app that created the Share
+	 * item.
+	 *
+	 * @param string $broadcast
+	 * @param Frame $frame
+	 *
+	 * @throws BroadcasterIsNotCompatible
+	 */
+	private function broadcastItem(string $broadcast, Frame $frame) {
+
+		if ($broadcast === null) {
+			return;
+		}
+
+		$broadcaster = \OC::$server->query($broadcast);
+		if (!($broadcaster instanceof IBroadcaster)) {
+			throw new BroadcasterIsNotCompatible();
+		}
+
+		$broadcaster->init();
+		$users = $this->circlesRequest->getMembers($frame->getCircleId(), Member::LEVEL_MEMBER);
+		foreach ($users AS $user) {
+			$broadcaster->broadcast($user->getUserId(), $frame);
+		}
+
+	}
 
 
-	public function shareItemToFederatedLinks(Share $share, string $broadcast = null) {
+	public function shareItemToFederatedLinks(Frame $share, string $broadcast = null) {
 
 		//$circles = $this->circlesRequest->getFederatedLinks($share->getCircle());
 // TODO, envoyer une requete http sur le broadcaster local en precisant qu'il a deja ete broadcaste en local

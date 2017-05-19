@@ -26,7 +26,7 @@
 
 namespace OCA\Circles\Model;
 
-class Share implements \JsonSerializable {
+class Frame implements \JsonSerializable {
 
 	private $source;
 	private $type;
@@ -44,10 +44,13 @@ class Share implements \JsonSerializable {
 	private $sharer;
 
 	/** @var array */
-	private $item;
+	private $payload;
 
 	/** @var int */
 	private $creation;
+
+	/** @var string */
+	private $uniqueId;
 
 	public function __construct(string $source, string $type) {
 		$this->source = $source;
@@ -134,10 +137,38 @@ class Share implements \JsonSerializable {
 
 
 	/**
-	 * @param array $item
+	 * @param string $uniqueId
+	 *
+	 * @return Frame
 	 */
-	public function setItem(array $item) {
-		$this->item = $item;
+	public function setUniqueId(string $uniqueId) {
+		$this->uniqueId = $uniqueId;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getUniqueId() {
+		return $this->uniqueId;
+	}
+
+	/**
+	 * @return Frame
+	 */
+	public function generateUniqueId() {
+		$uniqueId = bin2hex(openssl_random_pseudo_bytes(16));
+		$this->setUniqueId($uniqueId);
+
+		return $this;
+	}
+
+	/**
+	 * @param array $payload
+	 */
+	public function setPayload(array $payload) {
+		$this->payload = $payload;
 	}
 
 	/**
@@ -145,12 +176,12 @@ class Share implements \JsonSerializable {
 	 *
 	 * @return array|string
 	 */
-	public function getItem(bool $asJson = false) {
+	public function getPayload(bool $asJson = false) {
 		if ($asJson) {
-			return json_encode($this->item);
+			return json_encode($this->payload);
 		}
 
-		return $this->item;
+		return $this->payload;
 	}
 
 
@@ -181,7 +212,7 @@ class Share implements \JsonSerializable {
 			'type'        => $this->getType(),
 			'author'      => $this->getAuthor(),
 			'sharer'      => $this->getSharer(),
-			'item'        => $this->getItem(),
+			'payload'     => $this->getPayload(),
 			'creation'    => $this->getCreation(),
 		);
 	}
@@ -190,7 +221,7 @@ class Share implements \JsonSerializable {
 
 		$arr = json_decode($json, true);
 
-		$share = new Share($arr['source'], $arr['type']);
+		$share = new Frame($arr['source'], $arr['type']);
 		$share->setCircleId($arr['circle_id']);
 		if (key_exists('circle_name', $arr)) {
 			$share->setCircleName($arr['circle_name']);
@@ -198,7 +229,7 @@ class Share implements \JsonSerializable {
 
 		$share->setAuthor($arr['author']);
 		$share->setSharer($arr['sharer']);
-		$share->setItem($arr['item']);
+		$share->setPayload($arr['payload']);
 		$share->setCreation($arr['creation']);
 
 		return $share;

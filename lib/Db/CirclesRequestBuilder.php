@@ -29,11 +29,11 @@ namespace OCA\Circles\Db;
 
 
 use Doctrine\DBAL\Query\QueryBuilder;
+use OC\L10N\L10N;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
-use OCP\Share;
-use OCP\Share\IShare;
 
 class CirclesRequestBuilder {
 
@@ -43,13 +43,16 @@ class CirclesRequestBuilder {
 	/** @var IDBConnection */
 	protected $dbConnection;
 
+	/** @var L10N */
+	protected $l10n;
+
 	private $default_select_alias;
 
 
 	/**
 	 * Join the Circles table
 	 *
-	 * @param $qb
+	 * @param IQueryBuilder $qb
 	 */
 	protected function joinCircles(& $qb, $field) {
 		$expr = $qb->expr();
@@ -63,13 +66,78 @@ class CirclesRequestBuilder {
 	 * Limit the request to the Share by its Id.
 	 *
 	 * @param IQueryBuilder $qb
-	 * @param $circleId
+	 * @param int $circleId
 	 */
-	protected function limitToCircle(& $qb, $circleId) {
+	protected function limitToCircle(IQueryBuilder &$qb, $circleId) {
 		$expr = $qb->expr();
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
 
 		$qb->andWhere($expr->eq($pf . 'circle_id', $qb->createNamedParameter($circleId)));
+	}
+
+
+
+	/**
+	 * Limit the request to the Share by its Id.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param int $id
+	 */
+	protected function limitToId(IQueryBuilder &$qb, $id) {
+		$expr = $qb->expr();
+		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
+
+		$qb->andWhere($expr->eq($pf . 'id', $qb->createNamedParameter($id)));
+	}
+
+
+	/**
+	 * Limit the request to the Share by its Id.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param string $userId
+	 */
+	protected function limitToUserId(IQueryBuilder &$qb, $userId) {
+//		$expr = $qb->expr();
+//		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
+//
+//		$qb->andWhere($expr->eq($pf . 'userid', $qb->createNamedParameter($userId)));
+	}
+
+
+
+
+
+	protected function limitToMemberLevel(IQueryBuilder &$qb, $level) {
+		$qb->where(
+			$qb->expr()
+			   ->gte('m.level', $qb->createNamedParameter($level))
+		);
+	}
+
+
+	/**
+	 * @param IQueryBuilder $qb
+	 *
+	 * @deprecated
+	 * never used in fact.
+	 */
+	protected function leftJoinOwner(IQueryBuilder &$qb) {
+
+		if ($qb->getType() !== QueryBuilder::SELECT) {
+			return;
+		}
+
+		$expr = $qb->expr();
+		$pf = $this->default_select_alias . '.';
+
+		$qb->leftJoin(
+			$this->default_select_alias, MembersMapper::TABLENAME, 'o',
+			$expr->andX(
+				$expr->eq($pf . 'id', 'o.circle_id'),
+				$expr->eq('o.level', $qb->createNamedParameter(Member::LEVEL_OWNER))
+			)
+		);
 	}
 
 
@@ -88,31 +156,68 @@ class CirclesRequestBuilder {
 
 
 	/**
-	 * @param int $level
-	 *
 	 * @return IQueryBuilder
 	 */
-	protected function getMembersSelectSql(int $level = Member::LEVEL_MEMBER) {
+	protected function getMembersSelectSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
-		$expr = $qb->expr();
 
 		$qb->select('user_id', 'circle_id', 'level', 'status', 'joined')
-		   ->from('circles_members', 'm')
-		   ->where($expr->gte('m.level', $qb->createNamedParameter($level)));
+		   ->from('circles_members', 'm');
 
 		$this->default_select_alias = 'm';
 
 		return $qb;
 	}
 
-	protected function parseMembersSelectSql(array $data) {
-		return [
-			'uid'      => $data['user_id'],
-			'circleId' => $data['circle_id'],
-			'level'    => $data['level'],
-			'status'   => $data['status'],
-			'joined'   => $data['joined']
-		];
+
+	/**
+	 * @return IQueryBuilder
+	 */
+	protected function getCirclesSelectSql() {
+		$qb = $this->dbConnection->getQueryBuilder();
+
+		$qb->select('c.id', 'c.unique_id', 'c.name', 'c.description', 'c.type', 'c.creation')
+		   ->from('circles_circles', 'c');
+		$this->default_select_alias = 'c';
+
+		return $qb;
 	}
 
+	/**
+	 * @param array $data
+	 *
+	 * @return Member
+	 */
+	protected function parseMembersSelectSql(array $data) {
+		$member = new Member($this->l10n);
+		$member->setUserId($data['user_id']);
+		$member->setCircleId($data['circle_id']);
+		$member->setLevel($data['level']);
+		$member->setStatus($data['status']);
+		$member->setJoined($data['joined']);
+
+		return $member;
+	}
+
+
+	/**
+	 * @param array $data
+	 *
+	 * @return Circle
+	 */
+	protected function parseCirclesSelectSql(array $data) {
+		if ($data === null) {
+			return null;
+		}
+
+		$circle = new Circle($this->l10n);
+		$circle->setId($data['id']);
+		$circle->setUniqueId($data['unique_id']);
+		$circle->setName($data['name']);
+		$circle->setDescription($data['description']);
+		$circle->setType($data['type']);
+		$circle->setCreation($data['creation']);
+
+		return $circle;
+	}
 }

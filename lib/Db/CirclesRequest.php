@@ -28,9 +28,10 @@
 namespace OCA\Circles\Db;
 
 
-use OCA\Circles\Db\CirclesRequestBuilder;
+use OC\L10N\L10N;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
-use OCA\Circles\Model\Share;
+use OCA\Circles\Model\Frame;
 use OCA\Circles\Service\MiscService;
 use OCP\IDBConnection;
 
@@ -42,15 +43,44 @@ class CirclesRequest extends CirclesRequestBuilder {
 	/**
 	 * CirclesRequest constructor.
 	 *
+	 * @param L10N $l10n
 	 * @param IDBConnection $connection
+	 * @param MiscService $miscService
 	 */
-	public function __construct(IDBConnection $connection, MiscService $miscService) {
+	public function __construct(L10N $l10n, IDBConnection $connection, MiscService $miscService) {
+		$this->l10n = $l10n;
 		$this->dbConnection = $connection;
 		$this->miscService = $miscService;
 	}
 
 
-	public function createShare(Share $share) {
+	/**
+	 * @param int $circleId
+	 * @param int $userId
+	 *
+	 * @return Circle
+	 */
+	public function getDetails($circleId, $userId = '') {
+		$qb = $this->getCirclesSelectSql();
+
+		$this->limitToId($qb, $circleId);
+		if ($userId !== '')
+			$this->limitToUserId($qb, $userId);
+
+//		$this->leftjoinOwner($qb);
+//		$this->buildWithMemberLevel($qb, 'u.level', $level);
+//		$this->buildWithCircleId($qb, 'c.id', $circleId);
+//		$this->buildWithOrXTypes($qb, $userId, $type, $name, $circleId);
+
+		$cursor = $qb->execute();
+		$data = $cursor->fetch();
+		$entry = $this->parseCirclesSelectSql($data);
+
+		return $entry;
+	}
+
+
+	public function createShare(Frame $share) {
 
 		$qb = $this->getSharesInsertSql();
 		$qb->setValue('circle_id', $qb->createNamedParameter($share->getCircleId()))
@@ -58,25 +88,34 @@ class CirclesRequest extends CirclesRequestBuilder {
 		   ->setValue('type', $qb->createNamedParameter($share->getType()))
 		   ->setValue('author', $qb->createNamedParameter($share->getAuthor()))
 		   ->setValue('sharer', $qb->createNamedParameter($share->getSharer()))
-		   ->setValue('item', $qb->createNamedParameter($share->getItem(true)));
+		   ->setValue('payload', $qb->createNamedParameter($share->getPayload(true)));
 
 		$qb->execute();
 	}
 
 
-	public function getAudience($circleId) {
-		$qb = $this->getMembersSelectSql(Member::LEVEL_MEMBER);
-		$this->limitToCircle($qb, $circleId);
+	/**
+	 * @param $circleId
+	 * @param int $level
+	 *
+	 * @return Member[]
+	 */
+	public function getMembers($circleId, $level = Member::LEVEL_MEMBER) {
+		$qb = $this->getMembersSelectSql();
+		$this->limitToMemberLevel($qb, $level);
 
 		$this->joinCircles($qb, 'm.circle_id');
+		$this->limitToCircle($qb, $circleId);
+
 		$qb->selectAlias('c.name', 'circle_name');
 
 		$users = [];
 		$cursor = $qb->execute();
 		while ($data = $cursor->fetch()) {
-			$entry = $this->parseMembersSelectSql($data);
-			$entry['circle_name'] = $data['circle_name'];
-			$users[] = $entry;
+			$member = $this->parseMembersSelectSql($data);
+			if ($member !== null) {
+				$users[] = $member;
+			}
 		}
 		$cursor->closeCursor();
 

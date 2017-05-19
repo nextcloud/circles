@@ -76,7 +76,6 @@ class BaseMember {
 		}
 		$this->setLevel(Member::LEVEL_NONE);
 		$this->setStatus(Member::STATUS_NONMEMBER);
-
 	}
 
 

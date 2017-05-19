@@ -26,7 +26,7 @@
 
 namespace OCA\Circles\Controller;
 
-use OCA\Circles\Model\Share;
+use OCA\Circles\Model\Frame;
 use OCP\AppFramework\Http\DataResponse;
 
 class SharesController extends BaseController {
@@ -42,27 +42,27 @@ class SharesController extends BaseController {
 	 * @param $id
 	 * @param $source
 	 * @param $type
-	 * @param $item
+	 * @param $payload
 	 *
 	 * @return DataResponse
 	 * @internal param string $name
 	 *
 	 */
-	public function create($id, $source, $type, $item) {
+	public function create($id, $source, $type, $payload) {
 
 		try {
-			$share = new Share($source, $type);
+			$share = new Frame($source, $type);
 			$share->setCircleId($id);
-			$share->setItem($item);
+			$share->setPayload($payload);
 
-			$this->sharesService->shareItem($share);
+			$this->sharesService->createFrame($share);
 		} catch (\Exception $e) {
 			return $this->fail(
 				[
 					'circle_id' => $id,
 					'source'    => $source,
 					'type'      => $type,
-					'item'      => $item,
+					'payload'   => $payload,
 					'error'     => $e->getMessage()
 				]
 			);
@@ -73,7 +73,7 @@ class SharesController extends BaseController {
 				'circle_id' => $id,
 				'source'    => $source,
 				'type'      => $type,
-				'item'      => $item
+				'payload'   => $payload
 			]
 		);
 	}
