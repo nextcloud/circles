@@ -3,7 +3,6 @@ OC.L10N.register(
     {
     "Cannot join this circle" : "Impossibile unirsi a questa cerchia",
     "no error message" : "nessun messaggio di errore",
-    "You have successfully left this circle" : "Hai abbandonato correttamente questa cerchia",
     "Cannot leave this circle" : "Impossibile abbandonare questa cerchia",
     " {type} '{name}' created" : " {type} '{name}' creato",
     "Issue while retrieving the list of circles" : "Errore durante il recupero dell'elenco delle cerchie",
