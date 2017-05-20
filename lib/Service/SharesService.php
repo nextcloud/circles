@@ -105,7 +105,11 @@ class SharesService {
 
 
 	public function getFrameFromUniqueId($uniqueId) {
-		$this->circlesRequest->getFrame($uniqueId);
+		if ($uniqueId === null || $uniqueId === '') {
+			return null;
+		}
+
+		return $this->circlesRequest->getFrame($uniqueId);
 	}
 
 

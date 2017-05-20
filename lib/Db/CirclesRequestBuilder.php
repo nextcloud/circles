@@ -179,7 +179,7 @@ class CirclesRequestBuilder {
 		$qb = $this->dbConnection->getQueryBuilder();
 
 		$qb->select(
-			'circle_id', 'source', 'type', 'author', 'sharer', 'payload', 'creation', 'header',
+			'circle_id', 'source', 'type', 'author', 'sharer', 'payload', 'creation', 'headers',
 			'unique_id'
 		)
 		   ->from('circles_shares', 's');
@@ -254,7 +254,7 @@ class CirclesRequestBuilder {
 	 * @return Circle
 	 */
 	protected function parseCirclesSelectSql(array $data) {
-		if ($data === null) {
+		if ($data === false || $data === null) {
 			return null;
 		}
 
@@ -281,8 +281,8 @@ class CirclesRequestBuilder {
 	 *
 	 * @return null|SharingFrame
 	 */
-	protected function parseSharesSelectSql(array $data) {
-		if ($data === null) {
+	protected function parseSharesSelectSql($data) {
+		if ($data === false || $data === null) {
 			return null;
 		}
 
@@ -290,9 +290,9 @@ class CirclesRequestBuilder {
 		$frame->setCircleId($data['circle_id']);
 		$frame->setAuthor($data['author']);
 		$frame->setSharer($data['sharer']);
-		$frame->setPayload($data['payload']);
+		$frame->setPayload(json_decode($data['payload'], true));
 		$frame->setCreation($data['creation']);
-		$frame->setHeaders($data['headers']);
+		$frame->setHeaders(json_decode($data['headers'], true));
 		$frame->setUniqueId($data['unique_id']);
 
 		return $frame;

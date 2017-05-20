@@ -50,8 +50,14 @@ return [
 		],
 		['name' => 'Circles#link', 'url' => '/circles/{id}/link', 'verb' => 'PUT'],
 		['name' => 'Federated#requestedLink', 'url' => '/circles/link/', 'verb' => 'PUT'],
-		['name' => 'Federated#initFederatedDelivery', 'url' => '/circles/payload/', 'verb' => 'GET'],
-		['name' => 'Federated#receiveFederatedDelivery', 'url' => '/circles/payload/', 'verb' => 'PUT'],
+		[
+			'name' => 'Federated#initFederatedDelivery', 'url' => '/circles/payload/',
+			'verb' => 'POST'
+		],
+		[
+			'name' => 'Federated#receiveFederatedDelivery', 'url' => '/circles/payload/',
+			'verb' => 'PUT'
+		],
 		['name' => 'Members#search', 'url' => '/circles/{id}/members', 'verb' => 'GET'],
 		[
 			'name'         => 'Members#add', 'url' => '/circles/{id}/members', 'verb' => 'PUT',

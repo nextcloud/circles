@@ -96,7 +96,7 @@ class SharingFrame implements \JsonSerializable {
 	/**
 	 * @param string $circleName
 	 */
-	public function setCircleName(string $circleName) {
+	public function setCircleName($circleName) {
 		$this->circleName = $circleName;
 	}
 
@@ -173,7 +173,7 @@ class SharingFrame implements \JsonSerializable {
 	/**
 	 * @param array $payload
 	 */
-	public function setPayload(array $payload) {
+	public function setPayload($payload) {
 		$this->payload = $payload;
 	}
 
@@ -194,7 +194,7 @@ class SharingFrame implements \JsonSerializable {
 	/**
 	 * @param array $headers
 	 */
-	public function setHeaders(array $headers) {
+	public function setHeaders($headers) {
 		$this->headers = $headers;
 	}
 
@@ -235,6 +235,7 @@ class SharingFrame implements \JsonSerializable {
 		return array(
 			'circle_id'   => $this->getCircleId(),
 			'circle_name' => $this->getCircleName(),
+			'unique_id'   => $this->getUniqueId(),
 			'source'      => $this->getSource(),
 			'type'        => $this->getType(),
 			'author'      => $this->getAuthor(),

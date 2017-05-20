@@ -28,6 +28,7 @@ namespace OCA\Circles\Controller;
 
 use OC\AppFramework\Http;
 use OCA\Circles\Model\FederatedLink;
+use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\FederatedService;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\ConfigService;
@@ -129,26 +130,32 @@ class FederatedController extends BaseController {
 	 *
 	 * @PublicPage
 	 * @NoCSRFRequired
+	 *
+	 * @param $uniqueId
+	 *
+	 * @return DataResponse
 	 */
 	public function initFederatedDelivery($uniqueId) {
 
-		$this->miscService->log("initFederatedDelivery start " . $uniqueId);
-
 		$frame = $this->sharesService->getFrameFromUniqueId($uniqueId);
+		if ($frame === null) {
+			return $this->federatedFail('unknown_share');
+		}
 
-		$this->miscService->log("____" . var_export(frame, true));
 		// We don't want to keep the connection with the client up and running
 		// as he might have others things to do
 		$this->asyncAndLeaveClientOutOfThis('done');
+		$this->federatedService->sendRemoteShare($frame);
 
 		sleep(15);
 		$this->miscService->log("initFederatedDelivery end");
+
 		exit();
 	}
 
 
 	/**
-	 * shareFederatedItem()
+	 * receiveFederatedDelivery()
 	 *
 	 * Note: this function will close the request mid-run from the client but will still
 	 * running its process.
@@ -158,10 +165,18 @@ class FederatedController extends BaseController {
 	 *
 	 * @PublicPage
 	 * @NoCSRFRequired
+	 *
+	 * @param $token
+	 * @param $uniqueId
+	 * @param $item
 	 */
-	public function receiveFederatedDelivery() {
+	public function receiveFederatedDelivery($token, $uniqueId, $item) {
 
-		$this->miscService->log("receiveFederatedDelivery start");
+		$frame = SharingFrame::fromJSON($item);
+		$this->miscService->log(
+			"receiveFederatedDelivery start " . $token . '   ' . $uniqueId . '    ' . $item . '   '
+			. var_export($frame, true)
+		);
 
 		// We don't want to keep the connection with the client up and running
 		// as he might have others things to do
@@ -182,12 +197,12 @@ class FederatedController extends BaseController {
 			ob_end_clean();
 		}
 
-		header("Connection: close");
+		header('Connection: close');
 		ignore_user_abort();
 		ob_start();
 		echo($result);
 		$size = ob_get_length();
-		header("Content-Length: $size");
+		header('Content-Length: ' . $size);
 		ob_end_flush();
 		flush();
 	}

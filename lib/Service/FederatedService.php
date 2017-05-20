@@ -41,6 +41,7 @@ use OCA\Circles\Exceptions\FederatedRemoteDoesNotAllowException;
 use OCA\Circles\Exceptions\MemberIsNotAdminException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
+use OCA\Circles\Model\SharingFrame;
 use OCP\IL10N;
 
 class FederatedService {
@@ -248,7 +249,6 @@ class FederatedService {
 
 		$client = $this->clientService->newClient();
 
-		// TEST TEST TEST
 		try {
 			$request = $client->put(
 				$this->generateLinkRemoteURL($link->getAddress()), [
@@ -301,7 +301,7 @@ class FederatedService {
 			);
 		}
 
-		throw new Exception();
+		throw new Exception($result['reason']);
 	}
 
 
@@ -334,10 +334,26 @@ class FederatedService {
 	 * @return FederatedLink
 	 */
 	public function getLink($circleId, $uniqueId) {
-		return $this->federatedLinksRequest->get($circleId, $uniqueId);
+		return $this->federatedLinksRequest->getFromUniqueId($circleId, $uniqueId);
 	}
 
 
+	/**
+	 * @param $circleId
+	 *
+	 * @return FederatedLink[]
+	 */
+	public function getLinks($circleId) {
+		return $this->federatedLinksRequest->getLinked($circleId);
+	}
+
+
+	/**
+	 * @param $uniqueId
+	 *
+	 * @return bool
+	 * @throws Exception
+	 */
 	public function initiateRemoteShare($uniqueId) {
 		$args = [
 			'uniqueId' => $uniqueId,
@@ -345,7 +361,7 @@ class FederatedService {
 
 		$client = $this->clientService->newClient();
 		try {
-			$request = $client->get(
+			$request = $client->post(
 				$this->generatePayloadDeliveryURL($this->serverHost), [
 																		'body'            => $args,
 																		'timeout'         => 10,
@@ -354,11 +370,45 @@ class FederatedService {
 			);
 
 			$result = json_decode($request->getBody(), true);
-			$this->miscService->log("initiateRemoteShare result: " . $result);
+			$this->miscService->log(
+				"initiateRemoteShare result: " . $uniqueId . '  ----  ' . var_export($result, true)
+			);
 
 			return true;
 		} catch (Exception $e) {
 			throw $e;
+		}
+	}
+
+
+	/**
+	 * @param SharingFrame $frame
+	 *
+	 * @throws Exception
+	 */
+	public function sendRemoteShare(SharingFrame $frame) {
+
+		$links = $this->getLinks($frame->getCircleId());
+		foreach ($links AS $link) {
+
+			$args = [
+				'uniqueId' => $link->getUniqueId(),
+				'token'    => $link->getToken(),
+				'item'    => json_encode($frame)
+			];
+
+			$client = $this->clientService->newClient();
+			try {
+				$request = $client->put(
+					$this->generatePayloadDeliveryURL($link->getAddress()), [
+																			  'body'            => $args,
+																			  'timeout'         => 10,
+																			  'connect_timeout' => 10,
+																		  ]
+				);
+			} catch (Exception $e) {
+				throw $e;
+			}
 		}
 	}
 

@@ -64,8 +64,9 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$qb = $this->getCirclesSelectSql();
 
 		$this->limitToId($qb, $circleId);
-		if ($userId !== '')
+		if ($userId !== '') {
 			$this->leftJoinUserIdAsMember($qb, $userId);
+		}
 
 //		$this->leftjoinOwner($qb);
 //		$this->buildWithMemberLevel($qb, 'u.level', $level);
@@ -95,16 +96,14 @@ class CirclesRequest extends CirclesRequestBuilder {
 		   ->setValue('type', $qb->createNamedParameter($share->getType()))
 		   ->setValue('author', $qb->createNamedParameter($share->getAuthor()))
 		   ->setValue('sharer', $qb->createNamedParameter($share->getSharer()))
+		   ->setValue('unique_id', $qb->createNamedParameter($share->getUniqueId()))
 		   ->setValue('payload', $qb->createNamedParameter($share->getPayload(true)));
 
 		$qb->execute();
 	}
 
 
-
-
-	public function getFrame(string $uniqueId)
-	{
+	public function getFrame(string $uniqueId) {
 		$qb = $this->getSharesSelectSql();
 		$this->limitToUniqueId($qb, $uniqueId);
 
@@ -114,8 +113,6 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 		return $entry;
 	}
-
-
 
 
 	/**

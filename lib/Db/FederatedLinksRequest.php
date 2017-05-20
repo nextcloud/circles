@@ -73,11 +73,39 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 
 	/**
 	 * @param int $circleId
+	 *
+	 * @return FederatedLink[]
+	 */
+	public function getLinked(int $circleId) {
+		$qb = $this->getLinksSelectSql();
+		$expr = $qb->expr();
+
+		$qb->where(
+			$expr->andX(
+				$expr->eq('f.circle_id', $qb->createNamedParameter($circleId)),
+				$expr->eq('f.status', $qb->createNamedParameter(9))
+			)
+		);
+
+		$result = [];
+		$cursor = $qb->execute();
+		while ($data = $cursor->fetch()) {
+			$entry = $this->getLinkFromEntry($data);
+			$result[] = $entry;
+		}
+		$cursor->closeCursor();
+
+		return $result;
+	}
+
+
+	/**
+	 * @param int $circleId
 	 * @param string $uniqueId
 	 *
 	 * @return FederatedLink
 	 */
-	public function get(int $circleId, string $uniqueId) {
+	public function getFromUniqueId(int $circleId, string $uniqueId) {
 		$qb = $this->getLinksSelectSql();
 		$expr = $qb->expr();
 
@@ -90,11 +118,6 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
-
-		if ($data === false) {
-			return null;
-		}
-
 		$cursor->closeCursor();
 
 		return $this->getLinkFromEntry($data);
@@ -126,15 +149,18 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 	 *
 	 * @return FederatedLink
 	 */
-	public function getLinkFromEntry($arr) {
+	public function getLinkFromEntry($data) {
+		if ($data === false || $data === null) {
+			return null;
+		}
 
 		$link = new FederatedLink();
-		$link->setId($arr['id'])
-			 ->setUniqueId($arr['unique_id'])
-			 ->setStatus($arr['status'])
-			 ->setAddress($arr['address'])
-			 ->setToken($arr['token'])
-			 ->setCircleId($arr['circle_id']);
+		$link->setId($data['id'])
+			 ->setUniqueId($data['unique_id'])
+			 ->setStatus($data['status'])
+			 ->setAddress($data['address'])
+			 ->setToken($data['token'])
+			 ->setCircleId($data['circle_id']);
 
 		return $link;
 	}
