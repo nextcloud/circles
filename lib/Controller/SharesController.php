@@ -26,7 +26,7 @@
 
 namespace OCA\Circles\Controller;
 
-use OCA\Circles\Model\Frame;
+use OCA\Circles\Model\SharingFrame;
 use OCP\AppFramework\Http\DataResponse;
 
 class SharesController extends BaseController {
@@ -51,7 +51,7 @@ class SharesController extends BaseController {
 	public function create($id, $source, $type, $payload) {
 
 		try {
-			$share = new Frame($source, $type);
+			$share = new SharingFrame($source, $type);
 			$share->setCircleId($id);
 			$share->setPayload($payload);
 

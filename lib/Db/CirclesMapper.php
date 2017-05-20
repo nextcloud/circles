@@ -360,7 +360,7 @@ class CirclesMapper extends Mapper {
 		if ($data === false) {
 			return null;
 		}
-$this->miscService->log("  ---- " . var_export($data, true));
+
 		$circle = new Circle($this->l10n);
 		$circle->setId($data['id']);
 		$circle->setType($data['type']);

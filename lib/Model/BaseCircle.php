@@ -132,6 +132,9 @@ class BaseCircle {
 	}
 
 
+	/**
+	 * @return Member
+	 */
 	public function getUser() {
 		return $this->user;
 	}

@@ -76,7 +76,6 @@ class CirclesRequestBuilder {
 	}
 
 
-
 	/**
 	 * Limit the request to the Share by its Id.
 	 *
@@ -91,21 +90,6 @@ class CirclesRequestBuilder {
 	}
 
 
-	/**
-	 * Limit the request to the Share by its Id.
-	 *
-	 * @param IQueryBuilder $qb
-	 * @param string $userId
-	 */
-	protected function limitToUserId(IQueryBuilder &$qb, $userId) {
-//		$expr = $qb->expr();
-//		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
-//
-//		$qb->andWhere($expr->eq($pf . 'userid', $qb->createNamedParameter($userId)));
-	}
-
-
-
 
 
 	protected function limitToMemberLevel(IQueryBuilder &$qb, $level) {
@@ -116,7 +100,35 @@ class CirclesRequestBuilder {
 	}
 
 
+
+
 	/**
+	 * add a request to the members list, using the current user ID.
+	 * will returns level and stuff.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param string $userId
+	 */
+	protected function leftJoinUserIdAsMember(IQueryBuilder &$qb, $userId) {
+
+		if ($qb->getType() !== QueryBuilder::SELECT) {
+			return;
+		}
+
+		$expr = $qb->expr();
+		$pf = $this->default_select_alias . '.';
+
+		$qb->selectAlias('u.level', 'user_level');
+		$qb->leftJoin(
+			$this->default_select_alias, MembersMapper::TABLENAME, 'u',
+			$expr->andX(
+				$expr->eq($pf . 'id', 'u.circle_id'),
+				$expr->eq('u.user_id', $qb->createNamedParameter($userId))
+			)
+		);
+	}
+
+		/**
 	 * @param IQueryBuilder $qb
 	 *
 	 * @deprecated
@@ -217,6 +229,12 @@ class CirclesRequestBuilder {
 		$circle->setDescription($data['description']);
 		$circle->setType($data['type']);
 		$circle->setCreation($data['creation']);
+
+		if (key_exists('user_level', $data)) {
+			$user = new Member($this->l10n);
+			$user->setLevel($data['user_level']);
+			$circle->setUser($user);
+		}
 
 		return $circle;
 	}

@@ -29,9 +29,10 @@ namespace OCA\Circles\Service;
 
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Exceptions\BroadcasterIsNotCompatible;
+use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\IBroadcaster;
 use OCA\Circles\Model\Member;
-use OCA\Circles\Model\Frame;
+use OCA\Circles\Model\SharingFrame;
 
 
 class SharesService {
@@ -76,23 +77,27 @@ class SharesService {
 	 * The Payload will be shared locally, and spread it live if a Broadcaster is set.
 	 * Function will also initiate the federated broadcast to linked circles.
 	 *
-	 * @param Frame $frame
+	 * @param SharingFrame $frame
 	 * @param string|null $broadcast
 	 *
 	 * @return bool
-	 * @throws BroadcasterIsNotCompatible
+	 * @throws MemberDoesNotExistException
 	 */
-	public function createFrame(Frame $frame, string $broadcast = null) {
+	public function createFrame(SharingFrame $frame, string $broadcast = null) {
+
+		$circle = $this->circlesRequest->getDetails($frame->getCircleId(), $this->userId);
+		if ($circle->getUser()
+				   ->getLevel() < Member::LEVEL_MEMBER
+		) {
+			throw new MemberDoesNotExistException();
+		}
 
 		$frame->setAuthor($this->userId);
-
-		// TODO: VERIFIER QUE L'UTILISATEUR EST BIEN MEMBRE
-		$circle = $this->circlesRequest->getDetails($frame->getCircleId(), $this->userId);
+		$frame->generateUniqueId();
 		$frame->setCircleName($circle->getName());
 
 		$this->circlesRequest->createShare($frame);
 		$this->broadcastItem($broadcast, $frame);
-
 		$this->federatedService->initiateRemoteShare($frame->getUniqueId());
 
 		return true;
@@ -100,15 +105,15 @@ class SharesService {
 
 
 	/**
-	 * broadcast the Share item using a IBroadcaster, usually set by the app that created the Share
+	 * broadcast the Frame item using a IBroadcaster, usually set by the app that created the Share
 	 * item.
 	 *
 	 * @param string $broadcast
-	 * @param Frame $frame
+	 * @param SharingFrame $frame
 	 *
 	 * @throws BroadcasterIsNotCompatible
 	 */
-	private function broadcastItem(string $broadcast, Frame $frame) {
+	private function broadcastItem(string $broadcast, SharingFrame $frame) {
 
 		if ($broadcast === null) {
 			return;
@@ -128,7 +133,7 @@ class SharesService {
 	}
 
 
-	public function shareItemToFederatedLinks(Frame $share, string $broadcast = null) {
+	public function shareItemToFederatedLinks(SharingFrame $share, string $broadcast = null) {
 
 		//$circles = $this->circlesRequest->getFederatedLinks($share->getCircle());
 // TODO, envoyer une requete http sur le broadcaster local en precisant qu'il a deja ete broadcaste en local

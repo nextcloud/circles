@@ -26,9 +26,12 @@
 
 namespace OCA\Circles\Model;
 
-class Frame implements \JsonSerializable {
+class SharingFrame implements \JsonSerializable {
 
+	/** @var string */
 	private $source;
+
+	/** @var string */
 	private $type;
 
 	/** @var int */
@@ -139,7 +142,7 @@ class Frame implements \JsonSerializable {
 	/**
 	 * @param string $uniqueId
 	 *
-	 * @return Frame
+	 * @return SharingFrame
 	 */
 	public function setUniqueId(string $uniqueId) {
 		$this->uniqueId = $uniqueId;
@@ -155,7 +158,7 @@ class Frame implements \JsonSerializable {
 	}
 
 	/**
-	 * @return Frame
+	 * @return SharingFrame
 	 */
 	public function generateUniqueId() {
 		$uniqueId = bin2hex(openssl_random_pseudo_bytes(16));
@@ -220,8 +223,11 @@ class Frame implements \JsonSerializable {
 	public static function fromJSON($json) {
 
 		$arr = json_decode($json, true);
+		if (!key_exists('source', $arr)) {
+			return null;
+		}
 
-		$share = new Frame($arr['source'], $arr['type']);
+		$share = new SharingFrame($arr['source'], $arr['type']);
 		$share->setCircleId($arr['circle_id']);
 		if (key_exists('circle_name', $arr)) {
 			$share->setCircleName($arr['circle_name']);

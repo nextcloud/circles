@@ -28,7 +28,7 @@ namespace OCA\Circles\Api;
 
 
 use OCA\Circles\AppInfo\Application;
-use OCA\Circles\Model\Frame;
+use OCA\Circles\Model\SharingFrame;
 
 class Circles {
 
@@ -76,7 +76,7 @@ class Circles {
 	) {
 		$c = self::getContainer();
 
-		$frame = new Frame($source, $type);
+		$frame = new SharingFrame($source, $type);
 		$frame->setCircleId($circleId);
 		$frame->setPayload($payload);
 

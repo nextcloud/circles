@@ -31,7 +31,7 @@ namespace OCA\Circles\Db;
 use OC\L10N\L10N;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
-use OCA\Circles\Model\Frame;
+use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\MiscService;
 use OCP\IDBConnection;
 
@@ -56,7 +56,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 	/**
 	 * @param int $circleId
-	 * @param int $userId
+	 * @param string $userId
 	 *
 	 * @return Circle
 	 */
@@ -65,7 +65,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 		$this->limitToId($qb, $circleId);
 		if ($userId !== '')
-			$this->limitToUserId($qb, $userId);
+			$this->leftJoinUserIdAsMember($qb, $userId);
 
 //		$this->leftjoinOwner($qb);
 //		$this->buildWithMemberLevel($qb, 'u.level', $level);
@@ -80,7 +80,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	}
 
 
-	public function createShare(Frame $share) {
+	public function createShare(SharingFrame $share) {
 
 		$qb = $this->getSharesInsertSql();
 		$qb->setValue('circle_id', $qb->createNamedParameter($share->getCircleId()))
