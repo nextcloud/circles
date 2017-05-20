@@ -134,8 +134,8 @@ class Application extends App {
 		$container->registerService(
 			'SharesService', function(IAppContainer $c) {
 			return new SharesService(
-				$c->query('UserId'), $c->query('CirclesRequest'), $c->query('FederatedService'),
-				$c->query('MiscService')
+				$c->query('UserId'), $c->query('ConfigService'), $c->query('CirclesRequest'),
+				$c->query('FederatedService'), $c->query('MiscService')
 			);
 		}
 		);

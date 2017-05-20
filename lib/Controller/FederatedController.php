@@ -137,6 +137,10 @@ class FederatedController extends BaseController {
 	 */
 	public function initFederatedDelivery($uniqueId) {
 
+		if ($uniqueId === '' || !$this->configService->isFederatedAllowed()) {
+			return $this->federatedFail('federated_not_allowed');
+		}
+
 		$frame = $this->sharesService->getFrameFromUniqueId($uniqueId);
 		if ($frame === null) {
 			return $this->federatedFail('unknown_share');
@@ -169,8 +173,14 @@ class FederatedController extends BaseController {
 	 * @param $token
 	 * @param $uniqueId
 	 * @param $item
+	 *
+	 * @return DataResponse
 	 */
 	public function receiveFederatedDelivery($token, $uniqueId, $item) {
+
+		if ($uniqueId === '' || !$this->configService->isFederatedAllowed()) {
+			return $this->federatedFail('federated_not_allowed');
+		}
 
 		$frame = SharingFrame::fromJSON($item);
 		$this->miscService->log(

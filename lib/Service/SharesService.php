@@ -39,6 +39,9 @@ class SharesService {
 
 	/** @var string */
 	private $userId;
+	
+	/** @var ConfigService */
+	private $configService;
 
 	/** @var CirclesRequest */
 	private $circlesRequest;
@@ -53,12 +56,14 @@ class SharesService {
 	 * SharesService constructor.
 	 *
 	 * @param string $userId
+	 * @param ConfigService $configService
 	 * @param CirclesRequest $circlesRequest
 	 * @param FederatedService $federatedService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
 		string $userId,
+		ConfigService $configService,
 		CirclesRequest $circlesRequest,
 		FederatedService $federatedService,
 		MiscService $miscService
@@ -98,7 +103,10 @@ class SharesService {
 
 		$this->circlesRequest->saveFrame($frame);
 		$this->broadcastFrame($broadcast, $frame);
-		$this->federatedService->initiateRemoteShare($frame->getUniqueId());
+
+		if ($this->configService->isFederatedAllowed()) {
+			$this->federatedService->initiateRemoteShare($frame->getUniqueId());
+		}
 
 		return true;
 	}
@@ -140,31 +148,5 @@ class SharesService {
 		}
 
 	}
-
-
-	public function shareItemToFederatedLinks(SharingFrame $share, string $broadcast = null) {
-
-		//$circles = $this->circlesRequest->getFederatedLinks($share->getCircle());
-// TODO, envoyer une requete http sur le broadcaster local en precisant qu'il a deja ete broadcaste en local
-		//broadcastItem()
-	}
-
-
-
-//	public function reshare($circleId, $source, $type, $shareid) {
-//		$this->miscService->log(
-//			"__reshare" . $circleId . ' ' . $source . ' ' . $type . ' ' . json_encode($item)
-//		);
-//
-//		$share = new Share($source, $type);
-//		$share->setCircleId($circleId);
-//		$share->setItem($item);
-//
-//		$share->setAuthor($this->userId);
-//
-//		$this->circlesRequest->createShare($share);
-//
-//		return true;
-//	}
 
 }
