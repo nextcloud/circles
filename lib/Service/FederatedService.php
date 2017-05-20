@@ -338,14 +338,12 @@ class FederatedService {
 	}
 
 
-	public function initiateRemoteShare($token) {
+	public function initiateRemoteShare($uniqueId) {
 		$args = [
-			'token' => $token,
+			'uniqueId' => $uniqueId,
 		];
 
 		$client = $this->clientService->newClient();
-
-		// TEST TEST TEST
 		try {
 			$request = $client->get(
 				$this->generatePayloadDeliveryURL($this->serverHost), [
@@ -356,7 +354,7 @@ class FederatedService {
 			);
 
 			$result = json_decode($request->getBody(), true);
-			$this->miscService->log("RESULT: " . $result);
+			$this->miscService->log("initiateRemoteShare result: " . $result);
 
 			return true;
 		} catch (Exception $e) {

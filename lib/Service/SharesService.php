@@ -96,24 +96,29 @@ class SharesService {
 		$frame->generateUniqueId();
 		$frame->setCircleName($circle->getName());
 
-		$this->circlesRequest->createShare($frame);
-		$this->broadcastItem($broadcast, $frame);
+		$this->circlesRequest->saveFrame($frame);
+		$this->broadcastFrame($broadcast, $frame);
 		$this->federatedService->initiateRemoteShare($frame->getUniqueId());
 
 		return true;
 	}
 
 
+	public function getFrameFromUniqueId($uniqueId) {
+		$this->circlesRequest->getFrame($uniqueId);
+	}
+
+
 	/**
-	 * broadcast the Frame item using a IBroadcaster, usually set by the app that created the Share
-	 * item.
+	 * broadcast the SharingFrame item using a IBroadcaster.
+	 * The broadcast is usually set by the app that created the SharingFrame item.
 	 *
 	 * @param string $broadcast
 	 * @param SharingFrame $frame
 	 *
 	 * @throws BroadcasterIsNotCompatible
 	 */
-	private function broadcastItem(string $broadcast, SharingFrame $frame) {
+	private function broadcastFrame(string $broadcast, SharingFrame $frame) {
 
 		if ($broadcast === null) {
 			return;

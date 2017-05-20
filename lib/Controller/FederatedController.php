@@ -134,6 +134,9 @@ class FederatedController extends BaseController {
 
 		$this->miscService->log("initFederatedDelivery start " . $uniqueId);
 
+		$frame = $this->sharesService->getFrameFromUniqueId($uniqueId);
+
+		$this->miscService->log("____" . var_export(frame, true));
 		// We don't want to keep the connection with the client up and running
 		// as he might have others things to do
 		$this->asyncAndLeaveClientOutOfThis('done');

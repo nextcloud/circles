@@ -80,7 +80,14 @@ class CirclesRequest extends CirclesRequestBuilder {
 	}
 
 
-	public function createShare(SharingFrame $share) {
+	/**
+	 * saveFrame()
+	 *
+	 * Insert a new entry in the database to save the SharingFrame.
+	 *
+	 * @param SharingFrame $share
+	 */
+	public function saveFrame(SharingFrame $share) {
 
 		$qb = $this->getSharesInsertSql();
 		$qb->setValue('circle_id', $qb->createNamedParameter($share->getCircleId()))
@@ -92,6 +99,23 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 		$qb->execute();
 	}
+
+
+
+
+	public function getFrame(string $uniqueId)
+	{
+		$qb = $this->getSharesSelectSql();
+		$this->limitToUniqueId($qb, $uniqueId);
+
+		$cursor = $qb->execute();
+		$data = $cursor->fetch();
+		$entry = $this->parseSharesSelectSql($data);
+
+		return $entry;
+	}
+
+
 
 
 	/**

@@ -32,6 +32,7 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use OC\L10N\L10N;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\SharingFrame;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 
@@ -77,7 +78,7 @@ class CirclesRequestBuilder {
 
 
 	/**
-	 * Limit the request to the Share by its Id.
+	 * Limit the request by its Id.
 	 *
 	 * @param IQueryBuilder $qb
 	 * @param int $id
@@ -90,16 +91,32 @@ class CirclesRequestBuilder {
 	}
 
 
+	/**
+	 * Limit the request by its UniqueId.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param int $uniqueId
+	 */
+	protected function limitToUniqueId(IQueryBuilder &$qb, $uniqueId) {
+		$expr = $qb->expr();
+		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
+
+		$qb->andWhere($expr->eq($pf . 'unique_id', $qb->createNamedParameter($uniqueId)));
+	}
 
 
+	/**
+	 * Limit the request to a minimum member level.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param $level
+	 */
 	protected function limitToMemberLevel(IQueryBuilder &$qb, $level) {
 		$qb->where(
 			$qb->expr()
 			   ->gte('m.level', $qb->createNamedParameter($level))
 		);
 	}
-
-
 
 
 	/**
@@ -128,7 +145,7 @@ class CirclesRequestBuilder {
 		);
 	}
 
-		/**
+	/**
 	 * @param IQueryBuilder $qb
 	 *
 	 * @deprecated
@@ -154,7 +171,26 @@ class CirclesRequestBuilder {
 
 
 	/**
-	 * Base of the Sql Insert request
+	 * Base of the Sql Select request for Shares
+	 *
+	 * @return IQueryBuilder
+	 */
+	protected function getSharesSelectSql() {
+		$qb = $this->dbConnection->getQueryBuilder();
+
+		$qb->select(
+			'circle_id', 'source', 'type', 'author', 'sharer', 'payload', 'creation', 'header',
+			'unique_id'
+		)
+		   ->from('circles_shares', 's');
+
+		$this->default_select_alias = 's';
+
+		return $qb;
+	}
+
+	/**
+	 * Base of the Sql Insert request for Shares
 	 *
 	 * @return IQueryBuilder
 	 */
@@ -237,5 +273,28 @@ class CirclesRequestBuilder {
 		}
 
 		return $circle;
+	}
+
+
+	/**
+	 * @param array $data
+	 *
+	 * @return null|SharingFrame
+	 */
+	protected function parseSharesSelectSql(array $data) {
+		if ($data === null) {
+			return null;
+		}
+
+		$frame = new SharingFrame($data['source'], $data['type']);
+		$frame->setCircleId($data['circle_id']);
+		$frame->setAuthor($data['author']);
+		$frame->setSharer($data['sharer']);
+		$frame->setPayload($data['payload']);
+		$frame->setCreation($data['creation']);
+		$frame->setHeaders($data['headers']);
+		$frame->setUniqueId($data['unique_id']);
+
+		return $frame;
 	}
 }

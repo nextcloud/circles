@@ -197,7 +197,7 @@
 			</field>
 
 			<field>
-				<name>header</name>
+				<name>headers</name>
 				<type>text</type>
 				<notnull>false</notnull>
 				<length>4000</length>

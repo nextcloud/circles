@@ -49,6 +49,9 @@ class SharingFrame implements \JsonSerializable {
 	/** @var array */
 	private $payload;
 
+	/** @var array */
+	private $headers;
+
 	/** @var int */
 	private $creation;
 
@@ -185,6 +188,27 @@ class SharingFrame implements \JsonSerializable {
 		}
 
 		return $this->payload;
+	}
+
+
+	/**
+	 * @param array $headers
+	 */
+	public function setHeaders(array $headers) {
+		$this->headers = $headers;
+	}
+
+	/**
+	 * @param bool $asJson
+	 *
+	 * @return array|string
+	 */
+	public function getHeaders(bool $asJson = false) {
+		if ($asJson) {
+			return json_encode($this->headers);
+		}
+
+		return $this->headers;
 	}
 
 
