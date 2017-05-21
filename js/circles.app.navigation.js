@@ -232,7 +232,7 @@ var nav = {
 			elements.addMember.show();
 		}
 
-		if (details.type === 'Personal' || details.user.level < 9) {
+		if (curr.allowed_federated === 0 || details.type === 'Personal' || details.user.level < 9) {
 			elements.linkCircle.hide();
 		} else {
 			elements.linkCircle.show();

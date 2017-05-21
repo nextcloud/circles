@@ -42,7 +42,8 @@ var curr = {
 	memberStatus: '',
 	searchCircle: '',
 	searchFilter: 0,
-	searchUser: ''
+	searchUser: '',
+	allowed_federated: 1
 };
 
 

@@ -143,10 +143,10 @@ class Application extends App {
 		$container->registerService(
 			'FederatedService', function(IAppContainer $c) {
 			return new FederatedService(
-				$c->query('UserId'), $c->query('L10N'), $c->query('ConfigService'),
-				$c->query('DatabaseService'), $c->query('CirclesService'),
-				$c->query('FederatedLinksRequest'), $c->query('ServerHost'),
-				$c->query('HTTPClientService'), $c->query('MiscService')
+				$c->query('UserId'), $c->query('L10N'), $c->query('CirclesRequest'),
+				$c->query('ConfigService'), $c->query('DatabaseService'),
+				$c->query('CirclesService'), $c->query('FederatedLinksRequest'),
+				$c->query('ServerHost'), $c->query('HTTPClientService'), $c->query('MiscService')
 			);
 		}
 		);

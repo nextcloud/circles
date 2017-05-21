@@ -123,36 +123,39 @@ class FederatedController extends BaseController {
 	 *
 	 * Note: this function will close the request mid-run from the client but will still
 	 * running its process.
-	 * Called by locally, the function will get the payload by its uniqueId from the database, and
-	 * will deliver it to each remotes linked to the circle the payload belongs to.
-	 * A status response is sent to free the client process before starting to broadcast the item
-	 * to other federated links.
+	 * Called by locally, the function will get the SharingFrame by its uniqueId from the database,
+	 * assign him some Headers and will deliver it to each remotes linked to the circle the Payload
+	 * belongs to. A status response is sent to free the client process before starting to
+	 * broadcast the item to other federated links.
 	 *
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
+	 * @param $circleId
 	 * @param $uniqueId
 	 *
 	 * @return DataResponse
 	 */
-	public function initFederatedDelivery($uniqueId) {
+	public function initFederatedDelivery($circleId, $uniqueId) {
 
 		if ($uniqueId === '' || !$this->configService->isFederatedAllowed()) {
 			return $this->federatedFail('federated_not_allowed');
 		}
 
-		$frame = $this->sharesService->getFrameFromUniqueId($uniqueId);
+		$frame = $this->sharesService->getFrameFromUniqueId($circleId, $uniqueId);
 		if ($frame === null) {
 			return $this->federatedFail('unknown_share');
 		}
 
-		// We don't want to keep the connection with the client up and running
-		// as he might have others things to do
-		$this->asyncAndLeaveClientOutOfThis('done');
-		$this->federatedService->sendRemoteShare($frame);
+		if ($frame->getCloudId() !== null) {
+			return $this->federatedFail('share_already_delivered');
+		}
 
-		sleep(15);
-		$this->miscService->log("initFederatedDelivery end");
+		// We don't want to keep the connection up
+		$this->asyncAndLeaveClientOutOfThis('done');
+
+		$this->federatedService->updateFrameWithCloudId($frame);
+		$this->federatedService->sendRemoteShare($frame);
 
 		exit();
 	}
@@ -183,18 +186,30 @@ class FederatedController extends BaseController {
 		}
 
 		$frame = SharingFrame::fromJSON($item);
-		$this->miscService->log(
-			"receiveFederatedDelivery start " . $token . '   ' . $uniqueId . '    ' . $item . '   '
-			. var_export($frame, true)
-		);
+		if (!$this->federatedService->receiveFrame($token, $uniqueId, $frame)) {
+			return $this->federatedFail('shares_is_already_known');
+		}
+
+
+		//	$this->sharesService->proceedFrame($token, $uniqueId$frame);
+		//$frame->setCircleId();
+		// TODO: SAVE THE FRAME, BROADCAST, DELIVER
+//		$this->miscService->log(
+//			"receiveFederatedDelivery start " . $token . '   ' . var_export($item, true) . '   '
+//			. $uniqueId
+//		);
+		//	$this->miscService->log(
+		//		'    ' . $item . '   '
+		//		. $frame->getHeader('address')
+		//	);
 
 		// We don't want to keep the connection with the client up and running
 		// as he might have others things to do
-		$this->asyncAndLeaveClientOutOfThis('done');
+		//	$this->asyncAndLeaveClientOutOfThis('done');
 
-		sleep(15);
-		$this->miscService->log("receiveFederatedDelivery end");
-		exit();
+		//	sleep(15);
+		//	$this->miscService->log("receiveFederatedDelivery end");
+		//	exit();
 	}
 
 	/**

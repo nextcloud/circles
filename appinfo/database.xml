@@ -190,10 +190,10 @@
 			</field>
 
 			<field>
-				<name>sharer</name>
+				<name>cloud_id</name>
 				<type>text</type>
-				<notnull>true</notnull>
-				<length>32</length>
+				<notnull>false</notnull>
+				<length>128</length>
 			</field>
 
 			<field>
@@ -218,7 +218,7 @@
 	</table>
 
 	<table>
-		<name>*dbprefix*circles_federated</name>
+		<name>*dbprefix*circles_links</name>
 
 		<declaration>
 			<field>

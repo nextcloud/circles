@@ -31,6 +31,7 @@ namespace OCA\Circles\Db;
 use Doctrine\DBAL\Query\QueryBuilder;
 use OC\L10N\L10N;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
 use OCP\DB\QueryBuilder\IQueryBuilder;
@@ -69,7 +70,7 @@ class CirclesRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param int $circleId
 	 */
-	protected function limitToCircle(IQueryBuilder &$qb, $circleId) {
+	protected function limitToCircleId(IQueryBuilder &$qb, $circleId) {
 		$expr = $qb->expr();
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
 
@@ -102,6 +103,20 @@ class CirclesRequestBuilder {
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
 
 		$qb->andWhere($expr->eq($pf . 'unique_id', $qb->createNamedParameter($uniqueId)));
+	}
+
+
+	/**
+	 * Limit the request by its Token.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param $token
+	 */
+	protected function limitToToken(IQueryBuilder &$qb, $token) {
+		$expr = $qb->expr();
+		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
+
+		$qb->andWhere($expr->eq($pf . 'token', $qb->createNamedParameter($token)));
 	}
 
 
@@ -175,11 +190,28 @@ class CirclesRequestBuilder {
 	 *
 	 * @return IQueryBuilder
 	 */
+	protected function getLinksSelectSql() {
+		$qb = $this->dbConnection->getQueryBuilder();
+
+		$qb->select('id', 'status', 'address', 'token', 'circle_id', 'unique_id', 'creation')
+		   ->from('circles_links', 's');
+
+		$this->default_select_alias = 's';
+
+		return $qb;
+	}
+
+
+	/**
+	 * Base of the Sql Select request for Shares
+	 *
+	 * @return IQueryBuilder
+	 */
 	protected function getSharesSelectSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 
 		$qb->select(
-			'circle_id', 'source', 'type', 'author', 'sharer', 'payload', 'creation', 'headers',
+			'circle_id', 'source', 'type', 'author', 'cloud_id', 'payload', 'creation', 'headers',
 			'unique_id'
 		)
 		   ->from('circles_shares', 's');
@@ -198,6 +230,25 @@ class CirclesRequestBuilder {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$qb->insert('circles_shares')
 		   ->setValue('creation', $qb->createFunction('NOW()'));
+
+		return $qb;
+	}
+
+
+	/**
+	 * Base of the Sql Update request for Shares
+	 *
+	 * @param string $uniqueId
+	 *
+	 * @return IQueryBuilder
+	 */
+	protected function getSharesUpdateSql(string $uniqueId) {
+		$qb = $this->dbConnection->getQueryBuilder();
+		$qb->update('circles_shares')
+		   ->where(
+			   $qb->expr()
+				  ->eq('unique_id', $qb->createNamedParameter($uniqueId))
+		   );
 
 		return $qb;
 	}
@@ -253,7 +304,7 @@ class CirclesRequestBuilder {
 	 *
 	 * @return Circle
 	 */
-	protected function parseCirclesSelectSql(array $data) {
+	protected function parseCirclesSelectSql($data) {
 		if ($data === false || $data === null) {
 			return null;
 		}
@@ -279,7 +330,7 @@ class CirclesRequestBuilder {
 	/**
 	 * @param array $data
 	 *
-	 * @return null|SharingFrame
+	 * @return SharingFrame
 	 */
 	protected function parseSharesSelectSql($data) {
 		if ($data === false || $data === null) {
@@ -289,7 +340,7 @@ class CirclesRequestBuilder {
 		$frame = new SharingFrame($data['source'], $data['type']);
 		$frame->setCircleId($data['circle_id']);
 		$frame->setAuthor($data['author']);
-		$frame->setSharer($data['sharer']);
+		$frame->setCloudId($data['cloud_id']);
 		$frame->setPayload(json_decode($data['payload'], true));
 		$frame->setCreation($data['creation']);
 		$frame->setHeaders(json_decode($data['headers'], true));
@@ -297,4 +348,28 @@ class CirclesRequestBuilder {
 
 		return $frame;
 	}
+
+
+	/**
+	 * @param array $data
+	 *
+	 * @return FederatedLink
+	 */
+	public function parseLinksSelectSql($data) {
+		if ($data === false || $data === null) {
+			return null;
+		}
+
+		$link = new FederatedLink();
+		$link->setId($data['id'])
+			 ->setUniqueId($data['unique_id'])
+			 ->setStatus($data['status'])
+			 ->setAddress($data['address'])
+			 ->setToken($data['token'])
+			 ->setCircleId($data['circle_id']);
+
+		return $link;
+	}
+
+
 }

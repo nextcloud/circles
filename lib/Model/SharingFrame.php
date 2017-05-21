@@ -44,7 +44,7 @@ class SharingFrame implements \JsonSerializable {
 	private $author;
 
 	/** @var string */
-	private $sharer;
+	private $cloudId;
 
 	/** @var array */
 	private $payload;
@@ -113,10 +113,6 @@ class SharingFrame implements \JsonSerializable {
 	 */
 	public function setAuthor(string $author) {
 		$this->author = $author;
-
-		if ($this->getSharer() === null) {
-			$this->setSharer($author);
-		}
 	}
 
 	/**
@@ -128,17 +124,17 @@ class SharingFrame implements \JsonSerializable {
 
 
 	/**
-	 * @param string $sharer
+	 * @param string $cloudId
 	 */
-	public function setSharer(string $sharer) {
-		$this->sharer = $sharer;
+	public function setCloudId($cloudId) {
+		$this->cloudId = $cloudId;
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getSharer() {
-		return $this->sharer;
+	public function getCloudId() {
+		return $this->cloudId;
 	}
 
 
@@ -213,6 +209,32 @@ class SharingFrame implements \JsonSerializable {
 
 
 	/**
+	 * @param $k
+	 *
+	 * @return string
+	 */
+	public function getHeader(string $k) {
+		if ($this->headers === null) {
+			return null;
+		}
+
+		if (!key_exists($k, $this->headers)) {
+			return null;
+		}
+
+		return $this->headers[$k];
+	}
+
+	/**
+	 * @param string $k
+	 * @param string $v
+	 */
+	public function setHeader(string $k, $v) {
+		$this->headers[$k] = $v;
+	}
+
+
+	/**
 	 * @param int $creation
 	 */
 	public function setCreation($creation) {
@@ -239,7 +261,8 @@ class SharingFrame implements \JsonSerializable {
 			'source'      => $this->getSource(),
 			'type'        => $this->getType(),
 			'author'      => $this->getAuthor(),
-			'sharer'      => $this->getSharer(),
+			'cloud_id'    => $this->getCloudId(),
+			'headers'     => $this->getHeaders(),
 			'payload'     => $this->getPayload(),
 			'creation'    => $this->getCreation(),
 		);
@@ -258,8 +281,16 @@ class SharingFrame implements \JsonSerializable {
 			$share->setCircleName($arr['circle_name']);
 		}
 
+		if (key_exists('headers', $arr)) {
+			$share->setHeaders($arr['headers']);
+		}
+
+		if (key_exists('cloud_id', $arr)) {
+			$share->setCloudID($arr['cloud_id']);
+		}
+
+		$share->setUniqueId($arr['unique_id']);
 		$share->setAuthor($arr['author']);
-		$share->setSharer($arr['sharer']);
 		$share->setPayload($arr['payload']);
 		$share->setCreation($arr['creation']);
 

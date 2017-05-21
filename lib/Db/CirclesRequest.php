@@ -30,6 +30,7 @@ namespace OCA\Circles\Db;
 
 use OC\L10N\L10N;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\MiscService;
@@ -86,26 +87,66 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 *
 	 * Insert a new entry in the database to save the SharingFrame.
 	 *
-	 * @param SharingFrame $share
+	 * @param SharingFrame $frame
 	 */
-	public function saveFrame(SharingFrame $share) {
+	public function saveFrame(SharingFrame $frame) {
 
 		$qb = $this->getSharesInsertSql();
-		$qb->setValue('circle_id', $qb->createNamedParameter($share->getCircleId()))
-		   ->setValue('source', $qb->createNamedParameter($share->getSource()))
-		   ->setValue('type', $qb->createNamedParameter($share->getType()))
-		   ->setValue('author', $qb->createNamedParameter($share->getAuthor()))
-		   ->setValue('sharer', $qb->createNamedParameter($share->getSharer()))
-		   ->setValue('unique_id', $qb->createNamedParameter($share->getUniqueId()))
-		   ->setValue('payload', $qb->createNamedParameter($share->getPayload(true)));
+		$qb->setValue('circle_id', $qb->createNamedParameter($frame->getCircleId()))
+		   ->setValue('source', $qb->createNamedParameter($frame->getSource()))
+		   ->setValue('type', $qb->createNamedParameter($frame->getType()))
+		   ->setValue('headers', $qb->createNamedParameter($frame->getHeaders(true)))
+		   ->setValue('author', $qb->createNamedParameter($frame->getAuthor()))
+		   ->setValue('cloud_id', $qb->createNamedParameter($frame->getCloudId()))
+		   ->setValue('unique_id', $qb->createNamedParameter($frame->getUniqueId()))
+		   ->setValue('payload', $qb->createNamedParameter($frame->getPayload(true)));
 
 		$qb->execute();
 	}
 
 
-	public function getFrame(string $uniqueId) {
+	public function updateFrame(SharingFrame $frame) {
+		$qb = $this->getSharesUpdateSql($frame->getUniqueId());
+		$qb->set('circle_id', $qb->createNamedParameter($frame->getCircleId()))
+		   ->set('source', $qb->createNamedParameter($frame->getSource()))
+		   ->set('type', $qb->createNamedParameter($frame->getType()))
+		   ->set('headers', $qb->createNamedParameter($frame->getHeaders(true)))
+		   ->set('author', $qb->createNamedParameter($frame->getAuthor()))
+		   ->set('cloud_id', $qb->createNamedParameter($frame->getCloudId()))
+		   ->set('unique_id', $qb->createNamedParameter($frame->getUniqueId()))
+		   ->set('payload', $qb->createNamedParameter($frame->getPayload(true)));
+
+		$qb->execute();
+	}
+
+
+	/**
+	 * @param string $uniqueId
+	 *
+	 * @return Circle
+	 */
+	public function getCircle(string $uniqueId) {
+		$qb = $this->getCirclesSelectSql();
+		$this->limitToUniqueId($qb, $uniqueId);
+
+		$cursor = $qb->execute();
+		$data = $cursor->fetch();
+		$entry = $this->parseCirclesSelectSql($data);
+
+		return $entry;
+	}
+
+
+	/**
+	 * @param int $circleId
+	 * @param string $uniqueId
+	 *
+	 * @return SharingFrame
+	 */
+	public function getFrame(int $circleId, string $uniqueId) {
 		$qb = $this->getSharesSelectSql();
 		$this->limitToUniqueId($qb, $uniqueId);
+		$this->limitToCircleId($qb, $circleId);
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
@@ -114,6 +155,27 @@ class CirclesRequest extends CirclesRequestBuilder {
 		return $entry;
 	}
 
+
+	/**
+	 * return the FederatedLink identified by a remote Circle UniqueId and the Token of the link
+	 * @param string $token
+	 * @param string $uniqueId
+	 *
+	 * @return FederatedLink
+	 */
+	public function getLinkFromToken(string $token, string $uniqueId) {
+		$qb = $this->getLinksSelectSql();
+		$this->limitToUniqueId($qb, $uniqueId);
+		$this->limitToToken($qb, $token);
+
+		$cursor = $qb->execute();
+		$data = $cursor->fetch();
+		$entry = $this->parseLinksSelectSql($data);
+
+		return $entry;
+
+
+	}
 
 	/**
 	 * @param $circleId
@@ -126,7 +188,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$this->limitToMemberLevel($qb, $level);
 
 		$this->joinCircles($qb, 'm.circle_id');
-		$this->limitToCircle($qb, $circleId);
+		$this->limitToCircleId($qb, $circleId);
 
 		$qb->selectAlias('c.name', 'circle_name');
 

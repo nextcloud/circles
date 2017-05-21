@@ -29,13 +29,11 @@ namespace OCA\Circles\Service;
 
 use Exception;
 use OC\Http\Client\ClientService;
-use OCA\Circles\Db\CirclesMapper;
+use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\FederatedLinksRequest;
-use OCA\Circles\Db\MembersMapper;
 use OCA\Circles\Exceptions\FederatedCircleLinkFormatException;
 use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 use OCA\Circles\Exceptions\CircleTypeNotValid;
-use OCA\Circles\Exceptions\FederatedLinkCreationIssue;
 use OCA\Circles\Exceptions\FederatedRemoteCircleDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedRemoteDoesNotAllowException;
 use OCA\Circles\Exceptions\MemberIsNotAdminException;
@@ -53,20 +51,23 @@ class FederatedService {
 	/** @var IL10N */
 	private $l10n;
 
+	/** @var CirclesRequest */
+	private $circlesRequest;
+
 	/** @var ConfigService */
 	private $configService;
 
 	/** @var CirclesService */
 	private $circlesService;
 
+	/** @var SharesService */
+	private $sharesService;
+
 	/** @var FederatedLinksRequest */
 	private $federatedLinksRequest;
 
-	/** @var CirclesMapper */
-	private $dbCircles;
-
-	/** @var MembersMapper */
-	private $dbMembers;
+	/** @var string */
+	private $serverHost;
 
 	/** @var ClientService */
 	private $clientService;
@@ -80,9 +81,11 @@ class FederatedService {
 	 *
 	 * @param $userId
 	 * @param IL10N $l10n
+	 * @param CirclesRequest $circlesRequest
 	 * @param ConfigService $configService
 	 * @param DatabaseService $databaseService
 	 * @param CirclesService $circlesService
+	 * @param SharesService $sharesService
 	 * @param FederatedLinksRequest $federatedLinksRequest
 	 * @param string $serverHost
 	 * @param ClientService $clientService
@@ -91,6 +94,7 @@ class FederatedService {
 	public function __construct(
 		$userId,
 		IL10N $l10n,
+		CirclesRequest $circlesRequest,
 		ConfigService $configService,
 		DatabaseService $databaseService,
 		CirclesService $circlesService,
@@ -101,16 +105,14 @@ class FederatedService {
 	) {
 		$this->userId = $userId;
 		$this->l10n = $l10n;
+		$this->circlesRequest = $circlesRequest;
 		$this->configService = $configService;
 		$this->circlesService = $circlesService;
+//		$this->sharesService = $sharesService;
 		$this->federatedLinksRequest = $federatedLinksRequest;
 		$this->serverHost = $serverHost;
 		$this->clientService = $clientService;
-
 		$this->miscService = $miscService;
-
-		$this->dbCircles = $databaseService->getCirclesMapper();
-		$this->dbMembers = $databaseService->getMembersMapper();
 	}
 
 
@@ -328,6 +330,41 @@ class FederatedService {
 
 
 	/**
+	 * @param string $token
+	 * @param string $uniqueId
+	 * @param SharingFrame $frame
+	 *
+	 * @return bool
+	 */
+	public function receiveFrame(string $token, string $uniqueId, SharingFrame $frame) {
+
+		$link = $this->circlesRequest->getLinkFromToken($token, $uniqueId);
+		if ($link === null) {
+			return false;
+			// TODO: throw Exception
+		}
+
+		if ($this->circlesRequest->getFrame($link->getCircleId(), $frame->getUniqueId())) {
+			return false;
+			// TODO: throw Exception
+		}
+
+//		$circle = $this->circlesRequest->getCircle($uniqueId);
+		$frame->setCircleId($link->getCircleId());
+		$this->miscService->log(
+			"RECEIVEFRAME: " . $frame->getCircleId() . ' '
+			. $frame->getHeaders(true)
+		);
+
+//		$circle = $this->circlesRequest->getDetailsFromToken();
+		//$frame->setCircleId($frame->get)
+//		$this->circlesRequest->saveFrame($frame);
+//		$this->sharesService->proceedFrame($frame);
+
+		return true;
+	}
+
+	/**
 	 * @param $circleId
 	 * @param $uniqueId
 	 *
@@ -349,14 +386,16 @@ class FederatedService {
 
 
 	/**
-	 * @param $uniqueId
+	 * @param int $circleId
+	 * @param string $uniqueId
 	 *
 	 * @return bool
 	 * @throws Exception
 	 */
-	public function initiateRemoteShare($uniqueId) {
+	public function initiateRemoteShare(int $circleId, string $uniqueId) {
 		$args = [
-			'uniqueId' => $uniqueId,
+			'circleId' => $circleId,
+			'uniqueId' => $uniqueId
 		];
 
 		$client = $this->clientService->newClient();
@@ -388,13 +427,18 @@ class FederatedService {
 	 */
 	public function sendRemoteShare(SharingFrame $frame) {
 
+		$circle = $this->circlesRequest->getDetails($frame->getCircleId());
+		if ($circle === null) {
+			throw new Exception('unknown_circle');
+		}
+
 		$links = $this->getLinks($frame->getCircleId());
 		foreach ($links AS $link) {
 
 			$args = [
-				'uniqueId' => $link->getUniqueId(),
 				'token'    => $link->getToken(),
-				'item'    => json_encode($frame)
+				'uniqueId' => $circle->getUniqueId(),
+				'item'     => json_encode($frame)
 			];
 
 			$client = $this->clientService->newClient();
@@ -410,6 +454,19 @@ class FederatedService {
 				throw $e;
 			}
 		}
+	}
+
+
+	/**
+	 * generateHeaders()
+	 *
+	 * Generate new headers for the current Payload, and save them in the SharingFrame.
+	 *
+	 * @param SharingFrame $frame
+	 */
+	public function updateFrameWithCloudId(SharingFrame $frame) {
+		$frame->setCloudId($this->serverHost);
+		$this->circlesRequest->updateFrame($frame);
 	}
 
 }
