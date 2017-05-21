@@ -61,7 +61,7 @@ class FederatedService {
 	private $circlesService;
 
 	/** @var SharesService */
-	private $sharesService;
+	private $broadcastService;
 
 	/** @var FederatedLinksRequest */
 	private $federatedLinksRequest;
@@ -85,7 +85,7 @@ class FederatedService {
 	 * @param ConfigService $configService
 	 * @param DatabaseService $databaseService
 	 * @param CirclesService $circlesService
-	 * @param SharesService $sharesService
+	 * @param BroadcastService $broadcastService
 	 * @param FederatedLinksRequest $federatedLinksRequest
 	 * @param string $serverHost
 	 * @param ClientService $clientService
@@ -98,6 +98,7 @@ class FederatedService {
 		ConfigService $configService,
 		DatabaseService $databaseService,
 		CirclesService $circlesService,
+		BroadcastService $broadcastService,
 		FederatedLinksRequest $federatedLinksRequest,
 		string $serverHost,
 		ClientService $clientService,
@@ -108,7 +109,7 @@ class FederatedService {
 		$this->circlesRequest = $circlesRequest;
 		$this->configService = $configService;
 		$this->circlesService = $circlesService;
-//		$this->sharesService = $sharesService;
+		$this->broadcastService = $broadcastService;
 		$this->federatedLinksRequest = $federatedLinksRequest;
 		$this->serverHost = $serverHost;
 		$this->clientService = $clientService;
@@ -335,8 +336,9 @@ class FederatedService {
 	 * @param SharingFrame $frame
 	 *
 	 * @return bool
+	 * @throws Exception
 	 */
-	public function receiveFrame(string $token, string $uniqueId, SharingFrame $frame) {
+	public function receiveFrame(string $token, string $uniqueId, SharingFrame &$frame) {
 
 		$link = $this->circlesRequest->getLinkFromToken($token, $uniqueId);
 		if ($link === null) {
@@ -345,21 +347,23 @@ class FederatedService {
 		}
 
 		if ($this->circlesRequest->getFrame($link->getCircleId(), $frame->getUniqueId())) {
+			$this->miscService->log("FRAME ALREADY EXIST !!!");
+
 			return false;
 			// TODO: throw Exception
 		}
 
-//		$circle = $this->circlesRequest->getCircle($uniqueId);
-		$frame->setCircleId($link->getCircleId());
-		$this->miscService->log(
-			"RECEIVEFRAME: " . $frame->getCircleId() . ' '
-			. $frame->getHeaders(true)
-		);
 
-//		$circle = $this->circlesRequest->getDetailsFromToken();
-		//$frame->setCircleId($frame->get)
-//		$this->circlesRequest->saveFrame($frame);
-//		$this->sharesService->proceedFrame($frame);
+		$circle = $this->circlesRequest->getDetails($link->getCircleId());
+		if ($circle === null) {
+			throw new Exception('unknown_circle');
+		}
+		$frame->setCircleId($link->getCircleId());
+		$frame->setCircleName($circle->getName());
+
+		$this->circlesRequest->saveFrame($frame);
+		$this->broadcastService->broadcastFrame($frame->getHeader('broadcast'), $frame);
+		$this->sendRemoteShare($frame);
 
 		return true;
 	}

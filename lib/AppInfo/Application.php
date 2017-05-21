@@ -38,6 +38,7 @@ use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\FederatedLinksRequest;
 use \OCA\Circles\Db\MembersMapper;
 use OCA\Circles\Events\UserEvents;
+use OCA\Circles\Service\BroadcastService;
 use \OCA\Circles\Service\DatabaseService;
 use \OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\FederatedService;
@@ -131,11 +132,22 @@ class Application extends App {
 		}
 		);
 
+
+		$container->registerService(
+			'BroadcastService', function(IAppContainer $c) {
+			return new BroadcastService(
+				$c->query('UserId'), $c->query('ConfigService'), $c->query('CirclesRequest'),
+				$c->query('MiscService')
+			);
+		}
+		);
+
+
 		$container->registerService(
 			'SharesService', function(IAppContainer $c) {
 			return new SharesService(
 				$c->query('UserId'), $c->query('ConfigService'), $c->query('CirclesRequest'),
-				$c->query('FederatedService'), $c->query('MiscService')
+				$c->query('BroadcastService'), $c->query('FederatedService'), $c->query('MiscService')
 			);
 		}
 		);
@@ -145,7 +157,8 @@ class Application extends App {
 			return new FederatedService(
 				$c->query('UserId'), $c->query('L10N'), $c->query('CirclesRequest'),
 				$c->query('ConfigService'), $c->query('DatabaseService'),
-				$c->query('CirclesService'), $c->query('FederatedLinksRequest'),
+				$c->query('CirclesService'), $c->query('BroadcastService'),
+				$c->query('FederatedLinksRequest'),
 				$c->query('ServerHost'), $c->query('HTTPClientService'), $c->query('MiscService')
 			);
 		}

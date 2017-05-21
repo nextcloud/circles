@@ -40,7 +40,7 @@ class ConfigService {
 	private $defaults = [
 		self::CIRCLES_ALLOW_CIRCLES   => Circle::CIRCLES_ALL,
 		self::CIRCLES_SWAP_TO_TEAMS   => '0',
-		self::CIRCLES_ALLOW_FEDERATED => '1'
+		self::CIRCLES_ALLOW_FEDERATED => '0'
 	];
 
 	/** @var string */
@@ -86,8 +86,6 @@ class ConfigService {
 
 
 	public function isFederatedAllowed() {
-
-	//	return false;
 		if ($this->allowedFederated === -1) {
 			$this->allowedFederated = (int)$this->getAppValue(self::CIRCLES_ALLOW_FEDERATED);
 		}
