@@ -2,11 +2,8 @@ OC.L10N.register(
     "circles",
     {
     "Cannot join this circle" : "Nepavyksta prisijungti prie šio rato",
-    "You have successfully joined this circle" : "Jūs sėkmingai prisijungėte prie šio rato",
     "You have requested to join this circle" : "Jūs užklausėte prisijungti prie šio rato",
-    "You have successfully left this circle" : "Jūs sėkmingai išėjote iš šio rato",
     "Cannot leave this circle" : "Nepavyksta išeiti iš šio rato",
-    "You have successfully deleted this circle" : "Jūs sėkmingai ištrynėte šį ratą",
     "Cannot delete this circle" : "Nepavyksta ištrinti šio rato",
     "Issue while retrieving the details of this circle" : "Problemos, gaunant išsamesnę šio rato informaciją",
     "Issue while retrieving the list of circles" : "Problemos, gaunant ratų sąrašą",

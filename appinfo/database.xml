@@ -178,7 +178,7 @@
 			<field>
 				<name>type</name>
 				<type>text</type>
-				<notnull>false</notnull>
+				<notnull>true</notnull>
 				<length>15</length>
 			</field>
 
