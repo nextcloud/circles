@@ -26,6 +26,8 @@
 
 namespace OCA\Circles\Model;
 
+use OC\L10N\L10N;
+
 class BaseCircle {
 
 	/** @var int */
@@ -34,6 +36,9 @@ class BaseCircle {
 
 	/** @var L10N */
 	protected $l10n;
+
+	/** @var string */
+	private $uniqueId;
 
 	/** @var string */
 	private $name;
@@ -56,6 +61,8 @@ class BaseCircle {
 	/** @var Member[] */
 	private $members;
 
+	/** @var FederatedLink[] */
+	private $links;
 
 	public function __construct($l10n, $type = -1, $name = '') {
 		$this->l10n = $l10n;
@@ -80,6 +87,29 @@ class BaseCircle {
 	}
 
 
+	/**
+	 * @param string $uniqueId
+	 *
+	 * @return $this
+	 */
+	public function setUniqueId(string $uniqueId) {
+		$this->uniqueId = $uniqueId;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getUniqueId() {
+		return $this->uniqueId;
+	}
+
+	public function generateUniqueId() {
+		$uniqueId = bin2hex(openssl_random_pseudo_bytes(24));
+		$this->setUniqueId($uniqueId);
+	}
+
 	public function setName($name) {
 		$this->name = $name;
 
@@ -102,6 +132,9 @@ class BaseCircle {
 	}
 
 
+	/**
+	 * @return Member
+	 */
 	public function getUser() {
 		return $this->user;
 	}
@@ -156,5 +189,33 @@ class BaseCircle {
 		return $this->members;
 	}
 
+
+	public function getRemote() {
+		return $this->links;
+	}
+
+	public function addRemote($link) {
+		array_push($this->links, $link);
+	}
+
+	public function getRemoteFromToken($token) {
+		foreach ($this->links AS $link) {
+			if ($link->getToken() === $token) {
+				return $link;
+			}
+		}
+
+		return null;
+	}
+
+	public function getRemoteFromAddressAndId($address, $id) {
+		foreach ($this->links AS $link) {
+			if ($link->getAddress() === $address && $link->getUniqueId() === $id) {
+				return $link;
+			}
+		}
+
+		return null;
+	}
 
 }

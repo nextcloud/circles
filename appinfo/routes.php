@@ -25,6 +25,9 @@
  */
 
 return [
+	'ocs'    => [
+
+	],
 	'routes' => [
 		['name' => 'Navigation#navigate', 'url' => '/', 'verb' => 'GET'],
 		['name' => 'Circles#create', 'url' => '/circles', 'verb' => 'PUT'],
@@ -45,6 +48,16 @@ return [
 			'name'         => 'Circles#leave', 'url' => '/circles/{id}/leave', 'verb' => 'GET',
 			'requirements' => ['id' => '\d+'],
 		],
+		['name' => 'Circles#link', 'url' => '/circles/{id}/link', 'verb' => 'PUT'],
+		['name' => 'Federated#requestedLink', 'url' => '/circles/link/', 'verb' => 'PUT'],
+		[
+			'name' => 'Federated#initFederatedDelivery', 'url' => '/circles/payload/',
+			'verb' => 'POST'
+		],
+		[
+			'name' => 'Federated#receiveFederatedDelivery', 'url' => '/circles/payload/',
+			'verb' => 'PUT'
+		],
 		['name' => 'Members#search', 'url' => '/circles/{id}/members', 'verb' => 'GET'],
 		[
 			'name'         => 'Members#add', 'url' => '/circles/{id}/members', 'verb' => 'PUT',
@@ -56,7 +69,7 @@ return [
 			'requirements' => ['id' => '\d+'],
 		],
 		[
-			'name'         => 'Shares#newShare', 'url' => '/circles/{id}/share', 'verb' => 'PUT',
+			'name'         => 'Shares#create', 'url' => '/circles/{id}/share', 'verb' => 'PUT',
 			'requirements' => ['id' => '\d+'],
 		],
 

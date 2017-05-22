@@ -100,6 +100,7 @@ var actions = {
 				type: type,
 				name: result.name
 			}));
+			elements.emptyCircleCreation();
 			nav.displayCirclesList(result.circle.type);
 			actions.selectCircle(result.circle.id);
 			return;
@@ -164,10 +165,39 @@ var actions = {
 		});
 	},
 
+	linkCircleResult: function (result) {
+
+		//elements.linkCircle.val('');
+		if (result.status !== 1) {
+			OCA.notification.onFail(
+				t('circles', "A link to <b>{remote}</b> could not be initiated", {
+					remote: result.remote
+				}) + ': ' +
+				((result.error) ? result.error : t('circles', 'no error message')));
+			return;
+		}
+
+		if (result.link.status === 6) {
+			OCA.notification.onSuccess(
+				t('circles', "A link to <b>{remote}</b> has been requested.", {
+					remote: result.remote
+				}));
+		}
+
+		if (result.link.status === 9) {
+			OCA.notification.onSuccess(
+				t('circles', "the link to <b>{remote}</b> is now up and running.", {
+					remote: result.remote
+				}));
+		}
+
+	},
+
 
 	selectCircle: function (circle_id) {
 		curr.searchUser = '';
 		elements.addMember.val('');
+		elements.linkCircle.val('');
 
 		api.detailsCircle(circle_id, actions.selectCircleResult);
 	},

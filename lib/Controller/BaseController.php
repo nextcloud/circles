@@ -29,6 +29,7 @@ namespace OCA\Circles\Controller;
 use OC\AppFramework\Http;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\FederatedService;
 use OCA\Circles\Service\MembersService;
 
 use OCA\Circles\Service\MiscService;
@@ -58,6 +59,9 @@ class BaseController extends Controller {
 	/** @var SharesService */
 	protected $sharesService;
 
+	/** @var FederatedService */
+	protected $federatedService;
+
 	/** @var MiscService */
 	protected $miscService;
 
@@ -73,6 +77,7 @@ class BaseController extends Controller {
 	 * @param CirclesService $circlesService
 	 * @param MembersService $membersService
 	 * @param SharesService $sharesService
+	 * @param FederatedService $federatedService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
@@ -84,6 +89,7 @@ class BaseController extends Controller {
 		CirclesService $circlesService,
 		MembersService $membersService,
 		SharesService $sharesService,
+		FederatedService $federatedService,
 		MiscService $miscService
 	) {
 		parent::__construct($appName, $request);
@@ -94,6 +100,7 @@ class BaseController extends Controller {
 		$this->circlesService = $circlesService;
 		$this->membersService = $membersService;
 		$this->sharesService = $sharesService;
+		$this->federatedService = $federatedService;
 		$this->miscService = $miscService;
 	}
 

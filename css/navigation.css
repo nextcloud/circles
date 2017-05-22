@@ -190,6 +190,16 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	position: absolute;
 }
 
+#mainui #linkcircle {
+	margin-left: 15px;
+	margin-right: 15px;
+	margin-top: 15px;
+	width: 370px;
+	right: 0px;
+	top: 45px;
+	position: absolute;
+}
+
 #joincircle_invit, #joincircle_request {
 	font-style: italic;
 	color: #555;

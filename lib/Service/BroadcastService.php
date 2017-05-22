@@ -29,13 +29,12 @@ namespace OCA\Circles\Service;
 
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Exceptions\BroadcasterIsNotCompatible;
-use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\IBroadcaster;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
 
 
-class SharesService {
+class BroadcastService {
 
 	/** @var string */
 	private $userId;
@@ -45,12 +44,6 @@ class SharesService {
 
 	/** @var CirclesRequest */
 	private $circlesRequest;
-
-	/** @var BroadcastService */
-	private $broadcastService;
-
-	/** @var FederatedService */
-	private $federatedService;
 
 	/** @var MiscService */
 	private $miscService;
@@ -62,78 +55,50 @@ class SharesService {
 	 * @param string $userId
 	 * @param ConfigService $configService
 	 * @param CirclesRequest $circlesRequest
-	 * @param BroadcastService $broadcastService
-	 * @param FederatedService $federatedService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
 		string $userId,
 		ConfigService $configService,
 		CirclesRequest $circlesRequest,
-		BroadcastService $broadcastService,
-		FederatedService $federatedService,
 		MiscService $miscService
 	) {
 		$this->userId = $userId;
 		$this->configService = $configService;
 		$this->circlesRequest = $circlesRequest;
-		$this->broadcastService = $broadcastService;
-		$this->federatedService = $federatedService;
 		$this->miscService = $miscService;
 	}
 
 
+
 	/**
-	 * createFrame()
+	 * broadcast the SharingFrame item using a IBroadcaster.
+	 * The broadcast is usually set by the app that created the SharingFrame item.
 	 *
-	 * Save the Frame containing the Payload.
-	 * The Payload will be shared locally, and spread it live if a Broadcaster is set.
-	 * Function will also initiate the federated broadcast to linked circles.
-	 *
+	 * @param string $broadcast
 	 * @param SharingFrame $frame
-	 * @param string|null $broadcast
 	 *
-	 * @throws MemberDoesNotExistException
+	 * @throws BroadcasterIsNotCompatible
 	 */
-	public function createFrame(SharingFrame $frame, string $broadcast = null) {
+	public function broadcastFrame(string $broadcast, SharingFrame $frame) {
 
-		$circle = $this->circlesRequest->getDetails($frame->getCircleId(), $this->userId);
-		if ($circle->getUser()
-				   ->getLevel() < Member::LEVEL_MEMBER
-		) {
-			throw new MemberDoesNotExistException();
+		if ($broadcast === null) {
+			return;
 		}
 
-		$frame->setAuthor($this->userId);
-		$frame->setHeader('author', $this->userId);
-		$frame->setHeader('circleName', $circle->getName());
-		$frame->setHeader('broadcast', $broadcast);
-		$frame->generateUniqueId();
-		$frame->setCircleName($circle->getName());
-
-		$this->circlesRequest->saveFrame($frame);
-
-		$this->broadcastService->broadcastFrame($frame->getHeader('broadcast'), $frame);
-
-		if ($this->configService->isFederatedAllowed()) {
-			$this->federatedService->initiateRemoteShare($circle->getId(), $frame->getUniqueId());
+		$broadcaster = \OC::$server->query($broadcast);
+		if (!($broadcaster instanceof IBroadcaster)) {
+			throw new BroadcasterIsNotCompatible();
 		}
+
+		$broadcaster->init();
+		$users = $this->circlesRequest->getMembers($frame->getCircleId(), Member::LEVEL_MEMBER);
+		foreach ($users AS $user) {
+			$broadcaster->broadcast($user->getUserId(), $frame);
+		}
+
 	}
 
-
-	/**
-	 * @param int $circleId
-	 * @param $uniqueId
-	 *
-	 * @return null|SharingFrame
-	 */
-	public function getFrameFromUniqueId(int $circleId, $uniqueId) {
-		if ($uniqueId === null || $uniqueId === '') {
-			return null;
-		}
-
-		return $this->circlesRequest->getFrame($circleId, $uniqueId);
-	}
 
 
 }

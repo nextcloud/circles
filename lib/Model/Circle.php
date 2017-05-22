@@ -26,6 +26,8 @@
 
 namespace OCA\Circles\Model;
 
+use OCA\Circles\Exceptions\CircleTypeNotValid;
+
 class Circle extends BaseCircle implements \JsonSerializable {
 
 	const CIRCLES_PERSONAL = 1;
@@ -73,7 +75,8 @@ class Circle extends BaseCircle implements \JsonSerializable {
 			'creation'       => $this->getCreation(),
 			'typeString'     => $this->getTypeString(),
 			'typeLongString' => $this->getTypeLongString(),
-			'members'        => $this->getMembers()
+			'members'        => $this->getMembers(),
+			'links'          => $this->getRemote()
 		);
 	}
 
@@ -87,6 +90,7 @@ class Circle extends BaseCircle implements \JsonSerializable {
 	public function fromArray($arr) {
 		$this->setId($arr['id']);
 		$this->setName($arr['name']);
+		$this->setUniqueId($arr['unique_id']);
 		$this->setDescription($arr['description']);
 		$this->setType($arr['type']);
 		$this->setCreation($arr['creation']);
@@ -127,6 +131,18 @@ class Circle extends BaseCircle implements \JsonSerializable {
 			$user->setLevel($array['level']);
 			$user->setJoined($array['joined']);
 			$this->setUser($user);
+		}
+	}
+
+
+	/**
+	 * @throws CircleTypeNotValid
+	 */
+	public function cantBePersonal() {
+		if ($this->getType() === self::CIRCLES_PERSONAL) {
+			throw new CircleTypeNotValid(
+				$this->l10n->t("This option is not available to personal circles")
+			);
 		}
 	}
 

@@ -46,6 +46,13 @@
 			</field>
 
 			<field>
+				<name>unique_id</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+
+			<field>
 				<name>name</name>
 				<type>text</type>
 				<notnull>true</notnull>
@@ -148,9 +155,9 @@
 			</field>
 
 			<field>
-				<name>item_id</name>
-				<type>integer</type>
-				<length>4</length>
+				<name>unique_id</name>
+				<type>text</type>
+				<length>32</length>
 			</field>
 
 			<field>
@@ -183,24 +190,86 @@
 			</field>
 
 			<field>
-				<name>sharer</name>
+				<name>cloud_id</name>
 				<type>text</type>
-				<notnull>true</notnull>
-				<length>32</length>
+				<notnull>false</notnull>
+				<length>128</length>
 			</field>
 
 			<field>
-				<name>header</name>
+				<name>headers</name>
+				<type>text</type>
+				<notnull>false</notnull>
+				<length>4000</length>
+			</field>
+
+			<field>
+				<name>payload</name>
 				<type>text</type>
 				<notnull>true</notnull>
 				<length>4000</length>
 			</field>
 
 			<field>
-				<name>item</name>
+				<name>creation</name>
+				<type>timestamp</type>
+			</field>
+		</declaration>
+	</table>
+
+	<table>
+		<name>*dbprefix*circles_links</name>
+
+		<declaration>
+			<field>
+				<name>id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<autoincrement>true</autoincrement>
+				<unsigned>true</unsigned>
+				<primary>true</primary>
+				<length>3</length>
+			</field>
+
+			<field>
+				<name>status</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<length>1</length>
+			</field>
+
+			<field>
+				<name>circle_id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<length>4</length>
+			</field>
+
+			<field>
+				<name>unique_id</name>
+				<type>text</type>
+				<length>64</length>
+			</field>
+
+			<field>
+				<name>address</name>
 				<type>text</type>
 				<notnull>true</notnull>
-				<length>4000</length>
+				<length>128</length>
+			</field>
+
+			<field>
+				<name>token</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+
+			<field>
+				<name>key</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
 			</field>
 
 			<field>
