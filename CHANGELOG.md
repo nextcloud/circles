@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 
 
+## 0.10.0
+
+- Introduction to Linked Circles (federated-circles)
+- bug fixing few SQL request (pgsql)
+- improving some SQL request
+- Compat php5.6
+
 ## 0.9.6
 
 - Shares: Take Nodes into account.
