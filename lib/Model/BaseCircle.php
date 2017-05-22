@@ -92,8 +92,8 @@ class BaseCircle {
 	 *
 	 * @return $this
 	 */
-	public function setUniqueId(string $uniqueId) {
-		$this->uniqueId = $uniqueId;
+	public function setUniqueId($uniqueId) {
+		$this->uniqueId = (string) $uniqueId;
 
 		return $this;
 	}

@@ -21,6 +21,6 @@ interface IBroadcaster {
 	 *
 	 * @return
 	 */
-	public function broadcast(string $userId, SharingFrame $frame);
+	public function broadcast($userId, SharingFrame $frame);
 
 }

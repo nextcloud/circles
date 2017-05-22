@@ -195,11 +195,11 @@ class CirclesMapper extends Mapper {
 	 * @param string $field
 	 * @param int $circleId
 	 */
-	private function buildWithCircleId(IQueryBuilder & $qb, string $field, int $circleId) {
+	private function buildWithCircleId(IQueryBuilder & $qb, $field, $circleId) {
 		if ($circleId > 0) {
 			$qb->andWhere(
 				$qb->expr()
-				   ->eq($field, $qb->createNamedParameter($circleId))
+				   ->eq((string)$field, $qb->createNamedParameter((int)$circleId))
 			);
 		}
 	}
@@ -210,11 +210,11 @@ class CirclesMapper extends Mapper {
 	 * @param string $field
 	 * @param int $level
 	 */
-	private function buildWithMemberLevel(IQueryBuilder & $qb, string $field, int $level) {
+	private function buildWithMemberLevel(IQueryBuilder & $qb, $field, $level) {
 		if ($level > 0) {
 			$qb->andWhere(
 				$qb->expr()
-				   ->gte($field, $qb->createNamedParameter($level))
+				   ->gte((string)$field, $qb->createNamedParameter((int)$level))
 			);
 		}
 	}
@@ -227,7 +227,7 @@ class CirclesMapper extends Mapper {
 	 *
 	 * @return \OCP\DB\QueryBuilder\ICompositeExpression
 	 */
-	private function generateTypeEntryForCirclePersonal(IQueryBuilder $qb, int $type, string $userId
+	private function generateTypeEntryForCirclePersonal(IQueryBuilder $qb, $type, $userId
 	) {
 		if (Circle::CIRCLES_PERSONAL & (int)$type) {
 			$expr = $qb->expr();
@@ -236,7 +236,7 @@ class CirclesMapper extends Mapper {
 			return $qb->expr()
 					  ->andX(
 						  $expr->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_PERSONAL)),
-						  $expr->eq('o.user_id', $qb->createNamedParameter($userId))
+						  $expr->eq('o.user_id', $qb->createNamedParameter((string)$userId))
 
 					  );
 		}
@@ -252,9 +252,7 @@ class CirclesMapper extends Mapper {
 	 *
 	 * @return string
 	 */
-	private function generateTypeEntryForCircleHidden(
-		IQueryBuilder $qb, int $type, int $circleId, string $name
-	) {
+	private function generateTypeEntryForCircleHidden(IQueryBuilder $qb, $type, $circleId, $name) {
 		if (!(Circle::CIRCLES_HIDDEN & (int)$type)) {
 			return null;
 		}
@@ -267,8 +265,8 @@ class CirclesMapper extends Mapper {
 				$expr->gte(
 					'u.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)
 				),
-				$expr->eq('c.id', $qb->createNamedParameter($circleId)),
-				$expr->eq('c.name', $qb->createNamedParameter($name))
+				$expr->eq('c.id', $qb->createNamedParameter((string)$circleId)),
+				$expr->eq('c.name', $qb->createNamedParameter((string)$name))
 			)
 		);
 
@@ -282,7 +280,7 @@ class CirclesMapper extends Mapper {
 	 *
 	 * @return string
 	 */
-	private function generateTypeEntryForCirclePrivate(IQueryBuilder $qb, int $type) {
+	private function generateTypeEntryForCirclePrivate(IQueryBuilder $qb, $type) {
 		if (Circle::CIRCLES_PRIVATE & (int)$type) {
 			return $qb->expr()
 					  ->eq(
@@ -301,7 +299,7 @@ class CirclesMapper extends Mapper {
 	 *
 	 * @return string
 	 */
-	private function generateTypeEntryForCirclePublic(IQueryBuilder $qb, int $type) {
+	private function generateTypeEntryForCirclePublic(IQueryBuilder $qb, $type) {
 		if (Circle::CIRCLES_PUBLIC & (int)$type) {
 			return $qb->expr()
 					  ->eq(

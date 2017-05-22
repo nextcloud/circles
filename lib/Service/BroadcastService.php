@@ -58,12 +58,12 @@ class BroadcastService {
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		string $userId,
+		$userId,
 		ConfigService $configService,
 		CirclesRequest $circlesRequest,
 		MiscService $miscService
 	) {
-		$this->userId = $userId;
+		$this->userId = (string) $userId;
 		$this->configService = $configService;
 		$this->circlesRequest = $circlesRequest;
 		$this->miscService = $miscService;
@@ -80,13 +80,13 @@ class BroadcastService {
 	 *
 	 * @throws BroadcasterIsNotCompatible
 	 */
-	public function broadcastFrame(string $broadcast, SharingFrame $frame) {
+	public function broadcastFrame($broadcast, SharingFrame $frame) {
 
 		if ($broadcast === null) {
 			return;
 		}
 
-		$broadcaster = \OC::$server->query($broadcast);
+		$broadcaster = \OC::$server->query((string) $broadcast);
 		if (!($broadcaster instanceof IBroadcaster)) {
 			throw new BroadcasterIsNotCompatible();
 		}

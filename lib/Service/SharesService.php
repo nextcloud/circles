@@ -67,14 +67,14 @@ class SharesService {
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		string $userId,
+		$userId,
 		ConfigService $configService,
 		CirclesRequest $circlesRequest,
 		BroadcastService $broadcastService,
 		FederatedService $federatedService,
 		MiscService $miscService
 	) {
-		$this->userId = $userId;
+		$this->userId = (string) $userId;
 		$this->configService = $configService;
 		$this->circlesRequest = $circlesRequest;
 		$this->broadcastService = $broadcastService;
@@ -95,7 +95,7 @@ class SharesService {
 	 *
 	 * @throws MemberDoesNotExistException
 	 */
-	public function createFrame(SharingFrame $frame, string $broadcast = null) {
+	public function createFrame(SharingFrame $frame, $broadcast = null) {
 
 		$circle = $this->circlesRequest->getDetails($frame->getCircleId(), $this->userId);
 		if ($circle->getUser()
@@ -107,7 +107,7 @@ class SharesService {
 		$frame->setAuthor($this->userId);
 		$frame->setHeader('author', $this->userId);
 		$frame->setHeader('circleName', $circle->getName());
-		$frame->setHeader('broadcast', $broadcast);
+		$frame->setHeader('broadcast', (string) $broadcast);
 		$frame->generateUniqueId();
 		$frame->setCircleName($circle->getName());
 
@@ -127,12 +127,12 @@ class SharesService {
 	 *
 	 * @return null|SharingFrame
 	 */
-	public function getFrameFromUniqueId(int $circleId, $uniqueId) {
+	public function getFrameFromUniqueId($circleId, $uniqueId) {
 		if ($uniqueId === null || $uniqueId === '') {
 			return null;
 		}
 
-		return $this->circlesRequest->getFrame($circleId, $uniqueId);
+		return $this->circlesRequest->getFrame((int) $circleId, (string) $uniqueId);
 	}
 
 

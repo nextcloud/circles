@@ -190,26 +190,10 @@ class FederatedController extends BaseController {
 			return $this->federatedFail('shares_is_already_known');
 		}
 
+		$this->asyncAndLeaveClientOutOfThis('done');
 
-		//	$this->sharesService->proceedFrame($token, $uniqueId$frame);
-		//$frame->setCircleId();
-		// TODO: SAVE THE FRAME, BROADCAST, DELIVER
-//		$this->miscService->log(
-//			"receiveFederatedDelivery start " . $token . '   ' . var_export($item, true) . '   '
-//			. $uniqueId
-//		);
-		//	$this->miscService->log(
-		//		'    ' . $item . '   '
-		//		. $frame->getHeader('address')
-		//	);
-
-		// We don't want to keep the connection with the client up and running
-		// as he might have others things to do
-		//	$this->asyncAndLeaveClientOutOfThis('done');
-
-		//	sleep(15);
-		//	$this->miscService->log("receiveFederatedDelivery end");
-		//	exit();
+		$this->federatedService->sendRemoteShare($frame);
+		exit();
 	}
 
 	/**

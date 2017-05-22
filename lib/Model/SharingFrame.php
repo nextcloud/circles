@@ -58,9 +58,9 @@ class SharingFrame implements \JsonSerializable {
 	/** @var string */
 	private $uniqueId;
 
-	public function __construct(string $source, string $type) {
-		$this->source = $source;
-		$this->type = $type;
+	public function __construct($source, $type) {
+		$this->source = (string)$source;
+		$this->type = (string)$type;
 	}
 
 
@@ -81,8 +81,8 @@ class SharingFrame implements \JsonSerializable {
 	/**
 	 * @param int $circleId
 	 */
-	public function setCircleId(int $circleId) {
-		$this->circleId = $circleId;
+	public function setCircleId($circleId) {
+		$this->circleId = (int)$circleId;
 	}
 
 	/**
@@ -111,8 +111,8 @@ class SharingFrame implements \JsonSerializable {
 	/**
 	 * @param string $author
 	 */
-	public function setAuthor(string $author) {
-		$this->author = $author;
+	public function setAuthor($author) {
+		$this->author = (string)$author;
 	}
 
 	/**
@@ -143,8 +143,8 @@ class SharingFrame implements \JsonSerializable {
 	 *
 	 * @return SharingFrame
 	 */
-	public function setUniqueId(string $uniqueId) {
-		$this->uniqueId = $uniqueId;
+	public function setUniqueId($uniqueId) {
+		$this->uniqueId = (string)$uniqueId;
 
 		return $this;
 	}
@@ -178,7 +178,7 @@ class SharingFrame implements \JsonSerializable {
 	 *
 	 * @return array|string
 	 */
-	public function getPayload(bool $asJson = false) {
+	public function getPayload($asJson = false) {
 		if ($asJson) {
 			return json_encode($this->payload);
 		}
@@ -199,7 +199,7 @@ class SharingFrame implements \JsonSerializable {
 	 *
 	 * @return array|string
 	 */
-	public function getHeaders(bool $asJson = false) {
+	public function getHeaders($asJson = false) {
 		if ($asJson) {
 			return json_encode($this->headers);
 		}
@@ -213,11 +213,12 @@ class SharingFrame implements \JsonSerializable {
 	 *
 	 * @return string
 	 */
-	public function getHeader(string $k) {
+	public function getHeader($k) {
 		if ($this->headers === null) {
 			return null;
 		}
 
+		$k = (string)$k;
 		if (!key_exists($k, $this->headers)) {
 			return null;
 		}
@@ -229,8 +230,8 @@ class SharingFrame implements \JsonSerializable {
 	 * @param string $k
 	 * @param string $v
 	 */
-	public function setHeader(string $k, $v) {
-		$this->headers[$k] = $v;
+	public function setHeader($k, $v) {
+		$this->headers[(string)$k] = $v;
 	}
 
 

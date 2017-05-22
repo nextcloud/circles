@@ -242,12 +242,12 @@ class CirclesRequestBuilder {
 	 *
 	 * @return IQueryBuilder
 	 */
-	protected function getSharesUpdateSql(string $uniqueId) {
+	protected function getSharesUpdateSql($uniqueId) {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$qb->update('circles_shares')
 		   ->where(
 			   $qb->expr()
-				  ->eq('unique_id', $qb->createNamedParameter($uniqueId))
+				  ->eq('unique_id', $qb->createNamedParameter((string) $uniqueId))
 		   );
 
 		return $qb;

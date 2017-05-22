@@ -72,16 +72,16 @@ class Circles {
 
 
 	public static function shareToCircle(
-		int $circleId, string $source, string $type, array $payload, string $broadcaster
+		$circleId, $source, $type, array $payload, $broadcaster
 	) {
 		$c = self::getContainer();
 
-		$frame = new SharingFrame($source, $type);
-		$frame->setCircleId($circleId);
+		$frame = new SharingFrame((string)$source, (string)$type);
+		$frame->setCircleId((int)$circleId);
 		$frame->setPayload($payload);
 
 		return $c->query('SharesService')
-				 ->createFrame($frame, $broadcaster);
+				 ->createFrame($frame, (string)$broadcaster);
 	}
 
 

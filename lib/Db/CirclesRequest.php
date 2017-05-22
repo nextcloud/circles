@@ -125,9 +125,9 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 *
 	 * @return Circle
 	 */
-	public function getCircle(string $uniqueId) {
+	public function getCircle($uniqueId) {
 		$qb = $this->getCirclesSelectSql();
-		$this->limitToUniqueId($qb, $uniqueId);
+		$this->limitToUniqueId($qb, (string) $uniqueId);
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
@@ -143,10 +143,10 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 *
 	 * @return SharingFrame
 	 */
-	public function getFrame(int $circleId, string $uniqueId) {
+	public function getFrame($circleId, $uniqueId) {
 		$qb = $this->getSharesSelectSql();
-		$this->limitToUniqueId($qb, $uniqueId);
-		$this->limitToCircleId($qb, $circleId);
+		$this->limitToUniqueId($qb, (string) $uniqueId);
+		$this->limitToCircleId($qb, (int) $circleId);
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
@@ -163,10 +163,10 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 *
 	 * @return FederatedLink
 	 */
-	public function getLinkFromToken(string $token, string $uniqueId) {
+	public function getLinkFromToken($token, $uniqueId) {
 		$qb = $this->getLinksSelectSql();
-		$this->limitToUniqueId($qb, $uniqueId);
-		$this->limitToToken($qb, $token);
+		$this->limitToUniqueId($qb, (string) $uniqueId);
+		$this->limitToToken($qb, (string) $token);
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();

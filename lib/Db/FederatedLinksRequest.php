@@ -76,13 +76,13 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 	 *
 	 * @return FederatedLink[]
 	 */
-	public function getLinked(int $circleId) {
+	public function getLinked($circleId) {
 		$qb = $this->getLinksSelectSql();
 		$expr = $qb->expr();
 
 		$qb->where(
 			$expr->andX(
-				$expr->eq('f.circle_id', $qb->createNamedParameter($circleId)),
+				$expr->eq('f.circle_id', $qb->createNamedParameter((int) $circleId)),
 				$expr->eq('f.status', $qb->createNamedParameter(9))
 			)
 		);
@@ -105,14 +105,14 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 	 *
 	 * @return FederatedLink
 	 */
-	public function getFromUniqueId(int $circleId, string $uniqueId) {
+	public function getFromUniqueId($circleId, $uniqueId) {
 		$qb = $this->getLinksSelectSql();
 		$expr = $qb->expr();
 
 		$qb->where(
 			$expr->andX(
-				$expr->eq('f.circle_id', $qb->createNamedParameter($circleId)),
-				$expr->eq('f.unique_id', $qb->createNamedParameter($uniqueId))
+				$expr->eq('f.circle_id', $qb->createNamedParameter((int) $circleId)),
+				$expr->eq('f.unique_id', $qb->createNamedParameter((string) $uniqueId))
 			)
 		);
 

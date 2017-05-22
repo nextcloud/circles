@@ -100,7 +100,7 @@ class FederatedService {
 		CirclesService $circlesService,
 		BroadcastService $broadcastService,
 		FederatedLinksRequest $federatedLinksRequest,
-		string $serverHost,
+		$serverHost,
 		ClientService $clientService,
 		MiscService $miscService
 	) {
@@ -111,7 +111,7 @@ class FederatedService {
 		$this->circlesService = $circlesService;
 		$this->broadcastService = $broadcastService;
 		$this->federatedLinksRequest = $federatedLinksRequest;
-		$this->serverHost = $serverHost;
+		$this->serverHost = (string)$serverHost;
 		$this->clientService = $clientService;
 		$this->miscService = $miscService;
 	}
@@ -338,9 +338,9 @@ class FederatedService {
 	 * @return bool
 	 * @throws Exception
 	 */
-	public function receiveFrame(string $token, string $uniqueId, SharingFrame &$frame) {
+	public function receiveFrame($token, $uniqueId, SharingFrame &$frame) {
 
-		$link = $this->circlesRequest->getLinkFromToken($token, $uniqueId);
+		$link = $this->circlesRequest->getLinkFromToken((string)$token, (string)$uniqueId);
 		if ($link === null) {
 			return false;
 			// TODO: throw Exception
@@ -363,7 +363,6 @@ class FederatedService {
 
 		$this->circlesRequest->saveFrame($frame);
 		$this->broadcastService->broadcastFrame($frame->getHeader('broadcast'), $frame);
-		$this->sendRemoteShare($frame);
 
 		return true;
 	}
@@ -396,10 +395,10 @@ class FederatedService {
 	 * @return bool
 	 * @throws Exception
 	 */
-	public function initiateRemoteShare(int $circleId, string $uniqueId) {
+	public function initiateRemoteShare($circleId, $uniqueId) {
 		$args = [
-			'circleId' => $circleId,
-			'uniqueId' => $uniqueId
+			'circleId' => (int)$circleId,
+			'uniqueId' => (string)$uniqueId
 		];
 
 		$client = $this->clientService->newClient();
