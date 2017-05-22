@@ -223,8 +223,8 @@ class FederatedService {
 	 * @return string
 	 */
 	private function generatePayloadDeliveryURL($remote) {
-		if (strpos($remote, 'http') !== 0) {
-			$remote = 'http://' . $remote;
+		if (strpos($remote, 'https') !== 0) {
+			$remote = 'https://' . $remote;
 		}
 
 		return rtrim($remote, '/') . '/index.php/apps/circles/circles/payload/';

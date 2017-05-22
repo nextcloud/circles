@@ -18,7 +18,7 @@ This is the right circle if you are looking for privacy when sharing your files 
 - A public circle is an open group visible to anyone willing to join.
 Your circle will be visible to everyone and everyone will be able to join the circle.]]>
 	</description>
-	<version>0.9.6</version>
+	<version>0.10.0</version>
 	<licence>AGPL</licence>
 	<author>Maxence Lange</author>
 	<documentation>
@@ -32,13 +32,14 @@ Your circle will be visible to everyone and everyone will be able to join the ci
 	<screenshot>https://raw.githubusercontent.com/nextcloud/circles/master/screenshots/1.png
 	</screenshot>
 	<dependencies>
-		<nextcloud min-version="12" max-version="12"/>
+		<nextcloud min-version="12" max-version="13"/>
 	</dependencies>
 
 	<repair-steps>
 		<post-migration>
-		  <step>OCA\Circles\Migration\UpdateShareTimeToTimestamp</step>
+			<step>OCA\Circles\Migration\UpdateShareTimeToTimestamp</step>
 			<step>OCA\Circles\Migration\ImportOwncloudCustomGroups</step>
+			<step>OCA\Circles\Migration\GenerateUniqueIdOnCreatedCircle</step>
 		</post-migration>
 	</repair-steps>
 </info>

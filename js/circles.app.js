@@ -43,7 +43,7 @@ var curr = {
 	searchCircle: '',
 	searchFilter: 0,
 	searchUser: '',
-	allowed_federated: 1
+	allowed_federated: 0
 };
 
 
