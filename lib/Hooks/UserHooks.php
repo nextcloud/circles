@@ -16,12 +16,6 @@ class UserHooks {
 	}
 
 
-	public static function onUserCreated($params) {
-		self::getController()
-			->onUserCreated($params);
-	}
-
-
 	public static function onUserDeleted($params) {
 		self::getController()
 			->onUserDeleted($params);

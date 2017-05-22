@@ -147,7 +147,8 @@ class Application extends App {
 			'SharesService', function(IAppContainer $c) {
 			return new SharesService(
 				$c->query('UserId'), $c->query('ConfigService'), $c->query('CirclesRequest'),
-				$c->query('BroadcastService'), $c->query('FederatedService'), $c->query('MiscService')
+				$c->query('BroadcastService'), $c->query('FederatedService'),
+				$c->query('MiscService')
 			);
 		}
 		);
@@ -156,9 +157,8 @@ class Application extends App {
 			'FederatedService', function(IAppContainer $c) {
 			return new FederatedService(
 				$c->query('UserId'), $c->query('L10N'), $c->query('CirclesRequest'),
-				$c->query('ConfigService'), $c->query('DatabaseService'),
-				$c->query('CirclesService'), $c->query('BroadcastService'),
-				$c->query('FederatedLinksRequest'),
+				$c->query('ConfigService'), $c->query('CirclesService'),
+				$c->query('BroadcastService'), $c->query('FederatedLinksRequest'),
 				$c->query('ServerHost'), $c->query('HTTPClientService'), $c->query('MiscService')
 			);
 		}
@@ -346,9 +346,6 @@ class Application extends App {
 
 
 	public function registerHooks() {
-		Util::connectHook(
-			'OC_User', 'post_createUser', '\OCA\Circles\Hooks\UserHooks', 'onUserCreated'
-		);
 		Util::connectHook(
 			'OC_User', 'post_deleteUser', '\OCA\Circles\Hooks\UserHooks', 'onUserDeleted'
 		);

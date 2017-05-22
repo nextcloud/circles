@@ -295,7 +295,4 @@ class FederatedLink implements \JsonSerializable {
 		);
 	}
 
-	public static function fromJSON($json) {
-	}
-
 }

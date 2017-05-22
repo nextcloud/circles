@@ -20,13 +20,6 @@ class UserEvents {
 		$this->miscService = $miscService;
 	}
 
-	/**
-	 * @param array $params
-	 */
-	public function onUserCreated(array $params) {
-		//$userId = $params['uid'];
-	}
-
 
 	/**
 	 * @param array $params

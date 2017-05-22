@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - improving some SQL request
 - Compat php5.6
 
+
 ## 0.9.6
 
 - Shares: Take Nodes into account.

@@ -60,7 +60,7 @@ class FederatedService {
 	/** @var CirclesService */
 	private $circlesService;
 
-	/** @var SharesService */
+	/** @var BroadcastService */
 	private $broadcastService;
 
 	/** @var FederatedLinksRequest */
@@ -83,7 +83,6 @@ class FederatedService {
 	 * @param IL10N $l10n
 	 * @param CirclesRequest $circlesRequest
 	 * @param ConfigService $configService
-	 * @param DatabaseService $databaseService
 	 * @param CirclesService $circlesService
 	 * @param BroadcastService $broadcastService
 	 * @param FederatedLinksRequest $federatedLinksRequest
@@ -96,7 +95,6 @@ class FederatedService {
 		IL10N $l10n,
 		CirclesRequest $circlesRequest,
 		ConfigService $configService,
-		DatabaseService $databaseService,
 		CirclesService $circlesService,
 		BroadcastService $broadcastService,
 		FederatedLinksRequest $federatedLinksRequest,
@@ -446,7 +444,7 @@ class FederatedService {
 
 			$client = $this->clientService->newClient();
 			try {
-				$request = $client->put(
+				$client->put(
 					$this->generatePayloadDeliveryURL($link->getAddress()), [
 																			  'body'            => $args,
 																			  'timeout'         => 10,

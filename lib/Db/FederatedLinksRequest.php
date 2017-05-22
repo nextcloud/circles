@@ -33,7 +33,18 @@ use OCA\Circles\Model\FederatedLink;
 class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 
 
+	/**
+	 * @param FederatedLink $link
+	 *
+	 * @return bool
+	 * @throws \Exception
+	 */
 	public function create(FederatedLink $link) {
+
+		if ($link === null) {
+			return false;
+		}
+
 		try {
 			$qb = $this->getLinksInsertSql();
 			$qb->setValue('status', $qb->createNamedParameter($link->getStatus()))
@@ -82,7 +93,7 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 
 		$qb->where(
 			$expr->andX(
-				$expr->eq('f.circle_id', $qb->createNamedParameter((int) $circleId)),
+				$expr->eq('f.circle_id', $qb->createNamedParameter((int)$circleId)),
 				$expr->eq('f.status', $qb->createNamedParameter(9))
 			)
 		);
@@ -111,8 +122,8 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 
 		$qb->where(
 			$expr->andX(
-				$expr->eq('f.circle_id', $qb->createNamedParameter((int) $circleId)),
-				$expr->eq('f.unique_id', $qb->createNamedParameter((string) $uniqueId))
+				$expr->eq('f.circle_id', $qb->createNamedParameter((int)$circleId)),
+				$expr->eq('f.unique_id', $qb->createNamedParameter((string)$uniqueId))
 			)
 		);
 
