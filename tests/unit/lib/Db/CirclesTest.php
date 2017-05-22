@@ -40,8 +40,12 @@ use OCA\Circles\Model\Member;
  */
 class CirclesTest extends \PHPUnit_Framework_TestCase {
 
+	protected $l10n;
 
 	public function testCircles() {
+
+		$this->l10n = $this->getMockBuilder('\OCP\IL10N')
+						   ->getMock();
 
 		$date = date("Y-m-d H:i:s");
 
@@ -59,6 +63,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 				'name'        => 'test',
 				'description' => 'description',
 				'type'        => Circle::CIRCLES_ALL,
+				'unique_id'   => bin2hex(openssl_random_pseudo_bytes(16)),
 				'creation'    => $date,
 				'count'       => sizeof($members),
 			)

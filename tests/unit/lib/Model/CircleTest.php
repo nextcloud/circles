@@ -51,7 +51,12 @@ class CircleTest extends \PHPUnit_Framework_TestCase {
 		);
 	}
 
+	protected $l10n;
+
 	public function testModel() {
+
+		$this->l10n = $this->getMockBuilder('\OCP\IL10N')
+						   ->getMock();
 
 		$date = date("Y-m-d H:i:s");
 		$joined = date("H:i:s Y-m-d");
@@ -77,6 +82,7 @@ class CircleTest extends \PHPUnit_Framework_TestCase {
 				'creation'    => $date,
 				'count'       => sizeof($members),
 				'owner'       => $owner->getUserId(),
+				'unique_id'   => bin2hex(openssl_random_pseudo_bytes(16)),
 				'status'      => $user->getStatus(),
 				'level'       => $user->getLevel(),
 				'joined'      => $user->getJoined()
@@ -112,11 +118,11 @@ class CircleTest extends \PHPUnit_Framework_TestCase {
 		//	$this->assertSame(2, $model->getCount());
 
 
-		$this->assertSame('Personal Circle', Circle::typeLongString(Circle::CIRCLES_PERSONAL));
-		$this->assertSame('Hidden Circle', Circle::typeLongString(Circle::CIRCLES_HIDDEN));
-		$this->assertSame('Private Circle', Circle::typeLongString(Circle::CIRCLES_PRIVATE));
-		$this->assertSame('Public Circle', Circle::typeLongString(Circle::CIRCLES_PUBLIC));
-		$this->assertSame('All Circles', Circle::typeLongString(Circle::CIRCLES_ALL));
+		$this->assertSame('Personal circle', Circle::typeLongString(Circle::CIRCLES_PERSONAL));
+		$this->assertSame('Hidden circle', Circle::typeLongString(Circle::CIRCLES_HIDDEN));
+		$this->assertSame('Private circle', Circle::typeLongString(Circle::CIRCLES_PRIVATE));
+		$this->assertSame('Public circle', Circle::typeLongString(Circle::CIRCLES_PUBLIC));
+		$this->assertSame('All circles', Circle::typeLongString(Circle::CIRCLES_ALL));
 		$this->assertSame('none', Circle::typeLongString(-1));
 
 

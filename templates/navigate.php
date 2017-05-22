@@ -106,6 +106,7 @@ style('circles', 'navigation');
 						"This is the right option if you want to do recurrent sharing with the same group."
 					)
 				); ?>
+				); ?>
 			</div>
 			<div id="circles_new_type_hidden"><b>
 					<?php p(
@@ -217,6 +218,8 @@ style('circles', 'navigation');
 				   value="<?php p($l->t('Leave this circle')); ?>"/>
 			<input id="addmember" type="text"
 				   placeholder="<?php p($l->t('Add a member')); ?>"/>
+			<input id="linkcircle" type="text"
+				   placeholder="<?php p($l->t('Link to a circle')); ?>"/>
 			<div id="members_search_result">
 
 			</div>

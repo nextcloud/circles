@@ -32,13 +32,14 @@ use OCP\Util;
 
 class ConfigService {
 
-
 	const CIRCLES_ALLOW_CIRCLES = 'allow_circles';
 	const CIRCLES_SWAP_TO_TEAMS = 'swap_to_teams';
+	const CIRCLES_ALLOW_FEDERATED = 'allow_federated';
 
 	private $defaults = [
-		self::CIRCLES_ALLOW_CIRCLES => Circle::CIRCLES_ALL,
-		self::CIRCLES_SWAP_TO_TEAMS => '0'
+		self::CIRCLES_ALLOW_CIRCLES   => Circle::CIRCLES_ALL,
+		self::CIRCLES_SWAP_TO_TEAMS   => '0',
+		self::CIRCLES_ALLOW_FEDERATED => '0'
 	];
 
 	/** @var string */
@@ -55,6 +56,9 @@ class ConfigService {
 
 	/** @var int */
 	private $allowedCircle = -1;
+
+	/** @var int */
+	private $allowedFederated = -1;
 
 	public function __construct($appName, IConfig $config, $userId, MiscService $miscService) {
 		$this->appName = $appName;
@@ -77,6 +81,15 @@ class ConfigService {
 		}
 
 		return ((int)$type & (int)$this->allowedCircle);
+	}
+
+
+	public function isFederatedAllowed() {
+		if ($this->allowedFederated === -1) {
+			$this->allowedFederated = (int)$this->getAppValue(self::CIRCLES_ALLOW_FEDERATED);
+		}
+
+		return ($this->allowedFederated === 1);
 	}
 
 	/**

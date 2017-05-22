@@ -56,7 +56,12 @@ class MemberTest extends \PHPUnit_Framework_TestCase {
 		$this->assertSame('Kicked', Member::STATUS_KICKED);
 	}
 
+	protected $l10n;
+
 	public function testModel() {
+
+		$this->l10n = $this->getMockBuilder('\OCP\IL10N')
+						   ->getMock();
 
 		$date = date("Y-m-d H:i:s");
 

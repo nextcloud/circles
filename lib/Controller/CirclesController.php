@@ -27,7 +27,6 @@
 namespace OCA\Circles\Controller;
 
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
-use OCA\Circles\Model\Member;
 use OCP\AppFramework\Http\DataResponse;
 
 class CirclesController extends BaseController {
@@ -43,7 +42,9 @@ class CirclesController extends BaseController {
 	 */
 	public function create($type, $name) {
 
-		if (substr($name, 0, 1) === '_') {
+		if (strlen($name) < 3) {
+			$error = $this->l10n->t("The name of your circle must contain at least 3 characters");
+		} elseif (substr($name, 0, 1) === '_') {
 			$error = $this->l10n->t("The name of your circle cannot start with this character");
 		} else {
 
@@ -66,6 +67,7 @@ class CirclesController extends BaseController {
 	 *
 	 * @param $type
 	 * @param string $name
+	 * @param int $level
 	 *
 	 * @return DataResponse
 	 */
@@ -168,9 +170,34 @@ class CirclesController extends BaseController {
 		} catch (\Exception $e) {
 			return $this->fail(['circle_id' => $id, 'error' => $e->getMessage()]);
 		}
-
 	}
 
+
+	/**
+	 * link()
+	 *
+	 * Called from the UI to create a initiate the process of linking 2 [remote] circles.
+	 * $remote format: <circle_name>@<remote_host>
+	 *
+	 * @NoAdminRequired
+	 * @NoSubAdminRequired
+	 *
+	 * @param int $id
+	 * @param string $remote
+	 *
+	 * @return DataResponse
+	 */
+	public function link($id, $remote) {
+		try {
+			$link = $this->federatedService->linkCircle($id, $remote);
+
+			return $this->success(['circle_id' => $id, 'remote' => $remote, 'link' => $link]);
+		} catch (\Exception $e) {
+			return $this->fail(
+				['circle_id' => $id, 'remote' => $remote, 'error' => $e->getMessage()]
+			);
+		}
+	}
 
 }
 

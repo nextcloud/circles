@@ -26,9 +26,12 @@
 
 namespace OCA\Circles\Model;
 
-class Share implements \JsonSerializable {
+class SharingFrame implements \JsonSerializable {
 
+	/** @var string */
 	private $source;
+
+	/** @var string */
 	private $type;
 
 	/** @var int */
@@ -41,17 +44,23 @@ class Share implements \JsonSerializable {
 	private $author;
 
 	/** @var string */
-	private $sharer;
+	private $cloudId;
 
 	/** @var array */
-	private $item;
+	private $payload;
+
+	/** @var array */
+	private $headers;
 
 	/** @var int */
 	private $creation;
 
-	public function __construct(string $source, string $type) {
-		$this->source = $source;
-		$this->type = $type;
+	/** @var string */
+	private $uniqueId;
+
+	public function __construct($source, $type) {
+		$this->source = (string)$source;
+		$this->type = (string)$type;
 	}
 
 
@@ -72,8 +81,8 @@ class Share implements \JsonSerializable {
 	/**
 	 * @param int $circleId
 	 */
-	public function setCircleId(int $circleId) {
-		$this->circleId = $circleId;
+	public function setCircleId($circleId) {
+		$this->circleId = (int)$circleId;
 	}
 
 	/**
@@ -87,7 +96,7 @@ class Share implements \JsonSerializable {
 	/**
 	 * @param string $circleName
 	 */
-	public function setCircleName(string $circleName) {
+	public function setCircleName($circleName) {
 		$this->circleName = $circleName;
 	}
 
@@ -102,12 +111,8 @@ class Share implements \JsonSerializable {
 	/**
 	 * @param string $author
 	 */
-	public function setAuthor(string $author) {
-		$this->author = $author;
-
-		if ($this->getSharer() === null) {
-			$this->setSharer($author);
-		}
+	public function setAuthor($author) {
+		$this->author = (string)$author;
 	}
 
 	/**
@@ -119,25 +124,53 @@ class Share implements \JsonSerializable {
 
 
 	/**
-	 * @param string $sharer
+	 * @param string $cloudId
 	 */
-	public function setSharer(string $sharer) {
-		$this->sharer = $sharer;
+	public function setCloudId($cloudId) {
+		$this->cloudId = $cloudId;
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getSharer() {
-		return $this->sharer;
+	public function getCloudId() {
+		return $this->cloudId;
 	}
 
 
 	/**
-	 * @param array $item
+	 * @param string $uniqueId
+	 *
+	 * @return SharingFrame
 	 */
-	public function setItem(array $item) {
-		$this->item = $item;
+	public function setUniqueId($uniqueId) {
+		$this->uniqueId = (string)$uniqueId;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getUniqueId() {
+		return $this->uniqueId;
+	}
+
+	/**
+	 * @return SharingFrame
+	 */
+	public function generateUniqueId() {
+		$uniqueId = bin2hex(openssl_random_pseudo_bytes(16));
+		$this->setUniqueId($uniqueId);
+
+		return $this;
+	}
+
+	/**
+	 * @param array $payload
+	 */
+	public function setPayload($payload) {
+		$this->payload = $payload;
 	}
 
 	/**
@@ -145,12 +178,60 @@ class Share implements \JsonSerializable {
 	 *
 	 * @return array|string
 	 */
-	public function getItem(bool $asJson = false) {
+	public function getPayload($asJson = false) {
 		if ($asJson) {
-			return json_encode($this->item);
+			return json_encode($this->payload);
 		}
 
-		return $this->item;
+		return $this->payload;
+	}
+
+
+	/**
+	 * @param array $headers
+	 */
+	public function setHeaders($headers) {
+		$this->headers = $headers;
+	}
+
+	/**
+	 * @param bool $asJson
+	 *
+	 * @return array|string
+	 */
+	public function getHeaders($asJson = false) {
+		if ($asJson) {
+			return json_encode($this->headers);
+		}
+
+		return $this->headers;
+	}
+
+
+	/**
+	 * @param $k
+	 *
+	 * @return string
+	 */
+	public function getHeader($k) {
+		if ($this->headers === null) {
+			return null;
+		}
+
+		$k = (string)$k;
+		if (!key_exists($k, $this->headers)) {
+			return null;
+		}
+
+		return $this->headers[$k];
+	}
+
+	/**
+	 * @param string $k
+	 * @param string $v
+	 */
+	public function setHeader($k, $v) {
+		$this->headers[(string)$k] = $v;
 	}
 
 
@@ -177,11 +258,13 @@ class Share implements \JsonSerializable {
 		return array(
 			'circle_id'   => $this->getCircleId(),
 			'circle_name' => $this->getCircleName(),
+			'unique_id'   => $this->getUniqueId(),
 			'source'      => $this->getSource(),
 			'type'        => $this->getType(),
 			'author'      => $this->getAuthor(),
-			'sharer'      => $this->getSharer(),
-			'item'        => $this->getItem(),
+			'cloud_id'    => $this->getCloudId(),
+			'headers'     => $this->getHeaders(),
+			'payload'     => $this->getPayload(),
 			'creation'    => $this->getCreation(),
 		);
 	}
@@ -189,16 +272,27 @@ class Share implements \JsonSerializable {
 	public static function fromJSON($json) {
 
 		$arr = json_decode($json, true);
+		if (!key_exists('source', $arr)) {
+			return null;
+		}
 
-		$share = new Share($arr['source'], $arr['type']);
+		$share = new SharingFrame($arr['source'], $arr['type']);
 		$share->setCircleId($arr['circle_id']);
 		if (key_exists('circle_name', $arr)) {
 			$share->setCircleName($arr['circle_name']);
 		}
 
+		if (key_exists('headers', $arr)) {
+			$share->setHeaders($arr['headers']);
+		}
+
+		if (key_exists('cloud_id', $arr)) {
+			$share->setCloudID($arr['cloud_id']);
+		}
+
+		$share->setUniqueId($arr['unique_id']);
 		$share->setAuthor($arr['author']);
-		$share->setSharer($arr['sharer']);
-		$share->setItem($arr['item']);
+		$share->setPayload($arr['payload']);
 		$share->setCreation($arr['creation']);
 
 		return $share;

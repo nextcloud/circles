@@ -30,6 +30,7 @@ use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberCantJoinCircle;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\MemberIsBlockedException;
+use OCA\Circles\Exceptions\MemberIsNotAdminException;
 use OCA\Circles\Exceptions\MemberIsNotModeratorException;
 use OCA\Circles\Exceptions\MemberIsNotOwnerException;
 use OCA\Circles\Exceptions\MemberIsOwnerException;
@@ -137,6 +138,17 @@ class Member extends BaseMember implements \JsonSerializable {
 
 
 	/**
+	 * @throws MemberIsNotModeratorException
+	 */
+	public function hasToBeAdmin() {
+		if ($this->getLevel() < self::LEVEL_OWNER) {
+			throw new MemberIsNotAdminException(
+				$this->l10n->t('This member is not admin of the circle')
+			);
+		}
+	}
+
+	/**
 	 * @throws MemberDoesNotExistException
 	 */
 	public function hasToBeMember() {
@@ -178,13 +190,13 @@ class Member extends BaseMember implements \JsonSerializable {
 
 	public function jsonSerialize() {
 		return array(
-			'circle_id' => $this->getCircleId(),
-			'user_id' => $this->getUserId(),
-			'level' => $this->getLevel(),
+			'circle_id'    => $this->getCircleId(),
+			'user_id'      => $this->getUserId(),
+			'level'        => $this->getLevel(),
 			'level_string' => $this->getLevelString(),
-			'status' => $this->getStatus(),
-			'note' => $this->getNote(),
-			'joined' => $this->getJoined()
+			'status'       => $this->getStatus(),
+			'note'         => $this->getNote(),
+			'joined'       => $this->getJoined()
 		);
 	}
 

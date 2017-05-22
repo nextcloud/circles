@@ -28,7 +28,7 @@ namespace OCA\Circles\Api;
 
 
 use OCA\Circles\AppInfo\Application;
-use OCA\Circles\IBroadcaster;
+use OCA\Circles\Model\SharingFrame;
 
 class Circles {
 
@@ -72,12 +72,16 @@ class Circles {
 
 
 	public static function shareToCircle(
-		int $circleId, string $source, string $type, array $item, string $broadcaster
+		$circleId, $source, $type, array $payload, $broadcaster
 	) {
 		$c = self::getContainer();
 
+		$frame = new SharingFrame((string)$source, (string)$type);
+		$frame->setCircleId((int)$circleId);
+		$frame->setPayload($payload);
+
 		return $c->query('SharesService')
-				 ->newShare($circleId, $source, $type, $item, $broadcaster);
+				 ->createFrame($frame, (string)$broadcaster);
 	}
 
 

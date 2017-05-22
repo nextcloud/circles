@@ -111,7 +111,6 @@ class Env implements \PHPUnit_Framework_TestListener {
 
 		return $userSession->getUser()
 						   ->getUID();
-
 	}
 
 	public static function logout() {
