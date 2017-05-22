@@ -77,7 +77,7 @@ class FederatedLink implements \JsonSerializable {
 	 * @return FederatedLink
 	 */
 	public function setId($id) {
-		$this->id = (int) $id;
+		$this->id = (int)$id;
 
 		return $this;
 	}
@@ -96,7 +96,7 @@ class FederatedLink implements \JsonSerializable {
 	 * @return $this
 	 */
 	public function setToken($token) {
-		$this->token = (string) $token;
+		$this->token = (string)$token;
 
 		return $this;
 	}
@@ -125,7 +125,7 @@ class FederatedLink implements \JsonSerializable {
 	 * @return FederatedLink
 	 */
 	public function setAddress($address) {
-		$this->address = (string) $address;
+		$this->address = (string)$address;
 
 		return $this;
 	}
@@ -144,7 +144,7 @@ class FederatedLink implements \JsonSerializable {
 	 * @return FederatedLink
 	 */
 	public function setLocalAddress($address) {
-		$this->localAddress = (string) $address;
+		$this->localAddress = (string)$address;
 
 		return $this;
 	}
@@ -182,7 +182,7 @@ class FederatedLink implements \JsonSerializable {
 	 * @return FederatedLink
 	 */
 	public function setUniqueId($uniqueId) {
-		$this->uniqueId = (string) $uniqueId;
+		$this->uniqueId = (string)$uniqueId;
 
 		return $this;
 	}
@@ -201,7 +201,7 @@ class FederatedLink implements \JsonSerializable {
 	 * @return FederatedLink
 	 */
 	public function setRemoteCircleName($circleName) {
-		$this->remoteCircleName = (string) $circleName;
+		$this->remoteCircleName = (string)$circleName;
 
 		return $this;
 	}
@@ -220,7 +220,7 @@ class FederatedLink implements \JsonSerializable {
 	 * @return FederatedLink
 	 */
 	public function setCircleName($circleName) {
-		$this->localCircleName = (string) $circleName;
+		$this->localCircleName = (string)$circleName;
 
 		return $this;
 	}
@@ -239,7 +239,7 @@ class FederatedLink implements \JsonSerializable {
 	 * @return FederatedLink
 	 */
 	public function setStatus($status) {
-		$this->status = (int) $status;
+		$this->status = (int)$status;
 
 		return $this;
 	}

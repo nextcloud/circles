@@ -167,8 +167,8 @@ class FederatedService {
 	 * in the database and send a request to the remote circle using requestLink()
 	 * If any issue, entry is removed from the database.
 	 *
-	 * @param $circleId
-	 * @param $remote
+	 * @param integer $circleId
+	 * @param string $remote
 	 *
 	 * @return FederatedLink
 	 * @throws Exception
@@ -211,10 +211,10 @@ class FederatedService {
 	 */
 	private function generateLinkRemoteURL($remote) {
 		if (strpos($remote, 'https') !== 0) {
-			$remote = 'https://' . $remote;
+			$remote = 'https://'.$remote;
 		}
 
-		return rtrim($remote, '/') . '/index.php/apps/circles/circles/link/';
+		return rtrim($remote, '/').'/index.php/apps/circles/circles/link/';
 	}
 
 	/**
@@ -224,10 +224,10 @@ class FederatedService {
 	 */
 	private function generatePayloadDeliveryURL($remote) {
 		if (strpos($remote, 'https') !== 0) {
-			$remote = 'https://' . $remote;
+			$remote = 'https://'.$remote;
 		}
 
-		return rtrim($remote, '/') . '/index.php/apps/circles/circles/payload/';
+		return rtrim($remote, '/').'/index.php/apps/circles/circles/payload/';
 	}
 
 
@@ -238,10 +238,10 @@ class FederatedService {
 	 * @param Circle $circle
 	 * @param FederatedLink $link
 	 *
-	 * @return int
+	 * @return boolean
 	 * @throws Exception
 	 */
-	private function requestLink(Circle $circle, FederatedLink &$link) {
+	private function requestLink(Circle $circle, FederatedLink & $link) {
 		$args = [
 			'token'      => $link->getToken(),
 			'uniqueId'   => $circle->getUniqueId(),
@@ -316,7 +316,7 @@ class FederatedService {
 	 *
 	 * @return bool
 	 */
-	public function initiateLink(Circle $circle, FederatedLink &$link) {
+	public function initiateLink(Circle $circle, FederatedLink & $link) {
 
 		$link->setCircleId($circle->getId());
 
@@ -338,7 +338,7 @@ class FederatedService {
 	 * @return bool
 	 * @throws Exception
 	 */
-	public function receiveFrame($token, $uniqueId, SharingFrame &$frame) {
+	public function receiveFrame($token, $uniqueId, SharingFrame & $frame) {
 
 		$link = $this->circlesRequest->getLinkFromToken((string)$token, (string)$uniqueId);
 		if ($link === null) {
@@ -368,8 +368,8 @@ class FederatedService {
 	}
 
 	/**
-	 * @param $circleId
-	 * @param $uniqueId
+	 * @param integer $circleId
+	 * @param string $uniqueId
 	 *
 	 * @return FederatedLink
 	 */
@@ -379,7 +379,7 @@ class FederatedService {
 
 
 	/**
-	 * @param $circleId
+	 * @param integer $circleId
 	 *
 	 * @return FederatedLink[]
 	 */
@@ -413,7 +413,7 @@ class FederatedService {
 
 			$result = json_decode($request->getBody(), true);
 			$this->miscService->log(
-				"initiateRemoteShare result: " . $uniqueId . '  ----  ' . var_export($result, true)
+				"initiateRemoteShare result: ".$uniqueId.'  ----  '.var_export($result, true)
 			);
 
 			return true;
