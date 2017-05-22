@@ -56,19 +56,24 @@ class CirclesMapperTest extends \PHPUnit_Framework_TestCase {
 	/** @var \OCA\Circles\Db\MembersMapper|\PHPUnit_Framework_MockObject_MockObject */
 	protected $membersMapper;
 
+	protected $l10n;
+
 	protected function setUp() {
 
+		$this->l10n = $this->getMockBuilder('\OCP\IL10N')
+						   ->getMock();
+
 		$this->circlesMapper = new CirclesMapper(
-			$this->l10n,
 			\OC::$server->getDatabaseConnection(),
-			$this->getMockBuilder('OCA\Circles\Service\MiscService')
-				 ->disableOriginalConstructor()
-				 ->getMock()
+			$this->l10n, $this->getMockBuilder('OCA\Circles\Service\MiscService')
+								   ->disableOriginalConstructor()
+								   ->getMock()
 		);
 
 		$this->membersMapper = new MembersMapper(
-			$this->l10n,
 			\OC::$server->getDatabaseConnection(),
+			$this->getMockBuilder('\OCP\IL10N')
+				 ->getMock(),
 			$this->getMockBuilder('OCA\Circles\Service\MiscService')
 				 ->disableOriginalConstructor()
 				 ->getMock()

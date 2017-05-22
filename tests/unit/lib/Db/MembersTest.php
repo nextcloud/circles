@@ -39,7 +39,12 @@ use OCA\Circles\Model\Member;
  */
 class MembersTest extends \PHPUnit_Framework_TestCase {
 
+	protected $l10n;
+
 	public function testMembers() {
+
+		$this->l10n = $this->getMockBuilder('\OCP\IL10N')
+						   ->getMock();
 
 		$date = date("Y-m-d H:i:s");
 

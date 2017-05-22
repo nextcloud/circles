@@ -33,7 +33,7 @@ class Circles extends Entity {
 
 
 	public $id;
-	public $uniqueid;
+	public $uniqueId;
 	public $name;
 	public $description;
 	public $type;

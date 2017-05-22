@@ -53,13 +53,18 @@ class NavigationControllerTest extends \PHPUnit_Framework_TestCase {
 								   ->getMock(),
 			$this->getMockBuilder('\OCA\Circles\Service\MembersService')
 				 ->disableOriginalConstructor()
-				 ->getMock(), $this->getMockBuilder('\OCA\Circles\Service\MiscService')
+				 ->getMock(), $this->getMockBuilder('\OCA\Circles\Service\SharesService')
 								   ->disableOriginalConstructor()
-								   ->getMock()
+								   ->getMock(),
+			$this->getMockBuilder('\OCA\Circles\Service\FederatedService')
+				 ->disableOriginalConstructor()
+				 ->getMock(),
+			$this->getMockBuilder('\OCA\Circles\Service\MiscService')
+				 ->disableOriginalConstructor()
+				 ->getMock()
 
 		);
 	}
-
 
 	protected function tearDrop() {
 		Env::logout();
