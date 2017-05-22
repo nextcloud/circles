@@ -32,7 +32,6 @@ use OCP\Util;
 
 class ConfigService {
 
-
 	const CIRCLES_ALLOW_CIRCLES = 'allow_circles';
 	const CIRCLES_SWAP_TO_TEAMS = 'swap_to_teams';
 	const CIRCLES_ALLOW_FEDERATED = 'allow_federated';

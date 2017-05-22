@@ -210,7 +210,7 @@ class FederatedService {
 	 * @return string
 	 */
 	private function generateLinkRemoteURL($remote) {
-		if (strpos($remote, 'http') !== 0) {
+		if (strpos($remote, 'https') !== 0) {
 			$remote = 'https://' . $remote;
 		}
 
