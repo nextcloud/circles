@@ -109,6 +109,10 @@ class Env implements \PHPUnit_Framework_TestListener {
 						->get($which)
 		);
 
+		if ($userSession->getUser() === null) {
+			return null;
+		}
+
 		return $userSession->getUser()
 						   ->getUID();
 

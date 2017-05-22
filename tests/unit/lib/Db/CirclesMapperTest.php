@@ -59,6 +59,7 @@ class CirclesMapperTest extends \PHPUnit_Framework_TestCase {
 	protected function setUp() {
 
 		$this->circlesMapper = new CirclesMapper(
+			$this->l10n,
 			\OC::$server->getDatabaseConnection(),
 			$this->getMockBuilder('OCA\Circles\Service\MiscService')
 				 ->disableOriginalConstructor()
@@ -66,6 +67,7 @@ class CirclesMapperTest extends \PHPUnit_Framework_TestCase {
 		);
 
 		$this->membersMapper = new MembersMapper(
+			$this->l10n,
 			\OC::$server->getDatabaseConnection(),
 			$this->getMockBuilder('OCA\Circles\Service\MiscService')
 				 ->disableOriginalConstructor()
