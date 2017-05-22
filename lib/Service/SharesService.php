@@ -74,7 +74,7 @@ class SharesService {
 		FederatedService $federatedService,
 		MiscService $miscService
 	) {
-		$this->userId = (string) $userId;
+		$this->userId = (string)$userId;
 		$this->configService = $configService;
 		$this->circlesRequest = $circlesRequest;
 		$this->broadcastService = $broadcastService;
@@ -107,7 +107,7 @@ class SharesService {
 		$frame->setAuthor($this->userId);
 		$frame->setHeader('author', $this->userId);
 		$frame->setHeader('circleName', $circle->getName());
-		$frame->setHeader('broadcast', (string) $broadcast);
+		$frame->setHeader('broadcast', (string)$broadcast);
 		$frame->generateUniqueId();
 		$frame->setCircleName($circle->getName());
 
@@ -132,7 +132,7 @@ class SharesService {
 			return null;
 		}
 
-		return $this->circlesRequest->getFrame((int) $circleId, (string) $uniqueId);
+		return $this->circlesRequest->getFrame((int)$circleId, (string)$uniqueId);
 	}
 
 

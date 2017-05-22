@@ -82,7 +82,7 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 
 		$qb->where(
 			$expr->andX(
-				$expr->eq('f.circle_id', $qb->createNamedParameter((int) $circleId)),
+				$expr->eq('f.circle_id', $qb->createNamedParameter((int)$circleId)),
 				$expr->eq('f.status', $qb->createNamedParameter(9))
 			)
 		);
@@ -111,8 +111,8 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 
 		$qb->where(
 			$expr->andX(
-				$expr->eq('f.circle_id', $qb->createNamedParameter((int) $circleId)),
-				$expr->eq('f.unique_id', $qb->createNamedParameter((string) $uniqueId))
+				$expr->eq('f.circle_id', $qb->createNamedParameter((int)$circleId)),
+				$expr->eq('f.unique_id', $qb->createNamedParameter((string)$uniqueId))
 			)
 		);
 

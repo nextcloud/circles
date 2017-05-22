@@ -63,7 +63,7 @@ class BroadcastService {
 		CirclesRequest $circlesRequest,
 		MiscService $miscService
 	) {
-		$this->userId = (string) $userId;
+		$this->userId = (string)$userId;
 		$this->configService = $configService;
 		$this->circlesRequest = $circlesRequest;
 		$this->miscService = $miscService;
@@ -86,7 +86,7 @@ class BroadcastService {
 			return;
 		}
 
-		$broadcaster = \OC::$server->query((string) $broadcast);
+		$broadcaster = \OC::$server->query((string)$broadcast);
 		if (!($broadcaster instanceof IBroadcaster)) {
 			throw new BroadcasterIsNotCompatible();
 		}

@@ -55,6 +55,7 @@ class CirclesRequestBuilder {
 	 * Join the Circles table
 	 *
 	 * @param IQueryBuilder $qb
+	 * @param string $field
 	 */
 	protected function joinCircles(& $qb, $field) {
 		$expr = $qb->expr();
@@ -70,11 +71,11 @@ class CirclesRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param int $circleId
 	 */
-	protected function limitToCircleId(IQueryBuilder &$qb, $circleId) {
+	protected function limitToCircleId(IQueryBuilder & $qb, $circleId) {
 		$expr = $qb->expr();
-		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
+		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias.'.' : '';
 
-		$qb->andWhere($expr->eq($pf . 'circle_id', $qb->createNamedParameter($circleId)));
+		$qb->andWhere($expr->eq($pf.'circle_id', $qb->createNamedParameter($circleId)));
 	}
 
 
@@ -84,11 +85,11 @@ class CirclesRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param int $id
 	 */
-	protected function limitToId(IQueryBuilder &$qb, $id) {
+	protected function limitToId(IQueryBuilder & $qb, $id) {
 		$expr = $qb->expr();
-		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
+		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias.'.' : '';
 
-		$qb->andWhere($expr->eq($pf . 'id', $qb->createNamedParameter($id)));
+		$qb->andWhere($expr->eq($pf.'id', $qb->createNamedParameter($id)));
 	}
 
 
@@ -98,11 +99,11 @@ class CirclesRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param int $uniqueId
 	 */
-	protected function limitToUniqueId(IQueryBuilder &$qb, $uniqueId) {
+	protected function limitToUniqueId(IQueryBuilder & $qb, $uniqueId) {
 		$expr = $qb->expr();
-		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
+		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias.'.' : '';
 
-		$qb->andWhere($expr->eq($pf . 'unique_id', $qb->createNamedParameter($uniqueId)));
+		$qb->andWhere($expr->eq($pf.'unique_id', $qb->createNamedParameter($uniqueId)));
 	}
 
 
@@ -110,13 +111,13 @@ class CirclesRequestBuilder {
 	 * Limit the request by its Token.
 	 *
 	 * @param IQueryBuilder $qb
-	 * @param $token
+	 * @param string $token
 	 */
-	protected function limitToToken(IQueryBuilder &$qb, $token) {
+	protected function limitToToken(IQueryBuilder & $qb, $token) {
 		$expr = $qb->expr();
-		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
+		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias.'.' : '';
 
-		$qb->andWhere($expr->eq($pf . 'token', $qb->createNamedParameter($token)));
+		$qb->andWhere($expr->eq($pf.'token', $qb->createNamedParameter($token)));
 	}
 
 
@@ -124,9 +125,9 @@ class CirclesRequestBuilder {
 	 * Limit the request to a minimum member level.
 	 *
 	 * @param IQueryBuilder $qb
-	 * @param $level
+	 * @param integer $level
 	 */
-	protected function limitToMemberLevel(IQueryBuilder &$qb, $level) {
+	protected function limitToMemberLevel(IQueryBuilder & $qb, $level) {
 		$qb->where(
 			$qb->expr()
 			   ->gte('m.level', $qb->createNamedParameter($level))
@@ -141,20 +142,20 @@ class CirclesRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param string $userId
 	 */
-	protected function leftJoinUserIdAsMember(IQueryBuilder &$qb, $userId) {
+	protected function leftJoinUserIdAsMember(IQueryBuilder & $qb, $userId) {
 
 		if ($qb->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
 
 		$expr = $qb->expr();
-		$pf = $this->default_select_alias . '.';
+		$pf = $this->default_select_alias.'.';
 
 		$qb->selectAlias('u.level', 'user_level');
 		$qb->leftJoin(
 			$this->default_select_alias, MembersMapper::TABLENAME, 'u',
 			$expr->andX(
-				$expr->eq($pf . 'id', 'u.circle_id'),
+				$expr->eq($pf.'id', 'u.circle_id'),
 				$expr->eq('u.user_id', $qb->createNamedParameter($userId))
 			)
 		);
@@ -166,19 +167,19 @@ class CirclesRequestBuilder {
 	 * @deprecated
 	 * never used in fact.
 	 */
-	protected function leftJoinOwner(IQueryBuilder &$qb) {
+	protected function leftJoinOwner(IQueryBuilder & $qb) {
 
 		if ($qb->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
 
 		$expr = $qb->expr();
-		$pf = $this->default_select_alias . '.';
+		$pf = $this->default_select_alias.'.';
 
 		$qb->leftJoin(
 			$this->default_select_alias, MembersMapper::TABLENAME, 'o',
 			$expr->andX(
-				$expr->eq($pf . 'id', 'o.circle_id'),
+				$expr->eq($pf.'id', 'o.circle_id'),
 				$expr->eq('o.level', $qb->createNamedParameter(Member::LEVEL_OWNER))
 			)
 		);
@@ -247,7 +248,7 @@ class CirclesRequestBuilder {
 		$qb->update('circles_shares')
 		   ->where(
 			   $qb->expr()
-				  ->eq('unique_id', $qb->createNamedParameter((string) $uniqueId))
+				  ->eq('unique_id', $qb->createNamedParameter((string)$uniqueId))
 		   );
 
 		return $qb;

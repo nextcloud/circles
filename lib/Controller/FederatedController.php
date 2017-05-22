@@ -211,7 +211,7 @@ class FederatedController extends BaseController {
 		ob_start();
 		echo($result);
 		$size = ob_get_length();
-		header('Content-Length: ' . $size);
+		header('Content-Length: '.$size);
 		ob_end_flush();
 		flush();
 	}
