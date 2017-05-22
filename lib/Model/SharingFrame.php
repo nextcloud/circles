@@ -101,7 +101,7 @@ class SharingFrame implements \JsonSerializable {
 	}
 
 	/**
-	 * @return mixed
+	 * @return string
 	 */
 	public function getCircleName() {
 		return $this->circleName;
@@ -209,7 +209,7 @@ class SharingFrame implements \JsonSerializable {
 
 
 	/**
-	 * @param $k
+	 * @param string $k
 	 *
 	 * @return string
 	 */

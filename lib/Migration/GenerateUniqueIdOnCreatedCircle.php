@@ -93,7 +93,7 @@ class GenerateUniqueIdOnCreatedCircle implements IRepairStep {
 
 			$update = $this->connection->getQueryBuilder();
 			$update->update('circles_circles')
-				   ->set('unique_id', $update->createNamedParameter('d' . $uniqueId))
+				   ->set('unique_id', $update->createNamedParameter('d'.$uniqueId))
 				   ->where(
 					   $update->expr()
 							  ->eq('id', $update->createNamedParameter($itemId))

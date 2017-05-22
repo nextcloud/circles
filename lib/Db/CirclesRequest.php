@@ -127,7 +127,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 */
 	public function getCircle($uniqueId) {
 		$qb = $this->getCirclesSelectSql();
-		$this->limitToUniqueId($qb, (string) $uniqueId);
+		$this->limitToUniqueId($qb, (string)$uniqueId);
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
@@ -145,8 +145,8 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 */
 	public function getFrame($circleId, $uniqueId) {
 		$qb = $this->getSharesSelectSql();
-		$this->limitToUniqueId($qb, (string) $uniqueId);
-		$this->limitToCircleId($qb, (int) $circleId);
+		$this->limitToUniqueId($qb, (string)$uniqueId);
+		$this->limitToCircleId($qb, (int)$circleId);
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
@@ -165,8 +165,8 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 */
 	public function getLinkFromToken($token, $uniqueId) {
 		$qb = $this->getLinksSelectSql();
-		$this->limitToUniqueId($qb, (string) $uniqueId);
-		$this->limitToToken($qb, (string) $token);
+		$this->limitToUniqueId($qb, (string)$uniqueId);
+		$this->limitToToken($qb, (string)$token);
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
@@ -178,7 +178,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	}
 
 	/**
-	 * @param $circleId
+	 * @param integer $circleId
 	 * @param int $level
 	 *
 	 * @return Member[]
