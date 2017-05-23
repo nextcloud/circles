@@ -257,6 +257,11 @@ class CircleProviderRequestBuilder {
 		   ->andWhere($expr->eq('s.share_with', 'm.circle_id'))
 		   ->andWhere($expr->eq('m.user_id', $qb->createNamedParameter($userId)))
 		   ->andWhere($expr->gte('m.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)));
+//		$qb->leftJoin('s',MembersMapper::TABLENAME, 'm', $expr->andX(
+//			$expr->eq('s.share_with', 'm.circle_id'),
+//			$expr->eq('m.user_id', $qb->createNamedParameter($userId)),
+//			$expr->gte('m.level', $qb->createNamedParameter(Member::LEVEL_MEMBER))
+//		));
 	}
 
 
