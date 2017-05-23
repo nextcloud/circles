@@ -28,6 +28,7 @@
 namespace OCA\Circles\Db;
 
 
+use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
 use Doctrine\DBAL\Query\QueryBuilder;
 use OCA\Circles\Model\Member;
 use OCP\DB\QueryBuilder\IQueryBuilder;
@@ -216,11 +217,21 @@ class CircleProviderRequestBuilder {
 	protected function linkCircleField(& $qb, $shareId) {
 		$expr = $qb->expr();
 
+		// TODO - Remove this in 12.0.1
+		if ($qb->getConnection()
+			   ->getDatabasePlatform() instanceof PostgreSqlPlatform
+		) {
+			$tmpOrX = $expr->eq('s.share_with', $qb->createFunction('CAST(c.id AS TEXT)'));
+		} else {
+			$tmpOrX =
+				$expr->eq('s.share_with', $expr->castColumn('c.id', IQueryBuilder::PARAM_STR));
+		}
+
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->from(CirclesMapper::TABLENAME, 'c')
 		   ->andWhere(
 			   $expr->orX(
-				   $expr->eq('s.share_with', 'c.id'),
+				   $tmpOrX,
 				   $expr->eq('s.parent', $qb->createNamedParameter($shareId))
 			   )
 		   );
@@ -253,15 +264,22 @@ class CircleProviderRequestBuilder {
 	protected function linkToMember(& $qb, $userId) {
 		$expr = $qb->expr();
 
+		// TODO - Remove this in 12.0.1
+		if ($qb->getConnection()
+			   ->getDatabasePlatform() instanceof PostgreSqlPlatform
+		) {
+			$tmpAndX = $expr->eq('s.share_with', $qb->createFunction('CAST(m.circle_id AS TEXT)'));
+		} else {
+			$tmpAndX = $expr->eq(
+				's.share_with', $expr->castColumn('m.circle_id', IQueryBuilder::PARAM_STR)
+			);
+		}
+
 		$qb->from(MembersMapper::TABLENAME, 'm')
-		   ->andWhere($expr->eq('s.share_with', 'm.circle_id'))
+		   ->andWhere($tmpAndX)
 		   ->andWhere($expr->eq('m.user_id', $qb->createNamedParameter($userId)))
 		   ->andWhere($expr->gte('m.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)));
-//		$qb->leftJoin('s',MembersMapper::TABLENAME, 'm', $expr->andX(
-//			$expr->eq('s.share_with', 'm.circle_id'),
-//			$expr->eq('m.user_id', $qb->createNamedParameter($userId)),
-//			$expr->gte('m.level', $qb->createNamedParameter(Member::LEVEL_MEMBER))
-//		));
+
 	}
 
 
@@ -273,8 +291,23 @@ class CircleProviderRequestBuilder {
 	protected function joinCircleMembers(& $qb) {
 		$expr = $qb->expr();
 
-		$qb->from(MembersMapper::TABLENAME, 'm')
-		   ->andWhere($expr->eq('s.share_with', 'm.circle_id'));
+		$qb->from(MembersMapper::TABLENAME, 'm');
+
+		// TODO - Remove this in 12.0.1
+		if ($qb->getConnection()
+			   ->getDatabasePlatform() instanceof PostgreSqlPlatform
+		) {
+			$qb->andWhere(
+				$expr->eq('s.share_with', $qb->createFunction('CAST(m.circle_id AS TEXT)'))
+			);
+		} else {
+
+			$qb->andWhere(
+				$expr->eq(
+					's.share_with', $expr->castColumn('m.circle_id', IQueryBuilder::PARAM_STR)
+				)
+			);
+		}
 	}
 
 
