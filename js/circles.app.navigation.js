@@ -38,7 +38,7 @@ var nav = {
 
 
 	initNavigation: function () {
-		this.initElementsMemberNavigation();
+		this.initElementsAddMemberNavigation();
 		this.initElementsLinkCircleNavigation();
 		this.initElementsCircleNavigation();
 
@@ -46,8 +46,9 @@ var nav = {
 	},
 
 
-	initElementsMemberNavigation: function () {
+	initElementsAddMemberNavigation: function () {
 
+		elements.addMember.hide();
 		elements.addMember.on('input propertychange paste focus', function () {
 			var search = $(this).val().trim();
 			if (search === '') {
@@ -63,12 +64,14 @@ var nav = {
 			}
 		}).blur(function () {
 			elements.membersSearchResult.fadeOut(400);
+			nav.circlesActionReturn();
 		});
 	},
 
 
 	initElementsLinkCircleNavigation: function () {
 
+		elements.linkCircle.hide();
 		elements.linkCircle.on('keydown', function (e) {
 
 			if (e.keyCode !== 13) {
@@ -76,17 +79,24 @@ var nav = {
 			}
 
 			api.linkCircle(curr.circle, elements.linkCircle.val(), actions.linkCircleResult);
+		}).blur(function () {
+			nav.circlesActionReturn();
 		});
 	},
 
+
 	initElementsCircleNavigation: function () {
 
+		elements.joinCircle.hide();
 		elements.joinCircle.on('click', function () {
 			api.joinCircle(curr.circle, actions.joinCircleResult);
+			nav.circlesActionReturn();
 		});
 
+		elements.leaveCircle.hide();
 		elements.leaveCircle.on('click', function () {
 			api.leaveCircle(curr.circle, actions.leaveCircleResult);
+			nav.circlesActionReturn();
 		});
 
 		elements.destroyCircle.on('click', function () {
@@ -142,6 +152,68 @@ var nav = {
 		});
 	},
 
+
+	circlesActionReturn: function () {
+		nav.displayCircleButtons(true);
+		nav.displayAddMemberInput(false);
+		nav.displayLinkCircleInput(false);
+		nav.displayJoinCircleButton(false);
+	},
+
+	joinCircleAction: function () {
+		nav.displayCircleButtons(false);
+		nav.displayAddMemberInput(false);
+		nav.displayLinkCircleInput(false);
+		nav.displayJoinCircleButton(true);
+	},
+
+	displayCircleButtons: function (display) {
+		if (display) {
+			elements.buttonCircleActionReturn.hide(200);
+			elements.buttonCircleActions.delay(200).show(200);
+		} else {
+			elements.buttonCircleActions.hide(200);
+			elements.buttonCircleActionReturn.delay(200).show(200);
+		}
+	},
+
+	displayAddMemberInput: function (display) {
+		if (display) {
+			elements.addMember.val('');
+			elements.addMember.delay(200).show(200);
+		} else {
+			elements.addMember.hide(200);
+		}
+	},
+
+	displayLinkCircleInput: function (display) {
+		if (display) {
+			elements.linkCircle.val('');
+			elements.linkCircle.delay(200).show(200);
+		} else {
+			elements.linkCircle.hide(200);
+		}
+	},
+
+	displayJoinCircleButton: function (display) {
+		if (display) {
+			if (curr.circleStatus === 'Invited') {
+
+			} else if (curr.circleLevel === 0 && curr.circleStatus !== 'Requesting') {
+				elements.joinCircle.delay(200).show(200);
+				elements.leaveCircle.hide(200);
+			}
+			else {
+				elements.leaveCircle.delay(200).show(200);
+				elements.joinCircle.hide(200);
+			}
+		} else {
+			elements.joinCircle.hide(200);
+			elements.leaveCircle.hide(200);
+		}
+	},
+
+
 	/**
 	 *
 	 * @param display
@@ -181,6 +253,7 @@ var nav = {
 			nav.displayMemberDetails($(this).attr('member-id'), $(this).attr('member-level'),
 				$(this).attr('member-levelstring'), $(this).attr('member-status'));
 		});
+
 	},
 
 
@@ -222,36 +295,37 @@ var nav = {
 	displayCircleDetails: function (details) {
 		elements.circlesDetails.children('#name').text(details.name);
 		elements.circlesDetails.children('#type').text(t('circles', details.typeLongString));
+
+		elements.buttonCircleActions.show(300);
+		elements.addMember.hide(300);
 	},
 
 
 	displayMembersInteraction: function (details) {
 		if (details.user.level < 6) {
-			elements.addMember.hide();
+			elements.buttonAddMember.hide();
 		} else {
-			elements.addMember.show();
+			elements.buttonAddMember.show();
 		}
 
-		if (curr.allowed_federated === 0 || details.type === 'Personal' || details.user.level < 9) {
-			elements.linkCircle.hide();
+		if (curr.allowed_federated === '0' || details.type === 'Personal' ||
+			details.user.level < 8) {
+			elements.buttonLinkCircle.hide();
 		} else {
-			elements.linkCircle.show();
+			elements.buttonLinkCircle.show();
 		}
 
 		elements.joinCircleInteraction.hide();
 		this.displayNonMemberInteraction(details);
 
 		if (details.user.level === 9) {
-			elements.joinCircle.hide();
-			elements.leaveCircle.hide();
+			// elements.leaveCircle.hide();
 			elements.destroyCircle.show();
+			elements.buttonCircleSettings.show();
+			elements.buttonJoinCircle.hide();
 			return;
 		}
 
-		if (details.user.level >= 1) {
-			elements.joinCircle.hide();
-			elements.leaveCircle.show();
-		}
 	},
 
 
@@ -260,20 +334,27 @@ var nav = {
 		elements.joinCircleReject.hide();
 		elements.joinCircleRequest.hide();
 		elements.joinCircleInvite.hide();
-
-		if (details.user.status === 'Invited') {
-			this.displayInvitedMemberInteraction();
-			return;
-		}
-
-		if (details.user.status === 'Requesting') {
-			this.displayRequestingMemberInteraction();
-			return;
-		}
-
-		elements.joinCircle.show();
-		elements.leaveCircle.hide();
+		elements.buttonCircleSettings.hide();
 		elements.destroyCircle.hide();
+
+		// if (details.user.status === 'Invited') {
+		// 	this.displayInvitedMemberInteraction();
+		// 	return;
+		// }
+		//
+		if (details.user.status === 'Requesting') {
+			elements.joinCircleRequest.show();
+			//this.displayRequestingMemberInteraction();
+			return;
+		}
+
+		if (details.user.level > 0) {
+			return;
+		}
+
+		setTimeout(function () {
+			nav.joinCircleAction();
+		}, 200);
 	},
 
 
@@ -282,16 +363,16 @@ var nav = {
 		elements.joinCircleInvite.show();
 		elements.joinCircleAccept.show();
 		elements.joinCircleReject.show();
-		elements.joinCircle.hide();
-		elements.leaveCircle.hide();
+		// elements.joinCircle.hide();
+		// elements.leaveCircle.hide();
 		elements.destroyCircle.hide();
 	},
 
 	displayRequestingMemberInteraction: function () {
 		elements.joinCircleInteraction.show();
 		elements.joinCircleRequest.show();
-		elements.joinCircle.hide();
-		elements.leaveCircle.show();
+		// elements.joinCircle.hide();
+		// elements.leaveCircle.show();
 		elements.destroyCircle.hide();
 	}
 

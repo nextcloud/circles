@@ -65,6 +65,13 @@ var elements = {
 	remMember: null,
 	linkCircle: null,
 
+	buttonCircleActions: null,
+	buttonCircleActionReturn: null,
+	buttonCircleSettings: null,
+	buttonAddMember: null,
+	buttonLinkCircle: null,
+	buttonDeleteCircle: null,
+
 
 	initElements: function () {
 
@@ -91,12 +98,20 @@ var elements = {
 		elements.joinCircleInvite = $('#joincircle_invit');
 		elements.joinCircle = $('#joincircle');
 		elements.leaveCircle = $('#leavecircle');
-		elements.destroyCircle = $('#destroycircle');
+		elements.destroyCircle = $('#circle-actions-delete');
 
 		elements.rightPanel = $('#rightpanel');
 		elements.addMember = $('#addmember');
 		elements.remMember = $('#remmember');
 		elements.linkCircle = $('#linkcircle');
+
+		elements.buttonCircleActions = $('#circle-actions-buttons');
+		elements.buttonCircleActionReturn = $('#circle-actions-return');
+		elements.buttonCircleSettings = $('#circle-actions-settings');
+		elements.buttonAddMember = $('#circle-actions-add');
+		elements.buttonLinkCircle = $('#circle-actions-link');
+		elements.buttonDeleteCircle = $('#circle-actions-delete');
+		elements.buttonJoinCircle = $('#circle-actions-join');
 	},
 
 
@@ -177,6 +192,41 @@ var elements = {
 	},
 
 
+	/**
+	 *
+	 */
+	initExperienceCircleButtons: function () {
+
+		elements.buttonCircleActionReturn.hide();
+		elements.buttonCircleActionReturn.on('click', function () {
+			nav.circlesActionReturn();
+		});
+
+		elements.buttonAddMember.on('click', function () {
+			nav.displayCircleButtons(false);
+			nav.displayAddMemberInput(true);
+			nav.displayLinkCircleInput(false);
+			nav.displayJoinCircleButton(false);
+		});
+
+		elements.buttonLinkCircle.on('click', function () {
+			nav.displayCircleButtons(false);
+			nav.displayAddMemberInput(false);
+			nav.displayLinkCircleInput(true);
+			nav.displayJoinCircleButton(false);
+		});
+
+		elements.buttonJoinCircle.on('click', function () {
+			nav.joinCircleAction();
+		});
+
+
+
+	},
+
+	/**
+	 *
+	 */
 	initExperienceMemberDetails: function () {
 		elements.memberRequest.hide();
 		elements.remMember.on('click', function () {

@@ -135,6 +135,7 @@ var actions = {
 		elements.mainUI.fadeIn(800);
 		curr.circle = result.circle_id;
 		curr.circleLevel = result.details.user.level;
+		curr.circleStatus = result.details.user.status;
 
 		nav.displayCircleDetails(result.details);
 		nav.displayMembersInteraction(result.details);
@@ -199,6 +200,7 @@ var actions = {
 		elements.addMember.val('');
 		elements.linkCircle.val('');
 
+		nav.circlesActionReturn();
 		api.detailsCircle(circle_id, actions.selectCircleResult);
 	},
 

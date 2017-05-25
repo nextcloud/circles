@@ -37,13 +37,15 @@ var curr = {
 	circlesType: '',
 	circle: 0,
 	circleLevel: 0,
+	circleStatus: '',
 	member: '',
 	memberLevel: 0,
 	memberStatus: '',
 	searchCircle: '',
 	searchFilter: 0,
 	searchUser: '',
-	allowed_federated: 0
+	allowed_federated: 0,
+	allowed_circles: 0
 };
 
 
@@ -61,6 +63,7 @@ $(document).ready(function () {
 
 		this.init();
 		this.initTransifex();
+		this.retrieveSettings();
 	};
 
 
@@ -72,6 +75,7 @@ $(document).ready(function () {
 			elements.initTweaks();
 			elements.initAnimationNewCircle();
 			elements.initExperienceCirclesList();
+			elements.initExperienceCircleButtons();
 			elements.initExperienceMemberDetails();
 			nav.initNavigation();
 		},
@@ -99,7 +103,30 @@ $(document).ready(function () {
 			t('circles', 'Requesting');
 			t('circles', 'Blocked');
 			t('circles', 'Kicked');
+		},
+
+		retrieveSettings: function () {
+			var self = this;
+
+			$.ajax({
+				method: 'GET',
+				url: OC.generateUrl('/apps/circles/settings'),
+			}).done(function (result) {
+				self.retrieveSettingsResult(result)
+			}).fail(function () {
+				self.retrieveSettingsResult({status: -1});
+			});			
+		},
+
+		retrieveSettingsResult: function (result) {
+			if (result.status !== 1) {
+				return;
+			}
+			console.log("___" + JSON.stringify(result));
+			curr.allowed_federated = result.allowed_federated;
+			curr.allowed_circles = result.allowed_circles;
 		}
+
 	};
 
 

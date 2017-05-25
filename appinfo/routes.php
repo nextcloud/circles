@@ -30,6 +30,7 @@ return [
 	],
 	'routes' => [
 		['name' => 'Navigation#navigate', 'url' => '/', 'verb' => 'GET'],
+		['name' => 'Navigation#settings', 'url' => '/settings', 'verb' => 'GET'],
 		['name' => 'Circles#create', 'url' => '/circles', 'verb' => 'PUT'],
 		['name' => 'Circles#listing', 'url' => '/circles', 'verb' => 'GET'],
 		[
