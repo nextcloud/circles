@@ -2,7 +2,6 @@
 	height: 50px;
 	margin: 0 auto;
 	padding: 20px;
-	padding: 20px;
 }
 
 #app-navigation .navigation-element, #app-navigation .navigation-element option {
@@ -15,7 +14,7 @@
 }
 
 #app-navigation select#circles_filters {
-	margin-top: 0px;
+	margin-top: 0;
 	font-style: italic;
 	color: #777777;
 }
@@ -161,65 +160,6 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	font-style: italic;
 }
 
-/**
-  deprecated
- */
-#joincircle_invit, #joincircle_request {
-	margin-left: 15px;
-	margin-right: 15px;
-	margin-top: 15px;
-	width: 370px;
-	right: 0px;
-	top: 0px;
-	position: absolute;
-}
-
-/**
-  deprecated
- */
-#joincircle_invit, #joincircle_request {
-	font-style: italic;
-	color: #555;
-}
-
-/**
-  deprecated
- */
-#joincircle_interact {
-	margin-left: 15px;
-	margin-right: 15px;
-	margin-top: 15px;
-	width: 400px;
-	top: 45px;
-	position: absolute;
-}
-
-/**
-  deprecated
- */
-#joincircle_acceptinvit, #joincircle_rejectinvit {
-	margin-left: 15px;
-	margin-right: 5px;
-	width: 170px;
-}
-
-/**
-  deprecated
- */
-#joincircle_rejectinvit {
-	margin-left: 5px;
-	margin-right: 15px;
-	width: 170px;
-}
-
-/**
-  deprecated
- */
-#joincircle_invit, #joincircle_request {
-	margin-left: 30px;
-	margin-bottom: 15px;
-}
-
 #mainui #memberslist {
 	position: absolute;
 	bottom: 15px;
@@ -266,9 +206,6 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	left: 200px;
 }
 
-/**
- * v2
- */
 #circle-actions {
 	right: 10px;
 	position: absolute;
@@ -327,7 +264,7 @@ div.circle .owner, div.circle .type, div.circle .resume {
 }
 
 .level-select, .status-select {
-	border: 0px;
-	margin: 0px;
+	border: 0;
+	margin: 0;
 	background: #fff;
 }

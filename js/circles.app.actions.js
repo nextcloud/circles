@@ -194,12 +194,13 @@ var actions = {
 
 	},
 
+
 	changeMemberLevel: function (member, level) {
 		console.log("--" + member + " -- " + level);
 	},
 
-	changeMemberStatus: function (member, value) {
 
+	changeMemberStatus: function (member, value) {
 		if (value === 'remove_member' || value === 'dismiss_request') {
 			api.removeMember(curr.circle, member, actions.removeMemberResult);
 		}

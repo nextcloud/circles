@@ -202,12 +202,14 @@ style('circles', 'navigation');
 			<div id="joincircle_invit"><?php p(
 					$l->t("Pending invitation to join this circle")
 				); ?></div>
-			<div id="joincircle_interact">
-				<input id="joincircle_acceptinvit" type="submit"
-					   value="<?php p($l->t('Accept the invitation')); ?>"/>
-				<input id="joincircle_rejectinvit" type="submit"
-					   value="<?php p($l->t('Decline the invitation')); ?>"/>
-			</div>
+			<!--			<div id="joincircle_interact">-->
+			<!--				<input id="joincircle_acceptinvit" type="submit"-->
+			<!--					   value="-->
+			<?php //p($l->t('Accept the invitation')); ?><!--"/>-->
+			<!--				<input id="joincircle_rejectinvit" type="submit"-->
+			<!--					   value="-->
+			<?php //p($l->t('Decline the invitation')); ?><!--"/>-->
+			<!--			</div>-->
 
 			<div id="joincircle_request"><?php p(
 					$l->t('You have a pending request to join this circle')
@@ -228,6 +230,10 @@ style('circles', 'navigation');
 				</div>
 
 				<div id="circle-actions-more">
+					<input id="joincircle_acceptinvit" type="submit"
+						   value="<?php p($l->t('Accept the invitation')); ?>"/>
+					<input id="joincircle_rejectinvit" type="submit"
+						   value="<?php p($l->t('Decline the invitation')); ?>"/>
 					<input id="joincircle" type="submit"
 						   value="<?php p($l->t('Join this circle')); ?>"/>
 					<input id="leavecircle" type="submit"
@@ -274,27 +280,10 @@ style('circles', 'navigation');
 							<div class="icon-checkmark" style="display: none;"></div>
 						</td>
 
-
 					</tr>
 				</script>
 			</div>
-<!---->
-<!--			<div id="rightpanel">-->
-<!--				<div class="lightenbg"></div>-->
-<!--				<div id="memberdetails">-->
-<!--					<div id="member_name"></div>-->
-<!--					<div id="member_levelstatus"></div>-->
-<!--					<input id="remmember" type="submit"-->
-<!--						   value="--><?php //p($l->t('Kick this member')); ?><!--"/>-->
-<!--					<div id="member_request">-->
-<!--						<input id="joincircle_acceptrequest" type="submit"-->
-<!--							   value="--><?php //p($l->t('Accept the request')); ?><!--"/>-->
-<!--						<input id="joincircle_rejectrequest" type="submit"-->
-<!--							   value="--><?php //p($l->t('Dismiss the request')); ?><!--"/>-->
-<!--					</div>-->
-<!--				</div>-->
-<!---->
-<!--			</div>-->
+
 		</div>
 
 	</div>

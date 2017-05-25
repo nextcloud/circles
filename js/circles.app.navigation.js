@@ -36,7 +36,6 @@
 
 var nav = {
 
-
 	initNavigation: function () {
 		this.initElementsAddMemberNavigation();
 		this.initElementsLinkCircleNavigation();
@@ -158,6 +157,7 @@ var nav = {
 		nav.displayAddMemberInput(false);
 		nav.displayLinkCircleInput(false);
 		nav.displayJoinCircleButton(false);
+		nav.displayInviteCircleButtons(false);
 	},
 
 	joinCircleAction: function () {
@@ -195,17 +195,37 @@ var nav = {
 		}
 	},
 
+	displayInviteCircleButtons: function (display) {
+		if (display) {
+			elements.joinCircleAccept.show(200);
+			elements.joinCircleReject.delay(200).show(200);
+		} else {
+			elements.joinCircleAccept.hide(200);
+			elements.joinCircleReject.hide(200);
+		}
+	},
+
 	displayJoinCircleButton: function (display) {
 		if (display) {
 			if (curr.circleStatus === 'Invited') {
-
-			} else if (curr.circleLevel === 0 && curr.circleStatus !== 'Requesting') {
-				elements.joinCircle.delay(200).show(200);
-				elements.leaveCircle.hide(200);
-			}
-			else {
-				elements.leaveCircle.delay(200).show(200);
 				elements.joinCircle.hide(200);
+				elements.leaveCircle.hide(200);
+				nav.displayInviteCircleButtons(true);
+
+			} else {
+				nav.displayInviteCircleButtons(false);
+
+				if (curr.circleLevel === 0 && curr.circleStatus !== 'Requesting') {
+					elements.joinCircle.delay(200).show(200);
+					elements.leaveCircle.hide(200);
+					elements.joinCircleAccept.hide(200);
+					elements.joinCircleReject.hide(200);
+
+				}
+				else {
+					elements.leaveCircle.delay(200).show(200);
+					elements.joinCircle.hide(200);
+				}
 			}
 		} else {
 			elements.joinCircle.hide(200);
@@ -291,7 +311,7 @@ var nav = {
 					return;
 				}
 
-				if (status === 'Member') {
+				if (status === 'Member' || status === 'Invited') {
 					statusSelect.append($('<option>', {
 						value: 'remove_member',
 						text: t('circles', 'Kick this member')
@@ -309,52 +329,10 @@ var nav = {
 					}));
 				}
 
-
 			}
 		)
-
-		//
-		// $('tr.entry').on('click', function () {
-		// 	nav.displayMemberDetails($(this).attr('member-id'), $(this).attr('member-level'),
-		// 		$(this).attr('member-levelstring'), $(this).attr('member-status'));
-		// });
-
 	},
 
-
-	displayMemberDetails: function (id, level, levelstring, status) {
-		//
-		// level = parseInt(level);
-		// curr.member = id;
-		// curr.memberLevel = level;
-		// curr.memberStatus = status;
-		//
-		// elements.rightPanel.fadeIn(300);
-		// elements.memberDetails.children('#member_name').text(id);
-		// if (level === 0) {
-		// 	levelstring += ' / ' + status;
-		// }
-		// elements.memberDetails.children('#member_levelstatus').text(levelstring);
-		//
-		// this.displayMemberDetailsAsModerator();
-	},
-
-
-	displayMemberDetailsAsModerator: function () {
-		// if (curr.circleLevel >= 6 && curr.memberLevel < curr.circleLevel) {
-		// 	if (curr.memberStatus === 'Requesting') {
-		// 		elements.memberRequest.fadeIn(300);
-		// 		elements.remMember.fadeOut(300);
-		// 	}
-		// 	else {
-		// 		elements.memberRequest.fadeOut(300);
-		// 		elements.remMember.fadeIn(300);
-		// 	}
-		// } else {
-		// 	elements.remMember.fadeOut(300);
-		// 	elements.memberRequest.fadeOut(300);
-		// }
-	},
 
 
 	displayCircleDetails: function (details) {
@@ -384,7 +362,6 @@ var nav = {
 		this.displayNonMemberInteraction(details);
 
 		if (details.user.level === 9) {
-			// elements.leaveCircle.hide();
 			elements.destroyCircle.show();
 			elements.buttonCircleSettings.show();
 			elements.buttonJoinCircle.hide();
@@ -402,14 +379,8 @@ var nav = {
 		elements.buttonCircleSettings.hide();
 		elements.destroyCircle.hide();
 
-		// if (details.user.status === 'Invited') {
-		// 	this.displayInvitedMemberInteraction();
-		// 	return;
-		// }
-		//
 		if (details.user.status === 'Requesting') {
 			elements.joinCircleRequest.show();
-			//this.displayRequestingMemberInteraction();
 			return;
 		}
 
@@ -420,25 +391,6 @@ var nav = {
 		setTimeout(function () {
 			nav.joinCircleAction();
 		}, 200);
-	},
-
-
-	displayInvitedMemberInteraction: function () {
-		elements.joinCircleInteraction.show();
-		elements.joinCircleInvite.show();
-		elements.joinCircleAccept.show();
-		elements.joinCircleReject.show();
-		// elements.joinCircle.hide();
-		// elements.leaveCircle.hide();
-		elements.destroyCircle.hide();
-	},
-
-	displayRequestingMemberInteraction: function () {
-		elements.joinCircleInteraction.show();
-		elements.joinCircleRequest.show();
-		// elements.joinCircle.hide();
-		// elements.leaveCircle.show();
-		elements.destroyCircle.hide();
 	}
 
 };

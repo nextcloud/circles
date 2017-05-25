@@ -70,7 +70,6 @@ var elements = {
 	buttonCircleSettings: null,
 	buttonAddMember: null,
 	buttonLinkCircle: null,
-	buttonDeleteCircle: null,
 
 
 	initElements: function () {
@@ -110,7 +109,6 @@ var elements = {
 		elements.buttonCircleSettings = $('#circle-actions-settings');
 		elements.buttonAddMember = $('#circle-actions-add');
 		elements.buttonLinkCircle = $('#circle-actions-link');
-		elements.buttonDeleteCircle = $('#circle-actions-delete');
 		elements.buttonJoinCircle = $('#circle-actions-join');
 	},
 
