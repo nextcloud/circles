@@ -249,46 +249,111 @@ var nav = {
 			elements.mainUIMembers.append(tmpl);
 		}
 
-		$('tr.entry').on('click', function () {
-			nav.displayMemberDetails($(this).attr('member-id'), $(this).attr('member-level'),
-				$(this).attr('member-levelstring'), $(this).attr('member-status'));
-		});
+		for (i = 0; i < 10; i++) {
+			if (curr.circleLevel < 9 && curr.circleLevel <= i) {
+				$('.level-select option[value="' + i + '"]').attr('disabled', 'disabled');
+			}
+		}
+
+
+		elements.mainUIMembers.children('tr.entry').each(function () {
+
+				var userId = $(this).attr('member-id');
+
+				//
+				// level
+				var level = $(this).attr('member-level');
+				var levelSelect = $(this).find('.level-select');
+				if (level === '0') {
+					levelSelect.hide();
+				}
+				else {
+					levelSelect.show(200).val(level);
+				}
+				levelSelect.on('change', function () {
+					actions.changeMemberLevel(userId, $(this).val());
+				});
+
+				//
+				// status
+				var status = $(this).attr('member-status');
+				var statusSelect = $(this).find('.status-select');
+
+				statusSelect.on('change', function () {
+					actions.changeMemberStatus(userId, $(this).val());
+				});
+				statusSelect.append($('<option>', {
+					value: status,
+					text: t('circles', status)
+				})).val(status);
+
+				if (curr.circleLevel <= $(this).attr('member-level')) {
+					return;
+				}
+
+				if (status === 'Member') {
+					statusSelect.append($('<option>', {
+						value: 'remove_member',
+						text: t('circles', 'Kick this member')
+					}));
+				}
+
+				if (status === 'Requesting') {
+					statusSelect.append($('<option>', {
+						value: 'accept_request',
+						text: t('circles', 'Accept the request')
+					}));
+					statusSelect.append($('<option>', {
+						value: 'dismiss_request',
+						text: t('circles', 'Dismiss the request')
+					}));
+				}
+
+
+			}
+		)
+
+		//
+		// $('tr.entry').on('click', function () {
+		// 	nav.displayMemberDetails($(this).attr('member-id'), $(this).attr('member-level'),
+		// 		$(this).attr('member-levelstring'), $(this).attr('member-status'));
+		// });
 
 	},
 
 
 	displayMemberDetails: function (id, level, levelstring, status) {
-
-		level = parseInt(level);
-		curr.member = id;
-		curr.memberLevel = level;
-		curr.memberStatus = status;
-
-		elements.rightPanel.fadeIn(300);
-		elements.memberDetails.children('#member_name').text(id);
-		if (level === 0) {
-			levelstring += ' / ' + status;
-		}
-		elements.memberDetails.children('#member_levelstatus').text(levelstring);
-
-		this.displayMemberDetailsAsModerator();
+		//
+		// level = parseInt(level);
+		// curr.member = id;
+		// curr.memberLevel = level;
+		// curr.memberStatus = status;
+		//
+		// elements.rightPanel.fadeIn(300);
+		// elements.memberDetails.children('#member_name').text(id);
+		// if (level === 0) {
+		// 	levelstring += ' / ' + status;
+		// }
+		// elements.memberDetails.children('#member_levelstatus').text(levelstring);
+		//
+		// this.displayMemberDetailsAsModerator();
 	},
 
 
 	displayMemberDetailsAsModerator: function () {
-		if (curr.circleLevel >= 6 && curr.memberLevel < curr.circleLevel) {
-			if (curr.memberStatus === 'Requesting') {
-				elements.memberRequest.fadeIn(300);
-				elements.remMember.fadeOut(300);
-			}
-			else {
-				elements.memberRequest.fadeOut(300);
-				elements.remMember.fadeIn(300);
-			}
-		} else {
-			elements.remMember.fadeOut(300);
-			elements.memberRequest.fadeOut(300);
-		}
+		// if (curr.circleLevel >= 6 && curr.memberLevel < curr.circleLevel) {
+		// 	if (curr.memberStatus === 'Requesting') {
+		// 		elements.memberRequest.fadeIn(300);
+		// 		elements.remMember.fadeOut(300);
+		// 	}
+		// 	else {
+		// 		elements.memberRequest.fadeOut(300);
+		// 		elements.remMember.fadeIn(300);
+		// 	}
+		// } else {
+		// 	elements.remMember.fadeOut(300);
+		// 	elements.memberRequest.fadeOut(300);
+		// }
 	},
 
 

@@ -38,9 +38,6 @@ var curr = {
 	circle: 0,
 	circleLevel: 0,
 	circleStatus: '',
-	member: '',
-	memberLevel: 0,
-	memberStatus: '',
 	searchCircle: '',
 	searchFilter: 0,
 	searchUser: '',
@@ -76,7 +73,7 @@ $(document).ready(function () {
 			elements.initAnimationNewCircle();
 			elements.initExperienceCirclesList();
 			elements.initExperienceCircleButtons();
-			elements.initExperienceMemberDetails();
+			//elements.initExperienceMemberDetails();
 			nav.initNavigation();
 		},
 
@@ -115,14 +112,14 @@ $(document).ready(function () {
 				self.retrieveSettingsResult(result)
 			}).fail(function () {
 				self.retrieveSettingsResult({status: -1});
-			});			
+			});
 		},
 
 		retrieveSettingsResult: function (result) {
 			if (result.status !== 1) {
 				return;
 			}
-			console.log("___" + JSON.stringify(result));
+
 			curr.allowed_federated = result.allowed_federated;
 			curr.allowed_circles = result.allowed_circles;
 		}

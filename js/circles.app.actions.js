@@ -194,6 +194,20 @@ var actions = {
 
 	},
 
+	changeMemberLevel: function (member, level) {
+		console.log("--" + member + " -- " + level);
+	},
+
+	changeMemberStatus: function (member, value) {
+
+		if (value === 'remove_member' || value === 'dismiss_request') {
+			api.removeMember(curr.circle, member, actions.removeMemberResult);
+		}
+		if (value === 'accept_request') {
+			api.addMember(curr.circle, member, actions.addMemberResult);
+		}
+	},
+
 
 	selectCircle: function (circle_id) {
 		curr.searchUser = '';

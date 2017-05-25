@@ -132,21 +132,6 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	display: none;
 }
 
-#mainui #rightpanel {
-	position: absolute;
-	top: 105px;
-	width: 300px;
-	right: 0px;
-	bottom: 0px;
-}
-
-#rightpanel .lightenbg {
-	width: 100%;
-	height: 100%;
-	background: #ffffffe0;
-	position: absolute;
-}
-
 #mainui #circle_details, #circle_details .lightenbg {
 	background-color: #0082c9;
 	width: 100%;
@@ -155,10 +140,6 @@ div.circle .owner, div.circle .type, div.circle .resume {
 
 #circle_details .lightenbg {
 	background: #ffffff99;
-	position: absolute;
-}
-
-#memberdetails {
 	position: absolute;
 }
 
@@ -180,6 +161,9 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	font-style: italic;
 }
 
+/**
+  deprecated
+ */
 #joincircle_invit, #joincircle_request {
 	margin-left: 15px;
 	margin-right: 15px;
@@ -190,11 +174,17 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	position: absolute;
 }
 
+/**
+  deprecated
+ */
 #joincircle_invit, #joincircle_request {
 	font-style: italic;
 	color: #555;
 }
 
+/**
+  deprecated
+ */
 #joincircle_interact {
 	margin-left: 15px;
 	margin-right: 15px;
@@ -204,18 +194,27 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	position: absolute;
 }
 
+/**
+  deprecated
+ */
 #joincircle_acceptinvit, #joincircle_rejectinvit {
 	margin-left: 15px;
 	margin-right: 5px;
 	width: 170px;
 }
 
+/**
+  deprecated
+ */
 #joincircle_rejectinvit {
 	margin-left: 5px;
 	margin-right: 15px;
 	width: 170px;
 }
 
+/**
+  deprecated
+ */
 #joincircle_invit, #joincircle_request {
 	margin-left: 30px;
 	margin-bottom: 15px;
@@ -224,7 +223,7 @@ div.circle .owner, div.circle .type, div.circle .resume {
 #mainui #memberslist {
 	position: absolute;
 	bottom: 15px;
-	right: 415px;
+	right: 15px;
 	left: 15px;
 	top: 120px;
 	overflow-y: auto;
@@ -240,7 +239,6 @@ div.circle .owner, div.circle .type, div.circle .resume {
 }
 
 #mainui #memberslist .entry td {
-	padding: 3px;
 	border-bottom: solid 1px #eee;
 	color: #555;
 }
@@ -262,35 +260,6 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	background: #eee;
 }
 
-#remmember {
-	margin-left: 15px;
-	margin-right: 15px;
-	margin-top: 30px;
-	width: 270px;
-	position: absolute;
-}
-
-#member_request {
-	margin-left: 15px;
-	margin-right: 15px;
-	margin-top: 30px;
-	width: 270px;
-}
-
-#joincircle_acceptrequest, #joincircle_rejectrequest {
-	width: 100%;
-}
-
-#member_name {
-	font-size: 22px;
-	padding: 15px 15px 0px 15px;
-}
-
-#member_levelstatus {
-	font-size: 14px;
-	padding: 15px 15px 0px 15px;
-}
-
 #emptycontent {
 	position: absolute;
 	z-index: -99;
@@ -298,7 +267,7 @@ div.circle .owner, div.circle .type, div.circle .resume {
 }
 
 /**
-
+ * v2
  */
 #circle-actions {
 	right: 10px;
@@ -355,4 +324,10 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	background-image: url('/apps/circles/img/join.svg');
 	background-size: 16px;
 	opacity: .2;
+}
+
+.level-select, .status-select {
+	border: 0px;
+	margin: 0px;
+	background: #fff;
 }
