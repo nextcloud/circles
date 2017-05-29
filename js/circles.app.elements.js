@@ -31,7 +31,7 @@
 /** global: actions */
 /** global: curr */
 /** global: api */
-
+/** global: define */
 
 var elements = {
 
