@@ -48,7 +48,7 @@
 				var result = {status: -1};
 				$.ajax({
 					method: 'PUT',
-					url: OC.generateUrl('/apps/circles/v1/v1/circles'),
+					url: OC.generateUrl('/apps/circles/v1/circles'),
 					data: {
 						type: type,
 						name: name
@@ -59,22 +59,6 @@
 					self.onCallback(callback, result);
 				});
 			};
-
-
-			// this.listCircles = function (type, callback) {
-			// 	var result = {status: -1};
-			// 	$.ajax({
-			// 		method: 'GET',
-			// 		url: OC.generateUrl(OC.linkTo('circles', 'circles')),
-			// 		data: {
-			// 			type: type
-			// 		}
-			// 	}).done(function (res) {
-			// 		self.onCallback(callback, res);
-			// 	}).fail(function () {
-			// 		self.onCallback(callback, result);
-			// 	});
-			// };
 
 
 			this.searchCircles = function (type, name, level, callback) {
