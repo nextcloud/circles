@@ -36,9 +36,8 @@
 
 var nav = {
 
-
 	initNavigation: function () {
-		this.initElementsMemberNavigation();
+		this.initElementsAddMemberNavigation();
 		this.initElementsLinkCircleNavigation();
 		this.initElementsCircleNavigation();
 
@@ -46,8 +45,9 @@ var nav = {
 	},
 
 
-	initElementsMemberNavigation: function () {
+	initElementsAddMemberNavigation: function () {
 
+		elements.addMember.hide();
 		elements.addMember.on('input propertychange paste focus', function () {
 			var search = $(this).val().trim();
 			if (search === '') {
@@ -63,12 +63,14 @@ var nav = {
 			}
 		}).blur(function () {
 			elements.membersSearchResult.fadeOut(400);
+			nav.circlesActionReturn();
 		});
 	},
 
 
 	initElementsLinkCircleNavigation: function () {
 
+		elements.linkCircle.hide();
 		elements.linkCircle.on('keydown', function (e) {
 
 			if (e.keyCode !== 13) {
@@ -76,17 +78,24 @@ var nav = {
 			}
 
 			api.linkCircle(curr.circle, elements.linkCircle.val(), actions.linkCircleResult);
+		}).blur(function () {
+			nav.circlesActionReturn();
 		});
 	},
 
+
 	initElementsCircleNavigation: function () {
 
+		elements.joinCircle.hide();
 		elements.joinCircle.on('click', function () {
 			api.joinCircle(curr.circle, actions.joinCircleResult);
+			nav.circlesActionReturn();
 		});
 
+		elements.leaveCircle.hide();
 		elements.leaveCircle.on('click', function () {
 			api.leaveCircle(curr.circle, actions.leaveCircleResult);
+			nav.circlesActionReturn();
 		});
 
 		elements.destroyCircle.on('click', function () {
@@ -142,6 +151,89 @@ var nav = {
 		});
 	},
 
+
+	circlesActionReturn: function () {
+		nav.displayCircleButtons(true);
+		nav.displayAddMemberInput(false);
+		nav.displayLinkCircleInput(false);
+		nav.displayJoinCircleButton(false);
+		nav.displayInviteCircleButtons(false);
+	},
+
+	joinCircleAction: function () {
+		nav.displayCircleButtons(false);
+		nav.displayAddMemberInput(false);
+		nav.displayLinkCircleInput(false);
+		nav.displayJoinCircleButton(true);
+	},
+
+	displayCircleButtons: function (display) {
+		if (display) {
+			elements.buttonCircleActionReturn.hide(200);
+			elements.buttonCircleActions.delay(200).show(200);
+		} else {
+			elements.buttonCircleActions.hide(200);
+			elements.buttonCircleActionReturn.delay(200).show(200);
+		}
+	},
+
+	displayAddMemberInput: function (display) {
+		if (display) {
+			elements.addMember.val('');
+			elements.addMember.delay(200).show(200);
+		} else {
+			elements.addMember.hide(200);
+		}
+	},
+
+	displayLinkCircleInput: function (display) {
+		if (display) {
+			elements.linkCircle.val('');
+			elements.linkCircle.delay(200).show(200);
+		} else {
+			elements.linkCircle.hide(200);
+		}
+	},
+
+	displayInviteCircleButtons: function (display) {
+		if (display) {
+			elements.joinCircleAccept.show(200);
+			elements.joinCircleReject.delay(200).show(200);
+		} else {
+			elements.joinCircleAccept.hide(200);
+			elements.joinCircleReject.hide(200);
+		}
+	},
+
+	displayJoinCircleButton: function (display) {
+		if (display) {
+			if (curr.circleStatus === 'Invited') {
+				elements.joinCircle.hide(200);
+				elements.leaveCircle.hide(200);
+				nav.displayInviteCircleButtons(true);
+
+			} else {
+				nav.displayInviteCircleButtons(false);
+
+				if (curr.circleLevel === 0 && curr.circleStatus !== 'Requesting') {
+					elements.joinCircle.delay(200).show(200);
+					elements.leaveCircle.hide(200);
+					elements.joinCircleAccept.hide(200);
+					elements.joinCircleReject.hide(200);
+
+				}
+				else {
+					elements.leaveCircle.delay(200).show(200);
+					elements.joinCircle.hide(200);
+				}
+			}
+		} else {
+			elements.joinCircle.hide(200);
+			elements.leaveCircle.hide(200);
+		}
+	},
+
+
 	/**
 	 *
 	 * @param display
@@ -177,81 +269,105 @@ var nav = {
 			elements.mainUIMembers.append(tmpl);
 		}
 
-		$('tr.entry').on('click', function () {
-			nav.displayMemberDetails($(this).attr('member-id'), $(this).attr('member-level'),
-				$(this).attr('member-levelstring'), $(this).attr('member-status'));
-		});
-	},
-
-
-	displayMemberDetails: function (id, level, levelstring, status) {
-
-		level = parseInt(level);
-		curr.member = id;
-		curr.memberLevel = level;
-		curr.memberStatus = status;
-
-		elements.rightPanel.fadeIn(300);
-		elements.memberDetails.children('#member_name').text(id);
-		if (level === 0) {
-			levelstring += ' / ' + status;
-		}
-		elements.memberDetails.children('#member_levelstatus').text(levelstring);
-
-		this.displayMemberDetailsAsModerator();
-	},
-
-
-	displayMemberDetailsAsModerator: function () {
-		if (curr.circleLevel >= 6 && curr.memberLevel < curr.circleLevel) {
-			if (curr.memberStatus === 'Requesting') {
-				elements.memberRequest.fadeIn(300);
-				elements.remMember.fadeOut(300);
+		for (i = 0; i < 10; i++) {
+			if (curr.circleLevel < 9 && curr.circleLevel <= i) {
+				$('.level-select option[value="' + i + '"]').attr('disabled', 'disabled');
 			}
-			else {
-				elements.memberRequest.fadeOut(300);
-				elements.remMember.fadeIn(300);
-			}
-		} else {
-			elements.remMember.fadeOut(300);
-			elements.memberRequest.fadeOut(300);
 		}
+
+
+		elements.mainUIMembers.children('tr.entry').each(function () {
+
+				var userId = $(this).attr('member-id');
+
+				//
+				// level
+				var level = $(this).attr('member-level');
+				var levelSelect = $(this).find('.level-select');
+				if (level === '0') {
+					levelSelect.hide();
+				}
+				else {
+					levelSelect.show(200).val(level);
+				}
+				levelSelect.on('change', function () {
+					actions.changeMemberLevel(userId, $(this).val());
+				});
+
+				//
+				// status
+				var status = $(this).attr('member-status');
+				var statusSelect = $(this).find('.status-select');
+
+				statusSelect.on('change', function () {
+					actions.changeMemberStatus(userId, $(this).val());
+				});
+				statusSelect.append($('<option>', {
+					value: status,
+					text: t('circles', status)
+				})).val(status);
+
+				if (curr.circleLevel <= $(this).attr('member-level')) {
+					return;
+				}
+
+				if (status === 'Member' || status === 'Invited') {
+					statusSelect.append($('<option>', {
+						value: 'remove_member',
+						text: t('circles', 'Kick this member')
+					}));
+				}
+
+				if (status === 'Requesting') {
+					statusSelect.append($('<option>', {
+						value: 'accept_request',
+						text: t('circles', 'Accept the request')
+					}));
+					statusSelect.append($('<option>', {
+						value: 'dismiss_request',
+						text: t('circles', 'Dismiss the request')
+					}));
+				}
+
+			}
+		)
 	},
+
 
 
 	displayCircleDetails: function (details) {
 		elements.circlesDetails.children('#name').text(details.name);
 		elements.circlesDetails.children('#type').text(t('circles', details.typeLongString));
+
+		elements.buttonCircleActions.show(300);
+		elements.addMember.hide(300);
 	},
 
 
 	displayMembersInteraction: function (details) {
-		if (details.user.level < 6) {
-			elements.addMember.hide();
+		if (details.user.level < define.levelModerator) {
+			elements.buttonAddMember.hide();
 		} else {
-			elements.addMember.show();
+			elements.buttonAddMember.show();
 		}
 
-		if (curr.allowed_federated === 0 || details.type === 'Personal' || details.user.level < 9) {
-			elements.linkCircle.hide();
+		if (curr.allowed_federated === '0' || details.type === 'Personal' ||
+			details.user.level < define.levelAdmin) {
+			elements.buttonLinkCircle.hide();
 		} else {
-			elements.linkCircle.show();
+			elements.buttonLinkCircle.show();
 		}
 
 		elements.joinCircleInteraction.hide();
 		this.displayNonMemberInteraction(details);
 
-		if (details.user.level === 9) {
-			elements.joinCircle.hide();
-			elements.leaveCircle.hide();
+		if (details.user.level === define.levelOwner) {
 			elements.destroyCircle.show();
+			elements.buttonCircleSettings.show();
+			elements.buttonJoinCircle.hide();
 			return;
 		}
 
-		if (details.user.level >= 1) {
-			elements.joinCircle.hide();
-			elements.leaveCircle.show();
-		}
 	},
 
 
@@ -260,39 +376,21 @@ var nav = {
 		elements.joinCircleReject.hide();
 		elements.joinCircleRequest.hide();
 		elements.joinCircleInvite.hide();
-
-		if (details.user.status === 'Invited') {
-			this.displayInvitedMemberInteraction();
-			return;
-		}
+		elements.buttonCircleSettings.hide();
+		elements.destroyCircle.hide();
 
 		if (details.user.status === 'Requesting') {
-			this.displayRequestingMemberInteraction();
+			elements.joinCircleRequest.show();
 			return;
 		}
 
-		elements.joinCircle.show();
-		elements.leaveCircle.hide();
-		elements.destroyCircle.hide();
-	},
+		if (details.user.level > 0) {
+			return;
+		}
 
-
-	displayInvitedMemberInteraction: function () {
-		elements.joinCircleInteraction.show();
-		elements.joinCircleInvite.show();
-		elements.joinCircleAccept.show();
-		elements.joinCircleReject.show();
-		elements.joinCircle.hide();
-		elements.leaveCircle.hide();
-		elements.destroyCircle.hide();
-	},
-
-	displayRequestingMemberInteraction: function () {
-		elements.joinCircleInteraction.show();
-		elements.joinCircleRequest.show();
-		elements.joinCircle.hide();
-		elements.leaveCircle.show();
-		elements.destroyCircle.hide();
+		setTimeout(function () {
+			nav.joinCircleAction();
+		}, 200);
 	}
 
 };

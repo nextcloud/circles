@@ -32,7 +32,7 @@ class BaseMember {
 
 	const LEVEL_NONE = 0;
 	const LEVEL_MEMBER = 1;
-	const LEVEL_MODERATOR = 6;
+	const LEVEL_MODERATOR = 4;
 	const LEVEL_ADMIN = 8;
 	const LEVEL_OWNER = 9;
 

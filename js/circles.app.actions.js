@@ -46,7 +46,7 @@ var actions = {
 		}
 
 		elements.removeMemberslistEntry(result.member.user_id);
-		if (result.member.level === 1) {
+		if (result.member.level === define.levelMember) {
 			OCA.notification.onSuccess(
 				t('circles', "You have successfully joined this circle"));
 		} else {
@@ -135,6 +135,7 @@ var actions = {
 		elements.mainUI.fadeIn(800);
 		curr.circle = result.circle_id;
 		curr.circleLevel = result.details.user.level;
+		curr.circleStatus = result.details.user.status;
 
 		nav.displayCircleDetails(result.details);
 		nav.displayMembersInteraction(result.details);
@@ -177,14 +178,14 @@ var actions = {
 			return;
 		}
 
-		if (result.link.status === 6) {
+		if (result.link.status === define.linkRequested) {
 			OCA.notification.onSuccess(
 				t('circles', "A link to <b>{remote}</b> has been requested.", {
 					remote: result.remote
 				}));
 		}
 
-		if (result.link.status === 9) {
+		if (result.link.status === define.linkUp) {
 			OCA.notification.onSuccess(
 				t('circles', "the link to <b>{remote}</b> is now up and running.", {
 					remote: result.remote
@@ -194,11 +195,28 @@ var actions = {
 	},
 
 
+	changeMemberLevel: function (member, level) {
+		api.levelMember(curr.circle, member, level, actions.levelMemberResult);
+		nav.circlesActionReturn();
+	},
+
+
+	changeMemberStatus: function (member, value) {
+		if (value === 'remove_member' || value === 'dismiss_request') {
+			api.removeMember(curr.circle, member, actions.removeMemberResult);
+		}
+		if (value === 'accept_request') {
+			api.addMember(curr.circle, member, actions.addMemberResult);
+		}
+	},
+
+
 	selectCircle: function (circle_id) {
 		curr.searchUser = '';
 		elements.addMember.val('');
 		elements.linkCircle.val('');
 
+		nav.circlesActionReturn();
 		api.detailsCircle(circle_id, actions.selectCircleResult);
 	},
 
@@ -306,6 +324,21 @@ var actions = {
 		OCA.notification.onFail(
 			t('circles', "Member '{name}' could not be removed from the circle",
 				{name: result.name}) +
+			': ' +
+			((result.error) ? result.error : t('circles', 'no error message')));
+	},
+
+	levelMemberResult: function (result) {
+		if (result.status === 1) {
+			OCA.notification.onSuccess(
+				t('circles', "Member '{name}' updated",
+					{name: result.name}));
+
+			nav.displayMembers(result.members);
+			return;
+		}
+		OCA.notification.onFail(
+			t('circles', "Member '{name}' could not be updated", {name: result.name}) +
 			': ' +
 			((result.error) ? result.error : t('circles', 'no error message')));
 	},

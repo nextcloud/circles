@@ -2,7 +2,6 @@
 	height: 50px;
 	margin: 0 auto;
 	padding: 20px;
-	padding: 20px;
 }
 
 #app-navigation .navigation-element, #app-navigation .navigation-element option {
@@ -15,7 +14,7 @@
 }
 
 #app-navigation select#circles_filters {
-	margin-top: 0px;
+	margin-top: 0;
 	font-style: italic;
 	color: #777777;
 }
@@ -132,21 +131,6 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	display: none;
 }
 
-#mainui #rightpanel {
-	position: absolute;
-	top: 105px;
-	width: 300px;
-	right: 0px;
-	bottom: 0px;
-}
-
-#rightpanel .lightenbg {
-	width: 100%;
-	height: 100%;
-	background: #ffffffe0;
-	position: absolute;
-}
-
 #mainui #circle_details, #circle_details .lightenbg {
 	background-color: #0082c9;
 	width: 100%;
@@ -155,10 +139,6 @@ div.circle .owner, div.circle .type, div.circle .resume {
 
 #circle_details .lightenbg {
 	background: #ffffff99;
-	position: absolute;
-}
-
-#memberdetails {
 	position: absolute;
 }
 
@@ -180,61 +160,10 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	font-style: italic;
 }
 
-#mainui #addmember, #joincircle_invit, #joincircle_request {
-	margin-left: 15px;
-	margin-right: 15px;
-	margin-top: 15px;
-	width: 370px;
-	right: 0px;
-	top: 0px;
-	position: absolute;
-}
-
-#mainui #linkcircle {
-	margin-left: 15px;
-	margin-right: 15px;
-	margin-top: 15px;
-	width: 370px;
-	right: 0px;
-	top: 45px;
-	position: absolute;
-}
-
-#joincircle_invit, #joincircle_request {
-	font-style: italic;
-	color: #555;
-}
-
-#mainui #joincircle, #mainui #leavecircle, #mainui #destroycircle, #joincircle_interact {
-	margin-left: 15px;
-	margin-right: 15px;
-	margin-top: 15px;
-	width: 400px;
-	top: 45px;
-	position: absolute;
-}
-
-#joincircle_acceptinvit, #joincircle_rejectinvit {
-	margin-left: 15px;
-	margin-right: 5px;
-	width: 170px;
-}
-
-#joincircle_rejectinvit {
-	margin-left: 5px;
-	margin-right: 15px;
-	width: 170px;
-}
-
-#joincircle_invit, #joincircle_request {
-	margin-left: 30px;
-	margin-bottom: 15px;
-}
-
 #mainui #memberslist {
 	position: absolute;
 	bottom: 15px;
-	right: 415px;
+	right: 15px;
 	left: 15px;
 	top: 120px;
 	overflow-y: auto;
@@ -250,29 +179,8 @@ div.circle .owner, div.circle .type, div.circle .resume {
 }
 
 #mainui #memberslist .entry td {
-	padding: 3px;
 	border-bottom: solid 1px #eee;
 	color: #555;
-}
-
-#members_search_result {
-	z-index: 5;
-	border-radius: 4px;
-	border: solid 1px #00000022;
-	color: #000000aa;
-	background: #ffffffdd;
-	max-height: 400px;
-	overflow-y: auto;
-	position: absolute;
-	right: 10px;
-	top: 60px;
-	width: 380px;
-}
-
-#members_search_result > #mainui #rightpanel #addmember {
-	position: relative;
-	width: 300px;
-	top: 5px;
 }
 
 .members_search {
@@ -292,37 +200,71 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	background: #eee;
 }
 
-#remmember {
-	margin-left: 15px;
-	margin-right: 15px;
-	margin-top: 30px;
-	width: 270px;
-	position: absolute;
-}
-
-#member_request {
-	margin-left: 15px;
-	margin-right: 15px;
-	margin-top: 30px;
-	width: 270px;
-}
-
-#joincircle_acceptrequest, #joincircle_rejectrequest {
-	width: 100%;
-}
-
-#member_name {
-	font-size: 22px;
-	padding: 15px 15px 0px 15px;
-}
-
-#member_levelstatus {
-	font-size: 14px;
-	padding: 15px 15px 0px 15px;
-}
-
 #emptycontent {
 	position: absolute;
 	z-index: -99;
 	left: 200px;
+}
+
+#circle-actions {
+	right: 10px;
+	position: absolute;
+	top: 20px;
+}
+
+#circle-actions button {
+	padding: 15px;
+	background-color: transparent;
+	border: none;
+	opacity: .5;
+}
+
+#circle-actions button:hover {
+	opacity: .9;
+}
+
+#circle-actions-return {
+	float: right;
+	margin-top: 6px;
+}
+
+#linkcircle, #addmember, #joincircle, #leavecircle {
+	width: 250px;
+}
+
+#members_search_result > #addmember {
+	position: relative;
+	width: 220px;
+	right: 20px;
+	top: 5px;
+}
+
+#members_search_result {
+	z-index: 5;
+	border-radius: 4px;
+	border: solid 1px #00000022;
+	color: #000000aa;
+	background: #ffffffdd;
+	max-height: 400px;
+	overflow-y: auto;
+	position: absolute;
+	top: 45px;
+	width: 260px;
+}
+
+.icon-add-user {
+	background-image: url('/apps/circles/img/add-user.svg');
+	background-size: 16px;
+}
+
+.icon-join {
+	background-image: url('/apps/circles/img/join.svg');
+	background-size: 16px;
+	opacity: .2;
+}
+
+.level-select, .status-select {
+	border: 0;
+	margin: 0;
+	background: #fff;
 }

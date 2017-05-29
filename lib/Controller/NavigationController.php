@@ -27,6 +27,10 @@
 namespace OCA\Circles\Controller;
 
 use \OCA\Circles\Model\Circle;
+use OCA\Circles\Service\ConfigService;
+use OCA\Testing\Config;
+use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 
 class NavigationController extends BaseController {
@@ -59,6 +63,27 @@ class NavigationController extends BaseController {
 
 		return new TemplateResponse(
 			'circles', 'navigate', $data
+		);
+	}
+
+
+	/**
+	 * @NoCSRFRequired
+	 * @NoAdminRequired
+	 * @NoSubAdminRequired
+	 *
+	 * @return DataResponse
+	 */
+	public function settings() {
+		$data = [
+			'allowed_federated' => $this->configService->getAppValue(ConfigService::CIRCLES_ALLOW_FEDERATED),
+			'allowed_circles'   => $this->configService->getAppValue(ConfigService::CIRCLES_ALLOW_CIRCLES),
+			'status'            => 1
+		];
+
+		return new DataResponse(
+			$data,
+			Http::STATUS_OK
 		);
 	}
 

@@ -209,10 +209,10 @@ class FederatedService {
 	 */
 	private function generateLinkRemoteURL($remote) {
 		if (strpos($remote, 'https') !== 0) {
-			$remote = 'https://'.$remote;
+			$remote = 'https://' . $remote;
 		}
 
-		return rtrim($remote, '/').'/index.php/apps/circles/circles/link/';
+		return rtrim($remote, '/') . '/index.php/apps/circles/v1/circles/link/';
 	}
 
 	/**
@@ -222,10 +222,10 @@ class FederatedService {
 	 */
 	private function generatePayloadDeliveryURL($remote) {
 		if (strpos($remote, 'https') !== 0) {
-			$remote = 'https://'.$remote;
+			$remote = 'https://' . $remote;
 		}
 
-		return rtrim($remote, '/').'/index.php/apps/circles/circles/payload/';
+		return rtrim($remote, '/') . '/index.php/apps/circles/v1/circles/payload/';
 	}
 
 
@@ -251,7 +251,7 @@ class FederatedService {
 		$client = $this->clientService->newClient();
 
 		try {
-			$request = $client->put(
+			$request = $client->post(
 				$this->generateLinkRemoteURL($link->getAddress()), [
 																	 'body'            => $args,
 																	 'timeout'         => 10,
@@ -411,7 +411,7 @@ class FederatedService {
 
 			$result = json_decode($request->getBody(), true);
 			$this->miscService->log(
-				"initiateRemoteShare result: ".$uniqueId.'  ----  '.var_export($result, true)
+				"initiateRemoteShare result: " . $uniqueId . '  ----  ' . var_export($result, true)
 			);
 
 			return true;

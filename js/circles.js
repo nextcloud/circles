@@ -48,7 +48,7 @@
 				var result = {status: -1};
 				$.ajax({
 					method: 'PUT',
-					url: OC.generateUrl('/apps/circles/circles'),
+					url: OC.generateUrl('/apps/circles/v1/circles'),
 					data: {
 						type: type,
 						name: name
@@ -61,27 +61,11 @@
 			};
 
 
-			// this.listCircles = function (type, callback) {
-			// 	var result = {status: -1};
-			// 	$.ajax({
-			// 		method: 'GET',
-			// 		url: OC.generateUrl(OC.linkTo('circles', 'circles')),
-			// 		data: {
-			// 			type: type
-			// 		}
-			// 	}).done(function (res) {
-			// 		self.onCallback(callback, res);
-			// 	}).fail(function () {
-			// 		self.onCallback(callback, result);
-			// 	});
-			// };
-
-
 			this.searchCircles = function (type, name, level, callback) {
 				var result = {status: -1};
 				$.ajax({
 					method: 'GET',
-					url: OC.generateUrl('/apps/circles/circles'),
+					url: OC.generateUrl('/apps/circles/v1/circles'),
 					data: {
 						type: type,
 						name: name,
@@ -99,7 +83,7 @@
 				var result = {status: -1};
 				$.ajax({
 					method: 'GET',
-					url: OC.generateUrl('/apps/circles/circles/' + circleId)
+					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId)
 				}).done(function (res) {
 					self.onCallback(callback, res);
 				}).fail(function () {
@@ -112,7 +96,7 @@
 				var result = {status: -1};
 				$.ajax({
 					method: 'PUT',
-					url: OC.generateUrl('/apps/circles/circles/' + circleId + '/members'),
+					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/members'),
 					data: {
 						name: member
 					}
@@ -128,7 +112,7 @@
 				var result = {status: -1};
 				$.ajax({
 					method: 'DELETE',
-					url: OC.generateUrl('/apps/circles/circles/' + circleId + '/members'),
+					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/members'),
 					data: {
 						member: member
 					}
@@ -140,11 +124,30 @@
 			};
 
 
+
+			this.levelMember = function (circleId, member, level, callback) {
+				var result = {status: -1};
+				$.ajax({
+					method: 'POST',
+					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/level'),
+					data: {
+						member: member,
+						level: level
+					}
+				}).done(function (res) {
+					self.onCallback(callback, res);
+				}).fail(function () {
+					self.onCallback(callback, result);
+				});
+			};
+
+
+
 			this.joinCircle = function (circleId, callback) {
 				var result = {status: -1};
 				$.ajax({
 					method: 'GET',
-					url: OC.generateUrl('/apps/circles/circles/' + circleId + '/join'),
+					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/join'),
 					data: {}
 				}).done(function (res) {
 					self.onCallback(callback, res);
@@ -158,7 +161,7 @@
 				var result = {status: -1};
 				$.ajax({
 					method: 'GET',
-					url: OC.generateUrl('/apps/circles/circles/' + circleId + '/leave'),
+					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/leave'),
 					data: {}
 				}).done(function (res) {
 					self.onCallback(callback, res);
@@ -172,7 +175,7 @@
 				var result = {status: -1};
 				$.ajax({
 					method: 'DELETE',
-					url: OC.generateUrl('/apps/circles/circles/' + circleId),
+					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId),
 					data: {}
 				}).done(function (res) {
 					self.onCallback(callback, res);
@@ -186,7 +189,7 @@
 				var result = {status: -1};
 				$.ajax({
 					method: 'PUT',
-					url: OC.generateUrl('/apps/circles/circles/' + circleId + '/share'),
+					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/share'),
 					data: {
 						source: source,
 						type: type,
@@ -203,8 +206,8 @@
 			this.linkCircle = function (circleId, remote, callback) {
 				var result = {status: -1};
 				$.ajax({
-					method: 'PUT',
-					url: OC.generateUrl('/apps/circles/circles/' + circleId + '/link'),
+					method: 'POST',
+					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/link'),
 					data: {
 						remote: remote
 					}

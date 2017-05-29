@@ -30,46 +30,51 @@ return [
 	],
 	'routes' => [
 		['name' => 'Navigation#navigate', 'url' => '/', 'verb' => 'GET'],
-		['name' => 'Circles#create', 'url' => '/circles', 'verb' => 'PUT'],
-		['name' => 'Circles#listing', 'url' => '/circles', 'verb' => 'GET'],
+		['name' => 'Navigation#settings', 'url' => '/settings', 'verb' => 'GET'],
+		['name' => 'Circles#create', 'url' => '/v1/circles', 'verb' => 'PUT'],
+		['name' => 'Circles#listing', 'url' => '/v1/circles', 'verb' => 'GET'],
 		[
-			'name'         => 'Circles#details', 'url' => '/circles/{id}', 'verb' => 'GET',
+			'name'         => 'Circles#details', 'url' => '/v1/circles/{id}', 'verb' => 'GET',
 			'requirements' => ['id' => '\d+'],
 		],
 		[
-			'name'         => 'Circles#join', 'url' => '/circles/{id}/join', 'verb' => 'GET',
+			'name'         => 'Circles#destroy', 'url' => '/v1/circles/{id}', 'verb' => 'DELETE',
 			'requirements' => ['id' => '\d+'],
 		],
 		[
-			'name'         => 'Circles#destroy', 'url' => '/circles/{id}', 'verb' => 'DELETE',
+			'name'         => 'Circles#join', 'url' => '/v1/circles/{id}/join', 'verb' => 'GET',
 			'requirements' => ['id' => '\d+'],
 		],
 		[
-			'name'         => 'Circles#leave', 'url' => '/circles/{id}/leave', 'verb' => 'GET',
+			'name'         => 'Circles#leave', 'url' => '/v1/circles/{id}/leave', 'verb' => 'GET',
 			'requirements' => ['id' => '\d+'],
 		],
-		['name' => 'Circles#link', 'url' => '/circles/{id}/link', 'verb' => 'PUT'],
-		['name' => 'Federated#requestedLink', 'url' => '/circles/link/', 'verb' => 'PUT'],
+		['name' => 'Circles#link', 'url' => '/v1/circles/{id}/link', 'verb' => 'POST'],
+		['name' => 'Federated#requestedLink', 'url' => '/v1/circles/link/', 'verb' => 'POST'],
 		[
-			'name' => 'Federated#initFederatedDelivery', 'url' => '/circles/payload/',
+			'name' => 'Federated#initFederatedDelivery', 'url' => '/v1/circles/payload/',
 			'verb' => 'POST'
 		],
 		[
-			'name' => 'Federated#receiveFederatedDelivery', 'url' => '/circles/payload/',
+			'name' => 'Federated#receiveFederatedDelivery', 'url' => '/v1/circles/payload/',
 			'verb' => 'PUT'
 		],
-		['name' => 'Members#search', 'url' => '/circles/{id}/members', 'verb' => 'GET'],
+		['name' => 'Members#search', 'url' => '/v1/circles/{id}/members', 'verb' => 'GET'],
 		[
-			'name'         => 'Members#add', 'url' => '/circles/{id}/members', 'verb' => 'PUT',
+			'name'         => 'Members#add', 'url' => '/v1/circles/{id}/members', 'verb' => 'PUT',
 			'requirements' => ['id' => '\d+'],
 		],
 		[
-			'name'         => 'Members#remove', 'url' => '/circles/{id}/members',
+			'name'         => 'Members#remove', 'url' => '/v1/circles/{id}/members',
 			'verb'         => 'DELETE',
 			'requirements' => ['id' => '\d+'],
 		],
 		[
-			'name'         => 'Shares#create', 'url' => '/circles/{id}/share', 'verb' => 'PUT',
+			'name'         => 'Members#level', 'url' => '/v1/circles/{id}/level', 'verb' => 'POST',
+			'requirements' => ['id' => '\d+'],
+		],
+		[
+			'name'         => 'Shares#create', 'url' => '/v1/circles/{id}/share', 'verb' => 'PUT',
 			'requirements' => ['id' => '\d+'],
 		],
 

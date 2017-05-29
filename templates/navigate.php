@@ -198,72 +198,83 @@ style('circles', 'navigation');
 			<div id="name"></div>
 			<div id="type"></div>
 
-
 			<div id="joincircle_invit"><?php p(
 					$l->t("Pending invitation to join this circle")
 				); ?></div>
-			<div id="joincircle_interact">
-				<input id="joincircle_acceptinvit" type="submit"
-					   value="<?php p($l->t('Accept the invitation')); ?>"/>
-				<input id="joincircle_rejectinvit" type="submit"
-					   value="<?php p($l->t('Decline the invitation')); ?>"/>
-			</div>
+			<div id="joincircle_request"><?php p(
+					$l->t('You have a pending request to join this circle')
+				); ?></div>
 
-			<div id="joincircle_request">You have a pending request to join this circle</div>
-			<input id="destroycircle" type="submit"
-				   value="<?php p($l->t('Delete this circle')); ?>"/>
-			<input id="joincircle" type="submit"
-				   value="<?php p($l->t('Join this circle')); ?>"/>
-			<input id="leavecircle" type="submit"
-				   value="<?php p($l->t('Leave this circle')); ?>"/>
-			<input id="addmember" type="text"
-				   placeholder="<?php p($l->t('Add a member')); ?>"/>
-			<input id="linkcircle" type="text"
-				   placeholder="<?php p($l->t('Link to a circle')); ?>"/>
-			<div id="members_search_result">
-
-			</div>
-
-
-		</div>
-
-		<div id="memberslist">
-			<table id="memberslist_table">
-				<tr class="header">
-					<td class="username"><?php p($l->t('Username')); ?></td>
-					<td class="level"><?php p($l->t('Level')); ?></td>
-					<td class="status"><?php p($l->t('Status')); ?></td>
-					<td class="joined"><?php p($l->t('Joined')); ?></td>
-				</tr>
-			</table>
-
-			<script id="tmpl_member" type="text/template">
-				<tr class="entry" member-id="%username%" member-level="%level%"
-					member-levelstring="%levelstring%" member-status="%status%">
-					<td class="username">%username%</td>
-					<td class="level">%levelstring%</td>
-					<td class="status">%status%</td>
-					<td class="joined">%joined%</td>
-				</tr>
-			</script>
-		</div>
-
-		<div id="rightpanel">
-			<div class="lightenbg"></div>
-			<div id="memberdetails">
-				<div id="member_name"></div>
-				<div id="member_levelstatus"></div>
-				<input id="remmember" type="submit" value="<?php p($l->t('Kick this member')); ?>"/>
-				<div id="member_request">
-					<input id="joincircle_acceptrequest" type="submit"
-						   value="<?php p($l->t('Accept the request')); ?>"/>
-					<input id="joincircle_rejectrequest" type="submit"
-						   value="<?php p($l->t('Dismiss the request')); ?>"/>
+			<div id="circle-actions">
+				<div id="circle-actions-buttons">
+					<button id="circle-actions-add" class="icon-add-user"
+							title="Add a member"></button>
+					<button id="circle-actions-join" class="icon-join"
+							title="Join this circle"></button>
+					<button id="circle-actions-link" class="icon-public"
+							title="Link a circle"></button>
+					<button id="circle-actions-delete" class="icon-delete"
+							title="Delete circle"></button>
+					<button id="circle-actions-settings" class="icon-settings-dark"
+							title="Edit circle"></button>
 				</div>
+
+				<div id="circle-actions-more">
+					<input id="joincircle_acceptinvit" type="submit"
+						   value="<?php p($l->t('Accept the invitation')); ?>"/>
+					<input id="joincircle_rejectinvit" type="submit"
+						   value="<?php p($l->t('Decline the invitation')); ?>"/>
+					<input id="joincircle" type="submit"
+						   value="<?php p($l->t('Join this circle')); ?>"/>
+					<input id="leavecircle" type="submit"
+						   value="<?php p($l->t('Leave this circle')); ?>"/>
+					<input id="addmember" type="text"
+						   placeholder="<?php p($l->t('Add a member')); ?>"/>
+					<input id="linkcircle" type="text"
+						   placeholder="<?php p($l->t('Link to a circle')); ?>"/>
+					<button id="circle-actions-return" class="icon-close"
+							title="Return to menu"></button>
+				</div>
+
+
+				<div id="members_search_result"></div>
+			</div>
+			<div id="memberslist">
+				<table id="memberslist_table">
+					<tr class="header">
+						<td class="username"><?php p($l->t('Username')); ?></td>
+						<td class="level"><?php p($l->t('Level')); ?></td>
+						<td class="status"><?php p($l->t('Status')); ?></td>
+						<td class="joined"><?php p($l->t('Joined')); ?></td>
+					</tr>
+				</table>
+
+				<script id="tmpl_member" type="text/template">
+					<tr class="entry" member-id="%username%" member-level="%level%"
+						member-status="%status%">
+						<td class="username">%username%</td>
+						<td class="level">
+							<select class="level-select">
+								<option value="1"><?php p($l->t('Member')); ?></option>
+								<option value="4"><?php p($l->t('Moderator')); ?></option>
+								<option value="8"><?php p($l->t('Admin')); ?></option>
+								<option value="9"><?php p($l->t('Owner')); ?></option>
+							</select>
+						</td>
+						<td class="status">
+							<select class="status-select">
+							</select>
+						</td>
+						<td class="joined">%joined%</td>
+						<td>
+							<div class="icon-checkmark" style="display: none;"></div>
+						</td>
+
+					</tr>
+				</script>
 			</div>
 
 		</div>
+
 	</div>
-
-
 </div>

@@ -65,6 +65,12 @@ var elements = {
 	remMember: null,
 	linkCircle: null,
 
+	buttonCircleActions: null,
+	buttonCircleActionReturn: null,
+	buttonCircleSettings: null,
+	buttonAddMember: null,
+	buttonLinkCircle: null,
+
 
 	initElements: function () {
 
@@ -91,12 +97,19 @@ var elements = {
 		elements.joinCircleInvite = $('#joincircle_invit');
 		elements.joinCircle = $('#joincircle');
 		elements.leaveCircle = $('#leavecircle');
-		elements.destroyCircle = $('#destroycircle');
+		elements.destroyCircle = $('#circle-actions-delete');
 
 		elements.rightPanel = $('#rightpanel');
 		elements.addMember = $('#addmember');
 		elements.remMember = $('#remmember');
 		elements.linkCircle = $('#linkcircle');
+
+		elements.buttonCircleActions = $('#circle-actions-buttons');
+		elements.buttonCircleActionReturn = $('#circle-actions-return');
+		elements.buttonCircleSettings = $('#circle-actions-settings');
+		elements.buttonAddMember = $('#circle-actions-add');
+		elements.buttonLinkCircle = $('#circle-actions-link');
+		elements.buttonJoinCircle = $('#circle-actions-join');
 	},
 
 
@@ -177,18 +190,35 @@ var elements = {
 	},
 
 
-	initExperienceMemberDetails: function () {
-		elements.memberRequest.hide();
-		elements.remMember.on('click', function () {
-			api.removeMember(curr.circle, curr.member, actions.removeMemberResult);
+	/**
+	 *
+	 */
+	initExperienceCircleButtons: function () {
+
+		elements.buttonCircleActionReturn.hide();
+		elements.buttonCircleActionReturn.on('click', function () {
+			nav.circlesActionReturn();
 		});
 
-		$('#joincircle_acceptrequest').on('click', function () {
-			api.addMember(curr.circle, curr.member, actions.addMemberResult);
+		elements.buttonAddMember.on('click', function () {
+			nav.displayCircleButtons(false);
+			nav.displayAddMemberInput(true);
+			nav.displayLinkCircleInput(false);
+			nav.displayJoinCircleButton(false);
 		});
-		$('#joincircle_rejectrequest').on('click', function () {
-			api.removeMember(curr.circle, curr.member, actions.removeMemberResult);
+
+		elements.buttonLinkCircle.on('click', function () {
+			nav.displayCircleButtons(false);
+			nav.displayAddMemberInput(false);
+			nav.displayLinkCircleInput(true);
+			nav.displayJoinCircleButton(false);
 		});
+
+		elements.buttonJoinCircle.on('click', function () {
+			nav.joinCircleAction();
+		});
+
+
 
 	},
 
@@ -294,7 +324,6 @@ var elements = {
 
 		tmpl = tmpl.replace(/%username%/g, escapeHTML(entry.user_id));
 		tmpl = tmpl.replace(/%level%/g, escapeHTML(entry.level));
-		tmpl = tmpl.replace(/%levelstring%/g, escapeHTML(entry.level_string));
 		tmpl = tmpl.replace(/%status%/g, escapeHTML(entry.status));
 		tmpl = tmpl.replace(/%joined%/g, escapeHTML(entry.joined));
 
