@@ -140,7 +140,7 @@ var nav = {
 
 		this.resetCirclesTypeSelection(type);
 		elements.resetCirclesList();
-		api.searchCircles(type, '', 0, resultCircles.listCirclesResult);
+		api.listCircles(type, '', 0, resultCircles.listCirclesResult);
 	},
 
 

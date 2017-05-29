@@ -43,6 +43,14 @@
 
 			var self = this;
 
+
+			/**
+			 * API function to create a new Circle.
+			 *
+			 * @param type
+			 * @param name
+			 * @param callback
+			 */
 			this.createCircle = function (type, name, callback) {
 
 				var result = {status: -1};
@@ -61,7 +69,7 @@
 			};
 
 
-			this.searchCircles = function (type, name, level, callback) {
+			this.listCircles = function (type, name, level, callback) {
 				var result = {status: -1};
 				$.ajax({
 					method: 'GET',
@@ -92,13 +100,13 @@
 			};
 
 
-			this.addMember = function (circleId, member, callback) {
+			this.addMember = function (circleId, userId, callback) {
 				var result = {status: -1};
 				$.ajax({
 					method: 'PUT',
 					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/members'),
 					data: {
-						name: member
+						name: userId
 					}
 				}).done(function (res) {
 					self.onCallback(callback, res);
@@ -108,13 +116,13 @@
 			};
 
 
-			this.removeMember = function (circleId, member, callback) {
+			this.removeMember = function (circleId, userId, callback) {
 				var result = {status: -1};
 				$.ajax({
 					method: 'DELETE',
 					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/members'),
 					data: {
-						member: member
+						member: userId
 					}
 				}).done(function (res) {
 					self.onCallback(callback, res);
@@ -122,7 +130,6 @@
 					self.onCallback(callback, result);
 				});
 			};
-
 
 
 			this.levelMember = function (circleId, member, level, callback) {
@@ -140,7 +147,6 @@
 					self.onCallback(callback, result);
 				});
 			};
-
 
 
 			this.joinCircle = function (circleId, callback) {

@@ -169,7 +169,7 @@ var elements = {
 			}
 
 			curr.searchCircle = search;
-			api.searchCircles(curr.circlesType, curr.searchCircle, curr.searchFilter,
+			api.listCircles(curr.circlesType, curr.searchCircle, curr.searchFilter,
 				resultCircles.listCirclesResult);
 		});
 	},
@@ -184,7 +184,7 @@ var elements = {
 			}
 
 			curr.searchFilter = searchFilter;
-			api.searchCircles(curr.circlesType, curr.searchCircle, curr.searchFilter,
+			api.listCircles(curr.circlesType, curr.searchCircle, curr.searchFilter,
 				resultCircles.listCirclesResult);
 		});
 
