@@ -141,7 +141,7 @@ class Circle extends BaseCircle implements \JsonSerializable {
 	public function cantBePersonal() {
 		if ($this->getType() === self::CIRCLES_PERSONAL) {
 			throw new CircleTypeNotValid(
-				$this->l10n->t("This option is not available to personal circles")
+				$this->l10n->t("This option is not available for personal circles")
 			);
 		}
 	}
