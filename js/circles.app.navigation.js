@@ -345,14 +345,14 @@ var nav = {
 
 
 	displayMembersInteraction: function (details) {
-		if (details.user.level < 6) {
+		if (details.user.level < define.levelModerator) {
 			elements.buttonAddMember.hide();
 		} else {
 			elements.buttonAddMember.show();
 		}
 
 		if (curr.allowed_federated === '0' || details.type === 'Personal' ||
-			details.user.level < 8) {
+			details.user.level < define.levelAdmin) {
 			elements.buttonLinkCircle.hide();
 		} else {
 			elements.buttonLinkCircle.show();
@@ -361,7 +361,7 @@ var nav = {
 		elements.joinCircleInteraction.hide();
 		this.displayNonMemberInteraction(details);
 
-		if (details.user.level === 9) {
+		if (details.user.level === define.levelOwner) {
 			elements.destroyCircle.show();
 			elements.buttonCircleSettings.show();
 			elements.buttonJoinCircle.hide();

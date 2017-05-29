@@ -46,7 +46,7 @@ var actions = {
 		}
 
 		elements.removeMemberslistEntry(result.member.user_id);
-		if (result.member.level === 1) {
+		if (result.member.level === define.levelMember) {
 			OCA.notification.onSuccess(
 				t('circles', "You have successfully joined this circle"));
 		} else {
@@ -178,14 +178,14 @@ var actions = {
 			return;
 		}
 
-		if (result.link.status === 6) {
+		if (result.link.status === define.linkRequested) {
 			OCA.notification.onSuccess(
 				t('circles', "A link to <b>{remote}</b> has been requested.", {
 					remote: result.remote
 				}));
 		}
 
-		if (result.link.status === 9) {
+		if (result.link.status === define.linkUp) {
 			OCA.notification.onSuccess(
 				t('circles', "the link to <b>{remote}</b> is now up and running.", {
 					remote: result.remote

@@ -45,6 +45,15 @@ var curr = {
 	allowed_circles: 0
 };
 
+var define = {
+	levelMember: 1,
+	levelModerator: 4,
+	levelAdmin: 8,
+	levelOwner: 9,
+	linkRequested: 6,
+	linkUp: 9
+};
+
 
 $(document).ready(function () {
 

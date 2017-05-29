@@ -34,6 +34,7 @@ use OCA\Circles\Exceptions\MemberIsNotAdminException;
 use OCA\Circles\Exceptions\MemberIsNotModeratorException;
 use OCA\Circles\Exceptions\MemberIsNotOwnerException;
 use OCA\Circles\Exceptions\MemberIsOwnerException;
+use OCA\Circles\Exceptions\ModeratorIsNotHighEnoughException;
 
 class Member extends BaseMember implements \JsonSerializable {
 
@@ -120,6 +121,21 @@ class Member extends BaseMember implements \JsonSerializable {
 		if ($this->getLevel() < self::LEVEL_MODERATOR) {
 			throw new MemberIsNotModeratorException(
 				$this->l10n->t('This member is not a moderator')
+			);
+		}
+	}
+
+
+	/**
+	 * @param $level
+	 *
+	 * @throws ModeratorIsNotHighEnoughException
+	 */
+	public function hasToBeHigherLevel($level) {
+
+		if ($this->getLevel() <= $level) {
+			throw new ModeratorIsNotHighEnoughException(
+				$this->l10n->t('Not enough privileges')
 			);
 		}
 	}

@@ -166,24 +166,45 @@ class MembersService {
 	 */
 	public function levelMember($circleId, $name, $level) {
 
-		$this->miscService->log("''' level: " . $circleId . ' ' . $name . " " . $level);
+		try {
+			if ((int)$level === Member::LEVEL_OWNER) {
+				$this->switchOwner($circleId, $name);
+			} else {
+				$isMod = $this->dbMembers->getMemberFromCircle($circleId, $this->userId);
+				$isMod->hasToBeModerator();
+				$isMod->hasToBeHigherLevel($level);
+
+				$member = $this->dbMembers->getMemberFromCircle($circleId, $name);
+				$member->cantBeOwner();
+				$isMod->hasToBeHigherLevel($member->getLevel());
+
+				$member->setLevel($level);
+				$this->dbMembers->editMember($member);
+			}
+		} catch (\Exception $e) {
+			throw $e;
+		}
+		$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
+
+		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getUser());
+	}
+
+
+	public function switchOwner($circleId, $name) {
 		try {
 			$isMod = $this->dbMembers->getMemberFromCircle($circleId, $this->userId);
-			$isMod->hasToBeModerator();
+			$isMod->hasToBeOwner();
+			$member = $this->dbMembers->getMemberFromCircle($circleId, $name);
+
+			$member->setLevel(Member::LEVEL_OWNER);
+			$this->dbMembers->editMember($member);
+
+			$isMod->setLevel(Member::LEVEL_ADMIN);
+			$this->dbMembers->editMember($isMod);
+
 		} catch (\Exception $e) {
 			throw $e;
 		}
-
-		try {
-//			$member = $this->dbMembers->getMemberFromCircle($circleId, $name);
-//			$member->cantBeOwner();
-		} catch (\Exception $e) {
-			throw $e;
-		}
-
-		$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
-		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getUser());
-
 	}
 
 
@@ -199,13 +220,11 @@ class MembersService {
 		try {
 			$isMod = $this->dbMembers->getMemberFromCircle($circleId, $this->userId);
 			$isMod->hasToBeModerator();
-		} catch (\Exception $e) {
-			throw $e;
-		}
 
-		try {
 			$member = $this->dbMembers->getMemberFromCircle($circleId, $name);
 			$member->cantBeOwner();
+
+			$isMod->hasToBeHigherLevel($member->getLevel());
 		} catch (\Exception $e) {
 			throw $e;
 		}

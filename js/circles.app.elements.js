@@ -222,24 +222,6 @@ var elements = {
 
 	},
 
-	/**
-	 *
-	 */
-	// initExperienceMemberDetails: function () {
-	// 	elements.memberRequest.hide();
-	// 	elements.remMember.on('click', function () {
-	// 		api.removeMember(curr.circle, curr.member, actions.removeMemberResult);
-	// 	});
-	//
-	// 	$('#joincircle_acceptrequest').on('click', function () {
-	// 		api.addMember(curr.circle, curr.member, actions.addMemberResult);
-	// 	});
-	// 	$('#joincircle_rejectrequest').on('click', function () {
-	// 		api.removeMember(curr.circle, curr.member, actions.removeMemberResult);
-	// 	});
-	//
-	// },
-
 
 	/**
 	 *
