@@ -34,8 +34,10 @@ use OCA\Circles\Db\FederatedLinksRequest;
 use OCA\Circles\Exceptions\FederatedCircleLinkFormatException;
 use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 use OCA\Circles\Exceptions\CircleTypeNotValid;
+use OCA\Circles\Exceptions\FederatedLinkDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedRemoteCircleDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedRemoteDoesNotAllowException;
+use OCA\Circles\Exceptions\FrameAlreadyExistException;
 use OCA\Circles\Exceptions\LinkCreationException;
 use OCA\Circles\Exceptions\MemberIsNotAdminException;
 use OCA\Circles\Model\Circle;
@@ -195,7 +197,9 @@ class FederatedService {
 			$this->requestLink($circle, $link);
 
 		} catch (Exception $e) {
-			$this->federatedLinksRequest->delete($link);
+			if ($link !== null) {
+				$this->federatedLinksRequest->delete($link);
+			}
 			throw $e;
 		}
 
@@ -215,6 +219,7 @@ class FederatedService {
 
 		return rtrim($remote, '/') . '/index.php/apps/circles/v1/circles/link/';
 	}
+
 
 	/**
 	 * @param string $remote
@@ -368,22 +373,19 @@ class FederatedService {
 
 		$link = $this->circlesRequest->getLinkFromToken((string)$token, (string)$uniqueId);
 		if ($link === null) {
-			return false;
-			// TODO: throw Exception
+			throw new FederatedLinkDoesNotExistException('unknown_link');
 		}
 
 		if ($this->circlesRequest->getFrame($link->getCircleId(), $frame->getUniqueId())) {
-			$this->miscService->log("FRAME ALREADY EXIST !!!");
-
-			return false;
-			// TODO: throw Exception
+			$this->miscService->log("Frame already exist");
+			throw new FrameAlreadyExistException('shares_is_already_known');
 		}
-
 
 		$circle = $this->circlesRequest->getDetails($link->getCircleId());
 		if ($circle === null) {
 			throw new Exception('unknown_circle');
 		}
+
 		$frame->setCircleId($link->getCircleId());
 		$frame->setCircleName($circle->getName());
 

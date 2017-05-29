@@ -177,13 +177,19 @@ class FederatedController extends BaseController {
 		}
 
 		$frame = SharingFrame::fromJSON($item);
-		if (!$this->federatedService->receiveFrame($token, $uniqueId, $frame)) {
-			return $this->federatedFail('shares_is_already_known');
+		try {
+			$this->federatedService->receiveFrame($token, $uniqueId, $frame);
+		} catch (Exception $e) {
+			return $this->federatedFail($e->getMessage());
 		}
 
 		$this->asyncAndLeaveClientOutOfThis('done');
 
-		$this->federatedService->sendRemoteShare($frame);
+		try {
+			$this->federatedService->sendRemoteShare($frame);
+		} catch (Exception $e) {
+		}
+
 		exit();
 	}
 
