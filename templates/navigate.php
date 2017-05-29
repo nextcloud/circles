@@ -198,19 +198,9 @@ style('circles', 'navigation');
 			<div id="name"></div>
 			<div id="type"></div>
 
-
 			<div id="joincircle_invit"><?php p(
 					$l->t("Pending invitation to join this circle")
 				); ?></div>
-			<!--			<div id="joincircle_interact">-->
-			<!--				<input id="joincircle_acceptinvit" type="submit"-->
-			<!--					   value="-->
-			<?php //p($l->t('Accept the invitation')); ?><!--"/>-->
-			<!--				<input id="joincircle_rejectinvit" type="submit"-->
-			<!--					   value="-->
-			<?php //p($l->t('Decline the invitation')); ?><!--"/>-->
-			<!--			</div>-->
-
 			<div id="joincircle_request"><?php p(
 					$l->t('You have a pending request to join this circle')
 				); ?></div>

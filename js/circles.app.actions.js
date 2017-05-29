@@ -196,7 +196,8 @@ var actions = {
 
 
 	changeMemberLevel: function (member, level) {
-		console.log("--" + member + " -- " + level);
+		api.levelMember(curr.circle, member, level, actions.levelMemberResult);
+		nav.circlesActionReturn();
 	},
 
 
@@ -323,6 +324,21 @@ var actions = {
 		OCA.notification.onFail(
 			t('circles', "Member '{name}' could not be removed from the circle",
 				{name: result.name}) +
+			': ' +
+			((result.error) ? result.error : t('circles', 'no error message')));
+	},
+
+	levelMemberResult: function (result) {
+		if (result.status === 1) {
+			OCA.notification.onSuccess(
+				t('circles', "Member '{name}' updated",
+					{name: result.name}));
+
+			nav.displayMembers(result.members);
+			return;
+		}
+		OCA.notification.onFail(
+			t('circles', "Member '{name}' could not be updated", {name: result.name}) +
 			': ' +
 			((result.error) ? result.error : t('circles', 'no error message')));
 	},

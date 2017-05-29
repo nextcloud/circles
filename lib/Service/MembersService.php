@@ -159,6 +159,37 @@ class MembersService {
 	/**
 	 * @param $circleId
 	 * @param $name
+	 * @param $level
+	 *
+	 * @return array
+	 * @throws \Exception
+	 */
+	public function levelMember($circleId, $name, $level) {
+
+		$this->miscService->log("''' level: " . $circleId . ' ' . $name . " " . $level);
+		try {
+			$isMod = $this->dbMembers->getMemberFromCircle($circleId, $this->userId);
+			$isMod->hasToBeModerator();
+		} catch (\Exception $e) {
+			throw $e;
+		}
+
+		try {
+//			$member = $this->dbMembers->getMemberFromCircle($circleId, $name);
+//			$member->cantBeOwner();
+		} catch (\Exception $e) {
+			throw $e;
+		}
+
+		$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
+		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getUser());
+
+	}
+
+
+	/**
+	 * @param $circleId
+	 * @param $name
 	 *
 	 * @return array
 	 * @throws \Exception

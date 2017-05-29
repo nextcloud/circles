@@ -70,6 +70,44 @@ class MembersController extends BaseController {
 	 *
 	 * @param $id
 	 * @param $member
+	 * @param $level
+	 *
+	 * @return DataResponse
+	 * @internal param string $name
+	 */
+	public function level($id, $member, $level) {
+
+		try {
+			$data = $this->membersService->levelMember($id, $member, $level);
+		} catch (\Exception $e) {
+			return
+				$this->fail(
+					[
+						'circle_id' => $id,
+						'name'      => $member,
+						'level'     => $level,
+						'error'     => $e->getMessage()
+					]
+				);
+		}
+
+		return $this->success(
+			[
+				'circle_id' => $id,
+				'name'      => $member,
+				'level'     => $level,
+				'members'   => $data,
+			]
+		);
+	}
+
+
+	/**
+	 * @NoAdminRequired
+	 * @NoSubAdminRequired
+	 *
+	 * @param $id
+	 * @param $member
 	 *
 	 * @return DataResponse
 	 * @internal param string $name
