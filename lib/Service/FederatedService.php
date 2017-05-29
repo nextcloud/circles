@@ -36,6 +36,7 @@ use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 use OCA\Circles\Exceptions\CircleTypeNotValid;
 use OCA\Circles\Exceptions\FederatedRemoteCircleDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedRemoteDoesNotAllowException;
+use OCA\Circles\Exceptions\LinkCreationException;
 use OCA\Circles\Exceptions\MemberIsNotAdminException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
@@ -312,19 +313,46 @@ class FederatedService {
 	 * @param Circle $circle
 	 * @param FederatedLink $link
 	 *
-	 * @return bool
+	 * @throws Exception
 	 */
 	public function initiateLink(Circle $circle, FederatedLink & $link) {
 
-		$link->setCircleId($circle->getId());
+		try {
+			$this->checkLinkRequestValidity($circle, $link);
+			$link->setCircleId($circle->getId());
 
-		if ($circle->getType() === Circle::CIRCLES_PUBLIC) {
-			$link->setStatus(FederatedLink::STATUS_LINK_UP);
-		} else {
-			$link->setStatus(FederatedLink::STATUS_REQUEST_SENT);
+			if ($circle->getType() === Circle::CIRCLES_PUBLIC) {
+				$link->setStatus(FederatedLink::STATUS_LINK_UP);
+			} else {
+				$link->setStatus(FederatedLink::STATUS_REQUEST_SENT);
+			}
+
+			$this->federatedLinksRequest->create($link);
+		} catch (Exception $e) {
+			throw $e;
+		}
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 *
+	 * @throws LinkCreationException
+	 */
+	private function checkLinkRequestValidity($circle, $link) {
+
+		if ($circle === null) {
+			throw new LinkCreationException('circle_does_not_exist');
 		}
 
-		return $this->federatedLinksRequest->create($link);
+		if ($circle->getUniqueId() === $link->getUniqueId()) {
+			throw new LinkCreationException('duplicate_unique_id');
+		}
+
+		if ($this->getLink($circle->getId(), $link->getUniqueId()) !== null) {
+			throw new LinkCreationException('duplicate_link');
+		}
 	}
 
 
