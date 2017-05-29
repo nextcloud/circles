@@ -115,7 +115,6 @@ var resultCircles = {
 	},
 
 
-
 	selectCircleResult: function (result) {
 
 		elements.mainUIMembers.emptyTable();
@@ -165,8 +164,7 @@ var resultCircles = {
 		elements.navigation.children('.circle').on('click', function () {
 			actions.selectCircle($(this).attr('circle-id'));
 		});
-	},
-
+	}
 
 
 };

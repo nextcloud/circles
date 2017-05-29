@@ -62,10 +62,7 @@ var resultLinks = {
 					remote: result.remote
 				}));
 		}
-
-	},
-
-
+	}
 
 
 };

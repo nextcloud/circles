@@ -108,7 +108,6 @@ var resultMembers = {
 			t('circles', "Member '{name}' could not be updated", {name: result.name}) +
 			': ' +
 			((result.error) ? result.error : t('circles', 'no error message')));
-	},
-
+	}
 
 };
