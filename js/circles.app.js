@@ -31,6 +31,8 @@
 /** global: nav */
 /** global: actions */
 /** global: elements */
+/** global: results */
+
 
 var api = OCA.Circles.api;
 var curr = {
@@ -66,6 +68,9 @@ $(document).ready(function () {
 		$.extend(Navigation.prototype, nav);
 		$.extend(Navigation.prototype, elements);
 		$.extend(Navigation.prototype, actions);
+		$.extend(Navigation.prototype, resultCircles);
+		$.extend(Navigation.prototype, resultMembers);
+		$.extend(Navigation.prototype, resultLinks);
 
 		this.init();
 		this.initTransifex();

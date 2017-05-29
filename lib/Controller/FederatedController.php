@@ -26,6 +26,7 @@
 
 namespace OCA\Circles\Controller;
 
+use Exception;
 use OC\AppFramework\Http;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\SharingFrame;
@@ -89,31 +90,21 @@ class FederatedController extends BaseController {
 			return $this->federatedFail('federated_not_allowed');
 		}
 
-		$circle = $this->circlesService->infoCircleByName($linkTo);
-		if ($circle === null) {
-			return $this->federatedFail('circle_does_not_exist');
-		}
+		try {
+			$link = new FederatedLink();
+			$link->setToken($token)
+				 ->setUniqueId($uniqueId)
+				 ->setRemoteCircleName($sourceName)
+				 ->setAddress($address);
 
-		if ($circle->getUniqueId() === $uniqueId) {
-			return $this->federatedFail('duplicate_unique_id');
-		}
+			$circle = $this->circlesService->infoCircleByName($linkTo);
+			$this->federatedService->initiateLink($circle, $link);
 
-		if ($this->federatedService->getLink($circle->getId(), $uniqueId) !== null) {
-			return $this->federatedFail('duplicate_link');
-		}
-
-		$link = new FederatedLink();
-		$link->setToken($token)
-			 ->setUniqueId($uniqueId)
-			 ->setRemoteCircleName($sourceName)
-			 ->setAddress($address);
-
-		if ($this->federatedService->initiateLink($circle, $link)) {
 			return $this->federatedSuccess(
 				['status' => $link->getStatus(), 'uniqueId' => $circle->getUniqueId()], $link
 			);
-		} else {
-			return $this->federatedFail('link_failed');
+		} catch (Exception $e) {
+			return $this->federatedFail($e->getMessage());
 		}
 	}
 
@@ -211,7 +202,7 @@ class FederatedController extends BaseController {
 		ob_start();
 		echo($result);
 		$size = ob_get_length();
-		header('Content-Length: '.$size);
+		header('Content-Length: ' . $size);
 		ob_end_flush();
 		flush();
 	}

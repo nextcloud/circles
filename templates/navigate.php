@@ -24,18 +24,18 @@
  *
  */
 
-script('circles', 'circles');
-
 script('circles', 'vendor/notyf');
 style('circles', 'notyf');
 
-script('circles', 'circles.app.elements');
-script('circles', 'circles.app.actions');
-script('circles', 'circles.app.navigation');
-script('circles', 'circles.app');
+script(
+	'circles', [
+				 'circles', 'circles.app.elements', 'circles.app.actions', 'circles.app.navigation',
+				 'circles.app', 'circles.app.results.circles', 'circles.app.results.members',
+				 'circles.app.results.links',
+			 ]
+);
 
 style('circles', 'navigation');
-
 ?>
 
 

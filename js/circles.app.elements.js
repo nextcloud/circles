@@ -29,9 +29,10 @@
 
 /** global: nav */
 /** global: actions */
+/** global: resultCircles */
 /** global: curr */
 /** global: api */
-
+/** global: define */
 
 var elements = {
 
@@ -169,7 +170,7 @@ var elements = {
 
 			curr.searchCircle = search;
 			api.searchCircles(curr.circlesType, curr.searchCircle, curr.searchFilter,
-				actions.listCirclesResult);
+				resultCircles.listCirclesResult);
 		});
 	},
 
@@ -184,7 +185,7 @@ var elements = {
 
 			curr.searchFilter = searchFilter;
 			api.searchCircles(curr.circlesType, curr.searchCircle, curr.searchFilter,
-				actions.listCirclesResult);
+				resultCircles.listCirclesResult);
 		});
 
 	},
@@ -238,7 +239,7 @@ var elements = {
 
 		elements.newSubmit.on('click', function () {
 			api.createCircle(elements.newType.val(), elements.newName.val(),
-				actions.createCircleResult);
+				resultCircles.createCircleResult);
 		});
 
 	},
