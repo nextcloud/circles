@@ -30,6 +30,8 @@
 /** global: actions */
 /** global: nav */
 /** global: elements */
+/** global: resultCircles */
+/** global: resultLinks */
 /** global: curr */
 /** global: api */
 /** global: define */
@@ -77,7 +79,7 @@ var nav = {
 				return;
 			}
 
-			api.linkCircle(curr.circle, elements.linkCircle.val(), actions.linkCircleResult);
+			api.linkCircle(curr.circle, elements.linkCircle.val(), resultLinks.linkCircleResult);
 		}).blur(function () {
 			nav.circlesActionReturn();
 		});
@@ -88,13 +90,13 @@ var nav = {
 
 		elements.joinCircle.hide();
 		elements.joinCircle.on('click', function () {
-			api.joinCircle(curr.circle, actions.joinCircleResult);
+			api.joinCircle(curr.circle, resultCircles.joinCircleResult);
 			nav.circlesActionReturn();
 		});
 
 		elements.leaveCircle.hide();
 		elements.leaveCircle.on('click', function () {
-			api.leaveCircle(curr.circle, actions.leaveCircleResult);
+			api.leaveCircle(curr.circle, resultCircles.leaveCircleResult);
 			nav.circlesActionReturn();
 		});
 
@@ -104,17 +106,17 @@ var nav = {
 				t('circles', 'Please confirm'),
 				function (e) {
 					if (e === true) {
-						api.destroyCircle(curr.circle, actions.destroyCircleResult);
+						api.destroyCircle(curr.circle, resultCircles.destroyCircleResult);
 					}
 				});
 		});
 
 		elements.joinCircleAccept.on('click', function () {
-			api.joinCircle(curr.circle, actions.joinCircleResult);
+			api.joinCircle(curr.circle, resultCircles.joinCircleResult);
 		});
 
 		elements.joinCircleReject.on('click', function () {
-			api.leaveCircle(curr.circle, actions.leaveCircleResult);
+			api.leaveCircle(curr.circle, resultCircles.leaveCircleResult);
 		});
 	},
 
@@ -138,7 +140,7 @@ var nav = {
 
 		this.resetCirclesTypeSelection(type);
 		elements.resetCirclesList();
-		api.searchCircles(type, '', 0, actions.listCirclesResult);
+		api.searchCircles(type, '', 0, resultCircles.listCirclesResult);
 	},
 
 
