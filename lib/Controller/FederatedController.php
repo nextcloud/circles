@@ -28,6 +28,7 @@ namespace OCA\Circles\Controller;
 
 use Exception;
 use OC\AppFramework\Http;
+use OCA\Circles\Exceptions\LinkCreationException;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\FederatedService;
@@ -91,13 +92,17 @@ class FederatedController extends BaseController {
 		}
 
 		try {
+			$circle = $this->circlesService->infoCircleByName($linkTo);
+			if ($circle === null) {
+				throw new LinkCreationException('circle_does_not_exist');
+			}
+
 			$link = new FederatedLink();
 			$link->setToken($token)
 				 ->setUniqueId($uniqueId)
 				 ->setRemoteCircleName($sourceName)
 				 ->setAddress($address);
 
-			$circle = $this->circlesService->infoCircleByName($linkTo);
 			$this->federatedService->initiateLink($circle, $link);
 
 			return $this->federatedSuccess(

@@ -347,10 +347,6 @@ class FederatedService {
 	 */
 	private function checkLinkRequestValidity($circle, $link) {
 
-		if ($circle === null) {
-			throw new LinkCreationException('circle_does_not_exist');
-		}
-
 		if ($circle->getUniqueId() === $link->getUniqueId()) {
 			throw new LinkCreationException('duplicate_unique_id');
 		}
