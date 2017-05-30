@@ -28,14 +28,31 @@
 namespace OCA\Circles\Tests;
 
 
+use OCA\Circles\Model\Circle;
+
 class Env implements \PHPUnit_Framework_TestListener {
 
 
 	const ENV_TEST_OWNER1 = '_test_circles_owner1';
 	const ENV_TEST_OWNER2 = '_test_circles_owner2';
+	const ENV_TEST_OWNER3 = '_test_circles_owner3';
+
+	const ENV_TEST_ADMIN1 = '_test_circles_admin1';
+	const ENV_TEST_ADMIN2 = '_test_circles_admin2';
+	const ENV_TEST_ADMIN3 = '_test_circles_admin3';
+
+	const ENV_TEST_MODERATOR1 = '_test_circles_mod1';
+	const ENV_TEST_MODERATOR2 = '_test_circles_mod2';
+	const ENV_TEST_MODERATOR3 = '_test_circles_mod3';
+
+	const ENV_TEST_MEMBER1 = '_test_circles_member1';
+	const ENV_TEST_MEMBER2 = '_test_circles_member2';
+	const ENV_TEST_MEMBER3 = '_test_circles_member3';
 
 	const ENV_TEST_USER1 = '_test_circles_user1';
 	const ENV_TEST_USER2 = '_test_circles_user2';
+	const ENV_TEST_USER3 = '_test_circles_user3';
+
 
 	/** @var array<string> */
 	private $users;
@@ -69,12 +86,7 @@ class Env implements \PHPUnit_Framework_TestListener {
 		}
 
 		$userManager = \OC::$server->getUserManager();
-		$this->users = [
-			self::ENV_TEST_OWNER1,
-			self::ENV_TEST_OWNER2,
-			self::ENV_TEST_USER1,
-			self::ENV_TEST_USER2
-		];
+		$this->users = self::listUsers();
 
 		foreach ($this->users AS $UID) {
 			if ($userManager->userExists($UID) === false) {
@@ -118,6 +130,34 @@ class Env implements \PHPUnit_Framework_TestListener {
 		$userSession->setUser(null);
 	}
 
+	public static function listUsers() {
+		return [
+			self::ENV_TEST_OWNER1,
+			self::ENV_TEST_OWNER2,
+			self::ENV_TEST_OWNER3,
+			self::ENV_TEST_ADMIN1,
+			self::ENV_TEST_ADMIN2,
+			self::ENV_TEST_ADMIN3,
+			self::ENV_TEST_MODERATOR1,
+			self::ENV_TEST_MODERATOR2,
+			self::ENV_TEST_MODERATOR3,
+			self::ENV_TEST_MEMBER1,
+			self::ENV_TEST_MEMBER2,
+			self::ENV_TEST_MEMBER3,
+			self::ENV_TEST_USER1,
+			self::ENV_TEST_USER2,
+			self::ENV_TEST_USER3
+		];
+	}
+
+	public static function listCircleTypes() {
+		return [
+			Circle::CIRCLES_PUBLIC,
+			Circle::CIRCLES_PRIVATE,
+			Circle::CIRCLES_HIDDEN,
+			Circle::CIRCLES_PERSONAL
+		];
+	}
 }
 
 
