@@ -86,17 +86,17 @@ function detailsCircleResult(result)
 ### PHP - list of API calls
 
 **Create a Circle**
->     $result = OCA\Circles\Api\Circles::createCircle($type, $name);
+>     $result = OCA\Circles\Api\v1\Circles::createCircle($type, $name);
 
 
 
 **Listing Circles/Searching Circles**
->     $result = OCA\Circles\Api\Circles::listCircles($type, [$name]);
+>     $result = OCA\Circles\Api\v1\Circles::listCircles($type, [$name]);
 
 
 
 **Details of a Circle**
->     $result = OCA\Circles\Api\Circles::detailsCircle($circle_id);
+>     $result = OCA\Circles\Api\v1\Circles::detailsCircle($circle_id);
 
 
 # Credits
