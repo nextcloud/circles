@@ -44,7 +44,7 @@ class MemberTest extends \PHPUnit_Framework_TestCase {
 
 		$this->assertSame(0, Member::LEVEL_NONE);
 		$this->assertSame(1, Member::LEVEL_MEMBER);
-		$this->assertSame(6, Member::LEVEL_MODERATOR);
+		$this->assertSame(4, Member::LEVEL_MODERATOR);
 		$this->assertSame(8, Member::LEVEL_ADMIN);
 		$this->assertSame(9, Member::LEVEL_OWNER);
 
