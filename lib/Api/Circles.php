@@ -63,7 +63,7 @@ class Circles {
 	}
 
 
-	public static function deleteCircle($circleId) {
+	public static function destroyCircle($circleId) {
 		$c = self::getContainer();
 
 		return $c->query('CirclesService')

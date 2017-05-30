@@ -46,7 +46,7 @@ class ShareesTest extends \PHPUnit_Framework_TestCase {
 
 	protected function tearDown() {
 		Env::setUser(Env::ENV_TEST_OWNER1);
-		Circles::deleteCircle($this->circle->getId());
+		Circles::destroyCircle($this->circle->getId());
 		Env::logout();
 	}
 

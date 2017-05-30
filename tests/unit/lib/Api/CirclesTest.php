@@ -83,7 +83,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 		Env::setUser($user);
 		try {
 			foreach ($this->circles AS $circle) {
-				Circles::deleteCircle($circle->getId());
+				Circles::destroyCircle($circle->getId());
 			}
 		} catch (\Exception $e) {
 			throw $e;
