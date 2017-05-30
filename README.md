@@ -24,79 +24,13 @@ Select this circle to create a public community that will not be displayed to ev
 - A **Private Circle** require an invitation or a confirmation from an admin, This way you can create a team or a group of people.
 his is the best circle if you are looking for privacy when sharing your files or else.
 
+
+
 ***
-# API
+# API (PHP & Javascript)
 
-```php
-CIRCLES_PERSONAL is 1 or 'personal';
-CIRCLES_HIDDEN is 2 or 'hidden';
-CIRCLES_PRIVATE is 4 or 'private';
-CIRCLES_PUBLIC is 8 or 'public';
-```
-***
+[Please visit our wiki to read more about the API.](https://github.com/nextcloud/circles/wiki)
 
-
-
-### Javascript - list of API calls:
-
-How to include the Circles.js in your templates:
->      <?php script('circles', 'circles'); ?>
-
-
-
-**Create a Circle**
->     OCA.Circles.api.createCircle(type, name, callback);
-```javascript
-OCA.Circles.api.createCircle('public', 'test-public', creationDone);
-function creationDone(result)
-{
-	console.log('status: ' + JSON.stringify(result));
-}     
-```
-
-
-
-
-**Searching Circles**
->     OCA.Circles.api.listCircle(type, callback);
-```javascript
-OCA.Circles.api.listCircles('all', 'test', 0, listingDone);
-function listingDone(result)
-{
-	console.log('status: ' + JSON.stringify(result));
-}     
-```
-
-
-
-**Details of a Circle**
->     OCA.Circles.api.detailsCircle(circle_id, callback);
-```javascript
-OCA.Circles.api.detailsCircle(42, detailsCircleResult);
-function detailsCircleResult(result)
-{
-	console.log('status: ' + JSON.stringify(result));
-}     
-```
-
-
-
-
-
-### PHP - list of API calls
-
-**Create a Circle**
->     $result = OCA\Circles\Api\v1\Circles::createCircle($type, $name);
-
-
-
-**Listing Circles/Searching Circles**
->     $result = OCA\Circles\Api\v1\Circles::listCircles($type, [$name]);
-
-
-
-**Details of a Circle**
->     $result = OCA\Circles\Api\v1\Circles::detailsCircle($circle_id);
 
 
 # Credits
