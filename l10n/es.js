@@ -1,11 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Cannot join this circle" : "No se puede unir a este círculo",
-    "no error message" : "no hay mensaje de error",
-    "Cannot leave this circle" : "No puede dejar este círculo",
-    " {type} '{name}' created" : " {type} '{name}' creado",
-    "Issue while retrieving the list of circles" : "Incidencia mientras se solicitaba la lista de círculos",
     "Personal circle" : "Círculo personal",
     "Hidden circle" : "Círculo oculto",
     "Private circle" : "Círculo privado",
@@ -30,6 +25,21 @@ OC.L10N.register(
     "Blocked" : "Bloqueado",
     "Kicked" : "Hechado",
     "Please confirm" : "Por favor, confirma",
+    "Kick this member" : "Sacar este participante",
+    "Accept the request" : "Aceptar la solicitud",
+    "Cannot join this circle" : "No se puede unir a este círculo",
+    "no error message" : "no hay mensaje de error",
+    "You have successfully joined this circle" : "Te has unido con éxito a este círculo",
+    "You have requested to join this circle" : "Has pedido unirte a este círculo",
+    "You have successfully left this circle" : "Has abandonado con éxito este círculo",
+    "Cannot leave this circle" : "No puede dejar este círculo",
+    "You have successfully deleted this circle" : "Has borrado con éxito este círculo",
+    "Cannot delete this circle" : "No se puede borrar este círculo",
+    " {type} '{name}' created" : " {type} '{name}' creado",
+    " {type} '{name}' could not be created" : "No se pudo crear  {type} '{name}' ",
+    "Issue while retrieving the details of this circle" : "Incidencia al recuperar los detalles de este círculo",
+    "Issue while retrieving the list of circles" : "Incidencia mientras se solicitaba la lista de círculos",
+    "A link to <b>{remote}</b> could not be initiated" : "Un enlace a <b>{remote}</b> no se puedo iniciar",
     "Circles" : "Círculos",
     "The name of your circle cannot start with this character" : "El nombre del círculo no puede iniciar con este carácter",
     "This member does not exist" : "Este miembro no existe",
@@ -50,8 +60,6 @@ OC.L10N.register(
     "Username" : "Nombre de usuario",
     "Level" : "Nivel",
     "Status" : "Estado",
-    "Joined" : "Ingresó",
-    "Kick this member" : "Sacar este participante",
-    "Accept the request" : "Aceptar la solicitud"
+    "Joined" : "Ingresó"
 },
 "nplurals=2; plural=(n != 1);");
