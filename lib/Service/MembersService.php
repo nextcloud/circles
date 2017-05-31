@@ -182,6 +182,7 @@ class MembersService {
 				$isMod->hasToBeHigherLevel($level);
 
 				$member = $this->dbMembers->getMemberFromCircle($circleId, $name);
+				$member->hasToBeMember();
 				$member->cantBeOwner();
 				$isMod->hasToBeHigherLevel($member->getLevel());
 
