@@ -1,12 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Cannot join this circle" : "Nun pues xunite a esti círculu",
-    "no error message" : "ensin mensaxe de fallu",
-    "You have requested to join this circle" : "Solicitesti xunite a esti círculu",
-    "Cannot leave this circle" : "Nun se pue dexar esti círculu",
-    "Cannot delete this circle" : "Nun pue desaniciase esti círculu",
-    "Issue while retrieving the details of this circle" : "Problemes entrín se recibíen los detalles d'esti circulu",
     "Personal circle" : "Círculu personal",
     "Hidden circle" : "Cículu anubríu",
     "Private circle" : "Círculu priváu",
@@ -21,6 +15,13 @@ OC.L10N.register(
     "Member" : "Miembru",
     "Moderator" : "Llendador",
     "Unknown" : "Desconozse",
+    "Accept the request" : "Aceutar la solicitú",
+    "Cannot join this circle" : "Nun pues xunite a esti círculu",
+    "no error message" : "ensin mensaxe de fallu",
+    "You have requested to join this circle" : "Solicitesti xunite a esti círculu",
+    "Cannot leave this circle" : "Nun se pue dexar esti círculu",
+    "Cannot delete this circle" : "Nun pue desaniciase esti círculu",
+    "Issue while retrieving the details of this circle" : "Problemes entrín se recibíen los detalles d'esti circulu",
     "This member is not the owner of the circle" : "Esti miembru nun ye'l dueñu'l círculu",
     "This member is the owner of the circle" : "Esti miembru ye'l dueñu'l círculu",
     "You are already a member of this circle" : "Yá yes miembru d'esti círculu",
@@ -35,7 +36,6 @@ OC.L10N.register(
     "Search circles" : "Guetar círculos",
     "Circles you belong to" : "Círculos nos que tas",
     "Username" : "Nome d'usuariu",
-    "Status" : "Estáu",
-    "Accept the request" : "Aceutar la solicitú"
+    "Status" : "Estáu"
 },
 "nplurals=2; plural=(n != 1);");
