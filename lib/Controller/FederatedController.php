@@ -77,6 +77,7 @@ class FederatedController extends BaseController {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
+	 * @param array $apiVersion
 	 * @param string $token
 	 * @param string $uniqueId
 	 * @param string $sourceName
@@ -85,7 +86,7 @@ class FederatedController extends BaseController {
 	 *
 	 * @return DataResponse
 	 */
-	public function requestedLink($token, $uniqueId, $sourceName, $linkTo, $address) {
+	public function requestedLink($apiVersion, $token, $uniqueId, $sourceName, $linkTo, $address) {
 
 		if ($uniqueId === '' || !$this->configService->isFederatedAllowed()) {
 			return $this->federatedFail('federated_not_allowed');
@@ -127,12 +128,13 @@ class FederatedController extends BaseController {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
+	 * @param $apiVersion
 	 * @param $circleId
 	 * @param $uniqueId
 	 *
 	 * @return DataResponse
 	 */
-	public function initFederatedDelivery($circleId, $uniqueId) {
+	public function initFederatedDelivery($apiVersion, $circleId, $uniqueId) {
 
 		if ($uniqueId === '' || !$this->configService->isFederatedAllowed()) {
 			return $this->federatedFail('federated_not_allowed');
@@ -169,13 +171,14 @@ class FederatedController extends BaseController {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
+	 * @param $apiVersion
 	 * @param $token
 	 * @param $uniqueId
 	 * @param $item
 	 *
 	 * @return DataResponse
 	 */
-	public function receiveFederatedDelivery($token, $uniqueId, $item) {
+	public function receiveFederatedDelivery($apiVersion, $token, $uniqueId, $item) {
 
 		if ($uniqueId === '' || !$this->configService->isFederatedAllowed()) {
 			return $this->federatedFail('federated_not_allowed');

@@ -35,7 +35,7 @@ use OCA\Circles\Model\SharingFrame;
 
 class Circles {
 
-	const API_VERSION = '0.9.0';
+	const API_VERSION = [0, 9, 1];
 
 	protected static function getContainer() {
 		$app = new Application();
@@ -49,7 +49,7 @@ class Circles {
 	 *
 	 * returns the current version of the API
 	 *
-	 * @return string
+	 * @return int[]
 	 */
 	public static function version() {
 		return self::API_VERSION;
