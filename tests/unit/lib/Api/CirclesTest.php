@@ -28,7 +28,12 @@ namespace OCA\Circles\Tests\Api;
 
 use Exception;
 use OCA\Circles\Api\v1\Circles;
+use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleTypeNotValid;
+use OCA\Circles\Exceptions\MemberDoesNotExistException;
+use OCA\Circles\Exceptions\MemberIsNotModeratorException;
+use OCA\Circles\Exceptions\MemberIsNotOwnerException;
+use OCA\Circles\Exceptions\ModeratorIsNotHighEnoughException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Tests\Env;
@@ -50,6 +55,13 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 	/** @var Circle[] */
 	private $circles;
 
+	/**
+	 * setUp() is initiated before each test.
+	 *
+	 * Function will create 4 differents circles under user ENV_TEST_OWNER1
+	 *
+	 * @throws Exception
+	 */
 	protected function setUp() {
 		Env::setUser(Env::ENV_TEST_OWNER1);
 
@@ -74,6 +86,13 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
+	/**
+	 * tearDown() is initiated after each test.
+	 *
+	 * Function will destroy the circles created in setUp()
+	 *
+	 * @throws Exception
+	 */
 	protected function tearDown() {
 		Env::setUser(Env::ENV_TEST_OWNER1);
 		try {
@@ -88,22 +107,209 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
-	public function testAddMemberAndLevelToCircles() {
+	/**
+	 * Testing Circles::version()
+	 */
+	public function testVersion() {
+		$this->assertSame(Circles::version(), Circles::API_VERSION);
+	}
+
+
+	/**
+	 * Testing Leveling Members. (not in Personal Circle)
+	 *
+	 * @throws Exception
+	 */
+	public function testLevelMemberInCircles() {
 		Env::setUser(Env::ENV_TEST_OWNER1);
 
+		$circles = [$this->circles['Public'], $this->circles['Private'], $this->circles['Hidden']];
+
+		// OWNER1 Should be able to add/level anyone to Admin Level at least
 		try {
-			$this->generateSimpleCircleWithAllLevel($this->circles['Public']->getId());
-			$this->generateSimpleCircleWithAllLevel($this->circles['Private']->getId());
-			$this->generateSimpleCircleWithAllLevel($this->circles['Hidden']->getId());
+			foreach ($circles AS $circle) {
+				$this->generateSimpleCircleWithAllLevel(
+					$circle->getId(), ($circle->getType() === Circle::CIRCLES_PRIVATE)
+				);
+			}
 		} catch (Exception $e) {
 			throw $e;
+		}
+
+		Env::logout();
+
+
+		// ADMIN1 should be able to add/level anyone to Moderator level
+		Env::setUser(Env::ENV_TEST_ADMIN1);
+
+		try {
+			foreach ($circles AS $circle) {
+				Circles::addMember($circle->getId(), Env::ENV_TEST_ADMIN2);
+
+				if ($circle->getType() === Circle::CIRCLES_PRIVATE) {
+					// In private circle, we need to confirm the invitation
+					Env::setUser(Env::ENV_TEST_ADMIN2);
+					Circles::joinCircle($circle->getId());
+					Env::setUser(Env::ENV_TEST_ADMIN1);
+				}
+
+				Circles::levelMember(
+					$circle->getId(), Env::ENV_TEST_ADMIN2, Member::LEVEL_MODERATOR
+				);
+			}
+		} catch (Exception $e) {
+			throw $e;
+		}
+		Env::logout();
+
+
+		// ADMIN1 should not be able to level anyone to Admin Level
+		Env::setUser(Env::ENV_TEST_ADMIN1);
+
+		foreach ($circles AS $circle) {
+
+			try {
+				Circles::levelMember(
+					$circle->getId(), Env::ENV_TEST_ADMIN3, Member::LEVEL_MODERATOR
+				);
+				$this->assertSame(true, false, 'should return an exception');
+			} catch (MemberDoesNotExistException $e) {
+			} catch (Exception $e) {
+				$this->assertSame(
+					true, false, 'should have returned a MemberDoesNotExistException'
+				);
+			}
+
+			try {
+				Circles::levelMember(
+					$circle->getId(), Env::ENV_TEST_ADMIN2, Member::LEVEL_ADMIN
+				);
+				$this->assertSame(true, false, 'should return an exception');
+			} catch (ModeratorIsNotHighEnoughException $e) {
+			} catch (Exception $e) {
+				$this->assertSame(
+					true, false, 'should have returned a ModeratorIsNotHighEnoughException'
+				);
+			}
+
+			try {
+				Circles::levelMember(
+					$circle->getId(), Env::ENV_TEST_ADMIN2, Member::LEVEL_OWNER
+				);
+				$this->assertSame(true, false, 'should return an exception');
+			} catch (MemberIsNotOwnerException $e) {
+			} catch (Exception $e) {
+				$this->assertSame(
+					true, false, 'should have returned a MemberIsNotOwnerException'
+				);
+			}
+		}
+
+		Env::logout();
+
+
+		// MODERATOR1 should be able to add anyone
+		Env::setUser(Env::ENV_TEST_MODERATOR1);
+
+		try {
+			foreach ($circles AS $circle) {
+				Circles::addMember($circle->getId(), Env::ENV_TEST_MODERATOR2);
+				if ($circle->getType() === Circle::CIRCLES_PRIVATE) {
+					// In private circle, we need to confirm the invitation
+					Env::setUser(Env::ENV_TEST_MODERATOR2);
+					Circles::joinCircle($circle->getId());
+					Env::setUser(Env::ENV_TEST_MODERATOR1);
+				}
+			}
+		} catch (Exception $e) {
+			throw $e;
+		}
+
+		Env::logout();
+
+
+		// MODERATOR1 should not be able to add/level anyone to Moderator/Admin Level
+		Env::setUser(Env::ENV_TEST_MODERATOR1);
+
+		foreach ($circles AS $circle) {
+			try {
+				Circles::levelMember(
+					$circle->getId(), Env::ENV_TEST_MODERATOR2, Member::LEVEL_MODERATOR
+				);
+				$this->assertSame(true, false, 'should return an exception');
+			} catch (ModeratorIsNotHighEnoughException $e) {
+			} catch (Exception $e) {
+				$this->assertSame(
+					true, false, 'should have returned a ModeratorIsNotHighEnoughException'
+				);
+			}
+			try {
+				Circles::levelMember(
+					$circle->getId(), Env::ENV_TEST_MODERATOR2, Member::LEVEL_ADMIN
+				);
+				$this->assertSame(true, false, 'should return an exception');
+			} catch (ModeratorIsNotHighEnoughException $e) {
+			} catch (Exception $e) {
+				$this->assertSame(
+					true, false, 'should have returned a ModeratorIsNotHighEnoughException'
+				);
+			}
+			try {
+				Circles::levelMember(
+					$circle->getId(), Env::ENV_TEST_MODERATOR2, Member::LEVEL_OWNER
+				);
+				$this->assertSame(true, false, 'should return an exception');
+			} catch (MemberIsNotOwnerException $e) {
+			} catch (Exception $e) {
+				$this->assertSame(
+					true, false, 'should have returned a MemberIsNotOwnerException'
+				);
+			}
+		}
+
+		Env::logout();
+
+
+		// MEMBER1 should not be able to add/level anyone to any level
+		Env::setUser(Env::ENV_TEST_MEMBER1);
+
+		foreach ($circles AS $circle) {
+			try {
+				Circles::addMember(
+					$circle->getId(), Env::ENV_TEST_MEMBER2
+				);
+				$this->assertSame(true, false, 'should return an exception');
+			} catch (MemberIsNotModeratorException $e) {
+			} catch (Exception $e) {
+				$this->assertSame(
+					true, false, 'should have returned a MemberIsNotModeratorException'
+				);
+			}
+
+			try {
+				Circles::levelMember(
+					$circle->getId(), Env::ENV_TEST_MEMBER1, Member::LEVEL_MEMBER
+				);
+				$this->assertSame(true, false, 'should return an exception');
+			} catch (MemberIsNotModeratorException $e) {
+			} catch (Exception $e) {
+				$this->assertSame(
+					true, false, 'should have returned a MemberIsNotModeratorException'
+				);
+			}
+
 		}
 
 		Env::logout();
 	}
 
 
-	public function testAddMemberAndLevelToPersonalCircle() {
+	/**
+	 * Testing Leveling Members in Personal Circle.
+	 *
+	 * @throws Exception
+	 */
+	public function testLevelMemberInPersonalCircle() {
 		Env::setUser(Env::ENV_TEST_OWNER1);
 
 		try {
@@ -118,27 +324,52 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 	}
 
 
+	/**
+	 * Testing creation of a circle with duplicate name as the owner.
+	 */
 	public function testCreateCircleWithDuplicate() {
 		Env::setUser(Env::ENV_TEST_OWNER1);
 
 		$circleNames = [
 			self::NAME_PUBLIC_CIRCLE1,
 			self::NAME_HIDDEN_CIRCLE1,
-			self::NAME_PRIVATE_CIRCLE1,
-			self::NAME_PERSONAL_CIRCLE1
+			self::NAME_PRIVATE_CIRCLE1
 		];
 
 		for ($i = 0; $i < sizeof(Env::listCircleTypes()); $i++) {
-			for ($j = 0; $j < sizeof($circleNames); $j++) {
+			if (Env::listCircleTypes()[$i] === Circle::CIRCLES_PERSONAL) {
 				try {
-					Circles::createCircle(Env::listCircleTypes()[$i], $circleNames[$j]);
+					Circles::createCircle(Circle::CIRCLES_PERSONAL, self::NAME_PERSONAL_CIRCLE1);
 					$this->assertSame(true, false, 'should return an exception');
+				} catch (CircleAlreadyExistsException $e) {
 				} catch (Exception $e) {
+					$this->assertSame(
+						true, false, 'should have returned a CircleAlreadyExistsException'
+					);
+				}
+
+			} else {
+				for ($j = 0; $j < sizeof($circleNames); $j++) {
+					try {
+						Circles::createCircle(Env::listCircleTypes()[$i], $circleNames[$j]);
+						$this->assertSame(true, false, 'should return an exception');
+					} catch (CircleAlreadyExistsException $e) {
+					} catch (Exception $e) {
+						$this->assertSame(
+							true, false, 'should have returned a CircleAlreadyExistsException'
+						);
+					}
 				}
 			}
 		}
+
+		Env::logout();
 	}
 
+
+	/**
+	 * Testing creation of a circle with duplicate name as a new owner.
+	 */
 	public function testCreateCircleWithDuplicateFromOthers() {
 		Env::setUser(Env::ENV_TEST_OWNER2);
 
@@ -146,8 +377,13 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 			self::NAME_PUBLIC_CIRCLE1,
 			self::NAME_HIDDEN_CIRCLE1,
 			self::NAME_PRIVATE_CIRCLE1,
-			self::NAME_PERSONAL_CIRCLE1
 		];
+
+		try {
+			Circles::createCircle(Circle::CIRCLES_PERSONAL, self::NAME_PERSONAL_CIRCLE1);
+		} catch (Exception $e) {
+			throw new $e;
+		}
 
 		for ($i = 0; $i < sizeof(Env::listCircleTypes()); $i++) {
 			for ($j = 0; $j < sizeof($circleNames); $j++) {
@@ -160,186 +396,78 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 				} else {
 					try {
 						Circles::createCircle(Env::listCircleTypes()[$i], $circleNames[$j]);
-						$this->assertSame(true, false, 'should return an exception');
+						$this->assertSame(
+							true, false, 'should return an exception'
+						);
+					} catch (CircleAlreadyExistsException $e) {
 					} catch (Exception $e) {
+						$this->assertSame(
+							true, false,
+							'should have returned a CircleAlreadyExistsException'
+						);
 					}
 				}
 			}
 		}
+
+		Env::logout();
 	}
 
 
-	public function testRemoveUser() {
+	/**
+	 * In this test, we will add user to circle, check their level and rights and remove them
+	 * before checking their rights again.
+	 */
+	public function testAddAndRemoveUser() {
 		Env::setUser(Env::ENV_TEST_OWNER1);
 
-		$circleNames = [
-			self::NAME_PUBLIC_CIRCLE1,
-			self::NAME_HIDDEN_CIRCLE1,
-			self::NAME_PRIVATE_CIRCLE1,
-			self::NAME_PERSONAL_CIRCLE1
-		];
-
-		for ($i = 0; $i < sizeof(Env::listCircleTypes()); $i++) {
-			for ($j = 0; $j < sizeof($circleNames); $j++) {
-				try {
-					Circles::createCircle(Env::listCircleTypes()[$i], $circleNames[$j]);
-					$this->assertSame(true, false, 'should return an exception');
-				} catch (Exception $e) {
-				}
+		foreach ($this->circles AS $circle) {
+			try {
+				Circles::addMember($circle->getId(), Env::ENV_TEST_MEMBER1);
+				Circles::removeMember($circle->getId(), Env::ENV_TEST_MEMBER1);
+			} catch (Exception $e) {
+				throw new $e;
 			}
 		}
 
+		Env::logout();
 	}
 
 
-	protected function generateSimpleCircleWithAllLevel($circleId) {
+	/**
+	 * function to generate admin/moderator/member and assigning them their level.
+	 *
+	 * @param $circleId
+	 * @param bool $isPrivate
+	 */
+	protected function generateSimpleCircleWithAllLevel($circleId, $isPrivate = false) {
+
+		$curr = Env::currentUser();
 
 		Circles::addMember($circleId, Env::ENV_TEST_ADMIN1);
+		if ($isPrivate) {
+			Env::setUser(Env::ENV_TEST_ADMIN1);
+			Circles::joinCircle($circleId);
+			Env::setUser($curr);
+		}
 		Circles::levelMember($circleId, Env::ENV_TEST_ADMIN1, Member::LEVEL_ADMIN);
 
+
 		Circles::addMember($circleId, Env::ENV_TEST_MODERATOR1);
+		if ($isPrivate) {
+			Env::setUser(Env::ENV_TEST_MODERATOR1);
+			Circles::joinCircle($circleId);
+			Env::setUser($curr);
+		}
 		Circles::levelMember($circleId, Env::ENV_TEST_MODERATOR1, Member::LEVEL_MODERATOR);
 
 		Circles::addMember($circleId, Env::ENV_TEST_MEMBER1);
+		if ($isPrivate) {
+			Env::setUser(Env::ENV_TEST_MEMBER1);
+			Circles::joinCircle($circleId);
+			Env::setUser($curr);
+		}
 		Circles::levelMember($circleId, Env::ENV_TEST_MEMBER1, Member::LEVEL_MEMBER);
 	}
 
-
-//
-//	public function testSearch() {
-//		Env::setUser(Env::ENV_TEST_USER1);
-////		$result = Sharees::search('sea');
-////		$this->assertSame(self::CIRCLE_NAME, $result['circles'][0]['label']);
-////		$result = Sharees::search('_search');
-////		$this->assertSame(self::CIRCLE_NAME, $result['exact']['circles'][0]['label']);
-//		Env::logout();
-//	}
-
-
-//
-//	const CIRCLE_BASENAME = '_test_';
-//
-//	/** @var array<int> */
-//	private $circleTypes = [];
-//
-//	/** @var array<Circle> */
-//	private $circles;
-
-
-//	protected function setUp() {
-//		$this->circleTypes = [1, 2, 4, 8];
-//		$this->circles = $this->createCirclesAs(Env::ENV_TEST_OWNER1);
-//	}
-//
-//
-//	protected function tearDown() {
-//		try {
-//			$this->deleteCirclesAs(Env::ENV_TEST_USER1);
-//			$this->assertSame(true, false, 'should return an exception');
-//		} catch (MemberDoesNotExistException $e) {
-//		} catch (MemberIsNotOwnerException $e) {
-//			// TODO: add test on Api/joinCircle
-//		} catch (\Exception $e) {
-//			$this->assertSame(true, false, 'Should return a valid Exception');
-//		}
-//
-//		$this->assertSame(true, $this->deleteCirclesAs(Env::ENV_TEST_OWNER1));
-//	}
-//
-//
-//	public function createCirclesAs($user) {
-//		Env::setUser($user);
-//		$circles = [];
-//		foreach ($this->circleTypes AS $type) {
-//			$name = self::CIRCLE_BASENAME . $type;
-//			$circles[] = Circles::createCircle($type, $name);
-//		}
-//		Env::logout();
-//
-//		return $circles;
-//	}
-//
-//
-//	public function deleteCirclesAs($user) {
-//		Env::setUser($user);
-//		try {
-//			foreach ($this->circles AS $circle) {
-//				Circles::destroyCircle($circle->getId());
-//			}
-//		} catch (\Exception $e) {
-//			throw $e;
-//		}
-//		Env::logout();
-//
-//		return true;
-//	}
-//
-//
-//	public function testCirclesAPI() {
-//
-//		$fullList = $this->listCirclesAs(Env::ENV_TEST_OWNER1);
-//		$this->assertCount(4, $fullList);
-//
-//		foreach ($fullList AS $circle) {
-//			$details = $this->detailsCircleAs(Env::ENV_TEST_OWNER1, $circle);
-//			$this->assertSame(
-//				$details->getOwner()
-//						->getUserId(), Env::ENV_TEST_OWNER1
-//			);
-//		}
-//
-//		$list = $this->listCirclesAs(Env::ENV_TEST_USER1);
-//		$this->assertCount(2, $list);
-//
-//		// test list hidden with/without full name
-//		Env::setUser(Env::ENV_TEST_USER1);
-//		$this->assertCount(0, Circles::listCircles(Circle::CIRCLES_HIDDEN, self::CIRCLE_BASENAME));
-//		$this->assertCount(
-//			1, Circles::listCircles(
-//			Circle::CIRCLES_HIDDEN, self::CIRCLE_BASENAME . Circle::CIRCLES_HIDDEN
-//		)
-//		);
-//		Env::logout();
-//
-//
-//		foreach ($fullList AS $circle) {
-//			switch ($circle->getType()) {
-//				case Circle::CIRCLES_PERSONAL:
-//					$this->assertNull($this->detailsCircleAs(Env::ENV_TEST_USER1, $circle));
-//					break;
-//
-//				case Circle::CIRCLES_HIDDEN:
-//				case Circle::CIRCLES_PRIVATE:
-//				case Circle::CIRCLES_PUBLIC:
-//					$details = $this->detailsCircleAs(Env::ENV_TEST_OWNER1, $circle);
-//					$this->assertSame(
-//						$details->getOwner()
-//								->getUserId(), Env::ENV_TEST_OWNER1
-//					);
-//					break;
-//			}
-//		}
-//	}
-//
-//
-//	public function listCirclesAs($user, $name = '') {
-//		Env::setUser($user);
-//		$list = Circles::listCircles(Circle::CIRCLES_ALL, $name);
-//		Env::logout();
-//
-//		return $list;
-//	}
-//
-//
-//	public function detailsCircleAs($user, $circle) {
-//		Env::setUser($user);
-//		try {
-//			$list = Circles::detailsCircle($circle->getId());
-//		} catch (CircleDoesNotExistException $e) {
-//			$list = null;
-//		}
-//		Env::logout();
-//
-//		return $list;
-//	}
 }
