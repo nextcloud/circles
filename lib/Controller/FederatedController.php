@@ -28,6 +28,7 @@ namespace OCA\Circles\Controller;
 
 use Exception;
 use OC\AppFramework\Http;
+use OCA\Circles\Exceptions\LinkCreationException;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\FederatedService;
@@ -76,6 +77,7 @@ class FederatedController extends BaseController {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
+	 * @param array $apiVersion
 	 * @param string $token
 	 * @param string $uniqueId
 	 * @param string $sourceName
@@ -84,20 +86,24 @@ class FederatedController extends BaseController {
 	 *
 	 * @return DataResponse
 	 */
-	public function requestedLink($token, $uniqueId, $sourceName, $linkTo, $address) {
+	public function requestedLink($apiVersion, $token, $uniqueId, $sourceName, $linkTo, $address) {
 
 		if ($uniqueId === '' || !$this->configService->isFederatedAllowed()) {
 			return $this->federatedFail('federated_not_allowed');
 		}
 
 		try {
+			$circle = $this->circlesService->infoCircleByName($linkTo);
+			if ($circle === null) {
+				throw new LinkCreationException('circle_does_not_exist');
+			}
+
 			$link = new FederatedLink();
 			$link->setToken($token)
 				 ->setUniqueId($uniqueId)
 				 ->setRemoteCircleName($sourceName)
 				 ->setAddress($address);
 
-			$circle = $this->circlesService->infoCircleByName($linkTo);
 			$this->federatedService->initiateLink($circle, $link);
 
 			return $this->federatedSuccess(
@@ -122,12 +128,13 @@ class FederatedController extends BaseController {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
+	 * @param $apiVersion
 	 * @param $circleId
 	 * @param $uniqueId
 	 *
 	 * @return DataResponse
 	 */
-	public function initFederatedDelivery($circleId, $uniqueId) {
+	public function initFederatedDelivery($apiVersion, $circleId, $uniqueId) {
 
 		if ($uniqueId === '' || !$this->configService->isFederatedAllowed()) {
 			return $this->federatedFail('federated_not_allowed');
@@ -164,13 +171,14 @@ class FederatedController extends BaseController {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
+	 * @param $apiVersion
 	 * @param $token
 	 * @param $uniqueId
 	 * @param $item
 	 *
 	 * @return DataResponse
 	 */
-	public function receiveFederatedDelivery($token, $uniqueId, $item) {
+	public function receiveFederatedDelivery($apiVersion, $token, $uniqueId, $item) {
 
 		if ($uniqueId === '' || !$this->configService->isFederatedAllowed()) {
 			return $this->federatedFail('federated_not_allowed');

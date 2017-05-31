@@ -30,8 +30,10 @@ namespace OCA\Circles\Service;
 use OC\User\NoUserException;
 use OCA\Circles\Db\CirclesMapper;
 use OCA\Circles\Db\MembersMapper;
+use OCA\Circles\Exceptions\CircleTypeNotValid;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
+use OCA\Circles\Model\Circle;
 use \OCA\Circles\Model\Member;
 use OCP\IL10N;
 use OCP\IUserManager;
@@ -167,7 +169,12 @@ class MembersService {
 	public function levelMember($circleId, $name, $level) {
 
 		try {
-			if ((int)$level === Member::LEVEL_OWNER) {
+			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
+			if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
+				throw new CircleTypeNotValid(
+					$this->l10n->t('You cannot edit level in a personal circle')
+				);
+			} else if ((int)$level === Member::LEVEL_OWNER) {
 				$this->switchOwner($circleId, $name);
 			} else {
 				$isMod = $this->dbMembers->getMemberFromCircle($circleId, $this->userId);
@@ -175,18 +182,19 @@ class MembersService {
 				$isMod->hasToBeHigherLevel($level);
 
 				$member = $this->dbMembers->getMemberFromCircle($circleId, $name);
+				$member->hasToBeMember();
 				$member->cantBeOwner();
 				$isMod->hasToBeHigherLevel($member->getLevel());
 
 				$member->setLevel($level);
 				$this->dbMembers->editMember($member);
 			}
+
+			return $this->dbMembers->getMembersFromCircle($circleId, $circle->getUser());
 		} catch (\Exception $e) {
 			throw $e;
 		}
-		$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
 
-		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getUser());
 	}
 
 

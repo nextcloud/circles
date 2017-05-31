@@ -158,6 +158,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 	/**
 	 * return the FederatedLink identified by a remote Circle UniqueId and the Token of the link
+	 *
 	 * @param string $token
 	 * @param string $uniqueId
 	 *

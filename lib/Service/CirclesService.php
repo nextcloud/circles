@@ -132,7 +132,7 @@ class CirclesService {
 	 * @param string $name
 	 * @param int $level
 	 *
-	 * @return array
+	 * @return Circle[]
 	 * @throws CircleTypeDisabledException
 	 */
 	public function listCircles($type, $name = '', $level = 0) {

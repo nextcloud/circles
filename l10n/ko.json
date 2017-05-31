@@ -1,9 +1,4 @@
 { "translations": {
-    "Cannot join this circle" : "이 서클에 등록할 수 없음",
-    "no error message" : "오류 메시지 없음",
-    "Cannot leave this circle" : "이 서클을 떠날 수 없음",
-    " {type} '{name}' created" : "{type} '{name}' 생성됨",
-    "Issue while retrieving the list of circles" : "서클 목록을 가져오는 중 오류 발생",
     "Personal circle" : "개인 서클",
     "Hidden circle" : "숨겨진 서클",
     "Private circle" : "비공개 서클",
@@ -27,6 +22,13 @@
     "Requesting" : "요청 중",
     "Blocked" : "차단됨",
     "Kicked" : "추방됨",
+    "Kick this member" : "이 회원 추방",
+    "Accept the request" : "요청 수락",
+    "Cannot join this circle" : "이 서클에 등록할 수 없음",
+    "no error message" : "오류 메시지 없음",
+    "Cannot leave this circle" : "이 서클을 떠날 수 없음",
+    " {type} '{name}' created" : "{type} '{name}' 생성됨",
+    "Issue while retrieving the list of circles" : "서클 목록을 가져오는 중 오류 발생",
     "Circles" : "서클",
     "The name of your circle cannot start with this character" : "서클 이름은 다음 글자로 시작할 수 없습니다",
     "This member does not exist" : "이 회원이 존재하지 않습니다",
@@ -47,8 +49,6 @@
     "Username" : "사용자 이름",
     "Level" : "레벨",
     "Status" : "상태",
-    "Joined" : "등록함",
-    "Kick this member" : "이 회원 추방",
-    "Accept the request" : "요청 수락"
+    "Joined" : "등록함"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

@@ -1,11 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Cannot join this circle" : "Kan ikke deltage i denne cirkel",
-    "no error message" : "ingen fejlbesked",
-    "Cannot leave this circle" : "Kan ikke forlade denne cirkel",
-    " {type} '{name}' created" : " {type} '{name}' oprettet",
-    "Issue while retrieving the list of circles" : "Fejl under hentning af listen med cirkler",
     "Personal circle" : "Person cirkel",
     "Hidden circle" : "Skjult cirkel",
     "Private circle" : "Privat cirkel",
@@ -29,6 +24,13 @@ OC.L10N.register(
     "Requesting" : "Anmoder",
     "Blocked" : "Blokeret",
     "Kicked" : "Smidt ud",
+    "Kick this member" : "Fjern dette medlem",
+    "Accept the request" : "Accepter anmodning",
+    "Cannot join this circle" : "Kan ikke deltage i denne cirkel",
+    "no error message" : "ingen fejlbesked",
+    "Cannot leave this circle" : "Kan ikke forlade denne cirkel",
+    " {type} '{name}' created" : " {type} '{name}' oprettet",
+    "Issue while retrieving the list of circles" : "Fejl under hentning af listen med cirkler",
     "Circles" : "Cirkler",
     "The name of your circle cannot start with this character" : "Cirklens navn kan ikke starte med denne karakter ",
     "This member does not exist" : "Dette medlem eksisterer ikke",
@@ -49,8 +51,6 @@ OC.L10N.register(
     "Username" : "Brugernavn",
     "Level" : "Niveau",
     "Status" : "Status",
-    "Joined" : "Forbind",
-    "Kick this member" : "Fjern dette medlem",
-    "Accept the request" : "Accepter anmodning"
+    "Joined" : "Forbind"
 },
 "nplurals=2; plural=(n != 1);");

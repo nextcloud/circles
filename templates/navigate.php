@@ -29,7 +29,7 @@ style('circles', 'notyf');
 
 script(
 	'circles', [
-				 'circles', 'circles.app.elements', 'circles.app.actions', 'circles.app.navigation',
+				 'circles.v1', 'circles.app.elements', 'circles.app.actions', 'circles.app.navigation',
 				 'circles.app', 'circles.app.results.circles', 'circles.app.results.members',
 				 'circles.app.results.links',
 			 ]

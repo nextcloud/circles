@@ -71,6 +71,7 @@ class MembersMapper extends Mapper {
 
 		$data = $cursor->fetch();
 		if ($data === false) {
+			// TODO	- Check that the author of the request have privileges or it will return this wrong error
 			throw new MemberDoesNotExistException($this->l10n->t('This member does not exist'));
 		}
 
