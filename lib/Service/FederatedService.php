@@ -29,6 +29,7 @@ namespace OCA\Circles\Service;
 
 use Exception;
 use OC\Http\Client\ClientService;
+use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\FederatedLinksRequest;
 use OCA\Circles\Exceptions\FederatedCircleLinkFormatException;
@@ -78,6 +79,8 @@ class FederatedService {
 	/** @var MiscService */
 	private $miscService;
 
+	/** @var bool */
+	private $localTest = false;
 
 	/**
 	 * CirclesService constructor.
@@ -213,7 +216,7 @@ class FederatedService {
 	 * @return string
 	 */
 	private function generateLinkRemoteURL($remote) {
-		if (strpos($remote, 'https') !== 0) {
+		if ($this->localTest === false && strpos($remote, 'https') !== 0) {
 			$remote = 'https://' . $remote;
 		}
 
@@ -227,11 +230,16 @@ class FederatedService {
 	 * @return string
 	 */
 	private function generatePayloadDeliveryURL($remote) {
-		if (strpos($remote, 'https') !== 0) {
+		if ($this->localTest === false && strpos($remote, 'https') !== 0) {
 			$remote = 'https://' . $remote;
 		}
 
 		return rtrim($remote, '/') . '/index.php/apps/circles/v1/circles/payload/';
+	}
+
+
+	public function allowNonSSLLink() {
+		$this->localTest = true;
 	}
 
 
@@ -247,11 +255,12 @@ class FederatedService {
 	 */
 	private function requestLink(Circle $circle, FederatedLink & $link) {
 		$args = [
-			'token'      => $link->getToken(),
-			'uniqueId'   => $circle->getUniqueId(),
-			'sourceName' => $circle->getName(),
-			'linkTo'     => $link->getRemoteCircleName(),
-			'address'    => $link->getLocalAddress()
+			'apiVersion' => Circles::API_VERSION,
+			'token'       => $link->getToken(),
+			'uniqueId'    => $circle->getUniqueId(),
+			'sourceName'  => $circle->getName(),
+			'linkTo'      => $link->getRemoteCircleName(),
+			'address'     => $link->getLocalAddress()
 		];
 
 		$client = $this->clientService->newClient();
@@ -421,8 +430,9 @@ class FederatedService {
 	 */
 	public function initiateRemoteShare($circleId, $uniqueId) {
 		$args = [
-			'circleId' => (int)$circleId,
-			'uniqueId' => (string)$uniqueId
+			'apiVersion' => Circles::API_VERSION,
+			'circleId'    => (int)$circleId,
+			'uniqueId'    => (string)$uniqueId
 		];
 
 		$client = $this->clientService->newClient();
@@ -463,6 +473,7 @@ class FederatedService {
 		foreach ($links AS $link) {
 
 			$args = [
+				'apiVersion' => Circles::API_VERSION,
 				'token'    => $link->getToken(),
 				'uniqueId' => $circle->getUniqueId(),
 				'item'     => json_encode($frame)
