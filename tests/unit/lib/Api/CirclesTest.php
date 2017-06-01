@@ -29,6 +29,7 @@ namespace OCA\Circles\Tests\Api;
 use Exception;
 use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
+use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\CircleTypeNotValid;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\MemberIsNotModeratorException;
@@ -114,6 +115,22 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 		$this->assertSame(Circles::version(), Circles::API_VERSION);
 	}
 
+
+	/**
+	 * Testing the tools to switch users
+	 */
+	public function testUserSession() {
+		Env::setUser(Env::ENV_TEST_ADMIN1);
+		$this->assertEquals(Env::currentUser(), Env::ENV_TEST_ADMIN1);
+		Env::setUser(Env::ENV_TEST_OWNER3);
+		try {
+			$this->assertEquals(Env::currentUser(), Env::ENV_TEST_ADMIN1);
+			$this->assertSame(true, false, 'should return an exception');
+		} catch (Exception $e) {
+		}
+		Env::setUser(Env::ENV_TEST_OWNER1);
+		$this->assertEquals(Env::currentUser(), Env::ENV_TEST_OWNER1);
+	}
 
 	/**
 	 * Testing Leveling Members. (not in Personal Circle)
@@ -421,16 +438,211 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 	public function testAddAndRemoveUser() {
 		Env::setUser(Env::ENV_TEST_OWNER1);
 
-		foreach ($this->circles AS $circle) {
-			try {
-				Circles::addMember($circle->getId(), Env::ENV_TEST_MEMBER1);
-				Circles::removeMember($circle->getId(), Env::ENV_TEST_MEMBER1);
-			} catch (Exception $e) {
-				throw new $e;
+		for ($i = 0; $i < 3; $i++) {
+			foreach ($this->circles AS $circle) {
+
+				try {
+					$member = Circles::getMember($circle->getId(), Env::ENV_TEST_MEMBER2);
+					$this->assertEquals(
+						[
+							Env::ENV_TEST_MEMBER2, Member::LEVEL_NONE, Member::STATUS_NONMEMBER,
+							$circle->getId()
+						]
+						, [
+							$member->getUserId(), $member->getLevel(), $member->getStatus(),
+							$member->getCircleId()
+						]
+					);
+				} catch (MemberDoesNotExistException $e) {
+				} catch (Exception $e) {
+					throw $e;
+				}
+
+
+				try {
+					Circles::addMember($circle->getId(), Env::ENV_TEST_MEMBER2);
+
+					// If Private, we check that the user is not a member before confirming
+					// the invitation using member account
+					if ($circle->getType() === Circle::CIRCLES_PRIVATE) {
+						$member = Circles::getMember($circle->getId(), Env::ENV_TEST_MEMBER2);
+						$this->assertEquals(
+							[
+								Env::ENV_TEST_MEMBER2, Member::LEVEL_NONE, Member::STATUS_INVITED,
+								$circle->getId()
+							]
+							, [
+								$member->getUserId(), $member->getLevel(), $member->getStatus(),
+								$member->getCircleId()
+							]
+						);
+
+						Env::setUser(Env::ENV_TEST_MEMBER2);
+						Circles::joinCircle($circle->getId());
+						Env::setUser(Env::ENV_TEST_OWNER1);
+					}
+
+					$member = Circles::getMember($circle->getId(), Env::ENV_TEST_MEMBER2);
+					$this->assertEquals(
+						[
+							Env::ENV_TEST_MEMBER2, Member::LEVEL_MEMBER, Member::STATUS_MEMBER,
+							$circle->getId()
+						]
+						, [
+							$member->getUserId(), $member->getLevel(), $member->getStatus(),
+							$member->getCircleId()
+						]
+					);
+
+
+					Circles::removeMember($circle->getId(), Env::ENV_TEST_MEMBER2);
+					$member = Circles::getMember($circle->getId(), Env::ENV_TEST_MEMBER2);
+					$this->assertEquals(
+						[
+							Env::ENV_TEST_MEMBER2, Member::LEVEL_NONE, Member::STATUS_NONMEMBER,
+							$circle->getId()
+						]
+						, [
+							$member->getUserId(), $member->getLevel(), $member->getStatus(),
+							$member->getCircleId()
+						]
+					);
+
+				} catch (Exception $e) {
+					throw $e;
+				}
+
 			}
 		}
 
 		Env::logout();
+	}
+
+
+	/**
+	 * @throws Exception
+	 */
+	public function testJoinCircleAndLeave() {
+		Env::setUser(Env::ENV_TEST_MEMBER3);
+
+		for ($i = 0; $i < 3; $i++) {
+			foreach ($this->circles AS $circle) {
+
+
+				try {
+					$member = Circles::getMember($circle->getId(), Env::ENV_TEST_MEMBER3);
+					$this->assertEquals(
+						[
+							Env::ENV_TEST_MEMBER2, Member::LEVEL_NONE, Member::STATUS_NONMEMBER,
+							$circle->getId()
+						]
+						, [
+							$member->getUserId(), $member->getLevel(), $member->getStatus(),
+							$member->getCircleId()
+						]
+					);
+				} catch (MemberDoesNotExistException $e) {
+				} catch (Exception $e) {
+					throw $e;
+				}
+
+
+				if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
+					try {
+						Circles::joinCircle($circle->getId());
+						$this->assertSame(
+							true, false, 'should return an exception'
+						);
+					} catch (CircleDoesNotExistException $e) {
+					} catch (Exception $e) {
+						$this->assertSame(
+							true, false, 'should have returned a CircleDoesNotExistException'
+						);
+					}
+				} else {
+					Circles::joinCircle($circle->getId());
+
+
+					try {
+
+						// If Private, we check that the user is not a member before accepting
+						// the request using a moderator account
+						if ($circle->getType() === Circle::CIRCLES_PRIVATE) {
+							Env::setUser(Env::ENV_TEST_OWNER1);
+							$member = Circles::getMember($circle->getId(), Env::ENV_TEST_MEMBER3);
+							$this->assertEquals(
+								[
+									Env::ENV_TEST_MEMBER3, Member::LEVEL_NONE,
+									Member::STATUS_REQUEST,
+									$circle->getId()
+								]
+								, [
+									$member->getUserId(), $member->getLevel(), $member->getStatus(),
+									$member->getCircleId()
+								]
+							);
+
+							Circles::addMember($circle->getId(), Env::ENV_TEST_MEMBER3);
+							Env::setUser(Env::ENV_TEST_MEMBER3);
+						}
+
+						$member = Circles::getMember($circle->getId(), Env::ENV_TEST_MEMBER3);
+						$this->assertEquals(
+							[
+								Env::ENV_TEST_MEMBER3, Member::LEVEL_MEMBER, Member::STATUS_MEMBER,
+								$circle->getId()
+							]
+							, [
+								$member->getUserId(), $member->getLevel(), $member->getStatus(),
+								$member->getCircleId()
+							]
+						);
+
+					} catch (Exception $e) {
+						throw $e;
+					}
+
+					Circles::leaveCircle($circle->getId());
+
+					// We check the member have no access to the circle
+					try {
+						Circles::getMember($circle->getId(), Env::ENV_TEST_MEMBER3);
+						$this->assertSame(
+							true, false, 'should return an exception'
+						);
+					} catch (MemberDoesNotExistException $e) {
+					} catch (Exception $e) {
+						$this->assertSame(
+							true, false, 'should have returned a MemberDoesNotExistException'
+						);
+					}
+
+					// We check that the user is not a member from the owner PoV
+					Env::setUser(Env::ENV_TEST_OWNER1);
+					try {
+						$member = Circles::getMember($circle->getId(), Env::ENV_TEST_MEMBER3);
+						$this->assertEquals(
+							[
+								Env::ENV_TEST_MEMBER3, Member::LEVEL_NONE, Member::STATUS_NONMEMBER,
+								$circle->getId()
+							]
+							, [
+								$member->getUserId(), $member->getLevel(), $member->getStatus(),
+								$member->getCircleId()
+							]
+						);
+					} catch (Exception $e) {
+						throw $e;
+					}
+					Env::setUser(Env::ENV_TEST_MEMBER3);
+
+				}
+			}
+		}
+
+		Env::logout();
+
+
 	}
 
 
