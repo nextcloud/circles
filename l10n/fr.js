@@ -77,6 +77,7 @@ OC.L10N.register(
     "This link exists already" : "Le lien existe déjà",
     "The requested remote circle does not exist" : "Le cercle distant demandé n'existe pas",
     "This user does not exist" : "Cet utilisateur n'existe pas",
+    "You cannot edit level in a personal circle" : "Vous ne pouvez pas modifier dans ce cercle personnel",
     "Create a new circle" : "Créer un nouveau cercle",
     "Select a type of circle" : "Sélectionner un type de cercle",
     "Create a personal circle" : "Créer un cercle personnel",

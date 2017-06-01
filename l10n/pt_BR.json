@@ -75,6 +75,7 @@
     "This link exists already" : "Este link já existe",
     "The requested remote circle does not exist" : "O círculo remoto solicitado não existe",
     "This user does not exist" : "O usuário não existe",
+    "You cannot edit level in a personal circle" : "Você não pode editar o nível em um círculo pessoal",
     "Create a new circle" : "Criar um novo círculo",
     "Select a type of circle" : "Selecione um tipo de círculo",
     "Create a personal circle" : "Criar um círculo pessoal",
