@@ -106,7 +106,6 @@ style('circles', 'navigation');
 						"This is the right option if you want to do recurrent sharing with the same group."
 					)
 				); ?>
-				); ?>
 			</div>
 			<div id="circles_new_type_hidden"><b>
 					<?php p(
