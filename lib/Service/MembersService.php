@@ -110,6 +110,31 @@ class MembersService {
 
 
 	/**
+	 * getMember();
+	 *
+	 * Will return any data of a user related to a circle (as a Member). User can be a 'non-member'
+	 *
+	 * @param $circleId
+	 * @param $userId
+	 *
+	 * @return Member
+	 * @throws \Exception
+	 */
+	public function getMember($circleId, $userId) {
+
+		try {
+			$this->dbMembers->getMemberFromCircle($circleId, $this->userId)
+							->hasToBeMember();
+			$member = $this->dbMembers->getMemberFromCircle($circleId, $userId);
+		} catch (\Exception $e) {
+			throw $e;
+		}
+
+		return $member;
+	}
+
+
+	/**
 	 * Check if a fresh member can be generated (by addMember)
 	 *
 	 * @param $circleId
@@ -237,7 +262,10 @@ class MembersService {
 			throw $e;
 		}
 
-		$this->dbMembers->remove($member);
+		$member->setStatus(Member::STATUS_NONMEMBER);
+		$member->setLevel(Member::LEVEL_NONE);
+		$this->dbMembers->editMember($member);
+
 		$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
 
 		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getUser());

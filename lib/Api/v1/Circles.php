@@ -111,7 +111,7 @@ class Circles {
 		$c = self::getContainer();
 
 		return $c->query('CirclesService')
-				 ->joinCircle($circleId);
+				 ->leaveCircle($circleId);
 	}
 
 
@@ -190,6 +190,25 @@ class Circles {
 
 		return $c->query('MembersService')
 				 ->addMember($circleId, $userId);
+	}
+
+
+	/**
+	 * Circles::getMember();
+	 *
+	 * This function will return information on a member of the circle. Current user need at least
+	 * to be Member.
+	 *
+	 * @param $circleId
+	 * @param $userId
+	 *
+	 * @return Member
+	 */
+	public static function getMember($circleId, $userId) {
+		$c = self::getContainer();
+
+		return $c->query('MembersService')
+				 ->getMember($circleId, $userId);
 	}
 
 
