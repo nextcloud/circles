@@ -396,19 +396,22 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 			self::NAME_PRIVATE_CIRCLE1,
 		];
 
-		try {
-			Circles::createCircle(Circle::CIRCLES_PERSONAL, self::NAME_PERSONAL_CIRCLE1);
-		} catch (Exception $e) {
-			throw new $e;
-		}
+		$circles = [];
+		array_push(
+			$circles, Circles::createCircle(Circle::CIRCLES_PERSONAL, self::NAME_PERSONAL_CIRCLE1)
+		);
 
 		for ($i = 0; $i < sizeof(Env::listCircleTypes()); $i++) {
 			for ($j = 0; $j < sizeof($circleNames); $j++) {
 				if (Env::listCircleTypes()[$i] === Circle::CIRCLES_PERSONAL) {
 					try {
-						Circles::createCircle(Env::listCircleTypes()[$i], $circleNames[$j]);
+						array_push(
+							$circles, Circles::createCircle(
+							Env::listCircleTypes()[$i], $circleNames[$j]
+						)
+						);
 					} catch (Exception $e) {
-						throw new $e;
+						throw $e;
 					}
 				} else {
 					try {
@@ -425,6 +428,10 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 					}
 				}
 			}
+		}
+
+		foreach ($circles AS $circle) {
+			Circles::destroyCircle($circle->getId());
 		}
 
 		Env::logout();
@@ -520,6 +527,8 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 
 	/**
+	 * We check the join/leave and the rights of a member during the process.
+	 *
 	 * @throws Exception
 	 */
 	public function testJoinCircleAndLeave() {
@@ -641,8 +650,142 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 		}
 
 		Env::logout();
+	}
 
 
+	/**
+	 * Listing Circles, as a non-member and as a member
+	 */
+	public function testListCircles() {
+
+		// First, we check from an outside PoV, user is not in any circles right now.
+		Env::setUser(Env::ENV_TEST_MEMBER1);
+
+		$listing = Circles::listCircles(Circle::CIRCLES_ALL);
+		$this->assertCount(2, $listing);
+
+		$result = [];
+		foreach ($listing AS $circle) {
+			array_push($result, $circle->getName());
+		}
+
+		$this->assertEquals($result, [self::NAME_PRIVATE_CIRCLE1, self::NAME_PUBLIC_CIRCLE1]);
+
+
+		// Let's add user to all circle
+		Env::setUser(Env::ENV_TEST_OWNER1);
+		$circles = [$this->circles['Public'], $this->circles['Private'], $this->circles['Hidden']];
+		foreach ($circles AS $circle) {
+			$this->generateSimpleCircleWithAllLevel(
+				$circle->getId(), ($circle->getType() === Circle::CIRCLES_PRIVATE)
+			);
+		}
+
+
+		// Let's check from an owner PoV
+		Env::setUser(Env::ENV_TEST_OWNER1);
+
+		$listing = Circles::listCircles(Circle::CIRCLES_ALL);
+		$this->assertCount(4, $listing);
+
+		$result = [];
+		foreach ($listing AS $circle) {
+			array_push($result, $circle->getName());
+		}
+
+		$this->assertEquals(
+			$result, [
+					   self::NAME_HIDDEN_CIRCLE1, self::NAME_PERSONAL_CIRCLE1,
+					   self::NAME_PRIVATE_CIRCLE1,
+					   self::NAME_PUBLIC_CIRCLE1
+				   ]
+		);
+
+
+		// check from a member PoV
+		Env::setUser(Env::ENV_TEST_MEMBER1);
+
+		$listing = Circles::listCircles(Circle::CIRCLES_ALL);
+		$this->assertCount(3, $listing);
+
+		$result = [];
+		foreach ($listing AS $circle) {
+			array_push($result, $circle->getName());
+		}
+
+		$this->assertEquals(
+			$result, [
+					   self::NAME_HIDDEN_CIRCLE1, self::NAME_PRIVATE_CIRCLE1,
+					   self::NAME_PUBLIC_CIRCLE1
+				   ]
+		);
+
+
+		// member with a dedicated search on hidden
+		Env::setUser(Env::ENV_TEST_MEMBER1);
+
+		$listing = Circles::listCircles(Circle::CIRCLES_HIDDEN, self::NAME_HIDDEN_CIRCLE1);
+		$this->assertCount(1, $listing);
+
+		// member with a search on hidden
+		Env::setUser(Env::ENV_TEST_MEMBER1);
+
+		$listing = Circles::listCircles(Circle::CIRCLES_HIDDEN, '');
+		$this->assertCount(1, $listing);
+
+		// removing member from Circle
+		Env::setUser(Env::ENV_TEST_OWNER1);
+		Circles::removeMember($this->circles['Hidden']->getId(), Env::ENV_TEST_MEMBER1);
+
+		// member with a search on hidden
+		Env::setUser(Env::ENV_TEST_MEMBER1);
+
+		$listing = Circles::listCircles(Circle::CIRCLES_HIDDEN, '');
+		$this->assertCount(0, $listing);
+
+		// non-member with a dedicated search on hidden
+		Env::setUser(Env::ENV_TEST_MEMBER2);
+
+		$listing = Circles::listCircles(Circle::CIRCLES_HIDDEN, self::NAME_HIDDEN_CIRCLE1);
+		$this->assertCount(1, $listing);
+
+		// member with a dedicated search on personal
+		Env::setUser(Env::ENV_TEST_MEMBER1);
+		$listing = Circles::listCircles(Circle::CIRCLES_PERSONAL, self::NAME_PERSONAL_CIRCLE1);
+		$this->assertCount(0, $listing);
+
+		// non-member with a dedicated search on personal
+		Env::setUser(Env::ENV_TEST_MEMBER2);
+		$listing = Circles::listCircles(Circle::CIRCLES_PERSONAL, self::NAME_PERSONAL_CIRCLE1);
+		$this->assertCount(0, $listing);
+
+		// few request as another Owner on hidden
+		Env::SetUser(Env::ENV_TEST_OWNER2);
+		$circle = Circles::createCircle(Circle::CIRCLES_HIDDEN, self::NAME_HIDDEN_CIRCLE2);
+		$listing = Circles::listCircles(Circle::CIRCLES_HIDDEN, '');
+		$this->assertCount(1, $listing);
+		$listing = Circles::listCircles(Circle::CIRCLES_HIDDEN, self::NAME_HIDDEN_CIRCLE1);
+		$this->assertCount(1, $listing);
+		$listing = Circles::listCircles(Circle::CIRCLES_HIDDEN, self::NAME_HIDDEN_CIRCLE2);
+		$this->assertCount(1, $listing);
+		Circles::destroyCircle($circle->getId());
+
+		// few request as another Owner on personal
+		Env::SetUser(Env::ENV_TEST_OWNER2);
+		$circle = Circles::createCircle(Circle::CIRCLES_PERSONAL, self::NAME_PERSONAL_CIRCLE2);
+		$listing = Circles::listCircles(Circle::CIRCLES_PERSONAL, '');
+		$this->assertCount(1, $listing);
+		$listing = Circles::listCircles(Circle::CIRCLES_PERSONAL, self::NAME_PERSONAL_CIRCLE1);
+		$this->assertCount(0, $listing);
+		$listing = Circles::listCircles(Circle::CIRCLES_PERSONAL, self::NAME_PERSONAL_CIRCLE2);
+		$this->assertCount(1, $listing);
+		Circles::destroyCircle($circle->getId());
+
+		Env::logout();
+	}
+
+
+	public function testDetailsCircle() {
 	}
 
 
