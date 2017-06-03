@@ -40,6 +40,7 @@ OC.L10N.register(
     "Issue while retrieving the details of this circle" : "Incidencia al recuperar los detalles de este círculo",
     "Issue while retrieving the list of circles" : "Incidencia mientras se solicitaba la lista de círculos",
     "A link to <b>{remote}</b> could not be initiated" : "Un enlace a <b>{remote}</b> no se puedo iniciar",
+    "Member '{name}' successfully removed from the circle" : "Miembro '{name}' exitosamente eliminado del círculo",
     "Circles" : "Círculos",
     "The name of your circle cannot start with this character" : "El nombre del círculo no puede iniciar con este carácter",
     "This member does not exist" : "Este miembro no existe",
