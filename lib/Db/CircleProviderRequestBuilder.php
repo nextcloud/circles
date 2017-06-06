@@ -214,7 +214,7 @@ class CircleProviderRequestBuilder {
 	 * @param integer $shareId
 	 */
 	// TODO - put this as a leftjoin
-	protected function linkCircleField(& $qb, $shareId) {
+	protected function linkCircleField(& $qb, $shareId = -1) {
 		$expr = $qb->expr();
 
 		// TODO - Remove this in 12.0.1
@@ -227,14 +227,21 @@ class CircleProviderRequestBuilder {
 				$expr->eq('s.share_with', $expr->castColumn('c.id', IQueryBuilder::PARAM_STR));
 		}
 
+		$qb->from(CirclesMapper::TABLENAME, 'c');
+
+		if ($shareId === -1) {
+			$qb->andWhere($tmpOrX);
+
+			return;
+		}
+
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->from(CirclesMapper::TABLENAME, 'c')
-		   ->andWhere(
-			   $expr->orX(
-				   $tmpOrX,
-				   $expr->eq('s.parent', $qb->createNamedParameter($shareId))
-			   )
-		   );
+		$qb->andWhere(
+			$expr->orX(
+				$tmpOrX,
+				$expr->eq('s.parent', $qb->createNamedParameter($shareId))
+			)
+		);
 		//->orderBy('c.circle_name');
 	}
 
@@ -414,12 +421,15 @@ class CircleProviderRequestBuilder {
 			's.*', 'f.fileid', 'f.path', 'f.permissions AS f_permissions', 'f.storage',
 			'f.path_hash', 'f.parent AS f_parent', 'f.name', 'f.mimetype', 'f.mimepart',
 			'f.size', 'f.mtime', 'f.storage_mtime', 'f.encrypted', 'f.unencrypted_size',
-			'f.etag', 'f.checksum', 's2.id AS parent_id', 's2.file_target AS parent_target',
+			'f.etag', 'f.checksum', 'c.type AS circle_type', 'c.name AS circle_name',
+			's2.id AS parent_id', 's2.file_target AS parent_target',
 			's2.permissions AS parent_perms'
 		)
 		   ->selectAlias('st.id', 'storage_string_id');
 
 		$this->joinShare($qb);
+		$this->linkCircleField($qb);
+
 
 		return $qb;
 	}
