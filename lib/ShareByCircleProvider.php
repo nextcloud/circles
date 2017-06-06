@@ -551,17 +551,46 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	 * @param IShare $share
 	 * @param $data
 	 */
-	private function assignShareObjectSharesProperties(& $share, $data) {
+	private function assignShareObjectSharesProperties(IShare &$share, $data) {
 		$shareTime = new \DateTime();
 		$shareTime->setTimestamp((int)$data['stime']);
 
 		$share->setShareTime($shareTime);
 		$share->setSharedWith($data['share_with'])
-			  ->setSharedWithDisplayName($data['circle_name'])
-			  ->setSharedWithAvatar('/apps/circles/img/private.svg')
+			  ->setSharedWithDisplayName(
+				  sprintf(
+					  '%s (%s, %s)', $data['circle_name'],
+					  Circle::TypeLongString($data['circle_type']),
+					  $data['circle_owner']
+				  )
+			  )
 			  ->setSharedBy($data['uid_initiator'])
 			  ->setShareOwner($data['uid_owner'])
 			  ->setShareType((int)$data['share_type']);
+
+		$this->assignShareObjectCircleIcon($share, $data);
+	}
+
+	/**
+	 * @param IShare $share
+	 * @param $data
+	 */
+	private function assignShareObjectCircleIcon(IShare &$share, $data) {
+		$urlGen = \OC::$server->getURLGenerator();
+		switch ($data['circle_type']) {
+			case Circle::CIRCLES_PERSONAL:
+				$share->setSharedWithAvatar($urlGen->imagePath('circles', 'personal.svg'));
+				break;
+			case Circle::CIRCLES_PRIVATE:
+				$share->setSharedWithAvatar($urlGen->imagePath('circles', 'private.svg'));
+				break;
+			case Circle::CIRCLES_HIDDEN:
+				$share->setSharedWithAvatar($urlGen->imagePath('circles', 'hidden.svg'));
+				break;
+			case Circle::CIRCLES_PUBLIC:
+				$share->setSharedWithAvatar($urlGen->imagePath('circles', 'public.svg'));
+				break;
+		}
 	}
 
 	/**
