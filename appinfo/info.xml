@@ -42,4 +42,20 @@ Your circle will be visible to everyone and everyone will be able to join the ci
 			<step>OCA\Circles\Migration\GenerateUniqueIdOnCreatedCircle</step>
 		</post-migration>
 	</repair-steps>
+
+	<activity>
+		<settings>
+			<setting>OCA\Circles\Activity\SettingCreation</setting>
+			<setting>OCA\Circles\Activity\SettingShares</setting>
+			<setting>OCA\Circles\Activity\SettingInvitation</setting>
+			<setting>OCA\Circles\Activity\SettingPopulation</setting>
+			<setting>OCA\Circles\Activity\SettingRights</setting>
+		</settings>
+		<filters>
+			<filter>OCA\Circles\Activity\Filter</filter>
+		</filters>
+		<providers>
+			<provider>OCA\Circles\Activity\Provider</provider>
+		</providers>
+	</activity>
 </info>
