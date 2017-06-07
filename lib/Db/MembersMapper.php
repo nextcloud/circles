@@ -80,7 +80,6 @@ class MembersMapper extends Mapper {
 		}
 
 		$member = Member::fromArray2($this->l10n, $data);
-//		$member->fromArray($data);
 		$cursor->closeCursor();
 
 		return $member;
