@@ -142,6 +142,9 @@ class Circles {
 	/**
 	 * Circles::detailsCircle();
 	 *
+	 * WARNING - This function is called by the core - WARNING
+	 *                 Do not change it
+	 *
 	 * Returns details on the circle. If the current user is a member, the members list will be
 	 * return as well.
 	 *
