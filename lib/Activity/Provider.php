@@ -77,9 +77,16 @@ class Provider implements IProvider {
 			return $event;
 		}
 
+		$params = $event->getSubjectParameters();
+		$circle = Circle::fromJSON($this->l10n, $params['circle']);
+		if ($circle === null) {
+			throw new \InvalidArgumentException();
+		}
+		$event->setIcon(CirclesService::getCircleIcon($circle->getType()));
+
 		switch ($event->getSubject()) {
 			case 'create':
-				return $this->parseCreationCreate($lang, $event);
+				return $this->parseCreationCreate($lang, $circle, $event);
 
 			case 'delete':
 				return $this->parseCreationDelete($lang, $event);
@@ -92,34 +99,40 @@ class Provider implements IProvider {
 
 	/**
 	 * @param string $lang
+	 * @param Circle $circle
 	 * @param IEvent $event
 	 *
 	 * @return IEvent
 	 */
-	private function parseCreationCreate($lang, IEvent $event) {
+	private function parseCreationCreate($lang, Circle $circle, IEvent $event) {
 
-		$params = $event->getSubjectParameters();
-		$this->miscService->log(var_export($params, true));
+	$this->miscService->log("____" . $this->activityManager->getCurrentUserId() . '   ' . $circle->getOwner()->getUserId());
+		if ($circle->getOwner()
+				   ->getUserId() === $this->activityManager->getCurrentUserId()
+		) {
 
-		$circle = Circle::fromJSON($this->l10n, $params['circle']);
-        $event->setIcon(CirclesService::getCircleIcon($circle->getType()));
+			$event->setRichSubject(
+				$this->l10n->t(
+					'You created the circle {circles}'
+				),
+				['circles' => $this->generateCircleParameter($circle)]
+			);
 
-//          $this->url->getAbsoluteURL($this->url->imagePath('circles', 'black_circle.svg'))
-//        );
+		} else {
 
-//        $frame = SharingFrame::fromJSON($params['share']);
-//
-//        if ($frame === null) {
-//          throw new \InvalidArgumentException();
-//        }
-//        $mood = $frame->getPayload();
-//        $this->parseActivityHeader($event, $frame);
-//        $this->parseMood($event, $mood);
-//        break;
-//
-//      default:
-//        throw new \InvalidArgumentException();
-//    }
+			$author = $this->generateUserParameter(
+				$circle->getOwner()
+					   ->getUserId()
+			);
+			$event->setRichSubject(
+					  $this->l10n->t(
+						  '{author} created the circle {circles}'
+					  ), [
+						  'author'  => $author,
+						  'circles' => $this->generateCircleParameter($circle)
+					  ]
+				  );
+		}
 
 
 		return $event;
@@ -256,48 +269,28 @@ class Provider implements IProvider {
 	}
 
 
-	private function generateOpenGraphParameter($id, $website) {
-		return [
-			'type'        => 'open-graph',
-			'id'          => $id,
-			'name'        => $website['title'],
-			'description' => $website['description'],
-			'website'     => $website['website'],
-			'thumb'       => \OC::$server->getURLGenerator()
-										 ->linkToRoute('mood.Tools.binFromExternalImage') . '?url='
-							 . rawurlencode($website['thumb']),
-			'link'        => $website['url']
-		];
-	}
-
-
-	private function generateCircleParameter(SharingFrame $frame) {
+	private function generateCircleParameter(Circle $circle) {
 		return [
 			'type' => 'circle',
-			'id'   => $frame->getCircleId(),
-			'name' => $frame->getCircleName(),
+			'id'   => $circle->getId(),
+			'name' => $circle->getName(),
 			'link' => \OC::$server->getURLGenerator()
 								  ->linkToRoute('circles.Navigation.navigate')
-					  . '#' . $frame->getCircleId()
+					  . '#' . $circle->getId()
 		];
 	}
 
 
 	/**
-	 * @param SharingFrame $frame
+	 * @param $userId
 	 *
 	 * @return array
 	 */
-	private function generateUserParameter(SharingFrame $frame) {
-		$host = '';
-		if ($frame->getCloudId() !== null) {
-			$host = '@' . $frame->getCloudId();
-		}
-
-		return [
+	private function generateUserParameter($userId) {
+			return [
 			'type' => 'user',
-			'id'   => $frame->getAuthor(),
-			'name' => $frame->getAuthor() . $host
+			'id'   => $userId,
+			'name' => $userId
 		];
 	}
 }
