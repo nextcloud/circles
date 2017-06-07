@@ -79,8 +79,8 @@ class MembersMapper extends Mapper {
 			$data['note'] = '';
 		}
 
-		$member = new Member($this->l10n);
-		$member->fromArray($data);
+		$member = Member::fromArray2($this->l10n, $data);
+//		$member->fromArray($data);
 		$cursor->closeCursor();
 
 		return $member;
@@ -110,9 +110,7 @@ class MembersMapper extends Mapper {
 					$data['note'] = '';
 				}
 
-				$member = new Member($this->l10n);
-				$member->fromArray($data);
-				$result[] = $member;
+				$result[] = Member::fromArray2($this->l10n, $data);
 			}
 			$cursor->closeCursor();
 

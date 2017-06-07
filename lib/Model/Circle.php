@@ -30,13 +30,6 @@ use OCA\Circles\Exceptions\CircleTypeNotValid;
 
 class Circle extends BaseCircle implements \JsonSerializable {
 
-	const CIRCLES_PERSONAL = 1;
-	const CIRCLES_HIDDEN = 2;
-	const CIRCLES_PRIVATE = 4;
-	const CIRCLES_PUBLIC = 8;
-
-	const CIRCLES_ALL = 15;
-
 	public function getTypeString() {
 		switch ($this->getType()) {
 			case self::CIRCLES_PERSONAL:
@@ -75,30 +68,56 @@ class Circle extends BaseCircle implements \JsonSerializable {
 			'creation'       => $this->getCreation(),
 			'typeString'     => $this->getTypeString(),
 			'typeLongString' => $this->getTypeLongString(),
+			'unique_id'      => $this->getUniqueId(),
 			'members'        => $this->getMembers(),
 			'links'          => $this->getRemote()
 		);
 	}
 
+//	/**
+//	 * set all infos from an Array.
+//	 *
+//	 * @param $arr
+//	 *
+//	 * @return $this
+//	 */
+//	public function fromArray($arr) {
+//		$this->setId($arr['id']);
+//		$this->setName($arr['name']);
+//		$this->setUniqueId($arr['unique_id']);
+//		$this->setDescription($arr['description']);
+//		$this->setType($arr['type']);
+//		$this->setCreation($arr['creation']);
+////		$this->setOwnerMemberFromArray($arr);
+////		$this->setUserMemberFromArray($arr);
+//
+//		return $this;
+//	}
+
 	/**
 	 * set all infos from an Array.
 	 *
+	 * @param $l10n
 	 * @param $arr
 	 *
 	 * @return $this
 	 */
-	public function fromArray($arr) {
-		$this->setId($arr['id']);
-		$this->setName($arr['name']);
-		$this->setUniqueId($arr['unique_id']);
-		$this->setDescription($arr['description']);
-		$this->setType($arr['type']);
-		$this->setCreation($arr['creation']);
+	public static function fromArray2($l10n, $arr) {
+		$circle = new Circle($l10n);
 
-		$this->setOwnerMemberFromArray($arr);
-		$this->setUserMemberFromArray($arr);
+		$circle->setId($arr['id']);
+		$circle->setName($arr['name']);
+		$circle->setUniqueId($arr['unique_id']);
+		$circle->setDescription($arr['description']);
+		$circle->setType($arr['type']);
+		$circle->setCreation($arr['creation']);
 
-		return $this;
+		return $circle;
+	}
+
+
+	public static function fromJSON($l10n, $json) {
+		return self::fromArray2($l10n, json_decode($json, true));
 	}
 
 
@@ -107,32 +126,35 @@ class Circle extends BaseCircle implements \JsonSerializable {
 	 *
 	 * @param $array
 	 */
-	private function setOwnerMemberFromArray(& $array) {
-		if (key_exists('owner', $array)) {
-			$owner = new Member($this->l10n);
-			$owner->setUserId($array['owner']);
-			$this->setOwner($owner);
-		}
-	}
-
-
-	/**
-	 * set User Infos from Array
-	 *
-	 * @param $array
-	 */
-	private function setUserMemberFromArray(& $array) {
-		if (key_exists('status', $array)
-			&& key_exists('level', $array)
-			&& key_exists('joined', $array)
-		) {
-			$user = new Member($this->l10n);
-			$user->setStatus($array['status']);
-			$user->setLevel($array['level']);
-			$user->setJoined($array['joined']);
-			$this->setUser($user);
-		}
-	}
+//	private function setOwnerMemberFromArray($array) {
+//		if (key_exists('owner', $array)) {
+//			$owner = new Member($this->l10n);
+//			$owner->fromArray($array['owner']);
+//
+//			//$owner = nreMember::fromArray2($this->l10n, $array['owner']);
+//			$this->setOwner($owner);
+//		}
+//	}
+//
+//
+//	/**
+//	 * set User Infos from Array
+//	 *
+//	 * @param $array
+//	 */
+//	// TODO rewrite the function based of setOwnerMemberFromArray()
+//	private function setUserMemberFromArray($array) {
+//		if (key_exists('status', $array)
+//			&& key_exists('level', $array)
+//			&& key_exists('joined', $array)
+//		) {
+//			$user = new Member($this->l10n);
+//			$user->setStatus($array['status']);
+//			$user->setLevel($array['level']);
+//			$user->setJoined($array['joined']);
+//			$this->setUser($user);
+//		}
+//	}
 
 
 	/**
@@ -168,6 +190,7 @@ class Circle extends BaseCircle implements \JsonSerializable {
 
 		return 'none';
 	}
+
 
 }
 

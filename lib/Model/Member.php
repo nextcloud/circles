@@ -36,7 +36,7 @@ use OCA\Circles\Exceptions\MemberIsNotOwnerException;
 use OCA\Circles\Exceptions\MemberIsOwnerException;
 use OCA\Circles\Exceptions\ModeratorIsNotHighEnoughException;
 
-class Member extends BaseMember implements \JsonSerializable {
+class Member extends BaseMember {
 
 
 	public function inviteToCircle($circleType) {
@@ -204,17 +204,6 @@ class Member extends BaseMember implements \JsonSerializable {
 		}
 	}
 
-	public function jsonSerialize() {
-		return array(
-			'circle_id'    => $this->getCircleId(),
-			'user_id'      => $this->getUserId(),
-			'level'        => $this->getLevel(),
-			'level_string' => $this->getLevelString(),
-			'status'       => $this->getStatus(),
-			'note'         => $this->getNote(),
-			'joined'       => $this->getJoined()
-		);
-	}
 
 
 }

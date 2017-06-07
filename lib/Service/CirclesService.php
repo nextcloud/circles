@@ -108,14 +108,15 @@ class CirclesService {
 			);
 		}
 
-		$owner = new Member($this->l10n, $this->userId);
-		$owner->setStatus(Member::STATUS_MEMBER);
 		$circle = new Circle($this->l10n, $type, $name);
-		$circle->setMembers([$owner]);
+		$owner = new Member($this->l10n, $this->userId);
 
 		try {
-			$this->dbCircles->create($circle, $owner);
-			$this->dbMembers->add($owner);
+			$this->dbCircles->create($circle);
+			$owner->setLevel(Member::LEVEL_OWNER)
+				  ->setStatus(Member::STATUS_MEMBER)
+				  ->setCircleId($circle->getId());
+			$this->dbMembers->add($circle->getOwner());
 		} catch (\Exception $e) {
 			$this->dbCircles->destroy($circle->getId());
 			throw $e;
@@ -303,6 +304,32 @@ class CirclesService {
 		}
 
 		return 0;
+	}
+
+
+	/**
+	 * getCircleIcon()
+	 *
+	 * Return the right imagePath for a type of circle.
+	 *
+	 * @param string $type
+	 *
+	 * @return string
+	 */
+	public static function getCircleIcon($type) {
+		$urlGen = \OC::$server->getURLGenerator();
+		switch ($type) {
+			case Circle::CIRCLES_PERSONAL:
+				return $urlGen->imagePath('circles', 'personal.svg');
+			case Circle::CIRCLES_PRIVATE:
+				return $urlGen->imagePath('circles', 'private.svg');
+			case Circle::CIRCLES_HIDDEN:
+				return $urlGen->imagePath('circles', 'hidden.svg');
+			case Circle::CIRCLES_PUBLIC:
+				return $urlGen->imagePath('circles', 'public.svg');
+		}
+
+		return $urlGen->imagePath('circles', 'black_circle.svg');
 	}
 
 }
