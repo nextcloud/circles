@@ -4,7 +4,10 @@
 namespace OCA\Circles\Activity;
 
 
+use Exception;
+use InvalidArgumentException;
 use OCA\Circles\Model\SharingFrame;
+use OCA\Circles\Service\MiscService;
 use OCP\Activity\IEvent;
 use OCP\Activity\IManager;
 use OCP\Activity\IProvider;
@@ -35,6 +38,7 @@ class Provider implements IProvider {
 		$this->miscService = $miscService;
 	}
 
+
 	/**
 	 * @param string $lang
 	 * @param IEvent $event
@@ -49,11 +53,11 @@ class Provider implements IProvider {
 			throw new \InvalidArgumentException();
 		}
 
-		$this->parseCreation($lang, $event);
-		$this->parseInvitation($lang, $event);
-		$this->parsePopulation($lang, $event);
-		$this->parseRights($lang, $event);
-		$this->parseShares($lang, $event);
+		$event = $this->parseCreation($lang, $event);
+		$event = $this->parseInvitation($lang, $event);
+		$event = $this->parsePopulation($lang, $event);
+		$event = $this->parseRights($lang, $event);
+		$event = $this->parseShares($lang, $event);
 
 		return $event;
 	}
@@ -62,80 +66,134 @@ class Provider implements IProvider {
 	/**
 	 * @param string $lang
 	 * @param IEvent $event
+	 *
+	 * @return IEvent
+	 * @throws Exception
 	 */
 	private function parseCreation($lang, IEvent $event) {
-		if ($event->getSubject() !== 'circles_creation') {
-			return;
+		if ($event->getType() !== 'circles_creation') {
+			return $event;
 		}
 
-//		switch ($event->getSubject()) {
-//			case 'mood_item':
-//				$params = $event->getSubjectParameters();
-//				if (!key_exists('share', $params)) {
-//					throw new \InvalidArgumentException();
-//				}
-//
-//				$event->setIcon(
-//					$this->url->getAbsoluteURL($this->url->imagePath('mood', 'mood.svg'))
-//				);
-//
-//				$frame = SharingFrame::fromJSON($params['share']);
-//
-//				if ($frame === null) {
-//					throw new \InvalidArgumentException();
-//				}
-//				$mood = $frame->getPayload();
-//				$this->parseActivityHeader($event, $frame);
-//				$this->parseMood($event, $mood);
-//				break;
-//
-//			default:
-//				throw new \InvalidArgumentException();
-//		}
+		switch ($event->getSubject()) {
+			case 'create':
+				return $this->parseCreationCreate($lang, $event);
 
+			case 'delete':
+				return $this->parseCreationDelete($lang, $event);
+
+			default:
+				throw new InvalidArgumentException();
+		}
 	}
+
 
 	/**
 	 * @param string $lang
 	 * @param IEvent $event
+	 *
+	 * @return IEvent
+	 */
+	private function parseCreationCreate($lang, IEvent $event) {
+
+		$params = $event->getSubjectParameters();
+		$this->miscService->log(var_export($params, true));
+
+
+
+        $event->setIcon(
+          $this->url->getAbsoluteURL($this->url->imagePath('circles', 'black_circle.svg'))
+        );
+//
+//        $frame = SharingFrame::fromJSON($params['share']);
+//
+//        if ($frame === null) {
+//          throw new \InvalidArgumentException();
+//        }
+//        $mood = $frame->getPayload();
+//        $this->parseActivityHeader($event, $frame);
+//        $this->parseMood($event, $mood);
+//        break;
+//
+//      default:
+//        throw new \InvalidArgumentException();
+//    }
+
+
+		return $event;
+//		throw new InvalidArgumentException();
+	}
+
+
+	/**
+	 * @param string $lang
+	 * @param IEvent $event
+	 *
+	 * @return IEvent
+	 */
+	private function parseCreationDelete($lang, IEvent $event) {
+		return $event;
+//		throw new InvalidArgumentException();
+	}
+
+
+	/**
+	 * @param string $lang
+	 * @param IEvent $event
+	 *
+	 * @return IEvent
 	 */
 	private function parseInvitation($lang, IEvent $event) {
-		if ($event->getSubject() !== 'circles_invitation') {
-			return;
+		if ($event->getType() !== 'circles_invitation') {
+			return $event;
 		}
+
+		return $event;
 	}
 
 
 	/**
 	 * @param string $lang
 	 * @param IEvent $event
+	 *
+	 * @return IEvent
 	 */
 	private function parsePopulation($lang, IEvent $event) {
-		if ($event->getSubject() !== 'circles_population') {
-			return;
+		if ($event->getType() !== 'circles_population') {
+			return $event;
 		}
+
+		return $event;
 	}
 
 
 	/**
 	 * @param string $lang
 	 * @param IEvent $event
+	 *
+	 * @return IEvent
 	 */
 	private function parseRights($lang, IEvent $event) {
-		if ($event->getSubject() !== 'circles_rights') {
-			return;
+		if ($event->getType() !== 'circles_rights') {
+			return $event;
 		}
+
+		return $event;
 	}
 
 
 	/**
 	 * @param string $lang
 	 * @param IEvent $event
+	 *
+	 * @return IEvent
 	 */
 	private function parseShares($lang, IEvent $event) {
-		if ($event->getSubject() !== 'circles_shares') {
-			return;
+		if ($event->getType() !== 'circles_shares') {
+			return $event;
 		}
+
+		return $event;
 	}
 
 //	private function parseMood(IEvent &$event, $mood) {
