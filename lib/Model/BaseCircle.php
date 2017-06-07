@@ -30,9 +30,16 @@ use OC\L10N\L10N;
 
 class BaseCircle {
 
+
+	const CIRCLES_PERSONAL = 1;
+	const CIRCLES_HIDDEN = 2;
+	const CIRCLES_PRIVATE = 4;
+	const CIRCLES_PUBLIC = 8;
+
+	const CIRCLES_ALL = 15;
+
 	/** @var int */
 	private $id;
-
 
 	/** @var L10N */
 	protected $l10n;
@@ -158,7 +165,7 @@ class BaseCircle {
 
 
 	public function setType($type) {
-		$this->type = (int)$type;
+		$this->type = self::typeInt($type);
 
 		return $this;
 	}
@@ -218,4 +225,24 @@ class BaseCircle {
 		return null;
 	}
 
+
+	public static function typeInt($type) {
+
+		if (is_int($type)) {
+			return $type;
+		}
+
+		switch ($type) {
+			case 'Personal':
+				return self::CIRCLES_PERSONAL;
+			case 'Private':
+				return self::CIRCLES_PRIVATE;
+			case 'Hidden':
+				return self::CIRCLES_HIDDEN;
+			case 'Public':
+				return self::CIRCLES_PUBLIC;
+		}
+
+		return 0;
+	}
 }
