@@ -316,4 +316,30 @@ class CirclesService {
 		return 0;
 	}
 
+
+	/**
+	 * getCircleIcon()
+	 *
+	 * Return the right imagePath for a type of circle.
+	 *
+	 * @param string $type
+	 *
+	 * @return string
+	 */
+	public static function getCircleIcon($type) {
+		$urlGen = \OC::$server->getURLGenerator();
+		switch ($type) {
+			case Circle::CIRCLES_PERSONAL:
+				return $urlGen->imagePath('circles', 'personal.svg');
+			case Circle::CIRCLES_PRIVATE:
+				return $urlGen->imagePath('circles', 'private.svg');
+			case Circle::CIRCLES_HIDDEN:
+				return $urlGen->imagePath('circles', 'hidden.svg');
+			case Circle::CIRCLES_PUBLIC:
+				return $urlGen->imagePath('circles', 'public.svg');
+		}
+
+		return $urlGen->imagePath('circles', 'black_circle.svg');
+	}
+
 }
