@@ -31,6 +31,7 @@ namespace OCA\Circles;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleProviderRequestBuilder;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Service\CirclesService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\Files\Folder;
 use OCP\Files\Node;
@@ -568,30 +569,9 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 			  ->setShareOwner($data['uid_owner'])
 			  ->setShareType((int)$data['share_type']);
 
-		$this->assignShareObjectCircleIcon($share, $data);
+		$share->setSharedWithAvatar(CirclesService::getCircleIcon($data['circle_type']));
 	}
 
-	/**
-	 * @param IShare $share
-	 * @param $data
-	 */
-	private function assignShareObjectCircleIcon(IShare &$share, $data) {
-		$urlGen = \OC::$server->getURLGenerator();
-		switch ($data['circle_type']) {
-			case Circle::CIRCLES_PERSONAL:
-				$share->setSharedWithAvatar($urlGen->imagePath('circles', 'personal.svg'));
-				break;
-			case Circle::CIRCLES_PRIVATE:
-				$share->setSharedWithAvatar($urlGen->imagePath('circles', 'private.svg'));
-				break;
-			case Circle::CIRCLES_HIDDEN:
-				$share->setSharedWithAvatar($urlGen->imagePath('circles', 'hidden.svg'));
-				break;
-			case Circle::CIRCLES_PUBLIC:
-				$share->setSharedWithAvatar($urlGen->imagePath('circles', 'public.svg'));
-				break;
-		}
-	}
 
 	/**
 	 * Returns whether the given database result can be interpreted as
