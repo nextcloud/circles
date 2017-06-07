@@ -53,9 +53,6 @@ class CirclesService {
 	/** @var MembersMapper */
 	private $dbMembers;
 
-	/** @var EventsService */
-	private $eventsService;
-
 	/** @var MiscService */
 	private $miscService;
 
@@ -67,7 +64,6 @@ class CirclesService {
 	 * @param IL10N $l10n
 	 * @param ConfigService $configService
 	 * @param DatabaseService $databaseService
-	 * @param EventsService $eventsService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
@@ -75,13 +71,11 @@ class CirclesService {
 		IL10N $l10n,
 		ConfigService $configService,
 		DatabaseService $databaseService,
-		EventsService $eventsService,
 		MiscService $miscService
 	) {
 		$this->userId = $userId;
 		$this->l10n = $l10n;
 		$this->configService = $configService;
-		$this->eventsService = $eventsService;
 		$this->miscService = $miscService;
 
 		$this->dbCircles = $databaseService->getCirclesMapper();
@@ -126,8 +120,6 @@ class CirclesService {
 			$this->dbCircles->destroy($circle->getId());
 			throw $e;
 		}
-
-		$this->eventsService->onCircleCreation($circle);
 
 		return $circle;
 	}
@@ -267,9 +259,6 @@ class CirclesService {
 		try {
 			$member = $this->dbMembers->getMemberFromCircle($circleId, $this->userId, false);
 			$member->hasToBeOwner();
-
-			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
-			$this->eventsService->onCircleDestruction($circle);
 
 			$this->dbMembers->removeAllFromCircle($circleId);
 			$this->dbCircles->destroy($circleId);
