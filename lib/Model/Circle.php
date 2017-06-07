@@ -30,13 +30,6 @@ use OCA\Circles\Exceptions\CircleTypeNotValid;
 
 class Circle extends BaseCircle implements \JsonSerializable {
 
-	const CIRCLES_PERSONAL = 1;
-	const CIRCLES_HIDDEN = 2;
-	const CIRCLES_PRIVATE = 4;
-	const CIRCLES_PUBLIC = 8;
-
-	const CIRCLES_ALL = 15;
-
 	public function getTypeString() {
 		switch ($this->getType()) {
 			case self::CIRCLES_PERSONAL:
@@ -75,6 +68,7 @@ class Circle extends BaseCircle implements \JsonSerializable {
 			'creation'       => $this->getCreation(),
 			'typeString'     => $this->getTypeString(),
 			'typeLongString' => $this->getTypeLongString(),
+			'unique_id'      => $this->getUniqueId(),
 			'members'        => $this->getMembers(),
 			'links'          => $this->getRemote()
 		);
@@ -94,11 +88,18 @@ class Circle extends BaseCircle implements \JsonSerializable {
 		$this->setDescription($arr['description']);
 		$this->setType($arr['type']);
 		$this->setCreation($arr['creation']);
-
 		$this->setOwnerMemberFromArray($arr);
 		$this->setUserMemberFromArray($arr);
 
 		return $this;
+	}
+
+
+	public static function fromJSON($l10n, $json) {
+		$circle = new Circle($l10n);
+		$circle->fromArray(json_decode($json, true));
+
+		return $circle;
 	}
 
 
@@ -168,6 +169,7 @@ class Circle extends BaseCircle implements \JsonSerializable {
 
 		return 'none';
 	}
+
 
 }
 
