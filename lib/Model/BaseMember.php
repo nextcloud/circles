@@ -166,26 +166,6 @@ class BaseMember implements \JsonSerializable {
 	}
 
 
-	/**
-	 * @param array $arr
-	 *
-	 * @return BaseMember
-	 */
-	public function fromArray($arr) {
-		$this->setCircleId($arr['circle_id']);
-		$this->setUserId($arr['user_id']);
-		$this->setLevel($arr['level']);
-		$this->setStatus($arr['status']);
-		if (key_exists('note', $arr)) {
-			$this->setNote($arr['note']);
-		}
-		if (key_exists('joined', $arr)) {
-			$this->setJoined($arr['joined']);
-		}
-
-		return $this;
-	}
-
 	public static function fromArray2($l10n, $arr) {
 		$member = new Member($l10n);
 

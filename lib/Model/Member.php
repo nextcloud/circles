@@ -26,6 +26,7 @@
 
 namespace OCA\Circles\Model;
 
+use OCA\Circles\Exceptions\CircleTypeNotValid;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberCantJoinCircle;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
@@ -40,6 +41,11 @@ class Member extends BaseMember {
 
 
 	public function inviteToCircle($circleType) {
+
+		if ($circleType === 0) {
+			throw new CircleTypeNotValid('Circle Type is not valid');
+		}
+
 		if ($circleType === Circle::CIRCLES_PRIVATE) {
 			return $this->inviteIntoPrivateCircle();
 		}
