@@ -6,7 +6,9 @@ namespace OCA\Circles\Activity;
 
 use Exception;
 use InvalidArgumentException;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\SharingFrame;
+use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\MiscService;
 use OCP\Activity\IEvent;
 use OCP\Activity\IManager;
@@ -99,12 +101,12 @@ class Provider implements IProvider {
 		$params = $event->getSubjectParameters();
 		$this->miscService->log(var_export($params, true));
 
+		$circle = Circle::fromJSON($this->l10n, $params['circle']);
+        $event->setIcon(CirclesService::getCircleIcon($circle->getType()));
 
+//          $this->url->getAbsoluteURL($this->url->imagePath('circles', 'black_circle.svg'))
+//        );
 
-        $event->setIcon(
-          $this->url->getAbsoluteURL($this->url->imagePath('circles', 'black_circle.svg'))
-        );
-//
 //        $frame = SharingFrame::fromJSON($params['share']);
 //
 //        if ($frame === null) {
