@@ -158,12 +158,10 @@ class EventsService {
 		);
 
 		$this->publishEvent(
-			$event, array_merge(
-					  [$member],
-					  $this->circlesRequest->getMembers($circle->getId(), Member::LEVEL_MODERATOR)
-				  )
+			$event, $this->circlesRequest->getMembers($circle->getId(), Member::LEVEL_MEMBER)
 		);
 	}
+
 
 	/**
 	 * onMemberAlmost()
@@ -234,7 +232,8 @@ class EventsService {
 
 		$event = $this->generateEvent('circles_as_moderator');
 		$event->setSubject(
-			'member_request_invitation', ['circle' => json_encode($circle), 'member' => json_encode($member)]
+			'member_request_invitation',
+			['circle' => json_encode($circle), 'member' => json_encode($member)]
 		);
 
 		$this->publishEvent(
@@ -271,7 +270,7 @@ class EventsService {
 		$this->publishEvent(
 			$event, array_merge(
 					  [$member],
-					  $this->circlesRequest->getMembers($circle->getId(), Member::LEVEL_MODERATOR)
+					  $this->circlesRequest->getMembers($circle->getId(), Member::LEVEL_MEMBER)
 				  )
 		);
 

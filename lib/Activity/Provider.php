@@ -48,7 +48,6 @@ class Provider implements IProvider {
 	 * @param IEvent|null $previousEvent
 	 *
 	 * @return IEvent
-	 * @since 11.0.0
 	 */
 	public function parse($lang, IEvent $event, IEvent $previousEvent = null) {
 
@@ -58,9 +57,6 @@ class Provider implements IProvider {
 
 		$event = $this->parseAsMember($lang, $event);
 		$event = $this->parseAsModerator($lang, $event);
-//		$event = $this->parsePopulation($lang, $event);
-//		$event = $this->parseRights($lang, $event);
-//		$event = $this->parseShares($lang, $event);
 
 		return $event;
 	}
@@ -118,6 +114,15 @@ class Provider implements IProvider {
 			case 'member_join':
 				return $this->parseMemberJoin($lang, $circle, $member, $event);
 
+			case 'member_add':
+				return $this->parseMemberAdd($lang, $circle, $member, $event);
+
+			case 'member_left':
+				return $this->parseMemberLeft($lang, $circle, $member, $event);
+
+			case 'member_remove':
+				return $this->parseMemberRemove($lang, $circle, $member, $event);
+
 			default:
 				return $event;
 		}
@@ -169,17 +174,14 @@ class Provider implements IProvider {
 				   ->getUserId() === $this->activityManager->getCurrentUserId()
 		) {
 			$event->setRichSubject(
-				$this->l10n->t(
-					'You created the circle {circle}'
-				),
+				$this->l10n->t('You created the circle {circle}'),
 				['circle' => $this->generateCircleParameter($circle)]
 			);
 
 		} else {
 			$event->setRichSubject(
-				$this->l10n->t(
-					'{author} created the circle {circle}'
-				), [
+				$this->l10n->t('{author} created the circle {circle}'),
+				[
 					'author' => $author = $this->generateUserParameter(
 						$circle->getOwner()
 							   ->getUserId()
@@ -205,16 +207,13 @@ class Provider implements IProvider {
 				   ->getUserId() === $this->activityManager->getCurrentUserId()
 		) {
 			$event->setRichSubject(
-				$this->l10n->t(
-					'You deleted circle {circle}'
-				),
+				$this->l10n->t('You deleted {circle}'),
 				['circle' => $this->generateCircleParameter($circle)]
 			);
 		} else {
 			$event->setRichSubject(
-				$this->l10n->t(
-					'{author} deleted circle {circle}'
-				), [
+				$this->l10n->t('{author} deleted {circle}'),
+				[
 					'author' => $this->generateUserParameter(
 						$circle->getOwner()
 							   ->getUserId()
@@ -242,9 +241,7 @@ class Provider implements IProvider {
 				   ->getUserId() === $this->activityManager->getCurrentUserId()
 		) {
 			$event->setRichSubject(
-				$this->l10n->t(
-					'You have invited {member} into {circle}'
-				),
+				$this->l10n->t('You invited {member} into {circle}'),
 				[
 					'circle' => $this->generateCircleParameter($circle),
 					'member' => $this->generateMemberParameter($member)
@@ -253,9 +250,8 @@ class Provider implements IProvider {
 
 		} elseif ($member->getUserId() === $this->activityManager->getCurrentUserId()) {
 			$event->setRichSubject(
-				$this->l10n->t(
-					'You have been invited into {circle} by {author}'
-				), [
+				$this->l10n->t('You have been invited into {circle} by {author}'),
+				[
 					'author' => $this->generateUserParameter(
 						$circle->getUser()
 							   ->getUserId()
@@ -266,9 +262,8 @@ class Provider implements IProvider {
 
 		} else {
 			$event->setRichSubject(
-				$this->l10n->t(
-					'{member} have been invited into {circle} by {author}'
-				), [
+				$this->l10n->t('{member} have been invited into {circle} by {author}'),
+				[
 					'author' => $this->generateUserParameter(
 						$circle->getUser()
 							   ->getUserId()
@@ -296,18 +291,14 @@ class Provider implements IProvider {
 	) {
 		if ($member->getUserId() === $this->activityManager->getCurrentUserId()) {
 			$event->setRichSubject(
-				$this->l10n->t(
-					'You have requested an invitation to {circle}'
-				),
-				[
-					'circle' => $this->generateCircleParameter($circle)
-				]
+				$this->l10n->t('You requested an invitation to {circle}'),
+				['circle' => $this->generateCircleParameter($circle)]
 			);
 
 		} else {
 			$event->setRichSubject(
 				$this->l10n->t(
-					'{author} have requested an invitation into {circle}'
+					'{author} has requested an invitation into {circle}'
 				), [
 					'author' => $this->generateMemberParameter($member),
 					'circle' => $this->generateCircleParameter($circle)
@@ -328,8 +319,165 @@ class Provider implements IProvider {
 	 * @return IEvent
 	 */
 	private function parseMemberJoin($lang, Circle $circle, Member $member, IEvent $event) {
+		if ($circle->getUser()
+				   ->getUserId() === $this->activityManager->getCurrentUserId()
+		) {
+			$event->setRichSubject(
+				$this->l10n->t('You joined {circle}'),
+				['circle' => $this->generateCircleParameter($circle)]
+			);
+
+		} else {
+			$event->setRichSubject(
+				$this->l10n->t(
+					'{member} has joined the circle {circle}'
+				), [
+					'circle' => $this->generateCircleParameter($circle),
+					'member' => $this->generateMemberParameter($member)
+				]
+			);
+		}
+
 		return $event;
 	}
+
+
+	/**
+	 * @param $lang
+	 * @param Circle $circle
+	 * @param Member $member
+	 * @param IEvent $event
+	 *
+	 * @return IEvent
+	 */
+	private function parseMemberAdd($lang, Circle $circle, Member $member, IEvent $event) {
+
+		if ($circle->getUser()
+				   ->getUserId() === $this->activityManager->getCurrentUserId()
+		) {
+			$event->setRichSubject(
+				$this->l10n->t('You added {member} as member to {circle}'),
+				[
+					'circle' => $this->generateCircleParameter($circle),
+					'member' => $this->generateMemberParameter($member)
+				]
+			);
+
+		} elseif ($member->getUserId() === $this->activityManager->getCurrentUserId()) {
+			$event->setRichSubject(
+				$this->l10n->t('You were added as member to {circle} by {author}'),
+				[
+					'author' => $this->generateUserParameter(
+						$circle->getUser()
+							   ->getUserId()
+					),
+					'circle' => $this->generateCircleParameter($circle)
+				]
+			);
+
+		} else {
+			$event->setRichSubject(
+				$this->l10n->t(
+					'{member} was added as member to {circle} by {author}'
+				), [
+					'author' => $this->generateUserParameter(
+						$circle->getUser()
+							   ->getUserId()
+					),
+					'circle' => $this->generateCircleParameter($circle),
+					'member' => $this->generateMemberParameter($member)
+				]
+			);
+		}
+
+		return $event;
+	}
+
+
+	/**
+	 * @param $lang
+	 * @param Circle $circle
+	 * @param Member $member
+	 * @param IEvent $event
+	 *
+	 * @return IEvent
+	 */
+	private function parseMemberLeft($lang, Circle $circle, Member $member, IEvent $event) {
+		if ($circle->getUser()
+				   ->getUserId() === $this->activityManager->getCurrentUserId()
+		) {
+			$event->setRichSubject(
+				$this->l10n->t('You left {circle}'),
+				['circle' => $this->generateCircleParameter($circle)]
+			);
+
+		} else {
+			$event->setRichSubject(
+				$this->l10n->t(
+					'{member} has left {circle}'
+				), [
+					'circle' => $this->generateCircleParameter($circle),
+					'member' => $this->generateMemberParameter($member)
+				]
+			);
+		}
+
+		return $event;
+	}
+
+
+	/**
+	 * @param $lang
+	 * @param Circle $circle
+	 * @param Member $member
+	 * @param IEvent $event
+	 *
+	 * @return IEvent
+	 */
+	private function parseMemberRemove($lang, Circle $circle, Member $member, IEvent $event) {
+
+		if ($circle->getUser()
+				   ->getUserId() === $this->activityManager->getCurrentUserId()
+		) {
+			$event->setRichSubject(
+				$this->l10n->t('You removed {member} from {circle}'),
+				[
+					'circle' => $this->generateCircleParameter($circle),
+					'member' => $this->generateMemberParameter($member)
+				]
+			);
+
+		} elseif ($member->getUserId() === $this->activityManager->getCurrentUserId()) {
+			$event->setRichSubject(
+				$this->l10n->t('You were removed from {circle} by {author}'),
+				[
+					'author' => $this->generateUserParameter(
+						$circle->getUser()
+							   ->getUserId()
+					),
+					'circle' => $this->generateCircleParameter($circle)
+				]
+			);
+
+		} else {
+			$event->setRichSubject(
+				$this->l10n->t(
+					'{member} was removed from {circle} by {author}'
+				), [
+					'author' => $this->generateUserParameter(
+						$circle->getUser()
+							   ->getUserId()
+					),
+					'circle' => $this->generateCircleParameter($circle),
+					'member' => $this->generateMemberParameter($member)
+				]
+			);
+		}
+
+		return $event;
+	}
+
+
 
 //
 //
