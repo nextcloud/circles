@@ -131,6 +131,7 @@ class CirclesService {
 		}
 
 		$this->eventsService->onCircleCreation($circle);
+
 		return $circle;
 	}
 
@@ -217,7 +218,7 @@ class CirclesService {
 			$member->hasToBeAbleToJoinTheCircle();
 			$member->joinCircle($circle->getType());
 			$this->dbMembers->editMember($member);
-
+			$this->eventsService->onMemberNew($circle, $member);
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -248,7 +249,7 @@ class CirclesService {
 			$member->setStatus(Member::STATUS_NONMEMBER);
 			$member->setLevel(Member::LEVEL_NONE);
 			$this->dbMembers->editMember($member);
-
+			$this->eventsService->onMemberLeaving($circle, $member);
 		} catch (\Exception $e) {
 			throw $e;
 		}

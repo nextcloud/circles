@@ -127,7 +127,7 @@ class Application extends App {
 			'MembersService', function(IAppContainer $c) {
 			return new MembersService(
 				$c->query('UserId'), $c->query('L10N'), $c->query('UserManager'),
-				$c->query('ConfigService'), $c->query('DatabaseService'), $c->query('MiscService')
+				$c->query('ConfigService'), $c->query('DatabaseService'), $c->query('EventsService'), $c->query('MiscService')
 			);
 		}
 		);

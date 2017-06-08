@@ -58,6 +58,9 @@ class MembersService {
 	/** @var MembersMapper */
 	private $dbMembers;
 
+	/** @var EventsService */
+	private $eventsService;
+
 	/** @var MiscService */
 	private $miscService;
 
@@ -67,12 +70,14 @@ class MembersService {
 		IUserManager $userManager,
 		ConfigService $configService,
 		DatabaseService $databaseService,
+		EventsService $eventsService,
 		MiscService $miscService
 	) {
 		$this->userId = $userId;
 		$this->l10n = $l10n;
 		$this->userManager = $userManager;
 		$this->configService = $configService;
+		$this->eventsService = $eventsService;
 		$this->miscService = $miscService;
 
 		$this->dbCircles = $databaseService->getCirclesMapper();
@@ -104,6 +109,8 @@ class MembersService {
 		}
 		$member->inviteToCircle($circle->getType());
 		$this->dbMembers->editMember($member);
+
+		$this->eventsService->onMemberNew($circle, $member);
 
 		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getUser());
 	}
@@ -267,6 +274,7 @@ class MembersService {
 		$this->dbMembers->editMember($member);
 
 		$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
+		$this->eventsService->onMemberLeaving($circle, $member);
 
 		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getUser());
 	}

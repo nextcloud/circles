@@ -29,6 +29,7 @@ namespace OCA\Circles\Service;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
+use OCP\Activity\IEvent;
 use OCP\Activity\IManager;
 use OCP\IUser;
 use OCP\IUserManager;
@@ -90,15 +91,13 @@ class EventsService {
 			return;
 		}
 
+		$event = $this->generateEvent('circles_creation');
+		$event->setSubject('create', ['circle' => json_encode($circle)]);
+
 		$this->userManager->callForSeenUsers(
-			function($user) use ($circle) {
+			function($user) use ($event) {
 				/** @var IUser $user */
-
-				$event = $this->generateEvent('circles_creation');
-				$event->setAffectedUser($user->getUID());
-				$event->setSubject('create', ['circle' => json_encode($circle)]);
-
-				$this->activityManager->publish($event);
+				$this->publishEvent($event, [$user]);
 			}
 		);
 	}
@@ -118,20 +117,81 @@ class EventsService {
 			return;
 		}
 
-		$members = $this->circlesRequest->getMembers($circle->getId(), Member::LEVEL_MEMBER);
-		foreach ($members AS $user) {
+		$event = $this->generateEvent('circles_creation');
+		$event->setSubject('delete', ['circle' => json_encode($circle)]);
+		$this->publishEvent(
+			$event, $this->circlesRequest->getMembers($circle->getId(), Member::LEVEL_MEMBER)
+		);
+	}
 
-			$event = $this->generateEvent('circles_creation');
-			$event->setAffectedUser($user->getUserId());
-			$event->setSubject('delete', ['circle' => json_encode($circle)]);
 
-			$this->activityManager->publish($event);
+	/**
+	 * onMemberNew()
+	 *
+	 * Called when a member is added to a circle.
+	 * Broadcast an activity to the new member and to the moderators of the circle.
+	 * We won't do anything if the circle is PERSONAL
+	 * If the level is still 0, we will redirect to onMemberAlmost and manage the
+	 * invitation/request from there
+	 * If the level is Owner, we ignore the event.
+	 *
+	 * @param Circle $circle
+	 * @param Member $member
+	 */
+	public function onMemberNew(Circle $circle, Member $member) {
+		if ($member->getLevel() === Member::LEVEL_OWNER
+			|| $circle->getType() === Circle::CIRCLES_PERSONAL
+		) {
+			return;
+		}
+
+		if ($member->getLevel() === Member::LEVEL_NONE) {
+			$this->onMemberAlmost($circle, $member);
+
+			return;
+		}
+
+		$event = $this->generateEvent('circles_population');
+		$event->setSubject(
+			($this->userId === $member->getUserId()) ? 'member_join' : 'member_add',
+			['circle' => json_encode($circle), 'member' => json_encode($member)]
+		);
+
+		$this->publishEvent(
+			$event, array_merge(
+					  [$member],
+					  $this->circlesRequest->getMembers($circle->getId(), Member::LEVEL_MODERATOR)
+				  )
+		);
+	}
+
+	/**
+	 * onMemberAlmost()
+	 *
+	 * Called when a member is added to a circle with level=0
+	 * Trigger onMemberInvitation() or onMemberInvitationRequest() based on Member Status
+	 *
+	 * @param Circle $circle
+	 * @param Member $member
+	 */
+	private function onMemberAlmost(Circle $circle, Member $member) {
+
+		switch ($member->getStatus()) {
+			case Member::STATUS_INVITED:
+				$this->onMemberInvitation($circle, $member);
+
+				return;
+
+			case Member::STATUS_REQUEST:
+				$this->onMemberInvitationRequest($circle, $member);
+
+				return;
 		}
 	}
 
 
 	/**
-	 * onCircleInvitation()
+	 * onMemberInvitation()
 	 *
 	 * Called when a member is invited to a circle.
 	 * Broadcast an activity to the invited member and to the moderators of the circle.
@@ -139,7 +199,7 @@ class EventsService {
 	 * @param Circle $circle
 	 * @param Member $member
 	 */
-	public function onCircleInvitation(Circle $circle, Member $member) {
+	public function onMemberInvitation(Circle $circle, Member $member) {
 		if ($circle->getType() !== Circle::CIRCLES_PRIVATE) {
 			return;
 		}
@@ -149,20 +209,17 @@ class EventsService {
 			'invited', ['circle' => json_encode($circle), 'member' => json_encode($member)]
 		);
 
-		$event->setAffectedUser($member->getUserId());
-		$this->activityManager->publish($event);
-
-		$members = $this->circlesRequest->getMembers($circle->getId(), Member::LEVEL_MODERATOR);
-		foreach ($members AS $user) {
-
-			$event->setAffectedUser($user->getUserId());
-			$this->activityManager->publish($event);
-		}
+		$this->publishEvent(
+			$event, array_merge(
+					  [$member],
+					  $this->circlesRequest->getMembers($circle->getId(), Member::LEVEL_MODERATOR)
+				  )
+		);
 	}
 
 
 	/**
-	 * onCircleRequestInvitation()
+	 * onMemberInvitationRequest()
 	 *
 	 * Called when a member request an invitation to a private circle.
 	 * Broadcast an activity to the requester and to the moderators of the circle.
@@ -170,7 +227,7 @@ class EventsService {
 	 * @param Circle $circle
 	 * @param Member $member
 	 */
-	public function onCircleRequestInvitation(Circle $circle, Member $member) {
+	public function onMemberInvitationRequest(Circle $circle, Member $member) {
 		if ($circle->getType() !== Circle::CIRCLES_PRIVATE) {
 			return;
 		}
@@ -180,42 +237,13 @@ class EventsService {
 			'request', ['circle' => json_encode($circle), 'member' => json_encode($member)]
 		);
 
-		$event->setAffectedUser($member->getUserId());
-		$this->activityManager->publish($event);
-
-		$members = $this->circlesRequest->getMembers($circle->getId(), Member::LEVEL_MODERATOR);
-		foreach ($members AS $user) {
-			$event->setAffectedUser($user->getUserId());
-			$this->activityManager->publish($event);
-		}
-	}
-
-
-	/**
-	 * onCircleNewMember()
-	 *
-	 * Called when a member is added to a circle.
-	 * Broadcast an activity to the new member and to the moderators of the circle.
-	 * We won't do anything if the circle is PERSONAL
-	 *
-	 * @param Circle $circle
-	 * @param Member $member
-	 */
-	public function onCircleNewMember(Circle $circle, Member $member) {
-		if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
-			return;
-		}
-
-		$event = $this->generateEvent('circles_population');
-		$event->setSubject(
-			'new_member', ['circle' => json_encode($circle), 'member' => json_encode($member)]
+		$this->publishEvent(
+			$event, array_merge(
+					  [$member],
+					  $this->circlesRequest->getMembers($circle->getId(), Member::LEVEL_MODERATOR)
+				  )
 		);
 
-		$members = $this->circlesRequest->getMembers($circle->getId(), Member::LEVEL_MODERATOR);
-		foreach ($members AS $user) {
-			$event->setAffectedUser($user->getUserId());
-			$this->activityManager->publish($event);
-		}
 	}
 
 
@@ -229,21 +257,24 @@ class EventsService {
 	 * @param Circle $circle
 	 * @param Member $member
 	 */
-	public function onCircleMemberLeaving(Circle $circle, Member $member) {
+	public function onMemberLeaving(Circle $circle, Member $member) {
 		if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
 			return;
 		}
 
 		$event = $this->generateEvent('circles_population');
 		$event->setSubject(
-			'remove_member', ['circle' => json_encode($circle), 'member' => json_encode($member)]
+			($this->userId === $member->getUserId()) ? 'member_left' : 'member_remove',
+			['circle' => json_encode($circle), 'member' => json_encode($member)]
 		);
 
-		$members = $this->circlesRequest->getMembers($circle->getId(), Member::LEVEL_MODERATOR);
-		foreach ($members AS $user) {
-			$event->setAffectedUser($user->getUserId());
-			$this->activityManager->publish($event);
-		}
+		$this->publishEvent(
+			$event, array_merge(
+					  [$member],
+					  $this->circlesRequest->getMembers($circle->getId(), Member::LEVEL_MODERATOR)
+				  )
+		);
+
 	}
 
 
@@ -262,6 +293,22 @@ class EventsService {
 			  ->setAuthor($this->userId);
 
 		return $event;
+	}
+
+
+	private function publishEvent(IEvent $event, array $users) {
+		foreach ($users AS $user) {
+			if ($user INSTANCEOF IUser) {
+				$userId = $user->getUID();
+			} else if ($user INSTANCEOF Member) {
+				$userId = $user->getUserId();
+			} else {
+				continue;
+			}
+
+			$event->setAffectedUser($userId);
+			$this->activityManager->publish($event);
+		}
 	}
 
 
