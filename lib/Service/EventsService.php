@@ -91,8 +91,8 @@ class EventsService {
 			return;
 		}
 
-		$event = $this->generateEvent('circles_creation');
-		$event->setSubject('create', ['circle' => json_encode($circle)]);
+		$event = $this->generateEvent('circles_as_member');
+		$event->setSubject('circle_create', ['circle' => json_encode($circle)]);
 
 		$this->userManager->callForSeenUsers(
 			function($user) use ($event) {
@@ -117,8 +117,8 @@ class EventsService {
 			return;
 		}
 
-		$event = $this->generateEvent('circles_creation');
-		$event->setSubject('delete', ['circle' => json_encode($circle)]);
+		$event = $this->generateEvent('circles_as_member');
+		$event->setSubject('circle_delete', ['circle' => json_encode($circle)]);
 		$this->publishEvent(
 			$event, $this->circlesRequest->getMembers($circle->getId(), Member::LEVEL_MEMBER)
 		);
@@ -151,7 +151,7 @@ class EventsService {
 			return;
 		}
 
-		$event = $this->generateEvent('circles_population');
+		$event = $this->generateEvent('circles_as_member');
 		$event->setSubject(
 			($this->userId === $member->getUserId()) ? 'member_join' : 'member_add',
 			['circle' => json_encode($circle), 'member' => json_encode($member)]
@@ -204,9 +204,9 @@ class EventsService {
 			return;
 		}
 
-		$event = $this->generateEvent('circles_invitation');
+		$event = $this->generateEvent('circles_as_moderator');
 		$event->setSubject(
-			'invited', ['circle' => json_encode($circle), 'member' => json_encode($member)]
+			'member_invited', ['circle' => json_encode($circle), 'member' => json_encode($member)]
 		);
 
 		$this->publishEvent(
@@ -232,9 +232,9 @@ class EventsService {
 			return;
 		}
 
-		$event = $this->generateEvent('circles_invitation');
+		$event = $this->generateEvent('circles_as_moderator');
 		$event->setSubject(
-			'request', ['circle' => json_encode($circle), 'member' => json_encode($member)]
+			'member_request_invitation', ['circle' => json_encode($circle), 'member' => json_encode($member)]
 		);
 
 		$this->publishEvent(
@@ -262,7 +262,7 @@ class EventsService {
 			return;
 		}
 
-		$event = $this->generateEvent('circles_population');
+		$event = $this->generateEvent('circles_as_member');
 		$event->setSubject(
 			($this->userId === $member->getUserId()) ? 'member_left' : 'member_remove',
 			['circle' => json_encode($circle), 'member' => json_encode($member)]
