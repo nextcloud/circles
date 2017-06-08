@@ -6,7 +6,7 @@ namespace OCA\Circles\Activity;
 use OCP\Activity\ISetting;
 use OCP\IL10N;
 
-class SettingInvitation implements ISetting {
+class SettingAsMember implements ISetting {
 
 	/** @var IL10N */
 	protected $l10n;
@@ -23,7 +23,7 @@ class SettingInvitation implements ISetting {
 	 * @since 11.0.0
 	 */
 	public function getIdentifier() {
-		return 'circles_invitation';
+		return 'circles_as_member';
 	}
 
 	/**
@@ -31,7 +31,7 @@ class SettingInvitation implements ISetting {
 	 * @since 11.0.0
 	 */
 	public function getName() {
-		return $this->l10n->t('Invitation and Request to a <strong>Circle</strong> you are moderating');
+		return $this->l10n->t('On event in a <strong>Circle</strong> you are a member, or a potential member');
 	}
 
 	/**
@@ -73,7 +73,7 @@ class SettingInvitation implements ISetting {
 	 * @since 11.0.0
 	 */
 	public function isDefaultEnabledMail() {
-		return true;
+		return false;
 	}
 }
 

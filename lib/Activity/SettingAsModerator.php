@@ -6,7 +6,7 @@ namespace OCA\Circles\Activity;
 use OCP\Activity\ISetting;
 use OCP\IL10N;
 
-class SettingShares implements ISetting {
+class SettingAsModerator implements ISetting {
 
 	/** @var IL10N */
 	protected $l10n;
@@ -23,7 +23,7 @@ class SettingShares implements ISetting {
 	 * @since 11.0.0
 	 */
 	public function getIdentifier() {
-		return 'circles_shares';
+		return 'circles_as_moderator';
 	}
 
 	/**
@@ -31,7 +31,7 @@ class SettingShares implements ISetting {
 	 * @since 11.0.0
 	 */
 	public function getName() {
-		return $this->l10n->t('A file is shared with a <strong>Circle</strong> you are a member');
+		return $this->l10n->t('Any important event in a <strong>Circle</strong> you are moderating');
 	}
 
 	/**
