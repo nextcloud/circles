@@ -278,6 +278,57 @@ class EventsService {
 
 
 	/**
+	 * onMemberNew()
+	 *
+	 * Called when a member have his level changed.
+	 * Broadcast an activity to all moderator of the circle.
+	 * We won't do anything if the circle is PERSONAL
+	 * If the level is Owner, we identify the event as a Coup d'Etat and we broadcast all members.
+	 *
+	 * @param Circle $circle
+	 * @param Member $member
+	 */
+	public function onMemberLevel(Circle $circle, Member $member) {
+		if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
+			return;
+		}
+
+		if ($member->getLevel() === Member::LEVEL_OWNER) {
+			$this->onMemberOwner($circle, $member);
+
+			return;
+		}
+
+		$event = $this->generateEvent('circles_as_moderator');
+		$event->setSubject(
+			'member_level',
+			['circle' => json_encode($circle), 'member' => json_encode($member)]
+		);
+
+		$mods = $this->circlesRequest->getMembers($circle->getId(), Member::LEVEL_MODERATOR);
+		if ($member->getLevel() < Member::LEVEL_MODERATOR) {
+			array_push($mods, $member);
+		}
+
+		$this->publishEvent($event, $mods);
+	}
+
+
+	private function onMemberOwner(Circle $circle, Member $member) {
+		$event = $this->generateEvent('circles_as_moderator');
+		$event->setSubject(
+			'member_owner',
+			['circle' => json_encode($circle), 'member' => json_encode($member)]
+		);
+
+		$this->publishEvent(
+			$event, $this->circlesRequest->getMembers(
+			$circle->getId(), Member::LEVEL_MEMBER
+		)
+		);
+	}
+
+	/**
 	 * generateEvent()
 	 * Create an Activity Event with the basic settings for the app.
 	 *

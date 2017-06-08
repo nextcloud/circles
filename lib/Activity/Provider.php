@@ -157,6 +157,12 @@ class Provider implements IProvider {
 			case 'member_request_invitation':
 				return $this->parseMemberRequestInvitation($lang, $circle, $member, $event);
 
+			case 'member_level':
+				return $this->parseMemberLevel($lang, $circle, $member, $event);
+
+			case 'member_owner':
+				return $this->parseMemberOwner($lang, $circle, $member, $event);
+
 			default:
 				throw new InvalidArgumentException();
 		}
@@ -478,66 +484,96 @@ class Provider implements IProvider {
 	}
 
 
+	/**
+	 * @param $lang
+	 * @param Circle $circle
+	 * @param Member $member
+	 * @param IEvent $event
+	 *
+	 * @return IEvent
+	 */
+	private function parseMemberLevel($lang, Circle $circle, Member $member, IEvent $event) {
 
-//
-//
-//	/**
-//	 * @param string $lang
-//	 * @param IEvent $event
-//	 *
-//	 * @return IEvent
-//	 */
-//	private function parsePopulation($lang, IEvent $event) {
-//		if ($event->getType() !== 'circles_population') {
-//			return $event;
-//		}
-//
-//		return $event;
-//	}
-//
-//
-//	/**
-//	 * @param string $lang
-//	 * @param IEvent $event
-//	 *
-//	 * @return IEvent
-//	 */
-//	private function parseRights($lang, IEvent $event) {
-//		if ($event->getType() !== 'circles_rights') {
-//			return $event;
-//		}
-//
-//		return $event;
-//	}
-//
-//
-//	/**
-//	 * @param string $lang
-//	 * @param IEvent $event
-//	 *
-//	 * @return IEvent
-//	 */
-//	private function parseShares($lang, IEvent $event) {
-//		if ($event->getType() !== 'circles_shares') {
-//			return $event;
-//		}
-//
-//		return $event;
-//	}
-//
-//	private function parseMood(IEvent &$event, $mood) {
-//
-//		if (key_exists('website', $mood)) {
-//			$event->setRichMessage(
-//				$mood['text'] . '{opengraph}',
-//				['opengraph' => $this->generateOpenGraphParameter('_id_', $mood['website'])]
-//			);
-//		} else {
-//			$event->setParsedMessage($mood['text']);
-//		}
-//
-//	}
+		if ($circle->getUser()
+				   ->getUserId() === $this->activityManager->getCurrentUserId()
+		) {
+			$event->setRichSubject(
+				$this->l10n->t(
+					'You changed {member}\'s level in {circle} to %1$s',
+					[$this->l10n->t($member->getLevelString())]
+				),
+				[
+					'circle' => $this->generateCircleParameter($circle),
+					'member' => $this->generateMemberParameter($member)
+				]
+			);
 
+		} elseif ($member->getUserId() === $this->activityManager->getCurrentUserId()) {
+			$event->setRichSubject(
+				$this->l10n->t(
+					'{author} changed your level in {circle} to %1$s',
+					[$this->l10n->t($member->getLevelString())]
+				),
+				[
+					'author' => $this->generateUserParameter(
+						$circle->getUser()
+							   ->getUserId()
+					),
+					'circle' => $this->generateCircleParameter($circle),
+					'level'  => $this->l10n->t($member->getLevelString())
+				]
+			);
+
+		} else {
+			$event->setRichSubject(
+				$this->l10n->t(
+					'{author} changed {member}\'s level in {circle} to %1$s',
+					[$this->l10n->t($member->getLevelString())]
+				), [
+					'author' => $this->generateUserParameter(
+						$circle->getUser()
+							   ->getUserId()
+					),
+					'circle' => $this->generateCircleParameter($circle),
+					'member' => $this->generateMemberParameter($member),
+					'level'  => $this->l10n->t($member->getLevelString())
+				]
+			);
+		}
+
+		return $event;
+	}
+
+
+	/**
+	 * @param $lang
+	 * @param Circle $circle
+	 * @param Member $member
+	 * @param IEvent $event
+	 *
+	 * @return IEvent
+	 */
+	private function parseMemberOwner($lang, Circle $circle, Member $member, IEvent $event) {
+		if ($member->getUserId() === $this->activityManager->getCurrentUserId()
+		) {
+			$event->setRichSubject(
+				$this->l10n->t('You are the new owner of {circle}'),
+				['circle' => $this->generateCircleParameter($circle)]
+			);
+
+		} else {
+			$event->setRichSubject(
+				$this->l10n->t(
+					'{member} is the new owner of {circle}'
+				), [
+					'circle' => $this->generateCircleParameter($circle),
+					'member' => $this->generateMemberParameter($member)
+				]
+			);
+		}
+
+		return $event;
+	}
 
 	private function parseActivityHeader(IEvent &$event, SharingFrame $frame) {
 
@@ -583,7 +619,16 @@ class Provider implements IProvider {
 	}
 
 
-	private function generateCircleParameter(Circle $circle) {
+	private function generateMemberParameter(
+		Member $member
+	) {
+		return $this->generateUserParameter($member->getUserId());
+	}
+
+
+	private function generateCircleParameter(
+		Circle $circle
+	) {
 		return [
 			'type' => 'circle',
 			'id'   => $circle->getId(),
@@ -594,17 +639,14 @@ class Provider implements IProvider {
 		];
 	}
 
-
-	private function generateMemberParameter(Member $member) {
-		return $this->generateUserParameter($member->getUserId());
-	}
-
 	/**
 	 * @param $userId
 	 *
 	 * @return array
 	 */
-	private function generateUserParameter($userId) {
+	private function generateUserParameter(
+		$userId
+	) {
 		return [
 			'type' => 'user',
 			'id'   => $userId,
