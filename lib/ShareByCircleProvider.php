@@ -558,18 +558,20 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 
 		$share->setShareTime($shareTime);
 		$share->setSharedWith($data['share_with'])
-			  ->setSharedWithDisplayName(
-				  sprintf(
-					  '%s (%s, %s)', $data['circle_name'],
-					  Circle::TypeLongString($data['circle_type']),
-					  $data['circle_owner']
-				  )
-			  )
 			  ->setSharedBy($data['uid_initiator'])
 			  ->setShareOwner($data['uid_owner'])
 			  ->setShareType((int)$data['share_type']);
 
-		$share->setSharedWithAvatar(CirclesService::getCircleIcon($data['circle_type']));
+		if (method_exists($share, 'setSharedWithDisplayName')) {
+			$share->setSharedWithAvatar(CirclesService::getCircleIcon($data['circle_type']))
+				  ->setSharedWithDisplayName(
+					  sprintf(
+						  '%s (%s, %s)', $data['circle_name'],
+						  Circle::TypeLongString($data['circle_type']),
+						  $data['circle_owner']
+					  )
+				  );
+		}
 	}
 
 
