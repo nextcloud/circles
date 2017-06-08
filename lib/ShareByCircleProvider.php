@@ -31,6 +31,7 @@ namespace OCA\Circles;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleProviderRequestBuilder;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Service\CirclesService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\Files\Folder;
 use OCP\Files\Node;
@@ -551,7 +552,7 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	 * @param IShare $share
 	 * @param $data
 	 */
-	private function assignShareObjectSharesProperties(& $share, $data) {
+	private function assignShareObjectSharesProperties(IShare &$share, $data) {
 		$shareTime = new \DateTime();
 		$shareTime->setTimestamp((int)$data['stime']);
 
@@ -560,7 +561,19 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 			  ->setSharedBy($data['uid_initiator'])
 			  ->setShareOwner($data['uid_owner'])
 			  ->setShareType((int)$data['share_type']);
+
+		if (method_exists($share, 'setSharedWithDisplayName')) {
+			$share->setSharedWithAvatar(CirclesService::getCircleIcon($data['circle_type']))
+				  ->setSharedWithDisplayName(
+					  sprintf(
+						  '%s (%s, %s)', $data['circle_name'],
+						  Circle::TypeLongString($data['circle_type']),
+						  $data['circle_owner']
+					  )
+				  );
+		}
 	}
+
 
 	/**
 	 * Returns whether the given database result can be interpreted as
