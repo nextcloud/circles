@@ -41,6 +41,7 @@ use OCA\Circles\Events\UserEvents;
 use OCA\Circles\Service\BroadcastService;
 use \OCA\Circles\Service\DatabaseService;
 use \OCA\Circles\Service\CirclesService;
+use OCA\Circles\Service\EventsService;
 use OCA\Circles\Service\FederatedService;
 use \OCA\Circles\Service\MembersService;
 use \OCA\Circles\Service\ConfigService;
@@ -96,7 +97,6 @@ class Application extends App {
 		}
 		);
 
-
 		$container->registerService(
 			'ConfigService', function(IAppContainer $c) {
 			return new ConfigService(
@@ -118,7 +118,7 @@ class Application extends App {
 			'CirclesService', function(IAppContainer $c) {
 			return new CirclesService(
 				$c->query('UserId'), $c->query('L10N'), $c->query('ConfigService'),
-				$c->query('DatabaseService'), $c->query('MiscService')
+				$c->query('DatabaseService'), $c->query('EventsService'), $c->query('MiscService')
 			);
 		}
 		);
@@ -127,11 +127,10 @@ class Application extends App {
 			'MembersService', function(IAppContainer $c) {
 			return new MembersService(
 				$c->query('UserId'), $c->query('L10N'), $c->query('UserManager'),
-				$c->query('ConfigService'), $c->query('DatabaseService'), $c->query('MiscService')
+				$c->query('ConfigService'), $c->query('DatabaseService'), $c->query('EventsService'), $c->query('MiscService')
 			);
 		}
 		);
-
 
 		$container->registerService(
 			'BroadcastService', function(IAppContainer $c) {
@@ -142,7 +141,6 @@ class Application extends App {
 		}
 		);
 
-
 		$container->registerService(
 			'SharesService', function(IAppContainer $c) {
 			return new SharesService(
@@ -152,6 +150,16 @@ class Application extends App {
 			);
 		}
 		);
+
+		$container->registerService(
+			'EventsService', function(IAppContainer $c) {
+			return new EventsService(
+				$c->query('UserId'), $c->query('ActivityManager'), $c->query('UserManager'),
+				$c->query('CirclesRequest'), $c->query('MiscService')
+			);
+		}
+		);
+
 
 		$container->registerService(
 			'FederatedService', function(IAppContainer $c) {
@@ -324,6 +332,13 @@ class Application extends App {
 			'UserManager', function(IAppContainer $c) {
 			return $c->query('ServerContainer')
 					 ->getUserManager();
+		}
+		);
+
+		$container->registerService(
+			'ActivityManager', function(IAppContainer $c) {
+			return $c->query('ServerContainer')
+					 ->getActivityManager();
 		}
 		);
 

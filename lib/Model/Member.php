@@ -210,6 +210,17 @@ class Member extends BaseMember {
 		}
 	}
 
+	public function jsonSerialize() {
+		return array(
+			'circle_id'    => $this->getCircleId(),
+			'user_id'      => $this->getUserId(),
+			'level'        => $this->getLevel(),
+			'level_string' => $this->getLevelString(),
+			'status'       => $this->getStatus(),
+			'note'         => $this->getNote(),
+			'joined'       => $this->getJoined()
+		);
+	}
 
 
 }

@@ -58,6 +58,9 @@ class MembersService {
 	/** @var MembersMapper */
 	private $dbMembers;
 
+	/** @var EventsService */
+	private $eventsService;
+
 	/** @var MiscService */
 	private $miscService;
 
@@ -67,12 +70,14 @@ class MembersService {
 		IUserManager $userManager,
 		ConfigService $configService,
 		DatabaseService $databaseService,
+		EventsService $eventsService,
 		MiscService $miscService
 	) {
 		$this->userId = $userId;
 		$this->l10n = $l10n;
 		$this->userManager = $userManager;
 		$this->configService = $configService;
+		$this->eventsService = $eventsService;
 		$this->miscService = $miscService;
 
 		$this->dbCircles = $databaseService->getCirclesMapper();
@@ -104,6 +109,8 @@ class MembersService {
 		}
 		$member->inviteToCircle($circle->getType());
 		$this->dbMembers->editMember($member);
+
+		$this->eventsService->onMemberNew($circle, $member);
 
 		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getUser());
 	}
@@ -199,20 +206,17 @@ class MembersService {
 				throw new CircleTypeNotValid(
 					$this->l10n->t('You cannot edit level in a personal circle')
 				);
-			} else if ((int)$level === Member::LEVEL_OWNER) {
-				$this->switchOwner($circleId, $name);
-			} else {
-				$isMod = $this->dbMembers->getMemberFromCircle($circleId, $this->userId);
-				$isMod->hasToBeModerator();
-				$isMod->hasToBeHigherLevel($level);
+			}
 
-				$member = $this->dbMembers->getMemberFromCircle($circleId, $name);
-				$member->hasToBeMember();
-				$member->cantBeOwner();
-				$isMod->hasToBeHigherLevel($member->getLevel());
+			$member = $this->dbMembers->getMemberFromCircle($circle->getId(), $name);
+			if ($member->getLevel() !== $level) {
+				if ((int)$level === Member::LEVEL_OWNER) {
+					$this->switchOwner($circle, $member);
+				} else {
+					$this->editMemberLevel($circle, $member, $level);
+				}
 
-				$member->setLevel($level);
-				$this->dbMembers->editMember($member);
+				$this->eventsService->onMemberLevel($circle, $member);
 			}
 
 			return $this->dbMembers->getMembersFromCircle($circleId, $circle->getUser());
@@ -223,11 +227,41 @@ class MembersService {
 	}
 
 
-	public function switchOwner($circleId, $name) {
+	/**
+	 * @param Circle $circle
+	 * @param Member $member
+	 * @param $level
+	 *
+	 * @throws \Exception
+	 */
+	private function editMemberLevel(Circle $circle, Member &$member, $level) {
 		try {
-			$isMod = $this->dbMembers->getMemberFromCircle($circleId, $this->userId);
+			$isMod = $this->dbMembers->getMemberFromCircle($circle->getId(), $this->userId);
+			$isMod->hasToBeModerator();
+			$isMod->hasToBeHigherLevel($level);
+
+			$member->hasToBeMember();
+			$member->cantBeOwner();
+			$isMod->hasToBeHigherLevel($member->getLevel());
+
+			$member->setLevel($level);
+			$this->dbMembers->editMember($member);
+		} catch (\Exception $e) {
+			throw $e;
+		}
+
+	}
+
+	/**
+	 * @param Circle $circle
+	 * @param Member $member
+	 *
+	 * @throws \Exception
+	 */
+	public function switchOwner(Circle $circle, Member &$member) {
+		try {
+			$isMod = $this->dbMembers->getMemberFromCircle($circle->getId(), $this->userId);
 			$isMod->hasToBeOwner();
-			$member = $this->dbMembers->getMemberFromCircle($circleId, $name);
 
 			$member->setLevel(Member::LEVEL_OWNER);
 			$this->dbMembers->editMember($member);
@@ -267,6 +301,7 @@ class MembersService {
 		$this->dbMembers->editMember($member);
 
 		$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
+		$this->eventsService->onMemberLeaving($circle, $member);
 
 		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getUser());
 	}

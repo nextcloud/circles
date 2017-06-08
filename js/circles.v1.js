@@ -226,8 +226,12 @@
 
 
 			this.onCallback = function (callback, result) {
-				if (callback && (typeof callback === "function")) {
-					callback(result);
+				if (callback && (typeof callback === 'function')) {
+					if (typeof result === 'object') {
+						callback(result);
+					} else {
+						callback({status: -1})
+					}
 				}
 			};
 
