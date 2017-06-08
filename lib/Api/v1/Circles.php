@@ -304,4 +304,34 @@ class Circles {
 				 ->linkCircle($circleId, $remote);
 	}
 
+
+	/**
+	 * Circles::generateLink();
+	 *
+	 * Returns the link to get access to a local circle.
+	 *
+	 * @param int $circleId
+	 *
+	 * @return string
+	 */
+	public static function generateLink($circleId) {
+		return \OC::$server->getURLGenerator()
+						   ->linkToRoute('circles.Navigation.navigate') . '#' . $circleId;
+	}
+
+
+	/**
+	 * Circles::generateLink();
+	 *
+	 * Returns the link to get access to a remote circle.
+	 *
+	 * @param int $circleId
+	 *
+	 * @return string
+	 */
+	public static function generateRemoteLink($remote, $circleId) {
+		return \OC::$server->getURLGenerator()
+						   ->linkToRoute('circles.Navigation.navigate') . '#' . $circleId;
+	}
+
 }
