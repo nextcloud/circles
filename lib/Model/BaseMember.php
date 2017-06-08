@@ -167,6 +167,9 @@ class BaseMember implements \JsonSerializable {
 
 
 	public static function fromArray2($l10n, $arr) {
+		if ($arr === null)
+			return null;
+
 		$member = new Member($l10n);
 
 		$member->setCircleId($arr['circle_id']);
@@ -184,6 +187,10 @@ class BaseMember implements \JsonSerializable {
 		return $member;
 	}
 
+
+	public static function fromJSON($l10n, $json) {
+		return self::fromArray2($l10n, json_decode($json, true));
+	}
 
 	public function jsonSerialize() {
 		return array(

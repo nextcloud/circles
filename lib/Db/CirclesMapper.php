@@ -42,14 +42,18 @@ class CirclesMapper extends Mapper {
 
 	const TABLENAME = 'circles_circles';
 
+	/** @var string */
+	private $userId;
+
 	/** @var L10N */
 	private $l10n;
 
 	/** @var MiscService */
 	private $miscService;
 
-	public function __construct(IDBConnection $db, $l10n, $miscService) {
+	public function __construct($userId, IDBConnection $db, $l10n, $miscService) {
 		parent::__construct($db, self::TABLENAME, 'OCA\Circles\Db\Circles');
+		$this->userId = $userId;
 		$this->l10n = $l10n;
 		$this->miscService = $miscService;
 	}
@@ -99,6 +103,7 @@ class CirclesMapper extends Mapper {
 		$circle->setOwner($owner);
 
 		$user = new Member($this->l10n);
+		$user->setUserId($this->userId);
 		$user->setStatus($data['status']);
 		$user->setLevel($data['level']);
 		$user->setJoined($data['joined']);

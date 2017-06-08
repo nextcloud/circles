@@ -278,8 +278,9 @@ class Application extends App {
 		$container->registerService(
 			'CirclesMapper', function(IAppContainer $c) {
 			return new CirclesMapper(
-				$c->query('ServerContainer')
-				  ->getDatabaseConnection(), $c->query('L10N'), $c->query('MiscService')
+				$c->query('UserId'), $c->query('ServerContainer')
+									   ->getDatabaseConnection(), $c->query('L10N'),
+				$c->query('MiscService')
 			);
 		}
 		);
