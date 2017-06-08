@@ -112,6 +112,10 @@ class Circle extends BaseCircle implements \JsonSerializable {
 		$circle->setType($arr['type']);
 		$circle->setCreation($arr['creation']);
 
+		if (key_exists('owner', $arr)) {
+			$circle->setOwner(Member::fromArray2($l10n, $arr['owner']));
+		}
+
 		return $circle;
 	}
 
@@ -121,20 +125,6 @@ class Circle extends BaseCircle implements \JsonSerializable {
 	}
 
 
-	/**
-	 * set Owner Infos from Array
-	 *
-	 * @param $array
-	 */
-//	private function setOwnerMemberFromArray($array) {
-//		if (key_exists('owner', $array)) {
-//			$owner = new Member($this->l10n);
-//			$owner->fromArray($array['owner']);
-//
-//			//$owner = nreMember::fromArray2($this->l10n, $array['owner']);
-//			$this->setOwner($owner);
-//		}
-//	}
 //
 //
 //	/**

@@ -95,7 +95,7 @@ class CirclesMapper extends Mapper {
 	 */
 	private function fillCircleUserIdAndOwner(Circle &$circle, array $data) {
 		$owner = new Member($this->l10n);
-		$owner->setUserId($data['owner']);
+		$owner->setUserId($data['owner_id']);
 		$circle->setOwner($owner);
 
 		$user = new Member($this->l10n);
@@ -126,7 +126,7 @@ class CirclesMapper extends Mapper {
 			'c.id', 'c.unique_id', 'c.name', 'c.description', 'c.type', 'c.creation',
 			'u.joined', 'u.level', 'u.status'
 		)
-		   ->selectAlias('o.user_id', 'owner')
+		   ->selectAlias('o.user_id', 'owner_id')
 		   ->from(self::TABLENAME, 'c')
 		   ->from(MembersMapper::TABLENAME, 'o')
 		   ->where(
