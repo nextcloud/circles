@@ -99,6 +99,10 @@ OC.L10N.register(
     "Accept the invitation" : "Accepta la invitació",
     "Join this circle" : "Uneix-te al cercle",
     "Leave this circle" : "Surt del cercle",
-    "Add a member" : "Afegeix un membre"
+    "Add a member" : "Afegeix un membre",
+    "Username" : "Nom d'usuari",
+    "Level" : "Nivell",
+    "Status" : "Estat",
+    "Joined" : "Unit"
 },
 "nplurals=2; plural=(n != 1);");

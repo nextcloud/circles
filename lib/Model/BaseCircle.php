@@ -228,8 +228,8 @@ class BaseCircle {
 
 	public static function typeInt($type) {
 
-		if (is_int($type)) {
-			return $type;
+		if (is_numeric($type)) {
+			return (int)$type;
 		}
 
 		switch ($type) {

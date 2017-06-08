@@ -28,7 +28,7 @@ namespace OCA\Circles\Model;
 
 use OC\L10N\L10N;
 
-class BaseMember {
+class BaseMember implements \JsonSerializable {
 
 	const LEVEL_NONE = 0;
 	const LEVEL_MEMBER = 1;
@@ -166,26 +166,36 @@ class BaseMember {
 	}
 
 
-	/**
-	 * @param array $arr
-	 *
-	 * @return BaseMember
-	 */
-	public function fromArray($arr) {
-		$this->setCircleId($arr['circle_id']);
-		$this->setUserId($arr['user_id']);
-		$this->setLevel($arr['level']);
-		$this->setStatus($arr['status']);
+	public static function fromArray2($l10n, $arr) {
+		$member = new Member($l10n);
+
+		$member->setCircleId($arr['circle_id']);
+		$member->setUserId($arr['user_id']);
+		$member->setLevel($arr['level']);
+		$member->setStatus($arr['status']);
 		if (key_exists('note', $arr)) {
-			$this->setNote($arr['note']);
-		}
-		if (key_exists('joined', $arr)) {
-			$this->setJoined($arr['joined']);
+			$member->setNote($arr['note']);
 		}
 
-		return $this;
+		if (key_exists('joined', $arr)) {
+			$member->setJoined($arr['joined']);
+		}
+
+		return $member;
 	}
 
+
+	public function jsonSerialize() {
+		return array(
+			'circle_id'    => $this->getCircleId(),
+			'user_id'      => $this->getUserId(),
+			'level'        => $this->getLevel(),
+			'level_string' => $this->getLevelString(),
+			'status'       => $this->getStatus(),
+			'note'         => $this->getNote(),
+			'joined'       => $this->getJoined()
+		);
+	}
 
 	public function getLevelString() {
 		switch ($this->getLevel()) {

@@ -78,8 +78,9 @@ class CirclesMapper extends Mapper {
 		$result = [];
 		while ($data = $cursor->fetch()) {
 			if ($name === '' || stripos($data['name'], $name) !== false) {
-				$circle = new Circle($this->l10n);
-				$result[] = $circle->fromArray($data);
+				$circle = Circle::fromArray2($this->l10n, $data);
+				$this->fillCircleUserIdAndOwner($circle, $data);
+				$result[] = $circle;
 			}
 		}
 		$cursor->closeCursor();
@@ -87,6 +88,22 @@ class CirclesMapper extends Mapper {
 		return $result;
 	}
 
+
+	/**
+	 * @param Circle $circle
+	 * @param array $data
+	 */
+	private function fillCircleUserIdAndOwner(Circle &$circle, array $data) {
+		$owner = new Member($this->l10n);
+		$owner->setUserId($data['owner']);
+		$circle->setOwner($owner);
+
+		$user = new Member($this->l10n);
+		$user->setStatus($data['status']);
+		$user->setLevel($data['level']);
+		$user->setJoined($data['joined']);
+		$circle->setUser($user);
+	}
 
 	/**
 	 * Returns SQL for findCirclesByUser
@@ -370,14 +387,13 @@ class CirclesMapper extends Mapper {
 
 	/**
 	 * @param Circle $circle
-	 * @param Member $owner
 	 *
 	 * @return bool
 	 * @throws CircleAlreadyExistsException
 	 */
-	public function create(Circle & $circle, Member & $owner) {
+	public function create(Circle & $circle) {
 
-		if (!$this->isCircleUnique($circle, $owner)) {
+		if (!$this->isCircleUnique($circle)) {
 			throw new CircleAlreadyExistsException(
 				$this->l10n->t('A circle with that name exists')
 			);
@@ -396,9 +412,6 @@ class CirclesMapper extends Mapper {
 		$circleId = $qb->getLastInsertId();
 
 		$circle->setId($circleId);
-		$owner->setLevel(Member::LEVEL_OWNER)
-			  ->setStatus(Member::STATUS_MEMBER)
-			  ->setCircleId($circleId);
 
 		return true;
 	}
@@ -429,14 +442,13 @@ class CirclesMapper extends Mapper {
 	 * returns if the circle is already in database
 	 *
 	 * @param Circle $circle
-	 * @param Member $owner
 	 *
 	 * @return bool
 	 */
-	public function isCircleUnique(Circle $circle, Member $owner) {
+	public function isCircleUnique(Circle $circle) {
 
 		if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
-			return $this->isPersonalCircleUnique($circle, $owner);
+			return $this->isPersonalCircleUnique($circle);
 		}
 
 		$qb = $this->isCircleUniqueSql();
@@ -479,16 +491,14 @@ class CirclesMapper extends Mapper {
 	 * return if the personal circle is unique
 	 *
 	 * @param Circle $circle
-	 * @param Member $owner
 	 *
 	 * @return bool
 	 */
-	private function isPersonalCircleUnique(
-		Circle $circle, Member $owner
-	) {
+	private function isPersonalCircleUnique(Circle $circle) {
 
 		$list = $this->findCirclesByUser(
-			$owner->getUserId(), Circle::CIRCLES_PERSONAL, $circle->getName(),
+			$circle->getOwner()
+				   ->getUserId(), Circle::CIRCLES_PERSONAL, $circle->getName(),
 			Member::LEVEL_OWNER
 		);
 

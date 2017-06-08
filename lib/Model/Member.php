@@ -26,6 +26,7 @@
 
 namespace OCA\Circles\Model;
 
+use OCA\Circles\Exceptions\CircleTypeNotValid;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberCantJoinCircle;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
@@ -36,10 +37,15 @@ use OCA\Circles\Exceptions\MemberIsNotOwnerException;
 use OCA\Circles\Exceptions\MemberIsOwnerException;
 use OCA\Circles\Exceptions\ModeratorIsNotHighEnoughException;
 
-class Member extends BaseMember implements \JsonSerializable {
+class Member extends BaseMember {
 
 
 	public function inviteToCircle($circleType) {
+
+		if ($circleType === 0) {
+			throw new CircleTypeNotValid('Circle Type is not valid');
+		}
+
 		if ($circleType === Circle::CIRCLES_PRIVATE) {
 			return $this->inviteIntoPrivateCircle();
 		}
@@ -204,17 +210,6 @@ class Member extends BaseMember implements \JsonSerializable {
 		}
 	}
 
-	public function jsonSerialize() {
-		return array(
-			'circle_id'    => $this->getCircleId(),
-			'user_id'      => $this->getUserId(),
-			'level'        => $this->getLevel(),
-			'level_string' => $this->getLevelString(),
-			'status'       => $this->getStatus(),
-			'note'         => $this->getNote(),
-			'joined'       => $this->getJoined()
-		);
-	}
 
 
 }

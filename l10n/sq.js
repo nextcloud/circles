@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "Personal circle" : "Rreth personal",
     "Private circle" : "Rrethi privat",
     "Public circle" : "Rrethi publik",
     "Circle" : "Rreth",
@@ -12,6 +13,7 @@ OC.L10N.register(
     "Hidden" : "I fshehur",
     "Private" : "Privat",
     "Public" : "Publik",
+    "Not a member" : "S'është anëtar ",
     "Member" : "Anëtar",
     "Moderator" : "Moderator",
     "Admin" : "Administratori",
