@@ -211,6 +211,7 @@ class CirclesService {
 			$member->joinCircle($circle->getType());
 			$this->dbMembers->editMember($member);
 
+			//$this->eventsService->onMemberNew($circle, $member);
 		} catch (\Exception $e) {
 			throw $e;
 		}
