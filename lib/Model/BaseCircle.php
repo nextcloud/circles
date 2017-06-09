@@ -62,7 +62,7 @@ class BaseCircle {
 	private $user;
 
 	/** @var string */
-	private $description;
+	private $description = '';
 
 	/** @var array */
 	private $settings = [];
@@ -189,6 +189,10 @@ class BaseCircle {
 		}
 
 		$settings = $this->settings;
+		if ($settings === null) {
+			$settings = [];
+		}
+
 		$ak = array_keys(self::CIRCLES_SETTINGS_DEFAULT);
 		foreach ($ak AS $k) {
 			if (!key_exists($k, $settings)) {
