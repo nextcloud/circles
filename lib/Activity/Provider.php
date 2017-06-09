@@ -6,6 +6,7 @@ namespace OCA\Circles\Activity;
 
 use Exception;
 use InvalidArgumentException;
+use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
@@ -633,9 +634,7 @@ class Provider implements IProvider {
 			'type' => 'circle',
 			'id'   => $circle->getId(),
 			'name' => $circle->getName(),
-			'link' => \OC::$server->getURLGenerator()
-								  ->linkToRoute('circles.Navigation.navigate')
-					  . '#' . $circle->getId()
+			'link' => Circles::generateLink($circle->getId())
 		];
 	}
 
