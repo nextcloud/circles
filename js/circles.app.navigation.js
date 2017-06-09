@@ -225,7 +225,6 @@ var nav = {
 	},
 
 	displaySettings: function (display) {
-		console.log('display settings');
 		if (display) {
 			elements.mainUIMembers.hide(define.animationSpeed);
 			elements.settingsPanel.delay(define.animationSpeed).show(define.animationSpeed);
@@ -374,7 +373,7 @@ var nav = {
 				}
 
 			}
-		)
+		);
 	},
 
 
