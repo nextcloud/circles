@@ -31,6 +31,7 @@
 /** global: nav */
 /** global: elements */
 /** global: resultCircles */
+/** global: resultMembers */
 /** global: resultLinks */
 /** global: curr */
 /** global: api */
