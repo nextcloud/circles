@@ -53,7 +53,8 @@ var define = {
 	levelAdmin: 8,
 	levelOwner: 9,
 	linkRequested: 6,
-	linkUp: 9
+	linkUp: 9,
+	animationMenuSpeed: 30
 };
 
 
