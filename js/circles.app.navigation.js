@@ -72,6 +72,16 @@ var nav = {
 			elements.membersSearchResult.fadeOut(400);
 			nav.circlesActionReturn();
 		});
+		elements.addMember.on('keydown', function (e) {
+			if (e.keyCode === 27) {
+				nav.circlesActionReturn();
+			}
+			if (e.keyCode === 13) {
+				api.addMember(curr.circle, $(this).val(), resultMembers.addMemberResult);
+			}
+
+		});
+
 	},
 
 
@@ -80,6 +90,9 @@ var nav = {
 		elements.linkCircle.hide();
 		elements.linkCircle.on('keydown', function (e) {
 
+			if (e.keyCode === 27) {
+				nav.circlesActionReturn();
+			}
 			if (e.keyCode !== 13) {
 				return;
 			}
@@ -176,67 +189,78 @@ var nav = {
 
 	displayCircleButtons: function (display) {
 		if (display) {
-			elements.buttonCircleActionReturn.hide(200);
-			elements.buttonCircleActions.delay(200).show(200);
+			elements.buttonCircleActionReturn.hide(define.animationMenuSpeed);
+			elements.buttonCircleActions.delay(define.animationMenuSpeed).show(
+				define.animationMenuSpeed);
 		} else {
-			elements.buttonCircleActions.hide(200);
-			elements.buttonCircleActionReturn.delay(200).show(200);
+			elements.buttonCircleActions.hide(define.animationMenuSpeed);
+			elements.buttonCircleActionReturn.delay(define.animationMenuSpeed).show(
+				define.animationMenuSpeed);
 		}
 	},
 
 	displayAddMemberInput: function (display) {
 		if (display) {
 			elements.addMember.val('');
-			elements.addMember.delay(200).show(200);
+			elements.addMember.delay(define.animationMenuSpeed).show(define.animationMenuSpeed,
+				function () {
+					$(this).focus();
+				});
 		} else {
-			elements.addMember.hide(200);
+			elements.addMember.hide(define.animationMenuSpeed);
 		}
 	},
 
 	displayLinkCircleInput: function (display) {
 		if (display) {
 			elements.linkCircle.val('');
-			elements.linkCircle.delay(200).show(200);
+			elements.linkCircle.delay(define.animationMenuSpeed).show(define.animationMenuSpeed,
+				function () {
+					$(this).focus();
+				});
 		} else {
-			elements.linkCircle.hide(200);
+			elements.linkCircle.hide(define.animationMenuSpeed);
 		}
 	},
 
 	displayInviteCircleButtons: function (display) {
 		if (display) {
-			elements.joinCircleAccept.show(200);
-			elements.joinCircleReject.delay(200).show(200);
+			elements.joinCircleAccept.show(define.animationMenuSpeed);
+			elements.joinCircleReject.delay(define.animationMenuSpeed).show(
+				define.animationMenuSpeed);
 		} else {
-			elements.joinCircleAccept.hide(200);
-			elements.joinCircleReject.hide(200);
+			elements.joinCircleAccept.hide(define.animationMenuSpeed);
+			elements.joinCircleReject.hide(define.animationMenuSpeed);
 		}
 	},
 
 	displayJoinCircleButton: function (display) {
 		if (display) {
 			if (curr.circleStatus === 'Invited') {
-				elements.joinCircle.hide(200);
-				elements.leaveCircle.hide(200);
+				elements.joinCircle.hide(define.animationMenuSpeed);
+				elements.leaveCircle.hide(define.animationMenuSpeed);
 				nav.displayInviteCircleButtons(true);
 
 			} else {
 				nav.displayInviteCircleButtons(false);
 
 				if (curr.circleLevel === 0 && curr.circleStatus !== 'Requesting') {
-					elements.joinCircle.delay(200).show(200);
-					elements.leaveCircle.hide(200);
-					elements.joinCircleAccept.hide(200);
-					elements.joinCircleReject.hide(200);
+					elements.joinCircle.delay(define.animationMenuSpeed).show(
+						define.animationMenuSpeed);
+					elements.leaveCircle.hide(define.animationMenuSpeed);
+					elements.joinCircleAccept.hide(define.animationMenuSpeed);
+					elements.joinCircleReject.hide(define.animationMenuSpeed);
 
 				}
 				else {
-					elements.leaveCircle.delay(200).show(200);
-					elements.joinCircle.hide(200);
+					elements.leaveCircle.delay(define.animationMenuSpeed).show(
+						define.animationMenuSpeed);
+					elements.joinCircle.hide(define.animationMenuSpeed);
 				}
 			}
 		} else {
-			elements.joinCircle.hide(200);
-			elements.leaveCircle.hide(200);
+			elements.joinCircle.hide(define.animationMenuSpeed);
+			elements.leaveCircle.hide(define.animationMenuSpeed);
 		}
 	},
 
@@ -339,7 +363,6 @@ var nav = {
 			}
 		)
 	},
-
 
 
 	displayCircleDetails: function (details) {
