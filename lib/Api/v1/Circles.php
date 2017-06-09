@@ -160,6 +160,25 @@ class Circles {
 	}
 
 
+
+	/**
+	 * Circles::settingsCircle();
+	 *
+	 * Save the settings. Settings is an array and current user need to be an admin
+	 *
+	 * @param $circleId
+	 * @param array $settings
+	 *
+	 * @return Circle
+	 */
+	public static function settingsCircle($circleId, array $settings) {
+		$c = self::getContainer();
+
+		return $c->query('CirclesService')
+				 ->settingsCircle($circleId, $settings);
+	}
+
+
 	/**
 	 * Circles::destroyCircle();
 	 *

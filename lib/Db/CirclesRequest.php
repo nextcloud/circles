@@ -120,6 +120,16 @@ class CirclesRequest extends CirclesRequestBuilder {
 	}
 
 
+	public function updateCircle(Circle $circle) {
+		$qb = $this->getCirclesUpdateSql($circle->getId());
+		$qb->set('name', $qb->createNamedParameter($circle->getName()))
+		   ->set('description', $qb->createNamedParameter($circle->getDescription()))
+		   ->set('settings', $qb->createNamedParameter($circle->getSettings(true)));
+
+		$qb->execute();
+	}
+
+
 	/**
 	 * @param string $uniqueId
 	 *

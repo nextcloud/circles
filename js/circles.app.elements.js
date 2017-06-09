@@ -253,6 +253,10 @@ var elements = {
 		});
 
 
+		elements.settingsSave.on('click', function () {
+				actions.saveSettings();
+			}
+		);
 	},
 
 

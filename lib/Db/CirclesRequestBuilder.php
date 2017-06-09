@@ -73,9 +73,9 @@ class CirclesRequestBuilder {
 	 */
 	protected function limitToCircleId(IQueryBuilder & $qb, $circleId) {
 		$expr = $qb->expr();
-		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias.'.' : '';
+		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
 
-		$qb->andWhere($expr->eq($pf.'circle_id', $qb->createNamedParameter($circleId)));
+		$qb->andWhere($expr->eq($pf . 'circle_id', $qb->createNamedParameter($circleId)));
 	}
 
 
@@ -87,9 +87,9 @@ class CirclesRequestBuilder {
 	 */
 	protected function limitToId(IQueryBuilder & $qb, $id) {
 		$expr = $qb->expr();
-		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias.'.' : '';
+		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
 
-		$qb->andWhere($expr->eq($pf.'id', $qb->createNamedParameter($id)));
+		$qb->andWhere($expr->eq($pf . 'id', $qb->createNamedParameter($id)));
 	}
 
 
@@ -101,9 +101,9 @@ class CirclesRequestBuilder {
 	 */
 	protected function limitToUniqueId(IQueryBuilder & $qb, $uniqueId) {
 		$expr = $qb->expr();
-		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias.'.' : '';
+		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
 
-		$qb->andWhere($expr->eq($pf.'unique_id', $qb->createNamedParameter($uniqueId)));
+		$qb->andWhere($expr->eq($pf . 'unique_id', $qb->createNamedParameter($uniqueId)));
 	}
 
 
@@ -115,9 +115,9 @@ class CirclesRequestBuilder {
 	 */
 	protected function limitToToken(IQueryBuilder & $qb, $token) {
 		$expr = $qb->expr();
-		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias.'.' : '';
+		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
 
-		$qb->andWhere($expr->eq($pf.'token', $qb->createNamedParameter($token)));
+		$qb->andWhere($expr->eq($pf . 'token', $qb->createNamedParameter($token)));
 	}
 
 
@@ -149,13 +149,13 @@ class CirclesRequestBuilder {
 		}
 
 		$expr = $qb->expr();
-		$pf = $this->default_select_alias.'.';
+		$pf = $this->default_select_alias . '.';
 
 		$qb->selectAlias('u.level', 'user_level');
 		$qb->leftJoin(
 			$this->default_select_alias, MembersMapper::TABLENAME, 'u',
 			$expr->andX(
-				$expr->eq($pf.'id', 'u.circle_id'),
+				$expr->eq($pf . 'id', 'u.circle_id'),
 				$expr->eq('u.user_id', $qb->createNamedParameter($userId))
 			)
 		);
@@ -174,12 +174,12 @@ class CirclesRequestBuilder {
 		}
 
 		$expr = $qb->expr();
-		$pf = $this->default_select_alias.'.';
+		$pf = $this->default_select_alias . '.';
 
 		$qb->leftJoin(
 			$this->default_select_alias, MembersMapper::TABLENAME, 'o',
 			$expr->andX(
-				$expr->eq($pf.'id', 'o.circle_id'),
+				$expr->eq($pf . 'id', 'o.circle_id'),
 				$expr->eq('o.level', $qb->createNamedParameter(Member::LEVEL_OWNER))
 			)
 		);
@@ -256,6 +256,25 @@ class CirclesRequestBuilder {
 
 
 	/**
+	 * Base of the Sql Update request for Shares
+	 *
+	 * @param int $circleId
+	 *
+	 * @return IQueryBuilder
+	 */
+	protected function getCirclesUpdateSql($circleId) {
+		$qb = $this->dbConnection->getQueryBuilder();
+		$qb->update('circles_circles')
+		   ->where(
+			   $qb->expr()
+				  ->eq('id', $qb->createNamedParameter($circleId))
+		   );
+
+		return $qb;
+	}
+
+
+	/**
 	 * @return IQueryBuilder
 	 */
 	protected function getMembersSelectSql() {
@@ -276,7 +295,9 @@ class CirclesRequestBuilder {
 	protected function getCirclesSelectSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 
-		$qb->select('c.id', 'c.unique_id', 'c.name', 'c.description', 'c.settings', 'c.type', 'c.creation')
+		$qb->select(
+			'c.id', 'c.unique_id', 'c.name', 'c.description', 'c.settings', 'c.type', 'c.creation'
+		)
 		   ->from('circles_circles', 'c');
 		$this->default_select_alias = 'c';
 

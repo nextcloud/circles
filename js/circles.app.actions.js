@@ -76,6 +76,16 @@ var actions = {
 	},
 
 
+	saveSettings: function () {
+		data = {
+			allow_links: (elements.settingsLink.is(":checked")),
+			allow_links_auto: (elements.settingsLinkAuto.is(":checked")),
+			allow_links_files: (elements.settingsLinkFiles.is(":checked"))
+		};
+
+		api.settingsCircle(curr.circle, data, settings.saveSettingsResult);
+	},
+
 	/**
 	 *
 	 * @param search

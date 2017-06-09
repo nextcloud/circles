@@ -38,6 +38,10 @@ return [
 			'requirements' => ['id' => '\d+'],
 		],
 		[
+			'name'         => 'Circles#settings', 'url' => '/v1/circles/{id}/settings', 'verb' => 'POST',
+			'requirements' => ['id' => '\d+'],
+		],
+		[
 			'name'         => 'Circles#destroy', 'url' => '/v1/circles/{id}', 'verb' => 'DELETE',
 			'requirements' => ['id' => '\d+'],
 		],

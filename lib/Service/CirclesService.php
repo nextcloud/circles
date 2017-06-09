@@ -28,6 +28,7 @@ namespace OCA\Circles\Service;
 
 
 use OCA\Circles\Db\CirclesMapper;
+use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersMapper;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
@@ -46,6 +47,9 @@ class CirclesService {
 
 	/** @var ConfigService */
 	private $configService;
+
+	/** @var CirclesRequest */
+	private $circlesRequest;
 
 	/** @var CirclesMapper */
 	private $dbCircles;
@@ -66,6 +70,7 @@ class CirclesService {
 	 * @param $userId
 	 * @param IL10N $l10n
 	 * @param ConfigService $configService
+	 * @param CirclesRequest $circlesRequest
 	 * @param DatabaseService $databaseService
 	 * @param EventsService $eventsService
 	 * @param MiscService $miscService
@@ -74,6 +79,7 @@ class CirclesService {
 		$userId,
 		IL10N $l10n,
 		ConfigService $configService,
+		CirclesRequest $circlesRequest,
 		DatabaseService $databaseService,
 		EventsService $eventsService,
 		MiscService $miscService
@@ -81,6 +87,7 @@ class CirclesService {
 		$this->userId = $userId;
 		$this->l10n = $l10n;
 		$this->configService = $configService;
+		$this->circlesRequest = $circlesRequest;
 		$this->eventsService = $eventsService;
 		$this->miscService = $miscService;
 
@@ -187,6 +194,36 @@ class CirclesService {
 				);
 				$circle->setMembers($members);
 			}
+		} catch (\Exception $e) {
+			throw $e;
+		}
+
+		return $circle;
+	}
+
+	/**
+	 * save new settings if current user is admin.
+	 *
+	 * @param $circleId
+	 * @param array $settings
+	 *
+	 * @return Circle
+	 * @throws \Exception
+	 */
+	public function settingsCircle($circleId, $settings) {
+
+		$this->miscService->log("____");
+		try {
+			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
+			$circle->getUser()
+				   ->hasToBeAdmin();
+
+			$ak = array_keys($settings);
+			foreach ($ak AS $k) {
+				$circle->setSetting($k, $settings[$k]);
+			}
+
+			$this->circlesRequest->updateCircle($circle);
 		} catch (\Exception $e) {
 			throw $e;
 		}

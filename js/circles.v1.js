@@ -163,6 +163,20 @@
 			};
 
 
+			this.settingsCircle = function (circleId, settings, callback) {
+				var result = {status: -1};
+				$.ajax({
+					method: 'POST',
+					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/settings'),
+					data: {settings: settings}
+				}).done(function (res) {
+					self.onCallback(callback, res);
+				}).fail(function () {
+					self.onCallback(callback, result);
+				});
+			};
+
+
 			this.leaveCircle = function (circleId, callback) {
 				var result = {status: -1};
 				$.ajax({

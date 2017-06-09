@@ -65,9 +65,12 @@ var settings = {
 //		elements.settingsEntryLinkAuto.fadeTo(0, 1).fadeTo(2000, 0.3);
 //		elements.settingsEntryLinkFiles.fadeTo(0, 1).fadeTo(2000, 0.3);
 
-	}
+	},
 
-}
+	saveSettingsResult: function (result) {
+		console.log(result);
+	}
+};
 
 
 
