@@ -36,6 +36,7 @@ class Circles extends Entity {
 	public $uniqueId;
 	public $name;
 	public $description;
+	public $settings;
 	public $type;
 	public $creation;
 	public $members;
@@ -52,6 +53,7 @@ class Circles extends Entity {
 			$this->setUniqueId($item->getUniqueId());
 			$this->setName($item->getName());
 			$this->setDescription($item->getDescription());
+			$this->setSettings($item->getSettings());
 			$this->setType($item->getType());
 			$this->setCreation($item->getCreation());
 			$this->setMembers($item->getMembers());

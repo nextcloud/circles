@@ -64,6 +64,7 @@ class Circle extends BaseCircle implements \JsonSerializable {
 			'owner'          => $this->getOwner(),
 			'user'           => $this->getUser(),
 			'description'    => $this->getDescription(),
+			'settings'       => $this->getSettings(),
 			'type'           => $this->getTypeString(),
 			'creation'       => $this->getCreation(),
 			'typeString'     => $this->getTypeString(),
@@ -109,6 +110,7 @@ class Circle extends BaseCircle implements \JsonSerializable {
 		$circle->setName($arr['name']);
 		$circle->setUniqueId($arr['unique_id']);
 		$circle->setDescription($arr['description']);
+		$circle->setSettings($arr['settings']);
 		$circle->setType($arr['type']);
 		$circle->setCreation($arr['creation']);
 

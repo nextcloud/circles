@@ -38,6 +38,7 @@ var api = OCA.Circles.api;
 var curr = {
 	circlesType: '',
 	circle: 0,
+	circleName: '',
 	circleLevel: 0,
 	circleStatus: '',
 	searchCircle: '',
@@ -139,6 +140,11 @@ $(document).ready(function () {
 
 			curr.allowed_federated = result.allowed_federated;
 			curr.allowed_circles = result.allowed_circles;
+
+			var circleId = window.location.hash.substr(1);
+			if (circleId) {
+				actions.selectCircle(circleId);
+			}
 		}
 
 	};

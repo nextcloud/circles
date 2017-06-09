@@ -62,6 +62,16 @@ var elements = {
 	leaveCircle: null,
 	destroyCircle: null,
 
+	settingsPanel: null,
+	settingsName: null,
+	settingsLink: null,
+	settingsLinkAuto: null,
+	settingsLinkFiles: null,
+	settingsEntryLink: null,
+	settingsEntryLinkAuto: null,
+	settingsEntryLinkFiles: null,
+	settingsSave: null,
+
 	rightPanel: null,
 	addMember: null,
 	remMember: null,
@@ -104,7 +114,13 @@ var elements = {
 		elements.destroyCircle = $('#circle-actions-delete');
 
 		elements.settingsPanel = $('#settings-panel');
-		elements.settingsCheckboxLink = $('#checkbox-link');
+		elements.settingsName = $('#settings-name');
+		elements.settingsLink = $('#settings-link');
+		elements.settingsLinkAuto = $('#settings-link-auto');
+		elements.settingsLinkFiles = $('#settings-link-files');
+		elements.settingsEntryLink = $('#settings-entry-link');
+		elements.settingsEntryLinkAuto = $('#settings-entry-link-auto');
+		elements.settingsEntryLinkFiles = $('#settings-entry-link-files');
 		elements.settingsSave = $('#settings-submit');
 
 		elements.rightPanel = $('#rightpanel');

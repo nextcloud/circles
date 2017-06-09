@@ -62,8 +62,15 @@
 			<field>
 				<name>description</name>
 				<type>text</type>
-				<notnull>false</notnull>
+				<notnull>true</notnull>
 				<length>128</length>
+			</field>
+
+			<field>
+				<name>settings</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>4000</length>
 			</field>
 
 			<field>

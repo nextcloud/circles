@@ -30,6 +30,11 @@ use OC\L10N\L10N;
 
 class BaseCircle {
 
+	const CIRCLES_SETTINGS_DEFAULT = [
+		'allow_links'       => false,
+		'allow_links_auto'  => false,
+		'allow_links_files' => false
+	];
 
 	const CIRCLES_PERSONAL = 1;
 	const CIRCLES_HIDDEN = 2;
@@ -58,6 +63,9 @@ class BaseCircle {
 
 	/** @var string */
 	private $description;
+
+	/** @var array */
+	private $settings = [];
 
 	/** @var int */
 	private $type;
@@ -161,6 +169,56 @@ class BaseCircle {
 
 	public function getDescription() {
 		return $this->description;
+	}
+
+
+	public function setSettings($settings) {
+		if (is_array($settings)) {
+			$this->settings = $settings;
+		} else if (is_string($settings)) {
+			$this->settings = json_decode($settings, true);
+		}
+
+		return $this;
+	}
+
+	public function getSettings($json = false) {
+
+		if ($json) {
+			return json_encode($this->settings);
+		}
+
+		$settings = $this->settings;
+		$ak = array_keys(self::CIRCLES_SETTINGS_DEFAULT);
+		foreach ($ak AS $k) {
+			if (!key_exists($k, $settings)) {
+				$settings[$k] = self::CIRCLES_SETTINGS_DEFAULT[$k];
+			}
+		}
+
+		return $settings;
+	}
+
+
+	public function setSetting($k, $v) {
+		$this->settings[$k] = $v;
+	}
+
+
+	/**
+	 * @param string $k
+	 *
+	 * @return string|null
+	 */
+	public function getSetting($k) {
+		if (key_exists($k, $this->settings)) {
+			return $this->settings[$k];
+		}
+		if (key_exists($k, (array)self::CIRCLES_SETTINGS_DEFAULT)) {
+			return self::CIRCLES_SETTINGS_DEFAULT[$k];
+		}
+
+		return null;
 	}
 
 

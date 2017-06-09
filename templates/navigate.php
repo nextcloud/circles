@@ -278,25 +278,30 @@ style('circles', 'navigation');
 						<td class="left">Name of the circle :</td>
 						<td><input type="text" id="settings-name"/></td>
 					</tr>
-					<tr class="settings-link">
+					<tr id="settings-entry-link">
 						<td class="left">Allow Federated Links :<br/>
-							<span class="hint">Links allow shares between 2 circles, remotely or locally</span>
+							<span class="hint">Federated Links enable sharing between this circle and an other, locally or remotely</span>
 						</td>
-						<td><input type="checkbox" value="1" id="checkbox-link"></td>
+						<td><input type="checkbox" value="1" id="settings-link"></td>
 					</tr>
-					<tr class="settings-link-sub">
+					<tr id="settings-entry-link-auto">
 						<td class="left">Automatically accept Link request :<br/>
-							<span class="hint">This option will allow anyone to link to your circle without your confirmation</span>
+							<span class="hint">This option will permit any links to be generated with your circle without confirmation</span>
 						</td>
-						<td><input type="checkbox" value="1" id="checkbox-link-auto"></td>
+						<td><input type="checkbox" value="1" id="settings-link-auto"></td>
 					</tr>
-					<tr class="settings-link-sub">
+					<tr id="settings-entry-link-files">
 						<td class="left">Share files with Linked Circles :<br/>
-							<span class="hint">Files that are shared to this circle will be shared with all Linked circles</span>
+							<span class="hint">Files that are locally shared with this circle will be shared with all Linked circles</span>
 						</td>
-						<td><input type="checkbox" value="1" id="checkbox-link-files"></td>
+						<td><input type="checkbox" value="1" id="settings-link-files"></td>
 					</tr>
-					<tr><td colspan="2" style="text-align: center;"><input type="submit" id="settings-submit" value="Save settings" /></td></tr>
+					<tr>
+						<td colspan="2" style="text-align: center;"><input type="submit"
+																		   id="settings-submit"
+																		   value="Save settings"/>
+						</td>
+					</tr>
 				</table>
 
 

@@ -128,7 +128,7 @@ class CirclesMapper extends Mapper {
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select(
-			'c.id', 'c.unique_id', 'c.name', 'c.description', 'c.type', 'c.creation',
+			'c.id', 'c.unique_id', 'c.name', 'c.description', 'c.settings', 'c.type', 'c.creation',
 			'u.joined', 'u.level', 'u.status'
 		)
 		   ->selectAlias('o.user_id', 'owner_id')
@@ -410,6 +410,7 @@ class CirclesMapper extends Mapper {
 		   ->setValue('unique_id', $qb->createNamedParameter($circle->getUniqueId()))
 		   ->setValue('name', $qb->createNamedParameter($circle->getName()))
 		   ->setValue('description', $qb->createNamedParameter($circle->getDescription()))
+		   ->setValue('settings', $qb->createNamedParameter($circle->getSettings(true)))
 		   ->setValue('type', $qb->createNamedParameter($circle->getType()))
 		   ->setValue('creation', $qb->createFunction('NOW()'));
 

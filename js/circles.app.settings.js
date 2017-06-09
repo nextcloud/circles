@@ -27,6 +27,7 @@
 /** global: OCA */
 /** global: Notyf */
 
+/** global: curr */
 /** global: define */
 /** global: elements */
 
@@ -34,12 +35,36 @@ var settings = {
 
 	displaySettings: function (display) {
 		if (display) {
+			settings.initUISettings();
 			elements.mainUIMembers.hide(define.animationSpeed);
 			elements.settingsPanel.delay(define.animationSpeed).show(define.animationSpeed);
 		} else {
 			elements.settingsPanel.hide(define.animationSpeed);
 			elements.mainUIMembers.delay(define.animationSpeed).show(define.animationSpeed);
 		}
+	},
+
+	initUISettings: function () {
+		elements.settingsName.val(curr.circleName);
+
+		elements.settingsLink.prop('disabled', true);
+		elements.settingsLinkAuto.prop('disabled', true);
+		elements.settingsLinkFiles.prop('disabled', true);
+		elements.settingsEntryLink.fadeTo(0, 0.3);
+		elements.settingsEntryLinkAuto.fadeTo(0, 0.3);
+		elements.settingsEntryLinkFiles.fadeTo(0, 0.3);
+
+		if (curr.allowed_federated !== '1') {
+			return;
+		}
+
+		elements.settingsLink.prop('disabled', false);
+//		elements.settingsLinkAuto.prop('disabled', true);
+//		elements.settingsLinkFiles.prop('disabled', true);
+		elements.settingsEntryLink.fadeTo(0, 1);
+//		elements.settingsEntryLinkAuto.fadeTo(0, 1).fadeTo(2000, 0.3);
+//		elements.settingsEntryLinkFiles.fadeTo(0, 1).fadeTo(2000, 0.3);
+
 	}
 
 }

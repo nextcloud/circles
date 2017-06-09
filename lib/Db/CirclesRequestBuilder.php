@@ -276,7 +276,7 @@ class CirclesRequestBuilder {
 	protected function getCirclesSelectSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 
-		$qb->select('c.id', 'c.unique_id', 'c.name', 'c.description', 'c.type', 'c.creation')
+		$qb->select('c.id', 'c.unique_id', 'c.name', 'c.description', 'c.settings', 'c.type', 'c.creation')
 		   ->from('circles_circles', 'c');
 		$this->default_select_alias = 'c';
 
@@ -315,6 +315,7 @@ class CirclesRequestBuilder {
 		$circle->setUniqueId($data['unique_id']);
 		$circle->setName($data['name']);
 		$circle->setDescription($data['description']);
+		$circle->setSettings($data['settings']);
 		$circle->setType($data['type']);
 		$circle->setCreation($data['creation']);
 

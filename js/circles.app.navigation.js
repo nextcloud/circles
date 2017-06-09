@@ -46,11 +46,6 @@ var nav = {
 		this.initElementsCircleNavigation();
 
 		this.displayCirclesList('all');
-
-		var circleId = window.location.hash.substr(1);
-		if (circleId) {
-			actions.selectCircle(circleId);
-		}
 	},
 
 
