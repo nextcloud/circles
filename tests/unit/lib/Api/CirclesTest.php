@@ -305,13 +305,40 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 			try {
 				Circles::levelMember(
-					$circle->getId(), Env::ENV_TEST_MEMBER1, Member::LEVEL_MEMBER
+					$circle->getId(), Env::ENV_TEST_USER1, Member::LEVEL_MEMBER
+				);
+				$this->assertSame(true, false, 'should return an exception');
+			} catch (MemberDoesNotExistException $e) {
+			} catch (Exception $e) {
+				$this->assertSame(
+					true, false, 'should have returned a MemberDoesNotExistException'
+				);
+			}
+
+			try {
+				Circles::levelMember(
+					$circle->getId(), Env::ENV_TEST_MEMBER1, Member::LEVEL_MODERATOR
 				);
 				$this->assertSame(true, false, 'should return an exception');
 			} catch (MemberIsNotModeratorException $e) {
 			} catch (Exception $e) {
 				$this->assertSame(
-					true, false, 'should have returned a MemberIsNotModeratorException'
+					true, false,
+					'should have returned a MemberIsNotModeratorException - ' . $e->getMessage()
+				);
+			}
+
+
+			try {
+				Circles::levelMember(
+					$circle->getId(), Env::ENV_TEST_OWNER1, Member::LEVEL_MEMBER
+				);
+				$this->assertSame(true, false, 'should return an exception');
+			} catch (MemberIsNotModeratorException $e) {
+			} catch (Exception $e) {
+				$this->assertSame(
+					true, false,
+					'should have returned a MemberIsNotModeratorException - ' . $e->getMessage()
 				);
 			}
 
