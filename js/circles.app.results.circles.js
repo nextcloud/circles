@@ -60,7 +60,7 @@ var resultCircles = {
 	leaveCircleResult: function (result) {
 		if (result.status === 1) {
 
-			elements.mainUIMembers.children("[member-id='" + result.name + "']").each(
+			elements.mainUIMembersTable.children("[member-id='" + result.name + "']").each(
 				function () {
 					$(this).hide(300);
 				});
@@ -91,6 +91,9 @@ var resultCircles = {
 			((result.error) ? result.error : t('circles', 'no error message')));
 	},
 
+	// settingsCircleResult: function (result) {
+	// 	console.log(result);
+	// },
 
 	createCircleResult: function (result) {
 		var type = actions.getStringTypeFromType(result.type);
@@ -117,7 +120,7 @@ var resultCircles = {
 
 	selectCircleResult: function (result) {
 
-		elements.mainUIMembers.emptyTable();
+		elements.mainUIMembersTable.emptyTable();
 		if (result.status < 1) {
 			OCA.notification.onFail(
 				t('circles', 'Issue while retrieving the details of this circle') + '" ' +

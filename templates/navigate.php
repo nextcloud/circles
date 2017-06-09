@@ -29,7 +29,8 @@ style('circles', 'notyf');
 
 script(
 	'circles', [
-				 'circles.v1', 'circles.app.elements', 'circles.app.actions', 'circles.app.navigation',
+				 'circles.v1', 'circles.app.elements', 'circles.app.actions',
+				 'circles.app.navigation',
 				 'circles.app', 'circles.app.results.circles', 'circles.app.results.members',
 				 'circles.app.results.links',
 			 ]
@@ -268,12 +269,38 @@ style('circles', 'navigation');
 						<td>
 							<div class="icon-checkmark" style="display: none;"></div>
 						</td>
-
 					</tr>
 				</script>
 			</div>
+			<div id="settings-panel">
+				<table id="settings-table">
+					<tr>
+						<td class="left">Name of the circle :</td>
+						<td><input type="text" id="settings-name"/></td>
+					</tr>
+					<tr id="settings-link">
+						<td class="left">Allow Federated Links :<br/>
+							<span class="hint">Links allow shares between 2 circles, remotely or locally</span>
+						</td>
+						<td><input type="checkbox" value="1" id="checkbox-link"></td>
+					</tr>
+					<tr id="settings-link-auto">
+						<td class="left">Automatically accept Link request :<br/>
+							<span class="hint">This option will allow anyone to link to your circle without your confirmation</span>
+						</td>
+						<td><input type="checkbox" value="1" id="checkbox-link-auto"></td>
+					</tr>
+					<tr id="settings-link-files">
+						<td class="left">Share files with Linked Circles :<br/>
+							<span class="hint">Files that are shared to this circle will be shared with all Linked circles</span>
+						</td>
+						<td><input type="checkbox" value="1" id="checkbox-link-files"></td>
+					</tr>
+				</table>
 
+
+				<div>
+				</div>
+
+			</div>
 		</div>
-
-	</div>
-</div>

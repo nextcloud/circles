@@ -268,3 +268,35 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	margin: 0;
 	background: #fff;
 }
+
+#mainui #settings-panel {
+	position: absolute;
+	bottom: 15px;
+	right: 15px;
+	left: 15px;
+	top: 120px;
+	overflow-y: auto;
+}
+
+#settings-table {
+	width: 100%;
+	color: #555;
+}
+
+#settings-table td.left {
+	font-weight: bold;
+	text-align: right;
+	width: 50%;
+	font-size: 15px;
+	padding: 15px 40px;
+}
+
+#settings-table .hint {
+	font-weight: normal;
+	font-size: 11px
+}
+
+#settings-name {
+	width: 300px;
+}
+

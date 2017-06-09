@@ -47,7 +47,7 @@ var elements = {
 	circlesDetails: null,
 	emptyContent: null,
 	mainUI: null,
-	mainUIMembers: null,
+	mainUIMembersTable: null,
 	membersSearchResult: null,
 	memberDetails: null,
 	memberRequest: null,
@@ -86,7 +86,9 @@ var elements = {
 		elements.circlesDetails = $('#circle_details');
 		elements.emptyContent = $('#emptycontent');
 		elements.mainUI = $('#mainui');
-		elements.mainUIMembers = $('#memberslist_table');
+
+		elements.mainUIMembers = $('#memberslist');
+		elements.mainUIMembersTable = $('#memberslist_table');
 		elements.membersSearchResult = $('#members_search_result');
 		elements.memberDetails = $('#memberdetails');
 		elements.memberRequest = $('#member_request');
@@ -100,6 +102,7 @@ var elements = {
 		elements.leaveCircle = $('#leavecircle');
 		elements.destroyCircle = $('#circle-actions-delete');
 
+		elements.settingsPanel = $('#settings-panel');
 		elements.rightPanel = $('#rightpanel');
 		elements.addMember = $('#addmember');
 		elements.remMember = $('#remmember');
@@ -202,6 +205,7 @@ var elements = {
 		});
 
 		elements.buttonAddMember.on('click', function () {
+			nav.displaySettings(false);
 			nav.displayCircleButtons(false);
 			nav.displayAddMemberInput(true);
 			nav.displayLinkCircleInput(false);
@@ -209,16 +213,24 @@ var elements = {
 		});
 
 		elements.buttonLinkCircle.on('click', function () {
+			nav.displaySettings(false);
 			nav.displayCircleButtons(false);
 			nav.displayAddMemberInput(false);
 			nav.displayLinkCircleInput(true);
 			nav.displayJoinCircleButton(false);
 		});
 
+		elements.buttonCircleSettings.on('click', function () {
+			nav.displaySettings(true);
+			nav.displayCircleButtons(false);
+			nav.displayAddMemberInput(false);
+			nav.displayLinkCircleInput(false);
+			nav.displayJoinCircleButton(false);
+		});
+
 		elements.buttonJoinCircle.on('click', function () {
 			nav.joinCircleAction();
 		});
-
 
 
 	},
@@ -258,7 +270,6 @@ var elements = {
 
 
 	fillExactMembersSearch: function (exact) {
-
 		$.each(exact, function (index, value) {
 			elements.membersSearchResult.append(
 				'<div class="members_search exact" searchresult="' +
@@ -299,7 +310,7 @@ var elements = {
 
 
 	removeMemberslistEntry: function (membername) {
-		this.mainUIMembers.children("[member-id='" + escapeHTML(membername) + "']").each(
+		this.mainUIMembersTable.children("[member-id='" + escapeHTML(membername) + "']").each(
 			function () {
 				$(this).hide(300);
 			});

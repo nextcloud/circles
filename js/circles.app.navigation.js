@@ -172,9 +172,9 @@ var nav = {
 		});
 	},
 
-
 	circlesActionReturn: function () {
 		nav.displayCircleButtons(true);
+		nav.displaySettings(false);
 		nav.displayAddMemberInput(false);
 		nav.displayLinkCircleInput(false);
 		nav.displayJoinCircleButton(false);
@@ -223,6 +223,18 @@ var nav = {
 			elements.linkCircle.hide(define.animationMenuSpeed);
 		}
 	},
+
+	displaySettings: function (display) {
+		console.log('display settings');
+		if (display) {
+			elements.mainUIMembers.hide(define.animationSpeed);
+			elements.settingsPanel.delay(define.animationSpeed).show(define.animationSpeed);
+		} else {
+			elements.settingsPanel.hide(define.animationSpeed);
+			elements.mainUIMembers.delay(define.animationSpeed).show(define.animationSpeed);
+		}
+	},
+
 
 	displayInviteCircleButtons: function (display) {
 		if (display) {
@@ -289,16 +301,16 @@ var nav = {
 		elements.remMember.fadeOut(300);
 		elements.rightPanel.fadeOut(300);
 
-		elements.mainUIMembers.emptyTable();
+		elements.mainUIMembersTable.emptyTable();
 		if (members === null) {
-			elements.mainUIMembers.hide(200);
+			elements.mainUIMembersTable.hide(200);
 			return;
 		}
 
-		elements.mainUIMembers.show(200);
+		elements.mainUIMembersTable.show(200);
 		for (var i = 0; i < members.length; i++) {
 			var tmpl = elements.generateTmplMember(members[i]);
-			elements.mainUIMembers.append(tmpl);
+			elements.mainUIMembersTable.append(tmpl);
 		}
 
 		for (i = 0; i < 10; i++) {
@@ -308,7 +320,7 @@ var nav = {
 		}
 
 
-		elements.mainUIMembers.children('tr.entry').each(function () {
+		elements.mainUIMembersTable.children('tr.entry').each(function () {
 
 				var userId = $(this).attr('member-id');
 
@@ -396,7 +408,6 @@ var nav = {
 			elements.destroyCircle.show();
 			elements.buttonCircleSettings.show();
 			elements.buttonJoinCircle.hide();
-			return;
 		}
 
 	},

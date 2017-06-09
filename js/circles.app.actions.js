@@ -66,7 +66,7 @@ var actions = {
 
 
 	unselectCircle: function (circle_id) {
-		elements.mainUIMembers.emptyTable();
+		elements.mainUIMembersTable.emptyTable();
 		elements.navigation.children(".circle[circle-id='" + circle_id + "']").remove();
 		elements.emptyContent.show(800);
 		elements.mainUI.fadeOut(800);
