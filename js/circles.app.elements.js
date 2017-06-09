@@ -29,6 +29,7 @@
 
 /** global: nav */
 /** global: actions */
+/** global: settings */
 /** global: resultCircles */
 /** global: curr */
 /** global: api */
@@ -103,6 +104,9 @@ var elements = {
 		elements.destroyCircle = $('#circle-actions-delete');
 
 		elements.settingsPanel = $('#settings-panel');
+		elements.settingsCheckboxLink = $('#checkbox-link');
+		elements.settingsSave = $('#settings-submit');
+
 		elements.rightPanel = $('#rightpanel');
 		elements.addMember = $('#addmember');
 		elements.remMember = $('#remmember');
@@ -205,7 +209,7 @@ var elements = {
 		});
 
 		elements.buttonAddMember.on('click', function () {
-			nav.displaySettings(false);
+			settings.displaySettings(false);
 			nav.displayCircleButtons(false);
 			nav.displayAddMemberInput(true);
 			nav.displayLinkCircleInput(false);
@@ -213,7 +217,7 @@ var elements = {
 		});
 
 		elements.buttonLinkCircle.on('click', function () {
-			nav.displaySettings(false);
+			settings.displaySettings(false);
 			nav.displayCircleButtons(false);
 			nav.displayAddMemberInput(false);
 			nav.displayLinkCircleInput(true);
@@ -221,7 +225,7 @@ var elements = {
 		});
 
 		elements.buttonCircleSettings.on('click', function () {
-			nav.displaySettings(true);
+			settings.displaySettings(true);
 			nav.displayCircleButtons(false);
 			nav.displayAddMemberInput(false);
 			nav.displayLinkCircleInput(false);

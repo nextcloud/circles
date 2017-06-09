@@ -70,6 +70,7 @@ $(document).ready(function () {
 		$.extend(Navigation.prototype, nav);
 		$.extend(Navigation.prototype, elements);
 		$.extend(Navigation.prototype, actions);
+		$.extend(Navigation.prototype, settings);
 		$.extend(Navigation.prototype, resultCircles);
 		$.extend(Navigation.prototype, resultMembers);
 		$.extend(Navigation.prototype, resultLinks);

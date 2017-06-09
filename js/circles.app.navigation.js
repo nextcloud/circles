@@ -30,6 +30,7 @@
 /** global: actions */
 /** global: nav */
 /** global: elements */
+/** global: settings */
 /** global: resultCircles */
 /** global: resultMembers */
 /** global: resultLinks */
@@ -174,7 +175,7 @@ var nav = {
 
 	circlesActionReturn: function () {
 		nav.displayCircleButtons(true);
-		nav.displaySettings(false);
+		settings.displaySettings(false);
 		nav.displayAddMemberInput(false);
 		nav.displayLinkCircleInput(false);
 		nav.displayJoinCircleButton(false);
@@ -224,15 +225,6 @@ var nav = {
 		}
 	},
 
-	displaySettings: function (display) {
-		if (display) {
-			elements.mainUIMembers.hide(define.animationSpeed);
-			elements.settingsPanel.delay(define.animationSpeed).show(define.animationSpeed);
-		} else {
-			elements.settingsPanel.hide(define.animationSpeed);
-			elements.mainUIMembers.delay(define.animationSpeed).show(define.animationSpeed);
-		}
-	},
 
 
 	displayInviteCircleButtons: function (display) {

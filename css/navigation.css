@@ -300,3 +300,6 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	width: 300px;
 }
 
+#settings-submit {
+	margin: 15px;
+}

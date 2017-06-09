@@ -30,7 +30,7 @@ style('circles', 'notyf');
 script(
 	'circles', [
 				 'circles.v1', 'circles.app.elements', 'circles.app.actions',
-				 'circles.app.navigation',
+				 'circles.app.navigation', 'circles.app.settings',
 				 'circles.app', 'circles.app.results.circles', 'circles.app.results.members',
 				 'circles.app.results.links',
 			 ]
@@ -278,24 +278,25 @@ style('circles', 'navigation');
 						<td class="left">Name of the circle :</td>
 						<td><input type="text" id="settings-name"/></td>
 					</tr>
-					<tr id="settings-link">
+					<tr class="settings-link">
 						<td class="left">Allow Federated Links :<br/>
 							<span class="hint">Links allow shares between 2 circles, remotely or locally</span>
 						</td>
 						<td><input type="checkbox" value="1" id="checkbox-link"></td>
 					</tr>
-					<tr id="settings-link-auto">
+					<tr class="settings-link-sub">
 						<td class="left">Automatically accept Link request :<br/>
 							<span class="hint">This option will allow anyone to link to your circle without your confirmation</span>
 						</td>
 						<td><input type="checkbox" value="1" id="checkbox-link-auto"></td>
 					</tr>
-					<tr id="settings-link-files">
+					<tr class="settings-link-sub">
 						<td class="left">Share files with Linked Circles :<br/>
 							<span class="hint">Files that are shared to this circle will be shared with all Linked circles</span>
 						</td>
 						<td><input type="checkbox" value="1" id="checkbox-link-files"></td>
 					</tr>
+					<tr><td colspan="2" style="text-align: center;"><input type="submit" id="settings-submit" value="Save settings" /></td></tr>
 				</table>
 
 
