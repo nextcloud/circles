@@ -193,13 +193,14 @@ class MembersService {
 	/**
 	 * @param $circleId
 	 * @param $name
-	 * @param $level
+	 * @param int $level
 	 *
 	 * @return array
 	 * @throws \Exception
 	 */
 	public function levelMember($circleId, $name, $level) {
 
+		$level = (int)$level;
 		try {
 			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
 			if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
@@ -210,7 +211,7 @@ class MembersService {
 
 			$member = $this->dbMembers->getMemberFromCircle($circle->getId(), $name);
 			if ($member->getLevel() !== $level) {
-				if ((int)$level === Member::LEVEL_OWNER) {
+				if ($level === Member::LEVEL_OWNER) {
 					$this->switchOwner($circle, $member);
 				} else {
 					$this->editMemberLevel($circle, $member, $level);
