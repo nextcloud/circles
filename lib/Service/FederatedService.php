@@ -167,7 +167,7 @@ class FederatedService {
 	 * requestLinkWithCircle()
 	 *
 	 * Using CircleId, function will get more infos from the database.
-	 * Will check if author is not admin and initiate a FederatedLink, save it
+	 * Will check if author is at least admin and initiate a FederatedLink, save it
 	 * in the database and send a request to the remote circle using requestLink()
 	 * If any issue, entry is removed from the database.
 	 *
@@ -299,6 +299,12 @@ class FederatedService {
 			);
 		}
 
+		if ($result['reason'] === 'circle_links_disable') {
+			throw new FederatedRemoteDoesNotAllowException(
+				$this->l10n->t('The remote circle does not accept Federated Links')
+			);
+		}
+
 		if ($result['reason'] === 'duplicate_unique_id') {
 			throw new FederatedRemoteDoesNotAllowException(
 				$this->l10n->t('It seems that you are trying to link a circle to itself')
@@ -335,7 +341,7 @@ class FederatedService {
 			$this->checkLinkRequestValidity($circle, $link);
 			$link->setCircleId($circle->getId());
 
-			if ($circle->getType() === Circle::CIRCLES_PUBLIC) {
+			if ($circle->getSetting('allow_link_auto') === 'true') {
 				$link->setStatus(FederatedLink::STATUS_LINK_UP);
 			} else {
 				$link->setStatus(FederatedLink::STATUS_REQUEST_SENT);
@@ -355,13 +361,16 @@ class FederatedService {
 	 * @throws LinkCreationException
 	 */
 	private function checkLinkRequestValidity($circle, $link) {
-
 		if ($circle->getUniqueId() === $link->getUniqueId()) {
 			throw new LinkCreationException('duplicate_unique_id');
 		}
 
 		if ($this->getLink($circle->getId(), $link->getUniqueId()) !== null) {
 			throw new LinkCreationException('duplicate_link');
+		}
+
+		if ($circle->getSetting('allow_links') !== 'true') {
+			throw new LinkCreationException('circle_links_disable');
 		}
 	}
 

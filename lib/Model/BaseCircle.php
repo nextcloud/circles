@@ -31,9 +31,9 @@ use OC\L10N\L10N;
 class BaseCircle {
 
 	const CIRCLES_SETTINGS_DEFAULT = [
-		'allow_links'       => false,
-		'allow_links_auto'  => false,
-		'allow_links_files' => false
+		'allow_links'       => 'false',
+		'allow_links_auto'  => 'false',
+		'allow_links_files' => 'false'
 	];
 
 	const CIRCLES_PERSONAL = 1;
