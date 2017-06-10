@@ -385,6 +385,7 @@ class CirclesMapper extends Mapper {
 		$circle->setId($data['id']);
 		$circle->setType($data['type']);
 		$circle->setUniqueId($data['unique_id']);
+		$circle->setSettings($data['settings']);
 
 		return $circle;
 	}
@@ -481,7 +482,7 @@ class CirclesMapper extends Mapper {
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select(
-			'c.id', 'c.unique_id', 'c.name', 'c.type'
+			'c.id', 'c.unique_id', 'c.name', 'c.type', 'c.settings'
 		)
 		   ->from(self::TABLENAME, 'c')
 		   ->where(
