@@ -264,6 +264,7 @@ class MembersService {
 			$isMod = $this->dbMembers->getMemberFromCircle($circle->getId(), $this->userId);
 			$isMod->hasToBeOwner();
 
+			$member->cantBeOwner();
 			$member->setLevel(Member::LEVEL_OWNER);
 			$this->dbMembers->editMember($member);
 
