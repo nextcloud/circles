@@ -110,7 +110,9 @@ class Circle extends BaseCircle implements \JsonSerializable {
 		$circle->setName($arr['name']);
 		$circle->setUniqueId($arr['unique_id']);
 		$circle->setDescription($arr['description']);
-		$circle->setSettings($arr['settings']);
+		if (key_exists('settings', $arr)) {
+			$circle->setSettings($arr['settings']);
+		}
 		$circle->setType($arr['type']);
 		$circle->setCreation($arr['creation']);
 
