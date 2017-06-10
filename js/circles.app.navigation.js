@@ -94,7 +94,8 @@ var nav = {
 				return;
 			}
 
-			api.linkCircle(curr.circle, elements.linkCircle.val(), resultLinks.linkCircleResult);
+			api.linkCircle(curr.circle, elements.linkCircle.val(),
+				resultLinks.linkCircleResult);
 		}).blur(function () {
 			nav.circlesActionReturn();
 		});
@@ -403,12 +404,7 @@ var nav = {
 			elements.buttonAddMember.show();
 		}
 
-		if (curr.allowed_federated === '0' || details.type === 'Personal' ||
-			details.user.level < define.levelAdmin) {
-			elements.buttonLinkCircle.hide();
-		} else {
-			elements.buttonLinkCircle.show();
-		}
+		nav.displayMemberInteractionLinks(details);
 
 		elements.joinCircleInteraction.hide();
 		this.displayNonMemberInteraction(details);
@@ -419,6 +415,18 @@ var nav = {
 			elements.buttonJoinCircle.hide();
 		}
 
+	},
+
+	displayMemberInteractionLinks: function (details) {
+		if (curr.allowed_federated === '0' || curr.circleSettings['allow_links'] !== 'true' ||
+			details.type === 'Personal' ||
+			details.user.level < define.levelAdmin
+		) {
+			elements.buttonLinkCircle.hide();
+		}
+		else {
+			elements.buttonLinkCircle.show();
+		}
 	},
 
 

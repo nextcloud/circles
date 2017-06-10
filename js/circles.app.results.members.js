@@ -49,7 +49,7 @@ var resultMembers = {
 
 		elements.fillMembersSearch(response.ocs.data.exact.users, response.ocs.data.users);
 
-		$('.members_search').on('click', function () {
+		$('DIV.members_search').on('click', function () {
 			api.addMember(curr.circle, $(this).attr('searchresult'),
 				resultMembers.addMemberResult);
 		});
