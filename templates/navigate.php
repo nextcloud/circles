@@ -209,10 +209,10 @@ style('circles', 'navigation');
 				<div id="circle-actions-buttons">
 					<button id="circle-actions-add" class="icon-add-user"
 							title="Add a member"></button>
-					<button id="circle-actions-join" class="icon-join"
-							title="Join this circle"></button>
 					<button id="circle-actions-link" class="icon-public"
 							title="Link a circle"></button>
+					<button id="circle-actions-join" class="icon-join"
+							title="Join this circle"></button>
 					<button id="circle-actions-delete" class="icon-delete"
 							title="Delete circle"></button>
 					<button id="circle-actions-settings" class="icon-settings-dark"

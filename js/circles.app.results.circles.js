@@ -91,9 +91,6 @@ var resultCircles = {
 			((result.error) ? result.error : t('circles', 'no error message')));
 	},
 
-	// settingsCircleResult: function (result) {
-	// 	console.log(result);
-	// },
 
 	createCircleResult: function (result) {
 		var type = actions.getStringTypeFromType(result.type);

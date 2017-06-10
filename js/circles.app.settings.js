@@ -57,7 +57,6 @@ var settings = {
 		});
 
 		settings.interactUISettings();
-
 	},
 
 
@@ -71,7 +70,6 @@ var settings = {
 				false);
 			return;
 		}
-		console.log(elements.settingsEntryLink);
 		settings.enableSetting(elements.settingsEntryLink, elements.settingsLink, true);
 		settings.enableSetting(elements.settingsEntryLinkAuto, elements.settingsLinkAuto,
 			(elements.settingsLink.is(":checked")));
@@ -85,7 +83,15 @@ var settings = {
 	},
 
 	saveSettingsResult: function (result) {
-		console.log(result);
+		if (result.status < 1) {
+			OCA.notification.onFail(
+				t('circles', 'Issue while saving settings') + '; ' +
+				((result.error) ? result.error : t('circles', 'no error message')));
+			return;
+		}
+
+		nav.circlesActionReturn();
+		OCA.notification.onSuccess(t('circles', "Settings saved."));
 	}
 };
 
