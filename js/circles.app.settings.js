@@ -46,25 +46,42 @@ var settings = {
 
 	initUISettings: function () {
 		elements.settingsName.val(curr.circleName);
+		elements.settingsLink.prop('checked', (curr.circleSettings['allow_links'] === 'true'));
+		elements.settingsLinkAuto.prop('checked',
+			(curr.circleSettings['allow_links_auto'] === 'true'));
+		elements.settingsLinkFiles.prop('checked',
+			(curr.circleSettings['allow_links_files'] === 'true'));
 
-		elements.settingsLink.prop('disabled', true);
-		elements.settingsLinkAuto.prop('disabled', true);
-		elements.settingsLinkFiles.prop('disabled', true);
-		elements.settingsEntryLink.fadeTo(0, 0.3);
-		elements.settingsEntryLinkAuto.fadeTo(0, 0.3);
-		elements.settingsEntryLinkFiles.fadeTo(0, 0.3);
+		elements.settingsLink.on('change', function () {
+			settings.interactUISettings();
+		});
+
+		settings.interactUISettings();
+
+	},
+
+
+	interactUISettings: function () {
 
 		if (curr.allowed_federated !== '1') {
+			settings.enableSetting(elements.settingsEntryLink, elements.settingsLink, false);
+			settings.enableSetting(elements.settingsEntryLinkAuto, elements.settingsLinkAuto,
+				false);
+			settings.enableSetting(elements.settingsEntryLinkFiles, elements.settingsLinkFiles,
+				false);
 			return;
 		}
+		console.log(elements.settingsEntryLink);
+		settings.enableSetting(elements.settingsEntryLink, elements.settingsLink, true);
+		settings.enableSetting(elements.settingsEntryLinkAuto, elements.settingsLinkAuto,
+			(elements.settingsLink.is(":checked")));
+		settings.enableSetting(elements.settingsEntryLinkFiles, elements.settingsLinkFiles,
+			(elements.settingsLink.is(":checked")));
+	},
 
-		elements.settingsLink.prop('disabled', false);
-//		elements.settingsLinkAuto.prop('disabled', true);
-//		elements.settingsLinkFiles.prop('disabled', true);
-		elements.settingsEntryLink.fadeTo(0, 1);
-//		elements.settingsEntryLinkAuto.fadeTo(0, 1).fadeTo(2000, 0.3);
-//		elements.settingsEntryLinkFiles.fadeTo(0, 1).fadeTo(2000, 0.3);
-
+	enableSetting: function (entry, input, enable) {
+		entry.fadeTo(curr.animationMenuSpeed, (enable) ? 1 : 0.3);
+		input.prop('disabled', !enable);
 	},
 
 	saveSettingsResult: function (result) {
