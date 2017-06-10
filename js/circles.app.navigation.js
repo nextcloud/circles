@@ -221,7 +221,6 @@ var nav = {
 	},
 
 
-
 	displayInviteCircleButtons: function (display) {
 		if (display) {
 			elements.joinCircleAccept.show(define.animationMenuSpeed);
@@ -361,6 +360,30 @@ var nav = {
 
 			}
 		);
+	},
+
+
+	displayLinks: function (links) {
+
+		elements.mainUILinksTable.emptyTable();
+		if (links.length === 0) {
+			elements.mainUILinksTable.hide(curr.animationSpeed);
+			return;
+		}
+
+		elements.mainUILinksTable.show(curr.animationSpeed);
+		for (var i = 0; i < links.length; i++) {
+			var tmpl = elements.generateTmplLink(links[i]);
+			elements.mainUILinksTable.append(tmpl);
+		}
+		//
+		// for (i = 0; i < 10; i++) {
+		// 	if (curr.circleLevel < 9 && curr.circleLevel <= i) {
+		// 		$('.level-select option[value="' + i + '"]').attr('disabled', 'disabled');
+		// 	}
+		// }
+
+
 	},
 
 

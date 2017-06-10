@@ -186,6 +186,7 @@ class FederatedService {
 			$circle = $this->circlesService->detailsCircle($circleId);
 			$circle->getUser()
 				   ->hasToBeAdmin();
+			$circle->hasToBeFederated();
 			$circle->cantBePersonal();
 
 			$link = new FederatedLink();
@@ -341,7 +342,7 @@ class FederatedService {
 			$this->checkLinkRequestValidity($circle, $link);
 			$link->setCircleId($circle->getId());
 
-			if ($circle->getSetting('allow_link_auto') === 'true') {
+			if ($circle->getSetting('allow_links_auto') === 'true') {
 				$link->setStatus(FederatedLink::STATUS_LINK_UP);
 			} else {
 				$link->setStatus(FederatedLink::STATUS_REQUEST_SENT);
@@ -440,8 +441,8 @@ class FederatedService {
 	public function initiateRemoteShare($circleId, $uniqueId) {
 		$args = [
 			'apiVersion' => Circles::API_VERSION,
-			'circleId'    => (int)$circleId,
-			'uniqueId'    => (string)$uniqueId
+			'circleId'   => (int)$circleId,
+			'uniqueId'   => (string)$uniqueId
 		];
 
 		$client = $this->clientService->newClient();
@@ -483,9 +484,9 @@ class FederatedService {
 
 			$args = [
 				'apiVersion' => Circles::API_VERSION,
-				'token'    => $link->getToken(),
-				'uniqueId' => $circle->getUniqueId(),
-				'item'     => json_encode($frame)
+				'token'      => $link->getToken(),
+				'uniqueId'   => $circle->getUniqueId(),
+				'item'       => json_encode($frame)
 			];
 
 			$client = $this->clientService->newClient();

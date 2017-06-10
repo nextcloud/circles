@@ -79,6 +79,9 @@ class BaseCircle {
 	/** @var FederatedLink[] */
 	private $links;
 
+	/** @var FederatedLink[] */
+	private $remote;
+
 	public function __construct($l10n, $type = -1, $name = '') {
 		$this->l10n = $l10n;
 
@@ -259,33 +262,44 @@ class BaseCircle {
 	}
 
 
-	public function getRemote() {
+	public function setLinks($links) {
+		$this->links = $links;
+
+		return $this;
+	}
+
+	public function getLinks() {
 		return $this->links;
 	}
 
-	public function addRemote($link) {
-		array_push($this->links, $link);
-	}
 
-	public function getRemoteFromToken($token) {
-		foreach ($this->links AS $link) {
-			if ($link->getToken() === $token) {
-				return $link;
-			}
-		}
-
-		return null;
-	}
-
-	public function getRemoteFromAddressAndId($address, $id) {
-		foreach ($this->links AS $link) {
-			if ($link->getAddress() === $address && $link->getUniqueId() === $id) {
-				return $link;
-			}
-		}
-
-		return null;
-	}
+//	public function getRemote() {
+//		return $this->remote;
+//	}
+//
+//	public function addRemote($link) {
+//		array_push($this->remote, $link);
+//	}
+//
+//	public function getRemoteFromToken($token) {
+//		foreach ($this->links AS $link) {
+//			if ($link->getToken() === $token) {
+//				return $link;
+//			}
+//		}
+//
+//		return null;
+//	}
+//
+//	public function getRemoteFromAddressAndId($address, $id) {
+//		foreach ($this->links AS $link) {
+//			if ($link->getAddress() === $address && $link->getUniqueId() === $id) {
+//				return $link;
+//			}
+//		}
+//
+//		return null;
+//	}
 
 
 	public static function typeInt($type) {

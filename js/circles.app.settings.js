@@ -78,7 +78,7 @@ var settings = {
 	},
 
 	enableSetting: function (entry, input, enable) {
-		entry.fadeTo(curr.animationMenuSpeed, (enable) ? 1 : 0.3);
+		entry.stop().fadeTo(curr.animationSpeed, (enable) ? 1 : 0.3);
 		input.prop('disabled', !enable);
 	},
 

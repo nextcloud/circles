@@ -49,6 +49,7 @@ var elements = {
 	emptyContent: null,
 	mainUI: null,
 	mainUIMembersTable: null,
+	mainUILinksTable: null,
 	membersSearchResult: null,
 	memberDetails: null,
 	memberRequest: null,
@@ -100,6 +101,7 @@ var elements = {
 
 		elements.mainUIMembers = $('#memberslist');
 		elements.mainUIMembersTable = $('#memberslist_table');
+		elements.mainUILinksTable = $('#linkslist_table');
 		elements.membersSearchResult = $('#members_search_result');
 		elements.memberDetails = $('#memberdetails');
 		elements.memberRequest = $('#member_request');
@@ -362,6 +364,18 @@ var elements = {
 		tmpl = tmpl.replace(/%level%/g, escapeHTML(entry.level));
 		tmpl = tmpl.replace(/%status%/g, escapeHTML(entry.status));
 		tmpl = tmpl.replace(/%joined%/g, escapeHTML(entry.joined));
+
+		return tmpl;
+	},
+
+	generateTmplLink: function (entry) {
+		var tmpl = $('#tmpl_link').html();
+
+		tmpl = tmpl.replace(/%uniqueid%/g, escapeHTML(entry.unique_id.substr(0, 8)));
+		tmpl = tmpl.replace(/%fulluniqueid%/g, escapeHTML(entry.unique_id));
+		tmpl = tmpl.replace(/%address%/g, escapeHTML(entry.address));
+		tmpl = tmpl.replace(/%status%/g, escapeHTML(entry.status));
+		tmpl = tmpl.replace(/%joined%/g, escapeHTML(entry.creation));
 
 		return tmpl;
 	}

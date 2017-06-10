@@ -184,8 +184,32 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$entry = $this->parseLinksSelectSql($data);
 
 		return $entry;
+	}
 
 
+	/**
+	 * returns all FederatedLink from a circle
+	 *
+	 * @param int $circleId
+	 *
+	 * @return FederatedLink[]
+	 */
+	public function getLinksFromCircle($circleId) {
+		$qb = $this->getLinksSelectSql();
+		$this->limitToCircleId($qb, $circleId);
+
+		$links = [];
+		$cursor = $qb->execute();
+		while ($data = $cursor->fetch()) {
+			$link = $this->parseLinksSelectSql($data);
+			$link->setToken('HIDDEN');
+			if ($link !== null) {
+				$links[] = $link;
+			}
+		}
+		$cursor->closeCursor();
+
+		return $links;
 	}
 
 	/**

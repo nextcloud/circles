@@ -27,6 +27,7 @@
 namespace OCA\Circles\Model;
 
 use OCA\Circles\Exceptions\CircleTypeNotValid;
+use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 
 class Circle extends BaseCircle implements \JsonSerializable {
 
@@ -71,7 +72,7 @@ class Circle extends BaseCircle implements \JsonSerializable {
 			'typeLongString' => $this->getTypeLongString(),
 			'unique_id'      => $this->getUniqueId(),
 			'members'        => $this->getMembers(),
-			'links'          => $this->getRemote()
+			'links'          => $this->getLinks()
 		);
 	}
 
@@ -110,6 +111,9 @@ class Circle extends BaseCircle implements \JsonSerializable {
 		$circle->setName($arr['name']);
 		$circle->setUniqueId($arr['unique_id']);
 		$circle->setDescription($arr['description']);
+		if (key_exists('links', $arr)) {
+			$circle->setLinks($arr['links']);
+		}
 		if (key_exists('settings', $arr)) {
 			$circle->setSettings($arr['settings']);
 		}
@@ -165,6 +169,17 @@ class Circle extends BaseCircle implements \JsonSerializable {
 		}
 	}
 
+
+	/**
+	 * @throws FederatedCircleNotAllowedException
+	 */
+	public function hasToBeFederated() {
+		if ($this->getSetting('allow_links') !== 'true') {
+			throw new FederatedCircleNotAllowedException(
+				$this->l10n->t('The circle is not Federated')
+			);
+		}
+	}
 
 	/**
 	 * @param $type

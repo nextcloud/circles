@@ -303,3 +303,9 @@ div.circle .owner, div.circle .type, div.circle .resume {
 #settings-submit {
 	margin: 15px;
 }
+
+
+#linkslist_table {
+	width: 100%;
+}
+

@@ -248,6 +248,14 @@ style('circles', 'navigation');
 						<td class="joined"><?php p($l->t('Joined')); ?></td>
 					</tr>
 				</table>
+				<br/><br/><br/><br/>
+				<table id="linkslist_table">
+					<tr class="header">
+						<td class="address"><?php p($l->t('Address')); ?></td>
+						<td class="status"><?php p($l->t('Status')); ?></td>
+						<td class="linked"><?php p($l->t('Linked')); ?></td>
+					</tr>
+				</table>
 
 				<script id="tmpl_member" type="text/template">
 					<tr class="entry" member-id="%username%" member-level="%level%"
@@ -271,31 +279,45 @@ style('circles', 'navigation');
 						</td>
 					</tr>
 				</script>
+
+				<script id="tmpl_link" type="text/template">
+					<tr class="entry" link-id="%fulluniqueid%" link-address="%address%"
+						link-status="%status%">
+						<td class="address">%uniqueid%@%address%</td>
+						<td class="status">
+							<select class="link-status-select">
+							</select>
+						</td>
+						<td class="joined">%joined%</td>
+					</tr>
+				</script>
+
 			</div>
 			<div id="settings-panel">
 				<table id="settings-table">
 					<tr>
-						<td class="left">Name of the circle :</td>
+						<td class="left">Name of the Circle</td>
 						<td><input type="text" id="settings-name"/></td>
 					</tr>
 					<tr id="settings-entry-link">
-						<td class="left">Allow Federated Links :<br/>
-							<span class="hint">Federated Links enable sharing between this circle and an other, locally or remotely</span>
+						<td class="left">Allow Federated Links<br/>
+							<span class="hint">Turns the circle as Federated and enable sharing between Federated Circles</span>
 						</td>
 						<td><input type="checkbox" value="1" id="settings-link"></td>
 					</tr>
-					<tr id="settings-entry-link-auto">
-						<td class="left">Automatically accept Link request :<br/>
-							<span class="hint">This option will permit any links to be generated with your circle without confirmation</span>
-						</td>
-						<td><input type="checkbox" value="1" id="settings-link-auto"></td>
-					</tr>
 					<tr id="settings-entry-link-files">
-						<td class="left">Share files with Linked Circles :<br/>
+						<td class="left">Share Files With Linked Circles<br/>
 							<span class="hint">Files that are locally shared with this circle will be shared with all Linked circles</span>
 						</td>
 						<td><input type="checkbox" value="1" id="settings-link-files"></td>
 					</tr>
+					<tr id="settings-entry-link-auto">
+						<td class="left">Automatically Accept Link Request<br/>
+							<span class="hint">Warning: enabling this will automatically accept new Link requests from other circle.</span>
+						</td>
+						<td><input type="checkbox" value="1" id="settings-link-auto"></td>
+					</tr>
+
 					<tr>
 						<td colspan="2" style="text-align: center;"><input type="submit"
 																		   id="settings-submit"

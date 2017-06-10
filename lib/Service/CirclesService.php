@@ -193,6 +193,8 @@ class CirclesService {
 					$circleId, $circle->getUser()
 				);
 				$circle->setMembers($members);
+				$links = $this->circlesRequest->getLinksFromCircle($circle->getId());
+				$circle->setLinks($links);
 			}
 		} catch (\Exception $e) {
 			throw $e;

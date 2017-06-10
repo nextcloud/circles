@@ -387,6 +387,7 @@ class CirclesRequestBuilder {
 		$link->setId($data['id'])
 			 ->setUniqueId($data['unique_id'])
 			 ->setStatus($data['status'])
+			 ->setCreation($data['creation'])
 			 ->setAddress($data['address'])
 			 ->setToken($data['token'])
 			 ->setCircleId($data['circle_id']);

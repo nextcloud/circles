@@ -288,10 +288,11 @@ class FederatedLink implements \JsonSerializable {
 
 	public function jsonSerialize() {
 		return array(
-			'token'    => $this->getToken(),
-			'address'  => $this->getAddress(),
-			'status'   => $this->getStatus(),
-			'creation' => $this->getCreation()
+			'token'     => $this->getToken(),
+			'address'   => $this->getAddress(),
+			'status'    => $this->getStatus(),
+			'unique_id' => $this->getUniqueId(),
+			'creation'  => $this->getCreation()
 		);
 	}
 

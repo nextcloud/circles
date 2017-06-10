@@ -142,6 +142,7 @@ var resultCircles = {
 		nav.displayCircleDetails(result.details);
 		nav.displayMembersInteraction(result.details);
 		nav.displayMembers(result.details.members);
+		nav.displayLinks(result.details.links);
 	},
 
 
