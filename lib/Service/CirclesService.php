@@ -216,7 +216,7 @@ class CirclesService {
 		try {
 			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
 			$circle->getUser()
-				   ->hasToBeAdmin();
+				   ->hasToBeOwner();
 
 			$ak = array_keys($settings);
 			foreach ($ak AS $k) {

@@ -163,7 +163,7 @@ class Member extends BaseMember {
 	 * @throws MemberIsNotModeratorException
 	 */
 	public function hasToBeAdmin() {
-		if ($this->getLevel() < self::LEVEL_OWNER) {
+		if ($this->getLevel() < self::LEVEL_ADMIN) {
 			throw new MemberIsNotAdminException(
 				$this->l10n->t('This member is not admin of the circle')
 			);
