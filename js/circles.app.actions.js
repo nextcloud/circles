@@ -40,8 +40,25 @@ var actions = {
 
 
 	changeMemberLevel: function (member, level) {
+		if (parseInt(level) === define.levelOwner) {
+			actions.changeMemberOwner(member);
+			return;
+		}
 		api.levelMember(curr.circle, member, level, resultMembers.levelMemberResult);
 		nav.circlesActionReturn();
+	},
+
+
+	changeMemberOwner: function (member) {
+		OC.dialogs.confirm(
+			t('circles', 'Are you sure you want to transfer your Owner rights ?', [member]),
+			t('circles', 'This action is irreversible'),
+			function (e) {
+				if (e === true) {
+					api.levelMember(curr.circle, member, define.levelOwner, resultMembers.levelMemberResult);
+					nav.circlesActionReturn();
+				}
+			});
 	},
 
 

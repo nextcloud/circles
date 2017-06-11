@@ -55,19 +55,21 @@ var nav = {
 		elements.addMember.on('input propertychange paste focus', function () {
 			var search = $(this).val().trim();
 			if (search === '') {
-				elements.membersSearchResult.fadeOut(400);
+				elements.membersSearchResult.fadeOut(curr.animationMenuSpeed);
 				return;
 			}
 
 			actions.searchMembersRequest(search);
 			if (elements.membersSearchResult.children().length === 0) {
-				elements.membersSearchResult.fadeOut(400);
+				elements.membersSearchResult.fadeOut(curr.animationMenuSpeed);
 			} else {
-				elements.membersSearchResult.fadeIn(400);
+				elements.membersSearchResult.fadeIn(curr.animationMenuSpeed);
 			}
 		}).blur(function () {
-			elements.membersSearchResult.fadeOut(400);
-			nav.circlesActionReturn();
+			setTimeout(function () {
+				elements.membersSearchResult.fadeOut(curr.animationMenuSpeed);
+				nav.circlesActionReturn();
+			}, 100);
 		});
 		elements.addMember.on('keydown', function (e) {
 			if (e.keyCode === 27) {
@@ -78,7 +80,6 @@ var nav = {
 			}
 
 		});
-
 	},
 
 
@@ -119,7 +120,7 @@ var nav = {
 		elements.destroyCircle.on('click', function () {
 			OC.dialogs.confirm(
 				t('circles', 'Are you sure you want to delete this circle?'),
-				t('circles', 'Please confirm'),
+				t('circles', 'This action is irreversible'),
 				function (e) {
 					if (e === true) {
 						api.destroyCircle(curr.circle, resultCircles.destroyCircleResult);

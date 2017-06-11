@@ -295,22 +295,24 @@ style('circles', 'navigation');
 			</div>
 			<div id="settings-panel">
 				<table id="settings-table">
-					<tr>
+
+					<!--<tr>
 						<td class="left">Name of the Circle</td>
 						<td><input type="text" id="settings-name"/></td>
-					</tr>
+					</tr>-->
+
 					<tr id="settings-entry-link">
 						<td class="left">Allow Federated Links<br/>
 							<span class="hint">Turns the circle as Federated and enable sharing between Federated Circles</span>
 						</td>
 						<td><input type="checkbox" value="1" id="settings-link"></td>
 					</tr>
-					<tr id="settings-entry-link-files">
+					<!--<tr id="settings-entry-link-files">
 						<td class="left">Share Files With Linked Circles<br/>
 							<span class="hint">Files that are locally shared with this circle will be shared with all Linked circles</span>
 						</td>
 						<td><input type="checkbox" value="1" id="settings-link-files"></td>
-					</tr>
+					</tr>-->
 					<tr id="settings-entry-link-auto">
 						<td class="left">Automatically Accept Link Request<br/>
 							<span class="hint">Warning: enabling this will automatically accept new Link requests from other circle.</span>

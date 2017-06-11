@@ -214,7 +214,6 @@ class CirclesService {
 	 */
 	public function settingsCircle($circleId, $settings) {
 
-		$this->miscService->log("____");
 		try {
 			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
 			$circle->getUser()

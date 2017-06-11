@@ -91,6 +91,9 @@ var settings = {
 		}
 
 		nav.circlesActionReturn();
+		curr.defineCircle(result);
+		nav.displayCircleDetails(result.details);
+		nav.displayMembersInteraction(result.details);
 		OCA.notification.onSuccess(t('circles', "Settings saved."));
 	}
 };

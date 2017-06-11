@@ -45,7 +45,16 @@ var curr = {
 	searchFilter: 0,
 	searchUser: '',
 	allowed_federated: 0,
-	allowed_circles: 0
+	allowed_circles: 0,
+
+	defineCircle: function(data)
+	{
+		curr.circle = data.circle_id;
+		curr.circleName = data.details.name;
+		curr.circleSettings = data.details.settings;
+		curr.circleLevel = data.details.user.level;
+		curr.circleStatus = data.details.user.status;
+	}
 };
 
 var define = {

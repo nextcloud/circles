@@ -133,12 +133,7 @@ var resultCircles = {
 
 		elements.emptyContent.hide(800);
 		elements.mainUI.fadeIn(800);
-		curr.circle = result.circle_id;
-		curr.circleName = result.details.name;
-		curr.circleSettings = result.details.settings;
-		curr.circleLevel = result.details.user.level;
-		curr.circleStatus = result.details.user.status;
-
+		curr.defineCircle(result);
 		nav.displayCircleDetails(result.details);
 		nav.displayMembersInteraction(result.details);
 		nav.displayMembers(result.details.members);

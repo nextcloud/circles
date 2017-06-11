@@ -576,49 +576,6 @@ class Provider implements IProvider {
 		return $event;
 	}
 
-	private function parseActivityHeader(IEvent &$event, SharingFrame $frame) {
-
-		$this->activityManager->getCurrentUserId();
-
-		if ($frame->getAuthor() === $this->activityManager->getCurrentUserId()
-			&& $frame->getCloudId() === null
-		) {
-
-			$event->setParsedSubject(
-				$this->l10n->t(
-					'You shared a mood with %1$s', ['circle1, circle2']
-				)
-			)
-				  ->setRichSubject(
-					  $this->l10n->t(
-						  'You shared a mood with {circles}'
-					  ),
-					  ['circles' => $this->generateCircleParameter($frame)]
-
-				  );
-
-		} else {
-
-			$author = $this->generateUserParameter($frame);
-			$event->setParsedSubject(
-				$this->l10n->t(
-					'%1$s shared a mood with %2$s', [
-													  $author['name'],
-													  'circle1, circle2'
-												  ]
-				)
-			)
-				  ->setRichSubject(
-					  $this->l10n->t(
-						  '{author} shared a mood with {circles}'
-					  ), [
-						  'author'  => $author,
-						  'circles' => $this->generateCircleParameter($frame)
-					  ]
-				  );
-		}
-	}
-
 
 	private function generateMemberParameter(
 		Member $member

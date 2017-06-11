@@ -119,9 +119,9 @@ class CirclesController extends BaseController {
 	 */
 	public function settings($id, $settings) {
 		try {
-			$data = $this->circlesService->settingsCircle($id, $settings);
+			$circle = $this->circlesService->settingsCircle($id, $settings);
 
-			return $this->success(['circle_id' => $id, 'details' => $data]);
+			return $this->success(['circle_id' => $id, 'details' => $circle]);
 		} catch (\Exception $e) {
 
 			return $this->fail(['circle_id' => $id, 'error' => $e->getMessage()]);
