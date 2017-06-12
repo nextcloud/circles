@@ -281,9 +281,9 @@ style('circles', 'navigation');
 				</script>
 
 				<script id="tmpl_link" type="text/template">
-					<tr class="entry" link-id="%fulluniqueid%" link-address="%address%"
+					<tr class="entry" link-id="%id%" link-address="%address%"
 						link-status="%status%">
-						<td class="address">%uniqueid%@%address%</td>
+						<td class="address">%token%@%address%</td>
 						<td class="status">
 							<select class="link-status-select">
 							</select>

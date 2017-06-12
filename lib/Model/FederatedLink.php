@@ -108,6 +108,17 @@ class FederatedLink implements \JsonSerializable {
 		return $this->token;
 	}
 
+
+	public function shortenToken() {
+		$this->setToken(substr($this->getToken(), 0, 8));
+	}
+
+
+
+	public function shortenUniqueId() {
+		$this->setUniqueId(substr($this->getUniqueId(), 0, 8));
+	}
+
 	/**
 	 * @return string
 	 */
@@ -288,6 +299,7 @@ class FederatedLink implements \JsonSerializable {
 
 	public function jsonSerialize() {
 		return array(
+			'id'        => $this->getId(),
 			'token'     => $this->getToken(),
 			'address'   => $this->getAddress(),
 			'status'    => $this->getStatus(),

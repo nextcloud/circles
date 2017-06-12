@@ -202,7 +202,8 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$cursor = $qb->execute();
 		while ($data = $cursor->fetch()) {
 			$link = $this->parseLinksSelectSql($data);
-			$link->setToken('HIDDEN');
+			$link->shortenUniqueId();
+			$link->shortenToken();
 			if ($link !== null) {
 				$links[] = $link;
 			}

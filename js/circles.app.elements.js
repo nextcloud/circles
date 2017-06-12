@@ -368,9 +368,9 @@ var elements = {
 
 	generateTmplLink: function (entry) {
 		var tmpl = $('#tmpl_link').html();
-
-		tmpl = tmpl.replace(/%uniqueid%/g, escapeHTML(entry.unique_id.substr(0, 8)));
-		tmpl = tmpl.replace(/%fulluniqueid%/g, escapeHTML(entry.unique_id));
+console.log(entry);
+		tmpl = tmpl.replace(/%id%/g, escapeHTML(entry.id));
+		tmpl = tmpl.replace(/%token%/g, escapeHTML(entry.token));
 		tmpl = tmpl.replace(/%address%/g, escapeHTML(entry.address));
 		tmpl = tmpl.replace(/%status%/g, escapeHTML(entry.status));
 		tmpl = tmpl.replace(/%joined%/g, escapeHTML(entry.creation));

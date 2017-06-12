@@ -128,6 +128,10 @@ class BaseCircle {
 		$this->setUniqueId($uniqueId);
 	}
 
+	public function shortenUniqueId() {
+		$this->setUniqueId(substr($this->getUniqueId(), 0, 8));
+	}
+
 	public function setName($name) {
 		$this->name = $name;
 

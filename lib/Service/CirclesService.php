@@ -165,6 +165,7 @@ class CirclesService {
 		$data = [];
 		$result = $this->dbCircles->findCirclesByUser($this->userId, $type, $name, $level);
 		foreach ($result as $item) {
+			$item->shortenUniqueId();
 			$data[] = $item;
 		}
 
@@ -186,6 +187,7 @@ class CirclesService {
 
 		try {
 			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
+			$circle->shortenUniqueId();
 			if ($circle->getUser()
 					   ->isLevel(Member::LEVEL_MEMBER)
 			) {
