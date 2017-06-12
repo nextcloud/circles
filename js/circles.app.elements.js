@@ -368,7 +368,7 @@ var elements = {
 
 	generateTmplLink: function (entry) {
 		var tmpl = $('#tmpl_link').html();
-console.log(entry);
+
 		tmpl = tmpl.replace(/%id%/g, escapeHTML(entry.id));
 		tmpl = tmpl.replace(/%token%/g, escapeHTML(entry.token));
 		tmpl = tmpl.replace(/%address%/g, escapeHTML(entry.address));

@@ -96,9 +96,10 @@ class CirclesController extends BaseController {
 	 */
 	public function details($id) {
 		try {
-			$data = $this->circlesService->detailsCircle($id);
+			$circle = $this->circlesService->detailsCircle($id);
+			$circle->shortenUniqueId();
 
-			return $this->success(['circle_id' => $id, 'details' => $data]);
+			return $this->success(['circle_id' => $id, 'details' => $circle]);
 		} catch (\Exception $e) {
 
 			return $this->fail(['circle_id' => $id, 'error' => $e->getMessage()]);
@@ -205,22 +206,56 @@ class CirclesController extends BaseController {
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
-	 * @param int $id
+	 * @param int $circleId
 	 * @param string $remote
 	 *
 	 * @return DataResponse
 	 */
-	public function link($id, $remote) {
+	public function link($circleId, $remote) {
 		try {
-			$link = $this->federatedService->linkCircle($id, $remote);
+			$link = $this->federatedService->linkCircle($circleId, $remote);
+			$links = $this->circlesService->detailsCircle($circleId)
+										  ->getLinks();
 
-			return $this->success(['circle_id' => $id, 'remote' => $remote, 'link' => $link]);
+			return $this->success(
+				['circle_id' => $circleId, 'remote' => $remote, 'link' => $link, 'links' => $links]
+			);
 		} catch (\Exception $e) {
 			return $this->fail(
 				['circle_id' => $id, 'remote' => $remote, 'error' => $e->getMessage()]
 			);
 		}
 	}
+
+
+	/**
+	 * linkStatus();
+	 *
+	 * Modify a link status. Used to confirm/dismiss a request or putting down a link.
+	 * The function will modify local status and broadcast the status to the remote.
+	 *
+	 * Note: should be moved to a LinkController
+	 *
+	 * @NoAdminRequired
+	 * @NoSubAdminRequired
+	 *
+	 * @param int $linkId
+	 * @param int $status
+	 *
+	 * @return DataResponse
+	 */
+	public function linkStatus($linkId, $status) {
+		try {
+			$links = $this->federatedService->linkStatus($linkId, $status);
+
+			return $this->success(['link_id' => $linkId, 'links' => $links]);
+		} catch (\Exception $e) {
+			return $this->fail(
+				['link_id' => $linkId, 'error' => $e->getMessage()]
+			);
+		}
+	}
+
 
 }
 

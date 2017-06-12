@@ -26,14 +26,18 @@
 
 namespace OCA\Circles\Model;
 
+use OCA\Circles\Exceptions\FederatedCircleStatusUpdateException;
+
 class FederatedLink implements \JsonSerializable {
 
 
-	const STATUS_ERROR = 0;
+	const STATUS_ERROR = -1;
+	const STATUS_LINK_REMOVE = 0;
 	const STATUS_LINK_DOWN = 1;
 	const STATUS_LINK_SETUP = 2;
 	const STATUS_REQUEST_DECLINED = 4;
-	const STATUS_REQUEST_SENT = 6;
+	const STATUS_REQUEST_SENT = 5;
+	const STATUS_LINK_REQUESTED = 6;
 	const STATUS_LINK_UP = 9;
 
 	/** @var int */
@@ -114,10 +118,10 @@ class FederatedLink implements \JsonSerializable {
 	}
 
 
-
 	public function shortenUniqueId() {
 		$this->setUniqueId(substr($this->getUniqueId(), 0, 8));
 	}
+
 
 	/**
 	 * @return string
@@ -283,6 +287,20 @@ class FederatedLink implements \JsonSerializable {
 	 */
 	public function getCreation() {
 		return $this->creation;
+	}
+
+
+	public function hasToBeValidStatusUpdate($status) {
+		if ($this->getStatus() === self::STATUS_LINK_REQUESTED) {
+			if ($status === self::STATUS_LINK_REMOVE) {
+				return true;
+			}
+			if ($status === self::STATUS_LINK_UP) {
+				return true;
+			}
+		}
+
+		throw new FederatedCircleStatusUpdateException('The status could not be updated');
 	}
 
 

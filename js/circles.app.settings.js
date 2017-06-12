@@ -85,7 +85,7 @@ var settings = {
 	saveSettingsResult: function (result) {
 		if (result.status < 1) {
 			OCA.notification.onFail(
-				t('circles', 'Issue while saving settings') + '; ' +
+				t('circles', 'Issue while saving settings') + ': ' +
 				((result.error) ? result.error : t('circles', 'no error message')));
 			return;
 		}

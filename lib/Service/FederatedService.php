@@ -164,6 +164,50 @@ class FederatedService {
 
 
 	/**
+	 * linkStatus()
+	 *
+	 * Update the status of a link.
+	 * Function will check if user can edit the status, will update it and send the update to
+	 * remote
+	 *
+	 * @param int $linkId
+	 * @param int $status
+	 *
+	 * @throws Exception
+	 * @throws FederatedCircleLinkFormatException
+	 * @throws CircleTypeNotValid
+	 * @throws MemberIsNotAdminException
+	 *
+	 * @return FederatedLink[]
+	 */
+	public function linkStatus($linkId, $status) {
+
+		if (!$this->configService->isFederatedAllowed()) {
+			throw new FederatedCircleNotAllowedException(
+				$this->l10n->t("Federated circles are not allowed on this Nextcloud")
+			);
+		}
+
+		$link = null;
+		try {
+
+			$link = $this->circlesRequest->getLinkFromId($linkId);
+			$circle = $this->circlesRequest->getCircleFromId($link->getCircleId(), $this->userId);
+			$circle->hasToBeFederated();
+
+			$link->hasToBeValidStatusUpdate($status);
+			$link->setStatus($status);
+			$this->federatedLinksRequest->update($link);
+
+			return $this->circlesRequest->getLinksFromCircle($circle->getId());
+		} catch (Exception $e) {
+			throw $e;
+		}
+
+	}
+
+
+	/**
 	 * requestLinkWithCircle()
 	 *
 	 * Using CircleId, function will get more infos from the database.
@@ -277,12 +321,16 @@ class FederatedService {
 
 			$result = json_decode($request->getBody(), true);
 
-			$link->setStatus($result['status']);
-			if (!$link->isValid()) {
+			if ($result['status'] === FederatedLink::STATUS_LINK_UP) {
+				$link->setStatus(FederatedLink::STATUS_LINK_UP);
+			} else if ($result['status'] === FederatedLink::STATUS_LINK_REQUESTED) {
+				$link->setStatus(FederatedLink::STATUS_REQUEST_SENT);
+			} else {
 				$this->parsingRequestLinkResult($result);
 			}
 
 			$link->setUniqueId($result['uniqueId']);
+			$this->federatedLinksRequest->uniqueness($link);
 			$this->federatedLinksRequest->update($link);
 
 			return true;
@@ -345,7 +393,7 @@ class FederatedService {
 			if ($circle->getSetting('allow_links_auto') === 'true') {
 				$link->setStatus(FederatedLink::STATUS_LINK_UP);
 			} else {
-				$link->setStatus(FederatedLink::STATUS_REQUEST_SENT);
+				$link->setStatus(FederatedLink::STATUS_LINK_REQUESTED);
 			}
 
 			$this->federatedLinksRequest->create($link);
@@ -396,7 +444,7 @@ class FederatedService {
 			throw new FrameAlreadyExistException('shares_is_already_known');
 		}
 
-		$circle = $this->circlesRequest->getDetails($link->getCircleId());
+		$circle = $this->circlesRequest->getCircleFromId($link->getCircleId());
 		if ($circle === null) {
 			throw new Exception('unknown_circle');
 		}
@@ -474,7 +522,7 @@ class FederatedService {
 	 */
 	public function sendRemoteShare(SharingFrame $frame) {
 
-		$circle = $this->circlesRequest->getDetails($frame->getCircleId());
+		$circle = $this->circlesRequest->getCircleFromId($frame->getCircleId());
 		if ($circle === null) {
 			throw new Exception('unknown_circle');
 		}

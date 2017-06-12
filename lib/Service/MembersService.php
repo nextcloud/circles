@@ -191,8 +191,8 @@ class MembersService {
 
 
 	/**
-	 * @param $circleId
-	 * @param $name
+	 * @param int $circleId
+	 * @param string $name
 	 * @param int $level
 	 *
 	 * @return array

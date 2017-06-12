@@ -265,7 +265,7 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	margin-top: 5px;
 }
 
-.level-select, .status-select {
+.level-select, .status-select, .link-status-select {
 	border: 0;
 	margin: 0;
 	background: #fff;

@@ -145,7 +145,7 @@ var resultCircles = {
 
 		if (result.status < 1) {
 			OCA.notification.onFail(
-				t('circles', 'Issue while retrieving the list of circles') + '; ' +
+				t('circles', 'Issue while retrieving the list of circles') + ': ' +
 				((result.error) ? result.error : t('circles', 'no error message')));
 			return;
 		}

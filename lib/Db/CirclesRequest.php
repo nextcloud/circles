@@ -29,6 +29,8 @@ namespace OCA\Circles\Db;
 
 
 use OC\L10N\L10N;
+use OCA\Circles\Exceptions\CircleDoesNotExistException;
+use OCA\Circles\Exceptions\FederatedLinkDoesNotExistException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
@@ -60,14 +62,16 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 * @param string $userId
 	 *
 	 * @return Circle
+	 * @throws CircleDoesNotExistException
 	 */
-	public function getDetails($circleId, $userId = '') {
+	public function getCircleFromId($circleId, $userId = '') {
 		$qb = $this->getCirclesSelectSql();
 
 		$this->limitToId($qb, $circleId);
 		if ($userId !== '') {
 			$this->leftJoinUserIdAsMember($qb, $userId);
 		}
+
 
 //		$this->leftjoinOwner($qb);
 //		$this->buildWithMemberLevel($qb, 'u.level', $level);
@@ -76,6 +80,12 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
+		if ($data === false) {
+			throw new CircleDoesNotExistException(
+				$this->l10n->t('Circle not found')
+			);
+		}
+
 		$entry = $this->parseCirclesSelectSql($data);
 
 		return $entry;
@@ -135,7 +145,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 *
 	 * @return Circle
 	 */
-	public function getCircle($uniqueId) {
+	public function getCircleFromUniqueId($uniqueId) {
 		$qb = $this->getCirclesSelectSql();
 		$this->limitToUniqueId($qb, (string)$uniqueId);
 
@@ -181,6 +191,33 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
+		$entry = $this->parseLinksSelectSql($data);
+
+		return $entry;
+	}
+
+
+	/**
+	 * return the FederatedLink identified by a its Id
+	 *
+	 * @param int $linkId
+	 *
+	 * @return FederatedLink
+	 * @throws FederatedLinkDoesNotExistException
+	 */
+	public function getLinkFromId($linkId) {
+		$qb = $this->getLinksSelectSql();
+		$this->limitToId($qb, (string)$linkId);
+
+		$cursor = $qb->execute();
+		$data = $cursor->fetch();
+
+		if ($data === false) {
+			throw new FederatedLinkDoesNotExistException(
+				$this->l10n->t('Federated Link not found')
+			);
+		}
+
 		$entry = $this->parseLinksSelectSql($data);
 
 		return $entry;

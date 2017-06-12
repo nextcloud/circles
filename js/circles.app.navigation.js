@@ -379,6 +379,12 @@ var nav = {
 
 	displayLinks: function (links) {
 
+		if (links === '') {
+			links = curr.circleLinks;
+		} else {
+			curr.circleLinks = links;
+		}
+
 		elements.mainUILinksTable.hide(curr.animationSpeed);
 		elements.mainUILinksTable.emptyTable();
 		if (links.length === 0) {
@@ -390,14 +396,51 @@ var nav = {
 			var tmpl = elements.generateTmplLink(links[i]);
 			elements.mainUILinksTable.append(tmpl);
 		}
-		//
-		// for (i = 0; i < 10; i++) {
-		// 	if (curr.circleLevel < 9 && curr.circleLevel <= i) {
-		// 		$('.level-select option[value="' + i + '"]').attr('disabled', 'disabled');
-		// 	}
-		// }
 
 
+		elements.mainUILinksTable.children('tr.entry').each(function () {
+
+			var linkId = $(this).attr('link-id');
+			var status = $(this).attr('link-status');
+			var statusSelect = $(this).find('.link-status-select');
+
+			statusSelect.on('change', function () {
+				actions.changeLinkStatus(linkId, $(this).val());
+			});
+			statusSelect.append($('<option>', {
+				value: status,
+				text: define.linkStatus(status)
+			})).val(status);
+
+			if (curr.circleLevel < define.levelAdmin) {
+				return;
+			}
+
+			if (status === '9') {
+				statusSelect.append($('<option>', {
+					value: define.linkDown,
+					text: t('circles', 'Close this Link')
+				}));
+			}
+
+			if (status === '5') {
+				statusSelect.append($('<option>', {
+					value: define.linkRemove,
+					text: t('circles', 'Cancel this Link')
+				}));
+			}
+
+			if (status === '6') {
+				statusSelect.append($('<option>', {
+					value: define.linkUp,
+					text: t('circles', 'Accept the Link request')
+				}));
+				statusSelect.append($('<option>', {
+					value: define.linkRemove,
+					text: t('circles', 'Reject the Link request')
+				}));
+			}
+		});
 	},
 
 

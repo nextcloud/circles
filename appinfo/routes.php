@@ -38,7 +38,8 @@ return [
 			'requirements' => ['id' => '\d+'],
 		],
 		[
-			'name'         => 'Circles#settings', 'url' => '/v1/circles/{id}/settings', 'verb' => 'POST',
+			'name'         => 'Circles#settings', 'url' => '/v1/circles/{id}/settings',
+			'verb'         => 'POST',
 			'requirements' => ['id' => '\d+'],
 		],
 		[
@@ -53,7 +54,12 @@ return [
 			'name'         => 'Circles#leave', 'url' => '/v1/circles/{id}/leave', 'verb' => 'GET',
 			'requirements' => ['id' => '\d+'],
 		],
-		['name' => 'Circles#link', 'url' => '/v1/circles/{id}/link', 'verb' => 'POST'],
+		['name' => 'Circles#link', 'url' => '/v1/circles/{circleId}/link', 'verb' => 'POST'],
+		[
+			'name'         => 'Circles#linkStatus',
+			'url'          => '/v1/link/{linkId}/status', 'verb' => 'POST',
+			'requirements' => ['linkId' => '\d+'],
+		],
 		['name' => 'Federated#requestedLink', 'url' => '/v1/circles/link/', 'verb' => 'POST'],
 		[
 			'name' => 'Federated#initFederatedDelivery', 'url' => '/v1/circles/payload/',

@@ -239,6 +239,21 @@
 			};
 
 
+			this.linkStatus = function(linkId, status, callback) {
+				var result = {status: -1};
+				$.ajax({
+					method: 'POST',
+					url: OC.generateUrl('/apps/circles/v1/link/' + linkId + '/status'),
+					data: {
+						status: status
+					}
+				}).done(function (res) {
+					self.onCallback(callback, res);
+				}).fail(function () {
+					self.onCallback(callback, result);
+				});
+			};
+
 			this.onCallback = function (callback, result) {
 				if (callback && (typeof callback === 'function')) {
 					if (typeof result === 'object') {

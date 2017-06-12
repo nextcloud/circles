@@ -55,7 +55,8 @@ var actions = {
 			t('circles', 'This action is irreversible'),
 			function (e) {
 				if (e === true) {
-					api.levelMember(curr.circle, member, define.levelOwner, resultMembers.levelMemberResult);
+					api.levelMember(curr.circle, member, define.levelOwner,
+						resultMembers.levelMemberResult);
 					nav.circlesActionReturn();
 					return;
 				}
@@ -72,6 +73,11 @@ var actions = {
 		if (value === 'accept_request') {
 			api.addMember(curr.circle, member, resultMembers.addMemberResult);
 		}
+	},
+
+
+	changeLinkStatus: function (link, value) {
+		api.linkStatus(link, value, resultLinks.linkStatusResult);
 	},
 
 

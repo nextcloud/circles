@@ -97,7 +97,7 @@ class SharesService {
 	 */
 	public function createFrame(SharingFrame $frame, $broadcast = null) {
 
-		$circle = $this->circlesRequest->getDetails($frame->getCircleId(), $this->userId);
+		$circle = $this->circlesRequest->getCircleFromId($frame->getCircleId(), $this->userId);
 		if ($circle->getUser()
 				   ->getLevel() < Member::LEVEL_MEMBER
 		) {

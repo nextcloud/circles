@@ -187,7 +187,6 @@ class CirclesService {
 
 		try {
 			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
-			$circle->shortenUniqueId();
 			if ($circle->getUser()
 					   ->isLevel(Member::LEVEL_MEMBER)
 			) {

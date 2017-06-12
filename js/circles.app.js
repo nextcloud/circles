@@ -41,14 +41,15 @@ var curr = {
 	circleName: '',
 	circleLevel: 0,
 	circleStatus: '',
+	circleMembers: {},
+	circleLinks: {},
 	searchCircle: '',
 	searchFilter: 0,
 	searchUser: '',
 	allowed_federated: 0,
 	allowed_circles: 0,
 
-	defineCircle: function(data)
-	{
+	defineCircle: function (data) {
 		curr.circle = data.circle_id;
 		curr.circleName = data.details.name;
 		curr.circleSettings = data.details.settings;
@@ -62,10 +63,29 @@ var define = {
 	levelModerator: 4,
 	levelAdmin: 8,
 	levelOwner: 9,
+	linkRemove: 0,
+	linkDown: 1,
+	linkSetup: 2,
+	linkRefused: 4,
+	linkRequestSent: 5,
 	linkRequested: 6,
 	linkUp: 9,
 	animationSpeed: 100,
-	animationMenuSpeed: 60
+	animationMenuSpeed: 60,
+
+	linkStatus: function (status) {
+		s = {
+			0: t('circles', 'Link Removed'),
+			1: t('circles', 'Link down'),
+			2: t('circles', 'Setting link'),
+			4: t('circles', 'Request dismissed'),
+			5: t('circles', 'Request sent'),
+			6: t('circles', 'Link requested'),
+			9: t('circles', 'Link up')
+		};
+
+		return s[parseInt(status)];
+	}
 };
 
 
@@ -120,7 +140,6 @@ $(document).ready(function () {
 			t('circles', 'Moderator');
 			t('circles', 'Admin');
 			t('circles', 'Owner');
-
 
 			t('circles', 'Unknown');
 			t('circles', 'Invited');

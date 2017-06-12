@@ -63,6 +63,13 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 
 
 	public function update(FederatedLink $link) {
+
+		if ($link->getStatus() === FederatedLink::STATUS_LINK_REMOVE) {
+			$this->delete($link);
+
+			return;
+		}
+
 		$qb = $this->getLinksUpdateSql();
 		$expr = $qb->expr();
 
@@ -132,6 +139,26 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 		$cursor->closeCursor();
 
 		return $this->getLinkFromEntry($data);
+	}
+
+
+	public function uniqueness(FederatedLink $link)
+	{
+		if ($link === null) {
+			return;
+		}
+
+		$qb = $this->getLinksDeleteSql();
+		$expr = $qb->expr();
+
+		$qb->where(
+			$expr->andX(
+				$expr->eq('unique_id', $qb->createNamedParameter($link->getUniqueId())),
+				$expr->eq('circle_id', $qb->createNamedParameter($link->getCircleId()))
+			)
+		);
+
+		$qb->execute();
 	}
 
 

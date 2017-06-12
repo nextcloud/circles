@@ -37,32 +37,50 @@
 var resultLinks = {
 
 
-	linkCircleResult: function (result) {
+		linkCircleResult: function (result) {
 
-		//elements.linkCircle.val('');
-		if (result.status !== 1) {
-			OCA.notification.onFail(
-				t('circles', "A link to <b>{remote}</b> could not be initiated", {
-					remote: result.remote
-				}) + ': ' +
-				((result.error) ? result.error : t('circles', 'no error message')));
-			return;
+			if (result.status !== 1) {
+				OCA.notification.onFail(
+					t('circles', "A link to <b>{remote}</b> could not be initiated", {
+						remote: result.remote
+					}) + ': ' +
+					((result.error) ? result.error : t('circles', 'no error message')));
+				return;
+			}
+
+			if (result.link.status === define.linkRequestSent) {
+				OCA.notification.onSuccess(
+					t('circles', "A link to <b>{remote}</b> has been requested.", {
+						remote: result.remote
+					}));
+			}
+
+			if (result.link.status === define.linkUp) {
+				OCA.notification.onSuccess(
+					t('circles', "the link to <b>{remote}</b> is now up and running.", {
+						remote: result.remote
+					}));
+			}
+
+			curr.circleLinks = result.links;
+			nav.displayLinks('');
+		},
+
+
+		linkStatusResult: function (result) {
+
+			if (result.status !== 1) {
+				OCA.notification.onFail(
+					t('circles', "The status of the link could not be updated") + ': ' +
+					((result.error) ? result.error : t('circles', 'no error message')));
+			} else {
+				OCA.notification.onSuccess(t('circles', "The status of the link has been updated"));
+				curr.circleLinks = result.links;
+			}
+
+			nav.displayLinks('');
 		}
 
-		if (result.link.status === define.linkRequested) {
-			OCA.notification.onSuccess(
-				t('circles', "A link to <b>{remote}</b> has been requested.", {
-					remote: result.remote
-				}));
-		}
 
-		if (result.link.status === define.linkUp) {
-			OCA.notification.onSuccess(
-				t('circles', "the link to <b>{remote}</b> is now up and running.", {
-					remote: result.remote
-				}));
-		}
 	}
-
-
-};
+;
