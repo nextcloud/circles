@@ -183,6 +183,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 * @param string $uniqueId
 	 *
 	 * @return FederatedLink
+	 * @throws FederatedLinkDoesNotExistException
 	 */
 	public function getLinkFromToken($token, $uniqueId) {
 		$qb = $this->getLinksSelectSql();
@@ -191,7 +192,15 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
+
+		if ($data === false) {
+			throw new FederatedLinkDoesNotExistException(
+				$this->l10n->t('Federated Link not found')
+			);
+		}
+
 		$entry = $this->parseLinksSelectSql($data);
+		$cursor->closeCursor();
 
 		return $entry;
 	}
@@ -211,6 +220,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
+		$cursor->closeCursor();
 
 		if ($data === false) {
 			throw new FederatedLinkDoesNotExistException(

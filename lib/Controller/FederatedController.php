@@ -71,7 +71,7 @@ class FederatedController extends BaseController {
 	 * requestedLink()
 	 *
 	 * Called when a remote circle want to create a link.
-	 * The function check if it is possible first; then create a link- object
+	 * The function check if it is possible first; then create a link-object
 	 * and sent it to be saved in the database.
 	 *
 	 * @PublicPage
@@ -200,6 +200,36 @@ class FederatedController extends BaseController {
 
 		exit();
 	}
+
+
+	/**
+	 * updateLink();
+	 *
+	 * Update the current status of a link, based on UniqueId and Token.
+	 *
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 *
+	 * @param $apiVersion
+	 * @param $token
+	 * @param $uniqueId
+	 * @param $status
+	 *
+	 * @return DataResponse
+	 */
+	public function updateLink($apiVersion, $token, $uniqueId, $status) {
+
+		if ($uniqueId === '' || !$this->configService->isFederatedAllowed()) {
+			return $this->federatedFail('federated_not_allowed');
+		}
+
+		$link = $this->federatedService->updateLinkLocal($token, $uniqueId, $status);
+
+		return $this->federatedSuccess(
+			['status' => 1, 'link' => $link], $link
+		);
+	}
+
 
 	/**
 	 * Hacky way to async the rest of the process without keeping client on hold.

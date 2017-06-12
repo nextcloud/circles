@@ -60,15 +60,19 @@ return [
 			'url'          => '/v1/link/{linkId}/status', 'verb' => 'POST',
 			'requirements' => ['linkId' => '\d+'],
 		],
-		['name' => 'Federated#requestedLink', 'url' => '/v1/circles/link/', 'verb' => 'POST'],
+
+		['name' => 'Federated#updateLink', 'url' => '/v1/link', 'verb' => 'POST'],
+		['name' => 'Federated#requestedLink', 'url' => '/v1/link', 'verb' => 'PUT'],
 		[
-			'name' => 'Federated#initFederatedDelivery', 'url' => '/v1/circles/payload/',
+			'name' => 'Federated#initFederatedDelivery', 'url' => '/v1/payload',
 			'verb' => 'POST'
 		],
 		[
-			'name' => 'Federated#receiveFederatedDelivery', 'url' => '/v1/circles/payload/',
+			'name' => 'Federated#receiveFederatedDelivery', 'url' => '/v1/payload',
 			'verb' => 'PUT'
 		],
+
+
 		['name' => 'Members#search', 'url' => '/v1/circles/{id}/members', 'verb' => 'GET'],
 		[
 			'name'         => 'Members#add', 'url' => '/v1/circles/{id}/members', 'verb' => 'PUT',

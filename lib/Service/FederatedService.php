@@ -33,7 +33,7 @@ use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\FederatedLinksRequest;
 use OCA\Circles\Exceptions\FederatedCircleLinkFormatException;
-use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
+use OCA\Circles\Exceptions\FederatedCircleNotAllowaedException;
 use OCA\Circles\Exceptions\CircleTypeNotValid;
 use OCA\Circles\Exceptions\FederatedLinkDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedRemoteCircleDoesNotExistException;
@@ -197,7 +197,11 @@ class FederatedService {
 
 			$link->hasToBeValidStatusUpdate($status);
 			$link->setStatus($status);
+
 			$this->federatedLinksRequest->update($link);
+
+			$link->setUniqueId($circle->getUniqueId());
+			$this->updateLinkRemote($link);
 
 			return $this->circlesRequest->getLinksFromCircle($circle->getId());
 		} catch (Exception $e) {
@@ -265,7 +269,7 @@ class FederatedService {
 			$remote = 'https://' . $remote;
 		}
 
-		return rtrim($remote, '/') . '/index.php/apps/circles/v1/circles/link/';
+		return rtrim($remote, '/') . '/index.php/apps/circles/v1/link';
 	}
 
 
@@ -279,7 +283,7 @@ class FederatedService {
 			$remote = 'https://' . $remote;
 		}
 
-		return rtrim($remote, '/') . '/index.php/apps/circles/v1/circles/payload/';
+		return rtrim($remote, '/') . '/index.php/apps/circles/v1/payload';
 	}
 
 
@@ -301,17 +305,18 @@ class FederatedService {
 	private function requestLink(Circle $circle, FederatedLink & $link) {
 		$args = [
 			'apiVersion' => Circles::API_VERSION,
-			'token'       => $link->getToken(),
-			'uniqueId'    => $circle->getUniqueId(),
-			'sourceName'  => $circle->getName(),
-			'linkTo'      => $link->getRemoteCircleName(),
-			'address'     => $link->getLocalAddress()
+			'token'      => $link->getToken(),
+			'uniqueId'   => $circle->getUniqueId(),
+			'sourceName' => $circle->getName(),
+			'linkTo'     => $link->getRemoteCircleName(),
+			'address'    => $link->getLocalAddress()
 		];
 
 		$client = $this->clientService->newClient();
+		//$this->allowNonSSLLink();
 
 		try {
-			$request = $client->post(
+			$request = $client->put(
 				$this->generateLinkRemoteURL($link->getAddress()), [
 																	 'body'            => $args,
 																	 'timeout'         => 10,
@@ -332,6 +337,78 @@ class FederatedService {
 			$link->setUniqueId($result['uniqueId']);
 			$this->federatedLinksRequest->uniqueness($link);
 			$this->federatedLinksRequest->update($link);
+
+			return true;
+		} catch (Exception $e) {
+			throw $e;
+		}
+	}
+
+
+	/**
+	 * @param $token
+	 * @param $uniqueId
+	 * @param $status
+	 *
+	 * @return FederatedLink
+	 * @throws Exception
+	 */
+	public function updateLinkLocal($token, $uniqueId, $status) {
+		try {
+			$link = $this->circlesRequest->getLinkFromToken($token, $uniqueId);
+			$link->setStatus($status);
+			$this->federatedLinksRequest->update($link);
+
+			return $link;
+		} catch (Exception $e) {
+			throw $e;
+		}
+	}
+
+
+	/**
+	 * updateLinkRemote()
+	 *
+	 * Send a request to the remote of the link to update its status.
+	 *
+	 * @param FederatedLink $link
+	 *
+	 * @return boolean
+	 * @throws Exception
+	 */
+	public function updateLinkRemote(FederatedLink & $link) {
+		$args = [
+			'apiVersion' => Circles::API_VERSION,
+			'token'      => $link->getToken(),
+			'uniqueId'   => $link->getUniqueId(),
+			'status'     => $link->getStatus()
+		];
+
+		$client = $this->clientService->newClient();
+		//$this->allowNonSSLLink();
+
+		try {
+			$request = $client->post(
+				$this->generateLinkRemoteURL($link->getAddress()), [
+																	 'body'            => $args,
+																	 'timeout'         => 10,
+																	 'connect_timeout' => 10,
+																 ]
+			);
+
+//			$result = json_decode($request->getBody(), true);
+
+//			if ($result['status'] === FederatedLink::STATUS_LINK_UP) {
+//				$link->setStatus(FederatedLink::STATUS_LINK_UP);
+//			} else if ($result['status'] === FederatedLink::STATUS_LINK_REQUESTED) {
+//				$link->setStatus(FederatedLink::STATUS_REQUEST_SENT);
+//			} else {
+//				$this->parsingRequestLinkResult($result);
+//			}
+//
+//			$link->setUniqueId($result['uniqueId']);
+//			$this->federatedLinksRequest->uniqueness($link);
+//			$this->federatedLinksRequest->update($link);
 
 			return true;
 		} catch (Exception $e) {
