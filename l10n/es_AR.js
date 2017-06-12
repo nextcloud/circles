@@ -25,7 +25,6 @@ OC.L10N.register(
     "Blocked" : "Bloqueado",
     "Kicked" : "Expulsado",
     "Are you sure you want to delete this circle?" : "¿Está seguro que desea borrar este círculo?",
-    "Please confirm" : "Favor de confirmar",
     "Kick this member" : "Sacar a este miembro",
     "Accept the request" : "Aceptar la solicitud",
     "Dismiss the request" : "Descartar la solicitud",

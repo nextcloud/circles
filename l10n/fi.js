@@ -25,7 +25,6 @@ OC.L10N.register(
     "Blocked" : "Estetty",
     "Kicked" : "Erotettu",
     "Are you sure you want to delete this circle?" : "Oletko varma, että haluat poistaa tämän piirin?",
-    "Please confirm" : "Vahvista muutokset",
     "Kick this member" : "Erota jäsen",
     "Accept the request" : "Hyväksy pyyntö",
     "Dismiss the request" : "Hylkää pyyntö",

@@ -23,7 +23,6 @@
     "Blocked" : "Blocked",
     "Kicked" : "Kicked",
     "Are you sure you want to delete this circle?" : "Are you sure you want to delete this circle?",
-    "Please confirm" : "Please confirm",
     "Kick this member" : "Kick this member",
     "Accept the request" : "Accept the request",
     "Dismiss the request" : "Dismiss the request",
@@ -48,6 +47,8 @@
     "Member '{name}' could not be removed from the circle" : "Member '{name}' could not be removed from the circle",
     "Member '{name}' updated" : "Member '{name}' updated",
     "Member '{name}' could not be updated" : "Member '{name}' could not be updated",
+    "Issue while saving settings" : "Issue while saving settings",
+    "Settings saved." : "Settings saved.",
     "Circles" : "Circles",
     "You created the circle {circle}" : "You created the circle {circle}",
     "{author} created the circle {circle}" : "{author} created the circle {circle}",
@@ -73,10 +74,6 @@
     "{author} changed {member}'s level in {circle} to %1$s" : "{author} changed {member}'s level in {circle} to %1$s",
     "You are the new owner of {circle}" : "You are the new owner of {circle}",
     "{member} is the new owner of {circle}" : "{member} is the new owner of {circle}",
-    "You shared a mood with %1$s" : "You shared a mood with %1$s",
-    "You shared a mood with {circles}" : "You shared a mood with {circles}",
-    "%1$s shared a mood with %2$s" : "%1$s shared a mood with %2$s",
-    "{author} shared a mood with {circles}" : "{author} shared a mood with {circles}",
     "On event in a <strong>Circle</strong> you are a member, or a potential member" : "On event in a <strong>Circle</strong> you are a member, or a potential member",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Any important event in a <strong>Circle</strong> you are moderating",
     "The name of your circle must contain at least 3 characters" : "The name of your circle must contain at least 3 characters",
@@ -87,6 +84,7 @@
     "This member does not exist" : "This member does not exist",
     "This user is already a member of the circle" : "This user is already a member of the circle",
     "This option is not available for personal circles" : "This option is not available for personal circles",
+    "The circle is not Federated" : "The circle is not Federated",
     "You cannot join this circle" : "You cannot join this circle",
     "This member is not a moderator" : "This member is not a moderator",
     "Not enough privileges" : "Not enough privileges",
@@ -101,6 +99,7 @@
     "Federated circles are not allowed on this Nextcloud" : "Federated circles are not allowed on this Nextcloud",
     "Federated link does not have a valid format" : "Federated link does not have a valid format",
     "Federated circles are not allowed on the remote Nextcloud" : "Federated circles are not allowed on the remote Nextcloud",
+    "The remote circle does not accept Federated Links" : "The remote circle does not accept Federated Links",
     "It seems that you are trying to link a circle to itself" : "It seems that you are trying to link a circle to itself",
     "This link exists already" : "This link exists already",
     "The requested remote circle does not exist" : "The requested remote circle does not exist",
@@ -141,6 +140,8 @@
     "Username" : "Username",
     "Level" : "Level",
     "Status" : "Status",
-    "Joined" : "Joined"
+    "Joined" : "Joined",
+    "Address" : "Address",
+    "Linked" : "Linked"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

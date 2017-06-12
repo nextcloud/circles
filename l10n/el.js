@@ -25,7 +25,6 @@ OC.L10N.register(
     "Blocked" : "Μπλοκαρισμένος",
     "Kicked" : "Διωγμένος",
     "Are you sure you want to delete this circle?" : "Θέλετε να διαγράψετε τον κύκλο;",
-    "Please confirm" : "Παρακαλούμε επιβεβαιώστε",
     "Kick this member" : "Διώξτε αυτό το μέλος",
     "Accept the request" : "Αποδοχή αιτήματος",
     "Cannot join this circle" : "Δεν μπορείτε να συνδεθείτε σε αυτό τον κύκλο",

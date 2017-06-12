@@ -25,7 +25,6 @@ OC.L10N.register(
     "Blocked" : "Blokkert",
     "Kicked" : "Utkastet",
     "Are you sure you want to delete this circle?" : "Er du sikker på at du vil slette denne sirkelen?",
-    "Please confirm" : "Bekreft",
     "Kick this member" : "Kast ut dette medlemmet",
     "Accept the request" : "Aksepter forespørselen",
     "Dismiss the request" : "Avslå forespørselen",
