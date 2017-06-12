@@ -104,6 +104,8 @@ var resultMembers = {
 			nav.displayMembers(result.members);
 			return;
 		}
+
+		nav.displayMembers('');
 		OCA.notification.onFail(
 			t('circles', "Member '{name}' could not be updated", {name: result.name}) +
 			': ' +

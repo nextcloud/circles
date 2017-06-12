@@ -113,8 +113,15 @@ var nav = {
 
 		elements.leaveCircle.hide();
 		elements.leaveCircle.on('click', function () {
-			api.leaveCircle(curr.circle, resultCircles.leaveCircleResult);
-			nav.circlesActionReturn();
+			OC.dialogs.confirm(
+				t('circles', 'Are you sure you want to leave this circle?'),
+				t('circles', 'Please confirm'),
+				function (e) {
+					if (e === true) {
+						api.leaveCircle(curr.circle, resultCircles.leaveCircleResult);
+						nav.circlesActionReturn();
+					}
+				});
 		});
 
 		elements.destroyCircle.on('click', function () {
@@ -284,6 +291,11 @@ var nav = {
 
 
 	displayMembers: function (members) {
+		if (members === '') {
+			members = curr.circleMembers;
+		} else {
+			curr.circleMembers = members;
+		}
 
 		elements.remMember.fadeOut(300);
 		elements.rightPanel.fadeOut(300);
@@ -367,9 +379,9 @@ var nav = {
 
 	displayLinks: function (links) {
 
+		elements.mainUILinksTable.hide(curr.animationSpeed);
 		elements.mainUILinksTable.emptyTable();
 		if (links.length === 0) {
-			elements.mainUILinksTable.hide(curr.animationSpeed);
 			return;
 		}
 

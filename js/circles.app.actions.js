@@ -57,7 +57,10 @@ var actions = {
 				if (e === true) {
 					api.levelMember(curr.circle, member, define.levelOwner, resultMembers.levelMemberResult);
 					nav.circlesActionReturn();
+					return;
 				}
+
+				nav.displayMembers('');
 			});
 	},
 
