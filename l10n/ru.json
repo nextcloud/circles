@@ -23,7 +23,6 @@
     "Blocked" : "Заблокирован",
     "Kicked" : "Отключён",
     "Are you sure you want to delete this circle?" : "Вы действительно хотите удалить этот круг?",
-    "Please confirm" : "Пожалуйста подтвердите",
     "Kick this member" : "Удалить участника",
     "Accept the request" : "Принять запрос",
     "Dismiss the request" : "Отклонить запрос",
@@ -48,6 +47,8 @@
     "Member '{name}' could not be removed from the circle" : "Участник «{name}» не может быть удалён из этото круга",
     "Member '{name}' updated" : "Участник «{name}» был обновлён",
     "Member '{name}' could not be updated" : "Участник «{name}» не может быть обновлён",
+    "Issue while saving settings" : "При сохранении настроек произошла ошибка.",
+    "Settings saved." : "Настройки сохранены.",
     "Circles" : "Круги",
     "You created the circle {circle}" : "Вы создали круг {circle}",
     "{author} created the circle {circle}" : "{author} создал круг {circle}",
@@ -73,10 +74,6 @@
     "{author} changed {member}'s level in {circle} to %1$s" : "{author} изменил уровень {member}'s в {circle} на %1$s",
     "You are the new owner of {circle}" : "Вы теперь новый владелец {circle}",
     "{member} is the new owner of {circle}" : "{member} теперь новый владелец {circle}",
-    "You shared a mood with %1$s" : "Вы поделились настроением с %1$s",
-    "You shared a mood with {circles}" : "Вы поделились настроением с {circles}",
-    "%1$s shared a mood with %2$s" : "%1$sподелился настроением с %2$s",
-    "{author} shared a mood with {circles}" : "{author} поделился настроением с {circles}",
     "On event in a <strong>Circle</strong> you are a member, or a potential member" : "При событии в  <strong>круге</strong>, в котором вы участник или отправили запрос на участие.",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Любое важное событие в модерируемом вами <strong>круге </strong> ",
     "The name of your circle must contain at least 3 characters" : "Название круга должно содержать минимум 3 символа",
@@ -87,6 +84,7 @@
     "This member does not exist" : "Этот участник не существует",
     "This user is already a member of the circle" : "Этот пользователь уже участник круга",
     "This option is not available for personal circles" : "Эта возможность недоступна для личных кругов",
+    "The circle is not Federated" : "К этому кругу не предоставлен федеративный доступ",
     "You cannot join this circle" : "Вы не можете присоедениться к этому кругу",
     "This member is not a moderator" : "Это участник — не модератор",
     "Not enough privileges" : "Недостаточно прав доступа",
@@ -101,6 +99,7 @@
     "Federated circles are not allowed on this Nextcloud" : "Федеративные круги не разрешены в этом Nextcloud",
     "Federated link does not have a valid format" : "Неверный формат федеративной ссылки",
     "Federated circles are not allowed on the remote Nextcloud" : "Федеративные круги не разрешены на другом сервере Nextcloud",
+    "The remote circle does not accept Federated Links" : "Указанный круг на другом сервере принимает запросы только от локальных пользователей",
     "It seems that you are trying to link a circle to itself" : "Похоже, что вы пытаетесь связать круг с самим собой",
     "This link exists already" : "Эта связь уже установлена",
     "The requested remote circle does not exist" : "Запрошенный круг не существует на другом сервере",
@@ -141,6 +140,8 @@
     "Username" : "Имя пользователя",
     "Level" : "Уровень",
     "Status" : "Статус",
-    "Joined" : "Присоеденился"
+    "Joined" : "Присоеденился",
+    "Address" : "Адреса",
+    "Linked" : "Связано"
 },"pluralForm" :"nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);"
 }

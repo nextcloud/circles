@@ -25,7 +25,6 @@ OC.L10N.register(
     "Blocked" : "Bloqué",
     "Kicked" : "Exclu",
     "Are you sure you want to delete this circle?" : "Êtes-vous sûr de vouloir supprimer ce cercle ?",
-    "Please confirm" : "Veuillez confirmer",
     "Kick this member" : "Exclure ce membre",
     "Accept the request" : "Accepter la requête",
     "Dismiss the request" : "Ignorer la requête",
@@ -50,6 +49,8 @@ OC.L10N.register(
     "Member '{name}' could not be removed from the circle" : "Membre '{name}' n'a pu être retiré du cercle",
     "Member '{name}' updated" : "Membre '{name}' mis à jour",
     "Member '{name}' could not be updated" : "Membre '{name}' ne peut pas être mis à jour",
+    "Issue while saving settings" : "Problème lors de la sauvegarde des paramètres",
+    "Settings saved." : "Paramètres sauvegardés.",
     "Circles" : "Cercles",
     "You created the circle {circle}" : "Vous avez créé le cercle {circle}",
     "{author} created the circle {circle}" : "{author} a créé le cercle {circle}",
@@ -75,10 +76,6 @@ OC.L10N.register(
     "{author} changed {member}'s level in {circle} to %1$s" : "{author} a changé le niveau de {member} dans {circle} à %1$s",
     "You are the new owner of {circle}" : "Vous êtes le nouveau propriétaire de {circle}",
     "{member} is the new owner of {circle}" : "{member} est le nouveau propriétaire de {circle}",
-    "You shared a mood with %1$s" : "Vous avez partagé une humeur avec %1$s",
-    "You shared a mood with {circles}" : "Vous avez partagé une humeur avec {circles}",
-    "%1$s shared a mood with %2$s" : "%1$s a partagé une humeur avec %2$s",
-    "{author} shared a mood with {circles}" : "{author} a partagé une humeur avec {circles}",
     "The name of your circle must contain at least 3 characters" : "Le nom de votre cercle doit contenir au moins 3 caractères",
     "The name of your circle cannot start with this character" : "Le nom de votre cercle ne peut pas commencer par ce caractère",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Vous ne pouvez pas utiliser l'application Cercles à moins que votre admnistrateur est autorisé au moins un type de cercles",
@@ -141,6 +138,7 @@ OC.L10N.register(
     "Username" : "Nom d'utilisateur",
     "Level" : "Niveau",
     "Status" : "Statut",
-    "Joined" : "A rejoint"
+    "Joined" : "A rejoint",
+    "Address" : "Adresse"
 },
 "nplurals=2; plural=(n > 1);");

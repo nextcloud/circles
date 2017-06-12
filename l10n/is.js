@@ -25,7 +25,6 @@ OC.L10N.register(
     "Blocked" : "Útilokaður",
     "Kicked" : "Hent út",
     "Are you sure you want to delete this circle?" : "Ertu viss um að þú viljir eyða þessum hring?",
-    "Please confirm" : "Endilega staðfestu þetta",
     "Kick this member" : "Henda þessum meðlimi út",
     "Accept the request" : "Samþykkja beiðnina",
     "Dismiss the request" : "Hafna beiðninni",

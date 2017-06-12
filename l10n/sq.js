@@ -23,7 +23,6 @@ OC.L10N.register(
     "Requesting" : "Duke kerkuar",
     "Blocked" : "I bllokuar",
     "Are you sure you want to delete this circle?" : "Jeni i sigurtë që doni ta fshini këtë rreth?",
-    "Please confirm" : "Ju lutem konfirmoni",
     "Cannot join this circle" : "Nuk mund të bashkohet me këtë rreth",
     "no error message" : "asnjë mesazh gabimi ",
     "You have successfully joined this circle" : "Anëtarësimi juaj në këtë rreth është kryer me sukses ",

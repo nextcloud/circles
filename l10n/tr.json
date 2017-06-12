@@ -23,7 +23,6 @@
     "Blocked" : "Engellenmiş",
     "Kicked" : "Atılmış",
     "Are you sure you want to delete this circle?" : "Bu çevreyi silmek istediğinize emin misiniz?",
-    "Please confirm" : "Lütfen onaylayın",
     "Kick this member" : "Üyelikten çıkar",
     "Accept the request" : "İsteği onayla",
     "Dismiss the request" : "İsteği yoksay",
@@ -48,6 +47,8 @@
     "Member '{name}' could not be removed from the circle" : "'{name}' adlı üye bu çevreden çıkarılamadı",
     "Member '{name}' updated" : "'{name}' üyesi güncellendi",
     "Member '{name}' could not be updated" : "'{name}' üyesi güncellenemedi",
+    "Issue while saving settings" : "Ayarlar kaydedilirken sorun çıktı",
+    "Settings saved." : "Ayarlar kaydedildi.",
     "Circles" : "Çevreler",
     "You created the circle {circle}" : "{circle} çevresini eklediniz",
     "{author} created the circle {circle}" : "{author}, {circle} çevresini ekledi",
@@ -73,10 +74,6 @@
     "{author} changed {member}'s level in {circle} to %1$s" : "{author}, {member} kullanıcısının {circle} çevresindeki düzeyini %1$s olarak değiştirdi",
     "You are the new owner of {circle}" : "Artık {circle} çevresinin sahibisiniz",
     "{member} is the new owner of {circle}" : "{member}, artık {circle} çevresinin sahibi",
-    "You shared a mood with %1$s" : "%1$s ile bir duygunuzu paylaştınız",
-    "You shared a mood with {circles}" : "{circles} ile bir duygunuzu paylaştınız",
-    "%1$s shared a mood with %2$s" : "%1$s, %2$s ile bir duygusunu paylaştı",
-    "{author} shared a mood with {circles}" : "{author},  {circles} ile bir duygusunu paylaştı",
     "On event in a <strong>Circle</strong> you are a member, or a potential member" : "Üyesi ya da olası üyesi olduğunuz bir <strong>Çevredeki</strong> olaylarda",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Sorumlusu olduğunuz bir <strong>Çevredeki</strong> önemli olaylarda",
     "The name of your circle must contain at least 3 characters" : "Çevrenizin adı en az 3 karakter uzunluğunda olmalıdır",
@@ -87,6 +84,7 @@
     "This member does not exist" : "Bu üye bulunamadı",
     "This user is already a member of the circle" : "Bu kullanıcı zaten bu çevrenin üyesi",
     "This option is not available for personal circles" : "Bu seçenek kişisel çevrelerde kullanılamaz",
+    "The circle is not Federated" : "Çevre birleşik değil",
     "You cannot join this circle" : "Bu çevreye katılamazsınız",
     "This member is not a moderator" : "Bu üye bir sorumlu değil",
     "Not enough privileges" : "Yeterli izin yok",
@@ -101,6 +99,7 @@
     "Federated circles are not allowed on this Nextcloud" : "Nextcloud üzerinde birleşmiş çevreler kullanılamaz",
     "Federated link does not have a valid format" : "Birleşmiş çevrenin biçimi geçerli değil",
     "Federated circles are not allowed on the remote Nextcloud" : "Uzak Nextcloud üzerinde birleşmiş çevreler kullanılamaz",
+    "The remote circle does not accept Federated Links" : "Uzak çevre birleşmiş bağlantıları kabul etmez",
     "It seems that you are trying to link a circle to itself" : "Bir çevre ile kendiniz arasında bağlantı kurmaya çalışıyorsunuz gibi görünüyor",
     "This link exists already" : "Bağlantı zaten var",
     "The requested remote circle does not exist" : "İstenilen uzak çevre bulunamadı",
@@ -141,6 +140,8 @@
     "Username" : "Kullanıcı Adı",
     "Level" : "Düzey",
     "Status" : "Durum",
-    "Joined" : "Katıldı"
+    "Joined" : "Katıldı",
+    "Address" : "Adres",
+    "Linked" : "Bağlantılı"
 },"pluralForm" :"nplurals=2; plural=(n > 1);"
 }

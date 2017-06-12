@@ -25,7 +25,6 @@ OC.L10N.register(
     "Blocked" : "Geblokkeerd",
     "Kicked" : "Verwijderd",
     "Are you sure you want to delete this circle?" : "Weet je zeker dat je deze kring wilt verwijderen?",
-    "Please confirm" : "Graag bevestigen",
     "Kick this member" : "Verwijder deze gebruiker uit de kring",
     "Accept the request" : "Accepteer het verzoek",
     "Dismiss the request" : "Verzoek afwijzen",

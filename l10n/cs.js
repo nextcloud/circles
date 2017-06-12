@@ -25,7 +25,6 @@ OC.L10N.register(
     "Blocked" : "Blokovaný",
     "Kicked" : "Vyhozen",
     "Are you sure you want to delete this circle?" : "Opravdu chcete smazat tento kruh?",
-    "Please confirm" : "Prosím potvrďte",
     "Kick this member" : "Vykopnout tohoto člena",
     "Accept the request" : "Přijmout požadavek",
     "Dismiss the request" : "Skrýt požadavek",
