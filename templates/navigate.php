@@ -198,25 +198,25 @@ style('circles', 'navigation');
 			<div id="name"></div>
 			<div id="type"></div>
 
-			<div id="joincircle_invit"><?php p(
-					$l->t("Pending invitation to join this circle")
-				); ?></div>
-			<div id="joincircle_request"><?php p(
-					$l->t('You have a pending request to join this circle')
-				); ?></div>
 
 			<div id="circle-actions">
 				<div id="circle-actions-buttons">
+					<div id="joincircle_invit"><?php p(
+						$l->t("Pending invitation to join this circle")
+						); ?></div>
+					<div id="joincircle_request"><?php p(
+						$l->t('You have a pending request to join this circle')
+						); ?></div>
 					<button id="circle-actions-add" class="icon-add-user"
-							title="Add a member"></button>
+							title="<?php p($l->t('Add a member')); ?>"></button>
 					<button id="circle-actions-link" class="icon-public"
-							title="Link a circle"></button>
+							title="<?php p($l->t('Link a circle')); ?>"></button>
 					<button id="circle-actions-join" class="icon-join"
-							title="Join this circle"></button>
+							title="<?php p($l->t('Join this circle')); ?>"></button>
 					<button id="circle-actions-delete" class="icon-delete"
-							title="Delete circle"></button>
+							title="<?php p($l->t('Delete circle')); ?>"></button>
 					<button id="circle-actions-settings" class="icon-settings-dark"
-							title="Edit circle"></button>
+							title="<?php p($l->t('Edit circle')); ?>"></button>
 				</div>
 
 				<div id="circle-actions-more">
@@ -233,7 +233,7 @@ style('circles', 'navigation');
 					<input id="linkcircle" type="text"
 						   placeholder="<?php p($l->t('Link to a circle')); ?>"/>
 					<button id="circle-actions-return" class="icon-close"
-							title="Return to menu"></button>
+							title="<?php p($l->t('Return to menu')); ?>"></button>
 				</div>
 
 
@@ -302,8 +302,12 @@ style('circles', 'navigation');
 					</tr>-->
 
 					<tr id="settings-entry-link">
-						<td class="left">Allow Federated Links<br/>
-							<span class="hint">Turns the circle as Federated and enable sharing between Federated Circles</span>
+						<td class="left"><?php p($l->t('Allow Federated Links')); ?><br/>
+							<span class="hint"><?php p(
+									$l->t(
+										'Turns the circle as Federated and enable sharing between Federated Circles'
+									)
+								); ?></span>
 						</td>
 						<td><input type="checkbox" value="1" id="settings-link"></td>
 					</tr>
@@ -314,16 +318,21 @@ style('circles', 'navigation');
 						<td><input type="checkbox" value="1" id="settings-link-files"></td>
 					</tr>-->
 					<tr id="settings-entry-link-auto">
-						<td class="left">Automatically Accept Link Request<br/>
-							<span class="hint">Warning: enabling this will automatically accept new Link requests from other circle.</span>
+						<td class="left"><?php p($l->t('Automatically Accept Link Request')); ?>
+							<br/>
+							<span class="hint"><?php p(
+									$l->t(
+										'Warning: enabling this will automatically accept new Link requests from other circle.'
+									)
+								); ?></span>
 						</td>
 						<td><input type="checkbox" value="1" id="settings-link-auto"></td>
 					</tr>
 
 					<tr>
-						<td colspan="2" style="text-align: center;"><input type="submit"
-																		   id="settings-submit"
-																		   value="Save settings"/>
+						<td colspan="2" style="text-align: center;">
+							<input type="submit" id="settings-submit"
+								   value="<?php p($l->t('Save settings')); ?>'"/>
 						</td>
 					</tr>
 				</table>

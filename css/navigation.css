@@ -261,6 +261,8 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	background-image: url('/apps/circles/img/join.svg');
 	background-size: 16px;
 	opacity: .2;
+	float: right;
+	margin-top: 5px;
 }
 
 .level-select, .status-select {
@@ -276,6 +278,12 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	left: 15px;
 	top: 120px;
 	overflow-y: auto;
+}
+
+#joincircle_request, #joincircle_invit {
+	display: inline-block;
+	padding: 10px;
+	color: #555;
 }
 
 #settings-table {
@@ -303,7 +311,6 @@ div.circle .owner, div.circle .type, div.circle .resume {
 #settings-submit {
 	margin: 15px;
 }
-
 
 #linkslist_table {
 	width: 100%;

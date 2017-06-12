@@ -65,7 +65,7 @@ var define = {
 	linkRequested: 6,
 	linkUp: 9,
 	animationSpeed: 100,
-	animationMenuSpeed: 30
+	animationMenuSpeed: 60
 };
 
 

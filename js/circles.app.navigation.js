@@ -408,6 +408,8 @@ var nav = {
 		nav.displayMemberInteractionLinks(details);
 
 		elements.joinCircleInteraction.hide();
+		elements.buttonJoinCircle.show();
+
 		this.displayNonMemberInteraction(details);
 
 		if (details.user.level === define.levelOwner) {
@@ -441,6 +443,11 @@ var nav = {
 
 		if (details.user.status === 'Requesting') {
 			elements.joinCircleRequest.show();
+			return;
+		}
+
+		if (details.user.status === 'Invited') {
+			elements.joinCircleInvite.show();
 			return;
 		}
 

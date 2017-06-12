@@ -254,11 +254,9 @@ var elements = {
 			nav.joinCircleAction();
 		});
 
-
 		elements.settingsSave.on('click', function () {
-				actions.saveSettings();
-			}
-		);
+			actions.saveSettings();
+		});
 	},
 
 
