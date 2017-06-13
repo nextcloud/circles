@@ -27,6 +27,7 @@
 namespace OCA\Circles\Controller;
 
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
+use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 use OCP\AppFramework\Http\DataResponse;
 
 class CirclesController extends BaseController {
@@ -222,7 +223,7 @@ class CirclesController extends BaseController {
 			);
 		} catch (\Exception $e) {
 			return $this->fail(
-				['circle_id' => $id, 'remote' => $remote, 'error' => $e->getMessage()]
+				['circle_id' => $circleId, 'remote' => $remote, 'error' => $e->getMessage()]
 			);
 		}
 	}
@@ -243,8 +244,16 @@ class CirclesController extends BaseController {
 	 * @param int $status
 	 *
 	 * @return DataResponse
+	 * @throws FederatedCircleNotAllowedException
 	 */
 	public function linkStatus($linkId, $status) {
+
+		if (!$this->configService->isFederatedAllowed()) {
+			throw new FederatedCircleNotAllowedException(
+				$this->l10n->t("Federated circles are not allowed on this Nextcloud")
+			);
+		}
+
 		try {
 			$links = $this->federatedService->linkStatus($linkId, $status);
 

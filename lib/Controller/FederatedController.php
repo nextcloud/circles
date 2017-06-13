@@ -223,7 +223,7 @@ class FederatedController extends BaseController {
 			return $this->federatedFail('federated_not_allowed');
 		}
 
-		$link = $this->federatedService->updateLinkLocal($token, $uniqueId, $status);
+		$link = $this->federatedService->updateLinkFromRemote($token, $uniqueId, $status);
 
 		return $this->federatedSuccess(
 			['status' => 1, 'link' => $link], $link

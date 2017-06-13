@@ -291,6 +291,10 @@ class FederatedLink implements \JsonSerializable {
 
 
 	public function hasToBeValidStatusUpdate($status) {
+		if ($this->getStatus() === self::STATUS_LINK_DOWN && $status === self::STATUS_LINK_REMOVE) {
+			return true;
+		}
+		
 		if ($this->getStatus() === self::STATUS_LINK_REQUESTED) {
 			if ($status === self::STATUS_LINK_REMOVE) {
 				return true;
@@ -300,20 +304,28 @@ class FederatedLink implements \JsonSerializable {
 			}
 		}
 
+		if ($this->getStatus() === self::STATUS_REQUEST_SENT
+			|| $this->getStatus() === self::STATUS_LINK_UP
+		) {
+			if ($status === self::STATUS_LINK_REMOVE) {
+				return true;
+			}
+		}
+
 		throw new FederatedCircleStatusUpdateException('The status could not be updated');
 	}
 
-
-	public function isValid() {
-
-		if ($this->getStatus() === FederatedLink::STATUS_REQUEST_SENT
-			|| $this->getStatus() === FederatedLink::STATUS_LINK_UP
-		) {
-			return true;
-		}
-
-		return false;
-	}
+//
+//	public function isValid() {
+//
+//		if ($this->getStatus() === FederatedLink::STATUS_REQUEST_SENT
+//			|| $this->getStatus() === FederatedLink::STATUS_LINK_UP
+//		) {
+//			return true;
+//		}
+//
+//		return false;
+//	}
 
 	public function jsonSerialize() {
 		return array(

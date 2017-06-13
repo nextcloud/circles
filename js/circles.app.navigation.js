@@ -401,7 +401,9 @@ var nav = {
 		elements.mainUILinksTable.children('tr.entry').each(function () {
 
 			var linkId = $(this).attr('link-id');
-			var status = $(this).attr('link-status');
+			var status = parseInt($(this).attr('link-status'));
+
+
 			var statusSelect = $(this).find('.link-status-select');
 
 			statusSelect.on('change', function () {
@@ -416,21 +418,21 @@ var nav = {
 				return;
 			}
 
-			if (status === '9') {
-				statusSelect.append($('<option>', {
-					value: define.linkDown,
-					text: t('circles', 'Close this Link')
-				}));
-			}
-
-			if (status === '5') {
+			if (status === define.linkUp || status === define.linkDown) {
 				statusSelect.append($('<option>', {
 					value: define.linkRemove,
-					text: t('circles', 'Cancel this Link')
+					text: t('circles', 'Remove this Link')
 				}));
 			}
 
-			if (status === '6') {
+			if (status === define.linkRequestSent) {
+				statusSelect.append($('<option>', {
+					value: define.linkRemove,
+					text: t('circles', 'Cancel the Link request')
+				}));
+			}
+
+			if (status === define.linkRequested) {
 				statusSelect.append($('<option>', {
 					value: define.linkUp,
 					text: t('circles', 'Accept the Link request')

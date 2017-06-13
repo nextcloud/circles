@@ -144,6 +144,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 * @param string $uniqueId
 	 *
 	 * @return Circle
+	 * @throws CircleDoesNotExistException
 	 */
 	public function getCircleFromUniqueId($uniqueId) {
 		$qb = $this->getCirclesSelectSql();
@@ -151,7 +152,14 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
+
+		if ($data === false) {
+			throw new CircleDoesNotExistException(
+				$this->l10n->t('Circle not found')
+			);
+		}
 		$entry = $this->parseCirclesSelectSql($data);
+		$cursor->closeCursor();
 
 		return $entry;
 	}

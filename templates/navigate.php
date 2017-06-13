@@ -251,7 +251,7 @@ style('circles', 'navigation');
 				<br/><br/><br/><br/>
 				<table id="linkslist_table">
 					<tr class="header">
-						<td class="address"><?php p($l->t('Address')); ?></td>
+						<td class="address"><?php p($l->t('Link')); ?></td>
 						<td class="status"><?php p($l->t('Status')); ?></td>
 						<td class="linked"><?php p($l->t('Linked')); ?></td>
 					</tr>

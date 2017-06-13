@@ -32,10 +32,11 @@ use OC\Http\Client\ClientService;
 use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\FederatedLinksRequest;
+use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedCircleLinkFormatException;
-use OCA\Circles\Exceptions\FederatedCircleNotAllowaedException;
+use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 use OCA\Circles\Exceptions\CircleTypeNotValid;
-use OCA\Circles\Exceptions\FederatedLinkDoesNotExistException;
+use OCA\Circles\Exceptions\FederatedCircleStatusUpdateException;
 use OCA\Circles\Exceptions\FederatedRemoteCircleDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedRemoteDoesNotAllowException;
 use OCA\Circles\Exceptions\FrameAlreadyExistException;
@@ -182,12 +183,7 @@ class FederatedService {
 	 */
 	public function linkStatus($linkId, $status) {
 
-		if (!$this->configService->isFederatedAllowed()) {
-			throw new FederatedCircleNotAllowedException(
-				$this->l10n->t("Federated circles are not allowed on this Nextcloud")
-			);
-		}
-
+		$status = (int)$status;
 		$link = null;
 		try {
 
@@ -200,14 +196,17 @@ class FederatedService {
 
 			$this->federatedLinksRequest->update($link);
 
-			$link->setUniqueId($circle->getUniqueId());
-			$this->updateLinkRemote($link);
-
-			return $this->circlesRequest->getLinksFromCircle($circle->getId());
 		} catch (Exception $e) {
 			throw $e;
 		}
 
+		try {
+			$link->setUniqueId($circle->getUniqueId());
+			$this->updateLinkRemote($link);
+		} catch (Exception $e) {
+		}
+
+		return $this->circlesRequest->getLinksFromCircle($circle->getId());
 	}
 
 
@@ -313,7 +312,6 @@ class FederatedService {
 		];
 
 		$client = $this->clientService->newClient();
-		//$this->allowNonSSLLink();
 
 		try {
 			$request = $client->put(
@@ -353,16 +351,96 @@ class FederatedService {
 	 * @return FederatedLink
 	 * @throws Exception
 	 */
-	public function updateLinkLocal($token, $uniqueId, $status) {
+	public function updateLinkFromRemote($token, $uniqueId, $status) {
 		try {
 			$link = $this->circlesRequest->getLinkFromToken($token, $uniqueId);
-			$link->setStatus($status);
-			$this->federatedLinksRequest->update($link);
+			$circle = $this->circlesRequest->getCircleFromId($link->getCircleId());
+			$circle->hasToBeFederated();
+
+
+			$this->checkUpdateLinkFromRemote($link, $status);
+			$this->checkUpdateLinkFromRemoteLinkUp($link, $status);
+			$this->checkUpdateLinkFromRemoteLinkRemove($link, $status);
+
+			if ($link->getStatus() !== $status) {
+				$this->federatedLinksRequest->update($link);
+			}
 
 			return $link;
 		} catch (Exception $e) {
 			throw $e;
 		}
+	}
+
+	/**
+	 * @param FederatedLink $link
+	 * @param $status
+	 *
+	 * @throws FederatedCircleStatusUpdateException
+	 */
+	private function checkUpdateLinkFromRemote(FederatedLink &$link, $status) {
+		$status = (int)$status;
+		if ($status === FederatedLink::STATUS_LINK_UP
+			|| $status === FederatedLink::STATUS_LINK_REMOVE
+		) {
+			return;
+		}
+
+		throw new FederatedCircleStatusUpdateException(
+			$this->l10n->t('Cannot proceed with this status update')
+		);
+	}
+
+
+	/**
+	 * @param FederatedLink $link
+	 * @param $status
+	 *
+	 * @throws FederatedCircleStatusUpdateException
+	 */
+	private function checkUpdateLinkFromRemoteLinkUp(FederatedLink &$link, $status) {
+		if ((int)$status !== FederatedLink::STATUS_LINK_UP) {
+			return;
+		}
+
+		if ($link->getStatus() !== FederatedLink::STATUS_REQUEST_SENT) {
+			throw new FederatedCircleStatusUpdateException(
+				$this->l10n->t('Cannot proceed with this status update')
+			);
+		}
+
+		$link->setStatus($status);
+	}
+
+
+	/**
+	 * @param FederatedLink $link
+	 * @param $status
+	 *
+	 * @throws FederatedCircleStatusUpdateException
+	 */
+	private function checkUpdateLinkFromRemoteLinkRemove(FederatedLink &$link, $status) {
+		if ((int)$status !== FederatedLink::STATUS_LINK_REMOVE) {
+			return;
+		}
+
+		if ($link->getStatus() === FederatedLink::STATUS_REQUEST_SENT) {
+			$link->setStatus(FederatedLink::STATUS_REQUEST_DECLINED);
+
+			return;
+		} else if ($link->getStatus() === FederatedLink::STATUS_LINK_REQUESTED) {
+			$link->setStatus(FederatedLink::STATUS_LINK_REMOVE);
+
+			return;
+		} else if ($link->getStatus() > FederatedLink::STATUS_LINK_DOWN) {
+
+			$link->setStatus(FederatedLink::STATUS_LINK_DOWN);
+
+			return;
+		}
+		throw new FederatedCircleStatusUpdateException(
+			$this->l10n->t('Cannot proceed with this status update')
+		);
 	}
 
 
@@ -385,30 +463,15 @@ class FederatedService {
 		];
 
 		$client = $this->clientService->newClient();
-		//$this->allowNonSSLLink();
 
 		try {
-			$request = $client->post(
+			$client->post(
 				$this->generateLinkRemoteURL($link->getAddress()), [
 																	 'body'            => $args,
 																	 'timeout'         => 10,
 																	 'connect_timeout' => 10,
 																 ]
 			);
-
-//			$result = json_decode($request->getBody(), true);
-
-//			if ($result['status'] === FederatedLink::STATUS_LINK_UP) {
-//				$link->setStatus(FederatedLink::STATUS_LINK_UP);
-//			} else if ($result['status'] === FederatedLink::STATUS_LINK_REQUESTED) {
-//				$link->setStatus(FederatedLink::STATUS_REQUEST_SENT);
-//			} else {
-//				$this->parsingRequestLinkResult($result);
-//			}
-//
-//			$link->setUniqueId($result['uniqueId']);
-//			$this->federatedLinksRequest->uniqueness($link);
-//			$this->federatedLinksRequest->update($link);
 
 			return true;
 		} catch (Exception $e) {
@@ -510,10 +573,11 @@ class FederatedService {
 	 * @throws Exception
 	 */
 	public function receiveFrame($token, $uniqueId, SharingFrame & $frame) {
+		try {
 
-		$link = $this->circlesRequest->getLinkFromToken((string)$token, (string)$uniqueId);
-		if ($link === null) {
-			throw new FederatedLinkDoesNotExistException('unknown_link');
+			$link = $this->circlesRequest->getLinkFromToken((string)$token, (string)$uniqueId);
+		} catch (Exception $e) {
+			throw $e;
 		}
 
 		if ($this->circlesRequest->getFrame($link->getCircleId(), $frame->getUniqueId())) {
@@ -521,9 +585,10 @@ class FederatedService {
 			throw new FrameAlreadyExistException('shares_is_already_known');
 		}
 
-		$circle = $this->circlesRequest->getCircleFromId($link->getCircleId());
-		if ($circle === null) {
-			throw new Exception('unknown_circle');
+		try {
+			$circle = $this->circlesRequest->getCircleFromId($link->getCircleId());
+		} catch (CircleDoesNotExistException $e) {
+			throw new CircleDoesNotExistException('unknown_circle');
 		}
 
 		$frame->setCircleId($link->getCircleId());
