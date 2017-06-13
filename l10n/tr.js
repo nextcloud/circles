@@ -1,6 +1,8 @@
 OC.L10N.register(
     "circles",
     {
+    "Are you sure you want to transfer your Owner rights ?" : "Sahiplik haklarınızı devretmek istediğinize emin misiniz?",
+    "This action is irreversible" : "Bu işlem geri alınamaz",
     "Personal circle" : "Kişisel çevre",
     "Hidden circle" : "Gizli çevre",
     "Private circle" : "Özel çevre",
@@ -133,11 +135,11 @@ OC.L10N.register(
     "No circle selected" : "Herhangi bir çevre seçilmemiş",
     "Pending invitation to join this circle" : "Bu çevreye katılma çağrısı bekliyor",
     "You have a pending request to join this circle" : "Bekleyen bir bu çevreye katılma isteğiniz var",
+    "Add a member" : "Üye ekle",
+    "Join this circle" : "Bu çevreye katıl",
     "Accept the invitation" : "Çağrıyı kabul et",
     "Decline the invitation" : "Çağrıyı reddet",
-    "Join this circle" : "Bu çevreye katıl",
     "Leave this circle" : "Bu çevreden ayrıl",
-    "Add a member" : "Üye ekle",
     "Link to a circle" : "Bir çevreyle bağla",
     "Username" : "Kullanıcı Adı",
     "Level" : "Düzey",

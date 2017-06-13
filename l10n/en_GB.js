@@ -1,6 +1,8 @@
 OC.L10N.register(
     "circles",
     {
+    "Are you sure you want to transfer your Owner rights ?" : "Are you sure you want to transfer your Owner rights?",
+    "This action is irreversible" : "This action is irreversible",
     "Personal circle" : "Personal circle",
     "Hidden circle" : "Hidden circle",
     "Private circle" : "Private circle",
@@ -133,11 +135,11 @@ OC.L10N.register(
     "No circle selected" : "No circle selected",
     "Pending invitation to join this circle" : "Pending invitation to join this circle",
     "You have a pending request to join this circle" : "You have a pending request to join this circle",
+    "Add a member" : "Add a member",
+    "Join this circle" : "Join this circle",
     "Accept the invitation" : "Accept the invitation",
     "Decline the invitation" : "Decline the invitation",
-    "Join this circle" : "Join this circle",
     "Leave this circle" : "Leave this circle",
-    "Add a member" : "Add a member",
     "Link to a circle" : "Link to a circle",
     "Username" : "Username",
     "Level" : "Level",

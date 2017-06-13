@@ -1,4 +1,6 @@
 { "translations": {
+    "Are you sure you want to transfer your Owner rights ?" : "Jesteś pewny, że chcesz przekazać swoje uprawnienia właściciela?",
+    "This action is irreversible" : "Operacja jest nieodwracalna",
     "Personal circle" : "Osobisty krąg",
     "Hidden circle" : "Ukryty krąg",
     "Private circle" : "Prywatny krąg",
@@ -47,6 +49,8 @@
     "Member '{name}' could not be removed from the circle" : "Nie udało się usunąć użytkownika '{name}' z kręgu",
     "Member '{name}' updated" : "Użytkownik '{name}' został zaktualizowany",
     "Member '{name}' could not be updated" : "Użytkownik '{name}' nie może zostać zaktualizowany",
+    "Issue while saving settings" : "Błąd podczas zapisywania ustawień",
+    "Settings saved." : "Ustawienia zostały zapisane.",
     "Circles" : "Kręgi",
     "You created the circle {circle}" : "Utworzyłeś krąg {circle}",
     "{author} created the circle {circle}" : "{author} utworzył krąg {circle}",
@@ -125,15 +129,16 @@
     "No circle selected" : "Żaden krąg nie został wybrany",
     "Pending invitation to join this circle" : "Oczekiwanie na zaproszenie do dołączenia do kręgu",
     "You have a pending request to join this circle" : "Masz oczekujące zaproszenie do dołączenia do tego kręgu",
+    "Add a member" : "Dodaj członka",
+    "Join this circle" : "Dołącz do kręgu",
     "Accept the invitation" : "Zaakceptuj zaproszenie",
     "Decline the invitation" : "Odrzuć zaproszenie",
-    "Join this circle" : "Dołącz do kręgu",
     "Leave this circle" : "Opuść krąg",
-    "Add a member" : "Dodaj członka",
     "Link to a circle" : "Link do kręgu",
     "Username" : "Nazwa użytkownika",
     "Level" : "Poziom",
     "Status" : "Status",
-    "Joined" : "Dołączeni"
+    "Joined" : "Dołączeni",
+    "Address" : "Adres"
 },"pluralForm" :"nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>=14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);"
 }

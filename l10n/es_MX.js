@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "This action is irreversible" : "Esta acción es irreversible",
     "Personal circle" : "Círculo personal",
     "Hidden circle" : "Círculo oculto",
     "Private circle" : "Círculo privado",
@@ -49,6 +50,8 @@ OC.L10N.register(
     "Member '{name}' could not be removed from the circle" : "No fue posible eliminar al miembro '{name}' del círculo",
     "Member '{name}' updated" : "El miembro '{name}' fue actualizado",
     "Member '{name}' could not be updated" : "El miembro '{name}' no pudo ser actualizado",
+    "Issue while saving settings" : "Se presentó un tema al guardar las configuraciones",
+    "Settings saved." : "Configuraciones guardadas.",
     "Circles" : "Círculos",
     "You created the circle {circle}" : "Creaste el círculo {circle}",
     "{author} created the circle {circle}" : "{author} creó el círculo {circle}",
@@ -84,6 +87,7 @@ OC.L10N.register(
     "This member does not exist" : "Este miembro no existe",
     "This user is already a member of the circle" : "El usuario ya es un miembro del círculo",
     "This option is not available for personal circles" : "Esta opción no está disponible para círculos personales",
+    "The circle is not Federated" : "Este círculo no es Federado",
     "You cannot join this circle" : "Usted no puede unirse a este cículo",
     "This member is not a moderator" : "Este miembro no es un moderador",
     "Not enough privileges" : "No cuenta con privilegios suficientes",
@@ -129,15 +133,16 @@ OC.L10N.register(
     "No circle selected" : "No se ha selecccionado un círculo",
     "Pending invitation to join this circle" : "Invitación pendiente para unirse a este círculo",
     "You have a pending request to join this circle" : "Usted tiene una solicitud pendiente para unirse a este círculo ",
+    "Add a member" : "Agegar un miembro",
+    "Join this circle" : "Unirse a este círculo",
     "Accept the invitation" : "Aceptar la invitación",
     "Decline the invitation" : "Declinar la invitación",
-    "Join this circle" : "Unirse a este círculo",
     "Leave this circle" : "Dejar este círculo",
-    "Add a member" : "Agegar un miembro",
     "Link to a circle" : "Enlazar a un círculo",
     "Username" : "Nombre de usuario",
     "Level" : "Nivel",
     "Status" : "Estatus",
-    "Joined" : "Se ha unido"
+    "Joined" : "Se ha unido",
+    "Address" : "Dirección"
 },
 "nplurals=2; plural=(n != 1);");

@@ -1,6 +1,8 @@
 OC.L10N.register(
     "circles",
     {
+    "Are you sure you want to transfer your Owner rights ?" : "Möchtest Du wirklich Deine Besitzerrechte übertragen?",
+    "This action is irreversible" : "Dieser Vorgang ist unumkehrbar",
     "Personal circle" : "Persönlicher Kreis",
     "Hidden circle" : "Versteckter Kreis",
     "Private circle" : "Privater Kreis",
@@ -133,11 +135,11 @@ OC.L10N.register(
     "No circle selected" : "Kein Kreis ausgewählt",
     "Pending invitation to join this circle" : "Ausstehende Einladung diesem Kreis beizutreten",
     "You have a pending request to join this circle" : "Sie haben eine ausstehende Beitrittsanfrage für diesen Kreis",
+    "Add a member" : "Ein Mitglied hinzufügen",
+    "Join this circle" : "Diesem Kreis beitreten",
     "Accept the invitation" : "Die Einladung akzeptieren",
     "Decline the invitation" : "Die Einladung ablehnen",
-    "Join this circle" : "Diesem Kreis beitreten",
     "Leave this circle" : "Diesen Kreis verlassen",
-    "Add a member" : "Ein Mitglied hinzufügen",
     "Link to a circle" : "Mit einem Kreis verknüpfen",
     "Username" : "Benutzername",
     "Level" : "Level",
