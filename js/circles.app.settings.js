@@ -30,6 +30,7 @@
 /** global: curr */
 /** global: define */
 /** global: elements */
+/** global: nav */
 
 var settings = {
 

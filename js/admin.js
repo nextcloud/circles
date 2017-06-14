@@ -24,6 +24,8 @@
  */
 
 
+/** global: OC */
+
 var elements = {
 	allow_federated_circles: null
 };

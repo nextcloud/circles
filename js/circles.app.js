@@ -32,6 +32,9 @@
 /** global: actions */
 /** global: elements */
 /** global: results */
+/** global: resultCircles */
+/** global: resultMembers */
+/** global: resultLinks */
 
 
 var api = OCA.Circles.api;
@@ -72,19 +75,18 @@ var define = {
 	linkUp: 9,
 	animationSpeed: 100,
 	animationMenuSpeed: 60,
+	status: {
+		0: t('circles', 'Link Removed'),
+		1: t('circles', 'Link down'),
+		2: t('circles', 'Setting link'),
+		4: t('circles', 'Request dismissed'),
+		5: t('circles', 'Request sent'),
+		6: t('circles', 'Link requested'),
+		9: t('circles', 'Link up')
+	},
 
 	linkStatus: function (status) {
-		s = {
-			0: t('circles', 'Link Removed'),
-			1: t('circles', 'Link down'),
-			2: t('circles', 'Setting link'),
-			4: t('circles', 'Request dismissed'),
-			5: t('circles', 'Request sent'),
-			6: t('circles', 'Link requested'),
-			9: t('circles', 'Link up')
-		};
-
-		return s[parseInt(status)];
+		return define.status[parseInt(status)];
 	}
 };
 

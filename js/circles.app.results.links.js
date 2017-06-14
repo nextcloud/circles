@@ -32,6 +32,7 @@
 /** global: elements */
 /** global: curr */
 /** global: api */
+/** global: define */
 
 
 var resultLinks = {

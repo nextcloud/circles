@@ -34,6 +34,9 @@
 /** global: resultCircles */
 /** global: curr */
 /** global: api */
+/** global: define */
+/** global: resultLinks */
+/** global: settings */
 
 
 var actions = {

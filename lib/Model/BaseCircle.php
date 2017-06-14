@@ -186,7 +186,7 @@ class BaseCircle {
 		if (is_array($settings)) {
 			$this->settings = $settings;
 		} else if (is_string($settings)) {
-			$this->settings = json_decode($settings, true);
+			$this->settings = (array)json_decode($settings, true);
 		}
 
 		return $this;
