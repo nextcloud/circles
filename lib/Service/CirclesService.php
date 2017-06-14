@@ -124,6 +124,7 @@ class CirclesService {
 		$circle = new Circle($this->l10n, $type, $name);
 		$owner = new Member($this->l10n, $this->userId);
 		$circle->setOwner($owner);
+		$circle->setUser($owner);
 
 		try {
 			$this->dbCircles->create($circle);

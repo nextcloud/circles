@@ -26,6 +26,7 @@
 
 namespace OCA\Circles\Model;
 
+use Exception;
 use OCA\Circles\Exceptions\CircleTypeNotValid;
 use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 
@@ -82,8 +83,7 @@ class Circle extends BaseCircle implements \JsonSerializable {
 			'links'          => $this->getLinks()
 		);
 
-		if ($this->lightJson)
-		{
+		if ($this->lightJson) {
 			$json['members'] = [];
 			$json['links'] = [];
 		}
@@ -132,7 +132,7 @@ class Circle extends BaseCircle implements \JsonSerializable {
 	 *
 	 * @return $this
 	 */
-	public static function fromArray2($l10n, $arr) {
+	public static function fromArray($l10n, $arr) {
 		$circle = new Circle($l10n);
 
 		$circle->setId($arr['id']);
@@ -160,9 +160,8 @@ class Circle extends BaseCircle implements \JsonSerializable {
 
 
 	public static function fromJSON($l10n, $json) {
-		return self::fromArray2($l10n, json_decode($json, true));
+		return self::fromArray($l10n, json_decode($json, true));
 	}
-
 
 //
 //

@@ -141,25 +141,6 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 	}
 
 
-	public function uniqueness(FederatedLink $link)
-	{
-		if ($link === null) {
-			return;
-		}
-
-		$qb = $this->getLinksDeleteSql();
-		$expr = $qb->expr();
-
-		$qb->where(
-			$expr->andX(
-				$expr->eq('unique_id', $qb->createNamedParameter($link->getUniqueId(true))),
-				$expr->eq('circle_id', $qb->createNamedParameter($link->getCircleId()))
-			)
-		);
-
-		$qb->execute();
-	}
-
 
 	public function delete(FederatedLink $link) {
 

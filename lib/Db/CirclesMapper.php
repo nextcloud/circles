@@ -82,7 +82,7 @@ class CirclesMapper extends Mapper {
 		$result = [];
 		while ($data = $cursor->fetch()) {
 			if ($name === '' || stripos($data['name'], $name) !== false) {
-				$circle = Circle::fromArray2($this->l10n, $data);
+				$circle = Circle::fromArray($this->l10n, $data);
 				$this->fillCircleUserIdAndOwner($circle, $data);
 				$result[] = $circle;
 			}

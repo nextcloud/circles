@@ -10,7 +10,6 @@ use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
-use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\MiscService;
 use OCP\Activity\IEvent;
@@ -18,6 +17,7 @@ use OCP\Activity\IManager;
 use OCP\Activity\IProvider;
 use OCP\IL10N;
 use OCP\IURLGenerator;
+use OpenCloud\Common\Exceptions\InvalidArgumentError;
 
 
 class Provider implements IProvider {
@@ -57,89 +57,105 @@ class Provider implements IProvider {
 			throw new \InvalidArgumentException();
 		}
 
-		$event = $this->parseAsMember($lang, $event);
-		$event = $this->parseAsModerator($lang, $event);
+		$event = $this->parseAsMember($event);
+		$event = $this->parseAsModerator($event);
 
 		return $event;
 	}
 
 
 	/**
-	 * @param string $lang
 	 * @param IEvent $event
 	 *
 	 * @return IEvent
 	 * @throws Exception
 	 */
-	private function parseAsMember($lang, IEvent $event) {
+	private function parseAsMember(IEvent $event) {
 		if ($event->getType() !== 'circles_as_member') {
 			return $event;
 		}
 
 		$params = $event->getSubjectParameters();
 		$circle = Circle::fromJSON($this->l10n, $params['circle']);
-		if ($circle === null) {
-			return $event;
-		}
-
 		$event->setIcon(CirclesService::getCircleIcon($circle->getType()));
+
 		switch ($event->getSubject()) {
 			case 'circle_create':
-				return $this->parseCircleCreate($lang, $circle, $event);
+				return $this->parseCircleEvent(
+					$circle, null, $event,
+					$this->l10n->t('You created the circle {circle}'),
+					$this->l10n->t('{author} created the circle {circle}')
+				);
 
 			case 'circle_delete':
-				return $this->parseCircleDelete($lang, $circle, $event);
+				return $this->parseCircleEvent(
+					$circle, null, $event,
+					$this->l10n->t('You deleted {circle}'),
+					$this->l10n->t('{author} deleted {circle}')
+				);
 		}
 
-		$event = $this->parseMembersAsMember($lang, $circle, $event);
+		if (key_exists('member', $params)) {
+			$event = $this->parseMemberAsMember($circle, $event);
+		}
 
 		return $event;
 	}
 
 
 	/**
-	 * @param $lang
 	 * @param Circle $circle
 	 * @param IEvent $event
 	 *
 	 * @return IEvent
 	 */
-	private function parseMembersAsMember($lang, Circle $circle, IEvent $event) {
+	private function parseMemberAsMember(Circle $circle, IEvent $event) {
 		$params = $event->getSubjectParameters();
-
 		$member = Member::fromJSON($this->l10n, $params['member']);
-		if ($member === null) {
-			return $event;
-		}
 
 		switch ($event->getSubject()) {
 			case 'member_join':
-				return $this->parseMemberJoin($lang, $circle, $member, $event);
+				return $this->parseCircleMemberEvent(
+					$circle, $member, $event,
+					$this->l10n->t('You joined {circle}'),
+					$this->l10n->t('{member} joined {circle}')
+				);
 
 			case 'member_add':
-				return $this->parseMemberAdd($lang, $circle, $member, $event);
+				return $this->parseCircleMemberAdvancedEvent(
+					$circle, $member, $event,
+					$this->l10n->t('You added {member} as member to {circle}'),
+					$this->l10n->t('You were added as member to {circle} by {author}'),
+					$this->l10n->t('{member} was added as member to {circle} by {author}')
+				);
 
 			case 'member_left':
-				return $this->parseMemberLeft($lang, $circle, $member, $event);
+				return $this->parseCircleMemberEvent(
+					$circle, $member, $event,
+					$this->l10n->t('You left {circle}'),
+					$this->l10n->t('{member} left {circle}')
+				);
 
 			case 'member_remove':
-				return $this->parseMemberRemove($lang, $circle, $member, $event);
-
-			default:
-				return $event;
+				return $this->parseCircleMemberAdvancedEvent(
+					$circle, $member, $event,
+					$this->l10n->t('You removed {member} from {circle}'),
+					$this->l10n->t('You were removed from {circle} by {author}'),
+					$this->l10n->t('{member} was removed from {circle} by {author}')
+				);
 		}
 
+		return $event;
 	}
 
 
 	/**
-	 * @param string $lang
 	 * @param IEvent $event
 	 *
 	 * @return IEvent
 	 * @throws Exception
 	 */
-	private function parseAsModerator($lang, IEvent $event) {
+	private function parseAsModerator(IEvent $event) {
 		if ($event->getType() !== 'circles_as_moderator') {
 			return $event;
 		}
@@ -150,17 +166,14 @@ class Provider implements IProvider {
 			$event->setIcon(CirclesService::getCircleIcon($circle->getType()));
 
 			if (key_exists('member', $params)) {
-				$member = Member::fromJSON($this->l10n, $params['member']);
-
-				return $this->parseMemberAsModerator($lang, $circle, $member, $event);
+				return $this->parseMemberAsModerator($circle, $event);
 			}
 
 			if (key_exists('link', $params)) {
-				$link = FederatedLink::fromJSON($params['link']);
-
-				return $this->parseLinkAsModerator($lang, $circle, $link, $event);
+				return $this->parseLinkAsModerator($circle, $event);
 			}
 
+			throw new InvalidArgumentError();
 		} catch (Exception $e) {
 			throw $e;
 		}
@@ -169,26 +182,50 @@ class Provider implements IProvider {
 
 
 	/**
-	 * @param $lang
 	 * @param Circle $circle
-	 * @param Member $member
 	 * @param IEvent $event
 	 *
 	 * @return IEvent
 	 */
-	private function parseMemberAsModerator($lang, Circle $circle, Member $member, IEvent $event) {
+	private function parseMemberAsModerator(Circle $circle, IEvent $event) {
+
+		$params = $event->getSubjectParameters();
+		$member = Member::fromJSON($this->l10n, $params['member']);
+
 		switch ($event->getSubject()) {
 			case 'member_invited':
-				return $this->parseMemberInvited($lang, $circle, $member, $event);
-
-			case 'member_request_invitation':
-				return $this->parseMemberRequestInvitation($lang, $circle, $member, $event);
+				return $this->parseCircleMemberAdvancedEvent(
+					$circle, $member, $event,
+					$this->l10n->t('You invited {member} into {circle}'),
+					$this->l10n->t('You have been invited into {circle} by {author}'),
+					$this->l10n->t('{member} have been invited into {circle} by {author}')
+				);
 
 			case 'member_level':
-				return $this->parseMemberLevel($lang, $circle, $member, $event);
+				$level = [$this->l10n->t($member->getLevelString())];
+
+				return $this->parseCircleMemberAdvancedEvent(
+					$circle, $member, $event,
+					$this->l10n->t('You changed {member}\'s level in {circle} to %1$s', $level),
+					$this->l10n->t('{author} changed your level in {circle} to %1$s', $level),
+					$this->l10n->t('{author} changed {member}\'s level in {circle} to %1$s', $level)
+				);
+
+			case 'member_request_invitation':
+				return $this->parseMemberEvent(
+					$circle, $member, $event,
+					$this->l10n->t('You requested an invitation to {circle}'),
+					$this->l10n->t(
+						'{member} has requested an invitation into {circle}'
+					)
+				);
 
 			case 'member_owner':
-				return $this->parseMemberOwner($lang, $circle, $member, $event);
+				return $this->parseMemberEvent(
+					$circle, $member, $event,
+					$this->l10n->t('You are the new owner of {circle}'),
+					$this->l10n->t('{member} is the new owner of {circle}')
+				);
 		}
 
 		throw new InvalidArgumentException();
@@ -196,744 +233,253 @@ class Provider implements IProvider {
 
 
 	/**
-	 * @param $lang
 	 * @param Circle $circle
-	 * @param FederatedLink $link
 	 * @param IEvent $event
 	 *
 	 * @return IEvent
 	 */
-	private function parseLinkAsModerator($lang, Circle $circle, FederatedLink $link, IEvent $event
-	) {
+	private function parseLinkAsModerator(Circle $circle, IEvent $event) {
+
+		$params = $event->getSubjectParameters();
+		$link = FederatedLink::fromJSON($params['link']);
 
 		switch ($event->getSubject()) {
 			case 'link_request_sent':
-				return $this->parseLinkRequestSent($lang, $circle, $link, $event);
+				return $this->parseCircleEvent(
+					$circle, $link, $event,
+					$this->l10n->t('You sent a request to link {circle} with {link}'),
+					$this->l10n->t('{author} sent a request to link {circle} with {link}')
+				);
 
 			case 'link_request_received';
-				return $this->parseLinkRequestReceived($lang, $circle, $link, $event);
+				return $this->parseLinkEvent(
+					$circle, $link, $event,
+					$this->l10n->t('{link} requested a link with {circle}')
+				);
 
-			case 'link_request_rejected':
-				return $this->parseLinkRequestRejected($lang, $circle, $link, $event);
+			case 'link_request_rejected';
+				return $this->parseLinkEvent(
+					$circle, $link, $event, $this->l10n->t(
+					'The request to link {circle} with {link} has been rejected'
+				)
+				);
 
 			case 'link_request_canceled':
-				return $this->parseLinkRequestCanceled($lang, $circle, $link, $event);
+				return $this->parseLinkEvent(
+					$circle, $link, $event,
+					$this->l10n->t(
+						'The request to link {link} with {circle} has been canceled remotely'
+					)
+				);
 
 			case 'link_request_accepted':
-				return $this->parseLinkRequestAccepted($lang, $circle, $link, $event);
-
-			case 'link_request_accepting':
-				return $this->parseLinkRequestAccepting($lang, $circle, $link, $event);
-
-			case 'link_up':
-				return $this->parseLinkUp($lang, $circle, $link, $event);
-
-			case 'link_down':
-				return $this->parseLinkDown($lang, $circle, $link, $event);
-
-			case 'link_remove':
-				return $this->parseLinkRemove($lang, $circle, $link, $event);
+				return $this->parseLinkEvent(
+					$circle, $link, $event,
+					$this->l10n->t('The request to link {circle} with {link} has been accepted')
+				);
 
 			case 'link_request_removed':
-				return $this->parseLinkRequestRemoved($lang, $circle, $link, $event);
+				return $this->parseCircleEvent(
+					$circle, $link, $event,
+					$this->l10n->t('You dismissed the request to link {link} with {circle}'),
+					$this->l10n->t('{author} dismissed the request to link {link} with {circle}')
+				);
+
+			case 'link_request_canceling':
+				return $this->parseCircleEvent(
+					$circle, $link, $event,
+					$this->l10n->t('You canceled the request to link {circle} with {link}'),
+					$this->l10n->t('{author} canceled the request to link {circle} with {link}')
+				);
+
+			case 'link_request_accepting':
+				return $this->parseCircleEvent(
+					$circle, $link, $event,
+					$this->l10n->t('You accepted the request to link {link} with {circle}'),
+					$this->l10n->t('{author} accepted the request to link {link} with {circle}')
+				);
+
+			case 'link_up':
+				return $this->parseLinkEvent(
+					$circle, $link, $event,
+					$this->l10n->t('A link between {circle} and {link} is now up and running')
+				);
+
+			case 'link_down':
+				return $this->parseLinkEvent(
+					$circle, $link, $event,
+					$this->l10n->t(
+						'The link between {circle} and {link} has been shutdown remotely'
+					)
+				);
+
+			case 'link_remove':
+				return $this->parseCircleEvent(
+					$circle, $link, $event,
+					$this->l10n->t('You closed the link between {circle} and {link}'),
+					$this->l10n->t('{author} closed the link between {circle} and {link}')
+				);
 		}
 
 		throw new InvalidArgumentException();
 	}
 
+
 	/**
-	 * @param string $lang
+	 * general function to generate Circle event.
+	 *
 	 * @param Circle $circle
+	 * @param FederatedLink $link
 	 * @param IEvent $event
+	 * @param $ownEvent
+	 * @param $othersEvent
 	 *
 	 * @return IEvent
 	 */
-	private function parseCircleCreate($lang, Circle $circle, IEvent $event) {
-		if ($circle->getOwner()
-				   ->getUserId() === $this->activityManager->getCurrentUserId()
-		) {
-			$event->setRichSubject(
-				$this->l10n->t('You created the circle {circle}'),
-				['circle' => $this->generateCircleParameter($circle)]
-			);
-
-		} else {
-			$event->setRichSubject(
-				$this->l10n->t('{author} created the circle {circle}'),
-				[
-					'author' => $author = $this->generateUserParameter(
-						$circle->getOwner()
-							   ->getUserId()
-					),
-					'circle' => $this->generateCircleParameter($circle)
-				]
-			);
-		}
-
-		return $event;
-	}
-
-
-	/**
-	 * @param string $lang
-	 * @param Circle $circle
-	 * @param IEvent $event
-	 *
-	 * @return IEvent
-	 */
-	private function parseCircleDelete($lang, Circle $circle, IEvent $event) {
-		if ($circle->getOwner()
-				   ->getUserId() === $this->activityManager->getCurrentUserId()
-		) {
-			$event->setRichSubject(
-				$this->l10n->t('You deleted {circle}'),
-				['circle' => $this->generateCircleParameter($circle)]
-			);
-		} else {
-			$event->setRichSubject(
-				$this->l10n->t('{author} deleted {circle}'),
-				[
-					'author' => $this->generateUserParameter(
-						$circle->getOwner()
-							   ->getUserId()
-					),
-					'circle' => $this->generateCircleParameter($circle)
-				]
-			);
-		}
-
-		return $event;
-	}
-
-
-	/**
-	 * @param string $lang
-	 * @param Circle $circle
-	 * @param Member $member
-	 * @param IEvent $event
-	 *
-	 * @return IEvent
-	 */
-	private function parseMemberInvited($lang, Circle $circle, Member $member, IEvent $event) {
-
-		if ($circle->getUser()
-				   ->getUserId() === $this->activityManager->getCurrentUserId()
-		) {
-			$event->setRichSubject(
-				$this->l10n->t('You invited {member} into {circle}'),
-				[
-					'circle' => $this->generateCircleParameter($circle),
-					'member' => $this->generateMemberParameter($member)
-				]
-			);
-
-		} elseif ($member->getUserId() === $this->activityManager->getCurrentUserId()) {
-			$event->setRichSubject(
-				$this->l10n->t('You have been invited into {circle} by {author}'),
-				[
-					'author' => $this->generateUserParameter(
-						$circle->getUser()
-							   ->getUserId()
-					),
-					'circle' => $this->generateCircleParameter($circle)
-				]
-			);
-
-		} else {
-			$event->setRichSubject(
-				$this->l10n->t('{member} have been invited into {circle} by {author}'),
-				[
-					'author' => $this->generateUserParameter(
-						$circle->getUser()
-							   ->getUserId()
-					),
-					'circle' => $this->generateCircleParameter($circle),
-					'member' => $this->generateMemberParameter($member)
-				]
-			);
-		}
-
-		return $event;
-	}
-
-
-	/**
-	 * @param $lang
-	 * @param Circle $circle
-	 * @param Member $member
-	 * @param IEvent $event
-	 *
-	 * @return IEvent
-	 */
-	private function parseMemberRequestInvitation(
-		$lang, Circle $circle, Member $member, IEvent $event
+	private function parseCircleEvent(Circle $circle, $link, IEvent $event, $ownEvent, $othersEvent
 	) {
-		if ($member->getUserId() === $this->activityManager->getCurrentUserId()) {
-			$event->setRichSubject(
-				$this->l10n->t('You requested an invitation to {circle}'),
-				['circle' => $this->generateCircleParameter($circle)]
-			);
-
-		} else {
-			$event->setRichSubject(
-				$this->l10n->t(
-					'{author} has requested an invitation into {circle}'
-				), [
-					'author' => $this->generateMemberParameter($member),
-					'circle' => $this->generateCircleParameter($circle)
-				]
-			);
-		}
-
-		return $event;
-	}
-
-
-	/**
-	 * @param $lang
-	 * @param Circle $circle
-	 * @param Member $member
-	 * @param IEvent $event
-	 *
-	 * @return IEvent
-	 */
-	private function parseMemberJoin($lang, Circle $circle, Member $member, IEvent $event) {
-		if ($circle->getUser()
-				   ->getUserId() === $this->activityManager->getCurrentUserId()
-		) {
-			$event->setRichSubject(
-				$this->l10n->t('You joined {circle}'),
-				['circle' => $this->generateCircleParameter($circle)]
-			);
-
-		} else {
-			$event->setRichSubject(
-				$this->l10n->t(
-					'{member} has joined the circle {circle}'
-				), [
-					'circle' => $this->generateCircleParameter($circle),
-					'member' => $this->generateMemberParameter($member)
-				]
-			);
-		}
-
-		return $event;
-	}
-
-
-	/**
-	 * @param $lang
-	 * @param Circle $circle
-	 * @param Member $member
-	 * @param IEvent $event
-	 *
-	 * @return IEvent
-	 */
-	private function parseMemberAdd($lang, Circle $circle, Member $member, IEvent $event) {
+		$data = [
+			'author' => $author = $this->generateUserParameter(
+				$circle->getUser()
+					   ->getUserId()
+			),
+			'circle' => $this->generateCircleParameter($circle),
+			'link'   => ($link === null) ? '' : $this->generateLinkParameter($link)
+		];
 
 		if ($circle->getUser()
 				   ->getUserId() === $this->activityManager->getCurrentUserId()
 		) {
-			$event->setRichSubject(
-				$this->l10n->t('You added {member} as member to {circle}'),
-				[
-					'circle' => $this->generateCircleParameter($circle),
-					'member' => $this->generateMemberParameter($member)
-				]
-			);
-
-		} elseif ($member->getUserId() === $this->activityManager->getCurrentUserId()) {
-			$event->setRichSubject(
-				$this->l10n->t('You were added as member to {circle} by {author}'),
-				[
-					'author' => $this->generateUserParameter(
-						$circle->getUser()
-							   ->getUserId()
-					),
-					'circle' => $this->generateCircleParameter($circle)
-				]
-			);
-
-		} else {
-			$event->setRichSubject(
-				$this->l10n->t(
-					'{member} was added as member to {circle} by {author}'
-				), [
-					'author' => $this->generateUserParameter(
-						$circle->getUser()
-							   ->getUserId()
-					),
-					'circle' => $this->generateCircleParameter($circle),
-					'member' => $this->generateMemberParameter($member)
-				]
-			);
+			return $event->setRichSubject($ownEvent, $data);
 		}
 
-		return $event;
+		return $event->setRichSubject($othersEvent, $data);
 	}
 
 
 	/**
-	 * @param $lang
+	 * general function to generate Member event.
+	 *
 	 * @param Circle $circle
-	 * @param Member $member
+	 * @param $member
 	 * @param IEvent $event
+	 * @param $ownEvent
+	 * @param $othersEvent
 	 *
 	 * @return IEvent
 	 */
-	private function parseMemberLeft($lang, Circle $circle, Member $member, IEvent $event) {
-		if ($circle->getUser()
-				   ->getUserId() === $this->activityManager->getCurrentUserId()
-		) {
-			$event->setRichSubject(
-				$this->l10n->t('You left {circle}'),
-				['circle' => $this->generateCircleParameter($circle)]
-			);
+	private function parseMemberEvent(
+		Circle $circle, Member $member, IEvent $event, $ownEvent, $othersEvent
+	) {
+		$data = [
+			'circle' => $this->generateCircleParameter($circle),
+			'member' => $this->generateMemberParameter($member)
+		];
 
-		} else {
-			$event->setRichSubject(
-				$this->l10n->t(
-					'{member} has left {circle}'
-				), [
-					'circle' => $this->generateCircleParameter($circle),
-					'member' => $this->generateMemberParameter($member)
-				]
-			);
-		}
-
-		return $event;
-	}
-
-
-	/**
-	 * @param $lang
-	 * @param Circle $circle
-	 * @param Member $member
-	 * @param IEvent $event
-	 *
-	 * @return IEvent
-	 */
-	private function parseMemberRemove($lang, Circle $circle, Member $member, IEvent $event) {
-
-		if ($circle->getUser()
-				   ->getUserId() === $this->activityManager->getCurrentUserId()
-		) {
-			$event->setRichSubject(
-				$this->l10n->t('You removed {member} from {circle}'),
-				[
-					'circle' => $this->generateCircleParameter($circle),
-					'member' => $this->generateMemberParameter($member)
-				]
-			);
-
-		} elseif ($member->getUserId() === $this->activityManager->getCurrentUserId()) {
-			$event->setRichSubject(
-				$this->l10n->t('You were removed from {circle} by {author}'),
-				[
-					'author' => $this->generateUserParameter(
-						$circle->getUser()
-							   ->getUserId()
-					),
-					'circle' => $this->generateCircleParameter($circle)
-				]
-			);
-
-		} else {
-			$event->setRichSubject(
-				$this->l10n->t(
-					'{member} was removed from {circle} by {author}'
-				), [
-					'author' => $this->generateUserParameter(
-						$circle->getUser()
-							   ->getUserId()
-					),
-					'circle' => $this->generateCircleParameter($circle),
-					'member' => $this->generateMemberParameter($member)
-				]
-			);
-		}
-
-		return $event;
-	}
-
-
-	/**
-	 * @param $lang
-	 * @param Circle $circle
-	 * @param Member $member
-	 * @param IEvent $event
-	 *
-	 * @return IEvent
-	 */
-	private function parseMemberLevel($lang, Circle $circle, Member $member, IEvent $event) {
-
-		if ($circle->getUser()
-				   ->getUserId() === $this->activityManager->getCurrentUserId()
-		) {
-			$event->setRichSubject(
-				$this->l10n->t(
-					'You changed {member}\'s level in {circle} to %1$s',
-					[$this->l10n->t($member->getLevelString())]
-				),
-				[
-					'circle' => $this->generateCircleParameter($circle),
-					'member' => $this->generateMemberParameter($member)
-				]
-			);
-
-		} elseif ($member->getUserId() === $this->activityManager->getCurrentUserId()) {
-			$event->setRichSubject(
-				$this->l10n->t(
-					'{author} changed your level in {circle} to %1$s',
-					[$this->l10n->t($member->getLevelString())]
-				),
-				[
-					'author' => $this->generateUserParameter(
-						$circle->getUser()
-							   ->getUserId()
-					),
-					'circle' => $this->generateCircleParameter($circle),
-					'level'  => $this->l10n->t($member->getLevelString())
-				]
-			);
-
-		} else {
-			$event->setRichSubject(
-				$this->l10n->t(
-					'{author} changed {member}\'s level in {circle} to %1$s',
-					[$this->l10n->t($member->getLevelString())]
-				), [
-					'author' => $this->generateUserParameter(
-						$circle->getUser()
-							   ->getUserId()
-					),
-					'circle' => $this->generateCircleParameter($circle),
-					'member' => $this->generateMemberParameter($member),
-					'level'  => $this->l10n->t($member->getLevelString())
-				]
-			);
-		}
-
-		return $event;
-	}
-
-
-	/**
-	 * @param $lang
-	 * @param Circle $circle
-	 * @param Member $member
-	 * @param IEvent $event
-	 *
-	 * @return IEvent
-	 */
-	private function parseMemberOwner($lang, Circle $circle, Member $member, IEvent $event) {
 		if ($member->getUserId() === $this->activityManager->getCurrentUserId()
 		) {
-			$event->setRichSubject(
-				$this->l10n->t('You are the new owner of {circle}'),
-				['circle' => $this->generateCircleParameter($circle)]
-			);
-
-		} else {
-			$event->setRichSubject(
-				$this->l10n->t(
-					'{member} is the new owner of {circle}'
-				), [
-					'circle' => $this->generateCircleParameter($circle),
-					'member' => $this->generateMemberParameter($member)
-				]
-			);
+			return $event->setRichSubject($ownEvent, $data);
 		}
 
-		return $event;
+		return $event->setRichSubject($othersEvent, $data);
 	}
 
 
 	/**
-	 * @param $lang
+	 * general function to generate Link event.
+	 *
 	 * @param Circle $circle
 	 * @param FederatedLink $link
 	 * @param IEvent $event
+	 * @param $line
 	 *
 	 * @return IEvent
 	 */
-	private function parseLinkRequestSent($lang, Circle $circle, FederatedLink $link, IEvent $event
+	private function parseLinkEvent(Circle $circle, FederatedLink $link, IEvent $event, $line) {
+		$data = [
+			'circle' => $this->generateCircleParameter($circle),
+			'link'   => $this->generateLinkParameter($link)
+		];
+
+		return $event->setRichSubject($line, $data);
+	}
+
+
+	/**
+	 * general function to generate Circle+Member event.
+	 *
+	 * @param Circle $circle
+	 * @param Member $member
+	 * @param IEvent $event
+	 * @param $ownEvent
+	 * @param $othersEvent
+	 *
+	 * @return IEvent
+	 */
+	private function parseCircleMemberEvent(
+		Circle $circle, Member $member, IEvent $event, $ownEvent, $othersEvent
 	) {
+		$data = [
+			'circle' => $this->generateCircleParameter($circle),
+			'member' => $this->generateMemberParameter($member)
+		];
+
 		if ($circle->getUser()
 				   ->getUserId() === $this->activityManager->getCurrentUserId()
 		) {
-			$event->setRichSubject(
-				$this->l10n->t('You sent a request to link {circle} with {remote}'),
-				[
-					'circle' => $this->generateCircleParameter($circle),
-					'remote' => $this->generateLinkParameter($link)
-				]
-			);
-		} else {
-			$event->setRichSubject(
-				$this->l10n->t('{author} sent a request to link {circle} with {remote}'),
-				[
-					'author' => $this->generateUserParameter(
-						$circle->getUser()
-							   ->getUserId()
-					),
-					'circle' => $this->generateCircleParameter($circle),
-					'remote' => $this->generateLinkParameter($link)
-				]
-			);
+			return $event->setRichSubject($ownEvent, $data);
 		}
 
-		return $event;
+		return $event->setRichSubject($othersEvent, $data);
 	}
 
 
 	/**
-	 * @param $lang
+	 * general function to generate Circle+Member advanced event.
+	 *
 	 * @param Circle $circle
-	 * @param FederatedLink $link
+	 * @param Member $member
 	 * @param IEvent $event
+	 *\
+	 * @param $ownEvent
+	 * @param $targetEvent
+	 * @param $othersEvent
 	 *
 	 * @return IEvent
 	 */
-	private function parseLinkRequestReceived(
-		$lang, Circle $circle, FederatedLink $link, IEvent $event
+	private function parseCircleMemberAdvancedEvent(
+		Circle $circle, Member $member, IEvent $event, $ownEvent, $targetEvent, $othersEvent
 	) {
-		$event->setRichSubject(
-			$this->l10n->t('{remote} requested a link with {circle}'),
-			[
-				'circle' => $this->generateCircleParameter($circle),
-				'remote' => $this->generateLinkParameter($link)
-			]
-		);
 
-		return $event;
-	}
-
-
-	/**
-	 * @param $lang
-	 * @param Circle $circle
-	 * @param FederatedLink $link
-	 * @param IEvent $event
-	 *
-	 * @return IEvent
-	 */
-	private function parseLinkRequestRejected(
-		$lang, Circle $circle, FederatedLink $link, IEvent $event
-	) {
-		$event->setRichSubject(
-			$this->l10n->t('The request to link {circle} with {remote} has been rejected remotely'),
-			[
-				'circle' => $this->generateCircleParameter($circle),
-				'remote' => $this->generateLinkParameter($link)
-			]
-		);
-
-		return $event;
-	}
-
-	/**
-	 * @param $lang
-	 * @param Circle $circle
-	 * @param FederatedLink $link
-	 * @param IEvent $event
-	 *
-	 * @return IEvent
-	 */
-	private function parseLinkRequestCanceled(
-		$lang, Circle $circle, FederatedLink $link, IEvent $event
-	) {
-		$event->setRichSubject(
-			$this->l10n->t(
-				'The request to link {remote} with {circle}  has been canceled remotely'
+		$data = [
+			'author' => $this->generateUserParameter(
+				$circle->getUser()
+					   ->getUserId()
 			),
-			[
-				'circle' => $this->generateCircleParameter($circle),
-				'remote' => $this->generateLinkParameter($link)
-			]
-		);
+			'circle' => $this->generateCircleParameter($circle),
+			'member' => $this->generateMemberParameter($member)
+		];
 
-		return $event;
-	}
-
-
-	/**
-	 * @param $lang
-	 * @param Circle $circle
-	 * @param FederatedLink $link
-	 * @param IEvent $event
-	 *
-	 * @return IEvent
-	 */
-	private function parseLinkRequestRemoved(
-		$lang, Circle $circle, FederatedLink $link, IEvent $event
-	) {
 		if ($circle->getUser()
 				   ->getUserId() === $this->activityManager->getCurrentUserId()
 		) {
-			$event->setRichSubject(
-				$this->l10n->t('You dismissed the request to link {remote} with {circle}'),
-				[
-					'circle' => $this->generateCircleParameter($circle),
-					'remote' => $this->generateLinkParameter($link)
-				]
-			);
-		} else {
-			$event->setRichSubject(
-				$this->l10n->t('{author} dismissed the request to link {remote} with {circle}'),
-				[
-					'author' => $this->generateUserParameter(
-						$circle->getUser()
-							   ->getUserId()
-					),
-					'circle' => $this->generateCircleParameter($circle),
-					'remote' => $this->generateLinkParameter($link)
-				]
-			);
+			return $event->setRichSubject($ownEvent, $data);
 		}
 
-		return $event;
-	}
-
-
-	/**
-	 * @param $lang
-	 * @param Circle $circle
-	 * @param FederatedLink $link
-	 * @param IEvent $event
-	 *
-	 * @return IEvent
-	 */
-	private function parseLinkRequestAccepted(
-		$lang, Circle $circle, FederatedLink $link, IEvent $event
-	) {
-		$event->setRichSubject(
-			$this->l10n->t('The request to link {circle} with {remote} has been accepted'),
-			[
-				'circle' => $this->generateCircleParameter($circle),
-				'remote' => $this->generateLinkParameter($link)
-			]
-		);
-
-		return $event;
-	}
-
-
-	/**
-	 * @param $lang
-	 * @param Circle $circle
-	 * @param FederatedLink $link
-	 * @param IEvent $event
-	 *
-	 * @return IEvent
-	 */
-	private function parseLinkRequestAccepting(
-		$lang, Circle $circle, FederatedLink $link, IEvent $event
-	) {
-		if ($circle->getUser()
-				   ->getUserId() === $this->activityManager->getCurrentUserId()
-		) {
-			$event->setRichSubject(
-				$this->l10n->t('You accepted the request to link {remote} with {circle}'),
-				[
-					'circle' => $this->generateCircleParameter($circle),
-					'remote' => $this->generateLinkParameter($link)
-				]
-			);
-		} else {
-			$event->setRichSubject(
-				$this->l10n->t('{author} accepted the request to link {remote} with {circle}'),
-				[
-					'author' => $this->generateUserParameter(
-						$circle->getUser()
-							   ->getUserId()
-					),
-					'circle' => $this->generateCircleParameter($circle),
-					'remote' => $this->generateLinkParameter($link)
-				]
-			);
+		if ($member->getUserId() === $this->activityManager->getCurrentUserId()) {
+			return $event->setRichSubject($targetEvent, $data);
 		}
 
-		return $event;
+		return $event->setRichSubject($othersEvent, $data);
 	}
 
 
-	/**
-	 * @param $lang
-	 * @param Circle $circle
-	 * @param FederatedLink $link
-	 * @param IEvent $event
-	 *
-	 * @return IEvent
-	 */
-	private function parseLinkUp($lang, Circle $circle, FederatedLink $link, IEvent $event
-	) {
-		$event->setRichSubject(
-			$this->l10n->t('A link between {circle} and {remote} is now up and running'),
-			[
-				'circle' => $this->generateCircleParameter($circle),
-				'remote' => $this->generateLinkParameter($link)
-			]
-		);
-
-		return $event;
-	}
-
-
-	/**
-	 * @param $lang
-	 * @param Circle $circle
-	 * @param FederatedLink $link
-	 * @param IEvent $event
-	 *
-	 * @return IEvent
-	 */
-	private function parseLinkDown($lang, Circle $circle, FederatedLink $link, IEvent $event
-	) {
-		$event->setRichSubject(
-			$this->l10n->t('The link between {circle} and {remote} has been shutdown remotely'),
-			[
-				'circle' => $this->generateCircleParameter($circle),
-				'remote' => $this->generateLinkParameter($link)
-			]
-		);
-
-		return $event;
-	}
-
-
-	/**
-	 * @param $lang
-	 * @param Circle $circle
-	 * @param FederatedLink $link
-	 * @param IEvent $event
-	 *
-	 * @return IEvent
-	 */
-	private function parseLinkRemove($lang, Circle $circle, FederatedLink $link, IEvent $event
-	) {
-		$event->setRichSubject(
-			$this->l10n->t('The link between {circle} and {remote} has been canceled locally'),
-			[
-				'circle' => $this->generateCircleParameter($circle),
-				'remote' => $this->generateLinkParameter($link)
-			]
-		);
-
-		return $event;
-	}
-
-
-	private function generateMemberParameter(
-		Member $member
-	) {
+	private function generateMemberParameter(Member $member) {
 		return $this->generateUserParameter($member->getUserId());
 	}
 
 
-	private function generateCircleParameter(
-		Circle $circle
-	) {
+	private function generateCircleParameter(Circle $circle) {
 		return [
 			'type' => 'circle',
 			'id'   => $circle->getId(),
@@ -950,7 +496,6 @@ class Provider implements IProvider {
 			'name' => $link->getToken() . '@' . $link->getAddress()
 		];
 //			'link' => Circles::generateRemoteLink($link)
-
 	}
 
 

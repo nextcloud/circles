@@ -532,11 +532,17 @@ class EventsService {
 	public function onLinkRemove(Circle $circle, FederatedLink $link) {
 		$event = $this->generateEvent('circles_as_moderator');
 
+		if ($link->getStatus() === FederatedLink::STATUS_LINK_DOWN) {
+			return;
+		}
+		
+		$subject = 'link_remove';
 		if ($link->getStatus() === FederatedLink::STATUS_LINK_REQUESTED) {
 			$subject = 'link_request_removed';
-		} else {
-			$subject = 'link_remove';
+		} elseif ($link->getStatus() === FederatedLink::STATUS_REQUEST_SENT) {
+			$subject = 'link_request_canceling';
 		}
+
 		$event->setSubject(
 			$subject, ['circle' => $circle->getJson(false, true), 'link' => $link->getJson()]
 		);

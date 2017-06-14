@@ -80,7 +80,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
-		if ($data === false) {
+		if ($data === false || $data === null) {
 			throw new CircleDoesNotExistException(
 				$this->l10n->t('Circle not found')
 			);
@@ -201,7 +201,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
 
-		if ($data === false) {
+		if ($data === false || $data === null) {
 			throw new FederatedLinkDoesNotExistException(
 				$this->l10n->t('Federated Link not found')
 			);
@@ -230,7 +230,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$data = $cursor->fetch();
 		$cursor->closeCursor();
 
-		if ($data === false) {
+		if ($data === false || $data === null) {
 			throw new FederatedLinkDoesNotExistException(
 				$this->l10n->t('Federated Link not found')
 			);

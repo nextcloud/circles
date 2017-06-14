@@ -332,7 +332,7 @@ style('circles', 'navigation');
 					<tr>
 						<td colspan="2" style="text-align: center;">
 							<input type="submit" id="settings-submit"
-								   value="<?php p($l->t('Save settings')); ?>'"/>
+								   value="<?php p($l->t('Save settings')); ?>"/>
 						</td>
 					</tr>
 				</table>

@@ -128,7 +128,7 @@ class FederatedService {
 
 
 	/**
-	 * linkCircle()
+	 * linkCircle();
 	 *
 	 * link to a circle.
 	 * Function will check if settings allow Federated links between circles, and the format of
@@ -199,17 +199,8 @@ class FederatedService {
 				   ->hasToBeAdmin();
 			$link->hasToBeValidStatusUpdate($status);
 
-			if ($link->getStatus() === $status) {
+			if (!$this->eventOnLinkStatus($circle, $link, $status)) {
 				return $this->circlesRequest->getLinksFromCircle($circle->getId());
-			}
-
-			if ($status === FederatedLink::STATUS_LINK_REMOVE) {
-				$this->eventsService->onLinkRemove($circle, $link);
-			}
-
-			if ($status === FederatedLink::STATUS_LINK_UP) {
-				$this->eventsService->onLinkRequestAccepting($circle, $link);
-				$this->eventsService->onLinkUp($circle, $link);
 			}
 
 			$link->setStatus($status);
@@ -226,6 +217,36 @@ class FederatedService {
 		}
 
 		return $this->circlesRequest->getLinksFromCircle($circle->getId());
+	}
+
+
+	/**
+	 * eventOnLinkStatus();
+	 *
+	 * Called by linkStatus() to manage events when status is changing.
+	 * If status does not need update, returns false;
+	 *
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 * @param $status
+	 *
+	 * @return bool
+	 */
+	private function eventOnLinkStatus(Circle $circle, FederatedLink $link, $status) {
+		if ($link->getStatus() === $status) {
+			return false;
+		}
+
+		if ($status === FederatedLink::STATUS_LINK_REMOVE) {
+			$this->eventsService->onLinkRemove($circle, $link);
+		}
+
+		if ($status === FederatedLink::STATUS_LINK_UP) {
+			$this->eventsService->onLinkRequestAccepting($circle, $link);
+			$this->eventsService->onLinkUp($circle, $link);
+		}
+
+		return true;
 	}
 
 
@@ -342,25 +363,101 @@ class FederatedService {
 			);
 
 			$result = json_decode($request->getBody(), true);
-			$link->setUniqueId($result['uniqueId']);
-
-			if ($result['status'] === FederatedLink::STATUS_LINK_UP) {
-				$link->setStatus(FederatedLink::STATUS_LINK_UP);
-				$this->eventsService->onLinkUp($circle, $link);
-			} else if ($result['status'] === FederatedLink::STATUS_LINK_REQUESTED) {
-				$link->setStatus(FederatedLink::STATUS_REQUEST_SENT);
-				$this->eventsService->onLinkRequestSent($circle, $link);
-			} else {
-				$this->parsingRequestLinkResult($result);
+			if (!key_exists('uniqueId', $result))
+			{
+				throw new Exception();
 			}
 
-//			$this->federatedLinksRequest->uniqueness($link);
+			$link->setUniqueId($result['uniqueId']);
+
+			$this->eventOnRequestLink(
+				$circle, $link, $result['status'],
+				((key_exists('reason', $result)) ? $result['reason'] : '')
+			);
 			$this->federatedLinksRequest->update($link);
 
 			return true;
 		} catch (Exception $e) {
 			throw $e;
 		}
+	}
+
+
+	/**
+	 * eventOnRequestLink();
+	 *
+	 * Called by requestLink() will update status and event
+	 * Will also manage errors returned by the remote link
+	 *
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 * @param $status
+	 * @param $reason
+	 *
+	 * @throws Exception
+	 */
+	private function eventOnRequestLink(Circle $circle, FederatedLink $link, $status, $reason) {
+
+		try {
+			if ($status === FederatedLink::STATUS_LINK_UP) {
+				$link->setStatus(FederatedLink::STATUS_LINK_UP);
+				$this->eventsService->onLinkUp($circle, $link);
+			} else if ($status === FederatedLink::STATUS_LINK_REQUESTED) {
+				$link->setStatus(FederatedLink::STATUS_REQUEST_SENT);
+				$this->eventsService->onLinkRequestSent($circle, $link);
+			} else {
+				$this->parseRequestLinkError($reason);
+			}
+		} catch (Exception $e) {
+			throw $e;
+		}
+	}
+
+
+	/**
+	 * parseRequestLinkError();
+	 *
+	 * Will parse the error reason returned by requestLink() and throw an Exception
+	 *
+	 * @param $reason
+	 *
+	 * @throws Exception
+	 * @throws FederatedRemoteCircleDoesNotExistException
+	 * @throws FederatedRemoteDoesNotAllowException
+	 */
+	private function parseRequestLinkError($reason) {
+
+		if ($reason === 'federated_not_allowed') {
+			throw new FederatedRemoteDoesNotAllowException(
+				$this->l10n->t('Federated circles are not allowed on the remote Nextcloud')
+			);
+		}
+
+		if ($reason === 'circle_links_disable') {
+			throw new FederatedRemoteDoesNotAllowException(
+				$this->l10n->t('The remote circle does not accept Federated Links')
+			);
+		}
+
+		if ($reason === 'duplicate_unique_id') {
+			throw new FederatedRemoteDoesNotAllowException(
+				$this->l10n->t('It seems that you are trying to link a circle to itself')
+			);
+		}
+
+		if ($reason === 'duplicate_link') {
+			throw new FederatedRemoteDoesNotAllowException(
+				$this->l10n->t('This link exists already')
+			);
+		}
+
+		if ($reason === 'circle_does_not_exist') {
+			throw new FederatedRemoteCircleDoesNotExistException(
+				$this->l10n->t('The requested remote circle does not exist')
+			);
+		}
+
+		throw new Exception($reason);
 	}
 
 
@@ -378,7 +475,7 @@ class FederatedService {
 			$circle = $this->circlesRequest->getCircleFromId($link->getCircleId());
 			$circle->hasToBeFederated();
 
-			$this->checkUpdateLinkFromRemote($link, $status);
+			$this->checkUpdateLinkFromRemote($status);
 			$this->checkUpdateLinkFromRemoteLinkUp($circle, $link, $status);
 			$this->checkUpdateLinkFromRemoteLinkRemove($circle, $link, $status);
 
@@ -393,26 +490,33 @@ class FederatedService {
 	}
 
 	/**
-	 * @param FederatedLink $link
+	 * checkUpdateLinkFromRemote();
+	 *
+	 * will throw exception is the status sent by remote is not correct
+	 *
 	 * @param $status
 	 *
 	 * @throws FederatedCircleStatusUpdateException
+	 * @internal param FederatedLink $link
 	 */
-	private function checkUpdateLinkFromRemote(FederatedLink $link, $status) {
+	private function checkUpdateLinkFromRemote($status) {
 		$status = (int)$status;
-		if ($status === FederatedLink::STATUS_LINK_UP
-			|| $status === FederatedLink::STATUS_LINK_REMOVE
+		if ($status !== FederatedLink::STATUS_LINK_UP
+			&& $status !== FederatedLink::STATUS_LINK_REMOVE
 		) {
-			return;
+			throw new FederatedCircleStatusUpdateException(
+				$this->l10n->t('Cannot proceed with this status update')
+			);
 		}
-
-		throw new FederatedCircleStatusUpdateException(
-			$this->l10n->t('Cannot proceed with this status update')
-		);
 	}
 
 
 	/**
+	 * checkUpdateLinkFromRemoteLinkUp()
+	 *
+	 * in case of a request of status update from remote for a link up, we check the current
+	 * status of the link locally.
+	 *
 	 * @param Circle $circle
 	 * @param FederatedLink $link
 	 * @param $status
@@ -437,6 +541,11 @@ class FederatedService {
 
 
 	/**
+	 * checkUpdateLinkFromRemoteLinkRemove();
+	 *
+	 * in case of a request of status update from remote for a link down, we check the current
+	 * status of the link locally
+	 *
 	 * @param Circle $circle
 	 * @param FederatedLink $link
 	 * @param $status
@@ -455,17 +564,22 @@ class FederatedService {
 			$this->eventsService->onLinkRequestRejected($circle, $link);
 
 			return;
-		} else if ($link->getStatus() === FederatedLink::STATUS_LINK_REQUESTED) {
+		}
+
+		if ($link->getStatus() === FederatedLink::STATUS_LINK_REQUESTED) {
 			$link->setStatus(FederatedLink::STATUS_LINK_REMOVE);
 			$this->eventsService->onLinkRequestCanceled($circle, $link);
 
 			return;
-		} else if ($link->getStatus() > FederatedLink::STATUS_LINK_DOWN) {
+		}
+
+		if ($link->getStatus() > FederatedLink::STATUS_LINK_DOWN) {
 			$link->setStatus(FederatedLink::STATUS_LINK_DOWN);
 			$this->eventsService->onLinkDown($circle, $link);
 
 			return;
 		}
+
 		throw new FederatedCircleStatusUpdateException(
 			$this->l10n->t('Cannot proceed with this status update')
 		);
@@ -505,42 +619,6 @@ class FederatedService {
 		} catch (Exception $e) {
 			throw $e;
 		}
-	}
-
-
-	private function parsingRequestLinkResult($result) {
-
-		if ($result['reason'] === 'federated_not_allowed') {
-			throw new FederatedRemoteDoesNotAllowException(
-				$this->l10n->t('Federated circles are not allowed on the remote Nextcloud')
-			);
-		}
-
-		if ($result['reason'] === 'circle_links_disable') {
-			throw new FederatedRemoteDoesNotAllowException(
-				$this->l10n->t('The remote circle does not accept Federated Links')
-			);
-		}
-
-		if ($result['reason'] === 'duplicate_unique_id') {
-			throw new FederatedRemoteDoesNotAllowException(
-				$this->l10n->t('It seems that you are trying to link a circle to itself')
-			);
-		}
-
-		if ($result['reason'] === 'duplicate_link') {
-			throw new FederatedRemoteDoesNotAllowException(
-				$this->l10n->t('This link exists already')
-			);
-		}
-
-		if ($result['reason'] === 'circle_does_not_exist') {
-			throw new FederatedRemoteCircleDoesNotExistException(
-				$this->l10n->t('The requested remote circle does not exist')
-			);
-		}
-
-		throw new Exception($result['reason']);
 	}
 
 
