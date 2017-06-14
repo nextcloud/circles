@@ -65,7 +65,7 @@ class SettingAsMember implements ISetting {
 	 * @since 11.0.0
 	 */
 	public function canChangeMail() {
-		return true;
+		return false;
 	}
 
 	/**
