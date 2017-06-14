@@ -143,7 +143,6 @@ class FederatedService {
 	 * @throws Exception
 	 * @throws FederatedCircleLinkFormatException
 	 * @throws CircleTypeNotValid
-	 * @throws MemberIsNotAdminException
 	 *
 	 * @return FederatedLink
 	 */
@@ -363,17 +362,12 @@ class FederatedService {
 			);
 
 			$result = json_decode($request->getBody(), true);
-			if (!key_exists('uniqueId', $result))
-			{
-				throw new Exception();
-			}
-
-			$link->setUniqueId($result['uniqueId']);
-
 			$this->eventOnRequestLink(
 				$circle, $link, $result['status'],
 				((key_exists('reason', $result)) ? $result['reason'] : '')
 			);
+
+			$link->setUniqueId($result['uniqueId']);
 			$this->federatedLinksRequest->update($link);
 
 			return true;
