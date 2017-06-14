@@ -430,12 +430,9 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	/**
 	 * @param $data
 	 */
-	private static function editShareFromParentEntry(& $data) {
+	private static function editShareFromParentEntry(&$data) {
 		if ($data['parent_id'] > 0) {
-			if ($data['parent_perms'] === '0') {
-				return;
-			}
-
+			$data['permissions'] = $data['parent_perms'];
 			$data['file_target'] = $data['parent_target'];
 		}
 	}

@@ -336,6 +336,11 @@ class CircleProviderRequestBuilder {
 			   $expr->eq('s2.share_with', $qb->createNamedParameter($userId))
 		   )
 		   );
+
+		$qb->selectAlias('s2.id', 'parent_id');
+		$qb->selectAlias('s2.file_target', 'parent_target');
+		$qb->selectAlias('s2.permissions', 'parent_perms');
+
 	}
 
 
@@ -422,9 +427,7 @@ class CircleProviderRequestBuilder {
 			'f.path_hash', 'f.parent AS f_parent', 'f.name', 'f.mimetype', 'f.mimepart',
 			'f.size', 'f.mtime', 'f.storage_mtime', 'f.encrypted', 'f.unencrypted_size',
 			'f.etag', 'f.checksum', 'c.type AS circle_type', 'c.name AS circle_name',
-			'mo.user_id AS circle_owner',
-			's2.id AS parent_id', 's2.file_target AS parent_target',
-			's2.permissions AS parent_perms'
+			'mo.user_id AS circle_owner'
 		)
 		   ->selectAlias('st.id', 'storage_string_id');
 
