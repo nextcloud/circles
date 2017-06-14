@@ -50,7 +50,7 @@ class Circles extends Entity {
 	public function __construct(Circle $item = null) {
 		if ($item != null) {
 			$this->setId($item->getId());
-			$this->setUniqueId($item->getUniqueId());
+			$this->setUniqueId($item->getUniqueId(true));
 			$this->setName($item->getName());
 			$this->setDescription($item->getDescription());
 			$this->setSettings($item->getSettings());

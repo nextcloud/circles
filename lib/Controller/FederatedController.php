@@ -107,7 +107,7 @@ class FederatedController extends BaseController {
 			$this->federatedService->initiateLink($circle, $link);
 
 			return $this->federatedSuccess(
-				['status' => $link->getStatus(), 'uniqueId' => $circle->getUniqueId()], $link
+				['status' => $link->getStatus(), 'uniqueId' => $circle->getUniqueId(true)], $link
 			);
 		} catch (Exception $e) {
 			return $this->federatedFail($e->getMessage());
@@ -223,7 +223,11 @@ class FederatedController extends BaseController {
 			return $this->federatedFail('federated_not_allowed');
 		}
 
-		$link = $this->federatedService->updateLinkFromRemote($token, $uniqueId, $status);
+		try {
+			$link = $this->federatedService->updateLinkFromRemote($token, $uniqueId, $status);
+		} catch (Exception $e) {
+			return $this->federatedFail($e->getMessage());
+		}
 
 		return $this->federatedSuccess(
 			['status' => 1, 'link' => $link], $link
@@ -262,7 +266,7 @@ class FederatedController extends BaseController {
 	 */
 	private function federatedSuccess($data, $link) {
 		return new DataResponse(
-			array_merge($data, ['token' => $link->getToken()]), Http::STATUS_OK
+			array_merge($data, ['token' => $link->getToken(true)]), Http::STATUS_OK
 		);
 
 	}

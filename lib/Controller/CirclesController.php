@@ -98,7 +98,6 @@ class CirclesController extends BaseController {
 	public function details($id) {
 		try {
 			$circle = $this->circlesService->detailsCircle($id);
-			$circle->shortenUniqueId();
 
 			return $this->success(['circle_id' => $id, 'details' => $circle]);
 		} catch (\Exception $e) {

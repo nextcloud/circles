@@ -160,7 +160,6 @@ class Circles {
 	}
 
 
-
 	/**
 	 * Circles::settingsCircle();
 	 *
@@ -344,13 +343,14 @@ class Circles {
 	 *
 	 * Returns the link to get access to a remote circle.
 	 *
-	 * @param int $circleId
+	 * @param FederatedLink $link
 	 *
 	 * @return string
 	 */
-	public static function generateRemoteLink($remote, $circleId) {
+	public static function generateRemoteLink(FederatedLink $link) {
 		return \OC::$server->getURLGenerator()
-						   ->linkToRoute('circles.Navigation.navigate') . '#' . $circleId;
+						   ->linkToRoute('circles.Navigation.navigate') . '#' . $link->getUniqueId()
+			   . '-' . $link->getToken();
 	}
 
 }

@@ -418,7 +418,8 @@ var nav = {
 				return;
 			}
 
-			if (status === define.linkUp || status === define.linkDown) {
+			if (status === define.linkSetup || status === define.linkRefused ||
+				status === define.linkUp || status === define.linkDown) {
 				statusSelect.append($('<option>', {
 					value: define.linkRemove,
 					text: t('circles', 'Remove this Link')

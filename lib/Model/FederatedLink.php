@@ -70,6 +70,8 @@ class FederatedLink implements \JsonSerializable {
 	/** @var string */
 	private $localCircleName;
 
+	/** @var bool */
+	private $fullJson = false;
 
 	public function __construct() {
 	}
@@ -106,20 +108,16 @@ class FederatedLink implements \JsonSerializable {
 	}
 
 	/**
+	 * @param bool $full
+	 *
 	 * @return string
 	 */
-	public function getToken() {
-		return $this->token;
-	}
+	public function getToken($full = false) {
+		if ($full) {
+			return $this->token;
+		}
 
-
-	public function shortenToken() {
-		$this->setToken(substr($this->getToken(), 0, 8));
-	}
-
-
-	public function shortenUniqueId() {
-		$this->setUniqueId(substr($this->getUniqueId(), 0, 8));
+		return substr($this->token, 0, 12);
 	}
 
 
@@ -203,10 +201,16 @@ class FederatedLink implements \JsonSerializable {
 	}
 
 	/**
+	 * @param bool $full
+	 *
 	 * @return string
 	 */
-	public function getUniqueId() {
-		return $this->uniqueId;
+	public function getUniqueId($full = false) {
+		if ($full) {
+			return $this->uniqueId;
+		}
+
+		return substr($this->uniqueId, 0, 12);
 	}
 
 
@@ -294,7 +298,15 @@ class FederatedLink implements \JsonSerializable {
 		if ($this->getStatus() === self::STATUS_LINK_DOWN && $status === self::STATUS_LINK_REMOVE) {
 			return true;
 		}
-		
+
+		if ($this->getStatus() === self::STATUS_REQUEST_DECLINED
+			|| $this->getStatus() === self::STATUS_LINK_SETUP
+		) {
+			if ($status === self::STATUS_LINK_REMOVE) {
+				return true;
+			}
+		}
+
 		if ($this->getStatus() === self::STATUS_LINK_REQUESTED) {
 			if ($status === self::STATUS_LINK_REMOVE) {
 				return true;
@@ -315,27 +327,50 @@ class FederatedLink implements \JsonSerializable {
 		throw new FederatedCircleStatusUpdateException('The status could not be updated');
 	}
 
-//
-//	public function isValid() {
-//
-//		if ($this->getStatus() === FederatedLink::STATUS_REQUEST_SENT
-//			|| $this->getStatus() === FederatedLink::STATUS_LINK_UP
-//		) {
-//			return true;
-//		}
-//
-//		return false;
-//	}
 
 	public function jsonSerialize() {
 		return array(
 			'id'        => $this->getId(),
-			'token'     => $this->getToken(),
+			'token'     => $this->getToken($this->fullJson),
 			'address'   => $this->getAddress(),
 			'status'    => $this->getStatus(),
-			'unique_id' => $this->getUniqueId(),
+			'circle_id' => $this->getCircleId(),
+			'unique_id' => $this->getUniqueId($this->fullJson),
 			'creation'  => $this->getCreation()
 		);
+	}
+
+
+	public function getJson($full = false) {
+		$this->fullJson = $full;
+		$json = json_encode($this);
+		$this->fullJson = false;
+
+		return $json;
+	}
+
+
+	public static function fromArray($arr) {
+		if ($arr === null) {
+			return null;
+		}
+
+		$link = new FederatedLink();
+
+		$link->setId($arr['id']);
+		$link->setToken($arr['token']);
+		$link->setAddress($arr['address']);
+		$link->setStatus($arr['status']);
+		$link->setCircleId($arr['circle_id']);
+		$link->setUniqueId($arr['unique_id']);
+		$link->setCreation($arr['creation']);
+
+		return $link;
+	}
+
+
+	public static function fromJSON($json) {
+		return self::fromArray(json_decode($json, true));
 	}
 
 }

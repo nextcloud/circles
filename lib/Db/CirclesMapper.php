@@ -383,6 +383,7 @@ class CirclesMapper extends Mapper {
 
 		$circle = new Circle($this->l10n);
 		$circle->setId($data['id']);
+		$circle->setName($data['name']);
 		$circle->setType($data['type']);
 		$circle->setUniqueId($data['unique_id']);
 		$circle->setSettings($data['settings']);
@@ -408,7 +409,7 @@ class CirclesMapper extends Mapper {
 		$circle->generateUniqueId();
 		$qb = $this->db->getQueryBuilder();
 		$qb->insert(self::TABLENAME)
-		   ->setValue('unique_id', $qb->createNamedParameter($circle->getUniqueId()))
+		   ->setValue('unique_id', $qb->createNamedParameter($circle->getUniqueId(true)))
 		   ->setValue('name', $qb->createNamedParameter($circle->getName()))
 		   ->setValue('description', $qb->createNamedParameter($circle->getDescription()))
 		   ->setValue('settings', $qb->createNamedParameter($circle->getSettings(true)))

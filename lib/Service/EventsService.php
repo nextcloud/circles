@@ -28,6 +28,7 @@ namespace OCA\Circles\Service;
 
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
 use OCP\Activity\IEvent;
 use OCP\Activity\IManager;
@@ -84,7 +85,6 @@ class EventsService {
 	 * @param Circle $circle
 	 */
 	public function onCircleCreation(Circle $circle) {
-
 		if ($circle->getType() !== Circle::CIRCLES_PUBLIC
 			&& $circle->getType() !== Circle::CIRCLES_PRIVATE
 		) {
@@ -314,6 +314,14 @@ class EventsService {
 	}
 
 
+	/**
+	 * onMemberOwner()
+	 *
+	 * Called when the owner rights of a circle have be given to another member.
+	 *
+	 * @param Circle $circle
+	 * @param Member $member
+	 */
 	private function onMemberOwner(Circle $circle, Member $member) {
 		$event = $this->generateEvent('circles_as_moderator');
 		$event->setSubject(
@@ -327,6 +335,219 @@ class EventsService {
 		)
 		);
 	}
+
+
+	/**
+	 * onLinkRequestSent()
+	 *
+	 * Called when a request to generate a link with a remote circle is sent.
+	 *
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 */
+	public function onLinkRequestSent(Circle $circle, FederatedLink $link) {
+		$event = $this->generateEvent('circles_as_moderator');
+		$event->setSubject(
+			'link_request_sent',
+			['circle' => $circle->getJson(false, true), 'link' => $link->getJson()]
+		);
+
+		$this->publishEvent(
+			$event, $this->circlesRequest->getMembers(
+			$link->getCircleId(), Member::LEVEL_MODERATOR
+		)
+		);
+	}
+
+
+	/**
+	 * onLinkRequestReceived()
+	 *
+	 * Called when a request to generate a link from a remote host is received.
+	 *
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 */
+	public function onLinkRequestReceived(Circle $circle, FederatedLink $link) {
+		$event = $this->generateEvent('circles_as_moderator');
+		$event->setSubject(
+			'link_request_received',
+			['circle' => $circle->getJson(false, true), 'link' => $link->getJson()]
+		);
+
+		$this->publishEvent(
+			$event, $this->circlesRequest->getMembers(
+			$link->getCircleId(), Member::LEVEL_MODERATOR
+		)
+		);
+	}
+
+
+	/**
+	 * onLinkRequestRejected()
+	 *
+	 * Called when a request to generate a link from a remote host is dismissed.
+	 *
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 */
+	public function onLinkRequestRejected(Circle $circle, FederatedLink $link) {
+		$event = $this->generateEvent('circles_as_moderator');
+		$event->setSubject(
+			'link_request_rejected',
+			['circle' => $circle->getJson(false, true), 'link' => $link->getJson()]
+		);
+
+		$this->publishEvent(
+			$event, $this->circlesRequest->getMembers(
+			$link->getCircleId(), Member::LEVEL_MODERATOR
+		)
+		);
+	}
+
+
+	/**
+	 * onLinkRequestRejected()
+	 *
+	 * Called when a request to generate a link from a remote host is dismissed.
+	 *
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 */
+	public function onLinkRequestCanceled(Circle $circle, FederatedLink $link) {
+		$event = $this->generateEvent('circles_as_moderator');
+		$event->setSubject(
+			'link_request_canceled',
+			['circle' => $circle->getJson(false, true), 'link' => $link->getJson()]
+		);
+
+		$this->publishEvent(
+			$event, $this->circlesRequest->getMembers(
+			$link->getCircleId(), Member::LEVEL_MODERATOR
+		)
+		);
+	}
+
+
+	/**
+	 * onLinkRequestAccepted()
+	 *
+	 * Called when a request to generate a link from a remote host is accepted.
+	 *
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 */
+	public function onLinkRequestAccepted(Circle $circle, FederatedLink $link) {
+		$event = $this->generateEvent('circles_as_moderator');
+		$event->setSubject(
+			'link_request_accepted',
+			['circle' => $circle->getJson(false, true), 'link' => $link->getJson()]
+		);
+
+		$this->publishEvent(
+			$event, $this->circlesRequest->getMembers(
+			$link->getCircleId(), Member::LEVEL_MODERATOR
+		)
+		);
+	}
+
+
+	/**
+	 * onLinkUp()
+	 *
+	 * Called when a link is Up and Running.
+	 *
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 */
+	public function onLinkRequestAccepting(Circle $circle, FederatedLink $link) {
+		$event = $this->generateEvent('circles_as_moderator');
+		$event->setSubject(
+			'link_request_accepting',
+			['circle' => $circle->getJson(false, true), 'link' => $link->getJson()]
+		);
+
+		$this->publishEvent(
+			$event, $this->circlesRequest->getMembers(
+			$link->getCircleId(), Member::LEVEL_MODERATOR
+		)
+		);
+	}
+
+
+	/**
+	 * onLinkUp()
+	 *
+	 * Called when a link is Up and Running.
+	 *
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 */
+	public function onLinkUp(Circle $circle, FederatedLink $link) {
+		$event = $this->generateEvent('circles_as_moderator');
+		$event->setSubject(
+			'link_up',
+			['circle' => $circle->getJson(false, true), 'link' => $link->getJson()]
+		);
+
+		$this->publishEvent(
+			$event, $this->circlesRequest->getMembers(
+			$link->getCircleId(), Member::LEVEL_MODERATOR
+		)
+		);
+	}
+
+
+	/**
+	 * onLinkDown()
+	 *
+	 * Called when a link is closed (usually by remote).
+	 *
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 */
+	public function onLinkDown(Circle $circle, FederatedLink $link) {
+		$event = $this->generateEvent('circles_as_moderator');
+		$event->setSubject(
+			'link_down',
+			['circle' => $circle->getJson(false, true), 'link' => $link->getJson()]
+		);
+
+		$this->publishEvent(
+			$event, $this->circlesRequest->getMembers(
+			$link->getCircleId(), Member::LEVEL_MODERATOR
+		)
+		);
+	}
+
+
+	/**
+	 * onLinkRemove()
+	 *
+	 * Called when a link is removed.
+	 *
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 */
+	public function onLinkRemove(Circle $circle, FederatedLink $link) {
+		$event = $this->generateEvent('circles_as_moderator');
+
+		if ($link->getStatus() === FederatedLink::STATUS_LINK_REQUESTED) {
+			$subject = 'link_request_removed';
+		} else {
+			$subject = 'link_remove';
+		}
+		$event->setSubject(
+			$subject, ['circle' => $circle->getJson(false, true), 'link' => $link->getJson()]
+		);
+
+		$this->publishEvent(
+			$event, $this->circlesRequest->getMembers(
+			$link->getCircleId(), Member::LEVEL_MODERATOR
+		)
+		);
+	}
+
 
 	/**
 	 * generateEvent()

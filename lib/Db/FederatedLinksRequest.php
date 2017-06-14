@@ -49,9 +49,9 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 			$qb = $this->getLinksInsertSql();
 			$qb->setValue('status', $qb->createNamedParameter($link->getStatus()))
 			   ->setValue('circle_id', $qb->createNamedParameter($link->getCircleId()))
-			   ->setValue('unique_id', $qb->createNamedParameter($link->getUniqueId()))
+			   ->setValue('unique_id', $qb->createNamedParameter($link->getUniqueId(true)))
 			   ->setValue('address', $qb->createNamedParameter($link->getAddress()))
-			   ->setValue('token', $qb->createNamedParameter($link->getToken()));
+			   ->setValue('token', $qb->createNamedParameter($link->getToken(true)));
 
 			$qb->execute();
 
@@ -72,16 +72,15 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 
 		$qb = $this->getLinksUpdateSql();
 		$expr = $qb->expr();
-
 		$qb->set('status', $qb->createNamedParameter($link->getStatus()));
 		if ($link->getUniqueId() !== '') {
-			$qb->set('unique_id', $qb->createNamedParameter($link->getUniqueId()));
+			$qb->set('unique_id', $qb->createNamedParameter($link->getUniqueId(true)));
 		}
 
 		$qb->where(
 			$expr->andX(
 				$expr->eq('circle_id', $qb->createNamedParameter($link->getCircleId())),
-				$expr->eq('token', $qb->createNamedParameter($link->getToken()))
+				$expr->eq('token', $qb->createNamedParameter($link->getToken(true)))
 			)
 		);
 
@@ -153,7 +152,7 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 
 		$qb->where(
 			$expr->andX(
-				$expr->eq('unique_id', $qb->createNamedParameter($link->getUniqueId())),
+				$expr->eq('unique_id', $qb->createNamedParameter($link->getUniqueId(true))),
 				$expr->eq('circle_id', $qb->createNamedParameter($link->getCircleId()))
 			)
 		);
@@ -173,7 +172,7 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 
 		$qb->where(
 			$expr->andX(
-				$expr->eq('token', $qb->createNamedParameter($link->getToken())),
+				$expr->eq('token', $qb->createNamedParameter($link->getToken(true))),
 				$expr->eq('circle_id', $qb->createNamedParameter($link->getCircleId()))
 			)
 		);

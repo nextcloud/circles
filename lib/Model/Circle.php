@@ -31,6 +31,13 @@ use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 
 class Circle extends BaseCircle implements \JsonSerializable {
 
+	/** @var bool */
+	private $fullJson = false;
+
+	/** @var bool */
+	private $lightJson = false;
+
+
 	public function getTypeString() {
 		switch ($this->getType()) {
 			case self::CIRCLES_PERSONAL:
@@ -59,7 +66,7 @@ class Circle extends BaseCircle implements \JsonSerializable {
 
 
 	public function jsonSerialize() {
-		return array(
+		$json = array(
 			'id'             => $this->getId(),
 			'name'           => $this->getName(),
 			'owner'          => $this->getOwner(),
@@ -70,11 +77,32 @@ class Circle extends BaseCircle implements \JsonSerializable {
 			'creation'       => $this->getCreation(),
 			'typeString'     => $this->getTypeString(),
 			'typeLongString' => $this->getTypeLongString(),
-			'unique_id'      => $this->getUniqueId(),
+			'unique_id'      => $this->getUniqueId($this->fullJson),
 			'members'        => $this->getMembers(),
 			'links'          => $this->getLinks()
 		);
+
+		if ($this->lightJson)
+		{
+			$json['members'] = [];
+			$json['links'] = [];
+		}
+
+		return $json;
 	}
+
+
+	public function getJson($full = false, $light = false) {
+		$this->fullJson = $full;
+		$this->lightJson = $light;
+		$json = json_encode($this);
+		$this->fullJson = false;
+		$this->lightJson = false;
+
+		return $json;
+	}
+
+
 
 //	/**
 //	 * set all infos from an Array.

@@ -165,7 +165,6 @@ class CirclesService {
 		$data = [];
 		$result = $this->dbCircles->findCirclesByUser($this->userId, $type, $name, $level);
 		foreach ($result as $item) {
-			$item->shortenUniqueId();
 			$data[] = $item;
 		}
 

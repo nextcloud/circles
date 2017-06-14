@@ -151,6 +151,7 @@ class CirclesRequestBuilder {
 		$expr = $qb->expr();
 		$pf = $this->default_select_alias . '.';
 
+		$qb->selectAlias('u.user_id', 'user_userid');
 		$qb->selectAlias('u.level', 'user_level');
 		$qb->leftJoin(
 			$this->default_select_alias, MembersMapper::TABLENAME, 'u',
@@ -342,6 +343,7 @@ class CirclesRequestBuilder {
 
 		if (key_exists('user_level', $data)) {
 			$user = new Member($this->l10n);
+			$user->setUserId($data['user_userid']);
 			$user->setLevel($data['user_level']);
 			$circle->setUser($user);
 		}

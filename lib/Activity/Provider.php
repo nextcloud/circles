@@ -8,6 +8,7 @@ use Exception;
 use InvalidArgumentException;
 use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\CirclesService;
@@ -136,21 +137,46 @@ class Provider implements IProvider {
 	 * @param IEvent $event
 	 *
 	 * @return IEvent
+	 * @throws Exception
 	 */
 	private function parseAsModerator($lang, IEvent $event) {
 		if ($event->getType() !== 'circles_as_moderator') {
 			return $event;
 		}
 
-		$params = $event->getSubjectParameters();
-		$circle = Circle::fromJSON($this->l10n, $params['circle']);
-		$member = Member::fromJSON($this->l10n, $params['member']);
-		if ($member === null || $circle === null) {
-			return $event;
+		try {
+			$params = $event->getSubjectParameters();
+			$circle = Circle::fromJSON($this->l10n, $params['circle']);
+			$event->setIcon(CirclesService::getCircleIcon($circle->getType()));
+
+			if (key_exists('member', $params)) {
+				$member = Member::fromJSON($this->l10n, $params['member']);
+
+				return $this->parseMemberAsModerator($lang, $circle, $member, $event);
+			}
+
+			if (key_exists('link', $params)) {
+				$link = FederatedLink::fromJSON($params['link']);
+
+				return $this->parseLinkAsModerator($lang, $circle, $link, $event);
+			}
+
+		} catch (Exception $e) {
+			throw $e;
 		}
 
-		$event->setIcon(CirclesService::getCircleIcon($circle->getType()));
+	}
 
+
+	/**
+	 * @param $lang
+	 * @param Circle $circle
+	 * @param Member $member
+	 * @param IEvent $event
+	 *
+	 * @return IEvent
+	 */
+	private function parseMemberAsModerator($lang, Circle $circle, Member $member, IEvent $event) {
 		switch ($event->getSubject()) {
 			case 'member_invited':
 				return $this->parseMemberInvited($lang, $circle, $member, $event);
@@ -163,10 +189,56 @@ class Provider implements IProvider {
 
 			case 'member_owner':
 				return $this->parseMemberOwner($lang, $circle, $member, $event);
-
-			default:
-				throw new InvalidArgumentException();
 		}
+
+		throw new InvalidArgumentException();
+	}
+
+
+	/**
+	 * @param $lang
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 * @param IEvent $event
+	 *
+	 * @return IEvent
+	 */
+	private function parseLinkAsModerator($lang, Circle $circle, FederatedLink $link, IEvent $event
+	) {
+
+		switch ($event->getSubject()) {
+			case 'link_request_sent':
+				return $this->parseLinkRequestSent($lang, $circle, $link, $event);
+
+			case 'link_request_received';
+				return $this->parseLinkRequestReceived($lang, $circle, $link, $event);
+
+			case 'link_request_rejected':
+				return $this->parseLinkRequestRejected($lang, $circle, $link, $event);
+
+			case 'link_request_canceled':
+				return $this->parseLinkRequestCanceled($lang, $circle, $link, $event);
+
+			case 'link_request_accepted':
+				return $this->parseLinkRequestAccepted($lang, $circle, $link, $event);
+
+			case 'link_request_accepting':
+				return $this->parseLinkRequestAccepting($lang, $circle, $link, $event);
+
+			case 'link_up':
+				return $this->parseLinkUp($lang, $circle, $link, $event);
+
+			case 'link_down':
+				return $this->parseLinkDown($lang, $circle, $link, $event);
+
+			case 'link_remove':
+				return $this->parseLinkRemove($lang, $circle, $link, $event);
+
+			case 'link_request_removed':
+				return $this->parseLinkRequestRemoved($lang, $circle, $link, $event);
+		}
+
+		throw new InvalidArgumentException();
 	}
 
 	/**
@@ -577,6 +649,281 @@ class Provider implements IProvider {
 	}
 
 
+	/**
+	 * @param $lang
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 * @param IEvent $event
+	 *
+	 * @return IEvent
+	 */
+	private function parseLinkRequestSent($lang, Circle $circle, FederatedLink $link, IEvent $event
+	) {
+		if ($circle->getUser()
+				   ->getUserId() === $this->activityManager->getCurrentUserId()
+		) {
+			$event->setRichSubject(
+				$this->l10n->t('You sent a request to link {circle} with {remote}'),
+				[
+					'circle' => $this->generateCircleParameter($circle),
+					'remote' => $this->generateLinkParameter($link)
+				]
+			);
+		} else {
+			$event->setRichSubject(
+				$this->l10n->t('{author} sent a request to link {circle} with {remote}'),
+				[
+					'author' => $this->generateUserParameter(
+						$circle->getUser()
+							   ->getUserId()
+					),
+					'circle' => $this->generateCircleParameter($circle),
+					'remote' => $this->generateLinkParameter($link)
+				]
+			);
+		}
+
+		return $event;
+	}
+
+
+	/**
+	 * @param $lang
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 * @param IEvent $event
+	 *
+	 * @return IEvent
+	 */
+	private function parseLinkRequestReceived(
+		$lang, Circle $circle, FederatedLink $link, IEvent $event
+	) {
+		$event->setRichSubject(
+			$this->l10n->t('{remote} requested a link with {circle}'),
+			[
+				'circle' => $this->generateCircleParameter($circle),
+				'remote' => $this->generateLinkParameter($link)
+			]
+		);
+
+		return $event;
+	}
+
+
+	/**
+	 * @param $lang
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 * @param IEvent $event
+	 *
+	 * @return IEvent
+	 */
+	private function parseLinkRequestRejected(
+		$lang, Circle $circle, FederatedLink $link, IEvent $event
+	) {
+		$event->setRichSubject(
+			$this->l10n->t('The request to link {circle} with {remote} has been rejected remotely'),
+			[
+				'circle' => $this->generateCircleParameter($circle),
+				'remote' => $this->generateLinkParameter($link)
+			]
+		);
+
+		return $event;
+	}
+
+	/**
+	 * @param $lang
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 * @param IEvent $event
+	 *
+	 * @return IEvent
+	 */
+	private function parseLinkRequestCanceled(
+		$lang, Circle $circle, FederatedLink $link, IEvent $event
+	) {
+		$event->setRichSubject(
+			$this->l10n->t(
+				'The request to link {remote} with {circle}  has been canceled remotely'
+			),
+			[
+				'circle' => $this->generateCircleParameter($circle),
+				'remote' => $this->generateLinkParameter($link)
+			]
+		);
+
+		return $event;
+	}
+
+
+	/**
+	 * @param $lang
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 * @param IEvent $event
+	 *
+	 * @return IEvent
+	 */
+	private function parseLinkRequestRemoved(
+		$lang, Circle $circle, FederatedLink $link, IEvent $event
+	) {
+		if ($circle->getUser()
+				   ->getUserId() === $this->activityManager->getCurrentUserId()
+		) {
+			$event->setRichSubject(
+				$this->l10n->t('You dismissed the request to link {remote} with {circle}'),
+				[
+					'circle' => $this->generateCircleParameter($circle),
+					'remote' => $this->generateLinkParameter($link)
+				]
+			);
+		} else {
+			$event->setRichSubject(
+				$this->l10n->t('{author} dismissed the request to link {remote} with {circle}'),
+				[
+					'author' => $this->generateUserParameter(
+						$circle->getUser()
+							   ->getUserId()
+					),
+					'circle' => $this->generateCircleParameter($circle),
+					'remote' => $this->generateLinkParameter($link)
+				]
+			);
+		}
+
+		return $event;
+	}
+
+
+	/**
+	 * @param $lang
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 * @param IEvent $event
+	 *
+	 * @return IEvent
+	 */
+	private function parseLinkRequestAccepted(
+		$lang, Circle $circle, FederatedLink $link, IEvent $event
+	) {
+		$event->setRichSubject(
+			$this->l10n->t('The request to link {circle} with {remote} has been accepted'),
+			[
+				'circle' => $this->generateCircleParameter($circle),
+				'remote' => $this->generateLinkParameter($link)
+			]
+		);
+
+		return $event;
+	}
+
+
+	/**
+	 * @param $lang
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 * @param IEvent $event
+	 *
+	 * @return IEvent
+	 */
+	private function parseLinkRequestAccepting(
+		$lang, Circle $circle, FederatedLink $link, IEvent $event
+	) {
+		if ($circle->getUser()
+				   ->getUserId() === $this->activityManager->getCurrentUserId()
+		) {
+			$event->setRichSubject(
+				$this->l10n->t('You accepted the request to link {remote} with {circle}'),
+				[
+					'circle' => $this->generateCircleParameter($circle),
+					'remote' => $this->generateLinkParameter($link)
+				]
+			);
+		} else {
+			$event->setRichSubject(
+				$this->l10n->t('{author} accepted the request to link {remote} with {circle}'),
+				[
+					'author' => $this->generateUserParameter(
+						$circle->getUser()
+							   ->getUserId()
+					),
+					'circle' => $this->generateCircleParameter($circle),
+					'remote' => $this->generateLinkParameter($link)
+				]
+			);
+		}
+
+		return $event;
+	}
+
+
+	/**
+	 * @param $lang
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 * @param IEvent $event
+	 *
+	 * @return IEvent
+	 */
+	private function parseLinkUp($lang, Circle $circle, FederatedLink $link, IEvent $event
+	) {
+		$event->setRichSubject(
+			$this->l10n->t('A link between {circle} and {remote} is now up and running'),
+			[
+				'circle' => $this->generateCircleParameter($circle),
+				'remote' => $this->generateLinkParameter($link)
+			]
+		);
+
+		return $event;
+	}
+
+
+	/**
+	 * @param $lang
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 * @param IEvent $event
+	 *
+	 * @return IEvent
+	 */
+	private function parseLinkDown($lang, Circle $circle, FederatedLink $link, IEvent $event
+	) {
+		$event->setRichSubject(
+			$this->l10n->t('The link between {circle} and {remote} has been shutdown remotely'),
+			[
+				'circle' => $this->generateCircleParameter($circle),
+				'remote' => $this->generateLinkParameter($link)
+			]
+		);
+
+		return $event;
+	}
+
+
+	/**
+	 * @param $lang
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 * @param IEvent $event
+	 *
+	 * @return IEvent
+	 */
+	private function parseLinkRemove($lang, Circle $circle, FederatedLink $link, IEvent $event
+	) {
+		$event->setRichSubject(
+			$this->l10n->t('The link between {circle} and {remote} has been canceled locally'),
+			[
+				'circle' => $this->generateCircleParameter($circle),
+				'remote' => $this->generateLinkParameter($link)
+			]
+		);
+
+		return $event;
+	}
+
+
 	private function generateMemberParameter(
 		Member $member
 	) {
@@ -594,6 +941,18 @@ class Provider implements IProvider {
 			'link' => Circles::generateLink($circle->getId())
 		];
 	}
+
+
+	private function generateLinkParameter(FederatedLink $link) {
+		return [
+			'type' => 'circle',
+			'id'   => $link->getUniqueId(),
+			'name' => $link->getToken() . '@' . $link->getAddress()
+		];
+//			'link' => Circles::generateRemoteLink($link)
+
+	}
+
 
 	/**
 	 * @param $userId

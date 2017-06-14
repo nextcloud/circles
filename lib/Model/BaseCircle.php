@@ -117,19 +117,22 @@ class BaseCircle {
 	}
 
 	/**
+	 * @param bool $full
+	 *
 	 * @return string
 	 */
-	public function getUniqueId() {
-		return $this->uniqueId;
+	public function getUniqueId($full = false) {
+		if ($full) {
+			return $this->uniqueId;
+		}
+
+		return substr($this->uniqueId, 0, 14);
 	}
+
 
 	public function generateUniqueId() {
 		$uniqueId = bin2hex(openssl_random_pseudo_bytes(24));
 		$this->setUniqueId($uniqueId);
-	}
-
-	public function shortenUniqueId() {
-		$this->setUniqueId(substr($this->getUniqueId(), 0, 8));
 	}
 
 	public function setName($name) {
