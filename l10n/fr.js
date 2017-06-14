@@ -80,6 +80,7 @@ OC.L10N.register(
     "{member} is the new owner of {circle}" : "{member} est le nouveau propriétaire de {circle}",
     "The name of your circle must contain at least 3 characters" : "Le nom de votre cercle doit contenir au moins 3 caractères",
     "The name of your circle cannot start with this character" : "Le nom de votre cercle ne peut pas commencer par ce caractère",
+    "Federated circles are not allowed on this Nextcloud" : "Les cercles fédérés ne sont pas autorisés sur ce Nextcloud",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Vous ne pouvez pas utiliser l'application Cercles à moins que votre admnistrateur est autorisé au moins un type de cercles",
     "The circle does not exist or is hidden" : "Le cercle n'existe pas ou est caché.",
     "A circle with that name exists" : "Ce nom de cercle existe",
@@ -97,7 +98,6 @@ OC.L10N.register(
     "You need a specify a type of circle" : "Vous devez spécifier un type de cercle",
     "You cannot create this type of circle" : "Vous ne pouvez pas créer ce type de cercle",
     "You cannot display this type of circle" : "Vous ne pouvez pas afficher ce type de cercle",
-    "Federated circles are not allowed on this Nextcloud" : "Les cercles fédérés ne sont pas autorisés sur ce Nextcloud",
     "Federated link does not have a valid format" : "Le lien fédéré n'a pas un format valide",
     "Federated circles are not allowed on the remote Nextcloud" : "Les cercles fédérés ne sont pas autorisés sur le Nextcloud distant",
     "It seems that you are trying to link a circle to itself" : "Il semble que vous essayer de lier un cercle à lui-même",
@@ -140,7 +140,6 @@ OC.L10N.register(
     "Username" : "Nom d'utilisateur",
     "Level" : "Niveau",
     "Status" : "Statut",
-    "Joined" : "A rejoint",
-    "Address" : "Adresse"
+    "Joined" : "A rejoint"
 },
 "nplurals=2; plural=(n > 1);");
