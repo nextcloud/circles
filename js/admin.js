@@ -1,5 +1,4 @@
-<?php
-/**
+/*
  * Circles - Bring cloud-users closer together.
  *
  * This file is licensed under the Affero General Public License version 3 or
@@ -24,7 +23,34 @@
  *
  */
 
-$app = new \OCA\Circles\AppInfo\Application();
 
-$app->registerNavigation();
-$app->registerSettingsAdmin();
+var elements = {
+	allow_federated_circles: null
+};
+
+
+$(document).ready(function () {
+
+	elements.allow_federated_circles = $('#allow_federated_circle');
+	elements.allow_federated_circles.on('change', function () {
+		$.ajax({
+			method: 'POST',
+			url: OC.generateUrl('/apps/circles/admin/settings'),
+			data: {
+				allow_federated_circles: (elements.allow_federated_circles.is(
+					':checked')) ? '1' : '0'
+			}
+		}).done(function (res) {
+			elements.allow_federated_circles.prop('checked', (res.allowFederatedCircles === '1'));
+		});
+	});
+
+	$.ajax({
+		method: 'GET',
+		url: OC.generateUrl('/apps/circles/admin/settings'),
+		data: {}
+	}).done(function (res) {
+		elements.allow_federated_circles.prop('checked', (res.allowFederatedCircles === '1'));
+	});
+
+});

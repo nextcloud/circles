@@ -1,0 +1,11 @@
+td.left {
+	padding-right: 30px;
+	font-weight: bolder;
+	text-align: right;
+	width: 400px;
+}
+
+td.left em {
+	font-weight: normal;
+	font-size: 11px;
+}

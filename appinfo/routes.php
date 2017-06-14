@@ -29,6 +29,16 @@ return [
 
 	],
 	'routes' => [
+		[
+			'name' => 'Settings#setSettings',
+			'url'  => '/admin/settings',
+			'verb' => 'POST'
+		],
+		[
+			'name' => 'Settings#getSettings',
+			'url'  => '/admin/settings',
+			'verb' => 'GET'
+		],
 		['name' => 'Navigation#navigate', 'url' => '/', 'verb' => 'GET'],
 		['name' => 'Navigation#settings', 'url' => '/settings', 'verb' => 'GET'],
 		['name' => 'Circles#create', 'url' => '/v1/circles', 'verb' => 'PUT'],

@@ -32,6 +32,7 @@ use \OCA\Circles\Controller\CirclesController;
 use \OCA\Circles\Controller\MembersController;
 
 
+use OCA\Circles\Controller\SettingsController;
 use OCA\Circles\Controller\SharesController;
 use \OCA\Circles\Db\CirclesMapper;
 use OCA\Circles\Db\CirclesRequest;
@@ -183,6 +184,15 @@ class Application extends App {
 	 * @param $container
 	 */
 	private static function registerControllers(IAppContainer &$container) {
+
+		$container->registerService(
+			'SettingsController', function(IAppContainer $c) {
+			return new SettingsController(
+				$c->query('AppName'), $c->query('Request'), $c->query('ConfigService'),
+				$c->query('MiscService')
+			);
+		}
+		);
 
 		$container->registerService(
 			'NavigationController', function(IAppContainer $c) {
@@ -402,6 +412,13 @@ class Application extends App {
 					 ];
 				 }
 			 );
+	}
+
+	public function registerSettingsAdmin() {
+		\OCP\App::registerAdmin(
+			$this->getContainer()
+				 ->query('AppName'), 'lib/admin'
+		);
 	}
 }
 
