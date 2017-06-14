@@ -510,7 +510,7 @@ class Provider implements IProvider {
 		return [
 			'type' => 'user',
 			'id'   => $userId,
-			'name' => $userId
+			'name' => \OC::$server->getUserManager()->get($userId)->getDisplayName()
 		];
 	}
 }

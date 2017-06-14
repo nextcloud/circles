@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file.
 
 
+## 0.11.0
+
+- Federated Circles
+- Integration with Activity
+- new UI
+- fixes
+
+
 ## 0.10.0
 
 - Introduction to Linked Circles (federated-circles)

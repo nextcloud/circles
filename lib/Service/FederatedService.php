@@ -303,11 +303,13 @@ class FederatedService {
 	 * @return string
 	 */
 	private function generateLinkRemoteURL($remote) {
+		//$this->allowNonSSLLink();
 		if ($this->localTest === false && strpos($remote, 'https') !== 0) {
 			$remote = 'https://' . $remote;
 		}
 
-		return rtrim($remote, '/') . '/index.php/apps/circles/v1/link';
+		return rtrim($remote, '/') . \OC::$server->getURLGenerator()
+												 ->linkToRoute('circles.Federated.requestedLink');
 	}
 
 
@@ -317,11 +319,15 @@ class FederatedService {
 	 * @return string
 	 */
 	private function generatePayloadDeliveryURL($remote) {
+		//$this->allowNonSSLLink();
 		if ($this->localTest === false && strpos($remote, 'https') !== 0) {
 			$remote = 'https://' . $remote;
 		}
 
-		return rtrim($remote, '/') . '/index.php/apps/circles/v1/payload';
+		return rtrim($remote, '/') . \OC::$server->getURLGenerator()
+												 ->linkToRoute(
+													 'circles.Federated.receiveFederatedDelivery'
+												 );
 	}
 
 
