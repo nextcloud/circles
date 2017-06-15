@@ -357,7 +357,7 @@ var elements = {
 
 	generateTmplMember: function (entry) {
 		var tmpl = $('#tmpl_member').html();
-console.log(JSON.stringify(entry));
+
 		tmpl = tmpl.replace(/%username%/g, escapeHTML(entry.user_id));
 		tmpl = tmpl.replace(/%displayname%/g, escapeHTML(entry.display_name));
 		tmpl = tmpl.replace(/%level%/g, escapeHTML(entry.level));
