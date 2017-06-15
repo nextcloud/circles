@@ -260,7 +260,7 @@ style('circles', 'navigation');
 				<script id="tmpl_member" type="text/template">
 					<tr class="entry" member-id="%username%" member-level="%level%"
 						member-status="%status%">
-						<td class="username">%username%</td>
+						<td class="username">%displayname%</td>
 						<td class="level">
 							<select class="level-select">
 								<option value="1"><?php p($l->t('Member')); ?></option>

@@ -46,12 +46,14 @@ class BaseMember implements \JsonSerializable {
 	/** @var int */
 	private $circleId;
 
-
 	/** @var L10N */
 	protected $l10n;
 
 	/** @var string */
 	private $userId;
+
+	/** @var string */
+	private $displayName;
 
 	/** @var int */
 	private $level;
@@ -93,11 +95,28 @@ class BaseMember implements \JsonSerializable {
 	public function setUserId($userId) {
 		$this->userId = $userId;
 
+		$this->setDisplayName(
+			\OC::$server->getUserManager()
+						->get($userId)
+						->getDisplayName()
+		);
+
 		return $this;
 	}
 
 	public function getUserId() {
 		return $this->userId;
+	}
+
+
+	public function setDisplayName($display) {
+		$this->displayName = $display;
+
+		return $this;
+	}
+
+	public function getDisplayNAme() {
+		return $this->displayName;
 	}
 
 
@@ -166,9 +185,10 @@ class BaseMember implements \JsonSerializable {
 	}
 
 
-	public static function fromArray2($l10n, $arr) {
-		if ($arr === null)
+	public static function fromArray($l10n, $arr) {
+		if ($arr === null) {
 			return null;
+		}
 
 		$member = new Member($l10n);
 
@@ -189,13 +209,14 @@ class BaseMember implements \JsonSerializable {
 
 
 	public static function fromJSON($l10n, $json) {
-		return self::fromArray2($l10n, json_decode($json, true));
+		return self::fromArray($l10n, json_decode($json, true));
 	}
 
 	public function jsonSerialize() {
 		return array(
 			'circle_id'    => $this->getCircleId(),
 			'user_id'      => $this->getUserId(),
+			'display_name' => $this->getDisplayNAme(),
 			'level'        => $this->getLevel(),
 			'level_string' => $this->getLevelString(),
 			'status'       => $this->getStatus(),

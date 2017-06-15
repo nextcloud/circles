@@ -346,7 +346,7 @@ var elements = {
 
 		tmpl = tmpl.replace(/%title%/g, escapeHTML(entry.name));
 		tmpl = tmpl.replace(/%type%/g, t('circles', escapeHTML(entry.type)));
-		tmpl = tmpl.replace(/%owner%/g, escapeHTML(entry.owner.user_id));
+		tmpl = tmpl.replace(/%owner%/g, escapeHTML(entry.owner.display_name));
 		tmpl = tmpl.replace(/%status%/g, t('circles', escapeHTML(entry.user.status)));
 		tmpl = tmpl.replace(/%level_string%/g, t('circles', escapeHTML(entry.user.level_string)));
 		tmpl = tmpl.replace(/%creation%/g, escapeHTML(entry.creation));
@@ -357,8 +357,9 @@ var elements = {
 
 	generateTmplMember: function (entry) {
 		var tmpl = $('#tmpl_member').html();
-
+console.log(JSON.stringify(entry));
 		tmpl = tmpl.replace(/%username%/g, escapeHTML(entry.user_id));
+		tmpl = tmpl.replace(/%displayname%/g, escapeHTML(entry.display_name));
 		tmpl = tmpl.replace(/%level%/g, escapeHTML(entry.level));
 		tmpl = tmpl.replace(/%status%/g, escapeHTML(entry.status));
 		tmpl = tmpl.replace(/%joined%/g, escapeHTML(entry.joined));
