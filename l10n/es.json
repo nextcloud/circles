@@ -110,6 +110,8 @@
     "Username" : "Nombre de usuario",
     "Level" : "Nivel",
     "Status" : "Estado",
-    "Joined" : "Ingresó"
+    "Joined" : "Ingresó",
+    "Link" : "Enlace",
+    "Linked" : "Enlazado"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

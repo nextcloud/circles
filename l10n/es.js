@@ -112,6 +112,8 @@ OC.L10N.register(
     "Username" : "Nombre de usuario",
     "Level" : "Nivel",
     "Status" : "Estado",
-    "Joined" : "Ingresó"
+    "Joined" : "Ingresó",
+    "Link" : "Enlace",
+    "Linked" : "Enlazado"
 },
 "nplurals=2; plural=(n != 1);");
