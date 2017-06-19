@@ -184,7 +184,9 @@ OC.L10N.register(
     "Link" : "Lenke",
     "Linked" : "Lenket",
     "Allow Federated Links" : "Tillat sammenknyttede lenker",
+    "Turns the circle as Federated and enable sharing between Federated Circles" : "Knytter sammen en sirkel, og skrur på deling mellom sammenknyttede sirkler",
     "Automatically Accept Link Request" : "Godta lenkeforespørsel automatisk",
+    "Warning: enabling this will automatically accept new Link requests from other circle." : "Advarsel: Å skru på dette vil medføre automatisk godkjenning av nye lenkeforespørsler fra den andre sirkelen.",
     "Save settings" : "Lagre innstillinger"
 },
 "nplurals=2; plural=(n != 1);");
