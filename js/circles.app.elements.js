@@ -161,6 +161,10 @@ var elements = {
 
 		$('.icon-circles').css('background-image',
 			'url(' + OC.imagePath('circles', 'colored') + ')');
+		$('.icon-add-user').css('background-image',
+			'url(' + OC.imagePath('circles', 'add-user') + ')');
+		$('.icon-join').css('background-image',
+			'url(' + OC.imagePath('circles', 'join') + ')');
 
 		var theme = $('#body-user').find('#header').css('background-color');
 		elements.circlesList.css('background-color', theme);

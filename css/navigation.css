@@ -253,12 +253,10 @@ div.circle .owner, div.circle .type, div.circle .resume {
 }
 
 .icon-add-user {
-	background-image: url('/apps/circles/img/add-user.svg');
 	background-size: 16px;
 }
 
 .icon-join {
-	background-image: url('/apps/circles/img/join.svg');
 	background-size: 16px;
 	opacity: .2;
 	float: right;
