@@ -155,7 +155,7 @@ $(document).ready(function () {
 
 			$.ajax({
 				method: 'GET',
-				url: OC.generateUrl('/apps/circles/settings'),
+				url: OC.generateUrl('/apps/circles/settings')
 			}).done(function (result) {
 				self.retrieveSettingsResult(result)
 			}).fail(function () {
