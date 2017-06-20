@@ -8,6 +8,7 @@ OC.L10N.register(
     "Private circle" : "Prywatny krąg",
     "Public circle" : "Publiczny krąg",
     "Circle" : "Krąg",
+    "Link Removed" : "Link usunięty",
     "Personal Circle" : "Osobisty Krąg",
     "Hidden Circle" : "Ukryty Krąg",
     "Private Circle" : "Prywatny Krąg",

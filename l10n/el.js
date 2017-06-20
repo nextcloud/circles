@@ -8,6 +8,7 @@ OC.L10N.register(
     "Private circle" : "Ιδιωτικός κύκλος",
     "Public circle" : "Δημόσιος κύκλος",
     "Circle" : "Κύκλος",
+    "Link requested" : "Απαιτείται σύνδεσμος",
     "Personal Circle" : "Προσωπικός κύκλος",
     "Hidden Circle" : "Κρυφός κύκλος",
     "Private Circle" : "Ιδιωτικός κύκλος",
