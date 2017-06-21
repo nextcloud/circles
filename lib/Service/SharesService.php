@@ -27,10 +27,12 @@
 namespace OCA\Circles\Service;
 
 
+use Exception;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Exceptions\BroadcasterIsNotCompatible;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\IBroadcaster;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
 
@@ -93,7 +95,7 @@ class SharesService {
 	 * @param SharingFrame $frame
 	 * @param string|null $broadcast
 	 *
-	 * @throws MemberDoesNotExistException
+	 * @throws Exception
 	 */
 	public function createFrame(SharingFrame $frame, $broadcast = null) {
 
@@ -104,22 +106,47 @@ class SharesService {
 			throw new MemberDoesNotExistException();
 		}
 
-		$frame->setAuthor($this->userId);
-		$frame->setHeader('author', $this->userId);
-		$frame->setHeader('circleName', $circle->getName());
-		$frame->setHeader('broadcast', (string)$broadcast);
-		$frame->generateUniqueId();
-		$frame->setCircleName($circle->getName());
+		try {
+			$this->generateHeaders($frame, $circle, $broadcast);
+			$this->circlesRequest->saveFrame($frame);
 
-		$this->circlesRequest->saveFrame($frame);
+			$this->broadcastService->broadcastFrame($frame->getHeader('broadcast'), $frame);
 
-		$this->broadcastService->broadcastFrame($frame->getHeader('broadcast'), $frame);
-
-		if ($this->configService->isFederatedAllowed()) {
-			$this->federatedService->initiateRemoteShare($circle->getId(), $frame->getUniqueId());
+			if ($this->configService->isFederatedAllowed()) {
+				$this->federatedService->initiateRemoteShare(
+					$circle->getId(), $frame->getUniqueId()
+				);
+			}
+		} catch (Exception $e) {
+			throw $e;
 		}
 	}
 
+
+	/**
+	 * Generate Headers and few more thing like UniqueId and Author.
+	 * Check if the source is NOT Circles.
+	 *
+	 * @param SharingFrame $frame
+	 * @param Circle $circle
+	 * @param $broadcast
+	 */
+	private function generateHeaders(SharingFrame $frame, Circle $circle, $broadcast) {
+
+		try {
+			$frame->cannotBeFromCircles();
+
+			$frame->setAuthor($this->userId);
+			$frame->setHeader('author', $this->userId);
+			$frame->setHeader('circleName', $circle->getName());
+			$frame->setHeader('broadcast', (string)$broadcast);
+			$frame->generateUniqueId();
+			$frame->setCircleName($circle->getName());
+
+		} catch (Exception $e) {
+			throw new $e;
+		}
+	}
 
 	/**
 	 * @param int $circleId

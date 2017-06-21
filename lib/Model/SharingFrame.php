@@ -26,6 +26,8 @@
 
 namespace OCA\Circles\Model;
 
+use OCA\Circles\Exceptions\SharingFrameSourceCannotBeAppCircles;
+
 class SharingFrame implements \JsonSerializable {
 
 	/** @var string */
@@ -253,6 +255,16 @@ class SharingFrame implements \JsonSerializable {
 		return $this->creation;
 	}
 
+	/**
+	 * @throws SharingFrameSourceCannotBeAppCircles
+	 */
+	public function cannotBeFromCircles()
+	{
+		if (strtolower($this->getSource()) === 'circles')
+		{
+			throw new SharingFrameSourceCannotBeAppCircles();
+		}
+	}
 
 	public function jsonSerialize() {
 		return array(
