@@ -107,6 +107,8 @@ var actions = {
 
 	saveSettings: function () {
 		data = {
+			circle_name: elements.settingsName.val(),
+			circle_desc: elements.settingsDesc.val(),
 			allow_links: (elements.settingsLink.is(":checked")),
 			allow_links_auto: (elements.settingsLinkAuto.is(":checked")),
 			allow_links_files: (elements.settingsLinkFiles.is(":checked"))

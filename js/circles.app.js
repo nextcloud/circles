@@ -42,6 +42,7 @@ var curr = {
 	circlesType: '',
 	circle: 0,
 	circleName: '',
+	circleDesc: '',
 	circleLevel: 0,
 	circleStatus: '',
 	circleMembers: {},
@@ -55,6 +56,7 @@ var curr = {
 	defineCircle: function (data) {
 		curr.circle = data.circle_id;
 		curr.circleName = data.details.name;
+		curr.circleDesc = data.details.description;
 		curr.circleSettings = data.details.settings;
 		curr.circleLevel = data.details.user.level;
 		curr.circleStatus = data.details.user.status;

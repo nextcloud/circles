@@ -160,12 +160,24 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	font-style: italic;
 }
 
-#mainui #memberslist {
+#circledata {
 	position: absolute;
 	bottom: 15px;
 	right: 15px;
 	left: 15px;
 	top: 120px;
+	overflow-y: auto;
+}
+
+#circle_desc {
+	margin: 15px;
+	padding: 10px;
+	background: #f0f0f0
+}
+
+#mainui #memberslist {
+	position: absolute;
+	margin: 15px;
 	overflow-y: auto;
 }
 
@@ -304,6 +316,11 @@ div.circle .owner, div.circle .type, div.circle .resume {
 
 #settings-name {
 	width: 300px;
+}
+
+#settings-desc {
+	width: 300px;
+	height: 140px;
 }
 
 #settings-submit {

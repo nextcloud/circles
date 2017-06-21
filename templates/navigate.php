@@ -202,10 +202,10 @@ style('circles', 'navigation');
 			<div id="circle-actions">
 				<div id="circle-actions-buttons">
 					<div id="joincircle_invit"><?php p(
-						$l->t("Pending invitation to join this circle")
+							$l->t("Pending invitation to join this circle")
 						); ?></div>
 					<div id="joincircle_request"><?php p(
-						$l->t('You have a pending request to join this circle')
+							$l->t('You have a pending request to join this circle')
 						); ?></div>
 					<button id="circle-actions-add" class="icon-add-user"
 							title="<?php p($l->t('Add a member')); ?>"></button>
@@ -239,67 +239,75 @@ style('circles', 'navigation');
 
 				<div id="members_search_result"></div>
 			</div>
-			<div id="memberslist">
-				<table id="memberslist_table">
-					<tr class="header">
-						<td class="username"><?php p($l->t('Username')); ?></td>
-						<td class="level"><?php p($l->t('Level')); ?></td>
-						<td class="status"><?php p($l->t('Status')); ?></td>
-						<td class="joined"><?php p($l->t('Joined')); ?></td>
-					</tr>
-				</table>
-				<br/><br/><br/><br/>
-				<table id="linkslist_table">
-					<tr class="header">
-						<td class="address"><?php p($l->t('Link')); ?></td>
-						<td class="status"><?php p($l->t('Status')); ?></td>
-						<td class="linked"><?php p($l->t('Linked')); ?></td>
-					</tr>
-				</table>
+			<div id="circledata">
+				<div id="circle_desc"></div>
+				<div id="memberslist">
+					<table id="memberslist_table">
+						<tr class="header">
+							<td class="username"><?php p($l->t('Username')); ?></td>
+							<td class="level"><?php p($l->t('Level')); ?></td>
+							<td class="status"><?php p($l->t('Status')); ?></td>
+							<td class="joined"><?php p($l->t('Joined')); ?></td>
+						</tr>
+					</table>
+					<br/><br/><br/><br/>
+					<table id="linkslist_table">
+						<tr class="header">
+							<td class="address"><?php p($l->t('Link')); ?></td>
+							<td class="status"><?php p($l->t('Status')); ?></td>
+							<td class="linked"><?php p($l->t('Linked')); ?></td>
+						</tr>
+					</table>
 
-				<script id="tmpl_member" type="text/template">
-					<tr class="entry" member-id="%username%" member-level="%level%"
-						member-status="%status%">
-						<td class="username">%displayname%</td>
-						<td class="level">
-							<select class="level-select">
-								<option value="1"><?php p($l->t('Member')); ?></option>
-								<option value="4"><?php p($l->t('Moderator')); ?></option>
-								<option value="8"><?php p($l->t('Admin')); ?></option>
-								<option value="9"><?php p($l->t('Owner')); ?></option>
-							</select>
-						</td>
-						<td class="status">
-							<select class="status-select">
-							</select>
-						</td>
-						<td class="joined">%joined%</td>
-						<td>
-							<div class="icon-checkmark" style="display: none;"></div>
-						</td>
-					</tr>
-				</script>
+					<script id="tmpl_member" type="text/template">
+						<tr class="entry" member-id="%username%" member-level="%level%"
+							member-status="%status%">
+							<td class="username">%displayname%</td>
+							<td class="level">
+								<select class="level-select">
+									<option value="1"><?php p($l->t('Member')); ?></option>
+									<option value="4"><?php p($l->t('Moderator')); ?></option>
+									<option value="8"><?php p($l->t('Admin')); ?></option>
+									<option value="9"><?php p($l->t('Owner')); ?></option>
+								</select>
+							</td>
+							<td class="status">
+								<select class="status-select">
+								</select>
+							</td>
+							<td class="joined">%joined%</td>
+							<td>
+								<div class="icon-checkmark" style="display: none;"></div>
+							</td>
+						</tr>
+					</script>
 
-				<script id="tmpl_link" type="text/template">
-					<tr class="entry" link-id="%id%" link-address="%address%"
-						link-status="%status%">
-						<td class="address">%token%@%address%</td>
-						<td class="status">
-							<select class="link-status-select">
-							</select>
-						</td>
-						<td class="joined">%joined%</td>
-					</tr>
-				</script>
+					<script id="tmpl_link" type="text/template">
+						<tr class="entry" link-id="%id%" link-address="%address%"
+							link-status="%status%">
+							<td class="address">%token%@%address%</td>
+							<td class="status">
+								<select class="link-status-select">
+								</select>
+							</td>
+							<td class="joined">%joined%</td>
+						</tr>
+					</script>
 
+				</div>
 			</div>
 			<div id="settings-panel">
 				<table id="settings-table">
 
-					<!--<tr>
+					<tr>
 						<td class="left">Name of the Circle</td>
 						<td><input type="text" id="settings-name"/></td>
-					</tr>-->
+					</tr>
+
+					<tr>
+						<td class="left" style="vertical-align: top">Description</td>
+						<td><textarea type="text" id="settings-desc"></textarea></td>
+					</tr>
 
 					<tr id="settings-entry-link">
 						<td class="left"><?php p($l->t('Allow Federated Links')); ?><br/>

@@ -37,9 +37,11 @@ var settings = {
 	displaySettings: function (display) {
 		if (display) {
 			settings.initUISettings();
+			elements.circleDesc.hide(define.animationSpeed);
 			elements.mainUIMembers.hide(define.animationSpeed);
 			elements.settingsPanel.delay(define.animationSpeed).show(define.animationSpeed);
 		} else {
+			elements.circleDesc.delay(define.animationSpeed).show(define.animationSpeed);
 			elements.settingsPanel.hide(define.animationSpeed);
 			elements.mainUIMembers.delay(define.animationSpeed).show(define.animationSpeed);
 		}
@@ -47,6 +49,7 @@ var settings = {
 
 	initUISettings: function () {
 		elements.settingsName.val(curr.circleName);
+		elements.settingsDesc.val(curr.circleDesc);
 		elements.settingsLink.prop('checked', (curr.circleSettings['allow_links'] === 'true'));
 		elements.settingsLinkAuto.prop('checked',
 			(curr.circleSettings['allow_links_auto'] === 'true'));

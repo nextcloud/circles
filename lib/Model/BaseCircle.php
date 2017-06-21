@@ -215,7 +215,19 @@ class BaseCircle {
 
 
 	public function setSetting($k, $v) {
-		$this->settings[$k] = $v;
+		switch ($k) {
+			case 'circle_name':
+				$this->setName($v);
+				break;
+
+			case 'circle_desc':
+				$this->setDescription($v);
+				break;
+
+			default:
+				$this->settings[$k] = $v;
+				break;
+		}
 	}
 
 

@@ -45,7 +45,8 @@ var elements = {
 	circlesList: null,
 	circlesSearch: null,
 	circlesFilters: null,
-	circlesDetails: null,
+	circleDetails: null,
+	circleDesc: null,
 	emptyContent: null,
 	mainUI: null,
 	mainUIMembersTable: null,
@@ -65,6 +66,7 @@ var elements = {
 
 	settingsPanel: null,
 	settingsName: null,
+	settingsDesc: null,
 	settingsLink: null,
 	settingsLinkAuto: null,
 	settingsLinkFiles: null,
@@ -95,7 +97,8 @@ var elements = {
 		elements.circlesList = $('#circles_list');
 		elements.circlesSearch = $('#circles_search');
 		elements.circlesFilters = $('#circles_filters');
-		elements.circlesDetails = $('#circle_details');
+		elements.circleDetails = $('#circle_details')
+		elements.circleDesc = $('#circle_desc');
 		elements.emptyContent = $('#emptycontent');
 		elements.mainUI = $('#mainui');
 
@@ -117,6 +120,7 @@ var elements = {
 
 		elements.settingsPanel = $('#settings-panel');
 		elements.settingsName = $('#settings-name');
+		elements.settingsDesc = $('#settings-desc');
 		elements.settingsLink = $('#settings-link');
 		elements.settingsLinkAuto = $('#settings-link-auto');
 		elements.settingsLinkFiles = $('#settings-link-files');
@@ -168,7 +172,7 @@ var elements = {
 
 		var theme = $('#body-user').find('#header').css('background-color');
 		elements.circlesList.css('background-color', theme);
-		elements.circlesDetails.css('background-color', theme);
+		elements.circleDetails.css('background-color', theme);
 		elements.rightPanel.css('background-color', theme);
 
 		elements.membersSearchResult.hide();

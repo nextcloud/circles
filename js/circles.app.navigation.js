@@ -448,8 +448,16 @@ var nav = {
 
 
 	displayCircleDetails: function (details) {
-		elements.circlesDetails.children('#name').text(details.name);
-		elements.circlesDetails.children('#type').text(t('circles', details.typeLongString));
+		elements.circleDetails.children('#name').text(details.name);
+		elements.circleDesc.text(details.description);
+		
+		elements.circleDetails.children('#type').text(t('circles', details.typeLongString));
+		if (details.description !== '') {
+			elements.circleDesc.text(details.description).show(define.animationSpeed);
+		}
+		else {
+			elements.circleDesc.hide(define.animationSpeed);
+		}
 
 		elements.buttonCircleActions.show(300);
 		elements.addMember.hide(300);
