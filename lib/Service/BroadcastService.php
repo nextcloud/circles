@@ -70,7 +70,6 @@ class BroadcastService {
 	}
 
 
-
 	/**
 	 * broadcast the SharingFrame item using a IBroadcaster.
 	 * The broadcast is usually set by the app that created the SharingFrame item.
@@ -95,11 +94,10 @@ class BroadcastService {
 		$broadcaster->createShareToCircle($frame);
 		$users = $this->circlesRequest->getMembers($frame->getCircleId(), Member::LEVEL_MEMBER);
 		foreach ($users AS $user) {
-			$broadcaster->createShareToUser($user->getUserId(), $frame);
+			$broadcaster->createShareToUser($frame, $user->getUserId());
 		}
 
 	}
-
 
 
 }
