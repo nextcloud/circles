@@ -140,6 +140,20 @@ class Circles {
 
 
 	/**
+	 * Circles::joinedCircles();
+	 *
+	 * Return all the circle the current user is a member.
+	 *
+	 * @return Circle[]
+	 */
+	public static function joinedCircles()
+	{
+		return self::listCircles(Circle::CIRCLES_ALL, '', Member::LEVEL_MEMBER);
+	}
+
+
+
+	/**
 	 * Circles::detailsCircle();
 	 *
 	 * WARNING - This function is called by the core - WARNING

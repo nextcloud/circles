@@ -14,13 +14,66 @@ interface IBroadcaster {
 	public function init();
 
 	/**
-	 * broadcast $share to $userId.
+	 * broadcast a creation of $share to $userId.
 	 *
 	 * @param string $userId
 	 * @param SharingFrame $frame
 	 *
 	 * @return
 	 */
-	public function broadcast($userId, SharingFrame $frame);
+	public function createShareToUser($userId, SharingFrame $frame);
+
+
+
+	/**
+	 * broadcast a creation of $share to $circleId.
+	 *
+	 * @param SharingFrame $frame
+	 *
+	 * @return
+	 */
+	public function createShareToCircle(SharingFrame $frame);
+
+
+	/**
+	 * broadcast a destruction of $share to $userId.
+	 *
+	 * @param string $userId
+	 * @param SharingFrame $frame
+	 *
+	 * @return
+	 */
+	public function deleteShareToUser($userId, SharingFrame $frame);
+
+
+	/**
+	 * broadcast a destruction of $share to $circleId.
+	 *
+	 * @param SharingFrame $frame
+	 *
+	 * @return
+	 */
+	public function deleteShareToCircle(SharingFrame $frame);
+
+
+	/**
+	 * broadcast an edition of $share to $userId.
+	 *
+	 * @param string $userId
+	 * @param SharingFrame $frame
+	 *
+	 * @return
+	 */
+	public function editShareToUser($userId, SharingFrame $frame);
+
+
+	/**
+	 * broadcast an edition of $share to $circleId.
+	 *
+	 * @param SharingFrame $frame
+	 *
+	 * @return
+	 */
+	public function editShareToCircle(SharingFrame $frame);
 
 }

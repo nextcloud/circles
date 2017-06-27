@@ -92,9 +92,10 @@ class BroadcastService {
 		}
 
 		$broadcaster->init();
+		$broadcaster->createShareToCircle($frame);
 		$users = $this->circlesRequest->getMembers($frame->getCircleId(), Member::LEVEL_MEMBER);
 		foreach ($users AS $user) {
-			$broadcaster->broadcast($user->getUserId(), $frame);
+			$broadcaster->createShareToUser($user->getUserId(), $frame);
 		}
 
 	}
