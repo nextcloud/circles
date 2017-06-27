@@ -107,6 +107,7 @@
     "The link between {circle} and {link} has been shutdown remotely" : "El enlace entre {circle} y {link} ha sido cerrado remotamente",
     "You closed the link between {circle} and {link}" : "Has cerrado el enlace entre {circle} y {link}",
     "{author} closed the link between {circle} and {link}" : "{author} ha cerrado el enlace entre {circle} y {link}",
+    "On event in a <strong>Circle</strong> you are a member, or a potential member" : "En un evento en un <strong>círculo</strong> del que eres un miembro actual o potencial",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Cualquier evento importante en un <strong>círculo</strong> del que seas moderador",
     "The name of your circle must contain at least 3 characters" : "El nombre de tu círculo debe contener al menos 3 caracteres",
     "The name of your circle cannot start with this character" : "El nombre del círculo no puede iniciar con este carácter",

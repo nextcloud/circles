@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "This action is irreversible" : "Tato akce je nevratná",
     "Personal circle" : "Osobní kruh",
     "Hidden circle" : "Skrytý kruh",
     "Private circle" : "Soukromý kruh",
@@ -24,6 +25,8 @@ OC.L10N.register(
     "Requesting" : "Žádání",
     "Blocked" : "Blokovaný",
     "Kicked" : "Vyhozen",
+    "Are you sure you want to leave this circle?" : "Opravdu chcete opustit tento kruh?",
+    "Please confirm" : "Prosím potvrďte",
     "Are you sure you want to delete this circle?" : "Opravdu chcete smazat tento kruh?",
     "Kick this member" : "Vykopnout tohoto člena",
     "Accept the request" : "Přijmout požadavek",
@@ -49,6 +52,7 @@ OC.L10N.register(
     "Member '{name}' could not be removed from the circle" : "Člen '{name}' nemohl být odstraněn z kruhu",
     "Member '{name}' updated" : "Člen '{name}' aktualizován",
     "Member '{name}' could not be updated" : "Člen '{name}' nemohl být aktualizován",
+    "Settings saved." : "Nastavení uložena.",
     "Circles" : "Kruhy",
     "The name of your circle must contain at least 3 characters" : "Jméno vašeho kruhu musí obsahovat alespoň 3 znaky",
     "The name of your circle cannot start with this character" : "Jméno vašeho kruhu nemůže začínat tímto znakem",
@@ -105,13 +109,18 @@ OC.L10N.register(
     "You have a pending request to join this circle" : "Máte čekající požadavek, abyste se připojili k tomuto kruhu",
     "Add a member" : "Přidat člena",
     "Join this circle" : "Připojit se k tomuto kruhu",
+    "Delete circle" : "Smazat kruh",
+    "Edit circle" : "Upravit kruh",
     "Accept the invitation" : "Přijmout pozvánku",
     "Decline the invitation" : "Odmítnout pozvánku",
     "Leave this circle" : "Opustit tento kruh",
     "Link to a circle" : "Odkaz na kruh",
+    "Return to menu" : "Návrat do menu",
     "Username" : "Uživatelské jméno",
     "Level" : "Úroveň",
     "Status" : "Stav",
-    "Joined" : "Připojený"
+    "Joined" : "Připojený",
+    "Link" : "Odkaz",
+    "Save settings" : "Uložit nastavení"
 },
 "nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;");
