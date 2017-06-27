@@ -13,17 +13,6 @@ interface IBroadcaster {
 	 */
 	public function init();
 
-	/**
-	 * broadcast a creation of $share to $userId.
-	 *
-	 * @param string $userId
-	 * @param SharingFrame $frame
-	 *
-	 * @return
-	 */
-	public function createShareToUser($userId, SharingFrame $frame);
-
-
 
 	/**
 	 * broadcast a creation of $share to $circleId.
@@ -36,14 +25,14 @@ interface IBroadcaster {
 
 
 	/**
-	 * broadcast a destruction of $share to $userId.
+	 * broadcast a creation of $share to $userId.
 	 *
-	 * @param string $userId
 	 * @param SharingFrame $frame
+	 * @param string $userId
 	 *
 	 * @return
 	 */
-	public function deleteShareToUser($userId, SharingFrame $frame);
+	public function createShareToUser(SharingFrame $frame, $userId);
 
 
 	/**
@@ -57,14 +46,14 @@ interface IBroadcaster {
 
 
 	/**
-	 * broadcast an edition of $share to $userId.
+	 * broadcast a destruction of $share to $userId.
 	 *
-	 * @param string $userId
 	 * @param SharingFrame $frame
+	 * @param string $userId
 	 *
 	 * @return
 	 */
-	public function editShareToUser($userId, SharingFrame $frame);
+	public function deleteShareToUser(SharingFrame $frame, $userId);
 
 
 	/**
@@ -75,5 +64,16 @@ interface IBroadcaster {
 	 * @return
 	 */
 	public function editShareToCircle(SharingFrame $frame);
+
+
+	/**
+	 * broadcast an edition of $share to $userId.
+	 *
+	 * @param SharingFrame $frame
+	 * @param string $userId
+	 *
+	 * @return
+	 */
+	public function editShareToUser(SharingFrame $frame, $userId);
 
 }
