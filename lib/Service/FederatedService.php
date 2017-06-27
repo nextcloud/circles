@@ -49,6 +49,8 @@ use OCP\IL10N;
 
 class FederatedService {
 
+	const REMOTE_URL_LINK = '/index.php/apps/circles/v1/link';
+	const REMOTE_URL_PAYLOAD = '/index.php/apps/circles/v1/payload';
 
 	/** @var string */
 	private $userId;
@@ -308,8 +310,7 @@ class FederatedService {
 			$remote = 'https://' . $remote;
 		}
 
-		return rtrim($remote, '/') . \OC::$server->getURLGenerator()
-												 ->linkToRoute('circles.Federated.requestedLink');
+		return rtrim($remote, '/') . self::REMOTE_URL_LINK;
 	}
 
 
@@ -324,10 +325,7 @@ class FederatedService {
 			$remote = 'https://' . $remote;
 		}
 
-		return rtrim($remote, '/') . \OC::$server->getURLGenerator()
-												 ->linkToRoute(
-													 'circles.Federated.receiveFederatedDelivery'
-												 );
+		return rtrim($remote, '/') . self::REMOTE_URL_PAYLOAD;
 	}
 
 
