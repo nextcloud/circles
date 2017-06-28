@@ -8,6 +8,7 @@ OC.L10N.register(
     "Private circle" : "Ιδιωτικός κύκλος",
     "Public circle" : "Δημόσιος κύκλος",
     "Circle" : "Κύκλος",
+    "Setting link" : "Ορισμός συνδέσμου",
     "Link requested" : "Απαιτείται σύνδεσμος",
     "Personal Circle" : "Προσωπικός κύκλος",
     "Hidden Circle" : "Κρυφός κύκλος",
@@ -81,9 +82,12 @@ OC.L10N.register(
     "Accept the invitation" : "Αποδοχή πρόσκλησης",
     "Leave this circle" : "Αποσυνδεθείτε από αυτόν τον κύκλο",
     "Link to a circle" : "Σύνδεσμος στον κύκλο",
+    "Return to menu" : "Επιστροφή στο μενού",
     "Username" : "Όνομα χρήστη",
     "Level" : "Επίπεδο",
     "Status" : "Κατάσταση",
-    "Joined" : "Συνδεδεμένοι"
+    "Joined" : "Συνδεδεμένοι",
+    "Link" : "Σύνδεσμος",
+    "Save settings" : "Αποθήκευση ρυθμίσεων"
 },
 "nplurals=2; plural=(n != 1);");
