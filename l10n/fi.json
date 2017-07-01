@@ -1,4 +1,5 @@
 { "translations": {
+    "This action is irreversible" : "Tämä toiminto on peruuttamaton",
     "Personal circle" : "Henkilökohtainen piiri",
     "Hidden circle" : "Piilotettu piiri",
     "Private circle" : "Yksityinen piiri",
@@ -40,7 +41,15 @@
     "Issue while retrieving the list of circles" : "Virhe haettaessa listaa piireistä",
     "Member '{name}' could not be added to the circle" : "Jäsentä '{name}' ei voitu lisätä piiriin",
     "Member '{name}' could not be removed from the circle" : "Jäsentä '{name}'  ei voitu poistaa piiristä",
+    "Issue while saving settings" : "Virhe tallennettaessa asetuksia",
+    "Settings saved." : "Asetukset tallennettu.",
     "Circles" : "Piirit",
+    "You created the circle {circle}" : "Loit piirin {circle}",
+    "{author} created the circle {circle}" : "{author} loi piirin {circle}",
+    "You deleted {circle}" : "Poistit piirin {circle}",
+    "{author} deleted {circle}" : "{author} poisti piirin {circle}",
+    "You joined {circle}" : "Liityit piiriin {circle}",
+    "{member} joined {circle}" : "{member} liittyi piiriin {circle}",
     "The name of your circle cannot start with this character" : "Piirin nimi ei voi alkaa tällä kirjoitusmerkillä",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Et voi käyttää Piiri Sovellusta ennenkuin ylläpitäjä on lisännyt sinut vähintään yhteen piiriin",
     "The circle does not exist or is hidden" : "Piiriä ei löydy tai se on piilotettu",
@@ -95,9 +104,11 @@
     "Decline the invitation" : "Hylkää kutsu",
     "Leave this circle" : "Poistu tästä piiristä",
     "Link to a circle" : "Piirin linkki",
+    "Return to menu" : "Palaa valikkoon",
     "Username" : "Käyttäjätunnus",
     "Level" : "Taso",
     "Status" : "Tila",
-    "Joined" : "Liittynyt"
+    "Joined" : "Liittynyt",
+    "Save settings" : "Tallenna asetukset"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
