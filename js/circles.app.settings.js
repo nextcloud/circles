@@ -41,7 +41,6 @@ var settings = {
 			elements.mainUIMembers.hide(define.animationSpeed);
 			elements.settingsPanel.delay(define.animationSpeed).show(define.animationSpeed);
 		} else {
-			elements.circleDesc.delay(define.animationSpeed).show(define.animationSpeed);
 			elements.settingsPanel.hide(define.animationSpeed);
 			elements.mainUIMembers.delay(define.animationSpeed).show(define.animationSpeed);
 		}
