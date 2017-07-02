@@ -109,6 +109,7 @@ OC.L10N.register(
     "The link between {circle} and {link} has been shutdown remotely" : "Lenken mellom {circle} og {link} har blitt stengt ned fra annensteds hen",
     "You closed the link between {circle} and {link}" : "Du lukket lenken mellom {circle} og {link}",
     "{author} closed the link between {circle} and {link}" : "{author} lukket lenken mellom {circle} og {link}",
+    "Any important event in a <strong>Circle</strong> you are moderating" : "Ønsker du å bli varslet om hendelser i <strong>sirkler</strong> du modererer?",
     "The name of your circle must contain at least 3 characters" : "Navnet på sirkelen din må inneholde minst 3 tegn",
     "The name of your circle cannot start with this character" : "Navnet på sirkelen kan ikke begynne med dette tegnet",
     "Federated circles are not allowed on this Nextcloud" : "Sammenknyttede sirkler tillates ikke i denne Nextcloud-en",
