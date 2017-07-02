@@ -453,10 +453,10 @@ var nav = {
 		
 		elements.circleDetails.children('#type').text(t('circles', details.typeLongString));
 		if (details.description !== '') {
-			elements.circleDesc.text(details.description).show(define.animationSpeed);
+			elements.circleDesc.html(escapeHTML(details.description).replace(/\n/g, '&nbsp;<br />')).show(define.animationSpeed);
 		}
 		else {
-			elements.circleDesc.hide(define.animationSpeed);
+			elements.circleDesc.text('').hide(define.animationSpeed);
 		}
 
 		elements.buttonCircleActions.show(300);
