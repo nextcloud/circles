@@ -387,7 +387,7 @@ var nav = {
 
 		elements.mainUILinksTable.hide(curr.animationSpeed);
 		elements.mainUILinksTable.emptyTable();
-		if (links.length === 0) {
+		if (links === null || links.length === 0) {
 			return;
 		}
 
