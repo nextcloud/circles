@@ -492,7 +492,7 @@ class Provider implements IProvider {
 	/**
 	 * @param Member $member
 	 *
-	 * @return array
+	 * @return array<string,string|integer>
 	 */
 	private function generateMemberParameter(Member $member) {
 		return $this->generateUserParameter($member->getUserId());
@@ -502,7 +502,7 @@ class Provider implements IProvider {
 	/**
 	 * @param Circle $circle
 	 *
-	 * @return array
+	 * @return array<string,string|integer>
 	 */
 	private function generateCircleParameter(Circle $circle) {
 		return [
@@ -515,6 +515,11 @@ class Provider implements IProvider {
 	}
 
 
+	/**
+	 * @param FederatedLink $link
+	 *
+	 * @return array<string,string|integer>
+	 */
 	private function generateLinkParameter(FederatedLink $link) {
 		return [
 			'type'   => 'circle',
@@ -529,11 +534,9 @@ class Provider implements IProvider {
 	/**
 	 * @param $userId
 	 *
-	 * @return array
+	 * @return array<string,string|integer>
 	 */
-	private function generateUserParameter(
-		$userId
-	) {
+	private function generateUserParameter($userId) {
 		return [
 			'type'   => 'user',
 			'id'     => $userId,
