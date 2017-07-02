@@ -57,27 +57,30 @@ class Provider implements IProvider {
 			throw new \InvalidArgumentException();
 		}
 
-		$event = $this->parseAsMember($event);
-		$event = $this->parseAsModerator($event);
+		$params = $event->getSubjectParameters();
+		$circle = Circle::fromJSON($this->l10n, $params['circle']);
+		$event->setIcon(CirclesService::getCircleIcon($circle->getType()));
+
+		$event = $this->parseAsMember($circle, $event, $params);
+		$event = $this->parseAsModerator($circle, $event, $params);
+
+		$this->generateParsedSubject($event);
 
 		return $event;
 	}
 
 
 	/**
+	 * @param Circle $circle
 	 * @param IEvent $event
+	 * @param array $params
 	 *
 	 * @return IEvent
-	 * @throws Exception
 	 */
-	private function parseAsMember(IEvent $event) {
+	private function parseAsMember(Circle $circle, IEvent $event, $params) {
 		if ($event->getType() !== 'circles_as_member') {
 			return $event;
 		}
-
-		$params = $event->getSubjectParameters();
-		$circle = Circle::fromJSON($this->l10n, $params['circle']);
-		$event->setIcon(CirclesService::getCircleIcon($circle->getType()));
 
 		switch ($event->getSubject()) {
 			case 'circle_create':
@@ -150,21 +153,19 @@ class Provider implements IProvider {
 
 
 	/**
+	 * @param Circle $circle
 	 * @param IEvent $event
+	 * @param array $params
 	 *
 	 * @return IEvent
 	 * @throws Exception
 	 */
-	private function parseAsModerator(IEvent $event) {
+	private function parseAsModerator(Circle $circle, IEvent $event, $params) {
 		if ($event->getType() !== 'circles_as_moderator') {
 			return $event;
 		}
 
 		try {
-			$params = $event->getSubjectParameters();
-			$circle = Circle::fromJSON($this->l10n, $params['circle']);
-			$event->setIcon(CirclesService::getCircleIcon($circle->getType()));
-
 			if (key_exists('member', $params)) {
 				return $this->parseMemberAsModerator($circle, $event);
 			}
@@ -474,26 +475,52 @@ class Provider implements IProvider {
 	}
 
 
+	/**
+	 * @param IEvent $event
+	 */
+	private function generateParsedSubject(IEvent $event) {
+		$subject = $event->getRichSubject();
+		$params = $event->getRichSubjectParameters();
+		$ak = array_keys($params);
+		foreach ($ak as $k) {
+			$subject = str_replace('{' . $k . '}', $params[$k]['parsed'], $subject);
+		}
+
+		$event->setParsedSubject($subject);
+	}
+
+	/**
+	 * @param Member $member
+	 *
+	 * @return array
+	 */
 	private function generateMemberParameter(Member $member) {
 		return $this->generateUserParameter($member->getUserId());
 	}
 
 
+	/**
+	 * @param Circle $circle
+	 *
+	 * @return array
+	 */
 	private function generateCircleParameter(Circle $circle) {
 		return [
-			'type' => 'circle',
-			'id'   => $circle->getId(),
-			'name' => $circle->getName(),
-			'link' => Circles::generateLink($circle->getId())
+			'type'   => 'circle',
+			'id'     => $circle->getId(),
+			'name'   => $circle->getName(),
+			'parsed' => $circle->getName(),
+			'link'   => Circles::generateLink($circle->getId())
 		];
 	}
 
 
 	private function generateLinkParameter(FederatedLink $link) {
 		return [
-			'type' => 'circle',
-			'id'   => $link->getUniqueId(),
-			'name' => $link->getToken() . '@' . $link->getAddress()
+			'type'   => 'circle',
+			'id'     => $link->getUniqueId(),
+			'name'   => $link->getToken() . '@' . $link->getAddress(),
+			'parsed' => $link->getToken() . '@' . $link->getAddress()
 		];
 //			'link' => Circles::generateRemoteLink($link)
 	}
@@ -508,9 +535,14 @@ class Provider implements IProvider {
 		$userId
 	) {
 		return [
-			'type' => 'user',
-			'id'   => $userId,
-			'name' => \OC::$server->getUserManager()->get($userId)->getDisplayName()
+			'type'   => 'user',
+			'id'     => $userId,
+			'name'   => \OC::$server->getUserManager()
+									->get($userId)
+									->getDisplayName(),
+			'parsed' => \OC::$server->getUserManager()
+									->get($userId)
+									->getDisplayName()
 		];
 	}
 }

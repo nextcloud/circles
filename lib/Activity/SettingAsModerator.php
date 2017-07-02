@@ -65,7 +65,7 @@ class SettingAsModerator implements ISetting {
 	 * @since 11.0.0
 	 */
 	public function canChangeMail() {
-		return false;
+		return true;
 	}
 
 	/**
@@ -73,7 +73,7 @@ class SettingAsModerator implements ISetting {
 	 * @since 11.0.0
 	 */
 	public function isDefaultEnabledMail() {
-		return false;
+		return true;
 	}
 }
 

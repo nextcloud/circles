@@ -11,12 +11,14 @@ class SettingAsMember implements ISetting {
 	/** @var IL10N */
 	protected $l10n;
 
+
 	/**
 	 * @param IL10N $l10n
 	 */
 	public function __construct(IL10N $l10n) {
 		$this->l10n = $l10n;
 	}
+
 
 	/**
 	 * @return string Lowercase a-z and underscore only identifier
@@ -26,6 +28,7 @@ class SettingAsMember implements ISetting {
 		return 'circles_as_member';
 	}
 
+
 	/**
 	 * @return string A translated string
 	 * @since 11.0.0
@@ -33,6 +36,7 @@ class SettingAsMember implements ISetting {
 	public function getName() {
 		return $this->l10n->t('On event in a <strong>Circle</strong> you are a member, or a potential member');
 	}
+
 
 	/**
 	 * @return int whether the filter should be rather on the top or bottom of
@@ -44,6 +48,7 @@ class SettingAsMember implements ISetting {
 		return 60;
 	}
 
+
 	/**
 	 * @return bool True when the option can be changed for the stream
 	 * @since 11.0.0
@@ -51,6 +56,7 @@ class SettingAsMember implements ISetting {
 	public function canChangeStream() {
 		return true;
 	}
+
 
 	/**
 	 * @return bool True when the option can be changed for the stream
@@ -60,13 +66,15 @@ class SettingAsMember implements ISetting {
 		return true;
 	}
 
+
 	/**
 	 * @return bool True when the option can be changed for the mail
 	 * @since 11.0.0
 	 */
 	public function canChangeMail() {
-		return false;
+		return true;
 	}
+
 
 	/**
 	 * @return bool True when the option can be changed for the stream
