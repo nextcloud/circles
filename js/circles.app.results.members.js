@@ -41,17 +41,29 @@ var resultMembers = {
 
 		elements.membersSearchResult.children().remove();
 
-		if (response === null ||
-			(response.ocs.data.users.length === 0 && response.ocs.data.exact.users.length === 0)) {
+		if (response === null) {
 			elements.membersSearchResult.fadeOut(0);
 			return;
 		}
 
-		elements.fillMembersSearch(response.ocs.data.exact.users, response.ocs.data.users);
+		elements.fillMembersSearch('users', response.ocs.data.exact.users, response.ocs.data.users);
+		elements.fillMembersSearch('groups', response.ocs.data.exact.groups, response.ocs.data.groups);
+
+		if (elements.membersSearchResult.children().length === 0)
+		{
+			elements.membersSearchResult.fadeOut(0);
+			return;
+		}
 
 		$('.members_search').on('click', function () {
-			api.addMember(curr.circle, $(this).attr('searchresult'),
-				resultMembers.addMemberResult);
+			if ($(this).attr('source') === 'groups')
+			{
+				api.addGroupMembers(curr.circle, $(this).attr('searchresult'),
+					resultMembers.addGroupMembersResult);
+			} else {
+				api.addMember(curr.circle, $(this).attr('searchresult'),
+					resultMembers.addMemberResult);
+			}
 		});
 		elements.membersSearchResult.fadeIn(300);
 	},
@@ -69,6 +81,22 @@ var resultMembers = {
 		}
 		OCA.notification.onFail(
 			t('circles', "Member '{name}' could not be added to the circle", {name: result.name}) +
+			': ' +
+			((result.error) ? result.error : t('circles', 'no error message')));
+	},
+
+	addGroupMembersResult: function (result) {
+
+		if (result.status === 1) {
+			OCA.notification.onSuccess(
+				t('circles', "Members from group '{name}' successfully added to the circle",
+					{name: result.name}));
+
+			nav.displayMembers(result.members);
+			return;
+		}
+		OCA.notification.onFail(
+			t('circles', "Members from group '{name}' could not be added to the circle", {name: result.name}) +
 			': ' +
 			((result.error) ? result.error : t('circles', 'no error message')));
 	},

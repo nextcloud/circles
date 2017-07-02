@@ -31,6 +31,7 @@ use OC\User\NoUserException;
 use OCA\Circles\Db\CirclesMapper;
 use OCA\Circles\Db\MembersMapper;
 use OCA\Circles\Exceptions\CircleTypeNotValid;
+use OCA\Circles\Exceptions\GroupDoesNotExistException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Model\Circle;
@@ -111,6 +112,47 @@ class MembersService {
 		$this->dbMembers->editMember($member);
 
 		$this->eventsService->onMemberNew($circle, $member);
+
+		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getUser());
+	}
+
+
+	/**
+	 * @param int $circleId
+	 * @param string $groupId
+	 *
+	 * @return array
+	 * @throws \Exception
+	 */
+	public function importMembersFromGroup($circleId, $groupId) {
+
+		try {
+			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
+			$this->dbMembers->getMemberFromCircle($circleId, $this->userId)
+							->hasToBeModerator();
+		} catch (\Exception $e) {
+			throw $e;
+		}
+
+		$group = \OC::$server->getGroupManager()
+							 ->get($groupId);
+		if ($group === null) {
+			throw new GroupDoesNotExistException('This group does not exist');
+		}
+
+		foreach ($group->getUsers() as $user) {
+			try {
+				$member = $this->getFreshNewMember($circleId, $user->getUID());
+
+				$member->inviteToCircle($circle->getType());
+				$this->dbMembers->editMember($member);
+
+				$this->eventsService->onMemberNew($circle, $member);
+			} catch (MemberAlreadyExistsException $e) {
+			} catch (\Exception $e) {
+				throw $e;
+			}
+		}
 
 		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getUser());
 	}

@@ -294,38 +294,51 @@ var elements = {
 		elements.newType.val('');
 	},
 
-	fillMembersSearch: function (exact, partial) {
-		this.fillExactMembersSearch(exact);
-		this.fillPartialMembersSearch(partial);
+
+	fillMembersSearch: function (source, exact, partial) {
+		this.fillExactMembersSearch(source, exact);
+		this.fillPartialMembersSearch(source, partial);
 		elements.membersSearchResult.children().first().css('border-top-width', '0px');
 	},
 
 
-	fillExactMembersSearch: function (exact) {
+	fillExactMembersSearch: function (source, exact) {
 		$.each(exact, function (index, value) {
+			var details = escapeHTML(value.value.shareWith);
+			if (source === 'groups') {
+				details = 'group';
+			}
 			elements.membersSearchResult.append(
-				'<div class="members_search exact" searchresult="' +
+				'<div class="members_search exact" source="' + source + '" searchresult="' +
 				escapeHTML(value.value.shareWith) + '">' + escapeHTML(value.label) + '   (' +
-				escapeHTML(value.value.shareWith) + ')</div>');
+				details + ')</div>');
 		});
 
 	},
 
 
-	fillPartialMembersSearch: function (partial) {
+	fillPartialMembersSearch: function (source, partial) {
 		$.each(partial, function (index, value) {
+
 			var currSearch = elements.addMember.val().trim();
-			var line = escapeHTML(value.label) + '   (' + escapeHTML(value.value.shareWith) + ')';
-			if (currSearch.length > 0) {
-				line = line.replace(new RegExp('(' + currSearch + ')', 'gi'), '<b>$1</b>');
+			var line = escapeHTML(value.label);
+
+			if (source === 'groups') {
+				if (currSearch.length > 0) {
+					line = line.replace(new RegExp('(' + currSearch + ')', 'gi'), '<b>$1</b>');
+				}
+				line += '   (group)';
+			} else {
+				line += '   (' + escapeHTML(value.value.shareWith) + ')';
+				if (currSearch.length > 0) {
+					line = line.replace(new RegExp('(' + currSearch + ')', 'gi'), '<b>$1</b>');
+				}
 			}
 
 			elements.membersSearchResult.append(
-				'<div class="members_search" searchresult="' + escapeHTML(value.value.shareWith) +
-				'">' + line +
-				'</div>');
+				'<div class="members_search" source="' + source + '" searchresult="' +
+				escapeHTML(value.value.shareWith) + '">' + line + '</div>');
 		});
-
 	},
 
 

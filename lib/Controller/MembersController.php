@@ -64,6 +64,41 @@ class MembersController extends BaseController {
 	}
 
 
+
+	/**
+	 * @NoAdminRequired
+	 * @NoSubAdminRequired
+	 *
+	 * @param $id
+	 * @param string $name
+	 *
+	 * @return DataResponse
+	 */
+	public function importFromGroup($id, $name) {
+
+		try {
+			$data = $this->membersService->importMembersFromGroup($id, $name);
+		} catch (\Exception $e) {
+			return $this->fail(
+				[
+					'circle_id' => $id,
+					'name'      => $name,
+					'error'     => $e->getMessage()
+				]
+			);
+		}
+
+		return $this->success(
+			[
+				'circle_id' => $id,
+				'name'      => $name,
+				'members'   => $data
+			]
+		);
+	}
+
+
+
 	/**
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
