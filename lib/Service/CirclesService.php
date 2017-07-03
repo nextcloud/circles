@@ -365,23 +365,38 @@ class CirclesService {
 	 * Return the right imagePath for a type of circle.
 	 *
 	 * @param string $type
+	 * @param bool $png
 	 *
 	 * @return string
 	 */
-	public static function getCircleIcon($type) {
+	public static function getCircleIcon($type, $png = false) {
+
+		$ext = '.svg';
+		if ($png === true) {
+			$ext = '.png';
+		}
+
 		$urlGen = \OC::$server->getURLGenerator();
 		switch ($type) {
 			case Circle::CIRCLES_PERSONAL:
-				return $urlGen->imagePath('circles', 'personal.svg');
+				return $urlGen->getAbsoluteURL(
+					$urlGen->imagePath('circles', 'personal' . $ext)
+				);
 			case Circle::CIRCLES_PRIVATE:
-				return $urlGen->imagePath('circles', 'private.svg');
+				return $urlGen->getAbsoluteURL(
+					$urlGen->imagePath('circles', 'private' . $ext)
+				);
 			case Circle::CIRCLES_HIDDEN:
-				return $urlGen->imagePath('circles', 'hidden.svg');
+				return $urlGen->getAbsoluteURL(
+					$urlGen->imagePath('circles', 'hidden' . $ext)
+				);
 			case Circle::CIRCLES_PUBLIC:
-				return $urlGen->imagePath('circles', 'public.svg');
+				return $urlGen->getAbsoluteURL(
+					$urlGen->imagePath('circles', 'public' . $ext)
+				);
 		}
 
-		return $urlGen->imagePath('circles', 'black_circle.svg');
+		return $urlGen->getAbsoluteURL($urlGen->imagePath('circles', 'black_circle' . $ext));
 	}
 
 }

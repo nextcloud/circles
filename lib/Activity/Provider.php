@@ -59,7 +59,14 @@ class Provider implements IProvider {
 
 		$params = $event->getSubjectParameters();
 		$circle = Circle::fromJSON($this->l10n, $params['circle']);
-		$event->setIcon(CirclesService::getCircleIcon($circle->getType()));
+
+		$event->setIcon(
+			CirclesService::getCircleIcon(
+				$circle->getType(),
+				(method_exists($this->activityManager, 'getRequirePNG')
+				 && $this->activityManager->getRequirePNG())
+			)
+		);
 
 		$event = $this->parseAsMember($circle, $event, $params);
 		$event = $this->parseAsModerator($circle, $event, $params);
