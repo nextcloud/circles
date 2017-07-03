@@ -39,6 +39,7 @@ use OCA\Circles\Exceptions\CircleTypeNotValid;
 use OCA\Circles\Exceptions\FederatedCircleStatusUpdateException;
 use OCA\Circles\Exceptions\FederatedRemoteCircleDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedRemoteDoesNotAllowException;
+use OCA\Circles\Exceptions\FederatedRemoteIsDown;
 use OCA\Circles\Exceptions\FrameAlreadyExistException;
 use OCA\Circles\Exceptions\LinkCreationException;
 use OCA\Circles\Exceptions\MemberIsNotAdminException;
@@ -366,6 +367,10 @@ class FederatedService {
 			);
 
 			$result = json_decode($request->getBody(), true);
+			if ($result === null) {
+				throw new FederatedRemoteIsDown($this->l10n->t('The remote host is down or the Circles app is not installed on it'));
+			}
+
 			$this->eventOnRequestLink(
 				$circle, $link, $result['status'],
 				((key_exists('reason', $result)) ? $result['reason'] : '')
