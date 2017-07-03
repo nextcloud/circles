@@ -483,7 +483,9 @@ class Provider implements IProvider {
 		$params = $event->getRichSubjectParameters();
 		$ak = array_keys($params);
 		foreach ($ak as $k) {
-			$subject = str_replace('{' . $k . '}', $params[$k]['parsed'], $subject);
+			if (is_array($params[$k])) {
+				$subject = str_replace('{' . $k . '}', $params[$k]['parsed'], $subject);
+			}
 		}
 
 		$event->setParsedSubject($subject);
