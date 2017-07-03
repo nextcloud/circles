@@ -50,6 +50,7 @@ var curr = {
 	searchCircle: '',
 	searchFilter: 0,
 	searchUser: '',
+	searchUserSelected: '',
 	allowed_federated: 0,
 	allowed_circles: 0,
 
