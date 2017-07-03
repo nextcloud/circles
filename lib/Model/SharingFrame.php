@@ -255,17 +255,25 @@ class SharingFrame implements \JsonSerializable {
 		return $this->creation;
 	}
 
+
+	/**
+	 * @return bool
+	 */
+	public function isLocal() {
+		return ($this->getCloudId() === null);
+	}
+
+
 	/**
 	 * @throws SharingFrameSourceCannotBeAppCircles
 	 */
-	public function cannotBeFromCircles()
-	{
-		if (strtolower($this->getSource()) === 'circles')
-		{
+	public function cannotBeFromCircles() {
+		if (strtolower($this->getSource()) === 'circles') {
 			throw new SharingFrameSourceCannotBeAppCircles();
 		}
 	}
 
+	
 	public function jsonSerialize() {
 		return array(
 			'circle_id'   => $this->getCircleId(),
