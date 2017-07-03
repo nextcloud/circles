@@ -163,7 +163,7 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 
 
 	/**
-	 * @param $arr
+	 * @param array $data
 	 *
 	 * @return FederatedLink
 	 */
