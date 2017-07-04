@@ -82,7 +82,6 @@ var nav = {
 		});
 
 
-
 		elements.linkGroup.on('input propertychange paste focus', function () {
 			var search = $(this).val().trim();
 			if (search === '') {
@@ -534,7 +533,7 @@ var nav = {
 	},
 
 	displayMemberInteractionGroupLinks: function (details) {
-		if (details.type === 'Personal' ||
+		if (curr.allowed_linked_groups === '0' || details.type === 'Personal' ||
 			details.user.level < define.levelAdmin
 		) {
 			elements.buttonLinkGroup.hide();
@@ -546,7 +545,7 @@ var nav = {
 
 
 	displayMemberInteractionCircleLinks: function (details) {
-		if (curr.allowed_federated === '0' || curr.circleSettings['allow_links'] !== 'true' ||
+		if (curr.allowed_federated_circles === '0' || curr.circleSettings['allow_links'] !== 'true' ||
 			details.type === 'Personal' ||
 			details.user.level < define.levelAdmin
 		) {

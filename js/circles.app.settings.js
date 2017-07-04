@@ -65,7 +65,7 @@ var settings = {
 
 	interactUISettings: function () {
 
-		if (curr.allowed_federated !== '1') {
+		if (curr.allowed_federated_circles !== '1') {
 			settings.enableSetting(elements.settingsEntryLink, elements.settingsLink, false);
 			settings.enableSetting(elements.settingsEntryLinkAuto, elements.settingsLinkAuto,
 				false);
