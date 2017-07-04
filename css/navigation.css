@@ -245,22 +245,14 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	width: 250px;
 }
 
-#members_search_result > #addmember {
+#members_search_result > #addmember, #groups_search_result > #linkgroup {
 	position: relative;
 	width: 220px;
 	right: 20px;
 	top: 5px;
 }
 
-#groups_search_result > #linkgroup {
-	position: relative;
-	width: 220px;
-	width: 220px;
-	right: 20px;
-	top: 5px;
-}
-
-#members_search_result {
+#members_search_result, #groups_search_result {
 	z-index: 5;
 	border-radius: 4px;
 	border: solid 1px #00000022;

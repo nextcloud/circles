@@ -242,7 +242,7 @@ style('circles', 'navigation');
 
 
 				<div id="members_search_result"></div>
-				<div id="groupss_search_result"></div>
+				<div id="groups_search_result"></div>
 			</div>
 			<div id="circledata">
 				<div id="circle_desc"></div>

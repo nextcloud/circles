@@ -363,8 +363,41 @@ var elements = {
 	},
 
 
-	resetCirclesList: function () {
+	fillGroupsSearch: function (exact, partial) {
+		this.fillExactGroupsSearch(exact);
+		this.fillPartialGroupsSearch(partial);
+		elements.groupsSearchResult.children().first().css('border-top-width', '0px');
+	},
 
+
+	fillExactGroupsSearch: function (exact) {
+		$.each(exact, function (index, value) {
+			elements.groupsSearchResult.append(
+				'<div class="members_search exact" searchresult="' +
+				escapeHTML(value.value.shareWith) + '">' + escapeHTML(value.label) + '   (' +
+				escapeHTML(value.value.shareWith) + ')</div>');
+		});
+
+	},
+
+
+	fillPartialGroupsSearch: function (partial) {
+		$.each(partial, function (index, value) {
+
+			var currSearch = elements.addMember.val().trim();
+			var line = escapeHTML(value.label) + '   (' + escapeHTML(value.value.shareWith) + ')';
+			if (currSearch.length > 0) {
+				line = line.replace(new RegExp('(' + currSearch + ')', 'gi'), '<b>$1</b>');
+			}
+
+			elements.groupsSearchResult.append(
+				'<div class="members_search" searchresult="' +
+				escapeHTML(value.value.shareWith) + '">' + line + '</div>');
+		});
+	},
+
+
+	resetCirclesList: function () {
 		elements.navigation.addClass('selected');
 		elements.navigation.children().each(function () {
 			if ($(this).attr('id') !== 'circles_search' &&

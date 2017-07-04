@@ -47,7 +47,6 @@ var resultGroups = {
 		}
 
 		elements.fillGroupsSearch(response.ocs.data.exact.groups, response.ocs.data.groups);
-
 		if (elements.groupsSearchResult.children().length === 0) {
 			elements.groupsSearchResult.fadeOut(0);
 			return;
