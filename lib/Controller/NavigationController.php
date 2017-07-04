@@ -76,8 +76,9 @@ class NavigationController extends BaseController {
 	 */
 	public function settings() {
 		$data = [
-			'allowed_federated' => $this->configService->getAppValue(ConfigService::CIRCLES_ALLOW_FEDERATED),
 			'allowed_circles'   => $this->configService->getAppValue(ConfigService::CIRCLES_ALLOW_CIRCLES),
+			'allowed_linked_groups' => $this->configService->getAppValue(ConfigService::CIRCLES_ALLOW_LINKED_GROUPS),
+			'allowed_federated_circles' => $this->configService->getAppValue(ConfigService::CIRCLES_ALLOW_FEDERATED_CIRCLES),
 			'status'            => 1
 		];
 
