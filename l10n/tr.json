@@ -60,6 +60,8 @@
     "The status of the link has been updated" : "Bağlantı durumu güncellendi",
     "Member '{name}' successfully added to the circle" : "'{name}' üyesi çevreye eklendi",
     "Member '{name}' could not be added to the circle" : "'{name}' adlı üye bu çevreye eklenemedi",
+    "Members from group '{name}' successfully added to the circle" : "'{name}' grubundaki üyeler çevreye eklendi",
+    "Members from group '{name}' could not be added to the circle" : "'{name}' grubundaki üyeler çevreye eklenemedi",
     "Member '{name}' successfully removed from the circle" : "'{name}' üyesi çevreden çıkarıldı",
     "Member '{name}' could not be removed from the circle" : "'{name}' adlı üye bu çevreden çıkarılamadı",
     "Member '{name}' updated" : "'{name}' üyesi güncellendi",

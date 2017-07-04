@@ -60,6 +60,8 @@
     "The status of the link has been updated" : "O status do link foi atualizado",
     "Member '{name}' successfully added to the circle" : "Usuário '{name}' adicionado ao círculo com sucesso",
     "Member '{name}' could not be added to the circle" : "Não foi possível adicionar o membro '{name}' a este círculo",
+    "Members from group '{name}' successfully added to the circle" : "Os membros do grupo '{name}' foram adicionados ao círculo",
+    "Members from group '{name}' could not be added to the circle" : "Os membros do grupo '{name}' não puderam ser adicionados ao círculo",
     "Member '{name}' successfully removed from the circle" : "Usuário '{name}' excluído do círculo com sucesso",
     "Member '{name}' could not be removed from the circle" : "Não foi possível remover o membro '{name}' do círculo",
     "Member '{name}' updated" : "Usuário '{name}' atualizado",

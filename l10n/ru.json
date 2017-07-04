@@ -60,6 +60,8 @@
     "The status of the link has been updated" : "Состояние связи было обновлено",
     "Member '{name}' successfully added to the circle" : "Участник «{name}» успешно добавлен в круг",
     "Member '{name}' could not be added to the circle" : "Участник «{name}» не может быть добавлен в этот круг",
+    "Members from group '{name}' successfully added to the circle" : "Участники группы  «{name}» были успешно добавлены в круг",
+    "Members from group '{name}' could not be added to the circle" : "Участники группы «{name }» не могут быть добавлены в круг",
     "Member '{name}' successfully removed from the circle" : "Участник «{name}» успешно удалён из этого круга",
     "Member '{name}' could not be removed from the circle" : "Участник «{name}» не может быть удалён из этото круга",
     "Member '{name}' updated" : "Участник «{name}» был обновлён",
