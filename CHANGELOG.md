@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file.
 
 
+## 0.11.1
+
+- fix icons
+- fix strange behaviour when the app is deleted from the disk, but not disable in the cloud
+- Edit Name and Description of a Circle
+- Activities are now send by mail.
+- Invite Group Members to a Circle.
+
+
 ## 0.11.0
 
 - Federated Circles

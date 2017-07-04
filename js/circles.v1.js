@@ -120,7 +120,7 @@
 				var result = {status: -1};
 				$.ajax({
 					method: 'PUT',
-					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/group'),
+					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/groupmembers'),
 					data: {
 						name: groupId
 					}
