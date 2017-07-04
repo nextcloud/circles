@@ -32,7 +32,7 @@ script(
 				 'circles.v1', 'circles.app.elements', 'circles.app.actions',
 				 'circles.app.navigation', 'circles.app.settings',
 				 'circles.app', 'circles.app.results.circles', 'circles.app.results.members',
-				 'circles.app.results.links',
+				 'circles.app.results.groups', 'circles.app.results.links'
 			 ]
 );
 
@@ -209,6 +209,8 @@ style('circles', 'navigation');
 						); ?></div>
 					<button id="circle-actions-add" class="icon-add-user"
 							title="<?php p($l->t('Add a member')); ?>"></button>
+					<button id="circle-actions-group" class="icon-link-group"
+							title="<?php p($l->t('Link a group')); ?>"></button>
 					<button id="circle-actions-link" class="icon-public"
 							title="<?php p($l->t('Link a circle')); ?>"></button>
 					<button id="circle-actions-join" class="icon-join"
@@ -230,6 +232,8 @@ style('circles', 'navigation');
 						   value="<?php p($l->t('Leave this circle')); ?>"/>
 					<input id="addmember" type="text"
 						   placeholder="<?php p($l->t('Add a member')); ?>"/>
+					<input id="linkgroup" type="text"
+						   placeholder="<?php p($l->t('Link a group')); ?>"/>
 					<input id="linkcircle" type="text"
 						   placeholder="<?php p($l->t('Link to a circle')); ?>"/>
 					<button id="circle-actions-return" class="icon-close"
@@ -238,6 +242,7 @@ style('circles', 'navigation');
 
 
 				<div id="members_search_result"></div>
+				<div id="groupss_search_result"></div>
 			</div>
 			<div id="circledata">
 				<div id="circle_desc"></div>

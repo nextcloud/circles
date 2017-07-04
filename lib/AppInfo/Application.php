@@ -27,6 +27,7 @@
 namespace OCA\Circles\AppInfo;
 
 use OCA\Circles\Controller\FederatedController;
+use OCA\Circles\Controller\GroupsController;
 use \OCA\Circles\Controller\NavigationController;
 use \OCA\Circles\Controller\CirclesController;
 use \OCA\Circles\Controller\MembersController;
@@ -44,6 +45,7 @@ use \OCA\Circles\Service\DatabaseService;
 use \OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\EventsService;
 use OCA\Circles\Service\FederatedService;
+use OCA\Circles\Service\GroupsService;
 use \OCA\Circles\Service\MembersService;
 use \OCA\Circles\Service\ConfigService;
 use \OCA\Circles\Service\MiscService;
@@ -136,6 +138,14 @@ class Application extends App {
 		);
 
 		$container->registerService(
+			'GroupsService', function(IAppContainer $c) {
+			return new GroupsService(
+				$c->query('L10N'), $c->query('MiscService')
+			);
+		}
+		);
+
+		$container->registerService(
 			'BroadcastService', function(IAppContainer $c) {
 			return new BroadcastService(
 				$c->query('UserId'), $c->query('ConfigService'), $c->query('CirclesRequest'),
@@ -199,19 +209,18 @@ class Application extends App {
 			return new NavigationController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
 				$c->query('ConfigService'), $c->query('CirclesService'),
-				$c->query('MembersService'), $c->query('SharesService'),
+				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
 				$c->query('FederatedService'), $c->query('MiscService')
 			);
 		}
 		);
-
 
 		$container->registerService(
 			'CirclesController', function(IAppContainer $c) {
 			return new CirclesController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
 				$c->query('ConfigService'), $c->query('CirclesService'),
-				$c->query('MembersService'), $c->query('SharesService'),
+				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
 				$c->query('FederatedService'), $c->query('MiscService')
 			);
 		}
@@ -222,7 +231,18 @@ class Application extends App {
 			return new MembersController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
 				$c->query('ConfigService'), $c->query('CirclesService'),
-				$c->query('MembersService'), $c->query('SharesService'),
+				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
+				$c->query('FederatedService'), $c->query('MiscService')
+			);
+		}
+		);
+
+		$container->registerService(
+			'GroupsController', function(IAppContainer $c) {
+			return new GroupsController(
+				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
+				$c->query('ConfigService'), $c->query('CirclesService'),
+				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
 				$c->query('FederatedService'), $c->query('MiscService')
 			);
 		}
@@ -233,7 +253,7 @@ class Application extends App {
 			return new SharesController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
 				$c->query('ConfigService'), $c->query('CirclesService'),
-				$c->query('MembersService'), $c->query('SharesService'),
+				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
 				$c->query('FederatedService'), $c->query('MiscService')
 			);
 		}
@@ -244,7 +264,7 @@ class Application extends App {
 			return new FederatedController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
 				$c->query('ConfigService'), $c->query('CirclesService'),
-				$c->query('MembersService'), $c->query('SharesService'),
+				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
 				$c->query('FederatedService'), $c->query('MiscService')
 			);
 		}

@@ -102,6 +102,15 @@ return [
 			'requirements' => ['id' => '\d+'],
 		],
 		[
+			'name'         => 'Groups#add', 'url' => '/v1/circles/{id}/groups', 'verb' => 'PUT',
+			'requirements' => ['id' => '\d+'],
+		],
+		[
+			'name'         => 'Groups#remove', 'url' => '/v1/circles/{id}/groups',
+			'verb'         => 'DELETE',
+			'requirements' => ['id' => '\d+'],
+		],
+		[
 			'name'         => 'Shares#create', 'url' => '/v1/circles/{id}/share', 'verb' => 'PUT',
 			'requirements' => ['id' => '\d+'],
 		],

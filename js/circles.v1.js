@@ -132,6 +132,24 @@
 			};
 
 
+
+			this.linkGroup = function (circleId, groupId, callback) {
+				var result = {status: -1};
+				$.ajax({
+					method: 'PUT',
+					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/group'),
+					data: {
+						name: userId
+					}
+				}).done(function (res) {
+					self.onCallback(callback, res);
+				}).fail(function () {
+					self.onCallback(callback, result);
+				});
+			};
+
+
+
 			this.removeMember = function (circleId, userId, callback) {
 				var result = {status: -1};
 				$.ajax({

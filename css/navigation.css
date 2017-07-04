@@ -240,12 +240,20 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	margin-top: 6px;
 }
 
-#linkcircle, #addmember, #joincircle, #leavecircle {
+#linkcircle, #addmember, #linkgroup, #joincircle, #leavecircle {
 	width: 250px;
 }
 
 #members_search_result > #addmember {
 	position: relative;
+	width: 220px;
+	right: 20px;
+	top: 5px;
+}
+
+#groups_search_result > #linkgroup {
+	position: relative;
+	width: 220px;
 	width: 220px;
 	right: 20px;
 	top: 5px;
@@ -265,6 +273,10 @@ div.circle .owner, div.circle .type, div.circle .resume {
 }
 
 .icon-add-user {
+	background-size: 16px;
+}
+
+.icon-link-group {
 	background-size: 16px;
 }
 

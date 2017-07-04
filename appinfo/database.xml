@@ -148,6 +148,45 @@
 	</table>
 
 	<table>
+		<name>*dbprefix*circles_groups</name>
+
+		<declaration>
+			<field>
+				<name>circle_id</name>
+				<type>integer</type>
+				<notnull>true</notnull>
+				<unsigned>true</unsigned>
+				<length>4</length>
+			</field>
+
+			<field>
+				<name>group_id</name>
+				<type>text</type>
+				<notnull>true</notnull>
+				<length>64</length>
+			</field>
+
+			<field>
+				<name>linked</name>
+				<type>timestamp</type>
+			</field>
+
+			<index>
+				<name>unique_groupship</name>
+				<primary>true</primary>
+				<unique>true</unique>
+				<field>
+					<name>circle_id</name>
+				</field>
+				<field>
+					<name>group_id</name>
+				</field>
+			</index>
+		</declaration>
+
+	</table>
+
+	<table>
 		<name>*dbprefix*circles_shares</name>
 
 		<declaration>

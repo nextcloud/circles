@@ -31,6 +31,7 @@
 /** global: nav */
 /** global: elements */
 /** global: resultMembers */
+/** global: resultGroups */
 /** global: resultCircles */
 /** global: curr */
 /** global: api */
@@ -87,6 +88,7 @@ var actions = {
 	selectCircle: function (circle_id) {
 		curr.searchUser = '';
 		elements.addMember.val('');
+		elements.linkGroup.val('');
 		elements.linkCircle.val('');
 
 		nav.circlesActionReturn();
@@ -136,6 +138,28 @@ var actions = {
 				perPage: 200,
 				itemType: 'principals'
 			}, resultMembers.searchMembersResult);
+	},
+
+
+	/**
+	 *
+	 * @param search
+	 */
+	searchGroupsRequest: function (search) {
+
+		if (curr.searchGroup === search) {
+			return;
+		}
+
+		curr.searchGroup = search;
+
+		$.get(OC.linkToOCS('apps/files_sharing/api/v1', 1) + 'sharees',
+			{
+				format: 'json',
+				search: search,
+				perPage: 200,
+				itemType: 'principals'
+			}, resultGroups.searchGroupsResult);
 	},
 
 

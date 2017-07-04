@@ -34,6 +34,7 @@
 /** global: results */
 /** global: resultCircles */
 /** global: resultMembers */
+/** global: resultGroups */
 /** global: resultLinks */
 
 
@@ -50,6 +51,7 @@ var curr = {
 	searchCircle: '',
 	searchFilter: 0,
 	searchUser: '',
+	searchGroup: '',
 	searchUserSelected: '',
 	allowed_federated: 0,
 	allowed_circles: 0,
@@ -108,6 +110,7 @@ $(document).ready(function () {
 		$.extend(Navigation.prototype, settings);
 		$.extend(Navigation.prototype, resultCircles);
 		$.extend(Navigation.prototype, resultMembers);
+		$.extend(Navigation.prototype, resultGroups);
 		$.extend(Navigation.prototype, resultLinks);
 
 		this.init();

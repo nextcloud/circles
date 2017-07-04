@@ -33,6 +33,7 @@
 /** global: settings */
 /** global: resultCircles */
 /** global: resultMembers */
+/** global: resultGroups */
 /** global: resultLinks */
 /** global: curr */
 /** global: api */
@@ -78,7 +79,36 @@ var nav = {
 			if (e.keyCode === 13) {
 				api.addMember(curr.circle, $(this).val(), resultMembers.addMemberResult);
 			}
+		});
 
+
+
+		elements.linkGroup.on('input propertychange paste focus', function () {
+			var search = $(this).val().trim();
+			if (search === '') {
+				elements.groupsSearchResult.fadeOut(curr.animationMenuSpeed);
+				return;
+			}
+
+			actions.searchGroupsRequest(search);
+			if (elements.groupsSearchResult.children().length === 0) {
+				elements.groupsSearchResult.fadeOut(curr.animationMenuSpeed);
+			} else {
+				elements.groupsSearchResult.fadeIn(curr.animationMenuSpeed);
+			}
+		}).blur(function () {
+			setTimeout(function () {
+				elements.groupsSearchResult.fadeOut(curr.animationMenuSpeed);
+				nav.circlesActionReturn();
+			}, 100);
+		});
+		elements.linkGroup.on('keydown', function (e) {
+			if (e.keyCode === 27) {
+				nav.circlesActionReturn();
+			}
+			if (e.keyCode === 13) {
+				api.linkGroup(curr.circle, $(this).val(), resultGroups.linkGroupResult);
+			}
 		});
 	},
 
@@ -181,6 +211,7 @@ var nav = {
 		nav.displayCircleButtons(true);
 		settings.displaySettings(false);
 		nav.displayAddMemberInput(false);
+		nav.displayLinkGroupInput(false);
 		nav.displayLinkCircleInput(false);
 		nav.displayJoinCircleButton(false);
 		nav.displayInviteCircleButtons(false);
@@ -190,6 +221,7 @@ var nav = {
 		nav.displayCircleButtons(false);
 		nav.displayAddMemberInput(false);
 		nav.displayLinkCircleInput(false);
+		nav.displayLinkGroupInput(false);
 		nav.displayJoinCircleButton(true);
 	},
 
@@ -214,6 +246,18 @@ var nav = {
 				});
 		} else {
 			elements.addMember.hide(define.animationMenuSpeed);
+		}
+	},
+
+	displayLinkGroupInput: function (display) {
+		if (display) {
+			elements.linkGroup.val('');
+			elements.linkGroup.delay(define.animationMenuSpeed).show(define.animationMenuSpeed,
+				function () {
+					$(this).focus();
+				});
+		} else {
+			elements.linkGroup.hide(define.animationMenuSpeed);
 		}
 	},
 
@@ -450,10 +494,12 @@ var nav = {
 	displayCircleDetails: function (details) {
 		elements.circleDetails.children('#name').text(details.name);
 		elements.circleDesc.text(details.description);
-		
+
 		elements.circleDetails.children('#type').text(t('circles', details.typeLongString));
 		if (details.description !== '') {
-			elements.circleDesc.html(escapeHTML(details.description).replace(/\n/g, '&nbsp;<br />')).show(define.animationSpeed);
+			elements.circleDesc.html(
+				escapeHTML(details.description).replace(/\n/g, '&nbsp;<br />')).show(
+				define.animationSpeed);
 		}
 		else {
 			elements.circleDesc.text('').hide(define.animationSpeed);
@@ -471,7 +517,8 @@ var nav = {
 			elements.buttonAddMember.show();
 		}
 
-		nav.displayMemberInteractionLinks(details);
+		nav.displayMemberInteractionCircleLinks(details);
+		nav.displayMemberInteractionGroupLinks(details);
 
 		elements.joinCircleInteraction.hide();
 		elements.buttonJoinCircle.show();
@@ -486,7 +533,19 @@ var nav = {
 
 	},
 
-	displayMemberInteractionLinks: function (details) {
+	displayMemberInteractionGroupLinks: function (details) {
+		if (details.type === 'Personal' ||
+			details.user.level < define.levelAdmin
+		) {
+			elements.buttonLinkGroup.hide();
+		}
+		else {
+			elements.buttonLinkGroup.show();
+		}
+	},
+
+
+	displayMemberInteractionCircleLinks: function (details) {
 		if (curr.allowed_federated === '0' || curr.circleSettings['allow_links'] !== 'true' ||
 			details.type === 'Personal' ||
 			details.user.level < define.levelAdmin
