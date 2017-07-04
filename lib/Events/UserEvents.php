@@ -26,7 +26,7 @@ class UserEvents {
 	 */
 	public function onUserDeleted(array $params) {
 		$userId = $params['uid'];
-		$this->membersService->removeUser($userId);
+		$this->membersService->onUserRemoved($userId);
 	}
 
 }
