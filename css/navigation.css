@@ -179,6 +179,7 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	position: absolute;
 	margin: 15px;
 	overflow-y: auto;
+	width: 100%;
 }
 
 #memberslist_table {

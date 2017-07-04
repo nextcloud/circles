@@ -85,7 +85,7 @@ return [
 
 		['name' => 'Members#search', 'url' => '/v1/circles/{id}/members', 'verb' => 'GET'],
 		[
-			'name'         => 'Members#importFromGroup', 'url' => '/v1/circles/{id}/group', 'verb' => 'PUT',
+			'name'         => 'Members#importFromGroup', 'url' => '/v1/circles/{id}/groupmembers', 'verb' => 'PUT',
 			'requirements' => ['id' => '\d+'],
 		],
 		[
