@@ -34,6 +34,7 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
+use OCA\Circles\Service\MiscService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 
@@ -48,7 +49,24 @@ class CirclesRequestBuilder {
 	/** @var L10N */
 	protected $l10n;
 
+	/** @var MiscService */
+	protected $miscService;
+
 	private $default_select_alias;
+
+
+	/**
+	 * CirclesRequest constructor.
+	 *
+	 * @param L10N $l10n
+	 * @param IDBConnection $connection
+	 * @param MiscService $miscService
+	 */
+	public function __construct(L10N $l10n, IDBConnection $connection, MiscService $miscService) {
+		$this->l10n = $l10n;
+		$this->dbConnection = $connection;
+		$this->miscService = $miscService;
+	}
 
 
 	/**

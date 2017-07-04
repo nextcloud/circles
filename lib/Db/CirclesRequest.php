@@ -40,22 +40,6 @@ use OCP\IDBConnection;
 
 class CirclesRequest extends CirclesRequestBuilder {
 
-	/** @var MiscService */
-	private $miscService;
-
-	/**
-	 * CirclesRequest constructor.
-	 *
-	 * @param L10N $l10n
-	 * @param IDBConnection $connection
-	 * @param MiscService $miscService
-	 */
-	public function __construct(L10N $l10n, IDBConnection $connection, MiscService $miscService) {
-		$this->l10n = $l10n;
-		$this->dbConnection = $connection;
-		$this->miscService = $miscService;
-	}
-
 
 	/**
 	 * @param int $circleId
