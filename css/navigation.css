@@ -26,6 +26,7 @@
 }
 
 #app-content {
+	overflow-x: hidden;
 }
 
 #app-navigation .header {
@@ -167,6 +168,7 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	left: 15px;
 	top: 120px;
 	overflow-y: auto;
+	overflow-x: hidden;
 }
 
 #circle_desc {
