@@ -39,6 +39,7 @@ use \OCA\Circles\Db\CirclesMapper;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\FederatedLinksRequest;
 use \OCA\Circles\Db\MembersMapper;
+use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Events\UserEvents;
 use OCA\Circles\Service\BroadcastService;
 use \OCA\Circles\Service\DatabaseService;
@@ -140,7 +141,8 @@ class Application extends App {
 		$container->registerService(
 			'GroupsService', function(IAppContainer $c) {
 			return new GroupsService(
-				$c->query('L10N'), $c->query('MiscService')
+				$c->query('UserId'), $c->query('L10N'), $c->query('GroupManager'),
+				$c->query('DatabaseService'), $c->query('MembersRequest'), $c->query('MiscService')
 			);
 		}
 		);
@@ -290,6 +292,15 @@ class Application extends App {
 		);
 
 		$container->registerService(
+			'MembersRequest', function(IAppContainer $c) {
+			return new MembersRequest(
+				$c->query('L10N'), $c->query('ServerContainer')
+									 ->getDatabaseConnection(), $c->query('MiscService')
+			);
+		}
+		);
+
+		$container->registerService(
 			'FederatedLinksRequest', function(IAppContainer $c) {
 			return new FederatedLinksRequest(
 				$c->query('ServerContainer')
@@ -394,20 +405,37 @@ class Application extends App {
 	}
 
 
+	/**
+	 * Register Hooks
+	 */
 	public function registerHooks() {
 		Util::connectHook(
 			'OC_User', 'post_deleteUser', '\OCA\Circles\Hooks\UserHooks', 'onUserDeleted'
 		);
+		Util::connectHook(
+			'\OC\Group', 'postDelete', '\OCA\Circles\Hooks\GroupHooks', 'onGroupDeleted'
+		);
 	}
 
 
+	/**
+	 * Register Events
+	 *
+	 * @param IAppContainer $container
+	 */
 	public function registerEvents(IAppContainer $container) {
 		$container->registerService(
 			'UserEvents', function(IAppContainer $c) {
 			return new UserEvents($c->query('MembersService'), $c->query('MiscService'));
 		}
 		);
+		$container->registerService(
+			'GroupEvents', function(IAppContainer $c) {
+			return new UserEvents($c->query('GroupsService'), $c->query('MiscService'));
+		}
+		);
 	}
+
 
 	/**
 	 * Register Navigation Tab

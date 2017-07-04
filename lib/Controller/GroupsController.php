@@ -36,19 +36,18 @@ class GroupsController extends BaseController {
 	 * @NoSubAdminRequired
 	 *
 	 * @param int $id
-	 * @param string $groupId
+	 * @param string $name
 	 *
 	 * @return DataResponse
 	 */
-	public function add($id, $groupId) {
-
+	public function add($id, $name) {
 		try {
-			$data = $this->groupsService->addGroup($id, $groupId);
+			$data = $this->groupsService->addGroup($id, $name);
 		} catch (\Exception $e) {
 			return $this->fail(
 				[
 					'circle_id' => $id,
-					'name'      => $groupId,
+					'name'      => $name,
 					'error'     => $e->getMessage()
 				]
 			);
@@ -57,7 +56,7 @@ class GroupsController extends BaseController {
 		return $this->success(
 			[
 				'circle_id' => $id,
-				'name'      => $groupId,
+				'name'      => $name,
 				'groups'    => $data
 			]
 		);
