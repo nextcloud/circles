@@ -32,6 +32,7 @@ use OCA\Circles\Db\CirclesMapper;
 use OCA\Circles\Db\MembersMapper;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Exceptions\CircleTypeNotValid;
+use OCA\Circles\Exceptions\GroupCannotBeOwnerException;
 use OCA\Circles\Exceptions\GroupDoesNotExistException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
@@ -52,6 +53,8 @@ class GroupsService {
 	/** @var IGroupManager */
 	private $groupManager;
 
+	/** @var MembersRequest */
+	private $membersRequest;
 	/** @var CirclesMapper */
 	private $dbCircles;
 
@@ -144,6 +147,71 @@ class GroupsService {
 		}
 
 		return $member;
+	}
+
+
+	/**
+	 * @param int $circleId
+	 * @param string $groupId
+	 * @param int $level
+	 *
+	 * @return array
+	 * @throws \Exception
+	 */
+	public function levelGroup($circleId, $groupId, $level) {
+
+		$level = (int)$level;
+		try {
+			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
+			if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
+				throw new CircleTypeNotValid(
+					$this->l10n->t('You cannot edit level in a personal circle')
+				);
+			}
+
+			$group = $this->membersRequest->forceGetGroup($circle->getId(), $groupId);
+			if ($group->getLevel() !== $level) {
+				if ($level === Member::LEVEL_OWNER) {
+					throw new GroupCannotBeOwnerException(
+						$this->l10n->t('Group cannot be set as owner of a circle')
+					);
+				} else {
+					$this->editGroupLevel($circle, $group, $level);
+				}
+
+//				$this->eventsService->onMemberLevel($circle, $member);
+			}
+
+			return $this->membersRequest->getGroups($circle->getId(), $circle->getUser());
+		} catch (\Exception $e) {
+			throw $e;
+		}
+
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 * @param Member $group
+	 * @param $level
+	 *
+	 * @throws \Exception
+	 */
+	private function editGroupLevel(Circle $circle, Member &$group, $level) {
+		try {
+			$isMod = $this->dbMembers->getMemberFromCircle($circle->getId(), $this->userId);
+			$isMod->hasToBeAdmin();
+			$isMod->hasToBeHigherLevel($level);
+
+			$group->hasToBeMember();
+			$group->cantBeOwner();
+			$isMod->hasToBeHigherLevel($group->getLevel());
+
+			$group->setLevel($level);
+			$this->membersRequest->editGroup($group);
+		} catch (\Exception $e) {
+			throw $e;
+		}
 	}
 
 

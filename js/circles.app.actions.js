@@ -53,6 +53,12 @@ var actions = {
 	},
 
 
+	changeGroupLevel: function (group, level) {
+		api.levelGroup(curr.circle, group, level, resultGroups.levelGroupResult);
+		nav.circlesActionReturn();
+	},
+
+
 	changeMemberOwner: function (member) {
 		OC.dialogs.confirm(
 			t('circles', 'Are you sure you want to transfer your Owner rights ?', [member]),

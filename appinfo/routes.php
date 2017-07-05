@@ -103,6 +103,10 @@ return [
 			'requirements' => ['id' => '\d+'],
 		],
 		[
+			'name'         => 'Groups#level', 'url' => '/v1/circles/{id}/group/level', 'verb' => 'POST',
+			'requirements' => ['id' => '\d+'],
+		],
+		[
 			'name'         => 'Groups#remove', 'url' => '/v1/circles/{id}/groups',
 			'verb'         => 'DELETE',
 			'requirements' => ['id' => '\d+'],

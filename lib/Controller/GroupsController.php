@@ -26,6 +26,7 @@
 
 namespace OCA\Circles\Controller;
 
+use OCA\Circles\Exceptions\LinkedGroupNotAllowedException;
 use OCP\AppFramework\Http\DataResponse;
 
 class GroupsController extends BaseController {
@@ -39,8 +40,15 @@ class GroupsController extends BaseController {
 	 * @param string $name
 	 *
 	 * @return DataResponse
+	 * @throws LinkedGroupNotAllowedException
 	 */
 	public function add($id, $name) {
+		if (!$this->configService->isLinkedGroupsAllowed()) {
+			throw new LinkedGroupNotAllowedException(
+				$this->l10n->t("Linked Groups are not allowed on this Nextcloud")
+			);
+		}
+
 		try {
 			$data = $this->groupsService->addGroup($id, $name);
 		} catch (\Exception $e) {
@@ -62,6 +70,44 @@ class GroupsController extends BaseController {
 		);
 	}
 
+
+	/**
+	 * @NoAdminRequired
+	 * @NoSubAdminRequired
+	 *
+	 * @param $id
+	 * @param $group
+	 * @param $level
+	 *
+	 * @return DataResponse
+	 */
+	public function level($id, $group, $level) {
+
+		try {
+			$data = $this->groupsService->levelGroup($id, $group, $level);
+		} catch (\Exception $e) {
+			return
+				$this->fail(
+					[
+						'circle_id' => $id,
+						'name'      => $group,
+						'level'     => $level,
+						'error'     => $e->getMessage()
+					]
+				);
+		}
+
+		return $this->success(
+			[
+				'circle_id' => $id,
+				'name'      => $group,
+				'level'     => $level,
+				'groups'   => $data,
+			]
+		);
+	}
+
+
 	/**
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
@@ -70,8 +116,14 @@ class GroupsController extends BaseController {
 	 * @param string $groupId
 	 *
 	 * @return DataResponse
+	 * @throws LinkedGroupNotAllowedException
 	 */
 	public function remove($id, $groupId) {
+		if (!$this->configService->isLinkedGroupsAllowed()) {
+			throw new LinkedGroupNotAllowedException(
+				$this->l10n->t("Linked Groups are not allowed on this Nextcloud")
+			);
+		}
 
 		try {
 			$data = $this->groupsService->removeGroup($id, $groupId);
@@ -90,7 +142,7 @@ class GroupsController extends BaseController {
 			[
 				'circle_id' => $id,
 				'name'      => $groupId,
-				'groups'   => $data,
+				'groups'    => $data,
 			]
 		);
 	}

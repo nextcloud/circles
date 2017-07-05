@@ -79,6 +79,24 @@ var resultGroups = {
 	},
 
 
+	levelGroupResult: function (result) {
+		if (result.status === 1) {
+			OCA.notification.onSuccess(
+				t('circles', "Group '{name}' updated",
+					{name: result.name}));
+
+			nav.displayGroups(result.groups);
+			return;
+		}
+
+		nav.displayGroups('');
+		OCA.notification.onFail(
+			t('circles', "Group '{name}' could not be updated", {name: result.name}) +
+			': ' +
+			((result.error) ? result.error : t('circles', 'no error message')));
+	},
+
+
 	removeGroupResult: function (result) {
 		if (result.status === 1) {
 
