@@ -115,7 +115,6 @@ var resultMembers = {
 	removeMemberResult: function (result) {
 		if (result.status === 1) {
 
-			elements.rightPanel.fadeOut(300);
 			elements.mainUIMembersTable.children("[member-id='" + result.name + "']").each(
 				function () {
 					$(this).hide(300);

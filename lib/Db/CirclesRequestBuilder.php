@@ -146,7 +146,7 @@ class CirclesRequestBuilder {
 	 * @param integer $level
 	 */
 	protected function limitToMemberLevel(IQueryBuilder & $qb, $level) {
-		$qb->where(
+		$qb->andWhere(
 			$qb->expr()
 			   ->gte('m.level', $qb->createNamedParameter($level))
 		);

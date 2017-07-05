@@ -113,12 +113,12 @@ class GroupsController extends BaseController {
 	 * @NoSubAdminRequired
 	 *
 	 * @param int $id
-	 * @param string $groupId
+	 * @param string $group
 	 *
 	 * @return DataResponse
 	 * @throws LinkedGroupNotAllowedException
 	 */
-	public function remove($id, $groupId) {
+	public function remove($id, $group) {
 		if (!$this->configService->isLinkedGroupsAllowed()) {
 			throw new LinkedGroupNotAllowedException(
 				$this->l10n->t("Linked Groups are not allowed on this Nextcloud")
@@ -126,13 +126,13 @@ class GroupsController extends BaseController {
 		}
 
 		try {
-			$data = $this->groupsService->removeGroup($id, $groupId);
+			$data = $this->groupsService->removeGroup($id, $group);
 		} catch (\Exception $e) {
 			return
 				$this->fail(
 					[
 						'circle_id' => $id,
-						'name'      => $groupId,
+						'name'      => $group,
 						'error'     => $e->getMessage()
 					]
 				);
@@ -141,7 +141,7 @@ class GroupsController extends BaseController {
 		return $this->success(
 			[
 				'circle_id' => $id,
-				'name'      => $groupId,
+				'name'      => $group,
 				'groups'    => $data,
 			]
 		);

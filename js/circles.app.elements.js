@@ -77,10 +77,8 @@ var elements = {
 	settingsEntryLinkFiles: null,
 	settingsSave: null,
 
-	rightPanel: null,
 	addMember: null,
 	linkGroup: null,
-	remMember: null,
 	linkCircle: null,
 
 	buttonCircleActions: null,
@@ -135,10 +133,8 @@ var elements = {
 		elements.settingsEntryLinkFiles = $('#settings-entry-link-files');
 		elements.settingsSave = $('#settings-submit');
 
-		elements.rightPanel = $('#rightpanel');
 		elements.addMember = $('#addmember');
 		elements.linkGroup = $('#linkgroup');
-		elements.remMember = $('#remmember');
 		elements.linkCircle = $('#linkcircle');
 
 		elements.buttonCircleActions = $('#circle-actions-buttons');
@@ -183,7 +179,6 @@ var elements = {
 		var theme = $('#body-user').find('#header').css('background-color');
 		elements.circlesList.css('background-color', theme);
 		elements.circleDetails.css('background-color', theme);
-		elements.rightPanel.css('background-color', theme);
 
 		elements.membersSearchResult.hide();
 		elements.groupsSearchResult.hide();
