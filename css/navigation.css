@@ -126,8 +126,6 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	color: #2c2c2c99;
 }
 
-/** members **/
-
 #mainui {
 	display: none;
 }
@@ -184,7 +182,7 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	width: 100%;
 }
 
-#memberslist_table {
+#memberslist_table, #linkslist_table, #groupslist_table {
 	width: 100%;
 }
 
@@ -332,9 +330,5 @@ div.circle .owner, div.circle .type, div.circle .resume {
 
 #settings-submit {
 	margin: 15px;
-}
-
-#linkslist_table {
-	width: 100%;
 }
 

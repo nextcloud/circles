@@ -50,6 +50,7 @@ var elements = {
 	emptyContent: null,
 	mainUI: null,
 	mainUIMembersTable: null,
+	mainUIGroupsTable: null,
 	mainUILinksTable: null,
 	membersSearchResult: null,
 	groupsSearchResult: null,
@@ -107,6 +108,7 @@ var elements = {
 
 		elements.mainUIMembers = $('#memberslist');
 		elements.mainUIMembersTable = $('#memberslist_table');
+		elements.mainUIGroupsTable = $('#groupslist_table');
 		elements.mainUILinksTable = $('#linkslist_table');
 		elements.membersSearchResult = $('#members_search_result');
 		elements.groupsSearchResult = $('#groups_search_result');
@@ -441,6 +443,18 @@ var elements = {
 
 		return tmpl;
 	},
+
+
+	generateTmplGroup: function (entry) {
+		var tmpl = $('#tmpl_group').html();
+
+		tmpl = tmpl.replace(/%groupid%/g, escapeHTML(entry.group_id));
+		tmpl = tmpl.replace(/%level%/g, escapeHTML(entry.level));
+		tmpl = tmpl.replace(/%joined%/g, escapeHTML(entry.joined));
+
+		return tmpl;
+	},
+
 
 	generateTmplLink: function (entry) {
 		var tmpl = $('#tmpl_link').html();

@@ -108,6 +108,7 @@ class BaseMember implements \JsonSerializable {
 		return $this->groupId;
 	}
 
+
 	public function setUserId($userId) {
 		$this->userId = $userId;
 
@@ -243,6 +244,7 @@ class BaseMember implements \JsonSerializable {
 		return array(
 			'circle_id'    => $this->getCircleId(),
 			'user_id'      => $this->getUserId(),
+			'group_id'     => $this->getGroupId(),
 			'display_name' => $this->getDisplayNAme(),
 			'level'        => $this->getLevel(),
 			'level_string' => $this->getLevelString(),

@@ -256,6 +256,16 @@ style('circles', 'navigation');
 						</tr>
 					</table>
 					<br/><br/><br/><br/>
+
+					<table id="groupslist_table">
+						<tr class="header">
+							<td class="groupid"><?php p($l->t('Group Name')); ?></td>
+							<td class="level"><?php p($l->t('Level')); ?></td>
+							<td class="joined"><?php p($l->t('Joined')); ?></td>
+						</tr>
+					</table>
+					<br/><br/><br/><br/>
+
 					<table id="linkslist_table">
 						<tr class="header">
 							<td class="address"><?php p($l->t('Link')); ?></td>
@@ -285,6 +295,20 @@ style('circles', 'navigation');
 								<div class="icon-checkmark" style="display: none;"></div>
 							</td>
 						</tr>
+					</script>
+
+					<script id="tmpl_group" type="text/template">
+						<tr class="entry" group-id="%groupid%" group-level="%level%">
+							<td class="groupid">%groupid%</td>
+							<td class="level">
+								<select class="level-select">
+									<option value="1"><?php p($l->t('Member')); ?></option>
+									<option value="4"><?php p($l->t('Moderator')); ?></option>
+									<option value="8"><?php p($l->t('Admin')); ?></option>
+								</select>
+							</td>
+							<td class="joined">%joined%</td>
+							</tr>
 					</script>
 
 					<script id="tmpl_link" type="text/template">

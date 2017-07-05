@@ -420,6 +420,52 @@ var nav = {
 	},
 
 
+	displayGroups: function (groups) {
+		if (groups === '') {
+			groups = curr.circleGroups;
+		} else {
+			curr.circleGroups = groups;
+		}
+
+		elements.mainUIGroupsTable.hide(curr.animationSpeed);
+		elements.mainUIGroupsTable.emptyTable();
+		if (groups === null || groups.length === 0) {
+			return;
+		}
+
+		elements.mainUIGroupsTable.show(200);
+		for (var i = 0; i < groups.length; i++) {
+			var tmpl = elements.generateTmplGroup(groups[i]);
+			elements.mainUIGroupsTable.append(tmpl);
+		}
+
+		for (i = 0; i < 10; i++) {
+			if (curr.circleLevel < define.levelAdmin && curr.circleLevel <= i) {
+				$('.level-select option[value="' + i + '"]').attr('disabled', 'disabled');
+			}
+		}
+
+		elements.mainUIGroupsTable.children('tr.entry').each(function () {
+
+				var groupId = $(this).attr('group-id');
+
+				var level = $(this).attr('group-level');
+				var levelSelect = $(this).find('.level-select');
+				if (level === '0') {
+					levelSelect.hide();
+				}
+				else {
+					levelSelect.show(200).val(level);
+				}
+				levelSelect.on('change', function () {
+					actions.changeGroupLevel(groupId, $(this).val());
+				});
+
+			}
+		);
+	},
+
+
 	displayLinks: function (links) {
 
 		if (links === '') {
