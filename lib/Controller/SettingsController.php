@@ -36,12 +36,11 @@ class SettingsController extends Controller {
 	public function getSettings() {
 		$params = [
 			'allowLinkedGroups' => $this->configService->getAppValue(
-				ConfigService::CIRCLES_ALLOW_FEDERATED_CIRCLES
+				ConfigService::CIRCLES_ALLOW_LINKED_GROUPS
 			),
 			'allowFederatedCircles' => $this->configService->getAppValue(
 				ConfigService::CIRCLES_ALLOW_FEDERATED_CIRCLES
 			)
-
 		];
 
 		return $params;

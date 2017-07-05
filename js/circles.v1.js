@@ -132,21 +132,6 @@
 			};
 
 
-			this.linkGroup = function (circleId, groupId, callback) {
-				var result = {status: -1};
-				$.ajax({
-					method: 'PUT',
-					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/groups'),
-					data: {
-						name: groupId
-					}
-				}).done(function (res) {
-					self.onCallback(callback, res);
-				}).fail(function () {
-					self.onCallback(callback, result);
-				});
-			};
-
 
 			this.removeMember = function (circleId, userId, callback) {
 				var result = {status: -1};
@@ -181,7 +166,23 @@
 			};
 
 
-			this.removeGroup = function (circleId, groupId, callback) {
+			this.linkGroup = function (circleId, groupId, callback) {
+				var result = {status: -1};
+				$.ajax({
+					method: 'PUT',
+					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/groups'),
+					data: {
+						name: groupId
+					}
+				}).done(function (res) {
+					self.onCallback(callback, res);
+				}).fail(function () {
+					self.onCallback(callback, result);
+				});
+			};
+
+
+			this.unlinkGroup = function (circleId, groupId, callback) {
 				var result = {status: -1};
 				$.ajax({
 					method: 'DELETE',

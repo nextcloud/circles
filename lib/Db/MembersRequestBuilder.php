@@ -106,4 +106,22 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	}
 
 
+	/**
+	 * Base of the Sql Insert request for Shares
+	 *
+	 * @param string $groupId
+	 *
+	 * @return IQueryBuilder
+	 */
+	protected function getGroupsDeleteSql($groupId) {
+		$qb = $this->dbConnection->getQueryBuilder();
+		$expr = $qb->expr();
+
+		$qb->delete(self::TABLE_GROUPS)
+		   ->where($expr->eq('group_id', $qb->createNamedParameter($groupId)));
+
+		return $qb;
+	}
+
+
 }

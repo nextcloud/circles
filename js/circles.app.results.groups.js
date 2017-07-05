@@ -54,10 +54,8 @@ var resultGroups = {
 
 		$('.groups_search').on('click', function () {
 			curr.searchGroupSelected = $(this).attr('searchresult');
-			if ($(this).attr('source') === 'groups') {
-				api.addGroup(curr.circle, curr.searchGroupSelected,
-					resultGroups.linkGroupResult);
-			}
+			api.linkGroup(curr.circle, curr.searchGroupSelected,
+				resultGroups.linkGroupResult);
 		});
 		elements.groupsSearchResult.fadeIn(300);
 	},
@@ -97,7 +95,7 @@ var resultGroups = {
 	},
 
 
-	removeGroupResult: function (result) {
+	unlinkGroupResult: function (result) {
 		if (result.status === 1) {
 
 			elements.mainUIGroupsTable.children("[group-id='" + result.name + "']").each(

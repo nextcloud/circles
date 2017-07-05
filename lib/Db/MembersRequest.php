@@ -150,4 +150,10 @@ class MembersRequest extends MembersRequestBuilder {
 	}
 
 
+	public function unlinkAllFromGroupId($groupId)
+	{
+		$qb = $this->getGroupsDeleteSql($groupId);
+		$qb->execute();
+	}
+
 }

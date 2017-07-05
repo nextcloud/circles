@@ -50,7 +50,7 @@ class GroupsController extends BaseController {
 		}
 
 		try {
-			$data = $this->groupsService->addGroup($id, $name);
+			$data = $this->groupsService->linkGroup($id, $name);
 		} catch (\Exception $e) {
 			return $this->fail(
 				[
@@ -126,7 +126,7 @@ class GroupsController extends BaseController {
 		}
 
 		try {
-			$data = $this->groupsService->removeGroup($id, $group);
+			$data = $this->groupsService->unlinkGroup($id, $group);
 		} catch (\Exception $e) {
 			return
 				$this->fail(

@@ -26,7 +26,7 @@ class GroupEvents {
 	 */
 	public function onGroupDeleted(array $params) {
 		$groupId = $params['gid'];
-		$this->groupsService->removeGroup($groupId);
+		$this->groupsService->unlinkGroup($groupId);
 	}
 
 }

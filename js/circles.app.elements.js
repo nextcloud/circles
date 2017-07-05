@@ -370,7 +370,7 @@ var elements = {
 	fillExactGroupsSearch: function (exact) {
 		$.each(exact, function (index, value) {
 			elements.groupsSearchResult.append(
-				'<div class="members_search exact" searchresult="' +
+				'<div class="groups_search exact" searchresult="' +
 				escapeHTML(value.value.shareWith) + '">' + escapeHTML(value.label) + '   (' +
 				escapeHTML(value.value.shareWith) + ')</div>');
 		});
@@ -388,7 +388,7 @@ var elements = {
 			}
 
 			elements.groupsSearchResult.append(
-				'<div class="members_search" searchresult="' +
+				'<div class="groups_search" searchresult="' +
 				escapeHTML(value.value.shareWith) + '">' + line + '</div>');
 		});
 	},

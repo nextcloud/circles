@@ -56,7 +56,7 @@ var actions = {
 	changeGroupLevel: function (group, level) {
 
 		if (level === 'remove_group') {
-			api.removeGroup(curr.circle, group, resultGroups.removeGroupResult);
+			api.unlinkGroup(curr.circle, group, resultGroups.unlinkGroupResult);
 		} else {
 			api.levelGroup(curr.circle, group, level, resultGroups.levelGroupResult);
 		}

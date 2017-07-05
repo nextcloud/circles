@@ -96,7 +96,7 @@ class GroupsService {
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function addGroup($circleId, $groupId) {
+	public function linkGroup($circleId, $groupId) {
 
 		try {
 			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
@@ -216,13 +216,13 @@ class GroupsService {
 
 
 	/**
-	 * @param $circleId
-	 * @param $groupId
+	 * @param int $circleId
+	 * @param string $groupId
 	 *
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function removeGroup($circleId, $groupId) {
+	public function unlinkGroup($circleId, $groupId) {
 		try {
 			$isMod = $this->dbMembers->getMemberFromCircle($circleId, $this->userId);
 			$isMod->hasToBeAdmin();
@@ -249,11 +249,11 @@ class GroupsService {
 	/**
 	 * When a group is removed, remove him from all Circles
 	 *
-	 * @param $groupId
+	 * @param string $groupId
 	 */
 	public function onGroupRemoved($groupId) {
 		$this->miscService->log("onGroupRemoved .. " . $groupId);
-		//$this->dbMembers->removeAllFromUserId($userId);
+		$this->membersRequest->unlinkAllFromGroupId($groupId);
 	}
 
 

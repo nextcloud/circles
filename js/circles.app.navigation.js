@@ -576,11 +576,11 @@ var nav = {
 			elements.buttonCircleSettings.show();
 			elements.buttonJoinCircle.hide();
 		}
-
 	},
 
+
 	displayMemberInteractionGroupLinks: function (details) {
-		if (curr.allowed_linked_groups === '0' || details.type === 'Personal' ||
+		if (curr.allowed_linked_groups === '0' ||
 			details.user.level < define.levelAdmin
 		) {
 			elements.buttonLinkGroup.hide();
