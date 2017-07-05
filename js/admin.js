@@ -55,7 +55,6 @@ $(document).ready(function () {
 					':checked')) ? '1' : '0'
 			}
 		}).done(function (res) {
-			console.log(JSON.stringify(res));
 			elements.allow_linked_groups.prop('checked', (res.allowLinkedGroups === '1'));
 			elements.allow_federated_circles.prop('checked', (res.allowFederatedCircles === '1'));
 		});
