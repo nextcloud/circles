@@ -43,7 +43,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		$qb = $this->dbConnection->getQueryBuilder();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->select('g.circle_id', 'g.group_id', 'g.level', 'g.note', 'g.linked')
+		$qb->select('g.circle_id', 'g.group_id', 'g.level', 'g.note', 'g.joined')
 		   ->from(self::TABLE_GROUPS, 'g');
 		$this->default_select_alias = 'g';
 
@@ -59,7 +59,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	protected function getGroupsInsertSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$qb->insert(self::TABLE_GROUPS)
-		   ->setValue('linked', $qb->createFunction('NOW()'));
+		   ->setValue('joined', $qb->createFunction('NOW()'));
 
 		return $qb;
 	}

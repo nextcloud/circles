@@ -47,6 +47,7 @@ var curr = {
 	circleLevel: 0,
 	circleStatus: '',
 	circleMembers: {},
+	circleGroups: {},
 	circleLinks: {},
 	searchCircle: '',
 	searchFilter: 0,

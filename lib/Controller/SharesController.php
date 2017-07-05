@@ -45,8 +45,6 @@ class SharesController extends BaseController {
 	 * @param $payload
 	 *
 	 * @return DataResponse
-	 * @internal param string $name
-	 *
 	 */
 	public function create($id, $source, $type, $payload) {
 

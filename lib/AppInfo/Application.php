@@ -122,7 +122,7 @@ class Application extends App {
 			'CirclesService', function(IAppContainer $c) {
 			return new CirclesService(
 				$c->query('UserId'), $c->query('L10N'), $c->query('ConfigService'),
-				$c->query('CirclesRequest'), $c->query('DatabaseService'),
+				$c->query('CirclesRequest'), $c->query('MembersRequest'), $c->query('DatabaseService'),
 				$c->query('EventsService'), $c->query('MiscService')
 			);
 		}

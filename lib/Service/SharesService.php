@@ -112,7 +112,7 @@ class SharesService {
 
 			$this->broadcastService->broadcastFrame($frame->getHeader('broadcast'), $frame);
 
-			if ($this->configService->isFederatedAllowed()) {
+			if ($this->configService->isFederatedCirclesAllowed()) {
 				$this->federatedService->initiateRemoteShare(
 					$circle->getId(), $frame->getUniqueId()
 				);

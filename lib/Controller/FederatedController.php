@@ -88,7 +88,7 @@ class FederatedController extends BaseController {
 	 */
 	public function requestedLink($apiVersion, $token, $uniqueId, $sourceName, $linkTo, $address) {
 
-		if ($uniqueId === '' || !$this->configService->isFederatedAllowed()) {
+		if ($uniqueId === '' || !$this->configService->isFederatedCirclesAllowed()) {
 			return $this->federatedFail('federated_not_allowed');
 		}
 
@@ -136,7 +136,7 @@ class FederatedController extends BaseController {
 	 */
 	public function initFederatedDelivery($apiVersion, $circleId, $uniqueId) {
 
-		if ($uniqueId === '' || !$this->configService->isFederatedAllowed()) {
+		if ($uniqueId === '' || !$this->configService->isFederatedCirclesAllowed()) {
 			return $this->federatedFail('federated_not_allowed');
 		}
 
@@ -180,7 +180,7 @@ class FederatedController extends BaseController {
 	 */
 	public function receiveFederatedDelivery($apiVersion, $token, $uniqueId, $item) {
 
-		if ($uniqueId === '' || !$this->configService->isFederatedAllowed()) {
+		if ($uniqueId === '' || !$this->configService->isFederatedCirclesAllowed()) {
 			return $this->federatedFail('federated_not_allowed');
 		}
 
@@ -219,7 +219,7 @@ class FederatedController extends BaseController {
 	 */
 	public function updateLink($apiVersion, $token, $uniqueId, $status) {
 
-		if ($uniqueId === '' || !$this->configService->isFederatedAllowed()) {
+		if ($uniqueId === '' || !$this->configService->isFederatedCirclesAllowed()) {
 			return $this->federatedFail('federated_not_allowed');
 		}
 

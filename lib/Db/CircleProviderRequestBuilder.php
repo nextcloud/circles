@@ -49,9 +49,7 @@ class CircleProviderRequestBuilder {
 	 * @param int $fileId
 	 * @param int $circleId
 	 *
-	 * @return \OCP\DB\QueryBuilder\IQueryBuilder
-	 * @internal param $share
-	 *
+	 * @return IQueryBuilder
 	 */
 	protected function findShareParentSql($fileId, $circleId) {
 

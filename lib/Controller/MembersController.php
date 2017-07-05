@@ -108,7 +108,6 @@ class MembersController extends BaseController {
 	 * @param $level
 	 *
 	 * @return DataResponse
-	 * @internal param string $name
 	 */
 	public function level($id, $member, $level) {
 
@@ -145,8 +144,6 @@ class MembersController extends BaseController {
 	 * @param $member
 	 *
 	 * @return DataResponse
-	 * @internal param string $name
-	 *
 	 */
 	public function remove($id, $member) {
 

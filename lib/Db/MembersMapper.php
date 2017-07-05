@@ -93,9 +93,6 @@ class MembersMapper extends Mapper {
 	 * @param Member $user
 	 *
 	 * @return array
-	 * @internal param Member $member
-	 * @internal param bool $moderator
-	 *
 	 */
 	public function getMembersFromCircle($circleId, Member $user) {
 		try {
