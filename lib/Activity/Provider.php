@@ -348,14 +348,14 @@ class Provider implements IProvider {
 	) {
 		$data = [
 			'author' => $author = $this->generateUserParameter(
-				$circle->getUser()
+				$circle->getViewer()
 					   ->getUserId()
 			),
 			'circle' => $this->generateCircleParameter($circle),
 			'link'   => ($link === null) ? '' : $this->generateLinkParameter($link)
 		];
 
-		if ($circle->getUser()
+		if ($circle->getViewer()
 				   ->getUserId() === $this->activityManager->getCurrentUserId()
 		) {
 			return $event->setRichSubject($ownEvent, $data);
@@ -432,7 +432,7 @@ class Provider implements IProvider {
 			'member' => $this->generateMemberParameter($member)
 		];
 
-		if ($circle->getUser()
+		if ($circle->getViewer()
 				   ->getUserId() === $this->activityManager->getCurrentUserId()
 		) {
 			return $event->setRichSubject($ownEvent, $data);
@@ -461,14 +461,14 @@ class Provider implements IProvider {
 
 		$data = [
 			'author' => $this->generateUserParameter(
-				$circle->getUser()
+				$circle->getViewer()
 					   ->getUserId()
 			),
 			'circle' => $this->generateCircleParameter($circle),
 			'member' => $this->generateMemberParameter($member)
 		];
 
-		if ($circle->getUser()
+		if ($circle->getViewer()
 				   ->getUserId() === $this->activityManager->getCurrentUserId()
 		) {
 			return $event->setRichSubject($ownEvent, $data);

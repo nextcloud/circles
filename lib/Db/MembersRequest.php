@@ -92,7 +92,7 @@ class MembersRequest extends MembersRequestBuilder {
 
 		$qb = $this->getGroupsSelectSql();
 		$this->limitToCircleId($qb, $circleId);
-		$this->limitToMemberLevel($qb, Member::LEVEL_MEMBER);
+		$this->limitToLevel($qb, Member::LEVEL_MEMBER);
 
 		$cursor = $qb->execute();
 		$groups = [];

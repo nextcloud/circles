@@ -30,8 +30,11 @@ namespace OCA\Circles;
 
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleProviderRequestBuilder;
+use OCA\Circles\Db\CirclesRequest;
+use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Service\CirclesService;
+use OCA\Circles\Service\MiscService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\Files\Folder;
 use OCP\Files\Node;
@@ -50,9 +53,6 @@ use OCP\IUserManager;
 
 class ShareByCircleProvider extends CircleProviderRequestBuilder implements IShareProvider {
 
-	private $misc;
-
-
 	/** @var ILogger */
 	private $logger;
 
@@ -70,6 +70,15 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 
 	/** @var IURLGenerator */
 	private $urlGenerator;
+
+	/** @var CirclesRequest */
+	private $circlesRequest;
+
+	/** @var MembersRequest */
+	private $membersRequest;
+
+	/** @var MiscService */
+	private $miscService;
 
 
 	/**
@@ -96,9 +105,12 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 		$this->urlGenerator = $urlGenerator;
 
 		$app = new Application();
-		$this->misc = $app->getContainer()
-						  ->query('MiscService');
-
+		$this->circlesRequest = $app->getContainer()
+									->query('CirclesRequest');
+		$this->membersRequest = $app->getContainer()
+									->query('MembersRequest');
+		$this->miscService = $app->getContainer()
+								 ->query('MiscService');
 	}
 
 
@@ -134,6 +146,7 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 			throw $this->errorShareAlreadyExist($share);
 		}
 
+		$circle = $this->circlesRequest->getCircle($share->getSharedWith(), $share->getSharedby());
 		$shareId = $this->createShare($share);
 
 		return $this->getShareById($shareId);
@@ -345,7 +358,9 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 		$data['share_with'] =
 			sprintf(
 				'%s (%s, %s)', $data['circle_name'], Circle::TypeLongString($data['circle_type']),
-				\OC::$server->getUserManager()->get($data['circle_owner'])->getDisplayName()
+				\OC::$server->getUserManager()
+							->get($data['circle_owner'])
+							->getDisplayName()
 			);
 
 		return $data;
@@ -565,7 +580,9 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 					  sprintf(
 						  '%s (%s, %s)', $data['circle_name'],
 						  Circle::TypeLongString($data['circle_type']),
-						  \OC::$server->getUserManager()->get($data['circle_owner'])->getDisplayName()
+						  \OC::$server->getUserManager()
+									  ->get($data['circle_owner'])
+									  ->getDisplayName()
 					  )
 				  );
 		}

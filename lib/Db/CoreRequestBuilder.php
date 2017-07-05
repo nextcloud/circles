@@ -17,6 +17,11 @@ use OCP\IDBConnection;
 
 class CoreRequestBuilder {
 
+	const TABLE_CIRCLES = 'circles_circles';
+	const TABLE_MEMBERS = 'circles_members';
+	const TABLE_GROUPS = 'circles_groups';
+
+
 	/** @var IDBConnection */
 	protected $dbConnection;
 
@@ -45,12 +50,45 @@ class CoreRequestBuilder {
 
 
 	/**
+	 * Limit the request by its Id.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param int $id
+	 */
+	protected function limitToId(IQueryBuilder &$qb, $id) {
+		$this->limitToDBField($qb, 'id', $id);
+	}
+
+
+	/**
+	 * Limit the request by its UniqueId.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param int $uniqueId
+	 */
+	protected function limitToUniqueId(IQueryBuilder &$qb, $uniqueId) {
+		$this->limitToDBField($qb, 'unique_id', $uniqueId);
+	}
+
+
+	/**
+	 * Limit the request by its Token.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param string $token
+	 */
+	protected function limitToToken(IQueryBuilder &$qb, $token) {
+		$this->limitToDBField($qb, 'token', $token);
+	}
+
+
+	/**
 	 * Limit the request to the Circle by its Id.
 	 *
 	 * @param IQueryBuilder $qb
 	 * @param int $circleId
 	 */
-	protected function limitToCircleId(IQueryBuilder & $qb, $circleId) {
+	protected function limitToCircleId(IQueryBuilder &$qb, $circleId) {
 		$this->limitToDBField($qb, 'circle_id', $circleId);
 	}
 
@@ -61,8 +99,19 @@ class CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param int $groupId
 	 */
-	protected function limitToGroupId(IQueryBuilder & $qb, $groupId) {
+	protected function limitToGroupId(IQueryBuilder &$qb, $groupId) {
 		$this->limitToDBField($qb, 'group_id', $groupId);
+	}
+
+
+	/**
+	 * Limit the request to a minimum member level.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param integer $level
+	 */
+	protected function limitToLevel(IQueryBuilder &$qb, $level) {
+		$this->limitToDBField($qb, 'level', $level);
 	}
 
 

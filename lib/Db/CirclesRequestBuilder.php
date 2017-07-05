@@ -29,45 +29,13 @@ namespace OCA\Circles\Db;
 
 
 use Doctrine\DBAL\Query\QueryBuilder;
-use OC\L10N\L10N;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
-use OCA\Circles\Service\MiscService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
-use OCP\IDBConnection;
 
-class CirclesRequestBuilder {
-
-	const TABLE_CIRCLES = 'circles_circles';
-	const TABLE_MEMBERS = 'circles_members';
-
-	/** @var IDBConnection */
-	protected $dbConnection;
-
-	/** @var L10N */
-	protected $l10n;
-
-	/** @var MiscService */
-	protected $miscService;
-
-	private $default_select_alias;
-
-
-	/**
-	 * CirclesRequest constructor.
-	 *
-	 * @param L10N $l10n
-	 * @param IDBConnection $connection
-	 * @param MiscService $miscService
-	 */
-	public function __construct(L10N $l10n, IDBConnection $connection, MiscService $miscService) {
-		$this->l10n = $l10n;
-		$this->dbConnection = $connection;
-		$this->miscService = $miscService;
-	}
-
+class CirclesRequestBuilder extends CoreRequestBuilder {
 
 	/**
 	 * Join the Circles table
@@ -84,83 +52,13 @@ class CirclesRequestBuilder {
 
 
 	/**
-	 * Limit the request to the Share by its Id.
-	 *
-	 * @param IQueryBuilder $qb
-	 * @param int $circleId
-	 */
-	protected function limitToCircleId(IQueryBuilder & $qb, $circleId) {
-		$expr = $qb->expr();
-		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
-
-		$qb->andWhere($expr->eq($pf . 'circle_id', $qb->createNamedParameter($circleId)));
-	}
-
-
-	/**
-	 * Limit the request by its Id.
-	 *
-	 * @param IQueryBuilder $qb
-	 * @param int $id
-	 */
-	protected function limitToId(IQueryBuilder & $qb, $id) {
-		$expr = $qb->expr();
-		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
-
-		$qb->andWhere($expr->eq($pf . 'id', $qb->createNamedParameter($id)));
-	}
-
-
-	/**
-	 * Limit the request by its UniqueId.
-	 *
-	 * @param IQueryBuilder $qb
-	 * @param int $uniqueId
-	 */
-	protected function limitToUniqueId(IQueryBuilder & $qb, $uniqueId) {
-		$expr = $qb->expr();
-		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
-
-		$qb->andWhere($expr->eq($pf . 'unique_id', $qb->createNamedParameter($uniqueId)));
-	}
-
-
-	/**
-	 * Limit the request by its Token.
-	 *
-	 * @param IQueryBuilder $qb
-	 * @param string $token
-	 */
-	protected function limitToToken(IQueryBuilder & $qb, $token) {
-		$expr = $qb->expr();
-		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
-
-		$qb->andWhere($expr->eq($pf . 'token', $qb->createNamedParameter($token)));
-	}
-
-
-	/**
-	 * Limit the request to a minimum member level.
-	 *
-	 * @param IQueryBuilder $qb
-	 * @param integer $level
-	 */
-	protected function limitToMemberLevel(IQueryBuilder & $qb, $level) {
-		$qb->andWhere(
-			$qb->expr()
-			   ->gte('m.level', $qb->createNamedParameter($level))
-		);
-	}
-
-
-	/**
 	 * add a request to the members list, using the current user ID.
 	 * will returns level and stuff.
 	 *
 	 * @param IQueryBuilder $qb
 	 * @param string $userId
 	 */
-	protected function leftJoinUserIdAsMember(IQueryBuilder & $qb, $userId) {
+	protected function leftJoinUserIdAsViewer(IQueryBuilder & $qb, $userId) {
 
 		if ($qb->getType() !== QueryBuilder::SELECT) {
 			return;
@@ -169,10 +67,11 @@ class CirclesRequestBuilder {
 		$expr = $qb->expr();
 		$pf = $this->default_select_alias . '.';
 
-		$qb->selectAlias('u.user_id', 'user_userid');
-		$qb->selectAlias('u.level', 'user_level');
+		$qb->selectAlias('u.user_id', 'viewer_userid');
+		$qb->selectAlias('u.level', 'viewer_level');
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->leftJoin(
-			$this->default_select_alias, MembersMapper::TABLENAME, 'u',
+			$this->default_select_alias, CoreRequestBuilder::TABLE_MEMBERS, 'u',
 			$expr->andX(
 				$expr->eq($pf . 'id', 'u.circle_id'),
 				$expr->eq('u.user_id', $qb->createNamedParameter($userId))
@@ -195,6 +94,7 @@ class CirclesRequestBuilder {
 		$expr = $qb->expr();
 		$pf = $this->default_select_alias . '.';
 
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->leftJoin(
 			$this->default_select_alias, MembersMapper::TABLENAME, 'o',
 			$expr->andX(
@@ -213,6 +113,7 @@ class CirclesRequestBuilder {
 	protected function getLinksSelectSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select('id', 'status', 'address', 'token', 'circle_id', 'unique_id', 'creation')
 		   ->from('circles_links', 's');
 
@@ -230,6 +131,7 @@ class CirclesRequestBuilder {
 	protected function getSharesSelectSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select(
 			'circle_id', 'source', 'type', 'author', 'cloud_id', 'payload', 'creation', 'headers',
 			'unique_id'
@@ -299,6 +201,7 @@ class CirclesRequestBuilder {
 	protected function getMembersSelectSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select('user_id', 'circle_id', 'level', 'status', 'joined')
 		   ->from('circles_members', 'm');
 
@@ -314,6 +217,7 @@ class CirclesRequestBuilder {
 	protected function getCirclesSelectSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select(
 			'c.id', 'c.unique_id', 'c.name', 'c.description', 'c.settings', 'c.type', 'c.creation'
 		)
@@ -359,11 +263,11 @@ class CirclesRequestBuilder {
 		$circle->setType($data['type']);
 		$circle->setCreation($data['creation']);
 
-		if (key_exists('user_level', $data)) {
+		if (key_exists('viewer_level', $data)) {
 			$user = new Member($this->l10n);
-			$user->setUserId($data['user_userid']);
-			$user->setLevel($data['user_level']);
-			$circle->setUser($user);
+			$user->setUserId($data['viewer_userid']);
+			$user->setLevel($data['viewer_level']);
+			$circle->setViewer($user);
 		}
 
 		return $circle;

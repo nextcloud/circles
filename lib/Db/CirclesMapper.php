@@ -107,7 +107,7 @@ class CirclesMapper extends Mapper {
 		$user->setStatus($data['status']);
 		$user->setLevel($data['level']);
 		$user->setJoined($data['joined']);
-		$circle->setUser($user);
+		$circle->setViewer($user);
 	}
 
 	/**

@@ -112,7 +112,7 @@ class GroupsService {
 		$this->membersRequest->editGroup($group);
 
 //		$this->eventsService->onMemberNew($circle, $group);
-		return $this->membersRequest->getGroups($circleId, $circle->getUser());
+		return $this->membersRequest->getGroups($circleId, $circle->getViewer());
 	}
 
 
@@ -182,7 +182,7 @@ class GroupsService {
 //				$this->eventsService->onMemberLevel($circle, $member);
 			}
 
-			return $this->membersRequest->getGroups($circle->getId(), $circle->getUser());
+			return $this->membersRequest->getGroups($circle->getId(), $circle->getViewer());
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -242,7 +242,7 @@ class GroupsService {
 			throw $e;
 		}
 
-		return $this->membersRequest->getGroups($circle->getId(), $circle->getUser());
+		return $this->membersRequest->getGroups($circle->getId(), $circle->getViewer());
 	}
 
 

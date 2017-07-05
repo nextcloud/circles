@@ -33,23 +33,20 @@ use Doctrine\DBAL\Query\QueryBuilder;
 
 class MembersRequestBuilder extends CoreRequestBuilder {
 
-	const TABLE_GROUPS = 'circles_groups';
-	const TABLE_MEMBERS = 'circles_members';
 
-
-	/**
-	 * Limit the request to a minimum member level.
-	 *
-	 * @param IQueryBuilder $qb
-	 * @param integer $level
-	 */
-	protected function limitToMemberLevel(IQueryBuilder & $qb, $level) {
-		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
-		$qb->andWhere(
-			$qb->expr()
-			   ->gte($pf . 'level', $qb->createNamedParameter($level))
-		);
-	}
+//	/**
+//	 * Limit the request to a minimum member level.
+//	 *
+//	 * @param IQueryBuilder $qb
+//	 * @param integer $level
+//	 */
+//	protected function limitToMemberLevel(IQueryBuilder & $qb, $level) {
+//		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
+//		$qb->andWhere(
+//			$qb->expr()
+//			   ->gte($pf . 'level', $qb->createNamedParameter($level))
+//		);
+//	}
 
 
 	/**
@@ -60,7 +57,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select('g.circle_id', 'g.group_id', 'g.level', 'g.note', 'g.joined')
-		   ->from(self::TABLE_GROUPS, 'g');
+		   ->from(CoreRequestBuilder::TABLE_GROUPS, 'g');
 		$this->default_select_alias = 'g';
 
 		return $qb;
@@ -74,7 +71,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function getGroupsInsertSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->insert(self::TABLE_GROUPS)
+		$qb->insert(CoreRequestBuilder::TABLE_GROUPS)
 		   ->setValue('joined', $qb->createFunction('NOW()'));
 
 		return $qb;
@@ -94,7 +91,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		$expr = $qb->expr();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->update(self::TABLE_GROUPS)
+		$qb->update(CoreRequestBuilder::TABLE_GROUPS)
 		   ->where(
 			   $expr->andX(
 				   $expr->eq('circle_id', $qb->createNamedParameter($circleId)),
@@ -117,7 +114,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$expr = $qb->expr();
 
-		$qb->delete(self::TABLE_GROUPS)
+		$qb->delete(CoreRequestBuilder::TABLE_GROUPS)
 		   ->where($expr->eq('group_id', $qb->createNamedParameter($groupId)));
 
 		return $qb;

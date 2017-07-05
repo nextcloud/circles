@@ -42,19 +42,47 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 
 	/**
+	 * forceGetCircle();
+	 *
+	 * returns data of a circle from its Id.
+	 *
+	 * WARNING: This function does not filters data regarding the current user/viewer.
+	 *          In case of interaction with users, Please use getGroup() instead.
+	 *
+	 * @param int $circleId
+	 *
+	 * @return Circle
+	 * @throws CircleDoesNotExistException
+	 */
+	public function forceGetCircle($circleId) {
+		$qb = $this->getCirclesSelectSql();
+		$this->limitToId($qb, $circleId);
+		$cursor = $qb->execute();
+
+		$data = $cursor->fetch();
+		if ($data === false || $data === null) {
+			throw new CircleDoesNotExistException($this->l10n->t('Circle not found'));
+		}
+
+		$entry = $this->parseCirclesSelectSql($data);
+
+		return $entry;
+	}
+
+
+	/**
+	 *
 	 * @param int $circleId
 	 * @param string $userId
 	 *
 	 * @return Circle
 	 * @throws CircleDoesNotExistException
 	 */
-	public function getCircleFromId($circleId, $userId = '') {
+	public function getCircle($circleId, $userId) {
 		$qb = $this->getCirclesSelectSql();
 
 		$this->limitToId($qb, $circleId);
-		if ($userId !== '') {
-			$this->leftJoinUserIdAsMember($qb, $userId);
-		}
+		$this->leftJoinUserIdAsViewer($qb, $userId);
 
 
 //		$this->leftjoinOwner($qb);
@@ -70,9 +98,10 @@ class CirclesRequest extends CirclesRequestBuilder {
 			);
 		}
 
-		$entry = $this->parseCirclesSelectSql($data);
+		$circle = $this->parseCirclesSelectSql($data);
 
-		return $entry;
+//		if ($circle->getUser()->getLevel)
+		return $circle;
 	}
 
 
@@ -258,7 +287,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 */
 	public function getMembers($circleId, $level = Member::LEVEL_MEMBER) {
 		$qb = $this->getMembersSelectSql();
-		$this->limitToMemberLevel($qb, $level);
+		$this->limitToLevel($qb, $level);
 
 		$this->joinCircles($qb, 'm.circle_id');
 		$this->limitToCircleId($qb, $circleId);

@@ -163,11 +163,11 @@ class BaseCircle {
 	/**
 	 * @return Member
 	 */
-	public function getUser() {
+	public function getViewer() {
 		return $this->user;
 	}
 
-	public function setUser($user) {
+	public function setViewer($user) {
 		$this->user = $user;
 
 		return $this;

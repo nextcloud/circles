@@ -195,9 +195,9 @@ class FederatedService {
 		try {
 
 			$link = $this->circlesRequest->getLinkFromId($linkId);
-			$circle = $this->circlesRequest->getCircleFromId($link->getCircleId(), $this->userId);
+			$circle = $this->circlesRequest->getCircle($link->getCircleId(), $this->userId);
 			$circle->hasToBeFederated();
-			$circle->getUser()
+			$circle->getViewer()
 				   ->hasToBeAdmin();
 			$link->hasToBeValidStatusUpdate($status);
 
@@ -273,7 +273,7 @@ class FederatedService {
 			list($remoteCircle, $remoteAddress) = explode('@', $remote, 2);
 
 			$circle = $this->circlesService->detailsCircle($circleId);
-			$circle->getUser()
+			$circle->getViewer()
 				   ->hasToBeAdmin();
 			$circle->hasToBeFederated();
 			$circle->cantBePersonal();
@@ -306,7 +306,7 @@ class FederatedService {
 	 * @return string
 	 */
 	private function generateLinkRemoteURL($remote) {
-//		$this->allowNonSSLLink();
+		$this->allowNonSSLLink();
 		if ($this->localTest === false && strpos($remote, 'https') !== 0) {
 			$remote = 'https://' . $remote;
 		}
@@ -321,7 +321,7 @@ class FederatedService {
 	 * @return string
 	 */
 	private function generatePayloadDeliveryURL($remote) {
-//		$this->allowNonSSLLink();
+		$this->allowNonSSLLink();
 		if ($this->localTest === false && strpos($remote, 'https') !== 0) {
 			$remote = 'https://' . $remote;
 		}
@@ -475,7 +475,7 @@ class FederatedService {
 	public function updateLinkFromRemote($token, $uniqueId, $status) {
 		try {
 			$link = $this->circlesRequest->getLinkFromToken($token, $uniqueId);
-			$circle = $this->circlesRequest->getCircleFromId($link->getCircleId());
+			$circle = $this->circlesRequest->forceGetCircle($link->getCircleId());
 			$circle->hasToBeFederated();
 
 			$this->checkUpdateLinkFromRemote($status);
@@ -696,7 +696,7 @@ class FederatedService {
 		}
 
 		try {
-			$circle = $this->circlesRequest->getCircleFromId($link->getCircleId());
+			$circle = $this->circlesRequest->forceGetCircle($link->getCircleId());
 		} catch (CircleDoesNotExistException $e) {
 			throw new CircleDoesNotExistException('unknown_circle');
 		}
@@ -774,7 +774,7 @@ class FederatedService {
 	 */
 	public function sendRemoteShare(SharingFrame $frame) {
 
-		$circle = $this->circlesRequest->getCircleFromId($frame->getCircleId());
+		$circle = $this->circlesRequest->forceGetCircle($frame->getCircleId());
 		if ($circle === null) {
 			throw new Exception('unknown_circle');
 		}

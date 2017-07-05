@@ -113,7 +113,7 @@ class MembersService {
 
 		$this->eventsService->onMemberNew($circle, $member);
 
-		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getUser());
+		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getViewer());
 	}
 
 
@@ -154,7 +154,7 @@ class MembersService {
 			}
 		}
 
-		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getUser());
+		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getViewer());
 	}
 
 
@@ -262,7 +262,7 @@ class MembersService {
 				$this->eventsService->onMemberLevel($circle, $member);
 			}
 
-			return $this->dbMembers->getMembersFromCircle($circleId, $circle->getUser());
+			return $this->dbMembers->getMembersFromCircle($circleId, $circle->getViewer());
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -347,7 +347,7 @@ class MembersService {
 		$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
 		$this->eventsService->onMemberLeaving($circle, $member);
 
-		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getUser());
+		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getViewer());
 	}
 
 
