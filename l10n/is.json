@@ -60,6 +60,8 @@
     "The status of the link has been updated" : "Staða tengilsins hefur verið uppfærð",
     "Member '{name}' successfully added to the circle" : "Meðlimnum '{name}' var bætt í hringinn",
     "Member '{name}' could not be added to the circle" : "Ekki var hægt að bæta meðlimnum '{name}' í hringinn",
+    "Members from group '{name}' successfully added to the circle" : "Meðlimum úr hópnum '{name}' var bætt í hringinn",
+    "Members from group '{name}' could not be added to the circle" : "Ekki var hægt að bæta meðlimum úr hópnum '{name}' í hringinn",
     "Member '{name}' successfully removed from the circle" : "Meðlimurinn '{name}' var fjarlægður úr hringnum",
     "Member '{name}' could not be removed from the circle" : "Meðliminn '{name}' var ekki hægt að fjarlægja úr hringnum",
     "Member '{name}' updated" : "Meðlimurinn '{name}' uppfærður",

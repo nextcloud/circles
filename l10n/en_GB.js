@@ -62,6 +62,8 @@ OC.L10N.register(
     "The status of the link has been updated" : "The status of the link has been updated",
     "Member '{name}' successfully added to the circle" : "Member '{name}' successfully added to the circle",
     "Member '{name}' could not be added to the circle" : "Member '{name}' could not be added to the circle",
+    "Members from group '{name}' successfully added to the circle" : "Members from group '{name}' successfully added to the circle",
+    "Members from group '{name}' could not be added to the circle" : "Members from group '{name}' could not be added to the circle",
     "Member '{name}' successfully removed from the circle" : "Member '{name}' successfully removed from the circle",
     "Member '{name}' could not be removed from the circle" : "Member '{name}' could not be removed from the circle",
     "Member '{name}' updated" : "Member '{name}' updated",
