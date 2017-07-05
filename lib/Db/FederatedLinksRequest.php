@@ -77,7 +77,7 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 			$qb->set('unique_id', $qb->createNamedParameter($link->getUniqueId(true)));
 		}
 
-		$qb->where(
+		$qb->andWhere(
 			$expr->andX(
 				$expr->eq('circle_id', $qb->createNamedParameter($link->getCircleId())),
 				$expr->eq('token', $qb->createNamedParameter($link->getToken(true)))
@@ -97,7 +97,7 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 		$qb = $this->getLinksSelectSql();
 		$expr = $qb->expr();
 
-		$qb->where(
+		$qb->andWhere(
 			$expr->andX(
 				$expr->eq('f.circle_id', $qb->createNamedParameter((int)$circleId)),
 				$expr->eq('f.status', $qb->createNamedParameter(9))
@@ -126,7 +126,7 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 		$qb = $this->getLinksSelectSql();
 		$expr = $qb->expr();
 
-		$qb->where(
+		$qb->andWhere(
 			$expr->andX(
 				$expr->eq('f.circle_id', $qb->createNamedParameter((int)$circleId)),
 				$expr->eq('f.unique_id', $qb->createNamedParameter((string)$uniqueId))
@@ -151,7 +151,7 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 		$qb = $this->getLinksDeleteSql();
 		$expr = $qb->expr();
 
-		$qb->where(
+		$qb->andWhere(
 			$expr->andX(
 				$expr->eq('token', $qb->createNamedParameter($link->getToken(true))),
 				$expr->eq('circle_id', $qb->createNamedParameter($link->getCircleId()))

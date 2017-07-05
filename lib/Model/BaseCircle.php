@@ -76,6 +76,9 @@ class BaseCircle {
 	/** @var Member[] */
 	private $members;
 
+	/** @var Member[] */
+	private $groups;
+
 	/** @var FederatedLink[] */
 	private $links;
 
@@ -278,6 +281,17 @@ class BaseCircle {
 
 	public function getMembers() {
 		return $this->members;
+	}
+
+
+	public function setGroups($groups) {
+		$this->groups = $groups;
+
+		return $this;
+	}
+
+	public function getGroups() {
+		return $this->groups;
 	}
 
 

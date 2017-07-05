@@ -26,7 +26,6 @@
 
 return [
 	'ocs'    => [
-
 	],
 	'routes' => [
 		[
@@ -70,7 +69,6 @@ return [
 			'url'          => '/v1/link/{linkId}/status', 'verb' => 'POST',
 			'requirements' => ['linkId' => '\d+'],
 		],
-
 		['name' => 'Federated#updateLink', 'url' => '/v1/link', 'verb' => 'POST'],
 		['name' => 'Federated#requestedLink', 'url' => '/v1/link', 'verb' => 'PUT'],
 		[
@@ -81,11 +79,10 @@ return [
 			'name' => 'Federated#receiveFederatedDelivery', 'url' => '/v1/payload',
 			'verb' => 'PUT'
 		],
-
-
 		['name' => 'Members#search', 'url' => '/v1/circles/{id}/members', 'verb' => 'GET'],
 		[
-			'name'         => 'Members#importFromGroup', 'url' => '/v1/circles/{id}/groupmembers', 'verb' => 'PUT',
+			'name'         => 'Members#importFromGroup', 'url' => '/v1/circles/{id}/groupmembers',
+			'verb'         => 'PUT',
 			'requirements' => ['id' => '\d+'],
 		],
 		[
@@ -102,9 +99,21 @@ return [
 			'requirements' => ['id' => '\d+'],
 		],
 		[
-			'name'         => 'Shares#create', 'url' => '/v1/circles/{id}/share', 'verb' => 'PUT',
+			'name'         => 'Groups#add', 'url' => '/v1/circles/{id}/groups', 'verb' => 'PUT',
 			'requirements' => ['id' => '\d+'],
 		],
-
-	],
+		[
+			'name'         => 'Groups#level', 'url' => '/v1/circles/{id}/group/level', 'verb' => 'POST',
+			'requirements' => ['id' => '\d+'],
+		],
+		[
+			'name'         => 'Groups#remove', 'url' => '/v1/circles/{id}/groups',
+			'verb'         => 'DELETE',
+			'requirements' => ['id' => '\d+'],
+		],
+		[
+			'name'         => 'Shares#create', 'url' => '/v1/circles/{id}/share', 'verb' => 'PUT',
+			'requirements' => ['id' => '\d+'],
+		]
+	]
 ];

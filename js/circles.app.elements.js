@@ -50,8 +50,10 @@ var elements = {
 	emptyContent: null,
 	mainUI: null,
 	mainUIMembersTable: null,
+	mainUIGroupsTable: null,
 	mainUILinksTable: null,
 	membersSearchResult: null,
+	groupsSearchResult: null,
 	memberDetails: null,
 	memberRequest: null,
 
@@ -75,15 +77,15 @@ var elements = {
 	settingsEntryLinkFiles: null,
 	settingsSave: null,
 
-	rightPanel: null,
 	addMember: null,
-	remMember: null,
+	linkGroup: null,
 	linkCircle: null,
 
 	buttonCircleActions: null,
 	buttonCircleActionReturn: null,
 	buttonCircleSettings: null,
 	buttonAddMember: null,
+	buttonLinkGroup: null,
 	buttonLinkCircle: null,
 
 
@@ -104,8 +106,10 @@ var elements = {
 
 		elements.mainUIMembers = $('#memberslist');
 		elements.mainUIMembersTable = $('#memberslist_table');
+		elements.mainUIGroupsTable = $('#groupslist_table');
 		elements.mainUILinksTable = $('#linkslist_table');
 		elements.membersSearchResult = $('#members_search_result');
+		elements.groupsSearchResult = $('#groups_search_result');
 		elements.memberDetails = $('#memberdetails');
 		elements.memberRequest = $('#member_request');
 
@@ -129,15 +133,15 @@ var elements = {
 		elements.settingsEntryLinkFiles = $('#settings-entry-link-files');
 		elements.settingsSave = $('#settings-submit');
 
-		elements.rightPanel = $('#rightpanel');
 		elements.addMember = $('#addmember');
-		elements.remMember = $('#remmember');
+		elements.linkGroup = $('#linkgroup');
 		elements.linkCircle = $('#linkcircle');
 
 		elements.buttonCircleActions = $('#circle-actions-buttons');
 		elements.buttonCircleActionReturn = $('#circle-actions-return');
 		elements.buttonCircleSettings = $('#circle-actions-settings');
 		elements.buttonAddMember = $('#circle-actions-add');
+		elements.buttonLinkGroup = $('#circle-actions-group');
 		elements.buttonLinkCircle = $('#circle-actions-link');
 		elements.buttonJoinCircle = $('#circle-actions-join');
 	},
@@ -167,15 +171,17 @@ var elements = {
 			'url(' + OC.imagePath('circles', 'colored') + ')');
 		$('.icon-add-user').css('background-image',
 			'url(' + OC.imagePath('circles', 'add-user') + ')');
+		$('.icon-link-group').css('background-image',
+			'url(' + OC.imagePath('circles', 'link-group') + ')');
 		$('.icon-join').css('background-image',
 			'url(' + OC.imagePath('circles', 'join') + ')');
 
 		var theme = $('#body-user').find('#header').css('background-color');
 		elements.circlesList.css('background-color', theme);
 		elements.circleDetails.css('background-color', theme);
-		elements.rightPanel.css('background-color', theme);
 
 		elements.membersSearchResult.hide();
+		elements.groupsSearchResult.hide();
 	},
 
 
@@ -238,6 +244,16 @@ var elements = {
 			settings.displaySettings(false);
 			nav.displayCircleButtons(false);
 			nav.displayAddMemberInput(true);
+			nav.displayLinkGroupInput(false);
+			nav.displayLinkCircleInput(false);
+			nav.displayJoinCircleButton(false);
+		});
+
+		elements.buttonLinkGroup.on('click', function () {
+			settings.displaySettings(false);
+			nav.displayCircleButtons(false);
+			nav.displayAddMemberInput(false);
+			nav.displayLinkGroupInput(true);
 			nav.displayLinkCircleInput(false);
 			nav.displayJoinCircleButton(false);
 		});
@@ -246,6 +262,7 @@ var elements = {
 			settings.displaySettings(false);
 			nav.displayCircleButtons(false);
 			nav.displayAddMemberInput(false);
+			nav.displayLinkGroupInput(false);
 			nav.displayLinkCircleInput(true);
 			nav.displayJoinCircleButton(false);
 		});
@@ -254,6 +271,7 @@ var elements = {
 			settings.displaySettings(true);
 			nav.displayCircleButtons(false);
 			nav.displayAddMemberInput(false);
+			nav.displayLinkGroupInput(false);
 			nav.displayLinkCircleInput(false);
 			nav.displayJoinCircleButton(false);
 		});
@@ -342,8 +360,41 @@ var elements = {
 	},
 
 
-	resetCirclesList: function () {
+	fillGroupsSearch: function (exact, partial) {
+		this.fillExactGroupsSearch(exact);
+		this.fillPartialGroupsSearch(partial);
+		elements.groupsSearchResult.children().first().css('border-top-width', '0px');
+	},
 
+
+	fillExactGroupsSearch: function (exact) {
+		$.each(exact, function (index, value) {
+			elements.groupsSearchResult.append(
+				'<div class="groups_search exact" searchresult="' +
+				escapeHTML(value.value.shareWith) + '">' + escapeHTML(value.label) + '   (' +
+				escapeHTML(value.value.shareWith) + ')</div>');
+		});
+
+	},
+
+
+	fillPartialGroupsSearch: function (partial) {
+		$.each(partial, function (index, value) {
+
+			var currSearch = elements.addMember.val().trim();
+			var line = escapeHTML(value.label) + '   (' + escapeHTML(value.value.shareWith) + ')';
+			if (currSearch.length > 0) {
+				line = line.replace(new RegExp('(' + currSearch + ')', 'gi'), '<b>$1</b>');
+			}
+
+			elements.groupsSearchResult.append(
+				'<div class="groups_search" searchresult="' +
+				escapeHTML(value.value.shareWith) + '">' + line + '</div>');
+		});
+	},
+
+
+	resetCirclesList: function () {
 		elements.navigation.addClass('selected');
 		elements.navigation.children().each(function () {
 			if ($(this).attr('id') !== 'circles_search' &&
@@ -387,6 +438,18 @@ var elements = {
 
 		return tmpl;
 	},
+
+
+	generateTmplGroup: function (entry) {
+		var tmpl = $('#tmpl_group').html();
+
+		tmpl = tmpl.replace(/%groupid%/g, escapeHTML(entry.group_id));
+		tmpl = tmpl.replace(/%level%/g, escapeHTML(entry.level));
+		tmpl = tmpl.replace(/%joined%/g, escapeHTML(entry.joined));
+
+		return tmpl;
+	},
+
 
 	generateTmplLink: function (entry) {
 		var tmpl = $('#tmpl_link').html();

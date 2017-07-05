@@ -27,6 +27,7 @@
 namespace OCA\Circles\AppInfo;
 
 use OCA\Circles\Controller\FederatedController;
+use OCA\Circles\Controller\GroupsController;
 use \OCA\Circles\Controller\NavigationController;
 use \OCA\Circles\Controller\CirclesController;
 use \OCA\Circles\Controller\MembersController;
@@ -38,12 +39,14 @@ use \OCA\Circles\Db\CirclesMapper;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\FederatedLinksRequest;
 use \OCA\Circles\Db\MembersMapper;
+use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Events\UserEvents;
 use OCA\Circles\Service\BroadcastService;
 use \OCA\Circles\Service\DatabaseService;
 use \OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\EventsService;
 use OCA\Circles\Service\FederatedService;
+use OCA\Circles\Service\GroupsService;
 use \OCA\Circles\Service\MembersService;
 use \OCA\Circles\Service\ConfigService;
 use \OCA\Circles\Service\MiscService;
@@ -119,7 +122,8 @@ class Application extends App {
 			'CirclesService', function(IAppContainer $c) {
 			return new CirclesService(
 				$c->query('UserId'), $c->query('L10N'), $c->query('ConfigService'),
-				$c->query('CirclesRequest'), $c->query('DatabaseService'),
+				$c->query('CirclesRequest'), $c->query('MembersRequest'),
+				$c->query('DatabaseService'),
 				$c->query('EventsService'), $c->query('MiscService')
 			);
 		}
@@ -131,6 +135,15 @@ class Application extends App {
 				$c->query('UserId'), $c->query('L10N'), $c->query('UserManager'),
 				$c->query('ConfigService'), $c->query('DatabaseService'),
 				$c->query('EventsService'), $c->query('MiscService')
+			);
+		}
+		);
+
+		$container->registerService(
+			'GroupsService', function(IAppContainer $c) {
+			return new GroupsService(
+				$c->query('UserId'), $c->query('L10N'), $c->query('GroupManager'),
+				$c->query('DatabaseService'), $c->query('MembersRequest'), $c->query('MiscService')
 			);
 		}
 		);
@@ -199,19 +212,18 @@ class Application extends App {
 			return new NavigationController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
 				$c->query('ConfigService'), $c->query('CirclesService'),
-				$c->query('MembersService'), $c->query('SharesService'),
+				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
 				$c->query('FederatedService'), $c->query('MiscService')
 			);
 		}
 		);
-
 
 		$container->registerService(
 			'CirclesController', function(IAppContainer $c) {
 			return new CirclesController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
 				$c->query('ConfigService'), $c->query('CirclesService'),
-				$c->query('MembersService'), $c->query('SharesService'),
+				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
 				$c->query('FederatedService'), $c->query('MiscService')
 			);
 		}
@@ -222,7 +234,18 @@ class Application extends App {
 			return new MembersController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
 				$c->query('ConfigService'), $c->query('CirclesService'),
-				$c->query('MembersService'), $c->query('SharesService'),
+				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
+				$c->query('FederatedService'), $c->query('MiscService')
+			);
+		}
+		);
+
+		$container->registerService(
+			'GroupsController', function(IAppContainer $c) {
+			return new GroupsController(
+				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
+				$c->query('ConfigService'), $c->query('CirclesService'),
+				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
 				$c->query('FederatedService'), $c->query('MiscService')
 			);
 		}
@@ -233,7 +256,7 @@ class Application extends App {
 			return new SharesController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
 				$c->query('ConfigService'), $c->query('CirclesService'),
-				$c->query('MembersService'), $c->query('SharesService'),
+				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
 				$c->query('FederatedService'), $c->query('MiscService')
 			);
 		}
@@ -244,7 +267,7 @@ class Application extends App {
 			return new FederatedController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
 				$c->query('ConfigService'), $c->query('CirclesService'),
-				$c->query('MembersService'), $c->query('SharesService'),
+				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
 				$c->query('FederatedService'), $c->query('MiscService')
 			);
 		}
@@ -263,6 +286,15 @@ class Application extends App {
 		$container->registerService(
 			'CirclesRequest', function(IAppContainer $c) {
 			return new CirclesRequest(
+				$c->query('L10N'), $c->query('ServerContainer')
+									 ->getDatabaseConnection(), $c->query('MiscService')
+			);
+		}
+		);
+
+		$container->registerService(
+			'MembersRequest', function(IAppContainer $c) {
+			return new MembersRequest(
 				$c->query('L10N'), $c->query('ServerContainer')
 									 ->getDatabaseConnection(), $c->query('MiscService')
 			);
@@ -374,20 +406,34 @@ class Application extends App {
 	}
 
 
+	/**
+	 * Register Hooks
+	 */
 	public function registerHooks() {
 		Util::connectHook(
 			'OC_User', 'post_deleteUser', '\OCA\Circles\Hooks\UserHooks', 'onUserDeleted'
 		);
+		Util::connectHook(
+			'OC_User', 'post_deleteGroup', '\OCA\Circles\Hooks\UserHooks', 'onGroupDeleted'
+		);
 	}
 
 
+	/**
+	 * Register Events
+	 *
+	 * @param IAppContainer $container
+	 */
 	public function registerEvents(IAppContainer $container) {
 		$container->registerService(
 			'UserEvents', function(IAppContainer $c) {
-			return new UserEvents($c->query('MembersService'), $c->query('MiscService'));
+			return new UserEvents(
+				$c->query('MembersService'), $c->query('GroupsService'), $c->query('MiscService')
+			);
 		}
 		);
 	}
+
 
 	/**
 	 * Register Navigation Tab
@@ -404,11 +450,11 @@ class Application extends App {
 											->t('Circles');
 
 					 return [
-						 'id'    => $this->appName,
+						 'id' => $this->appName,
 						 'order' => 5,
-						 'href'  => $urlGen->linkToRoute('circles.Navigation.navigate'),
-						 'icon'  => $urlGen->imagePath($this->appName, 'circles.svg'),
-						 'name'  => $navName
+						 'href' => $urlGen->linkToRoute('circles.Navigation.navigate'),
+						 'icon' => $urlGen->imagePath($this->appName, 'circles.svg'),
+						 'name' => $navName
 					 ];
 				 }
 			 );

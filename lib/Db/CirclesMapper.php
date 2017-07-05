@@ -429,8 +429,6 @@ class CirclesMapper extends Mapper {
 	 * remove a circle
 	 *
 	 * @param int $circleId
-	 *
-	 * @internal param Circle $circle
 	 */
 	public function destroy($circleId) {
 		$qb = $this->db->getQueryBuilder();

@@ -30,6 +30,7 @@ use OC\AppFramework\Http;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedService;
+use OCA\Circles\Service\GroupsService;
 use OCA\Circles\Service\MembersService;
 
 use OCA\Circles\Service\MiscService;
@@ -56,6 +57,9 @@ class BaseController extends Controller {
 	/** @var MembersService */
 	protected $membersService;
 
+	/** @var GroupsService */
+	protected $groupsService;
+
 	/** @var SharesService */
 	protected $sharesService;
 
@@ -76,6 +80,7 @@ class BaseController extends Controller {
 	 * @param ConfigService $configService
 	 * @param CirclesService $circlesService
 	 * @param MembersService $membersService
+	 * @param GroupsService $groupsService
 	 * @param SharesService $sharesService
 	 * @param FederatedService $federatedService
 	 * @param MiscService $miscService
@@ -88,6 +93,7 @@ class BaseController extends Controller {
 		ConfigService $configService,
 		CirclesService $circlesService,
 		MembersService $membersService,
+		GroupsService $groupsService,
 		SharesService $sharesService,
 		FederatedService $federatedService,
 		MiscService $miscService
@@ -99,6 +105,7 @@ class BaseController extends Controller {
 		$this->configService = $configService;
 		$this->circlesService = $circlesService;
 		$this->membersService = $membersService;
+		$this->groupsService = $groupsService;
 		$this->sharesService = $sharesService;
 		$this->federatedService = $federatedService;
 		$this->miscService = $miscService;

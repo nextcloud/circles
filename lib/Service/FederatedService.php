@@ -151,7 +151,7 @@ class FederatedService {
 	 */
 	public function linkCircle($circleId, $remote) {
 
-		if (!$this->configService->isFederatedAllowed()) {
+		if (!$this->configService->isFederatedCirclesAllowed()) {
 			throw new FederatedCircleNotAllowedException(
 				$this->l10n->t("Federated circles are not allowed on this Nextcloud")
 			);
@@ -500,7 +500,6 @@ class FederatedService {
 	 * @param $status
 	 *
 	 * @throws FederatedCircleStatusUpdateException
-	 * @internal param FederatedLink $link
 	 */
 	private function checkUpdateLinkFromRemote($status) {
 		$status = (int)$status;
@@ -692,7 +691,7 @@ class FederatedService {
 		}
 
 		if ($this->circlesRequest->getFrame($link->getCircleId(), $frame->getUniqueId())) {
-	//		$this->miscService->log("Frame already exist");
+			//		$this->miscService->log("Frame already exist");
 			throw new FrameAlreadyExistException('shares_is_already_known');
 		}
 

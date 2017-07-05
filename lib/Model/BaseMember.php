@@ -53,6 +53,9 @@ class BaseMember implements \JsonSerializable {
 	private $userId;
 
 	/** @var string */
+	private $groupId;
+
+	/** @var string */
 	private $displayName;
 
 	/** @var int */
@@ -89,6 +92,20 @@ class BaseMember implements \JsonSerializable {
 
 	public function getCircleId() {
 		return $this->circleId;
+	}
+
+	/**
+	 * @param string $groupId
+	 */
+	public function setGroupId($groupId) {
+		$this->groupId = $groupId;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getGroupId() {
+		return $this->groupId;
 	}
 
 
@@ -193,9 +210,20 @@ class BaseMember implements \JsonSerializable {
 		$member = new Member($l10n);
 
 		$member->setCircleId($arr['circle_id']);
-		$member->setUserId($arr['user_id']);
 		$member->setLevel($arr['level']);
-		$member->setStatus($arr['status']);
+
+		if (key_exists('user_id', $arr)) {
+			$member->setUserId($arr['user_id']);
+		}
+
+		if (key_exists('group_id', $arr)) {
+			$member->setGroupId($arr['group_id']);
+		}
+
+		if (key_exists('status', $arr)) {
+			$member->setStatus($arr['status']);
+		}
+
 		if (key_exists('note', $arr)) {
 			$member->setNote($arr['note']);
 		}
@@ -216,6 +244,7 @@ class BaseMember implements \JsonSerializable {
 		return array(
 			'circle_id'    => $this->getCircleId(),
 			'user_id'      => $this->getUserId(),
+			'group_id'     => $this->getGroupId(),
 			'display_name' => $this->getDisplayNAme(),
 			'level'        => $this->getLevel(),
 			'level_string' => $this->getLevelString(),

@@ -356,7 +356,7 @@ class MembersService {
 	 *
 	 * @param $userId
 	 */
-	public function removeUser($userId) {
+	public function onUserRemoved($userId) {
 		$this->dbMembers->removeAllFromUserId($userId);
 	}
 

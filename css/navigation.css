@@ -26,6 +26,7 @@
 }
 
 #app-content {
+	overflow-x: hidden;
 }
 
 #app-navigation .header {
@@ -125,8 +126,6 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	color: #2c2c2c99;
 }
 
-/** members **/
-
 #mainui {
 	display: none;
 }
@@ -167,6 +166,7 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	left: 15px;
 	top: 120px;
 	overflow-y: auto;
+	overflow-x: hidden;
 }
 
 #circle_desc {
@@ -182,7 +182,7 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	width: 100%;
 }
 
-#memberslist_table {
+#memberslist_table, #linkslist_table, #groupslist_table {
 	width: 100%;
 }
 
@@ -196,20 +196,20 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	color: #555;
 }
 
-.members_search {
+.members_search, .groups_search {
 	padding: 10px;
 	border-top: solid 1px #00000022;
 	-webkit-transition: background-color 0.2s ease-in;
 	transition: background-color 0.2s ease-in;
 }
 
-.members_search:hover {
+.members_search:hover, .groups_search:hover {
 	background: #fafafa;
 	-webkit-transition: background-color 0.2s ease-in;
 	transition: background-color 0.2s ease-in;
 }
 
-.members_search.exact {
+.members_search.exact, .groups_search.exact {
 	background: #eee;
 }
 
@@ -241,18 +241,18 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	margin-top: 6px;
 }
 
-#linkcircle, #addmember, #joincircle, #leavecircle {
+#linkcircle, #addmember, #linkgroup, #joincircle, #leavecircle {
 	width: 250px;
 }
 
-#members_search_result > #addmember {
+#members_search_result > #addmember, #groups_search_result > #linkgroup {
 	position: relative;
 	width: 220px;
 	right: 20px;
 	top: 5px;
 }
 
-#members_search_result {
+#members_search_result, #groups_search_result {
 	z-index: 5;
 	border-radius: 4px;
 	border: solid 1px #00000022;
@@ -266,6 +266,10 @@ div.circle .owner, div.circle .type, div.circle .resume {
 }
 
 .icon-add-user {
+	background-size: 16px;
+}
+
+.icon-link-group {
 	background-size: 16px;
 }
 
@@ -326,9 +330,5 @@ div.circle .owner, div.circle .type, div.circle .resume {
 
 #settings-submit {
 	margin: 15px;
-}
-
-#linkslist_table {
-	width: 100%;
 }
 

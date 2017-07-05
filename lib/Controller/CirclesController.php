@@ -92,8 +92,6 @@ class CirclesController extends BaseController {
 	 * @param $id
 	 *
 	 * @return DataResponse
-	 * @internal param string $name
-	 *
 	 */
 	public function details($id) {
 		try {
@@ -115,8 +113,6 @@ class CirclesController extends BaseController {
 	 * @param $id
 	 *
 	 * @return DataResponse
-	 * @internal param string $name
-	 *
 	 */
 	public function settings($id, $settings) {
 		try {
@@ -138,8 +134,6 @@ class CirclesController extends BaseController {
 	 * @param $id
 	 *
 	 * @return DataResponse
-	 * @internal param string $name
-	 *
 	 */
 	public function join($id) {
 		try {
@@ -160,8 +154,6 @@ class CirclesController extends BaseController {
 	 * @param $id
 	 *
 	 * @return DataResponse
-	 * @internal param string $name
-	 *
 	 */
 	public function leave($id) {
 		try {
@@ -183,8 +175,6 @@ class CirclesController extends BaseController {
 	 * @param $id
 	 *
 	 * @return DataResponse
-	 * @internal param string $name
-	 *
 	 */
 	public function destroy($id) {
 		try {
@@ -247,7 +237,7 @@ class CirclesController extends BaseController {
 	 */
 	public function linkStatus($linkId, $status) {
 
-		if (!$this->configService->isFederatedAllowed()) {
+		if (!$this->configService->isFederatedCirclesAllowed()) {
 			throw new FederatedCircleNotAllowedException(
 				$this->l10n->t("Federated circles are not allowed on this Nextcloud")
 			);

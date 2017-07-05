@@ -34,6 +34,7 @@
 /** global: results */
 /** global: resultCircles */
 /** global: resultMembers */
+/** global: resultGroups */
 /** global: resultLinks */
 
 
@@ -46,12 +47,15 @@ var curr = {
 	circleLevel: 0,
 	circleStatus: '',
 	circleMembers: {},
+	circleGroups: {},
 	circleLinks: {},
 	searchCircle: '',
 	searchFilter: 0,
 	searchUser: '',
+	searchGroup: '',
 	searchUserSelected: '',
-	allowed_federated: 0,
+	allowed_linked_groups: 0,
+	allowed_federated_circles: 0,
 	allowed_circles: 0,
 
 	defineCircle: function (data) {
@@ -108,6 +112,7 @@ $(document).ready(function () {
 		$.extend(Navigation.prototype, settings);
 		$.extend(Navigation.prototype, resultCircles);
 		$.extend(Navigation.prototype, resultMembers);
+		$.extend(Navigation.prototype, resultGroups);
 		$.extend(Navigation.prototype, resultLinks);
 
 		this.init();
@@ -171,8 +176,9 @@ $(document).ready(function () {
 				return;
 			}
 
-			curr.allowed_federated = result.allowed_federated;
 			curr.allowed_circles = result.allowed_circles;
+			curr.allowed_linked_groups = result.allowed_linked_groups;
+			curr.allowed_federated_circles = result.allowed_federated_circles;
 
 			var circleId = window.location.hash.substr(1);
 			if (circleId) {

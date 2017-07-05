@@ -31,6 +31,7 @@
 /** global: nav */
 /** global: elements */
 /** global: resultMembers */
+/** global: resultGroups */
 /** global: resultCircles */
 /** global: curr */
 /** global: api */
@@ -48,6 +49,17 @@ var actions = {
 			return;
 		}
 		api.levelMember(curr.circle, member, level, resultMembers.levelMemberResult);
+		nav.circlesActionReturn();
+	},
+
+
+	changeGroupLevel: function (group, level) {
+
+		if (level === 'remove_group') {
+			api.unlinkGroup(curr.circle, group, resultGroups.unlinkGroupResult);
+		} else {
+			api.levelGroup(curr.circle, group, level, resultGroups.levelGroupResult);
+		}
 		nav.circlesActionReturn();
 	},
 
@@ -87,6 +99,7 @@ var actions = {
 	selectCircle: function (circle_id) {
 		curr.searchUser = '';
 		elements.addMember.val('');
+		elements.linkGroup.val('');
 		elements.linkCircle.val('');
 
 		nav.circlesActionReturn();
@@ -136,6 +149,28 @@ var actions = {
 				perPage: 200,
 				itemType: 'principals'
 			}, resultMembers.searchMembersResult);
+	},
+
+
+	/**
+	 *
+	 * @param search
+	 */
+	searchGroupsRequest: function (search) {
+
+		if (curr.searchGroup === search) {
+			return;
+		}
+
+		curr.searchGroup = search;
+
+		$.get(OC.linkToOCS('apps/files_sharing/api/v1', 1) + 'sharees',
+			{
+				format: 'json',
+				search: search,
+				perPage: 200,
+				itemType: 'principals'
+			}, resultGroups.searchGroupsResult);
 	},
 
 

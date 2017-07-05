@@ -5,7 +5,16 @@ td.left {
 	width: 400px;
 }
 
+tr.lane td {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
 td.left em {
 	font-weight: normal;
 	font-size: 11px;
+}
+
+td.right {
+	width: 200px;
 }

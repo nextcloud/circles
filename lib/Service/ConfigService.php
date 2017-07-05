@@ -34,12 +34,14 @@ class ConfigService {
 
 	const CIRCLES_ALLOW_CIRCLES = 'allow_circles';
 	const CIRCLES_SWAP_TO_TEAMS = 'swap_to_teams';
-	const CIRCLES_ALLOW_FEDERATED = 'allow_federated';
+	const CIRCLES_ALLOW_FEDERATED_CIRCLES = 'allow_federated';
+	const CIRCLES_ALLOW_LINKED_GROUPS = 'allow_linked_groups';
 
 	private $defaults = [
-		self::CIRCLES_ALLOW_CIRCLES   => Circle::CIRCLES_ALL,
-		self::CIRCLES_SWAP_TO_TEAMS   => '0',
-		self::CIRCLES_ALLOW_FEDERATED => '0'
+		self::CIRCLES_ALLOW_CIRCLES           => Circle::CIRCLES_ALL,
+		self::CIRCLES_SWAP_TO_TEAMS           => '0',
+		self::CIRCLES_ALLOW_LINKED_GROUPS     => '0',
+		self::CIRCLES_ALLOW_FEDERATED_CIRCLES => '0'
 	];
 
 	/** @var string */
@@ -58,7 +60,10 @@ class ConfigService {
 	private $allowedCircle = -1;
 
 	/** @var int */
-	private $allowedFederated = -1;
+	private $allowedLinkedGroups = -1;
+
+	/** @var int */
+	private $allowedFederatedCircles = -1;
 
 	public function __construct($appName, IConfig $config, $userId, MiscService $miscService) {
 		$this->appName = $appName;
@@ -84,13 +89,25 @@ class ConfigService {
 	}
 
 
-	public function isFederatedAllowed() {
-		if ($this->allowedFederated === -1) {
-			$this->allowedFederated = (int)$this->getAppValue(self::CIRCLES_ALLOW_FEDERATED);
+	public function isLinkedGroupsAllowed() {
+		if ($this->allowedLinkedGroups === -1) {
+			$this->allowedLinkedGroups =
+				(int)$this->getAppValue(self::CIRCLES_ALLOW_LINKED_GROUPS);
 		}
 
-		return ($this->allowedFederated === 1);
+		return ($this->allowedLinkedGroups === 1);
 	}
+
+
+	public function isFederatedCirclesAllowed() {
+		if ($this->allowedFederatedCircles === -1) {
+			$this->allowedFederatedCircles =
+				(int)$this->getAppValue(self::CIRCLES_ALLOW_FEDERATED_CIRCLES);
+		}
+
+		return ($this->allowedFederatedCircles === 1);
+	}
+
 
 	/**
 	 * Get a value by key

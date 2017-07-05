@@ -30,7 +30,9 @@ namespace OCA\Circles\Service;
 use OCA\Circles\Db\CirclesMapper;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersMapper;
+use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
+use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\MemberIsNotOwnerException;
 use \OCA\Circles\Model\Circle;
@@ -50,6 +52,9 @@ class CirclesService {
 
 	/** @var CirclesRequest */
 	private $circlesRequest;
+
+	/** @var MembersRequest */
+	private $membersRequest;
 
 	/** @var CirclesMapper */
 	private $dbCircles;
@@ -71,6 +76,7 @@ class CirclesService {
 	 * @param IL10N $l10n
 	 * @param ConfigService $configService
 	 * @param CirclesRequest $circlesRequest
+	 * @param MembersRequest $membersRequest
 	 * @param DatabaseService $databaseService
 	 * @param EventsService $eventsService
 	 * @param MiscService $miscService
@@ -80,6 +86,7 @@ class CirclesService {
 		IL10N $l10n,
 		ConfigService $configService,
 		CirclesRequest $circlesRequest,
+		MembersRequest $membersRequest,
 		DatabaseService $databaseService,
 		EventsService $eventsService,
 		MiscService $miscService
@@ -88,6 +95,7 @@ class CirclesService {
 		$this->l10n = $l10n;
 		$this->configService = $configService;
 		$this->circlesRequest = $circlesRequest;
+		$this->membersRequest = $membersRequest;
 		$this->eventsService = $eventsService;
 		$this->miscService = $miscService;
 
@@ -180,9 +188,7 @@ class CirclesService {
 	 *
 	 * @return Circle
 	 * @throws \Exception
-	 * @internal param $circleId
-	 * @internal param string $iError
-	 */
+]	 */
 	public function detailsCircle($circleId) {
 
 		try {
@@ -190,12 +196,11 @@ class CirclesService {
 			if ($circle->getUser()
 					   ->isLevel(Member::LEVEL_MEMBER)
 			) {
-				$members = $this->dbMembers->getMembersFromCircle(
-					$circleId, $circle->getUser()
-				);
+				$members = $this->dbMembers->getMembersFromCircle($circleId, $circle->getUser());
 				$circle->setMembers($members);
-				$links = $this->circlesRequest->getLinksFromCircle($circle->getId());
-				$circle->setLinks($links);
+
+				$this->detailsCircleLinkedGroups($circle);
+				$this->detailsCircleFederatedCircles($circle);
 			}
 		} catch (\Exception $e) {
 			throw $e;
@@ -203,6 +208,31 @@ class CirclesService {
 
 		return $circle;
 	}
+
+	private function detailsCircleLinkedGroups(Circle &$circle) {
+		$groups = [];
+		if ($this->configService->isLinkedGroupsAllowed()) {
+			$groups = $this->membersRequest->getGroups($circle->getId(), $circle->getUser());
+		}
+
+		$circle->setGroups($groups);
+	}
+
+
+	private function detailsCircleFederatedCircles(Circle &$circle) {
+		$links = [];
+
+		try {
+			if ($this->configService->isFederatedCirclesAllowed()) {
+				$circle->hasToBeFederated();
+				$links = $this->circlesRequest->getLinksFromCircle($circle->getId());
+			}
+		} catch (FederatedCircleNotAllowedException $e) {
+		}
+
+		$circle->setLinks($links);
+	}
+
 
 	/**
 	 * save new settings if current user is admin.

@@ -26,24 +26,31 @@
 
 namespace OCA\Circles\Controller;
 
+use OCA\Circles\Exceptions\LinkedGroupNotAllowedException;
 use OCP\AppFramework\Http\DataResponse;
 
-class MembersController extends BaseController {
+class GroupsController extends BaseController {
 
 
 	/**
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
-	 * @param $id
+	 * @param int $id
 	 * @param string $name
 	 *
 	 * @return DataResponse
+	 * @throws LinkedGroupNotAllowedException
 	 */
 	public function add($id, $name) {
+		if (!$this->configService->isLinkedGroupsAllowed()) {
+			throw new LinkedGroupNotAllowedException(
+				$this->l10n->t("Linked Groups are not allowed on this Nextcloud")
+			);
+		}
 
 		try {
-			$data = $this->membersService->addMember($id, $name);
+			$data = $this->groupsService->linkGroup($id, $name);
 		} catch (\Exception $e) {
 			return $this->fail(
 				[
@@ -58,11 +65,10 @@ class MembersController extends BaseController {
 			[
 				'circle_id' => $id,
 				'name'      => $name,
-				'members'   => $data
+				'groups'    => $data
 			]
 		);
 	}
-
 
 
 	/**
@@ -70,55 +76,21 @@ class MembersController extends BaseController {
 	 * @NoSubAdminRequired
 	 *
 	 * @param $id
-	 * @param string $name
-	 *
-	 * @return DataResponse
-	 */
-	public function importFromGroup($id, $name) {
-
-		try {
-			$data = $this->membersService->importMembersFromGroup($id, $name);
-		} catch (\Exception $e) {
-			return $this->fail(
-				[
-					'circle_id' => $id,
-					'name'      => $name,
-					'error'     => $e->getMessage()
-				]
-			);
-		}
-
-		return $this->success(
-			[
-				'circle_id' => $id,
-				'name'      => $name,
-				'members'   => $data
-			]
-		);
-	}
-
-
-
-	/**
-	 * @NoAdminRequired
-	 * @NoSubAdminRequired
-	 *
-	 * @param $id
-	 * @param $member
+	 * @param $group
 	 * @param $level
 	 *
 	 * @return DataResponse
 	 */
-	public function level($id, $member, $level) {
+	public function level($id, $group, $level) {
 
 		try {
-			$data = $this->membersService->levelMember($id, $member, $level);
+			$data = $this->groupsService->levelGroup($id, $group, $level);
 		} catch (\Exception $e) {
 			return
 				$this->fail(
 					[
 						'circle_id' => $id,
-						'name'      => $member,
+						'name'      => $group,
 						'level'     => $level,
 						'error'     => $e->getMessage()
 					]
@@ -128,9 +100,9 @@ class MembersController extends BaseController {
 		return $this->success(
 			[
 				'circle_id' => $id,
-				'name'      => $member,
+				'name'      => $group,
 				'level'     => $level,
-				'members'   => $data,
+				'groups'   => $data,
 			]
 		);
 	}
@@ -140,21 +112,27 @@ class MembersController extends BaseController {
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
-	 * @param $id
-	 * @param $member
+	 * @param int $id
+	 * @param string $group
 	 *
 	 * @return DataResponse
+	 * @throws LinkedGroupNotAllowedException
 	 */
-	public function remove($id, $member) {
+	public function remove($id, $group) {
+		if (!$this->configService->isLinkedGroupsAllowed()) {
+			throw new LinkedGroupNotAllowedException(
+				$this->l10n->t("Linked Groups are not allowed on this Nextcloud")
+			);
+		}
 
 		try {
-			$data = $this->membersService->removeMember($id, $member);
+			$data = $this->groupsService->unlinkGroup($id, $group);
 		} catch (\Exception $e) {
 			return
 				$this->fail(
 					[
 						'circle_id' => $id,
-						'name'      => $member,
+						'name'      => $group,
 						'error'     => $e->getMessage()
 					]
 				);
@@ -163,8 +141,8 @@ class MembersController extends BaseController {
 		return $this->success(
 			[
 				'circle_id' => $id,
-				'name'      => $member,
-				'members'   => $data,
+				'name'      => $group,
+				'groups'    => $data,
 			]
 		);
 	}

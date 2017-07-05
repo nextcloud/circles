@@ -80,12 +80,14 @@ class Circle extends BaseCircle implements \JsonSerializable {
 			'typeLongString' => $this->getTypeLongString(),
 			'unique_id'      => $this->getUniqueId($this->fullJson),
 			'members'        => $this->getMembers(),
+			'groups'         => $this->getGroups(),
 			'links'          => $this->getLinks()
 		);
 
 		if ($this->lightJson) {
 			$json['members'] = [];
 			$json['links'] = [];
+			$json['groups'] = [];
 		}
 
 		return $json;
