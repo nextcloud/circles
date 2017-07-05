@@ -223,27 +223,26 @@ class GroupsService {
 	 * @throws \Exception
 	 */
 	public function removeGroup($circleId, $groupId) {
-		return array();
-//		try {
-//			$isMod = $this->dbMembers->getMemberFromCircle($circleId, $this->userId);
-//			$isMod->hasToBeModerator();
-//
-//			$member = $this->dbMembers->getMemberFromCircle($circleId, $name);
-//			$member->cantBeOwner();
-//
-//			$isMod->hasToBeHigherLevel($member->getLevel());
-//		} catch (\Exception $e) {
-//			throw $e;
-//		}
-//
-//		$member->setStatus(Member::STATUS_NONMEMBER);
-//		$member->setLevel(Member::LEVEL_NONE);
-//		$this->dbMembers->editMember($member);
-//
-//		$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
-//		$this->eventsService->onMemberLeaving($circle, $member);
-//
-//		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getUser());
+		try {
+			$isMod = $this->dbMembers->getMemberFromCircle($circleId, $this->userId);
+			$isMod->hasToBeAdmin();
+
+			$group = $this->membersRequest->forceGetGroup($circleId, $groupId);
+			$group->cantBeOwner();
+			$isMod->hasToBeHigherLevel($group->getLevel());
+
+			$group->setLevel(Member::LEVEL_NONE);
+			$this->membersRequest->editGroup($group);
+
+			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
+
+			//		$this->eventsService->onMemberLeaving($circle, $member);
+
+		} catch (\Exception $e) {
+			throw $e;
+		}
+
+		return $this->membersRequest->getGroups($circle->getId(), $circle->getUser());
 	}
 
 

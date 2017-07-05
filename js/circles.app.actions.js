@@ -54,7 +54,12 @@ var actions = {
 
 
 	changeGroupLevel: function (group, level) {
-		api.levelGroup(curr.circle, group, level, resultGroups.levelGroupResult);
+
+		if (level === 'remove_group') {
+			api.removeGroup(curr.circle, group, resultGroups.removeGroupResult);
+		} else {
+			api.levelGroup(curr.circle, group, level, resultGroups.levelGroupResult);
+		}
 		nav.circlesActionReturn();
 	},
 

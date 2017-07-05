@@ -181,6 +181,22 @@
 			};
 
 
+			this.removeGroup = function (circleId, groupId, callback) {
+				var result = {status: -1};
+				$.ajax({
+					method: 'DELETE',
+					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/groups'),
+					data: {
+						group: groupId
+					}
+				}).done(function (res) {
+					self.onCallback(callback, res);
+				}).fail(function () {
+					self.onCallback(callback, result);
+				});
+			};
+
+
 			this.levelGroup = function (circleId, group, level, callback) {
 				var result = {status: -1};
 				$.ajax({

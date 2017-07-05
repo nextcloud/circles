@@ -340,9 +340,6 @@ var nav = {
 			curr.circleMembers = members;
 		}
 
-		elements.remMember.fadeOut(300);
-		elements.rightPanel.fadeOut(300);
-
 		elements.mainUIMembersTable.emptyTable();
 		if (members === null) {
 			elements.mainUIMembersTable.hide(200);
@@ -427,9 +424,9 @@ var nav = {
 			curr.circleGroups = groups;
 		}
 
-		elements.mainUIGroupsTable.hide(curr.animationSpeed);
 		elements.mainUIGroupsTable.emptyTable();
 		if (groups === null || groups.length === 0) {
+			elements.mainUIGroupsTable.hide(curr.animationSpeed);
 			return;
 		}
 
@@ -457,10 +454,14 @@ var nav = {
 				else {
 					levelSelect.show(200).val(level);
 				}
+				levelSelect.append($('<option>', {
+					value: 'remove_group',
+					text: t('circles', 'Unlink this group')
+				}));
+
 				levelSelect.on('change', function () {
 					actions.changeGroupLevel(groupId, $(this).val());
 				});
-
 			}
 		);
 	},
@@ -591,7 +592,8 @@ var nav = {
 
 
 	displayMemberInteractionCircleLinks: function (details) {
-		if (curr.allowed_federated_circles === '0' || curr.circleSettings['allow_links'] !== 'true' ||
+		if (curr.allowed_federated_circles === '0' ||
+			curr.circleSettings['allow_links'] !== 'true' ||
 			details.type === 'Personal' ||
 			details.user.level < define.levelAdmin
 		) {
