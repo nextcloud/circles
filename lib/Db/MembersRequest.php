@@ -36,6 +36,7 @@ use OCA\Circles\Model\Member;
 class MembersRequest extends MembersRequestBuilder {
 
 
+
 	/**
 	 * forceGetGroup();
 	 *
@@ -70,7 +71,7 @@ class MembersRequest extends MembersRequestBuilder {
 
 
 
-	// TODO - returns data from a group from a Viewer POV
+	// TODO - returns data of a group from a Viewer POV
 	public function getGroup($circleId, $groupId, $viewer)
 	{
 
@@ -86,11 +87,12 @@ class MembersRequest extends MembersRequestBuilder {
 	public function getGroups($circleId, Member $viewer) {
 
 		if ($viewer->getLevel() < Member::LEVEL_MEMBER) {
-			return;
+			return [];
 		}
 
 		$qb = $this->getGroupsSelectSql();
 		$this->limitToCircleId($qb, $circleId);
+		$this->limitToMemberLevel($qb, Member::LEVEL_MEMBER);
 
 		$cursor = $qb->execute();
 		$groups = [];

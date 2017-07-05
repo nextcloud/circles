@@ -29,11 +29,27 @@ namespace OCA\Circles\Db;
 
 
 use OCP\DB\QueryBuilder\IQueryBuilder;
+use Doctrine\DBAL\Query\QueryBuilder;
 
 class MembersRequestBuilder extends CoreRequestBuilder {
 
 	const TABLE_GROUPS = 'circles_groups';
 	const TABLE_MEMBERS = 'circles_members';
+
+
+	/**
+	 * Limit the request to a minimum member level.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param integer $level
+	 */
+	protected function limitToMemberLevel(IQueryBuilder & $qb, $level) {
+		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
+		$qb->andWhere(
+			$qb->expr()
+			   ->gte($pf . 'level', $qb->createNamedParameter($level))
+		);
+	}
 
 
 	/**
