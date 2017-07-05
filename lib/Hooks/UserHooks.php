@@ -21,5 +21,11 @@ class UserHooks {
 			->onUserDeleted($params);
 	}
 
+
+	public static function onGroupDeleted($params) {
+		self::getController()
+			->onGroupDeleted($params);
+	}
+
 }
 

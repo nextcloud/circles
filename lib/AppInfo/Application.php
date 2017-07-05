@@ -122,7 +122,8 @@ class Application extends App {
 			'CirclesService', function(IAppContainer $c) {
 			return new CirclesService(
 				$c->query('UserId'), $c->query('L10N'), $c->query('ConfigService'),
-				$c->query('CirclesRequest'), $c->query('MembersRequest'), $c->query('DatabaseService'),
+				$c->query('CirclesRequest'), $c->query('MembersRequest'),
+				$c->query('DatabaseService'),
 				$c->query('EventsService'), $c->query('MiscService')
 			);
 		}
@@ -413,7 +414,7 @@ class Application extends App {
 			'OC_User', 'post_deleteUser', '\OCA\Circles\Hooks\UserHooks', 'onUserDeleted'
 		);
 		Util::connectHook(
-			'\OC\Group', 'postDelete', '\OCA\Circles\Hooks\GroupHooks', 'onGroupDeleted'
+			'OC_User', 'post_deleteGroup', '\OCA\Circles\Hooks\UserHooks', 'onGroupDeleted'
 		);
 	}
 
@@ -426,12 +427,9 @@ class Application extends App {
 	public function registerEvents(IAppContainer $container) {
 		$container->registerService(
 			'UserEvents', function(IAppContainer $c) {
-			return new UserEvents($c->query('MembersService'), $c->query('MiscService'));
-		}
-		);
-		$container->registerService(
-			'GroupEvents', function(IAppContainer $c) {
-			return new UserEvents($c->query('GroupsService'), $c->query('MiscService'));
+			return new UserEvents(
+				$c->query('MembersService'), $c->query('GroupsService'), $c->query('MiscService')
+			);
 		}
 		);
 	}
@@ -452,11 +450,11 @@ class Application extends App {
 											->t('Circles');
 
 					 return [
-						 'id'    => $this->appName,
+						 'id' => $this->appName,
 						 'order' => 5,
-						 'href'  => $urlGen->linkToRoute('circles.Navigation.navigate'),
-						 'icon'  => $urlGen->imagePath($this->appName, 'circles.svg'),
-						 'name'  => $navName
+						 'href' => $urlGen->linkToRoute('circles.Navigation.navigate'),
+						 'icon' => $urlGen->imagePath($this->appName, 'circles.svg'),
+						 'name' => $navName
 					 ];
 				 }
 			 );

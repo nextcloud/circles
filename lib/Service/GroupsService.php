@@ -247,12 +247,11 @@ class GroupsService {
 
 
 	/**
-	 * When a group is removed, remove him from all Circles
+	 * When a group is removed, remove it from all Circles
 	 *
 	 * @param string $groupId
 	 */
 	public function onGroupRemoved($groupId) {
-		$this->miscService->log("onGroupRemoved .. " . $groupId);
 		$this->membersRequest->unlinkAllFromGroupId($groupId);
 	}
 
