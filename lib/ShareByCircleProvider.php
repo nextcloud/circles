@@ -434,12 +434,17 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 			$this->limitToFiles($qb, [$node->getId()]);
 		}
 
+		$this->leftJoinShareInitiator($qb);
+
 		$cursor = $qb->execute();
 
 		$shares = [];
 		while ($data = $cursor->fetch()) {
-			self::editShareFromParentEntry($data);
+			if ($data['initiator_level'] < Member::LEVEL_MEMBER) {
+				continue;
+			}
 
+			self::editShareFromParentEntry($data);
 			if (self::isAccessibleResult($data)) {
 				$shares[] = $this->createShareObject($data);
 			}

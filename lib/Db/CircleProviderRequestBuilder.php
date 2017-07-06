@@ -289,6 +289,34 @@ class CircleProviderRequestBuilder {
 
 
 	/**
+	 * left join to get more data about the initiator of the share
+	 *
+	 * @param IQueryBuilder $qb
+	 */
+	protected function leftJoinShareInitiator(IQueryBuilder &$qb) {
+		$expr = $qb->expr();
+
+		if ($qb->getConnection()
+			   ->getDatabasePlatform() instanceof PostgreSqlPlatform
+		) {
+			$req = $expr->eq('s.share_with', $qb->createFunction('CAST(fo.circle_id AS TEXT)'));
+		} else {
+			$req = $expr->eq(
+				's.share_with', $expr->castColumn('fo.circle_id', IQueryBuilder::PARAM_STR)
+			);
+		}
+
+		$qb->leftJoin(
+			's', 'circles_members', 'fo', $expr->andX(
+			$req, $expr->eq('s.uid_initiator', 'fo.user_id')
+		)
+		);
+
+		$qb->selectAlias('fo.level', 'initiator_level');
+	}
+
+
+	/**
 	 * Link to all members of circle
 	 *
 	 * @param IQueryBuilder $qb
