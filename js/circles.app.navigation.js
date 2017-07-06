@@ -362,6 +362,9 @@ var nav = {
 		elements.mainUIMembersTable.children('tr.entry').each(function () {
 
 				var userId = $(this).attr('member-id');
+				if (userId === curr.userId) {
+					$(this).find('td.username').css('font-weight', 'bold').css('font-style', 'italic');
+				}
 
 				//
 				// level

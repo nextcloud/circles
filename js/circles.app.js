@@ -40,6 +40,7 @@
 
 var api = OCA.Circles.api;
 var curr = {
+	userId: '',
 	circlesType: '',
 	circle: 0,
 	circleName: '',
@@ -176,6 +177,7 @@ $(document).ready(function () {
 				return;
 			}
 
+			curr.userId = result.user_id;
 			curr.allowed_circles = result.allowed_circles;
 			curr.allowed_linked_groups = result.allowed_linked_groups;
 			curr.allowed_federated_circles = result.allowed_federated_circles;
