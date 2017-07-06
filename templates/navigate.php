@@ -65,7 +65,7 @@ style('circles', 'navigation');
 				print_unescaped(
 					sprintf(
 						'<option value="%s">%s</option>', 'hidden',
-						$l->t("Create an hidden circle")
+						$l->t("Create a hidden circle")
 					)
 				);
 			}
