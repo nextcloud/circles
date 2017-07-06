@@ -33,6 +33,7 @@ use OCA\Circles\Db\CircleProviderRequestBuilder;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\MiscService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
@@ -132,24 +133,31 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	 * @return IShare The share object
 	 * @throws \Exception
 	 */
-	// TODO: check if user can create a share in this circle !
 	public function create(IShare $share) {
-		$nodeId = $share->getNode()
-						->getId();
+		try {
+			$nodeId = $share->getNode()
+							->getId();
 
-		$qb = $this->findShareParentSql($nodeId, $share->getSharedWith());
-		$exists = $qb->execute();
-		$data = $exists->fetch();
-		$exists->closeCursor();
+			$qb = $this->findShareParentSql($nodeId, $share->getSharedWith());
+			$exists = $qb->execute();
+			$data = $exists->fetch();
+			$exists->closeCursor();
 
-		if ($data !== false) {
-			throw $this->errorShareAlreadyExist($share);
+			if ($data !== false) {
+				throw $this->errorShareAlreadyExist($share);
+			}
+
+			$circle =
+				$this->circlesRequest->getCircle($share->getSharedWith(), $share->getSharedby());
+			$circle->getViewer()
+				   ->hasToBeMember();
+
+			$shareId = $this->createShare($share);
+
+			return $this->getShareById($shareId);
+		} catch (\Exception $e) {
+			throw $e;
 		}
-
-		$circle = $this->circlesRequest->getCircle($share->getSharedWith(), $share->getSharedby());
-		$shareId = $this->createShare($share);
-
-		return $this->getShareById($shareId);
 	}
 
 
