@@ -27,6 +27,7 @@
 namespace OCA\Circles\Controller;
 
 use Exception;
+use GuzzleHttp\Exception\ServerException;
 use OC\AppFramework\Http;
 use OCA\Circles\Exceptions\LinkCreationException;
 use OCA\Circles\Model\FederatedLink;

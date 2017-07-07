@@ -306,7 +306,7 @@ class FederatedService {
 	 * @return string
 	 */
 	private function generateLinkRemoteURL($remote) {
-		$this->allowNonSSLLink();
+//		$this->allowNonSSLLink();
 		if ($this->localTest === false && strpos($remote, 'https') !== 0) {
 			$remote = 'https://' . $remote;
 		}
@@ -321,7 +321,7 @@ class FederatedService {
 	 * @return string
 	 */
 	private function generatePayloadDeliveryURL($remote) {
-		$this->allowNonSSLLink();
+//		$this->allowNonSSLLink();
 		if ($this->localTest === false && strpos($remote, 'https') !== 0) {
 			$remote = 'https://' . $remote;
 		}
@@ -368,7 +368,11 @@ class FederatedService {
 
 			$result = json_decode($request->getBody(), true);
 			if ($result === null) {
-				throw new FederatedRemoteIsDown($this->l10n->t('The remote host is down or the Circles app is not installed on it'));
+				throw new FederatedRemoteIsDown(
+					$this->l10n->t(
+						'The remote host is down or the Circles app is not installed on it'
+					)
+				);
 			}
 
 			$this->eventOnRequestLink(
@@ -799,7 +803,9 @@ class FederatedService {
 																		  ]
 				);
 			} catch (Exception $e) {
-				throw $e;
+				$this->miscService->log(
+					'Could not connect to ' . $link->getAddress() . ' - ' . $e->getMessage()
+				);
 			}
 		}
 	}

@@ -36,6 +36,11 @@ use OCA\Circles\Model\Member;
 class MembersRequest extends MembersRequestBuilder {
 
 
+	public function getMember($circleId, $userId) {
+
+	}
+
+
 
 	/**
 	 * forceGetGroup();
@@ -70,10 +75,8 @@ class MembersRequest extends MembersRequestBuilder {
 	}
 
 
-
 	// TODO - returns data of a group from a Viewer POV
-	public function getGroup($circleId, $groupId, $viewer)
-	{
+	public function getGroup($circleId, $groupId, $viewer) {
 
 	}
 
@@ -150,8 +153,7 @@ class MembersRequest extends MembersRequestBuilder {
 	}
 
 
-	public function unlinkAllFromGroupId($groupId)
-	{
+	public function unlinkAllFromGroupId($groupId) {
 		$qb = $this->getGroupsDeleteSql($groupId);
 		$qb->execute();
 	}

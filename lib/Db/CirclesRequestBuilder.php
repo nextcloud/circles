@@ -202,7 +202,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		$qb = $this->dbConnection->getQueryBuilder();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->select('user_id', 'circle_id', 'level', 'status', 'joined')
+		$qb->select('m.user_id', 'm.circle_id', 'm.level', 'm.status', 'm.joined')
 		   ->from('circles_members', 'm');
 
 		$this->default_select_alias = 'm';

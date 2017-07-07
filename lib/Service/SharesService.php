@@ -139,6 +139,7 @@ class SharesService {
 			$frame->setAuthor($this->userId);
 			$frame->setHeader('author', $this->userId);
 			$frame->setHeader('circleName', $circle->getName());
+			$frame->setHeader('circleUniqueId', $circle->getUniqueId());
 			$frame->setHeader('broadcast', (string)$broadcast);
 			$frame->generateUniqueId();
 			$frame->setCircleName($circle->getName());

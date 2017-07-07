@@ -78,6 +78,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 * @return Circle
 	 * @throws CircleDoesNotExistException
 	 */
+	// TODO: Filters data
 	public function getCircle($circleId, $userId) {
 		$qb = $this->getCirclesSelectSql();
 

@@ -111,7 +111,9 @@ class CoreRequestBuilder {
 	 * @param integer $level
 	 */
 	protected function limitToLevel(IQueryBuilder &$qb, $level) {
-		$this->limitToDBField($qb, 'level', $level);
+		$expr = $qb->expr();
+		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
+		$qb->andWhere($expr->gte($pf . 'level', $qb->createNamedParameter($level)));
 	}
 
 

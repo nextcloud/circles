@@ -574,6 +574,7 @@ class EventsService {
 
 
 	private function publishEvent(IEvent $event, array $users) {
+
 		foreach ($users AS $user) {
 			if ($user INSTANCEOF IUser) {
 				$userId = $user->getUID();
