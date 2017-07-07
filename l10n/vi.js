@@ -59,7 +59,6 @@ OC.L10N.register(
     "Create a new circle" : "Tạo một vòng kết nối mới",
     "Select a type of circle" : "Chọn loại vòng kết nối",
     "Create a personal circle" : "Tạo vòng kết nối cá nhân",
-    "Create an hidden circle" : "Tạo vòng kết nối ẩn",
     "Create a private circle" : "Tạo vòng kết nối riêng tư",
     "Create a public circle" : "Tạo vòng kết nối công cộng",
     "A personal circle is a list of users known only to the owner." : "Vòng kết nối cá nhân là danh sách những người dùng mà chỉ chủ sở hữu biết.",

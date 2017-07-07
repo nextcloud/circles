@@ -145,7 +145,6 @@ OC.L10N.register(
     "Create a new circle" : "Opprett en ny sirkel",
     "Select a type of circle" : "Velg en type sirkel",
     "Create a personal circle" : "Opprett en personlig sirkel",
-    "Create an hidden circle" : "Opprett en skjult sirkel",
     "Create a private circle" : "Opprett en privat sirkel",
     "Create a public circle" : "Opprett en offentlig sirkel",
     "A personal circle is a list of users known only to the owner." : "En personlig sirkel er en liste over brukere bare eieren vet om.",

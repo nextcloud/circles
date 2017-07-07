@@ -80,7 +80,6 @@ OC.L10N.register(
     "Create a new circle" : "Crear un nuevo círculo",
     "Select a type of circle" : "Seleccione el tipo de círculo",
     "Create a personal circle" : "Crear un círculo personal",
-    "Create an hidden circle" : "Crear un círculo oculto",
     "Create a private circle" : "Crear un círculo privado",
     "Create a public circle" : "Crear un círculo público",
     "A personal circle is a list of users known only to the owner." : "Un círculo personal es una lista de usuarios que es conocida solo por el dueño. ",

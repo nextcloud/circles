@@ -76,7 +76,6 @@ OC.L10N.register(
     "Create a new circle" : "Crea una nuova cerchia",
     "Select a type of circle" : "Seleziona un tipo di cerchia",
     "Create a personal circle" : "Crea una cerchia personale",
-    "Create an hidden circle" : "Crea una cerchia nascosta",
     "Create a private circle" : "Crea una cerchia privata",
     "Create a public circle" : "Crea una cerchia pubblica",
     "personal circles" : "Cerchie personali",
