@@ -63,7 +63,6 @@ OC.L10N.register(
     "Create a new circle" : "Δημιουργήστε έναν νέο κύκλο",
     "Select a type of circle" : "Επιλογή τύπου του κύκλου",
     "Create a personal circle" : "Δημιουργία προσωπικού κύκλου",
-    "Create an hidden circle" : "Δημιουργία κρυφού κύκλου",
     "Create a private circle" : "Δημιουργία ιδιωτικού κύκλου",
     "Create a public circle" : "Δημιουργία δημόσιου κύκλου",
     "A personal circle is a list of users known only to the owner." : "Ο προσωπικός κύκλος είναι μια λίστα από χρήστες που είναι γνωστοί μόνο στον ιδιοκτήτη.",

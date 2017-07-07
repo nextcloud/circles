@@ -83,7 +83,6 @@ OC.L10N.register(
     "Create a new circle" : "шинэ бүлэг үүсгэх",
     "Select a type of circle" : "бүлгийн төрлийг сонго",
     "Create a personal circle" : "хувийн бүлэг үүсгэх",
-    "Create an hidden circle" : "нууцлагдсан бүлэг үүсгэх ",
     "Create a private circle" : "нууц бүлэг үүсгэх",
     "Create a public circle" : "нийтийн бүлэг үүсгэх",
     "personal circles" : "хувийн бүлгүүд",
