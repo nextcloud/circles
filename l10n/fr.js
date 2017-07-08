@@ -155,6 +155,7 @@ OC.L10N.register(
     "Create a new circle" : "Créer un nouveau cercle",
     "Select a type of circle" : "Sélectionner un type de cercle",
     "Create a personal circle" : "Créer un cercle personnel",
+    "Create a hidden circle" : "Créer un cercle caché",
     "Create a private circle" : "Créer un cercle privé",
     "Create a public circle" : "Créer un cercle public",
     "A personal circle is a list of users known only to the owner." : "Un cercle personnel est une liste d'utilisateurs connus uniquement par le propriétaire.",
