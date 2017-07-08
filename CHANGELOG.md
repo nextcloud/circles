@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## 0.11.1
 
+- security: when leaving in a circle, files are not shared anymore
 - fix icons
 - fix strange behaviour when the app is deleted from the disk, but not disable in the cloud
 - Edit Name and Description of a Circle
