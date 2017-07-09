@@ -1,7 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Are you sure you want to transfer your Owner rights ?" : "Ertu viss um að þú viljir yfirfæra eignarhald þitt?",
     "This action is irreversible" : "Þessa aðgerð er ekki hægt að afturkalla",
     "Personal circle" : "Persónulegur hringur",
     "Hidden circle" : "Falinn hringur",

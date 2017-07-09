@@ -1,7 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Are you sure you want to transfer your Owner rights ?" : "Sahiplik haklarınızı devretmek istediğinize emin misiniz?",
     "This action is irreversible" : "Bu işlem geri alınamaz",
     "Personal circle" : "Kişisel çevre",
     "Hidden circle" : "Gizli çevre",

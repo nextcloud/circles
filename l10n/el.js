@@ -1,7 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Are you sure you want to transfer your Owner rights ?" : "Είστε σίγουρος ότι θέλετε να μεταφέρετε τα προσωπικά σας δικαιώματα;",
     "This action is irreversible" : "Αυτή η ενέργεια είναι μη αναστρέψιμη",
     "Personal circle" : "Προσωπικός κύκλος",
     "Hidden circle" : "Κρυφός κύκλος",

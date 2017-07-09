@@ -1,7 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Are you sure you want to transfer your Owner rights ?" : "Weet je zeker dat je je rechten wilt overdragen?",
     "This action is irreversible" : "Deze actie is onomkeerbaar",
     "Personal circle" : "Persoonlijke kring",
     "Hidden circle" : "Verborgen kring",
