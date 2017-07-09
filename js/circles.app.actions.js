@@ -66,7 +66,7 @@ var actions = {
 
 	changeMemberOwner: function (member) {
 		OC.dialogs.confirm(
-			t('circles', 'Are you sure you want to transfer your Owner rights?', [member]),
+			t('circles', 'Are you sure you want to transfer your ownership?', [member]),
 			t('circles', 'This action is irreversible'),
 			function (e) {
 				if (e === true) {
