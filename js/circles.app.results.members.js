@@ -61,7 +61,7 @@ var resultMembers = {
 
 				OC.dialogs.confirm(
 					t('circles',
-						'This operation will add/invite every members from the group to the circle'),
+						'This operation will add/invite all members of the group to the circle'),
 					t('circles', 'Please confirm'),
 					function (e) {
 						if (e === true) {
@@ -82,14 +82,14 @@ var resultMembers = {
 
 		if (result.status === 1) {
 			OCA.notification.onSuccess(
-				t('circles', "Member '{name}' successfully added to the circle",
+				t('circles', "The member '{name}' was included in the circle",
 					{name: result.name}));
 
 			nav.displayMembers(result.members);
 			return;
 		}
 		OCA.notification.onFail(
-			t('circles', "Member '{name}' could not be added to the circle", {name: result.name}) +
+			t('circles', "The member '{name}' could not be included in the circle", {name: result.name}) +
 			': ' +
 			((result.error) ? result.error : t('circles', 'no error message')));
 	},
@@ -98,14 +98,14 @@ var resultMembers = {
 
 		if (result.status === 1) {
 			OCA.notification.onSuccess(
-				t('circles', "Members from group '{name}' successfully added to the circle",
+				t('circles', "Members of the group '{name}' were included in the circle",
 					{name: result.name}));
 
 			nav.displayMembers(result.members);
 			return;
 		}
 		OCA.notification.onFail(
-			t('circles', "Members from group '{name}' could not be added to the circle",
+			t('circles', "Members of the group '{name}' could not be included in the circle",
 				{name: result.name}) +
 			': ' +
 			((result.error) ? result.error : t('circles', 'no error message')));
@@ -120,13 +120,13 @@ var resultMembers = {
 					$(this).hide(300);
 				});
 			OCA.notification.onSuccess(
-				t('circles', "Member '{name}' successfully removed from the circle",
+				t('circles', "The member '{name}' was removed from the circle",
 					{name: result.name}));
 			return;
 		}
 
 		OCA.notification.onFail(
-			t('circles', "Member '{name}' could not be removed from the circle",
+			t('circles', "The member '{name}' could not be removed from the circle",
 				{name: result.name}) +
 			': ' +
 			((result.error) ? result.error : t('circles', 'no error message')));
@@ -144,7 +144,7 @@ var resultMembers = {
 
 		nav.displayMembers('');
 		OCA.notification.onFail(
-			t('circles', "Member '{name}' could not be updated", {name: result.name}) +
+			t('circles', "The member '{name}' could not be updated", {name: result.name}) +
 			': ' +
 			((result.error) ? result.error : t('circles', 'no error message')));
 	}
