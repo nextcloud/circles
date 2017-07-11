@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "Are you sure you want to transfer your ownership?" : "Действительно передать свои права владения?",
     "This action is irreversible" : "Это действие необратимо",
     "Personal circle" : "Личный круг",
     "Hidden circle" : "Скрытый круг",
@@ -32,9 +33,9 @@ OC.L10N.register(
     "Requesting" : "Запрашивается",
     "Blocked" : "Заблокирован",
     "Kicked" : "Отключён",
-    "Are you sure you want to leave this circle?" : "Вы хотите покинуть этот круг?",
+    "Are you sure you want to leave this circle?" : "Действительно покинуть этот круг?",
     "Please confirm" : "Подтвердите, пожалуйста",
-    "Are you sure you want to delete this circle?" : "Вы действительно хотите удалить этот круг?",
+    "Are you sure you want to delete this circle?" : "Действительно удалить этот круг?",
     "Kick this member" : "Удалить участника",
     "Accept the request" : "Принять запрос",
     "Dismiss the request" : "Отклонить запрос",

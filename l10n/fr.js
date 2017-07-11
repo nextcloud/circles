@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "Are you sure you want to transfer your ownership?" : "Êtes-vous sûr de vouloir transférer votre propriété ?",
     "This action is irreversible" : "Cette action est irréversible",
     "Personal circle" : "Cercle personnel",
     "Hidden circle" : "Cercle caché",
@@ -150,6 +151,7 @@ OC.L10N.register(
     "Cannot proceed with this status update" : "Impossible de procéder à la mise à jour du statut",
     "This group does not exist" : "Ce groupe n'existe pas",
     "You cannot edit level in a personal circle" : "Vous ne pouvez pas modifier dans ce cercle personnel",
+    "Group cannot be set as owner of a circle" : "Le groupe ne peut pas être défini comme propriétaire d'un cercle",
     "This user does not exist" : "Cet utilisateur n'existe pas",
     "Create a new circle" : "Créer un nouveau cercle",
     "Select a type of circle" : "Sélectionner un type de cercle",

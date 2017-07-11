@@ -188,6 +188,7 @@ OC.L10N.register(
     "Level" : "Niveau",
     "Status" : "Status",
     "Joined" : "Toegetreden",
+    "Group Name" : "Groepsnaam",
     "Link" : "Link",
     "Linked" : "Gekoppeld",
     "Allow Federated Links" : "Gefedereerde links toestaan",

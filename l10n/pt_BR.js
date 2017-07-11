@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "Are you sure you want to transfer your ownership?" : "Quer realmente transferir a propriedade?",
     "This action is irreversible" : "Esta ação é irreversível",
     "Personal circle" : "Círculo pessoal",
     "Hidden circle" : "Círculo oculto",
