@@ -564,12 +564,11 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 		for ($i = 0; $i < 3; $i++) {
 			foreach ($this->circles AS $circle) {
 
-
 				try {
 					$member = Circles::getMember($circle->getId(), Env::ENV_TEST_MEMBER3);
 					$this->assertEquals(
 						[
-							Env::ENV_TEST_MEMBER2, Member::LEVEL_NONE, Member::STATUS_NONMEMBER,
+							Env::ENV_TEST_MEMBER3, Member::LEVEL_NONE, Member::STATUS_NONMEMBER,
 							$circle->getId()
 						]
 						, [
@@ -578,6 +577,13 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 						]
 					);
 				} catch (MemberDoesNotExistException $e) {
+					if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
+						throw $e;
+					}
+				} catch (CircleDoesNotExistException $f) {
+					if ($circle->getType() !== Circle::CIRCLES_PERSONAL) {
+						throw $f;
+					}
 				} catch (Exception $e) {
 					throw $e;
 				}
