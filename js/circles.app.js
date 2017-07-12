@@ -64,8 +64,8 @@ var curr = {
 		curr.circleName = data.details.name;
 		curr.circleDesc = data.details.description;
 		curr.circleSettings = data.details.settings;
-		curr.circleLevel = data.details.user.level;
-		curr.circleStatus = data.details.user.status;
+		curr.circleLevel = data.details.viewer.level;
+		curr.circleStatus = data.details.viewer.status;
 	}
 };
 

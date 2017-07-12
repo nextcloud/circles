@@ -59,7 +59,10 @@ class BaseCircle {
 	private $owner;
 
 	/** @var Member */
-	private $user;
+	private $viewer;
+
+	/** @var Member */
+	private $viewerGroup;
 
 	/** @var string */
 	private $description = '';
@@ -81,9 +84,6 @@ class BaseCircle {
 
 	/** @var FederatedLink[] */
 	private $links;
-
-	/** @var FederatedLink[] */
-	private $remote;
 
 	public function __construct($l10n, $type = -1, $name = '') {
 		$this->l10n = $l10n;
@@ -164,13 +164,50 @@ class BaseCircle {
 	 * @return Member
 	 */
 	public function getViewer() {
-		return $this->user;
+		return $this->viewer;
 	}
 
 	public function setViewer($user) {
-		$this->user = $user;
+		$this->viewer = $user;
 
 		return $this;
+	}
+
+
+	/**
+	 * @return Member
+	 */
+	public function getGroupViewer() {
+		return $this->viewerGroup;
+	}
+
+	public function setGroupViewer($group) {
+		$this->viewerGroup = $group;
+
+		return $this;
+	}
+
+
+	/**
+	 * @return Member
+	 */
+	public function getHigherViewer() {
+		if ($this->getGroupViewer() === null) {
+			return $this->getViewer();
+		}
+
+		if ($this->getViewer() === null) {
+			return $this->getGroupViewer();
+		}
+
+		if ($this->getGroupViewer()
+				 ->getLevel() > $this->getViewer()
+									 ->getLevel()
+		) {
+			return $this->getGroupViewer();
+		}
+
+		return $this->getViewer();
 	}
 
 

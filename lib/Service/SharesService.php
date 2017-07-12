@@ -100,7 +100,7 @@ class SharesService {
 	public function createFrame(SharingFrame $frame, $broadcast = null) {
 
 		$circle = $this->circlesRequest->getCircle($frame->getCircleId(), $this->userId);
-		if ($circle->getViewer()
+		if ($circle->getHigherViewer()
 				   ->getLevel() < Member::LEVEL_MEMBER
 		) {
 			throw new MemberDoesNotExistException();
