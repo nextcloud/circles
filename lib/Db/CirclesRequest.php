@@ -47,7 +47,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 * returns data of a circle from its Id.
 	 *
 	 * WARNING: This function does not filters data regarding the current user/viewer.
-	 *          In case of interaction with users, Please use getGroup() instead.
+	 *          In case of interaction with users, Please use getCircle() instead.
 	 *
 	 * @param int $circleId
 	 *
@@ -56,6 +56,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 */
 	public function forceGetCircle($circleId) {
 		$qb = $this->getCirclesSelectSql();
+
 		$this->limitToId($qb, $circleId);
 		$cursor = $qb->execute();
 
@@ -70,6 +71,39 @@ class CirclesRequest extends CirclesRequestBuilder {
 	}
 
 
+	public function getCircles($userId, $type = 0, $name = '', $level = 0) {
+		if ($type === 0) {
+			$type = Circle::CIRCLES_ALL;
+		}
+
+		$qb = $this->getCirclesSelectSql();
+		$this->joinMembers($qb, 'c.id');
+
+		$this->limitToUserId($qb, $userId);
+		$this->limitToLevel($qb, $level, 'm', 'g');
+		$this->limitRegardingCircleType($qb, $userId, -1, $type, $name);
+
+		$this->leftJoinUserIdAsViewer($qb, $userId);
+		$this->leftJoinOwner($qb);
+
+		$result = [];
+		$cursor = $qb->execute();
+
+		while ($data = $cursor->fetch()) {
+			if ($name === '' || stripos($data['name'], $name) !== false) {
+				$result[] = $this->parseCirclesSelectSql($data);
+
+//				$circle = Circle::fromArray($this->l10n, $data);
+			//	$this->fillCircleUserIdAndOwner($circle, $data);
+		//		$result[] = $circle;
+			}
+		}
+		$cursor->closeCursor();
+
+		return $result;
+	}
+
+
 	/**
 	 *
 	 * @param int $circleId
@@ -78,30 +112,30 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 * @return Circle
 	 * @throws CircleDoesNotExistException
 	 */
-	// TODO: Filters data
 	public function getCircle($circleId, $userId) {
 		$qb = $this->getCirclesSelectSql();
 
 		$this->limitToId($qb, $circleId);
+
 		$this->leftJoinUserIdAsViewer($qb, $userId);
+		$this->leftJoinOwner($qb);
 
-
-//		$this->leftjoinOwner($qb);
-//		$this->buildWithMemberLevel($qb, 'u.level', $level);
-//		$this->buildWithCircleId($qb, 'c.id', $circleId);
-//		$this->buildWithOrXTypes($qb, $userId, $type, $name, $circleId);
+		// If we need the viewer to be at least member of the circle
+		//	$this->limitToLevel($qb, Member::LEVEL_MEMBER, 'u');
+		$this->limitRegardingCircleType($qb, $userId, $circleId, Circle::CIRCLES_ALL, '');
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
 		if ($data === false || $data === null) {
-			throw new CircleDoesNotExistException(
-				$this->l10n->t('Circle not found')
-			);
+			throw new CircleDoesNotExistException($this->l10n->t('Circle not found'));
 		}
 
 		$circle = $this->parseCirclesSelectSql($data);
 
-//		if ($circle->getUser()->getLevel)
+		$circle->setGroupViewer(
+			$this->membersRequest->forceGetHigherLevelGroupFromUser($circleId, $userId)
+		);
+
 		return $circle;
 	}
 

@@ -29,13 +29,36 @@ namespace OCA\Circles\Db;
 
 
 use Doctrine\DBAL\Query\QueryBuilder;
+use OC\L10N\L10N;
+use OCA\Circles\Exceptions\ConfigNoCircleAvailable;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
+use OCA\Circles\Service\MiscService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
+use OCP\IDBConnection;
 
 class CirclesRequestBuilder extends CoreRequestBuilder {
+
+
+	/** @var MembersRequest */
+	protected $membersRequest;
+
+	/**
+	 * CirclesRequestBuilder constructor.
+	 *
+	 * {@inheritdoc}
+	 * @param MembersRequest $membersRequest
+	 */
+	public function __construct(
+		L10N $l10n, IDBConnection $connection, MembersRequest $membersRequest,
+		MiscService $miscService
+	) {
+		parent::__construct($l10n, $connection, $miscService);
+		$this->membersRequest = $membersRequest;
+	}
+
 
 	/**
 	 * Join the Circles table
@@ -50,6 +73,226 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		   ->andWhere($expr->eq('c.id', $field));
 	}
 
+
+	/**
+	 * Join the Circles table
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param string $field
+	 */
+	protected function joinGroups(& $qb, $field) {
+		$expr = $qb->expr();
+
+		$qb->from(self::TABLE_GROUPS, 'g')
+		   ->andWhere($expr->eq('g.circle_id', $field));
+	}
+
+
+	/**
+	 * Link to member (userId) of circle
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param string $field
+	 */
+	protected function joinMembers(& $qb, $field) {
+		$expr = $qb->expr();
+
+		$qb->from(self::TABLE_MEMBERS, 'm')
+		   ->andWhere($expr->eq('m.circle_id', $field));
+	}
+
+
+	/**
+	 * Limit the search to a userId, using also the group table from NC
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param $userId
+	 */
+	protected function limitToUserId(IQueryBuilder &$qb, $userId) {
+		$expr = $qb->expr();
+
+		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
+
+		$this->joinGroups($qb, $pf . 'id');
+		$this->joinNCGroupAndUser($qb, 'g.group_id', 'm.user_id');
+		$qb->andWhere(
+			$expr->orX(
+				$expr->eq('m.user_id', $qb->createNamedParameter($userId)),
+				$expr->eq('ncgu.uid', $qb->createNamedParameter($userId))
+			)
+		);
+	}
+
+
+	/**
+	 * @param IQueryBuilder $qb
+	 * @param $circleId
+	 * @param $userId
+	 * @param $type
+	 * @param $name
+	 *
+	 * @return array
+	 * @throws ConfigNoCircleAvailable
+	 */
+	protected function limitRegardingCircleType(IQueryBuilder &$qb, $userId, $circleId, $type, $name
+	) {
+		$orTypes = $this->generateLimit($qb, $circleId, $userId, $type, $name);
+		if (sizeof($orTypes) === 0) {
+			throw new ConfigNoCircleAvailable(
+				$this->l10n->t(
+					'You cannot use the Circles Application until your administrator has allowed at least one type of circles'
+				)
+			);
+		}
+
+		$orXTypes = $qb->expr()
+					   ->orX();
+		foreach ($orTypes as $orType) {
+			$orXTypes->add($orType);
+		}
+
+		$qb->andWhere($orXTypes);
+
+
+	}
+
+
+	/**
+	 * @param IQueryBuilder $qb
+	 * @param $circleId
+	 * @param $userId
+	 * @param $type
+	 * @param $name
+	 *
+	 * @return array
+	 */
+	private function generateLimit(IQueryBuilder &$qb, $circleId, $userId, $type, $name) {
+		$orTypes = [];
+		array_push($orTypes, $this->generateLimitPersonal($qb, $userId, $type));
+		array_push($orTypes, $this->generateLimitHidden($qb, $circleId, $type, $name));
+		array_push($orTypes, $this->generateLimitPrivate($qb, $type));
+		array_push($orTypes, $this->generateLimitPublic($qb, $type));
+
+		return array_filter($orTypes);
+	}
+
+
+	/**
+	 * @param IQueryBuilder $qb
+	 * @param int|string $userId
+	 * @param int $type
+	 *
+	 * @return \OCP\DB\QueryBuilder\ICompositeExpression
+	 */
+	private function generateLimitPersonal(IQueryBuilder $qb, $userId, $type) {
+		if (!(Circle::CIRCLES_PERSONAL & (int)$type)) {
+			return null;
+		}
+		$expr = $qb->expr();
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		return $expr->andX(
+			$expr->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_PERSONAL)),
+			$expr->eq('o.user_id', $qb->createNamedParameter((string)$userId))
+		);
+	}
+
+
+	/**
+	 * @param IQueryBuilder $qb
+	 * @param int $circleId
+	 * @param int $type
+	 * @param string $name
+	 *
+	 * @return string
+	 */
+	private function generateLimitHidden(IQueryBuilder $qb, $circleId, $type, $name) {
+		if (!(Circle::CIRCLES_HIDDEN & (int)$type)) {
+			return null;
+		}
+		$expr = $qb->expr();
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$sqb = $expr->andX(
+			$expr->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_HIDDEN)),
+			$expr->orX(
+				$expr->gte(
+					'u.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)
+				),
+				// TODO: Replace search on CircleID By a search on UniqueID
+				$expr->eq('c.id', $qb->createNamedParameter($circleId)),
+				$expr->eq('c.name', $qb->createNamedParameter($name))
+			)
+		);
+
+		return $sqb;
+	}
+
+
+	/**
+	 * @param IQueryBuilder $qb
+	 * @param int $type
+	 *
+	 * @return string
+	 */
+	private function generateLimitPrivate(IQueryBuilder $qb, $type) {
+		if (!(Circle::CIRCLES_PRIVATE & (int)$type)) {
+			return null;
+		}
+
+		return $qb->expr()
+				  ->eq(
+					  'c.type',
+					  $qb->createNamedParameter(Circle::CIRCLES_PRIVATE)
+				  );
+	}
+
+
+	/**
+	 * @param IQueryBuilder $qb
+	 * @param int $type
+	 *
+	 * @return string
+	 */
+	private function generateLimitPublic(IQueryBuilder $qb, $type) {
+		if (!(Circle::CIRCLES_PUBLIC & (int)$type)) {
+			return null;
+		}
+
+		return $qb->expr()
+				  ->eq(
+					  'c.type',
+					  $qb->createNamedParameter(Circle::CIRCLES_PUBLIC)
+				  );
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 *
+	 * @deprecated
+	 *
+	 * do nothing.
+	 */
+	protected function filterCircleRegardingViewer(Circle $circle) {
+//		if ($circle->getHigherViewer()
+//				   ->getLevel() < Member::LEVEL_MODERATOR
+//		) {
+//		}
+//		$members = $circle->getMembers();
+//
+//		foreach ($members as $member) {
+//			$member->setNote('ok');
+//		}
+////			$circle->setMembers($members);
+//
+//
+//		foreach ($members as $member) {
+//			$this->miscService->log('note: ' . $member->getNote());
+//		}
+
+
+	}
 
 	/**
 	 * add a request to the members list, using the current user ID.
@@ -67,23 +310,23 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		$expr = $qb->expr();
 		$pf = $this->default_select_alias . '.';
 
-		$qb->selectAlias('u.user_id', 'viewer_userid');
-		$qb->selectAlias('u.level', 'viewer_level');
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->leftJoin(
-			$this->default_select_alias, CoreRequestBuilder::TABLE_MEMBERS, 'u',
-			$expr->andX(
-				$expr->eq($pf . 'id', 'u.circle_id'),
-				$expr->eq('u.user_id', $qb->createNamedParameter($userId))
-			)
-		);
+		$qb->selectAlias('u.user_id', 'viewer_userid')
+		   ->selectAlias('u.status', 'viewer_status')
+		   ->selectAlias('u.level', 'viewer_level')
+		   ->leftJoin(
+			   $this->default_select_alias, CoreRequestBuilder::TABLE_MEMBERS, 'u',
+			   $expr->andX(
+				   $expr->eq($pf . 'id', 'u.circle_id'),
+				   $expr->eq('u.user_id', $qb->createNamedParameter($userId))
+			   )
+		   );
 	}
 
 	/**
-	 * @param IQueryBuilder $qb
+	 * Left Join members table to get the owner of the circle.
 	 *
-	 * @deprecated
-	 * never used in fact.
+	 * @param IQueryBuilder $qb
 	 */
 	protected function leftJoinOwner(IQueryBuilder & $qb) {
 
@@ -95,13 +338,16 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		$pf = $this->default_select_alias . '.';
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->leftJoin(
-			$this->default_select_alias, MembersMapper::TABLENAME, 'o',
-			$expr->andX(
-				$expr->eq($pf . 'id', 'o.circle_id'),
-				$expr->eq('o.level', $qb->createNamedParameter(Member::LEVEL_OWNER))
-			)
-		);
+		$qb->selectAlias('o.user_id', 'owner_userid')
+		   ->selectAlias('o.status', 'owner_status')
+		   ->selectAlias('o.level', 'owner_level')
+		   ->leftJoin(
+			   $this->default_select_alias, CoreRequestBuilder::TABLE_MEMBERS, 'o',
+			   $expr->andX(
+				   $expr->eq($pf . 'id', 'o.circle_id'),
+				   $expr->eq('o.level', $qb->createNamedParameter(Member::LEVEL_OWNER))
+			   )
+		   );
 	}
 
 
@@ -218,14 +464,16 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		$qb = $this->dbConnection->getQueryBuilder();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->select(
-			'c.id', 'c.unique_id', 'c.name', 'c.description', 'c.settings', 'c.type', 'c.creation'
-		)
-		   ->from('circles_circles', 'c');
+		$qb
+		   ->selectDistinct('c.unique_id')
+		   ->addSelect(
+			   'c.id', 'c.name', 'c.description', 'c.settings', 'c.type', 'c.creation'
+		   )->from(CoreRequestBuilder::TABLE_CIRCLES, 'c');
 		$this->default_select_alias = 'c';
 
 		return $qb;
 	}
+
 
 	/**
 	 * @param array $data
@@ -265,10 +513,29 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 
 		if (key_exists('viewer_level', $data)) {
 			$user = new Member($this->l10n);
+			$user->setStatus($data['viewer_status']);
+			$user->setCircleId($circle->getId());
 			$user->setUserId($data['viewer_userid']);
 			$user->setLevel($data['viewer_level']);
 			$circle->setViewer($user);
 		}
+
+		if (key_exists('owner_level', $data)) {
+			$owner = new Member($this->l10n);
+			$owner->setStatus($data['owner_status']);
+			$owner->setCircleId($circle->getId());
+			$owner->setUserId($data['owner_userid']);
+			$owner->setLevel($data['owner_level']);
+			$circle->setOwner($owner);
+		}
+
+//		if (key_exists('group_level', $data))
+//		{
+//			$group = new Member($this->l10n);
+//			$group->setGroupId($data['group_id']);
+//			$group->setLevel($data['group_level']);
+//			$circle->setGroupViewer($group);
+//		}
 
 		return $circle;
 	}

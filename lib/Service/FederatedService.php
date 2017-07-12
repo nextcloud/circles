@@ -197,7 +197,7 @@ class FederatedService {
 			$link = $this->circlesRequest->getLinkFromId($linkId);
 			$circle = $this->circlesRequest->getCircle($link->getCircleId(), $this->userId);
 			$circle->hasToBeFederated();
-			$circle->getViewer()
+			$circle->getHigherViewer()
 				   ->hasToBeAdmin();
 			$link->hasToBeValidStatusUpdate($status);
 
@@ -273,7 +273,7 @@ class FederatedService {
 			list($remoteCircle, $remoteAddress) = explode('@', $remote, 2);
 
 			$circle = $this->circlesService->detailsCircle($circleId);
-			$circle->getViewer()
+			$circle->getHigherViewer()
 				   ->hasToBeAdmin();
 			$circle->hasToBeFederated();
 			$circle->cantBePersonal();
@@ -306,7 +306,7 @@ class FederatedService {
 	 * @return string
 	 */
 	private function generateLinkRemoteURL($remote) {
-//		$this->allowNonSSLLink();
+		$this->allowNonSSLLink();
 		if ($this->localTest === false && strpos($remote, 'https') !== 0) {
 			$remote = 'https://' . $remote;
 		}
@@ -321,7 +321,7 @@ class FederatedService {
 	 * @return string
 	 */
 	private function generatePayloadDeliveryURL($remote) {
-//		$this->allowNonSSLLink();
+		$this->allowNonSSLLink();
 		if ($this->localTest === false && strpos($remote, 'https') !== 0) {
 			$remote = 'https://' . $remote;
 		}

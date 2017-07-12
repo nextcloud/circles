@@ -41,7 +41,6 @@ class MembersRequest extends MembersRequestBuilder {
 	}
 
 
-
 	/**
 	 * forceGetGroup();
 	 *
@@ -75,10 +74,39 @@ class MembersRequest extends MembersRequestBuilder {
 	}
 
 
-	// TODO - returns data of a group from a Viewer POV
-	public function getGroup($circleId, $groupId, $viewer) {
+	/**
+	 * return the higher level group linked to a circle, that include the userId.
+	 *
+	 * WARNING: This function does not filters data regarding the current user/viewer.
+	 *          In case of interaction with users, Please don't use this.
+	 *
+	 * @param int $circleId
+	 * @param string $userId
+	 *
+	 * @return Member
+	 */
+	public function forceGetHigherLevelGroupFromUser($circleId, $userId) {
+		$qb = $this->getGroupsSelectSql();
 
+		$this->limitToCircleId($qb, $circleId);
+		$this->limitToNCGroupUser($qb, $userId);
+
+		/** @var Member $group */
+		$group = null;
+
+		$cursor = $qb->execute();
+		while ($data = $cursor->fetch()) {
+			$entry = Member::fromArray($this->l10n, $data);
+			if ($group === null || $entry->getLevel() > $group->getLevel()) {
+				$group = $entry;
+			}
+		}
+		$cursor->closeCursor();
+
+		return $group;
 	}
+
+
 
 	/**
 	 * @param int $circleId

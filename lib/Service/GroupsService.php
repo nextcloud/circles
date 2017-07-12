@@ -27,8 +27,8 @@
 namespace OCA\Circles\Service;
 
 
-use OC\User\NoUserException;
 use OCA\Circles\Db\CirclesMapper;
+use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersMapper;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Exceptions\CircleTypeNotValid;
@@ -37,10 +37,9 @@ use OCA\Circles\Exceptions\GroupDoesNotExistException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Model\Circle;
-use \OCA\Circles\Model\Member;
+use OCA\Circles\Model\Member;
 use OCP\IGroupManager;
 use OCP\IL10N;
-use OCP\IUserManager;
 
 class GroupsService {
 
@@ -53,8 +52,12 @@ class GroupsService {
 	/** @var IGroupManager */
 	private $groupManager;
 
+	/** @var CirclesRequest */
+	private $circlesRequest;
+
 	/** @var MembersRequest */
 	private $membersRequest;
+
 	/** @var CirclesMapper */
 	private $dbCircles;
 
@@ -70,17 +73,19 @@ class GroupsService {
 	 * @param string $userId
 	 * @param IL10N $l10n
 	 * @param IGroupManager $groupManager
-	 * @param DatabaseService $databaseService ,
+	 * @param DatabaseService $databaseService
+	 * @param CirclesRequest $circlesRequest
 	 * @param MembersRequest $membersRequest
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
 		$userId, IL10N $l10n, IGroupManager $groupManager, DatabaseService $databaseService,
-		MembersRequest $membersRequest, MiscService $miscService
+		CirclesRequest $circlesRequest, MembersRequest $membersRequest, MiscService $miscService
 	) {
 		$this->userId = $userId;
 		$this->l10n = $l10n;
 		$this->groupManager = $groupManager;
+		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
 		$this->miscService = $miscService;
 
@@ -99,9 +104,9 @@ class GroupsService {
 	public function linkGroup($circleId, $groupId) {
 
 		try {
-			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
-			$this->dbMembers->getMemberFromCircle($circleId, $this->userId)
-							->hasToBeAdmin();
+			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
+			$circle->getHigherViewer()
+				   ->hasToBeAdmin();
 
 			$group = $this->getFreshNewMember($circleId, $groupId);
 		} catch (\Exception $e) {
@@ -112,7 +117,7 @@ class GroupsService {
 		$this->membersRequest->editGroup($group);
 
 //		$this->eventsService->onMemberNew($circle, $group);
-		return $this->membersRequest->getGroups($circleId, $circle->getViewer());
+		return $this->membersRequest->getGroups($circleId, $circle->getHigherViewer());
 	}
 
 
@@ -162,7 +167,7 @@ class GroupsService {
 
 		$level = (int)$level;
 		try {
-			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
+			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
 			if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
 				throw new CircleTypeNotValid(
 					$this->l10n->t('You cannot edit level in a personal circle')
@@ -182,7 +187,7 @@ class GroupsService {
 //				$this->eventsService->onMemberLevel($circle, $member);
 			}
 
-			return $this->membersRequest->getGroups($circle->getId(), $circle->getViewer());
+			return $this->membersRequest->getGroups($circle->getId(), $circle->getHigherViewer());
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -224,17 +229,18 @@ class GroupsService {
 	 */
 	public function unlinkGroup($circleId, $groupId) {
 		try {
-			$isMod = $this->dbMembers->getMemberFromCircle($circleId, $this->userId);
-			$isMod->hasToBeAdmin();
+			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
+			$circle->getHigherViewer()
+				   ->hasToBeAdmin();
 
 			$group = $this->membersRequest->forceGetGroup($circleId, $groupId);
 			$group->cantBeOwner();
-			$isMod->hasToBeHigherLevel($group->getLevel());
+			$circle->getHigherViewer()
+				   ->hasToBeHigherLevel($group->getLevel());
 
 			$group->setLevel(Member::LEVEL_NONE);
 			$this->membersRequest->editGroup($group);
 
-			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
 
 			//		$this->eventsService->onMemberLeaving($circle, $member);
 
@@ -242,7 +248,7 @@ class GroupsService {
 			throw $e;
 		}
 
-		return $this->membersRequest->getGroups($circle->getId(), $circle->getViewer());
+		return $this->membersRequest->getGroups($circle->getId(), $circle->getHigherViewer());
 	}
 
 

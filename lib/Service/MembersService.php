@@ -29,7 +29,9 @@ namespace OCA\Circles\Service;
 
 use OC\User\NoUserException;
 use OCA\Circles\Db\CirclesMapper;
+use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersMapper;
+use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Exceptions\CircleTypeNotValid;
 use OCA\Circles\Exceptions\GroupDoesNotExistException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
@@ -59,18 +61,39 @@ class MembersService {
 	/** @var MembersMapper */
 	private $dbMembers;
 
+	/** @var CirclesRequest */
+	private $circlesRequest;
+
+	/** @var MembersRequest */
+	private $membersRequest;
+
 	/** @var EventsService */
 	private $eventsService;
 
 	/** @var MiscService */
 	private $miscService;
 
+	/**
+	 * MembersService constructor.
+	 *
+	 * @param $userId
+	 * @param IL10N $l10n
+	 * @param IUserManager $userManager
+	 * @param ConfigService $configService
+	 * @param DatabaseService $databaseService
+	 * @param CirclesRequest $circlesRequest
+	 * @param MembersRequest $membersRequest
+	 * @param EventsService $eventsService
+	 * @param MiscService $miscService
+	 */
 	public function __construct(
 		$userId,
 		IL10N $l10n,
 		IUserManager $userManager,
 		ConfigService $configService,
 		DatabaseService $databaseService,
+		CirclesRequest $circlesRequest,
+		MembersRequest $membersRequest,
 		EventsService $eventsService,
 		MiscService $miscService
 	) {
@@ -78,6 +101,8 @@ class MembersService {
 		$this->l10n = $l10n;
 		$this->userManager = $userManager;
 		$this->configService = $configService;
+		$this->circlesRequest = $circlesRequest;
+		$this->membersRequest = $membersRequest;
 		$this->eventsService = $eventsService;
 		$this->miscService = $miscService;
 
@@ -96,9 +121,9 @@ class MembersService {
 	public function addMember($circleId, $name) {
 
 		try {
-			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
-			$this->dbMembers->getMemberFromCircle($circleId, $this->userId)
-							->hasToBeModerator();
+			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
+			$circle->getHigherViewer()
+				   ->hasToBeModerator();
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -108,12 +133,13 @@ class MembersService {
 		} catch (\Exception $e) {
 			throw $e;
 		}
+
 		$member->inviteToCircle($circle->getType());
 		$this->dbMembers->editMember($member);
 
 		$this->eventsService->onMemberNew($circle, $member);
 
-		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getViewer());
+		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getHigherViewer());
 	}
 
 
@@ -127,9 +153,9 @@ class MembersService {
 	public function importMembersFromGroup($circleId, $groupId) {
 
 		try {
-			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
-			$this->dbMembers->getMemberFromCircle($circleId, $this->userId)
-							->hasToBeModerator();
+			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
+			$circle->getHigherViewer()
+				   ->hasToBeModerator();
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -154,7 +180,7 @@ class MembersService {
 			}
 		}
 
-		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getViewer());
+		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getHigherViewer());
 	}
 
 
@@ -172,8 +198,10 @@ class MembersService {
 	public function getMember($circleId, $userId) {
 
 		try {
-			$this->dbMembers->getMemberFromCircle($circleId, $this->userId)
-							->hasToBeMember();
+			$this->circlesRequest->getCircle($circleId, $this->userId)
+								 ->getHigherViewer()
+								 ->hasToBeMember();
+
 			$member = $this->dbMembers->getMemberFromCircle($circleId, $userId);
 		} catch (\Exception $e) {
 			throw $e;
@@ -244,7 +272,7 @@ class MembersService {
 
 		$level = (int)$level;
 		try {
-			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
+			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
 			if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
 				throw new CircleTypeNotValid(
 					$this->l10n->t('You cannot edit level in a personal circle')
@@ -262,7 +290,7 @@ class MembersService {
 				$this->eventsService->onMemberLevel($circle, $member);
 			}
 
-			return $this->dbMembers->getMembersFromCircle($circleId, $circle->getViewer());
+			return $this->dbMembers->getMembersFromCircle($circleId, $circle->getHigherViewer());
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -329,13 +357,15 @@ class MembersService {
 	public function removeMember($circleId, $name) {
 
 		try {
-			$isMod = $this->dbMembers->getMemberFromCircle($circleId, $this->userId);
-			$isMod->hasToBeModerator();
+			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
+			$circle->getHigherViewer()
+				   ->hasToBeModerator();
 
 			$member = $this->dbMembers->getMemberFromCircle($circleId, $name);
 			$member->cantBeOwner();
 
-			$isMod->hasToBeHigherLevel($member->getLevel());
+			$circle->getHigherViewer()
+				   ->hasToBeHigherLevel($member->getLevel());
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -344,10 +374,9 @@ class MembersService {
 		$member->setLevel(Member::LEVEL_NONE);
 		$this->dbMembers->editMember($member);
 
-		$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
 		$this->eventsService->onMemberLeaving($circle, $member);
 
-		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getViewer());
+		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getHigherViewer());
 	}
 
 

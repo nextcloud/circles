@@ -172,7 +172,7 @@ class CirclesService {
 		}
 
 		$data = [];
-		$result = $this->dbCircles->findCirclesByUser($this->userId, $type, $name, $level);
+		$result = $this->circlesRequest->getCircles($this->userId, $type, $name, $level);
 		foreach ($result as $item) {
 			$data[] = $item;
 		}
@@ -188,15 +188,16 @@ class CirclesService {
 	 *
 	 * @return Circle
 	 * @throws \Exception
-]	 */
+	]	 */
 	public function detailsCircle($circleId) {
 
 		try {
-			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
-			if ($circle->getViewer()
+			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
+			if ($circle->getHigherViewer()
 					   ->isLevel(Member::LEVEL_MEMBER)
 			) {
-				$members = $this->dbMembers->getMembersFromCircle($circleId, $circle->getViewer());
+				$members =
+					$this->dbMembers->getMembersFromCircle($circleId, $circle->getHigherViewer());
 				$circle->setMembers($members);
 
 				$this->detailsCircleLinkedGroups($circle);
@@ -209,10 +210,12 @@ class CirclesService {
 		return $circle;
 	}
 
+
 	private function detailsCircleLinkedGroups(Circle &$circle) {
 		$groups = [];
 		if ($this->configService->isLinkedGroupsAllowed()) {
-			$groups = $this->membersRequest->getGroups($circle->getId(), $circle->getViewer());
+			$groups =
+				$this->membersRequest->getGroups($circle->getId(), $circle->getHigherViewer());
 		}
 
 		$circle->setGroups($groups);
@@ -246,8 +249,8 @@ class CirclesService {
 	public function settingsCircle($circleId, $settings) {
 
 		try {
-			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
-			$circle->getViewer()
+			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
+			$circle->getHigherViewer()
 				   ->hasToBeOwner();
 
 			$ak = array_keys($settings);
@@ -275,7 +278,7 @@ class CirclesService {
 	public function joinCircle($circleId) {
 
 		try {
-			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
+			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
 
 			try {
 				$member = $this->dbMembers->getMemberFromCircle($circle->getId(), $this->userId);
@@ -307,8 +310,8 @@ class CirclesService {
 	public function leaveCircle($circleId) {
 
 		try {
-			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
-			$member = $this->dbMembers->getMemberFromCircle($circle->getId(), $this->userId, false);
+			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
+			$member = $circle->getViewer();
 
 			if (!$member->isAlmostMember()) {
 				$member->hasToBeMember();
@@ -318,6 +321,7 @@ class CirclesService {
 			$member->setStatus(Member::STATUS_NONMEMBER);
 			$member->setLevel(Member::LEVEL_NONE);
 			$this->dbMembers->editMember($member);
+
 			$this->eventsService->onMemberLeaving($circle, $member);
 		} catch (\Exception $e) {
 			throw $e;
@@ -337,10 +341,13 @@ class CirclesService {
 	public function removeCircle($circleId) {
 
 		try {
-			$member = $this->dbMembers->getMemberFromCircle($circleId, $this->userId, false);
-			$member->hasToBeOwner();
+//			$member = $this->dbMembers->getMemberFromCircle($circleId, $this->userId, false);
+//			$member->hasToBeOwner();
 
-			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
+			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
+			$circle->getHigherViewer()
+				   ->hasToBeOwner();
+
 			$this->eventsService->onCircleDestruction($circle);
 
 			$this->dbMembers->removeAllFromCircle($circleId);

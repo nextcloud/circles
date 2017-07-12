@@ -40,7 +40,7 @@ class Circles {
 	 *
 	 * Returns details on the circle. If the current user is a member, the members list will be
 	 * return as well.
-	 * @deprecated 12.0.1
+	 * @deprecated 13.0.0
 	 * @param $circleId
 	 *
 	 * @return Circle

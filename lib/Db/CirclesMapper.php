@@ -48,13 +48,19 @@ class CirclesMapper extends Mapper {
 	/** @var L10N */
 	private $l10n;
 
+	/** @var MembersRequest */
+	private $membersRequest;
+
 	/** @var MiscService */
 	private $miscService;
 
-	public function __construct($userId, IDBConnection $db, $l10n, $miscService) {
+	public function __construct(
+		$userId, IDBConnection $db, $l10n, MembersRequest $membersRequest, $miscService
+	) {
 		parent::__construct($db, self::TABLENAME, 'OCA\Circles\Db\Circles');
 		$this->userId = $userId;
 		$this->l10n = $l10n;
+		$this->membersRequest = $membersRequest;
 		$this->miscService = $miscService;
 	}
 
@@ -70,6 +76,8 @@ class CirclesMapper extends Mapper {
 	 *
 	 * @return Circle[]
 	 * @throws ConfigNoCircleAvailable
+	 *
+	 * @deprecated - a virer
 	 */
 	public function findCirclesByUser($userId, $type, $name = '', $level = 0, $circleId = -1) {
 
@@ -342,23 +350,30 @@ class CirclesMapper extends Mapper {
 	 * @return Circle
 	 * @throws CircleDoesNotExistException
 	 * @throws ConfigNoCircleAvailable
+	 *
+	 * @deprecated Should use CirclesRequest->getCircle()
 	 */
-	public function getDetailsFromCircle($circleId, $userId) {
-
-		try {
-			$result = $this->findCirclesByUser($userId, Circle::CIRCLES_ALL, '', 0, $circleId);
-		} catch (ConfigNoCircleAvailable $e) {
-			throw $e;
-		}
-
-		if (sizeof($result) !== 1) {
-			throw new CircleDoesNotExistException(
-				$this->l10n->t("The circle does not exist or is hidden")
-			);
-		}
-
-		return $result[0];
-	}
+//	public function getDetailsFromCircle($circleId, $userId) {
+//
+//		try {
+//			$result = $this->findCirclesByUser($userId, Circle::CIRCLES_ALL, '', 0, $circleId);
+//		} catch (ConfigNoCircleAvailable $e) {
+//			throw $e;
+//		}
+//
+//		if (sizeof($result) !== 1) {
+//			throw new CircleDoesNotExistException(
+//				$this->l10n->t("The circle does not exist or is hidden")
+//			);
+//		}
+//
+//		$circle = $result[0];
+//		$circle->setGroupViewer(
+//			$this->membersRequest->forceGetHigherLevelGroupFromUser($circleId, $userId)
+//		);
+//
+//		return $circle;
+//	}
 
 
 	/**

@@ -21,6 +21,7 @@ class CoreRequestBuilder {
 	const TABLE_MEMBERS = 'circles_members';
 	const TABLE_GROUPS = 'circles_groups';
 
+	const NC_TABLE_GROUP_USER = 'group_user';
 
 	/** @var IDBConnection */
 	protected $dbConnection;
@@ -36,7 +37,7 @@ class CoreRequestBuilder {
 
 
 	/**
-	 * CirclesRequest constructor.
+	 * RequestBuilder constructor.
 	 *
 	 * @param L10N $l10n
 	 * @param IDBConnection $connection
@@ -109,11 +110,29 @@ class CoreRequestBuilder {
 	 *
 	 * @param IQueryBuilder $qb
 	 * @param integer $level
+	 * @param string $pf
+	 * @param string $pf2
 	 */
-	protected function limitToLevel(IQueryBuilder &$qb, $level) {
+	protected function limitToLevel(IQueryBuilder &$qb, $level, $pf = '', $pf2 = '') {
 		$expr = $qb->expr();
-		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
-		$qb->andWhere($expr->gte($pf . 'level', $qb->createNamedParameter($level)));
+		if ($pf === '') {
+			$pf =
+				($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
+		} else {
+			$pf .= '.';
+		}
+
+		if ($pf2 === '') {
+			$qb->andWhere($expr->gte($pf . 'level', $qb->createNamedParameter($level)));
+		} else {
+			$pf2 .= '.';
+			$qb->andWhere(
+				$expr->orX(
+					$expr->gte($pf . 'level', $qb->createNamedParameter($level)),
+					$expr->gte($pf2 . 'level', $qb->createNamedParameter($level))
+				)
+			);
+		}
 	}
 
 
@@ -128,4 +147,46 @@ class CoreRequestBuilder {
 		$qb->andWhere($expr->eq($pf . $field, $qb->createNamedParameter($value)));
 	}
 
+
+	/**
+	 * link to the groupId/UserId of the NC DB.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param string $userId
+	 */
+	protected function limitToNCGroupUser(IQueryBuilder $qb, $userId) {
+		$expr = $qb->expr();
+		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
+
+		$qb->from(self::NC_TABLE_GROUP_USER, 'ncgu');
+		$qb->andWhere(
+			$expr->andX(
+				$expr->eq($pf . 'group_id', 'ncgu.gid'),
+				$expr->eq(
+					'ncgu.uid',
+					$qb->createNamedParameter($userId)
+				)
+			)
+		);
+	}
+
+
+	/**
+	 * link to the groupId/UserId of the NC DB.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param $fieldGroup
+	 * @param $fieldUser
+	 */
+	protected function joinNCGroupAndUser(IQueryBuilder $qb, $fieldGroup, $fieldUser) {
+		$expr = $qb->expr();
+
+		$qb->from(self::NC_TABLE_GROUP_USER, 'ncgu');
+		$qb->andWhere(
+			$expr->andX(
+				$expr->eq('ncgu.gid', $fieldGroup),
+				$expr->eq('ncgu.uid', $fieldUser)
+			)
+		);
+	}
 }

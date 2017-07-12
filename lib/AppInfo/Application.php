@@ -134,6 +134,7 @@ class Application extends App {
 			return new MembersService(
 				$c->query('UserId'), $c->query('L10N'), $c->query('UserManager'),
 				$c->query('ConfigService'), $c->query('DatabaseService'),
+				$c->query('CirclesRequest'), $c->query('MembersRequest'),
 				$c->query('EventsService'), $c->query('MiscService')
 			);
 		}
@@ -143,7 +144,8 @@ class Application extends App {
 			'GroupsService', function(IAppContainer $c) {
 			return new GroupsService(
 				$c->query('UserId'), $c->query('L10N'), $c->query('GroupManager'),
-				$c->query('DatabaseService'), $c->query('MembersRequest'), $c->query('MiscService')
+				$c->query('DatabaseService'), $c->query('CirclesRequest'),
+				$c->query('MembersRequest'), $c->query('MiscService')
 			);
 		}
 		);
@@ -287,7 +289,8 @@ class Application extends App {
 			'CirclesRequest', function(IAppContainer $c) {
 			return new CirclesRequest(
 				$c->query('L10N'), $c->query('ServerContainer')
-									 ->getDatabaseConnection(), $c->query('MiscService')
+									 ->getDatabaseConnection(), $c->query('MembersRequest'),
+				$c->query('MiscService')
 			);
 		}
 		);
@@ -325,7 +328,7 @@ class Application extends App {
 			return new CirclesMapper(
 				$c->query('UserId'), $c->query('ServerContainer')
 									   ->getDatabaseConnection(), $c->query('L10N'),
-				$c->query('MiscService')
+				$c->query('MembersRequest'), $c->query('MiscService')
 			);
 		}
 		);
@@ -450,11 +453,11 @@ class Application extends App {
 											->t('Circles');
 
 					 return [
-						 'id' => $this->appName,
+						 'id'    => $this->appName,
 						 'order' => 5,
-						 'href' => $urlGen->linkToRoute('circles.Navigation.navigate'),
-						 'icon' => $urlGen->imagePath($this->appName, 'circles.svg'),
-						 'name' => $navName
+						 'href'  => $urlGen->linkToRoute('circles.Navigation.navigate'),
+						 'icon'  => $urlGen->imagePath($this->appName, 'circles.svg'),
+						 'name'  => $navName
 					 ];
 				 }
 			 );
