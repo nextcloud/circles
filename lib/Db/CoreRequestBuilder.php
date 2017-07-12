@@ -20,6 +20,8 @@ class CoreRequestBuilder {
 	const TABLE_CIRCLES = 'circles_circles';
 	const TABLE_MEMBERS = 'circles_members';
 	const TABLE_GROUPS = 'circles_groups';
+	const TABLE_SHARES = 'circles_shares';
+	const TABLE_LINKS = 'circles_links';
 
 	const NC_TABLE_GROUP_USER = 'group_user';
 
@@ -106,6 +108,16 @@ class CoreRequestBuilder {
 
 
 	/**
+	 * Limit the search by its Name
+	 *
+	 * @param IQueryBuilder $qb
+	 */
+	protected function limitToName(IQueryBuilder &$qb, $name) {
+		$this->limitToDBField($qb, 'name', $name);
+	}
+
+
+	/**
 	 * Limit the request to a minimum member level.
 	 *
 	 * @param IQueryBuilder $qb
@@ -175,17 +187,17 @@ class CoreRequestBuilder {
 	 * link to the groupId/UserId of the NC DB.
 	 *
 	 * @param IQueryBuilder $qb
-	 * @param $fieldGroup
-	 * @param $fieldUser
+	 * @param string $fieldGroup
+	 * @param string $userId
 	 */
-	protected function joinNCGroupAndUser(IQueryBuilder $qb, $fieldGroup, $fieldUser) {
+	protected function leftJoinNCGroupAndUser(IQueryBuilder $qb, $fieldGroup, $userId) {
 		$expr = $qb->expr();
 
-		$qb->from(self::NC_TABLE_GROUP_USER, 'ncgu');
-		$qb->andWhere(
+		$qb->leftJoin(
+			$this->default_select_alias, self::NC_TABLE_GROUP_USER, 'ncgu',
 			$expr->andX(
 				$expr->eq('ncgu.gid', $fieldGroup),
-				$expr->eq('ncgu.uid', $fieldUser)
+				$expr->eq('ncgu.uid', $qb->createNamedParameter($userId))
 			)
 		);
 	}

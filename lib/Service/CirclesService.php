@@ -130,17 +130,10 @@ class CirclesService {
 		}
 
 		$circle = new Circle($this->l10n, $type, $name);
-		$owner = new Member($this->l10n, $this->userId);
-		$circle->setOwner($owner);
-		$circle->setViewer($owner);
 
 		try {
-			$this->dbCircles->create($circle);
-			$circle->getOwner()
-				   ->setCircleId($circle->getId())
-				   ->setLevel(Member::LEVEL_OWNER)
-				   ->setStatus(Member::STATUS_MEMBER);
-			$this->dbMembers->add($circle->getOwner());
+			$this->circlesRequest->createCircle($circle, $this->userId);
+			$this->membersRequest->createMember($circle->getOwner());
 		} catch (\Exception $e) {
 			$this->dbCircles->destroy($circle->getId());
 			throw $e;

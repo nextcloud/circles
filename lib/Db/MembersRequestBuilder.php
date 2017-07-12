@@ -35,9 +35,18 @@ use OCP\Diagnostics\IQuery;
 class MembersRequestBuilder extends CoreRequestBuilder {
 
 
+	/**
+	 * Base of the Sql Insert request for Shares
+	 *
+	 * @return IQueryBuilder
+	 */
+	protected function getMembersInsertSql() {
+		$qb = $this->dbConnection->getQueryBuilder();
+		$qb->insert(self::TABLE_MEMBERS)
+		   ->setValue('joined', $qb->createFunction('NOW()'));
 
-
-
+		return $qb;
+	}
 
 
 	/**
@@ -48,7 +57,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select('g.circle_id', 'g.group_id', 'g.level', 'g.note', 'g.joined')
-		   ->from(CoreRequestBuilder::TABLE_GROUPS, 'g');
+		   ->from(self::TABLE_GROUPS, 'g');
 		$this->default_select_alias = 'g';
 
 		return $qb;
@@ -62,7 +71,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function getGroupsInsertSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->insert(CoreRequestBuilder::TABLE_GROUPS)
+		$qb->insert(self::TABLE_GROUPS)
 		   ->setValue('joined', $qb->createFunction('NOW()'));
 
 		return $qb;
@@ -82,7 +91,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		$expr = $qb->expr();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->update(CoreRequestBuilder::TABLE_GROUPS)
+		$qb->update(self::TABLE_GROUPS)
 		   ->where(
 			   $expr->andX(
 				   $expr->eq('circle_id', $qb->createNamedParameter($circleId)),

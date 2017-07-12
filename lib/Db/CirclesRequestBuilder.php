@@ -80,11 +80,15 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param string $field
 	 */
-	protected function joinGroups(& $qb, $field) {
+	protected function leftJoinGroups(& $qb, $field) {
 		$expr = $qb->expr();
 
-		$qb->from(self::TABLE_GROUPS, 'g')
-		   ->andWhere($expr->eq('g.circle_id', $field));
+//		$qb->from(self::TABLE_GROUPS, 'g')
+//		   ->andWhere($expr->eq('g.circle_id', $field));
+		$qb->leftJoin(
+			$this->default_select_alias, CoreRequestBuilder::TABLE_GROUPS, 'g',
+			$expr->eq('g.circle_id', $field)
+		);
 	}
 
 
@@ -113,13 +117,27 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
 
-		$this->joinGroups($qb, $pf . 'id');
-		$this->joinNCGroupAndUser($qb, 'g.group_id', 'm.user_id');
+		$this->leftJoinGroups($qb, $pf . 'id');
+		$this->leftJoinNCGroupAndUser($qb, 'g.group_id', 'm.user_id');
 		$qb->andWhere(
 			$expr->orX(
 				$expr->eq('m.user_id', $qb->createNamedParameter($userId)),
 				$expr->eq('ncgu.uid', $qb->createNamedParameter($userId))
 			)
+		);
+	}
+
+
+	/**
+	 * Limit the search to a non-personal circle
+	 *
+	 * @param IQueryBuilder $qb
+	 */
+	protected function limitToNonPersonalCircle(IQueryBuilder &$qb) {
+		$expr = $qb->expr();
+
+		$qb->andWhere(
+			$expr->neq('c.type', $qb->createNamedParameter(Circle::CIRCLES_PERSONAL))
 		);
 	}
 
@@ -361,7 +379,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select('id', 'status', 'address', 'token', 'circle_id', 'unique_id', 'creation')
-		   ->from('circles_links', 's');
+		   ->from(self::TABLE_LINKS, 's');
 
 		$this->default_select_alias = 's';
 
@@ -382,7 +400,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 			'circle_id', 'source', 'type', 'author', 'cloud_id', 'payload', 'creation', 'headers',
 			'unique_id'
 		)
-		   ->from('circles_shares', 's');
+		   ->from(self::TABLE_SHARES, 's');
 
 		$this->default_select_alias = 's';
 
@@ -396,7 +414,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function getSharesInsertSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->insert('circles_shares')
+		$qb->insert(self::TABLE_SHARES)
 		   ->setValue('creation', $qb->createFunction('NOW()'));
 
 		return $qb;
@@ -412,11 +430,25 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function getSharesUpdateSql($uniqueId) {
 		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->update('circles_shares')
+		$qb->update(self::TABLE_SHARES)
 		   ->where(
 			   $qb->expr()
 				  ->eq('unique_id', $qb->createNamedParameter((string)$uniqueId))
 		   );
+
+		return $qb;
+	}
+
+
+	/**
+	 * Base of the Sql Insert request for Shares
+	 *
+	 * @return IQueryBuilder
+	 */
+	protected function getCirclesInsertSql() {
+		$qb = $this->dbConnection->getQueryBuilder();
+		$qb->insert(self::TABLE_CIRCLES)
+		   ->setValue('creation', $qb->createFunction('NOW()'));
 
 		return $qb;
 	}
@@ -431,7 +463,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function getCirclesUpdateSql($circleId) {
 		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->update('circles_circles')
+		$qb->update(self::TABLE_CIRCLES)
 		   ->where(
 			   $qb->expr()
 				  ->eq('id', $qb->createNamedParameter($circleId))
@@ -449,7 +481,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select('m.user_id', 'm.circle_id', 'm.level', 'm.status', 'm.joined')
-		   ->from('circles_members', 'm');
+		   ->from(self::TABLE_MEMBERS, 'm');
 
 		$this->default_select_alias = 'm';
 
@@ -465,10 +497,11 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb
-		   ->selectDistinct('c.unique_id')
-		   ->addSelect(
-			   'c.id', 'c.name', 'c.description', 'c.settings', 'c.type', 'c.creation'
-		   )->from(CoreRequestBuilder::TABLE_CIRCLES, 'c');
+			->selectDistinct('c.unique_id')
+			->addSelect(
+				'c.id', 'c.name', 'c.description', 'c.settings', 'c.type', 'c.creation'
+			)
+			->from(CoreRequestBuilder::TABLE_CIRCLES, 'c');
 		$this->default_select_alias = 'c';
 
 		return $qb;

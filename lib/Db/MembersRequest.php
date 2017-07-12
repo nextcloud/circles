@@ -78,7 +78,7 @@ class MembersRequest extends MembersRequestBuilder {
 	 * return the higher level group linked to a circle, that include the userId.
 	 *
 	 * WARNING: This function does not filters data regarding the current user/viewer.
-	 *          In case of interaction with users, Please don't use this.
+	 *          In case of direct interaction with users, Please don't use this.
 	 *
 	 * @param int $circleId
 	 * @param string $userId
@@ -106,6 +106,31 @@ class MembersRequest extends MembersRequestBuilder {
 		return $group;
 	}
 
+
+	/**
+	 * Insert Member into database.
+	 *
+	 * @param Member $member
+	 *
+	 * @throws MemberAlreadyExistsException
+	 */
+	public function createMember(Member $member) {
+
+		try {
+			$qb = $this->getMembersInsertSql();
+			$qb->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
+			   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
+			   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
+			   ->setValue('status', $qb->createNamedParameter($member->getStatus()))
+			   ->setValue('note', $qb->createNamedParameter($member->getNote()));
+
+			$qb->execute();
+		} catch (UniqueConstraintViolationException $e) {
+			throw new MemberAlreadyExistsException(
+				$this->l10n->t('This user is already a member of the circle')
+			);
+		}
+	}
 
 
 	/**

@@ -29,6 +29,7 @@ namespace OCA\Circles\Db;
 
 
 use OC\L10N\L10N;
+use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedLinkDoesNotExistException;
 use OCA\Circles\Model\Circle;
@@ -78,13 +79,13 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 		$qb = $this->getCirclesSelectSql();
 		$this->joinMembers($qb, 'c.id');
+		$this->leftJoinUserIdAsViewer($qb, $userId);
+		$this->leftJoinOwner($qb);
 
 		$this->limitToUserId($qb, $userId);
 		$this->limitToLevel($qb, $level, 'm', 'g');
 		$this->limitRegardingCircleType($qb, $userId, -1, $type, $name);
 
-		$this->leftJoinUserIdAsViewer($qb, $userId);
-		$this->leftJoinOwner($qb);
 
 		$result = [];
 		$cursor = $qb->execute();
@@ -94,8 +95,8 @@ class CirclesRequest extends CirclesRequestBuilder {
 				$result[] = $this->parseCirclesSelectSql($data);
 
 //				$circle = Circle::fromArray($this->l10n, $data);
-			//	$this->fillCircleUserIdAndOwner($circle, $data);
-		//		$result[] = $circle;
+				//	$this->fillCircleUserIdAndOwner($circle, $data);
+				//		$result[] = $circle;
 			}
 		}
 		$cursor->closeCursor();
@@ -137,6 +138,100 @@ class CirclesRequest extends CirclesRequestBuilder {
 		);
 
 		return $circle;
+	}
+
+
+	/**
+	 * createCircle();
+	 *
+	 * Create a circle with $userId as its owner.
+	 * Will returns the circle
+	 *
+	 * @param Circle $circle
+	 * @param $userId
+	 *
+	 * @throws CircleAlreadyExistsException
+	 */
+	public function createCircle(Circle &$circle, $userId) {
+
+		if (!$this->isCircleUnique($circle, $userId)) {
+			throw new CircleAlreadyExistsException(
+				$this->l10n->t('A circle with that name exists')
+			);
+		}
+
+		$circle->generateUniqueId();
+		$qb = $this->getCirclesInsertSql();
+		$qb->setValue('unique_id', $qb->createNamedParameter($circle->getUniqueId(true)))
+		   ->setValue('name', $qb->createNamedParameter($circle->getName()))
+		   ->setValue('description', $qb->createNamedParameter($circle->getDescription()))
+		   ->setValue('settings', $qb->createNamedParameter($circle->getSettings(true)))
+		   ->setValue('type', $qb->createNamedParameter($circle->getType()));
+		$qb->execute();
+
+		$circle->setId($qb->getLastInsertId());
+
+		$owner = new Member($this->l10n, $userId);
+		$owner->setCircleId($circle->getId())
+			  ->setLevel(Member::LEVEL_OWNER)
+			  ->setStatus(Member::STATUS_MEMBER);
+		$circle->setOwner($owner);
+	}
+
+
+	/**
+	 * returns if the circle is already in database
+	 *
+	 * @param Circle $circle
+	 * @param string $userId
+	 *
+	 * @return bool
+	 */
+	private function isCircleUnique(Circle $circle, $userId) {
+
+		if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
+			return $this->isPersonalCircleUnique($circle, $userId);
+		}
+
+		$qb = $this->getCirclesSelectSql();
+		$this->limitToNonPersonalCircle($qb);
+		//	$this->limitToName($qb, $circle->getName());
+
+		$cursor = $qb->execute();
+		while ($data = $cursor->fetch()) {
+			// Welp, haven't found a way to do non-sensitive search in IQueryBuilder.
+			if (strtolower($data['name']) === strtolower($circle->getName())) {
+				return false;
+			}
+		}
+		$cursor->closeCursor();
+
+		return true;
+	}
+
+
+	/**
+	 * return if the personal circle is unique
+	 *
+	 * @param Circle $circle
+	 * @param string $userId
+	 *
+	 * @return bool
+	 */
+	private function isPersonalCircleUnique(Circle $circle, $userId) {
+
+		$list = $this->getCircles(
+			$userId, Circle::CIRCLES_PERSONAL, $circle->getName(),
+			Member::LEVEL_OWNER
+		);
+
+		foreach ($list as $test) {
+			//if ($test->getName() === $circle->getName()) {
+			return false;
+			//}
+		}
+
+		return true;
 	}
 
 
