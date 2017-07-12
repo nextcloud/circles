@@ -2,14 +2,15 @@
 All notable changes to this project will be documented in this file.
 
 
-## 0.11.1
+## 0.12.0
 
-- security: when leaving in a circle, files are not shared anymore
+- security: when leaving a circle, shared file are not accessible anymore
 - fix icons
 - fix strange behaviour when the app is deleted from the disk, but not disable in the cloud
 - Edit Name and Description of a Circle
 - Activities are now send by mail.
-- Invite Group Members to a Circle.
+- Mass invite Group Members to a Circle.
+- Link Groups to Circle and assign level to linked group.
 
 
 ## 0.11.0

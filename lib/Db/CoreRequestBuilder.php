@@ -122,29 +122,28 @@ class CoreRequestBuilder {
 	 *
 	 * @param IQueryBuilder $qb
 	 * @param integer $level
-	 * @param string $pf
-	 * @param string $pf2
+	 * @param string|array $pf
 	 */
-	protected function limitToLevel(IQueryBuilder &$qb, $level, $pf = '', $pf2 = '') {
+	protected function limitToLevel(IQueryBuilder &$qb, $level, $pf = '') {
 		$expr = $qb->expr();
+		$orX = $expr->orX();
+
 		if ($pf === '') {
-			$pf =
-				($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
+			$p = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
+			$orX->add($expr->gte($p . 'level', $qb->createNamedParameter($level)));
+
 		} else {
-			$pf .= '.';
+
+			if (!is_array($pf)) {
+				$pf = [$pf];
+			}
+
+			foreach ($pf as $p) {
+				$orX->add($expr->gte($p . '.level', $qb->createNamedParameter($level)));
+			}
 		}
 
-		if ($pf2 === '') {
-			$qb->andWhere($expr->gte($pf . 'level', $qb->createNamedParameter($level)));
-		} else {
-			$pf2 .= '.';
-			$qb->andWhere(
-				$expr->orX(
-					$expr->gte($pf . 'level', $qb->createNamedParameter($level)),
-					$expr->gte($pf2 . 'level', $qb->createNamedParameter($level))
-				)
-			);
-		}
+		$qb->andWhere($orX);
 	}
 
 

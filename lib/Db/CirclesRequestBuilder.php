@@ -83,49 +83,30 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	protected function leftJoinGroups(& $qb, $field) {
 		$expr = $qb->expr();
 
-//		$qb->from(self::TABLE_GROUPS, 'g')
-//		   ->andWhere($expr->eq('g.circle_id', $field));
 		$qb->leftJoin(
 			$this->default_select_alias, CoreRequestBuilder::TABLE_GROUPS, 'g',
-			$expr->eq('g.circle_id', $field)
+			$expr->eq($field, 'g.circle_id')
 		);
 	}
 
+//
+//	/**
+//	 * Link to member (userId) of circle
+//	 *
+//	 * @param IQueryBuilder $qb
+//	 * @param string $field
+//	 */
+//	protected function leftJoinMembers(& $qb, $field) {
+//		$expr = $qb->expr();
+//
+//		$qb->leftJoin(
+//			$this->default_select_alias, CoreRequestBuilder::TABLE_MEMBERS, 'm',
+//			$expr->eq('m.circle_id', $field)
+//		);
+////		$qb->from(self::TABLE_MEMBERS, 'm')
+////		   ->andWhere($expr->eq('m.circle_id', $field));
+//	}
 
-	/**
-	 * Link to member (userId) of circle
-	 *
-	 * @param IQueryBuilder $qb
-	 * @param string $field
-	 */
-	protected function joinMembers(& $qb, $field) {
-		$expr = $qb->expr();
-
-		$qb->from(self::TABLE_MEMBERS, 'm')
-		   ->andWhere($expr->eq('m.circle_id', $field));
-	}
-
-
-	/**
-	 * Limit the search to a userId, using also the group table from NC
-	 *
-	 * @param IQueryBuilder $qb
-	 * @param $userId
-	 */
-	protected function limitToUserId(IQueryBuilder &$qb, $userId) {
-		$expr = $qb->expr();
-
-		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
-
-		$this->leftJoinGroups($qb, $pf . 'id');
-		$this->leftJoinNCGroupAndUser($qb, 'g.group_id', 'm.user_id');
-		$qb->andWhere(
-			$expr->orX(
-				$expr->eq('m.user_id', $qb->createNamedParameter($userId)),
-				$expr->eq('ncgu.uid', $qb->createNamedParameter($userId))
-			)
-		);
-	}
 
 
 	/**
@@ -149,7 +130,6 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 * @param $type
 	 * @param $name
 	 *
-	 * @return array
 	 * @throws ConfigNoCircleAvailable
 	 */
 	protected function limitRegardingCircleType(IQueryBuilder &$qb, $userId, $circleId, $type, $name
@@ -170,8 +150,6 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		}
 
 		$qb->andWhere($orXTypes);
-
-
 	}
 
 
@@ -236,6 +214,9 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 			$expr->orX(
 				$expr->gte(
 					'u.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)
+				),
+				$expr->gte(
+					'g.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)
 				),
 				// TODO: Replace search on CircleID By a search on UniqueID
 				$expr->eq('c.id', $qb->createNamedParameter($circleId)),

@@ -78,25 +78,21 @@ class CirclesRequest extends CirclesRequestBuilder {
 		}
 
 		$qb = $this->getCirclesSelectSql();
-		$this->joinMembers($qb, 'c.id');
 		$this->leftJoinUserIdAsViewer($qb, $userId);
 		$this->leftJoinOwner($qb);
+		$this->leftJoinGroups($qb, 'c.id');
+		$this->leftJoinNCGroupAndUser($qb, 'g.group_id', $userId);
 
-		$this->limitToUserId($qb, $userId);
-		$this->limitToLevel($qb, $level, 'm', 'g');
+		if ($level > 0) {
+			$this->limitToLevel($qb, $level, ['u', 'g']);
+		}
 		$this->limitRegardingCircleType($qb, $userId, -1, $type, $name);
-
 
 		$result = [];
 		$cursor = $qb->execute();
-
 		while ($data = $cursor->fetch()) {
-			if ($name === '' || stripos($data['name'], $name) !== false) {
+			if ($name === '' || stripos(strtolower($data['name']), strtolower($name)) !== false) {
 				$result[] = $this->parseCirclesSelectSql($data);
-
-//				$circle = Circle::fromArray($this->l10n, $data);
-				//	$this->fillCircleUserIdAndOwner($circle, $data);
-				//		$result[] = $circle;
 			}
 		}
 		$cursor->closeCursor();
@@ -120,9 +116,9 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 		$this->leftJoinUserIdAsViewer($qb, $userId);
 		$this->leftJoinOwner($qb);
+		$this->leftJoinGroups($qb, 'c.id');
+		$this->leftJoinNCGroupAndUser($qb, 'g.group_id', $userId);
 
-		// If we need the viewer to be at least member of the circle
-		//	$this->limitToLevel($qb, Member::LEVEL_MEMBER, 'u');
 		$this->limitRegardingCircleType($qb, $userId, $circleId, Circle::CIRCLES_ALL, '');
 
 		$cursor = $qb->execute();
