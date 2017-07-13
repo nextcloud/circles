@@ -134,7 +134,7 @@ class MembersService {
 
 		$this->eventsService->onMemberNew($circle, $member);
 
-		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getHigherViewer());
+		return $this->membersRequest->getMembers($circleId, $circle->getHigherViewer());
 	}
 
 
@@ -175,7 +175,7 @@ class MembersService {
 			}
 		}
 
-		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getHigherViewer());
+		return $this->membersRequest->getMembers($circle->getId(), $circle->getHigherViewer());
 	}
 
 
@@ -183,6 +183,7 @@ class MembersService {
 	 * getMember();
 	 *
 	 * Will return any data of a user related to a circle (as a Member). User can be a 'non-member'
+	 * Viewer needs to be at least Member of the Circle
 	 *
 	 * @param $circleId
 	 * @param $userId
@@ -197,13 +198,16 @@ class MembersService {
 								 ->getHigherViewer()
 								 ->hasToBeMember();
 
-			$member = $this->dbMembers->getMemberFromCircle($circleId, $userId);
+			$member = $this->membersRequest->forceGetMember($circleId, $userId);
+			$member->setNote('');
+
+			return $member;
 		} catch (\Exception $e) {
 			throw $e;
 		}
-
-		return $member;
 	}
+
+
 
 
 	/**
@@ -223,7 +227,7 @@ class MembersService {
 		}
 
 		try {
-			$member = $this->dbMembers->getMemberFromCircle($circleId, $name);
+			$member = $this->membersRequest->forceGetMember($circleId, $name);
 
 		} catch (MemberDoesNotExistException $e) {
 			$member = new Member($this->l10n, $name, $circleId);
@@ -274,7 +278,7 @@ class MembersService {
 				);
 			}
 
-			$member = $this->dbMembers->getMemberFromCircle($circle->getId(), $name);
+			$member = $this->membersRequest->forceGetMember($circle->getId(), $name);
 			if ($member->getLevel() !== $level) {
 				if ($level === Member::LEVEL_OWNER) {
 					$this->switchOwner($circle, $member);
@@ -285,7 +289,7 @@ class MembersService {
 				$this->eventsService->onMemberLevel($circle, $member);
 			}
 
-			return $this->dbMembers->getMembersFromCircle($circleId, $circle->getHigherViewer());
+			return $this->membersRequest->getMembers($circle->getId(), $circle->getHigherViewer());
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -302,7 +306,7 @@ class MembersService {
 	 */
 	private function editMemberLevel(Circle $circle, Member &$member, $level) {
 		try {
-			$isMod = $this->dbMembers->getMemberFromCircle($circle->getId(), $this->userId);
+			$isMod = $this->membersRequest->forceGetMember($circle->getId(), $this->userId);
 			$isMod->hasToBeModerator();
 			$isMod->hasToBeHigherLevel($level);
 
@@ -326,7 +330,7 @@ class MembersService {
 	 */
 	public function switchOwner(Circle $circle, Member &$member) {
 		try {
-			$isMod = $this->dbMembers->getMemberFromCircle($circle->getId(), $this->userId);
+			$isMod = $this->membersRequest->forceGetMember($circle->getId(), $this->userId);
 			$isMod->hasToBeOwner();
 
 			$member->cantBeOwner();
@@ -356,7 +360,7 @@ class MembersService {
 			$circle->getHigherViewer()
 				   ->hasToBeModerator();
 
-			$member = $this->dbMembers->getMemberFromCircle($circleId, $name);
+			$member = $this->membersRequest->forceGetMember($circleId, $name);
 			$member->cantBeOwner();
 
 			$circle->getHigherViewer()
@@ -371,7 +375,7 @@ class MembersService {
 
 		$this->eventsService->onMemberLeaving($circle, $member);
 
-		return $this->dbMembers->getMembersFromCircle($circleId, $circle->getHigherViewer());
+		return $this->membersRequest->getMembers($circle->getId(), $circle->getHigherViewer());
 	}
 
 

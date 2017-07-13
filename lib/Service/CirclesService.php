@@ -184,10 +184,7 @@ class CirclesService {
 			if ($circle->getHigherViewer()
 					   ->isLevel(Member::LEVEL_MEMBER)
 			) {
-				$members =
-					$this->dbMembers->getMembersFromCircle($circleId, $circle->getHigherViewer());
-				$circle->setMembers($members);
-
+				$this->detailsCircleMembers($circle);
 				$this->detailsCircleLinkedGroups($circle);
 				$this->detailsCircleFederatedCircles($circle);
 			}
@@ -199,6 +196,24 @@ class CirclesService {
 	}
 
 
+	/**
+	 * get the Members list and add the result to the Circle.
+	 *
+	 * @param Circle $circle
+	 */
+	private function detailsCircleMembers(Circle &$circle) {
+		$members =
+			$this->membersRequest->getMembers($circle->getId(), $circle->getHigherViewer());
+
+		$circle->setMembers($members);
+	}
+
+
+	/**
+	 * get the Linked Group list and add the result to the Circle.
+	 *
+	 * @param Circle $circle
+	 */
 	private function detailsCircleLinkedGroups(Circle &$circle) {
 		$groups = [];
 		if ($this->configService->isLinkedGroupsAllowed()) {
@@ -210,6 +225,11 @@ class CirclesService {
 	}
 
 
+	/**
+	 * get the Federated Circles list and add the result to the Circle.
+	 *
+	 * @param Circle $circle
+	 */
 	private function detailsCircleFederatedCircles(Circle &$circle) {
 		$links = [];
 
@@ -269,7 +289,7 @@ class CirclesService {
 			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
 
 			try {
-				$member = $this->dbMembers->getMemberFromCircle($circle->getId(), $this->userId);
+				$member = $this->membersRequest->forceGetMember($circle->getId(), $this->userId);
 			} catch (MemberDoesNotExistException $m) {
 				$member = new Member($this->l10n, $this->userId, $circle->getId());
 				$this->membersRequest->createMember($member);

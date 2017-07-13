@@ -36,8 +36,95 @@ use OCA\Circles\Model\Member;
 class MembersRequest extends MembersRequestBuilder {
 
 
-	public function getMember($circleId, $userId) {
+	/**
+	 * Returns information about a member.
+	 *
+	 * WARNING: This function does not filters data regarding the current user/viewer.
+	 *          In case of interaction with users, Please use MembersService->getMember() instead.
+	 *
+	 * @param $circleId
+	 * @param $userId
+	 *
+	 * @return Member
+	 * @throws MemberDoesNotExistException
+	 */
+	public function forceGetMember($circleId, $userId) {
+		$qb = $this->getMembersSelectSql();
 
+		$this->limitToUserId($qb, $userId);
+		$this->limitToCircleId($qb, $circleId);
+
+		$cursor = $qb->execute();
+		$data = $cursor->fetch();
+		if ($data === false || $data === null) {
+			throw new MemberDoesNotExistException($this->l10n->t('This member does not exist'));
+		}
+
+		$member = $this->parseMembersSelectSql($data);
+
+		return $member;
+	}
+
+
+	/**
+	 * Returns members list of a circle, based on their level.
+	 *
+	 * WARNING: This function does not filters data regarding the current user/viewer.
+	 *          In case of interaction with users, Please use getMembers() instead.
+	 *
+	 * @param integer $circleId
+	 * @param integer $level
+	 *
+	 * @return Member[]
+	 */
+	public function forceGetMembers($circleId, $level = Member::LEVEL_MEMBER) {
+		$qb = $this->getMembersSelectSql();
+
+		$this->limitToLevel($qb, $level);
+		$this->rightJoinCircles($qb);
+		$this->limitToCircleId($qb, $circleId);
+
+		$qb->selectAlias('c.name', 'circle_name');
+
+		$users = [];
+		$cursor = $qb->execute();
+		while ($data = $cursor->fetch()) {
+			$member = $this->parseMembersSelectSql($data);
+			if ($member !== null) {
+				$users[] = $member;
+			}
+		}
+		$cursor->closeCursor();
+
+		return $users;
+	}
+
+
+	/**
+	 * @param integer $circleId
+	 * @param Member $viewer
+	 *
+	 * @return Member[]
+	 * @throws \Exception
+	 */
+	public function getMembers($circleId, Member $viewer) {
+		try {
+			$viewer->hasToBeMember();
+
+			/** @var Member[] $members */
+			$members = [];
+
+			$result = $this->forceGetMembers($circleId, Member::LEVEL_MEMBER);
+			if (!$viewer->isLevel(Member::LEVEL_MODERATOR)) {
+				foreach ($result as $member) {
+					$members[] = $member->setNote('');
+				}
+			}
+
+			return $members;
+		} catch (\Exception $e) {
+			return [];
+		}
 	}
 
 

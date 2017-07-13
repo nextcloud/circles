@@ -28,6 +28,7 @@ namespace OCA\Circles\Service;
 
 
 use OCA\Circles\Db\CirclesRequest;
+use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Exceptions\BroadcasterIsNotCompatible;
 use OCA\Circles\IBroadcaster;
 use OCA\Circles\Model\Member;
@@ -45,6 +46,9 @@ class BroadcastService {
 	/** @var CirclesRequest */
 	private $circlesRequest;
 
+	/** @var MembersRequest */
+	private $membersRequest;
+
 	/** @var MiscService */
 	private $miscService;
 
@@ -55,17 +59,20 @@ class BroadcastService {
 	 * @param string $userId
 	 * @param ConfigService $configService
 	 * @param CirclesRequest $circlesRequest
+	 * @param MembersRequest $membersRequest
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
 		$userId,
 		ConfigService $configService,
 		CirclesRequest $circlesRequest,
+		MembersRequest $membersRequest,
 		MiscService $miscService
 	) {
 		$this->userId = (string)$userId;
 		$this->configService = $configService;
 		$this->circlesRequest = $circlesRequest;
+		$this->membersRequest = $membersRequest;
 		$this->miscService = $miscService;
 	}
 
@@ -92,7 +99,7 @@ class BroadcastService {
 
 		$broadcaster->init();
 		$broadcaster->createShareToCircle($frame);
-		$users = $this->circlesRequest->getMembers($frame->getCircleId(), Member::LEVEL_MEMBER);
+		$users = $this->membersRequest->forceGetMembers($frame->getCircleId(), Member::LEVEL_MEMBER);
 		foreach ($users AS $user) {
 			$broadcaster->createShareToUser($frame, $user->getUserId());
 		}

@@ -86,6 +86,19 @@ class CoreRequestBuilder {
 
 
 	/**
+	 * Limit the request to the User by its Id.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param $userId
+	 *
+	 * @internal param int $circleId
+	 */
+	protected function limitToUserId(IQueryBuilder &$qb, $userId) {
+		$this->limitToDBField($qb, 'user_id', $userId);
+	}
+
+
+	/**
 	 * Limit the request to the Circle by its Id.
 	 *
 	 * @param IQueryBuilder $qb
@@ -179,6 +192,20 @@ class CoreRequestBuilder {
 				)
 			)
 		);
+	}
+
+
+	/**
+	 * Right Join the Circles table
+	 *
+	 * @param IQueryBuilder $qb
+	 */
+	protected function rightJoinCircles(& $qb) {
+		$expr = $qb->expr();
+		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
+
+		$qb->from(self::TABLE_CIRCLES, 'c')
+		   ->andWhere($expr->eq('c.id', $pf . 'circle_id'));
 	}
 
 

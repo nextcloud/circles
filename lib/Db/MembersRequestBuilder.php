@@ -28,9 +28,8 @@
 namespace OCA\Circles\Db;
 
 
+use OCA\Circles\Model\Member;
 use OCP\DB\QueryBuilder\IQueryBuilder;
-use Doctrine\DBAL\Query\QueryBuilder;
-use OCP\Diagnostics\IQuery;
 
 class MembersRequestBuilder extends CoreRequestBuilder {
 
@@ -44,6 +43,22 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$qb->insert(self::TABLE_MEMBERS)
 		   ->setValue('joined', $qb->createFunction('NOW()'));
+
+		return $qb;
+	}
+
+
+	/**
+	 * @return IQueryBuilder
+	 */
+	protected function getMembersSelectSql() {
+		$qb = $this->dbConnection->getQueryBuilder();
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$qb->select('m.user_id', 'm.circle_id', 'm.level', 'm.status', 'm.joined')
+		   ->from(self::TABLE_MEMBERS, 'm');
+
+		$this->default_select_alias = 'm';
 
 		return $qb;
 	}
@@ -120,5 +135,21 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		return $qb;
 	}
 
+
+	/**
+	 * @param array $data
+	 *
+	 * @return Member
+	 */
+	protected function parseMembersSelectSql(array $data) {
+		$member = new Member($this->l10n);
+		$member->setUserId($data['user_id']);
+		$member->setCircleId($data['circle_id']);
+		$member->setLevel($data['level']);
+		$member->setStatus($data['status']);
+		$member->setJoined($data['joined']);
+
+		return $member;
+	}
 
 }

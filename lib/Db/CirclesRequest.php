@@ -135,22 +135,22 @@ class CirclesRequest extends CirclesRequestBuilder {
 	/**
 	 *
 	 * @param int $circleId
-	 * @param string $userId
+	 * @param string $viewerId
 	 *
 	 * @return Circle
 	 * @throws CircleDoesNotExistException
 	 */
-	public function getCircle($circleId, $userId) {
+	public function getCircle($circleId, $viewerId) {
 		$qb = $this->getCirclesSelectSql();
 
 		$this->limitToId($qb, $circleId);
 
-		$this->leftJoinUserIdAsViewer($qb, $userId);
+		$this->leftJoinUserIdAsViewer($qb, $viewerId);
 		$this->leftJoinOwner($qb);
 		$this->leftJoinGroups($qb, 'c.id');
-		$this->leftJoinNCGroupAndUser($qb, 'g.group_id', $userId);
+		$this->leftJoinNCGroupAndUser($qb, 'g.group_id', $viewerId);
 
-		$this->limitRegardingCircleType($qb, $userId, $circleId, Circle::CIRCLES_ALL, '');
+		$this->limitRegardingCircleType($qb, $viewerId, $circleId, Circle::CIRCLES_ALL, '');
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
@@ -161,7 +161,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$circle = $this->parseCirclesSelectSql($data);
 
 		$circle->setGroupViewer(
-			$this->membersRequest->forceGetHigherLevelGroupFromUser($circleId, $userId)
+			$this->membersRequest->forceGetHigherLevelGroupFromUser($circleId, $viewerId)
 		);
 
 		return $circle;
@@ -271,9 +271,9 @@ class CirclesRequest extends CirclesRequestBuilder {
 		);
 
 		foreach ($list as $test) {
-			//if ($test->getName() === $circle->getName()) {
-			return false;
-			//}
+			if (strtolower($test->getName()) === strtolower($circle->getName())) {
+				return false;
+			}
 		}
 
 		return true;
@@ -452,34 +452,6 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$cursor->closeCursor();
 
 		return $links;
-	}
-
-	/**
-	 * @param integer $circleId
-	 * @param int $level
-	 *
-	 * @return Member[]
-	 */
-	public function getMembers($circleId, $level = Member::LEVEL_MEMBER) {
-		$qb = $this->getMembersSelectSql();
-		$this->limitToLevel($qb, $level);
-
-		$this->joinCircles($qb, 'm.circle_id');
-		$this->limitToCircleId($qb, $circleId);
-
-		$qb->selectAlias('c.name', 'circle_name');
-
-		$users = [];
-		$cursor = $qb->execute();
-		while ($data = $cursor->fetch()) {
-			$member = $this->parseMembersSelectSql($data);
-			if ($member !== null) {
-				$users[] = $member;
-			}
-		}
-		$cursor->closeCursor();
-
-		return $users;
 	}
 
 

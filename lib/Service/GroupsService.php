@@ -199,7 +199,7 @@ class GroupsService {
 	 */
 	private function editGroupLevel(Circle $circle, Member &$group, $level) {
 		try {
-			$isMod = $this->dbMembers->getMemberFromCircle($circle->getId(), $this->userId);
+			$isMod = $this->membersRequest->forceGetMember($circle->getId(), $this->userId);
 			$isMod->hasToBeAdmin();
 			$isMod->hasToBeHigherLevel($level);
 
@@ -209,6 +209,7 @@ class GroupsService {
 
 			$group->setLevel($level);
 			$this->membersRequest->editGroup($group);
+
 		} catch (\Exception $e) {
 			throw $e;
 		}

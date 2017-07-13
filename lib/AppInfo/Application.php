@@ -111,7 +111,8 @@ class Application extends App {
 
 		$container->registerService(
 			'DatabaseService', function(IAppContainer $c) {
-			return new DatabaseService($c->query('MembersMapper')
+			return new DatabaseService(
+				$c->query('MembersMapper')
 			);
 		}
 		);
@@ -152,7 +153,7 @@ class Application extends App {
 			'BroadcastService', function(IAppContainer $c) {
 			return new BroadcastService(
 				$c->query('UserId'), $c->query('ConfigService'), $c->query('CirclesRequest'),
-				$c->query('MiscService')
+				$c->query('MembersRequest'), $c->query('MiscService')
 			);
 		}
 		);
@@ -171,7 +172,7 @@ class Application extends App {
 			'EventsService', function(IAppContainer $c) {
 			return new EventsService(
 				$c->query('UserId'), $c->query('ActivityManager'), $c->query('UserManager'),
-				$c->query('CirclesRequest'), $c->query('MiscService')
+				$c->query('CirclesRequest'), $c->query('MembersRequest'), $c->query('MiscService')
 			);
 		}
 		);

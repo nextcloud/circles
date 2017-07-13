@@ -60,22 +60,10 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	}
 
 
-	/**
-	 * Join the Circles table
-	 *
-	 * @param IQueryBuilder $qb
-	 * @param string $field
-	 */
-	protected function joinCircles(& $qb, $field) {
-		$expr = $qb->expr();
-
-		$qb->from(self::TABLE_CIRCLES, 'c')
-		   ->andWhere($expr->eq('c.id', $field));
-	}
 
 
 	/**
-	 * Join the Circles table
+	 * Left Join the Groups table
 	 *
 	 * @param IQueryBuilder $qb
 	 * @param string $field
@@ -471,22 +459,6 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * @return IQueryBuilder
 	 */
-	protected function getMembersSelectSql() {
-		$qb = $this->dbConnection->getQueryBuilder();
-
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->select('m.user_id', 'm.circle_id', 'm.level', 'm.status', 'm.joined')
-		   ->from(self::TABLE_MEMBERS, 'm');
-
-		$this->default_select_alias = 'm';
-
-		return $qb;
-	}
-
-
-	/**
-	 * @return IQueryBuilder
-	 */
 	protected function getCirclesSelectSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 
@@ -502,22 +474,6 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		return $qb;
 	}
 
-
-	/**
-	 * @param array $data
-	 *
-	 * @return Member
-	 */
-	protected function parseMembersSelectSql(array $data) {
-		$member = new Member($this->l10n);
-		$member->setUserId($data['user_id']);
-		$member->setCircleId($data['circle_id']);
-		$member->setLevel($data['level']);
-		$member->setStatus($data['status']);
-		$member->setJoined($data['joined']);
-
-		return $member;
-	}
 
 
 	/**
