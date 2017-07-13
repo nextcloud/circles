@@ -55,7 +55,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		$qb = $this->dbConnection->getQueryBuilder();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->select('m.user_id', 'm.circle_id', 'm.level', 'm.status', 'm.joined')
+		$qb->select('m.user_id', 'm.circle_id', 'm.level', 'm.status', 'm.note', 'm.joined')
 		   ->from(self::TABLE_MEMBERS, 'm');
 
 		$this->default_select_alias = 'm';
@@ -145,6 +145,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		$member = new Member($this->l10n);
 		$member->setUserId($data['user_id']);
 		$member->setCircleId($data['circle_id']);
+		$member->setNote($data['note']);
 		$member->setLevel($data['level']);
 		$member->setStatus($data['status']);
 		$member->setJoined($data['joined']);

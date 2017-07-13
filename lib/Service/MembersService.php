@@ -134,7 +134,7 @@ class MembersService {
 
 		$this->eventsService->onMemberNew($circle, $member);
 
-		return $this->membersRequest->getMembers($circleId, $circle->getHigherViewer());
+		return $this->membersRequest->getMembers($circle->getId(), $circle->getHigherViewer());
 	}
 
 
@@ -206,8 +206,6 @@ class MembersService {
 			throw $e;
 		}
 	}
-
-
 
 
 	/**
@@ -362,6 +360,7 @@ class MembersService {
 
 			$member = $this->membersRequest->forceGetMember($circleId, $name);
 			$member->cantBeOwner();
+			$member->hasToBeMember();
 
 			$circle->getHigherViewer()
 				   ->hasToBeHigherLevel($member->getLevel());

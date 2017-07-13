@@ -40,7 +40,7 @@ use OCA\Circles\Exceptions\FederatedCircleStatusUpdateException;
 use OCA\Circles\Exceptions\FederatedRemoteCircleDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedRemoteDoesNotAllowException;
 use OCA\Circles\Exceptions\FederatedRemoteIsDown;
-use OCA\Circles\Exceptions\FrameAlreadyExistException;
+use OCA\Circles\Exceptions\SharingFrameAlreadyExistException;
 use OCA\Circles\Exceptions\LinkCreationException;
 use OCA\Circles\Exceptions\MemberIsNotAdminException;
 use OCA\Circles\Model\Circle;
@@ -696,7 +696,7 @@ class FederatedService {
 
 		if ($this->circlesRequest->getFrame($link->getCircleId(), $frame->getUniqueId())) {
 			//		$this->miscService->log("Frame already exist");
-			throw new FrameAlreadyExistException('shares_is_already_known');
+			throw new SharingFrameAlreadyExistException('shares_is_already_known');
 		}
 
 		try {

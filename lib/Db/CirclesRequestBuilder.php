@@ -60,8 +60,6 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	}
 
 
-
-
 	/**
 	 * Left Join the Groups table
 	 *
@@ -94,7 +92,6 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 ////		$qb->from(self::TABLE_MEMBERS, 'm')
 ////		   ->andWhere($expr->eq('m.circle_id', $field));
 //	}
-
 
 
 	/**
@@ -475,16 +472,12 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	}
 
 
-
 	/**
 	 * @param array $data
 	 *
 	 * @return Circle
 	 */
 	protected function parseCirclesSelectSql($data) {
-		if ($data === false || $data === null) {
-			return null;
-		}
 
 		$circle = new Circle($this->l10n);
 		$circle->setId($data['id']);
@@ -513,14 +506,6 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 			$circle->setOwner($owner);
 		}
 
-//		if (key_exists('group_level', $data))
-//		{
-//			$group = new Member($this->l10n);
-//			$group->setGroupId($data['group_id']);
-//			$group->setLevel($data['group_level']);
-//			$circle->setGroupViewer($group);
-//		}
-
 		return $circle;
 	}
 
@@ -531,10 +516,6 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 * @return SharingFrame
 	 */
 	protected function parseSharesSelectSql($data) {
-		if ($data === false || $data === null) {
-			return null;
-		}
-
 		$frame = new SharingFrame($data['source'], $data['type']);
 		$frame->setCircleId($data['circle_id']);
 		$frame->setAuthor($data['author']);
@@ -553,11 +534,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 *
 	 * @return FederatedLink
 	 */
-	public function parseLinksSelectSql($data) {
-		if ($data === false || $data === null) {
-			return null;
-		}
-
+	protected function parseLinksSelectSql($data) {
 		$link = new FederatedLink();
 		$link->setId($data['id'])
 			 ->setUniqueId($data['unique_id'])

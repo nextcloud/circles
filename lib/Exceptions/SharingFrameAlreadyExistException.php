@@ -26,7 +26,7 @@
 
 namespace OCA\Circles\Exceptions;
 
-class FrameAlreadyExistException extends \Exception {
+class SharingFrameAlreadyExistException extends \Exception {
 
 }
 

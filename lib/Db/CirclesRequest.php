@@ -32,6 +32,7 @@ use OC\L10N\L10N;
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedLinkDoesNotExistException;
+use OCA\Circles\Exceptions\SharingFrameDoesNotEXist;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
@@ -59,10 +60,12 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$qb = $this->getCirclesSelectSql();
 
 		$this->limitToId($qb, $circleId);
-		$cursor = $qb->execute();
 
+		$cursor = $qb->execute();
 		$data = $cursor->fetch();
-		if ($data === false || $data === null) {
+		$cursor->closeCursor();
+
+		if ($data === false) {
 			throw new CircleDoesNotExistException($this->l10n->t('Circle not found'));
 		}
 
@@ -90,10 +93,12 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$qb = $this->getCirclesSelectSql();
 
 		$this->limitToName($qb, $name);
-		$cursor = $qb->execute();
 
+		$cursor = $qb->execute();
 		$data = $cursor->fetch();
-		if ($data === false || $data === null) {
+		$cursor->closeCursor();
+
+		if ($data === false) {
 			throw new CircleDoesNotExistException($this->l10n->t('Circle not found'));
 		}
 
@@ -154,12 +159,13 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
-		if ($data === false || $data === null) {
+		$cursor->closeCursor();
+
+		if ($data === false) {
 			throw new CircleDoesNotExistException($this->l10n->t('Circle not found'));
 		}
 
 		$circle = $this->parseCirclesSelectSql($data);
-
 		$circle->setGroupViewer(
 			$this->membersRequest->forceGetHigherLevelGroupFromUser($circleId, $viewerId)
 		);
@@ -340,14 +346,13 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
+		$cursor->closeCursor();
 
 		if ($data === false) {
-			throw new CircleDoesNotExistException(
-				$this->l10n->t('Circle not found')
-			);
+			throw new CircleDoesNotExistException($this->l10n->t('Circle not found'));
 		}
+
 		$entry = $this->parseCirclesSelectSql($data);
-		$cursor->closeCursor();
 
 		return $entry;
 	}
@@ -358,6 +363,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 * @param string $uniqueId
 	 *
 	 * @return SharingFrame
+	 * @throws SharingFrameDoesNotEXist
 	 */
 	public function getFrame($circleId, $uniqueId) {
 		$qb = $this->getSharesSelectSql();
@@ -366,6 +372,12 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
+		$cursor->closeCursor();
+
+		if ($data === false) {
+			throw new SharingFrameDoesNotEXist($this->l10n->t('Sharing Frame does not exist'));
+		}
+
 		$entry = $this->parseSharesSelectSql($data);
 
 		return $entry;
@@ -388,15 +400,15 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
+		$cursor->closeCursor();
 
-		if ($data === false || $data === null) {
+		if ($data === false) {
 			throw new FederatedLinkDoesNotExistException(
 				$this->l10n->t('Federated Link not found')
 			);
 		}
 
 		$entry = $this->parseLinksSelectSql($data);
-		$cursor->closeCursor();
 
 		return $entry;
 	}
@@ -418,7 +430,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$data = $cursor->fetch();
 		$cursor->closeCursor();
 
-		if ($data === false || $data === null) {
+		if ($data === false) {
 			throw new FederatedLinkDoesNotExistException(
 				$this->l10n->t('Federated Link not found')
 			);
@@ -444,10 +456,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$links = [];
 		$cursor = $qb->execute();
 		while ($data = $cursor->fetch()) {
-			$link = $this->parseLinksSelectSql($data);
-			if ($link !== null) {
-				$links[] = $link;
-			}
+			$links[] = $this->parseLinksSelectSql($data);
 		}
 		$cursor->closeCursor();
 

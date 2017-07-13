@@ -56,7 +56,9 @@ class MembersRequest extends MembersRequestBuilder {
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
-		if ($data === false || $data === null) {
+		$cursor->closeCursor();
+
+		if ($data === false) {
 			throw new MemberDoesNotExistException($this->l10n->t('This member does not exist'));
 		}
 
@@ -86,17 +88,14 @@ class MembersRequest extends MembersRequestBuilder {
 
 		$qb->selectAlias('c.name', 'circle_name');
 
-		$users = [];
+		$members = [];
 		$cursor = $qb->execute();
 		while ($data = $cursor->fetch()) {
-			$member = $this->parseMembersSelectSql($data);
-			if ($member !== null) {
-				$users[] = $member;
-			}
+			$members[] = $this->parseMembersSelectSql($data);
 		}
 		$cursor->closeCursor();
 
-		return $users;
+		return $members;
 	}
 
 
@@ -111,14 +110,13 @@ class MembersRequest extends MembersRequestBuilder {
 		try {
 			$viewer->hasToBeMember();
 
-			/** @var Member[] $members */
-			$members = [];
-
-			$result = $this->forceGetMembers($circleId, Member::LEVEL_MEMBER);
+			$members = $this->forceGetMembers($circleId, Member::LEVEL_MEMBER);
 			if (!$viewer->isLevel(Member::LEVEL_MODERATOR)) {
-				foreach ($result as $member) {
-					$members[] = $member->setNote('');
-				}
+				array_map(
+					function(Member $m) {
+						$m->setNote('');
+					}, $members
+				);
 			}
 
 			return $members;
