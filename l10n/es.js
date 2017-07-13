@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "Are you sure you want to transfer your ownership?" : "¿Seguro que quieres transferir tu propiedad?",
     "This action is irreversible" : "Esta acción no se puede deshacer",
     "Personal circle" : "Círculo personal",
     "Hidden circle" : "Círculo oculto",
@@ -66,15 +67,7 @@ OC.L10N.register(
     "the link to <b>{remote}</b> is now up and running." : "El enlace a <b>{remote}</b>está funcionando ahora.",
     "The status of the link could not be updated" : "El estado del enlace no se ha podido actualizar",
     "The status of the link has been updated" : "El estado del enlace ha sido actualizado",
-    "This operation will add/invite every members from the group to the circle" : "Esta operación añadirá/invitará a cada miembro del grupo al círculo",
-    "Member '{name}' successfully added to the circle" : "El participante '{name}' se ha añadido con éxito al círculo",
-    "Member '{name}' could not be added to the circle" : "No se ha podido añadir al participante '{name}' al círculo",
-    "Members from group '{name}' successfully added to the circle" : "Los miembros del grupo '{name}' se han añadido con éxito al círculo",
-    "Members from group '{name}' could not be added to the circle" : "Los miembros del grupo '{name}' no se han podido añadir al círculo",
-    "Member '{name}' successfully removed from the circle" : "Se ha eliminado al participante '{name}' del círculo con éxito",
-    "Member '{name}' could not be removed from the circle" : "No se ha podido eliminar del círculo al participante '{name}'",
     "Member '{name}' updated" : "Se ha actualizado al participante '{name}'",
-    "Member '{name}' could not be updated" : "No se ha podido actualizar al miembro '{name}'",
     "Issue while saving settings" : "Problema al guardar la configuración",
     "Settings saved." : "Configuración guardada.",
     "Circles" : "Círculos",
