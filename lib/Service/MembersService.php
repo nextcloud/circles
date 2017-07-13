@@ -216,19 +216,21 @@ class MembersService {
 	 *
 	 * @return null|Member
 	 * @throws MemberAlreadyExistsException
-	 * @throws NoUserException
+	 * @throws \Exception
 	 */
 	private function getFreshNewMember($circleId, $name) {
 
-		if (!$this->userManager->userExists($name)) {
-			throw new NoUserException($this->l10n->t("This user does not exist"));
+		try {
+			$userId = $this->getRealUserId($name);
+		} catch (\Exception $e) {
+			throw $e;
 		}
 
 		try {
-			$member = $this->membersRequest->forceGetMember($circleId, $name);
+			$member = $this->membersRequest->forceGetMember($circleId, $userId);
 
 		} catch (MemberDoesNotExistException $e) {
-			$member = new Member($this->l10n, $name, $circleId);
+			$member = new Member($this->l10n, $userId, $circleId);
 			$this->membersRequest->createMember($member);
 		}
 
@@ -241,6 +243,24 @@ class MembersService {
 		return $member;
 	}
 
+
+
+	/**
+	 * return the real userId, with its real case
+	 *
+	 * @param $userId
+	 *
+	 * @return string
+	 * @throws NoUserException
+	 */
+	private function getRealUserId($userId) {
+		if (!$this->userManager->userExists($userId)) {
+			throw new NoUserException($this->l10n->t("This user does not exist"));
+		}
+
+		return $this->userManager->get($userId)
+								 ->getUID();
+	}
 
 	/**
 	 * return if member already exists
