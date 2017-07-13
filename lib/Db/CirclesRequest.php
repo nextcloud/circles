@@ -72,6 +72,37 @@ class CirclesRequest extends CirclesRequestBuilder {
 	}
 
 
+	/**
+	 * forceGetCircleByName();
+	 *
+	 * returns data of a circle from its Name.
+	 *
+	 * WARNING: This function does not filters data regarding the current user/viewer.
+	 *          In case of interaction with users, do not use this method.
+	 *
+	 * @param $name
+	 *
+	 * @return null|Circle
+	 * @throws CircleDoesNotExistException
+	 */
+	public function forceGetCircleByName($name) {
+
+		$qb = $this->getCirclesSelectSql();
+
+		$this->limitToName($qb, $name);
+		$cursor = $qb->execute();
+
+		$data = $cursor->fetch();
+		if ($data === false || $data === null) {
+			throw new CircleDoesNotExistException($this->l10n->t('Circle not found'));
+		}
+
+		$entry = $this->parseCirclesSelectSql($data);
+
+		return $entry;
+	}
+
+
 	public function getCircles($userId, $type = 0, $name = '', $level = 0) {
 		if ($type === 0) {
 			$type = Circle::CIRCLES_ALL;
@@ -172,6 +203,24 @@ class CirclesRequest extends CirclesRequestBuilder {
 			  ->setLevel(Member::LEVEL_OWNER)
 			  ->setStatus(Member::STATUS_MEMBER);
 		$circle->setOwner($owner);
+	}
+
+
+	/**
+	 * remove a circle
+	 *
+	 * @param int $circleId
+	 */
+	public function destroyCircle($circleId) {
+		$qb = $this->getCirclesDeleteSql();
+		$qb->where(
+			$qb->expr()
+			   ->eq(
+				   'id', $qb->createNamedParameter($circleId)
+			   )
+		);
+
+		$qb->execute();
 	}
 
 

@@ -28,7 +28,6 @@ namespace OCA\Circles\Service;
 
 
 use OC\User\NoUserException;
-use OCA\Circles\Db\CirclesMapper;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersMapper;
 use OCA\Circles\Db\MembersRequest;
@@ -54,9 +53,6 @@ class MembersService {
 
 	/** @var ConfigService */
 	private $configService;
-
-	/** @var CirclesMapper */
-	private $dbCircles;
 
 	/** @var MembersMapper */
 	private $dbMembers;
@@ -106,7 +102,6 @@ class MembersService {
 		$this->eventsService = $eventsService;
 		$this->miscService = $miscService;
 
-		$this->dbCircles = $databaseService->getCirclesMapper();
 		$this->dbMembers = $databaseService->getMembersMapper();
 	}
 
@@ -232,7 +227,7 @@ class MembersService {
 
 		} catch (MemberDoesNotExistException $e) {
 			$member = new Member($this->l10n, $name, $circleId);
-			$this->dbMembers->add($member);
+			$this->membersRequest->createMember($member);
 		}
 
 		if ($this->memberAlreadyExist($member)) {

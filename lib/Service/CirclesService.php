@@ -27,7 +27,6 @@
 namespace OCA\Circles\Service;
 
 
-use OCA\Circles\Db\CirclesMapper;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersMapper;
 use OCA\Circles\Db\MembersRequest;
@@ -35,8 +34,8 @@ use OCA\Circles\Exceptions\CircleTypeDisabledException;
 use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\MemberIsNotOwnerException;
-use \OCA\Circles\Model\Circle;
-use \OCA\Circles\Model\Member;
+use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Member;
 use OCP\IL10N;
 
 class CirclesService {
@@ -55,9 +54,6 @@ class CirclesService {
 
 	/** @var MembersRequest */
 	private $membersRequest;
-
-	/** @var CirclesMapper */
-	private $dbCircles;
 
 	/** @var MembersMapper */
 	private $dbMembers;
@@ -99,7 +95,6 @@ class CirclesService {
 		$this->eventsService = $eventsService;
 		$this->miscService = $miscService;
 
-		$this->dbCircles = $databaseService->getCirclesMapper();
 		$this->dbMembers = $databaseService->getMembersMapper();
 	}
 
@@ -135,7 +130,7 @@ class CirclesService {
 			$this->circlesRequest->createCircle($circle, $this->userId);
 			$this->membersRequest->createMember($circle->getOwner());
 		} catch (\Exception $e) {
-			$this->dbCircles->destroy($circle->getId());
+			$this->circlesRequest->destroyCircle($circle->getId());
 			throw $e;
 		}
 
@@ -277,7 +272,7 @@ class CirclesService {
 				$member = $this->dbMembers->getMemberFromCircle($circle->getId(), $this->userId);
 			} catch (MemberDoesNotExistException $m) {
 				$member = new Member($this->l10n, $this->userId, $circle->getId());
-				$this->dbMembers->add($member);
+				$this->membersRequest->createMember($member);
 			}
 
 			$member->hasToBeAbleToJoinTheCircle();
@@ -344,7 +339,7 @@ class CirclesService {
 			$this->eventsService->onCircleDestruction($circle);
 
 			$this->dbMembers->removeAllFromCircle($circleId);
-			$this->dbCircles->destroy($circleId);
+			$this->circlesRequest->destroyCircle($circleId);
 
 		} catch (MemberIsNotOwnerException $e) {
 			throw $e;
@@ -358,7 +353,7 @@ class CirclesService {
 	 * @return Circle|null
 	 */
 	public function infoCircleByName($circleName) {
-		return $this->dbCircles->getDetailsFromCircleByName($circleName);
+		return $this->circlesRequest->forceGetCircleByName($circleName);
 	}
 
 	/**

@@ -27,7 +27,6 @@
 namespace OCA\Circles\Service;
 
 
-use OCA\Circles\Db\CirclesMapper;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersMapper;
 use OCA\Circles\Db\MembersRequest;
@@ -58,9 +57,6 @@ class GroupsService {
 	/** @var MembersRequest */
 	private $membersRequest;
 
-	/** @var CirclesMapper */
-	private $dbCircles;
-
 	/** @var MembersMapper */
 	private $dbMembers;
 
@@ -89,7 +85,6 @@ class GroupsService {
 		$this->membersRequest = $membersRequest;
 		$this->miscService = $miscService;
 
-		$this->dbCircles = $databaseService->getCirclesMapper();
 		$this->dbMembers = $databaseService->getMembersMapper();
 	}
 

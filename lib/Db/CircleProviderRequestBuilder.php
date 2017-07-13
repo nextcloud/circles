@@ -225,7 +225,7 @@ class CircleProviderRequestBuilder {
 				$expr->eq('s.share_with', $expr->castColumn('c.id', IQueryBuilder::PARAM_STR));
 		}
 
-		$qb->from(CirclesMapper::TABLENAME, 'c');
+		$qb->from(CoreRequestBuilder::TABLE_CIRCLES, 'c');
 
 		if ($shareId === -1) {
 			$qb->andWhere($tmpOrX);

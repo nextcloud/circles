@@ -424,6 +424,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * Base of the Sql Insert request for Shares
 	 *
+	 *
 	 * @return IQueryBuilder
 	 */
 	protected function getCirclesInsertSql() {
@@ -449,6 +450,19 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 			   $qb->expr()
 				  ->eq('id', $qb->createNamedParameter($circleId))
 		   );
+
+		return $qb;
+	}
+
+
+	/**
+	 * Base of the Sql Delete request
+	 *
+	 * @return IQueryBuilder
+	 */
+	protected function getCirclesDeleteSql() {
+		$qb = $this->dbConnection->getQueryBuilder();
+		$qb->delete(self::TABLE_CIRCLES);
 
 		return $qb;
 	}

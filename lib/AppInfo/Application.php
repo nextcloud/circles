@@ -35,7 +35,6 @@ use \OCA\Circles\Controller\MembersController;
 
 use OCA\Circles\Controller\SettingsController;
 use OCA\Circles\Controller\SharesController;
-use \OCA\Circles\Db\CirclesMapper;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\FederatedLinksRequest;
 use \OCA\Circles\Db\MembersMapper;
@@ -112,8 +111,7 @@ class Application extends App {
 
 		$container->registerService(
 			'DatabaseService', function(IAppContainer $c) {
-			return new DatabaseService(
-				$c->query('CirclesMapper'), $c->query('MembersMapper')
+			return new DatabaseService($c->query('MembersMapper')
 			);
 		}
 		);
@@ -322,16 +320,6 @@ class Application extends App {
 	 * @param $container
 	 */
 	private static function registerMappers(IAppContainer &$container) {
-
-		$container->registerService(
-			'CirclesMapper', function(IAppContainer $c) {
-			return new CirclesMapper(
-				$c->query('UserId'), $c->query('ServerContainer')
-									   ->getDatabaseConnection(), $c->query('L10N'),
-				$c->query('MembersRequest'), $c->query('MiscService')
-			);
-		}
-		);
 
 		$container->registerService(
 			'MembersMapper', function(IAppContainer $c) {
