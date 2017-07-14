@@ -192,7 +192,7 @@ class GroupsService {
 	 */
 	private function editGroupLevel(Circle $circle, Member &$group, $level) {
 		try {
-			$isMod = $this->membersRequest->forceGetMember($circle->getId(), $this->userId);
+			$isMod = $circle->getHigherViewer();
 			$isMod->hasToBeAdmin();
 			$isMod->hasToBeHigherLevel($level);
 

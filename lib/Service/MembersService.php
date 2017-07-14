@@ -315,7 +315,7 @@ class MembersService {
 	 */
 	private function editMemberLevel(Circle $circle, Member &$member, $level) {
 		try {
-			$isMod = $this->membersRequest->forceGetMember($circle->getId(), $this->userId);
+			$isMod = $circle->getHigherViewer();
 			$isMod->hasToBeModerator();
 			$isMod->hasToBeHigherLevel($level);
 
@@ -337,9 +337,9 @@ class MembersService {
 	 *
 	 * @throws \Exception
 	 */
-	public function switchOwner(Circle $circle, Member &$member) {
+	private function switchOwner(Circle $circle, Member &$member) {
 		try {
-			$isMod = $this->membersRequest->forceGetMember($circle->getId(), $this->userId);
+			$isMod = $circle->getHigherViewer();
 			$isMod->hasToBeOwner();
 
 			$member->cantBeOwner();
