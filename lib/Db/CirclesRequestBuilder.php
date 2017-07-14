@@ -252,33 +252,6 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @param Circle $circle
-	 *
-	 * @deprecated
-	 *
-	 * do nothing.
-	 */
-	protected function filterCircleRegardingViewer(Circle $circle) {
-//		if ($circle->getHigherViewer()
-//				   ->getLevel() < Member::LEVEL_MODERATOR
-//		) {
-//		}
-//		$members = $circle->getMembers();
-//
-//		foreach ($members as $member) {
-//			$member->setNote('ok');
-//		}
-////			$circle->setMembers($members);
-//
-//
-//		foreach ($members as $member) {
-//			$this->miscService->log('note: ' . $member->getNote());
-//		}
-
-
-	}
-
-	/**
 	 * add a request to the members list, using the current user ID.
 	 * will returns level and stuff.
 	 *

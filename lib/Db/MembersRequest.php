@@ -177,10 +177,7 @@ class MembersRequest extends MembersRequestBuilder {
 	private function includeGroupMembers(array &$members, $circleId, $level) {
 
 		$groupMembers = $this->forceGetGroupMembers($circleId, $level);
-		$this->miscService->log(json_encode($members));
-
 		foreach ($groupMembers as $member) {
-
 			$index = $this->indexOfMember($members, $member->getUserId());
 			if ($index === -1) {
 				array_push($members, $member);

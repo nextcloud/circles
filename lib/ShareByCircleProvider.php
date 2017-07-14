@@ -435,7 +435,6 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 		}
 
 		$this->leftJoinShareInitiator($qb);
-
 		$cursor = $qb->execute();
 
 		$shares = [];
