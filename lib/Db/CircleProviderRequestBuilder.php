@@ -66,7 +66,7 @@ class CircleProviderRequestBuilder {
 	 * Limit the request to a Circle.
 	 *
 	 * @param IQueryBuilder $qb
-	 * @param integer $circleId
+	 * @param int $circleId
 	 */
 	protected function limitToCircle(& $qb, $circleId) {
 		$expr = $qb->expr();
@@ -209,7 +209,7 @@ class CircleProviderRequestBuilder {
 	 * @deprecated
 	 *
 	 * @param IQueryBuilder $qb
-	 * @param integer $shareId
+	 * @param int $shareId
 	 */
 	// TODO - put this as a leftjoin
 	protected function linkCircleField(& $qb, $shareId = -1) {

@@ -74,19 +74,20 @@ class MembersRequest extends MembersRequestBuilder {
 	 * WARNING: This function does not filters data regarding the current user/viewer.
 	 *          In case of interaction with users, Please use getMembers() instead.
 	 *
-	 * @param integer $circleId
-	 * @param integer $level
+	 * @param int $circleId
+	 * @param int $level
+	 * @param bool $includeGroupMembers
 	 *
 	 * @return Member[]
 	 */
-	public function forceGetMembers($circleId, $level = Member::LEVEL_MEMBER) {
+	public function forceGetMembers(
+		$circleId, $level = Member::LEVEL_MEMBER, $includeGroupMembers = false
+	) {
+
 		$qb = $this->getMembersSelectSql();
 
 		$this->limitToLevel($qb, $level);
-		$this->rightJoinCircles($qb);
 		$this->limitToCircleId($qb, $circleId);
-
-		$qb->selectAlias('c.name', 'circle_name');
 
 		$members = [];
 		$cursor = $qb->execute();
@@ -95,12 +96,16 @@ class MembersRequest extends MembersRequestBuilder {
 		}
 		$cursor->closeCursor();
 
+		if ($includeGroupMembers === true) {
+			$this->includeGroupMembers($members, $circleId, $level);
+		}
+
 		return $members;
 	}
 
 
 	/**
-	 * @param integer $circleId
+	 * @param int $circleId
 	 * @param Member $viewer
 	 *
 	 * @return Member[]
@@ -152,10 +157,89 @@ class MembersRequest extends MembersRequestBuilder {
 			throw new MemberDoesNotExistException($this->l10n->t('This member does not exist'));
 		}
 
-		$group = Member::fromArray($this->l10n, $data);
+		$group = $this->parseGroupsSelectSql($data);
 		$cursor->closeCursor();
 
 		return $group;
+	}
+
+
+	/**
+	 * includeGroupMembers();
+	 *
+	 * This function will get members of a circle throw NCGroups and fill the result an existing
+	 * Members List. In case of duplicate, higher level will be kept.
+	 *
+	 * @param Member[] $members
+	 * @param int $circleId
+	 * @param int $level
+	 */
+	private function includeGroupMembers(array &$members, $circleId, $level) {
+
+		$groupMembers = $this->forceGetGroupMembers($circleId, $level);
+		$this->miscService->log(json_encode($members));
+
+		foreach ($groupMembers as $member) {
+
+			$index = $this->indexOfMember($members, $member->getUserId());
+			if ($index === -1) {
+				array_push($members, $member);
+			} else if ($members[$index]->getLevel() < $member->getLevel()) {
+				$members[$index] = $member;
+			}
+		}
+	}
+
+
+	/**
+	 * returns the index of a specific UserID in a Members List
+	 *
+	 * @param array $members
+	 * @param $userId
+	 *
+	 * @return int
+	 */
+	private function indexOfMember(array $members, $userId) {
+
+		foreach ($members as $k => $member) {
+			if ($member->getUserId() === $userId) {
+				return intval($k);
+			}
+		}
+
+		return -1;
+	}
+
+
+	/**
+	 * Returns members list of a Group Members of a Circle. The Level of the linked group will be
+	 * assigned to each entry
+	 *
+	 * NOTE: Can contains duplicate.
+	 *
+	 * WARNING: This function does not filters data regarding the current user/viewer.
+	 *          Do not use in case of direct interaction with users.
+	 *
+	 * @param int $circleId
+	 * @param int $level
+	 *
+	 * @return Member[]
+	 */
+	public function forceGetGroupMembers($circleId, $level = Member::LEVEL_MEMBER) {
+		$qb = $this->getGroupsSelectSql();
+
+		$this->limitToLevel($qb, $level);
+		$this->limitToCircleId($qb, $circleId);
+		$this->limitToNCGroupUser($qb);
+
+		$members = [];
+		$cursor = $qb->execute();
+		while ($data = $cursor->fetch()) {
+			$members[] = $this->parseGroupsSelectSql($data);
+		}
+		$cursor->closeCursor();
+
+		return $members;
 	}
 
 
@@ -181,7 +265,7 @@ class MembersRequest extends MembersRequestBuilder {
 
 		$cursor = $qb->execute();
 		while ($data = $cursor->fetch()) {
-			$entry = Member::fromArray($this->l10n, $data);
+			$entry = $this->parseGroupsSelectSql($data);
 			if ($group === null || $entry->getLevel() > $group->getLevel()) {
 				$group = $entry;
 			}
@@ -241,8 +325,7 @@ class MembersRequest extends MembersRequestBuilder {
 			if ($viewer->getLevel() < Member::LEVEL_MODERATOR) {
 				$data['note'] = '';
 			}
-
-			$groups[] = Member::fromArray($this->l10n, $data);
+			$groups[] = $this->parseGroupsSelectSql($data);
 		}
 		$cursor->closeCursor();
 

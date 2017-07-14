@@ -134,7 +134,7 @@ class CoreRequestBuilder {
 	 * Limit the request to a minimum member level.
 	 *
 	 * @param IQueryBuilder $qb
-	 * @param integer $level
+	 * @param int $level
 	 * @param string|array $pf
 	 */
 	protected function limitToLevel(IQueryBuilder &$qb, $level, $pf = '') {
@@ -174,24 +174,25 @@ class CoreRequestBuilder {
 
 	/**
 	 * link to the groupId/UserId of the NC DB.
+	 * If userId is empty, we add the uid of the NCGroup Table in the select list with 'user_id'
+	 * alias
 	 *
 	 * @param IQueryBuilder $qb
 	 * @param string $userId
 	 */
-	protected function limitToNCGroupUser(IQueryBuilder $qb, $userId) {
+	protected function limitToNCGroupUser(IQueryBuilder $qb, $userId = '') {
 		$expr = $qb->expr();
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
 
+		$and = $expr->andX($expr->eq($pf . 'group_id', 'ncgu.gid'));
+		if ($userId !== '') {
+			$and->add($expr->eq('ncgu.uid', $qb->createNamedParameter($userId)));
+		} else {
+			$qb->selectAlias('ncgu.uid', 'user_id');
+		}
+
 		$qb->from(self::NC_TABLE_GROUP_USER, 'ncgu');
-		$qb->andWhere(
-			$expr->andX(
-				$expr->eq($pf . 'group_id', 'ncgu.gid'),
-				$expr->eq(
-					'ncgu.uid',
-					$qb->createNamedParameter($userId)
-				)
-			)
-		);
+		$qb->andWhere($and);
 	}
 
 
@@ -199,6 +200,8 @@ class CoreRequestBuilder {
 	 * Right Join the Circles table
 	 *
 	 * @param IQueryBuilder $qb
+	 *
+	 * @deprecated not used (14/07/17)
 	 */
 	protected function rightJoinCircles(& $qb) {
 		$expr = $qb->expr();

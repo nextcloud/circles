@@ -208,7 +208,8 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$owner->setCircleId($circle->getId())
 			  ->setLevel(Member::LEVEL_OWNER)
 			  ->setStatus(Member::STATUS_MEMBER);
-		$circle->setOwner($owner);
+		$circle->setOwner($owner)
+			   ->setViewer($owner);
 	}
 
 

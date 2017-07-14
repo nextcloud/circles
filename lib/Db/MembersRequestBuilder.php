@@ -162,7 +162,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * Base of the Sql Delete request for Members
 	 *
-	 * @param integer $circleId
+	 * @param int $circleId
 	 * @param string $userId
 	 *
 	 * @return IQueryBuilder
@@ -198,6 +198,27 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		$member->setNote($data['note']);
 		$member->setLevel($data['level']);
 		$member->setStatus($data['status']);
+		$member->setJoined($data['joined']);
+
+		return $member;
+	}
+
+	/**
+	 * @param array $data
+	 *
+	 * @return Member
+	 */
+	protected function parseGroupsSelectSql(array $data) {
+		$member = new Member($this->l10n);
+		$member->setCircleId($data['circle_id']);
+		$member->setNote($data['note']);
+		$member->setLevel($data['level']);
+		$member->setGroupId($data['group_id']);
+
+		if (key_exists('user_id', $data)) {
+			$member->setUserId($data['user_id']);
+		}
+
 		$member->setJoined($data['joined']);
 
 		return $member;

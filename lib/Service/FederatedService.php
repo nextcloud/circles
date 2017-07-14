@@ -260,7 +260,7 @@ class FederatedService {
 	 * in the database and send a request to the remote circle using requestLink()
 	 * If any issue, entry is removed from the database.
 	 *
-	 * @param integer $circleId
+	 * @param int $circleId
 	 * @param string $remote
 	 *
 	 * @return FederatedLink
@@ -715,7 +715,7 @@ class FederatedService {
 	}
 
 	/**
-	 * @param integer $circleId
+	 * @param int $circleId
 	 * @param string $uniqueId
 	 *
 	 * @return FederatedLink
@@ -726,7 +726,7 @@ class FederatedService {
 
 
 	/**
-	 * @param integer $circleId
+	 * @param int $circleId
 	 *
 	 * @return FederatedLink[]
 	 */

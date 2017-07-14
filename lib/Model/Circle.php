@@ -167,26 +167,6 @@ class Circle extends BaseCircle implements \JsonSerializable {
 		return self::fromArray($l10n, json_decode($json, true));
 	}
 
-//
-//
-//	/**
-//	 * set User Infos from Array
-//	 *
-//	 * @param $array
-//	 */
-//	// TODO rewrite the function based of setOwnerMemberFromArray()
-//	private function setUserMemberFromArray($array) {
-//		if (key_exists('status', $array)
-//			&& key_exists('level', $array)
-//			&& key_exists('joined', $array)
-//		) {
-//			$user = new Member($this->l10n);
-//			$user->setStatus($array['status']);
-//			$user->setLevel($array['level']);
-//			$user->setJoined($array['joined']);
-//			$this->setUser($user);
-//		}
-//	}
 
 
 	/**
