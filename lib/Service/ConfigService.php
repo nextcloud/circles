@@ -36,12 +36,14 @@ class ConfigService {
 	const CIRCLES_SWAP_TO_TEAMS = 'swap_to_teams';
 	const CIRCLES_ALLOW_FEDERATED_CIRCLES = 'allow_federated';
 	const CIRCLES_ALLOW_LINKED_GROUPS = 'allow_linked_groups';
+	const CIRCLES_ALLOW_NON_SSL_LINKS = 'allow_non_ssl_links';
 
 	private $defaults = [
 		self::CIRCLES_ALLOW_CIRCLES           => Circle::CIRCLES_ALL,
 		self::CIRCLES_SWAP_TO_TEAMS           => '0',
 		self::CIRCLES_ALLOW_LINKED_GROUPS     => '0',
-		self::CIRCLES_ALLOW_FEDERATED_CIRCLES => '0'
+		self::CIRCLES_ALLOW_FEDERATED_CIRCLES => '0',
+		self::CIRCLES_ALLOW_NON_SSL_LINKS     => '0'
 	];
 
 	/** @var string */
@@ -64,6 +66,9 @@ class ConfigService {
 
 	/** @var int */
 	private $allowedFederatedCircles = -1;
+
+	/** @var int */
+	private $allowedNonSSLLinks = -1;
 
 	public function __construct($appName, IConfig $config, $userId, MiscService $miscService) {
 		$this->appName = $appName;
@@ -108,6 +113,15 @@ class ConfigService {
 		return ($this->allowedFederatedCircles === 1);
 	}
 
+
+	public function isNonSSLLinksAllowed() {
+		if ($this->allowedNonSSLLinks === -1) {
+			$this->allowedNonSSLLinks =
+				(int)$this->getAppValue(self::CIRCLES_ALLOW_NON_SSL_LINKS);
+		}
+
+		return ($this->allowedNonSSLLinks === 1);
+	}
 
 	/**
 	 * Get a value by key

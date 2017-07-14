@@ -86,8 +86,6 @@ class FederatedService {
 	/** @var MiscService */
 	private $miscService;
 
-	/** @var bool */
-	private $localTest = false;
 
 	/**
 	 * CirclesService constructor.
@@ -306,8 +304,9 @@ class FederatedService {
 	 * @return string
 	 */
 	private function generateLinkRemoteURL($remote) {
-//		$this->allowNonSSLLink();
-		if ($this->localTest === false && strpos($remote, 'https') !== 0) {
+		if ((!$this->configService->isNonSSLLinksAllowed() || strpos($remote, 'http://') !== 0)
+			&& strpos($remote, 'https://') !== 0
+		) {
 			$remote = 'https://' . $remote;
 		}
 
@@ -321,17 +320,13 @@ class FederatedService {
 	 * @return string
 	 */
 	private function generatePayloadDeliveryURL($remote) {
-//		$this->allowNonSSLLink();
-		if ($this->localTest === false && strpos($remote, 'https') !== 0) {
+		if ((!$this->configService->isNonSSLLinksAllowed() || strpos($remote, 'http://') !== 0)
+			&& strpos($remote, 'https://') !== 0
+		) {
 			$remote = 'https://' . $remote;
 		}
 
 		return rtrim($remote, '/') . self::REMOTE_URL_PAYLOAD;
-	}
-
-
-	public function allowNonSSLLink() {
-		$this->localTest = true;
 	}
 
 
