@@ -49,7 +49,7 @@ var resultCircles = {
 		elements.removeMemberslistEntry(result.member.user_id);
 		if (result.member.level === define.levelMember) {
 			OCA.notification.onSuccess(
-				t('circles', "You have successfully joined this circle"));
+				t('circles', "You have joined this circle"));
 		} else {
 			OCA.notification.onSuccess(
 				t('circles', "You have requested to join this circle"));
@@ -68,7 +68,7 @@ var resultCircles = {
 
 			actions.selectCircle(result.circle_id);
 			OCA.notification.onSuccess(
-				t('circles', "You have successfully left this circle"));
+				t('circles', "You have left this circle"));
 			return;
 		}
 
@@ -83,7 +83,7 @@ var resultCircles = {
 
 			actions.unselectCircle(result.circle_id);
 			OCA.notification.onSuccess(
-				t('circles', "You have successfully deleted this circle"));
+				t('circles', "You have deleted this circle"));
 			return;
 		}
 
