@@ -560,7 +560,7 @@ var nav = {
 
 
 	displayMembersInteraction: function (details) {
-		if (details.user.level < define.levelModerator) {
+		if (details.viewer.level < define.levelModerator) {
 			elements.buttonAddMember.hide();
 		} else {
 			elements.buttonAddMember.show();
@@ -574,7 +574,7 @@ var nav = {
 
 		this.displayNonMemberInteraction(details);
 
-		if (details.user.level === define.levelOwner) {
+		if (details.viewer.level === define.levelOwner) {
 			elements.destroyCircle.show();
 			elements.buttonCircleSettings.show();
 			elements.buttonJoinCircle.hide();
@@ -584,7 +584,7 @@ var nav = {
 
 	displayMemberInteractionGroupLinks: function (details) {
 		if (curr.allowed_linked_groups === '0' ||
-			details.user.level < define.levelAdmin
+			details.viewer.level < define.levelAdmin
 		) {
 			elements.buttonLinkGroup.hide();
 		}
@@ -598,7 +598,7 @@ var nav = {
 		if (curr.allowed_federated_circles === '0' ||
 			curr.circleSettings['allow_links'] !== 'true' ||
 			details.type === 'Personal' ||
-			details.user.level < define.levelAdmin
+			details.viewer.level < define.levelAdmin
 		) {
 			elements.buttonLinkCircle.hide();
 		}
@@ -626,7 +626,7 @@ var nav = {
 			return;
 		}
 
-		if (details.user.level > 0) {
+		if (details.viewer.level > 0) {
 			return;
 		}
 

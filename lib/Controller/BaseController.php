@@ -117,6 +117,7 @@ class BaseController extends Controller {
 	 * @return DataResponse
 	 */
 	protected function fail($data) {
+		$this->miscService->log(json_encode($data));
 		return new DataResponse(
 			array_merge($data, array('status' => 0)),
 			Http::STATUS_NON_AUTHORATIVE_INFORMATION

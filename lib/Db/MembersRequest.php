@@ -36,10 +36,99 @@ use OCA\Circles\Model\Member;
 class MembersRequest extends MembersRequestBuilder {
 
 
-	public function getMember($circleId, $userId) {
+	/**
+	 * Returns information about a member.
+	 *
+	 * WARNING: This function does not filters data regarding the current user/viewer.
+	 *          In case of interaction with users, Please use MembersService->getMember() instead.
+	 *
+	 * @param $circleId
+	 * @param $userId
+	 *
+	 * @return Member
+	 * @throws MemberDoesNotExistException
+	 */
+	public function forceGetMember($circleId, $userId) {
+		$qb = $this->getMembersSelectSql();
 
+		$this->limitToUserId($qb, $userId);
+		$this->limitToCircleId($qb, $circleId);
+
+		$cursor = $qb->execute();
+		$data = $cursor->fetch();
+		$cursor->closeCursor();
+
+		if ($data === false) {
+			throw new MemberDoesNotExistException($this->l10n->t('This member does not exist'));
+		}
+
+		$member = $this->parseMembersSelectSql($data);
+
+		return $member;
 	}
 
+
+	/**
+	 * Returns members list of a circle, based on their level.
+	 *
+	 * WARNING: This function does not filters data regarding the current user/viewer.
+	 *          In case of interaction with users, Please use getMembers() instead.
+	 *
+	 * @param int $circleId
+	 * @param int $level
+	 * @param bool $includeGroupMembers
+	 *
+	 * @return Member[]
+	 */
+	public function forceGetMembers(
+		$circleId, $level = Member::LEVEL_MEMBER, $includeGroupMembers = false
+	) {
+
+		$qb = $this->getMembersSelectSql();
+
+		$this->limitToLevel($qb, $level);
+		$this->limitToCircleId($qb, $circleId);
+
+		$members = [];
+		$cursor = $qb->execute();
+		while ($data = $cursor->fetch()) {
+			$members[] = $this->parseMembersSelectSql($data);
+		}
+		$cursor->closeCursor();
+
+		if ($includeGroupMembers === true) {
+			$this->includeGroupMembers($members, $circleId, $level);
+		}
+
+		return $members;
+	}
+
+
+	/**
+	 * @param int $circleId
+	 * @param Member $viewer
+	 *
+	 * @return Member[]
+	 * @throws \Exception
+	 */
+	public function getMembers($circleId, Member $viewer) {
+		try {
+			$viewer->hasToBeMember();
+
+			$members = $this->forceGetMembers($circleId, Member::LEVEL_MEMBER);
+			if (!$viewer->isLevel(Member::LEVEL_MODERATOR)) {
+				array_map(
+					function(Member $m) {
+						$m->setNote('');
+					}, $members
+				);
+			}
+
+			return $members;
+		} catch (\Exception $e) {
+			return [];
+		}
+	}
 
 
 	/**
@@ -68,17 +157,147 @@ class MembersRequest extends MembersRequestBuilder {
 			throw new MemberDoesNotExistException($this->l10n->t('This member does not exist'));
 		}
 
-		$group = Member::fromArray($this->l10n, $data);
+		$group = $this->parseGroupsSelectSql($data);
 		$cursor->closeCursor();
 
 		return $group;
 	}
 
 
-	// TODO - returns data of a group from a Viewer POV
-	public function getGroup($circleId, $groupId, $viewer) {
+	/**
+	 * includeGroupMembers();
+	 *
+	 * This function will get members of a circle throw NCGroups and fill the result an existing
+	 * Members List. In case of duplicate, higher level will be kept.
+	 *
+	 * @param Member[] $members
+	 * @param int $circleId
+	 * @param int $level
+	 */
+	private function includeGroupMembers(array &$members, $circleId, $level) {
 
+		$groupMembers = $this->forceGetGroupMembers($circleId, $level);
+		foreach ($groupMembers as $member) {
+			$index = $this->indexOfMember($members, $member->getUserId());
+			if ($index === -1) {
+				array_push($members, $member);
+			} else if ($members[$index]->getLevel() < $member->getLevel()) {
+				$members[$index] = $member;
+			}
+		}
 	}
+
+
+	/**
+	 * returns the index of a specific UserID in a Members List
+	 *
+	 * @param array $members
+	 * @param $userId
+	 *
+	 * @return int
+	 */
+	private function indexOfMember(array $members, $userId) {
+
+		foreach ($members as $k => $member) {
+			if ($member->getUserId() === $userId) {
+				return intval($k);
+			}
+		}
+
+		return -1;
+	}
+
+
+	/**
+	 * Returns members list of a Group Members of a Circle. The Level of the linked group will be
+	 * assigned to each entry
+	 *
+	 * NOTE: Can contains duplicate.
+	 *
+	 * WARNING: This function does not filters data regarding the current user/viewer.
+	 *          Do not use in case of direct interaction with users.
+	 *
+	 * @param int $circleId
+	 * @param int $level
+	 *
+	 * @return Member[]
+	 */
+	public function forceGetGroupMembers($circleId, $level = Member::LEVEL_MEMBER) {
+		$qb = $this->getGroupsSelectSql();
+
+		$this->limitToLevel($qb, $level);
+		$this->limitToCircleId($qb, $circleId);
+		$this->limitToNCGroupUser($qb);
+
+		$members = [];
+		$cursor = $qb->execute();
+		while ($data = $cursor->fetch()) {
+			$members[] = $this->parseGroupsSelectSql($data);
+		}
+		$cursor->closeCursor();
+
+		return $members;
+	}
+
+
+	/**
+	 * return the higher level group linked to a circle, that include the userId.
+	 *
+	 * WARNING: This function does not filters data regarding the current user/viewer.
+	 *          In case of direct interaction with users, Please don't use this.
+	 *
+	 * @param int $circleId
+	 * @param string $userId
+	 *
+	 * @return Member
+	 */
+	public function forceGetHigherLevelGroupFromUser($circleId, $userId) {
+		$qb = $this->getGroupsSelectSql();
+
+		$this->limitToCircleId($qb, $circleId);
+		$this->limitToNCGroupUser($qb, $userId);
+
+		/** @var Member $group */
+		$group = null;
+
+		$cursor = $qb->execute();
+		while ($data = $cursor->fetch()) {
+			$entry = $this->parseGroupsSelectSql($data);
+			if ($group === null || $entry->getLevel() > $group->getLevel()) {
+				$group = $entry;
+			}
+		}
+		$cursor->closeCursor();
+
+		return $group;
+	}
+
+
+	/**
+	 * Insert Member into database.
+	 *
+	 * @param Member $member
+	 *
+	 * @throws MemberAlreadyExistsException
+	 */
+	public function createMember(Member $member) {
+
+		try {
+			$qb = $this->getMembersInsertSql();
+			$qb->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
+			   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
+			   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
+			   ->setValue('status', $qb->createNamedParameter($member->getStatus()))
+			   ->setValue('note', $qb->createNamedParameter($member->getNote()));
+
+			$qb->execute();
+		} catch (UniqueConstraintViolationException $e) {
+			throw new MemberAlreadyExistsException(
+				$this->l10n->t('This user is already a member of the circle')
+			);
+		}
+	}
+
 
 	/**
 	 * @param int $circleId
@@ -103,8 +322,7 @@ class MembersRequest extends MembersRequestBuilder {
 			if ($viewer->getLevel() < Member::LEVEL_MODERATOR) {
 				$data['note'] = '';
 			}
-
-			$groups[] = Member::fromArray($this->l10n, $data);
+			$groups[] = $this->parseGroupsSelectSql($data);
 		}
 		$cursor->closeCursor();
 
@@ -137,13 +355,63 @@ class MembersRequest extends MembersRequestBuilder {
 
 
 	/**
+	 * update database entry for a specific Member.
+	 *
+	 * @param Member $member
+	 *
+	 * @return bool
+	 */
+	public function updateMember(Member $member) {
+		$qb = $this->getMembersUpdateSql($member->getCircleId(), $member->getUserId());
+		$qb->set('level', $qb->createNamedParameter($member->getLevel()))
+		   ->set('status', $qb->createNamedParameter($member->getStatus()));
+
+		$qb->execute();
+	}
+
+
+	/**
+	 * removeAllFromCircle();
+	 *
+	 * Remove All members from a Circle. Used when deleting a Circle.
+	 *
+	 * @param $circleId
+	 */
+	public function removeAllFromCircle($circleId) {
+		if ($circleId === 0) {
+			return;
+		}
+
+		$qb = $this->getMembersDeleteSql($circleId, '');
+		$qb->execute();
+	}
+
+
+	/**
+	 * removeAllFromUser();
+	 *
+	 * remove All membership from a User. Used when removing a User from the Cloud.
+	 *
+	 * @param $userId
+	 */
+	public function removeAllFromUser($userId) {
+		if ($userId === '') {
+			return;
+		}
+
+		$qb = $this->getMembersDeleteSql(0, $userId);
+		$qb->execute();
+	}
+
+
+	/**
 	 * update database entry for a specific Group.
 	 *
 	 * @param Member $member
 	 *
 	 * @return bool
 	 */
-	public function editGroup(Member $member) {
+	public function updateGroup(Member $member) {
 
 		$qb = $this->getGroupsUpdateSql($member->getCircleId(), $member->getGroupId());
 		$qb->set('level', $qb->createNamedParameter($member->getLevel()));
@@ -153,7 +421,7 @@ class MembersRequest extends MembersRequestBuilder {
 	}
 
 
-	public function unlinkAllFromGroupId($groupId) {
+	public function unlinkAllFromGroup($groupId) {
 		$qb = $this->getGroupsDeleteSql($groupId);
 		$qb->execute();
 	}

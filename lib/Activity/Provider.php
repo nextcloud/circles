@@ -57,9 +57,32 @@ class Provider implements IProvider {
 			throw new \InvalidArgumentException();
 		}
 
-		$params = $event->getSubjectParameters();
-		$circle = Circle::fromJSON($this->l10n, $params['circle']);
+		try {
+			$params = $event->getSubjectParameters();
+			$circle = Circle::fromJSON($this->l10n, $params['circle']);
 
+			$this->verifyCircleIntegrity($circle);
+			$this->setIcon($event, $circle);
+			$this->parseAsMember($event, $circle, $params);
+			$this->parseAsModerator($event, $circle, $params);
+
+			$this->generateParsedSubject($event);
+
+			return $event;
+		} catch (\Exception $e) {
+			throw new \InvalidArgumentException();
+		}
+	}
+
+
+	private function verifyCircleIntegrity(Circle $circle) {
+		if ($circle->getViewer() === null) {
+			throw new \InvalidArgumentException();
+		}
+	}
+
+
+	private function setIcon(IEvent &$event, Circle $circle) {
 		$event->setIcon(
 			CirclesService::getCircleIcon(
 				$circle->getType(),
@@ -67,15 +90,7 @@ class Provider implements IProvider {
 				 && $this->activityManager->getRequirePNG())
 			)
 		);
-
-		$event = $this->parseAsMember($circle, $event, $params);
-		$event = $this->parseAsModerator($circle, $event, $params);
-
-		$this->generateParsedSubject($event);
-
-		return $event;
 	}
-
 
 	/**
 	 * @param Circle $circle
@@ -84,7 +99,7 @@ class Provider implements IProvider {
 	 *
 	 * @return IEvent
 	 */
-	private function parseAsMember(Circle $circle, IEvent $event, $params) {
+	private function parseAsMember(IEvent &$event, Circle $circle, $params) {
 		if ($event->getType() !== 'circles_as_member') {
 			return $event;
 		}
@@ -92,21 +107,21 @@ class Provider implements IProvider {
 		switch ($event->getSubject()) {
 			case 'circle_create':
 				return $this->parseCircleEvent(
-					$circle, null, $event,
+					$event, $circle, null,
 					$this->l10n->t('You created the circle {circle}'),
 					$this->l10n->t('{author} created the circle {circle}')
 				);
 
 			case 'circle_delete':
 				return $this->parseCircleEvent(
-					$circle, null, $event,
+					$event, $circle, null,
 					$this->l10n->t('You deleted {circle}'),
 					$this->l10n->t('{author} deleted {circle}')
 				);
 		}
 
 		if (key_exists('member', $params)) {
-			$event = $this->parseMemberAsMember($circle, $event);
+			$this->parseMemberAsMember($event, $circle);
 		}
 
 		return $event;
@@ -119,21 +134,21 @@ class Provider implements IProvider {
 	 *
 	 * @return IEvent
 	 */
-	private function parseMemberAsMember(Circle $circle, IEvent $event) {
+	private function parseMemberAsMember(IEvent &$event, Circle $circle) {
 		$params = $event->getSubjectParameters();
 		$member = Member::fromJSON($this->l10n, $params['member']);
 
 		switch ($event->getSubject()) {
 			case 'member_join':
 				return $this->parseCircleMemberEvent(
-					$circle, $member, $event,
+					$event, $circle, $member,
 					$this->l10n->t('You joined {circle}'),
 					$this->l10n->t('{member} joined {circle}')
 				);
 
 			case 'member_add':
 				return $this->parseCircleMemberAdvancedEvent(
-					$circle, $member, $event,
+					$event, $circle, $member,
 					$this->l10n->t('You added {member} as member to {circle}'),
 					$this->l10n->t('You were added as member to {circle} by {author}'),
 					$this->l10n->t('{member} was added as member to {circle} by {author}')
@@ -141,14 +156,14 @@ class Provider implements IProvider {
 
 			case 'member_left':
 				return $this->parseCircleMemberEvent(
-					$circle, $member, $event,
+					$event, $circle, $member,
 					$this->l10n->t('You left {circle}'),
 					$this->l10n->t('{member} left {circle}')
 				);
 
 			case 'member_remove':
 				return $this->parseCircleMemberAdvancedEvent(
-					$circle, $member, $event,
+					$event, $circle, $member,
 					$this->l10n->t('You removed {member} from {circle}'),
 					$this->l10n->t('You were removed from {circle} by {author}'),
 					$this->l10n->t('{member} was removed from {circle} by {author}')
@@ -167,18 +182,18 @@ class Provider implements IProvider {
 	 * @return IEvent
 	 * @throws Exception
 	 */
-	private function parseAsModerator(Circle $circle, IEvent $event, $params) {
+	private function parseAsModerator(IEvent &$event, Circle $circle, $params) {
 		if ($event->getType() !== 'circles_as_moderator') {
 			return $event;
 		}
 
 		try {
 			if (key_exists('member', $params)) {
-				return $this->parseMemberAsModerator($circle, $event);
+				return $this->parseMemberAsModerator($event, $circle);
 			}
 
 			if (key_exists('link', $params)) {
-				return $this->parseLinkAsModerator($circle, $event);
+				return $this->parseLinkAsModerator($event, $circle);
 			}
 
 			throw new InvalidArgumentError();
@@ -195,7 +210,7 @@ class Provider implements IProvider {
 	 *
 	 * @return IEvent
 	 */
-	private function parseMemberAsModerator(Circle $circle, IEvent $event) {
+	private function parseMemberAsModerator(IEvent &$event, Circle $circle) {
 
 		$params = $event->getSubjectParameters();
 		$member = Member::fromJSON($this->l10n, $params['member']);
@@ -203,7 +218,7 @@ class Provider implements IProvider {
 		switch ($event->getSubject()) {
 			case 'member_invited':
 				return $this->parseCircleMemberAdvancedEvent(
-					$circle, $member, $event,
+					$event, $circle, $member,
 					$this->l10n->t('You invited {member} into {circle}'),
 					$this->l10n->t('You have been invited into {circle} by {author}'),
 					$this->l10n->t('{member} have been invited into {circle} by {author}')
@@ -213,7 +228,7 @@ class Provider implements IProvider {
 				$level = [$this->l10n->t($member->getLevelString())];
 
 				return $this->parseCircleMemberAdvancedEvent(
-					$circle, $member, $event,
+					$event, $circle, $member,
 					$this->l10n->t('You changed {member}\'s level in {circle} to %1$s', $level),
 					$this->l10n->t('{author} changed your level in {circle} to %1$s', $level),
 					$this->l10n->t('{author} changed {member}\'s level in {circle} to %1$s', $level)
@@ -221,7 +236,7 @@ class Provider implements IProvider {
 
 			case 'member_request_invitation':
 				return $this->parseMemberEvent(
-					$circle, $member, $event,
+					$event, $circle, $member,
 					$this->l10n->t('You requested an invitation to {circle}'),
 					$this->l10n->t(
 						'{member} has requested an invitation into {circle}'
@@ -230,7 +245,7 @@ class Provider implements IProvider {
 
 			case 'member_owner':
 				return $this->parseMemberEvent(
-					$circle, $member, $event,
+					$event, $circle, $member,
 					$this->l10n->t('You are the new owner of {circle}'),
 					$this->l10n->t('{member} is the new owner of {circle}')
 				);
@@ -246,7 +261,7 @@ class Provider implements IProvider {
 	 *
 	 * @return IEvent
 	 */
-	private function parseLinkAsModerator(Circle $circle, IEvent $event) {
+	private function parseLinkAsModerator(IEvent &$event, Circle $circle) {
 
 		$params = $event->getSubjectParameters();
 		$link = FederatedLink::fromJSON($params['link']);
@@ -254,27 +269,27 @@ class Provider implements IProvider {
 		switch ($event->getSubject()) {
 			case 'link_request_sent':
 				return $this->parseCircleEvent(
-					$circle, $link, $event,
+					$event, $circle, $link,
 					$this->l10n->t('You sent a request to link {circle} with {link}'),
 					$this->l10n->t('{author} sent a request to link {circle} with {link}')
 				);
 
 			case 'link_request_received';
 				return $this->parseLinkEvent(
-					$circle, $link, $event,
+					$event, $circle, $link,
 					$this->l10n->t('{link} requested a link with {circle}')
 				);
 
 			case 'link_request_rejected';
 				return $this->parseLinkEvent(
-					$circle, $link, $event, $this->l10n->t(
+					$event, $circle, $link, $this->l10n->t(
 					'The request to link {circle} with {link} has been rejected'
 				)
 				);
 
 			case 'link_request_canceled':
 				return $this->parseLinkEvent(
-					$circle, $link, $event,
+					$event, $circle, $link,
 					$this->l10n->t(
 						'The request to link {link} with {circle} has been canceled remotely'
 					)
@@ -282,40 +297,40 @@ class Provider implements IProvider {
 
 			case 'link_request_accepted':
 				return $this->parseLinkEvent(
-					$circle, $link, $event,
+					$event, $circle, $link,
 					$this->l10n->t('The request to link {circle} with {link} has been accepted')
 				);
 
 			case 'link_request_removed':
 				return $this->parseCircleEvent(
-					$circle, $link, $event,
+					$event, $circle, $link,
 					$this->l10n->t('You dismissed the request to link {link} with {circle}'),
 					$this->l10n->t('{author} dismissed the request to link {link} with {circle}')
 				);
 
 			case 'link_request_canceling':
 				return $this->parseCircleEvent(
-					$circle, $link, $event,
+					$event, $circle, $link,
 					$this->l10n->t('You canceled the request to link {circle} with {link}'),
 					$this->l10n->t('{author} canceled the request to link {circle} with {link}')
 				);
 
 			case 'link_request_accepting':
 				return $this->parseCircleEvent(
-					$circle, $link, $event,
+					$event, $circle, $link,
 					$this->l10n->t('You accepted the request to link {link} with {circle}'),
 					$this->l10n->t('{author} accepted the request to link {link} with {circle}')
 				);
 
 			case 'link_up':
 				return $this->parseLinkEvent(
-					$circle, $link, $event,
+					$event, $circle, $link,
 					$this->l10n->t('A link between {circle} and {link} is now up and running')
 				);
 
 			case 'link_down':
 				return $this->parseLinkEvent(
-					$circle, $link, $event,
+					$event, $circle, $link,
 					$this->l10n->t(
 						'The link between {circle} and {link} has been shutdown remotely'
 					)
@@ -323,7 +338,7 @@ class Provider implements IProvider {
 
 			case 'link_remove':
 				return $this->parseCircleEvent(
-					$circle, $link, $event,
+					$event, $circle, $link,
 					$this->l10n->t('You closed the link between {circle} and {link}'),
 					$this->l10n->t('{author} closed the link between {circle} and {link}')
 				);
@@ -344,7 +359,7 @@ class Provider implements IProvider {
 	 *
 	 * @return IEvent
 	 */
-	private function parseCircleEvent(Circle $circle, $link, IEvent $event, $ownEvent, $othersEvent
+	private function parseCircleEvent(IEvent &$event, Circle $circle, $link, $ownEvent, $othersEvent
 	) {
 		$data = [
 			'author' => $author = $this->generateUserParameter(
@@ -377,7 +392,7 @@ class Provider implements IProvider {
 	 * @return IEvent
 	 */
 	private function parseMemberEvent(
-		Circle $circle, Member $member, IEvent $event, $ownEvent, $othersEvent
+		IEvent &$event, Circle $circle, Member $member, $ownEvent, $othersEvent
 	) {
 		$data = [
 			'circle' => $this->generateCircleParameter($circle),
@@ -403,7 +418,7 @@ class Provider implements IProvider {
 	 *
 	 * @return IEvent
 	 */
-	private function parseLinkEvent(Circle $circle, FederatedLink $link, IEvent $event, $line) {
+	private function parseLinkEvent(IEvent &$event, Circle $circle, FederatedLink $link, $line) {
 		$data = [
 			'circle' => $this->generateCircleParameter($circle),
 			'link'   => $this->generateLinkParameter($link)
@@ -425,7 +440,7 @@ class Provider implements IProvider {
 	 * @return IEvent
 	 */
 	private function parseCircleMemberEvent(
-		Circle $circle, Member $member, IEvent $event, $ownEvent, $othersEvent
+		IEvent &$event, Circle $circle, Member $member, $ownEvent, $othersEvent
 	) {
 		$data = [
 			'circle' => $this->generateCircleParameter($circle),
@@ -456,7 +471,7 @@ class Provider implements IProvider {
 	 * @return IEvent
 	 */
 	private function parseCircleMemberAdvancedEvent(
-		Circle $circle, Member $member, IEvent $event, $ownEvent, $targetEvent, $othersEvent
+		IEvent &$event, Circle $circle, Member $member, $ownEvent, $targetEvent, $othersEvent
 	) {
 
 		$data = [
@@ -485,7 +500,7 @@ class Provider implements IProvider {
 	/**
 	 * @param IEvent $event
 	 */
-	private function generateParsedSubject(IEvent $event) {
+	private function generateParsedSubject(IEvent &$event) {
 		$subject = $event->getRichSubject();
 		$params = $event->getRichSubjectParameters();
 		$ak = array_keys($params);

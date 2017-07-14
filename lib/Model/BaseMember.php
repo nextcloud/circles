@@ -53,7 +53,7 @@ class BaseMember implements \JsonSerializable {
 	private $userId;
 
 	/** @var string */
-	private $groupId;
+	private $groupId = '';
 
 	/** @var string */
 	private $displayName;
@@ -109,14 +109,24 @@ class BaseMember implements \JsonSerializable {
 	}
 
 
+	public function getViewerType() {
+		if ($this->getGroupId() !== '') {
+			return 'group';
+		} else {
+			return 'user';
+		}
+	}
+
 	public function setUserId($userId) {
 		$this->userId = $userId;
 
-		$this->setDisplayName(
-			\OC::$server->getUserManager()
-						->get($userId)
-						->getDisplayName()
-		);
+		if ($userId !== null) {
+			$this->setDisplayName(
+				\OC::$server->getUserManager()
+							->get($userId)
+							->getDisplayName()
+			);
+		}
 
 		return $this;
 	}
@@ -245,6 +255,7 @@ class BaseMember implements \JsonSerializable {
 			'circle_id'    => $this->getCircleId(),
 			'user_id'      => $this->getUserId(),
 			'group_id'     => $this->getGroupId(),
+			'type'         => $this->getViewerType(),
 			'display_name' => $this->getDisplayNAme(),
 			'level'        => $this->getLevel(),
 			'level_string' => $this->getLevelString(),

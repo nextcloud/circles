@@ -40,7 +40,7 @@ use OCA\Circles\Exceptions\FederatedCircleStatusUpdateException;
 use OCA\Circles\Exceptions\FederatedRemoteCircleDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedRemoteDoesNotAllowException;
 use OCA\Circles\Exceptions\FederatedRemoteIsDown;
-use OCA\Circles\Exceptions\FrameAlreadyExistException;
+use OCA\Circles\Exceptions\SharingFrameAlreadyExistException;
 use OCA\Circles\Exceptions\LinkCreationException;
 use OCA\Circles\Exceptions\MemberIsNotAdminException;
 use OCA\Circles\Model\Circle;
@@ -197,7 +197,7 @@ class FederatedService {
 			$link = $this->circlesRequest->getLinkFromId($linkId);
 			$circle = $this->circlesRequest->getCircle($link->getCircleId(), $this->userId);
 			$circle->hasToBeFederated();
-			$circle->getViewer()
+			$circle->getHigherViewer()
 				   ->hasToBeAdmin();
 			$link->hasToBeValidStatusUpdate($status);
 
@@ -260,7 +260,7 @@ class FederatedService {
 	 * in the database and send a request to the remote circle using requestLink()
 	 * If any issue, entry is removed from the database.
 	 *
-	 * @param integer $circleId
+	 * @param int $circleId
 	 * @param string $remote
 	 *
 	 * @return FederatedLink
@@ -273,7 +273,7 @@ class FederatedService {
 			list($remoteCircle, $remoteAddress) = explode('@', $remote, 2);
 
 			$circle = $this->circlesService->detailsCircle($circleId);
-			$circle->getViewer()
+			$circle->getHigherViewer()
 				   ->hasToBeAdmin();
 			$circle->hasToBeFederated();
 			$circle->cantBePersonal();
@@ -306,7 +306,7 @@ class FederatedService {
 	 * @return string
 	 */
 	private function generateLinkRemoteURL($remote) {
-//		$this->allowNonSSLLink();
+		$this->allowNonSSLLink();
 		if ($this->localTest === false && strpos($remote, 'https') !== 0) {
 			$remote = 'https://' . $remote;
 		}
@@ -321,7 +321,7 @@ class FederatedService {
 	 * @return string
 	 */
 	private function generatePayloadDeliveryURL($remote) {
-//		$this->allowNonSSLLink();
+		$this->allowNonSSLLink();
 		if ($this->localTest === false && strpos($remote, 'https') !== 0) {
 			$remote = 'https://' . $remote;
 		}
@@ -696,7 +696,7 @@ class FederatedService {
 
 		if ($this->circlesRequest->getFrame($link->getCircleId(), $frame->getUniqueId())) {
 			//		$this->miscService->log("Frame already exist");
-			throw new FrameAlreadyExistException('shares_is_already_known');
+			throw new SharingFrameAlreadyExistException('shares_is_already_known');
 		}
 
 		try {
@@ -715,7 +715,7 @@ class FederatedService {
 	}
 
 	/**
-	 * @param integer $circleId
+	 * @param int $circleId
 	 * @param string $uniqueId
 	 *
 	 * @return FederatedLink
@@ -726,7 +726,7 @@ class FederatedService {
 
 
 	/**
-	 * @param integer $circleId
+	 * @param int $circleId
 	 *
 	 * @return FederatedLink[]
 	 */

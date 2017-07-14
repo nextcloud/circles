@@ -149,7 +149,7 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 
 			$circle =
 				$this->circlesRequest->getCircle($share->getSharedWith(), $share->getSharedby());
-			$circle->getViewer()
+			$circle->getHigherViewer()
 				   ->hasToBeMember();
 
 			$shareId = $this->createShare($share);
@@ -435,7 +435,6 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 		}
 
 		$this->leftJoinShareInitiator($qb);
-
 		$cursor = $qb->execute();
 
 		$shares = [];

@@ -24,41 +24,9 @@
  *
  */
 
-namespace OCA\Circles\Db;
+namespace OCA\Circles\Exceptions;
 
-use \OCA\Circles\Model\Circle;
-use OCP\AppFramework\Db\Entity;
-
-class Circles extends Entity {
-
-
-	public $id;
-	public $uniqueId;
-	public $name;
-	public $description;
-	public $settings;
-	public $type;
-	public $creation;
-	public $members;
-
-
-	/**
-	 * Circles constructor.
-	 *
-	 * @param Circle|null $item
-	 */
-	public function __construct(Circle $item = null) {
-		if ($item != null) {
-			$this->setId($item->getId());
-			$this->setUniqueId($item->getUniqueId(true));
-			$this->setName($item->getName());
-			$this->setDescription($item->getDescription());
-			$this->setSettings($item->getSettings());
-			$this->setType($item->getType());
-			$this->setCreation($item->getCreation());
-			$this->setMembers($item->getMembers());
-		}
-	}
+class SharingFrameAlreadyExistException extends \Exception {
 
 }
 

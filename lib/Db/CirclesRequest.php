@@ -29,8 +29,10 @@ namespace OCA\Circles\Db;
 
 
 use OC\L10N\L10N;
+use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedLinkDoesNotExistException;
+use OCA\Circles\Exceptions\SharingFrameDoesNotEXist;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
@@ -47,7 +49,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 * returns data of a circle from its Id.
 	 *
 	 * WARNING: This function does not filters data regarding the current user/viewer.
-	 *          In case of interaction with users, Please use getGroup() instead.
+	 *          In case of interaction with users, Please use getCircle() instead.
 	 *
 	 * @param int $circleId
 	 *
@@ -56,11 +58,14 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 */
 	public function forceGetCircle($circleId) {
 		$qb = $this->getCirclesSelectSql();
-		$this->limitToId($qb, $circleId);
-		$cursor = $qb->execute();
 
+		$this->limitToId($qb, $circleId);
+
+		$cursor = $qb->execute();
 		$data = $cursor->fetch();
-		if ($data === false || $data === null) {
+		$cursor->closeCursor();
+
+		if ($data === false) {
 			throw new CircleDoesNotExistException($this->l10n->t('Circle not found'));
 		}
 
@@ -71,38 +76,214 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 
 	/**
+	 * forceGetCircleByName();
+	 *
+	 * returns data of a circle from its Name.
+	 *
+	 * WARNING: This function does not filters data regarding the current user/viewer.
+	 *          In case of interaction with users, do not use this method.
+	 *
+	 * @param $name
+	 *
+	 * @return null|Circle
+	 * @throws CircleDoesNotExistException
+	 */
+	public function forceGetCircleByName($name) {
+
+		$qb = $this->getCirclesSelectSql();
+
+		$this->limitToName($qb, $name);
+
+		$cursor = $qb->execute();
+		$data = $cursor->fetch();
+		$cursor->closeCursor();
+
+		if ($data === false) {
+			throw new CircleDoesNotExistException($this->l10n->t('Circle not found'));
+		}
+
+		$entry = $this->parseCirclesSelectSql($data);
+
+		return $entry;
+	}
+
+
+	public function getCircles($userId, $type = 0, $name = '', $level = 0) {
+		if ($type === 0) {
+			$type = Circle::CIRCLES_ALL;
+		}
+
+		$qb = $this->getCirclesSelectSql();
+		$this->leftJoinUserIdAsViewer($qb, $userId);
+		$this->leftJoinOwner($qb);
+		$this->leftJoinGroups($qb, 'c.id');
+		$this->leftJoinNCGroupAndUser($qb, 'g.group_id', $userId);
+
+		if ($level > 0) {
+			$this->limitToLevel($qb, $level, ['u', 'g']);
+		}
+		$this->limitRegardingCircleType($qb, $userId, -1, $type, $name);
+
+		$result = [];
+		$cursor = $qb->execute();
+		while ($data = $cursor->fetch()) {
+			if ($name === '' || stripos(strtolower($data['name']), strtolower($name)) !== false) {
+				$result[] = $this->parseCirclesSelectSql($data);
+			}
+		}
+		$cursor->closeCursor();
+
+		return $result;
+	}
+
+
+	/**
 	 *
 	 * @param int $circleId
-	 * @param string $userId
+	 * @param string $viewerId
 	 *
 	 * @return Circle
 	 * @throws CircleDoesNotExistException
 	 */
-	// TODO: Filters data
-	public function getCircle($circleId, $userId) {
+	public function getCircle($circleId, $viewerId) {
 		$qb = $this->getCirclesSelectSql();
 
 		$this->limitToId($qb, $circleId);
-		$this->leftJoinUserIdAsViewer($qb, $userId);
 
+		$this->leftJoinUserIdAsViewer($qb, $viewerId);
+		$this->leftJoinOwner($qb);
+		$this->leftJoinGroups($qb, 'c.id');
+		$this->leftJoinNCGroupAndUser($qb, 'g.group_id', $viewerId);
 
-//		$this->leftjoinOwner($qb);
-//		$this->buildWithMemberLevel($qb, 'u.level', $level);
-//		$this->buildWithCircleId($qb, 'c.id', $circleId);
-//		$this->buildWithOrXTypes($qb, $userId, $type, $name, $circleId);
+		$this->limitRegardingCircleType($qb, $viewerId, $circleId, Circle::CIRCLES_ALL, '');
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
-		if ($data === false || $data === null) {
-			throw new CircleDoesNotExistException(
-				$this->l10n->t('Circle not found')
-			);
+		$cursor->closeCursor();
+
+		if ($data === false) {
+			throw new CircleDoesNotExistException($this->l10n->t('Circle not found'));
 		}
 
 		$circle = $this->parseCirclesSelectSql($data);
+		$circle->setGroupViewer(
+			$this->membersRequest->forceGetHigherLevelGroupFromUser($circleId, $viewerId)
+		);
 
-//		if ($circle->getUser()->getLevel)
 		return $circle;
+	}
+
+
+	/**
+	 * createCircle();
+	 *
+	 * Create a circle with $userId as its owner.
+	 * Will returns the circle
+	 *
+	 * @param Circle $circle
+	 * @param $userId
+	 *
+	 * @throws CircleAlreadyExistsException
+	 */
+	public function createCircle(Circle &$circle, $userId) {
+
+		if (!$this->isCircleUnique($circle, $userId)) {
+			throw new CircleAlreadyExistsException(
+				$this->l10n->t('A circle with that name exists')
+			);
+		}
+
+		$circle->generateUniqueId();
+		$qb = $this->getCirclesInsertSql();
+		$qb->setValue('unique_id', $qb->createNamedParameter($circle->getUniqueId(true)))
+		   ->setValue('name', $qb->createNamedParameter($circle->getName()))
+		   ->setValue('description', $qb->createNamedParameter($circle->getDescription()))
+		   ->setValue('settings', $qb->createNamedParameter($circle->getSettings(true)))
+		   ->setValue('type', $qb->createNamedParameter($circle->getType()));
+		$qb->execute();
+
+		$circle->setId($qb->getLastInsertId());
+
+		$owner = new Member($this->l10n, $userId);
+		$owner->setCircleId($circle->getId())
+			  ->setLevel(Member::LEVEL_OWNER)
+			  ->setStatus(Member::STATUS_MEMBER);
+		$circle->setOwner($owner)
+			   ->setViewer($owner);
+	}
+
+
+	/**
+	 * remove a circle
+	 *
+	 * @param int $circleId
+	 */
+	public function destroyCircle($circleId) {
+		$qb = $this->getCirclesDeleteSql();
+		$qb->where(
+			$qb->expr()
+			   ->eq(
+				   'id', $qb->createNamedParameter($circleId)
+			   )
+		);
+
+		$qb->execute();
+	}
+
+
+	/**
+	 * returns if the circle is already in database
+	 *
+	 * @param Circle $circle
+	 * @param string $userId
+	 *
+	 * @return bool
+	 */
+	private function isCircleUnique(Circle $circle, $userId) {
+
+		if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
+			return $this->isPersonalCircleUnique($circle, $userId);
+		}
+
+		$qb = $this->getCirclesSelectSql();
+		$this->limitToNonPersonalCircle($qb);
+		//	$this->limitToName($qb, $circle->getName());
+
+		$cursor = $qb->execute();
+		while ($data = $cursor->fetch()) {
+			// Welp, haven't found a way to do non-sensitive search in IQueryBuilder.
+			if (strtolower($data['name']) === strtolower($circle->getName())) {
+				return false;
+			}
+		}
+		$cursor->closeCursor();
+
+		return true;
+	}
+
+
+	/**
+	 * return if the personal circle is unique
+	 *
+	 * @param Circle $circle
+	 * @param string $userId
+	 *
+	 * @return bool
+	 */
+	private function isPersonalCircleUnique(Circle $circle, $userId) {
+
+		$list = $this->getCircles(
+			$userId, Circle::CIRCLES_PERSONAL, $circle->getName(),
+			Member::LEVEL_OWNER
+		);
+
+		foreach ($list as $test) {
+			if (strtolower($test->getName()) === strtolower($circle->getName())) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 
@@ -166,14 +347,13 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
+		$cursor->closeCursor();
 
 		if ($data === false) {
-			throw new CircleDoesNotExistException(
-				$this->l10n->t('Circle not found')
-			);
+			throw new CircleDoesNotExistException($this->l10n->t('Circle not found'));
 		}
+
 		$entry = $this->parseCirclesSelectSql($data);
-		$cursor->closeCursor();
 
 		return $entry;
 	}
@@ -184,6 +364,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 * @param string $uniqueId
 	 *
 	 * @return SharingFrame
+	 * @throws SharingFrameDoesNotEXist
 	 */
 	public function getFrame($circleId, $uniqueId) {
 		$qb = $this->getSharesSelectSql();
@@ -192,6 +373,12 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
+		$cursor->closeCursor();
+
+		if ($data === false) {
+			throw new SharingFrameDoesNotEXist($this->l10n->t('Sharing Frame does not exist'));
+		}
+
 		$entry = $this->parseSharesSelectSql($data);
 
 		return $entry;
@@ -214,15 +401,15 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
+		$cursor->closeCursor();
 
-		if ($data === false || $data === null) {
+		if ($data === false) {
 			throw new FederatedLinkDoesNotExistException(
 				$this->l10n->t('Federated Link not found')
 			);
 		}
 
 		$entry = $this->parseLinksSelectSql($data);
-		$cursor->closeCursor();
 
 		return $entry;
 	}
@@ -244,7 +431,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$data = $cursor->fetch();
 		$cursor->closeCursor();
 
-		if ($data === false || $data === null) {
+		if ($data === false) {
 			throw new FederatedLinkDoesNotExistException(
 				$this->l10n->t('Federated Link not found')
 			);
@@ -270,42 +457,11 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$links = [];
 		$cursor = $qb->execute();
 		while ($data = $cursor->fetch()) {
-			$link = $this->parseLinksSelectSql($data);
-			if ($link !== null) {
-				$links[] = $link;
-			}
+			$links[] = $this->parseLinksSelectSql($data);
 		}
 		$cursor->closeCursor();
 
 		return $links;
-	}
-
-	/**
-	 * @param integer $circleId
-	 * @param int $level
-	 *
-	 * @return Member[]
-	 */
-	public function getMembers($circleId, $level = Member::LEVEL_MEMBER) {
-		$qb = $this->getMembersSelectSql();
-		$this->limitToLevel($qb, $level);
-
-		$this->joinCircles($qb, 'm.circle_id');
-		$this->limitToCircleId($qb, $circleId);
-
-		$qb->selectAlias('c.name', 'circle_name');
-
-		$users = [];
-		$cursor = $qb->execute();
-		while ($data = $cursor->fetch()) {
-			$member = $this->parseMembersSelectSql($data);
-			if ($member !== null) {
-				$users[] = $member;
-			}
-		}
-		$cursor->closeCursor();
-
-		return $users;
 	}
 
 

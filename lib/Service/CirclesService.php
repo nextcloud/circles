@@ -27,16 +27,14 @@
 namespace OCA\Circles\Service;
 
 
-use OCA\Circles\Db\CirclesMapper;
 use OCA\Circles\Db\CirclesRequest;
-use OCA\Circles\Db\MembersMapper;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
 use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\MemberIsNotOwnerException;
-use \OCA\Circles\Model\Circle;
-use \OCA\Circles\Model\Member;
+use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Member;
 use OCP\IL10N;
 
 class CirclesService {
@@ -56,12 +54,6 @@ class CirclesService {
 	/** @var MembersRequest */
 	private $membersRequest;
 
-	/** @var CirclesMapper */
-	private $dbCircles;
-
-	/** @var MembersMapper */
-	private $dbMembers;
-
 	/** @var EventsService */
 	private $eventsService;
 
@@ -77,7 +69,6 @@ class CirclesService {
 	 * @param ConfigService $configService
 	 * @param CirclesRequest $circlesRequest
 	 * @param MembersRequest $membersRequest
-	 * @param DatabaseService $databaseService
 	 * @param EventsService $eventsService
 	 * @param MiscService $miscService
 	 */
@@ -87,7 +78,6 @@ class CirclesService {
 		ConfigService $configService,
 		CirclesRequest $circlesRequest,
 		MembersRequest $membersRequest,
-		DatabaseService $databaseService,
 		EventsService $eventsService,
 		MiscService $miscService
 	) {
@@ -98,9 +88,6 @@ class CirclesService {
 		$this->membersRequest = $membersRequest;
 		$this->eventsService = $eventsService;
 		$this->miscService = $miscService;
-
-		$this->dbCircles = $databaseService->getCirclesMapper();
-		$this->dbMembers = $databaseService->getMembersMapper();
 	}
 
 
@@ -130,19 +117,12 @@ class CirclesService {
 		}
 
 		$circle = new Circle($this->l10n, $type, $name);
-		$owner = new Member($this->l10n, $this->userId);
-		$circle->setOwner($owner);
-		$circle->setViewer($owner);
 
 		try {
-			$this->dbCircles->create($circle);
-			$circle->getOwner()
-				   ->setCircleId($circle->getId())
-				   ->setLevel(Member::LEVEL_OWNER)
-				   ->setStatus(Member::STATUS_MEMBER);
-			$this->dbMembers->add($circle->getOwner());
+			$this->circlesRequest->createCircle($circle, $this->userId);
+			$this->membersRequest->createMember($circle->getOwner());
 		} catch (\Exception $e) {
-			$this->dbCircles->destroy($circle->getId());
+			$this->circlesRequest->destroyCircle($circle->getId());
 			throw $e;
 		}
 
@@ -172,7 +152,7 @@ class CirclesService {
 		}
 
 		$data = [];
-		$result = $this->dbCircles->findCirclesByUser($this->userId, $type, $name, $level);
+		$result = $this->circlesRequest->getCircles($this->userId, $type, $name, $level);
 		foreach ($result as $item) {
 			$data[] = $item;
 		}
@@ -188,17 +168,15 @@ class CirclesService {
 	 *
 	 * @return Circle
 	 * @throws \Exception
-]	 */
+	]	 */
 	public function detailsCircle($circleId) {
 
 		try {
-			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
-			if ($circle->getViewer()
+			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
+			if ($circle->getHigherViewer()
 					   ->isLevel(Member::LEVEL_MEMBER)
 			) {
-				$members = $this->dbMembers->getMembersFromCircle($circleId, $circle->getViewer());
-				$circle->setMembers($members);
-
+				$this->detailsCircleMembers($circle);
 				$this->detailsCircleLinkedGroups($circle);
 				$this->detailsCircleFederatedCircles($circle);
 			}
@@ -209,16 +187,41 @@ class CirclesService {
 		return $circle;
 	}
 
+
+	/**
+	 * get the Members list and add the result to the Circle.
+	 *
+	 * @param Circle $circle
+	 */
+	private function detailsCircleMembers(Circle &$circle) {
+		$members =
+			$this->membersRequest->getMembers($circle->getId(), $circle->getHigherViewer());
+
+		$circle->setMembers($members);
+	}
+
+
+	/**
+	 * get the Linked Group list and add the result to the Circle.
+	 *
+	 * @param Circle $circle
+	 */
 	private function detailsCircleLinkedGroups(Circle &$circle) {
 		$groups = [];
 		if ($this->configService->isLinkedGroupsAllowed()) {
-			$groups = $this->membersRequest->getGroups($circle->getId(), $circle->getViewer());
+			$groups =
+				$this->membersRequest->getGroups($circle->getId(), $circle->getHigherViewer());
 		}
 
 		$circle->setGroups($groups);
 	}
 
 
+	/**
+	 * get the Federated Circles list and add the result to the Circle.
+	 *
+	 * @param Circle $circle
+	 */
 	private function detailsCircleFederatedCircles(Circle &$circle) {
 		$links = [];
 
@@ -246,8 +249,8 @@ class CirclesService {
 	public function settingsCircle($circleId, $settings) {
 
 		try {
-			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
-			$circle->getViewer()
+			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
+			$circle->getHigherViewer()
 				   ->hasToBeOwner();
 
 			$ak = array_keys($settings);
@@ -275,18 +278,18 @@ class CirclesService {
 	public function joinCircle($circleId) {
 
 		try {
-			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
+			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
 
 			try {
-				$member = $this->dbMembers->getMemberFromCircle($circle->getId(), $this->userId);
+				$member = $this->membersRequest->forceGetMember($circle->getId(), $this->userId);
 			} catch (MemberDoesNotExistException $m) {
 				$member = new Member($this->l10n, $this->userId, $circle->getId());
-				$this->dbMembers->add($member);
+				$this->membersRequest->createMember($member);
 			}
 
 			$member->hasToBeAbleToJoinTheCircle();
 			$member->joinCircle($circle->getType());
-			$this->dbMembers->editMember($member);
+			$this->membersRequest->updateMember($member);
 			$this->eventsService->onMemberNew($circle, $member);
 		} catch (\Exception $e) {
 			throw $e;
@@ -307,17 +310,19 @@ class CirclesService {
 	public function leaveCircle($circleId) {
 
 		try {
-			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
-			$member = $this->dbMembers->getMemberFromCircle($circle->getId(), $this->userId, false);
+			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
+			$member = $circle->getViewer();
 
 			if (!$member->isAlmostMember()) {
 				$member->hasToBeMember();
 			}
 
 			$member->cantBeOwner();
+
 			$member->setStatus(Member::STATUS_NONMEMBER);
 			$member->setLevel(Member::LEVEL_NONE);
-			$this->dbMembers->editMember($member);
+			$this->membersRequest->updateMember($member);
+
 			$this->eventsService->onMemberLeaving($circle, $member);
 		} catch (\Exception $e) {
 			throw $e;
@@ -337,14 +342,14 @@ class CirclesService {
 	public function removeCircle($circleId) {
 
 		try {
-			$member = $this->dbMembers->getMemberFromCircle($circleId, $this->userId, false);
-			$member->hasToBeOwner();
+			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
+			$circle->getHigherViewer()
+				   ->hasToBeOwner();
 
-			$circle = $this->dbCircles->getDetailsFromCircle($circleId, $this->userId);
 			$this->eventsService->onCircleDestruction($circle);
 
-			$this->dbMembers->removeAllFromCircle($circleId);
-			$this->dbCircles->destroy($circleId);
+			$this->membersRequest->removeAllFromCircle($circleId);
+			$this->circlesRequest->destroyCircle($circleId);
 
 		} catch (MemberIsNotOwnerException $e) {
 			throw $e;
@@ -358,7 +363,7 @@ class CirclesService {
 	 * @return Circle|null
 	 */
 	public function infoCircleByName($circleName) {
-		return $this->dbCircles->getDetailsFromCircleByName($circleName);
+		return $this->circlesRequest->forceGetCircleByName($circleName);
 	}
 
 	/**

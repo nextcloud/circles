@@ -35,14 +35,11 @@ use \OCA\Circles\Controller\MembersController;
 
 use OCA\Circles\Controller\SettingsController;
 use OCA\Circles\Controller\SharesController;
-use \OCA\Circles\Db\CirclesMapper;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\FederatedLinksRequest;
-use \OCA\Circles\Db\MembersMapper;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Events\UserEvents;
 use OCA\Circles\Service\BroadcastService;
-use \OCA\Circles\Service\DatabaseService;
 use \OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\EventsService;
 use OCA\Circles\Service\FederatedService;
@@ -72,7 +69,6 @@ class Application extends App {
 
 		self::registerServices($container);
 		self::registerControllers($container);
-		self::registerMappers($container);
 		self::registerDatabaseRequesters($container);
 		self::registerCores($container);
 		self::registerEvents($container);
@@ -111,19 +107,10 @@ class Application extends App {
 		);
 
 		$container->registerService(
-			'DatabaseService', function(IAppContainer $c) {
-			return new DatabaseService(
-				$c->query('CirclesMapper'), $c->query('MembersMapper')
-			);
-		}
-		);
-
-		$container->registerService(
 			'CirclesService', function(IAppContainer $c) {
 			return new CirclesService(
 				$c->query('UserId'), $c->query('L10N'), $c->query('ConfigService'),
 				$c->query('CirclesRequest'), $c->query('MembersRequest'),
-				$c->query('DatabaseService'),
 				$c->query('EventsService'), $c->query('MiscService')
 			);
 		}
@@ -133,8 +120,8 @@ class Application extends App {
 			'MembersService', function(IAppContainer $c) {
 			return new MembersService(
 				$c->query('UserId'), $c->query('L10N'), $c->query('UserManager'),
-				$c->query('ConfigService'), $c->query('DatabaseService'),
-				$c->query('EventsService'), $c->query('MiscService')
+				$c->query('ConfigService'), $c->query('CirclesRequest'),
+				$c->query('MembersRequest'), $c->query('EventsService'), $c->query('MiscService')
 			);
 		}
 		);
@@ -143,7 +130,7 @@ class Application extends App {
 			'GroupsService', function(IAppContainer $c) {
 			return new GroupsService(
 				$c->query('UserId'), $c->query('L10N'), $c->query('GroupManager'),
-				$c->query('DatabaseService'), $c->query('MembersRequest'), $c->query('MiscService')
+				$c->query('CirclesRequest'), $c->query('MembersRequest'), $c->query('MiscService')
 			);
 		}
 		);
@@ -152,7 +139,7 @@ class Application extends App {
 			'BroadcastService', function(IAppContainer $c) {
 			return new BroadcastService(
 				$c->query('UserId'), $c->query('ConfigService'), $c->query('CirclesRequest'),
-				$c->query('MiscService')
+				$c->query('MembersRequest'), $c->query('MiscService')
 			);
 		}
 		);
@@ -171,7 +158,7 @@ class Application extends App {
 			'EventsService', function(IAppContainer $c) {
 			return new EventsService(
 				$c->query('UserId'), $c->query('ActivityManager'), $c->query('UserManager'),
-				$c->query('CirclesRequest'), $c->query('MiscService')
+				$c->query('CirclesRequest'), $c->query('MembersRequest'), $c->query('MiscService')
 			);
 		}
 		);
@@ -287,7 +274,8 @@ class Application extends App {
 			'CirclesRequest', function(IAppContainer $c) {
 			return new CirclesRequest(
 				$c->query('L10N'), $c->query('ServerContainer')
-									 ->getDatabaseConnection(), $c->query('MiscService')
+									 ->getDatabaseConnection(), $c->query('MembersRequest'),
+				$c->query('MiscService')
 			);
 		}
 		);
@@ -310,34 +298,6 @@ class Application extends App {
 		}
 		);
 
-
-	}
-
-	/**
-	 * Register Mappers
-	 *
-	 * @param $container
-	 */
-	private static function registerMappers(IAppContainer &$container) {
-
-		$container->registerService(
-			'CirclesMapper', function(IAppContainer $c) {
-			return new CirclesMapper(
-				$c->query('UserId'), $c->query('ServerContainer')
-									   ->getDatabaseConnection(), $c->query('L10N'),
-				$c->query('MiscService')
-			);
-		}
-		);
-
-		$container->registerService(
-			'MembersMapper', function(IAppContainer $c) {
-			return new MembersMapper(
-				$c->query('ServerContainer')
-				  ->getDatabaseConnection(), $c->query('L10N'), $c->query('MiscService')
-			);
-		}
-		);
 
 	}
 
@@ -450,11 +410,11 @@ class Application extends App {
 											->t('Circles');
 
 					 return [
-						 'id' => $this->appName,
+						 'id'    => $this->appName,
 						 'order' => 5,
-						 'href' => $urlGen->linkToRoute('circles.Navigation.navigate'),
-						 'icon' => $urlGen->imagePath($this->appName, 'circles.svg'),
-						 'name' => $navName
+						 'href'  => $urlGen->linkToRoute('circles.Navigation.navigate'),
+						 'icon'  => $urlGen->imagePath($this->appName, 'circles.svg'),
+						 'name'  => $navName
 					 ];
 				 }
 			 );

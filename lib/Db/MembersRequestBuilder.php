@@ -28,25 +28,40 @@
 namespace OCA\Circles\Db;
 
 
+use OCA\Circles\Model\Member;
 use OCP\DB\QueryBuilder\IQueryBuilder;
-use Doctrine\DBAL\Query\QueryBuilder;
 
 class MembersRequestBuilder extends CoreRequestBuilder {
 
 
-//	/**
-//	 * Limit the request to a minimum member level.
-//	 *
-//	 * @param IQueryBuilder $qb
-//	 * @param integer $level
-//	 */
-//	protected function limitToMemberLevel(IQueryBuilder & $qb, $level) {
-//		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
-//		$qb->andWhere(
-//			$qb->expr()
-//			   ->gte($pf . 'level', $qb->createNamedParameter($level))
-//		);
-//	}
+	/**
+	 * Base of the Sql Insert request for Shares
+	 *
+	 * @return IQueryBuilder
+	 */
+	protected function getMembersInsertSql() {
+		$qb = $this->dbConnection->getQueryBuilder();
+		$qb->insert(self::TABLE_MEMBERS)
+		   ->setValue('joined', $qb->createFunction('NOW()'));
+
+		return $qb;
+	}
+
+
+	/**
+	 * @return IQueryBuilder
+	 */
+	protected function getMembersSelectSql() {
+		$qb = $this->dbConnection->getQueryBuilder();
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$qb->select('m.user_id', 'm.circle_id', 'm.level', 'm.status', 'm.note', 'm.joined')
+		   ->from(self::TABLE_MEMBERS, 'm');
+
+		$this->default_select_alias = 'm';
+
+		return $qb;
+	}
 
 
 	/**
@@ -57,7 +72,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select('g.circle_id', 'g.group_id', 'g.level', 'g.note', 'g.joined')
-		   ->from(CoreRequestBuilder::TABLE_GROUPS, 'g');
+		   ->from(self::TABLE_GROUPS, 'g');
 		$this->default_select_alias = 'g';
 
 		return $qb;
@@ -71,7 +86,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function getGroupsInsertSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->insert(CoreRequestBuilder::TABLE_GROUPS)
+		$qb->insert(self::TABLE_GROUPS)
 		   ->setValue('joined', $qb->createFunction('NOW()'));
 
 		return $qb;
@@ -79,7 +94,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * Base of the Sql Insert request for Shares
+	 * Base of the Sql Update request for Groups
 	 *
 	 * @param int $circleId
 	 * @param string $groupId
@@ -91,7 +106,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		$expr = $qb->expr();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->update(CoreRequestBuilder::TABLE_GROUPS)
+		$qb->update(self::TABLE_GROUPS)
 		   ->where(
 			   $expr->andX(
 				   $expr->eq('circle_id', $qb->createNamedParameter($circleId)),
@@ -102,9 +117,33 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		return $qb;
 	}
 
+	/**
+	 * Base of the Sql Updte request for Members
+	 *
+	 * @param int $circleId
+	 * @param string $userId
+	 *
+	 * @return IQueryBuilder
+	 */
+	protected function getMembersUpdateSql($circleId, $userId) {
+		$qb = $this->dbConnection->getQueryBuilder();
+		$expr = $qb->expr();
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$qb->update(self::TABLE_MEMBERS)
+		   ->where(
+			   $expr->andX(
+				   $expr->eq('circle_id', $qb->createNamedParameter($circleId)),
+				   $expr->eq('user_id', $qb->createNamedParameter($userId))
+			   )
+		   );
+
+		return $qb;
+	}
+
 
 	/**
-	 * Base of the Sql Insert request for Shares
+	 * Base of the Sql Delete request for Groups
 	 *
 	 * @param string $groupId
 	 *
@@ -120,5 +159,69 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		return $qb;
 	}
 
+	/**
+	 * Base of the Sql Delete request for Members
+	 *
+	 * @param int $circleId
+	 * @param string $userId
+	 *
+	 * @return IQueryBuilder
+	 */
+	protected function getMembersDeleteSql($circleId, $userId) {
+		$qb = $this->dbConnection->getQueryBuilder();
+		$expr = $qb->expr();
+
+		$and = $expr->andX();
+		if ($circleId > 0) {
+			$and->add($expr->eq('circle_id', $qb->createNamedParameter($circleId)));
+		}
+		if ($userId !== '') {
+			$and->add($expr->eq('user_id', $qb->createNamedParameter($userId)));
+		}
+
+		$qb->delete(CoreRequestBuilder::TABLE_MEMBERS)
+		   ->where($and);
+
+		return $qb;
+	}
+
+
+	/**
+	 * @param array $data
+	 *
+	 * @return Member
+	 */
+	protected function parseMembersSelectSql(array $data) {
+		$member = new Member($this->l10n);
+		$member->setUserId($data['user_id']);
+		$member->setCircleId($data['circle_id']);
+		$member->setNote($data['note']);
+		$member->setLevel($data['level']);
+		$member->setStatus($data['status']);
+		$member->setJoined($data['joined']);
+
+		return $member;
+	}
+
+	/**
+	 * @param array $data
+	 *
+	 * @return Member
+	 */
+	protected function parseGroupsSelectSql(array $data) {
+		$member = new Member($this->l10n);
+		$member->setCircleId($data['circle_id']);
+		$member->setNote($data['note']);
+		$member->setLevel($data['level']);
+		$member->setGroupId($data['group_id']);
+
+		if (key_exists('user_id', $data)) {
+			$member->setUserId($data['user_id']);
+		}
+
+		$member->setJoined($data['joined']);
+
+		return $member;
+	}
 
 }

@@ -66,7 +66,7 @@ class CircleProviderRequestBuilder {
 	 * Limit the request to a Circle.
 	 *
 	 * @param IQueryBuilder $qb
-	 * @param integer $circleId
+	 * @param int $circleId
 	 */
 	protected function limitToCircle(& $qb, $circleId) {
 		$expr = $qb->expr();
@@ -146,7 +146,9 @@ class CircleProviderRequestBuilder {
 	 * limit the request to a fileId.
 	 *
 	 * @param IQueryBuilder $qb
-	 * @param $fileId
+	 * @param $files
+	 *
+	 * @internal param $fileId
 	 */
 	protected function limitToFiles(& $qb, $files) {
 
@@ -209,9 +211,8 @@ class CircleProviderRequestBuilder {
 	 * @deprecated
 	 *
 	 * @param IQueryBuilder $qb
-	 * @param integer $shareId
+	 * @param int $shareId
 	 */
-	// TODO - put this as a leftjoin
 	protected function linkCircleField(& $qb, $shareId = -1) {
 		$expr = $qb->expr();
 
@@ -225,7 +226,7 @@ class CircleProviderRequestBuilder {
 				$expr->eq('s.share_with', $expr->castColumn('c.id', IQueryBuilder::PARAM_STR));
 		}
 
-		$qb->from(CirclesMapper::TABLENAME, 'c');
+		$qb->from(CoreRequestBuilder::TABLE_CIRCLES, 'c');
 
 		if ($shareId === -1) {
 			$qb->andWhere($tmpOrX);
@@ -270,21 +271,39 @@ class CircleProviderRequestBuilder {
 		$expr = $qb->expr();
 
 		// TODO - Remove this in 12.0.1
-		if ($qb->getConnection()
-			   ->getDatabasePlatform() instanceof PostgreSqlPlatform
-		) {
-			$tmpAndX = $expr->eq('s.share_with', $qb->createFunction('CAST(m.circle_id AS TEXT)'));
-		} else {
-			$tmpAndX = $expr->eq(
-				's.share_with', $expr->castColumn('m.circle_id', IQueryBuilder::PARAM_STR)
-			);
-		}
+//		if ($qb->getConnection()
+//			   ->getDatabasePlatform() instanceof PostgreSqlPlatform
+//		) {
+//			$tmpAndX = $expr->eq('s.share_with', $qb->createFunction('CAST(m.circle_id AS TEXT)'));
+//		} else {
+//			$tmpAndX = $expr->eq(
+//				's.share_with', $expr->castColumn('m.circle_id', IQueryBuilder::PARAM_STR)
+//			);
+//		}
+//		$qb->andWhere($tmpAndX);
 
-		$qb->from(MembersMapper::TABLENAME, 'm')
-		   ->andWhere($tmpAndX)
-		   ->andWhere($expr->eq('m.user_id', $qb->createNamedParameter($userId)))
-		   ->andWhere($expr->gte('m.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)));
+		$qb->from(CoreRequestBuilder::TABLE_MEMBERS, 'm');
+		$qb->from(CoreRequestBuilder::TABLE_GROUPS, 'g');
+		$qb->from(CoreRequestBuilder::NC_TABLE_GROUP_USER, 'ncgu');
 
+
+		$qb->andWhere(
+			$expr->orX(
+			// We check if user is members of the circle with the right level
+				$expr->andX(
+					$expr->eq('m.user_id', $qb->createNamedParameter($userId)),
+					$expr->gte('m.level', $qb->createNamedParameter(Member::LEVEL_MEMBER))
+				),
+
+				// Or if user is member of one of the group linked to the circle with the right level
+				$expr->andX(
+					$expr->eq('g.circle_id', 'c.id'),
+					$expr->gte('g.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)),
+					$expr->eq('ncgu.gid', 'g.group_id'),
+					$expr->eq('ncgu.uid', $qb->createNamedParameter($userId))
+				)
+			)
+		);
 	}
 
 
@@ -324,7 +343,7 @@ class CircleProviderRequestBuilder {
 	protected function joinCircleMembers(& $qb) {
 		$expr = $qb->expr();
 
-		$qb->from(MembersMapper::TABLENAME, 'm');
+		$qb->from(CoreRequestBuilder::TABLE_MEMBERS, 'm');
 
 		// TODO - Remove this in 12.0.1
 		if ($qb->getConnection()
