@@ -4,13 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## 0.12.0
 
-- security: when leaving a circle, shared file are not accessible anymore
-- fix icons
-- fix strange behaviour when the app is deleted from the disk, but not disable in the cloud
-- Edit Name and Description of a Circle
-- Activities are now send by mail.
-- Mass invite Group Members to a Circle.
-- Link Groups to Circle and assign level to linked group.
+- Security: when leaving a circle, shared file are not accessible anymore by said circle.
+- Bug: fix icons
+- Bug: fix strange behaviour when the app is deleted from the disk, but not disable in the cloud
+- Code design: getting rid of Mapper/Entity and using pure QueryBuilder
+- Feature: Edit Name and Description of a Circle
+- Feature: Activities are now send by mail.
+- Feature: Mass invite Group Members to a Circle.
+- Feature: Link Groups to Circle and assign level to linked group.
 
 
 ## 0.11.0

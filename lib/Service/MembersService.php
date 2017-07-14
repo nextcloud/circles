@@ -29,7 +29,6 @@ namespace OCA\Circles\Service;
 
 use OC\User\NoUserException;
 use OCA\Circles\Db\CirclesRequest;
-use OCA\Circles\Db\MembersMapper;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Exceptions\CircleTypeNotValid;
 use OCA\Circles\Exceptions\GroupDoesNotExistException;
@@ -54,9 +53,6 @@ class MembersService {
 	/** @var ConfigService */
 	private $configService;
 
-	/** @var MembersMapper */
-	private $dbMembers;
-
 	/** @var CirclesRequest */
 	private $circlesRequest;
 
@@ -76,7 +72,6 @@ class MembersService {
 	 * @param IL10N $l10n
 	 * @param IUserManager $userManager
 	 * @param ConfigService $configService
-	 * @param DatabaseService $databaseService
 	 * @param CirclesRequest $circlesRequest
 	 * @param MembersRequest $membersRequest
 	 * @param EventsService $eventsService
@@ -87,7 +82,6 @@ class MembersService {
 		IL10N $l10n,
 		IUserManager $userManager,
 		ConfigService $configService,
-		DatabaseService $databaseService,
 		CirclesRequest $circlesRequest,
 		MembersRequest $membersRequest,
 		EventsService $eventsService,
@@ -101,8 +95,6 @@ class MembersService {
 		$this->membersRequest = $membersRequest;
 		$this->eventsService = $eventsService;
 		$this->miscService = $miscService;
-
-		$this->dbMembers = $databaseService->getMembersMapper();
 	}
 
 
@@ -130,7 +122,7 @@ class MembersService {
 		}
 
 		$member->inviteToCircle($circle->getType());
-		$this->dbMembers->editMember($member);
+		$this->membersRequest->updateMember($member);
 
 		$this->eventsService->onMemberNew($circle, $member);
 
@@ -166,7 +158,7 @@ class MembersService {
 				$member = $this->getFreshNewMember($circleId, $user->getUID());
 
 				$member->inviteToCircle($circle->getType());
-				$this->dbMembers->editMember($member);
+				$this->membersRequest->updateMember($member);
 
 				$this->eventsService->onMemberNew($circle, $member);
 			} catch (MemberAlreadyExistsException $e) {
@@ -242,7 +234,6 @@ class MembersService {
 
 		return $member;
 	}
-
 
 
 	/**
@@ -333,7 +324,7 @@ class MembersService {
 			$isMod->hasToBeHigherLevel($member->getLevel());
 
 			$member->setLevel($level);
-			$this->dbMembers->editMember($member);
+			$this->membersRequest->updateMember($member);
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -353,10 +344,10 @@ class MembersService {
 
 			$member->cantBeOwner();
 			$member->setLevel(Member::LEVEL_OWNER);
-			$this->dbMembers->editMember($member);
+			$this->membersRequest->updateMember($member);
 
 			$isMod->setLevel(Member::LEVEL_ADMIN);
-			$this->dbMembers->editMember($isMod);
+			$this->membersRequest->updateMember($isMod);
 
 		} catch (\Exception $e) {
 			throw $e;
@@ -390,7 +381,7 @@ class MembersService {
 
 		$member->setStatus(Member::STATUS_NONMEMBER);
 		$member->setLevel(Member::LEVEL_NONE);
-		$this->dbMembers->editMember($member);
+		$this->membersRequest->updateMember($member);
 
 		$this->eventsService->onMemberLeaving($circle, $member);
 
@@ -404,7 +395,7 @@ class MembersService {
 	 * @param $userId
 	 */
 	public function onUserRemoved($userId) {
-		$this->dbMembers->removeAllFromUserId($userId);
+		$this->membersRequest->removeAllFromUser($userId);
 	}
 
 

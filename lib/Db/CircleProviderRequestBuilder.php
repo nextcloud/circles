@@ -280,7 +280,7 @@ class CircleProviderRequestBuilder {
 			);
 		}
 
-		$qb->from(MembersMapper::TABLENAME, 'm')
+		$qb->from(CoreRequestBuilder::TABLE_MEMBERS, 'm')
 		   ->andWhere($tmpAndX)
 		   ->andWhere($expr->eq('m.user_id', $qb->createNamedParameter($userId)))
 		   ->andWhere($expr->gte('m.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)));
@@ -324,7 +324,7 @@ class CircleProviderRequestBuilder {
 	protected function joinCircleMembers(& $qb) {
 		$expr = $qb->expr();
 
-		$qb->from(MembersMapper::TABLENAME, 'm');
+		$qb->from(CoreRequestBuilder::TABLE_MEMBERS, 'm');
 
 		// TODO - Remove this in 12.0.1
 		if ($qb->getConnection()

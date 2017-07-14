@@ -275,13 +275,63 @@ class MembersRequest extends MembersRequestBuilder {
 
 
 	/**
+	 * update database entry for a specific Member.
+	 *
+	 * @param Member $member
+	 *
+	 * @return bool
+	 */
+	public function updateMember(Member $member) {
+		$qb = $this->getMembersUpdateSql($member->getCircleId(), $member->getUserId());
+		$qb->set('level', $qb->createNamedParameter($member->getLevel()))
+		   ->set('status', $qb->createNamedParameter($member->getStatus()));
+
+		$qb->execute();
+	}
+
+
+	/**
+	 * removeAllFromCircle();
+	 *
+	 * Remove All members from a Circle. Used when deleting a Circle.
+	 *
+	 * @param $circleId
+	 */
+	public function removeAllFromCircle($circleId) {
+		if ($circleId === 0) {
+			return;
+		}
+
+		$qb = $this->getMembersDeleteSql($circleId, '');
+		$qb->execute();
+	}
+
+
+	/**
+	 * removeAllFromUser();
+	 *
+	 * remove All membership from a User. Used when removing a User from the Cloud.
+	 *
+	 * @param $userId
+	 */
+	public function removeAllFromUser($userId) {
+		if ($userId === '') {
+			return;
+		}
+
+		$qb = $this->getMembersDeleteSql(0, $userId);
+		$qb->execute();
+	}
+
+
+	/**
 	 * update database entry for a specific Group.
 	 *
 	 * @param Member $member
 	 *
 	 * @return bool
 	 */
-	public function editGroup(Member $member) {
+	public function updateGroup(Member $member) {
 
 		$qb = $this->getGroupsUpdateSql($member->getCircleId(), $member->getGroupId());
 		$qb->set('level', $qb->createNamedParameter($member->getLevel()));
@@ -291,7 +341,7 @@ class MembersRequest extends MembersRequestBuilder {
 	}
 
 
-	public function unlinkAllFromGroupId($groupId) {
+	public function unlinkAllFromGroup($groupId) {
 		$qb = $this->getGroupsDeleteSql($groupId);
 		$qb->execute();
 	}

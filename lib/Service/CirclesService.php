@@ -28,7 +28,6 @@ namespace OCA\Circles\Service;
 
 
 use OCA\Circles\Db\CirclesRequest;
-use OCA\Circles\Db\MembersMapper;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
 use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
@@ -55,9 +54,6 @@ class CirclesService {
 	/** @var MembersRequest */
 	private $membersRequest;
 
-	/** @var MembersMapper */
-	private $dbMembers;
-
 	/** @var EventsService */
 	private $eventsService;
 
@@ -73,7 +69,6 @@ class CirclesService {
 	 * @param ConfigService $configService
 	 * @param CirclesRequest $circlesRequest
 	 * @param MembersRequest $membersRequest
-	 * @param DatabaseService $databaseService
 	 * @param EventsService $eventsService
 	 * @param MiscService $miscService
 	 */
@@ -83,7 +78,6 @@ class CirclesService {
 		ConfigService $configService,
 		CirclesRequest $circlesRequest,
 		MembersRequest $membersRequest,
-		DatabaseService $databaseService,
 		EventsService $eventsService,
 		MiscService $miscService
 	) {
@@ -94,8 +88,6 @@ class CirclesService {
 		$this->membersRequest = $membersRequest;
 		$this->eventsService = $eventsService;
 		$this->miscService = $miscService;
-
-		$this->dbMembers = $databaseService->getMembersMapper();
 	}
 
 
@@ -297,7 +289,7 @@ class CirclesService {
 
 			$member->hasToBeAbleToJoinTheCircle();
 			$member->joinCircle($circle->getType());
-			$this->dbMembers->editMember($member);
+			$this->membersRequest->updateMember($member);
 			$this->eventsService->onMemberNew($circle, $member);
 		} catch (\Exception $e) {
 			throw $e;
@@ -326,9 +318,10 @@ class CirclesService {
 			}
 
 			$member->cantBeOwner();
+
 			$member->setStatus(Member::STATUS_NONMEMBER);
 			$member->setLevel(Member::LEVEL_NONE);
-			$this->dbMembers->editMember($member);
+			$this->membersRequest->updateMember($member);
 
 			$this->eventsService->onMemberLeaving($circle, $member);
 		} catch (\Exception $e) {
@@ -349,16 +342,13 @@ class CirclesService {
 	public function removeCircle($circleId) {
 
 		try {
-//			$member = $this->dbMembers->getMemberFromCircle($circleId, $this->userId, false);
-//			$member->hasToBeOwner();
-
 			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
 			$circle->getHigherViewer()
 				   ->hasToBeOwner();
 
 			$this->eventsService->onCircleDestruction($circle);
 
-			$this->dbMembers->removeAllFromCircle($circleId);
+			$this->membersRequest->removeAllFromCircle($circleId);
 			$this->circlesRequest->destroyCircle($circleId);
 
 		} catch (MemberIsNotOwnerException $e) {

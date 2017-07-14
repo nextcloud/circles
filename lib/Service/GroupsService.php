@@ -28,7 +28,6 @@ namespace OCA\Circles\Service;
 
 
 use OCA\Circles\Db\CirclesRequest;
-use OCA\Circles\Db\MembersMapper;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Exceptions\CircleTypeNotValid;
 use OCA\Circles\Exceptions\GroupCannotBeOwnerException;
@@ -57,9 +56,6 @@ class GroupsService {
 	/** @var MembersRequest */
 	private $membersRequest;
 
-	/** @var MembersMapper */
-	private $dbMembers;
-
 	/** @var MiscService */
 	private $miscService;
 
@@ -69,13 +65,12 @@ class GroupsService {
 	 * @param string $userId
 	 * @param IL10N $l10n
 	 * @param IGroupManager $groupManager
-	 * @param DatabaseService $databaseService
 	 * @param CirclesRequest $circlesRequest
 	 * @param MembersRequest $membersRequest
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$userId, IL10N $l10n, IGroupManager $groupManager, DatabaseService $databaseService,
+		$userId, IL10N $l10n, IGroupManager $groupManager,
 		CirclesRequest $circlesRequest, MembersRequest $membersRequest, MiscService $miscService
 	) {
 		$this->userId = $userId;
@@ -84,8 +79,6 @@ class GroupsService {
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
 		$this->miscService = $miscService;
-
-		$this->dbMembers = $databaseService->getMembersMapper();
 	}
 
 
@@ -109,7 +102,7 @@ class GroupsService {
 		}
 
 		$group->setLevel(Member::LEVEL_MEMBER);
-		$this->membersRequest->editGroup($group);
+		$this->membersRequest->updateGroup($group);
 
 //		$this->eventsService->onMemberNew($circle, $group);
 		return $this->membersRequest->getGroups($circleId, $circle->getHigherViewer());
@@ -208,7 +201,7 @@ class GroupsService {
 			$isMod->hasToBeHigherLevel($group->getLevel());
 
 			$group->setLevel($level);
-			$this->membersRequest->editGroup($group);
+			$this->membersRequest->updateGroup($group);
 
 		} catch (\Exception $e) {
 			throw $e;
@@ -235,7 +228,7 @@ class GroupsService {
 				   ->hasToBeHigherLevel($group->getLevel());
 
 			$group->setLevel(Member::LEVEL_NONE);
-			$this->membersRequest->editGroup($group);
+			$this->membersRequest->updateGroup($group);
 
 
 			//		$this->eventsService->onMemberLeaving($circle, $member);
@@ -254,7 +247,7 @@ class GroupsService {
 	 * @param string $groupId
 	 */
 	public function onGroupRemoved($groupId) {
-		$this->membersRequest->unlinkAllFromGroupId($groupId);
+		$this->membersRequest->unlinkAllFromGroup($groupId);
 	}
 
 
