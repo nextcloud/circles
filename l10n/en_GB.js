@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "Are you sure you want to transfer your ownership?" : "Are you sure you want to transfer your ownership?",
     "This action is irreversible" : "This action is irreversible",
     "Personal circle" : "Personal circle",
     "Hidden circle" : "Hidden circle",
@@ -66,7 +67,15 @@ OC.L10N.register(
     "the link to <b>{remote}</b> is now up and running." : "the link to <b>{remote}</b> is now up and running.",
     "The status of the link could not be updated" : "The status of the link could not be updated",
     "The status of the link has been updated" : "The status of the link has been updated",
+    "This operation will add/invite all members of the group to the circle" : "This operation will add/invite all members of the group to the circle",
+    "The member '{name}' was included in the circle" : "The member '{name}' was included in the circle",
+    "The member '{name}' could not be included in the circle" : "The member '{name}' could not be included in the circle",
+    "Members of the group '{name}' were included in the circle" : "Members of the group '{name}' were included in the circle",
+    "Members of the group '{name}' could not be included in the circle" : "Members of the group '{name}' could not be included in the circle",
+    "The member '{name}' was removed from the circle" : "The member '{name}' was removed from the circle",
+    "The member '{name}' could not be removed from the circle" : "The member '{name}' could not be removed from the circle",
     "Member '{name}' updated" : "Member '{name}' updated",
+    "The member '{name}' could not be updated" : "The member '{name}' could not be updated",
     "Issue while saving settings" : "Issue while saving settings",
     "Settings saved." : "Settings saved.",
     "Circles" : "Circles",
