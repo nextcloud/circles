@@ -245,11 +245,9 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 		$qb = $this->getCirclesSelectSql();
 		$this->limitToNonPersonalCircle($qb);
-		//	$this->limitToName($qb, $circle->getName());
 
 		$cursor = $qb->execute();
 		while ($data = $cursor->fetch()) {
-			// Welp, haven't found a way to do non-sensitive search in IQueryBuilder.
 			if (strtolower($data['name']) === strtolower($circle->getName())) {
 				return false;
 			}

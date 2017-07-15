@@ -122,7 +122,9 @@ class FederatedService {
 		$this->broadcastService = $broadcastService;
 		$this->federatedLinksRequest = $federatedLinksRequest;
 		$this->eventsService = $eventsService;
-		$this->serverHost = (string)$serverHost;
+		$this->serverHost =
+			(string)(($this->configService->isLocalNonSSL()) ? 'http://' : '') . $serverHost;
+
 		$this->clientService = $clientService;
 		$this->miscService = $miscService;
 	}
