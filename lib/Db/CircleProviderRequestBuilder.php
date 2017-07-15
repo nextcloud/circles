@@ -180,6 +180,7 @@ class CircleProviderRequestBuilder {
 		$qb->setFirstResult($offset);
 	}
 
+
 	/**
 	 * limit the request to a userId
 	 *
@@ -270,32 +271,20 @@ class CircleProviderRequestBuilder {
 	protected function linkToMember(& $qb, $userId) {
 		$expr = $qb->expr();
 
-		// TODO - Remove this in 12.0.1
-//		if ($qb->getConnection()
-//			   ->getDatabasePlatform() instanceof PostgreSqlPlatform
-//		) {
-//			$tmpAndX = $expr->eq('s.share_with', $qb->createFunction('CAST(m.circle_id AS TEXT)'));
-//		} else {
-//			$tmpAndX = $expr->eq(
-//				's.share_with', $expr->castColumn('m.circle_id', IQueryBuilder::PARAM_STR)
-//			);
-//		}
-//		$qb->andWhere($tmpAndX);
-
 		$qb->from(CoreRequestBuilder::TABLE_MEMBERS, 'm');
 		$qb->from(CoreRequestBuilder::TABLE_GROUPS, 'g');
 		$qb->from(CoreRequestBuilder::NC_TABLE_GROUP_USER, 'ncgu');
-
 
 		$qb->andWhere(
 			$expr->orX(
 			// We check if user is members of the circle with the right level
 				$expr->andX(
 					$expr->eq('m.user_id', $qb->createNamedParameter($userId)),
+					$expr->eq('m.circle_id', 'c.id'),
 					$expr->gte('m.level', $qb->createNamedParameter(Member::LEVEL_MEMBER))
 				),
 
-				// Or if user is member of one of the group linked to the circle with the right level
+//				 Or if user is member of one of the group linked to the circle with the right level
 				$expr->andX(
 					$expr->eq('g.circle_id', 'c.id'),
 					$expr->gte('g.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)),
@@ -315,23 +304,51 @@ class CircleProviderRequestBuilder {
 	protected function leftJoinShareInitiator(IQueryBuilder &$qb) {
 		$expr = $qb->expr();
 
+
+		// Circle member
 		if ($qb->getConnection()
 			   ->getDatabasePlatform() instanceof PostgreSqlPlatform
 		) {
 			$req = $expr->eq('s.share_with', $qb->createFunction('CAST(fo.circle_id AS TEXT)'));
 		} else {
 			$req = $expr->eq(
-				's.share_with', $expr->castColumn('fo.circle_id', IQueryBuilder::PARAM_STR)
+				's.share_with', $expr->castColumn('src_m.circle_id', IQueryBuilder::PARAM_STR)
 			);
 		}
 
+		$qb->selectAlias('src_m.level', 'initiator_circle_level');
 		$qb->leftJoin(
-			's', 'circles_members', 'fo', $expr->andX(
-			$req, $expr->eq('s.uid_initiator', 'fo.user_id')
+			's', CoreRequestBuilder::TABLE_MEMBERS, 'src_m', $expr->andX(
+			$expr->eq('s.uid_initiator', 'src_m.user_id'),
+			$req
 		)
 		);
 
-		$qb->selectAlias('fo.level', 'initiator_level');
+
+		// group member
+		if ($qb->getConnection()
+			   ->getDatabasePlatform() instanceof PostgreSqlPlatform
+		) {
+			$req = $expr->eq('s.share_with', $qb->createFunction('CAST(src_g.circle_id AS TEXT)'));
+		} else {
+			$req = $expr->eq(
+				's.share_with', $expr->castColumn('src_g.circle_id', IQueryBuilder::PARAM_STR)
+			);
+		}
+
+		$qb->selectAlias('src_g.level', 'initiator_group_level');
+		$qb->leftJoin(
+			's', CoreRequestBuilder::NC_TABLE_GROUP_USER, 'src_ncgu', $expr->andX(
+			$expr->eq('s.uid_initiator', 'src_ncgu.uid')
+		)
+		);
+		$qb->leftJoin(
+			's', 'circles_groups', 'src_g', $expr->andX(
+			$expr->gte('src_g.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)),
+			$expr->eq('src_ncgu.gid', 'src_g.group_id'),
+			$req
+		)
+		);
 	}
 
 
@@ -467,14 +484,16 @@ class CircleProviderRequestBuilder {
 		$qb = $this->dbConnection->getQueryBuilder();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->select(
-			's.*', 'f.fileid', 'f.path', 'f.permissions AS f_permissions', 'f.storage',
-			'f.path_hash', 'f.parent AS f_parent', 'f.name', 'f.mimetype', 'f.mimepart',
-			'f.size', 'f.mtime', 'f.storage_mtime', 'f.encrypted', 'f.unencrypted_size',
-			'f.etag', 'f.checksum', 'c.type AS circle_type', 'c.name AS circle_name',
-			'mo.user_id AS circle_owner'
-		)
+		$qb->selectDistinct('s.id')
+		   ->addSelect(
+			   's.*', 'f.fileid', 'f.path', 'f.permissions AS f_permissions', 'f.storage',
+			   'f.path_hash', 'f.parent AS f_parent', 'f.name', 'f.mimetype', 'f.mimepart',
+			   'f.size', 'f.mtime', 'f.storage_mtime', 'f.encrypted', 'f.unencrypted_size',
+			   'f.etag', 'f.checksum', 'c.type AS circle_type', 'c.name AS circle_name',
+			   'mo.user_id AS circle_owner'
+		   )
 		   ->selectAlias('st.id', 'storage_string_id');
+
 
 		$this->linkToCircleOwner($qb);
 		$this->joinShare($qb);

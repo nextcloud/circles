@@ -425,8 +425,16 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	 */
 	public function getSharedWith($userId, $shareType, $node, $limit, $offset) {
 
+		$shares = $this->getSharedWithCircleMembers($userId, $shareType, $node, $limit, $offset);
+
+
+		return $shares;
+	}
+
+
+	private function getSharedWithCircleMembers($userId, $shareType, $node, $limit, $offset) {
+
 		$qb = $this->getCompleteSelectSql();
-		$this->linkToMember($qb, $userId);
 		$this->linkToFileCache($qb, $userId);
 		$this->limitToPage($qb, $limit, $offset);
 
@@ -434,12 +442,17 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 			$this->limitToFiles($qb, [$node->getId()]);
 		}
 
+		$this->linkToMember($qb, $userId);
+
 		$this->leftJoinShareInitiator($qb);
 		$cursor = $qb->execute();
 
 		$shares = [];
 		while ($data = $cursor->fetch()) {
-			if ($data['initiator_level'] < Member::LEVEL_MEMBER) {
+			
+			if ($data['initiator_circle_level'] < Member::LEVEL_MEMBER
+				&& $data['initiator_group_level'] < Member::LEVEL_MEMBER
+			) {
 				continue;
 			}
 
@@ -452,7 +465,6 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 
 		return $shares;
 	}
-
 
 	/**
 	 * @param $data
