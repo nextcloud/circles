@@ -284,7 +284,7 @@ class CircleProviderRequestBuilder {
 					$expr->gte('m.level', $qb->createNamedParameter(Member::LEVEL_MEMBER))
 				),
 
-//				 Or if user is member of one of the group linked to the circle with the right level
+				// Or if user is member of one of the group linked to the circle with the right level
 				$expr->andX(
 					$expr->eq('g.circle_id', 'c.id'),
 					$expr->gte('g.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)),

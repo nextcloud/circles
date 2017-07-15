@@ -75,25 +75,6 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		);
 	}
 
-//
-//	/**
-//	 * Link to member (userId) of circle
-//	 *
-//	 * @param IQueryBuilder $qb
-//	 * @param string $field
-//	 */
-//	protected function leftJoinMembers(& $qb, $field) {
-//		$expr = $qb->expr();
-//
-//		$qb->leftJoin(
-//			$this->default_select_alias, CoreRequestBuilder::TABLE_MEMBERS, 'm',
-//			$expr->eq('m.circle_id', $field)
-//		);
-////		$qb->from(self::TABLE_MEMBERS, 'm')
-////		   ->andWhere($expr->eq('m.circle_id', $field));
-//	}
-
-
 	/**
 	 * Limit the search to a non-personal circle
 	 *

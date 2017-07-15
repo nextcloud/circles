@@ -216,17 +216,22 @@ class CoreRequestBuilder {
 	 * link to the groupId/UserId of the NC DB.
 	 *
 	 * @param IQueryBuilder $qb
-	 * @param string $fieldGroup
 	 * @param string $userId
+	 * @param string $field
 	 */
-	protected function leftJoinNCGroupAndUser(IQueryBuilder $qb, $fieldGroup, $userId) {
+	protected function leftJoinNCGroupAndUser(IQueryBuilder $qb, $userId, $field) {
 		$expr = $qb->expr();
 
 		$qb->leftJoin(
 			$this->default_select_alias, self::NC_TABLE_GROUP_USER, 'ncgu',
+			$expr->eq('ncgu.uid', $qb->createNamedParameter($userId))
+		);
+
+		$qb->leftJoin(
+			$this->default_select_alias, CoreRequestBuilder::TABLE_GROUPS, 'g',
 			$expr->andX(
-				$expr->eq('ncgu.gid', $fieldGroup),
-				$expr->eq('ncgu.uid', $qb->createNamedParameter($userId))
+				$expr->eq('ncgu.gid', 'g.group_id'),
+				$expr->eq($field, 'g.circle_id')
 			)
 		);
 	}
