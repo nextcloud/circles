@@ -4,53 +4,53 @@ All notable changes to this project will be documented in this file.
 
 ## 0.12.0
 
-- Security: when leaving a circle, shared file are not accessible anymore by said circle.
-- Bug: fix icons
-- Bug: fix strange behaviour when the app is deleted from the disk, but not disable in the cloud
-- Code design: getting rid of Mapper/Entity and using pure QueryBuilder
-- Feature: Edit Name and Description of a Circle
-- Feature: Activities are now send by mail.
-- Feature: Mass invite Group Members to a Circle.
-- Feature: Link Groups to Circle and assign level to linked group.
+- Security: When leaving a circle, shared files are not accessible by said circle anymore.
+- Bug: Fix icons
+- Bug: Fix strange behaviour when the app is deleted from disk, but not disabled in the cloud
+- Code design: Getting rid of Mapper/Entity and using pure QueryBuilder
+- Feature: Edit Name and Description of a circle
+- Feature: Activities are now sent by email.
+- Feature: Mass invite group members to a circle.
+- Feature: Link groups to circle and assign level to linked group.
 
 
 ## 0.11.0
 
-- Federated Circles
-- Integration with Activity
-- new UI
-- fixes
+- Federated circles
+- Integration with activity
+- New UI
+- Bugfixes
 
 
 ## 0.10.0
 
-- Introduction to Linked Circles (federated-circles)
-- bug fixing few SQL request (pgsql)
-- improving some SQL request
-- Compat php5.6
+- Introduction to linked circles (federated-circles)
+- Bugfixes to a few SQL requests (pgsql)
+- Improvement of some SQL requests
+- Compatability with PHP 5.6
 
 
 ## 0.9.6
 
 - Shares: Take Nodes into account.
-- API: returns circle name.
-- misc: removing memberships when user is deleted.
-- misc: bugfixes.
-- misc: review all texts. 
+- API: Returns circle name.
+- Misc: Removal of memberships when user is deleted.
+- Misc: Bugfixes.
+- Misc: All texts reviewed. 
 
 
 ## 0.9.5
 
-- small rework on database
-- fixing UI bug.
-- API: creation of new share items
-- API: listing members of a circle
+- Small database rework
+- UI bug fixed.
+- API: Creation of new share items
+- API: Listing members of a circle
 
 
 ## 0.9.4
 
 - Fixed an SQL error (#51)
-- Adding a way to destroy a Circle (#50)
+- Adding a way to destroy a circle (#50)
 
 
 ## 0.9.3
