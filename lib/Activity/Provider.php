@@ -237,7 +237,7 @@ class Provider implements IProvider {
 			case 'member_request_invitation':
 				return $this->parseMemberEvent(
 					$event, $circle, $member,
-					$this->l10n->t('You requested an invitation to {circle}'),
+					$this->l10n->t('You requested an invitation into {circle}'),
 					$this->l10n->t(
 						'{member} has requested an invitation into {circle}'
 					)
