@@ -16,7 +16,7 @@ use OCP\Activity\IEvent;
 use OCP\Activity\IManager;
 use OCP\Activity\IProvider;
 use OCP\IL10N;
-use OCP\IURLGenerafr;
+use OCP\IURLGenerator;
 use OpenCloud\Common\Exceptions\InvalidArgumentError;
 
 
