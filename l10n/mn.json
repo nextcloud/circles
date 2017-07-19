@@ -51,7 +51,6 @@
     "Circles" : "Тойрог",
     "You joined {circle}" : "Та нэвтэрлээ {тойрогт}",
     "You left {circle}" : " Та гарлаа {тойрог} ",
-    "You requested an invitation to {circle}" : "та ",
     "Circle not found" : "тойрог олдоогүй",
     "This member does not exist" : "ийм гишүүн байхгүй байна",
     "This user is already a member of the circle" : "Энэ хэрэглэгч аль хэдийн тойргийн гишүүн болсон ",

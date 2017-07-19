@@ -96,7 +96,6 @@ OC.L10N.register(
     "You changed {member}'s level in {circle} to %1$s" : "Změnili jste úroveň člena {member} v kruhu {circle} na %1$s",
     "{author} changed your level in {circle} to %1$s" : "Člen {author} změnil vaši úroveň v kruhu {circle} na %1$s",
     "{author} changed {member}'s level in {circle} to %1$s" : "Člen {author} změnil úroveň člena {member} v kruhu {circle} na %1$s",
-    "You requested an invitation to {circle}" : "Požádali jste o pozvánku do kruhu {circle}",
     "{member} has requested an invitation into {circle}" : "{member} požádal o pozvánku do kruhu {circle}",
     "You are the new owner of {circle}" : "Stali jste se novým vlastníkem kruhu {circle}",
     "{member} is the new owner of {circle}" : "{member} je novým vlastníkem kruhu {circle}",

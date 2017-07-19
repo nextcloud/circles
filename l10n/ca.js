@@ -83,7 +83,6 @@ OC.L10N.register(
     "You were removed from {circle} by {author}" : "{author} t'ha tret del cercle {circle}",
     "{member} was removed from {circle} by {author}" : "{author} ha tret {member} del cercle {circle}",
     "You invited {member} into {circle}" : "Has convidat {member} a {circle}",
-    "You requested an invitation to {circle}" : "Has demanat una invitació per entrar a {circle}",
     "You are the new owner of {circle}" : "Ets el nou propietari de {circle}",
     "The name of your circle must contain at least 3 characters" : "El nom del teu cercle ha de tenir com a mínim 3 caràcters",
     "The name of your circle cannot start with this character" : "El nom del teu cercle no pot començar amb aquest caràcter",
