@@ -97,6 +97,7 @@
     "You changed {member}'s level in {circle} to %1$s" : "{member} kullanıcısının {circle} çevresindeki düzeyini %1$s olarak değiştirdiniz",
     "{author} changed your level in {circle} to %1$s" : "{author}, circle} çevresindeki düzeyinizi %1$s olarak değiştirdi",
     "{author} changed {member}'s level in {circle} to %1$s" : "{author}, {member} kullanıcısının {circle} çevresindeki düzeyini %1$s olarak değiştirdi",
+    "You requested an invitation into {circle}" : "{circle} çevresine katılma çağrısı aldınız",
     "{member} has requested an invitation into {circle}" : "{member}, {circle} çevresine katılma çağrısı aldı",
     "You are the new owner of {circle}" : "Artık {circle} çevresinin sahibisiniz",
     "{member} is the new owner of {circle}" : "{member}, artık {circle} çevresinin sahibi",
