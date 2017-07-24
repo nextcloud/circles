@@ -129,7 +129,7 @@ class FederatedController extends BaseController {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
-	 * @param $apiVersion
+	 * @param array $apiVersion
 	 * @param string $circleUniqueId
 	 * @param string $uniqueId
 	 *
@@ -172,10 +172,10 @@ class FederatedController extends BaseController {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
-	 * @param $apiVersion
-	 * @param $token
-	 * @param $uniqueId
-	 * @param $item
+	 * @param array $apiVersion
+	 * @param string $token
+	 * @param string $uniqueId
+	 * @param string $item
 	 *
 	 * @return DataResponse
 	 */
@@ -211,9 +211,9 @@ class FederatedController extends BaseController {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
-	 * @param $apiVersion
-	 * @param $token
-	 * @param $uniqueId
+	 * @param array $apiVersion
+	 * @param string $token
+	 * @param string $uniqueId
 	 * @param $status
 	 *
 	 * @return DataResponse

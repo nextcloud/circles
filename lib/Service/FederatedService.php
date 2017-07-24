@@ -466,9 +466,9 @@ class FederatedService {
 
 
 	/**
-	 * @param $token
-	 * @param $uniqueId
-	 * @param $status
+	 * @param string $token
+	 * @param string $uniqueId
+	 * @param int $status
 	 *
 	 * @return FederatedLink
 	 * @throws Exception
@@ -498,7 +498,7 @@ class FederatedService {
 	 *
 	 * will throw exception is the status sent by remote is not correct
 	 *
-	 * @param $status
+	 * @param int $status
 	 *
 	 * @throws FederatedCircleStatusUpdateException
 	 */
@@ -522,7 +522,7 @@ class FederatedService {
 	 *
 	 * @param Circle $circle
 	 * @param FederatedLink $link
-	 * @param $status
+	 * @param int $status
 	 *
 	 * @throws FederatedCircleStatusUpdateException
 	 */
@@ -551,7 +551,7 @@ class FederatedService {
 	 *
 	 * @param Circle $circle
 	 * @param FederatedLink $link
-	 * @param $status
+	 * @param int $status
 	 *
 	 * @throws FederatedCircleStatusUpdateException
 	 */
