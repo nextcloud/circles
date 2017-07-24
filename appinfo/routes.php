@@ -43,25 +43,20 @@ return [
 		['name' => 'Circles#create', 'url' => '/v1/circles', 'verb' => 'PUT'],
 		['name' => 'Circles#listing', 'url' => '/v1/circles', 'verb' => 'GET'],
 		[
-			'name'         => 'Circles#details', 'url' => '/v1/circles/{id}', 'verb' => 'GET',
-			'requirements' => ['id' => '\d+'],
+			'name'         => 'Circles#details', 'url' => '/v1/circles/{uniqueId}', 'verb' => 'GET',
 		],
 		[
-			'name'         => 'Circles#settings', 'url' => '/v1/circles/{id}/settings',
+			'name'         => 'Circles#settings', 'url' => '/v1/circles/{uniqueId}/settings',
 			'verb'         => 'POST',
-			'requirements' => ['id' => '\d+'],
 		],
 		[
-			'name'         => 'Circles#destroy', 'url' => '/v1/circles/{id}', 'verb' => 'DELETE',
-			'requirements' => ['id' => '\d+'],
+			'name'         => 'Circles#destroy', 'url' => '/v1/circles/{uniqueId}', 'verb' => 'DELETE',
 		],
 		[
-			'name'         => 'Circles#join', 'url' => '/v1/circles/{id}/join', 'verb' => 'GET',
-			'requirements' => ['id' => '\d+'],
+			'name'         => 'Circles#join', 'url' => '/v1/circles/{uniqueId}/join', 'verb' => 'GET',
 		],
 		[
-			'name'         => 'Circles#leave', 'url' => '/v1/circles/{id}/leave', 'verb' => 'GET',
-			'requirements' => ['id' => '\d+'],
+			'name'         => 'Circles#leave', 'url' => '/v1/circles/{uniqueId}/leave', 'verb' => 'GET',
 		],
 		['name' => 'Circles#link', 'url' => '/v1/circles/{circleId}/link', 'verb' => 'POST'],
 		[
@@ -79,41 +74,33 @@ return [
 			'name' => 'Federated#receiveFederatedDelivery', 'url' => '/v1/payload',
 			'verb' => 'PUT'
 		],
-		['name' => 'Members#search', 'url' => '/v1/circles/{id}/members', 'verb' => 'GET'],
+		['name' => 'Members#search', 'url' => '/v1/circles/{uniqueId}/members', 'verb' => 'GET'],
 		[
-			'name'         => 'Members#importFromGroup', 'url' => '/v1/circles/{id}/groupmembers',
-			'verb'         => 'PUT',
-			'requirements' => ['id' => '\d+'],
+			'name'         => 'Members#importFromGroup', 'url' => '/v1/circles/{uniqueId}/groupmembers',
+			'verb'         => 'PUT'
 		],
 		[
-			'name'         => 'Members#add', 'url' => '/v1/circles/{id}/members', 'verb' => 'PUT',
-			'requirements' => ['id' => '\d+'],
+			'name'         => 'Members#add', 'url' => '/v1/circles/{uniqueId}/members', 'verb' => 'PUT'
 		],
 		[
-			'name'         => 'Members#remove', 'url' => '/v1/circles/{id}/members',
+			'name'         => 'Members#remove', 'url' => '/v1/circles/{uniqueId}/members',
 			'verb'         => 'DELETE',
-			'requirements' => ['id' => '\d+'],
 		],
 		[
-			'name'         => 'Members#level', 'url' => '/v1/circles/{id}/level', 'verb' => 'POST',
-			'requirements' => ['id' => '\d+'],
+			'name'         => 'Members#level', 'url' => '/v1/circles/{uniqueId}/level', 'verb' => 'POST'
 		],
 		[
-			'name'         => 'Groups#add', 'url' => '/v1/circles/{id}/groups', 'verb' => 'PUT',
-			'requirements' => ['id' => '\d+'],
+			'name'         => 'Groups#add', 'url' => '/v1/circles/{uniqueId}/groups', 'verb' => 'PUT'
 		],
 		[
-			'name'         => 'Groups#level', 'url' => '/v1/circles/{id}/group/level', 'verb' => 'POST',
-			'requirements' => ['id' => '\d+'],
+			'name'         => 'Groups#level', 'url' => '/v1/circles/{uniqueId}/group/level', 'verb' => 'POST'
 		],
 		[
-			'name'         => 'Groups#remove', 'url' => '/v1/circles/{id}/groups',
-			'verb'         => 'DELETE',
-			'requirements' => ['id' => '\d+'],
+			'name'         => 'Groups#remove', 'url' => '/v1/circles/{uniqueId}/groups',
+			'verb'         => 'DELETE'
 		],
 		[
-			'name'         => 'Shares#create', 'url' => '/v1/circles/{id}/share', 'verb' => 'PUT',
-			'requirements' => ['id' => '\d+'],
+			'name'         => 'Shares#create', 'url' => '/v1/circles/{uniqueId}/share', 'verb' => 'PUT'
 		]
 	]
 ];

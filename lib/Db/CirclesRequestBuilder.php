@@ -179,13 +179,12 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		$sqb = $expr->andX(
 			$expr->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_HIDDEN)),
 			$expr->orX(
-				$expr->gte(
-					'u.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)
+				$expr->gte('u.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)),
+				$expr->gte('g.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)),
+				$expr->eq(
+					$qb->createNamedParameter($circleUniqueId),
+					$qb->createFunction('LEFT(c.unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH . ')')
 				),
-				$expr->gte(
-					'g.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)
-				),
-				$expr->eq('c.unique_id', $qb->createNamedParameter($circleUniqueId)),
 				$expr->eq('c.name', $qb->createNamedParameter($name))
 			)
 		);
@@ -255,7 +254,12 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		   ->leftJoin(
 			   $this->default_select_alias, CoreRequestBuilder::TABLE_MEMBERS, 'u',
 			   $expr->andX(
-				   $expr->eq($pf . 'id', 'u.circle_id'),
+				   $expr->eq(
+					   'u.circle_id',
+					   $qb->createFunction(
+						   'LEFT(' . $pf . 'unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
+					   )
+				   ),
 				   $expr->eq('u.user_id', $qb->createNamedParameter($userId))
 			   )
 		   );
@@ -282,7 +286,12 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		   ->leftJoin(
 			   $this->default_select_alias, CoreRequestBuilder::TABLE_MEMBERS, 'o',
 			   $expr->andX(
-				   $expr->eq($pf . 'id', 'o.circle_id'),
+				   $expr->eq(
+					   $qb->createFunction(
+						   'LEFT(' . $pf . 'unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
+					   )
+					   , 'o.circle_id'
+				   ),
 				   $expr->eq('o.level', $qb->createNamedParameter(Member::LEVEL_OWNER))
 			   )
 		   );
@@ -407,7 +416,8 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		   ->where(
 			   $qb->expr()
 				  ->eq(
-					  'unique_id', $qb->createNamedParameter($circleUniqueId)
+					  $qb->createFunction('LEFT(unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH),
+					  $qb->createNamedParameter($circleUniqueId)
 				  )
 		   );
 

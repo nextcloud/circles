@@ -83,20 +83,20 @@ class GroupsService {
 
 
 	/**
-	 * @param $circleId
-	 * @param $groupId
+	 * @param string $circleUniqueId
+	 * @param string $groupId
 	 *
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function linkGroup($circleId, $groupId) {
+	public function linkGroup($circleUniqueId, $groupId) {
 
 		try {
-			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
+			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			$circle->getHigherViewer()
 				   ->hasToBeAdmin();
 
-			$group = $this->getFreshNewMember($circleId, $groupId);
+			$group = $this->getFreshNewMember($circleUniqueId, $groupId);
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -105,7 +105,7 @@ class GroupsService {
 		$this->membersRequest->updateGroup($group);
 
 //		$this->eventsService->onMemberNew($circle, $group);
-		return $this->membersRequest->getGroupsFromCircle($circleId, $circle->getHigherViewer());
+		return $this->membersRequest->getGroupsFromCircle($circleUniqueId, $circle->getHigherViewer());
 	}
 
 
@@ -144,18 +144,18 @@ class GroupsService {
 
 
 	/**
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 * @param string $groupId
 	 * @param int $level
 	 *
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function levelGroup($circleId, $groupId, $level) {
+	public function levelGroup($circleUniqueId, $groupId, $level) {
 
 		$level = (int)$level;
 		try {
-			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
+			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
 				throw new CircleTypeNotValid(
 					$this->l10n->t('You cannot edit level in a personal circle')
@@ -210,19 +210,19 @@ class GroupsService {
 
 
 	/**
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 * @param string $groupId
 	 *
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function unlinkGroup($circleId, $groupId) {
+	public function unlinkGroup($circleUniqueId, $groupId) {
 		try {
-			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
+			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			$circle->getHigherViewer()
 				   ->hasToBeAdmin();
 
-			$group = $this->membersRequest->forceGetGroup($circleId, $groupId);
+			$group = $this->membersRequest->forceGetGroup($circleUniqueId, $groupId);
 			$group->cantBeOwner();
 			$circle->getHigherViewer()
 				   ->hasToBeHigherLevel($group->getLevel());

@@ -43,7 +43,7 @@ class MembersRequest extends MembersRequestBuilder {
 	 *          In case of interaction with users, Please use MembersService->getMember() instead.
 	 *
 	 * @param string $circleUniqueId
-	 * @param $userId
+	 * @param string $userId
 	 *
 	 * @return Member
 	 * @throws MemberDoesNotExistException
@@ -139,17 +139,17 @@ class MembersRequest extends MembersRequestBuilder {
 	 * WARNING: This function does not filters data regarding the current user/viewer.
 	 *          In case of interaction with users, Please use getGroup() instead.
 	 *
-	 * @param string $circleId
+	 * @param string $circleUniqueId
 	 * @param string $groupId
 	 *
 	 * @return Member
 	 * @throws MemberDoesNotExistException
 	 */
-	public function forceGetGroup($circleId, $groupId) {
+	public function forceGetGroup($circleUniqueId, $groupId) {
 		$qb = $this->getGroupsSelectSql();
 
 		$this->limitToGroupId($qb, $groupId);
-		$this->limitToCircleId($qb, $circleId);
+		$this->limitToCircleId($qb, $circleUniqueId);
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
@@ -375,14 +375,10 @@ class MembersRequest extends MembersRequestBuilder {
 	 *
 	 * Remove All members from a Circle. Used when deleting a Circle.
 	 *
-	 * @param $circleId
+	 * @param string $uniqueCircleId
 	 */
-	public function removeAllFromCircle($circleId) {
-		if ($circleId === 0) {
-			return;
-		}
-
-		$qb = $this->getMembersDeleteSql($circleId, '');
+	public function removeAllFromCircle($uniqueCircleId) {
+		$qb = $this->getMembersDeleteSql($uniqueCircleId, '');
 		$qb->execute();
 	}
 

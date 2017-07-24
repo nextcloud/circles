@@ -97,7 +97,7 @@ class BaseMember implements \JsonSerializable {
 	 * @return $this
 	 */
 	public function setCircleId($circleUniqueId) {
-		$this->circleUniqueId = (int)$circleUniqueId;
+		$this->circleUniqueId = $circleUniqueId;
 
 		return $this;
 	}

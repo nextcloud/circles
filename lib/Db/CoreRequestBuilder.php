@@ -9,6 +9,7 @@
 namespace OCA\Circles\Db;
 
 
+use OCA\Circles\Model\Circle;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use Doctrine\DBAL\Query\QueryBuilder;
 use OC\L10N\L10N;
@@ -106,6 +107,29 @@ class CoreRequestBuilder {
 	 */
 	protected function limitToCircleId(IQueryBuilder &$qb, $circleUniqueId) {
 		$this->limitToDBField($qb, 'circle_id', $circleUniqueId);
+
+	}
+
+
+	/**
+	 * Limit the request to the Circle by its Shorten Unique Id.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param string $circleUniqueId
+	 */
+	protected function limitToShortenUniqueId(IQueryBuilder &$qb, $circleUniqueId) {
+		$expr = $qb->expr();
+		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
+
+		$qb->andWhere(
+			$expr->eq(
+				$qb->createNamedParameter($circleUniqueId),
+				$qb->createFunction(
+					'LEFT(' . $pf . 'unique_id' . ', ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
+				)
+			)
+		);
+
 	}
 
 
@@ -208,7 +232,12 @@ class CoreRequestBuilder {
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
 
 		$qb->from(self::TABLE_CIRCLES, 'c')
-		   ->andWhere($expr->eq('c.unique_id', $pf . 'circle_id'));
+		   ->andWhere(
+			   $expr->eq(
+				   $pf . 'circle_id',
+				   $qb->createFunction('LEFT(c.unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH . ')')
+			   )
+		   );
 	}
 
 
@@ -231,7 +260,11 @@ class CoreRequestBuilder {
 			$this->default_select_alias, CoreRequestBuilder::TABLE_GROUPS, 'g',
 			$expr->andX(
 				$expr->eq('ncgu.gid', 'g.group_id'),
-				$expr->eq($field, 'g.circle_id')
+				$expr->eq(
+					'g.circle_id', $qb->createFunction(
+					'LEFT(' . $field . ', ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
+				)
+				)
 			)
 		);
 	}

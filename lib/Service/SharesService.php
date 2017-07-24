@@ -150,17 +150,17 @@ class SharesService {
 	}
 
 	/**
-	 * @param int $circleId
-	 * @param $uniqueId
+	 * @param string $circleUniqueId
+	 * @param string $frameUniqueId
 	 *
 	 * @return null|SharingFrame
 	 */
-	public function getFrameFromUniqueId($circleId, $uniqueId) {
-		if ($uniqueId === null || $uniqueId === '') {
+	public function getFrameFromUniqueId($circleUniqueId, $frameUniqueId) {
+		if ($frameUniqueId === null || $frameUniqueId === '') {
 			return null;
 		}
 
-		return $this->circlesRequest->getFrame((int)$circleId, (string)$uniqueId);
+		return $this->circlesRequest->getFrame($circleUniqueId, $frameUniqueId);
 	}
 
 

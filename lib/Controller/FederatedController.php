@@ -130,18 +130,18 @@ class FederatedController extends BaseController {
 	 * @NoCSRFRequired
 	 *
 	 * @param $apiVersion
-	 * @param $circleId
-	 * @param $uniqueId
+	 * @param string $circleUniqueId
+	 * @param string $uniqueId
 	 *
 	 * @return DataResponse
 	 */
-	public function initFederatedDelivery($apiVersion, $circleId, $uniqueId) {
+	public function initFederatedDelivery($apiVersion, $circleUniqueId, $uniqueId) {
 
 		if ($uniqueId === '' || !$this->configService->isFederatedCirclesAllowed()) {
 			return $this->federatedFail('federated_not_allowed');
 		}
 
-		$frame = $this->sharesService->getFrameFromUniqueId($circleId, $uniqueId);
+		$frame = $this->sharesService->getFrameFromUniqueId($circleUniqueId, $uniqueId);
 		if ($frame === null) {
 			return $this->federatedFail('unknown_share');
 		}

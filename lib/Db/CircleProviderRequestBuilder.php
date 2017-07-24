@@ -30,6 +30,7 @@ namespace OCA\Circles\Db;
 
 use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
 use Doctrine\DBAL\Query\QueryBuilder;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
@@ -219,7 +220,10 @@ class CircleProviderRequestBuilder {
 
 		$qb->from(CoreRequestBuilder::TABLE_CIRCLES, 'c');
 
-		$tmpOrX = $expr->eq('s.share_with', 'c.unique_id');
+		$tmpOrX = $expr->eq(
+			's.share_with',
+			$qb->createFunction('LEFT(c.unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH . ')')
+		);
 
 		if ($shareId === -1) {
 			$qb->andWhere($tmpOrX);
@@ -246,7 +250,10 @@ class CircleProviderRequestBuilder {
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->leftJoin(
 			'c', 'circles_members', 'mo', $expr->andX(
-			$expr->eq('c.unique_id', 'mo.circle_id'),
+			$expr->eq(
+				'mo.circle_id',
+				$qb->createFunction('LEFT(c.unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH . ')')
+			),
 			$expr->eq('mo.level', $qb->createNamedParameter(Member::LEVEL_OWNER))
 		)
 		);
@@ -271,13 +278,23 @@ class CircleProviderRequestBuilder {
 			// We check if user is members of the circle with the right level
 				$expr->andX(
 					$expr->eq('m.user_id', $qb->createNamedParameter($userId)),
-					$expr->eq('m.circle_id', 'c.unique_id'),
+					$expr->eq(
+						'm.circle_id',
+						$qb->createFunction(
+							'LEFT(c.unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
+						)
+					),
 					$expr->gte('m.level', $qb->createNamedParameter(Member::LEVEL_MEMBER))
 				),
 
 				// Or if user is member of one of the group linked to the circle with the right level
 				$expr->andX(
-					$expr->eq('g.circle_id', 'c.unique_id'),
+					$expr->eq(
+						'g.circle_id',
+						$qb->createFunction(
+							'LEFT(c.unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
+						)
+					),
 					$expr->gte('g.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)),
 					$expr->eq('ncgu.gid', 'g.group_id'),
 					$expr->eq('ncgu.uid', $qb->createNamedParameter($userId))

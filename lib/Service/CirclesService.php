@@ -240,16 +240,16 @@ class CirclesService {
 	/**
 	 * save new settings if current user is admin.
 	 *
-	 * @param $circleId
+	 * @param string $circleUniqueId
 	 * @param array $settings
 	 *
 	 * @return Circle
 	 * @throws \Exception
 	 */
-	public function settingsCircle($circleId, $settings) {
+	public function settingsCircle($circleUniqueId, $settings) {
 
 		try {
-			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
+			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			$circle->getHigherViewer()
 				   ->hasToBeOwner();
 
@@ -302,15 +302,15 @@ class CirclesService {
 	/**
 	 * Leave a circle.
 	 *
-	 * @param $circleId
+	 * @param string $circleUniqueId
 	 *
 	 * @return null|Member
 	 * @throws \Exception
 	 */
-	public function leaveCircle($circleId) {
+	public function leaveCircle($circleUniqueId) {
 
 		try {
-			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
+			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			$member = $circle->getViewer();
 
 			if (!$member->isAlmostMember()) {
@@ -335,21 +335,21 @@ class CirclesService {
 	/**
 	 * destroy a circle.
 	 *
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 *
 	 * @throws MemberIsNotOwnerException
 	 */
-	public function removeCircle($circleId) {
+	public function removeCircle($circleUniqueId) {
 
 		try {
-			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
+			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			$circle->getHigherViewer()
 				   ->hasToBeOwner();
 
 			$this->eventsService->onCircleDestruction($circle);
 
-			$this->membersRequest->removeAllFromCircle($circleId);
-			$this->circlesRequest->destroyCircle($circleId);
+			$this->membersRequest->removeAllFromCircle($circleUniqueId);
+			$this->circlesRequest->destroyCircle($circleUniqueId);
 
 		} catch (MemberIsNotOwnerException $e) {
 			throw $e;

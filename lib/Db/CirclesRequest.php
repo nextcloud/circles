@@ -144,7 +144,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	public function getCircle($circleUniqueId, $viewerId) {
 		$qb = $this->getCirclesSelectSql();
 
-		$this->limitToUniqueId($qb, $circleUniqueId);
+		$this->limitToShortenUniqueId($qb, $circleUniqueId);
 
 		$this->leftJoinUserIdAsViewer($qb, $viewerId);
 		$this->leftJoinOwner($qb);
@@ -196,8 +196,6 @@ class CirclesRequest extends CirclesRequestBuilder {
 		   ->setValue('settings', $qb->createNamedParameter($circle->getSettings(true)))
 		   ->setValue('type', $qb->createNamedParameter($circle->getType()));
 		$qb->execute();
-
-		$circle->setId($qb->getLastInsertId());
 
 		$owner = new Member($this->l10n, $userId);
 		$owner->setCircleId($circle->getUniqueId())
@@ -349,15 +347,15 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 	/**
 	 * @param string $circleUniqueId
-	 * @param string $uniqueId
+	 * @param string $frameUniqueId
 	 *
 	 * @return SharingFrame
 	 * @throws SharingFrameDoesNotEXist
 	 */
-	public function getFrame($circleUniqueId, $uniqueId) {
+	public function getFrame($circleUniqueId, $frameUniqueId) {
 		$qb = $this->getSharesSelectSql();
-		$this->limitToUniqueId($qb, (string)$uniqueId);
-		$this->limitToCircleId($qb, (string)$circleUniqueId);
+		$this->limitToUniqueId($qb, $frameUniqueId);
+		$this->limitToCircleId($qb, $circleUniqueId);
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();

@@ -84,7 +84,7 @@ class SharingFrame implements \JsonSerializable {
 	 * @param string $circleUniqueId
 	 */
 	public function setCircleId($circleUniqueId) {
-		$this->circleUniqueId = (int)$circleUniqueId;
+		$this->circleUniqueId = $circleUniqueId;
 	}
 
 	/**

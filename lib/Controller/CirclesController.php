@@ -89,18 +89,18 @@ class CirclesController extends BaseController {
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
-	 * @param $id
+	 * @param string $uniqueId
 	 *
 	 * @return DataResponse
 	 */
-	public function details($id) {
+	public function details($uniqueId) {
 		try {
-			$circle = $this->circlesService->detailsCircle($id);
+			$circle = $this->circlesService->detailsCircle($uniqueId);
 
-			return $this->success(['circle_id' => $id, 'details' => $circle]);
+			return $this->success(['circle_id' => $uniqueId, 'details' => $circle]);
 		} catch (\Exception $e) {
 
-			return $this->fail(['circle_id' => $id, 'error' => $e->getMessage()]);
+			return $this->fail(['circle_id' => $uniqueId, 'error' => $e->getMessage()]);
 		}
 
 	}
@@ -110,18 +110,19 @@ class CirclesController extends BaseController {
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
-	 * @param $id
+	 * @param string $uniqueId
+	 * @param array $settings
 	 *
 	 * @return DataResponse
 	 */
-	public function settings($id, $settings) {
+	public function settings($uniqueId, $settings) {
 		try {
-			$circle = $this->circlesService->settingsCircle($id, $settings);
+			$circle = $this->circlesService->settingsCircle($uniqueId, $settings);
 
-			return $this->success(['circle_id' => $id, 'details' => $circle]);
+			return $this->success(['circle_id' => $uniqueId, 'details' => $circle]);
 		} catch (\Exception $e) {
 
-			return $this->fail(['circle_id' => $id, 'error' => $e->getMessage()]);
+			return $this->fail(['circle_id' => $uniqueId, 'error' => $e->getMessage()]);
 		}
 
 	}
@@ -131,18 +132,18 @@ class CirclesController extends BaseController {
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
-	 * @param string $circleUniqueId
+	 * @param string $uniqueId
 	 *
 	 * @return DataResponse
 	 */
-	public function join($circleUniqueId) {
+	public function join($uniqueId) {
 		try {
-			$data = $this->circlesService->joinCircle($circleUniqueId);
+			$data = $this->circlesService->joinCircle($uniqueId);
 
-			return $this->success(['circle_id' => $circleUniqueId, 'member' => $data]);
+			return $this->success(['circle_id' => $uniqueId, 'member' => $data]);
 		} catch (\Exception $e) {
 
-			return $this->fail(['circle_id' => $circleUniqueId, 'error' => $e->getMessage()]);
+			return $this->fail(['circle_id' => $uniqueId, 'error' => $e->getMessage()]);
 		}
 	}
 
@@ -151,18 +152,18 @@ class CirclesController extends BaseController {
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
-	 * @param $id
+	 * @param string $uniqueId
 	 *
 	 * @return DataResponse
 	 */
-	public function leave($id) {
+	public function leave($uniqueId) {
 		try {
-			$data = $this->circlesService->leaveCircle($id);
+			$data = $this->circlesService->leaveCircle($uniqueId);
 
-			return $this->success(['circle_id' => $id, 'member' => $data]);
+			return $this->success(['circle_id' => $uniqueId, 'member' => $data]);
 		} catch (\Exception $e) {
 
-			return $this->fail(['circle_id' => $id, 'error' => $e->getMessage()]);
+			return $this->fail(['circle_id' => $uniqueId, 'error' => $e->getMessage()]);
 		}
 
 	}
@@ -172,17 +173,17 @@ class CirclesController extends BaseController {
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
-	 * @param $id
+	 * @param string $uniqueId
 	 *
 	 * @return DataResponse
 	 */
-	public function destroy($id) {
+	public function destroy($uniqueId) {
 		try {
-			$this->circlesService->removeCircle($id);
+			$this->circlesService->removeCircle($uniqueId);
 
-			return $this->success(['circle_id' => $id]);
+			return $this->success(['circle_id' => $uniqueId]);
 		} catch (\Exception $e) {
-			return $this->fail(['circle_id' => $id, 'error' => $e->getMessage()]);
+			return $this->fail(['circle_id' => $uniqueId, 'error' => $e->getMessage()]);
 		}
 	}
 

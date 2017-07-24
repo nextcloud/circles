@@ -35,19 +35,19 @@ class MembersController extends BaseController {
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
-	 * @param $id
+	 * @param string $uniqueId
 	 * @param string $name
 	 *
 	 * @return DataResponse
 	 */
-	public function add($id, $name) {
+	public function add($uniqueId, $name) {
 
 		try {
-			$data = $this->membersService->addMember($id, $name);
+			$data = $this->membersService->addMember($uniqueId, $name);
 		} catch (\Exception $e) {
 			return $this->fail(
 				[
-					'circle_id' => $id,
+					'circle_id' => $uniqueId,
 					'name'      => $name,
 					'error'     => $e->getMessage()
 				]
@@ -56,7 +56,7 @@ class MembersController extends BaseController {
 
 		return $this->success(
 			[
-				'circle_id' => $id,
+				'circle_id' => $uniqueId,
 				'name'      => $name,
 				'members'   => $data
 			]
@@ -69,19 +69,19 @@ class MembersController extends BaseController {
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
-	 * @param $id
+	 * @param $uniqueId
 	 * @param string $name
 	 *
 	 * @return DataResponse
 	 */
-	public function importFromGroup($id, $name) {
+	public function importFromGroup($uniqueId, $name) {
 
 		try {
-			$data = $this->membersService->importMembersFromGroup($id, $name);
+			$data = $this->membersService->importMembersFromGroup($uniqueId, $name);
 		} catch (\Exception $e) {
 			return $this->fail(
 				[
-					'circle_id' => $id,
+					'circle_id' => $uniqueId,
 					'name'      => $name,
 					'error'     => $e->getMessage()
 				]
@@ -90,7 +90,7 @@ class MembersController extends BaseController {
 
 		return $this->success(
 			[
-				'circle_id' => $id,
+				'circle_id' => $uniqueId,
 				'name'      => $name,
 				'members'   => $data
 			]
@@ -103,21 +103,21 @@ class MembersController extends BaseController {
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
-	 * @param $id
-	 * @param $member
-	 * @param $level
+	 * @param string $uniqueId
+	 * @param string $member
+	 * @param int $level
 	 *
 	 * @return DataResponse
 	 */
-	public function level($id, $member, $level) {
+	public function level($uniqueId, $member, $level) {
 
 		try {
-			$data = $this->membersService->levelMember($id, $member, $level);
+			$data = $this->membersService->levelMember($uniqueId, $member, $level);
 		} catch (\Exception $e) {
 			return
 				$this->fail(
 					[
-						'circle_id' => $id,
+						'circle_id' => $uniqueId,
 						'name'      => $member,
 						'level'     => $level,
 						'error'     => $e->getMessage()
@@ -127,7 +127,7 @@ class MembersController extends BaseController {
 
 		return $this->success(
 			[
-				'circle_id' => $id,
+				'circle_id' => $uniqueId,
 				'name'      => $member,
 				'level'     => $level,
 				'members'   => $data,
@@ -140,20 +140,20 @@ class MembersController extends BaseController {
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
-	 * @param $id
-	 * @param $member
+	 * @param string $uniqueId
+	 * @param string $member
 	 *
 	 * @return DataResponse
 	 */
-	public function remove($id, $member) {
+	public function remove($uniqueId, $member) {
 
 		try {
-			$data = $this->membersService->removeMember($id, $member);
+			$data = $this->membersService->removeMember($uniqueId, $member);
 		} catch (\Exception $e) {
 			return
 				$this->fail(
 					[
-						'circle_id' => $id,
+						'circle_id' => $uniqueId,
 						'name'      => $member,
 						'error'     => $e->getMessage()
 					]
@@ -162,7 +162,7 @@ class MembersController extends BaseController {
 
 		return $this->success(
 			[
-				'circle_id' => $id,
+				'circle_id' => $uniqueId,
 				'name'      => $member,
 				'members'   => $data,
 			]
