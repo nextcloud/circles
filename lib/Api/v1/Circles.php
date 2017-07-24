@@ -146,11 +146,9 @@ class Circles {
 	 *
 	 * @return Circle[]
 	 */
-	public static function joinedCircles()
-	{
+	public static function joinedCircles() {
 		return self::listCircles(Circle::CIRCLES_ALL, '', Member::LEVEL_MEMBER);
 	}
-
 
 
 	/**
