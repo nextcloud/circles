@@ -26,17 +26,15 @@
 
 namespace OCA\Circles\Migration;
 
-use OC\Share20\Share;
 use OCA\Circles\Db\CoreRequestBuilder;
 use OCA\Circles\Model\Circle;
 use OCP\IConfig;
 use OCP\IDBConnection;
 use OCP\Migration\IOutput;
 use OCP\Migration\IRepairStep;
-use OCP\Share\IShare;
 
 /**
- * Class UpdateShareTimeToTimestamp
+ * Class UsingShortenUniqueIdInsteadOfCircleId
  *
  * @package OCA\Circles\Migration
  */
@@ -73,14 +71,16 @@ class UsingShortenUniqueIdInsteadOfCircleId implements IRepairStep {
 		);
 
 		if ((int)$oldVersion[0] === 0 && $oldVersion[1] < 12) {
-			$this->swapToShortenUniqueId($output);
+			$this->swapToShortenUniqueId();
 		}
 	}
 
 
-	private function swapToShortenUniqueId(IOutput $output) {
+	private function swapToShortenUniqueId() {
 
 		$qb = $this->connection->getQueryBuilder();
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select('id', 'unique_id')
 		   ->from(CoreRequestBuilder::TABLE_CIRCLES);
 
