@@ -131,18 +131,18 @@ class CirclesController extends BaseController {
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
-	 * @param $id
+	 * @param string $circleUniqueId
 	 *
 	 * @return DataResponse
 	 */
-	public function join($id) {
+	public function join($circleUniqueId) {
 		try {
-			$data = $this->circlesService->joinCircle($id);
+			$data = $this->circlesService->joinCircle($circleUniqueId);
 
-			return $this->success(['circle_id' => $id, 'member' => $data]);
+			return $this->success(['circle_id' => $circleUniqueId, 'member' => $data]);
 		} catch (\Exception $e) {
 
-			return $this->fail(['circle_id' => $id, 'error' => $e->getMessage()]);
+			return $this->fail(['circle_id' => $circleUniqueId, 'error' => $e->getMessage()]);
 		}
 	}
 
@@ -196,23 +196,23 @@ class CirclesController extends BaseController {
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 * @param string $remote
 	 *
 	 * @return DataResponse
 	 */
-	public function link($circleId, $remote) {
+	public function link($circleUniqueId, $remote) {
 		try {
-			$link = $this->federatedService->linkCircle($circleId, $remote);
-			$links = $this->circlesService->detailsCircle($circleId)
+			$link = $this->federatedService->linkCircle($circleUniqueId, $remote);
+			$links = $this->circlesService->detailsCircle($circleUniqueId)
 										  ->getLinks();
 
 			return $this->success(
-				['circle_id' => $circleId, 'remote' => $remote, 'link' => $link, 'links' => $links]
+				['circle_id' => $circleUniqueId, 'remote' => $remote, 'link' => $link, 'links' => $links]
 			);
 		} catch (\Exception $e) {
 			return $this->fail(
-				['circle_id' => $circleId, 'remote' => $remote, 'error' => $e->getMessage()]
+				['circle_id' => $circleUniqueId, 'remote' => $remote, 'error' => $e->getMessage()]
 			);
 		}
 	}

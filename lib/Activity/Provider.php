@@ -534,7 +534,7 @@ class Provider implements IProvider {
 			'id'     => $circle->getId(),
 			'name'   => $circle->getName(),
 			'parsed' => $circle->getName(),
-			'link'   => Circles::generateLink($circle->getId())
+			'link'   => Circles::generateLink($circle->getUniqueId())
 		];
 	}
 

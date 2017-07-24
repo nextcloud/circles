@@ -39,25 +39,25 @@ class SharesController extends BaseController {
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
-	 * @param $id
+	 * @param string $circleUniqueId
 	 * @param $source
 	 * @param $type
 	 * @param $payload
 	 *
 	 * @return DataResponse
 	 */
-	public function create($id, $source, $type, $payload) {
+	public function create($circleUniqueId, $source, $type, $payload) {
 
 		try {
 			$share = new SharingFrame($source, $type);
-			$share->setCircleId($id);
+			$share->setCircleId($circleUniqueId);
 			$share->setPayload($payload);
 
 			$this->sharesService->createFrame($share);
 		} catch (\Exception $e) {
 			return $this->fail(
 				[
-					'circle_id' => $id,
+					'circle_id' => $circleUniqueId,
 					'source'    => $source,
 					'type'      => $type,
 					'payload'   => $payload,

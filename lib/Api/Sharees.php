@@ -81,7 +81,7 @@ class Sharees {
 			'label' => $entry->getName(),
 			'value' => [
 				'shareType'   => Share::SHARE_TYPE_CIRCLE,
-				'shareWith'   => $entry->getId(),
+				'shareWith'   => $entry->getUniqueId(),
 				'circleInfo'  => $entry->getInfo(),
 				'circleOwner' => \OC::$server->getUserManager()
 											 ->get(

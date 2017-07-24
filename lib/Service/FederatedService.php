@@ -140,7 +140,7 @@ class FederatedService {
 	 *
 	 * $remote format: <circle_name>@<remote_host>
 	 *
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 * @param string $remote
 	 *
 	 * @throws Exception
@@ -149,7 +149,7 @@ class FederatedService {
 	 *
 	 * @return FederatedLink
 	 */
-	public function linkCircle($circleId, $remote) {
+	public function linkCircle($circleUniqueId, $remote) {
 
 		if (!$this->configService->isFederatedCirclesAllowed()) {
 			throw new FederatedCircleNotAllowedException(
@@ -164,7 +164,7 @@ class FederatedService {
 		}
 
 		try {
-			return $this->requestLinkWithCircle($circleId, $remote);
+			return $this->requestLinkWithCircle($circleUniqueId, $remote);
 		} catch (Exception $e) {
 			throw $e;
 		}
@@ -202,7 +202,7 @@ class FederatedService {
 			$link->hasToBeValidStatusUpdate($status);
 
 			if (!$this->eventOnLinkStatus($circle, $link, $status)) {
-				return $this->circlesRequest->getLinksFromCircle($circle->getId());
+				return $this->circlesRequest->getLinksFromCircle($circle->getUniqueId());
 			}
 
 			$link->setStatus($status);
@@ -218,7 +218,7 @@ class FederatedService {
 		} catch (Exception $e) {
 		}
 
-		return $this->circlesRequest->getLinksFromCircle($circle->getId());
+		return $this->circlesRequest->getLinksFromCircle($circle->getUniqueId());
 	}
 
 
@@ -260,26 +260,26 @@ class FederatedService {
 	 * in the database and send a request to the remote circle using requestLink()
 	 * If any issue, entry is removed from the database.
 	 *
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 * @param string $remote
 	 *
 	 * @return FederatedLink
 	 * @throws Exception
 	 */
-	private function requestLinkWithCircle($circleId, $remote) {
+	private function requestLinkWithCircle($circleUniqueId, $remote) {
 
 		$link = null;
 		try {
 			list($remoteCircle, $remoteAddress) = explode('@', $remote, 2);
 
-			$circle = $this->circlesService->detailsCircle($circleId);
+			$circle = $this->circlesService->detailsCircle($circleUniqueId);
 			$circle->getHigherViewer()
 				   ->hasToBeAdmin();
 			$circle->hasToBeFederated();
 			$circle->cantBePersonal();
 
 			$link = new FederatedLink();
-			$link->setCircleId($circleId)
+			$link->setCircleId($circleUniqueId)
 				 ->setLocalAddress($this->serverHost)
 				 ->setAddress($remoteAddress)
 				 ->setRemoteCircleName($remoteCircle)
@@ -637,7 +637,7 @@ class FederatedService {
 
 		try {
 			$this->checkLinkRequestValidity($circle, $link);
-			$link->setCircleId($circle->getId());
+			$link->setCircleId($circle->getUniqueId());
 
 			if ($circle->getSetting('allow_links_auto') === 'true') {
 				$link->setStatus(FederatedLink::STATUS_LINK_UP);
@@ -665,7 +665,7 @@ class FederatedService {
 			throw new LinkCreationException('duplicate_unique_id');
 		}
 
-		if ($this->getLink($circle->getId(), $link->getUniqueId(true)) !== null) {
+		if ($this->getLink($circle->getUniqueId(), $link->getUniqueId(true)) !== null) {
 			throw new LinkCreationException('duplicate_link');
 		}
 
@@ -712,43 +712,43 @@ class FederatedService {
 	}
 
 	/**
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 * @param string $uniqueId
 	 *
 	 * @return FederatedLink
 	 */
-	public function getLink($circleId, $uniqueId) {
-		return $this->federatedLinksRequest->getFromUniqueId($circleId, $uniqueId);
+	public function getLink($circleUniqueId, $uniqueId) {
+		return $this->federatedLinksRequest->getFromUniqueId($circleUniqueId, $uniqueId);
 	}
 
 
 	/**
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 *
 	 * @return FederatedLink[]
 	 */
-	public function getLinks($circleId) {
-		return $this->federatedLinksRequest->getLinked($circleId);
+	public function getLinksFromCircle($circleUniqueId) {
+		return $this->federatedLinksRequest->getLinked($circleUniqueId);
 	}
 
 
 	/**
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 * @param string $uniqueId
 	 *
 	 * @return bool
 	 * @throws Exception
 	 */
-	public function initiateRemoteShare($circleId, $uniqueId) {
+	public function initiateRemoteShare($circleUniqueId, $uniqueId) {
 		$args = [
 			'apiVersion' => Circles::API_VERSION,
-			'circleId'   => (int)$circleId,
+			'circleId'   => (string)$circleUniqueId,
 			'uniqueId'   => (string)$uniqueId
 		];
 
 		$client = $this->clientService->newClient();
 		try {
-			$request = $client->post(
+			$client->post(
 				$this->generatePayloadDeliveryURL($this->serverHost), [
 																		'body'            => $args,
 																		'timeout'         => 10,
@@ -756,7 +756,7 @@ class FederatedService {
 																	]
 			);
 
-			$result = json_decode($request->getBody(), true);
+//			$result = json_decode($request->getBody(), true);
 //			$this->miscService->log(
 //				"initiateRemoteShare result: " . $uniqueId . '  ----  ' . var_export($result, true)
 //			);
@@ -780,7 +780,7 @@ class FederatedService {
 			throw new Exception('unknown_circle');
 		}
 
-		$links = $this->getLinks($frame->getCircleId());
+		$links = $this->getLinksFromCircle($frame->getCircleId());
 		foreach ($links AS $link) {
 
 			$args = [

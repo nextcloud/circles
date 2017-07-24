@@ -37,7 +37,7 @@ class SharingFrame implements \JsonSerializable {
 	private $type;
 
 	/** @var int */
-	private $circleId;
+	private $circleUniqueId;
 
 	/** @var string */
 	private $circleName;
@@ -81,17 +81,17 @@ class SharingFrame implements \JsonSerializable {
 	}
 
 	/**
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 */
-	public function setCircleId($circleId) {
-		$this->circleId = (int)$circleId;
+	public function setCircleId($circleUniqueId) {
+		$this->circleUniqueId = (int)$circleUniqueId;
 	}
 
 	/**
-	 * @return int
+	 * @return string
 	 */
 	public function getCircleId() {
-		return $this->circleId;
+		return $this->circleUniqueId;
 	}
 
 

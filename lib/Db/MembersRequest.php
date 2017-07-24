@@ -42,17 +42,17 @@ class MembersRequest extends MembersRequestBuilder {
 	 * WARNING: This function does not filters data regarding the current user/viewer.
 	 *          In case of interaction with users, Please use MembersService->getMember() instead.
 	 *
-	 * @param $circleId
+	 * @param string $circleUniqueId
 	 * @param $userId
 	 *
 	 * @return Member
 	 * @throws MemberDoesNotExistException
 	 */
-	public function forceGetMember($circleId, $userId) {
+	public function forceGetMember($circleUniqueId, $userId) {
 		$qb = $this->getMembersSelectSql();
 
 		$this->limitToUserId($qb, $userId);
-		$this->limitToCircleId($qb, $circleId);
+		$this->limitToCircleId($qb, $circleUniqueId);
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
@@ -74,20 +74,20 @@ class MembersRequest extends MembersRequestBuilder {
 	 * WARNING: This function does not filters data regarding the current user/viewer.
 	 *          In case of interaction with users, Please use getMembers() instead.
 	 *
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 * @param int $level
 	 * @param bool $includeGroupMembers
 	 *
 	 * @return Member[]
 	 */
 	public function forceGetMembers(
-		$circleId, $level = Member::LEVEL_MEMBER, $includeGroupMembers = false
+		$circleUniqueId, $level = Member::LEVEL_MEMBER, $includeGroupMembers = false
 	) {
 
 		$qb = $this->getMembersSelectSql();
 
 		$this->limitToLevel($qb, $level);
-		$this->limitToCircleId($qb, $circleId);
+		$this->limitToCircleId($qb, $circleUniqueId);
 
 		$members = [];
 		$cursor = $qb->execute();
@@ -97,7 +97,7 @@ class MembersRequest extends MembersRequestBuilder {
 		$cursor->closeCursor();
 
 		if ($includeGroupMembers === true) {
-			$this->includeGroupMembers($members, $circleId, $level);
+			$this->includeGroupMembers($members, $circleUniqueId, $level);
 		}
 
 		return $members;
@@ -105,17 +105,17 @@ class MembersRequest extends MembersRequestBuilder {
 
 
 	/**
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 * @param Member $viewer
 	 *
 	 * @return Member[]
 	 * @throws \Exception
 	 */
-	public function getMembers($circleId, Member $viewer) {
+	public function getMembers($circleUniqueId, Member $viewer) {
 		try {
 			$viewer->hasToBeMember();
 
-			$members = $this->forceGetMembers($circleId, Member::LEVEL_MEMBER);
+			$members = $this->forceGetMembers($circleUniqueId, Member::LEVEL_MEMBER);
 			if (!$viewer->isLevel(Member::LEVEL_MODERATOR)) {
 				array_map(
 					function(Member $m) {
@@ -139,7 +139,7 @@ class MembersRequest extends MembersRequestBuilder {
 	 * WARNING: This function does not filters data regarding the current user/viewer.
 	 *          In case of interaction with users, Please use getGroup() instead.
 	 *
-	 * @param int $circleId
+	 * @param string $circleId
 	 * @param string $groupId
 	 *
 	 * @return Member
@@ -171,12 +171,12 @@ class MembersRequest extends MembersRequestBuilder {
 	 * Members List. In case of duplicate, higher level will be kept.
 	 *
 	 * @param Member[] $members
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 * @param int $level
 	 */
-	private function includeGroupMembers(array &$members, $circleId, $level) {
+	private function includeGroupMembers(array &$members, $circleUniqueId, $level) {
 
-		$groupMembers = $this->forceGetGroupMembers($circleId, $level);
+		$groupMembers = $this->forceGetGroupMembers($circleUniqueId, $level);
 		foreach ($groupMembers as $member) {
 			$index = $this->indexOfMember($members, $member->getUserId());
 			if ($index === -1) {
@@ -217,16 +217,16 @@ class MembersRequest extends MembersRequestBuilder {
 	 * WARNING: This function does not filters data regarding the current user/viewer.
 	 *          Do not use in case of direct interaction with users.
 	 *
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 * @param int $level
 	 *
 	 * @return Member[]
 	 */
-	public function forceGetGroupMembers($circleId, $level = Member::LEVEL_MEMBER) {
+	public function forceGetGroupMembers($circleUniqueId, $level = Member::LEVEL_MEMBER) {
 		$qb = $this->getGroupsSelectSql();
 
 		$this->limitToLevel($qb, $level);
-		$this->limitToCircleId($qb, $circleId);
+		$this->limitToCircleId($qb, $circleUniqueId);
 		$this->limitToNCGroupUser($qb);
 
 		$members = [];
@@ -246,15 +246,15 @@ class MembersRequest extends MembersRequestBuilder {
 	 * WARNING: This function does not filters data regarding the current user/viewer.
 	 *          In case of direct interaction with users, Please don't use this.
 	 *
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 * @param string $userId
 	 *
 	 * @return Member
 	 */
-	public function forceGetHigherLevelGroupFromUser($circleId, $userId) {
+	public function forceGetHigherLevelGroupFromUser($circleUniqueId, $userId) {
 		$qb = $this->getGroupsSelectSql();
 
-		$this->limitToCircleId($qb, $circleId);
+		$this->limitToCircleId($qb, $circleUniqueId);
 		$this->limitToNCGroupUser($qb, $userId);
 
 		/** @var Member $group */
@@ -300,20 +300,20 @@ class MembersRequest extends MembersRequestBuilder {
 
 
 	/**
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 * @param Member $viewer
 	 *
 	 * @return Member[]
 	 * @throws MemberDoesNotExistException
 	 */
-	public function getGroups($circleId, Member $viewer) {
+	public function getGroupsFromCircle($circleUniqueId, Member $viewer) {
 
 		if ($viewer->getLevel() < Member::LEVEL_MEMBER) {
 			return [];
 		}
 
 		$qb = $this->getGroupsSelectSql();
-		$this->limitToCircleId($qb, $circleId);
+		$this->limitToCircleId($qb, $circleUniqueId);
 		$this->limitToLevel($qb, Member::LEVEL_MEMBER);
 
 		$cursor = $qb->execute();

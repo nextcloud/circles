@@ -217,17 +217,9 @@ class CircleProviderRequestBuilder {
 	protected function linkCircleField(& $qb, $shareId = -1) {
 		$expr = $qb->expr();
 
-		// TODO - Remove this in 12.0.1
-		if ($qb->getConnection()
-			   ->getDatabasePlatform() instanceof PostgreSqlPlatform
-		) {
-			$tmpOrX = $expr->eq('s.share_with', $qb->createFunction('CAST(c.id AS TEXT)'));
-		} else {
-			$tmpOrX =
-				$expr->eq('s.share_with', $expr->castColumn('c.id', IQueryBuilder::PARAM_STR));
-		}
-
 		$qb->from(CoreRequestBuilder::TABLE_CIRCLES, 'c');
+
+		$tmpOrX = $expr->eq('s.share_with', 'c.unique_id');
 
 		if ($shareId === -1) {
 			$qb->andWhere($tmpOrX);
@@ -242,7 +234,6 @@ class CircleProviderRequestBuilder {
 				$expr->eq('s.parent', $qb->createNamedParameter($shareId))
 			)
 		);
-		//->orderBy('c.circle_name');
 	}
 
 
@@ -255,7 +246,7 @@ class CircleProviderRequestBuilder {
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->leftJoin(
 			'c', 'circles_members', 'mo', $expr->andX(
-			$expr->eq('c.id', 'mo.circle_id'),
+			$expr->eq('c.unique_id', 'mo.circle_id'),
 			$expr->eq('mo.level', $qb->createNamedParameter(Member::LEVEL_OWNER))
 		)
 		);
@@ -280,13 +271,13 @@ class CircleProviderRequestBuilder {
 			// We check if user is members of the circle with the right level
 				$expr->andX(
 					$expr->eq('m.user_id', $qb->createNamedParameter($userId)),
-					$expr->eq('m.circle_id', 'c.id'),
+					$expr->eq('m.circle_id', 'c.unique_id'),
 					$expr->gte('m.level', $qb->createNamedParameter(Member::LEVEL_MEMBER))
 				),
 
 				// Or if user is member of one of the group linked to the circle with the right level
 				$expr->andX(
-					$expr->eq('g.circle_id', 'c.id'),
+					$expr->eq('g.circle_id', 'c.unique_id'),
 					$expr->gte('g.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)),
 					$expr->eq('ncgu.gid', 'g.group_id'),
 					$expr->eq('ncgu.uid', $qb->createNamedParameter($userId))

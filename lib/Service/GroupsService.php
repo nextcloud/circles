@@ -105,7 +105,7 @@ class GroupsService {
 		$this->membersRequest->updateGroup($group);
 
 //		$this->eventsService->onMemberNew($circle, $group);
-		return $this->membersRequest->getGroups($circleId, $circle->getHigherViewer());
+		return $this->membersRequest->getGroupsFromCircle($circleId, $circle->getHigherViewer());
 	}
 
 
@@ -162,7 +162,7 @@ class GroupsService {
 				);
 			}
 
-			$group = $this->membersRequest->forceGetGroup($circle->getId(), $groupId);
+			$group = $this->membersRequest->forceGetGroup($circle->getUniqueId(), $groupId);
 			if ($group->getLevel() !== $level) {
 				if ($level === Member::LEVEL_OWNER) {
 					throw new GroupCannotBeOwnerException(
@@ -175,7 +175,7 @@ class GroupsService {
 //				$this->eventsService->onMemberLevel($circle, $member);
 			}
 
-			return $this->membersRequest->getGroups($circle->getId(), $circle->getHigherViewer());
+			return $this->membersRequest->getGroupsFromCircle($circle->getUniqueId(), $circle->getHigherViewer());
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -237,7 +237,7 @@ class GroupsService {
 			throw $e;
 		}
 
-		return $this->membersRequest->getGroups($circle->getId(), $circle->getHigherViewer());
+		return $this->membersRequest->getGroupsFromCircle($circle->getUniqueId(), $circle->getHigherViewer());
 	}
 
 

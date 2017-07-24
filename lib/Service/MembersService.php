@@ -126,7 +126,7 @@ class MembersService {
 
 		$this->eventsService->onMemberNew($circle, $member);
 
-		return $this->membersRequest->getMembers($circle->getId(), $circle->getHigherViewer());
+		return $this->membersRequest->getMembers($circle->getUniqueId(), $circle->getHigherViewer());
 	}
 
 
@@ -167,7 +167,7 @@ class MembersService {
 			}
 		}
 
-		return $this->membersRequest->getMembers($circle->getId(), $circle->getHigherViewer());
+		return $this->membersRequest->getMembers($circle->getUniqueId(), $circle->getHigherViewer());
 	}
 
 
@@ -287,7 +287,7 @@ class MembersService {
 				);
 			}
 
-			$member = $this->membersRequest->forceGetMember($circle->getId(), $name);
+			$member = $this->membersRequest->forceGetMember($circle->getUniqueId(), $name);
 			if ($member->getLevel() !== $level) {
 				if ($level === Member::LEVEL_OWNER) {
 					$this->switchOwner($circle, $member);
@@ -298,7 +298,7 @@ class MembersService {
 				$this->eventsService->onMemberLevel($circle, $member);
 			}
 
-			return $this->membersRequest->getMembers($circle->getId(), $circle->getHigherViewer());
+			return $this->membersRequest->getMembers($circle->getUniqueId(), $circle->getHigherViewer());
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -385,7 +385,7 @@ class MembersService {
 
 		$this->eventsService->onMemberLeaving($circle, $member);
 
-		return $this->membersRequest->getMembers($circle->getId(), $circle->getHigherViewer());
+		return $this->membersRequest->getMembers($circle->getUniqueId(), $circle->getHigherViewer());
 	}
 
 

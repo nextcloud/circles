@@ -114,7 +114,7 @@ class SharesService {
 
 			if ($this->configService->isFederatedCirclesAllowed()) {
 				$this->federatedService->initiateRemoteShare(
-					$circle->getId(), $frame->getUniqueId()
+					$circle->getUniqueId(), $frame->getUniqueId()
 				);
 			}
 		} catch (Exception $e) {

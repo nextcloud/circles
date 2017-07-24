@@ -122,7 +122,7 @@ class CirclesService {
 			$this->circlesRequest->createCircle($circle, $this->userId);
 			$this->membersRequest->createMember($circle->getOwner());
 		} catch (\Exception $e) {
-			$this->circlesRequest->destroyCircle($circle->getId());
+			$this->circlesRequest->destroyCircle($circle->getUniqueId(true));
 			throw $e;
 		}
 
@@ -164,15 +164,15 @@ class CirclesService {
 	/**
 	 * returns details on circle and its members if this->userId is a member itself.
 	 *
-	 * @param $circleId
+	 * @param string $circleUniqueId
 	 *
 	 * @return Circle
 	 * @throws \Exception
 	]	 */
-	public function detailsCircle($circleId) {
+	public function detailsCircle($circleUniqueId) {
 
 		try {
-			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
+			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			if ($circle->getHigherViewer()
 					   ->isLevel(Member::LEVEL_MEMBER)
 			) {
@@ -195,7 +195,7 @@ class CirclesService {
 	 */
 	private function detailsCircleMembers(Circle &$circle) {
 		$members =
-			$this->membersRequest->getMembers($circle->getId(), $circle->getHigherViewer());
+			$this->membersRequest->getMembers($circle->getUniqueId(), $circle->getHigherViewer());
 
 		$circle->setMembers($members);
 	}
@@ -210,7 +210,7 @@ class CirclesService {
 		$groups = [];
 		if ($this->configService->isLinkedGroupsAllowed()) {
 			$groups =
-				$this->membersRequest->getGroups($circle->getId(), $circle->getHigherViewer());
+				$this->membersRequest->getGroupsFromCircle($circle->getUniqueId(), $circle->getHigherViewer());
 		}
 
 		$circle->setGroups($groups);
@@ -228,7 +228,7 @@ class CirclesService {
 		try {
 			if ($this->configService->isFederatedCirclesAllowed()) {
 				$circle->hasToBeFederated();
-				$links = $this->circlesRequest->getLinksFromCircle($circle->getId());
+				$links = $this->circlesRequest->getLinksFromCircle($circle->getUniqueId());
 			}
 		} catch (FederatedCircleNotAllowedException $e) {
 		}
@@ -270,20 +270,20 @@ class CirclesService {
 	/**
 	 * Join a circle.
 	 *
-	 * @param $circleId
+	 * @param string $circleUniqueId
 	 *
 	 * @return null|Member
 	 * @throws \Exception
 	 */
-	public function joinCircle($circleId) {
+	public function joinCircle($circleUniqueId) {
 
 		try {
-			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
+			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 
 			try {
-				$member = $this->membersRequest->forceGetMember($circle->getId(), $this->userId);
+				$member = $this->membersRequest->forceGetMember($circle->getUniqueId(), $this->userId);
 			} catch (MemberDoesNotExistException $m) {
-				$member = new Member($this->l10n, $this->userId, $circle->getId());
+				$member = new Member($this->l10n, $this->userId, $circle->getUniqueId());
 				$this->membersRequest->createMember($member);
 			}
 

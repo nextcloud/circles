@@ -28,7 +28,6 @@
 namespace OCA\Circles\Db;
 
 
-use OC\L10N\L10N;
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedLinkDoesNotExistException;
@@ -37,8 +36,6 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
-use OCA\Circles\Service\MiscService;
-use OCP\IDBConnection;
 
 class CirclesRequest extends CirclesRequestBuilder {
 
@@ -51,15 +48,15 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 * WARNING: This function does not filters data regarding the current user/viewer.
 	 *          In case of interaction with users, Please use getCircle() instead.
 	 *
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 *
 	 * @return Circle
 	 * @throws CircleDoesNotExistException
 	 */
-	public function forceGetCircle($circleId) {
+	public function forceGetCircle($circleUniqueId) {
 		$qb = $this->getCirclesSelectSql();
 
-		$this->limitToId($qb, $circleId);
+		$this->limitToUniqueId($qb, $circleUniqueId);
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
@@ -116,7 +113,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$qb = $this->getCirclesSelectSql();
 		$this->leftJoinUserIdAsViewer($qb, $userId);
 		$this->leftJoinOwner($qb);
-		$this->leftJoinNCGroupAndUser($qb, $userId, 'c.id');
+		$this->leftJoinNCGroupAndUser($qb, $userId, 'c.unique_id');
 
 		if ($level > 0) {
 			$this->limitToLevel($qb, $level, ['u', 'g']);
@@ -138,22 +135,22 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 	/**
 	 *
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 * @param string $viewerId
 	 *
 	 * @return Circle
 	 * @throws CircleDoesNotExistException
 	 */
-	public function getCircle($circleId, $viewerId) {
+	public function getCircle($circleUniqueId, $viewerId) {
 		$qb = $this->getCirclesSelectSql();
 
-		$this->limitToId($qb, $circleId);
+		$this->limitToUniqueId($qb, $circleUniqueId);
 
 		$this->leftJoinUserIdAsViewer($qb, $viewerId);
 		$this->leftJoinOwner($qb);
-		$this->leftJoinNCGroupAndUser($qb, $viewerId, 'c.id');
+		$this->leftJoinNCGroupAndUser($qb, $viewerId, 'c.unique_id');
 
-		$this->limitRegardingCircleType($qb, $viewerId, $circleId, Circle::CIRCLES_ALL, '');
+		$this->limitRegardingCircleType($qb, $viewerId, $circleUniqueId, Circle::CIRCLES_ALL, '');
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
@@ -165,7 +162,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 		$circle = $this->parseCirclesSelectSql($data);
 		$circle->setGroupViewer(
-			$this->membersRequest->forceGetHigherLevelGroupFromUser($circleId, $viewerId)
+			$this->membersRequest->forceGetHigherLevelGroupFromUser($circleUniqueId, $viewerId)
 		);
 
 		return $circle;
@@ -203,7 +200,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$circle->setId($qb->getLastInsertId());
 
 		$owner = new Member($this->l10n, $userId);
-		$owner->setCircleId($circle->getId())
+		$owner->setCircleId($circle->getUniqueId())
 			  ->setLevel(Member::LEVEL_OWNER)
 			  ->setStatus(Member::STATUS_MEMBER);
 		$circle->setOwner($owner)
@@ -214,16 +211,11 @@ class CirclesRequest extends CirclesRequestBuilder {
 	/**
 	 * remove a circle
 	 *
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 */
-	public function destroyCircle($circleId) {
-		$qb = $this->getCirclesDeleteSql();
-		$qb->where(
-			$qb->expr()
-			   ->eq(
-				   'id', $qb->createNamedParameter($circleId)
-			   )
-		);
+	public function destroyCircle($circleUniqueId) {
+		$qb = $this->getCirclesDeleteSql($circleUniqueId);
+
 
 		$qb->execute();
 	}
@@ -322,7 +314,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 
 	public function updateCircle(Circle $circle) {
-		$qb = $this->getCirclesUpdateSql($circle->getId());
+		$qb = $this->getCirclesUpdateSql($circle->getUniqueId(true));
 		$qb->set('name', $qb->createNamedParameter($circle->getName()))
 		   ->set('description', $qb->createNamedParameter($circle->getDescription()))
 		   ->set('settings', $qb->createNamedParameter($circle->getSettings(true)));
@@ -356,16 +348,16 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 
 	/**
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 * @param string $uniqueId
 	 *
 	 * @return SharingFrame
 	 * @throws SharingFrameDoesNotEXist
 	 */
-	public function getFrame($circleId, $uniqueId) {
+	public function getFrame($circleUniqueId, $uniqueId) {
 		$qb = $this->getSharesSelectSql();
 		$this->limitToUniqueId($qb, (string)$uniqueId);
-		$this->limitToCircleId($qb, (int)$circleId);
+		$this->limitToCircleId($qb, (string)$circleUniqueId);
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
@@ -442,13 +434,13 @@ class CirclesRequest extends CirclesRequestBuilder {
 	/**
 	 * returns all FederatedLink from a circle
 	 *
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 *
 	 * @return FederatedLink[]
 	 */
-	public function getLinksFromCircle($circleId) {
+	public function getLinksFromCircle($circleUniqueId) {
 		$qb = $this->getLinksSelectSql();
-		$this->limitToCircleId($qb, $circleId);
+		$this->limitToCircleId($qb, $circleUniqueId);
 
 		$links = [];
 		$cursor = $qb->execute();

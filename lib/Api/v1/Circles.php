@@ -295,7 +295,7 @@ class Circles {
 	 * Source is the app that is sharing the item and type can be used by the app to identified the
 	 * payload.
 	 *
-	 * @param $circleId
+	 * @param string $circleUniqueId
 	 * @param $source
 	 * @param $type
 	 * @param array $payload
@@ -304,12 +304,12 @@ class Circles {
 	 * @return mixed
 	 */
 	public static function shareToCircle(
-		$circleId, $source, $type, array $payload, $broadcaster
+		$circleUniqueId, $source, $type, array $payload, $broadcaster
 	) {
 		$c = self::getContainer();
 
 		$frame = new SharingFrame((string)$source, (string)$type);
-		$frame->setCircleId((int)$circleId);
+		$frame->setCircleId($circleUniqueId);
 		$frame->setPayload($payload);
 
 		return $c->query('SharesService')
@@ -342,13 +342,13 @@ class Circles {
 	 *
 	 * Returns the link to get access to a local circle.
 	 *
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 *
 	 * @return string
 	 */
-	public static function generateLink($circleId) {
+	public static function generateLink($circleUniqueId) {
 		return \OC::$server->getURLGenerator()
-						   ->linkToRoute('circles.Navigation.navigate') . '#' . $circleId;
+						   ->linkToRoute('circles.Navigation.navigate') . '#' . $circleUniqueId;
 	}
 
 

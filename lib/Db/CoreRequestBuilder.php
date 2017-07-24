@@ -102,10 +102,10 @@ class CoreRequestBuilder {
 	 * Limit the request to the Circle by its Id.
 	 *
 	 * @param IQueryBuilder $qb
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 */
-	protected function limitToCircleId(IQueryBuilder &$qb, $circleId) {
-		$this->limitToDBField($qb, 'circle_id', $circleId);
+	protected function limitToCircleId(IQueryBuilder &$qb, $circleUniqueId) {
+		$this->limitToDBField($qb, 'circle_id', $circleUniqueId);
 	}
 
 
@@ -208,7 +208,7 @@ class CoreRequestBuilder {
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
 
 		$qb->from(self::TABLE_CIRCLES, 'c')
-		   ->andWhere($expr->eq('c.id', $pf . 'circle_id'));
+		   ->andWhere($expr->eq('c.unique_id', $pf . 'circle_id'));
 	}
 
 

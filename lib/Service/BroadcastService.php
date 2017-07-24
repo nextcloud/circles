@@ -103,7 +103,6 @@ class BroadcastService {
 		foreach ($users AS $user) {
 			$broadcaster->createShareToUser($frame, $user->getUserId());
 		}
-
 	}
 
 

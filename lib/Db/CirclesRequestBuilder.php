@@ -91,16 +91,17 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 
 	/**
 	 * @param IQueryBuilder $qb
-	 * @param $circleId
+	 * @param string $circleUniqueId
 	 * @param $userId
 	 * @param $type
 	 * @param $name
 	 *
 	 * @throws ConfigNoCircleAvailable
 	 */
-	protected function limitRegardingCircleType(IQueryBuilder &$qb, $userId, $circleId, $type, $name
+	protected function limitRegardingCircleType(
+		IQueryBuilder &$qb, $userId, $circleUniqueId, $type, $name
 	) {
-		$orTypes = $this->generateLimit($qb, $circleId, $userId, $type, $name);
+		$orTypes = $this->generateLimit($qb, $circleUniqueId, $userId, $type, $name);
 		if (sizeof($orTypes) === 0) {
 			throw new ConfigNoCircleAvailable(
 				$this->l10n->t(
@@ -121,17 +122,17 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 
 	/**
 	 * @param IQueryBuilder $qb
-	 * @param $circleId
+	 * @param string $circleUniqueId
 	 * @param $userId
 	 * @param $type
 	 * @param $name
 	 *
 	 * @return array
 	 */
-	private function generateLimit(IQueryBuilder &$qb, $circleId, $userId, $type, $name) {
+	private function generateLimit(IQueryBuilder &$qb, $circleUniqueId, $userId, $type, $name) {
 		$orTypes = [];
 		array_push($orTypes, $this->generateLimitPersonal($qb, $userId, $type));
-		array_push($orTypes, $this->generateLimitHidden($qb, $circleId, $type, $name));
+		array_push($orTypes, $this->generateLimitHidden($qb, $circleUniqueId, $type, $name));
 		array_push($orTypes, $this->generateLimitPrivate($qb, $type));
 		array_push($orTypes, $this->generateLimitPublic($qb, $type));
 
@@ -162,13 +163,13 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 
 	/**
 	 * @param IQueryBuilder $qb
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 * @param int $type
 	 * @param string $name
 	 *
 	 * @return string
 	 */
-	private function generateLimitHidden(IQueryBuilder $qb, $circleId, $type, $name) {
+	private function generateLimitHidden(IQueryBuilder $qb, $circleUniqueId, $type, $name) {
 		if (!(Circle::CIRCLES_HIDDEN & (int)$type)) {
 			return null;
 		}
@@ -184,8 +185,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 				$expr->gte(
 					'g.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)
 				),
-				// TODO: Replace search on CircleID By a search on UniqueID
-				$expr->eq('c.id', $qb->createNamedParameter($circleId)),
+				$expr->eq('c.unique_id', $qb->createNamedParameter($circleUniqueId)),
 				$expr->eq('c.name', $qb->createNamedParameter($name))
 			)
 		);
@@ -378,16 +378,16 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * Base of the Sql Update request for Shares
 	 *
-	 * @param int $circleId
+	 * @param int $uniqueId
 	 *
 	 * @return IQueryBuilder
 	 */
-	protected function getCirclesUpdateSql($circleId) {
+	protected function getCirclesUpdateSql($uniqueId) {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$qb->update(self::TABLE_CIRCLES)
 		   ->where(
 			   $qb->expr()
-				  ->eq('id', $qb->createNamedParameter($circleId))
+				  ->eq('unique_id', $qb->createNamedParameter($uniqueId))
 		   );
 
 		return $qb;
@@ -397,11 +397,19 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * Base of the Sql Delete request
 	 *
+	 * @param string $circleUniqueId
+	 *
 	 * @return IQueryBuilder
 	 */
-	protected function getCirclesDeleteSql() {
+	protected function getCirclesDeleteSql($circleUniqueId) {
 		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->delete(self::TABLE_CIRCLES);
+		$qb->delete(self::TABLE_CIRCLES)
+		   ->where(
+			   $qb->expr()
+				  ->eq(
+					  'unique_id', $qb->createNamedParameter($circleUniqueId)
+				  )
+		   );
 
 		return $qb;
 	}
@@ -445,7 +453,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		if (key_exists('viewer_level', $data)) {
 			$user = new Member($this->l10n);
 			$user->setStatus($data['viewer_status']);
-			$user->setCircleId($circle->getId());
+			$user->setCircleId($circle->getUniqueId());
 			$user->setUserId($data['viewer_userid']);
 			$user->setLevel($data['viewer_level']);
 			$circle->setViewer($user);
@@ -454,7 +462,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		if (key_exists('owner_level', $data)) {
 			$owner = new Member($this->l10n);
 			$owner->setStatus($data['owner_status']);
-			$owner->setCircleId($circle->getId());
+			$owner->setCircleId($circle->getUniqueId());
 			$owner->setUserId($data['owner_userid']);
 			$owner->setLevel($data['owner_level']);
 			$circle->setOwner($owner);
