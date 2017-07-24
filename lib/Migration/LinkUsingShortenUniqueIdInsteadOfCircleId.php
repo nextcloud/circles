@@ -27,6 +27,7 @@
 namespace OCA\Circles\Migration;
 
 use OCA\Circles\Db\CoreRequestBuilder;
+use OCA\Circles\Model\Circle;
 use OCP\IConfig;
 use OCP\IDBConnection;
 use OCP\Migration\IOutput;
@@ -83,19 +84,38 @@ class LinkUsingShortenUniqueIdInsteadOfCircleId implements IRepairStep {
 
 		$cursor = $qb->execute();
 		while ($data = $cursor->fetch()) {
-			$this->swapToShortenUniqueIdOnCirclesGroups($data['id'], $data['unique_id']);
-//			$this->swapToShortenUniqueIdOnCirclesLinks($data['id'], $data['unique_id']);
-//			$this->swapToShortenUniqueIdOnCirclesMembers($data['id'], $data['unique_id']);
-//			$this->swapToShortenUniqueIdOnCirclesShares($data['id'], $data['unique_id']);
+			$circleId = $data['id'];
+			$shortenUniqueId = substr($data['unique_id'], 0, Circle::UNIQUEID_SHORT_LENGTH);
+
+			$this->swapToShortenUniqueIdInTable(
+				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_GROUPS
+			);
+			$this->swapToShortenUniqueIdInTable(
+				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_LINKS
+			);
+			$this->swapToShortenUniqueIdInTable(
+				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_MEMBERS
+			);
+			$this->swapToShortenUniqueIdInTable(
+				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_LINKS
+			);
 		}
 		$cursor->closeCursor();
 	}
 
 
-	private function swapToShortenUniqueIdOnCirclesGroups($id, $uniqueId) {
-		\OC::$server->getLogger()
-					->log(2, 'SWAP: ' . $id . ' - ' . $uniqueId);
+	private function swapToShortenUniqueIdInTable($circleId, $shortenUniqueId, $table) {
+		$qb = $this->connection->getQueryBuilder();
+		$qb->update($table)
+		   ->where(
+			   $qb->expr()
+				  ->eq('circle_id', $qb->createNamedParameter($circleId))
+		   );
+
+		$qb->set('circle_id', $qb->createNamedParameter($shortenUniqueId));
+		$qb->execute();
 	}
 
-
 }
+
+
