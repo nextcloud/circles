@@ -87,6 +87,7 @@ class FederatedController extends BaseController {
 	 * @param string $address
 	 *
 	 * @return DataResponse
+	 * @throws LinkCreationException
 	 */
 	public function requestedLink($apiVersion, $token, $uniqueId, $sourceName, $linkTo, $address) {
 

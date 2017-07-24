@@ -28,9 +28,9 @@ namespace OCA\Circles\AppInfo;
 
 use OCA\Circles\Controller\FederatedController;
 use OCA\Circles\Controller\GroupsController;
-use \OCA\Circles\Controller\NavigationController;
-use \OCA\Circles\Controller\CirclesController;
-use \OCA\Circles\Controller\MembersController;
+use OCA\Circles\Controller\NavigationController;
+use OCA\Circles\Controller\CirclesController;
+use OCA\Circles\Controller\MembersController;
 
 
 use OCA\Circles\Controller\SettingsController;
@@ -40,13 +40,13 @@ use OCA\Circles\Db\FederatedLinksRequest;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Events\UserEvents;
 use OCA\Circles\Service\BroadcastService;
-use \OCA\Circles\Service\CirclesService;
+use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\EventsService;
 use OCA\Circles\Service\FederatedService;
 use OCA\Circles\Service\GroupsService;
-use \OCA\Circles\Service\MembersService;
-use \OCA\Circles\Service\ConfigService;
-use \OCA\Circles\Service\MiscService;
+use OCA\Circles\Service\MembersService;
+use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\SharesService;
 use OCP\AppFramework\App;
 use OCP\AppFramework\IAppContainer;

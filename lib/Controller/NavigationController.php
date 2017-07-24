@@ -68,7 +68,6 @@ class NavigationController extends BaseController {
 
 
 	/**
-	 * @NoCSRFRequired
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
