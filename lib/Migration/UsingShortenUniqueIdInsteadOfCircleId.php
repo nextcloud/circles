@@ -26,19 +26,21 @@
 
 namespace OCA\Circles\Migration;
 
+use OC\Share20\Share;
 use OCA\Circles\Db\CoreRequestBuilder;
 use OCA\Circles\Model\Circle;
 use OCP\IConfig;
 use OCP\IDBConnection;
 use OCP\Migration\IOutput;
 use OCP\Migration\IRepairStep;
+use OCP\Share\IShare;
 
 /**
  * Class UpdateShareTimeToTimestamp
  *
  * @package OCA\Circles\Migration
  */
-class LinkUsingShortenUniqueIdInsteadOfCircleId implements IRepairStep {
+class UsingShortenUniqueIdInsteadOfCircleId implements IRepairStep {
 
 	/** @var IDBConnection */
 	protected $connection;
@@ -99,6 +101,7 @@ class LinkUsingShortenUniqueIdInsteadOfCircleId implements IRepairStep {
 			$this->swapToShortenUniqueIdInTable(
 				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_LINKS
 			);
+			$this->swapToShortenUniqueIdInShares($circleId, $shortenUniqueId);
 		}
 		$cursor->closeCursor();
 	}
@@ -113,6 +116,24 @@ class LinkUsingShortenUniqueIdInsteadOfCircleId implements IRepairStep {
 		   );
 
 		$qb->set('circle_id', $qb->createNamedParameter($shortenUniqueId));
+		$qb->execute();
+	}
+
+
+	private function swapToShortenUniqueIdInShares($circleId, $shortenUniqueId) {
+		$qb = $this->connection->getQueryBuilder();
+		$expr = $qb->expr();
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$qb->update('share')
+		   ->where(
+			   $expr->andX(
+				   $expr->eq('share_type', $qb->createNamedParameter(\OC\Share\Share::SHARE_TYPE_CIRCLE)),
+				   $expr->eq('share_with', $qb->createNamedParameter($circleId))
+			   )
+		   );
+
+		$qb->set('share_with', $qb->createNamedParameter($shortenUniqueId));
 		$qb->execute();
 	}
 
