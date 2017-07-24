@@ -50,6 +50,7 @@ OC.L10N.register(
     "Issue while retrieving the list of circles" : "同时检索圈子列表",
     "The status of the link could not be updated" : "该链接的状态无法更新",
     "The status of the link has been updated" : "该链接的状态已更新",
+    "The member '{name}' could not be updated" : "无法更新成员：'{name}'",
     "Issue while saving settings" : "保存设置时出现问题",
     "Settings saved." : "设置已保存",
     "Circles" : "圈子",

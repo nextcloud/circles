@@ -99,7 +99,7 @@ OC.L10N.register(
     "You changed {member}'s level in {circle} to %1$s" : "Du hast {member}s Rang in {circle} zu %1$s geändert",
     "{author} changed your level in {circle} to %1$s" : "{author} hat Deinen Rang in {circle} zu %1$s geändert",
     "{author} changed {member}'s level in {circle} to %1$s" : "{author} hat {member}s Rang in {circle} zu %1$s geändert",
-    "You requested an invitation to {circle}" : "Du hast eine Einladung zu {circle} angefordert",
+    "You requested an invitation into {circle}" : "Du hast eine Einladung zu {circle} angefordert ",
     "{member} has requested an invitation into {circle}" : "{member} hat eine Einladung zu {circle} angefordert",
     "You are the new owner of {circle}" : "Du bist der neue Eigentümer von {circle}",
     "{member} is the new owner of {circle}" : "{member} ist der neue Eigentümer von {circle}",

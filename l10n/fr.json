@@ -97,7 +97,7 @@
     "You changed {member}'s level in {circle} to %1$s" : "Vous avez changé le niveau de {member} dans {circle} à %1$s",
     "{author} changed your level in {circle} to %1$s" : "{author} a changé votre niveau dans {circle} à %1$s",
     "{author} changed {member}'s level in {circle} to %1$s" : "{author} a changé le niveau de {member} dans {circle} à %1$s",
-    "You requested an invitation to {circle}" : "Vous avez demandé une invitation pour {circle}",
+    "You requested an invitation into {circle}" : "Vous avez demandé une invitation pour {circle}",
     "{member} has requested an invitation into {circle}" : "{member} a demandé une invitation pour {circle}",
     "You are the new owner of {circle}" : "Vous êtes le nouveau propriétaire de {circle}",
     "{member} is the new owner of {circle}" : "{member} est le nouveau propriétaire de {circle}",
