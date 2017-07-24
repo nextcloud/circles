@@ -135,7 +135,7 @@ class CirclesService {
 	/**
 	 * list Circles depends on type (or all) and name (parts) and minimum level.
 	 *
-	 * @param $type
+	 * @param mixed $type
 	 * @param string $name
 	 * @param int $level
 	 *
