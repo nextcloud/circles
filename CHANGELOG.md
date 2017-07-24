@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## 0.12.0
 
+- Security: SQL incremented ID is not used anymore; Every request on a Circle will require a 14 chars version of its Unique ID. (API v0.10.0)
 - Security: When leaving a circle, shared files are not accessible by said circle anymore.
 - Bug: Fix icons
 - Bug: Fix strange behaviour when the app is deleted from disk, but not disabled in the cloud
