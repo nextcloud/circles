@@ -105,6 +105,14 @@ class CirclesRequest extends CirclesRequestBuilder {
 	}
 
 
+	/**
+	 * @param string $userId
+	 * @param int $type
+	 * @param string $name
+	 * @param int $level
+	 *
+	 * @return array
+	 */
 	public function getCircles($userId, $type = 0, $name = '', $level = 0) {
 		if ($type === 0) {
 			$type = Circle::CIRCLES_ALL;

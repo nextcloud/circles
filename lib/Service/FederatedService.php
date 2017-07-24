@@ -742,8 +742,8 @@ class FederatedService {
 	public function initiateRemoteShare($circleUniqueId, $uniqueId) {
 		$args = [
 			'apiVersion' => Circles::API_VERSION,
-			'circleId'   => (string)$circleUniqueId,
-			'uniqueId'   => (string)$uniqueId
+			'circleId'   => $circleUniqueId,
+			'uniqueId'   => $uniqueId
 		];
 
 		$client = $this->clientService->newClient();

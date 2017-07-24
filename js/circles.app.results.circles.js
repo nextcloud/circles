@@ -103,7 +103,6 @@ var resultCircles = {
 			}));
 			elements.emptyCircleCreation();
 			nav.displayCirclesList(result.circle.type);
-			console.log(JSON.stringify(result.circle));
 			actions.selectCircle(result.circle.unique_id);
 			return;
 		}
@@ -119,7 +118,6 @@ var resultCircles = {
 
 	selectCircleResult: function (result) {
 
-		console.log(JSON.stringify(result));
 		elements.mainUIMembersTable.emptyTable();
 		if (result.status < 1) {
 			OCA.notification.onFail(
@@ -157,7 +155,6 @@ var resultCircles = {
 		elements.resetCirclesList();
 
 		var data = result.data;
-		console.log("___ "+ JSON.stringify(result.data));
 		for (var i = 0; i < data.length; i++) {
 			var tmpl = elements.generateTmplCircle(data[i]);
 			elements.navigation.append(

@@ -432,8 +432,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		$qb = $this->dbConnection->getQueryBuilder();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb
-			->selectDistinct('c.unique_id')
+		$qb->selectDistinct('c.unique_id')
 			->addSelect(
 				'c.id', 'c.name', 'c.description', 'c.settings', 'c.type', 'c.creation'
 			)

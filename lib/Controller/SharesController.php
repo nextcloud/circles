@@ -68,7 +68,7 @@ class SharesController extends BaseController {
 
 		return $this->success(
 			[
-				'circle_id' => $id,
+				'circle_id' => $uniqueId,
 				'source'    => $source,
 				'type'      => $type,
 				'payload'   => $payload

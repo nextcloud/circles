@@ -148,6 +148,7 @@ class CoreRequestBuilder {
 	 * Limit the search by its Name
 	 *
 	 * @param IQueryBuilder $qb
+	 * @param string $name
 	 */
 	protected function limitToName(IQueryBuilder &$qb, $name) {
 		$this->limitToDBField($qb, 'name', $name);
@@ -256,6 +257,7 @@ class CoreRequestBuilder {
 			$expr->eq('ncgu.uid', $qb->createNamedParameter($userId))
 		);
 
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->leftJoin(
 			$this->default_select_alias, CoreRequestBuilder::TABLE_GROUPS, 'g',
 			$expr->andX(

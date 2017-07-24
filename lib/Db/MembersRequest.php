@@ -358,8 +358,6 @@ class MembersRequest extends MembersRequestBuilder {
 	 * update database entry for a specific Member.
 	 *
 	 * @param Member $member
-	 *
-	 * @return bool
 	 */
 	public function updateMember(Member $member) {
 		$qb = $this->getMembersUpdateSql($member->getCircleId(), $member->getUserId());
