@@ -124,7 +124,7 @@ var nav = {
 				return;
 			}
 
-			api.linkCircle(curr.circle, elements.linkCircle.val(),
+			api.linkCircle(curr.circle, elements.linkCircle.val().trim(),
 				resultLinks.linkCircleResult);
 		}).blur(function () {
 			nav.circlesActionReturn();

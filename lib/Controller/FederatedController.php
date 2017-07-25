@@ -109,7 +109,7 @@ class FederatedController extends BaseController {
 				['status' => $link->getStatus(), 'uniqueId' => $circle->getUniqueId(true)], $link
 			);
 		} catch (CircleDoesNotExistException $e) {
-			throw new LinkCreationException('circle_does_not_exist');
+			return $this->federatedFail('circle_does_not_exist');
 		} catch (Exception $e) {
 			return $this->federatedFail($e->getMessage());
 		}

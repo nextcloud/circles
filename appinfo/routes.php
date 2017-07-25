@@ -58,11 +58,10 @@ return [
 		[
 			'name'         => 'Circles#leave', 'url' => '/v1/circles/{uniqueId}/leave', 'verb' => 'GET',
 		],
-		['name' => 'Circles#link', 'url' => '/v1/circles/{circleId}/link', 'verb' => 'POST'],
+		['name' => 'Circles#link', 'url' => '/v1/circles/{uniqueId}/link', 'verb' => 'POST'],
 		[
 			'name'         => 'Circles#linkStatus',
-			'url'          => '/v1/link/{linkId}/status', 'verb' => 'POST',
-			'requirements' => ['linkId' => '\d+'],
+			'url'          => '/v1/link/{linkId}/status', 'verb' => 'POST'
 		],
 		['name' => 'Federated#updateLink', 'url' => '/v1/link', 'verb' => 'POST'],
 		['name' => 'Federated#requestedLink', 'url' => '/v1/link', 'verb' => 'PUT'],
