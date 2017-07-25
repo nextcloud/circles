@@ -515,25 +515,25 @@ var nav = {
 				status === define.linkUp || status === define.linkDown) {
 				statusSelect.append($('<option>', {
 					value: define.linkRemove,
-					text: t('circles', 'Remove this Link')
+					text: t('circles', 'Remove this link')
 				}));
 			}
 
 			if (status === define.linkRequestSent) {
 				statusSelect.append($('<option>', {
 					value: define.linkRemove,
-					text: t('circles', 'Cancel the Link request')
+					text: t('circles', 'Cancel the link request')
 				}));
 			}
 
 			if (status === define.linkRequested) {
 				statusSelect.append($('<option>', {
 					value: define.linkUp,
-					text: t('circles', 'Accept the Link request')
+					text: t('circles', 'Accept the link request')
 				}));
 				statusSelect.append($('<option>', {
 					value: define.linkRemove,
-					text: t('circles', 'Reject the Link request')
+					text: t('circles', 'Reject the link request')
 				}));
 			}
 		});
