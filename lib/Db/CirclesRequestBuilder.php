@@ -66,7 +66,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param string $field
 	 */
-	protected function leftJoinGroups(& $qb, $field) {
+	protected function leftJoinGroups(IQueryBuilder &$qb, $field) {
 		$expr = $qb->expr();
 
 		$qb->leftJoin(
@@ -238,7 +238,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param string $userId
 	 */
-	protected function leftJoinUserIdAsViewer(IQueryBuilder & $qb, $userId) {
+	protected function leftJoinUserIdAsViewer(IQueryBuilder &$qb, $userId) {
 
 		if ($qb->getType() !== QueryBuilder::SELECT) {
 			return;
@@ -270,7 +270,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 *
 	 * @param IQueryBuilder $qb
 	 */
-	protected function leftJoinOwner(IQueryBuilder & $qb) {
+	protected function leftJoinOwner(IQueryBuilder &$qb) {
 
 		if ($qb->getType() !== QueryBuilder::SELECT) {
 			return;

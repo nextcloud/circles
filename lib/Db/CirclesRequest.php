@@ -56,7 +56,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	public function forceGetCircle($circleUniqueId) {
 		$qb = $this->getCirclesSelectSql();
 
-		$this->limitToUniqueId($qb, $circleUniqueId);
+		$this->limitToShortenUniqueId($qb, $circleUniqueId);
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();

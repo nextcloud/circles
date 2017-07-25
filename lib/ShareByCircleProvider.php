@@ -449,7 +449,7 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 
 		$shares = [];
 		while ($data = $cursor->fetch()) {
-			
+
 			if ($data['initiator_circle_level'] < Member::LEVEL_MEMBER
 				&& $data['initiator_group_level'] < Member::LEVEL_MEMBER
 			) {
@@ -569,7 +569,7 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	 * @param IShare $share
 	 * @param $data
 	 */
-	private function assignShareObjectPropertiesFromParent(& $share, $data) {
+	private function assignShareObjectPropertiesFromParent(IShare &$share, $data) {
 		if (isset($data['f_permissions'])) {
 			$entryData = $data;
 			$entryData['permissions'] = $entryData['f_permissions'];

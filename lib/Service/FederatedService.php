@@ -37,11 +37,12 @@ use OCA\Circles\Exceptions\FederatedCircleLinkFormatException;
 use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 use OCA\Circles\Exceptions\CircleTypeNotValid;
 use OCA\Circles\Exceptions\FederatedCircleStatusUpdateException;
+use OCA\Circles\Exceptions\FederatedLinkUpdateException;
 use OCA\Circles\Exceptions\FederatedRemoteCircleDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedRemoteDoesNotAllowException;
 use OCA\Circles\Exceptions\FederatedRemoteIsDown;
 use OCA\Circles\Exceptions\SharingFrameAlreadyExistException;
-use OCA\Circles\Exceptions\LinkCreationException;
+use OCA\Circles\Exceptions\FederatedLinkCreationException;
 use OCA\Circles\Exceptions\MemberIsNotAdminException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
@@ -98,7 +99,6 @@ class FederatedService {
 	 * @param BroadcastService $broadcastService
 	 * @param FederatedLinksRequest $federatedLinksRequest
 	 * @param EventsService $eventsService
-	 * @param string $serverHost
 	 * @param ClientService $clientService
 	 * @param MiscService $miscService
 	 */
@@ -110,7 +110,7 @@ class FederatedService {
 		CirclesService $circlesService,
 		BroadcastService $broadcastService,
 		FederatedLinksRequest $federatedLinksRequest,
-		EventsService $eventsService, $serverHost,
+		EventsService $eventsService,
 		ClientService $clientService,
 		MiscService $miscService
 	) {
@@ -122,8 +122,8 @@ class FederatedService {
 		$this->broadcastService = $broadcastService;
 		$this->federatedLinksRequest = $federatedLinksRequest;
 		$this->eventsService = $eventsService;
-		$this->serverHost =
-			(string)(($this->configService->isLocalNonSSL()) ? 'http://' : '') . $serverHost;
+		$this->serverHost = $this->configService->getLocalAddress();
+
 
 		$this->clientService = $clientService;
 		$this->miscService = $miscService;
@@ -205,18 +205,22 @@ class FederatedService {
 				return $this->circlesRequest->getLinksFromCircle($circle->getUniqueId());
 			}
 
-			$link->setStatus($status);
-			$this->federatedLinksRequest->update($link);
-
 		} catch (Exception $e) {
 			throw $e;
 		}
 
+		$link->setStatus($status);
+		$link->setCircleId($circle->getUniqueId(true));
+
 		try {
-			$link->setUniqueId($circle->getUniqueId(true));
 			$this->updateLinkRemote($link);
 		} catch (Exception $e) {
+			if ($status !== FederatedLink::STATUS_LINK_REMOVE) {
+				throw $e;
+			}
 		}
+
+		$this->federatedLinksRequest->update($link);
 
 		return $this->circlesRequest->getLinksFromCircle($circle->getUniqueId());
 	}
@@ -306,13 +310,7 @@ class FederatedService {
 	 * @return string
 	 */
 	private function generateLinkRemoteURL($remote) {
-		if ((!$this->configService->isNonSSLLinksAllowed() || strpos($remote, 'http://') !== 0)
-			&& strpos($remote, 'https://') !== 0
-		) {
-			$remote = 'https://' . $remote;
-		}
-
-		return rtrim($remote, '/') . self::REMOTE_URL_LINK;
+		return $this->generateRemoteHost($remote) . self::REMOTE_URL_LINK;
 	}
 
 
@@ -322,13 +320,23 @@ class FederatedService {
 	 * @return string
 	 */
 	private function generatePayloadDeliveryURL($remote) {
+		return $this->generateRemoteHost($remote) . self::REMOTE_URL_PAYLOAD;
+	}
+
+
+	/**
+	 * @param string $remote
+	 *
+	 * @return string
+	 */
+	private function generateRemoteHost($remote) {
 		if ((!$this->configService->isNonSSLLinksAllowed() || strpos($remote, 'http://') !== 0)
 			&& strpos($remote, 'https://') !== 0
 		) {
 			$remote = 'https://' . $remote;
 		}
 
-		return rtrim($remote, '/') . self::REMOTE_URL_PAYLOAD;
+		return rtrim($remote, '/');
 	}
 
 
@@ -342,7 +350,7 @@ class FederatedService {
 	 * @return boolean
 	 * @throws Exception
 	 */
-	private function requestLink(Circle $circle, FederatedLink & $link) {
+	private function requestLink(Circle $circle, FederatedLink &$link) {
 		$args = [
 			'apiVersion' => Circles::API_VERSION,
 			'token'      => $link->getToken(true),
@@ -596,27 +604,31 @@ class FederatedService {
 	 *
 	 * @param FederatedLink $link
 	 *
-	 * @return boolean
+	 * @return bool
 	 * @throws Exception
 	 */
-	public function updateLinkRemote(FederatedLink & $link) {
+	public function updateLinkRemote(FederatedLink &$link) {
 		$args = [
 			'apiVersion' => Circles::API_VERSION,
 			'token'      => $link->getToken(true),
-			'uniqueId'   => $link->getUniqueId(true),
+			'uniqueId'   => $link->getCircleId(true),
 			'status'     => $link->getStatus()
 		];
 
 		$client = $this->clientService->newClient();
-
 		try {
-			$client->post(
+			$request = $client->post(
 				$this->generateLinkRemoteURL($link->getAddress()), [
 																	 'body'            => $args,
 																	 'timeout'         => 10,
 																	 'connect_timeout' => 10,
 																 ]
 			);
+
+			$result = json_decode($request->getBody(), true);
+			if ($result['status'] === -1) {
+				throw new FederatedLinkUpdateException($result['reason']);
+			}
 
 			return true;
 		} catch (Exception $e) {
@@ -633,7 +645,7 @@ class FederatedService {
 	 *
 	 * @throws Exception
 	 */
-	public function initiateLink(Circle $circle, FederatedLink & $link) {
+	public function initiateLink(Circle $circle, FederatedLink &$link) {
 
 		try {
 			$this->checkLinkRequestValidity($circle, $link);
@@ -658,19 +670,19 @@ class FederatedService {
 	 * @param Circle $circle
 	 * @param FederatedLink $link
 	 *
-	 * @throws LinkCreationException
+	 * @throws FederatedLinkCreationException
 	 */
 	private function checkLinkRequestValidity($circle, $link) {
 		if ($circle->getUniqueId(true) === $link->getUniqueId(true)) {
-			throw new LinkCreationException('duplicate_unique_id');
+			throw new FederatedLinkCreationException('duplicate_unique_id');
 		}
 
 		if ($this->getLink($circle->getUniqueId(), $link->getUniqueId(true)) !== null) {
-			throw new LinkCreationException('duplicate_link');
+			throw new FederatedLinkCreationException('duplicate_link');
 		}
 
 		if ($circle->getSetting('allow_links') !== 'true') {
-			throw new LinkCreationException('circle_links_disable');
+			throw new FederatedLinkCreationException('circle_links_disable');
 		}
 	}
 
@@ -683,7 +695,7 @@ class FederatedService {
 	 * @return bool
 	 * @throws Exception
 	 */
-	public function receiveFrame($token, $uniqueId, SharingFrame & $frame) {
+	public function receiveFrame($token, $uniqueId, SharingFrame &$frame) {
 		try {
 
 			$link = $this->circlesRequest->getLinkFromToken((string)$token, (string)$uniqueId);

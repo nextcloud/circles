@@ -30,7 +30,7 @@ use Exception;
 use GuzzleHttp\Exception\ServerException;
 use OC\AppFramework\Http;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
-use OCA\Circles\Exceptions\LinkCreationException;
+use OCA\Circles\Exceptions\FederatedLinkCreationException;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\FederatedService;
@@ -87,7 +87,7 @@ class FederatedController extends BaseController {
 	 * @param string $address
 	 *
 	 * @return DataResponse
-	 * @throws LinkCreationException
+	 * @throws FederatedLinkCreationException
 	 */
 	public function requestedLink($apiVersion, $token, $uniqueId, $sourceName, $linkTo, $address) {
 

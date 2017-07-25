@@ -182,10 +182,17 @@ class FederatedLink implements \JsonSerializable {
 	}
 
 	/**
+	 * @param bool $full
+	 *
 	 * @return string
 	 */
-	public function getCircleId() {
-		return $this->circleUniqueId;
+	public function getCircleId($full = false) {
+		if ($full) {
+			return $this->circleUniqueId;
+		}
+
+		return substr($this->circleUniqueId, 0, Circle::UNIQUEID_SHORT_LENGTH);
+
 	}
 
 

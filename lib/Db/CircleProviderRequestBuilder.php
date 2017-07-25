@@ -69,7 +69,7 @@ class CircleProviderRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param int $circleId
 	 */
-	protected function limitToCircle(& $qb, $circleId) {
+	protected function limitToCircle(IQueryBuilder &$qb, $circleId) {
 		$expr = $qb->expr();
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? 's.' : '';
 
@@ -83,7 +83,7 @@ class CircleProviderRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param $shareId
 	 */
-	protected function limitToShare(& $qb, $shareId) {
+	protected function limitToShare(IQueryBuilder &$qb, $shareId) {
 		$expr = $qb->expr();
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? 's.' : '';
 
@@ -96,7 +96,7 @@ class CircleProviderRequestBuilder {
 	 *
 	 * @param IQueryBuilder $qb
 	 */
-	protected function limitToShareParent(& $qb) {
+	protected function limitToShareParent(IQueryBuilder &$qb) {
 		$expr = $qb->expr();
 
 		$qb->andWhere($expr->isNull('parent'));
@@ -110,7 +110,7 @@ class CircleProviderRequestBuilder {
 	 * @param $userId
 	 * @param int $parentId
 	 */
-	protected function limitToShareChildren(& $qb, $userId, $parentId = -1) {
+	protected function limitToShareChildren(IQueryBuilder &$qb, $userId, $parentId = -1) {
 		$expr = $qb->expr();
 		$qb->andWhere($expr->eq('share_with', $qb->createNamedParameter($userId)));
 
@@ -129,7 +129,7 @@ class CircleProviderRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param $circleId
 	 */
-	protected function limitToShareAndChildren(& $qb, $circleId) {
+	protected function limitToShareAndChildren(IQueryBuilder &$qb, $circleId) {
 		$expr = $qb->expr();
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? 's.' : '';
 
@@ -151,7 +151,7 @@ class CircleProviderRequestBuilder {
 	 *
 	 * @internal param $fileId
 	 */
-	protected function limitToFiles(& $qb, $files) {
+	protected function limitToFiles(IQueryBuilder &$qb, $files) {
 
 		if (!is_array($files)) {
 			$files = array($files);
@@ -173,7 +173,7 @@ class CircleProviderRequestBuilder {
 	 * @param int $limit
 	 * @param int $offset
 	 */
-	protected function limitToPage(& $qb, $limit = -1, $offset = 0) {
+	protected function limitToPage(IQueryBuilder &$qb, $limit = -1, $offset = 0) {
 		if ($limit !== -1) {
 			$qb->setMaxResults($limit);
 		}
@@ -189,7 +189,7 @@ class CircleProviderRequestBuilder {
 	 * @param string $userId
 	 * @param bool $reShares
 	 */
-	protected function limitToShareOwner(& $qb, $userId, $reShares = false) {
+	protected function limitToShareOwner(IQueryBuilder &$qb, $userId, $reShares = false) {
 		$expr = $qb->expr();
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? 's.' : '';
 
@@ -215,7 +215,7 @@ class CircleProviderRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param int $shareId
 	 */
-	protected function linkCircleField(& $qb, $shareId = -1) {
+	protected function linkCircleField(IQueryBuilder &$qb, $shareId = -1) {
 		$expr = $qb->expr();
 
 		$qb->from(CoreRequestBuilder::TABLE_CIRCLES, 'c');
@@ -244,7 +244,7 @@ class CircleProviderRequestBuilder {
 	/**
 	 * @param IQueryBuilder $qb
 	 */
-	protected function linkToCircleOwner(& $qb) {
+	protected function linkToCircleOwner(IQueryBuilder &$qb) {
 		$expr = $qb->expr();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
@@ -266,7 +266,7 @@ class CircleProviderRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param string $userId
 	 */
-	protected function linkToMember(& $qb, $userId) {
+	protected function linkToMember(IQueryBuilder &$qb, $userId) {
 		$expr = $qb->expr();
 
 		$qb->from(CoreRequestBuilder::TABLE_MEMBERS, 'm');
@@ -402,7 +402,7 @@ class CircleProviderRequestBuilder {
 	 *
 	 * @param IQueryBuilder $qb
 	 */
-	protected function joinCircleMembers(& $qb) {
+	protected function joinCircleMembers(IQueryBuilder &$qb) {
 		$expr = $qb->expr();
 
 		$qb->from(CoreRequestBuilder::TABLE_MEMBERS, 'm');
@@ -431,7 +431,7 @@ class CircleProviderRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param string $userId
 	 */
-	protected function linkToFileCache(& $qb, $userId) {
+	protected function linkToFileCache(IQueryBuilder &$qb, $userId) {
 		$expr = $qb->expr();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
@@ -552,7 +552,7 @@ class CircleProviderRequestBuilder {
 	/**
 	 * @param IQueryBuilder $qb
 	 */
-	private function joinShare(& $qb) {
+	private function joinShare(IQueryBuilder &$qb) {
 		$expr = $qb->expr();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */

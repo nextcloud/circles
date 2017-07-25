@@ -190,7 +190,7 @@ class CoreRequestBuilder {
 	 * @param string $field
 	 * @param string|integer $value
 	 */
-	private function limitToDBField(IQueryBuilder & $qb, $field, $value) {
+	private function limitToDBField(IQueryBuilder &$qb, $field, $value) {
 		$expr = $qb->expr();
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
 		$qb->andWhere($expr->eq($pf . $field, $qb->createNamedParameter($value)));
@@ -228,7 +228,7 @@ class CoreRequestBuilder {
 	 *
 	 * @deprecated not used (14/07/17)
 	 */
-	protected function rightJoinCircles(& $qb) {
+	protected function rightJoinCircles(IQueryBuilder &$qb) {
 		$expr = $qb->expr();
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
 

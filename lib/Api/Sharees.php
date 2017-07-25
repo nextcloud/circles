@@ -75,7 +75,7 @@ class Sharees {
 	 * @param bool $exact
 	 *
 	 */
-	private static function addResultEntry(& $result, $entry, $exact = false) {
+	private static function addResultEntry(&$result, $entry, $exact = false) {
 
 		$arr = [
 			'label' => $entry->getName(),

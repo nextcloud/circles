@@ -210,7 +210,9 @@ class CirclesService {
 		$groups = [];
 		if ($this->configService->isLinkedGroupsAllowed()) {
 			$groups =
-				$this->membersRequest->getGroupsFromCircle($circle->getUniqueId(), $circle->getHigherViewer());
+				$this->membersRequest->getGroupsFromCircle(
+					$circle->getUniqueId(), $circle->getHigherViewer()
+				);
 		}
 
 		$circle->setGroups($groups);
@@ -281,7 +283,8 @@ class CirclesService {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 
 			try {
-				$member = $this->membersRequest->forceGetMember($circle->getUniqueId(), $this->userId);
+				$member =
+					$this->membersRequest->forceGetMember($circle->getUniqueId(), $this->userId);
 			} catch (MemberDoesNotExistException $m) {
 				$member = new Member($this->l10n, $this->userId, $circle->getUniqueId());
 				$this->membersRequest->createMember($member);
@@ -369,11 +372,11 @@ class CirclesService {
 	/**
 	 * Convert a Type in String to its Bit Value
 	 *
-	 * @param $type
+	 * @param string $type
 	 *
 	 * @return int
 	 */
-	public static function convertTypeStringToBitValue(& $type) {
+	public static function convertTypeStringToBitValue(&$type) {
 		if (strtolower($type) === 'personal') {
 			$type = Circle::CIRCLES_PERSONAL;
 		}
