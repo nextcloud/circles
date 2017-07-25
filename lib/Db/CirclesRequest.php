@@ -399,7 +399,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 		if ($data === false) {
 			throw new FederatedLinkDoesNotExistException(
-				$this->l10n->t('Federated Link not found')
+				$this->l10n->t('Federated link not found')
 			);
 		}
 
@@ -427,7 +427,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 		if ($data === false) {
 			throw new FederatedLinkDoesNotExistException(
-				$this->l10n->t('Federated Link not found')
+				$this->l10n->t('Federated link not found')
 			);
 		}
 

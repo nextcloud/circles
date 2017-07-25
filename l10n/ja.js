@@ -20,6 +20,9 @@ OC.L10N.register(
     "Owner" : "オーナー",
     "Unknown" : "不明",
     "Cannot join this circle" : "このサークルに参加することはできません",
+    "You have joined this circle" : "あなたはこのサークルに参加しました",
+    "You have requested to join this circle" : "このサークルへ参加のリクエストを行いました",
+    "You have left this circle" : "あなたはこのサークルを抜けました",
     "Cannot leave this circle" : "このサークルを抜けることはできません",
     "You have deleted this circle" : "あなたはこのサークルから除名されました",
     "Cannot delete this circle" : "このサークルを削除できません",
@@ -47,6 +50,7 @@ OC.L10N.register(
     "This member does not exist" : "このメンバーは存在しません",
     "You cannot join this circle" : "あなたはこのサークルに加入できません",
     "Not enough privileges" : "十分な権限がありません",
+    "Create a new circle" : "新しいサークルを作成",
     "Select a type of circle" : "サークルの種類を選択",
     "Create a personal circle" : "パーソナルサークルを作成",
     "Create a hidden circle" : "非公開サークルを作成",
@@ -60,6 +64,10 @@ OC.L10N.register(
     "This is the right circle if you are looking for privacy when sharing your files or ideas." : "あなたのファイルやアイデアを共有する際にプライバシーが必要な場合に適切なサークルです。",
     "A public circle is an open group visible to anyone willing to join." : "公開サークルは誰でも参加できるオープンなサークルです。",
     "Everyone will be able to see and join your circle." : "全ての人が見たり参加することが可能なサークルです。",
+    "personal circles" : "パーソナルサークル",
+    "hidden circles" : "非公開サークル",
+    "private circles" : "プライベートサークル",
+    "public circles" : "公開サークル",
     "All circles" : "全てのサークル",
     "Search circles" : "サークルを検索",
     "No filter" : "フィルタ無し",
@@ -74,6 +82,7 @@ OC.L10N.register(
     "Decline the invitation" : "招待を断る",
     "Leave this circle" : "このサークルを抜ける",
     "Return to menu" : "メニューに戻る",
-    "Username" : "ユーザ名"
+    "Username" : "ユーザ名",
+    "Save settings" : "設定を保存"
 },
 "nplurals=1; plural=0;");

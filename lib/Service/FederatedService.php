@@ -447,7 +447,7 @@ class FederatedService {
 
 		if ($reason === 'circle_links_disable') {
 			throw new FederatedRemoteDoesNotAllowException(
-				$this->l10n->t('The remote circle does not accept Federated Links')
+				$this->l10n->t('The remote circle does not accept federated links')
 			);
 		}
 

@@ -359,7 +359,7 @@ style('circles', 'navigation');
 							<br/>
 							<span class="hint"><?php p(
 									$l->t(
-										'Warning: enabling this will automatically accept new Link requests from other circle.'
+										'Warning: enabling this will automatically accept new link requests from other circle.'
 									)
 								); ?></span>
 						</td>

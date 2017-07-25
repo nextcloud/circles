@@ -82,14 +82,14 @@ var resultMembers = {
 
 		if (result.status === 1) {
 			OCA.notification.onSuccess(
-				t('circles', "The member '{name}' was included in the circle",
+				t('circles', "The member '{name}' was added to the circle",
 					{name: result.name}));
 
 			nav.displayMembers(result.members);
 			return;
 		}
 		OCA.notification.onFail(
-			t('circles', "The member '{name}' could not be included in the circle", {name: result.name}) +
+			t('circles', "The member '{name}' could not be added to the circle", {name: result.name}) +
 			': ' +
 			((result.error) ? result.error : t('circles', 'no error message')));
 	},
@@ -98,14 +98,14 @@ var resultMembers = {
 
 		if (result.status === 1) {
 			OCA.notification.onSuccess(
-				t('circles', "Members of the group '{name}' were included in the circle",
+				t('circles', "Members of the group '{name}' were added to the circle",
 					{name: result.name}));
 
 			nav.displayMembers(result.members);
 			return;
 		}
 		OCA.notification.onFail(
-			t('circles', "Members of the group '{name}' could not be included in the circle",
+			t('circles', "Members of the group '{name}' could not be added to the circle",
 				{name: result.name}) +
 			': ' +
 			((result.error) ? result.error : t('circles', 'no error message')));

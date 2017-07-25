@@ -264,83 +264,83 @@ class Provider implements IProvider {
 	private function parseLinkAsModerator(IEvent &$event, Circle $circle) {
 
 		$params = $event->getSubjectParameters();
-		$link = FederatedLink::fromJSON($params['link']);
+		$remote = FederatedLink::fromJSON($params['link']);
 
 		switch ($event->getSubject()) {
 			case 'link_request_sent':
 				return $this->parseCircleEvent(
-					$event, $circle, $link,
-					$this->l10n->t('You sent a request to link {circle} with {link}'),
-					$this->l10n->t('{author} sent a request to link {circle} with {link}')
+					$event, $circle, $remote,
+					$this->l10n->t('You sent a request to link {circle} with {remote}'),
+					$this->l10n->t('{author} sent a request to link {circle} with {remote}')
 				);
 
 			case 'link_request_received';
 				return $this->parseLinkEvent(
-					$event, $circle, $link,
-					$this->l10n->t('{link} requested a link with {circle}')
+					$event, $circle, $remote,
+					$this->l10n->t('{remote} requested a link with {circle}')
 				);
 
 			case 'link_request_rejected';
 				return $this->parseLinkEvent(
-					$event, $circle, $link, $this->l10n->t(
-					'The request to link {circle} with {link} has been rejected'
+					$event, $circle, $remote, $this->l10n->t(
+					'The request to link {circle} with {remote} has been rejected'
 				)
 				);
 
 			case 'link_request_canceled':
 				return $this->parseLinkEvent(
-					$event, $circle, $link,
+					$event, $circle, $remote,
 					$this->l10n->t(
-						'The request to link {link} with {circle} has been canceled remotely'
+						'The request to link {remote} with {circle} has been canceled remotely'
 					)
 				);
 
 			case 'link_request_accepted':
 				return $this->parseLinkEvent(
-					$event, $circle, $link,
-					$this->l10n->t('The request to link {circle} with {link} has been accepted')
+					$event, $circle, $remote,
+					$this->l10n->t('The request to link {circle} with {remote} has been accepted')
 				);
 
 			case 'link_request_removed':
 				return $this->parseCircleEvent(
-					$event, $circle, $link,
-					$this->l10n->t('You dismissed the request to link {link} with {circle}'),
-					$this->l10n->t('{author} dismissed the request to link {link} with {circle}')
+					$event, $circle, $remote,
+					$this->l10n->t('You dismissed the request to link {remote} with {circle}'),
+					$this->l10n->t('{author} dismissed the request to link {remote} with {circle}')
 				);
 
 			case 'link_request_canceling':
 				return $this->parseCircleEvent(
-					$event, $circle, $link,
-					$this->l10n->t('You canceled the request to link {circle} with {link}'),
-					$this->l10n->t('{author} canceled the request to link {circle} with {link}')
+					$event, $circle, $remote,
+					$this->l10n->t('You canceled the request to link {circle} with {remote}'),
+					$this->l10n->t('{author} canceled the request to link {circle} with {remote}')
 				);
 
 			case 'link_request_accepting':
 				return $this->parseCircleEvent(
-					$event, $circle, $link,
-					$this->l10n->t('You accepted the request to link {link} with {circle}'),
-					$this->l10n->t('{author} accepted the request to link {link} with {circle}')
+					$event, $circle, $remote,
+					$this->l10n->t('You accepted the request to link {remote} with {circle}'),
+					$this->l10n->t('{author} accepted the request to link {remote} with {circle}')
 				);
 
 			case 'link_up':
 				return $this->parseLinkEvent(
-					$event, $circle, $link,
-					$this->l10n->t('A link between {circle} and {link} is now up and running')
+					$event, $circle, $remote,
+					$this->l10n->t('A link between {circle} and {remote} is now up and running')
 				);
 
 			case 'link_down':
 				return $this->parseLinkEvent(
-					$event, $circle, $link,
+					$event, $circle, $remote,
 					$this->l10n->t(
-						'The link between {circle} and {link} has been shutdown remotely'
+						'The link between {circle} and {remote} has been shutdown remotely'
 					)
 				);
 
 			case 'link_remove':
 				return $this->parseCircleEvent(
-					$event, $circle, $link,
-					$this->l10n->t('You closed the link between {circle} and {link}'),
-					$this->l10n->t('{author} closed the link between {circle} and {link}')
+					$event, $circle, $remote,
+					$this->l10n->t('You closed the link between {circle} and {remote}'),
+					$this->l10n->t('{author} closed the link between {circle} and {remote}')
 				);
 		}
 
@@ -351,15 +351,15 @@ class Provider implements IProvider {
 	/**
 	 * general function to generate Circle event.
 	 *
-	 * @param Circle $circle
-	 * @param FederatedLink $link
 	 * @param IEvent $event
-	 * @param $ownEvent
-	 * @param $othersEvent
+	 * @param Circle $circle
+	 * @param FederatedLink $remote
+	 * @param string $ownEvent
+	 * @param string $othersEvent
 	 *
 	 * @return IEvent
 	 */
-	private function parseCircleEvent(IEvent &$event, Circle $circle, $link, $ownEvent, $othersEvent
+	private function parseCircleEvent(IEvent &$event, Circle $circle, FederatedLink $remote, $ownEvent, $othersEvent
 	) {
 		$data = [
 			'author' => $author = $this->generateUserParameter(
@@ -367,7 +367,7 @@ class Provider implements IProvider {
 					   ->getUserId()
 			),
 			'circle' => $this->generateCircleParameter($circle),
-			'link'   => ($link === null) ? '' : $this->generateLinkParameter($link)
+			'remote'   => ($remote === null) ? '' : $this->generateLinkParameter($remote)
 		];
 
 		if ($circle->getViewer()
@@ -412,16 +412,16 @@ class Provider implements IProvider {
 	 * general function to generate Link event.
 	 *
 	 * @param Circle $circle
-	 * @param FederatedLink $link
+	 * @param FederatedLink $remote
 	 * @param IEvent $event
-	 * @param $line
+	 * @param string $line
 	 *
 	 * @return IEvent
 	 */
-	private function parseLinkEvent(IEvent &$event, Circle $circle, FederatedLink $link, $line) {
+	private function parseLinkEvent(IEvent &$event, Circle $circle, FederatedLink $remote, $line) {
 		$data = [
 			'circle' => $this->generateCircleParameter($circle),
-			'link'   => $this->generateLinkParameter($link)
+			'remote'   => $this->generateLinkParameter($remote)
 		];
 
 		return $event->setRichSubject($line, $data);
@@ -434,8 +434,8 @@ class Provider implements IProvider {
 	 * @param Circle $circle
 	 * @param Member $member
 	 * @param IEvent $event
-	 * @param $ownEvent
-	 * @param $othersEvent
+	 * @param string $ownEvent
+	 * @param string $othersEvent
 	 *
 	 * @return IEvent
 	 */
