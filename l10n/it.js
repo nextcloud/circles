@@ -32,7 +32,6 @@ OC.L10N.register(
     "Kick this member" : "Espelli questo membro",
     "Accept the request" : "Accetta la richiesta",
     "Dismiss the request" : "Annulla la richiesta",
-    "Remove this Link" : "Rimuovi questo collegamento",
     "Cannot join this circle" : "Impossibile unirsi a questa cerchia",
     "no error message" : "nessun messaggio di errore",
     "You have requested to join this circle" : "Hai richiesto di unirti a questa cerchia",

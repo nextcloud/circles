@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "Are you sure you want to transfer your ownership?" : "确定转让所有权？",
     "This action is irreversible" : "操作不可逆",
     "Personal circle" : "个人圈子",
     "Hidden circle" : "隐藏圈子",
@@ -35,10 +36,6 @@ OC.L10N.register(
     "Kick this member" : "踢开这个成员",
     "Accept the request" : "接受这个请求",
     "Dismiss the request" : "取消此请求",
-    "Remove this Link" : "移除这个链接",
-    "Cancel the Link request" : "取消链接请求",
-    "Accept the Link request" : "接受链接请求",
-    "Reject the Link request" : "拒绝链接请求",
     "Cannot join this circle" : "不能加入此圈子",
     "no error message" : "没有错误信息",
     "You have requested to join this circle" : "你已经请求加入这个圈子",
@@ -116,7 +113,6 @@ OC.L10N.register(
     "Linked" : "已链接",
     "Allow Federated Links" : "允许联合链接",
     "Automatically Accept Link Request" : "自动接受链接请求",
-    "Warning: enabling this will automatically accept new Link requests from other circle." : "警告：启用此功能将自动接收来自其他圈子的新的链接请求。",
     "Save settings" : "保存设置"
 },
 "nplurals=1; plural=0;");

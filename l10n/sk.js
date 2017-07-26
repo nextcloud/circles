@@ -35,7 +35,6 @@ OC.L10N.register(
     "Are you sure you want to delete this circle?" : "Vážne chcete odstrániť tento kruh?",
     "Kick this member" : "Odstrániť tohto člena",
     "Accept the request" : "Prijať žiadosť",
-    "Remove this Link" : "Odstrániť odkaz",
     "Cannot join this circle" : "Nie je možné pripojiť sa k tomuto kruhu",
     "no error message" : "žiadna chybová správa",
     "You have requested to join this circle" : "Požiadali ste o pripojenie k tomuto kruhu",

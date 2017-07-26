@@ -34,8 +34,6 @@ OC.L10N.register(
     "Are you sure you want to delete this circle?" : "Jeni i sigurtë që doni ta fshini këtë rreth?",
     "Kick this member" : "Dëboje këtë anëtar",
     "Accept the request" : "Prano kërkesën",
-    "Remove this Link" : "Hiqe këtë Link",
-    "Accept the Link request" : "Prano kërkesën e Link-ut",
     "Cannot join this circle" : "Nuk mund të bashkohet me këtë rreth",
     "no error message" : "asnjë mesazh gabimi ",
     "You have joined this circle" : "Ju i jeni bashkuar këtij rrethi",

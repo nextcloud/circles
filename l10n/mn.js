@@ -37,8 +37,6 @@ OC.L10N.register(
     "Kick this member" : "Энэ гишүүнийг хасах",
     "Accept the request" : "Хүсэлт хүлээн авах",
     "Dismiss the request" : "Хүсэлт алдаатай",
-    "Accept the Link request" : "Холбоосын хүсэлтийг зөвшөөрнө үү",
-    "Reject the Link request" : "холбоосын хүсэлтээс татгалзах",
     "Cannot join this circle" : "Энэ тойрогт илсэж чадахгүй",
     "You have requested to join this circle" : "Та энэ тойрогт нэгдэхийг хүссэн байна",
     "Cannot leave this circle" : "Та энэ тойргийг орхиж чадаагүй байна",
