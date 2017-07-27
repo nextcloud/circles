@@ -26,7 +26,7 @@
 
 namespace OCA\Circles\Exceptions;
 
-class SharingFrameDoesNotEXist extends \Exception {
+class CircleTypeNotValidException extends \Exception {
 
 }
 

@@ -29,7 +29,7 @@ namespace OCA\Circles\Service;
 
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
-use OCA\Circles\Exceptions\BroadcasterIsNotCompatible;
+use OCA\Circles\Exceptions\BroadcasterIsNotCompatibleException;
 use OCA\Circles\IBroadcaster;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
@@ -84,7 +84,7 @@ class BroadcastService {
 	 * @param string $broadcast
 	 * @param SharingFrame $frame
 	 *
-	 * @throws BroadcasterIsNotCompatible
+	 * @throws BroadcasterIsNotCompatibleException
 	 */
 	public function broadcastFrame($broadcast, SharingFrame $frame) {
 
@@ -94,7 +94,7 @@ class BroadcastService {
 
 		$broadcaster = \OC::$server->query((string)$broadcast);
 		if (!($broadcaster instanceof IBroadcaster)) {
-			throw new BroadcasterIsNotCompatible();
+			throw new BroadcasterIsNotCompatibleException();
 		}
 
 		$broadcaster->init();

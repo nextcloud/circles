@@ -26,7 +26,7 @@
 
 namespace OCA\Circles\Exceptions;
 
-class MemberCantJoinCircle extends \Exception {
+class FederatedLinkCircleNotFoundException extends \Exception {
 
 }
 

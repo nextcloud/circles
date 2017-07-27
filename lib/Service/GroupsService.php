@@ -29,7 +29,7 @@ namespace OCA\Circles\Service;
 
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
-use OCA\Circles\Exceptions\CircleTypeNotValid;
+use OCA\Circles\Exceptions\CircleTypeNotValidException;
 use OCA\Circles\Exceptions\GroupCannotBeOwnerException;
 use OCA\Circles\Exceptions\GroupDoesNotExistException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
@@ -157,7 +157,7 @@ class GroupsService {
 		try {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
-				throw new CircleTypeNotValid(
+				throw new CircleTypeNotValidException(
 					$this->l10n->t('You cannot edit level in a personal circle')
 				);
 			}

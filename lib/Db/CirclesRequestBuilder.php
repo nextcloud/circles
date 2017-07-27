@@ -30,7 +30,7 @@ namespace OCA\Circles\Db;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use OC\L10N\L10N;
-use OCA\Circles\Exceptions\ConfigNoCircleAvailable;
+use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
@@ -96,14 +96,14 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 * @param $type
 	 * @param $name
 	 *
-	 * @throws ConfigNoCircleAvailable
+	 * @throws ConfigNoCircleAvailableException
 	 */
 	protected function limitRegardingCircleType(
 		IQueryBuilder &$qb, $userId, $circleUniqueId, $type, $name
 	) {
 		$orTypes = $this->generateLimit($qb, $circleUniqueId, $userId, $type, $name);
 		if (sizeof($orTypes) === 0) {
-			throw new ConfigNoCircleAvailable(
+			throw new ConfigNoCircleAvailableException(
 				$this->l10n->t(
 					'You cannot use the Circles Application until your administrator has allowed at least one type of circles'
 				)

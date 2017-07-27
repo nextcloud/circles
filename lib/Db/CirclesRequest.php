@@ -31,7 +31,7 @@ namespace OCA\Circles\Db;
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedLinkDoesNotExistException;
-use OCA\Circles\Exceptions\SharingFrameDoesNotEXist;
+use OCA\Circles\Exceptions\SharingFrameDoesNotExistException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
@@ -358,7 +358,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 * @param string $frameUniqueId
 	 *
 	 * @return SharingFrame
-	 * @throws SharingFrameDoesNotEXist
+	 * @throws SharingFrameDoesNotExistException
 	 */
 	public function getFrame($circleUniqueId, $frameUniqueId) {
 		$qb = $this->getSharesSelectSql();
@@ -370,7 +370,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$cursor->closeCursor();
 
 		if ($data === false) {
-			throw new SharingFrameDoesNotEXist($this->l10n->t('Sharing Frame does not exist'));
+			throw new SharingFrameDoesNotExistException($this->l10n->t('Sharing Frame does not exist'));
 		}
 
 		$entry = $this->parseSharesSelectSql($data);

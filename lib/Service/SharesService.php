@@ -29,8 +29,10 @@ namespace OCA\Circles\Service;
 
 use Exception;
 use OCA\Circles\Db\CirclesRequest;
-use OCA\Circles\Exceptions\BroadcasterIsNotCompatible;
+use OCA\Circles\Exceptions\BroadcasterIsNotCompatibleException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
+use OCA\Circles\Exceptions\SharingFrameAlreadyDeliveredException;
+use OCA\Circles\Exceptions\SharingFrameDoesNotExistException;
 use OCA\Circles\IBroadcaster;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
@@ -154,13 +156,24 @@ class SharesService {
 	 * @param string $frameUniqueId
 	 *
 	 * @return null|SharingFrame
+	 * @throws SharingFrameAlreadyDeliveredException
+	 * @throws SharingFrameDoesNotExistException
 	 */
 	public function getFrameFromUniqueId($circleUniqueId, $frameUniqueId) {
 		if ($frameUniqueId === null || $frameUniqueId === '') {
-			return null;
+			throw new SharingFrameDoesNotExistException('unknown_share');
 		}
 
-		return $this->circlesRequest->getFrame($circleUniqueId, $frameUniqueId);
+		try {
+			$frame = $this->circlesRequest->getFrame($circleUniqueId, $frameUniqueId);
+			if ($frame->getCloudId() !== null) {
+				throw new SharingFrameAlreadyDeliveredException('share_already_delivered');
+			}
+		} catch (SharingFrameDoesNotExistException $e) {
+			throw new SharingFrameDoesNotExistException('unknown_share');
+		}
+
+		return $frame;
 	}
 
 

@@ -35,12 +35,12 @@ use OCA\Circles\Db\FederatedLinksRequest;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedCircleLinkFormatException;
 use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
-use OCA\Circles\Exceptions\CircleTypeNotValid;
+use OCA\Circles\Exceptions\CircleTypeNotValidException;
 use OCA\Circles\Exceptions\FederatedCircleStatusUpdateException;
 use OCA\Circles\Exceptions\FederatedLinkUpdateException;
 use OCA\Circles\Exceptions\FederatedRemoteCircleDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedRemoteDoesNotAllowException;
-use OCA\Circles\Exceptions\FederatedRemoteIsDown;
+use OCA\Circles\Exceptions\FederatedRemoteIsDownException;
 use OCA\Circles\Exceptions\SharingFrameAlreadyExistException;
 use OCA\Circles\Exceptions\FederatedLinkCreationException;
 use OCA\Circles\Exceptions\MemberIsNotAdminException;
@@ -145,7 +145,7 @@ class FederatedService {
 	 *
 	 * @throws Exception
 	 * @throws FederatedCircleLinkFormatException
-	 * @throws CircleTypeNotValid
+	 * @throws CircleTypeNotValidException
 	 *
 	 * @return FederatedLink
 	 */
@@ -183,7 +183,7 @@ class FederatedService {
 	 *
 	 * @throws Exception
 	 * @throws FederatedCircleLinkFormatException
-	 * @throws CircleTypeNotValid
+	 * @throws CircleTypeNotValidException
 	 * @throws MemberIsNotAdminException
 	 *
 	 * @return FederatedLink[]
@@ -373,7 +373,7 @@ class FederatedService {
 
 			$result = json_decode($request->getBody(), true);
 			if ($result === null) {
-				throw new FederatedRemoteIsDown(
+				throw new FederatedRemoteIsDownException(
 					$this->l10n->t(
 						'The remote host is down or the Circles app is not installed on it'
 					)

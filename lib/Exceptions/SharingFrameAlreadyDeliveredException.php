@@ -26,7 +26,7 @@
 
 namespace OCA\Circles\Exceptions;
 
-class BroadcasterIsNotCompatible extends \Exception {
+class SharingFrameAlreadyDeliveredException extends \Exception {
 
 }
 
