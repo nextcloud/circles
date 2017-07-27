@@ -352,7 +352,7 @@ class FederatedService {
 	 */
 	private function requestLink(Circle $circle, FederatedLink &$link) {
 		$args = [
-			'apiVersion' => Circles::API_VERSION,
+			'apiVersion' => Circles::version(),
 			'token'      => $link->getToken(true),
 			'uniqueId'   => $circle->getUniqueId(true),
 			'sourceName' => $circle->getName(),
@@ -609,7 +609,7 @@ class FederatedService {
 	 */
 	public function updateLinkRemote(FederatedLink &$link) {
 		$args = [
-			'apiVersion' => Circles::API_VERSION,
+			'apiVersion' => Circles::version(),
 			'token'      => $link->getToken(true),
 			'uniqueId'   => $link->getCircleId(true),
 			'status'     => $link->getStatus()
@@ -746,16 +746,16 @@ class FederatedService {
 
 	/**
 	 * @param string $circleUniqueId
-	 * @param string $uniqueId
+	 * @param string $frameUniqueId
 	 *
 	 * @return bool
 	 * @throws Exception
 	 */
-	public function initiateRemoteShare($circleUniqueId, $uniqueId) {
+	public function initiateRemoteShare($circleUniqueId, $frameUniqueId) {
 		$args = [
-			'apiVersion' => Circles::API_VERSION,
+			'apiVersion' => Circles::version(),
 			'circleId'   => $circleUniqueId,
-			'uniqueId'   => $uniqueId
+			'frameId'    => $frameUniqueId
 		];
 
 		$client = $this->clientService->newClient();
@@ -796,7 +796,7 @@ class FederatedService {
 		foreach ($links AS $link) {
 
 			$args = [
-				'apiVersion' => Circles::API_VERSION,
+				'apiVersion' => Circles::version(),
 				'token'      => $link->getToken(true),
 				'uniqueId'   => $circle->getUniqueId(true),
 				'item'       => json_encode($frame)

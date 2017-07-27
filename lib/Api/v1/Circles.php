@@ -28,6 +28,7 @@ namespace OCA\Circles\Api\v1;
 
 
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\Exceptions\ApiVersionIncompatibleException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
@@ -45,7 +46,7 @@ class Circles {
 
 
 	/**
-	 * Circles::version()
+	 * Circles::version();
 	 *
 	 * returns the current version of the API
 	 *
@@ -53,6 +54,27 @@ class Circles {
 	 */
 	public static function version() {
 		return self::API_VERSION;
+	}
+
+
+	/**
+	 * Circles::compareVersion();
+	 *
+	 * Compare and return true if version is compatible.
+	 * Exception otherwise.
+	 *
+	 * @param array $apiVersion
+	 *
+	 * @return bool
+	 * @throws ApiVersionIncompatibleException
+	 */
+	public static function compareVersion($apiVersion) {
+		if ((int)$apiVersion[0] !== Circles::API_VERSION[0]
+			|| (int)$apiVersion[1] !== Circles::API_VERSION[1]) {
+			throw new ApiVersionIncompatibleException('api_not_compatible');
+		}
+
+		return true;
 	}
 
 

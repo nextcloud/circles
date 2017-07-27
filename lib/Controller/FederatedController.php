@@ -27,15 +27,15 @@
 namespace OCA\Circles\Controller;
 
 use Exception;
-use GuzzleHttp\Exception\ServerException;
 use OC\AppFramework\Http;
+use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedLinkCreationException;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\SharingFrame;
-use OCA\Circles\Service\FederatedService;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\FederatedService;
 use OCA\Circles\Service\MembersService;
 use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\SharesService;
@@ -96,6 +96,7 @@ class FederatedController extends BaseController {
 		}
 
 		try {
+			Circles::compareVersion($apiVersion);
 			$circle = $this->circlesService->infoCircleByName($linkTo);
 			$link = new FederatedLink();
 			$link->setToken($token)
@@ -130,29 +131,28 @@ class FederatedController extends BaseController {
 	 * @NoCSRFRequired
 	 *
 	 * @param array $apiVersion
-	 * @param string $circleUniqueId
-	 * @param string $uniqueId
+	 * @param string $circleId
+	 * @param string $frameId
 	 *
 	 * @return DataResponse
 	 */
-	public function initFederatedDelivery($apiVersion, $circleUniqueId, $uniqueId) {
+	public function initFederatedDelivery($apiVersion, $circleId, $frameId) {
 
-		if ($uniqueId === '' || !$this->configService->isFederatedCirclesAllowed()) {
+		if ($frameId === '' || !$this->configService->isFederatedCirclesAllowed()) {
 			return $this->federatedFail('federated_not_allowed');
 		}
 
-		$frame = $this->sharesService->getFrameFromUniqueId($circleUniqueId, $uniqueId);
-		if ($frame === null) {
-			return $this->federatedFail('unknown_share');
-		}
-
-		if ($frame->getCloudId() !== null) {
-			return $this->federatedFail('share_already_delivered');
+		try {
+			Circles::compareVersion($apiVersion);
+			$frame = $this->sharesService->getFrameFromUniqueId($circleId, $frameId);
+		} catch (Exception $e) {
+			return $this->federatedFail($e->getMessage());
 		}
 
 		// We don't want to keep the connection up
 		$this->asyncAndLeaveClientOutOfThis('done');
 
+		$this->miscService->log("____ 1");
 		$this->federatedService->updateFrameWithCloudId($frame);
 		$this->federatedService->sendRemoteShare($frame);
 
@@ -185,8 +185,9 @@ class FederatedController extends BaseController {
 			return $this->federatedFail('federated_not_allowed');
 		}
 
-		$frame = SharingFrame::fromJSON($item);
 		try {
+			Circles::compareVersion($apiVersion);
+			$frame = SharingFrame::fromJSON($item);
 			$this->federatedService->receiveFrame($token, $uniqueId, $frame);
 		} catch (Exception $e) {
 			return $this->federatedFail($e->getMessage());
@@ -225,6 +226,7 @@ class FederatedController extends BaseController {
 		}
 
 		try {
+			Circles::compareVersion($apiVersion);
 			$link = $this->federatedService->updateLinkFromRemote($token, $uniqueId, $status);
 		} catch (Exception $e) {
 			return $this->federatedFail($e->getMessage());
