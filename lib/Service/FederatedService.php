@@ -41,9 +41,11 @@ use OCA\Circles\Exceptions\FederatedLinkUpdateException;
 use OCA\Circles\Exceptions\FederatedRemoteCircleDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedRemoteDoesNotAllowException;
 use OCA\Circles\Exceptions\FederatedRemoteIsDownException;
+use OCA\Circles\Exceptions\PayloadDeliveryException;
 use OCA\Circles\Exceptions\SharingFrameAlreadyExistException;
 use OCA\Circles\Exceptions\FederatedLinkCreationException;
 use OCA\Circles\Exceptions\MemberIsNotAdminException;
+use OCA\Circles\Exceptions\SharingFrameDoesNotExistException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\SharingFrame;
@@ -697,15 +699,15 @@ class FederatedService {
 	 */
 	public function receiveFrame($token, $uniqueId, SharingFrame &$frame) {
 		try {
-
 			$link = $this->circlesRequest->getLinkFromToken((string)$token, (string)$uniqueId);
 		} catch (Exception $e) {
 			throw $e;
 		}
 
-		if ($this->circlesRequest->getFrame($link->getCircleId(), $frame->getUniqueId())) {
-			//		$this->miscService->log("Frame already exist");
+		try {
+			$this->circlesRequest->getFrame($link->getCircleId(), $frame->getUniqueId());
 			throw new SharingFrameAlreadyExistException('shares_is_already_known');
+		} catch (SharingFrameDoesNotExistException $e) {
 		}
 
 		try {
@@ -804,16 +806,23 @@ class FederatedService {
 
 			$client = $this->clientService->newClient();
 			try {
-				$client->put(
+				$request = $client->put(
 					$this->generatePayloadDeliveryURL($link->getAddress()), [
 																			  'body'            => $args,
 																			  'timeout'         => 10,
 																			  'connect_timeout' => 10,
 																		  ]
 				);
+
+				$result = json_decode($request->getBody(), true);
+				if ($result['status'] === -1) {
+					throw new PayloadDeliveryException($result['reason']);
+				}
+
 			} catch (Exception $e) {
 				$this->miscService->log(
-					'Could not connect to ' . $link->getAddress() . ' - ' . $e->getMessage()
+					'Issue while sending sharing frame to ' . $link->getAddress() . ' - '
+					. $e->getMessage()
 				);
 			}
 		}

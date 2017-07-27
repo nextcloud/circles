@@ -90,7 +90,7 @@ class FederatedLinksRequestBuilder {
 		$qb = $this->dbConnection->getQueryBuilder();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->select('f.unique_id', 'f.status', 'f.address', 'f.token', 'f.circle_id')
+		$qb->select('f.id', 'f.unique_id', 'f.status', 'f.address', 'f.token', 'f.circle_id')
 		   ->from(self::TABLE_LINKS, 'f');
 
 		return $qb;

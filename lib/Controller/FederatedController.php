@@ -31,6 +31,7 @@ use OC\AppFramework\Http;
 use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedLinkCreationException;
+use OCA\Circles\Exceptions\SharingFrameAlreadyExistException;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\CirclesService;
@@ -152,7 +153,6 @@ class FederatedController extends BaseController {
 		// We don't want to keep the connection up
 		$this->asyncAndLeaveClientOutOfThis('done');
 
-		$this->miscService->log("____ 1");
 		$this->federatedService->updateFrameWithCloudId($frame);
 		$this->federatedService->sendRemoteShare($frame);
 
@@ -189,17 +189,14 @@ class FederatedController extends BaseController {
 			Circles::compareVersion($apiVersion);
 			$frame = SharingFrame::fromJSON($item);
 			$this->federatedService->receiveFrame($token, $uniqueId, $frame);
+		} catch (SharingFrameAlreadyExistException $e) {
+			return $this->federatedSuccess();
 		} catch (Exception $e) {
 			return $this->federatedFail($e->getMessage());
 		}
 
 		$this->asyncAndLeaveClientOutOfThis('done');
-
-		try {
-			$this->federatedService->sendRemoteShare($frame);
-		} catch (Exception $e) {
-		}
-
+		$this->federatedService->sendRemoteShare($frame);
 		exit();
 	}
 
@@ -267,12 +264,19 @@ class FederatedController extends BaseController {
 	 *
 	 * @return DataResponse
 	 */
-	private function federatedSuccess($data, $link) {
-		return new DataResponse(
-			array_merge($data, ['token' => $link->getToken(true)]), Http::STATUS_OK
-		);
+	private function federatedSuccess(array $data = array(), FederatedLink $link = null) {
 
+		if (!key_exists('status', $data)) {
+			$data['status'] = 1;
+		}
+
+		if ($link !== null) {
+			$data = array_merge($data, ['token' => $link->getToken(true)]);
+		}
+
+		return new DataResponse($data, Http::STATUS_OK);
 	}
+
 
 	/**
 	 * send a negative response to a request, with a reason of the failure.
@@ -282,6 +286,8 @@ class FederatedController extends BaseController {
 	 * @return DataResponse
 	 */
 	private function federatedFail($reason) {
+		$this->miscService->log(2, 'federated fail: ' . $reason);
+
 		return new DataResponse(
 			[
 				'status' => FederatedLink::STATUS_ERROR,
