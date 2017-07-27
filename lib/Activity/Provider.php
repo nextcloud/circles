@@ -359,7 +359,7 @@ class Provider implements IProvider {
 	 *
 	 * @return IEvent
 	 */
-	private function parseCircleEvent(IEvent &$event, Circle $circle, FederatedLink $remote, $ownEvent, $othersEvent
+	private function parseCircleEvent(IEvent &$event, Circle $circle, $remote, $ownEvent, $othersEvent
 	) {
 		$data = [
 			'author' => $author = $this->generateUserParameter(
