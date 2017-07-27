@@ -58,25 +58,17 @@ class Provider implements IProvider {
 		}
 
 		try {
+
 			$params = $event->getSubjectParameters();
 			$circle = Circle::fromJSON($this->l10n, $params['circle']);
 
-			$this->verifyCircleIntegrity($circle);
 			$this->setIcon($event, $circle);
 			$this->parseAsMember($event, $circle, $params);
 			$this->parseAsModerator($event, $circle, $params);
-
 			$this->generateParsedSubject($event);
 
 			return $event;
 		} catch (\Exception $e) {
-			throw new \InvalidArgumentException();
-		}
-	}
-
-
-	private function verifyCircleIntegrity(Circle $circle) {
-		if ($circle->getViewer() === null) {
 			throw new \InvalidArgumentException();
 		}
 	}
@@ -200,7 +192,6 @@ class Provider implements IProvider {
 		} catch (Exception $e) {
 			throw $e;
 		}
-
 	}
 
 
@@ -359,20 +350,16 @@ class Provider implements IProvider {
 	 *
 	 * @return IEvent
 	 */
-	private function parseCircleEvent(IEvent &$event, Circle $circle, $remote, $ownEvent, $othersEvent
+	private function parseCircleEvent(
+		IEvent &$event, Circle $circle, $remote, $ownEvent, $othersEvent
 	) {
 		$data = [
-			'author' => $author = $this->generateUserParameter(
-				$circle->getViewer()
-					   ->getUserId()
-			),
+			'author' => $this->generateViewerParameter($circle),
 			'circle' => $this->generateCircleParameter($circle),
-			'remote'   => ($remote === null) ? '' : $this->generateLinkParameter($remote)
+			'remote' => ($remote === null) ? '' : $this->generateRemoteCircleParameter($remote)
 		];
 
-		if ($circle->getViewer()
-				   ->getUserId() === $this->activityManager->getCurrentUserId()
-		) {
+		if ($this->isViewerTheAuthor($circle, $this->activityManager->getCurrentUserId())) {
 			return $event->setRichSubject($ownEvent, $data);
 		}
 
@@ -421,7 +408,7 @@ class Provider implements IProvider {
 	private function parseLinkEvent(IEvent &$event, Circle $circle, FederatedLink $remote, $line) {
 		$data = [
 			'circle' => $this->generateCircleParameter($circle),
-			'remote'   => $this->generateLinkParameter($remote)
+			'remote' => $this->generateRemoteCircleParameter($remote)
 		];
 
 		return $event->setRichSubject($line, $data);
@@ -447,9 +434,7 @@ class Provider implements IProvider {
 			'member' => $this->generateMemberParameter($member)
 		];
 
-		if ($circle->getViewer()
-				   ->getUserId() === $this->activityManager->getCurrentUserId()
-		) {
+		if ($this->isViewerTheAuthor($circle, $this->activityManager->getCurrentUserId())) {
 			return $event->setRichSubject($ownEvent, $data);
 		}
 
@@ -475,17 +460,12 @@ class Provider implements IProvider {
 	) {
 
 		$data = [
-			'author' => $this->generateUserParameter(
-				$circle->getViewer()
-					   ->getUserId()
-			),
+			'author' => $this->generateViewerParameter($circle),
 			'circle' => $this->generateCircleParameter($circle),
 			'member' => $this->generateMemberParameter($member)
 		];
 
-		if ($circle->getViewer()
-				   ->getUserId() === $this->activityManager->getCurrentUserId()
-		) {
+		if ($this->isViewerTheAuthor($circle, $this->activityManager->getCurrentUserId())) {
 			return $event->setRichSubject($ownEvent, $data);
 		}
 
@@ -513,6 +493,27 @@ class Provider implements IProvider {
 		$event->setParsedSubject($subject);
 	}
 
+
+	/**
+	 * @param Circle $circle
+	 * @param string $userId
+	 *
+	 * @return bool
+	 */
+	private function isViewerTheAuthor(Circle $circle, $userId) {
+		if ($circle->getViewer() === null) {
+			return false;
+		}
+
+		if ($circle->getViewer()
+				   ->getUserId() === $userId) {
+			return true;
+		}
+
+		return false;
+	}
+
+
 	/**
 	 * @param Member $member
 	 *
@@ -520,6 +521,22 @@ class Provider implements IProvider {
 	 */
 	private function generateMemberParameter(Member $member) {
 		return $this->generateUserParameter($member->getUserId());
+	}
+
+	/**
+	 * @param Circle $circle
+	 *
+	 * @return array <string,string|integer>
+	 */
+	private function generateViewerParameter(Circle $circle) {
+		if ($circle->getViewer() === null) {
+			return '';
+		}
+
+		return $this->generateUserParameter(
+			$circle->getViewer()
+				   ->getUserId()
+		);
 	}
 
 
@@ -544,7 +561,7 @@ class Provider implements IProvider {
 	 *
 	 * @return array<string,string|integer>
 	 */
-	private function generateLinkParameter(FederatedLink $link) {
+	private function generateRemoteCircleParameter(FederatedLink $link) {
 		return [
 			'type'   => 'circle',
 			'id'     => $link->getUniqueId(),
