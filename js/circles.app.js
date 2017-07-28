@@ -45,6 +45,7 @@ var curr = {
 	circle: 0,
 	circleName: '',
 	circleDesc: '',
+	circleDetails: {},
 	circleLevel: 0,
 	circleStatus: '',
 	circleMembers: {},
@@ -61,6 +62,7 @@ var curr = {
 
 	defineCircle: function (data) {
 		curr.circle = data.circle_id;
+		curr.circleDetails = data.details;
 		curr.circleName = data.details.name;
 		curr.circleDesc = data.details.description;
 		curr.circleSettings = data.details.settings;
@@ -70,6 +72,10 @@ var curr = {
 };
 
 var define = {
+	typePersonal: 1,
+	typeHidden: 2,
+	typePrivate: 4,
+	typePublic: 8,
 	levelMember: 1,
 	levelModerator: 4,
 	levelAdmin: 8,

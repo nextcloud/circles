@@ -102,7 +102,7 @@ var resultCircles = {
 				name: result.name
 			}));
 			elements.emptyCircleCreation();
-			nav.displayCirclesList(result.circle.type);
+			nav.displayCirclesList(result.circle.typeString);
 			actions.selectCircle(result.circle.unique_id);
 			return;
 		}

@@ -175,14 +175,15 @@ var actions = {
 
 
 	getStringTypeFromType: function (type) {
-		switch (type) {
-			case '1':
+
+		switch (Number(type)) {
+			case define.typePersonal:
 				return t('circles', 'Personal circle');
-			case '2':
+			case define.typeHidden:
 				return t('circles', 'Hidden circle');
-			case '4':
+			case define.typePrivate:
 				return t('circles', 'Private circle');
-			case '8':
+			case define.typePublic:
 				return t('circles', 'Public circle');
 		}
 

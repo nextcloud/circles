@@ -76,7 +76,7 @@ class Circle extends BaseCircle implements \JsonSerializable {
 			'viewer'         => $this->getHigherViewer(),
 			'description'    => $this->getDescription(),
 			'settings'       => $this->getSettings(),
-			'type'           => $this->getTypeString(),
+			'type'           => $this->getType(),
 			'creation'       => $this->getCreation(),
 			'typeString'     => $this->getTypeString(),
 			'typeLongString' => $this->getTypeLongString(),

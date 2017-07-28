@@ -300,7 +300,7 @@ var elements = {
 		});
 
 		elements.newSubmit.on('click', function () {
-			api.createCircle(elements.newType.val(), elements.newName.val(),
+			api.createCircle(Number(elements.newType.val()), elements.newName.val(),
 				resultCircles.createCircleResult);
 		});
 
@@ -417,7 +417,7 @@ var elements = {
 		var tmpl = $('#tmpl_circle').html();
 
 		tmpl = tmpl.replace(/%title%/g, escapeHTML(entry.name));
-		tmpl = tmpl.replace(/%type%/g, t('circles', escapeHTML(entry.type)));
+		tmpl = tmpl.replace(/%type%/g, t('circles', escapeHTML(entry.typeString)));
 		tmpl = tmpl.replace(/%owner%/g, escapeHTML(entry.owner.display_name));
 		tmpl = tmpl.replace(/%status%/g, t('circles', escapeHTML(entry.user.status)));
 		tmpl = tmpl.replace(/%level_string%/g, t('circles', escapeHTML(entry.user.level_string)));
