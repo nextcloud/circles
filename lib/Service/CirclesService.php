@@ -29,6 +29,7 @@ namespace OCA\Circles\Service;
 
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
+use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
 use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
@@ -94,7 +95,7 @@ class CirclesService {
 	/**
 	 * Create circle using this->userId as owner
 	 *
-	 * @param int $type
+	 * @param int|string $type
 	 * @param string $name
 	 *
 	 * @return Circle
@@ -103,8 +104,9 @@ class CirclesService {
 	 */
 	public function createCircle($type, $name) {
 		self::convertTypeStringToBitValue($type);
+		$type = (int)$type;
 
-		if ($type === "") {
+		if ($type === '') {
 			throw new CircleTypeDisabledException(
 				$this->l10n->t('You need a specify a type of circle')
 			);
@@ -121,8 +123,7 @@ class CirclesService {
 		try {
 			$this->circlesRequest->createCircle($circle, $this->userId);
 			$this->membersRequest->createMember($circle->getOwner());
-		} catch (\Exception $e) {
-			$this->circlesRequest->destroyCircle($circle->getUniqueId(true));
+		} catch (CircleAlreadyExistsException $e) {
 			throw $e;
 		}
 
@@ -373,8 +374,6 @@ class CirclesService {
 	 * Convert a Type in String to its Bit Value
 	 *
 	 * @param string $type
-	 *
-	 * @return int
 	 */
 	public static function convertTypeStringToBitValue(&$type) {
 		if (strtolower($type) === 'personal') {
@@ -392,8 +391,6 @@ class CirclesService {
 		if (strtolower($type) === 'all') {
 			$type = Circle::CIRCLES_ALL;
 		}
-
-		return 0;
 	}
 
 
