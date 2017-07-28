@@ -28,6 +28,8 @@
 namespace OCA\Circles;
 
 
+use OC\Files\Cache\Cache;
+use OC\Share20\Share;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleProviderRequestBuilder;
 use OCA\Circles\Db\CirclesRequest;
@@ -35,24 +37,25 @@ use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CirclesService;
+use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
-use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\Files\Folder;
-use OCP\Files\Node;
 use OCP\Files\IRootFolder;
-use OC\Files\Cache\Cache;
-use OC\Share20\Share;
-use OCP\Share\IShare;
-use OCP\Share\Exceptions\ShareNotFound;
-use OCP\Share\IShareProvider;
+use OCP\Files\Node;
 use OCP\IDBConnection;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IURLGenerator;
-use OCP\Security\ISecureRandom;
 use OCP\IUserManager;
+use OCP\Security\ISecureRandom;
+use OCP\Share\Exceptions\ShareNotFound;
+use OCP\Share\IShare;
+use OCP\Share\IShareProvider;
 
 class ShareByCircleProvider extends CircleProviderRequestBuilder implements IShareProvider {
+
+	/** @var IDBConnection */
+	protected $dbConnection;
 
 	/** @var ILogger */
 	private $logger;
@@ -77,6 +80,9 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 
 	/** @var MembersRequest */
 	private $membersRequest;
+
+	/** @var ConfigService */
+	private $configService;
 
 	/** @var MiscService */
 	private $miscService;
@@ -110,6 +116,8 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 									->query('CirclesRequest');
 		$this->membersRequest = $app->getContainer()
 									->query('MembersRequest');
+		$this->configService = $app->getContainer()
+								   ->query('ConfigService');
 		$this->miscService = $app->getContainer()
 								 ->query('MiscService');
 	}
@@ -442,7 +450,7 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 			$this->limitToFiles($qb, [$node->getId()]);
 		}
 
-		$this->linkToMember($qb, $userId);
+		$this->linkToMember($qb, $userId, $this->configService->isLinkedGroupsAllowed());
 
 		$this->leftJoinShareInitiator($qb);
 		$cursor = $qb->execute();
@@ -451,7 +459,8 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 		while ($data = $cursor->fetch()) {
 
 			if ($data['initiator_circle_level'] < Member::LEVEL_MEMBER
-				&& $data['initiator_group_level'] < Member::LEVEL_MEMBER
+				&& ($data['initiator_group_level'] < Member::LEVEL_MEMBER
+					|| !$this->configService->isLinkedGroupsAllowed())
 			) {
 				continue;
 			}

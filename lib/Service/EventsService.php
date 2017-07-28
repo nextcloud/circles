@@ -127,7 +127,9 @@ class EventsService {
 		$event->setSubject('circle_delete', ['circle' => json_encode($circle)]);
 		$this->publishEvent(
 			$event,
-			$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MEMBER)
+			$this->membersRequest->forceGetMembers(
+				$circle->getUniqueId(), Member::LEVEL_MEMBER, true
+			)
 		);
 	}
 
@@ -166,7 +168,9 @@ class EventsService {
 
 		$this->publishEvent(
 			$event,
-			$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MEMBER)
+			$this->membersRequest->forceGetMembers(
+				$circle->getUniqueId(), Member::LEVEL_MEMBER, true
+			)
 		);
 	}
 
@@ -219,7 +223,7 @@ class EventsService {
 			$event, array_merge(
 					  [$member],
 					  $this->membersRequest->forceGetMembers(
-						  $circle->getUniqueId(), Member::LEVEL_MODERATOR
+						  $circle->getUniqueId(), Member::LEVEL_MODERATOR, true
 					  )
 				  )
 		);
@@ -250,7 +254,7 @@ class EventsService {
 			$event, array_merge(
 					  [$member],
 					  $this->membersRequest->forceGetMembers(
-						  $circle->getUniqueId(), Member::LEVEL_MODERATOR
+						  $circle->getUniqueId(), Member::LEVEL_MODERATOR, true
 					  )
 				  )
 		);
@@ -283,7 +287,7 @@ class EventsService {
 			$event, array_merge(
 					  [$member],
 					  $this->membersRequest->forceGetMembers(
-						  $circle->getUniqueId(), Member::LEVEL_MEMBER
+						  $circle->getUniqueId(), Member::LEVEL_MEMBER, true
 					  )
 				  )
 		);
@@ -319,8 +323,9 @@ class EventsService {
 			['circle' => json_encode($circle), 'member' => json_encode($member)]
 		);
 
-		$mods =
-			$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MODERATOR);
+		$mods = $this->membersRequest->forceGetMembers(
+			$circle->getUniqueId(), Member::LEVEL_MODERATOR, true
+		);
 		if ($member->getLevel() < Member::LEVEL_MODERATOR) {
 			array_push($mods, $member);
 		}
@@ -346,7 +351,9 @@ class EventsService {
 
 		$this->publishEvent(
 			$event,
-			$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MEMBER)
+			$this->membersRequest->forceGetMembers(
+				$circle->getUniqueId(), Member::LEVEL_MEMBER, true
+			)
 		);
 	}
 
@@ -368,7 +375,7 @@ class EventsService {
 
 		$this->publishEvent(
 			$event, $this->membersRequest->forceGetMembers(
-			$link->getCircleId(), Member::LEVEL_MODERATOR
+			$link->getCircleId(), Member::LEVEL_MODERATOR, true
 		)
 		);
 	}
@@ -391,7 +398,7 @@ class EventsService {
 
 		$this->publishEvent(
 			$event, $this->membersRequest->forceGetMembers(
-			$link->getCircleId(), Member::LEVEL_MODERATOR
+			$link->getCircleId(), Member::LEVEL_MODERATOR, true
 		)
 		);
 	}
@@ -414,7 +421,7 @@ class EventsService {
 
 		$this->publishEvent(
 			$event, $this->membersRequest->forceGetMembers(
-			$link->getCircleId(), Member::LEVEL_MODERATOR
+			$link->getCircleId(), Member::LEVEL_MODERATOR, true
 		)
 		);
 	}
@@ -437,7 +444,7 @@ class EventsService {
 
 		$this->publishEvent(
 			$event, $this->membersRequest->forceGetMembers(
-			$link->getCircleId(), Member::LEVEL_MODERATOR
+			$link->getCircleId(), Member::LEVEL_MODERATOR, true
 		)
 		);
 	}
@@ -460,7 +467,7 @@ class EventsService {
 
 		$this->publishEvent(
 			$event, $this->membersRequest->forceGetMembers(
-			$link->getCircleId(), Member::LEVEL_MODERATOR
+			$link->getCircleId(), Member::LEVEL_MODERATOR, true
 		)
 		);
 	}
@@ -483,7 +490,7 @@ class EventsService {
 
 		$this->publishEvent(
 			$event, $this->membersRequest->forceGetMembers(
-			$link->getCircleId(), Member::LEVEL_MODERATOR
+			$link->getCircleId(), Member::LEVEL_MODERATOR, true
 		)
 		);
 	}
@@ -506,7 +513,7 @@ class EventsService {
 
 		$this->publishEvent(
 			$event, $this->membersRequest->forceGetMembers(
-			$link->getCircleId(), Member::LEVEL_MODERATOR
+			$link->getCircleId(), Member::LEVEL_MODERATOR, true
 		)
 		);
 	}
@@ -529,7 +536,7 @@ class EventsService {
 
 		$this->publishEvent(
 			$event, $this->membersRequest->forceGetMembers(
-			$link->getCircleId(), Member::LEVEL_MODERATOR
+			$link->getCircleId(), Member::LEVEL_MODERATOR, true
 		)
 		);
 	}
@@ -563,7 +570,7 @@ class EventsService {
 
 		$this->publishEvent(
 			$event, $this->membersRequest->forceGetMembers(
-			$link->getCircleId(), Member::LEVEL_MODERATOR
+			$link->getCircleId(), Member::LEVEL_MODERATOR, true
 		)
 		);
 	}

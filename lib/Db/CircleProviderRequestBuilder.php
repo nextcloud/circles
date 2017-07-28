@@ -266,7 +266,7 @@ class CircleProviderRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param string $userId
 	 */
-	protected function linkToMember(IQueryBuilder &$qb, $userId) {
+	protected function linkToMember(IQueryBuilder &$qb, $userId, $groupMemberAllowed) {
 		$expr = $qb->expr();
 
 		$qb->from(CoreRequestBuilder::TABLE_MEMBERS, 'm');
@@ -275,7 +275,9 @@ class CircleProviderRequestBuilder {
 
 		$orX = $expr->orX();
 		$orX->add($this->exprLinkToMemberAsCircleMember($qb, $userId));
-		$orX->add($this->exprLinkToMemberAsGroupMember($qb, $userId));
+		if ($groupMemberAllowed) {
+			$orX->add($this->exprLinkToMemberAsGroupMember($qb, $userId));
+		}
 
 		$qb->andWhere($orX);
 

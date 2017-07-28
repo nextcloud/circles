@@ -96,7 +96,7 @@ class MembersRequest extends MembersRequestBuilder {
 		}
 		$cursor->closeCursor();
 
-		if ($includeGroupMembers === true) {
+		if ($this->configService->isLinkedGroupsAllowed() && $includeGroupMembers === true) {
 			$this->includeGroupMembers($members, $circleUniqueId, $level);
 		}
 

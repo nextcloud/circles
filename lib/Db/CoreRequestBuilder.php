@@ -10,6 +10,7 @@ namespace OCA\Circles\Db;
 
 
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Service\ConfigService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use Doctrine\DBAL\Query\QueryBuilder;
 use OC\L10N\L10N;
@@ -32,23 +33,33 @@ class CoreRequestBuilder {
 	/** @var L10N */
 	protected $l10n;
 
+	/** @var ConfigService */
+	protected $configService;
+
 	/** @var MiscService */
 	protected $miscService;
 
 	/** @var string */
 	protected $default_select_alias;
 
+	/** @var bool */
+	protected $leftJoinedNCGroupAndUser = false;
 
 	/**
 	 * RequestBuilder constructor.
 	 *
 	 * @param L10N $l10n
 	 * @param IDBConnection $connection
+	 * @param ConfigService $configService
 	 * @param MiscService $miscService
 	 */
-	public function __construct(L10N $l10n, IDBConnection $connection, MiscService $miscService) {
+	public function __construct(
+		L10N $l10n, IDBConnection $connection, ConfigService $configService,
+		MiscService $miscService
+	) {
 		$this->l10n = $l10n;
 		$this->dbConnection = $connection;
+		$this->configService = $configService;
 		$this->miscService = $miscService;
 	}
 
@@ -164,21 +175,25 @@ class CoreRequestBuilder {
 	 */
 	protected function limitToLevel(IQueryBuilder &$qb, $level, $pf = '') {
 		$expr = $qb->expr();
-		$orX = $expr->orX();
 
 		if ($pf === '') {
 			$p = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
-			$orX->add($expr->gte($p . 'level', $qb->createNamedParameter($level)));
+			$qb->andWhere($expr->gte($p . 'level', $qb->createNamedParameter($level)));
 
-		} else {
+			return;
+		}
 
-			if (!is_array($pf)) {
-				$pf = [$pf];
+		$orX = $expr->orX();
+
+		if (!is_array($pf)) {
+			$pf = [$pf];
+		}
+
+		foreach ($pf as $p) {
+			if ($p === 'g' && !$this->leftJoinedNCGroupAndUser) {
+				continue;
 			}
-
-			foreach ($pf as $p) {
-				$orX->add($expr->gte($p . '.level', $qb->createNamedParameter($level)));
-			}
+			$orX->add($expr->gte($p . '.level', $qb->createNamedParameter($level)));
 		}
 
 		$qb->andWhere($orX);
@@ -207,6 +222,7 @@ class CoreRequestBuilder {
 	 */
 	protected function limitToNCGroupUser(IQueryBuilder $qb, $userId = '') {
 		$expr = $qb->expr();
+
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
 
 		$and = $expr->andX($expr->eq($pf . 'group_id', 'ncgu.gid'));
@@ -250,8 +266,11 @@ class CoreRequestBuilder {
 	 * @param string $field
 	 */
 	protected function leftJoinNCGroupAndUser(IQueryBuilder $qb, $userId, $field) {
-		$expr = $qb->expr();
+		if (!$this->configService->isLinkedGroupsAllowed()) {
+			return;
+		}
 
+		$expr = $qb->expr();
 		$qb->leftJoin(
 			$this->default_select_alias, self::NC_TABLE_GROUP_USER, 'ncgu',
 			$expr->eq('ncgu.uid', $qb->createNamedParameter($userId))
@@ -269,5 +288,10 @@ class CoreRequestBuilder {
 				)
 			)
 		);
+
+		$this->leftJoinedNCGroupAndUser = true;
 	}
 }
+
+
+

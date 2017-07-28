@@ -35,6 +35,7 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
+use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
@@ -53,9 +54,9 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 */
 	public function __construct(
 		L10N $l10n, IDBConnection $connection, MembersRequest $membersRequest,
-		MiscService $miscService
+		ConfigService $configService, MiscService $miscService
 	) {
-		parent::__construct($l10n, $connection, $miscService);
+		parent::__construct($l10n, $connection, $configService, $miscService);
 		$this->membersRequest = $membersRequest;
 	}
 
@@ -175,18 +176,23 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		}
 		$expr = $qb->expr();
 
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$sqb = $expr->andX(
-			$expr->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_HIDDEN)),
-			$expr->orX(
-				$expr->gte('u.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)),
-				$expr->gte('g.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)),
+		$orX = $expr->orX($expr->gte('u.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)));
+		$orX->add($expr->eq('c.name', $qb->createNamedParameter($name)))
+			->add(
 				$expr->eq(
 					$qb->createNamedParameter($circleUniqueId),
 					$qb->createFunction('LEFT(c.unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH . ')')
-				),
-				$expr->eq('c.name', $qb->createNamedParameter($name))
-			)
+				)
+			);
+
+		if ($this->leftJoinedNCGroupAndUser) {
+			$orX->add($expr->gte('g.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)));
+		}
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$sqb = $expr->andX(
+			$expr->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_HIDDEN)),
+			$expr->orX($orX)
 		);
 
 		return $sqb;
@@ -433,10 +439,10 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->selectDistinct('c.unique_id')
-			->addSelect(
-				'c.id', 'c.name', 'c.description', 'c.settings', 'c.type', 'c.creation'
-			)
-			->from(CoreRequestBuilder::TABLE_CIRCLES, 'c');
+		   ->addSelect(
+			   'c.id', 'c.name', 'c.description', 'c.settings', 'c.type', 'c.creation'
+		   )
+		   ->from(CoreRequestBuilder::TABLE_CIRCLES, 'c');
 		$this->default_select_alias = 'c';
 
 		return $qb;
