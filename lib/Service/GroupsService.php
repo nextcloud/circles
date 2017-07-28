@@ -56,6 +56,9 @@ class GroupsService {
 	/** @var MembersRequest */
 	private $membersRequest;
 
+	/** @var EventsService */
+	private $eventsService;
+
 	/** @var MiscService */
 	private $miscService;
 
@@ -67,17 +70,19 @@ class GroupsService {
 	 * @param IGroupManager $groupManager
 	 * @param CirclesRequest $circlesRequest
 	 * @param MembersRequest $membersRequest
+	 * @param EventsService $eventsService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$userId, IL10N $l10n, IGroupManager $groupManager,
-		CirclesRequest $circlesRequest, MembersRequest $membersRequest, MiscService $miscService
+		$userId, IL10N $l10n, IGroupManager $groupManager, CirclesRequest $circlesRequest,
+		MembersRequest $membersRequest, EventsService $eventsService, MiscService $miscService
 	) {
 		$this->userId = $userId;
 		$this->l10n = $l10n;
 		$this->groupManager = $groupManager;
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
+		$this->eventsService = $eventsService;
 		$this->miscService = $miscService;
 	}
 
@@ -104,8 +109,11 @@ class GroupsService {
 		$group->setLevel(Member::LEVEL_MEMBER);
 		$this->membersRequest->updateGroup($group);
 
-//		$this->eventsService->onMemberNew($circle, $group);
-		return $this->membersRequest->getGroupsFromCircle($circleUniqueId, $circle->getHigherViewer());
+		$this->eventsService->onGroupLink($circle, $group);
+
+		return $this->membersRequest->getGroupsFromCircle(
+			$circleUniqueId, $circle->getHigherViewer()
+		);
 	}
 
 
@@ -172,10 +180,12 @@ class GroupsService {
 					$this->editGroupLevel($circle, $group, $level);
 				}
 
-//				$this->eventsService->onMemberLevel($circle, $member);
+				$this->eventsService->onGroupLevel($circle, $group);
 			}
 
-			return $this->membersRequest->getGroupsFromCircle($circle->getUniqueId(), $circle->getHigherViewer());
+			return $this->membersRequest->getGroupsFromCircle(
+				$circle->getUniqueId(), $circle->getHigherViewer()
+			);
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -231,13 +241,15 @@ class GroupsService {
 			$this->membersRequest->updateGroup($group);
 
 
-			//		$this->eventsService->onMemberLeaving($circle, $member);
+			$this->eventsService->onGroupUnlink($circle, $group);
 
 		} catch (\Exception $e) {
 			throw $e;
 		}
 
-		return $this->membersRequest->getGroupsFromCircle($circle->getUniqueId(), $circle->getHigherViewer());
+		return $this->membersRequest->getGroupsFromCircle(
+			$circle->getUniqueId(), $circle->getHigherViewer()
+		);
 	}
 
 

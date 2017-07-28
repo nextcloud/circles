@@ -435,7 +435,6 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 
 		$shares = $this->getSharedWithCircleMembers($userId, $shareType, $node, $limit, $offset);
 
-
 		return $shares;
 	}
 

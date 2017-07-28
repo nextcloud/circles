@@ -32,6 +32,7 @@ use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Model\Member;
+use OCP\IGroup;
 
 class MembersRequest extends MembersRequestBuilder {
 
@@ -177,6 +178,20 @@ class MembersRequest extends MembersRequestBuilder {
 	private function includeGroupMembers(array &$members, $circleUniqueId, $level) {
 
 		$groupMembers = $this->forceGetGroupMembers($circleUniqueId, $level);
+		$this->avoidDuplicateMembers($members, $groupMembers);
+	}
+
+
+	/**
+	 * avoidDuplicateMembers();
+	 *
+	 * Use this function to add members to the list (1st argument), keeping the higher level in case
+	 * of duplicate
+	 *
+	 * @param Member[] $members
+	 * @param Member[] $groupMembers
+	 */
+	public function avoidDuplicateMembers(array &$members, array $groupMembers) {
 		foreach ($groupMembers as $member) {
 			$index = $this->indexOfMember($members, $member->getUserId());
 			if ($index === -1) {
@@ -209,7 +224,7 @@ class MembersRequest extends MembersRequestBuilder {
 
 
 	/**
-	 * Returns members list of a Group Members of a Circle. The Level of the linked group will be
+	 * Returns members list of all Group Members of a Circle. The Level of the linked group will be
 	 * assigned to each entry
 	 *
 	 * NOTE: Can contains duplicate.
@@ -235,6 +250,33 @@ class MembersRequest extends MembersRequestBuilder {
 			$members[] = $this->parseGroupsSelectSql($data);
 		}
 		$cursor->closeCursor();
+
+		return $members;
+	}
+
+
+	/**
+	 * returns all users from a Group as a list of Members.
+	 *
+	 * @param Member $group
+	 *
+	 * @return Member[]
+	 */
+	public function getGroupMemberMembers(Member $group) {
+		/** @var IGroup $grp */
+		$grp = $this->groupManager->get($group->getGroupId());
+		if ($grp === null) {
+			return [];
+		}
+
+		$members = [];
+		$users = $grp->getUsers();
+		foreach ($users as $user) {
+			$member = clone $group;
+			//Member::fromJSON($this->l10n, json_encode($group));
+			$member->setUserId($user->getUID());
+			$members[] = $member;
+		}
 
 		return $members;
 	}

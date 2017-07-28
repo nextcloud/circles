@@ -184,6 +184,10 @@ class Provider implements IProvider {
 				return $this->parseMemberAsModerator($event, $circle);
 			}
 
+			if (key_exists('group', $params)) {
+				return $this->parseGroupAsModerator($event, $circle);
+			}
+
 			if (key_exists('link', $params)) {
 				return $this->parseLinkAsModerator($event, $circle);
 			}
@@ -192,6 +196,49 @@ class Provider implements IProvider {
 		} catch (Exception $e) {
 			throw $e;
 		}
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 * @param IEvent $event
+	 *
+	 * @return IEvent
+	 */
+	private function parseGroupAsModerator(IEvent &$event, Circle $circle) {
+
+		$params = $event->getSubjectParameters();
+		$group = Member::fromJSON($this->l10n, $params['group']);
+
+		switch ($event->getSubject()) {
+
+			case 'group_link':
+				return $this->parseCircleMemberEvent(
+					$event, $circle, $group,
+					$this->l10n->t('You linked {group} to {circle}'),
+					$this->l10n->t('{group} was linked to {circle} by {author}')
+				);
+
+
+			case 'group_unlink':
+				return $this->parseCircleMemberEvent(
+					$event, $circle, $group,
+					$this->l10n->t('You unlinked {group} from {circle}'),
+					$this->l10n->t('{group} was unlinked from {circle} by {author}')
+				);
+
+
+			case 'group_level':
+				$level = [$this->l10n->t($group->getLevelString())];
+
+				return $this->parseCircleMemberEvent(
+					$event, $circle, $group,
+					$this->l10n->t('You changed the level of the linked group {group} in {circle} to %1$s', $level),
+					$this->l10n->t('{author} changed the level of the linked group {group} in {circle} to %1$s', $level)
+				);
+
+		}
+		throw new InvalidArgumentException();
 	}
 
 
@@ -430,8 +477,10 @@ class Provider implements IProvider {
 		IEvent &$event, Circle $circle, Member $member, $ownEvent, $othersEvent
 	) {
 		$data = [
+			'author' => $this->generateViewerParameter($circle),
 			'circle' => $this->generateCircleParameter($circle),
-			'member' => $this->generateMemberParameter($member)
+			'member' => $this->generateMemberParameter($member),
+			'group' => $this->generateMemberParameter($member),
 		];
 
 		if ($this->isViewerTheAuthor($circle, $this->activityManager->getCurrentUserId())) {
@@ -520,7 +569,11 @@ class Provider implements IProvider {
 	 * @return array<string,string|integer>
 	 */
 	private function generateMemberParameter(Member $member) {
-		return $this->generateUserParameter($member->getUserId());
+		if ($member->getViewerType() === 'user') {
+			return $this->generateUserParameter($member->getUserId());
+		}
+
+		return $this->generateGroupParameter($member->getGroupId());
 	}
 
 	/**
@@ -587,6 +640,21 @@ class Provider implements IProvider {
 			'parsed' => \OC::$server->getUserManager()
 									->get($userId)
 									->getDisplayName()
+		];
+	}
+
+
+	/**
+	 * @param $groupId
+	 *
+	 * @return array<string,string|integer>
+	 */
+	private function generateGroupParameter($groupId) {
+		return [
+			'type'   => 'group',
+			'id'     => $groupId,
+			'name'   => $groupId,
+			'parsed' => $groupId
 		];
 	}
 }

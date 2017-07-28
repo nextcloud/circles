@@ -130,7 +130,8 @@ class Application extends App {
 			'GroupsService', function(IAppContainer $c) {
 			return new GroupsService(
 				$c->query('UserId'), $c->query('L10N'), $c->query('GroupManager'),
-				$c->query('CirclesRequest'), $c->query('MembersRequest'), $c->query('MiscService')
+				$c->query('CirclesRequest'), $c->query('MembersRequest'),
+				$c->query('EventsService'), $c->query('MiscService')
 			);
 		}
 		);
@@ -284,8 +285,8 @@ class Application extends App {
 			'MembersRequest', function(IAppContainer $c) {
 			return new MembersRequest(
 				$c->query('L10N'), $c->query('ServerContainer')
-									 ->getDatabaseConnection(), $c->query('ConfigService'),
-				$c->query('MiscService')
+									 ->getDatabaseConnection(), $c->query('GroupManager'),
+				$c->query('ConfigService'), $c->query('MiscService')
 			);
 		}
 		);

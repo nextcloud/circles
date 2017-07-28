@@ -167,10 +167,12 @@ class EventsService {
 		);
 
 		$this->publishEvent(
-			$event,
-			$this->membersRequest->forceGetMembers(
-				$circle->getUniqueId(), Member::LEVEL_MEMBER, true
-			)
+			$event, array_merge(
+					  [$member],
+					  $this->membersRequest->forceGetMembers(
+						  $circle->getUniqueId(), Member::LEVEL_MODERATOR, true
+					  )
+				  )
 		);
 	}
 
@@ -263,10 +265,10 @@ class EventsService {
 
 
 	/**
-	 * onCircleMemberLeaving()
+	 * onMemberLeaving()
 	 *
 	 * Called when a member is removed from a circle.
-	 * Broadcast an activity to the new member and to the moderators of the circle.
+	 * Broadcast an activity to the leaving member and to the moderators of the circle.
 	 * We won't do anything if the circle is PERSONAL
 	 *
 	 * @param Circle $circle
@@ -287,7 +289,7 @@ class EventsService {
 			$event, array_merge(
 					  [$member],
 					  $this->membersRequest->forceGetMembers(
-						  $circle->getUniqueId(), Member::LEVEL_MEMBER, true
+						  $circle->getUniqueId(), Member::LEVEL_MODERATOR, true
 					  )
 				  )
 		);
@@ -296,21 +298,16 @@ class EventsService {
 
 
 	/**
-	 * onMemberNew()
+	 * onMemberLevel()
 	 *
 	 * Called when a member have his level changed.
-	 * Broadcast an activity to all moderator of the circle.
-	 * We won't do anything if the circle is PERSONAL
+	 * Broadcast an activity to all moderator of the circle, and the member if he is demoted.
 	 * If the level is Owner, we identify the event as a Coup d'Etat and we broadcast all members.
 	 *
 	 * @param Circle $circle
 	 * @param Member $member
 	 */
 	public function onMemberLevel(Circle $circle, Member $member) {
-		if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
-			return;
-		}
-
 		if ($member->getLevel() === Member::LEVEL_OWNER) {
 			$this->onMemberOwner($circle, $member);
 
@@ -326,9 +323,7 @@ class EventsService {
 		$mods = $this->membersRequest->forceGetMembers(
 			$circle->getUniqueId(), Member::LEVEL_MODERATOR, true
 		);
-		if ($member->getLevel() < Member::LEVEL_MODERATOR) {
-			array_push($mods, $member);
-		}
+		$this->membersRequest->avoidDuplicateMembers($mods, [$member]);
 
 		$this->publishEvent($event, $mods);
 	}
@@ -359,9 +354,106 @@ class EventsService {
 
 
 	/**
+	 * onGroupLink()
+	 *
+	 * Called when a group is linked to a circle.
+	 * Broadcast an activity to the member of the linked group and to the moderators of the circle.
+	 * We won't do anything if the circle is PERSONAL
+	 *
+	 * @param Circle $circle
+	 * @param Member $group
+	 */
+	public function onGroupLink(Circle $circle, Member $group) {
+		if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
+			return;
+		}
+
+		$event = $this->generateEvent('circles_as_moderator');
+		$event->setSubject(
+			'group_link',
+			['circle' => json_encode($circle), 'group' => json_encode($group)]
+		);
+
+		$mods = $this->membersRequest->forceGetMembers(
+			$circle->getUniqueId(), Member::LEVEL_MODERATOR, true
+		);
+		$this->membersRequest->avoidDuplicateMembers(
+			$mods, $this->membersRequest->getGroupMemberMembers($group)
+		);
+
+		$this->publishEvent($event, $mods);
+	}
+
+
+	/**
+	 * onGroupUnlink()
+	 *
+	 * Called when a group is unlinked from a circle.
+	 * Broadcast an activity to the member of the unlinked group and to the moderators of the
+	 * circle. We won't do anything if the circle is PERSONAL
+	 *
+	 * @param Circle $circle
+	 * @param Member $group
+	 */
+	public function onGroupUnlink(Circle $circle, Member $group) {
+		if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
+			return;
+		}
+
+		$event = $this->generateEvent('circles_as_moderator');
+		$event->setSubject(
+			'group_unlink',
+			['circle' => json_encode($circle), 'group' => json_encode($group)]
+		);
+
+		$mods = $this->membersRequest->forceGetMembers(
+			$circle->getUniqueId(), Member::LEVEL_MODERATOR, true
+		);
+		$this->membersRequest->avoidDuplicateMembers(
+			$mods, $this->membersRequest->getGroupMemberMembers($group)
+		);
+
+		$this->publishEvent($event, $mods);
+	}
+
+
+	/**
+	 * onGroupLevel()
+	 *
+	 * Called when a linked group have his level changed.
+	 * Broadcast an activity to all moderator of the circle, and the group members in case of
+	 * demotion.
+	 *
+	 * @param Circle $circle
+	 * @param Member $group
+	 */
+	public function onGroupLevel(Circle $circle, Member $group) {
+		if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
+			return;
+		}
+
+		$event = $this->generateEvent('circles_as_moderator');
+		$event->setSubject(
+			'group_level',
+			['circle' => json_encode($circle), 'group' => json_encode($group)]
+		);
+
+		$mods = $this->membersRequest->forceGetMembers(
+			$circle->getUniqueId(), Member::LEVEL_MODERATOR, true
+		);
+		$this->membersRequest->avoidDuplicateMembers(
+			$mods, $this->membersRequest->getGroupMemberMembers($group)
+		);
+
+		$this->publishEvent($event, $mods);
+	}
+
+
+	/**
 	 * onLinkRequestSent()
 	 *
 	 * Called when a request to generate a link with a remote circle is sent.
+	 * Broadcast an activity to the moderators of the circle.
 	 *
 	 * @param Circle $circle
 	 * @param FederatedLink $link
@@ -385,6 +477,7 @@ class EventsService {
 	 * onLinkRequestReceived()
 	 *
 	 * Called when a request to generate a link from a remote host is received.
+	 * Broadcast an activity to the moderators of the circle.
 	 *
 	 * @param Circle $circle
 	 * @param FederatedLink $link
@@ -408,6 +501,7 @@ class EventsService {
 	 * onLinkRequestRejected()
 	 *
 	 * Called when a request to generate a link from a remote host is dismissed.
+	 * Broadcast an activity to the moderators of the circle.
 	 *
 	 * @param Circle $circle
 	 * @param FederatedLink $link
@@ -431,6 +525,7 @@ class EventsService {
 	 * onLinkRequestRejected()
 	 *
 	 * Called when a request to generate a link from a remote host is dismissed.
+	 * Broadcast an activity to the moderators of the circle.
 	 *
 	 * @param Circle $circle
 	 * @param FederatedLink $link
@@ -454,6 +549,7 @@ class EventsService {
 	 * onLinkRequestAccepted()
 	 *
 	 * Called when a request to generate a link from a remote host is accepted.
+	 * Broadcast an activity to the moderators of the circle.
 	 *
 	 * @param Circle $circle
 	 * @param FederatedLink $link
@@ -477,6 +573,7 @@ class EventsService {
 	 * onLinkUp()
 	 *
 	 * Called when a link is Up and Running.
+	 * Broadcast an activity to the moderators of the circle.
 	 *
 	 * @param Circle $circle
 	 * @param FederatedLink $link
@@ -500,6 +597,7 @@ class EventsService {
 	 * onLinkUp()
 	 *
 	 * Called when a link is Up and Running.
+	 * Broadcast an activity to the moderators of the circle.
 	 *
 	 * @param Circle $circle
 	 * @param FederatedLink $link
@@ -523,6 +621,7 @@ class EventsService {
 	 * onLinkDown()
 	 *
 	 * Called when a link is closed (usually by remote).
+	 * Broadcast an activity to the moderators of the circle.
 	 *
 	 * @param Circle $circle
 	 * @param FederatedLink $link
@@ -546,6 +645,8 @@ class EventsService {
 	 * onLinkRemove()
 	 *
 	 * Called when a link is removed.
+	 * Subject is based on the current status of the Link.
+	 * Broadcast an activity to the moderators of the circle.
 	 *
 	 * @param Circle $circle
 	 * @param FederatedLink $link
@@ -594,12 +695,17 @@ class EventsService {
 	}
 
 
+	/**
+	 * Publish the event to the users.
+	 *
+	 * @param IEvent $event
+	 * @param array $users
+	 */
 	private function publishEvent(IEvent $event, array $users) {
-
 		foreach ($users AS $user) {
-			if ($user INSTANCEOF IUser) {
+			if ($user instanceof IUser) {
 				$userId = $user->getUID();
-			} else if ($user INSTANCEOF Member) {
+			} else if ($user instanceof Member) {
 				$userId = $user->getUserId();
 			} else {
 				continue;

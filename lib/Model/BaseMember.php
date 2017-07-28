@@ -50,7 +50,7 @@ class BaseMember implements \JsonSerializable {
 	protected $l10n;
 
 	/** @var string */
-	private $userId;
+	private $userId = '';
 
 	/** @var string */
 	private $groupId = '';
@@ -126,17 +126,25 @@ class BaseMember implements \JsonSerializable {
 
 
 	public function getViewerType() {
-		if ($this->getGroupId() !== '') {
+		if ($this->getUserId() === '') {
 			return 'group';
 		} else {
 			return 'user';
 		}
 	}
 
+	public function getViewerId() {
+		if ($this->getViewerType() === 'user') {
+			return $this->getUserId();
+		} else {
+			return $this->getGroupId();
+		}
+	}
+
 	public function setUserId($userId) {
 		$this->userId = $userId;
 
-		if ($userId !== null) {
+		if ($userId !== null && $userId !== '') {
 			$this->setDisplayName(
 				\OC::$server->getUserManager()
 							->get($userId)
