@@ -26,7 +26,7 @@
 
 namespace OCA\Circles\Exceptions;
 
-class FederatedLinkCircleNotFound extends \Exception {
+class SharingFrameAlreadyDeliveredException extends \Exception {
 
 }
 

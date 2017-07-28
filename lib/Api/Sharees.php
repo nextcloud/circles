@@ -75,13 +75,13 @@ class Sharees {
 	 * @param bool $exact
 	 *
 	 */
-	private static function addResultEntry(& $result, $entry, $exact = false) {
+	private static function addResultEntry(&$result, $entry, $exact = false) {
 
 		$arr = [
 			'label' => $entry->getName(),
 			'value' => [
 				'shareType'   => Share::SHARE_TYPE_CIRCLE,
-				'shareWith'   => $entry->getId(),
+				'shareWith'   => $entry->getUniqueId(),
 				'circleInfo'  => $entry->getInfo(),
 				'circleOwner' => \OC::$server->getUserManager()
 											 ->get(

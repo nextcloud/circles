@@ -27,15 +27,16 @@
 namespace OCA\Circles\Controller;
 
 use Exception;
-use GuzzleHttp\Exception\ServerException;
 use OC\AppFramework\Http;
+use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
-use OCA\Circles\Exceptions\LinkCreationException;
+use OCA\Circles\Exceptions\FederatedLinkCreationException;
+use OCA\Circles\Exceptions\SharingFrameAlreadyExistException;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\SharingFrame;
-use OCA\Circles\Service\FederatedService;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\FederatedService;
 use OCA\Circles\Service\MembersService;
 use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\SharesService;
@@ -87,7 +88,7 @@ class FederatedController extends BaseController {
 	 * @param string $address
 	 *
 	 * @return DataResponse
-	 * @throws LinkCreationException
+	 * @throws FederatedLinkCreationException
 	 */
 	public function requestedLink($apiVersion, $token, $uniqueId, $sourceName, $linkTo, $address) {
 
@@ -96,6 +97,7 @@ class FederatedController extends BaseController {
 		}
 
 		try {
+			Circles::compareVersion($apiVersion);
 			$circle = $this->circlesService->infoCircleByName($linkTo);
 			$link = new FederatedLink();
 			$link->setToken($token)
@@ -109,7 +111,7 @@ class FederatedController extends BaseController {
 				['status' => $link->getStatus(), 'uniqueId' => $circle->getUniqueId(true)], $link
 			);
 		} catch (CircleDoesNotExistException $e) {
-			throw new LinkCreationException('circle_does_not_exist');
+			return $this->federatedFail('circle_does_not_exist');
 		} catch (Exception $e) {
 			return $this->federatedFail($e->getMessage());
 		}
@@ -129,25 +131,23 @@ class FederatedController extends BaseController {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
-	 * @param $apiVersion
-	 * @param $circleId
-	 * @param $uniqueId
+	 * @param array $apiVersion
+	 * @param string $circleId
+	 * @param string $frameId
 	 *
 	 * @return DataResponse
 	 */
-	public function initFederatedDelivery($apiVersion, $circleId, $uniqueId) {
+	public function initFederatedDelivery($apiVersion, $circleId, $frameId) {
 
-		if ($uniqueId === '' || !$this->configService->isFederatedCirclesAllowed()) {
+		if ($frameId === '' || !$this->configService->isFederatedCirclesAllowed()) {
 			return $this->federatedFail('federated_not_allowed');
 		}
 
-		$frame = $this->sharesService->getFrameFromUniqueId($circleId, $uniqueId);
-		if ($frame === null) {
-			return $this->federatedFail('unknown_share');
-		}
-
-		if ($frame->getCloudId() !== null) {
-			return $this->federatedFail('share_already_delivered');
+		try {
+			Circles::compareVersion($apiVersion);
+			$frame = $this->sharesService->getFrameFromUniqueId($circleId, $frameId);
+		} catch (Exception $e) {
+			return $this->federatedFail($e->getMessage());
 		}
 
 		// We don't want to keep the connection up
@@ -172,10 +172,10 @@ class FederatedController extends BaseController {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
-	 * @param $apiVersion
-	 * @param $token
-	 * @param $uniqueId
-	 * @param $item
+	 * @param array $apiVersion
+	 * @param string $token
+	 * @param string $uniqueId
+	 * @param string $item
 	 *
 	 * @return DataResponse
 	 */
@@ -185,20 +185,18 @@ class FederatedController extends BaseController {
 			return $this->federatedFail('federated_not_allowed');
 		}
 
-		$frame = SharingFrame::fromJSON($item);
 		try {
+			Circles::compareVersion($apiVersion);
+			$frame = SharingFrame::fromJSON($item);
 			$this->federatedService->receiveFrame($token, $uniqueId, $frame);
+		} catch (SharingFrameAlreadyExistException $e) {
+			return $this->federatedSuccess();
 		} catch (Exception $e) {
 			return $this->federatedFail($e->getMessage());
 		}
 
 		$this->asyncAndLeaveClientOutOfThis('done');
-
-		try {
-			$this->federatedService->sendRemoteShare($frame);
-		} catch (Exception $e) {
-		}
-
+		$this->federatedService->sendRemoteShare($frame);
 		exit();
 	}
 
@@ -211,9 +209,9 @@ class FederatedController extends BaseController {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
-	 * @param $apiVersion
-	 * @param $token
-	 * @param $uniqueId
+	 * @param array $apiVersion
+	 * @param string $token
+	 * @param string $uniqueId
 	 * @param $status
 	 *
 	 * @return DataResponse
@@ -225,6 +223,7 @@ class FederatedController extends BaseController {
 		}
 
 		try {
+			Circles::compareVersion($apiVersion);
 			$link = $this->federatedService->updateLinkFromRemote($token, $uniqueId, $status);
 		} catch (Exception $e) {
 			return $this->federatedFail($e->getMessage());
@@ -265,12 +264,19 @@ class FederatedController extends BaseController {
 	 *
 	 * @return DataResponse
 	 */
-	private function federatedSuccess($data, $link) {
-		return new DataResponse(
-			array_merge($data, ['token' => $link->getToken(true)]), Http::STATUS_OK
-		);
+	private function federatedSuccess(array $data = array(), FederatedLink $link = null) {
 
+		if (!key_exists('status', $data)) {
+			$data['status'] = 1;
+		}
+
+		if ($link !== null) {
+			$data = array_merge($data, ['token' => $link->getToken(true)]);
+		}
+
+		return new DataResponse($data, Http::STATUS_OK);
 	}
+
 
 	/**
 	 * send a negative response to a request, with a reason of the failure.
@@ -280,6 +286,8 @@ class FederatedController extends BaseController {
 	 * @return DataResponse
 	 */
 	private function federatedFail($reason) {
+		$this->miscService->log(2, 'federated fail: ' . $reason);
+
 		return new DataResponse(
 			[
 				'status' => FederatedLink::STATUS_ERROR,

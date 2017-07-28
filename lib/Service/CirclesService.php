@@ -29,6 +29,7 @@ namespace OCA\Circles\Service;
 
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
+use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
 use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
@@ -94,7 +95,7 @@ class CirclesService {
 	/**
 	 * Create circle using this->userId as owner
 	 *
-	 * @param int $type
+	 * @param int|string $type
 	 * @param string $name
 	 *
 	 * @return Circle
@@ -103,8 +104,9 @@ class CirclesService {
 	 */
 	public function createCircle($type, $name) {
 		self::convertTypeStringToBitValue($type);
+		$type = (int)$type;
 
-		if ($type === "") {
+		if ($type === '') {
 			throw new CircleTypeDisabledException(
 				$this->l10n->t('You need a specify a type of circle')
 			);
@@ -121,8 +123,7 @@ class CirclesService {
 		try {
 			$this->circlesRequest->createCircle($circle, $this->userId);
 			$this->membersRequest->createMember($circle->getOwner());
-		} catch (\Exception $e) {
-			$this->circlesRequest->destroyCircle($circle->getId());
+		} catch (CircleAlreadyExistsException $e) {
 			throw $e;
 		}
 
@@ -135,7 +136,7 @@ class CirclesService {
 	/**
 	 * list Circles depends on type (or all) and name (parts) and minimum level.
 	 *
-	 * @param $type
+	 * @param mixed $type
 	 * @param string $name
 	 * @param int $level
 	 *
@@ -164,15 +165,15 @@ class CirclesService {
 	/**
 	 * returns details on circle and its members if this->userId is a member itself.
 	 *
-	 * @param $circleId
+	 * @param string $circleUniqueId
 	 *
 	 * @return Circle
 	 * @throws \Exception
 	]	 */
-	public function detailsCircle($circleId) {
+	public function detailsCircle($circleUniqueId) {
 
 		try {
-			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
+			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			if ($circle->getHigherViewer()
 					   ->isLevel(Member::LEVEL_MEMBER)
 			) {
@@ -195,7 +196,7 @@ class CirclesService {
 	 */
 	private function detailsCircleMembers(Circle &$circle) {
 		$members =
-			$this->membersRequest->getMembers($circle->getId(), $circle->getHigherViewer());
+			$this->membersRequest->getMembers($circle->getUniqueId(), $circle->getHigherViewer());
 
 		$circle->setMembers($members);
 	}
@@ -210,7 +211,9 @@ class CirclesService {
 		$groups = [];
 		if ($this->configService->isLinkedGroupsAllowed()) {
 			$groups =
-				$this->membersRequest->getGroups($circle->getId(), $circle->getHigherViewer());
+				$this->membersRequest->getGroupsFromCircle(
+					$circle->getUniqueId(), $circle->getHigherViewer()
+				);
 		}
 
 		$circle->setGroups($groups);
@@ -228,7 +231,7 @@ class CirclesService {
 		try {
 			if ($this->configService->isFederatedCirclesAllowed()) {
 				$circle->hasToBeFederated();
-				$links = $this->circlesRequest->getLinksFromCircle($circle->getId());
+				$links = $this->circlesRequest->getLinksFromCircle($circle->getUniqueId());
 			}
 		} catch (FederatedCircleNotAllowedException $e) {
 		}
@@ -240,16 +243,16 @@ class CirclesService {
 	/**
 	 * save new settings if current user is admin.
 	 *
-	 * @param $circleId
+	 * @param string $circleUniqueId
 	 * @param array $settings
 	 *
 	 * @return Circle
 	 * @throws \Exception
 	 */
-	public function settingsCircle($circleId, $settings) {
+	public function settingsCircle($circleUniqueId, $settings) {
 
 		try {
-			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
+			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			$circle->getHigherViewer()
 				   ->hasToBeOwner();
 
@@ -270,20 +273,21 @@ class CirclesService {
 	/**
 	 * Join a circle.
 	 *
-	 * @param $circleId
+	 * @param string $circleUniqueId
 	 *
 	 * @return null|Member
 	 * @throws \Exception
 	 */
-	public function joinCircle($circleId) {
+	public function joinCircle($circleUniqueId) {
 
 		try {
-			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
+			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 
 			try {
-				$member = $this->membersRequest->forceGetMember($circle->getId(), $this->userId);
+				$member =
+					$this->membersRequest->forceGetMember($circle->getUniqueId(), $this->userId);
 			} catch (MemberDoesNotExistException $m) {
-				$member = new Member($this->l10n, $this->userId, $circle->getId());
+				$member = new Member($this->l10n, $this->userId, $circle->getUniqueId());
 				$this->membersRequest->createMember($member);
 			}
 
@@ -302,15 +306,15 @@ class CirclesService {
 	/**
 	 * Leave a circle.
 	 *
-	 * @param $circleId
+	 * @param string $circleUniqueId
 	 *
 	 * @return null|Member
 	 * @throws \Exception
 	 */
-	public function leaveCircle($circleId) {
+	public function leaveCircle($circleUniqueId) {
 
 		try {
-			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
+			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			$member = $circle->getViewer();
 
 			if (!$member->isAlmostMember()) {
@@ -335,21 +339,21 @@ class CirclesService {
 	/**
 	 * destroy a circle.
 	 *
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 *
 	 * @throws MemberIsNotOwnerException
 	 */
-	public function removeCircle($circleId) {
+	public function removeCircle($circleUniqueId) {
 
 		try {
-			$circle = $this->circlesRequest->getCircle($circleId, $this->userId);
+			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			$circle->getHigherViewer()
 				   ->hasToBeOwner();
 
 			$this->eventsService->onCircleDestruction($circle);
 
-			$this->membersRequest->removeAllFromCircle($circleId);
-			$this->circlesRequest->destroyCircle($circleId);
+			$this->membersRequest->removeAllFromCircle($circleUniqueId);
+			$this->circlesRequest->destroyCircle($circleUniqueId);
 
 		} catch (MemberIsNotOwnerException $e) {
 			throw $e;
@@ -369,11 +373,9 @@ class CirclesService {
 	/**
 	 * Convert a Type in String to its Bit Value
 	 *
-	 * @param $type
-	 *
-	 * @return int
+	 * @param string $type
 	 */
-	public static function convertTypeStringToBitValue(& $type) {
+	public static function convertTypeStringToBitValue(&$type) {
 		if (strtolower($type) === 'personal') {
 			$type = Circle::CIRCLES_PERSONAL;
 		}
@@ -389,8 +391,6 @@ class CirclesService {
 		if (strtolower($type) === 'all') {
 			$type = Circle::CIRCLES_ALL;
 		}
-
-		return 0;
 	}
 
 

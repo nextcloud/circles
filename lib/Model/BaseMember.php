@@ -43,8 +43,8 @@ class BaseMember implements \JsonSerializable {
 	const STATUS_BLOCKED = 'Blocked';
 	const STATUS_KICKED = 'Kicked';
 
-	/** @var int */
-	private $circleId;
+	/** @var string */
+	private $circleUniqueId;
 
 	/** @var L10N */
 	protected $l10n;
@@ -70,29 +70,45 @@ class BaseMember implements \JsonSerializable {
 	/** @var string */
 	private $joined;
 
-	public function __construct($l10n, $userId = '', $circleId = -1) {
+	/**
+	 * BaseMember constructor.
+	 *
+	 * @param $l10n
+	 * @param string $userId
+	 * @param string $circleUniqueId
+	 */
+	public function __construct($l10n, $userId = '', $circleUniqueId = '') {
 		$this->l10n = $l10n;
 
 		if ($userId !== '') {
 			$this->setUserId($userId);
 		}
-		if ($circleId > -1) {
-			$this->setCircleId($circleId);
+		if ($circleUniqueId > -1) {
+			$this->setCircleId($circleUniqueId);
 		}
 		$this->setLevel(Member::LEVEL_NONE);
 		$this->setStatus(Member::STATUS_NONMEMBER);
 	}
 
 
-	public function setCircleId($circleId) {
-		$this->circleId = (int)$circleId;
+	/**
+	 * @param string $circleUniqueId
+	 *
+	 * @return $this
+	 */
+	public function setCircleId($circleUniqueId) {
+		$this->circleUniqueId = $circleUniqueId;
 
 		return $this;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getCircleId() {
-		return $this->circleId;
+		return $this->circleUniqueId;
 	}
+
 
 	/**
 	 * @param string $groupId

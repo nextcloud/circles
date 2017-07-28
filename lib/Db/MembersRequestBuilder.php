@@ -162,18 +162,18 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * Base of the Sql Delete request for Members
 	 *
-	 * @param int $circleId
+	 * @param string $uniqueCircleId
 	 * @param string $userId
 	 *
 	 * @return IQueryBuilder
 	 */
-	protected function getMembersDeleteSql($circleId, $userId) {
+	protected function getMembersDeleteSql($uniqueCircleId, $userId) {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$expr = $qb->expr();
 
 		$and = $expr->andX();
-		if ($circleId > 0) {
-			$and->add($expr->eq('circle_id', $qb->createNamedParameter($circleId)));
+		if ($uniqueCircleId > 0) {
+			$and->add($expr->eq('circle_id', $qb->createNamedParameter($uniqueCircleId)));
 		}
 		if ($userId !== '') {
 			$and->add($expr->eq('user_id', $qb->createNamedParameter($userId)));

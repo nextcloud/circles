@@ -30,6 +30,7 @@ namespace OCA\Circles\Db;
 
 use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
 use Doctrine\DBAL\Query\QueryBuilder;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
@@ -68,7 +69,7 @@ class CircleProviderRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param int $circleId
 	 */
-	protected function limitToCircle(& $qb, $circleId) {
+	protected function limitToCircle(IQueryBuilder &$qb, $circleId) {
 		$expr = $qb->expr();
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? 's.' : '';
 
@@ -82,7 +83,7 @@ class CircleProviderRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param $shareId
 	 */
-	protected function limitToShare(& $qb, $shareId) {
+	protected function limitToShare(IQueryBuilder &$qb, $shareId) {
 		$expr = $qb->expr();
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? 's.' : '';
 
@@ -95,7 +96,7 @@ class CircleProviderRequestBuilder {
 	 *
 	 * @param IQueryBuilder $qb
 	 */
-	protected function limitToShareParent(& $qb) {
+	protected function limitToShareParent(IQueryBuilder &$qb) {
 		$expr = $qb->expr();
 
 		$qb->andWhere($expr->isNull('parent'));
@@ -109,7 +110,7 @@ class CircleProviderRequestBuilder {
 	 * @param $userId
 	 * @param int $parentId
 	 */
-	protected function limitToShareChildren(& $qb, $userId, $parentId = -1) {
+	protected function limitToShareChildren(IQueryBuilder &$qb, $userId, $parentId = -1) {
 		$expr = $qb->expr();
 		$qb->andWhere($expr->eq('share_with', $qb->createNamedParameter($userId)));
 
@@ -128,7 +129,7 @@ class CircleProviderRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param $circleId
 	 */
-	protected function limitToShareAndChildren(& $qb, $circleId) {
+	protected function limitToShareAndChildren(IQueryBuilder &$qb, $circleId) {
 		$expr = $qb->expr();
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? 's.' : '';
 
@@ -150,7 +151,7 @@ class CircleProviderRequestBuilder {
 	 *
 	 * @internal param $fileId
 	 */
-	protected function limitToFiles(& $qb, $files) {
+	protected function limitToFiles(IQueryBuilder &$qb, $files) {
 
 		if (!is_array($files)) {
 			$files = array($files);
@@ -172,7 +173,7 @@ class CircleProviderRequestBuilder {
 	 * @param int $limit
 	 * @param int $offset
 	 */
-	protected function limitToPage(& $qb, $limit = -1, $offset = 0) {
+	protected function limitToPage(IQueryBuilder &$qb, $limit = -1, $offset = 0) {
 		if ($limit !== -1) {
 			$qb->setMaxResults($limit);
 		}
@@ -188,7 +189,7 @@ class CircleProviderRequestBuilder {
 	 * @param string $userId
 	 * @param bool $reShares
 	 */
-	protected function limitToShareOwner(& $qb, $userId, $reShares = false) {
+	protected function limitToShareOwner(IQueryBuilder &$qb, $userId, $reShares = false) {
 		$expr = $qb->expr();
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? 's.' : '';
 
@@ -214,20 +215,15 @@ class CircleProviderRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param int $shareId
 	 */
-	protected function linkCircleField(& $qb, $shareId = -1) {
+	protected function linkCircleField(IQueryBuilder &$qb, $shareId = -1) {
 		$expr = $qb->expr();
 
-		// TODO - Remove this in 12.0.1
-		if ($qb->getConnection()
-			   ->getDatabasePlatform() instanceof PostgreSqlPlatform
-		) {
-			$tmpOrX = $expr->eq('s.share_with', $qb->createFunction('CAST(c.id AS TEXT)'));
-		} else {
-			$tmpOrX =
-				$expr->eq('s.share_with', $expr->castColumn('c.id', IQueryBuilder::PARAM_STR));
-		}
-
 		$qb->from(CoreRequestBuilder::TABLE_CIRCLES, 'c');
+
+		$tmpOrX = $expr->eq(
+			's.share_with',
+			$qb->createFunction('LEFT(c.unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH . ')')
+		);
 
 		if ($shareId === -1) {
 			$qb->andWhere($tmpOrX);
@@ -242,20 +238,22 @@ class CircleProviderRequestBuilder {
 				$expr->eq('s.parent', $qb->createNamedParameter($shareId))
 			)
 		);
-		//->orderBy('c.circle_name');
 	}
 
 
 	/**
 	 * @param IQueryBuilder $qb
 	 */
-	protected function linkToCircleOwner(& $qb) {
+	protected function linkToCircleOwner(IQueryBuilder &$qb) {
 		$expr = $qb->expr();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->leftJoin(
 			'c', 'circles_members', 'mo', $expr->andX(
-			$expr->eq('c.id', 'mo.circle_id'),
+			$expr->eq(
+				'mo.circle_id',
+				$qb->createFunction('LEFT(c.unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH . ')')
+			),
 			$expr->eq('mo.level', $qb->createNamedParameter(Member::LEVEL_OWNER))
 		)
 		);
@@ -268,31 +266,75 @@ class CircleProviderRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param string $userId
 	 */
-	protected function linkToMember(& $qb, $userId) {
+	protected function linkToMember(IQueryBuilder &$qb, $userId) {
 		$expr = $qb->expr();
 
 		$qb->from(CoreRequestBuilder::TABLE_MEMBERS, 'm');
 		$qb->from(CoreRequestBuilder::TABLE_GROUPS, 'g');
 		$qb->from(CoreRequestBuilder::NC_TABLE_GROUP_USER, 'ncgu');
 
-		$qb->andWhere(
-			$expr->orX(
-			// We check if user is members of the circle with the right level
-				$expr->andX(
-					$expr->eq('m.user_id', $qb->createNamedParameter($userId)),
-					$expr->eq('m.circle_id', 'c.id'),
-					$expr->gte('m.level', $qb->createNamedParameter(Member::LEVEL_MEMBER))
-				),
+		$orX = $expr->orX();
+		$orX->add($this->exprLinkToMemberAsCircleMember($qb, $userId));
+		$orX->add($this->exprLinkToMemberAsGroupMember($qb, $userId));
 
-				// Or if user is member of one of the group linked to the circle with the right level
-				$expr->andX(
-					$expr->eq('g.circle_id', 'c.id'),
-					$expr->gte('g.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)),
-					$expr->eq('ncgu.gid', 'g.group_id'),
-					$expr->eq('ncgu.uid', $qb->createNamedParameter($userId))
+		$qb->andWhere($orX);
+
+	}
+
+
+	/**
+	 * generate CompositeExpression to link to a Member as a Real Circle Member
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param string $userId
+	 *
+	 * @return \OCP\DB\QueryBuilder\ICompositeExpression
+	 */
+	private function exprLinkToMemberAsCircleMember(IQueryBuilder &$qb, $userId) {
+
+		$expr = $qb->expr();
+		$andX = $expr->andX();
+
+		$andX->add($expr->eq('m.user_id', $qb->createNamedParameter($userId)));
+		$andX->add(
+			$expr->eq(
+				'm.circle_id',
+				$qb->createFunction(
+					'LEFT(c.unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
 				)
 			)
 		);
+		$andX->add($expr->gte('m.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)));
+
+		return $andX;
+	}
+
+
+	/**
+	 * generate CompositeExpression to link to a Member as a Group Member (core NC)
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param string $userId
+	 *
+	 * @return \OCP\DB\QueryBuilder\ICompositeExpression
+	 */
+	private function exprLinkToMemberAsGroupMember(IQueryBuilder &$qb, $userId) {
+		$expr = $qb->expr();
+		$andX = $expr->andX();
+
+		$andX->add($expr->gte('g.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)));
+		$andX->add($expr->eq('ncgu.gid', 'g.group_id'));
+		$andX->add($expr->eq('ncgu.uid', $qb->createNamedParameter($userId)));
+		$andX->add(
+			$expr->eq(
+				'g.circle_id',
+				$qb->createFunction(
+					'LEFT(c.unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
+				)
+			)
+		);
+
+		return $andX;
 	}
 
 
@@ -317,11 +359,13 @@ class CircleProviderRequestBuilder {
 		}
 
 		$qb->selectAlias('src_m.level', 'initiator_circle_level');
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->leftJoin(
-			's', CoreRequestBuilder::TABLE_MEMBERS, 'src_m', $expr->andX(
-			$expr->eq('s.uid_initiator', 'src_m.user_id'),
-			$req
-		)
+			's', CoreRequestBuilder::TABLE_MEMBERS, 'src_m',
+			$expr->andX(
+				$expr->eq('s.uid_initiator', 'src_m.user_id'),
+				$req
+			)
 		);
 
 
@@ -338,16 +382,17 @@ class CircleProviderRequestBuilder {
 
 		$qb->selectAlias('src_g.level', 'initiator_group_level');
 		$qb->leftJoin(
-			's', CoreRequestBuilder::NC_TABLE_GROUP_USER, 'src_ncgu', $expr->andX(
+			's', CoreRequestBuilder::NC_TABLE_GROUP_USER, 'src_ncgu',
 			$expr->eq('s.uid_initiator', 'src_ncgu.uid')
-		)
 		);
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->leftJoin(
-			's', 'circles_groups', 'src_g', $expr->andX(
-			$expr->gte('src_g.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)),
-			$expr->eq('src_ncgu.gid', 'src_g.group_id'),
-			$req
-		)
+			's', 'circles_groups', 'src_g',
+			$expr->andX(
+				$expr->gte('src_g.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)),
+				$expr->eq('src_ncgu.gid', 'src_g.group_id'),
+				$req
+			)
 		);
 	}
 
@@ -357,7 +402,7 @@ class CircleProviderRequestBuilder {
 	 *
 	 * @param IQueryBuilder $qb
 	 */
-	protected function joinCircleMembers(& $qb) {
+	protected function joinCircleMembers(IQueryBuilder &$qb) {
 		$expr = $qb->expr();
 
 		$qb->from(CoreRequestBuilder::TABLE_MEMBERS, 'm');
@@ -386,7 +431,7 @@ class CircleProviderRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param string $userId
 	 */
-	protected function linkToFileCache(& $qb, $userId) {
+	protected function linkToFileCache(IQueryBuilder &$qb, $userId) {
 		$expr = $qb->expr();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
@@ -507,7 +552,7 @@ class CircleProviderRequestBuilder {
 	/**
 	 * @param IQueryBuilder $qb
 	 */
-	private function joinShare(& $qb) {
+	private function joinShare(IQueryBuilder &$qb) {
 		$expr = $qb->expr();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */

@@ -26,7 +26,7 @@
 
 namespace OCA\Circles\Exceptions;
 
-class BroadcasterIsNotCompatible extends \Exception {
+class FederatedLinkUpdateException extends \Exception {
 
 }
 

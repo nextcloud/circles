@@ -54,7 +54,8 @@ style('circles', 'navigation');
 			if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PERSONAL]) {
 				print_unescaped(
 					sprintf(
-						'<option value="%s">%s</option>', 'personal',
+						'<option value="%s">%s</option>',
+						\OCA\Circles\Model\Circle::CIRCLES_PERSONAL,
 						$l->t("Create a personal circle")
 					)
 				);
@@ -64,7 +65,8 @@ style('circles', 'navigation');
 			if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_HIDDEN]) {
 				print_unescaped(
 					sprintf(
-						'<option value="%s">%s</option>', 'hidden',
+						'<option value="%s">%s</option>',
+						\OCA\Circles\Model\Circle::CIRCLES_HIDDEN,
 						$l->t("Create a hidden circle")
 					)
 				);
@@ -74,7 +76,8 @@ style('circles', 'navigation');
 			if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PRIVATE]) {
 				print_unescaped(
 					sprintf(
-						'<option value="%s">%s</option>', 'private',
+						'<option value="%s">%s</option>',
+						\OCA\Circles\Model\Circle::CIRCLES_PRIVATE,
 						$l->t("Create a private circle")
 					)
 				);
@@ -84,7 +87,8 @@ style('circles', 'navigation');
 			if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PUBLIC]) {
 				print_unescaped(
 					sprintf(
-						'<option value="%s">%s</option>', 'public',
+						'<option value="%s">%s</option>',
+						\OCA\Circles\Model\Circle::CIRCLES_PUBLIC,
 						$l->t("Create a public circle")
 					)
 				);
@@ -146,19 +150,35 @@ style('circles', 'navigation');
 
 		<?php
 		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PERSONAL]) {
-			print_unescaped('<div circle-type="personal">' . $l->t('personal circles') . '</div>');
+			print_unescaped(
+				'<div circle-type="' . \OCA\Circles\Model\Circle::CIRCLES_PERSONAL . '">' . $l->t(
+					'personal circles'
+				) . '</div>'
+			);
 		}
 
 		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_HIDDEN]) {
-			print_unescaped('<div circle-type="hidden">' . $l->t('hidden circles') . '</div>');
+			print_unescaped(
+				'<div circle-type="' . \OCA\Circles\Model\Circle::CIRCLES_HIDDEN . '">' . $l->t(
+					'hidden circles'
+				) . '</div>'
+			);
 		}
 
 		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PRIVATE]) {
-			print_unescaped('<div circle-type="private">' . $l->t('private circles') . '</div>');
+			print_unescaped(
+				'<div circle-type="' . \OCA\Circles\Model\Circle::CIRCLES_PRIVATE . '">' . $l->t(
+					'private circles'
+				) . '</div>'
+			);
 		}
 
 		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PUBLIC]) {
-			print_unescaped('<div circle-type="public">' . $l->t('public circles') . '</div>');
+			print_unescaped(
+				'<div circle-type="' . \OCA\Circles\Model\Circle::CIRCLES_PUBLIC . '">' . $l->t(
+					'public circles'
+				) . '</div>'
+			);
 		}
 		?>
 
@@ -308,7 +328,7 @@ style('circles', 'navigation');
 								</select>
 							</td>
 							<td class="joined">%joined%</td>
-							</tr>
+						</tr>
 					</script>
 
 					<script id="tmpl_link" type="text/template">

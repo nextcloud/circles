@@ -59,7 +59,7 @@ class FederatedLink implements \JsonSerializable {
 	private $creation;
 
 	/** @var int */
-	private $circleId;
+	private $circleUniqueId;
 
 	/** @var string */
 	private $uniqueId = '';
@@ -171,21 +171,28 @@ class FederatedLink implements \JsonSerializable {
 
 
 	/**
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 *
 	 * @return FederatedLink
 	 */
-	public function setCircleId($circleId) {
-		$this->circleId = (int)$circleId;
+	public function setCircleId($circleUniqueId) {
+		$this->circleUniqueId = $circleUniqueId;
 
 		return $this;
 	}
 
 	/**
-	 * @return int
+	 * @param bool $full
+	 *
+	 * @return string
 	 */
-	public function getCircleId() {
-		return $this->circleId;
+	public function getCircleId($full = false) {
+		if ($full) {
+			return $this->circleUniqueId;
+		}
+
+		return substr($this->circleUniqueId, 0, Circle::UNIQUEID_SHORT_LENGTH);
+
 	}
 
 

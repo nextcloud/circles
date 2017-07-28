@@ -26,7 +26,7 @@
 
 namespace OCA\Circles\Exceptions;
 
-class ConfigNoCircleAvailable extends \Exception {
+class CircleTypeNotValidException extends \Exception {
 
 }
 

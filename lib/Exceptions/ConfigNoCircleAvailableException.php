@@ -26,7 +26,7 @@
 
 namespace OCA\Circles\Exceptions;
 
-class LinkCreationException extends \Exception {
+class ConfigNoCircleAvailableException extends \Exception {
 
 }
 

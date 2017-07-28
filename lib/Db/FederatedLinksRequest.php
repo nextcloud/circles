@@ -62,6 +62,9 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 	}
 
 
+	/**
+	 * @param FederatedLink $link
+	 */
 	public function update(FederatedLink $link) {
 
 		if ($link->getStatus() === FederatedLink::STATUS_LINK_REMOVE) {
@@ -77,6 +80,7 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 			$qb->set('unique_id', $qb->createNamedParameter($link->getUniqueId(true)));
 		}
 
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->andWhere(
 			$expr->andX(
 				$expr->eq('circle_id', $qb->createNamedParameter($link->getCircleId())),
@@ -89,17 +93,18 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 
 
 	/**
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 *
 	 * @return FederatedLink[]
 	 */
-	public function getLinked($circleId) {
+	public function getLinked($circleUniqueId) {
 		$qb = $this->getLinksSelectSql();
 		$expr = $qb->expr();
 
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->andWhere(
 			$expr->andX(
-				$expr->eq('f.circle_id', $qb->createNamedParameter((int)$circleId)),
+				$expr->eq('f.circle_id', $qb->createNamedParameter($circleUniqueId)),
 				$expr->eq('f.status', $qb->createNamedParameter(9))
 			)
 		);
@@ -117,19 +122,20 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 
 
 	/**
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 * @param string $uniqueId
 	 *
 	 * @return FederatedLink
 	 */
-	public function getFromUniqueId($circleId, $uniqueId) {
+	public function getFromUniqueId($circleUniqueId, $uniqueId) {
 		$qb = $this->getLinksSelectSql();
 		$expr = $qb->expr();
 
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->andWhere(
 			$expr->andX(
-				$expr->eq('f.circle_id', $qb->createNamedParameter((int)$circleId)),
-				$expr->eq('f.unique_id', $qb->createNamedParameter((string)$uniqueId))
+				$expr->eq('f.circle_id', $qb->createNamedParameter($circleUniqueId)),
+				$expr->eq('f.unique_id', $qb->createNamedParameter($uniqueId))
 			)
 		);
 
@@ -151,6 +157,7 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 		$qb = $this->getLinksDeleteSql();
 		$expr = $qb->expr();
 
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->andWhere(
 			$expr->andX(
 				$expr->eq('token', $qb->createNamedParameter($link->getToken(true))),

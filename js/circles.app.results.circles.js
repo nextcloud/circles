@@ -102,8 +102,8 @@ var resultCircles = {
 				name: result.name
 			}));
 			elements.emptyCircleCreation();
-			nav.displayCirclesList(result.circle.type);
-			actions.selectCircle(result.circle.id);
+			nav.displayCirclesList(result.circle.typeString);
+			actions.selectCircle(result.circle.unique_id);
 			return;
 		}
 
@@ -158,7 +158,7 @@ var resultCircles = {
 		for (var i = 0; i < data.length; i++) {
 			var tmpl = elements.generateTmplCircle(data[i]);
 			elements.navigation.append(
-				'<div class="circle" circle-id="' + data[i].id + '">' + tmpl + '</div>');
+				'<div class="circle" circle-id="' + data[i].unique_id + '">' + tmpl + '</div>');
 		}
 
 		elements.navigation.children('.circle').on('click', function () {

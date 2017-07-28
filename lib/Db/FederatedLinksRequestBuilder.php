@@ -28,13 +28,9 @@
 namespace OCA\Circles\Db;
 
 
-use Doctrine\DBAL\Query\QueryBuilder;
-use OCA\Circles\Model\Member;
 use OCA\Circles\Service\MiscService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
-use OCP\Share;
-use OCP\Share\IShare;
 
 class FederatedLinksRequestBuilder {
 
@@ -92,6 +88,8 @@ class FederatedLinksRequestBuilder {
 	 */
 	protected function getLinksSelectSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select('f.id', 'f.unique_id', 'f.status', 'f.address', 'f.token', 'f.circle_id')
 		   ->from(self::TABLE_LINKS, 'f');
 

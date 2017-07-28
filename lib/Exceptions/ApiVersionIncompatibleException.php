@@ -26,7 +26,7 @@
 
 namespace OCA\Circles\Exceptions;
 
-class FederatedRemoteIsDown extends \Exception {
+class ApiVersionIncompatibleException extends \Exception {
 
 }
 

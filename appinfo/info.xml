@@ -18,7 +18,7 @@ This is the right circle if you are looking for privacy when sharing your files 
 - A public circle is an open group visible to anyone willing to join.
 Your circle will be visible to everyone and everyone will be able to join the circle.]]>
 	</description>
-	<version>0.11.2</version>
+	<version>0.11.8</version>
 	<licence>AGPL</licence>
 	<author>Maxence Lange</author>
 	<documentation>
@@ -39,6 +39,7 @@ Your circle will be visible to everyone and everyone will be able to join the ci
 			<step>OCA\Circles\Migration\UpdateShareTimeToTimestamp</step>
 			<step>OCA\Circles\Migration\ImportOwncloudCustomGroups</step>
 			<step>OCA\Circles\Migration\GenerateUniqueIdOnCreatedCircle</step>
+			<step>OCA\Circles\Migration\UsingShortenUniqueIdInsteadOfCircleId</step>
 		</post-migration>
 	</repair-steps>
 

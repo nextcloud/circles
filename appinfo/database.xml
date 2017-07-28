@@ -93,10 +93,9 @@
 		<declaration>
 			<field>
 				<name>circle_id</name>
-				<type>integer</type>
+				<type>text</type>
 				<notnull>true</notnull>
-				<unsigned>true</unsigned>
-				<length>4</length>
+				<length>64</length>
 			</field>
 
 			<field>
@@ -153,10 +152,9 @@
 		<declaration>
 			<field>
 				<name>circle_id</name>
-				<type>integer</type>
+				<type>text</type>
 				<notnull>true</notnull>
-				<unsigned>true</unsigned>
-				<length>4</length>
+				<length>64</length>
 			</field>
 
 			<field>
@@ -222,10 +220,9 @@
 
 			<field>
 				<name>circle_id</name>
-				<type>integer</type>
+				<type>text</type>
 				<notnull>true</notnull>
-				<unsigned>true</unsigned>
-				<length>4</length>
+				<length>64</length>
 			</field>
 
 			<field>
@@ -300,9 +297,9 @@
 
 			<field>
 				<name>circle_id</name>
-				<type>integer</type>
+				<type>text</type>
 				<notnull>true</notnull>
-				<length>4</length>
+				<length>64</length>
 			</field>
 
 			<field>

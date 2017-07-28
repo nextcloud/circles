@@ -80,6 +80,11 @@ var resultMembers = {
 
 	addMemberResult: function (result) {
 
+		if (curr.circleDetails.type === define.typePrivate) {
+			resultMembers.inviteMemberResult(result);
+			return;
+		}
+
 		if (result.status === 1) {
 			OCA.notification.onSuccess(
 				t('circles', "The member '{name}' was added to the circle",
@@ -89,12 +94,35 @@ var resultMembers = {
 			return;
 		}
 		OCA.notification.onFail(
-			t('circles', "The member '{name}' could not be added to the circle", {name: result.name}) +
-			': ' +
-			((result.error) ? result.error : t('circles', 'no error message')));
+			t('circles', "The member '{name}' could not be added to the circle",
+				{name: result.name}) +
+			': ' + ((result.error) ? result.error : t('circles', 'no error message')));
 	},
 
+
+	inviteMemberResult: function (result) {
+
+		if (result.status === 1) {
+			OCA.notification.onSuccess(
+				t('circles', "The member '{name}' was invited to the circle",
+					{name: result.name}));
+
+			nav.displayMembers(result.members);
+			return;
+		}
+		OCA.notification.onFail(
+			t('circles', "The member '{name}' could not be invited to the circle",
+				{name: result.name}) +
+			': ' + ((result.error) ? result.error : t('circles', 'no error message')));
+	},
+
+
 	addGroupMembersResult: function (result) {
+
+		if (curr.circleDetails.type === define.typePrivate) {
+			resultMembers.inviteGroupMembersResult(result);
+			return;
+		}
 
 		if (result.status === 1) {
 			OCA.notification.onSuccess(
@@ -106,6 +134,24 @@ var resultMembers = {
 		}
 		OCA.notification.onFail(
 			t('circles', "Members of the group '{name}' could not be added to the circle",
+				{name: result.name}) +
+			': ' +
+			((result.error) ? result.error : t('circles', 'no error message')));
+	},
+
+
+	inviteGroupMembersResult: function (result) {
+
+		if (result.status === 1) {
+			OCA.notification.onSuccess(
+				t('circles', "Members of the group '{name}' were invited to the circle",
+					{name: result.name}));
+
+			nav.displayMembers(result.members);
+			return;
+		}
+		OCA.notification.onFail(
+			t('circles', "Members of the group '{name}' could not be invited to the circle",
 				{name: result.name}) +
 			': ' +
 			((result.error) ? result.error : t('circles', 'no error message')));

@@ -30,7 +30,7 @@ use Exception;
 use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
-use OCA\Circles\Exceptions\CircleTypeNotValid;
+use OCA\Circles\Exceptions\CircleTypeNotValidException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\MemberIsNotModeratorException;
 use OCA\Circles\Exceptions\MemberIsNotOwnerException;
@@ -359,7 +359,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 		try {
 			$this->generateSimpleCircleWithAllLevel($this->circles['Personal']->getId());
 			$this->assertSame(true, false, 'should return an exception');
-		} catch (CircleTypeNotValid $e) {
+		} catch (CircleTypeNotValidException $e) {
 		} catch (Exception $e) {
 			$this->assertSame(true, false, 'should have returned a CircleTypeNotValid');
 		}

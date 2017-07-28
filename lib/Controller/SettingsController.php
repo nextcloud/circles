@@ -25,6 +25,7 @@ class SettingsController extends Controller {
 		$this->miscService = $miscService;
 	}
 
+
 	/**
 	 * @NoCSRFRequired
 	 */

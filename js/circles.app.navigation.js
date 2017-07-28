@@ -124,7 +124,7 @@ var nav = {
 				return;
 			}
 
-			api.linkCircle(curr.circle, elements.linkCircle.val(),
+			api.linkCircle(curr.circle, elements.linkCircle.val().trim(),
 				resultLinks.linkCircleResult);
 		}).blur(function () {
 			nav.circlesActionReturn();
@@ -597,7 +597,7 @@ var nav = {
 	displayMemberInteractionCircleLinks: function (details) {
 		if (curr.allowed_federated_circles === '0' ||
 			curr.circleSettings['allow_links'] !== 'true' ||
-			details.type === 'Personal' ||
+			details.type === define.typePersonal ||
 			details.viewer.level < define.levelAdmin
 		) {
 			elements.buttonLinkCircle.hide();

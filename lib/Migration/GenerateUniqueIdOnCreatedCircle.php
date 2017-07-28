@@ -1,9 +1,12 @@
 <?php
 /**
- * @copyright Copyright (c) 2017 Joas Schilling <coding@schilljs.com>
+ * Circles - Bring cloud-users closer together.
  *
- * @author Joas Schilling <coding@schilljs.com>
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
  *
+ * @author Maxence Lange <maxence@pontapreta.net>
+ * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -93,7 +96,7 @@ class GenerateUniqueIdOnCreatedCircle implements IRepairStep {
 
 			$update = $this->connection->getQueryBuilder();
 			$update->update('circles_circles')
-				   ->set('unique_id', $update->createNamedParameter('d'.$uniqueId))
+				   ->set('unique_id', $update->createNamedParameter('d' . $uniqueId))
 				   ->where(
 					   $update->expr()
 							  ->eq('id', $update->createNamedParameter($itemId))

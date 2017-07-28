@@ -65,7 +65,7 @@ $(document).ready(function () {
 		url: OC.generateUrl('/apps/circles/admin/settings'),
 		data: {}
 	}).done(function (res) {
-		elements.allow_federated_circles.prop('checked', (res.allowLinkedGroups === '1'));
+		elements.allow_linked_groups.prop('checked', (res.allowLinkedGroups === '1'));
 		elements.allow_federated_circles.prop('checked', (res.allowFederatedCircles === '1'));
 	});
 

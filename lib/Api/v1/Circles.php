@@ -28,6 +28,7 @@ namespace OCA\Circles\Api\v1;
 
 
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\Exceptions\ApiVersionIncompatibleException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
@@ -35,7 +36,7 @@ use OCA\Circles\Model\SharingFrame;
 
 class Circles {
 
-	const API_VERSION = [0, 9, 1];
+	const API_VERSION = [0, 10, 0];
 
 	protected static function getContainer() {
 		$app = new Application();
@@ -45,7 +46,7 @@ class Circles {
 
 
 	/**
-	 * Circles::version()
+	 * Circles::version();
 	 *
 	 * returns the current version of the API
 	 *
@@ -53,6 +54,27 @@ class Circles {
 	 */
 	public static function version() {
 		return self::API_VERSION;
+	}
+
+
+	/**
+	 * Circles::compareVersion();
+	 *
+	 * Compare and return true if version is compatible.
+	 * Exception otherwise.
+	 *
+	 * @param array $apiVersion
+	 *
+	 * @return bool
+	 * @throws ApiVersionIncompatibleException
+	 */
+	public static function compareVersion($apiVersion) {
+		if ((int)$apiVersion[0] !== Circles::API_VERSION[0]
+			|| (int)$apiVersion[1] !== Circles::API_VERSION[1]) {
+			throw new ApiVersionIncompatibleException('api_not_compatible');
+		}
+
+		return true;
 	}
 
 
@@ -67,8 +89,8 @@ class Circles {
 	 * CIRCLES_PRIVATE is 4 or 'private'
 	 * CIRCLES_PUBLIC is 8 or 'public'
 	 *
-	 * @param $type
-	 * @param $name
+	 * @param mixed $type
+	 * @param string $name
 	 *
 	 * @return Circle
 	 */
@@ -85,15 +107,15 @@ class Circles {
 	 *
 	 * This function will make the current user joining a circle identified by its Id.
 	 *
-	 * @param $circleId
+	 * @param string $circleUniqueId
 	 *
 	 * @return Member
 	 */
-	public static function joinCircle($circleId) {
+	public static function joinCircle($circleUniqueId) {
 		$c = self::getContainer();
 
 		return $c->query('CirclesService')
-				 ->joinCircle($circleId);
+				 ->joinCircle($circleUniqueId);
 	}
 
 
@@ -103,15 +125,15 @@ class Circles {
 	 * This function will make the current user leaving the circle identified by its Id. Will fail
 	 * if user is the owner of the circle.
 	 *
-	 * @param $circleId
+	 * @param string $circleUniqueId
 	 *
 	 * @return Member
 	 */
-	public static function leaveCircle($circleId) {
+	public static function leaveCircle($circleUniqueId) {
 		$c = self::getContainer();
 
 		return $c->query('CirclesService')
-				 ->leaveCircle($circleId);
+				 ->leaveCircle($circleUniqueId);
 	}
 
 
@@ -125,7 +147,7 @@ class Circles {
 	 * example: Circles::listCircles(Circle::CIRCLES_ALL, '', 8, callback); will returns all
 	 * circles when the current user is at least an Admin.
 	 *
-	 * @param $type
+	 * @param mixed $type
 	 * @param string $name
 	 * @param int $level
 	 *
@@ -146,11 +168,9 @@ class Circles {
 	 *
 	 * @return Circle[]
 	 */
-	public static function joinedCircles()
-	{
+	public static function joinedCircles() {
 		return self::listCircles(Circle::CIRCLES_ALL, '', Member::LEVEL_MEMBER);
 	}
-
 
 
 	/**
@@ -162,15 +182,15 @@ class Circles {
 	 * Returns details on the circle. If the current user is a member, the members list will be
 	 * return as well.
 	 *
-	 * @param $circleId
+	 * @param string $circleUniqueId
 	 *
 	 * @return Circle
 	 */
-	public static function detailsCircle($circleId) {
+	public static function detailsCircle($circleUniqueId) {
 		$c = self::getContainer();
 
 		return $c->query('CirclesService')
-				 ->detailsCircle($circleId);
+				 ->detailsCircle($circleUniqueId);
 	}
 
 
@@ -179,16 +199,16 @@ class Circles {
 	 *
 	 * Save the settings. Settings is an array and current user need to be an admin
 	 *
-	 * @param $circleId
+	 * @param string $circleUniqueId
 	 * @param array $settings
 	 *
 	 * @return Circle
 	 */
-	public static function settingsCircle($circleId, array $settings) {
+	public static function settingsCircle($circleUniqueId, array $settings) {
 		$c = self::getContainer();
 
 		return $c->query('CirclesService')
-				 ->settingsCircle($circleId, $settings);
+				 ->settingsCircle($circleUniqueId, $settings);
 	}
 
 
@@ -197,15 +217,15 @@ class Circles {
 	 *
 	 * This function will destroy the circle if the current user is the Owner.
 	 *
-	 * @param $circleId
+	 * @param string $circleUniqueId
 	 *
 	 * @return mixed
 	 */
-	public static function destroyCircle($circleId) {
+	public static function destroyCircle($circleUniqueId) {
 		$c = self::getContainer();
 
 		return $c->query('CirclesService')
-				 ->removeCircle($circleId);
+				 ->removeCircle($circleUniqueId);
 	}
 
 
@@ -215,16 +235,16 @@ class Circles {
 	 * This function will add a user as member of the circle. Current user need at least to be
 	 * Moderator.
 	 *
-	 * @param $circleId
-	 * @param $userId
+	 * @param string $circleUniqueId
+	 * @param string $userId
 	 *
 	 * @return Member[]
 	 */
-	public static function addMember($circleId, $userId) {
+	public static function addMember($circleUniqueId, $userId) {
 		$c = self::getContainer();
 
 		return $c->query('MembersService')
-				 ->addMember($circleId, $userId);
+				 ->addMember($circleUniqueId, $userId);
 	}
 
 
@@ -234,16 +254,16 @@ class Circles {
 	 * This function will return information on a member of the circle. Current user need at least
 	 * to be Member.
 	 *
-	 * @param $circleId
-	 * @param $userId
+	 * @param string $circleUniqueId
+	 * @param string $userId
 	 *
 	 * @return Member
 	 */
-	public static function getMember($circleId, $userId) {
+	public static function getMember($circleUniqueId, $userId) {
 		$c = self::getContainer();
 
 		return $c->query('MembersService')
-				 ->getMember($circleId, $userId);
+				 ->getMember($circleUniqueId, $userId);
 	}
 
 
@@ -253,16 +273,16 @@ class Circles {
 	 * This function will remove a member from the circle. Current user needs to be at least
 	 * Moderator and have a higher level that the targeted member.
 	 *
-	 * @param $circleId
-	 * @param $userId
+	 * @param string $circleUniqueId
+	 * @param string $userId
 	 *
 	 * @return Member[]
 	 */
-	public static function removeMember($circleId, $userId) {
+	public static function removeMember($circleUniqueId, $userId) {
 		$c = self::getContainer();
 
 		return $c->query('MembersService')
-				 ->removeMember($circleId, $userId);
+				 ->removeMember($circleUniqueId, $userId);
 	}
 
 
@@ -274,17 +294,17 @@ class Circles {
 	 * cannot be the same than the current level of the user that initiate the process (ie. the
 	 * current user).
 	 *
-	 * @param $circleId
-	 * @param $userId
-	 * @param $level
+	 * @param string $circleUniqueId
+	 * @param string $userId
+	 * @param int $level
 	 *
 	 * @return Member[]
 	 */
-	public static function levelMember($circleId, $userId, $level) {
+	public static function levelMember($circleUniqueId, $userId, $level) {
 		$c = self::getContainer();
 
 		return $c->query('MembersService')
-				 ->levelMember($circleId, $userId, $level);
+				 ->levelMember($circleUniqueId, $userId, $level);
 	}
 
 
@@ -295,21 +315,21 @@ class Circles {
 	 * Source is the app that is sharing the item and type can be used by the app to identified the
 	 * payload.
 	 *
-	 * @param $circleId
-	 * @param $source
-	 * @param $type
+	 * @param string $circleUniqueId
+	 * @param string $source
+	 * @param string $type
 	 * @param array $payload
-	 * @param $broadcaster
+	 * @param string $broadcaster
 	 *
 	 * @return mixed
 	 */
 	public static function shareToCircle(
-		$circleId, $source, $type, array $payload, $broadcaster
+		$circleUniqueId, $source, $type, array $payload, $broadcaster
 	) {
 		$c = self::getContainer();
 
 		$frame = new SharingFrame((string)$source, (string)$type);
-		$frame->setCircleId((int)$circleId);
+		$frame->setCircleId($circleUniqueId);
 		$frame->setPayload($payload);
 
 		return $c->query('SharesService')
@@ -324,16 +344,16 @@ class Circles {
 	 * circleId is the local circle and remote is the target for the link.
 	 * Remote format is: <circle_name>@<remote_host> when remote_host must be a valid HTTPS address.
 	 *
-	 * @param $circleId
-	 * @param $remote
+	 * @param string $circleUniqueId
+	 * @param string $remote
 	 *
 	 * @return FederatedLink
 	 */
-	public static function linkCircle($circleId, $remote) {
+	public static function linkCircle($circleUniqueId, $remote) {
 		$c = self::getContainer();
 
 		return $c->query('FederatedService')
-				 ->linkCircle($circleId, $remote);
+				 ->linkCircle($circleUniqueId, $remote);
 	}
 
 
@@ -342,13 +362,13 @@ class Circles {
 	 *
 	 * Returns the link to get access to a local circle.
 	 *
-	 * @param int $circleId
+	 * @param string $circleUniqueId
 	 *
 	 * @return string
 	 */
-	public static function generateLink($circleId) {
+	public static function generateLink($circleUniqueId) {
 		return \OC::$server->getURLGenerator()
-						   ->linkToRoute('circles.Navigation.navigate') . '#' . $circleId;
+						   ->linkToRoute('circles.Navigation.navigate') . '#' . $circleUniqueId;
 	}
 
 

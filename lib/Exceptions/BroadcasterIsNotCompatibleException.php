@@ -26,7 +26,7 @@
 
 namespace OCA\Circles\Exceptions;
 
-class SharingFrameSourceCannotBeAppCircles extends \Exception {
+class BroadcasterIsNotCompatibleException extends \Exception {
 
 }
 

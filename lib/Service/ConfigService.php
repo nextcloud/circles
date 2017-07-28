@@ -37,7 +37,7 @@ class ConfigService {
 	const CIRCLES_ALLOW_FEDERATED_CIRCLES = 'allow_federated';
 	const CIRCLES_ALLOW_LINKED_GROUPS = 'allow_linked_groups';
 	const CIRCLES_ALLOW_NON_SSL_LINKS = 'allow_non_ssl_links';
-	const CIRCLES_ALLOW_NON_SSL_LOCAL = 'local_is_non_ssl';
+	const CIRCLES_NON_SSL_LOCAL = 'local_is_non_ssl';
 
 	private $defaults = [
 		self::CIRCLES_ALLOW_CIRCLES           => Circle::CIRCLES_ALL,
@@ -45,7 +45,7 @@ class ConfigService {
 		self::CIRCLES_ALLOW_LINKED_GROUPS     => '0',
 		self::CIRCLES_ALLOW_FEDERATED_CIRCLES => '0',
 		self::CIRCLES_ALLOW_NON_SSL_LINKS     => '0',
-		self::CIRCLES_ALLOW_NON_SSL_LOCAL     => '0'
+		self::CIRCLES_NON_SSL_LOCAL           => '0'
 	];
 
 	/** @var string */
@@ -56,6 +56,9 @@ class ConfigService {
 
 	/** @var string */
 	private $userId;
+
+	/** @var string */
+	private $serverHost;
 
 	/** @var MiscService */
 	private $miscService;
@@ -75,11 +78,29 @@ class ConfigService {
 	/** @var int */
 	private $localNonSSL = -1;
 
-	public function __construct($appName, IConfig $config, $userId, MiscService $miscService) {
+	/**
+	 * ConfigService constructor.
+	 *
+	 * @param string $appName
+	 * @param IConfig $config
+	 * @param string $serverHost
+	 * @param string $userId
+	 * @param MiscService $miscService
+	 */
+	public function __construct(
+		$appName, IConfig $config, $serverHost, $userId, MiscService $miscService
+	) {
 		$this->appName = $appName;
 		$this->config = $config;
+		$this->serverHost = $serverHost;
 		$this->userId = $userId;
 		$this->miscService = $miscService;
+	}
+
+
+	public function getLocalAddress() {
+		return (($this->isLocalNonSSL()) ? 'http://' : '')
+			   . $this->serverHost;
 	}
 
 
@@ -131,7 +152,7 @@ class ConfigService {
 	public function isLocalNonSSL() {
 		if ($this->localNonSSL === -1) {
 			$this->localNonSSL =
-				(int)$this->getAppValue(self::CIRCLES_ALLOW_NON_SSL_LOCAL);
+				(int)$this->getAppValue(self::CIRCLES_NON_SSL_LOCAL);
 		}
 
 		return ($this->localNonSSL === 1);
