@@ -219,7 +219,6 @@ class Provider implements IProvider {
 					$this->l10n->t('{group} was linked to {circle} by {author}')
 				);
 
-
 			case 'group_unlink':
 				return $this->parseCircleMemberEvent(
 					$event, $circle, $group,
@@ -227,17 +226,22 @@ class Provider implements IProvider {
 					$this->l10n->t('{group} was unlinked from {circle} by {author}')
 				);
 
-
 			case 'group_level':
 				$level = [$this->l10n->t($group->getLevelString())];
 
 				return $this->parseCircleMemberEvent(
 					$event, $circle, $group,
-					$this->l10n->t('You changed the level of the linked group {group} in {circle} to %1$s', $level),
-					$this->l10n->t('{author} changed the level of the linked group {group} in {circle} to %1$s', $level)
+					$this->l10n->t(
+						'You changed the level of the linked group {group} in {circle} to %1$s',
+						$level
+					),
+					$this->l10n->t(
+						'{author} changed the level of the linked group {group} in {circle} to %1$s',
+						$level
+					)
 				);
-
 		}
+
 		throw new InvalidArgumentException();
 	}
 
@@ -480,7 +484,7 @@ class Provider implements IProvider {
 			'author' => $this->generateViewerParameter($circle),
 			'circle' => $this->generateCircleParameter($circle),
 			'member' => $this->generateMemberParameter($member),
-			'group' => $this->generateMemberParameter($member),
+			'group'  => $this->generateMemberParameter($member),
 		];
 
 		if ($this->isViewerTheAuthor($circle, $this->activityManager->getCurrentUserId())) {
@@ -579,7 +583,7 @@ class Provider implements IProvider {
 	/**
 	 * @param Circle $circle
 	 *
-	 * @return array <string,string|integer>
+	 * @return string|array <string,string|integer>
 	 */
 	private function generateViewerParameter(Circle $circle) {
 		if ($circle->getViewer() === null) {

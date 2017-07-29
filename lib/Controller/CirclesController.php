@@ -26,6 +26,9 @@
 
 namespace OCA\Circles\Controller;
 
+use Exception;
+use OCA\Circles\Exceptions\CircleNameFirstCharException;
+use OCA\Circles\Exceptions\CircleNameTooShortException;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
 use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 use OCP\AppFramework\Http\DataResponse;
@@ -43,22 +46,45 @@ class CirclesController extends BaseController {
 	 */
 	public function create($type, $name) {
 
-		if (strlen($name) < 3) {
-			$error = $this->l10n->t("The name of your circle must contain at least 3 characters");
-		} elseif (substr($name, 0, 1) === '_') {
-			$error = $this->l10n->t("The name of your circle cannot start with this character");
-		} else {
+		try {
+			$this->verifyCreationName($name);
+			$data = $this->circlesService->createCircle($type, $name);
 
-			try {
-				$data = $this->circlesService->createCircle($type, $name);
-
-				return $this->success(['name' => $name, 'circle' => $data, 'type' => $type]);
-			} catch (\Exception $e) {
-				$error = $e->getMessage();
-			}
+			return $this->success(['name' => $name, 'circle' => $data, 'type' => $type]);
+		} catch (Exception $e) {
+			return $this->fail(['type' => $type, 'name' => $name, 'error' => $e->getMessage()]);
 		}
 
-		return $this->fail(['type' => $type, 'name' => $name, 'error' => $error]);
+	}
+
+
+	/**
+	 * verifyCreationName();
+	 *
+	 * Verify the name at the creation of a circle:
+	 * Name must contain at least 3 chars.
+	 * First char must be alpha-numeric.
+	 *
+	 * @param $name
+	 *
+	 * @throws CircleNameFirstCharException
+	 * @throws CircleNameTooShortException
+	 */
+	private function verifyCreationName($name) {
+		if (strlen($name) < 3) {
+			throw new CircleNameTooShortException(
+				$this->l10n->t('The name of your circle must contain at least 3 characters')
+			);
+		}
+
+		$chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+		if (strpos($chars, strtolower(substr($name, 0, 1))) === false) {
+			throw new CircleNameFirstCharException(
+				$this->l10n->t(
+					"The name of your circle must start with an alpha-numerical character"
+				)
+			);
+		}
 	}
 
 
@@ -117,6 +143,7 @@ class CirclesController extends BaseController {
 	 */
 	public function settings($uniqueId, $settings) {
 		try {
+			$this->verifyCreationName($settings['circle_name']);
 			$circle = $this->circlesService->settingsCircle($uniqueId, $settings);
 
 			return $this->success(['circle_id' => $uniqueId, 'details' => $circle]);
