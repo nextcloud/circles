@@ -356,7 +356,6 @@ var nav = {
 			if (curr.circleLevel < 9 && curr.circleLevel <= i
 				|| curr.circleDetails.type === define.typePersonal) {
 				$('.level-select option[value="' + i + '"]').attr('disabled', 'disabled');
-
 			}
 		}
 
@@ -370,17 +369,22 @@ var nav = {
 
 				//
 				// level
-				var level = $(this).attr('member-level');
-				var levelSelect = $(this).find('.level-select');
-				if (level === '0') {
-					levelSelect.hide();
+				if (curr.circleDetails.type === define.typePersonal) {
+					var levelString = $(this).attr('member-levelString');
+					$(this).find('.level').text(levelString);
+				} else {
+					var level = $(this).attr('member-level');
+					var levelSelect = $(this).find('.level-select');
+					if (level === '0') {
+						levelSelect.hide();
+					}
+					else {
+						levelSelect.show(200).val(level);
+					}
+					levelSelect.on('change', function () {
+						actions.changeMemberLevel(userId, $(this).val());
+					});
 				}
-				else {
-					levelSelect.show(200).val(level);
-				}
-				levelSelect.on('change', function () {
-					actions.changeMemberLevel(userId, $(this).val());
-				});
 
 				//
 				// status
@@ -442,9 +446,11 @@ var nav = {
 		}
 
 		for (i = 0; i < 10; i++) {
-			if ((curr.circleLevel < define.levelAdmin && curr.circleLevel <= i) ||
-				curr.circleDetails.type === define.typePersonal) {
+			if (curr.circleLevel < define.levelAdmin && curr.circleLevel <= i) {
 				$('.level-select option[value="' + i + '"]').attr('disabled', 'disabled');
+			}
+			if (i > define.levelMember && curr.circleDetails.type === define.typePersonal) {
+				$('.level-select option[value="' + i + '"]').remove();
 			}
 		}
 

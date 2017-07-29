@@ -433,6 +433,7 @@ var elements = {
 		tmpl = tmpl.replace(/%username%/g, escapeHTML(entry.user_id));
 		tmpl = tmpl.replace(/%displayname%/g, escapeHTML(entry.display_name));
 		tmpl = tmpl.replace(/%level%/g, escapeHTML(entry.level));
+		tmpl = tmpl.replace(/%levelString%/g, escapeHTML(entry.level_string));
 		tmpl = tmpl.replace(/%status%/g, escapeHTML(entry.status));
 		tmpl = tmpl.replace(/%joined%/g, escapeHTML(entry.joined));
 
@@ -445,6 +446,7 @@ var elements = {
 
 		tmpl = tmpl.replace(/%groupid%/g, escapeHTML(entry.group_id));
 		tmpl = tmpl.replace(/%level%/g, escapeHTML(entry.level));
+		tmpl = tmpl.replace(/%levelString%/g, escapeHTML(entry.level_string));
 		tmpl = tmpl.replace(/%joined%/g, escapeHTML(entry.joined));
 
 		return tmpl;
