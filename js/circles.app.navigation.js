@@ -449,7 +449,7 @@ var nav = {
 		}
 
 		for (i = 0; i < 10; i++) {
-			if (curr.circleLevel < define.levelAdmin && curr.circleLevel <= i) {
+			if (curr.circleLevel < 9 && curr.circleLevel <= i) {
 				$('.level-select option[value="' + i + '"]').attr('disabled', 'disabled');
 			}
 			if (i > define.levelMember && curr.circleDetails.type === define.typePersonal) {
@@ -467,9 +467,9 @@ var nav = {
 					$(this).css('background', '#fff');
 				}
 
-				var level = $(this).attr('group-level');
+				var level = Number($(this).attr('group-level'));
 				var levelSelect = $(this).find('.level-select');
-				if (level === '0') {
+				if (level === 0) {
 					levelSelect.hide();
 				}
 				else {
