@@ -365,6 +365,9 @@ var nav = {
 				var userId = $(this).attr('member-id');
 				if (userId === curr.userId) {
 					$(this).find('td.username').css('font-weight', 'bold').css('font-style', 'italic');
+					$(this).css('background', '#e0e0e0');
+				} else {
+					$(this).css('background', '#fff');
 				}
 
 				//
@@ -373,9 +376,9 @@ var nav = {
 					var levelString = $(this).attr('member-levelString');
 					$(this).find('.level').text(levelString);
 				} else {
-					var level = $(this).attr('member-level');
+					var level = Number($(this).attr('member-level'));
 					var levelSelect = $(this).find('.level-select');
-					if (level === '0') {
+					if (level === 0) {
 						levelSelect.hide();
 					}
 					else {
@@ -457,6 +460,12 @@ var nav = {
 		elements.mainUIGroupsTable.children('tr.entry').each(function () {
 
 				var groupId = $(this).attr('group-id');
+				if (groupId === curr.circleDetails.group.group_id) {
+					$(this).find('td.username').css('font-weight', 'bold').css('font-style', 'italic');
+					$(this).css('background', '#e0e0e0');
+				} else {
+					$(this).css('background', '#fff');
+				}
 
 				var level = $(this).attr('group-level');
 				var levelSelect = $(this).find('.level-select');

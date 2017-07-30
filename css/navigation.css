@@ -177,7 +177,6 @@ div.circle .owner, div.circle .type, div.circle .resume {
 
 #mainui #memberslist {
 	position: absolute;
-	margin: 15px;
 	overflow-y: auto;
 	width: 100%;
 }
@@ -283,7 +282,7 @@ div.circle .owner, div.circle .type, div.circle .resume {
 .level-select, .status-select, .link-status-select {
 	border: 0;
 	margin: 0;
-	background: #fff;
+	background: #fff0;
 }
 
 #mainui #settings-panel {

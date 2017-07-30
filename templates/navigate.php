@@ -297,7 +297,7 @@ style('circles', 'navigation');
 					<script id="tmpl_member" type="text/template">
 						<tr class="entry" member-id="%username%" member-level="%level%" member-levelString="%levelString%"
 							member-status="%status%">
-							<td class="username">%displayname%</td>
+							<td class="username" style="padding-left: 15px;">%displayname%</td>
 							<td class="level">
 								<select class="level-select">
 									<option value="1"><?php p($l->t('Member')); ?></option>
@@ -319,7 +319,7 @@ style('circles', 'navigation');
 
 					<script id="tmpl_group" type="text/template">
 						<tr class="entry" group-id="%groupid%" group-level="%level%">
-							<td class="groupid">%groupid%</td>
+							<td class="groupid" style="padding-left: 15px;">%groupid%</td>
 							<td class="level">
 								<select class="level-select">
 									<option value="1"><?php p($l->t('Member')); ?></option>
@@ -334,7 +334,7 @@ style('circles', 'navigation');
 					<script id="tmpl_link" type="text/template">
 						<tr class="entry" link-id="%id%" link-address="%address%"
 							link-status="%status%">
-							<td class="address">%token%@%address%</td>
+							<td class="address" style="padding-left: 15px;">%token%@%address%</td>
 							<td class="status">
 								<select class="link-status-select">
 								</select>

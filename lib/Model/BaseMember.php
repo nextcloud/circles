@@ -280,7 +280,7 @@ class BaseMember implements \JsonSerializable {
 			'user_id'      => $this->getUserId(),
 			'group_id'     => $this->getGroupId(),
 			'type'         => $this->getViewerType(),
-			'display_name' => $this->getDisplayNAme(),
+			'display_name' => $this->getDisplayName(),
 			'level'        => $this->getLevel(),
 			'level_string' => $this->getLevelString(),
 			'status'       => $this->getStatus(),
