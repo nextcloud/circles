@@ -19,7 +19,7 @@ This is the right circle if you are looking for privacy when sharing your files 
 Your circle will be visible to everyone and everyone will be able to join the circle.]]>
 	</description>
 	<version>0.11.8</version>
-	<licence>AGPL</licence>
+	<licence>agpl</licence>
 	<author>Maxence Lange</author>
 	<documentation>
 		<admin>https://github.com/nextcloud/circles/wiki</admin>

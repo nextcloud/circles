@@ -24,7 +24,8 @@
   ~
   -->
 
-<database>
+<database xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		  xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/database.xsd">
 
 	<name>*dbname*</name>
 	<create>true</create>
@@ -38,46 +39,46 @@
 			<field>
 				<name>id</name>
 				<type>integer</type>
+				<length>4</length>
+				<unsigned>true</unsigned>
 				<notnull>true</notnull>
 				<autoincrement>true</autoincrement>
-				<unsigned>true</unsigned>
 				<primary>true</primary>
-				<length>4</length>
 			</field>
 
 			<field>
 				<name>unique_id</name>
 				<type>text</type>
-				<notnull>true</notnull>
 				<length>64</length>
+				<notnull>true</notnull>
 			</field>
 
 			<field>
 				<name>name</name>
 				<type>text</type>
-				<notnull>true</notnull>
 				<length>64</length>
+				<notnull>true</notnull>
 			</field>
 
 			<field>
 				<name>description</name>
 				<type>text</type>
-				<notnull>false</notnull>
 				<length>4000</length>
+				<notnull>false</notnull>
 			</field>
 
 			<field>
 				<name>settings</name>
 				<type>text</type>
-				<notnull>false</notnull>
 				<length>4000</length>
+				<notnull>false</notnull>
 			</field>
 
 			<field>
 				<name>type</name>
 				<type>integer</type>
-				<notnull>true</notnull>
 				<length>2</length>
+				<notnull>true</notnull>
 			</field>
 
 			<field>
@@ -94,36 +95,36 @@
 			<field>
 				<name>circle_id</name>
 				<type>text</type>
-				<notnull>true</notnull>
 				<length>64</length>
+				<notnull>true</notnull>
 			</field>
 
 			<field>
 				<name>user_id</name>
 				<type>text</type>
-				<notnull>true</notnull>
 				<length>64</length>
+				<notnull>true</notnull>
 			</field>
 
 			<field>
 				<name>level</name>
 				<type>integer</type>
-				<notnull>true</notnull>
 				<length>1</length>
+				<notnull>true</notnull>
 			</field>
 
 			<field>
 				<name>status</name>
 				<type>text</type>
-				<notnull>false</notnull>
 				<length>15</length>
+				<notnull>false</notnull>
 			</field>
 
 			<field>
 				<name>note</name>
 				<type>text</type>
-				<notnull>false</notnull>
 				<length>255</length>
+				<notnull>false</notnull>
 			</field>
 
 			<field>
@@ -153,29 +154,29 @@
 			<field>
 				<name>circle_id</name>
 				<type>text</type>
-				<notnull>true</notnull>
 				<length>64</length>
+				<notnull>true</notnull>
 			</field>
 
 			<field>
 				<name>group_id</name>
 				<type>text</type>
-				<notnull>true</notnull>
 				<length>64</length>
+				<notnull>true</notnull>
 			</field>
 
 			<field>
 				<name>level</name>
 				<type>integer</type>
-				<notnull>true</notnull>
 				<length>1</length>
+				<notnull>true</notnull>
 			</field>
 
 			<field>
 				<name>note</name>
 				<type>text</type>
-				<notnull>false</notnull>
 				<length>255</length>
+				<notnull>false</notnull>
 			</field>
 
 			<field>
@@ -205,11 +206,11 @@
 			<field>
 				<name>id</name>
 				<type>integer</type>
+				<length>4</length>
+				<unsigned>true</unsigned>
 				<notnull>true</notnull>
 				<autoincrement>true</autoincrement>
-				<unsigned>true</unsigned>
 				<primary>true</primary>
-				<length>4</length>
 			</field>
 
 			<field>
@@ -221,50 +222,50 @@
 			<field>
 				<name>circle_id</name>
 				<type>text</type>
-				<notnull>true</notnull>
 				<length>64</length>
+				<notnull>true</notnull>
 			</field>
 
 			<field>
 				<name>source</name>
 				<type>text</type>
-				<notnull>true</notnull>
 				<length>15</length>
+				<notnull>true</notnull>
 			</field>
 
 			<field>
 				<name>type</name>
 				<type>text</type>
-				<notnull>true</notnull>
 				<length>15</length>
+				<notnull>true</notnull>
 			</field>
 
 			<field>
 				<name>author</name>
 				<type>text</type>
-				<notnull>true</notnull>
 				<length>32</length>
+				<notnull>true</notnull>
 			</field>
 
 			<field>
 				<name>cloud_id</name>
 				<type>text</type>
-				<notnull>false</notnull>
 				<length>128</length>
+				<notnull>false</notnull>
 			</field>
 
 			<field>
 				<name>headers</name>
 				<type>text</type>
-				<notnull>false</notnull>
 				<length>4000</length>
+				<notnull>false</notnull>
 			</field>
 
 			<field>
 				<name>payload</name>
 				<type>text</type>
-				<notnull>true</notnull>
 				<length>4000</length>
+				<notnull>true</notnull>
 			</field>
 
 			<field>
@@ -281,25 +282,25 @@
 			<field>
 				<name>id</name>
 				<type>integer</type>
+				<length>3</length>
+				<unsigned>true</unsigned>
 				<notnull>true</notnull>
 				<autoincrement>true</autoincrement>
-				<unsigned>true</unsigned>
 				<primary>true</primary>
-				<length>3</length>
 			</field>
 
 			<field>
 				<name>status</name>
 				<type>integer</type>
-				<notnull>true</notnull>
 				<length>1</length>
+				<notnull>true</notnull>
 			</field>
 
 			<field>
 				<name>circle_id</name>
 				<type>text</type>
-				<notnull>true</notnull>
 				<length>64</length>
+				<notnull>true</notnull>
 			</field>
 
 			<field>
@@ -311,22 +312,22 @@
 			<field>
 				<name>address</name>
 				<type>text</type>
-				<notnull>true</notnull>
 				<length>128</length>
+				<notnull>true</notnull>
 			</field>
 
 			<field>
 				<name>token</name>
 				<type>text</type>
-				<notnull>true</notnull>
 				<length>64</length>
+				<notnull>true</notnull>
 			</field>
 
 			<field>
 				<name>key</name>
 				<type>text</type>
-				<notnull>true</notnull>
 				<length>64</length>
+				<notnull>true</notnull>
 			</field>
 
 			<field>
