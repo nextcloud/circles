@@ -177,6 +177,20 @@ class Member extends BaseMember {
 		if ($this->getLevel() < self::LEVEL_MEMBER) {
 			throw new MemberDoesNotExistException($this->l10n->t('This member does not exist'));
 		}
+
+		return true;
+	}
+
+
+	/**
+	 * @throws MemberDoesNotExistException
+	 */
+	public function hasToBeMemberOrAlmost() {
+		if ($this->isAlmostMember() || $this->hasToBeMember()) {
+			return true;
+		}
+
+		throw new MemberDoesNotExistException($this->l10n->t('This member does not exist'));
 	}
 
 

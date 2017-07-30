@@ -10,6 +10,7 @@ namespace OCA\Circles\Db;
 
 
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use Doctrine\DBAL\Query\QueryBuilder;
@@ -197,6 +198,26 @@ class CoreRequestBuilder {
 		}
 
 		$qb->andWhere($orX);
+	}
+
+
+	/**
+	 * Limit the search to Members and Almost members
+	 *
+	 * @param IQueryBuilder $qb
+	 */
+	protected function limitToMembersAndAlmost(IQueryBuilder &$qb) {
+		$expr = $qb->expr();
+
+		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
+
+		$orX = $expr->orX();
+		$orX->add($expr->eq($pf . 'status', $qb->createNamedParameter(Member::STATUS_MEMBER)));
+		$orX->add($expr->eq($pf . 'status', $qb->createNamedParameter(Member::STATUS_INVITED)));
+		$orX->add($expr->eq($pf . 'status', $qb->createNamedParameter(Member::STATUS_REQUEST)));
+
+		$qb->andWhere($orX);
+
 	}
 
 

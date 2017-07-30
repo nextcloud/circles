@@ -317,9 +317,7 @@ class CirclesService {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			$member = $circle->getViewer();
 
-			if (!$member->isAlmostMember()) {
-				$member->hasToBeMember();
-			}
+			$member->hasToBeMemberOrAlmost();
 
 			$member->cantBeOwner();
 

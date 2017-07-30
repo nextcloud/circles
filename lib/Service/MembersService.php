@@ -370,8 +370,8 @@ class MembersService {
 				   ->hasToBeModerator();
 
 			$member = $this->membersRequest->forceGetMember($circleUniqueId, $name);
+			$member->hasToBeMemberOrAlmost();
 			$member->cantBeOwner();
-			$member->hasToBeMember();
 
 			$circle->getHigherViewer()
 				   ->hasToBeHigherLevel($member->getLevel());

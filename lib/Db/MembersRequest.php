@@ -87,6 +87,7 @@ class MembersRequest extends MembersRequestBuilder {
 
 		$qb = $this->getMembersSelectSql();
 
+		$this->limitToMembersAndAlmost($qb);
 		$this->limitToLevel($qb, $level);
 		$this->limitToCircleId($qb, $circleUniqueId);
 
@@ -116,7 +117,7 @@ class MembersRequest extends MembersRequestBuilder {
 		try {
 			$viewer->hasToBeMember();
 
-			$members = $this->forceGetMembers($circleUniqueId, Member::LEVEL_MEMBER);
+			$members = $this->forceGetMembers($circleUniqueId, Member::LEVEL_NONE);
 			if (!$viewer->isLevel(Member::LEVEL_MODERATOR)) {
 				array_map(
 					function(Member $m) {
