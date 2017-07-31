@@ -255,6 +255,7 @@ class FederatedController extends BaseController {
 		flush();
 	}
 
+
 	/**
 	 * send a positive response to a request with an array of data, and confirm
 	 * the identity of the link with a token

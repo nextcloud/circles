@@ -217,7 +217,6 @@ class CoreRequestBuilder {
 		$orX->add($expr->eq($pf . 'status', $qb->createNamedParameter(Member::STATUS_REQUEST)));
 
 		$qb->andWhere($orX);
-
 	}
 
 
