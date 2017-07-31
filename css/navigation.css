@@ -161,8 +161,8 @@ div.circle .owner, div.circle .type, div.circle .resume {
 
 #circledata {
 	position: absolute;
-	bottom: 15px;
-	right: 15px;
+	bottom: 5px;
+	right: 10px;
 	left: 15px;
 	top: 120px;
 	overflow-y: auto;

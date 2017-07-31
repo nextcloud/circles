@@ -436,12 +436,12 @@ var nav = {
 			curr.circleGroups = groups;
 		}
 
-		elements.mainUIGroupsTable.emptyTable();
 		if (groups === null || groups.length === 0) {
 			elements.mainUIGroupsTable.hide(curr.animationSpeed);
 			return;
 		}
 
+		elements.mainUIGroupsTable.emptyTable();
 		elements.mainUIGroupsTable.show(200);
 		for (var i = 0; i < groups.length; i++) {
 			var tmpl = elements.generateTmplGroup(groups[i]);
@@ -460,7 +460,7 @@ var nav = {
 		elements.mainUIGroupsTable.children('tr.entry').each(function () {
 
 				var groupId = $(this).attr('group-id');
-				if (groupId === curr.circleDetails.group.group_id) {
+				if (curr.circleDetails.group !== null && groupId === curr.circleDetails.group.group_id) {
 					$(this).find('td.username').css('font-weight', 'bold').css('font-style', 'italic');
 					$(this).css('background', '#e0e0e0');
 				} else {

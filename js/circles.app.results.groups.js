@@ -97,17 +97,20 @@ var resultGroups = {
 
 	unlinkGroupResult: function (result) {
 		if (result.status === 1) {
-
 			elements.mainUIGroupsTable.children("[group-id='" + result.name + "']").each(
 				function () {
 					$(this).hide(300);
 				});
+
 			OCA.notification.onSuccess(
 				t('circles', "Group '{name}' successfully removed from the circle",
 					{name: result.name}));
+
+			nav.displayGroups(result.groups);
 			return;
 		}
 
+		nav.displayGroups('');
 		OCA.notification.onFail(
 			t('circles', "Group '{name}' could not be removed from the circle",
 				{name: result.name}) +
