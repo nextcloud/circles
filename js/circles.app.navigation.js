@@ -77,7 +77,23 @@ var nav = {
 				nav.circlesActionReturn();
 			}
 			if (e.keyCode === 13) {
-				api.addMember(curr.circle, $(this).val(), resultMembers.addMemberResult);
+
+				if (curr.exactMemberSearchType === 'group') {
+
+					OC.dialogs.confirm(
+						t('circles',
+							'This operation will add/invite all members of the group to the circle'),
+						t('circles', 'Please confirm'),
+						function (e) {
+							if (e === true) {
+								api.addGroupMembers(curr.circle, elements.addMember.val(),
+									resultMembers.addGroupMembersResult);
+							}
+						});
+				} else {
+					api.addMember(curr.circle, elements.addMember.val(),
+						resultMembers.addMemberResult);
+				}
 			}
 		});
 
@@ -460,7 +476,8 @@ var nav = {
 		elements.mainUIGroupsTable.children('tr.entry').each(function () {
 
 				var groupId = $(this).attr('group-id');
-				if (curr.circleDetails.group !== null && groupId === curr.circleDetails.group.group_id) {
+				if (curr.circleDetails.group !== null &&
+					groupId === curr.circleDetails.group.group_id) {
 					$(this).find('td.username').css('font-weight', 'bold').css('font-style', 'italic');
 					$(this).css('background', '#e0e0e0');
 				} else {

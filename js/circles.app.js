@@ -54,6 +54,7 @@ var curr = {
 	searchCircle: '',
 	searchFilter: 0,
 	searchUser: '',
+	exactMemberSearchType: false,
 	searchGroup: '',
 	searchUserSelected: '',
 	allowed_linked_groups: 0,

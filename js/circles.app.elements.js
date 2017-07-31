@@ -321,11 +321,16 @@ var elements = {
 
 
 	fillExactMembersSearch: function (source, exact) {
+		curr.exactMemberSearchType = '';
 		$.each(exact, function (index, value) {
 			var details = escapeHTML(value.value.shareWith);
 			if (source === 'groups') {
+				if (exact.length === 1) {
+					curr.exactMemberSearchType = 'group';
+				}
 				details = 'group';
 			}
+
 			elements.membersSearchResult.append(
 				'<div class="members_search exact" source="' + source + '" searchresult="' +
 				escapeHTML(value.value.shareWith) + '">' + escapeHTML(value.label) + '   (' +
