@@ -209,7 +209,7 @@ var nav = {
 
 		this.resetCirclesTypeSelection(type);
 		elements.resetCirclesList();
-		api.listCircles(type, '', 0, resultCircles.listCirclesResult);
+		api.listCircles(type, '', curr.searchFilter, resultCircles.listCirclesResult);
 	},
 
 
