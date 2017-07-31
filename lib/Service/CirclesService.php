@@ -318,14 +318,13 @@ class CirclesService {
 			$member = $circle->getViewer();
 
 			$member->hasToBeMemberOrAlmost();
-
 			$member->cantBeOwner();
+
+			$this->eventsService->onMemberLeaving($circle, $member);
 
 			$member->setStatus(Member::STATUS_NONMEMBER);
 			$member->setLevel(Member::LEVEL_NONE);
 			$this->membersRequest->updateMember($member);
-
-			$this->eventsService->onMemberLeaving($circle, $member);
 		} catch (\Exception $e) {
 			throw $e;
 		}

@@ -190,12 +190,12 @@ class EventsService {
 
 		switch ($member->getStatus()) {
 			case Member::STATUS_INVITED:
-				$this->onMemberInvitation($circle, $member);
+				$this->onMemberInvited($circle, $member);
 
 				return;
 
 			case Member::STATUS_REQUEST:
-				$this->onMemberInvitationRequest($circle, $member);
+				$this->onMemberRequesting($circle, $member);
 
 				return;
 		}
@@ -203,7 +203,7 @@ class EventsService {
 
 
 	/**
-	 * onMemberInvitation()
+	 * onMemberInvited()
 	 *
 	 * Called when a member is invited to a circle.
 	 * Broadcast an activity to the invited member and to the moderators of the circle.
@@ -211,7 +211,7 @@ class EventsService {
 	 * @param Circle $circle
 	 * @param Member $member
 	 */
-	public function onMemberInvitation(Circle $circle, Member $member) {
+	private function onMemberInvited(Circle $circle, Member $member) {
 		if ($circle->getType() !== Circle::CIRCLES_PRIVATE) {
 			return;
 		}
@@ -233,7 +233,7 @@ class EventsService {
 
 
 	/**
-	 * onMemberInvitationRequest()
+	 * onMemberRequesting()
 	 *
 	 * Called when a member request an invitation to a private circle.
 	 * Broadcast an activity to the requester and to the moderators of the circle.
@@ -241,7 +241,7 @@ class EventsService {
 	 * @param Circle $circle
 	 * @param Member $member
 	 */
-	public function onMemberInvitationRequest(Circle $circle, Member $member) {
+	private function onMemberRequesting(Circle $circle, Member $member) {
 		if ($circle->getType() !== Circle::CIRCLES_PRIVATE) {
 			return;
 		}

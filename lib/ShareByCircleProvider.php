@@ -374,9 +374,7 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 		$data['share_with'] =
 			sprintf(
 				'%s (%s, %s)', $data['circle_name'], Circle::TypeLongString($data['circle_type']),
-				\OC::$server->getUserManager()
-							->get($data['circle_owner'])
-							->getDisplayName()
+				$this->miscService->getDisplayName($data['circle_owner'])
 			);
 
 		return $data;
@@ -612,9 +610,7 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 					  sprintf(
 						  '%s (%s, %s)', $data['circle_name'],
 						  Circle::TypeLongString($data['circle_type']),
-						  \OC::$server->getUserManager()
-									  ->get($data['circle_owner'])
-									  ->getDisplayName()
+						  $this->miscService->getDisplayName($data['circle_owner'])
 					  )
 				  );
 		}

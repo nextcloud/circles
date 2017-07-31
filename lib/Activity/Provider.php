@@ -132,37 +132,135 @@ class Provider implements IProvider {
 
 		switch ($event->getSubject()) {
 			case 'member_join':
-				return $this->parseCircleMemberEvent(
-					$event, $circle, $member,
-					$this->l10n->t('You joined {circle}'),
-					$this->l10n->t('{member} joined {circle}')
-				);
+				return $this->parseSubjectMemberJoin($event, $circle, $member);
 
 			case 'member_add':
-				return $this->parseCircleMemberAdvancedEvent(
-					$event, $circle, $member,
-					$this->l10n->t('You added {member} as member to {circle}'),
-					$this->l10n->t('You were added as member to {circle} by {author}'),
-					$this->l10n->t('{member} was added as member to {circle} by {author}')
-				);
+				return $this->parseSubjectMemberAdd($event, $circle, $member);
 
 			case 'member_left':
-				return $this->parseCircleMemberEvent(
-					$event, $circle, $member,
-					$this->l10n->t('You left {circle}'),
-					$this->l10n->t('{member} left {circle}')
-				);
+				return $this->parseSubjectMemberLeft($event, $circle, $member);
 
 			case 'member_remove':
-				return $this->parseCircleMemberAdvancedEvent(
-					$event, $circle, $member,
-					$this->l10n->t('You removed {member} from {circle}'),
-					$this->l10n->t('You were removed from {circle} by {author}'),
-					$this->l10n->t('{member} was removed from {circle} by {author}')
-				);
+				return $this->parseSubjectMemberRemove($event, $circle, $member);
 		}
 
 		return $event;
+	}
+
+
+	/**
+	 * Parse on Subject 'member_join'.
+	 * If circle is private, we say that user accepted his invitation.
+	 *
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param Member $member
+	 *
+	 * @return IEvent
+	 */
+	private function parseSubjectMemberJoin(IEvent &$event, Circle $circle, Member $member) {
+		if ($circle->getType() === Circle::CIRCLES_PRIVATE) {
+			return $this->parseCircleMemberEvent(
+				$event, $circle, $member,
+				$this->l10n->t('You accepted the invitation to join {circle}'),
+				$this->l10n->t('{member} accepted the invitation to join {circle}')
+			);
+		} else {
+			return $this->parseCircleMemberEvent(
+				$event, $circle, $member,
+				$this->l10n->t('You joined {circle}'),
+				$this->l10n->t('{member} joined {circle}')
+			);
+		}
+	}
+
+
+	/**
+	 * Parse on Subject 'member_add'.
+	 * If circle is private, we say that user's invitation was accepted.
+	 *
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param Member $member
+	 *
+	 * @return IEvent
+	 */
+	private function parseSubjectMemberAdd(IEvent &$event, Circle $circle, Member $member) {
+		if ($circle->getType() === Circle::CIRCLES_PRIVATE) {
+			return $this->parseCircleMemberAdvancedEvent(
+				$event, $circle, $member,
+				$this->l10n->t("You accepted {member}'s request to join {circle}"),
+				$this->l10n->t('Your request to join {circle} has been accepted by {author}'),
+				$this->l10n->t("{member}'s request to join {circle} has been accepted by {author}")
+			);
+		} else {
+			return $this->parseCircleMemberAdvancedEvent(
+				$event, $circle, $member,
+				$this->l10n->t('You added {member} as member to {circle}'),
+				$this->l10n->t('You have been added as member to {circle} by {author}'),
+				$this->l10n->t('{member} has been added as member to {circle} by {author}')
+			);
+		}
+	}
+
+
+	/**
+	 * Parse on Subject 'member_left'.
+	 * If circle is private and member was not a real member, we say that member rejected his
+	 * invitation.
+	 *
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param Member $member
+	 *
+	 * @return IEvent
+	 */
+	private function parseSubjectMemberLeft(IEvent &$event, Circle $circle, Member $member) {
+		if ($circle->getType() === Circle::CIRCLES_PRIVATE
+			&& $member->getLevel() === Member::LEVEL_NONE) {
+			return $this->parseCircleMemberEvent(
+				$event, $circle, $member,
+				$this->l10n->t("You rejected the invitation to join {circle}"),
+				$this->l10n->t("{member} rejected the invitation to join {circle}")
+			);
+		} else {
+			return $this->parseCircleMemberEvent(
+				$event, $circle, $member,
+				$this->l10n->t('You left {circle}'),
+				$this->l10n->t('{member} left {circle}')
+			);
+		}
+	}
+
+
+	/**
+	 * Parse on Subject 'member_remove'.
+	 * If circle is private and member was not a real member, we say that his invitation was
+	 * rejected.
+	 *
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param Member $member
+	 *
+	 * @return IEvent
+	 */
+	private function parseSubjectMemberRemove(IEvent &$event, Circle $circle, Member $member) {
+		if ($circle->getType() === Circle::CIRCLES_PRIVATE
+			&& $member->getLevel() === Member::LEVEL_NONE) {
+			return $this->parseCircleMemberAdvancedEvent(
+				$event, $circle, $member,
+				$this->l10n->t("You dismissed {member}'s request to join {circle}"),
+				$this->l10n->t('Your request to join {circle} has been dismissed by {author}'),
+				$this->l10n->t("{member}'s request to join {circle} has been dismissed by {author}")
+			);
+		} else {
+			return $this->parseCircleMemberAdvancedEvent(
+				$event, $circle, $member,
+				$this->l10n->t('You removed {member} from {circle}'),
+				$this->l10n->t('You have been removed from {circle} by {author}'),
+				$this->l10n->t('{member} has been removed from {circle} by {author}')
+			);
+		}
 	}
 
 
@@ -216,14 +314,14 @@ class Provider implements IProvider {
 				return $this->parseCircleMemberEvent(
 					$event, $circle, $group,
 					$this->l10n->t('You linked {group} to {circle}'),
-					$this->l10n->t('{group} was linked to {circle} by {author}')
+					$this->l10n->t('{group} has been linked to {circle} by {author}')
 				);
 
 			case 'group_unlink':
 				return $this->parseCircleMemberEvent(
 					$event, $circle, $group,
 					$this->l10n->t('You unlinked {group} from {circle}'),
-					$this->l10n->t('{group} was unlinked from {circle} by {author}')
+					$this->l10n->t('{group} has been unlinked from {circle} by {author}')
 				);
 
 			case 'group_level':
@@ -261,9 +359,9 @@ class Provider implements IProvider {
 			case 'member_invited':
 				return $this->parseCircleMemberAdvancedEvent(
 					$event, $circle, $member,
-					$this->l10n->t('You invited {member} into {circle}'),
-					$this->l10n->t('You have been invited into {circle} by {author}'),
-					$this->l10n->t('{member} have been invited into {circle} by {author}')
+					$this->l10n->t('You invited {member} to join {circle}'),
+					$this->l10n->t('You have been invited to join {circle} by {author}'),
+					$this->l10n->t('{member} has been invited to join {circle} by {author}')
 				);
 
 			case 'member_level':
@@ -279,10 +377,8 @@ class Provider implements IProvider {
 			case 'member_request_invitation':
 				return $this->parseMemberEvent(
 					$event, $circle, $member,
-					$this->l10n->t('You requested an invitation into {circle}'),
-					$this->l10n->t(
-						'{member} has requested an invitation into {circle}'
-					)
+					$this->l10n->t('You sent a request to join {circle}'),
+					$this->l10n->t('{member} sent a request to join {circle}')
 				);
 
 			case 'member_owner':
@@ -625,7 +721,6 @@ class Provider implements IProvider {
 			'name'   => $link->getToken() . '@' . $link->getAddress(),
 			'parsed' => $link->getToken() . '@' . $link->getAddress()
 		];
-//			'link' => Circles::generateRemoteLink($link)
 	}
 
 
@@ -638,12 +733,8 @@ class Provider implements IProvider {
 		return [
 			'type'   => 'user',
 			'id'     => $userId,
-			'name'   => \OC::$server->getUserManager()
-									->get($userId)
-									->getDisplayName(),
-			'parsed' => \OC::$server->getUserManager()
-									->get($userId)
-									->getDisplayName()
+			'name'   => $this->miscService->getDisplayName($userId),
+			'parsed' => $this->miscService->getDisplayName($userId)
 		];
 	}
 
