@@ -26,17 +26,25 @@
 
 namespace OCA\Circles\Service;
 
+use OC\User\NoUserException;
 use OCP\ILogger;
+use OCP\IUserManager;
 
 class MiscService {
 
+	/** @var ILogger */
 	private $logger;
 
+	/** @var string */
 	private $appName;
 
-	public function __construct(ILogger $logger, $appName) {
+	/** @var IUserManager */
+	private $userManager;
+
+	public function __construct(ILogger $logger, $appName, IUserManager $userManager) {
 		$this->logger = $logger;
 		$this->appName = $appName;
+		$this->userManager = $userManager;
 	}
 
 	public function log($message, $level = 2) {
@@ -46,5 +54,30 @@ class MiscService {
 		);
 
 		$this->logger->log($level, $message, $data);
+	}
+
+	/**
+	 * return Display Name if user exists and display name exists.
+	 * returns Exception if user does not exist.
+	 *
+	 * However, with noException set to true, will return userId even if user does not exist
+	 *
+	 * @param $userId
+	 * @param bool $noException
+	 *
+	 * @return string
+	 * @throws NoUserException
+	 */
+	public function getDisplayName($userId, $noException = false) {
+		$user = $this->userManager->get($userId);
+		if ($user === null) {
+			if ($noException) {
+				return $userId;
+			} else {
+				throw new NoUserException();
+			}
+		}
+
+		return $user->getDisplayName();
 	}
 }

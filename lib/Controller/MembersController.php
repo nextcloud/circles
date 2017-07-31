@@ -48,7 +48,8 @@ class MembersController extends BaseController {
 			return $this->fail(
 				[
 					'circle_id' => $uniqueId,
-					'name'      => $name,
+					'user_id'   => $name,
+					'name'      => $this->miscService->getDisplayName($name, true),
 					'error'     => $e->getMessage()
 				]
 			);
@@ -57,12 +58,12 @@ class MembersController extends BaseController {
 		return $this->success(
 			[
 				'circle_id' => $uniqueId,
-				'name'      => $name,
+				'user_id'   => $name,
+				'name'      => $this->miscService->getDisplayName($name, true),
 				'members'   => $data
 			]
 		);
 	}
-
 
 
 	/**
@@ -82,7 +83,8 @@ class MembersController extends BaseController {
 			return $this->fail(
 				[
 					'circle_id' => $uniqueId,
-					'name'      => $name,
+					'user_id'   => $name,
+					'name'      => $this->miscService->getDisplayName($name, true),
 					'error'     => $e->getMessage()
 				]
 			);
@@ -91,12 +93,12 @@ class MembersController extends BaseController {
 		return $this->success(
 			[
 				'circle_id' => $uniqueId,
-				'name'      => $name,
+				'user_id'   => $name,
+				'name'      => $this->miscService->getDisplayName($name, true),
 				'members'   => $data
 			]
 		);
 	}
-
 
 
 	/**
@@ -118,7 +120,8 @@ class MembersController extends BaseController {
 				$this->fail(
 					[
 						'circle_id' => $uniqueId,
-						'name'      => $member,
+						'user_id'   => $member,
+						'name'      => $this->miscService->getDisplayName($member, true),
 						'level'     => $level,
 						'error'     => $e->getMessage()
 					]
@@ -128,7 +131,8 @@ class MembersController extends BaseController {
 		return $this->success(
 			[
 				'circle_id' => $uniqueId,
-				'name'      => $member,
+				'user_id'   => $member,
+				'name'      => $this->miscService->getDisplayName($member, true),
 				'level'     => $level,
 				'members'   => $data,
 			]
@@ -154,7 +158,8 @@ class MembersController extends BaseController {
 				$this->fail(
 					[
 						'circle_id' => $uniqueId,
-						'name'      => $member,
+						'user_id'   => $member,
+						'name'      => $this->miscService->getDisplayName($member, true),
 						'error'     => $e->getMessage()
 					]
 				);
@@ -163,7 +168,8 @@ class MembersController extends BaseController {
 		return $this->success(
 			[
 				'circle_id' => $uniqueId,
-				'name'      => $member,
+				'user_id'   => $member,
+				'name'      => $this->miscService->getDisplayName($member, true),
 				'members'   => $data,
 			]
 		);

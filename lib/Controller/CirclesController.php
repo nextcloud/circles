@@ -36,6 +36,8 @@ use OCP\AppFramework\Http\DataResponse;
 class CirclesController extends BaseController {
 
 	/**
+	 * Create a circle.
+	 *
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *

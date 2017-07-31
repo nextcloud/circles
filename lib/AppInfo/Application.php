@@ -93,7 +93,9 @@ class Application extends App {
 
 		$container->registerService(
 			'MiscService', function(IAppContainer $c) {
-			return new MiscService($c->query('Logger'), $c->query('AppName'));
+			return new MiscService(
+				$c->query('Logger'), $c->query('AppName'), $c->query('UserManager')
+			);
 		}
 		);
 
@@ -412,11 +414,11 @@ class Application extends App {
 											->t('Circles');
 
 					 return [
-						 'id'    => $this->appName,
+						 'id' => $this->appName,
 						 'order' => 5,
-						 'href'  => $urlGen->linkToRoute('circles.Navigation.navigate'),
-						 'icon'  => $urlGen->imagePath($this->appName, 'circles.svg'),
-						 'name'  => $navName
+						 'href' => $urlGen->linkToRoute('circles.Navigation.navigate'),
+						 'icon' => $urlGen->imagePath($this->appName, 'circles.svg'),
+						 'name' => $navName
 					 ];
 				 }
 			 );

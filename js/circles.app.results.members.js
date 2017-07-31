@@ -161,7 +161,7 @@ var resultMembers = {
 	removeMemberResult: function (result) {
 		if (result.status === 1) {
 
-			elements.mainUIMembersTable.children("[member-id='" + result.name + "']").each(
+			elements.mainUIMembersTable.children("[member-id='" + result.user_id + "']").each(
 				function () {
 					$(this).hide(300);
 				});
