@@ -38,7 +38,6 @@ OC.L10N.register(
     "Issue while retrieving the details of this circle" : "Lỗi khi truy xuất chi tiết của vòng kết nối này",
     "Issue while retrieving the list of circles" : "Lỗi trong khi truy xuất danh sách vòng kết nối",
     "Circles" : "Vòng kết nối",
-    "The name of your circle cannot start with this character" : "Tên vòng kết nối của bạn không thể bắt đầu bằng ký tự này",
     "A circle with that name exists" : "Đã tồn tại một vòng kết nối có tên đó",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Bạn không thể sử dụng ứng dụng Vòng kết nối cho đến khi quản trị viên cho phép ít nhất một loại vòng kết nối",
     "This member does not exist" : "Thành viên này không tồn tại",

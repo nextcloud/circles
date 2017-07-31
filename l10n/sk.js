@@ -52,7 +52,6 @@ OC.L10N.register(
     "{member} joined {circle}" : "{member} sa pripojil o kruhu {circle}",
     "You left {circle}" : "Opustili ste kruh {circle}",
     "The name of your circle must contain at least 3 characters" : "Názov vášho kruhu musí obsahovať aspoň 3 znaky",
-    "The name of your circle cannot start with this character" : "Názov vášho kruhu nemôže začínať s týmto znakom",
     "A circle with that name exists" : "Kruh s týmto názvom existuje",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Nemôžete použiť aplikáciu Kruhy, pokiaľ administrátor nepovolí aspoň jeden typ kruhov",
     "This member does not exist" : "Tento používateľ neexistuje",

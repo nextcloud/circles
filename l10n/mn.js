@@ -54,7 +54,6 @@ OC.L10N.register(
     "Circle not found" : "тойрог олдоогүй",
     "This member does not exist" : "ийм гишүүн байхгүй байна",
     "This user is already a member of the circle" : "Энэ хэрэглэгч аль хэдийн тойргийн гишүүн болсон ",
-    "This option is not available for personal circles" : "Энэ сонголтыг хувийн хүрээлэлд ашиглах боломжгүй",
     "You cannot join this circle" : "Та энэ тойрогт нэгдэх боломжгүй",
     "This member is not a moderator" : "Энэ гишүүн нь зохицуулагч биш",
     "Not enough privileges" : "эрх хангалтгүй",

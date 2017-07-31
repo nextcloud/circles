@@ -61,7 +61,6 @@
     "You left {circle}" : "你离开了 {circle}",
     "You invited {member} into {circle}" : "你被 {member} 邀请到 {circle}",
     "You have been invited into {circle} by {author}" : "You have been invited into {circle} by {author}",
-    "The name of your circle cannot start with this character" : "您的圈子的名称无法从此字符开始",
     "A circle with that name exists" : "存在具有该名称的圈子",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "您的管理员至少允许一种类型的圈子，否则您不能使用“圈子”应用程序",
     "This member does not exist" : "此成员不存在",
