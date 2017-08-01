@@ -46,8 +46,8 @@ class Member extends BaseMember {
 			throw new CircleTypeNotValidException('Circle Type is not valid');
 		}
 
-		if ($circleType === Circle::CIRCLES_PRIVATE) {
-			return $this->inviteIntoPrivateCircle();
+		if ($circleType === Circle::CIRCLES_CLOSED) {
+			return $this->inviteIntoClosedCircle();
 		}
 
 		return $this->addMemberToCircle();
@@ -62,12 +62,12 @@ class Member extends BaseMember {
 	public function joinCircle($circleType) {
 
 		switch ($circleType) {
-			case Circle::CIRCLES_HIDDEN:
+			case Circle::CIRCLES_SECRET:
 			case Circle::CIRCLES_PUBLIC:
 				return $this->addMemberToCircle();
 
-			case Circle::CIRCLES_PRIVATE:
-				return $this->joinPrivateCircle();
+			case Circle::CIRCLES_CLOSED:
+				return $this->joinClosedCircle();
 		}
 
 		throw new MemberCantJoinCircleException($this->l10n->t('You cannot join this circle'));
@@ -88,10 +88,10 @@ class Member extends BaseMember {
 
 
 	/**
-	 * Update status of member like he joined a private circle
+	 * Update status of member like he joined a closed circle
 	 * (invite/request)
 	 */
-	private function joinPrivateCircle() {
+	private function joinClosedCircle() {
 
 		switch ($this->getStatus()) {
 			case Member::STATUS_NONMEMBER:
@@ -106,7 +106,7 @@ class Member extends BaseMember {
 	}
 
 
-	private function inviteIntoPrivateCircle() {
+	private function inviteIntoClosedCircle() {
 		switch ($this->getStatus()) {
 			case Member::STATUS_NONMEMBER:
 			case Member::STATUS_KICKED:

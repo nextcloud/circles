@@ -37,8 +37,8 @@ class BaseCircle {
 	];
 
 	const CIRCLES_PERSONAL = 1;
-	const CIRCLES_HIDDEN = 2;
-	const CIRCLES_PRIVATE = 4;
+	const CIRCLES_SECRET = 2;
+	const CIRCLES_CLOSED = 4;
 	const CIRCLES_PUBLIC = 8;
 
 	const CIRCLES_ALL = 15;
@@ -383,10 +383,10 @@ class BaseCircle {
 		switch ($type) {
 			case 'Personal':
 				return self::CIRCLES_PERSONAL;
-			case 'Private':
-				return self::CIRCLES_PRIVATE;
-			case 'Hidden':
-				return self::CIRCLES_HIDDEN;
+			case 'Closed':
+				return self::CIRCLES_CLOSED;
+			case 'Secret':
+				return self::CIRCLES_SECRET;
 			case 'Public':
 				return self::CIRCLES_PUBLIC;
 		}

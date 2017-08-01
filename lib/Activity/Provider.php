@@ -150,7 +150,7 @@ class Provider implements IProvider {
 
 	/**
 	 * Parse on Subject 'member_join'.
-	 * If circle is private, we say that user accepted his invitation.
+	 * If circle is closed, we say that user accepted his invitation.
 	 *
 	 * @param IEvent $event
 	 * @param Circle $circle
@@ -159,7 +159,7 @@ class Provider implements IProvider {
 	 * @return IEvent
 	 */
 	private function parseSubjectMemberJoin(IEvent &$event, Circle $circle, Member $member) {
-		if ($circle->getType() === Circle::CIRCLES_PRIVATE) {
+		if ($circle->getType() === Circle::CIRCLES_CLOSED) {
 			return $this->parseCircleMemberEvent(
 				$event, $circle, $member,
 				$this->l10n->t('You accepted the invitation to join {circle}'),
@@ -177,7 +177,7 @@ class Provider implements IProvider {
 
 	/**
 	 * Parse on Subject 'member_add'.
-	 * If circle is private, we say that user's invitation was accepted.
+	 * If circle is closed, we say that user's invitation was accepted.
 	 *
 	 * @param IEvent $event
 	 * @param Circle $circle
@@ -186,7 +186,7 @@ class Provider implements IProvider {
 	 * @return IEvent
 	 */
 	private function parseSubjectMemberAdd(IEvent &$event, Circle $circle, Member $member) {
-		if ($circle->getType() === Circle::CIRCLES_PRIVATE) {
+		if ($circle->getType() === Circle::CIRCLES_CLOSED) {
 			return $this->parseCircleMemberAdvancedEvent(
 				$event, $circle, $member,
 				$this->l10n->t("You accepted {member}'s request to join {circle}"),
@@ -206,7 +206,7 @@ class Provider implements IProvider {
 
 	/**
 	 * Parse on Subject 'member_left'.
-	 * If circle is private and member was not a real member, we say that member rejected his
+	 * If circle is closed and member was not a real member, we say that member rejected his
 	 * invitation.
 	 *
 	 * @param IEvent $event
@@ -216,7 +216,7 @@ class Provider implements IProvider {
 	 * @return IEvent
 	 */
 	private function parseSubjectMemberLeft(IEvent &$event, Circle $circle, Member $member) {
-		if ($circle->getType() === Circle::CIRCLES_PRIVATE
+		if ($circle->getType() === Circle::CIRCLES_CLOSED
 			&& $member->getLevel() === Member::LEVEL_NONE) {
 			return $this->parseCircleMemberEvent(
 				$event, $circle, $member,
@@ -235,7 +235,7 @@ class Provider implements IProvider {
 
 	/**
 	 * Parse on Subject 'member_remove'.
-	 * If circle is private and member was not a real member, we say that his invitation was
+	 * If circle is closed and member was not a real member, we say that his invitation was
 	 * rejected.
 	 *
 	 * @param IEvent $event
@@ -245,7 +245,7 @@ class Provider implements IProvider {
 	 * @return IEvent
 	 */
 	private function parseSubjectMemberRemove(IEvent &$event, Circle $circle, Member $member) {
-		if ($circle->getType() === Circle::CIRCLES_PRIVATE
+		if ($circle->getType() === Circle::CIRCLES_CLOSED
 			&& $member->getLevel() === Member::LEVEL_NONE) {
 			return $this->parseCircleMemberAdvancedEvent(
 				$event, $circle, $member,

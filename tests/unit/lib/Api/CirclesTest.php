@@ -43,13 +43,13 @@ use OCA\Circles\Tests\Env;
 class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 	const NAME_PUBLIC_CIRCLE1 = '_circleNamePublic1';
-	const NAME_HIDDEN_CIRCLE1 = '_circleNameHidden1';
-	const NAME_PRIVATE_CIRCLE1 = '_circleNamePrivate1';
+	const NAME_SECRET_CIRCLE1 = '_circleNameSecret1';
+	const NAME_CLOSED_CIRCLE1 = '_circleNameClosed1';
 	const NAME_PERSONAL_CIRCLE1 = '_circleNamePersonal1';
 
 	const NAME_PUBLIC_CIRCLE2 = '_circleNamePublic2';
-	const NAME_HIDDEN_CIRCLE2 = '_circleNameHidden2';
-	const NAME_PRIVATE_CIRCLE2 = '_circleNamePrivate2';
+	const NAME_SECRET_CIRCLE2 = '_circleNameSecret2';
+	const NAME_CLOSED_CIRCLE2 = '_circleNameClosed2';
 	const NAME_PERSONAL_CIRCLE2 = '_circleNamePersonal2';
 
 
@@ -71,10 +71,10 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 			$this->circles = [
 				'Public'   =>
 					Circles::createCircle(Circle::CIRCLES_PUBLIC, self::NAME_PUBLIC_CIRCLE1),
-				'Hidden'   =>
-					Circles::createCircle(Circle::CIRCLES_HIDDEN, self::NAME_HIDDEN_CIRCLE1),
-				'Private'  =>
-					Circles::createCircle(Circle::CIRCLES_PRIVATE, self::NAME_PRIVATE_CIRCLE1),
+				'Secret'   =>
+					Circles::createCircle(Circle::CIRCLES_SECRET, self::NAME_SECRET_CIRCLE1),
+				'Closed'  =>
+					Circles::createCircle(Circle::CIRCLES_CLOSED, self::NAME_CLOSED_CIRCLE1),
 				'Personal' =>
 					Circles::createCircle(Circle::CIRCLES_PERSONAL, self::NAME_PERSONAL_CIRCLE1)
 			];
@@ -140,13 +140,13 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 	public function testLevelMemberInCircles() {
 		Env::setUser(Env::ENV_TEST_OWNER1);
 
-		$circles = [$this->circles['Public'], $this->circles['Private'], $this->circles['Hidden']];
+		$circles = [$this->circles['Public'], $this->circles['Closed'], $this->circles['Secret']];
 
 		// OWNER1 Should be able to add/level anyone to Admin Level at least
 		try {
 			foreach ($circles AS $circle) {
 				$this->generateSimpleCircleWithAllLevel(
-					$circle->getId(), ($circle->getType() === Circle::CIRCLES_PRIVATE)
+					$circle->getId(), ($circle->getType() === Circle::CIRCLES_CLOSED)
 				);
 			}
 		} catch (Exception $e) {
@@ -163,8 +163,8 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 			foreach ($circles AS $circle) {
 				Circles::addMember($circle->getId(), Env::ENV_TEST_ADMIN2);
 
-				if ($circle->getType() === Circle::CIRCLES_PRIVATE) {
-					// In private circle, we need to confirm the invitation
+				if ($circle->getType() === Circle::CIRCLES_CLOSED) {
+					// In closed circle, we need to confirm the invitation
 					Env::setUser(Env::ENV_TEST_ADMIN2);
 					Circles::joinCircle($circle->getId());
 					Env::setUser(Env::ENV_TEST_ADMIN1);
@@ -231,8 +231,8 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 		try {
 			foreach ($circles AS $circle) {
 				Circles::addMember($circle->getId(), Env::ENV_TEST_MODERATOR2);
-				if ($circle->getType() === Circle::CIRCLES_PRIVATE) {
-					// In private circle, we need to confirm the invitation
+				if ($circle->getType() === Circle::CIRCLES_CLOSED) {
+					// In closed circle, we need to confirm the invitation
 					Env::setUser(Env::ENV_TEST_MODERATOR2);
 					Circles::joinCircle($circle->getId());
 					Env::setUser(Env::ENV_TEST_MODERATOR1);
@@ -376,8 +376,8 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 		$circleNames = [
 			self::NAME_PUBLIC_CIRCLE1,
-			self::NAME_HIDDEN_CIRCLE1,
-			self::NAME_PRIVATE_CIRCLE1
+			self::NAME_SECRET_CIRCLE1,
+			self::NAME_CLOSED_CIRCLE1
 		];
 
 		for ($i = 0; $i < sizeof(Env::listCircleTypes()); $i++) {
@@ -419,8 +419,8 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 		$circleNames = [
 			self::NAME_PUBLIC_CIRCLE1,
-			self::NAME_HIDDEN_CIRCLE1,
-			self::NAME_PRIVATE_CIRCLE1,
+			self::NAME_SECRET_CIRCLE1,
+			self::NAME_CLOSED_CIRCLE1,
 		];
 
 		$circles = [];
@@ -496,9 +496,9 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 				try {
 					Circles::addMember($circle->getId(), Env::ENV_TEST_MEMBER2);
 
-					// If Private, we check that the user is not a member before confirming
+					// If Closed, we check that the user is not a member before confirming
 					// the invitation using member account
-					if ($circle->getType() === Circle::CIRCLES_PRIVATE) {
+					if ($circle->getType() === Circle::CIRCLES_CLOSED) {
 						$member = Circles::getMember($circle->getId(), Env::ENV_TEST_MEMBER2);
 						$this->assertEquals(
 							[
@@ -607,9 +607,9 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 					try {
 
-						// If Private, we check that the user is not a member before accepting
+						// If Closed, we check that the user is not a member before accepting
 						// the request using a moderator account
-						if ($circle->getType() === Circle::CIRCLES_PRIVATE) {
+						if ($circle->getType() === Circle::CIRCLES_CLOSED) {
 							Env::setUser(Env::ENV_TEST_OWNER1);
 							$member = Circles::getMember($circle->getId(), Env::ENV_TEST_MEMBER3);
 							$this->assertEquals(
@@ -702,15 +702,15 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 			array_push($result, $circle->getName());
 		}
 
-		$this->assertEquals($result, [self::NAME_PRIVATE_CIRCLE1, self::NAME_PUBLIC_CIRCLE1]);
+		$this->assertEquals($result, [self::NAME_CLOSED_CIRCLE1, self::NAME_PUBLIC_CIRCLE1]);
 
 
 		// Let's add user to all circle
 		Env::setUser(Env::ENV_TEST_OWNER1);
-		$circles = [$this->circles['Public'], $this->circles['Private'], $this->circles['Hidden']];
+		$circles = [$this->circles['Public'], $this->circles['Closed'], $this->circles['Secret']];
 		foreach ($circles AS $circle) {
 			$this->generateSimpleCircleWithAllLevel(
-				$circle->getId(), ($circle->getType() === Circle::CIRCLES_PRIVATE)
+				$circle->getId(), ($circle->getType() === Circle::CIRCLES_CLOSED)
 			);
 		}
 
@@ -728,8 +728,8 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 		$this->assertEquals(
 			$result, [
-					   self::NAME_HIDDEN_CIRCLE1, self::NAME_PERSONAL_CIRCLE1,
-					   self::NAME_PRIVATE_CIRCLE1,
+					   self::NAME_SECRET_CIRCLE1, self::NAME_PERSONAL_CIRCLE1,
+					   self::NAME_CLOSED_CIRCLE1,
 					   self::NAME_PUBLIC_CIRCLE1
 				   ]
 		);
@@ -748,38 +748,38 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 		$this->assertEquals(
 			$result, [
-					   self::NAME_HIDDEN_CIRCLE1, self::NAME_PRIVATE_CIRCLE1,
+					   self::NAME_SECRET_CIRCLE1, self::NAME_CLOSED_CIRCLE1,
 					   self::NAME_PUBLIC_CIRCLE1
 				   ]
 		);
 
 
-		// member with a dedicated search on hidden
+		// member with a dedicated search on secret
 		Env::setUser(Env::ENV_TEST_MEMBER1);
 
-		$listing = Circles::listCircles(Circle::CIRCLES_HIDDEN, self::NAME_HIDDEN_CIRCLE1);
+		$listing = Circles::listCircles(Circle::CIRCLES_SECRET, self::NAME_SECRET_CIRCLE1);
 		$this->assertCount(1, $listing);
 
-		// member with a search on hidden
+		// member with a search on secret
 		Env::setUser(Env::ENV_TEST_MEMBER1);
 
-		$listing = Circles::listCircles(Circle::CIRCLES_HIDDEN, '');
+		$listing = Circles::listCircles(Circle::CIRCLES_SECRET, '');
 		$this->assertCount(1, $listing);
 
 		// removing member from Circle
 		Env::setUser(Env::ENV_TEST_OWNER1);
-		Circles::removeMember($this->circles['Hidden']->getId(), Env::ENV_TEST_MEMBER1);
+		Circles::removeMember($this->circles['Secret']->getId(), Env::ENV_TEST_MEMBER1);
 
-		// member with a search on hidden
+		// member with a search on secret
 		Env::setUser(Env::ENV_TEST_MEMBER1);
 
-		$listing = Circles::listCircles(Circle::CIRCLES_HIDDEN, '');
+		$listing = Circles::listCircles(Circle::CIRCLES_SECRET, '');
 		$this->assertCount(0, $listing);
 
-		// non-member with a dedicated search on hidden
+		// non-member with a dedicated search on secret
 		Env::setUser(Env::ENV_TEST_MEMBER2);
 
-		$listing = Circles::listCircles(Circle::CIRCLES_HIDDEN, self::NAME_HIDDEN_CIRCLE1);
+		$listing = Circles::listCircles(Circle::CIRCLES_SECRET, self::NAME_SECRET_CIRCLE1);
 		$this->assertCount(1, $listing);
 
 		// member with a dedicated search on personal
@@ -792,14 +792,14 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 		$listing = Circles::listCircles(Circle::CIRCLES_PERSONAL, self::NAME_PERSONAL_CIRCLE1);
 		$this->assertCount(0, $listing);
 
-		// few request as another Owner on hidden
+		// few request as another Owner on secret
 		Env::SetUser(Env::ENV_TEST_OWNER2);
-		$circle = Circles::createCircle(Circle::CIRCLES_HIDDEN, self::NAME_HIDDEN_CIRCLE2);
-		$listing = Circles::listCircles(Circle::CIRCLES_HIDDEN, '');
+		$circle = Circles::createCircle(Circle::CIRCLES_SECRET, self::NAME_SECRET_CIRCLE2);
+		$listing = Circles::listCircles(Circle::CIRCLES_SECRET, '');
 		$this->assertCount(1, $listing);
-		$listing = Circles::listCircles(Circle::CIRCLES_HIDDEN, self::NAME_HIDDEN_CIRCLE1);
+		$listing = Circles::listCircles(Circle::CIRCLES_SECRET, self::NAME_SECRET_CIRCLE1);
 		$this->assertCount(1, $listing);
-		$listing = Circles::listCircles(Circle::CIRCLES_HIDDEN, self::NAME_HIDDEN_CIRCLE2);
+		$listing = Circles::listCircles(Circle::CIRCLES_SECRET, self::NAME_SECRET_CIRCLE2);
 		$this->assertCount(1, $listing);
 		Circles::destroyCircle($circle->getId());
 
@@ -826,14 +826,14 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 	 * function to generate admin/moderator/member and assigning them their level.
 	 *
 	 * @param $circleId
-	 * @param bool $isPrivate
+	 * @param bool $isClosed
 	 */
-	protected function generateSimpleCircleWithAllLevel($circleId, $isPrivate = false) {
+	protected function generateSimpleCircleWithAllLevel($circleId, $isClosed = false) {
 
 		$curr = Env::currentUser();
 
 		Circles::addMember($circleId, Env::ENV_TEST_ADMIN1);
-		if ($isPrivate) {
+		if ($isClosed) {
 			Env::setUser(Env::ENV_TEST_ADMIN1);
 			Circles::joinCircle($circleId);
 			Env::setUser($curr);
@@ -842,7 +842,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 
 		Circles::addMember($circleId, Env::ENV_TEST_MODERATOR1);
-		if ($isPrivate) {
+		if ($isClosed) {
 			Env::setUser(Env::ENV_TEST_MODERATOR1);
 			Circles::joinCircle($circleId);
 			Env::setUser($curr);
@@ -850,7 +850,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 		Circles::levelMember($circleId, Env::ENV_TEST_MODERATOR1, Member::LEVEL_MODERATOR);
 
 		Circles::addMember($circleId, Env::ENV_TEST_MEMBER1);
-		if ($isPrivate) {
+		if ($isClosed) {
 			Env::setUser(Env::ENV_TEST_MEMBER1);
 			Circles::joinCircle($circleId);
 			Env::setUser($curr);

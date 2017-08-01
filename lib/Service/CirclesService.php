@@ -376,11 +376,11 @@ class CirclesService {
 		if (strtolower($type) === 'personal') {
 			$type = Circle::CIRCLES_PERSONAL;
 		}
-		if (strtolower($type) === 'hidden') {
-			$type = Circle::CIRCLES_HIDDEN;
+		if (strtolower($type) === 'secret') {
+			$type = Circle::CIRCLES_SECRET;
 		}
-		if (strtolower($type) === 'private') {
-			$type = Circle::CIRCLES_PRIVATE;
+		if (strtolower($type) === 'closed') {
+			$type = Circle::CIRCLES_CLOSED;
 		}
 		if (strtolower($type) === 'public') {
 			$type = Circle::CIRCLES_PUBLIC;
@@ -414,13 +414,13 @@ class CirclesService {
 				return $urlGen->getAbsoluteURL(
 					$urlGen->imagePath('circles', 'personal' . $ext)
 				);
-			case Circle::CIRCLES_PRIVATE:
+			case Circle::CIRCLES_CLOSED:
 				return $urlGen->getAbsoluteURL(
-					$urlGen->imagePath('circles', 'private' . $ext)
+					$urlGen->imagePath('circles', 'closed' . $ext)
 				);
-			case Circle::CIRCLES_HIDDEN:
+			case Circle::CIRCLES_SECRET:
 				return $urlGen->getAbsoluteURL(
-					$urlGen->imagePath('circles', 'hidden' . $ext)
+					$urlGen->imagePath('circles', 'secret' . $ext)
 				);
 			case Circle::CIRCLES_PUBLIC:
 				return $urlGen->getAbsoluteURL(

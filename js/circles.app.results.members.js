@@ -80,7 +80,7 @@ var resultMembers = {
 
 	addMemberResult: function (result) {
 
-		if (curr.circleDetails.type === define.typePrivate) {
+		if (curr.circleDetails.type === define.typeClosed) {
 			resultMembers.inviteMemberResult(result);
 			return;
 		}
@@ -119,7 +119,7 @@ var resultMembers = {
 
 	addGroupMembersResult: function (result) {
 
-		if (curr.circleDetails.type === define.typePrivate) {
+		if (curr.circleDetails.type === define.typeClosed) {
 			resultMembers.inviteGroupMembersResult(result);
 			return;
 		}

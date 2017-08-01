@@ -74,8 +74,8 @@ var curr = {
 
 var define = {
 	typePersonal: 1,
-	typeHidden: 2,
-	typePrivate: 4,
+	typeSecret: 2,
+	typeClosed: 4,
 	typePublic: 8,
 	levelMember: 1,
 	levelModerator: 4,
@@ -144,13 +144,13 @@ $(document).ready(function () {
 
 		initTransifex: function () {
 			t('circles', 'Personal Circle');
-			t('circles', 'Hidden Circle');
-			t('circles', 'Private Circle');
+			t('circles', 'Secret Circle');
+			t('circles', 'Closed Circle');
 			t('circles', 'Public Circle');
 
 			t('circles', 'Personal');
-			t('circles', 'Hidden');
-			t('circles', 'Private');
+			t('circles', 'Secret');
+			t('circles', 'Closed');
 			t('circles', 'Public');
 
 			t('circles', 'Not a member');

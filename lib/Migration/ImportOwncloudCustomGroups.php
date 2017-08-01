@@ -105,7 +105,7 @@ class ImportOwncloudCustomGroups implements IRepairStep {
 
 		while ($row = $result->fetch()) {
 			$insert->setParameter('name', $row['display_name'])
-				->setParameter('type', Circle::CIRCLES_PRIVATE);
+				->setParameter('type', Circle::CIRCLES_CLOSED);
 
 			$insert->execute();
 			$output->advance();

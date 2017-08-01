@@ -49,11 +49,11 @@ class NavigationController extends BaseController {
 				Circle::CIRCLES_PERSONAL => $this->configService->isCircleAllowed(
 					Circle::CIRCLES_PERSONAL
 				),
-				Circle::CIRCLES_HIDDEN   => $this->configService->isCircleAllowed(
-					Circle::CIRCLES_HIDDEN
+				Circle::CIRCLES_SECRET   => $this->configService->isCircleAllowed(
+					Circle::CIRCLES_SECRET
 				),
-				Circle::CIRCLES_PRIVATE  => $this->configService->isCircleAllowed(
-					Circle::CIRCLES_PRIVATE
+				Circle::CIRCLES_CLOSED   => $this->configService->isCircleAllowed(
+					Circle::CIRCLES_CLOSED
 				),
 				Circle::CIRCLES_PUBLIC   => $this->configService->isCircleAllowed(
 					Circle::CIRCLES_PUBLIC

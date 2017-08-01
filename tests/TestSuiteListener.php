@@ -159,8 +159,8 @@ class Env implements \PHPUnit_Framework_TestListener {
 	public static function listCircleTypes() {
 		return [
 			Circle::CIRCLES_PUBLIC,
-			Circle::CIRCLES_PRIVATE,
-			Circle::CIRCLES_HIDDEN,
+			Circle::CIRCLES_CLOSED,
+			Circle::CIRCLES_SECRET,
 			Circle::CIRCLES_PERSONAL
 		];
 	}

@@ -61,24 +61,24 @@ style('circles', 'navigation');
 				);
 			}
 
-			// Hidden Circle
-			if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_HIDDEN]) {
+			// Secret Circle
+			if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_SECRET]) {
 				print_unescaped(
 					sprintf(
 						'<option value="%s">%s</option>',
-						\OCA\Circles\Model\Circle::CIRCLES_HIDDEN,
-						$l->t("Create a hidden circle")
+						\OCA\Circles\Model\Circle::CIRCLES_SECRET,
+						$l->t("Create a secret circle")
 					)
 				);
 			}
 
-			// Private Circle
-			if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PRIVATE]) {
+			// Closed Circle
+			if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_CLOSED]) {
 				print_unescaped(
 					sprintf(
 						'<option value="%s">%s</option>',
-						\OCA\Circles\Model\Circle::CIRCLES_PRIVATE,
-						$l->t("Create a private circle")
+						\OCA\Circles\Model\Circle::CIRCLES_CLOSED,
+						$l->t("Create a closed circle")
 					)
 				);
 			}
@@ -112,10 +112,10 @@ style('circles', 'navigation');
 					)
 				); ?>
 			</div>
-			<div id="circles_new_type_hidden"><b>
+			<div id="circles_new_type_secret"><b>
 					<?php p(
 						$l->t(
-							"An hidden circle is an open group that can be protected by a password."
+							"An secret circle is an open group that can be protected by a password."
 						)
 					); ?></b><br/><?php p(
 					$l->t(
@@ -123,9 +123,9 @@ style('circles', 'navigation');
 					)
 				); ?>
 			</div>
-			<div id="circles_new_type_private"><b><?php p(
+			<div id="circles_new_type_closed"><b><?php p(
 						$l->t(
-							"A private circle requires invitation or confirmation by an admin."
+							"A closed circle requires invitation or confirmation by an admin."
 						)
 					); ?>
 				</b><br/><?php p(
@@ -152,23 +152,23 @@ style('circles', 'navigation');
 		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PERSONAL]) {
 			print_unescaped(
 				'<div circle-type="' . \OCA\Circles\Model\Circle::CIRCLES_PERSONAL . '">' . $l->t(
-					'personal circles'
+					'Personal circles'
 				) . '</div>'
 			);
 		}
 
-		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_HIDDEN]) {
+		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_SECRET]) {
 			print_unescaped(
-				'<div circle-type="' . \OCA\Circles\Model\Circle::CIRCLES_HIDDEN . '">' . $l->t(
-					'hidden circles'
+				'<div circle-type="' . \OCA\Circles\Model\Circle::CIRCLES_SECRET . '">' . $l->t(
+					'Secret circles'
 				) . '</div>'
 			);
 		}
 
-		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PRIVATE]) {
+		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_CLOSED]) {
 			print_unescaped(
-				'<div circle-type="' . \OCA\Circles\Model\Circle::CIRCLES_PRIVATE . '">' . $l->t(
-					'private circles'
+				'<div circle-type="' . \OCA\Circles\Model\Circle::CIRCLES_CLOSED . '">' . $l->t(
+					'Closed circles'
 				) . '</div>'
 			);
 		}
@@ -176,7 +176,7 @@ style('circles', 'navigation');
 		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PUBLIC]) {
 			print_unescaped(
 				'<div circle-type="' . \OCA\Circles\Model\Circle::CIRCLES_PUBLIC . '">' . $l->t(
-					'public circles'
+					'Public circles'
 				) . '</div>'
 			);
 		}
@@ -295,7 +295,8 @@ style('circles', 'navigation');
 					</table>
 
 					<script id="tmpl_member" type="text/template">
-						<tr class="entry" member-id="%username%" member-level="%level%" member-levelString="%levelString%"
+						<tr class="entry" member-id="%username%" member-level="%level%"
+							member-levelString="%levelString%"
 							member-status="%status%">
 							<td class="username" style="padding-left: 15px;">%displayname%</td>
 							<td class="level">
