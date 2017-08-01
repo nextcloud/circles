@@ -322,8 +322,7 @@ class CircleProviderRequestBuilder {
 	 */
 	private function exprLinkToMemberAsGroupMember(IQueryBuilder &$qb, $userId) {
 		$expr = $qb->expr();
-
-
+		
 		$qb->leftJoin(
 			'c', CoreRequestBuilder::TABLE_GROUPS, 'g',
 			$expr->andX(
