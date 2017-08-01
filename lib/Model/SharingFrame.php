@@ -42,6 +42,9 @@ class SharingFrame implements \JsonSerializable {
 	/** @var string */
 	private $circleName;
 
+	/** @var int */
+	private $circleType;
+
 	/** @var string */
 	private $author;
 
@@ -107,6 +110,21 @@ class SharingFrame implements \JsonSerializable {
 	 */
 	public function getCircleName() {
 		return $this->circleName;
+	}
+
+
+	/**
+	 * @param int $circleType
+	 */
+	public function setCircleType($circleType) {
+		$this->circleType = $circleType;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getCircleType() {
+		return $this->circleType;
 	}
 
 
@@ -273,11 +291,12 @@ class SharingFrame implements \JsonSerializable {
 		}
 	}
 
-	
+
 	public function jsonSerialize() {
 		return array(
 			'circle_id'   => $this->getCircleId(),
 			'circle_name' => $this->getCircleName(),
+			'circle_type' => $this->getCircleType(),
 			'unique_id'   => $this->getUniqueId(),
 			'source'      => $this->getSource(),
 			'type'        => $this->getType(),
@@ -292,7 +311,7 @@ class SharingFrame implements \JsonSerializable {
 	public static function fromJSON($json) {
 
 		$arr = json_decode($json, true);
-		if (!key_exists('source', $arr)) {
+		if (!is_array($arr) || !key_exists('source', $arr)) {
 			return null;
 		}
 
@@ -301,6 +320,10 @@ class SharingFrame implements \JsonSerializable {
 		if (key_exists('circle_name', $arr)) {
 			$share->setCircleName($arr['circle_name']);
 		}
+		if (key_exists('circle_type', $arr)) {
+			$share->setCircleType($arr['circle_type']);
+		}
+
 
 		if (key_exists('headers', $arr)) {
 			$share->setHeaders($arr['headers']);
@@ -319,3 +342,4 @@ class SharingFrame implements \JsonSerializable {
 	}
 
 }
+

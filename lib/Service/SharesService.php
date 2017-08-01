@@ -145,6 +145,7 @@ class SharesService {
 			$frame->setHeader('broadcast', (string)$broadcast);
 			$frame->generateUniqueId();
 			$frame->setCircleName($circle->getName());
+			$frame->setCircleType($circle->getType());
 
 		} catch (Exception $e) {
 			throw new $e;

@@ -4,6 +4,7 @@
 namespace OCA\Circles;
 
 
+use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
 
 interface IBroadcaster {
@@ -15,7 +16,7 @@ interface IBroadcaster {
 
 
 	/**
-	 * broadcast a creation of $share to $circleId.
+	 * broadcast a creation of a Share to a circle.
 	 *
 	 * @param SharingFrame $frame
 	 *
@@ -25,7 +26,7 @@ interface IBroadcaster {
 
 
 	/**
-	 * broadcast a creation of $share to $userId.
+	 * broadcast a creation of a Share to a $userId.
 	 *
 	 * @param SharingFrame $frame
 	 * @param string $userId

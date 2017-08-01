@@ -133,8 +133,8 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	private function generateLimit(IQueryBuilder &$qb, $circleUniqueId, $userId, $type, $name) {
 		$orTypes = [];
 		array_push($orTypes, $this->generateLimitPersonal($qb, $userId, $type));
-		array_push($orTypes, $this->generateLimitHidden($qb, $circleUniqueId, $type, $name));
-		array_push($orTypes, $this->generateLimitPrivate($qb, $type));
+		array_push($orTypes, $this->generateLimitSecret($qb, $circleUniqueId, $type, $name));
+		array_push($orTypes, $this->generateLimitClosed($qb, $type));
 		array_push($orTypes, $this->generateLimitPublic($qb, $type));
 
 		return array_filter($orTypes);
@@ -170,8 +170,8 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 *
 	 * @return string
 	 */
-	private function generateLimitHidden(IQueryBuilder $qb, $circleUniqueId, $type, $name) {
-		if (!(Circle::CIRCLES_HIDDEN & (int)$type)) {
+	private function generateLimitSecret(IQueryBuilder $qb, $circleUniqueId, $type, $name) {
+		if (!(Circle::CIRCLES_SECRET & (int)$type)) {
 			return null;
 		}
 		$expr = $qb->expr();
@@ -191,7 +191,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$sqb = $expr->andX(
-			$expr->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_HIDDEN)),
+			$expr->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_SECRET)),
 			$expr->orX($orX)
 		);
 
@@ -205,15 +205,15 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 *
 	 * @return string
 	 */
-	private function generateLimitPrivate(IQueryBuilder $qb, $type) {
-		if (!(Circle::CIRCLES_PRIVATE & (int)$type)) {
+	private function generateLimitClosed(IQueryBuilder $qb, $type) {
+		if (!(Circle::CIRCLES_CLOSED & (int)$type)) {
 			return null;
 		}
 
 		return $qb->expr()
 				  ->eq(
 					  'c.type',
-					  $qb->createNamedParameter(Circle::CIRCLES_PRIVATE)
+					  $qb->createNamedParameter(Circle::CIRCLES_CLOSED)
 				  );
 	}
 

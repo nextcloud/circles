@@ -33,6 +33,7 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
+use OCA\Circles\Service\MiscService;
 
 class Circles {
 
@@ -85,8 +86,8 @@ class Circles {
 	 * You must specify type and name. type is one of this value:
 	 *
 	 * CIRCLES_PERSONAL is 1 or 'personal'
-	 * CIRCLES_HIDDEN is 2 or 'hidden'
-	 * CIRCLES_PRIVATE is 4 or 'private'
+	 * CIRCLES_SECRET is 2 or 'secret'
+	 * CIRCLES_CLOSED is 4 or 'closed'
 	 * CIRCLES_PUBLIC is 8 or 'public'
 	 *
 	 * @param mixed $type
@@ -141,7 +142,7 @@ class Circles {
 	 * Circles::listCircles();
 	 *
 	 * This function list all circles fitting a search regarding its name and the level and the
-	 * rights from the current user. In case of Hidden circle, name needs to be complete so the
+	 * rights from the current user. In case of Secret circle, name needs to be complete so the
 	 * circle is included in the list (or if the current user is the owner)
 	 *
 	 * example: Circles::listCircles(Circle::CIRCLES_ALL, '', 8, callback); will returns all
@@ -387,4 +388,39 @@ class Circles {
 			   . '-' . $link->getToken();
 	}
 
+
+	/**
+	 * @param SharingFrame $frame
+	 *
+	 * @return array
+	 */
+	public static function generateUserParameter(SharingFrame $frame) {
+
+		if ($frame->getCloudId() !== null) {
+			$name = $frame->getAuthor() . '@' . $frame->getCloudId();
+		} else {
+			$name = MiscService::staticGetDisplayName($frame->getAuthor());
+		}
+
+		return [
+			'type' => 'user',
+			'id'   => $frame->getAuthor(),
+			'name' => $name
+		];
+	}
+
+
+	/**
+	 * @param SharingFrame $frame
+	 *
+	 * @return array
+	 */
+	public static function generateCircleParameter(SharingFrame $frame) {
+		return [
+			'type' => 'circle',
+			'id'   => $frame->getCircleId(),
+			'name' => $frame->getCircleName(),
+			'link' => self::generateLink($frame->getCircleId())
+		];
+	}
 }

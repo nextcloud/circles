@@ -179,10 +179,10 @@ var actions = {
 		switch (Number(type)) {
 			case define.typePersonal:
 				return t('circles', 'Personal circle');
-			case define.typeHidden:
-				return t('circles', 'Hidden circle');
-			case define.typePrivate:
-				return t('circles', 'Private circle');
+			case define.typeSecret:
+				return t('circles', 'Secret circle');
+			case define.typeClosed:
+				return t('circles', 'Closed circle');
 			case define.typePublic:
 				return t('circles', 'Public circle');
 		}

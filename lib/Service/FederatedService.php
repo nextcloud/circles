@@ -718,6 +718,7 @@ class FederatedService {
 
 		$frame->setCircleId($link->getCircleId());
 		$frame->setCircleName($circle->getName());
+		$frame->setCircleType($circle->getType());
 
 		$this->circlesRequest->saveFrame($frame);
 		$this->broadcastService->broadcastFrame($frame->getHeader('broadcast'), $frame);

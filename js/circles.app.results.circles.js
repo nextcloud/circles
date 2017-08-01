@@ -102,7 +102,7 @@ var resultCircles = {
 				name: result.name
 			}));
 			elements.emptyCircleCreation();
-			nav.displayCirclesList(result.circle.typeString);
+			nav.displayCirclesList(result.circle.type_string);
 			actions.selectCircle(result.circle.unique_id);
 			return;
 		}
@@ -121,7 +121,7 @@ var resultCircles = {
 		elements.mainUIMembersTable.emptyTable();
 		if (result.status < 1) {
 			OCA.notification.onFail(
-				t('circles', 'Issue while retrieving the details of this circle') + '" ' +
+				t('circles', 'Issue while retrieving the details of this circle') + ': ' +
 				((result.error) ? result.error : t('circles', 'no error message')));
 			return;
 		}

@@ -86,13 +86,13 @@ class EventsService {
 	 *
 	 * Called when a circle is created.
 	 * Broadcast an activity to the cloud
-	 * We won't do anything if the circle is not PUBLIC or PRIVATE
+	 * We won't do anything if the circle is not PUBLIC or CLOSED
 	 *
 	 * @param Circle $circle
 	 */
 	public function onCircleCreation(Circle $circle) {
 		if ($circle->getType() !== Circle::CIRCLES_PUBLIC
-			&& $circle->getType() !== Circle::CIRCLES_PRIVATE
+			&& $circle->getType() !== Circle::CIRCLES_CLOSED
 		) {
 			return;
 		}
@@ -212,7 +212,7 @@ class EventsService {
 	 * @param Member $member
 	 */
 	private function onMemberInvited(Circle $circle, Member $member) {
-		if ($circle->getType() !== Circle::CIRCLES_PRIVATE) {
+		if ($circle->getType() !== Circle::CIRCLES_CLOSED) {
 			return;
 		}
 
@@ -242,7 +242,7 @@ class EventsService {
 	 * @param Member $member
 	 */
 	private function onMemberRequesting(Circle $circle, Member $member) {
-		if ($circle->getType() !== Circle::CIRCLES_PRIVATE) {
+		if ($circle->getType() !== Circle::CIRCLES_CLOSED) {
 			return;
 		}
 

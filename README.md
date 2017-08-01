@@ -19,10 +19,10 @@ Different types of circles can be created:
 Use this if you want to send messages or share things repeatedly to the same group of people. 
 Only you will know the members list of a personal circle.
 - A **Public Circle** is an open group visible to anyone in the cloud, and everyone will be able to join it. 
-- An **Hidden Circle** is an open group that can be protected by a password. 
-Select this circle to create a public community that will not be displayed to everyone like the Public Circle.
-- A **Private Circle** require an invitation or a confirmation from an admin, This way you can create a team or a group of people.
+- A **Closed Circle** require an invitation or a confirmation from an admin, This way you can create a team or a group of people.
 This is the best circle if you are looking for privacy when sharing your files or else.
+- An **Secret Circle** is an open group that can be protected by a password. 
+Select this circle to create a public community that will not be displayed to everyone like the Public Circle.
 
 
 
