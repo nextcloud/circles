@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - Feature: Activities are now sent by email.
 - Feature: Mass invite group members to a circle.
 - Feature: Link groups to circle and assign level to linked group.
+- UI: fixing some glitches. 
 
 
 ## 0.11.0

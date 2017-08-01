@@ -265,17 +265,17 @@ class CircleProviderRequestBuilder {
 	 *
 	 * @param IQueryBuilder $qb
 	 * @param string $userId
+	 * @param bool $groupMemberAllowed
 	 */
 	protected function linkToMember(IQueryBuilder &$qb, $userId, $groupMemberAllowed) {
 		$expr = $qb->expr();
 
 		$qb->from(CoreRequestBuilder::TABLE_MEMBERS, 'm');
-		$qb->from(CoreRequestBuilder::TABLE_GROUPS, 'g');
-		$qb->from(CoreRequestBuilder::NC_TABLE_GROUP_USER, 'ncgu');
+
 
 		$orX = $expr->orX();
 		$orX->add($this->exprLinkToMemberAsCircleMember($qb, $userId));
-		if ($groupMemberAllowed) {
+		if ($groupMemberAllowed === true) {
 			$orX->add($this->exprLinkToMemberAsGroupMember($qb, $userId));
 		}
 
@@ -322,21 +322,25 @@ class CircleProviderRequestBuilder {
 	 */
 	private function exprLinkToMemberAsGroupMember(IQueryBuilder &$qb, $userId) {
 		$expr = $qb->expr();
-		$andX = $expr->andX();
 
-		$andX->add($expr->gte('g.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)));
-		$andX->add($expr->eq('ncgu.gid', 'g.group_id'));
-		$andX->add($expr->eq('ncgu.uid', $qb->createNamedParameter($userId)));
-		$andX->add(
-			$expr->eq(
-				'g.circle_id',
-				$qb->createFunction(
-					'LEFT(c.unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
-				)
+
+		$qb->leftJoin(
+			'c', CoreRequestBuilder::TABLE_GROUPS, 'g',
+			$expr->andX(
+				$expr->eq(
+					'g.circle_id',
+					$qb->createFunction('LEFT(c.unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH . ')')
+				),
+				$expr->gte('g.level', $qb->createNamedParameter(Member::LEVEL_MEMBER))
 			)
 		);
 
-		return $andX;
+		$qb->leftJoin(
+			'g', CoreRequestBuilder::NC_TABLE_GROUP_USER, 'ncgu',
+			$expr->eq('ncgu.gid', 'g.group_id')
+		);
+
+		return $expr->andX($expr->eq('ncgu.uid', $qb->createNamedParameter($userId)));
 	}
 
 
@@ -348,39 +352,15 @@ class CircleProviderRequestBuilder {
 	protected function leftJoinShareInitiator(IQueryBuilder &$qb) {
 		$expr = $qb->expr();
 
-
-		// Circle member
-		if ($qb->getConnection()
-			   ->getDatabasePlatform() instanceof PostgreSqlPlatform
-		) {
-			$req = $expr->eq('s.share_with', $qb->createFunction('CAST(fo.circle_id AS TEXT)'));
-		} else {
-			$req = $expr->eq(
-				's.share_with', $expr->castColumn('src_m.circle_id', IQueryBuilder::PARAM_STR)
-			);
-		}
-
 		$qb->selectAlias('src_m.level', 'initiator_circle_level');
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->leftJoin(
 			's', CoreRequestBuilder::TABLE_MEMBERS, 'src_m',
 			$expr->andX(
 				$expr->eq('s.uid_initiator', 'src_m.user_id'),
-				$req
+				$expr->eq('s.share_with', 'src_m.circle_id')
 			)
 		);
-
-
-		// group member
-		if ($qb->getConnection()
-			   ->getDatabasePlatform() instanceof PostgreSqlPlatform
-		) {
-			$req = $expr->eq('s.share_with', $qb->createFunction('CAST(src_g.circle_id AS TEXT)'));
-		} else {
-			$req = $expr->eq(
-				's.share_with', $expr->castColumn('src_g.circle_id', IQueryBuilder::PARAM_STR)
-			);
-		}
 
 		$qb->selectAlias('src_g.level', 'initiator_group_level');
 		$qb->leftJoin(
@@ -393,7 +373,7 @@ class CircleProviderRequestBuilder {
 			$expr->andX(
 				$expr->gte('src_g.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)),
 				$expr->eq('src_ncgu.gid', 'src_g.group_id'),
-				$req
+				$req = $expr->eq('s.share_with', 'src_g.circle_id')
 			)
 		);
 	}
@@ -408,22 +388,7 @@ class CircleProviderRequestBuilder {
 		$expr = $qb->expr();
 
 		$qb->from(CoreRequestBuilder::TABLE_MEMBERS, 'm');
-
-		// TODO - Remove this in 12.0.1
-		if ($qb->getConnection()
-			   ->getDatabasePlatform() instanceof PostgreSqlPlatform
-		) {
-			$qb->andWhere(
-				$expr->eq('s.share_with', $qb->createFunction('CAST(m.circle_id AS TEXT)'))
-			);
-		} else {
-
-			$qb->andWhere(
-				$expr->eq(
-					's.share_with', $expr->castColumn('m.circle_id', IQueryBuilder::PARAM_STR)
-				)
-			);
-		}
+		$qb->andWhere($expr->eq('s.share_with', 'm.circle_id'));
 	}
 
 
