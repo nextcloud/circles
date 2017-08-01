@@ -61,13 +61,13 @@ style('circles', 'navigation');
 				);
 			}
 
-			// Secret Circle
-			if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_SECRET]) {
+			// Public Circle
+			if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PUBLIC]) {
 				print_unescaped(
 					sprintf(
 						'<option value="%s">%s</option>',
-						\OCA\Circles\Model\Circle::CIRCLES_SECRET,
-						$l->t("Create a secret circle")
+						\OCA\Circles\Model\Circle::CIRCLES_PUBLIC,
+						$l->t("Create a public circle")
 					)
 				);
 			}
@@ -83,23 +83,24 @@ style('circles', 'navigation');
 				);
 			}
 
-			// Public Circle
-			if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PUBLIC]) {
+			// Secret Circle
+			if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_SECRET]) {
 				print_unescaped(
 					sprintf(
 						'<option value="%s">%s</option>',
-						\OCA\Circles\Model\Circle::CIRCLES_PUBLIC,
-						$l->t("Create a public circle")
+						\OCA\Circles\Model\Circle::CIRCLES_SECRET,
+						$l->t("Create a secret circle")
 					)
 				);
 			}
+
 			?>
 
 		</select>
 		<input id="circles_new_submit" type="submit" value="Creation" style="display: none;"/>
 
 		<div id="circles_new_type_definition" style="display: none;">
-			<div id="circles_new_type_personal"><b>
+			<div id="circles_new_type_1"><b>
 					<?php p(
 						$l->t(
 							"A personal circle is a list of users known only to the owner."
@@ -108,39 +109,39 @@ style('circles', 'navigation');
 				</b><br/>
 				<?php p(
 					$l->t(
-						"This is the right option if you want to do recurrent sharing with the same group."
+						"This is the right option if you want to do recurrent sharing with the same list of local users."
 					)
 				); ?>
 			</div>
-			<div id="circles_new_type_secret"><b>
+			<div id="circles_new_type_2"><b>
 					<?php p(
 						$l->t(
-							"An secret circle is an open group that can be protected by a password."
+							"A secret circle is an hidden group that can only be see by its members or by people knowing the exact name of the circle."
 						)
 					); ?></b><br/><?php p(
 					$l->t(
-						"Users won't be able to find this circle using the Nextcloud search engine."
+						"Non-members won't be able to find your secret circle using the search bar."
 					)
 				); ?>
 			</div>
-			<div id="circles_new_type_closed"><b><?php p(
+			<div id="circles_new_type_4"><b><?php p(
 						$l->t(
-							"A closed circle requires invitation or confirmation by an admin."
+							"Joining a closed circle requires an invitation or a confirmation by a moderator."
 						)
 					); ?>
 				</b><br/><?php p(
 					$l->t(
-						"This is the right circle if you are looking for privacy when sharing your files or ideas."
+						"Anyone can find the circle and request an invitation; but only members will see who's in it and get access to shared items."
 					)
 				); ?>
 			</div>
-			<div id="circles_new_type_public"><b><?php p(
+			<div id="circles_new_type_8"><b><?php p(
 						$l->t(
 							"A public circle is an open group visible to anyone willing to join."
 						)
 					); ?></b><br/><?php p(
 					$l->t(
-						"Everyone will be able to see and join your circle."
+						"Anyone can see the circle, can join the circle and access the items shared to the circle."
 					)
 				); ?>
 			</div>
@@ -157,10 +158,10 @@ style('circles', 'navigation');
 			);
 		}
 
-		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_SECRET]) {
+		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PUBLIC]) {
 			print_unescaped(
-				'<div circle-type="' . \OCA\Circles\Model\Circle::CIRCLES_SECRET . '">' . $l->t(
-					'Secret circles'
+				'<div circle-type="' . \OCA\Circles\Model\Circle::CIRCLES_PUBLIC . '">' . $l->t(
+					'Public circles'
 				) . '</div>'
 			);
 		}
@@ -173,13 +174,14 @@ style('circles', 'navigation');
 			);
 		}
 
-		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PUBLIC]) {
+		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_SECRET]) {
 			print_unescaped(
-				'<div circle-type="' . \OCA\Circles\Model\Circle::CIRCLES_PUBLIC . '">' . $l->t(
-					'Public circles'
+				'<div circle-type="' . \OCA\Circles\Model\Circle::CIRCLES_SECRET . '">' . $l->t(
+					'Secret circles'
 				) . '</div>'
 			);
 		}
+
 		?>
 
 		<div circle-type="all"><?php p($l->t('All circles')); ?></div>

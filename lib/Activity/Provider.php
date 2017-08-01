@@ -354,7 +354,6 @@ class Provider implements IProvider {
 
 		$params = $event->getSubjectParameters();
 		$member = Member::fromJSON($this->l10n, $params['member']);
-
 		switch ($event->getSubject()) {
 			case 'member_invited':
 				return $this->parseCircleMemberAdvancedEvent(
@@ -607,7 +606,6 @@ class Provider implements IProvider {
 	private function parseCircleMemberAdvancedEvent(
 		IEvent &$event, Circle $circle, Member $member, $ownEvent, $targetEvent, $othersEvent
 	) {
-
 		$data = [
 			'author' => $this->generateViewerParameter($circle),
 			'circle' => $this->generateCircleParameter($circle),
