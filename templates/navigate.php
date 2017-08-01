@@ -116,7 +116,7 @@ style('circles', 'navigation');
 			<div id="circles_new_type_2"><b>
 					<?php p(
 						$l->t(
-							"A secret circle is an hidden group that can only be see by its members or by people knowing the exact name of the circle."
+							"A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle."
 						)
 					); ?></b><br/><?php p(
 					$l->t(
