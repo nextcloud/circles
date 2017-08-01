@@ -27,6 +27,7 @@
 namespace OCA\Circles\Model;
 
 use OC\L10N\L10N;
+use OCA\Circles\Service\MiscService;
 
 class BaseMember implements \JsonSerializable {
 
@@ -146,9 +147,7 @@ class BaseMember implements \JsonSerializable {
 
 		if ($userId !== null && $userId !== '') {
 			$this->setDisplayName(
-				\OC::$server->getUserManager()
-							->get($userId)
-							->getDisplayName()
+				MiscService::staticGetDisplayName($userId)
 			);
 		}
 

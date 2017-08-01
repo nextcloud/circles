@@ -68,6 +68,33 @@ class MiscService {
 	 * @return string
 	 * @throws NoUserException
 	 */
+	public static function staticGetDisplayName($userId, $noException = false) {
+		$user = \OC::$server->getUserManager()
+							->get($userId);
+		if ($user === null) {
+			if ($noException) {
+				return $userId;
+			} else {
+				throw new NoUserException();
+			}
+		}
+
+		return $user->getDisplayName();
+	}
+
+
+	/**
+	 * return Display Name if user exists and display name exists.
+	 * returns Exception if user does not exist.
+	 *
+	 * However, with noException set to true, will return userId even if user does not exist
+	 *
+	 * @param $userId
+	 * @param bool $noException
+	 *
+	 * @return string
+	 * @throws NoUserException
+	 */
 	public function getDisplayName($userId, $noException = false) {
 		$user = $this->userManager->get($userId);
 		if ($user === null) {
@@ -81,3 +108,4 @@ class MiscService {
 		return $user->getDisplayName();
 	}
 }
+

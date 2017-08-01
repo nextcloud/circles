@@ -33,6 +33,7 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
+use OCA\Circles\Service\MiscService;
 
 class Circles {
 
@@ -387,4 +388,39 @@ class Circles {
 			   . '-' . $link->getToken();
 	}
 
+
+	/**
+	 * @param SharingFrame $frame
+	 *
+	 * @return array
+	 */
+	public static function generateUserParameter(SharingFrame $frame) {
+
+		if ($frame->getCloudId() !== null) {
+			$name = $frame->getAuthor() . '@' . $frame->getCloudId();
+		} else {
+			$name = MiscService::staticGetDisplayName($frame->getAuthor());
+		}
+
+		return [
+			'type' => 'user',
+			'id'   => $frame->getAuthor(),
+			'name' => $name
+		];
+	}
+
+
+	/**
+	 * @param SharingFrame $frame
+	 *
+	 * @return array
+	 */
+	public static function generateCircleParameter(SharingFrame $frame) {
+		return [
+			'type' => 'circle',
+			'id'   => $frame->getCircleId(),
+			'name' => $frame->getCircleName(),
+			'link' => self::generateLink($frame->getCircleId())
+		];
+	}
 }

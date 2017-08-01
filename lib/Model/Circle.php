@@ -68,22 +68,22 @@ class Circle extends BaseCircle implements \JsonSerializable {
 
 	public function jsonSerialize() {
 		$json = array(
-			'id'             => $this->getId(),
-			'name'           => $this->getName(),
-			'owner'          => $this->getOwner(),
-			'user'           => $this->getViewer(),
-			'group'          => $this->getGroupViewer(),
-			'viewer'         => $this->getHigherViewer(),
-			'description'    => $this->getDescription(),
-			'settings'       => $this->getSettings(),
-			'type'           => $this->getType(),
-			'creation'       => $this->getCreation(),
-			'typeString'     => $this->getTypeString(),
-			'typeLongString' => $this->getTypeLongString(),
-			'unique_id'      => $this->getUniqueId($this->fullJson),
-			'members'        => $this->getMembers(),
-			'groups'         => $this->getGroups(),
-			'links'          => $this->getLinks()
+			'id'               => $this->getId(),
+			'name'             => $this->getName(),
+			'owner'            => $this->getOwner(),
+			'user'             => $this->getViewer(),
+			'group'            => $this->getGroupViewer(),
+			'viewer'           => $this->getHigherViewer(),
+			'description'      => $this->getDescription(),
+			'settings'         => $this->getSettings(),
+			'type'             => $this->getType(),
+			'creation'         => $this->getCreation(),
+			'type_string'      => $this->getTypeString(),
+			'type_long_string' => $this->getTypeLongString(),
+			'unique_id'        => $this->getUniqueId($this->fullJson),
+			'members'          => $this->getMembers(),
+			'groups'           => $this->getGroups(),
+			'links'            => $this->getLinks()
 		);
 
 		if ($this->lightJson) {
@@ -166,7 +166,6 @@ class Circle extends BaseCircle implements \JsonSerializable {
 	public static function fromJSON($l10n, $json) {
 		return self::fromArray($l10n, json_decode($json, true));
 	}
-
 
 
 	/**

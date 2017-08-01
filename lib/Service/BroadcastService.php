@@ -27,10 +27,12 @@
 namespace OCA\Circles\Service;
 
 
+use Exception;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Exceptions\BroadcasterIsNotCompatibleException;
 use OCA\Circles\IBroadcaster;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
 
@@ -81,10 +83,14 @@ class BroadcastService {
 	 * broadcast the SharingFrame item using a IBroadcaster.
 	 * The broadcast is usually set by the app that created the SharingFrame item.
 	 *
+	 * If the circle is not a Personal Circle, we first call createShareToCircle()
+	 * Then for each members of the circle, we call createShareToUser()
+	 * If the circle is a Personal Circle, we don't send data about the SharingFrame but null.
+	 *
 	 * @param string $broadcast
 	 * @param SharingFrame $frame
 	 *
-	 * @throws BroadcasterIsNotCompatibleException
+	 * @throws Exception
 	 */
 	public function broadcastFrame($broadcast, SharingFrame $frame) {
 
@@ -92,16 +98,27 @@ class BroadcastService {
 			return;
 		}
 
-		$broadcaster = \OC::$server->query((string)$broadcast);
-		if (!($broadcaster instanceof IBroadcaster)) {
-			throw new BroadcasterIsNotCompatibleException();
-		}
+		try {
+			$broadcaster = \OC::$server->query((string)$broadcast);
+			if (!($broadcaster instanceof IBroadcaster)) {
+				throw new BroadcasterIsNotCompatibleException();
+			}
 
-		$broadcaster->init();
-		$broadcaster->createShareToCircle($frame);
-		$users = $this->membersRequest->forceGetMembers($frame->getCircleId(), Member::LEVEL_MEMBER, true);
-		foreach ($users AS $user) {
-			$broadcaster->createShareToUser($frame, $user->getUserId());
+			$circle = $this->circlesRequest->forceGetCircle($frame->getCircleId());
+
+			$broadcaster->init();
+			if ($circle->getType() !== Circle::CIRCLES_PERSONAL) {
+				$broadcaster->createShareToCircle($frame);
+			}
+
+			$users = $this->membersRequest->forceGetMembers(
+				$circle->getUniqueId(), Member::LEVEL_MEMBER, true
+			);
+			foreach ($users AS $user) {
+				$broadcaster->createShareToUser($frame, $user->getUserId());
+			}
+		} catch (Exception $e) {
+			throw $e;
 		}
 	}
 

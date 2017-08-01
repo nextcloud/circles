@@ -29,6 +29,7 @@ namespace OCA\Circles\Api;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Service\MiscService;
 use OCP\Share;
 
 
@@ -83,12 +84,10 @@ class Sharees {
 				'shareType'   => Share::SHARE_TYPE_CIRCLE,
 				'shareWith'   => $entry->getUniqueId(),
 				'circleInfo'  => $entry->getInfo(),
-				'circleOwner' => \OC::$server->getUserManager()
-											 ->get(
-												 $entry->getOwner()
-													   ->getUserId()
-											 )
-											 ->getDisplayName()
+				'circleOwner' => MiscService::staticGetUserManager(
+					$entry->getOwner()
+						  ->getUserId()
+				)
 			],
 		];
 

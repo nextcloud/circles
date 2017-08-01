@@ -579,7 +579,7 @@ var nav = {
 		elements.circleDetails.children('#name').text(details.name);
 		elements.circleDesc.text(details.description);
 
-		elements.circleDetails.children('#type').text(t('circles', details.typeLongString));
+		elements.circleDetails.children('#type').text(t('circles', details.type_long_string));
 		if (details.description !== '') {
 			elements.circleDesc.html(
 				escapeHTML(details.description).replace(/\n/g, '&nbsp;<br />')).show(
