@@ -131,13 +131,13 @@ class CoreRequestBuilder {
 	 */
 	protected function limitToShortenUniqueId(IQueryBuilder &$qb, $circleUniqueId) {
 		$expr = $qb->expr();
-		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
+		$pf = ($qb->getType() === QueryBuilder::SELECT) ? '`' . $this->default_select_alias . '`.' : '';
 
 		$qb->andWhere(
 			$expr->eq(
 				$qb->createNamedParameter($circleUniqueId),
 				$qb->createFunction(
-					'LEFT(' . $pf . 'unique_id' . ', ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
+					'SUBSTR(' . $pf . '`unique_id`' . ', 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
 				)
 			)
 		);
@@ -272,7 +272,7 @@ class CoreRequestBuilder {
 		   ->andWhere(
 			   $expr->eq(
 				   $pf . 'circle_id',
-				   $qb->createFunction('LEFT(c.unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH . ')')
+				   $qb->createFunction('SUBSTR(`c`.`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')')
 			   )
 		   );
 	}
@@ -303,7 +303,7 @@ class CoreRequestBuilder {
 				$expr->eq('ncgu.gid', 'g.group_id'),
 				$expr->eq(
 					'g.circle_id', $qb->createFunction(
-					'LEFT(' . $field . ', ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
+					'SUBSTR(' . $field . ', 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
 				)
 				)
 			)

@@ -222,7 +222,7 @@ class CircleProviderRequestBuilder {
 
 		$tmpOrX = $expr->eq(
 			's.share_with',
-			$qb->createFunction('LEFT(c.unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH . ')')
+			$qb->createFunction('SUBSTR(`c`.`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')')
 		);
 
 		if ($shareId === -1) {
@@ -252,7 +252,7 @@ class CircleProviderRequestBuilder {
 			'c', 'circles_members', 'mo', $expr->andX(
 			$expr->eq(
 				'mo.circle_id',
-				$qb->createFunction('LEFT(c.unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH . ')')
+				$qb->createFunction('SUBSTR(`c`.`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')')
 			),
 			$expr->eq('mo.level', $qb->createNamedParameter(Member::LEVEL_OWNER))
 		)
@@ -302,7 +302,7 @@ class CircleProviderRequestBuilder {
 			$expr->eq(
 				'm.circle_id',
 				$qb->createFunction(
-					'LEFT(c.unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
+					'SUBSTR(`c`.`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
 				)
 			)
 		);
@@ -328,7 +328,7 @@ class CircleProviderRequestBuilder {
 			$expr->andX(
 				$expr->eq(
 					'g.circle_id',
-					$qb->createFunction('LEFT(c.unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH . ')')
+					$qb->createFunction('SUBSTR(`c`.`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')')
 				),
 				$expr->gte('g.level', $qb->createNamedParameter(Member::LEVEL_MEMBER))
 			)

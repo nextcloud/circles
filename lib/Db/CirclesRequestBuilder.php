@@ -181,7 +181,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 			->add(
 				$expr->eq(
 					$qb->createNamedParameter($circleUniqueId),
-					$qb->createFunction('LEFT(c.unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH . ')')
+					$qb->createFunction('SUBSTR(`c`.`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')')
 				)
 			);
 
@@ -251,7 +251,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		}
 
 		$expr = $qb->expr();
-		$pf = $this->default_select_alias . '.';
+		$pf = '`' . $this->default_select_alias . '`.';
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->selectAlias('u.user_id', 'viewer_userid')
@@ -263,7 +263,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 				   $expr->eq(
 					   'u.circle_id',
 					   $qb->createFunction(
-						   'LEFT(' . $pf . 'unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
+						   'SUBSTR(' . $pf . '`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
 					   )
 				   ),
 				   $expr->eq('u.user_id', $qb->createNamedParameter($userId))
@@ -283,7 +283,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		}
 
 		$expr = $qb->expr();
-		$pf = $this->default_select_alias . '.';
+		$pf = '`' . $this->default_select_alias . '`.';
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->selectAlias('o.user_id', 'owner_userid')
@@ -294,7 +294,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 			   $expr->andX(
 				   $expr->eq(
 					   $qb->createFunction(
-						   'LEFT(' . $pf . 'unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
+						   'SUBSTR(' . $pf . '`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
 					   )
 					   , 'o.circle_id'
 				   ),
@@ -422,7 +422,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		   ->where(
 			   $qb->expr()
 				  ->eq(
-					  $qb->createFunction('LEFT(unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'),
+					  $qb->createFunction('SUBSTR(`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'),
 					  $qb->createNamedParameter($circleUniqueId)
 				  )
 		   );
