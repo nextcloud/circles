@@ -422,7 +422,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		   ->where(
 			   $qb->expr()
 				  ->eq(
-					  $qb->createFunction('LEFT(unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH),
+					  $qb->createFunction('LEFT(unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'),
 					  $qb->createNamedParameter($circleUniqueId)
 				  )
 		   );

@@ -195,7 +195,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		$expr = $qb->expr();
 
 		$and = $expr->andX();
-		if ($uniqueCircleId > 0) {
+		if ($uniqueCircleId !== '') {
 			$and->add($expr->eq('circle_id', $qb->createNamedParameter($uniqueCircleId)));
 		}
 		if ($userId !== '') {

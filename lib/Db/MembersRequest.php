@@ -436,7 +436,7 @@ class MembersRequest extends MembersRequestBuilder {
 			return;
 		}
 
-		$qb = $this->getMembersDeleteSql(0, $userId);
+		$qb = $this->getMembersDeleteSql('', $userId);
 		$qb->execute();
 	}
 
