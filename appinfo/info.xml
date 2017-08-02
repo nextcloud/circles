@@ -29,7 +29,7 @@ Your circle will be visible to everyone and everyone will be able to join the ci
 	<website>https://github.com/nextcloud/circles</website>
 	<bugs>https://github.com/nextcloud/circles/issues</bugs>
 	<repository type="git">https://github.com/nextcloud/circles.git</repository>
-	<screenshot>https://raw.githubusercontent.com/nextcloud/circles/master/screenshots/1.png
+	<screenshot>https://raw.githubusercontent.com/nextcloud/circles/master/screenshots/0.12.0.png
 	</screenshot>
 	<dependencies>
 		<nextcloud min-version="12" max-version="13"/>

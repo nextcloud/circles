@@ -6,7 +6,7 @@
 
 **Bring cloud-users closer together.**
 
-![](https://raw.githubusercontent.com/nextcloud/circles/master/screenshots/1.png)
+![](https://raw.githubusercontent.com/nextcloud/circles/master/screenshots/0.12.0.png)
 
 Circles allows your users to create their own groups of users/colleagues/friends. 
 Those groups of users (or circles) can then be used by any other app for sharing purpose 
@@ -15,15 +15,17 @@ Those groups of users (or circles) can then be used by any other app for sharing
 Different types of circles can be created:
 
 
-- A **Personal Circle** is a list of users known only to yourself. 
-Use this if you want to send messages or share things repeatedly to the same group of people. 
-Only you will know the members list of a personal circle.
-- A **Public Circle** is an open group visible to anyone in the cloud, and everyone will be able to join it. 
-- A **Closed Circle** require an invitation or a confirmation from an admin, This way you can create a team or a group of people.
-This is the best circle if you are looking for privacy when sharing your files or else.
-- An **Secret Circle** is an open group that can be protected by a password. 
-Select this circle to create a public community that will not be displayed to everyone like the Public Circle.
+- A **Personal Circle** is a list of users known only to the owner.  
+This is the right option if you want to do recurrent sharing with the same list of local users.
 
+- A **Public Circle** is an open group visible to anyone willing to join.  
+Anyone can see the circle, can join the circle and access the items shared to the circle.
+ 
+- Joining a **Closed Circle** requires an invitation or a confirmation by a moderator.  
+Anyone can find the circle and request an invitation; but only members will see who's in it and get access to shared items.
+
+- A **Secret Circle** is an hidden group that can only be seen by its members or by people knowing the exact name of the circle.  
+Non-members won't be able to find your secret circle using the search bar.
 
 
 ***
