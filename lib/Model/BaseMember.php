@@ -44,6 +44,9 @@ class BaseMember implements \JsonSerializable {
 	const STATUS_BLOCKED = 'Blocked';
 	const STATUS_KICKED = 'Kicked';
 
+	const TYPE_USER = 1;
+	const TYPE_MAIL = 2;
+
 	/** @var string */
 	private $circleUniqueId;
 
@@ -55,6 +58,9 @@ class BaseMember implements \JsonSerializable {
 
 	/** @var string */
 	private $groupId = '';
+
+	/** @var int */
+	private $type = self::TYPE_USER;
 
 	/** @var string */
 	private $displayName;
@@ -123,6 +129,18 @@ class BaseMember implements \JsonSerializable {
 	 */
 	public function getGroupId() {
 		return $this->groupId;
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function getType() {
+		return $this->type;
+	}
+
+	public function setType($type) {
+		$this->type = $type;
 	}
 
 
