@@ -26,6 +26,7 @@
 
 namespace OCA\Circles\Migration;
 
+use OC\Share\Share;
 use OCA\Circles\Db\CoreRequestBuilder;
 use OCA\Circles\Model\Circle;
 use OCP\IConfig;
@@ -73,7 +74,7 @@ class UsingShortenUniqueIdInsteadOfCircleId implements IRepairStep {
 		if ((int)$oldVersion[0] === 0
 			&& ((int)$oldVersion[1] < 12
 				|| ((int)$oldVersion[1] === 12
-					&& (int)$oldVersion[2] === 0))) {
+					&& (int)$oldVersion[2] <= 1))) {
 			$this->swapToShortenUniqueId();
 		}
 	}
@@ -98,9 +99,14 @@ class UsingShortenUniqueIdInsteadOfCircleId implements IRepairStep {
 			$this->swapToShortenUniqueIdInTable(
 				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_LINKS
 			);
+
+			$this->cleanBuggyDuplicateEntries(
+				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_MEMBERS, 'user_id'
+			);
 			$this->swapToShortenUniqueIdInTable(
 				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_MEMBERS
 			);
+
 			$this->swapToShortenUniqueIdInTable(
 				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_LINKS
 			);
@@ -111,6 +117,7 @@ class UsingShortenUniqueIdInsteadOfCircleId implements IRepairStep {
 
 
 	private function swapToShortenUniqueIdInTable($circleId, $shortenUniqueId, $table) {
+
 		$qb = $this->connection->getQueryBuilder();
 		$qb->update($table)
 		   ->where(
@@ -132,7 +139,7 @@ class UsingShortenUniqueIdInsteadOfCircleId implements IRepairStep {
 		   ->where(
 			   $expr->andX(
 				   $expr->eq(
-					   'share_type', $qb->createNamedParameter(\OC\Share\Share::SHARE_TYPE_CIRCLE)
+					   'share_type', $qb->createNamedParameter(Share::SHARE_TYPE_CIRCLE)
 				   ),
 				   $expr->eq('share_with', $qb->createNamedParameter($circleId))
 			   )
@@ -140,6 +147,38 @@ class UsingShortenUniqueIdInsteadOfCircleId implements IRepairStep {
 
 		$qb->set('share_with', $qb->createNamedParameter($shortenUniqueId));
 		$qb->execute();
+	}
+
+
+	private function cleanBuggyDuplicateEntries($circleId, $shortenUniqueId, $table, $field) {
+
+		$qb = $this->connection->getQueryBuilder();
+		$expr = $qb->expr();
+
+		$qb->select($field)
+		   ->from($table)
+		   ->where(
+			   $expr->eq('circle_id', $qb->createNamedParameter($circleId))
+		   );
+
+		$cursor = $qb->execute();
+		while ($data = $cursor->fetch()) {
+			$val = $data[$field];
+			if ($val !== '') {
+				$qb2 = $this->connection->getQueryBuilder();
+				$expr2 = $qb2->expr();
+				/** @noinspection PhpMethodParametersCountMismatchInspection */
+				$qb2->delete($table)
+					->where(
+						$expr2->andX(
+							$expr2->eq('circle_id', $qb2->createNamedParameter($shortenUniqueId)),
+							$expr2->eq($field, $qb2->createNamedParameter($val))
+						)
+					);
+				$qb2->execute();
+			}
+		}
+		$cursor->closeCursor();
 	}
 
 }
