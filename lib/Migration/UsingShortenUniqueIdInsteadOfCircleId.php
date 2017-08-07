@@ -70,7 +70,10 @@ class UsingShortenUniqueIdInsteadOfCircleId implements IRepairStep {
 							 ->getAppValue('circles', 'installed_version', '')
 		);
 
-		if ((int)$oldVersion[0] === 0 && $oldVersion[1] < 12) {
+		if ((int)$oldVersion[0] === 0
+			&& ((int)$oldVersion[1] < 12
+				|| ((int)$oldVersion[1] === 12
+					&& (int)$oldVersion[2] === 0))) {
 			$this->swapToShortenUniqueId();
 		}
 	}
@@ -128,7 +131,9 @@ class UsingShortenUniqueIdInsteadOfCircleId implements IRepairStep {
 		$qb->update('share')
 		   ->where(
 			   $expr->andX(
-				   $expr->eq('share_type', $qb->createNamedParameter(\OC\Share\Share::SHARE_TYPE_CIRCLE)),
+				   $expr->eq(
+					   'share_type', $qb->createNamedParameter(\OC\Share\Share::SHARE_TYPE_CIRCLE)
+				   ),
 				   $expr->eq('share_with', $qb->createNamedParameter($circleId))
 			   )
 		   );
