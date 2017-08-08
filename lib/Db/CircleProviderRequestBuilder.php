@@ -272,7 +272,6 @@ class CircleProviderRequestBuilder {
 
 		$qb->from(CoreRequestBuilder::TABLE_MEMBERS, 'm');
 
-
 		$orX = $expr->orX();
 		$orX->add($this->exprLinkToMemberAsCircleMember($qb, $userId));
 		if ($groupMemberAllowed === true) {
