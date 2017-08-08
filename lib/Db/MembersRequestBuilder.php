@@ -78,7 +78,9 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		$qb = $this->dbConnection->getQueryBuilder();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->select('m.user_id', 'm.circle_id', 'm.level', 'm.status', 'm.note', 'm.joined')
+		$qb->select(
+			'm.user_id', 'm.type', 'm.circle_id', 'm.level', 'm.status', 'm.note', 'm.joined'
+		)
 		   ->from(self::TABLE_MEMBERS, 'm');
 
 		$this->default_select_alias = 'm';
@@ -144,11 +146,11 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	 * Base of the Sql Updte request for Members
 	 *
 	 * @param int $circleId
-	 * @param string $userId
+	 * @param Member $member
 	 *
 	 * @return IQueryBuilder
 	 */
-	protected function getMembersUpdateSql($circleId, $userId) {
+	protected function getMembersUpdateSql($circleId, Member $member) {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$expr = $qb->expr();
 
@@ -157,7 +159,8 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		   ->where(
 			   $expr->andX(
 				   $expr->eq('circle_id', $qb->createNamedParameter($circleId)),
-				   $expr->eq('user_id', $qb->createNamedParameter($userId))
+				   $expr->eq('user_id', $qb->createNamedParameter($member->getUserId())),
+				   $expr->eq('type', $qb->createNamedParameter($member->getType()))
 			   )
 		   );
 
@@ -217,6 +220,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	protected function parseMembersSelectSql(array $data) {
 		$member = new Member($this->l10n);
 		$member->setUserId($data['user_id']);
+		$member->setType($data['type']);
 		$member->setCircleId($data['circle_id']);
 		$member->setNote($data['note']);
 		$member->setLevel($data['level']);

@@ -262,9 +262,9 @@ class BaseMember implements \JsonSerializable {
 
 		$member->setCircleId($arr['circle_id']);
 		$member->setLevel($arr['level']);
-
 		if (key_exists('user_id', $arr)) {
 			$member->setUserId($arr['user_id']);
+//			$member->setType($arr['type']);
 		}
 
 		if (key_exists('group_id', $arr)) {

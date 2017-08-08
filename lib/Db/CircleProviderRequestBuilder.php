@@ -248,8 +248,9 @@ class CircleProviderRequestBuilder {
 		$expr = $qb->expr();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$qb->selectAlias('mo.user_id', 'circle_owner');
 		$qb->leftJoin(
-			'c', 'circles_members', 'mo', $expr->andX(
+			'c', CoreRequestBuilder::TABLE_MEMBERS, 'mo', $expr->andX(
 			$expr->eq(
 				'mo.circle_id',
 				$qb->createFunction('LEFT(c.unique_id, ' . Circle::UNIQUEID_SHORT_LENGTH . ')')
@@ -321,7 +322,7 @@ class CircleProviderRequestBuilder {
 	 */
 	private function exprLinkToMemberAsGroupMember(IQueryBuilder &$qb, $userId) {
 		$expr = $qb->expr();
-		
+
 		$qb->leftJoin(
 			'c', CoreRequestBuilder::TABLE_GROUPS, 'g',
 			$expr->andX(
@@ -457,8 +458,7 @@ class CircleProviderRequestBuilder {
 			's.id', 's.share_type', 's.share_with', 's.uid_owner', 's.uid_initiator',
 			's.parent', 's.item_type', 's.item_source', 's.item_target', 's.file_source',
 			's.file_target', 's.permissions', 's.stime', 's.accepted', 's.expiration',
-			's.token', 's.mail_send', 'c.type AS circle_type', 'c.name AS circle_name',
-			'mo.user_id AS circle_owner'
+			's.token', 's.mail_send', 'c.type AS circle_type', 'c.name AS circle_name'
 		);
 		$this->linkToCircleOwner($qb);
 		$this->joinShare($qb);
@@ -499,8 +499,7 @@ class CircleProviderRequestBuilder {
 			   's.*', 'f.fileid', 'f.path', 'f.permissions AS f_permissions', 'f.storage',
 			   'f.path_hash', 'f.parent AS f_parent', 'f.name', 'f.mimetype', 'f.mimepart',
 			   'f.size', 'f.mtime', 'f.storage_mtime', 'f.encrypted', 'f.unencrypted_size',
-			   'f.etag', 'f.checksum', 'c.type AS circle_type', 'c.name AS circle_name',
-			   'mo.user_id AS circle_owner'
+			   'f.etag', 'f.checksum', 'c.type AS circle_type', 'c.name AS circle_name'
 		   )
 		   ->selectAlias('st.id', 'storage_string_id');
 

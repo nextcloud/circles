@@ -403,7 +403,7 @@ class MembersRequest extends MembersRequestBuilder {
 	 * @param Member $member
 	 */
 	public function updateMember(Member $member) {
-		$qb = $this->getMembersUpdateSql($member->getCircleId(), $member->getUserId());
+		$qb = $this->getMembersUpdateSql($member->getCircleId(), $member);
 		$qb->set('level', $qb->createNamedParameter($member->getLevel()))
 		   ->set('status', $qb->createNamedParameter($member->getStatus()));
 
