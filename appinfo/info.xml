@@ -46,6 +46,7 @@ Users won't be able to find this Circle using Nextcloud search engine.
 			<step>OCA\Circles\Migration\ImportOwncloudCustomGroups</step>
 			<step>OCA\Circles\Migration\GenerateUniqueIdOnCreatedCircle</step>
 			<step>OCA\Circles\Migration\UsingShortenUniqueIdInsteadOfCircleId</step>
+			<step>OCA\Circles\Migration\SetMemberTypeToDefault</step>
 		</post-migration>
 	</repair-steps>
 
