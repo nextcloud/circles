@@ -190,10 +190,11 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	 *
 	 * @param string $uniqueCircleId
 	 * @param string $userId
+	 * @param int $type
 	 *
 	 * @return IQueryBuilder
 	 */
-	protected function getMembersDeleteSql($uniqueCircleId, $userId) {
+	protected function getMembersDeleteSql($uniqueCircleId, $type = 0, $userId = '') {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$expr = $qb->expr();
 
@@ -201,8 +202,9 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		if ($uniqueCircleId !== '') {
 			$and->add($expr->eq('circle_id', $qb->createNamedParameter($uniqueCircleId)));
 		}
-		if ($userId !== '') {
+		if ($type > 0) {
 			$and->add($expr->eq('user_id', $qb->createNamedParameter($userId)));
+			$and->add($expr->eq('type', $qb->createNamedParameter($type)));
 		}
 
 		$qb->delete(CoreRequestBuilder::TABLE_MEMBERS)
