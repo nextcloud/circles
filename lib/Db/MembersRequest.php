@@ -329,6 +329,7 @@ class MembersRequest extends MembersRequestBuilder {
 			$qb = $this->getMembersInsertSql();
 			$qb->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
 			   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
+			   ->setValue('type', $qb->createNamedParameter($member->getType()))
 			   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
 			   ->setValue('status', $qb->createNamedParameter($member->getStatus()))
 			   ->setValue('note', $qb->createNamedParameter($member->getNote()));
@@ -403,7 +404,7 @@ class MembersRequest extends MembersRequestBuilder {
 	 * @param Member $member
 	 */
 	public function updateMember(Member $member) {
-		$qb = $this->getMembersUpdateSql($member->getCircleId(), $member->getUserId());
+		$qb = $this->getMembersUpdateSql($member->getCircleId(), $member);
 		$qb->set('level', $qb->createNamedParameter($member->getLevel()))
 		   ->set('status', $qb->createNamedParameter($member->getStatus()));
 
@@ -419,7 +420,7 @@ class MembersRequest extends MembersRequestBuilder {
 	 * @param string $uniqueCircleId
 	 */
 	public function removeAllFromCircle($uniqueCircleId) {
-		$qb = $this->getMembersDeleteSql($uniqueCircleId, '');
+		$qb = $this->getMembersDeleteSql($uniqueCircleId);
 		$qb->execute();
 	}
 
@@ -436,7 +437,7 @@ class MembersRequest extends MembersRequestBuilder {
 			return;
 		}
 
-		$qb = $this->getMembersDeleteSql('', $userId);
+		$qb = $this->getMembersDeleteSql('', Member::TYPE_USER, $userId);
 		$qb->execute();
 	}
 
