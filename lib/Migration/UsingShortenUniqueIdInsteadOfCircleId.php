@@ -74,7 +74,7 @@ class UsingShortenUniqueIdInsteadOfCircleId implements IRepairStep {
 		if ((int)$oldVersion[0] === 0
 			&& ((int)$oldVersion[1] < 12
 				|| ((int)$oldVersion[1] === 12
-					&& (int)$oldVersion[2] <= 1))) {
+					&& (int)$oldVersion[2] <= 2))) {
 			$this->swapToShortenUniqueId();
 		}
 	}

@@ -2,9 +2,10 @@
 All notable changes to this project will be documented in this file.
 
 
-## 0.12.2
+## 0.12.3
 
 - Fixing a migration bug.
+- Add Type to members.
 
 
 ## 0.12.0

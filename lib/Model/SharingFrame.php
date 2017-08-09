@@ -283,6 +283,13 @@ class SharingFrame implements \JsonSerializable {
 
 
 	/**
+	 * @return bool
+	 */
+	public function isCircleZero() {
+		return ($this->getCloudId() === null);
+	}
+
+	/**
 	 * @throws SharingFrameSourceCannotBeAppCirclesException
 	 */
 	public function cannotBeFromCircles() {
