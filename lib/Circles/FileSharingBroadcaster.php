@@ -54,7 +54,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 * {@inheritdoc}
 	 */
 	public function createShareToMember(SharingFrame $frame, Member $member) {
-		\OC::$server->getLogger()->log(2, 'Share to Member');
+		//\OC::$server->getLogger()->log(2, 'Share to Member');
 		return true;
 	}
 
