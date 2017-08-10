@@ -30,6 +30,7 @@ namespace OCA\Circles;
 
 use OC\Files\Cache\Cache;
 use OC\Share20\Share;
+use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleProviderRequestBuilder;
 use OCA\Circles\Db\CirclesRequest;
@@ -161,6 +162,12 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 				   ->hasToBeMember();
 
 			$shareId = $this->createShare($share);
+
+			Circles::shareToCircle(
+				$circle->getUniqueId(), 'files', '',
+				['id' => $shareId, 'share' => $share],
+				'\OCA\Circles\Circles\FileSharingBroadcaster'
+			);
 
 			return $this->getShareById($shareId);
 		} catch (\Exception $e) {

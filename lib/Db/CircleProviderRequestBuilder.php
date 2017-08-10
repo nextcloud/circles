@@ -247,13 +247,14 @@ class CircleProviderRequestBuilder {
 	protected function linkToCircleOwner(IQueryBuilder &$qb) {
 		$expr = $qb->expr();
 
+		$qb->selectAlias('mo.user_id', 'circle_owner');
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->leftJoin(
-			'c', 'circles_members', 'mo', $expr->andX(
+			'c', CoreRequestBuilder::TABLE_MEMBERS, 'mo', $expr->andX(
 			$expr->eq(
 				'mo.circle_id',
-				$qb->createFunction('SUBSTR(`c`.`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')')
-			),
+        $qb->createFunction('SUBSTR(`c`.`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')')
+			), $expr->eq('mo.type', $qb->createNamedParameter(Member::TYPE_USER)),
 			$expr->eq('mo.level', $qb->createNamedParameter(Member::LEVEL_OWNER))
 		)
 		);
@@ -271,7 +272,6 @@ class CircleProviderRequestBuilder {
 		$expr = $qb->expr();
 
 		$qb->from(CoreRequestBuilder::TABLE_MEMBERS, 'm');
-
 
 		$orX = $expr->orX();
 		$orX->add($this->exprLinkToMemberAsCircleMember($qb, $userId));
@@ -298,6 +298,7 @@ class CircleProviderRequestBuilder {
 		$andX = $expr->andX();
 
 		$andX->add($expr->eq('m.user_id', $qb->createNamedParameter($userId)));
+		$andX->add($expr->eq('m.type', $qb->createNamedParameter(Member::TYPE_USER)));
 		$andX->add(
 			$expr->eq(
 				'm.circle_id',
@@ -322,7 +323,8 @@ class CircleProviderRequestBuilder {
 	 */
 	private function exprLinkToMemberAsGroupMember(IQueryBuilder &$qb, $userId) {
 		$expr = $qb->expr();
-		
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->leftJoin(
 			'c', CoreRequestBuilder::TABLE_GROUPS, 'g',
 			$expr->andX(
@@ -357,6 +359,7 @@ class CircleProviderRequestBuilder {
 			's', CoreRequestBuilder::TABLE_MEMBERS, 'src_m',
 			$expr->andX(
 				$expr->eq('s.uid_initiator', 'src_m.user_id'),
+				$expr->eq('src_m.type', $qb->createNamedParameter(Member::TYPE_USER)),
 				$expr->eq('s.share_with', 'src_m.circle_id')
 			)
 		);
@@ -386,8 +389,15 @@ class CircleProviderRequestBuilder {
 	protected function joinCircleMembers(IQueryBuilder &$qb) {
 		$expr = $qb->expr();
 
-		$qb->from(CoreRequestBuilder::TABLE_MEMBERS, 'm');
-		$qb->andWhere($expr->eq('s.share_with', 'm.circle_id'));
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$qb->addSelect('m.user_id')
+		   ->from(CoreRequestBuilder::TABLE_MEMBERS, 'm')
+		   ->andWhere(
+			   $expr->andX(
+				   $expr->eq('s.share_with', 'm.circle_id'),
+				   $expr->eq('m.type', $qb->createNamedParameter(Member::TYPE_USER))
+			   )
+		   );
 	}
 
 
@@ -456,10 +466,9 @@ class CircleProviderRequestBuilder {
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select(
 			's.id', 's.share_type', 's.share_with', 's.uid_owner', 's.uid_initiator',
-			's.parent', 's.item_type', 's.item_source', 's.item_target', 's.file_source',
-			's.file_target', 's.permissions', 's.stime', 's.accepted', 's.expiration',
-			's.token', 's.mail_send', 'c.type AS circle_type', 'c.name AS circle_name',
-			'mo.user_id AS circle_owner'
+			's.parent', 's.item_type', 's.item_source', 's.item_target', 's.permissions', 's.stime',
+			's.accepted', 's.expiration',
+			's.token', 's.mail_send', 'c.type AS circle_type', 'c.name AS circle_name'
 		);
 		$this->linkToCircleOwner($qb);
 		$this->joinShare($qb);
@@ -481,9 +490,6 @@ class CircleProviderRequestBuilder {
 		$qb = $this->dbConnection->getQueryBuilder();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->select(
-			'm.user_id', 's.file_source', 's.file_target'
-		);
 		$this->joinCircleMembers($qb);
 		$this->joinShare($qb);
 
@@ -500,8 +506,7 @@ class CircleProviderRequestBuilder {
 			   's.*', 'f.fileid', 'f.path', 'f.permissions AS f_permissions', 'f.storage',
 			   'f.path_hash', 'f.parent AS f_parent', 'f.name', 'f.mimetype', 'f.mimepart',
 			   'f.size', 'f.mtime', 'f.storage_mtime', 'f.encrypted', 'f.unencrypted_size',
-			   'f.etag', 'f.checksum', 'c.type AS circle_type', 'c.name AS circle_name',
-			   'mo.user_id AS circle_owner'
+			   'f.etag', 'f.checksum', 'c.type AS circle_type', 'c.name AS circle_name'
 		   )
 		   ->selectAlias('st.id', 'storage_string_id');
 
@@ -521,6 +526,8 @@ class CircleProviderRequestBuilder {
 	private function joinShare(IQueryBuilder &$qb) {
 		$expr = $qb->expr();
 
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$qb->addSelect('s.file_source', 's.file_target');
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->from('share', 's')
 		   ->where($expr->eq('s.share_type', $qb->createNamedParameter(Share::SHARE_TYPE_CIRCLE)))

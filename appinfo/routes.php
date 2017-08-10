@@ -79,10 +79,13 @@ return [
 			'verb'         => 'PUT'
 		],
 		[
-			'name'         => 'Members#add', 'url' => '/v1/circles/{uniqueId}/members', 'verb' => 'PUT'
+			'name'         => 'Members#addLocalMember', 'url' => '/v1/circles/{uniqueId}/member', 'verb' => 'PUT'
 		],
 		[
-			'name'         => 'Members#remove', 'url' => '/v1/circles/{uniqueId}/members',
+			'name'         => 'Members#addEmailAddress', 'url' => '/v1/circles/{uniqueId}/email', 'verb' => 'PUT'
+		],
+		[
+			'name'         => 'Members#removeLocalMember', 'url' => '/v1/circles/{uniqueId}/member',
 			'verb'         => 'DELETE',
 		],
 		[

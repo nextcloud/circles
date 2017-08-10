@@ -104,9 +104,25 @@
 				var result = {status: -1};
 				$.ajax({
 					method: 'PUT',
-					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/members'),
+					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/member'),
 					data: {
 						name: userId
+					}
+				}).done(function (res) {
+					self.onCallback(callback, res);
+				}).fail(function () {
+					self.onCallback(callback, result);
+				});
+			};
+
+
+			this.addEmail = function (circleId, email, callback) {
+				var result = {status: -1};
+				$.ajax({
+					method: 'PUT',
+					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/email'),
+					data: {
+						email: email
 					}
 				}).done(function (res) {
 					self.onCallback(callback, res);
@@ -137,7 +153,7 @@
 				var result = {status: -1};
 				$.ajax({
 					method: 'DELETE',
-					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/members'),
+					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/member'),
 					data: {
 						member: userId
 					}

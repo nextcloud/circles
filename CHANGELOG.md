@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 
 
+## 0.12.3
+
+- Fixing a migration bug.
+- Add Type to members.
+
+
 ## 0.12.0
 
 - Security: SQL incremented ID is not used anymore; Every request on a Circle will require a 14 chars version of its Unique ID. (API v0.10.0).

@@ -102,7 +102,14 @@
 			<field>
 				<name>user_id</name>
 				<type>text</type>
-				<length>64</length>
+				<length>128</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>type</name>
+				<type>integer</type>
+				<length>1</length>
 				<notnull>true</notnull>
 			</field>
 
@@ -141,6 +148,9 @@
 				</field>
 				<field>
 					<name>user_id</name>
+				</field>
+				<field>
+					<name>type</name>
 				</field>
 			</index>
 		</declaration>

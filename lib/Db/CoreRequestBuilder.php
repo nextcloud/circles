@@ -111,6 +111,21 @@ class CoreRequestBuilder {
 	}
 
 
+
+	/**
+	 * Limit the request to the Type entry.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param int $type
+	 *
+	 * @internal param int $circleId
+	 */
+	protected function limitToType(IQueryBuilder &$qb, $type) {
+		$this->limitToDBField($qb, 'type', $type);
+	}
+
+
+
 	/**
 	 * Limit the request to the Circle by its Id.
 	 *

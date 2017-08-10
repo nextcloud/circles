@@ -31,6 +31,7 @@ use OC\User\NoUserException;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Exceptions\CircleTypeNotValidException;
+use OCA\Circles\Exceptions\EmailAccountInvalidFormatException;
 use OCA\Circles\Exceptions\GroupDoesNotExistException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
@@ -105,7 +106,7 @@ class MembersService {
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function addMember($circleUniqueId, $name) {
+	public function addLocalMember($circleUniqueId, $name) {
 
 		try {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
@@ -116,7 +117,7 @@ class MembersService {
 		}
 
 		try {
-			$member = $this->getFreshNewMember($circleUniqueId, $name);
+			$member = $this->getFreshNewMember($circleUniqueId, $name, Member::TYPE_USER);
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -126,6 +127,50 @@ class MembersService {
 
 		$this->eventsService->onMemberNew($circle, $member);
 
+		return $this->membersRequest->getMembers(
+			$circle->getUniqueId(), $circle->getHigherViewer()
+		);
+	}
+
+
+	/**
+	 * @param string $circleUniqueId
+	 * @param string $email
+	 *
+	 * @return array
+	 * @throws \Exception
+	 */
+	public function addEmailAddress($circleUniqueId, $email) {
+
+		$this->miscService->log('___' . $email);
+		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+			throw new EmailAccountInvalidFormatException(
+				$this->l10n->t('Email format is not valid')
+			);
+		}
+
+		try {
+			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
+			$circle->getHigherViewer()
+				   ->hasToBeModerator();
+		} catch (\Exception $e) {
+			throw $e;
+		}
+
+		try {
+			$member = $this->getFreshNewMember($circleUniqueId, $email, Member::TYPE_MAIL);
+		} catch (\Exception $e) {
+			throw $e;
+		}
+
+		$this->miscService->log('___' . json_encode($member));
+
+//
+//		$member->inviteToCircle($circle->getType());
+//		$this->membersRequest->updateMember($member);
+//
+//		$this->eventsService->onMemberNew($circle, $member);
+//
 		return $this->membersRequest->getMembers(
 			$circle->getUniqueId(), $circle->getHigherViewer()
 		);
@@ -152,12 +197,13 @@ class MembersService {
 		$group = \OC::$server->getGroupManager()
 							 ->get($groupId);
 		if ($group === null) {
-			throw new GroupDoesNotExistException('This group does not exist');
+			throw new GroupDoesNotExistException($this->l10n->t('This group does not exist'));
 		}
 
 		foreach ($group->getUsers() as $user) {
 			try {
-				$member = $this->getFreshNewMember($circleUniqueId, $user->getUID());
+				$member =
+					$this->getFreshNewMember($circleUniqueId, $user->getUID(), Member::TYPE_USER);
 
 				$member->inviteToCircle($circle->getType());
 				$this->membersRequest->updateMember($member);
@@ -183,18 +229,19 @@ class MembersService {
 	 *
 	 * @param $circleId
 	 * @param $userId
+	 * @param $type
 	 *
 	 * @return Member
 	 * @throws \Exception
 	 */
-	public function getMember($circleId, $userId) {
+	public function getMember($circleId, $userId, $type) {
 
 		try {
 			$this->circlesRequest->getCircle($circleId, $this->userId)
 								 ->getHigherViewer()
 								 ->hasToBeMember();
 
-			$member = $this->membersRequest->forceGetMember($circleId, $userId);
+			$member = $this->membersRequest->forceGetMember($circleId, $userId, $type);
 			$member->setNote('');
 
 			return $member;
@@ -209,24 +256,27 @@ class MembersService {
 	 *
 	 * @param string $circleUniqueId
 	 * @param string $name
+	 * @param $type
 	 *
-	 * @return null|Member
+	 * @return Member
 	 * @throws MemberAlreadyExistsException
 	 * @throws \Exception
 	 */
-	private function getFreshNewMember($circleUniqueId, $name) {
+	private function getFreshNewMember($circleUniqueId, $name, $type) {
 
-		try {
-			$userId = $this->getRealUserId($name);
-		} catch (\Exception $e) {
-			throw $e;
+		if ($type === Member::TYPE_USER) {
+			try {
+				$name = $this->getRealUserId($name);
+			} catch (\Exception $e) {
+				throw $e;
+			}
 		}
 
 		try {
-			$member = $this->membersRequest->forceGetMember($circleUniqueId, $userId);
+			$member = $this->membersRequest->forceGetMember($circleUniqueId, $name, $type);
 
 		} catch (MemberDoesNotExistException $e) {
-			$member = new Member($this->l10n, $userId, $circleUniqueId);
+			$member = new Member($name, $type, $circleUniqueId);
 			$this->membersRequest->createMember($member);
 		}
 
@@ -280,7 +330,7 @@ class MembersService {
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function levelMember($circleUniqueId, $name, $level) {
+	public function levelLocalMember($circleUniqueId, $name, $level) {
 
 		$level = (int)$level;
 		try {
@@ -291,7 +341,9 @@ class MembersService {
 				);
 			}
 
-			$member = $this->membersRequest->forceGetMember($circle->getUniqueId(), $name);
+			$member = $this->membersRequest->forceGetMember(
+				$circle->getUniqueId(), $name, Member::TYPE_USER
+			);
 			if ($member->getLevel() !== $level) {
 				if ($level === Member::LEVEL_OWNER) {
 					$this->switchOwner($circle, $member);
@@ -348,7 +400,9 @@ class MembersService {
 			$isMod = $circle->getHigherViewer();
 			$isMod->hasToBeOwner();
 
+			$member->hasToBeMember();
 			$member->cantBeOwner();
+			
 			$member->setLevel(Member::LEVEL_OWNER);
 			$this->membersRequest->updateMember($member);
 
@@ -364,18 +418,19 @@ class MembersService {
 	/**
 	 * @param string $circleUniqueId
 	 * @param string $name
+	 * @param $type
 	 *
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function removeMember($circleUniqueId, $name) {
+	public function removeMember($circleUniqueId, $name, $type) {
 
 		try {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			$circle->getHigherViewer()
 				   ->hasToBeModerator();
 
-			$member = $this->membersRequest->forceGetMember($circleUniqueId, $name);
+			$member = $this->membersRequest->forceGetMember($circleUniqueId, $name, $type);
 			$member->hasToBeMemberOrAlmost();
 			$member->cantBeOwner();
 

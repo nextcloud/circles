@@ -136,7 +136,7 @@ class GroupsService {
 		try {
 			$member = $this->membersRequest->forceGetGroup($circleId, $groupId);
 		} catch (MemberDoesNotExistException $e) {
-			$member = new Member($this->l10n, '', $circleId);
+			$member = new Member('', Member::TYPE_GROUP, $circleId);
 			$member->setGroupId($groupId);
 			$this->membersRequest->insertGroup($member);
 		}

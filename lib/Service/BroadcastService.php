@@ -108,19 +108,18 @@ class BroadcastService {
 
 			$broadcaster->init();
 			if ($circle->getType() !== Circle::CIRCLES_PERSONAL) {
-				$broadcaster->createShareToCircle($frame);
+				$broadcaster->createShareToCircle($frame, $circle);
 			}
 
-			$users = $this->membersRequest->forceGetMembers(
+			$members = $this->membersRequest->forceGetMembers(
 				$circle->getUniqueId(), Member::LEVEL_MEMBER, true
 			);
-			foreach ($users AS $user) {
-				$broadcaster->createShareToUser($frame, $user->getUserId());
+			foreach ($members AS $member) {
+				$broadcaster->createShareToMember($frame, $member);
 			}
 		} catch (Exception $e) {
 			throw $e;
 		}
 	}
-
 
 }

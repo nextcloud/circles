@@ -78,7 +78,9 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		$qb = $this->dbConnection->getQueryBuilder();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->select('m.user_id', 'm.circle_id', 'm.level', 'm.status', 'm.note', 'm.joined')
+		$qb->select(
+			'm.user_id', 'm.type', 'm.circle_id', 'm.level', 'm.status', 'm.note', 'm.joined'
+		)
 		   ->from(self::TABLE_MEMBERS, 'm');
 
 		$this->default_select_alias = 'm';
@@ -144,11 +146,11 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	 * Base of the Sql Updte request for Members
 	 *
 	 * @param int $circleId
-	 * @param string $userId
+	 * @param Member $member
 	 *
 	 * @return IQueryBuilder
 	 */
-	protected function getMembersUpdateSql($circleId, $userId) {
+	protected function getMembersUpdateSql($circleId, Member $member) {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$expr = $qb->expr();
 
@@ -157,7 +159,8 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		   ->where(
 			   $expr->andX(
 				   $expr->eq('circle_id', $qb->createNamedParameter($circleId)),
-				   $expr->eq('user_id', $qb->createNamedParameter($userId))
+				   $expr->eq('user_id', $qb->createNamedParameter($member->getUserId())),
+				   $expr->eq('type', $qb->createNamedParameter($member->getType()))
 			   )
 		   );
 
@@ -187,10 +190,11 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	 *
 	 * @param string $uniqueCircleId
 	 * @param string $userId
+	 * @param int $type
 	 *
 	 * @return IQueryBuilder
 	 */
-	protected function getMembersDeleteSql($uniqueCircleId, $userId) {
+	protected function getMembersDeleteSql($uniqueCircleId, $type = 0, $userId = '') {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$expr = $qb->expr();
 
@@ -198,8 +202,9 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		if ($uniqueCircleId !== '') {
 			$and->add($expr->eq('circle_id', $qb->createNamedParameter($uniqueCircleId)));
 		}
-		if ($userId !== '') {
+		if ($type > 0) {
 			$and->add($expr->eq('user_id', $qb->createNamedParameter($userId)));
+			$and->add($expr->eq('type', $qb->createNamedParameter($type)));
 		}
 
 		$qb->delete(CoreRequestBuilder::TABLE_MEMBERS)
@@ -215,9 +220,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	 * @return Member
 	 */
 	protected function parseMembersSelectSql(array $data) {
-		$member = new Member($this->l10n);
-		$member->setUserId($data['user_id']);
-		$member->setCircleId($data['circle_id']);
+		$member = new Member($data['user_id'], $data['type'], $data['circle_id']);
 		$member->setNote($data['note']);
 		$member->setLevel($data['level']);
 		$member->setStatus($data['status']);
@@ -232,7 +235,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	 * @return Member
 	 */
 	protected function parseGroupsSelectSql(array $data) {
-		$member = new Member($this->l10n);
+		$member = new Member();
 		$member->setCircleId($data['circle_id']);
 		$member->setNote($data['note']);
 		$member->setLevel($data['level']);
@@ -240,6 +243,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 
 		if (key_exists('user_id', $data)) {
 			$member->setUserId($data['user_id']);
+			$member->setType(Member::TYPE_USER);
 		}
 
 		$member->setJoined($data['joined']);
