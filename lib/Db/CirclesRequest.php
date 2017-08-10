@@ -205,7 +205,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 		   ->setValue('type', $qb->createNamedParameter($circle->getType()));
 		$qb->execute();
 
-		$owner = new Member($this->l10n, $userId);
+		$owner = new Member($userId, Member::TYPE_USER);
 		$owner->setCircleId($circle->getUniqueId())
 			  ->setLevel(Member::LEVEL_OWNER)
 			  ->setStatus(Member::STATUS_MEMBER);

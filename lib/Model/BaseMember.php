@@ -45,7 +45,8 @@ class BaseMember implements \JsonSerializable {
 	const STATUS_KICKED = 'Kicked';
 
 	const TYPE_USER = 1;
-	const TYPE_MAIL = 2;
+	const TYPE_GROUP = 2;
+	const TYPE_MAIL = 3;
 
 	/** @var string */
 	private $circleUniqueId;
@@ -80,19 +81,16 @@ class BaseMember implements \JsonSerializable {
 	/**
 	 * BaseMember constructor.
 	 *
-	 * @param $l10n
-	 * @param string $userId
 	 * @param string $circleUniqueId
+	 * @param string $userId
+	 * @param int $type
 	 */
-	public function __construct($l10n, $userId = '', $circleUniqueId = '') {
-		$this->l10n = $l10n;
+	public function __construct($userId = '', $type = 0, $circleUniqueId = '') {
+		$this->l10n = \OC::$server->getL10N('circles');
 
-		if ($userId !== '') {
-			$this->setUserId($userId);
-		}
-		if ($circleUniqueId > -1) {
-			$this->setCircleId($circleUniqueId);
-		}
+		$this->setUserId($userId);
+		$this->setCircleId($circleUniqueId);
+		$this->setType($type);
 		$this->setLevel(Member::LEVEL_NONE);
 		$this->setStatus(Member::STATUS_NONMEMBER);
 	}
@@ -253,18 +251,18 @@ class BaseMember implements \JsonSerializable {
 	}
 
 
-	public static function fromArray($l10n, $arr) {
+	public static function fromArray($arr) {
 		if ($arr === null) {
 			return null;
 		}
 
-		$member = new Member($l10n);
+		$member = new Member();
 
 		$member->setCircleId($arr['circle_id']);
 		$member->setLevel($arr['level']);
 		if (key_exists('user_id', $arr)) {
 			$member->setUserId($arr['user_id']);
-//			$member->setType($arr['type']);
+			$member->setType($arr['type']);
 		}
 
 		if (key_exists('group_id', $arr)) {
@@ -287,8 +285,8 @@ class BaseMember implements \JsonSerializable {
 	}
 
 
-	public static function fromJSON($l10n, $json) {
-		return self::fromArray($l10n, json_decode($json, true));
+	public static function fromJSON($json) {
+		return self::fromArray(json_decode($json, true));
 	}
 
 	public function jsonSerialize() {

@@ -45,14 +45,16 @@ class MembersRequest extends MembersRequestBuilder {
 	 *
 	 * @param string $circleUniqueId
 	 * @param string $userId
+	 * @param $type
 	 *
 	 * @return Member
 	 * @throws MemberDoesNotExistException
 	 */
-	public function forceGetMember($circleUniqueId, $userId) {
+	public function forceGetMember($circleUniqueId, $userId, $type) {
 		$qb = $this->getMembersSelectSql();
 
 		$this->limitToUserId($qb, $userId);
+		$this->limitToType($qb, $type);
 		$this->limitToCircleId($qb, $circleUniqueId);
 
 		$cursor = $qb->execute();

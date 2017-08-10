@@ -220,10 +220,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	 * @return Member
 	 */
 	protected function parseMembersSelectSql(array $data) {
-		$member = new Member($this->l10n);
-		$member->setUserId($data['user_id']);
-		$member->setType($data['type']);
-		$member->setCircleId($data['circle_id']);
+		$member = new Member($data['user_id'], $data['type'], $data['circle_id']);
 		$member->setNote($data['note']);
 		$member->setLevel($data['level']);
 		$member->setStatus($data['status']);
@@ -238,7 +235,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	 * @return Member
 	 */
 	protected function parseGroupsSelectSql(array $data) {
-		$member = new Member($this->l10n);
+		$member = new Member();
 		$member->setCircleId($data['circle_id']);
 		$member->setNote($data['note']);
 		$member->setLevel($data['level']);
@@ -246,6 +243,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 
 		if (key_exists('user_id', $data)) {
 			$member->setUserId($data['user_id']);
+			$member->setType(Member::TYPE_USER);
 		}
 
 		$member->setJoined($data['joined']);

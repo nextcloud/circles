@@ -468,19 +468,21 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		$circle->setCreation($data['creation']);
 
 		if (key_exists('viewer_level', $data)) {
-			$user = new Member($this->l10n);
+			$user = new Member();
 			$user->setStatus($data['viewer_status']);
 			$user->setCircleId($circle->getUniqueId());
 			$user->setUserId($data['viewer_userid']);
+			$user->setType(Member::TYPE_USER);
 			$user->setLevel($data['viewer_level']);
 			$circle->setViewer($user);
 		}
 
 		if (key_exists('owner_level', $data)) {
-			$owner = new Member($this->l10n);
+			$owner = new Member();
 			$owner->setStatus($data['owner_status']);
 			$owner->setCircleId($circle->getUniqueId());
 			$owner->setUserId($data['owner_userid']);
+			$owner->setType(Member::TYPE_USER);
 			$owner->setLevel($data['owner_level']);
 			$circle->setOwner($owner);
 		}

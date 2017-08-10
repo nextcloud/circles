@@ -260,11 +260,11 @@ class Circles {
 	 *
 	 * @return Member
 	 */
-	public static function getMember($circleUniqueId, $userId) {
+	public static function getLocalMember($circleUniqueId, $userId) {
 		$c = self::getContainer();
 
 		return $c->query('MembersService')
-				 ->getMember($circleUniqueId, $userId);
+				 ->getMember($circleUniqueId, $userId, Member::TYPE_USER);
 	}
 
 
