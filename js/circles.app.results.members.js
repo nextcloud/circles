@@ -100,6 +100,23 @@ var resultMembers = {
 	},
 
 
+	addEmailResult: function (result) {
+
+		if (result.status === 1) {
+			OCA.notification.onSuccess(
+				t('circles', "The email address '{email}' was added to the circle",
+					{email: result.email}));
+
+			nav.displayMembers(result.members);
+			return;
+		}
+		OCA.notification.onFail(
+			t('circles', "The email address '{email}' could not be added to the circle",
+				{email: result.email}) +
+			': ' + ((result.error) ? result.error : t('circles', 'no error message')));
+	},
+
+
 	inviteMemberResult: function (result) {
 
 		if (result.status === 1) {

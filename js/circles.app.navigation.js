@@ -91,8 +91,13 @@ var nav = {
 							}
 						});
 				} else {
-					api.addMember(curr.circle, elements.addMember.val(),
-						resultMembers.addMemberResult);
+					if (actions.validateEmail(elements.addMember.val())) {
+						api.addEmail(curr.circle, elements.addMember.val(),
+							resultMembers.addEmailResult);
+					} else {
+						api.addMember(curr.circle, elements.addMember.val(),
+							resultMembers.addMemberResult);
+					}
 				}
 			}
 		});

@@ -31,6 +31,7 @@ use OC\User\NoUserException;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Exceptions\CircleTypeNotValidException;
+use OCA\Circles\Exceptions\EmailAccountInvalidFormatException;
 use OCA\Circles\Exceptions\GroupDoesNotExistException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
@@ -105,7 +106,7 @@ class MembersService {
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function addMember($circleUniqueId, $name) {
+	public function addLocalMember($circleUniqueId, $name) {
 
 		try {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
@@ -126,6 +127,50 @@ class MembersService {
 
 		$this->eventsService->onMemberNew($circle, $member);
 
+		return $this->membersRequest->getMembers(
+			$circle->getUniqueId(), $circle->getHigherViewer()
+		);
+	}
+
+
+	/**
+	 * @param string $circleUniqueId
+	 * @param string $email
+	 *
+	 * @return array
+	 * @throws \Exception
+	 */
+	public function addEmailAddress($circleUniqueId, $email) {
+
+		$this->miscService->log('___' . $email);
+		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+			throw new EmailAccountInvalidFormatException(
+				$this->l10n->t('Email format is not valid')
+			);
+		}
+
+		try {
+			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
+			$circle->getHigherViewer()
+				   ->hasToBeModerator();
+		} catch (\Exception $e) {
+			throw $e;
+		}
+
+		try {
+			$member = $this->getFreshNewMember($circleUniqueId, $email, Member::TYPE_MAIL);
+		} catch (\Exception $e) {
+			throw $e;
+		}
+
+		$this->miscService->log('___' . json_encode($member));
+
+//
+//		$member->inviteToCircle($circle->getType());
+//		$this->membersRequest->updateMember($member);
+//
+//		$this->eventsService->onMemberNew($circle, $member);
+//
 		return $this->membersRequest->getMembers(
 			$circle->getUniqueId(), $circle->getHigherViewer()
 		);

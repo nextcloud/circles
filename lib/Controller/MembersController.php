@@ -26,6 +26,7 @@
 
 namespace OCA\Circles\Controller;
 
+use OCA\Circles\Model\Member;
 use OCP\AppFramework\Http\DataResponse;
 
 class MembersController extends BaseController {
@@ -40,10 +41,10 @@ class MembersController extends BaseController {
 	 *
 	 * @return DataResponse
 	 */
-	public function add($uniqueId, $name) {
+	public function addLocalMember($uniqueId, $name) {
 
 		try {
-			$data = $this->membersService->addMember($uniqueId, $name);
+			$data = $this->membersService->addLocalMember($uniqueId, $name);
 		} catch (\Exception $e) {
 			return $this->fail(
 				[
@@ -60,6 +61,41 @@ class MembersController extends BaseController {
 				'circle_id' => $uniqueId,
 				'user_id'   => $name,
 				'name'      => $this->miscService->getDisplayName($name, true),
+				'members'   => $data
+			]
+		);
+	}
+
+
+	/**
+	 * @NoAdminRequired
+	 * @NoSubAdminRequired
+	 *
+	 * @param string $uniqueId
+	 * @param string $email
+	 *
+	 * @return DataResponse
+	 */
+	public function addEmailAddress($uniqueId, $email) {
+
+		try {
+			$data = $this->membersService->addEmailAddress($uniqueId, $email);
+		} catch (\Exception $e) {
+			return $this->fail(
+				[
+					'circle_id' => $uniqueId,
+					'user_id'   => $email,
+					'name'      => $this->miscService->getDisplayName($email, true),
+					'error'     => $e->getMessage()
+				]
+			);
+		}
+
+		return $this->success(
+			[
+				'circle_id' => $uniqueId,
+				'user_id'   => $email,
+				'name'      => $this->miscService->getDisplayName($email, true),
 				'members'   => $data
 			]
 		);
@@ -114,7 +150,7 @@ class MembersController extends BaseController {
 	public function level($uniqueId, $member, $level) {
 
 		try {
-			$data = $this->membersService->levelMember($uniqueId, $member, $level);
+			$data = $this->membersService->levelLocalMember($uniqueId, $member, $level);
 		} catch (\Exception $e) {
 			return
 				$this->fail(
@@ -149,10 +185,10 @@ class MembersController extends BaseController {
 	 *
 	 * @return DataResponse
 	 */
-	public function remove($uniqueId, $member) {
+	public function removeLocalMember($uniqueId, $member) {
 
 		try {
-			$data = $this->membersService->removeMember($uniqueId, $member);
+			$data = $this->membersService->removeMember($uniqueId, $member, Member::TYPE_USER);
 		} catch (\Exception $e) {
 			return
 				$this->fail(

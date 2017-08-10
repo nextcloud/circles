@@ -245,7 +245,7 @@ class Circles {
 		$c = self::getContainer();
 
 		return $c->query('MembersService')
-				 ->addMember($circleUniqueId, $userId);
+				 ->addLocalMember($circleUniqueId, $userId);
 	}
 
 
