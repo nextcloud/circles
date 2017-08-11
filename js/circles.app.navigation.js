@@ -315,7 +315,7 @@ var nav = {
 			} else {
 				nav.displayInviteCircleButtons(false);
 
-				if (curr.circleLevel === 0 && curr.circleStatus !== 'Requesting') {
+				if (curr.circleDetails.user.level === 0 && curr.circleStatus !== 'Requesting') {
 					elements.joinCircle.delay(define.animationMenuSpeed).show(
 						define.animationMenuSpeed);
 					elements.leaveCircle.hide(define.animationMenuSpeed);
