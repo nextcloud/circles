@@ -285,7 +285,9 @@ class CirclesService {
 
 			try {
 				$member =
-					$this->membersRequest->forceGetMember($circle->getUniqueId(), $this->userId, Member::TYPE_USER);
+					$this->membersRequest->forceGetMember(
+						$circle->getUniqueId(), $this->userId, Member::TYPE_USER
+					);
 			} catch (MemberDoesNotExistException $m) {
 				$member = new Member($this->userId, Member::TYPE_USER, $circle->getUniqueId());
 				$this->membersRequest->createMember($member);
