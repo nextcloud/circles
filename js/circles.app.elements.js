@@ -436,6 +436,7 @@ var elements = {
 		var tmpl = $('#tmpl_member').html();
 
 		tmpl = tmpl.replace(/%username%/g, escapeHTML(entry.user_id));
+		tmpl = tmpl.replace(/%type%/g, escapeHTML(entry.type));
 		tmpl = tmpl.replace(/%displayname%/g, escapeHTML(entry.display_name));
 		tmpl = tmpl.replace(/%level%/g, escapeHTML(entry.level));
 		tmpl = tmpl.replace(/%levelString%/g, escapeHTML(entry.level_string));
@@ -449,7 +450,7 @@ var elements = {
 	generateTmplGroup: function (entry) {
 		var tmpl = $('#tmpl_group').html();
 
-		tmpl = tmpl.replace(/%groupid%/g, escapeHTML(entry.group_id));
+		tmpl = tmpl.replace(/%groupid%/g, escapeHTML(entry.user_id));
 		tmpl = tmpl.replace(/%level%/g, escapeHTML(entry.level));
 		tmpl = tmpl.replace(/%levelString%/g, escapeHTML(entry.level_string));
 		tmpl = tmpl.replace(/%joined%/g, escapeHTML(entry.joined));

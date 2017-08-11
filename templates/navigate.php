@@ -297,7 +297,7 @@ style('circles', 'navigation');
 					</table>
 
 					<script id="tmpl_member" type="text/template">
-						<tr class="entry" member-id="%username%" member-level="%level%"
+						<tr class="entry" member-id="%username%" member-type="%type%" member-level="%level%"
 							member-levelString="%levelString%"
 							member-status="%status%">
 							<td class="username" style="padding-left: 15px;">%displayname%</td>

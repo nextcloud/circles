@@ -384,7 +384,7 @@ var nav = {
 		elements.mainUIMembersTable.children('tr.entry').each(function () {
 
 				var userId = $(this).attr('member-id');
-				if (userId === curr.userId) {
+				if (userId === curr.userId && Number($(this).attr('member-type')) === define.typeUser) {
 					$(this).find('td.username').css('font-weight', 'bold').css('font-style', 'italic');
 					$(this).css('background', '#e0e0e0');
 				} else {
@@ -482,7 +482,7 @@ var nav = {
 
 				var groupId = $(this).attr('group-id');
 				if (curr.circleDetails.group !== null &&
-					groupId === curr.circleDetails.group.group_id) {
+					groupId === curr.circleDetails.group.user_id) {
 					$(this).find('td.username').css('font-weight', 'bold').css('font-style', 'italic');
 					$(this).css('background', '#e0e0e0');
 				} else {
