@@ -134,7 +134,6 @@ class CoreRequestBuilder {
 	 */
 	protected function limitToCircleId(IQueryBuilder &$qb, $circleUniqueId) {
 		$this->limitToDBField($qb, 'circle_id', $circleUniqueId);
-
 	}
 
 

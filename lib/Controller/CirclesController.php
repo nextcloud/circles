@@ -61,36 +61,6 @@ class CirclesController extends BaseController {
 
 
 	/**
-	 * verifyCreationName();
-	 *
-	 * Verify the name at the creation of a circle:
-	 * Name must contain at least 3 chars.
-	 * First char must be alpha-numeric.
-	 *
-	 * @param $name
-	 *
-	 * @throws CircleNameFirstCharException
-	 * @throws CircleNameTooShortException
-	 */
-	private function verifyCreationName($name) {
-		if (strlen($name) < 3) {
-			throw new CircleNameTooShortException(
-				$this->l10n->t('The name of your circle must contain at least 3 characters')
-			);
-		}
-
-		$chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-		if (strpos($chars, strtolower(substr($name, 0, 1))) === false) {
-			throw new CircleNameFirstCharException(
-				$this->l10n->t(
-					"The name of your circle must start with an alpha-numerical character"
-				)
-			);
-		}
-	}
-
-
-	/**
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
@@ -284,6 +254,35 @@ class CirclesController extends BaseController {
 		}
 	}
 
+
+	/**
+	 * verifyCreationName();
+	 *
+	 * Verify the name at the creation of a circle:
+	 * Name must contain at least 3 chars.
+	 * First char must be alpha-numeric.
+	 *
+	 * @param $name
+	 *
+	 * @throws CircleNameFirstCharException
+	 * @throws CircleNameTooShortException
+	 */
+	private function verifyCreationName($name) {
+		if (strlen($name) < 3) {
+			throw new CircleNameTooShortException(
+				$this->l10n->t('The name of your circle must contain at least 3 characters')
+			);
+		}
+
+		$chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+		if (strpos($chars, strtolower(substr($name, 0, 1))) === false) {
+			throw new CircleNameFirstCharException(
+				$this->l10n->t(
+					"The name of your circle must start with an alpha-numerical character"
+				)
+			);
+		}
+	}
 
 }
 
