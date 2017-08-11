@@ -671,7 +671,7 @@ class Provider implements IProvider {
 			return $this->generateUserParameter($member->getUserId());
 		}
 
-		return $this->generateGroupParameter($member->getGroupId());
+		return $this->generateGroupParameter($member->getUserId());
 	}
 
 	/**

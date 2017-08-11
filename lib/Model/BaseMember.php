@@ -57,9 +57,6 @@ class BaseMember implements \JsonSerializable {
 	/** @var string */
 	private $userId = '';
 
-	/** @var string */
-	private $groupId = '';
-
 	/** @var int */
 	private $type = self::TYPE_USER;
 
@@ -88,9 +85,9 @@ class BaseMember implements \JsonSerializable {
 	public function __construct($userId = '', $type = 0, $circleUniqueId = '') {
 		$this->l10n = \OC::$server->getL10N('circles');
 
+		$this->setType($type);
 		$this->setUserId($userId);
 		$this->setCircleId($circleUniqueId);
-		$this->setType($type);
 		$this->setLevel(Member::LEVEL_NONE);
 		$this->setStatus(Member::STATUS_NONMEMBER);
 	}
@@ -116,21 +113,6 @@ class BaseMember implements \JsonSerializable {
 
 
 	/**
-	 * @param string $groupId
-	 */
-	public function setGroupId($groupId) {
-		$this->groupId = $groupId;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getGroupId() {
-		return $this->groupId;
-	}
-
-
-	/**
 	 * @return int
 	 */
 	public function getType() {
@@ -138,33 +120,25 @@ class BaseMember implements \JsonSerializable {
 	}
 
 	public function setType($type) {
-		$this->type = $type;
+		$this->type = (int)$type;
 	}
 
 
 	public function getViewerType() {
-		if ($this->getUserId() === '') {
+		if ($this->getType() === 2) {
 			return 'group';
 		} else {
 			return 'user';
 		}
 	}
 
-	public function getViewerId() {
-		if ($this->getViewerType() === 'user') {
-			return $this->getUserId();
-		} else {
-			return $this->getGroupId();
-		}
-	}
-
 	public function setUserId($userId) {
 		$this->userId = $userId;
 
-		if ($userId !== null && $userId !== '') {
-			$this->setDisplayName(
-				MiscService::staticGetDisplayName($userId)
-			);
+		if ($this->getType() === Member::TYPE_USER) {
+			$this->setDisplayName(MiscService::staticGetDisplayName($userId, true));
+		} else {
+			$this->setDisplayName($userId);
 		}
 
 		return $this;
@@ -181,7 +155,7 @@ class BaseMember implements \JsonSerializable {
 		return $this;
 	}
 
-	public function getDisplayNAme() {
+	public function getDisplayName() {
 		return $this->displayName;
 	}
 
@@ -251,6 +225,13 @@ class BaseMember implements \JsonSerializable {
 	}
 
 
+	/**
+	 * @param $arr
+	 *
+	 * @deprecated use only by Provider
+	 *
+	 * @return null|Member
+	 */
 	public static function fromArray($arr) {
 		if ($arr === null) {
 			return null;
@@ -262,12 +243,11 @@ class BaseMember implements \JsonSerializable {
 		$member->setLevel($arr['level']);
 		if (key_exists('user_id', $arr)) {
 			$member->setUserId($arr['user_id']);
-			$member->setType($arr['type']);
 		}
 
-		if (key_exists('group_id', $arr)) {
-			$member->setGroupId($arr['group_id']);
-		}
+//		if (key_exists('group_id', $arr)) {
+//			$member->setGroupId($arr['group_id']);
+//		}
 
 		if (key_exists('status', $arr)) {
 			$member->setStatus($arr['status']);
@@ -285,6 +265,12 @@ class BaseMember implements \JsonSerializable {
 	}
 
 
+	/**
+	 * @param $json
+	 *
+	 * @return Member
+	 * @deprecated
+	 */
 	public static function fromJSON($json) {
 		return self::fromArray(json_decode($json, true));
 	}
@@ -293,8 +279,9 @@ class BaseMember implements \JsonSerializable {
 		return array(
 			'circle_id'    => $this->getCircleId(),
 			'user_id'      => $this->getUserId(),
-			'group_id'     => $this->getGroupId(),
-			'type'         => $this->getViewerType(),
+			//			'group_id'     => $this->getGroupId(),
+			'type'         => $this->getType(),
+			'viewer_type'  => $this->getViewerType(),
 			'display_name' => $this->getDisplayName(),
 			'level'        => $this->getLevel(),
 			'level_string' => $this->getLevelString(),

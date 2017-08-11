@@ -239,11 +239,13 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		$member->setCircleId($data['circle_id']);
 		$member->setNote($data['note']);
 		$member->setLevel($data['level']);
-		$member->setGroupId($data['group_id']);
 
 		if (key_exists('user_id', $data)) {
-			$member->setUserId($data['user_id']);
 			$member->setType(Member::TYPE_USER);
+			$member->setUserId($data['user_id']);
+		} else {
+			$member->setType(Member::TYPE_GROUP);
+			$member->setUserId($data['group_id']);
 		}
 
 		$member->setJoined($data['joined']);

@@ -267,7 +267,7 @@ class MembersRequest extends MembersRequestBuilder {
 	 */
 	public function getGroupMemberMembers(Member $group) {
 		/** @var IGroup $grp */
-		$grp = $this->groupManager->get($group->getGroupId());
+		$grp = $this->groupManager->get($group->getUserId());
 		if ($grp === null) {
 			return [];
 		}
@@ -277,6 +277,7 @@ class MembersRequest extends MembersRequestBuilder {
 		foreach ($users as $user) {
 			$member = clone $group;
 			//Member::fromJSON($this->l10n, json_encode($group));
+			$member->setType(Member::TYPE_USER);
 			$member->setUserId($user->getUID());
 			$members[] = $member;
 		}
@@ -387,7 +388,7 @@ class MembersRequest extends MembersRequestBuilder {
 		try {
 			$qb = $this->getGroupsInsertSql();
 			$qb->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
-			   ->setValue('group_id', $qb->createNamedParameter($member->getGroupId()))
+			   ->setValue('group_id', $qb->createNamedParameter($member->getUserId()))
 			   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
 			   ->setValue('note', $qb->createNamedParameter($member->getNote()));
 
@@ -453,7 +454,7 @@ class MembersRequest extends MembersRequestBuilder {
 	 */
 	public function updateGroup(Member $member) {
 
-		$qb = $this->getGroupsUpdateSql($member->getCircleId(), $member->getGroupId());
+		$qb = $this->getGroupsUpdateSql($member->getCircleId(), $member->getUserId());
 		$qb->set('level', $qb->createNamedParameter($member->getLevel()));
 		$qb->execute();
 
