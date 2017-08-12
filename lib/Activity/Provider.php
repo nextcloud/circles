@@ -128,7 +128,7 @@ class Provider implements IProvider {
 	 */
 	private function parseMemberAsMember(IEvent &$event, Circle $circle) {
 		$params = $event->getSubjectParameters();
-		$member = Member::fromJSON2($params['member']);
+		$member = Member::fromJSON($params['member']);
 
 		switch ($event->getSubject()) {
 			case 'member_join':
@@ -306,7 +306,7 @@ class Provider implements IProvider {
 	private function parseGroupAsModerator(IEvent &$event, Circle $circle) {
 
 		$params = $event->getSubjectParameters();
-		$group = Member::fromJSON2($params['group']);
+		$group = Member::fromJSON($params['group']);
 
 		switch ($event->getSubject()) {
 
@@ -353,7 +353,7 @@ class Provider implements IProvider {
 	private function parseMemberAsModerator(IEvent &$event, Circle $circle) {
 
 		$params = $event->getSubjectParameters();
-		$member = Member::fromJSON2($params['member']);
+		$member = Member::fromJSON($params['member']);
 
 		switch ($event->getSubject()) {
 			case 'member_invited':

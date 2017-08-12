@@ -155,12 +155,12 @@ class Circle extends BaseCircle implements \JsonSerializable {
 		$circle->setCreation($arr['creation']);
 
 		if (key_exists('user', $arr)) {
-			$viewer = Member::fromArray2($arr['user'], Member::TYPE_USER);
+			$viewer = Member::fromArray($arr['user'], Member::TYPE_USER);
 			$circle->setViewer($viewer);
 		}
 
 		if (key_exists('owner', $arr)) {
-			$owner = Member::fromArray2($arr['owner'], Member::TYPE_USER);
+			$owner = Member::fromArray($arr['owner'], Member::TYPE_USER);
 			$circle->setOwner($owner);
 		}
 
