@@ -117,7 +117,10 @@ class MembersService {
 		}
 
 		try {
-			$member = $this->getFreshNewMember($circleUniqueId, $name, Member::TYPE_USER);
+			$member =
+				$this->membersRequest->getFreshNewMember($circleUniqueId, $name, Member::TYPE_USER);
+			$member->hasToBeInviteAble();
+
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -158,7 +161,11 @@ class MembersService {
 		}
 
 		try {
-			$member = $this->getFreshNewMember($circleUniqueId, $email, Member::TYPE_MAIL);
+			$member = $this->membersRequest->getFreshNewMember(
+				$circleUniqueId, $email, Member::TYPE_MAIL
+			);
+			$member->hasToBeInviteAble();
+
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -203,7 +210,10 @@ class MembersService {
 		foreach ($group->getUsers() as $user) {
 			try {
 				$member =
-					$this->getFreshNewMember($circleUniqueId, $user->getUID(), Member::TYPE_USER);
+					$this->membersRequest->getFreshNewMember(
+						$circleUniqueId, $user->getUID(), Member::TYPE_USER
+					);
+				$member->hasToBeInviteAble();
 
 				$member->inviteToCircle($circle->getType());
 				$this->membersRequest->updateMember($member);
@@ -248,77 +258,6 @@ class MembersService {
 		} catch (\Exception $e) {
 			throw $e;
 		}
-	}
-
-
-	/**
-	 * Check if a fresh member can be generated (by addMember)
-	 *
-	 * @param string $circleUniqueId
-	 * @param string $name
-	 * @param $type
-	 *
-	 * @return Member
-	 * @throws MemberAlreadyExistsException
-	 * @throws \Exception
-	 */
-	private function getFreshNewMember($circleUniqueId, $name, $type) {
-
-		if ($type === Member::TYPE_USER) {
-			try {
-				$name = $this->getRealUserId($name);
-			} catch (\Exception $e) {
-				throw $e;
-			}
-		}
-
-		try {
-			$member = $this->membersRequest->forceGetMember($circleUniqueId, $name, $type);
-
-		} catch (MemberDoesNotExistException $e) {
-			$member = new Member($name, $type, $circleUniqueId);
-			$this->membersRequest->createMember($member);
-		}
-
-		if ($this->memberAlreadyExist($member)) {
-			throw new MemberAlreadyExistsException(
-				$this->l10n->t('This user is already a member of the circle')
-			);
-		}
-
-		return $member;
-	}
-
-
-	/**
-	 * return the real userId, with its real case
-	 *
-	 * @param $userId
-	 *
-	 * @return string
-	 * @throws NoUserException
-	 */
-	private function getRealUserId($userId) {
-		if (!$this->userManager->userExists($userId)) {
-			throw new NoUserException($this->l10n->t("This user does not exist"));
-		}
-
-		return $this->userManager->get($userId)
-								 ->getUID();
-	}
-
-	/**
-	 * return if member already exists
-	 *
-	 * @param Member $member
-	 *
-	 * @return bool
-	 */
-	private function memberAlreadyExist($member) {
-		return ($member->getLevel() > Member::LEVEL_NONE
-				|| ($member->getStatus() !== Member::STATUS_NONMEMBER
-					&& $member->getStatus() !== Member::STATUS_REQUEST)
-		);
 	}
 
 
@@ -402,7 +341,7 @@ class MembersService {
 
 			$member->hasToBeMember();
 			$member->cantBeOwner();
-			
+
 			$member->setLevel(Member::LEVEL_OWNER);
 			$this->membersRequest->updateMember($member);
 

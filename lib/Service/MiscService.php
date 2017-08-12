@@ -56,6 +56,27 @@ class MiscService {
 		$this->logger->log($level, $message, $data);
 	}
 
+
+
+	/**
+	 * return the real userId, with its real case
+	 *
+	 * @param $userId
+	 *
+	 * @return string
+	 * @throws NoUserException
+	 */
+	public function getRealUserId($userId) {
+		if (!$this->userManager->userExists($userId)) {
+			throw new NoUserException();
+		}
+
+		return $this->userManager->get($userId)
+								 ->getUID();
+	}
+
+
+
 	/**
 	 * return Display Name if user exists and display name exists.
 	 * returns Exception if user does not exist.

@@ -29,6 +29,7 @@ namespace OCA\Circles\Db;
 
 
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use OC\User\NoUserException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Model\Member;
@@ -223,6 +224,43 @@ class MembersRequest extends MembersRequestBuilder {
 		}
 
 		return -1;
+	}
+
+
+	/**
+	 * Check if a fresh member can be generated (by addMember/joinCircle)
+	 *
+	 * @param string $circleUniqueId
+	 * @param string $name
+	 * @param $type
+	 *
+	 * @return Member
+	 * @throws MemberAlreadyExistsException
+	 * @throws \Exception
+	 */
+	public function getFreshNewMember($circleUniqueId, $name, $type) {
+
+		try {
+			if ($type === Member::TYPE_USER) {
+				$name = $this->miscService->getRealUserId($name);
+			}
+
+			$member = $this->forceGetMember($circleUniqueId, $name, $type);
+
+		} catch (NoUserException $e) {
+			throw new NoUserException($this->l10n->t("This user does not exist"));
+		} catch (MemberDoesNotExistException $e) {
+			$member = new Member($name, $type, $circleUniqueId);
+			$this->createMember($member);
+		}
+
+//		if ($member->alreadyExistOrJoining()) {
+//			throw new MemberAlreadyExistsException(
+//				$this->l10n->t('This user is already a member of the circle')
+//			);
+//		}
+
+		return $member;
 	}
 
 

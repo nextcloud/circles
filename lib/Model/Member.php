@@ -205,6 +205,20 @@ class Member extends BaseMember {
 		}
 	}
 
+
+	/**
+	 * return if member already exists
+	 *
+	 * @return bool
+	 */
+	public function alreadyExistOrJoining() {
+		return ($this->getLevel() > Member::LEVEL_NONE
+				|| ($this->getStatus() !== Member::STATUS_NONMEMBER
+					&& $this->getStatus() !== Member::STATUS_REQUEST)
+		);
+	}
+
+
 	/**
 	 * @throws MemberAlreadyExistsException
 	 * @throws MemberIsBlockedException
@@ -220,6 +234,25 @@ class Member extends BaseMember {
 		if ($this->getStatus() === Member::STATUS_BLOCKED) {
 			throw new MemberIsBlockedException(
 				$this->l10n->t("You have been blocked from this circle")
+			);
+		}
+	}
+
+
+	/**
+	 * @throws MemberAlreadyExistsException
+	 */
+	public function hasToBeInviteAble() {
+
+		if ($this->getLevel() > 0) {
+			throw new MemberAlreadyExistsException(
+				$this->l10n->t("User is already a member of this circle")
+			);
+		}
+
+		if ($this->getStatus() === Member::STATUS_INVITED) {
+			throw new MemberAlreadyExistsException(
+				$this->l10n->t("User is already invited into this circle")
 			);
 		}
 	}

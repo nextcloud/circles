@@ -283,19 +283,11 @@ class CirclesService {
 		try {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 
-			try {
-				$member =
-					$this->membersRequest->forceGetMember(
-						$circle->getUniqueId(), $this->userId, Member::TYPE_USER
-					);
-			} catch (MemberDoesNotExistException $m) {
-				$member = new Member($this->userId, Member::TYPE_USER, $circle->getUniqueId());
-				$this->membersRequest->createMember($member);
-			}
-
+			$member = $this->membersRequest->getFreshNewMember($circleUniqueId, $this->userId, Member::TYPE_USER);
 			$member->hasToBeAbleToJoinTheCircle();
 			$member->joinCircle($circle->getType());
 			$this->membersRequest->updateMember($member);
+
 			$this->eventsService->onMemberNew($circle, $member);
 		} catch (\Exception $e) {
 			throw $e;
