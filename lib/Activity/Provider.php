@@ -128,7 +128,7 @@ class Provider implements IProvider {
 	 */
 	private function parseMemberAsMember(IEvent &$event, Circle $circle) {
 		$params = $event->getSubjectParameters();
-		$member = Member::fromJSON($params['member']);
+		$member = Member::fromJSON2($params['member']);
 
 		switch ($event->getSubject()) {
 			case 'member_join':
@@ -306,7 +306,7 @@ class Provider implements IProvider {
 	private function parseGroupAsModerator(IEvent &$event, Circle $circle) {
 
 		$params = $event->getSubjectParameters();
-		$group = Member::fromJSON($params['group']);
+		$group = Member::fromJSON2($params['group']);
 
 		switch ($event->getSubject()) {
 
@@ -353,7 +353,8 @@ class Provider implements IProvider {
 	private function parseMemberAsModerator(IEvent &$event, Circle $circle) {
 
 		$params = $event->getSubjectParameters();
-		$member = Member::fromJSON($params['member']);
+		$member = Member::fromJSON2($params['member']);
+
 		switch ($event->getSubject()) {
 			case 'member_invited':
 				return $this->parseCircleMemberAdvancedEvent(
@@ -529,7 +530,7 @@ class Provider implements IProvider {
 	) {
 		$data = [
 			'circle' => $this->generateCircleParameter($circle),
-			'member' => $this->generateMemberParameter($member)
+			'member' => $this->generateUserParameter($member)
 		];
 
 		if ($member->getUserId() === $this->activityManager->getCurrentUserId()
@@ -578,8 +579,8 @@ class Provider implements IProvider {
 		$data = [
 			'author' => $this->generateViewerParameter($circle),
 			'circle' => $this->generateCircleParameter($circle),
-			'member' => $this->generateMemberParameter($member),
-			'group'  => $this->generateMemberParameter($member),
+			'member' => $this->generateUserParameter($member),
+			'group'  => $this->generateGroupParameter($member),
 		];
 
 		if ($this->isViewerTheAuthor($circle, $this->activityManager->getCurrentUserId())) {
@@ -609,7 +610,7 @@ class Provider implements IProvider {
 		$data = [
 			'author' => $this->generateViewerParameter($circle),
 			'circle' => $this->generateCircleParameter($circle),
-			'member' => $this->generateMemberParameter($member)
+			'member' => $this->generateUserParameter($member)
 		];
 
 		if ($this->isViewerTheAuthor($circle, $this->activityManager->getCurrentUserId())) {
@@ -662,19 +663,6 @@ class Provider implements IProvider {
 
 
 	/**
-	 * @param Member $member
-	 *
-	 * @return array<string,string|integer>
-	 */
-	private function generateMemberParameter(Member $member) {
-		if ($member->getViewerType() === 'user') {
-			return $this->generateUserParameter($member->getUserId());
-		}
-
-		return $this->generateGroupParameter($member->getUserId());
-	}
-
-	/**
 	 * @param Circle $circle
 	 *
 	 * @return string|array <string,string|integer>
@@ -684,10 +672,7 @@ class Provider implements IProvider {
 			return '';
 		}
 
-		return $this->generateUserParameter(
-			$circle->getViewer()
-				   ->getUserId()
-		);
+		return $this->generateUserParameter($circle->getViewer());
 	}
 
 
@@ -723,31 +708,31 @@ class Provider implements IProvider {
 
 
 	/**
-	 * @param $userId
+	 * @param Member $member
 	 *
-	 * @return array<string,string|integer>
+	 * @return array <string,string|integer>
 	 */
-	private function generateUserParameter($userId) {
+	private function generateUserParameter(Member $member) {
 		return [
 			'type'   => 'user',
-			'id'     => $userId,
-			'name'   => $this->miscService->getDisplayName($userId),
-			'parsed' => $this->miscService->getDisplayName($userId)
+			'id'     => $member->getUserId(),
+			'name'   => $this->miscService->getDisplayName($member->getUserId(), true),
+			'parsed' => $this->miscService->getDisplayName($member->getUserId(), true)
 		];
 	}
 
 
 	/**
-	 * @param $groupId
+	 * @param Member $group
 	 *
-	 * @return array<string,string|integer>
+	 * @return array <string,string|integer>
 	 */
-	private function generateGroupParameter($groupId) {
+	private function generateGroupParameter($group) {
 		return [
 			'type'   => 'group',
-			'id'     => $groupId,
-			'name'   => $groupId,
-			'parsed' => $groupId
+			'id'     => $group->getUserId(),
+			'name'   => $group->getUserId(),
+			'parsed' => $group->getUserId()
 		];
 	}
 }

@@ -134,6 +134,8 @@ class Circle extends BaseCircle implements \JsonSerializable {
 	 * @param $l10n
 	 * @param $arr
 	 *
+	 * @deprecated
+	 *
 	 * @return $this
 	 */
 	public static function fromArray($l10n, $arr) {
@@ -153,13 +155,12 @@ class Circle extends BaseCircle implements \JsonSerializable {
 		$circle->setCreation($arr['creation']);
 
 		if (key_exists('user', $arr)) {
-			$viewer = Member::fromArray($arr['user']);
-			$viewer->setType(Member::TYPE_USER);
+			$viewer = Member::fromArray2($arr['user'], Member::TYPE_USER);
 			$circle->setViewer($viewer);
 		}
+
 		if (key_exists('owner', $arr)) {
-			$owner = Member::fromArray($arr['owner']);
-			$owner->setType(Member::TYPE_USER);
+			$owner = Member::fromArray2($arr['owner'], Member::TYPE_USER);
 			$circle->setOwner($owner);
 		}
 
@@ -167,6 +168,13 @@ class Circle extends BaseCircle implements \JsonSerializable {
 	}
 
 
+	/**
+	 * @param $l10n
+	 * @param $json
+	 *
+	 * @deprecated
+	 * @return Circle
+	 */
 	public static function fromJSON($l10n, $json) {
 		return self::fromArray($l10n, json_decode($json, true));
 	}

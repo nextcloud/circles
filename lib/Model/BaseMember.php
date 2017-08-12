@@ -225,41 +225,21 @@ class BaseMember implements \JsonSerializable {
 	}
 
 
+
 	/**
 	 * @param $arr
 	 *
-	 * @deprecated use only by Provider
-	 *
 	 * @return null|Member
 	 */
-	public static function fromArray($arr) {
-		if ($arr === null) {
-			return null;
-		}
-
+	public static function fromArray2($arr) {
 		$member = new Member();
-
 		$member->setCircleId($arr['circle_id']);
 		$member->setLevel($arr['level']);
-		if (key_exists('user_id', $arr)) {
-			$member->setUserId($arr['user_id']);
-		}
-
-//		if (key_exists('group_id', $arr)) {
-//			$member->setGroupId($arr['group_id']);
-//		}
-
-		if (key_exists('status', $arr)) {
-			$member->setStatus($arr['status']);
-		}
-
-		if (key_exists('note', $arr)) {
-			$member->setNote($arr['note']);
-		}
-
-		if (key_exists('joined', $arr)) {
-			$member->setJoined($arr['joined']);
-		}
+		$member->setType($arr['type']);
+		$member->setUserId($arr['user_id']);
+		$member->setStatus($arr['status']);
+		$member->setNote($arr['note']);
+		$member->setJoined($arr['joined']);
 
 		return $member;
 	}
@@ -269,19 +249,17 @@ class BaseMember implements \JsonSerializable {
 	 * @param $json
 	 *
 	 * @return Member
-	 * @deprecated
 	 */
-	public static function fromJSON($json) {
-		return self::fromArray(json_decode($json, true));
+	public static function fromJSON2($json) {
+		return self::fromArray2(json_decode($json, true));
 	}
+
 
 	public function jsonSerialize() {
 		return array(
 			'circle_id'    => $this->getCircleId(),
 			'user_id'      => $this->getUserId(),
-			//			'group_id'     => $this->getGroupId(),
 			'type'         => $this->getType(),
-			'viewer_type'  => $this->getViewerType(),
 			'display_name' => $this->getDisplayName(),
 			'level'        => $this->getLevel(),
 			'level_string' => $this->getLevelString(),
