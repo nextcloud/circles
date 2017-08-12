@@ -206,8 +206,8 @@ class Provider implements IProvider {
 
 	/**
 	 * Parse on Subject 'member_left'.
-	 * If circle is closed and member was not a real member, we say that member rejected his
-	 * invitation.
+	 * If circle is closed and member was not a real member, we send him to
+	 * parseSubjectNonMemberLeftClosedCircle();
 	 *
 	 * @param IEvent $event
 	 * @param Circle $circle
@@ -218,11 +218,7 @@ class Provider implements IProvider {
 	private function parseSubjectMemberLeft(IEvent &$event, Circle $circle, Member $member) {
 		if ($circle->getType() === Circle::CIRCLES_CLOSED
 			&& $member->getLevel() === Member::LEVEL_NONE) {
-			return $this->parseCircleMemberEvent(
-				$event, $circle, $member,
-				$this->l10n->t("You rejected the invitation to join {circle}"),
-				$this->l10n->t("{member} rejected the invitation to join {circle}")
-			);
+			return $this->parseSubjectNonMemberLeftClosedCircle($event, $circle, $member);
 		} else {
 			return $this->parseCircleMemberEvent(
 				$event, $circle, $member,
@@ -232,11 +228,40 @@ class Provider implements IProvider {
 		}
 	}
 
+	/**
+	 * Parse on Subject 'member_left' on a closed circle when user were not yet a member.
+	 * If status is Invited we say that member rejected his invitation.
+	 * If status is Requested we say he dismissed his request.
+	 *
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param Member $member
+	 *
+	 * @return IEvent
+	 */
+	private function parseSubjectNonMemberLeftClosedCircle(
+		IEvent &$event, Circle $circle, Member $member
+	) {
+		if ($member->getStatus() === Member::STATUS_INVITED) {
+			return $this->parseCircleMemberEvent(
+				$event, $circle, $member,
+				$this->l10n->t("You declined the invitation to join {circle}"),
+				$this->l10n->t("{member} declined an invitation to join {circle}")
+			);
+		}
+
+		return $this->parseCircleMemberEvent(
+			$event, $circle, $member,
+			$this->l10n->t("You cancelled your request to join {circle}"),
+			$this->l10n->t("{member} cancelled his request to join {circle}")
+		);
+	}
+
 
 	/**
 	 * Parse on Subject 'member_remove'.
-	 * If circle is closed and member was not a real member, we say that his invitation was
-	 * rejected.
+	 * If circle is closed and member was not a real member, we send him to
+	 * parseSubjectNonMemberRemoveClosedCircle();
 	 *
 	 * @param IEvent $event
 	 * @param Circle $circle
@@ -247,12 +272,8 @@ class Provider implements IProvider {
 	private function parseSubjectMemberRemove(IEvent &$event, Circle $circle, Member $member) {
 		if ($circle->getType() === Circle::CIRCLES_CLOSED
 			&& $member->getLevel() === Member::LEVEL_NONE) {
-			return $this->parseCircleMemberAdvancedEvent(
-				$event, $circle, $member,
-				$this->l10n->t("You dismissed {member}'s request to join {circle}"),
-				$this->l10n->t('Your request to join {circle} has been dismissed by {author}'),
-				$this->l10n->t("{member}'s request to join {circle} has been dismissed by {author}")
-			);
+			return $this->parseSubjectNonMemberRemoveClosedCircle($event, $circle, $member);
+
 		} else {
 			return $this->parseCircleMemberAdvancedEvent(
 				$event, $circle, $member,
@@ -261,6 +282,38 @@ class Provider implements IProvider {
 				$this->l10n->t('{member} has been removed from {circle} by {author}')
 			);
 		}
+	}
+
+
+	/**
+	 * Parse on Subject 'member_remove' on a closed circle when user were not yet a member.
+	 * If status is Invited we say that author cancelled his invitation.
+	 * If status is Requested we say that his invitation was rejected.
+	 *
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param Member $member
+	 *
+	 * @return IEvent
+	 */
+	private function parseSubjectNonMemberRemoveClosedCircle(
+		IEvent &$event, Circle $circle, Member $member
+	) {
+	if ($member->getStatus() === Member::STATUS_REQUEST) {
+			return $this->parseCircleMemberAdvancedEvent(
+				$event, $circle, $member,
+				$this->l10n->t("You dismissed {member}'s request to join {circle}"),
+				$this->l10n->t('Your request to join {circle} has been dismissed by {author}'),
+				$this->l10n->t("{member}'s request to join {circle} has been dismissed by {author}")
+			);
+		}
+
+		return $this->parseCircleMemberAdvancedEvent(
+			$event, $circle, $member,
+			$this->l10n->t("You cancelled {member}'s invitation to join {circle}"),
+			$this->l10n->t('Your invitation to join {circle} has been cancelled by {author}'),
+			$this->l10n->t("{author} cancelled {member}'s invitation to join {circle}")
+		);
 	}
 
 
