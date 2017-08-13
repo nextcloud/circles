@@ -228,13 +228,22 @@ class BaseMember implements \JsonSerializable {
 	/**
 	 * @param $arr
 	 *
+	 * 0.13.0 : remove both key_exists condition
+	 *
 	 * @return null|Member
 	 */
 	public static function fromArray($arr) {
 		$member = new Member();
 		$member->setCircleId($arr['circle_id']);
 		$member->setLevel($arr['level']);
-		$member->setType($arr['user_type']);
+
+		if (key_exists('user_type', $arr)) {
+			$member->setType($arr['user_type']);
+		}
+		if (key_exists('type', $arr)) {
+			$member->setType($arr['type']);
+		}
+
 		$member->setUserId($arr['user_id']);
 		$member->setStatus($arr['status']);
 		$member->setNote($arr['note']);
