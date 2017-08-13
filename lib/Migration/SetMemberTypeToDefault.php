@@ -74,10 +74,10 @@ class SetMemberTypeToDefault implements IRepairStep {
 		$qb->update(CoreRequestBuilder::TABLE_MEMBERS)
 		   ->where(
 			   $qb->expr()
-				  ->eq('type', $qb->createNamedParameter(0))
+				  ->eq('user_type', $qb->createNamedParameter(0))
 		   );
 
-		$qb->set('type', $qb->createNamedParameter(1));
+		$qb->set('user_type', $qb->createNamedParameter(1));
 		$qb->execute();
 	}
 

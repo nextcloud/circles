@@ -254,7 +254,7 @@ class CircleProviderRequestBuilder {
 			$expr->eq(
 				'mo.circle_id',
         $qb->createFunction('SUBSTR(`c`.`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')')
-			), $expr->eq('mo.type', $qb->createNamedParameter(Member::TYPE_USER)),
+			), $expr->eq('mo.user_type', $qb->createNamedParameter(Member::TYPE_USER)),
 			$expr->eq('mo.level', $qb->createNamedParameter(Member::LEVEL_OWNER))
 		)
 		);
@@ -298,7 +298,7 @@ class CircleProviderRequestBuilder {
 		$andX = $expr->andX();
 
 		$andX->add($expr->eq('m.user_id', $qb->createNamedParameter($userId)));
-		$andX->add($expr->eq('m.type', $qb->createNamedParameter(Member::TYPE_USER)));
+		$andX->add($expr->eq('m.user_type', $qb->createNamedParameter(Member::TYPE_USER)));
 		$andX->add(
 			$expr->eq(
 				'm.circle_id',
@@ -359,7 +359,7 @@ class CircleProviderRequestBuilder {
 			's', CoreRequestBuilder::TABLE_MEMBERS, 'src_m',
 			$expr->andX(
 				$expr->eq('s.uid_initiator', 'src_m.user_id'),
-				$expr->eq('src_m.type', $qb->createNamedParameter(Member::TYPE_USER)),
+				$expr->eq('src_m.user_type', $qb->createNamedParameter(Member::TYPE_USER)),
 				$expr->eq('s.share_with', 'src_m.circle_id')
 			)
 		);
@@ -395,7 +395,7 @@ class CircleProviderRequestBuilder {
 		   ->andWhere(
 			   $expr->andX(
 				   $expr->eq('s.share_with', 'm.circle_id'),
-				   $expr->eq('m.type', $qb->createNamedParameter(Member::TYPE_USER))
+				   $expr->eq('m.user_type', $qb->createNamedParameter(Member::TYPE_USER))
 			   )
 		   );
 	}

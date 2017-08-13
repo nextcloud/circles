@@ -107,7 +107,7 @@
 			</field>
 
 			<field>
-				<name>type</name>
+				<name>user_type</name>
 				<type>integer</type>
 				<length>1</length>
 				<notnull>true</notnull>
@@ -149,9 +149,9 @@
 				<field>
 					<name>user_id</name>
 				</field>
-				<field>
-					<name>type</name>
-				</field>
+				<!--<field>
+					<name>user_type</name>
+				</field>-->
 			</index>
 		</declaration>
 

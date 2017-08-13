@@ -267,7 +267,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 					   )
 				   ),
 				   $expr->eq('u.user_id', $qb->createNamedParameter($userId)),
-				   $expr->eq('u.type', $qb->createNamedParameter(Member::TYPE_USER))
+				   $expr->eq('u.user_type', $qb->createNamedParameter(Member::TYPE_USER))
 			   )
 		   );
 	}
@@ -300,7 +300,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 					   , 'o.circle_id'
 				   ),
 				   $expr->eq('o.level', $qb->createNamedParameter(Member::LEVEL_OWNER)),
-				   $expr->eq('o.type', $qb->createNamedParameter(Member::TYPE_USER))
+				   $expr->eq('o.user_type', $qb->createNamedParameter(Member::TYPE_USER))
 			   )
 		   );
 	}

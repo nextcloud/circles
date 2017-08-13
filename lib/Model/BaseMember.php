@@ -225,7 +225,6 @@ class BaseMember implements \JsonSerializable {
 	}
 
 
-
 	/**
 	 * @param $arr
 	 *
@@ -235,7 +234,7 @@ class BaseMember implements \JsonSerializable {
 		$member = new Member();
 		$member->setCircleId($arr['circle_id']);
 		$member->setLevel($arr['level']);
-		$member->setType($arr['type']);
+		$member->setType($arr['user_type']);
 		$member->setUserId($arr['user_id']);
 		$member->setStatus($arr['status']);
 		$member->setNote($arr['note']);
@@ -259,7 +258,7 @@ class BaseMember implements \JsonSerializable {
 		return array(
 			'circle_id'    => $this->getCircleId(),
 			'user_id'      => $this->getUserId(),
-			'type'         => $this->getType(),
+			'user_type'    => $this->getType(),
 			'display_name' => $this->getDisplayName(),
 			'level'        => $this->getLevel(),
 			'level_string' => $this->getLevelString(),

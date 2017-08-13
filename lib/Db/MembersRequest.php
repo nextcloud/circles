@@ -55,7 +55,7 @@ class MembersRequest extends MembersRequestBuilder {
 		$qb = $this->getMembersSelectSql();
 
 		$this->limitToUserId($qb, $userId);
-		$this->limitToType($qb, $type);
+		$this->limitToUserType($qb, $type);
 		$this->limitToCircleId($qb, $circleUniqueId);
 
 		$cursor = $qb->execute();
@@ -370,7 +370,7 @@ class MembersRequest extends MembersRequestBuilder {
 			$qb = $this->getMembersInsertSql();
 			$qb->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
 			   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
-			   ->setValue('type', $qb->createNamedParameter($member->getType()))
+			   ->setValue('user_type', $qb->createNamedParameter($member->getType()))
 			   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
 			   ->setValue('status', $qb->createNamedParameter($member->getStatus()))
 			   ->setValue('note', $qb->createNamedParameter($member->getNote()));

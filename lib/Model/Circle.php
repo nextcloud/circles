@@ -26,7 +26,6 @@
 
 namespace OCA\Circles\Model;
 
-use Exception;
 use OCA\Circles\Exceptions\CircleTypeNotValidException;
 use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 
@@ -107,27 +106,6 @@ class Circle extends BaseCircle implements \JsonSerializable {
 	}
 
 
-
-//	/**
-//	 * set all infos from an Array.
-//	 *
-//	 * @param $arr
-//	 *
-//	 * @return $this
-//	 */
-//	public function fromArray($arr) {
-//		$this->setId($arr['id']);
-//		$this->setName($arr['name']);
-//		$this->setUniqueId($arr['unique_id']);
-//		$this->setDescription($arr['description']);
-//		$this->setType($arr['type']);
-//		$this->setCreation($arr['creation']);
-////		$this->setOwnerMemberFromArray($arr);
-////		$this->setUserMemberFromArray($arr);
-//
-//		return $this;
-//	}
-
 	/**
 	 * set all infos from an Array.
 	 *
@@ -155,12 +133,14 @@ class Circle extends BaseCircle implements \JsonSerializable {
 		$circle->setCreation($arr['creation']);
 
 		if (key_exists('user', $arr)) {
-			$viewer = Member::fromArray($arr['user'], Member::TYPE_USER);
+			$viewer = Member::fromArray($arr['user']);
+			$viewer->setType(Member::TYPE_USER);
 			$circle->setViewer($viewer);
 		}
 
 		if (key_exists('owner', $arr)) {
-			$owner = Member::fromArray($arr['owner'], Member::TYPE_USER);
+			$owner = Member::fromArray($arr['owner']);
+			$owner->setType(Member::TYPE_USER);
 			$circle->setOwner($owner);
 		}
 

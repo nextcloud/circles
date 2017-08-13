@@ -79,7 +79,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select(
-			'm.user_id', 'm.type', 'm.circle_id', 'm.level', 'm.status', 'm.note', 'm.joined'
+			'm.user_id', 'm.user_type', 'm.circle_id', 'm.level', 'm.status', 'm.note', 'm.joined'
 		)
 		   ->from(self::TABLE_MEMBERS, 'm');
 
@@ -160,7 +160,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 			   $expr->andX(
 				   $expr->eq('circle_id', $qb->createNamedParameter($circleId)),
 				   $expr->eq('user_id', $qb->createNamedParameter($member->getUserId())),
-				   $expr->eq('type', $qb->createNamedParameter($member->getType()))
+				   $expr->eq('user_type', $qb->createNamedParameter($member->getType()))
 			   )
 		   );
 
@@ -204,7 +204,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		}
 		if ($type > 0) {
 			$and->add($expr->eq('user_id', $qb->createNamedParameter($userId)));
-			$and->add($expr->eq('type', $qb->createNamedParameter($type)));
+			$and->add($expr->eq('user_type', $qb->createNamedParameter($type)));
 		}
 
 		$qb->delete(CoreRequestBuilder::TABLE_MEMBERS)
@@ -220,7 +220,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	 * @return Member
 	 */
 	protected function parseMembersSelectSql(array $data) {
-		$member = new Member($data['user_id'], $data['type'], $data['circle_id']);
+		$member = new Member($data['user_id'], $data['user_type'], $data['circle_id']);
 		$member->setNote($data['note']);
 		$member->setLevel($data['level']);
 		$member->setStatus($data['status']);
