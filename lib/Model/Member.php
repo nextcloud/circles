@@ -35,6 +35,7 @@ use OCA\Circles\Exceptions\MemberIsNotAdminException;
 use OCA\Circles\Exceptions\MemberIsNotModeratorException;
 use OCA\Circles\Exceptions\MemberIsNotOwnerException;
 use OCA\Circles\Exceptions\MemberIsOwnerException;
+use OCA\Circles\Exceptions\MemberTypeCantEditLevelException;
 use OCA\Circles\Exceptions\ModeratorIsNotHighEnoughException;
 
 class Member extends BaseMember {
@@ -216,6 +217,18 @@ class Member extends BaseMember {
 				|| ($this->getStatus() !== Member::STATUS_NONMEMBER
 					&& $this->getStatus() !== Member::STATUS_REQUEST)
 		);
+	}
+
+
+	/**
+	 * @throws MemberTypeCantEditLevelException
+	 */
+	public function levelHasToBeEditable() {
+		if ($this->getType() !== self::TYPE_USER) {
+			throw new MemberTypeCantEditLevelException(
+				$this->l10n->t('Level cannot be changed for that type of member')
+			);
+		}
 	}
 
 

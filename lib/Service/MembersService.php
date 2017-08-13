@@ -264,12 +264,13 @@ class MembersService {
 	/**
 	 * @param string $circleUniqueId
 	 * @param string $name
+	 * @param int $type
 	 * @param int $level
 	 *
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function levelLocalMember($circleUniqueId, $name, $level) {
+	public function levelMember($circleUniqueId, $name, $type, $level) {
 
 		$level = (int)$level;
 		try {
@@ -280,9 +281,8 @@ class MembersService {
 				);
 			}
 
-			$member = $this->membersRequest->forceGetMember(
-				$circle->getUniqueId(), $name, Member::TYPE_USER
-			);
+			$member = $this->membersRequest->forceGetMember($circle->getUniqueId(), $name, $type);
+			$member->levelHasToBeEditable();
 			if ($member->getLevel() !== $level) {
 				if ($level === Member::LEVEL_OWNER) {
 					$this->switchOwner($circle, $member);

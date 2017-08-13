@@ -143,14 +143,15 @@ class MembersController extends BaseController {
 	 *
 	 * @param string $uniqueId
 	 * @param string $member
+	 * @param int $type
 	 * @param int $level
 	 *
 	 * @return DataResponse
 	 */
-	public function level($uniqueId, $member, $level) {
+	public function levelMember($uniqueId, $member, $type, $level) {
 
 		try {
-			$data = $this->membersService->levelLocalMember($uniqueId, $member, $level);
+			$data = $this->membersService->levelMember($uniqueId, $member, $type, $level);
 		} catch (\Exception $e) {
 			return
 				$this->fail(
@@ -182,13 +183,14 @@ class MembersController extends BaseController {
 	 *
 	 * @param string $uniqueId
 	 * @param string $member
+	 * @param int $type
 	 *
 	 * @return DataResponse
 	 */
-	public function removeLocalMember($uniqueId, $member) {
+	public function removeMember($uniqueId, $member, $type) {
 
 		try {
-			$data = $this->membersService->removeMember($uniqueId, $member, Member::TYPE_USER);
+			$data = $this->membersService->removeMember($uniqueId, $member, $type);
 		} catch (\Exception $e) {
 			return
 				$this->fail(

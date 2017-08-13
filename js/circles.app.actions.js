@@ -48,7 +48,7 @@ var actions = {
 			actions.changeMemberOwner(member);
 			return;
 		}
-		api.levelMember(curr.circle, member, level, resultMembers.levelMemberResult);
+		api.levelMember(curr.circle, member, define.typeUser, level, resultMembers.levelMemberResult);
 		nav.circlesActionReturn();
 	},
 
@@ -70,7 +70,7 @@ var actions = {
 			t('circles', 'This action is irreversible'),
 			function (e) {
 				if (e === true) {
-					api.levelMember(curr.circle, member, define.levelOwner,
+					api.levelMember(curr.circle, member, define.typeUser, define.levelOwner,
 						resultMembers.levelMemberResult);
 					nav.circlesActionReturn();
 					return;
@@ -83,7 +83,7 @@ var actions = {
 
 	changeMemberStatus: function (member, value) {
 		if (value === 'remove_member' || value === 'dismiss_request') {
-			api.removeMember(curr.circle, member, resultMembers.removeMemberResult);
+			api.removeMember(curr.circle, member, define.typeUser, resultMembers.removeMemberResult);
 		}
 		if (value === 'accept_request') {
 			api.addMember(curr.circle, member, resultMembers.addMemberResult);

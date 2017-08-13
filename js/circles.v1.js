@@ -148,14 +148,14 @@
 			};
 
 
-
-			this.removeMember = function (circleId, userId, callback) {
+			this.removeMember = function (circleId, userId, userType, callback) {
 				var result = {status: -1};
 				$.ajax({
 					method: 'DELETE',
 					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/member'),
 					data: {
-						member: userId
+						member: userId,
+						type: userType
 					}
 				}).done(function (res) {
 					self.onCallback(callback, res);
@@ -165,13 +165,14 @@
 			};
 
 
-			this.levelMember = function (circleId, member, level, callback) {
+			this.levelMember = function (circleId, userId, userType, level, callback) {
 				var result = {status: -1};
 				$.ajax({
 					method: 'POST',
 					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/level'),
 					data: {
-						member: member,
+						member: userId,
+						type: userType,
 						level: level
 					}
 				}).done(function (res) {

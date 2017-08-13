@@ -85,11 +85,11 @@ return [
 			'name'         => 'Members#addEmailAddress', 'url' => '/v1/circles/{uniqueId}/email', 'verb' => 'PUT'
 		],
 		[
-			'name'         => 'Members#removeLocalMember', 'url' => '/v1/circles/{uniqueId}/member',
+			'name'         => 'Members#removeMember', 'url' => '/v1/circles/{uniqueId}/member',
 			'verb'         => 'DELETE',
 		],
 		[
-			'name'         => 'Members#level', 'url' => '/v1/circles/{uniqueId}/level', 'verb' => 'POST'
+			'name'         => 'Members#levelMember', 'url' => '/v1/circles/{uniqueId}/level', 'verb' => 'POST'
 		],
 		[
 			'name'         => 'Groups#add', 'url' => '/v1/circles/{uniqueId}/groups', 'verb' => 'PUT'

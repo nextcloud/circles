@@ -149,9 +149,9 @@
 				<field>
 					<name>user_id</name>
 				</field>
-				<!--<field>
+				<field>
 					<name>user_type</name>
-				</field>-->
+				</field>
 			</index>
 		</declaration>
 

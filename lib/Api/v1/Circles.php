@@ -231,7 +231,7 @@ class Circles {
 
 
 	/**
-	 * Circles::addMember();
+	 * Circles::addLocalMember();
 	 *
 	 * This function will add a user as member of the circle. Current user need at least to be
 	 * Moderator.
@@ -241,7 +241,7 @@ class Circles {
 	 *
 	 * @return Member[]
 	 */
-	public static function addMember($circleUniqueId, $userId) {
+	public static function addLocalMember($circleUniqueId, $userId) {
 		$c = self::getContainer();
 
 		return $c->query('MembersService')
@@ -257,14 +257,15 @@ class Circles {
 	 *
 	 * @param string $circleUniqueId
 	 * @param string $userId
+	 * @param int $userType
 	 *
 	 * @return Member
 	 */
-	public static function getLocalMember($circleUniqueId, $userId) {
+	public static function getMember($circleUniqueId, $userId, $userType) {
 		$c = self::getContainer();
 
 		return $c->query('MembersService')
-				 ->getMember($circleUniqueId, $userId, Member::TYPE_USER);
+				 ->getMember($circleUniqueId, $userId, $userType);
 	}
 
 
@@ -276,14 +277,15 @@ class Circles {
 	 *
 	 * @param string $circleUniqueId
 	 * @param string $userId
+	 * @param int $userType
 	 *
 	 * @return Member[]
 	 */
-	public static function removeMember($circleUniqueId, $userId) {
+	public static function removeMember($circleUniqueId, $userId, $userType) {
 		$c = self::getContainer();
 
 		return $c->query('MembersService')
-				 ->removeMember($circleUniqueId, $userId);
+				 ->removeMember($circleUniqueId, $userId, $userType);
 	}
 
 
@@ -297,15 +299,16 @@ class Circles {
 	 *
 	 * @param string $circleUniqueId
 	 * @param string $userId
+	 * @param int $userType
 	 * @param int $level
 	 *
 	 * @return Member[]
 	 */
-	public static function levelMember($circleUniqueId, $userId, $level) {
+	public static function levelMember($circleUniqueId, $userId, $userType, $level) {
 		$c = self::getContainer();
 
 		return $c->query('MembersService')
-				 ->levelMember($circleUniqueId, $userId, $level);
+				 ->levelMember($circleUniqueId, $userId, $userType, $level);
 	}
 
 

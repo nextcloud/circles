@@ -138,6 +138,7 @@ class BaseCircle {
 	public function generateUniqueId() {
 		$uniqueId = bin2hex(openssl_random_pseudo_bytes(24));
 		$this->setUniqueId($uniqueId);
+		$this->setId($this->getUniqueId());
 	}
 
 	public function setName($name) {
