@@ -168,6 +168,7 @@ OC.L10N.register(
     "This member is not the owner of the circle" : "Este membro não é o proprietário do círculo",
     "This member is not admin of the circle" : "Este usuário não é administrador do círculo",
     "This member is the owner of the circle" : "Este membro é o proprietário do círculo",
+    "Level cannot be changed for that type of member" : "O nível não pode ser trocado para este tipo de membro",
     "You are already a member of this circle" : "Você já é membro deste círculo",
     "You have been blocked from this circle" : "Você foi bloqueado neste círculo",
     "User is already a member of this circle" : "O usuário já é membro deste círculo",

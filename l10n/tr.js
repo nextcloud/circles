@@ -168,6 +168,7 @@ OC.L10N.register(
     "This member is not the owner of the circle" : "Bu üye çevrenin sahibi değil",
     "This member is not admin of the circle" : "Bu üye çevrenin yöneticisi değil",
     "This member is the owner of the circle" : "Bu üye çevrenin sahibi",
+    "Level cannot be changed for that type of member" : "Bu üye türünün düzeyi değiştirilemez",
     "You are already a member of this circle" : "Zaten bu çevrenin bir üyesisiniz",
     "You have been blocked from this circle" : "Bu çevrede engellenmişsiniz",
     "User is already a member of this circle" : "Kullanıcı zaten bu çevrenin üyesi",

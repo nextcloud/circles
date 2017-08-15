@@ -166,6 +166,7 @@
     "This member is not the owner of the circle" : "Dieses Mitglied ist nicht der Besitzer des Kreises",
     "This member is not admin of the circle" : " Dieses Mitglied ist nicht der Administrator des Kreises",
     "This member is the owner of the circle" : "Dieses Mitglied ist der Besitzer des Kreises",
+    "Level cannot be changed for that type of member" : "Berechtigungsstufe kann für diesen Mitgliedstyp nicht geändert werden",
     "You are already a member of this circle" : "Du bist bereits Mitglied dieses Kreises",
     "You have been blocked from this circle" : "Du wurdest für diesen Kreis blockiert",
     "User is already a member of this circle" : "Nutzer ist bereits Mitglied dieses Kreises",
