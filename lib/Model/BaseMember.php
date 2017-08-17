@@ -233,6 +233,10 @@ class BaseMember implements \JsonSerializable {
 	 * @return null|Member
 	 */
 	public static function fromArray($arr) {
+		if ($arr === null) {
+			return null;
+		}
+
 		$member = new Member();
 		$member->setCircleId($arr['circle_id']);
 		$member->setLevel($arr['level']);
