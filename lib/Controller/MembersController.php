@@ -84,7 +84,7 @@ class MembersController extends BaseController {
 			return $this->fail(
 				[
 					'circle_id' => $uniqueId,
-					'user_id'   => $email,
+					'email'   => $email,
 					'name'      => $this->miscService->getDisplayName($email, true),
 					'error'     => $e->getMessage()
 				]
@@ -94,7 +94,7 @@ class MembersController extends BaseController {
 		return $this->success(
 			[
 				'circle_id' => $uniqueId,
-				'user_id'   => $email,
+				'email'   => $email,
 				'name'      => $this->miscService->getDisplayName($email, true),
 				'members'   => $data
 			]
