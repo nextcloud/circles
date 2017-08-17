@@ -409,13 +409,16 @@ var elements = {
 		});
 	},
 
-
-	removeMemberslistEntry: function (membername) {
-		this.mainUIMembersTable.children("[member-id='" + escapeHTML(membername) + "']").each(
-			function () {
-				$(this).hide(300);
-			});
-	},
+	//
+	// removeMemberslistEntry: function (membername, membertype) {
+	// 	this.mainUIMembersTable.children("[member-id='" + escapeHTML(membername) + "']").each(
+	// 		function () {
+	// 			if ($(this).attr('member-type') === membertype) {
+	// 				$(this).hide(300);
+	// 			}
+	// 		}
+	// 	);
+	// },
 
 
 	generateTmplCircle: function (entry) {

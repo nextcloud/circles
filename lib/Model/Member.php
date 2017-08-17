@@ -78,7 +78,7 @@ class Member extends BaseMember {
 	/**
 	 * Update status of member like he joined a public circle.
 	 */
-	private function addMemberToCircle() {
+	public function addMemberToCircle() {
 
 		if ($this->getStatus() === Member::STATUS_NONMEMBER
 			|| $this->getStatus() === Member::STATUS_KICKED

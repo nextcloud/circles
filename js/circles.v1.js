@@ -155,7 +155,7 @@
 					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/member'),
 					data: {
 						member: userId,
-						type: userType
+						type: Number(userType)
 					}
 				}).done(function (res) {
 					self.onCallback(callback, res);

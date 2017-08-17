@@ -145,7 +145,6 @@ class MembersService {
 	 */
 	public function addEmailAddress($circleUniqueId, $email) {
 
-		$this->miscService->log('___' . $email);
 		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 			throw new EmailAccountInvalidFormatException(
 				$this->l10n->t('Email format is not valid')
@@ -156,11 +155,7 @@ class MembersService {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			$circle->getHigherViewer()
 				   ->hasToBeModerator();
-		} catch (\Exception $e) {
-			throw $e;
-		}
 
-		try {
 			$member = $this->membersRequest->getFreshNewMember(
 				$circleUniqueId, $email, Member::TYPE_MAIL
 			);
@@ -170,14 +165,11 @@ class MembersService {
 			throw $e;
 		}
 
-		$this->miscService->log('___' . json_encode($member));
+		$member->addMemberToCircle();
+		$this->membersRequest->updateMember($member);
 
-//
-//		$member->inviteToCircle($circle->getType());
-//		$this->membersRequest->updateMember($member);
-//
-//		$this->eventsService->onMemberNew($circle, $member);
-//
+		$this->eventsService->onMemberNew($circle, $member);
+
 		return $this->membersRequest->getMembers(
 			$circle->getUniqueId(), $circle->getHigherViewer()
 		);

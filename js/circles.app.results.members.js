@@ -180,7 +180,9 @@ var resultMembers = {
 
 			elements.mainUIMembersTable.children("[member-id='" + result.user_id + "']").each(
 				function () {
-					$(this).hide(300);
+					if (Number($(this).attr('member-type')) === result.user_type) {
+						$(this).hide(300);
+					}
 				});
 			OCA.notification.onSuccess(
 				t('circles', "The member '{name}' was removed from the circle",

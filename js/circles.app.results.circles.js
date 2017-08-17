@@ -46,7 +46,7 @@ var resultCircles = {
 			return;
 		}
 
-		elements.removeMemberslistEntry(result.member.user_id);
+//		elements.removeMemberslistEntry(result.member.user_id, result.member.user_type);
 		if (result.member.level === define.levelMember) {
 			OCA.notification.onSuccess(
 				t('circles', "You have joined this circle"));

@@ -384,7 +384,9 @@ var nav = {
 		elements.mainUIMembersTable.children('tr.entry').each(function () {
 
 				var userId = $(this).attr('member-id');
-				if (userId === curr.userId && Number($(this).attr('member-type')) === define.typeUser) {
+				var userType = Number($(this).attr('member-type'));
+				
+				if (userId === curr.userId && userType === define.typeUser) {
 					$(this).find('td.username').css('font-weight', 'bold').css('font-style', 'italic');
 					$(this).css('background', '#e0e0e0');
 				} else {
@@ -406,7 +408,7 @@ var nav = {
 						levelSelect.show(200).val(level);
 					}
 					levelSelect.on('change', function () {
-						actions.changeMemberLevel(userId, $(this).val());
+						actions.changeMemberLevel(userId, userType, $(this).val());
 					});
 				}
 
@@ -416,12 +418,21 @@ var nav = {
 				var statusSelect = $(this).find('.status-select');
 
 				statusSelect.on('change', function () {
-					actions.changeMemberStatus(userId, $(this).val());
+					actions.changeMemberStatus(userId, userType, $(this).val());
 				});
-				statusSelect.append($('<option>', {
-					value: status,
-					text: t('circles', status)
-				})).val(status);
+				if (userType === define.typeUser) {
+					statusSelect.append($('<option>', {
+						value: status,
+						text: t('circles', status)
+					})).val(status);
+				}
+
+				if (userType === define.typeMail) {
+					statusSelect.append($('<option>', {
+						value: status,
+						text: t('circles', 'Mail Contact')
+					})).val(status);
+				}
 
 				if (curr.circleLevel <= $(this).attr('member-level')) {
 					return;

@@ -43,18 +43,17 @@
 var actions = {
 
 
-	changeMemberLevel: function (member, level) {
-		if (parseInt(level) === define.levelOwner) {
-			actions.changeMemberOwner(member);
+	changeMemberLevel: function (member, type, level) {
+		if (Number(level) === define.levelOwner) {
+			actions.changeMemberOwner(member, type);
 			return;
 		}
-		api.levelMember(curr.circle, member, define.typeUser, level, resultMembers.levelMemberResult);
+		api.levelMember(curr.circle, member, type, level, resultMembers.levelMemberResult);
 		nav.circlesActionReturn();
 	},
 
 
 	changeGroupLevel: function (group, level) {
-
 		if (level === 'remove_group') {
 			api.unlinkGroup(curr.circle, group, resultGroups.unlinkGroupResult);
 		} else {
@@ -64,13 +63,13 @@ var actions = {
 	},
 
 
-	changeMemberOwner: function (member) {
+	changeMemberOwner: function (member, type) {
 		OC.dialogs.confirm(
 			t('circles', 'Are you sure you want to transfer your ownership?', [member]),
 			t('circles', 'This action is irreversible'),
 			function (e) {
 				if (e === true) {
-					api.levelMember(curr.circle, member, define.typeUser, define.levelOwner,
+					api.levelMember(curr.circle, member, type, define.levelOwner,
 						resultMembers.levelMemberResult);
 					nav.circlesActionReturn();
 					return;
@@ -81,12 +80,12 @@ var actions = {
 	},
 
 
-	changeMemberStatus: function (member, value) {
+	changeMemberStatus: function (member, type, value) {
 		if (value === 'remove_member' || value === 'dismiss_request') {
-			api.removeMember(curr.circle, member, define.typeUser, resultMembers.removeMemberResult);
+			api.removeMember(curr.circle, member, type, resultMembers.removeMemberResult);
 		}
 		if (value === 'accept_request') {
-			api.addMember(curr.circle, member, resultMembers.addMemberResult);
+			api.addMember(curr.circle, member, type, resultMembers.addMemberResult);
 		}
 	},
 

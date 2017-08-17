@@ -151,13 +151,14 @@ class MembersController extends BaseController {
 	public function levelMember($uniqueId, $member, $type, $level) {
 
 		try {
-			$data = $this->membersService->levelMember($uniqueId, $member, $type, $level);
+			$data = $this->membersService->levelMember($uniqueId, $member, (int)$type, $level);
 		} catch (\Exception $e) {
 			return
 				$this->fail(
 					[
 						'circle_id' => $uniqueId,
 						'user_id'   => $member,
+						'user_type' => (int)$type,
 						'name'      => $this->miscService->getDisplayName($member, true),
 						'level'     => $level,
 						'error'     => $e->getMessage()
@@ -169,6 +170,7 @@ class MembersController extends BaseController {
 			[
 				'circle_id' => $uniqueId,
 				'user_id'   => $member,
+				'user_type' => (int)$type,
 				'name'      => $this->miscService->getDisplayName($member, true),
 				'level'     => $level,
 				'members'   => $data,
@@ -190,13 +192,14 @@ class MembersController extends BaseController {
 	public function removeMember($uniqueId, $member, $type) {
 
 		try {
-			$data = $this->membersService->removeMember($uniqueId, $member, $type);
+			$data = $this->membersService->removeMember($uniqueId, $member, (int)$type);
 		} catch (\Exception $e) {
 			return
 				$this->fail(
 					[
 						'circle_id' => $uniqueId,
 						'user_id'   => $member,
+						'user_type' => (int)$type,
 						'name'      => $this->miscService->getDisplayName($member, true),
 						'error'     => $e->getMessage()
 					]
@@ -207,6 +210,7 @@ class MembersController extends BaseController {
 			[
 				'circle_id' => $uniqueId,
 				'user_id'   => $member,
+				'user_type' => (int)$type,
 				'name'      => $this->miscService->getDisplayName($member, true),
 				'members'   => $data,
 			]
