@@ -37,6 +37,7 @@ OC.L10N.register(
     "Please confirm" : "Lütfen onaylayın",
     "Are you sure you want to leave this circle?" : "Bu çevreyi bırakmak istediğinize emin misiniz?",
     "Are you sure you want to delete this circle?" : "Bu çevreyi silmek istediğinize emin misiniz?",
+    "Mail Contact" : "Kişiye E-posta",
     "Kick this member" : "Üyelikten çıkar",
     "Accept the request" : "İsteği onayla",
     "Dismiss the request" : "İsteği yoksay",

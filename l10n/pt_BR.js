@@ -37,6 +37,7 @@ OC.L10N.register(
     "Please confirm" : "Por favor confirme",
     "Are you sure you want to leave this circle?" : "Quer realmente sair deste círculo?",
     "Are you sure you want to delete this circle?" : "Quer mesmo deletar este círculo?",
+    "Mail Contact" : "Contato de email",
     "Kick this member" : "Expulsar este membro",
     "Accept the request" : "Aceitar a solicitação",
     "Dismiss the request" : "Descartar o convite",
