@@ -29,6 +29,7 @@ namespace OCA\Circles;
 
 
 use OC\Files\Cache\Cache;
+use OC\Share20\Exception\InvalidShare;
 use OC\Share20\Share;
 use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\AppInfo\Application;
@@ -40,6 +41,7 @@ use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
 use OCP\Files\Node;
@@ -156,16 +158,17 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 				throw $this->errorShareAlreadyExist($share);
 			}
 
+			$share->setToken(substr(bin2hex(openssl_random_pseudo_bytes(24)), 1, 15));
+			$shareId = $this->createShare($share);
+
 			$circle =
 				$this->circlesRequest->getCircle($share->getSharedWith(), $share->getSharedby());
 			$circle->getHigherViewer()
 				   ->hasToBeMember();
 
-			$shareId = $this->createShare($share);
-
 			Circles::shareToCircle(
 				$circle->getUniqueId(), 'files', '',
-				['id' => $shareId, 'share' => $share],
+				['id' => $shareId, 'share' => $this->shareObjectToArray($share)],
 				'\OCA\Circles\Circles\FileSharingBroadcaster'
 			);
 
@@ -497,9 +500,39 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	 *
 	 * @return IShare
 	 * @throws ShareNotFound
+	 * @deprecated - use local querybuilder lib instead
 	 */
 	public function getShareByToken($token) {
-		return null;
+		$qb = $this->dbConnection->getQueryBuilder();
+
+		$cursor = $qb->select('*')
+					 ->from('share')
+					 ->where(
+						 $qb->expr()
+							->eq(
+								'share_type',
+								$qb->createNamedParameter(\OCP\Share::SHARE_TYPE_CIRCLE)
+							)
+					 )
+					 ->andWhere(
+						 $qb->expr()
+							->eq('token', $qb->createNamedParameter($token))
+					 )
+					 ->execute();
+
+		$data = $cursor->fetch();
+
+		if ($data === false) {
+			throw new ShareNotFound('Share not found', $this->l->t('Could not find share'));
+		}
+
+		try {
+			$share = $this->createShareObject($data);
+		} catch (InvalidShare $e) {
+			throw new ShareNotFound('Share not found', $this->l->t('Could not find share'));
+		}
+
+		return $share;
 	}
 
 
@@ -655,7 +688,7 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 		$message = 'Sharing %s failed, this item is already shared with this circle';
 		$message_t = $this->l->t($message, array($share_src));
 		$this->logger->debug(
-			sprintf($message, $share_src, $share->getSharedWith()), ['app' => 'circles']
+			sprintf($message, $share_src, $share->getSharedWith()), ['app' => Application::APP_NAME]
 		);
 
 		return new \Exception($message_t);
@@ -698,11 +731,11 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	 * return array regarding getAccessList format.
 	 * ie. \OC\Share20\Manager::getAccessList()
 	 *
-	 * @param $qb
+	 * @param IQueryBuilder $qb
 	 *
 	 * @return array
 	 */
-	private function parseAccessListResult($qb) {
+	private function parseAccessListResult(IQueryBuilder $qb) {
 
 		$cursor = $qb->execute();
 		$users = [];
@@ -720,5 +753,23 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 		$cursor->closeCursor();
 
 		return $users;
+	}
+
+
+	/**
+	 * @param IShare $share
+	 *
+	 * @return array
+	 */
+	private function shareObjectToArray(IShare $share) {
+		return [
+			'sharedWith'  => $share->getSharedWith(),
+			'sharedBy'    => $share->getSharedBy(),
+			'nodeId'      => $share->getNodeId(),
+			'shareOwner'  => $share->getShareOwner(),
+			'permissions' => $share->getPermissions(),
+			'token'       => $share->getToken(),
+			'password'    => $share->getPassword()
+		];
 	}
 }

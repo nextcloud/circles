@@ -27,19 +27,55 @@
 
 namespace OCA\Circles\Circles;
 
+use OC\Share20\Share;
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\IBroadcaster;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
+use OCA\Circles\Service\MiscService;
+use OCP\Defaults;
+use OCP\Files\IRootFolder;
+use OCP\IL10N;
+use OCP\IURLGenerator;
+use OCP\IUserManager;
+use OCP\Mail\IMailer;
+use OCP\Share\IShare;
+use OCP\Util;
 
 
 class FileSharingBroadcaster implements IBroadcaster {
+
+	/** @var IL10N */
+	private $l10n = null;
+
+	/** @var IMailer */
+	private $mailer;
+
+	/** @var IRootFolder */
+	private $rootFolder;
+
+	/** @var IUserManager */
+	private $userManager;
+
+	/** @var Defaults */
+	private $defaults;
+
+	/** @var IURLGenerator */
+	private $urlGenerator;
 
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function init() {
+		$this->l10n = \OC::$server->getL10N(Application::APP_NAME);
+		$this->mailer = \OC::$server->getMailer();
+		$this->rootFolder = \OC::$server->getLazyRootFolder();
+		$this->userManager = \OC::$server->getUserManager();
+
+		$this->defaults = \OC::$server->query(Defaults::class);
+		$this->urlGenerator = \OC::$server->getURLGenerator();
 	}
 
 
@@ -53,8 +89,49 @@ class FileSharingBroadcaster implements IBroadcaster {
 	/**
 	 * {@inheritdoc}
 	 */
+	public function createShareToCircle(SharingFrame $frame, Circle $circle) {
+		if ($frame->is0Circle()) {
+			return false;
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function deleteShareToCircle(SharingFrame $frame, Circle $circle) {
+		return true;
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function editShareToCircle(SharingFrame $frame, Circle $circle) {
+		return true;
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function createShareToMember(SharingFrame $frame, Member $member) {
-		//\OC::$server->getLogger()->log(2, 'Share to Member');
+		if (!$frame->is0Circle()) {
+			return false;
+		}
+
+		$payload = $frame->getPayload();
+		if (!key_exists('share', $payload)) {
+			return false;
+		}
+
+		$share = $this->generateShare($payload['share']);
+		if ($member->getType() === Member::TYPE_MAIL) {
+			$this->sharedByMail($frame->getCircleName(), $share, $member->getUserId());
+		}
+
 		return true;
 	}
 
@@ -76,25 +153,95 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 
 	/**
-	 * {@inheritdoc}
+	 * recreate the share from the JSON payload.
+	 *
+	 * @param array $data
+	 *
+	 * @return IShare
 	 */
-	public function createShareToCircle(SharingFrame $frame, Circle $circle) {
-		return true;
+	private function generateShare($data) {
+
+		$share = new Share($this->rootFolder, $this->userManager);
+		$share->setSharedBy($data['sharedBy']);
+		$share->setSharedWith($data['sharedWith']);
+		$share->setNodeId($data['nodeId']);
+		$share->setShareOwner($data['shareOwner']);
+		$share->setPermissions($data['permissions']);
+		$share->setToken($data['token']);
+		$share->setPassword($data['password']);
+
+		return $share;
 	}
 
 
 	/**
-	 * {@inheritdoc}
+	 * @param $circleName
+	 * @param IShare $share
+	 * @param string $email
 	 */
-	public function deleteShareToCircle(SharingFrame $frame, Circle $circle) {
-		return true;
+	private function sharedByMail($circleName, IShare $share, $email) {
+
+		$link = $this->urlGenerator->linkToRouteAbsolute(
+			'files_sharing.sharecontroller.showShare',
+			['token' => $share->getToken()]
+		);
+		$this->sendMail(
+			$share->getNode()
+				  ->getName(), $link, MiscService::staticGetDisplayName($share->getSharedBy()),
+			$circleName, $email
+		);
+
 	}
 
 
 	/**
-	 * {@inheritdoc}
+	 * @param $fileName
+	 * @param string $link
+	 * @param string $author
+	 * @param $circleName
+	 * @param string $email
+	 *
+	 * @internal param string $filename
+	 * @internal param string $circle
 	 */
-	public function editShareToCircle(SharingFrame $frame, Circle $circle) {
-		return true;
+	protected function sendMail($fileName, $link, $author, $circleName, $email) {
+		$message = $this->mailer->createMessage();
+
+		$subject = $this->l10n->t('%s shared »%s« with you.', [$author, $fileName]);
+		$text = $this->l10n->t('%s shared »%s« with \'%s\'.', [$author, $fileName, $circleName]);
+
+		$emailTemplate = $this->generateEmailTemplate($subject, $text, $fileName, $link);
+
+		$instanceName = $this->defaults->getName();
+		$senderName = $this->l10n->t('%s on %s', [$author, $instanceName]);
+
+		$message->setFrom([Util::getDefaultEmailAddress($instanceName) => $senderName]);
+		$message->setSubject($subject);
+		$message->setPlainBody($emailTemplate->renderText());
+		$message->setHtmlBody($emailTemplate->renderHtml());
+		$message->setTo([$email]);
+
+		$this->mailer->send($message);
+	}
+
+
+	/**
+	 * @param $subject
+	 * @param $text
+	 * @param $fileName
+	 * @param $link
+	 *
+	 * @return \OCP\Mail\IEMailTemplate
+	 */
+	private function generateEmailTemplate($subject, $text, $fileName, $link) {
+
+		$emailTemplate = $this->mailer->createEMailTemplate();
+
+		$emailTemplate->addHeader();
+		$emailTemplate->addHeading($subject, false);
+		$emailTemplate->addBodyText($text . '\n ' . $this->l10n->t('Click the button below to open it.'), $text);
+		$emailTemplate->addBodyButton($this->l10n->t('Open »%s«', [$fileName]), $link);
+
+		return $emailTemplate;
 	}
 }
