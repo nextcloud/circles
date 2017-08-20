@@ -119,7 +119,7 @@ class CirclesService {
 			);
 		}
 
-		$circle = new Circle($this->l10n, $type, $name);
+		$circle = new Circle($type, $name);
 
 		try {
 			$this->circlesRequest->createCircle($circle, $this->userId);

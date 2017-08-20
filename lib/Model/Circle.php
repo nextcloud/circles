@@ -117,7 +117,7 @@ class Circle extends BaseCircle implements \JsonSerializable {
 	 * @return $this
 	 */
 	public static function fromArray($l10n, $arr) {
-		$circle = new Circle($l10n);
+		$circle = new Circle();
 
 		$circle->setId($arr['id']);
 		$circle->setName($arr['name']);

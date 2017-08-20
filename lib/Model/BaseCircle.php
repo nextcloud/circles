@@ -27,6 +27,7 @@
 namespace OCA\Circles\Model;
 
 use OC\L10N\L10N;
+use OCA\Circles\AppInfo\Application;
 
 class BaseCircle {
 
@@ -87,8 +88,8 @@ class BaseCircle {
 	/** @var FederatedLink[] */
 	private $links;
 
-	public function __construct($l10n, $type = -1, $name = '') {
-		$this->l10n = $l10n;
+	public function __construct($type = -1, $name = '') {
+		$this->l10n = \OC::$server->getL10N(Application::APP_NAME);
 
 		if ($type > -1) {
 			$this->type = $type;

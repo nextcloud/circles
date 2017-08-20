@@ -458,7 +458,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function parseCirclesSelectSql($data) {
 
-		$circle = new Circle($this->l10n);
+		$circle = new Circle();
 		$circle->setId($data['id']);
 		$circle->setUniqueId($data['unique_id']);
 		$circle->setName($data['name']);
