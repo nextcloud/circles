@@ -3,6 +3,7 @@
 
 namespace OCA\Circles\Activity;
 
+use OCA\Circles\AppInfo\Application;
 use OCP\Activity\IFilter;
 use OCP\IL10N;
 use OCP\IURLGenerator;
@@ -25,7 +26,7 @@ class Filter implements IFilter {
 	 * @since 11.0.0
 	 */
 	public function getIdentifier() {
-		return 'circles';
+		return Application::APP_NAME;
 	}
 
 	/**
@@ -49,7 +50,9 @@ class Filter implements IFilter {
 	 * @since 11.0.0
 	 */
 	public function getIcon() {
-		return $this->url->getAbsoluteURL($this->url->imagePath('circles', 'black_circle.svg'));
+		return $this->url->getAbsoluteURL(
+			$this->url->imagePath(Application::APP_NAME, 'black_circle.svg')
+		);
 	}
 
 	/**
@@ -67,7 +70,7 @@ class Filter implements IFilter {
 	 * @since 11.0.0
 	 */
 	public function allowedApps() {
-		return ['circles'];
+		return [Application::APP_NAME];
 	}
 }
 

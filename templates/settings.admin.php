@@ -1,8 +1,10 @@
 <?php
 
 
-script('circles', 'admin');
-style('circles', 'admin');
+use OCA\Circles\AppInfo\Application;
+
+script(Application::APP_NAME, 'admin');
+style(Application::APP_NAME, 'admin');
 
 ?>
 

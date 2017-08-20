@@ -29,6 +29,7 @@ namespace OCA\Circles\Activity;
 
 use Exception;
 use InvalidArgumentException;
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
@@ -49,7 +50,7 @@ class Provider extends BaseProvider implements IProvider {
 	 */
 	public function parse($lang, IEvent $event, IEvent $previousEvent = null) {
 
-		if ($event->getApp() !== 'circles') {
+		if ($event->getApp() !== Application::APP_NAME) {
 			throw new \InvalidArgumentException();
 		}
 

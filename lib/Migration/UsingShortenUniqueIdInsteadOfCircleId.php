@@ -27,6 +27,7 @@
 namespace OCA\Circles\Migration;
 
 use OC\Share\Share;
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CoreRequestBuilder;
 use OCA\Circles\Model\Circle;
 use OCP\IConfig;
@@ -68,7 +69,7 @@ class UsingShortenUniqueIdInsteadOfCircleId implements IRepairStep {
 	public function run(IOutput $output) {
 		$oldVersion = explode(
 			'.', \OC::$server->getConfig()
-							 ->getAppValue('circles', 'installed_version', '')
+							 ->getAppValue(Application::APP_NAME, 'installed_version', '')
 		);
 
 		if ((int)$oldVersion[0] === 0

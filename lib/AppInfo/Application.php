@@ -54,6 +54,8 @@ use OCP\Util;
 
 class Application extends App {
 
+	const APP_NAME = 'circles';
+
 	/** @var string */
 	private $appName;
 
@@ -62,7 +64,7 @@ class Application extends App {
 	 * @param array $params
 	 */
 	public function __construct(array $params = array()) {
-		parent::__construct('circles', $params);
+		parent::__construct(self::APP_NAME, $params);
 
 		$container = $this->getContainer();
 		$this->appName = $container->query('AppName');

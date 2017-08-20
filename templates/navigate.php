@@ -24,11 +24,13 @@
  *
  */
 
-script('circles', 'vendor/notyf');
-style('circles', 'notyf');
+use OCA\Circles\AppInfo\Application;
+
+script(Application::APP_NAME, 'vendor/notyf');
+style(Application::APP_NAME, 'notyf');
 
 script(
-	'circles', [
+	Application::APP_NAME, [
 				 'circles.v1', 'circles.app.elements', 'circles.app.actions',
 				 'circles.app.navigation', 'circles.app.settings',
 				 'circles.app', 'circles.app.results.circles', 'circles.app.results.members',
@@ -36,7 +38,7 @@ script(
 			 ]
 );
 
-style('circles', 'navigation');
+style(Application::APP_NAME, 'navigation');
 ?>
 
 

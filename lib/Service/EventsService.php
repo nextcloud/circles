@@ -26,6 +26,7 @@
 
 namespace OCA\Circles\Service;
 
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Model\Circle;
@@ -687,7 +688,7 @@ class EventsService {
 	 */
 	private function generateEvent($type) {
 		$event = $this->activityManager->generateEvent();
-		$event->setApp('circles')
+		$event->setApp(Application::APP_NAME)
 			  ->setType($type)
 			  ->setAuthor($this->userId);
 

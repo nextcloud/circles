@@ -26,6 +26,7 @@
 
 namespace OCA\Circles\Controller;
 
+use OCA\Circles\AppInfo\Application;
 use \OCA\Circles\Model\Circle;
 use OCA\Circles\Service\ConfigService;
 use OCA\Testing\Config;
@@ -62,7 +63,7 @@ class NavigationController extends BaseController {
 		];
 
 		return new TemplateResponse(
-			'circles', 'navigate', $data
+			Application::APP_NAME, 'navigate', $data
 		);
 	}
 

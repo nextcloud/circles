@@ -27,6 +27,7 @@
 namespace OCA\Circles\Model;
 
 use OC\L10N\L10N;
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Service\MiscService;
 
 class BaseMember implements \JsonSerializable {
@@ -83,7 +84,7 @@ class BaseMember implements \JsonSerializable {
 	 * @param int $type
 	 */
 	public function __construct($userId = '', $type = 0, $circleUniqueId = '') {
-		$this->l10n = \OC::$server->getL10N('circles');
+		$this->l10n = \OC::$server->getL10N(Application::APP_NAME);
 
 		$this->setType($type);
 		$this->setUserId($userId);
