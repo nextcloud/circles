@@ -37,6 +37,7 @@ OC.L10N.register(
     "Please confirm" : "Bekreft",
     "Are you sure you want to leave this circle?" : "Er du sikker på at du vil forlate denne sirkelen?",
     "Are you sure you want to delete this circle?" : "Er du sikker på at du vil slette denne sirkelen?",
+    "Mail Contact" : "E-postkontakt",
     "Kick this member" : "Kast ut dette medlemmet",
     "Accept the request" : "Aksepter forespørselen",
     "Dismiss the request" : "Avslå forespørselen",
