@@ -289,9 +289,8 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 * @param SharingFrame $frame
 	 */
 	public function saveFrame(SharingFrame $frame) {
-
 		$qb = $this->getSharesInsertSql();
-		$qb->setValue('circle_id', $qb->createNamedParameter($frame->getCircleId()))
+		$qb->setValue('circle_id', $qb->createNamedParameter($frame->getCircle()->getUniqueId()))
 		   ->setValue('source', $qb->createNamedParameter($frame->getSource()))
 		   ->setValue('type', $qb->createNamedParameter($frame->getType()))
 		   ->setValue('headers', $qb->createNamedParameter($frame->getHeaders(true)))
@@ -306,7 +305,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 	public function updateFrame(SharingFrame $frame) {
 		$qb = $this->getSharesUpdateSql($frame->getUniqueId());
-		$qb->set('circle_id', $qb->createNamedParameter($frame->getCircleId()))
+		$qb->set('circle_id', $qb->createNamedParameter($frame->getCircle()->getUniqueId()))
 		   ->set('source', $qb->createNamedParameter($frame->getSource()))
 		   ->set('type', $qb->createNamedParameter($frame->getType()))
 		   ->set('headers', $qb->createNamedParameter($frame->getHeaders(true)))
@@ -364,13 +363,16 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$qb = $this->getSharesSelectSql();
 		$this->limitToUniqueId($qb, $frameUniqueId);
 		$this->limitToCircleId($qb, $circleUniqueId);
+		$this->leftJoinCircle($qb);
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
 		$cursor->closeCursor();
 
 		if ($data === false) {
-			throw new SharingFrameDoesNotExistException($this->l10n->t('Sharing Frame does not exist'));
+			throw new SharingFrameDoesNotExistException(
+				$this->l10n->t('Sharing Frame does not exist')
+			);
 		}
 
 		$entry = $this->parseSharesSelectSql($data);

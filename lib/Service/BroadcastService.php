@@ -104,7 +104,7 @@ class BroadcastService {
 				throw new BroadcasterIsNotCompatibleException();
 			}
 
-			$circle = $this->circlesRequest->forceGetCircle($frame->getCircleId());
+			$circle = $this->circlesRequest->forceGetCircle($frame->getCircle()->getUniqueId());
 
 			$broadcaster->init();
 			if ($circle->getType() !== Circle::CIRCLES_PERSONAL) {

@@ -37,14 +37,8 @@ class SharingFrame implements \JsonSerializable {
 	/** @var string */
 	private $type;
 
-	/** @var int */
-	private $circleUniqueId;
-
-	/** @var string */
-	private $circleName;
-
-	/** @var int */
-	private $circleType;
+	/** @var Circle */
+	private $circle;
 
 	/** @var string */
 	private $author;
@@ -85,47 +79,17 @@ class SharingFrame implements \JsonSerializable {
 	}
 
 	/**
-	 * @param string $circleUniqueId
+	 * @param Circle $circle
 	 */
-	public function setCircleId($circleUniqueId) {
-		$this->circleUniqueId = $circleUniqueId;
+	public function setCircle($circle) {
+		$this->circle = $circle;
 	}
 
 	/**
-	 * @return string
+	 * @return Circle
 	 */
-	public function getCircleId() {
-		return $this->circleUniqueId;
-	}
-
-
-	/**
-	 * @param string $circleName
-	 */
-	public function setCircleName($circleName) {
-		$this->circleName = $circleName;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getCircleName() {
-		return $this->circleName;
-	}
-
-
-	/**
-	 * @param int $circleType
-	 */
-	public function setCircleType($circleType) {
-		$this->circleType = $circleType;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getCircleType() {
-		return $this->circleType;
+	public function getCircle() {
+		return $this->circle;
 	}
 
 
@@ -286,7 +250,7 @@ class SharingFrame implements \JsonSerializable {
 	/**
 	 * @return bool
 	 */
-	public function isCircleZero() {
+	public function is0Circle() {
 		return ($this->getCloudId() === null);
 	}
 
@@ -302,17 +266,15 @@ class SharingFrame implements \JsonSerializable {
 
 	public function jsonSerialize() {
 		return array(
-			'circle_id'   => $this->getCircleId(),
-			'circle_name' => $this->getCircleName(),
-			'circle_type' => $this->getCircleType(),
-			'unique_id'   => $this->getUniqueId(),
-			'source'      => $this->getSource(),
-			'type'        => $this->getType(),
-			'author'      => $this->getAuthor(),
-			'cloud_id'    => $this->getCloudId(),
-			'headers'     => $this->getHeaders(),
-			'payload'     => $this->getPayload(),
-			'creation'    => $this->getCreation(),
+			'unique_id' => $this->getUniqueId(),
+			'circle'    => $this->getCircle()->getArray(false, true),
+			'source'    => $this->getSource(),
+			'type'      => $this->getType(),
+			'author'    => $this->getAuthor(),
+			'cloud_id'  => $this->getCloudId(),
+			'headers'   => $this->getHeaders(),
+			'payload'   => $this->getPayload(),
+			'creation'  => $this->getCreation(),
 		);
 	}
 
@@ -324,14 +286,23 @@ class SharingFrame implements \JsonSerializable {
 		}
 
 		$share = new SharingFrame($arr['source'], $arr['type']);
-		$share->setCircleId($arr['circle_id']);
-		if (key_exists('circle_name', $arr)) {
-			$share->setCircleName($arr['circle_name']);
-		}
-		if (key_exists('circle_type', $arr)) {
-			$share->setCircleType($arr['circle_type']);
+
+		$circle = new Circle();
+		if (key_exists('circle', $arr)) {
+			$circle = Circle::fromArray($arr['circle']);
 		}
 
+		// TODO 0.15.0 - remove those 3 conditions
+		if (key_exists('circle_type', $arr)) {
+			$circle->setType($arr['circle_type']);
+		}
+		if (key_exists('circle_name', $arr)) {
+			$circle->setName($arr['circle_name']);
+		}
+		if (key_exists('circle_id', $arr)) {
+			$circle->setId($arr['circle_id']);
+		}
+		$share->setCircle($circle);
 
 		if (key_exists('headers', $arr)) {
 			$share->setHeaders($arr['headers']);

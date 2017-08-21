@@ -94,21 +94,22 @@ class SharesService {
 	 * The Payload will be shared locally, and spread it live if a Broadcaster is set.
 	 * Function will also initiate the federated broadcast to linked circles.
 	 *
+	 * @param string $circleUniqueId
 	 * @param SharingFrame $frame
 	 * @param string|null $broadcast
 	 *
 	 * @throws Exception
+	 * @throws MemberDoesNotExistException
 	 */
-	public function createFrame(SharingFrame $frame, $broadcast = null) {
-
-		$circle = $this->circlesRequest->getCircle($frame->getCircleId(), $this->userId);
-		if ($circle->getHigherViewer()
-				   ->getLevel() < Member::LEVEL_MEMBER
-		) {
-			throw new MemberDoesNotExistException();
-		}
+	public function createFrame($circleUniqueId, SharingFrame $frame, $broadcast = null) {
 
 		try {
+			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
+			$circle->getHigherViewer()
+				   ->hasToBeMember();
+
+			$frame->setCircle($circle);
+
 			$this->generateHeaders($frame, $circle, $broadcast);
 			$this->circlesRequest->saveFrame($frame);
 
@@ -144,8 +145,6 @@ class SharesService {
 			$frame->setHeader('circleUniqueId', $circle->getUniqueId());
 			$frame->setHeader('broadcast', (string)$broadcast);
 			$frame->generateUniqueId();
-			$frame->setCircleName($circle->getName());
-			$frame->setCircleType($circle->getType());
 
 		} catch (Exception $e) {
 			throw new $e;

@@ -716,9 +716,7 @@ class FederatedService {
 			throw new CircleDoesNotExistException('unknown_circle');
 		}
 
-		$frame->setCircleId($link->getCircleId());
-		$frame->setCircleName($circle->getName());
-		$frame->setCircleType($circle->getType());
+		$frame->setCircle($circle);
 
 		$this->circlesRequest->saveFrame($frame);
 		$this->broadcastService->broadcastFrame($frame->getHeader('broadcast'), $frame);
@@ -790,13 +788,22 @@ class FederatedService {
 	 */
 	public function sendRemoteShare(SharingFrame $frame) {
 
-		$circle = $this->circlesRequest->forceGetCircle($frame->getCircleId());
-		if ($circle === null) {
-			throw new Exception('unknown_circle');
+		try {
+			$circle = $this->circlesRequest->forceGetCircle(
+				$frame->getCircle()
+					  ->getUniqueId()
+			);
+		} catch (CircleDoesNotExistException $e) {
+			throw new CircleDoesNotExistException('unknown_circle');
 		}
 
-		$links = $this->getLinksFromCircle($frame->getCircleId());
+		$links = $this->getLinksFromCircle(
+			$frame->getCircle()
+				  ->getUniqueId()
+		);
+
 		foreach ($links AS $link) {
+
 
 			$args = [
 				'apiVersion' => Circles::version(),

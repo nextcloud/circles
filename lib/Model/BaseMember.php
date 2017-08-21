@@ -229,7 +229,7 @@ class BaseMember implements \JsonSerializable {
 	/**
 	 * @param $arr
 	 *
-	 * 0.13.0 : remove both key_exists condition
+	 * TODO: 0.15.0 : remove both key_exists condition
 	 *
 	 * @return null|Member
 	 */

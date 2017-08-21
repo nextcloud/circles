@@ -333,11 +333,10 @@ class Circles {
 		$c = self::getContainer();
 
 		$frame = new SharingFrame((string)$source, (string)$type);
-		$frame->setCircleId($circleUniqueId);
 		$frame->setPayload($payload);
 
 		return $c->query('SharesService')
-				 ->createFrame($frame, (string)$broadcaster);
+				 ->createFrame($circleUniqueId, $frame, (string)$broadcaster);
 	}
 
 
@@ -421,9 +420,9 @@ class Circles {
 	public static function generateCircleParameter(SharingFrame $frame) {
 		return [
 			'type' => 'circle',
-			'id'   => $frame->getCircleId(),
-			'name' => $frame->getCircleName(),
-			'link' => self::generateLink($frame->getCircleId())
+			'id'   => $frame->getCircle()->getUniqueId(),
+			'name' => $frame->getCircle()->getName(),
+			'link' => self::generateLink($frame->getCircle()->getUniqueId())
 		];
 	}
 }

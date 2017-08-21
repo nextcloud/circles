@@ -102,7 +102,7 @@ return [
 			'verb'         => 'DELETE'
 		],
 		[
-			'name'         => 'Shares#create', 'url' => '/v1/circles/{uniqueId}/share', 'verb' => 'PUT'
+			'name'         => 'Shares#create', 'url' => '/v1/circles/{circleUniqueId}/share', 'verb' => 'PUT'
 		]
 	]
 ];

@@ -87,11 +87,20 @@ class Circle extends BaseCircle implements \JsonSerializable {
 
 		if ($this->lightJson) {
 			$json['members'] = [];
+			$json['description'] = '';
 			$json['links'] = [];
 			$json['groups'] = [];
+			$json['settings'] = [];
 		}
 
 		return $json;
+	}
+
+
+	public function getArray($full = false, $light = false) {
+		$json = $this->getJson($full, $light);
+
+		return json_decode($json, true);
 	}
 
 
@@ -109,14 +118,13 @@ class Circle extends BaseCircle implements \JsonSerializable {
 	/**
 	 * set all infos from an Array.
 	 *
-	 * @param $l10n
 	 * @param $arr
 	 *
 	 * @deprecated
 	 *
 	 * @return $this
 	 */
-	public static function fromArray($l10n, $arr) {
+	public static function fromArray($arr) {
 		$circle = new Circle();
 
 		$circle->setId($arr['id']);
@@ -132,13 +140,14 @@ class Circle extends BaseCircle implements \JsonSerializable {
 		$circle->setType($arr['type']);
 		$circle->setCreation($arr['creation']);
 
-		if (key_exists('user', $arr)) {
+		// TODO: 0.15.0 - remove condition is null
+		if (key_exists('user', $arr) && $arr['user'] !== null) {
 			$viewer = Member::fromArray($arr['user']);
 			$viewer->setType(Member::TYPE_USER);
 			$circle->setViewer($viewer);
 		}
 
-		if (key_exists('owner', $arr)) {
+		if (key_exists('owner', $arr) && $arr['owner'] !== null) {
 			$owner = Member::fromArray($arr['owner']);
 			$owner->setType(Member::TYPE_USER);
 			$circle->setOwner($owner);
@@ -149,14 +158,13 @@ class Circle extends BaseCircle implements \JsonSerializable {
 
 
 	/**
-	 * @param $l10n
 	 * @param $json
 	 *
 	 * @deprecated
 	 * @return Circle
 	 */
-	public static function fromJSON($l10n, $json) {
-		return self::fromArray($l10n, json_decode($json, true));
+	public static function fromJSON($json) {
+		return self::fromArray(json_decode($json, true));
 	}
 
 

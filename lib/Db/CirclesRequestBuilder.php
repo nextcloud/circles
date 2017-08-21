@@ -181,7 +181,9 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 			->add(
 				$expr->eq(
 					$qb->createNamedParameter($circleUniqueId),
-					$qb->createFunction('SUBSTR(`c`.`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')')
+					$qb->createFunction(
+						'SUBSTR(`c`.`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
+					)
 				)
 			);
 
@@ -263,7 +265,8 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 				   $expr->eq(
 					   'u.circle_id',
 					   $qb->createFunction(
-						   'SUBSTR(' . $pf . '`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
+						   'SUBSTR(' . $pf . '`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH
+						   . ')'
 					   )
 				   ),
 				   $expr->eq('u.user_id', $qb->createNamedParameter($userId)),
@@ -295,13 +298,38 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 			   $expr->andX(
 				   $expr->eq(
 					   $qb->createFunction(
-						   'SUBSTR(' . $pf . '`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
+						   'SUBSTR(' . $pf . '`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH
+						   . ')'
 					   )
 					   , 'o.circle_id'
 				   ),
 				   $expr->eq('o.level', $qb->createNamedParameter(Member::LEVEL_OWNER)),
 				   $expr->eq('o.user_type', $qb->createNamedParameter(Member::TYPE_USER))
 			   )
+		   );
+	}
+
+
+	/**
+	 * Left Join circle table to get more information about the circle.
+	 *
+	 * @param IQueryBuilder $qb
+	 */
+	protected function leftJoinCircle(IQueryBuilder &$qb) {
+
+		if ($qb->getType() !== QueryBuilder::SELECT) {
+			return;
+		}
+
+		$expr = $qb->expr();
+		$pf = $this->default_select_alias . '.';
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$qb->selectAlias('lc.type', 'circle_type')
+		   ->selectAlias('lc.name', 'circle_name')
+		   ->leftJoin(
+			   $this->default_select_alias, CoreRequestBuilder::TABLE_CIRCLES, 'lc',
+			   $expr->eq($pf . 'circle_id', 'lc.id')
 		   );
 	}
 
@@ -316,9 +344,9 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select('id', 'status', 'address', 'token', 'circle_id', 'unique_id', 'creation')
-		   ->from(self::TABLE_LINKS, 's');
+		   ->from(self::TABLE_LINKS, 'l');
 
-		$this->default_select_alias = 's';
+		$this->default_select_alias = 'l';
 
 		return $qb;
 	}
@@ -334,8 +362,8 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select(
-			'circle_id', 'source', 'type', 'author', 'cloud_id', 'payload', 'creation', 'headers',
-			'unique_id'
+			's.circle_id', 's.source', 's.type', 's.author', 's.cloud_id', 's.payload',
+			's.creation', 's.headers', 's.unique_id'
 		)
 		   ->from(self::TABLE_SHARES, 's');
 
@@ -343,6 +371,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 
 		return $qb;
 	}
+
 
 	/**
 	 * Base of the Sql Insert request for Shares
@@ -424,7 +453,9 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		   ->where(
 			   $qb->expr()
 				  ->eq(
-					  $qb->createFunction('SUBSTR(`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'),
+					  $qb->createFunction(
+						  'SUBSTR(`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
+					  ),
 					  $qb->createNamedParameter($circleUniqueId)
 				  )
 		   );
@@ -492,7 +523,16 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function parseSharesSelectSql($data) {
 		$frame = new SharingFrame($data['source'], $data['type']);
-		$frame->setCircleId($data['circle_id']);
+
+		$circle = new Circle();
+		$circle->setUniqueId($data['circle_id']);
+		if (key_exists('circle_type', $data)) {
+			$circle->setType($data['circle_type']);
+			$circle->setName($data['circle_name']);
+		}
+
+		$frame->setCircle($circle);
+
 		$frame->setAuthor($data['author']);
 		$frame->setCloudId($data['cloud_id']);
 		$frame->setPayload(json_decode($data['payload'], true));
