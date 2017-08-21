@@ -128,5 +128,27 @@ class MiscService {
 
 		return $user->getDisplayName();
 	}
+
+
+	/**
+	 * Hacky way to async the rest of the process without keeping client on hold.
+	 *
+	 * @param string $result
+	 */
+	public function asyncAndLeaveClientOutOfThis($result = '') {
+		if (ob_get_contents() !== false) {
+			ob_end_clean();
+		}
+
+		header('Connection: close');
+		ignore_user_abort();
+		ob_start();
+		echo($result);
+		$size = ob_get_length();
+		header('Content-Length: ' . $size);
+		ob_end_flush();
+		flush();
+	}
+
 }
 

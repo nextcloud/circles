@@ -717,9 +717,7 @@ class FederatedService {
 		}
 
 		$frame->setCircle($circle);
-
 		$this->circlesRequest->saveFrame($frame);
-		$this->broadcastService->broadcastFrame($frame->getHeader('broadcast'), $frame);
 
 		return true;
 	}
@@ -752,9 +750,8 @@ class FederatedService {
 	 * @return bool
 	 * @throws Exception
 	 */
-	public function initiateRemoteShare($circleUniqueId, $frameUniqueId) {
+	public function initiateShare($circleUniqueId, $frameUniqueId) {
 		$args = [
-			'apiVersion' => Circles::version(),
 			'circleId'   => $circleUniqueId,
 			'frameId'    => $frameUniqueId
 		];

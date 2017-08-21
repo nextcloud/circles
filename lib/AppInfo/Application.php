@@ -205,7 +205,8 @@ class Application extends App {
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
 				$c->query('ConfigService'), $c->query('CirclesService'),
 				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
-				$c->query('FederatedService'), $c->query('MiscService')
+				$c->query('BroadcastService'), $c->query('FederatedService'),
+				$c->query('MiscService')
 			);
 		}
 		);
@@ -216,7 +217,8 @@ class Application extends App {
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
 				$c->query('ConfigService'), $c->query('CirclesService'),
 				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
-				$c->query('FederatedService'), $c->query('MiscService')
+				$c->query('BroadcastService'), $c->query('FederatedService'),
+				$c->query('MiscService')
 			);
 		}
 		);
@@ -227,7 +229,8 @@ class Application extends App {
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
 				$c->query('ConfigService'), $c->query('CirclesService'),
 				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
-				$c->query('FederatedService'), $c->query('MiscService')
+				$c->query('BroadcastService'), $c->query('FederatedService'),
+				$c->query('MiscService')
 			);
 		}
 		);
@@ -238,7 +241,8 @@ class Application extends App {
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
 				$c->query('ConfigService'), $c->query('CirclesService'),
 				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
-				$c->query('FederatedService'), $c->query('MiscService')
+				$c->query('BroadcastService'), $c->query('FederatedService'),
+				$c->query('MiscService')
 			);
 		}
 		);
@@ -249,7 +253,8 @@ class Application extends App {
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
 				$c->query('ConfigService'), $c->query('CirclesService'),
 				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
-				$c->query('FederatedService'), $c->query('MiscService')
+				$c->query('BroadcastService'), $c->query('FederatedService'),
+				$c->query('MiscService')
 			);
 		}
 		);
@@ -260,7 +265,8 @@ class Application extends App {
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
 				$c->query('ConfigService'), $c->query('CirclesService'),
 				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
-				$c->query('FederatedService'), $c->query('MiscService')
+				$c->query('BroadcastService'), $c->query('FederatedService'),
+				$c->query('MiscService')
 			);
 		}
 		);
@@ -416,11 +422,11 @@ class Application extends App {
 											->t('Circles');
 
 					 return [
-						 'id' => $this->appName,
+						 'id'    => $this->appName,
 						 'order' => 5,
-						 'href' => $urlGen->linkToRoute('circles.Navigation.navigate'),
-						 'icon' => $urlGen->imagePath($this->appName, 'circles.svg'),
-						 'name' => $navName
+						 'href'  => $urlGen->linkToRoute('circles.Navigation.navigate'),
+						 'icon'  => $urlGen->imagePath($this->appName, 'circles.svg'),
+						 'name'  => $navName
 					 ];
 				 }
 			 );

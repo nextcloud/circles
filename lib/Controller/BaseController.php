@@ -27,6 +27,7 @@
 namespace OCA\Circles\Controller;
 
 use OC\AppFramework\Http;
+use OCA\Circles\Service\BroadcastService;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedService;
@@ -63,6 +64,9 @@ class BaseController extends Controller {
 	/** @var SharesService */
 	protected $sharesService;
 
+	/** @var BroadcastService */
+	protected $broadcastService;
+
 	/** @var FederatedService */
 	protected $federatedService;
 
@@ -82,6 +86,7 @@ class BaseController extends Controller {
 	 * @param MembersService $membersService
 	 * @param GroupsService $groupsService
 	 * @param SharesService $sharesService
+	 * @param BroadcastService $broadcastService
 	 * @param FederatedService $federatedService
 	 * @param MiscService $miscService
 	 */
@@ -95,6 +100,7 @@ class BaseController extends Controller {
 		MembersService $membersService,
 		GroupsService $groupsService,
 		SharesService $sharesService,
+		BroadcastService $broadcastService,
 		FederatedService $federatedService,
 		MiscService $miscService
 	) {
@@ -107,6 +113,7 @@ class BaseController extends Controller {
 		$this->membersService = $membersService;
 		$this->groupsService = $groupsService;
 		$this->sharesService = $sharesService;
+		$this->broadcastService = $broadcastService;
 		$this->federatedService = $federatedService;
 		$this->miscService = $miscService;
 	}
@@ -118,11 +125,13 @@ class BaseController extends Controller {
 	 */
 	protected function fail($data) {
 		$this->miscService->log(json_encode($data));
+
 		return new DataResponse(
 			array_merge($data, array('status' => 0)),
 			Http::STATUS_NON_AUTHORATIVE_INFORMATION
 		);
 	}
+
 
 	/**
 	 * @param $data

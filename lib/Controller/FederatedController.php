@@ -119,48 +119,6 @@ class FederatedController extends BaseController {
 
 
 	/**
-	 * initFederatedDelivery()
-	 *
-	 * Note: this function will close the request mid-run from the client but will still
-	 * running its process.
-	 * Called by locally, the function will get the SharingFrame by its uniqueId from the database,
-	 * assign him some Headers and will deliver it to each remotes linked to the circle the Payload
-	 * belongs to. A status response is sent to free the client process before starting to
-	 * broadcast the item to other federated links.
-	 *
-	 * @PublicPage
-	 * @NoCSRFRequired
-	 *
-	 * @param array $apiVersion
-	 * @param string $circleId
-	 * @param string $frameId
-	 *
-	 * @return DataResponse
-	 */
-	public function initFederatedDelivery($apiVersion, $circleId, $frameId) {
-
-		if ($frameId === '' || !$this->configService->isFederatedCirclesAllowed()) {
-			return $this->federatedFail('federated_not_allowed');
-		}
-
-		try {
-			Circles::compareVersion($apiVersion);
-			$frame = $this->sharesService->getFrameFromUniqueId($circleId, $frameId);
-		} catch (Exception $e) {
-			return $this->federatedFail($e->getMessage());
-		}
-
-		// We don't want to keep the connection up
-		$this->asyncAndLeaveClientOutOfThis('done');
-
-		$this->federatedService->updateFrameWithCloudId($frame);
-		$this->federatedService->sendRemoteShare($frame);
-
-		exit();
-	}
-
-
-	/**
 	 * receiveFederatedDelivery()
 	 *
 	 * Note: this function will close the request mid-run from the client but will still
@@ -195,7 +153,8 @@ class FederatedController extends BaseController {
 			return $this->federatedFail($e->getMessage());
 		}
 
-		$this->asyncAndLeaveClientOutOfThis('done');
+		$this->miscService->asyncAndLeaveClientOutOfThis('done');
+		$this->broadcastService->broadcastFrame($frame);
 		$this->federatedService->sendRemoteShare($frame);
 		exit();
 	}
@@ -232,27 +191,6 @@ class FederatedController extends BaseController {
 		return $this->federatedSuccess(
 			['status' => 1, 'link' => $link], $link
 		);
-	}
-
-
-	/**
-	 * Hacky way to async the rest of the process without keeping client on hold.
-	 *
-	 * @param string $result
-	 */
-	private function asyncAndLeaveClientOutOfThis($result = '') {
-		if (ob_get_contents() !== false) {
-			ob_end_clean();
-		}
-
-		header('Connection: close');
-		ignore_user_abort();
-		ob_start();
-		echo($result);
-		$size = ob_get_length();
-		header('Content-Length: ' . $size);
-		ob_end_flush();
-		flush();
 	}
 
 

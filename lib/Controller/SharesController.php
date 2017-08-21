@@ -26,6 +26,7 @@
 
 namespace OCA\Circles\Controller;
 
+use Exception;
 use OCA\Circles\Model\SharingFrame;
 use OCP\AppFramework\Http\DataResponse;
 
@@ -75,6 +76,49 @@ class SharesController extends BaseController {
 		);
 	}
 
+
+	/**
+	 * initShareDelivery()
+	 *
+	 * Note: this function will close the request mid-run from the client but will still
+	 * running its process.
+	 *
+	 * Called by locally, the function will get the SharingFrame by its uniqueId from the database.
+	 * After closing the socket, will broadcast the Frame locally and - if Federated Shares are
+	 * enable - will deliver it to each remote circles linked to the circle the Payload belongs to.
+	 *
+	 * A status response is sent to free the client process before starting to broadcast the item
+	 * to other federated links.
+	 *
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 *
+	 * @param string $circleId
+	 * @param string $frameId
+	 *
+	 * @return DataResponse
+	 */
+	public function initShareDelivery($circleId, $frameId) {
+
+		try {
+			$frame = $this->sharesService->getFrameFromUniqueId($circleId, $frameId);
+		} catch (Exception $e) {
+			return $this->fail($e->getMessage());
+		}
+
+		// We don't want to keep the connection up
+		$this->miscService->asyncAndLeaveClientOutOfThis('done');
+
+		$this->broadcastService->broadcastFrame($frame);
+
+		// TODO - do not update cloudId to avoid duplicate, use it's own field and keep cloudId
+		$this->federatedService->updateFrameWithCloudId($frame);
+		if ($this->configService->isFederatedCirclesAllowed()) {
+			$this->federatedService->sendRemoteShare($frame);
+		}
+
+		exit();
+	}
 
 }
 

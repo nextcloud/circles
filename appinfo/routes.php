@@ -66,7 +66,7 @@ return [
 		['name' => 'Federated#updateLink', 'url' => '/v1/link', 'verb' => 'POST'],
 		['name' => 'Federated#requestedLink', 'url' => '/v1/link', 'verb' => 'PUT'],
 		[
-			'name' => 'Federated#initFederatedDelivery', 'url' => '/v1/payload',
+			'name' => 'Shares#initShareDelivery', 'url' => '/v1/payload',
 			'verb' => 'POST'
 		],
 		[

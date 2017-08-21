@@ -113,13 +113,9 @@ class SharesService {
 			$this->generateHeaders($frame, $circle, $broadcast);
 			$this->circlesRequest->saveFrame($frame);
 
-			$this->broadcastService->broadcastFrame($frame->getHeader('broadcast'), $frame);
-
-			if ($this->configService->isFederatedCirclesAllowed()) {
-				$this->federatedService->initiateRemoteShare(
-					$circle->getUniqueId(), $frame->getUniqueId()
-				);
-			}
+			$this->federatedService->initiateShare(
+				$circle->getUniqueId(), $frame->getUniqueId()
+			);
 		} catch (Exception $e) {
 			throw $e;
 		}

@@ -329,7 +329,12 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		   ->selectAlias('lc.name', 'circle_name')
 		   ->leftJoin(
 			   $this->default_select_alias, CoreRequestBuilder::TABLE_CIRCLES, 'lc',
-			   $expr->eq($pf . 'circle_id', 'lc.id')
+			   $expr->eq(
+				   $pf . 'circle_id',
+				   $qb->createFunction(
+					   'SUBSTR(`lc`.`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
+				   )
+			   )
 		   );
 	}
 
