@@ -87,26 +87,29 @@ class BroadcastService {
 	 * Then for each members of the circle, we call createShareToUser()
 	 * If the circle is a Personal Circle, we don't send data about the SharingFrame but null.
 	 *
-	 * @param string $broadcast
 	 * @param SharingFrame $frame
 	 *
 	 * @throws Exception
 	 */
-	public function broadcastFrame($broadcast, SharingFrame $frame) {
+	public function broadcastFrame(SharingFrame $frame) {
 
-		if ($broadcast === null) {
+		if ($frame->getHeader('broadcast') === null) {
 			return;
 		}
 
 		try {
-			$broadcaster = \OC::$server->query((string)$broadcast);
+			$broadcaster = \OC::$server->query((string)$frame->getHeader('broadcast'));
 			if (!($broadcaster instanceof IBroadcaster)) {
 				throw new BroadcasterIsNotCompatibleException();
 			}
 
-			$circle = $this->circlesRequest->forceGetCircle($frame->getCircle()->getUniqueId());
+			$circle = $this->circlesRequest->forceGetCircle(
+				$frame->getCircle()
+					  ->getUniqueId()
+			);
 
 			$broadcaster->init();
+
 			if ($circle->getType() !== Circle::CIRCLES_PERSONAL) {
 				$broadcaster->createShareToCircle($frame, $circle);
 			}
