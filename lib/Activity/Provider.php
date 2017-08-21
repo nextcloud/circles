@@ -57,7 +57,7 @@ class Provider extends BaseProvider implements IProvider {
 		try {
 
 			$params = $event->getSubjectParameters();
-			$circle = Circle::fromJSON($this->l10n, $params['circle']);
+			$circle = Circle::fromJSON($params['circle']);
 
 			$this->setIcon($event, $circle);
 			$this->parseAsMember($event, $circle, $params);

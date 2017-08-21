@@ -28,7 +28,6 @@
 namespace OCA\Circles\Db;
 
 
-use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
 use Doctrine\DBAL\Query\QueryBuilder;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;

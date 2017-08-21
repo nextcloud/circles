@@ -290,7 +290,12 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 */
 	public function saveFrame(SharingFrame $frame) {
 		$qb = $this->getSharesInsertSql();
-		$qb->setValue('circle_id', $qb->createNamedParameter($frame->getCircle()->getUniqueId()))
+		$qb->setValue(
+			'circle_id', $qb->createNamedParameter(
+			$frame->getCircle()
+				  ->getUniqueId()
+		)
+		)
 		   ->setValue('source', $qb->createNamedParameter($frame->getSource()))
 		   ->setValue('type', $qb->createNamedParameter($frame->getType()))
 		   ->setValue('headers', $qb->createNamedParameter($frame->getHeaders(true)))
@@ -305,7 +310,12 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 	public function updateFrame(SharingFrame $frame) {
 		$qb = $this->getSharesUpdateSql($frame->getUniqueId());
-		$qb->set('circle_id', $qb->createNamedParameter($frame->getCircle()->getUniqueId()))
+		$qb->set(
+			'circle_id', $qb->createNamedParameter(
+			$frame->getCircle()
+				  ->getUniqueId()
+		)
+		)
 		   ->set('source', $qb->createNamedParameter($frame->getSource()))
 		   ->set('type', $qb->createNamedParameter($frame->getType()))
 		   ->set('headers', $qb->createNamedParameter($frame->getHeaders(true)))

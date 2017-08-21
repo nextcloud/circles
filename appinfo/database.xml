@@ -110,7 +110,7 @@
 				<name>user_type</name>
 				<type>integer</type>
 				<length>1</length>
-				<notnull>true</notnull>
+				<!--<notnull>true</notnull>-->
 			</field>
 
 			<field>
@@ -150,7 +150,7 @@
 					<name>user_id</name>
 				</field>
 				<!--<field>-->
-					<!--<name>user_type</name>-->
+				<!--<name>user_type</name>-->
 				<!--</field>-->
 			</index>
 		</declaration>
@@ -203,6 +203,55 @@
 				</field>
 				<field>
 					<name>group_id</name>
+				</field>
+			</index>
+		</declaration>
+
+	</table>
+
+	<table>
+		<name>*dbprefix*circles_clouds</name>
+
+		<declaration>
+			<field>
+				<name>cloud_id</name>
+				<type>text</type>
+				<length>64</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>address</name>
+				<type>text</type>
+				<length>128</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>status</name>
+				<type>integer</type>
+				<length>1</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>note</name>
+				<type>text</type>
+				<length>255</length>
+				<notnull>false</notnull>
+			</field>
+
+			<field>
+				<name>created</name>
+				<type>timestamp</type>
+			</field>
+
+			<index>
+				<name>unique_cloud</name>
+				<primary>true</primary>
+				<unique>true</unique>
+				<field>
+					<name>cloud_id</name>
 				</field>
 			</index>
 		</declaration>
