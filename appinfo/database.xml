@@ -110,7 +110,8 @@
 				<name>user_type</name>
 				<type>integer</type>
 				<length>1</length>
-				<!--<notnull>true</notnull>-->
+				<notnull>true</notnull>
+				<default>1</default>
 			</field>
 
 			<field>
