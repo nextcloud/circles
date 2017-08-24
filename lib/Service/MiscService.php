@@ -27,6 +27,7 @@
 namespace OCA\Circles\Service;
 
 use OC\User\NoUserException;
+use OCA\Circles\Model\Member;
 use OCP\ILogger;
 use OCP\IUserManager;
 
@@ -57,7 +58,6 @@ class MiscService {
 	}
 
 
-
 	/**
 	 * return the real userId, with its real case
 	 *
@@ -76,7 +76,6 @@ class MiscService {
 	}
 
 
-
 	/**
 	 * return Display Name if user exists and display name exists.
 	 * returns Exception if user does not exist.
@@ -84,12 +83,13 @@ class MiscService {
 	 * However, with noException set to true, will return userId even if user does not exist
 	 *
 	 * @param $userId
+	 * @param int $type
 	 * @param bool $noException
 	 *
 	 * @return string
 	 * @throws NoUserException
 	 */
-	public static function staticGetDisplayName($userId, $noException = false) {
+	public static function staticGetDisplayName($userId, $type = Member::TYPE_USER) {
 		$user = \OC::$server->getUserManager()
 							->get($userId);
 		if ($user === null) {
@@ -101,6 +101,54 @@ class MiscService {
 		}
 
 		return $user->getDisplayName();
+	}
+
+
+	/**
+	 * @param string $ident
+	 * @param int $type
+	 *
+	 * @return string
+	 */
+	public static function getDisplay($ident, $type) {
+		$display = $ident;
+
+		self::getDisplayMember($display, $ident, $type);
+		self::getDisplayContact($display, $ident, $type);
+
+		return $display;
+	}
+
+
+	/**
+	 * @param string $display
+	 * @param string $ident
+	 * @param int $type
+	 */
+	private static function getDisplayMember(&$display, $ident, $type) {
+		if ($type !== Member::TYPE_USER) {
+			return;
+		}
+
+		$user = \OC::$server->getUserManager()
+							->get($ident);
+		if ($user !== null) {
+			$display = $user->getDisplayName();
+		}
+	}
+
+
+	/**
+	 * @param string $display
+	 * @param string $ident
+	 * @param int $type
+	 */
+	private static function getDisplayContact(&$display, $ident, $type) {
+		if ($type !== Member::TYPE_CONTACT) {
+			return;
+		}
+
+		$display = 'Contaaaact';
 	}
 
 

@@ -27,6 +27,7 @@
 namespace OCA\Circles\Controller;
 
 use OCA\Circles\Model\Member;
+use OCA\Circles\Service\MiscService;
 use OCP\AppFramework\Http\DataResponse;
 
 class MembersController extends BaseController {
@@ -89,7 +90,7 @@ class MembersController extends BaseController {
 					'circle_id' => $uniqueId,
 					'user_id'   => $ident,
 					'user_type' => (int)$type,
-					'name'      => $this->miscService->getDisplayName($ident, true),
+					'ident'     => MiscService::getDisplay($ident, (int)$type),
 					'error'     => $e->getMessage()
 				]
 			);
@@ -100,7 +101,7 @@ class MembersController extends BaseController {
 				'circle_id' => $uniqueId,
 				'user_id'   => $ident,
 				'user_type' => (int)$type,
-				'name'      => $this->miscService->getDisplayName($ident, true),
+				'ident'     => MiscService::getDisplay($ident, (int)$type),
 				'members'   => $data
 			]
 		);
@@ -142,39 +143,39 @@ class MembersController extends BaseController {
 //	}
 
 
-	/**
-	 * @NoAdminRequired
-	 * @NoSubAdminRequired
-	 *
-	 * @param $uniqueId
-	 * @param string $name
-	 *
-	 * @return DataResponse
-	 */
-	public function importFromGroup($uniqueId, $name) {
-
-		try {
-			$data = $this->membersService->importMembersFromGroup($uniqueId, $name);
-		} catch (\Exception $e) {
-			return $this->fail(
-				[
-					'circle_id' => $uniqueId,
-					'user_id'   => $name,
-					'name'      => $this->miscService->getDisplayName($name, true),
-					'error'     => $e->getMessage()
-				]
-			);
-		}
-
-		return $this->success(
-			[
-				'circle_id' => $uniqueId,
-				'user_id'   => $name,
-				'name'      => $this->miscService->getDisplayName($name, true),
-				'members'   => $data
-			]
-		);
-	}
+//	/**
+//	 * @NoAdminRequired
+//	 * @NoSubAdminRequired
+//	 *
+//	 * @param $uniqueId
+//	 * @param string $name
+//	 *
+//	 * @return DataResponse
+//	 */
+//	public function importFromGroup($uniqueId, $name) {
+//
+//		try {
+//			$data = $this->membersService->importMembersFromGroup($uniqueId, $name);
+//		} catch (\Exception $e) {
+//			return $this->fail(
+//				[
+//					'circle_id' => $uniqueId,
+//					'user_id'   => $name,
+//					'name'      => $this->miscService->getDisplayName($name, true),
+//					'error'     => $e->getMessage()
+//				]
+//			);
+//		}
+//
+//		return $this->success(
+//			[
+//				'circle_id' => $uniqueId,
+//				'user_id'   => $name,
+//				'name'      => $this->miscService->getDisplayName($name, true),
+//				'members'   => $data
+//			]
+//		);
+//	}
 
 
 	/**

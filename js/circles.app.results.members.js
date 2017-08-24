@@ -106,7 +106,6 @@ var resultMembers = {
 		});
 
 		$('.members_search').on('click', function () {
-			//curr.searchUserSelected = $(this).attr('searchresult');
 			var ident = $(this).attr('data-ident');
 			var type = $(this).attr('data-type');
 
@@ -149,7 +148,7 @@ var resultMembers = {
 		resultMembers.addMemberUserResult(result);
 		resultMembers.addMemberGroupResult(result);
 		resultMembers.addMemberMailResult(result);
-		//	resultMembers.addMemberContactResult(result);
+		resultMembers.addMemberContactResult(result);
 	},
 
 
@@ -166,14 +165,15 @@ var resultMembers = {
 		if (result.status === 1) {
 			OCA.notification.onSuccess(
 				t('circles', "The member '{name}' was added to the circle",
-					{name: result.name}));
+					{name: result.ident}));
 
 			nav.displayMembers(result.members);
 			return;
 		}
+
 		OCA.notification.onFail(
 			t('circles', "The member '{name}' could not be added to the circle",
-				{name: result.name}) +
+				{name: result.ident}) +
 			': ' + ((result.error) ? result.error : t('circles', 'no error message')));
 	},
 
@@ -186,14 +186,33 @@ var resultMembers = {
 		if (result.status === 1) {
 			OCA.notification.onSuccess(
 				t('circles', "The email address '{email}' was added to the circle",
-					{email: result.email}));
+					{email: result.ident}));
 
 			nav.displayMembers(result.members);
 			return;
 		}
 		OCA.notification.onFail(
 			t('circles', "The email address '{email}' could not be added to the circle",
-				{email: result.email}) +
+				{email: result.ident}) +
+			': ' + ((result.error) ? result.error : t('circles', 'no error message')));
+	},
+
+	addMemberContactResult: function (result) {
+		if (result.user_type !== define.typeContact) {
+			return;
+		}
+
+		if (result.status === 1) {
+			OCA.notification.onSuccess(
+				t('circles', "The contact '{contact}' was added to the circle",
+					{contact: result.ident}));
+
+			nav.displayMembers(result.members);
+			return;
+		}
+		OCA.notification.onFail(
+			t('circles', "The contact '{contact}' could not be added to the circle",
+				{contact: result.ident}) +
 			': ' + ((result.error) ? result.error : t('circles', 'no error message')));
 	},
 
@@ -203,14 +222,14 @@ var resultMembers = {
 		if (result.status === 1) {
 			OCA.notification.onSuccess(
 				t('circles', "The member '{name}' was invited to the circle",
-					{name: result.name}));
+					{name: result.ident}));
 
 			nav.displayMembers(result.members);
 			return;
 		}
 		OCA.notification.onFail(
 			t('circles', "The member '{name}' could not be invited to the circle",
-				{name: result.name}) +
+				{name: result.ident}) +
 			': ' + ((result.error) ? result.error : t('circles', 'no error message')));
 	},
 
@@ -229,14 +248,14 @@ var resultMembers = {
 		if (result.status === 1) {
 			OCA.notification.onSuccess(
 				t('circles', "Members of the group '{name}' were added to the circle",
-					{name: result.name}));
+					{name: result.ident}));
 
 			nav.displayMembers(result.members);
 			return;
 		}
 		OCA.notification.onFail(
 			t('circles', "Members of the group '{name}' could not be added to the circle",
-				{name: result.name}) +
+				{name: result.ident}) +
 			': ' +
 			((result.error) ? result.error : t('circles', 'no error message')));
 	},
@@ -247,14 +266,14 @@ var resultMembers = {
 		if (result.status === 1) {
 			OCA.notification.onSuccess(
 				t('circles', "Members of the group '{name}' were invited to the circle",
-					{name: result.name}));
+					{name: result.ident}));
 
 			nav.displayMembers(result.members);
 			return;
 		}
 		OCA.notification.onFail(
 			t('circles', "Members of the group '{name}' could not be invited to the circle",
-				{name: result.name}) +
+				{name: result.ident}) +
 			': ' +
 			((result.error) ? result.error : t('circles', 'no error message')));
 	},
@@ -271,13 +290,13 @@ var resultMembers = {
 				});
 			OCA.notification.onSuccess(
 				t('circles', "The member '{name}' was removed from the circle",
-					{name: result.name}));
+					{name: result.ident}));
 			return;
 		}
 
 		OCA.notification.onFail(
 			t('circles', "The member '{name}' could not be removed from the circle",
-				{name: result.name}) +
+				{name: result.ident}) +
 			': ' +
 			((result.error) ? result.error : t('circles', 'no error message')));
 	},
@@ -286,7 +305,7 @@ var resultMembers = {
 		if (result.status === 1) {
 			OCA.notification.onSuccess(
 				t('circles', "Member '{name}' updated",
-					{name: result.name}));
+					{name: result.ident}));
 
 			nav.displayMembers(result.members);
 			return;
@@ -294,7 +313,7 @@ var resultMembers = {
 
 		nav.displayMembers('');
 		OCA.notification.onFail(
-			t('circles', "The member '{name}' could not be updated", {name: result.name}) +
+			t('circles', "The member '{name}' could not be updated", {name: result.ident}) +
 			': ' +
 			((result.error) ? result.error : t('circles', 'no error message')));
 	}

@@ -27,6 +27,8 @@
 namespace OCA\Circles\Service;
 
 
+use Exception;
+use OC\User\NoUserException;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Exceptions\CircleTypeNotValidException;
@@ -113,6 +115,7 @@ class MembersService {
 				   ->hasToBeModerator();
 
 			if (!$this->addMemberMassively($circle, $type, $ident)) {
+				$this->verifyIdentBasedOnItsType($ident, $type);
 
 				$member = $this->membersRequest->getFreshNewMember($circleUniqueId, $ident, $type);
 				$member->hasToBeInviteAble();
@@ -145,6 +148,48 @@ class MembersService {
 	private function addMemberBasedOnItsType(Circle $circle, Member &$member) {
 		$this->addLocalMember($circle, $member);
 		$this->addEmailAddress($member);
+		$this->addContact($member);
+	}
+
+
+	/**
+	 * @param string $ident
+	 * @param int $type
+	 *
+	 * @throws Exception
+	 */
+	private function verifyIdentBasedOnItsType(&$ident, $type) {
+		try {
+			$this->verifyIdentLocalMember($ident, $type);
+			$this->verifyIdentContact($ident, $type);
+		} catch (Exception $e) {
+			throw $e;
+		}
+	}
+
+	private function verifyIdentLocalMember(&$ident, $type) {
+		if ($type !== Member::TYPE_USER) {
+			return;
+		}
+
+		try {
+			$ident = $this->miscService->getRealUserId($ident);
+		} catch (NoUserException $e) {
+			throw new NoUserException($this->l10n->t("This user does not exist"));
+		}
+	}
+
+
+	private function verifyIdentContact(&$ident, $type) {
+		if ($type !== Member::TYPE_CONTACT) {
+			return;
+		}
+
+//		try {
+//			$ident = $this->miscService->getRealUserId($ident);
+//		} catch (NoUserException $e) {
+//			throw new NoUserException($this->l10n->t("This user does not exist"));
+//		}
 	}
 
 
@@ -161,6 +206,42 @@ class MembersService {
 		}
 
 		$member->inviteToCircle($circle->getType());
+	}
+
+
+	/**
+	 * @param Member $member
+	 *
+	 * @throws \Exception
+	 */
+	private function addEmailAddress(Member $member) {
+
+		if ($member->getType() !== Member::TYPE_MAIL) {
+			return;
+		}
+
+		if (!filter_var($member->getUserId(), FILTER_VALIDATE_EMAIL)) {
+			throw new EmailAccountInvalidFormatException(
+				$this->l10n->t('Email format is not valid')
+			);
+		}
+
+		$member->addMemberToCircle();
+	}
+
+
+	/**
+	 * @param Member $member
+	 *
+	 * @throws \Exception
+	 */
+	private function addContact(Member $member) {
+
+		if ($member->getType() !== Member::TYPE_CONTACT) {
+			return;
+		}
+
+		$member->addMemberToCircle();
 	}
 
 
@@ -198,74 +279,6 @@ class MembersService {
 		}
 
 		return true;
-	}
-
-
-	/**
-	 * @param Member $member
-	 *
-	 * @throws \Exception
-	 */
-	public function addEmailAddress(Member $member) {
-
-		if ($member->getType() !== Member::TYPE_MAIL) {
-			return;
-		}
-
-		if (!filter_var($member->getUserId(), FILTER_VALIDATE_EMAIL)) {
-			throw new EmailAccountInvalidFormatException(
-				$this->l10n->t('Email format is not valid')
-			);
-		}
-
-		$member->addMemberToCircle();
-	}
-
-
-	/**
-	 * @param string $circleUniqueId
-	 * @param string $groupId
-	 *
-	 * @return array
-	 * @throws \Exception
-	 */
-	public function importMembersFromGroup($circleUniqueId, $groupId) {
-
-		try {
-			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
-			$circle->getHigherViewer()
-				   ->hasToBeModerator();
-		} catch (\Exception $e) {
-			throw $e;
-		}
-
-		$group = \OC::$server->getGroupManager()
-							 ->get($groupId);
-		if ($group === null) {
-			throw new GroupDoesNotExistException($this->l10n->t('This group does not exist'));
-		}
-
-		foreach ($group->getUsers() as $user) {
-			try {
-				$member =
-					$this->membersRequest->getFreshNewMember(
-						$circleUniqueId, $user->getUID(), Member::TYPE_USER
-					);
-				$member->hasToBeInviteAble();
-
-				$member->inviteToCircle($circle->getType());
-				$this->membersRequest->updateMember($member);
-
-				$this->eventsService->onMemberNew($circle, $member);
-			} catch (MemberAlreadyExistsException $e) {
-			} catch (\Exception $e) {
-				throw $e;
-			}
-		}
-
-		return $this->membersRequest->getMembers(
-			$circle->getUniqueId(), $circle->getHigherViewer()
-		);
 	}
 
 
@@ -319,7 +332,8 @@ class MembersService {
 				);
 			}
 
-			$member = $this->membersRequest->forceGetMember($circle->getUniqueId(), $name, $type);
+			$member =
+				$this->membersRequest->forceGetMember($circle->getUniqueId(), $name, $type);
 			$member->levelHasToBeEditable();
 			if ($member->getLevel() !== $level) {
 				if ($level === Member::LEVEL_OWNER) {

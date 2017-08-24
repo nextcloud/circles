@@ -401,7 +401,7 @@ class Circles {
 		if ($frame->getCloudId() !== null) {
 			$name = $frame->getAuthor() . '@' . $frame->getCloudId();
 		} else {
-			$name = MiscService::staticGetDisplayName($frame->getAuthor());
+			$name = MiscService::getDisplay($frame->getAuthor(), Member::TYPE_USER);
 		}
 
 		return [

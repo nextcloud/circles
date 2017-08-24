@@ -187,7 +187,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 		);
 		$this->sendMail(
 			$share->getNode()
-				  ->getName(), $link, MiscService::staticGetDisplayName($share->getSharedBy()),
+				  ->getName(), $link, MiscService::getDisplay($share->getSharedBy(), Member::TYPE_USER),
 			$circleName, $email
 		);
 
