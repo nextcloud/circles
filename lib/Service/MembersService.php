@@ -190,6 +190,8 @@ class MembersService {
 //		} catch (NoUserException $e) {
 //			throw new NoUserException($this->l10n->t("This user does not exist"));
 //		}
+
+		$ident = $this->userId . ':' . $ident;
 	}
 
 
@@ -332,8 +334,7 @@ class MembersService {
 				);
 			}
 
-			$member =
-				$this->membersRequest->forceGetMember($circle->getUniqueId(), $name, $type);
+			$member = $this->membersRequest->forceGetMember($circle->getUniqueId(), $name, $type);
 			$member->levelHasToBeEditable();
 			if ($member->getLevel() !== $level) {
 				if ($level === Member::LEVEL_OWNER) {

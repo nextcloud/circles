@@ -136,12 +136,7 @@ class BaseMember implements \JsonSerializable {
 
 	public function setUserId($userId) {
 		$this->userId = $userId;
-
-//		if ($this->getType() === Member::TYPE_USER) {
-			$this->setDisplayName(MiscService::getDisplay($userId, $this->getType()));
-//		} else {
-//			$this->setDisplayName($userId);
-//		}
+		$this->setDisplayName(MiscService::getDisplay($userId, $this->getType()));
 
 		return $this;
 	}

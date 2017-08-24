@@ -26,6 +26,7 @@
 
 namespace OCA\Circles\Service;
 
+use Exception;
 use OC\User\NoUserException;
 use OCA\Circles\Model\Member;
 use OCP\ILogger;
@@ -77,34 +78,6 @@ class MiscService {
 
 
 	/**
-	 * return Display Name if user exists and display name exists.
-	 * returns Exception if user does not exist.
-	 *
-	 * However, with noException set to true, will return userId even if user does not exist
-	 *
-	 * @param $userId
-	 * @param int $type
-	 * @param bool $noException
-	 *
-	 * @return string
-	 * @throws NoUserException
-	 */
-	public static function staticGetDisplayName($userId, $type = Member::TYPE_USER) {
-		$user = \OC::$server->getUserManager()
-							->get($userId);
-		if ($user === null) {
-			if ($noException) {
-				return $userId;
-			} else {
-				throw new NoUserException();
-			}
-		}
-
-		return $user->getDisplayName();
-	}
-
-
-	/**
 	 * @param string $ident
 	 * @param int $type
 	 *
@@ -148,9 +121,40 @@ class MiscService {
 			return;
 		}
 
-		$display = 'Contaaaact';
+		list($userId, $contactId) = explode(':', $ident);
+
+		try {
+			$contactApp = new \OCA\DAV\AppInfo\Application();
+			$cm = \OC::$server->getContactsManager();
+			$contactApp->setupContactsProvider($cm, $userId);
+			$contact = $cm->search($contactId, ['UID']);
+
+			if (sizeof($contact) === 0) {
+				return;
+			}
+
+		} catch (Exception $e) {
+		}
+
+
+		self::getDisplayContactFromArray($display, $contact);
 	}
 
+
+	private static function getDisplayContactFromArray(&$display, $contact) {
+		$contact = array_shift($contact);
+		if (key_exists('FN', $contact) && $contact['FN'] !== '') {
+			$display = $contact['FN'];
+
+			return;
+		}
+
+		if (key_exists('EMAIL', $contact) && $contact['EMAIL'] !== '') {
+			$display = $contact['EMAIL'];
+
+			return;
+		}
+	}
 
 	/**
 	 * return Display Name if user exists and display name exists.
