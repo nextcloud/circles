@@ -123,6 +123,7 @@ class FederatedController extends BaseController {
 	 *
 	 * Note: this function will close the request mid-run from the client but will still
 	 * running its process.
+	 *
 	 * Called by a remote circle to broadcast a Share item, the function will save the item
 	 * in the database and broadcast it locally. A status response is sent to the remote to free
 	 * the remote process before starting to broadcast the item to other federated links.

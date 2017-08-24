@@ -32,25 +32,64 @@ use OCP\AppFramework\Http\DataResponse;
 class MembersController extends BaseController {
 
 
+//	/**
+//	 * @NoAdminRequired
+//	 * @NoSubAdminRequired
+//	 *
+//	 * @param string $uniqueId
+//	 * @param string $name
+//	 *
+//	 * @deprecated
+//	 *
+//	 * @return DataResponse
+//	 */
+//	public function addLocalMember($uniqueId, $name) {
+//
+//		try {
+//			$data = $this->membersService->addLocalMember($uniqueId, $name);
+//		} catch (\Exception $e) {
+//			return $this->fail(
+//				[
+//					'circle_id' => $uniqueId,
+//					'user_id'   => $name,
+//					'name'      => $this->miscService->getDisplayName($name, true),
+//					'error'     => $e->getMessage()
+//				]
+//			);
+//		}
+//
+//		return $this->success(
+//			[
+//				'circle_id' => $uniqueId,
+//				'user_id'   => $name,
+//				'name'      => $this->miscService->getDisplayName($name, true),
+//				'members'   => $data
+//			]
+//		);
+//	}
+
+
 	/**
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
 	 * @param string $uniqueId
-	 * @param string $name
+	 * @param $ident
+	 * @param $type
 	 *
 	 * @return DataResponse
 	 */
-	public function addLocalMember($uniqueId, $name) {
+	public function addMember($uniqueId, $ident, $type) {
 
 		try {
-			$data = $this->membersService->addLocalMember($uniqueId, $name);
+			$data = $this->membersService->addMember($uniqueId, $ident, (int)$type);
 		} catch (\Exception $e) {
 			return $this->fail(
 				[
 					'circle_id' => $uniqueId,
-					'user_id'   => $name,
-					'name'      => $this->miscService->getDisplayName($name, true),
+					'user_id'   => $ident,
+					'user_type' => (int)$type,
+					'name'      => $this->miscService->getDisplayName($ident, true),
 					'error'     => $e->getMessage()
 				]
 			);
@@ -59,47 +98,48 @@ class MembersController extends BaseController {
 		return $this->success(
 			[
 				'circle_id' => $uniqueId,
-				'user_id'   => $name,
-				'name'      => $this->miscService->getDisplayName($name, true),
+				'user_id'   => $ident,
+				'user_type' => (int)$type,
+				'name'      => $this->miscService->getDisplayName($ident, true),
 				'members'   => $data
 			]
 		);
 	}
 
 
-	/**
-	 * @NoAdminRequired
-	 * @NoSubAdminRequired
-	 *
-	 * @param string $uniqueId
-	 * @param string $email
-	 *
-	 * @return DataResponse
-	 */
-	public function addEmailAddress($uniqueId, $email) {
-
-		try {
-			$data = $this->membersService->addEmailAddress($uniqueId, $email);
-		} catch (\Exception $e) {
-			return $this->fail(
-				[
-					'circle_id' => $uniqueId,
-					'email'   => $email,
-					'name'      => $this->miscService->getDisplayName($email, true),
-					'error'     => $e->getMessage()
-				]
-			);
-		}
-
-		return $this->success(
-			[
-				'circle_id' => $uniqueId,
-				'email'   => $email,
-				'name'      => $this->miscService->getDisplayName($email, true),
-				'members'   => $data
-			]
-		);
-	}
+//	/**
+//	 * @NoAdminRequired
+//	 * @NoSubAdminRequired
+//	 *
+//	 * @param string $uniqueId
+//	 * @param string $email
+//	 *
+//	 * @return DataResponse
+//	 */
+//	public function addEmailAddress($uniqueId, $email) {
+//
+//		try {
+//			$data = $this->membersService->addEmailAddress($uniqueId, $email);
+//		} catch (\Exception $e) {
+//			return $this->fail(
+//				[
+//					'circle_id' => $uniqueId,
+//					'email'     => $email,
+//					'name'      => $this->miscService->getDisplayName($email, true),
+//					'error'     => $e->getMessage()
+//				]
+//			);
+//		}
+//
+//		return $this->success(
+//			[
+//				'circle_id' => $uniqueId,
+//				'email'     => $email,
+//				'name'      => $this->miscService->getDisplayName($email, true),
+//				'members'   => $data
+//			]
+//		);
+//	}
 
 
 	/**
@@ -217,6 +257,30 @@ class MembersController extends BaseController {
 		);
 	}
 
+
+	/**
+	 * @NoAdminRequired
+	 *
+	 * @param string $search
+	 *
+	 * @return DataResponse
+	 */
+	public function searchGlobal($search) {
+
+		try {
+			$result = $this->searchService->searchGlobal($search);
+		} catch (\Exception $e) {
+			return
+				$this->fail(
+					[
+						'search' => $search,
+						'error'  => $e->getMessage()
+					]
+				);
+		}
+
+		return $this->success(['search' => $search, 'result' => $result]);
+	}
 
 }
 

@@ -80,6 +80,7 @@ var define = {
 	typeUser: 1,
 	typeGroup: 2,
 	typeMail: 3,
+	typeContact: 4,
 	levelMember: 1,
 	levelModerator: 4,
 	levelAdmin: 8,

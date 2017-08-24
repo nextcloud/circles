@@ -47,6 +47,7 @@ use OCA\Circles\Service\GroupsService;
 use OCA\Circles\Service\MembersService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
+use OCA\Circles\Service\SearchService;
 use OCA\Circles\Service\SharesService;
 use OCP\AppFramework\App;
 use OCP\AppFramework\IAppContainer;
@@ -106,6 +107,15 @@ class Application extends App {
 			return new ConfigService(
 				$c->query('AppName'), $c->query('CoreConfig'), $c->query('ServerHost'),
 				$c->query('UserId'), $c->query('MiscService')
+			);
+		}
+		);
+
+		$container->registerService(
+			'SearchService', function(IAppContainer $c) {
+			return new SearchService(
+				$c->query('L10N'), $c->query('UserManager'), $c->query('ConfigService'),
+				$c->query('MiscService')
 			);
 		}
 		);
@@ -203,7 +213,7 @@ class Application extends App {
 			'NavigationController', function(IAppContainer $c) {
 			return new NavigationController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
-				$c->query('ConfigService'), $c->query('CirclesService'),
+				$c->query('ConfigService'), $c->query('CirclesService'), $c->query('SearchService'),
 				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
 				$c->query('BroadcastService'), $c->query('FederatedService'),
 				$c->query('MiscService')
@@ -215,7 +225,7 @@ class Application extends App {
 			'CirclesController', function(IAppContainer $c) {
 			return new CirclesController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
-				$c->query('ConfigService'), $c->query('CirclesService'),
+				$c->query('ConfigService'), $c->query('CirclesService'), $c->query('SearchService'),
 				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
 				$c->query('BroadcastService'), $c->query('FederatedService'),
 				$c->query('MiscService')
@@ -227,7 +237,7 @@ class Application extends App {
 			'MembersController', function(IAppContainer $c) {
 			return new MembersController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
-				$c->query('ConfigService'), $c->query('CirclesService'),
+				$c->query('ConfigService'), $c->query('CirclesService'), $c->query('SearchService'),
 				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
 				$c->query('BroadcastService'), $c->query('FederatedService'),
 				$c->query('MiscService')
@@ -239,7 +249,7 @@ class Application extends App {
 			'GroupsController', function(IAppContainer $c) {
 			return new GroupsController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
-				$c->query('ConfigService'), $c->query('CirclesService'),
+				$c->query('ConfigService'), $c->query('CirclesService'), $c->query('SearchService'),
 				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
 				$c->query('BroadcastService'), $c->query('FederatedService'),
 				$c->query('MiscService')
@@ -251,7 +261,7 @@ class Application extends App {
 			'SharesController', function(IAppContainer $c) {
 			return new SharesController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
-				$c->query('ConfigService'), $c->query('CirclesService'),
+				$c->query('ConfigService'), $c->query('CirclesService'), $c->query('SearchService'),
 				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
 				$c->query('BroadcastService'), $c->query('FederatedService'),
 				$c->query('MiscService')
@@ -263,7 +273,7 @@ class Application extends App {
 			'FederatedController', function(IAppContainer $c) {
 			return new FederatedController(
 				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
-				$c->query('ConfigService'), $c->query('CirclesService'),
+				$c->query('ConfigService'), $c->query('CirclesService'), $c->query('SearchService'),
 				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
 				$c->query('BroadcastService'), $c->query('FederatedService'),
 				$c->query('MiscService')

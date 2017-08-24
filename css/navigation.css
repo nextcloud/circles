@@ -241,7 +241,7 @@ div.circle .owner, div.circle .type, div.circle .resume {
 }
 
 #linkcircle, #addmember, #linkgroup, #joincircle, #leavecircle {
-	width: 250px;
+	width: 350px;
 }
 
 #members_search_result > #addmember, #groups_search_result > #linkgroup {
@@ -261,7 +261,7 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	overflow-y: auto;
 	position: absolute;
 	top: 45px;
-	width: 260px;
+	width: 360px;
 }
 
 .icon-add-user {
@@ -337,3 +337,13 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	margin: 15px;
 }
 
+DIV.result_top {
+	font-size: 15px;
+}
+
+DIV.result_bot {
+	font-size: 12px;
+	padding: 5px;
+	height: 10px;
+	font-style: italic;
+}

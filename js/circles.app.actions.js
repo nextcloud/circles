@@ -145,14 +145,7 @@ var actions = {
 		}
 
 		curr.searchUser = search;
-
-		$.get(OC.linkToOCS('apps/files_sharing/api/v1', 1) + 'sharees',
-			{
-				format: 'json',
-				search: search,
-				perPage: 200,
-				itemType: 'principals'
-			}, resultMembers.searchMembersResult);
+		api.searchUsers(search, resultMembers.searchMembersResult);
 	},
 
 

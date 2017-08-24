@@ -37,6 +37,58 @@
 var resultMembers = {
 
 
+	generateItemResult: function (search, value) {
+
+		switch (value.type) {
+			case define.typeUser:
+				return resultMembers.generateItemUser(search, value);
+			case define.typeGroup:
+				return resultMembers.generateItemGroup(search, value);
+			case define.typeContact:
+				return resultMembers.generateItemContact(search, value);
+		}
+	},
+
+
+	enhanceSearchResult: function (search, display) {
+		display = escapeHTML(display);
+		if (search.length > 0) {
+			display = display.replace(new RegExp('(' + search + ')', 'gi'), '<b>$1</b>');
+		}
+
+		return display;
+	},
+
+
+	generateItemUser: function (search, value) {
+		return '<div class="result_top">' +
+			resultMembers.enhanceSearchResult(search, value.data.display) + '</div>' +
+			'<div class="result_bot">' + t('circles', 'Local User') + '</div>';
+	},
+
+	generateItemGroup: function (search, value) {
+		return '<div class="result_top">' +
+			resultMembers.enhanceSearchResult(search, value.data.display) + '</div>' +
+			'<div class="result_bot">' + t('circles', 'Local Group') + '</div>';
+	},
+
+	generateItemContact: function (search, value) {
+		var display = resultMembers.enhanceSearchResult(search, value.data.display);
+		var email = resultMembers.enhanceSearchResult(search, value.data.email);
+		var org = resultMembers.enhanceSearchResult(search, value.data.organization);
+		if (email !== '') {
+			email = ' - ' + email;
+		}
+
+		if (org !== '') {
+			display += '   (' + org + ')';
+		}
+
+		return '<div class="result_top">' + display + '</div>' +
+			'<div class="result_bot">' + t('circles', 'Contact') + email + '</div>';
+	},
+
+
 	searchMembersResult: function (response) {
 
 		elements.membersSearchResult.children().remove();
@@ -46,18 +98,19 @@ var resultMembers = {
 			return;
 		}
 
-		elements.fillMembersSearch('users', response.ocs.data.exact.users, response.ocs.data.users);
-		elements.fillMembersSearch('groups', response.ocs.data.exact.groups,
-			response.ocs.data.groups);
-
-		if (elements.membersSearchResult.children().length === 0) {
-			elements.membersSearchResult.fadeOut(0);
-			return;
-		}
+		var currSearch = response.search;
+		$.each(response.result, function (index, value) {
+			elements.membersSearchResult.append('<div class="members_search" data-type="' +
+				value.type + '" data-ident="' + escapeHTML(value.ident) + '">' +
+				resultMembers.generateItemResult(currSearch, value) + '</div>');
+		});
 
 		$('.members_search').on('click', function () {
-			curr.searchUserSelected = $(this).attr('searchresult');
-			if ($(this).attr('source') === 'groups') {
+			//curr.searchUserSelected = $(this).attr('searchresult');
+			var ident = $(this).attr('data-ident');
+			var type = $(this).attr('data-type');
+
+			if (Number(type) === define.typeGroup) {
 
 				OC.dialogs.confirm(
 					t('circles',
@@ -65,20 +118,45 @@ var resultMembers = {
 					t('circles', 'Please confirm'),
 					function (e) {
 						if (e === true) {
-							api.addGroupMembers(curr.circle, curr.searchUserSelected,
-								resultMembers.addGroupMembersResult);
+							api.addMember(curr.circle, ident, type, resultMembers.addMemberResult);
 						}
 					});
+
 			} else {
-				api.addMember(curr.circle, curr.searchUserSelected,
-					resultMembers.addMemberResult);
+				api.addMember(curr.circle, ident, type, resultMembers.addMemberResult);
 			}
 		});
+
+		// elements.fillMembersSearch('users', response.ocs.data.exact.users,
+		// response.ocs.data.users); elements.fillMembersSearch('groups',
+		// response.ocs.data.exact.groups, response.ocs.data.groups);  if
+		// (elements.membersSearchResult.children().length === 0) {
+		// elements.membersSearchResult.fadeOut(0); return; }  $('.members_search').on('click',
+		// function () { curr.searchUserSelected = $(this).attr('searchresult'); if
+		// ($(this).attr('source') === 'groups') {  OC.dialogs.confirm( t('circles', 'This
+		// operation will add/invite all members of the group to the circle'), t('circles', 'Please
+		// confirm'), function (e) { if (e === true) { api.addGroupMembers(curr.circle,
+		// curr.searchUserSelected, resultMembers.addGroupMembersResult); } }); } else {
+		// api.addMember(curr.circle, curr.searchUserSelected, resultMembers.addMemberResult); } });
 		elements.membersSearchResult.fadeIn(300);
 	},
 
 
 	addMemberResult: function (result) {
+
+		console.log(JSON.stringify(result));
+
+		resultMembers.addMemberUserResult(result);
+		resultMembers.addMemberGroupResult(result);
+		resultMembers.addMemberMailResult(result);
+		//	resultMembers.addMemberContactResult(result);
+	},
+
+
+	addMemberUserResult: function (result) {
+		if (result.user_type !== define.typeUser) {
+			return;
+		}
 
 		if (curr.circleDetails.type === define.typeClosed) {
 			resultMembers.inviteMemberResult(result);
@@ -100,7 +178,10 @@ var resultMembers = {
 	},
 
 
-	addEmailResult: function (result) {
+	addMemberMailResult: function (result) {
+		if (result.user_type !== define.typeMail) {
+			return;
+		}
 
 		if (result.status === 1) {
 			OCA.notification.onSuccess(
@@ -134,10 +215,14 @@ var resultMembers = {
 	},
 
 
-	addGroupMembersResult: function (result) {
+	addMemberGroupResult: function (result) {
+
+		if (result.user_type !== define.typeGroup) {
+			return;
+		}
 
 		if (curr.circleDetails.type === define.typeClosed) {
-			resultMembers.inviteGroupMembersResult(result);
+			resultMembers.inviteMemberGroupResult(result);
 			return;
 		}
 
@@ -157,7 +242,7 @@ var resultMembers = {
 	},
 
 
-	inviteGroupMembersResult: function (result) {
+	inviteMemberGroupResult: function (result) {
 
 		if (result.status === 1) {
 			OCA.notification.onSuccess(

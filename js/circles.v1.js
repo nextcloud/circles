@@ -43,6 +43,22 @@
 
 			var self = this;
 
+			this.searchUsers = function (search, callback) {
+
+				var result = {status: -1};
+				$.ajax({
+					method: 'GET',
+					url: OC.generateUrl('/apps/circles/v1/globalsearch'),
+					data: {
+						search: search
+					}
+				}).done(function (res) {
+					self.onCallback(callback, res);
+				}).fail(function () {
+					self.onCallback(callback, result);
+				});
+			}
+
 
 			/**
 			 * API function to create a new Circle.
@@ -100,13 +116,14 @@
 			};
 
 
-			this.addMember = function (circleId, userId, callback) {
+			this.addMember = function (circleId, ident, type, callback) {
 				var result = {status: -1};
 				$.ajax({
 					method: 'PUT',
 					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/member'),
 					data: {
-						name: userId
+						ident: ident,
+						type: type
 					}
 				}).done(function (res) {
 					self.onCallback(callback, res);
@@ -116,36 +133,36 @@
 			};
 
 
-			this.addEmail = function (circleId, email, callback) {
-				var result = {status: -1};
-				$.ajax({
-					method: 'PUT',
-					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/email'),
-					data: {
-						email: email
-					}
-				}).done(function (res) {
-					self.onCallback(callback, res);
-				}).fail(function () {
-					self.onCallback(callback, result);
-				});
-			};
+			// this.addEmail = function (circleId, email, callback) {
+			// 	var result = {status: -1};
+			// 	$.ajax({
+			// 		method: 'PUT',
+			// 		url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/email'),
+			// 		data: {
+			// 			email: email
+			// 		}
+			// 	}).done(function (res) {
+			// 		self.onCallback(callback, res);
+			// 	}).fail(function () {
+			// 		self.onCallback(callback, result);
+			// 	});
+			// };
 
 
-			this.addGroupMembers = function (circleId, groupId, callback) {
-				var result = {status: -1};
-				$.ajax({
-					method: 'PUT',
-					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/groupmembers'),
-					data: {
-						name: groupId
-					}
-				}).done(function (res) {
-					self.onCallback(callback, res);
-				}).fail(function () {
-					self.onCallback(callback, result);
-				});
-			};
+			// this.addGroupMembers = function (circleId, groupId, callback) {
+			// 	var result = {status: -1};
+			// 	$.ajax({
+			// 		method: 'PUT',
+			// 		url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/groupmembers'),
+			// 		data: {
+			// 			name: groupId
+			// 		}
+			// 	}).done(function (res) {
+			// 		self.onCallback(callback, res);
+			// 	}).fail(function () {
+			// 		self.onCallback(callback, result);
+			// 	});
+			// };
 
 
 			this.removeMember = function (circleId, userId, userType, callback) {

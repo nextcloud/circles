@@ -48,6 +48,7 @@ class BaseMember implements \JsonSerializable {
 	const TYPE_USER = 1;
 	const TYPE_GROUP = 2;
 	const TYPE_MAIL = 3;
+	const TYPE_CONTACT = 4;
 
 	/** @var string */
 	private $circleUniqueId;
@@ -269,7 +270,7 @@ class BaseMember implements \JsonSerializable {
 
 
 	public function jsonSerialize() {
-		return array(
+		return [
 			'circle_id'    => $this->getCircleId(),
 			'user_id'      => $this->getUserId(),
 			'user_type'    => $this->getType(),
@@ -279,7 +280,7 @@ class BaseMember implements \JsonSerializable {
 			'status'       => $this->getStatus(),
 			'note'         => $this->getNote(),
 			'joined'       => $this->getJoined()
-		);
+		];
 	}
 
 	public function getLevelString() {
