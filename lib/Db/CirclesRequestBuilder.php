@@ -29,7 +29,6 @@ namespace OCA\Circles\Db;
 
 
 use Doctrine\DBAL\Query\QueryBuilder;
-use OC\L10N\L10N;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
@@ -39,6 +38,7 @@ use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
+use OCP\IL10N;
 
 class CirclesRequestBuilder extends CoreRequestBuilder {
 
@@ -53,7 +53,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 * @param MembersRequest $membersRequest
 	 */
 	public function __construct(
-		L10N $l10n, IDBConnection $connection, MembersRequest $membersRequest,
+		IL10N $l10n, IDBConnection $connection, MembersRequest $membersRequest,
 		ConfigService $configService, MiscService $miscService
 	) {
 		parent::__construct($l10n, $connection, $configService, $miscService);

@@ -28,13 +28,13 @@
 namespace OCA\Circles\Db;
 
 
-use OC\L10N\L10N;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 use OCP\IGroupManager;
+use OCP\IL10N;
 
 class MembersRequestBuilder extends CoreRequestBuilder {
 
@@ -49,7 +49,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	 * @param IGroupManager $groupManager
 	 */
 	public function __construct(
-		L10N $l10n, IDBConnection $connection, IGroupManager $groupManager,
+		IL10N $l10n, IDBConnection $connection, IGroupManager $groupManager,
 		ConfigService $configService, MiscService $miscService
 	) {
 		parent::__construct($l10n, $connection, $configService, $miscService);

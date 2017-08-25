@@ -49,6 +49,7 @@ use OCA\Circles\Exceptions\SharingFrameDoesNotExistException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\SharingFrame;
+use OCP\Http\Client\IClientService;
 use OCP\IL10N;
 
 class FederatedService {
@@ -83,7 +84,7 @@ class FederatedService {
 	/** @var string */
 	private $serverHost;
 
-	/** @var ClientService */
+	/** @var IClientService */
 	private $clientService;
 
 	/** @var MiscService */
@@ -101,20 +102,14 @@ class FederatedService {
 	 * @param BroadcastService $broadcastService
 	 * @param FederatedLinksRequest $federatedLinksRequest
 	 * @param EventsService $eventsService
-	 * @param ClientService $clientService
+	 * @param IClientService $clientService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$userId,
-		IL10N $l10n,
-		CirclesRequest $circlesRequest,
-		ConfigService $configService,
-		CirclesService $circlesService,
-		BroadcastService $broadcastService,
-		FederatedLinksRequest $federatedLinksRequest,
-		EventsService $eventsService,
-		ClientService $clientService,
-		MiscService $miscService
+		$userId, IL10N $l10n, CirclesRequest $circlesRequest, ConfigService $configService,
+		CirclesService $circlesService, BroadcastService $broadcastService,
+		FederatedLinksRequest $federatedLinksRequest, EventsService $eventsService,
+		IClientService $clientService, MiscService $miscService
 	) {
 		$this->userId = $userId;
 		$this->l10n = $l10n;
@@ -125,7 +120,6 @@ class FederatedService {
 		$this->federatedLinksRequest = $federatedLinksRequest;
 		$this->eventsService = $eventsService;
 		$this->serverHost = $this->configService->getLocalAddress();
-
 
 		$this->clientService = $clientService;
 		$this->miscService = $miscService;
@@ -752,8 +746,8 @@ class FederatedService {
 	 */
 	public function initiateShare($circleUniqueId, $frameUniqueId) {
 		$args = [
-			'circleId'   => $circleUniqueId,
-			'frameId'    => $frameUniqueId
+			'circleId' => $circleUniqueId,
+			'frameId'  => $frameUniqueId
 		];
 
 		$client = $this->clientService->newClient();

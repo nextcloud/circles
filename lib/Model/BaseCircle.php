@@ -26,8 +26,8 @@
 
 namespace OCA\Circles\Model;
 
-use OC\L10N\L10N;
 use OCA\Circles\AppInfo\Application;
+use OCP\IL10N;
 
 class BaseCircle {
 
@@ -49,7 +49,7 @@ class BaseCircle {
 	/** @var int */
 	private $id;
 
-	/** @var L10N */
+	/** @var IL10N */
 	protected $l10n;
 
 	/** @var string */

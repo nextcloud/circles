@@ -28,6 +28,7 @@ namespace OCA\Circles\Service;
 
 use OCA\Circles\Model\Circle;
 use OCP\IConfig;
+use OCP\IRequest;
 use OCP\Util;
 
 class ConfigService {
@@ -57,8 +58,8 @@ class ConfigService {
 	/** @var string */
 	private $userId;
 
-	/** @var string */
-	private $serverHost;
+	/** @var IRequest */
+	private $request;
 
 	/** @var MiscService */
 	private $miscService;
@@ -83,24 +84,24 @@ class ConfigService {
 	 *
 	 * @param string $appName
 	 * @param IConfig $config
-	 * @param string $serverHost
-	 * @param string $userId
+	 * @param IRequest $request
+	 * @param string $UserId
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$appName, IConfig $config, $serverHost, $userId, MiscService $miscService
+		$appName, IConfig $config, IRequest $request, $UserId, MiscService $miscService
 	) {
 		$this->appName = $appName;
 		$this->config = $config;
-		$this->serverHost = $serverHost;
-		$this->userId = $userId;
+		$this->request = $request;
+		$this->userId = $UserId;
 		$this->miscService = $miscService;
 	}
 
 
 	public function getLocalAddress() {
 		return (($this->isLocalNonSSL()) ? 'http://' : '')
-			   . $this->serverHost;
+			   . $this->request->getServerHost();
 	}
 
 

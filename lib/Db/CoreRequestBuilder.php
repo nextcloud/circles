@@ -14,9 +14,9 @@ use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use Doctrine\DBAL\Query\QueryBuilder;
-use OC\L10N\L10N;
 use OCA\Circles\Service\MiscService;
 use OCP\IDBConnection;
+use OCP\IL10N;
 
 class CoreRequestBuilder {
 
@@ -31,7 +31,7 @@ class CoreRequestBuilder {
 	/** @var IDBConnection */
 	protected $dbConnection;
 
-	/** @var L10N */
+	/** @var IL10N */
 	protected $l10n;
 
 	/** @var ConfigService */
@@ -49,13 +49,13 @@ class CoreRequestBuilder {
 	/**
 	 * RequestBuilder constructor.
 	 *
-	 * @param L10N $l10n
+	 * @param IL10N $l10n
 	 * @param IDBConnection $connection
 	 * @param ConfigService $configService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		L10N $l10n, IDBConnection $connection, ConfigService $configService,
+		IL10N $l10n, IDBConnection $connection, ConfigService $configService,
 		MiscService $miscService
 	) {
 		$this->l10n = $l10n;

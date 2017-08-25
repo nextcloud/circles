@@ -100,6 +100,10 @@ class MembersService {
 
 
 	/**
+	 * addMember();
+	 *
+	 * add a new member to a circle.
+	 *
 	 * @param string $circleUniqueId
 	 * @param $ident
 	 * @param $type
@@ -114,16 +118,8 @@ class MembersService {
 			$circle->getHigherViewer()
 				   ->hasToBeModerator();
 
-			if (!$this->addMemberMassively($circle, $type, $ident)) {
-				$this->verifyIdentBasedOnItsType($ident, $type);
-
-				$member = $this->membersRequest->getFreshNewMember($circleUniqueId, $ident, $type);
-				$member->hasToBeInviteAble();
-
-				$this->addMemberBasedOnItsType($circle, $member);
-
-				$this->membersRequest->updateMember($member);
-				$this->eventsService->onMemberNew($circle, $member);
+			if (!$this->addMassiveMembers($circle, $ident, $type)) {
+				$this->addSingleMember($circle, $ident, $type);
 			}
 		} catch (\Exception $e) {
 			throw $e;
@@ -133,7 +129,36 @@ class MembersService {
 	}
 
 
-	private function addMemberMassively(Circle $circle, $type, $ident) {
+	/**
+	 * add a single member to a circle.
+	 *
+	 * @param Circle $circle
+	 * @param string $ident
+	 * @param int $type
+	 */
+	private function addSingleMember(Circle $circle, $ident, $type) {
+		$this->verifyIdentBasedOnItsType($ident, $type);
+
+		$member = $this->membersRequest->getFreshNewMember($circle->getUniqueId(), $ident, $type);
+		$member->hasToBeInviteAble();
+
+		$this->addMemberBasedOnItsType($circle, $member);
+
+		$this->membersRequest->updateMember($member);
+		$this->eventsService->onMemberNew($circle, $member);
+	}
+
+
+	/**
+	 * add a bunch of users to a circle based on the type of the 'bunch'
+	 *
+	 * @param Circle $circle
+	 * @param string $ident
+	 * @param int $type
+	 *
+	 * @return bool
+	 */
+	private function addMassiveMembers(Circle $circle, $ident, $type) {
 
 		if ($type === Member::TYPE_GROUP) {
 			return $this->addGroupMembers($circle, $ident);

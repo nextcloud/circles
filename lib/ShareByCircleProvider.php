@@ -73,7 +73,7 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	private $rootFolder;
 
 	/** @var IL10N */
-	private $l;
+	private $l10n;
 
 	/** @var IURLGenerator */
 	private $urlGenerator;
@@ -98,31 +98,31 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	 * @param ISecureRandom $secureRandom
 	 * @param IUserManager $userManager
 	 * @param IRootFolder $rootFolder
-	 * @param IL10N $l
+	 * @param IL10N $l10n
 	 * @param ILogger $logger
 	 * @param IURLGenerator $urlGenerator
 	 */
 	public function __construct(
 		IDBConnection $connection, ISecureRandom $secureRandom, IUserManager $userManager,
-		IRootFolder $rootFolder, IL10N $l, ILogger $logger, IURLGenerator $urlGenerator
+		IRootFolder $rootFolder, IL10N $l10n, ILogger $logger, IURLGenerator $urlGenerator
 	) {
 		$this->dbConnection = $connection;
 		$this->secureRandom = $secureRandom;
 		$this->userManager = $userManager;
 		$this->rootFolder = $rootFolder;
-		$this->l = $l;
+		$this->l10n = $l10n;
 		$this->logger = $logger;
 		$this->urlGenerator = $urlGenerator;
 
 		$app = new Application();
 		$this->circlesRequest = $app->getContainer()
-									->query('CirclesRequest');
+									->query(CirclesRequest::class);
 		$this->membersRequest = $app->getContainer()
-									->query('MembersRequest');
+									->query(MembersRequest::class);
 		$this->configService = $app->getContainer()
-								   ->query('ConfigService');
+								   ->query(ConfigService::class);
 		$this->miscService = $app->getContainer()
-								 ->query('MiscService');
+								 ->query(MiscService::class);
 	}
 
 
@@ -523,13 +523,13 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 		$data = $cursor->fetch();
 
 		if ($data === false) {
-			throw new ShareNotFound('Share not found', $this->l->t('Could not find share'));
+			throw new ShareNotFound('Share not found', $this->l10n->t('Could not find share'));
 		}
 
 		try {
 			$share = $this->createShareObject($data);
 		} catch (InvalidShare $e) {
-			throw new ShareNotFound('Share not found', $this->l->t('Could not find share'));
+			throw new ShareNotFound('Share not found', $this->l10n->t('Could not find share'));
 		}
 
 		return $share;
@@ -686,7 +686,7 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 						   ->getName();
 
 		$message = 'Sharing %s failed, this item is already shared with this circle';
-		$message_t = $this->l->t($message, array($share_src));
+		$message_t = $this->l10n->t($message, array($share_src));
 		$this->logger->debug(
 			sprintf($message, $share_src, $share->getSharedWith()), ['app' => Application::APP_NAME]
 		);

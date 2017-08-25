@@ -26,9 +26,9 @@
 
 namespace OCA\Circles\Model;
 
-use OC\L10N\L10N;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Service\MiscService;
+use OCP\IL10N;
 
 class BaseMember implements \JsonSerializable {
 
@@ -53,7 +53,7 @@ class BaseMember implements \JsonSerializable {
 	/** @var string */
 	private $circleUniqueId;
 
-	/** @var L10N */
+	/** @var IL10N */
 	protected $l10n;
 
 	/** @var string */

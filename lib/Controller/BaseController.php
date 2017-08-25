@@ -83,7 +83,7 @@ class BaseController extends Controller {
 	 *
 	 * @param string $appName
 	 * @param IRequest $request
-	 * @param string $userId
+	 * @param string $UserId
 	 * @param IL10N $l10n
 	 * @param ConfigService $configService
 	 * @param CirclesService $circlesService
@@ -98,7 +98,7 @@ class BaseController extends Controller {
 	public function __construct(
 		$appName,
 		IRequest $request,
-		$userId,
+		$UserId,
 		IL10N $l10n,
 		ConfigService $configService,
 		CirclesService $circlesService,
@@ -112,7 +112,7 @@ class BaseController extends Controller {
 	) {
 		parent::__construct($appName, $request);
 
-		$this->userId = $userId;
+		$this->userId = $UserId;
 		$this->l10n = $l10n;
 		$this->configService = $configService;
 		$this->circlesService = $circlesService;

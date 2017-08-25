@@ -33,7 +33,11 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
+use OCA\Circles\Service\CirclesService;
+use OCA\Circles\Service\FederatedService;
+use OCA\Circles\Service\MembersService;
 use OCA\Circles\Service\MiscService;
+use OCA\Circles\Service\SharesService;
 use OCP\Util;
 
 class Circles {
@@ -107,7 +111,7 @@ class Circles {
 	public static function createCircle($type, $name) {
 		$c = self::getContainer();
 
-		return $c->query('CirclesService')
+		return $c->query(CirclesService::class)
 				 ->createCircle($type, $name);
 	}
 
@@ -124,7 +128,7 @@ class Circles {
 	public static function joinCircle($circleUniqueId) {
 		$c = self::getContainer();
 
-		return $c->query('CirclesService')
+		return $c->query(CirclesService::class)
 				 ->joinCircle($circleUniqueId);
 	}
 
@@ -142,7 +146,7 @@ class Circles {
 	public static function leaveCircle($circleUniqueId) {
 		$c = self::getContainer();
 
-		return $c->query('CirclesService')
+		return $c->query(CirclesService::class)
 				 ->leaveCircle($circleUniqueId);
 	}
 
@@ -166,7 +170,7 @@ class Circles {
 	public static function listCircles($type, $name = '', $level = 0) {
 		$c = self::getContainer();
 
-		return $c->query('CirclesService')
+		return $c->query(CirclesService::class)
 				 ->listCircles($type, $name, $level);
 	}
 
@@ -199,7 +203,7 @@ class Circles {
 	public static function detailsCircle($circleUniqueId) {
 		$c = self::getContainer();
 
-		return $c->query('CirclesService')
+		return $c->query(CirclesService::class)
 				 ->detailsCircle($circleUniqueId);
 	}
 
@@ -217,7 +221,7 @@ class Circles {
 	public static function settingsCircle($circleUniqueId, array $settings) {
 		$c = self::getContainer();
 
-		return $c->query('CirclesService')
+		return $c->query(CirclesService::class)
 				 ->settingsCircle($circleUniqueId, $settings);
 	}
 
@@ -234,7 +238,7 @@ class Circles {
 	public static function destroyCircle($circleUniqueId) {
 		$c = self::getContainer();
 
-		return $c->query('CirclesService')
+		return $c->query(CirclesService::class)
 				 ->removeCircle($circleUniqueId);
 	}
 
@@ -254,7 +258,7 @@ class Circles {
 	public static function addMember($circleUniqueId, $ident, $type) {
 		$c = self::getContainer();
 
-		return $c->query('MembersService')
+		return $c->query(MembersService::class)
 				 ->addMember($circleUniqueId, $ident, $type);
 	}
 
@@ -274,7 +278,7 @@ class Circles {
 	public static function getMember($circleUniqueId, $ident, $type) {
 		$c = self::getContainer();
 
-		return $c->query('MembersService')
+		return $c->query(MembersService::class)
 				 ->getMember($circleUniqueId, $ident, $type);
 	}
 
@@ -294,7 +298,7 @@ class Circles {
 	public static function removeMember($circleUniqueId, $ident, $type) {
 		$c = self::getContainer();
 
-		return $c->query('MembersService')
+		return $c->query(MembersService::class)
 				 ->removeMember($circleUniqueId, $ident, $type);
 	}
 
@@ -317,7 +321,7 @@ class Circles {
 	public static function levelMember($circleUniqueId, $ident, $type, $level) {
 		$c = self::getContainer();
 
-		return $c->query('MembersService')
+		return $c->query(MembersService::class)
 				 ->levelMember($circleUniqueId, $ident, $type, $level);
 	}
 
@@ -345,7 +349,7 @@ class Circles {
 		$frame = new SharingFrame((string)$source, (string)$type);
 		$frame->setPayload($payload);
 
-		return $c->query('SharesService')
+		return $c->query(SharesService::class)
 				 ->createFrame($circleUniqueId, $frame, (string)$broadcaster);
 	}
 
@@ -366,7 +370,7 @@ class Circles {
 	public static function linkCircle($circleUniqueId, $remote) {
 		$c = self::getContainer();
 
-		return $c->query('FederatedService')
+		return $c->query(FederatedService::class)
 				 ->linkCircle($circleUniqueId, $remote);
 	}
 
