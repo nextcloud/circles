@@ -36,6 +36,7 @@
 
 		$.extend(Circles.prototype, circles);
 		$.extend(Circles.prototype, members);
+		$.extend(Circles.prototype, links);
 
 		this.initialize();
 	};
@@ -48,55 +49,6 @@
 			var self = this;
 
 
-			this.linkGroup = function (circleId, groupId, callback) {
-				var result = {status: -1};
-				$.ajax({
-					method: 'PUT',
-					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/groups'),
-					data: {
-						name: groupId
-					}
-				}).done(function (res) {
-					self.onCallback(callback, res);
-				}).fail(function () {
-					self.onCallback(callback, result);
-				});
-			};
-
-
-			this.unlinkGroup = function (circleId, groupId, callback) {
-				var result = {status: -1};
-				$.ajax({
-					method: 'DELETE',
-					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/groups'),
-					data: {
-						group: groupId
-					}
-				}).done(function (res) {
-					self.onCallback(callback, res);
-				}).fail(function () {
-					self.onCallback(callback, result);
-				});
-			};
-
-
-			this.levelGroup = function (circleId, group, level, callback) {
-				var result = {status: -1};
-				$.ajax({
-					method: 'POST',
-					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/group/level'),
-					data: {
-						group: group,
-						level: level
-					}
-				}).done(function (res) {
-					self.onCallback(callback, res);
-				}).fail(function () {
-					self.onCallback(callback, result);
-				});
-			};
-
-
 			this.shareToCircle = function (circleId, source, type, item, callback) {
 				var result = {status: -1};
 				$.ajax({
@@ -106,38 +58,6 @@
 						source: source,
 						type: type,
 						item: item
-					}
-				}).done(function (res) {
-					self.onCallback(callback, res);
-				}).fail(function () {
-					self.onCallback(callback, result);
-				});
-			};
-
-
-			this.linkCircle = function (circleId, remote, callback) {
-				var result = {status: -1};
-				$.ajax({
-					method: 'POST',
-					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/link'),
-					data: {
-						remote: remote
-					}
-				}).done(function (res) {
-					self.onCallback(callback, res);
-				}).fail(function () {
-					self.onCallback(callback, result);
-				});
-			};
-
-
-			this.linkStatus = function (linkId, status, callback) {
-				var result = {status: -1};
-				$.ajax({
-					method: 'POST',
-					url: OC.generateUrl('/apps/circles/v1/link/' + linkId + '/status'),
-					data: {
-						status: status
 					}
 				}).done(function (res) {
 					self.onCallback(callback, res);

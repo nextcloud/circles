@@ -62,6 +62,7 @@ class Circles {
 	public static function addJavascriptAPI() {
 		Util::addScript(Application::APP_NAME, 'circles.v1.circles');
 		Util::addScript(Application::APP_NAME, 'circles.v1.members');
+		Util::addScript(Application::APP_NAME, 'circles.v1.links');
 		Util::addScript(Application::APP_NAME, 'circles.v1');
 	}
 
