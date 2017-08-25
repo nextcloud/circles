@@ -33,6 +33,11 @@
 	 * @constructs Circles
 	 */
 	var Circles = function () {
+
+		$.extend(Circles.prototype, circles);
+		$.extend(Circles.prototype, members);
+		$.extend(Circles.prototype, links);
+
 		this.initialize();
 	};
 
@@ -42,250 +47,6 @@
 		initialize: function () {
 
 			var self = this;
-
-
-			/**
-			 * API function to create a new Circle.
-			 *
-			 * @param type
-			 * @param name
-			 * @param callback
-			 */
-			this.createCircle = function (type, name, callback) {
-
-				var result = {status: -1};
-				$.ajax({
-					method: 'PUT',
-					url: OC.generateUrl('/apps/circles/v1/circles'),
-					data: {
-						type: type,
-						name: name
-					}
-				}).done(function (res) {
-					self.onCallback(callback, res);
-				}).fail(function () {
-					self.onCallback(callback, result);
-				});
-			};
-
-
-			this.listCircles = function (type, name, level, callback) {
-				var result = {status: -1};
-				$.ajax({
-					method: 'GET',
-					url: OC.generateUrl('/apps/circles/v1/circles'),
-					data: {
-						type: type,
-						name: name,
-						level: level
-					}
-				}).done(function (res) {
-					self.onCallback(callback, res);
-				}).fail(function () {
-					self.onCallback(callback, result);
-				});
-			};
-
-
-			this.detailsCircle = function (circleId, callback) {
-				var result = {status: -1};
-				$.ajax({
-					method: 'GET',
-					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId)
-				}).done(function (res) {
-					self.onCallback(callback, res);
-				}).fail(function () {
-					self.onCallback(callback, result);
-				});
-			};
-
-
-			this.addMember = function (circleId, userId, callback) {
-				var result = {status: -1};
-				$.ajax({
-					method: 'PUT',
-					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/member'),
-					data: {
-						name: userId
-					}
-				}).done(function (res) {
-					self.onCallback(callback, res);
-				}).fail(function () {
-					self.onCallback(callback, result);
-				});
-			};
-
-
-			this.addEmail = function (circleId, email, callback) {
-				var result = {status: -1};
-				$.ajax({
-					method: 'PUT',
-					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/email'),
-					data: {
-						email: email
-					}
-				}).done(function (res) {
-					self.onCallback(callback, res);
-				}).fail(function () {
-					self.onCallback(callback, result);
-				});
-			};
-
-
-			this.addGroupMembers = function (circleId, groupId, callback) {
-				var result = {status: -1};
-				$.ajax({
-					method: 'PUT',
-					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/groupmembers'),
-					data: {
-						name: groupId
-					}
-				}).done(function (res) {
-					self.onCallback(callback, res);
-				}).fail(function () {
-					self.onCallback(callback, result);
-				});
-			};
-
-
-			this.removeMember = function (circleId, userId, userType, callback) {
-				var result = {status: -1};
-				$.ajax({
-					method: 'DELETE',
-					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/member'),
-					data: {
-						member: userId,
-						type: Number(userType)
-					}
-				}).done(function (res) {
-					self.onCallback(callback, res);
-				}).fail(function () {
-					self.onCallback(callback, result);
-				});
-			};
-
-
-			this.levelMember = function (circleId, userId, userType, level, callback) {
-				var result = {status: -1};
-				$.ajax({
-					method: 'POST',
-					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/level'),
-					data: {
-						member: userId,
-						type: userType,
-						level: level
-					}
-				}).done(function (res) {
-					self.onCallback(callback, res);
-				}).fail(function () {
-					self.onCallback(callback, result);
-				});
-			};
-
-
-			this.linkGroup = function (circleId, groupId, callback) {
-				var result = {status: -1};
-				$.ajax({
-					method: 'PUT',
-					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/groups'),
-					data: {
-						name: groupId
-					}
-				}).done(function (res) {
-					self.onCallback(callback, res);
-				}).fail(function () {
-					self.onCallback(callback, result);
-				});
-			};
-
-
-			this.unlinkGroup = function (circleId, groupId, callback) {
-				var result = {status: -1};
-				$.ajax({
-					method: 'DELETE',
-					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/groups'),
-					data: {
-						group: groupId
-					}
-				}).done(function (res) {
-					self.onCallback(callback, res);
-				}).fail(function () {
-					self.onCallback(callback, result);
-				});
-			};
-
-
-			this.levelGroup = function (circleId, group, level, callback) {
-				var result = {status: -1};
-				$.ajax({
-					method: 'POST',
-					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/group/level'),
-					data: {
-						group: group,
-						level: level
-					}
-				}).done(function (res) {
-					self.onCallback(callback, res);
-				}).fail(function () {
-					self.onCallback(callback, result);
-				});
-			};
-
-
-			this.joinCircle = function (circleId, callback) {
-				var result = {status: -1};
-				$.ajax({
-					method: 'GET',
-					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/join'),
-					data: {}
-				}).done(function (res) {
-					self.onCallback(callback, res);
-				}).fail(function () {
-					self.onCallback(callback, result);
-				});
-			};
-
-
-			this.settingsCircle = function (circleId, settings, callback) {
-				var result = {status: -1};
-				$.ajax({
-					method: 'POST',
-					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/settings'),
-					data: {settings: settings}
-				}).done(function (res) {
-					self.onCallback(callback, res);
-				}).fail(function () {
-					self.onCallback(callback, result);
-				});
-			};
-
-
-			this.leaveCircle = function (circleId, callback) {
-				var result = {status: -1};
-				$.ajax({
-					method: 'GET',
-					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/leave'),
-					data: {}
-				}).done(function (res) {
-					self.onCallback(callback, res);
-				}).fail(function () {
-					self.onCallback(callback, result);
-				});
-			};
-
-
-			this.destroyCircle = function (circleId, callback) {
-				var result = {status: -1};
-				$.ajax({
-					method: 'DELETE',
-					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId),
-					data: {}
-				}).done(function (res) {
-					self.onCallback(callback, res);
-				}).fail(function () {
-					self.onCallback(callback, result);
-				});
-			};
 
 
 			this.shareToCircle = function (circleId, source, type, item, callback) {
@@ -305,44 +66,12 @@
 				});
 			};
 
-
-			this.linkCircle = function (circleId, remote, callback) {
-				var result = {status: -1};
-				$.ajax({
-					method: 'POST',
-					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/link'),
-					data: {
-						remote: remote
-					}
-				}).done(function (res) {
-					self.onCallback(callback, res);
-				}).fail(function () {
-					self.onCallback(callback, result);
-				});
-			};
-
-
-			this.linkStatus = function (linkId, status, callback) {
-				var result = {status: -1};
-				$.ajax({
-					method: 'POST',
-					url: OC.generateUrl('/apps/circles/v1/link/' + linkId + '/status'),
-					data: {
-						status: status
-					}
-				}).done(function (res) {
-					self.onCallback(callback, res);
-				}).fail(function () {
-					self.onCallback(callback, result);
-				});
-			};
-
 			this.onCallback = function (callback, result) {
 				if (callback && (typeof callback === 'function')) {
 					if (typeof result === 'object') {
 						callback(result);
 					} else {
-						callback({status: -1})
+						callback({status: -1});
 					}
 				}
 			};

@@ -26,7 +26,9 @@
 
 namespace OCA\Circles\Service;
 
+use Exception;
 use OC\User\NoUserException;
+use OCA\Circles\Model\Member;
 use OCP\ILogger;
 use OCP\IUserManager;
 
@@ -57,7 +59,6 @@ class MiscService {
 	}
 
 
-
 	/**
 	 * return the real userId, with its real case
 	 *
@@ -76,33 +77,95 @@ class MiscService {
 	}
 
 
-
 	/**
-	 * return Display Name if user exists and display name exists.
-	 * returns Exception if user does not exist.
-	 *
-	 * However, with noException set to true, will return userId even if user does not exist
-	 *
-	 * @param $userId
-	 * @param bool $noException
+	 * @param string $ident
+	 * @param int $type
 	 *
 	 * @return string
-	 * @throws NoUserException
 	 */
-	public static function staticGetDisplayName($userId, $noException = false) {
-		$user = \OC::$server->getUserManager()
-							->get($userId);
-		if ($user === null) {
-			if ($noException) {
-				return $userId;
-			} else {
-				throw new NoUserException();
-			}
-		}
+	public static function getDisplay($ident, $type) {
+		$display = $ident;
 
-		return $user->getDisplayName();
+		self::getDisplayMember($display, $ident, $type);
+		self::getDisplayContact($display, $ident, $type);
+
+		return $display;
 	}
 
+
+	/**
+	 * @param string $display
+	 * @param string $ident
+	 * @param int $type
+	 */
+	private static function getDisplayMember(&$display, $ident, $type) {
+		if ($type !== Member::TYPE_USER) {
+			return;
+		}
+
+		$user = \OC::$server->getUserManager()
+							->get($ident);
+		if ($user !== null) {
+			$display = $user->getDisplayName();
+		}
+	}
+
+
+	/**
+	 * @param string $display
+	 * @param string $ident
+	 * @param int $type
+	 */
+	private static function getDisplayContact(&$display, $ident, $type) {
+		if ($type !== Member::TYPE_CONTACT) {
+			return;
+		}
+
+		$contact = self::getContactData($ident);
+		self::getDisplayContactFromArray($display, $contact);
+	}
+
+
+	/**
+	 * @param $ident
+	 *
+	 * @return mixed|string
+	 */
+	public static function getContactData($ident) {
+		list($userId, $contactId) = explode(':', $ident);
+
+		try {
+			/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
+			$contactApp = new \OCA\DAV\AppInfo\Application();
+			$cm = \OC::$server->getContactsManager();
+			$contactApp->setupContactsProvider($cm, $userId);
+			$contact = $cm->search($contactId, ['UID']);
+
+			return array_shift($contact);
+		} catch (Exception $e) {
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * @param string $display
+	 * @param array $contact
+	 */
+	private static function getDisplayContactFromArray(&$display, $contact) {
+		if (key_exists('FN', $contact) && $contact['FN'] !== '') {
+			$display = $contact['FN'];
+
+			return;
+		}
+
+		if (key_exists('EMAIL', $contact) && $contact['EMAIL'] !== '') {
+			$display = $contact['EMAIL'];
+
+			return;
+		}
+	}
 
 	/**
 	 * return Display Name if user exists and display name exists.

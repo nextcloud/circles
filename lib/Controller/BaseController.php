@@ -35,6 +35,7 @@ use OCA\Circles\Service\GroupsService;
 use OCA\Circles\Service\MembersService;
 
 use OCA\Circles\Service\MiscService;
+use OCA\Circles\Service\SearchService;
 use OCA\Circles\Service\SharesService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
@@ -51,6 +52,9 @@ class BaseController extends Controller {
 
 	/** @var ConfigService */
 	protected $configService;
+
+	/** @var SearchService */
+	protected $searchService;
 
 	/** @var CirclesService */
 	protected $circlesService;
@@ -83,6 +87,7 @@ class BaseController extends Controller {
 	 * @param IL10N $l10n
 	 * @param ConfigService $configService
 	 * @param CirclesService $circlesService
+	 * @param SearchService $searchService
 	 * @param MembersService $membersService
 	 * @param GroupsService $groupsService
 	 * @param SharesService $sharesService
@@ -97,6 +102,7 @@ class BaseController extends Controller {
 		IL10N $l10n,
 		ConfigService $configService,
 		CirclesService $circlesService,
+		SearchService $searchService,
 		MembersService $membersService,
 		GroupsService $groupsService,
 		SharesService $sharesService,
@@ -110,6 +116,7 @@ class BaseController extends Controller {
 		$this->l10n = $l10n;
 		$this->configService = $configService;
 		$this->circlesService = $circlesService;
+		$this->searchService = $searchService;
 		$this->membersService = $membersService;
 		$this->groupsService = $groupsService;
 		$this->sharesService = $sharesService;

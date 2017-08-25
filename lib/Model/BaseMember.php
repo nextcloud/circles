@@ -48,6 +48,7 @@ class BaseMember implements \JsonSerializable {
 	const TYPE_USER = 1;
 	const TYPE_GROUP = 2;
 	const TYPE_MAIL = 3;
+	const TYPE_CONTACT = 4;
 
 	/** @var string */
 	private $circleUniqueId;
@@ -75,6 +76,9 @@ class BaseMember implements \JsonSerializable {
 
 	/** @var string */
 	private $joined;
+
+	/** @var bool */
+	protected $broadcasting = true;
 
 	/**
 	 * BaseMember constructor.
@@ -135,12 +139,7 @@ class BaseMember implements \JsonSerializable {
 
 	public function setUserId($userId) {
 		$this->userId = $userId;
-
-		if ($this->getType() === Member::TYPE_USER) {
-			$this->setDisplayName(MiscService::staticGetDisplayName($userId, true));
-		} else {
-			$this->setDisplayName($userId);
-		}
+		$this->setDisplayName(MiscService::getDisplay($userId, $this->getType()));
 
 		return $this;
 	}
@@ -269,7 +268,7 @@ class BaseMember implements \JsonSerializable {
 
 
 	public function jsonSerialize() {
-		return array(
+		return [
 			'circle_id'    => $this->getCircleId(),
 			'user_id'      => $this->getUserId(),
 			'user_type'    => $this->getType(),
@@ -279,7 +278,7 @@ class BaseMember implements \JsonSerializable {
 			'status'       => $this->getStatus(),
 			'note'         => $this->getNote(),
 			'joined'       => $this->getJoined()
-		);
+		];
 	}
 
 	public function getLevelString() {

@@ -84,9 +84,9 @@ class Sharees {
 				'shareType'   => Share::SHARE_TYPE_CIRCLE,
 				'shareWith'   => $entry->getUniqueId(),
 				'circleInfo'  => $entry->getInfo(),
-				'circleOwner' => MiscService::staticGetDisplayName(
+				'circleOwner' => MiscService::getDisplay(
 					$entry->getOwner()
-						  ->getUserId()
+						  ->getUserId(), Member::TYPE_USER
 				)
 			],
 		];

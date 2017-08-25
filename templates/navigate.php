@@ -24,14 +24,16 @@
  *
  */
 
+use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\AppInfo\Application;
 
 script(Application::APP_NAME, 'vendor/notyf');
 style(Application::APP_NAME, 'notyf');
 
+Circles::addJavascriptAPI();
 script(
 	Application::APP_NAME, [
-				 'circles.v1', 'circles.app.elements', 'circles.app.actions',
+				 'circles.app.elements', 'circles.app.actions',
 				 'circles.app.navigation', 'circles.app.settings',
 				 'circles.app', 'circles.app.results.circles', 'circles.app.results.members',
 				 'circles.app.results.groups', 'circles.app.results.links'

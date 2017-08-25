@@ -86,16 +86,16 @@ var nav = {
 						t('circles', 'Please confirm'),
 						function (e) {
 							if (e === true) {
-								api.addGroupMembers(curr.circle, elements.addMember.val(),
-									resultMembers.addGroupMembersResult);
+								api.addMember(curr.circle, elements.addMember.val(), define.typeGroup,
+									resultMembers.addMemberResult);
 							}
 						});
 				} else {
 					if (actions.validateEmail(elements.addMember.val())) {
-						api.addEmail(curr.circle, elements.addMember.val(),
-							resultMembers.addEmailResult);
+						api.addMember(curr.circle, elements.addMember.val(), define.typeMail,
+							resultMembers.addMemberResult);
 					} else {
-						api.addMember(curr.circle, elements.addMember.val(),
+						api.addMember(curr.circle, elements.addMember.val(), define.typeUser,
 							resultMembers.addMemberResult);
 					}
 				}
@@ -385,7 +385,7 @@ var nav = {
 
 				var userId = $(this).attr('member-id');
 				var userType = Number($(this).attr('member-type'));
-				
+
 				if (userId === curr.userId && userType === define.typeUser) {
 					$(this).find('td.username').css('font-weight', 'bold').css('font-style', 'italic');
 					$(this).css('background', '#e0e0e0');
@@ -430,7 +430,14 @@ var nav = {
 				if (userType === define.typeMail) {
 					statusSelect.append($('<option>', {
 						value: status,
-						text: t('circles', 'Mail Contact')
+						text: t('circles', 'Mail Address')
+					})).val(status);
+				}
+
+				if (userType === define.typeContact) {
+					statusSelect.append($('<option>', {
+						value: status,
+						text: t('circles', 'Contact')
 					})).val(status);
 				}
 

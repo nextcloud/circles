@@ -129,7 +129,10 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 		$share = $this->generateShare($payload['share']);
 		if ($member->getType() === Member::TYPE_MAIL) {
-			$this->sharedByMail($frame->getCircle()->getName(), $share, $member->getUserId());
+			$this->sharedByMail(
+				$frame->getCircle()
+					  ->getName(), $share, $member->getUserId()
+			);
 		}
 
 		return true;
@@ -185,12 +188,13 @@ class FileSharingBroadcaster implements IBroadcaster {
 			'files_sharing.sharecontroller.showShare',
 			['token' => $share->getToken()]
 		);
+
 		$this->sendMail(
 			$share->getNode()
-				  ->getName(), $link, MiscService::staticGetDisplayName($share->getSharedBy()),
+				  ->getName(), $link,
+			MiscService::getDisplay($share->getSharedBy(), Member::TYPE_USER),
 			$circleName, $email
 		);
-
 	}
 
 
@@ -239,7 +243,9 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 		$emailTemplate->addHeader();
 		$emailTemplate->addHeading($subject, false);
-		$emailTemplate->addBodyText($text . "\n " . $this->l10n->t('Click the button below to open it.'), $text);
+		$emailTemplate->addBodyText(
+			$text . "\n " . $this->l10n->t('Click the button below to open it.'), $text
+		);
 		$emailTemplate->addBodyButton($this->l10n->t('Open »%s«', [$fileName]), $link);
 
 		return $emailTemplate;

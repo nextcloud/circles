@@ -27,6 +27,7 @@
 namespace OCA\Circles\Service;
 
 
+use Exception;
 use OC\User\NoUserException;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
@@ -34,9 +35,8 @@ use OCA\Circles\Exceptions\CircleTypeNotValidException;
 use OCA\Circles\Exceptions\EmailAccountInvalidFormatException;
 use OCA\Circles\Exceptions\GroupDoesNotExistException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
-use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Model\Circle;
-use \OCA\Circles\Model\Member;
+use OCA\Circles\Model\Member;
 use OCP\IL10N;
 use OCP\IUserManager;
 
@@ -101,34 +101,33 @@ class MembersService {
 
 	/**
 	 * @param string $circleUniqueId
-	 * @param string $name
+	 * @param $ident
+	 * @param $type
 	 *
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function addLocalMember($circleUniqueId, $name) {
+	public function addMember($circleUniqueId, $ident, $type) {
 
 		try {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			$circle->getHigherViewer()
 				   ->hasToBeModerator();
+
+			if (!$this->addMemberMassively($circle, $type, $ident)) {
+				$this->verifyIdentBasedOnItsType($ident, $type);
+
+				$member = $this->membersRequest->getFreshNewMember($circleUniqueId, $ident, $type);
+				$member->hasToBeInviteAble();
+
+				$this->addMemberBasedOnItsType($circle, $member);
+
+				$this->membersRequest->updateMember($member);
+				$this->eventsService->onMemberNew($circle, $member);
+			}
 		} catch (\Exception $e) {
 			throw $e;
 		}
-
-		try {
-			$member =
-				$this->membersRequest->getFreshNewMember($circleUniqueId, $name, Member::TYPE_USER);
-			$member->hasToBeInviteAble();
-
-		} catch (\Exception $e) {
-			throw $e;
-		}
-
-		$member->inviteToCircle($circle->getType());
-		$this->membersRequest->updateMember($member);
-
-		$this->eventsService->onMemberNew($circle, $member);
 
 		return $this->membersRequest->getMembers(
 			$circle->getUniqueId(), $circle->getHigherViewer()
@@ -136,62 +135,126 @@ class MembersService {
 	}
 
 
+	private function addMemberMassively(Circle $circle, $type, $ident) {
+
+		if ($type === Member::TYPE_GROUP) {
+			return $this->addGroupMembers($circle, $ident);
+		}
+
+		return false;
+	}
+
+
+	private function addMemberBasedOnItsType(Circle $circle, Member &$member) {
+		$this->addLocalMember($circle, $member);
+		$this->addEmailAddress($member);
+		$this->addContact($member);
+	}
+
+
 	/**
-	 * @param string $circleUniqueId
-	 * @param string $email
+	 * @param string $ident
+	 * @param int $type
 	 *
-	 * @return array
+	 * @throws Exception
+	 */
+	private function verifyIdentBasedOnItsType(&$ident, $type) {
+		try {
+			$this->verifyIdentLocalMember($ident, $type);
+			$this->verifyIdentContact($ident, $type);
+		} catch (Exception $e) {
+			throw $e;
+		}
+	}
+
+	private function verifyIdentLocalMember(&$ident, $type) {
+		if ($type !== Member::TYPE_USER) {
+			return;
+		}
+
+		try {
+			$ident = $this->miscService->getRealUserId($ident);
+		} catch (NoUserException $e) {
+			throw new NoUserException($this->l10n->t("This user does not exist"));
+		}
+	}
+
+
+	private function verifyIdentContact(&$ident, $type) {
+		if ($type !== Member::TYPE_CONTACT) {
+			return;
+		}
+
+//		try {
+//			$ident = $this->miscService->getRealUserId($ident);
+//		} catch (NoUserException $e) {
+//			throw new NoUserException($this->l10n->t("This user does not exist"));
+//		}
+
+		$ident = $this->userId . ':' . $ident;
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 * @param Member $member
+	 *
 	 * @throws \Exception
 	 */
-	public function addEmailAddress($circleUniqueId, $email) {
+	public function addLocalMember(Circle $circle, Member $member) {
 
-		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+		if ($member->getType() !== Member::TYPE_USER) {
+			return;
+		}
+
+		$member->inviteToCircle($circle->getType());
+	}
+
+
+	/**
+	 * @param Member $member
+	 *
+	 * @throws \Exception
+	 */
+	private function addEmailAddress(Member $member) {
+
+		if ($member->getType() !== Member::TYPE_MAIL) {
+			return;
+		}
+
+		if (!filter_var($member->getUserId(), FILTER_VALIDATE_EMAIL)) {
 			throw new EmailAccountInvalidFormatException(
 				$this->l10n->t('Email format is not valid')
 			);
 		}
 
-		try {
-			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
-			$circle->getHigherViewer()
-				   ->hasToBeModerator();
-
-			$member = $this->membersRequest->getFreshNewMember(
-				$circleUniqueId, $email, Member::TYPE_MAIL
-			);
-			$member->hasToBeInviteAble();
-
-		} catch (\Exception $e) {
-			throw $e;
-		}
-
 		$member->addMemberToCircle();
-		$this->membersRequest->updateMember($member);
-
-		$this->eventsService->onMemberNew($circle, $member);
-
-		return $this->membersRequest->getMembers(
-			$circle->getUniqueId(), $circle->getHigherViewer()
-		);
 	}
 
 
 	/**
-	 * @param string $circleUniqueId
-	 * @param string $groupId
+	 * @param Member $member
 	 *
-	 * @return array
 	 * @throws \Exception
 	 */
-	public function importMembersFromGroup($circleUniqueId, $groupId) {
+	private function addContact(Member $member) {
 
-		try {
-			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
-			$circle->getHigherViewer()
-				   ->hasToBeModerator();
-		} catch (\Exception $e) {
-			throw $e;
+		if ($member->getType() !== Member::TYPE_CONTACT) {
+			return;
 		}
+
+		$member->addMemberToCircle();
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 * @param string $groupId
+	 *
+	 * @return bool
+	 * @throws \Exception
+	 */
+	private function addGroupMembers(Circle $circle, $groupId) {
 
 		$group = \OC::$server->getGroupManager()
 							 ->get($groupId);
@@ -203,7 +266,7 @@ class MembersService {
 			try {
 				$member =
 					$this->membersRequest->getFreshNewMember(
-						$circleUniqueId, $user->getUID(), Member::TYPE_USER
+						$circle->getUniqueId(), $user->getUID(), Member::TYPE_USER
 					);
 				$member->hasToBeInviteAble();
 
@@ -217,9 +280,7 @@ class MembersService {
 			}
 		}
 
-		return $this->membersRequest->getMembers(
-			$circle->getUniqueId(), $circle->getHigherViewer()
-		);
+		return true;
 	}
 
 

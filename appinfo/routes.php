@@ -73,17 +73,17 @@ return [
 			'name' => 'Federated#receiveFederatedDelivery', 'url' => '/v1/payload',
 			'verb' => 'PUT'
 		],
-		['name' => 'Members#search', 'url' => '/v1/circles/{uniqueId}/members', 'verb' => 'GET'],
+		['name' => 'Members#searchGlobal', 'url' => '/v1/globalsearch', 'verb' => 'GET'],
+//		[
+//			'name'         => 'Members#importFromGroup', 'url' => '/v1/circles/{uniqueId}/groupmembers',
+//			'verb'         => 'PUT'
+//		],
 		[
-			'name'         => 'Members#importFromGroup', 'url' => '/v1/circles/{uniqueId}/groupmembers',
-			'verb'         => 'PUT'
+			'name'         => 'Members#addMember', 'url' => '/v1/circles/{uniqueId}/member', 'verb' => 'PUT'
 		],
-		[
-			'name'         => 'Members#addLocalMember', 'url' => '/v1/circles/{uniqueId}/member', 'verb' => 'PUT'
-		],
-		[
-			'name'         => 'Members#addEmailAddress', 'url' => '/v1/circles/{uniqueId}/email', 'verb' => 'PUT'
-		],
+//		[
+//			'name'         => 'Members#addEmailAddress', 'url' => '/v1/circles/{uniqueId}/email', 'verb' => 'PUT'
+//		],
 		[
 			'name'         => 'Members#removeMember', 'url' => '/v1/circles/{uniqueId}/member',
 			'verb'         => 'DELETE',
