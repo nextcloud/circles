@@ -221,6 +221,22 @@ class Member extends BaseMember {
 
 
 	/**
+	 * @param bool $able
+	 */
+	public function broadcasting($able) {
+		$this->broadcasting = $able;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function isBroadcasting() {
+		return $this->broadcasting;
+	}
+
+
+	/**
 	 * @throws MemberTypeCantEditLevelException
 	 */
 	public function levelHasToBeEditable() {

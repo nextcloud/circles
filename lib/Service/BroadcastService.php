@@ -117,12 +117,52 @@ class BroadcastService {
 			$members = $this->membersRequest->forceGetMembers(
 				$circle->getUniqueId(), Member::LEVEL_MEMBER, true
 			);
+			$this->miscService->log('___>');
+
 			foreach ($members AS $member) {
-				$broadcaster->createShareToMember($frame, $member);
+				$this->parseMember($member);
+
+				if ($member->isBroadcasting()) {
+					$this->miscService->log('___ ' . $member->getUserId());
+					$broadcaster->createShareToMember($frame, $member);
+				}
 			}
 		} catch (Exception $e) {
 			throw $e;
 		}
 	}
+
+
+	/**
+	 * @param Member $member
+	 */
+	private function parseMember(Member &$member) {
+		$this->parseMemberFromContact($member);
+	}
+
+
+	/**
+	 * on Type Contact, we convert the type to MAIL and retreive the first mail of the list.
+	 * If no email, we set the member as not broadcasting.
+	 *
+	 * @param Member $member
+	 */
+	private function parseMemberFromContact(Member &$member) {
+
+		if ($member->getType() !== Member::TYPE_CONTACT) {
+			return;
+		}
+
+		$contact = MiscService::getContactData($member->getUserId());
+		if (!key_exists('EMAIL', $contact)) {
+			$member->broadcasting(false);
+
+			return;
+		}
+
+		$member->setType(Member::TYPE_MAIL);
+		$member->setUserId(array_shift($contact['EMAIL']));
+	}
+
 
 }

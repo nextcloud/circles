@@ -121,28 +121,39 @@ class MiscService {
 			return;
 		}
 
+		$contact = self::getContactData($ident);
+		self::getDisplayContactFromArray($display, $contact);
+	}
+
+
+	/**
+	 * @param $ident
+	 *
+	 * @return mixed|string
+	 */
+	public static function getContactData($ident) {
 		list($userId, $contactId) = explode(':', $ident);
 
 		try {
+			/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 			$contactApp = new \OCA\DAV\AppInfo\Application();
 			$cm = \OC::$server->getContactsManager();
 			$contactApp->setupContactsProvider($cm, $userId);
 			$contact = $cm->search($contactId, ['UID']);
 
-			if (sizeof($contact) === 0) {
-				return;
-			}
-
+			return array_shift($contact);
 		} catch (Exception $e) {
 		}
 
-
-		self::getDisplayContactFromArray($display, $contact);
+		return null;
 	}
 
 
+	/**
+	 * @param string $display
+	 * @param array $contact
+	 */
 	private static function getDisplayContactFromArray(&$display, $contact) {
-		$contact = array_shift($contact);
 		if (key_exists('FN', $contact) && $contact['FN'] !== '') {
 			$display = $contact['FN'];
 

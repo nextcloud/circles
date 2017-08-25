@@ -77,6 +77,9 @@ class BaseMember implements \JsonSerializable {
 	/** @var string */
 	private $joined;
 
+	/** @var bool */
+	protected $broadcasting = true;
+
 	/**
 	 * BaseMember constructor.
 	 *
