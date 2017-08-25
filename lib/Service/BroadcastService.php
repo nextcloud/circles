@@ -117,13 +117,11 @@ class BroadcastService {
 			$members = $this->membersRequest->forceGetMembers(
 				$circle->getUniqueId(), Member::LEVEL_MEMBER, true
 			);
-			$this->miscService->log('___>');
 
 			foreach ($members AS $member) {
 				$this->parseMember($member);
 
 				if ($member->isBroadcasting()) {
-					$this->miscService->log('___ ' . $member->getUserId());
 					$broadcaster->createShareToMember($frame, $member);
 				}
 			}

@@ -34,6 +34,7 @@ use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\MiscService;
+use OCP\Util;
 
 class Circles {
 
@@ -55,6 +56,13 @@ class Circles {
 	 */
 	public static function version() {
 		return self::API_VERSION;
+	}
+
+
+	public static function addJavascriptAPI() {
+		Util::addScript(Application::APP_NAME, 'circles.v1.circles');
+		Util::addScript(Application::APP_NAME, 'circles.v1.members');
+		Util::addScript(Application::APP_NAME, 'circles.v1');
 	}
 
 
@@ -420,9 +428,14 @@ class Circles {
 	public static function generateCircleParameter(SharingFrame $frame) {
 		return [
 			'type' => 'circle',
-			'id'   => $frame->getCircle()->getUniqueId(),
-			'name' => $frame->getCircle()->getName(),
-			'link' => self::generateLink($frame->getCircle()->getUniqueId())
+			'id'   => $frame->getCircle()
+							->getUniqueId(),
+			'name' => $frame->getCircle()
+							->getName(),
+			'link' => self::generateLink(
+				$frame->getCircle()
+					  ->getUniqueId()
+			)
 		];
 	}
 }
