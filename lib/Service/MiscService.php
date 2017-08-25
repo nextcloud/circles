@@ -128,7 +128,7 @@ class MiscService {
 
 	/**
 	 * @param $ident
-	 *
+	 * @deprecated - move this somewhere else, no static if possible
 	 * @return mixed|string
 	 */
 	public static function getContactData($ident) {

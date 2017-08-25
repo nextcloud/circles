@@ -129,9 +129,7 @@ class MembersService {
 			throw $e;
 		}
 
-		return $this->membersRequest->getMembers(
-			$circle->getUniqueId(), $circle->getHigherViewer()
-		);
+		return $this->membersRequest->getMembers($circle->getUniqueId(), $circle->getHigherViewer());
 	}
 
 
@@ -145,53 +143,16 @@ class MembersService {
 	}
 
 
+	/**
+	 * add a new member based on its type.
+	 *
+	 * @param Circle $circle
+	 * @param Member $member
+	 */
 	private function addMemberBasedOnItsType(Circle $circle, Member &$member) {
 		$this->addLocalMember($circle, $member);
 		$this->addEmailAddress($member);
 		$this->addContact($member);
-	}
-
-
-	/**
-	 * @param string $ident
-	 * @param int $type
-	 *
-	 * @throws Exception
-	 */
-	private function verifyIdentBasedOnItsType(&$ident, $type) {
-		try {
-			$this->verifyIdentLocalMember($ident, $type);
-			$this->verifyIdentContact($ident, $type);
-		} catch (Exception $e) {
-			throw $e;
-		}
-	}
-
-	private function verifyIdentLocalMember(&$ident, $type) {
-		if ($type !== Member::TYPE_USER) {
-			return;
-		}
-
-		try {
-			$ident = $this->miscService->getRealUserId($ident);
-		} catch (NoUserException $e) {
-			throw new NoUserException($this->l10n->t("This user does not exist"));
-		}
-	}
-
-
-	private function verifyIdentContact(&$ident, $type) {
-		if ($type !== Member::TYPE_CONTACT) {
-			return;
-		}
-
-//		try {
-//			$ident = $this->miscService->getRealUserId($ident);
-//		} catch (NoUserException $e) {
-//			throw new NoUserException($this->l10n->t("This user does not exist"));
-//		}
-
-		$ident = $this->userId . ':' . $ident;
 	}
 
 
@@ -212,6 +173,8 @@ class MembersService {
 
 
 	/**
+	 * add mail address as contact.
+	 *
 	 * @param Member $member
 	 *
 	 * @throws \Exception
@@ -222,17 +185,13 @@ class MembersService {
 			return;
 		}
 
-		if (!filter_var($member->getUserId(), FILTER_VALIDATE_EMAIL)) {
-			throw new EmailAccountInvalidFormatException(
-				$this->l10n->t('Email format is not valid')
-			);
-		}
-
 		$member->addMemberToCircle();
 	}
 
 
 	/**
+	 * Add contact as member.
+	 *
 	 * @param Member $member
 	 *
 	 * @throws \Exception
@@ -244,6 +203,91 @@ class MembersService {
 		}
 
 		$member->addMemberToCircle();
+	}
+
+
+	/**
+	 * Verify the availability of an ident, based on its type.
+	 *
+	 * @param string $ident
+	 * @param int $type
+	 *
+	 * @throws Exception
+	 */
+	private function verifyIdentBasedOnItsType(&$ident, $type) {
+		try {
+			$this->verifyIdentLocalMember($ident, $type);
+			$this->verifyIdentEmailAddress($ident, $type);
+			$this->verifyIdentContact($ident, $type);
+		} catch (Exception $e) {
+			throw $e;
+		}
+	}
+
+
+	/**
+	 * Verify if a local account is valid.
+	 *
+	 * @param $ident
+	 * @param $type
+	 *
+	 * @throws NoUserException
+	 */
+	private function verifyIdentLocalMember(&$ident, $type) {
+		if ($type !== Member::TYPE_USER) {
+			return;
+		}
+
+		try {
+			$ident = $this->miscService->getRealUserId($ident);
+		} catch (NoUserException $e) {
+			throw new NoUserException($this->l10n->t("This user does not exist"));
+		}
+	}
+
+
+	/**
+	 * Verify if a mail have a valid format.
+	 *
+	 * @param $ident
+	 * @param $type
+	 *
+	 * @throws EmailAccountInvalidFormatException
+	 */
+	private function verifyIdentEmailAddress(&$ident, $type) {
+		if ($type !== Member::TYPE_MAIL) {
+			return;
+		}
+
+		if (!filter_var($ident, FILTER_VALIDATE_EMAIL)) {
+			throw new EmailAccountInvalidFormatException(
+				$this->l10n->t('Email format is not valid')
+			);
+		}
+	}
+
+
+	/**
+	 * Verify if a contact exist in current user address books.
+	 *
+	 * @param $ident
+	 * @param $type
+	 *
+	 * @throws NoUserException
+	 */
+	private function verifyIdentContact(&$ident, $type) {
+		if ($type !== Member::TYPE_CONTACT) {
+			return;
+		}
+
+		$tmpContact = $this->userId . ':' . $ident;
+		try {
+			MiscService::getContactData($tmpContact);
+		} catch (Exception $e) {
+			throw new NoUserException($this->l10n->t("This contact is not available"));
+		}
+
+		$ident = $tmpContact;
 	}
 
 
