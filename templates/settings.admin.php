@@ -21,7 +21,7 @@ style(Application::APP_NAME, 'admin');
 		</tr>
 		<tr class="lane">
 			<td colspan="2" class="left">Allow Federated Circles:<br/>
-				<em>Circles from different Nextcloud can be linked together.</em></td>
+				<em>Circles from different Nextclouds can be linked together.</em></td>
 			<td class="right">
 				<input type="checkbox" value="1" id="allow_federated_circles"/>
 			</td>
