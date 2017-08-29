@@ -15,6 +15,7 @@ OC.L10N.register(
     "Personal Circle" : "个人圈子",
     "Public Circle" : "公开圈子",
     "Personal" : "个人",
+    "Closed" : "关闭",
     "Public" : "公开",
     "Not a member" : "不是成员",
     "Member" : "成员",
