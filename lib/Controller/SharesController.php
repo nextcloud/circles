@@ -112,9 +112,9 @@ class SharesController extends BaseController {
 		$this->broadcastService->broadcastFrame($frame);
 
 		// TODO - do not update cloudId to avoid duplicate, use it's own field and keep cloudId
-		$this->federatedService->updateFrameWithCloudId($frame);
+		$this->sharesService->updateFrameWithCloudId($frame);
 		if ($this->configService->isFederatedCirclesAllowed()) {
-			$this->federatedService->sendRemoteShare($frame);
+			$this->sharesService->forwardSharingFrame($frame);
 		}
 
 		exit();

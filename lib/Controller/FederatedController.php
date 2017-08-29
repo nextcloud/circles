@@ -36,7 +36,7 @@ use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\ConfigService;
-use OCA\Circles\Service\FederatedService;
+use OCA\Circles\Service\FederatedLinkService;
 use OCA\Circles\Service\MembersService;
 use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\SharesService;
@@ -63,8 +63,8 @@ class FederatedController extends BaseController {
 	/** @var SharesService */
 	protected $sharesService;
 
-	/** @var FederatedService */
-	protected $federatedService;
+	/** @var FederatedLinkService */
+	protected $federatedLinkService;
 
 	/** @var MiscService */
 	protected $miscService;
@@ -105,7 +105,7 @@ class FederatedController extends BaseController {
 				 ->setRemoteCircleName($sourceName)
 				 ->setAddress($address);
 
-			$this->federatedService->initiateLink($circle, $link);
+			$this->federatedLinkService->initiateLink($circle, $link);
 
 			return $this->federatedSuccess(
 				['status' => $link->getStatus(), 'uniqueId' => $circle->getUniqueId(true)], $link
@@ -147,7 +147,7 @@ class FederatedController extends BaseController {
 		try {
 			Circles::compareVersion($apiVersion);
 			$frame = SharingFrame::fromJSON($item);
-			$this->federatedService->receiveFrame($token, $uniqueId, $frame);
+			$this->sharesService->receiveFrame($token, $uniqueId, $frame);
 		} catch (SharingFrameAlreadyExistException $e) {
 			return $this->federatedSuccess();
 		} catch (Exception $e) {
@@ -156,7 +156,7 @@ class FederatedController extends BaseController {
 
 		$this->miscService->asyncAndLeaveClientOutOfThis('done');
 		$this->broadcastService->broadcastFrame($frame);
-		$this->federatedService->sendRemoteShare($frame);
+		$this->sharesService->forwardSharingFrame($frame);
 		exit();
 	}
 
@@ -184,7 +184,7 @@ class FederatedController extends BaseController {
 
 		try {
 			Circles::compareVersion($apiVersion);
-			$link = $this->federatedService->updateLinkFromRemote($token, $uniqueId, $status);
+			$link = $this->federatedLinkService->updateLinkFromRemote($token, $uniqueId, $status);
 		} catch (Exception $e) {
 			return $this->federatedFail($e->getMessage());
 		}

@@ -34,7 +34,7 @@ use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\CirclesService;
-use OCA\Circles\Service\FederatedService;
+use OCA\Circles\Service\FederatedLinkService;
 use OCA\Circles\Service\MembersService;
 use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\SharesService;
@@ -370,7 +370,7 @@ class Circles {
 	public static function linkCircle($circleUniqueId, $remote) {
 		$c = self::getContainer();
 
-		return $c->query(FederatedService::class)
+		return $c->query(FederatedLinkService::class)
 				 ->linkCircle($circleUniqueId, $remote);
 	}
 

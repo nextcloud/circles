@@ -172,6 +172,27 @@ class ConfigService {
 		return ($this->allowedNonSSLLinks === 1);
 	}
 
+
+
+
+	/**
+	 * @param string $remote
+	 *
+	 * @return string
+	 */
+	public function generateRemoteHost($remote) {
+		if ((!$this->isNonSSLLinksAllowed() || strpos($remote, 'http://') !== 0)
+			&& strpos($remote, 'https://') !== 0
+		) {
+			$remote = 'https://' . $remote;
+		}
+
+		return rtrim($remote, '/');
+	}
+
+
+
+
 	/**
 	 * Get a value by key
 	 *

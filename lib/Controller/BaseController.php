@@ -30,7 +30,7 @@ use OC\AppFramework\Http;
 use OCA\Circles\Service\BroadcastService;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\ConfigService;
-use OCA\Circles\Service\FederatedService;
+use OCA\Circles\Service\FederatedLinkService;
 use OCA\Circles\Service\GroupsService;
 use OCA\Circles\Service\MembersService;
 
@@ -71,8 +71,8 @@ class BaseController extends Controller {
 	/** @var BroadcastService */
 	protected $broadcastService;
 
-	/** @var FederatedService */
-	protected $federatedService;
+	/** @var FederatedLinkService */
+	protected $federatedLinkService;
 
 	/** @var MiscService */
 	protected $miscService;
@@ -92,7 +92,7 @@ class BaseController extends Controller {
 	 * @param GroupsService $groupsService
 	 * @param SharesService $sharesService
 	 * @param BroadcastService $broadcastService
-	 * @param FederatedService $federatedService
+	 * @param FederatedLinkService $federatedLinkService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
@@ -107,7 +107,7 @@ class BaseController extends Controller {
 		GroupsService $groupsService,
 		SharesService $sharesService,
 		BroadcastService $broadcastService,
-		FederatedService $federatedService,
+		FederatedLinkService $federatedLinkService,
 		MiscService $miscService
 	) {
 		parent::__construct($appName, $request);
@@ -121,7 +121,7 @@ class BaseController extends Controller {
 		$this->groupsService = $groupsService;
 		$this->sharesService = $sharesService;
 		$this->broadcastService = $broadcastService;
-		$this->federatedService = $federatedService;
+		$this->federatedLinkService = $federatedLinkService;
 		$this->miscService = $miscService;
 	}
 

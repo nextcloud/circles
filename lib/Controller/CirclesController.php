@@ -203,7 +203,7 @@ class CirclesController extends BaseController {
 	 */
 	public function link($uniqueId, $remote) {
 		try {
-			$link = $this->federatedService->linkCircle($uniqueId, $remote);
+			$link = $this->federatedLinkService->linkCircle($uniqueId, $remote);
 			$links = $this->circlesService->detailsCircle($uniqueId)
 										  ->getLinks();
 
@@ -244,7 +244,7 @@ class CirclesController extends BaseController {
 		}
 
 		try {
-			$links = $this->federatedService->linkStatus($linkId, $status);
+			$links = $this->federatedLinkService->linkStatus($linkId, $status);
 
 			return $this->success(['link_id' => $linkId, 'links' => $links]);
 		} catch (\Exception $e) {

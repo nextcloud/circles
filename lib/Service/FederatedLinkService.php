@@ -28,34 +28,26 @@ namespace OCA\Circles\Service;
 
 
 use Exception;
-use OC\Http\Client\ClientService;
 use OCA\Circles\Api\v1\Circles;
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\FederatedLinksRequest;
-use OCA\Circles\Exceptions\CircleDoesNotExistException;
+use OCA\Circles\Exceptions\CircleTypeNotValidException;
 use OCA\Circles\Exceptions\FederatedCircleLinkFormatException;
 use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
-use OCA\Circles\Exceptions\CircleTypeNotValidException;
 use OCA\Circles\Exceptions\FederatedCircleStatusUpdateException;
+use OCA\Circles\Exceptions\FederatedLinkCreationException;
 use OCA\Circles\Exceptions\FederatedLinkUpdateException;
 use OCA\Circles\Exceptions\FederatedRemoteCircleDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedRemoteDoesNotAllowException;
 use OCA\Circles\Exceptions\FederatedRemoteIsDownException;
-use OCA\Circles\Exceptions\PayloadDeliveryException;
-use OCA\Circles\Exceptions\SharingFrameAlreadyExistException;
-use OCA\Circles\Exceptions\FederatedLinkCreationException;
 use OCA\Circles\Exceptions\MemberIsNotAdminException;
-use OCA\Circles\Exceptions\SharingFrameDoesNotExistException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
-use OCA\Circles\Model\SharingFrame;
 use OCP\Http\Client\IClientService;
 use OCP\IL10N;
 
-class FederatedService {
-
-	const REMOTE_URL_LINK = '/index.php/apps/circles/v1/link';
-	const REMOTE_URL_PAYLOAD = '/index.php/apps/circles/v1/payload';
+class FederatedLinkService {
 
 	/** @var string */
 	private $userId;
@@ -80,9 +72,6 @@ class FederatedService {
 
 	/** @var EventsService */
 	private $eventsService;
-
-	/** @var string */
-	private $serverHost;
 
 	/** @var IClientService */
 	private $clientService;
@@ -119,7 +108,6 @@ class FederatedService {
 		$this->broadcastService = $broadcastService;
 		$this->federatedLinksRequest = $federatedLinksRequest;
 		$this->eventsService = $eventsService;
-		$this->serverHost = $this->configService->getLocalAddress();
 
 		$this->clientService = $clientService;
 		$this->miscService = $miscService;
@@ -280,7 +268,7 @@ class FederatedService {
 
 			$link = new FederatedLink();
 			$link->setCircleId($circleUniqueId)
-				 ->setLocalAddress($this->serverHost)
+				 ->setLocalAddress($this->configService->getLocalAddress())
 				 ->setAddress($remoteAddress)
 				 ->setRemoteCircleName($remoteCircle)
 				 ->setStatus(FederatedLink::STATUS_LINK_SETUP)
@@ -306,33 +294,7 @@ class FederatedService {
 	 * @return string
 	 */
 	private function generateLinkRemoteURL($remote) {
-		return $this->generateRemoteHost($remote) . self::REMOTE_URL_LINK;
-	}
-
-
-	/**
-	 * @param string $remote
-	 *
-	 * @return string
-	 */
-	private function generatePayloadDeliveryURL($remote) {
-		return $this->generateRemoteHost($remote) . self::REMOTE_URL_PAYLOAD;
-	}
-
-
-	/**
-	 * @param string $remote
-	 *
-	 * @return string
-	 */
-	private function generateRemoteHost($remote) {
-		if ((!$this->configService->isNonSSLLinksAllowed() || strpos($remote, 'http://') !== 0)
-			&& strpos($remote, 'https://') !== 0
-		) {
-			$remote = 'https://' . $remote;
-		}
-
-		return rtrim($remote, '/');
+		return $this->configService->generateRemoteHost($remote) . Application::REMOTE_URL_LINK;
 	}
 
 
@@ -684,39 +646,6 @@ class FederatedService {
 
 
 	/**
-	 * @param string $token
-	 * @param string $uniqueId
-	 * @param SharingFrame $frame
-	 *
-	 * @return bool
-	 * @throws Exception
-	 */
-	public function receiveFrame($token, $uniqueId, SharingFrame &$frame) {
-		try {
-			$link = $this->circlesRequest->getLinkFromToken((string)$token, (string)$uniqueId);
-		} catch (Exception $e) {
-			throw $e;
-		}
-
-		try {
-			$this->circlesRequest->getFrame($link->getCircleId(), $frame->getUniqueId());
-			throw new SharingFrameAlreadyExistException('shares_is_already_known');
-		} catch (SharingFrameDoesNotExistException $e) {
-		}
-
-		try {
-			$circle = $this->circlesRequest->forceGetCircle($link->getCircleId());
-		} catch (CircleDoesNotExistException $e) {
-			throw new CircleDoesNotExistException('unknown_circle');
-		}
-
-		$frame->setCircle($circle);
-		$this->circlesRequest->saveFrame($frame);
-
-		return true;
-	}
-
-	/**
 	 * @param string $circleUniqueId
 	 * @param string $uniqueId
 	 *
@@ -734,110 +663,6 @@ class FederatedService {
 	 */
 	public function getLinksFromCircle($circleUniqueId) {
 		return $this->federatedLinksRequest->getLinked($circleUniqueId);
-	}
-
-
-	/**
-	 * @param string $circleUniqueId
-	 * @param string $frameUniqueId
-	 *
-	 * @return bool
-	 * @throws Exception
-	 */
-	public function initiateShare($circleUniqueId, $frameUniqueId) {
-		$args = [
-			'circleId' => $circleUniqueId,
-			'frameId'  => $frameUniqueId
-		];
-
-		$client = $this->clientService->newClient();
-		try {
-			$client->post(
-				$this->generatePayloadDeliveryURL($this->serverHost), [
-																		'body'            => $args,
-																		'timeout'         => 10,
-																		'connect_timeout' => 10,
-																	]
-			);
-
-//			$result = json_decode($request->getBody(), true);
-//			$this->miscService->log(
-//				"initiateRemoteShare result: " . $uniqueId . '  ----  ' . var_export($result, true)
-//			);
-
-			return true;
-		} catch (Exception $e) {
-			throw $e;
-		}
-	}
-
-
-	/**
-	 * @param SharingFrame $frame
-	 *
-	 * @throws Exception
-	 */
-	public function sendRemoteShare(SharingFrame $frame) {
-
-		try {
-			$circle = $this->circlesRequest->forceGetCircle(
-				$frame->getCircle()
-					  ->getUniqueId()
-			);
-		} catch (CircleDoesNotExistException $e) {
-			throw new CircleDoesNotExistException('unknown_circle');
-		}
-
-		$links = $this->getLinksFromCircle(
-			$frame->getCircle()
-				  ->getUniqueId()
-		);
-
-		foreach ($links AS $link) {
-
-
-			$args = [
-				'apiVersion' => Circles::version(),
-				'token'      => $link->getToken(true),
-				'uniqueId'   => $circle->getUniqueId(true),
-				'item'       => json_encode($frame)
-			];
-
-			$client = $this->clientService->newClient();
-			try {
-				$request = $client->put(
-					$this->generatePayloadDeliveryURL($link->getAddress()), [
-																			  'body'            => $args,
-																			  'timeout'         => 10,
-																			  'connect_timeout' => 10,
-																		  ]
-				);
-
-				$result = json_decode($request->getBody(), true);
-				if ($result['status'] === -1) {
-					throw new PayloadDeliveryException($result['reason']);
-				}
-
-			} catch (Exception $e) {
-				$this->miscService->log(
-					'Issue while sending sharing frame to ' . $link->getAddress() . ' - '
-					. $e->getMessage()
-				);
-			}
-		}
-	}
-
-
-	/**
-	 * generateHeaders()
-	 *
-	 * Generate new headers for the current Payload, and save them in the SharingFrame.
-	 *
-	 * @param SharingFrame $frame
-	 */
-	public function updateFrameWithCloudId(SharingFrame $frame) {
-		$frame->setCloudId($this->serverHost);
-		$this->circlesRequest->updateFrame($frame);
 	}
 
 }

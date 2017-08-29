@@ -42,7 +42,7 @@ use OCA\Circles\Events\UserEvents;
 use OCA\Circles\Service\BroadcastService;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\EventsService;
-use OCA\Circles\Service\FederatedService;
+use OCA\Circles\Service\FederatedLinkService;
 use OCA\Circles\Service\GroupsService;
 use OCA\Circles\Service\MembersService;
 use OCA\Circles\Service\ConfigService;
@@ -57,6 +57,8 @@ class Application extends App {
 
 	const APP_NAME = 'circles';
 
+	const REMOTE_URL_LINK = '/index.php/apps/circles/v1/link';
+	const REMOTE_URL_PAYLOAD = '/index.php/apps/circles/v1/payload';
 
 	/**
 	 * @param array $params
