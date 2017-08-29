@@ -267,7 +267,8 @@ class SharingFrame implements \JsonSerializable {
 	public function jsonSerialize() {
 		return array(
 			'unique_id' => $this->getUniqueId(),
-			'circle'    => $this->getCircle()->getArray(false, true),
+			'circle'    => $this->getCircle()
+								->getArray(false, true),
 			'source'    => $this->getSource(),
 			'type'      => $this->getType(),
 			'author'    => $this->getAuthor(),
@@ -286,7 +287,43 @@ class SharingFrame implements \JsonSerializable {
 		}
 
 		$share = new SharingFrame($arr['source'], $arr['type']);
+		$share->setCircle(self::getCircleFromArray($arr));
+		$share->setHeaders(self::getHeadersFromArray($arr));
+		if (key_exists('cloud_id', $arr)) {
+			$share->setCloudID($arr['cloud_id']);
+		}
 
+		$share->setUniqueId($arr['unique_id']);
+		$share->setAuthor($arr['author']);
+		$share->setPayload($arr['payload']);
+		$share->setCreation($arr['creation']);
+
+		return $share;
+	}
+
+
+	/**
+	 * @param array $arr
+	 *
+	 * @return array
+	 */
+	private static function getHeadersFromArray($arr) {
+
+		$headers = [];
+		if (key_exists('headers', $arr)) {
+			$headers = $arr['headers'];
+		}
+
+		return $headers;
+	}
+
+
+	/**
+	 * @param array $arr
+	 *
+	 * @return Circle
+	 */
+	private static function getCircleFromArray($arr) {
 		$circle = new Circle();
 		if (key_exists('circle', $arr)) {
 			$circle = Circle::fromArray($arr['circle']);
@@ -302,23 +339,8 @@ class SharingFrame implements \JsonSerializable {
 		if (key_exists('circle_id', $arr)) {
 			$circle->setId($arr['circle_id']);
 		}
-		$share->setCircle($circle);
 
-		if (key_exists('headers', $arr)) {
-			$share->setHeaders($arr['headers']);
-		}
-
-		if (key_exists('cloud_id', $arr)) {
-			$share->setCloudID($arr['cloud_id']);
-		}
-
-		$share->setUniqueId($arr['unique_id']);
-		$share->setAuthor($arr['author']);
-		$share->setPayload($arr['payload']);
-		$share->setCreation($arr['creation']);
-
-		return $share;
+		return $circle;
 	}
-
 }
 

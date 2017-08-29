@@ -111,7 +111,6 @@ class CoreRequestBuilder {
 	}
 
 
-
 	/**
 	 * Limit the request to the Type entry.
 	 *
@@ -123,7 +122,6 @@ class CoreRequestBuilder {
 	protected function limitToUserType(IQueryBuilder &$qb, $type) {
 		$this->limitToDBField($qb, 'user_type', $type);
 	}
-
 
 
 	/**
@@ -184,6 +182,8 @@ class CoreRequestBuilder {
 	/**
 	 * Limit the request to a minimum member level.
 	 *
+	 * if $pf is an array, will generate an SQL OR request to limit level in multiple tables
+	 *
 	 * @param IQueryBuilder $qb
 	 * @param int $level
 	 * @param string|array $pf
@@ -198,11 +198,24 @@ class CoreRequestBuilder {
 			return;
 		}
 
-		$orX = $expr->orX();
-
 		if (!is_array($pf)) {
 			$pf = [$pf];
 		}
+
+		$orX = $this->generateLimitToLevelMultipleTableRequest($qb, $level, $pf);
+		$qb->andWhere($orX);
+	}
+
+
+	/**
+	 * @param IQueryBuilder $qb
+	 * @param array $pf
+	 *
+	 * @return mixed
+	 */
+	private function generateLimitToLevelMultipleTableRequest(IQueryBuilder $qb, $level, $pf) {
+		$expr = $qb->expr();
+		$orX = $expr->orX();
 
 		foreach ($pf as $p) {
 			if ($p === 'g' && !$this->leftJoinedNCGroupAndUser) {
@@ -211,7 +224,7 @@ class CoreRequestBuilder {
 			$orX->add($expr->gte($p . '.level', $qb->createNamedParameter($level)));
 		}
 
-		$qb->andWhere($orX);
+		return $orX;
 	}
 
 
@@ -286,7 +299,9 @@ class CoreRequestBuilder {
 		   ->andWhere(
 			   $expr->eq(
 				   $pf . 'circle_id',
-				   $qb->createFunction('SUBSTR(`c`.`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')')
+				   $qb->createFunction(
+					   'SUBSTR(`c`.`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
+				   )
 			   )
 		   );
 	}

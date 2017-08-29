@@ -120,47 +120,81 @@ class Circle extends BaseCircle implements \JsonSerializable {
 	 *
 	 * @param $arr
 	 *
-	 * @deprecated
-	 *
 	 * @return $this
 	 */
 	public static function fromArray($arr) {
-		$circle = new Circle();
+		$circle = new Circle($arr['type'], $arr['name']);
 
 		$circle->setId($arr['id']);
-		$circle->setName($arr['name']);
 		$circle->setUniqueId($arr['unique_id']);
 		$circle->setDescription($arr['description']);
-		if (key_exists('links', $arr)) {
-			$circle->setLinks($arr['links']);
-		}
-		if (key_exists('settings', $arr)) {
-			$circle->setSettings($arr['settings']);
-		}
-		$circle->setType($arr['type']);
+
+		$circle->setSettings(self::getSettingsFromArray($arr));
+		$circle->setLinks(self::getLinksFromArray($arr));
 		$circle->setCreation($arr['creation']);
 
-		// TODO: 0.15.0 - remove condition is null
-		if (key_exists('user', $arr) && $arr['user'] !== null) {
-			$viewer = Member::fromArray($arr['user']);
-			$viewer->setType(Member::TYPE_USER);
-			$circle->setViewer($viewer);
-		}
-
-		if (key_exists('owner', $arr) && $arr['owner'] !== null) {
-			$owner = Member::fromArray($arr['owner']);
-			$owner->setType(Member::TYPE_USER);
-			$circle->setOwner($owner);
-		}
+		$circle->setViewer(self::getMemberFromArray($arr, 'user'));
+		$circle->setOwner(self::getMemberFromArray($arr, 'owner'));
 
 		return $circle;
 	}
 
 
 	/**
+	 * @param array $arr
+	 * @param $key
+	 * @param int $type
+	 *
+	 * @return null|Member
+	 */
+	private static function getMemberFromArray($arr, $key, $type = Member::TYPE_USER) {
+
+		// TODO: 0.15.0 - remove condition is null
+		if (key_exists($key, $arr) && $arr[$key] !== null) {
+			$viewer = Member::fromArray($arr[$key]);
+			$viewer->setType($type);
+
+			return $viewer;
+		}
+
+		return null;
+
+	}
+
+
+	/**
+	 * @param array $arr
+	 *
+	 * @return array
+	 */
+	private static function getLinksFromArray($arr) {
+		$links = [];
+		if (key_exists('links', $arr)) {
+			$links = $arr['links'];
+		}
+
+		return $links;
+	}
+
+
+	/**
+	 * @param array $arr
+	 *
+	 * @return array
+	 */
+	private static function getSettingsFromArray($arr) {
+		$settings = [];
+		if (key_exists('settings', $arr)) {
+			$settings = $arr['settings'];
+		}
+
+		return $settings;
+	}
+
+
+	/**
 	 * @param $json
 	 *
-	 * @deprecated
 	 * @return Circle
 	 */
 	public static function fromJSON($json) {

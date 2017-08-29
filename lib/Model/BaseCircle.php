@@ -226,6 +226,11 @@ class BaseCircle {
 	}
 
 
+	/**
+	 * @param string|array $settings
+	 *
+	 * @return $this
+	 */
 	public function setSettings($settings) {
 		if (is_array($settings)) {
 			$this->settings = $settings;
@@ -236,6 +241,11 @@ class BaseCircle {
 		return $this;
 	}
 
+	/**
+	 * @param bool $json
+	 *
+	 * @return array|string
+	 */
 	public function getSettings($json = false) {
 
 		if ($json) {
