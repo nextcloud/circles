@@ -48,7 +48,7 @@ use OCA\Circles\Service\MembersService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\SearchService;
-use OCA\Circles\Service\SharesService;
+use OCA\Circles\Service\SharingFrameService;
 use OCP\AppFramework\App;
 use OCP\AppFramework\IAppContainer;
 use OCP\Util;

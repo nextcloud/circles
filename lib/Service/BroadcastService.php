@@ -56,7 +56,7 @@ class BroadcastService {
 
 
 	/**
-	 * SharesService constructor.
+	 * BroadcastService constructor.
 	 *
 	 * @param string $userId
 	 * @param ConfigService $configService

@@ -53,7 +53,7 @@ class SharesController extends BaseController {
 			$share = new SharingFrame($source, $type);
 			$share->setPayload($payload);
 
-			$this->sharesService->createFrame($circleUniqueId, $share);
+			$this->sharingFrameService->createFrame($circleUniqueId, $share);
 		} catch (\Exception $e) {
 			return $this->fail(
 				[
@@ -101,7 +101,7 @@ class SharesController extends BaseController {
 	public function initShareDelivery($circleId, $frameId) {
 
 		try {
-			$frame = $this->sharesService->getFrameFromUniqueId($circleId, $frameId);
+			$frame = $this->sharingFrameService->getFrameFromUniqueId($circleId, $frameId);
 		} catch (Exception $e) {
 			return $this->fail($e->getMessage());
 		}
@@ -112,9 +112,9 @@ class SharesController extends BaseController {
 		$this->broadcastService->broadcastFrame($frame);
 
 		// TODO - do not update cloudId to avoid duplicate, use it's own field and keep cloudId
-		$this->sharesService->updateFrameWithCloudId($frame);
+		$this->sharingFrameService->updateFrameWithCloudId($frame);
 		if ($this->configService->isFederatedCirclesAllowed()) {
-			$this->sharesService->forwardSharingFrame($frame);
+			$this->sharingFrameService->forwardSharingFrame($frame);
 		}
 
 		exit();

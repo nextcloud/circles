@@ -39,7 +39,7 @@ use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedLinkService;
 use OCA\Circles\Service\MembersService;
 use OCA\Circles\Service\MiscService;
-use OCA\Circles\Service\SharesService;
+use OCA\Circles\Service\SharingFrameService;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\IL10N;
 
@@ -60,8 +60,8 @@ class FederatedController extends BaseController {
 	/** @var MembersService */
 	protected $membersService;
 
-	/** @var SharesService */
-	protected $sharesService;
+	/** @var SharingFrameService */
+	protected $sharingFrameService;
 
 	/** @var FederatedLinkService */
 	protected $federatedLinkService;
@@ -147,7 +147,7 @@ class FederatedController extends BaseController {
 		try {
 			Circles::compareVersion($apiVersion);
 			$frame = SharingFrame::fromJSON($item);
-			$this->sharesService->receiveFrame($token, $uniqueId, $frame);
+			$this->sharingFrameService->receiveFrame($token, $uniqueId, $frame);
 		} catch (SharingFrameAlreadyExistException $e) {
 			return $this->federatedSuccess();
 		} catch (Exception $e) {
@@ -156,7 +156,7 @@ class FederatedController extends BaseController {
 
 		$this->miscService->asyncAndLeaveClientOutOfThis('done');
 		$this->broadcastService->broadcastFrame($frame);
-		$this->sharesService->forwardSharingFrame($frame);
+		$this->sharingFrameService->forwardSharingFrame($frame);
 		exit();
 	}
 

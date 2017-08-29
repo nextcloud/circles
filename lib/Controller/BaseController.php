@@ -36,7 +36,7 @@ use OCA\Circles\Service\MembersService;
 
 use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\SearchService;
-use OCA\Circles\Service\SharesService;
+use OCA\Circles\Service\SharingFrameService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\IL10N;
@@ -65,8 +65,8 @@ class BaseController extends Controller {
 	/** @var GroupsService */
 	protected $groupsService;
 
-	/** @var SharesService */
-	protected $sharesService;
+	/** @var SharingFrameService */
+	protected $sharingFrameService;
 
 	/** @var BroadcastService */
 	protected $broadcastService;
@@ -90,7 +90,7 @@ class BaseController extends Controller {
 	 * @param SearchService $searchService
 	 * @param MembersService $membersService
 	 * @param GroupsService $groupsService
-	 * @param SharesService $sharesService
+	 * @param SharingFrameService $sharingFrameService
 	 * @param BroadcastService $broadcastService
 	 * @param FederatedLinkService $federatedLinkService
 	 * @param MiscService $miscService
@@ -105,7 +105,7 @@ class BaseController extends Controller {
 		SearchService $searchService,
 		MembersService $membersService,
 		GroupsService $groupsService,
-		SharesService $sharesService,
+		SharingFrameService $sharingFrameService,
 		BroadcastService $broadcastService,
 		FederatedLinkService $federatedLinkService,
 		MiscService $miscService
@@ -119,7 +119,7 @@ class BaseController extends Controller {
 		$this->searchService = $searchService;
 		$this->membersService = $membersService;
 		$this->groupsService = $groupsService;
-		$this->sharesService = $sharesService;
+		$this->sharingFrameService = $sharingFrameService;
 		$this->broadcastService = $broadcastService;
 		$this->federatedLinkService = $federatedLinkService;
 		$this->miscService = $miscService;

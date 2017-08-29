@@ -43,7 +43,7 @@ use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\SharingFrame;
 
 
-class SharesService {
+class SharingFrameService {
 
 	/** @var string */
 	private $userId;
@@ -68,7 +68,7 @@ class SharesService {
 
 
 	/**
-	 * SharesService constructor.
+	 * SharingFrameService constructor.
 	 *
 	 * @param string $userId
 	 * @param ConfigService $configService
