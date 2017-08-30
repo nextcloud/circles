@@ -32,6 +32,7 @@ use OC\Http\Client\ClientService;
 use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CirclesRequest;
+use OCA\Circles\Db\FederatedLinksRequest;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\PayloadDeliveryException;
@@ -41,6 +42,7 @@ use OCA\Circles\Exceptions\SharingFrameDoesNotExistException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\SharingFrame;
+use OCP\Http\Client\IClientService;
 
 
 class SharingFrameService {
@@ -53,6 +55,9 @@ class SharingFrameService {
 
 	/** @var CirclesRequest */
 	private $circlesRequest;
+
+	/** @var FederatedLinksRequest */
+	private $federatedLinksRequest;
 
 	/** @var BroadcastService */
 	private $broadcastService;
@@ -70,26 +75,29 @@ class SharingFrameService {
 	/**
 	 * SharingFrameService constructor.
 	 *
-	 * @param string $userId
+	 * @param string $UserId
 	 * @param ConfigService $configService
 	 * @param CirclesRequest $circlesRequest
+	 * @param FederatedLinksRequest $federatedLinksRequest
 	 * @param BroadcastService $broadcastService
 	 * @param FederatedLinkService $federatedLinkService
-	 * @param ClientService $clientService
+	 * @param IClientService $clientService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$userId,
+		$UserId,
 		ConfigService $configService,
 		CirclesRequest $circlesRequest,
+		FederatedLinksRequest $federatedLinksRequest,
 		BroadcastService $broadcastService,
 		FederatedLinkService $federatedLinkService,
-		ClientService $clientService,
+		IClientService $clientService,
 		MiscService $miscService
 	) {
-		$this->userId = (string)$userId;
+		$this->userId = $UserId;
 		$this->configService = $configService;
 		$this->circlesRequest = $circlesRequest;
+		$this->federatedLinksRequest = $federatedLinksRequest;
 		$this->broadcastService = $broadcastService;
 		$this->federatedLinkService = $federatedLinkService;
 		$this->clientService = $clientService;
@@ -191,7 +199,7 @@ class SharingFrameService {
 	 */
 	public function receiveFrame($token, $uniqueId, SharingFrame &$frame) {
 		try {
-			$link = $this->circlesRequest->getLinkFromToken((string)$token, (string)$uniqueId);
+			$link = $this->federatedLinksRequest->getLinkFromToken((string)$token, (string)$uniqueId);
 		} catch (Exception $e) {
 			throw $e;
 		}
@@ -271,9 +279,9 @@ class SharingFrameService {
 			throw new CircleDoesNotExistException('unknown_circle');
 		}
 
-		$links = $this->federatedLinkService->getLinksFromCircle(
+		$links = $this->federatedLinksRequest->getLinksFromCircle(
 			$frame->getCircle()
-				  ->getUniqueId()
+				  ->getUniqueId(), FederatedLink::STATUS_LINK_UP
 		);
 
 		$this->forwardSharingFrameToFederatedLinks($circle, $frame, $links);

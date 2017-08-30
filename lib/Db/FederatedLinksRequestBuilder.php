@@ -28,29 +28,25 @@
 namespace OCA\Circles\Db;
 
 
+use OCA\Circles\Model\FederatedLink;
+use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
+use OCP\IL10N;
 
-class FederatedLinksRequestBuilder {
+class FederatedLinksRequestBuilder extends CoreRequestBuilder {
 
-	const TABLE_LINKS = 'circles_links';
-
-	/** @var IDBConnection */
-	protected $dbConnection;
-
-	/** @var MiscService */
-	protected $miscService;
 
 	/**
-	 * CirclesRequest constructor.
+	 * CirclesRequestBuilder constructor.
 	 *
-	 * @param IDBConnection $connection
-	 * @param MiscService $miscService
+	 * {@inheritdoc}
 	 */
-	public function __construct(IDBConnection $connection, MiscService $miscService) {
-		$this->dbConnection = $connection;
-		$this->miscService = $miscService;
+	public function __construct(
+		IL10N $l10n, IDBConnection $connection, ConfigService $configService, MiscService $miscService
+	) {
+		parent::__construct($l10n, $connection, $configService, $miscService);
 	}
 
 
@@ -82,7 +78,7 @@ class FederatedLinksRequestBuilder {
 
 
 	/**
-	 * Base of the Sql Select request
+	 * Base of the Sql Select request for Shares
 	 *
 	 * @return IQueryBuilder
 	 */
@@ -90,8 +86,12 @@ class FederatedLinksRequestBuilder {
 		$qb = $this->dbConnection->getQueryBuilder();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->select('f.id', 'f.unique_id', 'f.status', 'f.address', 'f.token', 'f.circle_id')
-		   ->from(self::TABLE_LINKS, 'f');
+		$qb->select(
+			'l.id', 'l.status', 'l.address', 'l.token', 'l.circle_id', 'l.unique_id', 'l.creation'
+		)
+		   ->from(self::TABLE_LINKS, 'l');
+
+		$this->default_select_alias = 'l';
 
 		return $qb;
 	}
@@ -107,4 +107,23 @@ class FederatedLinksRequestBuilder {
 
 		return $qb;
 	}
+
+	/**
+	 * @param array $data
+	 *
+	 * @return FederatedLink
+	 */
+	protected function parseLinksSelectSql($data) {
+		$link = new FederatedLink();
+		$link->setId($data['id'])
+			 ->setUniqueId($data['unique_id'])
+			 ->setStatus($data['status'])
+			 ->setCreation($data['creation'])
+			 ->setAddress($data['address'])
+			 ->setToken($data['token'])
+			 ->setCircleId($data['circle_id']);
+
+		return $link;
+	}
+
 }

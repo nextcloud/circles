@@ -44,7 +44,7 @@ class BaseCircle {
 
 	const CIRCLES_ALL = 15;
 
-	const UNIQUEID_SHORT_LENGTH = 14;
+	const SHORT_UNIQUE_ID_LENGTH = 14;
 
 	/** @var int */
 	private $id;
@@ -132,7 +132,7 @@ class BaseCircle {
 			return $this->uniqueId;
 		}
 
-		return substr($this->uniqueId, 0, self::UNIQUEID_SHORT_LENGTH);
+		return substr($this->uniqueId, 0, self::SHORT_UNIQUE_ID_LENGTH);
 	}
 
 

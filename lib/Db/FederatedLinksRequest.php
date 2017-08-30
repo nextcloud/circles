@@ -28,6 +28,7 @@
 namespace OCA\Circles\Db;
 
 
+use OCA\Circles\Exceptions\FederatedLinkDoesNotExistException;
 use OCA\Circles\Model\FederatedLink;
 
 class FederatedLinksRequest extends FederatedLinksRequestBuilder {
@@ -40,11 +41,6 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 	 * @throws \Exception
 	 */
 	public function create(FederatedLink $link) {
-
-		if ($link === null) {
-			return false;
-		}
-
 		try {
 			$qb = $this->getLinksInsertSql();
 			$qb->setValue('status', $qb->createNamedParameter($link->getStatus()))
@@ -93,61 +89,8 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 
 
 	/**
-	 * @param string $circleUniqueId
-	 *
-	 * @return FederatedLink[]
+	 * @param FederatedLink $link
 	 */
-	public function getLinked($circleUniqueId) {
-		$qb = $this->getLinksSelectSql();
-		$expr = $qb->expr();
-
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->andWhere(
-			$expr->andX(
-				$expr->eq('f.circle_id', $qb->createNamedParameter($circleUniqueId)),
-				$expr->eq('f.status', $qb->createNamedParameter(9))
-			)
-		);
-
-		$result = [];
-		$cursor = $qb->execute();
-		while ($data = $cursor->fetch()) {
-			$entry = $this->getLinkFromEntry($data);
-			$result[] = $entry;
-		}
-		$cursor->closeCursor();
-
-		return $result;
-	}
-
-
-	/**
-	 * @param string $circleUniqueId
-	 * @param string $uniqueId
-	 *
-	 * @return FederatedLink
-	 */
-	public function getFromUniqueId($circleUniqueId, $uniqueId) {
-		$qb = $this->getLinksSelectSql();
-		$expr = $qb->expr();
-
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->andWhere(
-			$expr->andX(
-				$expr->eq('f.circle_id', $qb->createNamedParameter($circleUniqueId)),
-				$expr->eq('f.unique_id', $qb->createNamedParameter($uniqueId))
-			)
-		);
-
-		$cursor = $qb->execute();
-		$data = $cursor->fetch();
-		$cursor->closeCursor();
-
-		return $this->getLinkFromEntry($data);
-	}
-
-
-
 	public function delete(FederatedLink $link) {
 
 		if ($link === null) {
@@ -189,4 +132,108 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 
 		return $link;
 	}
+
+
+	/**
+	 * returns all FederatedLink from a circle
+	 *
+	 * @param string $circleUniqueId
+	 * @param int $status
+	 *
+	 * @return FederatedLink[]
+	 */
+	public function getLinksFromCircle($circleUniqueId, $status = 0) {
+		$qb = $this->getLinksSelectSql();
+		$this->limitToCircleId($qb, $circleUniqueId);
+		$this->limitToStatus($qb, $status);
+
+		$links = [];
+		$cursor = $qb->execute();
+		while ($data = $cursor->fetch()) {
+			$links[] = $this->parseLinksSelectSql($data);
+		}
+		$cursor->closeCursor();
+
+		return $links;
+	}
+
+
+	/**
+	 * returns a FederatedLink from a circle identified by its full unique Id
+	 *
+	 * @param string $circleUniqueId
+	 * @param string $linkUniqueId
+	 *
+	 * @return FederatedLink
+	 * @throws FederatedLinkDoesNotExistException
+	 */
+	public function getLinkFromCircle($circleUniqueId, $linkUniqueId) {
+		$qb = $this->getLinksSelectSql();
+		$this->limitToCircleId($qb, $circleUniqueId);
+		$this->limitToUniqueId($qb, $linkUniqueId);
+
+		$cursor = $qb->execute();
+		$data = $cursor->fetch();
+		$cursor->closeCursor();
+
+		if ($data === false) {
+			throw new FederatedLinkDoesNotExistException($this->l10n->t('Federated link not found'));
+		}
+
+		return $this->parseLinksSelectSql($data);
+	}
+
+
+	/**
+	 * return the FederatedLink identified by a remote Circle UniqueId and the Token of the link
+	 *
+	 * @param string $token
+	 * @param string $uniqueId
+	 *
+	 * @return FederatedLink
+	 * @throws FederatedLinkDoesNotExistException
+	 */
+	public function getLinkFromToken($token, $uniqueId) {
+		$qb = $this->getLinksSelectSql();
+		$this->limitToUniqueId($qb, (string)$uniqueId);
+		$this->limitToToken($qb, (string)$token);
+
+		$cursor = $qb->execute();
+		$data = $cursor->fetch();
+		$cursor->closeCursor();
+
+		if ($data === false) {
+			throw new FederatedLinkDoesNotExistException($this->l10n->t('Federated link not found'));
+		}
+
+		return $this->parseLinksSelectSql($data);
+	}
+
+
+	/**
+	 * return the FederatedLink identified by a its Id
+	 *
+	 * @param string $linkUniqueId
+	 *
+	 * @return FederatedLink
+	 * @throws FederatedLinkDoesNotExistException
+	 */
+	public function getLinkFromId($linkUniqueId) {
+		$qb = $this->getLinksSelectSql();
+		$this->limitToShortenUniqueId($qb, $linkUniqueId, FederatedLink::SHORT_UNIQUE_ID_LENGTH);
+
+		$cursor = $qb->execute();
+		$data = $cursor->fetch();
+		$cursor->closeCursor();
+
+		if ($data === false) {
+			throw new FederatedLinkDoesNotExistException($this->l10n->t('Federated link not found'));
+		}
+
+		$entry = $this->parseLinksSelectSql($data);
+
+		return $entry;
+	}
+
+
 }

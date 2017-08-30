@@ -140,17 +140,16 @@ class CoreRequestBuilder {
 	 *
 	 * @param IQueryBuilder $qb
 	 * @param string $circleUniqueId
+	 * @param $length
 	 */
-	protected function limitToShortenUniqueId(IQueryBuilder &$qb, $circleUniqueId) {
+	protected function limitToShortenUniqueId(IQueryBuilder &$qb, $circleUniqueId, $length) {
 		$expr = $qb->expr();
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? '`' . $this->default_select_alias . '`.' : '';
 
 		$qb->andWhere(
 			$expr->eq(
 				$qb->createNamedParameter($circleUniqueId),
-				$qb->createFunction(
-					'SUBSTR(' . $pf . '`unique_id`' . ', 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
-				)
+				$qb->createFunction('SUBSTR(' . $pf . '`unique_id`' . ', 1, ' . $length . ')')
 			)
 		);
 
@@ -176,6 +175,17 @@ class CoreRequestBuilder {
 	 */
 	protected function limitToName(IQueryBuilder &$qb, $name) {
 		$this->limitToDBField($qb, 'name', $name);
+	}
+
+
+	/**
+	 * Limit the search by its Status (or greater)
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param string $name
+	 */
+	protected function limitToStatus(IQueryBuilder &$qb, $name) {
+		$this->limitToDBFieldOrGreater($qb, 'status', $name);
 	}
 
 
@@ -260,6 +270,18 @@ class CoreRequestBuilder {
 
 
 	/**
+	 * @param IQueryBuilder $qb
+	 * @param string $field
+	 * @param string|integer $value
+	 */
+	private function limitToDBFieldOrGreater(IQueryBuilder &$qb, $field, $value) {
+		$expr = $qb->expr();
+		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
+		$qb->andWhere($expr->gte($pf . $field, $qb->createNamedParameter($value)));
+	}
+
+
+	/**
 	 * link to the groupId/UserId of the NC DB.
 	 * If userId is empty, we add the uid of the NCGroup Table in the select list with 'user_id'
 	 * alias
@@ -300,7 +322,7 @@ class CoreRequestBuilder {
 			   $expr->eq(
 				   $pf . 'circle_id',
 				   $qb->createFunction(
-					   'SUBSTR(`c`.`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
+					   'SUBSTR(`c`.`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')'
 				   )
 			   )
 		   );
@@ -332,7 +354,7 @@ class CoreRequestBuilder {
 				$expr->eq('ncgu.gid', 'g.group_id'),
 				$expr->eq(
 					'g.circle_id', $qb->createFunction(
-					'SUBSTR(' . $field . ', 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
+					'SUBSTR(' . $field . ', 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')'
 				)
 				)
 			)

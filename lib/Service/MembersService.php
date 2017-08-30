@@ -69,7 +69,7 @@ class MembersService {
 	/**
 	 * MembersService constructor.
 	 *
-	 * @param $userId
+	 * @param string $UserId
 	 * @param IL10N $l10n
 	 * @param IUserManager $userManager
 	 * @param ConfigService $configService
@@ -79,7 +79,7 @@ class MembersService {
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$userId,
+		$UserId,
 		IL10N $l10n,
 		IUserManager $userManager,
 		ConfigService $configService,
@@ -88,7 +88,7 @@ class MembersService {
 		EventsService $eventsService,
 		MiscService $miscService
 	) {
-		$this->userId = $userId;
+		$this->userId = $UserId;
 		$this->l10n = $l10n;
 		$this->userManager = $userManager;
 		$this->configService = $configService;

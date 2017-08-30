@@ -40,6 +40,8 @@ class FederatedLink implements \JsonSerializable {
 	const STATUS_LINK_REQUESTED = 6;
 	const STATUS_LINK_UP = 9;
 
+	const SHORT_UNIQUE_ID_LENGTH = 12;
+
 	/** @var int */
 	private $id;
 
@@ -117,7 +119,7 @@ class FederatedLink implements \JsonSerializable {
 			return $this->token;
 		}
 
-		return substr($this->token, 0, 12);
+		return substr($this->token, 0, FederatedLink::SHORT_UNIQUE_ID_LENGTH);
 	}
 
 
@@ -191,7 +193,7 @@ class FederatedLink implements \JsonSerializable {
 			return $this->circleUniqueId;
 		}
 
-		return substr($this->circleUniqueId, 0, Circle::UNIQUEID_SHORT_LENGTH);
+		return substr($this->circleUniqueId, 0, Circle::SHORT_UNIQUE_ID_LENGTH);
 
 	}
 
@@ -217,7 +219,7 @@ class FederatedLink implements \JsonSerializable {
 			return $this->uniqueId;
 		}
 
-		return substr($this->uniqueId, 0, 12);
+		return substr($this->uniqueId, 0, FederatedLink::SHORT_UNIQUE_ID_LENGTH);
 	}
 
 

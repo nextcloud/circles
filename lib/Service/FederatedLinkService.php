@@ -37,6 +37,7 @@ use OCA\Circles\Exceptions\FederatedCircleLinkFormatException;
 use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 use OCA\Circles\Exceptions\FederatedCircleStatusUpdateException;
 use OCA\Circles\Exceptions\FederatedLinkCreationException;
+use OCA\Circles\Exceptions\FederatedLinkDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedLinkUpdateException;
 use OCA\Circles\Exceptions\FederatedRemoteCircleDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedRemoteDoesNotAllowException;
@@ -81,9 +82,9 @@ class FederatedLinkService {
 
 
 	/**
-	 * CirclesService constructor.
+	 * FederatedLinkService constructor.
 	 *
-	 * @param $userId
+	 * @param string $UserId
 	 * @param IL10N $l10n
 	 * @param CirclesRequest $circlesRequest
 	 * @param ConfigService $configService
@@ -95,12 +96,12 @@ class FederatedLinkService {
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$userId, IL10N $l10n, CirclesRequest $circlesRequest, ConfigService $configService,
+		$UserId, IL10N $l10n, CirclesRequest $circlesRequest, ConfigService $configService,
 		CirclesService $circlesService, BroadcastService $broadcastService,
 		FederatedLinksRequest $federatedLinksRequest, EventsService $eventsService,
 		IClientService $clientService, MiscService $miscService
 	) {
-		$this->userId = $userId;
+		$this->userId = $UserId;
 		$this->l10n = $l10n;
 		$this->circlesRequest = $circlesRequest;
 		$this->configService = $configService;
@@ -162,7 +163,7 @@ class FederatedLinkService {
 	 * Function will check if user can edit the status, will update it and send the update to
 	 * remote
 	 *
-	 * @param int $linkId
+	 * @param string $linkUniqueId
 	 * @param int $status
 	 *
 	 * @throws Exception
@@ -172,13 +173,13 @@ class FederatedLinkService {
 	 *
 	 * @return FederatedLink[]
 	 */
-	public function linkStatus($linkId, $status) {
+	public function linkStatus($linkUniqueId, $status) {
 
 		$status = (int)$status;
 		$link = null;
 		try {
 
-			$link = $this->circlesRequest->getLinkFromId($linkId);
+			$link = $this->federatedLinksRequest->getLinkFromId($linkUniqueId);
 			$circle = $this->circlesRequest->getCircle($link->getCircleId(), $this->userId);
 			$circle->hasToBeFederated();
 			$circle->getHigherViewer()
@@ -186,7 +187,7 @@ class FederatedLinkService {
 			$link->hasToBeValidStatusUpdate($status);
 
 			if (!$this->eventOnLinkStatus($circle, $link, $status)) {
-				return $this->circlesRequest->getLinksFromCircle($circle->getUniqueId());
+				return $this->federatedLinksRequest->getLinksFromCircle($circle->getUniqueId());
 			}
 
 		} catch (Exception $e) {
@@ -206,7 +207,7 @@ class FederatedLinkService {
 
 		$this->federatedLinksRequest->update($link);
 
-		return $this->circlesRequest->getLinksFromCircle($circle->getUniqueId());
+		return $this->federatedLinksRequest->getLinksFromCircle($circle->getUniqueId());
 	}
 
 
@@ -258,31 +259,42 @@ class FederatedLinkService {
 
 		$link = null;
 		try {
-			list($remoteCircle, $remoteAddress) = explode('@', $remote, 2);
-
 			$circle = $this->circlesService->detailsCircle($circleUniqueId);
 			$circle->getHigherViewer()
 				   ->hasToBeAdmin();
 			$circle->hasToBeFederated();
 			$circle->cantBePersonal();
 
-			$link = new FederatedLink();
-			$link->setCircleId($circleUniqueId)
-				 ->setLocalAddress($this->configService->getLocalAddress())
-				 ->setAddress($remoteAddress)
-				 ->setRemoteCircleName($remoteCircle)
-				 ->setStatus(FederatedLink::STATUS_LINK_SETUP)
-				 ->generateToken();
-
-			$this->federatedLinksRequest->create($link);
+			$link = $this->generateNewLinkWithRemoteCircle($circle->getUniqueId(), $remote);
 			$this->requestLink($circle, $link);
-
 		} catch (Exception $e) {
-			if ($link !== null) {
-				$this->federatedLinksRequest->delete($link);
-			}
+			$this->federatedLinksRequest->delete($link);
 			throw $e;
 		}
+
+		return $link;
+	}
+
+
+	/**
+	 * @param $circleUniqueId
+	 * @param $remote
+	 *
+	 * @return FederatedLink
+	 */
+	private function generateNewLinkWithRemoteCircle($circleUniqueId, $remote) {
+
+		$link = new FederatedLink();
+		list($remoteCircle, $remoteAddress) = explode('@', $remote, 2);
+
+		$link->setCircleId($circleUniqueId)
+			 ->setLocalAddress($this->configService->getLocalAddress())
+			 ->setAddress($remoteAddress)
+			 ->setRemoteCircleName($remoteCircle)
+			 ->setStatus(FederatedLink::STATUS_LINK_SETUP)
+			 ->generateToken();
+
+		$this->federatedLinksRequest->create($link);
 
 		return $link;
 	}
@@ -397,36 +409,19 @@ class FederatedLinkService {
 	 */
 	private function parseRequestLinkError($reason) {
 
-		if ($reason === 'federated_not_allowed') {
-			throw new FederatedRemoteDoesNotAllowException(
-				$this->l10n->t('Federated circles are not allowed on the remote Nextcloud')
-			);
-		}
+		$convert = [
+			'federated_not_allowed' => $this->l10n->t(
+				'Federated circles are not allowed on the remote Nextcloud'
+			),
+			'circle_links_disable'  => $this->l10n->t('Remote circle does not accept federated links'),
+			'duplicate_unique_id'   => $this->l10n->t('Trying to link a circle to itself'),
+			'duplicate_link'        => $this->l10n->t('This link exists already'),
+			'circle_does_not_exist' => $this->l10n->t('The requested remote circle does not exist')
+		];
 
-		if ($reason === 'circle_links_disable') {
-			throw new FederatedRemoteDoesNotAllowException(
-				$this->l10n->t('The remote circle does not accept federated links')
-			);
+		if (key_exists($reason, $convert)) {
+			throw new FederatedRemoteDoesNotAllowException($convert[$reason]);
 		}
-
-		if ($reason === 'duplicate_unique_id') {
-			throw new FederatedRemoteDoesNotAllowException(
-				$this->l10n->t('It seems that you are trying to link a circle to itself')
-			);
-		}
-
-		if ($reason === 'duplicate_link') {
-			throw new FederatedRemoteDoesNotAllowException(
-				$this->l10n->t('This link exists already')
-			);
-		}
-
-		if ($reason === 'circle_does_not_exist') {
-			throw new FederatedRemoteCircleDoesNotExistException(
-				$this->l10n->t('The requested remote circle does not exist')
-			);
-		}
-
 		throw new Exception($reason);
 	}
 
@@ -441,7 +436,7 @@ class FederatedLinkService {
 	 */
 	public function updateLinkFromRemote($token, $uniqueId, $status) {
 		try {
-			$link = $this->circlesRequest->getLinkFromToken($token, $uniqueId);
+			$link = $this->federatedLinksRequest->getLinkFromToken($token, $uniqueId);
 			$circle = $this->circlesRequest->forceGetCircle($link->getCircleId());
 			$circle->hasToBeFederated();
 
@@ -521,37 +516,69 @@ class FederatedLinkService {
 	 *
 	 * @throws FederatedCircleStatusUpdateException
 	 */
-	private function checkUpdateLinkFromRemoteLinkRemove(
-		Circle $circle, FederatedLink $link, $status
-	) {
+	private function checkUpdateLinkFromRemoteLinkRemove(Circle $circle, FederatedLink $link, $status) {
+
 		if ((int)$status !== FederatedLink::STATUS_LINK_REMOVE) {
 			return;
 		}
 
-		if ($link->getStatus() === FederatedLink::STATUS_REQUEST_SENT) {
-			$link->setStatus(FederatedLink::STATUS_REQUEST_DECLINED);
-			$this->eventsService->onLinkRequestRejected($circle, $link);
+		$curStatus = $link->getStatus();
+		$this->checkUpdateLinkFromRemoteLinkRequestSent($circle, $link);
+		$this->checkUpdateLinkFromRemoteLinkRequested($circle, $link);
+		$this->checkUpdateLinkFromRemoteLinkDown($circle, $link);
 
-			return;
-		}
-
-		if ($link->getStatus() === FederatedLink::STATUS_LINK_REQUESTED) {
-			$link->setStatus(FederatedLink::STATUS_LINK_REMOVE);
-			$this->eventsService->onLinkRequestCanceled($circle, $link);
-
-			return;
-		}
-
-		if ($link->getStatus() > FederatedLink::STATUS_LINK_DOWN) {
-			$link->setStatus(FederatedLink::STATUS_LINK_DOWN);
-			$this->eventsService->onLinkDown($circle, $link);
-
+		if ($curStatus !== $link->getStatus()) {
 			return;
 		}
 
 		throw new FederatedCircleStatusUpdateException(
 			$this->l10n->t('Cannot proceed with this status update')
 		);
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 */
+	private function checkUpdateLinkFromRemoteLinkRequestSent(Circle $circle, FederatedLink &$link) {
+
+		if ($link->getStatus() !== FederatedLink::STATUS_REQUEST_SENT) {
+			return;
+		}
+
+		$link->setStatus(FederatedLink::STATUS_REQUEST_DECLINED);
+		$this->eventsService->onLinkRequestRejected($circle, $link);
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 */
+	private function checkUpdateLinkFromRemoteLinkRequested(Circle $circle, FederatedLink &$link) {
+
+		if ($link->getStatus() !== FederatedLink::STATUS_LINK_REQUESTED) {
+			return;
+		}
+
+		$link->setStatus(FederatedLink::STATUS_LINK_REMOVE);
+		$this->eventsService->onLinkRequestCanceled($circle, $link);
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 */
+	private function checkUpdateLinkFromRemoteLinkDown(Circle $circle, FederatedLink &$link) {
+
+		if ($link->getStatus() < FederatedLink::STATUS_LINK_DOWN) {
+			return;
+		}
+
+		$link->setStatus(FederatedLink::STATUS_LINK_DOWN);
+		$this->eventsService->onLinkDown($circle, $link);
 	}
 
 
@@ -635,8 +662,12 @@ class FederatedLinkService {
 			throw new FederatedLinkCreationException('duplicate_unique_id');
 		}
 
-		if ($this->getLink($circle->getUniqueId(), $link->getUniqueId(true)) !== null) {
+		try {
+			$this->federatedLinksRequest->getLinkFromCircle(
+				$circle->getUniqueId(), $link->getUniqueId(true)
+			);
 			throw new FederatedLinkCreationException('duplicate_link');
+		} catch (FederatedLinkDoesNotExistException $e) {
 		}
 
 		if ($circle->getSetting('allow_links') !== 'true') {
@@ -644,25 +675,5 @@ class FederatedLinkService {
 		}
 	}
 
-
-	/**
-	 * @param string $circleUniqueId
-	 * @param string $uniqueId
-	 *
-	 * @return FederatedLink
-	 */
-	public function getLink($circleUniqueId, $uniqueId) {
-		return $this->federatedLinksRequest->getFromUniqueId($circleUniqueId, $uniqueId);
-	}
-
-
-	/**
-	 * @param string $circleUniqueId
-	 *
-	 * @return FederatedLink[]
-	 */
-	public function getLinksFromCircle($circleUniqueId) {
-		return $this->federatedLinksRequest->getLinked($circleUniqueId);
-	}
 
 }

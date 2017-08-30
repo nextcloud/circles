@@ -29,6 +29,7 @@ namespace OCA\Circles\Service;
 
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CirclesRequest;
+use OCA\Circles\Db\FederatedLinksRequest;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
@@ -56,6 +57,9 @@ class CirclesService {
 	/** @var MembersRequest */
 	private $membersRequest;
 
+	/** @var FederatedLinksRequest */
+	private $federatedLinksRequest;
+
 	/** @var EventsService */
 	private $eventsService;
 
@@ -66,28 +70,31 @@ class CirclesService {
 	/**
 	 * CirclesService constructor.
 	 *
-	 * @param $userId
+	 * @param string $UserId
 	 * @param IL10N $l10n
 	 * @param ConfigService $configService
 	 * @param CirclesRequest $circlesRequest
 	 * @param MembersRequest $membersRequest
+	 * @param FederatedLinksRequest $federatedLinksRequest
 	 * @param EventsService $eventsService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$userId,
+		$UserId,
 		IL10N $l10n,
 		ConfigService $configService,
 		CirclesRequest $circlesRequest,
 		MembersRequest $membersRequest,
+		FederatedLinksRequest $federatedLinksRequest,
 		EventsService $eventsService,
 		MiscService $miscService
 	) {
-		$this->userId = $userId;
+		$this->userId = $UserId;
 		$this->l10n = $l10n;
 		$this->configService = $configService;
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
+		$this->federatedLinksRequest = $federatedLinksRequest;
 		$this->eventsService = $eventsService;
 		$this->miscService = $miscService;
 	}
@@ -232,7 +239,7 @@ class CirclesService {
 		try {
 			if ($this->configService->isFederatedCirclesAllowed()) {
 				$circle->hasToBeFederated();
-				$links = $this->circlesRequest->getLinksFromCircle($circle->getUniqueId());
+				$links = $this->federatedLinksRequest->getLinksFromCircle($circle->getUniqueId());
 			}
 		} catch (FederatedCircleNotAllowedException $e) {
 		}

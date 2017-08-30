@@ -58,20 +58,20 @@ class BroadcastService {
 	/**
 	 * BroadcastService constructor.
 	 *
-	 * @param string $userId
+	 * @param string $UserId
 	 * @param ConfigService $configService
 	 * @param CirclesRequest $circlesRequest
 	 * @param MembersRequest $membersRequest
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$userId,
+		$UserId,
 		ConfigService $configService,
 		CirclesRequest $circlesRequest,
 		MembersRequest $membersRequest,
 		MiscService $miscService
 	) {
-		$this->userId = (string)$userId;
+		$this->userId = $UserId;
 		$this->configService = $configService;
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;

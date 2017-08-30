@@ -554,7 +554,6 @@ var nav = {
 			var linkId = $(this).attr('link-id');
 			var status = parseInt($(this).attr('link-status'));
 
-
 			var statusSelect = $(this).find('.link-status-select');
 
 			statusSelect.on('change', function () {

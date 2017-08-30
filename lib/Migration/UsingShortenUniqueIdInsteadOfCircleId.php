@@ -90,7 +90,7 @@ class UsingShortenUniqueIdInsteadOfCircleId implements IRepairStep {
 		$cursor = $qb->execute();
 		while ($data = $cursor->fetch()) {
 			$circleId = $data['id'];
-			$shortenUniqueId = substr($data['unique_id'], 0, Circle::UNIQUEID_SHORT_LENGTH);
+			$shortenUniqueId = substr($data['unique_id'], 0, Circle::SHORT_UNIQUE_ID_LENGTH);
 
 			$this->swapToShortenUniqueIdInTable(
 				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_GROUPS

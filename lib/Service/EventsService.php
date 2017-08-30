@@ -62,7 +62,7 @@ class EventsService {
 	/**
 	 * Events constructor.
 	 *
-	 * @param string $userId
+	 * @param string $UserId
 	 * @param IManager $activityManager
 	 * @param IUserManager $userManager
 	 * @param CirclesRequest $circlesRequest
@@ -70,10 +70,10 @@ class EventsService {
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$userId, IManager $activityManager, IUserManager $userManager,
+		$UserId, IManager $activityManager, IUserManager $userManager,
 		CirclesRequest $circlesRequest, MembersRequest $membersRequest, MiscService $miscService
 	) {
-		$this->userId = $userId;
+		$this->userId = $UserId;
 		$this->activityManager = $activityManager;
 		$this->userManager = $userManager;
 		$this->circlesRequest = $circlesRequest;
@@ -687,10 +687,14 @@ class EventsService {
 	 * @return \OCP\Activity\IEvent
 	 */
 	private function generateEvent($type) {
+		$this->miscService->log("USER: " . $this->userId);
 		$event = $this->activityManager->generateEvent();
 		$event->setApp(Application::APP_NAME)
-			  ->setType($type)
-			  ->setAuthor($this->userId);
+			  ->setType($type);
+
+		if ($this->userId === null) {
+		//	$event->setAuthor($this->userId);
+		}
 
 		return $event;
 	}

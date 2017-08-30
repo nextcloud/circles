@@ -229,7 +229,7 @@ class CirclesController extends BaseController {
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
-	 * @param int $linkId
+	 * @param string $linkId
 	 * @param int $status
 	 *
 	 * @return DataResponse
@@ -248,9 +248,7 @@ class CirclesController extends BaseController {
 
 			return $this->success(['link_id' => $linkId, 'links' => $links]);
 		} catch (\Exception $e) {
-			return $this->fail(
-				['link_id' => $linkId, 'error' => $e->getMessage()]
-			);
+			return $this->fail(['link_id' => $linkId, 'error' => $e->getMessage()]);
 		}
 	}
 

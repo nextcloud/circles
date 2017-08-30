@@ -31,7 +31,6 @@ namespace OCA\Circles\Db;
 use Doctrine\DBAL\Query\QueryBuilder;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Model\Circle;
-use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\ConfigService;
@@ -182,7 +181,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 				$expr->eq(
 					$qb->createNamedParameter($circleUniqueId),
 					$qb->createFunction(
-						'SUBSTR(`c`.`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
+						'SUBSTR(`c`.`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')'
 					)
 				)
 			);
@@ -265,7 +264,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 				   $expr->eq(
 					   'u.circle_id',
 					   $qb->createFunction(
-						   'SUBSTR(' . $pf . '`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH
+						   'SUBSTR(' . $pf . '`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH
 						   . ')'
 					   )
 				   ),
@@ -298,7 +297,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 			   $expr->andX(
 				   $expr->eq(
 					   $qb->createFunction(
-						   'SUBSTR(' . $pf . '`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH
+						   'SUBSTR(' . $pf . '`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH
 						   . ')'
 					   )
 					   , 'o.circle_id'
@@ -332,28 +331,10 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 			   $expr->eq(
 				   $pf . 'circle_id',
 				   $qb->createFunction(
-					   'SUBSTR(`lc`.`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
+					   'SUBSTR(`lc`.`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')'
 				   )
 			   )
 		   );
-	}
-
-
-	/**
-	 * Base of the Sql Select request for Shares
-	 *
-	 * @return IQueryBuilder
-	 */
-	protected function getLinksSelectSql() {
-		$qb = $this->dbConnection->getQueryBuilder();
-
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->select('id', 'status', 'address', 'token', 'circle_id', 'unique_id', 'creation')
-		   ->from(self::TABLE_LINKS, 'l');
-
-		$this->default_select_alias = 'l';
-
-		return $qb;
 	}
 
 
@@ -459,7 +440,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 			   $qb->expr()
 				  ->eq(
 					  $qb->createFunction(
-						  'SUBSTR(`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
+						  'SUBSTR(`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')'
 					  ),
 					  $qb->createNamedParameter($circleUniqueId)
 				  )
@@ -546,25 +527,6 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		$frame->setUniqueId($data['unique_id']);
 
 		return $frame;
-	}
-
-
-	/**
-	 * @param array $data
-	 *
-	 * @return FederatedLink
-	 */
-	protected function parseLinksSelectSql($data) {
-		$link = new FederatedLink();
-		$link->setId($data['id'])
-			 ->setUniqueId($data['unique_id'])
-			 ->setStatus($data['status'])
-			 ->setCreation($data['creation'])
-			 ->setAddress($data['address'])
-			 ->setToken($data['token'])
-			 ->setCircleId($data['circle_id']);
-
-		return $link;
 	}
 
 
