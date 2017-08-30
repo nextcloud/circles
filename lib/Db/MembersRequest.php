@@ -79,16 +79,13 @@ class MembersRequest extends MembersRequestBuilder {
 	 *
 	 * @param string $circleUniqueId
 	 * @param int $level
-	 * @param bool $includeGroupMembers
+	 * @param bool $incGroup
 	 *
 	 * @return Member[]
 	 */
-	public function forceGetMembers(
-		$circleUniqueId, $level = Member::LEVEL_MEMBER, $includeGroupMembers = false
-	) {
+	public function forceGetMembers($circleUniqueId, $level = Member::LEVEL_MEMBER, $incGroup = false) {
 
 		$qb = $this->getMembersSelectSql();
-
 		$this->limitToMembersAndAlmost($qb);
 		$this->limitToLevel($qb, $level);
 		$this->limitToCircleId($qb, $circleUniqueId);
@@ -100,7 +97,7 @@ class MembersRequest extends MembersRequestBuilder {
 		}
 		$cursor->closeCursor();
 
-		if ($this->configService->isLinkedGroupsAllowed() && $includeGroupMembers === true) {
+		if ($this->configService->isLinkedGroupsAllowed() && $incGroup === true) {
 			$this->includeGroupMembers($members, $circleUniqueId, $level);
 		}
 

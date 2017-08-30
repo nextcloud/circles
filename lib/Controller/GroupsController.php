@@ -102,7 +102,7 @@ class GroupsController extends BaseController {
 				'circle_id' => $uniqueId,
 				'name'      => $group,
 				'level'     => $level,
-				'groups'   => $data,
+				'groups'    => $data,
 			]
 		);
 	}
@@ -121,30 +121,18 @@ class GroupsController extends BaseController {
 	public function remove($uniqueId, $group) {
 		if (!$this->configService->isLinkedGroupsAllowed()) {
 			throw new LinkedGroupNotAllowedException(
-				$this->l10n->t("Linked Groups are not allowed on this Nextcloud")
+				$this->l10n->t('Linked Groups are not allowed on this Nextcloud')
 			);
 		}
 
+		$args = ['circle_id' => $uniqueId, 'name' => $group];
 		try {
 			$data = $this->groupsService->unlinkGroup($uniqueId, $group);
 		} catch (\Exception $e) {
-			return
-				$this->fail(
-					[
-						'circle_id' => $uniqueId,
-						'name'      => $group,
-						'error'     => $e->getMessage()
-					]
-				);
+			return $this->fail(array_merge($args, ['error' => $e->getMessage()]));
 		}
 
-		return $this->success(
-			[
-				'circle_id' => $uniqueId,
-				'name'      => $group,
-				'groups'    => $data,
-			]
-		);
+		return $this->success(array_merge($args, ['groups' => $data]));
 	}
 
 
