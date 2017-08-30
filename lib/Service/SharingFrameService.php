@@ -172,7 +172,7 @@ class SharingFrameService {
 	 * @throws SharingFrameDoesNotExistException
 	 */
 	public function getFrameFromUniqueId($circleUniqueId, $frameUniqueId) {
-		if ($frameUniqueId === null || $frameUniqueId === '') {
+		if ($frameUniqueId === '') {
 			throw new SharingFrameDoesNotExistException('unknown_share');
 		}
 
@@ -200,6 +200,9 @@ class SharingFrameService {
 	public function receiveFrame($token, $uniqueId, SharingFrame &$frame) {
 		try {
 			$link = $this->federatedLinksRequest->getLinkFromToken((string)$token, (string)$uniqueId);
+			$circle = $this->circlesRequest->forceGetCircle($link->getCircleId());
+		} catch (CircleDoesNotExistException $e) {
+			throw new CircleDoesNotExistException('unknown_circle');
 		} catch (Exception $e) {
 			throw $e;
 		}
@@ -208,12 +211,6 @@ class SharingFrameService {
 			$this->circlesRequest->getFrame($link->getCircleId(), $frame->getUniqueId());
 			throw new SharingFrameAlreadyExistException('shares_is_already_known');
 		} catch (SharingFrameDoesNotExistException $e) {
-		}
-
-		try {
-			$circle = $this->circlesRequest->forceGetCircle($link->getCircleId());
-		} catch (CircleDoesNotExistException $e) {
-			throw new CircleDoesNotExistException('unknown_circle');
 		}
 
 		$frame->setCircle($circle);
