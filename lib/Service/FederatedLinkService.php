@@ -46,6 +46,7 @@ use OCA\Circles\Exceptions\MemberIsNotAdminException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCP\Http\Client\IClientService;
+use OCP\Http\Client\IResponse;
 use OCP\IL10N;
 
 class FederatedLinkService {
@@ -321,39 +322,16 @@ class FederatedLinkService {
 	 * @throws Exception
 	 */
 	private function requestLink(Circle $circle, FederatedLink &$link) {
-		$args = [
-			'apiVersion' => Circles::version(),
-			'token'      => $link->getToken(true),
-			'uniqueId'   => $circle->getUniqueId(true),
-			'sourceName' => $circle->getName(),
-			'linkTo'     => $link->getRemoteCircleName(),
-			'address'    => $link->getLocalAddress()
-		];
-
-		$client = $this->clientService->newClient();
+		$args = array_merge(self::generateLinkData($link), ['sourceName' => $circle->getName()]);
 
 		try {
-			$request = $client->put(
-				$this->generateLinkRemoteURL($link->getAddress()), [
-																	 'body'            => $args,
-																	 'timeout'         => 10,
-																	 'connect_timeout' => 10,
-																 ]
-			);
+			$client = $this->clientService->newClient();
+			$body = self::generateClientBodyData($args);
+			$response = $client->put($this->generateLinkRemoteURL($link->getAddress()), $body);
+			$result = $this->parseRequestLinkResult($response);
 
-			$result = json_decode($request->getBody(), true);
-			if ($result === null) {
-				throw new FederatedRemoteIsDownException(
-					$this->l10n->t(
-						'The remote host is down or the Circles app is not installed on it'
-					)
-				);
-			}
-
-			$this->eventOnRequestLink(
-				$circle, $link, $result['status'],
-				((key_exists('reason', $result)) ? $result['reason'] : '')
-			);
+			$reason = ((key_exists('reason', $result)) ? $result['reason'] : '');
+			$this->eventOnRequestLink($circle, $link, $result['status'], $reason);
 
 			$link->setUniqueId($result['uniqueId']);
 			$this->federatedLinksRequest->update($link);
@@ -365,6 +343,18 @@ class FederatedLinkService {
 	}
 
 
+	private function parseRequestLinkResult(IResponse $response) {
+		$result = json_decode($response->getBody(), true);
+		if ($result === null) {
+			throw new FederatedRemoteIsDownException(
+				$this->l10n->t('The remote host is down or the Circles app is not installed on it')
+			);
+		}
+
+		return $result;
+	}
+
+
 	/**
 	 * eventOnRequestLink();
 	 *
@@ -373,25 +363,26 @@ class FederatedLinkService {
 	 *
 	 * @param Circle $circle
 	 * @param FederatedLink $link
-	 * @param $status
-	 * @param $reason
+	 * @param int $status
+	 * @param string $reason
 	 *
 	 * @throws Exception
 	 */
-	private function eventOnRequestLink(Circle $circle, FederatedLink $link, $status, $reason) {
+	private function eventOnRequestLink(Circle $circle, FederatedLink &$link, $status, $reason) {
 
-		try {
-			if ($status === FederatedLink::STATUS_LINK_UP) {
+		switch ($status) {
+			case FederatedLink::STATUS_LINK_UP:
 				$link->setStatus(FederatedLink::STATUS_LINK_UP);
 				$this->eventsService->onLinkUp($circle, $link);
-			} else if ($status === FederatedLink::STATUS_LINK_REQUESTED) {
+				break;
+
+			case  FederatedLink::STATUS_LINK_REQUESTED:
 				$link->setStatus(FederatedLink::STATUS_REQUEST_SENT);
 				$this->eventsService->onLinkRequestSent($circle, $link);
-			} else {
+				break;
+
+			default:
 				$this->parseRequestLinkError($reason);
-			}
-		} catch (Exception $e) {
-			throw $e;
 		}
 	}
 
@@ -505,6 +496,89 @@ class FederatedLinkService {
 
 
 	/**
+	 * updateLinkRemote()
+	 *
+	 * Send a request to the remote of the link to update its status.
+	 *
+	 * @param FederatedLink $link
+	 *
+	 * @return bool
+	 * @throws Exception
+	 */
+	public function updateLinkRemote(FederatedLink &$link) {
+
+		try {
+			$client = $this->clientService->newClient();
+			$body = self::generateClientBodyData(self::generateLinkData($link));
+			$response = $client->post($this->generateLinkRemoteURL($link->getAddress()), $body);
+			$result = parseRequestLinkResult($response);
+
+			if ($result['status'] === -1) {
+				throw new FederatedLinkUpdateException($result['reason']);
+			}
+
+			return true;
+		} catch (Exception $e) {
+			throw $e;
+		}
+	}
+
+
+	/**
+	 * Create a new link into database and assign the correct status.
+	 *
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 *
+	 * @throws Exception
+	 */
+	public function initiateLink(Circle $circle, FederatedLink &$link) {
+
+		try {
+			$this->checkLinkRequestValidity($circle, $link);
+			$link->setCircleId($circle->getUniqueId());
+
+			if ($circle->getSetting('allow_links_auto') === 'true') {
+				$link->setStatus(FederatedLink::STATUS_LINK_UP);
+				$this->eventsService->onLinkUp($circle, $link);
+			} else {
+				$link->setStatus(FederatedLink::STATUS_LINK_REQUESTED);
+				$this->eventsService->onLinkRequestReceived($circle, $link);
+			}
+
+			$this->federatedLinksRequest->create($link);
+		} catch (Exception $e) {
+			throw $e;
+		}
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 * @param FederatedLink $link
+	 *
+	 * @throws FederatedLinkCreationException
+	 */
+	private function checkLinkRequestValidity($circle, $link) {
+		if ($circle->getUniqueId(true) === $link->getUniqueId(true)) {
+			throw new FederatedLinkCreationException('duplicate_unique_id');
+		}
+
+		try {
+			$this->federatedLinksRequest->getLinkFromCircle(
+				$circle->getUniqueId(), $link->getUniqueId(true)
+			);
+			throw new FederatedLinkCreationException('duplicate_link');
+		} catch (FederatedLinkDoesNotExistException $e) {
+		}
+
+		if ($circle->getSetting('allow_links') !== 'true') {
+			throw new FederatedLinkCreationException('circle_links_disable');
+		}
+	}
+
+
+	/**
 	 * checkUpdateLinkFromRemoteLinkRemove();
 	 *
 	 * in case of a request of status update from remote for a link down, we check the current
@@ -583,96 +657,32 @@ class FederatedLinkService {
 
 
 	/**
-	 * updateLinkRemote()
-	 *
-	 * Send a request to the remote of the link to update its status.
-	 *
 	 * @param FederatedLink $link
 	 *
-	 * @return bool
-	 * @throws Exception
+	 * @return array
 	 */
-	public function updateLinkRemote(FederatedLink &$link) {
-		$args = [
+	private static function generateLinkData(FederatedLink $link) {
+		return [
 			'apiVersion' => Circles::version(),
 			'token'      => $link->getToken(true),
 			'uniqueId'   => $link->getCircleId(true),
-			'status'     => $link->getStatus()
+			'linkTo'     => $link->getRemoteCircleName(),
+			'address'    => $link->getLocalAddress()
 		];
-
-		$client = $this->clientService->newClient();
-		try {
-			$request = $client->post(
-				$this->generateLinkRemoteURL($link->getAddress()), [
-																	 'body'            => $args,
-																	 'timeout'         => 10,
-																	 'connect_timeout' => 10,
-																 ]
-			);
-
-			$result = json_decode($request->getBody(), true);
-			if ($result['status'] === -1) {
-				throw new FederatedLinkUpdateException($result['reason']);
-			}
-
-			return true;
-		} catch (Exception $e) {
-			throw $e;
-		}
 	}
 
 
 	/**
-	 * Create a new link into database and assign the correct status.
+	 * @param array $args
 	 *
-	 * @param Circle $circle
-	 * @param FederatedLink $link
-	 *
-	 * @throws Exception
+	 * @return array
 	 */
-	public function initiateLink(Circle $circle, FederatedLink &$link) {
-
-		try {
-			$this->checkLinkRequestValidity($circle, $link);
-			$link->setCircleId($circle->getUniqueId());
-
-			if ($circle->getSetting('allow_links_auto') === 'true') {
-				$link->setStatus(FederatedLink::STATUS_LINK_UP);
-				$this->eventsService->onLinkUp($circle, $link);
-			} else {
-				$link->setStatus(FederatedLink::STATUS_LINK_REQUESTED);
-				$this->eventsService->onLinkRequestReceived($circle, $link);
-			}
-
-			$this->federatedLinksRequest->create($link);
-		} catch (Exception $e) {
-			throw $e;
-		}
-	}
-
-
-	/**
-	 * @param Circle $circle
-	 * @param FederatedLink $link
-	 *
-	 * @throws FederatedLinkCreationException
-	 */
-	private function checkLinkRequestValidity($circle, $link) {
-		if ($circle->getUniqueId(true) === $link->getUniqueId(true)) {
-			throw new FederatedLinkCreationException('duplicate_unique_id');
-		}
-
-		try {
-			$this->federatedLinksRequest->getLinkFromCircle(
-				$circle->getUniqueId(), $link->getUniqueId(true)
-			);
-			throw new FederatedLinkCreationException('duplicate_link');
-		} catch (FederatedLinkDoesNotExistException $e) {
-		}
-
-		if ($circle->getSetting('allow_links') !== 'true') {
-			throw new FederatedLinkCreationException('circle_links_disable');
-		}
+	private static function generateClientBodyData($args) {
+		return [
+			'body'            => $args,
+			'timeout'         => 5,
+			'connect_timeout' => 5,
+		];
 	}
 
 
