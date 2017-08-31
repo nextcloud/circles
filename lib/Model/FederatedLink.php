@@ -304,36 +304,83 @@ class FederatedLink implements \JsonSerializable {
 
 
 	public function hasToBeValidStatusUpdate($status) {
-		if ($this->getStatus() === self::STATUS_LINK_DOWN && $status === self::STATUS_LINK_REMOVE) {
-			return true;
+		try {
+			$this->hasToBeValidStatusUpdateWhileLinkDown($status);
+			$this->hasToBeValidStatusUpdateWhileRequestDeclined($status);
+			$this->hasToBeValidStatusUpdateWhileLinkRequested($status);
+			$this->hasToBeValidStatusUpdateWhileRequestSent($status);
+
+		} catch (FederatedCircleStatusUpdateException $e) {
+			throw new FederatedCircleStatusUpdateException('The status could not be updated');
+		}
+	}
+
+
+	/**
+	 * @param $status
+	 *
+	 * @throws FederatedCircleStatusUpdateException
+	 */
+	private function hasToBeValidStatusUpdateWhileLinkDown($status) {
+
+		if ($this->getStatus() === self::STATUS_LINK_DOWN) {
+			return;
 		}
 
-		if ($this->getStatus() === self::STATUS_REQUEST_DECLINED
-			|| $this->getStatus() === self::STATUS_LINK_SETUP
+		if ($status !== self::STATUS_LINK_REMOVE) {
+			throw new FederatedCircleStatusUpdateException();
+		}
+	}
+
+
+	/**
+	 * @param $status
+	 *
+	 * @throws FederatedCircleStatusUpdateException
+	 */
+	private function hasToBeValidStatusUpdateWhileRequestDeclined($status) {
+		if ($this->getStatus() !== self::STATUS_REQUEST_DECLINED
+			&& $this->getStatus() !== self::STATUS_LINK_SETUP) {
+			return;
+		}
+
+		if ($status !== self::STATUS_LINK_REMOVE) {
+			throw new FederatedCircleStatusUpdateException();
+		}
+	}
+
+
+	/**
+	 * @param $status
+	 *
+	 * @throws FederatedCircleStatusUpdateException
+	 */
+	private function hasToBeValidStatusUpdateWhileLinkRequested($status) {
+		if ($this->getStatus() !== self::STATUS_LINK_REQUESTED) {
+			return;
+		}
+
+		if ($status !== self::STATUS_LINK_REMOVE && $status !== self::STATUS_LINK_UP) {
+			throw new FederatedCircleStatusUpdateException();
+		}
+	}
+
+
+	/**
+	 * @param $status
+	 *
+	 * @throws FederatedCircleStatusUpdateException
+	 */
+	private function hasToBeValidStatusUpdateWhileRequestSent($status) {
+		if ($this->getStatus() !== self::STATUS_REQUEST_SENT
+			&& $this->getStatus() !== self::STATUS_LINK_UP
 		) {
-			if ($status === self::STATUS_LINK_REMOVE) {
-				return true;
-			}
+			return;
 		}
 
-		if ($this->getStatus() === self::STATUS_LINK_REQUESTED) {
-			if ($status === self::STATUS_LINK_REMOVE) {
-				return true;
-			}
-			if ($status === self::STATUS_LINK_UP) {
-				return true;
-			}
+		if ($status !== self::STATUS_LINK_REMOVE) {
+			throw new FederatedCircleStatusUpdateException();
 		}
-
-		if ($this->getStatus() === self::STATUS_REQUEST_SENT
-			|| $this->getStatus() === self::STATUS_LINK_UP
-		) {
-			if ($status === self::STATUS_LINK_REMOVE) {
-				return true;
-			}
-		}
-
-		throw new FederatedCircleStatusUpdateException('The status could not be updated');
 	}
 
 
