@@ -84,7 +84,7 @@ class FederatedLinkService {
 	/**
 	 * FederatedLinkService constructor.
 	 *
-	 * @param string $UserId
+	 * @param string $userId
 	 * @param IL10N $l10n
 	 * @param CirclesRequest $circlesRequest
 	 * @param ConfigService $configService
@@ -96,12 +96,12 @@ class FederatedLinkService {
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$UserId, IL10N $l10n, CirclesRequest $circlesRequest, ConfigService $configService,
+		$userId, IL10N $l10n, CirclesRequest $circlesRequest, ConfigService $configService,
 		CirclesService $circlesService, BroadcastService $broadcastService,
 		FederatedLinksRequest $federatedLinksRequest, EventsService $eventsService,
 		IClientService $clientService, MiscService $miscService
 	) {
-		$this->userId = $UserId;
+		$this->userId = $userId;
 		$this->l10n = $l10n;
 		$this->circlesRequest = $circlesRequest;
 		$this->configService = $configService;

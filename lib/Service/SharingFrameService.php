@@ -75,7 +75,7 @@ class SharingFrameService {
 	/**
 	 * SharingFrameService constructor.
 	 *
-	 * @param string $UserId
+	 * @param string $userId
 	 * @param ConfigService $configService
 	 * @param CirclesRequest $circlesRequest
 	 * @param FederatedLinksRequest $federatedLinksRequest
@@ -85,7 +85,7 @@ class SharingFrameService {
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$UserId,
+		$userId,
 		ConfigService $configService,
 		CirclesRequest $circlesRequest,
 		FederatedLinksRequest $federatedLinksRequest,
@@ -94,7 +94,7 @@ class SharingFrameService {
 		IClientService $clientService,
 		MiscService $miscService
 	) {
-		$this->userId = $UserId;
+		$this->userId = $userId;
 		$this->configService = $configService;
 		$this->circlesRequest = $circlesRequest;
 		$this->federatedLinksRequest = $federatedLinksRequest;

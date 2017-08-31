@@ -62,7 +62,7 @@ class EventsService {
 	/**
 	 * Events constructor.
 	 *
-	 * @param string $UserId
+	 * @param string $userId
 	 * @param IManager $activityManager
 	 * @param IUserManager $userManager
 	 * @param CirclesRequest $circlesRequest
@@ -70,10 +70,10 @@ class EventsService {
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$UserId, IManager $activityManager, IUserManager $userManager,
+		$userId, IManager $activityManager, IUserManager $userManager,
 		CirclesRequest $circlesRequest, MembersRequest $membersRequest, MiscService $miscService
 	) {
-		$this->userId = $UserId;
+		$this->userId = $userId;
 		$this->activityManager = $activityManager;
 		$this->userManager = $userManager;
 		$this->circlesRequest = $circlesRequest;

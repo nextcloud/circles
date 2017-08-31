@@ -85,16 +85,16 @@ class ConfigService {
 	 * @param string $appName
 	 * @param IConfig $config
 	 * @param IRequest $request
-	 * @param string $UserId
+	 * @param string $userId
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$appName, IConfig $config, IRequest $request, $UserId, MiscService $miscService
+		$appName, IConfig $config, IRequest $request, $userId, MiscService $miscService
 	) {
 		$this->appName = $appName;
 		$this->config = $config;
 		$this->request = $request;
-		$this->userId = $UserId;
+		$this->userId = $userId;
 		$this->miscService = $miscService;
 	}
 

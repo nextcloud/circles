@@ -43,16 +43,9 @@ use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\SharingFrameService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
-use OCP\IL10N;
 use OCP\IRequest;
 
 class FederatedController extends Controller {
-
-	/** @var string */
-	protected $userId;
-
-	/** @var IL10N */
-	protected $l10n;
 
 	/** @var ConfigService */
 	protected $configService;
@@ -84,8 +77,6 @@ class FederatedController extends Controller {
 	 *
 	 * @param string $appName
 	 * @param IRequest $request
-	 * @param string $UserId
-	 * @param IL10N $l10n
 	 * @param ConfigService $configService
 	 * @param CirclesService $circlesService
 	 * @param SharingFrameService $sharingFrameService
@@ -95,22 +86,12 @@ class FederatedController extends Controller {
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$appName,
-		IRequest $request,
-		$UserId,
-		IL10N $l10n,
-		ConfigService $configService,
-		CirclesService $circlesService,
-		SharingFrameService $sharingFrameService,
-		BroadcastService $broadcastService,
+		$appName, IRequest $request, ConfigService $configService, CirclesService $circlesService,
+		SharingFrameService $sharingFrameService, BroadcastService $broadcastService,
 		FederatedLinkService $federatedLinkService,
-		FederatedLinkCreationService $federatedLinkCreationService,
-		MiscService $miscService
+		FederatedLinkCreationService $federatedLinkCreationService, MiscService $miscService
 	) {
 		parent::__construct($appName, $request);
-
-		$this->userId = $UserId;
-		$this->l10n = $l10n;
 		$this->configService = $configService;
 		$this->circlesService = $circlesService;
 		$this->sharingFrameService = $sharingFrameService;

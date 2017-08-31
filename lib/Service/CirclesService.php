@@ -70,7 +70,7 @@ class CirclesService {
 	/**
 	 * CirclesService constructor.
 	 *
-	 * @param string $UserId
+	 * @param string $userId
 	 * @param IL10N $l10n
 	 * @param ConfigService $configService
 	 * @param CirclesRequest $circlesRequest
@@ -80,7 +80,7 @@ class CirclesService {
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$UserId,
+		$userId,
 		IL10N $l10n,
 		ConfigService $configService,
 		CirclesRequest $circlesRequest,
@@ -89,7 +89,7 @@ class CirclesService {
 		EventsService $eventsService,
 		MiscService $miscService
 	) {
-		$this->userId = $UserId;
+		$this->userId = $userId;
 		$this->l10n = $l10n;
 		$this->configService = $configService;
 		$this->circlesRequest = $circlesRequest;

@@ -69,7 +69,7 @@ class MembersService {
 	/**
 	 * MembersService constructor.
 	 *
-	 * @param string $UserId
+	 * @param string $userId
 	 * @param IL10N $l10n
 	 * @param IUserManager $userManager
 	 * @param ConfigService $configService
@@ -79,16 +79,11 @@ class MembersService {
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$UserId,
-		IL10N $l10n,
-		IUserManager $userManager,
-		ConfigService $configService,
-		CirclesRequest $circlesRequest,
-		MembersRequest $membersRequest,
-		EventsService $eventsService,
+		$userId, IL10N $l10n, IUserManager $userManager, ConfigService $configService,
+		CirclesRequest $circlesRequest, MembersRequest $membersRequest, EventsService $eventsService,
 		MiscService $miscService
 	) {
-		$this->userId = $UserId;
+		$this->userId = $userId;
 		$this->l10n = $l10n;
 		$this->userManager = $userManager;
 		$this->configService = $configService;
@@ -187,7 +182,7 @@ class MembersService {
 	 *
 	 * @throws \Exception
 	 */
-	public function addLocalMember(Circle $circle, Member $member) {
+	private function addLocalMember(Circle $circle, Member $member) {
 
 		if ($member->getType() !== Member::TYPE_USER) {
 			return;
@@ -240,13 +235,9 @@ class MembersService {
 	 * @throws Exception
 	 */
 	private function verifyIdentBasedOnItsType(&$ident, $type) {
-		try {
-			$this->verifyIdentLocalMember($ident, $type);
-			$this->verifyIdentEmailAddress($ident, $type);
-			$this->verifyIdentContact($ident, $type);
-		} catch (Exception $e) {
-			throw $e;
-		}
+		$this->verifyIdentLocalMember($ident, $type);
+		$this->verifyIdentEmailAddress($ident, $type);
+		$this->verifyIdentContact($ident, $type);
 	}
 
 
@@ -333,16 +324,7 @@ class MembersService {
 
 		foreach ($group->getUsers() as $user) {
 			try {
-				$member =
-					$this->membersRequest->getFreshNewMember(
-						$circle->getUniqueId(), $user->getUID(), Member::TYPE_USER
-					);
-				$member->hasToBeInviteAble();
-
-				$member->inviteToCircle($circle->getType());
-				$this->membersRequest->updateMember($member);
-
-				$this->eventsService->onMemberNew($circle, $member);
+				$this->addSingleMember($circle, $user->getUID(), Member::TYPE_USER);
 			} catch (MemberAlreadyExistsException $e) {
 			} catch (\Exception $e) {
 				throw $e;
@@ -405,23 +387,28 @@ class MembersService {
 
 			$member = $this->membersRequest->forceGetMember($circle->getUniqueId(), $name, $type);
 			$member->levelHasToBeEditable();
-			if ($member->getLevel() !== $level) {
-				if ($level === Member::LEVEL_OWNER) {
-					$this->switchOwner($circle, $member);
-				} else {
-					$this->editMemberLevel($circle, $member, $level);
-				}
+			$this->updateMemberLevel($circle, $member, $level);
 
-				$this->eventsService->onMemberLevel($circle, $member);
-			}
-
-			return $this->membersRequest->getMembers(
-				$circle->getUniqueId(), $circle->getHigherViewer()
-			);
+			return $this->membersRequest->getMembers($circle->getUniqueId(), $circle->getHigherViewer());
 		} catch (\Exception $e) {
 			throw $e;
 		}
 
+	}
+
+
+	private function updateMemberLevel(Circle $circle, Member $member, $level) {
+		if ($member->getLevel() === $level) {
+			return;
+		}
+
+		if ($level === Member::LEVEL_OWNER) {
+			$this->switchOwner($circle, $member);
+		} else {
+			$this->editMemberLevel($circle, $member, $level);
+		}
+
+		$this->eventsService->onMemberLevel($circle, $member);
 	}
 
 

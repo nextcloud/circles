@@ -67,7 +67,7 @@ class LinksController extends Controller {
 	 *
 	 * @param string $appName
 	 * @param IRequest $request
-	 * @param string $UserId
+	 * @param string $userId
 	 * @param IL10N $l10n
 	 * @param ConfigService $configService
 	 * @param CirclesService $circlesService
@@ -78,7 +78,7 @@ class LinksController extends Controller {
 	public function __construct(
 		$appName,
 		IRequest $request,
-		$UserId,
+		$userId,
 		IL10N $l10n,
 		ConfigService $configService,
 		CirclesService $circlesService,

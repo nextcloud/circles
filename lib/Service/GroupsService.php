@@ -65,7 +65,7 @@ class GroupsService {
 	/**
 	 * GroupsService constructor.
 	 *
-	 * @param string $UserId
+	 * @param string $userId
 	 * @param IL10N $l10n
 	 * @param IGroupManager $groupManager
 	 * @param CirclesRequest $circlesRequest
@@ -74,10 +74,10 @@ class GroupsService {
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$UserId, IL10N $l10n, IGroupManager $groupManager, CirclesRequest $circlesRequest,
+		$userId, IL10N $l10n, IGroupManager $groupManager, CirclesRequest $circlesRequest,
 		MembersRequest $membersRequest, EventsService $eventsService, MiscService $miscService
 	) {
-		$this->userId = $UserId;
+		$this->userId = $userId;
 		$this->l10n = $l10n;
 		$this->groupManager = $groupManager;
 		$this->circlesRequest = $circlesRequest;
