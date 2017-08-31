@@ -58,13 +58,13 @@ return [
 		[
 			'name'         => 'Circles#leave', 'url' => '/v1/circles/{uniqueId}/leave', 'verb' => 'GET',
 		],
-		['name' => 'Circles#link', 'url' => '/v1/circles/{uniqueId}/link', 'verb' => 'POST'],
+		['name' => 'Links#createLink', 'url' => '/v1/circles/{uniqueId}/link', 'verb' => 'POST'],
 		[
-			'name'         => 'Circles#linkStatus',
+			'name'         => 'Links#updateLinkStatus',
 			'url'          => '/v1/link/{linkId}/status', 'verb' => 'POST'
 		],
-		['name' => 'Federated#updateLink', 'url' => '/v1/link', 'verb' => 'POST'],
 		['name' => 'Federated#requestedLink', 'url' => '/v1/link', 'verb' => 'PUT'],
+		['name' => 'Federated#updateLink', 'url' => '/v1/link', 'verb' => 'POST'],
 		[
 			'name' => 'Shares#initShareDelivery', 'url' => '/v1/payload',
 			'verb' => 'POST'
@@ -81,9 +81,6 @@ return [
 		[
 			'name'         => 'Members#addMember', 'url' => '/v1/circles/{uniqueId}/member', 'verb' => 'PUT'
 		],
-//		[
-//			'name'         => 'Members#addEmailAddress', 'url' => '/v1/circles/{uniqueId}/email', 'verb' => 'PUT'
-//		],
 		[
 			'name'         => 'Members#removeMember', 'url' => '/v1/circles/{uniqueId}/member',
 			'verb'         => 'DELETE',

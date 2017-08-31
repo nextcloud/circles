@@ -687,7 +687,6 @@ class EventsService {
 	 * @return \OCP\Activity\IEvent
 	 */
 	private function generateEvent($type) {
-		$this->miscService->log("USER: " . $this->userId);
 		$event = $this->activityManager->generateEvent();
 		$event->setApp(Application::APP_NAME)
 			  ->setType($type);

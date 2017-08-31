@@ -42,6 +42,7 @@ use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\SharingFrameService;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\IL10N;
+use Punic\Misc;
 
 class FederatedController extends BaseController {
 
@@ -80,30 +81,20 @@ class FederatedController extends BaseController {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
-	 * @param array $apiVersion
-	 * @param string $token
-	 * @param string $uniqueId
-	 * @param string $sourceName
-	 * @param string $linkTo
-	 * @param string $address
+	 * @param $data
 	 *
 	 * @return DataResponse
-	 * @throws FederatedLinkCreationException
 	 */
-	public function requestedLink($apiVersion, $token, $uniqueId, $sourceName, $linkTo, $address) {
-
-		if ($uniqueId === '' || !$this->configService->isFederatedCirclesAllowed()) {
+	public function requestedLink($data) {
+		if (MiscService::get($data, 'uniqueId') === ''
+			|| !$this->configService->isFederatedCirclesAllowed()) {
 			return $this->federatedFail('federated_not_allowed');
 		}
 
 		try {
-			Circles::compareVersion($apiVersion);
-			$circle = $this->circlesService->infoCircleByName($linkTo);
-			$link = new FederatedLink();
-			$link->setToken($token)
-				 ->setUniqueId($uniqueId)
-				 ->setRemoteCircleName($sourceName)
-				 ->setAddress($address);
+			Circles::compareVersion(MiscService::get($data, 'apiVersion'));
+			$circle = $this->circlesService->infoCircleByName(MiscService::get($data, 'linkTo'));
+			$link = $this->generateNewLink($data);
 
 			$this->federatedLinkService->initiateLink($circle, $link);
 
@@ -117,6 +108,23 @@ class FederatedController extends BaseController {
 		}
 	}
 
+
+	/**
+	 * @param $data
+	 *
+	 * @return FederatedLink
+	 */
+	private function generateNewLink($data) {
+		MiscService::mustContains($data, ['token', 'uniqueId', 'sourceName', 'address']);
+		$link = new FederatedLink();
+
+		$link->setToken(MiscService::get($data, 'token'))
+			 ->setUniqueId(MiscService::get($data, 'uniqueId'))
+			 ->setRemoteCircleName(MiscService::get($data, 'sourceName'))
+			 ->setAddress(MiscService::get($data, 'address'));
+
+		return $link;
+	}
 
 	/**
 	 * receiveFederatedDelivery()
@@ -169,22 +177,22 @@ class FederatedController extends BaseController {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
-	 * @param array $apiVersion
-	 * @param string $token
-	 * @param string $uniqueId
-	 * @param $status
+	 * @param $data
 	 *
 	 * @return DataResponse
 	 */
-	public function updateLink($apiVersion, $token, $uniqueId, $status) {
-
-		if ($uniqueId === '' || !$this->configService->isFederatedCirclesAllowed()) {
+	public function updateLink($data) {
+		if (MiscService::get($data, 'uniqueId') === ''
+			|| !$this->configService->isFederatedCirclesAllowed()) {
 			return $this->federatedFail('federated_not_allowed');
 		}
 
 		try {
-			Circles::compareVersion($apiVersion);
-			$link = $this->federatedLinkService->updateLinkFromRemote($token, $uniqueId, $status);
+			Circles::compareVersion(MiscService::get($data, 'apiVersion'));
+			$link = $this->federatedLinkService->updateLinkFromRemote(
+				MiscService::get($data, 'token'), MiscService::get($data, 'uniqueId'),
+				MiscService::get($data, 'status')
+			);
 		} catch (Exception $e) {
 			return $this->federatedFail($e->getMessage());
 		}

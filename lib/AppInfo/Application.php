@@ -57,7 +57,6 @@ class Application extends App {
 
 	const APP_NAME = 'circles';
 
-	const REMOTE_URL_LINK = '/index.php/apps/circles/v1/link';
 	const REMOTE_URL_PAYLOAD = '/index.php/apps/circles/v1/payload';
 
 	/**

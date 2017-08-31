@@ -28,7 +28,10 @@ namespace OCA\Circles\Service;
 
 use Exception;
 use OC\User\NoUserException;
+use OCA\Circles\Exceptions\MissingKeyInArrayException;
 use OCA\Circles\Model\Member;
+use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\DataResponse;
 use OCP\ILogger;
 use OCP\IUserManager;
 
@@ -56,6 +59,62 @@ class MiscService {
 		);
 
 		$this->logger->log($level, $message, $data);
+	}
+
+
+	/**
+	 * @param $arr
+	 * @param $k
+	 *
+	 * @return string|array
+	 */
+	public static function get($arr, $k) {
+		if (!key_exists($k, $arr)) {
+			return '';
+		}
+
+		return $arr[$k];
+	}
+
+
+	public static function mustContains($data, $arr) {
+		if (!is_array($arr)) {
+			$arr = [$arr];
+		}
+
+		foreach ($arr as $k) {
+			if (!key_exists($k, $data)) {
+				throw new MissingKeyInArrayException('missing_key_in_array');
+			}
+		}
+	}
+
+
+	/**
+	 * @param $data
+	 *
+	 * @return DataResponse
+	 */
+	public function fail($data) {
+		$this->log(json_encode($data));
+
+		return new DataResponse(
+			array_merge($data, array('status' => 0)),
+			Http::STATUS_NON_AUTHORATIVE_INFORMATION
+		);
+	}
+
+
+	/**
+	 * @param $data
+	 *
+	 * @return DataResponse
+	 */
+	public function success($data) {
+		return new DataResponse(
+			array_merge($data, array('status' => 1)),
+			Http::STATUS_CREATED
+		);
 	}
 
 
@@ -128,6 +187,7 @@ class MiscService {
 
 	/**
 	 * @param $ident
+	 *
 	 * @deprecated - move this somewhere else, no static if possible
 	 * @return mixed|string
 	 */
