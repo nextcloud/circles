@@ -342,60 +342,6 @@ class FederatedLinkService {
 
 
 	/**
-	 * Create a new link into database and assign the correct status.
-	 *
-	 * @param Circle $circle
-	 * @param FederatedLink $link
-	 *
-	 * @throws Exception
-	 */
-	public function initiateLink(Circle $circle, FederatedLink &$link) {
-
-		try {
-			$this->checkLinkRequestValidity($circle, $link);
-			$link->setCircleId($circle->getUniqueId());
-
-			if ($circle->getSetting('allow_links_auto') === 'true') {
-				$link->setStatus(FederatedLink::STATUS_LINK_UP);
-				$this->eventsService->onLinkUp($circle, $link);
-			} else {
-				$link->setStatus(FederatedLink::STATUS_LINK_REQUESTED);
-				$this->eventsService->onLinkRequestReceived($circle, $link);
-			}
-
-			$this->federatedLinksRequest->create($link);
-		} catch (Exception $e) {
-			throw $e;
-		}
-	}
-
-
-	/**
-	 * @param Circle $circle
-	 * @param FederatedLink $link
-	 *
-	 * @throws FederatedLinkCreationException
-	 */
-	private function checkLinkRequestValidity($circle, $link) {
-		if ($circle->getUniqueId(true) === $link->getUniqueId(true)) {
-			throw new FederatedLinkCreationException('duplicate_unique_id');
-		}
-
-		try {
-			$this->federatedLinksRequest->getLinkFromCircle(
-				$circle->getUniqueId(), $link->getUniqueId(true)
-			);
-			throw new FederatedLinkCreationException('duplicate_link');
-		} catch (FederatedLinkDoesNotExistException $e) {
-		}
-
-		if ($circle->getSetting('allow_links') !== 'true') {
-			throw new FederatedLinkCreationException('circle_links_disable');
-		}
-	}
-
-
-	/**
 	 * checkUpdateLinkFromRemoteLinkRemove();
 	 *
 	 * in case of a request of status update from remote for a link down, we check the current

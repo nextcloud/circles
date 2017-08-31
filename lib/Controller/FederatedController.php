@@ -30,21 +30,23 @@ use Exception;
 use OC\AppFramework\Http;
 use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
-use OCA\Circles\Exceptions\FederatedLinkCreationException;
 use OCA\Circles\Exceptions\SharingFrameAlreadyExistException;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\SharingFrame;
+use OCA\Circles\Service\BroadcastService;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\FederatedLinkCreationService;
 use OCA\Circles\Service\FederatedLinkService;
 use OCA\Circles\Service\MembersService;
 use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\SharingFrameService;
+use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\IL10N;
-use Punic\Misc;
+use OCP\IRequest;
 
-class FederatedController extends BaseController {
+class FederatedController extends Controller {
 
 	/** @var string */
 	protected $userId;
@@ -64,11 +66,59 @@ class FederatedController extends BaseController {
 	/** @var SharingFrameService */
 	protected $sharingFrameService;
 
+	/** @var BroadcastService */
+	protected $broadcastService;
+
 	/** @var FederatedLinkService */
 	protected $federatedLinkService;
 
+	/** @var FederatedLinkCreationService */
+	protected $federatedLinkCreationService;
+
 	/** @var MiscService */
 	protected $miscService;
+
+
+	/**
+	 * BaseController constructor.
+	 *
+	 * @param string $appName
+	 * @param IRequest $request
+	 * @param string $UserId
+	 * @param IL10N $l10n
+	 * @param ConfigService $configService
+	 * @param CirclesService $circlesService
+	 * @param SharingFrameService $sharingFrameService
+	 * @param BroadcastService $broadcastService
+	 * @param FederatedLinkService $federatedLinkService
+	 * @param FederatedLinkCreationService $federatedLinkCreationService
+	 * @param MiscService $miscService
+	 */
+	public function __construct(
+		$appName,
+		IRequest $request,
+		$UserId,
+		IL10N $l10n,
+		ConfigService $configService,
+		CirclesService $circlesService,
+		SharingFrameService $sharingFrameService,
+		BroadcastService $broadcastService,
+		FederatedLinkService $federatedLinkService,
+		FederatedLinkCreationService $federatedLinkCreationService,
+		MiscService $miscService
+	) {
+		parent::__construct($appName, $request);
+
+		$this->userId = $UserId;
+		$this->l10n = $l10n;
+		$this->configService = $configService;
+		$this->circlesService = $circlesService;
+		$this->sharingFrameService = $sharingFrameService;
+		$this->broadcastService = $broadcastService;
+		$this->federatedLinkService = $federatedLinkService;
+		$this->federatedLinkCreationService = $federatedLinkCreationService;
+		$this->miscService = $miscService;
+	}
 
 
 	/**
@@ -96,7 +146,7 @@ class FederatedController extends BaseController {
 			$circle = $this->circlesService->infoCircleByName(MiscService::get($data, 'linkTo'));
 			$link = $this->generateNewLink($data);
 
-			$this->federatedLinkService->initiateLink($circle, $link);
+			$this->federatedLinkCreationService->requestedLinkFromRemoteCircle($circle, $link);
 
 			return $this->federatedSuccess(
 				['status' => $link->getStatus(), 'uniqueId' => $circle->getUniqueId(true)], $link
