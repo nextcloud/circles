@@ -244,7 +244,7 @@ class CirclesController extends BaseController {
 		}
 
 		try {
-			$links = $this->federatedLinkService->linkStatus($linkId, $status);
+			$links = $this->federatedLinkService->linkStatus($linkId, (int)$status);
 
 			return $this->success(['link_id' => $linkId, 'links' => $links]);
 		} catch (\Exception $e) {

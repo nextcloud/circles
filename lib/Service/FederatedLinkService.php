@@ -176,10 +176,7 @@ class FederatedLinkService {
 	 */
 	public function linkStatus($linkUniqueId, $status) {
 
-		$status = (int)$status;
-		$link = null;
 		try {
-
 			$link = $this->federatedLinksRequest->getLinkFromId($linkUniqueId);
 			$circle = $this->circlesRequest->getCircle($link->getCircleId(), $this->userId);
 			$circle->hasToBeFederated();
@@ -187,13 +184,29 @@ class FederatedLinkService {
 				   ->hasToBeAdmin();
 			$link->hasToBeValidStatusUpdate($status);
 
-			if (!$this->eventOnLinkStatus($circle, $link, $status)) {
-				return $this->federatedLinksRequest->getLinksFromCircle($circle->getUniqueId());
+			if ($link->getStatus() !== $status) {
+				$this->updateLinkStatus($link, $circle, $status);
 			}
+
+			return $this->federatedLinksRequest->getLinksFromCircle($circle->getUniqueId());
 
 		} catch (Exception $e) {
 			throw $e;
 		}
+	}
+
+
+	/**
+	 * @param FederatedLink $link
+	 * @param Circle $circle
+	 * @param int $status
+	 *
+	 * @return FederatedLink[]
+	 * @throws Exception
+	 */
+	private function updateLinkStatus(FederatedLink $link, Circle $circle, $status) {
+
+		$this->eventOnUpdateLinkStatus($link, $circle, $status);
 
 		$link->setStatus($status);
 		$link->setCircleId($circle->getUniqueId(true));
@@ -218,16 +231,13 @@ class FederatedLinkService {
 	 * Called by linkStatus() to manage events when status is changing.
 	 * If status does not need update, returns false;
 	 *
-	 * @param Circle $circle
 	 * @param FederatedLink $link
-	 * @param $status
+	 * @param Circle $circle
+	 * @param int $status
 	 *
 	 * @return bool
 	 */
-	private function eventOnLinkStatus(Circle $circle, FederatedLink $link, $status) {
-		if ($link->getStatus() === $status) {
-			return false;
-		}
+	private function eventOnUpdateLinkStatus(FederatedLink $link, Circle $circle, $status) {
 
 		if ($status === FederatedLink::STATUS_LINK_REMOVE) {
 			$this->eventsService->onLinkRemove($circle, $link);
@@ -505,13 +515,13 @@ class FederatedLinkService {
 	 * @return bool
 	 * @throws Exception
 	 */
-	public function updateLinkRemote(FederatedLink &$link) {
+	private function updateLinkRemote(FederatedLink &$link) {
 
 		try {
 			$client = $this->clientService->newClient();
 			$body = self::generateClientBodyData(self::generateLinkData($link));
 			$response = $client->post($this->generateLinkRemoteURL($link->getAddress()), $body);
-			$result = parseRequestLinkResult($response);
+			$result = $this->parseRequestLinkResult($response);
 
 			if ($result['status'] === -1) {
 				throw new FederatedLinkUpdateException($result['reason']);
