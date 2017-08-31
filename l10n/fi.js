@@ -63,7 +63,6 @@ OC.L10N.register(
     "You need a specify a type of circle" : "Sinun täytyy määritellä piirin tyyppi",
     "You cannot create this type of circle" : "Et voi luoda tämän tyyppistä piiriä",
     "You cannot display this type of circle" : "Et voi näyttää tämän tyyppistä piiriä",
-    "It seems that you are trying to link a circle to itself" : "Näyttää että yrität linkittää piirin itsellesi",
     "This link exists already" : "Linkki on jo olemassa",
     "The requested remote circle does not exist" : "Pyydettyä etäpiiriä ei ole olemassa",
     "This user does not exist" : "Tätä käyttäjää ei ole olemassa",

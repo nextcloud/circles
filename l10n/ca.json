@@ -110,7 +110,6 @@
     "You cannot display this type of circle" : "No pots mostrar aquest tipus de cercle",
     "Federated link does not have a valid format" : "L'enllaç federat no té un format vàlid",
     "Federated circles are not allowed on the remote Nextcloud" : "Els cercles federats no estan permesos al Nextcloud remot",
-    "It seems that you are trying to link a circle to itself" : "Sembla que estàs intentant enllaçar un cercle amb ell mateix",
     "This link exists already" : "Aquest enllaç ja existeix",
     "The requested remote circle does not exist" : "El cercle remot sol·licitat no existeix",
     "This group does not exist" : "Aquest grup no existeix",

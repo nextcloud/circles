@@ -55,7 +55,6 @@ OC.L10N.register(
     "You cannot display this type of circle" : "No puede desplegar un círculo de este tipo",
     "Federated link does not have a valid format" : "El link federada no tiene un formato válido",
     "Federated circles are not allowed on the remote Nextcloud" : "No se permiten los círculos federados en el Nextcloud remoto",
-    "It seems that you are trying to link a circle to itself" : "Parece que está tratando de linkear un círculo a sí mismo",
     "This link exists already" : "Este link ya existe",
     "The requested remote circle does not exist" : "El círculo remoto solicitado no existe",
     "You cannot edit level in a personal circle" : "No puede editar el nivel en un círculo personal",
