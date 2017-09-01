@@ -161,19 +161,15 @@ class Provider extends BaseProvider implements IProvider {
 		$params = $event->getSubjectParameters();
 		$member = Member::fromJSON($params['member']);
 
-		switch ($event->getSubject()) {
-			case 'member_join':
-				return $this->parseSubjectMemberJoin($event, $circle, $member);
-
-			case 'member_add':
-				return $this->parseSubjectMemberAdd($event, $circle, $member);
-
-			case 'member_left':
-				return $this->parseSubjectMemberLeft($event, $circle, $member);
-
-			case 'member_remove':
-				return $this->parseSubjectMemberRemove($event, $circle, $member);
+		try {
+			$this->parseSubjectMemberJoin($event, $circle, $member);
+			$this->parseSubjectMemberAdd($event, $circle, $member);
+			$this->parseSubjectMemberLeft($event, $circle, $member);
+			$this->parseSubjectMemberRemove($event, $circle, $member);
+		} catch (FakeException $e) {
+			return $event;
 		}
+
 
 		return $event;
 	}
@@ -187,22 +183,43 @@ class Provider extends BaseProvider implements IProvider {
 	 * @param Circle $circle
 	 * @param Member $member
 	 *
-	 * @return IEvent
+	 * @throws FakeException
 	 */
 	private function parseSubjectMemberJoin(IEvent &$event, Circle $circle, Member $member) {
-		if ($circle->getType() === Circle::CIRCLES_CLOSED) {
-			return $this->parseCircleMemberEvent(
-				$event, $circle, $member,
-				$this->l10n->t('You accepted the invitation to join {circle}'),
-				$this->l10n->t('{member} accepted the invitation to join {circle}')
-			);
-		} else {
-			return $this->parseCircleMemberEvent(
-				$event, $circle, $member,
-				$this->l10n->t('You joined {circle}'),
-				$this->l10n->t('{member} joined {circle}')
-			);
+
+		if ($event->getSubject() !== 'member_request_invitation') {
+			return;
 		}
+
+		$this->parseSubjectMemberJoinClosedCircle($event, $circle, $member);
+		$this->parseCircleMemberEvent(
+			$event, $circle, $member, $this->l10n->t('You joined {circle}'),
+			$this->l10n->t('{member} joined {circle}')
+		);
+
+		throw new FakeException();
+	}
+
+
+	/**
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param Member $member
+	 *
+	 * @throws FakeException
+	 */
+	private function parseSubjectMemberJoinClosedCircle(IEvent &$event, Circle $circle, Member $member) {
+		if ($circle->getType() !== Circle::CIRCLES_CLOSED) {
+			return;
+		}
+
+		$this->parseCircleMemberEvent(
+			$event, $circle, $member,
+			$this->l10n->t('You accepted the invitation to join {circle}'),
+			$this->l10n->t('{member} accepted the invitation to join {circle}')
+		);
+
+		throw new FakeException();
 	}
 
 
@@ -214,24 +231,45 @@ class Provider extends BaseProvider implements IProvider {
 	 * @param Circle $circle
 	 * @param Member $member
 	 *
-	 * @return IEvent
+	 * @throws FakeException
 	 */
 	private function parseSubjectMemberAdd(IEvent &$event, Circle $circle, Member $member) {
-		if ($circle->getType() === Circle::CIRCLES_CLOSED) {
-			return $this->parseCircleMemberAdvancedEvent(
-				$event, $circle, $member,
-				$this->l10n->t("You accepted {member}'s request to join {circle}"),
-				$this->l10n->t('Your request to join {circle} has been accepted by {author}'),
-				$this->l10n->t("{member}'s request to join {circle} has been accepted by {author}")
-			);
-		} else {
-			return $this->parseCircleMemberAdvancedEvent(
-				$event, $circle, $member,
-				$this->l10n->t('You added {member} as member to {circle}'),
-				$this->l10n->t('You have been added as member to {circle} by {author}'),
-				$this->l10n->t('{member} has been added as member to {circle} by {author}')
-			);
+		if ($event->getSubject() !== 'member_add') {
+			return;
 		}
+
+		$this->parseSubjectMemberAddClosedCircle($event, $circle, $member);
+		$this->parseCircleMemberAdvancedEvent(
+			$event, $circle, $member,
+			$this->l10n->t('You added {member} as member to {circle}'),
+			$this->l10n->t('You have been added as member to {circle} by {author}'),
+			$this->l10n->t('{member} has been added as member to {circle} by {author}')
+		);
+
+		throw new FakeException();
+	}
+
+
+	/**
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param Member $member
+	 *
+	 * @throws FakeException
+	 */
+	private function parseSubjectMemberAddClosedCircle(IEvent &$event, Circle $circle, Member $member) {
+		if ($circle->getType() !== Circle::CIRCLES_CLOSED) {
+			return;
+		}
+
+		$this->parseCircleMemberAdvancedEvent(
+			$event, $circle, $member,
+			$this->l10n->t("You accepted {member}'s request to join {circle}"),
+			$this->l10n->t('Your request to join {circle} has been accepted by {author}'),
+			$this->l10n->t("{member}'s request to join {circle} has been accepted by {author}")
+		);
+
+		throw new FakeException();
 	}
 
 
@@ -244,19 +282,22 @@ class Provider extends BaseProvider implements IProvider {
 	 * @param Circle $circle
 	 * @param Member $member
 	 *
-	 * @return IEvent
+	 * @throws FakeException
 	 */
 	private function parseSubjectMemberLeft(IEvent &$event, Circle $circle, Member $member) {
-		if ($circle->getType() === Circle::CIRCLES_CLOSED
-			&& $member->getLevel() === Member::LEVEL_NONE) {
-			return $this->parseSubjectNonMemberLeftClosedCircle($event, $circle, $member);
-		} else {
-			return $this->parseCircleMemberEvent(
-				$event, $circle, $member,
-				$this->l10n->t('You left {circle}'),
-				$this->l10n->t('{member} left {circle}')
-			);
+
+		if ($event->getSubject() !== 'member_left') {
+			return;
 		}
+
+		$this->parseSubjectNonMemberLeftClosedCircle($event, $circle, $member);
+		$this->parseCircleMemberEvent(
+			$event, $circle, $member,
+			$this->l10n->t('You left {circle}'),
+			$this->l10n->t('{member} left {circle}')
+		);
+
+		throw new FakeException();
 	}
 
 
@@ -269,24 +310,30 @@ class Provider extends BaseProvider implements IProvider {
 	 * @param Circle $circle
 	 * @param Member $member
 	 *
-	 * @return IEvent
+	 * @throws FakeException
 	 */
-	private function parseSubjectNonMemberLeftClosedCircle(
-		IEvent &$event, Circle $circle, Member $member
+	private function parseSubjectNonMemberLeftClosedCircle(IEvent &$event, Circle $circle, Member $member
 	) {
+		if ($circle->getType() !== Circle::CIRCLES_CLOSED
+			|| $member->getLevel() !== Member::LEVEL_NONE) {
+			return;
+		}
+
 		if ($member->getStatus() === Member::STATUS_INVITED) {
-			return $this->parseCircleMemberEvent(
+			$this->parseCircleMemberEvent(
 				$event, $circle, $member,
 				$this->l10n->t("You declined the invitation to join {circle}"),
 				$this->l10n->t("{member} declined an invitation to join {circle}")
 			);
+		} else {
+			$this->parseCircleMemberEvent(
+				$event, $circle, $member,
+				$this->l10n->t("You cancelled your request to join {circle}"),
+				$this->l10n->t("{member} cancelled his request to join {circle}")
+			);
 		}
 
-		return $this->parseCircleMemberEvent(
-			$event, $circle, $member,
-			$this->l10n->t("You cancelled your request to join {circle}"),
-			$this->l10n->t("{member} cancelled his request to join {circle}")
-		);
+		throw new FakeException();
 	}
 
 
@@ -299,21 +346,28 @@ class Provider extends BaseProvider implements IProvider {
 	 * @param Circle $circle
 	 * @param Member $member
 	 *
-	 * @return IEvent
+	 * @throws FakeException
 	 */
 	private function parseSubjectMemberRemove(IEvent &$event, Circle $circle, Member $member) {
+
+		if ($event->getSubject() !== 'member_remove') {
+			return;
+		}
+
 		if ($circle->getType() === Circle::CIRCLES_CLOSED
 			&& $member->getLevel() === Member::LEVEL_NONE) {
-			return $this->parseSubjectNonMemberRemoveClosedCircle($event, $circle, $member);
+			$this->parseSubjectNonMemberRemoveClosedCircle($event, $circle, $member);
 
 		} else {
-			return $this->parseCircleMemberAdvancedEvent(
+			$this->parseCircleMemberAdvancedEvent(
 				$event, $circle, $member,
 				$this->l10n->t('You removed {member} from {circle}'),
 				$this->l10n->t('You have been removed from {circle} by {author}'),
 				$this->l10n->t('{member} has been removed from {circle} by {author}')
 			);
 		}
+
+		throw new FakeException();
 	}
 
 
@@ -360,36 +414,12 @@ class Provider extends BaseProvider implements IProvider {
 		$params = $event->getSubjectParameters();
 		$group = Member::fromJSON($params['group']);
 
-		switch ($event->getSubject()) {
-
-			case 'group_link':
-				return $this->parseCircleMemberEvent(
-					$event, $circle, $group,
-					$this->l10n->t('You linked {group} to {circle}'),
-					$this->l10n->t('{group} has been linked to {circle} by {author}')
-				);
-
-			case 'group_unlink':
-				return $this->parseCircleMemberEvent(
-					$event, $circle, $group,
-					$this->l10n->t('You unlinked {group} from {circle}'),
-					$this->l10n->t('{group} has been unlinked from {circle} by {author}')
-				);
-
-			case 'group_level':
-				$level = [$this->l10n->t($group->getLevelString())];
-
-				return $this->parseCircleMemberEvent(
-					$event, $circle, $group,
-					$this->l10n->t(
-						'You changed the level of the linked group {group} in {circle} to %1$s',
-						$level
-					),
-					$this->l10n->t(
-						'{author} changed the level of the linked group {group} in {circle} to %1$s',
-						$level
-					)
-				);
+		try {
+			$this->parseGroupLink($event, $circle, $group);
+			$this->parseGroupUnlink($event, $circle, $group);
+			$this->parseGroupLevel($event, $circle, $group);
+		} catch (FakeException $e) {
+			return $event;
 		}
 
 		throw new InvalidArgumentException();
@@ -407,38 +437,13 @@ class Provider extends BaseProvider implements IProvider {
 		$params = $event->getSubjectParameters();
 		$member = Member::fromJSON($params['member']);
 
-		switch ($event->getSubject()) {
-			case 'member_invited':
-				return $this->parseCircleMemberAdvancedEvent(
-					$event, $circle, $member,
-					$this->l10n->t('You invited {member} to join {circle}'),
-					$this->l10n->t('You have been invited to join {circle} by {author}'),
-					$this->l10n->t('{member} has been invited to join {circle} by {author}')
-				);
-
-			case 'member_level':
-				$level = [$this->l10n->t($member->getLevelString())];
-
-				return $this->parseCircleMemberAdvancedEvent(
-					$event, $circle, $member,
-					$this->l10n->t('You changed {member}\'s level in {circle} to %1$s', $level),
-					$this->l10n->t('{author} changed your level in {circle} to %1$s', $level),
-					$this->l10n->t('{author} changed {member}\'s level in {circle} to %1$s', $level)
-				);
-
-			case 'member_request_invitation':
-				return $this->parseMemberEvent(
-					$event, $circle, $member,
-					$this->l10n->t('You sent a request to join {circle}'),
-					$this->l10n->t('{member} sent a request to join {circle}')
-				);
-
-			case 'member_owner':
-				return $this->parseMemberEvent(
-					$event, $circle, $member,
-					$this->l10n->t('You are the new owner of {circle}'),
-					$this->l10n->t('{member} is the new owner of {circle}')
-				);
+		try {
+			$this->parseMemberInvited($event, $circle, $member);
+			$this->parseMemberLevel($event, $circle, $member);
+			$this->parseMemberRequestInvitation($event, $circle, $member);
+			$this->parseMemberOwner($event, $circle, $member);
+		} catch (FakeException $e) {
+			return $event;
 		}
 
 		throw new InvalidArgumentException();
@@ -468,7 +473,6 @@ class Provider extends BaseProvider implements IProvider {
 			$this->parseLinkUp($event, $circle, $remote);
 			$this->parseLinkDown($event, $circle, $remote);
 			$this->parseLinkRemove($event, $circle, $remote);
-
 		} catch (FakeException $e) {
 			return $event;
 		}
@@ -477,6 +481,170 @@ class Provider extends BaseProvider implements IProvider {
 	}
 
 
+	/**
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param Member $group
+	 *
+	 * @throws FakeException
+	 */
+	private function parseGroupLink(IEvent &$event, Circle $circle, Member $group) {
+		if ($event->getSubject() !== 'group_link') {
+			return;
+		}
+
+		$this->parseCircleMemberEvent(
+			$event, $circle, $group,
+			$this->l10n->t('You linked {group} to {circle}'),
+			$this->l10n->t('{group} has been linked to {circle} by {author}')
+		);
+		throw new FakeException();
+	}
+
+
+	/**
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param Member $group
+	 *
+	 * @throws FakeException
+	 */
+	private function parseGroupUnlink(IEvent &$event, Circle $circle, Member $group) {
+		if ($event->getSubject() !== 'group_unlink') {
+			return;
+		}
+		$this->parseCircleMemberEvent(
+			$event, $circle, $group,
+			$this->l10n->t('You unlinked {group} from {circle}'),
+			$this->l10n->t('{group} has been unlinked from {circle} by {author}')
+		);
+
+		throw new FakeException();
+	}
+
+
+	/**
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param Member $group
+	 *
+	 * @throws FakeException
+	 */
+	private function parseGroupLevel(IEvent &$event, Circle $circle, Member $group) {
+		if ($event->getSubject() !== 'group_level') {
+			return;
+		}
+
+		$l = $this->l10n;
+
+		$level = [$l->t($group->getLevelString())];
+		$this->parseCircleMemberEvent(
+			$event, $circle, $group,
+			$l->t('You changed the level of the linked group {group} in {circle} to %1$s', $level),
+			$l->t('{author} changed the level of the linked group {group} in {circle} to %1$s', $level)
+		);
+
+		throw new FakeException();
+	}
+
+
+	/**
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param Member $member
+	 *
+	 * @throws FakeException
+	 */
+	private function parseMemberInvited(IEvent &$event, Circle $circle, Member $member) {
+		if ($event->getSubject() !== 'member_invited') {
+			return;
+		}
+
+		$this->parseCircleMemberAdvancedEvent(
+			$event, $circle, $member,
+			$this->l10n->t('You invited {member} to join {circle}'),
+			$this->l10n->t('You have been invited to join {circle} by {author}'),
+			$this->l10n->t('{member} has been invited to join {circle} by {author}')
+		);
+
+		throw new FakeException();
+	}
+
+
+	/**
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param Member $member
+	 *
+	 * @throws FakeException
+	 */
+	private function parseMemberLevel(IEvent &$event, Circle $circle, Member $member) {
+		if ($event->getSubject() !== 'member_level') {
+			return;
+		}
+
+		$level = [$this->l10n->t($member->getLevelString())];
+		$this->parseCircleMemberAdvancedEvent(
+			$event, $circle, $member,
+			$this->l10n->t('You changed {member}\'s level in {circle} to %1$s', $level),
+			$this->l10n->t('{author} changed your level in {circle} to %1$s', $level),
+			$this->l10n->t('{author} changed {member}\'s level in {circle} to %1$s', $level)
+		);
+
+		throw new FakeException();
+	}
+
+
+	/**
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param Member $member
+	 *
+	 * @throws FakeException
+	 */
+	private function parseMemberRequestInvitation(IEvent &$event, Circle $circle, Member $member) {
+		if ($event->getSubject() !== 'member_request_invitation') {
+			return;
+		}
+
+		$this->parseMemberEvent(
+			$event, $circle, $member,
+			$this->l10n->t('You sent a request to join {circle}'),
+			$this->l10n->t('{member} sent a request to join {circle}')
+		);
+
+		throw new FakeException();
+	}
+
+
+	/**
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param Member $member
+	 *
+	 * @throws FakeException
+	 */
+	private function parseMemberOwner(IEvent &$event, Circle $circle, Member $member) {
+		if ($event->getSubject() !== 'member_owner') {
+			return;
+		}
+
+		$this->parseMemberEvent(
+			$event, $circle, $member,
+			$this->l10n->t('You are the new owner of {circle}'),
+			$this->l10n->t('{member} is the new owner of {circle}')
+		);
+		throw new FakeException();
+	}
+
+
+	/**
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param FederatedLink $remote
+	 *
+	 * @throws FakeException
+	 */
 	private function parseLinkRequestSent(IEvent &$event, Circle $circle, FederatedLink $remote) {
 		if ($event->getSubject() !== 'link_request_sent') {
 			return;
@@ -492,6 +660,13 @@ class Provider extends BaseProvider implements IProvider {
 	}
 
 
+	/**
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param FederatedLink $remote
+	 *
+	 * @throws FakeException
+	 */
 	private function parseLinkRequestReceived(IEvent &$event, Circle $circle, FederatedLink $remote) {
 		if ($event->getSubject() !== 'link_request_received') {
 			return;
@@ -505,6 +680,13 @@ class Provider extends BaseProvider implements IProvider {
 	}
 
 
+	/**
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param FederatedLink $remote
+	 *
+	 * @throws FakeException
+	 */
 	private function parseLinkRequestRejected(IEvent &$event, Circle $circle, FederatedLink $remote) {
 		if ($event->getSubject() !== 'link_request_rejected') {
 			return;
@@ -519,6 +701,13 @@ class Provider extends BaseProvider implements IProvider {
 	}
 
 
+	/**
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param FederatedLink $remote
+	 *
+	 * @throws FakeException
+	 */
 	private function parseLinkRequestCanceled(IEvent &$event, Circle $circle, FederatedLink $remote) {
 		if ($event->getSubject() !== 'link_request_canceled') {
 			return;
@@ -535,6 +724,13 @@ class Provider extends BaseProvider implements IProvider {
 	}
 
 
+	/**
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param FederatedLink $remote
+	 *
+	 * @throws FakeException
+	 */
 	private function parseLinkRequestAccepted(IEvent &$event, Circle $circle, FederatedLink $remote) {
 		if ($event->getSubject() !== 'link_request_accepted') {
 			return;
@@ -549,6 +745,13 @@ class Provider extends BaseProvider implements IProvider {
 	}
 
 
+	/**
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param FederatedLink $remote
+	 *
+	 * @throws FakeException
+	 */
 	private function parseLinkRequestRemoved(IEvent &$event, Circle $circle, FederatedLink $remote) {
 		if ($event->getSubject() !== 'link_request_removed') {
 			return;
@@ -564,6 +767,13 @@ class Provider extends BaseProvider implements IProvider {
 	}
 
 
+	/**
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param FederatedLink $remote
+	 *
+	 * @throws FakeException
+	 */
 	private function parseLinkRequestCanceling(IEvent &$event, Circle $circle, FederatedLink $remote) {
 		if ($event->getSubject() !== 'link_request_canceling') {
 			return;
@@ -579,6 +789,13 @@ class Provider extends BaseProvider implements IProvider {
 	}
 
 
+	/**
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param FederatedLink $remote
+	 *
+	 * @throws FakeException
+	 */
 	private function parseLinkRequestAccepting(IEvent &$event, Circle $circle, FederatedLink $remote) {
 		if ($event->getSubject() !== 'link_request_accepting') {
 			return;
@@ -594,6 +811,13 @@ class Provider extends BaseProvider implements IProvider {
 	}
 
 
+	/**
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param FederatedLink $remote
+	 *
+	 * @throws FakeException
+	 */
 	private function parseLinkUp(IEvent &$event, Circle $circle, FederatedLink $remote) {
 		if ($event->getSubject() !== 'link_up') {
 			return;
@@ -608,6 +832,13 @@ class Provider extends BaseProvider implements IProvider {
 	}
 
 
+	/**
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param FederatedLink $remote
+	 *
+	 * @throws FakeException
+	 */
 	private function parseLinkDown(IEvent &$event, Circle $circle, FederatedLink $remote) {
 		if ($event->getSubject() !== 'link_down') {
 			return;
@@ -624,6 +855,13 @@ class Provider extends BaseProvider implements IProvider {
 	}
 
 
+	/**
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param FederatedLink $remote
+	 *
+	 * @throws FakeException
+	 */
 	private function parseLinkRemove(IEvent &$event, Circle $circle, FederatedLink $remote) {
 		if ($event->getSubject() !== 'link_remove') {
 			return;
