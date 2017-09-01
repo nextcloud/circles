@@ -157,10 +157,10 @@
     "%s on %s" : "%s en %s",
     "Click the button below to open it." : "Haz click en el botón para abrirlo.",
     "Open »%s«" : "Abrir »%s«",
-    "Federated circles are not allowed on this Nextcloud" : "No se permiten los círculos federados en este Nextcloud",
     "The name of your circle must contain at least 3 characters" : "El nombre de tu círculo debe contener al menos 3 caracteres",
     "The name of your circle must start with an alpha-numerical character" : "El nombre del círculo debe empezar con un caracter alfa-numérico",
     "Linked Groups are not allowed on this Nextcloud" : "No se permiten Grupos Ligados en este Nextcloud",
+    "Federated circles are not allowed on this Nextcloud" : "No se permiten los círculos federados en este Nextcloud",
     "Circle not found" : "Círculo no encontrado",
     "A circle with that name exists" : "Un círculo con ese nombre ya existe",
     "Sharing Frame does not exist" : "No existe el Marco para Compartir. ",
@@ -185,10 +185,12 @@
     "You cannot create this type of circle" : "No puede crear un círculo de este tipo",
     "You cannot display this type of circle" : "No puedes desplegar un círculo de este tipo",
     "Federated link does not have a valid format" : "La liga federada no tiene un formato válido",
-    "The remote host is down or the Circles app is not installed on it" : "El servidor remoto está abajo o bien la aplicación de Círculos no está instalada en él",
     "Federated circles are not allowed on the remote Nextcloud" : "No se permiten los círculos federados en el Nextcloud remoto",
+    "Remote circle does not accept federated links" : "El círculo remoto no acepta ligas federadas",
+    "Trying to link a circle to itself" : "Intentando vincular círculo a si mismo",
     "This link exists already" : "Esta liga ya existe",
     "The requested remote circle does not exist" : "El círculo remoto solicitado no existe",
+    "The remote host is down or the Circles app is not installed on it" : "El servidor remoto está abajo o bien la aplicación de Círculos no está instalada en él",
     "Cannot proceed with this status update" : "No es posible proceder con esta actualización de estatus",
     "This group does not exist" : "Este grupo no existe",
     "This group is already linked to the circle" : "Este grupo ya ha sido ligado a este círculo",
@@ -246,6 +248,10 @@
     "Turns the circle as Federated and enable sharing between Federated Circles" : "Convierte el círculo a Federado y habilita el compartir entre Círculos Federados",
     "Automatically Accept Link Request" : "Aceptar Automáticamente Solicitudes de Ligas",
     "Warning: enabling this will automatically accept new link requests from other circle." : "Advertencia: al habilitar esto, aceptará automáticamente solicitudes de ligas nuevas de otros círculos",
-    "Save settings" : "Guardar configuraciones"
+    "Save settings" : "Guardar configuraciones",
+    "Allow Group Linking:" : "Permitir Vinculacion de Gurpos:",
+    "Groups can be linked to Circles." : "Los grupos se pueden vincular a Círculos.",
+    "Allow Federated Circles:" : "Permitir Círculos Federados:",
+    "Circles from different Nextclouds can be linked together." : "Círculos de diferentes Nextclouds se pueden vincular juntos."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
