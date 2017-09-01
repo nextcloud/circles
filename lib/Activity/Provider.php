@@ -30,6 +30,7 @@ namespace OCA\Circles\Activity;
 use Exception;
 use InvalidArgumentException;
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\Exceptions\FakeException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
@@ -455,85 +456,185 @@ class Provider extends BaseProvider implements IProvider {
 		$params = $event->getSubjectParameters();
 		$remote = FederatedLink::fromJSON($params['link']);
 
-		switch ($event->getSubject()) {
-			case 'link_request_sent':
-				return $this->parseCircleEvent(
-					$event, $circle, $remote,
-					$this->l10n->t('You sent a request to link {circle} with {remote}'),
-					$this->l10n->t('{author} sent a request to link {circle} with {remote}')
-				);
+		try {
+			$this->parseLinkRequestSent($event, $circle, $remote);
+			$this->parseLinkRequestReceived($event, $circle, $remote);
+			$this->parseLinkRequestRejected($event, $circle, $remote);
+			$this->parseLinkRequestCanceled($event, $circle, $remote);
+			$this->parseLinkRequestAccepted($event, $circle, $remote);
+			$this->parseLinkRequestRemoved($event, $circle, $remote);
+			$this->parseLinkRequestCanceling($event, $circle, $remote);
+			$this->parseLinkRequestAccepting($event, $circle, $remote);
+			$this->parseLinkUp($event, $circle, $remote);
+			$this->parseLinkDown($event, $circle, $remote);
+			$this->parseLinkRemove($event, $circle, $remote);
 
-			case 'link_request_received';
-				return $this->parseLinkEvent(
-					$event, $circle, $remote,
-					$this->l10n->t('{remote} requested a link with {circle}')
-				);
-
-			case 'link_request_rejected';
-				return $this->parseLinkEvent(
-					$event, $circle, $remote, $this->l10n->t(
-					'The request to link {circle} with {remote} has been rejected'
-				)
-				);
-
-			case 'link_request_canceled':
-				return $this->parseLinkEvent(
-					$event, $circle, $remote,
-					$this->l10n->t(
-						'The request to link {remote} with {circle} has been canceled remotely'
-					)
-				);
-
-			case 'link_request_accepted':
-				return $this->parseLinkEvent(
-					$event, $circle, $remote,
-					$this->l10n->t('The request to link {circle} with {remote} has been accepted')
-				);
-
-			case 'link_request_removed':
-				return $this->parseCircleEvent(
-					$event, $circle, $remote,
-					$this->l10n->t('You dismissed the request to link {remote} with {circle}'),
-					$this->l10n->t('{author} dismissed the request to link {remote} with {circle}')
-				);
-
-			case 'link_request_canceling':
-				return $this->parseCircleEvent(
-					$event, $circle, $remote,
-					$this->l10n->t('You canceled the request to link {circle} with {remote}'),
-					$this->l10n->t('{author} canceled the request to link {circle} with {remote}')
-				);
-
-			case 'link_request_accepting':
-				return $this->parseCircleEvent(
-					$event, $circle, $remote,
-					$this->l10n->t('You accepted the request to link {remote} with {circle}'),
-					$this->l10n->t('{author} accepted the request to link {remote} with {circle}')
-				);
-
-			case 'link_up':
-				return $this->parseLinkEvent(
-					$event, $circle, $remote,
-					$this->l10n->t('A link between {circle} and {remote} is now up and running')
-				);
-
-			case 'link_down':
-				return $this->parseLinkEvent(
-					$event, $circle, $remote,
-					$this->l10n->t(
-						'The link between {circle} and {remote} has been shutdown remotely'
-					)
-				);
-
-			case 'link_remove':
-				return $this->parseCircleEvent(
-					$event, $circle, $remote,
-					$this->l10n->t('You closed the link between {circle} and {remote}'),
-					$this->l10n->t('{author} closed the link between {circle} and {remote}')
-				);
+		} catch (FakeException $e) {
+			return $event;
 		}
 
 		throw new InvalidArgumentException();
 	}
 
+
+	private function parseLinkRequestSent(IEvent &$event, Circle $circle, FederatedLink $remote) {
+		if ($event->getSubject() !== 'link_request_sent') {
+			return;
+		}
+
+		$this->parseCircleEvent(
+			$event, $circle, $remote,
+			$this->l10n->t('You sent a request to link {circle} with {remote}'),
+			$this->l10n->t('{author} sent a request to link {circle} with {remote}')
+		);
+
+		throw new FakeException();
+	}
+
+
+	private function parseLinkRequestReceived(IEvent &$event, Circle $circle, FederatedLink $remote) {
+		if ($event->getSubject() !== 'link_request_received') {
+			return;
+		}
+
+		$this->parseLinkEvent(
+			$event, $circle, $remote, $this->l10n->t('{remote} requested a link with {circle}')
+		);
+
+		throw new FakeException();
+	}
+
+
+	private function parseLinkRequestRejected(IEvent &$event, Circle $circle, FederatedLink $remote) {
+		if ($event->getSubject() !== 'link_request_rejected') {
+			return;
+		}
+
+		$this->parseLinkEvent(
+			$event, $circle, $remote,
+			$this->l10n->t('The request to link {circle} with {remote} has been rejected')
+		);
+
+		throw new FakeException();
+	}
+
+
+	private function parseLinkRequestCanceled(IEvent &$event, Circle $circle, FederatedLink $remote) {
+		if ($event->getSubject() !== 'link_request_canceled') {
+			return;
+		}
+
+		$this->parseLinkEvent(
+			$event, $circle, $remote,
+			$this->l10n->t(
+				'The request to link {remote} with {circle} has been canceled remotely'
+			)
+		);
+
+		throw new FakeException();
+	}
+
+
+	private function parseLinkRequestAccepted(IEvent &$event, Circle $circle, FederatedLink $remote) {
+		if ($event->getSubject() !== 'link_request_accepted') {
+			return;
+		}
+
+		$this->parseLinkEvent(
+			$event, $circle, $remote,
+			$this->l10n->t('The request to link {circle} with {remote} has been accepted')
+		);
+
+		throw new FakeException();
+	}
+
+
+	private function parseLinkRequestRemoved(IEvent &$event, Circle $circle, FederatedLink $remote) {
+		if ($event->getSubject() !== 'link_request_removed') {
+			return;
+		}
+
+		$this->parseCircleEvent(
+			$event, $circle, $remote,
+			$this->l10n->t('You dismissed the request to link {remote} with {circle}'),
+			$this->l10n->t('{author} dismissed the request to link {remote} with {circle}')
+		);
+
+		throw new FakeException();
+	}
+
+
+	private function parseLinkRequestCanceling(IEvent &$event, Circle $circle, FederatedLink $remote) {
+		if ($event->getSubject() !== 'link_request_canceling') {
+			return;
+		}
+
+		$this->parseCircleEvent(
+			$event, $circle, $remote,
+			$this->l10n->t('You canceled the request to link {circle} with {remote}'),
+			$this->l10n->t('{author} canceled the request to link {circle} with {remote}')
+		);
+
+		throw new FakeException();
+	}
+
+
+	private function parseLinkRequestAccepting(IEvent &$event, Circle $circle, FederatedLink $remote) {
+		if ($event->getSubject() !== 'link_request_accepting') {
+			return;
+		}
+
+		$this->parseCircleEvent(
+			$event, $circle, $remote,
+			$this->l10n->t('You accepted the request to link {remote} with {circle}'),
+			$this->l10n->t('{author} accepted the request to link {remote} with {circle}')
+		);
+
+		throw new FakeException();
+	}
+
+
+	private function parseLinkUp(IEvent &$event, Circle $circle, FederatedLink $remote) {
+		if ($event->getSubject() !== 'link_up') {
+			return;
+		}
+
+		$this->parseLinkEvent(
+			$event, $circle, $remote,
+			$this->l10n->t('A link between {circle} and {remote} is now up and running')
+		);
+
+		throw new FakeException();
+	}
+
+
+	private function parseLinkDown(IEvent &$event, Circle $circle, FederatedLink $remote) {
+		if ($event->getSubject() !== 'link_down') {
+			return;
+		}
+
+		$this->parseLinkEvent(
+			$event, $circle, $remote,
+			$this->l10n->t(
+				'The link between {circle} and {remote} has been shutdown remotely'
+			)
+		);
+
+		throw new FakeException();
+	}
+
+
+	private function parseLinkRemove(IEvent &$event, Circle $circle, FederatedLink $remote) {
+		if ($event->getSubject() !== 'link_remove') {
+			return;
+		}
+
+		$this->parseCircleEvent(
+			$event, $circle, $remote,
+			$this->l10n->t('You closed the link between {circle} and {remote}'),
+			$this->l10n->t('{author} closed the link between {circle} and {remote}')
+		);
+
+		throw new FakeException();
+	}
 }

@@ -31,6 +31,7 @@ use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Service\FederatedLinkService;
 use OCA\Circles\Service\MiscService;
 use OCP\Activity\IEvent;
 use OCP\Activity\IManager;
@@ -74,7 +75,7 @@ class BaseProvider {
 	 * @return IEvent
 	 */
 	protected function parseCircleEvent(
-		IEvent &$event, Circle $circle, $remote, $ownEvent, $othersEvent
+		IEvent &$event, Circle $circle, FederatedLink $remote, $ownEvent, $othersEvent
 	) {
 		$data = [
 			'author' => $this->generateViewerParameter($circle),
