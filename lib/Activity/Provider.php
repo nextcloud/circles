@@ -35,11 +35,46 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CirclesService;
+use OCA\Circles\Service\MiscService;
 use OCP\Activity\IEvent;
+use OCP\Activity\IManager;
 use OCP\Activity\IProvider;
-use OpenCloud\Common\Exceptions\InvalidArgumentError;
 
-class Provider extends SubjectProvider implements IProvider {
+class Provider implements IProvider {
+
+
+	/** @var ProviderSubjectCircle */
+	private $parserCircle;
+
+	/** @var ProviderSubjectMember */
+	private $parserMember;
+
+	/** @var ProviderSubjectGroup */
+	private $parserGroup;
+
+	/** @var ProviderSubjectLink */
+	private $parserLink;
+
+	/** @var MiscService */
+	protected $miscService;
+
+	/** @var IManager */
+	protected $activityManager;
+
+
+	public function __construct(
+		IManager $activityManager, MiscService $miscService, ProviderSubjectCircle $parserCircle,
+		ProviderSubjectMember $parserMember, ProviderSubjectGroup $parserGroup,
+		ProviderSubjectLink $parserLink
+	) {
+		$this->activityManager = $activityManager;
+		$this->miscService = $miscService;
+
+		$this->parserCircle = $parserCircle;
+		$this->parserMember = $parserMember;
+		$this->parserGroup = $parserGroup;
+		$this->parserLink = $parserLink;
+	}
 
 
 	/**
@@ -51,28 +86,54 @@ class Provider extends SubjectProvider implements IProvider {
 	 */
 	public function parse($lang, IEvent $event, IEvent $previousEvent = null) {
 
-		if ($event->getApp() !== Application::APP_NAME) {
-			throw new \InvalidArgumentException();
-		}
-
 		try {
-
 			$params = $event->getSubjectParameters();
+			$this->initActivityParser($event, $params);
 			$circle = Circle::fromJSON($params['circle']);
 
 			$this->setIcon($event, $circle);
-
 			$this->parseAsMember($event, $circle, $params);
 			$this->parseAsModerator($event, $circle, $params);
 
 		} catch (FakeException $e) {
-		} catch (\Exception $e) {
-			throw new \InvalidArgumentException();
+			$this->generateParsedSubject($event);
+
+			return $event;
 		}
 
-		$this->generateParsedSubject($event);
+		throw new InvalidArgumentException();
+	}
 
-		return $event;
+
+	/**
+	 * @param IEvent $event
+	 * @param array $params
+	 */
+	private function initActivityParser(IEvent $event, $params) {
+		if ($event->getApp() !== Application::APP_NAME) {
+			throw new InvalidArgumentException();
+		}
+
+		if (!key_exists('circle', $params)) {
+			throw new InvalidArgumentException();
+		}
+	}
+
+
+	/**
+	 * @param IEvent $event
+	 */
+	private function generateParsedSubject(IEvent &$event) {
+		$subject = $event->getRichSubject();
+		$params = $event->getRichSubjectParameters();
+		$ak = array_keys($params);
+		foreach ($ak as $k) {
+			if (is_array($params[$k])) {
+				$subject = str_replace('{' . $k . '}', $params[$k]['parsed'], $subject);
+			}
+		}
+
+		$event->setParsedSubject($subject);
 	}
 
 
@@ -92,38 +153,22 @@ class Provider extends SubjectProvider implements IProvider {
 
 
 	/**
-	 * @param Circle $circle
 	 * @param IEvent $event
+	 * @param Circle $circle
 	 * @param array $params
+	 *
+	 * @throws InvalidArgumentError
 	 */
 	private function parseAsMember(IEvent &$event, Circle $circle, $params) {
 		if ($event->getType() !== 'circles_as_member') {
 			return;
 		}
 
-		switch ($event->getSubject()) {
-			case 'circle_create':
-				$this->parseCircleEvent(
-					$event, $circle, null,
-					$this->l10n->t('You created the circle {circle}'),
-					$this->l10n->t('{author} created the circle {circle}')
-				);
+		$this->parserCircle->parseSubjectCircleCreate($event, $circle);
+		$this->parserCircle->parseSubjectCircleDelete($event, $circle);
+		$this->parseMemberAsMember($event, $circle, $params);
 
-				return;
-
-			case 'circle_delete':
-				$this->parseCircleEvent(
-					$event, $circle, null,
-					$this->l10n->t('You deleted {circle}'),
-					$this->l10n->t('{author} deleted {circle}')
-				);
-
-				return;
-		}
-
-		if (key_exists('member', $params)) {
-			$this->parseMemberAsMember($event, $circle);
-		}
+		throw new InvalidArgumentError();
 	}
 
 
@@ -139,42 +184,35 @@ class Provider extends SubjectProvider implements IProvider {
 			return;
 		}
 
-		try {
-			$this->parseMemberAsModerator($event, $circle, $params);
-			$this->parseGroupAsModerator($event, $circle, $params);
-			$this->parseLinkAsModerator($event, $circle, $params);
+		$this->parseMemberAsModerator($event, $circle, $params);
+		$this->parseGroupAsModerator($event, $circle, $params);
+		$this->parseLinkAsModerator($event, $circle, $params);
 
-
-			throw new InvalidArgumentError();
-		} catch (FakeException $e) {
-			return;
-		} catch (Exception $e) {
-			throw $e;
-		}
+		throw new InvalidArgumentError();
 	}
 
 
 	/**
-	 * @param Circle $circle
 	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param array $params
 	 *
-	 * @return IEvent
+	 * @throws InvalidArgumentError
 	 */
-	private function parseMemberAsMember(IEvent &$event, Circle $circle) {
-		$params = $event->getSubjectParameters();
-		$member = Member::fromJSON($params['member']);
+	private function parseMemberAsMember(IEvent &$event, Circle $circle, $params) {
 
-		try {
-			$this->parseSubjectMemberJoin($event, $circle, $member);
-			$this->parseSubjectMemberAdd($event, $circle, $member);
-			$this->parseSubjectMemberLeft($event, $circle, $member);
-			$this->parseSubjectMemberRemove($event, $circle, $member);
-		} catch (FakeException $e) {
-			return $event;
+		if (!key_exists('member', $params)) {
+			return;
 		}
 
+		$member = Member::fromJSON($params['member']);
 
-		return $event;
+		$this->parserMember->parseSubjectMemberJoin($event, $circle, $member);
+		$this->parserMember->parseSubjectMemberAdd($event, $circle, $member);
+		$this->parserMember->parseSubjectMemberLeft($event, $circle, $member);
+		$this->parserMember->parseSubjectMemberRemove($event, $circle, $member);
+
+		throw new InvalidArgumentError();
 	}
 
 
@@ -184,15 +222,15 @@ class Provider extends SubjectProvider implements IProvider {
 	 * @param array $params
 	 */
 	private function parseGroupAsModerator(IEvent &$event, Circle $circle, $params) {
-
 		if (!key_exists('group', $params)) {
 			return;
 		}
+
 		$group = Member::fromJSON($params['group']);
 
-		$this->parseGroupLink($event, $circle, $group);
-		$this->parseGroupUnlink($event, $circle, $group);
-		$this->parseGroupLevel($event, $circle, $group);
+		$this->parserGroup->parseGroupLink($event, $circle, $group);
+		$this->parserGroup->parseGroupUnlink($event, $circle, $group);
+		$this->parserGroup->parseGroupLevel($event, $circle, $group);
 
 		throw new InvalidArgumentException();
 	}
@@ -204,16 +242,16 @@ class Provider extends SubjectProvider implements IProvider {
 	 * @param array $params
 	 */
 	private function parseMemberAsModerator(IEvent &$event, Circle $circle, $params) {
-
 		if (!key_exists('member', $params)) {
 			return;
 		}
+
 		$member = Member::fromJSON($params['member']);
 
-		$this->parseMemberInvited($event, $circle, $member);
-		$this->parseMemberLevel($event, $circle, $member);
-		$this->parseMemberRequestInvitation($event, $circle, $member);
-		$this->parseMemberOwner($event, $circle, $member);
+		$this->parserMember->parseMemberInvited($event, $circle, $member);
+		$this->parserMember->parseMemberLevel($event, $circle, $member);
+		$this->parserMember->parseMemberRequestInvitation($event, $circle, $member);
+		$this->parserMember->parseMemberOwner($event, $circle, $member);
 
 		throw new InvalidArgumentException();
 	}
@@ -232,17 +270,17 @@ class Provider extends SubjectProvider implements IProvider {
 
 		$remote = FederatedLink::fromJSON($params['link']);
 
-		$this->parseLinkRequestSent($event, $circle, $remote);
-		$this->parseLinkRequestReceived($event, $circle, $remote);
-		$this->parseLinkRequestRejected($event, $circle, $remote);
-		$this->parseLinkRequestCanceled($event, $circle, $remote);
-		$this->parseLinkRequestAccepted($event, $circle, $remote);
-		$this->parseLinkRequestRemoved($event, $circle, $remote);
-		$this->parseLinkRequestCanceling($event, $circle, $remote);
-		$this->parseLinkRequestAccepting($event, $circle, $remote);
-		$this->parseLinkUp($event, $circle, $remote);
-		$this->parseLinkDown($event, $circle, $remote);
-		$this->parseLinkRemove($event, $circle, $remote);
+		$this->parserLink->parseLinkRequestSent($event, $circle, $remote);
+		$this->parserLink->parseLinkRequestReceived($event, $circle, $remote);
+		$this->parserLink->parseLinkRequestRejected($event, $circle, $remote);
+		$this->parserLink->parseLinkRequestCanceled($event, $circle, $remote);
+		$this->parserLink->parseLinkRequestAccepted($event, $circle, $remote);
+		$this->parserLink->parseLinkRequestRemoved($event, $circle, $remote);
+		$this->parserLink->parseLinkRequestCanceling($event, $circle, $remote);
+		$this->parserLink->parseLinkRequestAccepting($event, $circle, $remote);
+		$this->parserLink->parseLinkUp($event, $circle, $remote);
+		$this->parserLink->parseLinkDown($event, $circle, $remote);
+		$this->parserLink->parseLinkRemove($event, $circle, $remote);
 
 		throw new InvalidArgumentException();
 	}

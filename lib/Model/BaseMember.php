@@ -292,4 +292,20 @@ class BaseMember implements \JsonSerializable {
 
 		return 'none';
 	}
+
+
+	public function getTypeString() {
+		switch ($this->getType()) {
+			case self::TYPE_USER:
+				return 'Local Member';
+			case self::TYPE_GROUP:
+				return 'Group';
+			case self::TYPE_MAIL:
+				return 'Mail address';
+			case self::TYPE_CONTACT:
+				return 'Contact';
+		}
+
+		return 'none';
+	}
 }

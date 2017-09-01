@@ -38,7 +38,7 @@ use OCP\Activity\IManager;
 use OCP\IL10N;
 use OCP\IURLGenerator;
 
-class BaseProvider {
+class ProviderParser {
 
 
 	/** @var MiscService */
@@ -151,10 +151,11 @@ class BaseProvider {
 		IEvent &$event, Circle $circle, Member $member, $ownEvent, $othersEvent
 	) {
 		$data = [
-			'author' => $this->generateViewerParameter($circle),
-			'circle' => $this->generateCircleParameter($circle),
-			'member' => $this->generateUserParameter($member),
-			'group'  => $this->generateGroupParameter($member),
+			'author'   => $this->generateViewerParameter($circle),
+			'circle'   => $this->generateCircleParameter($circle),
+			'member'   => $this->generateUserParameter($member),
+			'external' => $this->generateExternalMemberParameter($member),
+			'group'    => $this->generateGroupParameter($member),
 		];
 
 		if ($this->isViewerTheAuthor($circle, $this->activityManager->getCurrentUserId())) {
@@ -203,23 +204,6 @@ class BaseProvider {
 
 
 	/**
-	 * @param IEvent $event
-	 */
-	protected function generateParsedSubject(IEvent &$event) {
-		$subject = $event->getRichSubject();
-		$params = $event->getRichSubjectParameters();
-		$ak = array_keys($params);
-		foreach ($ak as $k) {
-			if (is_array($params[$k])) {
-				$subject = str_replace('{' . $k . '}', $params[$k]['parsed'], $subject);
-			}
-		}
-
-		$event->setParsedSubject($subject);
-	}
-
-
-	/**
 	 * @param Circle $circle
 	 * @param string $userId
 	 *
@@ -250,6 +234,21 @@ class BaseProvider {
 		}
 
 		return $this->generateUserParameter($circle->getViewer());
+	}
+
+
+	/**
+	 * @param Member $member
+	 *
+	 * @return array|string <string,string|integer>
+	 */
+	protected function generateExternalMemberParameter(Member $member) {
+		return [
+			'type'   => 'member_' . $member->getType(),
+			'id'     => $member->getUserId(),
+			'name'   => $member->getDisplayName() . ' (' . $member->getTypeString() . ')',
+			'parsed' => $member->getDisplayName()
+		];
 	}
 
 
