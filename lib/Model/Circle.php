@@ -123,6 +123,10 @@ class Circle extends BaseCircle implements \JsonSerializable {
 	 * @return $this
 	 */
 	public static function fromArray($arr) {
+		if ($arr === null) {
+			return new Circle();
+		}
+
 		$circle = new Circle($arr['type'], $arr['name']);
 
 		$circle->setId($arr['id']);

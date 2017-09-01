@@ -29,6 +29,7 @@ namespace OCA\Circles\Search;
 use OCA\Circles\ISearch;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SearchResult;
+use OCA\Circles\Service\MiscService;
 
 class Contacts implements ISearch {
 
@@ -43,8 +44,7 @@ class Contacts implements ISearch {
 		// Add 'ADR' to search also in the address
 		$contacts = $contactManager->search($search, ['FN', 'ORG', 'EMAIL']);
 		foreach ($contacts as $contact) {
-			if (key_exists('isLocalSystemBook', $contact)
-				&& $contact['isLocalSystemBook'] === true) {
+			if (MiscService::get($contact, 'isLocalSystemBook', false) === true) {
 				continue;
 			}
 
@@ -68,17 +68,9 @@ class Contacts implements ISearch {
 			'organization' => ''
 		];
 
-		if (key_exists('EMAIL', $contact)) {
-			$data['display'] = $data['email'] = $contact['EMAIL'];
-		}
-
-		if (key_exists('FN', $contact)) {
-			$data['display'] = $contact['FN'];
-		}
-
-		if (key_exists('ORG', $contact)) {
-			$data['organization'] = $contact['ORG'];
-		}
+		$data['display'] = $data['email'] = MiscService::get($contact, 'EMAIL');
+		$data['display'] = MiscService::get($contact, 'FN', $data['display']);
+		$data['organization'] = MiscService::get($contact, 'ORG');
 
 		return $data;
 	}

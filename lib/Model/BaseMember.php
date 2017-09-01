@@ -229,8 +229,6 @@ class BaseMember implements \JsonSerializable {
 	/**
 	 * @param $arr
 	 *
-	 * TODO: 0.15.0 : remove both key_exists condition
-	 *
 	 * @return null|Member
 	 */
 	public static function fromArray($arr) {
@@ -242,12 +240,8 @@ class BaseMember implements \JsonSerializable {
 		$member->setCircleId($arr['circle_id']);
 		$member->setLevel($arr['level']);
 
-		if (key_exists('user_type', $arr)) {
-			$member->setType($arr['user_type']);
-		}
-		if (key_exists('type', $arr)) {
-			$member->setType($arr['type']);
-		}
+		$member->setType(MiscService::get($arr, 'user_type'));
+		$member->setType(MiscService::get($arr, 'type', $member->getType()));
 
 		$member->setUserId($arr['user_id']);
 		$member->setStatus($arr['status']);

@@ -66,11 +66,13 @@ class MiscService {
 	 * @param $arr
 	 * @param $k
 	 *
-	 * @return string|array
+	 * @param string $default
+	 *
+	 * @return array|string
 	 */
-	public static function get($arr, $k) {
+	public static function get($arr, $k, $default = '') {
 		if (!key_exists($k, $arr)) {
-			return '';
+			return $default;
 		}
 
 		return $arr[$k];

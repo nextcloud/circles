@@ -28,6 +28,7 @@ namespace OCA\Circles\Model;
 
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\SharingFrameSourceCannotBeAppCirclesException;
+use OCA\Circles\Service\MiscService;
 
 class SharingFrame implements \JsonSerializable {
 
@@ -324,21 +325,11 @@ class SharingFrame implements \JsonSerializable {
 	 * @return Circle
 	 */
 	private static function getCircleFromArray($arr) {
-		$circle = new Circle();
-		if (key_exists('circle', $arr)) {
-			$circle = Circle::fromArray($arr['circle']);
-		}
+		$circle = Circle::fromArray(MiscService::get($arr, 'circle', null));
 
-		// TODO 0.15.0 - remove those 3 conditions
-		if (key_exists('circle_type', $arr)) {
-			$circle->setType($arr['circle_type']);
-		}
-		if (key_exists('circle_name', $arr)) {
-			$circle->setName($arr['circle_name']);
-		}
-		if (key_exists('circle_id', $arr)) {
-			$circle->setId($arr['circle_id']);
-		}
+		$circle->setType(MiscService::get($arr, 'circle_type'));
+		$circle->setName(MiscService::get($arr, 'circle_name'));
+		$circle->setId(MiscService::get($arr, 'circle_id'));
 
 		return $circle;
 	}
