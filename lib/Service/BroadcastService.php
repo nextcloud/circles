@@ -103,30 +103,36 @@ class BroadcastService {
 				throw new BroadcasterIsNotCompatibleException();
 			}
 
-			$circle = $this->circlesRequest->forceGetCircle(
-				$frame->getCircle()
-					  ->getUniqueId()
-			);
+			$frameCircle = $frame->getCircle();
+			$circle = $this->circlesRequest->forceGetCircle($frameCircle->getUniqueId());
 
-			$broadcaster->init();
-
-			if ($circle->getType() !== Circle::CIRCLES_PERSONAL) {
-				$broadcaster->createShareToCircle($frame, $circle);
-			}
-
-			$members = $this->membersRequest->forceGetMembers(
-				$circle->getUniqueId(), Member::LEVEL_MEMBER, true
-			);
-
-			foreach ($members AS $member) {
-				$this->parseMember($member);
-
-				if ($member->isBroadcasting()) {
-					$broadcaster->createShareToMember($frame, $member);
-				}
-			}
+			$this->feedBroadcaster($broadcaster, $frame, $circle);
 		} catch (Exception $e) {
 			throw $e;
+		}
+	}
+
+
+	/**
+	 * @param IBroadcaster $broadcaster
+	 * @param SharingFrame $frame
+	 * @param Circle $circle
+	 */
+	private function feedBroadcaster(IBroadcaster $broadcaster, SharingFrame $frame, Circle $circle) {
+		$broadcaster->init();
+
+		if ($circle->getType() !== Circle::CIRCLES_PERSONAL) {
+			$broadcaster->createShareToCircle($frame, $circle);
+		}
+
+		$members =
+			$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MEMBER, true);
+		foreach ($members AS $member) {
+			$this->parseMember($member);
+
+			if ($member->isBroadcasting()) {
+				$broadcaster->createShareToMember($frame, $member);
+			}
 		}
 	}
 
