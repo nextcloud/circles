@@ -1,6 +1,6 @@
 { "translations": {
     "Are you sure you want to transfer your ownership?" : "Möchtest Du wirklich Deine Besitzerrechte übertragen?",
-    "This action is irreversible" : "Dieser Vorgang ist unumkehrbar",
+    "This action is irreversible" : "Dieser Vorgang kann nicht rückgängig gemacht werden",
     "Personal circle" : "Persönlicher Kreis",
     "Secret circle" : "Geheimer Kreis",
     "Closed circle" : "Geschlossener Kreis",
@@ -157,10 +157,10 @@
     "%s on %s" : "%s in %s",
     "Click the button below to open it." : "Zum Öffnen auf die untenstehende Schaltfläche klicken.",
     "Open »%s«" : "Öffne »%s«",
-    "Federated circles are not allowed on this Nextcloud" : "Federated-Kreise sind auf dieser Nextcloud nicht zugelassen",
     "The name of your circle must contain at least 3 characters" : "Der Name des Kreises muss mindestens aus 3 Zeichen bestehen",
     "The name of your circle must start with an alpha-numerical character" : "Der Name deines Kreises muss mit einem alphanumerischen Zeichen beginnen",
     "Linked Groups are not allowed on this Nextcloud" : "Verknüpfte Gruppen sind auf dieser Nextcloud nicht zugelassen ",
+    "Federated circles are not allowed on this Nextcloud" : "Federated-Kreise sind auf dieser Nextcloud nicht zugelassen",
     "Circle not found" : "Kreis nicht gefunden",
     "A circle with that name exists" : "Ein Kreis mit diesem Namen existiert bereits",
     "Sharing Frame does not exist" : "Rahmen zum Teilen existiert nicht",
@@ -185,10 +185,12 @@
     "You cannot create this type of circle" : "Du kannst diese Art von Kreis nicht erstellen",
     "You cannot display this type of circle" : "Du kannst diese Art von Kreis nicht anzeigen",
     "Federated link does not have a valid format" : "Unzulässiges Format der Federated-Verknüpfung",
-    "The remote host is down or the Circles app is not installed on it" : "Das entferne System is nicht erreichbar oder die Circles-App ist nicht darauf installiert",
     "Federated circles are not allowed on the remote Nextcloud" : " Federated-Kreise sind auf der anderen Nextcloud nicht zugelassen",
+    "Remote circle does not accept federated links" : "Der entfernte Kreis akzeptiert keine Federated-Verknüpfungen",
+    "Trying to link a circle to itself" : "Versuche einen Kreis mit sich selbst zu verknüpfen",
     "This link exists already" : "Diese Verknüpfung besteht bereits",
     "The requested remote circle does not exist" : "Der angeforderte Remote-Kreis existiert nicht",
+    "The remote host is down or the Circles app is not installed on it" : "Das entferne System is nicht erreichbar oder die Circles-App ist nicht darauf installiert",
     "Cannot proceed with this status update" : "Die Status-Aktualisierung kann nicht fortgesetzt werden",
     "This group does not exist" : "Diese Gruppe existiert nicht",
     "This group is already linked to the circle" : "Diese Gruppe ist bereits mit diesem Kreis verknüpft",
@@ -246,6 +248,10 @@
     "Turns the circle as Federated and enable sharing between Federated Circles" : "Macht den Kreis zu einem Federated-Kreis und erlaubt das Teilen zwischen Federated-Kreisen",
     "Automatically Accept Link Request" : "Verknüpfungs-Anfragen automatisch akzeptieren",
     "Warning: enabling this will automatically accept new link requests from other circle." : "Achtung: Bei Aktivierung dieser Funktion werden neue Verknüpfungsanfragen anderer Kreise automatisch akzeptiert.",
-    "Save settings" : "Einstellungen speichern"
+    "Save settings" : "Einstellungen speichern",
+    "Allow Group Linking:" : "Erlaube Gruppen-Verknüpfung:",
+    "Groups can be linked to Circles." : "Gruppen können mit Kreisen verknüpft werden.",
+    "Allow Federated Circles:" : "Erlaube Verknüpfung von externen Kreisen:",
+    "Circles from different Nextclouds can be linked together." : "Kreise von externen Servern können verknüpft werden."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

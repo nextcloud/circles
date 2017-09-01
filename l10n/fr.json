@@ -157,10 +157,10 @@
     "%s on %s" : "%s sur %s",
     "Click the button below to open it." : "Cliquez sur le bouton ci-dessous pour l'ouvrir.",
     "Open »%s«" : "Ouvrir «%s»",
-    "Federated circles are not allowed on this Nextcloud" : "Les cercles fédérés ne sont pas autorisés sur ce Nextcloud",
     "The name of your circle must contain at least 3 characters" : "Le nom de votre cercle doit contenir au moins 3 caractères",
     "The name of your circle must start with an alpha-numerical character" : "Le nom de votre cercle doit commencer par un caractère alphanumérique",
     "Linked Groups are not allowed on this Nextcloud" : "Les groupes liés ne sont pas autorisés sur ce Nextcloud",
+    "Federated circles are not allowed on this Nextcloud" : "Les cercles fédérés ne sont pas autorisés sur ce Nextcloud",
     "Circle not found" : "Cercle non trouvé",
     "A circle with that name exists" : "Ce nom de cercle existe",
     "Sharing Frame does not exist" : "Le partage de la fenêtre n'existe pas",
@@ -185,10 +185,12 @@
     "You cannot create this type of circle" : "Vous ne pouvez pas créer ce type de cercle",
     "You cannot display this type of circle" : "Vous ne pouvez pas afficher ce type de cercle",
     "Federated link does not have a valid format" : "Le lien fédéré n'a pas un format valide",
-    "The remote host is down or the Circles app is not installed on it" : "L'hôte distant est en panne ou l'application Cercle n'est pas installé sur celui-ci",
     "Federated circles are not allowed on the remote Nextcloud" : "Les cercles fédérés ne sont pas autorisés sur le Nextcloud distant",
+    "Remote circle does not accept federated links" : "Le cercle distant n'accepte pas les liens fédérés",
+    "Trying to link a circle to itself" : "Essai de lier un cercle à lui-même",
     "This link exists already" : "Le lien existe déjà",
     "The requested remote circle does not exist" : "Le cercle distant demandé n'existe pas",
+    "The remote host is down or the Circles app is not installed on it" : "L'hôte distant est en panne ou l'application Cercle n'est pas installé sur celui-ci",
     "Cannot proceed with this status update" : "Impossible de procéder à la mise à jour du statut",
     "This group does not exist" : "Ce groupe n'existe pas",
     "This group is already linked to the circle" : "Ce groupe es déjà lié au cercle",
@@ -246,6 +248,9 @@
     "Turns the circle as Federated and enable sharing between Federated Circles" : "Transforme le cercle en Fédéré et active le partage entre Cercles Fédérés",
     "Automatically Accept Link Request" : "Accepter automatiquement les requêtes de mise en relation",
     "Warning: enabling this will automatically accept new link requests from other circle." : "Attention : activer cela va accepter automatiquement les nouvelles requêtes de mise en relation avec d'autres cercles.",
-    "Save settings" : "Sauvegarder les paramètres"
+    "Save settings" : "Sauvegarder les paramètres",
+    "Groups can be linked to Circles." : "Des groupes peuvent être liés aux Cercles.",
+    "Allow Federated Circles:" : "Autoriser les Cercles Fédérés :",
+    "Circles from different Nextclouds can be linked together." : "Des cercles de différents Nextcloud peuvent être liés ensemble."
 },"pluralForm" :"nplurals=2; plural=(n > 1);"
 }
