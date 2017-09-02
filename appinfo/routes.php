@@ -28,78 +28,38 @@ return [
 	'ocs'    => [
 	],
 	'routes' => [
-		[
-			'name' => 'Settings#setSettings',
-			'url'  => '/admin/settings',
-			'verb' => 'POST'
-		],
-		[
-			'name' => 'Settings#getSettings',
-			'url'  => '/admin/settings',
-			'verb' => 'GET'
-		],
+		['name' => 'Settings#getSettings', 'url' => '/admin/settings', 'verb' => 'GET'],
+		['name' => 'Settings#setSettings', 'url' => '/admin/settings', 'verb' => 'POST'],
+		['name' => 'Test#testAsyncStart', 'url' => '/admin/testAsync', 'verb' => 'POST'],
+		['name' => 'Test#testAsyncStatus', 'url' => '/admin/testAsync', 'verb' => 'GET'],
+		['name' => 'Test#testAsyncReset', 'url' => '/admin/testAsync', 'verb' => 'DELETE'],
+		['name' => 'Test#testAsyncRun', 'url' => '/admin/testAsync', 'verb' => 'PUT'],
 		['name' => 'Navigation#navigate', 'url' => '/', 'verb' => 'GET'],
 		['name' => 'Navigation#settings', 'url' => '/settings', 'verb' => 'GET'],
 		['name' => 'Circles#create', 'url' => '/v1/circles', 'verb' => 'PUT'],
 		['name' => 'Circles#listing', 'url' => '/v1/circles', 'verb' => 'GET'],
-		[
-			'name'         => 'Circles#details', 'url' => '/v1/circles/{uniqueId}', 'verb' => 'GET',
-		],
-		[
-			'name'         => 'Circles#settings', 'url' => '/v1/circles/{uniqueId}/settings',
-			'verb'         => 'POST',
-		],
-		[
-			'name'         => 'Circles#destroy', 'url' => '/v1/circles/{uniqueId}', 'verb' => 'DELETE',
-		],
-		[
-			'name'         => 'Circles#join', 'url' => '/v1/circles/{uniqueId}/join', 'verb' => 'GET',
-		],
-		[
-			'name'         => 'Circles#leave', 'url' => '/v1/circles/{uniqueId}/leave', 'verb' => 'GET',
-		],
+		['name' => 'Circles#details', 'url' => '/v1/circles/{uniqueId}', 'verb' => 'GET'],
+		['name' => 'Circles#settings', 'url' => '/v1/circles/{uniqueId}/settings', 'verb' => 'POST'],
+		['name' => 'Circles#destroy', 'url' => '/v1/circles/{uniqueId}', 'verb' => 'DELETE'],
+		['name' => 'Circles#join', 'url' => '/v1/circles/{uniqueId}/join', 'verb' => 'GET'],
+		['name' => 'Circles#leave', 'url' => '/v1/circles/{uniqueId}/leave', 'verb' => 'GET'],
 		['name' => 'Links#createLink', 'url' => '/v1/circles/{uniqueId}/link', 'verb' => 'POST'],
-		[
-			'name'         => 'Links#updateLinkStatus',
-			'url'          => '/v1/link/{linkId}/status', 'verb' => 'POST'
-		],
+		['name' => 'Links#updateLinkStatus', 'url' => '/v1/link/{linkId}/status', 'verb' => 'POST'],
 		['name' => 'Federated#requestedLink', 'url' => '/v1/link', 'verb' => 'PUT'],
 		['name' => 'Federated#updateLink', 'url' => '/v1/link', 'verb' => 'POST'],
-		[
-			'name' => 'Shares#initShareDelivery', 'url' => '/v1/payload',
-			'verb' => 'POST'
-		],
-		[
-			'name' => 'Federated#receiveFederatedDelivery', 'url' => '/v1/payload',
-			'verb' => 'PUT'
-		],
+		['name' => 'Shares#initShareDelivery', 'url' => '/v1/payload', 'verb' => 'POST'],
+		['name' => 'Federated#receiveFederatedDelivery', 'url' => '/v1/payload', 'verb' => 'PUT'],
 		['name' => 'Members#searchGlobal', 'url' => '/v1/globalsearch', 'verb' => 'GET'],
-//		[
-//			'name'         => 'Members#importFromGroup', 'url' => '/v1/circles/{uniqueId}/groupmembers',
-//			'verb'         => 'PUT'
-//		],
-		[
-			'name'         => 'Members#addMember', 'url' => '/v1/circles/{uniqueId}/member', 'verb' => 'PUT'
-		],
-		[
-			'name'         => 'Members#removeMember', 'url' => '/v1/circles/{uniqueId}/member',
-			'verb'         => 'DELETE',
-		],
-		[
-			'name'         => 'Members#levelMember', 'url' => '/v1/circles/{uniqueId}/level', 'verb' => 'POST'
-		],
-		[
-			'name'         => 'Groups#add', 'url' => '/v1/circles/{uniqueId}/groups', 'verb' => 'PUT'
-		],
-		[
-			'name'         => 'Groups#level', 'url' => '/v1/circles/{uniqueId}/group/level', 'verb' => 'POST'
-		],
-		[
-			'name'         => 'Groups#remove', 'url' => '/v1/circles/{uniqueId}/groups',
-			'verb'         => 'DELETE'
-		],
-		[
-			'name'         => 'Shares#create', 'url' => '/v1/circles/{circleUniqueId}/share', 'verb' => 'PUT'
-		]
+		//		[
+		//			'name'         => 'Members#importFromGroup', 'url' => '/v1/circles/{uniqueId}/groupmembers',
+		//			'verb'         => 'PUT'
+		//		],
+		['name' => 'Members#addMember', 'url' => '/v1/circles/{uniqueId}/member', 'verb' => 'PUT'],
+		['name' => 'Members#removeMember', 'url' => '/v1/circles/{uniqueId}/member', 'verb' => 'DELETE'],
+		['name' => 'Members#levelMember', 'url' => '/v1/circles/{uniqueId}/level', 'verb' => 'POST'],
+		['name' => 'Groups#add', 'url' => '/v1/circles/{uniqueId}/groups', 'verb' => 'PUT'],
+		['name' => 'Groups#level', 'url' => '/v1/circles/{uniqueId}/group/level', 'verb' => 'POST'],
+		['name' => 'Groups#remove', 'url' => '/v1/circles/{uniqueId}/groups', 'verb' => 'DELETE'],
+		['name' => 'Shares#create', 'url' => '/v1/circles/{circleUniqueId}/share', 'verb' => 'PUT']
 	]
 ];

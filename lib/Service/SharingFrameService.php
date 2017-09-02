@@ -28,7 +28,6 @@ namespace OCA\Circles\Service;
 
 
 use Exception;
-use OC\Http\Client\ClientService;
 use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CirclesRequest;
@@ -65,7 +64,7 @@ class SharingFrameService {
 	/** @var FederatedLinkService */
 	private $federatedLinkService;
 
-	/** @var ClientService */
+	/** @var IClientService */
 	private $clientService;
 
 	/** @var MiscService */
@@ -238,8 +237,8 @@ class SharingFrameService {
 			$client->post(
 				$this->generatePayloadDeliveryURL($this->configService->getLocalAddress()), [
 																							  'body'            => $args,
-																							  'timeout'         => 10,
-																							  'connect_timeout' => 10,
+																							  'timeout'         => Application::CLIENT_TIMEOUT,
+																							  'connect_timeout' => Application::CLIENT_TIMEOUT,
 																						  ]
 			);
 

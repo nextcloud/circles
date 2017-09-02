@@ -437,11 +437,7 @@ class FederatedLinkService {
 					]
 		);
 
-		return [
-			'body'            => ['data' => $args],
-			'timeout'         => 5,
-			'connect_timeout' => 5,
-		];
+		return MiscService::generateClientBodyData($args);
 	}
 
 

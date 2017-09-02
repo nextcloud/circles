@@ -58,6 +58,9 @@ class Application extends App {
 	const APP_NAME = 'circles';
 
 	const REMOTE_URL_PAYLOAD = '/index.php/apps/circles/v1/payload';
+	const TEST_URL_ASYNC = '/index.php/apps/circles/admin/testAsync';
+
+	const CLIENT_TIMEOUT = 3;
 
 	/**
 	 * @param array $params

@@ -28,6 +28,7 @@ namespace OCA\Circles\Service;
 
 use Exception;
 use OC\User\NoUserException;
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\MissingKeyInArrayException;
 use OCA\Circles\Model\Member;
 use OCP\AppFramework\Http;
@@ -255,6 +256,20 @@ class MiscService {
 
 
 	/**
+	 * @param array $options
+	 *
+	 * @return array
+	 */
+	public static function generateClientBodyData($options = []) {
+		return [
+			'body'            => ['data' => $options],
+			'timeout'         => Application::CLIENT_TIMEOUT,
+			'connect_timeout' => Application::CLIENT_TIMEOUT
+		];
+	}
+
+
+	/**
 	 * Hacky way to async the rest of the process without keeping client on hold.
 	 *
 	 * @param string $result
@@ -267,7 +282,7 @@ class MiscService {
 		header('Connection: close');
 		ignore_user_abort();
 		ob_start();
-		echo($result);
+		echo(json_encode($result));
 		$size = ob_get_length();
 		header('Content-Length: ' . $size);
 		ob_end_flush();
