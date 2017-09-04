@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "Circles is using its own way to async heavy process." : "Hringjahugbúnaðurinn notar sína eigin aðferð við krefjandi ósamhverf ferli (async process).",
     "Are you sure you want to transfer your ownership?" : "Ertu viss um að þú viljir yfirfæra eignarhald þitt?",
     "This action is irreversible" : "Þessa aðgerð er ekki hægt að afturkalla",
     "Personal circle" : "Persónulegur hringur",
@@ -124,6 +125,8 @@ OC.L10N.register(
     "You added {member} as member to {circle}" : "Þú bættir {member} sem meðlim í {circle}",
     "You have been added as member to {circle} by {author}" : "Þér var bætt við sem meðlimi í {circle} af {author}",
     "{member} has been added as member to {circle} by {author}" : "{member} var bætt við sem meðlimi í {circle} af {author}",
+    "You added {external} to {circle}" : "Þú bættir {external} í {circle}",
+    "{external} has been added to {circle} by {author}" : "{external} var bætt við í {circle} af {author}",
     "You accepted {member}'s request to join {circle}" : "Þú samþykktir beiðni frá {member} um að taka þátt í {circle}",
     "Your request to join {circle} has been accepted by {author}" : "Beiðni þín um að ganga í {circle} var samþykkt af {author}",
     "{member}'s request to join {circle} has been accepted by {author}" : "Beiðni frá {member} um að ganga í {circle} var samþykkt af {author}",
@@ -136,6 +139,8 @@ OC.L10N.register(
     "You removed {member} from {circle}" : "Þú fjarlægðir {member} úr {circle}",
     "You have been removed from {circle} by {author}" : "Þú varst fjarlægður úr {circle} af {author}",
     "{member} has been removed from {circle} by {author}" : "{member} var fjarlægður úr {circle} af {author}",
+    "You removed {external} from {circle}" : "Þú fjarlægðir {external} úr {circle}",
+    "{external} has been removed from {circle} by {author}" : "{external} var fjarlægður úr {circle} af {author}",
     "You cancelled {member}'s invitation to join {circle}" : "Þú dróst til baka beiðni frá {member} um að taka þátt í {circle}",
     "Your invitation to join {circle} has been cancelled by {author}" : "Beiðni þín um að ganga í {circle} var dregin til baka af {author}",
     "{author} cancelled {member}'s invitation to join {circle}" : "{author} dró til baka boð til {member} um að taka þátt í {circle}",
@@ -188,6 +193,8 @@ OC.L10N.register(
     "You cannot display this type of circle" : "Þú getur ekki tekið birt þessa gerð hrings",
     "Federated link does not have a valid format" : "Skyjasambandstengillinn er ekki á réttu sniði",
     "Federated circles are not allowed on the remote Nextcloud" : "Skýjasambönd hringja eru ekki leyfð í fjartengda Nextcloud-skýinu",
+    "Remote circle does not accept federated links" : "Fjartengdur hringur tekur ekki við skýjasambandstenglum",
+    "Trying to link a circle to itself" : "Reyni að tengja hring við sjálfan sig",
     "This link exists already" : "Þessi tengill er þegar til staðar",
     "The requested remote circle does not exist" : "Umbeðinn fjartengdur hringur er ekki til",
     "The remote host is down or the Circles app is not installed on it" : "Fjartengdi þjónninn er niðri eða að Circles-forritið er ekki uppsett á honum",
@@ -248,6 +255,14 @@ OC.L10N.register(
     "Turns the circle as Federated and enable sharing between Federated Circles" : "Setur hringinn í skýjasamband og virkjar deilingu milli hringja í skýjasambandi (federated)",
     "Automatically Accept Link Request" : "Samþykkja sjálfkrafa beiðnir um tengla",
     "Warning: enabling this will automatically accept new link requests from other circle." : "Aðvörun: ef þetta er gert virkt verða beiðnir um tengla frá öðrum hringjum samþykktar sjálfkrafa.",
-    "Save settings" : "Vista stillingar"
+    "Save settings" : "Vista stillingar",
+    "Async Testing:" : "Prófun á ósamhverfri vinnslu:",
+    "initiate test of Circles Async" : "ræsa prófun ósamhverfrar vinnslu",
+    "reset test result" : "núllstilla niðurstöður prófunar",
+    "Test is currently running. Please wait." : "Prófun er í gangi. Bíddu aðeins.",
+    "Allow Group Linking:" : "Leyfa tengingar hópa:",
+    "Groups can be linked to Circles." : "Hópar geta verið tengdir hringjum.",
+    "Allow Federated Circles:" : "Leyfa skýjasambandshringi:",
+    "Circles from different Nextclouds can be linked together." : "Hringir úr mismunandi Nextcloud-skýjum geta verið tengdir saman."
 },
 "nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);");
