@@ -214,7 +214,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$subject = $this->l10n->t('%s shared »%s« with you.', [$author, $fileName]);
 		$text = $this->l10n->t('%s shared »%s« with \'%s\'.', [$author, $fileName, $circleName]);
 
-		$emailTemplate = $this->generateEmailTemplate($subject, $text, $fileName, $link);
+		$emailTemplate = $this->generateEmailTemplate($subject, $text, $fileName, $link, $author, $circleName);
 
 		$instanceName = $this->defaults->getName();
 		$senderName = $this->l10n->t('%s on %s', [$author, $instanceName]);
@@ -234,12 +234,19 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 * @param $text
 	 * @param $fileName
 	 * @param $link
+	 * @param string $author
+	 * @param string $circleName
 	 *
 	 * @return \OCP\Mail\IEMailTemplate
 	 */
-	private function generateEmailTemplate($subject, $text, $fileName, $link) {
+	private function generateEmailTemplate($subject, $text, $fileName, $link, $author, $circleName) {
 
-		$emailTemplate = $this->mailer->createEMailTemplate();
+		$emailTemplate = $this->mailer->createEMailTemplate('circles.ShareNotification', [
+			'fileName' => $fileName,
+			'fileLink' => $link,
+			'author' => $author,
+			'circleName' => $circleName,
+		]);
 
 		$emailTemplate->addHeader();
 		$emailTemplate->addHeading($subject, false);
