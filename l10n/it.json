@@ -1,4 +1,5 @@
 { "translations": {
+    "Circles is using its own way to async heavy process." : "Cerchie sta utilizzando la sua modalità per rendere asincrono il processo pesante.",
     "Are you sure you want to transfer your ownership?" : "Sei sicuro di voler trasferire la tua proprietà?",
     "This action is irreversible" : "Questa azione è irreversibile",
     "Personal circle" : "Cerchia personale",
@@ -253,6 +254,8 @@
     "Automatically Accept Link Request" : "Accetta automaticamente richieste di collegamento",
     "Warning: enabling this will automatically accept new link requests from other circle." : "Avviso: l'abilitazione di questa opzione accetterà automaticamente nuove richieste di collegamento da altre cerchie.",
     "Save settings" : "Salva impostazioni",
+    "Async Testing:" : "Test asincrono:",
+    "initiate test of Circles Async" : "inizia il test di Cerchie asincrono",
     "reset test result" : "ripristina i risultati del test",
     "Test is currently running. Please wait." : "Il test è attualmente in esecuzione. Attendi.",
     "Allow Group Linking:" : "Consenti collegamento dei gruppi:",
