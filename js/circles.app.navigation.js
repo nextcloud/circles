@@ -60,12 +60,18 @@ var nav = {
 				return;
 			}
 
-			actions.searchMembersRequest(search);
-			if (elements.membersSearchResult.children().length === 0) {
-				elements.membersSearchResult.fadeOut(curr.animationMenuSpeed);
-			} else {
-				elements.membersSearchResult.fadeIn(curr.animationMenuSpeed);
+			if(!_.isUndefined(elements.searchTimeoutID)) {
+				clearTimeout(elements.searchTimeoutID);
 			}
+			elements.searchTimeoutID = _.delay(function () {
+				actions.searchMembersRequest(search);
+				if (elements.membersSearchResult.children().length === 0) {
+					elements.membersSearchResult.fadeOut(curr.animationMenuSpeed);
+				} else {
+					elements.membersSearchResult.fadeIn(curr.animationMenuSpeed);
+
+				}
+			}, 500);
 		}).blur(function () {
 			setTimeout(function () {
 				elements.membersSearchResult.fadeOut(curr.animationMenuSpeed);
