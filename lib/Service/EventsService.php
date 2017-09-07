@@ -107,6 +107,7 @@ class EventsService {
 				$this->publishEvent($event, [$user]);
 			}
 		);
+		\OC_Hook::emit('\OCA\Circles', 'onCircleCreation', [$circle]);
 	}
 
 
@@ -132,6 +133,7 @@ class EventsService {
 				$circle->getUniqueId(), Member::LEVEL_MEMBER, true
 			)
 		);
+		\OC_Hook::emit('\OCA\Circles', 'onCircleDestruction', [$circle]);
 	}
 
 
@@ -175,6 +177,7 @@ class EventsService {
 					  )
 				  )
 		);
+		\OC_Hook::emit('\OCA\Circles', 'onMemberNew', [$circle, $member]);
 	}
 
 
@@ -230,6 +233,7 @@ class EventsService {
 					  )
 				  )
 		);
+		\OC_Hook::emit('\OCA\Circles', 'onMemberInvited', [$circle, $member]);
 	}
 
 
@@ -261,7 +265,7 @@ class EventsService {
 					  )
 				  )
 		);
-
+		\OC_Hook::emit('\OCA\Circles', 'onMemberRequesting', [$circle, $member]);
 	}
 
 
@@ -294,7 +298,7 @@ class EventsService {
 					  )
 				  )
 		);
-
+		\OC_Hook::emit('\OCA\Circles', 'onMemberLeaving', [$circle, $member]);
 	}
 
 
@@ -327,6 +331,7 @@ class EventsService {
 		$this->membersRequest->avoidDuplicateMembers($mods, [$member]);
 
 		$this->publishEvent($event, $mods);
+		\OC_Hook::emit('\OCA\Circles', 'onMemberLevel', [$circle, $member]);
 	}
 
 
@@ -351,6 +356,7 @@ class EventsService {
 				$circle->getUniqueId(), Member::LEVEL_MEMBER, true
 			)
 		);
+		\OC_Hook::emit('\OCA\Circles', 'onMemberOwner', [$circle, $member]);
 	}
 
 
@@ -383,6 +389,7 @@ class EventsService {
 		);
 
 		$this->publishEvent($event, $mods);
+		\OC_Hook::emit('\OCA\Circles', 'onGroupLink', [$circle, $group]);
 	}
 
 
@@ -415,6 +422,7 @@ class EventsService {
 		);
 
 		$this->publishEvent($event, $mods);
+		\OC_Hook::emit('\OCA\Circles', 'onGroupUnlink', [$circle, $group]);
 	}
 
 
@@ -447,6 +455,7 @@ class EventsService {
 		);
 
 		$this->publishEvent($event, $mods);
+		\OC_Hook::emit('\OCA\Circles', 'onGroupLevel', [$circle, $group]);
 	}
 
 
@@ -471,6 +480,7 @@ class EventsService {
 			$link->getCircleId(), Member::LEVEL_MODERATOR, true
 		)
 		);
+		\OC_Hook::emit('\OCA\Circles', 'onLinkRequestSent', [$circle, $link]);
 	}
 
 
@@ -495,6 +505,7 @@ class EventsService {
 			$link->getCircleId(), Member::LEVEL_MODERATOR, true
 		)
 		);
+		\OC_Hook::emit('\OCA\Circles', 'onLinkRequestReceived', [$circle, $link]);
 	}
 
 
@@ -519,11 +530,12 @@ class EventsService {
 			$link->getCircleId(), Member::LEVEL_MODERATOR, true
 		)
 		);
+		\OC_Hook::emit('\OCA\Circles', 'onLinkRequestRejected', [$circle, $link]);
 	}
 
 
 	/**
-	 * onLinkRequestRejected()
+	 * onLinkRequestCanceled()
 	 *
 	 * Called when a request to generate a link from a remote host is dismissed.
 	 * Broadcast an activity to the moderators of the circle.
@@ -543,6 +555,7 @@ class EventsService {
 			$link->getCircleId(), Member::LEVEL_MODERATOR, true
 		)
 		);
+		\OC_Hook::emit('\OCA\Circles', 'onLinkRequestCanceled', [$circle, $link]);
 	}
 
 
@@ -567,11 +580,12 @@ class EventsService {
 			$link->getCircleId(), Member::LEVEL_MODERATOR, true
 		)
 		);
+		\OC_Hook::emit('\OCA\Circles', 'onLinkRequestAccepted', [$circle, $link]);
 	}
 
 
 	/**
-	 * onLinkUp()
+	 * onLinkRequestAccepting()
 	 *
 	 * Called when a link is Up and Running.
 	 * Broadcast an activity to the moderators of the circle.
@@ -591,6 +605,7 @@ class EventsService {
 			$link->getCircleId(), Member::LEVEL_MODERATOR, true
 		)
 		);
+		\OC_Hook::emit('\OCA\Circles', 'onLinkRequestAccepting', [$circle, $link]);
 	}
 
 
@@ -615,6 +630,7 @@ class EventsService {
 			$link->getCircleId(), Member::LEVEL_MODERATOR, true
 		)
 		);
+		\OC_Hook::emit('\OCA\Circles', 'onLinkUp', [$circle, $link]);
 	}
 
 
@@ -639,6 +655,7 @@ class EventsService {
 			$link->getCircleId(), Member::LEVEL_MODERATOR, true
 		)
 		);
+		\OC_Hook::emit('\OCA\Circles', 'onLinkDown', [$circle, $link]);
 	}
 
 
@@ -675,6 +692,7 @@ class EventsService {
 			$link->getCircleId(), Member::LEVEL_MODERATOR, true
 		)
 		);
+		\OC_Hook::emit('\OCA\Circles', 'onLinkRemove', [$circle, $link]);
 	}
 
 
