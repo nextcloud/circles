@@ -1,9 +1,12 @@
 <?php
 /**
- * @copyright Copyright (c) 2017 Arthur Schiwon <blizzz@arthur-schiwon.de>
+ * Circles - Bring cloud-users closer together.
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
  *
  * @author Arthur Schiwon <blizzz@arthur-schiwon.de>
- *
+ * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,7 +24,7 @@
  *
  */
 
-namespace OCA\Circles\Collaboration;
+namespace OCA\Circles\Collaboration\v1;
 
 use OCA\Circles\Api\Sharees;
 use OCP\Collaboration\Collaborators\ISearchPlugin;
