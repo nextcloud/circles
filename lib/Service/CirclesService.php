@@ -262,6 +262,8 @@ class CirclesService {
 			}
 
 			$this->circlesRequest->updateCircle($circle);
+
+			$this->eventsService->onSettingsChange($circle);
 		} catch (\Exception $e) {
 			throw $e;
 		}
