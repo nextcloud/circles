@@ -6,6 +6,7 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@pontapreta.net>
+ * @author: Vinicius Cubas Brand <viniciuscb@gmail.com>
  * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
