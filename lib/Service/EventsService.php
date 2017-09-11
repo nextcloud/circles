@@ -35,7 +35,7 @@ use OCP\Activity\IEvent;
 use OCP\Activity\IManager;
 use OCP\IUser;
 use OCP\IUserManager;
-use Symfony\Component\EventDispatcher\GenericEvent;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class EventsService {
 
@@ -48,6 +48,9 @@ class EventsService {
 
 	/** @var IUserManager */
 	private $userManager;
+
+	/** @var EventDispatcher */
+	private $eventDispatcher;
 
 	/** @var CirclesRequest */
 	private $circlesRequest;
@@ -65,17 +68,19 @@ class EventsService {
 	 * @param string $userId
 	 * @param IManager $activityManager
 	 * @param IUserManager $userManager
+	 * @param EventDispatcher $eventDispatcher
 	 * @param CirclesRequest $circlesRequest
 	 * @param MembersRequest $membersRequest
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
 		$userId, IManager $activityManager, IUserManager $userManager,
-		CirclesRequest $circlesRequest, MembersRequest $membersRequest, MiscService $miscService
+		EventDispatcher $eventDispatcher, CirclesRequest $circlesRequest, MembersRequest $membersRequest, MiscService $miscService
 	) {
 		$this->userId = $userId;
 		$this->activityManager = $activityManager;
 		$this->userManager = $userManager;
+		$this->eventDispatcher = $eventDispatcher;
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
 		$this->miscService = $miscService;
@@ -747,7 +752,7 @@ class EventsService {
 	}
 	
 	private function dispatch($context, $arguments) {
-		\OC::$server->getEventDispatcher()->dispatch($context, new GenericEvent(null,$arguments));
+		$this->eventDispatcher->dispatch($context, new GenericEvent(null,$arguments));
 	}
 
 }
