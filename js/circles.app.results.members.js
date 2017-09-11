@@ -142,9 +142,6 @@ var resultMembers = {
 
 
 	addMemberResult: function (result) {
-
-		console.log(JSON.stringify(result));
-
 		resultMembers.addMemberUserResult(result);
 		resultMembers.addMemberGroupResult(result);
 		resultMembers.addMemberMailResult(result);
