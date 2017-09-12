@@ -29,7 +29,6 @@ namespace OCA\Circles\Db;
 
 
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
-use OC\User\NoUserException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Model\Member;
@@ -80,16 +79,13 @@ class MembersRequest extends MembersRequestBuilder {
 	 *
 	 * @param string $circleUniqueId
 	 * @param int $level
-	 * @param bool $includeGroupMembers
+	 * @param bool $incGroup
 	 *
 	 * @return Member[]
 	 */
-	public function forceGetMembers(
-		$circleUniqueId, $level = Member::LEVEL_MEMBER, $includeGroupMembers = false
-	) {
+	public function forceGetMembers($circleUniqueId, $level = Member::LEVEL_MEMBER, $incGroup = false) {
 
 		$qb = $this->getMembersSelectSql();
-
 		$this->limitToMembersAndAlmost($qb);
 		$this->limitToLevel($qb, $level);
 		$this->limitToCircleId($qb, $circleUniqueId);
@@ -101,7 +97,7 @@ class MembersRequest extends MembersRequestBuilder {
 		}
 		$cursor->closeCursor();
 
-		if ($this->configService->isLinkedGroupsAllowed() && $includeGroupMembers === true) {
+		if ($this->configService->isLinkedGroupsAllowed() && $incGroup === true) {
 			$this->includeGroupMembers($members, $circleUniqueId, $level);
 		}
 
@@ -241,14 +237,9 @@ class MembersRequest extends MembersRequestBuilder {
 	public function getFreshNewMember($circleUniqueId, $name, $type) {
 
 		try {
-			if ($type === Member::TYPE_USER) {
-				$name = $this->miscService->getRealUserId($name);
-			}
 
 			$member = $this->forceGetMember($circleUniqueId, $name, $type);
 
-		} catch (NoUserException $e) {
-			throw new NoUserException($this->l10n->t("This user does not exist"));
 		} catch (MemberDoesNotExistException $e) {
 			$member = new Member($name, $type, $circleUniqueId);
 			$this->createMember($member);

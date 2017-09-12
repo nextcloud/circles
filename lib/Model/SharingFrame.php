@@ -26,7 +26,9 @@
 
 namespace OCA\Circles\Model;
 
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\SharingFrameSourceCannotBeAppCirclesException;
+use OCA\Circles\Service\MiscService;
 
 class SharingFrame implements \JsonSerializable {
 
@@ -36,14 +38,8 @@ class SharingFrame implements \JsonSerializable {
 	/** @var string */
 	private $type;
 
-	/** @var int */
-	private $circleUniqueId;
-
-	/** @var string */
-	private $circleName;
-
-	/** @var int */
-	private $circleType;
+	/** @var Circle */
+	private $circle;
 
 	/** @var string */
 	private $author;
@@ -84,47 +80,17 @@ class SharingFrame implements \JsonSerializable {
 	}
 
 	/**
-	 * @param string $circleUniqueId
+	 * @param Circle $circle
 	 */
-	public function setCircleId($circleUniqueId) {
-		$this->circleUniqueId = $circleUniqueId;
+	public function setCircle($circle) {
+		$this->circle = $circle;
 	}
 
 	/**
-	 * @return string
+	 * @return Circle
 	 */
-	public function getCircleId() {
-		return $this->circleUniqueId;
-	}
-
-
-	/**
-	 * @param string $circleName
-	 */
-	public function setCircleName($circleName) {
-		$this->circleName = $circleName;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getCircleName() {
-		return $this->circleName;
-	}
-
-
-	/**
-	 * @param int $circleType
-	 */
-	public function setCircleType($circleType) {
-		$this->circleType = $circleType;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getCircleType() {
-		return $this->circleType;
+	public function getCircle() {
+		return $this->circle;
 	}
 
 
@@ -285,7 +251,7 @@ class SharingFrame implements \JsonSerializable {
 	/**
 	 * @return bool
 	 */
-	public function isCircleZero() {
+	public function is0Circle() {
 		return ($this->getCloudId() === null);
 	}
 
@@ -293,7 +259,7 @@ class SharingFrame implements \JsonSerializable {
 	 * @throws SharingFrameSourceCannotBeAppCirclesException
 	 */
 	public function cannotBeFromCircles() {
-		if (strtolower($this->getSource()) === 'circles') {
+		if (strtolower($this->getSource()) === Application::APP_NAME) {
 			throw new SharingFrameSourceCannotBeAppCirclesException();
 		}
 	}
@@ -301,17 +267,16 @@ class SharingFrame implements \JsonSerializable {
 
 	public function jsonSerialize() {
 		return array(
-			'circle_id'   => $this->getCircleId(),
-			'circle_name' => $this->getCircleName(),
-			'circle_type' => $this->getCircleType(),
-			'unique_id'   => $this->getUniqueId(),
-			'source'      => $this->getSource(),
-			'type'        => $this->getType(),
-			'author'      => $this->getAuthor(),
-			'cloud_id'    => $this->getCloudId(),
-			'headers'     => $this->getHeaders(),
-			'payload'     => $this->getPayload(),
-			'creation'    => $this->getCreation(),
+			'unique_id' => $this->getUniqueId(),
+			'circle'    => $this->getCircle()
+								->getArray(false, true),
+			'source'    => $this->getSource(),
+			'type'      => $this->getType(),
+			'author'    => $this->getAuthor(),
+			'cloud_id'  => $this->getCloudId(),
+			'headers'   => $this->getHeaders(),
+			'payload'   => $this->getPayload(),
+			'creation'  => $this->getCreation(),
 		);
 	}
 
@@ -323,19 +288,8 @@ class SharingFrame implements \JsonSerializable {
 		}
 
 		$share = new SharingFrame($arr['source'], $arr['type']);
-		$share->setCircleId($arr['circle_id']);
-		if (key_exists('circle_name', $arr)) {
-			$share->setCircleName($arr['circle_name']);
-		}
-		if (key_exists('circle_type', $arr)) {
-			$share->setCircleType($arr['circle_type']);
-		}
-
-
-		if (key_exists('headers', $arr)) {
-			$share->setHeaders($arr['headers']);
-		}
-
+		$share->setCircle(self::getCircleFromArray($arr));
+		$share->setHeaders(self::getHeadersFromArray($arr));
 		if (key_exists('cloud_id', $arr)) {
 			$share->setCloudID($arr['cloud_id']);
 		}
@@ -348,5 +302,36 @@ class SharingFrame implements \JsonSerializable {
 		return $share;
 	}
 
+
+	/**
+	 * @param array $arr
+	 *
+	 * @return array
+	 */
+	private static function getHeadersFromArray($arr) {
+
+		$headers = [];
+		if (key_exists('headers', $arr)) {
+			$headers = $arr['headers'];
+		}
+
+		return $headers;
+	}
+
+
+	/**
+	 * @param array $arr
+	 *
+	 * @return Circle
+	 */
+	private static function getCircleFromArray($arr) {
+		$circle = Circle::fromArray(MiscService::get($arr, 'circle', null));
+
+		$circle->setType(MiscService::get($arr, 'circle_type'));
+		$circle->setName(MiscService::get($arr, 'circle_name'));
+		$circle->setId(MiscService::get($arr, 'circle_id'));
+
+		return $circle;
+	}
 }
 

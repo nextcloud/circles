@@ -56,7 +56,7 @@ class BroadcastService {
 
 
 	/**
-	 * SharesService constructor.
+	 * BroadcastService constructor.
 	 *
 	 * @param string $userId
 	 * @param ConfigService $configService
@@ -71,7 +71,7 @@ class BroadcastService {
 		MembersRequest $membersRequest,
 		MiscService $miscService
 	) {
-		$this->userId = (string)$userId;
+		$this->userId = $userId;
 		$this->configService = $configService;
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
@@ -87,39 +87,86 @@ class BroadcastService {
 	 * Then for each members of the circle, we call createShareToUser()
 	 * If the circle is a Personal Circle, we don't send data about the SharingFrame but null.
 	 *
-	 * @param string $broadcast
 	 * @param SharingFrame $frame
 	 *
 	 * @throws Exception
 	 */
-	public function broadcastFrame($broadcast, SharingFrame $frame) {
+	public function broadcastFrame(SharingFrame $frame) {
 
-		if ($broadcast === null) {
+		if ($frame->getHeader('broadcast') === null) {
 			return;
 		}
 
 		try {
-			$broadcaster = \OC::$server->query((string)$broadcast);
+			$broadcaster = \OC::$server->query((string)$frame->getHeader('broadcast'));
 			if (!($broadcaster instanceof IBroadcaster)) {
 				throw new BroadcasterIsNotCompatibleException();
 			}
 
-			$circle = $this->circlesRequest->forceGetCircle($frame->getCircleId());
+			$frameCircle = $frame->getCircle();
+			$circle = $this->circlesRequest->forceGetCircle($frameCircle->getUniqueId());
 
-			$broadcaster->init();
-			if ($circle->getType() !== Circle::CIRCLES_PERSONAL) {
-				$broadcaster->createShareToCircle($frame, $circle);
-			}
-
-			$members = $this->membersRequest->forceGetMembers(
-				$circle->getUniqueId(), Member::LEVEL_MEMBER, true
-			);
-			foreach ($members AS $member) {
-				$broadcaster->createShareToMember($frame, $member);
-			}
+			$this->feedBroadcaster($broadcaster, $frame, $circle);
 		} catch (Exception $e) {
 			throw $e;
 		}
 	}
+
+
+	/**
+	 * @param IBroadcaster $broadcaster
+	 * @param SharingFrame $frame
+	 * @param Circle $circle
+	 */
+	private function feedBroadcaster(IBroadcaster $broadcaster, SharingFrame $frame, Circle $circle) {
+		$broadcaster->init();
+
+		if ($circle->getType() !== Circle::CIRCLES_PERSONAL) {
+			$broadcaster->createShareToCircle($frame, $circle);
+		}
+
+		$members =
+			$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MEMBER, true);
+		foreach ($members AS $member) {
+			$this->parseMember($member);
+
+			if ($member->isBroadcasting()) {
+				$broadcaster->createShareToMember($frame, $member);
+			}
+		}
+	}
+
+
+	/**
+	 * @param Member $member
+	 */
+	private function parseMember(Member &$member) {
+		$this->parseMemberFromContact($member);
+	}
+
+
+	/**
+	 * on Type Contact, we convert the type to MAIL and retreive the first mail of the list.
+	 * If no email, we set the member as not broadcasting.
+	 *
+	 * @param Member $member
+	 */
+	private function parseMemberFromContact(Member &$member) {
+
+		if ($member->getType() !== Member::TYPE_CONTACT) {
+			return;
+		}
+
+		$contact = MiscService::getContactData($member->getUserId());
+		if (!key_exists('EMAIL', $contact)) {
+			$member->broadcasting(false);
+
+			return;
+		}
+
+		$member->setType(Member::TYPE_MAIL);
+		$member->setUserId(array_shift($contact['EMAIL']));
+	}
+
 
 }

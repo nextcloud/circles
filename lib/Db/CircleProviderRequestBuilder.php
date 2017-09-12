@@ -28,7 +28,6 @@
 namespace OCA\Circles\Db;
 
 
-use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
 use Doctrine\DBAL\Query\QueryBuilder;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
@@ -222,7 +221,7 @@ class CircleProviderRequestBuilder {
 
 		$tmpOrX = $expr->eq(
 			's.share_with',
-			$qb->createFunction('SUBSTR(`c`.`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')')
+			$qb->createFunction('SUBSTR(`c`.`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')')
 		);
 
 		if ($shareId === -1) {
@@ -253,7 +252,7 @@ class CircleProviderRequestBuilder {
 			'c', CoreRequestBuilder::TABLE_MEMBERS, 'mo', $expr->andX(
 			$expr->eq(
 				'mo.circle_id',
-        $qb->createFunction('SUBSTR(`c`.`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')')
+        $qb->createFunction('SUBSTR(`c`.`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')')
 			), $expr->eq('mo.user_type', $qb->createNamedParameter(Member::TYPE_USER)),
 			$expr->eq('mo.level', $qb->createNamedParameter(Member::LEVEL_OWNER))
 		)
@@ -303,7 +302,7 @@ class CircleProviderRequestBuilder {
 			$expr->eq(
 				'm.circle_id',
 				$qb->createFunction(
-					'SUBSTR(`c`.`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
+					'SUBSTR(`c`.`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')'
 				)
 			)
 		);
@@ -330,7 +329,7 @@ class CircleProviderRequestBuilder {
 			$expr->andX(
 				$expr->eq(
 					'g.circle_id',
-					$qb->createFunction('SUBSTR(`c`.`unique_id`, 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')')
+					$qb->createFunction('SUBSTR(`c`.`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')')
 				),
 				$expr->gte('g.level', $qb->createNamedParameter(Member::LEVEL_MEMBER))
 			)

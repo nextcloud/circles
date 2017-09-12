@@ -32,6 +32,7 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
+use OCA\Circles\Service\CirclesService;
 
 class Circles {
 
@@ -49,7 +50,7 @@ class Circles {
 		$app = new Application();
 		$c = $app->getContainer();
 
-		return $c->query('CirclesService')
+		return $c->query(CirclesService::class)
 				 ->detailsCircle($circleId);
 	}
 }

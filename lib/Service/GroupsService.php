@@ -228,27 +228,22 @@ class GroupsService {
 	public function unlinkGroup($circleUniqueId, $groupId) {
 		try {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
-			$circle->getHigherViewer()
-				   ->hasToBeAdmin();
+			$higherViewer = $circle->getHigherViewer();
+			$higherViewer->hasToBeAdmin();
 
 			$group = $this->membersRequest->forceGetGroup($circleUniqueId, $groupId);
 			$group->cantBeOwner();
-			$circle->getHigherViewer()
-				   ->hasToBeHigherLevel($group->getLevel());
+			$higherViewer->hasToBeHigherLevel($group->getLevel());
 
 			$group->setLevel(Member::LEVEL_NONE);
 			$this->membersRequest->updateGroup($group);
 
-
 			$this->eventsService->onGroupUnlink($circle, $group);
 
+			return $this->membersRequest->getGroupsFromCircle($circleUniqueId, $higherViewer);
 		} catch (\Exception $e) {
 			throw $e;
 		}
-
-		return $this->membersRequest->getGroupsFromCircle(
-			$circle->getUniqueId(), $circle->getHigherViewer()
-		);
 	}
 
 

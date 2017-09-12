@@ -27,6 +27,7 @@
 namespace OCA\Circles\Controller;
 
 use OCA\Circles\Model\Member;
+use OCA\Circles\Service\MiscService;
 use OCP\AppFramework\Http\DataResponse;
 
 class MembersController extends BaseController {
@@ -37,20 +38,22 @@ class MembersController extends BaseController {
 	 * @NoSubAdminRequired
 	 *
 	 * @param string $uniqueId
-	 * @param string $name
+	 * @param $ident
+	 * @param $type
 	 *
 	 * @return DataResponse
 	 */
-	public function addLocalMember($uniqueId, $name) {
+	public function addMember($uniqueId, $ident, $type) {
 
 		try {
-			$data = $this->membersService->addLocalMember($uniqueId, $name);
+			$data = $this->membersService->addMember($uniqueId, $ident, (int)$type);
 		} catch (\Exception $e) {
 			return $this->fail(
 				[
 					'circle_id' => $uniqueId,
-					'user_id'   => $name,
-					'name'      => $this->miscService->getDisplayName($name, true),
+					'user_id'   => $ident,
+					'user_type' => (int)$type,
+					'display'   => MiscService::getDisplay($ident, (int)$type),
 					'error'     => $e->getMessage()
 				]
 			);
@@ -59,78 +62,9 @@ class MembersController extends BaseController {
 		return $this->success(
 			[
 				'circle_id' => $uniqueId,
-				'user_id'   => $name,
-				'name'      => $this->miscService->getDisplayName($name, true),
-				'members'   => $data
-			]
-		);
-	}
-
-
-	/**
-	 * @NoAdminRequired
-	 * @NoSubAdminRequired
-	 *
-	 * @param string $uniqueId
-	 * @param string $email
-	 *
-	 * @return DataResponse
-	 */
-	public function addEmailAddress($uniqueId, $email) {
-
-		try {
-			$data = $this->membersService->addEmailAddress($uniqueId, $email);
-		} catch (\Exception $e) {
-			return $this->fail(
-				[
-					'circle_id' => $uniqueId,
-					'user_id'   => $email,
-					'name'      => $this->miscService->getDisplayName($email, true),
-					'error'     => $e->getMessage()
-				]
-			);
-		}
-
-		return $this->success(
-			[
-				'circle_id' => $uniqueId,
-				'user_id'   => $email,
-				'name'      => $this->miscService->getDisplayName($email, true),
-				'members'   => $data
-			]
-		);
-	}
-
-
-	/**
-	 * @NoAdminRequired
-	 * @NoSubAdminRequired
-	 *
-	 * @param $uniqueId
-	 * @param string $name
-	 *
-	 * @return DataResponse
-	 */
-	public function importFromGroup($uniqueId, $name) {
-
-		try {
-			$data = $this->membersService->importMembersFromGroup($uniqueId, $name);
-		} catch (\Exception $e) {
-			return $this->fail(
-				[
-					'circle_id' => $uniqueId,
-					'user_id'   => $name,
-					'name'      => $this->miscService->getDisplayName($name, true),
-					'error'     => $e->getMessage()
-				]
-			);
-		}
-
-		return $this->success(
-			[
-				'circle_id' => $uniqueId,
-				'user_id'   => $name,
-				'name'      => $this->miscService->getDisplayName($name, true),
+				'user_id'   => $ident,
+				'user_type' => (int)$type,
+				'display'   => MiscService::getDisplay($ident, (int)$type),
 				'members'   => $data
 			]
 		);
@@ -151,14 +85,15 @@ class MembersController extends BaseController {
 	public function levelMember($uniqueId, $member, $type, $level) {
 
 		try {
-			$data = $this->membersService->levelMember($uniqueId, $member, $type, $level);
+			$data = $this->membersService->levelMember($uniqueId, $member, (int)$type, $level);
 		} catch (\Exception $e) {
 			return
 				$this->fail(
 					[
 						'circle_id' => $uniqueId,
 						'user_id'   => $member,
-						'name'      => $this->miscService->getDisplayName($member, true),
+						'user_type' => (int)$type,
+						'display'   => MiscService::getDisplay($member, (int)$type),
 						'level'     => $level,
 						'error'     => $e->getMessage()
 					]
@@ -169,7 +104,8 @@ class MembersController extends BaseController {
 			[
 				'circle_id' => $uniqueId,
 				'user_id'   => $member,
-				'name'      => $this->miscService->getDisplayName($member, true),
+				'user_type' => (int)$type,
+				'display'   => MiscService::getDisplay($member, (int)$type),
 				'level'     => $level,
 				'members'   => $data,
 			]
@@ -190,14 +126,15 @@ class MembersController extends BaseController {
 	public function removeMember($uniqueId, $member, $type) {
 
 		try {
-			$data = $this->membersService->removeMember($uniqueId, $member, $type);
+			$data = $this->membersService->removeMember($uniqueId, $member, (int)$type);
 		} catch (\Exception $e) {
 			return
 				$this->fail(
 					[
 						'circle_id' => $uniqueId,
 						'user_id'   => $member,
-						'name'      => $this->miscService->getDisplayName($member, true),
+						'user_type' => (int)$type,
+						'display'   => MiscService::getDisplay($member, (int)$type),
 						'error'     => $e->getMessage()
 					]
 				);
@@ -207,12 +144,37 @@ class MembersController extends BaseController {
 			[
 				'circle_id' => $uniqueId,
 				'user_id'   => $member,
-				'name'      => $this->miscService->getDisplayName($member, true),
+				'user_type' => (int)$type,
+				'display'   => MiscService::getDisplay($member, (int)$type),
 				'members'   => $data,
 			]
 		);
 	}
 
+
+	/**
+	 * @NoAdminRequired
+	 *
+	 * @param string $search
+	 *
+	 * @return DataResponse
+	 */
+	public function searchGlobal($search) {
+
+		try {
+			$result = $this->searchService->searchGlobal($search);
+		} catch (\Exception $e) {
+			return
+				$this->fail(
+					[
+						'search' => $search,
+						'error'  => $e->getMessage()
+					]
+				);
+		}
+
+		return $this->success(['search' => $search, 'result' => $result]);
+	}
 
 }
 

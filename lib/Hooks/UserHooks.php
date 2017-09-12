@@ -4,6 +4,7 @@
 namespace OCA\Circles\Hooks;
 
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\Events\UserEvents;
 
 
 class UserHooks {
@@ -12,7 +13,7 @@ class UserHooks {
 		$app = new Application();
 
 		return $app->getContainer()
-				   ->query('UserEvents');
+				   ->query(UserEvents::class);
 	}
 
 

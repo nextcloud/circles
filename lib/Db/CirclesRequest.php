@@ -56,7 +56,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	public function forceGetCircle($circleUniqueId) {
 		$qb = $this->getCirclesSelectSql();
 
-		$this->limitToShortenUniqueId($qb, $circleUniqueId);
+		$this->limitToShortenUniqueId($qb, $circleUniqueId, Circle::SHORT_UNIQUE_ID_LENGTH);
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
@@ -152,7 +152,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	public function getCircle($circleUniqueId, $viewerId) {
 		$qb = $this->getCirclesSelectSql();
 
-		$this->limitToShortenUniqueId($qb, $circleUniqueId);
+		$this->limitToShortenUniqueId($qb, $circleUniqueId, Circle::SHORT_UNIQUE_ID_LENGTH);
 
 		$this->leftJoinUserIdAsViewer($qb, $viewerId);
 		$this->leftJoinOwner($qb);
@@ -289,9 +289,9 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 * @param SharingFrame $frame
 	 */
 	public function saveFrame(SharingFrame $frame) {
-
 		$qb = $this->getSharesInsertSql();
-		$qb->setValue('circle_id', $qb->createNamedParameter($frame->getCircleId()))
+		$circle = $frame->getCircle();
+		$qb->setValue('circle_id', $qb->createNamedParameter($circle->getUniqueId()))
 		   ->setValue('source', $qb->createNamedParameter($frame->getSource()))
 		   ->setValue('type', $qb->createNamedParameter($frame->getType()))
 		   ->setValue('headers', $qb->createNamedParameter($frame->getHeaders(true)))
@@ -306,7 +306,8 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 	public function updateFrame(SharingFrame $frame) {
 		$qb = $this->getSharesUpdateSql($frame->getUniqueId());
-		$qb->set('circle_id', $qb->createNamedParameter($frame->getCircleId()))
+		$circle = $frame->getCircle();
+		$qb->set('circle_id', $qb->createNamedParameter($circle->getUniqueId()))
 		   ->set('source', $qb->createNamedParameter($frame->getSource()))
 		   ->set('type', $qb->createNamedParameter($frame->getType()))
 		   ->set('headers', $qb->createNamedParameter($frame->getHeaders(true)))
@@ -364,6 +365,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$qb = $this->getSharesSelectSql();
 		$this->limitToUniqueId($qb, $frameUniqueId);
 		$this->limitToCircleId($qb, $circleUniqueId);
+		$this->leftJoinCircle($qb);
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
@@ -376,86 +378,6 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$entry = $this->parseSharesSelectSql($data);
 
 		return $entry;
-	}
-
-
-	/**
-	 * return the FederatedLink identified by a remote Circle UniqueId and the Token of the link
-	 *
-	 * @param string $token
-	 * @param string $uniqueId
-	 *
-	 * @return FederatedLink
-	 * @throws FederatedLinkDoesNotExistException
-	 */
-	public function getLinkFromToken($token, $uniqueId) {
-		$qb = $this->getLinksSelectSql();
-		$this->limitToUniqueId($qb, (string)$uniqueId);
-		$this->limitToToken($qb, (string)$token);
-
-		$cursor = $qb->execute();
-		$data = $cursor->fetch();
-		$cursor->closeCursor();
-
-		if ($data === false) {
-			throw new FederatedLinkDoesNotExistException(
-				$this->l10n->t('Federated link not found')
-			);
-		}
-
-		$entry = $this->parseLinksSelectSql($data);
-
-		return $entry;
-	}
-
-
-	/**
-	 * return the FederatedLink identified by a its Id
-	 *
-	 * @param int $linkId
-	 *
-	 * @return FederatedLink
-	 * @throws FederatedLinkDoesNotExistException
-	 */
-	public function getLinkFromId($linkId) {
-		$qb = $this->getLinksSelectSql();
-		$this->limitToId($qb, (string)$linkId);
-
-		$cursor = $qb->execute();
-		$data = $cursor->fetch();
-		$cursor->closeCursor();
-
-		if ($data === false) {
-			throw new FederatedLinkDoesNotExistException(
-				$this->l10n->t('Federated link not found')
-			);
-		}
-
-		$entry = $this->parseLinksSelectSql($data);
-
-		return $entry;
-	}
-
-
-	/**
-	 * returns all FederatedLink from a circle
-	 *
-	 * @param string $circleUniqueId
-	 *
-	 * @return FederatedLink[]
-	 */
-	public function getLinksFromCircle($circleUniqueId) {
-		$qb = $this->getLinksSelectSql();
-		$this->limitToCircleId($qb, $circleUniqueId);
-
-		$links = [];
-		$cursor = $qb->execute();
-		while ($data = $cursor->fetch()) {
-			$links[] = $this->parseLinksSelectSql($data);
-		}
-		$cursor->closeCursor();
-
-		return $links;
 	}
 
 

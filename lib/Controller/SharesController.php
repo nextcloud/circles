@@ -26,6 +26,7 @@
 
 namespace OCA\Circles\Controller;
 
+use Exception;
 use OCA\Circles\Model\SharingFrame;
 use OCP\AppFramework\Http\DataResponse;
 
@@ -39,25 +40,24 @@ class SharesController extends BaseController {
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
-	 * @param string $uniqueId
+	 * @param string $circleUniqueId
 	 * @param string $source
 	 * @param string $type
 	 * @param array $payload
 	 *
 	 * @return DataResponse
 	 */
-	public function create($uniqueId, $source, $type, $payload) {
+	public function create($circleUniqueId, $source, $type, $payload) {
 
 		try {
 			$share = new SharingFrame($source, $type);
-			$share->setCircleId($uniqueId);
 			$share->setPayload($payload);
 
-			$this->sharesService->createFrame($share);
+			$this->sharingFrameService->createFrame($circleUniqueId, $share);
 		} catch (\Exception $e) {
 			return $this->fail(
 				[
-					'circle_id' => $uniqueId,
+					'circle_id' => $circleUniqueId,
 					'source'    => $source,
 					'type'      => $type,
 					'payload'   => $payload,
@@ -68,7 +68,7 @@ class SharesController extends BaseController {
 
 		return $this->success(
 			[
-				'circle_id' => $uniqueId,
+				'circle_id' => $circleUniqueId,
 				'source'    => $source,
 				'type'      => $type,
 				'payload'   => $payload
@@ -76,6 +76,49 @@ class SharesController extends BaseController {
 		);
 	}
 
+
+	/**
+	 * initShareDelivery()
+	 *
+	 * Note: this function will close the request mid-run from the client but will still
+	 * running its process.
+	 *
+	 * Called by locally, the function will get the SharingFrame by its uniqueId from the database.
+	 * After closing the socket, will broadcast the Frame locally and - if Federated Shares are
+	 * enable - will deliver it to each remote circles linked to the circle the Payload belongs to.
+	 *
+	 * A status response is sent to free the client process before starting to broadcast the item
+	 * to other federated links.
+	 *
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 *
+	 * @param string $circleId
+	 * @param string $frameId
+	 *
+	 * @return DataResponse
+	 */
+	public function initShareDelivery($circleId, $frameId) {
+
+		try {
+			$frame = $this->sharingFrameService->getFrameFromUniqueId($circleId, $frameId);
+		} catch (Exception $e) {
+			return $this->fail($e->getMessage());
+		}
+
+		// We don't want to keep the connection up
+		$this->miscService->asyncAndLeaveClientOutOfThis('done');
+
+		$this->broadcastService->broadcastFrame($frame);
+
+		// TODO - do not update cloudId to avoid duplicate, use it's own field and keep cloudId
+		$this->sharingFrameService->updateFrameWithCloudId($frame);
+		if ($this->configService->isFederatedCirclesAllowed()) {
+			$this->sharingFrameService->forwardSharingFrame($frame);
+		}
+
+		exit();
+	}
 
 }
 

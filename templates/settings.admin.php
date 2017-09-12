@@ -1,8 +1,10 @@
 <?php
 
 
-script('circles', 'admin');
-style('circles', 'admin');
+use OCA\Circles\AppInfo\Application;
+
+script(Application::APP_NAME, 'admin');
+style(Application::APP_NAME, 'admin');
 
 ?>
 
@@ -11,15 +13,25 @@ style('circles', 'admin');
 
 	<table cellpadding="10" cellpadding="5">
 		<tr class="lane">
-			<td colspan="2" class="left">Allow Group Linking:<br/>
-				<em>Groups can be linked to Circles.</em></td>
+			<td colspan="2" class="left"><?php p($l->t('Async Testing:')); ?><br/>
+				<em id="test_async_result"></em></td>
+			<td class="right">
+				<input type="button" value="<?php p($l->t('initiate test of Circles Async')); ?>" id="test_async_start"/>
+				<input type="button" value="<?php p($l->t('reset test result')); ?>" id="test_async_reset"/>
+				<input type="button" value="<?php p($l->t('Test is currently running. Please wait.')); ?>" id="test_async_wait"/>
+			</td>
+		</tr>
+		<tr class="lane">
+			<td colspan="2" class="left"><?php p($l->t('Allow Group Linking:')); ?><br/>
+				<em><?php p($l->t('Groups can be linked to Circles.')); ?></em></td>
 			<td class="right">
 				<input type="checkbox" value="1" id="allow_linked_groups"/>
 			</td>
 		</tr>
 		<tr class="lane">
-			<td colspan="2" class="left">Allow Federated Circles:<br/>
-				<em>Circles from different Nextcloud can be linked together.</em></td>
+			<td colspan="2" class="left"><?php p($l->t('Allow Federated Circles:')); ?><br/>
+				<em><?php p($l->t('Circles from different Nextclouds can be linked together.')); ?></em>
+			</td>
 			<td class="right">
 				<input type="checkbox" value="1" id="allow_federated_circles"/>
 			</td>

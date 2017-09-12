@@ -27,14 +27,16 @@
 namespace OCA\Circles\Controller;
 
 use OC\AppFramework\Http;
+use OCA\Circles\Service\BroadcastService;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\ConfigService;
-use OCA\Circles\Service\FederatedService;
+use OCA\Circles\Service\FederatedLinkService;
 use OCA\Circles\Service\GroupsService;
 use OCA\Circles\Service\MembersService;
 
 use OCA\Circles\Service\MiscService;
-use OCA\Circles\Service\SharesService;
+use OCA\Circles\Service\SearchService;
+use OCA\Circles\Service\SharingFrameService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\IL10N;
@@ -51,6 +53,9 @@ class BaseController extends Controller {
 	/** @var ConfigService */
 	protected $configService;
 
+	/** @var SearchService */
+	protected $searchService;
+
 	/** @var CirclesService */
 	protected $circlesService;
 
@@ -60,11 +65,14 @@ class BaseController extends Controller {
 	/** @var GroupsService */
 	protected $groupsService;
 
-	/** @var SharesService */
-	protected $sharesService;
+	/** @var SharingFrameService */
+	protected $sharingFrameService;
 
-	/** @var FederatedService */
-	protected $federatedService;
+	/** @var BroadcastService */
+	protected $broadcastService;
+
+	/** @var FederatedLinkService */
+	protected $federatedLinkService;
 
 	/** @var MiscService */
 	protected $miscService;
@@ -79,10 +87,12 @@ class BaseController extends Controller {
 	 * @param IL10N $l10n
 	 * @param ConfigService $configService
 	 * @param CirclesService $circlesService
+	 * @param SearchService $searchService
 	 * @param MembersService $membersService
 	 * @param GroupsService $groupsService
-	 * @param SharesService $sharesService
-	 * @param FederatedService $federatedService
+	 * @param SharingFrameService $sharingFrameService
+	 * @param BroadcastService $broadcastService
+	 * @param FederatedLinkService $federatedLinkService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
@@ -92,10 +102,12 @@ class BaseController extends Controller {
 		IL10N $l10n,
 		ConfigService $configService,
 		CirclesService $circlesService,
+		SearchService $searchService,
 		MembersService $membersService,
 		GroupsService $groupsService,
-		SharesService $sharesService,
-		FederatedService $federatedService,
+		SharingFrameService $sharingFrameService,
+		BroadcastService $broadcastService,
+		FederatedLinkService $federatedLinkService,
 		MiscService $miscService
 	) {
 		parent::__construct($appName, $request);
@@ -104,10 +116,12 @@ class BaseController extends Controller {
 		$this->l10n = $l10n;
 		$this->configService = $configService;
 		$this->circlesService = $circlesService;
+		$this->searchService = $searchService;
 		$this->membersService = $membersService;
 		$this->groupsService = $groupsService;
-		$this->sharesService = $sharesService;
-		$this->federatedService = $federatedService;
+		$this->sharingFrameService = $sharingFrameService;
+		$this->broadcastService = $broadcastService;
+		$this->federatedLinkService = $federatedLinkService;
 		$this->miscService = $miscService;
 	}
 
@@ -118,11 +132,13 @@ class BaseController extends Controller {
 	 */
 	protected function fail($data) {
 		$this->miscService->log(json_encode($data));
+
 		return new DataResponse(
 			array_merge($data, array('status' => 0)),
 			Http::STATUS_NON_AUTHORATIVE_INFORMATION
 		);
 	}
+
 
 	/**
 	 * @param $data

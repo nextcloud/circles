@@ -31,13 +31,14 @@ use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Service\FederatedLinkService;
 use OCA\Circles\Service\MiscService;
 use OCP\Activity\IEvent;
 use OCP\Activity\IManager;
 use OCP\IL10N;
 use OCP\IURLGenerator;
 
-class BaseProvider {
+class ProviderParser {
 
 
 	/** @var MiscService */
@@ -67,11 +68,9 @@ class BaseProvider {
 	 *
 	 * @param IEvent $event
 	 * @param Circle $circle
-	 * @param FederatedLink $remote
+	 * @param FederatedLink|null $remote
 	 * @param string $ownEvent
 	 * @param string $othersEvent
-	 *
-	 * @return IEvent
 	 */
 	protected function parseCircleEvent(
 		IEvent &$event, Circle $circle, $remote, $ownEvent, $othersEvent
@@ -83,10 +82,12 @@ class BaseProvider {
 		];
 
 		if ($this->isViewerTheAuthor($circle, $this->activityManager->getCurrentUserId())) {
-			return $event->setRichSubject($ownEvent, $data);
+			$event->setRichSubject($ownEvent, $data);
+
+			return;
 		}
 
-		return $event->setRichSubject($othersEvent, $data);
+		$event->setRichSubject($othersEvent, $data);
 	}
 
 
@@ -98,8 +99,6 @@ class BaseProvider {
 	 * @param IEvent $event
 	 * @param $ownEvent
 	 * @param $othersEvent
-	 *
-	 * @return IEvent
 	 */
 	protected function parseMemberEvent(
 		IEvent &$event, Circle $circle, Member $member, $ownEvent, $othersEvent
@@ -111,10 +110,12 @@ class BaseProvider {
 
 		if ($member->getUserId() === $this->activityManager->getCurrentUserId()
 		) {
-			return $event->setRichSubject($ownEvent, $data);
+			$event->setRichSubject($ownEvent, $data);
+
+			return;
 		}
 
-		return $event->setRichSubject($othersEvent, $data);
+		$event->setRichSubject($othersEvent, $data);
 	}
 
 
@@ -125,8 +126,6 @@ class BaseProvider {
 	 * @param FederatedLink $remote
 	 * @param IEvent $event
 	 * @param string $line
-	 *
-	 * @return IEvent
 	 */
 	protected function parseLinkEvent(IEvent &$event, Circle $circle, FederatedLink $remote, $line
 	) {
@@ -135,7 +134,7 @@ class BaseProvider {
 			'remote' => $this->generateRemoteCircleParameter($remote)
 		];
 
-		return $event->setRichSubject($line, $data);
+		$event->setRichSubject($line, $data);
 	}
 
 
@@ -147,24 +146,25 @@ class BaseProvider {
 	 * @param IEvent $event
 	 * @param string $ownEvent
 	 * @param string $othersEvent
-	 *
-	 * @return IEvent
 	 */
 	protected function parseCircleMemberEvent(
 		IEvent &$event, Circle $circle, Member $member, $ownEvent, $othersEvent
 	) {
 		$data = [
-			'author' => $this->generateViewerParameter($circle),
-			'circle' => $this->generateCircleParameter($circle),
-			'member' => $this->generateUserParameter($member),
-			'group'  => $this->generateGroupParameter($member),
+			'author'   => $this->generateViewerParameter($circle),
+			'circle'   => $this->generateCircleParameter($circle),
+			'member'   => $this->generateUserParameter($member),
+			'external' => $this->generateExternalMemberParameter($member),
+			'group'    => $this->generateGroupParameter($member),
 		];
 
 		if ($this->isViewerTheAuthor($circle, $this->activityManager->getCurrentUserId())) {
-			return $event->setRichSubject($ownEvent, $data);
+			$event->setRichSubject($ownEvent, $data);
+
+			return;
 		}
 
-		return $event->setRichSubject($othersEvent, $data);
+		$event->setRichSubject($othersEvent, $data);
 	}
 
 
@@ -174,12 +174,9 @@ class BaseProvider {
 	 * @param Circle $circle
 	 * @param Member $member
 	 * @param IEvent $event
-	 *\
 	 * @param $ownEvent
 	 * @param $targetEvent
 	 * @param $othersEvent
-	 *
-	 * @return IEvent
 	 */
 	protected function parseCircleMemberAdvancedEvent(
 		IEvent &$event, Circle $circle, Member $member, $ownEvent, $targetEvent, $othersEvent
@@ -191,31 +188,18 @@ class BaseProvider {
 		];
 
 		if ($this->isViewerTheAuthor($circle, $this->activityManager->getCurrentUserId())) {
-			return $event->setRichSubject($ownEvent, $data);
+			$event->setRichSubject($ownEvent, $data);
+
+			return;
 		}
 
 		if ($member->getUserId() === $this->activityManager->getCurrentUserId()) {
-			return $event->setRichSubject($targetEvent, $data);
+			$event->setRichSubject($targetEvent, $data);
+
+			return;
 		}
 
-		return $event->setRichSubject($othersEvent, $data);
-	}
-
-
-	/**
-	 * @param IEvent $event
-	 */
-	protected function generateParsedSubject(IEvent &$event) {
-		$subject = $event->getRichSubject();
-		$params = $event->getRichSubjectParameters();
-		$ak = array_keys($params);
-		foreach ($ak as $k) {
-			if (is_array($params[$k])) {
-				$subject = str_replace('{' . $k . '}', $params[$k]['parsed'], $subject);
-			}
-		}
-
-		$event->setParsedSubject($subject);
+		$event->setRichSubject($othersEvent, $data);
 	}
 
 
@@ -250,6 +234,21 @@ class BaseProvider {
 		}
 
 		return $this->generateUserParameter($circle->getViewer());
+	}
+
+
+	/**
+	 * @param Member $member
+	 *
+	 * @return array|string <string,string|integer>
+	 */
+	protected function generateExternalMemberParameter(Member $member) {
+		return [
+			'type'   => 'member_' . $member->getType(),
+			'id'     => $member->getUserId(),
+			'name'   => $member->getDisplayName() . ' (' . $member->getTypeString() . ')',
+			'parsed' => $member->getDisplayName()
+		];
 	}
 
 

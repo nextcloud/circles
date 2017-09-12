@@ -27,7 +27,9 @@
 namespace OCA\Circles\Service;
 
 
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CirclesRequest;
+use OCA\Circles\Db\FederatedLinksRequest;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
@@ -55,6 +57,9 @@ class CirclesService {
 	/** @var MembersRequest */
 	private $membersRequest;
 
+	/** @var FederatedLinksRequest */
+	private $federatedLinksRequest;
+
 	/** @var EventsService */
 	private $eventsService;
 
@@ -65,11 +70,12 @@ class CirclesService {
 	/**
 	 * CirclesService constructor.
 	 *
-	 * @param $userId
+	 * @param string $userId
 	 * @param IL10N $l10n
 	 * @param ConfigService $configService
 	 * @param CirclesRequest $circlesRequest
 	 * @param MembersRequest $membersRequest
+	 * @param FederatedLinksRequest $federatedLinksRequest
 	 * @param EventsService $eventsService
 	 * @param MiscService $miscService
 	 */
@@ -79,6 +85,7 @@ class CirclesService {
 		ConfigService $configService,
 		CirclesRequest $circlesRequest,
 		MembersRequest $membersRequest,
+		FederatedLinksRequest $federatedLinksRequest,
 		EventsService $eventsService,
 		MiscService $miscService
 	) {
@@ -87,6 +94,7 @@ class CirclesService {
 		$this->configService = $configService;
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
+		$this->federatedLinksRequest = $federatedLinksRequest;
 		$this->eventsService = $eventsService;
 		$this->miscService = $miscService;
 	}
@@ -118,7 +126,7 @@ class CirclesService {
 			);
 		}
 
-		$circle = new Circle($this->l10n, $type, $name);
+		$circle = new Circle($type, $name);
 
 		try {
 			$this->circlesRequest->createCircle($circle, $this->userId);
@@ -231,7 +239,7 @@ class CirclesService {
 		try {
 			if ($this->configService->isFederatedCirclesAllowed()) {
 				$circle->hasToBeFederated();
-				$links = $this->circlesRequest->getLinksFromCircle($circle->getUniqueId());
+				$links = $this->federatedLinksRequest->getLinksFromCircle($circle->getUniqueId());
 			}
 		} catch (FederatedCircleNotAllowedException $e) {
 		}
@@ -408,23 +416,23 @@ class CirclesService {
 		switch ($type) {
 			case Circle::CIRCLES_PERSONAL:
 				return $urlGen->getAbsoluteURL(
-					$urlGen->imagePath('circles', 'personal' . $ext)
+					$urlGen->imagePath(Application::APP_NAME, 'personal' . $ext)
 				);
 			case Circle::CIRCLES_CLOSED:
 				return $urlGen->getAbsoluteURL(
-					$urlGen->imagePath('circles', 'closed' . $ext)
+					$urlGen->imagePath(Application::APP_NAME, 'closed' . $ext)
 				);
 			case Circle::CIRCLES_SECRET:
 				return $urlGen->getAbsoluteURL(
-					$urlGen->imagePath('circles', 'secret' . $ext)
+					$urlGen->imagePath(Application::APP_NAME, 'secret' . $ext)
 				);
 			case Circle::CIRCLES_PUBLIC:
 				return $urlGen->getAbsoluteURL(
-					$urlGen->imagePath('circles', 'public' . $ext)
+					$urlGen->imagePath(Application::APP_NAME, 'public' . $ext)
 				);
 		}
 
-		return $urlGen->getAbsoluteURL($urlGen->imagePath('circles', 'black_circle' . $ext));
+		return $urlGen->getAbsoluteURL($urlGen->imagePath(Application::APP_NAME, 'black_circle' . $ext));
 	}
 
 }

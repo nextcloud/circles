@@ -28,6 +28,7 @@ namespace OCA\Circles\Service;
 
 use OCA\Circles\Model\Circle;
 use OCP\IConfig;
+use OCP\IRequest;
 use OCP\Util;
 
 class ConfigService {
@@ -38,6 +39,11 @@ class ConfigService {
 	const CIRCLES_ALLOW_LINKED_GROUPS = 'allow_linked_groups';
 	const CIRCLES_ALLOW_NON_SSL_LINKS = 'allow_non_ssl_links';
 	const CIRCLES_NON_SSL_LOCAL = 'local_is_non_ssl';
+
+	const CIRCLES_TEST_ASYNC_LOCK = 'test_async_lock';
+	const CIRCLES_TEST_ASYNC_INIT = 'test_async_init';
+	const CIRCLES_TEST_ASYNC_HAND = 'test_async_hand';
+	const CIRCLES_TEST_ASYNC_COUNT = 'test_async_count';
 
 	private $defaults = [
 		self::CIRCLES_ALLOW_CIRCLES           => Circle::CIRCLES_ALL,
@@ -57,8 +63,8 @@ class ConfigService {
 	/** @var string */
 	private $userId;
 
-	/** @var string */
-	private $serverHost;
+	/** @var IRequest */
+	private $request;
 
 	/** @var MiscService */
 	private $miscService;
@@ -83,16 +89,16 @@ class ConfigService {
 	 *
 	 * @param string $appName
 	 * @param IConfig $config
-	 * @param string $serverHost
+	 * @param IRequest $request
 	 * @param string $userId
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$appName, IConfig $config, $serverHost, $userId, MiscService $miscService
+		$appName, IConfig $config, IRequest $request, $userId, MiscService $miscService
 	) {
 		$this->appName = $appName;
 		$this->config = $config;
-		$this->serverHost = $serverHost;
+		$this->request = $request;
 		$this->userId = $userId;
 		$this->miscService = $miscService;
 	}
@@ -100,7 +106,7 @@ class ConfigService {
 
 	public function getLocalAddress() {
 		return (($this->isLocalNonSSL()) ? 'http://' : '')
-			   . $this->serverHost;
+			   . $this->request->getServerHost();
 	}
 
 
@@ -171,6 +177,23 @@ class ConfigService {
 		return ($this->allowedNonSSLLinks === 1);
 	}
 
+
+	/**
+	 * @param string $remote
+	 *
+	 * @return string
+	 */
+	public function generateRemoteHost($remote) {
+		if ((!$this->isNonSSLLinksAllowed() || strpos($remote, 'http://') !== 0)
+			&& strpos($remote, 'https://') !== 0
+		) {
+			$remote = 'https://' . $remote;
+		}
+
+		return rtrim($remote, '/');
+	}
+
+
 	/**
 	 * Get a value by key
 	 *
@@ -196,7 +219,10 @@ class ConfigService {
 	 *
 	 * @return void
 	 */
-	public function setAppValue($key, $value) {
+	public
+	function setAppValue(
+		$key, $value
+	) {
 		$this->config->setAppValue($this->appName, $key, $value);
 	}
 
@@ -207,7 +233,10 @@ class ConfigService {
 	 *
 	 * @return string
 	 */
-	public function deleteAppValue($key) {
+	public
+	function deleteAppValue(
+		$key
+	) {
 		return $this->config->deleteAppValue($this->appName, $key);
 	}
 
@@ -218,7 +247,10 @@ class ConfigService {
 	 *
 	 * @return string
 	 */
-	public function getUserValue($key) {
+	public
+	function getUserValue(
+		$key
+	) {
 		return $this->config->getUserValue($this->userId, $this->appName, $key);
 	}
 
@@ -230,7 +262,10 @@ class ConfigService {
 	 *
 	 * @return string
 	 */
-	public function setUserValue($key, $value) {
+	public
+	function setUserValue(
+		$key, $value
+	) {
 		return $this->config->setUserValue($this->userId, $this->appName, $key, $value);
 	}
 
@@ -242,7 +277,10 @@ class ConfigService {
 	 *
 	 * @return string
 	 */
-	public function getValueForUser($userId, $key) {
+	public
+	function getValueForUser(
+		$userId, $key
+	) {
 		return $this->config->getUserValue($userId, $this->appName, $key);
 	}
 
@@ -255,7 +293,10 @@ class ConfigService {
 	 *
 	 * @return string
 	 */
-	public function setValueForUser($userId, $key, $value) {
+	public
+	function setValueForUser(
+		$userId, $key, $value
+	) {
 		return $this->config->setUserValue($userId, $this->appName, $key, $value);
 	}
 
@@ -267,7 +308,10 @@ class ConfigService {
 	 *
 	 * @return string|integer
 	 */
-	public function getCloudVersion($complete = false) {
+	public
+	function getCloudVersion(
+		$complete = false
+	) {
 		$ver = Util::getVersion();
 
 		if ($complete) {

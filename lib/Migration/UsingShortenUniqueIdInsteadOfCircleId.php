@@ -27,6 +27,7 @@
 namespace OCA\Circles\Migration;
 
 use OC\Share\Share;
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CoreRequestBuilder;
 use OCA\Circles\Model\Circle;
 use OCP\IConfig;
@@ -68,13 +69,11 @@ class UsingShortenUniqueIdInsteadOfCircleId implements IRepairStep {
 	public function run(IOutput $output) {
 		$oldVersion = explode(
 			'.', \OC::$server->getConfig()
-							 ->getAppValue('circles', 'installed_version', '')
+							 ->getAppValue(Application::APP_NAME, 'installed_version', '')
 		);
 
 		if ((int)$oldVersion[0] === 0
-			&& ((int)$oldVersion[1] < 12
-				|| ((int)$oldVersion[1] === 12
-					&& (int)$oldVersion[2] <= 2))) {
+			&& (int)$oldVersion[1] < 13) {
 			$this->swapToShortenUniqueId();
 		}
 	}
@@ -91,7 +90,7 @@ class UsingShortenUniqueIdInsteadOfCircleId implements IRepairStep {
 		$cursor = $qb->execute();
 		while ($data = $cursor->fetch()) {
 			$circleId = $data['id'];
-			$shortenUniqueId = substr($data['unique_id'], 0, Circle::UNIQUEID_SHORT_LENGTH);
+			$shortenUniqueId = substr($data['unique_id'], 0, Circle::SHORT_UNIQUE_ID_LENGTH);
 
 			$this->swapToShortenUniqueIdInTable(
 				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_GROUPS
@@ -100,9 +99,9 @@ class UsingShortenUniqueIdInsteadOfCircleId implements IRepairStep {
 				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_LINKS
 			);
 
-			$this->cleanBuggyDuplicateEntries(
-				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_MEMBERS, 'user_id'
-			);
+//			$this->cleanBuggyDuplicateEntries(
+//				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_MEMBERS, 'user_id'
+//			);
 			$this->swapToShortenUniqueIdInTable(
 				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_MEMBERS
 			);
@@ -150,36 +149,36 @@ class UsingShortenUniqueIdInsteadOfCircleId implements IRepairStep {
 	}
 
 
-	private function cleanBuggyDuplicateEntries($circleId, $shortenUniqueId, $table, $field) {
-
-		$qb = $this->connection->getQueryBuilder();
-		$expr = $qb->expr();
-
-		$qb->select($field)
-		   ->from($table)
-		   ->where(
-			   $expr->eq('circle_id', $qb->createNamedParameter($circleId))
-		   );
-
-		$cursor = $qb->execute();
-		while ($data = $cursor->fetch()) {
-			$val = $data[$field];
-			if ($val !== '') {
-				$qb2 = $this->connection->getQueryBuilder();
-				$expr2 = $qb2->expr();
-				/** @noinspection PhpMethodParametersCountMismatchInspection */
-				$qb2->delete($table)
-					->where(
-						$expr2->andX(
-							$expr2->eq('circle_id', $qb2->createNamedParameter($shortenUniqueId)),
-							$expr2->eq($field, $qb2->createNamedParameter($val))
-						)
-					);
-				$qb2->execute();
-			}
-		}
-		$cursor->closeCursor();
-	}
+//	private function cleanBuggyDuplicateEntries($circleId, $shortenUniqueId, $table, $field) {
+//
+//		$qb = $this->connection->getQueryBuilder();
+//		$expr = $qb->expr();
+//
+//		$qb->select($field)
+//		   ->from($table)
+//		   ->where(
+//			   $expr->eq('circle_id', $qb->createNamedParameter($circleId))
+//		   );
+//
+//		$cursor = $qb->execute();
+//		while ($data = $cursor->fetch()) {
+//			$val = $data[$field];
+//			if ($val !== '') {
+//				$qb2 = $this->connection->getQueryBuilder();
+//				$expr2 = $qb2->expr();
+//				/** @noinspection PhpMethodParametersCountMismatchInspection */
+//				$qb2->delete($table)
+//					->where(
+//						$expr2->andX(
+//							$expr2->eq('circle_id', $qb2->createNamedParameter($shortenUniqueId)),
+//							$expr2->eq($field, $qb2->createNamedParameter($val))
+//						)
+//					);
+//				$qb2->execute();
+//			}
+//		}
+//		$cursor->closeCursor();
+//	}
 
 }
 

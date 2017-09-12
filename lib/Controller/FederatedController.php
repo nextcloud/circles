@@ -30,26 +30,22 @@ use Exception;
 use OC\AppFramework\Http;
 use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
-use OCA\Circles\Exceptions\FederatedLinkCreationException;
 use OCA\Circles\Exceptions\SharingFrameAlreadyExistException;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\SharingFrame;
+use OCA\Circles\Service\BroadcastService;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\ConfigService;
-use OCA\Circles\Service\FederatedService;
+use OCA\Circles\Service\FederatedLinkCreationService;
+use OCA\Circles\Service\FederatedLinkService;
 use OCA\Circles\Service\MembersService;
 use OCA\Circles\Service\MiscService;
-use OCA\Circles\Service\SharesService;
+use OCA\Circles\Service\SharingFrameService;
+use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
-use OCP\IL10N;
+use OCP\IRequest;
 
-class FederatedController extends BaseController {
-
-	/** @var string */
-	protected $userId;
-
-	/** @var IL10N */
-	protected $l10n;
+class FederatedController extends Controller {
 
 	/** @var ConfigService */
 	protected $configService;
@@ -60,14 +56,50 @@ class FederatedController extends BaseController {
 	/** @var MembersService */
 	protected $membersService;
 
-	/** @var SharesService */
-	protected $sharesService;
+	/** @var SharingFrameService */
+	protected $sharingFrameService;
 
-	/** @var FederatedService */
-	protected $federatedService;
+	/** @var BroadcastService */
+	protected $broadcastService;
+
+	/** @var FederatedLinkService */
+	protected $federatedLinkService;
+
+	/** @var FederatedLinkCreationService */
+	protected $federatedLinkCreationService;
 
 	/** @var MiscService */
 	protected $miscService;
+
+
+	/**
+	 * BaseController constructor.
+	 *
+	 * @param string $appName
+	 * @param IRequest $request
+	 * @param ConfigService $configService
+	 * @param CirclesService $circlesService
+	 * @param SharingFrameService $sharingFrameService
+	 * @param BroadcastService $broadcastService
+	 * @param FederatedLinkService $federatedLinkService
+	 * @param FederatedLinkCreationService $federatedLinkCreationService
+	 * @param MiscService $miscService
+	 */
+	public function __construct(
+		$appName, IRequest $request, ConfigService $configService, CirclesService $circlesService,
+		SharingFrameService $sharingFrameService, BroadcastService $broadcastService,
+		FederatedLinkService $federatedLinkService,
+		FederatedLinkCreationService $federatedLinkCreationService, MiscService $miscService
+	) {
+		parent::__construct($appName, $request);
+		$this->configService = $configService;
+		$this->circlesService = $circlesService;
+		$this->sharingFrameService = $sharingFrameService;
+		$this->broadcastService = $broadcastService;
+		$this->federatedLinkService = $federatedLinkService;
+		$this->federatedLinkCreationService = $federatedLinkCreationService;
+		$this->miscService = $miscService;
+	}
 
 
 	/**
@@ -80,32 +112,22 @@ class FederatedController extends BaseController {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
-	 * @param array $apiVersion
-	 * @param string $token
-	 * @param string $uniqueId
-	 * @param string $sourceName
-	 * @param string $linkTo
-	 * @param string $address
+	 * @param $data
 	 *
 	 * @return DataResponse
-	 * @throws FederatedLinkCreationException
 	 */
-	public function requestedLink($apiVersion, $token, $uniqueId, $sourceName, $linkTo, $address) {
-
-		if ($uniqueId === '' || !$this->configService->isFederatedCirclesAllowed()) {
+	public function requestedLink($data) {
+		if (MiscService::get($data, 'uniqueId') === ''
+			|| !$this->configService->isFederatedCirclesAllowed()) {
 			return $this->federatedFail('federated_not_allowed');
 		}
 
 		try {
-			Circles::compareVersion($apiVersion);
-			$circle = $this->circlesService->infoCircleByName($linkTo);
-			$link = new FederatedLink();
-			$link->setToken($token)
-				 ->setUniqueId($uniqueId)
-				 ->setRemoteCircleName($sourceName)
-				 ->setAddress($address);
+			Circles::compareVersion(MiscService::get($data, 'apiVersion'));
+			$circle = $this->circlesService->infoCircleByName(MiscService::get($data, 'linkTo'));
+			$link = $this->generateNewLink($data);
 
-			$this->federatedService->initiateLink($circle, $link);
+			$this->federatedLinkCreationService->requestedLinkFromRemoteCircle($circle, $link);
 
 			return $this->federatedSuccess(
 				['status' => $link->getStatus(), 'uniqueId' => $circle->getUniqueId(true)], $link
@@ -119,52 +141,28 @@ class FederatedController extends BaseController {
 
 
 	/**
-	 * initFederatedDelivery()
+	 * @param $data
 	 *
-	 * Note: this function will close the request mid-run from the client but will still
-	 * running its process.
-	 * Called by locally, the function will get the SharingFrame by its uniqueId from the database,
-	 * assign him some Headers and will deliver it to each remotes linked to the circle the Payload
-	 * belongs to. A status response is sent to free the client process before starting to
-	 * broadcast the item to other federated links.
-	 *
-	 * @PublicPage
-	 * @NoCSRFRequired
-	 *
-	 * @param array $apiVersion
-	 * @param string $circleId
-	 * @param string $frameId
-	 *
-	 * @return DataResponse
+	 * @return FederatedLink
 	 */
-	public function initFederatedDelivery($apiVersion, $circleId, $frameId) {
+	private function generateNewLink($data) {
+		MiscService::mustContains($data, ['token', 'uniqueId', 'sourceName', 'address']);
+		$link = new FederatedLink();
 
-		if ($frameId === '' || !$this->configService->isFederatedCirclesAllowed()) {
-			return $this->federatedFail('federated_not_allowed');
-		}
+		$link->setToken(MiscService::get($data, 'token'))
+			 ->setUniqueId(MiscService::get($data, 'uniqueId'))
+			 ->setRemoteCircleName(MiscService::get($data, 'sourceName'))
+			 ->setAddress(MiscService::get($data, 'address'));
 
-		try {
-			Circles::compareVersion($apiVersion);
-			$frame = $this->sharesService->getFrameFromUniqueId($circleId, $frameId);
-		} catch (Exception $e) {
-			return $this->federatedFail($e->getMessage());
-		}
-
-		// We don't want to keep the connection up
-		$this->asyncAndLeaveClientOutOfThis('done');
-
-		$this->federatedService->updateFrameWithCloudId($frame);
-		$this->federatedService->sendRemoteShare($frame);
-
-		exit();
+		return $link;
 	}
-
 
 	/**
 	 * receiveFederatedDelivery()
 	 *
 	 * Note: this function will close the request mid-run from the client but will still
 	 * running its process.
+	 *
 	 * Called by a remote circle to broadcast a Share item, the function will save the item
 	 * in the database and broadcast it locally. A status response is sent to the remote to free
 	 * the remote process before starting to broadcast the item to other federated links.
@@ -188,15 +186,16 @@ class FederatedController extends BaseController {
 		try {
 			Circles::compareVersion($apiVersion);
 			$frame = SharingFrame::fromJSON($item);
-			$this->federatedService->receiveFrame($token, $uniqueId, $frame);
+			$this->sharingFrameService->receiveFrame($token, $uniqueId, $frame);
 		} catch (SharingFrameAlreadyExistException $e) {
 			return $this->federatedSuccess();
 		} catch (Exception $e) {
 			return $this->federatedFail($e->getMessage());
 		}
 
-		$this->asyncAndLeaveClientOutOfThis('done');
-		$this->federatedService->sendRemoteShare($frame);
+		$this->miscService->asyncAndLeaveClientOutOfThis('done');
+		$this->broadcastService->broadcastFrame($frame);
+		$this->sharingFrameService->forwardSharingFrame($frame);
 		exit();
 	}
 
@@ -209,22 +208,22 @@ class FederatedController extends BaseController {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
-	 * @param array $apiVersion
-	 * @param string $token
-	 * @param string $uniqueId
-	 * @param $status
+	 * @param $data
 	 *
 	 * @return DataResponse
 	 */
-	public function updateLink($apiVersion, $token, $uniqueId, $status) {
-
-		if ($uniqueId === '' || !$this->configService->isFederatedCirclesAllowed()) {
+	public function updateLink($data) {
+		if (MiscService::get($data, 'uniqueId') === ''
+			|| !$this->configService->isFederatedCirclesAllowed()) {
 			return $this->federatedFail('federated_not_allowed');
 		}
 
 		try {
-			Circles::compareVersion($apiVersion);
-			$link = $this->federatedService->updateLinkFromRemote($token, $uniqueId, $status);
+			Circles::compareVersion(MiscService::get($data, 'apiVersion'));
+			$link = $this->federatedLinkService->updateLinkFromRemote(
+				MiscService::get($data, 'token'), MiscService::get($data, 'uniqueId'),
+				MiscService::get($data, 'status')
+			);
 		} catch (Exception $e) {
 			return $this->federatedFail($e->getMessage());
 		}
@@ -232,27 +231,6 @@ class FederatedController extends BaseController {
 		return $this->federatedSuccess(
 			['status' => 1, 'link' => $link], $link
 		);
-	}
-
-
-	/**
-	 * Hacky way to async the rest of the process without keeping client on hold.
-	 *
-	 * @param string $result
-	 */
-	private function asyncAndLeaveClientOutOfThis($result = '') {
-		if (ob_get_contents() !== false) {
-			ob_end_clean();
-		}
-
-		header('Connection: close');
-		ignore_user_abort();
-		ob_start();
-		echo($result);
-		$size = ob_get_length();
-		header('Content-Length: ' . $size);
-		ob_end_flush();
-		flush();
 	}
 
 

@@ -42,331 +42,37 @@ use OCA\Circles\Events\UserEvents;
 use OCA\Circles\Service\BroadcastService;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\EventsService;
-use OCA\Circles\Service\FederatedService;
+use OCA\Circles\Service\FederatedLinkService;
 use OCA\Circles\Service\GroupsService;
 use OCA\Circles\Service\MembersService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
-use OCA\Circles\Service\SharesService;
+use OCA\Circles\Service\SearchService;
+use OCA\Circles\Service\SharingFrameService;
 use OCP\AppFramework\App;
 use OCP\AppFramework\IAppContainer;
 use OCP\Util;
 
 class Application extends App {
 
-	/** @var string */
-	private $appName;
+	const APP_NAME = 'circles';
 
+	const REMOTE_URL_PAYLOAD = '/index.php/apps/circles/v1/payload';
+	const TEST_URL_ASYNC = '/index.php/apps/circles/admin/testAsync';
+
+	const CLIENT_TIMEOUT = 3;
 
 	/**
 	 * @param array $params
 	 */
 	public function __construct(array $params = array()) {
-		parent::__construct('circles', $params);
+		parent::__construct(self::APP_NAME, $params);
 
 		$container = $this->getContainer();
-		$this->appName = $container->query('AppName');
 
-		self::registerServices($container);
-		self::registerControllers($container);
-		self::registerDatabaseRequesters($container);
-		self::registerCores($container);
+		// TODO: POURQUOI SELF:: ??!??
 		self::registerEvents($container);
 		self::registerHooks();
-
-		// Translates
-		$container->registerService(
-			'L10N', function(IAppContainer $c) {
-			return $c->query('ServerContainer')
-					 ->getL10N($c->query('AppName'));
-		}
-		);
-	}
-
-
-	/**
-	 * Register Containers
-	 *
-	 * @param $container
-	 */
-	private function registerServices(IAppContainer &$container) {
-
-		$container->registerService(
-			'MiscService', function(IAppContainer $c) {
-			return new MiscService(
-				$c->query('Logger'), $c->query('AppName'), $c->query('UserManager')
-			);
-		}
-		);
-
-		$container->registerService(
-			'ConfigService', function(IAppContainer $c) {
-			return new ConfigService(
-				$c->query('AppName'), $c->query('CoreConfig'), $c->query('ServerHost'),
-				$c->query('UserId'), $c->query('MiscService')
-			);
-		}
-		);
-
-		$container->registerService(
-			'CirclesService', function(IAppContainer $c) {
-			return new CirclesService(
-				$c->query('UserId'), $c->query('L10N'), $c->query('ConfigService'),
-				$c->query('CirclesRequest'), $c->query('MembersRequest'),
-				$c->query('EventsService'), $c->query('MiscService')
-			);
-		}
-		);
-
-		$container->registerService(
-			'MembersService', function(IAppContainer $c) {
-			return new MembersService(
-				$c->query('UserId'), $c->query('L10N'), $c->query('UserManager'),
-				$c->query('ConfigService'), $c->query('CirclesRequest'),
-				$c->query('MembersRequest'), $c->query('EventsService'), $c->query('MiscService')
-			);
-		}
-		);
-
-		$container->registerService(
-			'GroupsService', function(IAppContainer $c) {
-			return new GroupsService(
-				$c->query('UserId'), $c->query('L10N'), $c->query('GroupManager'),
-				$c->query('CirclesRequest'), $c->query('MembersRequest'),
-				$c->query('EventsService'), $c->query('MiscService')
-			);
-		}
-		);
-
-		$container->registerService(
-			'BroadcastService', function(IAppContainer $c) {
-			return new BroadcastService(
-				$c->query('UserId'), $c->query('ConfigService'), $c->query('CirclesRequest'),
-				$c->query('MembersRequest'), $c->query('MiscService')
-			);
-		}
-		);
-
-		$container->registerService(
-			'SharesService', function(IAppContainer $c) {
-			return new SharesService(
-				$c->query('UserId'), $c->query('ConfigService'), $c->query('CirclesRequest'),
-				$c->query('BroadcastService'), $c->query('FederatedService'),
-				$c->query('MiscService')
-			);
-		}
-		);
-
-		$container->registerService(
-			'EventsService', function(IAppContainer $c) {
-			return new EventsService(
-				$c->query('UserId'), $c->query('ActivityManager'), $c->query('UserManager'),
-				$c->query('CirclesRequest'), $c->query('MembersRequest'), $c->query('MiscService')
-			);
-		}
-		);
-
-
-		$container->registerService(
-			'FederatedService', function(IAppContainer $c) {
-			return new FederatedService(
-				$c->query('UserId'), $c->query('L10N'), $c->query('CirclesRequest'),
-				$c->query('ConfigService'), $c->query('CirclesService'),
-				$c->query('BroadcastService'), $c->query('FederatedLinksRequest'),
-				$c->query('EventsService'), $c->query('HTTPClientService'),
-				$c->query('MiscService')
-			);
-		}
-		);
-	}
-
-
-	/**
-	 * Register Controllers
-	 *
-	 * @param $container
-	 */
-	private static function registerControllers(IAppContainer &$container) {
-
-		$container->registerService(
-			'SettingsController', function(IAppContainer $c) {
-			return new SettingsController(
-				$c->query('AppName'), $c->query('Request'), $c->query('ConfigService'),
-				$c->query('MiscService')
-			);
-		}
-		);
-
-		$container->registerService(
-			'NavigationController', function(IAppContainer $c) {
-			return new NavigationController(
-				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
-				$c->query('ConfigService'), $c->query('CirclesService'),
-				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
-				$c->query('FederatedService'), $c->query('MiscService')
-			);
-		}
-		);
-
-		$container->registerService(
-			'CirclesController', function(IAppContainer $c) {
-			return new CirclesController(
-				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
-				$c->query('ConfigService'), $c->query('CirclesService'),
-				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
-				$c->query('FederatedService'), $c->query('MiscService')
-			);
-		}
-		);
-
-		$container->registerService(
-			'MembersController', function(IAppContainer $c) {
-			return new MembersController(
-				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
-				$c->query('ConfigService'), $c->query('CirclesService'),
-				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
-				$c->query('FederatedService'), $c->query('MiscService')
-			);
-		}
-		);
-
-		$container->registerService(
-			'GroupsController', function(IAppContainer $c) {
-			return new GroupsController(
-				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
-				$c->query('ConfigService'), $c->query('CirclesService'),
-				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
-				$c->query('FederatedService'), $c->query('MiscService')
-			);
-		}
-		);
-
-		$container->registerService(
-			'SharesController', function(IAppContainer $c) {
-			return new SharesController(
-				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
-				$c->query('ConfigService'), $c->query('CirclesService'),
-				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
-				$c->query('FederatedService'), $c->query('MiscService')
-			);
-		}
-		);
-
-		$container->registerService(
-			'FederatedController', function(IAppContainer $c) {
-			return new FederatedController(
-				$c->query('AppName'), $c->query('Request'), $c->query('UserId'), $c->query('L10N'),
-				$c->query('ConfigService'), $c->query('CirclesService'),
-				$c->query('MembersService'), $c->query('GroupsService'), $c->query('SharesService'),
-				$c->query('FederatedService'), $c->query('MiscService')
-			);
-		}
-		);
-
-	}
-
-
-	/**
-	 * Register Request Builders
-	 *
-	 * @param IAppContainer $container
-	 */
-	private static function registerDatabaseRequesters(IAppContainer &$container) {
-
-		$container->registerService(
-			'CirclesRequest', function(IAppContainer $c) {
-			return new CirclesRequest(
-				$c->query('L10N'), $c->query('ServerContainer')
-									 ->getDatabaseConnection(), $c->query('MembersRequest'),
-				$c->query('ConfigService'), $c->query('MiscService')
-			);
-		}
-		);
-
-		$container->registerService(
-			'MembersRequest', function(IAppContainer $c) {
-			return new MembersRequest(
-				$c->query('L10N'), $c->query('ServerContainer')
-									 ->getDatabaseConnection(), $c->query('GroupManager'),
-				$c->query('ConfigService'), $c->query('MiscService')
-			);
-		}
-		);
-
-		$container->registerService(
-			'FederatedLinksRequest', function(IAppContainer $c) {
-			return new FederatedLinksRequest(
-				$c->query('ServerContainer')
-				  ->getDatabaseConnection(), $c->query('MiscService')
-			);
-		}
-		);
-
-
-	}
-
-
-	/**
-	 * Register Cores
-	 *
-	 * @param $container
-	 */
-	private static function registerCores(IAppContainer &$container) {
-
-		$container->registerService(
-			'Logger', function(IAppContainer $c) {
-			return $c->query('ServerContainer')
-					 ->getLogger();
-		}
-		);
-		$container->registerService(
-			'CoreConfig', function(IAppContainer $c) {
-			return $c->query('ServerContainer')
-					 ->getConfig();
-		}
-		);
-
-		$container->registerService(
-			'UserId', function(IAppContainer $c) {
-			$user = $c->query('ServerContainer')
-					  ->getUserSession()
-					  ->getUser();
-
-			/** @noinspection PhpUndefinedMethodInspection */
-			return is_null($user) ? '' : $user->getUID();
-		}
-		);
-
-		$container->registerService(
-			'UserManager', function(IAppContainer $c) {
-			return $c->query('ServerContainer')
-					 ->getUserManager();
-		}
-		);
-
-		$container->registerService(
-			'ActivityManager', function(IAppContainer $c) {
-			return $c->query('ServerContainer')
-					 ->getActivityManager();
-		}
-		);
-
-		$container->registerService(
-			'HTTPClientService', function(IAppContainer $c) {
-			return $c->query('ServerContainer')
-					 ->getHTTPClientService();
-		}
-		);
-
-
-		$container->registerService(
-			'ServerHost', function(IAppContainer $c) {
-			return $c->query('ServerContainer')
-					 ->getRequest()
-					 ->getServerHost();
-		}
-		);
-
 	}
 
 
@@ -389,13 +95,13 @@ class Application extends App {
 	 * @param IAppContainer $container
 	 */
 	public function registerEvents(IAppContainer $container) {
-		$container->registerService(
-			'UserEvents', function(IAppContainer $c) {
-			return new UserEvents(
-				$c->query('MembersService'), $c->query('GroupsService'), $c->query('MiscService')
-			);
-		}
-		);
+//		$container->registerService(
+//			'UserEvents', function(IAppContainer $c) {
+//			return new UserEvents(
+//				$c->query('MembersService'), $c->query('GroupsService'), $c->query('MiscService')
+//			);
+//		}
+//		);
 	}
 
 
@@ -410,25 +116,22 @@ class Application extends App {
 			 ->add(
 				 function() {
 					 $urlGen = \OC::$server->getURLGenerator();
-					 $navName = \OC::$server->getL10N($this->appName)
+					 $navName = \OC::$server->getL10N(self::APP_NAME)
 											->t('Circles');
 
 					 return [
-						 'id' => $this->appName,
+						 'id'    => self::APP_NAME,
 						 'order' => 5,
-						 'href' => $urlGen->linkToRoute('circles.Navigation.navigate'),
-						 'icon' => $urlGen->imagePath($this->appName, 'circles.svg'),
-						 'name' => $navName
+						 'href'  => $urlGen->linkToRoute('circles.Navigation.navigate'),
+						 'icon'  => $urlGen->imagePath(self::APP_NAME, 'circles.svg'),
+						 'name'  => $navName
 					 ];
 				 }
 			 );
 	}
 
 	public function registerSettingsAdmin() {
-		\OCP\App::registerAdmin(
-			$this->getContainer()
-				 ->query('AppName'), 'lib/admin'
-		);
+		\OCP\App::registerAdmin(self::APP_NAME, 'lib/admin');
 	}
 }
 

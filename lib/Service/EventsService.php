@@ -6,6 +6,7 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@pontapreta.net>
+ * @author: Vinicius Cubas Brand <viniciuscb@gmail.com>
  * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
@@ -26,6 +27,7 @@
 
 namespace OCA\Circles\Service;
 
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Model\Circle;
@@ -36,6 +38,7 @@ use OCP\Activity\IManager;
 use OCP\IUser;
 use OCP\IUserManager;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\GenericEvent;
 
 class EventsService {
 
@@ -722,9 +725,12 @@ class EventsService {
 	 */
 	private function generateEvent($type) {
 		$event = $this->activityManager->generateEvent();
-		$event->setApp('circles')
-			  ->setType($type)
-			  ->setAuthor($this->userId);
+		$event->setApp(Application::APP_NAME)
+			  ->setType($type);
+
+		if ($this->userId === null) {
+		//	$event->setAuthor($this->userId);
+		}
 
 		return $event;
 	}

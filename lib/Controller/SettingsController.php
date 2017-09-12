@@ -6,6 +6,7 @@ use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\Http\Client\IClientService;
 use OCP\IRequest;
 
 
@@ -28,12 +29,16 @@ class SettingsController extends Controller {
 
 	/**
 	 * @NoCSRFRequired
+	 * @return TemplateResponse
 	 */
 	public function admin() {
 		return new TemplateResponse($this->appName, 'settings.admin', [], 'blank');
 	}
 
 
+	/**
+	 * @NoCSRFRequired
+	 */
 	public function getSettings() {
 		$params = [
 			'allowLinkedGroups' => $this->configService->getAppValue(
@@ -58,4 +63,5 @@ class SettingsController extends Controller {
 
 		return $this->getSettings();
 	}
+
 }

@@ -29,6 +29,7 @@ namespace OCA\Circles\Api;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\MiscService;
 use OCP\Share;
 
@@ -53,7 +54,7 @@ class Sharees {
 	public static function search($search) {
 		$c = self::getContainer();
 
-		$data = $c->query('CirclesService')
+		$data = $c->query(CirclesService::class)
 				  ->listCircles(Circle::CIRCLES_ALL, $search, Member::LEVEL_MEMBER);
 		$result = array(
 			'exact'   => ['circles'],
@@ -84,9 +85,9 @@ class Sharees {
 				'shareType'   => Share::SHARE_TYPE_CIRCLE,
 				'shareWith'   => $entry->getUniqueId(),
 				'circleInfo'  => $entry->getInfo(),
-				'circleOwner' => MiscService::staticGetDisplayName(
+				'circleOwner' => MiscService::getDisplay(
 					$entry->getOwner()
-						  ->getUserId()
+						  ->getUserId(), Member::TYPE_USER
 				)
 			],
 		];

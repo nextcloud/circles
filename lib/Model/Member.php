@@ -78,7 +78,7 @@ class Member extends BaseMember {
 	/**
 	 * Update status of member like he joined a public circle.
 	 */
-	private function addMemberToCircle() {
+	public function addMemberToCircle() {
 
 		if ($this->getStatus() === Member::STATUS_NONMEMBER
 			|| $this->getStatus() === Member::STATUS_KICKED
@@ -217,6 +217,22 @@ class Member extends BaseMember {
 				|| ($this->getStatus() !== Member::STATUS_NONMEMBER
 					&& $this->getStatus() !== Member::STATUS_REQUEST)
 		);
+	}
+
+
+	/**
+	 * @param bool $able
+	 */
+	public function broadcasting($able) {
+		$this->broadcasting = $able;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function isBroadcasting() {
+		return $this->broadcasting;
 	}
 
 

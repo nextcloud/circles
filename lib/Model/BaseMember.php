@@ -26,8 +26,9 @@
 
 namespace OCA\Circles\Model;
 
-use OC\L10N\L10N;
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Service\MiscService;
+use OCP\IL10N;
 
 class BaseMember implements \JsonSerializable {
 
@@ -47,11 +48,12 @@ class BaseMember implements \JsonSerializable {
 	const TYPE_USER = 1;
 	const TYPE_GROUP = 2;
 	const TYPE_MAIL = 3;
+	const TYPE_CONTACT = 4;
 
 	/** @var string */
 	private $circleUniqueId;
 
-	/** @var L10N */
+	/** @var IL10N */
 	protected $l10n;
 
 	/** @var string */
@@ -75,6 +77,9 @@ class BaseMember implements \JsonSerializable {
 	/** @var string */
 	private $joined;
 
+	/** @var bool */
+	protected $broadcasting = true;
+
 	/**
 	 * BaseMember constructor.
 	 *
@@ -83,7 +88,7 @@ class BaseMember implements \JsonSerializable {
 	 * @param int $type
 	 */
 	public function __construct($userId = '', $type = 0, $circleUniqueId = '') {
-		$this->l10n = \OC::$server->getL10N('circles');
+		$this->l10n = \OC::$server->getL10N(Application::APP_NAME);
 
 		$this->setType($type);
 		$this->setUserId($userId);
@@ -132,14 +137,10 @@ class BaseMember implements \JsonSerializable {
 		}
 	}
 
+
 	public function setUserId($userId) {
 		$this->userId = $userId;
-
-		if ($this->getType() === Member::TYPE_USER) {
-			$this->setDisplayName(MiscService::staticGetDisplayName($userId, true));
-		} else {
-			$this->setDisplayName($userId);
-		}
+		$this->setDisplayName(MiscService::getDisplay($userId, $this->getType()));
 
 		return $this;
 	}
@@ -228,8 +229,6 @@ class BaseMember implements \JsonSerializable {
 	/**
 	 * @param $arr
 	 *
-	 * 0.13.0 : remove both key_exists condition
-	 *
 	 * @return null|Member
 	 */
 	public static function fromArray($arr) {
@@ -241,12 +240,8 @@ class BaseMember implements \JsonSerializable {
 		$member->setCircleId($arr['circle_id']);
 		$member->setLevel($arr['level']);
 
-		if (key_exists('user_type', $arr)) {
-			$member->setType($arr['user_type']);
-		}
-		if (key_exists('type', $arr)) {
-			$member->setType($arr['type']);
-		}
+		$member->setType(MiscService::get($arr, 'user_type'));
+		$member->setType(MiscService::get($arr, 'type', $member->getType()));
 
 		$member->setUserId($arr['user_id']);
 		$member->setStatus($arr['status']);
@@ -268,7 +263,7 @@ class BaseMember implements \JsonSerializable {
 
 
 	public function jsonSerialize() {
-		return array(
+		return [
 			'circle_id'    => $this->getCircleId(),
 			'user_id'      => $this->getUserId(),
 			'user_type'    => $this->getType(),
@@ -278,7 +273,7 @@ class BaseMember implements \JsonSerializable {
 			'status'       => $this->getStatus(),
 			'note'         => $this->getNote(),
 			'joined'       => $this->getJoined()
-		);
+		];
 	}
 
 	public function getLevelString() {
@@ -293,6 +288,22 @@ class BaseMember implements \JsonSerializable {
 				return 'Admin';
 			case self::LEVEL_OWNER:
 				return 'Owner';
+		}
+
+		return 'none';
+	}
+
+
+	public function getTypeString() {
+		switch ($this->getType()) {
+			case self::TYPE_USER:
+				return 'Local Member';
+			case self::TYPE_GROUP:
+				return 'Group';
+			case self::TYPE_MAIL:
+				return 'Mail address';
+			case self::TYPE_CONTACT:
+				return 'Contact';
 		}
 
 		return 'none';
