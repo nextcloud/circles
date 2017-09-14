@@ -409,6 +409,7 @@ class CirclesService {
 				if ($member->getLevel() === Member::LEVEL_ADMIN) {
 					$member->setLevel(Member::LEVEL_OWNER);
 					$this->membersRequest->updateMember($member);
+					$this->eventsService->onMemberOwner($circle, $member);
 					continue;
 				}
 			}
