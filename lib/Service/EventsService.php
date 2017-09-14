@@ -115,6 +115,7 @@ class EventsService {
 				$this->publishEvent($event, [$user]);
 			}
 		);
+
 		$this->dispatch('\OCA\Circles::onCircleCreation',  ['circle' => $circle]);
 	}
 
@@ -728,9 +729,9 @@ class EventsService {
 		$event->setApp(Application::APP_NAME)
 			  ->setType($type);
 
-		if ($this->userId === null) {
+	//	if ($this->userId === null) {
 		//	$event->setAuthor($this->userId);
-		}
+	//	}
 
 		return $event;
 	}
