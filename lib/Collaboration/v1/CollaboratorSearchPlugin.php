@@ -46,7 +46,7 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 
 		$circles = Circles::listCircles(Circle::CIRCLES_ALL, $search, Member::LEVEL_MEMBER);
 		foreach ($circles as $circle) {
-			$entry = self::addResultEntry($circle);
+			$entry = $this->addResultEntry($circle);
 			if (strtolower($circle->getName()) === strtolower($search)) {
 				$exact[] = $entry;
 			} else {
@@ -64,7 +64,7 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 	 *
 	 * @return array
 	 */
-	private static function addResultEntry(Circle $circle) {
+	private function addResultEntry(Circle $circle) {
 
 		return [
 			'label' => $circle->getName(),
