@@ -73,6 +73,32 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 
 	/**
+	 * forceGetCircles();
+	 *
+	 * returns data of a all circles.
+	 *
+	 * WARNING: This function does not filters data regarding the current user/viewer.
+	 *          In case of interaction with users, Please use getCircles() instead.
+	 *
+	 * @return Circle[]
+	 */
+	public function forceGetCircles() {
+
+		$qb = $this->getCirclesSelectSql();
+		$this->leftJoinOwner($qb);
+
+		$circles = [];
+		$cursor = $qb->execute();
+		while ($data = $cursor->fetch()) {
+			$circles[] = $this->parseCirclesSelectSql($data);
+		}
+		$cursor->closeCursor();
+
+		return $circles;
+	}
+
+
+	/**
 	 * forceGetCircleByName();
 	 *
 	 * returns data of a circle from its Name.

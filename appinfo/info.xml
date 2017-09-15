@@ -49,6 +49,10 @@ Users won't be able to find this Circle using Nextcloud search engine.
 		</post-migration>
 	</repair-steps>
 
+	<commands>
+		<command>OCA\Circles\Command\Clean</command>
+	</commands>
+
 	<activity>
 		<settings>
 			<setting>OCA\Circles\Activity\SettingAsModerator</setting>
@@ -61,4 +65,5 @@ Users won't be able to find this Circle using Nextcloud search engine.
 			<provider>OCA\Circles\Activity\Provider</provider>
 		</providers>
 	</activity>
+
 </info>
