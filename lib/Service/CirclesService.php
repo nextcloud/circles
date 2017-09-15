@@ -376,23 +376,12 @@ class CirclesService {
 
 	/**
 	 * When a user is removed.
-	 *
-	 * @param $userId
-	 */
-	public function onUserRemoved($userId) {
-		$this->switchOlderAdminToOwnerInCirclesOwnedByUser($userId);
-	}
-
-
-	/**
-	 * switchOlderAdminToOwnerInCirclesOwnedByUser();
-	 *
 	 * Before deleting a user from the cloud, we assign a new owner to his Circles.
 	 * Remove the Circle if it has no admin.
 	 *
 	 * @param string $userId
 	 */
-	private function switchOlderAdminToOwnerInCirclesOwnedByUser($userId) {
+	public function onUserRemoved($userId) {
 		$circles = $this->circlesRequest->getCircles($userId, 0, '', Member::LEVEL_OWNER);
 
 		foreach ($circles as $circle) {
@@ -405,15 +394,28 @@ class CirclesService {
 				continue;
 			}
 
-			foreach ($members as $member) {
-				if ($member->getLevel() === Member::LEVEL_ADMIN) {
-					$member->setLevel(Member::LEVEL_OWNER);
-					$this->membersRequest->updateMember($member);
-					$this->eventsService->onMemberOwner($circle, $member);
-					continue;
-				}
+			$this->switchOlderAdminToOwner($circle, $members);
+		}
+	}
+
+
+	/**
+	 * switchOlderAdminToOwner();
+	 *
+	 * @param Member[] $members
+	 */
+	private function switchOlderAdminToOwner($circle, $members) {
+
+		foreach ($members as $member) {
+			if ($member->getLevel() === Member::LEVEL_ADMIN) {
+				$member->setLevel(Member::LEVEL_OWNER);
+				$this->membersRequest->updateMember($member);
+				$this->eventsService->onMemberOwner($circle, $member);
+
+				return;
 			}
 		}
+
 	}
 
 
@@ -423,21 +425,22 @@ class CirclesService {
 	 * @param string $type
 	 */
 	public static function convertTypeStringToBitValue(&$type) {
-		if (strtolower($type) === 'personal') {
-			$type = Circle::CIRCLES_PERSONAL;
+
+		$strings = [
+			'personal' => Circle::CIRCLES_PERSONAL,
+			'secret'   => Circle::CIRCLES_SECRET,
+			'closed'   => Circle::CIRCLES_CLOSED,
+			'public'   => Circle::CIRCLES_PUBLIC,
+			'all'      => Circle::CIRCLES_ALL
+		];
+
+		if (!key_exists(strtolower($type), $strings)) {
+			$type = 0;
+
+			return;
 		}
-		if (strtolower($type) === 'secret') {
-			$type = Circle::CIRCLES_SECRET;
-		}
-		if (strtolower($type) === 'closed') {
-			$type = Circle::CIRCLES_CLOSED;
-		}
-		if (strtolower($type) === 'public') {
-			$type = Circle::CIRCLES_PUBLIC;
-		}
-		if (strtolower($type) === 'all') {
-			$type = Circle::CIRCLES_ALL;
-		}
+
+		$type = $strings[$type];
 	}
 
 

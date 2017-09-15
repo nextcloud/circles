@@ -757,7 +757,11 @@ class EventsService {
 			$this->activityManager->publish($event);
 		}
 	}
-	
+
+	/**
+	 * @param string $context
+	 * @param array $arguments
+	 */
 	private function dispatch($context, $arguments) {
 		$this->eventDispatcher->dispatch($context, new GenericEvent(null,$arguments));
 	}
