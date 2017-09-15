@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "Circles is using its own way to async heavy process." : "Cirklar använder ett eget sätt att synkronisera tunga processer.",
     "Are you sure you want to transfer your ownership?" : "Är du säker att du vill ändra ägare?",
     "This action is irreversible" : "Handlingen kan inte ångras",
     "Personal circle" : "Personlig cirkel",
@@ -139,6 +140,7 @@ OC.L10N.register(
     "You have been removed from {circle} by {author}" : "Du har tagits bort från {circle} av {author}",
     "{member} has been removed from {circle} by {author}" : "{member} har tagits bort från {circle} av {author}",
     "You removed {external} from {circle}" : "Du tog bort {external} från {circle}",
+    "{external} has been removed from {circle} by {author}" : "{external} har tagits bort från {circle} av {author}",
     "You cancelled {member}'s invitation to join {circle}" : "Du avbröt {member}s inbjudan att gå med i {circle}",
     "Your invitation to join {circle} has been cancelled by {author}" : "Din inbjudan att gå med i {circle} har avbrutits av {author}",
     "{author} cancelled {member}'s invitation to join {circle}" : "{author} avbröt {member}s inbjudan att gå med i {circle}",
@@ -254,6 +256,8 @@ OC.L10N.register(
     "Automatically Accept Link Request" : "Automatisk acceptera länkförfrågan",
     "Warning: enabling this will automatically accept new link requests from other circle." : "Varning: tillåta detta kommer automatiskt acceptera nya länkförfrågningar från andra cirklar.",
     "Save settings" : "Spara inställningar",
+    "Async Testing:" : "Async test:",
+    "initiate test of Circles Async" : "starta test av Circles Async",
     "reset test result" : "Återställ testresultat",
     "Test is currently running. Please wait." : "Ett test körs just nu. Vänligen vänta.",
     "Allow Group Linking:" : "Tillåt grupplänkning:",
