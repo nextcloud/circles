@@ -452,26 +452,41 @@ class MembersRequest extends MembersRequestBuilder {
 	 * @param string $uniqueCircleId
 	 */
 	public function removeAllFromCircle($uniqueCircleId) {
-		$qb = $this->getMembersDeleteSql($uniqueCircleId);
+		$qb = $this->getMembersDeleteSql();
+		$expr = $qb->expr();
+
+		$qb->where($expr->eq('circle_id', $qb->createNamedParameter($uniqueCircleId)));
 		$qb->execute();
 	}
 
 
 	/**
-	 * removeAllFromUser();
+	 * removeAllMembershipsFromUser();
 	 *
 	 * remove All membership from a User. Used when removing a User from the Cloud.
 	 *
-	 * @param $userId
+	 * @param string $userId
 	 */
-	public function removeAllFromUser($userId) {
+	public function removeAllMembershipsFromUser($userId) {
 		if ($userId === '') {
 			return;
 		}
 
-		$qb = $this->getMembersDeleteSql('', Member::TYPE_USER, $userId);
+		$qb = $this->getMembersDeleteSql();
+		$expr = $qb->expr();
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$qb->where(
+			$expr->andX(
+				$expr->eq('user_id', $qb->createNamedParameter($userId)),
+				$expr->eq('user_type', $qb->createNamedParameter(Member::TYPE_USER))
+			)
+		);
+
 		$qb->execute();
 	}
+
+
 
 
 	/**

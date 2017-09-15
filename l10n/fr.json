@@ -1,4 +1,5 @@
 { "translations": {
+    "Circles is using its own way to async heavy process." : "Circles utilise une architecture qui lui est propre pour traiter les tâches lourdes de manière asynchrone.",
     "Are you sure you want to transfer your ownership?" : "Êtes-vous sûr de vouloir transférer votre propriété ?",
     "This action is irreversible" : "Cette action est irréversible",
     "Personal circle" : "Cercle personnel",
@@ -253,8 +254,11 @@
     "Automatically Accept Link Request" : "Accepter automatiquement les requêtes de mise en relation",
     "Warning: enabling this will automatically accept new link requests from other circle." : "Attention : activer cela va accepter automatiquement les nouvelles requêtes de mise en relation avec d'autres cercles.",
     "Save settings" : "Sauvegarder les paramètres",
+    "Async Testing:" : "Test de l'asynchronisation :",
+    "initiate test of Circles Async" : "Démarrer le test Circles Async",
     "reset test result" : "Réinitialiser les résultats du test",
     "Test is currently running. Please wait." : "Le test est en cours. Veuillez patienter.",
+    "Allow Group Linking:" : "Autoriser la Liaison de Groupe :",
     "Groups can be linked to Circles." : "Des groupes peuvent être liés aux Cercles.",
     "Allow Federated Circles:" : "Autoriser les Cercles Fédérés :",
     "Circles from different Nextclouds can be linked together." : "Des cercles de différents Nextcloud peuvent être liés ensemble."

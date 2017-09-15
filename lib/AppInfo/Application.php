@@ -70,6 +70,7 @@ class Application extends App {
 
 		$container = $this->getContainer();
 
+		// TODO: POURQUOI SELF:: ??!??
 		self::registerEvents($container);
 		self::registerHooks();
 	}

@@ -506,7 +506,7 @@ class MembersService {
 	 * @param $userId
 	 */
 	public function onUserRemoved($userId) {
-		$this->membersRequest->removeAllFromUser($userId);
+		$this->membersRequest->removeAllMembershipsFromUser($userId);
 	}
 
 

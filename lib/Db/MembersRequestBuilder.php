@@ -81,7 +81,8 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		$qb->select(
 			'm.user_id', 'm.user_type', 'm.circle_id', 'm.level', 'm.status', 'm.note', 'm.joined'
 		)
-		   ->from(self::TABLE_MEMBERS, 'm');
+		   ->from(self::TABLE_MEMBERS, 'm')
+		   ->orderBy('m.joined');
 
 		$this->default_select_alias = 'm';
 
@@ -188,27 +189,11 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * Base of the Sql Delete request for Members
 	 *
-	 * @param string $uniqueCircleId
-	 * @param string $userId
-	 * @param int $type
-	 *
 	 * @return IQueryBuilder
 	 */
-	protected function getMembersDeleteSql($uniqueCircleId, $type = 0, $userId = '') {
+	protected function getMembersDeleteSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
-		$expr = $qb->expr();
-
-		$and = $expr->andX();
-		if ($uniqueCircleId !== '') {
-			$and->add($expr->eq('circle_id', $qb->createNamedParameter($uniqueCircleId)));
-		}
-		if ($type > 0) {
-			$and->add($expr->eq('user_id', $qb->createNamedParameter($userId)));
-			$and->add($expr->eq('user_type', $qb->createNamedParameter($type)));
-		}
-
-		$qb->delete(CoreRequestBuilder::TABLE_MEMBERS)
-		   ->where($and);
+		$qb->delete(CoreRequestBuilder::TABLE_MEMBERS);
 
 		return $qb;
 	}

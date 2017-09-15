@@ -70,19 +70,13 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 		}
 
 		$qb = $this->getLinksUpdateSql();
-		$expr = $qb->expr();
 		$qb->set('status', $qb->createNamedParameter($link->getStatus()));
 		if ($link->getUniqueId() !== '') {
 			$qb->set('unique_id', $qb->createNamedParameter($link->getUniqueId(true)));
 		}
 
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->andWhere(
-			$expr->andX(
-				$expr->eq('circle_id', $qb->createNamedParameter($link->getCircleId())),
-				$expr->eq('token', $qb->createNamedParameter($link->getToken(true)))
-			)
-		);
+		$this->limitToToken($qb, $link->getToken(true));
+		$this->limitToCircleId($qb, $link->getCircleId());
 
 		$qb->execute();
 	}
@@ -98,15 +92,8 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 		}
 
 		$qb = $this->getLinksDeleteSql();
-		$expr = $qb->expr();
-
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->andWhere(
-			$expr->andX(
-				$expr->eq('token', $qb->createNamedParameter($link->getToken(true))),
-				$expr->eq('circle_id', $qb->createNamedParameter($link->getCircleId()))
-			)
-		);
+		$this->limitToToken($qb, $link->getToken(true));
+		$this->limitToCircleId($qb, $link->getCircleId());
 
 		$qb->execute();
 	}

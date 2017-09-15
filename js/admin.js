@@ -105,7 +105,6 @@ $(document).ready(function () {
 	};
 
 	displayTestAsync = function (res) {
-		console.log('____' + JSON.stringify(res));
 		displayTestAsyncResult(res);
 		displayTestAsyncNewTest(res);
 		displayTestAsyncReset(res);
