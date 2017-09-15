@@ -45,8 +45,9 @@ class Application extends App {
 	 */
 	public function __construct(array $params = array()) {
 		parent::__construct(self::APP_NAME, $params);
-		self::registerHooks();
-		self::registerProviders();
+
+		$this->registerHooks();
+		$this->registerProviders();
 	}
 
 
@@ -69,6 +70,7 @@ class Application extends App {
 				  ->getMountProviderCollection()
 				  ->registerProvider($container->query(RemoteMountProvider::class));
 	}
+
 
 	/**
 	 * Register Navigation Tab
