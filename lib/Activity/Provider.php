@@ -86,7 +86,7 @@ class Provider implements IProvider {
 		try {
 			$params = $event->getSubjectParameters();
 			$this->initActivityParser($event, $params);
-			\OC::$server->getLogger()->log(4, '___' . $event->getSubject());
+
 			$circle = Circle::fromJSON($params['circle']);
 
 			$this->setIcon($event, $circle);
