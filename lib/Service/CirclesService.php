@@ -111,7 +111,7 @@ class CirclesService {
 	 * @throws \Exception
 	 */
 	public function createCircle($type, $name) {
-		self::convertTypeStringToBitValue($type);
+		$type = $this->convertTypeStringToBitValue($type);
 		$type = (int)$type;
 
 		if ($type === '') {
@@ -152,7 +152,7 @@ class CirclesService {
 	 * @throws CircleTypeDisabledException
 	 */
 	public function listCircles($type, $name = '', $level = 0) {
-		self::convertTypeStringToBitValue($type);
+		$type = $this->convertTypeStringToBitValue($type);
 
 		if (!$this->configService->isCircleAllowed((int)$type)) {
 			throw new CircleTypeDisabledException(
@@ -423,9 +423,10 @@ class CirclesService {
 	 * Convert a Type in String to its Bit Value
 	 *
 	 * @param string $type
+	 *
+	 * @return int|mixed
 	 */
-	public static function convertTypeStringToBitValue(&$type) {
-
+	public function convertTypeStringToBitValue($type) {
 		$strings = [
 			'personal' => Circle::CIRCLES_PERSONAL,
 			'secret'   => Circle::CIRCLES_SECRET,
@@ -435,12 +436,10 @@ class CirclesService {
 		];
 
 		if (!key_exists(strtolower($type), $strings)) {
-			$type = 0;
-
-			return;
+			return $type;
 		}
 
-		$type = $strings[$type];
+		return $strings[strtolower($type)];
 	}
 
 
