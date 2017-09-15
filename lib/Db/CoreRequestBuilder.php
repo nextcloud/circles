@@ -409,7 +409,7 @@ class CoreRequestBuilder {
 			$expr->eq(
 				'm.circle_id',
 				$qb->createFunction(
-					'SUBSTR(' . $field . ', 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
+					'SUBSTR(' . $field . ', 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')'
 				)
 			)
 		);
