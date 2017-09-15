@@ -6,6 +6,7 @@
  * later. See the COPYING file.
  *
  * @author Arthur Schiwon <blizzz@arthur-schiwon.de>
+ * @author Maxence Lange <maxence@artificial-owl.com>
  * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
@@ -26,29 +27,56 @@
 
 namespace OCA\Circles\Collaboration\v1;
 
-use OCA\Circles\Api\Sharees;
+use OCA\Circles\Api\v1\Circles;
+use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Member;
+use OCA\Circles\Service\MiscService;
 use OCP\Collaboration\Collaborators\ISearchPlugin;
 use OCP\Collaboration\Collaborators\ISearchResult;
 use OCP\Collaboration\Collaborators\SearchResultType;
+use OCP\Share;
 
 class CollaboratorSearchPlugin implements ISearchPlugin {
 
+	/**
+	 * {@inheritdoc}
+	 */
 	public function search($search, $limit, $offset, ISearchResult $searchResult) {
-		$result = ['wide' => [], 'exact' => []];
+		$wide = $exact = [];
 
-		if(\OC_App::isEnabled('circles')) {
-			$circles = Sharees::search($search);
-			if (array_key_exists('circles', $circles['exact'])) {
-				$result['exact'] = $circles['exact']['circles'];
+		$circles = Circles::listCircles(Circle::CIRCLES_ALL, $search, Member::LEVEL_MEMBER);
+		foreach ($circles as $circle) {
+			$entry = self::addResultEntry($circle);
+			if (strtolower($circle->getName()) === strtolower($search)) {
+				$exact[] = $entry;
+			} else {
+				$wide[] = $entry;
 			}
-			if (array_key_exists('circles', $circles)) {
-				$result['wide'] = $circles['circles'];
-			}
-
-			$type = new SearchResultType('circles');
-			$searchResult->addResultSet($type, $result['wide'], $result['exact']);
 		}
 
-		return false;
+		$type = new SearchResultType('circles');
+		$searchResult->addResultSet($type, $wide, $exact);
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 *
+	 * @return array
+	 */
+	private static function addResultEntry(Circle $circle) {
+
+		return [
+			'label' => $circle->getName(),
+			'value' => [
+				'shareType'   => Share::SHARE_TYPE_CIRCLE,
+				'shareWith'   => $circle->getUniqueId(),
+				'circleInfo'  => $circle->getInfo(),
+				'circleOwner' => MiscService::getDisplay(
+					$circle->getOwner()
+						   ->getUserId(), Member::TYPE_USER
+				)
+			],
+		];
 	}
 }
