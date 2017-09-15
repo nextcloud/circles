@@ -39,6 +39,7 @@ use OCA\Circles\Service\MiscService;
 use OCP\Activity\IEvent;
 use OCP\Activity\IManager;
 use OCP\Activity\IProvider;
+use OpenCloud\Common\Exceptions\InvalidArgumentError;
 
 class Provider implements IProvider {
 
