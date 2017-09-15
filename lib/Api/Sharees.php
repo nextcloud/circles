@@ -34,6 +34,14 @@ use OCA\Circles\Service\MiscService;
 use OCP\Share;
 
 
+/**
+ * ############### WARNING #################
+ * ###
+ * ### This file is needed and used by Nextcloud 12 and lower.
+ * ###
+ *
+ * @package OCA\Circles\Api
+ */
 class Sharees {
 
 
