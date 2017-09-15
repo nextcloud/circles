@@ -323,7 +323,7 @@ class FederatedLink implements \JsonSerializable {
 	 */
 	private function hasToBeValidStatusUpdateWhileLinkDown($status) {
 
-		if ($this->getStatus() === self::STATUS_LINK_DOWN) {
+		if ($this->getStatus() !== self::STATUS_LINK_DOWN) {
 			return;
 		}
 
