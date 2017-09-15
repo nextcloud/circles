@@ -29,6 +29,7 @@ namespace OCA\Circles;
 
 
 use OC\Files\Cache\Cache;
+use OC\Files\Config\MountProviderCollection;
 use OC\Share20\Exception\InvalidShare;
 use OC\Share20\Share;
 use OCA\Circles\Api\v1\Circles;
@@ -465,7 +466,9 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 		$shares = [];
 		while ($data = $cursor->fetch()) {
 
-			if ($data['initiator_circle_level'] < Member::LEVEL_MEMBER
+			// check if it is a federated share, if not check if the initiator is still in the circle
+			if (strpos('@', $data['share_with'])
+				&& $data['initiator_circle_level'] < Member::LEVEL_MEMBER
 				&& ($data['initiator_group_level'] < Member::LEVEL_MEMBER
 					|| !$this->configService->isLinkedGroupsAllowed())
 			) {
@@ -602,12 +605,38 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 		$share->setNodeId((int)$data['file_source'])
 			  ->setTarget($data['file_target']);
 
+		$this->assignShareObjectFileProperties($share, $data);
 		$this->assignShareObjectSharesProperties($share, $data);
 		$this->assignShareObjectPropertiesFromParent($share, $data);
 
 		$share->setProviderId($this->identifier());
 
 		return $share;
+	}
+
+
+	private function assignShareObjectFileProperties(IShare &$share, $data) {
+
+		if (strpos($data['share_with'], '@')) {
+			$this->assignShareObjectFederatedFileProperties($share, $data);
+
+			return;
+		}
+		$share->setSharedWith($data['share_with'])
+			  ->setSharedBy($data['uid_initiator'])
+			  ->setShareOwner($data['uid_owner']);
+	}
+
+
+	private function assignShareObjectFederatedFileProperties(IShare &$share, $data) {
+
+		/** @var MountProviderCollection $mountConfigManager */
+//				$mountConfigManager = \OC::$server->getMountProviderCollection();
+
+		$share->setSharedWith('ddd')
+			  ->setSharedBy('cult2')
+			  ->setShareOwner('http://nextcloud2/');
+
 	}
 
 
@@ -639,10 +668,7 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 		$shareTime->setTimestamp((int)$data['stime']);
 
 		$share->setShareTime($shareTime);
-		$share->setSharedWith($data['share_with'])
-			  ->setSharedBy($data['uid_initiator'])
-			  ->setShareOwner($data['uid_owner'])
-			  ->setShareType((int)$data['share_type']);
+		$share->setShareType((int)$data['share_type']);
 
 		if (method_exists($share, 'setSharedWithDisplayName')) {
 			$share->setSharedWithAvatar(CirclesService::getCircleIcon($data['circle_type']))

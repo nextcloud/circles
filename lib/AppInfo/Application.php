@@ -26,32 +26,10 @@
 
 namespace OCA\Circles\AppInfo;
 
-use OCA\Circles\Controller\FederatedController;
-use OCA\Circles\Controller\GroupsController;
-use OCA\Circles\Controller\NavigationController;
-use OCA\Circles\Controller\CirclesController;
-use OCA\Circles\Controller\MembersController;
-
-
-use OCA\Circles\Controller\SettingsController;
-use OCA\Circles\Controller\SharesController;
-use OCA\Circles\Db\CirclesRequest;
-use OCA\Circles\Db\FederatedLinksRequest;
-use OCA\Circles\Db\MembersRequest;
-use OCA\Circles\Events\UserEvents;
-use OCA\Circles\Service\BroadcastService;
-use OCA\Circles\Service\CirclesService;
-use OCA\Circles\Service\EventsService;
-use OCA\Circles\Service\FederatedLinkService;
-use OCA\Circles\Service\GroupsService;
-use OCA\Circles\Service\MembersService;
-use OCA\Circles\Service\ConfigService;
-use OCA\Circles\Service\MiscService;
-use OCA\Circles\Service\SearchService;
-use OCA\Circles\Service\SharingFrameService;
+use OCA\Circles\Mount\RemoteMountProvider;
 use OCP\AppFramework\App;
-use OCP\AppFramework\IAppContainer;
 use OCP\Util;
+
 
 class Application extends App {
 
@@ -67,12 +45,8 @@ class Application extends App {
 	 */
 	public function __construct(array $params = array()) {
 		parent::__construct(self::APP_NAME, $params);
-
-		$container = $this->getContainer();
-
-		// TODO: POURQUOI SELF:: ??!??
-		self::registerEvents($container);
 		self::registerHooks();
+		self::registerProviders();
 	}
 
 
@@ -89,21 +63,12 @@ class Application extends App {
 	}
 
 
-	/**
-	 * Register Events
-	 *
-	 * @param IAppContainer $container
-	 */
-	public function registerEvents(IAppContainer $container) {
-//		$container->registerService(
-//			'UserEvents', function(IAppContainer $c) {
-//			return new UserEvents(
-//				$c->query('MembersService'), $c->query('GroupsService'), $c->query('MiscService')
-//			);
-//		}
-//		);
+	public function registerProviders() {
+		$container = $this->getContainer();
+		$container->getServer()
+				  ->getMountProviderCollection()
+				  ->registerProvider($container->query(RemoteMountProvider::class));
 	}
-
 
 	/**
 	 * Register Navigation Tab

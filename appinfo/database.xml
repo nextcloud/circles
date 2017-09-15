@@ -89,6 +89,82 @@
 	</table>
 
 	<table>
+		<name>*dbprefix*circles_remote_mounts</name>
+
+		<declaration>
+			<field>
+				<name>circle_id</name>
+				<type>text</type>
+				<length>64</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>remote_cloud_id</name>
+				<type>text</type>
+				<length>256</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>remote_circle_id</name>
+				<type>text</type>
+				<length>256</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>token</name>
+				<type>text</type>
+				<length>64</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>password</name>
+				<type>text</type>
+				<length>64</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>remote_filename</name>
+				<type>text</type>
+				<length>64</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>author</name>
+				<type>text</type>
+				<length>64</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>mountpoint</name>
+				<type>text</type>
+				<length>4000</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>mountpoint_hash</name>
+				<type>text</type>
+				<length>32</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>created</name>
+				<type>timestamp</type>
+			</field>
+
+		</declaration>
+
+	</table>
+
+	<table>
 		<name>*dbprefix*circles_members</name>
 
 		<declaration>
@@ -151,7 +227,7 @@
 					<name>user_id</name>
 				</field>
 				<!--<field>-->
-				<!--<name>user_type</name>-->
+					<!--<name>user_type</name>-->
 				<!--</field>-->
 			</index>
 		</declaration>
@@ -233,6 +309,7 @@
 				<type>integer</type>
 				<length>1</length>
 				<notnull>true</notnull>
+				<default>0</default>
 			</field>
 
 			<field>

@@ -25,6 +25,9 @@ class CoreRequestBuilder {
 	const TABLE_GROUPS = 'circles_groups';
 	const TABLE_SHARES = 'circles_shares';
 	const TABLE_LINKS = 'circles_links';
+	const TABLE_CLOUDS = 'circles_clouds';
+	const TABLE_MOUNTS_REMOTE = 'circles_remote_mounts';
+	const TABLE_MOUNTS_LOCAL = 'circles_local_mounts';
 
 	const NC_TABLE_GROUP_USER = 'group_user';
 
@@ -362,6 +365,59 @@ class CoreRequestBuilder {
 
 		$this->leftJoinedNCGroupAndUser = true;
 	}
+
+
+	/**
+	 * Link to member (userId) of circles. Field is the SQL field that contain the circleUniqueId
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param string $userId
+	 * @param int $type
+	 * @param $field
+	 */
+	protected function limitToMember(IQueryBuilder &$qb, $userId, $type, $field = '`c`.`unique_id`') {
+		$expr = $qb->expr();
+		$qb->from(CoreRequestBuilder::TABLE_MEMBERS, 'm');
+
+		$orX = $expr->orX();
+		$orX->add($this->exprLimitToMemberAsCircleMember($qb, $userId, $type, $field));
+//		if ($groupMemberAllowed === true) {
+//			$orX->add($this->exprLinkToMemberAsGroupMember($qb, $userId));
+//		}
+
+		$qb->andWhere($orX);
+
+	}
+
+	/**
+	 * generate CompositeExpression to link to a Member as a Real Circle Member
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param string $userId
+	 * @param int $type
+	 * @param string $field
+	 *
+	 * @return \OCP\DB\QueryBuilder\ICompositeExpression
+	 */
+	private function exprLimitToMemberAsCircleMember(IQueryBuilder &$qb, $userId, $type, $field) {
+
+		$expr = $qb->expr();
+		$andX = $expr->andX();
+		$andX->add($expr->eq('m.user_id', $qb->createNamedParameter($userId)));
+		$andX->add($expr->eq('m.user_type', $qb->createNamedParameter($type)));
+		$andX->add(
+			$expr->eq(
+				'm.circle_id',
+				$qb->createFunction(
+					'SUBSTR(' . $field . ', 1, ' . Circle::UNIQUEID_SHORT_LENGTH . ')'
+				)
+			)
+		);
+		$andX->add($expr->gte('m.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)));
+
+		return $andX;
+	}
+
 }
 
 

@@ -90,9 +90,11 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 * {@inheritdoc}
 	 */
 	public function createShareToCircle(SharingFrame $frame, Circle $circle) {
-		if ($frame->is0Circle()) {
-			return false;
+		if (!$frame->is0Circle()) {
+			return $this->createFederatedShareToCircle($frame, $circle);
 		}
+
+		$this->createLocalShareToCircle($frame, $circle);
 
 		return true;
 	}
@@ -154,6 +156,23 @@ class FileSharingBroadcaster implements IBroadcaster {
 		return true;
 	}
 
+
+	/**
+	 * @param SharingFrame $frame
+	 * @param Circle $circle
+	 */
+	private function createLocalShareToCircle(SharingFrame $frame, Circle $circle) {
+
+	}
+
+
+	/**
+	 * @param SharingFrame $frame
+	 * @param Circle $circle
+	 */
+	private function createFederatedShareToCircle(SharingFrame $frame, Circle $circle) {
+
+	}
 
 	/**
 	 * recreate the share from the JSON payload.
