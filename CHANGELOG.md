@@ -11,8 +11,9 @@ All notable changes to this project will be documented in this file.
 - Feature: contact can be added as a member of a Circle.
 - Feature: When sharing a file to a Circle, all non-local member (Mail address or Contact) will receive a link to the shared files by mail. 
 - Feature: the older Admin of a Circle becomes Owner if current Owner's account deleted. If the Circle has no Admin, the Circle is deleted.
-- Bugfix: Unexpected behaviour when an the account of a circle owner is removed from the cloud
+- Fix: Unexpected behaviour when an the account of a circle owner is removed from the cloud
 - Code: Automatic DI
+- Code: Compatibility NC13 collaboration search
 - New Command: ./occ circles:clean
 - API: The app will dispatch some events (by Vinicius Cubas Brand <viniciuscb@gmail.com>)
 

@@ -312,6 +312,7 @@
 				<type>text</type>
 				<length>128</length>
 				<notnull>false</notnull>
+				<default>null</default>
 			</field>
 
 			<field>
