@@ -237,7 +237,7 @@ class FederatedLinkCreationService {
 			$circle->hasToBeFederated();
 			$circle->cantBePersonal();
 
-			$link = $this->generateNewLink($circle->getUniqueId(), $remote);
+			$link = $this->generateNewLink($circle->getUniqueId(true), $remote);
 			$this->forceRequestNewLink($circle, $link);
 		} catch (Exception $e) {
 			$this->federatedLinksRequest->delete($link);
