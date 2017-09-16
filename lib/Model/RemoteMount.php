@@ -69,9 +69,13 @@ class RemoteMount {
 
 	/**
 	 * @param string $circleId
+	 *
+	 * @return $this
 	 */
 	public function setCircleId($circleId) {
 		$this->circleId = $circleId;
+
+		return $this;
 	}
 
 	/**
@@ -84,9 +88,13 @@ class RemoteMount {
 
 	/**
 	 * @param string $circleId
+	 *
+	 * @return $this
 	 */
 	public function setRemoteCircleId($circleId) {
 		$this->remoteCircleId = $circleId;
+
+		return $this;
 	}
 
 	/**
@@ -98,27 +106,33 @@ class RemoteMount {
 
 
 	/**
-	 * @param Cloud $cloud
-	 *
-	 * @internal param Cloud $cloudId
-	 */
-	public function setRemoteCloud($cloud) {
-		$this->remoteCloud = $cloud;
-	}
-
-	/**
 	 * @return Cloud
 	 */
 	public function getRemoteCloud() {
 		return $this->remoteCloud;
 	}
 
+	/**
+	 * @param Cloud $cloud
+	 *
+	 * @return $this
+	 */
+	public function setRemoteCloud($cloud) {
+		$this->remoteCloud = $cloud;
+
+		return $this;
+	}
+
 
 	/**
 	 * @param string $token
+	 *
+	 * @return $this
 	 */
 	public function setToken($token) {
 		$this->token = $token;
+
+		return $this;
 	}
 
 	/**
@@ -131,9 +145,13 @@ class RemoteMount {
 
 	/**
 	 * @param string $password
+	 *
+	 * @return $this
 	 */
 	public function setPassword($password) {
 		$this->password = $password;
+
+		return $this;
 	}
 
 	/**
@@ -146,24 +164,51 @@ class RemoteMount {
 
 	/**
 	 * @param string $filename
+	 *
+	 * @return $this
 	 */
-	public function setRemoteFilename($filename) {
+	public function setRemoteFileId($filename) {
 		$this->remoteFilename = $filename;
+
+		return $this;
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getRemoteFilename() {
+	public function getRemoteFileId() {
+		return $this->remoteFilename;
+	}
+
+
+	/**
+	 * @param string $filename
+	 *
+	 * @return $this
+	 */
+	public function setRemoteFileName($filename) {
+		$this->remoteFilename = $filename;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getRemoteFileName() {
 		return $this->remoteFilename;
 	}
 
 
 	/**
 	 * @param string $author
+	 *
+	 * @return $this
 	 */
 	public function setAuthor($author) {
 		$this->author = $author;
+
+		return $this;
 	}
 
 	/**
@@ -176,9 +221,13 @@ class RemoteMount {
 
 	/**
 	 * @param string $mountPoint
+	 *
+	 * @return $this
 	 */
 	public function setMountPoint($mountPoint) {
 		$this->mountPoint = $mountPoint;
+
+		return $this;
 	}
 
 	/**
@@ -191,9 +240,13 @@ class RemoteMount {
 
 	/**
 	 * @param string $mountPointHash
+	 *
+	 * @return $this
 	 */
 	public function setMountPointHash($mountPointHash) {
 		$this->mountPointHash = $mountPointHash;
+
+		return $this;
 	}
 
 	/**
@@ -206,9 +259,13 @@ class RemoteMount {
 
 	/**
 	 * @param string $created
+	 *
+	 * @return $this
 	 */
 	public function setCreated($created) {
 		$this->created = $created;
+
+		return $this;
 	}
 
 	/**
@@ -218,8 +275,5 @@ class RemoteMount {
 		return $this->created;
 	}
 
-
-
-	public function
 
 }
