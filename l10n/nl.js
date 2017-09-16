@@ -248,6 +248,7 @@ OC.L10N.register(
     "Turns the circle as Federated and enable sharing between Federated Circles" : "Maakt de kring",
     "Automatically Accept Link Request" : "Accepteer link verzoeken automatisch",
     "Warning: enabling this will automatically accept new link requests from other circle." : "Waarschuwing: hiermee worden nieuwe link verzoeken van andere kringen automatisch aanvaard.",
-    "Save settings" : "Opslaan instellingen"
+    "Save settings" : "Opslaan instellingen",
+    "Async Testing:" : "Async Testen:"
 },
 "nplurals=2; plural=(n != 1);");
