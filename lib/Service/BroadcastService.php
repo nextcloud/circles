@@ -91,7 +91,7 @@ class BroadcastService {
 	 *
 	 * @throws Exception
 	 */
-	public function broadcastFrame(SharingFrame $frame) {
+	public function localFrameBroadcast(SharingFrame $frame) {
 
 		if ($frame->getHeader('broadcast') === null) {
 			return;

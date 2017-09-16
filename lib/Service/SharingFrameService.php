@@ -126,8 +126,7 @@ class SharingFrameService {
 				   ->hasToBeMember();
 
 			$frame->setCircle($circle);
-
-			$this->generateHeaders($frame, $circle, $broadcast);
+			$this->generateHeaders($frame, $broadcast);
 			$this->circlesRequest->saveFrame($frame);
 
 			$this->initiateShare($circle->getUniqueId(), $frame->getUniqueId());
@@ -142,18 +141,19 @@ class SharingFrameService {
 	 * Check if the source is NOT Circles.
 	 *
 	 * @param SharingFrame $frame
-	 * @param Circle $circle
 	 * @param $broadcast
 	 */
-	private function generateHeaders(SharingFrame $frame, Circle $circle, $broadcast) {
+	private function generateHeaders(SharingFrame $frame, $broadcast) {
 
 		try {
 			$frame->cannotBeFromCircles();
 
+			$circle = $frame->getCircle();
 			$frame->setAuthor($this->userId);
 			$frame->setHeader('author', $this->userId);
 			$frame->setHeader('circleName', $circle->getName());
 			$frame->setHeader('circleUniqueId', $circle->getUniqueId());
+			$frame->setHeader('originHost', $this->configService->getLocalAddress());
 			$frame->setHeader('broadcast', (string)$broadcast);
 			$frame->generateUniqueId();
 
@@ -193,7 +193,6 @@ class SharingFrameService {
 	 * @param string $uniqueId
 	 * @param SharingFrame $frame
 	 *
-	 * @return bool
 	 * @throws Exception
 	 */
 	public function receiveFrame($token, $uniqueId, SharingFrame &$frame) {
@@ -214,8 +213,6 @@ class SharingFrameService {
 
 		$frame->setCircle($circle);
 		$this->circlesRequest->saveFrame($frame);
-
-		return true;
 	}
 
 
@@ -332,15 +329,6 @@ class SharingFrameService {
 				'fail to send frame to ' . $link->getAddress() . ' - ' . $e->getMessage()
 			);
 		}
-	}
-
-
-	/**
-	 * @param SharingFrame $frame
-	 */
-	public function updateFrameWithCloudId(SharingFrame $frame) {
-		$frame->setCloudId($this->configService->getLocalAddress());
-		$this->circlesRequest->updateFrame($frame);
 	}
 
 

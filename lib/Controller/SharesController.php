@@ -40,6 +40,8 @@ class SharesController extends BaseController {
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
 	 *
+	 * @deprecated - should not be possible to create a SharingFrame from JS (source/type not verified)
+	 *
 	 * @param string $circleUniqueId
 	 * @param string $source
 	 * @param string $type
@@ -109,10 +111,9 @@ class SharesController extends BaseController {
 		// We don't want to keep the connection up
 		$this->miscService->asyncAndLeaveClientOutOfThis('done');
 
-		$this->broadcastService->broadcastFrame($frame);
+		$this->broadcastService->localFrameBroadcast($frame);
 
 		// TODO - do not update cloudId to avoid duplicate, use it's own field and keep cloudId
-		$this->sharingFrameService->updateFrameWithCloudId($frame);
 		if ($this->configService->isFederatedCirclesAllowed()) {
 			$this->sharingFrameService->forwardSharingFrame($frame);
 		}

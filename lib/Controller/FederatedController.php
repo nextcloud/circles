@@ -194,7 +194,7 @@ class FederatedController extends Controller {
 		}
 
 		$this->miscService->asyncAndLeaveClientOutOfThis('done');
-		$this->broadcastService->broadcastFrame($frame);
+		$this->broadcastService->localFrameBroadcast($frame);
 		$this->sharingFrameService->forwardSharingFrame($frame);
 		exit();
 	}
