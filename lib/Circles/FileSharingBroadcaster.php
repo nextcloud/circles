@@ -29,9 +29,12 @@ namespace OCA\Circles\Circles;
 
 use OC\Share20\Share;
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\Db\MountsRequest;
 use OCA\Circles\IBroadcaster;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Cloud;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\RemoteMount;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\MiscService;
 use OCP\Defaults;
@@ -64,6 +67,9 @@ class FileSharingBroadcaster implements IBroadcaster {
 	/** @var IURLGenerator */
 	private $urlGenerator;
 
+	/** @var MountsRequest */
+	private $mountsRequest;
+
 
 	/**
 	 * {@inheritdoc}
@@ -76,6 +82,12 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 		$this->defaults = \OC::$server->query(Defaults::class);
 		$this->urlGenerator = \OC::$server->getURLGenerator();
+
+
+		$app = new Application();
+		$container = $app->getContainer();
+
+		$this->mountsRequest = $container->query(MountsRequest::class);
 	}
 
 
@@ -90,13 +102,13 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 * {@inheritdoc}
 	 */
 	public function createShareToCircle(SharingFrame $frame, Circle $circle) {
-		if (!$frame->is0Circle()) {
-			return $this->createFederatedShareToCircle($frame, $circle);
+		if ($frame->is0Circle() !== true) {
+			$this->createFederatedShareToCircle($frame, $circle);
+
+			return;
 		}
 
 		$this->createLocalShareToCircle($frame, $circle);
-
-		return true;
 	}
 
 
@@ -120,7 +132,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 * {@inheritdoc}
 	 */
 	public function createShareToMember(SharingFrame $frame, Member $member) {
-		if (!$frame->is0Circle()) {
+		if ($frame->is0Circle() !== true) {
 			return false;
 		}
 
@@ -172,6 +184,28 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 */
 	private function createFederatedShareToCircle(SharingFrame $frame, Circle $circle) {
 
+		$share = MiscService::get($frame->getPayload(), 'share');
+		MiscService::mustContains(
+			$share, [
+					  'sharedWith', 'sharedBy', 'permissions', 'nodeId', 'token', 'filename',
+					  'shareOwner'
+				  ]
+		);
+
+		$remoteMount = new RemoteMount();
+		$remoteMount->setCircleId($circle->getUniqueId())
+					->setRemoteCircleId($frame->getHeaders()['circleId'])
+					->setCloud(
+						new Cloud($frame->getHeaders()['cloudId'], $frame->getHeaders()['cloudHost'])
+					)
+					->setToken($share['token'])
+					->setFileId($share['nodeId'])
+					->setFilename($share['filename'])
+					->setAuthor($share['shareOwner'])
+					->setMountPoint('/test_test')
+					->setMountPointHash('');
+
+		$this->mountsRequest->create($remoteMount);
 	}
 
 	/**
@@ -233,7 +267,8 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$subject = $this->l10n->t('%s shared »%s« with you.', [$author, $fileName]);
 		$text = $this->l10n->t('%s shared »%s« with \'%s\'.', [$author, $fileName, $circleName]);
 
-		$emailTemplate = $this->generateEmailTemplate($subject, $text, $fileName, $link, $author, $circleName);
+		$emailTemplate =
+			$this->generateEmailTemplate($subject, $text, $fileName, $link, $author, $circleName);
 
 		$instanceName = $this->defaults->getName();
 		$senderName = $this->l10n->t('%s on %s', [$author, $instanceName]);
@@ -260,12 +295,14 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 */
 	private function generateEmailTemplate($subject, $text, $fileName, $link, $author, $circleName) {
 
-		$emailTemplate = $this->mailer->createEMailTemplate('circles.ShareNotification', [
-			'fileName' => $fileName,
-			'fileLink' => $link,
-			'author' => $author,
-			'circleName' => $circleName,
-		]);
+		$emailTemplate = $this->mailer->createEMailTemplate(
+			'circles.ShareNotification', [
+										   'fileName' => $fileName,
+										   'fileLink' => $link,
+										   'author' => $author,
+										   'circleName' => $circleName,
+									   ]
+		);
 
 		$emailTemplate->addHeader();
 		$emailTemplate->addHeading($subject, false);

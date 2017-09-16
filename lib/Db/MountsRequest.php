@@ -48,17 +48,20 @@ class MountsRequest extends MountsRequestBuilder {
 		}
 
 		try {
-			$cloud = $remote->getRemoteCloud();
+			$cloud = $remote->getCloud();
+
 			$qb = $this->getRemoteMountsInsertSql();
 			$qb->setValue('circle_id', $qb->createNamedParameter($remote->getCircleId()))
 			   ->setValue('remote_circle_id', $qb->createNamedParameter($remote->getRemoteCircleId()))
-			   ->setValue('remote_cloud_id', $qb->createNamedParameter($cloud->getCloudId()))
+			   ->setValue('cloud_id', $qb->createNamedParameter($cloud->getCloudId()))
 			   ->setValue('token', $qb->createNamedParameter($remote->getToken()))
 			   ->setValue('password', $qb->createNamedParameter($remote->getPassword()))
-			   ->setValue('remote_filename', $qb->createNamedParameter($remote->getRemoteFilename()))
+			   ->setValue('file_id', $qb->createNamedParameter($remote->getFileId()))
+			   ->setValue('file_name', $qb->createNamedParameter($remote->getFilename()))
 			   ->setValue('author', $qb->createNamedParameter($remote->getAuthor()))
 			   ->setValue('mountpoint', $qb->createNamedParameter($remote->getMountPoint()))
 			   ->setValue('mountpoint_hash', $qb->createNamedParameter($remote->getMountPointHash()));
+
 			$qb->execute();
 
 			return true;
@@ -71,7 +74,7 @@ class MountsRequest extends MountsRequestBuilder {
 	public function getRemoteMountsForUser($userId) {
 		$qb = $this->getRemoteMountsSelectSql();
 		$this->limitToMember($qb, $userId, Member::TYPE_USER, '`rm`.`circle_id`');
-		$this->rightJoinClouds($qb, 'remote_cloud_id');
+		$this->rightJoinClouds($qb, 'cloud_id');
 
 		$mounts = [];
 		$cursor = $qb->execute();

@@ -36,7 +36,7 @@ class RemoteMount {
 	private $remoteCircleId;
 
 	/** @var Cloud */
-	private $remoteCloud;
+	private $cloud;
 
 	/** @var string */
 	private $token;
@@ -44,8 +44,11 @@ class RemoteMount {
 	/** @var string */
 	private $password;
 
+	/** @var int */
+	private $fileId;
+
 	/** @var string */
-	private $remoteFilename;
+	private $filename;
 
 	/** @var string */
 	private $author;
@@ -108,8 +111,8 @@ class RemoteMount {
 	/**
 	 * @return Cloud
 	 */
-	public function getRemoteCloud() {
-		return $this->remoteCloud;
+	public function getCloud() {
+		return $this->cloud;
 	}
 
 	/**
@@ -117,8 +120,8 @@ class RemoteMount {
 	 *
 	 * @return $this
 	 */
-	public function setRemoteCloud($cloud) {
-		$this->remoteCloud = $cloud;
+	public function setCloud($cloud) {
+		$this->cloud = $cloud;
 
 		return $this;
 	}
@@ -163,12 +166,31 @@ class RemoteMount {
 
 
 	/**
+	 * @param int $fileId
+	 *
+	 * @return $this
+	 */
+	public function setFileId($fileId) {
+		$this->fileId = $fileId;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getFileId() {
+		return $this->fileId;
+	}
+
+
+	/**
 	 * @param string $filename
 	 *
 	 * @return $this
 	 */
-	public function setRemoteFileId($filename) {
-		$this->remoteFilename = $filename;
+	public function setFilename($filename) {
+		$this->filename = $filename;
 
 		return $this;
 	}
@@ -176,27 +198,8 @@ class RemoteMount {
 	/**
 	 * @return string
 	 */
-	public function getRemoteFileId() {
-		return $this->remoteFilename;
-	}
-
-
-	/**
-	 * @param string $filename
-	 *
-	 * @return $this
-	 */
-	public function setRemoteFileName($filename) {
-		$this->remoteFilename = $filename;
-
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getRemoteFileName() {
-		return $this->remoteFilename;
+	public function getFilename() {
+		return $this->filename;
 	}
 
 

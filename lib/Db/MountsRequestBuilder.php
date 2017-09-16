@@ -83,8 +83,8 @@ class MountsRequestBuilder extends CoreRequestBuilder {
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select(
-			'rm.circle_id', 'rm.remote_circle_id', 'rm.remote_cloud_id', 'rm.token', 'rm.password',
-			'rm.remote_filename', 'rm.author', 'rm.mountpoint', 'rm.mountpoint_hash', 'rm.created'
+			'rm.circle_id', 'rm.remote_circle_id', 'rm.cloud_id', 'rm.token', 'rm.password',
+			'rm.file_name', 'rm.file_id', 'rm.author', 'rm.mountpoint', 'rm.mountpoint_hash', 'rm.created'
 		)
 		   ->from(self::TABLE_MOUNTS_REMOTE, 'rm');
 
@@ -128,10 +128,11 @@ class MountsRequestBuilder extends CoreRequestBuilder {
 		$cloud = $this->parseCloudSelectSql($data);
 		$mount->setCircleId($data['circle_id']);
 		$mount->setRemoteCircleId($data['remote_circle_id']);
-		$mount->setRemoteCloud($cloud);
+		$mount->setCloud($cloud);
 		$mount->setToken($data['token']);
 		$mount->setPassword($data['password']);
-		$mount->setRemoteFilename($data['remote_filename']);
+		$mount->setFileId($data['file_id']);
+		$mount->setFilename($data['file_name']);
 		$mount->setAuthor($data['author']);
 		$mount->setMountPoint($data['mountpoint']);
 		$mount->setMountPointHash($data['mountpoint_hash']);

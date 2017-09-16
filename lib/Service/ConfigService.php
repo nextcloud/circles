@@ -33,6 +33,8 @@ use OCP\Util;
 
 class ConfigService {
 
+	const CIRCLES_CLOUD_ID = 'cloud_id';
+
 	const CIRCLES_ALLOW_CIRCLES = 'allow_circles';
 	const CIRCLES_SWAP_TO_TEAMS = 'swap_to_teams';
 	const CIRCLES_ALLOW_FEDERATED_CIRCLES = 'allow_federated';
@@ -46,6 +48,7 @@ class ConfigService {
 	const CIRCLES_TEST_ASYNC_COUNT = 'test_async_count';
 
 	private $defaults = [
+		self::CIRCLES_CLOUD_ID                => '',
 		self::CIRCLES_ALLOW_CIRCLES           => Circle::CIRCLES_ALL,
 		self::CIRCLES_SWAP_TO_TEAMS           => '0',
 		self::CIRCLES_ALLOW_LINKED_GROUPS     => '0',
@@ -109,6 +112,21 @@ class ConfigService {
 			   . $this->request->getServerHost();
 	}
 
+
+	public function getCloudId($full = false) {
+		$cloudId = $this->getAppValue(self::CIRCLES_CLOUD_ID);
+
+		if ($cloudId === '') {
+			$cloudId = bin2hex(openssl_random_pseudo_bytes(24));
+			$this->setAppValue(self::CIRCLES_CLOUD_ID, $cloudId);
+		}
+
+		if ($full === true) {
+			return $cloudId;
+		}
+
+		return substr($cloudId, 0, 14);
+	}
 
 	/**
 	 * returns if this type of circle is allowed by the current configuration.

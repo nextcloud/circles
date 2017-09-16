@@ -59,6 +59,12 @@ class SharingFrame implements \JsonSerializable {
 	/** @var string */
 	private $uniqueId;
 
+	/** @var bool */
+	private $isLocal;
+
+	/** @var bool */
+	private $is0Circle;
+
 	public function __construct($source, $type) {
 		$this->source = (string)$source;
 		$this->type = (string)$type;
@@ -241,18 +247,32 @@ class SharingFrame implements \JsonSerializable {
 
 
 	/**
+	 * @param bool $local
+	 */
+	public function setLocal($local) {
+		$this->isLocal = $local;
+	}
+
+	/**
 	 * @return bool
 	 */
 	public function isLocal() {
-		return ($this->getCloudId() === null);
+		return $this->isLocal;
 	}
 
+
+	/**
+	 * @param bool $value
+	 */
+	public function set0Circle($value) {
+		$this->is0Circle = $value;
+	}
 
 	/**
 	 * @return bool
 	 */
 	public function is0Circle() {
-		return ($this->getCloudId() === null);
+		return $this->is0Circle;
 	}
 
 

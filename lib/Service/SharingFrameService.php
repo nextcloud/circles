@@ -38,6 +38,8 @@ use OCA\Circles\Exceptions\PayloadDeliveryException;
 use OCA\Circles\Exceptions\SharingFrameAlreadyDeliveredException;
 use OCA\Circles\Exceptions\SharingFrameAlreadyExistException;
 use OCA\Circles\Exceptions\SharingFrameDoesNotExistException;
+use OCA\Circles\Exceptions\SharingFrameSourceCannotBeAppCirclesException;
+use OCA\Circles\Exceptions\SharingFrameUnexpectedFormatException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\SharingFrame;
@@ -152,8 +154,9 @@ class SharingFrameService {
 			$frame->setAuthor($this->userId);
 			$frame->setHeader('author', $this->userId);
 			$frame->setHeader('circleName', $circle->getName());
-			$frame->setHeader('circleUniqueId', $circle->getUniqueId());
-			$frame->setHeader('originHost', $this->configService->getLocalAddress());
+			$frame->setHeader('circleId', $circle->getUniqueId());
+			$frame->setHeader('cloudHost', $this->configService->getLocalAddress());
+			$frame->setHeader('cloudId', $this->configService->getCloudId());
 			$frame->setHeader('broadcast', (string)$broadcast);
 			$frame->generateUniqueId();
 
@@ -197,6 +200,7 @@ class SharingFrameService {
 	 */
 	public function receiveFrame($token, $uniqueId, SharingFrame &$frame) {
 		try {
+			$this->frameMustContainsCloudId($frame);
 			$link = $this->federatedLinksRequest->getLinkFromToken((string)$token, (string)$uniqueId);
 			$circle = $this->circlesRequest->forceGetCircle($link->getCircleId());
 		} catch (CircleDoesNotExistException $e) {
@@ -253,6 +257,13 @@ class SharingFrameService {
 	 */
 	private function generatePayloadDeliveryURL($remote) {
 		return $this->configService->generateRemoteHost($remote) . Application::REMOTE_URL_PAYLOAD;
+	}
+
+
+	private function frameMustContainsCloudId(SharingFrame $frame) {
+		if ($frame->getCloudId() === null) {
+			throw new SharingFrameUnexpectedFormatException('missing_cloud_id');
+		}
 	}
 
 
@@ -332,4 +343,11 @@ class SharingFrameService {
 	}
 
 
+	/**
+	 * @param SharingFrame $frame
+	 */
+	public function updateFrameWithCloudId(SharingFrame $frame) {
+		$frame->setCloudId($this->configService->getCloudId());
+		$this->circlesRequest->updateFrame($frame);
+	}
 }

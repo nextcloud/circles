@@ -795,6 +795,8 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 			'shareOwner'  => $share->getShareOwner(),
 			'permissions' => $share->getPermissions(),
 			'token'       => $share->getToken(),
+			'filename'    => $share->getNode()
+								   ->getName(),
 			'password'    => $share->getPassword()
 		];
 	}

@@ -47,8 +47,13 @@ class Cloud {
 
 	/**
 	 * RemoteMount constructor.
+	 *
+	 * @param string $cloudId
+	 * @param string $address
 	 */
-	function __construct() {
+	function __construct($cloudId = '', $address = '') {
+		$this->setCloudId($cloudId);
+		$this->setAddress($address);
 	}
 
 

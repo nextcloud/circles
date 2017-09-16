@@ -92,6 +92,17 @@
 		<name>*dbprefix*circles_remote_mounts</name>
 
 		<declaration>
+
+			<field>
+				<name>id</name>
+				<type>integer</type>
+				<length>4</length>
+				<unsigned>true</unsigned>
+				<notnull>true</notnull>
+				<autoincrement>true</autoincrement>
+				<primary>true</primary>
+			</field>
+
 			<field>
 				<name>circle_id</name>
 				<type>text</type>
@@ -100,7 +111,7 @@
 			</field>
 
 			<field>
-				<name>remote_cloud_id</name>
+				<name>cloud_id</name>
 				<type>text</type>
 				<length>256</length>
 				<notnull>true</notnull>
@@ -124,11 +135,18 @@
 				<name>password</name>
 				<type>text</type>
 				<length>64</length>
+				<notnull>false</notnull>
+			</field>
+
+			<field>
+				<name>file_id</name>
+				<type>text</type>
+				<length>64</length>
 				<notnull>true</notnull>
 			</field>
 
 			<field>
-				<name>remote_filename</name>
+				<name>file_name</name>
 				<type>text</type>
 				<length>64</length>
 				<notnull>true</notnull>
@@ -152,7 +170,7 @@
 				<name>mountpoint_hash</name>
 				<type>text</type>
 				<length>32</length>
-				<notnull>true</notnull>
+				<notnull>false</notnull>
 			</field>
 
 			<field>

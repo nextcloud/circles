@@ -98,6 +98,8 @@ class BroadcastService {
 		}
 
 		try {
+			$this->checkHeadersAndCompleteFrame($frame);
+
 			$broadcaster = \OC::$server->query((string)$frame->getHeader('broadcast'));
 			if (!($broadcaster instanceof IBroadcaster)) {
 				throw new BroadcasterIsNotCompatibleException();
@@ -108,10 +110,21 @@ class BroadcastService {
 
 			$this->feedBroadcaster($broadcaster, $frame, $circle);
 		} catch (Exception $e) {
+			$this->miscService->log('failed to local broadcast: ' . $e->getMessage());
 			throw $e;
 		}
 	}
 
+
+	private function checkHeadersAndCompleteFrame(SharingFrame &$frame) {
+		MiscService::mustContains(
+			$frame->getHeaders(),
+			['author', 'circleName', 'circleId', 'cloudHost', 'cloudId', 'broadcast']
+		);
+
+		$frame->set0Circle(($frame->getCloudId() === null));
+		$frame->setLocal(($frame->getCloudId() === $this->configService->getCloudId()));
+	}
 
 	/**
 	 * @param IBroadcaster $broadcaster
