@@ -6,6 +6,9 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Vinicius Cubas Brand <vinicius@eita.org.br>
+ * @author Daniel Tygel <dtygel@eita.org.br>
+ *
  * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
@@ -106,10 +109,10 @@ class Application extends App {
 
 
 	/**
-	 * Register Navigation Tab
+	 * Register Navigation elements
 	 */
 	public function registerNavigation() {
-
+		// Register Navigation Tab
 		$this->getContainer()
 			 ->getServer()
 			 ->getNavigationManager()
@@ -128,10 +131,42 @@ class Application extends App {
 					 ];
 				 }
 			 );
+
+		// Register Navigation in FileList
+		\OCA\Files\App::getNavigationManager()->add(function () {
+			$l = \OC::$server->getL10N('circles');
+			return [
+				'id' => 'circlesfilter',
+				'appname' => 'circles',
+				'script' => 'list.php',
+				'order' => 25,
+				'name' => $l->t('Circles'),
+			];
+		});
 	}
 
 	public function registerSettingsAdmin() {
 		\OCP\App::registerAdmin(self::APP_NAME, 'lib/admin');
+	}
+
+	public function registerFilesPlugin() {
+		$eventDispatcher = \OC::$server->getEventDispatcher();
+		$eventDispatcher->addListener(
+			'OCA\Files::loadAdditionalScripts',
+			function() {
+				// FIXME: no public API for these ?
+				\OCP\Util::addScript('circles', 'circles.v1.circles');
+				\OCP\Util::addScript('circles', 'circles.v1.links');
+				\OCP\Util::addScript('circles', 'circles.v1.members');
+				\OCP\Util::addScript('circles', 'circles.v1');
+
+				\OCP\Util::addScript('circles', 'circles.files.app');
+				\OCP\Util::addScript('circles', 'circles.files.list');
+
+				\OCP\Util::addStyle('circles');
+				\OCP\Util::addStyle('circles', 'circles.filelist');
+			}
+		);
 	}
 }
 

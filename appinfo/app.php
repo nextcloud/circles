@@ -6,6 +6,8 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Vinicius Cubas Brand <vinicius@eita.org.br>
+ *
  * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
@@ -28,3 +30,6 @@ $app = new \OCA\Circles\AppInfo\Application();
 
 $app->registerNavigation();
 $app->registerSettingsAdmin();
+$app->registerFilesPlugin();
+
+

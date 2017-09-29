@@ -7,6 +7,9 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Vinicius Cubas Brand <vinicius@eita.org.br>
+ * @author Daniel Tygel <dtygel@eita.org.br>
+ *
  * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
@@ -55,7 +58,7 @@ class CircleProviderRequestBuilder {
 
 		$qb = $this->getBaseSelectSql();
 		$this->limitToShareParent($qb);
-		$this->limitToCircle($qb, $circleId);
+		$this->limitToCircles($qb, [$circleId]);
 		$this->limitToFiles($qb, $fileId);
 
 		return $qb;
@@ -63,16 +66,25 @@ class CircleProviderRequestBuilder {
 
 
 	/**
-	 * Limit the request to a Circle.
+	 * Limit the request to the given Circles.
 	 *
 	 * @param IQueryBuilder $qb
-	 * @param int $circleId
+	 * @param array $circleUniqueIds
 	 */
-	protected function limitToCircle(IQueryBuilder &$qb, $circleId) {
+	protected function limitToCircles(IQueryBuilder &$qb, $circleUniqueIds) {
+
+		if (!is_array($circleUniqueIds)) {
+			$circleUniqueIds = array($circleUniqueIds);
+		}
+
 		$expr = $qb->expr();
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? 's.' : '';
-
-		$qb->andWhere($expr->eq($pf . 'share_with', $qb->createNamedParameter($circleId)));
+		$qb->andWhere(
+			$expr->in(
+				$pf . 'share_with',
+				$qb->createNamedParameter($circleUniqueIds, IQueryBuilder::PARAM_STR_ARRAY)
+			)
+		);
 	}
 
 

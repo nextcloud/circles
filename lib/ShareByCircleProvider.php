@@ -6,6 +6,9 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Vinicius Cubas Brand <vinicius@eita.org.br>
+ * @author Daniel Tygel <dtygel@eita.org.br>
+ *
  * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
@@ -535,6 +538,37 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 		return $share;
 	}
 
+	public function getObjectIdsForCircles($userId, $circleUniqueIds, $limit, $offset) {
+
+		$qb = $this->getCompleteSelectSql();
+		$this->linkToFileCache($qb, $userId);
+		$this->limitToPage($qb, $limit, $offset);
+		$this->limitToCircles($qb, $circleUniqueIds);
+
+		$this->linkToMember($qb, $userId, $this->configService->isLinkedGroupsAllowed());
+
+		$this->leftJoinShareInitiator($qb);
+		$cursor = $qb->execute();
+
+		$object_ids = [];
+		while ($data = $cursor->fetch()) {
+
+			if ($data['initiator_circle_level'] < Member::LEVEL_MEMBER
+				&& ($data['initiator_group_level'] < Member::LEVEL_MEMBER
+					|| !$this->configService->isLinkedGroupsAllowed())
+			) {
+				continue;
+			}
+
+			self::editShareFromParentEntry($data);
+			if (self::isAccessibleResult($data)) {
+				$object_ids[] = $data['file_source'];
+			}
+		}
+		$cursor->closeCursor();
+
+		return $object_ids;
+	}
 
 	/**
 	 * We don't return a thing about children.

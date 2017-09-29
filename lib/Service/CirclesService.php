@@ -6,6 +6,9 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Vinicius Cubas Brand <vinicius@eita.org.br>
+ * @author Daniel Tygel <dtygel@eita.org.br>
+ *
  * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
@@ -38,6 +41,7 @@ use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\MemberIsNotOwnerException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
+use OCA\Circles\ShareByCircleProvider;
 use OCP\IL10N;
 
 class CirclesService {
@@ -66,6 +70,9 @@ class CirclesService {
 	/** @var MiscService */
 	private $miscService;
 
+	/** @var ShareByCircleProvider */
+	private $shareProvider;
+
 
 	/**
 	 * CirclesService constructor.
@@ -87,7 +94,8 @@ class CirclesService {
 		MembersRequest $membersRequest,
 		FederatedLinksRequest $federatedLinksRequest,
 		EventsService $eventsService,
-		MiscService $miscService
+		MiscService $miscService,
+		ShareByCircleProvider $shareProvider
 	) {
 		$this->userId = $userId;
 		$this->l10n = $l10n;
@@ -97,6 +105,7 @@ class CirclesService {
 		$this->federatedLinksRequest = $federatedLinksRequest;
 		$this->eventsService = $eventsService;
 		$this->miscService = $miscService;
+		$this->shareProvider = $shareProvider;
 	}
 
 
@@ -433,6 +442,16 @@ class CirclesService {
 		}
 
 		return $urlGen->getAbsoluteURL($urlGen->imagePath(Application::APP_NAME, 'black_circle' . $ext));
+	}
+
+	public function getObjectIdsForCircles($circleUniqueIds, $limit = -1, $offset = 0) {
+		if (!is_array($circleUniqueIds)) {
+			$circleUniqueIds = [$circleUniqueIds];
+		}
+
+		$objectIds = $this->shareProvider->getObjectIdsForCircles($this->userId, $circleUniqueIds, $limit, $offset);
+
+		return $objectIds;
 	}
 
 }
