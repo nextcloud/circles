@@ -93,7 +93,7 @@
 						var circleIds = val.split(','),
 							circles = [];
 
-						OCA.Circles.api.listCircles("all", '', 0, function(result) {
+						OCA.Circles.api.listCircles("all", '', 1, function(result) {
 							_.each(circleIds, function(circleId) {
 								var circle = _.find(result.data,function(circleData) {
 									return circleData.unique_id == circleId;
@@ -160,7 +160,7 @@
 		 */
 		_queryCirclesAutocomplete: function(query) {
 
-			OCA.Circles.api.listCircles("all", query.term, 0, function(result) {
+			OCA.Circles.api.listCircles("all", query.term, 1, function(result) {
 				query.callback({
 					results: result.data
 				});
