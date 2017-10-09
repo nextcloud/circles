@@ -27,6 +27,7 @@
 namespace OCA\Circles\Service;
 
 
+use Exception;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\FederatedLinksRequest;
@@ -144,15 +145,21 @@ class CirclesService {
 	/**
 	 * list Circles depends on type (or all) and name (parts) and minimum level.
 	 *
+	 * @param string $userId
 	 * @param mixed $type
 	 * @param string $name
 	 * @param int $level
 	 *
 	 * @return Circle[]
 	 * @throws CircleTypeDisabledException
+	 * @throws Exception
 	 */
-	public function listCircles($type, $name = '', $level = 0) {
+	public function listCircles($userId, $type, $name = '', $level = 0) {
 		$type = $this->convertTypeStringToBitValue($type);
+
+		if ($userId === '') {
+			throw new Exception('UserID cannot be null');
+		}
 
 		if (!$this->configService->isCircleAllowed((int)$type)) {
 			throw new CircleTypeDisabledException(
@@ -161,7 +168,7 @@ class CirclesService {
 		}
 
 		$data = [];
-		$result = $this->circlesRequest->getCircles($this->userId, $type, $name, $level);
+		$result = $this->circlesRequest->getCircles($userId, $type, $name, $level);
 		foreach ($result as $item) {
 			$data[] = $item;
 		}

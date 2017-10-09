@@ -61,9 +61,12 @@ class Sharees {
 //	public static function search($search, $limit, $offset) {
 	public static function search($search) {
 		$c = self::getContainer();
+		$userId = \OC::$server->getUserSession()
+							  ->getUser()
+							  ->getUID();
 
 		$data = $c->query(CirclesService::class)
-				  ->listCircles(Circle::CIRCLES_ALL, $search, Member::LEVEL_MEMBER);
+				  ->listCircles($userId, Circle::CIRCLES_ALL, $search, Member::LEVEL_MEMBER);
 		$result = array(
 			'exact'   => ['circles'],
 			'circles' => []
