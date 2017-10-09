@@ -68,13 +68,8 @@ Users won't be able to find this Circle using Nextcloud search engine.
 	</activity>
 
 	<collaboration>
-		<collaborators>
-			<searchPlugins>
-				<searchPlugin>
-					<class>OCA\Circles\Collaboration\v1\CollaboratorSearchPlugin</class>
-					<shareType>SHARE_TYPE_CIRCLE</shareType>
-				</searchPlugin>
-			</searchPlugins>
-		</collaborators>
+		<plugins>
+			<plugin type="collaborator-search" share-type="SHARE_TYPE_CIRCLE">OCA\Circles\Collaboration\v1\CollaboratorSearchPlugin</plugin>
+		</plugins>
 	</collaboration>
 </info>

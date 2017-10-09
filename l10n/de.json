@@ -1,5 +1,5 @@
 { "translations": {
-    "Circles is using its own way to async heavy process." : "Kreise nutzt eigene Methoden zur zur asynchronen Synchronisation bei hoher Auslastung.",
+    "Circles is using its own way to async heavy process." : "Kreise nutzt eigene Methoden zur asynchronen Synchronisation bei hoher Auslastung.",
     "Are you sure you want to transfer your ownership?" : "Möchtest Du wirklich Deine Besitzerrechte übertragen?",
     "This action is irreversible" : "Dieser Vorgang kann nicht rückgängig gemacht werden",
     "Personal circle" : "Persönlicher Kreis",
@@ -76,7 +76,7 @@
     "The email address '{email}' was added to the circle" : "Die E-Mail-Adresse '{email}' wurde zum Kreis hinzugefügt",
     "The email address '{email}' could not be added to the circle" : "Die E-Mail-Adresse '{email}' konnte dem Kreis nicht hinzugefügt werden ",
     "The contact '{contact}' was added to the circle" : "Der Kontakt '{contact}' wurde dem Kreis hinzugefügt",
-    "The contact '{contact}' could not be added to the circle" : "Der Kontakt '{contact}' komnte dem Kreis nicht hinzugefügt werden",
+    "The contact '{contact}' could not be added to the circle" : "Der Kontakt '{contact}' konnte dem Kreis nicht hinzugefügt werden",
     "The member '{name}' was invited to the circle" : "Das Mitglied '{name}' wurde zum Kreis eingeladen",
     "The member '{name}' could not be invited to the circle" : "Das Mitglied '{name}' konnte nicht zum Kreis eingeladen werden",
     "Members of the group '{name}' were added to the circle" : "Mitglieder der Gruppe '{name}' wurden dem Kreis hinzugefügt",
@@ -173,7 +173,7 @@
     "Federated link not found" : "Federated-Verknüpfung nicht gefunden",
     "This member does not exist" : "Dieses Mitglied existiert nicht",
     "This user is already a member of the circle" : "Dieser Benutzer ist bereits Mitglied dieses Kreises",
-    "This feature is not available for personal circles" : "Diese Eigenschaft steht für persönliche Kreise nicht zur Verfügung",
+    "This feature is not available for personal circles" : "Diese Funktion steht für persönliche Kreise nicht zur Verfügung",
     "The circle is not Federated" : "Der Kreis ist nicht Federated",
     "You cannot join this circle" : "Du kannst diesem Kreis nicht beitreten",
     "This member is not a moderator" : "Dieses Mitglied ist kein Moderator",
@@ -184,8 +184,8 @@
     "Level cannot be changed for that type of member" : "Berechtigungsstufe kann für diesen Mitgliedstyp nicht geändert werden",
     "You are already a member of this circle" : "Du bist bereits Mitglied dieses Kreises",
     "You have been blocked from this circle" : "Du wurdest für diesen Kreis blockiert",
-    "User is already a member of this circle" : "Nutzer ist bereits Mitglied dieses Kreises",
-    "User is already invited into this circle" : "Nutzer wurde bereits zu diesem Kreis eingeladen",
+    "User is already a member of this circle" : "Benutzer ist bereits Mitglied dieses Kreises",
+    "User is already invited into this circle" : "Benutzer wurde bereits zu diesem Kreis eingeladen",
     "You need a specify a type of circle" : "Du benötigst einen bestimmten Kreis-Typ",
     "You cannot create this type of circle" : "Du kannst diese Art von Kreis nicht erstellen",
     "You cannot display this type of circle" : "Du kannst diese Art von Kreis nicht anzeigen",
@@ -203,7 +203,7 @@
     "Group cannot be set as owner of a circle" : "Eine Gruppe kann nicht Besitzer eines Kreises sein",
     "This user does not exist" : "Dieser Nutzer existiert nicht",
     "Email format is not valid" : "Das E-Mail-Format ist ungültig",
-    "This contact is not available" : "Dieser Kontakt ist nicht vorhanden",
+    "This contact is not available" : "Dieser Kontakt ist nicht verfügbar",
     "Could not find share" : "Freigabe konnte nicht gefunden werden",
     "Create a new circle" : "Einen neuen Kreis erstellen.",
     "Select a type of circle" : "Bitte Kreis-Typ wählen",
@@ -258,9 +258,9 @@
     "initiate test of Circles Async" : "Initialisierung des Tests der asynchronen Synchronisation",
     "reset test result" : "Testergebnisse zurücksetzen",
     "Test is currently running. Please wait." : "Test wird durchgeführt. Bitte warten.",
-    "Allow Group Linking:" : "Erlaube Gruppen-Verknüpfung:",
+    "Allow Group Linking:" : "Gruppenverknüpfung erlauben:",
     "Groups can be linked to Circles." : "Gruppen können mit Kreisen verknüpft werden.",
-    "Allow Federated Circles:" : "Erlaube Verknüpfung von externen Kreisen:",
-    "Circles from different Nextclouds can be linked together." : "Kreise von externen Servern können verknüpft werden."
+    "Allow Federated Circles:" : "Federated-Kreise erlauben:",
+    "Circles from different Nextclouds can be linked together." : "Kreise aus verschiedenen Nextclouds können miteinander verknüpft werden."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

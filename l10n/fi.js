@@ -133,6 +133,8 @@ OC.L10N.register(
     "Pending invitation to join this circle" : "Tässä piirissä on odottavia kutsuja",
     "You have a pending request to join this circle" : "Pyyntö piiriin liittymiseksi odottaa",
     "Add a member" : "Lisää jäsen",
+    "Link a group" : "Linkitä ryhmä",
+    "Link a circle" : "Linkitä piiri",
     "Join this circle" : "Liity tähän piiriin",
     "Delete circle" : "Poista piiri",
     "Edit circle" : "Muokkaa piiriä",
@@ -147,6 +149,7 @@ OC.L10N.register(
     "Joined" : "Liittynyt",
     "Group Name" : "Ryhmän nimi",
     "Link" : "Linkki",
+    "Linked" : "Linkitetty",
     "Save settings" : "Tallenna asetukset",
     "Groups can be linked to Circles." : "Ryhmät voidaan linkittää piireihin."
 },
