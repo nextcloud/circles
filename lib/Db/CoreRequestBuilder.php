@@ -103,8 +103,6 @@ class CoreRequestBuilder {
 	 *
 	 * @param IQueryBuilder $qb
 	 * @param $userId
-	 *
-	 * @internal param int $circleId
 	 */
 	protected function limitToUserId(IQueryBuilder &$qb, $userId) {
 		$this->limitToDBField($qb, 'user_id', $userId);
@@ -116,8 +114,6 @@ class CoreRequestBuilder {
 	 *
 	 * @param IQueryBuilder $qb
 	 * @param int $type
-	 *
-	 * @internal param int $circleId
 	 */
 	protected function limitToUserType(IQueryBuilder &$qb, $type) {
 		$this->limitToDBField($qb, 'user_type', $type);

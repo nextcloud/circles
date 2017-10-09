@@ -68,23 +68,13 @@ class SharingFrameRequest extends SharingFrameRequestBuilder {
 
 
 	/**
-	 * @param string $circleUniqueId
-	 *
-	 * @param $viewerId
+	 * @param string $circleUniqueId*
 	 *
 	 * @return SharingFrame[]
 	 */
-	public function getSharingFramesFromCircle($circleUniqueId, $viewerId) {
+	public function getSharingFramesFromCircle($circleUniqueId) {
 		$qb = $this->getSharesSelectSql();
 		$this->limitToCircleId($qb, $circleUniqueId);
-
-		if ($viewerId !== '') {
-			$this->circlesRequest->leftJoinCircle($qb);
-			$this->circlesRequest->leftJoinUserIdAsViewer($qb, $viewerId);
-			$this->circlesRequest->leftJoinNCGroupAndUser($qb, $viewerId, '`c`.`unique_id`');
-
-			$this->limitToLevel($qb, Member::LEVEL_MEMBER, ['u', 'g']);
-		}
 
 		$frames = [];
 		$cursor = $qb->execute();

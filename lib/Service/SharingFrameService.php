@@ -174,19 +174,11 @@ class SharingFrameService {
 	 * return all SharingFrame from a circle regarding a userId.
 	 *
 	 * @param string $circleUniqueId
-	 * @param string $userId
 	 *
 	 * @return SharingFrame[]
 	 */
-	public function getFrameFromCircle($circleUniqueId, $userId = '') {
-
-		if ($userId === '') {
-			$userId = $this->userId;
-		}
-
-		$frames = $this->sharingFrameRequest->getSharingFramesFromCircle($circleUniqueId, $userId);
-
-		return $frames;
+	public function getFrameFromCircle($circleUniqueId) {
+		return $this->forceGetFrameFromCircle($circleUniqueId, $this->userId);
 	}
 
 
@@ -194,17 +186,22 @@ class SharingFrameService {
 	 * return all SharingFrame from a circle.
 	 *
 	 * Warning, result won't be filtered regarding current user session.
-	 * Please use getFrameFromCircleUniqueId();
+	 * Please use getFrameFromCircle();
 	 *
 	 * @param string $circleUniqueId
+	 * @param $viewerId
 	 *
 	 * @return SharingFrame[]
-	 * @throws SharingFrameDoesNotExistException
 	 */
-	public function forceGetFrameFromCircle($circleUniqueId) {
-		$frames = $this->sharingFrameRequest->getSharingFramesFromCircle($circleUniqueId, '');
+	public function forceGetFrameFromCircle($circleUniqueId, $viewerId) {
 
-		return $frames;
+		if ($viewerId !== '') {
+			$circle = $this->circlesRequest->getCircle($circleUniqueId, $viewerId);
+			$circle->getViewer()
+				   ->hasToBeMember();
+		}
+
+		return $this->sharingFrameRequest->getSharingFramesFromCircle($circleUniqueId);
 	}
 
 
