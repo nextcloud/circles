@@ -384,6 +384,45 @@ class Circles {
 
 
 	/**
+	 * Circles::getSharesFromCircle();
+	 *
+	 * This function will returns all item (array) shared to a specific circle identified by its Id,
+	 * source and type. Limited to current user session.
+	 *
+	 * @param string $circleUniqueId
+	 *
+	 * @return mixed
+	 */
+	public static function getSharesFromCircle($circleUniqueId) {
+		$c = self::getContainer();
+
+		return $c->query(SharingFrameService::class)
+				 ->getFrameFromCircle($circleUniqueId);
+	}
+
+
+	/**
+	 * Circles::forceGetSharesFromCircle();
+	 *
+	 * This function will returns all item (array) shared to a specific circle identified by its Id,
+	 * source and type.
+	 *
+	 * @param string $circleUniqueId
+	 * @param string $userId
+	 *
+	 * @return SharingFrame[]
+	 */
+	public static function forceGetSharesFromCircle($circleUniqueId, $userId = '') {
+		$c = self::getContainer();
+
+		return $c->query(SharingFrameService::class)
+				 ->forceGetFrameFromCircle($circleUniqueId, $userId);
+	}
+
+
+
+
+	/**
 	 * Circles::linkCircle();
 	 *
 	 * Initiate a link procedure. Current user must be at least Admin of the circle.
