@@ -303,7 +303,7 @@
 			<field>
 				<name>author</name>
 				<type>text</type>
-				<length>32</length>
+				<length>64</length>
 				<notnull>true</notnull>
 			</field>
 
