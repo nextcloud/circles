@@ -219,10 +219,7 @@ class ConfigService {
 	 *
 	 * @return void
 	 */
-	public
-	function setAppValue(
-		$key, $value
-	) {
+	public function setAppValue($key, $value) {
 		$this->config->setAppValue($this->appName, $key, $value);
 	}
 
@@ -233,10 +230,7 @@ class ConfigService {
 	 *
 	 * @return string
 	 */
-	public
-	function deleteAppValue(
-		$key
-	) {
+	public function deleteAppValue($key) {
 		return $this->config->deleteAppValue($this->appName, $key);
 	}
 
@@ -247,10 +241,7 @@ class ConfigService {
 	 *
 	 * @return string
 	 */
-	public
-	function getUserValue(
-		$key
-	) {
+	public function getUserValue($key) {
 		return $this->config->getUserValue($this->userId, $this->appName, $key);
 	}
 
@@ -262,10 +253,7 @@ class ConfigService {
 	 *
 	 * @return string
 	 */
-	public
-	function setUserValue(
-		$key, $value
-	) {
+	public function setUserValue($key, $value) {
 		return $this->config->setUserValue($this->userId, $this->appName, $key, $value);
 	}
 
@@ -277,10 +265,7 @@ class ConfigService {
 	 *
 	 * @return string
 	 */
-	public
-	function getValueForUser(
-		$userId, $key
-	) {
+	public function getValueForUser($userId, $key) {
 		return $this->config->getUserValue($userId, $this->appName, $key);
 	}
 
@@ -293,10 +278,7 @@ class ConfigService {
 	 *
 	 * @return string
 	 */
-	public
-	function setValueForUser(
-		$userId, $key, $value
-	) {
+	public function setValueForUser($userId, $key, $value) {
 		return $this->config->setUserValue($userId, $this->appName, $key, $value);
 	}
 
@@ -308,10 +290,7 @@ class ConfigService {
 	 *
 	 * @return string|integer
 	 */
-	public
-	function getCloudVersion(
-		$complete = false
-	) {
+	public function getCloudVersion($complete = false) {
 		$ver = Util::getVersion();
 
 		if ($complete) {
