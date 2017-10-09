@@ -245,7 +245,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param string $userId
 	 */
-	protected function leftJoinUserIdAsViewer(IQueryBuilder &$qb, $userId) {
+	public function leftJoinUserIdAsViewer(IQueryBuilder &$qb, $userId) {
 
 		if ($qb->getType() !== QueryBuilder::SELECT) {
 			return;
@@ -274,12 +274,13 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		   );
 	}
 
+
 	/**
 	 * Left Join members table to get the owner of the circle.
 	 *
 	 * @param IQueryBuilder $qb
 	 */
-	protected function leftJoinOwner(IQueryBuilder &$qb) {
+	public function leftJoinOwner(IQueryBuilder &$qb) {
 
 		if ($qb->getType() !== QueryBuilder::SELECT) {
 			return;
@@ -314,7 +315,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 *
 	 * @param IQueryBuilder $qb
 	 */
-	protected function leftJoinCircle(IQueryBuilder &$qb) {
+	public function leftJoinCircle(IQueryBuilder &$qb) {
 
 		if ($qb->getType() !== QueryBuilder::SELECT) {
 			return;
@@ -335,60 +336,6 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 				   )
 			   )
 		   );
-	}
-
-
-	/**
-	 * Base of the Sql Select request for Shares
-	 *
-	 * @return IQueryBuilder
-	 */
-	protected function getSharesSelectSql() {
-		$qb = $this->dbConnection->getQueryBuilder();
-
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->select(
-			's.circle_id', 's.source', 's.type', 's.author', 's.cloud_id', 's.payload',
-			's.creation', 's.headers', 's.unique_id'
-		)
-		   ->from(self::TABLE_SHARES, 's');
-
-		$this->default_select_alias = 's';
-
-		return $qb;
-	}
-
-
-	/**
-	 * Base of the Sql Insert request for Shares
-	 *
-	 * @return IQueryBuilder
-	 */
-	protected function getSharesInsertSql() {
-		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->insert(self::TABLE_SHARES)
-		   ->setValue('creation', $qb->createFunction('NOW()'));
-
-		return $qb;
-	}
-
-
-	/**
-	 * Base of the Sql Update request for Shares
-	 *
-	 * @param string $uniqueId
-	 *
-	 * @return IQueryBuilder
-	 */
-	protected function getSharesUpdateSql($uniqueId) {
-		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->update(self::TABLE_SHARES)
-		   ->where(
-			   $qb->expr()
-				  ->eq('unique_id', $qb->createNamedParameter((string)$uniqueId))
-		   );
-
-		return $qb;
 	}
 
 
@@ -499,34 +446,6 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		}
 
 		return $circle;
-	}
-
-
-	/**
-	 * @param array $data
-	 *
-	 * @return SharingFrame
-	 */
-	protected function parseSharesSelectSql($data) {
-		$frame = new SharingFrame($data['source'], $data['type']);
-
-		$circle = new Circle();
-		$circle->setUniqueId($data['circle_id']);
-		if (key_exists('circle_type', $data)) {
-			$circle->setType($data['circle_type']);
-			$circle->setName($data['circle_name']);
-		}
-
-		$frame->setCircle($circle);
-
-		$frame->setAuthor($data['author']);
-		$frame->setCloudId($data['cloud_id']);
-		$frame->setPayload(json_decode($data['payload'], true));
-		$frame->setCreation($data['creation']);
-		$frame->setHeaders(json_decode($data['headers'], true));
-		$frame->setUniqueId($data['unique_id']);
-
-		return $frame;
 	}
 
 

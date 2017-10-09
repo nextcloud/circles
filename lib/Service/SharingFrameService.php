@@ -32,6 +32,7 @@ use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\FederatedLinksRequest;
+use OCA\Circles\Db\SharingFrameRequest;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\PayloadDeliveryException;
@@ -51,6 +52,9 @@ class SharingFrameService {
 
 	/** @var ConfigService */
 	private $configService;
+
+	/** @var SharingFrameRequest */
+	private $sharingFrameRequest;
 
 	/** @var CirclesRequest */
 	private $circlesRequest;
@@ -76,6 +80,7 @@ class SharingFrameService {
 	 *
 	 * @param string $userId
 	 * @param ConfigService $configService
+	 * @param SharingFrameRequest $sharingFrameRequest
 	 * @param CirclesRequest $circlesRequest
 	 * @param FederatedLinksRequest $federatedLinksRequest
 	 * @param BroadcastService $broadcastService
@@ -86,6 +91,7 @@ class SharingFrameService {
 	public function __construct(
 		$userId,
 		ConfigService $configService,
+		SharingFrameRequest $sharingFrameRequest,
 		CirclesRequest $circlesRequest,
 		FederatedLinksRequest $federatedLinksRequest,
 		BroadcastService $broadcastService,
@@ -95,6 +101,7 @@ class SharingFrameService {
 	) {
 		$this->userId = $userId;
 		$this->configService = $configService;
+		$this->sharingFrameRequest = $sharingFrameRequest;
 		$this->circlesRequest = $circlesRequest;
 		$this->federatedLinksRequest = $federatedLinksRequest;
 		$this->broadcastService = $broadcastService;
@@ -128,7 +135,7 @@ class SharingFrameService {
 			$frame->setCircle($circle);
 
 			$this->generateHeaders($frame, $circle, $broadcast);
-			$this->circlesRequest->saveFrame($frame);
+			$this->sharingFrameRequest->saveSharingFrame($frame);
 
 			$this->initiateShare($circle->getUniqueId(), $frame->getUniqueId());
 		} catch (Exception $e) {
@@ -162,6 +169,45 @@ class SharingFrameService {
 		}
 	}
 
+
+	/**
+	 * return all SharingFrame from a circle regarding a userId.
+	 *
+	 * @param string $circleUniqueId
+	 * @param string $userId
+	 *
+	 * @return SharingFrame[]
+	 */
+	public function getFrameFromCircle($circleUniqueId, $userId = '') {
+
+		if ($userId === '') {
+			$userId = $this->userId;
+		}
+
+		$frames = $this->sharingFrameRequest->getSharingFramesFromCircle($circleUniqueId, $userId);
+
+		return $frames;
+	}
+
+
+	/**
+	 * return all SharingFrame from a circle.
+	 *
+	 * Warning, result won't be filtered regarding current user session.
+	 * Please use getFrameFromCircleUniqueId();
+	 *
+	 * @param string $circleUniqueId
+	 *
+	 * @return SharingFrame[]
+	 * @throws SharingFrameDoesNotExistException
+	 */
+	public function forceGetFrameFromCircle($circleUniqueId) {
+		$frames = $this->sharingFrameRequest->getSharingFramesFromCircle($circleUniqueId, '');
+
+		return $frames;
+	}
+
+
 	/**
 	 * @param string $circleUniqueId
 	 * @param string $frameUniqueId
@@ -176,7 +222,7 @@ class SharingFrameService {
 		}
 
 		try {
-			$frame = $this->circlesRequest->getFrame($circleUniqueId, $frameUniqueId);
+			$frame = $this->sharingFrameRequest->getSharingFrame($circleUniqueId, $frameUniqueId);
 			if ($frame->getCloudId() !== null) {
 				throw new SharingFrameAlreadyDeliveredException('share_already_delivered');
 			}
@@ -207,13 +253,13 @@ class SharingFrameService {
 		}
 
 		try {
-			$this->circlesRequest->getFrame($link->getCircleId(), $frame->getUniqueId());
+			$this->sharingFrameRequest->getSharingFrame($link->getCircleId(), $frame->getUniqueId());
 			throw new SharingFrameAlreadyExistException('shares_is_already_known');
 		} catch (SharingFrameDoesNotExistException $e) {
 		}
 
 		$frame->setCircle($circle);
-		$this->circlesRequest->saveFrame($frame);
+		$this->sharingFrameRequest->saveSharingFrame($frame);
 
 		return true;
 	}
@@ -340,7 +386,7 @@ class SharingFrameService {
 	 */
 	public function updateFrameWithCloudId(SharingFrame $frame) {
 		$frame->setCloudId($this->configService->getLocalAddress());
-		$this->circlesRequest->updateFrame($frame);
+		$this->sharingFrameRequest->updateSharingFrame($frame);
 	}
 
 
