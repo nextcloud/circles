@@ -51,7 +51,7 @@ class SharingFrameRequest extends SharingFrameRequestBuilder {
 		$qb = $this->getSharesSelectSql();
 		$this->limitToUniqueId($qb, $frameUniqueId);
 		$this->limitToCircleId($qb, $circleUniqueId);
-		$this->circlesRequest->leftJoinCircle($qb);
+		$this->leftJoinCircle($qb);
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
@@ -68,7 +68,7 @@ class SharingFrameRequest extends SharingFrameRequestBuilder {
 
 
 	/**
-	 * @param string $circleUniqueId*
+	 * @param string $circleUniqueId
 	 *
 	 * @return SharingFrame[]
 	 */
