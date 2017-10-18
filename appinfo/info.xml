@@ -34,8 +34,7 @@ Users won't be able to find this Circle using Nextcloud search engine.
 	<website>https://github.com/nextcloud/circles</website>
 	<bugs>https://github.com/nextcloud/circles/issues</bugs>
 	<repository>https://github.com/nextcloud/circles.git</repository>
-	<screenshot>https://raw.githubusercontent.com/nextcloud/circles/master/screenshots/0.12.0.png
-	</screenshot>
+	<screenshot>https://raw.githubusercontent.com/nextcloud/circles/master/screenshots/0.12.0.png</screenshot>
 	<dependencies>
 		<nextcloud min-version="12" max-version="13"/>
 	</dependencies>
@@ -51,7 +50,7 @@ Users won't be able to find this Circle using Nextcloud search engine.
 
 	<commands>
 		<command>OCA\Circles\Command\Clean</command>
-		<command>OCA\Circles\Command\Groups</command>
+		<!--<command>OCA\Circles\Command\Groups</command>-->
 		<command>OCA\Circles\Command\FixUniqueId</command>
 	</commands>
 
@@ -70,7 +69,9 @@ Users won't be able to find this Circle using Nextcloud search engine.
 
 	<collaboration>
 		<plugins>
-			<plugin type="collaborator-search" share-type="SHARE_TYPE_CIRCLE">OCA\Circles\Collaboration\v1\CollaboratorSearchPlugin</plugin>
+			<plugin type="collaborator-search" share-type="SHARE_TYPE_CIRCLE">
+				OCA\Circles\Collaboration\v1\CollaboratorSearchPlugin
+			</plugin>
 		</plugins>
 	</collaboration>
 </info>
