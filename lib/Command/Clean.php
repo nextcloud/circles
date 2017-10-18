@@ -29,18 +29,41 @@ namespace OCA\Circles\Command;
 use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\Db\CirclesRequest;
+use OCA\Circles\Db\CoreRequestBuilder;
+use OCA\Circles\Db\MembersRequest;
+use OCA\Circles\Exceptions\CircleDoesNotExistException;
+use OCP\IDBConnection;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
 class Clean extends Base {
 
+	/** @var IDBConnection */
+	private $dbConnection;
+
 	/** @var CirclesRequest */
 	private $circlesRequest;
 
-	public function __construct(CirclesRequest $circlesRequest) {
+	/** @var MembersRequest */
+	private $membersRequest;
+
+
+	/**
+	 * Clean constructor.
+	 *
+	 * @param IDBConnection $connection
+	 * @param CirclesRequest $circlesRequest
+	 * @param MembersRequest $membersRequest
+	 */
+	public function __construct(
+		IDBConnection $connection, CirclesRequest $circlesRequest, MembersRequest $membersRequest
+	) {
 		parent::__construct();
+		$this->dbConnection = $connection;
 		$this->circlesRequest = $circlesRequest;
+		$this->membersRequest = $membersRequest;
+
 	}
 
 	protected function configure() {
@@ -52,7 +75,9 @@ class Clean extends Base {
 	protected function execute(InputInterface $input, OutputInterface $output) {
 
 		try {
+			$this->fixUserType();
 			$this->removeCirclesWithNoOwner();
+			$this->removeMembersWithNoCircles();
 
 			$output->writeln('done');
 		} catch (Exception $e) {
@@ -60,6 +85,20 @@ class Clean extends Base {
 		}
 	}
 
+
+	private function fixUserType() {
+		$qb = $this->dbConnection->getQueryBuilder();
+		$qb->update(CoreRequestBuilder::TABLE_MEMBERS)
+		   ->set('user_type', $qb->createNamedParameter(1))
+		   ->where(
+			   $qb->expr()
+				  ->eq('user_type', $qb->createNamedParameter(0))
+		   );
+
+		return $qb->execute();
+
+
+	}
 
 	private function removeCirclesWithNoOwner() {
 
@@ -71,6 +110,21 @@ class Clean extends Base {
 				$this->circlesRequest->destroyCircle($circle->getUniqueId());
 			}
 		}
+	}
+
+	private function removeMembersWithNoCircles() {
+
+		$members = $this->membersRequest->forceGetAllMembers();
+
+		foreach ($members as $member) {
+			try {
+				$this->circlesRequest->forceGetCircle($member->getCircleId());
+
+			} catch (CircleDoesNotExistException $e) {
+				$this->membersRequest->removeMember($member);
+			}
+		}
+
 	}
 }
 
