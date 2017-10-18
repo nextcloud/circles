@@ -27,6 +27,7 @@
 /** global: OC */
 
 var elements = {
+	test_timer: 4000,
 	test_async_start: null,
 	test_async_reset: null,
 	test_async_wait: null,
@@ -173,7 +174,7 @@ $(document).ready(function () {
 
 	var timerTestAsync = setInterval(function () {
 		self.updateTestAsync();
-	}, 4000);
+	}, elements.test_timer);
 
 
 })

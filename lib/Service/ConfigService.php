@@ -47,6 +47,7 @@ class ConfigService {
 
 	private $defaults = [
 		self::CIRCLES_ALLOW_CIRCLES           => Circle::CIRCLES_ALL,
+		self::CIRCLES_TEST_ASYNC_INIT         => '0',
 		self::CIRCLES_SWAP_TO_TEAMS           => '0',
 		self::CIRCLES_ALLOW_LINKED_GROUPS     => '0',
 		self::CIRCLES_ALLOW_FEDERATED_CIRCLES => '0',

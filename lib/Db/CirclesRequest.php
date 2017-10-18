@@ -30,12 +30,8 @@ namespace OCA\Circles\Db;
 
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
-use OCA\Circles\Exceptions\FederatedLinkDoesNotExistException;
-use OCA\Circles\Exceptions\SharingFrameDoesNotExistException;
 use OCA\Circles\Model\Circle;
-use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
-use OCA\Circles\Model\SharingFrame;
 
 class CirclesRequest extends CirclesRequestBuilder {
 
@@ -307,43 +303,6 @@ class CirclesRequest extends CirclesRequestBuilder {
 	}
 
 
-	/**
-	 * saveFrame()
-	 *
-	 * Insert a new entry in the database to save the SharingFrame.
-	 *
-	 * @param SharingFrame $frame
-	 */
-	public function saveFrame(SharingFrame $frame) {
-		$qb = $this->getSharesInsertSql();
-		$circle = $frame->getCircle();
-		$qb->setValue('circle_id', $qb->createNamedParameter($circle->getUniqueId()))
-		   ->setValue('source', $qb->createNamedParameter($frame->getSource()))
-		   ->setValue('type', $qb->createNamedParameter($frame->getType()))
-		   ->setValue('headers', $qb->createNamedParameter($frame->getHeaders(true)))
-		   ->setValue('author', $qb->createNamedParameter($frame->getAuthor()))
-		   ->setValue('cloud_id', $qb->createNamedParameter($frame->getCloudId()))
-		   ->setValue('unique_id', $qb->createNamedParameter($frame->getUniqueId()))
-		   ->setValue('payload', $qb->createNamedParameter($frame->getPayload(true)));
-
-		$qb->execute();
-	}
-
-
-	public function updateFrame(SharingFrame $frame) {
-		$qb = $this->getSharesUpdateSql($frame->getUniqueId());
-		$circle = $frame->getCircle();
-		$qb->set('circle_id', $qb->createNamedParameter($circle->getUniqueId()))
-		   ->set('source', $qb->createNamedParameter($frame->getSource()))
-		   ->set('type', $qb->createNamedParameter($frame->getType()))
-		   ->set('headers', $qb->createNamedParameter($frame->getHeaders(true)))
-		   ->set('author', $qb->createNamedParameter($frame->getAuthor()))
-		   ->set('cloud_id', $qb->createNamedParameter($frame->getCloudId()))
-		   ->set('unique_id', $qb->createNamedParameter($frame->getUniqueId()))
-		   ->set('payload', $qb->createNamedParameter($frame->getPayload(true)));
-
-		$qb->execute();
-	}
 
 
 	public function updateCircle(Circle $circle) {
@@ -380,31 +339,6 @@ class CirclesRequest extends CirclesRequestBuilder {
 	}
 
 
-	/**
-	 * @param string $circleUniqueId
-	 * @param string $frameUniqueId
-	 *
-	 * @return SharingFrame
-	 * @throws SharingFrameDoesNotExistException
-	 */
-	public function getFrame($circleUniqueId, $frameUniqueId) {
-		$qb = $this->getSharesSelectSql();
-		$this->limitToUniqueId($qb, $frameUniqueId);
-		$this->limitToCircleId($qb, $circleUniqueId);
-		$this->leftJoinCircle($qb);
-
-		$cursor = $qb->execute();
-		$data = $cursor->fetch();
-		$cursor->closeCursor();
-
-		if ($data === false) {
-			throw new SharingFrameDoesNotExistException($this->l10n->t('Sharing Frame does not exist'));
-		}
-
-		$entry = $this->parseSharesSelectSql($data);
-
-		return $entry;
-	}
 
 
 }

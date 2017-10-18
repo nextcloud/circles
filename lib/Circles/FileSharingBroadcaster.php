@@ -204,9 +204,6 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 * @param string $author
 	 * @param $circleName
 	 * @param string $email
-	 *
-	 * @internal param string $filename
-	 * @internal param string $circle
 	 */
 	protected function sendMail($fileName, $link, $author, $circleName, $email) {
 		$message = $this->mailer->createMessage();

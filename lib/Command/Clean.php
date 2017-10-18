@@ -52,7 +52,7 @@ class Clean extends Base {
 	protected function execute(InputInterface $input, OutputInterface $output) {
 
 		try {
-			$this->removeCirclesWithNoOwner($output);
+			$this->removeCirclesWithNoOwner();
 
 			$output->writeln('done');
 		} catch (Exception $e) {
