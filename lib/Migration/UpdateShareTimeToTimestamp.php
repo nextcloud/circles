@@ -86,7 +86,7 @@ class UpdateShareTimeToTimestamp implements IRepairStep {
 		$select = $this->connection->getQueryBuilder();
 		$select->select('*')
 			->from('share')
-			->where($select->expr()->eq('share_type', $select->createNamedParameter(Share::SHARE_TYPE_CIRCLE)));
+			->where($select->expr()->eq('share_type', $select->createNamedParameter(7)));
 
 		$update = $this->connection->getQueryBuilder();
 		$update->update('share')
