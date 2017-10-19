@@ -33,7 +33,7 @@ var circles = {
 		var result = {status: -1};
 		$.ajax({
 			method: 'PUT',
-			url: OC.generateUrl('/apps/circles/v1/circles'),
+			url: OC.generateUrl(oc_appswebroots.circles + '/v1/circles'),
 			data: {
 				type: type,
 				name: name
@@ -50,7 +50,7 @@ var circles = {
 		var result = {status: -1};
 		$.ajax({
 			method: 'GET',
-			url: OC.generateUrl('/apps/circles/v1/circles'),
+			url: OC.generateUrl(oc_appswebroots.circles + '/v1/circles'),
 			data: {
 				type: type,
 				name: name,
@@ -68,7 +68,7 @@ var circles = {
 		var result = {status: -1};
 		$.ajax({
 			method: 'GET',
-			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId)
+			url: OC.generateUrl(oc_appswebroots.circles + '/v1/circles/' + circleId)
 		}).done(function (res) {
 			api.onCallback(callback, res);
 		}).fail(function () {
@@ -81,7 +81,7 @@ var circles = {
 		var result = {status: -1};
 		$.ajax({
 			method: 'GET',
-			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/join'),
+			url: OC.generateUrl(oc_appswebroots.circles + '/v1/circles/' + circleId + '/join'),
 			data: {}
 		}).done(function (res) {
 			api.onCallback(callback, res);
@@ -95,7 +95,7 @@ var circles = {
 		var result = {status: -1};
 		$.ajax({
 			method: 'POST',
-			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/settings'),
+			url: OC.generateUrl(oc_appswebroots.circles + '/v1/circles/' + circleId + '/settings'),
 			data: {settings: settings}
 		}).done(function (res) {
 			api.onCallback(callback, res);
@@ -109,7 +109,7 @@ var circles = {
 		var result = {status: -1};
 		$.ajax({
 			method: 'GET',
-			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/leave'),
+			url: OC.generateUrl(oc_appswebroots.circles + '/v1/circles/' + circleId + '/leave'),
 			data: {}
 		}).done(function (res) {
 			api.onCallback(callback, res);
@@ -123,7 +123,7 @@ var circles = {
 		var result = {status: -1};
 		$.ajax({
 			method: 'DELETE',
-			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId),
+			url: OC.generateUrl(oc_appswebroots.circles + '/v1/circles/' + circleId),
 			data: {}
 		}).done(function (res) {
 			api.onCallback(callback, res);

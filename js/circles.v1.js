@@ -53,7 +53,7 @@
 				var result = {status: -1};
 				$.ajax({
 					method: 'PUT',
-					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/share'),
+					url: OC.generateUrl(oc_appswebroots.circles + '/v1/circles/' + circleId + '/share'),
 					data: {
 						source: source,
 						type: type,
