@@ -69,7 +69,7 @@ class UsingShortenUniqueIdInsteadOfCircleId implements IRepairStep {
 	public function run(IOutput $output) {
 		$oldVersion = explode(
 			'.', \OC::$server->getConfig()
-							 ->getAppValue(Application::APP_NAME, 'installed_version', '')
+							 ->getAppValue('circles', 'installed_version', '')
 		);
 
 		if ((int)$oldVersion[0] === 0
