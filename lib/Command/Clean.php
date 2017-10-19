@@ -96,9 +96,8 @@ class Clean extends Base {
 		   );
 
 		return $qb->execute();
-
-
 	}
+
 
 	private function removeCirclesWithNoOwner() {
 
@@ -111,6 +110,7 @@ class Clean extends Base {
 			}
 		}
 	}
+
 
 	private function removeMembersWithNoCircles() {
 
