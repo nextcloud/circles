@@ -1,13 +1,25 @@
 /*
- * Copyright (c) 2017 EITA Cooperative
+ * Circles - Bring cloud-users closer together.
  *
- * @author Vinicius Brand <vinicius@eita.org.br>
- * @author Daniel Tygel <daniel@eita.org.br>
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
  *
- * This file is licensed under the Affero General Public License version 3
- * or later.
+ * @author Maxence Lange <maxence@artificial-owl.com>
+ * @copyright 2017
+ * @license GNU AGPL version 3 or any later version
  *
- * See the COPYING-README file.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 (function() {
@@ -146,7 +158,7 @@
 					return m;
 				},
 				formatNoMatches: function() {
-					return t('systemtags', 'No tags found');
+					return t('systemtags', 'No circles found');
 				}
 			});
 			this.$filterField.on('change', _.bind(this._onTagsChanged, this));
@@ -211,11 +223,11 @@
 				if (!this._circlesIds.length) {
 					// no tags selected
 					this.$el.find('#emptycontent').html('<div class="icon-systemtags"></div>' +
-						'<h2>' + t('systemtags', 'Please select tags to filter by') + '</h2>');
+						'<h2>' + t('systemtags', 'Please select circles to filter by') + '</h2>');
 				} else {
 					// tags selected but no results
 					this.$el.find('#emptycontent').html('<div class="icon-systemtags"></div>' +
-						'<h2>' + t('systemtags', 'No files found for the selected tags') + '</h2>');
+						'<h2>' + t('systemtags', 'No files found for the selected circles') + '</h2>');
 				}
 				this.$el.find('#emptycontent').toggleClass('hidden', !this.isEmpty);
 				this.$el.find('#filestable thead th').toggleClass('hidden', this.isEmpty);

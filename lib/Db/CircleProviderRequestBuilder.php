@@ -35,15 +35,10 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCP\DB\QueryBuilder\IQueryBuilder;
-use OCP\IDBConnection;
 use OCP\Share;
 use OCP\Share\IShare;
 
-class CircleProviderRequestBuilder {
-
-
-	/** @var IDBConnection */
-	protected $dbConnection;
+class CircleProviderRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
