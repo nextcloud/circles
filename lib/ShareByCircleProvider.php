@@ -61,9 +61,6 @@ use OCP\Share\IShareProvider;
 
 class ShareByCircleProvider extends CircleProviderRequest implements IShareProvider {
 
-	/** @var IDBConnection */
-	protected $dbConnection;
-
 	/** @var ILogger */
 	private $logger;
 
@@ -76,9 +73,6 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	/** @var IRootFolder */
 	private $rootFolder;
 
-	/** @var IL10N */
-	private $l10n;
-
 	/** @var IURLGenerator */
 	private $urlGenerator;
 
@@ -87,12 +81,6 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 
 	/** @var MembersRequest */
 	private $membersRequest;
-
-	/** @var ConfigService */
-	private $configService;
-
-	/** @var MiscService */
-	private $miscService;
 
 
 	/**
