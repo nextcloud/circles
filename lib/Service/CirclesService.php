@@ -31,13 +31,13 @@ namespace OCA\Circles\Service;
 
 
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\Db\CircleProviderRequest;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\FederatedLinksRequest;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
 use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
-use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\MemberIsNotOwnerException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
@@ -67,11 +67,11 @@ class CirclesService {
 	/** @var EventsService */
 	private $eventsService;
 
+	/** @var CircleProviderRequest */
+	private $circleProviderRequest;
+
 	/** @var MiscService */
 	private $miscService;
-
-	/** @var ShareByCircleProvider */
-	private $shareProvider;
 
 
 	/**
@@ -84,6 +84,7 @@ class CirclesService {
 	 * @param MembersRequest $membersRequest
 	 * @param FederatedLinksRequest $federatedLinksRequest
 	 * @param EventsService $eventsService
+	 * @param CircleProviderRequest $circleProviderRequest
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
@@ -94,8 +95,8 @@ class CirclesService {
 		MembersRequest $membersRequest,
 		FederatedLinksRequest $federatedLinksRequest,
 		EventsService $eventsService,
-		MiscService $miscService,
-		ShareByCircleProvider $shareProvider
+		CircleProviderRequest $circleProviderRequest,
+		MiscService $miscService
 	) {
 		$this->userId = $userId;
 		$this->l10n = $l10n;
@@ -104,8 +105,8 @@ class CirclesService {
 		$this->membersRequest = $membersRequest;
 		$this->federatedLinksRequest = $federatedLinksRequest;
 		$this->eventsService = $eventsService;
+		$this->circleProviderRequest = $circleProviderRequest;
 		$this->miscService = $miscService;
-		$this->shareProvider = $shareProvider;
 	}
 
 
@@ -302,7 +303,9 @@ class CirclesService {
 		try {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 
-			$member = $this->membersRequest->getFreshNewMember($circleUniqueId, $this->userId, Member::TYPE_USER);
+			$member = $this->membersRequest->getFreshNewMember(
+				$circleUniqueId, $this->userId, Member::TYPE_USER
+			);
 			$member->hasToBeAbleToJoinTheCircle();
 			$member->joinCircle($circle->getType());
 			$this->membersRequest->updateMember($member);
@@ -444,12 +447,22 @@ class CirclesService {
 		return $urlGen->getAbsoluteURL($urlGen->imagePath(Application::APP_NAME, 'black_circle' . $ext));
 	}
 
-	public function getObjectIdsForCircles($circleUniqueIds, $limit = -1, $offset = 0) {
+
+	/**
+	 * @param string $circleUniqueIds
+	 * @param int $limit
+	 * @param int $offset
+	 *
+	 * @return array
+	 */
+	public function getFilesForCircles($circleUniqueIds, $limit = -1, $offset = 0) {
 		if (!is_array($circleUniqueIds)) {
 			$circleUniqueIds = [$circleUniqueIds];
 		}
 
-		$objectIds = $this->shareProvider->getObjectIdsForCircles($this->userId, $circleUniqueIds, $limit, $offset);
+		$objectIds = $this->circleProviderRequest->getFilesForCircles(
+			$this->userId, $circleUniqueIds, $limit, $offset
+		);
 
 		return $objectIds;
 	}

@@ -452,24 +452,16 @@ class Circles {
 	/**
 	 * Get a list of objects which are shred with $circleUniqueId.
 	 *
-	 * @param string|array $tagIds Tag id or array of tag ids.
-	 * @param string $objectType object type
-	 * @param int $limit Count of object ids you want to get
-	 * @param string $offset The last object id you already received
+	 * @since 0.14.0
+	 *
+	 * @param array $circleUniqueIds
 	 *
 	 * @return string[] array of object ids or empty array if none found
-	 *
-	 * @throws \OCP\SystemTag\TagNotFoundException if at least one of the
-	 * given tags does not exist
-	 * @throws \InvalidArgumentException When a limit is specified together with
-	 * multiple tag ids
-	 *
-	 * @since 9.0.0
 	 */
-	public static function getObjectIdsForCircles($circleUniqueIds) {
+	public static function getFilesForCircles($circleUniqueIds) {
 		$c = self::getContainer();
 
 		return $c->query(CirclesService::class)
-			->getObjectIdsForCircles($circleUniqueIds);
+			->getFilesForCircles($circleUniqueIds);
 	}
 }
