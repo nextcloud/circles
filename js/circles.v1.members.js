@@ -34,7 +34,7 @@ var members = {
 		var result = {status: -1};
 		$.ajax({
 			method: 'GET',
-			url: OC.generateUrl(oc_appswebroots.circles + '/v1/globalsearch'),
+			url: OC.generateUrl('/apps/circles/v1/globalsearch'),
 			data: {
 				search: search
 			}
@@ -50,7 +50,7 @@ var members = {
 		var result = {status: -1};
 		$.ajax({
 			method: 'PUT',
-			url: OC.generateUrl(oc_appswebroots.circles + '/v1/circles/' + circleId + '/member'),
+			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/member'),
 			data: {
 				ident: ident,
 				type: type
@@ -67,7 +67,7 @@ var members = {
 		var result = {status: -1};
 		$.ajax({
 			method: 'DELETE',
-			url: OC.generateUrl(oc_appswebroots.circles + '/v1/circles/' + circleId + '/member'),
+			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/member'),
 			data: {
 				member: userId,
 				type: Number(userType)
@@ -84,7 +84,7 @@ var members = {
 		var result = {status: -1};
 		$.ajax({
 			method: 'POST',
-			url: OC.generateUrl(oc_appswebroots.circles + '/v1/circles/' + circleId + '/level'),
+			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/level'),
 			data: {
 				member: userId,
 				type: userType,

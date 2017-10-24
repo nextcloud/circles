@@ -34,7 +34,7 @@ var links = {
 		var result = {status: -1};
 		$.ajax({
 			method: 'POST',
-			url: OC.generateUrl(oc_appswebroots.circles + '/v1/circles/' + circleId + '/link'),
+			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/link'),
 			data: {
 				remote: remote
 			}
@@ -50,7 +50,7 @@ var links = {
 		var result = {status: -1};
 		$.ajax({
 			method: 'POST',
-			url: OC.generateUrl(oc_appswebroots.circles + '/v1/link/' + linkId + '/status'),
+			url: OC.generateUrl('/apps/circles/v1/link/' + linkId + '/status'),
 			data: {
 				status: status
 			}
@@ -66,7 +66,7 @@ var links = {
 		var result = {status: -1};
 		$.ajax({
 			method: 'PUT',
-			url: OC.generateUrl(oc_appswebroots.circles + '/v1/circles/' + circleId + '/groups'),
+			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/groups'),
 			data: {
 				name: groupId
 			}
@@ -82,7 +82,7 @@ var links = {
 		var result = {status: -1};
 		$.ajax({
 			method: 'DELETE',
-			url: OC.generateUrl(oc_appswebroots.circles + '/v1/circles/' + circleId + '/groups'),
+			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/groups'),
 			data: {
 				group: groupId
 			}
@@ -98,7 +98,7 @@ var links = {
 		var result = {status: -1};
 		$.ajax({
 			method: 'POST',
-			url: OC.generateUrl(oc_appswebroots.circles + '/v1/circles/' + circleId + '/group/level'),
+			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/group/level'),
 			data: {
 				group: group,
 				level: level
