@@ -278,11 +278,13 @@ class SharingFrameService {
 		$client = $this->clientService->newClient();
 		try {
 			$client->post(
-				$this->generatePayloadDeliveryURL($this->configService->getLocalAddress()), [
-																							  'body'            => $args,
-																							  'timeout'         => Application::CLIENT_TIMEOUT,
-																							  'connect_timeout' => Application::CLIENT_TIMEOUT,
-																						  ]
+				$this->generatePayloadDeliveryURL(
+					$this->configService->getLocalAddress() . \OC::$WEBROOT
+				), [
+					'body'            => $args,
+					'timeout'         => Application::CLIENT_TIMEOUT,
+					'connect_timeout' => Application::CLIENT_TIMEOUT,
+				]
 			);
 
 			return true;
