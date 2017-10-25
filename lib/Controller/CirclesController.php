@@ -73,7 +73,7 @@ class CirclesController extends BaseController {
 	public function listing($type, $name = '', $level = 0) {
 
 		try {
-			$data = $this->circlesService->listCircles($type, $name, $level);
+			$data = $this->circlesService->listCircles($this->userId, $type, $name, $level);
 
 			return $this->success(['type' => $type, 'data' => $data]);
 		} catch (CircleTypeDisabledException $e) {

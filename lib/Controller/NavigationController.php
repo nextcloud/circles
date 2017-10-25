@@ -26,8 +26,10 @@
 
 namespace OCA\Circles\Controller;
 
+use OCA\Circles\Api\v1\Circles;
+use OCA\Circles\Api\v1\ShotgunCircles;
 use OCA\Circles\AppInfo\Application;
-use \OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Service\ConfigService;
 use OCA\Testing\Config;
 use OCP\AppFramework\Http;
@@ -45,6 +47,7 @@ class NavigationController extends BaseController {
 	 * @return TemplateResponse
 	 */
 	public function navigate() {
+
 		$data = [
 			'allowed_circles' => array(
 				Circle::CIRCLES_PERSONAL => $this->configService->isCircleAllowed(

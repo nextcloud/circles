@@ -34,6 +34,14 @@ use OCA\Circles\Service\MiscService;
 use OCP\Share;
 
 
+/**
+ * ############### WARNING #################
+ * ###
+ * ### This file is needed and used by Nextcloud 12 and lower.
+ * ###
+ *
+ * @package OCA\Circles\Api
+ */
 class Sharees {
 
 
@@ -53,9 +61,12 @@ class Sharees {
 //	public static function search($search, $limit, $offset) {
 	public static function search($search) {
 		$c = self::getContainer();
+		$userId = \OC::$server->getUserSession()
+							  ->getUser()
+							  ->getUID();
 
 		$data = $c->query(CirclesService::class)
-				  ->listCircles(Circle::CIRCLES_ALL, $search, Member::LEVEL_MEMBER);
+				  ->listCircles($userId, Circle::CIRCLES_ALL, $search, Member::LEVEL_MEMBER);
 		$result = array(
 			'exact'   => ['circles'],
 			'circles' => []

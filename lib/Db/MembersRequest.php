@@ -88,6 +88,7 @@ class MembersRequest extends MembersRequestBuilder {
 		$qb = $this->getMembersSelectSql();
 		$this->limitToMembersAndAlmost($qb);
 		$this->limitToLevel($qb, $level);
+
 		$this->limitToCircleId($qb, $circleUniqueId);
 
 		$members = [];
@@ -100,6 +101,30 @@ class MembersRequest extends MembersRequestBuilder {
 		if ($this->configService->isLinkedGroupsAllowed() && $incGroup === true) {
 			$this->includeGroupMembers($members, $circleUniqueId, $level);
 		}
+
+		return $members;
+	}
+
+
+	/**
+	 * Returns all members.
+	 *
+	 * WARNING: This function does not filters data regarding the current user/viewer.
+	 *          In case of interaction with users, Please use getMembers() instead.
+	 *
+	 *
+	 * @return Member[]
+	 */
+	public function forceGetAllMembers() {
+
+		$qb = $this->getMembersSelectSql();
+
+		$members = [];
+		$cursor = $qb->execute();
+		while ($data = $cursor->fetch()) {
+			$members[] = $this->parseMembersSelectSql($data);
+		}
+		$cursor->closeCursor();
 
 		return $members;
 	}
@@ -452,27 +477,54 @@ class MembersRequest extends MembersRequestBuilder {
 	 * @param string $uniqueCircleId
 	 */
 	public function removeAllFromCircle($uniqueCircleId) {
-		$qb = $this->getMembersDeleteSql($uniqueCircleId);
+		$qb = $this->getMembersDeleteSql();
+		$expr = $qb->expr();
+
+		$qb->where($expr->eq('circle_id', $qb->createNamedParameter($uniqueCircleId)));
 		$qb->execute();
 	}
 
 
 	/**
-	 * removeAllFromUser();
+	 * removeAllMembershipsFromUser();
 	 *
 	 * remove All membership from a User. Used when removing a User from the Cloud.
 	 *
-	 * @param $userId
+	 * @param string $userId
 	 */
-	public function removeAllFromUser($userId) {
+	public function removeAllMembershipsFromUser($userId) {
 		if ($userId === '') {
 			return;
 		}
 
-		$qb = $this->getMembersDeleteSql('', Member::TYPE_USER, $userId);
+		$qb = $this->getMembersDeleteSql();
+		$expr = $qb->expr();
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$qb->where(
+			$expr->andX(
+				$expr->eq('user_id', $qb->createNamedParameter($userId)),
+				$expr->eq('user_type', $qb->createNamedParameter(Member::TYPE_USER))
+			)
+		);
+
 		$qb->execute();
 	}
 
+
+	/**
+	 * remove member, identified by its id, type and circleId
+	 *
+	 * @param Member $member
+	 */
+	public function removeMember(Member $member) {
+		$qb = $this->getMembersDeleteSql();
+		$this->limitToCircleId($qb, $member->getCircleId());
+		$this->limitToUserId($qb, $member->getUserId());
+		$this->limitToUserType($qb, $member->getType());
+
+		$qb->execute();
+	}
 
 	/**
 	 * update database entry for a specific Group.

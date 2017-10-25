@@ -327,10 +327,6 @@ class SharingFrame implements \JsonSerializable {
 	private static function getCircleFromArray($arr) {
 		$circle = Circle::fromArray(MiscService::get($arr, 'circle', null));
 
-		$circle->setType(MiscService::get($arr, 'circle_type'));
-		$circle->setName(MiscService::get($arr, 'circle_name'));
-		$circle->setId(MiscService::get($arr, 'circle_id'));
-
 		return $circle;
 	}
 }

@@ -1,6 +1,49 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 0.13.4
+
+- bugfixes.
+
+
+## 0.13.0
+
+- Feature: Circles Async is now available on every shares rendering the UX a lot smoother.
+- Feature: The stability of Circles Async is testable from the Admin Interface.
+- Feature: mail address can be added as a member of a Circle.
+- Feature: contact can be added as a member of a Circle.
+- Feature: When sharing a file to a Circle, all non-local member (Mail address or Contact) will receive a link to the shared files by mail. 
+- Feature: the older Admin of a Circle becomes Owner if current Owner's account deleted. If the Circle has no Admin, the Circle is deleted.
+- api: Circles::getSharesFromCircle()/ShotgunCircles::getSharesFromCircle() returns SharingFrame[]
+- Fix: Unexpected behaviour when an the account of a circle owner is removed from the cloud
+- Code: Automatic DI
+- Code: Compatibility NC13 collaboration search
+- New Command: ./occ circles:clean
+- API: The app will dispatch some events (by Vinicius Cubas Brand <viniciuscb@gmail.com>)
+
+
+		\OCA\Circles::onCircleCreation
+		\OCA\Circles::onCircleDestruction
+		\OCA\Circles::onMemberNew
+		\OCA\Circles::onMemberInvited
+		\OCA\Circles::onMemberRequesting
+		\OCA\Circles::onMemberLeaving
+		\OCA\Circles::onMemberLevel
+		\OCA\Circles::onMemberOwner
+		\OCA\Circles::onGroupLink
+		\OCA\Circles::onGroupUnlink
+		\OCA\Circles::onGroupLevel
+		\OCA\Circles::onLinkRequestSent
+		\OCA\Circles::onLinkRequestReceived
+		\OCA\Circles::onLinkRequestRejected
+		\OCA\Circles::onLinkRequestCanceled
+		\OCA\Circles::onLinkRequestAccepted
+		\OCA\Circles::onLinkRequestAccepting
+		\OCA\Circles::onLinkUp
+		\OCA\Circles::onLinkDown
+		\OCA\Circles::onLinkRemove
+		\OCA\Circles::onSettingsChange
+
 
 ## 0.12.4
 

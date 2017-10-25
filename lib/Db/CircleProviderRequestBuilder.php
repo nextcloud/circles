@@ -154,8 +154,6 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	 *
 	 * @param IQueryBuilder $qb
 	 * @param $files
-	 *
-	 * @internal param $fileId
 	 */
 	protected function limitToFiles(IQueryBuilder &$qb, $files) {
 

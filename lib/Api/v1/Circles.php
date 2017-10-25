@@ -167,14 +167,21 @@ class Circles {
 	 * @param mixed $type
 	 * @param string $name
 	 * @param int $level
+	 * @param string $userId
 	 *
 	 * @return Circle[]
 	 */
-	public static function listCircles($type, $name = '', $level = 0) {
+	public static function listCircles($type, $name = '', $level = 0, $userId = '') {
 		$c = self::getContainer();
 
+		if ($userId === '') {
+			$userId = \OC::$server->getUserSession()
+								  ->getUser()
+								  ->getUID();
+		}
+
 		return $c->query(CirclesService::class)
-				 ->listCircles($type, $name, $level);
+				 ->listCircles($userId, $type, $name, $level);
 	}
 
 
@@ -183,10 +190,32 @@ class Circles {
 	 *
 	 * Return all the circle the current user is a member.
 	 *
+	 * @param string $userId
+	 *
 	 * @return Circle[]
 	 */
-	public static function joinedCircles() {
-		return self::listCircles(Circle::CIRCLES_ALL, '', Member::LEVEL_MEMBER);
+	public static function joinedCircles($userId = '') {
+		return self::listCircles(Circle::CIRCLES_ALL, '', Member::LEVEL_MEMBER, $userId);
+	}
+
+
+	/**
+	 * Circles::joinedCircleIds();
+	 *
+	 * Return all the circleIds the user is a member, if empty user, using current user.
+	 *
+	 * @param $userId
+	 *
+	 * @return array
+	 */
+	public static function joinedCircleIds($userId = '') {
+		$circleIds = [];
+		$circles = self::listCircles(Circle::CIRCLES_ALL, '', Member::LEVEL_MEMBER, $userId);
+		foreach ($circles as $circle) {
+			$circleIds[] = $circle->getUniqueId();
+		}
+
+		return $circleIds;
 	}
 
 
@@ -354,6 +383,24 @@ class Circles {
 
 		return $c->query(SharingFrameService::class)
 				 ->createFrame($circleUniqueId, $frame, (string)$broadcaster);
+	}
+
+
+	/**
+	 * Circles::getSharesFromCircle();
+	 *
+	 * This function will returns all item (array) shared to a specific circle identified by its Id,
+	 * source and type. Limited to current user session.
+	 *
+	 * @param string $circleUniqueId
+	 *
+	 * @return mixed
+	 */
+	public static function getSharesFromCircle($circleUniqueId) {
+		$c = self::getContainer();
+
+		return $c->query(SharingFrameService::class)
+				 ->getFrameFromCircle($circleUniqueId);
 	}
 
 

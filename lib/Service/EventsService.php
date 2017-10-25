@@ -115,6 +115,7 @@ class EventsService {
 				$this->publishEvent($event, [$user]);
 			}
 		);
+
 		$this->dispatch('\OCA\Circles::onCircleCreation',  ['circle' => $circle]);
 	}
 
@@ -351,7 +352,7 @@ class EventsService {
 	 * @param Circle $circle
 	 * @param Member $member
 	 */
-	private function onMemberOwner(Circle $circle, Member $member) {
+	public function onMemberOwner(Circle $circle, Member $member) {
 		$event = $this->generateEvent('circles_as_moderator');
 		$event->setSubject(
 			'member_owner',
@@ -728,9 +729,9 @@ class EventsService {
 		$event->setApp(Application::APP_NAME)
 			  ->setType($type);
 
-		if ($this->userId === null) {
+	//	if ($this->userId === null) {
 		//	$event->setAuthor($this->userId);
-		}
+	//	}
 
 		return $event;
 	}
@@ -756,7 +757,11 @@ class EventsService {
 			$this->activityManager->publish($event);
 		}
 	}
-	
+
+	/**
+	 * @param string $context
+	 * @param array $arguments
+	 */
 	private function dispatch($context, $arguments) {
 		$this->eventDispatcher->dispatch($context, new GenericEvent(null,$arguments));
 	}

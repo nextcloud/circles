@@ -657,7 +657,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 		$message = 'Sharing %s failed, this item is already shared with this circle';
 		$message_t = $this->l10n->t($message, array($share_src));
 		$this->logger->debug(
-			sprintf($message, $share_src, $share->getSharedWith()), ['app' => Application::APP_NAME]
+			sprintf($message, $share_src, $share->getSharedWith()), ['app' => 'circles']
 		);
 
 		return new \Exception($message_t);

@@ -46,7 +46,7 @@ class ProviderSubjectMember extends ProviderParser {
 	 * @throws FakeException
 	 */
 	public function parseSubjectMemberJoin(IEvent &$event, Circle $circle, Member $member) {
-		if ($event->getSubject() !== 'member_request_invitation') {
+		if ($event->getSubject() !== 'member_join') {
 			return;
 		}
 

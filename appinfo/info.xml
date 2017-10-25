@@ -23,7 +23,7 @@ Users won't be able to find this Circle using Nextcloud search engine.
 
 		]]>
 	</description>
-	<version>0.12.5</version>
+	<version>0.13.4</version>
 	<licence>agpl</licence>
 	<author>Maxence Lange</author>
 	<documentation>
@@ -34,8 +34,7 @@ Users won't be able to find this Circle using Nextcloud search engine.
 	<website>https://github.com/nextcloud/circles</website>
 	<bugs>https://github.com/nextcloud/circles/issues</bugs>
 	<repository>https://github.com/nextcloud/circles.git</repository>
-	<screenshot>https://raw.githubusercontent.com/nextcloud/circles/master/screenshots/0.12.0.png
-	</screenshot>
+	<screenshot>https://raw.githubusercontent.com/nextcloud/circles/master/screenshots/0.12.0.png</screenshot>
 	<dependencies>
 		<nextcloud min-version="12" max-version="13"/>
 	</dependencies>
@@ -49,6 +48,12 @@ Users won't be able to find this Circle using Nextcloud search engine.
 		</post-migration>
 	</repair-steps>
 
+	<commands>
+		<command>OCA\Circles\Command\Clean</command>
+		<!--<command>OCA\Circles\Command\Groups</command>-->
+		<command>OCA\Circles\Command\FixUniqueId</command>
+	</commands>
+
 	<activity>
 		<settings>
 			<setting>OCA\Circles\Activity\SettingAsModerator</setting>
@@ -61,4 +66,10 @@ Users won't be able to find this Circle using Nextcloud search engine.
 			<provider>OCA\Circles\Activity\Provider</provider>
 		</providers>
 	</activity>
+
+	<collaboration>
+		<plugins>
+			<plugin type="collaborator-search" share-type="SHARE_TYPE_CIRCLE">OCA\Circles\Collaboration\v1\CollaboratorSearchPlugin</plugin>
+		</plugins>
+	</collaboration>
 </info>

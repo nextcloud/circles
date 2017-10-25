@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "Circles is using its own way to async heavy process." : "Приложение «Круги» использует собственный способ параллельного выполнения требовательным к ресурсам процессов. ",
     "Are you sure you want to transfer your ownership?" : "Действительно передать свои права владения?",
     "This action is irreversible" : "Это действие необратимо",
     "Personal circle" : "Личный круг",
@@ -169,11 +170,11 @@ OC.L10N.register(
     "Federated circles are not allowed on this Nextcloud" : "Федеративные круги не разрешены на этом сервере Nextcloud",
     "Circle not found" : "Круг не найден",
     "A circle with that name exists" : "Круг с таким именем существует",
-    "Sharing Frame does not exist" : "Механизм обмена  не существует",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "В не можете использовать это приложение до тех пор, пока администратор не разрешит использовать как минимум один тип кругов.",
     "Federated link not found" : "Федеративная связь не найдена",
     "This member does not exist" : "Этот участник не существует",
     "This user is already a member of the circle" : "Этот пользователь уже участник круга",
+    "Sharing Frame does not exist" : "Механизм обмена  не существует",
     "This feature is not available for personal circles" : "Эта возможность недоступна для личных кругов",
     "The circle is not Federated" : "К этому кругу не предоставлен федеративный доступ",
     "You cannot join this circle" : "Вы не можете присоедениться к этому кругу",
@@ -254,6 +255,14 @@ OC.L10N.register(
     "Turns the circle as Federated and enable sharing between Federated Circles" : "Превращает этот круг в федеративный и разрешает обмен между федеративными кругами",
     "Automatically Accept Link Request" : "Автоматически принимать запросы на связывание",
     "Warning: enabling this will automatically accept new link requests from other circle." : "Внимание: при включении это настройки запросы на связывание, полученные из других кругов, будут приниматься автоматически.",
-    "Save settings" : "Сохранить изменения"
+    "Save settings" : "Сохранить изменения",
+    "Async Testing:" : "Проверка параллельного выполнения:",
+    "initiate test of Circles Async" : "запустить проверку параллельного выполнения",
+    "reset test result" : "сбросить результат проверки",
+    "Test is currently running. Please wait." : "Выполняется проверка, подождите.",
+    "Allow Group Linking:" : "Разрешать связывание групп:",
+    "Groups can be linked to Circles." : "Группы могут быть связаны с кругами.",
+    "Allow Federated Circles:" : "Разрешить федеративные круги:",
+    "Circles from different Nextclouds can be linked together." : "Могут быть связаны круги, расположенные на разных серверах Nextcloud."
 },
 "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);");

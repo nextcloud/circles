@@ -103,8 +103,6 @@ class CoreRequestBuilder {
 	 *
 	 * @param IQueryBuilder $qb
 	 * @param $userId
-	 *
-	 * @internal param int $circleId
 	 */
 	protected function limitToUserId(IQueryBuilder &$qb, $userId) {
 		$this->limitToDBField($qb, 'user_id', $userId);
@@ -116,8 +114,6 @@ class CoreRequestBuilder {
 	 *
 	 * @param IQueryBuilder $qb
 	 * @param int $type
-	 *
-	 * @internal param int $circleId
 	 */
 	protected function limitToUserType(IQueryBuilder &$qb, $type) {
 		$this->limitToDBField($qb, 'user_type', $type);
@@ -327,6 +323,37 @@ class CoreRequestBuilder {
 			   )
 		   );
 	}
+
+
+
+	/**
+	 * Left Join circle table to get more information about the circle.
+	 *
+	 * @param IQueryBuilder $qb
+	 */
+	protected function leftJoinCircle(IQueryBuilder &$qb) {
+
+		if ($qb->getType() !== QueryBuilder::SELECT) {
+			return;
+		}
+
+		$expr = $qb->expr();
+		$pf = $this->default_select_alias . '.';
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$qb->selectAlias('lc.type', 'circle_type')
+		   ->selectAlias('lc.name', 'circle_name')
+		   ->leftJoin(
+			   $this->default_select_alias, CoreRequestBuilder::TABLE_CIRCLES, 'lc',
+			   $expr->eq(
+				   $pf . 'circle_id',
+				   $qb->createFunction(
+					   'SUBSTR(`lc`.`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')'
+				   )
+			   )
+		   );
+	}
+
 
 
 	/**

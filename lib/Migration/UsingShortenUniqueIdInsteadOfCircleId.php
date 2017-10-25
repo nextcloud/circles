@@ -27,7 +27,6 @@
 namespace OCA\Circles\Migration;
 
 use OC\Share\Share;
-use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CoreRequestBuilder;
 use OCA\Circles\Model\Circle;
 use OCP\IConfig;
@@ -69,7 +68,7 @@ class UsingShortenUniqueIdInsteadOfCircleId implements IRepairStep {
 	public function run(IOutput $output) {
 		$oldVersion = explode(
 			'.', \OC::$server->getConfig()
-							 ->getAppValue(Application::APP_NAME, 'installed_version', '')
+							 ->getAppValue('circles', 'installed_version', '')
 		);
 
 		if ((int)$oldVersion[0] === 0
@@ -90,24 +89,24 @@ class UsingShortenUniqueIdInsteadOfCircleId implements IRepairStep {
 		$cursor = $qb->execute();
 		while ($data = $cursor->fetch()) {
 			$circleId = $data['id'];
-			$shortenUniqueId = substr($data['unique_id'], 0, Circle::SHORT_UNIQUE_ID_LENGTH);
+			$shortenUniqueId = substr($data['unique_id'], 0, 14);
 
 			$this->swapToShortenUniqueIdInTable(
-				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_GROUPS
+				$circleId, $shortenUniqueId, 'circles_groups'
 			);
 			$this->swapToShortenUniqueIdInTable(
-				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_LINKS
+				$circleId, $shortenUniqueId, 'circles_links'
 			);
 
 //			$this->cleanBuggyDuplicateEntries(
 //				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_MEMBERS, 'user_id'
 //			);
 			$this->swapToShortenUniqueIdInTable(
-				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_MEMBERS
+				$circleId, $shortenUniqueId, 'circles_members'
 			);
 
 			$this->swapToShortenUniqueIdInTable(
-				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_LINKS
+				$circleId, $shortenUniqueId, 'circles_links'
 			);
 			$this->swapToShortenUniqueIdInShares($circleId, $shortenUniqueId);
 		}
@@ -138,7 +137,7 @@ class UsingShortenUniqueIdInsteadOfCircleId implements IRepairStep {
 		   ->where(
 			   $expr->andX(
 				   $expr->eq(
-					   'share_type', $qb->createNamedParameter(Share::SHARE_TYPE_CIRCLE)
+					   'share_type', $qb->createNamedParameter(7)
 				   ),
 				   $expr->eq('share_with', $qb->createNamedParameter($circleId))
 			   )

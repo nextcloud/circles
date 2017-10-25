@@ -1,4 +1,5 @@
 { "translations": {
+    "Circles is using its own way to async heavy process." : "Οι κύκλοι χρησιμοποιούν τις δικές τους μεθόδους για τον ασυγχρονισμό βαρέων διαδικασιών",
     "Are you sure you want to transfer your ownership?" : "Είστε σίγουροι ότι θέλετε να μεταφέρετε την ιδιοκτησία;",
     "This action is irreversible" : "Αυτή η ενέργεια είναι μη αναστρέψιμη",
     "Personal circle" : "Προσωπικός κύκλος",
@@ -126,11 +127,11 @@
     "Federated circles are not allowed on this Nextcloud" : "Ομόσπονδοι κύκλοι δεν επιτρέπονται σε αυτό το Nextcloud",
     "Circle not found" : "Ο Κύκλος δεν βρέθηκε",
     "A circle with that name exists" : "Υπάρχει ένας κύκλος με αυτό το όνομα",
-    "Sharing Frame does not exist" : "Το Πλαίσιο Διαμοιρασμού δεν υπάρχει",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Δεν μπορείτε να χρησιμοποιήσετε την εφαρμογή Κύκλοι, μέχρι ο διαχειριστής να επιτρέψει τουλάχιστον έναν τύπο κύκλων",
     "Federated link not found" : "Ο Ομόσπονδος σύνδεσμος δεν βρέθηκε",
     "This member does not exist" : "Αυτό το μέλος δεν υπάρχει",
     "This user is already a member of the circle" : "Αυτός ο χρήστης είναι ήδη μέλος του κύκλου",
+    "Sharing Frame does not exist" : "Το Πλαίσιο Διαμοιρασμού δεν υπάρχει",
     "The circle is not Federated" : "Ο κύκλος δεν είναι Ομόσπονδος",
     "You cannot join this circle" : "Δεν μπορείτε να συνδεθείτε σε αυτόν τον κύκλο",
     "This member is not a moderator" : "Αυτό το μέλος δεν είναι επιμελητής",
