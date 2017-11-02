@@ -94,9 +94,7 @@ class Provider implements IProvider {
 			$this->parseAsModerator($event, $circle, $params);
 
 		} catch (FakeException $e) {
-			$this->generateParsedSubject($event);
-
-			return $event;
+			/** clean exit */
 		}
 
 		return $event;
@@ -115,23 +113,6 @@ class Provider implements IProvider {
 		if (!key_exists('circle', $params)) {
 			throw new InvalidArgumentException();
 		}
-	}
-
-
-	/**
-	 * @param IEvent $event
-	 */
-	private function generateParsedSubject(IEvent &$event) {
-		$subject = $event->getRichSubject();
-		$params = $event->getRichSubjectParameters();
-		$ak = array_keys($params);
-		foreach ($ak as $k) {
-			if (is_array($params[$k])) {
-				$subject = str_replace('{' . $k . '}', $params[$k]['parsed'], $subject);
-			}
-		}
-
-		$event->setParsedSubject($subject);
 	}
 
 
