@@ -494,6 +494,9 @@ class CircleProviderRequestBuilder {
 	}
 
 
+	/**
+	 * @return IQueryBuilder
+	 */
 	protected function getCompleteSelectSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 
