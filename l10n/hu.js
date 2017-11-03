@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "Circles is using its own way to async heavy process." : "A Körök saját módon párhuzamosítja a terhelő folyamatokat.",
     "Are you sure you want to transfer your ownership?" : "Biztosan átadod a tulajdonjogodat?",
     "This action is irreversible" : "Ez a művelet nem visszafordítható",
     "Personal circle" : "Személyes kör",
