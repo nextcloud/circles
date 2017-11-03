@@ -79,9 +79,9 @@ class ProviderParser {
 			'circle' => $this->generateCircleParameter($circle)
 		];
 
-		$remote = $this->generateRemoteCircleParameter($remote);
-		if ($remote !== null) {
-			$data['remote'] = $remote;
+		$remoteCircle = $this->generateRemoteCircleParameter($remote);
+		if ($remoteCircle !== null) {
+			$data['remote'] = $remoteCircle;
 		}
 
 		if ($this->isViewerTheAuthor($circle, $this->activityManager->getCurrentUserId())) {
@@ -329,7 +329,12 @@ class ProviderParser {
 	 *
 	 * @return array<string,string|integer>
 	 */
-	protected function generateRemoteCircleParameter(FederatedLink $link) {
+	protected function generateRemoteCircleParameter($link) {
+
+		if ($link === null) {
+			return null;
+		}
+
 		return [
 			'type'    => 'circle',
 			'id'      => $link->getUniqueId(),
