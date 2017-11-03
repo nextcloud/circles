@@ -72,14 +72,17 @@ class ProviderParser {
 	 * @param string $ownEvent
 	 * @param string $othersEvent
 	 */
-	protected function parseCircleEvent(
-		IEvent &$event, Circle $circle, $remote, $ownEvent, $othersEvent
+	protected function parseCircleEvent(IEvent &$event, Circle $circle, $remote, $ownEvent, $othersEvent
 	) {
 		$data = [
 			'author' => $this->generateViewerParameter($circle),
-			'circle' => $this->generateCircleParameter($circle),
-			'remote' => ($remote === null) ? [] : $this->generateRemoteCircleParameter($remote)
+			'circle' => $this->generateCircleParameter($circle)
 		];
+
+		$remote = $this->generateRemoteCircleParameter($remote);
+		if ($remote !== null) {
+			$data['remote'] = $remote;
+		}
 
 		if ($this->isViewerTheAuthor($circle, $this->activityManager->getCurrentUserId())) {
 			$this->setSubject($event, $ownEvent, $data);
