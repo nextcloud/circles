@@ -72,22 +72,78 @@ class ProviderParser {
 	 * @param string $ownEvent
 	 * @param string $othersEvent
 	 */
-	protected function parseCircleEvent(
-		IEvent &$event, Circle $circle, $remote, $ownEvent, $othersEvent
+	protected function parseCircleEvent(IEvent &$event, Circle $circle, $remote, $ownEvent, $othersEvent
 	) {
 		$data = [
 			'author' => $this->generateViewerParameter($circle),
-			'circle' => $this->generateCircleParameter($circle),
-			'remote' => ($remote === null) ? '' : $this->generateRemoteCircleParameter($remote)
+			'circle' => $this->generateCircleParameter($circle)
 		];
 
+		$remoteCircle = $this->generateRemoteCircleParameter($remote);
+		if ($remoteCircle !== null) {
+			$data['remote'] = $remoteCircle;
+		}
+
 		if ($this->isViewerTheAuthor($circle, $this->activityManager->getCurrentUserId())) {
-			$event->setRichSubject($ownEvent, $data);
+			$this->setSubject($event, $ownEvent, $data);
 
 			return;
 		}
 
-		$event->setRichSubject($othersEvent, $data);
+		$this->setSubject($event, $othersEvent, $data);
+	}
+
+
+	/**
+	 * @param IEvent $event
+	 * @param string $line
+	 * @param array $data
+	 */
+	private function setSubject(IEvent $event, $line, $data) {
+		$this->setParsedSubject($event, $line, $data);
+		$this->setRichSubject($event, $line, $data);
+	}
+
+
+	/**
+	 * @param IEvent $event
+	 * @param string $line
+	 * @param array $data
+	 */
+	private function setRichSubject(IEvent $event, $line, $data) {
+		$ak = array_keys($data);
+		foreach ($ak as $k) {
+			$subAk = array_keys($data[$k]);
+			foreach ($subAk as $sK) {
+				if (substr($sK, 0, 1) === '_') {
+					unset($data[$k][$sK]);
+				}
+			}
+		}
+
+		$event->setRichSubject($line, $data);
+	}
+
+
+	/**
+	 * @param IEvent $event
+	 * @param string $line
+	 * @param array $data
+	 */
+	private function setParsedSubject(IEvent $event, $line, $data) {
+		$ak = array_keys($data);
+		$replace = [];
+		foreach ($ak as $k) {
+			if (!key_exists('_parsed', $data[$k])) {
+				continue;
+			}
+
+			$replace['{' . $k . '}'] = $data[$k]['_parsed'];
+		}
+
+		$line = strtr($line, $replace);
+
+		$event->setParsedSubject($line);
 	}
 
 
@@ -110,12 +166,12 @@ class ProviderParser {
 
 		if ($member->getUserId() === $this->activityManager->getCurrentUserId()
 		) {
-			$event->setRichSubject($ownEvent, $data);
+			$event->setSubject($ownEvent, $data);
 
 			return;
 		}
 
-		$event->setRichSubject($othersEvent, $data);
+		$this->setSubject($event, $othersEvent, $data);
 	}
 
 
@@ -134,7 +190,7 @@ class ProviderParser {
 			'remote' => $this->generateRemoteCircleParameter($remote)
 		];
 
-		$event->setRichSubject($line, $data);
+		$this->setSubject($event, $line, $data);
 	}
 
 
@@ -159,12 +215,12 @@ class ProviderParser {
 		];
 
 		if ($this->isViewerTheAuthor($circle, $this->activityManager->getCurrentUserId())) {
-			$event->setRichSubject($ownEvent, $data);
+			$this->setSubject($event, $ownEvent, $data);
 
 			return;
 		}
 
-		$event->setRichSubject($othersEvent, $data);
+		$this->setSubject($event, $othersEvent, $data);
 	}
 
 
@@ -188,18 +244,18 @@ class ProviderParser {
 		];
 
 		if ($this->isViewerTheAuthor($circle, $this->activityManager->getCurrentUserId())) {
-			$event->setRichSubject($ownEvent, $data);
+			$this->setSubject($event, $ownEvent, $data);
 
 			return;
 		}
 
 		if ($member->getUserId() === $this->activityManager->getCurrentUserId()) {
-			$event->setRichSubject($targetEvent, $data);
+			$this->setSubject($event, $targetEvent, $data);
 
 			return;
 		}
 
-		$event->setRichSubject($othersEvent, $data);
+		$this->setSubject($event, $othersEvent, $data);
 	}
 
 
@@ -230,7 +286,7 @@ class ProviderParser {
 	 */
 	protected function generateViewerParameter(Circle $circle) {
 		if ($circle->getViewer() === null) {
-			return '';
+			return [];
 		}
 
 		return $this->generateUserParameter($circle->getViewer());
@@ -244,10 +300,10 @@ class ProviderParser {
 	 */
 	protected function generateExternalMemberParameter(Member $member) {
 		return [
-			'type'   => 'member_' . $member->getType(),
-			'id'     => $member->getUserId(),
-			'name'   => $member->getDisplayName() . ' (' . $member->getTypeString() . ')',
-			'parsed' => $member->getDisplayName()
+			'type'    => 'member_' . $member->getType(),
+			'id'      => $member->getUserId(),
+			'name'    => $member->getDisplayName() . ' (' . $member->getTypeString() . ')',
+			'_parsed' => $member->getDisplayName()
 		];
 	}
 
@@ -259,11 +315,11 @@ class ProviderParser {
 	 */
 	protected function generateCircleParameter(Circle $circle) {
 		return [
-			'type'   => 'circle',
-			'id'     => $circle->getId(),
-			'name'   => $circle->getName(),
-			'parsed' => $circle->getName(),
-			'link'   => Circles::generateLink($circle->getUniqueId())
+			'type'    => 'circle',
+			'id'      => $circle->getId(),
+			'name'    => $circle->getName(),
+			'_parsed' => $circle->getName(),
+			'link'    => Circles::generateLink($circle->getUniqueId())
 		];
 	}
 
@@ -273,12 +329,17 @@ class ProviderParser {
 	 *
 	 * @return array<string,string|integer>
 	 */
-	protected function generateRemoteCircleParameter(FederatedLink $link) {
+	protected function generateRemoteCircleParameter($link) {
+
+		if ($link === null) {
+			return null;
+		}
+
 		return [
-			'type'   => 'circle',
-			'id'     => $link->getUniqueId(),
-			'name'   => $link->getToken() . '@' . $link->getAddress(),
-			'parsed' => $link->getToken() . '@' . $link->getAddress()
+			'type'    => 'circle',
+			'id'      => $link->getUniqueId(),
+			'name'    => $link->getToken() . '@' . $link->getAddress(),
+			'_parsed' => $link->getToken() . '@' . $link->getAddress()
 		];
 	}
 
@@ -290,10 +351,10 @@ class ProviderParser {
 	 */
 	protected function generateUserParameter(Member $member) {
 		return [
-			'type'   => 'user',
-			'id'     => $member->getUserId(),
-			'name'   => $this->miscService->getDisplayName($member->getUserId(), true),
-			'parsed' => $this->miscService->getDisplayName($member->getUserId(), true)
+			'type'    => 'user',
+			'id'      => $member->getUserId(),
+			'name'    => $this->miscService->getDisplayName($member->getUserId(), true),
+			'_parsed' => $this->miscService->getDisplayName($member->getUserId(), true)
 		];
 	}
 
@@ -305,10 +366,10 @@ class ProviderParser {
 	 */
 	protected function generateGroupParameter($group) {
 		return [
-			'type'   => 'group',
-			'id'     => $group->getUserId(),
-			'name'   => $group->getUserId(),
-			'parsed' => $group->getUserId()
+			'type'    => 'group',
+			'id'      => $group->getUserId(),
+			'name'    => $group->getUserId(),
+			'_parsed' => $group->getUserId()
 		];
 	}
 

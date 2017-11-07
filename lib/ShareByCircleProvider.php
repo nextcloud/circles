@@ -391,6 +391,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 */
 	public function getShareById($shareId, $recipientId = null) {
 		$qb = $this->getBaseSelectSql();
+
 		$this->limitToShare($qb, $shareId);
 
 		$cursor = $qb->execute();
@@ -426,7 +427,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * @param int $limit The max number of entries returned, -1 for all
 	 * @param int $offset
 	 *
-	 * @return array|IShare[]
+	 * @return IShare[]
 	 */
 	public function getSharedWith($userId, $shareType, $node, $limit, $offset) {
 
@@ -443,7 +444,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * @param int $limit
 	 * @param int $offset
 	 *
-	 * @return array
+	 * @return IShare[]
 	 */
 	private function getSharedWithCircleMembers($userId, $shareType, $node, $limit, $offset) {
 
@@ -578,7 +579,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 *
 	 * @param array $data
 	 *
-	 * @return Share
+	 * @return IShare
 	 */
 	private function createShareObject($data) {
 
@@ -677,7 +678,6 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * @since 12
 	 */
 	public function getAccessList($nodes, $currentAccess) {
-
 		$ids = [];
 		foreach ($nodes as $node) {
 			$ids[] = $node->getId();

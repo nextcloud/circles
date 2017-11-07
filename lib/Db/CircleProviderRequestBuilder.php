@@ -501,6 +501,9 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	}
 
 
+	/**
+	 * @return IQueryBuilder
+	 */
 	protected function getCompleteSelectSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 
@@ -534,7 +537,7 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 		$qb->addSelect('s.file_source', 's.file_target');
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->from('share', 's')
-		   ->where($expr->eq('s.share_type', $qb->createNamedParameter(Share::SHARE_TYPE_CIRCLE)))
+		   ->andWhere($expr->eq('s.share_type', $qb->createNamedParameter(Share::SHARE_TYPE_CIRCLE)))
 		   ->andWhere(
 			   $expr->orX(
 				   $expr->eq('s.item_type', $qb->createNamedParameter('file')),
