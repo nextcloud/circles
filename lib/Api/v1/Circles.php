@@ -6,6 +6,9 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Vinicius Cubas Brand <vinicius@eita.org.br>
+ * @author Daniel Tygel <dtygel@eita.org.br>
+ *
  * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
@@ -491,5 +494,21 @@ class Circles {
 					  ->getUniqueId()
 			)
 		];
+	}
+
+	/**
+	 * Get a list of objects which are shred with $circleUniqueId.
+	 *
+	 * @since 0.14.0
+	 *
+	 * @param array $circleUniqueIds
+	 *
+	 * @return string[] array of object ids or empty array if none found
+	 */
+	public static function getFilesForCircles($circleUniqueIds) {
+		$c = self::getContainer();
+
+		return $c->query(CirclesService::class)
+			->getFilesForCircles($circleUniqueIds);
 	}
 }

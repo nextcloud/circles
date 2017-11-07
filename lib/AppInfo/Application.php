@@ -6,6 +6,9 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Vinicius Cubas Brand <vinicius@eita.org.br>
+ * @author Daniel Tygel <dtygel@eita.org.br>
+ *
  * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
@@ -26,32 +29,12 @@
 
 namespace OCA\Circles\AppInfo;
 
-use OCA\Circles\Controller\FederatedController;
-use OCA\Circles\Controller\GroupsController;
-use OCA\Circles\Controller\NavigationController;
-use OCA\Circles\Controller\CirclesController;
-use OCA\Circles\Controller\MembersController;
-
-
-use OCA\Circles\Controller\SettingsController;
-use OCA\Circles\Controller\SharesController;
-use OCA\Circles\Db\CirclesRequest;
-use OCA\Circles\Db\FederatedLinksRequest;
-use OCA\Circles\Db\MembersRequest;
-use OCA\Circles\Events\UserEvents;
-use OCA\Circles\Service\BroadcastService;
-use OCA\Circles\Service\CirclesService;
-use OCA\Circles\Service\EventsService;
-use OCA\Circles\Service\FederatedLinkService;
-use OCA\Circles\Service\GroupsService;
-use OCA\Circles\Service\MembersService;
-use OCA\Circles\Service\ConfigService;
-use OCA\Circles\Service\MiscService;
-use OCA\Circles\Service\SearchService;
-use OCA\Circles\Service\SharingFrameService;
+use OCA\Circles\Api\v1\Circles;
+use OCA\Files\App as FilesApp;
 use OCP\AppFramework\App;
 use OCP\AppFramework\IAppContainer;
 use OCP\Util;
+
 
 class Application extends App {
 
@@ -62,17 +45,18 @@ class Application extends App {
 
 	const CLIENT_TIMEOUT = 3;
 
+	/** @var IAppContainer */
+	private $container;
+
 	/**
 	 * @param array $params
 	 */
 	public function __construct(array $params = array()) {
 		parent::__construct(self::APP_NAME, $params);
 
-		$container = $this->getContainer();
+		$this->container = $this->getContainer();
 
-		// TODO: POURQUOI SELF:: ??!??
-		self::registerEvents($container);
-		self::registerHooks();
+		$this->registerHooks();
 	}
 
 
@@ -90,48 +74,71 @@ class Application extends App {
 
 
 	/**
-	 * Register Events
-	 *
-	 * @param IAppContainer $container
-	 */
-	public function registerEvents(IAppContainer $container) {
-//		$container->registerService(
-//			'UserEvents', function(IAppContainer $c) {
-//			return new UserEvents(
-//				$c->query('MembersService'), $c->query('GroupsService'), $c->query('MiscService')
-//			);
-//		}
-//		);
-	}
-
-
-	/**
-	 * Register Navigation Tab
+	 * Register Navigation elements
 	 */
 	public function registerNavigation() {
 
-		$this->getContainer()
-			 ->getServer()
-			 ->getNavigationManager()
-			 ->add(
-				 function() {
-					 $urlGen = \OC::$server->getURLGenerator();
-					 $navName = \OC::$server->getL10N(self::APP_NAME)
-											->t('Circles');
+		$appManager = $this->container->getServer()
+									  ->getNavigationManager();
+		$appManager->add(
+			function() {
+				$urlGen = \OC::$server->getURLGenerator();
+				$navName = \OC::$server->getL10N(self::APP_NAME)
+									   ->t('Circles');
 
-					 return [
-						 'id'    => self::APP_NAME,
-						 'order' => 5,
-						 'href'  => $urlGen->linkToRoute('circles.Navigation.navigate'),
-						 'icon'  => $urlGen->imagePath(self::APP_NAME, 'circles.svg'),
-						 'name'  => $navName
-					 ];
-				 }
-			 );
+				return [
+					'id'    => self::APP_NAME,
+					'order' => 5,
+					'href'  => $urlGen->linkToRoute('circles.Navigation.navigate'),
+					'icon'  => $urlGen->imagePath(self::APP_NAME, 'circles.svg'),
+					'name'  => $navName
+				];
+			}
+		);
+
 	}
+
 
 	public function registerSettingsAdmin() {
 		\OCP\App::registerAdmin(self::APP_NAME, 'lib/admin');
 	}
+
+	public function registerFilesPlugin() {
+		$eventDispatcher = \OC::$server->getEventDispatcher();
+		$eventDispatcher->addListener(
+			'OCA\Files::loadAdditionalScripts',
+			function() {
+				Circles::addJavascriptAPI();
+
+				Util::addScript('circles', 'files/circles.files.app');
+				Util::addScript('circles', 'files/circles.files.list');
+
+				Util::addStyle('circles', 'files/circles.filelist');
+			}
+		);
+	}
+
+
+	/**
+	 *
+	 */
+	public function registerFilesNavigation() {
+
+		$appManager = FilesApp::getNavigationManager();
+		$appManager->add(
+			function() {
+				$l = \OC::$server->getL10N('circles');
+
+				return [
+					'id'      => 'circlesfilter',
+					'appname' => 'circles',
+					'script'  => 'files/list.php',
+					'order'   => 25,
+					'name'    => $l->t('Shared to Circles'),
+				];
+			}
+		);
+	}
+
 }
 

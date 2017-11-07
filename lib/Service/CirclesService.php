@@ -6,6 +6,9 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Vinicius Cubas Brand <vinicius@eita.org.br>
+ * @author Daniel Tygel <dtygel@eita.org.br>
+ *
  * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
@@ -29,16 +32,17 @@ namespace OCA\Circles\Service;
 
 use Exception;
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\Db\CircleProviderRequest;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\FederatedLinksRequest;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
 use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
-use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\MemberIsNotOwnerException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
+use OCA\Circles\ShareByCircleProvider;
 use OCP\IL10N;
 
 class CirclesService {
@@ -64,6 +68,9 @@ class CirclesService {
 	/** @var EventsService */
 	private $eventsService;
 
+	/** @var CircleProviderRequest */
+	private $circleProviderRequest;
+
 	/** @var MiscService */
 	private $miscService;
 
@@ -78,6 +85,7 @@ class CirclesService {
 	 * @param MembersRequest $membersRequest
 	 * @param FederatedLinksRequest $federatedLinksRequest
 	 * @param EventsService $eventsService
+	 * @param CircleProviderRequest $circleProviderRequest
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
@@ -88,6 +96,7 @@ class CirclesService {
 		MembersRequest $membersRequest,
 		FederatedLinksRequest $federatedLinksRequest,
 		EventsService $eventsService,
+		CircleProviderRequest $circleProviderRequest,
 		MiscService $miscService
 	) {
 		$this->userId = $userId;
@@ -97,6 +106,7 @@ class CirclesService {
 		$this->membersRequest = $membersRequest;
 		$this->federatedLinksRequest = $federatedLinksRequest;
 		$this->eventsService = $eventsService;
+		$this->circleProviderRequest = $circleProviderRequest;
 		$this->miscService = $miscService;
 	}
 
@@ -488,6 +498,26 @@ class CirclesService {
 		}
 
 		return $urlGen->getAbsoluteURL($urlGen->imagePath(Application::APP_NAME, 'black_circle' . $ext));
+	}
+
+
+	/**
+	 * @param string $circleUniqueIds
+	 * @param int $limit
+	 * @param int $offset
+	 *
+	 * @return array
+	 */
+	public function getFilesForCircles($circleUniqueIds, $limit = -1, $offset = 0) {
+		if (!is_array($circleUniqueIds)) {
+			$circleUniqueIds = [$circleUniqueIds];
+		}
+
+		$objectIds = $this->circleProviderRequest->getFilesForCircles(
+			$this->userId, $circleUniqueIds, $limit, $offset
+		);
+
+		return $objectIds;
 	}
 
 }

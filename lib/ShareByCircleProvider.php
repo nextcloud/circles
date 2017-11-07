@@ -6,6 +6,9 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Vinicius Cubas Brand <vinicius@eita.org.br>
+ * @author Daniel Tygel <dtygel@eita.org.br>
+ *
  * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
@@ -33,7 +36,7 @@ use OC\Share20\Exception\InvalidShare;
 use OC\Share20\Share;
 use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\AppInfo\Application;
-use OCA\Circles\Db\CircleProviderRequestBuilder;
+use OCA\Circles\Db\CircleProviderRequest;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Model\Circle;
@@ -55,10 +58,8 @@ use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IShare;
 use OCP\Share\IShareProvider;
 
-class ShareByCircleProvider extends CircleProviderRequestBuilder implements IShareProvider {
 
-	/** @var IDBConnection */
-	protected $dbConnection;
+class ShareByCircleProvider extends CircleProviderRequest implements IShareProvider {
 
 	/** @var ILogger */
 	private $logger;
@@ -72,9 +73,6 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 	/** @var IRootFolder */
 	private $rootFolder;
 
-	/** @var IL10N */
-	private $l10n;
-
 	/** @var IURLGenerator */
 	private $urlGenerator;
 
@@ -83,12 +81,6 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 
 	/** @var MembersRequest */
 	private $membersRequest;
-
-	/** @var ConfigService */
-	private $configService;
-
-	/** @var MiscService */
-	private $miscService;
 
 
 	/**
@@ -106,23 +98,20 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 		IDBConnection $connection, ISecureRandom $secureRandom, IUserManager $userManager,
 		IRootFolder $rootFolder, IL10N $l10n, ILogger $logger, IURLGenerator $urlGenerator
 	) {
-		$this->dbConnection = $connection;
+		$app = new Application();
+		$container = $app->getContainer();
+		$configService = $container->query(ConfigService::class);
+		$miscService = $container->query(MiscService::class);
+
+		parent::__construct($l10n, $connection, $configService, $miscService);
+
 		$this->secureRandom = $secureRandom;
 		$this->userManager = $userManager;
 		$this->rootFolder = $rootFolder;
-		$this->l10n = $l10n;
 		$this->logger = $logger;
 		$this->urlGenerator = $urlGenerator;
-
-		$app = new Application();
-		$this->circlesRequest = $app->getContainer()
-									->query(CirclesRequest::class);
-		$this->membersRequest = $app->getContainer()
-									->query(MembersRequest::class);
-		$this->configService = $app->getContainer()
-								   ->query(ConfigService::class);
-		$this->miscService = $app->getContainer()
-								 ->query(MiscService::class);
+		$this->circlesRequest = $container->query(CirclesRequest::class);
+		$this->membersRequest = $container->query(MembersRequest::class);
 	}
 
 
@@ -449,11 +438,11 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 
 
 	/**
-	 * @param $userId
+	 * @param string $userId
 	 * @param $shareType
-	 * @param $node
-	 * @param $limit
-	 * @param $offset
+	 * @param Node $node
+	 * @param int $limit
+	 * @param int $offset
 	 *
 	 * @return IShare[]
 	 */
@@ -490,16 +479,6 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 		$cursor->closeCursor();
 
 		return $shares;
-	}
-
-	/**
-	 * @param $data
-	 */
-	private static function editShareFromParentEntry(&$data) {
-		if ($data['parent_id'] > 0) {
-			$data['permissions'] = $data['parent_perms'];
-			$data['file_target'] = $data['parent_target'];
-		}
 	}
 
 
@@ -664,25 +643,6 @@ class ShareByCircleProvider extends CircleProviderRequestBuilder implements ISha
 					  )
 				  );
 		}
-	}
-
-
-	/**
-	 * Returns whether the given database result can be interpreted as
-	 * a share with accessible file (not trashed, not deleted)
-	 *
-	 * @param $data
-	 *F
-	 *
-	 * @return bool
-	 */
-	private static function isAccessibleResult($data) {
-		if ($data['fileid'] === null) {
-			return false;
-		}
-
-		return (!(explode('/', $data['path'], 2)[0] !== 'files'
-				  && explode(':', $data['storage_string_id'], 2)[0] === 'home'));
 	}
 
 
