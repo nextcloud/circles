@@ -268,7 +268,8 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 		$cursor = $qb->execute();
 		while ($data = $cursor->fetch()) {
-			if (strtolower($data['name']) === strtolower($circle->getName())) {
+			if (strtolower($data['name']) === strtolower($circle->getName())
+				&& $circle->getUniqueId() !== $data['unique_id']) {
 				return false;
 			}
 		}
@@ -294,7 +295,8 @@ class CirclesRequest extends CirclesRequestBuilder {
 		);
 
 		foreach ($list as $test) {
-			if (strtolower($test->getName()) === strtolower($circle->getName())) {
+			if (strtolower($test->getName()) === strtolower($circle->getName())
+				&& $circle->getUniqueId(true) !== $test->getUniqueId(true)) {
 				return false;
 			}
 		}
@@ -303,9 +305,20 @@ class CirclesRequest extends CirclesRequestBuilder {
 	}
 
 
+	/**
+	 * @param Circle $circle
+	 * @param string $userId
+	 *
+	 * @throws CircleAlreadyExistsException
+	 */
+	public function updateCircle(Circle $circle, $userId) {
 
+		if (!$this->isCircleUnique($circle, $userId)) {
+			throw new CircleAlreadyExistsException(
+				$this->l10n->t('A circle with that name exists')
+			);
+		}
 
-	public function updateCircle(Circle $circle) {
 		$qb = $this->getCirclesUpdateSql($circle->getUniqueId(true));
 		$qb->set('name', $qb->createNamedParameter($circle->getName()))
 		   ->set('description', $qb->createNamedParameter($circle->getDescription()))
@@ -337,8 +350,6 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 		return $entry;
 	}
-
-
 
 
 }

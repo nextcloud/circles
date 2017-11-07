@@ -276,7 +276,7 @@ class CirclesService {
 				$circle->setSetting($k, $settings[$k]);
 			}
 
-			$this->circlesRequest->updateCircle($circle);
+			$this->circlesRequest->updateCircle($circle, $this->userId);
 
 			$this->eventsService->onSettingsChange($circle);
 		} catch (\Exception $e) {
