@@ -414,7 +414,17 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * @return IShare[]|null
 	 */
 	public function getSharesByPath(Node $path) {
-		return null;
+		$qb = $this->getBaseSelectSql();
+		$this->limitToFiles($qb, [$path->getId()]);
+		$cursor = $qb->execute();
+
+		$shares = [];
+		while ($data = $cursor->fetch()) {
+			$shares[] = $this->createShareObject($data);
+		}
+		$cursor->closeCursor();
+
+		return $shares;
 	}
 
 
