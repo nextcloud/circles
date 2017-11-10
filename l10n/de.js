@@ -21,7 +21,7 @@ OC.L10N.register(
     "Closed Circle" : "Geschlossener Kreis",
     "Public Circle" : "Öffentlicher Kreis",
     "Personal" : "Persönlich",
-    "Secret" : "Geheimnis",
+    "Secret" : "Geheim",
     "Closed" : "Geschlossen",
     "Public" : "Öffentlich",
     "Not a member" : "Kein Mitglied",
