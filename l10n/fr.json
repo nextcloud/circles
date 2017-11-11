@@ -162,6 +162,7 @@
     "{member} is the new owner of {circle}" : "{member} est le nouveau propriétaire de {circle}",
     "On events happening in a <strong>Circle</strong> you belong" : "Sur les évènements se passant dans un <strong>Cercle</strong> dont vous êtes membre",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Tous les évènements importants dans un <strong>Cercle</strong> que vous modérez",
+    "Shared to Circles" : "Partagé dans les Cercles",
     "%s shared »%s« with you." : "%s a partagé «%s» avec vous.",
     "%s shared »%s« with '%s'." : "%s a partagé «%s» avec '%s'.",
     "%s on %s" : "%s sur %s",

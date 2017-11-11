@@ -1,4 +1,6 @@
-{ "translations": {
+OC.L10N.register(
+    "circles",
+    {
     "Circles is using its own way to async heavy process." : "La aplicación Cirlces está usando su propio mecanismo para async los procesos pesados.",
     "Are you sure you want to transfer your ownership?" : "¿Estás seguro que quieres transferir tu propiedad?",
     "This action is irreversible" : "Esta acción es irreversible",
@@ -90,11 +92,6 @@
     "Issue while saving settings" : "Se presentó un tema al guardar las configuraciones",
     "Settings saved." : "Configuraciones guardadas.",
     "Circles" : "Círculos",
-    "Circles' files" : "Archivos de los círculos",
-    "Select circles to filter by" : "Seleccionar los círculos a filtrar",
-    "No circles found" : "No se encontraron círculos",
-    "Please select circles to filter by" : "Por favor selecciona los círculos a filtrar",
-    "No files found for the selected circles" : "No se encontraron archivos para los círculos seleccionados",
     "You created the circle {circle}" : "Creaste el círculo {circle}",
     "{author} created the circle {circle}" : "{author} creó el círculo {circle}",
     "You deleted {circle}" : "Borraste el círculo {circle}",
@@ -162,7 +159,6 @@
     "{member} is the new owner of {circle}" : "{member} es el nuevo dueño de {circle}",
     "On events happening in a <strong>Circle</strong> you belong" : "Acerca de eventos que pasan en un <strong>C´riculo</strong> al que perteneces",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Cualquier evento importante en un <strong>Círculo</strong> que estés moderando",
-    "Shared to Circles" : "Compartido a Círculos",
     "%s shared »%s« with you." : "%s compartió »%s« contigo.",
     "%s shared »%s« with '%s'." : "%s compartió »%s« con '%s'.",
     "%s on %s" : "%s en %s",
@@ -211,11 +207,6 @@
     "Email format is not valid" : "El formato de la dirección de correo electrónico no es válido",
     "This contact is not available" : "Este contacto no está disponible",
     "Could not find share" : "No se encontró el elemento compartido",
-    "No files in here" : "No hay archivos aquí",
-    "No entries found in this folder" : "No se encontraron elementos en esta carpeta",
-    "Name" : "Nombre",
-    "Size" : "Tamaño",
-    "Modified" : "Modificado",
     "Create a new circle" : "Crear un nuevo círculo",
     "Select a type of circle" : "Selecciona el tipo de círculo",
     "Create a personal circle" : "Crear un círculo personal",
@@ -273,5 +264,5 @@
     "Groups can be linked to Circles." : "Los grupos se pueden vincular a Círculos.",
     "Allow Federated Circles:" : "Permitir Círculos Federados:",
     "Circles from different Nextclouds can be linked together." : "Círculos de diferentes Nextclouds se pueden vincular juntos."
-},"pluralForm" :"nplurals=2; plural=(n != 1);"
-}
+},
+"nplurals=2; plural=(n != 1);");
