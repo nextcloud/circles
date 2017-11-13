@@ -16,13 +16,13 @@ style(Application::APP_NAME, 'admin');
 			<td colspan="2" class="left"><?php p($l->t('Async Testing:')); ?><br/>
 				<em id="test_async_result"></em></td>
 			<td class="right">
-				<input type="button" value="<?php p($l->t('initiate test of circles async')); ?>" id="test_async_start"/>
+				<input type="button" value="<?php p($l->t('initiate async test in Circles')); ?>" id="test_async_start"/>
 				<input type="button" value="<?php p($l->t('reset test result')); ?>" id="test_async_reset"/>
 				<input type="button" value="<?php p($l->t('Test underway. Please wait.')); ?>" id="test_async_wait"/>
 			</td>
 		</tr>
 		<tr class="lane">
-			<td colspan="2" class="left"><?php p($l->t('Allow Group Linking:')); ?><br/>
+			<td colspan="2" class="left"><?php p($l->t('Allow linking of groups:')); ?><br/>
 				<em><?php p($l->t('Groups can be linked to circles.')); ?></em></td>
 			<td class="right">
 				<input type="checkbox" value="1" id="allow_linked_groups"/>
