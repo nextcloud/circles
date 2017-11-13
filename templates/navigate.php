@@ -386,7 +386,7 @@ style(Application::APP_NAME, 'navigation');
 							<br/>
 							<span class="hint"><?php p(
 									$l->t(
-										'Warning: enabling this will automatically accept new link requests from other circle.'
+										'Warning: Enabling this will automatically accept new link requests from other circle.'
 									)
 								); ?></span>
 						</td>
