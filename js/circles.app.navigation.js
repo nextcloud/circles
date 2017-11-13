@@ -436,7 +436,7 @@ var nav = {
 				if (userType === define.typeMail) {
 					statusSelect.append($('<option>', {
 						value: status,
-						text: t('circles', 'Mail Address')
+						text: t('circles', 'Email address')
 					})).val(status);
 				}
 
