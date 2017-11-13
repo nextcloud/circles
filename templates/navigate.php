@@ -145,7 +145,7 @@ style(Application::APP_NAME, 'navigation');
 						)
 					); ?></b><br/><?php p(
 					$l->t(
-						"Anyone can see the circle, can join the circle and access the items shared to the circle."
+						"Anyone can see and join the circle, and access the items shared in it."
 					)
 				); ?>
 			</div>
