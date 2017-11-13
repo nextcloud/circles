@@ -95,7 +95,7 @@ var define = {
 	animationSpeed: 100,
 	animationMenuSpeed: 60,
 	status: {
-		0: t('circles', 'Link Removed'),
+		0: t('circles', 'Link removed'),
 		1: t('circles', 'Link down'),
 		2: t('circles', 'Setting link'),
 		4: t('circles', 'Request dismissed'),
