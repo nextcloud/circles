@@ -224,7 +224,7 @@ class Circle extends BaseCircle implements \JsonSerializable {
 	public function hasToBeFederated() {
 		if ($this->getSetting('allow_links') !== 'true') {
 			throw new FederatedCircleNotAllowedException(
-				$this->l10n->t('The circle is not Federated')
+				$this->l10n->t('The circle is not federated')
 			);
 		}
 	}
