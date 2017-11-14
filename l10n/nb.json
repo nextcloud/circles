@@ -266,7 +266,7 @@
     "Warning: enabling this will automatically accept new link requests from other circle." : "Advarsel: Å skru på dette vil medføre automatisk godkjenning av nye lenkeforespørsler fra den andre sirkelen.",
     "Save settings" : "Lagre innstillinger",
     "Async Testing:" : "Asynk-testing:",
-    "initiate test of Circles Async" : "igangsett test av sirkel-asynk",
+    "initiate test of Circles Async" : "igangsett asynk-test i Circles",
     "reset test result" : "tilbakestill testresultat",
     "Test is currently running. Please wait." : "Test kjører. Vent.",
     "Allow Group Linking:" : "Tillat gruppelenking:",
