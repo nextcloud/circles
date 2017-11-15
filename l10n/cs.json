@@ -126,12 +126,9 @@
     "This user is already a member of the circle" : "Tento uživatel je již členem tohoto kruhu",
     "Sharing Frame does not exist" : "Rámec sdílení neexistuje",
     "This feature is not available for personal circles" : "Tato funkce není pro osobní kruhy dostupná",
-    "The circle is not Federated" : "Kruh není sdružen",
     "You cannot join this circle" : "K tomuto kruhu se nemůžete připojit",
     "This member is not a moderator" : "Tento člen není moderátorem",
-    "Not enough privileges" : "Nedostatečné oprávnění",
     "This member is not the owner of the circle" : "Tento člen není vlastníkem tohoto kruhu",
-    "This member is not admin of the circle" : "Tento člen není vlastníkem tohoto kruhu",
     "This member is the owner of the circle" : "Tento člen je vlastníkem kruhu",
     "You are already a member of this circle" : "Již jste členem tohoto kruhu",
     "You have been blocked from this circle" : "Tento kruh vás zablokoval",
@@ -151,7 +148,6 @@
     "This user does not exist" : "Vybraný uživatel neexisstuje",
     "Could not find share" : "Nelze nalézt sdílení",
     "Create a new circle" : "Vytvořit nový kruh",
-    "Select a type of circle" : "Vyberte typ kruhu",
     "Create a personal circle" : "Vytvořit osobní kruh",
     "Create a public circle" : "Vytvořit veřejný kruh",
     "A personal circle is a list of users known only to the owner." : "Osobní kruh je seznam uživatelů, který znáte pouze vy.",
@@ -186,8 +182,6 @@
     "Link" : "Odkaz",
     "Linked" : "Propojeno",
     "Allow Federated Links" : "Povolit sdružená propojení",
-    "Turns the circle as Federated and enable sharing between Federated Circles" : "Nastaví kruh jako sdružený a zapne sdílení mezi sdruženými kruhy",
-    "Automatically Accept Link Request" : "Automaticky přijímat požadavky na propojení",
     "Save settings" : "Uložit nastavení"
 },"pluralForm" :"nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;"
 }

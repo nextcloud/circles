@@ -84,7 +84,6 @@ OC.L10N.register(
     "This contact is not available" : "Denne kontakt er ikke tilgængelig ",
     "Could not find share" : "Kunne ikke finde deling",
     "Create a new circle" : "Opret en ny cirkel",
-    "Select a type of circle" : "Vælg en cirkeltype",
     "Create a personal circle" : "Opret en Personlig  Cirkel",
     "Create a public circle" : "Opret en Offentlig Cirkel",
     "Create a closed circle" : "Opret en lukket cirkel",
@@ -117,7 +116,6 @@ OC.L10N.register(
     "Link" : "Link",
     "Linked" : "Linket",
     "Allow Federated Links" : "Tillad federarede links",
-    "Save settings" : "Gem indstillinger",
-    "Allow Federated Circles:" : "Tillad federarede cirkler:"
+    "Save settings" : "Gem indstillinger"
 },
 "nplurals=2; plural=(n != 1);");

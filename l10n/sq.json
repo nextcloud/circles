@@ -133,12 +133,9 @@
     "This user is already a member of the circle" : "Ky  përdorues është tashmë anëtar i rrethit",
     "Sharing Frame does not exist" : "Korniza e shpërndarjes nuk ekziston",
     "This feature is not available for personal circles" : "Ky funksion nuk është i vlefshëm për rrathë personal.",
-    "The circle is not Federated" : "Rrethi nuk është i Federuar",
     "You cannot join this circle" : "Ju nuk mund t'i bashkoheni këtij rrethi",
     "This member is not a moderator" : "Ky anëtar nuk është moderator",
-    "Not enough privileges" : "Jo mjaftueshëm privilegje",
     "This member is not the owner of the circle" : "Ky anëtar nuk është zotëruesi i rrethit",
-    "This member is not admin of the circle" : "Ky anëtar nuk është administrator i rrethit",
     "This member is the owner of the circle" : "Ky anëtar është zotëruesi i rrethit",
     "You are already a member of this circle" : "Ju jeni tashmë anëtar i këtij rrethi",
     "You have been blocked from this circle" : "Ju jeni bllokuar nga ky rreth",
@@ -157,7 +154,6 @@
     "Group cannot be set as owner of a circle" : "Grupi nuk mund të vendosej si zotërues i një rrethi",
     "This user does not exist" : "Ky përdorues nuk ekziston",
     "Create a new circle" : "Krijo një rreth të ri",
-    "Select a type of circle" : "Zgjidh një tip rrethi",
     "Create a personal circle" : "Krijo një rreth personal",
     "Create a public circle" : "Krijo një rreth publik",
     "A personal circle is a list of users known only to the owner." : "Një rreth personal është një listë përdoruesish të njohur vetëm për zotëruesin.",
@@ -189,9 +185,6 @@
     "Link" : "Lidhja",
     "Linked" : "I lidhur",
     "Allow Federated Links" : "Lejo Linqet e Federuara",
-    "Turns the circle as Federated and enable sharing between Federated Circles" : "E kthen rrethin si të federuar dhe mundëson ndarjen midis Qarqeve Federale",
-    "Automatically Accept Link Request" : "Automatikisht Prano Kërkesën për Link",
-    "Warning: enabling this will automatically accept new link requests from other circle." : "Paralajmërim: aktivizimi i kësaj do të pranojë automatikisht kërkesa të reja për lidhje nga  rrathë të tjerë.",
     "Save settings" : "Ruaj konfigurimet"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
