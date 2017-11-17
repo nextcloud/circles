@@ -251,9 +251,12 @@
     "Link" : "Lien",
     "Linked" : "Lié",
     "Allow Federated Links" : "Autoriser les Liens Fédérés",
+    "Warning: Enabling this will automatically accept new link requests from other circles." : "Attention : Activer cela va accepter automatiquement les nouvelles requêtes de mise en relation avec d'autres cercles.",
     "Save settings" : "Sauvegarder les paramètres",
     "Async Testing:" : "Test de l'asynchronisation :",
     "reset test result" : "Réinitialiser les résultats du test",
+    "Allow linking of groups:" : "Autoriser le lien des groupes :",
+    "Groups can be linked to circles." : "Des groupes peuvent être liés aux cercles.",
     "Circles from different Nextclouds can be linked together." : "Des cercles de différents Nextcloud peuvent être liés ensemble."
 },"pluralForm" :"nplurals=2; plural=(n > 1);"
 }
