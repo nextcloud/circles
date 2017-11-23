@@ -183,7 +183,9 @@
     "The circle is not federated" : "El círculo no es federado",
     "You cannot join this circle" : "No puedes unirte a este cículo",
     "This member is not a moderator" : "Este miembro no es un moderador",
+    "Insufficient privileges" : "Privilegios insuficientes",
     "This member is not the owner of the circle" : "Este miembro no es el dueño del círculo",
+    "This member is not an admin of the circle" : "Este miembro no es un administador del círculo",
     "This member is the owner of the circle" : "Este miembro es el dueño del círculo",
     "You are already a member of this circle" : "Ya eres un miembro de este círculo",
     "You have been blocked from this circle" : "Has sido bloqueado de este círculo",
@@ -212,6 +214,7 @@
     "Size" : "Tamaño",
     "Modified" : "Modificado",
     "Create a new circle" : "Crear un nuevo círculo",
+    "Select a circle type" : "Seleccionar un tipo de círculo",
     "Create a personal circle" : "Crear un círculo personal",
     "Create a public circle" : "Crear un círculo público",
     "Create a closed circle" : "Crear un círculo cerrado",
@@ -255,6 +258,8 @@
     "Save settings" : "Guardar configuraciones",
     "Async Testing:" : "Probando Async:",
     "reset test result" : "reiniciar los resutlados de la prueba",
+    "Test underway. Please wait." : "Prueba en curso. Por favor aguarda unos minutos. ",
+    "Allow federated circles:" : "Permitir círculos federados:",
     "Circles from different Nextclouds can be linked together." : "Círculos de diferentes Nextclouds se pueden vincular juntos."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
