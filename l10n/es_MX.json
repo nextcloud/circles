@@ -187,8 +187,11 @@
     "This member is not the owner of the circle" : "Este miembro no es el dueño del círculo",
     "This member is not an admin of the circle" : "Este miembro no es un administador del círculo",
     "This member is the owner of the circle" : "Este miembro es el dueño del círculo",
+    "Level cannot be changed for this type of member" : "El nivel no puede ser cambiado para este tipo de miembro",
     "You are already a member of this circle" : "Ya eres un miembro de este círculo",
     "You have been blocked from this circle" : "Has sido bloqueado de este círculo",
+    "The user is already a member of this circle" : "El usuario ya es un miembro de este círculo",
+    "The user has already been invited into this circle" : "El usuario ya ha sido invitado a este círculo",
     "You need a specify a type of circle" : "Necesitas especificar un tipo de círculo",
     "You cannot create this type of circle" : "No puede crear un círculo de este tipo",
     "You cannot display this type of circle" : "No puedes desplegar un círculo de este tipo",
@@ -259,6 +262,8 @@
     "Async Testing:" : "Probando Async:",
     "reset test result" : "reiniciar los resutlados de la prueba",
     "Test underway. Please wait." : "Prueba en curso. Por favor aguarda unos minutos. ",
+    "Allow linking of groups:" : "Permitir la vinculación de grupos:",
+    "Groups can be linked to circles." : "Los grupos se pueden vincular a círculos",
     "Allow federated circles:" : "Permitir círculos federados:",
     "Circles from different Nextclouds can be linked together." : "Círculos de diferentes Nextclouds se pueden vincular juntos."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
