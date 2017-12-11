@@ -40,8 +40,9 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCP\IL10N;
 use OCP\IUserManager;
+use OCP\Util;
 
-class MembersService {
+class MembersService extends BaseService {
 
 	/** @var string */
 	private $userId;
@@ -118,10 +119,15 @@ class MembersService {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			$circle->getHigherViewer()
 				   ->hasToBeModerator();
-
+			
 			if (!$this->addMassiveMembers($circle, $ident, $type)) {
 				$this->addSingleMember($circle, $ident, $type);
 			}
+
+			$action = ($type == Circle::CIRCLES_CLOSED ? 'invited' : 'added');
+			$circleName = $circle->getName();
+			$user = $this->getUser()->getDisplayName();
+			$this->miscService->log("user $user $action member $ident to circle $circleName");
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -402,7 +408,12 @@ class MembersService {
 			$member = $this->membersRequest->forceGetMember($circle->getUniqueId(), $name, $type);
 			$member->levelHasToBeEditable();
 			$this->updateMemberLevel($circle, $member, $level);
-
+			
+			$circleName = $circle->getName();
+			$levelString = Member::getLevelStringFromCode($level);
+			$memberName = $member->getDisplayName();
+			$user = $this->getUser()->getDisplayName();
+			$this->miscService->log("$user changed level of $memberName from circle $circleName to $levelString");
 			return $this->membersRequest->getMembers(
 				$circle->getUniqueId(), $circle->getHigherViewer()
 			);
@@ -507,6 +518,11 @@ class MembersService {
 
 			$circle->getHigherViewer()
 				   ->hasToBeHigherLevel($member->getLevel());
+
+			$user = $this->getUser()->getDisplayName();
+			$memberName = $member->getDisplayName();
+			$circleName = $circle->getName();
+			$this->miscService->log("user $user removed member $memberName from circle $circleName");
 		} catch (\Exception $e) {
 			throw $e;
 		}

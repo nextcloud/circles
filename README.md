@@ -27,6 +27,36 @@ Anyone can find the circle and request an invitation; but only members will see 
 - A **Secret Circle** is an hidden group that can only be seen by its members or by people knowing the exact name of the circle.  
 Non-members won't be able to find your secret circle using the search bar.
 
+## Settings
+
+Circles settings is available in Nextcloud interface in **Settings / Additional Settings**.
+
+### Async Testing
+
+This option allows to initiate an async test in Circles.
+
+### Allow linking of groups
+
+This option allows that groups be linked to circles.
+
+### Allow federated circles
+
+This option allows that circles from different Nextclouds can be linked together. 
+
+### Enable audit
+
+This options allows that actions of circles, members and sharing can be audit with records into log. Following actions are audited:
+
+* User X created circle Z;
+* User X removed circle Z;
+* User X change name of circle Z for circle W;
+* User X was added to circle U by user Z;
+* User X shared file/folder with circle Y;
+* User X, that created circle, unshared file/folder with circle Y
+* Member X accepted invitation to circle Y by user Z;
+* Member X left circle Y;
+* User X change role of member Y in circle Z for W.
+* User X was invited to circle U by user Z
 
 ***
 # API (PHP & Javascript)

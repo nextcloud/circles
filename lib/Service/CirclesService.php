@@ -46,8 +46,9 @@ use OCA\Circles\Exceptions\MemberIsNotModeratorException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCP\IL10N;
+use OCP\Util;
 
-class CirclesService {
+class CirclesService extends BaseService {
 
 	/** @var string */
 	private $userId;
@@ -150,6 +151,9 @@ class CirclesService {
 		try {
 			$this->circlesRequest->createCircle($circle, $this->userId);
 			$this->membersRequest->createMember($circle->getOwner());
+			
+			$owner = $circle->getOwner()->getDisplayName();
+			$this->miscService->log("user $owner created circle $name");
 		} catch (CircleAlreadyExistsException $e) {
 			throw $e;
 		}
@@ -290,17 +294,25 @@ class CirclesService {
 
 		try {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
+			$formerCircleName = $circle->getName();
 			$circle->getHigherViewer()
 				   ->hasToBeOwner();
 
 			$ak = array_keys($settings);
+			$changes = '';
 			foreach ($ak AS $k) {
+				if (trim($circle->getSetting($k)) !== trim($settings[$k])){
+					$changes .=  ((empty($changes) ? '' : ' and ') . "$k to {$settings[$k]}");
+				}
 				$circle->setSetting($k, $settings[$k]);
 			}
 
 			$this->circlesRequest->updateCircle($circle, $this->userId);
 
 			$this->eventsService->onSettingsChange($circle);
+			
+			$user = $this->getUser()->getDisplayName();
+			$this->miscService->log("user $user updated circle $formerCircleName changing $changes");
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -325,11 +337,23 @@ class CirclesService {
 			$member = $this->membersRequest->getFreshNewMember(
 				$circleUniqueId, $this->userId, Member::TYPE_USER
 			);
+			$formerStatus = $member->getStatus();
 			$member->hasToBeAbleToJoinTheCircle();
 			$member->joinCircle($circle->getType());
 			$this->membersRequest->updateMember($member);
 
 			$this->eventsService->onMemberNew($circle, $member);
+			
+			$circleName = $circle->getName();
+			$circleType = $circle->getType();
+			$memberName = $member->getDisplayName();
+			if ($formerStatus == Member::STATUS_INVITED){
+				$this->miscService->log("member $memberName accepted invitation to circle $circleName");
+			} else if ($circle->getType() == Circle::CIRCLES_CLOSED) {
+				$this->miscService->log("member $memberName requested to join circle $circleName");
+			} else {
+				$this->miscService->log("member $memberName joined circle $circleName");
+			}
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -354,10 +378,22 @@ class CirclesService {
 		$member->hasToBeMemberOrAlmost();
 		$member->cantBeOwner();
 
+		$circleName = $circle->getName();
+		$formerStatus = $member->getStatus();
+		$memberName = $member->getDisplayName();
+		
 		$this->eventsService->onMemberLeaving($circle, $member);
 
 		$this->membersRequest->removeMember($member);
 		$this->sharesRequest->removeSharesFromMember($member);
+
+		if ($formerStatus == Member::STATUS_INVITED){
+			$this->miscService->log("member $memberName refused invitation to circle $circleName");
+		} else if ($circle->getType() == Circle::CIRCLES_CLOSED) {
+			$this->miscService->log("member $memberName cancelled invitation from circle $circleName");
+		} else {
+			$this->miscService->log("member $memberName left circle $circleName");
+		}
 
 		return $member;
 	}
@@ -382,6 +418,9 @@ class CirclesService {
 		$this->membersRequest->removeAllFromCircle($circleUniqueId);
 		$this->circlesRequest->destroyCircle($circleUniqueId);
 
+		$circleName = $circle->getName();
+		$user = $this->getUser()->getDisplayName();
+		$this->miscService->log("user $user destroyed circle $circleName");
 	}
 
 

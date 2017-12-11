@@ -59,7 +59,8 @@ use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IShare;
 use OCP\Share\IShareProvider;
 use OCA\Circles\Service\TimezoneService;
-
+use OCP\Util;
+use OCP\IUser;
 
 class ShareByCircleProvider extends CircleProviderRequest implements IShareProvider {
 
@@ -84,7 +85,9 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	/** @var MembersRequest */
 	private $membersRequest;
 
-
+	/** $var IUser */ 
+	private static $user = null;
+	
 	/**
 	 * DefaultShareProvider constructor.
 	 *
@@ -137,6 +140,8 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * @throws \Exception
 	 */
 	public function create(IShare $share) {
+		$circle = null;
+		$shareId = null;
 		try {
 			$nodeId = $share->getNode()
 							->getId();
@@ -164,8 +169,20 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 				'\OCA\Circles\Circles\FileSharingBroadcaster'
 			);
 
+			$user = $this->getUser()->getDisplayName();
+			$target = $share->getTarget();
+			$shareWith = $share->getSharedWith();
+			$this->miscService->log("user $user shared $target with $shareWith");
 			return $this->getShareById($shareId);
 		} catch (\Exception $e) {
+			if ($this->getShareById($shareId)){
+				Util::emitHook('OCP\Share', 'post_shared',[
+					'fileTarget'=> $share->getTarget(),
+					'itemType'	=> $share->getNodeType(),
+					'shareType' => $share->getShareType(),
+					'shareWith' => $circle->getName()
+				]);
+			}			
 			throw $e;
 		}
 	}
@@ -187,7 +204,10 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 		   ->set('uid_owner', $qb->createNamedParameter($share->getShareOwner()))
 		   ->set('uid_initiator', $qb->createNamedParameter($share->getSharedBy()));
 		$qb->execute();
-
+		
+		$user = $this->getUser()->getDisplayName();
+		$target = $share->getTarget();
+		$this->miscService->log("user $user updated shared $target");
 		return $share;
 	}
 
@@ -201,8 +221,22 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 
 		$qb = $this->getBaseDeleteSql();
 		$this->limitToShareAndChildren($qb, $share->getId());
-
+		
+		$user = $this->getUser()->getDisplayName();
+		$target = $share->getTarget();
+		$shareWith = $share->getSharedWith();
+		$this->miscService->log("user $user unshared $target with $shareWith");
+		Util::emitHook('OCP\Share', 'post_unshared',[
+			'fileTarget'=> $target,
+			'itemType'  => $share->getNodeType(),
+			'shareType' => $share->getShareType(),
+			'shareWith' => $shareWith
+		]);
 		$qb->execute();
+
+		$app = new Application();
+		$container = $app->getContainer();
+		$circle = $container->query(CirclesService::class)->detailsCircle($share->getSharedWith());
 	}
 
 
@@ -221,8 +255,22 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 		$this->limitToShare($qb, $childId);
 
 		$qb->execute();
-	}
 
+		try {
+			$shareWith = $this->circlesRequest->getCircle($share->getSharedWith(),$userId)->getName();
+		} catch (\Exception $e) {
+			$shareWith = $share->getSharedWith();
+		}
+
+		$target = $share->getTarget();
+		$user = $this->getUser()->getDisplayName();
+		$this->miscService->log("user $user unshared $target with $shareWith");
+		Util::emitHook('OCP\Share', 'post_unshared',[
+			'fileTarget'=> $target,
+			'shareType' => $share->getShareType(),
+			'shareWith'=> $shareWith
+		]);
+	}
 
 	/**
 	 * Move a share as a recipient.
@@ -747,5 +795,16 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 			'token'       => $share->getToken(),
 			'password'    => $share->getPassword()
 		];
+	}
+	
+	/**
+	 * @return User 
+	 */
+	private function getUser() {
+		if (self::$user == null){
+			$app = new Application();
+			self::$user = $app->getContainer()->query('UserSession')->getUser();
+		}
+		return self::$user;
 	}
 }
