@@ -99,7 +99,7 @@ class ProviderParser {
 	 * @param string $line
 	 * @param array $data
 	 */
-	private function setSubject(IEvent $event, $line, $data) {
+	protected function setSubject(IEvent $event, $line, $data) {
 		$this->setParsedSubject($event, $line, $data);
 		$this->setRichSubject($event, $line, $data);
 	}
@@ -110,7 +110,7 @@ class ProviderParser {
 	 * @param string $line
 	 * @param array $data
 	 */
-	private function setRichSubject(IEvent $event, $line, $data) {
+	protected function setRichSubject(IEvent $event, $line, $data) {
 		$ak = array_keys($data);
 		foreach ($ak as $k) {
 			$subAk = array_keys($data[$k]);
@@ -130,7 +130,7 @@ class ProviderParser {
 	 * @param string $line
 	 * @param array $data
 	 */
-	private function setParsedSubject(IEvent $event, $line, $data) {
+	protected function setParsedSubject(IEvent $event, $line, $data) {
 		$ak = array_keys($data);
 		$replace = [];
 		foreach ($ak as $k) {

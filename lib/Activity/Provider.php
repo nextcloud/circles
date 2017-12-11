@@ -55,6 +55,9 @@ class Provider implements IProvider {
 
 	/** @var ProviderSubjectLink */
 	private $parserLink;
+	
+	/** @var ProviderSubjectShared */
+	private $parserShared;
 
 	/** @var MiscService */
 	protected $miscService;
@@ -66,7 +69,7 @@ class Provider implements IProvider {
 	public function __construct(
 		IManager $activityManager, MiscService $miscService, ProviderSubjectCircle $parserCircle,
 		ProviderSubjectMember $parserMember, ProviderSubjectGroup $parserGroup,
-		ProviderSubjectLink $parserLink
+		ProviderSubjectLink $parserLink, ProviderSubjectShared $parserShared
 	) {
 		$this->activityManager = $activityManager;
 		$this->miscService = $miscService;
@@ -75,6 +78,7 @@ class Provider implements IProvider {
 		$this->parserMember = $parserMember;
 		$this->parserGroup = $parserGroup;
 		$this->parserLink = $parserLink;
+		$this->parserShared = $parserShared;
 	}
 
 
@@ -92,9 +96,11 @@ class Provider implements IProvider {
 			$this->setIcon($event, $circle);
 			$this->parseAsMember($event, $circle, $params);
 			$this->parseAsModerator($event, $circle, $params);
-
 		} catch (FakeException $e) {
 			/** clean exit */
+		} catch (InvalidArgumentException $e) {
+			/** sharing is a special case because app is files **/
+			$this->parseShared($event, $params);
 		}
 
 		return $event;
@@ -110,7 +116,7 @@ class Provider implements IProvider {
 			throw new InvalidArgumentException();
 		}
 
-		if (!key_exists('circle', $params)) {
+		if ($event->getApp() === Application::APP_NAME && !key_exists('circle', $params)) {
 			throw new InvalidArgumentException();
 		}
 	}
@@ -252,5 +258,21 @@ class Provider implements IProvider {
 		$this->parserLink->parseLinkRemove($event, $circle, $remote);
 	}
 
-
+	/**
+	 * @param IEvent $event
+	 * @param array $params
+	 *
+	 * @throws FakeException
+	 */
+	private function parseShared(IEvent &$event, $params) {
+		if ($event->getSubject() === 'shared_circle_self') {
+			$this->parserShared->parseSubjectSharedWithCircle($event, $params);
+			return;
+		}
+		if ($event->getSubject() === 'unshared_circle_self') {
+			$this->parserShared->parseSubjectUnsharedWithCircle($event, $params);
+			return;
+		}
+		throw new InvalidArgumentException();
+	}
 }

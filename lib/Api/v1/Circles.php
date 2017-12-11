@@ -43,6 +43,7 @@ use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\SharingFrameService;
 use OCP\AppFramework\QueryException;
 use OCP\Util;
+use OC\Files\View;
 
 class Circles {
 
@@ -528,5 +529,36 @@ class Circles {
 
 		return $c->query(CirclesService::class)
 			->getFilesForCircles($circleUniqueIds);
+	}
+	
+	/**
+	 * Get a list of objects which are shred with $circleUniqueId.
+	 *
+	 * @since 0.15.0
+	 *
+	 * @param string $circleName
+	 *
+	 * @return Circle|null
+	 * @throws CircleDoesNotExistException
+	 */	
+	public static function infoCircleByName($circleName) {
+		$c = self::getContainer();
+		return $c->query(CirclesService::class)
+			->infoCircleByName($circleName);
+	}
+
+	/**
+	 * Get path of a file from id.
+	 *
+	 * @since 0.15.0
+	 *
+	 * @param string $id
+	 *
+	 * @return string|null
+	 */
+	public static function getViewPath($id) {
+		$c = self::getContainer();
+		return $c->query(View::class)
+			->getPath($id);
 	}
 }
