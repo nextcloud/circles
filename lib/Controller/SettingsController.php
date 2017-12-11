@@ -46,6 +46,9 @@ class SettingsController extends Controller {
 			),
 			'allowFederatedCircles' => $this->configService->getAppValue(
 				ConfigService::CIRCLES_ALLOW_FEDERATED_CIRCLES
+			),
+			'enableAudit' => $this->configService->getAppValue(
+				ConfigService::CIRCLES_ENABLE_AUDIT
 			)
 		];
 
@@ -53,12 +56,15 @@ class SettingsController extends Controller {
 	}
 
 
-	public function setSettings($allow_linked_groups, $allow_federated_circles) {
+	public function setSettings($allow_linked_groups, $allow_federated_circles, $enable_audit) {
 		$this->configService->setAppValue(
 			ConfigService::CIRCLES_ALLOW_LINKED_GROUPS, $allow_linked_groups
 		);
 		$this->configService->setAppValue(
 			ConfigService::CIRCLES_ALLOW_FEDERATED_CIRCLES, $allow_federated_circles
+		);
+		$this->configService->setAppValue(
+			ConfigService::CIRCLES_ENABLE_AUDIT, $enable_audit
 		);
 
 		return $this->getSettings();

@@ -39,6 +39,7 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCP\IL10N;
 use OCP\IUserManager;
+use OCP\Util;
 
 class MembersService {
 
@@ -112,9 +113,18 @@ class MembersService {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			$circle->getHigherViewer()
 				   ->hasToBeModerator();
-
+			
 			if (!$this->addMassiveMembers($circle, $ident, $type)) {
 				$this->addSingleMember($circle, $ident, $type);
+			}
+
+			if ($this->configService->isAuditEnabled()){
+				Util::emitHook('OCA\Circles', 'post_addMember', [
+					'circle' => $circle->getName(),
+					'member' => $ident,
+					'type' => $circle->getType(),
+					'owner' => $circle->getOwner() 
+				]);
 			}
 		} catch (\Exception $e) {
 			throw $e;
@@ -388,6 +398,10 @@ class MembersService {
 			$member = $this->membersRequest->forceGetMember($circle->getUniqueId(), $name, $type);
 			$member->levelHasToBeEditable();
 			$this->updateMemberLevel($circle, $member, $level);
+			
+			if ($this->configService->isAuditEnabled()){
+				Util::emitHook('OCA\Circles', 'post_changeLevelMember', ['circle' => $circle->getName(), 'member' => $member->getDisplayName(), 'level' => $level]);
+			}	
 
 			return $this->membersRequest->getMembers($circle->getUniqueId(), $circle->getHigherViewer());
 		} catch (\Exception $e) {
@@ -484,6 +498,10 @@ class MembersService {
 
 			$circle->getHigherViewer()
 				   ->hasToBeHigherLevel($member->getLevel());
+
+			if ($this->configService->isAuditEnabled()){
+				Util::emitHook('OCA\Circles', 'post_removeMember', ['circle' => $circle->getName(), 'member' => $member->getDisplayName()]);
+			}	
 		} catch (\Exception $e) {
 			throw $e;
 		}

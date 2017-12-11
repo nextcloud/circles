@@ -32,5 +32,5 @@ $app->registerSettingsAdmin();
 $app->registerNavigation();
 $app->registerFilesNavigation();
 $app->registerFilesPlugin();
-
+$app->registerHooks();
 

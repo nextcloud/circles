@@ -57,6 +57,7 @@ use OCP\Security\ISecureRandom;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IShare;
 use OCP\Share\IShareProvider;
+use OCP\Util;
 
 
 class ShareByCircleProvider extends CircleProviderRequest implements IShareProvider {
@@ -134,6 +135,8 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * @throws \Exception
 	 */
 	public function create(IShare $share) {
+		$circle = null;
+		$shareId = null;
 		try {
 			$nodeId = $share->getNode()
 							->getId();
@@ -161,8 +164,15 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 				'\OCA\Circles\Circles\FileSharingBroadcaster'
 			);
 
+			if ($this->configService->isAuditEnabled()){
+				Util::emitHook('OCP\Share', 'post_share',['shareWith'=> $circle->getName(),'fileTarget'=> $share->getTarget()]);
+			}			
+
 			return $this->getShareById($shareId);
 		} catch (\Exception $e) {
+			if ($this->getShareById($shareId) && $this->configService->isAuditEnabled()){
+				Util::emitHook('OCP\Share', 'post_share',['shareWith'=> $circle->getName(),'fileTarget'=> $share->getTarget()]);
+			}			
 			throw $e;
 		}
 	}
@@ -200,6 +210,18 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 		$this->limitToShareAndChildren($qb, $share->getId());
 
 		$qb->execute();
+
+		$app = new Application();
+		$container = $app->getContainer();
+		$circle = $container->query(CirclesService::class)->detailsCircle($share->getSharedWith());
+
+		if ($this->configService->isAuditEnabled()){
+			Util::emitHook('OCP\Share', 'post_unshare',[
+				'fileTarget'=> $share->getTarget(),
+				'shareType' => $share->getShareType(),
+				'shareWith'=> $circle->getName()
+			]);
+		}
 	}
 
 
@@ -218,8 +240,21 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 		$this->limitToShare($qb, $childId);
 
 		$qb->execute();
-	}
 
+		try {
+			$shareWith = $this->circlesRequest->getCircle($share->getSharedWith(),$userId)->getName();
+		} catch (\Exception $e) {
+			$shareWith = $share->getSharedWith();
+		}
+
+		if ($this->configService->isAuditEnabled()){
+			Util::emitHook('OCP\Share', 'post_unshare',[
+				'fileTarget'=> $share->getTarget(),
+				'shareType' => $share->getShareType(),
+				'shareWith'=> $shareWith
+			]);
+		}
+	}
 
 	/**
 	 * Move a share as a recipient.

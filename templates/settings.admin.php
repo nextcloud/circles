@@ -36,5 +36,13 @@ style(Application::APP_NAME, 'admin');
 				<input type="checkbox" value="1" id="allow_federated_circles"/>
 			</td>
 		</tr>
+		<tr class="lane">
+			<td colspan="2" class="left"><?php p($l->t('Enable audit:')); ?><br/>
+				<em><?php p($l->t('Actions of circles, members and sharing can be audited.')); ?></em>
+			</td>
+			<td class="right">
+				<input type="checkbox" value="1" id="enable_audit"/>
+			</td>
+		</tr>
 	</table>
 </div>
