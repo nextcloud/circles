@@ -44,6 +44,7 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\ShareByCircleProvider;
 use OCP\IL10N;
+use OCP\Util;
 
 class CirclesService {
 
@@ -318,6 +319,13 @@ class CirclesService {
 			$this->membersRequest->updateMember($member);
 
 			$this->eventsService->onMemberNew($circle, $member);
+
+			if ($this->configService->isAuditEnabled()){
+				Util::emitHook('OCA\Circles', 'post_joinMember', [
+					'circle' => $circle->getName(),
+					'member' => $circle->getViewer()->getDisplayName()
+				]);
+			}
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -348,6 +356,13 @@ class CirclesService {
 			$member->setStatus(Member::STATUS_NONMEMBER);
 			$member->setLevel(Member::LEVEL_NONE);
 			$this->membersRequest->updateMember($member);
+
+			if ($this->configService->isAuditEnabled()){
+				Util::emitHook('OCA\Circles', 'post_leftMember', [
+					'circle' => $circle->getName(),
+					'member' => $circle->getViewer()->getDisplayName()
+				]);
+			}
 		} catch (\Exception $e) {
 			throw $e;
 		}

@@ -277,20 +277,7 @@ class BaseMember implements \JsonSerializable {
 	}
 
 	public function getLevelString() {
-		switch ($this->getLevel()) {
-			case self::LEVEL_NONE:
-				return 'Not a member';
-			case self::LEVEL_MEMBER:
-				return 'Member';
-			case self::LEVEL_MODERATOR:
-				return 'Moderator';
-			case self::LEVEL_ADMIN:
-				return 'Admin';
-			case self::LEVEL_OWNER:
-				return 'Owner';
-		}
-
-		return 'none';
+		return self::getLevelStringFromCode($this->getLevel());
 	}
 
 
@@ -304,6 +291,27 @@ class BaseMember implements \JsonSerializable {
 				return 'Mail address';
 			case self::TYPE_CONTACT:
 				return 'Contact';
+		}
+
+		return 'none';
+	}
+
+	/** 
+	 * @param integer $code
+	 * @return string
+	 */
+	public static function getLevelStringFromCode($code) {
+		switch ($code) {
+			case self::LEVEL_NONE:
+				return 'Not a member';
+			case self::LEVEL_MEMBER:
+				return 'Member';
+			case self::LEVEL_MODERATOR:
+				return 'Moderator';
+			case self::LEVEL_ADMIN:
+				return 'Admin';
+			case self::LEVEL_OWNER:
+				return 'Owner';
 		}
 
 		return 'none';

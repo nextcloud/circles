@@ -54,6 +54,8 @@ var settings = {
 			(curr.circleSettings['allow_links_auto'] === 'true'));
 		elements.settingsLinkFiles.prop('checked',
 			(curr.circleSettings['allow_links_files'] === 'true'));
+		elements.settingsEnableAudit.prop('checked',
+		    (curr.circleSettings['enable_audit'] === 'true'));
 
 		elements.settingsLink.on('change', function () {
 			settings.interactUISettings();
@@ -79,6 +81,9 @@ var settings = {
 			(elements.settingsLink.is(":checked")));
 		settings.enableSetting(elements.settingsEntryLinkFiles, elements.settingsLinkFiles,
 			(elements.settingsLink.is(":checked")));
+		settings.enableSetting(elements.settingsEntryEnableAudit, elements.settingsEnableAudit,
+		    (elements.settingsEnableAudit.is(":checked")));
+		
 	},
 
 	enableSetting: function (entry, input, enable) {
@@ -101,6 +106,3 @@ var settings = {
 		OCA.notification.onSuccess(t('circles', "Settings saved."));
 	}
 };
-
-
-

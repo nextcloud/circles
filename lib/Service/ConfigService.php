@@ -44,6 +44,8 @@ class ConfigService {
 	const CIRCLES_TEST_ASYNC_INIT = 'test_async_init';
 	const CIRCLES_TEST_ASYNC_HAND = 'test_async_hand';
 	const CIRCLES_TEST_ASYNC_COUNT = 'test_async_count';
+	
+	const CIRCLES_ENABLE_AUDIT = 'circles_enable_audit';
 
 	private $defaults = [
 		self::CIRCLES_ALLOW_CIRCLES           => Circle::CIRCLES_ALL,
@@ -52,7 +54,8 @@ class ConfigService {
 		self::CIRCLES_ALLOW_LINKED_GROUPS     => '0',
 		self::CIRCLES_ALLOW_FEDERATED_CIRCLES => '0',
 		self::CIRCLES_ALLOW_NON_SSL_LINKS     => '0',
-		self::CIRCLES_NON_SSL_LOCAL           => '0'
+		self::CIRCLES_NON_SSL_LOCAL           => '0',
+		self::CIRCLES_ENABLE_AUDIT            => '0'
 	];
 
 	/** @var string */
@@ -84,6 +87,9 @@ class ConfigService {
 
 	/** @var int */
 	private $localNonSSL = -1;
+	
+	/** $var int */
+	private $enableAudit = -1;
 
 	/**
 	 * ConfigService constructor.
@@ -299,5 +305,17 @@ class ConfigService {
 		}
 
 		return $ver[0];
+	}
+	
+	/**
+	 * returns if audit is enabled by the current configuration.
+	 *
+	 * @return int
+	 */
+	public function isAuditEnabled() {
+		if ($this->enableAudit === -1) {
+			$this->enableAudit = (int)$this->getAppValue(self::CIRCLES_ENABLE_AUDIT);
+		}
+		return ((int)$this->enableAudit);
 	}
 }
