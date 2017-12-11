@@ -70,6 +70,36 @@ class Application extends App {
 		Util::connectHook(
 			'OC_User', 'post_deleteGroup', '\OCA\Circles\Hooks\UserHooks', 'onGroupDeleted'
 		);
+		Util::connectHook(
+			'OCA\Circles', 'post_createCircle', '\OCA\Circles\Hooks\UserHooks', 'onCircleCreated'
+		);
+		Util::connectHook(
+			'OCA\Circles', 'post_destroyCircle', '\OCA\Circles\Hooks\UserHooks', 'onCircleDestroyed'
+		);
+		Util::connectHook(
+			'OCA\Circles', 'post_updateCircle', '\OCA\Circles\Hooks\UserHooks', 'onCircleUpdated'
+		);
+		Util::connectHook(
+			'OCA\Circles', 'post_addMember', '\OCA\Circles\Hooks\UserHooks', 'onMemberAdded'
+		);
+		Util::connectHook(
+			'OCA\Circles', 'post_removeMember', '\OCA\Circles\Hooks\UserHooks', 'onMemberRemoved'
+		);
+		Util::connectHook(
+			'OCP\Share', 'post_share', '\OCA\Circles\Hooks\UserHooks', 'onItemShared'
+		);
+		Util::connectHook(
+			'OCP\Share', 'post_unshare', '\OCA\Circles\Hooks\UserHooks', 'onItemUnshared'
+		);
+		Util::connectHook(
+			'OCA\Circles', 'post_joinMember', '\OCA\Circles\Hooks\UserHooks', 'onMemberJoined'
+		);
+		Util::connectHook(
+			'OCA\Circles', 'post_leftMember', '\OCA\Circles\Hooks\UserHooks', 'onMemberLeft'
+		);
+		Util::connectHook(
+			'OCA\Circles', 'post_changeLevelMember', '\OCA\Circles\Hooks\UserHooks', 'onMemberLevelChanged'
+		);
 	}
 
 

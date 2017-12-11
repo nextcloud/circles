@@ -44,6 +44,7 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\ShareByCircleProvider;
 use OCP\IL10N;
+use OCP\Util;
 
 class CirclesService {
 
@@ -142,6 +143,10 @@ class CirclesService {
 		try {
 			$this->circlesRequest->createCircle($circle, $this->userId);
 			$this->membersRequest->createMember($circle->getOwner());
+			
+			if ($this->configService->isAuditEnabled()){
+				Util::emitHook('OCA\Circles', 'post_createCircle', ['circle' => $name]);
+			}
 		} catch (CircleAlreadyExistsException $e) {
 			throw $e;
 		}
@@ -278,6 +283,7 @@ class CirclesService {
 
 		try {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
+			$formerCircle = $circle->getName();
 			$circle->getHigherViewer()
 				   ->hasToBeOwner();
 
@@ -289,6 +295,11 @@ class CirclesService {
 			$this->circlesRequest->updateCircle($circle, $this->userId);
 
 			$this->eventsService->onSettingsChange($circle);
+			
+			if ($this->configService->isAuditEnabled()){
+				$settings['former_name']= $formerCircle;
+				Util::emitHook('OCA\Circles', 'post_updateCircle', $settings);
+			}
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -313,11 +324,20 @@ class CirclesService {
 			$member = $this->membersRequest->getFreshNewMember(
 				$circleUniqueId, $this->userId, Member::TYPE_USER
 			);
+			$formerStatus = $member->getStatus();
 			$member->hasToBeAbleToJoinTheCircle();
 			$member->joinCircle($circle->getType());
 			$this->membersRequest->updateMember($member);
 
 			$this->eventsService->onMemberNew($circle, $member);
+			
+			if ($this->configService->isAuditEnabled()){
+				$settings['member'] = $member->getDisplayName();
+				$settings['circle'] = $circle->getName();
+				$settings['formerStatus'] = $formerStatus;
+				$settings['type'] = $circle->getType();
+				Util::emitHook('OCA\Circles', 'post_joinMember', $settings);
+			}
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -345,9 +365,19 @@ class CirclesService {
 
 			$this->eventsService->onMemberLeaving($circle, $member);
 
+			$formerStatus = $member->getStatus();
 			$member->setStatus(Member::STATUS_NONMEMBER);
 			$member->setLevel(Member::LEVEL_NONE);
 			$this->membersRequest->updateMember($member);
+
+			if ($this->configService->isAuditEnabled()){
+				Util::emitHook('OCA\Circles', 'post_leftMember', [
+					'circle' => $circle->getName(),
+					'member' => $member->getDisplayName(),
+					'formerStatus' => $formerStatus,
+					'type' => $circle->getType()
+				]);
+			}
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -374,7 +404,10 @@ class CirclesService {
 
 			$this->membersRequest->removeAllFromCircle($circleUniqueId);
 			$this->circlesRequest->destroyCircle($circleUniqueId);
-
+			
+			if ($this->configService->isAuditEnabled()){
+				Util::emitHook('OCA\Circles', 'post_destroyCircle', ['circle' => $circle->getName()]);
+			}
 		} catch (MemberIsNotOwnerException $e) {
 			throw $e;
 		}

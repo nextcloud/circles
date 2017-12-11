@@ -44,6 +44,7 @@ $(document).ready(function () {
 	elements.test_async_result = $('#test_async_result');
 	elements.allow_linked_groups = $('#allow_linked_groups');
 	elements.allow_federated_circles = $('#allow_federated_circles');
+	elements.enable_audit = $('#enable_audit');	
 
 	elements.test_async_wait.hide().on('click', function () {
 		self.refreshResult();
@@ -74,6 +75,10 @@ $(document).ready(function () {
 	elements.allow_federated_circles.on('change', function () {
 		saveChange();
 	});
+	
+	elements.enable_audit.on('change', function () {
+	    saveChange();
+	});
 
 	saveChange = function () {
 		$.ajax({
@@ -83,11 +88,14 @@ $(document).ready(function () {
 				allow_linked_groups: (elements.allow_linked_groups.is(
 					':checked')) ? '1' : '0',
 				allow_federated_circles: (elements.allow_federated_circles.is(
-					':checked')) ? '1' : '0'
+					':checked')) ? '1' : '0',
+			    enable_audit: (elements.enable_audit.is(
+		            ':checked')) ? '1' : '0'
 			}
 		}).done(function (res) {
 			elements.allow_linked_groups.prop('checked', (res.allowLinkedGroups === '1'));
 			elements.allow_federated_circles.prop('checked', (res.allowFederatedCircles === '1'));
+			elements.enable_audit.prop('checked', (res.enableAudit === '1'));
 		});
 	};
 
@@ -170,6 +178,7 @@ $(document).ready(function () {
 	}).done(function (res) {
 		elements.allow_linked_groups.prop('checked', (res.allowLinkedGroups === '1'));
 		elements.allow_federated_circles.prop('checked', (res.allowFederatedCircles === '1'));
+		elements.enable_audit.prop('checked', (res.enableAudit === '1'));		
 	});
 
 	var timerTestAsync = setInterval(function () {

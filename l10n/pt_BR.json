@@ -273,6 +273,8 @@
     "Allow linking of groups:" : "Permitir links dos  grupos:",
     "Groups can be linked to circles." : "Grupos podem ser linkados a círculos.",
     "Allow federated circles:" : "Permitir círculos federados:",
-    "Circles from different Nextclouds can be linked together." : "Círculos de diferentes Nextclouds podem ser linkados juntos."
+    "Circles from different Nextclouds can be linked together." : "Círculos de diferentes Nextclouds podem ser linkados juntos.",
+    "Enable audit:" : "Habilitar auditoria:",
+    "Actions of circles, members and sharing can be audited." : "Ações de círculos, membros e compartilhamentos podem ser auditadas."
 },"pluralForm" :"nplurals=2; plural=(n > 1);"
 }
