@@ -75,6 +75,7 @@ var elements = {
 	settingsEntryLink: null,
 	settingsEntryLinkAuto: null,
 	settingsEntryLinkFiles: null,
+	settingsEnableAudit: null,
 	settingsSave: null,
 
 	addMember: null,
@@ -131,6 +132,7 @@ var elements = {
 		elements.settingsEntryLink = $('#settings-entry-link');
 		elements.settingsEntryLinkAuto = $('#settings-entry-link-auto');
 		elements.settingsEntryLinkFiles = $('#settings-entry-link-files');
+        elements.settingsEnableAudit = $('#settings-enable-audit');		
 		elements.settingsSave = $('#settings-submit');
 
 		elements.addMember = $('#addmember');
