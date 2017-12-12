@@ -1,2 +1,5 @@
 
 \.idea/
+.buildpath
+.project
+.settings/
