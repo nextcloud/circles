@@ -178,6 +178,7 @@ OC.L10N.register(
     "This feature is not available for personal circles" : "Þessi eiginleiki er ekki tiltækur fyrir persónulega hringi",
     "You cannot join this circle" : "Þú getur ekki tekið þátt í þessum hring",
     "This member is not a moderator" : "Þessi meðlimur er ekki umsjónarmaður",
+    "Insufficient privileges" : "Ekki næg réttindi",
     "This member is not the owner of the circle" : "Þessi meðlimur er ekki eigandi hringsins",
     "This member is the owner of the circle" : "Þessi meðlimur er eigandi hringsins",
     "You are already a member of this circle" : "Þú ert nú þegar meðlimur í þessum hring",
@@ -201,6 +202,9 @@ OC.L10N.register(
     "Email format is not valid" : "Snið póstfangsins er ekki gilt",
     "This contact is not available" : "Þessi tengiliður er ekki tiltækur",
     "Could not find share" : "Gat ekki fundið sameign",
+    "Name" : "Nafn",
+    "Size" : "Stærð",
+    "Modified" : "Breytt",
     "Create a new circle" : "Búa til nýjan hring",
     "Create a personal circle" : "Búa til persónulegan hring",
     "Create a public circle" : "Búa til opinberan hring",
@@ -245,6 +249,7 @@ OC.L10N.register(
     "Save settings" : "Vista stillingar",
     "Async Testing:" : "Prófun á ósamhverfri vinnslu:",
     "reset test result" : "núllstilla niðurstöður prófunar",
+    "Allow federated circles:" : "Leyfa skýjasambandshringi:",
     "Circles from different Nextclouds can be linked together." : "Hringir úr mismunandi Nextcloud-skýjum geta verið tengdir saman."
 },
 "nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);");
