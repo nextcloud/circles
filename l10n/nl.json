@@ -163,7 +163,7 @@
     "On events happening in a <strong>Circle</strong> you belong" : "Jij hoort bij evenementen in een <strong>kring</strong>",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Belangrijke gebeurtenissen in <strong>Kring</strong> die je modereert",
     "Shared to Circles" : "Gedeeld met Kringen",
-    "%s shared »%s« with you." : "%sdeelde » %s « met jou.",
+    "%s shared »%s« with you." : "%sheeft \"%s\" met je gedeeld.",
     "%s shared »%s« with '%s'." : "%s deelde » %s « met '%s'.",
     "%s on %s" : "%s op  %s",
     "Click the button below to open it." : "Klik op de button hieronder om te openen.",
