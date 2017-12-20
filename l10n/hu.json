@@ -222,6 +222,7 @@
     "Create a public circle" : " Nyilvános kör létrehozása",
     "Create a closed circle" : "Zárt kör létrehozása",
     "Create a secret circle" : "Titkos kör létrehozása",
+    "Creation" : "Létrehozás",
     "A personal circle is a list of users known only to the owner." : "A személyes kör egy olyan felhasználói lista, amit csak a tulajdonos ismer.",
     "This is the right option if you want to do recurrent sharing with the same list of local users." : "Ez a helyes választás, ha rendszeresen helyi felhasználók egy listájával kívánsz megosztani.",
     "A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle." : "A titkos kör egy rejtett csoport, melyet csak tagjai láthatnak vagy olyanok akik ismerik a pontos nevét.",

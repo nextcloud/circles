@@ -222,6 +222,7 @@
     "Create a public circle" : "Opprett en offentlig sirkel",
     "Create a closed circle" : "Lag en lukket sirkel",
     "Create a secret circle" : "Lag en hemmelig sirkel",
+    "Creation" : "Opprettelse",
     "A personal circle is a list of users known only to the owner." : "En personlig sirkel er en liste over brukere bare eieren vet om.",
     "This is the right option if you want to do recurrent sharing with the same list of local users." : "Dette er det rette valget hvis du ønsker å utføre gjentagende deling med samme liste av lokale brukere.",
     "A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle." : "En hemmelig sirkel er en skjult gruppe som bare kan ses av dens medlemmer eller av folk som kjenner det eksakte navnet på sirkelen.",
