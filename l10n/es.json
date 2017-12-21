@@ -222,6 +222,7 @@
     "Create a public circle" : "Crear un círculo público",
     "Create a closed circle" : "Crear un círculo cerrado",
     "Create a secret circle" : "Crear un círculo secreto",
+    "Creation" : "Creación",
     "A personal circle is a list of users known only to the owner." : "Un círculo personal es una lista de usuarios conocida solo por el propietario.",
     "This is the right option if you want to do recurrent sharing with the same list of local users." : "Esta es la opción adecuada si quieres compartir recurrentemente con la misma lista de usuarios locales.",
     "A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle." : "Un círculo secreto es un grupo oculto que sólo puede ser visto por sus miembros o por gente que conozca el nombre exacto del círculo.",
