@@ -224,6 +224,7 @@ OC.L10N.register(
     "Create a public circle" : "Create a public circle",
     "Create a closed circle" : "Create a closed circle",
     "Create a secret circle" : "Create a secret circle",
+    "Creation" : "Creation",
     "A personal circle is a list of users known only to the owner." : "A personal circle is a list of users known only to the owner.",
     "This is the right option if you want to do recurrent sharing with the same list of local users." : "This is the right option if you want to do recurrent sharing with the same list of local users.",
     "A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle." : "A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle.",
