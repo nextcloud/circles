@@ -222,6 +222,7 @@
     "Create a public circle" : "Herkese açık bir çevre ekle",
     "Create a closed circle" : "Kapalı bir çevre ekle",
     "Create a secret circle" : "Gizli bir çevre ekle",
+    "Creation" : "Oluşturulma",
     "A personal circle is a list of users known only to the owner." : "Kişisel çevrede yalnız çevre sahibinin tanıdığı kullanıcılar bulunur.",
     "This is the right option if you want to do recurrent sharing with the same list of local users." : "Aynı yerel kullanıcı listesi ile yinelenen paylaşımlarda bulunmak için bu seçeneği kullanın.",
     "A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle." : "Gizli çevreler yalnız üyeleri tarafından ya da çevrenin tam adını bilen kişiler tarafından görülebilen gizli bir gruptur",

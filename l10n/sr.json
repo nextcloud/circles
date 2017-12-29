@@ -222,6 +222,7 @@
     "Create a public circle" : "Направи јавни круг",
     "Create a closed circle" : "Направи затворени круг",
     "Create a secret circle" : "Направи тајни круг",
+    "Creation" : "Прављење",
     "A personal circle is a list of users known only to the owner." : "Лични круг је круг са списком корисника познатим само власнику.",
     "This is the right option if you want to do recurrent sharing with the same list of local users." : "Ово је прави избор ако желите стално да делите ствари са истом листом локалних корисника.",
     "A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle." : "Тајни круг је тајна група коју виде само њени чланови или људи који знају тачно име круга.",
