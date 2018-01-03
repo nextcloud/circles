@@ -222,6 +222,7 @@
     "Create a public circle" : "Создать общедоступный круг",
     "Create a closed circle" : "Создать закрытый круг",
     "Create a secret circle" : "Создать секретный круг",
+    "Creation" : "Создание",
     "A personal circle is a list of users known only to the owner." : "Личный круг — это список пользователей, известных только вам",
     "This is the right option if you want to do recurrent sharing with the same list of local users." : "Это верный выбор, если вы хотите регулярно делиться чем-то с одним и теми же локальными пользователями.",
     "A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle." : "Секретный круг — это скрытая группа, видимая только для входящих в неё участников, а так же для тех, кому известно точное имя такого круга.",
