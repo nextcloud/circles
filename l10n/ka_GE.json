@@ -222,6 +222,7 @@
     "Create a public circle" : "შექმენით საზოგადო წრე",
     "Create a closed circle" : "შექმენით დახურული წრე",
     "Create a secret circle" : "შექმენით საიდუმლო წრე",
+    "Creation" : "შექმნა",
     "A personal circle is a list of users known only to the owner." : "პირადი წრე იმ მომხმარებელთა სიაა, რომელთაც მფლობელი იცნობს.",
     "This is the right option if you want to do recurrent sharing with the same list of local users." : "ეს სწორი არჩევანია, თუ გსურთ გამეორებადი გაზიარება ლოკალური მოხმარებლების იგივე სიასთან.",
     "A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle." : "საიდუმლო წრე დამალული ჯგუფია რომელსაც ხედავენ მხოლოდ მისი წავრები ან ადამიანები რომლემბაც იციან წრის ზუსტი სახელწოდება.",
