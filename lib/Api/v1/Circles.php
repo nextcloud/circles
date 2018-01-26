@@ -381,8 +381,10 @@ class Circles {
 		$frame = new SharingFrame((string)$source, (string)$type);
 		$frame->setPayload($payload);
 
-		return $c->query(SharingFrameService::class)
+		$result = $c->query(SharingFrameService::class)
 				 ->createFrame($circleUniqueId, $frame, (string)$broadcaster);
+
+		return $result;
 	}
 
 

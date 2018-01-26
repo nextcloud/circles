@@ -29,6 +29,7 @@ namespace OCA\Circles\Controller;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\MiscService;
 use OCP\AppFramework\Http\DataResponse;
+use OCP\Util;
 
 class MembersController extends BaseController {
 
@@ -47,6 +48,10 @@ class MembersController extends BaseController {
 
 		try {
 			$data = $this->membersService->addMember($uniqueId, $ident, (int)$type);
+			if ($this->configService->isAuditEnabled()){
+				$circle = $this->circlesService->detailsCircle($uniqueId);
+				Util::emitHook('OCA\Circles', 'post_addMember', ['circle' => $circle->getName(), 'member' => $ident]);
+			}
 		} catch (\Exception $e) {
 			return $this->fail(
 				[
@@ -127,6 +132,10 @@ class MembersController extends BaseController {
 
 		try {
 			$data = $this->membersService->removeMember($uniqueId, $member, (int)$type);
+			if ($this->configService->isAuditEnabled()){
+				$circle = $this->circlesService->detailsCircle($uniqueId);
+				Util::emitHook('OCA\Circles', 'post_removeMember', ['circle' => $circle->getName(), 'member' => $member]);
+			}
 		} catch (\Exception $e) {
 			return
 				$this->fail(
