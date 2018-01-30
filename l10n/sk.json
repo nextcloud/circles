@@ -54,6 +54,8 @@
     "You have deleted this circle" : "Zmazali ste tento kruh",
     "Cannot delete this circle" : "Tento kruh nie je možné zmazať",
     " {type} '{name}' created" : " {type} '{name}' vytvorený",
+    "Group '{name}' updated" : "Skupina '{name}' aktualizovaná",
+    "Group '{name}' could not be updated" : "Skupina '{name}' nemohla byť aktualizovaná",
     "The status of the link could not be updated" : "Nie je možné aktualizovať stav odkazu",
     "The status of the link has been updated" : "Stav odkazu bol aktualizonavý",
     "Local User" : "Lokálny používateľ",
