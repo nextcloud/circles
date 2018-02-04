@@ -248,9 +248,9 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$emailTemplate->addHeader();
 		$emailTemplate->addHeading($subject, false);
 		$emailTemplate->addBodyText(
-			$text . "\n " . $this->l10n->t('Click the button below to open it.'), $text
+			htmlspecialchars($text) . '<br>' . htmlspecialchars($this->l10n->t('Click the button below to open it.')), $text
 		);
-		$emailTemplate->addBodyButton($this->l10n->t('Open »%s«', [$fileName]), $link);
+		$emailTemplate->addBodyButton($this->l10n->t('Open »%s«', [htmlspecialchars($fileName)]), $link);
 
 		return $emailTemplate;
 	}
