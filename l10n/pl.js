@@ -224,6 +224,7 @@ OC.L10N.register(
     "Create a public circle" : "Utwórz publiczny krąg",
     "Create a closed circle" : "Utwórz zamknięty krąg",
     "Create a secret circle" : "Utwórz tajny krąg",
+    "Creation" : "Tworzenie",
     "A personal circle is a list of users known only to the owner." : "Osobisty krąg jest listą użytkowników, którą zna tylko właściciel.",
     "This is the right option if you want to do recurrent sharing with the same list of local users." : "To jest prawidłowa opcja jeśli chcesz rekurencyjnie współdzielić z tą samą listą użytkowników lokalnych.",
     "A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle." : "Tajny krąg jest to ukryta grupa, która jest widoczna tylko dla członków lub osób, które znają dokładną nazwę kręgu.",
