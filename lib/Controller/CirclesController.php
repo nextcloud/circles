@@ -32,6 +32,8 @@ use OCA\Circles\Exceptions\CircleNameTooShortException;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
 use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 use OCP\AppFramework\Http\DataResponse;
+use OCA\Circles\Model\Circle;
+use OCP\Util;
 
 class CirclesController extends BaseController {
 
@@ -51,7 +53,9 @@ class CirclesController extends BaseController {
 		try {
 			$this->verifyCreationName($name);
 			$data = $this->circlesService->createCircle($type, $name);
-
+			if ($this->configService->isAuditEnabled()){
+				Util::emitHook('OCA\Circles', 'post_createCircle', ['circle' => $name]);
+			}
 			return $this->success(['name' => $name, 'circle' => $data, 'type' => $type]);
 		} catch (Exception $e) {
 			return $this->fail(['type' => $type, 'name' => $name, 'error' => $e->getMessage()]);
@@ -116,8 +120,13 @@ class CirclesController extends BaseController {
 	public function settings($uniqueId, $settings) {
 		try {
 			$this->verifyCreationName($settings['circle_name']);
+			$formerCircle = $this->details($uniqueId)->getData()['details']->getName();
 			$circle = $this->circlesService->settingsCircle($uniqueId, $settings);
-
+			if ($this->configService->isAuditEnabled()){
+				$settings['former_name']= $formerCircle;
+				Util::emitHook('OCA\Circles', 'post_updateCircle', $settings);
+			}
+			
 			return $this->success(['circle_id' => $uniqueId, 'details' => $circle]);
 		} catch (\Exception $e) {
 
@@ -178,8 +187,12 @@ class CirclesController extends BaseController {
 	 */
 	public function destroy($uniqueId) {
 		try {
+			$circle = $this->details($uniqueId)->getData()['details']->getName();
 			$this->circlesService->removeCircle($uniqueId);
-
+			if ($this->configService->isAuditEnabled()){
+				Util::emitHook('OCA\Circles', 'post_destroyCircle', ['circle' => $circle]);
+			}
+				
 			return $this->success(['circle_id' => $uniqueId]);
 		} catch (\Exception $e) {
 			return $this->fail(['circle_id' => $uniqueId, 'error' => $e->getMessage()]);
