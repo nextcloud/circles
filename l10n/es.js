@@ -259,7 +259,7 @@ OC.L10N.register(
     "Username" : "Nombre de usuario",
     "Level" : "Nivel",
     "Status" : "Estado",
-    "Joined" : "Ingresó",
+    "Joined" : "Se unió",
     "Group Name" : "Nombre del grupo",
     "Link" : "Enlace",
     "Linked" : "Enlazado",
