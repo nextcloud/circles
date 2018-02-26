@@ -3,3 +3,4 @@
 .buildpath
 .project
 .settings/
+tests/clover.xml
