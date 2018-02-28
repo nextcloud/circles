@@ -37,7 +37,7 @@ OC.L10N.register(
     "Please confirm" : "Prosím potvrďte",
     "Are you sure you want to leave this circle?" : "Opravdu chcete opustit tento kruh?",
     "Are you sure you want to delete this circle?" : "Opravdu chcete smazat tento kruh?",
-    "Mail Address" : "Emailová adresa",
+    "Mail Address" : "E-mailová adresa",
     "Contact" : "Kontakt",
     "Kick this member" : "Vykopnout tohoto člena",
     "Accept the request" : "Přijmout požadavek",
