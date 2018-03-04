@@ -270,7 +270,7 @@ OC.L10N.register(
     "Save settings" : "Guardar configuración",
     "Async Testing:" : "Prueba asíncrona:",
     "initiate async test in Circles" : "Iniciar test asíncrono en Círculos",
-    "reset test result" : "reiniciar resultado de la prueba",
+    "reset test result" : "restablecer el resultado de la prueba",
     "Test underway. Please wait." : "Test en proceso. Por favor, espera.",
     "Allow linking of groups:" : "Permitir enlace de grupos:",
     "Groups can be linked to circles." : "Los grupos puedes ser unidos a círculos.",
