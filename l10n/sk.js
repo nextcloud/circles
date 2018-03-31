@@ -107,6 +107,7 @@ OC.L10N.register(
     "Email format is not valid" : "Nesprávny formát e-mailu",
     "This contact is not available" : "Tento kontakt je nedostupný",
     "Could not find share" : "Nebolo možné nájsť sprístupnenie",
+    "Size" : "Veľkosť",
     "Create a new circle" : "Vytvoriť nový kruh",
     "Create a personal circle" : "Vytvoriť osobný kruh",
     "Create a public circle" : "Vytvoriť verejný kruh",
