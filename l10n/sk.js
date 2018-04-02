@@ -100,6 +100,7 @@ OC.L10N.register(
     "You need a specify a type of circle" : "Musíte špecifikovať typ kruhu",
     "You cannot create this type of circle" : "Nemôžete vytvoriť tento typ kruhu",
     "You cannot display this type of circle" : "Nemôžete zobraziť tento typ kruhu",
+    "This link exists already" : "Tento odkaz už existuje",
     "This group does not exist" : "Táto skupina neexistuje",
     "This group is already linked to the circle" : "Táto skupina je už s kruhom prepojená",
     "You cannot edit level in a personal circle" : "Úroveň osobného kruhu sa nedá upraviť",
