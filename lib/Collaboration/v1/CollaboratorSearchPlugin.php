@@ -44,7 +44,7 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 	public function search($search, $limit, $offset, ISearchResult $searchResult) {
 		$wide = $exact = [];
 
-		$circles = Circles::listCircles(Circle::CIRCLES_ALL, $search, Member::LEVEL_MEMBER);
+		$circles = Circles::listCircles(Circle::CIRCLES_ALL, $search, Member::LEVEL_NONE);
 		foreach ($circles as $circle) {
 			$entry = $this->addResultEntry($circle);
 			if (strtolower($circle->getName()) === strtolower($search)) {
