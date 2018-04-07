@@ -66,7 +66,7 @@ class Sharees {
 							  ->getUID();
 
 		$data = $c->query(CirclesService::class)
-				  ->listCircles($userId, Circle::CIRCLES_ALL, $search, Member::LEVEL_MEMBER);
+				  ->listCircles($userId, Circle::CIRCLES_ALL, $search, Member::LEVEL_NONE);
 		$result = array(
 			'exact'   => ['circles'],
 			'circles' => []
