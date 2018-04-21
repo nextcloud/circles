@@ -73,6 +73,7 @@
     "Local Group" : "Τοπική ομάδα",
     "The member '{name}' was added to the circle" : "Το μέλος '{name}' προστέθηκε στον κύκλο",
     "The member '{name}' could not be added to the circle" : "Αδύνατη η προσθήκη του μέλους '{name}' στον κύκλο",
+    "The contact '{contact}' was added to the circle" : "Η επαφή '{contact}' προστέθηκε στον κύκλο",
     "The member '{name}' was invited to the circle" : "Το μέλος '{name}' προσκλήθηκε στον κύκλο",
     "The member '{name}' could not be invited to the circle" : "Αδύνατη η πρόσκληση του μέλους '{name}' στον κύκλο",
     "Members of the group '{name}' were added to the circle" : "Τα μέλη της ομάδας '{name}' προστέθηκαν στον κύκλο",
