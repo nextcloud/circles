@@ -38,6 +38,7 @@ use OCA\Circles\Service\MiscService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 use OCP\IL10N;
+use OCA\Circles\Model\Timezone;
 
 class CirclesRequestBuilder extends CoreRequestBuilder {
 
@@ -320,7 +321,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	protected function getCirclesInsertSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$qb->insert(self::TABLE_CIRCLES)
-		   ->setValue('creation', $qb->createFunction('NOW()'));
+		   ->setValue('creation', Timezone::getUTCTimestamp());
 
 		return $qb;
 	}

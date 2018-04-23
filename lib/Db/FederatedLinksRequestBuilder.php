@@ -34,6 +34,7 @@ use OCA\Circles\Service\MiscService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 use OCP\IL10N;
+use OCA\Circles\Model\Timezone;
 
 class FederatedLinksRequestBuilder extends CoreRequestBuilder {
 
@@ -58,7 +59,7 @@ class FederatedLinksRequestBuilder extends CoreRequestBuilder {
 	protected function getLinksInsertSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$qb->insert(self::TABLE_LINKS)
-		   ->setValue('creation', $qb->createFunction('NOW()'));
+		   ->setValue('creation', Timezone::getUTCTimestamp());
 
 		return $qb;
 	}
