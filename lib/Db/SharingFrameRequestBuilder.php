@@ -35,6 +35,7 @@ use OCA\Circles\Service\MiscService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 use OCP\IL10N;
+use OCA\Circles\Model\Timezone;
 
 class SharingFrameRequestBuilder extends CoreRequestBuilder {
 
@@ -88,8 +89,7 @@ class SharingFrameRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function getSharesInsertSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->insert(self::TABLE_SHARES)
-		   ->setValue('creation', $qb->createFunction('NOW()'));
+		$qb->insert(self::TABLE_SHARES);
 
 		return $qb;
 	}

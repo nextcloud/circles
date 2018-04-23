@@ -32,6 +32,7 @@ use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Timezone;
 
 class CirclesRequest extends CirclesRequestBuilder {
 
@@ -224,7 +225,8 @@ class CirclesRequest extends CirclesRequestBuilder {
 		   ->setValue('name', $qb->createNamedParameter($circle->getName()))
 		   ->setValue('description', $qb->createNamedParameter($circle->getDescription()))
 		   ->setValue('settings', $qb->createNamedParameter($circle->getSettings(true)))
-		   ->setValue('type', $qb->createNamedParameter($circle->getType()));
+		   ->setValue('type', $qb->createNamedParameter($circle->getType()))
+		   ->setValue('creation',$qb->createNamedParameter(Timezone::getUTCTimestamp()));
 		$qb->execute();
 
 		$owner = new Member($userId, Member::TYPE_USER);

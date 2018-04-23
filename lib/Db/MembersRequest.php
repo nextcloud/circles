@@ -33,6 +33,7 @@ use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Model\Member;
 use OCP\IGroup;
+use OCA\Circles\Model\Timezone;
 
 class MembersRequest extends MembersRequestBuilder {
 
@@ -389,7 +390,8 @@ class MembersRequest extends MembersRequestBuilder {
 			   ->setValue('user_type', $qb->createNamedParameter($member->getType()))
 			   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
 			   ->setValue('status', $qb->createNamedParameter($member->getStatus()))
-			   ->setValue('note', $qb->createNamedParameter($member->getNote()));
+			   ->setValue('note', $qb->createNamedParameter($member->getNote()))
+			   ->setValue('joined', $qb->createNamedParameter(Timezone::getUTCTimestamp()));
 
 			$qb->execute();
 		} catch (UniqueConstraintViolationException $e) {
