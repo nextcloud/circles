@@ -35,6 +35,7 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 use OCP\IGroupManager;
 use OCP\IL10N;
+use OCA\Circles\AppInfo\Application;
 
 class MembersRequestBuilder extends CoreRequestBuilder {
 
@@ -64,8 +65,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function getMembersInsertSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->insert(self::TABLE_MEMBERS)
-		   ->setValue('joined', $qb->createFunction('NOW()'));
+		$qb->insert(self::TABLE_MEMBERS);
 
 		return $qb;
 	}
@@ -112,8 +112,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function getGroupsInsertSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->insert(self::TABLE_GROUPS)
-		   ->setValue('joined', $qb->createFunction('NOW()'));
+		$qb->insert(self::TABLE_GROUPS);
 
 		return $qb;
 	}
@@ -209,8 +208,13 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		$member->setNote($data['note']);
 		$member->setLevel($data['level']);
 		$member->setStatus($data['status']);
-		$member->setJoined($data['joined']);
-
+		$app = new Application();
+		$user = $app->getContainer()->query('UserSession')->getUser();
+		$config = $app->getContainer()->query(ConfigService::class);
+		$timezone = \OC::$server->getConfig()->getUserValue($user->getUID(), 'core', 'timezone', 'UTC');
+		$date = \DateTime::createFromFormat('Y-m-d H:i:s', $data['joined']);
+		$date->setTimezone(new \DateTimeZone($timezone));
+		$member->setJoined($date->format('Y-m-d H:i:s'));
 		return $member;
 	}
 

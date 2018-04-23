@@ -319,8 +319,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function getCirclesInsertSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->insert(self::TABLE_CIRCLES)
-		   ->setValue('creation', $qb->createFunction('NOW()'));
+		$qb->insert(self::TABLE_CIRCLES);
 
 		return $qb;
 	}

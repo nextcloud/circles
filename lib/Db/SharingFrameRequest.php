@@ -36,6 +36,7 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
+use OCA\Circles\Model\Timezone;
 
 class SharingFrameRequest extends SharingFrameRequestBuilder {
 
@@ -104,7 +105,8 @@ class SharingFrameRequest extends SharingFrameRequestBuilder {
 		   ->setValue('author', $qb->createNamedParameter($frame->getAuthor()))
 		   ->setValue('cloud_id', $qb->createNamedParameter($frame->getCloudId()))
 		   ->setValue('unique_id', $qb->createNamedParameter($frame->getUniqueId()))
-		   ->setValue('payload', $qb->createNamedParameter($frame->getPayload(true)));
+		   ->setValue('payload', $qb->createNamedParameter($frame->getPayload(true)))
+		   ->setValue('creation', $qb->createNamedParameter(Timezone::getUTCTimestamp()));
 
 		$qb->execute();
 	}
