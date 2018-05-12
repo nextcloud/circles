@@ -87,7 +87,7 @@
     "The member '{name}' could not be removed from the circle" : "No s'ha pogut treure '{name}' del cercle",
     "Member '{name}' updated" : "El membre '{name}' s'ha actualitzat",
     "The member '{name}' could not be updated" : "El membre '{name}' no s'ha pogut actualitzar",
-    "Issue while saving settings" : "Problemes al guardar la configuració",
+    "Issue while saving settings" : "Problemes en guardar la configuració",
     "Settings saved." : "Paràmetres desats.",
     "Circles" : "Cercle",
     "Circles' files" : "Fitxers del cercle",
