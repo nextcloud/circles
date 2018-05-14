@@ -57,8 +57,7 @@ class FederatedLinksRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function getLinksInsertSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->insert(self::TABLE_LINKS)
-		   ->setValue('creation', $qb->createFunction('NOW()'));
+		$qb->insert(self::TABLE_LINKS);
 
 		return $qb;
 	}
