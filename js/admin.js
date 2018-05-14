@@ -129,7 +129,7 @@ $(document).ready(function () {
 		}
 
 		elements.test_async_result.text(
-			t('circles', 'Circles is using its own way to async heavy process.'));
+			t('circles', 'Circles uses its own method to async heavy processes.'));
 	};
 
 
