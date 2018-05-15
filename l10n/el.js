@@ -1,7 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Circles is using its own way to async heavy process." : "Οι κύκλοι χρησιμοποιούν τις δικές τους μεθόδους για τον ασυγχρονισμό βαρέων διαδικασιών",
     "Are you sure you want to transfer your ownership?" : "Είστε σίγουροι ότι θέλετε να μεταφέρετε την ιδιοκτησία;",
     "This action is irreversible" : "Αυτή η ενέργεια είναι μη αναστρέψιμη",
     "Personal circle" : "Προσωπικός κύκλος",

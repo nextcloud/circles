@@ -1,7 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Circles is using its own way to async heavy process." : "Cirkler bruger dens egen metode til at at synkronisere tunge processer.",
     "Are you sure you want to transfer your ownership?" : "Er du sikker på at du vil overføre dine ejerskab?",
     "This action is irreversible" : "Denne handling kan ikke fortrydes",
     "Personal circle" : "Person cirkel",

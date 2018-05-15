@@ -1,7 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Circles is using its own way to async heavy process." : "წრეები მძიმე პროცესებს საკუთარი გზებით უწევენ სინქრონიზაციას.",
     "Are you sure you want to transfer your ownership?" : "დაწრუმებული ხართ, რომ გსურთ თქვენი მბლობელობის ტრანსფერი?",
     "This action is irreversible" : "ეს ქმედება არაა უკუქცევადი",
     "Personal circle" : "პირადი წრე",

@@ -1,7 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Circles is using its own way to async heavy process." : "Приложение «Круги» использует собственный способ параллельного выполнения процессов, требовательных к ресурсам.",
     "Are you sure you want to transfer your ownership?" : "Действительно передать свои права владения?",
     "This action is irreversible" : "Это действие необратимо",
     "Personal circle" : "Личный круг",

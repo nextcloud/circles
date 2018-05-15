@@ -1,7 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Circles is using its own way to async heavy process." : "Кругови користе сопствени начин да асинхроно извршавају веће процесе.",
     "Are you sure you want to transfer your ownership?" : "Да ли сте сигурни да желите да предате власништво?",
     "This action is irreversible" : "Ова акција је неповратна",
     "Personal circle" : "Лични круг",

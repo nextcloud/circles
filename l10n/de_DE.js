@@ -1,7 +1,6 @@
 OC.L10N.register(
     "circles",
     {
-    "Circles is using its own way to async heavy process." : "Kreise nutzt eigene Methoden zur asynchronen Synchronisation bei hoher Auslastung.",
     "Are you sure you want to transfer your ownership?" : "Möchten Sie wirklich Ihre Besitzerrechte übertragen?",
     "This action is irreversible" : "Dieser Vorgang ist unumkehrbar",
     "Personal circle" : "Persönlicher Kreis",

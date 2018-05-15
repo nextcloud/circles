@@ -1,5 +1,4 @@
 { "translations": {
-    "Circles is using its own way to async heavy process." : "서클에서 자체적으로 무거운 프로세스를 비동기적으로 실행하고 있습니다.",
     "Are you sure you want to transfer your ownership?" : "소유권을 이전하시겠습니까?",
     "This action is irreversible" : "이 작업은 취소할 수 없습니다",
     "Personal circle" : "개인 서클",
