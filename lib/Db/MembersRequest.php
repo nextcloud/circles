@@ -390,8 +390,7 @@ class MembersRequest extends MembersRequestBuilder {
 			   ->setValue('user_type', $qb->createNamedParameter($member->getType()))
 			   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
 			   ->setValue('status', $qb->createNamedParameter($member->getStatus()))
-			   ->setValue('note', $qb->createNamedParameter($member->getNote()))
-			   ->setValue('joined', $qb->createNamedParameter(Timezone::getUTCTimestamp()));
+			   ->setValue('note', $qb->createNamedParameter($member->getNote()));
 
 			$qb->execute();
 		} catch (UniqueConstraintViolationException $e) {

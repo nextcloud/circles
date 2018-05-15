@@ -30,7 +30,6 @@ namespace OCA\Circles\Db;
 
 use OCA\Circles\Exceptions\FederatedLinkDoesNotExistException;
 use OCA\Circles\Model\FederatedLink;
-use OCA\Circles\Model\Timezone;
 
 class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 
@@ -48,8 +47,7 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 			   ->setValue('circle_id', $qb->createNamedParameter($link->getCircleId()))
 			   ->setValue('unique_id', $qb->createNamedParameter($link->getUniqueId(true)))
 			   ->setValue('address', $qb->createNamedParameter($link->getAddress()))
-			   ->setValue('token', $qb->createNamedParameter($link->getToken(true)))
-			   ->setValue('creation', $qb->createNamedParemeter(Timezone::getUTCTimestamp()));
+			   ->setValue('token', $qb->createNamedParameter($link->getToken(true)));
 
 			$qb->execute();
 

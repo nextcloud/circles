@@ -105,8 +105,7 @@ class SharingFrameRequest extends SharingFrameRequestBuilder {
 		   ->setValue('author', $qb->createNamedParameter($frame->getAuthor()))
 		   ->setValue('cloud_id', $qb->createNamedParameter($frame->getCloudId()))
 		   ->setValue('unique_id', $qb->createNamedParameter($frame->getUniqueId()))
-		   ->setValue('payload', $qb->createNamedParameter($frame->getPayload(true)))
-		   ->setValue('creation', $qb->createNamedParameter(Timezone::getUTCTimestamp()));
+		   ->setValue('payload', $qb->createNamedParameter($frame->getPayload(true)));
 
 		$qb->execute();
 	}

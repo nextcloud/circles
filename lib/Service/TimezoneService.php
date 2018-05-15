@@ -26,17 +26,65 @@
 
 namespace OCA\Circles\Service;
 
+use DateTime;
+
 class TimezoneService {
+
+
+	/** @var string */
+	private $userId;
+
+	/** @var ConfigService */
+	private $configService;
+
+
+	/**
+	 * TimezoneService constructor.
+	 *
+	 * @param string $userId
+	 * @param ConfigService $configService
+	 */
+	public function __construct($userId, ConfigService $configService) {
+		$this->userId = $userId;
+		$this->configService = $configService;
+	}
+
+
+	/**
+	 * @param string $time
+	 *
+	 * @return string
+	 */
+	public function convertTimeForCurrentUser($time) {
+		return $this->convertTimeForUserId($this->userId, $time);
+	}
+
+
+	/**
+	 * @param string $userId
+	 * @param string $time
+	 *
+	 * @return string
+	 */
+	public function convertTimeForUserId($userId, $time) {
+		$timezone = $this->configService->getCoreValueForUser($userId, 'timezone', 'UTC');
+		$date = DateTime::createFromFormat('Y-m-d H:i:s', $time);
+		$date->setTimezone(new \DateTimeZone($timezone));
+
+		return $date->format('Y-m-d H:i:s');
+	}
+
+
 	/**
 	 * @return string
 	 */
-	public function getUTCTimestamp()
-	{
+	public function getUTCDate() {
 		$defaultTimezone = date_default_timezone_get();
 		date_default_timezone_set('UTC');
-		$timestamp = date('Y-m-d H:i:s');
+		$format = date('Y-m-d H:i:s');
 		date_default_timezone_set($defaultTimezone);
-		return $timestamp;
+
+		return $format;
 	}
 }
 

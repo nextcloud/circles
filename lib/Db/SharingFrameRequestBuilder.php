@@ -32,6 +32,7 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
+use OCA\Circles\Service\TimezoneService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 use OCP\IL10N;
@@ -53,9 +54,10 @@ class SharingFrameRequestBuilder extends CoreRequestBuilder {
 	 */
 	public function __construct(
 		IL10N $l10n, IDBConnection $connection, CirclesRequest $circlesRequest,
-		MembersRequest $membersRequest, ConfigService $configService, MiscService $miscService
+		MembersRequest $membersRequest, ConfigService $configService,
+		TimezoneService $timezoneService, MiscService $miscService
 	) {
-		parent::__construct($l10n, $connection, $configService, $miscService);
+		parent::__construct($l10n, $connection, $configService, $timezoneService, $miscService);
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
 	}
@@ -89,7 +91,8 @@ class SharingFrameRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function getSharesInsertSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->insert(self::TABLE_SHARES);
+		$qb->insert(self::TABLE_SHARES)
+		   ->setValue('creation', $qb->createNamedParameter($this->timeZoneService->getUTCDate()));
 
 		return $qb;
 	}
