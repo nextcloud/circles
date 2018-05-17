@@ -273,5 +273,5 @@
     "Groups can be linked to circles." : "ჯგუფები შეიძლება დაკავშირდნენ წრეებთან.",
     "Allow federated circles:" : "ნება დართეთ ფედერალურ წრეებს:",
     "Circles from different Nextclouds can be linked together." : "წრეები სხვადასხვა Nextcloud-ებითან შეიძლება დაკავშირდნენ."
-},"pluralForm" :"nplurals=1; plural=0;"
+},"pluralForm" :"nplurals=2; plural=(n==1);"
 }
