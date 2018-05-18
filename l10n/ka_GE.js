@@ -276,4 +276,4 @@ OC.L10N.register(
     "Allow federated circles:" : "ნება დართეთ ფედერალურ წრეებს:",
     "Circles from different Nextclouds can be linked together." : "წრეები სხვადასხვა Nextcloud-ებითან შეიძლება დაკავშირდნენ."
 },
-"nplurals=2; plural=(n==1);");
+"nplurals=2; plural=(n!=1);");
