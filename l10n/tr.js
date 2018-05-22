@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "Circles uses its own method to async heavy processes." : "Çevreler eşitlenmemiş ağır işlemler için kendi yöntemini kullanır",
     "Are you sure you want to transfer your ownership?" : "Sahipliğinizi devretmek istediğinize emin misiniz?",
     "This action is irreversible" : "Bu işlem geri alınamaz",
     "Personal circle" : "Kişisel çevre",

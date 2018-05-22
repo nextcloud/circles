@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "Circles uses its own method to async heavy processes." : "Los círculos usan su propio método para procesos pesados asincrónicos.",
     "Are you sure you want to transfer your ownership?" : "¿Estás seguro que quieres transferir tu propiedad?",
     "This action is irreversible" : "Esta acción es irreversible",
     "Personal circle" : "Círculo personal",
