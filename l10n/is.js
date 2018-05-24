@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "Circles uses its own method to async heavy processes." : "Hringjahugbúnaðurinn notar sína eigin aðferð við krefjandi ósamhverf ferli (async process).",
     "Are you sure you want to transfer your ownership?" : "Ertu viss um að þú viljir yfirfæra eignarhald þitt?",
     "This action is irreversible" : "Þessa aðgerð er ekki hægt að afturkalla",
     "Personal circle" : "Persónulegur hringur",
