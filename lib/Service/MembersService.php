@@ -490,9 +490,7 @@ class MembersService {
 
 		$this->eventsService->onMemberLeaving($circle, $member);
 
-		$member->setStatus(Member::STATUS_NONMEMBER);
-		$member->setLevel(Member::LEVEL_NONE);
-		$this->membersRequest->updateMember($member);
+		$this->membersRequest->removeMember($member);
 
 		return $this->membersRequest->getMembers(
 			$circle->getUniqueId(), $circle->getHigherViewer()

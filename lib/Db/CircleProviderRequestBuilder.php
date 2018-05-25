@@ -311,7 +311,6 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 				)
 			)
 		);
-		$andX->add($expr->gte('m.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)));
 
 		return $andX;
 	}
@@ -335,8 +334,7 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 				$expr->eq(
 					'g.circle_id',
 					$qb->createFunction('SUBSTR(`c`.`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')')
-				),
-				$expr->gte('g.level', $qb->createNamedParameter(Member::LEVEL_MEMBER))
+				)
 			)
 		);
 
