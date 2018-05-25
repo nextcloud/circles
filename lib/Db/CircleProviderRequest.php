@@ -51,6 +51,7 @@ class CircleProviderRequest extends CircleProviderRequestBuilder {
 		$this->linkToMember($qb, $userId, $this->configService->isLinkedGroupsAllowed());
 
 		$this->leftJoinShareInitiator($qb);
+		
 		$cursor = $qb->execute();
 
 		$object_ids = [];

@@ -118,7 +118,6 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		return $qb;
 	}
 
-
 	/**
 	 * Base of the Sql Update request for Groups
 	 *

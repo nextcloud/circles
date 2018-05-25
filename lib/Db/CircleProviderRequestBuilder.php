@@ -377,7 +377,6 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 		$qb->leftJoin(
 			's', 'circles_groups', 'src_g',
 			$expr->andX(
-				$expr->gte('src_g.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)),
 				$expr->eq('src_ncgu.gid', 'src_g.group_id'),
 				$req = $expr->eq('s.share_with', 'src_g.circle_id')
 			)
