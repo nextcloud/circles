@@ -348,41 +348,6 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * left join to get more data about the initiator of the share
-	 *
-	 * @param IQueryBuilder $qb
-	 */
-	protected function leftJoinShareInitiator(IQueryBuilder &$qb) {
-		$expr = $qb->expr();
-
-		$qb->selectAlias('src_m.level', 'initiator_circle_level');
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->leftJoin(
-			's', CoreRequestBuilder::TABLE_MEMBERS, 'src_m',
-			$expr->andX(
-				$expr->eq('s.uid_initiator', 'src_m.user_id'),
-				$expr->eq('src_m.user_type', $qb->createNamedParameter(Member::TYPE_USER)),
-				$expr->eq('s.share_with', 'src_m.circle_id')
-			)
-		);
-
-		$qb->selectAlias('src_g.level', 'initiator_group_level');
-		$qb->leftJoin(
-			's', CoreRequestBuilder::NC_TABLE_GROUP_USER, 'src_ncgu',
-			$expr->eq('s.uid_initiator', 'src_ncgu.uid')
-		);
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->leftJoin(
-			's', 'circles_groups', 'src_g',
-			$expr->andX(
-				$expr->eq('src_ncgu.gid', 'src_g.group_id'),
-				$req = $expr->eq('s.share_with', 'src_g.circle_id')
-			)
-		);
-	}
-
-
-	/**
 	 * Link to all members of circle
 	 *
 	 * @param IQueryBuilder $qb

@@ -468,19 +468,10 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 
 		$this->linkToMember($qb, $userId, $this->configService->isLinkedGroupsAllowed());
 
-		$this->leftJoinShareInitiator($qb);
 		$cursor = $qb->execute();
 
 		$shares = [];
 		while ($data = $cursor->fetch()) {
-
-			if ($data['initiator_circle_level'] < Member::LEVEL_MEMBER
-				&& ($data['initiator_group_level'] < Member::LEVEL_MEMBER
-					|| !$this->configService->isLinkedGroupsAllowed())
-			) {
-				continue;
-			}
-
 			self::editShareFromParentEntry($data);
 			if (self::isAccessibleResult($data)) {
 				$shares[] = $this->createShareObject($data);
