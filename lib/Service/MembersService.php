@@ -101,7 +101,7 @@ class MembersService {
 	 *
 	 * @param string $circleUniqueId
 	 * @param $ident
-	 * @param $type
+	 * @param int $type
 	 *
 	 * @return array
 	 * @throws \Exception

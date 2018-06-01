@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "Circles uses its own method to async heavy processes." : "Circles usa un método propio para la comunicación no sincrónica de procesos pesados.",
     "Are you sure you want to transfer your ownership?" : "¿Estás seguro de que quieres transferir tu propiedad?",
     "This action is irreversible" : "Esta acción no se puede deshacer",
     "Personal circle" : "Círculo personal",
@@ -212,6 +213,8 @@ OC.L10N.register(
     "Email format is not valid" : "El formato del correo no es válido",
     "This contact is not available" : "Este contacto no está disponible",
     "Could not find share" : "No se ha podido encontrar el recurso compartido",
+    "Bring cloud-users closer together." : "Acerca a los usuarios de nubes.",
+    "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or 'circles') can then be used by any other app for sharing purpose (files, social feed, status update, messaging, ...).\n\nDifferent type of circles can be created:\n\n- A personal circle is a list of users known only to the owner.\nThis is the right option if you want to do recurrent sharing with the same group of people.\n\n- A public circle is an open group visible to anyone willing to join.\nYour circle will be visible to everyone and everyone will be able to join the circle.\n\n- A closed circle requires invitation or confirmation by an admin.\nThis is the right circle if you are looking for privacy when sharing your files or ideas.\n\n- An Secret circle is an open group that can be protected by a password.\nUsers won't be able to find this Circle using Nextcloud search engine." : "Círculos permite a tus usuarios crear sus propios grupos de usuarios/colegas/amigos.\nCualquiera otra app puede usar estos grupos de usuarios ('círculos') para compartir archivos, elementos sociales, actualizaciones de estado, mensajería...\n\nSe pueden crear diferentes tipos de círculos:\n\n- Un círculo personal es una lista de usuarios conocida solo por el propietario.\nEsta es la opción correcta si quieres compartir de forma habitual con el mismo grupo de personas.\n\n- Un círculo público es un grupo abierto visible para cualquiera que desee unirse.\nTu círculo será visible para todo el mundo y todo el mundo podrá unirse a él.\n\n- Un círculo cerrado requiere invitación o confirmación por parte de un administrador.\nEste es el círculo adecuado si buscas privacidad al compartir tus archivos o ideas.\n\n- Un círculo secreto es un grupo abierto que se puede proteger con una contraseña.\nLos usuarios no podrán encontrar este círculo usando la herramienta de búsqueda de Nextcloud.",
     "No files in here" : "No hay archivos aquí",
     "No entries found in this folder" : "No se han encontrado entradas en esta carpeta",
     "Name" : "Nombre",
