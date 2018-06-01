@@ -41,6 +41,7 @@ use OCA\Circles\Service\FederatedLinkService;
 use OCA\Circles\Service\MembersService;
 use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\SharingFrameService;
+use OCP\AppFramework\QueryException;
 use OCP\Util;
 
 class Circles {
@@ -110,6 +111,7 @@ class Circles {
 	 * @param string $name
 	 *
 	 * @return Circle
+	 * @throws QueryException
 	 */
 	public static function createCircle($type, $name) {
 		$c = self::getContainer();
@@ -127,6 +129,7 @@ class Circles {
 	 * @param string $circleUniqueId
 	 *
 	 * @return Member
+	 * @throws QueryException
 	 */
 	public static function joinCircle($circleUniqueId) {
 		$c = self::getContainer();
@@ -145,6 +148,7 @@ class Circles {
 	 * @param string $circleUniqueId
 	 *
 	 * @return Member
+	 * @throws QueryException
 	 */
 	public static function leaveCircle($circleUniqueId) {
 		$c = self::getContainer();
@@ -170,6 +174,7 @@ class Circles {
 	 * @param string $userId
 	 *
 	 * @return Circle[]
+	 * @throws QueryException
 	 */
 	public static function listCircles($type, $name = '', $level = 0, $userId = '') {
 		$c = self::getContainer();
@@ -193,6 +198,7 @@ class Circles {
 	 * @param string $userId
 	 *
 	 * @return Circle[]
+	 * @throws QueryException
 	 */
 	public static function joinedCircles($userId = '') {
 		return self::listCircles(Circle::CIRCLES_ALL, '', Member::LEVEL_MEMBER, $userId);
@@ -207,6 +213,7 @@ class Circles {
 	 * @param $userId
 	 *
 	 * @return array
+	 * @throws QueryException
 	 */
 	public static function joinedCircleIds($userId = '') {
 		$circleIds = [];
@@ -231,6 +238,7 @@ class Circles {
 	 * @param string $circleUniqueId
 	 *
 	 * @return Circle
+	 * @throws QueryException
 	 */
 	public static function detailsCircle($circleUniqueId) {
 		$c = self::getContainer();
@@ -249,6 +257,7 @@ class Circles {
 	 * @param array $settings
 	 *
 	 * @return Circle
+	 * @throws QueryException
 	 */
 	public static function settingsCircle($circleUniqueId, array $settings) {
 		$c = self::getContainer();
@@ -266,6 +275,7 @@ class Circles {
 	 * @param string $circleUniqueId
 	 *
 	 * @return mixed
+	 * @throws QueryException
 	 */
 	public static function destroyCircle($circleUniqueId) {
 		$c = self::getContainer();
@@ -286,6 +296,7 @@ class Circles {
 	 * @param int $type
 	 *
 	 * @return Member[]
+	 * @throws QueryException
 	 */
 	public static function addMember($circleUniqueId, $ident, $type) {
 		$c = self::getContainer();
@@ -306,6 +317,7 @@ class Circles {
 	 * @param int $type
 	 *
 	 * @return Member
+	 * @throws QueryException
 	 */
 	public static function getMember($circleUniqueId, $ident, $type) {
 		$c = self::getContainer();
@@ -326,6 +338,7 @@ class Circles {
 	 * @param int $type
 	 *
 	 * @return Member[]
+	 * @throws QueryException
 	 */
 	public static function removeMember($circleUniqueId, $ident, $type) {
 		$c = self::getContainer();
@@ -349,6 +362,7 @@ class Circles {
 	 * @param int $level
 	 *
 	 * @return Member[]
+	 * @throws QueryException
 	 */
 	public static function levelMember($circleUniqueId, $ident, $type, $level) {
 		$c = self::getContainer();
@@ -372,6 +386,7 @@ class Circles {
 	 * @param string $broadcaster
 	 *
 	 * @return mixed
+	 * @throws QueryException
 	 */
 	public static function shareToCircle(
 		$circleUniqueId, $source, $type, array $payload, $broadcaster
@@ -395,6 +410,7 @@ class Circles {
 	 * @param string $circleUniqueId
 	 *
 	 * @return mixed
+	 * @throws QueryException
 	 */
 	public static function getSharesFromCircle($circleUniqueId) {
 		$c = self::getContainer();
@@ -416,6 +432,7 @@ class Circles {
 	 * @param string $remote
 	 *
 	 * @return FederatedLink
+	 * @throws QueryException
 	 */
 	public static function linkCircle($circleUniqueId, $remote) {
 		$c = self::getContainer();
@@ -504,6 +521,7 @@ class Circles {
 	 * @param array $circleUniqueIds
 	 *
 	 * @return string[] array of object ids or empty array if none found
+	 * @throws QueryException
 	 */
 	public static function getFilesForCircles($circleUniqueIds) {
 		$c = self::getContainer();
