@@ -31,6 +31,7 @@ namespace OCA\Circles\Db;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
+use OCA\Circles\Service\TimezoneService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 use OCP\IGroupManager;
@@ -50,9 +51,9 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	 */
 	public function __construct(
 		IL10N $l10n, IDBConnection $connection, IGroupManager $groupManager,
-		ConfigService $configService, MiscService $miscService
+		ConfigService $configService, TimeZoneService $timeZoneService, MiscService $miscService
 	) {
-		parent::__construct($l10n, $connection, $configService, $miscService);
+		parent::__construct($l10n, $connection, $configService, $timeZoneService, $miscService);
 		$this->groupManager = $groupManager;
 	}
 
@@ -65,7 +66,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	protected function getMembersInsertSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$qb->insert(self::TABLE_MEMBERS)
-		   ->setValue('joined', $qb->createFunction('NOW()'));
+		   ->setValue('joined', $qb->createNamedParameter($this->timeZoneService->getUTCDate()));
 
 		return $qb;
 	}
@@ -112,8 +113,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function getGroupsInsertSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->insert(self::TABLE_GROUPS)
-		   ->setValue('joined', $qb->createFunction('NOW()'));
+		$qb->insert(self::TABLE_GROUPS);
 
 		return $qb;
 	}
@@ -208,10 +208,11 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		$member->setNote($data['note']);
 		$member->setLevel($data['level']);
 		$member->setStatus($data['status']);
-		$member->setJoined($data['joined']);
+		$member->setJoined($this->timeZoneService->convertTimeForCurrentUser($data['joined']));
 
 		return $member;
 	}
+
 
 	/**
 	 * @param array $data
@@ -232,7 +233,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 			$member->setUserId($data['group_id']);
 		}
 
-		$member->setJoined($data['joined']);
+		$member->setJoined($this->timeZoneService->convertTimeForCurrentUser($data['joined']));
 
 		return $member;
 	}

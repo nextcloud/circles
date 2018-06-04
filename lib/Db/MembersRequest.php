@@ -33,6 +33,7 @@ use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Model\Member;
 use OCP\IGroup;
+use OCA\Circles\Model\Timezone;
 
 class MembersRequest extends MembersRequestBuilder {
 

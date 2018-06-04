@@ -32,9 +32,9 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
-use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
+use OCA\Circles\Service\TimezoneService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 use OCP\IL10N;
@@ -53,9 +53,9 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 */
 	public function __construct(
 		IL10N $l10n, IDBConnection $connection, MembersRequest $membersRequest,
-		ConfigService $configService, MiscService $miscService
+		ConfigService $configService, TimeZoneService $timeZoneService, MiscService $miscService
 	) {
-		parent::__construct($l10n, $connection, $configService, $miscService);
+		parent::__construct($l10n, $connection, $configService, $timeZoneService, $miscService);
 		$this->membersRequest = $membersRequest;
 	}
 
@@ -310,7 +310,6 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	}
 
 
-
 	/**
 	 * Base of the Sql Insert request for Shares
 	 *
@@ -320,7 +319,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	protected function getCirclesInsertSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$qb->insert(self::TABLE_CIRCLES)
-		   ->setValue('creation', $qb->createFunction('NOW()'));
+		   ->setValue('creation', $qb->createNamedParameter($this->timeZoneService->getUTCDate()));
 
 		return $qb;
 	}
