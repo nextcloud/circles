@@ -31,6 +31,7 @@ use Exception;
 use OC\User\NoUserException;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
+use OCA\Circles\Db\SharesRequest;
 use OCA\Circles\Exceptions\CircleTypeNotValidException;
 use OCA\Circles\Exceptions\EmailAccountInvalidFormatException;
 use OCA\Circles\Exceptions\GroupDoesNotExistException;
@@ -60,6 +61,9 @@ class MembersService {
 	/** @var MembersRequest */
 	private $membersRequest;
 
+	/** @var SharesRequest */
+	private $sharesRequest;
+
 	/** @var EventsService */
 	private $eventsService;
 
@@ -75,13 +79,14 @@ class MembersService {
 	 * @param ConfigService $configService
 	 * @param CirclesRequest $circlesRequest
 	 * @param MembersRequest $membersRequest
+	 * @param SharesRequest $sharesRequest
 	 * @param EventsService $eventsService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
 		$userId, IL10N $l10n, IUserManager $userManager, ConfigService $configService,
-		CirclesRequest $circlesRequest, MembersRequest $membersRequest, EventsService $eventsService,
-		MiscService $miscService
+		CirclesRequest $circlesRequest, MembersRequest $membersRequest,
+		SharesRequest $sharesRequest, EventsService $eventsService, MiscService $miscService
 	) {
 		$this->userId = $userId;
 		$this->l10n = $l10n;
@@ -89,6 +94,7 @@ class MembersService {
 		$this->configService = $configService;
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
+		$this->sharesRequest = $sharesRequest;
 		$this->eventsService = $eventsService;
 		$this->miscService = $miscService;
 	}
@@ -120,7 +126,9 @@ class MembersService {
 			throw $e;
 		}
 
-		return $this->membersRequest->getMembers($circle->getUniqueId(), $circle->getHigherViewer());
+		return $this->membersRequest->getMembers(
+			$circle->getUniqueId(), $circle->getHigherViewer()
+		);
 	}
 
 
@@ -130,6 +138,9 @@ class MembersService {
 	 * @param Circle $circle
 	 * @param string $ident
 	 * @param int $type
+	 *
+	 * @throws MemberAlreadyExistsException
+	 * @throws Exception
 	 */
 	private function addSingleMember(Circle $circle, $ident, $type) {
 		$this->verifyIdentBasedOnItsType($ident, $type);
@@ -152,6 +163,7 @@ class MembersService {
 	 * @param int $type
 	 *
 	 * @return bool
+	 * @throws Exception
 	 */
 	private function addMassiveMembers(Circle $circle, $ident, $type) {
 
@@ -168,6 +180,8 @@ class MembersService {
 	 *
 	 * @param Circle $circle
 	 * @param Member $member
+	 *
+	 * @throws Exception
 	 */
 	private function addMemberBasedOnItsType(Circle $circle, Member &$member) {
 		$this->addLocalMember($circle, $member);
@@ -389,7 +403,9 @@ class MembersService {
 			$member->levelHasToBeEditable();
 			$this->updateMemberLevel($circle, $member, $level);
 
-			return $this->membersRequest->getMembers($circle->getUniqueId(), $circle->getHigherViewer());
+			return $this->membersRequest->getMembers(
+				$circle->getUniqueId(), $circle->getHigherViewer()
+			);
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -397,6 +413,13 @@ class MembersService {
 	}
 
 
+	/**
+	 * @param Circle $circle
+	 * @param Member $member
+	 * @param $level
+	 *
+	 * @throws Exception
+	 */
 	private function updateMemberLevel(Circle $circle, Member $member, $level) {
 		if ($member->getLevel() === $level) {
 			return;
@@ -491,6 +514,7 @@ class MembersService {
 		$this->eventsService->onMemberLeaving($circle, $member);
 
 		$this->membersRequest->removeMember($member);
+		$this->sharesRequest->removeSharesFromMember($circle, $member);
 
 		return $this->membersRequest->getMembers(
 			$circle->getUniqueId(), $circle->getHigherViewer()

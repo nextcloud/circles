@@ -302,6 +302,7 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 		$andX = $expr->andX();
 
 		$andX->add($expr->eq('m.user_id', $qb->createNamedParameter($userId)));
+		$andX->add($expr->gt('m.level', $qb->createNamedParameter(0)));
 		$andX->add($expr->eq('m.user_type', $qb->createNamedParameter(Member::TYPE_USER)));
 		$andX->add(
 			$expr->eq(
