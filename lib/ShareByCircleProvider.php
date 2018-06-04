@@ -372,8 +372,8 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	private function editShareEntry($data) {
 		$data['share_with'] =
 			sprintf(
-				'%s (%s, %s)', $data['circle_name'], Circle::TypeLongString($data['circle_type']),
-				$this->miscService->getDisplayName($data['circle_owner'])
+				'%s (%s, %s) [%s]', $data['circle_name'], Circle::TypeLongString($data['circle_type']),
+				$this->miscService->getDisplayName($data['circle_owner']), $data['share_with']
 			);
 
 		return $data;
