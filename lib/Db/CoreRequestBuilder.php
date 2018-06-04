@@ -20,6 +20,9 @@ use OCP\IL10N;
 
 class CoreRequestBuilder {
 
+	const TABLE_FILE_SHARES = 'share';
+	const SHARE_TYPE = 7;
+
 	const TABLE_CIRCLES = 'circles_circles';
 	const TABLE_MEMBERS = 'circles_members';
 	const TABLE_GROUPS = 'circles_groups';

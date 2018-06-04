@@ -302,6 +302,7 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 		$andX = $expr->andX();
 
 		$andX->add($expr->eq('m.user_id', $qb->createNamedParameter($userId)));
+		$andX->add($expr->gt('m.level', $qb->createNamedParameter(0)));
 		$andX->add($expr->eq('m.user_type', $qb->createNamedParameter(Member::TYPE_USER)));
 		$andX->add(
 			$expr->eq(
@@ -311,7 +312,6 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 				)
 			)
 		);
-		$andX->add($expr->gte('m.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)));
 
 		return $andX;
 	}
@@ -335,8 +335,7 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 				$expr->eq(
 					'g.circle_id',
 					$qb->createFunction('SUBSTR(`c`.`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')')
-				),
-				$expr->gte('g.level', $qb->createNamedParameter(Member::LEVEL_MEMBER))
+				)
 			)
 		);
 
@@ -346,42 +345,6 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 		);
 
 		return $expr->andX($expr->eq('ncgu.uid', $qb->createNamedParameter($userId)));
-	}
-
-
-	/**
-	 * left join to get more data about the initiator of the share
-	 *
-	 * @param IQueryBuilder $qb
-	 */
-	protected function leftJoinShareInitiator(IQueryBuilder &$qb) {
-		$expr = $qb->expr();
-
-		$qb->selectAlias('src_m.level', 'initiator_circle_level');
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->leftJoin(
-			's', CoreRequestBuilder::TABLE_MEMBERS, 'src_m',
-			$expr->andX(
-				$expr->eq('s.uid_initiator', 'src_m.user_id'),
-				$expr->eq('src_m.user_type', $qb->createNamedParameter(Member::TYPE_USER)),
-				$expr->eq('s.share_with', 'src_m.circle_id')
-			)
-		);
-
-		$qb->selectAlias('src_g.level', 'initiator_group_level');
-		$qb->leftJoin(
-			's', CoreRequestBuilder::NC_TABLE_GROUP_USER, 'src_ncgu',
-			$expr->eq('s.uid_initiator', 'src_ncgu.uid')
-		);
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->leftJoin(
-			's', 'circles_groups', 'src_g',
-			$expr->andX(
-				$expr->gte('src_g.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)),
-				$expr->eq('src_ncgu.gid', 'src_g.group_id'),
-				$req = $expr->eq('s.share_with', 'src_g.circle_id')
-			)
-		);
 	}
 
 

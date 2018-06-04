@@ -235,8 +235,7 @@ class GroupsService {
 			$group->cantBeOwner();
 			$higherViewer->hasToBeHigherLevel($group->getLevel());
 
-			$group->setLevel(Member::LEVEL_NONE);
-			$this->membersRequest->updateGroup($group);
+			$this->membersRequest->unlinkAllFromGroup($groupId);
 
 			$this->eventsService->onGroupUnlink($circle, $group);
 

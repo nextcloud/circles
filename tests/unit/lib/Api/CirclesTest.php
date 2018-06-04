@@ -541,9 +541,11 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 					);
 
 
-					Circles::removeMember(
-						$circle->getId(), Env::ENV_TEST_MEMBER2, Member::TYPE_USER
-					);
+						Circles::removeMember(
+							$circle->getId(), Env::ENV_TEST_MEMBER2, Member::TYPE_USER
+						);
+
+				try {
 					$member = Circles::getMember(
 						$circle->getId(), Env::ENV_TEST_MEMBER2, Member::TYPE_USER
 					);
@@ -557,6 +559,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 							$member->getCircleId()
 						]
 					);
+				} catch (MemberDoesNotExistException $e) {}
 
 				} catch (Exception $e) {
 					throw $e;
