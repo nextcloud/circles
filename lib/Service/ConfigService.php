@@ -258,6 +258,23 @@ class ConfigService {
 		return $this->config->setUserValue($this->userId, $this->appName, $key, $value);
 	}
 
+
+	/**
+	 * Get a user value by key and user
+	 *
+	 * @param string $userId
+	 * @param string $key
+	 *
+	 * @param string $default
+	 *
+	 * @return string
+	 */
+	public function getCoreValueForUser($userId, $key, $default = '') {
+		return $this->config->getUserValue($userId, 'core', $key, $default);
+	}
+
+
+
 	/**
 	 * Get a user value by key and user
 	 *

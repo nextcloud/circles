@@ -31,6 +31,7 @@ namespace OCA\Circles\Db;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
+use OCA\Circles\Service\TimezoneService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 use OCP\IL10N;
@@ -44,9 +45,10 @@ class FederatedLinksRequestBuilder extends CoreRequestBuilder {
 	 * {@inheritdoc}
 	 */
 	public function __construct(
-		IL10N $l10n, IDBConnection $connection, ConfigService $configService, MiscService $miscService
+		IL10N $l10n, IDBConnection $connection, ConfigService $configService,
+		TimeZoneService $timeZoneService, MiscService $miscService
 	) {
-		parent::__construct($l10n, $connection, $configService, $miscService);
+		parent::__construct($l10n, $connection, $configService, $timeZoneService, $miscService);
 	}
 
 
@@ -58,7 +60,7 @@ class FederatedLinksRequestBuilder extends CoreRequestBuilder {
 	protected function getLinksInsertSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$qb->insert(self::TABLE_LINKS)
-		   ->setValue('creation', $qb->createFunction('NOW()'));
+		   ->setValue('creation', $qb->createNamedParameter($this->timeZoneService->getUTCDate()));
 
 		return $qb;
 	}
