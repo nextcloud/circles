@@ -730,9 +730,8 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 		foreach ($listing AS $circle) {
 			array_push($result, $circle->getName());
 		}
-
-		$this->assertEquals($result, [self::NAME_PUBLIC_CIRCLE1, self::NAME_CLOSED_CIRCLE1]);
-
+		$expected = [self::NAME_PUBLIC_CIRCLE1, self::NAME_CLOSED_CIRCLE1];
+		$this->assertEquals($result, $expected);
 
 		// Let's add user to all circle
 		Env::setUser(Env::ENV_TEST_OWNER1);
