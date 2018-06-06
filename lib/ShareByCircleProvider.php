@@ -164,6 +164,10 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 				'\OCA\Circles\Circles\FileSharingBroadcaster'
 			);
 
+			$user = $this->getUser()->getDisplayName();
+			$target = $share->getTarget();
+			$shareWith = $share->getSharedWith();
+			$this->miscService->log("user $user shared $target with $shareWith");
 			return $this->getShareById($shareId);
 		} catch (\Exception $e) {
 			throw $e;
@@ -188,6 +192,9 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 		   ->set('uid_initiator', $qb->createNamedParameter($share->getSharedBy()));
 		$qb->execute();
 
+		$user = $this->getUser()->getDisplayName();
+		$target = $share->getTarget();
+		$this->miscService->log("user $user updated shared $target");
 		return $share;
 	}
 
@@ -202,6 +209,10 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 		$qb = $this->getBaseDeleteSql();
 		$this->limitToShareAndChildren($qb, $share->getId());
 
+		$user = $this->getUser()->getDisplayName();
+		$target = $share->getTarget();
+		$shareWith = $share->getSharedWith();
+		$this->miscService->log("user $user unshared $target with $shareWith");
 		$qb->execute();
 	}
 
@@ -747,5 +758,16 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 			'token'       => $share->getToken(),
 			'password'    => $share->getPassword()
 		];
+	}
+	
+	/**
+	 * @return User
+	 */
+	private function getUser() {
+	    if (self::$user == null){
+	        $app = new Application();
+	        self::$user = $app->getContainer()->query('UserSession')->getUser();
+	    }
+	    return self::$user;
 	}
 }
