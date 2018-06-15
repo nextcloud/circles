@@ -23,7 +23,7 @@ Users won't be able to find this Circle using Nextcloud search engine.
 
 		]]>
 	</description>
-	<version>0.13.6</version>
+	<version>0.14.0</version>
 	<licence>agpl</licence>
 	<author>Maxence Lange</author>
 	<documentation>
@@ -47,6 +47,7 @@ Users won't be able to find this Circle using Nextcloud search engine.
 			<step>OCA\Circles\Migration\ImportOwncloudCustomGroups</step>
 			<step>OCA\Circles\Migration\GenerateUniqueIdOnCreatedCircle</step>
 			<step>OCA\Circles\Migration\UsingShortenUniqueIdInsteadOfCircleId</step>
+			<step>OCA\Circles\Migration\RemoveDeadShares</step>
 		</post-migration>
 	</repair-steps>
 
