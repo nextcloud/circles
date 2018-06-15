@@ -58,6 +58,7 @@ use OCP\Security\ISecureRandom;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IShare;
 use OCP\Share\IShareProvider;
+use OCA\Circles\Service\TimezoneService;
 
 
 class ShareByCircleProvider extends CircleProviderRequest implements IShareProvider {
@@ -103,8 +104,9 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 		$container = $app->getContainer();
 		$configService = $container->query(ConfigService::class);
 		$miscService = $container->query(MiscService::class);
+		$timeZoneService = $container->query(TimezoneService::class);
 
-		parent::__construct($l10n, $connection, $configService, $miscService);
+		parent::__construct($l10n, $connection, $configService, $timeZoneService, $miscService);
 
 		$this->secureRandom = $secureRandom;
 		$this->userManager = $userManager;
