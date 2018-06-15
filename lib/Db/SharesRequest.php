@@ -28,7 +28,6 @@
 namespace OCA\Circles\Db;
 
 
-use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 
 class SharesRequest extends SharesRequestBuilder {
@@ -37,15 +36,14 @@ class SharesRequest extends SharesRequestBuilder {
 	/**
 	 * remove shares from a member to a circle
 	 *
-	 * @param Circle $circle
 	 * @param Member $member
 	 */
-	public function removeSharesFromMember(Circle $circle, Member $member) {
+	public function removeSharesFromMember(Member $member) {
 		$qb = $this->getSharesDeleteSql();
 		$expr = $qb->expr();
 
 		$andX = $expr->andX();
-		$andX->add($expr->eq('share_with', $qb->createNamedParameter($circle->getUniqueId())));
+		$andX->add($expr->eq('share_with', $qb->createNamedParameter($member->getCircleId())));
 		$andX->add($expr->eq('uid_initiator', $qb->createNamedParameter($member->getUserId())));
 		$qb->andWhere($andX);
 

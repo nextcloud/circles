@@ -34,6 +34,7 @@ namespace OCA\Circles;
 use OC\Files\Cache\Cache;
 use OC\Share20\Exception\InvalidShare;
 use OC\Share20\Share;
+use OC\User\NoUserException;
 use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleProviderRequest;
@@ -368,13 +369,16 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * @param $data
 	 *
 	 * @return array<string,string>
+	 * @throws NoUserException
 	 */
 	private function editShareEntry($data) {
 		$data['share_with'] =
 			sprintf(
-				'%s (%s, %s) [%s]', $data['circle_name'], Circle::TypeLongString($data['circle_type']),
+				'%s (%s, %s) [%s]', $data['circle_name'],
+				Circle::TypeLongString($data['circle_type']),
 				$this->miscService->getDisplayName($data['circle_owner']), $data['share_with']
 			);
+
 
 		return $data;
 	}

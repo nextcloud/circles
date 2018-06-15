@@ -357,7 +357,7 @@ class CirclesService {
 		$this->eventsService->onMemberLeaving($circle, $member);
 
 		$this->membersRequest->removeMember($member);
-		$this->sharesRequest->removeSharesFromMember($circle, $member);
+		$this->sharesRequest->removeSharesFromMember($member);
 
 		return $member;
 	}

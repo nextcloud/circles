@@ -28,32 +28,9 @@
 namespace OCA\Circles\Db;
 
 
-use Doctrine\DBAL\Query\QueryBuilder;
-use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
-use OCA\Circles\Model\Circle;
-use OCA\Circles\Model\Member;
-use OCA\Circles\Model\SharingFrame;
-use OCA\Circles\Service\ConfigService;
-use OCA\Circles\Service\MiscService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
-use OCP\IDBConnection;
-use OCP\IL10N;
 
 class SharesRequestBuilder extends CoreRequestBuilder {
-
-
-	/**
-	 * SharesRequestBuilder constructor.
-	 *
-	 * {@inheritdoc}
-	 * @param MembersRequest $membersRequest
-	 */
-	public function __construct(
-		IL10N $l10n, IDBConnection $connection, ConfigService $configService,
-		MiscService $miscService
-	) {
-		parent::__construct($l10n, $connection, $configService, $miscService);
-	}
 
 
 	/**
