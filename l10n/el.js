@@ -41,7 +41,7 @@ OC.L10N.register(
     "Contact" : "Επαφή",
     "Kick this member" : "Διώξτε αυτό το μέλος",
     "Accept the request" : "Αποδοχή αιτήματος",
-    "Dismiss the request" : "Απόρριψη αιτήματος",
+    "Dismiss the request" : "Αποδέσμευση αιτήματος",
     "Unlink this group" : "Αποσυνδέστε αυτή την ομάδα",
     "Remove this link" : "Αφαιρέστε αυτό τον σύνδεσμο",
     "Cancel the link request" : "Ακυρώστε το αίτημα συνδέσμου",
