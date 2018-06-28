@@ -213,6 +213,7 @@ OC.L10N.register(
     "Email format is not valid" : "Le format d'Email est invalide",
     "This contact is not available" : "Ce contact n'est pas disponible",
     "Could not find share" : "Impossible de trouver le partage",
+    "Bring cloud-users closer together." : "Permet de rapprocher les utilisateur du cloud ensemble ",
     "No files in here" : "Aucun fichier",
     "No entries found in this folder" : "Aucune entrée trouvée dans ce dossier",
     "Name" : "Nom",
