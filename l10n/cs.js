@@ -221,6 +221,7 @@ OC.L10N.register(
     "Allow Federated Links" : "Povolit sdružená propojení",
     "Accept Link Request Automatically" : "Automaticky přijímat žádost o připojení",
     "Save settings" : "Uložit nastavení",
+    "reset test result" : "resetovat výsledek testu",
     "Test underway. Please wait." : "Probíhá test. Prosím, čekejte.",
     "Allow linking of groups:" : "Povolit propojení skupin:",
     "Groups can be linked to circles." : "Skupiny lze propojit s kruhy."
