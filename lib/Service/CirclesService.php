@@ -43,8 +43,11 @@ use OCA\Circles\Exceptions\CircleTypeDisabledException;
 use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\MemberIsNotModeratorException;
+use OCA\Circles\Exceptions\MemberIsNotOwnerException;
+use OCA\Circles\Exceptions\MembersLimitException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
+use OCP\IGroupManager;
 use OCP\IL10N;
 
 class CirclesService {
@@ -54,6 +57,9 @@ class CirclesService {
 
 	/** @var IL10N */
 	private $l10n;
+
+	/** @var IGroupManager */
+	private $groupManager;
 
 	/** @var ConfigService */
 	private $configService;
@@ -85,6 +91,7 @@ class CirclesService {
 	 *
 	 * @param string $userId
 	 * @param IL10N $l10n
+	 * @param IGroupManager $groupManager
 	 * @param ConfigService $configService
 	 * @param CirclesRequest $circlesRequest
 	 * @param MembersRequest $membersRequest
@@ -97,6 +104,7 @@ class CirclesService {
 	public function __construct(
 		$userId,
 		IL10N $l10n,
+		IGroupManager $groupManager,
 		ConfigService $configService,
 		CirclesRequest $circlesRequest,
 		MembersRequest $membersRequest,
@@ -108,6 +116,7 @@ class CirclesService {
 	) {
 		$this->userId = $userId;
 		$this->l10n = $l10n;
+		$this->groupManager = $groupManager;
 		$this->configService = $configService;
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
@@ -207,8 +216,9 @@ class CirclesService {
 
 		try {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
-			if ($circle->getHigherViewer()
-					   ->isLevel(Member::LEVEL_MEMBER)
+			if ($this->viewerIsAdmin()
+				|| $circle->getHigherViewer()
+						  ->isLevel(Member::LEVEL_MEMBER)
 			) {
 				$this->detailsCircleMembers($circle);
 				$this->detailsCircleLinkedGroups($circle);
@@ -230,8 +240,13 @@ class CirclesService {
 	 * @throws Exception
 	 */
 	private function detailsCircleMembers(Circle &$circle) {
-		$members =
-			$this->membersRequest->getMembers($circle->getUniqueId(), $circle->getHigherViewer());
+		if ($this->viewerIsAdmin()) {
+			$members = $this->membersRequest->forceGetMembers($circle->getUniqueId());
+		} else {
+			$members = $this->membersRequest->getMembers(
+				$circle->getUniqueId(), $circle->getHigherViewer()
+			);
+		}
 
 		$circle->setMembers($members);
 	}
@@ -292,6 +307,9 @@ class CirclesService {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			$circle->getHigherViewer()
 				   ->hasToBeOwner();
+			if (!$this->viewerIsAdmin()) {
+				$settings['members_limit'] = $circle->getSetting('members_limit');
+			}
 
 			$ak = array_keys($settings);
 			foreach ($ak AS $k) {
@@ -326,6 +344,8 @@ class CirclesService {
 				$circleUniqueId, $this->userId, Member::TYPE_USER
 			);
 			$member->hasToBeAbleToJoinTheCircle();
+			$this->checkThatCircleIsNotFull($circle);
+
 			$member->joinCircle($circle->getType());
 			$this->membersRequest->updateMember($member);
 
@@ -528,4 +548,76 @@ class CirclesService {
 		return $objectIds;
 	}
 
+
+	/**
+	 * @param Circle $circle
+	 *
+	 * @throws MembersLimitException
+	 */
+	public function checkThatCircleIsNotFull(Circle $circle) {
+
+		$members = $this->membersRequest->forceGetMembers(
+			$circle->getUniqueId(), Member::STATUS_MEMBER, true
+		);
+
+		$limit = $circle->getSetting('members_limit');
+		if ($limit === -1) {
+			return;
+		}
+		if ($limit === 0) {
+			$limit = $this->configService->getAppValue(ConfigService::CIRCLES_MEMBERS_LIMIT);
+		}
+
+		if (sizeof($members) >= $limit) {
+			throw new MembersLimitException(
+				'This circle already reach its limit on the number of members'
+			);
+		}
+
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function viewerIsAdmin() {
+		if ($this->userId === '') {
+			return false;
+		}
+
+		return ($this->groupManager->isAdmin($this->userId));
+	}
+
+
+	/**
+	 * should be moved.
+	 *
+	 * @param Member $member
+	 *
+	 * @throws MemberIsNotOwnerException
+	 */
+	public function hasToBeOwner(Member $member) {
+		if (!$this->groupManager->isAdmin($member->getUserId())
+			&& $member->getLevel() < Member::LEVEL_OWNER) {
+			throw new MemberIsNotOwnerException(
+				$this->l10n->t('This member is not the owner of the circle')
+			);
+		}
+	}
+
+
+	/**
+	 * should be moved.
+	 *
+	 * @param Member $member
+	 *
+	 * @throws MemberIsNotOwnerException
+	 */
+	public function hasToBeAdmin(Member $member) {
+		if (!$this->groupManager->isAdmin($member->getUserId())
+			&& $member->getLevel() < Member::LEVEL_ADMIN) {
+			throw new MemberIsNotOwnerException(
+				$this->l10n->t('This member is not an admin of the circle')
+			);
+		}
+	}
 }

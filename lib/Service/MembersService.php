@@ -36,6 +36,7 @@ use OCA\Circles\Exceptions\CircleTypeNotValidException;
 use OCA\Circles\Exceptions\EmailAccountInvalidFormatException;
 use OCA\Circles\Exceptions\GroupDoesNotExistException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
+use OCA\Circles\Exceptions\MembersLimitException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCP\IL10N;
@@ -64,6 +65,9 @@ class MembersService {
 	/** @var SharesRequest */
 	private $sharesRequest;
 
+	/** @var CirclesService */
+	private $circlesService;
+
 	/** @var EventsService */
 	private $eventsService;
 
@@ -80,13 +84,15 @@ class MembersService {
 	 * @param CirclesRequest $circlesRequest
 	 * @param MembersRequest $membersRequest
 	 * @param SharesRequest $sharesRequest
+	 * @param CirclesService $circlesService
 	 * @param EventsService $eventsService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
 		$userId, IL10N $l10n, IUserManager $userManager, ConfigService $configService,
 		CirclesRequest $circlesRequest, MembersRequest $membersRequest,
-		SharesRequest $sharesRequest, EventsService $eventsService, MiscService $miscService
+		SharesRequest $sharesRequest, CirclesService $circlesService, EventsService $eventsService,
+		MiscService $miscService
 	) {
 		$this->userId = $userId;
 		$this->l10n = $l10n;
@@ -95,6 +101,7 @@ class MembersService {
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
 		$this->sharesRequest = $sharesRequest;
+		$this->circlesService = $circlesService;
 		$this->eventsService = $eventsService;
 		$this->miscService = $miscService;
 	}
@@ -147,6 +154,8 @@ class MembersService {
 
 		$member = $this->membersRequest->getFreshNewMember($circle->getUniqueId(), $ident, $type);
 		$member->hasToBeInviteAble();
+
+		$this->circlesService->checkThatCircleIsNotFull($circle);
 
 		$this->addMemberBasedOnItsType($circle, $member);
 
