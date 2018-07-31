@@ -206,14 +206,14 @@ class CirclesController extends BaseController {
 			);
 		}
 
-		$chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-		if (strpos($chars, strtolower(substr($name, 0, 1))) === false) {
-			throw new CircleNameFirstCharException(
-				$this->l10n->t(
-					"The name of your circle must start with an alpha-numerical character"
-				)
-			);
-		}
+//		$chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+//		if (strpos($chars, strtolower(substr($name, 0, 1))) === false) {
+//			throw new CircleNameFirstCharException(
+//				$this->l10n->t(
+//					"The name of your circle must start with an alpha-numerical character"
+//				)
+//			);
+//		}
 	}
 
 }
