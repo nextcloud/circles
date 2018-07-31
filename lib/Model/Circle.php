@@ -66,7 +66,7 @@ class Circle extends BaseCircle implements \JsonSerializable {
 
 
 	public function jsonSerialize() {
-		$json = array(
+		$json = [
 			'id'               => $this->getId(),
 			'name'             => $this->getName(),
 			'owner'            => $this->getOwner(),
@@ -83,7 +83,7 @@ class Circle extends BaseCircle implements \JsonSerializable {
 			'members'          => $this->getMembers(),
 			'groups'           => $this->getGroups(),
 			'links'            => $this->getLinks()
-		);
+		];
 
 		if ($this->lightJson) {
 			$json['members'] = [];

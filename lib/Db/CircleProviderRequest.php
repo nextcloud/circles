@@ -28,8 +28,6 @@
 namespace OCA\Circles\Db;
 
 
-use OCA\Circles\Model\Member;
-
 class CircleProviderRequest extends CircleProviderRequestBuilder {
 
 
