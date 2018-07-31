@@ -132,8 +132,8 @@ var resultCircles = {
 				$(this).addClass('selected');
 			});
 
-		elements.emptyContent.hide(800);
-		elements.mainUI.fadeIn(800);
+		elements.emptyContent.hide(400);
+		elements.mainUI.fadeIn(400);
 		curr.defineCircle(result);
 		nav.displayCircleDetails(result.details);
 		nav.displayMembersInteraction(result.details);

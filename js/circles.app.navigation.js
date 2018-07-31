@@ -60,7 +60,7 @@ var nav = {
 				return;
 			}
 
-			if(!_.isUndefined(elements.searchTimeoutID)) {
+			if (!_.isUndefined(elements.searchTimeoutID)) {
 				clearTimeout(elements.searchTimeoutID);
 			}
 			elements.searchTimeoutID = _.delay(function () {
@@ -210,9 +210,9 @@ var nav = {
 		curr.circle = 0;
 		curr.circleLevel = 0;
 
-		elements.navigation.show('slide', 800);
-		elements.emptyContent.show(800);
-		elements.mainUI.fadeOut(800);
+		elements.navigation.show('slide', 400);
+		elements.emptyContent.show(400);
+		elements.mainUI.fadeOut(400);
 
 		elements.circlesSearch.val('');
 		elements.addMember.val('');
@@ -637,9 +637,15 @@ var nav = {
 
 		this.displayNonMemberInteraction(details);
 
+		if (details.viewer.level !== define.levelOwner && OC.isUserAdmin()) {
+			elements.adminSettingsCircle.show();
+		} else {
+			elements.adminSettingsCircle.hide();
+		}
+
 		if (details.viewer.level === define.levelOwner) {
-			elements.destroyCircle.show();
 			elements.buttonCircleSettings.show();
+			elements.destroyCircle.show();
 			elements.buttonJoinCircle.hide();
 		}
 	},

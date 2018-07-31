@@ -66,6 +66,7 @@ var curr = {
 		curr.circleDetails = data.details;
 		curr.circleName = data.details.name;
 		curr.circleDesc = data.details.description;
+		curr.circleLimit = data.details.settings.members_limit;
 		curr.circleSettings = data.details.settings;
 		curr.circleLevel = data.details.viewer.level;
 		curr.circleStatus = data.details.viewer.status;
@@ -219,6 +220,7 @@ $(document).ready(function () {
 			});
 
 			this.onSuccess = function (text) {
+
 				notyf.confirm(text);
 			};
 

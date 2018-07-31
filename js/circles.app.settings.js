@@ -49,6 +49,13 @@ var settings = {
 	initUISettings: function () {
 		elements.settingsName.val(curr.circleName);
 		elements.settingsDesc.val(curr.circleDesc);
+		elements.settingsLimit.val(curr.circleLimit);
+		if (OC.isUserAdmin()) {
+			elements.settingsEntryLimit.show();
+		} else {
+			elements.settingsEntryLimit.hide();
+		}
+
 		elements.settingsLink.prop('checked', (curr.circleSettings['allow_links'] === 'true'));
 		elements.settingsLinkAuto.prop('checked',
 			(curr.circleSettings['allow_links_auto'] === 'true'));

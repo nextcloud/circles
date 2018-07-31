@@ -63,12 +63,15 @@ var elements = {
 	joinCircleRequest: null,
 	joinCircleInvite: null,
 	joinCircle: null,
+	adminSettingsCircle: null,
 	leaveCircle: null,
 	destroyCircle: null,
 
 	settingsPanel: null,
 	settingsName: null,
 	settingsDesc: null,
+	settingsLimit: null,
+	settingsEntryLimit: null,
 	settingsLink: null,
 	settingsLinkAuto: null,
 	settingsLinkFiles: null,
@@ -95,7 +98,7 @@ var elements = {
 		elements.newType = $('#circles_new_type');
 		elements.newSubmit = $('#circles_new_submit');
 		elements.newName = $('#circles_new_name');
-		elements.navigation = $('#app-navigation.circles');
+		elements.navigation = $('#circle-navigation.circles');
 		elements.circlesList = $('#circles_list');
 		elements.circlesSearch = $('#circles_search');
 		elements.circlesFilters = $('#circles_filters');
@@ -121,10 +124,18 @@ var elements = {
 		elements.joinCircle = $('#joincircle');
 		elements.leaveCircle = $('#leavecircle');
 		elements.destroyCircle = $('#circle-actions-delete');
+		elements.adminSettingsCircle = $('#adminsettingscircle');
+		elements.adminSettingsCircle.hide().on('click', function () {
+			settings.displaySettings(true);
+		});
 
 		elements.settingsPanel = $('#settings-panel');
 		elements.settingsName = $('#settings-name');
 		elements.settingsDesc = $('#settings-desc');
+		elements.settingsEntryLimit = $('#settings-entry-limit');
+		elements.settingsLimit = $('#settings-limit');
+		// elements.settingsLimit.prop('disabled', !OC.isUserAdmin());
+
 		elements.settingsLink = $('#settings-link');
 		elements.settingsLinkAuto = $('#settings-link-auto');
 		elements.settingsLinkFiles = $('#settings-link-files');
