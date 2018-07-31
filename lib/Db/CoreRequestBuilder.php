@@ -42,7 +42,7 @@ class CoreRequestBuilder {
 	protected $configService;
 
 	/** @var TimezoneService */
-	protected $timeZoneService;
+	protected $timezoneService;
 
 	/** @var MiscService */
 	protected $miscService;
@@ -59,17 +59,17 @@ class CoreRequestBuilder {
 	 * @param IL10N $l10n
 	 * @param IDBConnection $connection
 	 * @param ConfigService $configService
-	 * @param TimezoneService $timeZoneService
+	 * @param TimezoneService $timezoneService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
 		IL10N $l10n, IDBConnection $connection, ConfigService $configService,
-			 TimeZoneService $timeZoneService, MiscService $miscService
+			 TimezoneService $timezoneService, MiscService $miscService
 	) {
 		$this->l10n = $l10n;
 		$this->dbConnection = $connection;
 		$this->configService = $configService;
-		$this->timeZoneService = $timeZoneService;
+		$this->timezoneService = $timezoneService;
 		$this->miscService = $miscService;
 	}
 

@@ -51,9 +51,9 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	 */
 	public function __construct(
 		IL10N $l10n, IDBConnection $connection, IGroupManager $groupManager,
-		ConfigService $configService, TimeZoneService $timeZoneService, MiscService $miscService
+		ConfigService $configService, TimezoneService $timezoneService, MiscService $miscService
 	) {
-		parent::__construct($l10n, $connection, $configService, $timeZoneService, $miscService);
+		parent::__construct($l10n, $connection, $configService, $timezoneService, $miscService);
 		$this->groupManager = $groupManager;
 	}
 
@@ -66,7 +66,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	protected function getMembersInsertSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$qb->insert(self::TABLE_MEMBERS)
-		   ->setValue('joined', $qb->createNamedParameter($this->timeZoneService->getUTCDate()));
+		   ->setValue('joined', $qb->createNamedParameter($this->timezoneService->getUTCDate()));
 
 		return $qb;
 	}
@@ -208,7 +208,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		$member->setNote($data['note']);
 		$member->setLevel($data['level']);
 		$member->setStatus($data['status']);
-		$member->setJoined($this->timeZoneService->convertTimeForCurrentUser($data['joined']));
+		$member->setJoined($this->timezoneService->convertTimeForCurrentUser($data['joined']));
 
 		return $member;
 	}
@@ -233,7 +233,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 			$member->setUserId($data['group_id']);
 		}
 
-		$member->setJoined($this->timeZoneService->convertTimeForCurrentUser($data['joined']));
+		$member->setJoined($this->timezoneService->convertTimeForCurrentUser($data['joined']));
 
 		return $member;
 	}

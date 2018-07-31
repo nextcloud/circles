@@ -46,9 +46,9 @@ class FederatedLinksRequestBuilder extends CoreRequestBuilder {
 	 */
 	public function __construct(
 		IL10N $l10n, IDBConnection $connection, ConfigService $configService,
-		TimeZoneService $timeZoneService, MiscService $miscService
+		TimezoneService $timezoneService, MiscService $miscService
 	) {
-		parent::__construct($l10n, $connection, $configService, $timeZoneService, $miscService);
+		parent::__construct($l10n, $connection, $configService, $timezoneService, $miscService);
 	}
 
 
@@ -60,7 +60,7 @@ class FederatedLinksRequestBuilder extends CoreRequestBuilder {
 	protected function getLinksInsertSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$qb->insert(self::TABLE_LINKS)
-		   ->setValue('creation', $qb->createNamedParameter($this->timeZoneService->getUTCDate()));
+		   ->setValue('creation', $qb->createNamedParameter($this->timezoneService->getUTCDate()));
 
 		return $qb;
 	}

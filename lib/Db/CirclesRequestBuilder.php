@@ -53,9 +53,9 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 */
 	public function __construct(
 		IL10N $l10n, IDBConnection $connection, MembersRequest $membersRequest,
-		ConfigService $configService, TimeZoneService $timeZoneService, MiscService $miscService
+		ConfigService $configService, TimezoneService $timezoneService, MiscService $miscService
 	) {
-		parent::__construct($l10n, $connection, $configService, $timeZoneService, $miscService);
+		parent::__construct($l10n, $connection, $configService, $timezoneService, $miscService);
 		$this->membersRequest = $membersRequest;
 	}
 
@@ -319,7 +319,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	protected function getCirclesInsertSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$qb->insert(self::TABLE_CIRCLES)
-		   ->setValue('creation', $qb->createNamedParameter($this->timeZoneService->getUTCDate()));
+		   ->setValue('creation', $qb->createNamedParameter($this->timezoneService->getUTCDate()));
 
 		return $qb;
 	}
