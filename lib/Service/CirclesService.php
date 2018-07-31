@@ -305,8 +305,8 @@ class CirclesService {
 
 		try {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
-			$circle->getHigherViewer()
-				   ->hasToBeOwner();
+			$this->hasToBeOwner($circle->getHigherViewer());
+
 			if (!$this->viewerIsAdmin()) {
 				$settings['members_limit'] = $circle->getSetting('members_limit');
 			}
@@ -390,18 +390,18 @@ class CirclesService {
 	 *
 	 * @throws CircleDoesNotExistException
 	 * @throws MemberIsNotModeratorException
+	 * @throws MemberIsNotOwnerException
 	 */
 	public function removeCircle($circleUniqueId) {
 
 		$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
-		$circle->getHigherViewer()
-			   ->hasToBeOwner();
+
+		$this->hasToBeOwner($circle->getHigherViewer());
 
 		$this->eventsService->onCircleDestruction($circle);
 
 		$this->membersRequest->removeAllFromCircle($circleUniqueId);
 		$this->circlesRequest->destroyCircle($circleUniqueId);
-
 	}
 
 

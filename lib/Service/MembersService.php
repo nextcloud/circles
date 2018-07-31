@@ -478,7 +478,9 @@ class MembersService {
 	private function switchOwner(Circle $circle, Member &$member) {
 		try {
 			$isMod = $circle->getHigherViewer();
-			$isMod->hasToBeOwner();
+
+			// should already be possible from an NCAdmin, but not enabled in the frontend.
+			$this->circlesService->hasToBeOwner($isMod);
 
 			$member->hasToBeMember();
 			$member->cantBeOwner();
