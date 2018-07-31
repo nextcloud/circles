@@ -28,9 +28,10 @@
 
 var elements = {
 	test_timer: 4000,
-	test_async_start: null,
-	test_async_reset: null,
-	test_async_wait: null,
+	// test_async_start: null,
+	// test_async_reset: null,
+	// test_async_wait: null,
+	members_limit: null,
 	allow_linked_groups: null,
 	allow_federated_circles: null
 };
@@ -38,38 +39,44 @@ var elements = {
 
 $(document).ready(function () {
 
-	elements.test_async_start = $('#test_async_start');
-	elements.test_async_reset = $('#test_async_reset');
-	elements.test_async_wait = $('#test_async_wait');
-	elements.test_async_result = $('#test_async_result');
+	// elements.test_async_start = $('#test_async_start');
+	// elements.test_async_reset = $('#test_async_reset');
+	// elements.test_async_wait = $('#test_async_wait');
+	// elements.test_async_result = $('#test_async_result');
+	elements.members_limit = $('#members_limit');
 	elements.allow_linked_groups = $('#allow_linked_groups');
 	elements.allow_federated_circles = $('#allow_federated_circles');
 
-	elements.test_async_wait.hide().on('click', function () {
-		self.refreshResult();
-	});
+	// elements.test_async_wait.hide().on('click', function () {
+	// 	self.refreshResult();
+	// });
+	//
+	// elements.test_async_reset.hide().on('click', function () {
+	// 	$.ajax({
+	// 		method: 'DELETE',
+	// 		url: OC.generateUrl('/apps/circles/admin/testAsync')
+	// 	}).done(function (res) {
+	// 		self.displayTestAsync(res);
+	// 	});
+	// });
+	//
+	// elements.test_async_start.hide().on('click', function () {
+	// 	$.ajax({
+	// 		method: 'POST',
+	// 		url: OC.generateUrl('/apps/circles/admin/testAsync')
+	// 	}).done(function (res) {
+	// 		self.displayTestAsync(res);
+	// 	});
+	// });
 
-	elements.test_async_reset.hide().on('click', function () {
-		$.ajax({
-			method: 'DELETE',
-			url: OC.generateUrl('/apps/circles/admin/testAsync')
-		}).done(function (res) {
-			self.displayTestAsync(res);
-		});
-	});
-
-	elements.test_async_start.hide().on('click', function () {
-		$.ajax({
-			method: 'POST',
-			url: OC.generateUrl('/apps/circles/admin/testAsync')
-		}).done(function (res) {
-			self.displayTestAsync(res);
-		});
+	elements.members_limit.on('change', function () {
+		saveChange();
 	});
 
 	elements.allow_linked_groups.on('change', function () {
 		saveChange();
 	});
+
 
 	elements.allow_federated_circles.on('change', function () {
 		saveChange();
@@ -80,12 +87,14 @@ $(document).ready(function () {
 			method: 'POST',
 			url: OC.generateUrl('/apps/circles/admin/settings'),
 			data: {
+				members_limit: elements.members_limit.val(),
 				allow_linked_groups: (elements.allow_linked_groups.is(
 					':checked')) ? '1' : '0',
 				allow_federated_circles: (elements.allow_federated_circles.is(
 					':checked')) ? '1' : '0'
 			}
 		}).done(function (res) {
+			elements.members_limit.val(res.membersLimit);
 			elements.allow_linked_groups.prop('checked', (res.allowLinkedGroups === '1'));
 			elements.allow_federated_circles.prop('checked', (res.allowFederatedCircles === '1'));
 		});
@@ -106,61 +115,61 @@ $(document).ready(function () {
 	};
 
 	displayTestAsync = function (res) {
-		displayTestAsyncResult(res);
-		displayTestAsyncNewTest(res);
-		displayTestAsyncReset(res);
-		displayTestAsyncWait(res);
+		// displayTestAsyncResult(res);
+		// displayTestAsyncNewTest(res);
+		// displayTestAsyncReset(res);
+		// displayTestAsyncWait(res);
 	};
 
 
-	displayTestAsyncResult = function (res) {
-		if (res.init !== '0') {
-			if (res.test.running === 0) {
-				elements.test_async_result.text(
-					'Test is now over; final score: ' + res.test.note);
-				return;
-			}
-
-
-			elements.test_async_result.text(
-				'Test is running. current tick: ' + res.count + '/121');
-
-			return;
-		}
-
-		elements.test_async_result.text(
-			t('circles', 'Circles uses its own method to async heavy processes.'));
-	};
-
-
-	displayTestAsyncNewTest = function (res) {
-		if (res.init !== '' && res.init !== '0') {
-			elements.test_async_start.hide();
-			return;
-		}
-
-		elements.test_async_start.show();
-	};
-
-	displayTestAsyncReset = function (res) {
-		if (res.init !== '' && res.init !== '0') {
-			elements.test_async_reset.show();
-			return;
-		}
-
-		elements.test_async_reset.hide();
-	};
-
-	displayTestAsyncWait = function (res) {
-		if (Number(res.test.running) === 1) {
-			elements.test_async_reset.hide();
-			elements.test_async_start.hide();
-			elements.test_async_wait.show();
-			return;
-		}
-
-		elements.test_async_wait.hide();
-	};
+	// displayTestAsyncResult = function (res) {
+	// 	if (res.init !== '0') {
+	// 		if (res.test.running === 0) {
+	// 			elements.test_async_result.text(
+	// 				'Test is now over; final score: ' + res.test.note);
+	// 			return;
+	// 		}
+	//
+	//
+	// 		elements.test_async_result.text(
+	// 			'Test is running. current tick: ' + res.count + '/121');
+	//
+	// 		return;
+	// 	}
+	//
+	// 	elements.test_async_result.text(
+	// 		t('circles', 'Circles uses its own method to async heavy processes.'));
+	// };
+	//
+	//
+	// displayTestAsyncNewTest = function (res) {
+	// 	if (res.init !== '' && res.init !== '0') {
+	// 		elements.test_async_start.hide();
+	// 		return;
+	// 	}
+	//
+	// 	elements.test_async_start.show();
+	// };
+	//
+	// displayTestAsyncReset = function (res) {
+	// 	if (res.init !== '' && res.init !== '0') {
+	// 		elements.test_async_reset.show();
+	// 		return;
+	// 	}
+	//
+	// 	elements.test_async_reset.hide();
+	// };
+	//
+	// displayTestAsyncWait = function (res) {
+	// 	if (Number(res.test.running) === 1) {
+	// 		elements.test_async_reset.hide();
+	// 		elements.test_async_start.hide();
+	// 		elements.test_async_wait.show();
+	// 		return;
+	// 	}
+	//
+	// 	elements.test_async_wait.hide();
+	// };
 
 
 	$.ajax({
@@ -168,13 +177,14 @@ $(document).ready(function () {
 		url: OC.generateUrl('/apps/circles/admin/settings'),
 		data: {}
 	}).done(function (res) {
+		elements.members_limit.val(res.membersLimit);
 		elements.allow_linked_groups.prop('checked', (res.allowLinkedGroups === '1'));
 		elements.allow_federated_circles.prop('checked', (res.allowFederatedCircles === '1'));
 	});
-
-	var timerTestAsync = setInterval(function () {
-		self.updateTestAsync();
-	}, elements.test_timer);
+	//
+	// var timerTestAsync = setInterval(function () {
+	// 	self.updateTestAsync();
+	// }, elements.test_timer);
 
 
 })

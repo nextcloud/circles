@@ -13,12 +13,10 @@ style(Application::APP_NAME, 'admin');
 
 	<table cellpadding="10" cellpadding="5">
 		<tr class="lane">
-			<td colspan="2" class="left"><?php p($l->t('Async Testing:')); ?><br/>
-				<em id="test_async_result"></em></td>
+			<td colspan="2" class="left"><?php p($l->t('Members limit:')); ?><br/>
+				<em><?php p($l->t('Default limit to the number of members in a circle.')); ?></em></td>
 			<td class="right">
-				<input type="button" value="<?php p($l->t('initiate async test in Circles')); ?>" id="test_async_start"/>
-				<input type="button" value="<?php p($l->t('reset test result')); ?>" id="test_async_reset"/>
-				<input type="button" value="<?php p($l->t('Test underway. Please wait.')); ?>" id="test_async_wait"/>
+				<input type="text" id="members_limit"/>
 			</td>
 		</tr>
 		<tr class="lane">
