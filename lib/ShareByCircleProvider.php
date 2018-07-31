@@ -41,10 +41,11 @@ use OCA\Circles\Db\CircleProviderRequest;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Model\Circle;
-use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
+use OCA\Circles\Service\TimezoneService;
+use OCP\AppFramework\QueryException;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
@@ -58,7 +59,6 @@ use OCP\Security\ISecureRandom;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IShare;
 use OCP\Share\IShareProvider;
-use OCA\Circles\Service\TimezoneService;
 
 
 class ShareByCircleProvider extends CircleProviderRequest implements IShareProvider {
@@ -95,6 +95,8 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * @param IL10N $l10n
 	 * @param ILogger $logger
 	 * @param IURLGenerator $urlGenerator
+	 *
+	 * @throws QueryException
 	 */
 	public function __construct(
 		IDBConnection $connection, ISecureRandom $secureRandom, IUserManager $userManager,
@@ -104,9 +106,9 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 		$container = $app->getContainer();
 		$configService = $container->query(ConfigService::class);
 		$miscService = $container->query(MiscService::class);
-		$timeZoneService = $container->query(TimezoneService::class);
+		$timezoneService = $container->query(TimezoneService::class);
 
-		parent::__construct($l10n, $connection, $configService, $timeZoneService, $miscService);
+		parent::__construct($l10n, $connection, $configService, $timezoneService, $miscService);
 
 		$this->secureRandom = $secureRandom;
 		$this->userManager = $userManager;
