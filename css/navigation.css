@@ -4,22 +4,22 @@
 	padding: 20px;
 }
 
-#app-navigation .navigation-element, #app-navigation .navigation-element option {
+#circle-navigation .navigation-element, #circle-navigation .navigation-element option {
 	padding: 3px 12px;
 }
 
-#app-navigation input#circles_search, #app-navigation select#circles_filters {
-	margin: 15px;
-	width: 285px;
+#circle-navigation input#circles_search, #circle-navigation select#circles_filters {
+	margin: 10px;
+	width: 225px;
 }
 
-#app-navigation select#circles_filters {
+#circle-navigation select#circles_filters {
 	margin-top: 0;
 	font-style: italic;
 	color: #777777;
 }
 
-#app-navigation input, #app-navigation select, #app-navigation option {
+#circle-navigation input, #circle-navigation select, #circle-navigation option {
 	width: 100%;
 	box-sizing: border-box;
 	background: #ffffffaa !important;
@@ -29,7 +29,7 @@
 	overflow-x: hidden;
 }
 
-#app-navigation .header {
+#circle-navigation .header {
 	padding: 0 12px;
 	line-height: 44px;
 	min-height: 44px;
@@ -39,7 +39,7 @@
 #circles_new_type_definition div {
 	margin-top: 20px;
 	position: absolute;
-	width: 255px;
+	width: 190px;
 	color: #474747b0;
 	word-wrap: break-word;
 }
@@ -51,7 +51,7 @@ SELECT.select_none {
 #circles_list, #circles_list .lightenbg {
 	position: absolute;
 	width: 100%;
-	top: 300px;
+	top: 350px;
 }
 
 #circles_list div {
@@ -75,26 +75,28 @@ SELECT.select_none {
 	font-weight: bold !important;
 }
 
-#app-navigation {
+#circle-navigation {
 	width: 300px;
 	border-right: 1px solid #ddd;
 }
 
-#app-navigation.circles {
+#circle-navigation.circles {
 	overflow-y: auto;
-	width: 320px;
+	width: 350px;
+	overflow-x: hidden;
+	z-index: 1002;
 }
 
-#app-navigation.circles, #app-navigation.circles .circle, #app-navigation.circles .selected {
+#circle-navigation.circles, #circle-navigation.circles .circle, #circle-navigation.circles .selected {
 	-webkit-transition: background-color 0.3s ease-in;
 	transition: background-color 0.3s ease-in;
 }
 
-#app-navigation.selected {
+#circle-navigation.selected {
 	background: #ededed !important;
 }
 
-#app-navigation.circles .selected {
+#circle-navigation.circles .selected {
 	background: #e5e5e5;
 }
 
@@ -214,8 +216,8 @@ div.circle .owner, div.circle .type, div.circle .resume {
 
 #emptycontent {
 	position: absolute;
-	z-index: -99;
-	left: 200px;
+	z-index: 1001;
+	left: 0px;
 }
 
 #circle-actions {
