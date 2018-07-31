@@ -232,8 +232,8 @@ class FederatedLinkCreationService {
 		$link = null;
 		try {
 			$circle = $this->circlesService->detailsCircle($circleUniqueId);
-			$circle->getHigherViewer()
-				   ->hasToBeAdmin();
+			$this->circlesService->hasToBeAdmin($circle->getHigherViewer());
+
 			$circle->hasToBeFederated();
 			$circle->cantBePersonal();
 

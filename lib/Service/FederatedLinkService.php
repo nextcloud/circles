@@ -139,8 +139,8 @@ class FederatedLinkService {
 			$link = $this->federatedLinksRequest->getLinkFromId($linkUniqueId);
 			$circle = $this->circlesRequest->getCircle($link->getCircleId(), $this->userId);
 			$circle->hasToBeFederated();
-			$circle->getHigherViewer()
-				   ->hasToBeAdmin();
+			$this->circlesService->hasToBeAdmin($circle->getHigherViewer());
+
 			$link->hasToBeValidStatusUpdate($status);
 
 			if ($link->getStatus() !== $status) {

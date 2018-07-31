@@ -56,6 +56,9 @@ class GroupsService {
 	/** @var MembersRequest */
 	private $membersRequest;
 
+	/** @var CirclesService */
+	private $circlesService;
+
 	/** @var EventsService */
 	private $eventsService;
 
@@ -70,18 +73,21 @@ class GroupsService {
 	 * @param IGroupManager $groupManager
 	 * @param CirclesRequest $circlesRequest
 	 * @param MembersRequest $membersRequest
+	 * @param CirclesService $circlesService
 	 * @param EventsService $eventsService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
 		$userId, IL10N $l10n, IGroupManager $groupManager, CirclesRequest $circlesRequest,
-		MembersRequest $membersRequest, EventsService $eventsService, MiscService $miscService
+		MembersRequest $membersRequest, CirclesService $circlesService,
+		EventsService $eventsService, MiscService $miscService
 	) {
 		$this->userId = $userId;
 		$this->l10n = $l10n;
 		$this->groupManager = $groupManager;
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
+		$this->circlesService = $circlesService;
 		$this->eventsService = $eventsService;
 		$this->miscService = $miscService;
 	}
@@ -98,8 +104,7 @@ class GroupsService {
 
 		try {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
-			$circle->getHigherViewer()
-				   ->hasToBeAdmin();
+			$this->circlesService->hasToBeAdmin($circle->getHigherViewer());
 
 			$group = $this->getFreshNewMember($circleUniqueId, $groupId);
 		} catch (\Exception $e) {
@@ -202,7 +207,7 @@ class GroupsService {
 	private function editGroupLevel(Circle $circle, Member &$group, $level) {
 		try {
 			$isMod = $circle->getHigherViewer();
-			$isMod->hasToBeAdmin();
+			$this->circlesService->hasToBeAdmin($isMod);
 			$isMod->hasToBeHigherLevel($level);
 
 			$group->hasToBeMember();
@@ -229,7 +234,7 @@ class GroupsService {
 		try {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			$higherViewer = $circle->getHigherViewer();
-			$higherViewer->hasToBeAdmin();
+			$this->circlesService->hasToBeAdmin($higherViewer);
 
 			$group = $this->membersRequest->forceGetGroup($circleUniqueId, $groupId);
 			$group->cantBeOwner();
