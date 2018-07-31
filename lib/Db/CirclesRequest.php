@@ -269,7 +269,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$cursor = $qb->execute();
 		while ($data = $cursor->fetch()) {
 			if (strtolower($data['name']) === strtolower($circle->getName())
-				&& $circle->getUniqueId() !== $data['unique_id']) {
+				&& $circle->getUniqueId(true) !== $data['unique_id']) {
 				return false;
 			}
 		}
