@@ -149,29 +149,6 @@ class Member extends BaseMember {
 
 
 	/**
-	 * @throws MemberIsNotModeratorException
-	 */
-	public function hasToBeOwner() {
-		if ($this->getLevel() < self::LEVEL_OWNER) {
-			throw new MemberIsNotOwnerException(
-				$this->l10n->t('This member is not the owner of the circle')
-			);
-		}
-	}
-
-
-	/**
-	 * @throws MemberIsNotModeratorException
-	 */
-	public function hasToBeAdmin() {
-		if ($this->getLevel() < self::LEVEL_ADMIN) {
-			throw new MemberIsNotAdminException(
-				$this->l10n->t('This member is not an admin of the circle')
-			);
-		}
-	}
-
-	/**
 	 * @throws MemberDoesNotExistException
 	 */
 	public function hasToBeMember() {
