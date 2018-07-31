@@ -6,7 +6,6 @@ use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
-use OCP\Http\Client\IClientService;
 use OCP\IRequest;
 
 
@@ -41,7 +40,10 @@ class SettingsController extends Controller {
 	 */
 	public function getSettings() {
 		$params = [
-			'allowLinkedGroups' => $this->configService->getAppValue(
+			'membersLimit'          => $this->configService->getAppValue(
+				ConfigService::CIRCLES_MEMBERS_LIMIT
+			),
+			'allowLinkedGroups'     => $this->configService->getAppValue(
 				ConfigService::CIRCLES_ALLOW_LINKED_GROUPS
 			),
 			'allowFederatedCircles' => $this->configService->getAppValue(
@@ -53,7 +55,10 @@ class SettingsController extends Controller {
 	}
 
 
-	public function setSettings($allow_linked_groups, $allow_federated_circles) {
+	public function setSettings($members_limit, $allow_linked_groups, $allow_federated_circles) {
+		$this->configService->setAppValue(
+			ConfigService::CIRCLES_MEMBERS_LIMIT, $members_limit
+		);
 		$this->configService->setAppValue(
 			ConfigService::CIRCLES_ALLOW_LINKED_GROUPS, $allow_linked_groups
 		);

@@ -220,7 +220,10 @@ style(Application::APP_NAME, 'navigation');
 	<div id="mainui">
 
 		<div id="circle_details">
-			<div class="lightenbg"></div>
+			<div class="lightenbg">
+				<input id="adminsettingscircle" type="submit"
+					   value="<?php p($l->t('Settings')); ?>"/>
+			</div>
 			<div id="name"></div>
 			<div id="type"></div>
 
@@ -363,6 +366,18 @@ style(Application::APP_NAME, 'navigation');
 					<tr>
 						<td class="left" style="vertical-align: top">Description</td>
 						<td><textarea type="text" id="settings-desc"></textarea></td>
+					</tr>
+
+
+					<tr id="settings-entry-limit">
+						<td class="left"><?php p($l->t('Members limit')); ?><br/>
+							<span class="hint"><?php p(
+									$l->t(
+										'Change the limit to the number of members. (0: default, -1: unlimited)'
+									)
+								); ?></span>
+						</td>
+						<td><input type="text" value="" id="settings-limit"></td>
 					</tr>
 
 					<tr id="settings-entry-link">
