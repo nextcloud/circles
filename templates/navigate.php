@@ -44,7 +44,7 @@ style(Application::APP_NAME, 'navigation');
 ?>
 
 
-<div id="circle-navigation" class="noborder" style="position: relative">
+<div id="app-navigation" class="noborder" style="position: relative">
 	<div class="navigation-element" style="height: 100%; padding-top: 15px">
 		<input id="circles_new_name" type="text"
 			   placeholder="<?php p($l->t('Create a new circle')); ?>"/>
@@ -193,7 +193,7 @@ style(Application::APP_NAME, 'navigation');
 
 </div>
 
-<div id="circle-navigation" class="circles" style="display: none;">
+<div id="app-navigation" class="circles" style="display: none;">
 	<input id="circles_search" type="text"
 		   placeholder="<?php p($l->t('Search circles')); ?>"/>
 	<select id="circles_filters">

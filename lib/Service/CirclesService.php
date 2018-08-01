@@ -596,7 +596,7 @@ class CirclesService {
 	 * @throws MemberIsNotOwnerException
 	 */
 	public function hasToBeOwner(Member $member) {
-		if (!$this->groupManager->isAdmin($member->getUserId())
+		if (!$this->groupManager->isAdmin($this->userId)
 			&& $member->getLevel() < Member::LEVEL_OWNER) {
 			throw new MemberIsNotOwnerException(
 				$this->l10n->t('This member is not the owner of the circle')
