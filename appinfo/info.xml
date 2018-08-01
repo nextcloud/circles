@@ -23,7 +23,7 @@ Users won't be able to find this Circle using Nextcloud search engine.
 
 		]]>
 	</description>
-	<version>0.14.0</version>
+	<version>0.14.1</version>
 	<licence>agpl</licence>
 	<author>Maxence Lange</author>
 	<documentation>
@@ -38,7 +38,7 @@ Users won't be able to find this Circle using Nextcloud search engine.
 	<repository>https://github.com/nextcloud/circles.git</repository>
 	<screenshot>https://raw.githubusercontent.com/nextcloud/circles/master/screenshots/0.12.0.png</screenshot>
 	<dependencies>
-		<nextcloud min-version="12" max-version="14"/>
+		<nextcloud min-version="12" max-version="13"/>
 	</dependencies>
 
 	<repair-steps>
