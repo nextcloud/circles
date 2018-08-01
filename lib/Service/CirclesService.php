@@ -564,7 +564,8 @@ class CirclesService {
 		if ($limit === -1) {
 			return;
 		}
-		if ($limit === 0) {
+
+		if ($limit === 0 || $limit === '' || $limit === null) {
 			$limit = $this->configService->getAppValue(ConfigService::CIRCLES_MEMBERS_LIMIT);
 		}
 
