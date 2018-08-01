@@ -339,6 +339,12 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	margin: 15px;
 }
 
+#adminsettingscircle {
+	position: absolute;
+	bottom: 1px;
+	left: 4px;
+}
+
 DIV.result_top {
 	font-size: 15px;
 }
