@@ -706,6 +706,21 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 
 
 	/**
+	 * Restore a share for a given recipient. The implementation could be provider independant.
+	 *
+	 * @param IShare $share
+	 * @param string $recipient
+	 *
+	 * @return IShare The restored share object
+	 *
+	 * @since 14.0.0
+	 */
+	public function restore(IShare $share, string $recipient): Ishare {
+		return $share;
+	}
+
+
+	/**
 	 * return array regarding getAccessList format.
 	 * ie. \OC\Share20\Manager::getAccessList()
 	 *
