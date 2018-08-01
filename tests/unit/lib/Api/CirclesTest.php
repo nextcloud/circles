@@ -702,6 +702,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 								$member->getCircleId()
 							]
 						);
+					} catch (MemberDoesNotExistException $e) {
 					} catch (Exception $e) {
 						throw $e;
 					}
