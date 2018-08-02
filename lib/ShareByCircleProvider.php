@@ -715,7 +715,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 *
 	 * @since 14.0.0
 	 */
-	public function restore(IShare $share, string $recipient): Ishare {
+	public function restore(IShare $share, string $recipient): IShare {
 		return $share;
 	}
 
