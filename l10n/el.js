@@ -121,6 +121,7 @@ OC.L10N.register(
     "{member}'s request to join {circle} has been accepted by {author}" : "Το αίτημα του {member} να συμμετάσχει στο {circle} έγινε αποδεκτό από τον {author}",
     "You left {circle}" : "Αποχωρήσατε από {circle}",
     "{member} left {circle}" : "{member} άφησε {circle}",
+    "You declined the invitation to join {circle}" : "Απορρίψατε την πρόσκληση να συμμετάσχετε στο {circle}",
     "You removed {member} from {circle}" : "Απομακρύνατε {member} από {circle}",
     "You changed {member}'s level in {circle} to %1$s" : "Αλλάξατε {member}'ς επίπεδο στο {circle} σε %1$s",
     "{author} changed your level in {circle} to %1$s" : "{author} το επίπεδο σας στο {circle} σε %1$s",
