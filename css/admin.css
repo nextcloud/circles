@@ -1,20 +1,8 @@
-td.left {
-	padding-right: 30px;
-	font-weight: bolder;
-	text-align: right;
-	width: 400px;
+#circles input[type='checkbox'].checkbox + label {
+	padding: 12px 0;
+	display: inline-block;
 }
 
-tr.lane td {
-	padding-top: 10px;
-	padding-bottom: 10px;
-}
-
-td.left em {
-	font-weight: normal;
-	font-size: 11px;
-}
-
-td.right {
-	width: 200px;
+#circles input[type='checkbox'].checkbox + label:before {
+	margin-right: 12px;
 }

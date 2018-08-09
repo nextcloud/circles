@@ -28,7 +28,6 @@
 
 $app = new \OCA\Circles\AppInfo\Application();
 
-$app->registerSettingsAdmin();
 $app->registerNavigation();
 $app->registerFilesNavigation();
 $app->registerFilesPlugin();
