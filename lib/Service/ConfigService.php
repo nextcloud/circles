@@ -29,6 +29,7 @@ namespace OCA\Circles\Service;
 use OCA\Circles\Model\Circle;
 use OCP\IConfig;
 use OCP\IRequest;
+use OCP\PreConditionNotMetException;
 use OCP\Util;
 
 class ConfigService {
@@ -255,6 +256,7 @@ class ConfigService {
 	 * @param string $value
 	 *
 	 * @return string
+	 * @throws PreConditionNotMetException
 	 */
 	public function setUserValue($key, $value) {
 		return $this->config->setUserValue($this->userId, $this->appName, $key, $value);
@@ -296,6 +298,7 @@ class ConfigService {
 	 * @param string $value
 	 *
 	 * @return string
+	 * @throws PreConditionNotMetException
 	 */
 	public function setValueForUser($userId, $key, $value) {
 		return $this->config->setUserValue($userId, $this->appName, $key, $value);

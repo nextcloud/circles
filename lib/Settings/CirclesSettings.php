@@ -33,7 +33,7 @@ class CirclesSettings implements ISettings {
 	private $config;
 
 	/**
-	 * CalDAVSettings constructor.
+	 * CirclesSettings constructor.
 	 *
 	 * @param IConfig $config
 	 */
