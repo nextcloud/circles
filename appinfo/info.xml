@@ -57,6 +57,10 @@ Users won't be able to find this Circle using Nextcloud search engine.
 		<command>OCA\Circles\Command\FixUniqueId</command>
 	</commands>
 
+	<settings>
+		<admin>OCA\Circles\Settings\CirclesSettings</admin>
+	</settings>
+
 	<activity>
 		<settings>
 			<setting>OCA\Circles\Activity\SettingAsModerator</setting>
@@ -75,4 +79,5 @@ Users won't be able to find this Circle using Nextcloud search engine.
 			<plugin type="collaborator-search" share-type="SHARE_TYPE_CIRCLE">OCA\Circles\Collaboration\v1\CollaboratorSearchPlugin</plugin>
 		</plugins>
 	</collaboration>
+
 </info>
