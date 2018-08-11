@@ -179,9 +179,9 @@ OC.L10N.register(
     "Allow Federated Links" : "Salli federoidut linkit",
     "Accept Link Request Automatically" : "Hyväksy linkkipyynnöt automaattisesti",
     "Save settings" : "Tallenna asetukset",
-    "Allow linking of groups:" : "Salli ryhmien linkittäminen:",
     "Groups can be linked to circles." : "Ryhmät voidaan linkittää piireihin.",
-    "Allow federated circles:" : "Salli federoidut piirit:",
-    "Circles from different Nextclouds can be linked together." : "Piirit eri Nextcloudeista voidaan linkittää yhteen."
+    "Circles from different Nextclouds can be linked together." : "Piirit eri Nextcloudeista voidaan linkittää yhteen.",
+    "Allow linking of groups:" : "Salli ryhmien linkittäminen:",
+    "Allow federated circles:" : "Salli federoidut piirit:"
 },
 "nplurals=2; plural=(n != 1);");

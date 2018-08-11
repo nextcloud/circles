@@ -271,11 +271,11 @@ OC.L10N.register(
     "Accept Link Request Automatically" : "Bağlantı İsteği Otomatik Onaylansın",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Uyarı: Bu seçenek etkinleştirildiğinde, diğer çevrelerden gelen bağlantı istekleri otomatik olarak onaylanır.",
     "Save settings" : "Ayarları kaydet",
+    "Groups can be linked to circles." : "Grupların Çevrelere bağlanmasını sağlar.",
+    "Circles from different Nextclouds can be linked together." : "Farklı Nextcloud kopyaları üzerindeki çevreler birbirine bağlanabilir",
     "Members limit:" : "Üye sınırı",
     "Default limit to the number of members in a circle." : "Bir çevrede bulunabilecek üye sayısının varsayılan değeri.",
     "Allow linking of groups:" : "Gruplar ile bağlanabilsin:",
-    "Groups can be linked to circles." : "Grupların Çevrelere bağlanmasını sağlar.",
-    "Allow federated circles:" : "Birleşmiş Çevreler Kullanılabilsin:",
-    "Circles from different Nextclouds can be linked together." : "Farklı Nextcloud kopyaları üzerindeki çevreler birbirine bağlanabilir"
+    "Allow federated circles:" : "Birleşmiş Çevreler Kullanılabilsin:"
 },
 "nplurals=2; plural=(n > 1);");

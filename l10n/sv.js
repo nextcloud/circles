@@ -264,9 +264,9 @@ OC.L10N.register(
     "Makes the circle federated, and enables sharing between federated circles" : "Gör cirkeln federerad och aktiverar delning mellan federerade cirklar",
     "Accept Link Request Automatically" : "Acceptera länkförfrågan automatiskt",
     "Save settings" : "Spara inställningar",
-    "Allow linking of groups:" : "Tillåt länkning av grupper:",
     "Groups can be linked to circles." : "Grupper kan länkas till cirklar.",
-    "Allow federated circles:" : "Tillåt federerade cirklar:",
-    "Circles from different Nextclouds can be linked together." : "Cirklar från olika Nextcloud kan länkas samman"
+    "Circles from different Nextclouds can be linked together." : "Cirklar från olika Nextcloud kan länkas samman",
+    "Allow linking of groups:" : "Tillåt länkning av grupper:",
+    "Allow federated circles:" : "Tillåt federerade cirklar:"
 },
 "nplurals=2; plural=(n != 1);");

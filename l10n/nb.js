@@ -266,9 +266,9 @@ OC.L10N.register(
     "Accept Link Request Automatically" : "Godta lenkeforespørsel automatisk",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Advarsel: Å skru på dette vil medføre automatisk godkjenning av nye lenkeforespørsler fra andre sirkler.",
     "Save settings" : "Lagre innstillinger",
-    "Allow linking of groups:" : "Tillat lenking av grupper:",
     "Groups can be linked to circles." : "Grupper kan lenkes til sirkler.",
-    "Allow federated circles:" : "Tillat sammenknyttede sirkler:",
-    "Circles from different Nextclouds can be linked together." : "Sirkler fra forskjellige Nextcloud-er kan lenkes sammen."
+    "Circles from different Nextclouds can be linked together." : "Sirkler fra forskjellige Nextcloud-er kan lenkes sammen.",
+    "Allow linking of groups:" : "Tillat lenking av grupper:",
+    "Allow federated circles:" : "Tillat sammenknyttede sirkler:"
 },
 "nplurals=2; plural=(n != 1);");

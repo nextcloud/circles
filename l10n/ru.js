@@ -271,11 +271,11 @@ OC.L10N.register(
     "Accept Link Request Automatically" : "Автоматически принимать запросы связывания",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Внимание: при включении этого параметра запросы связывания, полученные из других кругов, будут приниматься автоматически.",
     "Save settings" : "Сохранить изменения",
+    "Groups can be linked to circles." : "Группы могут быть связаны с кругами.",
+    "Circles from different Nextclouds can be linked together." : "Могут быть связаны круги, расположенные на разных серверах Nextcloud.",
     "Members limit:" : "Лимит участников:",
     "Default limit to the number of members in a circle." : "Ограничение по умолчанию - количество членов в круге.",
     "Allow linking of groups:" : "Разрешить связывание групп:",
-    "Groups can be linked to circles." : "Группы могут быть связаны с кругами.",
-    "Allow federated circles:" : "Разрешить федеративные круги:",
-    "Circles from different Nextclouds can be linked together." : "Могут быть связаны круги, расположенные на разных серверах Nextcloud."
+    "Allow federated circles:" : "Разрешить федеративные круги:"
 },
 "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);");
