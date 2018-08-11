@@ -268,9 +268,9 @@ OC.L10N.register(
     "Accept Link Request Automatically" : "Samþykkja sjálfkrafa beiðni um tengil",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Aðvörun: Ef þetta er gert virkt verða beiðnir um tengla frá öðrum hringjum samþykktar sjálfkrafa.",
     "Save settings" : "Vista stillingar",
-    "Allow linking of groups:" : "Leyfa tengingar hópa:",
     "Groups can be linked to circles." : "Hópar geta verið tengdir hringjum.",
-    "Allow federated circles:" : "Leyfa skýjasambandshringi:",
-    "Circles from different Nextclouds can be linked together." : "Hringir úr mismunandi Nextcloud-skýjum geta verið tengdir saman."
+    "Circles from different Nextclouds can be linked together." : "Hringir úr mismunandi Nextcloud-skýjum geta verið tengdir saman.",
+    "Allow linking of groups:" : "Leyfa tengingar hópa:",
+    "Allow federated circles:" : "Leyfa skýjasambandshringi:"
 },
 "nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);");

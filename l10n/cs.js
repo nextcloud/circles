@@ -220,7 +220,7 @@ OC.L10N.register(
     "Allow Federated Links" : "Povolit sdružená propojení",
     "Accept Link Request Automatically" : "Automaticky přijímat žádost o připojení",
     "Save settings" : "Uložit nastavení",
-    "Allow linking of groups:" : "Povolit propojení skupin:",
-    "Groups can be linked to circles." : "Skupiny lze propojit s kruhy."
+    "Groups can be linked to circles." : "Skupiny lze propojit s kruhy.",
+    "Allow linking of groups:" : "Povolit propojení skupin:"
 },
 "nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;");

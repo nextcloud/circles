@@ -266,9 +266,9 @@ OC.L10N.register(
     "Accept Link Request Automatically" : "연결 요청 자동으로 수락",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "경고: 이 설정을 사용하면 다른 서클의 연결 요청을 자동으로 수락합니다.",
     "Save settings" : "설정 저장",
-    "Allow linking of groups:" : "그룹 연결 허용:",
     "Groups can be linked to circles." : "그룹을 서클에 연결할 수 있습니다.",
-    "Allow federated circles:" : "연합 서클 허용:",
-    "Circles from different Nextclouds can be linked together." : "다른 Nextcloud의 서클을 연결할 수 있습니다."
+    "Circles from different Nextclouds can be linked together." : "다른 Nextcloud의 서클을 연결할 수 있습니다.",
+    "Allow linking of groups:" : "그룹 연결 허용:",
+    "Allow federated circles:" : "연합 서클 허용:"
 },
 "nplurals=1; plural=0;");

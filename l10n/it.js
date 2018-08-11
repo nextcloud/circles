@@ -271,11 +271,11 @@ OC.L10N.register(
     "Accept Link Request Automatically" : "Accetta la richiesta di collegamento automaticamente",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Avviso: l'abilitazione di questa opzione accetterà automaticamente nuove richieste di collegamento da altre cerchie.",
     "Save settings" : "Salva impostazioni",
+    "Groups can be linked to circles." : "I gruppi possono essere collegati alle cerchie.",
+    "Circles from different Nextclouds can be linked together." : "Le cerchie di Nextcloud diversi possono essere collegate tra di loro.",
     "Members limit:" : "Limite di membri:",
     "Default limit to the number of members in a circle." : "Limite predefinito al numero di membri in una cerchia.",
     "Allow linking of groups:" : "Consenti il collegamento dei gruppi:",
-    "Groups can be linked to circles." : "I gruppi possono essere collegati alle cerchie.",
-    "Allow federated circles:" : "Consenti cerchie federate:",
-    "Circles from different Nextclouds can be linked together." : "Le cerchie di Nextcloud diversi possono essere collegate tra di loro."
+    "Allow federated circles:" : "Consenti cerchie federate:"
 },
 "nplurals=2; plural=(n != 1);");

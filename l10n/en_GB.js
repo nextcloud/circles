@@ -268,9 +268,9 @@ OC.L10N.register(
     "Accept Link Request Automatically" : "Accept Link Request Automatically",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Warning: Enabling this will automatically accept new link requests from other circles.",
     "Save settings" : "Save settings",
-    "Allow linking of groups:" : "Allow linking of groups:",
     "Groups can be linked to circles." : "Groups can be linked to circles.",
-    "Allow federated circles:" : "Allow federated circles:",
-    "Circles from different Nextclouds can be linked together." : "Circles from different Nextclouds can be linked together."
+    "Circles from different Nextclouds can be linked together." : "Circles from different Nextclouds can be linked together.",
+    "Allow linking of groups:" : "Allow linking of groups:",
+    "Allow federated circles:" : "Allow federated circles:"
 },
 "nplurals=2; plural=(n != 1);");

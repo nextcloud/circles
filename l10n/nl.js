@@ -266,9 +266,9 @@ OC.L10N.register(
     "Accept Link Request Automatically" : "Automatisch koppelings-verzoeken accepteren",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Waarschuwing: hiermee worden nieuwe koppelings-verzoeken van andere kringen automatisch aanvaard.",
     "Save settings" : "Opslaan instellingen",
-    "Allow linking of groups:" : "Koppelen van groepen toestaan:",
     "Groups can be linked to circles." : "Groepen kunnen gekoppeld worden aan kringen.",
-    "Allow federated circles:" : "Gefedereerde kringen toestaan:",
-    "Circles from different Nextclouds can be linked together." : "Kringen van andere Nextcloud installaties kunnen aan elkaar gekoppeld worden."
+    "Circles from different Nextclouds can be linked together." : "Kringen van andere Nextcloud installaties kunnen aan elkaar gekoppeld worden.",
+    "Allow linking of groups:" : "Koppelen van groepen toestaan:",
+    "Allow federated circles:" : "Gefedereerde kringen toestaan:"
 },
 "nplurals=2; plural=(n != 1);");
