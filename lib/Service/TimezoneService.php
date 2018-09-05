@@ -69,7 +69,7 @@ class TimezoneService {
 		$timezone = $this->configService->getCoreValueForUser($userId, 'timezone', 'UTC');
 		$date = \DateTime::createFromFormat('Y-m-d H:i:s', $time);
 		if ($date === false) {
-			return date('Y-m-d H:i:s', $time);
+			return $time;
 		}
 
 		$date->setTimezone(new \DateTimeZone($timezone));
