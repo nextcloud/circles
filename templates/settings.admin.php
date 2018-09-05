@@ -25,4 +25,9 @@ style(Application::APP_NAME, 'admin');
 		<label for="allow_federated_circles"><?php p($l->t('Allow federated circles')); ?></label>
 		<em><?php p($l->t('Circles from different Nextclouds can be linked together.')); ?></em>
 	</p>
+	<p>
+		<input type="checkbox" value="0" id="disable_notification_for_seen_users" class="checkbox"/>
+		<label for="disable_notification_for_seen_users"><?php p($l->t('Disable notification for seen users.')); ?></label>
+		<em><?php p($l->t('Disable notification for seen users.')); ?></em>
+	</p>
 </div>

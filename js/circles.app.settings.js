@@ -61,6 +61,8 @@ var settings = {
 			(curr.circleSettings['allow_links_auto'] === 'true'));
 		elements.settingsLinkFiles.prop('checked',
 			(curr.circleSettings['allow_links_files'] === 'true'));
+		elements.settingsNotification.prop('checked',
+			(curr.circleSettings['disable_notification_for_seen_users'] === 'true'));
 
 		elements.settingsLink.on('change', function () {
 			settings.interactUISettings();
@@ -86,6 +88,8 @@ var settings = {
 			(elements.settingsLink.is(":checked")));
 		settings.enableSetting(elements.settingsEntryLinkFiles, elements.settingsLinkFiles,
 			(elements.settingsLink.is(":checked")));
+		settings.enableSetting(elements.settingsEntryNotification, elements.settingsNotification,
+		    (elements.settingsNotification.is(":checked")));
 	},
 
 	enableSetting: function (entry, input, enable) {

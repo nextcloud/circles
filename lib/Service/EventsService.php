@@ -100,22 +100,29 @@ class EventsService {
 	 * @param Circle $circle
 	 */
 	public function onCircleCreation(Circle $circle) {
-		if ($circle->getType() !== Circle::CIRCLES_PUBLIC
-			&& $circle->getType() !== Circle::CIRCLES_CLOSED
-		) {
-			return;
-		}
-
 		$event = $this->generateEvent('circles_as_member');
 		$event->setSubject('circle_create', ['circle' => json_encode($circle)]);
 
-		$this->userManager->callForSeenUsers(
-			function($user) use ($event) {
-				/** @var IUser $user */
-				$this->publishEvent($event, [$user]);
-			}
-		);
+		if ($circle->getType() !== Circle::CIRCLES_PUBLIC
+			&& $circle->getType() !== Circle::CIRCLES_CLOSED
+		) {
+			$this->publishEvent($event, [\OC::$server->getUserSession()->getUser()]);
+			$this->dispatch('\OCA\Circles::onCircleCreation',  ['circle' => $circle]);
+			return;
+		}
 
+		$disableNotificationForSeenUsers = \OC::$server->getAppConfig()->getValue('circles', 'disable_notification_for_seen_users', false);
+		if ($disableNotificationForSeenUsers) {
+			$this->publishEvent($event, [\OC::$server->getUserSession()->getUser()]);
+		} else {
+			$this->userManager->callForSeenUsers(
+				function($user) use ($event) {
+					/** @var IUser $user */
+					$this->publishEvent($event, [$user]);
+				}
+			);
+		}
+		
 		$this->dispatch('\OCA\Circles::onCircleCreation',  ['circle' => $circle]);
 	}
 
