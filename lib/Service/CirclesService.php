@@ -557,7 +557,7 @@ class CirclesService {
 	public function checkThatCircleIsNotFull(Circle $circle) {
 
 		$members = $this->membersRequest->forceGetMembers(
-			$circle->getUniqueId(), Member::STATUS_MEMBER, true
+			$circle->getUniqueId(), Member::LEVEL_MEMBER, true
 		);
 
 		$limit = $circle->getSetting('members_limit');
