@@ -238,7 +238,7 @@ OC.L10N.register(
     "Closed circles" : "Cerchie chiuse",
     "Secret circles" : "Cerchie segrete",
     "All circles" : "Tutte le cerchie",
-    "Search circles" : "Cerca neile cerchie",
+    "Search circles" : "Cerca nelle cerchie",
     "No filter" : "Nessun filtro",
     "Circles you belong to" : "Cerchie alle quali appartieni",
     "Circles you own" : "Cerchie di cui sei proprietario",
