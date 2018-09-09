@@ -1,6 +1,5 @@
 app_name=circles
 
-project_dir=$(CURDIR)/../$(app_name)
 build_dir=$(CURDIR)/build/artifacts
 appstore_dir=$(build_dir)/appstore
 source_dir=$(build_dir)/source
@@ -52,7 +51,7 @@ appstore: clean
 	--exclude=/.scrutinizer.yml \
 	--exclude=/.travis.yml \
 	--exclude=/Makefile \
-	$(project_dir)/ $(sign_dir)/$(app_name)
+	./ $(sign_dir)/$(app_name)
 	tar -czf $(build_dir)/$(app_name)-$(version).tar.gz \
 		-C $(sign_dir) $(app_name)
 	@if [ -f $(cert_dir)/$(app_name).key ]; then \
