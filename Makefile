@@ -7,15 +7,27 @@ source_dir=$(build_dir)/source
 sign_dir=$(build_dir)/sign
 package_name=$(app_name)
 cert_dir=$(HOME)/.nextcloud/certificates
-version+=0.14.1
+github_account=nextcloud
+version+=0.14.2
 
 all: appstore
 
-release: appstore create-tag
+release: appstore github-release github-upload
 
-create-tag:
-	git tag -s -a v$(version) -m "Tagging the $(version) release."
-	git push origin v$(version)
+github-release:
+	github-release release \
+		--user $(github_account) \
+		--repo $(app_name) \
+		--tag v$(version) \
+		--name "$(app_name) v$(version)"
+
+github-upload:
+	github-release upload \
+		--user $(github_account) \
+		--repo $(app_name) \
+		--tag v$(version) \
+		--name "$(app_name)-$(version).tar.gz" \
+		--file $(build_dir)/$(app_name)-$(version).tar.gz
 
 clean:
 	rm -rf $(build_dir)
