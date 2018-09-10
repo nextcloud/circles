@@ -99,13 +99,19 @@ class BaseCircle {
 		}
 	}
 
-
+	/**
+	 * @param integer $id
+	 * @return BaseCircle
+	 */
 	public function setId($id) {
 		$this->id = $id;
 
 		return $this;
 	}
 
+	/**
+	 * @return integer
+	 */
 	public function getId() {
 		return $this->id;
 	}
@@ -135,28 +141,40 @@ class BaseCircle {
 		return substr($this->uniqueId, 0, self::SHORT_UNIQUE_ID_LENGTH);
 	}
 
-
 	public function generateUniqueId() {
 		$uniqueId = bin2hex(openssl_random_pseudo_bytes(24));
 		$this->setUniqueId($uniqueId);
 		$this->setId($this->getUniqueId());
 	}
 
+	/**
+	 * @param string $name
+	 * @return BaseCircle
+	 */
 	public function setName($name) {
 		$this->name = $name;
 
 		return $this;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getName() {
 		return $this->name;
 	}
 
-
+	/**
+	 * @return Member
+	 */
 	public function getOwner() {
 		return $this->owner;
 	}
 
+	/**
+	 * @param Member $owner
+	 * @return BaseCircle
+	 */
 	public function setOwner($owner) {
 		$this->owner = $owner;
 
@@ -171,12 +189,15 @@ class BaseCircle {
 		return $this->viewer;
 	}
 
+	/**
+	 * @param Member $user
+	 * @return BaseCircle
+	 */
 	public function setViewer($user) {
 		$this->viewer = $user;
 
 		return $this;
 	}
-
 
 	/**
 	 * @return Member
@@ -185,12 +206,15 @@ class BaseCircle {
 		return $this->viewerGroup;
 	}
 
+	/**
+	 * @param Member $group
+	 * @return BaseCircle
+	 */
 	public function setGroupViewer($group) {
 		$this->viewerGroup = $group;
 
 		return $this;
 	}
-
 
 	/**
 	 * @return Member
@@ -215,16 +239,22 @@ class BaseCircle {
 	}
 
 
+	/**
+	 * @param string $description
+	 * @return BaseCircle
+	 */
 	public function setDescription($description) {
 		$this->description = $description;
 
 		return $this;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getDescription() {
 		return $this->description;
 	}
-
 
 	/**
 	 * @param string|array $settings
@@ -268,6 +298,10 @@ class BaseCircle {
 	}
 
 
+	/**
+	 * @param string $k
+	 * @param mixed $v
+	 */
 	public function setSetting($k, $v) {
 		switch ($k) {
 			case 'circle_name':
@@ -301,57 +335,88 @@ class BaseCircle {
 		return null;
 	}
 
-
+	/**
+	 * 
+	 * @param string $type
+	 * @return \OCA\Circles\Model\BaseCircle
+	 */
 	public function setType($type) {
 		$this->type = self::typeInt($type);
 
 		return $this;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getType() {
 		return $this->type;
 	}
-
-
+	
+	/**
+	 * @param string $creation
+	 * @return \OCA\Circles\Model\BaseCircle
+	 */
 	public function setCreation($creation) {
 		$this->creation = $creation;
 
 		return $this;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getCreation() {
 		return $this->creation;
 	}
 
-
+	/**
+	 * @param array $members
+	 * @return BaseCircle
+	 */
 	public function setMembers($members) {
 		$this->members = $members;
 
 		return $this;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getMembers() {
 		return $this->members;
 	}
 
-
+	/**
+	 * @param array $groups
+	 * @return BaseCircle
+	 */
 	public function setGroups($groups) {
 		$this->groups = $groups;
 
 		return $this;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getGroups() {
 		return $this->groups;
 	}
 
-
+	/**
+	 * @param array $links
+	 * @return BaseCircle
+	 */
 	public function setLinks($links) {
 		$this->links = $links;
 
 		return $this;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getLinks() {
 		return $this->links;
 	}
@@ -385,7 +450,10 @@ class BaseCircle {
 //		return null;
 //	}
 
-
+	/**
+	 * @param integer|string $type
+	 * @return integer
+	 */
 	public static function typeInt($type) {
 
 		if (is_numeric($type)) {
