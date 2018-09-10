@@ -28,10 +28,10 @@
 #app-content {
 	overflow-x: hidden;
 	position: absolute !important;
-	left: 545px;
+	left: 543px;
 	right: 0px;
 	height: 100%;
-	top: 0px;
+	top: 50px;
 }
 
 #circle-navigation .header {
@@ -92,7 +92,7 @@ SELECT.select_none {
 	z-index: 1002;
 	position: absolute;
 	left: 300px;
-	top: 0;
+	top: 50px;
 	bottom: 0;
 	width: 243px;
 }
@@ -191,6 +191,7 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	position: absolute;
 	overflow-y: auto;
 	width: 100%;
+	overflow-x: hidden;
 }
 
 #memberslist_table, #linkslist_table, #groupslist_table {

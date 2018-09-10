@@ -7,7 +7,7 @@ sign_dir=$(build_dir)/sign
 package_name=$(app_name)
 cert_dir=$(HOME)/.nextcloud/certificates
 github_account=nextcloud
-version+=0.15.0
+version+=0.15.1
 
 all: appstore
 
