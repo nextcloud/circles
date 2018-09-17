@@ -156,6 +156,7 @@ OC.L10N.register(
     "Circles you belong to" : "Piirit jotka kuuluvat sinulle",
     "Circles you own" : "Piirit jotka omistat",
     "No circle selected" : "Ei piiriä valittuna",
+    "Settings" : "Asetukset",
     "Pending invitation to join this circle" : "Tässä piirissä on odottavia kutsuja",
     "You have a pending request to join this circle" : "Pyyntö piiriin liittymiseksi odottaa",
     "Add a member" : "Lisää jäsen",
