@@ -400,6 +400,7 @@ class CirclesService {
 
 		$this->eventsService->onCircleDestruction($circle);
 
+		$this->sharesRequest->removeSharesFromMember($circle->getOwner());
 		$this->membersRequest->removeAllFromCircle($circleUniqueId);
 		$this->circlesRequest->destroyCircle($circleUniqueId);
 	}
