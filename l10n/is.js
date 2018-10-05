@@ -243,6 +243,7 @@ OC.L10N.register(
     "Circles you belong to" : "Hringir sem þú tilheyrir",
     "Circles you own" : "Hringir sem þú átt",
     "No circle selected" : "Enginn hringur valinn",
+    "Settings" : "Stillingar",
     "Pending invitation to join this circle" : "Boð sem í biðstöðu um að taka þátt í þessum hring",
     "You have a pending request to join this circle" : "Þú ert með beiðni um að taka þátt í þessum hring",
     "Add a member" : "Bæta við meðlimi",
@@ -268,7 +269,9 @@ OC.L10N.register(
     "Accept Link Request Automatically" : "Samþykkja sjálfkrafa beiðni um tengil",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Aðvörun: Ef þetta er gert virkt verða beiðnir um tengla frá öðrum hringjum samþykktar sjálfkrafa.",
     "Save settings" : "Vista stillingar",
+    "Allow linking of groups" : "Leyfa tengingar hópa",
     "Groups can be linked to circles." : "Hópar geta verið tengdir hringjum.",
+    "Allow federated circles" : "Leyfa skýjasambandshringi",
     "Circles from different Nextclouds can be linked together." : "Hringir úr mismunandi Nextcloud-skýjum geta verið tengdir saman.",
     "Allow linking of groups:" : "Leyfa tengingar hópa:",
     "Allow federated circles:" : "Leyfa skýjasambandshringi:"
