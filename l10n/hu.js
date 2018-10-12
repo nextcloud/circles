@@ -241,6 +241,7 @@ OC.L10N.register(
     "Circles you belong to" : "Körök amikbe tartozol",
     "Circles you own" : "A te köreid",
     "No circle selected" : "Nincs kör kiválasztva",
+    "Settings" : "Beállítások",
     "Pending invitation to join this circle" : "Függő körhöz való csatlakozási felkérés",
     "You have a pending request to join this circle" : "Egy körhöz való csatlakozási kérelmed függőben van",
     "Add a member" : "Tag felvétele",
