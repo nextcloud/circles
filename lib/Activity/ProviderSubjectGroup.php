@@ -44,7 +44,7 @@ class ProviderSubjectGroup extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	public function parseGroupLink(IEvent &$event, Circle $circle, Member $group) {
+	public function parseGroupLink(IEvent $event, Circle $circle, Member $group) {
 		if ($event->getSubject() !== 'group_link') {
 			return;
 		}
@@ -65,7 +65,7 @@ class ProviderSubjectGroup extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	public function parseGroupUnlink(IEvent &$event, Circle $circle, Member $group) {
+	public function parseGroupUnlink(IEvent $event, Circle $circle, Member $group) {
 		if ($event->getSubject() !== 'group_unlink') {
 			return;
 		}
@@ -86,7 +86,7 @@ class ProviderSubjectGroup extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	public function parseGroupLevel(IEvent &$event, Circle $circle, Member $group) {
+	public function parseGroupLevel(IEvent $event, Circle $circle, Member $group) {
 		if ($event->getSubject() !== 'group_level') {
 			return;
 		}
