@@ -206,6 +206,7 @@ OC.L10N.register(
     "Create a public circle" : "Crea un cercle públic",
     "Create a closed circle" : "Crea un cercle tancat",
     "Create a secret circle" : "Crea un cercle secret",
+    "Creation" : "Creació",
     "A personal circle is a list of users known only to the owner." : "Un cercle personal és una llista d'usuaris coneguts només pel propietari.",
     "Public circles" : "Cercle públics",
     "Closed circles" : "Cercles tancats",
@@ -216,6 +217,7 @@ OC.L10N.register(
     "Circles you belong to" : "Cercles als que pertanys",
     "Circles you own" : "Cercles que posseeixes",
     "No circle selected" : "Cap cercle escollit",
+    "Settings" : "Paràmetres",
     "Add a member" : "Afegeix un membre",
     "Link a group" : "Enllaça un grup",
     "Link a circle" : "Enllaça un cercle",
@@ -233,6 +235,9 @@ OC.L10N.register(
     "Group Name" : "Nom del grup",
     "Link" : "Enllaç",
     "Linked" : "Enllaçat",
-    "Save settings" : "Desa la configuració"
+    "Allow Federated Links" : "Permet Enllaços Federats",
+    "Save settings" : "Desa la configuració",
+    "Allow linking of groups" : "Permet l'enllaç de grups",
+    "Allow federated circles" : "Permet cercles federats"
 },
 "nplurals=2; plural=(n != 1);");
