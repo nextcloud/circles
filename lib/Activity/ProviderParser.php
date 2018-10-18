@@ -318,7 +318,7 @@ class ProviderParser {
 			'id'      => $circle->getId(),
 			'name'    => $circle->getName(),
 			'_parsed' => $circle->getName(),
-			'link'    => Circles::generateLink($circle->getUniqueId())
+			'link'    => Circles::generateAbsoluteLink($circle->getUniqueId())
 		];
 	}
 
