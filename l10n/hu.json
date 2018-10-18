@@ -192,7 +192,7 @@
     "You cannot create this type of circle" : "Nem hozhatsz létre ilyen típusú kört",
     "You cannot display this type of circle" : "Nem tudod megjeleníteni ezt a típusú kört",
     "This member is not the owner of the circle" : "Ez a tag nem a tulajdonosa a körnek",
-    "This member is not an admin of the circle" : "Ez a tag nem adminja a körnek",
+    "This member is not an admin of the circle" : "Ez a tag nem rendszergazdája a körnek",
     "Federated link does not have a valid format" : "Érvénytelen egységesített kapcsolati formátum",
     "Federated circles are not allowed on the remote Nextcloud" : "Egységesített körök nem engedélyezettek a távoli Nextcloud-on.",
     "Remote circle does not accept federated links" : "A távoli kör nem fogad egységesített kapcsolatokat",
