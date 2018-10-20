@@ -175,6 +175,7 @@
     "This user is already a member of the circle" : "Aquest usuari ja és membre del cercle",
     "Sharing Frame does not exist" : "El Marc compartit no existeix",
     "This feature is not available for personal circles" : "Aquesta funció no està disponible per als cercles personals",
+    "The circle is not federated" : "El cercle no és federat",
     "You cannot join this circle" : "No et pots unira  aquest cercle",
     "This member is not a moderator" : "Aquest membre no és moderador",
     "Insufficient privileges" : "Privilegis insuficients",
