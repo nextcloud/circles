@@ -177,11 +177,13 @@ OC.L10N.register(
     "Group Name" : "Ryhmän nimi",
     "Link" : "Linkki",
     "Linked" : "Linkitetty",
+    "Members limit" : "Jäsenraja",
     "Allow Federated Links" : "Salli federoidut linkit",
     "Accept Link Request Automatically" : "Hyväksy linkkipyynnöt automaattisesti",
     "Save settings" : "Tallenna asetukset",
     "Groups can be linked to circles." : "Ryhmät voidaan linkittää piireihin.",
     "Circles from different Nextclouds can be linked together." : "Piirit eri Nextcloudeista voidaan linkittää yhteen.",
+    "Members limit:" : "Jäsenraja:",
     "Allow linking of groups:" : "Salli ryhmien linkittäminen:",
     "Allow federated circles:" : "Salli federoidut piirit:"
 },
