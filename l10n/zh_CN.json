@@ -161,7 +161,7 @@
     "{member} is the new owner of {circle}" : "{member}是{circle}的新拥有者",
     "On events happening in a <strong>Circle</strong> you belong" : "对于您所属的<strong>圈子</strong>中发生的事件",
     "Any important event in a <strong>Circle</strong> you are moderating" : "在<strong>圈子</strong>中的任何重要事件你正在主持",
-    "Shared to Circles" : "分享圈子的文件",
+    "Shared to Circles" : "共享圈子的文件",
     "%s shared »%s« with you." : "%s已共享 »%s«和你一起",
     "%s shared »%s« with '%s'." : "%s已共享 »%s«和 '%s'.",
     "%s on %s" : "%s上%s",
