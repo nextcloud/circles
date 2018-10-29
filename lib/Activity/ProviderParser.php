@@ -165,7 +165,7 @@ class ProviderParser {
 
 		if ($member->getUserId() === $this->activityManager->getCurrentUserId()
 		) {
-			$event->setSubject($ownEvent, $data);
+			$this->setSubject($ownEvent, $data);
 
 			return;
 		}
