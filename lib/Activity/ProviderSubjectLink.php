@@ -44,7 +44,7 @@ class ProviderSubjectLink extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	public function parseLinkRequestSent(IEvent &$event, Circle $circle, FederatedLink $remote) {
+	public function parseLinkRequestSent(IEvent $event, Circle $circle, FederatedLink $remote) {
 		if ($event->getSubject() !== 'link_request_sent') {
 			return;
 		}
@@ -66,7 +66,7 @@ class ProviderSubjectLink extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	public function parseLinkRequestReceived(IEvent &$event, Circle $circle, FederatedLink $remote) {
+	public function parseLinkRequestReceived(IEvent $event, Circle $circle, FederatedLink $remote) {
 		if ($event->getSubject() !== 'link_request_received') {
 			return;
 		}
@@ -86,7 +86,7 @@ class ProviderSubjectLink extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	public function parseLinkRequestRejected(IEvent &$event, Circle $circle, FederatedLink $remote) {
+	public function parseLinkRequestRejected(IEvent $event, Circle $circle, FederatedLink $remote) {
 		if ($event->getSubject() !== 'link_request_rejected') {
 			return;
 		}
@@ -107,7 +107,7 @@ class ProviderSubjectLink extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	public function parseLinkRequestCanceled(IEvent &$event, Circle $circle, FederatedLink $remote) {
+	public function parseLinkRequestCanceled(IEvent $event, Circle $circle, FederatedLink $remote) {
 		if ($event->getSubject() !== 'link_request_canceled') {
 			return;
 		}
@@ -130,7 +130,7 @@ class ProviderSubjectLink extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	public function parseLinkRequestAccepted(IEvent &$event, Circle $circle, FederatedLink $remote) {
+	public function parseLinkRequestAccepted(IEvent $event, Circle $circle, FederatedLink $remote) {
 		if ($event->getSubject() !== 'link_request_accepted') {
 			return;
 		}
@@ -151,7 +151,7 @@ class ProviderSubjectLink extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	public function parseLinkRequestRemoved(IEvent &$event, Circle $circle, FederatedLink $remote) {
+	public function parseLinkRequestRemoved(IEvent $event, Circle $circle, FederatedLink $remote) {
 		if ($event->getSubject() !== 'link_request_removed') {
 			return;
 		}
@@ -173,7 +173,7 @@ class ProviderSubjectLink extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	public function parseLinkRequestCanceling(IEvent &$event, Circle $circle, FederatedLink $remote) {
+	public function parseLinkRequestCanceling(IEvent $event, Circle $circle, FederatedLink $remote) {
 		if ($event->getSubject() !== 'link_request_canceling') {
 			return;
 		}
@@ -195,7 +195,7 @@ class ProviderSubjectLink extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	public function parseLinkRequestAccepting(IEvent &$event, Circle $circle, FederatedLink $remote) {
+	public function parseLinkRequestAccepting(IEvent $event, Circle $circle, FederatedLink $remote) {
 		if ($event->getSubject() !== 'link_request_accepting') {
 			return;
 		}
@@ -217,7 +217,7 @@ class ProviderSubjectLink extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	public function parseLinkUp(IEvent &$event, Circle $circle, FederatedLink $remote) {
+	public function parseLinkUp(IEvent $event, Circle $circle, FederatedLink $remote) {
 		if ($event->getSubject() !== 'link_up') {
 			return;
 		}
@@ -238,7 +238,7 @@ class ProviderSubjectLink extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	public function parseLinkDown(IEvent &$event, Circle $circle, FederatedLink $remote) {
+	public function parseLinkDown(IEvent $event, Circle $circle, FederatedLink $remote) {
 		if ($event->getSubject() !== 'link_down') {
 			return;
 		}
@@ -261,7 +261,7 @@ class ProviderSubjectLink extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	public function parseLinkRemove(IEvent &$event, Circle $circle, FederatedLink $remote) {
+	public function parseLinkRemove(IEvent $event, Circle $circle, FederatedLink $remote) {
 		if ($event->getSubject() !== 'link_remove') {
 			return;
 		}

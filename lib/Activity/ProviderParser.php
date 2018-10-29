@@ -31,7 +31,6 @@ use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
-use OCA\Circles\Service\FederatedLinkService;
 use OCA\Circles\Service\MiscService;
 use OCP\Activity\IEvent;
 use OCP\Activity\IManager;
@@ -72,7 +71,7 @@ class ProviderParser {
 	 * @param string $ownEvent
 	 * @param string $othersEvent
 	 */
-	protected function parseCircleEvent(IEvent &$event, Circle $circle, $remote, $ownEvent, $othersEvent
+	protected function parseCircleEvent(IEvent $event, Circle $circle, $remote, $ownEvent, $othersEvent
 	) {
 		$data = [
 			'author' => $this->generateViewerParameter($circle),
@@ -157,7 +156,7 @@ class ProviderParser {
 	 * @param $othersEvent
 	 */
 	protected function parseMemberEvent(
-		IEvent &$event, Circle $circle, Member $member, $ownEvent, $othersEvent
+		IEvent $event, Circle $circle, Member $member, $ownEvent, $othersEvent
 	) {
 		$data = [
 			'circle' => $this->generateCircleParameter($circle),
@@ -183,7 +182,7 @@ class ProviderParser {
 	 * @param IEvent $event
 	 * @param string $line
 	 */
-	protected function parseLinkEvent(IEvent &$event, Circle $circle, FederatedLink $remote, $line
+	protected function parseLinkEvent(IEvent $event, Circle $circle, FederatedLink $remote, $line
 	) {
 		$data = [
 			'circle' => $this->generateCircleParameter($circle),
@@ -204,7 +203,7 @@ class ProviderParser {
 	 * @param string $othersEvent
 	 */
 	protected function parseCircleMemberEvent(
-		IEvent &$event, Circle $circle, Member $member, $ownEvent, $othersEvent
+		IEvent $event, Circle $circle, Member $member, $ownEvent, $othersEvent
 	) {
 		$data = [
 			'author'   => $this->generateViewerParameter($circle),
@@ -235,7 +234,7 @@ class ProviderParser {
 	 * @param $othersEvent
 	 */
 	protected function parseCircleMemberAdvancedEvent(
-		IEvent &$event, Circle $circle, Member $member, $ownEvent, $targetEvent, $othersEvent
+		IEvent $event, Circle $circle, Member $member, $ownEvent, $targetEvent, $othersEvent
 	) {
 		$data = [
 			'author' => $this->generateViewerParameter($circle),
@@ -319,7 +318,7 @@ class ProviderParser {
 			'id'      => $circle->getId(),
 			'name'    => $circle->getName(),
 			'_parsed' => $circle->getName(),
-			'link'    => Circles::generateLink($circle->getUniqueId())
+			'link'    => Circles::generateAbsoluteLink($circle->getUniqueId())
 		];
 	}
 
