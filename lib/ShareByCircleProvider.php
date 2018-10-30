@@ -347,9 +347,10 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 */
 	public function getSharesBy($userId, $shareType, $node, $reShares, $limit, $offset) {
 		$qb = $this->getBaseSelectSql();
-		$this->limitToShareOwner($qb, $userId, $reShares);
 
-		if ($node !== null) {
+		if ($node === null) {
+			$this->limitToShareOwner($qb, $userId, $reShares);
+		} else {
 			$this->limitToFiles($qb, $node->getId());
 		}
 
