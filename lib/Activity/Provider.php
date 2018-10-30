@@ -126,7 +126,7 @@ class Provider implements IProvider {
 	 * @param IEvent $event
 	 * @param Circle $circle
 	 */
-	private function setIcon(IEvent &$event, Circle $circle) {
+	private function setIcon(IEvent $event, Circle $circle) {
 		$event->setIcon(
 			CirclesService::getCircleIcon(
 				$circle->getType(),
@@ -144,7 +144,7 @@ class Provider implements IProvider {
 	 *
 	 * @throws FakeException
 	 */
-	private function parseAsMember(IEvent &$event, Circle $circle, $params) {
+	private function parseAsMember(IEvent $event, Circle $circle, $params) {
 		if ($event->getType() !== 'circles_as_member') {
 			return;
 		}
@@ -162,7 +162,7 @@ class Provider implements IProvider {
 	 *
 	 * @throws Exception
 	 */
-	private function parseAsModerator(IEvent &$event, Circle $circle, $params) {
+	private function parseAsModerator(IEvent $event, Circle $circle, $params) {
 		if ($event->getType() !== 'circles_as_moderator') {
 			return;
 		}
@@ -180,7 +180,7 @@ class Provider implements IProvider {
 	 *
 	 * @throws InvalidArgumentError
 	 */
-	private function parseMemberAsMember(IEvent &$event, Circle $circle, $params) {
+	private function parseMemberAsMember(IEvent $event, Circle $circle, $params) {
 
 		if (!key_exists('member', $params)) {
 			return;
@@ -200,7 +200,7 @@ class Provider implements IProvider {
 	 * @param Circle $circle
 	 * @param array $params
 	 */
-	private function parseGroupAsModerator(IEvent &$event, Circle $circle, $params) {
+	private function parseGroupAsModerator(IEvent $event, Circle $circle, $params) {
 		if (!key_exists('group', $params)) {
 			return;
 		}
@@ -218,7 +218,7 @@ class Provider implements IProvider {
 	 * @param Circle $circle
 	 * @param array $params
 	 */
-	private function parseMemberAsModerator(IEvent &$event, Circle $circle, $params) {
+	private function parseMemberAsModerator(IEvent $event, Circle $circle, $params) {
 		if (!key_exists('member', $params)) {
 			return;
 		}
@@ -237,7 +237,7 @@ class Provider implements IProvider {
 	 * @param Circle $circle
 	 * @param array $params
 	 */
-	private function parseLinkAsModerator(IEvent &$event, Circle $circle, $params) {
+	private function parseLinkAsModerator(IEvent $event, Circle $circle, $params) {
 
 		if (!key_exists('link', $params)) {
 			return;

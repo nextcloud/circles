@@ -43,7 +43,7 @@ class ProviderSubjectCircle extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	public function parseSubjectCircleCreate(IEvent &$event, Circle $circle) {
+	public function parseSubjectCircleCreate(IEvent $event, Circle $circle) {
 		if ($event->getSubject() !== 'circle_create') {
 			return;
 		}
@@ -64,7 +64,7 @@ class ProviderSubjectCircle extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	public function parseSubjectCircleDelete(IEvent &$event, Circle $circle) {
+	public function parseSubjectCircleDelete(IEvent $event, Circle $circle) {
 		if ($event->getSubject() !== 'circle_delete') {
 			return;
 		}

@@ -45,7 +45,7 @@ class ProviderSubjectMember extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	public function parseSubjectMemberJoin(IEvent &$event, Circle $circle, Member $member) {
+	public function parseSubjectMemberJoin(IEvent $event, Circle $circle, Member $member) {
 		if ($event->getSubject() !== 'member_join') {
 			return;
 		}
@@ -67,7 +67,7 @@ class ProviderSubjectMember extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	private function parseSubjectMemberJoinClosedCircle(IEvent &$event, Circle $circle, Member $member) {
+	private function parseSubjectMemberJoinClosedCircle(IEvent $event, Circle $circle, Member $member) {
 		if ($circle->getType() !== Circle::CIRCLES_CLOSED) {
 			return;
 		}
@@ -92,7 +92,7 @@ class ProviderSubjectMember extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	public function parseSubjectMemberAdd(IEvent &$event, Circle $circle, Member $member) {
+	public function parseSubjectMemberAdd(IEvent $event, Circle $circle, Member $member) {
 		if ($event->getSubject() !== 'member_add') {
 			return;
 		}
@@ -117,7 +117,7 @@ class ProviderSubjectMember extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	private function parseSubjectMemberAddNotLocalMember(IEvent &$event, Circle $circle, Member $member
+	private function parseSubjectMemberAddNotLocalMember(IEvent $event, Circle $circle, Member $member
 	) {
 		if ($member->getType() === Member::TYPE_USER) {
 			return;
@@ -140,7 +140,7 @@ class ProviderSubjectMember extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	private function parseSubjectMemberAddClosedCircle(IEvent &$event, Circle $circle, Member $member) {
+	private function parseSubjectMemberAddClosedCircle(IEvent $event, Circle $circle, Member $member) {
 		if ($circle->getType() !== Circle::CIRCLES_CLOSED) {
 			return;
 		}
@@ -167,7 +167,7 @@ class ProviderSubjectMember extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	public function parseSubjectMemberLeft(IEvent &$event, Circle $circle, Member $member) {
+	public function parseSubjectMemberLeft(IEvent $event, Circle $circle, Member $member) {
 
 		if ($event->getSubject() !== 'member_left') {
 			return;
@@ -195,7 +195,7 @@ class ProviderSubjectMember extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	private function parseSubjectNonMemberLeftClosedCircle(IEvent &$event, Circle $circle, Member $member
+	private function parseSubjectNonMemberLeftClosedCircle(IEvent $event, Circle $circle, Member $member
 	) {
 		if ($circle->getType() !== Circle::CIRCLES_CLOSED
 			|| $member->getLevel() !== Member::LEVEL_NONE) {
@@ -231,7 +231,7 @@ class ProviderSubjectMember extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	public function parseSubjectMemberRemove(IEvent &$event, Circle $circle, Member $member) {
+	public function parseSubjectMemberRemove(IEvent $event, Circle $circle, Member $member) {
 
 		if ($event->getSubject() !== 'member_remove') {
 			return;
@@ -258,7 +258,7 @@ class ProviderSubjectMember extends ProviderParser {
 	 * @throws FakeException
 	 */
 	private function parseSubjectMemberRemoveNotLocalMember(
-		IEvent &$event, Circle $circle, Member $member
+		IEvent $event, Circle $circle, Member $member
 	) {
 		if ($member->getType() === Member::TYPE_USER) {
 			return;
@@ -286,7 +286,7 @@ class ProviderSubjectMember extends ProviderParser {
 	 * @throws FakeException
 	 */
 	private function parseSubjectMemberRemoveNotYetMember(
-		IEvent &$event, Circle $circle, Member $member
+		IEvent $event, Circle $circle, Member $member
 	) {
 		if ($circle->getType() !== Circle::CIRCLES_CLOSED
 			|| $member->getLevel() !== Member::LEVEL_NONE) {
@@ -306,7 +306,7 @@ class ProviderSubjectMember extends ProviderParser {
 
 
 	private function parseSubjectMemberRemoveNotYetMemberRequesting(
-		IEvent &$event, Circle $circle, Member $member
+		IEvent $event, Circle $circle, Member $member
 	) {
 		if ($member->getStatus() !== Member::STATUS_REQUEST) {
 			return;
@@ -330,7 +330,7 @@ class ProviderSubjectMember extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	public function parseMemberInvited(IEvent &$event, Circle $circle, Member $member) {
+	public function parseMemberInvited(IEvent $event, Circle $circle, Member $member) {
 		if ($event->getSubject() !== 'member_invited') {
 			return;
 		}
@@ -353,7 +353,7 @@ class ProviderSubjectMember extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	public function parseMemberLevel(IEvent &$event, Circle $circle, Member $member) {
+	public function parseMemberLevel(IEvent $event, Circle $circle, Member $member) {
 		if ($event->getSubject() !== 'member_level') {
 			return;
 		}
@@ -377,7 +377,7 @@ class ProviderSubjectMember extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	public function parseMemberRequestInvitation(IEvent &$event, Circle $circle, Member $member) {
+	public function parseMemberRequestInvitation(IEvent $event, Circle $circle, Member $member) {
 		if ($event->getSubject() !== 'member_request_invitation') {
 			return;
 		}
@@ -399,7 +399,7 @@ class ProviderSubjectMember extends ProviderParser {
 	 *
 	 * @throws FakeException
 	 */
-	public function parseMemberOwner(IEvent &$event, Circle $circle, Member $member) {
+	public function parseMemberOwner(IEvent $event, Circle $circle, Member $member) {
 		if ($event->getSubject() !== 'member_owner') {
 			return;
 		}

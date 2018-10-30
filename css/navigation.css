@@ -27,6 +27,11 @@
 
 #app-content {
 	overflow-x: hidden;
+	position: absolute !important;
+	left: 543px;
+	right: 0px;
+	height: 100%;
+	top: 50px;
 }
 
 #circle-navigation .header {
@@ -77,14 +82,19 @@ SELECT.select_none {
 
 #circle-navigation {
 	width: 300px;
+	height: 100%;
 	border-right: 1px solid #ddd;
 }
 
 #circle-navigation.circles {
 	overflow-y: auto;
-	width: 350px;
 	overflow-x: hidden;
 	z-index: 1002;
+	position: absolute;
+	left: 300px;
+	top: 50px;
+	bottom: 0;
+	width: 243px;
 }
 
 #circle-navigation.circles, #circle-navigation.circles .circle, #circle-navigation.circles .selected {
@@ -162,12 +172,12 @@ div.circle .owner, div.circle .type, div.circle .resume {
 }
 
 #circledata {
-	position: absolute;
+	position: absolute !important;
 	bottom: 5px;
 	right: 10px;
 	left: 15px;
 	top: 120px;
-	overflow-y: auto;
+	overflow-y: hidden;
 	overflow-x: hidden;
 }
 
@@ -181,6 +191,7 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	position: absolute;
 	overflow-y: auto;
 	width: 100%;
+	overflow-x: hidden;
 }
 
 #memberslist_table, #linkslist_table, #groupslist_table {
@@ -215,6 +226,7 @@ div.circle .owner, div.circle .type, div.circle .resume {
 }
 
 #emptycontent {
+	display: none;
 	position: absolute;
 	z-index: 1001;
 	left: 0px;

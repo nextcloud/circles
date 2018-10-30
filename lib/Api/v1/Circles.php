@@ -459,7 +459,22 @@ class Circles {
 
 
 	/**
-	 * Circles::generateLink();
+	 * Circles::generateAbsoluteLink();
+	 *
+	 * Returns the absolute link to get access to a local circle.
+	 *
+	 * @param string $circleUniqueId
+	 *
+	 * @return string
+	 */
+	public static function generateAbsoluteLink($circleUniqueId) {
+		return \OC::$server->getURLGenerator()
+						   ->linkToRouteAbsolute('circles.Navigation.navigate') . '#' . $circleUniqueId;
+	}
+
+
+	/**
+	 * Circles::generateRemoteLink();
 	 *
 	 * Returns the link to get access to a remote circle.
 	 *

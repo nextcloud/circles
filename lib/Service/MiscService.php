@@ -130,12 +130,18 @@ class MiscService {
 	 * @throws NoUserException
 	 */
 	public function getRealUserId($userId) {
-		if (!$this->userManager->userExists($userId)) {
+		if ($this->userManager->userExists($userId)) {
+			return $this->userManager->get($userId)
+									 ->getUID();
+		}
+
+		$result = $this->userManager->search($userId);
+		if (sizeof($result) !== 1) {
 			throw new NoUserException();
 		}
 
-		return $this->userManager->get($userId)
-								 ->getUID();
+		$user = array_shift($result);
+		return $user->getUID();
 	}
 
 
