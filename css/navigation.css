@@ -173,11 +173,11 @@ div.circle .owner, div.circle .type, div.circle .resume {
 
 #circledata {
 	position: absolute !important;
+	overflow-y: auto;
 	bottom: 5px;
 	right: 10px;
 	left: 15px;
 	top: 120px;
-	overflow-y: hidden;
 	overflow-x: hidden;
 }
 
