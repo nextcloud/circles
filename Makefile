@@ -7,7 +7,8 @@ sign_dir=$(build_dir)/sign
 package_name=$(app_name)
 cert_dir=$(HOME)/.nextcloud/certificates
 github_account=nextcloud
-version+=0.15.1
+branch=stable13
+version+=0.15.2
 
 all: appstore
 
@@ -17,6 +18,7 @@ github-release:
 	github-release release \
 		--user $(github_account) \
 		--repo $(app_name) \
+		--target $(branch) \
 		--tag v$(version) \
 		--name "$(app_name) v$(version)"
 
