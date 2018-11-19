@@ -273,6 +273,8 @@
     "Groups can be linked to circles." : "グループはサークルにリンクできます。",
     "Allow federated circles" : "フェデレーションサークルを許可する",
     "Circles from different Nextclouds can be linked together." : "異なるNextcloudのサークルをリンクすることができます。",
-    "Members limit:" : "メモリ制限:"
+    "Members limit:" : "メモリ制限:",
+    "Allow linking of groups:" : "グループのリンクを許可する:",
+    "Allow federated circles:" : "フェデレーションサークルを許可する:"
 },"pluralForm" :"nplurals=1; plural=0;"
 }
