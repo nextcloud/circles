@@ -167,7 +167,7 @@ OC.L10N.register(
     "%s shared »%s« with you." : "%s delade »%s« med dig.",
     "%s shared »%s« with '%s'." : "%s delade »%s« med '%s'.",
     "%s on %s" : "%s på %s",
-    "Click the button below to open it." : "Klicka knappen nedan för att öppna det.",
+    "Click the button below to open it." : "Klicka på knappen nedan för att öppna det.",
     "Open »%s«" : "Öppna »%s«",
     "The name of your circle must contain at least 3 characters" : "Cirkelns namn måste innehålla minst 3 tecken",
     "Linked Groups are not allowed on this Nextcloud" : "Länkade Grupper är inte tillåtna på denna Nextcloud",
