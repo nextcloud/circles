@@ -262,6 +262,7 @@ OC.L10N.register(
     "Group Name" : "Csoport Név",
     "Link" : "Kapcsolat",
     "Linked" : "Kapcsolódva",
+    "Members limit" : "Tagok limite",
     "Allow Federated Links" : "Egyesített linkek engedélyezése",
     "Makes the circle federated, and enables sharing between federated circles" : "A köröket egységesítetté teszi és lehetővé teszi az egységes körök közti megosztást.",
     "Accept Link Request Automatically" : "Kapcsolati kérések automatikus elfogadása",
@@ -269,6 +270,7 @@ OC.L10N.register(
     "Save settings" : "Beállítások mentése",
     "Groups can be linked to circles." : "Csoportok csatolhatók a körökhöz.",
     "Circles from different Nextclouds can be linked together." : "Más Nextcloud-okból való körök összekapcsolhatók.",
+    "Members limit:" : "Tagok limite:",
     "Allow linking of groups:" : "Csoportok csatlakoztatásának engedélyezése:",
     "Allow federated circles:" : "Egységesített körök engedélyezése:"
 },
