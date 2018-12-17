@@ -268,6 +268,7 @@ OC.L10N.register(
     "Accept Link Request Automatically" : "Kapcsolati kérések automatikus elfogadása",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Figyelem: ennek bekapcsolásával a kapcsolati kérések más köröktől automatikusan elfogadásra kerülnek.",
     "Save settings" : "Beállítások mentése",
+    "Allow linking of groups" : "Csoportok csatlakoztatásának engedélyezése",
     "Groups can be linked to circles." : "Csoportok csatolhatók a körökhöz.",
     "Circles from different Nextclouds can be linked together." : "Más Nextcloud-okból való körök összekapcsolhatók.",
     "Members limit:" : "Tagok limite:",
