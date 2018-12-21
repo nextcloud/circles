@@ -85,6 +85,7 @@
     "This user is already a member of the circle" : "Šis naudotojas jau yra šio rato narys",
     "This feature is not available for personal circles" : "Ši ypatybė nėra prieinama asmeniniams ratams",
     "You cannot join this circle" : "Jūs negalite prisijungti prie šio rato",
+    "Insufficient privileges" : "Nepakanka teisių",
     "This member is the owner of the circle" : "Šis narys yra rato savininkas",
     "You are already a member of this circle" : "Jūs jau esate šio rato narys",
     "You need a specify a type of circle" : "Jūs turite nurodyti rato tipą",
