@@ -63,6 +63,8 @@ OC.L10N.register(
     "The status of the link has been updated" : "Stav odkazu bol aktualizonavý",
     "Local User" : "Lokálny používateľ",
     "Local Group" : "Lokálna skupina",
+    "The member '{name}' was added to the circle" : "Člen/ka '{name}' bol/a pridaný/á do kruhu",
+    "The contact '{contact}' was added to the circle" : "Kontakt '{contact}' bol pridaný do kruhu",
     "Members of the group '{name}' were added to the circle" : "Členovia skupiny '{name}' boli pridaní do kruhu",
     "Members of the group '{name}' could not be added to the circle" : "Členovia skupiny '{name}' nemohli byť boli pridaní do kruhu",
     "Members of the group '{name}' were invited to the circle" : "Členovia skupiny '{name}' boli pozvaní do kruhu",
