@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 0.14.4
+
+- Fixing an issue when adding a user to a circle.
+
+
 ## 0.13.4
 
 - bugfixes.
