@@ -127,7 +127,7 @@
     "The name of your circle must contain at least 3 characters" : "O nome do seu círculo debe conter cando menos 3 caracteres",
     "Federated circles are not allowed on this Nextcloud" : "Neste Nextcloud non se permiten os círculos federados",
     "A circle with that name exists" : "Xa existe un círculo con ese nome.",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Vostede non pode usar a aplicación «Circles» ata que o administrador teña permitido polo menos un tipo de círculo",
+    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Vostede non pode usar o aplicativo «Circles» ata que o administrador teña permitido polo menos un tipo de círculo",
     "This member does not exist" : "Non existe este participante",
     "This user is already a member of the circle" : "Este usuario xa é participante no círculo",
     "You cannot join this circle" : "Vostede non pode unirse a este círculo",
