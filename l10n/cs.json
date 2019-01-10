@@ -168,7 +168,7 @@
     "Click the button below to open it." : "Pro otevření klikněte na tlačítko níže.",
     "Open »%s«" : "Otevřít „%s“",
     "The name of your circle must contain at least 3 characters" : "Je třeba, aby název vašeho okruhu obsahoval alespoň 3 znaky",
-    "Linked Groups are not allowed on this Nextcloud" : "Propojené skupiny nejsou v této instanci Nextcloudu povoleny",
+    "Linked Groups are not allowed on this Nextcloud" : "Propojené skupiny nejsou v této instanci Nextcloud umožněny",
     "Federated circles are not allowed on this Nextcloud" : "Propojené kruhy nejsou v této instance Nextcloudu povoleny",
     "Circle not found" : "Kruh nenalezen",
     "A circle with that name exists" : "Okruh s tímto názvem už existuje",
