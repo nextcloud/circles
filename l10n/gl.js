@@ -35,7 +35,7 @@ OC.L10N.register(
     "Kicked" : "Expulsado",
     "This operation will add/invite all members of the group to the circle" : "Esta operación engadirá/convidará a todos os membros do grupo ao círculo",
     "Please confirm" : "Confírmeo",
-    "Are you sure you want to leave this circle?" : "Está seguro de que desexa saír deste círculo?",
+    "Are you sure you want to leave this circle?" : "Confirma que quere abandonar este círculo?",
     "Are you sure you want to delete this circle?" : "Confirma que quere eliminar este círculo?",
     "Mail Address" : "Enderezo de correo",
     "Contact" : "Contacto",
