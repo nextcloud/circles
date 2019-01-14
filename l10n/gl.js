@@ -43,7 +43,7 @@ OC.L10N.register(
     "Accept the request" : "Aceptar a solicitude",
     "Dismiss the request" : "Declinar a solicitude",
     "Unlink this group" : "Desligar este grupo",
-    "Remove this link" : "Borrar esta ligazón",
+    "Remove this link" : "Retirar esta ligazón",
     "Cancel the link request" : "Cancelar a solicitude de ligazón",
     "Accept the link request" : "Aceptar a solicitude de ligazón",
     "Reject the link request" : "Rexeitar a solicitude de ligazón",
