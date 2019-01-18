@@ -89,7 +89,7 @@ OC.L10N.register(
     "Member '{name}' updated" : "Foi actualizado o membro «{name}»",
     "The member '{name}' could not be updated" : "Non foi posíbel actualizar ao membro «{name}»",
     "Issue while saving settings" : "Produciuse un incidente ao gardar os axustes",
-    "Settings saved." : "Axustes gardados",
+    "Settings saved." : "Axustes gardados.",
     "Circles" : "Círculos",
     "Circles' files" : "Ficheiros dos círculos",
     "Select circles to filter by" : "Seleccionar círculos polos que filtrar",
