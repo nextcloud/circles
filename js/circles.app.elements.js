@@ -71,13 +71,15 @@ var elements = {
 	settingsName: null,
 	settingsDesc: null,
 	settingsLimit: null,
-	settingsEntryLimit: null,
+	settingsEntryLimit: null,	
 	settingsLink: null,
 	settingsLinkAuto: null,
 	settingsLinkFiles: null,
+	settingsNotification: null,	
 	settingsEntryLink: null,
 	settingsEntryLinkAuto: null,
 	settingsEntryLinkFiles: null,
+	settingsEntryNotification: null,
 	settingsSave: null,
 
 	addMember: null,
@@ -139,9 +141,11 @@ var elements = {
 		elements.settingsLink = $('#settings-link');
 		elements.settingsLinkAuto = $('#settings-link-auto');
 		elements.settingsLinkFiles = $('#settings-link-files');
+		elements.settingsNotification = $('#settings-notification');
 		elements.settingsEntryLink = $('#settings-entry-link');
 		elements.settingsEntryLinkAuto = $('#settings-entry-link-auto');
 		elements.settingsEntryLinkFiles = $('#settings-entry-link-files');
+		elements.settingsEntryNotification = $('#settings-entry-notification');
 		elements.settingsSave = $('#settings-submit');
 
 		elements.addMember = $('#addmember');

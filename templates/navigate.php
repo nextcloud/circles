@@ -407,6 +407,11 @@ style(Application::APP_NAME, 'navigation');
 						</td>
 						<td><input type="checkbox" value="1" id="settings-link-auto"></td>
 					</tr>
+					<tr id="settings-entry-notification">
+						<td class="left"><?php p($l->t('Disable notification for seen users.')); ?>
+						</td>
+						<td><input type="checkbox" value="0" id="settings-notification"></td>
+					</tr>
 
 					<tr>
 						<td colspan="2" style="text-align: center;">

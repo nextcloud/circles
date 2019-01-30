@@ -60,6 +60,7 @@ var curr = {
 	allowed_linked_groups: 0,
 	allowed_federated_circles: 0,
 	allowed_circles: 0,
+	disabled_notification_for_seen_users: 0,
 
 	defineCircle: function (data) {
 		curr.circle = data.circle_id;

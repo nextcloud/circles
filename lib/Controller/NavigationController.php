@@ -84,6 +84,7 @@ class NavigationController extends BaseController {
 			'members_list' => $this->configService->getAppValue(ConfigService::CIRCLES_MEMBERS_LIMIT),
 			'allowed_linked_groups' => $this->configService->getAppValue(ConfigService::CIRCLES_ALLOW_LINKED_GROUPS),
 			'allowed_federated_circles' => $this->configService->getAppValue(ConfigService::CIRCLES_ALLOW_FEDERATED_CIRCLES),
+			'disabled_notification_for_seen_users' => $this->configService->getAppValue(ConfigService::CIRCLES_DISABLE_NOTIFICATION_FOR_SEEN_USERS),
 			'status'            => 1
 		];
 

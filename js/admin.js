@@ -33,7 +33,8 @@ var elements = {
 	// test_async_wait: null,
 	members_limit: null,
 	allow_linked_groups: null,
-	allow_federated_circles: null
+	allow_federated_circles: null,
+	disable_notification_for_seen_users: null
 };
 
 
@@ -46,6 +47,7 @@ $(document).ready(function () {
 	elements.members_limit = $('#members_limit');
 	elements.allow_linked_groups = $('#allow_linked_groups');
 	elements.allow_federated_circles = $('#allow_federated_circles');
+	elements.disable_notification_for_seen_users = $('#disable_notification_for_seen_users');
 
 	// elements.test_async_wait.hide().on('click', function () {
 	// 	self.refreshResult();
@@ -81,6 +83,10 @@ $(document).ready(function () {
 	elements.allow_federated_circles.on('change', function () {
 		saveChange();
 	});
+	
+	elements.disable_notification_for_seen_users.on('change', function () {
+		saveChange();
+	});	
 
 	saveChange = function () {
 		$.ajax({
@@ -91,12 +97,15 @@ $(document).ready(function () {
 				allow_linked_groups: (elements.allow_linked_groups.is(
 					':checked')) ? '1' : '0',
 				allow_federated_circles: (elements.allow_federated_circles.is(
+					':checked')) ? '1' : '0',
+				disable_notification_for_seen_users: (elements.disable_notification_for_seen_users.is(
 					':checked')) ? '1' : '0'
 			}
 		}).done(function (res) {
 			elements.members_limit.val(res.membersLimit);
 			elements.allow_linked_groups.prop('checked', (res.allowLinkedGroups === '1'));
 			elements.allow_federated_circles.prop('checked', (res.allowFederatedCircles === '1'));
+			elements.disable_notification_for_seen_users.prop('checked', (res.disableNotificationForSeenUsers === '1'));			
 		});
 	};
 

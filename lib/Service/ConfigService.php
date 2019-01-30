@@ -41,6 +41,7 @@ class ConfigService {
 	const CIRCLES_ALLOW_LINKED_GROUPS = 'allow_linked_groups';
 	const CIRCLES_ALLOW_NON_SSL_LINKS = 'allow_non_ssl_links';
 	const CIRCLES_NON_SSL_LOCAL = 'local_is_non_ssl';
+	const CIRCLES_DISABLE_NOTIFICATION_FOR_SEEN_USERS = 'disable_notification_for_seen_users';
 
 	const CIRCLES_TEST_ASYNC_LOCK = 'test_async_lock';
 	const CIRCLES_TEST_ASYNC_INIT = 'test_async_init';
@@ -55,7 +56,8 @@ class ConfigService {
 		self::CIRCLES_ALLOW_LINKED_GROUPS     => '0',
 		self::CIRCLES_ALLOW_FEDERATED_CIRCLES => '0',
 		self::CIRCLES_ALLOW_NON_SSL_LINKS     => '0',
-		self::CIRCLES_NON_SSL_LOCAL           => '0'
+		self::CIRCLES_NON_SSL_LOCAL           => '0',
+		self::CIRCLES_DISABLE_NOTIFICATION_FOR_SEEN_USERS => '0',
 	];
 
 	/** @var string */
@@ -87,6 +89,9 @@ class ConfigService {
 
 	/** @var int */
 	private $localNonSSL = -1;
+	
+	/** @var int */
+	private $disabledNotificationForSeenUsers = -1;
 
 	/**
 	 * ConfigService constructor.
@@ -181,6 +186,17 @@ class ConfigService {
 		return ($this->allowedNonSSLLinks === 1);
 	}
 
+	/**
+	 * @return bool
+	 */
+	public function isDisabledNotificationForSeenUsers() {
+		if ($this->disabledNotificationForSeenUsers === -1) {
+			$this->disabledNotificationForSeenUsers =
+				(int)$this->getAppValue(self::CIRCLES_DISABLE_NOTIFICATION_FOR_SEEN_USERS);
+		}
+
+		return ($this->disabledNotificationForSeenUsers === 1);
+	}
 
 	/**
 	 * @param string $remote
