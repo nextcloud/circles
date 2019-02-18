@@ -36,6 +36,7 @@ OC.L10N.register(
     "the link to <b>{remote}</b> is now up and running." : "el link a <b>{remote}</b> ahora está disponible y funcionando.",
     "Member '{name}' updated" : "El miembro '{name}' fue actualizado",
     "Circles" : "Círculos",
+    "The link between {circle} and {remote} has been shutdown remotely" : "El enlace entre {círculo} y {remoto} se ha cerrado de forma remota",
     "The name of your circle must contain at least 3 characters" : "El nombre de su círculo debe contener al menos 3 caracteres",
     "Federated circles are not allowed on this Nextcloud" : "No se permiten los círculos federados en este Nextcloud",
     "A circle with that name exists" : "Un círculo con ese nombre ya existe",
