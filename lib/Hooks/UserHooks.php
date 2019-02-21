@@ -22,11 +22,18 @@ class UserHooks {
 			->onUserDeleted($params);
 	}
 
-
 	public static function onGroupDeleted($params) {
 		self::getController()
 			->onGroupDeleted($params);
 	}
 
-}
+	public static function onItemShared($params) {
+		self::getController()
+			->onItemShared($params);
+	}
 
+	public static function onItemUnshared($params) {
+		self::getController()
+			->onItemUnshared($params);
+	}
+}

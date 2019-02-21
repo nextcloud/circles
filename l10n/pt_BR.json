@@ -277,6 +277,10 @@
     "Members limit:" : "Limite de membros:",
     "Default limit to the number of members in a circle." : "Limite de membros em um círculo.",
     "Allow linking of groups:" : "Permitir links dos  grupos:",
-    "Allow federated circles:" : "Permitir círculos federados:"
+    "Allow federated circles:" : "Permitir círculos federados:",
+    "You shared {file} with circle {circle}" : "Você compartilhou {file} com o círculo {circle}",
+    "{author} shared {file} with the circle {circle}" : "{author} compartilhou {file} com o círculo {circle}",
+    "You unshared {file} with the circle {circle}" : "Você descompartilhou {file} com o círculo {circle}",
+    "{author} unshared {file} with the circle {circle}" : "{author} descompartilhou {file} com o círculo {circle}"
 },"pluralForm" :"nplurals=2; plural=(n > 1);"
 }

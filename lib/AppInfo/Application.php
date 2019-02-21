@@ -34,7 +34,7 @@ use OCA\Files\App as FilesApp;
 use OCP\AppFramework\App;
 use OCP\AppFramework\IAppContainer;
 use OCP\Util;
-
+use OCA\Circles\Activity\Consumer;
 
 class Application extends App {
 
@@ -69,6 +69,12 @@ class Application extends App {
 		);
 		Util::connectHook(
 			'OC_User', 'post_deleteGroup', '\OCA\Circles\Hooks\UserHooks', 'onGroupDeleted'
+		);
+		Util::connectHook(
+			'OCP\Share', 'post_shared', '\OCA\Circles\Hooks\UserHooks', 'onItemShared'
+		);
+		Util::connectHook(
+			'OCP\Share', 'post_unshared', '\OCA\Circles\Hooks\UserHooks', 'onItemUnshared'
 		);
 	}
 
@@ -134,6 +140,16 @@ class Application extends App {
 			}
 		);
 	}
-
+	
+	/**
+	 *
+	 */
+	public function registerConsumers()
+	{
+		$c = $this->getContainer();
+		\OC::$server->getActivityManager()->registerConsumer(function() use ($c){
+			return $c->query(Consumer::class);
+		});
+	}
 }
 
