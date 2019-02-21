@@ -227,7 +227,7 @@ OC.L10N.register(
     "Creation" : "Erstellen",
     "A personal circle is a list of users known only to the owner." : "Ein persönlicher Kreis ist eine Liste von Nutzern die nur dem Besitzer bekannt ist.",
     "This is the right option if you want to do recurrent sharing with the same list of local users." : "Dies ist die passende Funktion, wenn Du Daten wiederholt mit der selben Liste an lokalen Benutzern teilen möchtest.",
-    "A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle." : "Ein geheimer Kreis ist eine versteckte Gruppe, welcher nur von dessen Mitgliedern gefunden wer kann oder von Personen, die den exakten Namen des Kreises kennen.",
+    "A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle." : "Ein geheimer Kreis ist eine versteckte Gruppe, welcher nur von dessen Mitgliedern gefunden werden kann oder von Personen, die den exakten Namen des Kreises kennen.",
     "Non-members won't be able to find your secret circle using the search bar." : "Nicht-Mitglieder werden diesen geheimen Kreis über die Suchfunktion nicht finden können.",
     "Joining a closed circle requires an invitation or confirmation by a moderator." : "Der Zutritt zu einem geschlossenen Kreis erfordert die Einladung oder Bestätigung durch einen Moderator.",
     "Anyone can find and request an invitation to the circle; but only members will see who\\'s in it and get access to it\\'s shared items." : "Jeder kann diesen Kreis finden und den Beitritt anfordern. Nur Mitglieder können die Liste der anderen Mitglieder sehen und Zugriff auf freigegebene Elemente haben.",
