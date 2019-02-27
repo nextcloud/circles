@@ -73,10 +73,11 @@ var nav = {
 				}
 			}, 500);
 		}).blur(function () {
-			setTimeout(function () {
-				elements.membersSearchResult.fadeOut(curr.animationMenuSpeed);
-				nav.circlesActionReturn();
-			}, 100);
+			// Issue with some browser, let's disable it.
+			// setTimeout(function () {
+			// 	elements.membersSearchResult.fadeOut(curr.animationMenuSpeed);
+			// 	nav.circlesActionReturn();
+			// }, 100);
 		});
 		elements.addMember.on('keydown', function (e) {
 			if (e.keyCode === 27) {
@@ -234,6 +235,8 @@ var nav = {
 	},
 
 	circlesActionReturn: function () {
+		elements.membersSearchResult.hide(0);
+
 		nav.displayCircleButtons(true);
 		settings.displaySettings(false);
 		nav.displayAddMemberInput(false);
