@@ -267,8 +267,6 @@ OC.L10N.register(
     "Warning: Enabling this will automatically accept new link requests from other circles." : "გაფრთხილება: ამის ჩართვა ავტომატურად მიიღებს ახალი კავშირების მოთხოვნებს სხვა წრეებიდან.",
     "Save settings" : "პარამეტრების შენახვა",
     "Groups can be linked to circles." : "ჯგუფები შეიძლება დაკავშირდნენ წრეებთან.",
-    "Circles from different Nextclouds can be linked together." : "წრეები სხვადასხვა Nextcloud-ებითან შეიძლება დაკავშირდნენ.",
-    "Allow linking of groups:" : "ჯგუფების დაკავშირების ნების დართვა:",
-    "Allow federated circles:" : "ნება დართეთ ფედერალურ წრეებს:"
+    "Circles from different Nextclouds can be linked together." : "წრეები სხვადასხვა Nextcloud-ებითან შეიძლება დაკავშირდნენ."
 },
 "nplurals=2; plural=(n!=1);");

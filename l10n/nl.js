@@ -275,10 +275,6 @@ OC.L10N.register(
     "Allow linking of groups" : "Toestaan koppelen van groepen",
     "Groups can be linked to circles." : "Groepen kunnen gekoppeld worden aan kringen.",
     "Allow federated circles" : "Toestaan gefedereerde kringen",
-    "Circles from different Nextclouds can be linked together." : "Kringen van andere Nextcloud installaties kunnen aan elkaar gekoppeld worden.",
-    "Members limit:" : "Lidmaatschapslimiet:",
-    "Default limit to the number of members in a circle." : "Standaardlimiet voor aantal leden in een kring",
-    "Allow linking of groups:" : "Koppelen van groepen toestaan:",
-    "Allow federated circles:" : "Gefedereerde kringen toestaan:"
+    "Circles from different Nextclouds can be linked together." : "Kringen van andere Nextcloud installaties kunnen aan elkaar gekoppeld worden."
 },
 "nplurals=2; plural=(n != 1);");

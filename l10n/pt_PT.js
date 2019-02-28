@@ -136,7 +136,6 @@ OC.L10N.register(
     "Allow Federated Links" : "Permitir Associações Federadas",
     "Accept Link Request Automatically" : "Aceitar Automaticamente o Pedido de Associação",
     "Allow linking of groups" : "Permitir associação de grupos",
-    "Groups can be linked to circles." : "Os grupos podem ser associados aos grupos.",
-    "Allow linking of groups:" : "Permitir associação de grupos:"
+    "Groups can be linked to circles." : "Os grupos podem ser associados aos grupos."
 },
 "nplurals=2; plural=(n != 1);");

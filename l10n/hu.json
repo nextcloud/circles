@@ -268,9 +268,6 @@
     "Save settings" : "Beállítások mentése",
     "Allow linking of groups" : "Csoportok csatlakoztatásának engedélyezése",
     "Groups can be linked to circles." : "Csoportok csatolhatók a körökhöz.",
-    "Circles from different Nextclouds can be linked together." : "Más Nextcloud-okból való körök összekapcsolhatók.",
-    "Members limit:" : "Tagok limite:",
-    "Allow linking of groups:" : "Csoportok csatlakoztatásának engedélyezése:",
-    "Allow federated circles:" : "Egységesített körök engedélyezése:"
+    "Circles from different Nextclouds can be linked together." : "Más Nextcloud-okból való körök összekapcsolhatók."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

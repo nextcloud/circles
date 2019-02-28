@@ -275,10 +275,6 @@ OC.L10N.register(
     "Allow linking of groups" : "グループのリンクを許可する",
     "Groups can be linked to circles." : "グループはサークルにリンクできます。",
     "Allow federated circles" : "フェデレーションサークルを許可する",
-    "Circles from different Nextclouds can be linked together." : "異なるNextcloudのサークルをリンクすることができます。",
-    "Members limit:" : "メモリ制限:",
-    "Default limit to the number of members in a circle." : "サークル内のメンバーの数に制限を設けます。",
-    "Allow linking of groups:" : "グループのリンクを許可する:",
-    "Allow federated circles:" : "フェデレーションサークルを許可する:"
+    "Circles from different Nextclouds can be linked together." : "異なるNextcloudのサークルをリンクすることができます。"
 },
 "nplurals=1; plural=0;");

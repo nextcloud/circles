@@ -273,10 +273,6 @@
     "Allow linking of groups" : "Permesi interligi grupojn",
     "Groups can be linked to circles." : "Grupoj ligeblas al rondoj.",
     "Allow federated circles" : "Permesi federajn rondojn",
-    "Circles from different Nextclouds can be linked together." : "Rondoj el aliaj Nextcloud ligeblas kune.",
-    "Members limit:" : "Maksimuma nombro da membroj:",
-    "Default limit to the number of members in a circle." : "Defaŭlta maksimumo da membroj en unu rondo",
-    "Allow linking of groups:" : "Permesi interligi grupojn:",
-    "Allow federated circles:" : "Permesi federajn rondojn:"
+    "Circles from different Nextclouds can be linked together." : "Rondoj el aliaj Nextcloud ligeblas kune."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

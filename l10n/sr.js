@@ -275,10 +275,6 @@ OC.L10N.register(
     "Allow linking of groups" : "Дозволи увезивање група",
     "Groups can be linked to circles." : "Групе се могу везати на кругове.",
     "Allow federated circles" : "Дозволи здружене кругове",
-    "Circles from different Nextclouds can be linked together." : "Кругови са различитих Некстклауда се могу везати заједно.",
-    "Members limit:" : "Ограничење броја чланова:",
-    "Default limit to the number of members in a circle." : "Подразумевано ограничење броја чланова у кругу.",
-    "Allow linking of groups:" : "Дозволи везивање са групама:",
-    "Allow federated circles:" : "Дозволи здружене кругове:"
+    "Circles from different Nextclouds can be linked together." : "Кругови са различитих Некстклауда се могу везати заједно."
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");

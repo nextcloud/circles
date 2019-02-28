@@ -269,8 +269,6 @@ OC.L10N.register(
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Advertencia: Habilitar esta opción aceptará automáticamente las nuevas solicitudes de ligas de otros círculos. ",
     "Save settings" : "Guardar configuraciones",
     "Groups can be linked to circles." : "Los grupos se pueden vincular a círculos",
-    "Circles from different Nextclouds can be linked together." : "Círculos de diferentes Nextclouds se pueden vincular juntos.",
-    "Allow linking of groups:" : "Permitir la vinculación de grupos:",
-    "Allow federated circles:" : "Permitir círculos federados:"
+    "Circles from different Nextclouds can be linked together." : "Círculos de diferentes Nextclouds se pueden vincular juntos."
 },
 "nplurals=2; plural=(n != 1);");

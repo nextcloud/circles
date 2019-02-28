@@ -275,10 +275,6 @@ OC.L10N.register(
     "Allow linking of groups" : "Consenti il collegamento dei gruppi",
     "Groups can be linked to circles." : "I gruppi possono essere collegati alle cerchie.",
     "Allow federated circles" : "Consenti cerchie federate",
-    "Circles from different Nextclouds can be linked together." : "Le cerchie di Nextcloud diversi possono essere collegate tra di loro.",
-    "Members limit:" : "Limite di membri:",
-    "Default limit to the number of members in a circle." : "Limite predefinito al numero di membri in una cerchia.",
-    "Allow linking of groups:" : "Consenti il collegamento dei gruppi:",
-    "Allow federated circles:" : "Consenti cerchie federate:"
+    "Circles from different Nextclouds can be linked together." : "Le cerchie di Nextcloud diversi possono essere collegate tra di loro."
 },
 "nplurals=2; plural=(n != 1);");

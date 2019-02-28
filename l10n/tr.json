@@ -273,10 +273,6 @@
     "Allow linking of groups" : "Gruplar Bağlanabilsin",
     "Groups can be linked to circles." : "Grupların Çevrelere bağlanmasını sağlar.",
     "Allow federated circles" : "Birleşmiş Çevreler Kullanılabilsin",
-    "Circles from different Nextclouds can be linked together." : "Farklı Nextcloud kopyaları üzerindeki çevreler birbirine bağlanabilir",
-    "Members limit:" : "Üye sınırı",
-    "Default limit to the number of members in a circle." : "Bir çevrede bulunabilecek üye sayısının varsayılan değeri.",
-    "Allow linking of groups:" : "Gruplar ile bağlanabilsin:",
-    "Allow federated circles:" : "Birleşmiş Çevreler Kullanılabilsin:"
+    "Circles from different Nextclouds can be linked together." : "Farklı Nextcloud kopyaları üzerindeki çevreler birbirine bağlanabilir"
 },"pluralForm" :"nplurals=2; plural=(n > 1);"
 }

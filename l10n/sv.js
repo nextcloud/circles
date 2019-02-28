@@ -273,10 +273,6 @@ OC.L10N.register(
     "Allow linking of groups" : "Tillåt länkning av grupper",
     "Groups can be linked to circles." : "Grupper kan länkas till cirklar.",
     "Allow federated circles" : "Tillåt federerade cirklar",
-    "Circles from different Nextclouds can be linked together." : "Cirklar från olika Nextcloud kan länkas samman",
-    "Members limit:" : "Gräns medlemmar:",
-    "Default limit to the number of members in a circle." : "Standardgräns för antalet medlemmar i en cirkel.",
-    "Allow linking of groups:" : "Tillåt länkning av grupper:",
-    "Allow federated circles:" : "Tillåt federerade cirklar:"
+    "Circles from different Nextclouds can be linked together." : "Cirklar från olika Nextcloud kan länkas samman"
 },
 "nplurals=2; plural=(n != 1);");
