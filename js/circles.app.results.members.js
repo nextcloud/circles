@@ -124,6 +124,8 @@ var resultMembers = {
 			} else {
 				api.addMember(curr.circle, ident, type, resultMembers.addMemberResult);
 			}
+
+			elements.membersSearchResult.hide(100);
 		});
 
 		// elements.fillMembersSearch('users', response.ocs.data.exact.users,
