@@ -275,10 +275,6 @@ OC.L10N.register(
     "Allow linking of groups" : "Leyfa tengingar hópa",
     "Groups can be linked to circles." : "Hópar geta verið tengdir hringjum.",
     "Allow federated circles" : "Leyfa skýjasambandshringi",
-    "Circles from different Nextclouds can be linked together." : "Hringir úr mismunandi Nextcloud-skýjum geta verið tengdir saman.",
-    "Members limit:" : "Takmörk meðlima:",
-    "Default limit to the number of members in a circle." : "Sjálfgefin takmörk á fjölda meðlima í hverjum hring.",
-    "Allow linking of groups:" : "Leyfa tengingar hópa:",
-    "Allow federated circles:" : "Leyfa skýjasambandshringi:"
+    "Circles from different Nextclouds can be linked together." : "Hringir úr mismunandi Nextcloud-skýjum geta verið tengdir saman."
 },
 "nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);");

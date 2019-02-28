@@ -275,10 +275,6 @@ OC.L10N.register(
     "Allow linking of groups" : "Umožnit propojování skupin",
     "Groups can be linked to circles." : "Skupiny lze propojit s kruhy.",
     "Allow federated circles" : "Umožnit federované okruhy",
-    "Circles from different Nextclouds can be linked together." : "Okruhy z různých instancí Nextcloud je možné propojit dohromady.",
-    "Members limit:" : "Limit počtu členů:",
-    "Default limit to the number of members in a circle." : "Výchozí limit počtu členů v kroužku.",
-    "Allow linking of groups:" : "Umožnit propojení skupin:",
-    "Allow federated circles:" : "Umožnit federované okruhy:"
+    "Circles from different Nextclouds can be linked together." : "Okruhy z různých instancí Nextcloud je možné propojit dohromady."
 },
 "nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;");

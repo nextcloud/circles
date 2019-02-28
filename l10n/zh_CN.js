@@ -275,10 +275,6 @@ OC.L10N.register(
     "Allow linking of groups" : "允许链接的群组",
     "Groups can be linked to circles." : "群组可以链接到圈子。",
     "Allow federated circles" : "允许联合圈：",
-    "Circles from different Nextclouds can be linked together." : "来自不同 Nextcloud 的圈子可以链接在一起。",
-    "Members limit:" : "限制成员数：",
-    "Default limit to the number of members in a circle." : "圈子默认限制的成员数。",
-    "Allow linking of groups:" : "允许链接的群组",
-    "Allow federated circles:" : "允许联合圈："
+    "Circles from different Nextclouds can be linked together." : "来自不同 Nextcloud 的圈子可以链接在一起。"
 },
 "nplurals=1; plural=0;");
