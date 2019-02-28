@@ -241,7 +241,7 @@ class CirclesService {
 	 */
 	private function detailsCircleMembers(Circle &$circle) {
 		if ($this->viewerIsAdmin()) {
-			$members = $this->membersRequest->forceGetMembers($circle->getUniqueId());
+			$members = $this->membersRequest->forceGetMembers($circle->getUniqueId(), 0);
 		} else {
 			$members = $this->membersRequest->getMembers(
 				$circle->getUniqueId(), $circle->getHigherViewer()
