@@ -239,15 +239,16 @@ class Circles {
 	 * return as well.
 	 *
 	 * @param string $circleUniqueId
+	 * @param bool $forceAll
 	 *
 	 * @return Circle
 	 * @throws QueryException
 	 */
-	public static function detailsCircle($circleUniqueId) {
+	public static function detailsCircle($circleUniqueId, $forceAll = false) {
 		$c = self::getContainer();
 
 		return $c->query(CirclesService::class)
-				 ->detailsCircle($circleUniqueId);
+				 ->detailsCircle($circleUniqueId, $forceAll);
 	}
 
 
