@@ -173,10 +173,12 @@ class Circles {
 	 * @param int $level
 	 * @param string $userId
 	 *
+	 * @param bool $forceAll
+	 *
 	 * @return Circle[]
 	 * @throws QueryException
 	 */
-	public static function listCircles($type, $name = '', $level = 0, $userId = '') {
+	public static function listCircles($type, $name = '', $level = 0, $userId = '', $forceAll = false) {
 		$c = self::getContainer();
 
 		if ($userId === '') {
@@ -186,7 +188,7 @@ class Circles {
 		}
 
 		return $c->query(CirclesService::class)
-				 ->listCircles($userId, $type, $name, $level);
+				 ->listCircles($userId, $type, $name, $level, $forceAll);
 	}
 
 
@@ -196,12 +198,13 @@ class Circles {
 	 * Return all the circle the current user is a member.
 	 *
 	 * @param string $userId
+	 * @param bool $forceAll
 	 *
 	 * @return Circle[]
 	 * @throws QueryException
 	 */
-	public static function joinedCircles($userId = '') {
-		return self::listCircles(Circle::CIRCLES_ALL, '', Member::LEVEL_MEMBER, $userId);
+	public static function joinedCircles($userId = '', $forceAll = false) {
+		return self::listCircles(Circle::CIRCLES_ALL, '', Member::LEVEL_MEMBER, $userId, $forceAll);
 	}
 
 

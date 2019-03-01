@@ -177,11 +177,13 @@ class CirclesService {
 	 * @param string $name
 	 * @param int $level
 	 *
+	 * @param bool $forceAll
+	 *
 	 * @return Circle[]
 	 * @throws CircleTypeDisabledException
 	 * @throws Exception
 	 */
-	public function listCircles($userId, $type, $name = '', $level = 0) {
+	public function listCircles($userId, $type, $name = '', $level = 0, $forceAll = false) {
 		$type = $this->convertTypeStringToBitValue($type);
 
 		if ($userId === '') {
@@ -195,7 +197,7 @@ class CirclesService {
 		}
 
 		$data = [];
-		$result = $this->circlesRequest->getCircles($userId, $type, $name, $level);
+		$result = $this->circlesRequest->getCircles($userId, $type, $name, $level, $forceAll);
 		foreach ($result as $item) {
 			$data[] = $item;
 		}
