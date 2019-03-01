@@ -91,17 +91,18 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 
 	/**
 	 * @param IQueryBuilder $qb
-	 * @param string $circleUniqueId
 	 * @param $userId
+	 * @param string $circleUniqueId
 	 * @param $type
 	 * @param $name
+	 * @param bool $forceAll
 	 *
 	 * @throws ConfigNoCircleAvailableException
 	 */
 	protected function limitRegardingCircleType(
-		IQueryBuilder &$qb, $userId, $circleUniqueId, $type, $name
+		IQueryBuilder &$qb, $userId, $circleUniqueId, $type, $name, $forceAll = false
 	) {
-		$orTypes = $this->generateLimit($qb, $circleUniqueId, $userId, $type, $name);
+		$orTypes = $this->generateLimit($qb, $circleUniqueId, $userId, $type, $name, $forceAll);
 		if (sizeof($orTypes) === 0) {
 			throw new ConfigNoCircleAvailableException(
 				$this->l10n->t(
@@ -126,12 +127,15 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 * @param $userId
 	 * @param $type
 	 * @param $name
+	 * @param bool $forceAll
 	 *
 	 * @return array
 	 */
-	private function generateLimit(IQueryBuilder &$qb, $circleUniqueId, $userId, $type, $name) {
+	private function generateLimit(
+		IQueryBuilder &$qb, $circleUniqueId, $userId, $type, $name, $forceAll = false
+	) {
 		$orTypes = [];
-		array_push($orTypes, $this->generateLimitPersonal($qb, $userId, $type));
+		array_push($orTypes, $this->generateLimitPersonal($qb, $userId, $type, $forceAll));
 		array_push($orTypes, $this->generateLimitSecret($qb, $circleUniqueId, $type, $name));
 		array_push($orTypes, $this->generateLimitClosed($qb, $type));
 		array_push($orTypes, $this->generateLimitPublic($qb, $type));
@@ -144,20 +148,24 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param int|string $userId
 	 * @param int $type
+	 * @param bool $forceAll
 	 *
 	 * @return \OCP\DB\QueryBuilder\ICompositeExpression
 	 */
-	private function generateLimitPersonal(IQueryBuilder $qb, $userId, $type) {
+	private function generateLimitPersonal(IQueryBuilder $qb, $userId, $type, $forceAll = false) {
 		if (!(Circle::CIRCLES_PERSONAL & (int)$type)) {
 			return null;
 		}
 		$expr = $qb->expr();
 
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		return $expr->andX(
-			$expr->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_PERSONAL)),
-			$expr->eq('o.user_id', $qb->createNamedParameter((string)$userId))
-		);
+		$andX = $expr->andX();
+		$andX->add($expr->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_PERSONAL)));
+
+		if (!$forceAll) {
+			$andX->add($expr->eq('o.user_id', $qb->createNamedParameter((string)$userId)));
+		}
+
+		return $andX;
 	}
 
 

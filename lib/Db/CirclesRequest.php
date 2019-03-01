@@ -30,6 +30,7 @@ namespace OCA\Circles\Db;
 
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
+use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 
@@ -132,10 +133,12 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 * @param int $type
 	 * @param string $name
 	 * @param int $level
+	 * @param bool $forceAll
 	 *
 	 * @return Circle[]
+	 * @throws ConfigNoCircleAvailableException
 	 */
-	public function getCircles($userId, $type = 0, $name = '', $level = 0) {
+	public function getCircles($userId, $type = 0, $name = '', $level = 0, $forceAll = false) {
 		if ($type === 0) {
 			$type = Circle::CIRCLES_ALL;
 		}
@@ -148,7 +151,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 		if ($level > 0) {
 			$this->limitToLevel($qb, $level, ['u', 'g']);
 		}
-		$this->limitRegardingCircleType($qb, $userId, -1, $type, $name);
+		$this->limitRegardingCircleType($qb, $userId, -1, $type, $name, $forceAll);
 
 		$circles = [];
 		$cursor = $qb->execute();
