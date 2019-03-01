@@ -170,11 +170,13 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 *
 	 * @param string $circleUniqueId
 	 * @param string $viewerId
+	 * @param bool $forceAll
 	 *
 	 * @return Circle
 	 * @throws CircleDoesNotExistException
+	 * @throws ConfigNoCircleAvailableException
 	 */
-	public function getCircle($circleUniqueId, $viewerId) {
+	public function getCircle($circleUniqueId, $viewerId, $forceAll = false) {
 		$qb = $this->getCirclesSelectSql();
 
 		$this->limitToShortenUniqueId($qb, $circleUniqueId, Circle::SHORT_UNIQUE_ID_LENGTH);
@@ -183,7 +185,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$this->leftJoinOwner($qb);
 		$this->leftJoinNCGroupAndUser($qb, $viewerId, '`c`.`unique_id`');
 
-		$this->limitRegardingCircleType($qb, $viewerId, $circleUniqueId, Circle::CIRCLES_ALL, '');
+		$this->limitRegardingCircleType($qb, $viewerId, $circleUniqueId, Circle::CIRCLES_ALL, '', $forceAll);
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
