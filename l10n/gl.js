@@ -52,7 +52,7 @@ OC.L10N.register(
     "You have joined this circle" : "Vostede uniuse a este círculo",
     "You have requested to join this circle" : "Solicitou unirse a este círculo",
     "You have left this circle" : "Vostede abandonou a este círculo",
-    "Cannot leave this circle" : "Non pode deixar este círculo",
+    "Cannot leave this circle" : "Non pode abandonar este círculo",
     "You have deleted this circle" : "Vostede eliminou a este círculo",
     "Cannot delete this circle" : "Non pode eliminar este círculo",
     " {type} '{name}' created" : " Creouse {type} «{name}»",
