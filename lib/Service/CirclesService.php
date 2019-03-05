@@ -177,11 +177,13 @@ class CirclesService {
 	 * @param string $name
 	 * @param int $level
 	 *
+	 * @param bool $forceAll
+	 *
 	 * @return Circle[]
 	 * @throws CircleTypeDisabledException
 	 * @throws Exception
 	 */
-	public function listCircles($userId, $type, $name = '', $level = 0) {
+	public function listCircles($userId, $type, $name = '', $level = 0, $forceAll = false) {
 		$type = $this->convertTypeStringToBitValue($type);
 
 		if ($userId === '') {
@@ -195,7 +197,7 @@ class CirclesService {
 		}
 
 		$data = [];
-		$result = $this->circlesRequest->getCircles($userId, $type, $name, $level);
+		$result = $this->circlesRequest->getCircles($userId, $type, $name, $level, $forceAll);
 		foreach ($result as $item) {
 			$data[] = $item;
 		}
@@ -208,14 +210,15 @@ class CirclesService {
 	 * returns details on circle and its members if this->userId is a member itself.
 	 *
 	 * @param string $circleUniqueId
+	 * @param bool $forceAll
 	 *
 	 * @return Circle
-	 * @throws \Exception
+	 * @throws Exception
 	 */
-	public function detailsCircle($circleUniqueId) {
+	public function detailsCircle($circleUniqueId, $forceAll = false) {
 
 		try {
-			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
+			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId, $forceAll);
 			if ($this->viewerIsAdmin()
 				|| $circle->getHigherViewer()
 						  ->isLevel(Member::LEVEL_MEMBER)
@@ -568,7 +571,7 @@ class CirclesService {
 			$limit = $this->configService->getAppValue(ConfigService::CIRCLES_MEMBERS_LIMIT);
 		}
 
-			if (sizeof($members) >= $limit) {
+		if (sizeof($members) >= $limit) {
 			throw new MembersLimitException(
 				'This circle already reach its limit on the number of members'
 			);
