@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+
+### 0.17.0 (NC16)
+
+- some new APIs.
+
+
 ## 0.13.4
 
 - bugfixes.
