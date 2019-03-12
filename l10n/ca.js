@@ -89,7 +89,7 @@ OC.L10N.register(
     "Member '{name}' updated" : "El membre '{name}' s'ha actualitzat",
     "The member '{name}' could not be updated" : "El membre '{name}' no s'ha pogut actualitzar",
     "Issue while saving settings" : "Problemes en guardar la configuració",
-    "Settings saved." : "Paràmetres desats.",
+    "Settings saved." : "S'han desat els paràmetres.",
     "Circles" : "Cercle",
     "Circles' files" : "Fitxers del cercle",
     "No circles found" : "No s'han trobat cercles",
@@ -237,7 +237,7 @@ OC.L10N.register(
     "Link" : "Enllaç",
     "Linked" : "Enllaçat",
     "Allow Federated Links" : "Permet Enllaços Federats",
-    "Save settings" : "Desa la configuració",
+    "Save settings" : "Desa els paràmetres",
     "Allow linking of groups" : "Permet l'enllaç de grups",
     "Allow federated circles" : "Permet cercles federats"
 },
