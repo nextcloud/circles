@@ -210,12 +210,12 @@ style(Application::APP_NAME, 'navigation');
 	<div class="owner"><b><?php p($l->t('Owner')); ?>:</b> %owner%</div>
 </script>
 
-<div id="emptycontent">
-	<div class="icon-circles"></div>
-	<h2><?php p($l->t('No circle selected')); ?></h2>
-</div>
-
 <div id="app-content" style="position: relative">
+
+	<div id="emptycontent">
+		<div class="icon-circles"></div>
+		<h2><?php p($l->t('No circle selected')); ?></h2>
+	</div>
 
 	<div id="mainui">
 
