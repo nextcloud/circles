@@ -112,7 +112,7 @@ OC.L10N.register(
     "The request to link {circle} with {remote} has been rejected" : "Die Anfrage {circle} mit {remote} zu verknüpfen wurde auf dem entfernten System zurückgewiesen",
     "The request to link {remote} with {circle} has been canceled remotely" : "Die Anfrage {remote} mit {circle} zu verknüpfen wurde auf dem entfernten System abgebrochen",
     "The request to link {circle} with {remote} has been accepted" : "Die Anfrage {circle} mit {remote} zu verknüpfen wurde auf dem entfernten System angenommen",
-    "You dismissed the request to link {remote} with {circle}" : "Sie haben eine Anfrage zum Verknüpfen von {remote} mit {circle} verworfen",
+    "You dismissed the request to link {remote} with {circle}" : "Du hast eine Anfrage zum Verknüpfen von {remote} mit {circle} verworfen",
     "{author} dismissed the request to link {remote} with {circle}" : "{author} hat eine Anfrage zum Verknüpfen von {remote} mit {circle} verworfen",
     "You canceled the request to link {circle} with {remote}" : "Du hast eine Anfrage zum Verknüpfen von {circle} mit {remote} abgebrochen",
     "{author} canceled the request to link {circle} with {remote}" : "{author} hat eine Anfrage zum Verknüpfen von {circle} mit {remote} abgebrochen",
