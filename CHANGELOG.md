@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 
 
+### 0.17.1
+
+- more APIs.
+- Allow disable of Activity on Circle creation.
+- fixing some div overlay.
+
+
 ### 0.17.0 (NC16)
 
 - some new APIs.
