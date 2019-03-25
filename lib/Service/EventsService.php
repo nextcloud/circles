@@ -61,6 +61,9 @@ class EventsService {
 	/** @var MembersRequest */
 	private $membersRequest;
 
+	/** @var ConfigService */
+	private $configService;
+
 	/** @var MiscService */
 	private $miscService;
 
@@ -74,11 +77,14 @@ class EventsService {
 	 * @param EventDispatcher $eventDispatcher
 	 * @param CirclesRequest $circlesRequest
 	 * @param MembersRequest $membersRequest
+	 * @param ConfigService $configService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
 		$userId, IManager $activityManager, IUserManager $userManager,
-		EventDispatcher $eventDispatcher, CirclesRequest $circlesRequest, MembersRequest $membersRequest, MiscService $miscService
+		EventDispatcher $eventDispatcher, CirclesRequest $circlesRequest,
+		MembersRequest $membersRequest,
+		ConfigService $configService, MiscService $miscService
 	) {
 		$this->userId = $userId;
 		$this->activityManager = $activityManager;
@@ -86,6 +92,7 @@ class EventsService {
 		$this->eventDispatcher = $eventDispatcher;
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
+		$this->configService = $configService;
 		$this->miscService = $miscService;
 	}
 
@@ -100,9 +107,9 @@ class EventsService {
 	 * @param Circle $circle
 	 */
 	public function onCircleCreation(Circle $circle) {
-		if ($circle->getType() !== Circle::CIRCLES_PUBLIC
-			&& $circle->getType() !== Circle::CIRCLES_CLOSED
-		) {
+		if ($this->configService->getAppValue(ConfigService::CIRCLES_ACTIVITY_ON_CREATION) !== '1'
+			|| ($circle->getType() !== Circle::CIRCLES_PUBLIC
+				&& $circle->getType() !== Circle::CIRCLES_CLOSED)) {
 			return;
 		}
 
