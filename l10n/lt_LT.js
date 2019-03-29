@@ -21,6 +21,7 @@ OC.L10N.register(
     "Contact" : "Adresatas",
     "Accept the request" : "Priimti užklausą",
     "Remove this link" : "Šalinti šią nuorodą",
+    "Cancel the link request" : "Atšaukti nuorodos užklausą",
     "Cannot join this circle" : "Nepavyksta prisijungti prie šio rato",
     "You have joined this circle" : "Jūs prisijungėte prie šio rato",
     "You have requested to join this circle" : "Jūs užklausėte prisijungti prie šio rato",
