@@ -87,7 +87,7 @@
     "Member '{name}' updated" : "Użytkownik '{name}' został zaktualizowany",
     "The member '{name}' could not be updated" : "Użytkownik '{name}' nie może zostać zaktualizowany",
     "Issue while saving settings" : "Błąd podczas zapisywania ustawień",
-    "Settings saved." : "Ustawienia zostały zapisane.",
+    "Settings saved." : "Zapisano ustawienia.",
     "Circles" : "Kręgi",
     "Circles' files" : "Pliki kręgu",
     "Select circles to filter by" : "Aby użyć filtracji wybierz kręgi",
