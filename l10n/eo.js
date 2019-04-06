@@ -163,7 +163,7 @@ OC.L10N.register(
     "{member} is the new owner of {circle}" : "{member} nun estas la nova posedanto de {circle}",
     "On events happening in a <strong>Circle</strong> you belong" : "Pri eventoj okazantaj en <strong>rondo</strong> en kiu vi estas membro",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Pri grava evento en <strong>rondo</strong> kiun vi kontrolas",
-    "Shared to Circles" : "Kunhavigita kun rondij",
+    "Shared to Circles" : "Kunhavigita kun rondoj",
     "%s shared »%s« with you." : "%s kunhavigis „%s“ kun vi.",
     "%s shared »%s« with '%s'." : "%s kunhavigis „%s“ kun „%s“.",
     "%s on %s" : "%s el %s",
