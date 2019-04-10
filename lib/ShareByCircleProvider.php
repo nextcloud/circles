@@ -642,7 +642,8 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 			  ->setShareOwner($data['uid_owner'])
 			  ->setShareType((int)$data['share_type']);
 
-		if (method_exists($share, 'setSharedWithDisplayName')) {
+		if (array_key_exists('circle_type', $data)
+			&& method_exists($share, 'setSharedWithDisplayName')) {
 			$share->setSharedWithAvatar(CirclesService::getCircleIcon($data['circle_type']))
 				  ->setSharedWithDisplayName(
 					  sprintf(
