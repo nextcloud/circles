@@ -202,6 +202,10 @@ class MiscService {
 	public static function getContactData($ident) {
 		list($userId, $contactId) = explode(':', $ident);
 
+		if (!class_exists(\OCA\DAV\AppInfo\Application::class)) {
+			return null;
+		}
+
 		try {
 			/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
 			$contactApp = new \OCA\DAV\AppInfo\Application();
