@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 
 
+### 0.17.2
+
+- more logging
+- add multiple mails address.
+
+
 ### 0.17.1
 
 - more APIs.
