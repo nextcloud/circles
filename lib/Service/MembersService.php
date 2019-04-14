@@ -180,6 +180,10 @@ class MembersService {
 			return $this->addGroupMembers($circle, $ident);
 		}
 
+		if ($type === Member::TYPE_USER) {
+			return $this->addMassiveMails($circle, $ident);
+		}
+
 		return false;
 	}
 
@@ -320,9 +324,8 @@ class MembersService {
 		}
 
 		$tmpContact = $this->userId . ':' . $ident;
-		try {
-			MiscService::getContactData($tmpContact);
-		} catch (Exception $e) {
+		$result = MiscService::getContactData($tmpContact);
+		if (empty($result)) {
 			throw new NoUserException($this->l10n->t("This contact is not available"));
 		}
 
@@ -351,6 +354,31 @@ class MembersService {
 			} catch (MemberAlreadyExistsException $e) {
 			} catch (\Exception $e) {
 				throw $e;
+			}
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 * @param string $mails
+	 *
+	 * @return bool
+	 */
+	private function addMassiveMails(Circle $circle, $mails) {
+
+		foreach (explode(' ', trim($mails)) as $mail) {
+			if (!filter_var($mail, FILTER_VALIDATE_EMAIL)) {
+				return false;
+			}
+		}
+
+		foreach (explode(' ', trim($mails)) as $mail) {
+			try {
+				$this->addMember($circle->getUniqueId(), $mail, Member::TYPE_MAIL);
+			} catch (Exception $e) {
 			}
 		}
 
