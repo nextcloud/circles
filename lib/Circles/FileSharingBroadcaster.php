@@ -37,6 +37,7 @@ use OCA\Circles\Service\MiscService;
 use OCP\Defaults;
 use OCP\Files\IRootFolder;
 use OCP\IL10N;
+use OCP\ILogger;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCP\Mail\IMailer;
@@ -58,6 +59,9 @@ class FileSharingBroadcaster implements IBroadcaster {
 	/** @var IUserManager */
 	private $userManager;
 
+	/** @var ILogger */
+	private $logger;
+
 	/** @var Defaults */
 	private $defaults;
 
@@ -73,6 +77,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$this->mailer = \OC::$server->getMailer();
 		$this->rootFolder = \OC::$server->getLazyRootFolder();
 		$this->userManager = \OC::$server->getUserManager();
+		$this->logger = \OC::$server->getLogger();
 
 		$this->defaults = \OC::$server->query(Defaults::class);
 		$this->urlGenerator = \OC::$server->getURLGenerator();
@@ -163,6 +168,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 * @return IShare
 	 */
 	private function generateShare($data) {
+		$this->logger->log(0, 'Regenerate shares from payload: ' . json_encode($data));
 
 		$share = new Share($this->rootFolder, $this->userManager);
 		$share->setSharedBy($data['sharedBy']);
@@ -208,10 +214,16 @@ class FileSharingBroadcaster implements IBroadcaster {
 	protected function sendMail($fileName, $link, $author, $circleName, $email) {
 		$message = $this->mailer->createMessage();
 
+		$this->logger->log(
+			0, "Sending mail to circle '" . $circleName . "': " . $email . ' file: ' . $fileName
+			   . ' - link: ' . $link
+		);
+
 		$subject = $this->l10n->t('%s shared »%s« with you.', [$author, $fileName]);
 		$text = $this->l10n->t('%s shared »%s« with \'%s\'.', [$author, $fileName, $circleName]);
 
-		$emailTemplate = $this->generateEmailTemplate($subject, $text, $fileName, $link, $author, $circleName);
+		$emailTemplate =
+			$this->generateEmailTemplate($subject, $text, $fileName, $link, $author, $circleName);
 
 		$instanceName = $this->defaults->getName();
 		$senderName = $this->l10n->t('%s on %s', [$author, $instanceName]);
@@ -236,21 +248,28 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 *
 	 * @return \OCP\Mail\IEMailTemplate
 	 */
-	private function generateEmailTemplate($subject, $text, $fileName, $link, $author, $circleName) {
+	private function generateEmailTemplate($subject, $text, $fileName, $link, $author, $circleName
+	) {
 
-		$emailTemplate = $this->mailer->createEMailTemplate('circles.ShareNotification', [
-			'fileName' => $fileName,
-			'fileLink' => $link,
-			'author' => $author,
-			'circleName' => $circleName,
-		]);
+		$emailTemplate = $this->mailer->createEMailTemplate(
+			'circles.ShareNotification', [
+										   'fileName'   => $fileName,
+										   'fileLink'   => $link,
+										   'author'     => $author,
+										   'circleName' => $circleName,
+									   ]
+		);
 
 		$emailTemplate->addHeader();
 		$emailTemplate->addHeading($subject, false);
 		$emailTemplate->addBodyText(
-			htmlspecialchars($text) . '<br>' . htmlspecialchars($this->l10n->t('Click the button below to open it.')), $text
+			htmlspecialchars($text) . '<br>' . htmlspecialchars(
+				$this->l10n->t('Click the button below to open it.')
+			), $text
 		);
-		$emailTemplate->addBodyButton($this->l10n->t('Open »%s«', [htmlspecialchars($fileName)]), $link);
+		$emailTemplate->addBodyButton(
+			$this->l10n->t('Open »%s«', [htmlspecialchars($fileName)]), $link
+		);
 
 		return $emailTemplate;
 	}
