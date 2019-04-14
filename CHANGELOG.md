@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+
+## 0.16.3
+
+- more logging
+- add multiple mails address.
+
+
 ## 0.16.x
 
 - NC15
