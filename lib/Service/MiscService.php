@@ -141,6 +141,7 @@ class MiscService {
 		}
 
 		$user = array_shift($result);
+
 		return $user->getUID();
 	}
 
@@ -200,11 +201,11 @@ class MiscService {
 	 * @return mixed|string
 	 */
 	public static function getContactData($ident) {
-		list($userId, $contactId) = explode(':', $ident);
-
-		if (!class_exists(\OCA\DAV\AppInfo\Application::class)) {
-			return null;
+		if (!class_exists(\OCA\DAV\AppInfo\Application::class) || !strpos(':', $ident)) {
+			return [];
 		}
+
+		list($userId, $contactId) = explode(':', $ident);
 
 		try {
 			/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
@@ -217,7 +218,7 @@ class MiscService {
 		} catch (Exception $e) {
 		}
 
-		return null;
+		return [];
 	}
 
 
