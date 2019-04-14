@@ -126,6 +126,7 @@ class SharingFrameService {
 	 * @throws MemberDoesNotExistException
 	 */
 	public function createFrame($circleUniqueId, SharingFrame $frame, $broadcast = null) {
+		$this->miscService->log('Create frame with payload ' . json_encode($frame->getPayload()), 0);
 
 		try {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);

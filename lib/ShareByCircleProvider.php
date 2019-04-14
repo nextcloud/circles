@@ -280,9 +280,20 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * @return int
 	 */
 	private function createShare($share) {
+		$this->miscService->log(
+			'Creating share (1/4) - type: ' . $share->getShareType() . ' - token: '
+			. $share->getToken() . ' - type: ' . $share->getShareType() . ' - with: '
+			. $share->getSharedWith() . ' - permissions: ' . $share->getPermissions(), 0
+		);
+
 		$qb = $this->getBaseInsertSql($share);
-		$qb->execute();
+		$this->miscService->log('Share creation (2/4) : ' . json_encode($qb->getSQL()), 0);
+
+		$result = $qb->execute();
+		$this->miscService->log('Share creation result (3/4) : ' . json_encode($result), 0);
+
 		$id = $qb->getLastInsertId();
+		$this->miscService->log('Share created ID (4/4) : ' . $id, 0);
 
 		return (int)$id;
 	}
@@ -504,6 +515,8 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	public function getShareByToken($token) {
 		$qb = $this->dbConnection->getQueryBuilder();
 
+		$this->miscService->log("Opening share by token '#" . $token . "'", 0);
+
 		$cursor = $qb->select('*')
 					 ->from('share')
 					 ->where(
@@ -522,12 +535,16 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 		$data = $cursor->fetch();
 
 		if ($data === false) {
+			$this->miscService->log("Share '#" . $token . "' not found.", 0);
 			throw new ShareNotFound('Share not found', $this->l10n->t('Could not find share'));
 		}
 
 		try {
 			$share = $this->createShareObject($data);
 		} catch (InvalidShare $e) {
+			$this->miscService->log(
+				"Share Object '#" . $token . "' not created. " . json_encode($data), 0
+			);
 			throw new ShareNotFound('Share not found', $this->l10n->t('Could not find share'));
 		}
 
@@ -679,13 +696,13 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	/**
 	 * Get the access list to the array of provided nodes.
 	 *
-	 * @see IManager::getAccessList() for sample docs
-	 *
 	 * @param Node[] $nodes The list of nodes to get access for
 	 * @param bool $currentAccess If current access is required (like for removed shares that might
 	 *     get revived later)
 	 *
 	 * @return array
+	 * @see IManager::getAccessList() for sample docs
+	 *
 	 * @since 12
 	 */
 	public function getAccessList($nodes, $currentAccess) {
