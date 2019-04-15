@@ -201,7 +201,7 @@ class MiscService {
 	 * @return mixed|string
 	 */
 	public static function getContactData($ident) {
-		if (!class_exists(\OCA\DAV\AppInfo\Application::class) || !strpos(':', $ident)) {
+		if (!class_exists(\OCA\DAV\AppInfo\Application::class) || !strpos($ident, ':')) {
 			return [];
 		}
 
