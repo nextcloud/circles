@@ -28,6 +28,7 @@ namespace OCA\Circles\Service;
 
 
 use Exception;
+use OC;
 use OC\User\NoUserException;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
@@ -36,7 +37,6 @@ use OCA\Circles\Exceptions\CircleTypeNotValidException;
 use OCA\Circles\Exceptions\EmailAccountInvalidFormatException;
 use OCA\Circles\Exceptions\GroupDoesNotExistException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
-use OCA\Circles\Exceptions\MembersLimitException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCP\IL10N;
@@ -117,7 +117,7 @@ class MembersService {
 	 * @param int $type
 	 *
 	 * @return array
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function addMember($circleUniqueId, $ident, $type) {
 
@@ -129,7 +129,7 @@ class MembersService {
 			if (!$this->addMassiveMembers($circle, $ident, $type)) {
 				$this->addSingleMember($circle, $ident, $type);
 			}
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			throw $e;
 		}
 
@@ -207,7 +207,7 @@ class MembersService {
 	 * @param Circle $circle
 	 * @param Member $member
 	 *
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	private function addLocalMember(Circle $circle, Member $member) {
 
@@ -224,7 +224,7 @@ class MembersService {
 	 *
 	 * @param Member $member
 	 *
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	private function addEmailAddress(Member $member) {
 
@@ -241,7 +241,7 @@ class MembersService {
 	 *
 	 * @param Member $member
 	 *
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	private function addContact(Member $member) {
 
@@ -338,12 +338,12 @@ class MembersService {
 	 * @param string $groupId
 	 *
 	 * @return bool
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	private function addGroupMembers(Circle $circle, $groupId) {
 
-		$group = \OC::$server->getGroupManager()
-							 ->get($groupId);
+		$group = OC::$server->getGroupManager()
+							->get($groupId);
 		if ($group === null) {
 			throw new GroupDoesNotExistException($this->l10n->t('This group does not exist'));
 		}
@@ -352,7 +352,7 @@ class MembersService {
 			try {
 				$this->addSingleMember($circle, $user->getUID(), Member::TYPE_USER);
 			} catch (MemberAlreadyExistsException $e) {
-			} catch (\Exception $e) {
+			} catch (Exception $e) {
 				throw $e;
 			}
 		}
@@ -369,13 +369,17 @@ class MembersService {
 	 */
 	private function addMassiveMails(Circle $circle, $mails) {
 
-		foreach (explode(' ', trim($mails)) as $mail) {
-			if (!filter_var($mail, FILTER_VALIDATE_EMAIL)) {
-				return false;
-			}
+		$mails = trim($mails);
+		if (substr($mails, 0, 6) !== 'mails:') {
+			return false;
 		}
 
-		foreach (explode(' ', trim($mails)) as $mail) {
+		$mails = substr($mails, 6);
+		foreach (explode(' ', $mails) as $mail) {
+			if (!filter_var($mail, FILTER_VALIDATE_EMAIL)) {
+				continue;
+			}
+
 			try {
 				$this->addMember($circle->getUniqueId(), $mail, Member::TYPE_MAIL);
 			} catch (Exception $e) {
@@ -410,7 +414,7 @@ class MembersService {
 			$member->setNote('');
 
 			return $member;
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			throw $e;
 		}
 	}
@@ -423,7 +427,7 @@ class MembersService {
 	 * @param int $level
 	 *
 	 * @return array
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function levelMember($circleUniqueId, $name, $type, $level) {
 
@@ -443,7 +447,7 @@ class MembersService {
 			return $this->membersRequest->getMembers(
 				$circle->getUniqueId(), $circle->getHigherViewer()
 			);
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			throw $e;
 		}
 
@@ -477,7 +481,7 @@ class MembersService {
 	 * @param Member $member
 	 * @param $level
 	 *
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	private function editMemberLevel(Circle $circle, Member &$member, $level) {
 		try {
@@ -491,7 +495,7 @@ class MembersService {
 
 			$member->setLevel($level);
 			$this->membersRequest->updateMember($member);
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			throw $e;
 		}
 
@@ -501,7 +505,7 @@ class MembersService {
 	 * @param Circle $circle
 	 * @param Member $member
 	 *
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	private function switchOwner(Circle $circle, Member &$member) {
 		try {
@@ -519,7 +523,7 @@ class MembersService {
 			$isMod->setLevel(Member::LEVEL_ADMIN);
 			$this->membersRequest->updateMember($isMod);
 
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			throw $e;
 		}
 	}
@@ -531,7 +535,7 @@ class MembersService {
 	 * @param $type
 	 *
 	 * @return array
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function removeMember($circleUniqueId, $name, $type) {
 
@@ -546,7 +550,7 @@ class MembersService {
 
 			$circle->getHigherViewer()
 				   ->hasToBeHigherLevel($member->getLevel());
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			throw $e;
 		}
 
