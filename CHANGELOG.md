@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 
 
+
+## 0.16.4
+
+- fixing an issue with mail as userId
+
+
 ## 0.16.3
 
 - more logging
