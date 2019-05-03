@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 
 
+## 0.16.5
+
+- fixing an issue on the front-end with linked groups
+
 
 ## 0.16.4
 
