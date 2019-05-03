@@ -290,7 +290,7 @@ style(Application::APP_NAME, 'navigation');
 						<tr class="header">
 							<td class="groupid"><?php p($l->t('Group Name')); ?></td>
 							<td class="level"><?php p($l->t('Level')); ?></td>
-							<td class="joined"><?php p($l->t('Joined')); ?></td>
+<!--							<td class="joined">--><?php //p($l->t('Joined')); ?><!--</td>-->
 						</tr>
 					</table>
 					<br/><br/><br/><br/>
@@ -337,7 +337,7 @@ style(Application::APP_NAME, 'navigation');
 									<option value="8"><?php p($l->t('Admin')); ?></option>
 								</select>
 							</td>
-							<td class="joined">%joined%</td>
+<!--							<td class="joined">%joined%</td>-->
 						</tr>
 					</script>
 
