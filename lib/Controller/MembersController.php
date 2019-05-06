@@ -173,6 +173,12 @@ class MembersController extends BaseController {
 				);
 		}
 
+		if ($this->configService->getAppValue('core', 'shareapi_allow_share_dialog_user_enumeration', 'yes') !== 'yes')
+			$result = array_filter($result,
+			                       function($data, $k) use ($search) {
+			                           return $data->getIdent() == $search;
+			                       }, ARRAY_FILTER_USE_BOTH);
+
 		return $this->success(['search' => $search, 'result' => $result]);
 	}
 
