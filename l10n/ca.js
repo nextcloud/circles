@@ -167,7 +167,7 @@ OC.L10N.register(
     "%s shared »%s« with you." : "%s compartit »%s« amb vós.",
     "%s shared »%s« with '%s'." : "%scompartit »%s« amb '%s'.",
     "%s on %s" : "%son %s",
-    "Click the button below to open it." : "Feu clic al botó següent per obrir-lo.",
+    "Click the button below to open it." : "Feu clic al botó de sota per obrir-lo.",
     "Open »%s«" : "Obre »%s«",
     "The name of your circle must contain at least 3 characters" : "El nom del vostre cercle ha de tenir com a mínim 3 caràcters",
     "Linked Groups are not allowed on this Nextcloud" : "Els grups vinculats no són permesos en aquest Nextcloud",
