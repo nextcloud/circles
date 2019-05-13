@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+### 0.17.3
+
+- fixing an issue on the front-end with linked groups
+
 
 ### 0.17.2
 
