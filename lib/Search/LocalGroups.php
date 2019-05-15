@@ -39,6 +39,22 @@ class LocalGroups implements ISearch {
 
 		$result = [];
 		$groupManager = \OC::$server->getGroupManager();
+		$config = \OC::$server->getConfig();
+		$listOwnGroupsOnly = $config->getAppValue('core', 'shareapi_only_share_with_group_members', 'no') === 'yes';
+		$self = \OC::$server->getUserSession()->getUser();
+		if ($self === null) {
+			// This will probably never happen, just to stay consistent with the rest of the codebase.
+			return $result;
+		}
+
+		if ($listOwnGroupsOnly) {
+			// TODO: Add support for 'shareapi_exclude_groups' / 'shareapi_exclude_groups_list'
+			$ownGroupIDs = $groupManager->getUserGroupIds($self);
+			foreach ($ownGroupIDs as $gid) {
+				$result[] = new SearchResult($gid, Member::TYPE_GROUP);
+			}
+			return $result;
+		}
 
 		$groups = $groupManager->search($search);
 		foreach ($groups as $group) {

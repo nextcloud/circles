@@ -39,6 +39,34 @@ class LocalUsers implements ISearch {
 
 		$result = [];
 		$userManager = \OC::$server->getUserManager();
+		$groupManager = \OC::$server->getGroupManager();
+		$config = \OC::$server->getConfig();
+		$disallowUserEnumeration = $config->getAppValue('core', 'shareapi_allow_share_dialog_user_enumeration', 'no') !== 'yes';
+		$self = \OC::$server->getUserSession()->getUser();
+		if ($self === null) {
+			// This will probably never happen, just to stay consistent with the rest of the codebase.
+			return $result;
+		}
+
+		if ($disallowUserEnumeration) {
+			// Only list users in common groups.
+			// TODO: Add support for 'shareapi_exclude_groups' / 'shareapi_exclude_groups_list'
+			$ownGroups = $groupManager->getUserGroups($self);
+			$allMembersByID = [];
+			foreach ($ownGroups as $g) {
+				$members = $g->getUsers();
+				foreach ($members as $m) {
+					$allMembersByID[$m->getUID()] = $m;
+				}
+			}
+			foreach ($allMembersByID as $uid => $m) {
+				$result[] =
+					new SearchResult(
+						$uid, Member::TYPE_USER, ['display' => $m->getDisplayName()]
+					);
+			}
+			return $result;
+		}
 
 		$users = $userManager->search($search);
 		foreach ($users as $user) {
