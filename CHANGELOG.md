@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+
+
+### 0.17.4
+
+- prevent user enumeration
+- apply limit to linked group
+
+
 ### 0.17.3
 
 - fixing an issue on the front-end with linked groups
