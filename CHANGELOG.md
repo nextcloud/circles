@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 
 
+## 0.16.6
+
+- prevent user enumeration
+- apply limit to linked group
+
+
 ## 0.16.5
 
 - fixing an issue on the front-end with linked groups
