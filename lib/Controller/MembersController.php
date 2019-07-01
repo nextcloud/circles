@@ -27,6 +27,7 @@
 namespace OCA\Circles\Controller;
 
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\SearchResult;
 use OCA\Circles\Service\MiscService;
 use OCP\AppFramework\Http\DataResponse;
 
@@ -171,6 +172,16 @@ class MembersController extends BaseController {
 						'error'  => $e->getMessage()
 					]
 				);
+		}
+
+		if ($this->configService->getAppValue('shareapi_allow_share_dialog_user_enumeration') !== 'yes') {
+			$result = array_filter(
+				$result,
+				function($data, $k) use ($search) {
+					/** @var SearchResult $data */
+					return $data->getIdent() === $search;
+				}, ARRAY_FILTER_USE_BOTH
+			);
 		}
 
 		return $this->success(['search' => $search, 'result' => $result]);

@@ -38,6 +38,7 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCP\IGroupManager;
 use OCP\IL10N;
+use OCP\IUserManager;
 
 class GroupsService {
 
@@ -49,6 +50,9 @@ class GroupsService {
 
 	/** @var IGroupManager */
 	private $groupManager;
+
+	/** @var IUserManager */
+	private $userManager;
 
 	/** @var CirclesRequest */
 	private $circlesRequest;
@@ -71,6 +75,7 @@ class GroupsService {
 	 * @param string $userId
 	 * @param IL10N $l10n
 	 * @param IGroupManager $groupManager
+	 * @param IUserManager $userManager
 	 * @param CirclesRequest $circlesRequest
 	 * @param MembersRequest $membersRequest
 	 * @param CirclesService $circlesService
@@ -78,13 +83,15 @@ class GroupsService {
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$userId, IL10N $l10n, IGroupManager $groupManager, CirclesRequest $circlesRequest,
+		$userId, IL10N $l10n, IGroupManager $groupManager, IUserManager $userManager,
+		CirclesRequest $circlesRequest,
 		MembersRequest $membersRequest, CirclesService $circlesService,
 		EventsService $eventsService, MiscService $miscService
 	) {
 		$this->userId = $userId;
 		$this->l10n = $l10n;
 		$this->groupManager = $groupManager;
+		$this->userManager = $userManager;
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
 		$this->circlesService = $circlesService;
@@ -105,6 +112,29 @@ class GroupsService {
 		try {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			$this->circlesService->hasToBeAdmin($circle->getHigherViewer());
+
+			$allMembers =
+				$this->membersRequest->forceGetMembers($circleUniqueId, Member::LEVEL_MEMBER, true);
+
+			$group = $this->groupManager->get($groupId);
+			$count = $group->count();
+
+			foreach ($allMembers as $member) {
+				if ($member->getType() !== Member::TYPE_USER) {
+					continue;
+				}
+
+				$user = $this->userManager->get($member->getUserId());
+				if ($group->inGroup($user)) {
+					continue;
+				}
+
+				$count++;
+			}
+
+			if ($count > $circle->getSetting('members_limit')) {
+				throw new \Exception('Group contains too many members');
+			}
 
 			$group = $this->getFreshNewMember($circleUniqueId, $groupId);
 		} catch (\Exception $e) {
