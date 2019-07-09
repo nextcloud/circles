@@ -207,6 +207,20 @@ class ConfigService {
 	 *
 	 * @return string
 	 */
+	public function getCoreValue($key) {
+		$defaultValue = null;
+
+		return $this->config->getAppValue('core', $key, $defaultValue);
+	}
+
+
+	/**
+	 * Get a value by key
+	 *
+	 * @param string $key
+	 *
+	 * @return string
+	 */
 	public function getAppValue($key) {
 		$defaultValue = null;
 
