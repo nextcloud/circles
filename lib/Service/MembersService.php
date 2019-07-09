@@ -399,16 +399,19 @@ class MembersService {
 	 * @param $circleId
 	 * @param $userId
 	 * @param $type
+	 * @param bool $forceAll
 	 *
 	 * @return Member
-	 * @throws \Exception
+	 * @throws Exception
 	 */
-	public function getMember($circleId, $userId, $type) {
+	public function getMember($circleId, $userId, $type, $forceAll = false) {
 
 		try {
-			$this->circlesRequest->getCircle($circleId, $this->userId)
-								 ->getHigherViewer()
-								 ->hasToBeMember();
+			if (!$forceAll) {
+				$this->circlesRequest->getCircle($circleId, $this->userId)
+									 ->getHigherViewer()
+									 ->hasToBeMember();
+			}
 
 			$member = $this->membersRequest->forceGetMember($circleId, $userId, $type);
 			$member->setNote('');

@@ -315,15 +315,16 @@ class Circles {
 	 * @param string $circleUniqueId
 	 * @param string $ident
 	 * @param int $type
+	 * @param bool $forceAll
 	 *
 	 * @return Member
 	 * @throws QueryException
 	 */
-	public static function getMember($circleUniqueId, $ident, $type) {
+	public static function getMember($circleUniqueId, $ident, $type, $forceAll = false) {
 		$c = self::getContainer();
 
 		return $c->query(MembersService::class)
-				 ->getMember($circleUniqueId, $ident, $type);
+				 ->getMember($circleUniqueId, $ident, $type, $forceAll);
 	}
 
 
