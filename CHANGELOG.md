@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 0.16.7
+
+- upgrade on API
+
 
 ## 0.16.6
 
