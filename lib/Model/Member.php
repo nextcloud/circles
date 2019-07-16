@@ -112,6 +112,7 @@ class Member extends BaseMember {
 			case Member::STATUS_NONMEMBER:
 			case Member::STATUS_KICKED:
 				$this->setStatus(Member::STATUS_INVITED);
+				//$this->setAsAMember(Member::LEVEL_MEMBER);
 				break;
 
 			case Member::STATUS_REQUEST:

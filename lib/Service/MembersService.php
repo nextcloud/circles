@@ -214,8 +214,12 @@ class MembersService {
 		if ($member->getType() !== Member::TYPE_USER) {
 			return;
 		}
-
+		
 		$member->inviteToCircle($circle->getType());
+
+		if ($this->configService->isInvitationSkipped()){
+			$member->joinCircle($circle->getType());
+		}
 	}
 
 

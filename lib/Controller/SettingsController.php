@@ -48,6 +48,9 @@ class SettingsController extends Controller {
 			),
 			'allowFederatedCircles' => $this->configService->getAppValue(
 				ConfigService::CIRCLES_ALLOW_FEDERATED_CIRCLES
+			),
+			'skipInvitationStep' => $this->configService->getAppValue(
+				ConfigService::CIRCLES_SKIP_INVITATION_STEP
 			)
 		];
 
@@ -55,7 +58,7 @@ class SettingsController extends Controller {
 	}
 
 
-	public function setSettings($members_limit, $allow_linked_groups, $allow_federated_circles) {
+	public function setSettings($members_limit, $allow_linked_groups, $allow_federated_circles, $skip_invitation_to_closed_circles) {
 		$this->configService->setAppValue(
 			ConfigService::CIRCLES_MEMBERS_LIMIT, $members_limit
 		);
@@ -64,6 +67,9 @@ class SettingsController extends Controller {
 		);
 		$this->configService->setAppValue(
 			ConfigService::CIRCLES_ALLOW_FEDERATED_CIRCLES, $allow_federated_circles
+		);
+		$this->configService->setAppValue(
+			ConfigService::CIRCLES_SKIP_INVITATION_STEP, $skip_invitation_to_closed_circles
 		);
 
 		return $this->getSettings();
