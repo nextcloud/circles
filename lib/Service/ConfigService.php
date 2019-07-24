@@ -92,9 +92,6 @@ class ConfigService {
 	/** @var int */
 	private $localNonSSL = -1;
 
-	/** @var int */
-	private $skipInvitationStep = -1;
-
 	/**
 	 * ConfigService constructor.
 	 *
@@ -166,12 +163,7 @@ class ConfigService {
 	 * @return bool
 	 */
 	public function isInvitationSkipped() {
-		if ($this->skipInvitationStep === -1) {
-			$this->skipInvitationStep =
-				(int)$this->getAppValue(self::CIRCLES_SKIP_INVITATION_STEP);
-		}
-
-		return ($this->skipInvitationStep === 1);
+		return (int)$this->getAppValue(self::CIRCLES_SKIP_INVITATION_STEP) === 1;
 	}
 
 	/**
