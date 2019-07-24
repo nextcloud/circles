@@ -275,8 +275,6 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	protected function linkToMember(IQueryBuilder &$qb, $userId, $groupMemberAllowed) {
 		$expr = $qb->expr();
 
-		$qb->from(CoreRequestBuilder::TABLE_MEMBERS, 'm');
-
 		$orX = $expr->orX();
 		$orX->add($this->exprLinkToMemberAsCircleMember($qb, $userId));
 		if ($groupMemberAllowed === true) {
@@ -297,23 +295,29 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	 * @return \OCP\DB\QueryBuilder\ICompositeExpression
 	 */
 	private function exprLinkToMemberAsCircleMember(IQueryBuilder &$qb, $userId) {
+		$subQb = $this->dbConnection->getQueryBuilder();
 
-		$expr = $qb->expr();
+		$subQb
+			->select('mcm.circle_id')
+			->from(CoreRequestBuilder::TABLE_MEMBERS, 'mcm');
+
+		$expr = $subQb->expr();
 		$andX = $expr->andX();
 
-		$andX->add($expr->eq('m.user_id', $qb->createNamedParameter($userId)));
-		$andX->add($expr->gt('m.level', $qb->createNamedParameter(0)));
-		$andX->add($expr->eq('m.user_type', $qb->createNamedParameter(Member::TYPE_USER)));
-		$andX->add(
-			$expr->eq(
-				'm.circle_id',
+		$andX->add($expr->eq('mcm.user_id', $qb->createNamedParameter($userId)));
+		$andX->add($expr->gt('mcm.level', $qb->createNamedParameter(0)));
+		$andX->add($expr->eq('mcm.user_type', $qb->createNamedParameter(Member::TYPE_USER)));
+
+		$subQb->andWhere($andX);
+
+		return $qb->expr()->andX(
+			$expr->in(
 				$qb->createFunction(
 					'SUBSTR(`c`.`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')'
-				)
+				),
+				$qb->createFunction($subQb->getSQL())
 			)
 		);
-
-		return $andX;
 	}
 
 
@@ -328,23 +332,30 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	private function exprLinkToMemberAsGroupMember(IQueryBuilder &$qb, $userId) {
 		$expr = $qb->expr();
 
+		$subQb = $this->dbConnection->getQueryBuilder();
+		$subExpr = $subQb->expr();
+
+		$subQb
+			->select('g.circle_id')
+			->from(CoreRequestBuilder::TABLE_GROUPS, 'g');
+
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->leftJoin(
-			'c', CoreRequestBuilder::TABLE_GROUPS, 'g',
-			$expr->andX(
-				$expr->eq(
-					'g.circle_id',
-					$qb->createFunction('SUBSTR(`c`.`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')')
-				)
+		$subQb->leftJoin(
+			'g', CoreRequestBuilder::NC_TABLE_GROUP_USER, 'ncgu',
+			$subExpr->eq('ncgu.gid', 'g.group_id')
+		);
+		$subQb->where(
+			$subExpr->andX($subExpr->eq('ncgu.uid', $qb->createNamedParameter($userId)))
+		);
+
+		return $qb->expr()->andX(
+			$expr->in(
+				$qb->createFunction(
+					'SUBSTR(`c`.`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')'
+				),
+				$qb->createFunction($subQb->getSQL())
 			)
 		);
-
-		$qb->leftJoin(
-			'g', CoreRequestBuilder::NC_TABLE_GROUP_USER, 'ncgu',
-			$expr->eq('ncgu.gid', 'g.group_id')
-		);
-
-		return $expr->andX($expr->eq('ncgu.uid', $qb->createNamedParameter($userId)));
 	}
 
 
