@@ -33,7 +33,15 @@ Non-members won't be able to find your secret circle using the search bar.
 
 [Please visit our wiki to read more about the API.](https://github.com/nextcloud/circles/wiki)
 
+# Configuration
 
+## Allow usage of Circles in non-SSL environments
+
+In non-SSL environments (like on development setups) it is necessary to set two config flags for Circles:
+
+`./occ config:app:set circles --value 1 allow_non_ssl_links` 
+
+`./occ config:app:set circles --value 1 local_is_non_ssl`
 
 # Credits
 
