@@ -522,7 +522,7 @@ class CirclesService {
 				);
 			case Circle::CIRCLES_PUBLIC:
 				return $urlGen->getAbsoluteURL(
-					$urlGen->imagePath(Application::APP_NAME, 'public' . $ext)
+					$urlGen->imagePath(Application::APP_NAME, 'black_circle' . $ext)
 				);
 		}
 
