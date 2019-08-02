@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-### 0.17.6
+### 0.17.7
 
 - lighter requests on request on Shares
 - new settings to allow moderator to add member to closed circle without invitation step
