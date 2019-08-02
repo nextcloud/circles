@@ -42,6 +42,7 @@ class ConfigService {
 	const CIRCLES_ALLOW_NON_SSL_LINKS = 'allow_non_ssl_links';
 	const CIRCLES_NON_SSL_LOCAL = 'local_is_non_ssl';
 	const CIRCLES_ACTIVITY_ON_CREATION = 'creation_activity';
+	const CIRCLES_SKIP_INVITATION_STEP = 'skip_invitation_to_closed_circles';
 
 	const CIRCLES_TEST_ASYNC_LOCK = 'test_async_lock';
 	const CIRCLES_TEST_ASYNC_INIT = 'test_async_init';
@@ -57,7 +58,8 @@ class ConfigService {
 		self::CIRCLES_ALLOW_FEDERATED_CIRCLES => '0',
 		self::CIRCLES_ALLOW_NON_SSL_LINKS     => '0',
 		self::CIRCLES_NON_SSL_LOCAL           => '0',
-		self::CIRCLES_ACTIVITY_ON_CREATION    => '1'
+		self::CIRCLES_ACTIVITY_ON_CREATION    => '1',
+		self::CIRCLES_SKIP_INVITATION_STEP    => '0'
 	];
 
 	/** @var string */
@@ -157,6 +159,12 @@ class ConfigService {
 		return ($this->allowedFederatedCircles === 1);
 	}
 
+	/**
+	 * @return bool
+	 */
+	public function isInvitationSkipped() {
+		return (int)$this->getAppValue(self::CIRCLES_SKIP_INVITATION_STEP) === 1;
+	}
 
 	/**
 	 * @return bool
