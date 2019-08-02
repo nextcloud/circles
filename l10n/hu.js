@@ -265,13 +265,16 @@ OC.L10N.register(
     "Link" : "Kapcsolat",
     "Linked" : "Kapcsolódva",
     "Members limit" : "Tagok limite",
+    "Change the limit to the number of members. (0: default, -1: unlimited)" : "A tagok számának módosítása. (0: alapértelmezés szerinti, -1: korlátlan)",
     "Allow Federated Links" : "Egyesített linkek engedélyezése",
     "Makes the circle federated, and enables sharing between federated circles" : "A köröket egységesítetté teszi és lehetővé teszi az egységes körök közti megosztást.",
     "Accept Link Request Automatically" : "Kapcsolati kérések automatikus elfogadása",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Figyelem: ennek bekapcsolásával a kapcsolati kérések más köröktől automatikusan elfogadásra kerülnek.",
     "Save settings" : "Beállítások mentése",
+    "Maximum number of members per circle" : "Körönkénti tagok legnagyobb száma",
     "Allow linking of groups" : "Csoportok csatlakoztatásának engedélyezése",
     "Groups can be linked to circles." : "Csoportok csatolhatók a körökhöz.",
+    "Allow federated circles" : "Egységesített körök engedélyezése",
     "Circles from different Nextclouds can be linked together." : "Más Nextcloud-okból való körök összekapcsolhatók."
 },
 "nplurals=2; plural=(n != 1);");
