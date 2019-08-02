@@ -33,7 +33,8 @@ var elements = {
 	// test_async_wait: null,
 	members_limit: null,
 	allow_linked_groups: null,
-	allow_federated_circles: null
+	allow_federated_circles: null,
+	skip_invitation_to_closed_circles: null
 };
 
 
@@ -46,6 +47,7 @@ $(document).ready(function () {
 	elements.members_limit = $('#members_limit');
 	elements.allow_linked_groups = $('#allow_linked_groups');
 	elements.allow_federated_circles = $('#allow_federated_circles');
+	elements.skip_invitation_to_closed_circles = $('#skip_invitation_to_closed_circles');
 
 	// elements.test_async_wait.hide().on('click', function () {
 	// 	self.refreshResult();
@@ -82,6 +84,10 @@ $(document).ready(function () {
 		saveChange();
 	});
 
+	elements.skip_invitation_to_closed_circles.on('change', function () {
+		saveChange();
+	});
+
 	saveChange = function () {
 		$.ajax({
 			method: 'POST',
@@ -91,12 +97,15 @@ $(document).ready(function () {
 				allow_linked_groups: (elements.allow_linked_groups.is(
 					':checked')) ? '1' : '0',
 				allow_federated_circles: (elements.allow_federated_circles.is(
+					':checked')) ? '1' : '0',
+				skip_invitation_to_closed_circles: (elements.skip_invitation_to_closed_circles.is(
 					':checked')) ? '1' : '0'
 			}
 		}).done(function (res) {
 			elements.members_limit.val(res.membersLimit);
 			elements.allow_linked_groups.prop('checked', (res.allowLinkedGroups === '1'));
 			elements.allow_federated_circles.prop('checked', (res.allowFederatedCircles === '1'));
+			elements.skip_invitation_to_closed_circles.prop('checked', (res.skipInvitationStep === '1'));
 		});
 	};
 
@@ -180,6 +189,8 @@ $(document).ready(function () {
 		elements.members_limit.val(res.membersLimit);
 		elements.allow_linked_groups.prop('checked', (res.allowLinkedGroups === '1'));
 		elements.allow_federated_circles.prop('checked', (res.allowFederatedCircles === '1'));
+		elements.skip_invitation_to_closed_circles.prop('checked', (res.skipInvitationStep === '1'));
+		
 	});
 	//
 	// var timerTestAsync = setInterval(function () {

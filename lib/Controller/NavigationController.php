@@ -84,6 +84,7 @@ class NavigationController extends BaseController {
 			'members_list' => $this->configService->getAppValue(ConfigService::CIRCLES_MEMBERS_LIMIT),
 			'allowed_linked_groups' => $this->configService->getAppValue(ConfigService::CIRCLES_ALLOW_LINKED_GROUPS),
 			'allowed_federated_circles' => $this->configService->getAppValue(ConfigService::CIRCLES_ALLOW_FEDERATED_CIRCLES),
+			'skip_invitation_to_closed_circles' => $this->configService->getAppValue(ConfigService::CIRCLES_SKIP_INVITATION_STEP),
 			'status'            => 1
 		];
 
