@@ -273,6 +273,8 @@
     "Allow linking of groups" : "Pozwalaj na łączenie grup",
     "Groups can be linked to circles." : "Grupy mogą być podpięte do kręgów.",
     "Allow federated circles" : "Pozwalaj na federowane kręgi",
-    "Circles from different Nextclouds can be linked together." : "Kręgi z różnych Nextcoud'ów mogą być podpięte razem."
+    "Circles from different Nextclouds can be linked together." : "Kręgi z różnych Nextcoud'ów mogą być podpięte razem.",
+    "Skip invitation step to closed circles" : "Pomiń krok zaproszenia do zamkniętych kręgów",
+    "Moderators can add member to closed circles without user approval." : "Moderatorzy mogą dodawać członków do zamkniętych kręgów bez zgody użytkownika."
 },"pluralForm" :"nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);"
 }
