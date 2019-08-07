@@ -275,6 +275,7 @@ OC.L10N.register(
     "Allow linking of groups" : "Permitir enlace de grupos",
     "Groups can be linked to circles." : "Los grupos puedes ser unidos a círculos.",
     "Allow federated circles" : "Permitir círculos federados",
-    "Circles from different Nextclouds can be linked together." : "Los círculos de diferentes Nextclouds pueden ser enlazados entre sí."
+    "Circles from different Nextclouds can be linked together." : "Los círculos de diferentes Nextclouds pueden ser enlazados entre sí.",
+    "Moderators can add member to closed circles without user approval." : "Los moderadores podrán añadir miembros a los círculos privados sin aprobación del usuario."
 },
 "nplurals=2; plural=(n != 1);");
