@@ -1,12 +1,12 @@
 OC.L10N.register(
     "circles",
     {
-    "Are you sure you want to transfer your ownership?" : "Esteu segurs que voleu transferir la vostra propietat?",
+    "Are you sure you want to transfer your ownership?" : "Segur que voleu transferir la vostra propietat?",
     "This action is irreversible" : "Aquesta acció és irreversible",
     "Personal circle" : "Cercle personal",
     "Secret circle" : "Cercle secret",
     "Closed circle" : "Cercle tancat",
-    "Public circle" : "Cercle Públic",
+    "Public circle" : "Cercle públic",
     "Circle" : "Cercle",
     "Link Removed" : "Enllaç suprimit",
     "Link down" : "Enllaç inactiu",
@@ -18,7 +18,7 @@ OC.L10N.register(
     "Personal Circle" : "Cercle personal",
     "Secret Circle" : "Cercle secret",
     "Closed Circle" : "Cercle tancat",
-    "Public Circle" : "Cercle Públic",
+    "Public Circle" : "Cercle públic",
     "Personal" : "Personal",
     "Secret" : "Secret",
     "Closed" : "Tancat",
@@ -37,7 +37,7 @@ OC.L10N.register(
     "Please confirm" : "Confirmeu, si us plau",
     "Are you sure you want to leave this circle?" : "Esteu segurs que voleu deixar aquest cercle?",
     "Are you sure you want to delete this circle?" : "Esteu segurs que voleu suprimir aquest cercle?",
-    "Mail Address" : "Adreça de correu",
+    "Mail Address" : "Adreça electrònica",
     "Contact" : "Contacte",
     "Kick this member" : "Expulsa aquest membre",
     "Accept the request" : "Accepta la petició",
@@ -274,7 +274,8 @@ OC.L10N.register(
     "Maximum number of members per circle" : "Màxim nombre de membres per cercle",
     "Allow linking of groups" : "Permet l'enllaç de grups",
     "Groups can be linked to circles." : "Els grups poden ser enllaçats a cercles.",
-    "Allow federated circles" : "Permet cercles federats",
-    "Circles from different Nextclouds can be linked together." : "Es poden enllaçar cercles de diferents Nextclouds."
+    "Allow federated circles" : "Permet els cercles federats",
+    "Circles from different Nextclouds can be linked together." : "Es poden enllaçar cercles de diferents Nextclouds.",
+    "Moderators can add member to closed circles without user approval." : "Els moderadors poden afegir un membre als cercles tancats sense que l'usuari ho accepti."
 },
 "nplurals=2; plural=(n != 1);");
