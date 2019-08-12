@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+### 0.16.9
+
+- lighter requests on request on Shares
 
 
 ### 0.16.8
