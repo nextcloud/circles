@@ -277,6 +277,6 @@ OC.L10N.register(
     "Allow federated circles" : "Federated-Kreise erlauben",
     "Circles from different Nextclouds can be linked together." : "Kreise aus verschiedenen Nextclouds können miteinander verknüpft werden.",
     "Skip invitation step to closed circles" : "Einladungsschritt für geschlossene Kreise überspringen",
-    "Moderators can add member to closed circles without user approval." : "Moderatoren können Nutzer zu geschlossenen Kreisen ohne Nutzerprüfung hinzufügen."
+    "Moderators can add member to closed circles without user approval." : "Moderatoren können Benutzer zu geschlossenen Kreisen ohne Benutzerprüfung hinzufügen."
 },
 "nplurals=2; plural=(n != 1);");
