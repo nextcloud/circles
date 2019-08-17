@@ -275,6 +275,8 @@ OC.L10N.register(
     "Allow linking of groups" : "Permesi interligi grupojn",
     "Groups can be linked to circles." : "Grupoj ligeblas al rondoj.",
     "Allow federated circles" : "Permesi federajn rondojn",
-    "Circles from different Nextclouds can be linked together." : "Rondoj el aliaj Nextcloud ligeblas kune."
+    "Circles from different Nextclouds can be linked together." : "Rondoj el aliaj Nextcloud ligeblas kune.",
+    "Skip invitation step to closed circles" : "Preterpasi la etapon pri invito al fermitaj rondoj",
+    "Moderators can add member to closed circles without user approval." : "Kontrolantoj povas aldoni membrojn en malfermitaj rondoj sen uzant-aprobo."
 },
 "nplurals=2; plural=(n != 1);");
