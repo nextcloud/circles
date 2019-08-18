@@ -43,6 +43,7 @@ OC.L10N.register(
     "Circles you belong to" : "Кругови што припаѓаат на",
     "Circles you own" : "Кругови што ги поседувате",
     "No circle selected" : "Нема избрано круг",
+    "Settings" : "Параметри",
     "Add a member" : "Додади член",
     "Delete circle" : "Избриши круг",
     "Edit circle" : "Измени круг",
