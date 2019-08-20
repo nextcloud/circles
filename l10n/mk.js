@@ -17,7 +17,7 @@ OC.L10N.register(
     "Admin" : "Администратор",
     "Owner" : "Сопственик",
     "Are you sure you want to delete this circle?" : "Дали си сигурен дека сакаш да го избришеш овој круг?",
-    "Settings saved." : "Подесувањата се зачувани.",
+    "Settings saved." : "Параметрите се зачувани.",
     "Circles" : "Кругови",
     "Create a new circle" : "Креирај круг",
     "Select a circle type" : "Избери вид на круг",
@@ -57,6 +57,6 @@ OC.L10N.register(
     "Makes the circle federated, and enables sharing between federated circles" : "Прави федерација на кругот, и дозволува споделување помеѓу федералните кругови.",
     "Accept Link Request Automatically" : "Автоматски прифати го барањето за врска",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "ПРЕДУПРЕДУВАЊЕ: Овозможувањето автоматски ќе прифаќа нови барања за врски од други кругови.",
-    "Save settings" : "Зачувај подесувања"
+    "Save settings" : "Зачувај параметри"
 },
 "nplurals=2; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : 1;");
