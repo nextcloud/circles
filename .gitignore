@@ -2,4 +2,6 @@
 \.idea/
 .buildpath
 .project
+build/
+vendor/
 .settings/
