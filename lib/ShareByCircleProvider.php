@@ -50,12 +50,14 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
 use OCP\Files\Node;
+use OCP\Files\NotFoundException;
 use OCP\IDBConnection;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCP\Security\ISecureRandom;
+use OCP\Share\Exceptions\IllegalIDChangeException;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IShare;
 use OCP\Share\IShareProvider;
@@ -153,7 +155,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 			}
 
 			$share->setToken(substr(bin2hex(openssl_random_pseudo_bytes(24)), 1, 15));
-			$shareId = $this->createShare($share);
+			$this->createShare($share);
 
 			$circle =
 				$this->circlesRequest->getCircle($share->getSharedWith(), $share->getSharedby());
@@ -162,11 +164,11 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 
 			Circles::shareToCircle(
 				$circle->getUniqueId(), 'files', '',
-				['id' => $shareId, 'share' => $this->shareObjectToArray($share)],
+				['id' => $share->getId(), 'share' => $this->shareObjectToArray($share)],
 				'\OCA\Circles\Circles\FileSharingBroadcaster'
 			);
 
-			return $this->getShareById($shareId);
+			return $this->getShareById($share->getId());
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -276,8 +278,6 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * Create a child and returns its ID
 	 *
 	 * @param IShare $share
-	 *
-	 * @return int
 	 */
 	private function createShare($share) {
 		$this->miscService->log(
@@ -295,7 +295,10 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 		$id = $qb->getLastInsertId();
 		$this->miscService->log('Share created ID (4/4) : ' . $id, 0);
 
-		return (int)$id;
+		try {
+			$share->setId($id);
+		} catch (IllegalIDChangeException $e) {
+		}
 	}
 
 
@@ -609,7 +612,6 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * @return IShare
 	 */
 	private function createShareObject($data) {
-
 		$share = new Share($this->rootFolder, $this->userManager);
 		$share->setId((int)$data['id'])
 			  ->setPermissions((int)$data['permissions'])
@@ -772,9 +774,11 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * @param IShare $share
 	 *
 	 * @return array
+	 * @throws NotFoundException
 	 */
 	private function shareObjectToArray(IShare $share) {
 		return [
+			'id'          => $share->getId(),
 			'sharedWith'  => $share->getSharedWith(),
 			'sharedBy'    => $share->getSharedBy(),
 			'nodeId'      => $share->getNodeId(),

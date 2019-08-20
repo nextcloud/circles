@@ -9,13 +9,13 @@
 namespace OCA\Circles\Db;
 
 
+use Doctrine\DBAL\Query\QueryBuilder;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\TimezoneService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
-use Doctrine\DBAL\Query\QueryBuilder;
-use OCA\Circles\Service\MiscService;
 use OCP\IDBConnection;
 use OCP\IL10N;
 
@@ -65,7 +65,7 @@ class CoreRequestBuilder {
 	 */
 	public function __construct(
 		IL10N $l10n, IDBConnection $connection, ConfigService $configService,
-			 TimezoneService $timezoneService, MiscService $miscService
+		TimezoneService $timezoneService, MiscService $miscService
 	) {
 		$this->l10n = $l10n;
 		$this->dbConnection = $connection;
@@ -142,6 +142,17 @@ class CoreRequestBuilder {
 
 
 	/**
+	 * Limit the request to the Circle by its Id.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param int $shareId
+	 */
+	protected function limitToShareId(IQueryBuilder &$qb, int $shareId) {
+		$this->limitToDBField($qb, 'circle_id', $shareId);
+	}
+
+
+	/**
 	 * Limit the request to the Circle by its Shorten Unique Id.
 	 *
 	 * @param IQueryBuilder $qb
@@ -150,7 +161,8 @@ class CoreRequestBuilder {
 	 */
 	protected function limitToShortenUniqueId(IQueryBuilder &$qb, $circleUniqueId, $length) {
 		$expr = $qb->expr();
-		$pf = ($qb->getType() === QueryBuilder::SELECT) ? '`' . $this->default_select_alias . '`.' : '';
+		$pf = ($qb->getType() === QueryBuilder::SELECT) ? '`' . $this->default_select_alias
+														  . '`.' : '';
 
 		$qb->andWhere(
 			$expr->eq(
@@ -335,7 +347,6 @@ class CoreRequestBuilder {
 	}
 
 
-
 	/**
 	 * Left Join circle table to get more information about the circle.
 	 *
@@ -363,7 +374,6 @@ class CoreRequestBuilder {
 			   )
 		   );
 	}
-
 
 
 	/**
