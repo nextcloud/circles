@@ -29,6 +29,7 @@ class CoreRequestBuilder {
 	const TABLE_GROUPS = 'circles_groups';
 	const TABLE_SHARES = 'circles_shares';
 	const TABLE_LINKS = 'circles_links';
+	const TABLE_TOKENS = 'circles_tokens';
 
 	const NC_TABLE_GROUP_USER = 'group_user';
 

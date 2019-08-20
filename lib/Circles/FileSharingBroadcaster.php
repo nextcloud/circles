@@ -36,6 +36,7 @@ use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\MiscService;
 use OCP\Defaults;
 use OCP\Files\IRootFolder;
+use OCP\Files\NotFoundException;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IURLGenerator;
@@ -187,9 +188,12 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 * @param $circleName
 	 * @param IShare $share
 	 * @param string $email
+	 *
+	 * @throws NotFoundException
 	 */
 	private function sharedByMail($circleName, IShare $share, $email) {
 
+		// genelink
 		$link = $this->urlGenerator->linkToRouteAbsolute(
 			'files_sharing.sharecontroller.showShare',
 			['token' => $share->getToken()]
