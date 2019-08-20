@@ -40,6 +40,7 @@ use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleProviderRequest;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
+use OCA\Circles\Db\TokensRequest;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\ConfigService;
@@ -86,6 +87,8 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	/** @var MembersRequest */
 	private $membersRequest;
 
+	/** @var TokensRequest */
+	private $tokensRequest;
 
 	/**
 	 * DefaultShareProvider constructor.
@@ -119,6 +122,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 		$this->urlGenerator = $urlGenerator;
 		$this->circlesRequest = $container->query(CirclesRequest::class);
 		$this->membersRequest = $container->query(MembersRequest::class);
+		$this->tokensRequest = $container->query(TokensRequest::class);
 	}
 
 
@@ -202,11 +206,12 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * @param IShare $share
 	 */
 	public function delete(IShare $share) {
-
 		$qb = $this->getBaseDeleteSql();
 		$this->limitToShareAndChildren($qb, $share->getId());
 
 		$qb->execute();
+
+		$this->tokensRequest->removeTokenByShareId($share->getId());
 	}
 
 

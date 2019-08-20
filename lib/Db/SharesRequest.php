@@ -29,6 +29,7 @@ namespace OCA\Circles\Db;
 
 
 use daita\MySmallPhpTools\Traits\TArrayTools;
+use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Model\Member;
 
@@ -42,6 +43,7 @@ class SharesRequest extends SharesRequestBuilder {
 
 
 	use TArrayTools;
+	use TStringTools;
 
 
 	/**
@@ -83,5 +85,52 @@ class SharesRequest extends SharesRequestBuilder {
 
 		return $this->get('token', $data, 'notfound');
 	}
+
+
+	/**
+	 * @param string $circleUniqueId
+	 */
+	public function shuffleTokensFromCircle(string $circleUniqueId) {
+		$shares = $this->getSharesForCircle($circleUniqueId);
+		foreach ($shares as $share) {
+			$this->shuffleTokenByShareId($this->getInt('id', $share, 0));
+		}
+	}
+
+
+	/**
+	 * @param int $shareId
+	 */
+	public function shuffleTokenByShareId(int $shareId) {
+		$qb = $this->getSharesUpdateSql();
+		$qb->set('token', $qb->createNamedParameter($this->uuid(15)));
+
+		$this->limitToId($qb, $shareId);
+
+		$qb->execute();
+	}
+
+
+	/**
+	 * @param string $circleId
+	 *
+	 * @return array
+	 */
+	public function getSharesForCircle(string $circleId) {
+		$qb = $this->getSharesSelectSql();
+
+		$this->limitToShareWith($qb, $circleId);
+		$this->limitToShareType($qb, self::SHARE_TYPE);
+
+		$shares = [];
+		$cursor = $qb->execute();
+		while ($data = $cursor->fetch()) {
+			$shares[] = $data;
+		}
+		$cursor->closeCursor();
+
+		return $shares;
+	}
+
 
 }

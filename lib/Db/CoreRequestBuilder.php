@@ -208,6 +208,28 @@ class CoreRequestBuilder {
 
 
 	/**
+	 * Limit the request by its Id.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param string $type
+	 */
+	protected function limitToShareType(IQueryBuilder &$qb, string $type) {
+		$this->limitToDBField($qb, 'share_type', $type);
+	}
+
+
+	/**
+	 * Limit the request by its Id.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param string $with
+	 */
+	protected function limitToShareWith(IQueryBuilder &$qb, string $with) {
+		$this->limitToDBField($qb, 'share_with', $with);
+	}
+
+
+	/**
 	 * Limit the request to a minimum member level.
 	 *
 	 * if $pf is an array, will generate an SQL OR request to limit level in multiple tables

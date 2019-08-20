@@ -101,7 +101,7 @@ class TokensRequest extends TokensRequestBuilder {
 	 * @return mixed
 	 */
 	public function generateTokenForMember(Member $member, int $shareId) {
-		$token = $this->uuid(13);
+		$token = $this->uuid(15);
 		try {
 			$qb = $this->getTokensInsertSql();
 			$qb->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
@@ -125,6 +125,17 @@ class TokensRequest extends TokensRequestBuilder {
 		foreach ($members as $member) {
 			$this->generateTokenForMember($member, $shareId);
 		}
+	}
+
+
+	/**
+	 * @param int $shareId
+	 */
+	public function removeTokenByShareId(int $shareId) {
+		$qb = $this->getTokensDeleteSql();
+		$this->limitToId($qb, $shareId);
+
+		$qb->execute();
 	}
 
 

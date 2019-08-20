@@ -33,10 +33,13 @@ use OC\User\NoUserException;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Db\SharesRequest;
+use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\CircleTypeNotValidException;
+use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Exceptions\EmailAccountInvalidFormatException;
 use OCA\Circles\Exceptions\GroupDoesNotExistException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
+use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCP\IL10N;
@@ -214,10 +217,10 @@ class MembersService {
 		if ($member->getType() !== Member::TYPE_USER) {
 			return;
 		}
-		
+
 		$member->inviteToCircle($circle->getType());
 
-		if ($this->configService->isInvitationSkipped()){
+		if ($this->configService->isInvitationSkipped()) {
 			$member->joinCircle($circle->getType());
 		}
 	}
@@ -406,24 +409,21 @@ class MembersService {
 	 * @param bool $forceAll
 	 *
 	 * @return Member
-	 * @throws Exception
+	 * @throws CircleDoesNotExistException
+	 * @throws ConfigNoCircleAvailableException
+	 * @throws MemberDoesNotExistException
 	 */
 	public function getMember($circleId, $userId, $type, $forceAll = false) {
-
-		try {
-			if (!$forceAll) {
-				$this->circlesRequest->getCircle($circleId, $this->userId)
-									 ->getHigherViewer()
-									 ->hasToBeMember();
-			}
-
-			$member = $this->membersRequest->forceGetMember($circleId, $userId, $type);
-			$member->setNote('');
-
-			return $member;
-		} catch (Exception $e) {
-			throw $e;
+		if (!$forceAll) {
+			$this->circlesRequest->getCircle($circleId, $this->userId)
+								 ->getHigherViewer()
+								 ->hasToBeMember();
 		}
+
+		$member = $this->membersRequest->forceGetMember($circleId, $userId, $type);
+		$member->setNote('');
+
+		return $member;
 	}
 
 
@@ -565,7 +565,7 @@ class MembersService {
 
 		$this->membersRequest->removeMember($member);
 		$this->sharesRequest->removeSharesFromMember($member);
-
+$this->sharesRequest->shuffleTokensFromCircle($circleUniqueId);
 		return $this->membersRequest->getMembers(
 			$circle->getUniqueId(), $circle->getHigherViewer()
 		);
