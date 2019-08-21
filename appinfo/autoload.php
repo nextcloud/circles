@@ -1,4 +1,7 @@
 <?php
+declare(strict_types=1);
+
+
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -6,9 +9,8 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@pontapreta.net>
- * @author Vinicius Cubas Brand <vinicius@eita.org.br>
  *
- * @copyright 2017
+ * @copyright 2019
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,11 +28,12 @@
  *
  */
 
-$app = new \OCA\Circles\AppInfo\Application();
 
-$app->registerNavigation();
-$app->registerFilesNavigation();
-$app->registerFilesPlugin();
+namespace OCA\Circles\AppInfo;
 
-require_once __DIR__ . '/autoload.php';
+$composerDir = __DIR__ . '/../vendor/';
+
+if (is_dir($composerDir) && file_exists($composerDir . 'autoload.php')) {
+	require_once $composerDir . 'autoload.php';
+}
 
