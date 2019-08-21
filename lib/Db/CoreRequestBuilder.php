@@ -148,7 +148,7 @@ class CoreRequestBuilder {
 	 * @param int $shareId
 	 */
 	protected function limitToShareId(IQueryBuilder &$qb, int $shareId) {
-		$this->limitToDBField($qb, 'circle_id', $shareId);
+		$this->limitToDBField($qb, 'share_id', $shareId);
 	}
 
 
@@ -161,8 +161,7 @@ class CoreRequestBuilder {
 	 */
 	protected function limitToShortenUniqueId(IQueryBuilder &$qb, $circleUniqueId, $length) {
 		$expr = $qb->expr();
-		$pf = ($qb->getType() === QueryBuilder::SELECT) ? '`' . $this->default_select_alias
-														  . '`.' : '';
+		$pf = ($qb->getType() === QueryBuilder::SELECT) ? '`' . $this->default_select_alias . '`.' : '';
 
 		$qb->andWhere(
 			$expr->eq(

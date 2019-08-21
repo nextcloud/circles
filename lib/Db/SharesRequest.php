@@ -56,6 +56,7 @@ class SharesRequest extends SharesRequestBuilder {
 		$expr = $qb->expr();
 
 		$andX = $expr->andX();
+		$andX->add($expr->eq('share_type', $qb->createNamedParameter(self::SHARE_TYPE)));
 		$andX->add($expr->eq('share_with', $qb->createNamedParameter($member->getCircleId())));
 		$andX->add($expr->eq('uid_initiator', $qb->createNamedParameter($member->getUserId())));
 		$qb->andWhere($andX);
@@ -65,8 +66,6 @@ class SharesRequest extends SharesRequestBuilder {
 
 
 	/**
-	 * remove shares from a member to a circle
-	 *
 	 * @param int $shareId
 	 *
 	 * @return string
@@ -75,6 +74,7 @@ class SharesRequest extends SharesRequestBuilder {
 	public function getTokenByShareId(int $shareId) {
 		$qb = $this->getSharesSelectSql();
 		$this->limitToId($qb, $shareId);
+		$this->limitToShareType($qb, self::SHARE_TYPE);
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
@@ -105,6 +105,7 @@ class SharesRequest extends SharesRequestBuilder {
 		$qb = $this->getSharesUpdateSql();
 		$qb->set('token', $qb->createNamedParameter($this->uuid(15)));
 
+		$this->limitToShareType($qb, self::SHARE_TYPE);
 		$this->limitToId($qb, $shareId);
 
 		$qb->execute();

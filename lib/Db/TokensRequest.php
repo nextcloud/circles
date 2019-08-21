@@ -47,8 +47,6 @@ class TokensRequest extends TokensRequestBuilder {
 
 
 	/**
-	 * remove shares from a member to a circle
-	 *
 	 * @param string $token
 	 *
 	 * @return SharesToken
@@ -133,7 +131,7 @@ class TokensRequest extends TokensRequestBuilder {
 	 */
 	public function removeTokenByShareId(int $shareId) {
 		$qb = $this->getTokensDeleteSql();
-		$this->limitToId($qb, $shareId);
+		$this->limitToShareId($qb, $shareId);
 
 		$qb->execute();
 	}

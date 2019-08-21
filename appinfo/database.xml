@@ -398,7 +398,6 @@
 		</declaration>
 	</table>
 
-
 	<table>
 		<name>*dbprefix*circles_tokens</name>
 
@@ -429,11 +428,17 @@
 			</field>
 
 			<index>
-				<name>unique_token</name>
 				<primary>true</primary>
+				<name>unique_recipient</name>
 				<unique>true</unique>
 				<field>
-					<name>token</name>
+					<name>circle_id</name>
+				</field>
+				<field>
+					<name>user_id</name>
+				</field>
+				<field>
+					<name>share_id</name>
 				</field>
 			</index>
 		</declaration>
