@@ -340,7 +340,7 @@ class MembersService {
 
 		if ($this->configService->isAccountOnly()) {
 			throw new EmailAccountInvalidFormatException(
-				$this->l10n->t('You cannot add a mail address as member of your Circle')
+				$this->l10n->t('You cannot add a contact as member of your Circle')
 			);
 		}
 
