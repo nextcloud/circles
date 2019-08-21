@@ -28,9 +28,22 @@
 namespace OCA\Circles\Db;
 
 
+use daita\MySmallPhpTools\Traits\TArrayTools;
+use daita\MySmallPhpTools\Traits\TStringTools;
+use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Model\Member;
 
+
+/**
+ * Class SharesRequest
+ *
+ * @package OCA\Circles\Db
+ */
 class SharesRequest extends SharesRequestBuilder {
+
+
+	use TArrayTools;
+	use TStringTools;
 
 
 	/**
@@ -43,11 +56,81 @@ class SharesRequest extends SharesRequestBuilder {
 		$expr = $qb->expr();
 
 		$andX = $expr->andX();
+		$andX->add($expr->eq('share_type', $qb->createNamedParameter(self::SHARE_TYPE)));
 		$andX->add($expr->eq('share_with', $qb->createNamedParameter($member->getCircleId())));
 		$andX->add($expr->eq('uid_initiator', $qb->createNamedParameter($member->getUserId())));
 		$qb->andWhere($andX);
 
 		$qb->execute();
+	}
+
+
+	/**
+	 * @param int $shareId
+	 *
+	 * @return string
+	 * @throws TokenDoesNotExistException
+	 */
+	public function getTokenByShareId(int $shareId) {
+		$qb = $this->getSharesSelectSql();
+		$this->limitToId($qb, $shareId);
+		$this->limitToShareType($qb, self::SHARE_TYPE);
+
+		$cursor = $qb->execute();
+		$data = $cursor->fetch();
+		$cursor->closeCursor();
+		if ($data === false) {
+			throw new TokenDoesNotExistException('Unknown share token');
+		}
+
+		return $this->get('token', $data, 'notfound');
+	}
+
+
+	/**
+	 * @param string $circleUniqueId
+	 */
+	public function shuffleTokensFromCircle(string $circleUniqueId) {
+		$shares = $this->getSharesForCircle($circleUniqueId);
+		foreach ($shares as $share) {
+			$this->shuffleTokenByShareId($this->getInt('id', $share, 0));
+		}
+	}
+
+
+	/**
+	 * @param int $shareId
+	 */
+	public function shuffleTokenByShareId(int $shareId) {
+		$qb = $this->getSharesUpdateSql();
+		$qb->set('token', $qb->createNamedParameter($this->uuid(15)));
+
+		$this->limitToShareType($qb, self::SHARE_TYPE);
+		$this->limitToId($qb, $shareId);
+
+		$qb->execute();
+	}
+
+
+	/**
+	 * @param string $circleId
+	 *
+	 * @return array
+	 */
+	public function getSharesForCircle(string $circleId) {
+		$qb = $this->getSharesSelectSql();
+
+		$this->limitToShareWith($qb, $circleId);
+		$this->limitToShareType($qb, self::SHARE_TYPE);
+
+		$shares = [];
+		$cursor = $qb->execute();
+		while ($data = $cursor->fetch()) {
+			$shares[] = $data;
+		}
+		$cursor->closeCursor();
+
+		return $shares;
 	}
 
 

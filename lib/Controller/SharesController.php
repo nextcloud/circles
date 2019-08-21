@@ -26,11 +26,94 @@
 
 namespace OCA\Circles\Controller;
 
+use daita\MySmallPhpTools\Traits\TStringTools;
 use Exception;
+use OCA\Circles\Db\SharesRequest;
+use OCA\Circles\Db\TokensRequest;
+use OCA\Circles\Exceptions\MemberDoesNotExistException;
+use OCA\Circles\Model\Member;
+use OCA\Circles\Model\SharesToken;
 use OCA\Circles\Model\SharingFrame;
+use OCA\Circles\Service\BroadcastService;
+use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\MembersService;
+use OCA\Circles\Service\MiscService;
+use OCA\Circles\Service\SharingFrameService;
+use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
+use OCP\AppFramework\Http\RedirectResponse;
+use OCP\IRequest;
+use OCP\IURLGenerator;
 
-class SharesController extends BaseController {
+
+/**
+ * Class SharesController
+ *
+ * @package OCA\Circles\Controller
+ */
+class SharesController extends Controller {
+
+
+	use TStringTools;
+
+
+	/** @var TokensRequest */
+	private $tokenRequest;
+
+	/** @var SharesRequest */
+	private $sharesRequest;
+
+	/** @var IURLGenerator */
+	private $urlGenerator;
+
+	/** @var MembersService */
+	private $membersService;
+
+	/** @var BroadcastService */
+	private $broadcastService;
+
+	/** @var SharingFrameService */
+	private $sharingFrameService;
+
+	/** @var ConfigService */
+	private $configService;
+
+	/** @var MiscService */
+	private $miscService;
+
+
+	/**
+	 * SharesController constructor.
+	 *
+	 * @param $appName
+	 * @param IRequest $request
+	 * @param TokensRequest $tokenRequest
+	 * @param SharesRequest $sharesRequest
+	 * @param IURLGenerator $urlGenerator
+	 * @param MembersService $membersService
+	 * @param BroadcastService $broadcastService
+	 * @param SharingFrameService $sharingFrameService
+	 * @param ConfigService $configService
+	 * @param MiscService $miscService
+	 */
+	public function __construct(
+		$appName, IRequest $request, TokensRequest $tokenRequest, SharesRequest $sharesRequest,
+		IUrlGenerator $urlGenerator, MembersService $membersService,
+		BroadcastService $broadcastService,
+		SharingFrameService $sharingFrameService, ConfigService $configService,
+		MiscService $miscService
+	) {
+		parent::__construct($appName, $request);
+
+		$this->tokenRequest = $tokenRequest;
+		$this->sharesRequest = $sharesRequest;
+		$this->urlGenerator = $urlGenerator;
+		$this->membersService = $membersService;
+		$this->broadcastService = $broadcastService;
+		$this->sharingFrameService = $sharingFrameService;
+		$this->configService = $configService;
+		$this->miscService = $miscService;
+	}
 
 
 	/**
@@ -120,5 +203,57 @@ class SharesController extends BaseController {
 		exit();
 	}
 
+
+	/**
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 *
+	 * @param string $token
+	 *
+	 * @return RedirectResponse
+	 */
+	public function public(string $token) {
+		try {
+			$shareToken = $this->tokenRequest->getByToken($token);
+			$this->checkContactMail($shareToken);
+
+			$token = $this->sharesRequest->getTokenByShareId($shareToken->getShareId());
+		} catch (Exception $e) {
+			$this->miscService->log(
+				'token ' . $token . ' not found - ' . get_class($e) . ' - ' . $e->getMessage()
+			);
+			$token = $this->uuid(15);
+		}
+
+		return new RedirectResponse($this->urlGenerator->getAbsoluteURL('/s/' . $token));
+	}
+
+
+	/**
+	 * @param SharesToken $shareToken
+	 *
+	 * @throws MemberDoesNotExistException
+	 */
+	private function checkContactMail(SharesToken $shareToken) {
+		try {
+			$this->membersService->getMember(
+				$shareToken->getCircleId(), $shareToken->getUserId(), Member::TYPE_MAIL, true
+			);
+
+			return;
+		} catch (Exception $e) {
+		}
+
+		try {
+			$this->membersService->getMember(
+				$shareToken->getCircleId(), $shareToken->getUserId(), Member::TYPE_MAIL, true
+			);
+
+			return;
+		} catch (Exception $e) {
+		}
+
+		throw new MemberDoesNotExistException();
+	}
 }
 

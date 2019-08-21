@@ -6,8 +6,6 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@pontapreta.net>
- * @author Vinicius Cubas Brand <vinicius@eita.org.br>
- *
  * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
@@ -26,11 +24,9 @@
  *
  */
 
-$app = new \OCA\Circles\AppInfo\Application();
+namespace OCA\Circles\Exceptions;
 
-$app->registerNavigation();
-$app->registerFilesNavigation();
-$app->registerFilesPlugin();
+class TokenDoesNotExistException extends \Exception {
 
-require_once __DIR__ . '/autoload.php';
+}
 

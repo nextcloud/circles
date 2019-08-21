@@ -27,20 +27,26 @@
 
 namespace OCA\Circles\Circles;
 
+use OC;
 use OC\Share20\Share;
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\Db\TokensRequest;
+use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\IBroadcaster;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\MiscService;
+use OCP\AppFramework\QueryException;
 use OCP\Defaults;
 use OCP\Files\IRootFolder;
+use OCP\Files\NotFoundException;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCP\Mail\IMailer;
+use OCP\Share\Exceptions\IllegalIDChangeException;
 use OCP\Share\IShare;
 use OCP\Util;
 
@@ -68,19 +74,25 @@ class FileSharingBroadcaster implements IBroadcaster {
 	/** @var IURLGenerator */
 	private $urlGenerator;
 
+	/** @var TokensRequest */
+	private $tokensRequest;
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function init() {
-		$this->l10n = \OC::$server->getL10N(Application::APP_NAME);
-		$this->mailer = \OC::$server->getMailer();
-		$this->rootFolder = \OC::$server->getLazyRootFolder();
-		$this->userManager = \OC::$server->getUserManager();
-		$this->logger = \OC::$server->getLogger();
+		$this->l10n = OC::$server->getL10N(Application::APP_NAME);
+		$this->mailer = OC::$server->getMailer();
+		$this->rootFolder = OC::$server->getLazyRootFolder();
+		$this->userManager = OC::$server->getUserManager();
+		$this->logger = OC::$server->getLogger();
+		$this->urlGenerator = OC::$server->getURLGenerator();
 
-		$this->defaults = \OC::$server->query(Defaults::class);
-		$this->urlGenerator = \OC::$server->getURLGenerator();
+		try {
+			$this->defaults = OC::$server->query(Defaults::class);
+			$this->tokensRequest = OC::$server->query(TokensRequest::class);
+		} catch (QueryException $e) {
+		}
 	}
 
 
@@ -134,10 +146,15 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 		$share = $this->generateShare($payload['share']);
 		if ($member->getType() === Member::TYPE_MAIL) {
-			$this->sharedByMail(
-				$frame->getCircle()
-					  ->getName(), $share, $member->getUserId()
-			);
+			try {
+				$circle = $frame->getCircle();
+				$token = $this->tokensRequest->generateTokenForMember($member, $share->getId());
+				if ($token !== '') {
+					$this->sharedByMail($circle, $share, $member->getUserId(), $token);
+				}
+			} catch (TokenDoesNotExistException $e) {
+			} catch (NotFoundException $e) {
+			}
 		}
 
 		return true;
@@ -166,11 +183,13 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 * @param array $data
 	 *
 	 * @return IShare
+	 * @throws IllegalIDChangeException
 	 */
 	private function generateShare($data) {
 		$this->logger->log(0, 'Regenerate shares from payload: ' . json_encode($data));
 
 		$share = new Share($this->rootFolder, $this->userManager);
+		$share->setId($data['id']);
 		$share->setSharedBy($data['sharedBy']);
 		$share->setSharedWith($data['sharedWith']);
 		$share->setNodeId($data['nodeId']);
@@ -184,22 +203,25 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 
 	/**
-	 * @param $circleName
+	 * @param Circle $circle
 	 * @param IShare $share
 	 * @param string $email
+	 * @param string $token
+	 *
+	 * @throws NotFoundException
 	 */
-	private function sharedByMail($circleName, IShare $share, $email) {
-
+	private function sharedByMail(Circle $circle, IShare $share, $email, $token) {
+		// genelink
 		$link = $this->urlGenerator->linkToRouteAbsolute(
-			'files_sharing.sharecontroller.showShare',
-			['token' => $share->getToken()]
+			'circles.Shares.public',
+			['token' => $token]
 		);
 
 		$this->sendMail(
 			$share->getNode()
 				  ->getName(), $link,
 			MiscService::getDisplay($share->getSharedBy(), Member::TYPE_USER),
-			$circleName, $email
+			$circle->getName(), $email
 		);
 	}
 

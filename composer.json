@@ -10,10 +10,9 @@
     }
   ],
   "require": {
-    "phpunit/phpunit": "6.0.8"
+    "daita/my-small-php-tools": "dev-master"
   },
   "config": {
-    "vendor-dir": "lib/composer",
     "optimize-autoloader": true
   },
   "autoload": {
