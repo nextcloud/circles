@@ -65,4 +65,16 @@ class SharesRequestBuilder extends CoreRequestBuilder {
 		return $qb;
 	}
 
+
+	/**
+	 * @return IQueryBuilder
+	 */
+	protected function getSharesUpdateSql() {
+		$qb = $this->dbConnection->getQueryBuilder();
+		$qb->update(self::TABLE_FILE_SHARES);
+
+		return $qb;
+	}
+
+
 }

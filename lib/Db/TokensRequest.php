@@ -29,6 +29,7 @@ namespace OCA\Circles\Db;
 
 
 use daita\MySmallPhpTools\Traits\TStringTools;
+use Exception;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharesToken;
@@ -46,8 +47,6 @@ class TokensRequest extends TokensRequestBuilder {
 
 
 	/**
-	 * remove shares from a member to a circle
-	 *
 	 * @param string $token
 	 *
 	 * @return SharesToken
@@ -69,17 +68,51 @@ class TokensRequest extends TokensRequestBuilder {
 
 
 	/**
+	 * @param string $shareId
+	 * @param string $circleId
+	 * @param string $email
+	 *
+	 * @return SharesToken
+	 * @throws TokenDoesNotExistException
+	 */
+	public function getTokenFromMember(string $shareId, string $circleId, string $email) {
+		$qb = $this->getTokensSelectSql();
+		$this->limitToShareId($qb, $shareId);
+		$this->limitToUserId($qb, $email);
+		$this->limitToCircleId($qb, $circleId);
+
+		$cursor = $qb->execute();
+		$data = $cursor->fetch();
+		$cursor->closeCursor();
+		if ($data === false) {
+			throw new TokenDoesNotExistException('Unknown share token');
+		}
+
+		return $this->parseTokensSelectSql($data);
+	}
+
+
+	/**
 	 * @param Member $member
 	 * @param int $shareId
+	 *
+	 * @return mixed
 	 */
 	public function generateTokenForMember(Member $member, int $shareId) {
-		$qb = $this->getTokensInsertSql();
-		$qb->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
-		   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
-		   ->setValue('share_id', $qb->createNamedParameter($shareId))
-		   ->setValue('token', $qb->createNamedParameter($this->uuid(13)));
+		$token = $this->uuid(15);
+		try {
+			$qb = $this->getTokensInsertSql();
+			$qb->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
+			   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
+			   ->setValue('share_id', $qb->createNamedParameter($shareId))
+			   ->setValue('token', $qb->createNamedParameter($token));
 
-		$qb->execute();
+			$qb->execute();
+
+			return $token;
+		} catch (Exception $e) {
+			return '';
+		}
 	}
 
 	/**
@@ -90,6 +123,17 @@ class TokensRequest extends TokensRequestBuilder {
 		foreach ($members as $member) {
 			$this->generateTokenForMember($member, $shareId);
 		}
+	}
+
+
+	/**
+	 * @param int $shareId
+	 */
+	public function removeTokenByShareId(int $shareId) {
+		$qb = $this->getTokensDeleteSql();
+		$this->limitToShareId($qb, $shareId);
+
+		$qb->execute();
 	}
 
 

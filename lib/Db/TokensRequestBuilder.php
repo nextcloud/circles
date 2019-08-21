@@ -95,10 +95,6 @@ TokensRequestBuilder extends CoreRequestBuilder {
 	protected function getTokensDeleteSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$qb->delete(self::TABLE_TOKENS);
-		$qb->where(
-			$qb->expr()
-			   ->eq('share_type', $qb->createNamedParameter(self::SHARE_TYPE))
-		);
 
 		return $qb;
 	}
