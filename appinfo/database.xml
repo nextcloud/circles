@@ -398,4 +398,46 @@
 		</declaration>
 	</table>
 
+
+	<table>
+		<name>*dbprefix*circles_tokens</name>
+
+		<declaration>
+			<field>
+				<name>circle_id</name>
+				<type>text</type>
+				<length>31</length>
+				<notnull>true</notnull>
+			</field>
+			<field>
+				<name>user_id</name>
+				<type>text</type>
+				<length>255</length>
+				<notnull>true</notnull>
+			</field>
+			<field>
+				<name>share_id</name>
+				<type>integer</type>
+				<length>14</length>
+				<notnull>true</notnull>
+			</field>
+			<field>
+				<name>token</name>
+				<type>text</type>
+				<length>31</length>
+				<notnull>true</notnull>
+			</field>
+
+			<index>
+				<name>unique_token</name>
+				<primary>true</primary>
+				<unique>true</unique>
+				<field>
+					<name>token</name>
+				</field>
+			</index>
+		</declaration>
+
+	</table>
+
 </database>

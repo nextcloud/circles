@@ -27,10 +27,80 @@
 namespace OCA\Circles\Controller;
 
 use Exception;
+use OCA\Circles\Db\SharesRequest;
+use OCA\Circles\Db\TokensRequest;
+use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Model\SharingFrame;
+use OCA\Circles\Service\BroadcastService;
+use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\MiscService;
+use OCA\Circles\Service\SharingFrameService;
+use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
+use OCP\AppFramework\Http\RedirectResponse;
+use OCP\IRequest;
+use OCP\IURLGenerator;
 
-class SharesController extends BaseController {
+
+/**
+ * Class SharesController
+ *
+ * @package OCA\Circles\Controller
+ */
+class SharesController extends Controller {
+
+
+	/** @var TokensRequest */
+	private $tokenRequest;
+
+	/** @var SharesRequest */
+	private $sharesRequest;
+
+	/** @var IURLGenerator */
+	private $urlGenerator;
+
+	/** @var BroadcastService */
+	private $broadcastService;
+
+	/** @var SharingFrameService */
+	private $sharingFrameService;
+
+	/** @var ConfigService */
+	private $configService;
+
+	/** @var MiscService */
+	private $miscService;
+
+
+	/**
+	 * SharesController constructor.
+	 *
+	 * @param $appName
+	 * @param IRequest $request
+	 * @param TokensRequest $tokenRequest
+	 * @param SharesRequest $sharesRequest
+	 * @param IURLGenerator $urlGenerator
+	 * @param BroadcastService $broadcastService
+	 * @param SharingFrameService $sharingFrameService
+	 * @param ConfigService $configService
+	 * @param MiscService $miscService
+	 */
+	public function __construct(
+		$appName, IRequest $request, TokensRequest $tokenRequest, SharesRequest $sharesRequest,
+		IUrlGenerator $urlGenerator, BroadcastService $broadcastService,
+		SharingFrameService $sharingFrameService, ConfigService $configService,
+		MiscService $miscService
+	) {
+		parent::__construct($appName, $request);
+
+		$this->tokenRequest = $tokenRequest;
+		$this->sharesRequest = $sharesRequest;
+		$this->urlGenerator = $urlGenerator;
+		$this->broadcastService = $broadcastService;
+		$this->sharingFrameService = $sharingFrameService;
+		$this->configService = $configService;
+		$this->miscService = $miscService;
+	}
 
 
 	/**
@@ -118,6 +188,26 @@ class SharesController extends BaseController {
 		}
 
 		exit();
+	}
+
+
+	/**
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 *
+	 * @param string $token
+	 *
+	 * @return RedirectResponse
+	 */
+	public function public(string $token) {
+		try {
+			$shareToken = $this->tokenRequest->getByToken($token);
+			$token = $this->sharesRequest->getTokenByShareId($shareToken->getShareId());
+		} catch (TokenDoesNotExistException $e) {
+			$token = 'notfound';
+		}
+
+		return new RedirectResponse($this->urlGenerator->getAbsoluteURL('/s/' . $token));
 	}
 
 }

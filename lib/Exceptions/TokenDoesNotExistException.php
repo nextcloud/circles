@@ -1,12 +1,11 @@
 <?php
-
 /**
  * Circles - Bring cloud-users closer together.
  *
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@artificial-owl.com>
+ * @author Maxence Lange <maxence@pontapreta.net>
  * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
@@ -25,44 +24,9 @@
  *
  */
 
-namespace OCA\Circles\Db;
+namespace OCA\Circles\Exceptions;
 
-
-use OCP\DB\QueryBuilder\IQueryBuilder;
-
-class SharesRequestBuilder extends CoreRequestBuilder {
-
-
-	/**
-	 * Base of the Sql Delete request
-	 *
-	 * @return IQueryBuilder
-	 */
-	protected function getSharesDeleteSql() {
-		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->delete(self::TABLE_FILE_SHARES);
-		$qb->where(
-			$qb->expr()
-			   ->eq('share_type', $qb->createNamedParameter(self::SHARE_TYPE))
-		);
-
-		return $qb;
-	}
-
-
-	/**
-	 * @return IQueryBuilder
-	 */
-	protected function getSharesSelectSql() {
-		$qb = $this->dbConnection->getQueryBuilder();
-
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->select('s.id', 's.token')
-		   ->from(self::TABLE_FILE_SHARES, 's');
-
-		$this->defaultSelectAlias = 's';
-
-		return $qb;
-	}
+class TokenDoesNotExistException extends \Exception {
 
 }
+

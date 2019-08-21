@@ -28,51 +28,34 @@
 namespace OCA\Circles\Db;
 
 
-use daita\MySmallPhpTools\Traits\TArrayTools;
+use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\SharesToken;
 
 
 /**
- * Class SharesRequest
+ * Class TokensRequest
  *
  * @package OCA\Circles\Db
  */
-class SharesRequest extends SharesRequestBuilder {
+class TokensRequest extends TokensRequestBuilder {
 
 
-	use TArrayTools;
-
-
-	/**
-	 * remove shares from a member to a circle
-	 *
-	 * @param Member $member
-	 */
-	public function removeSharesFromMember(Member $member) {
-		$qb = $this->getSharesDeleteSql();
-		$expr = $qb->expr();
-
-		$andX = $expr->andX();
-		$andX->add($expr->eq('share_with', $qb->createNamedParameter($member->getCircleId())));
-		$andX->add($expr->eq('uid_initiator', $qb->createNamedParameter($member->getUserId())));
-		$qb->andWhere($andX);
-
-		$qb->execute();
-	}
+	use TStringTools;
 
 
 	/**
 	 * remove shares from a member to a circle
 	 *
-	 * @param int $shareId
+	 * @param string $token
 	 *
-	 * @return string
+	 * @return SharesToken
 	 * @throws TokenDoesNotExistException
 	 */
-	public function getTokenByShareId(int $shareId) {
-		$qb = $this->getSharesSelectSql();
-		$this->limitToId($qb, $shareId);
+	public function getByToken(string $token) {
+		$qb = $this->getTokensSelectSql();
+		$this->limitToToken($qb, $token);
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
@@ -81,7 +64,33 @@ class SharesRequest extends SharesRequestBuilder {
 			throw new TokenDoesNotExistException('Unknown share token');
 		}
 
-		return $this->get('token', $data, 'notfound');
+		return $this->parseTokensSelectSql($data);
 	}
+
+
+	/**
+	 * @param Member $member
+	 * @param int $shareId
+	 */
+	public function generateTokenForMember(Member $member, int $shareId) {
+		$qb = $this->getTokensInsertSql();
+		$qb->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
+		   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
+		   ->setValue('share_id', $qb->createNamedParameter($shareId))
+		   ->setValue('token', $qb->createNamedParameter($this->uuid(13)));
+
+		$qb->execute();
+	}
+
+	/**
+	 * @param Member[] $members
+	 * @param int $shareId
+	 */
+	public function generateTokenForMembers(array $members, int $shareId) {
+		foreach ($members as $member) {
+			$this->generateTokenForMember($member, $shareId);
+		}
+	}
+
 
 }
