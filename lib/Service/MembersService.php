@@ -305,8 +305,15 @@ class MembersService {
 	 * @throws EmailAccountInvalidFormatException
 	 */
 	private function verifyIdentEmailAddress(&$ident, $type) {
+
 		if ($type !== Member::TYPE_MAIL) {
 			return;
+		}
+
+		if ($this->configService->isAccountOnly()) {
+			throw new EmailAccountInvalidFormatException(
+				$this->l10n->t('You cannot add a mail address as member of your Circle')
+			);
 		}
 
 		if (!filter_var($ident, FILTER_VALIDATE_EMAIL)) {
@@ -324,10 +331,17 @@ class MembersService {
 	 * @param $type
 	 *
 	 * @throws NoUserException
+	 * @throws EmailAccountInvalidFormatException
 	 */
 	private function verifyIdentContact(&$ident, $type) {
 		if ($type !== Member::TYPE_CONTACT) {
 			return;
+		}
+
+		if ($this->configService->isAccountOnly()) {
+			throw new EmailAccountInvalidFormatException(
+				$this->l10n->t('You cannot add a mail address as member of your Circle')
+			);
 		}
 
 		$tmpContact = $this->userId . ':' . $ident;
