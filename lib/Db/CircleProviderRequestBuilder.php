@@ -32,6 +32,7 @@ namespace OCA\Circles\Db;
 
 
 use Doctrine\DBAL\Query\QueryBuilder;
+use OC;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCP\DB\QueryBuilder\IQueryBuilder;
@@ -414,6 +415,8 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function getBaseInsertSql($share) {
 		$qb = $this->dbConnection->getQueryBuilder();
+		$hasher = OC::$server->getHasher();
+
 		$qb->insert('share')
 		   ->setValue('share_type', $qb->createNamedParameter(Share::SHARE_TYPE_CIRCLE))
 		   ->setValue('item_type', $qb->createNamedParameter($share->getNodeType()))
@@ -423,6 +426,7 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 		   ->setValue('share_with', $qb->createNamedParameter($share->getSharedWith()))
 		   ->setValue('uid_owner', $qb->createNamedParameter($share->getShareOwner()))
 		   ->setValue('uid_initiator', $qb->createNamedParameter($share->getSharedBy()))
+		   ->setValue('password', $qb->createNamedParameter($hasher->hash($share->getPassword())))
 		   ->setValue('permissions', $qb->createNamedParameter($share->getPermissions()))
 		   ->setValue('token', $qb->createNamedParameter($share->getToken()))
 		   ->setValue('stime', $qb->createFunction('UNIX_TIMESTAMP()'));

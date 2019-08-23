@@ -31,6 +31,7 @@
 namespace OCA\Circles;
 
 
+use OC;
 use OC\Files\Cache\Cache;
 use OC\Share20\Exception\InvalidShare;
 use OC\Share20\Share;
@@ -65,6 +66,7 @@ use OCP\Share\IShareProvider;
 
 
 class ShareByCircleProvider extends CircleProviderRequest implements IShareProvider {
+
 
 	/** @var ILogger */
 	private $logger;
@@ -158,7 +160,11 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 				throw $this->errorShareAlreadyExist($share);
 			}
 
-			$share->setToken(substr(bin2hex(openssl_random_pseudo_bytes(24)), 1, 15));
+			$share->setToken($this->uuid(15));
+			if ($this->configService->enforcePasswordProtection()) {
+				$share->setPassword($this->uuid(15));
+			}
+
 			$this->createShare($share);
 
 			$circle =
@@ -620,7 +626,8 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 		$share = new Share($this->rootFolder, $this->userManager);
 		$share->setId((int)$data['id'])
 			  ->setPermissions((int)$data['permissions'])
-			  ->setNodeType($data['item_type']);
+			  ->setNodeType($data['item_type'])
+			  ->setPassword($data['password']);
 
 		$share->setNodeId((int)$data['file_source'])
 			  ->setTarget($data['file_target']);
@@ -646,7 +653,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 			$share->setNodeCacheEntry(
 				Cache::cacheEntryFromData(
 					$entryData,
-					\OC::$server->getMimeTypeLoader()
+					OC::$server->getMimeTypeLoader()
 				)
 			);
 		}
@@ -793,4 +800,33 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 			'password'    => $share->getPassword()
 		];
 	}
+
+
+	/**
+	 * Generate uuid: 2b5a7a87-8db1-445f-a17b-405790f91c80
+	 *
+	 * @param int $length
+	 *
+	 * @return string
+	 */
+	private function uuid(int $length = 0): string {
+		$uuid = sprintf(
+			'%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+			mt_rand(0, 0xffff), mt_rand(0, 0xfff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000,
+			mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+		);
+
+		if ($length > 0) {
+			if ($length <= 16) {
+				$uuid = str_replace('-', '', $uuid);
+			}
+
+			$uuid = substr($uuid, 0, $length);
+		}
+
+		return $uuid;
+	}
+
+
+
 }
