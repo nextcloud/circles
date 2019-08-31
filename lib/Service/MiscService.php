@@ -300,5 +300,31 @@ class MiscService {
 		flush();
 	}
 
+
+	/**
+	 * Generate uuid: 2b5a7a87-8db1-445f-a17b-405790f91c80
+	 *
+	 * @param int $length
+	 *
+	 * @return string
+	 */
+	public function uuid(int $length = 0): string {
+		$uuid = sprintf(
+			'%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+			mt_rand(0, 0xffff), mt_rand(0, 0xfff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000,
+			mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+		);
+
+		if ($length > 0) {
+			if ($length <= 16) {
+				$uuid = str_replace('-', '', $uuid);
+			}
+
+			$uuid = substr($uuid, 0, $length);
+		}
+
+		return $uuid;
+	}
+
 }
 

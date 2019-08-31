@@ -31,6 +31,7 @@
 namespace OCA\Circles;
 
 
+use OC;
 use OC\Files\Cache\Cache;
 use OC\Share20\Exception\InvalidShare;
 use OC\Share20\Share;
@@ -42,8 +43,10 @@ use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Db\TokensRequest;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\MembersService;
 use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\TimezoneService;
 use OCP\AppFramework\QueryException;
@@ -66,6 +69,7 @@ use OCP\Share\IShareProvider;
 
 class ShareByCircleProvider extends CircleProviderRequest implements IShareProvider {
 
+
 	/** @var ILogger */
 	private $logger;
 
@@ -80,6 +84,9 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 
 	/** @var IURLGenerator */
 	private $urlGenerator;
+
+	/** @var MembersService */
+	private $membersService;
 
 	/** @var CirclesRequest */
 	private $circlesRequest;
@@ -120,6 +127,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 		$this->rootFolder = $rootFolder;
 		$this->logger = $logger;
 		$this->urlGenerator = $urlGenerator;
+		$this->membersService = $container->query(MembersService::class);
 		$this->circlesRequest = $container->query(CirclesRequest::class);
 		$this->membersRequest = $container->query(MembersRequest::class);
 		$this->tokensRequest = $container->query(TokensRequest::class);
@@ -158,7 +166,11 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 				throw $this->errorShareAlreadyExist($share);
 			}
 
-			$share->setToken(substr(bin2hex(openssl_random_pseudo_bytes(24)), 1, 15));
+			$share->setToken($this->miscService->uuid(15));
+			if ($this->configService->enforcePasswordProtection()) {
+				$share->setPassword($this->miscService->uuid(15));
+			}
+
 			$this->createShare($share);
 
 			$circle =
@@ -208,7 +220,6 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	public function delete(IShare $share) {
 		$qb = $this->getBaseDeleteSql();
 		$this->limitToShareAndChildren($qb, $share->getId());
-
 		$qb->execute();
 
 		$this->tokensRequest->removeTokenByShareId($share->getId());
@@ -283,6 +294,8 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * Create a child and returns its ID
 	 *
 	 * @param IShare $share
+	 *
+	 * @throws NotFoundException
 	 */
 	private function createShare($share) {
 		$this->miscService->log(
@@ -543,8 +556,13 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 		$data = $cursor->fetch();
 
 		if ($data === false) {
-			$this->miscService->log("Share '#" . $token . "' not found.", 0);
-			throw new ShareNotFound('Share not found', $this->l10n->t('Could not find share'));
+			$this->miscService->log('data is false - checking personal token', 0);
+			try {
+				$data = $this->getShareByPersonalToken($token);
+			} catch (\Exception $e) {
+				$this->miscService->log("Share '#" . $token . "' not found.", 0);
+				throw new ShareNotFound('Share not found', $this->l10n->t('Could not find share'));
+			}
 		}
 
 		try {
@@ -557,6 +575,66 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 		}
 
 		return $share;
+	}
+
+
+	/**
+	 * @param string $token
+	 *
+	 * @return array
+	 * @throws ShareNotFound
+	 */
+	private function getShareByPersonalToken(string $token) {
+		$qb = $this->dbConnection->getQueryBuilder();
+
+		$qb = $qb->select('s.*')
+				 ->selectAlias('ct.password', 'personal_password')
+				 ->selectAlias('ct.circle_id', 'personal_circle_id')
+				 ->selectAlias('ct.user_id', 'personal_user_id')
+				 ->from('share', 's')
+				 ->from('circles_tokens', 'ct')
+				 ->where(
+					 $qb->expr()
+						->eq(
+							's.share_type',
+							$qb->createNamedParameter(\OCP\Share::SHARE_TYPE_CIRCLE)
+						)
+				 )
+				 ->andWhere(
+					 $qb->expr()
+						->eq('ct.token', $qb->createNamedParameter($token))
+				 )
+				 ->andWhere(
+					 $qb->expr()
+						->eq('ct.share_id', 's.id')
+				 );
+		$cursor = $qb->execute();
+
+		$data = $cursor->fetch();
+		if ($data === false) {
+			throw new ShareNotFound('personal check not found');
+		}
+
+		$member = null;
+		try {
+			$member = $this->membersService->getMember(
+				$data['personal_circle_id'], $data['personal_user_id'], Member::TYPE_MAIL, true
+			);
+		} catch (\Exception $e) {
+			$this->miscService->log('__ no 1 ' . $e->getMessage());
+			try {
+				$member = $this->membersService->getMember(
+					$data['personal_circle_id'], $data['personal_user_id'], Member::TYPE_CONTACT, true
+				);
+			} catch (\Exception $e) {
+			}
+		}
+
+		if ($member === null || !$member->isLevel(Member::LEVEL_MEMBER)) {
+			throw new ShareNotFound('invalid token');
+		}
+
+		return $data;
 	}
 
 
@@ -622,6 +700,12 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 			  ->setPermissions((int)$data['permissions'])
 			  ->setNodeType($data['item_type']);
 
+		if (($password = $this->get('personal_password', $data, '')) !== '') {
+			$share->setPassword($this->get('personal_password', $data, ''));
+		} else if (($password = $this->get('password', $data, '')) !== '') {
+			$share->setPassword($this->get('password', $data, ''));
+		}
+
 		$share->setNodeId((int)$data['file_source'])
 			  ->setTarget($data['file_target']);
 
@@ -646,7 +730,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 			$share->setNodeCacheEntry(
 				Cache::cacheEntryFromData(
 					$entryData,
-					\OC::$server->getMimeTypeLoader()
+					OC::$server->getMimeTypeLoader()
 				)
 			);
 		}
@@ -790,7 +874,47 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 			'shareOwner'  => $share->getShareOwner(),
 			'permissions' => $share->getPermissions(),
 			'token'       => $share->getToken(),
-			'password'    => $share->getPassword()
+			'password'    => ($share->getPassword() === null) ? '' : $share->getPassword()
 		];
 	}
+
+
+	/**
+	 * @param string $k
+	 * @param array $arr
+	 * @param string $default
+	 *
+	 * @return string
+	 */
+	protected function get(string $k, array $arr, string $default = ''): string {
+		if ($arr === null) {
+			return $default;
+		}
+
+		if (!array_key_exists($k, $arr)) {
+			$subs = explode('.', $k, 2);
+			if (sizeof($subs) > 1) {
+				if (!array_key_exists($subs[0], $arr)) {
+					return $default;
+				}
+
+				$r = $arr[$subs[0]];
+				if (!is_array($r)) {
+					return $default;
+				}
+
+				return $this->get($subs[1], $r, $default);
+			} else {
+				return $default;
+			}
+		}
+
+		if ($arr[$k] === null || !is_string($arr[$k]) && (!is_int($arr[$k]))) {
+			return $default;
+		}
+
+		return (string)$arr[$k];
+	}
+
+
 }

@@ -426,6 +426,12 @@
 				<length>31</length>
 				<notnull>true</notnull>
 			</field>
+			<field>
+				<name>password</name>
+				<type>text</type>
+				<length>127</length>
+				<notnull>true</notnull>
+			</field>
 
 			<index>
 				<primary>true</primary>
