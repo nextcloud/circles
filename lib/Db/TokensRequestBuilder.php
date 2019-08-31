@@ -25,12 +25,66 @@
  *
  */
 
+
 namespace OCA\Circles\Db;
 
 
+use OCA\Circles\Model\SharesToken;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 
-class SharesRequestBuilder extends CoreRequestBuilder {
+
+/**
+ * Class TokensRequestBuilder
+ *
+ * @package OCA\Circles\Db
+ */
+class
+TokensRequestBuilder extends CoreRequestBuilder {
+
+
+	/**
+	 * Base of the Sql Insert request for Shares
+	 *
+	 * @return IQueryBuilder
+	 */
+	protected function getTokensInsertSql() {
+		$qb = $this->dbConnection->getQueryBuilder();
+		$qb->insert(self::TABLE_TOKENS);
+
+		return $qb;
+	}
+
+
+	/**
+	 * Base of the Sql Update request for Groups
+	 *
+	 * @param int $circleId
+	 * @param string $groupId
+	 *
+	 * @return IQueryBuilder
+	 */
+	protected function getTokensUpdateSql($circleId, $groupId) {
+		$qb = $this->dbConnection->getQueryBuilder();
+		$qb->update(self::TABLE_TOKENS);
+
+		return $qb;
+	}
+
+
+	/**
+	 * @return IQueryBuilder
+	 */
+	protected function getTokensSelectSql() {
+		$qb = $this->dbConnection->getQueryBuilder();
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$qb->select('t.user_id', 't.circle_id', 't.share_id', 't.token')
+		   ->from(self::TABLE_TOKENS, 't');
+
+		$this->default_select_alias = 't';
+
+		return $qb;
+	}
 
 
 	/**
@@ -38,43 +92,24 @@ class SharesRequestBuilder extends CoreRequestBuilder {
 	 *
 	 * @return IQueryBuilder
 	 */
-	protected function getSharesDeleteSql() {
+	protected function getTokensDeleteSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->delete(self::TABLE_FILE_SHARES);
-		$qb->where(
-			$qb->expr()
-			   ->eq('share_type', $qb->createNamedParameter(self::SHARE_TYPE))
-		);
+		$qb->delete(self::TABLE_TOKENS);
 
 		return $qb;
 	}
 
 
 	/**
-	 * @return IQueryBuilder
+	 * @param array $data
+	 *
+	 * @return SharesToken
 	 */
-	protected function getSharesSelectSql() {
-		$qb = $this->dbConnection->getQueryBuilder();
+	protected function parseTokensSelectSql($data) {
+		$sharesToken = new SharesToken();
+		$sharesToken->import($data);
 
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->select('s.id', 's.token')
-		   ->from(self::TABLE_FILE_SHARES, 's');
-
-		$this->defaultSelectAlias = 's';
-
-		return $qb;
+		return $sharesToken;
 	}
-
-
-	/**
-	 * @return IQueryBuilder
-	 */
-	protected function getSharesUpdateSql() {
-		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->update(self::TABLE_FILE_SHARES);
-
-		return $qb;
-	}
-
 
 }

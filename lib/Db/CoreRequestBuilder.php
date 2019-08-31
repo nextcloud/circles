@@ -9,13 +9,13 @@
 namespace OCA\Circles\Db;
 
 
+use Doctrine\DBAL\Query\QueryBuilder;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\TimezoneService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
-use Doctrine\DBAL\Query\QueryBuilder;
-use OCA\Circles\Service\MiscService;
 use OCP\IDBConnection;
 use OCP\IL10N;
 
@@ -29,6 +29,7 @@ class CoreRequestBuilder {
 	const TABLE_GROUPS = 'circles_groups';
 	const TABLE_SHARES = 'circles_shares';
 	const TABLE_LINKS = 'circles_links';
+	const TABLE_TOKENS = 'circles_tokens';
 
 	const NC_TABLE_GROUP_USER = 'group_user';
 
@@ -64,7 +65,7 @@ class CoreRequestBuilder {
 	 */
 	public function __construct(
 		IL10N $l10n, IDBConnection $connection, ConfigService $configService,
-			 TimezoneService $timezoneService, MiscService $miscService
+		TimezoneService $timezoneService, MiscService $miscService
 	) {
 		$this->l10n = $l10n;
 		$this->dbConnection = $connection;
@@ -141,6 +142,17 @@ class CoreRequestBuilder {
 
 
 	/**
+	 * Limit the request to the Circle by its Id.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param int $shareId
+	 */
+	protected function limitToShareId(IQueryBuilder &$qb, int $shareId) {
+		$this->limitToDBField($qb, 'share_id', $shareId);
+	}
+
+
+	/**
 	 * Limit the request to the Circle by its Shorten Unique Id.
 	 *
 	 * @param IQueryBuilder $qb
@@ -191,6 +203,28 @@ class CoreRequestBuilder {
 	 */
 	protected function limitToStatus(IQueryBuilder &$qb, $name) {
 		$this->limitToDBFieldOrGreater($qb, 'status', $name);
+	}
+
+
+	/**
+	 * Limit the request by its Id.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param string $type
+	 */
+	protected function limitToShareType(IQueryBuilder &$qb, string $type) {
+		$this->limitToDBField($qb, 'share_type', $type);
+	}
+
+
+	/**
+	 * Limit the request by its Id.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param string $with
+	 */
+	protected function limitToShareWith(IQueryBuilder &$qb, string $with) {
+		$this->limitToDBField($qb, 'share_with', $with);
 	}
 
 
@@ -334,7 +368,6 @@ class CoreRequestBuilder {
 	}
 
 
-
 	/**
 	 * Left Join circle table to get more information about the circle.
 	 *
@@ -362,7 +395,6 @@ class CoreRequestBuilder {
 			   )
 		   );
 	}
-
 
 
 	/**
