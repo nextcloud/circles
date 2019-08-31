@@ -33,6 +33,7 @@ use OC\User\NoUserException;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Db\SharesRequest;
+use OCA\Circles\Db\TokensRequest;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\CircleTypeNotValidException;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
@@ -40,6 +41,7 @@ use OCA\Circles\Exceptions\EmailAccountInvalidFormatException;
 use OCA\Circles\Exceptions\GroupDoesNotExistException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
+use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCP\IL10N;
@@ -68,6 +70,9 @@ class MembersService {
 	/** @var SharesRequest */
 	private $sharesRequest;
 
+	/** @var TokensRequest */
+	private $tokensRequest;
+
 	/** @var CirclesService */
 	private $circlesService;
 
@@ -87,6 +92,7 @@ class MembersService {
 	 * @param CirclesRequest $circlesRequest
 	 * @param MembersRequest $membersRequest
 	 * @param SharesRequest $sharesRequest
+	 * @param TokensRequest $tokensRequest
 	 * @param CirclesService $circlesService
 	 * @param EventsService $eventsService
 	 * @param MiscService $miscService
@@ -94,8 +100,8 @@ class MembersService {
 	public function __construct(
 		$userId, IL10N $l10n, IUserManager $userManager, ConfigService $configService,
 		CirclesRequest $circlesRequest, MembersRequest $membersRequest,
-		SharesRequest $sharesRequest, CirclesService $circlesService, EventsService $eventsService,
-		MiscService $miscService
+		SharesRequest $sharesRequest, TokensRequest $tokensRequest, CirclesService $circlesService,
+		EventsService $eventsService, MiscService $miscService
 	) {
 		$this->userId = $userId;
 		$this->l10n = $l10n;
@@ -104,6 +110,7 @@ class MembersService {
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
 		$this->sharesRequest = $sharesRequest;
+		$this->tokensRequest = $tokensRequest;
 		$this->circlesService = $circlesService;
 		$this->eventsService = $eventsService;
 		$this->miscService = $miscService;
@@ -574,7 +581,7 @@ class MembersService {
 
 		$this->membersRequest->removeMember($member);
 		$this->sharesRequest->removeSharesFromMember($member);
-$this->sharesRequest->shuffleTokensFromCircle($circleUniqueId);
+
 		return $this->membersRequest->getMembers(
 			$circle->getUniqueId(), $circle->getHigherViewer()
 		);
@@ -590,5 +597,5 @@ $this->sharesRequest->shuffleTokensFromCircle($circleUniqueId);
 		$this->membersRequest->removeAllMembershipsFromUser($userId);
 	}
 
-
 }
+

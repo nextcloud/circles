@@ -28,7 +28,6 @@
 namespace OCA\Circles\Db;
 
 
-use daita\MySmallPhpTools\Traits\TStringTools;
 use Exception;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Model\Member;
@@ -41,9 +40,6 @@ use OCA\Circles\Model\SharesToken;
  * @package OCA\Circles\Db
  */
 class TokensRequest extends TokensRequestBuilder {
-
-
-	use TStringTools;
 
 
 	/**
@@ -96,32 +92,30 @@ class TokensRequest extends TokensRequestBuilder {
 	 * @param Member $member
 	 * @param int $shareId
 	 *
+	 * @param string $password
+	 *
 	 * @return mixed
 	 */
-	public function generateTokenForMember(Member $member, int $shareId) {
-		$token = $this->uuid(15);
+	public function generateTokenForMember(Member $member, int $shareId, string $password = '') {
+		$token = $this->miscService->uuid(15);
+
+		$hasher = \OC::$server->getHasher();
+		$password = ($password !== '') ? $hasher->hash($password) : '';
 		try {
 			$qb = $this->getTokensInsertSql();
 			$qb->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
 			   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
 			   ->setValue('share_id', $qb->createNamedParameter($shareId))
-			   ->setValue('token', $qb->createNamedParameter($token));
+			   ->setValue('token', $qb->createNamedParameter($token))
+			   ->setValue('password', $qb->createNamedParameter($password));
 
 			$qb->execute();
 
 			return $token;
 		} catch (Exception $e) {
-			return '';
-		}
-	}
+			$this->miscService->log('exception while generateTokenForMember: ' . $e->getMessage());
 
-	/**
-	 * @param Member[] $members
-	 * @param int $shareId
-	 */
-	public function generateTokenForMembers(array $members, int $shareId) {
-		foreach ($members as $member) {
-			$this->generateTokenForMember($member, $shareId);
+			return '';
 		}
 	}
 
@@ -136,5 +130,5 @@ class TokensRequest extends TokensRequestBuilder {
 		$qb->execute();
 	}
 
-
 }
+

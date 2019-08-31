@@ -88,31 +88,6 @@ class SharesRequest extends SharesRequestBuilder {
 
 
 	/**
-	 * @param string $circleUniqueId
-	 */
-	public function shuffleTokensFromCircle(string $circleUniqueId) {
-		$shares = $this->getSharesForCircle($circleUniqueId);
-		foreach ($shares as $share) {
-			$this->shuffleTokenByShareId($this->getInt('id', $share, 0));
-		}
-	}
-
-
-	/**
-	 * @param int $shareId
-	 */
-	public function shuffleTokenByShareId(int $shareId) {
-		$qb = $this->getSharesUpdateSql();
-		$qb->set('token', $qb->createNamedParameter($this->uuid(15)));
-
-		$this->limitToShareType($qb, self::SHARE_TYPE);
-		$this->limitToId($qb, $shareId);
-
-		$qb->execute();
-	}
-
-
-	/**
 	 * @param string $circleId
 	 *
 	 * @return array
@@ -133,5 +108,5 @@ class SharesRequest extends SharesRequestBuilder {
 		return $shares;
 	}
 
-
 }
+
