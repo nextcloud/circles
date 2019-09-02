@@ -27,6 +27,7 @@
 
 namespace OCA\Circles\Circles;
 
+use Exception;
 use OC;
 use OC\Share20\Share;
 use OCA\Circles\AppInfo\Application;
@@ -36,6 +37,7 @@ use OCA\Circles\IBroadcaster;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
+use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
 use OCP\AppFramework\QueryException;
 use OCP\Defaults;
@@ -44,6 +46,7 @@ use OCP\Files\NotFoundException;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IURLGenerator;
+use OCP\IUser;
 use OCP\IUserManager;
 use OCP\Mail\IMailer;
 use OCP\Share\Exceptions\IllegalIDChangeException;
@@ -77,6 +80,13 @@ class FileSharingBroadcaster implements IBroadcaster {
 	/** @var TokensRequest */
 	private $tokensRequest;
 
+	/** @var ConfigService */
+	private $configService;
+
+	/** @var MiscService */
+	private $miscService;
+
+
 	/**
 	 * {@inheritdoc}
 	 */
@@ -87,10 +97,11 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$this->userManager = OC::$server->getUserManager();
 		$this->logger = OC::$server->getLogger();
 		$this->urlGenerator = OC::$server->getURLGenerator();
-
 		try {
 			$this->defaults = OC::$server->query(Defaults::class);
 			$this->tokensRequest = OC::$server->query(TokensRequest::class);
+			$this->configService = OC::$server->query(ConfigService::class);
+			$this->miscService = OC::$server->query(MiscService::class);
 		} catch (QueryException $e) {
 		}
 	}
@@ -133,6 +144,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 	/**
 	 * {@inheritdoc}
+	 * @throws IllegalIDChangeException
 	 */
 	public function createShareToMember(SharingFrame $frame, Member $member) {
 		if (!$frame->is0Circle()) {
@@ -145,12 +157,17 @@ class FileSharingBroadcaster implements IBroadcaster {
 		}
 
 		$share = $this->generateShare($payload['share']);
-		if ($member->getType() === Member::TYPE_MAIL) {
+		if ($member->getType() === Member::TYPE_MAIL || $member->getType() === Member::TYPE_CONTACT) {
 			try {
 				$circle = $frame->getCircle();
-				$token = $this->tokensRequest->generateTokenForMember($member, $share->getId());
+				$password = '';
+
+				if ($this->configService->enforcePasswordProtection()) {
+					$password = $this->miscService->uuid(15);
+				}
+				$token = $this->tokensRequest->generateTokenForMember($member, $share->getId(), $password);
 				if ($token !== '') {
-					$this->sharedByMail($circle, $share, $member->getUserId(), $token);
+					$this->sharedByMail($circle, $share, $member->getUserId(), $token, $password);
 				}
 			} catch (TokenDoesNotExistException $e) {
 			} catch (NotFoundException $e) {
@@ -207,22 +224,32 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 * @param IShare $share
 	 * @param string $email
 	 * @param string $token
-	 *
-	 * @throws NotFoundException
+	 * @param string $password
 	 */
-	private function sharedByMail(Circle $circle, IShare $share, $email, $token) {
+	private function sharedByMail(Circle $circle, IShare $share, $email, $token, $password) {
 		// genelink
 		$link = $this->urlGenerator->linkToRouteAbsolute(
-			'circles.Shares.public',
+			'files_sharing.sharecontroller.showShare',
 			['token' => $token]
 		);
 
-		$this->sendMail(
-			$share->getNode()
-				  ->getName(), $link,
-			MiscService::getDisplay($share->getSharedBy(), Member::TYPE_USER),
-			$circle->getName(), $email
-		);
+		try {
+			$this->sendMail(
+				$share->getNode()
+					  ->getName(), $link,
+				MiscService::getDisplay($share->getSharedBy(), Member::TYPE_USER),
+				$circle->getName(), $email
+			);
+			if ($this->configService->sendPasswordByMail() && $password !== '') {
+				$this->sendPasswordByMail(
+					$share, MiscService::getDisplay($share->getSharedBy(), Member::TYPE_USER),
+					$email, $password
+				);
+			}
+		} catch (Exception $e) {
+			OC::$server->getLogger()
+					   ->log(1, 'Circles::sharedByMail - mail were not sent: ' . $e->getMessage());
+		}
 	}
 
 
@@ -232,6 +259,8 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 * @param string $author
 	 * @param $circleName
 	 * @param string $email
+	 *
+	 * @throws Exception
 	 */
 	protected function sendMail($fileName, $link, $author, $circleName, $email) {
 		$message = $this->mailer->createMessage();
@@ -256,6 +285,84 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$message->setHtmlBody($emailTemplate->renderHtml());
 		$message->setTo([$email]);
 
+		$this->mailer->send($message);
+	}
+
+
+	/**
+	 * @param IShare $share
+	 * @param string $circleName
+	 * @param string $email
+	 *
+	 * @param $password
+	 *
+	 * @throws NotFoundException
+	 * @throws Exception
+	 */
+	protected function sendPasswordByMail(IShare $share, $circleName, $email, $password) {
+		$message = $this->mailer->createMessage();
+
+		$this->logger->log(0, "Sending password mail to circle '" . $circleName . "': " . $email);
+
+		$filename = $share->getNode()
+						  ->getName();
+		$initiator = $share->getSharedBy();
+		$shareWith = $share->getSharedWith();
+
+		$initiatorUser = $this->userManager->get($initiator);
+		$initiatorDisplayName =
+			($initiatorUser instanceof IUser) ? $initiatorUser->getDisplayName() : $initiator;
+		$initiatorEmailAddress = ($initiatorUser instanceof IUser) ? $initiatorUser->getEMailAddress() : null;
+
+		$plainBodyPart = $this->l10n->t(
+			"%1\$s shared »%2\$s« with you.\nYou should have already received a separate mail with a link to access it.\n",
+			[$initiatorDisplayName, $filename]
+		);
+		$htmlBodyPart = $this->l10n->t(
+			'%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it.',
+			[$initiatorDisplayName, $filename]
+		);
+
+		$emailTemplate = $this->mailer->createEMailTemplate(
+			'sharebymail.RecipientPasswordNotification', [
+														   'filename'       => $filename,
+														   'password'       => $password,
+														   'initiator'      => $initiatorDisplayName,
+														   'initiatorEmail' => $initiatorEmailAddress,
+														   'shareWith'      => $shareWith,
+													   ]
+		);
+
+		$emailTemplate->setSubject(
+			$this->l10n->t(
+				'Password to access »%1$s« shared to you by %2$s', [$filename, $initiatorDisplayName]
+			)
+		);
+		$emailTemplate->addHeader();
+		$emailTemplate->addHeading($this->l10n->t('Password to access »%s«', [$filename]), false);
+		$emailTemplate->addBodyText(htmlspecialchars($htmlBodyPart), $plainBodyPart);
+		$emailTemplate->addBodyText($this->l10n->t('It is protected with the following password:'));
+		$emailTemplate->addBodyText($password);
+
+		// The "From" contains the sharers name
+		$instanceName = $this->defaults->getName();
+		$senderName = $this->l10n->t(
+			'%1$s via %2$s',
+			[
+				$initiatorDisplayName,
+				$instanceName
+			]
+		);
+		$message->setFrom([\OCP\Util::getDefaultEmailAddress($instanceName) => $senderName]);
+		if ($initiatorEmailAddress !== null) {
+			$message->setReplyTo([$initiatorEmailAddress => $initiatorDisplayName]);
+			$emailTemplate->addFooter($instanceName . ' - ' . $this->defaults->getSlogan());
+		} else {
+			$emailTemplate->addFooter();
+		}
+
+		$message->setTo([$email]);
+		$message->useTemplate($emailTemplate);
 		$this->mailer->send($message);
 	}
 

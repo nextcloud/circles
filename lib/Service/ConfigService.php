@@ -355,4 +355,25 @@ class ConfigService {
 	public function isAccountOnly() {
 		return ($this->getAppValue(self::CIRCLES_ACCOUNTS_ONLY) === '1');
 	}
+
+
+	/**
+	 * should the password for a mail share be send to the recipient
+	 *
+	 * @return bool
+	 */
+	public function sendPasswordByMail() {
+		return ($this->config->getAppValue('sharebymail', 'sendpasswordmail', 'yes') === 'yes');
+	}
+
+	/**
+	 * do we require a share by mail to be password protected
+	 *
+	 * @return bool
+	 */
+	public function enforcePasswordProtection() {
+		return ($this->config->getAppValue('sharebymail', 'enforcePasswordProtection', 'no') === 'yes');
+	}
+
+
 }
