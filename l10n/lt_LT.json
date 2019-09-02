@@ -109,6 +109,7 @@
     "This member does not exist" : "Šio nario nėra",
     "This user is already a member of the circle" : "Šis naudotojas jau yra šio rato narys",
     "This feature is not available for personal circles" : "Ši ypatybė nėra prieinama asmeniniams ratams",
+    "The circle is not federated" : "Šis ratas nėra federacinis",
     "You cannot join this circle" : "Jūs negalite prisijungti prie šio rato",
     "This member is not a moderator" : "Šis narys nėra moderatorius",
     "Insufficient privileges" : "Nepakanka teisių",
@@ -163,6 +164,7 @@
     "Allow linking of groups" : "Leisti grupių susiejimą",
     "Groups can be linked to circles." : "Grupės gali būti susietos su ratais.",
     "Allow federated circles" : "Leisti federacinius ratus",
-    "Circles from different Nextclouds can be linked together." : "Ratai iš skirtingų Nextcloud egzempliorių gali būti susieti kartu."
+    "Circles from different Nextclouds can be linked together." : "Ratai iš skirtingų Nextcloud egzempliorių gali būti susieti kartu.",
+    "%1$s via %2$s" : "%1$s per %2$s"
 },"pluralForm" :"nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);"
 }
