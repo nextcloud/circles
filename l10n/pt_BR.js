@@ -279,6 +279,12 @@ OC.L10N.register(
     "Allow federated circles" : "Permitir círculos federados",
     "Circles from different Nextclouds can be linked together." : "Círculos de diferentes Nextclouds podem ser linkados juntos.",
     "Skip invitation step to closed circles" : "Pular a etapa do convite para círculos fechados",
-    "Moderators can add member to closed circles without user approval." : "Moderadores podem adicionar membros em círculos fechados sem a provação do usuário."
+    "Moderators can add member to closed circles without user approval." : "Moderadores podem adicionar membros em círculos fechados sem a provação do usuário.",
+    "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n" : "%1$s compartilhou»%2$s« com você.\nVocê deve receber um email com um link para acessá-lo.\n",
+    "%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it." : "%1$s compartilhou »%2$s« com você. Você deve receber um email com um link para acessá-lo.",
+    "Password to access »%1$s« shared to you by %2$s" : "Senha para acessar »%1$s« compartilhado com você por %2$s",
+    "Password to access »%s«" : "Senha para acessar »%s«",
+    "It is protected with the following password:" : "Está protegido com a seguinte senha:",
+    "%1$s via %2$s" : "%1$s via %2$s"
 },
 "nplurals=2; plural=(n > 1);");
