@@ -165,6 +165,12 @@
     "%s shared »%s« with you." : "%s hat »%s« mit Dir geteilt.",
     "%s shared »%s« with '%s'." : "%s hat »%s« mit '%s' geteilt.",
     "%s on %s" : "%s in %s",
+    "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n" : "%1$s hat  »%2$s« mit Dir geteilt.\nDu solltest bereits eine weitere E-Mail mit einem Link für den Zugriff erhalten haben.\n",
+    "%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it." : "%1$s hat »%2$s« mit Dir geteilt. Du solltest bereits eine weitere E-Mail mit einem Link für den Zugriff erhalten haben. ",
+    "Password to access »%1$s« shared to you by %2$s" : "Das Passwort zum Zugriff auf %1$s wurde Dir von  %2$s mitgetelt.",
+    "Password to access »%s«" : "Passwort um auf »%s« zu zugreifen",
+    "It is protected with the following password:" : "Dies ist mit dem folgendem Passwort geschützt:",
+    "%1$s via %2$s" : "%1$s über %2$s",
     "Click the button below to open it." : "Zum Öffnen auf die untenstehende Schaltfläche klicken.",
     "Open »%s«" : "Öffne »%s«",
     "The name of your circle must contain at least 3 characters" : "Der Name des Kreises muss mindestens aus 3 Zeichen bestehen",
@@ -277,12 +283,6 @@
     "Allow federated circles" : "Federated-Kreise erlauben",
     "Circles from different Nextclouds can be linked together." : "Kreise aus verschiedenen Nextclouds können miteinander verknüpft werden.",
     "Skip invitation step to closed circles" : "Einladungsschritt für geschlossene Kreise überspringen",
-    "Moderators can add member to closed circles without user approval." : "Moderatoren können Benutzer zu geschlossenen Kreisen ohne Benutzerprüfung hinzufügen.",
-    "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n" : "%1$s hat  »%2$s« mit Dir geteilt.\nDu solltest bereits eine weitere E-Mail mit einem Link für den Zugriff erhalten haben.\n",
-    "%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it." : "%1$s hat »%2$s« mit Dir geteilt. Du solltest bereits eine weitere E-Mail mit einem Link für den Zugriff erhalten haben. ",
-    "Password to access »%1$s« shared to you by %2$s" : "Das Passwort zum Zugriff auf %1$s wurde Dir von  %2$s mitgetelt.",
-    "Password to access »%s«" : "Passwort um auf »%s« zu zugreifen",
-    "It is protected with the following password:" : "Dies ist mit dem folgendem Passwort geschützt:",
-    "%1$s via %2$s" : "%1$s über %2$s"
+    "Moderators can add member to closed circles without user approval." : "Moderatoren können Benutzer zu geschlossenen Kreisen ohne Benutzerprüfung hinzufügen."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

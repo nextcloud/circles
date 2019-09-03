@@ -99,6 +99,7 @@
     "{member} is the new owner of {circle}" : "{member} yra naujas rato {circle} savininkas",
     "%s shared »%s« with you." : "%s pradėjo bendrinti »%s« su jumis.",
     "%s shared »%s« with '%s'." : "%s pradėjo bendrinti »%s« su '%s'.",
+    "%1$s via %2$s" : "%1$s per %2$s",
     "Click the button below to open it." : "Norėdami jį atverti, spustelėkite mygtuką žemiau.",
     "Open »%s«" : "Atverti »%s«",
     "The name of your circle must contain at least 3 characters" : "Jūsų rato pavadinime privalo būti bent 3 simboliai",
@@ -164,7 +165,6 @@
     "Allow linking of groups" : "Leisti grupių susiejimą",
     "Groups can be linked to circles." : "Grupės gali būti susietos su ratais.",
     "Allow federated circles" : "Leisti federacinius ratus",
-    "Circles from different Nextclouds can be linked together." : "Ratai iš skirtingų Nextcloud egzempliorių gali būti susieti kartu.",
-    "%1$s via %2$s" : "%1$s per %2$s"
+    "Circles from different Nextclouds can be linked together." : "Ratai iš skirtingų Nextcloud egzempliorių gali būti susieti kartu."
 },"pluralForm" :"nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);"
 }
