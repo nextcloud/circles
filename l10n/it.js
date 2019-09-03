@@ -167,6 +167,12 @@ OC.L10N.register(
     "%s shared »%s« with you." : "%s ha condiviso «%s» con te.",
     "%s shared »%s« with '%s'." : "%s ha condiviso «%s» con '%s'.",
     "%s on %s" : "%s su %s",
+    "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n" : "%1$s ha condiviso «%2$s» con te.\nDovresti aver già riicevuto un messaggio separato con un collegamento per accedervi.\n",
+    "%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it." : "%1$s ha condiviso «%2$s» con te. Dovresti aver già riicevuto un messaggio separato con un collegamento per accedervi.",
+    "Password to access »%1$s« shared to you by %2$s" : "Password per accedere a «%1$s» condivisa con te da %2$s",
+    "Password to access »%s«" : "Password per accedere a «%s»",
+    "It is protected with the following password:" : "È protetta con la password seguente:",
+    "%1$s via %2$s" : "%1$s tramite %2$s",
     "Click the button below to open it." : "Fai clic sul pulsante sotto per aprirlo.",
     "Open »%s«" : "Apri «%s»",
     "The name of your circle must contain at least 3 characters" : "Il nome della tua cerchia deve contenere almeno 3 caratteri",
@@ -279,12 +285,6 @@ OC.L10N.register(
     "Allow federated circles" : "Consenti cerchie federate",
     "Circles from different Nextclouds can be linked together." : "Le cerchie di Nextcloud diversi possono essere collegate tra di loro.",
     "Skip invitation step to closed circles" : "Salta la fase di invito alle cerchie chiuse",
-    "Moderators can add member to closed circles without user approval." : "I moderatori possono aggiungere membri alle cerchie chiuse senza approvazione dell'utente.",
-    "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n" : "%1$s ha condiviso «%2$s» con te.\nDovresti aver già riicevuto un messaggio separato con un collegamento per accedervi.\n",
-    "%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it." : "%1$s ha condiviso «%2$s» con te. Dovresti aver già riicevuto un messaggio separato con un collegamento per accedervi.",
-    "Password to access »%1$s« shared to you by %2$s" : "Password per accedere a «%1$s» condivisa con te da %2$s",
-    "Password to access »%s«" : "Password per accedere a «%s»",
-    "It is protected with the following password:" : "È protetta con la password seguente:",
-    "%1$s via %2$s" : "%1$s tramite %2$s"
+    "Moderators can add member to closed circles without user approval." : "I moderatori possono aggiungere membri alle cerchie chiuse senza approvazione dell'utente."
 },
 "nplurals=2; plural=(n != 1);");

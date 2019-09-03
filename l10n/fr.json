@@ -165,6 +165,12 @@
     "%s shared »%s« with you." : "%s a partagé «%s» avec vous.",
     "%s shared »%s« with '%s'." : "%s a partagé «%s» avec '%s'.",
     "%s on %s" : "%s sur %s",
+    "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n" : "%1$s a partagé %2$s avec vous.\nVous devez déjà avoir reçu un courriel avec un lien d'accès.\n",
+    "%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it." : "%1$s a partagé %2$s avec vous. Vous devez déjà avoir reçu un courriel avec un lien d'accès.",
+    "Password to access »%1$s« shared to you by %2$s" : "Mot de passe pour accéder à «%1$s» partagé avec vous par %2$s",
+    "Password to access »%s«" : "Mot de passe pour accéder à «%s»",
+    "It is protected with the following password:" : "Protégé par le mot de passe suivant :",
+    "%1$s via %2$s" : "%1$s via %2$s",
     "Click the button below to open it." : "Cliquez sur le bouton ci-dessous pour l'ouvrir.",
     "Open »%s«" : "Ouvrir «%s»",
     "The name of your circle must contain at least 3 characters" : "Le nom de votre cercle doit contenir au moins 3 caractères",
@@ -277,12 +283,6 @@
     "Allow federated circles" : "Autoriser les cercles fédérés",
     "Circles from different Nextclouds can be linked together." : "Des cercles de différents Nextcloud peuvent être liés ensemble.",
     "Skip invitation step to closed circles" : "Ignorer l'invitation aux cercles fermés",
-    "Moderators can add member to closed circles without user approval." : "Les modérateurs peuvent ajouter un membre aux cercles fermés sans autorisation de l'utilisateur.",
-    "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n" : "%1$s a partagé %2$s avec vous.\nVous devez déjà avoir reçu un courriel avec un lien d'accès.\n",
-    "%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it." : "%1$s a partagé %2$s avec vous. Vous devez déjà avoir reçu un courriel avec un lien d'accès.",
-    "Password to access »%1$s« shared to you by %2$s" : "Mot de passe pour accéder à «%1$s» partagé avec vous par %2$s",
-    "Password to access »%s«" : "Mot de passe pour accéder à «%s»",
-    "It is protected with the following password:" : "Protégé par le mot de passe suivant :",
-    "%1$s via %2$s" : "%1$s via %2$s"
+    "Moderators can add member to closed circles without user approval." : "Les modérateurs peuvent ajouter un membre aux cercles fermés sans autorisation de l'utilisateur."
 },"pluralForm" :"nplurals=2; plural=(n > 1);"
 }

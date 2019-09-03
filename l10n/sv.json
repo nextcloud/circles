@@ -165,6 +165,12 @@
     "%s shared »%s« with you." : "%s delade »%s« med dig.",
     "%s shared »%s« with '%s'." : "%s delade »%s« med '%s'.",
     "%s on %s" : "%s på %s",
+    "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n" : "%1$s delade »%2$s« med dig.\nDu borde redan ha fått ett separat e-postmeddelande med en länk för åtkomst.\n",
+    "%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it." : "%1$s delade »%2$s« med dig. Du borde redan ha fått ett separat e-postmeddelande med en länk för åtkomst.",
+    "Password to access »%1$s« shared to you by %2$s" : "Lösenord för access till »%1$s« delad med dig av %2$s",
+    "Password to access »%s«" : "Lösenord för att nå »%s«",
+    "It is protected with the following password:" : "Den är skyddad med följande lösenord:",
+    "%1$s via %2$s" : "%1$s via %2$s",
     "Click the button below to open it." : "Klicka på knappen nedan för att öppna det.",
     "Open »%s«" : "Öppna »%s«",
     "The name of your circle must contain at least 3 characters" : "Cirkelns namn måste innehålla minst 3 tecken",
@@ -275,12 +281,6 @@
     "Allow federated circles" : "Tillåt federerade cirklar",
     "Circles from different Nextclouds can be linked together." : "Cirklar från olika Nextcloud kan länkas samman",
     "Skip invitation step to closed circles" : "Hoppa över inbjudan till stängda cirklar",
-    "Moderators can add member to closed circles without user approval." : "Moderatorer kan lägga till medlem i slutna kretsar utan användarens godkännande.",
-    "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n" : "%1$s delade »%2$s« med dig.\nDu borde redan ha fått ett separat e-postmeddelande med en länk för åtkomst.\n",
-    "%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it." : "%1$s delade »%2$s« med dig. Du borde redan ha fått ett separat e-postmeddelande med en länk för åtkomst.",
-    "Password to access »%1$s« shared to you by %2$s" : "Lösenord för access till »%1$s« delad med dig av %2$s",
-    "Password to access »%s«" : "Lösenord för att nå »%s«",
-    "It is protected with the following password:" : "Den är skyddad med följande lösenord:",
-    "%1$s via %2$s" : "%1$s via %2$s"
+    "Moderators can add member to closed circles without user approval." : "Moderatorer kan lägga till medlem i slutna kretsar utan användarens godkännande."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
