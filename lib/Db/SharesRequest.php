@@ -28,8 +28,6 @@
 namespace OCA\Circles\Db;
 
 
-use daita\MySmallPhpTools\Traits\TArrayTools;
-use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Model\Member;
 
 
@@ -39,10 +37,6 @@ use OCA\Circles\Model\Member;
  * @package OCA\Circles\Db
  */
 class SharesRequest extends SharesRequestBuilder {
-
-
-	use TArrayTools;
-	use TStringTools;
 
 
 	/**
