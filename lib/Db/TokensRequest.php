@@ -90,11 +90,33 @@ class TokensRequest extends TokensRequestBuilder {
 
 	/**
 	 * @param Member $member
+	 *
+	 * @return SharesToken[]
+	 */
+	public function getTokensFromMember(Member $member) {
+		$qb = $this->getTokensSelectSql();
+		$this->limitToUserId($qb, $member->getUserId());
+		$this->limitToCircleId($qb, $member->getCircleId());
+
+		$shares = [];
+		$cursor = $qb->execute();
+		while ($data = $cursor->fetch()) {
+			$shares[] = $this->parseTokensSelectSql($data);
+		}
+		$cursor->closeCursor();
+
+		return $shares;
+	}
+
+
+
+	/**
+	 * @param Member $member
 	 * @param int $shareId
 	 *
 	 * @param string $password
 	 *
-	 * @return mixed
+	 * @return string
 	 */
 	public function generateTokenForMember(Member $member, int $shareId, string $password = '') {
 		$token = $this->miscService->uuid(15);

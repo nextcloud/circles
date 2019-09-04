@@ -57,7 +57,7 @@ class SharesRequestBuilder extends CoreRequestBuilder {
 		$qb = $this->dbConnection->getQueryBuilder();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->select('s.id', 's.token')
+		$qb->select('s.id', 's.token', 's.file_target', 's.uid_initiator')
 		   ->from(self::TABLE_FILE_SHARES, 's');
 
 		$this->defaultSelectAlias = 's';
