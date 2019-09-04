@@ -41,7 +41,6 @@ use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\SharingFrameService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
-use OCP\AppFramework\Http\RedirectResponse;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 
@@ -201,31 +200,6 @@ class SharesController extends Controller {
 		}
 
 		exit();
-	}
-
-
-	/**
-	 * @PublicPage
-	 * @NoCSRFRequired
-	 *
-	 * @param string $token
-	 *
-	 * @return RedirectResponse
-	 */
-	public function public(string $token) {
-		try {
-			$shareToken = $this->tokenRequest->getByToken($token);
-			$this->checkContactMail($shareToken);
-
-			$token = $this->sharesRequest->getTokenByShareId($shareToken->getShareId());
-		} catch (Exception $e) {
-			$this->miscService->log(
-				'token ' . $token . ' not found - ' . get_class($e) . ' - ' . $e->getMessage()
-			);
-			$token = $this->uuid(15);
-		}
-
-		return new RedirectResponse($this->urlGenerator->getAbsoluteURL('/s/' . $token));
 	}
 
 

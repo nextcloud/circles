@@ -584,7 +584,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * @return array
 	 * @throws ShareNotFound
 	 */
-	private function getShareByPersonalToken(string $token) {
+	private function getShareByPersonalToken($token) {
 		$qb = $this->dbConnection->getQueryBuilder();
 
 		$qb = $qb->select('s.*')
@@ -621,7 +621,6 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 				$data['personal_circle_id'], $data['personal_user_id'], Member::TYPE_MAIL, true
 			);
 		} catch (\Exception $e) {
-			$this->miscService->log('__ no 1 ' . $e->getMessage());
 			try {
 				$member = $this->membersService->getMember(
 					$data['personal_circle_id'], $data['personal_user_id'], Member::TYPE_CONTACT, true
@@ -886,7 +885,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 *
 	 * @return string
 	 */
-	protected function get(string $k, array $arr, string $default = ''): string {
+	protected function get($k, array $arr, string $default = ''): string {
 		if ($arr === null) {
 			return $default;
 		}
