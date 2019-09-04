@@ -30,6 +30,7 @@ namespace OCA\Circles\Service;
 use Exception;
 use OC;
 use OC\User\NoUserException;
+use OCA\Circles\Circles\FileSharingBroadcaster;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Db\SharesRequest;
@@ -41,12 +42,17 @@ use OCA\Circles\Exceptions\EmailAccountInvalidFormatException;
 use OCA\Circles\Exceptions\GroupDoesNotExistException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
-use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCP\IL10N;
 use OCP\IUserManager;
 
+
+/**
+ * Class MembersService
+ *
+ * @package OCA\Circles\Service
+ */
 class MembersService {
 
 	/** @var string */
@@ -79,6 +85,9 @@ class MembersService {
 	/** @var EventsService */
 	private $eventsService;
 
+	/** @var FileSharingBroadcaster */
+	private $fileSharingBroadcaster;
+
 	/** @var MiscService */
 	private $miscService;
 
@@ -95,13 +104,14 @@ class MembersService {
 	 * @param TokensRequest $tokensRequest
 	 * @param CirclesService $circlesService
 	 * @param EventsService $eventsService
+	 * @param FileSharingBroadcaster $fileSharingBroadcaster
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
 		$userId, IL10N $l10n, IUserManager $userManager, ConfigService $configService,
-		CirclesRequest $circlesRequest, MembersRequest $membersRequest,
-		SharesRequest $sharesRequest, TokensRequest $tokensRequest, CirclesService $circlesService,
-		EventsService $eventsService, MiscService $miscService
+		CirclesRequest $circlesRequest, MembersRequest $membersRequest, SharesRequest $sharesRequest,
+		TokensRequest $tokensRequest, CirclesService $circlesService, EventsService $eventsService,
+		FileSharingBroadcaster $fileSharingBroadcaster, MiscService $miscService
 	) {
 		$this->userId = $userId;
 		$this->l10n = $l10n;
@@ -113,6 +123,7 @@ class MembersService {
 		$this->tokensRequest = $tokensRequest;
 		$this->circlesService = $circlesService;
 		$this->eventsService = $eventsService;
+		$this->fileSharingBroadcaster = $fileSharingBroadcaster;
 		$this->miscService = $miscService;
 	}
 
@@ -170,6 +181,7 @@ class MembersService {
 		$this->addMemberBasedOnItsType($circle, $member);
 
 		$this->membersRequest->updateMember($member);
+		$this->fileSharingBroadcaster->sendMailAboutExistingShares($circle, $member);
 		$this->eventsService->onMemberNew($circle, $member);
 	}
 
