@@ -31,6 +31,7 @@
 namespace OCA\Circles;
 
 
+use Exception;
 use OC;
 use OC\Files\Cache\Cache;
 use OC\Share20\Exception\InvalidShare;
@@ -150,7 +151,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * @param IShare $share
 	 *
 	 * @return IShare The share object
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function create(IShare $share) {
 		try {
@@ -166,10 +167,10 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 				throw $this->errorShareAlreadyExist($share);
 			}
 
-			$share->setToken($this->miscService->uuid(15));
-			if ($this->configService->enforcePasswordProtection()) {
-				$share->setPassword($this->miscService->uuid(15));
-			}
+//			$share->setToken($this->miscService->uuid(15));
+//			if ($this->configService->enforcePasswordProtection()) {
+//				$share->setPassword($this->miscService->uuid(15));
+//			}
 
 			$this->createShare($share);
 
@@ -185,7 +186,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 			);
 
 			return $this->getShareById($share->getId());
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			throw $e;
 		}
 	}
@@ -559,7 +560,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 			$this->miscService->log('data is false - checking personal token', 0);
 			try {
 				$data = $this->getShareByPersonalToken($token);
-			} catch (\Exception $e) {
+			} catch (Exception $e) {
 				$this->miscService->log("Share '#" . $token . "' not found.", 0);
 				throw new ShareNotFound('Share not found', $this->l10n->t('Could not find share'));
 			}
@@ -584,7 +585,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * @return array
 	 * @throws ShareNotFound
 	 */
-	private function getShareByPersonalToken(string $token) {
+	private function getShareByPersonalToken($token) {
 		$qb = $this->dbConnection->getQueryBuilder();
 
 		$qb = $qb->select('s.*')
@@ -620,13 +621,12 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 			$member = $this->membersService->getMember(
 				$data['personal_circle_id'], $data['personal_user_id'], Member::TYPE_MAIL, true
 			);
-		} catch (\Exception $e) {
-			$this->miscService->log('__ no 1 ' . $e->getMessage());
+		} catch (Exception $e) {
 			try {
 				$member = $this->membersService->getMember(
 					$data['personal_circle_id'], $data['personal_user_id'], Member::TYPE_CONTACT, true
 				);
-			} catch (\Exception $e) {
+			} catch (Exception $e) {
 			}
 		}
 
@@ -768,7 +768,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	/**
 	 * @param IShare $share
 	 *
-	 * @return \Exception
+	 * @return Exception
 	 */
 	private function errorShareAlreadyExist($share) {
 		$share_src = $share->getNode()
@@ -780,7 +780,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 			sprintf($message, $share_src, $share->getSharedWith()), ['app' => 'circles']
 		);
 
-		return new \Exception($message_t);
+		return new Exception($message_t);
 	}
 
 
@@ -886,7 +886,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 *
 	 * @return string
 	 */
-	protected function get(string $k, array $arr, string $default = ''): string {
+	protected function get($k, array $arr, string $default = ''): string {
 		if ($arr === null) {
 			return $default;
 		}

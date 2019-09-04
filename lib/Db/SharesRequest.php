@@ -28,9 +28,6 @@
 namespace OCA\Circles\Db;
 
 
-use daita\MySmallPhpTools\Traits\TArrayTools;
-use daita\MySmallPhpTools\Traits\TStringTools;
-use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Model\Member;
 
 
@@ -40,10 +37,6 @@ use OCA\Circles\Model\Member;
  * @package OCA\Circles\Db
  */
 class SharesRequest extends SharesRequestBuilder {
-
-
-	use TArrayTools;
-	use TStringTools;
 
 
 	/**
@@ -62,28 +55,6 @@ class SharesRequest extends SharesRequestBuilder {
 		$qb->andWhere($andX);
 
 		$qb->execute();
-	}
-
-
-	/**
-	 * @param int $shareId
-	 *
-	 * @return string
-	 * @throws TokenDoesNotExistException
-	 */
-	public function getTokenByShareId(int $shareId) {
-		$qb = $this->getSharesSelectSql();
-		$this->limitToId($qb, $shareId);
-		$this->limitToShareType($qb, self::SHARE_TYPE);
-
-		$cursor = $qb->execute();
-		$data = $cursor->fetch();
-		$cursor->closeCursor();
-		if ($data === false) {
-			throw new TokenDoesNotExistException('Unknown share token');
-		}
-
-		return $this->get('token', $data, 'notfound');
 	}
 
 
