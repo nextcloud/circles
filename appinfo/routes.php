@@ -60,8 +60,6 @@ return [
 		['name' => 'Groups#add', 'url' => '/v1/circles/{uniqueId}/groups', 'verb' => 'PUT'],
 		['name' => 'Groups#level', 'url' => '/v1/circles/{uniqueId}/group/level', 'verb' => 'POST'],
 		['name' => 'Groups#remove', 'url' => '/v1/circles/{uniqueId}/groups', 'verb' => 'DELETE'],
-		['name' => 'Shares#create', 'url' => '/v1/circles/{circleUniqueId}/share', 'verb' => 'PUT'],
-
-		['name' => 'Shares#public', 'url' => '/s/{token}', 'verb' => 'GET']
+		['name' => 'Shares#create', 'url' => '/v1/circles/{circleUniqueId}/share', 'verb' => 'PUT']
 	]
 ];
