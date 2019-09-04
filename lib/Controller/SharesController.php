@@ -220,7 +220,7 @@ class SharesController extends Controller {
 
 		try {
 			$this->membersService->getMember(
-				$shareToken->getCircleId(), $shareToken->getUserId(), Member::TYPE_MAIL, true
+				$shareToken->getCircleId(), $shareToken->getUserId(), Member::TYPE_CONTACT, true
 			);
 
 			return;
