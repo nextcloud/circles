@@ -167,10 +167,10 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 				throw $this->errorShareAlreadyExist($share);
 			}
 
-			$share->setToken($this->miscService->uuid(15));
-			if ($this->configService->enforcePasswordProtection()) {
-				$share->setPassword($this->miscService->uuid(15));
-			}
+//			$share->setToken($this->miscService->uuid(15));
+//			if ($this->configService->enforcePasswordProtection()) {
+//				$share->setPassword($this->miscService->uuid(15));
+//			}
 
 			$this->createShare($share);
 
