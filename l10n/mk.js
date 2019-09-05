@@ -55,7 +55,7 @@ OC.L10N.register(
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Промени го бројот лимитот на членови. (0: стандардно, -1: наограничено)",
     "Allow Federated Links" : "Дозволи федерални врски",
     "Makes the circle federated, and enables sharing between federated circles" : "Прави федерација на кругот, и дозволува споделување помеѓу федералните кругови.",
-    "Accept Link Request Automatically" : "Автоматски прифати го барањето за врска",
+    "Accept Link Request Automatically" : "Автоматски прифати го барањето за линк",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "ПРЕДУПРЕДУВАЊЕ: Овозможувањето автоматски ќе прифаќа нови барања за врски од други кругови.",
     "Save settings" : "Зачувај параметри"
 },
