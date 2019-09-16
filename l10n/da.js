@@ -33,7 +33,7 @@ OC.L10N.register(
     "Requesting" : "Anmoder",
     "Blocked" : "Blokeret",
     "Kicked" : "Smidt ud",
-    "This operation will add/invite all members of the group to the circle" : "Denne handling vil tilføje / invitere alle medlemmer af gruppen til cirklen",
+    "This operation will add/invite all members of the group to the circle" : "Denne handling vil tilføje/invitere alle medlemmer af gruppen til cirklen",
     "Please confirm" : "Bekræft venligst",
     "Are you sure you want to leave this circle?" : "Er du sikker på at du vil forlade denne cirkel?",
     "Are you sure you want to delete this circle?" : "Er du sikker på at du vil slette denne cirkel?",
