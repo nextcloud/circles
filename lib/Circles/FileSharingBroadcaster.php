@@ -181,14 +181,13 @@ class FileSharingBroadcaster implements IBroadcaster {
 				$password = '';
 
 				if ($this->configService->enforcePasswordProtection()) {
-					$password = $this->miscService->uuid(15);
+					$password = $this->miscService->token(15);
 				}
 				$token = $this->tokensRequest->generateTokenForMember($member, $share->getId(), $password);
 				if ($token !== '') {
 					$this->sharedByMail($circle, $share, $member->getUserId(), $token, $password);
 				}
-			} catch (TokenDoesNotExistException $e) {
-			} catch (NotFoundException $e) {
+			} catch (Exception $e) {
 			}
 		}
 
@@ -465,7 +464,11 @@ class FileSharingBroadcaster implements IBroadcaster {
 	private function sendMailExitingShares(array $unknownShares, $author, Member $member, $circleName) {
 		$password = '';
 		if ($this->configService->enforcePasswordProtection()) {
-			$password = $this->miscService->uuid(15);
+			try {
+				$password = $this->miscService->token(15);
+			} catch (Exception $e) {
+				return;
+			}
 		}
 
 		$data = [];
