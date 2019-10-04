@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+
+### 0.17.8
+
+- improvement when sharing a file to mail address: 
+- each contact have his own link to the file, and password is generated if enforced.
+- access to shared file is disable if the account is removed from the circle.
+- when adding a contact to a circle with already existing shares, a list of the shares is sent by mail  
+
+
 ### 0.17.7
 
 - lighter requests on request on Shares
