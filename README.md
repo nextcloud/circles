@@ -22,7 +22,7 @@ This is the right option if you want to do recurrent sharing with the same list 
 Anyone can see the circle, can join the circle and access the items shared to the circle.
  
 - Joining a **Closed Circle** requires an invitation or a confirmation by a moderator.  
-Anyone can find the circle and request an invitation; but only members will see who's in it and get access to shared items.
+Anyone can find and request an invitation to the circle; but only members can see its membership and get access to its shared items.
 
 - A **Secret Circle** is an hidden group that can only be seen by its members or by people knowing the exact name of the circle.  
 Non-members won't be able to find your secret circle using the search bar.
