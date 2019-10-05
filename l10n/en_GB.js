@@ -230,7 +230,7 @@ OC.L10N.register(
     "A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle." : "A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle.",
     "Non-members won't be able to find your secret circle using the search bar." : "Non-members won't be able to find your secret circle using the search bar.",
     "Joining a closed circle requires an invitation or confirmation by a moderator." : "Joining a closed circle requires an invitation or confirmation by a moderator.",
-    "Anyone can find and request an invitation to the circle; but only members will see who\\'s in it and get access to it\\'s shared items." : "Anyone can find and request an invitation to the circle; but only members will see who\\'s in it and get access to it\\'s shared items.",
+    "Anyone can find and request an invitation to the circle; but only members can see its membership and get access to its shared items." : "Anyone can find and request an invitation to the circle; but only members can see its membership and get access to its shared items.",
     "A public circle is an open group visible to anyone willing to join." : "A public circle is an open group visible to anyone willing to join.",
     "Anyone can see, join, and access the items shared within the circle." : "Anyone can see, join, and access the items shared within the circle.",
     "Personal circles" : "Personal circles",
