@@ -135,7 +135,7 @@ style(Application::APP_NAME, 'navigation');
 					); ?>
 				</b><br/><?php p(
 					$l->t(
-						"Anyone can find and request an invitation to the circle; but only members will see who\'s in it and get access to it\'s shared items."
+						"Anyone can find and request an invitation to the circle; but only members can see its membership and get access to its shared items."
 					)
 				); ?>
 			</div>
