@@ -109,7 +109,6 @@ class TokensRequest extends TokensRequestBuilder {
 	}
 
 
-
 	/**
 	 * @param Member $member
 	 * @param int $shareId
@@ -119,11 +118,12 @@ class TokensRequest extends TokensRequestBuilder {
 	 * @return string
 	 */
 	public function generateTokenForMember(Member $member, int $shareId, string $password = '') {
-		$token = $this->miscService->uuid(15);
-
-		$hasher = \OC::$server->getHasher();
-		$password = ($password !== '') ? $hasher->hash($password) : '';
 		try {
+			$token = $this->miscService->token(15);
+
+			$hasher = \OC::$server->getHasher();
+			$password = ($password !== '') ? $hasher->hash($password) : '';
+
 			$qb = $this->getTokensInsertSql();
 			$qb->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
 			   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))

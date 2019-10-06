@@ -307,23 +307,18 @@ class MiscService {
 	 * @param int $length
 	 *
 	 * @return string
+	 * @throws Exception
 	 */
-	public function uuid(int $length = 0): string {
-		$uuid = sprintf(
-			'%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-			mt_rand(0, 0xffff), mt_rand(0, 0xfff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000,
-			mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
-		);
+	public function token(int $length = 0): string {
+		$chars = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890';
 
-		if ($length > 0) {
-			if ($length <= 16) {
-				$uuid = str_replace('-', '', $uuid);
-			}
-
-			$uuid = substr($uuid, 0, $length);
+		$str = '';
+		$max = strlen($chars);
+		for ($i = 0; $i <= $length; $i++) {
+			$str .= $chars[random_int(0, $max)];
 		}
 
-		return $uuid;
+		return $str;
 	}
 
 }
