@@ -1,14 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-### 0.16.10
 
+### 0.16.11
 
-- Enforced password policy applied when sharing a file to a Circle that contains contacts/mail addresses
-- Unique public token and token per mail address/contact
-- Removing a mail address/contact from a circle will disable the shared links.
-- When adding a new contact/mail address to a Circle, a mail with all already existing shares to this Circle 
-will be sent to the new member.
+- improvement when sharing a file to mail address: 
+- each contact have his own link to the file, and password is generated if enforced.
+- access to shared file is disable if the account is removed from the circle.
+- when adding a contact to a circle with already existing shares, a list of the shares is sent by mail  
 
 
 ### 0.16.9
