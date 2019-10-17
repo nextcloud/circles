@@ -219,6 +219,7 @@ class CirclesService {
 			if ($this->viewerIsAdmin()
 				|| $circle->getHigherViewer()
 						  ->isLevel(Member::LEVEL_MEMBER)
+				|| $forceAll === true
 			) {
 				$this->detailsCircleMembers($circle);
 				$this->detailsCircleLinkedGroups($circle);
