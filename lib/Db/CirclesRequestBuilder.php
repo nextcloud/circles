@@ -385,7 +385,8 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->selectDistinct('c.unique_id')
 		   ->addSelect(
-			   'c.id', 'c.name', 'c.description', 'c.settings', 'c.type', 'c.creation'
+			   'c.id', 'c.name', 'c.description', 'c.settings', 'c.type', 'contact_addressbook',
+			   'contact_groupname', 'c.creation'
 		   )
 		   ->from(CoreRequestBuilder::TABLE_CIRCLES, 'c');
 		$this->default_select_alias = 'c';
@@ -406,6 +407,12 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		$circle->setUniqueId($data['unique_id']);
 		$circle->setName($data['name']);
 		$circle->setDescription($data['description']);
+		if ($data['contact_addressbook'] !== null) {
+			$circle->setContactAddressBook($data['contact_addressbook']);
+		}
+		if ($data['contact_groupname'] !== null) {
+			$circle->setContactGroupName($data['contact_groupname']);
+		}
 		$circle->setSettings($data['settings']);
 		$circle->setType($data['type']);
 		$circle->setCreation($data['creation']);

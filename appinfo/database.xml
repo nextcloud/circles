@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!--
+  ~ Circles - Bring cloud-users closer together.
+  ~
+  ~ This file is licensed under the Affero General Public License version 3 or
+  ~ later. See the COPYING file.
+  ~
+  ~ @author Maxence Lange <maxence@pontapreta.net>
+  ~ @copyright 2017
+  ~ @license GNU AGPL version 3 or any later version
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<database xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		  xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/database.xsd">
+
+	<name>*dbname*</name>
+	<create>true</create>
+	<overwrite>false</overwrite>
+	<charset>utf8</charset>
+
+	<table>
+		<name>*dbprefix*circles_circles</name>
+
+		<declaration>
+			<field>
+				<name>id</name>
+				<type>integer</type>
+				<length>4</length>
+				<unsigned>true</unsigned>
+				<notnull>true</notnull>
+				<autoincrement>true</autoincrement>
+				<primary>true</primary>
+			</field>
+
+			<field>
+				<name>unique_id</name>
+				<type>text</type>
+				<length>64</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>name</name>
+				<type>text</type>
+				<length>64</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>description</name>
+				<type>text</type>
+				<length>4000</length>
+				<notnull>false</notnull>
+			</field>
+
+			<field>
+				<name>settings</name>
+				<type>text</type>
+				<length>4000</length>
+				<notnull>false</notnull>
+			</field>
+
+			<field>
+				<name>type</name>
+				<type>integer</type>
+				<length>2</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>contact_addressbook</name>
+				<type>integer</type>
+				<length>7</length>
+				<notnull>false</notnull>
+			</field>
+
+			<field>
+				<name>contact_groupname</name>
+				<type>text</type>
+				<length>127</length>
+				<notnull>false</notnull>
+			</field>
+
+			<field>
+				<name>creation</name>
+				<type>timestamp</type>
+			</field>
+		</declaration>
+	</table>
+
+	<table>
+		<name>*dbprefix*circles_members</name>
+
+		<declaration>
+			<field>
+				<name>circle_id</name>
+				<type>text</type>
+				<length>64</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>user_id</name>
+				<type>text</type>
+				<length>128</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>user_type</name>
+				<type>integer</type>
+				<length>1</length>
+				<notnull>true</notnull>
+				<default>1</default>
+			</field>
+
+			<field>
+				<name>level</name>
+				<type>integer</type>
+				<length>1</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>status</name>
+				<type>text</type>
+				<length>15</length>
+				<notnull>false</notnull>
+			</field>
+
+			<field>
+				<name>note</name>
+				<type>text</type>
+				<length>255</length>
+				<notnull>false</notnull>
+			</field>
+
+			<field>
+				<name>contact_id</name>
+				<type>text</type>
+				<length>63</length>
+				<notnull>false</notnull>
+			</field>
+
+			<field>
+				<name>joined</name>
+				<type>timestamp</type>
+			</field>
+
+			<index>
+				<name>unique_membership</name>
+				<primary>true</primary>
+				<unique>true</unique>
+				<field>
+					<name>circle_id</name>
+				</field>
+				<field>
+					<name>user_id</name>
+				</field>
+				<field>
+					<name>contact_id</name>
+				</field>
+				<!--<field>-->
+				<!--<name>user_type</name>-->
+				<!--</field>-->
+			</index>
+		</declaration>
+
+	</table>
+
+	<table>
+		<name>*dbprefix*circles_groups</name>
+
+		<declaration>
+			<field>
+				<name>circle_id</name>
+				<type>text</type>
+				<length>64</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>group_id</name>
+				<type>text</type>
+				<length>64</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>level</name>
+				<type>integer</type>
+				<length>1</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>note</name>
+				<type>text</type>
+				<length>255</length>
+				<notnull>false</notnull>
+			</field>
+
+			<field>
+				<name>joined</name>
+				<type>timestamp</type>
+			</field>
+
+			<index>
+				<name>unique_groupship</name>
+				<primary>true</primary>
+				<unique>true</unique>
+				<field>
+					<name>circle_id</name>
+				</field>
+				<field>
+					<name>group_id</name>
+				</field>
+			</index>
+		</declaration>
+
+	</table>
+
+	<table>
+		<name>*dbprefix*circles_clouds</name>
+
+		<declaration>
+			<field>
+				<name>cloud_id</name>
+				<type>text</type>
+				<length>64</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>address</name>
+				<type>text</type>
+				<length>128</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>status</name>
+				<type>integer</type>
+				<length>1</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>note</name>
+				<type>text</type>
+				<length>255</length>
+				<notnull>false</notnull>
+			</field>
+
+			<field>
+				<name>created</name>
+				<type>timestamp</type>
+			</field>
+
+			<index>
+				<name>unique_cloud</name>
+				<primary>true</primary>
+				<unique>true</unique>
+				<field>
+					<name>cloud_id</name>
+				</field>
+			</index>
+		</declaration>
+
+	</table>
+
+	<table>
+		<name>*dbprefix*circles_shares</name>
+
+		<declaration>
+			<field>
+				<name>id</name>
+				<type>integer</type>
+				<length>4</length>
+				<unsigned>true</unsigned>
+				<notnull>true</notnull>
+				<autoincrement>true</autoincrement>
+				<primary>true</primary>
+			</field>
+
+			<field>
+				<name>unique_id</name>
+				<type>text</type>
+				<length>32</length>
+			</field>
+
+			<field>
+				<name>circle_id</name>
+				<type>text</type>
+				<length>64</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>source</name>
+				<type>text</type>
+				<length>15</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>type</name>
+				<type>text</type>
+				<length>15</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>author</name>
+				<type>text</type>
+				<length>64</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>cloud_id</name>
+				<type>text</type>
+				<length>128</length>
+				<notnull>false</notnull>
+				<default>null</default>
+			</field>
+
+			<field>
+				<name>headers</name>
+				<type>text</type>
+				<length>4000</length>
+				<notnull>false</notnull>
+			</field>
+
+			<field>
+				<name>payload</name>
+				<type>text</type>
+				<length>4000</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>creation</name>
+				<type>timestamp</type>
+			</field>
+		</declaration>
+	</table>
+
+	<table>
+		<name>*dbprefix*circles_links</name>
+
+		<declaration>
+			<field>
+				<name>id</name>
+				<type>integer</type>
+				<length>3</length>
+				<unsigned>true</unsigned>
+				<notnull>true</notnull>
+				<autoincrement>true</autoincrement>
+				<primary>true</primary>
+			</field>
+
+			<field>
+				<name>status</name>
+				<type>integer</type>
+				<length>1</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>circle_id</name>
+				<type>text</type>
+				<length>64</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>unique_id</name>
+				<type>text</type>
+				<length>64</length>
+			</field>
+
+			<field>
+				<name>address</name>
+				<type>text</type>
+				<length>128</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>token</name>
+				<type>text</type>
+				<length>64</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>key</name>
+				<type>text</type>
+				<length>64</length>
+				<notnull>true</notnull>
+			</field>
+
+			<field>
+				<name>creation</name>
+				<type>timestamp</type>
+			</field>
+		</declaration>
+	</table>
+
+	<table>
+		<name>*dbprefix*circles_tokens</name>
+
+		<declaration>
+			<field>
+				<name>circle_id</name>
+				<type>text</type>
+				<length>31</length>
+				<notnull>true</notnull>
+			</field>
+			<field>
+				<name>user_id</name>
+				<type>text</type>
+				<length>255</length>
+				<notnull>true</notnull>
+			</field>
+			<field>
+				<name>share_id</name>
+				<type>integer</type>
+				<length>14</length>
+				<notnull>true</notnull>
+			</field>
+			<field>
+				<name>token</name>
+				<type>text</type>
+				<length>31</length>
+				<notnull>true</notnull>
+			</field>
+			<field>
+				<name>password</name>
+				<type>text</type>
+				<length>127</length>
+				<notnull>true</notnull>
+			</field>
+
+			<index>
+				<primary>true</primary>
+				<name>unique_recipient</name>
+				<unique>true</unique>
+				<field>
+					<name>circle_id</name>
+				</field>
+				<field>
+					<name>user_id</name>
+				</field>
+				<field>
+					<name>share_id</name>
+				</field>
+			</index>
+		</declaration>
+
+	</table>
+
+</database>

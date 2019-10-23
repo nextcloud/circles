@@ -35,6 +35,8 @@ use OCP\Util;
 class ConfigService {
 
 	const CIRCLES_ALLOW_CIRCLES = 'allow_circles';
+	const CIRCLES_CONTACTS_BACKEND = 'contacts_backend';
+	const CIRCLES_NO_FRONTEND = 'no_frontend';
 	const CIRCLES_SWAP_TO_TEAMS = 'swap_to_teams';
 	const CIRCLES_ALLOW_FEDERATED_CIRCLES = 'allow_federated';
 	const CIRCLES_MEMBERS_LIMIT = 'members_limit';
@@ -52,6 +54,8 @@ class ConfigService {
 
 	private $defaults = [
 		self::CIRCLES_ALLOW_CIRCLES           => Circle::CIRCLES_ALL,
+		self::CIRCLES_CONTACTS_BACKEND        => '0',
+		self::CIRCLES_NO_FRONTEND             => '0',
 		self::CIRCLES_TEST_ASYNC_INIT         => '0',
 		self::CIRCLES_SWAP_TO_TEAMS           => '0',
 		self::CIRCLES_ACCOUNTS_ONLY           => '0',
@@ -221,6 +225,16 @@ class ConfigService {
 		$defaultValue = null;
 
 		return $this->config->getAppValue('core', $key, $defaultValue);
+	}
+
+
+	/**
+	 * Get available hosts
+	 *
+	 * @return array
+	 */
+	public function getAvailableHosts(): array {
+		return $this->config->getSystemValue('trusted_domains', []);
 	}
 
 

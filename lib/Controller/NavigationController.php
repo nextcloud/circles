@@ -26,6 +26,7 @@
 
 namespace OCA\Circles\Controller;
 
+use Exception;
 use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Api\v1\ShotgunCircles;
 use OCA\Circles\AppInfo\Application;
@@ -45,8 +46,13 @@ class NavigationController extends BaseController {
 	 * @NoSubAdminRequired
 	 *
 	 * @return TemplateResponse
+	 * @throws Exception
 	 */
 	public function navigate() {
+
+//		if ($this->configService->getAppValue(ConfigService::CIRCLES_NO_FRONTEND) === '1') {
+//			throw new Exception('frontend is not allowed (circles.no_frontend)');
+//		}
 
 		$data = [
 			'allowed_circles' => array(

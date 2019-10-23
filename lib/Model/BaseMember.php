@@ -53,6 +53,9 @@ class BaseMember implements \JsonSerializable {
 	/** @var string */
 	private $circleUniqueId;
 
+	/** @var string */
+	private $circleContactGroupName;
+
 	/** @var IL10N */
 	protected $l10n;
 
@@ -70,6 +73,9 @@ class BaseMember implements \JsonSerializable {
 
 	/** @var string */
 	private $status;
+
+	/** @var string */
+	private $contactId = '';
 
 	/** @var string */
 	private $note;
@@ -113,6 +119,25 @@ class BaseMember implements \JsonSerializable {
 	 * @return string
 	 */
 	public function getCircleId() {
+		return $this->circleUniqueId;
+	}
+
+
+	/**
+	 * @param string $circleContactGroupName
+	 *
+	 * @return $this
+	 */
+	public function setCircleContactGroupName($circleContactGroupName): self {
+		$this->circleContactGroupName = $circleContactGroupName;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getCircleContactGroupName(): string {
 		return $this->circleUniqueId;
 	}
 
@@ -180,6 +205,17 @@ class BaseMember implements \JsonSerializable {
 
 	public function getNote() {
 		return $this->note;
+	}
+
+
+	public function setContactId($contactId) {
+		$this->contactId = $contactId;
+
+		return $this;
+	}
+
+	public function getContactId() {
+		return $this->contactId;
 	}
 
 
@@ -268,6 +304,7 @@ class BaseMember implements \JsonSerializable {
 			'user_id'      => $this->getUserId(),
 			'user_type'    => $this->getType(),
 			'display_name' => $this->getDisplayName(),
+			'contact_id'   => $this->getContactId(),
 			'level'        => $this->getLevel(),
 			'level_string' => $this->getLevelString(),
 			'status'       => $this->getStatus(),

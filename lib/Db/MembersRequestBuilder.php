@@ -25,6 +25,7 @@
  *
  */
 
+
 namespace OCA\Circles\Db;
 
 
@@ -38,6 +39,7 @@ use OCP\IGroupManager;
 use OCP\IL10N;
 
 class MembersRequestBuilder extends CoreRequestBuilder {
+
 
 
 	/** @var IGroupManager */
@@ -80,7 +82,8 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select(
-			'm.user_id', 'm.user_type', 'm.circle_id', 'm.level', 'm.status', 'm.note', 'm.joined'
+			'm.user_id', 'm.user_type', 'm.circle_id', 'm.level', 'm.status', 'm.note', 'm.contact_id',
+			'm.joined'
 		)
 		   ->from(self::TABLE_MEMBERS, 'm')
 		   ->orderBy('m.joined');
@@ -206,6 +209,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	protected function parseMembersSelectSql(array $data) {
 		$member = new Member($data['user_id'], $data['user_type'], $data['circle_id']);
 		$member->setNote($data['note']);
+		$member->setContactId($data['contact_id']);
 		$member->setLevel($data['level']);
 		$member->setStatus($data['status']);
 		$member->setJoined($this->timezoneService->convertTimeForCurrentUser($data['joined']));

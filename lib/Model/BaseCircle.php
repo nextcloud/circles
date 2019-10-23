@@ -77,6 +77,13 @@ class BaseCircle {
 	private $type;
 
 	/** @var string */
+	private $contactGroupName = '';
+
+	/** @var int */
+	private $contactAddressBook = 0;
+
+
+	/** @var string */
 	private $creation;
 
 	/** @var Member[] */
@@ -101,6 +108,7 @@ class BaseCircle {
 
 	/**
 	 * @param integer $id
+	 *
 	 * @return BaseCircle
 	 */
 	public function setId($id) {
@@ -149,6 +157,7 @@ class BaseCircle {
 
 	/**
 	 * @param string $name
+	 *
 	 * @return BaseCircle
 	 */
 	public function setName($name) {
@@ -173,6 +182,7 @@ class BaseCircle {
 
 	/**
 	 * @param Member $owner
+	 *
 	 * @return BaseCircle
 	 */
 	public function setOwner($owner) {
@@ -191,6 +201,7 @@ class BaseCircle {
 
 	/**
 	 * @param Member $user
+	 *
 	 * @return BaseCircle
 	 */
 	public function setViewer($user) {
@@ -208,6 +219,7 @@ class BaseCircle {
 
 	/**
 	 * @param Member $group
+	 *
 	 * @return BaseCircle
 	 */
 	public function setGroupViewer($group) {
@@ -241,6 +253,7 @@ class BaseCircle {
 
 	/**
 	 * @param string $description
+	 *
 	 * @return BaseCircle
 	 */
 	public function setDescription($description) {
@@ -255,6 +268,45 @@ class BaseCircle {
 	public function getDescription() {
 		return $this->description;
 	}
+
+
+	/**
+	 * @param int $contactAddressBook
+	 *
+	 * @return BaseCircle
+	 */
+	public function setContactAddressBook(int $contactAddressBook) {
+		$this->contactAddressBook = $contactAddressBook;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getContactAddressBook() {
+		return $this->contactAddressBook;
+	}
+
+
+	/**
+	 * @param string $contactGroupName
+	 *
+	 * @return BaseCircle
+	 */
+	public function setContactGroupName($contactGroupName) {
+		$this->contactGroupName = $contactGroupName;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getContactGroupName() {
+		return $this->contactGroupName;
+	}
+
 
 	/**
 	 * @param string|array $settings
@@ -336,8 +388,9 @@ class BaseCircle {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param string $type
+	 *
 	 * @return \OCA\Circles\Model\BaseCircle
 	 */
 	public function setType($type) {
@@ -352,9 +405,10 @@ class BaseCircle {
 	public function getType() {
 		return $this->type;
 	}
-	
+
 	/**
 	 * @param string $creation
+	 *
 	 * @return \OCA\Circles\Model\BaseCircle
 	 */
 	public function setCreation($creation) {
@@ -372,6 +426,7 @@ class BaseCircle {
 
 	/**
 	 * @param array $members
+	 *
 	 * @return BaseCircle
 	 */
 	public function setMembers($members) {
@@ -389,6 +444,7 @@ class BaseCircle {
 
 	/**
 	 * @param array $groups
+	 *
 	 * @return BaseCircle
 	 */
 	public function setGroups($groups) {
@@ -406,6 +462,7 @@ class BaseCircle {
 
 	/**
 	 * @param array $links
+	 *
 	 * @return BaseCircle
 	 */
 	public function setLinks($links) {
@@ -452,6 +509,7 @@ class BaseCircle {
 
 	/**
 	 * @param integer|string $type
+	 *
 	 * @return integer
 	 */
 	public static function typeInt($type) {

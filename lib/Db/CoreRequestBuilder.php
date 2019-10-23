@@ -98,6 +98,40 @@ class CoreRequestBuilder {
 
 
 	/**
+	 * Limit the request by its addressbookId.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param int $bookId
+	 */
+	protected function limitToAddressBookId(IQueryBuilder &$qb, $bookId) {
+		$this->limitToDBField($qb, 'contact_addressbook', (string)$bookId);
+	}
+
+
+
+	/**
+	 * Limit the request by its addressbookId.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param string $groupName
+	 */
+	protected function limitToContactGroup(IQueryBuilder &$qb, $groupName) {
+		$this->limitToDBField($qb, 'contact_groupname', $groupName);
+	}
+
+
+	/**
+	 * Limit the request to the Circle by its Id.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param string $contactId
+	 */
+	protected function limitToContactId(IQueryBuilder &$qb, $contactId) {
+		$this->limitToDBField($qb, 'contact_id', $contactId);
+	}
+
+
+	/**
 	 * Limit the request by its Token.
 	 *
 	 * @param IQueryBuilder $qb
@@ -374,7 +408,6 @@ class CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 */
 	protected function leftJoinCircle(IQueryBuilder &$qb) {
-
 		if ($qb->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
