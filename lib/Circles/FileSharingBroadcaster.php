@@ -33,7 +33,6 @@ use OC\Share20\Share;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\SharesRequest;
 use OCA\Circles\Db\TokensRequest;
-use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\IBroadcaster;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
@@ -183,9 +182,17 @@ class FileSharingBroadcaster implements IBroadcaster {
 				if ($this->configService->enforcePasswordProtection()) {
 					$password = $this->miscService->token(15);
 				}
+
 				$token = $this->tokensRequest->generateTokenForMember($member, $share->getId(), $password);
 				if ($token !== '') {
-					$this->sharedByMail($circle, $share, $member->getUserId(), $token, $password);
+					$mails = [$member->getUserId()];
+					if ($member->getType() === Member::TYPE_CONTACT) {
+						$mails = $this->getMailsFromContact($member->getUserId());
+					}
+
+					foreach ($mails as $mail) {
+						$this->sharedByMail($circle, $share, $mail, $token, $password);
+					}
 				}
 			} catch (Exception $e) {
 			}
@@ -725,5 +732,19 @@ class FileSharingBroadcaster implements IBroadcaster {
 //		$this->mailer->send($message);
 	}
 
+
+	/**
+	 * @param string $contactId
+	 *
+	 * @return array
+	 */
+	private function getMailsFromContact(string $contactId): array {
+		$contact = MiscService::getContactData($contactId);
+		if (!key_exists('EMAIL', $contact)) {
+			return [];
+		}
+
+		return $contact['EMAIL'];
+	}
 
 }

@@ -128,11 +128,12 @@ class BroadcastService {
 		$members =
 			$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MEMBER, true);
 		foreach ($members AS $member) {
-			$this->parseMember($member);
+			// removed so you can share to contacts
+//			$this->parseMember($member);
 
 			if ($member->isBroadcasting()) {
 				$broadcaster->createShareToMember($frame, $member);
-			}
+			}''
 		}
 	}
 
