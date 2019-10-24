@@ -132,6 +132,8 @@ class DavService {
 		$cardData = $event->getArgument('cardData');
 
 		$davCard = new DavCard();
+		// TODO: set owner based on Address Book owner
+		$davCard->setOwner($this->userId);
 		$davCard->importFromDav($cardData);
 		$davCard->setAddressBookId($addressBookId);
 		$davCard->setCardUri($cardUri);
@@ -146,16 +148,14 @@ class DavService {
 	private function updateDavCard(DavCard $davCard) {
 		$this->miscService->log('Updating Card: ' . json_encode($davCard));
 		$this->manageCircles($davCard);
-		$this->manageContactMembers($davCard);
+		$this->manageContact($davCard);
 	}
 
 
 	/**
 	 * @param DavCard $davCard
-	 *
-	 * @return Member[]
 	 */
-	private function manageContactMembers(DavCard $davCard): array {
+	private function manageContact(DavCard $davCard) {
 		$circles = array_map(
 			function(Circle $circle) {
 				return $circle->getUniqueId();
@@ -165,9 +165,9 @@ class DavService {
 		try {
 			$userId = $this->isLocalMember($davCard);
 
-			return $this->manageLocalMembers($circles, $davCard, $userId);
+			$this->manageLocalContact($circles, $davCard, $userId);
 		} catch (NotLocalMemberException $e) {
-			return $this->manageRemoteMembers($circles, $davCard);
+			$this->manageRemoteContact($circles, $davCard);
 		}
 	}
 
@@ -176,79 +176,50 @@ class DavService {
 	 * @param array $circles
 	 * @param DavCard $davCard
 	 * @param string $userId
-	 *
-	 * @return Member[]
 	 */
-	private function manageLocalMembers(array $circles, DavCard $davCard, string $userId): array {
-		// remove all remote members
-		$this->membersRequest->removeContactMembers($davCard->getContactId(), Member::TYPE_CONTACT);
-		// remove local members with different userid and deprecated circles
-		foreach ($this->membersRequest->getLocalContactMembers($davCard->getContactId()) as $member) {
-			if ($member->getUserId() !== $userId || !in_array($member->getCircleId(), $circles)
-			) {
-				$this->membersRequest->removeMember($member);
-			}
-		}
-
-		// generate members
-		$members = [];
+	private function manageLocalContact(array $circles, DavCard $davCard, string $userId) {
 		foreach ($davCard->getCircles() as $circle) {
-			$members[] = $this->manageMember($davCard->getContactId(), $circle, $userId, Member::TYPE_USER);
+			$this->manageMember($circle, $davCard, Member::TYPE_USER, $userId);
 		}
 
-		return $members;
 	}
 
 
 	/**
 	 * @param array $circles
 	 * @param DavCard $davCard
-	 *
-	 * @return Member[]
 	 */
-	private function manageRemoteMembers(array $circles, DavCard $davCard): array {
-		// remove all local members
-		$this->membersRequest->removeContactMembers($davCard->getContactId(), Member::TYPE_USER);
-		// remove deprecated mail address & deprecated circles
-		foreach ($this->membersRequest->getMembersByContactId($davCard->getContactId()) as $member) {
-
-			if (!in_array($member->getUserId(), $davCard->getEmails())
-				|| !in_array($member->getCircleId(), $circles)
-			) {
-				$this->membersRequest->removeMember($member);
-			}
+	private function manageRemoteContact(array $circles, DavCard $davCard) {
+		foreach ($davCard->getCircles() as $circle) {
+			$this->manageMember($circle, $davCard, Member::TYPE_CONTACT);
 		}
-
-		$members = [];
-		foreach ($davCard->getEmails() as $email) {
-			foreach ($davCard->getCircles() as $circle) {
-				$members[] =
-					$this->manageMember($davCard->getContactId(), $circle, $email, Member::TYPE_CONTACT);
-			}
-		}
-
-		return $members;
 	}
 
 
 	/**
-	 * @param string $contactId
 	 * @param Circle $circle
-	 * @param string $userId
+	 * @param DavCard $davCard
 	 * @param int $type
-	 *
-	 * @return Member
+	 * @param string $userId
 	 */
-	private function manageMember(string $contactId, Circle $circle, string $userId, int $type) {
+	private function manageMember(Circle $circle, DavCard $davCard, int $type, string $userId = '') {
+		if ($userId === '') {
+			$userId = $davCard->getOwner() . ':' . $davCard->getContactId();
+		}
+
 		try {
-			$member = $this->membersRequest->getContactMember(
-				$circle->getUniqueId(), $contactId, $userId, $type
-			);
+			$member =
+				$this->membersRequest->getContactMember($circle->getUniqueId(), $davCard->getContactId());
+
+			if ($member->getType() !== $type) {
+				$this->membersRequest->removeMember($member);
+				throw new MemberDoesNotExistException();
+			}
 		} catch (MemberDoesNotExistException $e) {
 			$member = new Member();
 			$member->setLevel(Member::LEVEL_MEMBER);
 			$member->setStatus(Member::STATUS_MEMBER);
-			$member->setContactId($contactId);
+			$member->setContactId($davCard->getContactId());
 			$member->setType($type);
 			$member->setCircleId($circle->getUniqueId());
 			$member->setUserId($userId);
@@ -258,8 +229,6 @@ class DavService {
 			} catch (MemberAlreadyExistsException $e) {
 			}
 		}
-
-		return $member;
 	}
 
 
@@ -299,7 +268,7 @@ class DavService {
 			}, $this->getCirclesFromBook($davCard->getAddressBookId())
 		);
 
-		$this->manageNewCircles($davCard->getAddressBookId(), $fromCard, $current);
+		$this->manageNewCircles($davCard, $fromCard, $current);
 		$this->manageDeprecatedCircles($fromCard, $current);
 
 		$this->assignCirclesToCard($davCard);
@@ -307,23 +276,23 @@ class DavService {
 
 
 	/**
-	 * @param int $bookId
+	 * @param DavCard $davCard
 	 * @param array $fromCard
 	 * @param array $current
 	 */
-	private function manageNewCircles(int $bookId, array $fromCard, array $current) {
+	private function manageNewCircles(DavCard $davCard, array $fromCard, array $current) {
 		foreach ($fromCard as $group) {
 			if (in_array($group, $current)) {
 				continue;
 			}
-			
+
 			$circle = new Circle(Circle::CIRCLES_PUBLIC, $group . ' - ' . $this->uuid(5));
-			$circle->setContactAddressBook($bookId);
+			$circle->setContactAddressBook($davCard->getAddressBookId());
 			$circle->setContactGroupName($group);
 
 			try {
-				$this->circlesRequest->createCircle($circle, $this->userId);
-				$member = new Member($this->userId, Member::TYPE_USER, $circle->getUniqueId());
+				$this->circlesRequest->createCircle($circle, $davCard->getOwner());
+				$member = new Member($davCard->getOwner(), Member::TYPE_USER, $circle->getUniqueId());
 				$member->setLevel(Member::LEVEL_OWNER);
 				$member->setStatus(Member::STATUS_MEMBER);
 

@@ -49,6 +49,9 @@ class DavCard implements JsonSerializable {
 	private $addressBookId = 0;
 
 	/** @var string */
+	private $owner = '';
+
+	/** @var string */
 	private $cardUri = '';
 
 	/** @var string */
@@ -85,6 +88,25 @@ class DavCard implements JsonSerializable {
 	 */
 	public function setAddressBookId(int $addressBookId): self {
 		$this->addressBookId = $addressBookId;
+
+		return $this;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getOwner(): string {
+		return $this->owner;
+	}
+
+	/**
+	 * @param string $owner
+	 *
+	 * @return DavCard
+	 */
+	public function setOwner(string $owner): self {
+		$this->owner = $owner;
 
 		return $this;
 	}
@@ -220,8 +242,9 @@ class DavCard implements JsonSerializable {
 	 */
 	public function import(array $data) {
 		$this->setAddressBookId($this->get('addressBookId', $data));
+		$this->setOwner($this->get('owner', $data));
 		$this->setCardUri($this->get('cardUri', $data));
-		$this->setContactId($this->get('uid', $data));
+		$this->setContactId($this->get('contactId', $data));
 		$this->setFn($this->get('fn', $data));
 		$this->setEmails($this->getArray('emails', $data));
 		$this->setGroups($this->getArray('groups', $data));
@@ -281,7 +304,7 @@ class DavCard implements JsonSerializable {
 
 				case 'CATEGORIES':
 					if (strpos($v, ',') === false) {
-						$result['CATEGORIES'] = $v;
+						$result['CATEGORIES'] = [$v];
 					} else {
 						$result['CATEGORIES'] = explode(',', $v);
 					}
@@ -300,8 +323,9 @@ class DavCard implements JsonSerializable {
 	public function jsonSerialize(): array {
 		return [
 			'addressBookId' => $this->getAddressBookId(),
+			'owner'         => $this->getOwner(),
 			'cardUri'       => $this->getCardUri(),
-			'uid'           => $this->getContactId(),
+			'contactId'     => $this->getContactId(),
 			'fn'            => $this->getFn(),
 			'emails'        => $this->getEmails(),
 			'groups'        => $this->getGroups()

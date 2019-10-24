@@ -522,6 +522,9 @@ class MembersRequest extends MembersRequestBuilder {
 		$this->limitToCircleId($qb, $member->getCircleId());
 		$this->limitToUserId($qb, $member->getUserId());
 		$this->limitToUserType($qb, $member->getType());
+		if ($member->getContactId() !== '') {
+			$this->limitToContactId($qb, $member->getContactId());
+		}
 
 		$qb->execute();
 	}
@@ -578,12 +581,10 @@ class MembersRequest extends MembersRequestBuilder {
 	 * @return Member
 	 * @throws MemberDoesNotExistException
 	 */
-	public function getContactMember(string $circleId, string $contactId, string $userId, int $type): Member {
+	public function getContactMember(string $circleId, string $contactId): Member {
 		$qb = $this->getMembersSelectSql();
 		$this->limitToContactId($qb, $contactId);
 		$this->limitToCircleId($qb, $circleId);
-		$this->limitToUserId($qb, $userId);
-		$this->limitToUserType($qb, $type);
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();

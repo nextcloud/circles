@@ -168,5 +168,4 @@ class BroadcastService {
 		$member->setUserId(array_shift($contact['EMAIL']));
 	}
 
-
 }
