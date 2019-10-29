@@ -76,6 +76,10 @@ class DavService {
 	private $miscService;
 
 
+	/** @var array */
+	private $migratedBooks = [];
+
+
 	/**
 	 * TimezoneService constructor.
 	 *
@@ -117,7 +121,7 @@ class DavService {
 	 */
 	public function onCreateCard(GenericEvent $event) {
 		$davCard = $this->generateDavCard($event);
-		$this->updateDavCard($davCard);
+		$this->manageDavCard($davCard);
 	}
 
 
@@ -126,7 +130,7 @@ class DavService {
 	 */
 	public function onUpdateCard(GenericEvent $event) {
 		$davCard = $this->generateDavCard($event);
-		$this->updateDavCard($davCard);
+		$this->manageDavCard($davCard);
 	}
 
 
@@ -162,7 +166,7 @@ class DavService {
 	/**
 	 * @param DavCard $davCard
 	 */
-	private function updateDavCard(DavCard $davCard) {
+	private function manageDavCard(DavCard $davCard) {
 		$this->miscService->log('Updating Card: ' . json_encode($davCard));
 		$this->manageCircles($davCard);
 		$this->manageContact($davCard);
@@ -173,28 +177,42 @@ class DavService {
 	 * @param DavCard $davCard
 	 */
 	private function manageContact(DavCard $davCard) {
+		$this->manageDeprecatedMembers($davCard);
+
+		try {
+			$userId = $this->isLocalMember($davCard);
+
+			$this->manageLocalContact($davCard, $userId);
+		} catch (NotLocalMemberException $e) {
+			$this->manageRemoteContact($davCard);
+		}
+	}
+
+
+	/**
+	 * @param DavCard $davCard
+	 */
+	private function manageDeprecatedMembers(DavCard $davCard) {
 		$circles = array_map(
 			function(Circle $circle) {
 				return $circle->getUniqueId();
 			}, $davCard->getCircles()
 		);
 
-		try {
-			$userId = $this->isLocalMember($davCard);
-
-			$this->manageLocalContact($circles, $davCard, $userId);
-		} catch (NotLocalMemberException $e) {
-			$this->manageRemoteContact($circles, $davCard);
+		$members = $this->membersRequest->getMembersByContactId($davCard->getContactId());
+		foreach ($members as $member) {
+			if (!in_array($member->getCircleId(), $circles)) {
+				$this->membersRequest->removeMember($member);
+			}
 		}
 	}
 
 
 	/**
-	 * @param array $circles
 	 * @param DavCard $davCard
 	 * @param string $userId
 	 */
-	private function manageLocalContact(array $circles, DavCard $davCard, string $userId) {
+	private function manageLocalContact(DavCard $davCard, string $userId) {
 		foreach ($davCard->getCircles() as $circle) {
 			$this->manageMember($circle, $davCard, Member::TYPE_USER, $userId);
 		}
@@ -203,10 +221,9 @@ class DavService {
 
 
 	/**
-	 * @param array $circles
 	 * @param DavCard $davCard
 	 */
-	private function manageRemoteContact(array $circles, DavCard $davCard) {
+	private function manageRemoteContact(DavCard $davCard) {
 		foreach ($davCard->getCircles() as $circle) {
 			$this->manageMember($circle, $davCard, Member::TYPE_CONTACT);
 		}
@@ -404,8 +421,39 @@ class DavService {
 	 *
 	 */
 	private function migration() {
-		$this->miscService->log('-- TODO: init migration/sync Contacts->Circles');
+		$users = $this->userManager->search('');
+		foreach ($users as $user) {
+			$books = $this->cardDavBackend->getAddressBooksForUser('principals/users/' . $user->getUID());
+			foreach ($books as $book) {
+				$this->migrateBook($book['id']);
+			}
+		}
 	}
+
+
+	/**
+	 * @param int $bookId
+	 */
+	private function migrateBook(int $bookId) {
+		if (in_array($bookId, $this->migratedBooks)) {
+			return;
+		}
+
+		$owner = $this->getOwnerFromAddressBook($bookId);
+
+		foreach ($this->cardDavBackend->getCards($bookId) as $card) {
+			$davCard = new DavCard();
+			$davCard->setOwner($owner);
+			$davCard->importFromDav($card['carddata']);
+			$davCard->setAddressBookId($bookId);
+			$davCard->setCardUri($card['uri']);
+
+			$this->manageDavCard($davCard);
+		}
+
+		$this->migratedBooks[] = $bookId;
+	}
+
 
 }
 
