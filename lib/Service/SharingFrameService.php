@@ -389,5 +389,4 @@ class SharingFrameService {
 		$this->sharingFrameRequest->updateSharingFrame($frame);
 	}
 
-
 }

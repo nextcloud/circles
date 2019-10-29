@@ -133,7 +133,7 @@ class BroadcastService {
 
 			if ($member->isBroadcasting()) {
 				$broadcaster->createShareToMember($frame, $member);
-			}''
+			}
 		}
 	}
 

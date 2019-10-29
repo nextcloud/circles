@@ -34,6 +34,7 @@ use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\DavService;
 use OCA\Files\App as FilesApp;
+use OCP\App\ManagerEvent;
 use OCP\AppFramework\App;
 use OCP\AppFramework\IAppContainer;
 use OCP\AppFramework\QueryException;
@@ -166,6 +167,7 @@ class Application extends App {
 
 		$event = OC::$server->getEventDispatcher();
 
+		$event->addListener(ManagerEvent::EVENT_APP_ENABLE, [$davService, 'onAppEnabled']);
 		$event->addListener('\OCA\DAV\CardDAV\CardDavBackend::createCard', [$davService, 'onCreateCard']);
 		$event->addListener('\OCA\DAV\CardDAV\CardDavBackend::updateCard', [$davService, 'onUpdateCard']);
 		$event->addListener('\OCA\DAV\CardDAV\CardDavBackend::deleteCard', [$davService, 'onDeleteCard']);

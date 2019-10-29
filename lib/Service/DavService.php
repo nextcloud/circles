@@ -40,6 +40,8 @@ use OCA\Circles\Exceptions\NotLocalMemberException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\DavCard;
 use OCA\Circles\Model\Member;
+use OCA\DAV\CardDAV\CardDavBackend;
+use OCP\App\ManagerEvent;
 use OCP\IUserManager;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
@@ -57,6 +59,9 @@ class DavService {
 
 	/** @var IUserManager */
 	private $userManager;
+
+	/** @var CardDavBackend */
+	private $cardDavBackend;
 
 	/** @var CirclesRequest */
 	private $circlesRequest;
@@ -82,15 +87,28 @@ class DavService {
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$userId, IUserManager $userManager, CirclesRequest $circlesRequest, MembersRequest $membersRequest,
-		ConfigService $configService, MiscService $miscService
+		$userId, IUserManager $userManager, CardDavBackend $cardDavBackend, CirclesRequest $circlesRequest,
+		MembersRequest $membersRequest, ConfigService $configService, MiscService $miscService
 	) {
 		$this->userId = $userId;
 		$this->userManager = $userManager;
+		$this->cardDavBackend = $cardDavBackend;
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
 		$this->configService = $configService;
 		$this->miscService = $miscService;
+	}
+
+
+	/**
+	 * @param ManagerEvent $event
+	 */
+	public function onAppEnabled(ManagerEvent $event) {
+		if ($event->getAppID() !== 'circles') {
+			return;
+		}
+
+		$this->migration();
 	}
 
 
@@ -132,8 +150,7 @@ class DavService {
 		$cardData = $event->getArgument('cardData');
 
 		$davCard = new DavCard();
-		// TODO: set owner based on Address Book owner
-		$davCard->setOwner($this->userId);
+		$davCard->setOwner($this->getOwnerFromAddressBook($addressBookId));
 		$davCard->importFromDav($cardData);
 		$davCard->setAddressBookId($addressBookId);
 		$davCard->setCardUri($cardUri);
@@ -367,6 +384,28 @@ class DavService {
 		return $uuid;
 	}
 
+
+	/**
+	 * @param int $bookId
+	 *
+	 * @return string
+	 */
+	private function getOwnerFromAddressBook(int $bookId): string {
+		$data = $this->cardDavBackend->getAddressBookById($bookId);
+
+		// let's assume the format is principals/users/OWNER
+		$owner = substr($data['principaluri'], 17);
+
+		return $owner;
+	}
+
+
+	/**
+	 *
+	 */
+	private function migration() {
+		$this->miscService->log('-- TODO: init migration/sync Contacts->Circles');
+	}
 
 }
 
