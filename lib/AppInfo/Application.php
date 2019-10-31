@@ -155,7 +155,7 @@ class Application extends App {
 		try {
 			/** @var ConfigService $configService */
 			$configService = OC::$server->query(ConfigService::class);
-			if ($configService->getAppValue(ConfigService::CIRCLES_CONTACTS_BACKEND) !== '1') {
+			if ($configService->getAppValue(ConfigService::CIRCLES_CONTACT_BACKEND) !== '1') {
 				return;
 			}
 

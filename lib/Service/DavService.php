@@ -30,6 +30,7 @@
 namespace OCA\Circles\Service;
 
 
+use Exception;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
@@ -112,7 +113,10 @@ class DavService {
 			return;
 		}
 
-		$this->migration();
+		try {
+			$this->migration();
+		} catch (Exception $e) {
+		}
 	}
 
 
@@ -419,8 +423,14 @@ class DavService {
 
 	/**
 	 *
+	 * @throws Exception
 	 */
-	private function migration() {
+	public function migration() {
+		if ($this->configService->getAppValue(ConfigService::CIRCLES_CONTACT_BACKEND) !== '1') {
+			throw new Exception('Circles needs to be set as Contacts App Backend first');
+		}
+
+
 		$users = $this->userManager->search('');
 		foreach ($users as $user) {
 			$books = $this->cardDavBackend->getAddressBooksForUser('principals/users/' . $user->getUID());

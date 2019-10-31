@@ -35,7 +35,7 @@ use OCP\Util;
 class ConfigService {
 
 	const CIRCLES_ALLOW_CIRCLES = 'allow_circles';
-	const CIRCLES_CONTACTS_BACKEND = 'contacts_backend';
+	const CIRCLES_CONTACT_BACKEND = 'contact_backend';
 	const CIRCLES_NO_FRONTEND = 'no_frontend';
 	const CIRCLES_SWAP_TO_TEAMS = 'swap_to_teams';
 	const CIRCLES_ALLOW_FEDERATED_CIRCLES = 'allow_federated';
@@ -54,7 +54,7 @@ class ConfigService {
 
 	private $defaults = [
 		self::CIRCLES_ALLOW_CIRCLES           => Circle::CIRCLES_ALL,
-		self::CIRCLES_CONTACTS_BACKEND        => '0',
+		self::CIRCLES_CONTACT_BACKEND         => '0',
 		self::CIRCLES_NO_FRONTEND             => '0',
 		self::CIRCLES_TEST_ASYNC_INIT         => '0',
 		self::CIRCLES_SWAP_TO_TEAMS           => '0',

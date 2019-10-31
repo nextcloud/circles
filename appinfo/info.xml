@@ -52,6 +52,7 @@ Users won't be able to find this Circle using Nextcloud search engine.
 
 	<commands>
 		<command>OCA\Circles\Command\Clean</command>
+		<command>OCA\Circles\Command\SyncContact</command>
 		<!--<command>OCA\Circles\Command\Groups</command>-->
 		<command>OCA\Circles\Command\FixUniqueId</command>
 	</commands>
