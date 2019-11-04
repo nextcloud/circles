@@ -30,7 +30,7 @@ OC.L10N.register(
     "Owner" : "Posedanto",
     "Unknown" : "Nekonata",
     "Invited" : "Invitita",
-    "Requesting" : "Petante",
+    "Requesting" : "Petado",
     "Blocked" : "Barita",
     "Kicked" : "Forpelita",
     "This operation will add/invite all members of the group to the circle" : "Tio operacio aldonos aŭ invitos ĉiujn membrojn el la grupo al la rondo",
