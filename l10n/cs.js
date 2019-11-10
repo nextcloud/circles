@@ -171,6 +171,7 @@ OC.L10N.register(
     "It is protected with the following password:" : "Je chráněno následujícím heslem:",
     "Click the button below to open it." : "Pro otevření klikněte na tlačítko níže.",
     "Open »%s«" : "Otevřít „%s“",
+    "Password to access files shared to you by %1$s" : "Heslo pro přístup k souboru, který vám nasdílel(a) %1$s",
     "Password to access files" : "Heslo pro přístup k souborům",
     "%s shared multiple files with you." : "%s s vámi sdílí více souborů.",
     "The name of your circle must contain at least 3 characters" : "Je třeba, aby název vašeho okruhu obsahoval alespoň 3 znaky",
