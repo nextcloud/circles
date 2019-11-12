@@ -45,6 +45,11 @@ class DavCard implements JsonSerializable {
 	use TArrayTools;
 
 
+	const TYPE_CONTACT = 1;
+	const TYPE_LOCAL = 2;
+//	const TYPE_FEDERATED = 3;
+
+
 	/** @var int */
 	private $addressBookId = 0;
 
@@ -64,10 +69,16 @@ class DavCard implements JsonSerializable {
 	private $emails = [];
 
 	/** @var array */
+	private $clouds = [];
+
+	/** @var array */
 	private $groups = [];
 
 	/** @var Circle[] */
 	private $circles = [];
+
+	/** @var string */
+	private $userId = '';
 
 
 	public function __construct() {
@@ -191,6 +202,25 @@ class DavCard implements JsonSerializable {
 	/**
 	 * @return array
 	 */
+	public function getClouds(): array {
+		return $this->clouds;
+	}
+
+	/**
+	 * @param array $clouds
+	 *
+	 * @return DavCard
+	 */
+	public function setClouds(array $clouds): self {
+		$this->clouds = $clouds;
+
+		return $this;
+	}
+
+
+	/**
+	 * @return array
+	 */
 	public function getGroups(): array {
 		return $this->groups;
 	}
@@ -225,6 +255,26 @@ class DavCard implements JsonSerializable {
 		return $this;
 	}
 
+
+	/**
+	 * @return string
+	 */
+	public function getUserId(): string {
+		return $this->userId;
+	}
+
+	/**
+	 * @param string $userId
+	 *
+	 * @return DavCard
+	 */
+	public function setUserId(string $userId): self {
+		$this->userId = $userId;
+
+		return $this;
+	}
+
+
 	/**
 	 * @param Circle $circle
 	 *
@@ -247,7 +297,9 @@ class DavCard implements JsonSerializable {
 		$this->setContactId($this->get('contactId', $data));
 		$this->setFn($this->get('fn', $data));
 		$this->setEmails($this->getArray('emails', $data));
+		$this->setClouds($this->getArray('clouds', $data));
 		$this->setGroups($this->getArray('groups', $data));
+		$this->setUserId($this->get('userId', $data));
 	}
 
 
@@ -260,6 +312,7 @@ class DavCard implements JsonSerializable {
 		$this->setContactId($this->get('UID', $data));
 		$this->setFn($this->get('FN', $data));
 		$this->setEmails($this->getArray('EMAILS', $data));
+		$this->setClouds($this->getArray('CLOUDS', $data));
 		$this->setGroups($this->getArray('CATEGORIES', $data));
 	}
 
@@ -277,6 +330,7 @@ class DavCard implements JsonSerializable {
 			'UID'        => '',
 			'FN'         => '',
 			'EMAILS'     => [],
+			'CLOUDS'     => [],
 			'CATEGORIES' => []
 		];
 
@@ -299,7 +353,15 @@ class DavCard implements JsonSerializable {
 					break;
 
 				case 'EMAIL':
-					$result['EMAILS'][] = $v;
+					if ($v !== '') {
+						$result['EMAILS'][] = $v;
+					}
+					break;
+
+				case 'CLOUD':
+					if ($v !== '') {
+						$result['CLOUDS'][] = $v;
+					}
 					break;
 
 				case 'CATEGORIES':
@@ -328,7 +390,9 @@ class DavCard implements JsonSerializable {
 			'contactId'     => $this->getContactId(),
 			'fn'            => $this->getFn(),
 			'emails'        => $this->getEmails(),
-			'groups'        => $this->getGroups()
+			'clouds'        => $this->getClouds(),
+			'groups'        => $this->getGroups(),
+			'userId'        => $this->getUserId()
 		];
 	}
 

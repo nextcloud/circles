@@ -43,6 +43,7 @@ use OCA\Circles\Model\DavCard;
 use OCA\Circles\Model\Member;
 use OCA\DAV\CardDAV\CardDavBackend;
 use OCP\App\ManagerEvent;
+use OCP\Federation\ICloudIdManager;
 use OCP\IUserManager;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
@@ -63,6 +64,9 @@ class DavService {
 
 	/** @var CardDavBackend */
 	private $cardDavBackend;
+
+	/** @var ICloudIdManager */
+	private $cloudManager;
 
 	/** @var CirclesRequest */
 	private $circlesRequest;
@@ -86,18 +90,22 @@ class DavService {
 	 *
 	 * @param string $userId
 	 * @param IUserManager $userManager
+	 * @param CardDavBackend $cardDavBackend
+	 * @param ICloudIdManager $cloudManager
 	 * @param CirclesRequest $circlesRequest
 	 * @param MembersRequest $membersRequest
 	 * @param ConfigService $configService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$userId, IUserManager $userManager, CardDavBackend $cardDavBackend, CirclesRequest $circlesRequest,
-		MembersRequest $membersRequest, ConfigService $configService, MiscService $miscService
+		$userId, IUserManager $userManager, CardDavBackend $cardDavBackend, ICloudIdManager $cloudManager,
+		CirclesRequest $circlesRequest, MembersRequest $membersRequest, ConfigService $configService,
+		MiscService $miscService
 	) {
 		$this->userId = $userId;
 		$this->userManager = $userManager;
 		$this->cardDavBackend = $cardDavBackend;
+		$this->cloudManager = $cloudManager;
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
 		$this->configService = $configService;
@@ -183,12 +191,18 @@ class DavService {
 	private function manageContact(DavCard $davCard) {
 		$this->manageDeprecatedMembers($davCard);
 
-		try {
-			$userId = $this->isLocalMember($davCard);
+		switch ($this->getMemberType($davCard)) {
+			case DavCard::TYPE_CONTACT:
+				$this->manageRemoteContact($davCard);
+				break;
 
-			$this->manageLocalContact($davCard, $userId);
-		} catch (NotLocalMemberException $e) {
-			$this->manageRemoteContact($davCard);
+			case DavCard::TYPE_LOCAL:
+				$this->manageLocalContact($davCard);
+				break;
+
+//			case DavCard::TYPE_FEDERATED:
+//				$this->manageFederatedContact($davCard);
+//				break;
 		}
 	}
 
@@ -214,13 +228,11 @@ class DavService {
 
 	/**
 	 * @param DavCard $davCard
-	 * @param string $userId
 	 */
-	private function manageLocalContact(DavCard $davCard, string $userId) {
+	private function manageLocalContact(DavCard $davCard) {
 		foreach ($davCard->getCircles() as $circle) {
-			$this->manageMember($circle, $davCard, Member::TYPE_USER, $userId);
+			$this->manageMember($circle, $davCard, Member::TYPE_USER);
 		}
-
 	}
 
 
@@ -238,13 +250,8 @@ class DavService {
 	 * @param Circle $circle
 	 * @param DavCard $davCard
 	 * @param int $type
-	 * @param string $userId
 	 */
-	private function manageMember(Circle $circle, DavCard $davCard, int $type, string $userId = '') {
-		if ($userId === '') {
-			$userId = $davCard->getOwner() . ':' . $davCard->getContactId();
-		}
-
+	private function manageMember(Circle $circle, DavCard $davCard, int $type) {
 		try {
 			$member =
 				$this->membersRequest->getContactMember($circle->getUniqueId(), $davCard->getContactId());
@@ -260,7 +267,7 @@ class DavService {
 			$member->setContactId($davCard->getContactId());
 			$member->setType($type);
 			$member->setCircleId($circle->getUniqueId());
-			$member->setUserId($userId);
+			$member->setUserId($davCard->getUserId());
 
 			try {
 				$this->membersRequest->createMember($member);
@@ -273,21 +280,40 @@ class DavService {
 	/**
 	 * @param DavCard $davCard
 	 *
+	 * @return int
+	 */
+	private function getMemberType(DavCard $davCard): int {
+		foreach ($davCard->getEmails() as $email) {
+			try {
+				$davCard->setUserId($this->isLocalMember($email));
+
+				return DavCard::TYPE_LOCAL;
+			} catch (NotLocalMemberException $e) {
+			}
+		}
+
+		$davCard->setUserId($davCard->getOwner() . ':' . $davCard->getContactId());
+
+		return DavCard::TYPE_CONTACT;
+	}
+
+
+	/**
+	 * @param string $email
+	 *
 	 * @return string
 	 * @throws NotLocalMemberException
 	 */
-	private function isLocalMember(DavCard $davCard): string {
-		foreach ($davCard->getEmails() as $email) {
-			if (strpos($email, '@') === false) {
-				continue;
-			}
+	private function isLocalMember(string $email): string {
+		if (strpos($email, '@') === false) {
+			throw new NotLocalMemberException();
+		}
 
-			list ($username, $domain) = explode('@', $email);
-			if (in_array($domain, $this->configService->getAvailableHosts())) {
-				$user = $this->userManager->get($username);
-				if ($user !== null) {
-					return $user->getUID();
-				}
+		list ($username, $domain) = explode('@', $email);
+		if (in_array($domain, $this->configService->getAvailableHosts())) {
+			$user = $this->userManager->get($username);
+			if ($user !== null) {
+				return $user->getUID();
 			}
 		}
 
