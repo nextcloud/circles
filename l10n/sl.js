@@ -44,6 +44,7 @@ OC.L10N.register(
     "Cannot join this circle" : "V ta krog se brez povabila ni mogoče pridružiti",
     "no error message" : "ni sporočila o napaki",
     "You have joined this circle" : "Pridružili ste se krogu",
+    "You have requested to join this circle" : "Poslali ste zahtevo za pridružitev temu krogu",
     "You have left this circle" : "Zapustite krog",
     "Cannot leave this circle" : "Tega kroga ni mogoče zapustiti",
     "You have deleted this circle" : "Izbrišete krog",
