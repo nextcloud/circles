@@ -29,6 +29,7 @@ namespace OCA\Circles\Circles;
 
 use Exception;
 use OC;
+use OC\Federation\CloudFederationFactory;
 use OC\Share20\Share;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\SharesRequest;
@@ -74,6 +75,9 @@ class FileSharingBroadcaster implements IBroadcaster {
 	/** @var IUserManager */
 	private $userManager;
 
+	/** @var cloudFederationFactory */
+	private $federationFactory;
+
 	/** @var ILogger */
 	private $logger;
 
@@ -109,6 +113,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$this->mailer = OC::$server->getMailer();
 		$this->rootFolder = OC::$server->getLazyRootFolder();
 		$this->userManager = OC::$server->getUserManager();
+		$this->federationFactory = OC::$server->getCloudFederationFactory();
 		$this->logger = OC::$server->getLogger();
 		$this->urlGenerator = OC::$server->getURLGenerator();
 		try {
@@ -177,8 +182,18 @@ class FileSharingBroadcaster implements IBroadcaster {
 		if ($member->getType() === Member::TYPE_MAIL || $member->getType() === Member::TYPE_CONTACT) {
 			try {
 				$circle = $frame->getCircle();
-				$password = '';
 
+				// federated shared in contact
+				$clouds = $this->getCloudsFromContact($member->getUserId());
+				if (!empty($clouds)) {
+					foreach ($clouds as $cloudId) {
+						$this->sharedByFederated($circle, $share, $cloudId);
+					}
+
+					return true;
+				}
+
+				$password = '';
 				if ($this->configService->enforcePasswordProtection()) {
 					$password = $this->miscService->token(15);
 				}
@@ -228,6 +243,8 @@ class FileSharingBroadcaster implements IBroadcaster {
 			return;
 		}
 
+		// TODO: check that contact got cloudIds. if so, generate shares to federated cloud Id;
+
 		$allShares = $this->sharesRequest->getSharesForCircle($member->getCircleId());
 		$knownShares = array_map(
 			function(SharesToken $shareToken) {
@@ -273,6 +290,16 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$share->setPassword($data['password']);
 
 		return $share;
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 * @param IShare $share
+	 * @param $cloudId
+	 */
+	private function sharedByFederated(Circle $circle, IShare $share, $cloudId) {
+		// TODO: Generate a Federated Share to the cloudId.
 	}
 
 
@@ -732,6 +759,20 @@ class FileSharingBroadcaster implements IBroadcaster {
 //		$this->mailer->send($message);
 	}
 
+
+	/**
+	 * @param string $contactId
+	 *
+	 * @return array
+	 */
+	private function getCloudsFromContact(string $contactId): array {
+		$contact = MiscService::getContactData($contactId);
+		if (!key_exists('CLOUD', $contact)) {
+			return [];
+		}
+
+		return $contact['CLOUD'];
+	}
 
 	/**
 	 * @param string $contactId
