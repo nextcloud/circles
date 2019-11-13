@@ -593,6 +593,7 @@ class MembersService {
 
 		$this->membersRequest->removeMember($member);
 		$this->sharesRequest->removeSharesFromMember($member);
+		$this->tokensRequest->removeTokensFromMember($member);
 
 		return $this->membersRequest->getMembers(
 			$circle->getUniqueId(), $circle->getHigherViewer()

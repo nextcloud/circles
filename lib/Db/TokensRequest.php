@@ -152,5 +152,17 @@ class TokensRequest extends TokensRequestBuilder {
 		$qb->execute();
 	}
 
+
+	/**
+	 * @param Member $member
+	 */
+	public function removeTokensFromMember(Member $member) {
+		$qb = $this->getTokensDeleteSql();
+		$this->limitToCircleId($qb, $member->getCircleId());
+		$this->limitToUserId($qb, $member->getUserId());
+
+		$qb->execute();
+	}
+
 }
 
