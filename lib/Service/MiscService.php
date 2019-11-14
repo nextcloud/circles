@@ -313,7 +313,7 @@ class MiscService {
 		$chars = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890';
 
 		$str = '';
-		$max = strlen($chars);
+		$max = strlen($chars) - 1;
 		for ($i = 0; $i <= $length; $i++) {
 			$str .= $chars[random_int(0, $max)];
 		}
