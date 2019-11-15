@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 
 
+
+### 0.16.12
+
+- fixing issue during token generation
+- token are now remove and not just disabled when remote user is kicked
+
+
 ### 0.16.11
 
 - improvement when sharing a file to mail address: 
