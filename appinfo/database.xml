@@ -347,8 +347,7 @@
 				<unsigned>true</unsigned>
 				<notnull>true</notnull>
 				<autoincrement>true</autoincrement>
-				<primary>true</primary>
-			</field>
+		    </field>
 
 			<field>
 				<name>status</name>
