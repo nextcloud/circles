@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 
+### 0.17.10
+
+- fixing issue with sqlite
+
+
 ### 0.17.9
 
 - fixing issue during token generation
