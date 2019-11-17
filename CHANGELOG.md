@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 
 
+### 0.16.13
+
+- fixing issue with sqlite
+
 
 ### 0.16.12
 
