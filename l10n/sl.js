@@ -91,6 +91,7 @@ OC.L10N.register(
     "You added {external} to {circle}" : "V krog {circle} je dodana oseba {external}",
     "{member} left {circle}" : "{member} zapusti krog {circle}",
     "Shared to Circles" : "Souporaba v krogu",
+    "%s on %s" : "%s na %s",
     "Password to access »%s«" : "Geslo za dostop do »%s«",
     "It is protected with the following password:" : "Zaščiten je z geslom:",
     "%1$s via %2$s" : "%1$s prek %2$s",
