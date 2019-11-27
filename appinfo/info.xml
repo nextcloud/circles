@@ -41,6 +41,10 @@ Users won't be able to find this Circle using Nextcloud search engine.
 		<nextcloud min-version="18" max-version="18"/>
 	</dependencies>
 
+	<types>
+		<dav/>
+	</types>
+
 	<repair-steps>
 		<post-migration>
 			<step>OCA\Circles\Migration\ImportOwncloudCustomGroups</step>

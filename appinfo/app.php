@@ -28,9 +28,12 @@
 
 $app = \OC::$server->query(\OCA\Circles\AppInfo\Application::class);
 
+
+require_once __DIR__ . '/autoload.php';
+
+$app = new Application();
+
 $app->registerNavigation();
 $app->registerFilesNavigation();
 $app->registerFilesPlugin();
-
-require_once __DIR__ . '/autoload.php';
 
