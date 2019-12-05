@@ -909,12 +909,10 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 			}
 		}
 
-		if ($arr[$k] === null || !is_string($arr[$k]) && (!is_int($arr[$k]))) {
+		if ($arr[$k] === null || (!is_string($arr[$k]) && (!is_int($arr[$k])))) {
 			return $default;
 		}
 
 		return (string)$arr[$k];
 	}
-
-
 }
