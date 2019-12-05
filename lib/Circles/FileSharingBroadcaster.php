@@ -29,7 +29,6 @@ namespace OCA\Circles\Circles;
 
 use Exception;
 use OC;
-use OC\Federation\CloudFederationFactory;
 use OC\Share20\Share;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\SharesRequest;
@@ -41,8 +40,12 @@ use OCA\Circles\Model\SharesToken;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
+use OCA\FederatedFileSharing\Notifications;
 use OCP\AppFramework\QueryException;
 use OCP\Defaults;
+use OCP\Federation\ICloudFederationFactory;
+use OCP\Federation\ICloudFederationProviderManager;
+use OCP\Federation\ICloudIdManager;
 use OCP\Files\IRootFolder;
 use OCP\Files\NotFoundException;
 use OCP\IL10N;
@@ -75,8 +78,17 @@ class FileSharingBroadcaster implements IBroadcaster {
 	/** @var IUserManager */
 	private $userManager;
 
-	/** @var cloudFederationFactory */
+	/** @var ICloudFederationFactory */
 	private $federationFactory;
+
+	/** @var ICloudFederationProviderManager */
+	private $federationProviderManager;
+
+	/** @var ICloudIdManager */
+	private $federationCloudIdManager;
+
+	/** @var Notifications */
+	private $federationNotifications;
 
 	/** @var ILogger */
 	private $logger;
@@ -99,6 +111,8 @@ class FileSharingBroadcaster implements IBroadcaster {
 	/** @var MiscService */
 	private $miscService;
 
+	/** @var bool */
+	private $federatedEnabled = false;
 
 	/**
 	 * {@inheritdoc}
@@ -114,6 +128,8 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$this->rootFolder = OC::$server->getLazyRootFolder();
 		$this->userManager = OC::$server->getUserManager();
 		$this->federationFactory = OC::$server->getCloudFederationFactory();
+		$this->federationProviderManager = OC::$server->getCloudFederationProviderManager();
+		$this->federationCloudIdManager = OC::$server->getCloudIdManager();
 		$this->logger = OC::$server->getLogger();
 		$this->urlGenerator = OC::$server->getURLGenerator();
 		try {
@@ -126,6 +142,14 @@ class FileSharingBroadcaster implements IBroadcaster {
 			\OC::$server->getLogger()
 						->log(1, 'Circles: cannot init FileSharingBroadcaster - ' . $e->getMessage());
 		}
+
+		try {
+			$this->federationNotifications =
+				OC::$server->query(\OCA\FederatedFileSharing\Notifications::class);
+			$this->federatedEnabled = true;
+		} catch (QueryException $e) {
+		}
+
 	}
 
 
@@ -185,12 +209,18 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 				// federated shared in contact
 				$clouds = $this->getCloudsFromContact($member->getUserId());
-				if (!empty($clouds)) {
+				if ($this->federatedEnabled && !empty($clouds)) {
+					$sent = false;
 					foreach ($clouds as $cloudId) {
-						$this->sharedByFederated($circle, $share, $cloudId);
+						$token = $this->tokensRequest->generateTokenForMember($member, $share->getId());
+						if ($this->sharedByFederated($circle, $share, $cloudId, $token)) {
+							$sent = true;
+						}
 					}
 
-					return true;
+					if ($sent) {
+						return true;
+					}
 				}
 
 				$password = '';
@@ -243,7 +273,9 @@ class FileSharingBroadcaster implements IBroadcaster {
 			return;
 		}
 
-		// TODO: check that contact got cloudIds. if so, generate shares to federated cloud Id;
+		//
+		// TODO: check that contact got cloudIds. if so, broadcast share to federated cloud Id;
+		//
 
 		$allShares = $this->sharesRequest->getSharesForCircle($member->getCircleId());
 		$knownShares = array_map(
@@ -296,10 +328,49 @@ class FileSharingBroadcaster implements IBroadcaster {
 	/**
 	 * @param Circle $circle
 	 * @param IShare $share
-	 * @param $cloudId
+	 * @param string $address
+	 * @param string $token
+	 *
+	 * @return bool
 	 */
-	private function sharedByFederated(Circle $circle, IShare $share, $cloudId) {
-		// TODO: Generate a Federated Share to the cloudId.
+	private function sharedByFederated(Circle $circle, IShare $share, string $address, string $token): bool {
+
+		try {
+			$cloudId = $this->federationCloudIdManager->resolveCloudId($address);
+
+			$localUrl = $this->urlGenerator->getAbsoluteURL('/');
+			$sharedByFederatedId = $share->getSharedBy();
+			if ($this->userManager->userExists($sharedByFederatedId)) {
+				$cloudId = $this->federationCloudIdManager->getCloudId($sharedByFederatedId, $localUrl);
+				$sharedByFederatedId = $cloudId->getId();
+			}
+			$ownerCloudId = $this->federationCloudIdManager->getCloudId($share->getShareOwner(), $localUrl);
+
+			$send = $this->federationNotifications->sendRemoteShare(
+				$token,
+				$address,
+				$share->getNode()
+					  ->getName(),
+				$share->getId(),
+				$share->getShareOwner(),
+				$ownerCloudId->getId(),
+				$share->getSharedBy(),
+				$sharedByFederatedId,
+				Share::TYPE_USER
+			);
+
+			return $send;
+		} catch (\Exception $e) {
+			$this->logger->logException(
+				$e, [
+					  'message' => 'Failed to notify remote server of circles-federated share',
+					  'level'   => ILogger::ERROR,
+					  'app'     => 'circles',
+				  ]
+			);
+		}
+
+		return false;
 	}
 
 
@@ -398,7 +469,8 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$initiatorUser = $this->userManager->get($initiator);
 		$initiatorDisplayName =
 			($initiatorUser instanceof IUser) ? $initiatorUser->getDisplayName() : $initiator;
-		$initiatorEmailAddress = ($initiatorUser instanceof IUser) ? $initiatorUser->getEMailAddress() : null;
+		$initiatorEmailAddress =
+			($initiatorUser instanceof IUser) ? $initiatorUser->getEMailAddress() : null;
 
 		$plainBodyPart = $this->l10n->t(
 			"%1\$s shared »%2\$s« with you.\nYou should have already received a separate mail with a link to access it.\n",
@@ -688,75 +760,6 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$message->setTo([$recipient]);
 
 		$this->mailer->send($message);
-
-
-//		$message = $this->mailer->createMessage();
-//
-		//
-		//
-		//
-
-
-//		$filename = $share->getNode()
-//						  ->getName();
-//		$initiator = $share->getSharedBy();
-//		$shareWith = $share->getSharedWith();
-//
-//		$initiatorUser = $this->userManager->get($initiator);
-//		$initiatorDisplayName =
-//			($initiatorUser instanceof IUser) ? $initiatorUser->getDisplayName() : $initiator;
-//		$initiatorEmailAddress = ($initiatorUser instanceof IUser) ? $initiatorUser->getEMailAddress() : null;
-
-//		$plainBodyPart = $this->l10n->t(
-//			"%1\$s shared »%2\$s« with you.\nYou should have already received a separate mail with a link to access it.\n",
-//			[$initiatorDisplayName, $filename]
-//		);
-//		$htmlBodyPart = $this->l10n->t(
-//			'%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it.',
-//			[$initiatorDisplayName, $filename]
-//		);
-//
-//		$emailTemplate = $this->mailer->createEMailTemplate(
-//			'sharebymail.RecipientPasswordNotification', [
-//														   'filename'       => $filename,
-//														   'password'       => $password,
-//														   'initiator'      => $initiatorDisplayName,
-//														   'initiatorEmail' => $initiatorEmailAddress,
-//														   'shareWith'      => $shareWith,
-//													   ]
-//		);
-//
-//		$emailTemplate->setSubject(
-//			$this->l10n->t(
-//				'Password to access »%1$s« shared to you by %2$s', [$filename, $initiatorDisplayName]
-//			)
-//		);
-//		$emailTemplate->addHeader();
-//		$emailTemplate->addHeading($this->l10n->t('Password to access »%s«', [$filename]), false);
-//		$emailTemplate->addBodyText(htmlspecialchars($htmlBodyPart), $plainBodyPart);
-//		$emailTemplate->addBodyText($this->l10n->t('It is protected with the following password:'));
-//		$emailTemplate->addBodyText($password);
-
-		// The "From" contains the sharers name
-//		$instanceName = $this->defaults->getName();
-//		$senderName = $this->l10n->t(
-//			'%1$s via %2$s',
-//			[
-//				$initiatorDisplayName,
-//				$instanceName
-//			]
-//		);
-//		$message->setFrom([\OCP\Util::getDefaultEmailAddress($instanceName) => $senderName]);
-//		if ($initiatorEmailAddress !== null) {
-//			$message->setReplyTo([$initiatorEmailAddress => $initiatorDisplayName]);
-//			$emailTemplate->addFooter($instanceName . ' - ' . $this->defaults->getSlogan());
-//		} else {
-//			$emailTemplate->addFooter();
-//		}
-//
-//		$message->setTo([$email]);
-//		$message->useTemplate($emailTemplate);
-//		$this->mailer->send($message);
 	}
 
 
