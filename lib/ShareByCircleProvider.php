@@ -915,4 +915,28 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 
 		return (string)$arr[$k];
 	}
+
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getAllShares(): iterable {
+		$qb = $this->dbConnection->getQueryBuilder();
+
+		$qb->select('*')
+			->from('share')
+			->where(
+				$qb->expr()->orX(
+					$qb->expr()->eq('share_type', $qb->createNamedParameter(IShare::TYPE_CIRCLE))
+				)
+			);
+
+		$cursor = $qb->execute();
+		while($data = $cursor->fetch()) {
+			$share = $this->createShareObject($data);
+
+			yield $share;
+		}
+		$cursor->closeCursor();
+	}
 }
