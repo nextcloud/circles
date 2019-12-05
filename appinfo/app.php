@@ -26,7 +26,7 @@
  *
  */
 
-$app = new \OCA\Circles\AppInfo\Application();
+$app = \OC::$server->query(\OCA\Circles\AppInfo\Application::class);
 
 $app->registerNavigation();
 $app->registerFilesNavigation();
