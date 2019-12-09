@@ -251,7 +251,6 @@ class CirclesRequest extends CirclesRequestBuilder {
 	public function destroyCircle($circleUniqueId) {
 		$qb = $this->getCirclesDeleteSql($circleUniqueId);
 
-
 		$qb->execute();
 	}
 

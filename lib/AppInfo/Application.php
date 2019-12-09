@@ -90,7 +90,7 @@ class Application extends App {
 			return;
 		}
 
-		if ($configService->getAppValue(ConfigService::CIRCLES_NO_FRONTEND) === '1') {
+		if (!$configService->stillFrontEnd()) {
 			return;
 		}
 

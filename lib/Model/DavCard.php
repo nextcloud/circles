@@ -145,6 +145,14 @@ class DavCard implements JsonSerializable {
 	/**
 	 * @return string
 	 */
+	public function getUniqueId(): string {
+		return $this->getAddressBookId() . '/' . $this->getCardUri();
+	}
+
+
+	/**
+	 * @return string
+	 */
 	public function getContactId(): string {
 		return $this->contactId;
 	}
@@ -245,6 +253,17 @@ class DavCard implements JsonSerializable {
 	}
 
 	/**
+	 * @param Circle $circle
+	 *
+	 * @return $this
+	 */
+	public function addCircle(Circle $circle): self {
+		$this->circles[] = $circle;
+
+		return $this;
+	}
+
+	/**
 	 * @param array $circles
 	 *
 	 * @return DavCard
@@ -270,18 +289,6 @@ class DavCard implements JsonSerializable {
 	 */
 	public function setUserId(string $userId): self {
 		$this->userId = $userId;
-
-		return $this;
-	}
-
-
-	/**
-	 * @param Circle $circle
-	 *
-	 * @return $this
-	 */
-	public function addCircle(Circle $circle): self {
-		$this->circles[] = $circle;
 
 		return $this;
 	}
@@ -388,6 +395,7 @@ class DavCard implements JsonSerializable {
 			'owner'         => $this->getOwner(),
 			'cardUri'       => $this->getCardUri(),
 			'contactId'     => $this->getContactId(),
+			'uniqueId'      => $this->getUniqueId(),
 			'fn'            => $this->getFn(),
 			'emails'        => $this->getEmails(),
 			'clouds'        => $this->getClouds(),

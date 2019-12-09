@@ -29,6 +29,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Migration;
 
 use Closure;
+use Doctrine\DBAL\Schema\SchemaException;
 use OCP\DB\ISchemaWrapper;
 use OCP\Migration\IOutput;
 use OCP\Migration\SimpleMigrationStep;
@@ -50,31 +51,41 @@ class Version0017Date20191206144441 extends SimpleMigrationStep {
 	 * @param IOutput $output
 	 * @param Closure $schemaClosure The `\Closure` returns a `ISchemaWrapper`
 	 * @param array $options
+	 *
 	 * @return null|ISchemaWrapper
+	 * @throws SchemaException
 	 */
 	public function changeSchema(IOutput $output, Closure $schemaClosure, array $options) {
 		/** @var ISchemaWrapper $schema */
 		$schema = $schemaClosure();
 
-		if ($schema->hasTable('circles_circles')) {
-			$table = $schema->createTable('circles_circles');
-			$table->addColumn('contact_addressbook', 'integer', [
-				'notnull' => false,
-				'unsigned' => true,
-				'length' => 7,
-			]);
-			$table->addColumn('contact_groupname', 'string', [
-				'notnull' => false,
-				'length' => 127,
-			]);
+		$table = $schema->getTable('circles_circles');
+		if (!$table->hasColumn('contact_addressbook')) {
+			$table->addColumn(
+				'contact_addressbook', 'integer', [
+										 'notnull'  => false,
+										 'unsigned' => true,
+										 'length'   => 7,
+									 ]
+			);
+		}
+		if (!$table->hasColumn('contact_groupname')) {
+			$table->addColumn(
+				'contact_groupname', 'string', [
+									   'notnull' => false,
+									   'length'  => 127,
+								   ]
+			);
 		}
 
-		if ($schema->hasTable('circles_members')) {
-			$table = $schema->createTable('circles_members');
-			$table->addColumn('contact_id', 'string', [
-				'notnull' => false,
-				'length' => 63,
-			]);
+		$table = $schema->getTable('circles_members');
+		if (!$table->hasColumn('contact_id')) {
+			$table->addColumn(
+				'contact_id', 'string', [
+								'notnull' => false,
+								'length'  => 127,
+							]
+			);
 			$table->dropPrimaryKey();
 			$table->setPrimaryKey(['circle_id', 'user_id', 'contact_id']);
 		}

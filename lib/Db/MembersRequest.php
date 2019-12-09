@@ -556,9 +556,14 @@ class MembersRequest extends MembersRequestBuilder {
 	 *
 	 * @return Member[]
 	 */
-	public function getMembersByContactId(string $contactId): array {
+	public function getMembersByContactId(string $contactId = ''): array {
 		$qb = $this->getMembersSelectSql();
-		$this->limitToContactId($qb, $contactId);
+		if ($contactId === '') {
+			$expr = $qb->expr();
+			$qb->andWhere($expr->neq('contact_id', $qb->createNamedParameter('')));
+		} else {
+			$this->limitToContactId($qb, $contactId);
+		}
 
 		$members = [];
 		$cursor = $qb->execute();
@@ -623,7 +628,12 @@ class MembersRequest extends MembersRequestBuilder {
 	 * @param string $contactId
 	 * @param int $type
 	 */
-	public function removeContactMembers(string $contactId, int $type = 0) {
+	public function removeMembersByContactId(string $contactId, int $type = 0) {
+		$this->miscService->log($contactId);
+		if ($contactId === '') {
+			return;
+		}
+
 		$qb = $this->getMembersDeleteSql();
 		$this->limitToContactId($qb, $contactId);
 		if ($type > 0) {
@@ -632,6 +642,7 @@ class MembersRequest extends MembersRequestBuilder {
 
 		$qb->execute();
 	}
+
 
 }
 
