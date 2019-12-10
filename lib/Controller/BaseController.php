@@ -26,6 +26,7 @@
 
 namespace OCA\Circles\Controller;
 
+use Exception;
 use OC\AppFramework\Http;
 use OCA\Circles\Service\BroadcastService;
 use OCA\Circles\Service\CirclesService;
@@ -152,4 +153,18 @@ class BaseController extends Controller {
 		);
 	}
 
+
+	/**
+	 * @throws Exception
+	 */
+	protected function mustHaveFrontEndEnabled() {
+		if ($this->configService->stillFrontEnd()) {
+			return;
+		}
+
+		throw new Exception('circles\' frontend is not enabled');
+	}
+
 }
+
+

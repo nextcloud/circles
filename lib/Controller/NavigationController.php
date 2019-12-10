@@ -49,10 +49,7 @@ class NavigationController extends BaseController {
 	 * @throws Exception
 	 */
 	public function navigate() {
-
-//		if ($this->configService->getAppValue(ConfigService::CIRCLES_NO_FRONTEND) === '1') {
-//			throw new Exception('frontend is not allowed (circles.no_frontend)');
-//		}
+		$this->mustHaveFrontEndEnabled();
 
 		$data = [
 			'allowed_circles' => array(

@@ -49,6 +49,8 @@ class CirclesController extends BaseController {
 	public function create($type, $name) {
 
 		try {
+			$this->mustHaveFrontEndEnabled();
+
 			$this->verifyCreationName($name);
 			$data = $this->circlesService->createCircle($type, $name);
 
@@ -73,11 +75,12 @@ class CirclesController extends BaseController {
 	public function listing($type, $name = '', $level = 0) {
 
 		try {
+			$this->mustHaveFrontEndEnabled();
+
 			$data = $this->circlesService->listCircles($this->userId, $type, $name, $level);
 
 			return $this->success(['type' => $type, 'data' => $data]);
-		} catch (CircleTypeDisabledException $e) {
-
+		} catch (Exception $e) {
 			return $this->fail(['type' => $type, 'error' => $e->getMessage()]);
 		}
 	}
@@ -93,14 +96,14 @@ class CirclesController extends BaseController {
 	 */
 	public function details($uniqueId) {
 		try {
+			$this->mustHaveFrontEndEnabled();
+
 			$circle = $this->circlesService->detailsCircle($uniqueId);
 
 			return $this->success(['circle_id' => $uniqueId, 'details' => $circle]);
-		} catch (\Exception $e) {
-
+		} catch (Exception $e) {
 			return $this->fail(['circle_id' => $uniqueId, 'error' => $e->getMessage()]);
 		}
-
 	}
 
 
@@ -115,11 +118,13 @@ class CirclesController extends BaseController {
 	 */
 	public function settings($uniqueId, $settings) {
 		try {
+			$this->mustHaveFrontEndEnabled();
+
 			$this->verifyCreationName($settings['circle_name']);
 			$circle = $this->circlesService->settingsCircle($uniqueId, $settings);
 
 			return $this->success(['circle_id' => $uniqueId, 'details' => $circle]);
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 
 			return $this->fail(['circle_id' => $uniqueId, 'error' => $e->getMessage()]);
 		}
@@ -137,10 +142,12 @@ class CirclesController extends BaseController {
 	 */
 	public function join($uniqueId) {
 		try {
+			$this->mustHaveFrontEndEnabled();
+
 			$data = $this->circlesService->joinCircle($uniqueId);
 
 			return $this->success(['circle_id' => $uniqueId, 'member' => $data]);
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 
 			return $this->fail(['circle_id' => $uniqueId, 'error' => $e->getMessage()]);
 		}
@@ -157,10 +164,12 @@ class CirclesController extends BaseController {
 	 */
 	public function leave($uniqueId) {
 		try {
+			$this->mustHaveFrontEndEnabled();
+
 			$data = $this->circlesService->leaveCircle($uniqueId);
 
 			return $this->success(['circle_id' => $uniqueId, 'member' => $data]);
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 
 			return $this->fail(['circle_id' => $uniqueId, 'error' => $e->getMessage()]);
 		}
@@ -178,10 +187,12 @@ class CirclesController extends BaseController {
 	 */
 	public function destroy($uniqueId) {
 		try {
+			$this->mustHaveFrontEndEnabled();
+
 			$this->circlesService->removeCircle($uniqueId);
 
 			return $this->success(['circle_id' => $uniqueId]);
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			return $this->fail(['circle_id' => $uniqueId, 'error' => $e->getMessage()]);
 		}
 	}
