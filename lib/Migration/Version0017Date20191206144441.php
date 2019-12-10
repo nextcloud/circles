@@ -79,6 +79,14 @@ class Version0017Date20191206144441 extends SimpleMigrationStep {
 		}
 
 		$table = $schema->getTable('circles_members');
+		if (!$table->hasColumn('contact_meta')) {
+			$table->addColumn(
+				'contact_meta', 'string', [
+								'notnull' => false,
+								'length'  => 1000,
+							]
+			);
+		}
 		if (!$table->hasColumn('contact_id')) {
 			$table->addColumn(
 				'contact_id', 'string', [

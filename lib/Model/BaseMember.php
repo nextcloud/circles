@@ -77,6 +77,9 @@ class BaseMember implements \JsonSerializable {
 	/** @var string */
 	private $contactId = '';
 
+	/** @var array */
+	private $contactMeta = [];
+
 	/** @var string */
 	private $note;
 
@@ -219,6 +222,70 @@ class BaseMember implements \JsonSerializable {
 	}
 
 
+	/**
+	 * @param array $contactMeta
+	 *
+	 * @return $this
+	 */
+	public function setContactMeta(array $contactMeta): self {
+		$this->contactMeta = $contactMeta;
+
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getContactMeta(): array {
+		return $this->contactMeta;
+	}
+
+	/**
+	 * @param string $k
+	 * @param string $v
+	 *
+	 * @return $this
+	 */
+	public function addContactMeta(string $k, string $v): self {
+		$this->contactMeta[$k] = $v;
+
+		return $this;
+	}
+
+	/**
+	 * @param string $k
+	 * @param string $v
+	 *
+	 * @return $this
+	 */
+	public function addContactMetaArray(string $k, string $v): self {
+		if (!array_key_exists($k, $this->contactMeta)) {
+			$this->contactMeta[$k] = [];
+		}
+
+		$this->contactMeta[$k][] = $v;
+
+		return $this;
+	}
+
+	/**
+	 * @param string $k
+	 * @param array $v
+	 *
+	 * @return $this
+	 */
+	public function setContactMetaArray(string $k, array $v): self {
+		$this->contactMeta[$k] = $v;
+
+		return $this;
+	}
+
+
+	/**
+	 * @param $status
+	 *
+	 * @return $this
+	 */
 	public function setStatus($status) {
 		if (is_null($status)) {
 			$this->status = self::STATUS_NONMEMBER;

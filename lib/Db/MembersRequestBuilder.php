@@ -41,7 +41,6 @@ use OCP\IL10N;
 class MembersRequestBuilder extends CoreRequestBuilder {
 
 
-
 	/** @var IGroupManager */
 	protected $groupManager;
 
@@ -210,6 +209,12 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		$member = new Member($data['user_id'], $data['user_type'], $data['circle_id']);
 		$member->setNote($data['note']);
 		$member->setContactId($data['contact_id']);
+
+		$contactMeta = json_decode($data['contact_meta'], true);
+		if (is_array($contactMeta)) {
+			$member->setContactMeta($contactMeta);
+		}
+
 		$member->setLevel($data['level']);
 		$member->setStatus($data['status']);
 		$member->setJoined($this->timezoneService->convertTimeForCurrentUser($data['joined']));

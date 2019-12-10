@@ -139,13 +139,13 @@ class FileSharingBroadcaster implements IBroadcaster {
 			$this->configService = OC::$server->query(ConfigService::class);
 			$this->miscService = OC::$server->query(MiscService::class);
 		} catch (QueryException $e) {
-			\OC::$server->getLogger()
-						->log(1, 'Circles: cannot init FileSharingBroadcaster - ' . $e->getMessage());
+			OC::$server->getLogger()
+					   ->log(1, 'Circles: cannot init FileSharingBroadcaster - ' . $e->getMessage());
 		}
 
 		try {
 			$this->federationNotifications =
-				OC::$server->query(\OCA\FederatedFileSharing\Notifications::class);
+				OC::$server->query(Notifications::class);
 			$this->federatedEnabled = true;
 		} catch (QueryException $e) {
 		}
@@ -273,10 +273,6 @@ class FileSharingBroadcaster implements IBroadcaster {
 			return;
 		}
 
-		//
-		// TODO: check that contact got cloudIds. if so, broadcast share to federated cloud Id;
-		//
-
 		$allShares = $this->sharesRequest->getSharesForCircle($member->getCircleId());
 		$knownShares = array_map(
 			function(SharesToken $shareToken) {
@@ -294,6 +290,17 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 		$author = $circle->getViewer()
 						 ->getUserId();
+
+		// TODO: check that contact got cloudIds. if so, broadcast share to federated cloud Id; also use ContactMeta.
+//		$clouds = $this->getCloudsFromContact($member->getUserId());
+//		if ($this->federatedEnabled && !empty($clouds)) {
+//			foreach ($clouds as $cloudId) {
+//				foreach ($unknownShares as $data) {
+//					$share = $this->generateShare($data);
+//				}
+//			}
+//		}
+
 		$this->sendMailExitingShares(
 			$unknownShares, MiscService::getDisplay($author, Member::TYPE_USER), $member, $circle->getName()
 		);
@@ -581,7 +588,6 @@ class FileSharingBroadcaster implements IBroadcaster {
 		foreach ($unknownShares as $share) {
 			$data[] = $this->getMailLinkFromShare($share, $member, $password);
 		}
-
 
 		if (sizeof($data) === 0) {
 			return;

@@ -31,6 +31,7 @@ namespace OCA\Circles\Service;
 
 
 use Exception;
+use OCA\Circles\Circles\FileSharingBroadcaster;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
@@ -68,6 +69,9 @@ class DavService {
 	/** @var ICloudIdManager */
 	private $cloudManager;
 
+	/** @var FileSharingBroadcaster */
+	private $fileSharingBroadcaster;
+
 	/** @var CirclesRequest */
 	private $circlesRequest;
 
@@ -93,19 +97,21 @@ class DavService {
 	 * @param CardDavBackend $cardDavBackend
 	 * @param ICloudIdManager $cloudManager
 	 * @param CirclesRequest $circlesRequest
+	 * @param FileSharingBroadcaster $fileSharingBroadcaster
 	 * @param MembersRequest $membersRequest
 	 * @param ConfigService $configService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
 		$userId, IUserManager $userManager, CardDavBackend $cardDavBackend, ICloudIdManager $cloudManager,
-		CirclesRequest $circlesRequest, MembersRequest $membersRequest, ConfigService $configService,
-		MiscService $miscService
+		FileSharingBroadcaster $fileSharingBroadcaster, CirclesRequest $circlesRequest,
+		MembersRequest $membersRequest, ConfigService $configService, MiscService $miscService
 	) {
 		$this->userId = $userId;
 		$this->userManager = $userManager;
 		$this->cardDavBackend = $cardDavBackend;
 		$this->cloudManager = $cloudManager;
+		$this->fileSharingBroadcaster = $fileSharingBroadcaster;
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
 		$this->configService = $configService;
@@ -299,6 +305,10 @@ class DavService {
 
 			try {
 				$this->membersRequest->createMember($member);
+
+//				if ($type === Member::TYPE_CONTACT) {
+//					$this->fileSharingBroadcaster->sendMailAboutExistingShares($circle, $member);
+//				}
 			} catch (MemberAlreadyExistsException $e) {
 			}
 		}
