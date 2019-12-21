@@ -172,7 +172,7 @@ OC.L10N.register(
     "Password to access »%1$s« shared to you by %2$s" : "Contrasenya d'accés »%1$s« compartida per %2$s",
     "Password to access »%s«" : "Contrasenya per accedir »%s«",
     "It is protected with the following password:" : "Està protegit amb la contrasenya següent:",
-    "%1$s via %2$s" : "%1$s a través de %2$s",
+    "%1$s via %2$s" : "%1$s mitjançant %2$s",
     "Click the button below to open it." : "Feu clic al botó de sota per obrir-lo.",
     "Open »%s«" : "Obre »%s«",
     "%1$s shared multiple files with you.\nYou should have already received a separate mail with a link to access them.\n" : "%1$s us ha compartit diversos fitxers.\nJa hauríeu d’haver rebut un correu separat amb un enllaç per accedir-hi.\n",
