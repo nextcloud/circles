@@ -167,6 +167,7 @@ OC.L10N.register(
     "%s shared »%s« with you." : "%s shared »%s« with you.",
     "%s shared »%s« with '%s'." : "%s shared »%s« with '%s'.",
     "%s on %s" : "%s on %s",
+    "Password to access »%s«" : "Password to access »%s«",
     "Click the button below to open it." : "Click the button below to open it.",
     "Open »%s«" : "Open »%s«",
     "The name of your circle must contain at least 3 characters" : "The name of your circle must contain at least 3 characters",

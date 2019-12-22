@@ -28,6 +28,7 @@
     "Please confirm" : "الرجاء التأكيد",
     "Are you sure you want to leave this circle?" : "هل أنت متأكد من ترك هذه الحلقة؟",
     "Are you sure you want to delete this circle?" : "هل أنت متأكد من حذف هذه الحلقة؟",
+    "Mail Address" : "عنوان البريد الإلكتروني",
     "Kick this member" : "طرد هذا العضو",
     "Accept the request" : "قبول هذا العضو",
     "Dismiss the request" : "رفض الطلب",
@@ -53,8 +54,17 @@
     "Group '{name}' successfully removed from the circle" : "تم حذف المجموعة '{name}' من الحلقة بنجاح",
     "Group '{name}' could not be removed from the circle" : "لا يمكن إزالة المجموعة '{name}' من الحلقة",
     "Settings saved." : "تم حفظ الإعدادات",
+    "Click the button below to open it." : "أنقر على الزر أدناه لفتحه.",
+    "No files in here" : "لا توجد ملفات هنا",
+    "No entries found in this folder" : "لا يوجد مدخلات في هذا المجلد ",
+    "Name" : "الاسم",
+    "Size" : "الحجم",
+    "Modified" : "آخر تعديل",
     "Settings" : "الإعدادات",
     "Username" : "اسم المستخدم",
+    "Level" : "الدرجة",
+    "Status" : "الحالة",
+    "Link" : "الرابط",
     "Save settings" : "حفظ الإعدادات"
 },"pluralForm" :"nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;"
 }
