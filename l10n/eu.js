@@ -71,7 +71,9 @@ OC.L10N.register(
     "You cannot join this circle" : "Ezin zara zirkulu honetara elkartu",
     "Email format is not valid" : "Posta-helbidearen formatua ez da baliozkoa",
     "This contact is not available" : "Kontaktu hori ez dago erabilgarri",
+    "Could not find share" : "Ezin da partekatzea topatu",
     "No files in here" : "Ez dago fitxategirik hemen",
+    "No entries found in this folder" : "Ez da sarrerarik aurkitu karpeta honetan ",
     "Name" : "Izena",
     "Size" : "Tamaina",
     "Modified" : "Aldatua",
@@ -89,6 +91,7 @@ OC.L10N.register(
     "Delete circle" : "Ezabatu zirkulua",
     "Username" : "Erabiltzaile-izena",
     "Level" : "Maila",
+    "Status" : "Egoera",
     "Link" : "Esteka",
     "Members limit" : "Kide muga",
     "Save settings" : "Gorde ezarpenak"

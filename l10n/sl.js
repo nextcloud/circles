@@ -95,6 +95,7 @@ OC.L10N.register(
     "Password to access »%s«" : "Geslo za dostop do »%s«",
     "It is protected with the following password:" : "Zaščiten je z geslom:",
     "%1$s via %2$s" : "%1$s prek %2$s",
+    "Click the button below to open it." : "Kliknite na gumb za odpiranje.",
     "Open »%s«" : "Odpri »%s«",
     "Password to access files" : "Geslo za dostop do datotek",
     "The name of your circle must contain at least 3 characters" : "Ime kroga mora vsebovati vsaj 3 znake",

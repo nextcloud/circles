@@ -167,6 +167,7 @@ OC.L10N.register(
     "%s shared »%s« with you." : "%s kunhavigis „%s“ kun vi.",
     "%s shared »%s« with '%s'." : "%s kunhavigis „%s“ kun „%s“.",
     "%s on %s" : "%s el %s",
+    "%1$s via %2$s" : "%1$s pere de %2$s",
     "Click the button below to open it." : "Alklaku la butonon ĉi-sube por malfermi ĝin.",
     "Open »%s«" : "Malfermi „%s“",
     "The name of your circle must contain at least 3 characters" : "La rondonomo enhavu almenaŭ 3 signojn",
