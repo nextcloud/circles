@@ -30,6 +30,7 @@ namespace OCA\Circles\Migration;
 
 use Closure;
 use Doctrine\DBAL\Schema\SchemaException;
+use Doctrine\DBAL\Types\Type;
 use OCP\DB\ISchemaWrapper;
 use OCP\Migration\IOutput;
 use OCP\Migration\SimpleMigrationStep;
@@ -82,9 +83,17 @@ class Version0017Date20191206144441 extends SimpleMigrationStep {
 		if (!$table->hasColumn('contact_meta')) {
 			$table->addColumn(
 				'contact_meta', 'string', [
-								'notnull' => false,
-								'length'  => 1000,
-							]
+								  'notnull' => false,
+								  'length'  => 1000,
+							  ]
+			);
+		}
+		if (!$table->hasColumn('contact_checked')) {
+			$table->addColumn(
+				'contact_checked', Type::SMALLINT, [
+								  'notnull' => false,
+								  'length'  => 1,
+							  ]
 			);
 		}
 		if (!$table->hasColumn('contact_id')) {
@@ -96,6 +105,24 @@ class Version0017Date20191206144441 extends SimpleMigrationStep {
 			);
 			$table->dropPrimaryKey();
 			$table->setPrimaryKey(['circle_id', 'user_id', 'contact_id']);
+		}
+
+		$table = $schema->getTable('circles_tokens');
+		if (!$table->hasColumn('orig_password')) {
+			$table->addColumn(
+				'orig_password', 'string', [
+								  'notnull' => false,
+								  'length'  => 255,
+							  ]
+			);
+		}
+		if (!$table->hasColumn('accepted')) {
+			$table->addColumn(
+				'accepted', Type::SMALLINT, [
+								   'notnull' => false,
+								   'length'  => 1,
+							   ]
+			);
 		}
 
 		return $schema;

@@ -406,4 +406,8 @@ class ConfigService {
 	}
 
 
+	public function getInstanceId() {
+		return $this->config->getSystemValue('instanceid');
+	}
+
 }

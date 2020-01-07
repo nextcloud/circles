@@ -82,7 +82,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select(
 			'm.user_id', 'm.user_type', 'm.circle_id', 'm.level', 'm.status', 'm.note', 'm.contact_id',
-			'm.joined'
+			'm.contact_meta', 'm.joined'
 		)
 		   ->from(self::TABLE_MEMBERS, 'm')
 		   ->orderBy('m.joined');
@@ -218,6 +218,9 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		$member->setLevel($data['level']);
 		$member->setStatus($data['status']);
 		$member->setJoined($this->timezoneService->convertTimeForCurrentUser($data['joined']));
+
+		$joined = $this->timezoneService->convertToTimestamp($data['joined']);
+		$member->setJoinedSince(time() - $joined);
 
 		return $member;
 	}

@@ -29,6 +29,7 @@
 namespace OCA\Circles\Db;
 
 
+use daita\MySmallPhpTools\Traits\TArrayTools;
 use OCA\Circles\Model\SharesToken;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 
@@ -38,8 +39,10 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
  *
  * @package OCA\Circles\Db
  */
-class
-TokensRequestBuilder extends CoreRequestBuilder {
+class TokensRequestBuilder extends CoreRequestBuilder {
+
+
+	use TArrayTools;
 
 
 	/**
@@ -78,7 +81,7 @@ TokensRequestBuilder extends CoreRequestBuilder {
 		$qb = $this->dbConnection->getQueryBuilder();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->select('t.user_id', 't.circle_id', 't.share_id', 't.token')
+		$qb->select('t.user_id', 't.circle_id', 't.share_id', 't.token', 't.orig_password')
 		   ->from(self::TABLE_TOKENS, 't');
 
 		$this->default_select_alias = 't';
@@ -107,9 +110,38 @@ TokensRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function parseTokensSelectSql($data) {
 		$sharesToken = new SharesToken();
+
+		$orig = $this->get('orig_password', $data);
+		$data['orig_password'] = ($orig === '') ? '' : $this->origPasswordDecrypt($orig);
 		$sharesToken->import($data);
 
 		return $sharesToken;
+	}
+
+
+	protected function origPasswordEncrypt(string $password): string {
+		$key = $this->configService->getInstanceId();
+
+		$ivlen = openssl_cipher_iv_length($cipher = 'AES-128-CBC');
+		$iv = openssl_random_pseudo_bytes($ivlen);
+		$raw = openssl_encrypt($password, $cipher, $key, $options = OPENSSL_RAW_DATA, $iv);
+		$hmac = hash_hmac('sha256', $raw, $key, $as_binary = true);
+
+		return base64_encode($iv . $hmac . $raw);
+	}
+
+
+	protected function origPasswordDecrypt($encoded): string {
+		$key = $this->configService->getInstanceId();
+		$c = base64_decode($encoded);
+		$ivlen = openssl_cipher_iv_length($cipher = 'AES-128-CBC');
+		$iv = substr($c, 0, $ivlen);
+		$hmac = substr($c, $ivlen, $sha2len = 32);
+		$raw = substr($c, $ivlen + $sha2len);
+
+		$password = openssl_decrypt($raw, $cipher, $key, $options = OPENSSL_RAW_DATA, $iv);
+
+		return $password;
 	}
 
 }

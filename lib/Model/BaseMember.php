@@ -86,6 +86,9 @@ class BaseMember implements \JsonSerializable {
 	/** @var string */
 	private $joined;
 
+	/** @var int */
+	private $joinedSince;
+
 	/** @var bool */
 	protected $broadcasting = true;
 
@@ -309,6 +312,15 @@ class BaseMember implements \JsonSerializable {
 
 	public function getJoined() {
 		return $this->joined;
+	}
+
+
+	public function getJoinedSince(): int {
+		return $this->joinedSince;
+	}
+
+	public function setJoinedSince(int $since) {
+		$this->joinedSince = $since;
 	}
 
 

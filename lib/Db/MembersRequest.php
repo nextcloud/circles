@@ -131,6 +131,45 @@ class MembersRequest extends MembersRequestBuilder {
 
 
 	/**
+	 * Returns members generated from Contacts that are not 'checked' (as not sent existing shares).
+	 *
+	 *
+	 * @return Member[]
+	 */
+	public function forceGetAllRecentContactEdit() {
+		$qb = $this->getMembersSelectSql();
+		$this->limitToUserType($qb, Member::TYPE_CONTACT);
+
+		$expr = $qb->expr();
+		$orX = $expr->orX();
+		$orX->add($expr->isNull('contact_checked'));
+		$orX->add($expr->neq('contact_checked', $qb->createNamedParameter('1')));
+		$qb->andWhere($orX);
+
+		$members = [];
+		$cursor = $qb->execute();
+		while ($data = $cursor->fetch()) {
+			$members[] = $this->parseMembersSelectSql($data);
+		}
+		$cursor->closeCursor();
+
+		return $members;
+	}
+
+
+	/**
+	 * @param Member $member
+	 * @param bool $check
+	 */
+	public function checkMember(Member $member, bool $check) {
+		$qb = $this->getMembersUpdateSql($member->getCircleId(), $member);
+		$qb->set('contact_checked', $qb->createNamedParameter(($check) ? 1 : 0));
+
+		$qb->execute();
+	}
+
+
+	/**
 	 * @param string $circleUniqueId
 	 * @param Member $viewer
 	 *
@@ -468,6 +507,18 @@ class MembersRequest extends MembersRequestBuilder {
 		$qb->execute();
 	}
 
+	/**
+	 * update database entry for a specific Member.
+	 *
+	 * @param Member $member
+	 */
+	public function updateContactMeta(Member $member) {
+		$qb = $this->getMembersUpdateSql($member->getCircleId(), $member);
+		$qb->set('contact_meta', $qb->createNamedParameter(json_encode($member->getContactMeta())));
+
+		$qb->execute();
+	}
+
 
 	/**
 	 * removeAllFromCircle();
@@ -642,7 +693,6 @@ class MembersRequest extends MembersRequestBuilder {
 
 		$qb->execute();
 	}
-
 
 }
 

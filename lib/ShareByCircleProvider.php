@@ -575,6 +575,8 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 			throw new ShareNotFound('Share not found', $this->l10n->t('Could not find share'));
 		}
 
+		$share->setStatus(Ishare::STATUS_ACCEPTED);
+
 		return $share;
 	}
 
@@ -713,6 +715,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 		$this->assignShareObjectPropertiesFromParent($share, $data);
 
 		$share->setProviderId($this->identifier());
+		$share->setStatus(Ishare::STATUS_ACCEPTED);
 
 		return $share;
 	}

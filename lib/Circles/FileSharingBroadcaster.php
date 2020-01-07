@@ -33,6 +33,7 @@ use OC\Share20\Share;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\SharesRequest;
 use OCA\Circles\Db\TokensRequest;
+use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\IBroadcaster;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
@@ -212,8 +213,8 @@ class FileSharingBroadcaster implements IBroadcaster {
 				if ($this->federatedEnabled && !empty($clouds)) {
 					$sent = false;
 					foreach ($clouds as $cloudId) {
-						$token = $this->tokensRequest->generateTokenForMember($member, $share->getId());
-						if ($this->sharedByFederated($circle, $share, $cloudId, $token)) {
+						$sharesToken = $this->tokensRequest->generateTokenForMember($member, $share->getId());
+						if ($this->sharedByFederated($circle, $share, $cloudId, $sharesToken)) {
 							$sent = true;
 						}
 					}
@@ -228,16 +229,14 @@ class FileSharingBroadcaster implements IBroadcaster {
 					$password = $this->miscService->token(15);
 				}
 
-				$token = $this->tokensRequest->generateTokenForMember($member, $share->getId(), $password);
-				if ($token !== '') {
-					$mails = [$member->getUserId()];
-					if ($member->getType() === Member::TYPE_CONTACT) {
-						$mails = $this->getMailsFromContact($member->getUserId());
-					}
+				$sharesToken = $this->tokensRequest->generateTokenForMember($member, $share->getId());
+				$mails = [$member->getUserId()];
+				if ($member->getType() === Member::TYPE_CONTACT) {
+					$mails = $this->getMailsFromContact($member->getUserId());
+				}
 
-					foreach ($mails as $mail) {
-						$this->sharedByMail($circle, $share, $mail, $token, $password);
-					}
+				foreach ($mails as $mail) {
+					$this->sharedByMail($circle, $share, $mail, $sharesToken, $password);
 				}
 			} catch (Exception $e) {
 			}
@@ -269,6 +268,10 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 */
 	public function sendMailAboutExistingShares(Circle $circle, Member $member) {
 		$this->init();
+		if ($this->configService->getAppValue(ConfigService::CIRCLES_CONTACT_BACKEND) === '1') {
+			return;
+		}
+
 		if ($member->getType() !== Member::TYPE_MAIL && $member->getType() !== Member::TYPE_CONTACT) {
 			return;
 		}
@@ -291,18 +294,17 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$author = $circle->getViewer()
 						 ->getUserId();
 
-		// TODO: check that contact got cloudIds. if so, broadcast share to federated cloud Id; also use ContactMeta.
-//		$clouds = $this->getCloudsFromContact($member->getUserId());
-//		if ($this->federatedEnabled && !empty($clouds)) {
-//			foreach ($clouds as $cloudId) {
-//				foreach ($unknownShares as $data) {
-//					$share = $this->generateShare($data);
-//				}
-//			}
-//		}
+		$recipient = $member->getUserId();
+		if ($member->getType() === Member::TYPE_CONTACT) {
+			$recipient = MiscService::getContactData($member->getUserId());
+			// TODO: CHECK THIS CHECK THIS CHECK TINS :: Get email from Contact
+			$this->miscService->log('___ RECIPIENT !! ' . json_encode($recipient));
+		}
 
+		$recipient = $member->getUserId();
 		$this->sendMailExitingShares(
-			$unknownShares, MiscService::getDisplay($author, Member::TYPE_USER), $member, $circle->getName()
+			$unknownShares, MiscService::getDisplay($author, Member::TYPE_USER), $member, $recipient,
+			$circle->getName()
 		);
 	}
 
@@ -315,7 +317,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 * @return IShare
 	 * @throws IllegalIDChangeException
 	 */
-	private function generateShare($data) {
+	private function generateShare($data): IShare {
 		$this->logger->log(0, 'Regenerate shares from payload: ' . json_encode($data));
 
 		$share = new Share($this->rootFolder, $this->userManager);
@@ -340,8 +342,8 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 *
 	 * @return bool
 	 */
-	private function sharedByFederated(Circle $circle, IShare $share, string $address, string $token): bool {
-
+	public function sharedByFederated(Circle $circle, IShare $share, string $address, SharesToken $token
+	): bool {
 		try {
 			$cloudId = $this->federationCloudIdManager->resolveCloudId($address);
 
@@ -354,7 +356,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 			$ownerCloudId = $this->federationCloudIdManager->getCloudId($share->getShareOwner(), $localUrl);
 
 			$send = $this->federationNotifications->sendRemoteShare(
-				$token,
+				$token->getToken(),
 				$address,
 				$share->getNode()
 					  ->getName(),
@@ -385,14 +387,13 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 * @param Circle $circle
 	 * @param IShare $share
 	 * @param string $email
-	 * @param string $token
-	 * @param string $password
+	 * @param SharesToken $sharesToken
 	 */
-	private function sharedByMail(Circle $circle, IShare $share, $email, $token, $password) {
+	private function sharedByMail(Circle $circle, IShare $share, $email, SharesToken $sharesToken) {
 		// genelink
 		$link = $this->urlGenerator->linkToRouteAbsolute(
 			'files_sharing.sharecontroller.showShare',
-			['token' => $token]
+			['token' => $sharesToken->getToken()]
 		);
 
 		try {
@@ -404,7 +405,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 			);
 			$this->sendPasswordByMail(
 				$share, MiscService::getDisplay($share->getSharedBy(), Member::TYPE_USER),
-				$email, $password
+				$email, $sharesToken->getOrigPassword()
 			);
 		} catch (Exception $e) {
 			OC::$server->getLogger()
@@ -572,21 +573,23 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 * @param array $unknownShares
 	 * @param string $author
 	 * @param Member $member
+	 * @param string $recipient
 	 * @param string $circleName
+	 * @param string $password
 	 */
-	private function sendMailExitingShares(array $unknownShares, $author, Member $member, $circleName) {
-		$password = '';
-		if ($this->configService->enforcePasswordProtection()) {
-			try {
-				$password = $this->miscService->token(15);
-			} catch (Exception $e) {
-				return;
-			}
-		}
-
+	public function sendMailExitingShares(
+		array $unknownShares, $author, Member $member, $recipient, $circleName
+	) {
 		$data = [];
+
+		$password = '';
 		foreach ($unknownShares as $share) {
-			$data[] = $this->getMailLinkFromShare($share, $member, $password);
+			try {
+				$item = $this->getMailLinkFromShare($share, $member, $password);
+				$password = $item['password'];
+				$data[] = $item;
+			} catch (TokenDoesNotExistException $e) {
+			}
 		}
 
 		if (sizeof($data) === 0) {
@@ -596,8 +599,8 @@ class FileSharingBroadcaster implements IBroadcaster {
 		try {
 			$template = $this->generateMailExitingShares($author, $circleName);
 			$this->fillMailExistingShares($template, $data);
-			$this->sendMailExistingShares($template, $author, $member->getUserId());
-			$this->sendPasswordExistingShares($author, $member->getUserId(), $password);
+			$this->sendMailExistingShares($template, $author, $recipient);
+			$this->sendPasswordExistingShares($author, $recipient, $password);
 		} catch (Exception $e) {
 			$this->logger->log(2, 'Failed to send mail about existing share ' . $e->getMessage());
 		}
@@ -679,14 +682,16 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 * @param array $share
 	 * @param Member $member
 	 * @param string $password
+	 * @param string $token
 	 *
 	 * @return array
+	 * @throws TokenDoesNotExistException
 	 */
-	private function getMailLinkFromShare(array $share, Member $member, $password) {
-		$token = $this->tokensRequest->generateTokenForMember($member, $share['id'], $password);
+	private function getMailLinkFromShare(array $share, Member $member, string $password = '') {
+		$sharesToken = $this->tokensRequest->generateTokenForMember($member, $share['id'], $password);
 		$link = $this->urlGenerator->linkToRouteAbsolute(
 			'files_sharing.sharecontroller.showShare',
-			['token' => $token]
+			['token' => $sharesToken->getToken()]
 		);
 		$author = $share['uid_initiator'];
 
@@ -695,7 +700,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 		return [
 			'author'   => $author,
 			'link'     => $link,
-			'password' => $password,
+			'password' => $sharesToken->getOrigPassword(),
 			'filename' => $filename
 		];
 	}

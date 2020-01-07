@@ -314,7 +314,6 @@ class MiscService {
 	 * @param int $length
 	 *
 	 * @return string
-	 * @throws Exception
 	 */
 	public function token(int $length = 0): string {
 		$chars = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890';
@@ -322,7 +321,10 @@ class MiscService {
 		$str = '';
 		$max = strlen($chars) - 1;
 		for ($i = 0; $i <= $length; $i++) {
-			$str .= $chars[random_int(0, $max)];
+			try {
+				$str .= $chars[random_int(0, $max)];
+			} catch (Exception $e) {
+			}
 		}
 
 		return $str;

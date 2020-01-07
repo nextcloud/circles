@@ -310,6 +310,7 @@ class DavService {
 //					$this->fileSharingBroadcaster->sendMailAboutExistingShares($circle, $member);
 //				}
 			} catch (MemberAlreadyExistsException $e) {
+				$this->membersRequest->checkMember($member, false);
 			}
 		}
 	}
@@ -496,14 +497,13 @@ class DavService {
 
 
 	/**
-	 * @param DavCard $davCard
 	 */
 	private function manageDeprecatedContacts() {
 		$contacts = $this->membersRequest->getMembersByContactId();
 
 		foreach ($contacts as $contact) {
 			try {
-				$this->findContactInBook($contact);
+				$this->getDavCardFromMember($contact);
 			} catch (MemberDoesNotExistException $e) {
 				$this->membersRequest->removeMember($contact);
 			}
@@ -572,15 +572,15 @@ class DavService {
 	/**
 	 * @param Member $contact
 	 *
-	 * @return array
+	 * @return DavCard
 	 * @throws MemberDoesNotExistException
 	 */
-	private function findContactInBook(Member $contact): array {
+	public function getDavCardFromMember(Member $contact): DavCard {
 		list($bookId, $cardUri) = explode('/', $contact->getContactId(), 2);
 		$cards = $this->cardDavBackend->getCards($bookId);
 		foreach ($cards as $card) {
 			if ($card['uri'] === $cardUri) {
-				return $card;
+				return $this->generateDavCardFromCard($bookId, $card);
 			}
 		}
 

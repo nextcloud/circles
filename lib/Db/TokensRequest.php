@@ -28,7 +28,7 @@
 namespace OCA\Circles\Db;
 
 
-use Exception;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharesToken;
@@ -112,33 +112,39 @@ class TokensRequest extends TokensRequestBuilder {
 	/**
 	 * @param Member $member
 	 * @param int $shareId
-	 *
 	 * @param string $password
 	 *
-	 * @return string
+	 * @return SharesToken
+	 * @throws TokenDoesNotExistException
 	 */
-	public function generateTokenForMember(Member $member, int $shareId, string $password = '') {
+	public function generateTokenForMember(Member $member, int $shareId, string $password = ''): SharesToken {
 		try {
 			$token = $this->miscService->token(15);
 
-			$hasher = \OC::$server->getHasher();
-			$password = ($password !== '') ? $hasher->hash($password) : '';
+			$orig = '';
+			if ($password === '' && $this->configService->enforcePasswordProtection()) {
+				$password = $this->miscService->token(15);
+			}
+
+			if ($password !== '') {
+				$hasher = \OC::$server->getHasher();
+				$orig = $this->origPasswordEncrypt($password);
+				$password = $hasher->hash($password);
+			}
 
 			$qb = $this->getTokensInsertSql();
 			$qb->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
 			   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
 			   ->setValue('share_id', $qb->createNamedParameter($shareId))
 			   ->setValue('token', $qb->createNamedParameter($token))
-			   ->setValue('password', $qb->createNamedParameter($password));
+			   ->setValue('password', $qb->createNamedParameter($password))
+			   ->setValue('orig_password', $qb->createNamedParameter($orig));
 
 			$qb->execute();
-
-			return $token;
-		} catch (Exception $e) {
-			$this->miscService->log('exception while generateTokenForMember: ' . $e->getMessage());
-
-			return '';
+		} catch (UniqueConstraintViolationException $e) {
 		}
+
+		return $this->getTokenFromMember($shareId, $member->getCircleId(), $member->getUserId());
 	}
 
 
