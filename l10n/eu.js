@@ -94,6 +94,9 @@ OC.L10N.register(
     "Status" : "Egoera",
     "Link" : "Esteka",
     "Members limit" : "Kide muga",
-    "Save settings" : "Gorde ezarpenak"
+    "Save settings" : "Gorde ezarpenak",
+    "Maximum number of members per circle" : "Gehieneko kide kopurua zirkuluko",
+    "Allow linking of groups" : "Onartu taldeak estekatzea",
+    "Allow federated circles" : "Onartu zirkulu federatuak"
 },
 "nplurals=2; plural=(n != 1);");
