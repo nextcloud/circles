@@ -27,6 +27,7 @@
 
 namespace OCA\Circles\Circles;
 
+use daita\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
 use OC;
 use OC\Share20\Share;
@@ -62,6 +63,9 @@ use OCP\Util;
 
 
 class FileSharingBroadcaster implements IBroadcaster {
+
+
+	use TArrayTools;
 
 
 	/** @var bool */
@@ -236,7 +240,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 				}
 
 				foreach ($mails as $mail) {
-					$this->sharedByMail($circle, $share, $mail, $sharesToken, $password);
+					$this->sharedByMail($circle, $share, $mail, $sharesToken);
 				}
 			} catch (Exception $e) {
 			}
@@ -267,14 +271,12 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 * @param Member $member
 	 */
 	public function sendMailAboutExistingShares(Circle $circle, Member $member) {
-		$this->init();
-		if ($this->configService->getAppValue(ConfigService::CIRCLES_CONTACT_BACKEND) === '1') {
+		if ($member->getType() !== Member::TYPE_MAIL && $member->getType() !== Member::TYPE_CONTACT
+			&& $member->getContactId() !== '') {
 			return;
 		}
 
-		if ($member->getType() !== Member::TYPE_MAIL && $member->getType() !== Member::TYPE_CONTACT) {
-			return;
-		}
+		$this->init();
 
 		$allShares = $this->sharesRequest->getSharesForCircle($member->getCircleId());
 		$knownShares = array_map(
@@ -296,12 +298,14 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 		$recipient = $member->getUserId();
 		if ($member->getType() === Member::TYPE_CONTACT) {
-			$recipient = MiscService::getContactData($member->getUserId());
-			// TODO: CHECK THIS CHECK THIS CHECK TINS :: Get email from Contact
-			$this->miscService->log('___ RECIPIENT !! ' . json_encode($recipient));
+			$emails = $this->getArray('EMAIL', MiscService::getContactData($member->getUserId()));
+			if (empty($emails)) {
+				return;
+			}
+
+			$recipient = $emails[0];
 		}
 
-		$recipient = $member->getUserId();
 		$this->sendMailExitingShares(
 			$unknownShares, MiscService::getDisplay($author, Member::TYPE_USER), $member, $recipient,
 			$circle->getName()
