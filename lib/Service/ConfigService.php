@@ -393,6 +393,10 @@ class ConfigService {
 	 * @return bool
 	 */
 	public function sendPasswordByMail() {
+		if ($this->getAppValue(self::CIRCLES_CONTACT_BACKEND) === '1') {
+			return false;
+		}
+
 		return ($this->config->getAppValue('sharebymail', 'sendpasswordmail', 'yes') === 'yes');
 	}
 
@@ -402,6 +406,10 @@ class ConfigService {
 	 * @return bool
 	 */
 	public function enforcePasswordProtection() {
+		if ($this->getAppValue(self::CIRCLES_CONTACT_BACKEND) === '1') {
+			return false;
+		}
+
 		return ($this->config->getAppValue('sharebymail', 'enforcePasswordProtection', 'no') === 'yes');
 	}
 
