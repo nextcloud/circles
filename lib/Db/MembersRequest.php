@@ -28,6 +28,7 @@
 namespace OCA\Circles\Db;
 
 
+use daita\MySmallPhpTools\Traits\TStringTools;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
@@ -35,6 +36,9 @@ use OCA\Circles\Model\Member;
 use OCP\IGroup;
 
 class MembersRequest extends MembersRequestBuilder {
+
+
+	use TStringTools;
 
 
 	/**
@@ -420,10 +424,16 @@ class MembersRequest extends MembersRequestBuilder {
 	 * @throws MemberAlreadyExistsException
 	 */
 	public function createMember(Member $member) {
+
+		if ($member->getMemberId() === '') {
+			$member->setMemberId($this->token());
+		}
+
 		try {
 			$qb = $this->getMembersInsertSql();
 			$qb->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
 			   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
+			   ->setValue('member_id', $qb->createNamedParameter($member->getMemberId()))
 			   ->setValue('user_type', $qb->createNamedParameter($member->getType()))
 			   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
 			   ->setValue('status', $qb->createNamedParameter($member->getStatus()))

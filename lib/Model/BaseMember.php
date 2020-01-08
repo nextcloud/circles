@@ -62,6 +62,9 @@ class BaseMember implements \JsonSerializable {
 	/** @var string */
 	private $userId = '';
 
+	/** @var string  */
+	private $memberId = '';
+
 	/** @var int */
 	private $type = self::TYPE_USER;
 
@@ -178,6 +181,18 @@ class BaseMember implements \JsonSerializable {
 
 	public function getUserId() {
 		return $this->userId;
+	}
+
+
+
+	public function setMemberId($memberId) {
+		$this->memberId = $memberId;
+
+		return $this;
+	}
+
+	public function getMemberId() {
+		return $this->memberId;
 	}
 
 

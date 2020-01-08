@@ -40,6 +40,8 @@ use OCP\AppFramework\IAppContainer;
 use OCP\AppFramework\QueryException;
 use OCP\Util;
 
+require_once __DIR__ . '/../../appinfo/autoload.php';
+
 
 class Application extends App {
 

@@ -121,14 +121,8 @@ class TokensRequest extends TokensRequestBuilder {
 		try {
 			$token = $this->miscService->token(15);
 
-			$orig = '';
-			if ($password === '' && $this->configService->enforcePasswordProtection()) {
-				$password = $this->miscService->token(15);
-			}
-
 			if ($password !== '') {
 				$hasher = \OC::$server->getHasher();
-				$orig = $this->origPasswordEncrypt($password);
 				$password = $hasher->hash($password);
 			}
 
@@ -136,9 +130,9 @@ class TokensRequest extends TokensRequestBuilder {
 			$qb->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
 			   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
 			   ->setValue('share_id', $qb->createNamedParameter($shareId))
+			   ->setValue('member_id', $qb->createNamedParameter($member->getMemberId()))
 			   ->setValue('token', $qb->createNamedParameter($token))
-			   ->setValue('password', $qb->createNamedParameter($password))
-			   ->setValue('orig_password', $qb->createNamedParameter($orig));
+			   ->setValue('password', $qb->createNamedParameter($password));
 
 			$qb->execute();
 		} catch (UniqueConstraintViolationException $e) {

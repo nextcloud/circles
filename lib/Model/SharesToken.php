@@ -54,9 +54,6 @@ class SharesToken implements JsonSerializable {
 	/** @var string */
 	private $token = '';
 
-	/** @var string */
-	private $origPassword = '';
-
 
 	/**
 	 * SharesToken constructor.
@@ -142,25 +139,6 @@ class SharesToken implements JsonSerializable {
 
 
 	/**
-	 * @return string
-	 */
-	public function getOrigPassword(): string {
-		return $this->origPassword;
-	}
-
-	/**
-	 * @param string $origPassword
-	 *
-	 * @return SharesToken
-	 */
-	public function setOrigPassword(string $origPassword): self {
-		$this->origPassword = $origPassword;
-
-		return $this;
-	}
-
-
-	/**
 	 * @param array $data
 	 */
 	function import(array $data) {
@@ -168,7 +146,6 @@ class SharesToken implements JsonSerializable {
 		$this->setUserId($this->get('user_id', $data, ''));
 		$this->setShareId($this->get('share_id', $data, ''));
 		$this->setToken($this->get('token', $data, ''));
-		$this->setOrigPassword($this->get('orig_password', $data, ''));
 	}
 
 

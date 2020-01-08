@@ -65,9 +65,6 @@ use OCP\Util;
 class FileSharingBroadcaster implements IBroadcaster {
 
 
-	use TArrayTools;
-
-
 	/** @var bool */
 	private $initiated = false;
 
@@ -233,14 +230,14 @@ class FileSharingBroadcaster implements IBroadcaster {
 					$password = $this->miscService->token(15);
 				}
 
-				$sharesToken = $this->tokensRequest->generateTokenForMember($member, $share->getId());
+				$sharesToken = $this->tokensRequest->generateTokenForMember($member, $share->getId(), $password);
 				$mails = [$member->getUserId()];
 				if ($member->getType() === Member::TYPE_CONTACT) {
 					$mails = $this->getMailsFromContact($member->getUserId());
 				}
 
 				foreach ($mails as $mail) {
-					$this->sharedByMail($circle, $share, $mail, $sharesToken);
+					$this->sharedByMail($circle, $share, $mail, $sharesToken, $password);
 				}
 			} catch (Exception $e) {
 			}
@@ -298,7 +295,12 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 		$recipient = $member->getUserId();
 		if ($member->getType() === Member::TYPE_CONTACT) {
-			$emails = $this->getArray('EMAIL', MiscService::getContactData($member->getUserId()));
+			$data = MiscService::getContactData($member->getUserId());
+			if (!array_key_exists('EMAIL', $data)) {
+				return;
+			}
+
+			$emails = $data['EMAIL'];
 			if (empty($emails)) {
 				return;
 			}
@@ -392,8 +394,11 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 * @param IShare $share
 	 * @param string $email
 	 * @param SharesToken $sharesToken
+	 * @param string $password
 	 */
-	private function sharedByMail(Circle $circle, IShare $share, $email, SharesToken $sharesToken) {
+	private function sharedByMail(
+		Circle $circle, IShare $share, string $email, SharesToken $sharesToken, string $password
+	) {
 		// genelink
 		$link = $this->urlGenerator->linkToRouteAbsolute(
 			'files_sharing.sharecontroller.showShare',
@@ -409,7 +414,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 			);
 			$this->sendPasswordByMail(
 				$share, MiscService::getDisplay($share->getSharedBy(), Member::TYPE_USER),
-				$email, $sharesToken->getOrigPassword()
+				$email, $password
 			);
 		} catch (Exception $e) {
 			OC::$server->getLogger()
@@ -579,7 +584,6 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 * @param Member $member
 	 * @param string $recipient
 	 * @param string $circleName
-	 * @param string $password
 	 */
 	public function sendMailExitingShares(
 		array $unknownShares, $author, Member $member, $recipient, $circleName
@@ -587,11 +591,13 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$data = [];
 
 		$password = '';
+		if ($this->configService->enforcePasswordProtection()) {
+			$password = $this->miscService->token(15);
+		}
+
 		foreach ($unknownShares as $share) {
 			try {
-				$item = $this->getMailLinkFromShare($share, $member, $password);
-				$password = $item['password'];
-				$data[] = $item;
+				$data[] = $this->getMailLinkFromShare($share, $member, $password);
 			} catch (TokenDoesNotExistException $e) {
 			}
 		}
@@ -686,7 +692,6 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 * @param array $share
 	 * @param Member $member
 	 * @param string $password
-	 * @param string $token
 	 *
 	 * @return array
 	 * @throws TokenDoesNotExistException
@@ -704,7 +709,6 @@ class FileSharingBroadcaster implements IBroadcaster {
 		return [
 			'author'   => $author,
 			'link'     => $link,
-			'password' => $sharesToken->getOrigPassword(),
 			'filename' => $filename
 		];
 	}
