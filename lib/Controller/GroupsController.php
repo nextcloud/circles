@@ -26,6 +26,7 @@
 
 namespace OCA\Circles\Controller;
 
+use Exception;
 use OCA\Circles\Exceptions\LinkedGroupNotAllowedException;
 use OCP\AppFramework\Http\DataResponse;
 
@@ -50,8 +51,10 @@ class GroupsController extends BaseController {
 		}
 
 		try {
+			$this->mustHaveFrontEndEnabled();
+
 			$data = $this->groupsService->linkGroup($uniqueId, $name);
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			return $this->fail(
 				[
 					'circle_id' => $uniqueId,
@@ -84,8 +87,10 @@ class GroupsController extends BaseController {
 	public function level($uniqueId, $group, $level) {
 
 		try {
+			$this->mustHaveFrontEndEnabled();
+
 			$data = $this->groupsService->levelGroup($uniqueId, $group, $level);
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			return
 				$this->fail(
 					[
@@ -127,8 +132,10 @@ class GroupsController extends BaseController {
 
 		$args = ['circle_id' => $uniqueId, 'name' => $group];
 		try {
+			$this->mustHaveFrontEndEnabled();
+
 			$data = $this->groupsService->unlinkGroup($uniqueId, $group);
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			return $this->fail(array_merge($args, ['error' => $e->getMessage()]));
 		}
 

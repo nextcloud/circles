@@ -29,6 +29,7 @@ namespace OCA\Circles\Model;
 
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
+use OCP\Share\IShare;
 
 
 /**
@@ -44,6 +45,12 @@ class SharesToken implements JsonSerializable {
 
 	/** @var string */
 	private $circleId = '';
+
+	/** @var string */
+	private $memberId = '';
+
+	/** @var int */
+	private $accepted = IShare::STATUS_PENDING;
 
 	/** @var string */
 	private $userId = '';
@@ -76,6 +83,25 @@ class SharesToken implements JsonSerializable {
 	 */
 	public function setCircleId(string $circleId): self {
 		$this->circleId = $circleId;
+
+		return $this;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getMemberId(): string {
+		return $this->memberId;
+	}
+
+	/**
+	 * @param string $memberId
+	 *
+	 * @return SharesToken
+	 */
+	public function setMemberId(string $memberId): self {
+		$this->memberId = $memberId;
 
 		return $this;
 	}
@@ -139,13 +165,34 @@ class SharesToken implements JsonSerializable {
 
 
 	/**
+	 * @return int
+	 */
+	public function getAccepted(): int {
+		return $this->accepted;
+	}
+
+	/**
+	 * @param int $accepted
+	 *
+	 * @return SharesToken
+	 */
+	public function setAccepted(int $accepted): self {
+		$this->accepted = $accepted;
+
+		return $this;
+	}
+
+
+	/**
 	 * @param array $data
 	 */
 	function import(array $data) {
 		$this->setCircleId($this->get('circle_id', $data, ''));
+		$this->setMemberId($this->get('member_id', $data, ''));
+		$this->setAccepted($this->getInt('accepted', $data, IShare::STATUS_PENDING));
 		$this->setUserId($this->get('user_id', $data, ''));
 		$this->setShareId($this->get('share_id', $data, ''));
-		$this->setToken($this->get('token_id', $data, ''));
+		$this->setToken($this->get('token', $data, ''));
 	}
 
 
@@ -155,9 +202,11 @@ class SharesToken implements JsonSerializable {
 	function jsonSerialize(): array {
 		return [
 			'circleId' => $this->getCircleId(),
+			'memberId' => $this->getMemberId(),
 			'userId'   => $this->getUserId(),
 			'shareId'  => $this->getShareId(),
-			'token'    => $this->getToken()
+			'token'    => $this->getToken(),
+			'accepted' => $this->getAccepted()
 		];
 	}
 

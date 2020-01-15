@@ -228,6 +228,8 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$qb->setValue('unique_id', $qb->createNamedParameter($circle->getUniqueId(true)))
 		   ->setValue('name', $qb->createNamedParameter($circle->getName()))
 		   ->setValue('description', $qb->createNamedParameter($circle->getDescription()))
+		   ->setValue('contact_addressbook', $qb->createNamedParameter($circle->getContactAddressBook()))
+		   ->setValue('contact_groupname', $qb->createNamedParameter($circle->getContactGroupName()))
 		   ->setValue('settings', $qb->createNamedParameter($circle->getSettings(true)))
 		   ->setValue('type', $qb->createNamedParameter($circle->getType()));
 		$qb->execute();
@@ -248,7 +250,6 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 */
 	public function destroyCircle($circleUniqueId) {
 		$qb = $this->getCirclesDeleteSql($circleUniqueId);
-
 
 		$qb->execute();
 	}
@@ -356,5 +357,68 @@ class CirclesRequest extends CirclesRequestBuilder {
 		return $entry;
 	}
 
+
+	/**
+	 * @param int $addressBookId
+	 *
+	 * @return array
+	 */
+	public function getFromBook(int $addressBookId) {
+		$qb = $this->getCirclesSelectSql();
+		$this->limitToAddressBookId($qb, $addressBookId);
+
+		$circles = [];
+		$cursor = $qb->execute();
+		while ($data = $cursor->fetch()) {
+			$circles[] = $this->parseCirclesSelectSql($data);
+		}
+		$cursor->closeCursor();
+
+		return $circles;
+	}
+
+
+	/**
+	 * @param int $addressBookId
+	 *
+	 * @return Circle[]
+	 */
+	public function getFromContactBook(int $addressBookId): array {
+		$qb = $this->getCirclesSelectSql();
+		$this->limitToAddressBookId($qb, $addressBookId);
+
+		$circles = [];
+		$cursor = $qb->execute();
+		while ($data = $cursor->fetch()) {
+			$circles[] = $this->parseCirclesSelectSql($data);
+		}
+		$cursor->closeCursor();
+
+		return $circles;
+	}
+
+
+	/**
+	 * @param int $addressBookId
+	 * @param string $group
+	 *
+	 * @return Circle
+	 * @throws CircleDoesNotExistException
+	 */
+	public function getFromContactGroup(int $addressBookId, string $group): Circle {
+		$qb = $this->getCirclesSelectSql();
+		$this->limitToAddressBookId($qb, $addressBookId);
+		$this->limitToContactGroup($qb, $group);
+
+		$cursor = $qb->execute();
+		$data = $cursor->fetch();
+		$cursor->closeCursor();
+
+		if ($data === false) {
+			throw new CircleDoesNotExistException($this->l10n->t('Circle not found'));
+		}
+
+		return $this->parseCirclesSelectSql($data);
+	}
 
 }

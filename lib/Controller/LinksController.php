@@ -113,6 +113,10 @@ class LinksController extends Controller {
 	 */
 	public function createLink($uniqueId, $remote) {
 		try {
+			if (!$this->configService->stillFrontEnd()) {
+				throw new Exception('circles\' frontend is not enabled');
+			}
+
 			$link = $this->federatedLinkCreationService->createLinkWithRemoteCircle($uniqueId, $remote);
 			$links = $this->circlesService->detailsCircle($uniqueId)
 										  ->getLinks();
@@ -120,7 +124,7 @@ class LinksController extends Controller {
 			return $this->miscService->success(
 				['circle_id' => $uniqueId, 'remote' => $remote, 'link' => $link, 'links' => $links]
 			);
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			return $this->miscService->fail(
 				['circle_id' => $uniqueId, 'remote' => $remote, 'error' => $e->getMessage()]
 			);
@@ -154,14 +158,17 @@ class LinksController extends Controller {
 		}
 
 		try {
+			if (!$this->configService->stillFrontEnd()) {
+				throw new Exception('circles\' frontend is not enabled');
+			}
+
 			$links = $this->federatedLinkService->linkStatus($linkId, (int)$status);
 
 			return $this->miscService->success(['link_id' => $linkId, 'links' => $links]);
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			return $this->miscService->fail(['link_id' => $linkId, 'error' => $e->getMessage()]);
 		}
 	}
-
 
 }
 

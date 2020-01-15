@@ -25,6 +25,7 @@
  *
  */
 
+
 namespace OCA\Circles\Db;
 
 
@@ -80,7 +81,9 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select(
-			'm.user_id', 'm.user_type', 'm.circle_id', 'm.level', 'm.status', 'm.note', 'm.joined'
+			'm.user_id', 'm.user_type', 'm.circle_id', 'm.level', 'm.status', 'm.note', 'm.contact_id',
+			'member_id',
+			'm.contact_meta', 'm.joined'
 		)
 		   ->from(self::TABLE_MEMBERS, 'm')
 		   ->orderBy('m.joined');
@@ -206,9 +209,20 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	protected function parseMembersSelectSql(array $data) {
 		$member = new Member($data['user_id'], $data['user_type'], $data['circle_id']);
 		$member->setNote($data['note']);
+		$member->setContactId($data['contact_id']);
+		$member->setMemberId($data['member_id']);
+
+		$contactMeta = json_decode($data['contact_meta'], true);
+		if (is_array($contactMeta)) {
+			$member->setContactMeta($contactMeta);
+		}
+
 		$member->setLevel($data['level']);
 		$member->setStatus($data['status']);
 		$member->setJoined($this->timezoneService->convertTimeForCurrentUser($data['joined']));
+
+		$joined = $this->timezoneService->convertToTimestamp($data['joined']);
+		$member->setJoinedSince(time() - $joined);
 
 		return $member;
 	}

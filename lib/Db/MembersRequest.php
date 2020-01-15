@@ -28,6 +28,7 @@
 namespace OCA\Circles\Db;
 
 
+use daita\MySmallPhpTools\Traits\TStringTools;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
@@ -35,6 +36,9 @@ use OCA\Circles\Model\Member;
 use OCP\IGroup;
 
 class MembersRequest extends MembersRequestBuilder {
+
+
+	use TStringTools;
 
 
 	/**
@@ -127,6 +131,45 @@ class MembersRequest extends MembersRequestBuilder {
 		$cursor->closeCursor();
 
 		return $members;
+	}
+
+
+	/**
+	 * Returns members generated from Contacts that are not 'checked' (as not sent existing shares).
+	 *
+	 *
+	 * @return Member[]
+	 */
+	public function forceGetAllRecentContactEdit() {
+		$qb = $this->getMembersSelectSql();
+		$this->limitToUserType($qb, Member::TYPE_CONTACT);
+
+		$expr = $qb->expr();
+		$orX = $expr->orX();
+		$orX->add($expr->isNull('contact_checked'));
+		$orX->add($expr->neq('contact_checked', $qb->createNamedParameter('1')));
+		$qb->andWhere($orX);
+
+		$members = [];
+		$cursor = $qb->execute();
+		while ($data = $cursor->fetch()) {
+			$members[] = $this->parseMembersSelectSql($data);
+		}
+		$cursor->closeCursor();
+
+		return $members;
+	}
+
+
+	/**
+	 * @param Member $member
+	 * @param bool $check
+	 */
+	public function checkMember(Member $member, bool $check) {
+		$qb = $this->getMembersUpdateSql($member->getCircleId(), $member);
+		$qb->set('contact_checked', $qb->createNamedParameter(($check) ? 1 : 0));
+
+		$qb->execute();
 	}
 
 
@@ -382,13 +425,19 @@ class MembersRequest extends MembersRequestBuilder {
 	 */
 	public function createMember(Member $member) {
 
+		if ($member->getMemberId() === '') {
+			$member->setMemberId($this->token());
+		}
+
 		try {
 			$qb = $this->getMembersInsertSql();
 			$qb->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
 			   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
+			   ->setValue('member_id', $qb->createNamedParameter($member->getMemberId()))
 			   ->setValue('user_type', $qb->createNamedParameter($member->getType()))
 			   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
 			   ->setValue('status', $qb->createNamedParameter($member->getStatus()))
+			   ->setValue('contact_id', $qb->createNamedParameter($member->getContactId()))
 			   ->setValue('note', $qb->createNamedParameter($member->getNote()));
 
 			$qb->execute();
@@ -468,6 +517,18 @@ class MembersRequest extends MembersRequestBuilder {
 		$qb->execute();
 	}
 
+	/**
+	 * update database entry for a specific Member.
+	 *
+	 * @param Member $member
+	 */
+	public function updateContactMeta(Member $member) {
+		$qb = $this->getMembersUpdateSql($member->getCircleId(), $member);
+		$qb->set('contact_meta', $qb->createNamedParameter(json_encode($member->getContactMeta())));
+
+		$qb->execute();
+	}
+
 
 	/**
 	 * removeAllFromCircle();
@@ -522,6 +583,9 @@ class MembersRequest extends MembersRequestBuilder {
 		$this->limitToCircleId($qb, $member->getCircleId());
 		$this->limitToUserId($qb, $member->getUserId());
 		$this->limitToUserType($qb, $member->getType());
+		if ($member->getContactId() !== '') {
+			$this->limitToContactId($qb, $member->getContactId());
+		}
 
 		$qb->execute();
 	}
@@ -534,7 +598,6 @@ class MembersRequest extends MembersRequestBuilder {
 	 * @return bool
 	 */
 	public function updateGroup(Member $member) {
-
 		$qb = $this->getGroupsUpdateSql($member->getCircleId(), $member->getUserId());
 		$qb->set('level', $qb->createNamedParameter($member->getLevel()));
 		$qb->execute();
@@ -548,4 +611,98 @@ class MembersRequest extends MembersRequestBuilder {
 		$qb->execute();
 	}
 
+
+	/**
+	 * @param string $contactId
+	 *
+	 * @return Member[]
+	 */
+	public function getMembersByContactId(string $contactId = ''): array {
+		$qb = $this->getMembersSelectSql();
+		if ($contactId === '') {
+			$expr = $qb->expr();
+			$qb->andWhere($expr->neq('contact_id', $qb->createNamedParameter('')));
+		} else {
+			$this->limitToContactId($qb, $contactId);
+		}
+
+		$members = [];
+		$cursor = $qb->execute();
+		while ($data = $cursor->fetch()) {
+			$member = $this->parseMembersSelectSql($data);
+			$members[] = $member;
+		}
+		$cursor->closeCursor();
+
+		return $members;
+	}
+
+
+	/**
+	 * @param string $circleId
+	 * @param string $contactId
+	 * @param string $userId
+	 * @param int $type
+	 *
+	 * @return Member
+	 * @throws MemberDoesNotExistException
+	 */
+	public function getContactMember(string $circleId, string $contactId): Member {
+		$qb = $this->getMembersSelectSql();
+		$this->limitToContactId($qb, $contactId);
+		$this->limitToCircleId($qb, $circleId);
+
+		$cursor = $qb->execute();
+		$data = $cursor->fetch();
+		$cursor->closeCursor();
+
+		if ($data === false) {
+			throw new MemberDoesNotExistException($this->l10n->t('This member does not exist'));
+		}
+
+		return $this->parseMembersSelectSql($data);
+	}
+
+
+	/**
+	 * @param string $contactId
+	 *
+	 * @return Member[]
+	 */
+	public function getLocalContactMembers(string $contactId): array {
+		$qb = $this->getMembersSelectSql();
+		$this->limitToContactId($qb, $contactId);
+		$this->limitToUserType($qb, Member::TYPE_USER);
+
+		$members = [];
+		$cursor = $qb->execute();
+		while ($data = $cursor->fetch()) {
+			$members[] = $this->parseMembersSelectSql($data);
+		}
+		$cursor->closeCursor();
+
+		return $members;
+	}
+
+
+	/**
+	 * @param string $contactId
+	 * @param int $type
+	 */
+	public function removeMembersByContactId(string $contactId, int $type = 0) {
+		$this->miscService->log($contactId);
+		if ($contactId === '') {
+			return;
+		}
+
+		$qb = $this->getMembersDeleteSql();
+		$this->limitToContactId($qb, $contactId);
+		if ($type > 0) {
+			$this->limitToUserType($qb, $type);
+		}
+
+		$qb->execute();
+	}
+
 }
+

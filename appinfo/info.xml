@@ -41,6 +41,14 @@ Users won't be able to find this Circle using Nextcloud search engine.
 		<nextcloud min-version="18" max-version="18"/>
 	</dependencies>
 
+	<background-jobs>
+		<job>OCA\Circles\Cron\ContactsExistingShares</job>
+	</background-jobs>
+
+	<types>
+		<dav/>
+	</types>
+
 	<repair-steps>
 		<post-migration>
 			<step>OCA\Circles\Migration\ImportOwncloudCustomGroups</step>
@@ -52,6 +60,7 @@ Users won't be able to find this Circle using Nextcloud search engine.
 
 	<commands>
 		<command>OCA\Circles\Command\Clean</command>
+		<command>OCA\Circles\Command\SyncContact</command>
 		<!--<command>OCA\Circles\Command\Groups</command>-->
 		<command>OCA\Circles\Command\FixUniqueId</command>
 	</commands>

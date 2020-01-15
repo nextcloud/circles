@@ -29,11 +29,18 @@
 
 namespace OCA\Circles\AppInfo;
 
+use OC;
 use OCA\Circles\Api\v1\Circles;
+use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\DavService;
 use OCA\Files\App as FilesApp;
+use OCP\App\ManagerEvent;
 use OCP\AppFramework\App;
 use OCP\AppFramework\IAppContainer;
+use OCP\AppFramework\QueryException;
 use OCP\Util;
+
+require_once __DIR__ . '/../../appinfo/autoload.php';
 
 
 class Application extends App {
@@ -57,6 +64,7 @@ class Application extends App {
 		$this->container = $this->getContainer();
 
 		$this->registerHooks();
+		$this->registerDavHooks();
 	}
 
 
@@ -77,14 +85,24 @@ class Application extends App {
 	 * Register Navigation elements
 	 */
 	public function registerNavigation() {
+		/** @var ConfigService $configService */
+		try {
+			$configService = OC::$server->query(ConfigService::class);
+		} catch (QueryException $e) {
+			return;
+		}
+
+		if (!$configService->stillFrontEnd()) {
+			return;
+		}
 
 		$appManager = $this->container->getServer()
 									  ->getNavigationManager();
 		$appManager->add(
 			function() {
-				$urlGen = \OC::$server->getURLGenerator();
-				$navName = \OC::$server->getL10N(self::APP_NAME)
-									   ->t('Circles');
+				$urlGen = OC::$server->getURLGenerator();
+				$navName = OC::$server->getL10N(self::APP_NAME)
+									  ->t('Circles');
 
 				return [
 					'id'    => self::APP_NAME,
@@ -99,7 +117,7 @@ class Application extends App {
 	}
 
 	public function registerFilesPlugin() {
-		$eventDispatcher = \OC::$server->getEventDispatcher();
+		$eventDispatcher = OC::$server->getEventDispatcher();
 		$eventDispatcher->addListener(
 			'OCA\Files::loadAdditionalScripts',
 			function() {
@@ -118,11 +136,10 @@ class Application extends App {
 	 *
 	 */
 	public function registerFilesNavigation() {
-
 		$appManager = FilesApp::getNavigationManager();
 		$appManager->add(
 			function() {
-				$l = \OC::$server->getL10N('circles');
+				$l = OC::$server->getL10N('circles');
 
 				return [
 					'id'      => 'circlesfilter',
@@ -133,6 +150,29 @@ class Application extends App {
 				];
 			}
 		);
+	}
+
+
+	public function registerDavHooks() {
+		try {
+			/** @var ConfigService $configService */
+			$configService = OC::$server->query(ConfigService::class);
+			if (!$configService->isContactsBackend()) {
+				return;
+			}
+
+			/** @var DavService $davService */
+			$davService = OC::$server->query(DavService::class);
+		} catch (QueryException $e) {
+			return;
+		}
+
+		$event = OC::$server->getEventDispatcher();
+
+		$event->addListener(ManagerEvent::EVENT_APP_ENABLE, [$davService, 'onAppEnabled']);
+		$event->addListener('\OCA\DAV\CardDAV\CardDavBackend::createCard', [$davService, 'onCreateCard']);
+		$event->addListener('\OCA\DAV\CardDAV\CardDavBackend::updateCard', [$davService, 'onUpdateCard']);
+		$event->addListener('\OCA\DAV\CardDAV\CardDavBackend::deleteCard', [$davService, 'onDeleteCard']);
 	}
 
 }

@@ -53,11 +53,17 @@ class BaseMember implements \JsonSerializable {
 	/** @var string */
 	private $circleUniqueId;
 
+	/** @var string */
+	private $circleContactGroupName;
+
 	/** @var IL10N */
 	protected $l10n;
 
 	/** @var string */
 	private $userId = '';
+
+	/** @var string  */
+	private $memberId = '';
 
 	/** @var int */
 	private $type = self::TYPE_USER;
@@ -72,10 +78,19 @@ class BaseMember implements \JsonSerializable {
 	private $status;
 
 	/** @var string */
+	private $contactId = '';
+
+	/** @var array */
+	private $contactMeta = [];
+
+	/** @var string */
 	private $note;
 
 	/** @var string */
 	private $joined;
+
+	/** @var int */
+	private $joinedSince;
 
 	/** @var bool */
 	protected $broadcasting = true;
@@ -118,6 +133,25 @@ class BaseMember implements \JsonSerializable {
 
 
 	/**
+	 * @param string $circleContactGroupName
+	 *
+	 * @return $this
+	 */
+	public function setCircleContactGroupName($circleContactGroupName): self {
+		$this->circleContactGroupName = $circleContactGroupName;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getCircleContactGroupName(): string {
+		return $this->circleUniqueId;
+	}
+
+
+	/**
 	 * @return int
 	 */
 	public function getType() {
@@ -147,6 +181,18 @@ class BaseMember implements \JsonSerializable {
 
 	public function getUserId() {
 		return $this->userId;
+	}
+
+
+
+	public function setMemberId($memberId) {
+		$this->memberId = $memberId;
+
+		return $this;
+	}
+
+	public function getMemberId() {
+		return $this->memberId;
 	}
 
 
@@ -183,6 +229,81 @@ class BaseMember implements \JsonSerializable {
 	}
 
 
+	public function setContactId($contactId) {
+		$this->contactId = $contactId;
+
+		return $this;
+	}
+
+	public function getContactId() {
+		return $this->contactId;
+	}
+
+
+	/**
+	 * @param array $contactMeta
+	 *
+	 * @return $this
+	 */
+	public function setContactMeta(array $contactMeta): self {
+		$this->contactMeta = $contactMeta;
+
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getContactMeta(): array {
+		return $this->contactMeta;
+	}
+
+	/**
+	 * @param string $k
+	 * @param string $v
+	 *
+	 * @return $this
+	 */
+	public function addContactMeta(string $k, string $v): self {
+		$this->contactMeta[$k] = $v;
+
+		return $this;
+	}
+
+	/**
+	 * @param string $k
+	 * @param string $v
+	 *
+	 * @return $this
+	 */
+	public function addContactMetaArray(string $k, string $v): self {
+		if (!array_key_exists($k, $this->contactMeta)) {
+			$this->contactMeta[$k] = [];
+		}
+
+		$this->contactMeta[$k][] = $v;
+
+		return $this;
+	}
+
+	/**
+	 * @param string $k
+	 * @param array $v
+	 *
+	 * @return $this
+	 */
+	public function setContactMetaArray(string $k, array $v): self {
+		$this->contactMeta[$k] = $v;
+
+		return $this;
+	}
+
+
+	/**
+	 * @param $status
+	 *
+	 * @return $this
+	 */
 	public function setStatus($status) {
 		if (is_null($status)) {
 			$this->status = self::STATUS_NONMEMBER;
@@ -206,6 +327,15 @@ class BaseMember implements \JsonSerializable {
 
 	public function getJoined() {
 		return $this->joined;
+	}
+
+
+	public function getJoinedSince(): int {
+		return $this->joinedSince;
+	}
+
+	public function setJoinedSince(int $since) {
+		$this->joinedSince = $since;
 	}
 
 
@@ -268,6 +398,7 @@ class BaseMember implements \JsonSerializable {
 			'user_id'      => $this->getUserId(),
 			'user_type'    => $this->getType(),
 			'display_name' => $this->getDisplayName(),
+			'contact_id'   => $this->getContactId(),
 			'level'        => $this->getLevel(),
 			'level_string' => $this->getLevelString(),
 			'status'       => $this->getStatus(),

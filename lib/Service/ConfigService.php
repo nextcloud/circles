@@ -35,6 +35,8 @@ use OCP\Util;
 class ConfigService {
 
 	const CIRCLES_ALLOW_CIRCLES = 'allow_circles';
+	const CIRCLES_CONTACT_BACKEND = 'contact_backend';
+	const CIRCLES_STILL_FRONTEND = 'still_frontend';
 	const CIRCLES_SWAP_TO_TEAMS = 'swap_to_teams';
 	const CIRCLES_ALLOW_FEDERATED_CIRCLES = 'allow_federated';
 	const CIRCLES_MEMBERS_LIMIT = 'members_limit';
@@ -52,6 +54,8 @@ class ConfigService {
 
 	private $defaults = [
 		self::CIRCLES_ALLOW_CIRCLES           => Circle::CIRCLES_ALL,
+		self::CIRCLES_CONTACT_BACKEND         => '0',
+		self::CIRCLES_STILL_FRONTEND          => '0',
 		self::CIRCLES_TEST_ASYNC_INIT         => '0',
 		self::CIRCLES_SWAP_TO_TEAMS           => '0',
 		self::CIRCLES_ACCOUNTS_ONLY           => '0',
@@ -225,6 +229,16 @@ class ConfigService {
 
 
 	/**
+	 * Get available hosts
+	 *
+	 * @return array
+	 */
+	public function getAvailableHosts(): array {
+		return $this->config->getSystemValue('trusted_domains', []);
+	}
+
+
+	/**
 	 * Get a value by key
 	 *
 	 * @param string $key
@@ -358,11 +372,44 @@ class ConfigService {
 
 
 	/**
+	 * @return bool
+	 */
+	public function isContactsBackend(): bool {
+		return ($this->getAppValue(ConfigService::CIRCLES_CONTACT_BACKEND) !== '0');
+	}
+
+
+	public function contactsBackendType(): int {
+		return (int)$this->getAppValue(ConfigService::CIRCLES_CONTACT_BACKEND);
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function stillFrontEnd(): bool {
+		if ($this->getAppValue(self::CIRCLES_CONTACT_BACKEND) !== '1') {
+			return true;
+		}
+
+		if ($this->getAppValue(self::CIRCLES_STILL_FRONTEND) === '1') {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
 	 * should the password for a mail share be send to the recipient
 	 *
 	 * @return bool
 	 */
 	public function sendPasswordByMail() {
+		if ($this->getAppValue(self::CIRCLES_CONTACT_BACKEND) === '1') {
+			return false;
+		}
+
 		return ($this->config->getAppValue('sharebymail', 'sendpasswordmail', 'yes') === 'yes');
 	}
 
@@ -372,8 +419,16 @@ class ConfigService {
 	 * @return bool
 	 */
 	public function enforcePasswordProtection() {
+		if ($this->getAppValue(self::CIRCLES_CONTACT_BACKEND) === '1') {
+			return false;
+		}
+
 		return ($this->config->getAppValue('sharebymail', 'enforcePasswordProtection', 'no') === 'yes');
 	}
 
+
+	public function getInstanceId() {
+		return $this->config->getSystemValue('instanceid');
+	}
 
 }

@@ -47,6 +47,8 @@ class MembersController extends BaseController {
 	public function addMember($uniqueId, $ident, $type) {
 
 		try {
+			$this->mustHaveFrontEndEnabled();
+
 			$data = $this->membersService->addMember($uniqueId, $ident, (int)$type);
 		} catch (\Exception $e) {
 			return $this->fail(
@@ -86,6 +88,8 @@ class MembersController extends BaseController {
 	public function levelMember($uniqueId, $member, $type, $level) {
 
 		try {
+			$this->mustHaveFrontEndEnabled();
+
 			$data = $this->membersService->levelMember($uniqueId, $member, (int)$type, $level);
 		} catch (\Exception $e) {
 			return
@@ -127,6 +131,8 @@ class MembersController extends BaseController {
 	public function removeMember($uniqueId, $member, $type) {
 
 		try {
+			$this->mustHaveFrontEndEnabled();
+
 			$data = $this->membersService->removeMember($uniqueId, $member, (int)$type);
 		} catch (\Exception $e) {
 			return
@@ -163,6 +169,8 @@ class MembersController extends BaseController {
 	public function searchGlobal($search) {
 
 		try {
+			$this->mustHaveFrontEndEnabled();
+
 			$result = $this->searchService->searchGlobal($search);
 		} catch (\Exception $e) {
 			return

@@ -59,6 +59,12 @@ class TimezoneService {
 	}
 
 
+	public function convertToTimestamp($time) {
+		return strtotime($time);
+	}
+
+
+
 	/**
 	 * @param string $userId
 	 * @param string $time

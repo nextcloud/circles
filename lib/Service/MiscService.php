@@ -191,6 +191,9 @@ class MiscService {
 		}
 
 		$contact = self::getContactData($ident);
+		if ($contact === null) {
+			return;
+		}
 		self::getDisplayContactFromArray($display, $contact);
 	}
 
@@ -226,7 +229,11 @@ class MiscService {
 	 * @param string $display
 	 * @param array $contact
 	 */
-	private static function getDisplayContactFromArray(&$display, $contact) {
+	private static function getDisplayContactFromArray(string &$display, array $contact) {
+		if (!is_array($contact)) {
+			return;
+		}
+
 		if (key_exists('FN', $contact) && $contact['FN'] !== '') {
 			$display = $contact['FN'];
 
@@ -307,7 +314,6 @@ class MiscService {
 	 * @param int $length
 	 *
 	 * @return string
-	 * @throws Exception
 	 */
 	public function token(int $length = 0): string {
 		$chars = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890';
@@ -315,7 +321,10 @@ class MiscService {
 		$str = '';
 		$max = strlen($chars) - 1;
 		for ($i = 0; $i <= $length; $i++) {
-			$str .= $chars[random_int(0, $max)];
+			try {
+				$str .= $chars[random_int(0, $max)];
+			} catch (Exception $e) {
+			}
 		}
 
 		return $str;

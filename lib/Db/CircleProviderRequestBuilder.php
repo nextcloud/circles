@@ -421,7 +421,7 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 		$password = ($share->getPassword() !== null) ? $hasher->hash($share->getPassword()) : '';
 
 		$qb->insert('share')
-		   ->setValue('share_type', $qb->createNamedParameter(Share::SHARE_TYPE_CIRCLE))
+		   ->setValue('share_type', $qb->createNamedParameter(IShare::TYPE_CIRCLE))
 		   ->setValue('item_type', $qb->createNamedParameter($share->getNodeType()))
 		   ->setValue('item_source', $qb->createNamedParameter($share->getNodeId()))
 		   ->setValue('file_source', $qb->createNamedParameter($share->getNodeId()))
@@ -429,6 +429,7 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 		   ->setValue('share_with', $qb->createNamedParameter($share->getSharedWith()))
 		   ->setValue('uid_owner', $qb->createNamedParameter($share->getShareOwner()))
 		   ->setValue('uid_initiator', $qb->createNamedParameter($share->getSharedBy()))
+		   ->setValue('accepted', $qb->createNamedParameter(IShare::STATUS_ACCEPTED))
 		   ->setValue('password', $qb->createNamedParameter($password))
 		   ->setValue('permissions', $qb->createNamedParameter($share->getPermissions()))
 		   ->setValue('token', $qb->createNamedParameter($share->getToken()))

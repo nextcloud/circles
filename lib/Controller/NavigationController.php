@@ -26,6 +26,7 @@
 
 namespace OCA\Circles\Controller;
 
+use Exception;
 use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Api\v1\ShotgunCircles;
 use OCA\Circles\AppInfo\Application;
@@ -45,8 +46,10 @@ class NavigationController extends BaseController {
 	 * @NoSubAdminRequired
 	 *
 	 * @return TemplateResponse
+	 * @throws Exception
 	 */
 	public function navigate() {
+		$this->mustHaveFrontEndEnabled();
 
 		$data = [
 			'allowed_circles' => array(
