@@ -124,7 +124,7 @@ class ContactsExistingShares extends TimedJob {
 		$this->configService = $c->query(ConfigService::class);
 		$this->miscService = $c->query(MiscService::class);
 
-		if ($this->configService->getAppValue(ConfigService::CIRCLES_CONTACT_BACKEND) !== '1') {
+		if (!$this->configService->isContactsBackend()) {
 			return;
 		}
 

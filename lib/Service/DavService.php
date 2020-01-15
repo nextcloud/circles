@@ -160,6 +160,8 @@ class DavService {
 
 		$this->miscService->log('Deleting Card: ' . json_encode($davCard), 1);
 		$this->membersRequest->removeMembersByContactId($davCard->getUniqueId(), Member::TYPE_USER);
+		$this->manageDeprecatedCircles($davCard->getAddressBookId());
+		$this->manageDeprecatedMembers($davCard);
 	}
 
 
@@ -244,7 +246,6 @@ class DavService {
 	 * @param DavCard $davCard
 	 */
 	private function manageDeprecatedMembers(DavCard $davCard) {
-		// TODO: Check this.
 		$circles = array_map(
 			function(Circle $circle) {
 				return $circle->getUniqueId();
@@ -389,7 +390,8 @@ class DavService {
 				continue;
 			}
 
-			$circle = new Circle(Circle::CIRCLES_PUBLIC, $group . ' - ' . $this->uuid(5));
+			$user = $this->userManager->get($davCard->getOwner());
+			$circle = new Circle($this->configService->contactsBackendType(), $group . ' - ' . $user->getDisplayName());
 			$circle->setContactAddressBook($davCard->getAddressBookId());
 			$circle->setContactGroupName($group);
 
@@ -480,7 +482,7 @@ class DavService {
 	 * @throws Exception
 	 */
 	public function migration() {
-		if ($this->configService->getAppValue(ConfigService::CIRCLES_CONTACT_BACKEND) !== '1') {
+		if (!$this->configService->isContactsBackend()) {
 			throw new Exception('Circles needs to be set as Contacts App Backend first');
 		}
 

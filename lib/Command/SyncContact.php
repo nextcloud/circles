@@ -29,6 +29,7 @@
 
 namespace OCA\Circles\Command;
 
+use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\CommandMissingArgumentException;
 use OCA\Circles\Exceptions\FakeException;
@@ -63,11 +64,18 @@ class SyncContact extends Base {
 
 	protected function configure() {
 		parent::configure();
-		$this->setName('circles:sync')
+		$this->setName('circles:contacts:sync')
 			 ->setDescription('sync contacts, when using the Circles app as a backend of the Contact app');
 	}
 
 
+	/**
+	 * @param InputInterface $input
+	 * @param OutputInterface $output
+	 *
+	 * @return int|void|null
+	 * @throws Exception
+	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		$this->davService->migration();
 

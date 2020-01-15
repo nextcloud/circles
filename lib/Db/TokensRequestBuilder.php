@@ -81,7 +81,7 @@ class TokensRequestBuilder extends CoreRequestBuilder {
 		$qb = $this->dbConnection->getQueryBuilder();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->select('t.user_id', 't.circle_id', 't.share_id', 't.token')
+		$qb->select('t.user_id', 't.circle_id', 't.member_id', 't.share_id', 't.token', 't.accepted')
 		   ->from(self::TABLE_TOKENS, 't');
 
 		$this->default_select_alias = 't';

@@ -374,6 +374,19 @@ class ConfigService {
 	/**
 	 * @return bool
 	 */
+	public function isContactsBackend(): bool {
+		return ($this->getAppValue(ConfigService::CIRCLES_CONTACT_BACKEND) !== '0');
+	}
+
+
+	public function contactsBackendType(): int {
+		return (int)$this->getAppValue(ConfigService::CIRCLES_CONTACT_BACKEND);
+	}
+
+
+	/**
+	 * @return bool
+	 */
 	public function stillFrontEnd(): bool {
 		if ($this->getAppValue(self::CIRCLES_CONTACT_BACKEND) !== '1') {
 			return true;
