@@ -4,9 +4,14 @@
     "Admin" : "مدیر",
     "Owner" : "Owner",
     "Unknown" : "نامشخص",
+    "%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it." : "%1$s به اشتراک گذاشته »%2$s« با شما.\nبرای دسترسی قبلاً باید یک نامه جداگانه با یک لینک دریافت کرده باشید",
+    "Password to access »%1$s« shared to you by %2$s" : "برای دسترسی به رمز عبور »%1$s« توسط شم %2$sا به اشتراک گذاشته شده است",
+    "Password to access »%s«" : "برای دسترسی به رمز عبور »%s«",
+    "It is protected with the following password:" : "با رمز عبور زیر محافظت می شود:",
     "%1$s via %2$s" : "%1$s از طریق %2$s",
     "Click the button below to open it." : "برای باز کردن آن روی دکمه زیر کلیک کنید.",
     "Open »%s«" : "باز کن »%s«",
+    "Could not find share" : "اشتراک یافت نشد",
     "No files in here" : "هیچ فایلی اینجا وجود ندارد",
     "No entries found in this folder" : "هیچ ورودی‌ای در این پوشه وجود ندارد",
     "Name" : "نام",
@@ -14,6 +19,7 @@
     "Modified" : "تغییر یافته",
     "Settings" : "تنظیمات",
     "Username" : "نام کاربری",
-    "Link" : "Link"
+    "Link" : "Link",
+    "Save settings" : "تنظیمات را ذخیره کن"
 },"pluralForm" :"nplurals=2; plural=(n > 1);"
 }
