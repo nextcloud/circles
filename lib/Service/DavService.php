@@ -323,9 +323,9 @@ class DavService {
 	 * @return int
 	 */
 	private function getMemberType(DavCard $davCard): int {
-		foreach ($davCard->getEmails() as $email) {
+		foreach (array_merge($davCard->getEmails(), $davCard->getClouds()) as $address) {
 			try {
-				$davCard->setUserId($this->isLocalMember($email));
+				$davCard->setUserId($this->isLocalMember($address));
 
 				return DavCard::TYPE_LOCAL;
 			} catch (NotLocalMemberException $e) {
@@ -339,17 +339,21 @@ class DavService {
 
 
 	/**
-	 * @param string $email
+	 * @param string $address
 	 *
 	 * @return string
 	 * @throws NotLocalMemberException
 	 */
-	private function isLocalMember(string $email): string {
-		if (strpos($email, '@') === false) {
+	private function isLocalMember(string $address): string {
+		if (strpos($address, '@') === false) {
+			$user = $this->userManager->get($address);
+			if ($user !== null) {
+				return $user->getUID();
+			}
 			throw new NotLocalMemberException();
 		}
 
-		list ($username, $domain) = explode('@', $email);
+		list ($username, $domain) = explode('@', $address);
 		if (in_array($domain, $this->configService->getAvailableHosts())) {
 			$user = $this->userManager->get($username);
 			if ($user !== null) {
