@@ -1,7 +1,7 @@
 OC.L10N.register(
     "circles",
     {
-    "Are you sure you want to transfer your ownership?" : "Ar tikrai norite perduoti nuosavybės teisę?",
+    "Are you sure you want to transfer your ownership?" : "Ar tikrai norite perduoti savo nuosavybės teisę?",
     "This action is irreversible" : "Šis veiksmas yra neatšaukiamas",
     "Personal circle" : "Asmeninis ratas",
     "Secret circle" : "Slaptas ratas",
