@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 
 
+### 0.18.0 (nc18)
+
+- compat nc18
+- circles as backend for contacts
+
+
 ### 0.17.10
 
 - fixing issue with sqlite
