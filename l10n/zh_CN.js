@@ -275,7 +275,7 @@ OC.L10N.register(
     "Level" : "离开",
     "Status" : "状态",
     "Joined" : "已加入",
-    "Group Name" : "分组名称",
+    "Group Name" : "群组名称",
     "Link" : "链接",
     "Linked" : "已链接",
     "Members limit" : "限制成员数：",
