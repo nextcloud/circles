@@ -47,6 +47,7 @@ OC.L10N.register(
     "%s shared »%s« with you." : "%s надав Вам доступ до »%s«.",
     "%s shared »%s« with '%s'." : "%s поділився »%s« з '%s'",
     "Click the button below to open it." : "Для відкриття натисніть кнопку нижче.",
+    "Open »%s«" : "Відкритт 1%s",
     "No files in here" : "Тут немає файлів",
     "No entries found in this folder" : "В цій теці нічого немає",
     "Name" : "Ім'я",
