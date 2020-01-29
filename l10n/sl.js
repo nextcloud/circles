@@ -75,6 +75,7 @@ OC.L10N.register(
     "Select circles to filter by" : "Izbor krogov za filtriranje",
     "No circles found" : "Ni najdenih krogov",
     "Please select circles to filter by" : "Izbor krogov za filtriranje",
+    "No files found for the selected circles" : "Ni izbranih datotek za izbrane kroge",
     "You created the circle {circle}" : "Ustvarili ste krog {circle}",
     "You deleted {circle}" : "Izbrišete krog {circle}",
     "{author} deleted {circle}" : "{author} izbriše krog {circle}",
