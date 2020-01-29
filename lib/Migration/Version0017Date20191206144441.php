@@ -124,7 +124,9 @@ class Version0017Date20191206144441 extends SimpleMigrationStep {
 								'length'  => 127,
 							]
 			);
-			$table->dropPrimaryKey();
+			if ($table->hasPrimaryKey()) {
+				$table->dropPrimaryKey();
+			}
 			$table->setPrimaryKey(['circle_id', 'user_id', 'contact_id']);
 		}
 
