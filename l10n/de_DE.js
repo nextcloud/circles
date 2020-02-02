@@ -162,7 +162,7 @@ OC.L10N.register(
     "You are the new owner of {circle}" : "Sie sind der neue Eigentümer von {circle}",
     "{member} is the new owner of {circle}" : "{member} ist der neue Eigentümer von {circle}",
     "On events happening in a <strong>Circle</strong> you belong" : "Auf Ereignisse in einem <strong>Kreis</strong> der Ihnen gehört",
-    "Any important event in a <strong>Circle</strong> you are moderating" : "Irgend ein wichtiges Ereignis in einem <strong>Kreis</strong> den Sie moderieren",
+    "Any important event in a <strong>Circle</strong> you are moderating" : "Irgend ein wichtiger Termin in einem <strong>Kreis</strong> den Sie moderieren",
     "Shared to Circles" : "Geteilt mit Kreisen",
     "%s shared »%s« with you." : "%s hat »%s« mit Ihnen geteilt.",
     "%s shared »%s« with '%s'." : "%s hat »%s« mit '%s' geteilt.",
