@@ -92,43 +92,6 @@ class Version0017Date20191206144441 extends SimpleMigrationStep {
 			);
 		}
 
-		$table = $schema->getTable('circles_members');
-		if (!$table->hasColumn('member_id')) {
-			$table->addColumn(
-				'member_id', Type::STRING, [
-							   'notnull' => false,
-							   'length'  => 15,
-						   ]
-			);
-		}
-		if (!$table->hasColumn('contact_meta')) {
-			$table->addColumn(
-				'contact_meta', 'string', [
-								  'notnull' => false,
-								  'length'  => 1000,
-							  ]
-			);
-		}
-		if (!$table->hasColumn('contact_checked')) {
-			$table->addColumn(
-				'contact_checked', Type::SMALLINT, [
-									 'notnull' => false,
-									 'length'  => 1,
-								 ]
-			);
-		}
-		if (!$table->hasColumn('contact_id')) {
-			$table->addColumn(
-				'contact_id', 'string', [
-								'notnull' => false,
-								'length'  => 127,
-							]
-			);
-			if ($table->hasPrimaryKey()) {
-				$table->dropPrimaryKey();
-			}
-			$table->setPrimaryKey(['circle_id', 'user_id', 'contact_id']);
-		}
 
 		$table = $schema->getTable('circles_tokens');
 		if (!$table->hasColumn('member_id')) {
@@ -158,65 +121,66 @@ class Version0017Date20191206144441 extends SimpleMigrationStep {
 	 */
 	public function postSchemaChange(IOutput $output, Closure $schemaClosure, array $options) {
 
-		$qb = $this->connection->getQueryBuilder();
-		$expr = $qb->expr();
+//		$qb = $this->connection->getQueryBuilder();
+//		$expr = $qb->expr();
+//
+//		$orX = $expr->orX();
+//		$orX->add($expr->eq('member_id', $qb->createNamedParameter('')));
+//		$orX->add($expr->isNull('member_id'));
+//// TODO : MOVE TO 112901
+//		$qb->select('circle_id', 'user_id', 'user_type')
+//		   ->from('circles_members')
+//		   ->where($orX);
+//
+//		$result = $qb->execute();
+//		while ($row = $result->fetch()) {
+//			$uniqueId = substr(bin2hex(openssl_random_pseudo_bytes(24)), 0, 15);
+//
+//			$update = $this->connection->getQueryBuilder();
+//			$expru = $update->expr();
+//			$update->update('circles_members')
+//				   ->set('member_id', $update->createNamedParameter($uniqueId))
+//				   ->where($expru->eq('circle_id', $update->createNamedParameter($row['circle_id'])))
+//				   ->andWhere($expru->eq('user_id', $update->createNamedParameter($row['user_id'])))
+//				   ->andWhere($expru->eq('user_type', $update->createNamedParameter($row['user_type'])));
+//
+//			$update->execute();
+//		}
+//		}
 
-		$orX = $expr->orX();
-		$orX->add($expr->eq('member_id', $qb->createNamedParameter('')));
-		$orX->add($expr->isNull('member_id'));
 
-		$qb->select('circle_id', 'user_id', 'user_type')
-		   ->from('circles_members')
-		   ->where($orX);
-
-		$result = $qb->execute();
-		while ($row = $result->fetch()) {
-			$uniqueId = substr(bin2hex(openssl_random_pseudo_bytes(24)), 0, 15);
-
-			$update = $this->connection->getQueryBuilder();
-			$expru = $update->expr();
-			$update->update('circles_members')
-				   ->set('member_id', $update->createNamedParameter($uniqueId))
-				   ->where($expru->eq('circle_id', $update->createNamedParameter($row['circle_id'])))
-				   ->andWhere($expru->eq('user_id', $update->createNamedParameter($row['user_id'])))
-				   ->andWhere($expru->eq('user_type', $update->createNamedParameter($row['user_type'])));
-
-			$update->execute();
-		}
-
-
-		$qb2 = $this->connection->getQueryBuilder();
-		$expr2 = $qb2->expr();
-		$orX = $expr2->orX();
-		$orX->add($expr2->eq('member_id', $qb2->createNamedParameter('')));
-		$orX->add($expr2->isNull('member_id'));
-		$qb2->select('user_id', 'circle_id')
-			->from('circles_tokens')
-			->where($orX);
-
-		$result = $qb2->execute();
-		while ($row = $result->fetch()) {
-			$qbm = $this->connection->getQueryBuilder();
-			$exprm = $qbm->expr();
-
-			$qbm->select('member_id')
-				->from('circles_members')
-				->where($exprm->eq('circle_id', $qbm->createNamedParameter($row['circle_id'])))
-				->andWhere($exprm->eq('user_id', $qbm->createNamedParameter($row['user_id'])))
-				->andWhere($exprm->neq('user_type', $qbm->createNamedParameter('1')));
-
-			$resultm = $qbm->execute();
-			$member = $resultm->fetch();
-
-			$update = $this->connection->getQueryBuilder();
-			$expru = $update->expr();
-			$update->update('circles_tokens')
-				   ->set('member_id', $update->createNamedParameter($member['member_id']))
-				   ->where($expru->eq('circle_id', $update->createNamedParameter($row['circle_id'])))
-				   ->andWhere($expru->eq('user_id', $update->createNamedParameter($row['user_id'])));
-
-			$update->execute();
-		}
+//		$qb2 = $this->connection->getQueryBuilder();
+//		$expr2 = $qb2->expr();
+//		$orX = $expr2->orX();
+//		$orX->add($expr2->eq('member_id', $qb2->createNamedParameter('')));
+//		$orX->add($expr2->isNull('member_id'));
+//		$qb2->select('user_id', 'circle_id')
+//			->from('circles_tokens')
+//			->where($orX);
+//
+//		$result = $qb2->execute();
+//		while ($row = $result->fetch()) {
+//			$qbm = $this->connection->getQueryBuilder();
+//			$exprm = $qbm->expr();
+//
+//			$qbm->select('member_id')
+//				->from('circles_members')
+//				->where($exprm->eq('circle_id', $qbm->createNamedParameter($row['circle_id'])))
+//				->andWhere($exprm->eq('user_id', $qbm->createNamedParameter($row['user_id'])))
+//				->andWhere($exprm->neq('user_type', $qbm->createNamedParameter('1')));
+//
+//			$resultm = $qbm->execute();
+//			$member = $resultm->fetch();
+//
+//			$update = $this->connection->getQueryBuilder();
+//			$expru = $update->expr();
+//			$update->update('circles_tokens')
+//				   ->set('member_id', $update->createNamedParameter($member['member_id']))
+//				   ->where($expru->eq('circle_id', $update->createNamedParameter($row['circle_id'])))
+//				   ->andWhere($expru->eq('user_id', $update->createNamedParameter($row['user_id'])));
+//
+//			$update->execute();
+//		}
 
 	}
 }

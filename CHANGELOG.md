@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 
-### 0.18.1
+### 0.18.2
 
 - fixing issue during migration.
 
