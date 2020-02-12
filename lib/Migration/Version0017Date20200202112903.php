@@ -32,7 +32,6 @@ use Closure;
 use Doctrine\DBAL\Schema\SchemaException;
 use Doctrine\DBAL\Types\Type;
 use OCP\DB\ISchemaWrapper;
-use OCP\IConfig;
 use OCP\IDBConnection;
 use OCP\Migration\IOutput;
 use OCP\Migration\SimpleMigrationStep;
@@ -46,16 +45,11 @@ class Version0017Date20200202112903 extends SimpleMigrationStep {
 	/** @var IDBConnection */
 	private $connection;
 
-	/** @var  IConfig */
-	protected $config;
-
 	/**
 	 * @param IDBConnection $connection
-	 * @param IConfig $config
 	 */
-	public function __construct(IDBConnection $connection, IConfig $config) {
+	public function __construct(IDBConnection $connection) {
 		$this->connection = $connection;
-		$this->config = $config;
 	}
 
 	/**
@@ -95,7 +89,7 @@ class Version0017Date20200202112903 extends SimpleMigrationStep {
 			'instance', 'string', [
 						  'notnull' => false,
 						  'length'  => 255,
-						  'default' => $this->config->getSystemValue('instanceid'),
+						  'default' => '',
 					  ]
 		);
 		$table->addColumn(
