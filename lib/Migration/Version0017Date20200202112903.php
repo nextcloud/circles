@@ -45,6 +45,7 @@ class Version0017Date20200202112903 extends SimpleMigrationStep {
 	/** @var IDBConnection */
 	private $connection;
 
+
 	/**
 	 * @param IDBConnection $connection
 	 */
@@ -89,7 +90,6 @@ class Version0017Date20200202112903 extends SimpleMigrationStep {
 			'instance', 'string', [
 						  'notnull' => false,
 						  'length'  => 255,
-						  'default' => '',
 					  ]
 		);
 		$table->addColumn(
