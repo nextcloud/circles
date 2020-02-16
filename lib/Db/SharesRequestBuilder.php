@@ -70,7 +70,7 @@ class SharesRequestBuilder extends CoreRequestBuilder {
 		)
 		   ->from(self::TABLE_FILE_SHARES, 's');
 
-		$this->defaultSelectAlias = 's';
+		$this->default_select_alias = 's';
 
 		return $qb;
 	}
