@@ -426,7 +426,7 @@ class MembersRequest extends MembersRequestBuilder {
 	public function createMember(Member $member) {
 
 		if ($member->getMemberId() === '') {
-			$member->setMemberId($this->token());
+			$member->setMemberId($this->token(14));
 		}
 
 		try {

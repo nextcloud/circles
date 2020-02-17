@@ -73,81 +73,93 @@ class Version0017Date20200202112903 extends SimpleMigrationStep {
 		/** @var ISchemaWrapper $schema */
 		$schema = $schemaClosure();
 
-		$table = $schema->createTable('circles_members');
-		$table->addColumn(
-			'circle_id', 'string', [
+		if ($schema->hasTable('circles_members')) {
+			$table = $schema->getTable('circles_members');
+			$table->changeColumn(
+				'instance', [
+							  'default' => ''
+						  ]
+			);
+		} else {
+
+			$table = $schema->createTable('circles_members');
+			$table->addColumn(
+				'circle_id', 'string', [
+							   'notnull' => true,
+							   'length'  => 64,
+						   ]
+			);
+			$table->addColumn(
+				'user_id', 'string', [
+							 'notnull' => true,
+							 'length'  => 128,
+						 ]
+			);
+			$table->addColumn(
+				'instance', 'string', [
+							  'notnull' => false,
+							  'default' => '',
+							  'length'  => 255,
+						  ]
+			);
+			$table->addColumn(
+				'user_type', 'smallint', [
+							   'notnull' => true,
+							   'length'  => 1,
+							   'default' => 1,
+						   ]
+			);
+			$table->addColumn(
+				'level', 'smallint', [
 						   'notnull' => true,
-						   'length'  => 64,
+						   'length'  => 1,
 					   ]
-		);
-		$table->addColumn(
-			'user_id', 'string', [
-						 'notnull' => true,
-						 'length'  => 128,
-					 ]
-		);
-		$table->addColumn(
-			'instance', 'string', [
+			);
+			$table->addColumn(
+				'status', 'string', [
+							'notnull' => false,
+							'length'  => 15,
+						]
+			);
+			$table->addColumn(
+				'note', 'string', [
 						  'notnull' => false,
 						  'length'  => 255,
 					  ]
-		);
-		$table->addColumn(
-			'user_type', 'smallint', [
-						   'notnull' => true,
-						   'length'  => 1,
-						   'default' => 1,
-					   ]
-		);
-		$table->addColumn(
-			'level', 'smallint', [
-					   'notnull' => true,
-					   'length'  => 1,
-				   ]
-		);
-		$table->addColumn(
-			'status', 'string', [
-						'notnull' => false,
-						'length'  => 15,
-					]
-		);
-		$table->addColumn(
-			'note', 'string', [
-					  'notnull' => false,
-					  'length'  => 255,
-				  ]
-		);
-		$table->addColumn(
-			'joined', 'datetime', [
-						'notnull' => false,
-					]
-		);
-		$table->addColumn(
-			'member_id', Type::STRING, [
-						   'notnull' => false,
-						   'length'  => 15,
-					   ]
-		);
-		$table->addColumn(
-			'contact_meta', 'string', [
-							  'notnull' => false,
-							  'length'  => 1000,
-						  ]
-		);
-		$table->addColumn(
-			'contact_checked', Type::SMALLINT, [
-								 'notnull' => false,
-								 'length'  => 1,
-							 ]
-		);
-		$table->addColumn(
-			'contact_id', 'string', [
+			);
+			$table->addColumn(
+				'joined', 'datetime', [
 							'notnull' => false,
-							'length'  => 127,
 						]
-		);
+			);
+			$table->addColumn(
+				'member_id', Type::STRING, [
+							   'notnull' => false,
+							   'length'  => 15,
+						   ]
+			);
+			$table->addColumn(
+				'contact_meta', 'string', [
+								  'notnull' => false,
+								  'length'  => 1000,
+							  ]
+			);
+			$table->addColumn(
+				'contact_checked', Type::SMALLINT, [
+									 'notnull' => false,
+									 'length'  => 1,
+								 ]
+			);
+			$table->addColumn(
+				'contact_id', 'string', [
+								'notnull' => false,
+								'length'  => 127,
+							]
+			);
 
-		$table->setPrimaryKey(['circle_id', 'user_id', 'user_type', 'contact_id', 'instance']);
+			$table->setPrimaryKey(['circle_id', 'user_id', 'user_type', 'contact_id', 'instance']);
+		}
+
 
 		return $schema;
 	}
@@ -158,7 +170,7 @@ class Version0017Date20200202112903 extends SimpleMigrationStep {
 	 * @param array $options
 	 */
 	public function postSchemaChange(IOutput $output, Closure $schemaClosure, array $options) {
-		$this->copyTable('circles_mb_tmp', 'circles_members');
+		$this->copyTable('circles_mb_tmp', 'circles_members', ['instance' => '', 'contact_id' => '']);
 
 		$this->updateMemberId();
 		$this->updateTokens();
@@ -236,7 +248,12 @@ class Version0017Date20200202112903 extends SimpleMigrationStep {
 	}
 
 
-	protected function copyTable($orig, $dest) {
+	/**
+	 * @param $orig
+	 * @param $dest
+	 * @param array $default
+	 */
+	protected function copyTable($orig, $dest, array $default = []) {
 		$connection = \OC::$server->getDatabaseConnection();
 		$qb = $connection->getQueryBuilder();
 
@@ -253,6 +270,13 @@ class Version0017Date20200202112903 extends SimpleMigrationStep {
 				if ($row[$k] !== null) {
 					$copy->setValue($k, $copy->createNamedParameter($row[$k]));
 				}
+			}
+
+			$ak = array_keys($default);
+			foreach($ak as $k) {
+//				if (!array_key_exists($k, $row)) {
+					$copy->setValue($k, $copy->createNamedParameter($default[$k]));
+//				}
 			}
 			$copy->execute();
 		}

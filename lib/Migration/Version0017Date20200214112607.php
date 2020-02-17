@@ -69,7 +69,7 @@ class Version0017Date20200214112607 extends SimpleMigrationStep {
 		$table = $schema->getTable('circles_members');
 		$table->changeColumn(
 			'instance', [
-						  'default' => '0',
+						  'default' => '',
 					  ]
 		);
 
