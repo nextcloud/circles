@@ -210,7 +210,7 @@
     "Remote circle does not accept federated links" : "Der entfernte Kreis akzeptiert keine Federated-Verknüpfungen",
     "Trying to link a circle to itself" : "Versuche einen Kreis mit sich selbst zu verknüpfen",
     "This link exists already" : "Diese Verknüpfung besteht bereits",
-    "The requested remote circle does not exist" : "Der angeforderte Remote-Kreis existiert nicht",
+    "The requested remote circle does not exist" : "Der angeforderte entfernte Kreis existiert nicht",
     "The remote host is down or the Circles app is not installed on it" : "Das entferne System is nicht erreichbar oder die Circles-App ist nicht darauf installiert",
     "Cannot proceed with this status update" : "Die Status-Aktualisierung kann nicht fortgesetzt werden",
     "This group does not exist" : "Diese Gruppe existiert nicht",
