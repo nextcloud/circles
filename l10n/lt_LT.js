@@ -16,6 +16,7 @@ OC.L10N.register(
     "Public Circle" : "Viešas ratas",
     "Personal" : "Asmeniniai",
     "Secret" : "Paslaptis",
+    "Closed" : "Uždaryta",
     "Public" : "Vieša",
     "Not a member" : "Ne narys",
     "Member" : "Narys",
