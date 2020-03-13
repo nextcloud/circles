@@ -10,7 +10,7 @@
 
 Circles allows your users to create their own groups of users/colleagues/friends. 
 Those groups of users (or circles) can then be used by any other app for sharing purpose 
-(files, social feed, status update, messaging, ...) through the Circles API
+(files, social feed, status update, messaging, …) through the Circles API
 
 Different types of circles can be created:
 
