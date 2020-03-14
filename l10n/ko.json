@@ -212,7 +212,6 @@
     "This contact is not available" : "이 연락처를 사용할 수 없음",
     "Could not find share" : "공유를 찾을 수 없음",
     "Bring cloud-users closer together." : "클라우드 사용자를 더 가깝게 연결합니다.",
-    "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or 'circles') can then be used by any other app for sharing purpose (files, social feed, status update, messaging, ...).\n\nDifferent type of circles can be created:\n\n- A personal circle is a list of users known only to the owner.\nThis is the right option if you want to do recurrent sharing with the same group of people.\n\n- A public circle is an open group visible to anyone willing to join.\nYour circle will be visible to everyone and everyone will be able to join the circle.\n\n- A closed circle requires invitation or confirmation by an admin.\nThis is the right circle if you are looking for privacy when sharing your files or ideas.\n\n- An Secret circle is an open group that can be protected by a password.\nUsers won't be able to find this Circle using Nextcloud search engine." : "서클을 사용하여 각 사용자들이 그룹을 직접 만들 수 있습니다.\n해당 서클은 다른 앱에서 공유 대상으로 설정할 수 있습니다(파일, 소셜 피드, 상태 업데이트, 메시징 등).\n\n다음 서클 형식을 사용할 수 있습니다:\n\n- 개인 서클은 소유자만 회원 목록을 알 수 있습니다.\n같은 사람들에게 내용을 자주 공유할 때 적합합니다.\n\n- 공개 서클은 누구나 등록할 수 있는 공개 그룹입니다.\n모든 사람이 서클을 볼 수 있으며 모든 사람이 가입할 수 있습니다.\n\n- 닫힌 서클은 관리자의 확인이나 초대장이 필요한 서클입니다.\n파일이나 아이디어를 공유할 때 프라이버시가 필요할 때 적합합니다.\n\n- 비밀 서클은 암호로 보호된 공개 그룹입니다.\nNextcloud 검색 엔진으로 이 서클을 찾을 수 없습니다.",
     "No files in here" : "여기에 파일 없음",
     "No entries found in this folder" : "이 폴더에서 항목을 찾을 수 없음",
     "Name" : "이름",
@@ -275,6 +274,7 @@
     "Allow linking of groups" : "그룹 링크 허용",
     "Groups can be linked to circles." : "그룹을 서클에 연결할 수 있습니다.",
     "Allow federated circles" : "연합 서클 허용",
-    "Circles from different Nextclouds can be linked together." : "다른 Nextcloud의 서클을 연결할 수 있습니다."
+    "Circles from different Nextclouds can be linked together." : "다른 Nextcloud의 서클을 연결할 수 있습니다.",
+    "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or 'circles') can then be used by any other app for sharing purpose (files, social feed, status update, messaging, ...).\n\nDifferent type of circles can be created:\n\n- A personal circle is a list of users known only to the owner.\nThis is the right option if you want to do recurrent sharing with the same group of people.\n\n- A public circle is an open group visible to anyone willing to join.\nYour circle will be visible to everyone and everyone will be able to join the circle.\n\n- A closed circle requires invitation or confirmation by an admin.\nThis is the right circle if you are looking for privacy when sharing your files or ideas.\n\n- An Secret circle is an open group that can be protected by a password.\nUsers won't be able to find this Circle using Nextcloud search engine." : "서클을 사용하여 각 사용자들이 그룹을 직접 만들 수 있습니다.\n해당 서클은 다른 앱에서 공유 대상으로 설정할 수 있습니다(파일, 소셜 피드, 상태 업데이트, 메시징 등).\n\n다음 서클 형식을 사용할 수 있습니다:\n\n- 개인 서클은 소유자만 회원 목록을 알 수 있습니다.\n같은 사람들에게 내용을 자주 공유할 때 적합합니다.\n\n- 공개 서클은 누구나 등록할 수 있는 공개 그룹입니다.\n모든 사람이 서클을 볼 수 있으며 모든 사람이 가입할 수 있습니다.\n\n- 닫힌 서클은 관리자의 확인이나 초대장이 필요한 서클입니다.\n파일이나 아이디어를 공유할 때 프라이버시가 필요할 때 적합합니다.\n\n- 비밀 서클은 암호로 보호된 공개 그룹입니다.\nNextcloud 검색 엔진으로 이 서클을 찾을 수 없습니다."
 },"pluralForm" :"nplurals=1; plural=0;"
 }
