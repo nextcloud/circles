@@ -62,7 +62,7 @@ class BaseMember implements \JsonSerializable {
 	/** @var string */
 	private $userId = '';
 
-	/** @var string  */
+	/** @var string */
 	private $memberId = '';
 
 	/** @var int */
@@ -182,7 +182,6 @@ class BaseMember implements \JsonSerializable {
 	public function getUserId() {
 		return $this->userId;
 	}
-
 
 
 	public function setMemberId($memberId) {
@@ -395,6 +394,7 @@ class BaseMember implements \JsonSerializable {
 	public function jsonSerialize() {
 		return [
 			'circle_id'    => $this->getCircleId(),
+			'member_id'    => $this->getMemberId(),
 			'user_id'      => $this->getUserId(),
 			'user_type'    => $this->getType(),
 			'display_name' => $this->getDisplayName(),

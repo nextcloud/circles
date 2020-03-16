@@ -134,11 +134,14 @@ class CirclesService {
 	 * @param int|string $type
 	 * @param string $name
 	 *
+	 * @param string $ownerId
+	 *
 	 * @return Circle
+	 * @throws CircleAlreadyExistsException
 	 * @throws CircleTypeDisabledException
-	 * @throws \Exception
+	 * @throws \OCA\Circles\Exceptions\MemberAlreadyExistsException
 	 */
-	public function createCircle($type, $name) {
+	public function createCircle($type, $name, string $ownerId = '') {
 		$type = $this->convertTypeStringToBitValue($type);
 		$type = (int)$type;
 
@@ -156,8 +159,12 @@ class CirclesService {
 
 		$circle = new Circle($type, $name);
 
+		if ($ownerId === '') {
+			$ownerId = $this->userId;
+		}
+
 		try {
-			$this->circlesRequest->createCircle($circle, $this->userId);
+			$this->circlesRequest->createCircle($circle, $ownerId);
 			$this->membersRequest->createMember($circle->getOwner());
 		} catch (CircleAlreadyExistsException $e) {
 			throw $e;
@@ -392,15 +399,21 @@ class CirclesService {
 	 *
 	 * @param string $circleUniqueId
 	 *
+	 * @param bool $force
+	 *
 	 * @throws CircleDoesNotExistException
-	 * @throws MemberIsNotModeratorException
 	 * @throws MemberIsNotOwnerException
+	 * @throws \OCA\Circles\Exceptions\ConfigNoCircleAvailableException
 	 */
-	public function removeCircle($circleUniqueId) {
+	public function removeCircle($circleUniqueId, bool $force = false) {
 
-		$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
+		if ($force) {
+			$circle = $this->circlesRequest->forceGetCircle($circleUniqueId);
+		} else {
+			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
+			$this->hasToBeOwner($circle->getHigherViewer());
+		}
 
-		$this->hasToBeOwner($circle->getHigherViewer());
 
 		$this->eventsService->onCircleDestruction($circle);
 

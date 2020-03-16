@@ -287,8 +287,9 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 * Left Join members table to get the owner of the circle.
 	 *
 	 * @param IQueryBuilder $qb
+	 * @param string $ownerId
 	 */
-	public function leftJoinOwner(IQueryBuilder &$qb) {
+	public function leftJoinOwner(IQueryBuilder &$qb, string $ownerId = '') {
 
 		if ($qb->getType() !== QueryBuilder::SELECT) {
 			return;
@@ -315,6 +316,10 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 				   $expr->eq('o.user_type', $qb->createNamedParameter(Member::TYPE_USER))
 			   )
 		   );
+
+		if ($ownerId !== '') {
+			$qb->andWhere($expr->eq('o.user_id', $qb->createNamedParameter($ownerId)));
+		}
 	}
 
 

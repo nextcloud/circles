@@ -53,6 +53,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	public function forceGetCircle($circleUniqueId) {
 		$qb = $this->getCirclesSelectSql();
 
+		$this->leftJoinOwner($qb, '');
 		$this->limitToShortenUniqueId($qb, $circleUniqueId, Circle::SHORT_UNIQUE_ID_LENGTH);
 
 		$cursor = $qb->execute();
@@ -77,12 +78,13 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 * WARNING: This function does not filters data regarding the current user/viewer.
 	 *          In case of interaction with users, Please use getCircles() instead.
 	 *
+	 * @param string $ownerId
+	 *
 	 * @return Circle[]
 	 */
-	public function forceGetCircles() {
-
+	public function forceGetCircles(string $ownerId = '') {
 		$qb = $this->getCirclesSelectSql();
-		$this->leftJoinOwner($qb);
+		$this->leftJoinOwner($qb, $ownerId);
 
 		$circles = [];
 		$cursor = $qb->execute();
@@ -134,18 +136,19 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 * @param string $name
 	 * @param int $level
 	 * @param bool $forceAll
+	 * @param string $ownerId
 	 *
 	 * @return Circle[]
 	 * @throws ConfigNoCircleAvailableException
 	 */
-	public function getCircles($userId, $type = 0, $name = '', $level = 0, $forceAll = false) {
+	public function getCircles($userId, $type = 0, $name = '', $level = 0, $forceAll = false, string $ownerId = '') {
 		if ($type === 0) {
 			$type = Circle::CIRCLES_ALL;
 		}
 
 		$qb = $this->getCirclesSelectSql();
 		$this->leftJoinUserIdAsViewer($qb, $userId);
-		$this->leftJoinOwner($qb);
+		$this->leftJoinOwner($qb, $ownerId);
 		$this->leftJoinNCGroupAndUser($qb, $userId, '`c`.`unique_id`');
 
 		if ($level > 0) {

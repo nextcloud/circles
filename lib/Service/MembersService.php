@@ -42,6 +42,10 @@ use OCA\Circles\Exceptions\EmailAccountInvalidFormatException;
 use OCA\Circles\Exceptions\GroupDoesNotExistException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
+use OCA\Circles\Exceptions\MemberIsNotModeratorException;
+use OCA\Circles\Exceptions\MemberIsOwnerException;
+use OCA\Circles\Exceptions\MemberTypeCantEditLevelException;
+use OCA\Circles\Exceptions\ModeratorIsNotHighEnoughException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCP\IL10N;
@@ -137,26 +141,26 @@ class MembersService {
 	 * @param $ident
 	 * @param int $type
 	 *
+	 * @param bool $force
+	 *
 	 * @return array
 	 * @throws Exception
 	 */
-	public function addMember($circleUniqueId, $ident, $type) {
+	public function addMember($circleUniqueId, $ident, $type, bool $force = false) {
 
-		try {
+		if ($force === true) {
+			$circle = $this->circlesRequest->forceGetCircle($circleUniqueId);
+		} else {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			$circle->getHigherViewer()
 				   ->hasToBeModerator();
-
-			if (!$this->addMassiveMembers($circle, $ident, $type)) {
-				$this->addSingleMember($circle, $ident, $type);
-			}
-		} catch (Exception $e) {
-			throw $e;
 		}
 
-		return $this->membersRequest->getMembers(
-			$circle->getUniqueId(), $circle->getHigherViewer()
-		);
+		if (!$this->addMassiveMembers($circle, $ident, $type)) {
+			$this->addSingleMember($circle, $ident, $type);
+		}
+
+		return $this->membersRequest->getMembers($circle->getUniqueId(), $circle->getHigherViewer(), $force);
 	}
 
 
@@ -461,34 +465,56 @@ class MembersService {
 
 
 	/**
+	 * @param string $memberId
+	 *
+	 * @return Member
+	 * @throws MemberDoesNotExistException
+	 */
+	public function getMemberById(string $memberId): Member {
+		return $this->membersRequest->forceGetMemberById($memberId);
+	}
+
+
+	/**
 	 * @param string $circleUniqueId
 	 * @param string $name
 	 * @param int $type
 	 * @param int $level
+	 * @param bool $force
 	 *
 	 * @return array
+	 * @throws CircleDoesNotExistException
+	 * @throws CircleTypeNotValidException
+	 * @throws ConfigNoCircleAvailableException
+	 * @throws MemberDoesNotExistException
+	 * @throws MemberTypeCantEditLevelException
 	 * @throws Exception
 	 */
-	public function levelMember($circleUniqueId, $name, $type, $level) {
+	public function levelMember($circleUniqueId, $name, $type, $level, bool $force = false) {
 
 		$level = (int)$level;
-		try {
+		if ($force === false) {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
-			if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
-				throw new CircleTypeNotValidException(
-					$this->l10n->t('You cannot edit level in a personal circle')
-				);
-			}
+		} else {
+			$circle = $this->circlesRequest->forceGetCircle($circleUniqueId);
+		}
 
-			$member = $this->membersRequest->forceGetMember($circle->getUniqueId(), $name, $type);
-			$member->levelHasToBeEditable();
-			$this->updateMemberLevel($circle, $member, $level);
+		if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
+			throw new CircleTypeNotValidException(
+				$this->l10n->t('You cannot edit level in a personal circle')
+			);
+		}
 
+		$member = $this->membersRequest->forceGetMember($circle->getUniqueId(), $name, $type);
+		$member->levelHasToBeEditable();
+		$this->updateMemberLevel($circle, $member, $level, $force);
+
+		if ($force === false) {
 			return $this->membersRequest->getMembers(
 				$circle->getUniqueId(), $circle->getHigherViewer()
 			);
-		} catch (Exception $e) {
-			throw $e;
+		} else {
+			return $this->membersRequest->forceGetMembers($circle->getUniqueId());
 		}
 
 	}
@@ -498,18 +524,19 @@ class MembersService {
 	 * @param Circle $circle
 	 * @param Member $member
 	 * @param $level
+	 * @param bool $force
 	 *
 	 * @throws Exception
 	 */
-	private function updateMemberLevel(Circle $circle, Member $member, $level) {
+	private function updateMemberLevel(Circle $circle, Member $member, $level, bool $force = false) {
 		if ($member->getLevel() === $level) {
 			return;
 		}
 
 		if ($level === Member::LEVEL_OWNER) {
-			$this->switchOwner($circle, $member);
+			$this->switchOwner($circle, $member, $force);
 		} else {
-			$this->editMemberLevel($circle, $member, $level);
+			$this->editMemberLevel($circle, $member, $level, $force);
 		}
 
 		$this->eventsService->onMemberLevel($circle, $member);
@@ -520,52 +547,51 @@ class MembersService {
 	 * @param Circle $circle
 	 * @param Member $member
 	 * @param $level
+	 * @param bool $force
 	 *
 	 * @throws Exception
 	 */
-	private function editMemberLevel(Circle $circle, Member &$member, $level) {
-		try {
+	private function editMemberLevel(Circle $circle, Member &$member, $level, bool $force = false) {
+		if ($force === false) {
 			$isMod = $circle->getHigherViewer();
 			$isMod->hasToBeModerator();
 			$isMod->hasToBeHigherLevel($level);
 
 			$member->hasToBeMember();
-			$member->cantBeOwner();
 			$isMod->hasToBeHigherLevel($member->getLevel());
-
-			$member->setLevel($level);
-			$this->membersRequest->updateMember($member);
-		} catch (Exception $e) {
-			throw $e;
 		}
 
+		$member->cantBeOwner();
+
+		$member->setLevel($level);
+		$this->membersRequest->updateMember($member);
 	}
 
 	/**
 	 * @param Circle $circle
 	 * @param Member $member
+	 * @param bool $force
 	 *
 	 * @throws Exception
 	 */
-	private function switchOwner(Circle $circle, Member &$member) {
-		try {
+	private function switchOwner(Circle $circle, Member &$member, bool $force = false) {
+		if ($force === false) {
 			$isMod = $circle->getHigherViewer();
 
 			// should already be possible from an NCAdmin, but not enabled in the frontend.
 			$this->circlesService->hasToBeOwner($isMod);
-
-			$member->hasToBeMember();
-			$member->cantBeOwner();
-
-			$member->setLevel(Member::LEVEL_OWNER);
-			$this->membersRequest->updateMember($member);
-
-			$isMod->setLevel(Member::LEVEL_ADMIN);
-			$this->membersRequest->updateMember($isMod);
-
-		} catch (Exception $e) {
-			throw $e;
+		} else {
+			$isMod = $circle->getOwner();
 		}
+
+		$member->hasToBeMember();
+		$member->cantBeOwner();
+
+		$member->setLevel(Member::LEVEL_OWNER);
+		$this->membersRequest->updateMember($member);
+
+		$isMod->setLevel(Member::LEVEL_ADMIN);
+		$this->membersRequest->updateMember($isMod);
 	}
 
 
@@ -573,25 +599,33 @@ class MembersService {
 	 * @param string $circleUniqueId
 	 * @param string $name
 	 * @param $type
+	 * @param bool $force
 	 *
 	 * @return array
-	 * @throws Exception
+	 * @throws CircleDoesNotExistException
+	 * @throws ConfigNoCircleAvailableException
+	 * @throws MemberDoesNotExistException
+	 * @throws MemberIsNotModeratorException
+	 * @throws MemberIsOwnerException
+	 * @throws ModeratorIsNotHighEnoughException
 	 */
-	public function removeMember($circleUniqueId, $name, $type) {
+	public function removeMember($circleUniqueId, $name, $type, bool $force = false) {
 
-		try {
+		if ($force === false) {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			$circle->getHigherViewer()
 				   ->hasToBeModerator();
+		} else {
+			$circle = $this->circlesRequest->forceGetCircle($circleUniqueId);
+		}
 
-			$member = $this->membersRequest->forceGetMember($circleUniqueId, $name, $type);
-			$member->hasToBeMemberOrAlmost();
-			$member->cantBeOwner();
+		$member = $this->membersRequest->forceGetMember($circleUniqueId, $name, $type);
+		$member->hasToBeMemberOrAlmost();
+		$member->cantBeOwner();
 
+		if ($force === false) {
 			$circle->getHigherViewer()
 				   ->hasToBeHigherLevel($member->getLevel());
-		} catch (Exception $e) {
-			throw $e;
 		}
 
 		$this->eventsService->onMemberLeaving($circle, $member);
@@ -600,9 +634,13 @@ class MembersService {
 		$this->sharesRequest->removeSharesFromMember($member);
 		$this->tokensRequest->removeTokensFromMember($member);
 
-		return $this->membersRequest->getMembers(
-			$circle->getUniqueId(), $circle->getHigherViewer()
-		);
+		if ($force === false) {
+			return $this->membersRequest->getMembers(
+				$circle->getUniqueId(), $circle->getHigherViewer()
+			);
+		} else {
+			return $this->membersRequest->forceGetMembers($circle->getUniqueId());
+		}
 	}
 
 
@@ -614,6 +652,7 @@ class MembersService {
 	public function onUserRemoved($userId) {
 		$this->membersRequest->removeAllMembershipsFromUser($userId);
 	}
+
 
 }
 
