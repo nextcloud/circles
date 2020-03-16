@@ -30,8 +30,8 @@
 namespace OCA\Circles\Command;
 
 use OC\Core\Command\Base;
-use OCA\Circles\Db\CirclesRequest;
-use OCA\Circles\Exceptions\CircleDoesNotExistException;
+use OCA\Circles\Db\MembersRequest;
+use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCP\IL10N;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -49,20 +49,20 @@ class MembersDetails extends Base {
 	/** @var IL10N */
 	private $l10n;
 
-	/** @var CirclesRequest */
-	private $circlesRequest;
+	/** @var MembersRequest */
+	private $membersRequest;
 
 
 	/**
 	 * MembersDetails constructor.
 	 *
 	 * @param IL10N $l10n
-	 * @param CirclesRequest $circlesRequest
+	 * @param MembersRequest $membersRequest
 	 */
-	public function __construct(IL10N $l10n, CirclesRequest $circlesRequest) {
+	public function __construct(IL10N $l10n, MembersRequest $membersRequest) {
 		parent::__construct();
 		$this->l10n = $l10n;
-		$this->circlesRequest = $circlesRequest;
+		$this->membersRequest = $membersRequest;
 	}
 
 
@@ -79,8 +79,13 @@ class MembersDetails extends Base {
 	 * @param OutputInterface $output
 	 *
 	 * @return int
+	 * @throws MemberDoesNotExistException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
+		$memberId = $input->getArgument('member_id');
+
+		$member = $this->membersRequest->forceGetMemberById($memberId);
+		echo json_encode($member, JSON_PRETTY_PRINT) . "\n";
 
 		return 0;
 	}
