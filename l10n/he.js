@@ -12,6 +12,7 @@ OC.L10N.register(
     "Mail Address" : "כתובת דוא״ל",
     "Contact" : "איש/אשת קשר",
     "Password to access »%s«" : "ססמת הגישה אל „%s”",
+    "%1$s via %2$s" : "%1$s דרך %2$s",
     "Click the button below to open it." : "יש ללחוץ על הכפתור להלן כדי לפתוח אותו.",
     "Open »%s«" : "פתיחת „%s”",
     "Could not find share" : "לא ניתן למצוא את השיתוף",
@@ -22,6 +23,7 @@ OC.L10N.register(
     "Modified" : "מועד שינוי",
     "Settings" : "הגדרות",
     "Username" : "שם משתמש",
+    "Level" : "רמה",
     "Status" : "מצב",
     "Link" : "קישור"
 },
