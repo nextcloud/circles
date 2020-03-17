@@ -108,7 +108,6 @@ class CoreRequestBuilder {
 	}
 
 
-
 	/**
 	 * Limit the request by its addressbookId.
 	 *
@@ -150,6 +149,17 @@ class CoreRequestBuilder {
 	 */
 	protected function limitToUserId(IQueryBuilder &$qb, $userId) {
 		$this->limitToDBField($qb, 'user_id', $userId);
+	}
+
+
+	/**
+	 * Limit the request to the Member by its Id.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param string $memberId
+	 */
+	protected function limitToMemberId(IQueryBuilder &$qb, string $memberId) {
+		$this->limitToDBField($qb, 'member_id', $memberId);
 	}
 
 

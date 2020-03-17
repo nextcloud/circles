@@ -69,9 +69,30 @@ class MembersRequest extends MembersRequestBuilder {
 			throw new MemberDoesNotExistException($this->l10n->t('This member does not exist'));
 		}
 
-		$member = $this->parseMembersSelectSql($data);
+		return $this->parseMembersSelectSql($data);
+	}
 
-		return $member;
+
+	/**
+	 * @param string $memberId
+	 *
+	 * @return Member
+	 * @throws MemberDoesNotExistException
+	 */
+	public function forceGetMemberById(string $memberId): Member {
+		$qb = $this->getMembersSelectSql();
+
+		$this->limitToMemberId($qb, $memberId);
+
+		$cursor = $qb->execute();
+		$data = $cursor->fetch();
+		$cursor->closeCursor();
+
+		if ($data === false) {
+			throw new MemberDoesNotExistException($this->l10n->t('This member does not exist'));
+		}
+
+		return $this->parseMembersSelectSql($data);
 	}
 
 
@@ -176,21 +197,25 @@ class MembersRequest extends MembersRequestBuilder {
 	/**
 	 * @param string $circleUniqueId
 	 * @param Member $viewer
+	 * @param bool $force
 	 *
 	 * @return Member[]
-	 * @throws \Exception
 	 */
-	public function getMembers($circleUniqueId, Member $viewer) {
+	public function getMembers($circleUniqueId, ?Member $viewer, bool $force = false) {
 		try {
-			$viewer->hasToBeMember();
+			if ($force === false) {
+				$viewer->hasToBeMember();
+			}
 
 			$members = $this->forceGetMembers($circleUniqueId, Member::LEVEL_NONE);
-			if (!$viewer->isLevel(Member::LEVEL_MODERATOR)) {
-				array_map(
-					function(Member $m) {
-						$m->setNote('');
-					}, $members
-				);
+			if ($force === false) {
+				if (!$viewer->isLevel(Member::LEVEL_MODERATOR)) {
+					array_map(
+						function(Member $m) {
+							$m->setNote('');
+						}, $members
+					);
+				}
 			}
 
 			return $members;
@@ -703,6 +728,7 @@ class MembersRequest extends MembersRequestBuilder {
 
 		$qb->execute();
 	}
+
 
 }
 

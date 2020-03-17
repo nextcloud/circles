@@ -27,7 +27,6 @@
 
 namespace OCA\Circles\Circles;
 
-use daita\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
 use OC;
 use OC\Share20\Share;
@@ -230,7 +229,8 @@ class FileSharingBroadcaster implements IBroadcaster {
 					$password = $this->miscService->token(15);
 				}
 
-				$sharesToken = $this->tokensRequest->generateTokenForMember($member, $share->getId(), $password);
+				$sharesToken =
+					$this->tokensRequest->generateTokenForMember($member, $share->getId(), $password);
 				$mails = [$member->getUserId()];
 				if ($member->getType() === Member::TYPE_CONTACT) {
 					$mails = $this->getMailsFromContact($member->getUserId());
@@ -290,8 +290,13 @@ class FileSharingBroadcaster implements IBroadcaster {
 			}
 		}
 
-		$author = $circle->getViewer()
-						 ->getUserId();
+		if ($circle->getViewer() === null) {
+			$author = $circle->getOwner()
+							 ->getUserId();
+		} else {
+			$author = $circle->getViewer()
+							 ->getUserId();
+		}
 
 		$recipient = $member->getUserId();
 		if ($member->getType() === Member::TYPE_CONTACT) {
