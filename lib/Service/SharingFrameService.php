@@ -140,7 +140,7 @@ class SharingFrameService {
 
 			$this->initiateShare($circle->getUniqueId(), $frame->getUniqueId());
 		} catch (Exception $e) {
-			$this->miscService->log('fail to create frame for circle ' . $$circleUniqueId . ' - ' . $e->getMessage());
+			$this->miscService->log('fail to create frame for circle ' . $circleUniqueId . ' - ' . $e->getMessage());
 			throw $e;
 		}
 	}
@@ -294,7 +294,7 @@ class SharingFrameService {
 
 			return true;
 		} catch (Exception $e) {
-			$this->miscService->log('fail to initialise circle share to ' . $addr . ' for circle ' . $$circleUniqueId . ' - ' . $e->getMessage(), 3);
+			$this->miscService->log('fail to initialise circle share to ' . $addr . ' for circle ' . $circleUniqueId . ' - ' . $e->getMessage(), 3);
 			throw $e;
 		}
 	}
