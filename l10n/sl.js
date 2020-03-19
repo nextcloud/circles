@@ -148,6 +148,7 @@ OC.L10N.register(
     "Federated link does not have a valid format" : "Zvezna povezava ni vpisana v pravilnem zapisu",
     "Federated circles are not allowed on the remote Nextcloud" : "Na oddaljenih strežnikih Nextcloud zvezni krogi niso dovoljeni",
     "Remote circle does not accept federated links" : "Oddaljen krog ne sprejema zveznih povezav",
+    "Trying to link a circle to itself" : "Poskušate povezati krog s samim sabo",
     "This link exists already" : "Povezava že obstaja",
     "The requested remote circle does not exist" : "Oddaljeni krog s tem imenom ne obstaja",
     "The remote host is down or the Circles app is not installed on it" : "Ali je strežnik ne deluje ali pa program Krogi ni nameščen.",
