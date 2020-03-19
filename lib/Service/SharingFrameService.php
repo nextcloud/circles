@@ -43,12 +43,16 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\SharingFrame;
 use OCP\Http\Client\IClientService;
+use OCP\IUserSession;
 
 
 class SharingFrameService {
 
 	/** @var string */
 	private $userId;
+
+	/** @var IUserSession */
+	private $userSession;
 
 	/** @var ConfigService */
 	private $configService;
@@ -90,6 +94,7 @@ class SharingFrameService {
 	 */
 	public function __construct(
 		$userId,
+		IUserSession $userSession,
 		ConfigService $configService,
 		SharingFrameRequest $sharingFrameRequest,
 		CirclesRequest $circlesRequest,
@@ -100,6 +105,7 @@ class SharingFrameService {
 		MiscService $miscService
 	) {
 		$this->userId = $userId;
+		$this->userSession = $userSession;
 		$this->configService = $configService;
 		$this->sharingFrameRequest = $sharingFrameRequest;
 		$this->circlesRequest = $circlesRequest;
@@ -126,10 +132,17 @@ class SharingFrameService {
 	 * @throws MemberDoesNotExistException
 	 */
 	public function createFrame($circleUniqueId, SharingFrame $frame, $broadcast = null) {
-		$this->miscService->log('Create frame with payload ' . json_encode($frame->getPayload()), 0);
+		$userId = $this->userId;
+		if ($userId === null) {
+			$user = $this->userSession->getUser();
+			$userId = $user->getUID();
+		}
 
+		$this->miscService->log(
+			'Create frame with payload ' . json_encode($frame->getPayload()) . ' as ' . $userId, 0
+		);
 		try {
-			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
+			$circle = $this->circlesRequest->getCircle($circleUniqueId, $userId);
 			$circle->getHigherViewer()
 				   ->hasToBeMember();
 
