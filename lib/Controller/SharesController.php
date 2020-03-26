@@ -131,12 +131,15 @@ class SharesController extends Controller {
 	 */
 	public function create($circleUniqueId, $source, $type, $payload) {
 
+		$this->miscService->log('Creating circle share: ' . $circleUniqueId, 0);
+
 		try {
 			$share = new SharingFrame($source, $type);
 			$share->setPayload($payload);
 
 			$this->sharingFrameService->createFrame($circleUniqueId, $share);
 		} catch (\Exception $e) {
+			$this->miscService->log('Failed to create circle - ' . $e->getMessage(), 3);
 			return $this->fail(
 				[
 					'circle_id' => $circleUniqueId,
@@ -147,6 +150,8 @@ class SharesController extends Controller {
 				]
 			);
 		}
+
+		$this->miscService->log('Created circle: share ' . $circleUniqueId, 0);
 
 		return $this->success(
 			[

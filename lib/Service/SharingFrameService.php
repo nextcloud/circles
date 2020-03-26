@@ -153,6 +153,7 @@ class SharingFrameService {
 
 			$this->initiateShare($circle->getUniqueId(), $frame->getUniqueId());
 		} catch (Exception $e) {
+			$this->miscService->log('fail to create frame for circle ' . $circleUniqueId . ' - ' . $e->getMessage());
 			throw $e;
 		}
 	}
@@ -290,10 +291,13 @@ class SharingFrameService {
 		];
 
 		$client = $this->clientService->newClient();
+
+		$addr = $this->configService->getLocalAddress() . \OC::$WEBROOT;
+
 		try {
 			$client->post(
 				$this->generatePayloadDeliveryURL(
-					$this->configService->getLocalAddress() . \OC::$WEBROOT
+					$addr
 				), [
 					'body'            => $args,
 					'timeout'         => Application::CLIENT_TIMEOUT,
@@ -303,6 +307,7 @@ class SharingFrameService {
 
 			return true;
 		} catch (Exception $e) {
+			$this->miscService->log('fail to initialise circle share to ' . $addr . ' for circle ' . $circleUniqueId . ' - ' . $e->getMessage(), 3);
 			throw $e;
 		}
 	}
