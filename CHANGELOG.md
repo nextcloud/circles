@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 
+### 0.17.11
+
+- using current user when sharing file by mail
+
+
 ### 0.17.10
 
 - fixing issue with sqlite
