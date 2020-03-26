@@ -75,7 +75,7 @@ class CircleProviderRequest extends CircleProviderRequestBuilder {
 	 * @return bool
 	 */
 	protected static function isAccessibleResult($data) {
-		if ($data['fileid'] === null) {
+		if ($data['fileid'] === null || $data['path'] === null) {
 			return false;
 		}
 
