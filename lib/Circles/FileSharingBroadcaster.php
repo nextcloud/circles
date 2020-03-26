@@ -283,6 +283,11 @@ class FileSharingBroadcaster implements IBroadcaster {
 			['token' => $token]
 		);
 
+		$lang = $this->configService->getCoreValueForUser($share->getSharedBy(), 'lang', '');
+		if ($lang !== '') {
+			$this->l10n = OC::$server->getL10N(Application::APP_NAME, $lang);
+		}
+
 		try {
 			$this->sendMail(
 				$share->getNode()
