@@ -75,6 +75,12 @@
     "%s shared »%s« with you." : "%s partilhou »%s« consigo.",
     "%s shared »%s« with '%s'." : "%s partilhou »%s« com '%s'.",
     "%s on %s" : "%s às %s",
+    "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n" : "%1$s partilhado »%2$s« contigo.\nJá deverá ter recebido um outro e-mail com uma hiperligação para o aceder.\n",
+    "%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it." : "%1$s partilhou »%2$s« consigo. Já deverá ter recebido um outro e-mail com uma hiperligação para o aceder.",
+    "Password to access »%1$s« shared to you by %2$s" : "Palavra passe para aceder »%1$s« partilhado por si %2$s",
+    "Password to access »%s«" : "Palavra-chave de acesso »%s«",
+    "It is protected with the following password:" : "Está protegido com a seguinte palavra-chave:",
+    "%1$s via %2$s" : "%1$s via %2$s",
     "Click the button below to open it." : "Clicar no botão abaixo para o abrir.",
     "Open »%s«" : "Abrir »%s«",
     "Circle not found" : "Círculo não encontrado",
@@ -133,6 +139,7 @@
     "Linked" : "Desassociar",
     "Allow Federated Links" : "Permitir Associações Federadas",
     "Accept Link Request Automatically" : "Aceitar Automaticamente o Pedido de Associação",
+    "Save settings" : "Guardar definições",
     "Allow linking of groups" : "Permitir associação de grupos",
     "Groups can be linked to circles." : "Os grupos podem ser associados aos grupos."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"

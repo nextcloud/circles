@@ -15,6 +15,13 @@ OC.L10N.register(
     "Unknown" : "Nepoznato",
     "Invited" : "Pozvan",
     "Blocked" : "Blokiran",
-    "Kicked" : "Izbačen"
+    "Kicked" : "Izbačen",
+    "Name" : "Ime",
+    "Size" : "Veličina",
+    "Modified" : "Izmijenjeno",
+    "Settings" : "Podešavanje",
+    "Username" : "Korisničko ime",
+    "Status" : "Status",
+    "Link" : "Veza"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");
