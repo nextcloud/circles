@@ -1,10 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+
 ### 0.18.4
 
 - porting nextcloud/server#20181
 - fixing an issue with userId on ocs
+- using current user when sharing file by mail
 
 
 ### 0.18.3
