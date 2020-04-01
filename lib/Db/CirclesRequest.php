@@ -131,6 +131,36 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 
 	/**
+	 * forceGetCircleByGroupId();
+	 *
+	 * returns data of a circle from its Group ID.
+	 *
+	 * WARNING: This function does not filters data regarding the current user/viewer.
+	 *          In case of interaction with users, do not use this method.
+	 *
+	 * @param $groupId
+	 *
+	 * @return null|Circle
+	 */
+	public function forceGetCircleByGroupId($groupId) {
+		$qb = $this->getCirclesSelectSql();
+
+		$this->limitToGroupId($qb, $groupId);
+
+		$cursor = $qb->execute();
+		$data = $cursor->fetch();
+		$cursor->closeCursor();
+
+		if ($data === false) {
+			return null;
+		}
+
+		$entry = $this->parseCirclesSelectSql($data);
+
+		return $entry;
+	}
+
+	/**
 	 * @param string $userId
 	 * @param int $type
 	 * @param string $name
@@ -331,7 +361,8 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$qb = $this->getCirclesUpdateSql($circle->getUniqueId(true));
 		$qb->set('name', $qb->createNamedParameter($circle->getName()))
 		   ->set('description', $qb->createNamedParameter($circle->getDescription()))
-		   ->set('settings', $qb->createNamedParameter($circle->getSettings(true)));
+		   ->set('settings', $qb->createNamedParameter($circle->getSettings(true)))
+		   ->set('group_id', $qb->createNamedParameter($circle->getGroupId()));
 
 		$qb->execute();
 	}

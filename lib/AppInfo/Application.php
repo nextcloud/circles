@@ -29,16 +29,18 @@
 
 namespace OCA\Circles\AppInfo;
 
-use OC;
 use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Notification\Notifier;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\DavService;
+use OCA\Circles\Service\GroupsBackendService;
 use OCA\Files\App as FilesApp;
 use OCP\App\ManagerEvent;
 use OCP\AppFramework\App;
 use OCP\AppFramework\IAppContainer;
 use OCP\AppFramework\QueryException;
+use OCP\IGroup;
+use OCP\EventDispatcher\IEventDispatcher;
 use OCP\Util;
 
 require_once __DIR__ . '/../../appinfo/autoload.php';
@@ -56,21 +58,35 @@ class Application extends App {
 	/** @var IAppContainer */
 	private $container;
 
+	/** @var \OC\ServerServer */
+	private $server;
+
+	/** @var IEventDispatcher */
+	private $dispatcher;
+
 	/**
 	 * @param array $params
 	 */
 	public function __construct(array $params = array()) {
 		parent::__construct(self::APP_NAME, $params);
-
-		$this->container = $this->getContainer();
-
-		$manager = OC::$server->getNotificationManager();
-		$manager->registerNotifierService(Notifier::class);
-
-		$this->registerHooks();
-		$this->registerDavHooks();
 	}
 
+	public function register()
+	{
+		$this->container = $this->getContainer();
+		$this->server = $this->container->getServer();
+		$this->dispatcher = $this->server->query(IEventDispatcher::class);
+
+		$manager = $this->server->getNotificationManager();
+		$manager->registerNotifierService(Notifier::class);
+
+		$this->registerNavigation();
+		$this->registerFilesNavigation();
+		$this->registerFilesPlugin();
+		$this->registerHooks();
+		$this->registerDavHooks();
+		$this->registerGroupsBackendHooks();
+	}
 
 	/**
 	 * Register Hooks
@@ -91,7 +107,7 @@ class Application extends App {
 	public function registerNavigation() {
 		/** @var ConfigService $configService */
 		try {
-			$configService = OC::$server->query(ConfigService::class);
+			$configService = $this->server->query(ConfigService::class);
 		} catch (QueryException $e) {
 			return;
 		}
@@ -104,8 +120,8 @@ class Application extends App {
 									  ->getNavigationManager();
 		$appManager->add(
 			function() {
-				$urlGen = OC::$server->getURLGenerator();
-				$navName = OC::$server->getL10N(self::APP_NAME)
+				$urlGen = $this->server->getURLGenerator();
+				$navName = $this->server->getL10N(self::APP_NAME)
 									  ->t('Circles');
 
 				return [
@@ -121,8 +137,17 @@ class Application extends App {
 	}
 
 	public function registerFilesPlugin() {
-		$eventDispatcher = OC::$server->getEventDispatcher();
-		$eventDispatcher->addListener(
+		try {
+			/** @var ConfigService $configService */
+			$configService = $this->server->query(ConfigService::class);
+			if (!$configService->isFilesFilteredCirclesAllowed()) {
+				return;
+			}
+		} catch (QueryException $e) {
+			return;
+		}
+
+		$this->dispatcher->addListener(
 			'OCA\Files::loadAdditionalScripts',
 			function() {
 				Circles::addJavascriptAPI();
@@ -140,10 +165,20 @@ class Application extends App {
 	 *
 	 */
 	public function registerFilesNavigation() {
+		try {
+			/** @var ConfigService $configService */
+			$configService = $this->server->query(ConfigService::class);
+			if (!$configService->isFilesFilteredCirclesAllowed()) {
+				return;
+			}
+		} catch (QueryException $e) {
+			return;
+		}
+
 		$appManager = FilesApp::getNavigationManager();
 		$appManager->add(
 			function() {
-				$l = OC::$server->getL10N('circles');
+				$l = $this->server->getL10N('circles');
 
 				return [
 					'id'      => 'circlesfilter',
@@ -160,24 +195,63 @@ class Application extends App {
 	public function registerDavHooks() {
 		try {
 			/** @var ConfigService $configService */
-			$configService = OC::$server->query(ConfigService::class);
+			$configService = $this->server->query(ConfigService::class);
 			if (!$configService->isContactsBackend()) {
 				return;
 			}
 
 			/** @var DavService $davService */
-			$davService = OC::$server->query(DavService::class);
+			$davService = $this->server->query(DavService::class);
 		} catch (QueryException $e) {
 			return;
 		}
 
-		$event = OC::$server->getEventDispatcher();
+		$this->dispatcher->addListener(ManagerEvent::EVENT_APP_ENABLE, [$davService, 'onAppEnabled']);
+		$this->dispatcher->addListener('\OCA\DAV\CardDAV\CardDavBackend::createCard', [$davService, 'onCreateCard']);
+		$this->dispatcher->addListener('\OCA\DAV\CardDAV\CardDavBackend::updateCard', [$davService, 'onUpdateCard']);
+		$this->dispatcher->addListener('\OCA\DAV\CardDAV\CardDavBackend::deleteCard', [$davService, 'onDeleteCard']);
+	}
 
-		$event->addListener(ManagerEvent::EVENT_APP_ENABLE, [$davService, 'onAppEnabled']);
-		$event->addListener('\OCA\DAV\CardDAV\CardDavBackend::createCard', [$davService, 'onCreateCard']);
-		$event->addListener('\OCA\DAV\CardDAV\CardDavBackend::updateCard', [$davService, 'onUpdateCard']);
-		$event->addListener('\OCA\DAV\CardDAV\CardDavBackend::deleteCard', [$davService, 'onDeleteCard']);
+	public function registerGroupsBackendHooks() {
+		try {
+			/** @var ConfigService $configService */
+			$configService = $this->server->query(ConfigService::class);
+			if (!$configService->isGroupsBackend()) {
+				return;
+			}
+
+			/** @var GroupsBackendService $groupsBackendService */
+			$groupsBackendService = $this->server->query(GroupsBackendService::class);
+		} catch (QueryException $e) {
+			return;
+		}
+
+		$this->dispatcher->addListener(ManagerEvent::EVENT_APP_ENABLE, [$groupsBackendService, 'onAppEnabled']);
+		$this->dispatcher->addListener('\OCA\Circles::onCircleCreation', [$groupsBackendService, 'onCircleCreation']);
+		$this->dispatcher->addListener('\OCA\Circles::onCircleDestruction', [$groupsBackendService, 'onCircleDestruction']);
+		$this->dispatcher->addListener('\OCA\Circles::onMemberNew', [$groupsBackendService, 'onMemberNew']);
+		$this->dispatcher->addListener('\OCA\Circles::onMemberInvited', [$groupsBackendService, 'onMemberInvited']);
+		$this->dispatcher->addListener('\OCA\Circles::onMemberRequesting', [$groupsBackendService, 'onMemberRequesting']);
+		$this->dispatcher->addListener('\OCA\Circles::onMemberLeaving', [$groupsBackendService, 'onMemberLeaving']);
+		$this->dispatcher->addListener('\OCA\Circles::onMemberLevel', [$groupsBackendService, 'onMemberLevel']);
+		$this->dispatcher->addListener('\OCA\Circles::onMemberOwner', [$groupsBackendService, 'onMemberOwner']);
+		$this->dispatcher->addListener('\OCA\Circles::onGroupLink', [$groupsBackendService, 'onGroupLink']);
+		$this->dispatcher->addListener('\OCA\Circles::onGroupUnlink', [$groupsBackendService, 'onGroupUnlink']);
+		$this->dispatcher->addListener('\OCA\Circles::onGroupLevel', [$groupsBackendService, 'onGroupLevel']);
+		$this->dispatcher->addListener('\OCA\Circles::onLinkRequestSent', [$groupsBackendService, 'onLinkRequestSent']);
+		$this->dispatcher->addListener('\OCA\Circles::onLinkRequestReceived', [$groupsBackendService, 'onLinkRequestReceived']);
+		$this->dispatcher->addListener('\OCA\Circles::onLinkRequestRejected', [$groupsBackendService, 'onLinkRequestRejected']);
+		$this->dispatcher->addListener('\OCA\Circles::onLinkRequestCanceled', [$groupsBackendService, 'onLinkRequestCanceled']);
+		$this->dispatcher->addListener('\OCA\Circles::onLinkRequestAccepted', [$groupsBackendService, 'onLinkRequestAccepted']);
+		$this->dispatcher->addListener('\OCA\Circles::onLinkRequestAccepting', [$groupsBackendService, 'onLinkRequestAccepting']);
+		$this->dispatcher->addListener('\OCA\Circles::onLinkUp', [$groupsBackendService, 'onLinkUp']);
+		$this->dispatcher->addListener('\OCA\Circles::onLinkDown', [$groupsBackendService, 'onLinkDown']);
+		$this->dispatcher->addListener('\OCA\Circles::onLinkRemove', [$groupsBackendService, 'onLinkRemove']);
+		$this->dispatcher->addListener('\OCA\Circles::onSettingsChange', [$groupsBackendService, 'onSettingsChange']);
+
+		$this->dispatcher->addListener(IGroup::class . '::postAddUser', [$groupsBackendService, 'onGroupPostAddUser']);
+		$this->dispatcher->addListener(IGroup::class . '::postRemoveUser', [$groupsBackendService, 'onGroupPostRemoveUser']);
+		$this->dispatcher->addListener(IGroup::class . '::postDelete', [$groupsBackendService, 'onGroupPostDelete']);
 	}
 
 }
-
