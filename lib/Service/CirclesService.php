@@ -318,6 +318,14 @@ class CirclesService {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			$this->hasToBeOwner($circle->getHigherViewer());
 
+			$oldSettings = array_merge(
+				$circle->getSettings(),
+				[
+					'circle_name' => $circle->getName(),
+					'circle_desc' => $circle->getDescription(),
+				]
+			);
+
 			if (!$this->viewerIsAdmin()) {
 				$settings['members_limit'] = $circle->getSetting('members_limit');
 			}
@@ -329,7 +337,7 @@ class CirclesService {
 
 			$this->circlesRequest->updateCircle($circle, $this->userId);
 
-			$this->eventsService->onSettingsChange($circle);
+			$this->eventsService->onSettingsChange($circle, $oldSettings);
 		} catch (\Exception $e) {
 			throw $e;
 		}
