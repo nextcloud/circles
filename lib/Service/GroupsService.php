@@ -54,6 +54,9 @@ class GroupsService {
 	/** @var IUserManager */
 	private $userManager;
 
+	/** @var ConfigService */
+	private $configService;
+
 	/** @var CirclesRequest */
 	private $circlesRequest;
 
@@ -76,6 +79,7 @@ class GroupsService {
 	 * @param IL10N $l10n
 	 * @param IGroupManager $groupManager
 	 * @param IUserManager $userManager
+	 * @param ConfigService $configService
 	 * @param CirclesRequest $circlesRequest
 	 * @param MembersRequest $membersRequest
 	 * @param CirclesService $circlesService
@@ -84,7 +88,7 @@ class GroupsService {
 	 */
 	public function __construct(
 		$userId, IL10N $l10n, IGroupManager $groupManager, IUserManager $userManager,
-		CirclesRequest $circlesRequest,
+		ConfigService $configService, CirclesRequest $circlesRequest,
 		MembersRequest $membersRequest, CirclesService $circlesService,
 		EventsService $eventsService, MiscService $miscService
 	) {
@@ -92,6 +96,7 @@ class GroupsService {
 		$this->l10n = $l10n;
 		$this->groupManager = $groupManager;
 		$this->userManager = $userManager;
+		$this->configService = $configService;
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
 		$this->circlesService = $circlesService;
@@ -132,8 +137,13 @@ class GroupsService {
 				$count++;
 			}
 
-			if ($count > $circle->getSetting('members_limit')) {
-				throw new \Exception('Group contains too many members');
+			$limit = (int) $circle->getSetting('members_limit');
+			if ($limit === 0) {
+				$limit = $this->configService->getAppValue(ConfigService::CIRCLES_MEMBERS_LIMIT);
+			}
+
+			if ($limit !== -1 && $count > $limit) {
+				throw new \Exception($this->l10n->t('Group contains too many members'));
 			}
 
 			$group = $this->getFreshNewMember($circleUniqueId, $groupId);
