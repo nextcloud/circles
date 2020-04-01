@@ -165,6 +165,9 @@
     "%s shared »%s« with you." : "%s megosztotta »%s« veled.",
     "%s shared »%s« with '%s'." : "%s megosztotta »%s« vele: '%s'.",
     "%s on %s" : "%s ezen: %s",
+    "Password to access »%s«" : "Jelszó »%s« eléréséhez",
+    "It is protected with the following password:" : "A következő jelszóval védve: ",
+    "%1$s via %2$s" : "%1$s-tól%2$s-ig",
     "Click the button below to open it." : "Kattints a lenti gombra a megnyitáshoz",
     "Open »%s«" : "»%s« megnyitása",
     "The name of your circle must contain at least 3 characters" : "A kör neve legalább 3 karakterből kell álljon",
@@ -210,7 +213,6 @@
     "This contact is not available" : "A kapcsolat nem elérhető",
     "Could not find share" : "Megosztás nem található",
     "Bring cloud-users closer together." : "Közelebb hozza a felhő használókat.",
-    "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or 'circles') can then be used by any other app for sharing purpose (files, social feed, status update, messaging, ...).\n\nDifferent type of circles can be created:\n\n- A personal circle is a list of users known only to the owner.\nThis is the right option if you want to do recurrent sharing with the same group of people.\n\n- A public circle is an open group visible to anyone willing to join.\nYour circle will be visible to everyone and everyone will be able to join the circle.\n\n- A closed circle requires invitation or confirmation by an admin.\nThis is the right circle if you are looking for privacy when sharing your files or ideas.\n\n- An Secret circle is an open group that can be protected by a password.\nUsers won't be able to find this Circle using Nextcloud search engine." : "A körök lehetőséget nyújt, hogy a felhasználók saját csoportokat hozzanak létre a felhasználókkal/kollégákkal/barátokkal.\nEzek a felhasználó csoportok (vagy 'körök') később használhatóak más appban megosztás céljából (fájlok, közösségi hírfolyam, állapot frissítés, üzenetek, ...).\n\nKülönböző típusú körök léteznek:\n\n- A személyes kör egy olyan felhasználó lista amit csak a tulajdonos ismer.\nEz egy tökéletes választás ha ismétlődő megosztásokat szeretnél létrehozni ugyanazzal az ember csoportal.\n\n- A publikus kör egy olyan csoport ami látható mindenki számára aki csatlakozni szeretne.\nAz általad létrehozott kör látható lesz mindenki számára és mindenki csatlakozni tud ehhez a körhöz.\n\n- A zárt kör meghívást vagy visszaigazolást igényel egy admintól.\nEz a jó választás ha a titkosságra törekszel a sajád fájljaid vagy ötleteid megszotása során.\n\n- A Titkos kör egy nyílt kör ami jelszóval van védve.\nA felhasználók ezt a Kört nem képesek megtalálni a Nextcloud kereső motorjával.",
     "No files in here" : "Itt nincsenek fájlok",
     "No entries found in this folder" : "Nincsenek bejegyzések ebben a mappában",
     "Name" : "Név",
@@ -273,6 +275,7 @@
     "Allow linking of groups" : "Csoportok csatlakoztatásának engedélyezése",
     "Groups can be linked to circles." : "Csoportok csatolhatók a körökhöz.",
     "Allow federated circles" : "Egységesített körök engedélyezése",
-    "Circles from different Nextclouds can be linked together." : "Más Nextcloud-okból való körök összekapcsolhatók."
+    "Circles from different Nextclouds can be linked together." : "Más Nextcloud-okból való körök összekapcsolhatók.",
+    "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or 'circles') can then be used by any other app for sharing purpose (files, social feed, status update, messaging, ...).\n\nDifferent type of circles can be created:\n\n- A personal circle is a list of users known only to the owner.\nThis is the right option if you want to do recurrent sharing with the same group of people.\n\n- A public circle is an open group visible to anyone willing to join.\nYour circle will be visible to everyone and everyone will be able to join the circle.\n\n- A closed circle requires invitation or confirmation by an admin.\nThis is the right circle if you are looking for privacy when sharing your files or ideas.\n\n- An Secret circle is an open group that can be protected by a password.\nUsers won't be able to find this Circle using Nextcloud search engine." : "A körök lehetőséget nyújt, hogy a felhasználók saját csoportokat hozzanak létre a felhasználókkal/kollégákkal/barátokkal.\nEzek a felhasználó csoportok (vagy 'körök') később használhatóak más appban megosztás céljából (fájlok, közösségi hírfolyam, állapot frissítés, üzenetek, ...).\n\nKülönböző típusú körök léteznek:\n\n- A személyes kör egy olyan felhasználó lista amit csak a tulajdonos ismer.\nEz egy tökéletes választás ha ismétlődő megosztásokat szeretnél létrehozni ugyanazzal az ember csoportal.\n\n- A publikus kör egy olyan csoport ami látható mindenki számára aki csatlakozni szeretne.\nAz általad létrehozott kör látható lesz mindenki számára és mindenki csatlakozni tud ehhez a körhöz.\n\n- A zárt kör meghívást vagy visszaigazolást igényel egy admintól.\nEz a jó választás ha a titkosságra törekszel a sajád fájljaid vagy ötleteid megszotása során.\n\n- A Titkos kör egy nyílt kör ami jelszóval van védve.\nA felhasználók ezt a Kört nem képesek megtalálni a Nextcloud kereső motorjával."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
