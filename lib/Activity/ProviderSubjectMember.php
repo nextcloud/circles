@@ -68,7 +68,9 @@ class ProviderSubjectMember extends ProviderParser {
 	 * @throws FakeException
 	 */
 	private function parseSubjectMemberJoinClosedCircle(IEvent $event, Circle $circle, Member $member) {
-		if ($circle->getType() !== Circle::CIRCLES_CLOSED) {
+		if ($circle->getType() !== Circle::CIRCLES_CLOSED ||
+			$this->configService->isInvitationSkipped()
+		) {
 			return;
 		}
 
@@ -141,7 +143,9 @@ class ProviderSubjectMember extends ProviderParser {
 	 * @throws FakeException
 	 */
 	private function parseSubjectMemberAddClosedCircle(IEvent $event, Circle $circle, Member $member) {
-		if ($circle->getType() !== Circle::CIRCLES_CLOSED) {
+		if ($circle->getType() !== Circle::CIRCLES_CLOSED ||
+	   		$this->configService->isInvitationSkipped()
+		) {
 			return;
 		}
 
