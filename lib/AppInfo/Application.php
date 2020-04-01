@@ -33,11 +33,13 @@ use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Notification\Notifier;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\DavService;
+use OCA\Circles\Service\GroupsBackendService;
 use OCA\Files\App as FilesApp;
 use OCP\App\ManagerEvent;
 use OCP\AppFramework\App;
 use OCP\AppFramework\IAppContainer;
 use OCP\AppFramework\QueryException;
+use OCP\IGroup;
 use OCP\EventDispatcher\IEventDispatcher;
 use OCP\Util;
 
@@ -83,6 +85,7 @@ class Application extends App {
 		$this->registerFilesPlugin();
 		$this->registerHooks();
 		$this->registerDavHooks();
+		$this->registerGroupsBackendHooks();
 	}
 
 	/**
@@ -207,7 +210,48 @@ class Application extends App {
 		$this->dispatcher->addListener('\OCA\DAV\CardDAV\CardDavBackend::createCard', [$davService, 'onCreateCard']);
 		$this->dispatcher->addListener('\OCA\DAV\CardDAV\CardDavBackend::updateCard', [$davService, 'onUpdateCard']);
 		$this->dispatcher->addListener('\OCA\DAV\CardDAV\CardDavBackend::deleteCard', [$davService, 'onDeleteCard']);
+	}
 
+	public function registerGroupsBackendHooks() {
+		try {
+			/** @var ConfigService $configService */
+			$configService = $this->server->query(ConfigService::class);
+			if (!$configService->isGroupsBackend()) {
+				return;
+			}
+
+			/** @var GroupsBackendService $groupsBackendService */
+			$groupsBackendService = $this->server->query(GroupsBackendService::class);
+		} catch (QueryException $e) {
+			return;
+		}
+
+		$this->dispatcher->addListener(ManagerEvent::EVENT_APP_ENABLE, [$groupsBackendService, 'onAppEnabled']);
+		$this->dispatcher->addListener('\OCA\Circles::onCircleCreation', [$groupsBackendService, 'onCircleCreation']);
+		$this->dispatcher->addListener('\OCA\Circles::onCircleDestruction', [$groupsBackendService, 'onCircleDestruction']);
+		$this->dispatcher->addListener('\OCA\Circles::onMemberNew', [$groupsBackendService, 'onMemberNew']);
+		$this->dispatcher->addListener('\OCA\Circles::onMemberInvited', [$groupsBackendService, 'onMemberInvited']);
+		$this->dispatcher->addListener('\OCA\Circles::onMemberRequesting', [$groupsBackendService, 'onMemberRequesting']);
+		$this->dispatcher->addListener('\OCA\Circles::onMemberLeaving', [$groupsBackendService, 'onMemberLeaving']);
+		$this->dispatcher->addListener('\OCA\Circles::onMemberLevel', [$groupsBackendService, 'onMemberLevel']);
+		$this->dispatcher->addListener('\OCA\Circles::onMemberOwner', [$groupsBackendService, 'onMemberOwner']);
+		$this->dispatcher->addListener('\OCA\Circles::onGroupLink', [$groupsBackendService, 'onGroupLink']);
+		$this->dispatcher->addListener('\OCA\Circles::onGroupUnlink', [$groupsBackendService, 'onGroupUnlink']);
+		$this->dispatcher->addListener('\OCA\Circles::onGroupLevel', [$groupsBackendService, 'onGroupLevel']);
+		$this->dispatcher->addListener('\OCA\Circles::onLinkRequestSent', [$groupsBackendService, 'onLinkRequestSent']);
+		$this->dispatcher->addListener('\OCA\Circles::onLinkRequestReceived', [$groupsBackendService, 'onLinkRequestReceived']);
+		$this->dispatcher->addListener('\OCA\Circles::onLinkRequestRejected', [$groupsBackendService, 'onLinkRequestRejected']);
+		$this->dispatcher->addListener('\OCA\Circles::onLinkRequestCanceled', [$groupsBackendService, 'onLinkRequestCanceled']);
+		$this->dispatcher->addListener('\OCA\Circles::onLinkRequestAccepted', [$groupsBackendService, 'onLinkRequestAccepted']);
+		$this->dispatcher->addListener('\OCA\Circles::onLinkRequestAccepting', [$groupsBackendService, 'onLinkRequestAccepting']);
+		$this->dispatcher->addListener('\OCA\Circles::onLinkUp', [$groupsBackendService, 'onLinkUp']);
+		$this->dispatcher->addListener('\OCA\Circles::onLinkDown', [$groupsBackendService, 'onLinkDown']);
+		$this->dispatcher->addListener('\OCA\Circles::onLinkRemove', [$groupsBackendService, 'onLinkRemove']);
+		$this->dispatcher->addListener('\OCA\Circles::onSettingsChange', [$groupsBackendService, 'onSettingsChange']);
+
+		$this->dispatcher->addListener(IGroup::class . '::postAddUser', [$groupsBackendService, 'onGroupPostAddUser']);
+		$this->dispatcher->addListener(IGroup::class . '::postRemoveUser', [$groupsBackendService, 'onGroupPostRemoveUser']);
+		$this->dispatcher->addListener(IGroup::class . '::postDelete', [$groupsBackendService, 'onGroupPostDelete']);
 	}
 
 }

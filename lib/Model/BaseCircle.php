@@ -82,6 +82,8 @@ class BaseCircle {
 	/** @var int */
 	private $contactAddressBook = 0;
 
+	/** @var string */
+	private $groupId = '';
 
 	/** @var string */
 	private $creation;
@@ -307,6 +309,23 @@ class BaseCircle {
 		return $this->contactGroupName;
 	}
 
+	/**
+	 * @param string $groupId
+	 *
+	 * @return BaseCircle
+	 */
+	public function setGroupId($groupId) {
+		$this->groupId = (string) $groupId;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getGroupId() {
+		return (string) $this->groupId;
+	}
 
 	/**
 	 * @param string|array $settings
