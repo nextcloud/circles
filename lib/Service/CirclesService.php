@@ -577,11 +577,11 @@ class CirclesService {
 			$circle->getUniqueId(), Member::LEVEL_MEMBER, true
 		);
 
-		$limit = $circle->getSetting('members_limit');
+		$limit = (int) $circle->getSetting('members_limit');
 		if ($limit === -1) {
 			return;
 		}
-		if ($limit === 0 || $limit === '' || $limit === null) {
+		if ($limit === 0) {
 			$limit = $this->configService->getAppValue(ConfigService::CIRCLES_MEMBERS_LIMIT);
 		}
 
