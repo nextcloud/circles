@@ -48,7 +48,9 @@ use OCA\Circles\Exceptions\MemberTypeCantEditLevelException;
 use OCA\Circles\Exceptions\ModeratorIsNotHighEnoughException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
+use OCP\IGroup;
 use OCP\IL10N;
+use OCP\IUser;
 use OCP\IUserManager;
 
 
@@ -387,8 +389,18 @@ class MembersService {
 	 */
 	private function addGroupMembers(Circle $circle, $groupId) {
 
-		$group = OC::$server->getGroupManager()
-							->get($groupId);
+		$groupManager = OC::$server->getGroupManager();
+		$group = $groupManager->get($groupId);
+
+		$user = OC::$server->getUserSession()->getUser();
+
+		if (!$this->configService->isAddingAnyGroupMembersAllowed() &&
+			$group instanceof IGroup && $user instanceof IUser &&
+			!$group->inGroup($user) && !$groupManager->isAdmin($user->getUID())
+		) {
+			$group = null;
+		}
+
 		if ($group === null) {
 			throw new GroupDoesNotExistException($this->l10n->t('This group does not exist'));
 		}

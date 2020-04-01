@@ -26,11 +26,25 @@
 
 namespace OCA\Circles\Search;
 
+use OC;
 use OCA\Circles\ISearch;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SearchResult;
+use OCP\IUser;
+use OCA\Circles\Service\ConfigService;
 
 class LocalGroups implements ISearch {
+
+	/** @var ConfigService */
+	private $configService;
+
+	/**
+	 * @param ConfigService $configService
+	 */
+	public function __construct(ConfigService $configService)
+	{
+		$this->configService = $configService;
+	}
 
 	/**
 	 * {@inheritdoc}
@@ -38,11 +52,19 @@ class LocalGroups implements ISearch {
 	public function search($search) {
 
 		$result = [];
-		$groupManager = \OC::$server->getGroupManager();
+		$groupManager = OC::$server->getGroupManager();
 
 		$groups = $groupManager->search($search);
+		$user = OC::$server->getUserSession()->getUser();
 		foreach ($groups as $group) {
-			$result[] = new SearchResult($group->getGID(), Member::TYPE_GROUP);
+			if ($this->configService->isAddingAnyGroupMembersAllowed() ||
+				(
+					$user instanceof IUser &&
+					($group->inGroup($user) || $groupManager->isAdmin($user->getUID()))
+				)
+			) {
+				$result[] = new SearchResult($group->getGID(), Member::TYPE_GROUP);
+			}
 		}
 
 		return $result;
