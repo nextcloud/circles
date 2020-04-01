@@ -158,7 +158,7 @@
 					return m;
 				},
 				formatNoMatches: function() {
-					return t('systemtags', 'No circles found');
+					return t('circles', 'No circles found');
 				}
 			});
 			this.$filterField.on('change', _.bind(this._onTagsChanged, this));
@@ -223,11 +223,11 @@
 				if (!this._circlesIds.length) {
 					// no tags selected
 					this.$el.find('#emptycontent').html('<div class="icon-systemtags"></div>' +
-						'<h2>' + t('systemtags', 'Please select circles to filter by') + '</h2>');
+						'<h2>' + t('circles', 'Please select circles to filter by') + '</h2>');
 				} else {
 					// tags selected but no results
 					this.$el.find('#emptycontent').html('<div class="icon-systemtags"></div>' +
-						'<h2>' + t('systemtags', 'No files found for the selected circles') + '</h2>');
+						'<h2>' + t('circles', 'No files found for the selected circles') + '</h2>');
 				}
 				this.$el.find('#emptycontent').toggleClass('hidden', !this.isEmpty);
 				this.$el.find('#filestable thead th').toggleClass('hidden', this.isEmpty);
