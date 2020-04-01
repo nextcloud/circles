@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+### 0.17.12
+
+- fix some translation
+
 
 ### 0.17.11
 
