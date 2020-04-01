@@ -30,6 +30,7 @@ use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CirclesService;
+use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
 use OCP\Share;
 
@@ -61,12 +62,20 @@ class Sharees {
 //	public static function search($search, $limit, $offset) {
 	public static function search($search) {
 		$c = self::getContainer();
+
+		$type = Circle::CIRCLES_ALL;
+		$circlesAreVisible = $c->query(ConfigService::class)
+						 		->isListedCirclesAllowed();
+		if (!$circlesAreVisible) {
+			$type = $type - Circle::CIRCLES_CLOSED - Circle::CIRCLES_PUBLIC;
+		}
+
 		$userId = \OC::$server->getUserSession()
 							  ->getUser()
 							  ->getUID();
 
 		$data = $c->query(CirclesService::class)
-				  ->listCircles($userId, Circle::CIRCLES_ALL, $search, Member::LEVEL_MEMBER);
+				  ->listCircles($userId, $type, $search, Member::LEVEL_MEMBER);
 		$result = array(
 			'exact'   => ['circles'],
 			'circles' => []

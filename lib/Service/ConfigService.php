@@ -41,6 +41,7 @@ class ConfigService {
 	const CIRCLES_ALLOW_FEDERATED_CIRCLES = 'allow_federated';
 	const CIRCLES_MEMBERS_LIMIT = 'members_limit';
 	const CIRCLES_ACCOUNTS_ONLY = 'accounts_only';
+	const CIRCLES_ALLOW_LISTED_CIRCLES = 'allow_listed_circles';
 	const CIRCLES_ALLOW_LINKED_GROUPS = 'allow_linked_groups';
 	const CIRCLES_ALLOW_NON_SSL_LINKS = 'allow_non_ssl_links';
 	const CIRCLES_NON_SSL_LOCAL = 'local_is_non_ssl';
@@ -66,6 +67,7 @@ class ConfigService {
 		self::CIRCLES_NON_SSL_LOCAL           => '0',
 		self::CIRCLES_ACTIVITY_ON_CREATION    => '1',
 		self::CIRCLES_SKIP_INVITATION_STEP    => '0'
+		self::CIRCLES_ALLOW_LISTED_CIRCLES       => '1',
 	];
 
 	/** @var string */
@@ -85,6 +87,9 @@ class ConfigService {
 
 	/** @var int */
 	private $allowedCircle = -1;
+
+	/** @var int */
+	private $allowedListedCircles = -1;
 
 	/** @var int */
 	private $allowedLinkedGroups = -1;
@@ -137,6 +142,20 @@ class ConfigService {
 		}
 
 		return ((int)$type & (int)$this->allowedCircle);
+	}
+
+	/**
+	 * returns if the circles are allowed to be listed outside the Circles application.
+	 *
+	 * @return bool
+	 */
+	public function isListedCirclesAllowed() {
+		if ($this->allowedListedCircles === -1) {
+			$this->allowedListedCircles =
+				(int)$this->getAppValue(self::CIRCLES_ALLOW_LISTED_CIRCLES);
+		}
+
+		return ($this->allowedListedCircles === 1);
 	}
 
 

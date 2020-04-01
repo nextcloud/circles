@@ -37,6 +37,7 @@ use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\CirclesService;
+use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedLinkService;
 use OCA\Circles\Service\MembersService;
 use OCA\Circles\Service\MiscService;
@@ -180,6 +181,43 @@ class Circles {
 	 */
 	public static function listCircles($type, $name = '', $level = 0, $userId = '', $forceAll = false) {
 		$c = self::getContainer();
+
+		$configService = $c->query(ConfigService::class);
+		$circlesAreVisible = $configService->isListedCirclesAllowed();
+		$circlesAllowed = (int)$configService->getAppValue(ConfigService::CIRCLES_ALLOW_CIRCLES);
+
+		if (!$circlesAreVisible) {
+			switch (true) {
+				case ($type === Circle::CIRCLES_CLOSED):
+				case ($type === Circle::CIRCLES_PUBLIC):
+				case (Circle::CIRCLES_CLOSED + Circle::CIRCLES_PUBLIC === $circlesAllowed):
+					return [];
+					break;
+				case ($type === Circle::CIRCLES_ALL &&
+						$circlesAllowed === Circle::CIRCLES_ALL
+				):
+					$type = $type - Circle::CIRCLES_CLOSED - Circle::CIRCLES_PUBLIC;
+					break;
+				case ($type > Circle::CIRCLES_CLOSED &&
+						$type < Circle::CIRCLES_PUBLIC &&
+						$circlesAllowed === Circle::CIRCLES_ALL
+				):
+					$type = $type - Circle::CIRCLES_CLOSED;
+					break;
+				case ($type > Circle::CIRCLES_PUBLIC &&
+						$type < (Circle::CIRCLES_PUBLIC + Circle::CIRCLES_CLOSED) &&
+						$circlesAllowed === Circle::CIRCLES_ALL
+				):
+					$type = $type - Circle::CIRCLES_PUBLIC;
+					break;
+				case ($type > (Circle::CIRCLES_PUBLIC + Circle::CIRCLES_CLOSED) &&
+						$type < Circle::CIRCLES_ALL &&
+						$circlesAllowed === Circle::CIRCLES_ALL
+				):
+					$type = $type - Circle::CIRCLES_PUBLIC - Circle::CIRCLES_CLOSED;
+					break;
+			}
+		}
 
 		if ($userId === '') {
 			$userId = \OC::$server->getUserSession()
