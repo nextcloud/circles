@@ -299,6 +299,7 @@ class SharingFrameService {
 					'body'            => $args,
 					'timeout'         => Application::CLIENT_TIMEOUT,
 					'connect_timeout' => Application::CLIENT_TIMEOUT,
+					'verify'          => false
 				]
 			);
 
