@@ -224,6 +224,7 @@
     "This contact is not available" : "此联系人不可用",
     "Could not find share" : "查找不到共享",
     "Bring cloud-users closer together." : "把云端用户连接到一起。",
+    "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or 'circles') can then be used by any other app for sharing purpose (files, social feed, status update, messaging, …).\n\nDifferent type of circles can be created:\n\n- A personal circle is a list of users known only to the owner.\nThis is the right option if you want to do recurrent sharing with the same group of people.\n\n- A public circle is an open group visible to anyone willing to join.\nYour circle will be visible to everyone and everyone will be able to join the circle.\n\n- A closed circle requires invitation or confirmation by an admin.\nThis is the right circle if you are looking for privacy when sharing your files or ideas.\n\n- An Secret circle is an open group that can be protected by a password.\nUsers won't be able to find this Circle using Nextcloud search engine." : "圈子允许用户创建自己的用户/同事/朋友的群组。\n这些群组（或者说圈子）可以被其它的App用于共享（文件、社交订阅源，状态更新、消息，等等）。\n\n可以创建的圈子类型有：\n\n- 个人圈子是只有创建人自己知道的一个用户列表。\n这个选项适用于您需要反复地共享给同样的一组人。\n\n- 公开圈子，任何想加入的人都可以看到的。\n这个圈子可以被所有人看到、并且所有人都能加入。\n\n- 封闭圈子，这个需要管理人员邀请或者确认。\n当您在共享文件或想法时要考虑隐私的话，这种圈子是个正确的选择。\n\n- 秘密圈子，这个是个公开的群组，但是需要密码保护。\n用户是不能通过Nextcloud的搜索引擎找到这个圈子的。",
     "No files in here" : "此处没有文件",
     "No entries found in this folder" : "此文件夹中无项目",
     "Name" : "名称",
