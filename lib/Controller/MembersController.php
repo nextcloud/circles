@@ -26,7 +26,6 @@
 
 namespace OCA\Circles\Controller;
 
-use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SearchResult;
 use OCA\Circles\Service\MiscService;
 use OCP\AppFramework\Http\DataResponse;
@@ -68,6 +67,40 @@ class MembersController extends BaseController {
 				'user_id'   => $ident,
 				'user_type' => (int)$type,
 				'display'   => MiscService::getDisplay($ident, (int)$type),
+				'members'   => $data
+			]
+		);
+	}
+
+
+	/**
+	 * @NoAdminRequired
+	 * @NoSubAdminRequired
+	 *
+	 * @param $memberId
+	 *
+	 * @return DataResponse
+	 */
+	public function addMemberById(string $memberId) {
+		try {
+			$this->mustHaveFrontEndEnabled();
+
+			$member = $this->membersService->getMemberById($memberId);
+			$data = $this->membersService->addMember(
+				$member->getCircleId(), $member->getUserId(), $member->getType()
+			);
+		} catch (\Exception $e) {
+			return $this->fail(
+				[
+					'member_id' => $memberId,
+					'error'     => $e->getMessage()
+				]
+			);
+		}
+
+		return $this->success(
+			[
+				'member_id' => $memberId,
 				'members'   => $data
 			]
 		);
@@ -153,6 +186,41 @@ class MembersController extends BaseController {
 				'user_id'   => $member,
 				'user_type' => (int)$type,
 				'display'   => MiscService::getDisplay($member, (int)$type),
+				'members'   => $data,
+			]
+		);
+	}
+
+
+	/**
+	 * @NoAdminRequired
+	 * @NoSubAdminRequired
+	 *
+	 * @param string $memberId
+	 *
+	 * @return DataResponse
+	 */
+	public function removeMemberById(string $memberId) {
+		try {
+			$this->mustHaveFrontEndEnabled();
+
+			$member = $this->membersService->getMemberById($memberId);
+			$data = $this->membersService->removeMember(
+				$member->getCircleId(), $member->getUserId(), $member->getType()
+			);
+		} catch (\Exception $e) {
+			return
+				$this->fail(
+					[
+						'member_id' => $memberId,
+						'error'     => $e->getMessage()
+					]
+				);
+		}
+
+		return $this->success(
+			[
+				'member_id' => $memberId,
 				'members'   => $data,
 			]
 		);
