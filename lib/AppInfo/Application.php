@@ -31,6 +31,7 @@ namespace OCA\Circles\AppInfo;
 
 use OC;
 use OCA\Circles\Api\v1\Circles;
+use OCA\Circles\Notification\Notifier;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\DavService;
 use OCA\Files\App as FilesApp;
@@ -62,6 +63,9 @@ class Application extends App {
 		parent::__construct(self::APP_NAME, $params);
 
 		$this->container = $this->getContainer();
+
+		$manager = OC::$server->getNotificationManager();
+		$manager->registerNotifierService(Notifier::class);
 
 		$this->registerHooks();
 		$this->registerDavHooks();

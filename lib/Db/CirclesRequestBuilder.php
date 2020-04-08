@@ -265,6 +265,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->selectAlias('u.user_id', 'viewer_userid')
 		   ->selectAlias('u.status', 'viewer_status')
+		   ->selectAlias('u.member_id', 'viewer_member_id')
 		   ->selectAlias('u.level', 'viewer_level')
 		   ->leftJoin(
 			   $this->default_select_alias, CoreRequestBuilder::TABLE_MEMBERS, 'u',
@@ -425,6 +426,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		if (key_exists('viewer_level', $data)) {
 			$user = new Member($data['viewer_userid'], Member::TYPE_USER, $circle->getUniqueId());
 			$user->setStatus($data['viewer_status']);
+			$user->setMemberId($data['viewer_member_id']);
 			$user->setLevel($data['viewer_level']);
 			$circle->setViewer($user);
 		}

@@ -56,6 +56,9 @@ return [
 		//		],
 		['name' => 'Members#addMember', 'url' => '/v1/circles/{uniqueId}/member', 'verb' => 'PUT'],
 		['name' => 'Members#removeMember', 'url' => '/v1/circles/{uniqueId}/member', 'verb' => 'DELETE'],
+		['name' => 'Members#addMemberById', 'url' => '/v1/circles/member/{memberId}', 'verb' => 'PUT'],
+		['name' => 'Members#removeMemberById', 'url' => '/v1/circles/member/{memberId}', 'verb' => 'DELETE'],
+
 		['name' => 'Members#levelMember', 'url' => '/v1/circles/{uniqueId}/level', 'verb' => 'POST'],
 		['name' => 'Groups#add', 'url' => '/v1/circles/{uniqueId}/groups', 'verb' => 'PUT'],
 		['name' => 'Groups#level', 'url' => '/v1/circles/{uniqueId}/group/level', 'verb' => 'POST'],

@@ -82,8 +82,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select(
 			'm.user_id', 'm.user_type', 'm.circle_id', 'm.level', 'm.status', 'm.note', 'm.contact_id',
-			'member_id',
-			'm.contact_meta', 'm.joined'
+			'm.member_id', 'm.contact_meta', 'm.joined'
 		)
 		   ->from(self::TABLE_MEMBERS, 'm')
 		   ->orderBy('m.joined');

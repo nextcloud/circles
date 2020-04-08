@@ -186,6 +186,7 @@ class MembersService {
 
 		$this->membersRequest->updateMember($member);
 		$this->fileSharingBroadcaster->sendMailAboutExistingShares($circle, $member);
+
 		$this->eventsService->onMemberNew($circle, $member);
 	}
 

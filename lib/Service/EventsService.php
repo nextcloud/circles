@@ -34,9 +34,13 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
 use OCP\Activity\IEvent;
-use OCP\Activity\IManager;
+use OCP\Activity\IManager as IActivityManager;
+use OCP\AppFramework\Utility\ITimeFactory;
+use OCP\IURLGenerator;
 use OCP\IUser;
 use OCP\IUserManager;
+use OCP\Notification\IManager as INotificationManager;
+use OCP\Notification\INotification;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
@@ -46,11 +50,20 @@ class EventsService {
 	/** @var string */
 	private $userId;
 
-	/** @var IManager */
+	/** @var ITimeFactory */
+	private $time;
+
+	/** @var IActivityManager */
 	private $activityManager;
+
+	/** @var INotificationManager */
+	private $notificationManager;
 
 	/** @var IUserManager */
 	private $userManager;
+
+	/** @var IURLGenerator */
+	private $urlGenerator;
 
 	/** @var EventDispatcher */
 	private $eventDispatcher;
@@ -72,8 +85,11 @@ class EventsService {
 	 * Events constructor.
 	 *
 	 * @param string $userId
-	 * @param IManager $activityManager
+	 * @param ITimeFactory $time
+	 * @param IActivityManager $activityManager
+	 * @param INotificationManager $notificationManager
 	 * @param IUserManager $userManager
+	 * @param IURLGenerator $urlGenerator
 	 * @param EventDispatcher $eventDispatcher
 	 * @param CirclesRequest $circlesRequest
 	 * @param MembersRequest $membersRequest
@@ -81,14 +97,17 @@ class EventsService {
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$userId, IManager $activityManager, IUserManager $userManager,
-		EventDispatcher $eventDispatcher, CirclesRequest $circlesRequest,
-		MembersRequest $membersRequest,
+		$userId, ITimeFactory $time, IActivityManager $activityManager,
+		INotificationManager $notificationManager, IUserManager $userManager, IURLGenerator $urlGenerator,
+		EventDispatcher $eventDispatcher, CirclesRequest $circlesRequest, MembersRequest $membersRequest,
 		ConfigService $configService, MiscService $miscService
 	) {
 		$this->userId = $userId;
+		$this->time = $time;
 		$this->activityManager = $activityManager;
+		$this->notificationManager = $notificationManager;
 		$this->userManager = $userManager;
+		$this->urlGenerator = $urlGenerator;
 		$this->eventDispatcher = $eventDispatcher;
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
@@ -123,7 +142,7 @@ class EventsService {
 			}
 		);
 
-		$this->dispatch('\OCA\Circles::onCircleCreation',  ['circle' => $circle]);
+		$this->dispatch('\OCA\Circles::onCircleCreation', ['circle' => $circle]);
 	}
 
 
@@ -149,7 +168,8 @@ class EventsService {
 				$circle->getUniqueId(), Member::LEVEL_MEMBER, true
 			)
 		);
-		$this->dispatch('\OCA\Circles::onCircleDestruction',  ['circle' => $circle]);
+
+		$this->dispatch('\OCA\Circles::onCircleDestruction', ['circle' => $circle]);
 	}
 
 
@@ -193,7 +213,9 @@ class EventsService {
 					  )
 				  )
 		);
-		$this->dispatch('\OCA\Circles::onMemberNew',  ['circle' => $circle, 'member' => $member]);
+		$this->dispatch('\OCA\Circles::onMemberNew', ['circle' => $circle, 'member' => $member]);
+
+		$this->notificationOnMemberNew($circle, $member);
 	}
 
 
@@ -249,7 +271,9 @@ class EventsService {
 					  )
 				  )
 		);
-		$this->dispatch('\OCA\Circles::onMemberInvited',  ['circle' => $circle, 'member' => $member]);
+		$this->dispatch('\OCA\Circles::onMemberInvited', ['circle' => $circle, 'member' => $member]);
+
+		$this->notificationOnInvitation($circle, $member);
 	}
 
 
@@ -281,7 +305,9 @@ class EventsService {
 					  )
 				  )
 		);
-		$this->dispatch('\OCA\Circles::onMemberRequesting',  ['circle' => $circle, 'member' => $member]);
+		$this->dispatch('\OCA\Circles::onMemberRequesting', ['circle' => $circle, 'member' => $member]);
+
+		$this->notificationOnRequest($circle, $member);
 	}
 
 
@@ -314,7 +340,10 @@ class EventsService {
 					  )
 				  )
 		);
-		$this->dispatch('\OCA\Circles::onMemberLeaving',  ['circle' => $circle, 'member' => $member]);
+		$this->dispatch('\OCA\Circles::onMemberLeaving', ['circle' => $circle, 'member' => $member]);
+
+		$this->deleteNotification('membership', $member->getMemberId());
+		$this->deleteNotification('membership_request', $member->getMemberId());
 	}
 
 
@@ -347,7 +376,7 @@ class EventsService {
 		$this->membersRequest->avoidDuplicateMembers($mods, [$member]);
 
 		$this->publishEvent($event, $mods);
-		$this->dispatch('\OCA\Circles::onMemberLevel',  ['circle' => $circle, 'member' => $member]);
+		$this->dispatch('\OCA\Circles::onMemberLevel', ['circle' => $circle, 'member' => $member]);
 	}
 
 
@@ -372,7 +401,8 @@ class EventsService {
 				$circle->getUniqueId(), Member::LEVEL_MEMBER, true
 			)
 		);
-		$this->dispatch('\OCA\Circles::onMemberOwner',  ['circle' => $circle, 'member' => $member]);
+
+		$this->dispatch('\OCA\Circles::onMemberOwner', ['circle' => $circle, 'member' => $member]);
 	}
 
 
@@ -405,7 +435,7 @@ class EventsService {
 		);
 
 		$this->publishEvent($event, $mods);
-		$this->dispatch('\OCA\Circles::onGroupLink',  ['circle' => $circle, 'group' => $group]);
+		$this->dispatch('\OCA\Circles::onGroupLink', ['circle' => $circle, 'group' => $group]);
 	}
 
 
@@ -438,7 +468,7 @@ class EventsService {
 		);
 
 		$this->publishEvent($event, $mods);
-		$this->dispatch('\OCA\Circles::onGroupUnlink',  ['circle' => $circle, 'group' => $group]);
+		$this->dispatch('\OCA\Circles::onGroupUnlink', ['circle' => $circle, 'group' => $group]);
 	}
 
 
@@ -471,7 +501,7 @@ class EventsService {
 		);
 
 		$this->publishEvent($event, $mods);
-		$this->dispatch('\OCA\Circles::onGroupLevel',  ['circle' => $circle, 'group' => $group]);
+		$this->dispatch('\OCA\Circles::onGroupLevel', ['circle' => $circle, 'group' => $group]);
 	}
 
 
@@ -496,7 +526,7 @@ class EventsService {
 			$link->getCircleId(), Member::LEVEL_MODERATOR, true
 		)
 		);
-		$this->dispatch('\OCA\Circles::onLinkRequestSent',  ['circle' => $circle, 'link' => $link]);
+		$this->dispatch('\OCA\Circles::onLinkRequestSent', ['circle' => $circle, 'link' => $link]);
 	}
 
 
@@ -521,7 +551,7 @@ class EventsService {
 			$link->getCircleId(), Member::LEVEL_MODERATOR, true
 		)
 		);
-		$this->dispatch('\OCA\Circles::onLinkRequestReceived',  ['circle' => $circle, 'link' => $link]);
+		$this->dispatch('\OCA\Circles::onLinkRequestReceived', ['circle' => $circle, 'link' => $link]);
 	}
 
 
@@ -546,7 +576,7 @@ class EventsService {
 			$link->getCircleId(), Member::LEVEL_MODERATOR, true
 		)
 		);
-		$this->dispatch('\OCA\Circles::onLinkRequestRejected',  ['circle' => $circle, 'link' => $link]);
+		$this->dispatch('\OCA\Circles::onLinkRequestRejected', ['circle' => $circle, 'link' => $link]);
 	}
 
 
@@ -571,7 +601,7 @@ class EventsService {
 			$link->getCircleId(), Member::LEVEL_MODERATOR, true
 		)
 		);
-		$this->dispatch('\OCA\Circles::onLinkRequestCanceled',  ['circle' => $circle, 'link' => $link]);
+		$this->dispatch('\OCA\Circles::onLinkRequestCanceled', ['circle' => $circle, 'link' => $link]);
 	}
 
 
@@ -596,7 +626,7 @@ class EventsService {
 			$link->getCircleId(), Member::LEVEL_MODERATOR, true
 		)
 		);
-		$this->dispatch('\OCA\Circles::onLinkRequestAccepted',  ['circle' => $circle, 'link' => $link]);
+		$this->dispatch('\OCA\Circles::onLinkRequestAccepted', ['circle' => $circle, 'link' => $link]);
 	}
 
 
@@ -621,7 +651,7 @@ class EventsService {
 			$link->getCircleId(), Member::LEVEL_MODERATOR, true
 		)
 		);
-		$this->dispatch('\OCA\Circles::onLinkRequestAccepting',  ['circle' => $circle, 'link' => $link]);
+		$this->dispatch('\OCA\Circles::onLinkRequestAccepting', ['circle' => $circle, 'link' => $link]);
 	}
 
 
@@ -646,7 +676,7 @@ class EventsService {
 			$link->getCircleId(), Member::LEVEL_MODERATOR, true
 		)
 		);
-		$this->dispatch('\OCA\Circles::onLinkUp',  ['circle' => $circle, 'link' => $link]);
+		$this->dispatch('\OCA\Circles::onLinkUp', ['circle' => $circle, 'link' => $link]);
 	}
 
 
@@ -671,7 +701,7 @@ class EventsService {
 			$link->getCircleId(), Member::LEVEL_MODERATOR, true
 		)
 		);
-		$this->dispatch('\OCA\Circles::onLinkDown',  ['circle' => $circle, 'link' => $link]);
+		$this->dispatch('\OCA\Circles::onLinkDown', ['circle' => $circle, 'link' => $link]);
 	}
 
 
@@ -702,13 +732,13 @@ class EventsService {
 		$event->setSubject(
 			$subject, ['circle' => $circle->getJson(false, true), 'link' => $link->getJson()]
 		);
-		
+
 		$this->publishEvent(
 			$event, $this->membersRequest->forceGetMembers(
 			$link->getCircleId(), Member::LEVEL_MODERATOR, true
 		)
 		);
-		$this->dispatch('\OCA\Circles::onLinkRemove',  ['circle' => $circle, 'link' => $link]);
+		$this->dispatch('\OCA\Circles::onLinkRemove', ['circle' => $circle, 'link' => $link]);
 	}
 
 	/**
@@ -719,7 +749,7 @@ class EventsService {
 	 * @param Circle $circle
 	 */
 	public function onSettingsChange(Circle $circle) {
-		$this->dispatch('\OCA\Circles::onSettingsChange',  ['circle' => $circle]);
+		$this->dispatch('\OCA\Circles::onSettingsChange', ['circle' => $circle]);
 	}
 
 
@@ -736,9 +766,9 @@ class EventsService {
 		$event->setApp(Application::APP_NAME)
 			  ->setType($type);
 
-	//	if ($this->userId === null) {
+		//	if ($this->userId === null) {
 		//	$event->setAuthor($this->userId);
-	//	}
+		//	}
 
 		return $event;
 	}
@@ -765,12 +795,157 @@ class EventsService {
 		}
 	}
 
+
+	/**
+	 * @param Circle $circle
+	 * @param Member $member
+	 */
+	private function notificationOnInvitation(Circle $circle, Member $member) {
+		$this->deleteNotification('membership_request', $member->getMemberId());
+
+		$notification =
+			$this->createNotification(
+				$circle, $circle->getViewer(), $member->getUserId(), 'invitation', 'membership',
+				$member->getMemberId()
+			);
+
+		$declineAction = $notification->createAction();
+		$declineAction->setLabel('refuse')
+					  ->setLink(
+						  $this->urlGenerator->linkToRoute(
+							  'circles.Circles.leave', ['uniqueId' => $circle->getUniqueId()]
+						  ), 'GET'
+					  );
+		$notification->addAction($declineAction);
+
+		$acceptAction = $notification->createAction();
+		$acceptAction->setLabel('accept')
+					 ->setLink(
+						 $this->urlGenerator->linkToRoute(
+							 'circles.Circles.join', ['uniqueId' => $circle->getUniqueId()]
+						 ), 'GET'
+					 );
+		$notification->addAction($acceptAction);
+
+		$this->notificationManager->notify($notification);
+	}
+
+	/**
+	 * @param Circle $circle
+	 * @param Member $author
+	 */
+	private function notificationOnRequest(Circle $circle, Member $author) {
+		$members = $this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MODERATOR);
+		foreach ($members as $member) {
+			$notification = $this->createNotification(
+				$circle, $author, $member->getUserId(), 'request_new', 'membership_request',
+				$author->getMemberId()
+			);
+
+			$declineAction = $notification->createAction();
+			$declineAction->setLabel('refuse')
+						  ->setLink(
+							  $this->urlGenerator->linkToRoute(
+								  'circles.Members.removeMemberById', ['memberId' => $author->getMemberId()]
+							  ), 'DELETE'
+						  );
+			$notification->addAction($declineAction);
+
+			$acceptAction = $notification->createAction();
+			$acceptAction->setLabel('accept')
+						 ->setLink(
+							 $this->urlGenerator->linkToRoute(
+								 'circles.Members.addMemberById', ['memberId' => $author->getMemberId()]
+							 ), 'PUT'
+						 );
+			$notification->addAction($acceptAction);
+
+			$this->notificationManager->notify($notification);
+		}
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 * @param Member $member
+	 */
+	private function notificationOnMemberNew(Circle $circle, Member $member) {
+		$this->deleteNotification('membership_request', $member->getMemberId());
+		$this->deleteNotification('membership', $member->getMemberId());
+		if ($this->userId === $member->getUserId()) {
+			return;
+		}
+
+		$notification =
+			$this->createNotification(
+				$circle, $circle->getViewer(), $member->getUserId(), 'member_new', 'membership',
+				$member->getMemberId()
+			);
+
+
+		$leave = $notification->createAction();
+		$leave->setLabel('leave')
+			  ->setLink(
+				  $this->urlGenerator->linkToRoute(
+					  'circles.Circles.leave', ['uniqueId' => $circle->getUniqueId()]
+				  ), 'GET'
+			  );
+		$notification->addAction($leave);
+
+		$this->notificationManager->notify($notification);
+	}
+
+
+	/**
+	 * @param string $object
+	 * @param string $objectId
+	 */
+	public function deleteNotification(string $object, string $objectId) {
+		if ($objectId === '') {
+			return;
+		}
+
+		$notification = $this->notificationManager->createNotification();
+		$notification->setApp('circles')
+					 ->setObject($object, $objectId);
+
+		$this->notificationManager->markProcessed($notification);
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 * @param Member $author
+	 * @param string $userId
+	 * @param string $subject
+	 * @param string $object
+	 * @param string $objectId
+	 *
+	 * @return INotification
+	 */
+	private function createNotification(
+		Circle $circle, Member $author, string $userId, string $subject, string $object, string $objectId
+	) {
+		$now = $this->time->getDateTime();
+		$notification = $this->notificationManager->createNotification();
+		$notification->setApp('circles')
+					 ->setDateTime($now)
+					 ->setUser($userId)
+					 ->setObject($object, $objectId)
+					 ->setSubject(
+						 $subject, [$author->getUserId(), $circle->getName(), json_encode($circle)]
+					 );
+
+		return $notification;
+	}
+
+
 	/**
 	 * @param string $context
 	 * @param array $arguments
 	 */
 	private function dispatch($context, $arguments) {
-		$this->eventDispatcher->dispatch($context, new GenericEvent(null,$arguments));
+		$this->eventDispatcher->dispatch($context, new GenericEvent(null, $arguments));
 	}
 
 }
