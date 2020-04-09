@@ -299,7 +299,7 @@ class ProviderParser {
 	 */
 	protected function generateExternalMemberParameter(Member $member) {
 		return [
-			'type'    => 'user',
+			'type'    => $member->getTypeName(),
 			'id'      => $member->getUserId(),
 			'name'    => $member->getDisplayName() . ' (' . $member->getTypeString() . ')',
 			'_parsed' => $member->getDisplayName()
