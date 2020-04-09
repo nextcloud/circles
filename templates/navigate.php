@@ -359,12 +359,12 @@ style(Application::APP_NAME, 'navigation');
 				<table id="settings-table">
 
 					<tr>
-						<td class="left">Name of the Circle</td>
+						<td class="left"><?php p($l->t('Name of the Circle')); ?></td>
 						<td><input type="text" id="settings-name"/></td>
 					</tr>
 
 					<tr>
-						<td class="left" style="vertical-align: top">Description</td>
+						<td class="left" style="vertical-align: top"><?php p($l->t('Description')); ?></td>
 						<td><textarea type="text" id="settings-desc"></textarea></td>
 					</tr>
 
