@@ -159,7 +159,6 @@
     "{member} sent a request to join {circle}" : "{member} a trimis o cerere să se alăture {circle}",
     "You are the new owner of {circle}" : "Ești noul proprietar al {circle}",
     "{member} is the new owner of {circle}" : "{member} este noul proprietar al {circle}",
-    "On events happening in a <strong>Circle</strong> you belong" : "Despre evenimente întâmplate într-un <strong>Cerc</strong> de care aparții",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Orice eveniment important într-un <strong>Cerc</strong> pe care îl moderezi",
     "Shared to Circles" : "Distribuit în Cercuri",
     "%s shared »%s« with you." : "%s a împărțit »%s« cu tine.",
@@ -277,6 +276,7 @@
     "Groups can be linked to circles." : "Grupurile pot fi legate de cercuri",
     "Allow federated circles" : "Permite cercuri federate",
     "Circles from different Nextclouds can be linked together." : "Cercuri din Nextcloud-uri diferite pot fi legate împreună",
+    "On events happening in a <strong>Circle</strong> you belong" : "Despre evenimente întâmplate într-un <strong>Cerc</strong> de care aparții",
     "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or 'circles') can then be used by any other app for sharing purpose (files, social feed, status update, messaging, ...).\n\nDifferent type of circles can be created:\n\n- A personal circle is a list of users known only to the owner.\nThis is the right option if you want to do recurrent sharing with the same group of people.\n\n- A public circle is an open group visible to anyone willing to join.\nYour circle will be visible to everyone and everyone will be able to join the circle.\n\n- A closed circle requires invitation or confirmation by an admin.\nThis is the right circle if you are looking for privacy when sharing your files or ideas.\n\n- An Secret circle is an open group that can be protected by a password.\nUsers won't be able to find this Circle using Nextcloud search engine." : "Cercurile permit utilizatorilor tăi să-și creeze propriile grupuri de utilizatori/colegi/prieteni.\nAceste grupuri de utilizatori (sau 'cercuri') pot apoi fi folosite de orice altă aplicație în scopul partajării (fișiere, feed social, actualizare stare, mesagerie, ...).\n\nDiferite tipuri de cercuri pot fi create:\n\n- Un cerc personal este o listă de utilizatori cunoscută numai de proprietar.\nAceasta este opțiunea potrivită dacă vrei să faci distribuții recurente cu aceeași listă de utilizatori locali.\n\n- Un cerc public este un grup deschis vizibil oricui dorește să se alăture.\nCercul tău va fi vizibil tuturor și oricine va putea să se alăture cercului."
 },"pluralForm" :"nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));"
 }

@@ -161,7 +161,6 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "{member} skickade en begäran att gå med i {circle}",
     "You are the new owner of {circle}" : "Du är ny ägare av {circle}",
     "{member} is the new owner of {circle}" : "{member} är ny ägare av {circle}",
-    "On events happening in a <strong>Circle</strong> you belong" : "Vid händelser som hände i en <strong>Cirkel</strong> du tillhör",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Någon viktig händelse i en <strong>Cirkel</strong> du modererar",
     "Shared to Circles" : "Delad med Cirklar",
     "%s shared »%s« with you." : "%s delade »%s« med dig.",
@@ -292,6 +291,7 @@ OC.L10N.register(
     "Circles from different Nextclouds can be linked together." : "Cirklar från olika Nextcloud kan länkas samman",
     "Skip invitation step to closed circles" : "Hoppa över inbjudan till stängda cirklar",
     "Moderators can add member to closed circles without user approval." : "Moderatorer kan lägga till medlem i slutna kretsar utan användarens godkännande.",
+    "On events happening in a <strong>Circle</strong> you belong" : "Vid händelser som hände i en <strong>Cirkel</strong> du tillhör",
     "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or 'circles') can then be used by any other app for sharing purpose (files, social feed, status update, messaging, ...).\n\nDifferent type of circles can be created:\n\n- A personal circle is a list of users known only to the owner.\nThis is the right option if you want to do recurrent sharing with the same group of people.\n\n- A public circle is an open group visible to anyone willing to join.\nYour circle will be visible to everyone and everyone will be able to join the circle.\n\n- A closed circle requires invitation or confirmation by an admin.\nThis is the right circle if you are looking for privacy when sharing your files or ideas.\n\n- An Secret circle is an open group that can be protected by a password.\nUsers won't be able to find this Circle using Nextcloud search engine." : "Cirklar låter användare skapa sina egna grupper av användare/kollegor/vänner.\nDe grupperna av användare (eller 'cirklar') kan användas av andra appar för delning (filer, sociala flöden, statusuppdateringar, meddelanden, ...).\n\nDu kan skapa olika typer av cirklar:\n\n- En personlig cirkel som är en lista av användare som bara är känd för skaparen av cirkeln.\nDet här är rätt val om du regelbundet vill  dela med samma grupp av användare.\n\n- En publik cirkel är en öppen grupp synlig för alla och den som vill kan gå med.\nDin cirkel är synlig för alla och alla som vill kan gå med.\n\n- En stängd cirkel kräver en inbjudan och en bekräftelse av ägaren.\nDet här är rätt cirkel om du vill vara privat när du delar filer eller idéer.\n\n- En hemlig cirkel är en öppen grupp som kan skyddas av ett lösenord.\nAndra användare kan inte hitta den här cirkeln om de söker i Nextcloud."
 },
 "nplurals=2; plural=(n != 1);");

@@ -57,6 +57,7 @@ OC.L10N.register(
     "Group '{name}' could not be removed from the circle" : "لا يمكن إزالة المجموعة '{name}' من الحلقة",
     "Settings saved." : "تم حفظ الإعدادات",
     "Click the button below to open it." : "أنقر على الزر أدناه لفتحه.",
+    "Accept" : "قبول",
     "No files in here" : "لا توجد ملفات هنا",
     "No entries found in this folder" : "لا يوجد مدخلات في هذا المجلد ",
     "Name" : "الاسم",

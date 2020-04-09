@@ -161,7 +161,6 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "{member} envió una solicitud para unirse a {circle}",
     "You are the new owner of {circle}" : "Eres el nuevo dueño de {circle}",
     "{member} is the new owner of {circle}" : "{member} es el nuevo dueño de {circle}",
-    "On events happening in a <strong>Circle</strong> you belong" : "Acerca de eventos que pasan en un <strong>C´riculo</strong> al que perteneces",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Cualquier evento importante en un <strong>Círculo</strong> que estés moderando",
     "Shared to Circles" : "Compartido a Círculos",
     "%s shared »%s« with you." : "%s compartió »%s« contigo.",
@@ -191,6 +190,7 @@ OC.L10N.register(
     "You have been blocked from this circle" : "Has sido bloqueado de este círculo",
     "The user is already a member of this circle" : "El usuario ya es un miembro de este círculo",
     "The user has already been invited into this circle" : "El usuario ya ha sido invitado a este círculo",
+    "Accept" : "Aceptar",
     "You need a specify a type of circle" : "Necesitas especificar un tipo de círculo",
     "You cannot create this type of circle" : "No puede crear un círculo de este tipo",
     "You cannot display this type of circle" : "No puedes desplegar un círculo de este tipo",
@@ -269,6 +269,7 @@ OC.L10N.register(
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Advertencia: Habilitar esta opción aceptará automáticamente las nuevas solicitudes de ligas de otros círculos. ",
     "Save settings" : "Guardar configuraciones",
     "Groups can be linked to circles." : "Los grupos se pueden vincular a círculos",
-    "Circles from different Nextclouds can be linked together." : "Círculos de diferentes Nextclouds se pueden vincular juntos."
+    "Circles from different Nextclouds can be linked together." : "Círculos de diferentes Nextclouds se pueden vincular juntos.",
+    "On events happening in a <strong>Circle</strong> you belong" : "Acerca de eventos que pasan en un <strong>C´riculo</strong> al que perteneces"
 },
 "nplurals=2; plural=(n != 1);");
