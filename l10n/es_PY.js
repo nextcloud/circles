@@ -229,7 +229,7 @@ OC.L10N.register(
     "A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle." : "Un círculo secreto es un grupo oculto que solo puede ser visto por sus miembros o por personas que conozcan el nombre exacto del círculo.",
     "Non-members won't be able to find your secret circle using the search bar." : "Sólo los miembros podrán encontrar tu círculo secreto usando la barra de búsqueda.",
     "Joining a closed circle requires an invitation or confirmation by a moderator." : "Unirse a un círculo cerrado requiere de una invitación o una confirmación de un moderador.",
-    "Anyone can find and request an invitation to the circle; but only members will see who\\'s in it and get access to it\\'s shared items." : "Todos pueden encontar y solicitar una invitación al círculo; pero solo los miembros pueden ver quienes pertenecen a él y acceder a los elementos compartidos. ",
+    "Anyone can find and request an invitation to the circle; but only members will see who's in it and get access to it's shared items." : "Todos pueden encontar y solicitar una invitación al círculo; pero solo los miembros pueden ver quienes pertenecen a él y acceder a los elementos compartidos. ",
     "A public circle is an open group visible to anyone willing to join." : "Un círculo público es un grupo abierto, visible a todos aquellos que quieran unirse.",
     "Anyone can see, join, and access the items shared within the circle." : "Todos pueden ver, unirse y accesar a los elementos compartidos dentro del círculo. ",
     "Personal circles" : "Círculos personales",

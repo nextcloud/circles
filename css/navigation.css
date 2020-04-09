@@ -56,7 +56,7 @@ SELECT.select_none {
 #circles_list, #circles_list .lightenbg {
 	position: absolute;
 	width: 100%;
-	top: 350px;
+	top: 400px;
 }
 
 #circles_list div {

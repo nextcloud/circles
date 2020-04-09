@@ -244,7 +244,7 @@ OC.L10N.register(
     "A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle." : "Tajny krąg jest to ukryta grupa, która jest widoczna tylko dla członków lub osób, które znają dokładną nazwę kręgu.",
     "Non-members won't be able to find your secret circle using the search bar." : "Nie-członkowie nie będą w stanie znaleźć Twojego tajnego kręgu w polu wyszukiwarki.",
     "Joining a closed circle requires an invitation or confirmation by a moderator." : "Przyłączenie do zamkniętego kręgu wymaga zaproszenia lub potwierdzenia przez moderatora.",
-    "Anyone can find and request an invitation to the circle; but only members will see who\\'s in it and get access to it\\'s shared items." : "Każdy może znaleźć krąg i poprosić  o zaproszenie; ale tylko członkowie będą widzieć kto jest w kręgu i mieć dostęp do udostępnionych danych.",
+    "Anyone can find and request an invitation to the circle; but only members will see who's in it and get access to it's shared items." : "Każdy może znaleźć krąg i poprosić  o zaproszenie; ale tylko członkowie będą widzieć kto jest w kręgu i mieć dostęp do udostępnionych danych.",
     "A public circle is an open group visible to anyone willing to join." : "Publiczny krąg jest otwartą grupą widoczną dla wszystkich, którzy zechcą się dołączyć.",
     "Anyone can see, join, and access the items shared within the circle." : "Każdy może widzieć krąg, może dołączyć do kręgu i mieć dostęp do danych udostępnionych w kręgu.",
     "Personal circles" : "Kręgi osobiste",

@@ -243,7 +243,7 @@ OC.L10N.register(
     "A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle." : "Een vertrouwelijke kring is een verborgen groep die alleen gezien wordt door leden of door mensen die de exacte naam van de kring weten.",
     "Non-members won't be able to find your secret circle using the search bar." : "Niet-leden zullen deze vertrouwelijke kring niet kunnen vinden via de zoekbalk.",
     "Joining a closed circle requires an invitation or confirmation by a moderator." : "Om lid te worden van een besloten kring is een uitnodiging of bevestiging nodig van een beheerder.",
-    "Anyone can find and request an invitation to the circle; but only members will see who\\'s in it and get access to it\\'s shared items." : "Iedereen kan de kring vinden en een uitnodiging verzoeken; alleen leden hebben toegang tot de ledenlijst en gedeelde bestanden.",
+    "Anyone can find and request an invitation to the circle; but only members will see who's in it and get access to it's shared items." : "Iedereen kan de kring vinden en een uitnodiging verzoeken; alleen leden hebben toegang tot de ledenlijst en gedeelde bestanden.",
     "A public circle is an open group visible to anyone willing to join." : "Een openbare kring is een open groep die zichtbaar is voor iedereen die lid wil worden.",
     "Anyone can see, join, and access the items shared within the circle." : "Iedereen kan de kring zien, lid worden en heeft toegang tot bestanden die gedeeld zijn met de kring.",
     "Personal circles" : "Persoonlijke kringen",
