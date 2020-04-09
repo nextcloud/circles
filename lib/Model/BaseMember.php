@@ -439,4 +439,17 @@ class BaseMember implements \JsonSerializable {
 
 		return 'none';
 	}
+
+	public function getTypeName() {
+		switch ($this->getType()) {
+			case self::TYPE_USER:
+			case self::TYPE_MAIL:
+			case self::TYPE_CONTACT:
+				return 'user';
+			case self::TYPE_GROUP:
+				return 'user-group';
+		}
+
+		return 'none';
+	}
 }
