@@ -42,9 +42,9 @@
 }
 
 #circles_new_type_definition div {
-	margin-top: 20px;
+	margin-top: 10px;
 	position: absolute;
-	width: 190px;
+	width: 250px;
 	color: #474747b0;
 	word-wrap: break-word;
 }
@@ -209,7 +209,8 @@ div.circle .owner, div.circle .type, div.circle .resume {
 }
 
 .members_search, .groups_search {
-	padding: 10px;
+	padding: 12px;
+	padding-top: 5px;
 	border-top: solid 1px #00000022;
 	-webkit-transition: background-color 0.2s ease-in;
 	transition: background-color 0.2s ease-in;
@@ -363,7 +364,6 @@ DIV.result_top {
 
 DIV.result_bot {
 	font-size: 12px;
-	padding: 5px;
 	height: 10px;
 	font-style: italic;
 }
