@@ -46,7 +46,7 @@ use OCA\DAV\CardDAV\CardDavBackend;
 use OCP\App\ManagerEvent;
 use OCP\Federation\ICloudIdManager;
 use OCP\IUserManager;
-use Symfony\Component\EventDispatcher\GenericEvent;
+use OCP\EventDispatcher\GenericEvent;
 
 
 /**
