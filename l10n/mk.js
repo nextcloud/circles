@@ -50,7 +50,7 @@ OC.L10N.register(
     "A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle." : "Таен круг е скриена група кој може да ја видат членовите или корисниците кој го знаат точноти име на кругот.",
     "Non-members won't be able to find your secret circle using the search bar." : "Корисниците кој не се членови нема да можат да го пронајдат кругот преку алатката за пребарување.",
     "Joining a closed circle requires an invitation or confirmation by a moderator." : "За приклучување кон затворен круг потребна е покана или одобрение од модератор.",
-    "Anyone can find and request an invitation to the circle; but only members will see who\\'s in it and get access to it\\'s shared items." : "Секој може да го види кругот и да испрати барање за пристап до кругот; но само членовите можат да гледаат кој е во групата и кој има пристап до споделените податоци.",
+    "Anyone can find and request an invitation to the circle; but only members will see who's in it and get access to it's shared items." : "Секој може да го види кругот и да испрати барање за пристап до кругот; но само членовите можат да гледаат кој е во групата и кој има пристап до споделените податоци.",
     "A public circle is an open group visible to anyone willing to join." : "Јавен круг е јавна група видлива за секој кој што сака да се приклучи.",
     "Anyone can see, join, and access the items shared within the circle." : "Секој може да види, да се приклучи, да пристапи до податоците кој се споделени во кругот.",
     "Personal circles" : "Персонални кругови",

@@ -242,7 +242,7 @@ OC.L10N.register(
     "A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle." : "非公開のサークルは、メンバーまたはサークルの正確な名前を知っている人だけが見ることができる隠されたグループです。",
     "Non-members won't be able to find your secret circle using the search bar." : "メンバーではない人は検索バーを使ってあなたの非公開のサークルを見つけることができません。",
     "Joining a closed circle requires an invitation or confirmation by a moderator." : "クローズドサークルに参加するには、モデレーターからの招待状または確認が必要です。",
-    "Anyone can find and request an invitation to the circle; but only members will see who\\'s in it and get access to it\\'s shared items." : "誰でもサークルへの招待状を見つけてリクエストすることができます。 メンバーだけがそのメンバーを見てその共有アイテムにアクセスできます。",
+    "Anyone can find and request an invitation to the circle; but only members will see who's in it and get access to it's shared items." : "誰でもサークルへの招待状を見つけてリクエストすることができます。 メンバーだけがそのメンバーを見てその共有アイテムにアクセスできます。",
     "A public circle is an open group visible to anyone willing to join." : "公開サークルは誰でも参加できるオープンなサークルです。",
     "Anyone can see, join, and access the items shared within the circle." : "誰でもサークル内で共有されているアイテムを見たり、参加したり、アクセスしたりすることができます。",
     "Personal circles" : "パーソナルサークル",

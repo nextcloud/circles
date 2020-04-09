@@ -243,7 +243,7 @@ OC.L10N.register(
     "A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle." : "Ο μυστικός κύκλος έιναι κρυφή ομάδα που εμαφανίζεται μόνο στα μέλη του και στα άτομα που γνωρίζουν το ακριβές όνομα του κύκλου.",
     "Non-members won't be able to find your secret circle using the search bar." : "Τα μή μέλη δεν θα μπορούν να βρούν τον μυστικό κύκλο σας από την γραμμή αναζήτησης.",
     "Joining a closed circle requires an invitation or confirmation by a moderator." : "Για συμμετοχή σε μυστικό κύκλο χρειάζεται πρόσκληση ή αποδοχή από συντονιστή.",
-    "Anyone can find and request an invitation to the circle; but only members will see who\\'s in it and get access to it\\'s shared items." : "Όλοι μπορούν να βρούν και να αιτηθούν πρόσβαση στον κύκλο; αλλά μόνο τα μέλη βλέπουν ποιός είναι σε αυτόν και έχουν πρόσβαση στα κοινόχρηστα.",
+    "Anyone can find and request an invitation to the circle; but only members will see who's in it and get access to it's shared items." : "Όλοι μπορούν να βρούν και να αιτηθούν πρόσβαση στον κύκλο; αλλά μόνο τα μέλη βλέπουν ποιός είναι σε αυτόν και έχουν πρόσβαση στα κοινόχρηστα.",
     "A public circle is an open group visible to anyone willing to join." : "Ένας δημόσιος κύκλος είναι μια ανοιχτή ομάδα ορατή σε οποιονδήποτε θελήσει να συμμετάσχει.",
     "Anyone can see, join, and access the items shared within the circle." : "Όλοι μπορούν να δουν, να συμμετάσχουν και να αποκτήσουν πρόσβαση στα στοιχεία που μοιράζονται στον κύκλο.",
     "Personal circles" : "Προσωπικοί κύκλοι",
