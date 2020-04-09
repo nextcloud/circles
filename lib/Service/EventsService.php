@@ -113,7 +113,7 @@ class EventsService {
 			return;
 		}
 
-		$event = $this->generateEvent('circles_as_member');
+		$event = $this->generateEvent('circles_as_non_member');
 		$event->setSubject('circle_create', ['circle' => json_encode($circle)]);
 
 		$this->userManager->callForSeenUsers(

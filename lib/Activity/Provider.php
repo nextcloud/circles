@@ -90,6 +90,7 @@ class Provider implements IProvider {
 			$circle = Circle::fromJSON($params['circle']);
 
 			$this->setIcon($event, $circle);
+			$this->parseAsNonMember($event, $circle, $params);
 			$this->parseAsMember($event, $circle, $params);
 			$this->parseAsModerator($event, $circle, $params);
 
@@ -131,6 +132,22 @@ class Provider implements IProvider {
 	}
 
 
+
+	/**
+	 * @param IEvent $event
+	 * @param Circle $circle
+	 * @param array $params
+	 *
+	 * @throws FakeException
+	 */
+	private function parseAsNonMember(IEvent $event, Circle $circle, $params) {
+		if ($event->getType() !== 'circles_as_non_member') {
+			return;
+		}
+
+		$this->parserCircle->parseSubjectCircleCreate($event, $circle);
+	}
+
 	/**
 	 * @param IEvent $event
 	 * @param Circle $circle
@@ -143,7 +160,7 @@ class Provider implements IProvider {
 			return;
 		}
 
-		$this->parserCircle->parseSubjectCircleCreate($event, $circle);
+//		$this->parserCircle->parseSubjectCircleCreate($event, $circle);
 		$this->parserCircle->parseSubjectCircleDelete($event, $circle);
 		$this->parseMemberAsMember($event, $circle, $params);
 	}

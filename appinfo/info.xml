@@ -62,8 +62,9 @@ Users won't be able to find this Circle using Nextcloud search engine.
 
 	<activity>
 		<settings>
-			<setting>OCA\Circles\Activity\SettingAsModerator</setting>
+			<setting>OCA\Circles\Activity\SettingAsNonMember</setting>
 			<setting>OCA\Circles\Activity\SettingAsMember</setting>
+			<setting>OCA\Circles\Activity\SettingAsModerator</setting>
 		</settings>
 		<filters>
 			<filter>OCA\Circles\Activity\Filter</filter>
