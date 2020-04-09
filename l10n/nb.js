@@ -161,7 +161,6 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "{member} sendte et ønske om å få bli med i {circle}",
     "You are the new owner of {circle}" : "Du er den nye eieren av {circle}",
     "{member} is the new owner of {circle}" : "{member} er den nye eieren av {circle}",
-    "On events happening in a <strong>Circle</strong> you belong" : "På hendelser i en <strong>Sirkel</strong> du tilhører",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Ønsker du å bli varslet om hendelser i <strong>sirkler</strong> du modererer?",
     "Shared to Circles" : "Delt til Sirkler",
     "%s shared »%s« with you." : "%s delte »%s« med deg.",
@@ -278,6 +277,7 @@ OC.L10N.register(
     "Groups can be linked to circles." : "Grupper kan lenkes til sirkler.",
     "Allow federated circles" : "Tillatt fødererte sirkler",
     "Circles from different Nextclouds can be linked together." : "Sirkler fra forskjellige Nextcloud-er kan lenkes sammen.",
+    "On events happening in a <strong>Circle</strong> you belong" : "På hendelser i en <strong>Sirkel</strong> du tilhører",
     "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or 'circles') can then be used by any other app for sharing purpose (files, social feed, status update, messaging, ...).\n\nDifferent type of circles can be created:\n\n- A personal circle is a list of users known only to the owner.\nThis is the right option if you want to do recurrent sharing with the same group of people.\n\n- A public circle is an open group visible to anyone willing to join.\nYour circle will be visible to everyone and everyone will be able to join the circle.\n\n- A closed circle requires invitation or confirmation by an admin.\nThis is the right circle if you are looking for privacy when sharing your files or ideas.\n\n- An Secret circle is an open group that can be protected by a password.\nUsers won't be able to find this Circle using Nextcloud search engine." : "Sirkler lar brukere lage sine egne grupper av brukere/kollegaer/venner.\nDisse gruppene av brukere (eller sirkler) kan brukes av alle apper for deling (filer, sosial strøm, status oppdatering, meldinger...).\n\nUlike type sirkler kan lages\n- en personlig sirkel er en liste med bruker kun kjent for eier.\nDette er nyttig hvis du ønsker gjentakende deling med den samme gruppen av personer.\n\n- Offentlig sirkel er synling for alle som ønsker å delta.\nSirkelen er synlig for alle og alle kan delta i sirkelen.\n\n- En lukke sirkel krever inivitasjon eller bekreftelse av en administrator.\nDette er rett sirkel hvis du ønsker begrenset deling av filer eller ideer til en sirkel.\n\n- En hemmelig sirkel er en gruppe som kan beskyttes av et passord.\nBruker kan ikke finne denne sirkelen med Nextcloud søke motor."
 },
 "nplurals=2; plural=(n != 1);");
