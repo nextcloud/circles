@@ -26,6 +26,7 @@
 
 namespace OCA\Circles\Service;
 
+use OC;
 use OCA\Circles\Model\Circle;
 use OCP\IConfig;
 use OCP\IRequest;
@@ -37,6 +38,9 @@ class ConfigService {
 	const CIRCLES_ALLOW_CIRCLES = 'allow_circles';
 	const CIRCLES_CONTACT_BACKEND = 'contact_backend';
 	const CIRCLES_STILL_FRONTEND = 'still_frontend';
+	const CIRCLES_GROUP_BACKEND = 'group_backend';
+	const CIRCLES_GROUP_BACKEND_NAME_PREFIX = 'group_backend_name_prefix';
+	const CIRCLES_GROUP_BACKEND_NAME_SUFFIX = 'group_backend_name_suffix';
 	const CIRCLES_SWAP_TO_TEAMS = 'swap_to_teams';
 	const CIRCLES_ALLOW_FEDERATED_CIRCLES = 'allow_federated';
 	const CIRCLES_MEMBERS_LIMIT = 'members_limit';
@@ -53,19 +57,25 @@ class ConfigService {
 	const CIRCLES_TEST_ASYNC_COUNT = 'test_async_count';
 
 	private $defaults = [
-		self::CIRCLES_ALLOW_CIRCLES           => Circle::CIRCLES_ALL,
-		self::CIRCLES_CONTACT_BACKEND         => '0',
-		self::CIRCLES_STILL_FRONTEND          => '0',
-		self::CIRCLES_TEST_ASYNC_INIT         => '0',
-		self::CIRCLES_SWAP_TO_TEAMS           => '0',
-		self::CIRCLES_ACCOUNTS_ONLY           => '0',
-		self::CIRCLES_MEMBERS_LIMIT           => '50',
-		self::CIRCLES_ALLOW_LINKED_GROUPS     => '0',
-		self::CIRCLES_ALLOW_FEDERATED_CIRCLES => '0',
-		self::CIRCLES_ALLOW_NON_SSL_LINKS     => '0',
-		self::CIRCLES_NON_SSL_LOCAL           => '0',
-		self::CIRCLES_ACTIVITY_ON_CREATION    => '1',
-		self::CIRCLES_SKIP_INVITATION_STEP    => '0'
+		self::CIRCLES_ALLOW_CIRCLES              => Circle::CIRCLES_ALL,
+		self::CIRCLES_CONTACT_BACKEND            => '0',
+		self::CIRCLES_STILL_FRONTEND             => '0',
+		self::CIRCLES_GROUP_BACKEND              => '0',
+		self::CIRCLES_GROUP_BACKEND_NAME_PREFIX  => '',
+		self::CIRCLES_GROUP_BACKEND_NAME_SUFFIX  => '',
+		self::CIRCLES_TEST_ASYNC_INIT            => '0',
+		self::CIRCLES_SWAP_TO_TEAMS              => '0',
+		self::CIRCLES_ACCOUNTS_ONLY              => '0',
+		self::CIRCLES_MEMBERS_LIMIT              => '50',
+		self::CIRCLES_ALLOW_FILES_CIRCLES_FILTER => '1',
+		self::CIRCLES_ALLOW_LISTED_CIRCLES       => '1',
+		self::CIRCLES_ALLOW_ANY_GROUP_MEMBERS    => '1',
+		self::CIRCLES_ALLOW_LINKED_GROUPS        => '0',
+		self::CIRCLES_ALLOW_FEDERATED_CIRCLES    => '0',
+		self::CIRCLES_ALLOW_NON_SSL_LINKS        => '0',
+		self::CIRCLES_NON_SSL_LOCAL              => '0',
+		self::CIRCLES_ACTIVITY_ON_CREATION       => '1',
+		self::CIRCLES_SKIP_INVITATION_STEP       => '0'
 	];
 
 	/** @var string */
@@ -97,6 +107,12 @@ class ConfigService {
 
 	/** @var int */
 	private $localNonSSL = -1;
+
+	/** @var string */
+	private $groupBackendNamePrefix = null;
+
+	/** @var string */
+	private $groupBackendNameSuffix = null;
 
 	/**
 	 * ConfigService constructor.
@@ -383,6 +399,41 @@ class ConfigService {
 		return (int)$this->getAppValue(ConfigService::CIRCLES_CONTACT_BACKEND);
 	}
 
+	/**
+	 * @return bool
+	 */
+	public function isGroupsBackend(): bool {
+		return ($this->getAppValue(ConfigService::CIRCLES_GROUP_BACKEND) !== '0');
+	}
+
+	/**
+	 * returns the prefix of the group name
+	 *
+	 * @return string|null
+	 */
+	public function getGroupBackendNamePrefix() {
+		if ($this->groupBackendNamePrefix === null && $this->isGroupsBackend()) {
+			$this->groupBackendNamePrefix = ltrim((string) $this->getAppValue(self::CIRCLES_GROUP_BACKEND_NAME_PREFIX));
+		}
+
+		return $this->groupBackendNamePrefix;
+	}
+
+	/**
+	 * returns the suffix of the group name
+	 *
+	 * @return string|null
+	 */
+	public function getGroupBackendNameSuffix() {
+		if ($this->groupBackendNameSuffix === null && $this->isGroupsBackend()) {
+			$l = OC::$server->getL10N('circles');
+			$defaultSuffix = ' '.$l->t('Circle');
+			$customSuffix = (string) $this->getAppValue(self::CIRCLES_GROUP_BACKEND_NAME_SUFFIX);
+			$this->groupBackendNameSuffix = rtrim($customSuffix ?: $defaultSuffix);
+		}
+
+		return $this->groupBackendNameSuffix;
+	}
 
 	/**
 	 * @return bool

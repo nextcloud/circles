@@ -43,6 +43,26 @@ In non-SSL environments (like on development setups) it is necessary to set two 
 
 `./occ config:app:set circles --value 1 local_is_non_ssl`
 
+## Allow mirroring circles as groups
+
+```bash
+./occ maintenance:mode --on
+
+./occ config:app:set circles --value 1 group_backend # Mirroring circles as groups
+./occ config:app:set circles --value 0 allow_listed_circles # Hide circles in shared list, useful with the 'group_backend' option
+
+# ./occ config:app:set circles --value "🌀 " group_backend_name_prefix # You can customize group name prefix
+# ./occ config:app:set circles --value " " group_backend_name_suffix # Remove default group name suffix with a `space` character
+
+./occ config:app:set circles --value 12 allow_circles # Only show 'public' and 'closed' circles
+./occ config:app:set circles --value 1 skip_invitation_to_closed_circles
+
+./occ config:app:set circles --value 0 allow_files_filtered_by_circles # Disable files list filtering by circles in the 'files' application
+./occ config:app:set circles --value 0 allow_adding_any_group_members # Adding group members only for groups where the current user is a member or global administrators
+
+./occ maintenance:mode --off
+```
+
 # Credits
 
 App Icon by [Madebyoliver](http://www.flaticon.com/authors/madebyoliver) under Creative Commons BY 3.0

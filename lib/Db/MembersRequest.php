@@ -637,6 +637,14 @@ class MembersRequest extends MembersRequestBuilder {
 	}
 
 
+	public function unlinkFromGroup($circleId, $groupId) {
+		$qb = $this->getGroupsDeleteSql($groupId);
+		$this->limitToCircleId($qb, $circleId);
+
+		$qb->execute();
+	}
+
+
 	/**
 	 * @param string $contactId
 	 *
@@ -731,4 +739,3 @@ class MembersRequest extends MembersRequestBuilder {
 
 
 }
-
