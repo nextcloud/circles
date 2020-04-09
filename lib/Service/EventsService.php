@@ -747,9 +747,10 @@ class EventsService {
 	 * Called when the circle's settings are changed
 	 *
 	 * @param Circle $circle
+	 * @param array  $oldSettings
 	 */
-	public function onSettingsChange(Circle $circle) {
-		$this->dispatch('\OCA\Circles::onSettingsChange', ['circle' => $circle]);
+	public function onSettingsChange(Circle $circle, array $oldSettings = []) {
+		$this->dispatch('\OCA\Circles::onSettingsChange',  ['circle' => $circle, 'oldSettings' => $oldSettings]);
 	}
 
 
