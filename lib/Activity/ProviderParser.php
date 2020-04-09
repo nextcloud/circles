@@ -299,7 +299,7 @@ class ProviderParser {
 	 */
 	protected function generateExternalMemberParameter(Member $member) {
 		return [
-			'type'    => 'member_' . $member->getType(),
+			'type'    => 'user',
 			'id'      => $member->getUserId(),
 			'name'    => $member->getDisplayName() . ' (' . $member->getTypeString() . ')',
 			'_parsed' => $member->getDisplayName()
@@ -365,7 +365,7 @@ class ProviderParser {
 	 */
 	protected function generateGroupParameter($group) {
 		return [
-			'type'    => 'group',
+			'type'    => 'user-group',
 			'id'      => $group->getUserId(),
 			'name'    => $group->getUserId(),
 			'_parsed' => $group->getUserId()
