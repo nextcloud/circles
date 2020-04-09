@@ -231,7 +231,7 @@ OC.L10N.register(
     "A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle." : "A titkos kör egy rejtett csoport, melyet csak tagjai láthatnak vagy olyanok akik ismerik a pontos nevét.",
     "Non-members won't be able to find your secret circle using the search bar." : "Nem-tagok nem fogják tudni megtalálni a a titkos körödet a keresősávval.",
     "Joining a closed circle requires an invitation or confirmation by a moderator." : "Zárt körhöz csak meghívással vagy moderátori ellenjegyzéssel lehet csatlakozni.",
-    "Anyone can find and request an invitation to the circle; but only members will see who\\'s in it and get access to it\\'s shared items." : "Bárki kérelmezheti csatlakozását a körhöz, de csak a tagok láthatják kik tartoznak hozzá és férnek a megosztott elemekhez.",
+    "Anyone can find and request an invitation to the circle; but only members will see who's in it and get access to it's shared items." : "Bárki kérelmezheti csatlakozását a körhöz, de csak a tagok láthatják kik tartoznak hozzá és férnek a megosztott elemekhez.",
     "A public circle is an open group visible to anyone willing to join." : "A nyilvános kör egy nyitott csoport azok számára, akik csatlakoznának.",
     "Anyone can see, join, and access the items shared within the circle." : "Bárki láthatja a kört, csatlakozhat és hozzáférhet az abban megosztott elemekhez.",
     "Personal circles" : "Személyes körök",

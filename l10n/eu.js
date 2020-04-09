@@ -243,7 +243,7 @@ OC.L10N.register(
     "A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle." : "Zirkulu sekretuak talde ezkutuak dira, bertako kideek edo zirkuluaren izen zehatza ezagutzen dutenek bakarrik ikus ditzakete. ",
     "Non-members won't be able to find your secret circle using the search bar." : "Kide ez direnek ezingo dute zirkulu sekretua aurkitu bilaketa-barrarekin.",
     "Joining a closed circle requires an invitation or confirmation by a moderator." : "Zirkulu itxietara batzeko moderatzaile baten baieztapena behar da",
-    "Anyone can find and request an invitation to the circle; but only members will see who\\'s in it and get access to it\\'s shared items." : "Edonork bilatu ditzake zirkuluak eta gonbidapen eskaera egin; baina kideek bakarrik ikus ditzakete partaideak eta eduki partekatuak.",
+    "Anyone can find and request an invitation to the circle; but only members will see who's in it and get access to it's shared items." : "Edonork bilatu ditzake zirkuluak eta gonbidapen eskaera egin; baina kideek bakarrik ikus ditzakete partaideak eta eduki partekatuak.",
     "A public circle is an open group visible to anyone willing to join." : "Zirkulu publikoak batu nahi duen edonorentzat ikusgarri dauden talde irekiak dira.",
     "Anyone can see, join, and access the items shared within the circle." : "Edonork ikusi dezake zirkulua, bertako eduki partekatuak eta bat egiteko gai izango da.",
     "Personal circles" : "Zirkulu pertsonalak",
