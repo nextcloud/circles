@@ -161,7 +161,6 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "{member} је послао захтев да се придружи кругу {circle}",
     "You are the new owner of {circle}" : "Ви сте нови власник круга {circle}",
     "{member} is the new owner of {circle}" : "{member} је нови власник круга {circle}",
-    "On events happening in a <strong>Circle</strong> you belong" : "На догађај који се дешава у <strong>Кругу</strong> коме припадате",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Било који битан догађај у <strong>Кругу</strong> који модеришете",
     "Shared to Circles" : "Дељено на Кругове",
     "%s shared »%s« with you." : "%s је поделио »%s« са Вама.",
@@ -202,6 +201,7 @@ OC.L10N.register(
     "You have been blocked from this circle" : "Блокирани сте у овом кругу",
     "The user is already a member of this circle" : "Корисник је већ члан круга",
     "The user has already been invited into this circle" : "Корисник је већ позван у овај круг",
+    "Accept" : "Прихвати",
     "You need a specify a type of circle" : "Морате навести тип круга",
     "You cannot create this type of circle" : "Не можете направити круг овог типа",
     "You cannot display this type of circle" : "Не можете приказати круг овог типа",
@@ -291,6 +291,7 @@ OC.L10N.register(
     "Circles from different Nextclouds can be linked together." : "Кругови са различитих Некстклауда се могу везати заједно.",
     "Skip invitation step to closed circles" : "Прескочи позивницу за затворене кругове",
     "Moderators can add member to closed circles without user approval." : "Модератори могу да додају чланове у затворене кругове без одобрења корисника.",
+    "On events happening in a <strong>Circle</strong> you belong" : "На догађај који се дешава у <strong>Кругу</strong> коме припадате",
     "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or 'circles') can then be used by any other app for sharing purpose (files, social feed, status update, messaging, ...).\n\nDifferent type of circles can be created:\n\n- A personal circle is a list of users known only to the owner.\nThis is the right option if you want to do recurrent sharing with the same group of people.\n\n- A public circle is an open group visible to anyone willing to join.\nYour circle will be visible to everyone and everyone will be able to join the circle.\n\n- A closed circle requires invitation or confirmation by an admin.\nThis is the right circle if you are looking for privacy when sharing your files or ideas.\n\n- An Secret circle is an open group that can be protected by a password.\nUsers won't be able to find this Circle using Nextcloud search engine." : "Кругови Вам дозвољавају да правите сопствене групе корисника/колега/пријатеља.\nОве групе корисника (или \"кругови\") онда могу да користе и друге апликације за потребе дељења (фајлова, друштвених лајни, ажурирања статуса, поруке,...).\n\nМогу се креирати различити типови кругова::\n\n- Лични круг је списак корисника познат само власнику круга.\nОво је права опција ако желите стално да делите ствари са истом групом људи.\n\n- Јавни круг је отворена група видљива свима који желе да се придруже. Ваш круг ће бити видљив свима и сви ће моћи да се придруже.\n\n- Затворени круг захтева позивницу или потврду администратора.\nОво је најбољи круг ако тражите приватност приликом дељења Ваших фајлова или идеја.\n\n- Тајни круг је отворена група која може да буде заштићена лозинком.\nКорисници неће моћи да нађу овај круг преко Некстклауд претраге."
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");

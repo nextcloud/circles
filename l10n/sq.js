@@ -131,7 +131,6 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "{member} dërgoi një kërkesë për t'ju bashkuar {circle}",
     "You are the new owner of {circle}" : "Ju jeni pronari i ri i {circle}",
     "{member} is the new owner of {circle}" : "{member} është zoteruesi i ri i {rrethit}",
-    "On events happening in a <strong>Circle</strong> you belong" : "Në ngjarjet që ndodhin në një <strong>Rreth </strong> ju përkisni",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Çdo ngjarje e rëndësishme në një <strong>Rreth</strong> ju po e moderoni",
     "%s shared »%s« with you." : "1 %s ndarë »1 %s« me ju.",
     "%s on %s" : "%s në %s",
@@ -208,6 +207,7 @@ OC.L10N.register(
     "Link" : "Lidhja",
     "Linked" : "I lidhur",
     "Allow Federated Links" : "Lejo Linqet e Federuara",
-    "Save settings" : "Ruaj konfigurimet"
+    "Save settings" : "Ruaj konfigurimet",
+    "On events happening in a <strong>Circle</strong> you belong" : "Në ngjarjet që ndodhin në një <strong>Rreth </strong> ju përkisni"
 },
 "nplurals=2; plural=(n != 1);");

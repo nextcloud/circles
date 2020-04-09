@@ -161,7 +161,6 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "{member} envió una solicitud para unirse a {circle}",
     "You are the new owner of {circle}" : "Eres el nuevo dueño de {circle}",
     "{member} is the new owner of {circle}" : "{member} es el nuevo dueño de {circle}",
-    "On events happening in a <strong>Circle</strong> you belong" : "Acerca de eventos que pasan en un <strong>C´riculo</strong> al que perteneces",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Cualquier evento importante en un <strong>Círculo</strong> que estés moderando",
     "Shared to Circles" : "Compartido a Círculos",
     "%s shared »%s« with you." : "%s compartió »%s« contigo.",
@@ -191,6 +190,7 @@ OC.L10N.register(
     "You have been blocked from this circle" : "Has sido bloqueado de este círculo",
     "The user is already a member of this circle" : "El usuario ya es un miembro de este círculo",
     "The user has already been invited into this circle" : "El usuario ya ha sido invitado a este círculo",
+    "Accept" : "Aceptar",
     "You need a specify a type of circle" : "Necesitas especificar un tipo de círculo",
     "You cannot create this type of circle" : "No puede crear un círculo de este tipo",
     "You cannot display this type of circle" : "No puedes desplegar un círculo de este tipo",
@@ -271,6 +271,7 @@ OC.L10N.register(
     "Save settings" : "Guardar configuraciones",
     "Groups can be linked to circles." : "Los grupos se pueden vincular a círculos",
     "Circles from different Nextclouds can be linked together." : "Círculos de diferentes Nextclouds se pueden vincular juntos.",
+    "On events happening in a <strong>Circle</strong> you belong" : "Acerca de eventos que pasan en un <strong>C´riculo</strong> al que perteneces",
     "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or 'circles') can then be used by any other app for sharing purpose (files, social feed, status update, messaging, ...).\n\nDifferent type of circles can be created:\n\n- A personal circle is a list of users known only to the owner.\nThis is the right option if you want to do recurrent sharing with the same group of people.\n\n- A public circle is an open group visible to anyone willing to join.\nYour circle will be visible to everyone and everyone will be able to join the circle.\n\n- A closed circle requires invitation or confirmation by an admin.\nThis is the right circle if you are looking for privacy when sharing your files or ideas.\n\n- An Secret circle is an open group that can be protected by a password.\nUsers won't be able to find this Circle using Nextcloud search engine." : "Los Círculos le permiten a tus usuarios crear sus propios grupos de usuarios/colegas/amigos.\nEsos grupos de usuarios (o 'círculos') pueden ser usados por cualquier otra aplicación para compartir (archivos, fuentes sociales, actualizaciones de estado, mensages, ...).\n\nSe pueden crear diferentes tipos de círculos:\n\n- Un círculo personal es una lista de usuarios conocidos solo por el dueño\nEsta es la opción adecuada si quieres compartir de forma reucrrente al mismo grupo de personas.\n\n- Un círculo público es un grupo abierto visible a todos los que quieran unirse.\nTu círculo será visible para todos y todos podrán unirse al círculo.\n\n- Un círculo cerrado necesita de una invitación o confirmación de un administrador.\nEsta es la opción adecuada si estás buscando privacidad al compartir tus archivos o ideas. \n\n-Un círculo Secreto es un grupo abierto que puede ser protegido por una contraseña.\nLos usuarios no podrán encontrar este Círculo usando el motor de búsqueda de Nextcloud."
 },
 "nplurals=2; plural=(n != 1);");

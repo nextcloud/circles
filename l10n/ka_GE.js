@@ -161,7 +161,6 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "{member} მომხმარებელმა გააგზვნა მოთხოვნა გაწევრიანდეს {circle} წრეში",
     "You are the new owner of {circle}" : "თქვენ ხართ {circle} წრის ახალი მფლობელი",
     "{member} is the new owner of {circle}" : "{member} ახლა {circle} წრის ახალი მფლობელია",
-    "On events happening in a <strong>Circle</strong> you belong" : "მოვლენები რომლებიც ხდება <strong>წრეში</strong> რომელსაც ეკუთვნით",
     "Any important event in a <strong>Circle</strong> you are moderating" : "მნიშვნელოვანი მოვლენა <strong>წრეში</strong> რომლის მოდერატორიც ხართ",
     "Shared to Circles" : "წრეებთან გაზიარებული",
     "%s shared »%s« with you." : "%s მომხმარებელმა თქვენთან გააზიარა »%s«.",
@@ -269,6 +268,7 @@ OC.L10N.register(
     "Warning: Enabling this will automatically accept new link requests from other circles." : "გაფრთხილება: ამის ჩართვა ავტომატურად მიიღებს ახალი კავშირების მოთხოვნებს სხვა წრეებიდან.",
     "Save settings" : "პარამეტრების შენახვა",
     "Groups can be linked to circles." : "ჯგუფები შეიძლება დაკავშირდნენ წრეებთან.",
-    "Circles from different Nextclouds can be linked together." : "წრეები სხვადასხვა Nextcloud-ებითან შეიძლება დაკავშირდნენ."
+    "Circles from different Nextclouds can be linked together." : "წრეები სხვადასხვა Nextcloud-ებითან შეიძლება დაკავშირდნენ.",
+    "On events happening in a <strong>Circle</strong> you belong" : "მოვლენები რომლებიც ხდება <strong>წრეში</strong> რომელსაც ეკუთვნით"
 },
 "nplurals=2; plural=(n!=1);");

@@ -161,7 +161,6 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "{member} 发送了加入 {circle} 的请求",
     "You are the new owner of {circle}" : "您是 {circle} 的新拥有者",
     "{member} is the new owner of {circle}" : "{member} 是 {circle} 的新拥有者",
-    "On events happening in a <strong>Circle</strong> you belong" : "对于您所属的<strong>圈子</strong>中发生的事件",
     "Any important event in a <strong>Circle</strong> you are moderating" : "您正在<strong>圈子</strong>中主持的任何重要事件",
     "Shared to Circles" : "共享圈子的文件",
     "%s shared »%s« with you." : "%s 已共享 »%s« 给您。",
@@ -202,6 +201,7 @@ OC.L10N.register(
     "You have been blocked from this circle" : "您被限制加入此圈子",
     "The user is already a member of this circle" : "此用户已经是此圈子的成员",
     "The user has already been invited into this circle" : "用户已被邀请进入此圈子",
+    "Accept" : "接受",
     "You need a specify a type of circle" : "您需要指定一种类型的圈子",
     "You cannot create this type of circle" : "您无法创建此类型的圈子",
     "You cannot display this type of circle" : "您无法显示此类型的圈子",
@@ -292,6 +292,7 @@ OC.L10N.register(
     "Circles from different Nextclouds can be linked together." : "来自不同 Nextcloud 的圈子可以链接在一起。",
     "Skip invitation step to closed circles" : "跳过进入封闭圈子的邀请步骤",
     "Moderators can add member to closed circles without user approval." : "主持人可以不经过用户同意向封闭圈子添加成员。",
+    "On events happening in a <strong>Circle</strong> you belong" : "对于您所属的<strong>圈子</strong>中发生的事件",
     "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or 'circles') can then be used by any other app for sharing purpose (files, social feed, status update, messaging, ...).\n\nDifferent type of circles can be created:\n\n- A personal circle is a list of users known only to the owner.\nThis is the right option if you want to do recurrent sharing with the same group of people.\n\n- A public circle is an open group visible to anyone willing to join.\nYour circle will be visible to everyone and everyone will be able to join the circle.\n\n- A closed circle requires invitation or confirmation by an admin.\nThis is the right circle if you are looking for privacy when sharing your files or ideas.\n\n- An Secret circle is an open group that can be protected by a password.\nUsers won't be able to find this Circle using Nextcloud search engine." : "圈子允许用户创建自己的用户/同事/朋友的群组。\n这些群组（或者说圈子）可以被其它的App用于共享（文件、社交订阅源，状态更新、消息，等等）。\n\n可以创建的圈子类型有：\n\n- 个人圈子，只有创建人自己知道的。\n这个选项适用于您想创建共享给同样的一组人。\n\n- 公开圈子，任何想加入的人都可以看到的。\n这个圈子可以被所有人看到、并且加入。\n\n- 封闭圈子，这个需要管理人员邀请或者确认。\n这个适用于您想创建一个私密的共享。\n\n- 秘密圈子，这个是个公开的群组，但是需要密码保护。\n用户是不能通过搜索找到这个圈子的。"
 },
 "nplurals=1; plural=0;");
