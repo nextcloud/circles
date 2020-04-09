@@ -6,7 +6,14 @@ namespace OCA\Circles\Activity;
 use OCP\Activity\ISetting;
 use OCP\IL10N;
 
-class SettingAsMember implements ISetting {
+
+/**
+ * Class SettingAsNonMember
+ *
+ * @package OCA\Circles\Activity
+ */
+class SettingAsNonMember implements ISetting {
+
 
 	/** @var IL10N */
 	protected $l10n;
@@ -25,7 +32,7 @@ class SettingAsMember implements ISetting {
 	 * @since 11.0.0
 	 */
 	public function getIdentifier() {
-		return 'circles_as_member';
+		return 'circles_as_non_member';
 	}
 
 
@@ -34,7 +41,7 @@ class SettingAsMember implements ISetting {
 	 * @since 11.0.0
 	 */
 	public function getName() {
-		return $this->l10n->t('On events happening in a <strong>Circle</strong> of which you are a member');
+		return $this->l10n->t('On global events happening in any <strong>Circle</strong>');
 	}
 
 
@@ -63,7 +70,7 @@ class SettingAsMember implements ISetting {
 	 * @since 11.0.0
 	 */
 	public function isDefaultEnabledStream() {
-		return true;
+		return false;
 	}
 
 
