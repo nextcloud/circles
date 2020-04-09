@@ -29,7 +29,6 @@
 
 namespace OCA\Circles\AppInfo;
 
-use OC;
 use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Notification\Notifier;
 use OCA\Circles\Service\ConfigService;
@@ -39,6 +38,7 @@ use OCP\App\ManagerEvent;
 use OCP\AppFramework\App;
 use OCP\AppFramework\IAppContainer;
 use OCP\AppFramework\QueryException;
+use OCP\EventDispatcher\IEventDispatcher;
 use OCP\Util;
 
 require_once __DIR__ . '/../../appinfo/autoload.php';
@@ -56,21 +56,34 @@ class Application extends App {
 	/** @var IAppContainer */
 	private $container;
 
+	/** @var \OC\ServerServer */
+	private $server;
+
+	/** @var IEventDispatcher */
+	private $dispatcher;
+
 	/**
 	 * @param array $params
 	 */
 	public function __construct(array $params = array()) {
 		parent::__construct(self::APP_NAME, $params);
+	}
 
+	public function register()
+	{
 		$this->container = $this->getContainer();
+		$this->server = $this->container->getServer();
+		$this->dispatcher = $this->server->query(IEventDispatcher::class);
 
-		$manager = OC::$server->getNotificationManager();
+		$manager = $this->server->getNotificationManager();
 		$manager->registerNotifierService(Notifier::class);
 
+		$this->registerNavigation();
+		$this->registerFilesNavigation();
+		$this->registerFilesPlugin();
 		$this->registerHooks();
 		$this->registerDavHooks();
 	}
-
 
 	/**
 	 * Register Hooks
@@ -91,7 +104,7 @@ class Application extends App {
 	public function registerNavigation() {
 		/** @var ConfigService $configService */
 		try {
-			$configService = OC::$server->query(ConfigService::class);
+			$configService = $this->server->query(ConfigService::class);
 		} catch (QueryException $e) {
 			return;
 		}
@@ -104,8 +117,8 @@ class Application extends App {
 									  ->getNavigationManager();
 		$appManager->add(
 			function() {
-				$urlGen = OC::$server->getURLGenerator();
-				$navName = OC::$server->getL10N(self::APP_NAME)
+				$urlGen = $this->server->getURLGenerator();
+				$navName = $this->server->getL10N(self::APP_NAME)
 									  ->t('Circles');
 
 				return [
@@ -121,8 +134,7 @@ class Application extends App {
 	}
 
 	public function registerFilesPlugin() {
-		$eventDispatcher = OC::$server->getEventDispatcher();
-		$eventDispatcher->addListener(
+		$this->dispatcher->addListener(
 			'OCA\Files::loadAdditionalScripts',
 			function() {
 				Circles::addJavascriptAPI();
@@ -143,7 +155,7 @@ class Application extends App {
 		$appManager = FilesApp::getNavigationManager();
 		$appManager->add(
 			function() {
-				$l = OC::$server->getL10N('circles');
+				$l = $this->server->getL10N('circles');
 
 				return [
 					'id'      => 'circlesfilter',
@@ -160,24 +172,22 @@ class Application extends App {
 	public function registerDavHooks() {
 		try {
 			/** @var ConfigService $configService */
-			$configService = OC::$server->query(ConfigService::class);
+			$configService = $this->server->query(ConfigService::class);
 			if (!$configService->isContactsBackend()) {
 				return;
 			}
 
 			/** @var DavService $davService */
-			$davService = OC::$server->query(DavService::class);
+			$davService = $this->server->query(DavService::class);
 		} catch (QueryException $e) {
 			return;
 		}
 
-		$event = OC::$server->getEventDispatcher();
+		$this->dispatcher->addListener(ManagerEvent::EVENT_APP_ENABLE, [$davService, 'onAppEnabled']);
+		$this->dispatcher->addListener('\OCA\DAV\CardDAV\CardDavBackend::createCard', [$davService, 'onCreateCard']);
+		$this->dispatcher->addListener('\OCA\DAV\CardDAV\CardDavBackend::updateCard', [$davService, 'onUpdateCard']);
+		$this->dispatcher->addListener('\OCA\DAV\CardDAV\CardDavBackend::deleteCard', [$davService, 'onDeleteCard']);
 
-		$event->addListener(ManagerEvent::EVENT_APP_ENABLE, [$davService, 'onAppEnabled']);
-		$event->addListener('\OCA\DAV\CardDAV\CardDavBackend::createCard', [$davService, 'onCreateCard']);
-		$event->addListener('\OCA\DAV\CardDAV\CardDavBackend::updateCard', [$davService, 'onUpdateCard']);
-		$event->addListener('\OCA\DAV\CardDAV\CardDavBackend::deleteCard', [$davService, 'onDeleteCard']);
 	}
 
 }
-
