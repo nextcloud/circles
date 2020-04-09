@@ -228,7 +228,7 @@ OC.L10N.register(
     "A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle." : "საიდუმლო წრე დამალული ჯგუფია რომელსაც ხედავენ მხოლოდ მისი წავრები ან ადამიანები რომლემბაც იციან წრის ზუსტი სახელწოდება.",
     "Non-members won't be able to find your secret circle using the search bar." : "ძიების ბარის მეშვეობით მომხმარებლები რომლებიც არ არიან წევრები, ვერ იპოვნიან თქვენს საიდუმლო წრეს.",
     "Joining a closed circle requires an invitation or confirmation by a moderator." : "დახურულ წრეში გაწევრიანება საჭიროებს მოწვევას ან მოდერატორის მიერ დადასტურებას.",
-    "Anyone can find and request an invitation to the circle; but only members will see who\\'s in it and get access to it\\'s shared items." : "ყველას შეუძლია იპოვოს წრე და მოითხოვოს მოწვევა; თუმცა მხოლოდ წევრებს მიუწვდებათ ხელი გაზიარებულ მასალაზე და მხოლოდ მათ შეუძლიათ იხილონ თუ ვინები არინ გაწევრიანებულნი.",
+    "Anyone can find and request an invitation to the circle; but only members will see who's in it and get access to it's shared items." : "ყველას შეუძლია იპოვოს წრე და მოითხოვოს მოწვევა; თუმცა მხოლოდ წევრებს მიუწვდებათ ხელი გაზიარებულ მასალაზე და მხოლოდ მათ შეუძლიათ იხილონ თუ ვინები არინ გაწევრიანებულნი.",
     "A public circle is an open group visible to anyone willing to join." : "ღია წრე ღია ჯგუფია რომელსაც ხედავს ყველა.",
     "Anyone can see, join, and access the items shared within the circle." : "ყველას შეუძლია ნახოს წრე, გაწევრიანდეს მასში და იქონიოს წვოდმა მასში გაზიარებულ მასალაზე.",
     "Personal circles" : "პირადი წრეები",
