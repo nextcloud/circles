@@ -13,6 +13,7 @@
     "%1$s via %2$s" : "%1$s דרך %2$s",
     "Click the button below to open it." : "יש ללחוץ על הכפתור להלן כדי לפתוח אותו.",
     "Open »%s«" : "פתיחת „%s”",
+    "Accept" : "אשר",
     "Could not find share" : "לא ניתן למצוא את השיתוף",
     "No files in here" : "אין כאן קבצים",
     "No entries found in this folder" : "לא נמצאו רשומות בתיקייה הזאת",

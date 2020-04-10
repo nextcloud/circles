@@ -111,6 +111,7 @@ OC.L10N.register(
     "%1$s via %2$s" : "%1$s از طریق %2$s",
     "Click the button below to open it." : "برای باز کردن آن روی دکمه زیر کلیک کنید.",
     "Open »%s«" : "باز کن »%s«",
+    "Accept" : "تایید",
     "Could not find share" : "اشتراک یافت نشد",
     "No files in here" : "هیچ فایلی اینجا وجود ندارد",
     "No entries found in this folder" : "هیچ ورودی‌ای در این پوشه وجود ندارد",

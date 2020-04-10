@@ -55,6 +55,7 @@ OC.L10N.register(
     "This member is the owner of the circle" : "энэ гишүүн бүлгийн эзэн",
     "You are already a member of this circle" : "та аль хэдийн энэ тойргийн гишүүн болсон",
     "You have been blocked from this circle" : "та энэ тойргоос хасагдсан ",
+    "Accept" : "Хүлээн зөвшөөрөх",
     "You need a specify a type of circle" : "та тойргийн төрлийг тодорхойлах хэрэгтэй",
     "You cannot create this type of circle" : "та энэ тойргийн төрлийг үүсгэх боломжгүй",
     "You cannot display this type of circle" : "та энэ тойргийн төрлийг харуулах боломжгүй",

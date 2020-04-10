@@ -139,6 +139,7 @@ OC.L10N.register(
     "You have been blocked from this circle" : "Boli ste zablokovaný z tohto kruhu",
     "The user is already a member of this circle" : "Používateľ už je členom tohto kruhu",
     "The user has already been invited into this circle" : "Používateľ už bol pozvaný do tohto kruhu",
+    "Accept" : "Prijať",
     "You need a specify a type of circle" : "Musíte špecifikovať typ kruhu",
     "You cannot create this type of circle" : "Nemôžete vytvoriť tento typ kruhu",
     "You cannot display this type of circle" : "Nemôžete zobraziť tento typ kruhu",

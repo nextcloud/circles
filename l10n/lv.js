@@ -16,6 +16,7 @@ OC.L10N.register(
     "Mail Address" : "E-pasta adrese",
     "Contact" : "Kontakts",
     "Open »%s«" : "Atvērt »%s«",
+    "Accept" : "Akceptēt",
     "Could not find share" : "Nevarēja atrast koplietojumu",
     "No files in here" : "Šeit nav datņu",
     "No entries found in this folder" : "Šajā mapē nekas nav atrasts",
