@@ -239,7 +239,7 @@ class MembersService {
 
 		$member->inviteToCircle($circle->getType());
 
-		if ($this->configService->isInvitationSkipped()) {
+		if ($circle->getType() === Circle::CIRCLES_CLOSED && $this->configService->isInvitationSkipped()) {
 			$member->joinCircle($circle->getType());
 		}
 	}
