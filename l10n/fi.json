@@ -134,6 +134,7 @@
     "You have been blocked from this circle" : "Sinut on estetty tästä piiristä",
     "The user is already a member of this circle" : "Käyttäjä on jo jäsenenä tässä piirissä",
     "The user has already been invited into this circle" : "Käyttäjä on jo kutsuttu tähän piiriin",
+    "Accept" : "Hyväksy",
     "You need a specify a type of circle" : "Sinun täytyy määritellä piirin tyyppi",
     "You cannot create this type of circle" : "Et voi luoda tämän tyyppistä piiriä",
     "You cannot display this type of circle" : "Et voi näyttää tämän tyyppistä piiriä",

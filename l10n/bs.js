@@ -16,6 +16,7 @@ OC.L10N.register(
     "Invited" : "Pozvan",
     "Blocked" : "Blokiran",
     "Kicked" : "Izbačen",
+    "Accept" : "Prihvati",
     "Name" : "Ime",
     "Size" : "Veličina",
     "Modified" : "Izmijenjeno",

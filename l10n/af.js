@@ -9,6 +9,7 @@ OC.L10N.register(
     "Mail Address" : "Posadres",
     "Contact" : "Kontak",
     "Open »%s«" : "Open »%s«",
+    "Accept" : "Aanvaar",
     "No files in here" : "Geen lêers hier nie",
     "No entries found in this folder" : "Geen inskrwyings in hierdie gids gevind",
     "Name" : "Naam",

@@ -56,6 +56,7 @@ OC.L10N.register(
     "This member is the owner of the circle" : "Este miembro es el dueño del círculo",
     "You are already a member of this circle" : "Usted ya es un miembro de este círculo",
     "You have been blocked from this circle" : "Usted ha sido bloqueado de este círculo",
+    "Accept" : "Aceptar",
     "You need a specify a type of circle" : "Usted necesita especificar un tipo de círculo",
     "You cannot create this type of circle" : "No puede crear un círculo de este tipo",
     "You cannot display this type of circle" : "No puede desplegar un círculo de este tipo",

@@ -29,6 +29,7 @@ OC.L10N.register(
     "Circles" : "Обкръжения",
     "%s shared »%s« with you." : "%s сподели »%s« с вас.",
     "Open »%s«" : "Отвори »%s«",
+    "Accept" : "Приемане",
     "No files in here" : "Няма файлове",
     "No entries found in this folder" : "Папката е празна",
     "Name" : "Име",

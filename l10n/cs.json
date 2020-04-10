@@ -159,7 +159,9 @@
     "{member} sent a request to join {circle}" : "{member} poslal(a) požadavek na připojení se k {circle}",
     "You are the new owner of {circle}" : "Stali jste se novým vlastníkem kruhu {circle}",
     "{member} is the new owner of {circle}" : "{member} je novým vlastníkem kruhu {circle}",
+    "On events happening in a <strong>Circle</strong> of which you are a member" : "Při událostech odehrávajících se v<strong>okrhu</strong>, kterého jste členy",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Důležité události v <strong>Kruhu</strong>, který moderujete",
+    "On global events happening in any <strong>Circle</strong>" : "Při globálních událostech odehrávajících se v jakémkoli <strong>okruhu</strong>",
     "Shared to Circles" : "Sdíleno do kruhů",
     "%s shared »%s« with you." : "%s vám nasdílel(a) „%s“.",
     "%s shared »%s« with '%s'." : "%s nasdílela „%s“ s „%s“.",
@@ -199,6 +201,12 @@
     "You have been blocked from this circle" : "Tento okruh vás zablokoval",
     "The user is already a member of this circle" : "Uživatel už je členem tohoto kruhu",
     "The user has already been invited into this circle" : "Uživatel už byl do tohoto kruhu pozván",
+    "You have been invited by %1$s into the Circle \"%2$s\"" : "%1$s vás pozval(a) do okruhu „%2$s“",
+    "You are now a member of the Circle \"%2$s\"" : "Nyní jste členy okruhu „%2$s“",
+    "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s poslal(a) žádost o to, stát se členem okruhu „%2$s“",
+    "Accept" : "Přijmout",
+    "Refuse" : "Odmítnout",
+    "Leave the circle" : "Opustit okruh",
     "You need a specify a type of circle" : "Vyberte typ kruhu",
     "You cannot create this type of circle" : "Tento typ kruhu nemůžete vytvořit",
     "You cannot display this type of circle" : "Tento typ kruhu nemůžete zobrazit",
@@ -241,7 +249,6 @@
     "A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle." : "Tajný okruh je skrytá skupina, kterou mohou vidět pouze její členové nebo lidé, kteří vědí přesný název okruhu.",
     "Non-members won't be able to find your secret circle using the search bar." : "Kdo není členem, nebude moci najít váš tajný okruh pomocí vyhledávacího panelu.",
     "Joining a closed circle requires an invitation or confirmation by a moderator." : "Připojení se k uzavřenému okruhu vyžaduje pozvánku nebo potvrzení moderátora.",
-    "Anyone can find and request an invitation to the circle; but only members will see who's in it and get access to it's shared items." : "Kdokoli může okruh najít a požádat o pozvánku, ale pouze členové uvidí, kdo je v něm a kdo získává přístup ke sdíleným položkám.",
     "A public circle is an open group visible to anyone willing to join." : "Veřejný okruh je otevřená skupina viditelná všem, kteří by se chtěli přidat.",
     "Anyone can see, join, and access the items shared within the circle." : "Okruh může kdokoli vidět, přidat se do něj a přistupovat k v něm sdíleným položkám.",
     "Personal circles" : "Osobní okruhy",
@@ -290,6 +297,7 @@
     "Skip invitation step to closed circles" : "Přeskočit krok pozvání do zavřených okruhů",
     "Moderators can add member to closed circles without user approval." : "Moderátoři nepotřebují souhlas uživatele pro přidávání členů do uzavřených okruhů.",
     "On events happening in a <strong>Circle</strong> you belong" : "Události v <strong>Kruzích</strong>, kterých jste členem",
-    "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or 'circles') can then be used by any other app for sharing purpose (files, social feed, status update, messaging, ...).\n\nDifferent type of circles can be created:\n\n- A personal circle is a list of users known only to the owner.\nThis is the right option if you want to do recurrent sharing with the same group of people.\n\n- A public circle is an open group visible to anyone willing to join.\nYour circle will be visible to everyone and everyone will be able to join the circle.\n\n- A closed circle requires invitation or confirmation by an admin.\nThis is the right circle if you are looking for privacy when sharing your files or ideas.\n\n- An Secret circle is an open group that can be protected by a password.\nUsers won't be able to find this Circle using Nextcloud search engine." : "Kruhy umožňují vašim uživatelům vytvářet jejich vlastní skupiny uživatelů/kolegů/přátel. Tyto skupiny uživatelů (neboli „okruhy“) je pak možné využívat ve všech ostatních aplikacích pro účely sdílení (soubory, společenské zdroje, aktualizace stavu, zprávy, …).\n\nJe možné vytvářet různé typy okruhů:\n\n- Osobní okruh je seznam uživatelů známý pouze vlastníkovi.\nToto je správná volba pokud chcete opakovaně sdílet se stejnou skupinou lidí.\n\n- Veřejný okruh je otevřená skupina viditelná komukoli kdo se chce připojit.\nVáš okruh bude viditelný komukoli a kdokoli bude schopen se do okruhu přidat.\n\n- Uzavřený okruh vyžaduje pozvání nebo potvrzení správcem.\nToto je správný okruh pokud hledáte soukromí při sdílení souborů nebo nápadů.\n\n- Tajný okruh je otevřená skupina kterou je možné zabezpečit heslem.\nUživatelé nebudou moci tento okruh najít prostřednictvím vyhledávání v Nextcloud."
+    "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or 'circles') can then be used by any other app for sharing purpose (files, social feed, status update, messaging, ...).\n\nDifferent type of circles can be created:\n\n- A personal circle is a list of users known only to the owner.\nThis is the right option if you want to do recurrent sharing with the same group of people.\n\n- A public circle is an open group visible to anyone willing to join.\nYour circle will be visible to everyone and everyone will be able to join the circle.\n\n- A closed circle requires invitation or confirmation by an admin.\nThis is the right circle if you are looking for privacy when sharing your files or ideas.\n\n- An Secret circle is an open group that can be protected by a password.\nUsers won't be able to find this Circle using Nextcloud search engine." : "Kruhy umožňují vašim uživatelům vytvářet jejich vlastní skupiny uživatelů/kolegů/přátel. Tyto skupiny uživatelů (neboli „okruhy“) je pak možné využívat ve všech ostatních aplikacích pro účely sdílení (soubory, společenské zdroje, aktualizace stavu, zprávy, …).\n\nJe možné vytvářet různé typy okruhů:\n\n- Osobní okruh je seznam uživatelů známý pouze vlastníkovi.\nToto je správná volba pokud chcete opakovaně sdílet se stejnou skupinou lidí.\n\n- Veřejný okruh je otevřená skupina viditelná komukoli kdo se chce připojit.\nVáš okruh bude viditelný komukoli a kdokoli bude schopen se do okruhu přidat.\n\n- Uzavřený okruh vyžaduje pozvání nebo potvrzení správcem.\nToto je správný okruh pokud hledáte soukromí při sdílení souborů nebo nápadů.\n\n- Tajný okruh je otevřená skupina kterou je možné zabezpečit heslem.\nUživatelé nebudou moci tento okruh najít prostřednictvím vyhledávání v Nextcloud.",
+    "Anyone can find and request an invitation to the circle; but only members will see who\\'s in it and get access to it\\'s shared items." : "Kdokoli může okruh najít a požádat o pozvánku, ale pouze členové uvidí, kdo je v něm a kdo získává přístup ke sdíleným položkám."
 },"pluralForm" :"nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;"
 }
