@@ -40,15 +40,16 @@ class MembersController extends BaseController {
 	 * @param string $uniqueId
 	 * @param $ident
 	 * @param $type
+	 * @param string $instance
 	 *
 	 * @return DataResponse
 	 */
-	public function addMember($uniqueId, $ident, $type) {
+	public function addMember($uniqueId, $ident, $type, $instance) {
 
 		try {
 			$this->mustHaveFrontEndEnabled();
 
-			$data = $this->membersService->addMember($uniqueId, $ident, (int)$type);
+			$data = $this->membersService->addMember($uniqueId, $ident, (int)$type, $instance);
 		} catch (\Exception $e) {
 			return $this->fail(
 				[
@@ -114,22 +115,24 @@ class MembersController extends BaseController {
 	 * @param string $uniqueId
 	 * @param string $member
 	 * @param int $type
+	 * @param string $instance
 	 * @param int $level
 	 *
 	 * @return DataResponse
 	 */
-	public function levelMember($uniqueId, $member, $type, $level) {
+	public function levelMember($uniqueId, $member, $type, $instance, $level) {
 
 		try {
 			$this->mustHaveFrontEndEnabled();
 
-			$data = $this->membersService->levelMember($uniqueId, $member, (int)$type, $level);
+			$data = $this->membersService->levelMember($uniqueId, $member, (int)$type, $instance, $level);
 		} catch (\Exception $e) {
 			return
 				$this->fail(
 					[
 						'circle_id' => $uniqueId,
 						'user_id'   => $member,
+						'instance'  => $instance,
 						'user_type' => (int)$type,
 						'display'   => MiscService::getDisplay($member, (int)$type),
 						'level'     => $level,
@@ -158,15 +161,16 @@ class MembersController extends BaseController {
 	 * @param string $uniqueId
 	 * @param string $member
 	 * @param int $type
+	 * @param $instance
 	 *
 	 * @return DataResponse
 	 */
-	public function removeMember($uniqueId, $member, $type) {
+	public function removeMember($uniqueId, $member, $type, $instance) {
 
 		try {
 			$this->mustHaveFrontEndEnabled();
 
-			$data = $this->membersService->removeMember($uniqueId, $member, (int)$type);
+			$data = $this->membersService->removeMember($uniqueId, $member, (int)$type, $instance);
 		} catch (\Exception $e) {
 			return
 				$this->fail(

@@ -283,6 +283,12 @@ class SharingFrame implements \JsonSerializable {
 	public static function fromJSON($json) {
 
 		$arr = json_decode($json, true);
+
+		return self::fromArray($arr);
+	}
+
+
+	public static function fromArray($arr) {
 		if (!is_array($arr) || !key_exists('source', $arr)) {
 			return null;
 		}

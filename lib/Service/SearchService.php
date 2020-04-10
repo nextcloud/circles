@@ -75,6 +75,7 @@ class SearchService {
 	public function loadSearch() {
 		$this->searchList = [
 			'OCA\Circles\Search\LocalUsers',
+			'OCA\Circles\Search\GlobalScaleUsers',
 			'OCA\Circles\Search\LocalGroups',
 			'OCA\Circles\Search\Contacts'
 		];
@@ -82,7 +83,6 @@ class SearchService {
 
 
 	public function searchGlobal($str) {
-
 		$result = [];
 		foreach ($this->searchList as $container) {
 			$searcher = \OC::$server->query((string)$container);

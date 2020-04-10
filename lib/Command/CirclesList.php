@@ -29,6 +29,7 @@
 
 namespace OCA\Circles\Command;
 
+use daita\MySmallPhpTools\Traits\TArrayTools;
 use OC\Core\Command\Base;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
@@ -48,6 +49,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class CirclesList extends Base {
+
+
+	use TArrayTools;
 
 
 	/** @var IL10N */
@@ -103,19 +107,23 @@ class CirclesList extends Base {
 		}
 
 		$table = new Table($output);
-		$table->setHeaders(['ID', 'Name', 'Type', 'Owner']);
+		$table->setHeaders(['ID', 'Name', 'Type', 'Owner', 'Instance', 'Limit', 'Description']);
 		$table->render();
 		$output->writeln('');
 
 		$c = 0;
 		foreach ($circles as $circle) {
+			$owner = $circle->getOwner();
+			$settings = $circle->getSettings();
 			$table->appendRow(
 				[
 					$circle->getUniqueId(),
 					$circle->getName(),
 					$circle->getTypeLongString(),
-					$circle->getOwner()
-						   ->getUserId()
+					$owner->getUserId(),
+					$owner->getInstance(),
+					$this->getInt('members_limit', $settings, -1),
+					substr($circle->getDescription(), 0, 30)
 				]
 			);
 		}

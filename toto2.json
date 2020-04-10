@@ -1,0 +1,60 @@
+{
+  "type": "GlobalScale\\\\MemberLevel",
+  "severity": 1,
+  "data": {
+    "level": 9
+  },
+  "result": [],
+  "key": "abcd",
+  "source": "gs1.local",
+  "force": true,
+  "circle": {
+    "id": "49",
+    "name": "test 001",
+    "owner": {
+      "circle_id": "4456e6bec56dbe",
+      "member_id": "",
+      "user_id": "cult3",
+      "user_type": 1,
+      "display_name": "cult3",
+      "contact_id": "",
+      "level": 9,
+      "level_string": "Owner",
+      "status": "Member",
+      "instance": "gs3.local",
+      "note": null,
+      "joined": ""
+    },
+    "user": null,
+    "group": null,
+    "viewer": null,
+    "description": "",
+    "settings": {
+      "allow_links": "false",
+      "allow_links_auto": "false",
+      "allow_links_files": "false"
+    },
+    "type": 8,
+    "creation": "2020-03-20 17:47:46",
+    "type_string": "Public",
+    "type_long_string": "Public circle",
+    "unique_id": "4456e6bec56dbe",
+    "members": null,
+    "groups": null,
+    "links": null
+  },
+  "member": {
+    "circle_id": "4456e6bec56dbe",
+    "member_id": "zfScdzi28pacyp",
+    "user_id": "cult1",
+    "user_type": 1,
+    "display_name": "cult1",
+    "contact_id": "",
+    "level": 8,
+    "level_string": "Admin",
+    "status": "Member",
+    "instance": "gs1.local",
+    "note": null,
+    "joined": "2020-03-20 17:47:46"
+  }
+}

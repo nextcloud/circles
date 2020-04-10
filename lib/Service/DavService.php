@@ -400,7 +400,7 @@ class DavService {
 			$circle->setContactGroupName($group);
 
 			try {
-				$this->circlesRequest->createCircle($circle, $davCard->getOwner());
+				$this->circlesRequest->createCircle($circle);
 				$member = new Member($davCard->getOwner(), Member::TYPE_USER, $circle->getUniqueId());
 				$member->setLevel(Member::LEVEL_OWNER);
 				$member->setStatus(Member::STATUS_MEMBER);

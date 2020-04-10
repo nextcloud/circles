@@ -214,6 +214,7 @@ div.circle .owner, div.circle .type, div.circle .resume {
 	border-top: solid 1px #00000022;
 	-webkit-transition: background-color 0.2s ease-in;
 	transition: background-color 0.2s ease-in;
+	height: 65px;
 }
 
 .members_search:hover, .groups_search:hover {

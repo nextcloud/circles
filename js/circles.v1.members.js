@@ -29,7 +29,7 @@
 var members = {
 
 
-	searchUsers: function (search, callback) {
+	searchUsers: function(search, callback) {
 
 		var result = {status: -1};
 		$.ajax({
@@ -38,49 +38,51 @@ var members = {
 			data: {
 				search: search
 			}
-		}).done(function (res) {
+		}).done(function(res) {
 			api.onCallback(callback, res);
-		}).fail(function () {
+		}).fail(function() {
 			api.onCallback(callback, result);
 		});
 	},
 
 
-	addMember: function (circleId, ident, type, callback) {
+	addMember: function(circleId, ident, type, instance, callback) {
 		var result = {status: -1};
 		$.ajax({
 			method: 'PUT',
 			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/member'),
 			data: {
 				ident: ident,
-				type: type
+				type: type,
+				instance: instance
 			}
-		}).done(function (res) {
+		}).done(function(res) {
 			api.onCallback(callback, res);
-		}).fail(function () {
+		}).fail(function() {
 			api.onCallback(callback, result);
 		});
 	},
 
 
-	removeMember: function (circleId, userId, userType, callback) {
+	removeMember: function(circleId, userId, userType, instance, callback) {
 		var result = {status: -1};
 		$.ajax({
 			method: 'DELETE',
 			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/member'),
 			data: {
 				member: userId,
-				type: Number(userType)
+				type: Number(userType),
+				instance: instance
 			}
-		}).done(function (res) {
+		}).done(function(res) {
 			api.onCallback(callback, res);
-		}).fail(function () {
+		}).fail(function() {
 			api.onCallback(callback, result);
 		});
 	},
 
 
-	levelMember: function (circleId, userId, userType, level, callback) {
+	levelMember: function(circleId, userId, userType, instance, level, callback) {
 		var result = {status: -1};
 		$.ajax({
 			method: 'POST',
@@ -88,11 +90,12 @@ var members = {
 			data: {
 				member: userId,
 				type: userType,
+				instance: instance,
 				level: level
 			}
-		}).done(function (res) {
+		}).done(function(res) {
 			api.onCallback(callback, res);
-		}).fail(function () {
+		}).fail(function() {
 			api.onCallback(callback, result);
 		});
 	}

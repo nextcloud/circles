@@ -57,8 +57,6 @@ class ShareService {
 		$this->l10n = $l10n;
 		$this->configService = $configService;
 		$this->miscService = $miscService;
-
-		$this->loadSearch();
 	}
 
 

@@ -33,8 +33,9 @@ use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedLinkService;
 use OCA\Circles\Service\GroupsService;
+use OCA\Circles\Service\GSDownstreamService;
+use OCA\Circles\Service\GSUpstreamService;
 use OCA\Circles\Service\MembersService;
-
 use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\SearchService;
 use OCA\Circles\Service\SharingFrameService;
@@ -63,6 +64,12 @@ class BaseController extends Controller {
 	/** @var MembersService */
 	protected $membersService;
 
+	/** @var GSUpstreamService */
+	protected $gsUpstreamService;
+
+	/** @var GSDownstreamService */
+	protected $gsDownstreamService;
+
 	/** @var GroupsService */
 	protected $groupsService;
 
@@ -90,6 +97,7 @@ class BaseController extends Controller {
 	 * @param CirclesService $circlesService
 	 * @param SearchService $searchService
 	 * @param MembersService $membersService
+	 * @param GSUpstreamService $gsUpstreamService
 	 * @param GroupsService $groupsService
 	 * @param SharingFrameService $sharingFrameService
 	 * @param BroadcastService $broadcastService
@@ -105,6 +113,8 @@ class BaseController extends Controller {
 		CirclesService $circlesService,
 		SearchService $searchService,
 		MembersService $membersService,
+		GSUpstreamService $gsUpstreamService,
+		GSDownstreamService $gsDownstreamService,
 		GroupsService $groupsService,
 		SharingFrameService $sharingFrameService,
 		BroadcastService $broadcastService,
@@ -113,12 +123,15 @@ class BaseController extends Controller {
 	) {
 		parent::__construct($appName, $request);
 
+
 		$this->userId = $userId;
 		$this->l10n = $l10n;
 		$this->configService = $configService;
 		$this->circlesService = $circlesService;
 		$this->searchService = $searchService;
 		$this->membersService = $membersService;
+		$this->gsUpstreamService = $gsUpstreamService;
+		$this->gsDownstreamService = $gsDownstreamService;
 		$this->groupsService = $groupsService;
 		$this->sharingFrameService = $sharingFrameService;
 		$this->broadcastService = $broadcastService;
@@ -166,5 +179,3 @@ class BaseController extends Controller {
 	}
 
 }
-
-

@@ -51,14 +51,21 @@ class MembersRequest extends MembersRequestBuilder {
 	 * @param string $userId
 	 * @param $type
 	 *
+	 * @param string $instance
+	 *
 	 * @return Member
 	 * @throws MemberDoesNotExistException
 	 */
-	public function forceGetMember($circleUniqueId, $userId, $type) {
+	public function forceGetMember($circleUniqueId, $userId, $type, string $instance = '') {
 		$qb = $this->getMembersSelectSql();
+
+		if ($instance === $this->configService->getLocalCloudId()) {
+			$instance = '';
+		}
 
 		$this->limitToUserId($qb, $userId);
 		$this->limitToUserType($qb, $type);
+		$this->limitToInstance($qb, $instance);
 		$this->limitToCircleId($qb, $circleUniqueId);
 
 		$cursor = $qb->execute();
@@ -187,7 +194,9 @@ class MembersRequest extends MembersRequestBuilder {
 	 * @param bool $check
 	 */
 	public function checkMember(Member $member, bool $check) {
-		$qb = $this->getMembersUpdateSql($member->getCircleId(), $member);
+		$qb = $this->getMembersUpdateSql(
+			$member->getCircleId(), $member->getUserId(), $member->getInstance(), $member->getType()
+		);
 		$qb->set('contact_checked', $qb->createNamedParameter(($check) ? 1 : 0));
 
 		$qb->execute();
@@ -321,21 +330,19 @@ class MembersRequest extends MembersRequestBuilder {
 	 *
 	 * @param string $circleUniqueId
 	 * @param string $name
-	 * @param $type
+	 * @param int $type
+	 *
+	 * @param string $instance
 	 *
 	 * @return Member
-	 * @throws MemberAlreadyExistsException
-	 * @throws \Exception
 	 */
-	public function getFreshNewMember($circleUniqueId, $name, $type) {
+	public function getFreshNewMember($circleUniqueId, string $name, int $type, string $instance) {
 
 		try {
-
-			$member = $this->forceGetMember($circleUniqueId, $name, $type);
-
+			$member = $this->forceGetMember($circleUniqueId, $name, $type, $instance);
 		} catch (MemberDoesNotExistException $e) {
 			$member = new Member($name, $type, $circleUniqueId);
-			$this->createMember($member);
+			$member->setInstance($instance);
 		}
 
 //		if ($member->alreadyExistOrJoining()) {
@@ -454,12 +461,18 @@ class MembersRequest extends MembersRequestBuilder {
 			$member->setMemberId($this->token(14));
 		}
 
+		$instance = $member->getInstance();
+		if ($instance === $this->configService->getLocalCloudId()) {
+			$instance = '';
+		}
+
 		try {
 			$qb = $this->getMembersInsertSql();
 			$qb->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
 			   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
 			   ->setValue('member_id', $qb->createNamedParameter($member->getMemberId()))
 			   ->setValue('user_type', $qb->createNamedParameter($member->getType()))
+			   ->setValue('instance', $qb->createNamedParameter($instance))
 			   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
 			   ->setValue('status', $qb->createNamedParameter($member->getStatus()))
 			   ->setValue('contact_id', $qb->createNamedParameter($member->getContactId()))
@@ -535,7 +548,14 @@ class MembersRequest extends MembersRequestBuilder {
 	 * @param Member $member
 	 */
 	public function updateMember(Member $member) {
-		$qb = $this->getMembersUpdateSql($member->getCircleId(), $member);
+		$instance = $member->getInstance();
+		if ($instance === $this->configService->getLocalCloudId()) {
+			$instance = '';
+		}
+
+		$qb = $this->getMembersUpdateSql(
+			$member->getCircleId(), $member->getUserId(), $instance, $member->getType()
+		);
 		$qb->set('level', $qb->createNamedParameter($member->getLevel()))
 		   ->set('status', $qb->createNamedParameter($member->getStatus()));
 
@@ -548,7 +568,9 @@ class MembersRequest extends MembersRequestBuilder {
 	 * @param Member $member
 	 */
 	public function updateContactMeta(Member $member) {
-		$qb = $this->getMembersUpdateSql($member->getCircleId(), $member);
+		$qb = $this->getMembersUpdateSql(
+			$member->getCircleId(), $member->getUserId(), $member->getInstance(), $member->getType()
+		);
 		$qb->set('contact_meta', $qb->createNamedParameter(json_encode($member->getContactMeta())));
 
 		$qb->execute();
@@ -604,9 +626,15 @@ class MembersRequest extends MembersRequestBuilder {
 	 * @param Member $member
 	 */
 	public function removeMember(Member $member) {
+		$instance = $member->getInstance();
+		if ($instance === $this->configService->getLocalCloudId()) {
+			$instance = '';
+		}
+
 		$qb = $this->getMembersDeleteSql();
 		$this->limitToCircleId($qb, $member->getCircleId());
 		$this->limitToUserId($qb, $member->getUserId());
+		$this->limitToInstance($qb, $instance);
 		$this->limitToUserType($qb, $member->getType());
 		if ($member->getContactId() !== '') {
 			$this->limitToContactId($qb, $member->getContactId());
@@ -731,4 +759,3 @@ class MembersRequest extends MembersRequestBuilder {
 
 
 }
-

@@ -53,7 +53,7 @@ class BaseCircle {
 	protected $l10n;
 
 	/** @var string */
-	private $uniqueId;
+	private $uniqueId = '';
 
 	/** @var string */
 	private $name;
@@ -62,7 +62,7 @@ class BaseCircle {
 	private $owner;
 
 	/** @var Member */
-	private $viewer;
+	private $viewer = null;
 
 	/** @var Member */
 	private $viewerGroup;
@@ -209,6 +209,12 @@ class BaseCircle {
 
 		return $this;
 	}
+
+
+	public function hasViewer(): bool {
+		return ($this->viewer !== null);
+	}
+
 
 	/**
 	 * @return Member
@@ -436,7 +442,7 @@ class BaseCircle {
 	}
 
 	/**
-	 * @return array
+	 * @return Member[]
 	 */
 	public function getMembers() {
 		return $this->members;

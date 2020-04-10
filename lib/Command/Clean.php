@@ -34,6 +34,7 @@ use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCP\IDBConnection;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
@@ -69,20 +70,32 @@ class Clean extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:clean')
-			 ->setDescription('remove all extra data from database');
+			 ->setDescription('remove all extra data from database')
+			 ->addOption('all', '', InputOption::VALUE_NONE, 'remove all data from the app');
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output) {
 
-		try {
-			$this->fixUserType();
-			$this->removeCirclesWithNoOwner();
-			$this->removeMembersWithNoCircles();
+	/**
+	 * @param InputInterface $input
+	 * @param OutputInterface $output
+	 *
+	 * @return int
+	 */
+	protected function execute(InputInterface $input, OutputInterface $output): int {
 
-			$output->writeln('done');
-		} catch (Exception $e) {
-			$output->writeln($e->getMessage());
+		if ($input->getOption('all')) {
+			$this->circlesRequest->cleanDatabase();
+
+			return 0;
 		}
+
+		$this->fixUserType();
+		$this->removeCirclesWithNoOwner();
+		$this->removeMembersWithNoCircles();
+
+		$output->writeln('done');
+
+		return 0;
 	}
 
 

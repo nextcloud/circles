@@ -26,10 +26,15 @@
 
 namespace OCA\Circles\Model;
 
+use daita\MySmallPhpTools\Traits\TArrayTools;
 use OCA\Circles\Exceptions\CircleTypeNotValidException;
 use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 
 class Circle extends BaseCircle implements \JsonSerializable {
+
+
+	use TArrayTools;
+
 
 	/** @var bool */
 	private $fullJson = false;
@@ -62,6 +67,18 @@ class Circle extends BaseCircle implements \JsonSerializable {
 
 	public function getInfo() {
 		return $this->getTypeLongString();
+	}
+
+
+	/**
+	 * @param bool $fullJson
+	 *
+	 * @return $this
+	 */
+	public function setFullJson(bool $fullJson): self {
+		$this->fullJson = $fullJson;
+
+		return $this;
 	}
 
 
@@ -123,7 +140,7 @@ class Circle extends BaseCircle implements \JsonSerializable {
 	 * @return $this
 	 */
 	public static function fromArray($arr) {
-		if ($arr === null) {
+		if ($arr === null || empty($arr)) {
 			return new Circle();
 		}
 
@@ -139,6 +156,15 @@ class Circle extends BaseCircle implements \JsonSerializable {
 
 		$circle->setViewer(self::getMemberFromArray($arr, 'user'));
 		$circle->setOwner(self::getMemberFromArray($arr, 'owner'));
+
+		if (array_key_exists('members', $arr) && is_array($arr['members'])) {
+			$members = [];
+			foreach ($arr['members'] as $item) {
+				$members[] = Member::fromArray($item);
+			}
+			$circle->setMembers($members);
+		}
+
 
 		return $circle;
 	}

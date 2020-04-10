@@ -27,20 +27,25 @@
 namespace OCA\Circles\Service;
 
 
+use daita\MySmallPhpTools\Model\SimpleDataStore;
 use Exception;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
-use OCA\Circles\Exceptions\BroadcasterIsNotCompatibleException;
 use OCA\Circles\IBroadcaster;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
 
 
 class BroadcastService {
 
+
 	/** @var string */
 	private $userId;
+
+	/** @var GSUpstreamService */
+	private $gsUpstreamService;
 
 	/** @var ConfigService */
 	private $configService;
@@ -62,6 +67,7 @@ class BroadcastService {
 	 * @param ConfigService $configService
 	 * @param CirclesRequest $circlesRequest
 	 * @param MembersRequest $membersRequest
+	 * @param GSUpstreamService $gsUpstreamService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
@@ -69,12 +75,14 @@ class BroadcastService {
 		ConfigService $configService,
 		CirclesRequest $circlesRequest,
 		MembersRequest $membersRequest,
+		GSUpstreamService $gsUpstreamService,
 		MiscService $miscService
 	) {
 		$this->userId = $userId;
 		$this->configService = $configService;
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
+		$this->gsUpstreamService = $gsUpstreamService;
 		$this->miscService = $miscService;
 	}
 
@@ -97,19 +105,22 @@ class BroadcastService {
 			return;
 		}
 
-		try {
-			$broadcaster = \OC::$server->query((string)$frame->getHeader('broadcast'));
-			if (!($broadcaster instanceof IBroadcaster)) {
-				throw new BroadcasterIsNotCompatibleException();
-			}
+		$event = new GSEvent(GSEvent::FILE_SHARE, true);
+		$event->setSeverity(GSEvent::SEVERITY_HIGH);
+		$event->setCircle($frame->getCircle());
+		$event->setSource($this->configService->getLocalCloudId());
+		$event->setData(new SimpleDataStore(['frame' => json_decode(json_encode($frame), true)]));
+		$this->gsUpstreamService->newEvent($event);
 
-			$frameCircle = $frame->getCircle();
-			$circle = $this->circlesRequest->forceGetCircle($frameCircle->getUniqueId());
-
-			$this->feedBroadcaster($broadcaster, $frame, $circle);
-		} catch (Exception $e) {
-			throw $e;
-		}
+//		$broadcaster = \OC::$server->query((string)$frame->getHeader('broadcast'));
+//		if (!($broadcaster instanceof IBroadcaster)) {
+//			throw new BroadcasterIsNotCompatibleException();
+//		}
+//
+//		$frameCircle = $frame->getCircle();
+//		$circle = $this->circlesRequest->forceGetCircle($frameCircle->getUniqueId());
+//
+//		$this->feedBroadcaster($broadcaster, $frame, $circle);
 	}
 
 
@@ -170,3 +181,4 @@ class BroadcastService {
 	}
 
 }
+

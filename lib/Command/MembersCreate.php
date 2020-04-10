@@ -29,11 +29,20 @@
 
 namespace OCA\Circles\Command;
 
+use daita\MySmallPhpTools\Exceptions\RequestContentException;
+use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
+use daita\MySmallPhpTools\Exceptions\RequestResultNotJsonException;
+use daita\MySmallPhpTools\Exceptions\RequestResultSizeException;
+use daita\MySmallPhpTools\Exceptions\RequestServerException;
+use daita\MySmallPhpTools\Model\Request;
+use daita\MySmallPhpTools\Traits\TRequest;
 use Exception;
 use OC\Core\Command\Base;
 use OC\User\NoUserException;
 use OCA\Circles\Db\MembersRequest;
+use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MembersService;
 use OCP\IL10N;
 use OCP\IUserManager;
@@ -50,6 +59,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 class MembersCreate extends Base {
 
 
+	use TRequest;
+
+
 	/** @var IL10N */
 	private $l10n;
 
@@ -62,6 +74,9 @@ class MembersCreate extends Base {
 	/** @var MembersRequest */
 	private $membersRequest;
 
+	/** @var ConfigService */
+	private $configService;
+
 
 	/**
 	 * MembersCreate constructor.
@@ -70,15 +85,18 @@ class MembersCreate extends Base {
 	 * @param IUserManager $userManager
 	 * @param MembersService $membersService
 	 * @param MembersRequest $membersRequest
+	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IL10N $l10n, IUserManager $userManager, MembersService $membersService, MembersRequest $membersRequest
+		IL10N $l10n, IUserManager $userManager, MembersService $membersService,
+		MembersRequest $membersRequest, ConfigService $configService
 	) {
 		parent::__construct();
 		$this->l10n = $l10n;
 		$this->userManager = $userManager;
 		$this->membersService = $membersService;
 		$this->membersRequest = $membersRequest;
+		$this->configService = $configService;
 	}
 
 
@@ -105,11 +123,17 @@ class MembersCreate extends Base {
 		$userId = $input->getArgument('user');
 		$level = $input->getArgument('level');
 
+		$instance = '';
 		$user = $this->userManager->get($userId);
 		if ($user === null) {
+			$userId = $this->findUserFromLookup($userId, $instance);
+		} else {
+			$userId = $user->getUID();
+		}
+
+		if ($userId === '') {
 			throw new NoUserException('user does not exist');
 		}
-		$userId = $user->getUID();
 
 		$levels = [
 			'member'    => Member::LEVEL_MEMBER,
@@ -124,13 +148,71 @@ class MembersCreate extends Base {
 
 		$level = $levels[strtolower($level)];
 
-		$this->membersService->addMember($circleId, $userId, Member::TYPE_USER, true);
-		$this->membersService->levelMember($circleId, $userId, Member::TYPE_USER, $level, true);
+		$this->membersService->addMember($circleId, $userId, Member::TYPE_USER, $instance, true);
+		$this->membersService->levelMember($circleId, $userId, Member::TYPE_USER, $instance, $level, true);
 
-		$member = $this->membersRequest->forceGetMember($circleId, $userId, Member::TYPE_USER);
+		$member = $this->membersRequest->forceGetMember($circleId, $userId, Member::TYPE_USER, $instance);
 		echo json_encode($member, JSON_PRETTY_PRINT) . "\n";
 
 		return 0;
+	}
+
+
+	/**
+	 * @param string $search
+	 * @param string $instance
+	 *
+	 * @return string
+	 */
+	private function findUserFromLookup(string $search, string &$instance = ''): string {
+		$userId = '';
+
+		/** @var string $lookup */
+		try {
+			$lookup = $this->configService->getGSStatus(ConfigService::GS_LOOKUP);
+		} catch (GSStatusException $e) {
+			return '';
+		}
+
+		$request = new Request('/users', Request::TYPE_GET);
+		$request->setProtocols(['https', 'http']);
+		$request->addData('search', $search);
+		$request->setAddressFromUrl($lookup);
+
+		try {
+			$users = $this->retrieveJson($request);
+		} catch (
+		RequestContentException |
+		RequestNetworkException |
+		RequestResultSizeException |
+		RequestServerException |
+		RequestResultNotJsonException $e
+		) {
+			return '';
+		}
+
+		$result = [];
+		foreach ($users as $user) {
+			if (!array_key_exists('userid', $user)) {
+				continue;
+			}
+
+			list(, $host) = explode('@', $user['federationId']);
+			if (strtolower($user['userid']['value']) === strtolower($search)) {
+				$userId = $user['userid']['value'];
+				$instance = $host;
+			}
+
+			$result[] = $user['userid']['value'] . ' <info>@' . $host . '</info>';
+		}
+
+//		if ($userId === '') {
+//			foreach($result as $item) {
+//				$output->writeln($item);
+//			}
+//		}
+
+		return $userId;
 	}
 
 }
