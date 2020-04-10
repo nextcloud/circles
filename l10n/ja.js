@@ -201,6 +201,7 @@ OC.L10N.register(
     "You have been blocked from this circle" : "あなたはこのサークルからブロックされています",
     "The user is already a member of this circle" : "ユーザーはすでにこのサークルのメンバーです",
     "The user has already been invited into this circle" : "ユーザーはすでにこのサークルに招待されています",
+    "Accept" : "承諾",
     "You need a specify a type of circle" : "あなたはサークルのタイプを指定する必要があります",
     "You cannot create this type of circle" : "このタイプのサークルを作成することはできません",
     "You cannot display this type of circle" : "このタイプのサークルを表示することはできません",
@@ -242,7 +243,6 @@ OC.L10N.register(
     "A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle." : "非公開のサークルは、メンバーまたはサークルの正確な名前を知っている人だけが見ることができる隠されたグループです。",
     "Non-members won't be able to find your secret circle using the search bar." : "メンバーではない人は検索バーを使ってあなたの非公開のサークルを見つけることができません。",
     "Joining a closed circle requires an invitation or confirmation by a moderator." : "クローズドサークルに参加するには、モデレーターからの招待状または確認が必要です。",
-    "Anyone can find and request an invitation to the circle; but only members will see who\\'s in it and get access to it\\'s shared items." : "誰でもサークルへの招待状を見つけてリクエストすることができます。 メンバーだけがそのメンバーを見てその共有アイテムにアクセスできます。",
     "A public circle is an open group visible to anyone willing to join." : "公開サークルは誰でも参加できるオープンなサークルです。",
     "Anyone can see, join, and access the items shared within the circle." : "誰でもサークル内で共有されているアイテムを見たり、参加したり、アクセスしたりすることができます。",
     "Personal circles" : "パーソナルサークル",
@@ -291,6 +291,7 @@ OC.L10N.register(
     "Skip invitation step to closed circles" : "クローズドサークルへの招待ステップをスキップ",
     "Moderators can add member to closed circles without user approval." : "モデレーターは、ユーザーの承認なしにクローズドサークルにメンバーを追加できます。",
     "On events happening in a <strong>Circle</strong> you belong" : "あなたが属している <strong>Circle</strong> で起こっている出来事について",
-    "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or 'circles') can then be used by any other app for sharing purpose (files, social feed, status update, messaging, ...).\n\nDifferent type of circles can be created:\n\n- A personal circle is a list of users known only to the owner.\nThis is the right option if you want to do recurrent sharing with the same group of people.\n\n- A public circle is an open group visible to anyone willing to join.\nYour circle will be visible to everyone and everyone will be able to join the circle.\n\n- A closed circle requires invitation or confirmation by an admin.\nThis is the right circle if you are looking for privacy when sharing your files or ideas.\n\n- An Secret circle is an open group that can be protected by a password.\nUsers won't be able to find this Circle using Nextcloud search engine." : "サークルでは、ユーザーが自分のグループのユーザー/同僚/友人を作成することができます。ユーザーのグループ（またはサークル）は、ファイル、ソーシャルフィード、ステータス更新、メッセージ、 ..の他のアプリとの共有を目的としています。\n\n異なる種類のサークルを作成することができます。\n\nパーソナルサークルは、オーナーだけが知っているユーザーのリストです。\nこれは、同じグループの人と繰り返し共有したい場合には適切なオプションです 。\n\nパブリックサークルは誰でも参加できるオープングループです。あなたのサークルは誰でも見ることができ、誰もがサークルに参加することができます.\n\n\nクローズドサークルには、管理者からの招待やコンファームが必要です。\nあなたのファイルやアイデアを共有するときにプライバシーを求めているのなら、これは正しいサークルです。\n\nシークレットサークルは、パスワードで保護できるオープングループです。ユーザーはNextcloudサーチエンジンを使っても、このサークルを見つけることができません 。"
+    "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or 'circles') can then be used by any other app for sharing purpose (files, social feed, status update, messaging, ...).\n\nDifferent type of circles can be created:\n\n- A personal circle is a list of users known only to the owner.\nThis is the right option if you want to do recurrent sharing with the same group of people.\n\n- A public circle is an open group visible to anyone willing to join.\nYour circle will be visible to everyone and everyone will be able to join the circle.\n\n- A closed circle requires invitation or confirmation by an admin.\nThis is the right circle if you are looking for privacy when sharing your files or ideas.\n\n- An Secret circle is an open group that can be protected by a password.\nUsers won't be able to find this Circle using Nextcloud search engine." : "サークルでは、ユーザーが自分のグループのユーザー/同僚/友人を作成することができます。ユーザーのグループ（またはサークル）は、ファイル、ソーシャルフィード、ステータス更新、メッセージ、 ..の他のアプリとの共有を目的としています。\n\n異なる種類のサークルを作成することができます。\n\nパーソナルサークルは、オーナーだけが知っているユーザーのリストです。\nこれは、同じグループの人と繰り返し共有したい場合には適切なオプションです 。\n\nパブリックサークルは誰でも参加できるオープングループです。あなたのサークルは誰でも見ることができ、誰もがサークルに参加することができます.\n\n\nクローズドサークルには、管理者からの招待やコンファームが必要です。\nあなたのファイルやアイデアを共有するときにプライバシーを求めているのなら、これは正しいサークルです。\n\nシークレットサークルは、パスワードで保護できるオープングループです。ユーザーはNextcloudサーチエンジンを使っても、このサークルを見つけることができません 。",
+    "Anyone can find and request an invitation to the circle; but only members will see who\\'s in it and get access to it\\'s shared items." : "誰でもサークルへの招待状を見つけてリクエストすることができます。 メンバーだけがそのメンバーを見てその共有アイテムにアクセスできます。"
 },
 "nplurals=1; plural=0;");

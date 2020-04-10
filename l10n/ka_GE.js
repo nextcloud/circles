@@ -190,6 +190,7 @@ OC.L10N.register(
     "You have been blocked from this circle" : "ამ წრეში დაბლოკილი ხართ",
     "The user is already a member of this circle" : "მომხმარებელი უკვე არის წრის წევრი",
     "The user has already been invited into this circle" : "მოხმარებელი უკვე დაპატიჟებულია წრეში",
+    "Accept" : "მიღება",
     "You need a specify a type of circle" : "საჭიროა წრის ტიპის მითითება",
     "You cannot create this type of circle" : "ამ ტიპის წრეს ვერ შექმნით",
     "You cannot display this type of circle" : "ამ ტიპის წრეს ვერ იხილავთ",
@@ -228,7 +229,6 @@ OC.L10N.register(
     "A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle." : "საიდუმლო წრე დამალული ჯგუფია რომელსაც ხედავენ მხოლოდ მისი წავრები ან ადამიანები რომლემბაც იციან წრის ზუსტი სახელწოდება.",
     "Non-members won't be able to find your secret circle using the search bar." : "ძიების ბარის მეშვეობით მომხმარებლები რომლებიც არ არიან წევრები, ვერ იპოვნიან თქვენს საიდუმლო წრეს.",
     "Joining a closed circle requires an invitation or confirmation by a moderator." : "დახურულ წრეში გაწევრიანება საჭიროებს მოწვევას ან მოდერატორის მიერ დადასტურებას.",
-    "Anyone can find and request an invitation to the circle; but only members will see who\\'s in it and get access to it\\'s shared items." : "ყველას შეუძლია იპოვოს წრე და მოითხოვოს მოწვევა; თუმცა მხოლოდ წევრებს მიუწვდებათ ხელი გაზიარებულ მასალაზე და მხოლოდ მათ შეუძლიათ იხილონ თუ ვინები არინ გაწევრიანებულნი.",
     "A public circle is an open group visible to anyone willing to join." : "ღია წრე ღია ჯგუფია რომელსაც ხედავს ყველა.",
     "Anyone can see, join, and access the items shared within the circle." : "ყველას შეუძლია ნახოს წრე, გაწევრიანდეს მასში და იქონიოს წვოდმა მასში გაზიარებულ მასალაზე.",
     "Personal circles" : "პირადი წრეები",
@@ -269,6 +269,7 @@ OC.L10N.register(
     "Save settings" : "პარამეტრების შენახვა",
     "Groups can be linked to circles." : "ჯგუფები შეიძლება დაკავშირდნენ წრეებთან.",
     "Circles from different Nextclouds can be linked together." : "წრეები სხვადასხვა Nextcloud-ებითან შეიძლება დაკავშირდნენ.",
-    "On events happening in a <strong>Circle</strong> you belong" : "მოვლენები რომლებიც ხდება <strong>წრეში</strong> რომელსაც ეკუთვნით"
+    "On events happening in a <strong>Circle</strong> you belong" : "მოვლენები რომლებიც ხდება <strong>წრეში</strong> რომელსაც ეკუთვნით",
+    "Anyone can find and request an invitation to the circle; but only members will see who\\'s in it and get access to it\\'s shared items." : "ყველას შეუძლია იპოვოს წრე და მოითხოვოს მოწვევა; თუმცა მხოლოდ წევრებს მიუწვდებათ ხელი გაზიარებულ მასალაზე და მხოლოდ მათ შეუძლიათ იხილონ თუ ვინები არინ გაწევრიანებულნი."
 },
 "nplurals=2; plural=(n!=1);");

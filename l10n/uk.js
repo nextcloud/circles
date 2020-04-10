@@ -49,6 +49,7 @@ OC.L10N.register(
     "%1$s via %2$s" : "%1$s через %2$s",
     "Click the button below to open it." : "Для відкриття натисніть кнопку нижче.",
     "Open »%s«" : "Відкритт 1%s",
+    "Accept" : "Прийняти",
     "No files in here" : "Тут немає файлів",
     "No entries found in this folder" : "В цій теці нічого немає",
     "Name" : "Ім'я",

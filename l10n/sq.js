@@ -153,6 +153,7 @@ OC.L10N.register(
     "This member is the owner of the circle" : "Ky anëtar është zotëruesi i rrethit",
     "You are already a member of this circle" : "Ju jeni tashmë anëtar i këtij rrethi",
     "You have been blocked from this circle" : "Ju jeni bllokuar nga ky rreth",
+    "Accept" : "Prano",
     "You need a specify a type of circle" : "Duhet të specifikoni një tip rrethi",
     "You cannot create this type of circle" : "Nuk mund të krijoni këtë tip rrethi",
     "You cannot display this type of circle" : "Nuk mund të shfaqni këtë tip rrethi",
