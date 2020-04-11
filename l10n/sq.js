@@ -207,6 +207,7 @@ OC.L10N.register(
     "Group Name" : "Emri i Grupit",
     "Link" : "Lidhja",
     "Linked" : "I lidhur",
+    "Description" : "Përshkrim",
     "Allow Federated Links" : "Lejo Linqet e Federuara",
     "Save settings" : "Ruaj konfigurimet",
     "On events happening in a <strong>Circle</strong> you belong" : "Në ngjarjet që ndodhin në një <strong>Rreth </strong> ju përkisni"

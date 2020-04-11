@@ -284,6 +284,7 @@ OC.L10N.register(
     "Group Name" : "Nome do Grupo",
     "Link" : "Link",
     "Linked" : "Linkado",
+    "Description" : "Descrição",
     "Members limit" : "Limite de membros",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Alterar o limite de membros. (0: padrão, -1: ilimitado)",
     "Allow Federated Links" : "Permitir Links Federados",

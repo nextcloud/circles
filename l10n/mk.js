@@ -72,6 +72,7 @@ OC.L10N.register(
     "Status" : "Статус",
     "Joined" : "Приклучен",
     "Link" : "Линк",
+    "Description" : "Опис",
     "Members limit" : "Лимит на членови",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Промени го бројот лимитот на членови. (0: стандардно, -1: наограничено)",
     "Allow Federated Links" : "Дозволи федерални врски",

@@ -277,6 +277,7 @@ OC.L10N.register(
     "Group Name" : "Gruppnamn",
     "Link" : "Länk",
     "Linked" : "Länkat",
+    "Description" : "Beskrivning",
     "Members limit" : "Gräns antal medlemmar",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Ändra gränsen för antalet medlemmar. (0: standard, -1: obegränsat)",
     "Allow Federated Links" : "Tillåt federerade länkar",

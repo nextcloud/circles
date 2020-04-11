@@ -95,6 +95,7 @@
     "Level" : "Nivel",
     "Status" : "Estatus",
     "Joined" : "Se ha unido",
-    "Link" : "Link"
+    "Link" : "Link",
+    "Description" : "Descripción"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

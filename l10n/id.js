@@ -17,6 +17,7 @@ OC.L10N.register(
     "Modified" : "Dimodifikasi",
     "Settings" : "Setelan",
     "Username" : "Nama pengguna",
-    "Link" : "Tautan"
+    "Link" : "Tautan",
+    "Description" : "Deskrisi"
 },
 "nplurals=1; plural=0;");

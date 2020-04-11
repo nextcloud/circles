@@ -265,6 +265,7 @@ OC.L10N.register(
     "Group Name" : "Gruppenavn",
     "Link" : "Lenke",
     "Linked" : "Lenket",
+    "Description" : "Beskrivelse",
     "Members limit" : "Medlemsbegrensning",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Endre grense for antall medlemmer (0: standard, -1: udefinert).",
     "Allow Federated Links" : "Tillat sammenknyttede lenker",

@@ -193,6 +193,7 @@ OC.L10N.register(
     "Group Name" : "Názov skupiny",
     "Link" : "Odkaz",
     "Linked" : "Spojené",
+    "Description" : "Popis",
     "Allow Federated Links" : "Povoliť združené odkazy",
     "Save settings" : "Uložiť nastavenia",
     "Circles from different Nextclouds can be linked together." : "Kruhy z rôznych Nextcloudov môžu byť spolu prepojené."
