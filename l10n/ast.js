@@ -101,6 +101,7 @@ OC.L10N.register(
     "Settings" : "Settings",
     "Username" : "Nome d'usuariu",
     "Status" : "Estáu",
-    "Link" : "Link"
+    "Link" : "Link",
+    "Description" : "Descripción"
 },
 "nplurals=2; plural=(n != 1);");

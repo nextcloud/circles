@@ -274,6 +274,7 @@ OC.L10N.register(
     "Group Name" : "Heiti hóps",
     "Link" : "Tengill",
     "Linked" : "Tengt",
+    "Description" : "Lýsing",
     "Members limit" : "Takmörk meðlima",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Breyttu takmörkum á fjölda meðlima. (0: sjálfgefið, -1: ótakmarkað)",
     "Allow Federated Links" : "Leyfa skýjasambandstengla",

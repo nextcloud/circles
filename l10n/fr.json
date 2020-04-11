@@ -280,6 +280,7 @@
     "Group Name" : "Nom du groupe",
     "Link" : "Lien",
     "Linked" : "Lié",
+    "Description" : "Description",
     "Members limit" : "Membres maximums",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Changez la limite du nombre de membres. (0: défaut, -1: illimité)",
     "Allow Federated Links" : "Autoriser les liens fédérés",

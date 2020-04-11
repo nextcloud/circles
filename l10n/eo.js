@@ -263,6 +263,7 @@ OC.L10N.register(
     "Group Name" : "Grupnomo",
     "Link" : "Ligilo",
     "Linked" : "Ligita",
+    "Description" : "Priskribo",
     "Members limit" : "Maksimuma nombro da membroj",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Ŝanĝi limon pri nombro da membroj (0: defaŭlta; -1: senlima).",
     "Allow Federated Links" : "Permesi federaj ligiloj",

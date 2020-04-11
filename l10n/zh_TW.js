@@ -113,6 +113,7 @@ OC.L10N.register(
     "Group Name" : "群組名稱",
     "Link" : "連結",
     "Linked" : "已連結",
+    "Description" : "描述",
     "Save settings" : "儲存設定"
 },
 "nplurals=1; plural=0;");

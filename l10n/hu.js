@@ -265,6 +265,7 @@ OC.L10N.register(
     "Group Name" : "Csoport Név",
     "Link" : "Kapcsolat",
     "Linked" : "Kapcsolódva",
+    "Description" : "Leírás",
     "Members limit" : "Tagok limite",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "A tagok számának módosítása. (0: alapértelmezés szerinti, -1: korlátlan)",
     "Allow Federated Links" : "Egyesített linkek engedélyezése",

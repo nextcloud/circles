@@ -284,6 +284,7 @@ OC.L10N.register(
     "Group Name" : "Grup Adı",
     "Link" : "Bağlantı",
     "Linked" : "Bağlantılı",
+    "Description" : "Açıklama",
     "Members limit" : "Üye sınırı",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Üye sayısı sınırını değiştirin. (0: varsayılan, -1: sınırsız)",
     "Allow Federated Links" : "Birleşik Bağlantılar Kullanılabilsin",

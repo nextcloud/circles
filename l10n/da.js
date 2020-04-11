@@ -142,6 +142,7 @@ OC.L10N.register(
     "Group Name" : "Gruppenavn",
     "Link" : "Link",
     "Linked" : "Linket",
+    "Description" : "Beskrivelse",
     "Allow Federated Links" : "Tillad federarede links",
     "Save settings" : "Gem indstillinger"
 },

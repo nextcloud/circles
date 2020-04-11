@@ -264,6 +264,7 @@ OC.L10N.register(
     "Group Name" : "그룹 이름",
     "Link" : "연결",
     "Linked" : "연결됨",
+    "Description" : "설명",
     "Members limit" : "회원 제한",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "서클 회원 수를 제한할 수 있습니다(0: 기본값, -1: 무제한).",
     "Allow Federated Links" : "연합 연결 허용",

@@ -59,6 +59,7 @@ OC.L10N.register(
     "Status" : "Състояние",
     "Group Name" : "Име на група",
     "Link" : "Връзка",
-    "Linked" : "Свързан"
+    "Linked" : "Свързан",
+    "Description" : "Описание"
 },
 "nplurals=2; plural=(n != 1);");

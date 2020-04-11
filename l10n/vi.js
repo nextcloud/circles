@@ -79,6 +79,7 @@ OC.L10N.register(
     "Level" : "Cấp độ",
     "Status" : "Trạng thái",
     "Joined" : "Đã tham gia",
-    "Link" : "Liên kết"
+    "Link" : "Liên kết",
+    "Description" : "Mô tả"
 },
 "nplurals=1; plural=0;");

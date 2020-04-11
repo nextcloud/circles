@@ -198,6 +198,7 @@ OC.L10N.register(
     "Group Name" : "Ryhmän nimi",
     "Link" : "Linkki",
     "Linked" : "Linkitetty",
+    "Description" : "Kuvaus",
     "Members limit" : "Jäsenraja",
     "Allow Federated Links" : "Salli federoidut linkit",
     "Accept Link Request Automatically" : "Hyväksy linkkipyynnöt automaattisesti",
