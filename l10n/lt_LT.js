@@ -181,6 +181,7 @@ OC.L10N.register(
     "Status" : "Būsena",
     "Group Name" : "Grupės pavadinimas",
     "Link" : "Nuoroda",
+    "Description" : "Aprašas",
     "Save settings" : "Įrašyti nustatymus",
     "Maximum number of members per circle" : "Didžiausias narių skaičius viename rate",
     "Allow linking of groups" : "Leisti grupių susiejimą",

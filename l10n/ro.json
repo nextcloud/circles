@@ -264,6 +264,7 @@
     "Group Name" : "Nume Grup",
     "Link" : "Legătură",
     "Linked" : "Legat",
+    "Description" : "Descriere",
     "Members limit" : "Limită membri",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Schimbă limita la numărul de membri. (0: implicit, -1: nelimitat)",
     "Allow Federated Links" : "Permite Legături Federate",

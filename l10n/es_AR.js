@@ -97,6 +97,7 @@ OC.L10N.register(
     "Level" : "Nivel",
     "Status" : "Estatus",
     "Joined" : "Se ha unido",
-    "Link" : "Link"
+    "Link" : "Link",
+    "Description" : "Descripción"
 },
 "nplurals=2; plural=(n != 1);");

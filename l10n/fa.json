@@ -145,6 +145,7 @@
     "Group Name" : "نام گروه",
     "Link" : "Link",
     "Linked" : "پیوند",
+    "Description" : "توضیحات",
     "Members limit" : "اعضا محدود شده است",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "محدودیت تعداد اعضا را تغییر دهید. (0: پیش فرض ، -1: نامحدود)",
     "Allow Federated Links" : "پیوندهای فدرالی مجاز",

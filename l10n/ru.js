@@ -277,6 +277,7 @@ OC.L10N.register(
     "Group Name" : "Название группы",
     "Link" : "Связь",
     "Linked" : "Связано",
+    "Description" : "Описание",
     "Members limit" : "Лимит участников",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Измените лимит на количество участников. (0: по умолчанию, -1: неограниченно)",
     "Allow Federated Links" : "Разрешить связывание между серверами",

@@ -140,6 +140,7 @@ OC.L10N.register(
     "Group Name" : "Nome do Grupo",
     "Link" : "Associar",
     "Linked" : "Desassociar",
+    "Description" : "Descrição",
     "Allow Federated Links" : "Permitir Associações Federadas",
     "Accept Link Request Automatically" : "Aceitar Automaticamente o Pedido de Associação",
     "Save settings" : "Guardar definições",

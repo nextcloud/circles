@@ -275,6 +275,7 @@
     "Group Name" : "Naziv grupe",
     "Link" : "Poveznica",
     "Linked" : "Povezan",
+    "Description" : "Opis",
     "Members limit" : "Ograničenje broja članova",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Promijenite ograničenje na broj članova. (0: zadano, -1: neograničeno)",
     "Allow Federated Links" : "Dopusti udružene poveznice",

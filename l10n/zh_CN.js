@@ -277,6 +277,7 @@ OC.L10N.register(
     "Group Name" : "群组名称",
     "Link" : "链接",
     "Linked" : "已链接",
+    "Description" : "描述",
     "Members limit" : "限制成员数：",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "修改成员数的限制。（0：默认，-1：不限制）",
     "Allow Federated Links" : "允许联合链接",

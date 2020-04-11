@@ -17,6 +17,7 @@ OC.L10N.register(
     "Modified" : "Gewysig",
     "Settings" : "Instellings",
     "Username" : "Gebruikersnaam",
-    "Link" : "Skakel"
+    "Link" : "Skakel",
+    "Description" : "Beskrywing"
 },
 "nplurals=2; plural=(n != 1);");

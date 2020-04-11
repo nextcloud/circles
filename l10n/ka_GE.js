@@ -262,6 +262,7 @@ OC.L10N.register(
     "Group Name" : "ჯგუფის სახელი",
     "Link" : "ბმული",
     "Linked" : "დაკავშირებულია",
+    "Description" : "აღწერილობა",
     "Allow Federated Links" : "დართეთ ნება ფედერალურ ბმულებს",
     "Makes the circle federated, and enables sharing between federated circles" : "ხდის წრეს ფედერალურად და რთავს გაზიარებას ფედერალურ წრეებს შორის",
     "Accept Link Request Automatically" : "ბმულის მოთხოვნის ავტომატური დადასტურება",

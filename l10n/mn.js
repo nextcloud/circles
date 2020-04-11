@@ -91,6 +91,7 @@ OC.L10N.register(
     "Joined" : "нэгдсэн",
     "Link" : "Холбоос",
     "Linked" : "холбосон",
+    "Description" : "Тодорхойлолт",
     "Save settings" : "тохиргоог хадгалах"
 },
 "nplurals=2; plural=(n != 1);");

@@ -276,6 +276,7 @@ OC.L10N.register(
     "Group Name" : "グループ名",
     "Link" : "リンク",
     "Linked" : "リンクされた",
+    "Description" : "説明",
     "Members limit" : "メンバー制限",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "制限をメンバー数に変更します。 （0：デフォルト、-1：無制限）",
     "Allow Federated Links" : "統合リンクを許可する",

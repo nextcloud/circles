@@ -26,6 +26,7 @@ OC.L10N.register(
     "Settings" : "Iestatījumi",
     "Username" : "Lietotājvārds",
     "Status" : "Status",
-    "Link" : "Saite"
+    "Link" : "Saite",
+    "Description" : "Apraksts"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);");

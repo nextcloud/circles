@@ -212,6 +212,7 @@ OC.L10N.register(
     "Group Name" : "Ime skupine",
     "Link" : "Povezava",
     "Linked" : "Povezano",
+    "Description" : "Opis",
     "Members limit" : "Omejitev članov",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Omejitev števila članov (0: privzeto, -1: neomejeno)",
     "Allow Federated Links" : "Dovoli zvezne povezave",

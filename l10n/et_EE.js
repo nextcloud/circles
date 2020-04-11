@@ -60,6 +60,7 @@ OC.L10N.register(
     "Group Name" : "Grupi nimi",
     "Link" : "Link",
     "Linked" : "Lingitud",
+    "Description" : "Kirjeldus",
     "Allow Federated Links" : "Luba liitlingid",
     "Makes the circle federated, and enables sharing between federated circles" : "Teeb ringi liitringiks ja lubab jagamise liitringide vahel",
     "Save settings" : "Salvesta seaded"
