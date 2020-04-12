@@ -222,6 +222,7 @@ OC.L10N.register(
     "The requested remote circle does not exist" : "Żądany zdalny krąg nie istnieje",
     "The remote host is down or the Circles app is not installed on it" : "Zdalny host jest nieosiągalny lub aplikacja Kręgi nie jest na nim zainstalowana",
     "Cannot proceed with this status update" : "Nie można kontynuować z tym statusem aktualizacji",
+    "Group contains too many members" : "Grupa zawiera zbyt wielu członków",
     "This group does not exist" : "Ta grupa nie istnieje",
     "This group is already linked to the circle" : "Grupa jest już połączona z tym kręgiem",
     "You cannot edit level in a personal circle" : "Nie można edytować poziomów w kręgach osobistych",

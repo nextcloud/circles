@@ -222,6 +222,7 @@ OC.L10N.register(
     "The requested remote circle does not exist" : "De aangevraagde externe Kring bestaat niet",
     "The remote host is down or the Circles app is not installed on it" : "De gastheer is uit de lucht of de kring-app is niet geïnstalleerd",
     "Cannot proceed with this status update" : "Kan niet door gaan met deze status update",
+    "Group contains too many members" : "De groep bevat te veel leden",
     "This group does not exist" : "Deze groep bestaat niet",
     "This group is already linked to the circle" : "Deze groep is al verbonden met de kring",
     "You cannot edit level in a personal circle" : "Je kan het niveau van een persoonlijke kring niet bewerken",
