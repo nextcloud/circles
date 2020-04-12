@@ -220,6 +220,7 @@
     "The requested remote circle does not exist" : "Vybraný vzdálený okruh neexistuje",
     "The remote host is down or the Circles app is not installed on it" : "Vzdálený hostitel není dostupný nebo na něm není nainstalována aplikace kruhy",
     "Cannot proceed with this status update" : "S aktualizací stavu nelze pokračovat",
+    "Group contains too many members" : "Skupina obsahuje příliš mnoho členů",
     "This group does not exist" : "Tato skupina neexistuje",
     "This group is already linked to the circle" : "Tato skupina je s okruhem už propojena",
     "You cannot edit level in a personal circle" : "Úroveň osobního kruhu nelze upravit",
