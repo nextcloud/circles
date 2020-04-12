@@ -222,6 +222,7 @@ OC.L10N.register(
     "The requested remote circle does not exist" : "Eskaturiko urruneko zirkulua ez da existitzen",
     "The remote host is down or the Circles app is not installed on it" : "Urruneko ostalaria ez dabil edo Zirkuluak aplikazioa ez dauka instalatuta",
     "Cannot proceed with this status update" : "Ezin da jarraitu egoeraren eguneraketa honekin",
+    "Group contains too many members" : "Taldeak kide gehiegi ditu",
     "This group does not exist" : "Talde hau ez da existitzen",
     "This group is already linked to the circle" : "Talde hau zirkulura baturik dago dagoeneko",
     "You cannot edit level in a personal circle" : "Ezin duzu maila aldatu zirkulu pertsonaletan",

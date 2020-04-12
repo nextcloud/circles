@@ -222,6 +222,7 @@ OC.L10N.register(
     "The requested remote circle does not exist" : "O círculo remoto solicitado non existe",
     "The remote host is down or the Circles app is not installed on it" : "A máquina remota está caída ou non ten instalado a aplicación Círculos.",
     "Cannot proceed with this status update" : "Non é posíbel proceder coa actualización do estado",
+    "Group contains too many members" : "O grupo contén demasiados membros",
     "This group does not exist" : "Non existe este grupo",
     "This group is already linked to the circle" : "Este grupo xa está ligado co círculo",
     "You cannot edit level in a personal circle" : "Vostede no pode editar o nivel nun círculo persoal",

@@ -220,6 +220,7 @@
     "The requested remote circle does not exist" : "La cerchia remota richiesta non esiste",
     "The remote host is down or the Circles app is not installed on it" : "L'host remoto non è raggiungibile o l'applicazione Cerchie non è installata su di esso",
     "Cannot proceed with this status update" : "Impossibile procedere con l'aggiornamento dello stato",
+    "Group contains too many members" : "Il gruppo contiene troppi membri",
     "This group does not exist" : "Questo gruppo non esiste",
     "This group is already linked to the circle" : "Il gruppo è già collegato alla cerchia",
     "You cannot edit level in a personal circle" : "Non puoi modificare il livello in una cerchia personale",
