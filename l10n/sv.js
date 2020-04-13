@@ -12,7 +12,7 @@ OC.L10N.register(
     "Link down" : "Länk nere",
     "Setting link" : "Sätter länk",
     "Request dismissed" : "Begäran avslagen",
-    "Request sent" : "Begäran sänd",
+    "Request sent" : "Förfrågan skickad",
     "Link requested" : "Länk begärd",
     "Link up" : "Länk uppe",
     "Personal Circle" : "Personlig cirkel",
