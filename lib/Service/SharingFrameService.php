@@ -309,7 +309,7 @@ class SharingFrameService {
 		} catch (Exception $e) {
 			$this->miscService->log(
 				'fail to initialise circle share to ' . $addr . ' for circle ' . $circleUniqueId . ' - '
-				. $e->getMessage(), 3
+				. json_encode($opts) . ' - ' . $e->getMessage(), 3
 			);
 			throw $e;
 		}
