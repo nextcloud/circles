@@ -222,6 +222,7 @@ OC.L10N.register(
     "The requested remote circle does not exist" : "Ο αιτούμενος απομακρυσμένος κύκλος δεν υπάρχει",
     "The remote host is down or the Circles app is not installed on it" : "Ο απομακρυσμένος υπολογιστής είναι εκτός λειτουργίας ή η εφαρμογή Κύκλοι δεν είναι εγκατεστημένη σε αυτόν",
     "Cannot proceed with this status update" : "Δεν είναι δυνατή η ενέργεια αναβάθμισης αυτής της κατάστασης",
+    "Group contains too many members" : "Η ομάδα περιέχει πάρα πολλά μέλη",
     "This group does not exist" : "Αυτή η ομάδα δεν υπάρχει",
     "This group is already linked to the circle" : "Αυτή η ομάδα είναι ήδη συνδεδεμένη στον κύκλο",
     "You cannot edit level in a personal circle" : "Δεν μπορείτε να επεξεργαστείτε το επίπεδο σε έναν προσωπικό κύκλο",
