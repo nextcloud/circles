@@ -1,6 +1,17 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+
+### 0.17.13
+
+- allow self signed certificate: self_signed_cert
+- fix issue with personal circles and skip_invitation
+- fix an issue with number limit on group
+- split on event activity for circles creation
+- fix messages on some activites
+- fix CSS
+
+
 ### 0.17.12
 
 - fix some translation
