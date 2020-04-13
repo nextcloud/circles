@@ -39,10 +39,10 @@ use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\IURLGenerator;
 use OCP\IUser;
 use OCP\IUserManager;
+use OCP\EventDispatcher\IEventDispatcher;
+use OCP\EventDispatcher\GenericEvent;
 use OCP\Notification\IManager as INotificationManager;
 use OCP\Notification\INotification;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\EventDispatcher\GenericEvent;
 
 class EventsService {
 
@@ -65,7 +65,7 @@ class EventsService {
 	/** @var IURLGenerator */
 	private $urlGenerator;
 
-	/** @var EventDispatcher */
+	/** @var IEventDispatcher */
 	private $eventDispatcher;
 
 	/** @var CirclesRequest */
@@ -90,7 +90,7 @@ class EventsService {
 	 * @param INotificationManager $notificationManager
 	 * @param IUserManager $userManager
 	 * @param IURLGenerator $urlGenerator
-	 * @param EventDispatcher $eventDispatcher
+	 * @param IEventDispatcher $eventDispatcher
 	 * @param CirclesRequest $circlesRequest
 	 * @param MembersRequest $membersRequest
 	 * @param ConfigService $configService
@@ -99,7 +99,7 @@ class EventsService {
 	public function __construct(
 		$userId, ITimeFactory $time, IActivityManager $activityManager,
 		INotificationManager $notificationManager, IUserManager $userManager, IURLGenerator $urlGenerator,
-		EventDispatcher $eventDispatcher, CirclesRequest $circlesRequest, MembersRequest $membersRequest,
+		IEventDispatcher $eventDispatcher, CirclesRequest $circlesRequest, MembersRequest $membersRequest,
 		ConfigService $configService, MiscService $miscService
 	) {
 		$this->userId = $userId;

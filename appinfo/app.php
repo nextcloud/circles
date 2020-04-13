@@ -34,7 +34,4 @@ require_once __DIR__ . '/autoload.php';
 
 
 $app = \OC::$server->query(Application::class);
-$app->registerNavigation();
-$app->registerFilesNavigation();
-$app->registerFilesPlugin();
-
+$app->register();
