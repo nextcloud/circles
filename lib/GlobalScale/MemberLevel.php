@@ -86,8 +86,6 @@ class MemberLevel extends AGlobalScaleEvent {
 			$this->verifyMemberLevel($event, $circle, $member, $level);
 		}
 
-		$this->miscService->log('$$$$ 3 ' . json_encode($event));
-
 	}
 
 
@@ -100,16 +98,12 @@ class MemberLevel extends AGlobalScaleEvent {
 		$level = $event->getData()
 					   ->gInt('level');
 
-		$this->miscService->log('$$$$ 4 ' . json_encode($event));
-
 		$member = $event->getMember();
 		$this->cleanMember($member);
-		$this->miscService->log('$$$$ 5 ' . json_encode($event));
 
 		$member->setLevel($level);
 		$this->membersRequest->updateMember($member);
 
-		$this->miscService->log('#### ' . json_encode($event));
 		if ($level === Member::LEVEL_OWNER) {
 			$circle = $event->getCircle();
 			$isMod = $circle->getOwner();
@@ -117,14 +111,8 @@ class MemberLevel extends AGlobalScaleEvent {
 				$isMod->setInstance($event->getSource());
 			}
 
-			$this->miscService->log('???? ' . $isMod->getInstance());
-
 			$isMod->setLevel(Member::LEVEL_ADMIN);
-			$this->miscService->log('#### 001 ' . json_encode($event));
-
 			$this->membersRequest->updateMember($isMod);
-			$this->miscService->log('#### 002 ' . json_encode($event));
-
 		}
 	}
 

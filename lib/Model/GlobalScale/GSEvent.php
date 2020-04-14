@@ -63,6 +63,7 @@ class GSEvent implements JsonSerializable {
 	const MEMBER_LEVEL = 'GlobalScale\MemberLevel';
 	const MEMBER_UPDATE = 'GlobalScale\MemberUpdate';
 	const MEMBER_REMOVE = 'GlobalScale\MemberRemove';
+	const USER_DELETED = 'GlobalScale\UserDeleted';
 
 	const FILE_SHARE = 'GlobalScale\FileShare';
 

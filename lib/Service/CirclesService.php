@@ -443,54 +443,6 @@ class CirclesService {
 
 
 	/**
-	 * // TODO - check this on GS setup
-	 * When a user is removed.
-	 * Before deleting a user from the cloud, we assign a new owner to his Circles.
-	 * Remove the Circle if it has no admin.
-	 *
-	 * @param string $userId
-	 */
-	public function onUserRemoved($userId) {
-		$circles = $this->circlesRequest->getCircles($userId, 0, '', Member::LEVEL_OWNER);
-
-		foreach ($circles as $circle) {
-
-			$members =
-				$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_ADMIN);
-
-			if (sizeof($members) === 1) {
-				$this->circlesRequest->destroyCircle($circle->getUniqueId());
-				continue;
-			}
-
-			$this->switchOlderAdminToOwner($circle, $members);
-		}
-	}
-
-
-	/**
-	 * // TODO - check this on GS setup
-	 * switchOlderAdminToOwner();
-	 *
-	 * @param Circle $circle
-	 * @param Member[] $members
-	 */
-	private function switchOlderAdminToOwner(Circle $circle, $members) {
-
-		foreach ($members as $member) {
-			if ($member->getLevel() === Member::LEVEL_ADMIN) {
-				$member->setLevel(Member::LEVEL_OWNER);
-				$this->membersRequest->updateMember($member);
-				$this->eventsService->onMemberOwner($circle, $member);
-
-				return;
-			}
-		}
-
-	}
-
-
-	/**
 	 * Convert a Type in String to its Bit Value
 	 *
 	 * @param string $type
@@ -587,7 +539,7 @@ class CirclesService {
 			$circle->getUniqueId(), Member::LEVEL_MEMBER, true
 		);
 
-		$limit = (int) $circle->getSetting('members_limit');
+		$limit = (int)$circle->getSetting('members_limit');
 		if ($limit === -1) {
 			return;
 		}

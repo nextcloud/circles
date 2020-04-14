@@ -132,7 +132,6 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 	/**
 	 * @param string $userId
-	 * @param string $instanceId
 	 * @param int $type
 	 * @param string $name
 	 * @param int $level

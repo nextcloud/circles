@@ -47,8 +47,11 @@ class UserEvents {
 	 */
 	public function onUserDeleted(array $params) {
 		$userId = $params['uid'];
-		$this->circlesService->onUserRemoved($userId);
-		$this->membersService->onUserRemoved($userId);
+		try {
+			$this->membersService->onUserRemoved($userId);
+		} catch (\Exception $e) {
+			$this->miscService->log('exception while onUserDeleted ' . $e->getMessage());
+		}
 	}
 
 

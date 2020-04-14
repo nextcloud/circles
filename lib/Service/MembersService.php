@@ -422,6 +422,7 @@ class MembersService {
 
 	/**
 	 * // TODO - check this on GS setup
+	 *
 	 * @param Circle $circle
 	 * @param string $mails
 	 *
@@ -588,14 +589,21 @@ class MembersService {
 
 
 	/**
-	 * // TODO - check this on GS setup
 	 * When a user is removed, remove him from all Circles
 	 *
-	 * @param $userId
+	 * @param string $userId
+	 *
+	 * @throws Exception
 	 */
-	public function onUserRemoved($userId) {
-		// TODO: broadcast the event to all instances
-		$this->membersRequest->removeAllMembershipsFromUser($userId);
+	public function onUserRemoved(string $userId) {
+		$event = new GSEvent(GSEvent::USER_DELETED, true, true);
+
+		$member = new Member($userId);
+		$event->setMember($member);
+		$event->getData()
+			  ->s('userId', $userId);
+
+		$this->gsUpstreamService->newEvent($event);
 	}
 
 

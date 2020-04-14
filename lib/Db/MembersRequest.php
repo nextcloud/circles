@@ -598,11 +598,16 @@ class MembersRequest extends MembersRequestBuilder {
 	 *
 	 * remove All membership from a User. Used when removing a User from the Cloud.
 	 *
-	 * @param string $userId
+	 * @param Member $member
 	 */
-	public function removeAllMembershipsFromUser($userId) {
-		if ($userId === '') {
+	public function removeAllMembershipsFromUser(Member $member) {
+		if ($member->getUserId() === '') {
 			return;
+		}
+
+		$instance = $member->getInstance();
+		if ($instance === $this->configService->getLocalCloudId()) {
+			$instance = '';
 		}
 
 		$qb = $this->getMembersDeleteSql();
@@ -611,7 +616,8 @@ class MembersRequest extends MembersRequestBuilder {
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->where(
 			$expr->andX(
-				$expr->eq('user_id', $qb->createNamedParameter($userId)),
+				$expr->eq('user_id', $qb->createNamedParameter($member->getUserId())),
+				$expr->eq('instance', $qb->createNamedParameter($instance)),
 				$expr->eq('user_type', $qb->createNamedParameter(Member::TYPE_USER))
 			)
 		);
