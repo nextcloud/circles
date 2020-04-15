@@ -30,14 +30,16 @@
 namespace OCA\Circles\GlobalScale\GSMount;
 
 
+use daita\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
 use OC;
 use OCA\Circles\Db\GSSharesRequest;
 use OCA\Circles\Model\GlobalScale\GSShare;
-use OCP\AppFramework\QueryException;
+use OCA\Circles\Model\GlobalScale\GSShareMountpoint;
 use OCP\Federation\ICloudIdManager;
 use OCP\Files\Config\IMountProvider;
 use OCP\Files\Mount\IMountPoint;
+use OCP\Files\NotFoundException;
 use OCP\Files\Storage\IStorageFactory;
 use OCP\IUser;
 
@@ -48,6 +50,9 @@ use OCP\IUser;
  * @package OCA\Circles\GlobalScale\GSMount
  */
 class MountProvider implements IMountProvider {
+
+
+	use TArrayTools;
 
 
 	const STORAGE = '\OCA\Files_Sharing\External\Storage';
@@ -84,7 +89,6 @@ class MountProvider implements IMountProvider {
 	 * @param IStorageFactory $loader
 	 *
 	 * @return IMountPoint[]
-	 * @throws QueryException
 	 */
 	public function getMountsForUser(IUser $user, IStorageFactory $loader): array {
 		$shares = $this->gsSharesRequest->getForUser($user->getUID());
@@ -93,6 +97,7 @@ class MountProvider implements IMountProvider {
 		foreach ($shares as $share) {
 			try {
 				if ($share->getMountPoint() !== '-') {
+					$this->fixDuplicateFile($user->getUID(), $share);
 					$mounts[] = $this->generateMount($share, $user->getUID(), $loader);
 				}
 			} catch (Exception $e) {
@@ -125,6 +130,43 @@ class MountProvider implements IMountProvider {
 		return new Mount(
 			self::STORAGE, $share->getMountPoint($userId), $data, $this->mountManager, $storageFactory
 		);
+	}
+
+
+	/**
+	 * @param string $userId
+	 * @param GSShare $share
+	 */
+	private function fixDuplicateFile(string $userId, GSShare $share) {
+		$fs = \OC::$server->getRootFolder()
+						  ->getUserFolder($userId);
+
+		try {
+			$fs->get($share->getMountPoint());
+		} catch (NotFoundException $e) {
+			return;
+		}
+
+		$info = pathinfo($share->getMountPoint());
+		$filename = $this->get('dirname', $info) . '/' . $this->get('filename', $info);
+		$extension = $this->get('extension', $info);
+		$extension = ($extension === '') ? '' : '.' . $extension;
+
+		$n = 2;
+		while (true) {
+			$path = $filename . " ($n)" . $extension;
+			try {
+				$fs->get($path);
+			} catch (NotFoundException $e) {
+				$share->setMountPoint($path);
+				$mountPoint = new GSShareMountpoint($share->getId(), $userId, $path);
+				$this->gsSharesRequest->updateShareMountPoint($mountPoint);
+
+				return;
+			}
+
+			$n++;
+		}
 	}
 
 }
