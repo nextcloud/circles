@@ -406,7 +406,7 @@ var nav = {
 				// level
 				if (curr.circleDetails.type === define.typePersonal) {
 					var levelString = $(this).attr('member-levelString');
-					$(this).find('.level').text(levelString);
+					$(this).find('.level').text(t('circles', levelString));
 				} else {
 					var level = Number($(this).attr('member-level'));
 					var levelSelect = $(this).find('.level-select');
