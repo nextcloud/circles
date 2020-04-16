@@ -293,23 +293,25 @@ class SharingFrameService {
 		];
 
 		$client = $this->clientService->newClient();
+		$addr = $this->configService->getLocalAddress() . \OC::$WEBROOT;
+		$opts = [
+			'body'            => $args,
+			'timeout'         => Application::CLIENT_TIMEOUT,
+			'connect_timeout' => Application::CLIENT_TIMEOUT
+		];
+
+		if ($this->configService->getAppValue(ConfigService::CIRCLES_SELF_SIGNED) === '1') {
+			$opts['verify'] = false;
+		}
+
 		try {
-			$client->post(
-				$this->generatePayloadDeliveryURL(
-					$this->configService->getLocalAddress() . \OC::$WEBROOT
-				), [
-					'body'            => $args,
-					'timeout'         => Application::CLIENT_TIMEOUT,
-					'connect_timeout' => Application::CLIENT_TIMEOUT,
-					'verify'          => false
-				]
-			);
+			$client->post($this->generatePayloadDeliveryURL($addr), $opts);
 
 			return true;
 		} catch (Exception $e) {
 			$this->miscService->log(
 				'fail to initialise circle share to ' . $addr . ' for circle ' . $circleUniqueId . ' - '
-				. json_encode($opts) . ' - ' . $e->getMessage(), 3
+				. json_encode($opts) . ' - ' . $e->getMessage()
 			);
 			throw $e;
 		}
