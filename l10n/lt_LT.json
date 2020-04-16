@@ -112,6 +112,7 @@
     "%1$s via %2$s" : "%1$s per %2$s",
     "Click the button below to open it." : "Norėdami jį atverti, spustelėkite mygtuką žemiau.",
     "Open »%s«" : "Atverti »%s«",
+    "Password to access files" : "Prieigos prie failų slaptažodis",
     "The name of your circle must contain at least 3 characters" : "Jūsų rato pavadinime privalo būti bent 3 simboliai",
     "Federated circles are not allowed on this Nextcloud" : "Federaciniai ratai nėra leidžiami šiame Nextcloud",
     "Circle not found" : "Ratas nerastas",
