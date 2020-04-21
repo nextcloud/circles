@@ -114,7 +114,7 @@ class GlobalScaleService {
 		$wrapper->setCreation(time());
 		$wrapper->setSeverity($event->getSeverity());
 
-		foreach ($this->getInstances() as $instance) {
+		foreach ($this->getInstances($event->isAsync()) as $instance) {
 			$wrapper->setInstance($instance);
 			$wrapper = $this->gsEventsRequest->create($wrapper);
 		}

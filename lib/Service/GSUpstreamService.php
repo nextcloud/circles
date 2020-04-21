@@ -136,13 +136,15 @@ class GSUpstreamService {
 			$this->fillEvent($event);
 			if ($this->isLocalEvent($event)) {
 				$gs->verify($event, true);
-				$gs->manage($event);
+				if (!$event->isAsync()) {
+					$gs->manage($event);
+				}
 
 				$this->globalScaleService->asyncBroadcast($event);
 			} else {
 				$gs->verify($event); // needed ? as we check event on the 'master' of the circle
 				$this->confirmEvent($event);
-				$gs->manage($event);
+				$gs->manage($event); // needed ? as we manage it throw the confirmEvent
 			}
 		} catch (Exception $e) {
 			$this->miscService->log(

@@ -180,10 +180,11 @@ class MembersService {
 	 *
 	 * @throws EmailAccountInvalidFormatException
 	 * @throws NoUserException
+	 * @throws Exception
 	 */
 	private function addSingleMember(Circle $circle, $ident, $type, $instance = '', bool $force = false) {
-
 		$this->verifyIdentBasedOnItsType($ident, $type, $instance);
+		$this->verifyIdentContact($ident, $type);
 
 		$member = $this->membersRequest->getFreshNewMember($circle->getUniqueId(), $ident, $type, $instance);
 
@@ -305,7 +306,7 @@ class MembersService {
 
 		$this->verifyIdentLocalMember($ident, $type, $instance);
 		$this->verifyIdentEmailAddress($ident, $type);
-		$this->verifyIdentContact($ident, $type);
+//		$this->verifyIdentContact($ident, $type);
 	}
 
 

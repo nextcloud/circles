@@ -111,15 +111,22 @@ class MembersRequest extends MembersRequestBuilder {
 	 *
 	 * @param string $circleUniqueId
 	 * @param int $level
+	 * @param int $type
 	 * @param bool $incGroup
 	 *
 	 * @return Member[]
 	 */
-	public function forceGetMembers($circleUniqueId, $level = Member::LEVEL_MEMBER, $incGroup = false) {
+	public function forceGetMembers(
+		$circleUniqueId, $level = Member::LEVEL_MEMBER, int $type = 0, $incGroup = false
+	) {
 
 		$qb = $this->getMembersSelectSql();
 		$this->limitToMembersAndAlmost($qb);
 		$this->limitToLevel($qb, $level);
+
+		if ($type > 0) {
+			$this->limitToUserType($qb, $type);
+		}
 
 		$this->limitToCircleId($qb, $circleUniqueId);
 

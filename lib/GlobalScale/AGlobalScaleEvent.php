@@ -47,8 +47,11 @@ use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\EventsService;
 use OCA\Circles\Service\MembersService;
 use OCA\Circles\Service\MiscService;
+use OCP\Defaults;
 use OCP\Files\IRootFolder;
+use OCP\IURLGenerator;
 use OCP\IUserManager;
+use OCP\Mail\IMailer;
 
 
 /**
@@ -61,6 +64,15 @@ abstract class AGlobalScaleEvent {
 
 	/** @var IRootFolder */
 	protected $rootFolder;
+
+	/** @var IURLGenerator */
+	protected $urlGenerator;
+
+	/** @var IMailer */
+	protected $mailer;
+
+	/** @var Defaults */
+	protected $defaults;
 
 	/** @var IUserManager */
 	protected $userManager;
@@ -100,6 +112,9 @@ abstract class AGlobalScaleEvent {
 	 * AGlobalScaleEvent constructor.
 	 *
 	 * @param IRootFolder $rootFolder
+	 * @param IURLGenerator $urlGenerator
+	 * @param IMailer $mailer
+	 * @param Defaults $defaults
 	 * @param IUserManager $userManager
 	 * @param SharesRequest $sharesRequest
 	 * @param TokensRequest $tokensRequest
@@ -114,6 +129,9 @@ abstract class AGlobalScaleEvent {
 	 */
 	public function __construct(
 		IRootFolder $rootFolder,
+		IURLGenerator $urlGenerator,
+		IMailer $mailer,
+		Defaults $defaults,
 		IUserManager $userManager,
 		SharesRequest $sharesRequest,
 		TokensRequest $tokensRequest,
@@ -127,6 +145,9 @@ abstract class AGlobalScaleEvent {
 		MiscService $miscService
 	) {
 		$this->rootFolder = $rootFolder;
+		$this->urlGenerator = $urlGenerator;
+		$this->mailer = $mailer;
+		$this->defaults = $defaults;
 		$this->userManager = $userManager;
 		$this->sharesRequest = $sharesRequest;
 		$this->tokensRequest = $tokensRequest;

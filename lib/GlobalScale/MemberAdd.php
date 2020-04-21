@@ -100,7 +100,6 @@ class MemberAdd extends AGlobalScaleEvent {
 		$this->membersService->addMemberBasedOnItsType($circle, $member);
 
 		$event->setMember($member);
-
 	}
 
 

@@ -106,6 +106,7 @@ class BroadcastService {
 		}
 
 		$event = new GSEvent(GSEvent::FILE_SHARE, true);
+		$event->setAsync(true);
 		$event->setSeverity(GSEvent::SEVERITY_HIGH);
 		$event->setCircle($frame->getCircle());
 		$event->setSource($this->configService->getLocalCloudId());
@@ -137,7 +138,7 @@ class BroadcastService {
 		}
 
 		$members =
-			$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MEMBER, true);
+			$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MEMBER, 0,true);
 		foreach ($members AS $member) {
 			// removed so you can share to contacts
 //			$this->parseMember($member);

@@ -105,11 +105,6 @@ class MemberJoin extends AGlobalScaleEvent {
 	 * @param GSEvent[] $events
 	 */
 	public function result(array $events): void {
-//		$instances = array_keys($events);
-//		foreach ($instances as $instance) {
-//			$event = $events[$instance];
-//			$this->miscService->log('---- ' . $instance . ' -- ' . json_encode($event->getResult()));
-//		}
 	}
 
 }

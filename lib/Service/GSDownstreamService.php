@@ -118,7 +118,10 @@ class GSDownstreamService {
 
 		$gs = $this->globalScaleService->getGlobalScaleEvent($event);
 		$gs->verify($event, true);
-		$gs->manage($event);
+
+		if (!$event->isAsync()) {
+			$gs->manage($event);
+		}
 
 		$this->globalScaleService->asyncBroadcast($event);
 	}
@@ -152,7 +155,7 @@ class GSDownstreamService {
 			$gs = $this->globalScaleService->getGlobalScaleEvent($event);
 			$gs->manage($event);
 		} catch (Exception $e) {
-			$this->miscService->log('issue onNewEvent - ' . $e->getMessage());
+			$this->miscService->log('issue onNewEvent: ' . json_encode($event) . ' - ' . $e->getMessage());
 		}
 	}
 

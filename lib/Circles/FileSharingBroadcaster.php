@@ -33,6 +33,7 @@ use OC\Share20\Share;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\SharesRequest;
 use OCA\Circles\Db\TokensRequest;
+use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\IBroadcaster;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;

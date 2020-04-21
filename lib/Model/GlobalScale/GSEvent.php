@@ -58,7 +58,6 @@ class GSEvent implements JsonSerializable {
 	const CIRCLE_DESTROY = 'GlobalScale\CircleDestroy';
 	const MEMBER_ADD = 'GlobalScale\MemberAdd';
 	const MEMBER_JOIN = 'GlobalScale\MemberJoin';
-	const MEMBER_INVITE = 'GlobalScale\MemberInvite';
 	const MEMBER_LEAVE = 'GlobalScale\MemberLeave';
 	const MEMBER_LEVEL = 'GlobalScale\MemberLevel';
 	const MEMBER_UPDATE = 'GlobalScale\MemberUpdate';
@@ -66,6 +65,7 @@ class GSEvent implements JsonSerializable {
 	const USER_DELETED = 'GlobalScale\UserDeleted';
 
 	const FILE_SHARE = 'GlobalScale\FileShare';
+	const FILE_UNSHARE = 'GlobalScale\FileUnshare';
 
 
 	use TArrayTools;
@@ -100,6 +100,9 @@ class GSEvent implements JsonSerializable {
 
 	/** @var bool */
 	private $force = false;
+
+	/** @var bool */
+	private $async = false;
 
 
 	/**
@@ -207,6 +210,27 @@ class GSEvent implements JsonSerializable {
 
 		return $this;
 	}
+
+
+
+	/**
+	 * @return bool
+	 */
+	public function isAsync(): bool {
+		return $this->async;
+	}
+
+	/**
+	 * @param bool $async
+	 *
+	 * @return GSEvent
+	 */
+	public function setAsync(bool $async): self {
+		$this->async = $async;
+
+		return $this;
+	}
+
 
 
 	/**
