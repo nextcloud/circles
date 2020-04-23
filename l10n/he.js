@@ -15,6 +15,7 @@ OC.L10N.register(
     "%1$s via %2$s" : "%1$s דרך %2$s",
     "Click the button below to open it." : "יש ללחוץ על הכפתור להלן כדי לפתוח אותו.",
     "Open »%s«" : "פתיחת „%s”",
+    "Accept" : "אשר",
     "Could not find share" : "לא ניתן למצוא את השיתוף",
     "No files in here" : "אין כאן קבצים",
     "No entries found in this folder" : "לא נמצאו רשומות בתיקייה הזאת",
@@ -25,6 +26,7 @@ OC.L10N.register(
     "Username" : "שם משתמש",
     "Level" : "רמה",
     "Status" : "מצב",
-    "Link" : "קישור"
+    "Link" : "קישור",
+    "Description" : "תיאור"
 },
 "nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: (n % 10 == 0 && n % 1 == 0 && n > 10) ? 2 : 3;");

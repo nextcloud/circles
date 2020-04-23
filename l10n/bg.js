@@ -29,6 +29,7 @@ OC.L10N.register(
     "Circles" : "Обкръжения",
     "%s shared »%s« with you." : "%s сподели »%s« с вас.",
     "Open »%s«" : "Отвори »%s«",
+    "Accept" : "Приемане",
     "No files in here" : "Няма файлове",
     "No entries found in this folder" : "Папката е празна",
     "Name" : "Име",
@@ -58,6 +59,7 @@ OC.L10N.register(
     "Status" : "Състояние",
     "Group Name" : "Име на група",
     "Link" : "Връзка",
-    "Linked" : "Свързан"
+    "Linked" : "Свързан",
+    "Description" : "Описание"
 },
 "nplurals=2; plural=(n != 1);");

@@ -49,6 +49,7 @@ OC.L10N.register(
     "%1$s via %2$s" : "%1$s через %2$s",
     "Click the button below to open it." : "Для відкриття натисніть кнопку нижче.",
     "Open »%s«" : "Відкритт 1%s",
+    "Accept" : "Прийняти",
     "No files in here" : "Тут немає файлів",
     "No entries found in this folder" : "В цій теці нічого немає",
     "Name" : "Ім'я",
@@ -57,6 +58,7 @@ OC.L10N.register(
     "Settings" : "Налаштування",
     "Username" : "Логін",
     "Status" : "Статус",
-    "Link" : "Посилання"
+    "Link" : "Посилання",
+    "Description" : "Опис"
 },
 "nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);");

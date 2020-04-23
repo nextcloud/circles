@@ -41,6 +41,7 @@ OC.L10N.register(
     "Federated circles are not allowed on this Nextcloud" : "Liitringid pole selles Nextcloud pilves lubatud",
     "Federated link not found" : "Liit-linki ei leitud",
     "The circle is not federated" : "Ring ei ole liidetud",
+    "Accept" : "Nõustu",
     "Federated link does not have a valid format" : "Liit-lingi formaat ei ole õige",
     "Federated circles are not allowed on the remote Nextcloud" : "Liitringid ei ole lubatud selles Nextcloud kaugpilves",
     "Remote circle does not accept federated links" : "Kaugring ei aksepteeri liitlinke",
@@ -59,6 +60,7 @@ OC.L10N.register(
     "Group Name" : "Grupi nimi",
     "Link" : "Link",
     "Linked" : "Lingitud",
+    "Description" : "Kirjeldus",
     "Allow Federated Links" : "Luba liitlingid",
     "Makes the circle federated, and enables sharing between federated circles" : "Teeb ringi liitringiks ja lubab jagamise liitringide vahel",
     "Save settings" : "Salvesta seaded"

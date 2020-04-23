@@ -8,6 +8,7 @@ OC.L10N.register(
     "Owner" : "Owner",
     "Unknown" : "Tidak diketahui",
     "Open »%s«" : "Buka »%s«",
+    "Accept" : "Terima",
     "Could not find share" : "Tidak menemukan berbagi",
     "No files in here" : "Tidak ada berkas disini",
     "No entries found in this folder" : "Tidak ada entri yang ditemukan dalam folder ini",
@@ -16,6 +17,7 @@ OC.L10N.register(
     "Modified" : "Dimodifikasi",
     "Settings" : "Setelan",
     "Username" : "Nama pengguna",
-    "Link" : "Tautan"
+    "Link" : "Tautan",
+    "Description" : "Deskrisi"
 },
 "nplurals=1; plural=0;");
