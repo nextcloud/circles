@@ -209,7 +209,6 @@ OC.L10N.register(
     "Linked" : "I lidhur",
     "Description" : "Përshkrim",
     "Allow Federated Links" : "Lejo Linqet e Federuara",
-    "Save settings" : "Ruaj konfigurimet",
-    "On events happening in a <strong>Circle</strong> you belong" : "Në ngjarjet që ndodhin në një <strong>Rreth </strong> ju përkisni"
+    "Save settings" : "Ruaj konfigurimet"
 },
 "nplurals=2; plural=(n != 1);");
