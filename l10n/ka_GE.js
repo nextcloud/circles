@@ -269,8 +269,6 @@ OC.L10N.register(
     "Warning: Enabling this will automatically accept new link requests from other circles." : "გაფრთხილება: ამის ჩართვა ავტომატურად მიიღებს ახალი კავშირების მოთხოვნებს სხვა წრეებიდან.",
     "Save settings" : "პარამეტრების შენახვა",
     "Groups can be linked to circles." : "ჯგუფები შეიძლება დაკავშირდნენ წრეებთან.",
-    "Circles from different Nextclouds can be linked together." : "წრეები სხვადასხვა Nextcloud-ებითან შეიძლება დაკავშირდნენ.",
-    "On events happening in a <strong>Circle</strong> you belong" : "მოვლენები რომლებიც ხდება <strong>წრეში</strong> რომელსაც ეკუთვნით",
-    "Anyone can find and request an invitation to the circle; but only members will see who\\'s in it and get access to it\\'s shared items." : "ყველას შეუძლია იპოვოს წრე და მოითხოვოს მოწვევა; თუმცა მხოლოდ წევრებს მიუწვდებათ ხელი გაზიარებულ მასალაზე და მხოლოდ მათ შეუძლიათ იხილონ თუ ვინები არინ გაწევრიანებულნი."
+    "Circles from different Nextclouds can be linked together." : "წრეები სხვადასხვა Nextcloud-ებითან შეიძლება დაკავშირდნენ."
 },
 "nplurals=2; plural=(n!=1);");

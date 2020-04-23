@@ -269,8 +269,6 @@ OC.L10N.register(
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Advertencia: Habilitar esta opción aceptará automáticamente las nuevas solicitudes de ligas de otros círculos. ",
     "Save settings" : "Guardar configuraciones",
     "Groups can be linked to circles." : "Los grupos se pueden vincular a círculos",
-    "Circles from different Nextclouds can be linked together." : "Círculos de diferentes Nextclouds se pueden vincular juntos.",
-    "On events happening in a <strong>Circle</strong> you belong" : "Acerca de eventos que pasan en un <strong>C´riculo</strong> al que perteneces",
-    "Anyone can find and request an invitation to the circle; but only members will see who\\'s in it and get access to it\\'s shared items." : "Todos pueden encontar y solicitar una invitación al círculo; pero solo los miembros pueden ver quienes pertenecen a él y acceder a los elementos compartidos. "
+    "Circles from different Nextclouds can be linked together." : "Círculos de diferentes Nextclouds se pueden vincular juntos."
 },
 "nplurals=2; plural=(n != 1);");

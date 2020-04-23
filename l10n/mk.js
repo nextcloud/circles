@@ -79,7 +79,6 @@ OC.L10N.register(
     "Makes the circle federated, and enables sharing between federated circles" : "Прави федерација на кругот, и дозволува споделување помеѓу федералните кругови.",
     "Accept Link Request Automatically" : "Автоматски прифати го барањето за линк",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "ПРЕДУПРЕДУВАЊЕ: Овозможувањето автоматски ќе прифаќа нови барања за врски од други кругови.",
-    "Save settings" : "Зачувај параметри",
-    "Anyone can find and request an invitation to the circle; but only members will see who\\'s in it and get access to it\\'s shared items." : "Секој може да го види кругот и да испрати барање за пристап до кругот; но само членовите можат да гледаат кој е во групата и кој има пристап до споделените податоци."
+    "Save settings" : "Зачувај параметри"
 },
 "nplurals=2; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : 1;");
