@@ -60,6 +60,7 @@ OC.L10N.register(
     "Group Name" : "Име на група",
     "Link" : "Връзка",
     "Linked" : "Свързан",
-    "Description" : "Описание"
+    "Description" : "Описание",
+    "Save settings" : "Запазване на настройките"
 },
 "nplurals=2; plural=(n != 1);");
