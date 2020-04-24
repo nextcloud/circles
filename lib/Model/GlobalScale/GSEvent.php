@@ -382,7 +382,6 @@ class GSEvent implements JsonSerializable {
 	 */
 	public function importFromJson(string $json): self {
 		$data = json_decode($json, true);
-
 		if (!is_array($data)) {
 			throw new JsonException('invalid JSON');
 		}

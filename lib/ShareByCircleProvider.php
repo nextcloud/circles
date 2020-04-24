@@ -595,6 +595,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 				 ->selectAlias('ct.password', 'personal_password')
 				 ->selectAlias('ct.circle_id', 'personal_circle_id')
 				 ->selectAlias('ct.user_id', 'personal_user_id')
+				 ->selectAlias('ct.member_id', 'personal_member_id')
 				 ->from('share', 's')
 				 ->from('circles_tokens', 'ct')
 				 ->where(
@@ -619,21 +620,14 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 			throw new ShareNotFound('personal check not found');
 		}
 
+		\OC::$server->getLogger()->log(3, '#### ' . json_encode($data));
 		$member = null;
 		try {
-			$member = $this->membersService->getMember(
-				$data['personal_circle_id'], $data['personal_user_id'], Member::TYPE_MAIL, true
-			);
-		} catch (Exception $e) {
-			try {
-				$member = $this->membersService->getMember(
-					$data['personal_circle_id'], $data['personal_user_id'], Member::TYPE_CONTACT, true
-				);
-			} catch (Exception $e) {
+			$member = $this->membersService->getMemberById($data['personal_member_id']);
+			if (!$member->isLevel(Member::LEVEL_MEMBER)) {
+				throw new Exception();
 			}
-		}
-
-		if ($member === null || !$member->isLevel(Member::LEVEL_MEMBER)) {
+		} catch (Exception $e) {
 			throw new ShareNotFound('invalid token');
 		}
 

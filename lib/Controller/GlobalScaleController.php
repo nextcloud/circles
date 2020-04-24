@@ -67,7 +67,7 @@ class GlobalScaleController extends BaseController {
 			$event->importFromJson($data);
 			$this->gsDownstreamService->requestedEvent($event);
 
-			return $this->success(['success' => $event]);
+			return $this->success(['event' => $event]);
 		} catch (Exception $e) {
 			return $this->fail(['data' => $data, 'error' => $e->getMessage()]);
 		}

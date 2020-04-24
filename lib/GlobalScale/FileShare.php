@@ -36,11 +36,8 @@ use Exception;
 use OC;
 use OC\Share20\Share;
 use OCA\Circles\AppInfo\Application;
-use OCA\Circles\Exceptions\BroadcasterIsNotCompatibleException;
-use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
-use OCA\Circles\IBroadcaster;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\GlobalScale\GSShare;
@@ -49,7 +46,6 @@ use OCA\Circles\Model\SharesToken;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
-use OCP\AppFramework\QueryException;
 use OCP\Files\NotFoundException;
 use OCP\IL10N;
 use OCP\IUser;
@@ -159,7 +155,9 @@ class FileShare extends AGlobalScaleEvent {
 
 		$accounts = [];
 		foreach ($members as $member) {
-			$accounts[] = $this->getInfosFromContact($member);
+			if ($member->getInstance() === '') {
+				$accounts[] = $this->getInfosFromContact($member);
+			}
 		}
 
 		$event->setResult(new SimpleDataStore(['contacts' => $accounts]));
@@ -196,7 +194,7 @@ class FileShare extends AGlobalScaleEvent {
 		$circle = $event->getCircle();
 
 		// we check mail address that were already filled
-		$mails = $this->getMailAddressFromCircle($circle->getUniqueId());
+//		$mails = $this->getMailAddressFromCircle($circle->getUniqueId());
 
 
 //		foreach ($members as $member) {
@@ -229,6 +227,7 @@ class FileShare extends AGlobalScaleEvent {
 
 	/**
 	 * @param GSEvent $event
+	 * @param Circle $circle
 	 * @param array $contact
 	 */
 	private function sendShareToContact(GSEvent $event, Circle $circle, array $contact) {

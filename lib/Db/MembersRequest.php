@@ -350,6 +350,7 @@ class MembersRequest extends MembersRequestBuilder {
 		} catch (MemberDoesNotExistException $e) {
 			$member = new Member($name, $type, $circleUniqueId);
 			$member->setInstance($instance);
+//			$member->setMemberId($this->token(14));
 		}
 
 //		if ($member->alreadyExistOrJoining()) {

@@ -36,6 +36,7 @@ use OC;
 use OCA\Circles\Db\GSSharesRequest;
 use OCA\Circles\Model\GlobalScale\GSShare;
 use OCA\Circles\Model\GlobalScale\GSShareMountpoint;
+use OCA\Circles\Service\ConfigService;
 use OCP\Federation\ICloudIdManager;
 use OCP\Files\Config\IMountProvider;
 use OCP\Files\Mount\IMountPoint;
@@ -67,6 +68,8 @@ class MountProvider implements IMountProvider {
 	/** @var GSSharesRequest */
 	private $gsSharesRequest;
 
+	/** @var ConfigService */
+	private $configService;
 
 	/**
 	 * MountProvider constructor.
@@ -74,13 +77,16 @@ class MountProvider implements IMountProvider {
 	 * @param MountManager $mountManager
 	 * @param ICloudIdManager $cloudIdManager
 	 * @param GSSharesRequest $gsSharesRequest
+	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		MountManager $mountManager, ICloudIdManager $cloudIdManager, GSSharesRequest $gsSharesRequest
+		MountManager $mountManager, ICloudIdManager $cloudIdManager, GSSharesRequest $gsSharesRequest,
+		ConfigService $configService
 	) {
 		$this->mountManager = $mountManager;
 		$this->cloudIdManager = $cloudIdManager;
 		$this->gsSharesRequest = $gsSharesRequest;
+		$this->configService = $configService;
 	}
 
 
@@ -119,8 +125,12 @@ class MountProvider implements IMountProvider {
 	public function generateMount(
 		GSShare $share, string $userId, IStorageFactory $storageFactory
 	) {
-		// might be better to test https first, then http. as this would only work from webclient !
-		$data = $share->toMount($userId, $_SERVER['REQUEST_SCHEME']);
+		$protocol = 'https';
+		if ($this->configService->isLocalNonSSL()) {
+			$protocol = 'http';
+		}
+
+		$data = $share->toMount($userId, $protocol);
 		$data['manager'] = $this->mountManager;
 		$data['gsShareId'] = $share->getId();
 		$data['cloudId'] = $this->cloudIdManager->getCloudId($data['owner'], $data['remote']);

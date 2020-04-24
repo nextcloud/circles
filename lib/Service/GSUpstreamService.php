@@ -142,8 +142,9 @@ class GSUpstreamService {
 
 				$this->globalScaleService->asyncBroadcast($event);
 			} else {
-				$gs->verify($event); // needed ? as we check event on the 'master' of the circle
+//				$gs->verify($event); // needed ? as we check event on the 'master' of the circle
 				$this->confirmEvent($event);
+				$this->miscService->log('confirmed: ' . json_encode($event));
 				$gs->manage($event); // needed ? as we manage it throw the confirmEvent
 			}
 		} catch (Exception $e) {
@@ -220,7 +221,7 @@ class GSUpstreamService {
 	 * @throws RequestResultNotJsonException
 	 * @throws GlobalScaleEventException
 	 */
-	public function confirmEvent(GSEvent $event): void {
+	public function confirmEvent(GSEvent &$event): void {
 		$this->signEvent($event);
 
 		$circle = $event->getCircle();
@@ -240,6 +241,17 @@ class GSUpstreamService {
 		$this->miscService->log('result ' . json_encode($result));
 		if ($this->getInt('status', $result) === 0) {
 			throw new GlobalScaleEventException($this->get('error', $result));
+		}
+
+		$updatedData = $this->getArray('event', $result);
+		$this->miscService->log('updatedEvent: ' . json_encode($updatedData));
+		if (!empty($updatedData)) {
+			$updated = new GSEvent();
+			try {
+				$updated->import($updatedData);
+				$event = $updated;
+			} catch (Exception $e) {
+			}
 		}
 	}
 
@@ -458,7 +470,7 @@ class GSUpstreamService {
 
 			try {
 				$result = $this->retrieveJson($request);
-				$this->miscService->log('result: ' . json_encode($result));
+//				$this->miscService->log('result: ' . json_encode($result));
 				if ($this->getInt('status', $result, 0) !== 1) {
 					throw new RequestContentException('result status is not good');
 				}

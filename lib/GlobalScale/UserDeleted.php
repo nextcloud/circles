@@ -81,8 +81,6 @@ class UserDeleted extends AGlobalScaleEvent {
 		$event->getData()
 			  ->sArray('destroyedCircles', $destroyedCircles)
 			  ->sArray('promotedAdmins', $promotedAdmins);
-
-		$this->miscService->log(json_encode($event->getData()));
 	}
 
 
