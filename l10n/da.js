@@ -95,6 +95,7 @@ OC.L10N.register(
     "This member is not a moderator" : "Dette medlem er ikke en moderator",
     "This member is the owner of the circle" : "Dette medlem ejer cirklen",
     "You are already a member of this circle" : "Du er allerede medlem af cirklen",
+    "Accept" : "Accepter",
     "This member is not the owner of the circle" : "Dette medlem ejer ikke cirklen",
     "Trying to link a circle to itself" : "Prøver at linke cirklen til sig selv",
     "This link exists already" : "Dette link eksisterer allerede",
@@ -141,6 +142,7 @@ OC.L10N.register(
     "Group Name" : "Gruppenavn",
     "Link" : "Link",
     "Linked" : "Linket",
+    "Description" : "Beskrivelse",
     "Allow Federated Links" : "Tillad federarede links",
     "Save settings" : "Gem indstillinger"
 },

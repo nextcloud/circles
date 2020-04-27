@@ -80,6 +80,7 @@ OC.L10N.register(
     "This member is the owner of the circle" : "Esti miembru ye'l dueñu'l círculu",
     "You are already a member of this circle" : "Yá yes miembru d'esti círculu",
     "The user is already a member of this circle" : "L'usuariu yá ye miembru d'esti círculu",
+    "Accept" : "Aceutar",
     "You need a specify a type of circle" : "Precises especificar una triba de círculu",
     "You cannot create this type of circle" : "Nun pues crear esta triba de círculu",
     "You cannot display this type of circle" : "Nun pues amosar esta triba de círculu",
@@ -100,6 +101,7 @@ OC.L10N.register(
     "Settings" : "Settings",
     "Username" : "Nome d'usuariu",
     "Status" : "Estáu",
-    "Link" : "Link"
+    "Link" : "Link",
+    "Description" : "Descripción"
 },
 "nplurals=2; plural=(n != 1);");

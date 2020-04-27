@@ -55,6 +55,7 @@
     "Group '{name}' could not be removed from the circle" : "لا يمكن إزالة المجموعة '{name}' من الحلقة",
     "Settings saved." : "تم حفظ الإعدادات",
     "Click the button below to open it." : "أنقر على الزر أدناه لفتحه.",
+    "Accept" : "قبول",
     "No files in here" : "لا توجد ملفات هنا",
     "No entries found in this folder" : "لا يوجد مدخلات في هذا المجلد ",
     "Name" : "الاسم",
@@ -65,6 +66,7 @@
     "Level" : "الدرجة",
     "Status" : "الحالة",
     "Link" : "الرابط",
+    "Description" : "الوصف",
     "Save settings" : "حفظ الإعدادات"
 },"pluralForm" :"nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;"
 }

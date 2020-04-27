@@ -131,7 +131,6 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "{member} dërgoi një kërkesë për t'ju bashkuar {circle}",
     "You are the new owner of {circle}" : "Ju jeni pronari i ri i {circle}",
     "{member} is the new owner of {circle}" : "{member} është zoteruesi i ri i {rrethit}",
-    "On events happening in a <strong>Circle</strong> you belong" : "Në ngjarjet që ndodhin në një <strong>Rreth </strong> ju përkisni",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Çdo ngjarje e rëndësishme në një <strong>Rreth</strong> ju po e moderoni",
     "%s shared »%s« with you." : "1 %s ndarë »1 %s« me ju.",
     "%s on %s" : "%s në %s",
@@ -154,6 +153,7 @@ OC.L10N.register(
     "This member is the owner of the circle" : "Ky anëtar është zotëruesi i rrethit",
     "You are already a member of this circle" : "Ju jeni tashmë anëtar i këtij rrethi",
     "You have been blocked from this circle" : "Ju jeni bllokuar nga ky rreth",
+    "Accept" : "Prano",
     "You need a specify a type of circle" : "Duhet të specifikoni një tip rrethi",
     "You cannot create this type of circle" : "Nuk mund të krijoni këtë tip rrethi",
     "You cannot display this type of circle" : "Nuk mund të shfaqni këtë tip rrethi",
@@ -207,6 +207,7 @@ OC.L10N.register(
     "Group Name" : "Emri i Grupit",
     "Link" : "Lidhja",
     "Linked" : "I lidhur",
+    "Description" : "Përshkrim",
     "Allow Federated Links" : "Lejo Linqet e Federuara",
     "Save settings" : "Ruaj konfigurimet"
 },

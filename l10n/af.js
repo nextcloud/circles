@@ -9,6 +9,7 @@ OC.L10N.register(
     "Mail Address" : "Posadres",
     "Contact" : "Kontak",
     "Open »%s«" : "Open »%s«",
+    "Accept" : "Aanvaar",
     "No files in here" : "Geen lêers hier nie",
     "No entries found in this folder" : "Geen inskrwyings in hierdie gids gevind",
     "Name" : "Naam",
@@ -16,6 +17,7 @@ OC.L10N.register(
     "Modified" : "Gewysig",
     "Settings" : "Instellings",
     "Username" : "Gebruikersnaam",
-    "Link" : "Skakel"
+    "Link" : "Skakel",
+    "Description" : "Beskrywing"
 },
 "nplurals=2; plural=(n != 1);");
