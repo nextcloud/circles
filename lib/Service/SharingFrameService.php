@@ -304,13 +304,14 @@ class SharingFrameService {
 			$opts['verify'] = false;
 		}
 
+		$url = $this->generatePayloadDeliveryURL($addr);
 		try {
-			$client->post($this->generatePayloadDeliveryURL($addr), $opts);
+			$client->post($url, $opts);
 
 			return true;
 		} catch (Exception $e) {
 			$this->miscService->log(
-				'fail to initialise circle share to ' . $addr . ' for circle ' . $circleUniqueId . ' - '
+				'fail to initialise circle share to ' . $addr . ' using ' . $url . ' for circle ' . $circleUniqueId . ' - '
 				. json_encode($opts) . ' - ' . $e->getMessage()
 			);
 			throw $e;
