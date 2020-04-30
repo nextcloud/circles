@@ -56,6 +56,7 @@ OC.L10N.register(
     "You have deleted this circle" : "מחקת את המעגל",
     "Cannot delete this circle" : "לא ניתן למחוק את המעגל",
     "Password to access »%s«" : "ססמת הגישה אל „%s”",
+    "It is protected with the following password:" : "הוא מוגן בססמה הבאה:",
     "%1$s via %2$s" : "%1$s דרך %2$s",
     "Click the button below to open it." : "יש ללחוץ על הכפתור להלן כדי לפתוח אותו.",
     "Open »%s«" : "פתיחת „%s”",
