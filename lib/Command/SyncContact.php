@@ -31,10 +31,11 @@ namespace OCA\Circles\Command;
 
 use Exception;
 use OC\Core\Command\Base;
-use OCA\Circles\Exceptions\CommandMissingArgumentException;
-use OCA\Circles\Exceptions\FakeException;
 use OCA\Circles\Service\DavService;
+use OCA\DAV\CardDAV\CardDavBackend;
+use OCP\IUserManager;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
@@ -46,6 +47,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SyncContact extends Base {
 
 
+	/** @var IUserManager */
+	private $userManager;
+
+	/** @var CardDavBackend */
+	private $cardDavBackend;
+
 	/** @var DavService */
 	private $davService;
 
@@ -53,11 +60,17 @@ class SyncContact extends Base {
 	/**
 	 * Groups constructor.
 	 *
+	 * @param IUserManager $userManager
+	 * @param CardDavBackend $cardDavBackend
 	 * @param DavService $davService
 	 */
-	public function __construct(DavService $davService) {
+	public function __construct(
+		IUserManager $userManager, CardDavBackend $cardDavBackend, DavService $davService
+	) {
 		parent::__construct();
 
+		$this->userManager = $userManager;
+		$this->cardDavBackend = $cardDavBackend;
 		$this->davService = $davService;
 	}
 
@@ -65,6 +78,8 @@ class SyncContact extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:contacts:sync')
+			 ->addOption('info', '', InputOption::VALUE_NONE, 'get info about contacts')
+			 ->addOption('status', '', InputOption::VALUE_NONE, 'get info about sync')
 			 ->setDescription('sync contacts, when using the Circles app as a backend of the Contact app');
 	}
 
@@ -77,6 +92,18 @@ class SyncContact extends Base {
 	 * @throws Exception
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output) {
+		if ($input->getOption('info')) {
+			$this->displayInfo($output);
+
+			return;
+		}
+
+		if ($input->getOption('status')) {
+			$this->displayStatus($output);
+
+			return;
+		}
+
 		$this->davService->migration();
 
 		$output->writeln('migration done');
@@ -84,64 +111,55 @@ class SyncContact extends Base {
 
 
 	/**
-	 * @param InputInterface $input
 	 * @param OutputInterface $output
-	 *
-	 * @throws FakeException
 	 */
-	private function listLinkedGroups(InputInterface $input, OutputInterface $output) {
-		if ($input->getOption('list') !== true) {
-			return;
+	private function displayInfo(OutputInterface $output) {
+		$users = $this->userManager->search('');
+
+		$tCards = $tBooks = 0;
+		$knownBooks = [];
+		foreach ($users as $user) {
+			$books = $this->cardDavBackend->getAddressBooksForUser('principals/users/' . $user->getUID());
+			$output->writeln(
+				'- User <info>' . $user->getUID() . '</info> have ' . sizeof($books) . ' address books:'
+			);
+
+			$tBooks += sizeof($books);
+			foreach ($books as $book) {
+				$bookId = $book['id'];
+				$owner = $this->davService->getOwnerFromAddressBook($bookId);
+
+				$cards = $this->cardDavBackend->getCards($bookId);
+
+				if (!in_array($bookId, $knownBooks)) {
+					$tCards += sizeof($cards);
+				}
+
+				$shared = '';
+				if ($owner !== $user->getUID()) {
+					$shared = ' (shared by <info>' . $owner . '</info>)';
+				}
+
+				$output->writeln(
+					'  <comment>*</comment> book #' . $bookId . $shared . ' contains '
+					. sizeof($cards)
+					. ' entries'
+				);
+
+				$knownBooks[] = $bookId;
+			}
 		}
 
-		throw new FakeException();
+		$output->writeln('');
+		$output->writeln('with a total of ' . $tBooks . ' address books and ' . $tCards . ' contact entries');
 	}
 
 
 	/**
-	 * @param InputInterface $input
 	 * @param OutputInterface $output
-	 *
-	 * @throws FakeException
 	 */
-	private function addLinkedGroups(InputInterface $input, OutputInterface $output) {
-		if ($input->getOption('link') !== true) {
-			return;
-		}
-
-		list($circleId, $group) = $this->getCircleIdAndGroupFromArguments($input);
-
-		throw new FakeException();
-	}
-
-
-	/**
-	 * @param InputInterface $input
-	 * @param OutputInterface $output
-	 *
-	 * @throws FakeException
-	 */
-	private function delLinkedGroups(InputInterface $input, OutputInterface $output) {
-		if ($input->getOption('unlink') !== true) {
-			return;
-		}
-
-		list($circleId, $group) = $this->getCircleIdAndGroupFromArguments($input);
-
-		throw new FakeException();
-	}
-
-
-	private function getCircleIdAndGroupFromArguments(InputInterface $input) {
-		if ($input->getArgument('circle_id') === null
-			|| $input->getArgument('group') === null) {
-			throw new CommandMissingArgumentException();
-//			$this->l10n->t(
-//				'Missing argument: {cmd} circle_id group', ['cmd' => './occ circles:link']
-//			)
-		}
-
-		return [$input->getArgument('circle_id'), $input->getArgument('group')];
+	private function displayStatus(OutputInterface $output) {
+		$output->writeln('not yet available');
 	}
 
 }
