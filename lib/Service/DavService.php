@@ -128,7 +128,7 @@ class DavService {
 		}
 
 		try {
-			$this->migration();
+//			$this->migration();
 		} catch (Exception $e) {
 		}
 	}
@@ -198,12 +198,18 @@ class DavService {
 	 * @return DavCard
 	 */
 	private function generateDavCardFromCard(int $bookId, array $card): DavCard {
+		$this->miscService->log(
+			'generating DavCard Model from book=' . $bookId . ' from ' . json_encode($card), 0
+		);
+
 		$davCard = new DavCard();
 		$davCard->setAddressBookId($bookId);
 		$davCard->setCardUri($card['uri']);
 
 		$davCard->setOwner($this->getOwnerFromAddressBook($bookId));
 		$davCard->importFromDav($card['carddata']);
+
+		$this->miscService->log('generated DavCard Model: ' . json_encode($davCard), 0);
 
 		return $davCard;
 	}
@@ -224,6 +230,7 @@ class DavService {
 	 * @param DavCard $davCard
 	 */
 	private function manageContact(DavCard $davCard) {
+
 		$this->manageDeprecatedMembers($davCard);
 
 		switch ($this->getMemberType($davCard)) {
@@ -246,6 +253,10 @@ class DavService {
 	 * @param DavCard $davCard
 	 */
 	private function manageDeprecatedMembers(DavCard $davCard) {
+		$this->miscService->log(
+			'Managing deprecated circles memberships from DavCard Model: ' . json_encode($davCard), 0
+		);
+
 		$circles = array_map(
 			function(Circle $circle) {
 				return $circle->getUniqueId();
@@ -253,8 +264,15 @@ class DavService {
 		);
 
 		$members = $this->membersRequest->getMembersByContactId($davCard->getUniqueId());
+		$this->miscService->log(
+			'Found ' . sizeof($members) . ' memberships with contactId=' . $davCard->getUniqueId(), 0
+		);
+
 		foreach ($members as $member) {
 			if (!in_array($member->getCircleId(), $circles)) {
+				$this->miscService->log(
+					'Removing membership ' . $member->getMemberId() . ' from ' . $member->getCircleId(), 0
+				);
 				$this->membersRequest->removeMember($member);
 			}
 		}
@@ -376,6 +394,10 @@ class DavService {
 			}, $this->getCirclesFromBook($davCard->getAddressBookId())
 		);
 
+		$this->miscService->log(
+			'manage Circles from DavCard: ' . json_encode($fromCard) . ' - current: ' . json_encode($current)
+		);
+
 		$this->manageNewCircles($davCard, $fromCard, $current);
 		$this->manageDeprecatedCircles($davCard->getAddressBookId());
 
@@ -395,23 +417,28 @@ class DavService {
 			}
 
 			$user = $this->userManager->get($davCard->getOwner());
-			$circle = new Circle($this->configService->contactsBackendType(), $group . ' - ' . $user->getDisplayName());
+			$circle = new Circle(
+				$this->configService->contactsBackendType(), $group . ' - ' . $user->getDisplayName()
+			);
 			$circle->setContactAddressBook($davCard->getAddressBookId());
 			$circle->setContactGroupName($group);
 
+			$this->miscService->log(
+				'creating new Circle: ' . json_encode($circle) . ', with owner=' . $davCard->getOwner(), 0
+			);
 			try {
 				$this->circlesRequest->createCircle($circle, $davCard->getOwner());
 				$member = new Member($davCard->getOwner(), Member::TYPE_USER, $circle->getUniqueId());
 				$member->setLevel(Member::LEVEL_OWNER);
 				$member->setStatus(Member::STATUS_MEMBER);
 
+				$this->miscService->log('creating new Member: ' . json_encode($member), 0);
 				try {
 					$this->membersRequest->createMember($member);
 				} catch (MemberAlreadyExistsException $e) {
 				}
 			} catch (CircleAlreadyExistsException $e) {
 			}
-
 		}
 	}
 
@@ -420,6 +447,7 @@ class DavService {
 	 * @param DavCard $davCard
 	 */
 	private function assignCirclesToCard(DavCard $davCard) {
+		$this->miscService->log('assigning Circles to DavCard Model: ' . json_encode($davCard), 0);
 		foreach ($davCard->getGroups() as $group) {
 			try {
 				$davCard->addCircle(
@@ -428,6 +456,8 @@ class DavService {
 			} catch (CircleDoesNotExistException $e) {
 			}
 		}
+
+		$this->miscService->log('assigned Circles to DavCard Model: ' . json_encode($davCard), 0);
 	}
 
 
@@ -471,18 +501,19 @@ class DavService {
 	 *
 	 * @return string
 	 */
-	private function getOwnerFromAddressBook(int $bookId): string {
+	public function getOwnerFromAddressBook(int $bookId): string {
+		$this->miscService->log('Retrieving Owner from book:' . $bookId, 0);
 		$data = $this->cardDavBackend->getAddressBookById($bookId);
 
 		// let's assume the format is principals/users/OWNER
 		$owner = substr($data['principaluri'], 17);
+		$this->miscService->log('Retrieved Owner:' . $owner, 0);
 
 		return $owner;
 	}
 
 
 	/**
-	 *
 	 * @throws Exception
 	 */
 	public function migration() {
@@ -493,8 +524,12 @@ class DavService {
 		$this->manageDeprecatedContacts();
 		$this->manageDeprecatedCircles();
 		$users = $this->userManager->search('');
+		$this->miscService->log('initiating migration for ' . sizeof($users) . ' users', 0);
 		foreach ($users as $user) {
+			$this->miscService->log('retrieving books for user=' . $user->getUID(), 0);
 			$books = $this->cardDavBackend->getAddressBooksForUser('principals/users/' . $user->getUID());
+
+			$this->miscService->log('initiating migration for user=' . $user->getUID(), 0);
 			foreach ($books as $book) {
 				$this->migrateBook($book['id']);
 			}
@@ -506,14 +541,23 @@ class DavService {
 	 */
 	private function manageDeprecatedContacts() {
 		$contacts = $this->membersRequest->getMembersByContactId();
+		$this->miscService->log(
+			'Managing Deprecated Contacts, checking ' . sizeof($contacts) . ' known contacts in database', 0
+		);
 
 		foreach ($contacts as $contact) {
 			try {
 				$this->getDavCardFromMember($contact);
+				$this->miscService->log('Contact is not deprecated: ' . json_encode($contact));
 			} catch (MemberDoesNotExistException $e) {
+				$this->miscService->log(
+					'Contact is deprecated and will be removed: ' . json_encode($contact)
+				);
 				$this->membersRequest->removeMember($contact);
 			}
 		}
+
+		$this->miscService->log('Deprecated Contacts managed', 0);
 	}
 
 
@@ -522,9 +566,13 @@ class DavService {
 	 */
 	private function manageDeprecatedCircles(int $bookId = 0) {
 		$knownBooks = [$bookId];
+		$this->miscService->log('Managing Deprecated Circles, using bookId: ' . $bookId, 0);
+
 		if ($bookId > 0) {
 			$knownBooks = [];
 			$contacts = $this->membersRequest->getMembersByContactId();
+			$this->miscService->log(sizeof($contacts) . ' known members as contacts in Circles DB', 0);
+
 			foreach ($contacts as $contact) {
 				list($bookId,) = explode('/', $contact->getContactId(), 2);
 				if (in_array($bookId, $knownBooks)) {
@@ -535,19 +583,34 @@ class DavService {
 			}
 		}
 
+		$this->miscService->log('Known books: ' . json_encode($knownBooks), 0);
 		foreach ($knownBooks as $bookId) {
+			$this->miscService->log('retrieving local Circles data for bookId=' . $bookId, 0);
 			$circles = $this->circlesRequest->getFromContactBook($bookId);
+			$this->miscService->log(
+				'Known circles for bookId=' . $bookId . ': ' . json_encode($circles), 0
+			);
+
 			$fromBook = $this->getExistingCirclesFromBook($bookId);
+			$this->miscService->log(
+				'Generated circles from bookId=' . $bookId . ': ' . json_encode($fromBook), 0
+			);
 
 			foreach ($circles as $circle) {
 				if (in_array($circle->getContactGroupName(), $fromBook)) {
 					continue;
 				}
 
+				$this->miscService->log(
+					$circle->getUniqueId() . ' is a deprecated Circle and will be destroyed', 0
+				);
+
 				$this->membersRequest->removeAllFromCircle($circle->getUniqueId());
 				$this->circlesRequest->destroyCircle($circle->getUniqueId());
 			}
 		}
+
+		$this->miscService->log('Deprecated Circles managed', 0);
 	}
 
 
@@ -559,19 +622,30 @@ class DavService {
 	private function getExistingCirclesFromBook(int $bookId): array {
 		$circles = [];
 		$cards = $this->cardDavBackend->getCards($bookId);
+
+		$this->miscService->log(
+			'retrieving existing circles from bookId=' . $bookId . ' in ' . sizeof($cards) . ' cards', 0
+		);
 		foreach ($cards as $card) {
 			$davCard = $this->generateDavCardFromCard($bookId, $card);
 			$this->assignCirclesToCard($davCard);
 			$circles = array_merge($circles, $davCard->getCircles());
 		}
 
-		$existing = array_map(
-			function(Circle $circle) {
-				return $circle->getContactGroupName();
-			}, $circles
+		$this->miscService->log('Found ' . sizeof($circles) . ' Circles from book=' . $bookId, 0);
+		$existing = array_unique(
+			array_map(
+				function(Circle $circle) {
+					return $circle->getContactGroupName();
+				}, $circles
+			)
 		);
 
-		return array_unique($existing);
+		$this->miscService->log(
+			'retrieved existing circles from book=' . $bookId . ': ' . json_encode($existing), 0
+		);
+
+		return $existing;
 	}
 
 
@@ -583,10 +657,16 @@ class DavService {
 	 */
 	public function getDavCardFromMember(Member $contact): DavCard {
 		list($bookId, $cardUri) = explode('/', $contact->getContactId(), 2);
+		$this->miscService->log('Retrieving DavCard from book:' . $bookId . ', uri:' . $cardUri, 0);
+
 		$cards = $this->cardDavBackend->getCards($bookId);
+		$this->miscService->log('Book contains ' . sizeof($cards) . ' cards', 0);
 		foreach ($cards as $card) {
 			if ($card['uri'] === $cardUri) {
-				return $this->generateDavCardFromCard($bookId, $card);
+				$davCard = $this->generateDavCardFromCard($bookId, $card);
+				$this->miscService->log('Retrieved DavCard: ' . json_encode($card));
+
+				return $davCard;
 			}
 		}
 
@@ -602,9 +682,13 @@ class DavService {
 			return;
 		}
 
+		$this->miscService->log('migrating book: ' . $bookId, 0);
 		$owner = $this->getOwnerFromAddressBook($bookId);
 
-		foreach ($this->cardDavBackend->getCards($bookId) as $card) {
+		$cards = $this->cardDavBackend->getCards($bookId);
+		$this->miscService->log('found ' . sizeof($cards) . 'cards from book=' . $bookId, 0);
+
+		foreach ($cards as $card) {
 			$davCard = new DavCard();
 			$davCard->setOwner($owner);
 			$davCard->importFromDav($card['carddata']);
