@@ -388,7 +388,11 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 */
 	public function getFromContactBook(int $addressBookId): array {
 		$qb = $this->getCirclesSelectSql();
-		$this->limitToAddressBookId($qb, $addressBookId);
+
+		if ($addressBookId > 0) {
+			$this->limitToAddressBookId($qb, $addressBookId);
+		}
+
 
 		$circles = [];
 		$cursor = $qb->execute();
