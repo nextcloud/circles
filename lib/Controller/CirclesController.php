@@ -30,7 +30,6 @@ use Exception;
 use OCA\Circles\Exceptions\CircleNameFirstCharException;
 use OCA\Circles\Exceptions\CircleNameTooShortException;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
-use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 use OCP\AppFramework\Http\DataResponse;
 
 class CirclesController extends BaseController {
@@ -148,7 +147,6 @@ class CirclesController extends BaseController {
 
 			return $this->success(['circle_id' => $uniqueId, 'member' => $data]);
 		} catch (Exception $e) {
-
 			return $this->fail(['circle_id' => $uniqueId, 'error' => $e->getMessage()]);
 		}
 	}

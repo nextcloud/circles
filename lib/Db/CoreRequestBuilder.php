@@ -30,8 +30,25 @@ class CoreRequestBuilder {
 	const TABLE_SHARES = 'circles_shares';
 	const TABLE_LINKS = 'circles_links';
 	const TABLE_TOKENS = 'circles_tokens';
+	const TABLE_GSEVENTS = 'circles_gsevents';
+	const TABLE_GSSHARES = 'circles_gsshares';
+	const TABLE_GSSHARES_MOUNTPOINT = 'circles_gsshares_mp';
 
 	const NC_TABLE_GROUP_USER = 'group_user';
+
+	/** @var array */
+	private $tables = [
+		self::TABLE_CIRCLES,
+		self::TABLE_MEMBERS,
+		self::TABLE_GROUPS,
+		self::TABLE_SHARES,
+		self::TABLE_LINKS,
+		self::TABLE_TOKENS,
+		self::TABLE_GSEVENTS,
+		self::TABLE_GSSHARES,
+		self::TABLE_GSSHARES_MOUNTPOINT
+	];
+
 
 	/** @var IDBConnection */
 	protected $dbConnection;
@@ -153,6 +170,17 @@ class CoreRequestBuilder {
 
 
 	/**
+	 * Limit the request to the owner
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param $owner
+	 */
+	protected function limitToOwner(IQueryBuilder &$qb, $owner) {
+		$this->limitToDBField($qb, 'owner', $owner);
+	}
+
+
+	/**
 	 * Limit the request to the Member by its Id.
 	 *
 	 * @param IQueryBuilder $qb
@@ -175,6 +203,17 @@ class CoreRequestBuilder {
 
 
 	/**
+	 * Limit the request to the Instance.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param string $instance
+	 */
+	protected function limitToInstance(IQueryBuilder &$qb, string $instance) {
+		$this->limitToDBField($qb, 'instance', $instance);
+	}
+
+
+	/**
 	 * Limit the request to the Circle by its Id.
 	 *
 	 * @param IQueryBuilder $qb
@@ -193,6 +232,27 @@ class CoreRequestBuilder {
 	 */
 	protected function limitToShareId(IQueryBuilder &$qb, int $shareId) {
 		$this->limitToDBField($qb, 'share_id', $shareId);
+	}
+
+
+	/**
+	 * Limit the request to the Circle by its Id.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param string $mountpoint
+	 */
+	protected function limitToMountpoint(IQueryBuilder &$qb, string $mountpoint) {
+		$this->limitToDBField($qb, 'share_id', $mountpoint);
+	}
+
+	/**
+	 * Limit the request to the Circle by its Id.
+	 *
+	 * @param IQueryBuilder $qb
+	 * @param string $hash
+	 */
+	protected function limitToMountpointHash(IQueryBuilder &$qb, string $hash) {
+		$this->limitToDBField($qb, 'share_id', $hash);
 	}
 
 
@@ -473,6 +533,25 @@ class CoreRequestBuilder {
 
 		$this->leftJoinedNCGroupAndUser = true;
 	}
+
+
+	/**
+	 *
+	 */
+	public function cleanDatabase(): void {
+		foreach ($this->tables as $table) {
+			$qb = $this->dbConnection->getQueryBuilder();
+			$qb->delete($table);
+			$qb->execute();
+		}
+
+		$qb = $this->dbConnection->getQueryBuilder();
+		$expr = $qb->expr();
+		$qb->delete(self::TABLE_FILE_SHARES);
+		$qb->where($expr->eq('share_type', $qb->createNamedParameter(self::SHARE_TYPE)));
+		$qb->execute();
+	}
+
 }
 
 

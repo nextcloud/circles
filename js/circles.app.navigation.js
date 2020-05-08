@@ -41,7 +41,7 @@
 
 var nav = {
 
-	initNavigation: function () {
+	initNavigation: function() {
 		this.initElementsAddMemberNavigation();
 		this.initElementsLinkCircleNavigation();
 		this.initElementsCircleNavigation();
@@ -50,10 +50,10 @@ var nav = {
 	},
 
 
-	initElementsAddMemberNavigation: function () {
+	initElementsAddMemberNavigation: function() {
 
 		elements.addMember.hide();
-		elements.addMember.on('input propertychange paste focus', function () {
+		elements.addMember.on('input propertychange paste focus', function() {
 			var search = $(this).val().trim();
 			if (search === '') {
 				elements.membersSearchResult.fadeOut(curr.animationMenuSpeed);
@@ -63,7 +63,7 @@ var nav = {
 			if (!_.isUndefined(elements.searchTimeoutID)) {
 				clearTimeout(elements.searchTimeoutID);
 			}
-			elements.searchTimeoutID = _.delay(function () {
+			elements.searchTimeoutID = _.delay(function() {
 				actions.searchMembersRequest(search);
 				if (elements.membersSearchResult.children().length === 0) {
 					elements.membersSearchResult.fadeOut(curr.animationMenuSpeed);
@@ -72,14 +72,14 @@ var nav = {
 
 				}
 			}, 500);
-		}).blur(function () {
+		}).blur(function() {
 			// Issue with some browser, let's disable it.
 			// setTimeout(function () {
 			// 	elements.membersSearchResult.fadeOut(curr.animationMenuSpeed);
 			// 	nav.circlesActionReturn();
 			// }, 100);
 		});
-		elements.addMember.on('keydown', function (e) {
+		elements.addMember.on('keydown', function(e) {
 			if (e.keyCode === 27) {
 				nav.circlesActionReturn();
 			}
@@ -91,18 +91,18 @@ var nav = {
 						t('circles',
 							'This operation will add/invite all members of the group to the circle'),
 						t('circles', 'Please confirm'),
-						function (e) {
+						function(e) {
 							if (e === true) {
-								api.addMember(curr.circle, elements.addMember.val(), define.typeGroup,
+								api.addMember(curr.circle, elements.addMember.val(), define.typeGroup, '',
 									resultMembers.addMemberResult);
 							}
 						});
 				} else {
 					if (actions.validateEmail(elements.addMember.val())) {
-						api.addMember(curr.circle, elements.addMember.val(), define.typeMail,
+						api.addMember(curr.circle, elements.addMember.val(), define.typeMail, '',
 							resultMembers.addMemberResult);
 					} else {
-						api.addMember(curr.circle, elements.addMember.val(), define.typeUser,
+						api.addMember(curr.circle, elements.addMember.val(), define.typeUser, '',
 							resultMembers.addMemberResult);
 					}
 				}
@@ -110,7 +110,7 @@ var nav = {
 		});
 
 
-		elements.linkGroup.on('input propertychange paste focus', function () {
+		elements.linkGroup.on('input propertychange paste focus', function() {
 			var search = $(this).val().trim();
 			if (search === '') {
 				elements.groupsSearchResult.fadeOut(curr.animationMenuSpeed);
@@ -123,13 +123,13 @@ var nav = {
 			} else {
 				elements.groupsSearchResult.fadeIn(curr.animationMenuSpeed);
 			}
-		}).blur(function () {
-			setTimeout(function () {
+		}).blur(function() {
+			setTimeout(function() {
 				elements.groupsSearchResult.fadeOut(curr.animationMenuSpeed);
 				nav.circlesActionReturn();
 			}, 100);
 		});
-		elements.linkGroup.on('keydown', function (e) {
+		elements.linkGroup.on('keydown', function(e) {
 			if (e.keyCode === 27) {
 				nav.circlesActionReturn();
 			}
@@ -140,10 +140,10 @@ var nav = {
 	},
 
 
-	initElementsLinkCircleNavigation: function () {
+	initElementsLinkCircleNavigation: function() {
 
 		elements.linkCircle.hide();
-		elements.linkCircle.on('keydown', function (e) {
+		elements.linkCircle.on('keydown', function(e) {
 
 			if (e.keyCode === 27) {
 				nav.circlesActionReturn();
@@ -154,26 +154,26 @@ var nav = {
 
 			api.linkCircle(curr.circle, elements.linkCircle.val().trim(),
 				resultLinks.linkCircleResult);
-		}).blur(function () {
+		}).blur(function() {
 			nav.circlesActionReturn();
 		});
 	},
 
 
-	initElementsCircleNavigation: function () {
+	initElementsCircleNavigation: function() {
 
 		elements.joinCircle.hide();
-		elements.joinCircle.on('click', function () {
+		elements.joinCircle.on('click', function() {
 			api.joinCircle(curr.circle, resultCircles.joinCircleResult);
 			nav.circlesActionReturn();
 		});
 
 		elements.leaveCircle.hide();
-		elements.leaveCircle.on('click', function () {
+		elements.leaveCircle.on('click', function() {
 			OC.dialogs.confirm(
 				t('circles', 'Are you sure you want to leave this circle?'),
 				t('circles', 'Please confirm'),
-				function (e) {
+				function(e) {
 					if (e === true) {
 						api.leaveCircle(curr.circle, resultCircles.leaveCircleResult);
 						nav.circlesActionReturn();
@@ -181,28 +181,28 @@ var nav = {
 				});
 		});
 
-		elements.destroyCircle.on('click', function () {
+		elements.destroyCircle.on('click', function() {
 			OC.dialogs.confirm(
 				t('circles', 'Are you sure you want to delete this circle?'),
 				t('circles', 'This action is irreversible'),
-				function (e) {
+				function(e) {
 					if (e === true) {
 						api.destroyCircle(curr.circle, resultCircles.destroyCircleResult);
 					}
 				});
 		});
 
-		elements.joinCircleAccept.on('click', function () {
+		elements.joinCircleAccept.on('click', function() {
 			api.joinCircle(curr.circle, resultCircles.joinCircleResult);
 		});
 
-		elements.joinCircleReject.on('click', function () {
+		elements.joinCircleReject.on('click', function() {
 			api.leaveCircle(curr.circle, resultCircles.leaveCircleResult);
 		});
 	},
 
 
-	displayCirclesList: function (type) {
+	displayCirclesList: function(type) {
 
 		curr.circlesType = type;
 		curr.searchCircle = '';
@@ -225,16 +225,16 @@ var nav = {
 	},
 
 
-	resetCirclesTypeSelection: function (type) {
+	resetCirclesTypeSelection: function(type) {
 		elements.circlesList.children('div').removeClass('selected');
-		elements.circlesList.children().each(function () {
+		elements.circlesList.children().each(function() {
 			if ($(this).attr('circle-type') === type.toLowerCase()) {
 				$(this).addClass('selected');
 			}
 		});
 	},
 
-	circlesActionReturn: function () {
+	circlesActionReturn: function() {
 		elements.membersSearchResult.hide(0);
 
 		nav.displayCircleButtons(true);
@@ -246,7 +246,7 @@ var nav = {
 		nav.displayInviteCircleButtons(false);
 	},
 
-	joinCircleAction: function () {
+	joinCircleAction: function() {
 		nav.displayCircleButtons(false);
 		nav.displayAddMemberInput(false);
 		nav.displayLinkCircleInput(false);
@@ -254,7 +254,7 @@ var nav = {
 		nav.displayJoinCircleButton(true);
 	},
 
-	displayCircleButtons: function (display) {
+	displayCircleButtons: function(display) {
 		if (display) {
 			elements.buttonCircleActionReturn.hide(define.animationMenuSpeed);
 			elements.buttonCircleActions.delay(define.animationMenuSpeed).show(
@@ -266,11 +266,11 @@ var nav = {
 		}
 	},
 
-	displayAddMemberInput: function (display) {
+	displayAddMemberInput: function(display) {
 		if (display) {
 			elements.addMember.val('');
 			elements.addMember.delay(define.animationMenuSpeed).show(define.animationMenuSpeed,
-				function () {
+				function() {
 					$(this).focus();
 				});
 		} else {
@@ -278,11 +278,11 @@ var nav = {
 		}
 	},
 
-	displayLinkGroupInput: function (display) {
+	displayLinkGroupInput: function(display) {
 		if (display) {
 			elements.linkGroup.val('');
 			elements.linkGroup.delay(define.animationMenuSpeed).show(define.animationMenuSpeed,
-				function () {
+				function() {
 					$(this).focus();
 				});
 		} else {
@@ -290,11 +290,11 @@ var nav = {
 		}
 	},
 
-	displayLinkCircleInput: function (display) {
+	displayLinkCircleInput: function(display) {
 		if (display) {
 			elements.linkCircle.val('');
 			elements.linkCircle.delay(define.animationMenuSpeed).show(define.animationMenuSpeed,
-				function () {
+				function() {
 					$(this).focus();
 				});
 		} else {
@@ -303,7 +303,7 @@ var nav = {
 	},
 
 
-	displayInviteCircleButtons: function (display) {
+	displayInviteCircleButtons: function(display) {
 		if (display) {
 			elements.joinCircleAccept.show(define.animationMenuSpeed);
 			elements.joinCircleReject.delay(define.animationMenuSpeed).show(
@@ -314,7 +314,7 @@ var nav = {
 		}
 	},
 
-	displayJoinCircleButton: function (display) {
+	displayJoinCircleButton: function(display) {
 		if (display) {
 			if (curr.circleStatus === 'Invited') {
 				elements.joinCircle.hide(define.animationMenuSpeed);
@@ -331,8 +331,7 @@ var nav = {
 					elements.joinCircleAccept.hide(define.animationMenuSpeed);
 					elements.joinCircleReject.hide(define.animationMenuSpeed);
 
-				}
-				else {
+				} else {
 					elements.leaveCircle.delay(define.animationMenuSpeed).show(
 						define.animationMenuSpeed);
 					elements.joinCircle.hide(define.animationMenuSpeed);
@@ -349,13 +348,12 @@ var nav = {
 	 *
 	 * @param display
 	 */
-	displayOptionsNewCircle: function (display) {
+	displayOptionsNewCircle: function(display) {
 		if (display) {
 			elements.newType.fadeIn(300);
 			elements.newSubmit.fadeIn(500);
 			elements.newTypeDefinition.fadeIn(700);
-		}
-		else {
+		} else {
 			elements.newType.fadeOut(700);
 			elements.newSubmit.fadeOut(500);
 			elements.newTypeDefinition.fadeOut(300);
@@ -363,7 +361,7 @@ var nav = {
 	},
 
 
-	displayMembers: function (members) {
+	displayMembers: function(members) {
 		if (members === '') {
 			members = curr.circleMembers;
 		} else {
@@ -390,12 +388,12 @@ var nav = {
 		}
 
 
-		elements.mainUIMembersTable.children('tr.entry').each(function () {
-
+		elements.mainUIMembersTable.children('tr.entry').each(function() {
 				var userId = $(this).attr('member-id');
+				var instance = $(this).attr('member-instance');
 				var userType = Number($(this).attr('member-type'));
 
-				if (userId === curr.userId && userType === define.typeUser) {
+				if (userId === curr.userId && instance === '' && userType === define.typeUser) {
 					$(this).find('td.username').css('font-weight', 'bold').css('font-style', 'italic');
 					$(this).css('background', '#e0e0e0');
 				} else {
@@ -412,12 +410,11 @@ var nav = {
 					var levelSelect = $(this).find('.level-select');
 					if (level === 0) {
 						levelSelect.hide();
-					}
-					else {
+					} else {
 						levelSelect.show(200).val(level);
 					}
-					levelSelect.on('change', function () {
-						actions.changeMemberLevel(userId, userType, $(this).val());
+					levelSelect.on('change', function() {
+						actions.changeMemberLevel(userId, userType, instance, $(this).val());
 					});
 				}
 
@@ -426,8 +423,8 @@ var nav = {
 				var status = $(this).attr('member-status');
 				var statusSelect = $(this).find('.status-select');
 
-				statusSelect.on('change', function () {
-					actions.changeMemberStatus(userId, userType, $(this).val());
+				statusSelect.on('change', function() {
+					actions.changeMemberStatus(userId, userType, instance, $(this).val());
 				});
 				if (userType === define.typeUser) {
 					statusSelect.append($('<option>', {
@@ -477,7 +474,7 @@ var nav = {
 	},
 
 
-	displayGroups: function (groups) {
+	displayGroups: function(groups) {
 		if (groups === '') {
 			groups = curr.circleGroups;
 		} else {
@@ -505,7 +502,7 @@ var nav = {
 			}
 		}
 
-		elements.mainUIGroupsTable.children('tr.entry').each(function () {
+		elements.mainUIGroupsTable.children('tr.entry').each(function() {
 
 				var groupId = $(this).attr('group-id');
 				if (curr.circleDetails.group !== null &&
@@ -520,8 +517,7 @@ var nav = {
 				var levelSelect = $(this).find('.level-select');
 				if (level === 0) {
 					levelSelect.hide();
-				}
-				else {
+				} else {
 					levelSelect.show(200).val(level);
 				}
 				levelSelect.append($('<option>', {
@@ -529,7 +525,7 @@ var nav = {
 					text: t('circles', 'Unlink this group')
 				}));
 
-				levelSelect.on('change', function () {
+				levelSelect.on('change', function() {
 					actions.changeGroupLevel(groupId, $(this).val());
 				});
 			}
@@ -537,7 +533,7 @@ var nav = {
 	},
 
 
-	displayLinks: function (links) {
+	displayLinks: function(links) {
 
 		if (links === '') {
 			links = curr.circleLinks;
@@ -558,14 +554,14 @@ var nav = {
 		}
 
 
-		elements.mainUILinksTable.children('tr.entry').each(function () {
+		elements.mainUILinksTable.children('tr.entry').each(function() {
 
 			var linkId = $(this).attr('link-id');
 			var status = parseInt($(this).attr('link-status'));
 
 			var statusSelect = $(this).find('.link-status-select');
 
-			statusSelect.on('change', function () {
+			statusSelect.on('change', function() {
 				actions.changeLinkStatus(linkId, $(this).val());
 			});
 			statusSelect.append($('<option>', {
@@ -606,7 +602,7 @@ var nav = {
 	},
 
 
-	displayCircleDetails: function (details) {
+	displayCircleDetails: function(details) {
 		elements.circleDetails.children('#name').text(details.name);
 		elements.circleDesc.text(details.description);
 
@@ -615,8 +611,7 @@ var nav = {
 			elements.circleDesc.html(
 				escapeHTML(details.description).replace(/\n/g, '&nbsp;<br />')).show(
 				define.animationSpeed);
-		}
-		else {
+		} else {
 			elements.circleDesc.text('').hide(define.animationSpeed);
 		}
 
@@ -625,7 +620,7 @@ var nav = {
 	},
 
 
-	displayMembersInteraction: function (details) {
+	displayMembersInteraction: function(details) {
 		if (details.viewer.level < define.levelModerator) {
 			elements.buttonAddMember.hide();
 		} else {
@@ -654,33 +649,31 @@ var nav = {
 	},
 
 
-	displayMemberInteractionGroupLinks: function (details) {
+	displayMemberInteractionGroupLinks: function(details) {
 		if (curr.allowed_linked_groups === '0' ||
 			details.viewer.level < define.levelAdmin
 		) {
 			elements.buttonLinkGroup.hide();
-		}
-		else {
+		} else {
 			elements.buttonLinkGroup.show();
 		}
 	},
 
 
-	displayMemberInteractionCircleLinks: function (details) {
+	displayMemberInteractionCircleLinks: function(details) {
 		if (curr.allowed_federated_circles === '0' ||
 			curr.circleSettings['allow_links'] !== 'true' ||
 			details.type === define.typePersonal ||
 			details.viewer.level < define.levelAdmin
 		) {
 			elements.buttonLinkCircle.hide();
-		}
-		else {
+		} else {
 			elements.buttonLinkCircle.show();
 		}
 	},
 
 
-	displayNonMemberInteraction: function (details) {
+	displayNonMemberInteraction: function(details) {
 		elements.joinCircleAccept.hide();
 		elements.joinCircleReject.hide();
 		elements.joinCircleRequest.hide();
@@ -702,7 +695,7 @@ var nav = {
 			return;
 		}
 
-		setTimeout(function () {
+		setTimeout(function() {
 			nav.joinCircleAction();
 		}, 200);
 	}

@@ -44,7 +44,7 @@ class LocalUsers implements ISearch {
 		foreach ($users as $user) {
 			$result[] =
 				new SearchResult(
-					$user->getUID(), Member::TYPE_USER, ['display' => $user->getDisplayName()]
+					$user->getUID(), Member::TYPE_USER, '', ['display' => $user->getDisplayName()]
 				);
 		}
 

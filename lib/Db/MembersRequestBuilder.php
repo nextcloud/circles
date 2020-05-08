@@ -81,8 +81,8 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select(
-			'm.user_id', 'm.user_type', 'm.circle_id', 'm.level', 'm.status', 'm.note', 'm.contact_id',
-			'm.member_id', 'm.contact_meta', 'm.joined'
+			'm.user_id', 'm.instance', 'm.user_type', 'm.circle_id', 'm.level', 'm.status', 'm.note',
+			'm.contact_id', 'm.member_id', 'm.contact_meta', 'm.joined'
 		)
 		   ->from(self::TABLE_MEMBERS, 'm')
 		   ->orderBy('m.joined');
@@ -147,12 +147,14 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * Base of the Sql Updte request for Members
 	 *
-	 * @param int $circleId
-	 * @param Member $member
+	 * @param string /$circleId
+	 * @param string $userId
+	 * @param string $instance
+	 * @param int $type
 	 *
 	 * @return IQueryBuilder
 	 */
-	protected function getMembersUpdateSql($circleId, Member $member) {
+	protected function getMembersUpdateSql(string $circleId, string $userId, string $instance, int $type) {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$expr = $qb->expr();
 
@@ -161,8 +163,9 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		   ->where(
 			   $expr->andX(
 				   $expr->eq('circle_id', $qb->createNamedParameter($circleId)),
-				   $expr->eq('user_id', $qb->createNamedParameter($member->getUserId())),
-				   $expr->eq('user_type', $qb->createNamedParameter($member->getType()))
+				   $expr->eq('user_id', $qb->createNamedParameter($userId)),
+				   $expr->eq('instance', $qb->createNamedParameter($instance)),
+				   $expr->eq('user_type', $qb->createNamedParameter($type))
 			   )
 		   );
 
@@ -217,6 +220,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		}
 
 		$member->setLevel($data['level']);
+		$member->setInstance($data['instance']);
 		$member->setStatus($data['status']);
 		$member->setJoined($this->timezoneService->convertTimeForCurrentUser($data['joined']));
 

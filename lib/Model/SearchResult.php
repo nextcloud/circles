@@ -27,18 +27,6 @@
 namespace OCA\Circles\Model;
 
 
-use OCA\Circles\Exceptions\CircleTypeNotValidException;
-use OCA\Circles\Exceptions\MemberAlreadyExistsException;
-use OCA\Circles\Exceptions\MemberCantJoinCircleException;
-use OCA\Circles\Exceptions\MemberDoesNotExistException;
-use OCA\Circles\Exceptions\MemberIsBlockedException;
-use OCA\Circles\Exceptions\MemberIsNotAdminException;
-use OCA\Circles\Exceptions\MemberIsNotModeratorException;
-use OCA\Circles\Exceptions\MemberIsNotOwnerException;
-use OCA\Circles\Exceptions\MemberIsOwnerException;
-use OCA\Circles\Exceptions\MemberTypeCantEditLevelException;
-use OCA\Circles\Exceptions\ModeratorIsNotHighEnoughException;
-
 class SearchResult implements \JsonSerializable {
 
 	/** @var string */
@@ -46,6 +34,9 @@ class SearchResult implements \JsonSerializable {
 
 	/** @var int */
 	private $type;
+
+	/** @var string */
+	private $instance = '';
 
 	/** @var array */
 	private $data = [];
@@ -58,9 +49,10 @@ class SearchResult implements \JsonSerializable {
 	 * @param int $type
 	 * @param array $data
 	 */
-	function __construct($ident = '', $type = 0, $data = []) {
+	function __construct($ident = '', $type = 0, $instance = '', $data = []) {
 		$this->setIdent($ident);
 		$this->setType($type);
+		$this->setInstance($instance);
 		$this->setData($data);
 	}
 
@@ -77,6 +69,21 @@ class SearchResult implements \JsonSerializable {
 	 */
 	public function getIdent() {
 		return $this->ident;
+	}
+
+
+	/**
+	 * @param string $instance
+	 */
+	public function setInstance($instance) {
+		$this->instance = $instance;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getInstance() {
+		return $this->instance;
 	}
 
 
@@ -125,9 +132,10 @@ class SearchResult implements \JsonSerializable {
 	function jsonSerialize() {
 
 		return [
-			'ident' => $this->getIdent(),
-			'type'  => $this->getType(),
-			'data'  => $this->getData()
+			'ident'    => $this->getIdent(),
+			'instance' => $this->getInstance(),
+			'type'     => $this->getType(),
+			'data'     => $this->getData()
 		];
 
 	}

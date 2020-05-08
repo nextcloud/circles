@@ -119,7 +119,7 @@ class GroupsService {
 			$this->circlesService->hasToBeAdmin($circle->getHigherViewer());
 
 			$allMembers =
-				$this->membersRequest->forceGetMembers($circleUniqueId, Member::LEVEL_MEMBER, true);
+				$this->membersRequest->forceGetMembers($circleUniqueId, Member::LEVEL_MEMBER, 0, true);
 
 			$group = $this->groupManager->get($groupId);
 			$count = $group->count();
@@ -137,7 +137,7 @@ class GroupsService {
 				$count++;
 			}
 
-			$limit = (int) $circle->getSetting('members_limit');
+			$limit = (int)$circle->getSetting('members_limit');
 			if ($limit === 0) {
 				$limit = $this->configService->getAppValue(ConfigService::CIRCLES_MEMBERS_LIMIT);
 			}

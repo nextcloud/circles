@@ -26,6 +26,7 @@
 
 namespace OCA\Circles\Service;
 
+use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Model\Circle;
 use OCP\IConfig;
 use OCP\IRequest;
@@ -39,6 +40,7 @@ class ConfigService {
 	const CIRCLES_STILL_FRONTEND = 'still_frontend';
 	const CIRCLES_SWAP_TO_TEAMS = 'swap_to_teams';
 	const CIRCLES_ALLOW_FEDERATED_CIRCLES = 'allow_federated';
+	const CIRCLES_GS_ENABLED = 'gs_enabled';
 	const CIRCLES_MEMBERS_LIMIT = 'members_limit';
 	const CIRCLES_ACCOUNTS_ONLY = 'accounts_only';
 	const CIRCLES_ALLOW_LINKED_GROUPS = 'allow_linked_groups';
@@ -52,6 +54,12 @@ class ConfigService {
 	const CIRCLES_TEST_ASYNC_HAND = 'test_async_hand';
 	const CIRCLES_TEST_ASYNC_COUNT = 'test_async_count';
 
+	const GS_ENABLED = 'enabled';
+	const GS_MODE = 'mode';
+	const GS_KEY = 'key';
+	const GS_LOOKUP = 'lookup';
+
+
 	private $defaults = [
 		self::CIRCLES_ALLOW_CIRCLES           => Circle::CIRCLES_ALL,
 		self::CIRCLES_CONTACT_BACKEND         => '0',
@@ -62,6 +70,7 @@ class ConfigService {
 		self::CIRCLES_MEMBERS_LIMIT           => '50',
 		self::CIRCLES_ALLOW_LINKED_GROUPS     => '0',
 		self::CIRCLES_ALLOW_FEDERATED_CIRCLES => '0',
+		self::CIRCLES_GS_ENABLED              => '0',
 		self::CIRCLES_ALLOW_NON_SSL_LINKS     => '0',
 		self::CIRCLES_NON_SSL_LOCAL           => '0',
 		self::CIRCLES_SELF_SIGNED             => '0',
@@ -428,8 +437,72 @@ class ConfigService {
 	}
 
 
+	/**
+	 * @param string $type
+	 *
+	 * @throws GSStatusException
+	 */
+	public function getGSStatus(string $type = '') {
+		$enabled = $this->config->getSystemValueBool('gs.enabled', false);
+		$lookup = $this->config->getSystemValue('lookup_server', '');
+
+		if ($lookup === '' || !$enabled) {
+			if ($type === self::GS_ENABLED) {
+				return false;
+			}
+
+			throw new GSStatusException('GS and lookup are not configured : ' . $lookup . ', ' . $enabled);
+		}
+
+		$clef = $this->config->getSystemValue('gss.jwt.key', '');
+		$mode = $this->config->getSystemValue('gss.mode', '');
+
+		switch ($type) {
+			case self::GS_ENABLED:
+				return $enabled;
+
+			case self::GS_MODE:
+				return $mode;
+
+			case self::GS_KEY:
+				return $clef;
+
+			case self::GS_LOOKUP:
+				return $lookup;
+		}
+
+		return [
+			self::GS_ENABLED => $enabled,
+			self::GS_LOOKUP  => $lookup,
+			self::GS_MODE    => $clef,
+			self::GS_KEY     => $mode,
+		];
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getTrustedDomains(): array {
+		$domains = [];
+		foreach ($this->config->getSystemValue('trusted_domains', []) as $v) {
+			$domains[] = $v;
+		}
+
+		return $domains;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getLocalCloudId(): string {
+		return $this->getTrustedDomains()[0];
+	}
+
 	public function getInstanceId() {
 		return $this->config->getSystemValue('instanceid');
 	}
 
 }
+

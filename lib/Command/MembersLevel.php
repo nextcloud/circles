@@ -118,11 +118,12 @@ class MembersLevel extends Base {
 
 		$member = $this->membersService->getMemberById($memberId);
 		$this->membersService->levelMember(
-			$member->getCircleId(), $member->getUserId(), Member::TYPE_USER, $level, true
+			$member->getCircleId(), $member->getUserId(), Member::TYPE_USER, $member->getInstance(), $level,
+			true
 		);
 
 		$member = $this->membersRequest->forceGetMember(
-			$member->getCircleId(), $member->getUserId(), Member::TYPE_USER
+			$member->getCircleId(), $member->getUserId(), Member::TYPE_USER, $member->getInstance()
 		);
 		echo json_encode($member, JSON_PRETTY_PRINT) . "\n";
 

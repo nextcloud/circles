@@ -192,6 +192,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 	/**
 	 * {@inheritdoc}
 	 * @throws IllegalIDChangeException
+	 * @throws Exception
 	 */
 	public function createShareToMember(SharingFrame $frame, Member $member) {
 		if (!$frame->is0Circle()) {
@@ -205,9 +206,8 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 		$share = $this->generateShare($payload['share']);
 		if ($member->getType() === Member::TYPE_MAIL || $member->getType() === Member::TYPE_CONTACT) {
+			$circle = $frame->getCircle();
 			try {
-				$circle = $frame->getCircle();
-
 				// federated shared in contact
 				$clouds = $this->getCloudsFromContact($member->getUserId());
 				if ($this->federatedEnabled && !empty($clouds)) {

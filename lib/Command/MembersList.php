@@ -109,7 +109,7 @@ class MembersList extends Base {
 		$output = $output->section();
 
 		$table = new Table($output);
-		$table->setHeaders(['ID', 'Name', 'Level']);
+		$table->setHeaders(['ID', 'Username', 'Instance', 'Level']);
 		$table->render();
 		$output->writeln('');
 
@@ -119,6 +119,7 @@ class MembersList extends Base {
 				[
 					$member->getMemberId(),
 					$member->getUserId(),
+					$member->getInstance(),
 					$member->getLevelString(),
 				]
 			);

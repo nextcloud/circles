@@ -167,7 +167,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 				throw $this->errorShareAlreadyExist($share);
 			}
 
-//			$share->setToken($this->miscService->uuid(15));
+			$share->setToken($this->token(15));
 //			if ($this->configService->enforcePasswordProtection()) {
 //				$share->setPassword($this->miscService->uuid(15));
 //			}
@@ -413,8 +413,8 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 		$data['share_with'] =
 			sprintf(
 				'%s (%s, %s) [%s]', $data['circle_name'],
-				$this->l10n->t(Circle::TypeLongString($data['circle_type'])),
-				$this->miscService->getDisplayName($data['circle_owner']), $data['share_with']
+				Circle::TypeLongString($data['circle_type']),
+				$this->miscService->getDisplayName($data['circle_owner'], true), $data['share_with']
 			);
 
 
@@ -595,6 +595,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 				 ->selectAlias('ct.password', 'personal_password')
 				 ->selectAlias('ct.circle_id', 'personal_circle_id')
 				 ->selectAlias('ct.user_id', 'personal_user_id')
+				 ->selectAlias('ct.member_id', 'personal_member_id')
 				 ->from('share', 's')
 				 ->from('circles_tokens', 'ct')
 				 ->where(
@@ -619,21 +620,14 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 			throw new ShareNotFound('personal check not found');
 		}
 
+		\OC::$server->getLogger()->log(3, '#### ' . json_encode($data));
 		$member = null;
 		try {
-			$member = $this->membersService->getMember(
-				$data['personal_circle_id'], $data['personal_user_id'], Member::TYPE_MAIL, true
-			);
-		} catch (Exception $e) {
-			try {
-				$member = $this->membersService->getMember(
-					$data['personal_circle_id'], $data['personal_user_id'], Member::TYPE_CONTACT, true
-				);
-			} catch (Exception $e) {
+			$member = $this->membersService->getMemberById($data['personal_member_id']);
+			if (!$member->isLevel(Member::LEVEL_MEMBER)) {
+				throw new Exception();
 			}
-		}
-
-		if ($member === null || !$member->isLevel(Member::LEVEL_MEMBER)) {
+		} catch (Exception $e) {
 			throw new ShareNotFound('invalid token');
 		}
 
@@ -761,8 +755,8 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 				  ->setSharedWithDisplayName(
 					  sprintf(
 						  '%s (%s, %s)', $data['circle_name'],
-						  $this->l10n->t(Circle::TypeLongString($data['circle_type'])),
-						  $this->miscService->getDisplayName($data['circle_owner'])
+						  Circle::TypeLongString($data['circle_type']),
+						  $this->miscService->getDisplayName($data['circle_owner'], true)
 					  )
 				  );
 		}
@@ -928,19 +922,44 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 		$qb = $this->dbConnection->getQueryBuilder();
 
 		$qb->select('*')
-			->from('share')
-			->where(
-				$qb->expr()->orX(
-					$qb->expr()->eq('share_type', $qb->createNamedParameter(IShare::TYPE_CIRCLE))
-				)
-			);
+		   ->from('share')
+		   ->where(
+			   $qb->expr()
+				  ->orX(
+					  $qb->expr()
+						 ->eq('share_type', $qb->createNamedParameter(IShare::TYPE_CIRCLE))
+				  )
+		   );
 
 		$cursor = $qb->execute();
-		while($data = $cursor->fetch()) {
+		while ($data = $cursor->fetch()) {
 			$share = $this->createShareObject($data);
 
 			yield $share;
 		}
 		$cursor->closeCursor();
 	}
+
+
+	/**
+	 * @param int $length
+	 *
+	 * @return string
+	 */
+	protected function token(int $length = 15): string {
+		$chars = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890';
+
+		$str = '';
+		$max = strlen($chars);
+		for ($i = 0; $i < $length; $i++) {
+			try {
+				$str .= $chars[random_int(0, $max - 1)];
+			} catch (Exception $e) {
+			}
+		}
+
+		return $str;
+	}
+
+
 }

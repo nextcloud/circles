@@ -31,6 +31,7 @@ namespace OCA\Circles\Service;
 
 
 use Exception;
+use OC;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleProviderRequest;
 use OCA\Circles\Db\CirclesRequest;
@@ -40,12 +41,14 @@ use OCA\Circles\Db\SharesRequest;
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
+use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
+use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
-use OCA\Circles\Exceptions\MemberIsNotModeratorException;
 use OCA\Circles\Exceptions\MemberIsNotOwnerException;
 use OCA\Circles\Exceptions\MembersLimitException;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\Member;
 use OCP\IGroupManager;
 use OCP\IL10N;
@@ -76,6 +79,9 @@ class CirclesService {
 	/** @var FederatedLinksRequest */
 	private $federatedLinksRequest;
 
+	/** @var GSUpstreamService */
+	private $gsUpstreamService;
+
 	/** @var EventsService */
 	private $eventsService;
 
@@ -97,6 +103,7 @@ class CirclesService {
 	 * @param MembersRequest $membersRequest
 	 * @param SharesRequest $sharesRequest
 	 * @param FederatedLinksRequest $federatedLinksRequest
+	 * @param GSUpstreamService $gsUpstreamService
 	 * @param EventsService $eventsService
 	 * @param CircleProviderRequest $circleProviderRequest
 	 * @param MiscService $miscService
@@ -110,6 +117,7 @@ class CirclesService {
 		MembersRequest $membersRequest,
 		SharesRequest $sharesRequest,
 		FederatedLinksRequest $federatedLinksRequest,
+		GSUpstreamService $gsUpstreamService,
 		EventsService $eventsService,
 		CircleProviderRequest $circleProviderRequest,
 		MiscService $miscService
@@ -122,6 +130,7 @@ class CirclesService {
 		$this->membersRequest = $membersRequest;
 		$this->sharesRequest = $sharesRequest;
 		$this->federatedLinksRequest = $federatedLinksRequest;
+		$this->gsUpstreamService = $gsUpstreamService;
 		$this->eventsService = $eventsService;
 		$this->circleProviderRequest = $circleProviderRequest;
 		$this->miscService = $miscService;
@@ -139,7 +148,8 @@ class CirclesService {
 	 * @return Circle
 	 * @throws CircleAlreadyExistsException
 	 * @throws CircleTypeDisabledException
-	 * @throws \OCA\Circles\Exceptions\MemberAlreadyExistsException
+	 * @throws MemberAlreadyExistsException
+	 * @throws Exception
 	 */
 	public function createCircle($type, $name, string $ownerId = '') {
 		$type = $this->convertTypeStringToBitValue($type);
@@ -163,14 +173,24 @@ class CirclesService {
 			$ownerId = $this->userId;
 		}
 
-		try {
-			$this->circlesRequest->createCircle($circle, $ownerId);
-			$this->membersRequest->createMember($circle->getOwner());
-		} catch (CircleAlreadyExistsException $e) {
-			throw $e;
+		if (!$this->circlesRequest->isCircleUnique($circle, $ownerId)) {
+			throw new CircleAlreadyExistsException(
+				$this->l10n->t('A circle with that name exists')
+			);
 		}
 
-		$this->eventsService->onCircleCreation($circle);
+		$circle->generateUniqueId();
+
+		$owner = new Member($ownerId, Member::TYPE_USER);
+		$owner->setCircleId($circle->getUniqueId())
+			  ->setLevel(Member::LEVEL_OWNER)
+			  ->setStatus(Member::STATUS_MEMBER);
+		$circle->setOwner($owner)
+			   ->setViewer($owner);
+
+		$event = new GSEvent(GSEvent::CIRCLE_CREATE, true);
+		$event->setCircle($circle);
+		$this->gsUpstreamService->newEvent($event);
 
 		return $circle;
 	}
@@ -225,7 +245,7 @@ class CirclesService {
 	public function detailsCircle($circleUniqueId, $forceAll = false) {
 
 		try {
-			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId, $forceAll);
+			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId, '', $forceAll);
 			if ($this->viewerIsAdmin()
 				|| $circle->getHigherViewer()
 						  ->isLevel(Member::LEVEL_MEMBER)
@@ -235,7 +255,7 @@ class CirclesService {
 				$this->detailsCircleLinkedGroups($circle);
 				$this->detailsCircleFederatedCircles($circle);
 			}
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			throw $e;
 		}
 
@@ -264,6 +284,7 @@ class CirclesService {
 
 
 	/**
+	 * // TODO - check this on GS setup
 	 * get the Linked Group list and add the result to the Circle.
 	 *
 	 * @param Circle $circle
@@ -310,37 +331,24 @@ class CirclesService {
 	 * @param array $settings
 	 *
 	 * @return Circle
-	 * @throws \Exception
+	 * @throws Exception
 	 */
-	public function settingsCircle($circleUniqueId, $settings) {
+	public function settingsCircle(string $circleUniqueId, array $settings) {
+		$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
+		$this->hasToBeOwner($circle->getHigherViewer());
 
-		try {
-			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
-			$this->hasToBeOwner($circle->getHigherViewer());
-
-			$oldSettings = array_merge(
-				$circle->getSettings(),
-				[
-					'circle_name' => $circle->getName(),
-					'circle_desc' => $circle->getDescription(),
-				]
-			);
-
-			if (!$this->viewerIsAdmin()) {
-				$settings['members_limit'] = $circle->getSetting('members_limit');
-			}
-
-			$ak = array_keys($settings);
-			foreach ($ak AS $k) {
-				$circle->setSetting($k, $settings[$k]);
-			}
-
-			$this->circlesRequest->updateCircle($circle, $this->userId);
-
-			$this->eventsService->onSettingsChange($circle, $oldSettings);
-		} catch (\Exception $e) {
-			throw $e;
+		if (!$this->viewerIsAdmin()) {
+			$settings['members_limit'] = $circle->getSetting('members_limit');
 		}
+
+		// can only be run from the instance of the circle's owner.
+		$event = new GSEvent(GSEvent::CIRCLE_UPDATE);
+		$event->setCircle($circle);
+		$event->getData()
+			  ->sBool('local_admin', $this->viewerIsAdmin())
+			  ->sArray('settings', $settings);
+
+		$this->gsUpstreamService->newEvent($event);
 
 		return $circle;
 	}
@@ -352,24 +360,20 @@ class CirclesService {
 	 * @param string $circleUniqueId
 	 *
 	 * @return null|Member
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function joinCircle($circleUniqueId) {
-
 		try {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
-
 			$member = $this->membersRequest->getFreshNewMember(
-				$circleUniqueId, $this->userId, Member::TYPE_USER
+				$circleUniqueId, $this->userId, Member::TYPE_USER, ''
 			);
-			$member->hasToBeAbleToJoinTheCircle();
-			$this->checkThatCircleIsNotFull($circle);
 
-			$member->joinCircle($circle->getType());
-			$this->membersRequest->updateMember($member);
-
-			$this->eventsService->onMemberNew($circle, $member);
-		} catch (\Exception $e) {
+			$event = new GSEvent(GSEvent::MEMBER_JOIN);
+			$event->setCircle($circle);
+			$event->setMember($member);
+			$this->gsUpstreamService->newEvent($event);
+		} catch (Exception $e) {
 			throw $e;
 		}
 
@@ -383,20 +387,16 @@ class CirclesService {
 	 * @param string $circleUniqueId
 	 *
 	 * @return null|Member
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function leaveCircle($circleUniqueId) {
-
 		$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 		$member = $circle->getViewer();
 
-		$member->hasToBeMemberOrAlmost();
-		$member->cantBeOwner();
-
-		$this->eventsService->onMemberLeaving($circle, $member);
-
-		$this->membersRequest->removeMember($member);
-		$this->sharesRequest->removeSharesFromMember($member);
+		$event = new GSEvent(GSEvent::MEMBER_LEAVE);
+		$event->setCircle($circle);
+		$event->setMember($member);
+		$this->gsUpstreamService->newEvent($event);
 
 		return $member;
 	}
@@ -411,10 +411,10 @@ class CirclesService {
 	 *
 	 * @throws CircleDoesNotExistException
 	 * @throws MemberIsNotOwnerException
-	 * @throws \OCA\Circles\Exceptions\ConfigNoCircleAvailableException
+	 * @throws ConfigNoCircleAvailableException
+	 * @throws Exception
 	 */
 	public function removeCircle($circleUniqueId, bool $force = false) {
-
 		if ($force) {
 			$circle = $this->circlesRequest->forceGetCircle($circleUniqueId);
 		} else {
@@ -422,11 +422,12 @@ class CirclesService {
 			$this->hasToBeOwner($circle->getHigherViewer());
 		}
 
+		// removing a Circle is done only by owner, so can already be done by local user, or admin, or occ
+		// at this point, we already know that all condition are filled. we can force it.
+		$event = new GSEvent(GSEvent::CIRCLE_DESTROY, false, true);
+		$event->setCircle($circle);
 
-		$this->eventsService->onCircleDestruction($circle);
-
-		$this->membersRequest->removeAllFromCircle($circleUniqueId);
-		$this->circlesRequest->destroyCircle($circleUniqueId);
+		$this->gsUpstreamService->newEvent($event);
 	}
 
 
@@ -438,52 +439,6 @@ class CirclesService {
 	 */
 	public function infoCircleByName($circleName) {
 		return $this->circlesRequest->forceGetCircleByName($circleName);
-	}
-
-
-	/**
-	 * When a user is removed.
-	 * Before deleting a user from the cloud, we assign a new owner to his Circles.
-	 * Remove the Circle if it has no admin.
-	 *
-	 * @param string $userId
-	 */
-	public function onUserRemoved($userId) {
-		$circles = $this->circlesRequest->getCircles($userId, 0, '', Member::LEVEL_OWNER);
-
-		foreach ($circles as $circle) {
-
-			$members =
-				$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_ADMIN);
-
-			if (sizeof($members) === 1) {
-				$this->circlesRequest->destroyCircle($circle->getUniqueId());
-				continue;
-			}
-
-			$this->switchOlderAdminToOwner($circle, $members);
-		}
-	}
-
-
-	/**
-	 * switchOlderAdminToOwner();
-	 *
-	 * @param Circle $circle
-	 * @param Member[] $members
-	 */
-	private function switchOlderAdminToOwner(Circle $circle, $members) {
-
-		foreach ($members as $member) {
-			if ($member->getLevel() === Member::LEVEL_ADMIN) {
-				$member->setLevel(Member::LEVEL_OWNER);
-				$this->membersRequest->updateMember($member);
-				$this->eventsService->onMemberOwner($circle, $member);
-
-				return;
-			}
-		}
-
 	}
 
 
@@ -528,7 +483,7 @@ class CirclesService {
 			$ext = '.png';
 		}
 
-		$urlGen = \OC::$server->getURLGenerator();
+		$urlGen = OC::$server->getURLGenerator();
 		switch ($type) {
 			case Circle::CIRCLES_PERSONAL:
 				return $urlGen->getAbsoluteURL(
@@ -580,12 +535,10 @@ class CirclesService {
 	 * @throws MembersLimitException
 	 */
 	public function checkThatCircleIsNotFull(Circle $circle) {
+		$members =
+			$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MEMBER, 0, true);
 
-		$members = $this->membersRequest->forceGetMembers(
-			$circle->getUniqueId(), Member::LEVEL_MEMBER, true
-		);
-
-		$limit = (int) $circle->getSetting('members_limit');
+		$limit = (int)$circle->getSetting('members_limit');
 		if ($limit === -1) {
 			return;
 		}
@@ -604,7 +557,7 @@ class CirclesService {
 	/**
 	 * @return bool
 	 */
-	public function viewerIsAdmin() {
+	public function viewerIsAdmin(): bool {
 		if ($this->userId === '') {
 			return false;
 		}

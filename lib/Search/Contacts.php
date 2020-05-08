@@ -49,7 +49,7 @@ class Contacts implements ISearch {
 			}
 
 			$data = $this->generateDataArray($contact);
-			$result[] = new SearchResult($contact['UID'], Member::TYPE_CONTACT, $data);
+			$result[] = new SearchResult($contact['UID'], Member::TYPE_CONTACT, '', $data);
 		}
 
 		return $result;

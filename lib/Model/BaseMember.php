@@ -87,7 +87,10 @@ class BaseMember implements \JsonSerializable {
 	private $note;
 
 	/** @var string */
-	private $joined;
+	private $instance = '';
+
+	/** @var string */
+	private $joined = '';
 
 	/** @var int */
 	private $joinedSince;
@@ -225,6 +228,17 @@ class BaseMember implements \JsonSerializable {
 
 	public function getNote() {
 		return $this->note;
+	}
+
+
+	public function setInstance($instance) {
+		$this->instance = $instance;
+
+		return $this;
+	}
+
+	public function getInstance() {
+		return $this->instance;
 	}
 
 
@@ -367,13 +381,16 @@ class BaseMember implements \JsonSerializable {
 
 		$member = new Member();
 		$member->setCircleId($arr['circle_id']);
+		$member->setMemberId($arr['member_id']);
 		$member->setLevel($arr['level']);
 
 		$member->setType(MiscService::get($arr, 'user_type'));
 		$member->setType(MiscService::get($arr, 'type', $member->getType()));
 
+		$member->setInstance($arr['instance']);
 		$member->setUserId($arr['user_id']);
 		$member->setStatus($arr['status']);
+		$member->setInstance($arr['instance']);
 		$member->setNote($arr['note']);
 		$member->setJoined($arr['joined']);
 
@@ -402,6 +419,7 @@ class BaseMember implements \JsonSerializable {
 			'level'        => $this->getLevel(),
 			'level_string' => $this->getLevelString(),
 			'status'       => $this->getStatus(),
+			'instance'     => $this->getInstance(),
 			'note'         => $this->getNote(),
 			'joined'       => $this->getJoined()
 		];

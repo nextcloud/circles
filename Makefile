@@ -46,7 +46,7 @@ appstore: clean composer
 	--exclude=/translationfiles \
 	--exclude=/.tx \
 	--exclude=/tests \
-	--exclude=/.git \
+	--exclude=.git \
 	--exclude=/.github \
 	--exclude=/l10n/l10n.pl \
 	--exclude=/CONTRIBUTING.md \

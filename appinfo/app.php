@@ -27,14 +27,18 @@
  */
 
 
+
 use OCA\Circles\AppInfo\Application;
 
 
 require_once __DIR__ . '/autoload.php';
 
 
+/** @var Application $app */
 $app = \OC::$server->query(Application::class);
+
 $app->registerNavigation();
 $app->registerFilesNavigation();
 $app->registerFilesPlugin();
+
 

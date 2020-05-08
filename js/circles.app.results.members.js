@@ -37,7 +37,7 @@
 var resultMembers = {
 
 
-	generateItemResult: function (search, value) {
+	generateItemResult: function(search, value) {
 
 		switch (value.type) {
 			case define.typeUser:
@@ -50,7 +50,7 @@ var resultMembers = {
 	},
 
 
-	enhanceSearchResult: function (search, display) {
+	enhanceSearchResult: function(search, display) {
 		display = escapeHTML(display);
 		if (search.length > 0) {
 			display = display.replace(new RegExp('(' + search + ')', 'gi'), '<b>$1</b>');
@@ -60,19 +60,27 @@ var resultMembers = {
 	},
 
 
-	generateItemUser: function (search, value) {
+	generateItemUser: function(search, value) {
+		var instance = value.instance;
+		console.log(instance);
+		if (instance !== '') {
+			return '<div class="result_top">' +
+				resultMembers.enhanceSearchResult(search, value.data.display) + '</div>' +
+				'<div class="result_bot">' + t('circles', 'Global Scale User') + ' (' + instance + ')</div>';
+		}
+
 		return '<div class="result_top">' +
 			resultMembers.enhanceSearchResult(search, value.data.display) + '</div>' +
 			'<div class="result_bot">' + t('circles', 'Local User') + '</div>';
 	},
 
-	generateItemGroup: function (search, value) {
+	generateItemGroup: function(search, value) {
 		return '<div class="result_top">' +
 			resultMembers.enhanceSearchResult(search, value.data.display) + '</div>' +
 			'<div class="result_bot">' + t('circles', 'Local Group') + '</div>';
 	},
 
-	generateItemContact: function (search, value) {
+	generateItemContact: function(search, value) {
 		var display = resultMembers.enhanceSearchResult(search, value.data.display);
 		var email = resultMembers.enhanceSearchResult(search, value.data.email);
 		var org = resultMembers.enhanceSearchResult(search, value.data.organization);
@@ -89,7 +97,7 @@ var resultMembers = {
 	},
 
 
-	searchMembersResult: function (response) {
+	searchMembersResult: function(response) {
 
 		elements.membersSearchResult.children().remove();
 
@@ -99,15 +107,22 @@ var resultMembers = {
 		}
 
 		var currSearch = response.search;
-		$.each(response.result, function (index, value) {
+		$.each(response.result, function(index, value) {
 			elements.membersSearchResult.append('<div class="members_search" data-type="' +
-				value.type + '" data-ident="' + escapeHTML(value.ident) + '">' +
-				resultMembers.generateItemResult(currSearch, value) + '</div>');
+				value.type + '" data-ident="' + escapeHTML(value.ident) + '" data-instance="' + escapeHTML(value.instance) + '">' +
+				resultMembers.generateItemResult(currSearch, value) + '</div>'
+			)
+			;
 		});
 
-		$('.members_search').on('click', function () {
+		$('.members_search').on('click', function() {
 			var ident = $(this).attr('data-ident');
 			var type = $(this).attr('data-type');
+			var instance = $(this).attr('data-instance');
+			if (instance === undefined) {
+				instance = '';
+			}
+			console.log('instance ' + instance);
 
 			if (Number(type) === define.typeGroup) {
 
@@ -115,14 +130,15 @@ var resultMembers = {
 					t('circles',
 						'This operation will add/invite all members of the group to the circle'),
 					t('circles', 'Please confirm'),
-					function (e) {
+					function(e) {
 						if (e === true) {
-							api.addMember(curr.circle, ident, type, resultMembers.addMemberResult);
+							api.addMember(curr.circle, ident, type, instance,
+								resultMembers.addMemberResult);
 						}
 					});
 
 			} else {
-				api.addMember(curr.circle, ident, type, resultMembers.addMemberResult);
+				api.addMember(curr.circle, ident, type, instance, resultMembers.addMemberResult);
 			}
 
 			elements.membersSearchResult.hide(100);
@@ -143,7 +159,7 @@ var resultMembers = {
 	},
 
 
-	addMemberResult: function (result) {
+	addMemberResult: function(result) {
 		resultMembers.addMemberUserResult(result);
 		resultMembers.addMemberGroupResult(result);
 		resultMembers.addMemberMailResult(result);
@@ -151,7 +167,7 @@ var resultMembers = {
 	},
 
 
-	addMemberUserResult: function (result) {
+	addMemberUserResult: function(result) {
 		if (result.user_type !== define.typeUser) {
 			return;
 		}
@@ -177,7 +193,7 @@ var resultMembers = {
 	},
 
 
-	addMemberMailResult: function (result) {
+	addMemberMailResult: function(result) {
 		if (result.user_type !== define.typeMail) {
 			return;
 		}
@@ -196,7 +212,7 @@ var resultMembers = {
 			': ' + ((result.error) ? result.error : t('circles', 'no error message')));
 	},
 
-	addMemberContactResult: function (result) {
+	addMemberContactResult: function(result) {
 		if (result.user_type !== define.typeContact) {
 			return;
 		}
@@ -216,7 +232,7 @@ var resultMembers = {
 	},
 
 
-	inviteMemberResult: function (result) {
+	inviteMemberResult: function(result) {
 
 		if (result.status === 1) {
 			OCA.notification.onSuccess(
@@ -233,7 +249,7 @@ var resultMembers = {
 	},
 
 
-	addMemberGroupResult: function (result) {
+	addMemberGroupResult: function(result) {
 
 		if (result.user_type !== define.typeGroup) {
 			return;
@@ -260,7 +276,7 @@ var resultMembers = {
 	},
 
 
-	inviteMemberGroupResult: function (result) {
+	inviteMemberGroupResult: function(result) {
 
 		if (result.status === 1) {
 			OCA.notification.onSuccess(
@@ -278,11 +294,11 @@ var resultMembers = {
 	},
 
 
-	removeMemberResult: function (result) {
+	removeMemberResult: function(result) {
 		if (result.status === 1) {
 
 			elements.mainUIMembersTable.children("[member-id='" + result.user_id + "']").each(
-				function () {
+				function() {
 					if (Number($(this).attr('member-type')) === result.user_type) {
 						$(this).hide(300);
 					}
@@ -300,7 +316,7 @@ var resultMembers = {
 			((result.error) ? result.error : t('circles', 'no error message')));
 	},
 
-	levelMemberResult: function (result) {
+	levelMemberResult: function(result) {
 		if (result.status === 1) {
 			OCA.notification.onSuccess(
 				t('circles', "Member '{name}' updated",

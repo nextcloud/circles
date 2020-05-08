@@ -41,12 +41,11 @@ use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Exceptions\EmailAccountInvalidFormatException;
 use OCA\Circles\Exceptions\GroupDoesNotExistException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
+use OCA\Circles\Exceptions\MemberCantJoinCircleException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\MemberIsNotModeratorException;
-use OCA\Circles\Exceptions\MemberIsOwnerException;
-use OCA\Circles\Exceptions\MemberTypeCantEditLevelException;
-use OCA\Circles\Exceptions\ModeratorIsNotHighEnoughException;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\Member;
 use OCP\IL10N;
 use OCP\IUserManager;
@@ -89,6 +88,9 @@ class MembersService {
 	/** @var EventsService */
 	private $eventsService;
 
+	/** @var GSUpstreamService */
+	private $gsUpstreamService;
+
 	/** @var FileSharingBroadcaster */
 	private $fileSharingBroadcaster;
 
@@ -115,7 +117,8 @@ class MembersService {
 		$userId, IL10N $l10n, IUserManager $userManager, ConfigService $configService,
 		CirclesRequest $circlesRequest, MembersRequest $membersRequest, SharesRequest $sharesRequest,
 		TokensRequest $tokensRequest, CirclesService $circlesService, EventsService $eventsService,
-		FileSharingBroadcaster $fileSharingBroadcaster, MiscService $miscService
+		GSUpstreamService $gsUpstreamService, FileSharingBroadcaster $fileSharingBroadcaster,
+		MiscService $miscService
 	) {
 		$this->userId = $userId;
 		$this->l10n = $l10n;
@@ -127,6 +130,7 @@ class MembersService {
 		$this->tokensRequest = $tokensRequest;
 		$this->circlesService = $circlesService;
 		$this->eventsService = $eventsService;
+		$this->gsUpstreamService = $gsUpstreamService;
 		$this->fileSharingBroadcaster = $fileSharingBroadcaster;
 		$this->miscService = $miscService;
 	}
@@ -140,14 +144,14 @@ class MembersService {
 	 * @param string $circleUniqueId
 	 * @param $ident
 	 * @param int $type
+	 * @param string $instance
 	 *
 	 * @param bool $force
 	 *
 	 * @return array
 	 * @throws Exception
 	 */
-	public function addMember($circleUniqueId, $ident, $type, bool $force = false) {
-
+	public function addMember($circleUniqueId, $ident, $type, string $instance, bool $force = false) {
 		if ($force === true) {
 			$circle = $this->circlesRequest->forceGetCircle($circleUniqueId);
 		} else {
@@ -157,7 +161,7 @@ class MembersService {
 		}
 
 		if (!$this->addMassiveMembers($circle, $ident, $type)) {
-			$this->addSingleMember($circle, $ident, $type);
+			$this->addSingleMember($circle, $ident, $type, $instance, $force);
 		}
 
 		return $this->membersRequest->getMembers($circle->getUniqueId(), $circle->getHigherViewer(), $force);
@@ -171,23 +175,25 @@ class MembersService {
 	 * @param string $ident
 	 * @param int $type
 	 *
-	 * @throws MemberAlreadyExistsException
+	 * @param string $instance
+	 * @param bool $force
+	 *
+	 * @throws EmailAccountInvalidFormatException
+	 * @throws NoUserException
 	 * @throws Exception
 	 */
-	private function addSingleMember(Circle $circle, $ident, $type) {
-		$this->verifyIdentBasedOnItsType($ident, $type);
+	private function addSingleMember(Circle $circle, $ident, $type, $instance = '', bool $force = false) {
+		$this->verifyIdentBasedOnItsType($ident, $type, $instance);
+		$this->verifyIdentContact($ident, $type);
 
-		$member = $this->membersRequest->getFreshNewMember($circle->getUniqueId(), $ident, $type);
-		$member->hasToBeInviteAble();
+		$member = $this->membersRequest->getFreshNewMember($circle->getUniqueId(), $ident, $type, $instance);
 
-		$this->circlesService->checkThatCircleIsNotFull($circle);
+		$event = new GSEvent(GSEvent::MEMBER_ADD, false, $force);
+		$event->setSeverity(GSEvent::SEVERITY_HIGH);
 
-		$this->addMemberBasedOnItsType($circle, $member);
-
-		$this->membersRequest->updateMember($member);
-		$this->fileSharingBroadcaster->sendMailAboutExistingShares($circle, $member);
-
-		$this->eventsService->onMemberNew($circle, $member);
+		$event->setCircle($circle);
+		$event->setMember($member);
+		$this->gsUpstreamService->newEvent($event);
 	}
 
 
@@ -202,7 +208,6 @@ class MembersService {
 	 * @throws Exception
 	 */
 	private function addMassiveMembers(Circle $circle, $ident, $type) {
-
 		if ($type === Member::TYPE_GROUP) {
 			return $this->addGroupMembers($circle, $ident);
 		}
@@ -221,9 +226,10 @@ class MembersService {
 	 * @param Circle $circle
 	 * @param Member $member
 	 *
-	 * @throws Exception
+	 * @throws CircleTypeNotValidException
+	 * @throws MemberCantJoinCircleException
 	 */
-	private function addMemberBasedOnItsType(Circle $circle, Member &$member) {
+	public function addMemberBasedOnItsType(Circle $circle, Member &$member) {
 		$this->addLocalMember($circle, $member);
 		$this->addEmailAddress($member);
 		$this->addContact($member);
@@ -234,7 +240,8 @@ class MembersService {
 	 * @param Circle $circle
 	 * @param Member $member
 	 *
-	 * @throws Exception
+	 * @throws CircleTypeNotValidException
+	 * @throws MemberCantJoinCircleException
 	 */
 	private function addLocalMember(Circle $circle, Member $member) {
 
@@ -254,8 +261,6 @@ class MembersService {
 	 * add mail address as contact.
 	 *
 	 * @param Member $member
-	 *
-	 * @throws Exception
 	 */
 	private function addEmailAddress(Member $member) {
 
@@ -268,11 +273,10 @@ class MembersService {
 
 
 	/**
+	 * // TODO - check this on GS setup
 	 * Add contact as member.
 	 *
 	 * @param Member $member
-	 *
-	 * @throws Exception
 	 */
 	private function addContact(Member $member) {
 
@@ -285,17 +289,24 @@ class MembersService {
 
 
 	/**
+	 * // TODO - check this on GS setup
 	 * Verify the availability of an ident, based on its type.
 	 *
 	 * @param string $ident
 	 * @param int $type
+	 * @param string $instance
 	 *
-	 * @throws Exception
+	 * @throws EmailAccountInvalidFormatException
+	 * @throws NoUserException
 	 */
-	private function verifyIdentBasedOnItsType(&$ident, $type) {
-		$this->verifyIdentLocalMember($ident, $type);
+	public function verifyIdentBasedOnItsType(&$ident, $type, string $instance = '') {
+		if ($instance === $this->configService->getLocalCloudId()) {
+			$instance = '';
+		}
+
+		$this->verifyIdentLocalMember($ident, $type, $instance);
 		$this->verifyIdentEmailAddress($ident, $type);
-		$this->verifyIdentContact($ident, $type);
+//		$this->verifyIdentContact($ident, $type);
 	}
 
 
@@ -305,17 +316,21 @@ class MembersService {
 	 * @param $ident
 	 * @param $type
 	 *
+	 * @param string $instance
+	 *
 	 * @throws NoUserException
 	 */
-	private function verifyIdentLocalMember(&$ident, $type) {
+	private function verifyIdentLocalMember(&$ident, $type, string $instance = '') {
 		if ($type !== Member::TYPE_USER) {
 			return;
 		}
 
-		try {
-			$ident = $this->miscService->getRealUserId($ident);
-		} catch (NoUserException $e) {
-			throw new NoUserException($this->l10n->t("This user does not exist"));
+		if ($instance === '') {
+			try {
+				$ident = $this->miscService->getRealUserId($ident);
+			} catch (NoUserException $e) {
+				throw new NoUserException($this->l10n->t("This user does not exist"));
+			}
 		}
 	}
 
@@ -407,6 +422,8 @@ class MembersService {
 
 
 	/**
+	 * // TODO - check this on GS setup
+	 *
 	 * @param Circle $circle
 	 * @param string $mails
 	 *
@@ -480,6 +497,7 @@ class MembersService {
 	 * @param string $circleUniqueId
 	 * @param string $name
 	 * @param int $type
+	 * @param string $instance
 	 * @param int $level
 	 * @param bool $force
 	 *
@@ -488,11 +506,11 @@ class MembersService {
 	 * @throws CircleTypeNotValidException
 	 * @throws ConfigNoCircleAvailableException
 	 * @throws MemberDoesNotExistException
-	 * @throws MemberTypeCantEditLevelException
 	 * @throws Exception
 	 */
-	public function levelMember($circleUniqueId, $name, $type, $level, bool $force = false) {
-
+	public function levelMember(
+		string $circleUniqueId, string $name, int $type, string $instance, int $level, bool $force = false
+	) {
 		$level = (int)$level;
 		if ($force === false) {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
@@ -506,9 +524,16 @@ class MembersService {
 			);
 		}
 
-		$member = $this->membersRequest->forceGetMember($circle->getUniqueId(), $name, $type);
-		$member->levelHasToBeEditable();
-		$this->updateMemberLevel($circle, $member, $level, $force);
+		$member = $this->membersRequest->forceGetMember($circle->getUniqueId(), $name, $type, $instance);
+		if ($member->getLevel() !== $level) {
+			$event = new GSEvent(GSEvent::MEMBER_LEVEL, false, $force);
+			$event->setCircle($circle);
+
+			$event->getData()
+				  ->sInt('level', $level);
+			$event->setMember($member);
+			$this->gsUpstreamService->newEvent($event);
+		}
 
 		if ($force === false) {
 			return $this->membersRequest->getMembers(
@@ -522,95 +547,22 @@ class MembersService {
 
 
 	/**
-	 * @param Circle $circle
-	 * @param Member $member
-	 * @param $level
-	 * @param bool $force
-	 *
-	 * @throws Exception
-	 */
-	private function updateMemberLevel(Circle $circle, Member $member, $level, bool $force = false) {
-		if ($member->getLevel() === $level) {
-			return;
-		}
-
-		if ($level === Member::LEVEL_OWNER) {
-			$this->switchOwner($circle, $member, $force);
-		} else {
-			$this->editMemberLevel($circle, $member, $level, $force);
-		}
-
-		$this->eventsService->onMemberLevel($circle, $member);
-	}
-
-
-	/**
-	 * @param Circle $circle
-	 * @param Member $member
-	 * @param $level
-	 * @param bool $force
-	 *
-	 * @throws Exception
-	 */
-	private function editMemberLevel(Circle $circle, Member &$member, $level, bool $force = false) {
-		if ($force === false) {
-			$isMod = $circle->getHigherViewer();
-			$isMod->hasToBeModerator();
-			$isMod->hasToBeHigherLevel($level);
-
-			$member->hasToBeMember();
-			$isMod->hasToBeHigherLevel($member->getLevel());
-		}
-
-		$member->cantBeOwner();
-
-		$member->setLevel($level);
-		$this->membersRequest->updateMember($member);
-	}
-
-	/**
-	 * @param Circle $circle
-	 * @param Member $member
-	 * @param bool $force
-	 *
-	 * @throws Exception
-	 */
-	private function switchOwner(Circle $circle, Member &$member, bool $force = false) {
-		if ($force === false) {
-			$isMod = $circle->getHigherViewer();
-
-			// should already be possible from an NCAdmin, but not enabled in the frontend.
-			$this->circlesService->hasToBeOwner($isMod);
-		} else {
-			$isMod = $circle->getOwner();
-		}
-
-		$member->hasToBeMember();
-		$member->cantBeOwner();
-
-		$member->setLevel(Member::LEVEL_OWNER);
-		$this->membersRequest->updateMember($member);
-
-		$isMod->setLevel(Member::LEVEL_ADMIN);
-		$this->membersRequest->updateMember($isMod);
-	}
-
-
-	/**
 	 * @param string $circleUniqueId
 	 * @param string $name
-	 * @param $type
+	 * @param int $type
+	 * @param string $instance
 	 * @param bool $force
 	 *
-	 * @return array
+	 * @return Member[]
 	 * @throws CircleDoesNotExistException
 	 * @throws ConfigNoCircleAvailableException
 	 * @throws MemberDoesNotExistException
 	 * @throws MemberIsNotModeratorException
-	 * @throws MemberIsOwnerException
-	 * @throws ModeratorIsNotHighEnoughException
+	 * @throws Exception
 	 */
-	public function removeMember($circleUniqueId, $name, $type, bool $force = false) {
+	public function removeMember(
+		string $circleUniqueId, string $name, int $type, string $instance, bool $force = false
+	): array {
 
 		if ($force === false) {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
@@ -620,20 +572,12 @@ class MembersService {
 			$circle = $this->circlesRequest->forceGetCircle($circleUniqueId);
 		}
 
-		$member = $this->membersRequest->forceGetMember($circleUniqueId, $name, $type);
-		$member->hasToBeMemberOrAlmost();
-		$member->cantBeOwner();
+		$member = $this->membersRequest->forceGetMember($circleUniqueId, $name, $type, $instance);
 
-		if ($force === false) {
-			$circle->getHigherViewer()
-				   ->hasToBeHigherLevel($member->getLevel());
-		}
-
-		$this->eventsService->onMemberLeaving($circle, $member);
-
-		$this->membersRequest->removeMember($member);
-		$this->sharesRequest->removeSharesFromMember($member);
-		$this->tokensRequest->removeTokensFromMember($member);
+		$event = new GSEvent(GSEvent::MEMBER_REMOVE, false, $force);
+		$event->setCircle($circle);
+		$event->setMember($member);
+		$this->gsUpstreamService->newEvent($event);
 
 		if ($force === false) {
 			return $this->membersRequest->getMembers(
@@ -648,10 +592,19 @@ class MembersService {
 	/**
 	 * When a user is removed, remove him from all Circles
 	 *
-	 * @param $userId
+	 * @param string $userId
+	 *
+	 * @throws Exception
 	 */
-	public function onUserRemoved($userId) {
-		$this->membersRequest->removeAllMembershipsFromUser($userId);
+	public function onUserRemoved(string $userId) {
+		$event = new GSEvent(GSEvent::USER_DELETED, true, true);
+
+		$member = new Member($userId);
+		$event->setMember($member);
+		$event->getData()
+			  ->s('userId', $userId);
+
+		$this->gsUpstreamService->newEvent($event);
 	}
 
 

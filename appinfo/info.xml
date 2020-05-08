@@ -23,9 +23,14 @@ Users won't be able to find this Circle using Nextcloud search engine.
 
 		]]>
 	</description>
-	<version>0.18.3</version>
+	<version>0.18.4</version>
 	<licence>agpl</licence>
 	<author>Maxence Lange</author>
+	<types>
+		<filesystem/>
+		<dav/>
+	</types>
+
 	<documentation>
 		<admin>https://github.com/nextcloud/circles/wiki</admin>
 	</documentation>
@@ -43,11 +48,8 @@ Users won't be able to find this Circle using Nextcloud search engine.
 
 	<background-jobs>
 		<job>OCA\Circles\Cron\ContactsExistingShares</job>
+		<job>OCA\Circles\Cron\GlobalSync</job>
 	</background-jobs>
-
-	<types>
-		<dav/>
-	</types>
 
 	<repair-steps>
 		<post-migration>
@@ -63,6 +65,7 @@ Users won't be able to find this Circle using Nextcloud search engine.
 		<command>OCA\Circles\Command\CirclesDestroy</command>
 		<command>OCA\Circles\Command\CirclesDetails</command>
 		<command>OCA\Circles\Command\CirclesList</command>
+		<command>OCA\Circles\Command\CirclesSync</command>
 		<command>OCA\Circles\Command\Clean</command>
 		<command>OCA\Circles\Command\MembersCreate</command>
 		<command>OCA\Circles\Command\MembersDetails</command>

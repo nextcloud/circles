@@ -439,8 +439,15 @@ var elements = {
 		var tmpl = $('#tmpl_member').html();
 
 		tmpl = tmpl.replace(/%username%/g, escapeHTML(entry.user_id));
+		tmpl = tmpl.replace(/%instance%/g, escapeHTML(entry.instance));
 		tmpl = tmpl.replace(/%type%/g, escapeHTML(entry.user_type));
-		tmpl = tmpl.replace(/%displayname%/g, escapeHTML(entry.display_name));
+
+		if (entry.instance !== '') {
+			tmpl = tmpl.replace(/%displayname%/g, escapeHTML(entry.display_name + ' (' + entry.instance) + ')');
+		} else {
+			tmpl = tmpl.replace(/%displayname%/g, escapeHTML(entry.display_name));
+		}
+
 		tmpl = tmpl.replace(/%level%/g, escapeHTML(entry.level));
 		tmpl = tmpl.replace(/%levelString%/g, escapeHTML(entry.level_string));
 		tmpl = tmpl.replace(/%status%/g, escapeHTML(entry.status));

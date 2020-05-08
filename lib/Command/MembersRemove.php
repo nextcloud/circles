@@ -87,7 +87,7 @@ class MembersRemove extends Base {
 		$memberId = $input->getArgument('member_id');
 
 		$member = $this->membersService->getMemberById($memberId);
-		$this->membersService->removeMember($member->getCircleId(), $member->getUserId(), $member->getType(), true);
+		$this->membersService->removeMember($member->getCircleId(), $member->getUserId(), $member->getType(), $member->getInstance(), true);
 
 		return 0;
 	}

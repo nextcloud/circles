@@ -127,7 +127,7 @@ class EventsService {
 	 */
 	public function onCircleCreation(Circle $circle) {
 		if ($circle->getType() !== Circle::CIRCLES_PUBLIC
-				&& $circle->getType() !== Circle::CIRCLES_CLOSED) {
+			&& $circle->getType() !== Circle::CIRCLES_CLOSED) {
 			return;
 		}
 
@@ -165,9 +165,7 @@ class EventsService {
 		$event->setSubject('circle_delete', ['circle' => json_encode($circle)]);
 		$this->publishEvent(
 			$event,
-			$this->membersRequest->forceGetMembers(
-				$circle->getUniqueId(), Member::LEVEL_MEMBER, true
-			)
+			$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MEMBER, 0, true)
 		);
 
 		$this->dispatch('\OCA\Circles::onCircleDestruction', ['circle' => $circle]);
@@ -210,7 +208,7 @@ class EventsService {
 			$event, array_merge(
 					  [$member],
 					  $this->membersRequest->forceGetMembers(
-						  $circle->getUniqueId(), Member::LEVEL_MODERATOR, true
+						  $circle->getUniqueId(), Member::LEVEL_MODERATOR, 0, true
 					  )
 				  )
 		);
@@ -269,7 +267,7 @@ class EventsService {
 			$event, array_merge(
 					  [$member],
 					  $this->membersRequest->forceGetMembers(
-						  $circle->getUniqueId(), Member::LEVEL_MODERATOR, true
+						  $circle->getUniqueId(), Member::LEVEL_MODERATOR, 0, true
 					  )
 				  )
 		);
@@ -303,7 +301,7 @@ class EventsService {
 			$event, array_merge(
 					  [$member],
 					  $this->membersRequest->forceGetMembers(
-						  $circle->getUniqueId(), Member::LEVEL_MODERATOR, true
+						  $circle->getUniqueId(), Member::LEVEL_MODERATOR, 0, true
 					  )
 				  )
 		);
@@ -338,7 +336,7 @@ class EventsService {
 			$event, array_merge(
 					  [$member],
 					  $this->membersRequest->forceGetMembers(
-						  $circle->getUniqueId(), Member::LEVEL_MODERATOR, true
+						  $circle->getUniqueId(), Member::LEVEL_MODERATOR, 0, true
 					  )
 				  )
 		);
@@ -373,9 +371,8 @@ class EventsService {
 			['circle' => json_encode($circle), 'member' => json_encode($member)]
 		);
 
-		$mods = $this->membersRequest->forceGetMembers(
-			$circle->getUniqueId(), Member::LEVEL_MODERATOR, true
-		);
+		$mods =
+			$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MODERATOR, 0, true);
 		$this->membersRequest->avoidDuplicateMembers($mods, [$member]);
 
 		$this->publishEvent($event, $mods);
@@ -400,9 +397,7 @@ class EventsService {
 
 		$this->publishEvent(
 			$event,
-			$this->membersRequest->forceGetMembers(
-				$circle->getUniqueId(), Member::LEVEL_MEMBER, true
-			)
+			$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MEMBER, 0, true)
 		);
 
 		$this->dispatch('\OCA\Circles::onMemberOwner', ['circle' => $circle, 'member' => $member]);
@@ -430,9 +425,8 @@ class EventsService {
 			['circle' => json_encode($circle), 'group' => json_encode($group)]
 		);
 
-		$mods = $this->membersRequest->forceGetMembers(
-			$circle->getUniqueId(), Member::LEVEL_MODERATOR, true
-		);
+		$mods =
+			$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MODERATOR, 0, true);
 		$this->membersRequest->avoidDuplicateMembers(
 			$mods, $this->membersRequest->getGroupMemberMembers($group)
 		);
@@ -463,9 +457,8 @@ class EventsService {
 			['circle' => json_encode($circle), 'group' => json_encode($group)]
 		);
 
-		$mods = $this->membersRequest->forceGetMembers(
-			$circle->getUniqueId(), Member::LEVEL_MODERATOR, true
-		);
+		$mods =
+			$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MODERATOR, 0, true);
 		$this->membersRequest->avoidDuplicateMembers(
 			$mods, $this->membersRequest->getGroupMemberMembers($group)
 		);
@@ -496,9 +489,8 @@ class EventsService {
 			['circle' => json_encode($circle), 'group' => json_encode($group)]
 		);
 
-		$mods = $this->membersRequest->forceGetMembers(
-			$circle->getUniqueId(), Member::LEVEL_MODERATOR, true
-		);
+		$mods =
+			$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MODERATOR, 0, true);
 		$this->membersRequest->avoidDuplicateMembers(
 			$mods, $this->membersRequest->getGroupMemberMembers($group)
 		);
@@ -525,9 +517,8 @@ class EventsService {
 		);
 
 		$this->publishEvent(
-			$event, $this->membersRequest->forceGetMembers(
-			$link->getCircleId(), Member::LEVEL_MODERATOR, true
-		)
+			$event,
+			$this->membersRequest->forceGetMembers($link->getCircleId(), Member::LEVEL_MODERATOR, 0, true)
 		);
 		$this->dispatch('\OCA\Circles::onLinkRequestSent', ['circle' => $circle, 'link' => $link]);
 	}
@@ -550,9 +541,8 @@ class EventsService {
 		);
 
 		$this->publishEvent(
-			$event, $this->membersRequest->forceGetMembers(
-			$link->getCircleId(), Member::LEVEL_MODERATOR, true
-		)
+			$event,
+			$this->membersRequest->forceGetMembers($link->getCircleId(), Member::LEVEL_MODERATOR, 0, true)
 		);
 		$this->dispatch('\OCA\Circles::onLinkRequestReceived', ['circle' => $circle, 'link' => $link]);
 	}
@@ -575,9 +565,8 @@ class EventsService {
 		);
 
 		$this->publishEvent(
-			$event, $this->membersRequest->forceGetMembers(
-			$link->getCircleId(), Member::LEVEL_MODERATOR, true
-		)
+			$event,
+			$this->membersRequest->forceGetMembers($link->getCircleId(), Member::LEVEL_MODERATOR, 0, true)
 		);
 		$this->dispatch('\OCA\Circles::onLinkRequestRejected', ['circle' => $circle, 'link' => $link]);
 	}
@@ -600,9 +589,8 @@ class EventsService {
 		);
 
 		$this->publishEvent(
-			$event, $this->membersRequest->forceGetMembers(
-			$link->getCircleId(), Member::LEVEL_MODERATOR, true
-		)
+			$event,
+			$this->membersRequest->forceGetMembers($link->getCircleId(), Member::LEVEL_MODERATOR, 0, true)
 		);
 		$this->dispatch('\OCA\Circles::onLinkRequestCanceled', ['circle' => $circle, 'link' => $link]);
 	}
@@ -625,9 +613,8 @@ class EventsService {
 		);
 
 		$this->publishEvent(
-			$event, $this->membersRequest->forceGetMembers(
-			$link->getCircleId(), Member::LEVEL_MODERATOR, true
-		)
+			$event,
+			$this->membersRequest->forceGetMembers($link->getCircleId(), Member::LEVEL_MODERATOR, 0, true)
 		);
 		$this->dispatch('\OCA\Circles::onLinkRequestAccepted', ['circle' => $circle, 'link' => $link]);
 	}
@@ -650,9 +637,8 @@ class EventsService {
 		);
 
 		$this->publishEvent(
-			$event, $this->membersRequest->forceGetMembers(
-			$link->getCircleId(), Member::LEVEL_MODERATOR, true
-		)
+			$event,
+			$this->membersRequest->forceGetMembers($link->getCircleId(), Member::LEVEL_MODERATOR, 0, true)
 		);
 		$this->dispatch('\OCA\Circles::onLinkRequestAccepting', ['circle' => $circle, 'link' => $link]);
 	}
@@ -675,9 +661,8 @@ class EventsService {
 		);
 
 		$this->publishEvent(
-			$event, $this->membersRequest->forceGetMembers(
-			$link->getCircleId(), Member::LEVEL_MODERATOR, true
-		)
+			$event,
+			$this->membersRequest->forceGetMembers($link->getCircleId(), Member::LEVEL_MODERATOR, 0, true)
 		);
 		$this->dispatch('\OCA\Circles::onLinkUp', ['circle' => $circle, 'link' => $link]);
 	}
@@ -700,9 +685,8 @@ class EventsService {
 		);
 
 		$this->publishEvent(
-			$event, $this->membersRequest->forceGetMembers(
-			$link->getCircleId(), Member::LEVEL_MODERATOR, true
-		)
+			$event,
+			$this->membersRequest->forceGetMembers($link->getCircleId(), Member::LEVEL_MODERATOR, 0, true)
 		);
 		$this->dispatch('\OCA\Circles::onLinkDown', ['circle' => $circle, 'link' => $link]);
 	}
@@ -737,9 +721,8 @@ class EventsService {
 		);
 
 		$this->publishEvent(
-			$event, $this->membersRequest->forceGetMembers(
-			$link->getCircleId(), Member::LEVEL_MODERATOR, true
-		)
+			$event,
+			$this->membersRequest->forceGetMembers($link->getCircleId(), Member::LEVEL_MODERATOR, 0, true)
 		);
 		$this->dispatch('\OCA\Circles::onLinkRemove', ['circle' => $circle, 'link' => $link]);
 	}
@@ -750,10 +733,12 @@ class EventsService {
 	 * Called when the circle's settings are changed
 	 *
 	 * @param Circle $circle
-	 * @param array  $oldSettings
+	 * @param array $oldSettings
 	 */
 	public function onSettingsChange(Circle $circle, array $oldSettings = []) {
-		$this->dispatch('\OCA\Circles::onSettingsChange',  ['circle' => $circle, 'oldSettings' => $oldSettings]);
+		$this->dispatch(
+			'\OCA\Circles::onSettingsChange', ['circle' => $circle, 'oldSettings' => $oldSettings]
+		);
 	}
 
 

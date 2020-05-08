@@ -139,7 +139,6 @@ class Member extends BaseMember {
 	 * @throws ModeratorIsNotHighEnoughException
 	 */
 	public function hasToBeHigherLevel($level) {
-
 		if ($this->getLevel() <= $level) {
 			throw new ModeratorIsNotHighEnoughException(
 				$this->l10n->t('Insufficient privileges')
