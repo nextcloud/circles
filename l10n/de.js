@@ -70,6 +70,7 @@ OC.L10N.register(
     "the link to <b>{remote}</b> is now up and running." : "Verknüpfung zu <b>{remote}</b> erstellt und funktioniert.",
     "The status of the link could not be updated" : "Status der Verknüpfung konnte nicht aktualisiert werden",
     "The status of the link has been updated" : "Status dieser Verknüpfung wurde aktualisiert",
+    "Global Scale User" : "Global Scale-Benutzer",
     "Local User" : "Lokaler Benutzer",
     "Local Group" : "Lokale Gruppe",
     "The member '{name}' was added to the circle" : "Das Mitglied '{name}' wurde zum Kreis hinzugefügt",
