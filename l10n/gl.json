@@ -68,6 +68,7 @@
     "the link to <b>{remote}</b> is now up and running." : "a ligazón a <b>{remote}</b> agora está dispoñíbel e funcionando.",
     "The status of the link could not be updated" : "Non foi posíbel actualizar o estado da ligazón",
     "The status of the link has been updated" : "Actualizouse o estado da ligazón",
+    "Global Scale User" : "Usuario de escala global",
     "Local User" : "Usuario local",
     "Local Group" : "Grupo local",
     "The member '{name}' was added to the circle" : "O membro «{name}» foi engadido ao círculo",
