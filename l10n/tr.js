@@ -70,6 +70,7 @@ OC.L10N.register(
     "the link to <b>{remote}</b> is now up and running." : "<b>{remote}</b> bağlantısı çalışıyor.",
     "The status of the link could not be updated" : "Bağlantı durumu güncellenemedi",
     "The status of the link has been updated" : "Bağlantı durumu güncellendi",
+    "Global Scale User" : "Küresel Ölçekte Kullanıcı",
     "Local User" : "Yerel Kullanıcı",
     "Local Group" : "Yerel Grup",
     "The member '{name}' was added to the circle" : "'{name}' adlı üye çevreye eklendi",
