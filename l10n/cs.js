@@ -70,6 +70,7 @@ OC.L10N.register(
     "the link to <b>{remote}</b> is now up and running." : "vazba na <b>{remote}</b> byla navázána a je funkční.",
     "The status of the link could not be updated" : "Stav propojení nemohl být aktualizován",
     "The status of the link has been updated" : "Stav propojení byl aktualizován",
+    "Global Scale User" : "Uživatel v globálním měřítku",
     "Local User" : "Místní uživatel",
     "Local Group" : "Místní skupina",
     "The member '{name}' was added to the circle" : "Člen „{member}“ byl přidán do kruhu",
