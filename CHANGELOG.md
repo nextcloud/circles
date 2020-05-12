@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 
 
+### 0.19.0 (v1-beta.01)
+
+- GlobalScale.
+
+
+
 ### 0.18.3
 
 - fixing issue during migration.

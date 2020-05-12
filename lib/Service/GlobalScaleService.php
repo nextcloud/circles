@@ -98,14 +98,8 @@ class GlobalScaleService {
 
 	/**
 	 * @param GSEvent $event
-	 *
-	 * @throws GSStatusException
 	 */
 	public function asyncBroadcast(GSEvent $event): void {
-//		if (!$this->configService->getGSStatus(ConfigService::GS_ENABLED)) {
-//			return;
-//		}
-
 		$wrapper = new GSWrapper();
 		$wrapper->setEvent($event);
 		$wrapper->setToken($this->uuid());
