@@ -146,7 +146,7 @@ class GlobalScaleService {
 	 * @throws GlobalScaleEventException
 	 */
 	public function getGlobalScaleEvent(GSEvent $event): AGlobalScaleEvent {
-		$class = '\OCA\Circles\\' . $event->getType();
+		$class = $this->getClassNameFromEvent($event);
 		try {
 			$gs = OC::$server->query($class);
 			if (!$gs instanceof AGlobalScaleEvent) {
@@ -219,6 +219,24 @@ class GlobalScaleService {
 		}
 
 		return array_diff($instances, $this->configService->getTrustedDomains());
+	}
+
+
+	/**
+	 * @param GSEvent $event
+	 *
+	 * @return string
+	 * @throws GlobalScaleEventException
+	 */
+	private function getClassNameFromEvent(GSEvent $event): string {
+		$className = $event->getType();
+		if (substr($className, 0, 25) !== '\OCA\Circles\GlobalScale\\' || strpos($className, '.')) {
+			throw new GlobalScaleEventException(
+				$className . ' does not seems to be a secured AGlobalScaleEvent'
+			);
+		}
+
+		return $className;
 	}
 
 }

@@ -50,22 +50,22 @@ class GSEvent implements JsonSerializable {
 	const SEVERITY_LOW = 1;
 	const SEVERITY_HIGH = 3;
 
-	const GLOBAL_SYNC = 'GlobalScale\GlobalSync';
-	const CIRCLE_STATUS = 'GlobalScale\CircleStatus';
+	const GLOBAL_SYNC = '\OCA\Circles\GlobalScale\GlobalSync';
+	const CIRCLE_STATUS = '\OCA\Circles\GlobalScale\CircleStatus';
 
-	const CIRCLE_CREATE = 'GlobalScale\CircleCreate';
-	const CIRCLE_UPDATE = 'GlobalScale\CircleUpdate';
-	const CIRCLE_DESTROY = 'GlobalScale\CircleDestroy';
-	const MEMBER_ADD = 'GlobalScale\MemberAdd';
-	const MEMBER_JOIN = 'GlobalScale\MemberJoin';
-	const MEMBER_LEAVE = 'GlobalScale\MemberLeave';
-	const MEMBER_LEVEL = 'GlobalScale\MemberLevel';
-	const MEMBER_UPDATE = 'GlobalScale\MemberUpdate';
-	const MEMBER_REMOVE = 'GlobalScale\MemberRemove';
-	const USER_DELETED = 'GlobalScale\UserDeleted';
+	const CIRCLE_CREATE = '\OCA\Circles\GlobalScale\CircleCreate';
+	const CIRCLE_UPDATE = '\OCA\Circles\GlobalScale\CircleUpdate';
+	const CIRCLE_DESTROY = '\OCA\Circles\GlobalScale\CircleDestroy';
+	const MEMBER_ADD = '\OCA\Circles\GlobalScale\MemberAdd';
+	const MEMBER_JOIN = '\OCA\Circles\GlobalScale\MemberJoin';
+	const MEMBER_LEAVE = '\OCA\Circles\GlobalScale\MemberLeave';
+	const MEMBER_LEVEL = '\OCA\Circles\GlobalScale\MemberLevel';
+	const MEMBER_UPDATE = '\OCA\Circles\GlobalScale\MemberUpdate';
+	const MEMBER_REMOVE = '\OCA\Circles\GlobalScale\MemberRemove';
+	const USER_DELETED = '\OCA\Circles\GlobalScale\UserDeleted';
 
-	const FILE_SHARE = 'GlobalScale\FileShare';
-	const FILE_UNSHARE = 'GlobalScale\FileUnshare';
+	const FILE_SHARE = '\OCA\Circles\GlobalScale\FileShare';
+	const FILE_UNSHARE = '\OCA\Circles\GlobalScale\FileUnshare';
 
 
 	use TArrayTools;
@@ -212,7 +212,6 @@ class GSEvent implements JsonSerializable {
 	}
 
 
-
 	/**
 	 * @return bool
 	 */
@@ -230,7 +229,6 @@ class GSEvent implements JsonSerializable {
 
 		return $this;
 	}
-
 
 
 	/**
