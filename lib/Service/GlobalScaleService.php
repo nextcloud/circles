@@ -36,7 +36,6 @@ use daita\MySmallPhpTools\Exceptions\RequestResultNotJsonException;
 use daita\MySmallPhpTools\Exceptions\RequestResultSizeException;
 use daita\MySmallPhpTools\Exceptions\RequestServerException;
 use daita\MySmallPhpTools\Model\Request;
-use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\TRequest;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OC;
@@ -45,7 +44,6 @@ use OCA\Circles\Exceptions\GlobalScaleEventException;
 use OCA\Circles\Exceptions\GSKeyException;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\GlobalScale\AGlobalScaleEvent;
-use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\GlobalScale\GSWrapper;
 use OCP\AppFramework\QueryException;
@@ -104,9 +102,9 @@ class GlobalScaleService {
 	 * @throws GSStatusException
 	 */
 	public function asyncBroadcast(GSEvent $event): void {
-		if (!$this->configService->getGSStatus(ConfigService::GS_ENABLED)) {
-			return;
-		}
+//		if (!$this->configService->getGSStatus(ConfigService::GS_ENABLED)) {
+//			return;
+//		}
 
 		$wrapper = new GSWrapper();
 		$wrapper->setEvent($event);
@@ -197,21 +195,23 @@ class GlobalScaleService {
 	 * @param bool $all
 	 *
 	 * @return array
-	 * @throws GSStatusException
 	 */
 	public function getInstances(bool $all = false): array {
 		/** @var string $lookup */
-		$lookup = $this->configService->getGSStatus(ConfigService::GS_LOOKUP);
-
-		$request = new Request('/instances', Request::TYPE_GET);
-		$request->setAddressFromUrl($lookup);
-
 		try {
-			$instances = $this->retrieveJson($request);
-		} catch (RequestContentException | RequestNetworkException | RequestResultSizeException | RequestServerException | RequestResultNotJsonException $e) {
-			$this->miscService->log('Issue while retrieving instances from lookup: ' . $e->getMessage());
+			$lookup = $this->configService->getGSStatus(ConfigService::GS_LOOKUP);
+			$request = new Request('/instances', Request::TYPE_GET);
+			$request->setAddressFromUrl($lookup);
 
-			return [];
+			try {
+				$instances = $this->retrieveJson($request);
+			} catch (RequestContentException | RequestNetworkException | RequestResultSizeException | RequestServerException | RequestResultNotJsonException $e) {
+				$this->miscService->log('Issue while retrieving instances from lookup: ' . $e->getMessage());
+
+				return [];
+			}
+		} catch (GSStatusException $e) {
+			$instances = [$this->configService->getLocalCloudId()];
 		}
 
 		if ($all) {
@@ -221,6 +221,5 @@ class GlobalScaleService {
 		return array_diff($instances, $this->configService->getTrustedDomains());
 	}
 
-
-
 }
+

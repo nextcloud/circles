@@ -100,7 +100,6 @@ class BroadcastService {
 	 * @throws Exception
 	 */
 	public function broadcastFrame(SharingFrame $frame) {
-
 		if ($frame->getHeader('broadcast') === null) {
 			return;
 		}

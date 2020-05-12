@@ -36,7 +36,6 @@ class LocalGroups implements ISearch {
 	 * {@inheritdoc}
 	 */
 	public function search($search) {
-
 		$result = [];
 		$groupManager = \OC::$server->getGroupManager();
 

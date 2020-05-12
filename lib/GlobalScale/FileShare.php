@@ -36,7 +36,6 @@ use Exception;
 use OC;
 use OC\Share20\Share;
 use OCA\Circles\AppInfo\Application;
-use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
@@ -44,7 +43,6 @@ use OCA\Circles\Model\GlobalScale\GSShare;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharesToken;
 use OCA\Circles\Model\SharingFrame;
-use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
 use OCP\Files\NotFoundException;
 use OCP\IL10N;
@@ -75,17 +73,8 @@ class FileShare extends AGlobalScaleEvent {
 	 * @param GSEvent $event
 	 * @param bool $localCheck
 	 * @param bool $mustBeChecked
-	 *
-	 * @throws GSStatusException
 	 */
 	public function verify(GSEvent $event, bool $localCheck = false, bool $mustBeChecked = false): void {
-		// TODO: might be a bad idea, all process of the sharing should be managed from here.
-		// Even if we are not in a GS setup.
-		// The reason is that if a mail needs to be send, all mail address associated to the circle needs to be retrieved
-		if (!$this->configService->getGSStatus(ConfigService::GS_ENABLED)) {
-			return;
-		}
-
 		// if event/file is local, we generate a federate share for the same circle on other instances
 		if ($event->getSource() !== $this->configService->getLocalCloudId()) {
 			return;
@@ -114,18 +103,9 @@ class FileShare extends AGlobalScaleEvent {
 
 	/**
 	 * @param GSEvent $event
-	 *
-	 * @throws GSStatusException
 	 */
 	public function manage(GSEvent $event): void {
-		// TODO: might be a bad idea, all process of the sharing should be managed from here.
-		// Even if we are not in a GS setup.
-		// The reason is that if a mail needs to be send, all mail address associated to the circle needs to be retrieved
-		if (!$this->configService->getGSStatus(ConfigService::GS_ENABLED)) {
-			return;
-		}
-
-		// TODO - if event is local - generate mails sur be sent to TYPE_MAILS
+		$circle = $event->getCircle();
 
 		// if event is not local, we create a federated file to the right instance of Nextcloud, using the right token
 		if ($event->getSource() !== $this->configService->getLocalCloudId()) {
@@ -146,9 +126,18 @@ class FileShare extends AGlobalScaleEvent {
 			$gsShare->setMountPoint($filename);
 
 			$this->gsSharesRequest->create($gsShare);
+		} else {
+			// if the event is local, we send mail to mail-as-members
+			$members = $this->membersRequest->forceGetMembers(
+				$circle->getUniqueId(), Member::LEVEL_MEMBER, Member::TYPE_MAIL, true
+			);
+
+			foreach ($members as $member) {
+				$this->sendShareToContact($event, $circle, $member->getMemberId(), [$member->getUserId()]);
+			}
 		}
 
-		$circle = $event->getCircle();
+		// we also fill the event's result for further things, like contact-as-members
 		$members = $this->membersRequest->forceGetMembers(
 			$circle->getUniqueId(), Member::LEVEL_MEMBER, Member::TYPE_CONTACT, true
 		);
@@ -169,7 +158,6 @@ class FileShare extends AGlobalScaleEvent {
 	 */
 	public function result(array $events): void {
 		$event = null;
-//		$mails = $cloudIds = [];
 		$contacts = [];
 		foreach (array_keys($events) as $instance) {
 			$event = $events[$instance];
@@ -177,14 +165,6 @@ class FileShare extends AGlobalScaleEvent {
 				$contacts, $event->getResult()
 								 ->gArray('contacts')
 			);
-//			$mails = array_merge(
-//				$mails, $event->getResult()
-//							  ->gArray('mails')
-//			);
-//			$cloudIds = array_merge(
-//				$cloudIds, $event->getResult()
-//								 ->gArray('cloudIds')
-//			);
 		}
 
 		if ($event === null || !$event->hasCircle()) {
@@ -193,51 +173,26 @@ class FileShare extends AGlobalScaleEvent {
 
 		$circle = $event->getCircle();
 
-		// we check mail address that were already filled
-//		$mails = $this->getMailAddressFromCircle($circle->getUniqueId());
-
-
-//		foreach ($members as $member) {
-//			$mails[] = $member->getUserId();
-//		}
-
-
 		foreach ($contacts as $contact) {
-			$this->sendShareToContact($event, $circle, $contact);
+			$this->sendShareToContact($event, $circle, $contact['memberId'], $contact['emails']);
 		}
-
-
-		// TODO - making this not needed - should force the async on this EVENT as it should be initiated in manage()
-//		$contacts = $this->membersRequest->forceGetMembers(
-//			$circle->getUniqueId(), Member::LEVEL_MEMBER, Member::TYPE_CONTACT
-//		);
-//
-//		foreach ($contacts as $contact) {
-//			$mails = array_merge($mails, $this->getMailsFromContact($contact->getUserId()));
-//			$cloudIds = array_merge($cloudIds, $this->getCloudIdsFromContact($contact->getUserId()));
-//		}
-//
-//		$mails = array_values(array_unique($mails));
-//		$this->sendShareToMails($event, $mails);
-
-//		$cloudIds = array_values(array_unique($cloudIds));
-//		$this->sendShareToCloudIds($event, $cloudIds);
 	}
 
 
 	/**
 	 * @param GSEvent $event
 	 * @param Circle $circle
-	 * @param array $contact
+	 * @param string $memberId
+	 * @param array $emails
 	 */
-	private function sendShareToContact(GSEvent $event, Circle $circle, array $contact) {
+	private function sendShareToContact(GSEvent $event, Circle $circle, string $memberId, array $emails) {
 		$password = '';
 		if ($this->configService->enforcePasswordProtection()) {
 			$password = $this->miscService->token(15);
 		}
 
 		try {
-			$member = $this->membersRequest->forceGetMemberById($contact['memberId']);
+			$member = $this->membersRequest->forceGetMemberById($memberId);
 			$share = $this->getShareFromData($event->getData());
 		} catch (Exception $e) {
 			return;
@@ -250,19 +205,9 @@ class FileShare extends AGlobalScaleEvent {
 			return;
 		}
 
-		foreach ($contact['emails'] as $mail) {
+		foreach ($emails as $mail) {
 			$this->sharedByMail($circle, $share, $mail, $sharesToken, $password);
 		}
-
-//		$mails = [$member->getUserId()];
-//		if ($member->getType() === Member::TYPE_CONTACT) {
-//			$mails = $this->getMailsFromContact($member->getUserId());
-//		}
-//
-//		foreach ($mails as $mail) {
-//			$this->sharedByMail($circle, $share, $mail, $sharesToken, $password);
-//		}
-
 	}
 
 
@@ -492,91 +437,6 @@ class FileShare extends AGlobalScaleEvent {
 			}, $members
 		);
 	}
-
-
-//
-//	/**
-//	 * @param GSEvent $event
-//	 *
-//	 * @throws BroadcasterIsNotCompatibleException
-//	 * `     */
-//	private function generateFederatedShare(GSEvent $event) {
-//		$data = $event->getData();
-//		$frame = SharingFrame::fromJSON(json_encode($data->gAll()));
-//
-//		try {
-//			$broadcaster = \OC::$server->query((string)$frame->getHeader('broadcast'));
-//			if (!($broadcaster instanceof IBroadcaster)) {
-//				throw new BroadcasterIsNotCompatibleException();
-//			}
-//
-//			$frameCircle = $frame->getCircle();
-//			$circle = $this->circlesRequest->forceGetCircle($frameCircle->getUniqueId());
-//		} catch (QueryException | CircleDoesNotExistException $e) {
-//			return;
-//		}
-//
-//		$this->feedBroadcaster($broadcaster, $frame, $circle);
-//	}
-
-//
-//	/**
-//	 * @param IBroadcaster $broadcaster
-//	 * @param SharingFrame $frame
-//	 * @param Circle $circle
-//	 */
-//	private function feedBroadcaster(IBroadcaster $broadcaster, SharingFrame $frame, Circle $circle) {
-//		$broadcaster->init();
-//
-//		if ($circle->getType() !== Circle::CIRCLES_PERSONAL) {
-//			$broadcaster->createShareToCircle($frame, $circle);
-//		}
-//
-//		$members =
-//			$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MEMBER, 0, true);
-//		foreach ($members as $member) {
-//			$this->parseMember($member);
-//
-//			if ($member->isBroadcasting()) {
-//				$broadcaster->createShareToMember($frame, $member);
-//			}
-//
-//			if ($member->getInstance() !== '') {
-//				$this->miscService->log('#### GENERATE FEDERATED CIRCLES SHARE ' . $member->getInstance());
-//			}
-//		}
-//	}
-
-//
-//	/**
-//	 * @param Member $member
-//	 */
-//	private function parseMember(Member &$member) {
-//		$this->parseMemberFromContact($member);
-//	}
-
-
-//	/**
-//	 * on Type Contact, we convert the type to MAIL and retrieve the first mail of the list.
-//	 * If no email, we set the member as not broadcasting.
-//	 *
-//	 * @param Member $member
-//	 */
-//	private function parseMemberFromContact(Member &$member) {
-//		if ($member->getType() !== Member::TYPE_CONTACT) {
-//			return;
-//		}
-//
-//		$contact = MiscService::getContactData($member->getUserId());
-//		if (!key_exists('EMAIL', $contact)) {
-//			$member->broadcasting(false);
-//
-//			return;
-//		}
-//
-//		$member->setType(Member::TYPE_MAIL);
-//		$member->setUserId(array_shift($contact['EMAIL']));
-//	}
 
 
 	/**

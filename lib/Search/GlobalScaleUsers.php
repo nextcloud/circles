@@ -81,7 +81,7 @@ class GlobalScaleUsers implements ISearch {
 		try {
 			$lookup = $this->configService->getGSStatus(ConfigService::GS_LOOKUP);
 		} catch (GSStatusException $e) {
-			return;
+			return [];
 		}
 
 		$request = new Request('/users', Request::TYPE_GET);
