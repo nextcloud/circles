@@ -68,6 +68,7 @@
     "the link to <b>{remote}</b> is now up and running." : "{remote} (e)rako esteka martxan da eta badabil",
     "The status of the link could not be updated" : "Ezin izan da estekaren egoera eguneratu",
     "The status of the link has been updated" : "Estekaren egoera eguneratu egin da",
+    "Global Scale User" : "Eskala globaleko erabiltzailea",
     "Local User" : "Erabiltzaile lokala",
     "Local Group" : "Talde lokala",
     "The member '{name}' was added to the circle" : "'{name}' kidea zirkulura gehitu da",
@@ -299,7 +300,6 @@
     "Allow federated circles" : "Onartu zirkulu federatuak",
     "Circles from different Nextclouds can be linked together." : "Nextcloud ezberdinetako zirkuluak beraien artean batu daitezke",
     "Skip invitation step to closed circles" : "Saltatu gonbidapen pausua zirkulu itxietan",
-    "Moderators can add member to closed circles without user approval." : "Moderatzaileek kideak gehitu ditzakete zirkulu itxietara erabiltzailearen baimenik gabe.",
-    "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or 'circles') can then be used by any other app for sharing purpose (files, social feed, status update, messaging, ...).\n\nDifferent type of circles can be created:\n\n- A personal circle is a list of users known only to the owner.\nThis is the right option if you want to do recurrent sharing with the same group of people.\n\n- A public circle is an open group visible to anyone willing to join.\nYour circle will be visible to everyone and everyone will be able to join the circle.\n\n- A closed circle requires invitation or confirmation by an admin.\nThis is the right circle if you are looking for privacy when sharing your files or ideas.\n\n- An Secret circle is an open group that can be protected by a password.\nUsers won't be able to find this Circle using Nextcloud search engine." : "Zirkuluek zure erabiltzaileei ahalbidetzen die beraien erabiltzaile/lankide/lagun taldeak sortzea.\nErabiltzaile talde horiek (zirkuluak) beste edozein aplikaziok erabil ditzake ondoren partekatze asmoekin (fitxategiak, jario soziala, egoera eguneratzea, mezularitza...).\n\nZirkulu mota ezberdinak sortu daitezke:\n\n-Zirkulu pertsonala jabeak bakarrik ezagutzen duen erabiltzaile zerrenda da.\nHau duzu aukera onena edukiak maiz pertsona talde berberarekin partekatu nahi badituzu.\n\n-Zirkulu publikoak ikusgarri daude eta irekiak dira batu nahi duen edonorentzat.\nEdonork ikusi ahal izango du zirkulua eta edonor izango da batzeko gai.\n\n-Zirkulu itxiek administratzaile baten gonbidapena edo baieztapena behar dute. \nHau duzu aukera onena zure fitxategiak edo ideiak partekatzean pribatutasuna nahi baduzu.\n\n-Zirkulu sekretuak pasahitz batekin babestu daitezkeen talde irekiak dira.\nErabiltzaileek ezingo dute zirkulu hau aurkitu Nextcloud-en bilatzailearekin."
+    "Moderators can add member to closed circles without user approval." : "Moderatzaileek kideak gehitu ditzakete zirkulu itxietara erabiltzailearen baimenik gabe."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

@@ -70,6 +70,7 @@ OC.L10N.register(
     "the link to <b>{remote}</b> is now up and running." : "il collegamento a <b>{remote}</b> è ora attivo e funzionante.",
     "The status of the link could not be updated" : "Lo stato del collegamento non può essere aggiornato",
     "The status of the link has been updated" : "Lo stato del collegamento è stato aggiornato",
+    "Global Scale User" : "Utente scala globale",
     "Local User" : "Utente locale",
     "Local Group" : "Gruppo locale",
     "The member '{name}' was added to the circle" : "Il membro '{name}' è stato aggiunto alla cerchia",
@@ -301,7 +302,6 @@ OC.L10N.register(
     "Allow federated circles" : "Consenti cerchie federate",
     "Circles from different Nextclouds can be linked together." : "Le cerchie di Nextcloud diversi possono essere collegate tra di loro.",
     "Skip invitation step to closed circles" : "Salta la fase di invito alle cerchie chiuse",
-    "Moderators can add member to closed circles without user approval." : "I moderatori possono aggiungere membri alle cerchie chiuse senza approvazione dell'utente.",
-    "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or 'circles') can then be used by any other app for sharing purpose (files, social feed, status update, messaging, ...).\n\nDifferent type of circles can be created:\n\n- A personal circle is a list of users known only to the owner.\nThis is the right option if you want to do recurrent sharing with the same group of people.\n\n- A public circle is an open group visible to anyone willing to join.\nYour circle will be visible to everyone and everyone will be able to join the circle.\n\n- A closed circle requires invitation or confirmation by an admin.\nThis is the right circle if you are looking for privacy when sharing your files or ideas.\n\n- An Secret circle is an open group that can be protected by a password.\nUsers won't be able to find this Circle using Nextcloud search engine." : "Cerchie consente ai tuoi utenti di creare il proprio gruppo di utenti/colleghi/amici.\nQuesti gruppi di utenti (o 'cerchie') possono essere utilizzati da un'altra applicazione per scopi di condivisione (file, fonti sociali, aggiornamenti di stato, messaggistica,…).\n\nPossono essere creati diversi tipi di cerchie:\n\n- Una cerca personale è un elenco di utenti conosciuti solo al proprietario.\nQuesta è l'opzione giusta se desideri condividere in modo ricorrente con lo stesso gruppo di persone.\n\n- Una cerchia pubblica è un gruppo aperto visibile a chiunque voglia unirsi.\nLa tua cerchia sarà visibile a chiunque e chiunque potrà unirsi alla cerchia.\n\n- Una cerchia chiusa richiede un invito o la conferma da parte di un amministratore.\nQuesta è la cerchia giusta se cerchi riservatezza quando condividi i tuoi file o le tue idee.\n\n- Una cerchia segreta è un gruppo aperto che può essere protetto da una password.\nGli utenti non saranno in grado di trovare questa cerchia utilizzando il motore di ricerca di Nextcloud."
+    "Moderators can add member to closed circles without user approval." : "I moderatori possono aggiungere membri alle cerchie chiuse senza approvazione dell'utente."
 },
 "nplurals=2; plural=(n != 1);");

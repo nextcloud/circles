@@ -70,6 +70,7 @@ OC.L10N.register(
     "the link to <b>{remote}</b> is now up and running." : "<b>{remote}</b> bağlantısı çalışıyor.",
     "The status of the link could not be updated" : "Bağlantı durumu güncellenemedi",
     "The status of the link has been updated" : "Bağlantı durumu güncellendi",
+    "Global Scale User" : "Küresel Ölçekte Kullanıcı",
     "Local User" : "Yerel Kullanıcı",
     "Local Group" : "Yerel Grup",
     "The member '{name}' was added to the circle" : "'{name}' adlı üye çevreye eklendi",
@@ -301,7 +302,6 @@ OC.L10N.register(
     "Allow federated circles" : "Birleşik Çevreler Kullanılabilsin",
     "Circles from different Nextclouds can be linked together." : "Farklı Nextcloud kopyaları üzerindeki çevreler birbirine bağlanabilir",
     "Skip invitation step to closed circles" : "Kapalı çevrelerde çağrı adımı atlansın",
-    "Moderators can add member to closed circles without user approval." : "Kapalı çevre sorumluları kullanıcı onayına gerek olmadan üye ekleyebilir.",
-    "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or 'circles') can then be used by any other app for sharing purpose (files, social feed, status update, messaging, ...).\n\nDifferent type of circles can be created:\n\n- A personal circle is a list of users known only to the owner.\nThis is the right option if you want to do recurrent sharing with the same group of people.\n\n- A public circle is an open group visible to anyone willing to join.\nYour circle will be visible to everyone and everyone will be able to join the circle.\n\n- A closed circle requires invitation or confirmation by an admin.\nThis is the right circle if you are looking for privacy when sharing your files or ideas.\n\n- An Secret circle is an open group that can be protected by a password.\nUsers won't be able to find this Circle using Nextcloud search engine." : "Çevreler, kullanıcıların kendi kullanıcı/iş arkadaşı/arkadaşlarını gruplamalarını sağlar. Bu kullanıcı grupları (ya da çevreler) paylaşım için kullanılan diğer tüm uygulamalarda (dosyalar, sosyal ağ akışı, durum güncellemesi, iletiler, ...) kullanılabilir.\n\nFarklı çevre türleri kullanılabilir:\n\n- Kişisel bir çevrede yalnız çevre sahibinin tanıdığı kişiler bulunur.\nAynı kişi grubuna yapılacak paylaşımlar için doğru seçenektir..\n\n- Herkese açık bir çevre isteyen herkesin katılabileceği bir açık gruptur.\nÇevrenizi herkes görüp katılabilir.\n\n- Kapalı bir çevreye katılmak için yöneticinin çağrısı ya da onayı gereklidir.\nDosya ve fikirleri paylaşırken gizlilik gerekliyse doğru seçenektir.\n\n- Gizli çevre bir parola ile korunabilen açık bir gruptur.\nBu çevre Nextcloud arama motorunda görüntülenmez."
+    "Moderators can add member to closed circles without user approval." : "Kapalı çevre sorumluları kullanıcı onayına gerek olmadan üye ekleyebilir."
 },
 "nplurals=2; plural=(n > 1);");
