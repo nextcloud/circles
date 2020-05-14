@@ -49,6 +49,7 @@ class ConfigService {
 	const CIRCLES_SELF_SIGNED = 'self_signed_cert';
 	const CIRCLES_ACTIVITY_ON_CREATION = 'creation_activity';
 	const CIRCLES_SKIP_INVITATION_STEP = 'skip_invitation_to_closed_circles';
+	const CIRCLES_SEARCH_FROM_COLLABORATOR = 'search_from_collaborator';
 	const CIRCLES_TEST_ASYNC_LOCK = 'test_async_lock';
 	const CIRCLES_TEST_ASYNC_INIT = 'test_async_init';
 	const CIRCLES_TEST_ASYNC_HAND = 'test_async_hand';
@@ -61,21 +62,22 @@ class ConfigService {
 
 
 	private $defaults = [
-		self::CIRCLES_ALLOW_CIRCLES           => Circle::CIRCLES_ALL,
-		self::CIRCLES_CONTACT_BACKEND         => '0',
-		self::CIRCLES_STILL_FRONTEND          => '0',
-		self::CIRCLES_TEST_ASYNC_INIT         => '0',
-		self::CIRCLES_SWAP_TO_TEAMS           => '0',
-		self::CIRCLES_ACCOUNTS_ONLY           => '0',
-		self::CIRCLES_MEMBERS_LIMIT           => '50',
-		self::CIRCLES_ALLOW_LINKED_GROUPS     => '0',
-		self::CIRCLES_ALLOW_FEDERATED_CIRCLES => '0',
-		self::CIRCLES_GS_ENABLED              => '0',
-		self::CIRCLES_ALLOW_NON_SSL_LINKS     => '0',
-		self::CIRCLES_NON_SSL_LOCAL           => '0',
-		self::CIRCLES_SELF_SIGNED             => '0',
-		self::CIRCLES_ACTIVITY_ON_CREATION    => '1',
-		self::CIRCLES_SKIP_INVITATION_STEP    => '0'
+		self::CIRCLES_ALLOW_CIRCLES            => Circle::CIRCLES_ALL,
+		self::CIRCLES_CONTACT_BACKEND          => '0',
+		self::CIRCLES_STILL_FRONTEND           => '0',
+		self::CIRCLES_TEST_ASYNC_INIT          => '0',
+		self::CIRCLES_SWAP_TO_TEAMS            => '0',
+		self::CIRCLES_ACCOUNTS_ONLY            => '0',
+		self::CIRCLES_MEMBERS_LIMIT            => '50',
+		self::CIRCLES_ALLOW_LINKED_GROUPS      => '0',
+		self::CIRCLES_ALLOW_FEDERATED_CIRCLES  => '0',
+		self::CIRCLES_GS_ENABLED               => '0',
+		self::CIRCLES_ALLOW_NON_SSL_LINKS      => '0',
+		self::CIRCLES_NON_SSL_LOCAL            => '0',
+		self::CIRCLES_SELF_SIGNED              => '0',
+		self::CIRCLES_ACTIVITY_ON_CREATION     => '1',
+		self::CIRCLES_SKIP_INVITATION_STEP     => '0',
+		self::CIRCLES_SEARCH_FROM_COLLABORATOR => '0'
 	];
 
 	/** @var string */
