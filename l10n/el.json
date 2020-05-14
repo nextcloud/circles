@@ -68,6 +68,7 @@
     "the link to <b>{remote}</b> is now up and running." : "ο σύνδεσμος στο <b>{remote}</b> είναι πλέον σε λειτουργία.",
     "The status of the link could not be updated" : "Η κατάσταση του συνδέσμου δεν μπορεί να ενημερωθεί",
     "The status of the link has been updated" : "Η κατάσταση του συνδέσμου ενημερώθηκε",
+    "Global Scale User" : "Γενική κλίμακα χρήστη",
     "Local User" : "Τοπικός χρήστης",
     "Local Group" : "Τοπική ομάδα",
     "The member '{name}' was added to the circle" : "Το μέλος '{name}' προστέθηκε στον κύκλο",
