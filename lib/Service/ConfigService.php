@@ -47,6 +47,7 @@ class ConfigService {
 	const CIRCLES_SELF_SIGNED = 'self_signed_cert';
 	const CIRCLES_ACTIVITY_ON_CREATION = 'creation_activity';
 	const CIRCLES_SKIP_INVITATION_STEP = 'skip_invitation_to_closed_circles';
+	const CIRCLES_SEARCH_FROM_COLLABORATOR = 'search_from_collaborator';
 	const CIRCLES_TEST_ASYNC_LOCK = 'test_async_lock';
 	const CIRCLES_TEST_ASYNC_INIT = 'test_async_init';
 	const CIRCLES_TEST_ASYNC_HAND = 'test_async_hand';
