@@ -43,6 +43,7 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\SharingFrame;
 use OCP\Http\Client\IClientService;
+use OCP\IURLGenerator;
 use OCP\IUserSession;
 
 
@@ -53,6 +54,9 @@ class SharingFrameService {
 
 	/** @var IUserSession */
 	private $userSession;
+
+	/** @var IURLGenerator */
+	private $urlGenerator;
 
 	/** @var ConfigService */
 	private $configService;
@@ -83,6 +87,8 @@ class SharingFrameService {
 	 * SharingFrameService constructor.
 	 *
 	 * @param string $userId
+	 * @param IUserSession $userSession
+	 * @param IURLGenerator $urlGenerator
 	 * @param ConfigService $configService
 	 * @param SharingFrameRequest $sharingFrameRequest
 	 * @param CirclesRequest $circlesRequest
@@ -95,6 +101,7 @@ class SharingFrameService {
 	public function __construct(
 		$userId,
 		IUserSession $userSession,
+		IURLGenerator $urlGenerator,
 		ConfigService $configService,
 		SharingFrameRequest $sharingFrameRequest,
 		CirclesRequest $circlesRequest,
@@ -106,6 +113,7 @@ class SharingFrameService {
 	) {
 		$this->userId = $userId;
 		$this->userSession = $userSession;
+		$this->urlGenerator = $urlGenerator;
 		$this->configService = $configService;
 		$this->sharingFrameRequest = $sharingFrameRequest;
 		$this->circlesRequest = $circlesRequest;
@@ -324,7 +332,8 @@ class SharingFrameService {
 	 * @return string
 	 */
 	private function generatePayloadDeliveryURL($remote) {
-		return $this->configService->generateRemoteHost($remote) . Application::REMOTE_URL_PAYLOAD;
+		return $this->configService->generateRemoteHost($remote) .
+			   $this->urlGenerator->linkToRoute('circles.Shares.initShareDelivery');
 	}
 
 
@@ -366,7 +375,7 @@ class SharingFrameService {
 			'item'       => json_encode($frame)
 		];
 
-		foreach ($links AS $link) {
+		foreach ($links as $link) {
 			$args['token'] = $link->getToken(true);
 			$this->deliverSharingFrameToLink($link, $args);
 		}
