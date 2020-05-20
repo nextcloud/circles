@@ -70,6 +70,7 @@ OC.L10N.register(
     "the link to <b>{remote}</b> is now up and running." : "связь с <b>{remote}</b> установлена и действует.",
     "The status of the link could not be updated" : "Не удаётся обновить состояние связи",
     "The status of the link has been updated" : "Состояние связи было обновлено",
+    "Global Scale User" : "Global Scale пользователь",
     "Local User" : "Локальный пользователь",
     "Local Group" : "Локальная группа",
     "The member '{name}' was added to the circle" : "Участник «{name}» был добавлен в круг",
