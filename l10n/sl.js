@@ -120,7 +120,7 @@ OC.L10N.register(
     "{member} cancelled his request to join {circle}" : "{member} prekliče prošnjo za pristop v krog {circle}",
     "Shared to Circles" : "Souporaba v krogu",
     "%s on %s" : "%s na %s",
-    "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n" : "%1$s vam omogoči souporabo »%2$s«.\nMorali bi že prejeti ločeno sporočilo s povezavo po elektronski pošti.\n",
+    "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n" : "%1$s vam omogoča souporabo »%2$s«.\nPo elektronski pošti bi morali prejeti tudi ločeno sporočilo s povezavo.\n",
     "Password to access »%s«" : "Geslo za dostop do »%s«",
     "It is protected with the following password:" : "Zaščiten je z geslom:",
     "%1$s via %2$s" : "%1$s prek %2$s",
