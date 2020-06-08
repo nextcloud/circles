@@ -596,7 +596,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 				 ->selectAlias('ct.circle_id', 'personal_circle_id')
 				 ->selectAlias('ct.user_id', 'personal_user_id')
 				 ->from('share', 's')
-				 ->from('circles_tokens', 'ct')
+				 ->from('circle_tokens', 'ct')
 				 ->where(
 					 $qb->expr()
 						->eq(
