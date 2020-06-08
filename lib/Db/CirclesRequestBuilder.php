@@ -187,14 +187,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 
 		$orX = $expr->orX($expr->gte('u.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)));
 		$orX->add($expr->eq('c.name', $qb->createNamedParameter($name)))
-			->add(
-				$expr->eq(
-					$qb->createNamedParameter($circleUniqueId),
-					$qb->createFunction(
-						'SUBSTR(`c`.`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')'
-					)
-				)
-			);
+			->add($expr->eq('c.unique_id', $qb->createNamedParameter($circleUniqueId)));
 
 		if ($this->leftJoinedNCGroupAndUser) {
 			$orX->add($expr->gte('g.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)));
@@ -263,7 +256,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		}
 
 		$expr = $qb->expr();
-		$pf = '`' . $this->default_select_alias . '`.';
+		$pf = '' . $this->default_select_alias . '.';
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->selectAlias('u.user_id', 'viewer_userid')
@@ -274,13 +267,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		   ->leftJoin(
 			   $this->default_select_alias, CoreRequestBuilder::TABLE_MEMBERS, 'u',
 			   $expr->andX(
-				   $expr->eq(
-					   'u.circle_id',
-					   $qb->createFunction(
-						   'SUBSTR(' . $pf . '`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH
-						   . ')'
-					   )
-				   ),
+				   $expr->eq('u.circle_id', $pf . 'unique_id'),
 				   $expr->eq('u.user_id', $qb->createNamedParameter($userId)),
 				   $expr->eq('u.instance', $qb->createNamedParameter($instanceId)),
 				   $expr->eq('u.user_type', $qb->createNamedParameter(Member::TYPE_USER))
@@ -302,7 +289,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		}
 
 		$expr = $qb->expr();
-		$pf = '`' . $this->default_select_alias . '`.';
+		$pf = $this->default_select_alias . '.';
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->selectAlias('o.user_id', 'owner_userid')
@@ -312,13 +299,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		   ->leftJoin(
 			   $this->default_select_alias, CoreRequestBuilder::TABLE_MEMBERS, 'o',
 			   $expr->andX(
-				   $expr->eq(
-					   $qb->createFunction(
-						   'SUBSTR(' . $pf . '`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH
-						   . ')'
-					   )
-					   , 'o.circle_id'
-				   ),
+				   $expr->eq('o.circle_id', $pf . 'unique_id'),
 				   $expr->eq('o.level', $qb->createNamedParameter(Member::LEVEL_OWNER)),
 				   $expr->eq('o.user_type', $qb->createNamedParameter(Member::TYPE_USER))
 			   )
@@ -376,12 +357,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		$qb->delete(self::TABLE_CIRCLES)
 		   ->where(
 			   $qb->expr()
-				  ->eq(
-					  $qb->createFunction(
-						  'SUBSTR(`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')'
-					  ),
-					  $qb->createNamedParameter($circleUniqueId)
-				  )
+				  ->eq('unique_id', $qb->createNamedParameter($circleUniqueId))
 		   );
 
 		return $qb;

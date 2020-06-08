@@ -33,7 +33,6 @@ namespace OCA\Circles\Db;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use OC;
-use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\Files\NotFoundException;
@@ -216,20 +215,18 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * link circle field
 	 *
-	 * @deprecated
-	 *
 	 * @param IQueryBuilder $qb
 	 * @param int $shareId
+	 *
+	 * @deprecated
+	 *
 	 */
 	protected function linkCircleField(IQueryBuilder &$qb, $shareId = -1) {
 		$expr = $qb->expr();
 
 		$qb->from(CoreRequestBuilder::TABLE_CIRCLES, 'c');
 
-		$tmpOrX = $expr->eq(
-			's.share_with',
-			$qb->createFunction('SUBSTR(`c`.`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')')
-		);
+		$tmpOrX = $expr->eq('s.share_with', 'c.unique_id');
 
 		if ($shareId === -1) {
 			$qb->andWhere($tmpOrX);
@@ -257,10 +254,8 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->leftJoin(
 			'c', CoreRequestBuilder::TABLE_MEMBERS, 'mo', $expr->andX(
-			$expr->eq(
-				'mo.circle_id',
-        $qb->createFunction('SUBSTR(`c`.`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')')
-			), $expr->eq('mo.user_type', $qb->createNamedParameter(Member::TYPE_USER)),
+			$expr->eq('mo.circle_id', 'c.unique_id'),
+			$expr->eq('mo.user_type', $qb->createNamedParameter(Member::TYPE_USER)),
 			$expr->eq('mo.level', $qb->createNamedParameter(Member::LEVEL_OWNER))
 		)
 		);
@@ -313,14 +308,7 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 
 		$subQb->andWhere($andX);
 
-		return $qb->expr()->andX(
-			$expr->in(
-				$qb->createFunction(
-					'SUBSTR(`c`.`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')'
-				),
-				$qb->createFunction($subQb->getSQL())
-			)
-		);
+		return $expr->andX($expr->in('c.unique_id', $qb->createFunction($subQb->getSQL())));
 	}
 
 
@@ -347,18 +335,9 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 			'g', CoreRequestBuilder::NC_TABLE_GROUP_USER, 'ncgu',
 			$subExpr->eq('ncgu.gid', 'g.group_id')
 		);
-		$subQb->where(
-			$subExpr->andX($subExpr->eq('ncgu.uid', $qb->createNamedParameter($userId)))
-		);
+		$subQb->where($subExpr->andX($subExpr->eq('ncgu.uid', $qb->createNamedParameter($userId))));
 
-		return $qb->expr()->andX(
-			$expr->in(
-				$qb->createFunction(
-					'SUBSTR(`c`.`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')'
-				),
-				$qb->createFunction($subQb->getSQL())
-			)
-		);
+		return $expr->andX($expr->in('c.unique_id', $qb->createFunction($subQb->getSQL())));
 	}
 
 

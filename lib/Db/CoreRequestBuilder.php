@@ -10,7 +10,6 @@ namespace OCA\Circles\Db;
 
 
 use Doctrine\DBAL\Query\QueryBuilder;
-use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
@@ -24,15 +23,15 @@ class CoreRequestBuilder {
 	const TABLE_FILE_SHARES = 'share';
 	const SHARE_TYPE = 7;
 
-	const TABLE_CIRCLES = 'circles_circles';
-	const TABLE_MEMBERS = 'circles_members';
-	const TABLE_GROUPS = 'circles_groups';
-	const TABLE_SHARES = 'circles_shares';
-	const TABLE_LINKS = 'circles_links';
-	const TABLE_TOKENS = 'circles_tokens';
-	const TABLE_GSEVENTS = 'circles_gsevents';
-	const TABLE_GSSHARES = 'circles_gsshares';
-	const TABLE_GSSHARES_MOUNTPOINT = 'circles_gsshares_mp';
+	const TABLE_CIRCLES = 'circle_circles';
+	const TABLE_MEMBERS = 'circle_members';
+	const TABLE_GROUPS = 'circle_groups';
+	const TABLE_SHARES = 'circle_shares';
+	const TABLE_LINKS = 'circle_links';
+	const TABLE_TOKENS = 'circle_tokens';
+	const TABLE_GSEVENTS = 'circle_gsevents';
+	const TABLE_GSSHARES = 'circle_gsshares';
+	const TABLE_GSSHARES_MOUNTPOINT = 'circle_gsshares_mp';
 
 	const NC_TABLE_GROUP_USER = 'group_user';
 
@@ -255,26 +254,26 @@ class CoreRequestBuilder {
 		$this->limitToDBField($qb, 'share_id', $hash);
 	}
 
-
-	/**
-	 * Limit the request to the Circle by its Shorten Unique Id.
-	 *
-	 * @param IQueryBuilder $qb
-	 * @param string $circleUniqueId
-	 * @param $length
-	 */
-	protected function limitToShortenUniqueId(IQueryBuilder &$qb, $circleUniqueId, $length) {
-		$expr = $qb->expr();
-		$pf = ($qb->getType() === QueryBuilder::SELECT) ? '`' . $this->default_select_alias . '`.' : '';
-
-		$qb->andWhere(
-			$expr->eq(
-				$qb->createNamedParameter($circleUniqueId),
-				$qb->createFunction('SUBSTR(' . $pf . '`unique_id`' . ', 1, ' . $length . ')')
-			)
-		);
-
-	}
+//
+//	/**
+//	 * Limit the request to the Circle by its Shorten Unique Id.
+//	 *
+//	 * @param IQueryBuilder $qb
+//	 * @param string $circleUniqueId
+//	 * @param $length
+//	 */
+//	protected function limitToShortenUniqueId(IQueryBuilder &$qb, $circleUniqueId, $length) {
+//		$expr = $qb->expr();
+//		$pf = ($qb->getType() === QueryBuilder::SELECT) ? '`' . $this->default_select_alias . '`.' : '';
+//
+//		$qb->andWhere(
+//			$expr->eq(
+//				$qb->createNamedParameter($circleUniqueId),
+//				$qb->createFunction('SUBSTR(' . $pf . '`unique_id`' . ', 1, ' . $length . ')')
+//			)
+//		);
+//
+//	}
 
 
 	/**
@@ -449,27 +448,20 @@ class CoreRequestBuilder {
 	}
 
 
-	/**
-	 * Right Join the Circles table
-	 *
-	 * @param IQueryBuilder $qb
-	 *
-	 * @deprecated not used (14/07/17)
-	 */
-	protected function rightJoinCircles(IQueryBuilder &$qb) {
-		$expr = $qb->expr();
-		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
-
-		$qb->from(self::TABLE_CIRCLES, 'c')
-		   ->andWhere(
-			   $expr->eq(
-				   $pf . 'circle_id',
-				   $qb->createFunction(
-					   'SUBSTR(`c`.`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')'
-				   )
-			   )
-		   );
-	}
+//	/**
+//	 * Right Join the Circles table
+//	 *
+//	 * @param IQueryBuilder $qb
+//	 *
+//	 * @deprecated not used (14/07/17)
+//	 */
+//	protected function rightJoinCircles(IQueryBuilder &$qb) {
+//		$expr = $qb->expr();
+//		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
+//
+//		$qb->from(self::TABLE_CIRCLES, 'c')
+//		   ->andWhere($expr->eq($pf . 'circle_id', 'c.unique_id'));
+//	}
 
 
 	/**
@@ -490,12 +482,7 @@ class CoreRequestBuilder {
 		   ->selectAlias('lc.name', 'circle_name')
 		   ->leftJoin(
 			   $this->default_select_alias, CoreRequestBuilder::TABLE_CIRCLES, 'lc',
-			   $expr->eq(
-				   $pf . 'circle_id',
-				   $qb->createFunction(
-					   'SUBSTR(`lc`.`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')'
-				   )
-			   )
+			   $expr->eq($pf . 'circle_id', 'lc.unique_id')
 		   );
 	}
 
@@ -523,11 +510,7 @@ class CoreRequestBuilder {
 			$this->default_select_alias, CoreRequestBuilder::TABLE_GROUPS, 'g',
 			$expr->andX(
 				$expr->eq('ncgu.gid', 'g.group_id'),
-				$expr->eq(
-					'g.circle_id', $qb->createFunction(
-					'SUBSTR(' . $field . ', 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')'
-				)
-				)
+				$expr->eq('g.circle_id', $field)
 			)
 		);
 
