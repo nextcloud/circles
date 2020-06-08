@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+### 0.18.6
+
+- new database structure
+- dynamic route for payload delivery
+
+
 ### 0.18.5
 
 - allow self signed certificate: self_signed_cert

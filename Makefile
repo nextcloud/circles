@@ -8,7 +8,7 @@ package_name=$(app_name)
 cert_dir=$(HOME)/.nextcloud/certificates
 github_account=nextcloud
 branch=stable18
-version+=0.18.5
+version+=0.18.6
 
 all: appstore
 
@@ -46,7 +46,7 @@ appstore: clean composer
 	--exclude=/translationfiles \
 	--exclude=/.tx \
 	--exclude=/tests \
-	--exclude=/.git \
+	--exclude=.git \
 	--exclude=/.github \
 	--exclude=/l10n/l10n.pl \
 	--exclude=/CONTRIBUTING.md \
