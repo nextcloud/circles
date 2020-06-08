@@ -10,7 +10,6 @@ namespace OCA\Circles\Db;
 
 
 use Doctrine\DBAL\Query\QueryBuilder;
-use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
@@ -389,27 +388,20 @@ class CoreRequestBuilder {
 	}
 
 
-	/**
-	 * Right Join the Circles table
-	 *
-	 * @param IQueryBuilder $qb
-	 *
-	 * @deprecated not used (14/07/17)
-	 */
-	protected function rightJoinCircles(IQueryBuilder &$qb) {
-		$expr = $qb->expr();
-		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
-
-		$qb->from(self::TABLE_CIRCLES, 'c')
-		   ->andWhere(
-			   $expr->eq(
-				   $pf . 'circle_id',
-				   $qb->createFunction(
-					   'SUBSTR(`c`.`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')'
-				   )
-			   )
-		   );
-	}
+//	/**
+//	 * Right Join the Circles table
+//	 *
+//	 * @param IQueryBuilder $qb
+//	 *
+//	 * @deprecated not used (14/07/17)
+//	 */
+//	protected function rightJoinCircles(IQueryBuilder &$qb) {
+//		$expr = $qb->expr();
+//		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
+//
+//		$qb->from(self::TABLE_CIRCLES, 'c')
+//		   ->andWhere($expr->eq($pf . 'circle_id', 'c.unique_id'));
+//	}
 
 
 	/**
@@ -430,12 +422,7 @@ class CoreRequestBuilder {
 		   ->selectAlias('lc.name', 'circle_name')
 		   ->leftJoin(
 			   $this->default_select_alias, CoreRequestBuilder::TABLE_CIRCLES, 'lc',
-			   $expr->eq(
-				   $pf . 'circle_id',
-				   $qb->createFunction(
-					   'SUBSTR(`lc`.`unique_id`, 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')'
-				   )
-			   )
+			   $expr->eq($pf . 'circle_id', 'lc.unique_id')
 		   );
 	}
 
@@ -463,11 +450,7 @@ class CoreRequestBuilder {
 			$this->default_select_alias, CoreRequestBuilder::TABLE_GROUPS, 'g',
 			$expr->andX(
 				$expr->eq('ncgu.gid', 'g.group_id'),
-				$expr->eq(
-					'g.circle_id', $qb->createFunction(
-					'SUBSTR(' . $field . ', 1, ' . Circle::SHORT_UNIQUE_ID_LENGTH . ')'
-				)
-				)
+				$expr->eq('g.circle_id', $field)
 			)
 		);
 

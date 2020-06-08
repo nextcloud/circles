@@ -93,7 +93,7 @@ class ImportOwncloudCustomGroups implements IRepairStep {
 			->orderBy('group_id');
 
 		$insert = $this->connection->getQueryBuilder();
-		$insert->insert('circles_circles')
+		$insert->insert('circle_circles')
 			->values([
 				'name' => $insert->createParameter('name'),
 				'type' => $insert->createParameter('type'),
@@ -130,7 +130,7 @@ class ImportOwncloudCustomGroups implements IRepairStep {
 			->orderBy('group_id');
 
 		$insert = $this->connection->getQueryBuilder();
-		$insert->insert('circles_members')
+		$insert->insert('circle_members')
 			->values([
 				'circle_id' => $insert->createParameter('circle_id'),
 				'user_id' => $insert->createParameter('user_id'),

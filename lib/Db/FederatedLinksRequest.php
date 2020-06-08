@@ -207,7 +207,7 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 	 */
 	public function getLinkFromId($linkUniqueId) {
 		$qb = $this->getLinksSelectSql();
-		$this->limitToShortenUniqueId($qb, $linkUniqueId, FederatedLink::SHORT_UNIQUE_ID_LENGTH);
+		$this->limitToUniqueId($qb, $linkUniqueId);
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
