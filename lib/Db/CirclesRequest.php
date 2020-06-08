@@ -56,7 +56,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$qb = $this->getCirclesSelectSql();
 
 		$this->leftJoinOwner($qb, '');
-		$this->limitToShortenUniqueId($qb, $circleUniqueId, Circle::SHORT_UNIQUE_ID_LENGTH);
+		$this->limitToUniqueId($qb, $circleUniqueId);
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
@@ -152,7 +152,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$qb = $this->getCirclesSelectSql();
 		$this->leftJoinUserIdAsViewer($qb, $userId, '');
 		$this->leftJoinOwner($qb, $ownerId);
-		$this->leftJoinNCGroupAndUser($qb, $userId, '`c`.`unique_id`');
+		$this->leftJoinNCGroupAndUser($qb, $userId, 'c.unique_id');
 
 		if ($level > 0) {
 			$this->limitToLevel($qb, $level, ['u', 'g']);
@@ -188,12 +188,12 @@ class CirclesRequest extends CirclesRequestBuilder {
 	) {
 		$qb = $this->getCirclesSelectSql();
 
-		$this->limitToShortenUniqueId($qb, $circleUniqueId, Circle::SHORT_UNIQUE_ID_LENGTH);
+		$this->limitToUniqueId($qb, $circleUniqueId);
 
 		$this->leftJoinUserIdAsViewer($qb, $viewerId, $instanceId);
 		$this->leftJoinOwner($qb);
 		if ($instanceId === '') {
-			$this->leftJoinNCGroupAndUser($qb, $viewerId, '`c`.`unique_id`');
+			$this->leftJoinNCGroupAndUser($qb, $viewerId, 'c.unique_id');
 		}
 
 		$this->limitRegardingCircleType($qb, $viewerId, $circleUniqueId, Circle::CIRCLES_ALL, '', $forceAll);
@@ -203,7 +203,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$cursor->closeCursor();
 
 		if ($data === false) {
-			throw new CircleDoesNotExistException($this->l10n->t('Circle not found'));
+			throw new CircleDoesNotExistException($this->l10n->t('Circle not found ' . $circleUniqueId));
 		}
 
 		$circle = $this->parseCirclesSelectSql($data);
@@ -227,7 +227,8 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 */
 	public function createCircle(Circle $circle) {
 		$qb = $this->getCirclesInsertSql();
-		$qb->setValue('unique_id', $qb->createNamedParameter($circle->getUniqueId(true)))
+		$qb->setValue('unique_id', $qb->createNamedParameter($circle->getUniqueId()))
+		   ->setValue('long_id', $qb->createNamedParameter($circle->getUniqueId(true)))
 		   ->setValue('name', $qb->createNamedParameter($circle->getName()))
 		   ->setValue('description', $qb->createNamedParameter($circle->getDescription()))
 		   ->setValue('contact_addressbook', $qb->createNamedParameter($circle->getContactAddressBook()))
