@@ -395,7 +395,8 @@ class DavService {
 		);
 
 		$this->miscService->log(
-			'manage Circles from DavCard: ' . json_encode($fromCard) . ' - current: ' . json_encode($current)
+			'manage Circles from DavCard: ' . json_encode($fromCard) . ' - current: ' . json_encode($current),
+			0
 		);
 
 		$this->manageNewCircles($davCard, $fromCard, $current);
@@ -628,6 +629,9 @@ class DavService {
 		);
 		foreach ($cards as $card) {
 			$davCard = $this->generateDavCardFromCard($bookId, $card);
+			$this->miscService->log(
+				'extracting existing Circles from DavCard Model: ' . json_encode($davCard)
+			);
 			$this->assignCirclesToCard($davCard);
 			$circles = array_merge($circles, $davCard->getCircles());
 		}
@@ -694,6 +698,8 @@ class DavService {
 			$davCard->importFromDav($card['carddata']);
 			$davCard->setAddressBookId($bookId);
 			$davCard->setCardUri($card['uri']);
+
+			$this->miscService->log('migrateBook davCard Model: ' . json_encode($davCard));
 
 			$this->manageDavCard($davCard);
 		}

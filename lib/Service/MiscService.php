@@ -53,7 +53,7 @@ class MiscService {
 		$this->userManager = $userManager;
 	}
 
-	public function log($message, $level = 4) {
+	public function log($message, $level = 2) {
 		$data = array(
 			'app'   => $this->appName,
 			'level' => $level
