@@ -23,12 +23,12 @@ class CoreRequestBuilder {
 	const TABLE_FILE_SHARES = 'share';
 	const SHARE_TYPE = 7;
 
-	const TABLE_CIRCLES = 'circles_circles';
-	const TABLE_MEMBERS = 'circles_members';
-	const TABLE_GROUPS = 'circles_groups';
-	const TABLE_SHARES = 'circles_shares';
-	const TABLE_LINKS = 'circles_links';
-	const TABLE_TOKENS = 'circles_tokens';
+	const TABLE_CIRCLES = 'circle_circles';
+	const TABLE_MEMBERS = 'circle_members';
+	const TABLE_GROUPS = 'circle_groups';
+	const TABLE_SHARES = 'circle_shares';
+	const TABLE_LINKS = 'circle_links';
+	const TABLE_TOKENS = 'circle_tokens';
 
 	const NC_TABLE_GROUP_USER = 'group_user';
 
@@ -192,27 +192,6 @@ class CoreRequestBuilder {
 	 */
 	protected function limitToShareId(IQueryBuilder &$qb, int $shareId) {
 		$this->limitToDBField($qb, 'share_id', $shareId);
-	}
-
-
-	/**
-	 * Limit the request to the Circle by its Shorten Unique Id.
-	 *
-	 * @param IQueryBuilder $qb
-	 * @param string $circleUniqueId
-	 * @param $length
-	 */
-	protected function limitToShortenUniqueId(IQueryBuilder &$qb, $circleUniqueId, $length) {
-		$expr = $qb->expr();
-		$pf = ($qb->getType() === QueryBuilder::SELECT) ? '`' . $this->default_select_alias . '`.' : '';
-
-		$qb->andWhere(
-			$expr->eq(
-				$qb->createNamedParameter($circleUniqueId),
-				$qb->createFunction('SUBSTR(' . $pf . '`unique_id`' . ', 1, ' . $length . ')')
-			)
-		);
-
 	}
 
 
