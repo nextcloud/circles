@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-### 0.18.6
+### 0.18.7
 
 - new database structure
 - dynamic route for payload delivery
