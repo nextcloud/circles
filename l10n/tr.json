@@ -185,6 +185,7 @@
     "Linked Groups are not allowed on this Nextcloud" : "Bu Nextcloud üzerinde Bağlantılı Gruplar kullanılamaz",
     "Federated circles are not allowed on this Nextcloud" : "Nextcloud üzerinde birleşik çevreler kullanılamaz",
     "Circle not found" : "Çevre bulunamadı",
+    "Circle not found " : "Çevre bulunamadı ",
     "A circle with that name exists" : "Aynı adlı bir çevre zaten var",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Yöneticiniz en az bir çevre türüne izin verene kadar Çevreler uygulamasını kullanamazsınız",
     "Federated link not found" : "Birleşik bağlantı bulunamadı",
