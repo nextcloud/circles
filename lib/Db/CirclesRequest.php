@@ -186,7 +186,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 		$this->leftJoinUserIdAsViewer($qb, $viewerId);
 		$this->leftJoinOwner($qb);
-		$this->leftJoinNCGroupAndUser($qb, $viewerId, '`c`.`unique_id`');
+		$this->leftJoinNCGroupAndUser($qb, $viewerId, 'c.unique_id');
 
 		$this->limitRegardingCircleType($qb, $viewerId, $circleUniqueId, Circle::CIRCLES_ALL, '', $forceAll);
 

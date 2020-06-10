@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+### 0.18.8
+
+- quick fix on some sql request and migration issues
+
+
 ### 0.18.7
 
 - new database structure
