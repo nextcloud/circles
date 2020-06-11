@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+### 0.19.2
+
+- quick fix on some sql request and migration issues
+- signing gs request
+
 
 ### 0.19.1
 
