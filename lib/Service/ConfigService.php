@@ -60,6 +60,8 @@ class ConfigService {
 	const GS_KEY = 'key';
 	const GS_LOOKUP = 'lookup';
 
+	const GS_LOOKUP_INSTANCES = '/instances';
+
 
 	private $defaults = [
 		self::CIRCLES_ALLOW_CIRCLES            => Circle::CIRCLES_ALL,
