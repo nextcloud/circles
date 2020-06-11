@@ -39,6 +39,8 @@ use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Traits\TRequest;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OC;
+use OC\Security\IdentityProof\Signer;
+use OC\User\NoUserException;
 use OCA\Circles\Db\GSEventsRequest;
 use OCA\Circles\Exceptions\GlobalScaleEventException;
 use OCA\Circles\Exceptions\GSKeyException;
@@ -48,6 +50,9 @@ use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\GlobalScale\GSWrapper;
 use OCP\AppFramework\QueryException;
 use OCP\IURLGenerator;
+use OCP\IUser;
+use OCP\IUserManager;
+use OCP\IUserSession;
 
 
 /**
@@ -65,6 +70,15 @@ class GlobalScaleService {
 	/** @var IURLGenerator */
 	private $urlGenerator;
 
+	/** @var IUserManager */
+	private $userManager;
+
+	/** @var IUserSession */
+	private $userSession;
+
+	/** @var Signer */
+	private $signer;
+
 	/** @var GSEventsRequest */
 	private $gsEventsRequest;
 
@@ -79,17 +93,26 @@ class GlobalScaleService {
 	 * GlobalScaleService constructor.
 	 *
 	 * @param IURLGenerator $urlGenerator
+	 * @param IUserManager $userManager
+	 * @param IUserSession $userSession
+	 * @param Signer $signer
 	 * @param GSEventsRequest $gsEventsRequest
 	 * @param ConfigService $configService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
 		IURLGenerator $urlGenerator,
+		IUserManager $userManager,
+		IUserSession $userSession,
+		Signer $signer,
 		GSEventsRequest $gsEventsRequest,
 		ConfigService $configService,
 		MiscService $miscService
 	) {
 		$this->urlGenerator = $urlGenerator;
+		$this->userManager = $userManager;
+		$this->userSession = $userSession;
+		$this->signer = $signer;
 		$this->gsEventsRequest = $gsEventsRequest;
 		$this->configService = $configService;
 		$this->miscService = $miscService;
@@ -194,7 +217,11 @@ class GlobalScaleService {
 		/** @var string $lookup */
 		try {
 			$lookup = $this->configService->getGSStatus(ConfigService::GS_LOOKUP);
-			$request = new Request('/instances', Request::TYPE_GET);
+			$request = new Request(ConfigService::GS_LOOKUP_INSTANCES, Request::TYPE_POST);
+
+			$user = $this->getRandomUser();
+			$data = $this->signer->sign('lookupserver', ['federationId' => $user->getCloudId()], $user);
+			$request->setData($data);
 			$request->setAddressFromUrl($lookup);
 
 			try {
@@ -204,7 +231,7 @@ class GlobalScaleService {
 
 				return [];
 			}
-		} catch (GSStatusException $e) {
+		} catch (NoUserException | GSStatusException $e) {
 			$instances = [$this->configService->getLocalCloudId()];
 		}
 
@@ -212,7 +239,7 @@ class GlobalScaleService {
 			return $instances;
 		}
 
-		return array_diff($instances, $this->configService->getTrustedDomains());
+		return array_values(array_diff($instances, $this->configService->getTrustedDomains()));
 	}
 
 
@@ -231,6 +258,25 @@ class GlobalScaleService {
 		}
 
 		return $className;
+	}
+
+
+	/**
+	 * @return IUser
+	 * @throws NoUserException
+	 */
+	private function getRandomUser(): IUser {
+		$user = $this->userSession->getUser();
+		if ($user !== null) {
+			return $user;
+		}
+
+		$random = $this->userManager->search('', 1);
+		if (sizeof($random) > 0) {
+			return array_shift($random);
+		}
+
+		throw  new NoUserException();
 	}
 
 }

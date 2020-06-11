@@ -17,6 +17,7 @@ OC.L10N.register(
     "Modified" : "Dimodifikasi",
     "Settings" : "Setelan",
     "Username" : "Nama pengguna",
+    "Status" : "Status",
     "Link" : "Tautan",
     "Description" : "Deskrisi"
 },

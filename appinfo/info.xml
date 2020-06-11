@@ -54,8 +54,6 @@ Users won't be able to find this Circle using Nextcloud search engine.
 	<repair-steps>
 		<post-migration>
 			<step>OCA\Circles\Migration\ImportOwncloudCustomGroups</step>
-			<step>OCA\Circles\Migration\GenerateUniqueIdOnCreatedCircle</step>
-			<step>OCA\Circles\Migration\UsingShortenUniqueIdInsteadOfCircleId</step>
 			<step>OCA\Circles\Migration\RemoveDeadShares</step>
 		</post-migration>
 	</repair-steps>
@@ -66,6 +64,7 @@ Users won't be able to find this Circle using Nextcloud search engine.
 		<command>OCA\Circles\Command\CirclesDetails</command>
 		<command>OCA\Circles\Command\CirclesList</command>
 		<command>OCA\Circles\Command\CirclesSync</command>
+		<command>OCA\Circles\Command\CirclesTest</command>
 		<command>OCA\Circles\Command\Clean</command>
 		<command>OCA\Circles\Command\MembersCreate</command>
 		<command>OCA\Circles\Command\MembersDetails</command>
