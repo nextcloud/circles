@@ -187,6 +187,7 @@ OC.L10N.register(
     "Linked Groups are not allowed on this Nextcloud" : "Grupos enlazados no son permitidos en este Nextcloud",
     "Federated circles are not allowed on this Nextcloud" : "Los círculos federados no están permitidos en este Nextcloud",
     "Circle not found" : "No se ha encontrado el círculo",
+    "Circle not found " : "Círculo no encontrado",
     "A circle with that name exists" : "Ya existe un círculo con ese nombre",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "No puedes usar la app Círculos hasta que el administrador haya permitido al menos un tipo de círculos",
     "Federated link not found" : "Enlace federado no encontrado",
