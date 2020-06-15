@@ -298,7 +298,7 @@ OC.L10N.register(
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Ostrzeżenie: włączenie tej opcji spowoduje automatyczną akceptację linków z prośbami z innych kręgów.",
     "Save settings" : "Zapisz ustawienia",
     "Maximum number of members per circle" : "Maksymalna ilość członków w kręgu",
-    "Allow linking of groups" : "Pozwalaj na łączenie grup",
+    "Allow linking of groups" : "Zezwalaj na łączenie grup",
     "Groups can be linked to circles." : "Grupy mogą być łączone z kręgami.",
     "Allow federated circles" : "Zezwalaj na kręgi federacyjne",
     "Circles from different Nextclouds can be linked together." : "Kręgi z różnych Nextcoud'ów mogą być łączone ze sobą.",
