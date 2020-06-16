@@ -185,6 +185,7 @@
     "Linked Groups are not allowed on this Nextcloud" : "Grupos vinculados não são permitidos neste Nextcloud",
     "Federated circles are not allowed on this Nextcloud" : "Círculos federados não são permitidos neste Nextcloud",
     "Circle not found" : "Círculo não encontrado",
+    "Circle not found " : "Círculo não encontrado",
     "A circle with that name exists" : "Um círculo com este nome já existe",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Você não pode usar a aplicação Círculos até que o administrador tenha permitido ao menos um tipo de círculo",
     "Federated link not found" : "Link federado não encontrado",
