@@ -185,6 +185,7 @@
     "Linked Groups are not allowed on this Nextcloud" : "Gekoppelde groepen zijn niet toegestaan bij deze Nextcloud",
     "Federated circles are not allowed on this Nextcloud" : "Gefedereerde kringen zijn niet toegestaan op deze Nextcloud",
     "Circle not found" : "Kring niet gevonden",
+    "Circle not found " : "Kring niet gevonden",
     "A circle with that name exists" : "Er bestaat al een kring met deze naam",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "De beheerder dient minimaal een kring te maken voordat je de kring-app kan gebruiken.",
     "Federated link not found" : "Gefedereerde link is niet gevonden",
