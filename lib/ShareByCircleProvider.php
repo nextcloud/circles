@@ -115,7 +115,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 		IDBConnection $connection, ISecureRandom $secureRandom, IUserManager $userManager,
 		IRootFolder $rootFolder, IL10N $l10n, ILogger $logger, IURLGenerator $urlGenerator
 	) {
-		$app = new Application();
+		$app = \OC::$server->query(Application::class);
 		$container = $app->getContainer();
 		$configService = $container->query(ConfigService::class);
 		$miscService = $container->query(MiscService::class);
