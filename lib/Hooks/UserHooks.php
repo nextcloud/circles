@@ -10,7 +10,7 @@ use OCA\Circles\Events\UserEvents;
 class UserHooks {
 
 	static protected function getController() {
-		$app = new Application();
+		$app = \OC::$server->query(Application::class);
 
 		return $app->getContainer()
 				   ->query(UserEvents::class);

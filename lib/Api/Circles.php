@@ -47,7 +47,7 @@ class Circles {
 	 * @return Circle
 	 */
 	public static function detailsCircle($circleId) {
-		$app = new Application();
+		$app = \OC::$server->query(Application::class);
 		$c = $app->getContainer();
 
 		return $c->query(CirclesService::class)

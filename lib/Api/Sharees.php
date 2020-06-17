@@ -46,7 +46,7 @@ class Sharees {
 
 
 	protected static function getContainer() {
-		$app = new Application();
+		$app = \OC::$server->query(Application::class);
 
 		return $app->getContainer();
 	}

@@ -59,7 +59,7 @@ class GlobalSync extends TimedJob {
 	 * @throws QueryException
 	 */
 	protected function run($argument) {
-		$app = new Application();
+		$app = \OC::$server->query(Application::class);
 		$c = $app->getContainer();
 
 		/** @var GSUpstreamService $gsUpstreamService */
