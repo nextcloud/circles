@@ -791,6 +791,9 @@ class EventsService {
 	 */
 	private function notificationOnInvitation(Circle $circle, Member $member) {
 		$this->deleteNotification('membership_request', $member->getMemberId());
+		if ($member->getType() !== Member::TYPE_USER) {
+			return;
+		}
 
 		$notification =
 			$this->createNotification(
