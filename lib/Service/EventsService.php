@@ -792,11 +792,10 @@ class EventsService {
 	private function notificationOnInvitation(Circle $circle, Member $member) {
 		$this->deleteNotification('membership_request', $member->getMemberId());
 
-		$notification =
-			$this->createNotification(
-				$circle, $circle->getViewer(), $member->getUserId(), 'invitation', 'membership',
-				$member->getMemberId()
-			);
+		$notification = $this->createNotification(
+			$circle, $circle->getViewer(), $member->getUserId(), 'invitation', 'membership',
+			$member->getMemberId()
+		);
 
 		$declineAction = $notification->createAction();
 		$declineAction->setLabel('refuse')
