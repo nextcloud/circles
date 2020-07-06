@@ -28,6 +28,7 @@ namespace OCA\Circles\Controller;
 
 use daita\MySmallPhpTools\Traits\TStringTools;
 use Exception;
+use OC\AppFramework\Http;
 use OCA\Circles\Db\SharesRequest;
 use OCA\Circles\Db\TokensRequest;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
@@ -234,5 +235,32 @@ class SharesController extends Controller {
 
 		throw new MemberDoesNotExistException();
 	}
+
+	/**
+	 * @param $data
+	 *
+	 * @return DataResponse
+	 */
+	private function fail($data) {
+		$this->miscService->log(json_encode($data));
+
+		return new DataResponse(
+			array_merge($data, array('status' => 0)),
+			Http::STATUS_NON_AUTHORATIVE_INFORMATION
+		);
+	}
+
+	/**
+	 * @param $data
+	 *
+	 * @return DataResponse
+	 */
+	private function success($data) {
+		return new DataResponse(
+			array_merge($data, array('status' => 1)),
+			Http::STATUS_CREATED
+		);
+	}
+
 }
 
