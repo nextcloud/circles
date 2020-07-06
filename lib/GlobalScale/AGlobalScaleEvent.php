@@ -213,14 +213,14 @@ abstract class AGlobalScaleEvent {
 		}
 
 		$circle = $event->getCircle();
-		$viewer = $circle->getViewer();
+		$viewer = $circle->getHigherViewer();
 		$this->cleanMember($viewer);
 
 		$localCircle = $this->circlesRequest->getCircle(
-			$circle->getUniqueId(), $viewer->getUserId(), $viewer->getInstance()
+			$circle->getUniqueId(), $viewer->getUserId(), $viewer->getType(), $viewer->getInstance()
 		);
 
-		if (!$this->compareMembers($viewer, $localCircle->getViewer())) {
+		if (!$this->compareMembers($viewer, $localCircle->getHigherViewer())) {
 			throw new GlobalScaleDSyncException('Viewer seems DSync');
 		}
 
@@ -242,7 +242,6 @@ abstract class AGlobalScaleEvent {
 		if ($member2->getInstance() === '') {
 			$member2->setInstance($this->configService->getLocalCloudId());
 		}
-
 
 		if ($member1->getCircleId() !== $member2->getCircleId()
 			|| $member1->getUserId() !== $member2->getUserId()

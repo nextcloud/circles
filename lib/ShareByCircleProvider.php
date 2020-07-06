@@ -483,7 +483,6 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * @return IShare[]
 	 */
 	public function getSharedWith($userId, $shareType, $node, $limit, $offset) {
-
 		$shares = $this->getSharedWithCircleMembers($userId, $shareType, $node, $limit, $offset);
 
 		return $shares;
@@ -511,9 +510,8 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 
 		$this->linkToMember($qb, $userId, $this->configService->isLinkedGroupsAllowed(), 'c');
 
-		$cursor = $qb->execute();
-
 		$shares = [];
+		$cursor = $qb->execute();
 		while ($data = $cursor->fetch()) {
 			self::editShareFromParentEntry($data);
 			if (self::isAccessibleResult($data)) {

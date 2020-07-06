@@ -94,57 +94,6 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return IQueryBuilder
-	 */
-	protected function getGroupsSelectSql() {
-		$qb = $this->dbConnection->getQueryBuilder();
-
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->select('g.circle_id', 'g.group_id', 'g.level', 'g.note', 'g.joined')
-		   ->from(self::TABLE_GROUPS, 'g');
-		$this->default_select_alias = 'g';
-
-		return $qb;
-	}
-
-
-	/**
-	 * Base of the Sql Insert request for Shares
-	 *
-	 * @return IQueryBuilder
-	 */
-	protected function getGroupsInsertSql() {
-		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->insert(self::TABLE_GROUPS);
-
-		return $qb;
-	}
-
-	/**
-	 * Base of the Sql Update request for Groups
-	 *
-	 * @param int $circleId
-	 * @param string $groupId
-	 *
-	 * @return IQueryBuilder
-	 */
-	protected function getGroupsUpdateSql($circleId, $groupId) {
-		$qb = $this->dbConnection->getQueryBuilder();
-		$expr = $qb->expr();
-
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->update(self::TABLE_GROUPS)
-		   ->where(
-			   $expr->andX(
-				   $expr->eq('circle_id', $qb->createNamedParameter($circleId)),
-				   $expr->eq('group_id', $qb->createNamedParameter($groupId))
-			   )
-		   );
-
-		return $qb;
-	}
-
-	/**
 	 * Base of the Sql Updte request for Members
 	 *
 	 * @param string /$circleId
@@ -172,23 +121,6 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		return $qb;
 	}
 
-
-	/**
-	 * Base of the Sql Delete request for Groups
-	 *
-	 * @param string $groupId
-	 *
-	 * @return IQueryBuilder
-	 */
-	protected function getGroupsDeleteSql($groupId) {
-		$qb = $this->dbConnection->getQueryBuilder();
-		$expr = $qb->expr();
-
-		$qb->delete(CoreRequestBuilder::TABLE_GROUPS)
-		   ->where($expr->eq('group_id', $qb->createNamedParameter($groupId)));
-
-		return $qb;
-	}
 
 	/**
 	 * Base of the Sql Delete request for Members

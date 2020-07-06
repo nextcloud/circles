@@ -376,8 +376,10 @@ var nav = {
 
 		elements.mainUIMembersTable.show(200);
 		for (var i = 0; i < members.length; i++) {
-			var tmpl = elements.generateTmplMember(members[i]);
-			elements.mainUIMembersTable.append(tmpl);
+			if (members[i].user_type !== 2) {
+				var tmpl = elements.generateTmplMember(members[i]);
+				elements.mainUIMembersTable.append(tmpl);
+			}
 		}
 
 		for (i = 0; i < 10; i++) {

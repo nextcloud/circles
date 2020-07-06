@@ -132,7 +132,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 	/**
 	 * @param string $userId
-	 * @param int $type
+	 * @param int $circleType
 	 * @param string $name
 	 * @param int $level
 	 * @param bool $forceAll
@@ -142,22 +142,25 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 * @throws ConfigNoCircleAvailableException
 	 */
 	public function getCircles(
-		string $userId, int $type = 0, string $name = '', int $level = 0, bool $forceAll = false,
+		string $userId, int $circleType = 0, string $name = '', int $level = 0, bool $forceAll = false,
 		string $ownerId = ''
 	) {
-		if ($type === 0) {
-			$type = Circle::CIRCLES_ALL;
+		if ($circleType === 0) {
+			$circleType = Circle::CIRCLES_ALL;
 		}
 
+		// todo - make it works based on $type
+		$typeViewer = Member::TYPE_USER;
+
 		$qb = $this->getCirclesSelectSql();
-		$this->leftJoinUserIdAsViewer($qb, $userId, '');
+		$this->leftJoinUserIdAsViewer($qb, $userId, $typeViewer, '');
 		$this->leftJoinOwner($qb, $ownerId);
 		$this->leftJoinNCGroupAndUser($qb, $userId, 'c.unique_id');
 
 		if ($level > 0) {
 			$this->limitToLevel($qb, $level, ['u', 'g']);
 		}
-		$this->limitRegardingCircleType($qb, $userId, -1, $type, $name, $forceAll);
+		$this->limitRegardingCircleType($qb, $userId, -1, $circleType, $name, $forceAll);
 
 		$circles = [];
 		$cursor = $qb->execute();
@@ -176,6 +179,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 *
 	 * @param string $circleUniqueId
 	 * @param string $viewerId
+	 * @param int $type
 	 * @param string $instanceId
 	 * @param bool $forceAll
 	 *
@@ -184,13 +188,14 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 * @throws ConfigNoCircleAvailableException
 	 */
 	public function getCircle(
-		string $circleUniqueId, string $viewerId, string $instanceId = '', bool $forceAll = false
+		string $circleUniqueId, string $viewerId, int $type = Member::TYPE_USER, string $instanceId = '',
+		bool $forceAll = false
 	) {
 		$qb = $this->getCirclesSelectSql();
 
 		$this->limitToUniqueId($qb, $circleUniqueId);
 
-		$this->leftJoinUserIdAsViewer($qb, $viewerId, $instanceId);
+		$this->leftJoinUserIdAsViewer($qb, $viewerId, $type, $instanceId);
 		$this->leftJoinOwner($qb);
 		if ($instanceId === '') {
 			$this->leftJoinNCGroupAndUser($qb, $viewerId, 'c.unique_id');

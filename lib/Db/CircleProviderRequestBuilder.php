@@ -37,7 +37,6 @@ use OCA\Circles\Model\Member;
 use OCP\DB\QueryBuilder\ICompositeExpression;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\Files\NotFoundException;
-use OCP\Share;
 use OCP\Share\IShare;
 
 class CircleProviderRequestBuilder extends CoreRequestBuilder {
@@ -68,7 +67,7 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param array $circleUniqueIds
 	 */
-	protected function limitToCircles(IQueryBuilder &$qb, $circleUniqueIds) {
+	protected function limitToCircles(IQueryBuilder $qb, $circleUniqueIds) {
 
 		if (!is_array($circleUniqueIds)) {
 			$circleUniqueIds = array($circleUniqueIds);
@@ -91,7 +90,7 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param $shareId
 	 */
-	protected function limitToShare(IQueryBuilder &$qb, $shareId) {
+	protected function limitToShare(IQueryBuilder $qb, $shareId) {
 		$expr = $qb->expr();
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? 's.' : '';
 
@@ -104,7 +103,7 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	 *
 	 * @param IQueryBuilder $qb
 	 */
-	protected function limitToShareParent(IQueryBuilder &$qb) {
+	protected function limitToShareParent(IQueryBuilder $qb) {
 		$expr = $qb->expr();
 
 		$qb->andWhere($expr->isNull('parent'));
@@ -118,7 +117,7 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	 * @param $userId
 	 * @param int $parentId
 	 */
-	protected function limitToShareChildren(IQueryBuilder &$qb, $userId, $parentId = -1) {
+	protected function limitToShareChildren(IQueryBuilder $qb, $userId, $parentId = -1) {
 		$expr = $qb->expr();
 		$qb->andWhere($expr->eq('share_with', $qb->createNamedParameter($userId)));
 
@@ -137,11 +136,10 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param $circleId
 	 */
-	protected function limitToShareAndChildren(IQueryBuilder &$qb, $circleId) {
+	protected function limitToShareAndChildren(IQueryBuilder $qb, $circleId) {
 		$expr = $qb->expr();
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? 's.' : '';
 
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->andWhere(
 			$expr->orX(
 				$expr->eq($pf . 'parent', $qb->createNamedParameter($circleId)),
@@ -157,7 +155,7 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param $files
 	 */
-	protected function limitToFiles(IQueryBuilder &$qb, $files) {
+	protected function limitToFiles(IQueryBuilder $qb, $files) {
 
 		if (!is_array($files)) {
 			$files = array($files);
@@ -179,7 +177,7 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	 * @param int $limit
 	 * @param int $offset
 	 */
-	protected function limitToPage(IQueryBuilder &$qb, $limit = -1, $offset = 0) {
+	protected function limitToPage(IQueryBuilder $qb, $limit = -1, $offset = 0) {
 		if ($limit !== -1) {
 			$qb->setMaxResults($limit);
 		}
@@ -195,14 +193,13 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	 * @param string $userId
 	 * @param bool $reShares
 	 */
-	protected function limitToShareOwner(IQueryBuilder &$qb, $userId, $reShares = false) {
+	protected function limitToShareOwner(IQueryBuilder $qb, $userId, $reShares = false) {
 		$expr = $qb->expr();
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? 's.' : '';
 
 		if ($reShares === false) {
 			$qb->andWhere($expr->eq($pf . 'uid_initiator', $qb->createNamedParameter($userId)));
 		} else {
-			/** @noinspection PhpMethodParametersCountMismatchInspection */
 			$qb->andWhere(
 				$expr->orX(
 					$expr->eq($pf . 'uid_owner', $qb->createNamedParameter($userId)),
@@ -222,7 +219,7 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	 * @deprecated
 	 *
 	 */
-	protected function linkCircleField(IQueryBuilder &$qb, $shareId = -1) {
+	protected function linkCircleField(IQueryBuilder $qb, $shareId = -1) {
 		$expr = $qb->expr();
 
 		$qb->from(CoreRequestBuilder::TABLE_CIRCLES, 'c');
@@ -235,7 +232,6 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 			return;
 		}
 
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->andWhere(
 			$expr->orX(
 				$tmpOrX,
@@ -248,11 +244,10 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * @param IQueryBuilder $qb
 	 */
-	protected function linkToCircleOwner(IQueryBuilder &$qb) {
+	protected function linkToCircleOwner(IQueryBuilder $qb) {
 		$expr = $qb->expr();
 
 		$qb->selectAlias('mo.user_id', 'circle_owner');
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->leftJoin(
 			'c', CoreRequestBuilder::TABLE_MEMBERS, 'mo', $expr->andX(
 			$expr->eq('mo.circle_id', 'c.unique_id'),
@@ -272,15 +267,14 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	 * @param string $aliasCircles
 	 */
 	protected function linkToMember(
-		IQueryBuilder &$qb, string $userId, bool $groupMemberAllowed, string $aliasCircles
+		IQueryBuilder $qb, string $userId, bool $groupMemberAllowed, string $aliasCircles
 	) {
-		$expr = $qb->expr();
-
-		$orX = $expr->orX();
 		$qb->from(CoreRequestBuilder::TABLE_MEMBERS, 'mcm');
+		$expr = $qb->expr();
+		$orX = $expr->orX();
 
 		$orX->add($this->exprLinkToMemberAsCircleMember($qb, $userId, 'mcm', $aliasCircles));
-		if ($groupMemberAllowed === true) {
+		if ($groupMemberAllowed) {
 			$orX->add($this->exprLinkToMemberAsGroupMember($qb, $userId, 'mcm', $aliasCircles));
 		}
 
@@ -299,7 +293,7 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	 * @return ICompositeExpression
 	 */
 	private function exprLinkToMemberAsCircleMember(
-		IQueryBuilder &$qb, string $userId, string $aliasM, string $aliasC
+		IQueryBuilder $qb, string $userId, string $aliasM, string $aliasC
 	): ICompositeExpression {
 		$expr = $qb->expr();
 		$andX = $expr->andX();
@@ -325,14 +319,21 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	 * @return ICompositeExpression
 	 */
 	private function exprLinkToMemberAsGroupMember(
-		IQueryBuilder &$qb, string $userId, string $aliasM, string $aliasC
+		IQueryBuilder $qb, string $userId, string $aliasM, string $aliasC
 	) {
+
 		$expr = $qb->expr();
+		$qb->leftJoin(
+			$aliasM, self::NC_TABLE_GROUP_USER, 'ncgu',
+			$expr->eq('ncgu.uid', $qb->createNamedParameter($userId))
+		);
+
 		$andX = $expr->andX();
 
-		$andX->add($expr->eq($aliasM . '.user_id', $qb->createNamedParameter($userId)));
+		$andX->add($expr->eq($aliasM . '.user_id', 'ncgu.gid'));
+		$andX->add($expr->eq($aliasM . '.user_type', $qb->createNamedParameter(Member::TYPE_GROUP)));
+		$andX->add($expr->eq($aliasM . '.instance', $qb->createNamedParameter('')));
 		$andX->add($expr->eq($aliasM . '.circle_id', $aliasC . '.unique_id'));
-
 		$andX->add($expr->gte($aliasM . '.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)));
 
 		return $andX;
@@ -344,10 +345,9 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	 *
 	 * @param IQueryBuilder $qb
 	 */
-	protected function joinCircleMembers(IQueryBuilder &$qb) {
+	protected function joinCircleMembers(IQueryBuilder $qb) {
 		$expr = $qb->expr();
 
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->addSelect('m.user_id')
 		   ->from(CoreRequestBuilder::TABLE_MEMBERS, 'm')
 		   ->andWhere(
@@ -365,10 +365,9 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param string $userId
 	 */
-	protected function linkToFileCache(IQueryBuilder &$qb, $userId) {
+	protected function linkToFileCache(IQueryBuilder $qb, $userId) {
 		$expr = $qb->expr();
 
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->leftJoin('s', 'filecache', 'f', $expr->eq('s.file_source', 'f.fileid'))
 		   ->leftJoin('f', 'storages', 'st', $expr->eq('f.storage', 'st.numeric_id'))
 		   ->leftJoin(
@@ -427,7 +426,6 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	protected function getBaseSelectSql($shareId = -1) {
 		$qb = $this->dbConnection->getQueryBuilder();
 
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select(
 			's.id', 's.share_type', 's.share_with', 's.uid_owner', 's.uid_initiator',
 			's.parent', 's.item_type', 's.item_source', 's.item_target', 's.permissions', 's.stime',
@@ -453,7 +451,6 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	protected function getAccessListBaseSelectSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$this->joinCircleMembers($qb);
 		$this->joinShare($qb);
 
@@ -467,7 +464,6 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	protected function getCompleteSelectSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->selectDistinct('s.id')
 		   ->addSelect(
 			   's.*', 'f.fileid', 'f.path', 'f.permissions AS f_permissions', 'f.storage',
@@ -477,11 +473,9 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 		   )
 		   ->selectAlias('st.id', 'storage_string_id');
 
-
 		$this->linkToCircleOwner($qb);
 		$this->joinShare($qb);
 		$this->linkCircleField($qb);
-
 
 		return $qb;
 	}
@@ -490,14 +484,12 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * @param IQueryBuilder $qb
 	 */
-	private function joinShare(IQueryBuilder &$qb) {
+	private function joinShare(IQueryBuilder $qb) {
 		$expr = $qb->expr();
 
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->addSelect('s.file_source', 's.file_target');
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->from('share', 's')
-		   ->andWhere($expr->eq('s.share_type', $qb->createNamedParameter(Share::SHARE_TYPE_CIRCLE)))
+		   ->andWhere($expr->eq('s.share_type', $qb->createNamedParameter(IShare::TYPE_CIRCLE)))
 		   ->andWhere(
 			   $expr->orX(
 				   $expr->eq('s.item_type', $qb->createNamedParameter('file')),
@@ -510,14 +502,14 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * generate and return a base sql request.
 	 *
-	 * @return \OCP\DB\QueryBuilder\IQueryBuilder
+	 * @return IQueryBuilder
 	 */
 	protected function getBaseDeleteSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$expr = $qb->expr();
 
 		$qb->delete('share')
-		   ->where($expr->eq('share_type', $qb->createNamedParameter(Share::SHARE_TYPE_CIRCLE)));
+		   ->where($expr->eq('share_type', $qb->createNamedParameter(IShare::TYPE_CIRCLE)));
 
 		return $qb;
 	}
@@ -526,14 +518,14 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * generate and return a base sql request.
 	 *
-	 * @return \OCP\DB\QueryBuilder\IQueryBuilder
+	 * @return IQueryBuilder
 	 */
 	protected function getBaseUpdateSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$expr = $qb->expr();
 
 		$qb->update('share')
-		   ->where($expr->eq('share_type', $qb->createNamedParameter(Share::SHARE_TYPE_CIRCLE)));
+		   ->where($expr->eq('share_type', $qb->createNamedParameter(IShare::TYPE_CIRCLE)));
 
 		return $qb;
 	}

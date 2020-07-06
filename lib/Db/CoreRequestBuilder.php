@@ -38,8 +38,8 @@ class CoreRequestBuilder {
 	/** @var array */
 	private $tables = [
 		self::TABLE_CIRCLES,
-		self::TABLE_MEMBERS,
 		self::TABLE_GROUPS,
+		self::TABLE_MEMBERS,
 		self::TABLE_SHARES,
 		self::TABLE_LINKS,
 		self::TABLE_TOKENS,
@@ -436,7 +436,7 @@ class CoreRequestBuilder {
 
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
 
-		$and = $expr->andX($expr->eq($pf . 'group_id', 'ncgu.gid'));
+		$and = $expr->andX($expr->eq($pf . 'user_id', 'ncgu.gid'));
 		if ($userId !== '') {
 			$and->add($expr->eq('ncgu.uid', $qb->createNamedParameter($userId)));
 		} else {
@@ -446,22 +446,6 @@ class CoreRequestBuilder {
 		$qb->from(self::NC_TABLE_GROUP_USER, 'ncgu');
 		$qb->andWhere($and);
 	}
-
-
-//	/**
-//	 * Right Join the Circles table
-//	 *
-//	 * @param IQueryBuilder $qb
-//	 *
-//	 * @deprecated not used (14/07/17)
-//	 */
-//	protected function rightJoinCircles(IQueryBuilder &$qb) {
-//		$expr = $qb->expr();
-//		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
-//
-//		$qb->from(self::TABLE_CIRCLES, 'c')
-//		   ->andWhere($expr->eq($pf . 'circle_id', 'c.unique_id'));
-//	}
 
 
 	/**
@@ -507,9 +491,11 @@ class CoreRequestBuilder {
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->leftJoin(
-			$this->default_select_alias, CoreRequestBuilder::TABLE_GROUPS, 'g',
+			$this->default_select_alias, CoreRequestBuilder::TABLE_MEMBERS, 'g',
 			$expr->andX(
-				$expr->eq('ncgu.gid', 'g.group_id'),
+				$expr->eq('g.user_id', 'ncgu.gid'),
+				$expr->eq('g.user_type', $qb->createNamedParameter(Member::TYPE_GROUP)),
+				$expr->eq('g.instance', $qb->createNamedParameter('')),
 				$expr->eq('g.circle_id', $field)
 			)
 		);
