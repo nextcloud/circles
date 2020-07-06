@@ -795,11 +795,10 @@ class EventsService {
 			return;
 		}
 
-		$notification =
-			$this->createNotification(
-				$circle, $circle->getViewer(), $member->getUserId(), 'invitation', 'membership',
-				$member->getMemberId()
-			);
+		$notification = $this->createNotification(
+			$circle, $circle->getViewer(), $member->getUserId(), 'invitation', 'membership',
+			$member->getMemberId()
+		);
 
 		$declineAction = $notification->createAction();
 		$declineUrl =

@@ -52,9 +52,6 @@ class SharingFrameService {
 	/** @var string */
 	private $userId;
 
-	/** @var IUserSession */
-	private $userSession;
-
 	/** @var IURLGenerator */
 	private $urlGenerator;
 
@@ -111,8 +108,15 @@ class SharingFrameService {
 		IClientService $clientService,
 		MiscService $miscService
 	) {
+
+		if ($userId === null) {
+			$user = $userSession->getUser();
+			if ($user !== null) {
+				$userId = $user->getUID();
+			}
+		}
+
 		$this->userId = $userId;
-		$this->userSession = $userSession;
 		$this->urlGenerator = $urlGenerator;
 		$this->configService = $configService;
 		$this->sharingFrameRequest = $sharingFrameRequest;
@@ -140,17 +144,12 @@ class SharingFrameService {
 	 * @throws MemberDoesNotExistException
 	 */
 	public function createFrame($circleUniqueId, SharingFrame $frame, $broadcast = null) {
-		$userId = $this->userId;
-		if ($userId === null) {
-			$user = $this->userSession->getUser();
-			$userId = $user->getUID();
-		}
 
 		$this->miscService->log(
-			'Create frame with payload ' . json_encode($frame->getPayload()) . ' as ' . $userId, 0
+			'Create frame with payload ' . json_encode($frame->getPayload()) . ' as ' . $this->userId, 0
 		);
 		try {
-			$circle = $this->circlesRequest->getCircle($circleUniqueId, $userId);
+			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			$circle->getHigherViewer()
 				   ->hasToBeMember();
 

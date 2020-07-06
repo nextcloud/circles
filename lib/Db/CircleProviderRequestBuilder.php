@@ -34,6 +34,7 @@ namespace OCA\Circles\Db;
 use Doctrine\DBAL\Query\QueryBuilder;
 use OC;
 use OCA\Circles\Model\Member;
+use OCP\DB\QueryBuilder\ICompositeExpression;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\Files\NotFoundException;
 use OCP\Share;
@@ -268,18 +269,22 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param string $userId
 	 * @param bool $groupMemberAllowed
+	 * @param string $aliasCircles
 	 */
-	protected function linkToMember(IQueryBuilder &$qb, $userId, $groupMemberAllowed) {
+	protected function linkToMember(
+		IQueryBuilder &$qb, string $userId, bool $groupMemberAllowed, string $aliasCircles
+	) {
 		$expr = $qb->expr();
 
 		$orX = $expr->orX();
-		$orX->add($this->exprLinkToMemberAsCircleMember($qb, $userId));
+		$qb->from(CoreRequestBuilder::TABLE_MEMBERS, 'mcm');
+
+		$orX->add($this->exprLinkToMemberAsCircleMember($qb, $userId, 'mcm', $aliasCircles));
 		if ($groupMemberAllowed === true) {
-			$orX->add($this->exprLinkToMemberAsGroupMember($qb, $userId));
+			$orX->add($this->exprLinkToMemberAsGroupMember($qb, $userId, 'mcm', $aliasCircles));
 		}
 
 		$qb->andWhere($orX);
-
 	}
 
 
@@ -288,27 +293,24 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	 *
 	 * @param IQueryBuilder $qb
 	 * @param string $userId
+	 * @param string $aliasM
+	 * @param string $aliasC
 	 *
-	 * @return \OCP\DB\QueryBuilder\ICompositeExpression
+	 * @return ICompositeExpression
 	 */
-	private function exprLinkToMemberAsCircleMember(IQueryBuilder &$qb, $userId) {
-		$subQb = $this->dbConnection->getQueryBuilder();
-
-		$subQb
-			->select('mcm.circle_id')
-			->from(CoreRequestBuilder::TABLE_MEMBERS, 'mcm');
-
-		$expr = $subQb->expr();
+	private function exprLinkToMemberAsCircleMember(
+		IQueryBuilder &$qb, string $userId, string $aliasM, string $aliasC
+	): ICompositeExpression {
+		$expr = $qb->expr();
 		$andX = $expr->andX();
 
-		$andX->add($expr->eq('mcm.user_id', $qb->createNamedParameter($userId)));
-		$andX->add($expr->gt('mcm.level', $qb->createNamedParameter(0)));
-		$andX->add($expr->eq('mcm.instance', $qb->createNamedParameter('')));
-		$andX->add($expr->eq('mcm.user_type', $qb->createNamedParameter(Member::TYPE_USER)));
+		$andX->add($expr->eq($aliasM . '.user_id', $qb->createNamedParameter($userId)));
+		$andX->add($expr->eq($aliasM . '.circle_id', $aliasC . '.unique_id'));
+		$andX->add($expr->gte($aliasM . '.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)));
+		$andX->add($expr->eq($aliasM . '.instance', $qb->createNamedParameter('')));
+		$andX->add($expr->eq($aliasM . '.user_type', $qb->createNamedParameter(Member::TYPE_USER)));
 
-		$subQb->andWhere($andX);
-
-		return $expr->andX($expr->in('c.unique_id', $qb->createFunction($subQb->getSQL())));
+		return $andX;
 	}
 
 
@@ -317,27 +319,23 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	 *
 	 * @param IQueryBuilder $qb
 	 * @param string $userId
+	 * @param string $aliasM
+	 * @param string $aliasC
 	 *
-	 * @return \OCP\DB\QueryBuilder\ICompositeExpression
+	 * @return ICompositeExpression
 	 */
-	private function exprLinkToMemberAsGroupMember(IQueryBuilder &$qb, $userId) {
+	private function exprLinkToMemberAsGroupMember(
+		IQueryBuilder &$qb, string $userId, string $aliasM, string $aliasC
+	) {
 		$expr = $qb->expr();
+		$andX = $expr->andX();
 
-		$subQb = $this->dbConnection->getQueryBuilder();
-		$subExpr = $subQb->expr();
+		$andX->add($expr->eq($aliasM . '.user_id', $qb->createNamedParameter($userId)));
+		$andX->add($expr->eq($aliasM . '.circle_id', $aliasC . '.unique_id'));
 
-		$subQb
-			->select('g.circle_id')
-			->from(CoreRequestBuilder::TABLE_GROUPS, 'g');
+		$andX->add($expr->gte($aliasM . '.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)));
 
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$subQb->leftJoin(
-			'g', CoreRequestBuilder::NC_TABLE_GROUP_USER, 'ncgu',
-			$subExpr->eq('ncgu.gid', 'g.group_id')
-		);
-		$subQb->where($subExpr->andX($subExpr->eq('ncgu.uid', $qb->createNamedParameter($userId))));
-
-		return $expr->andX($expr->in('c.unique_id', $qb->createFunction($subQb->getSQL())));
+		return $andX;
 	}
 
 

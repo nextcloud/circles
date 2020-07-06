@@ -26,7 +26,7 @@
 
 namespace OCA\Circles\Command;
 
-use Exception;
+use Doctrine\DBAL\Driver\Statement;
 use OC\Core\Command\Base;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\CoreRequestBuilder;
@@ -67,6 +67,7 @@ class Clean extends Base {
 
 	}
 
+
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:clean')
@@ -82,7 +83,6 @@ class Clean extends Base {
 	 * @return int
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-
 		if ($input->getOption('all')) {
 			$this->circlesRequest->cleanDatabase();
 
@@ -99,6 +99,9 @@ class Clean extends Base {
 	}
 
 
+	/**
+	 * @return Statement|int
+	 */
 	private function fixUserType() {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$qb->update(CoreRequestBuilder::TABLE_MEMBERS)
