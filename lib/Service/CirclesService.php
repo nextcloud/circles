@@ -52,6 +52,7 @@ use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\Member;
 use OCP\IGroupManager;
 use OCP\IL10N;
+use OCP\IUserSession;
 
 class CirclesService {
 
@@ -97,6 +98,7 @@ class CirclesService {
 	 *
 	 * @param string $userId
 	 * @param IL10N $l10n
+	 * @param IUserSession $userSession
 	 * @param IGroupManager $groupManager
 	 * @param ConfigService $configService
 	 * @param CirclesRequest $circlesRequest
@@ -111,6 +113,7 @@ class CirclesService {
 	public function __construct(
 		$userId,
 		IL10N $l10n,
+		IUserSession $userSession,
 		IGroupManager $groupManager,
 		ConfigService $configService,
 		CirclesRequest $circlesRequest,
@@ -122,6 +125,14 @@ class CirclesService {
 		CircleProviderRequest $circleProviderRequest,
 		MiscService $miscService
 	) {
+
+		if ($userId === null) {
+			$user = $userSession->getUser();
+			if ($user !== null) {
+				$userId = $user->getUID();
+			}
+		}
+
 		$this->userId = $userId;
 		$this->l10n = $l10n;
 		$this->groupManager = $groupManager;
