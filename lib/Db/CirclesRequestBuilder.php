@@ -61,21 +61,6 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * Left Join the Groups table
-	 *
-	 * @param IQueryBuilder $qb
-	 * @param string $field
-	 */
-	protected function leftJoinGroups(IQueryBuilder &$qb, $field) {
-		$expr = $qb->expr();
-
-		$qb->leftJoin(
-			$this->default_select_alias, CoreRequestBuilder::TABLE_GROUPS, 'g',
-			$expr->eq($field, 'g.circle_id')
-		);
-	}
-
-	/**
 	 * Limit the search to a non-personal circle
 	 *
 	 * @param IQueryBuilder $qb
@@ -247,9 +232,11 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 *
 	 * @param IQueryBuilder $qb
 	 * @param string $userId
+	 * @param int $type
 	 * @param string $instanceId
 	 */
-	public function leftJoinUserIdAsViewer(IQueryBuilder &$qb, string $userId, string $instanceId) {
+	public function leftJoinUserIdAsViewer(IQueryBuilder &$qb, string $userId, int $type, string $instanceId
+	) {
 
 		if ($qb->getType() !== QueryBuilder::SELECT) {
 			return;
@@ -260,6 +247,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->selectAlias('u.user_id', 'viewer_userid')
+		   ->selectAlias('u.user_type', 'viewer_type')
 		   ->selectAlias('u.instance', 'viewer_instance')
 		   ->selectAlias('u.status', 'viewer_status')
 		   ->selectAlias('u.member_id', 'viewer_member_id')
@@ -270,7 +258,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 				   $expr->eq('u.circle_id', $pf . 'unique_id'),
 				   $expr->eq('u.user_id', $qb->createNamedParameter($userId)),
 				   $expr->eq('u.instance', $qb->createNamedParameter($instanceId)),
-				   $expr->eq('u.user_type', $qb->createNamedParameter(Member::TYPE_USER))
+				   $expr->eq('u.user_type', $qb->createNamedParameter($type))
 			   )
 		   );
 	}
@@ -409,6 +397,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 			$user = new Member($data['viewer_userid'], Member::TYPE_USER, $circle->getUniqueId());
 			$user->setStatus($data['viewer_status']);
 			$user->setMemberId($data['viewer_member_id']);
+			$user->setType($data['viewer_type']);
 			$user->setInstance($data['viewer_instance']);
 			$user->setLevel($data['viewer_level']);
 			$circle->setViewer($user);

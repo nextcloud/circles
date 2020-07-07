@@ -30,6 +30,7 @@ namespace OCA\Circles\Db;
 
 use daita\MySmallPhpTools\Traits\TStringTools;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Exception;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Model\Member;
@@ -119,7 +120,6 @@ class MembersRequest extends MembersRequestBuilder {
 	public function forceGetMembers(
 		$circleUniqueId, $level = Member::LEVEL_MEMBER, int $type = 0, $incGroup = false
 	) {
-
 		$qb = $this->getMembersSelectSql();
 		$this->limitToMembersAndAlmost($qb);
 		$this->limitToLevel($qb, $level);
@@ -235,7 +235,7 @@ class MembersRequest extends MembersRequestBuilder {
 			}
 
 			return $members;
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			return [];
 		}
 	}
@@ -251,26 +251,27 @@ class MembersRequest extends MembersRequestBuilder {
 	 *
 	 * @param string $circleUniqueId
 	 * @param string $groupId
+	 * @param string $instance
 	 *
 	 * @return Member
 	 * @throws MemberDoesNotExistException
 	 */
-	public function forceGetGroup($circleUniqueId, $groupId) {
-		$qb = $this->getGroupsSelectSql();
+	public function forceGetGroup(string $circleUniqueId, string $groupId, string $instance) {
+		$qb = $this->getMembersSelectSql();
 
-		$this->limitToGroupId($qb, $groupId);
+		$this->limitToUserId($qb, $groupId);
+		$this->limitToUserType($qb, Member::TYPE_GROUP);
+		$this->limitToInstance($qb, $instance);
 		$this->limitToCircleId($qb, $circleUniqueId);
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
+		$cursor->closeCursor();
 		if ($data === false) {
 			throw new MemberDoesNotExistException($this->l10n->t('This member does not exist'));
 		}
 
-		$group = $this->parseGroupsSelectSql($data);
-		$cursor->closeCursor();
-
-		return $group;
+		return $this->parseMembersSelectSql($data);
 	}
 
 
@@ -285,7 +286,6 @@ class MembersRequest extends MembersRequestBuilder {
 	 * @param int $level
 	 */
 	private function includeGroupMembers(array &$members, $circleUniqueId, $level) {
-
 		$groupMembers = $this->forceGetGroupMembers($circleUniqueId, $level);
 		$this->avoidDuplicateMembers($members, $groupMembers);
 	}
@@ -378,8 +378,9 @@ class MembersRequest extends MembersRequestBuilder {
 	 * @return Member[]
 	 */
 	public function forceGetGroupMembers($circleUniqueId, $level = Member::LEVEL_MEMBER) {
-		$qb = $this->getGroupsSelectSql();
+		$qb = $this->getMembersSelectSql();
 
+		$this->limitToUserType($qb, Member::TYPE_GROUP);
 		$this->limitToLevel($qb, $level);
 		$this->limitToCircleId($qb, $circleUniqueId);
 		$this->limitToNCGroupUser($qb);
@@ -435,9 +436,13 @@ class MembersRequest extends MembersRequestBuilder {
 	 * @return Member
 	 */
 	public function forceGetHigherLevelGroupFromUser($circleUniqueId, $userId) {
-		$qb = $this->getGroupsSelectSql();
+		$qb = $this->getMembersSelectSql();
 
+		$this->limitToUserType($qb, Member::TYPE_GROUP);
+		$this->limitToInstance($qb, '');
 		$this->limitToCircleId($qb, $circleUniqueId);
+		$this->limitToNCGroupUser($qb);
+
 		$this->limitToNCGroupUser($qb, $userId);
 
 		/** @var Member $group */
@@ -500,17 +505,18 @@ class MembersRequest extends MembersRequestBuilder {
 	 * @param Member $viewer
 	 *
 	 * @return Member[]
-	 * @throws MemberDoesNotExistException
 	 */
 	public function getGroupsFromCircle($circleUniqueId, Member $viewer) {
-
 		if ($viewer->getLevel() < Member::LEVEL_MEMBER) {
 			return [];
 		}
 
-		$qb = $this->getGroupsSelectSql();
-		$this->limitToCircleId($qb, $circleUniqueId);
+		$qb = $this->getMembersSelectSql();
+
+		$this->limitToUserType($qb, Member::TYPE_GROUP);
 		$this->limitToLevel($qb, Member::LEVEL_MEMBER);
+		$this->limitToInstance($qb, '');
+		$this->limitToCircleId($qb, $circleUniqueId);
 
 		$cursor = $qb->execute();
 		$groups = [];
@@ -523,30 +529,6 @@ class MembersRequest extends MembersRequestBuilder {
 		$cursor->closeCursor();
 
 		return $groups;
-	}
-
-
-	/**
-	 * Insert Member into database.
-	 *
-	 * @param Member $member
-	 *
-	 * @throws MemberAlreadyExistsException
-	 */
-	public function insertGroup(Member $member) {
-		try {
-			$qb = $this->getGroupsInsertSql();
-			$qb->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
-			   ->setValue('group_id', $qb->createNamedParameter($member->getUserId()))
-			   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
-			   ->setValue('note', $qb->createNamedParameter($member->getNote()));
-
-			$qb->execute();
-		} catch (UniqueConstraintViolationException $e) {
-			throw new MemberAlreadyExistsException(
-				$this->l10n->t('This user is already a member of the circle')
-			);
-		}
 	}
 
 
@@ -621,7 +603,6 @@ class MembersRequest extends MembersRequestBuilder {
 		$qb = $this->getMembersDeleteSql();
 		$expr = $qb->expr();
 
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->where(
 			$expr->andX(
 				$expr->eq('user_id', $qb->createNamedParameter($member->getUserId())),
@@ -665,7 +646,9 @@ class MembersRequest extends MembersRequestBuilder {
 	 * @return bool
 	 */
 	public function updateGroup(Member $member) {
-		$qb = $this->getGroupsUpdateSql($member->getCircleId(), $member->getUserId());
+		$qb = $this->getMembersUpdateSql(
+			$member->getCircleId(), $member->getUserId(), $member->getInstance(), $member->getType()
+		);
 		$qb->set('level', $qb->createNamedParameter($member->getLevel()));
 		$qb->execute();
 
@@ -674,7 +657,12 @@ class MembersRequest extends MembersRequestBuilder {
 
 
 	public function unlinkAllFromGroup($groupId) {
-		$qb = $this->getGroupsDeleteSql($groupId);
+		$qb = $this->getMembersDeleteSql();
+
+		$this->limitToUserId($qb, $groupId);
+		$this->limitToUserType($qb, Member::TYPE_GROUP);
+		$this->limitToInstance($qb, '');
+
 		$qb->execute();
 	}
 
@@ -708,8 +696,6 @@ class MembersRequest extends MembersRequestBuilder {
 	/**
 	 * @param string $circleId
 	 * @param string $contactId
-	 * @param string $userId
-	 * @param int $type
 	 *
 	 * @return Member
 	 * @throws MemberDoesNotExistException

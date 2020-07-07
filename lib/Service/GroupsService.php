@@ -179,10 +179,12 @@ class GroupsService {
 		}
 
 		try {
-			$member = $this->membersRequest->forceGetGroup($circleId, $groupId);
+			$instance = ''; // TODO: group are not used in GS yet.
+			$member = $this->membersRequest->forceGetGroup($circleId, $groupId, $instance);
 		} catch (MemberDoesNotExistException $e) {
 			$member = new Member($groupId, Member::TYPE_GROUP, $circleId);
-			$this->membersRequest->insertGroup($member);
+			$this->membersRequest->createMember($member);
+//			$this->membersRequest->insertGroup($member);
 		}
 
 		if ($member->getLevel() > Member::LEVEL_NONE) {
@@ -214,7 +216,8 @@ class GroupsService {
 				);
 			}
 
-			$group = $this->membersRequest->forceGetGroup($circle->getUniqueId(), $groupId);
+			$instance = ''; // TODO: group are not used in GS yet.
+			$group = $this->membersRequest->forceGetGroup($circle->getUniqueId(), $groupId, $instance);
 			if ($group->getLevel() !== $level) {
 				if ($level === Member::LEVEL_OWNER) {
 					throw new GroupCannotBeOwnerException(
@@ -276,12 +279,12 @@ class GroupsService {
 			$higherViewer = $circle->getHigherViewer();
 			$this->circlesService->hasToBeAdmin($higherViewer);
 
-			$group = $this->membersRequest->forceGetGroup($circleUniqueId, $groupId);
+			$instance = ''; // TODO: group are not used in GS yet.
+			$group = $this->membersRequest->forceGetGroup($circleUniqueId, $groupId, $instance);
 			$group->cantBeOwner();
 			$higherViewer->hasToBeHigherLevel($group->getLevel());
 
-			$this->membersRequest->unlinkAllFromGroup($groupId);
-
+			$this->membersRequest->removeMember($group);
 			$this->eventsService->onGroupUnlink($circle, $group);
 
 			return $this->membersRequest->getGroupsFromCircle($circleUniqueId, $higherViewer);

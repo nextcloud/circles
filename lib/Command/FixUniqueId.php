@@ -83,9 +83,9 @@ class FixUniqueId extends Base {
 
 			$shortenUniqueId = substr($data['unique_id'], 0, Circle::SHORT_UNIQUE_ID_LENGTH);
 
-			$this->swapToShortenUniqueIdInTable(
-				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_GROUPS
-			);
+//			$this->swapToShortenUniqueIdInTable(
+//				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_GROUPS
+//			);
 			$this->swapToShortenUniqueIdInTable(
 				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_LINKS
 			);
