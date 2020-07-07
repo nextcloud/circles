@@ -29,7 +29,6 @@
 
 var links = {
 
-
 	linkCircle: function (circleId, remote, callback) {
 		var result = {status: -1};
 		$.ajax({
@@ -39,9 +38,9 @@ var links = {
 				remote: remote
 			}
 		}).done(function (res) {
-			api.onCallback(callback, res);
+			OCA.Circles.api.onCallback(callback, res);
 		}).fail(function () {
-			api.onCallback(callback, result);
+			OCA.Circles.api.onCallback(callback, result);
 		});
 	},
 
@@ -55,9 +54,9 @@ var links = {
 				status: status
 			}
 		}).done(function (res) {
-			api.onCallback(callback, res);
+			OCA.Circles.api.onCallback(callback, res);
 		}).fail(function () {
-			api.onCallback(callback, result);
+			OCA.Circles.api.onCallback(callback, result);
 		});
 	},
 
@@ -71,9 +70,9 @@ var links = {
 				name: groupId
 			}
 		}).done(function (res) {
-			api.onCallback(callback, res);
+			OCA.Circles.api.onCallback(callback, res);
 		}).fail(function () {
-			api.onCallback(callback, result);
+			OCA.Circles.api.onCallback(callback, result);
 		});
 	},
 
@@ -87,9 +86,9 @@ var links = {
 				group: groupId
 			}
 		}).done(function (res) {
-			api.onCallback(callback, res);
+			OCA.Circles.api.onCallback(callback, res);
 		}).fail(function () {
-			api.onCallback(callback, result);
+			OCA.Circles.api.onCallback(callback, result);
 		});
 	},
 
@@ -104,9 +103,9 @@ var links = {
 				level: level
 			}
 		}).done(function (res) {
-			api.onCallback(callback, res);
+			OCA.Circles.api.onCallback(callback, res);
 		}).fail(function () {
-			api.onCallback(callback, result);
+			OCA.Circles.api.onCallback(callback, result);
 		});
 	}
 

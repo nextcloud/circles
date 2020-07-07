@@ -39,9 +39,9 @@ var circles = {
 				name: name
 			}
 		}).done(function (res) {
-			api.onCallback(callback, res);
+			OCA.Circles.api.onCallback(callback, res);
 		}).fail(function () {
-			api.onCallback(callback, result);
+			OCA.Circles.api.onCallback(callback, result);
 		});
 	},
 
@@ -57,9 +57,9 @@ var circles = {
 				level: level
 			}
 		}).done(function (res) {
-			api.onCallback(callback, res);
+			OCA.Circles.api.onCallback(callback, res);
 		}).fail(function () {
-			api.onCallback(callback, result);
+			OCA.Circles.api.onCallback(callback, result);
 		});
 	},
 
@@ -70,9 +70,9 @@ var circles = {
 			method: 'GET',
 			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId)
 		}).done(function (res) {
-			api.onCallback(callback, res);
+			OCA.Circles.api.onCallback(callback, res);
 		}).fail(function () {
-			api.onCallback(callback, result);
+			OCA.Circles.api.onCallback(callback, result);
 		});
 	},
 
@@ -84,9 +84,9 @@ var circles = {
 			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/join'),
 			data: {}
 		}).done(function (res) {
-			api.onCallback(callback, res);
+			OCA.Circles.api.onCallback(callback, res);
 		}).fail(function () {
-			api.onCallback(callback, result);
+			OCA.Circles.api.onCallback(callback, result);
 		});
 	},
 
@@ -98,9 +98,9 @@ var circles = {
 			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/settings'),
 			data: {settings: settings}
 		}).done(function (res) {
-			api.onCallback(callback, res);
+			OCA.Circles.api.onCallback(callback, res);
 		}).fail(function () {
-			api.onCallback(callback, result);
+			OCA.Circles.api.onCallback(callback, result);
 		});
 	},
 
@@ -112,9 +112,9 @@ var circles = {
 			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/leave'),
 			data: {}
 		}).done(function (res) {
-			api.onCallback(callback, res);
+			OCA.Circles.api.onCallback(callback, res);
 		}).fail(function () {
-			api.onCallback(callback, result);
+			OCA.Circles.api.onCallback(callback, result);
 		});
 	},
 
@@ -126,9 +126,9 @@ var circles = {
 			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId),
 			data: {}
 		}).done(function (res) {
-			api.onCallback(callback, res);
+			OCA.Circles.api.onCallback(callback, res);
 		}).fail(function () {
-			api.onCallback(callback, result);
+			OCA.Circles.api.onCallback(callback, result);
 		});
 	}
 

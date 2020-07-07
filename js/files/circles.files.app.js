@@ -11,8 +11,6 @@
  *
  */
 
-var api = OCA.Circles.api;
-
 (function() {
 	if (!OCA.Circles) {
 		/**
