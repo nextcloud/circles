@@ -29,25 +29,18 @@
 var members = {
 
 	searchUsers: function(search, callback) {
-
-		var result = {status: -1};
-		$.ajax({
+		OCA.Circles.api.request({
 			method: 'GET',
 			url: OC.generateUrl('/apps/circles/v1/globalsearch'),
 			data: {
 				search: search
 			}
-		}).done(function(res) {
-			OCA.Circles.api.onCallback(callback, res);
-		}).fail(function() {
-			OCA.Circles.api.onCallback(callback, result);
-		});
+		}, callback);
 	},
 
 
 	addMember: function(circleId, ident, type, instance, callback) {
-		var result = {status: -1};
-		$.ajax({
+		OCA.Circles.api.request({
 			method: 'PUT',
 			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/member'),
 			data: {
@@ -55,17 +48,12 @@ var members = {
 				type: type,
 				instance: instance
 			}
-		}).done(function(res) {
-			OCA.Circles.api.onCallback(callback, res);
-		}).fail(function() {
-			OCA.Circles.api.onCallback(callback, result);
-		});
+		}, callback);
 	},
 
 
 	removeMember: function(circleId, userId, userType, instance, callback) {
-		var result = {status: -1};
-		$.ajax({
+		OCA.Circles.api.request({
 			method: 'DELETE',
 			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/member'),
 			data: {
@@ -73,17 +61,12 @@ var members = {
 				type: Number(userType),
 				instance: instance
 			}
-		}).done(function(res) {
-			OCA.Circles.api.onCallback(callback, res);
-		}).fail(function() {
-			OCA.Circles.api.onCallback(callback, result);
-		});
+		}, callback);
 	},
 
 
 	levelMember: function(circleId, userId, userType, instance, level, callback) {
-		var result = {status: -1};
-		$.ajax({
+		OCA.Circles.api.request({
 			method: 'POST',
 			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/level'),
 			data: {
@@ -92,11 +75,7 @@ var members = {
 				instance: instance,
 				level: level
 			}
-		}).done(function(res) {
-			OCA.Circles.api.onCallback(callback, res);
-		}).fail(function() {
-			OCA.Circles.api.onCallback(callback, result);
-		});
+		}, callback);
 	}
 
 

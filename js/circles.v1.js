@@ -50,8 +50,7 @@
 
 
 			this.shareToCircle = function (circleId, source, type, item, callback) {
-				var result = {status: -1};
-				$.ajax({
+				self.request({
 					method: 'PUT',
 					url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/share'),
 					data: {
@@ -59,11 +58,14 @@
 						type: type,
 						item: item
 					}
-				}).done(function (res) {
-					self.onCallback(callback, res);
-				}).fail(function () {
-					self.onCallback(callback, result);
-				});
+				}, callback)
+			};
+
+			this.request = function (options, callback) {
+				var result = {status: -1};
+				$.ajax(options)
+					.done(function (res) { self.onCallback(callback, res); })
+					.fail(function () { self.onCallback(callback, result); });
 			};
 
 			this.onCallback = function (callback, result) {

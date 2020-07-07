@@ -29,26 +29,19 @@
 var circles = {
 
 	createCircle: function (type, name, callback) {
-
-		var result = {status: -1};
-		$.ajax({
+		OCA.Circles.api.request({
 			method: 'PUT',
 			url: OC.generateUrl('/apps/circles/v1/circles'),
 			data: {
 				type: type,
 				name: name
 			}
-		}).done(function (res) {
-			OCA.Circles.api.onCallback(callback, res);
-		}).fail(function () {
-			OCA.Circles.api.onCallback(callback, result);
-		});
+		}, callback);
 	},
 
 
 	listCircles: function (type, name, level, callback) {
-		var result = {status: -1};
-		$.ajax({
+		OCA.Circles.api.request({
 			method: 'GET',
 			url: OC.generateUrl('/apps/circles/v1/circles'),
 			data: {
@@ -56,80 +49,51 @@ var circles = {
 				name: name,
 				level: level
 			}
-		}).done(function (res) {
-			OCA.Circles.api.onCallback(callback, res);
-		}).fail(function () {
-			OCA.Circles.api.onCallback(callback, result);
-		});
+		}, callback);
 	},
 
 
 	detailsCircle: function (circleId, callback) {
-		var result = {status: -1};
-		$.ajax({
+		OCA.Circles.api.request({
 			method: 'GET',
 			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId)
-		}).done(function (res) {
-			OCA.Circles.api.onCallback(callback, res);
-		}).fail(function () {
-			OCA.Circles.api.onCallback(callback, result);
-		});
+		}, callback);
 	},
 
 
 	joinCircle: function (circleId, callback) {
-		var result = {status: -1};
-		$.ajax({
+		OCA.Circles.api.request({
 			method: 'GET',
 			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/join'),
 			data: {}
-		}).done(function (res) {
-			OCA.Circles.api.onCallback(callback, res);
-		}).fail(function () {
-			OCA.Circles.api.onCallback(callback, result);
-		});
+		}, callback);
 	},
 
 
 	settingsCircle: function (circleId, settings, callback) {
-		var result = {status: -1};
-		$.ajax({
+		OCA.Circles.api.request({
 			method: 'POST',
 			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/settings'),
 			data: {settings: settings}
-		}).done(function (res) {
-			OCA.Circles.api.onCallback(callback, res);
-		}).fail(function () {
-			OCA.Circles.api.onCallback(callback, result);
-		});
+		}, callback);
 	},
 
 
 	leaveCircle: function (circleId, callback) {
-		var result = {status: -1};
-		$.ajax({
+		OCA.Circles.api.request({
 			method: 'GET',
 			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/leave'),
 			data: {}
-		}).done(function (res) {
-			OCA.Circles.api.onCallback(callback, res);
-		}).fail(function () {
-			OCA.Circles.api.onCallback(callback, result);
-		});
+		}, callback);
 	},
 
 
 	destroyCircle: function (circleId, callback) {
-		var result = {status: -1};
-		$.ajax({
+		OCA.Circles.api.request({
 			method: 'DELETE',
 			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId),
 			data: {}
-		}).done(function (res) {
-			OCA.Circles.api.onCallback(callback, res);
-		}).fail(function () {
-			OCA.Circles.api.onCallback(callback, result);
-		});
+		}, callback);
 	}
 
 };
