@@ -15,11 +15,17 @@ style(Application::APP_NAME, 'admin');
 		<label><?php p($l->t('Maximum number of members per circle')); ?></label><br />
 		<input type="text" id="members_limit" />
 	</p>
+	<?php
+	if (!$_['gsEnabled']) {
+	?>
 	<p>
 		<input type="checkbox" value="1" id="allow_linked_groups" class="checkbox" />
 		<label for="allow_linked_groups"><?php p($l->t('Allow linking of groups')); ?></label>
 		<em><?php p($l->t('Groups can be linked to circles.')); ?></em>
 	</p>
+	<?php
+	}
+	?>
 	<p>
 		<input type="checkbox" value="1" id="allow_federated_circles" class="checkbox"/>
 		<label for="allow_federated_circles"><?php p($l->t('Allow federated circles')); ?></label>

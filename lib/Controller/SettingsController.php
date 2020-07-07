@@ -5,7 +5,6 @@ namespace OCA\Circles\Controller;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
 use OCP\AppFramework\Controller;
-use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
 
 
@@ -28,15 +27,6 @@ class SettingsController extends Controller {
 
 	/**
 	 * @NoCSRFRequired
-	 * @return TemplateResponse
-	 */
-	public function admin() {
-		return new TemplateResponse($this->appName, 'settings.admin', [], 'blank');
-	}
-
-
-	/**
-	 * @NoCSRFRequired
 	 */
 	public function getSettings() {
 		$params = [
@@ -49,7 +39,7 @@ class SettingsController extends Controller {
 			'allowFederatedCircles' => $this->configService->getAppValue(
 				ConfigService::CIRCLES_ALLOW_FEDERATED_CIRCLES
 			),
-			'skipInvitationStep' => $this->configService->getAppValue(
+			'skipInvitationStep'    => $this->configService->getAppValue(
 				ConfigService::CIRCLES_SKIP_INVITATION_STEP
 			)
 		];
@@ -58,7 +48,9 @@ class SettingsController extends Controller {
 	}
 
 
-	public function setSettings($members_limit, $allow_linked_groups, $allow_federated_circles, $skip_invitation_to_closed_circles) {
+	public function setSettings(
+		$members_limit, $allow_linked_groups, $allow_federated_circles, $skip_invitation_to_closed_circles
+	) {
 		$this->configService->setAppValue(
 			ConfigService::CIRCLES_MEMBERS_LIMIT, $members_limit
 		);

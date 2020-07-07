@@ -21,32 +21,52 @@
  *
  */
 
+
 namespace OCA\Circles\Settings;
 
+
+use OCA\Circles\Exceptions\GSStatusException;
+use OCA\Circles\Service\ConfigService;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IConfig;
 use OCP\Settings\ISettings;
 
+
 class CirclesSettings implements ISettings {
+
 
 	/** @var IConfig */
 	private $config;
+
+	/** @var ConfigService */
+	private $configService;
+
 
 	/**
 	 * CirclesSettings constructor.
 	 *
 	 * @param IConfig $config
+	 * @param ConfigService $configService
 	 */
-	public function __construct(IConfig $config) {
+	public function __construct(IConfig $config, ConfigService $configService) {
 		$this->config = $config;
+		$this->configService = $configService;
 	}
+
 
 	/**
 	 * @return TemplateResponse
+	 * @throws GSStatusException
 	 */
 	public function getForm() {
-		return new TemplateResponse('circles', 'settings.admin');
+		return new TemplateResponse(
+			'circles', 'settings.admin',
+			[
+				'gsEnabled' => $this->configService->getGSStatus(ConfigService::GS_ENABLED)
+			]
+		);
 	}
+
 
 	/**
 	 * @return string
@@ -55,10 +75,13 @@ class CirclesSettings implements ISettings {
 		return 'groupware';
 	}
 
+
 	/**
 	 * @return int
 	 */
 	public function getPriority() {
 		return 90;
 	}
+
 }
+
