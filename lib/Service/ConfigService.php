@@ -156,11 +156,13 @@ class ConfigService {
 
 	/**
 	 * @return bool
+	 * @throws GSStatusException
 	 */
 	public function isLinkedGroupsAllowed() {
 		if ($this->allowedLinkedGroups === -1) {
-			$this->allowedLinkedGroups =
-				(int)$this->getAppValue(self::CIRCLES_ALLOW_LINKED_GROUPS);
+			$allowed = ($this->getAppValue(self::CIRCLES_ALLOW_LINKED_GROUPS) === '1'
+						&& !$this->getGSStatus(self::GS_ENABLED));
+			$this->allowedLinkedGroups = ($allowed) ? 1 : 0;
 		}
 
 		return ($this->allowedLinkedGroups === 1);
