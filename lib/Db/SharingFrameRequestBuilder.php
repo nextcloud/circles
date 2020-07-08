@@ -126,6 +126,7 @@ class SharingFrameRequestBuilder extends CoreRequestBuilder {
 
 		$circle = new Circle();
 		$circle->setUniqueId($data['circle_id']);
+		$circle->setSettings($data['circle_settings']);
 		if (key_exists('circle_type', $data)) {
 			$circle->setType($data['circle_type']);
 			$circle->setName($data['circle_name']);

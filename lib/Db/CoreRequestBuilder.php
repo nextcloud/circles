@@ -464,6 +464,7 @@ class CoreRequestBuilder {
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->selectAlias('lc.type', 'circle_type')
 		   ->selectAlias('lc.name', 'circle_name')
+		   ->selectAlias('lc.settings', 'circle_settings')
 		   ->leftJoin(
 			   $this->default_select_alias, CoreRequestBuilder::TABLE_CIRCLES, 'lc',
 			   $expr->eq($pf . 'circle_id', 'lc.unique_id')

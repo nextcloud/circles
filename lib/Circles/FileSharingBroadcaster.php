@@ -225,7 +225,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 				}
 
 				$password = '';
-				if ($this->configService->enforcePasswordProtection()) {
+				if ($this->configService->enforcePasswordProtection($circle)) {
 					$password = $this->miscService->token(15);
 				}
 
@@ -314,8 +314,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 		}
 
 		$this->sendMailExitingShares(
-			$unknownShares, MiscService::getDisplay($author, Member::TYPE_USER), $member, $recipient,
-			$circle->getName()
+			$circle, $unknownShares, MiscService::getDisplay($author, Member::TYPE_USER), $member, $recipient
 		);
 	}
 
@@ -589,19 +588,19 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 
 	/**
+	 * @param Circle $circle
 	 * @param array $unknownShares
 	 * @param string $author
 	 * @param Member $member
 	 * @param string $recipient
-	 * @param string $circleName
 	 */
 	public function sendMailExitingShares(
-		array $unknownShares, $author, Member $member, $recipient, $circleName
+		Circle $circle, array $unknownShares, $author, Member $member, $recipient
 	) {
 		$data = [];
 
 		$password = '';
-		if ($this->configService->enforcePasswordProtection()) {
+		if ($this->configService->enforcePasswordProtection($circle)) {
 			$password = $this->miscService->token(15);
 		}
 

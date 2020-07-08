@@ -432,11 +432,17 @@ class ConfigService {
 	/**
 	 * do we require a share by mail to be password protected
 	 *
+	 * @param Circle $circle
+	 *
 	 * @return bool
 	 */
-	public function enforcePasswordProtection() {
+	public function enforcePasswordProtection(Circle $circle) {
 		if ($this->getAppValue(self::CIRCLES_CONTACT_BACKEND) === '1') {
 			return false;
+		}
+
+		if ($circle->getSetting('password_enforcement') === 'true') {
+			return true;
 		}
 
 		return ($this->config->getAppValue('sharebymail', 'enforcePasswordProtection', 'no') === 'yes');
