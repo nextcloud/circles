@@ -33,11 +33,11 @@ style(Application::APP_NAME, 'notyf');
 Circles::addJavascriptAPI();
 script(
 	Application::APP_NAME, [
-				 'circles.app.elements', 'circles.app.actions',
-				 'circles.app.navigation', 'circles.app.settings',
-				 'circles.app', 'circles.app.results.circles', 'circles.app.results.members',
-				 'circles.app.results.groups', 'circles.app.results.links'
-			 ]
+							 'circles.app.elements', 'circles.app.actions',
+							 'circles.app.navigation', 'circles.app.settings',
+							 'circles.app', 'circles.app.results.circles', 'circles.app.results.members',
+							 'circles.app.results.groups', 'circles.app.results.links'
+						 ]
 );
 
 style(Application::APP_NAME, 'navigation');
@@ -47,7 +47,7 @@ style(Application::APP_NAME, 'navigation');
 <div id="circle-navigation" class="noborder" style="position: relative">
 	<div class="navigation-element" style="height: 100%; padding-top: 15px">
 		<input id="circles_new_name" type="text"
-			   placeholder="<?php p($l->t('Create a new circle')); ?>"/>
+			   placeholder="<?php p($l->t('Create a new circle')); ?>" />
 		<select id="circles_new_type" style="display: none;" class="select_none">
 			<option value="" style="font-style: italic">&nbsp;&nbsp;&nbsp;&nbsp;<?php p(
 					$l->t("Select a circle type")
@@ -101,7 +101,8 @@ style(Application::APP_NAME, 'navigation');
 			?>
 
 		</select>
-		<input id="circles_new_submit" type="submit" value="<?php p($l->t('Creation')); ?>" style="display: none;"/>
+		<input id="circles_new_submit" type="submit" value="<?php p($l->t('Creation')); ?>"
+			   style="display: none;" />
 
 		<div id="circles_new_type_definition" style="display: none;">
 			<div id="circles_new_type_1"><b>
@@ -110,7 +111,7 @@ style(Application::APP_NAME, 'navigation');
 							"A personal circle is a list of users known only to the owner."
 						)
 					); ?>
-				</b><br/>
+				</b><br />
 				<?php p(
 					$l->t(
 						"This is the right option if you want to do recurrent sharing with the same list of local users."
@@ -122,7 +123,7 @@ style(Application::APP_NAME, 'navigation');
 						$l->t(
 							"A secret circle is an hidden group that can only be seen by its members or by people knowing the exact name of the circle."
 						)
-					); ?></b><br/><?php p(
+					); ?></b><br /><?php p(
 					$l->t(
 						"Non-members won't be able to find your secret circle using the search bar."
 					)
@@ -133,7 +134,7 @@ style(Application::APP_NAME, 'navigation');
 							"Joining a closed circle requires an invitation or confirmation by a moderator."
 						)
 					); ?>
-				</b><br/><?php p(
+				</b><br /><?php p(
 					$l->t(
 						"Anyone can find and request an invitation to the circle; but only members will see who's in it and get access to it's shared items."
 					)
@@ -143,7 +144,7 @@ style(Application::APP_NAME, 'navigation');
 						$l->t(
 							"A public circle is an open group visible to anyone willing to join."
 						)
-					); ?></b><br/><?php p(
+					); ?></b><br /><?php p(
 					$l->t(
 						"Anyone can see, join, and access the items shared within the circle."
 					)
@@ -195,7 +196,7 @@ style(Application::APP_NAME, 'navigation');
 
 <div id="circle-navigation" class="circles" style="display: none;">
 	<input id="circles_search" type="text"
-		   placeholder="<?php p($l->t('Search circles')); ?>"/>
+		   placeholder="<?php p($l->t('Search circles')); ?>" />
 	<select id="circles_filters">
 		<option value="0"><?php p($l->t('No filter')); ?></option>
 		<option value="1"><?php p($l->t('Circles you belong to')); ?></option>
@@ -205,9 +206,9 @@ style(Application::APP_NAME, 'navigation');
 </div>
 
 <script id="tmpl_circle" type="text/template">
-	<div class="title">%title%</div>
-	<div class="type"><b>%type%</b> (%status%, %level_string%)</div>
-	<div class="owner"><b><?php p($l->t('Owner')); ?>:</b> %owner%</div>
+<div class="title">%title%</div>
+<div class="type"><b>%type%</b> (%status%, %level_string%)</div>
+<div class="owner"><b><?php p($l->t('Owner')); ?>:</b> %owner%</div>
 </script>
 
 <div id="app-content" style="position: relative">
@@ -222,7 +223,7 @@ style(Application::APP_NAME, 'navigation');
 		<div id="circle_details">
 			<div class="lightenbg">
 				<input id="adminsettingscircle" type="submit"
-					   value="<?php p($l->t('Settings')); ?>"/>
+					   value="<?php p($l->t('Settings')); ?>" />
 			</div>
 			<div id="name"></div>
 			<div id="type"></div>
@@ -252,19 +253,19 @@ style(Application::APP_NAME, 'navigation');
 
 				<div id="circle-actions-more">
 					<input id="joincircle_acceptinvit" type="submit"
-						   value="<?php p($l->t('Accept the invitation')); ?>"/>
+						   value="<?php p($l->t('Accept the invitation')); ?>" />
 					<input id="joincircle_rejectinvit" type="submit"
-						   value="<?php p($l->t('Decline the invitation')); ?>"/>
+						   value="<?php p($l->t('Decline the invitation')); ?>" />
 					<input id="joincircle" type="submit"
-						   value="<?php p($l->t('Join this circle')); ?>"/>
+						   value="<?php p($l->t('Join this circle')); ?>" />
 					<input id="leavecircle" type="submit"
-						   value="<?php p($l->t('Leave this circle')); ?>"/>
+						   value="<?php p($l->t('Leave this circle')); ?>" />
 					<input id="addmember" type="text"
-						   placeholder="<?php p($l->t('Add a member')); ?>"/>
+						   placeholder="<?php p($l->t('Add a member')); ?>" />
 					<input id="linkgroup" type="text"
-						   placeholder="<?php p($l->t('Link a group')); ?>"/>
+						   placeholder="<?php p($l->t('Link a group')); ?>" />
 					<input id="linkcircle" type="text"
-						   placeholder="<?php p($l->t('Link to a circle')); ?>"/>
+						   placeholder="<?php p($l->t('Link to a circle')); ?>" />
 					<button id="circle-actions-return" class="icon-close"
 							title="<?php p($l->t('Return to menu')); ?>"></button>
 				</div>
@@ -284,16 +285,16 @@ style(Application::APP_NAME, 'navigation');
 							<td class="joined"><?php p($l->t('Joined')); ?></td>
 						</tr>
 					</table>
-					<br/><br/><br/><br/>
+					<br /><br /><br /><br />
 
 					<table id="groupslist_table">
 						<tr class="header">
 							<td class="groupid"><?php p($l->t('Group Name')); ?></td>
 							<td class="level"><?php p($l->t('Level')); ?></td>
-<!--							<td class="joined">--><?php //p($l->t('Joined')); ?><!--</td>-->
+							<!--							<td class="joined">--><?php //p($l->t('Joined')); ?><!--</td>-->
 						</tr>
 					</table>
-					<br/><br/><br/><br/>
+					<br /><br /><br /><br />
 
 					<table id="linkslist_table">
 						<tr class="header">
@@ -304,53 +305,54 @@ style(Application::APP_NAME, 'navigation');
 					</table>
 
 					<script id="tmpl_member" type="text/template">
-						<tr class="entry" member-id="%username%" member-type="%type%" member-level="%level%" member-instance="%instance%"
-							member-levelString="%levelString%"
-							member-status="%status%">
-							<td class="username" style="padding-left: 15px;">%displayname%</td>
-							<td class="level">
-								<select class="level-select">
-									<option value="1"><?php p($l->t('Member')); ?></option>
-									<option value="4"><?php p($l->t('Moderator')); ?></option>
-									<option value="8"><?php p($l->t('Admin')); ?></option>
-									<option value="9"><?php p($l->t('Owner')); ?></option>
-								</select>
-							</td>
-							<td class="status">
-								<select class="status-select">
-								</select>
-							</td>
-							<td class="joined">%joined%</td>
-							<td>
-								<div class="icon-checkmark" style="display: none;"></div>
-							</td>
-						</tr>
+					<tr class="entry" member-id="%username%" member-type="%type%" member-level="%level%"
+						member-instance="%instance%"
+						member-levelString="%levelString%"
+						member-status="%status%">
+						<td class="username" style="padding-left: 15px;">%displayname%</td>
+						<td class="level">
+							<select class="level-select">
+								<option value="1"><?php p($l->t('Member')); ?></option>
+								<option value="4"><?php p($l->t('Moderator')); ?></option>
+								<option value="8"><?php p($l->t('Admin')); ?></option>
+								<option value="9"><?php p($l->t('Owner')); ?></option>
+							</select>
+						</td>
+						<td class="status">
+							<select class="status-select">
+							</select>
+						</td>
+						<td class="joined">%joined%</td>
+						<td>
+							<div class="icon-checkmark" style="display: none;"></div>
+						</td>
+					</tr>
 					</script>
 
 					<script id="tmpl_group" type="text/template">
-						<tr class="entry" group-id="%groupid%" group-level="%level%">
-							<td class="groupid" style="padding-left: 15px;">%groupid%</td>
-							<td class="level">
-								<select class="level-select">
-									<option value="1"><?php p($l->t('Member')); ?></option>
-									<option value="4"><?php p($l->t('Moderator')); ?></option>
-									<option value="8"><?php p($l->t('Admin')); ?></option>
-								</select>
-							</td>
-<!--							<td class="joined">%joined%</td>-->
-						</tr>
+					<tr class="entry" group-id="%groupid%" group-level="%level%">
+						<td class="groupid" style="padding-left: 15px;">%groupid%</td>
+						<td class="level">
+							<select class="level-select">
+								<option value="1"><?php p($l->t('Member')); ?></option>
+								<option value="4"><?php p($l->t('Moderator')); ?></option>
+								<option value="8"><?php p($l->t('Admin')); ?></option>
+							</select>
+						</td>
+						<!--							<td class="joined">%joined%</td>-->
+					</tr>
 					</script>
 
 					<script id="tmpl_link" type="text/template">
-						<tr class="entry" link-id="%id%" link-address="%address%"
-							link-status="%status%">
-							<td class="address" style="padding-left: 15px;">%token%@%address%</td>
-							<td class="status">
-								<select class="link-status-select">
-								</select>
-							</td>
-							<td class="joined">%joined%</td>
-						</tr>
+					<tr class="entry" link-id="%id%" link-address="%address%"
+						link-status="%status%">
+						<td class="address" style="padding-left: 15px;">%token%@%address%</td>
+						<td class="status">
+							<select class="link-status-select">
+							</select>
+						</td>
+						<td class="joined">%joined%</td>
+					</tr>
 					</script>
 
 				</div>
@@ -360,7 +362,7 @@ style(Application::APP_NAME, 'navigation');
 
 					<tr>
 						<td class="left"><?php p($l->t('Name of the Circle')); ?></td>
-						<td><input type="text" id="settings-name"/></td>
+						<td><input type="text" id="settings-name" /></td>
 					</tr>
 
 					<tr>
@@ -370,7 +372,7 @@ style(Application::APP_NAME, 'navigation');
 
 
 					<tr id="settings-entry-limit">
-						<td class="left"><?php p($l->t('Members limit')); ?><br/>
+						<td class="left"><?php p($l->t('Members limit')); ?><br />
 							<span class="hint"><?php p(
 									$l->t(
 										'Change the limit to the number of members. (0: default, -1: unlimited)'
@@ -380,8 +382,17 @@ style(Application::APP_NAME, 'navigation');
 						<td><input type="text" value="" id="settings-limit"></td>
 					</tr>
 
+					<tr id="settings-password-enforcement">
+						<td class="left"><?php p($l->t('Password enforcement')); ?><br />
+							<span class="hint"><?php p(
+									$l->t('External share will be protected by a randomly generated password')
+								); ?></span>
+						</td>
+						<td><input type="checkbox" value="1" id="settings-password"></td>
+					</tr>
+
 					<tr id="settings-entry-link">
-						<td class="left"><?php p($l->t('Allow Federated Links')); ?><br/>
+						<td class="left"><?php p($l->t('Allow Federated Links')); ?><br />
 							<span class="hint"><?php p(
 									$l->t(
 										'Makes the circle federated, and enables sharing between federated circles'
@@ -398,7 +409,7 @@ style(Application::APP_NAME, 'navigation');
 					</tr>-->
 					<tr id="settings-entry-link-auto">
 						<td class="left"><?php p($l->t('Accept Link Request Automatically')); ?>
-							<br/>
+							<br />
 							<span class="hint"><?php p(
 									$l->t(
 										'Warning: Enabling this will automatically accept new link requests from other circles.'
@@ -411,7 +422,7 @@ style(Application::APP_NAME, 'navigation');
 					<tr>
 						<td colspan="2" style="text-align: center;">
 							<input type="submit" id="settings-submit"
-								   value="<?php p($l->t('Save settings')); ?>"/>
+								   value="<?php p($l->t('Save settings')); ?>" />
 						</td>
 					</tr>
 				</table>

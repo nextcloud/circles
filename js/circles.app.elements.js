@@ -70,6 +70,7 @@ var elements = {
 	settingsPanel: null,
 	settingsName: null,
 	settingsDesc: null,
+	settingsPassword: null,
 	settingsLimit: null,
 	settingsEntryLimit: null,
 	settingsLink: null,
@@ -133,6 +134,7 @@ var elements = {
 		elements.settingsName = $('#settings-name');
 		elements.settingsDesc = $('#settings-desc');
 		elements.settingsEntryLimit = $('#settings-entry-limit');
+		elements.settingsPassword = $('#settings-password');
 		elements.settingsLimit = $('#settings-limit');
 		// elements.settingsLimit.prop('disabled', !OC.isUserAdmin());
 

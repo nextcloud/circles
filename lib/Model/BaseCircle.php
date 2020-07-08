@@ -32,9 +32,10 @@ use OCP\IL10N;
 class BaseCircle {
 
 	const CIRCLES_SETTINGS_DEFAULT = [
-		'allow_links'       => 'false',
-		'allow_links_auto'  => 'false',
-		'allow_links_files' => 'false'
+		'password_enforcement' => 'false',
+		'allow_links'          => 'false',
+		'allow_links_auto'     => 'false',
+		'allow_links_files'    => 'false'
 	];
 
 	const CIRCLES_PERSONAL = 1;
@@ -346,7 +347,7 @@ class BaseCircle {
 		}
 
 		$ak = array_keys(self::CIRCLES_SETTINGS_DEFAULT);
-		foreach ($ak AS $k) {
+		foreach ($ak as $k) {
 			if (!key_exists($k, $settings)) {
 				$settings[$k] = self::CIRCLES_SETTINGS_DEFAULT[$k];
 			}

@@ -187,7 +187,7 @@ class FileShare extends AGlobalScaleEvent {
 	 */
 	private function sendShareToContact(GSEvent $event, Circle $circle, string $memberId, array $emails) {
 		$password = '';
-		if ($this->configService->enforcePasswordProtection()) {
+		if ($this->configService->enforcePasswordProtection($circle)) {
 			$password = $this->miscService->token(15);
 		}
 

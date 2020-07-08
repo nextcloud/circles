@@ -170,8 +170,8 @@ class ContactsExistingShares extends TimedJob {
 
 			foreach ($missingMails as $recipient) {
 				$this->fileSharingBroadcaster->sendMailExitingShares(
-					$allShares, MiscService::getDisplay($owner->getUserId(), Member::TYPE_USER), $member,
-					$recipient, $circle->getName()
+					$circle, $allShares, MiscService::getDisplay($owner->getUserId(), Member::TYPE_USER),
+					$member, $recipient
 				);
 				$this->updateContactMeta($member, 'emails', $recipient);
 			}
