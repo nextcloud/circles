@@ -785,7 +785,7 @@ class EventsService {
 	 * @param array $users
 	 */
 	private function publishEvent(IEvent $event, array $users) {
-		foreach ($users AS $user) {
+		foreach ($users as $user) {
 			if ($user instanceof IUser) {
 				$userId = $user->getUID();
 			} else if ($user instanceof Member) {
@@ -806,6 +806,9 @@ class EventsService {
 	 */
 	private function notificationOnInvitation(Circle $circle, Member $member) {
 		$this->deleteNotification('membership_request', $member->getMemberId());
+		if ($member->getType() !== Member::TYPE_USER) {
+			return;
+		}
 
 		$notification =
 			$this->createNotification(
@@ -814,21 +817,19 @@ class EventsService {
 			);
 
 		$declineAction = $notification->createAction();
+		$declineUrl =
+			$this->urlGenerator->linkToRoute('circles.Circles.leave', ['uniqueId' => $circle->getUniqueId()]);
+
 		$declineAction->setLabel('refuse')
-					  ->setLink(
-						  $this->urlGenerator->linkToRoute(
-							  'circles.Circles.leave', ['uniqueId' => $circle->getUniqueId()]
-						  ), 'GET'
-					  );
+					  ->setLink($this->urlGenerator->getAbsoluteURL($declineUrl), 'GET');
 		$notification->addAction($declineAction);
 
 		$acceptAction = $notification->createAction();
+		$acceptUrl =
+			$this->urlGenerator->linkToRoute('circles.Circles.join', ['uniqueId' => $circle->getUniqueId()]);
+
 		$acceptAction->setLabel('accept')
-					 ->setLink(
-						 $this->urlGenerator->linkToRoute(
-							 'circles.Circles.join', ['uniqueId' => $circle->getUniqueId()]
-						 ), 'GET'
-					 );
+					 ->setLink($this->urlGenerator->getAbsoluteURL($acceptUrl), 'GET');
 		$notification->addAction($acceptAction);
 
 		$this->notificationManager->notify($notification);
@@ -847,21 +848,20 @@ class EventsService {
 			);
 
 			$declineAction = $notification->createAction();
+			$declineUrl = $this->urlGenerator->linkToRoute(
+				'circles.Members.removeMemberById', ['memberId' => $author->getMemberId()]
+			);
+
 			$declineAction->setLabel('refuse')
-						  ->setLink(
-							  $this->urlGenerator->linkToRoute(
-								  'circles.Members.removeMemberById', ['memberId' => $author->getMemberId()]
-							  ), 'DELETE'
-						  );
+						  ->setLink($this->urlGenerator->getAbsoluteURL($declineUrl), 'DELETE');
 			$notification->addAction($declineAction);
 
 			$acceptAction = $notification->createAction();
+			$acceptUrl = $this->urlGenerator->linkToRoute(
+				'circles.Members.addMemberById', ['memberId' => $author->getMemberId()]
+			);
 			$acceptAction->setLabel('accept')
-						 ->setLink(
-							 $this->urlGenerator->linkToRoute(
-								 'circles.Members.addMemberById', ['memberId' => $author->getMemberId()]
-							 ), 'PUT'
-						 );
+						 ->setLink($this->urlGenerator->getAbsoluteURL($acceptUrl), 'PUT');
 			$notification->addAction($acceptAction);
 
 			$this->notificationManager->notify($notification);
@@ -888,12 +888,11 @@ class EventsService {
 
 
 		$leave = $notification->createAction();
+		$leaveUrl =
+			$this->urlGenerator->linkToRoute('circles.Circles.leave', ['uniqueId' => $circle->getUniqueId()]);
 		$leave->setLabel('leave')
-			  ->setLink(
-				  $this->urlGenerator->linkToRoute(
-					  'circles.Circles.leave', ['uniqueId' => $circle->getUniqueId()]
-				  ), 'GET'
-			  );
+			  ->setLink($this->urlGenerator->getAbsoluteURL($leaveUrl), 'GET');
+
 		$notification->addAction($leave);
 
 		$this->notificationManager->notify($notification);
