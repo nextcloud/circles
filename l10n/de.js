@@ -292,6 +292,8 @@ OC.L10N.register(
     "Description" : "Beschreibung",
     "Members limit" : "Mitglieder-Grenzwert",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Ändere den Grenzwert für die Anzahl der Mitglieder. (0: Standard, -1: Unbegrenzt)",
+    "Password enforcement" : "Passwortzwang",
+    "External share will be protected by a randomly generated password" : "Externe Freigabe wird durch ein zufällig generiertes Passwort geschützt",
     "Allow Federated Links" : "Federated-Verknüpfungen erlauben",
     "Makes the circle federated, and enables sharing between federated circles" : "Macht den Kreis zu einem Federated-Kreis und erlaubt das Teilen zwischen Federated-Kreisen",
     "Accept Link Request Automatically" : "Verknüpfungsanfrage automatisch akzeptieren",

@@ -290,6 +290,8 @@
     "Description" : "Açıklama",
     "Members limit" : "Üye sınırı",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Üye sayısı sınırını değiştirin. (0: varsayılan, -1: sınırsız)",
+    "Password enforcement" : "Parola dayatması",
+    "External share will be protected by a randomly generated password" : "Dış paylaşım rastgele üretilmiş bir parola ile korunacak",
     "Allow Federated Links" : "Birleşik Bağlantılar Kullanılabilsin",
     "Makes the circle federated, and enables sharing between federated circles" : "Çevreyi Birleşik yapar ve Birleşik Çevreler arasında paylaşımı etkinleştirir.",
     "Accept Link Request Automatically" : "Bağlantı İsteği Otomatik Olarak Kabul Edilsin",
