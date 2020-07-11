@@ -290,6 +290,8 @@
     "Description" : "Descrição",
     "Members limit" : "Limite de membros",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Alterar o limite de membros. (0: padrão, -1: ilimitado)",
+    "Password enforcement" : "Aplicação de senha",
+    "External share will be protected by a randomly generated password" : "O compartilhamento externo será protegido por uma senha gerada aleatoriamente",
     "Allow Federated Links" : "Permitir Links Federados",
     "Makes the circle federated, and enables sharing between federated circles" : "Faz o círculo federado e ativa o compartilhamento entre círculos federados",
     "Accept Link Request Automatically" : "Aceitar Solicitação de Link Automaticamente",
