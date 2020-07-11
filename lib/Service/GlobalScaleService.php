@@ -227,7 +227,7 @@ class GlobalScaleService {
 			try {
 				$instances = $this->retrieveJson($request);
 			} catch (RequestContentException | RequestNetworkException | RequestResultSizeException | RequestServerException | RequestResultNotJsonException $e) {
-				$this->miscService->log('Issue while retrieving instances from lookup: ' . $e->getMessage());
+				$this->miscService->log('Issue while retrieving instances from lookup: ' . get_class($e) . ' ' . $e->getMessage());
 
 				return [];
 			}

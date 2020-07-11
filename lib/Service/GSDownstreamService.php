@@ -38,7 +38,6 @@ use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Exceptions\GlobalScaleDSyncException;
 use OCA\Circles\Exceptions\GlobalScaleEventException;
 use OCA\Circles\Exceptions\GSKeyException;
-use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCP\IURLGenerator;
 
@@ -107,7 +106,6 @@ class GSDownstreamService {
 	 * @param GSEvent $event
 	 *
 	 * @throws GSKeyException
-	 * @throws GSStatusException
 	 * @throws GlobalScaleEventException
 	 * @throws CircleDoesNotExistException
 	 * @throws ConfigNoCircleAvailableException

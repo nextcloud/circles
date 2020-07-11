@@ -402,6 +402,7 @@ class GSEvent implements JsonSerializable {
 		$this->setSource($this->get('source', $data));
 		$this->setKey($this->get('key', $data));
 		$this->setForced($this->getBool('force', $data));
+		$this->setAsync($this->getBool('async', $data));
 
 		if (array_key_exists('circle', $data)) {
 			$this->setCircle(Circle::fromArray($data['circle']));
@@ -430,7 +431,8 @@ class GSEvent implements JsonSerializable {
 			'result'   => $this->getResult(),
 			'key'      => $this->getKey(),
 			'source'   => $this->getSource(),
-			'force'    => $this->isForced()
+			'force'    => $this->isForced(),
+			'async'    => $this->isAsync()
 		];
 
 		if ($this->hasCircle()) {

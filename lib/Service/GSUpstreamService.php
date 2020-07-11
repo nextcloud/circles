@@ -145,7 +145,7 @@ class GSUpstreamService {
 //				$gs->verify($event); // needed ? as we check event on the 'master' of the circle
 				$this->confirmEvent($event);
 				$this->miscService->log('confirmed: ' . json_encode($event));
-				$gs->manage($event); // needed ? as we manage it throw the confirmEvent
+//				$gs->manage($event); // needed ? as we manage it throw the confirmEvent
 			}
 		} catch (Exception $e) {
 			$this->miscService->log(
