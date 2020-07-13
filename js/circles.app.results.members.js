@@ -122,8 +122,6 @@ var resultMembers = {
 			if (instance === undefined) {
 				instance = '';
 			}
-			console.log('instance ' + instance);
-
 			if (Number(type) === define.typeGroup) {
 
 				OC.dialogs.confirm(

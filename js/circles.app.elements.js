@@ -444,7 +444,7 @@ var elements = {
 		tmpl = tmpl.replace(/%instance%/g, escapeHTML(entry.instance));
 		tmpl = tmpl.replace(/%type%/g, escapeHTML(entry.user_type));
 
-		if (entry.instance !== '') {
+		if (entry.instance !== '' && entry.user_type <= 2) {
 			tmpl = tmpl.replace(/%displayname%/g, escapeHTML(entry.display_name + ' (' + entry.instance) + ')');
 		} else {
 			tmpl = tmpl.replace(/%displayname%/g, escapeHTML(entry.display_name));
