@@ -1,6 +1,17 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+### 0.19.3
+
+- considering groups as members
+- last part of sql optimization
+- fixing some auth on dav connection
+- group linking disabled on GS setup
+- on new external contact, send links to shared files by mail from all instances of GS
+- configure your circle to force password on external shares
+- allow self-signed cert on configuration
+
+
 ### 0.19.2
 
 - quick fix on some sql request and migration issues
