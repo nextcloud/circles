@@ -105,8 +105,8 @@ class BroadcastService {
 		$event->setAsync(true);
 		$event->setSeverity(GSEvent::SEVERITY_HIGH);
 		$event->setCircle($frame->getCircle());
-		$event->setSource($this->configService->getLocalCloudId());
 		$event->setData(new SimpleDataStore(['frame' => json_decode(json_encode($frame), true)]));
+
 		$this->gsUpstreamService->newEvent($event);
 	}
 
