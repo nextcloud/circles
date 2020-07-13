@@ -45,7 +45,6 @@ use OCA\Circles\Model\SharesToken;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\MiscService;
 use OCP\Files\NotFoundException;
-use OCP\IL10N;
 use OCP\IUser;
 use OCP\Mail\IEMailTemplate;
 use OCP\Share\Exceptions\IllegalIDChangeException;
@@ -63,10 +62,6 @@ class FileShare extends AGlobalScaleEvent {
 
 
 	use TArrayTools;
-
-
-	/** @var IL10N */
-	private $l10n;
 
 
 	/**

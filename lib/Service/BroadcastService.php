@@ -31,10 +31,7 @@ use daita\MySmallPhpTools\Model\SimpleDataStore;
 use Exception;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
-use OCA\Circles\IBroadcaster;
-use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
-use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
 
 
@@ -108,76 +105,9 @@ class BroadcastService {
 		$event->setAsync(true);
 		$event->setSeverity(GSEvent::SEVERITY_HIGH);
 		$event->setCircle($frame->getCircle());
-		$event->setSource($this->configService->getLocalCloudId());
 		$event->setData(new SimpleDataStore(['frame' => json_decode(json_encode($frame), true)]));
+
 		$this->gsUpstreamService->newEvent($event);
-
-//		$broadcaster = \OC::$server->query((string)$frame->getHeader('broadcast'));
-//		if (!($broadcaster instanceof IBroadcaster)) {
-//			throw new BroadcasterIsNotCompatibleException();
-//		}
-//
-//		$frameCircle = $frame->getCircle();
-//		$circle = $this->circlesRequest->forceGetCircle($frameCircle->getUniqueId());
-//
-//		$this->feedBroadcaster($broadcaster, $frame, $circle);
-	}
-
-
-	/**
-	 * @param IBroadcaster $broadcaster
-	 * @param SharingFrame $frame
-	 * @param Circle $circle
-	 */
-	private function feedBroadcaster(IBroadcaster $broadcaster, SharingFrame $frame, Circle $circle) {
-		$broadcaster->init();
-
-		if ($circle->getType() !== Circle::CIRCLES_PERSONAL) {
-			$broadcaster->createShareToCircle($frame, $circle);
-		}
-
-		$members =
-			$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MEMBER, 0,true);
-		foreach ($members AS $member) {
-			// removed so you can share to contacts
-//			$this->parseMember($member);
-
-			if ($member->isBroadcasting()) {
-				$broadcaster->createShareToMember($frame, $member);
-			}
-		}
-	}
-
-
-	/**
-	 * @param Member $member
-	 */
-	private function parseMember(Member &$member) {
-		$this->parseMemberFromContact($member);
-	}
-
-
-	/**
-	 * on Type Contact, we convert the type to MAIL and retreive the first mail of the list.
-	 * If no email, we set the member as not broadcasting.
-	 *
-	 * @param Member $member
-	 */
-	private function parseMemberFromContact(Member &$member) {
-
-		if ($member->getType() !== Member::TYPE_CONTACT) {
-			return;
-		}
-
-		$contact = MiscService::getContactData($member->getUserId());
-		if (!key_exists('EMAIL', $contact)) {
-			$member->broadcasting(false);
-
-			return;
-		}
-
-		$member->setType(Member::TYPE_MAIL);
-		$member->setUserId(array_shift($contact['EMAIL']));
 	}
 
 }

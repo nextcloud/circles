@@ -49,6 +49,7 @@ use OCA\Circles\Service\MembersService;
 use OCA\Circles\Service\MiscService;
 use OCP\Defaults;
 use OCP\Files\IRootFolder;
+use OCP\IL10N;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCP\Mail\IMailer;
@@ -67,6 +68,9 @@ abstract class AGlobalScaleEvent {
 
 	/** @var IURLGenerator */
 	protected $urlGenerator;
+
+	/** @var IL10N */
+	protected $l10n;
 
 	/** @var IMailer */
 	protected $mailer;
@@ -113,6 +117,7 @@ abstract class AGlobalScaleEvent {
 	 *
 	 * @param IRootFolder $rootFolder
 	 * @param IURLGenerator $urlGenerator
+	 * @param IL10N $l10n
 	 * @param IMailer $mailer
 	 * @param Defaults $defaults
 	 * @param IUserManager $userManager
@@ -130,6 +135,7 @@ abstract class AGlobalScaleEvent {
 	public function __construct(
 		IRootFolder $rootFolder,
 		IURLGenerator $urlGenerator,
+		IL10N $l10n,
 		IMailer $mailer,
 		Defaults $defaults,
 		IUserManager $userManager,
@@ -146,6 +152,7 @@ abstract class AGlobalScaleEvent {
 	) {
 		$this->rootFolder = $rootFolder;
 		$this->urlGenerator = $urlGenerator;
+		$this->l10n = $l10n;
 		$this->mailer = $mailer;
 		$this->defaults = $defaults;
 		$this->userManager = $userManager;

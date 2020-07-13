@@ -616,7 +616,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 		}
 
 		try {
-			$template = $this->generateMailExitingShares($author, $circleName);
+			$template = $this->generateMailExitingShares($author, $circle->getName());
 			$this->fillMailExistingShares($template, $data);
 			$this->sendMailExistingShares($template, $author, $recipient);
 			$this->sendPasswordExistingShares($author, $recipient, $password);

@@ -243,6 +243,22 @@ class ConfigService {
 		return $this->config->getAppValue('core', $key, $defaultValue);
 	}
 
+		/**
+	 * Get a value by key
+	 *
+	 * @param string $key
+	 *
+	 * @return string
+	 */
+	public function getSystemValue($key) {
+		$defaultValue = null;
+
+		return $this->config->getSystemValue($key, $defaultValue);
+	}
+
+
+
+
 
 	/**
 	 * Get available hosts

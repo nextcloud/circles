@@ -130,10 +130,11 @@ class GSUpstreamService {
 	 * @throws Exception
 	 */
 	public function newEvent(GSEvent $event) {
+		$event->setSource($this->configService->getLocalCloudId());
+
 		try {
 			$gs = $this->globalScaleService->getGlobalScaleEvent($event);
 
-			$this->fillEvent($event);
 			if ($this->isLocalEvent($event)) {
 				$gs->verify($event, true);
 				if (!$event->isAsync()) {
@@ -145,7 +146,7 @@ class GSUpstreamService {
 //				$gs->verify($event); // needed ? as we check event on the 'master' of the circle
 				$this->confirmEvent($event);
 				$this->miscService->log('confirmed: ' . json_encode($event));
-				$gs->manage($event); // needed ? as we manage it throw the confirmEvent
+//				$gs->manage($event); // needed ? as we manage it throw the confirmEvent
 			}
 		} catch (Exception $e) {
 			$this->miscService->log(
@@ -258,20 +259,6 @@ class GSUpstreamService {
 
 	/**
 	 * @param GSEvent $event
-	 *
-	 * @throws GSStatusException
-	 */
-	private function fillEvent(GSEvent $event): void {
-		if (!$this->configService->getGSStatus(ConfigService::GS_ENABLED)) {
-			return;
-		}
-
-		$event->setSource($this->configService->getLocalCloudId());
-	}
-
-
-	/**
-	 * @param GSEvent $event
 	 */
 	private function signEvent(GSEvent $event) {
 		$event->setKey($this->globalScaleService->getKey());
@@ -368,8 +355,6 @@ class GSUpstreamService {
 
 	/**
 	 * @param array $circles
-	 *
-	 * @throws GSStatusException
 	 */
 	public function synchronizeCircles(array $circles): void {
 		$event = new GSEvent(GSEvent::GLOBAL_SYNC, true);

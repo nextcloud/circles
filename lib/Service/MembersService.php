@@ -160,11 +160,14 @@ class MembersService {
 				   ->hasToBeModerator();
 		}
 
-		if (!$this->addMassiveMembers($circle, $ident, $type)) {
-			$this->addSingleMember($circle, $ident, $type, $instance, $force);
+		$curr = $this->membersRequest->getMembers($circle->getUniqueId(), $circle->getHigherViewer(), $force);
+		
+		$new = $this->addMassiveMembers($circle, $ident, $type);
+		if (empty($new)) {
+			$new = [$this->addSingleMember($circle, $ident, $type, $instance, $force)];
 		}
 
-		return $this->membersRequest->getMembers($circle->getUniqueId(), $circle->getHigherViewer(), $force);
+		return array_merge($curr, $new);
 	}
 
 
@@ -178,11 +181,13 @@ class MembersService {
 	 * @param string $instance
 	 * @param bool $force
 	 *
+	 * @return Member
 	 * @throws EmailAccountInvalidFormatException
 	 * @throws NoUserException
 	 * @throws Exception
 	 */
-	private function addSingleMember(Circle $circle, $ident, $type, $instance = '', bool $force = false) {
+	private function addSingleMember(Circle $circle, $ident, $type, $instance = '', bool $force = false
+	): Member {
 		$this->verifyIdentBasedOnItsType($ident, $type, $instance);
 		$this->verifyIdentContact($ident, $type);
 
@@ -190,10 +195,16 @@ class MembersService {
 
 		$event = new GSEvent(GSEvent::MEMBER_ADD, false, $force);
 		$event->setSeverity(GSEvent::SEVERITY_HIGH);
+		$event->setAsync(true);
 
 		$event->setCircle($circle);
 		$event->setMember($member);
 		$this->gsUpstreamService->newEvent($event);
+
+		$new = $event->getMember();
+		$new->setJoined($this->l10n->t('now'));
+
+		return $new;
 	}
 
 
@@ -204,10 +215,10 @@ class MembersService {
 	 * @param string $ident
 	 * @param int $type
 	 *
-	 * @return bool
+	 * @return Member[]
 	 * @throws Exception
 	 */
-	private function addMassiveMembers(Circle $circle, $ident, $type) {
+	private function addMassiveMembers(Circle $circle, $ident, $type): array {
 		if ($type === Member::TYPE_GROUP) {
 			return $this->addGroupMembers($circle, $ident);
 		}
@@ -216,7 +227,7 @@ class MembersService {
 			return $this->addMassiveMails($circle, $ident);
 		}
 
-		return false;
+		return [];
 	}
 
 
@@ -397,10 +408,10 @@ class MembersService {
 	 * @param Circle $circle
 	 * @param string $groupId
 	 *
-	 * @return bool
+	 * @return Member[]
 	 * @throws Exception
 	 */
-	private function addGroupMembers(Circle $circle, $groupId) {
+	private function addGroupMembers(Circle $circle, $groupId): array {
 
 		$group = OC::$server->getGroupManager()
 							->get($groupId);
@@ -408,16 +419,17 @@ class MembersService {
 			throw new GroupDoesNotExistException($this->l10n->t('This group does not exist'));
 		}
 
+		$members = [];
 		foreach ($group->getUsers() as $user) {
 			try {
-				$this->addSingleMember($circle, $user->getUID(), Member::TYPE_USER);
+				$members[] = $this->addSingleMember($circle, $user->getUID(), Member::TYPE_USER);
 			} catch (MemberAlreadyExistsException $e) {
 			} catch (Exception $e) {
 				throw $e;
 			}
 		}
 
-		return true;
+		return $members;
 	}
 
 
@@ -427,28 +439,29 @@ class MembersService {
 	 * @param Circle $circle
 	 * @param string $mails
 	 *
-	 * @return bool
+	 * @return Member[]
 	 */
-	private function addMassiveMails(Circle $circle, $mails) {
+	private function addMassiveMails(Circle $circle, $mails): array {
 
 		$mails = trim($mails);
 		if (substr($mails, 0, 6) !== 'mails:') {
-			return false;
+			return [];
 		}
 
 		$mails = substr($mails, 6);
+		$members = [];
 		foreach (explode(' ', $mails) as $mail) {
 			if (!filter_var($mail, FILTER_VALIDATE_EMAIL)) {
 				continue;
 			}
 
 			try {
-				$this->addMember($circle->getUniqueId(), $mail, Member::TYPE_MAIL);
+				$members[] = $this->addMember($circle->getUniqueId(), $mail, Member::TYPE_MAIL, '');
 			} catch (Exception $e) {
 			}
 		}
 
-		return true;
+		return $members;
 	}
 
 
