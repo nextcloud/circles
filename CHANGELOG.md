@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 
+### 0.17.14
+
+- fixing some auth on dav connection
+
+
 ### 0.17.13
 
 - allow self signed certificate: self_signed_cert
