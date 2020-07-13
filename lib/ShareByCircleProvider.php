@@ -31,6 +31,7 @@
 namespace OCA\Circles;
 
 
+use daita\MySmallPhpTools\Model\SimpleDataStore;
 use Exception;
 use OC;
 use OC\Files\Cache\Cache;
@@ -43,10 +44,13 @@ use OCA\Circles\Db\CircleProviderRequest;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Db\TokensRequest;
+use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\GSUpstreamService;
 use OCA\Circles\Service\MembersService;
 use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\TimezoneService;
@@ -68,6 +72,11 @@ use OCP\Share\IShare;
 use OCP\Share\IShareProvider;
 
 
+/**
+ * Class ShareByCircleProvider
+ *
+ * @package OCA\Circles
+ */
 class ShareByCircleProvider extends CircleProviderRequest implements IShareProvider {
 
 
@@ -98,8 +107,12 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	/** @var TokensRequest */
 	private $tokensRequest;
 
+	/** @var GSUpstreamService */
+	private $gsUpstreamService;
+
+
 	/**
-	 * DefaultShareProvider constructor.
+	 * ShareByCircleProvider constructor.
 	 *
 	 * @param IDBConnection $connection
 	 * @param ISecureRandom $secureRandom
@@ -131,6 +144,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 		$this->membersService = $container->query(MembersService::class);
 		$this->circlesRequest = $container->query(CirclesRequest::class);
 		$this->membersRequest = $container->query(MembersRequest::class);
+		$this->gsUpstreamService = $container->query(GSUpstreamService::class);
 		$this->tokensRequest = $container->query(TokensRequest::class);
 	}
 
@@ -168,9 +182,6 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 			}
 
 			$share->setToken($this->token(15));
-//			if ($this->configService->enforcePasswordProtection()) {
-//				$share->setPassword($this->miscService->uuid(15));
-//			}
 
 			$this->createShare($share);
 
@@ -217,11 +228,30 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * Delete a share, and it's children
 	 *
 	 * @param IShare $share
+	 *
+	 * @throws Exception
 	 */
 	public function delete(IShare $share) {
 		$qb = $this->getBaseDeleteSql();
 		$this->limitToShareAndChildren($qb, $share->getId());
 		$qb->execute();
+
+		try {
+			$circle = $this->circlesRequest->forceGetCircle($share->getSharedWith());
+			$event = new GSEvent(GSEvent::FILE_UNSHARE, true);
+			$event->setCircle($circle);
+
+			$store = new SimpleDataStore();
+			$store->sArray(
+				'share', [
+						   'id' => $share->getId()
+					   ]
+			);
+			$event->setData($store);
+
+			$this->gsUpstreamService->newEvent($event);
+		} catch (CircleDoesNotExistException $e) {
+		}
 
 		$this->tokensRequest->removeTokenByShareId($share->getId());
 	}
@@ -618,7 +648,6 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 			throw new ShareNotFound('personal check not found');
 		}
 
-		\OC::$server->getLogger()->log(3, '#### ' . json_encode($data));
 		$member = null;
 		try {
 			$member = $this->membersService->getMemberById($data['personal_member_id']);
