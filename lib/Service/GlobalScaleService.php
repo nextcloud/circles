@@ -181,10 +181,15 @@ class GlobalScaleService {
 	 * @return string
 	 */
 	public function getKey(): string {
-		// TODO: sign event with real and temp key.
-		return 'abcd';
-	}
+		// TODO: include a webfinger loader in core to share public keys
+		try {
+			$key = $this->configService->getGSStatus(ConfigService::GS_KEY);
+		} catch (GSStatusException $e) {
+			$key = $this->configService->getSystemValue('instanceid');
+		}
 
+		return md5('gskey:' . $key);
+	}
 
 	/**
 	 * @param string $key
@@ -227,7 +232,9 @@ class GlobalScaleService {
 			try {
 				$instances = $this->retrieveJson($request);
 			} catch (RequestContentException | RequestNetworkException | RequestResultSizeException | RequestServerException | RequestResultNotJsonException $e) {
-				$this->miscService->log('Issue while retrieving instances from lookup: ' . get_class($e) . ' ' . $e->getMessage());
+				$this->miscService->log(
+					'Issue while retrieving instances from lookup: ' . get_class($e) . ' ' . $e->getMessage()
+				);
 
 				return [];
 			}
