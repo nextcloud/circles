@@ -419,6 +419,13 @@ class Version0019Date20200603080001 extends SimpleMigrationStep {
 						 ]
 			);
 			$table->addColumn(
+				'cached_name', 'string', [
+							 'notnull' => true,
+							 'length'  => 255,
+							 'default' => ''
+						 ]
+			);
+			$table->addColumn(
 				'instance', 'string', [
 							  'default' => '',
 							  'length'  => 255

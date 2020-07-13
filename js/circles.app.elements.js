@@ -93,7 +93,7 @@ var elements = {
 	buttonLinkCircle: null,
 
 
-	initElements: function () {
+	initElements: function() {
 
 		elements.newTypeDefinition = $('#circles_new_type_definition');
 		elements.newType = $('#circles_new_type');
@@ -126,7 +126,7 @@ var elements = {
 		elements.leaveCircle = $('#leavecircle');
 		elements.destroyCircle = $('#circle-actions-delete');
 		elements.adminSettingsCircle = $('#adminsettingscircle');
-		elements.adminSettingsCircle.hide().on('click', function () {
+		elements.adminSettingsCircle.hide().on('click', function() {
 			settings.displaySettings(true);
 		});
 
@@ -160,9 +160,9 @@ var elements = {
 	},
 
 
-	initTweaks: function () {
-		$.fn.emptyTable = function () {
-			this.children('tr').each(function () {
+	initTweaks: function() {
+		$.fn.emptyTable = function() {
+			this.children('tr').each(function() {
 				if ($(this).attr('class') !== 'header') {
 					$(this).remove();
 				}
@@ -171,7 +171,7 @@ var elements = {
 	},
 
 
-	initUI: function () {
+	initUI: function() {
 		elements.newTypeDefinition.children('div').fadeOut(0);
 		$('#circles_new_type_' + elements.newType.children('option:selected').val()).fadeIn(
 			0);
@@ -201,9 +201,9 @@ var elements = {
 	/**
 	 *
 	 */
-	initExperienceCirclesList: function () {
+	initExperienceCirclesList: function() {
 
-		elements.circlesList.children('div').on('click', function () {
+		elements.circlesList.children('div').on('click', function() {
 			nav.displayCirclesList($(this).attr('circle-type'));
 		});
 
@@ -212,9 +212,9 @@ var elements = {
 	},
 
 
-	initExperienceCirclesListFromSearch: function () {
+	initExperienceCirclesListFromSearch: function() {
 
-		this.circlesSearch.on('input property paste focus', function () {
+		this.circlesSearch.on('input property paste focus', function() {
 			var search = $(this).val().trim();
 			if (curr.searchCircle === search) {
 				return;
@@ -227,9 +227,9 @@ var elements = {
 	},
 
 
-	initExperienceCirclesListFromFilter: function () {
+	initExperienceCirclesListFromFilter: function() {
 
-		this.circlesFilters.on('input property paste focus', function () {
+		this.circlesFilters.on('input property paste focus', function() {
 			var searchFilter = $(this).val();
 			if (curr.searchFilter === searchFilter) {
 				return;
@@ -246,14 +246,14 @@ var elements = {
 	/**
 	 *
 	 */
-	initExperienceCircleButtons: function () {
+	initExperienceCircleButtons: function() {
 
 		elements.buttonCircleActionReturn.hide();
-		elements.buttonCircleActionReturn.on('click', function () {
+		elements.buttonCircleActionReturn.on('click', function() {
 			nav.circlesActionReturn();
 		});
 
-		elements.buttonAddMember.on('click', function () {
+		elements.buttonAddMember.on('click', function() {
 			settings.displaySettings(false);
 			nav.displayCircleButtons(false);
 			nav.displayAddMemberInput(true);
@@ -262,7 +262,7 @@ var elements = {
 			nav.displayJoinCircleButton(false);
 		});
 
-		elements.buttonLinkGroup.on('click', function () {
+		elements.buttonLinkGroup.on('click', function() {
 			settings.displaySettings(false);
 			nav.displayCircleButtons(false);
 			nav.displayAddMemberInput(false);
@@ -271,7 +271,7 @@ var elements = {
 			nav.displayJoinCircleButton(false);
 		});
 
-		elements.buttonLinkCircle.on('click', function () {
+		elements.buttonLinkCircle.on('click', function() {
 			settings.displaySettings(false);
 			nav.displayCircleButtons(false);
 			nav.displayAddMemberInput(false);
@@ -280,7 +280,7 @@ var elements = {
 			nav.displayJoinCircleButton(false);
 		});
 
-		elements.buttonCircleSettings.on('click', function () {
+		elements.buttonCircleSettings.on('click', function() {
 			settings.displaySettings(true);
 			nav.displayCircleButtons(false);
 			nav.displayAddMemberInput(false);
@@ -289,11 +289,11 @@ var elements = {
 			nav.displayJoinCircleButton(false);
 		});
 
-		elements.buttonJoinCircle.on('click', function () {
+		elements.buttonJoinCircle.on('click', function() {
 			nav.joinCircleAction();
 		});
 
-		elements.settingsSave.on('click', function () {
+		elements.settingsSave.on('click', function() {
 			actions.saveSettings();
 		});
 	},
@@ -302,17 +302,17 @@ var elements = {
 	/**
 	 *
 	 */
-	initAnimationNewCircle: function () {
+	initAnimationNewCircle: function() {
 
-		elements.newName.on('keyup', function () {
+		elements.newName.on('keyup', function() {
 			actions.onEventNewCircleName();
 		});
 
-		elements.newType.on('change', function () {
+		elements.newType.on('change', function() {
 			actions.onEventNewCircleType();
 		});
 
-		elements.newSubmit.on('click', function () {
+		elements.newSubmit.on('click', function() {
 			api.createCircle(Number(elements.newType.val()), elements.newName.val(),
 				resultCircles.createCircleResult);
 		});
@@ -320,22 +320,22 @@ var elements = {
 	},
 
 
-	emptyCircleCreation: function () {
+	emptyCircleCreation: function() {
 		elements.newName.val('');
 		elements.newType.val('');
 	},
 
 
-	fillMembersSearch: function (source, exact, partial) {
+	fillMembersSearch: function(source, exact, partial) {
 		this.fillExactMembersSearch(source, exact);
 		this.fillPartialMembersSearch(source, partial);
 		elements.membersSearchResult.children().first().css('border-top-width', '0px');
 	},
 
 
-	fillExactMembersSearch: function (source, exact) {
+	fillExactMembersSearch: function(source, exact) {
 		curr.exactMemberSearchType = '';
-		$.each(exact, function (index, value) {
+		$.each(exact, function(index, value) {
 			var details = escapeHTML(value.value.shareWith);
 			if (source === 'groups') {
 				if (exact.length === 1) {
@@ -353,8 +353,8 @@ var elements = {
 	},
 
 
-	fillPartialMembersSearch: function (source, partial) {
-		$.each(partial, function (index, value) {
+	fillPartialMembersSearch: function(source, partial) {
+		$.each(partial, function(index, value) {
 
 			var currSearch = elements.addMember.val().trim();
 			var line = escapeHTML(value.label);
@@ -378,15 +378,15 @@ var elements = {
 	},
 
 
-	fillGroupsSearch: function (exact, partial) {
+	fillGroupsSearch: function(exact, partial) {
 		this.fillExactGroupsSearch(exact);
 		this.fillPartialGroupsSearch(partial);
 		elements.groupsSearchResult.children().first().css('border-top-width', '0px');
 	},
 
 
-	fillExactGroupsSearch: function (exact) {
-		$.each(exact, function (index, value) {
+	fillExactGroupsSearch: function(exact) {
+		$.each(exact, function(index, value) {
 			elements.groupsSearchResult.append(
 				'<div class="groups_search exact" searchresult="' +
 				escapeHTML(value.value.shareWith) + '">' + escapeHTML(value.label) + '   (' +
@@ -396,8 +396,8 @@ var elements = {
 	},
 
 
-	fillPartialGroupsSearch: function (partial) {
-		$.each(partial, function (index, value) {
+	fillPartialGroupsSearch: function(partial) {
+		$.each(partial, function(index, value) {
 
 			var currSearch = elements.addMember.val().trim();
 			var line = escapeHTML(value.label) + '   (' + escapeHTML(value.value.shareWith) + ')';
@@ -412,9 +412,9 @@ var elements = {
 	},
 
 
-	resetCirclesList: function () {
+	resetCirclesList: function() {
 		elements.navigation.addClass('selected');
-		elements.navigation.children().each(function () {
+		elements.navigation.children().each(function() {
 			if ($(this).attr('id') !== 'circles_search' &&
 				$(this).attr('id') !== 'circles_filters') {
 				$(this).remove();
@@ -423,7 +423,7 @@ var elements = {
 	},
 
 
-	generateTmplCircle: function (entry) {
+	generateTmplCircle: function(entry) {
 		var tmpl = $('#tmpl_circle').html();
 
 		tmpl = tmpl.replace(/%title%/g, escapeHTML(entry.name));
@@ -437,19 +437,22 @@ var elements = {
 	},
 
 
-	generateTmplMember: function (entry) {
+	generateTmplMember: function(entry) {
 		var tmpl = $('#tmpl_member').html();
 
 		tmpl = tmpl.replace(/%username%/g, escapeHTML(entry.user_id));
 		tmpl = tmpl.replace(/%instance%/g, escapeHTML(entry.instance));
 		tmpl = tmpl.replace(/%type%/g, escapeHTML(entry.user_type));
 
+		let displayName = entry.display_name;
+		if (entry.cached_name !== '') {
+			displayName = entry.cached_name;
+		}
 		if (entry.instance !== '' && entry.user_type <= 2) {
-			tmpl = tmpl.replace(/%displayname%/g, escapeHTML(entry.display_name + ' (' + entry.instance) + ')');
-		} else {
-			tmpl = tmpl.replace(/%displayname%/g, escapeHTML(entry.display_name));
+			displayName += ' (' + entry.instance + ')';
 		}
 
+		tmpl = tmpl.replace(/%displayname%/g, escapeHTML(displayName));
 		tmpl = tmpl.replace(/%level%/g, escapeHTML(entry.level));
 		tmpl = tmpl.replace(/%levelString%/g, escapeHTML(entry.level_string));
 		tmpl = tmpl.replace(/%status%/g, escapeHTML(entry.status));
@@ -459,7 +462,7 @@ var elements = {
 	},
 
 
-	generateTmplGroup: function (entry) {
+	generateTmplGroup: function(entry) {
 		var tmpl = $('#tmpl_group').html();
 
 		tmpl = tmpl.replace(/%groupid%/g, escapeHTML(entry.user_id));
@@ -471,7 +474,7 @@ var elements = {
 	},
 
 
-	generateTmplLink: function (entry) {
+	generateTmplLink: function(entry) {
 		var tmpl = $('#tmpl_link').html();
 
 		tmpl = tmpl.replace(/%id%/g, escapeHTML(entry.unique_id));
