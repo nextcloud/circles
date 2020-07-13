@@ -8,7 +8,7 @@ package_name=$(app_name)
 cert_dir=$(HOME)/.nextcloud/certificates
 github_account=nextcloud
 branch=stable18
-version+=0.18.8
+version+=0.18.9
 
 all: appstore
 
