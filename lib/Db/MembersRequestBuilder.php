@@ -82,7 +82,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select(
 			'm.user_id', 'm.instance', 'm.user_type', 'm.circle_id', 'm.level', 'm.status', 'm.note',
-			'm.contact_id', 'm.member_id', 'm.contact_meta', 'm.joined'
+			'm.contact_id', 'm.member_id', 'm.cached_name', 'm.contact_meta', 'm.joined'
 		)
 		   ->from(self::TABLE_MEMBERS, 'm')
 		   ->orderBy('m.joined');
@@ -145,6 +145,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 		$member->setNote($data['note']);
 		$member->setContactId($data['contact_id']);
 		$member->setMemberId($data['member_id']);
+		$member->setCachedName($data['cached_name']);
 
 		$contactMeta = json_decode($data['contact_meta'], true);
 		if (is_array($contactMeta)) {

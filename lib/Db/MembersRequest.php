@@ -485,6 +485,7 @@ class MembersRequest extends MembersRequestBuilder {
 			   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
 			   ->setValue('member_id', $qb->createNamedParameter($member->getMemberId()))
 			   ->setValue('user_type', $qb->createNamedParameter($member->getType()))
+			   ->setValue('cached_name', $qb->createNamedParameter($member->getCachedName()))
 			   ->setValue('instance', $qb->createNamedParameter($instance))
 			   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
 			   ->setValue('status', $qb->createNamedParameter($member->getStatus()))
