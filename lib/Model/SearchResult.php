@@ -47,6 +47,7 @@ class SearchResult implements \JsonSerializable {
 	 *
 	 * @param string $ident
 	 * @param int $type
+	 * @param string $instance
 	 * @param array $data
 	 */
 	function __construct($ident = '', $type = 0, $instance = '', $data = []) {
