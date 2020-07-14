@@ -58,6 +58,7 @@ OC.L10N.register(
     "Settings saved." : "تم حفظ الإعدادات",
     "Click the button below to open it." : "أنقر على الزر أدناه لفتحه.",
     "Accept" : "قبول",
+    "now" : "الآن",
     "No files in here" : "لا توجد ملفات هنا",
     "No entries found in this folder" : "لا يوجد مدخلات في هذا المجلد ",
     "Name" : "الاسم",

@@ -10,6 +10,7 @@ OC.L10N.register(
     "Contact" : "Kontak",
     "Open »%s«" : "Open »%s«",
     "Accept" : "Aanvaar",
+    "now" : "nou",
     "No files in here" : "Geen lêers hier nie",
     "No entries found in this folder" : "Geen inskrwyings in hierdie gids gevind",
     "Name" : "Naam",

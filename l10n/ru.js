@@ -228,6 +228,7 @@ OC.L10N.register(
     "This group is already linked to the circle" : "Эта группа уже связана с кругом",
     "You cannot edit level in a personal circle" : "Вы не можете редактировать уровень в личном круге",
     "Group cannot be set as owner of a circle" : "Группа не может быть назначена владельцем круга",
+    "now" : "только что",
     "This user does not exist" : "Этот пользователь не существует",
     "You cannot add a mail address as member of your Circle" : "Вы не можете добавить данный адрес электронный почты как участника вашего круга",
     "Email format is not valid" : "Неверный формат электронной почты",

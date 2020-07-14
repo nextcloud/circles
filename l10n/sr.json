@@ -217,6 +217,7 @@
     "This group is already linked to the circle" : "Ова група је већ везана за круг",
     "You cannot edit level in a personal circle" : "Не можете мењати ниво у личним круговима",
     "Group cannot be set as owner of a circle" : "Не можете да поставите групу као власника круга",
+    "now" : "сада",
     "This user does not exist" : "Овај корисник не постоји",
     "You cannot add a mail address as member of your Circle" : "Не можете да додате и-мејл адресу као члана Кругова",
     "Email format is not valid" : "Формат адресе е-поште није исправан",

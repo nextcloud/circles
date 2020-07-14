@@ -208,6 +208,7 @@
     "This group is already linked to the circle" : "Ez a csoport már csatolva van a körhöz",
     "You cannot edit level in a personal circle" : "A szint nem szerkeszthető egy személyes körnél",
     "Group cannot be set as owner of a circle" : "Csoport nem lehet kör tulajdonosa",
+    "now" : "most",
     "This user does not exist" : "Ez a felhasználó nem létezik",
     "Email format is not valid" : "Hibás e-mail formátum",
     "This contact is not available" : "A kapcsolat nem elérhető",

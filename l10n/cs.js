@@ -229,6 +229,7 @@ OC.L10N.register(
     "This group is already linked to the circle" : "Tato skupina je s okruhem už propojena",
     "You cannot edit level in a personal circle" : "Úroveň osobního okruhu nelze upravit",
     "Group cannot be set as owner of a circle" : "Skupina nemůže být nastavena jako vlastník okruhu",
+    "now" : "nyní",
     "This user does not exist" : "Tento uživatel neexistuje",
     "You cannot add a mail address as member of your Circle" : "Jako člena svého Okruhu si nemůžete přidat e-mailovou adresu",
     "Email format is not valid" : "Neplatný formát e-mailu",

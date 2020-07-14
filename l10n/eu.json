@@ -226,6 +226,7 @@
     "This group is already linked to the circle" : "Talde hau zirkulura baturik dago dagoeneko",
     "You cannot edit level in a personal circle" : "Ezin duzu maila aldatu zirkulu pertsonaletan",
     "Group cannot be set as owner of a circle" : "Taldeak ezin dira zirkulu jabe bihurtu",
+    "now" : "orain",
     "This user does not exist" : "Erabiltzaile hau ez da existitzen",
     "You cannot add a mail address as member of your Circle" : "Ezin duzu posta elektroniko bat gehitu zirkuluko kide gisa",
     "Email format is not valid" : "Posta-helbidearen formatua ez da baliozkoa",

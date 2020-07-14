@@ -79,6 +79,7 @@ OC.L10N.register(
     "Open »%s«" : "開啟 »%s«",
     "This member is not a moderator" : "該成員並非主持人",
     "Accept" : "接受",
+    "now" : "現在",
     "Could not find share" : "找不到分享",
     "No files in here" : "沒有檔案在這裡。",
     "No entries found in this folder" : "在此資料夾中沒有任何項目",

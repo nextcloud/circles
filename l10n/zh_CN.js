@@ -219,6 +219,7 @@ OC.L10N.register(
     "This group is already linked to the circle" : "该分组已经链接到该圈子",
     "You cannot edit level in a personal circle" : "您无法编辑个人圈子中的级别",
     "Group cannot be set as owner of a circle" : "组不能设置为圈子的所有者",
+    "now" : "现在",
     "This user does not exist" : "此用户不存在",
     "You cannot add a mail address as member of your Circle" : "您无法将邮件地址添加为您圈子的成员",
     "Email format is not valid" : "电子邮件格式无效",

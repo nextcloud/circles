@@ -17,6 +17,7 @@ OC.L10N.register(
     "Contact" : "Kontakts",
     "Open »%s«" : "Atvērt »%s«",
     "Accept" : "Akceptēt",
+    "now" : "šobrīd",
     "Could not find share" : "Nevarēja atrast koplietojumu",
     "No files in here" : "Šeit nav datņu",
     "No entries found in this folder" : "Šajā mapē nekas nav atrasts",
