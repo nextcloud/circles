@@ -97,7 +97,6 @@ class LocalUsers implements ISearch {
 				new SearchResult(
 					$this->get('value.shareWith', $entry),
 					Member::TYPE_USER,
-					'',
 					['display' => $this->get('label', $entry)]
 				);
 		}
