@@ -34,6 +34,7 @@ OC.L10N.register(
     "Click the button below to open it." : "Кликнете на копчето подолу за да ја отворите.",
     "Open »%s«" : "Отвори »%s«",
     "Accept" : "Прифати",
+    "now" : "сега",
     "Could not find share" : "Неможе да се пронајде споделувањето",
     "No files in here" : "Тука нема датотеки",
     "No entries found in this folder" : "Нема ништо во оваа папка",

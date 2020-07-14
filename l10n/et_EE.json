@@ -43,6 +43,7 @@
     "Federated link does not have a valid format" : "Liit-lingi formaat ei ole õige",
     "Federated circles are not allowed on the remote Nextcloud" : "Liitringid ei ole lubatud selles Nextcloud kaugpilves",
     "Remote circle does not accept federated links" : "Kaugring ei aksepteeri liitlinke",
+    "now" : "kohe",
     "Could not find share" : "Jagamist ei leitud",
     "No files in here" : "Siin ei ole faile",
     "No entries found in this folder" : "Selles kaustas ei leitud kirjeid",

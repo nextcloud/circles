@@ -168,6 +168,7 @@ OC.L10N.register(
     "This group is already linked to the circle" : "Ky grup është i lidhur tashmë me rrethin",
     "You cannot edit level in a personal circle" : "Nuk mund të modifikoni nivelin në një rreth personal",
     "Group cannot be set as owner of a circle" : "Grupi nuk mund të vendosej si zotërues i një rrethi",
+    "now" : "tani",
     "This user does not exist" : "Ky përdorues nuk ekziston",
     "Could not find share" : "Nuk mund të gjej shpërndarje",
     "No files in here" : "Jo dosje këtu",

@@ -142,6 +142,7 @@ OC.L10N.register(
     "You need a specify a type of circle" : "עליך לציין את סוג המעגל",
     "You cannot create this type of circle" : "אין לך אפשרות ליצור סוג כזה של מעגל",
     "You cannot display this type of circle" : "אין לך אפשרות להציג סוג כזה של מעגל",
+    "now" : "עכשיו",
     "Could not find share" : "לא ניתן למצוא את השיתוף",
     "No files in here" : "אין כאן קבצים",
     "No entries found in this folder" : "לא נמצאו רשומות בתיקייה הזאת",

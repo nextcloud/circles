@@ -210,6 +210,7 @@ OC.L10N.register(
     "This group is already linked to the circle" : "이 그룹이 서클에 이미 연결됨",
     "You cannot edit level in a personal circle" : "개인 서클의 단계를 편집할 수 없음",
     "Group cannot be set as owner of a circle" : "그룹을 서클 소유자로 설정할 수 없음",
+    "now" : "현재",
     "This user does not exist" : "이 사용자가 존재하지 않음",
     "Email format is not valid" : "이메일 주소가 올바르지 않음",
     "This contact is not available" : "이 연락처를 사용할 수 없음",

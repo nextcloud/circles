@@ -226,6 +226,7 @@ OC.L10N.register(
     "This group does not exist" : "Šios grupės nėra",
     "This group is already linked to the circle" : "Ši grupė jau yra susieta su ratu",
     "Group cannot be set as owner of a circle" : "Grupė negali būti nustatyta kaip rato savininkė",
+    "now" : "dabar",
     "This user does not exist" : "Šio naudotojo nėra",
     "Email format is not valid" : "Neteisingas el. pašto formatas",
     "This contact is not available" : "Šis adresatas yra neprieinamas",
