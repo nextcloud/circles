@@ -88,7 +88,7 @@ class LocalUsers implements ISearch {
 	 * @return array
 	 */
 	private function searchFromCollaborator($search): array {
-		list($temp, $hasMore) = $this->search->search($search, [IShare::TYPE_USER], false, 50, 0);
+		list($temp, $hasMore) = $this->search->search($search, [IShare::TYPE_USER, IShare::TYPE_EMAIL], false, 50, 0);
 
 		$result = array_merge($temp['exact']['users'], $temp['users']);
 		$parsed = [];
@@ -97,7 +97,6 @@ class LocalUsers implements ISearch {
 				new SearchResult(
 					$this->get('value.shareWith', $entry),
 					Member::TYPE_USER,
-					'',
 					['display' => $this->get('label', $entry)]
 				);
 		}
