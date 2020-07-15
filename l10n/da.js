@@ -100,6 +100,7 @@ OC.L10N.register(
     "Trying to link a circle to itself" : "Prøver at linke cirklen til sig selv",
     "This link exists already" : "Dette link eksisterer allerede",
     "This group does not exist" : "Denne gruppe eksisterer ikke",
+    "now" : "nu",
     "This user does not exist" : "Brugeren eksisterer ikke ",
     "Email format is not valid" : "Email format er ugyldigt",
     "This contact is not available" : "Denne kontakt er ikke tilgængelig ",

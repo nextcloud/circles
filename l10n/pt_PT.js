@@ -104,6 +104,7 @@ OC.L10N.register(
     "Remote circle does not accept federated links" : "O círculo remoto não aceita associações federadas",
     "Trying to link a circle to itself" : "A tentar associar um círculo a si mesmo ",
     "This link exists already" : "Esta associação já existe",
+    "now" : "agora",
     "This user does not exist" : "Este utilizador não existe",
     "Email format is not valid" : "O formato de e-mail não é válido",
     "This contact is not available" : "Este contacto não está disponível",

@@ -229,6 +229,7 @@ OC.L10N.register(
     "This group is already linked to the circle" : "Este grupo já está vinculado ao círculo",
     "You cannot edit level in a personal circle" : "Você não pode editar o nível em um círculo pessoal",
     "Group cannot be set as owner of a circle" : "Grupo não pode ser definido como proprietário de um círculo",
+    "now" : "agora",
     "This user does not exist" : "O usuário não existe",
     "You cannot add a mail address as member of your Circle" : "Você não pode adicionar um endereço de e-mail como membro do seu círculo",
     "Email format is not valid" : "O formato do e-mail é inválido",
