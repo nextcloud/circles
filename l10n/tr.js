@@ -229,6 +229,7 @@ OC.L10N.register(
     "This group is already linked to the circle" : "Bu grup zaten çevre ile bağlantılı",
     "You cannot edit level in a personal circle" : "Kişisel bir çevrede düzeyi düzenleyemezsiniz",
     "Group cannot be set as owner of a circle" : "Grup çevrenin sahibini ayarlayamaz",
+    "now" : "şimdi",
     "This user does not exist" : "Bu kullanıcı bulunamadı",
     "You cannot add a mail address as member of your Circle" : "Çevrenize üye olarak bir e-posta adresi ekleyemezsiniz",
     "Email format is not valid" : "E-posta biçimi geçersiz",

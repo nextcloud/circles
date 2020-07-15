@@ -229,6 +229,7 @@ OC.L10N.register(
     "This group is already linked to the circle" : "Þessi hópur er nú þegar tengdur hringnum",
     "You cannot edit level in a personal circle" : "Þú getur ekki breytt stigum í persónulegum hring",
     "Group cannot be set as owner of a circle" : "Hópur getur ekki verið eigandi á hring",
+    "now" : "núna",
     "This user does not exist" : "Þessi notandi er ekki til",
     "You cannot add a mail address as member of your Circle" : "Þú getur ekki bætt við tölvupóstfangi sem meðlimur í þessum hring",
     "Email format is not valid" : "Snið póstfangsins er ekki gilt",

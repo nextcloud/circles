@@ -229,6 +229,7 @@ OC.L10N.register(
     "This group is already linked to the circle" : "このグループはすでにサークルにリンクしています",
     "You cannot edit level in a personal circle" : "あなたは個人的なサークルのレベルを編集することはできません",
     "Group cannot be set as owner of a circle" : "グループをサークルのオーナーとして設定することはできません",
+    "now" : "今",
     "This user does not exist" : "このユーザーは存在しません",
     "You cannot add a mail address as member of your Circle" : "あなたのサークルのメンバーのメールアドレスを追加できません",
     "Email format is not valid" : "メールフォーマットが有効ではありません",
