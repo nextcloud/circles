@@ -185,6 +185,7 @@
     "Linked Groups are not allowed on this Nextcloud" : "Povezane grupe nisu dopuštene na ovom Nextcloudu",
     "Federated circles are not allowed on this Nextcloud" : "Udruženi krugovi nisu dopušteni na ovom Nextcloudu",
     "Circle not found" : "Krug nije pronađen",
+    "Circle not found " : "Krug nije pronađen ",
     "A circle with that name exists" : "Postoji krug s tim nazivom",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Aplikaciju Krugovi ne možete upotrebljavati dok administrator ne dopusti barem jednu vrstu krugova",
     "Federated link not found" : "Udružena poveznica nije pronađena",
