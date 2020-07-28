@@ -420,6 +420,7 @@ class DavService {
 			$circle = new Circle(
 				$this->configService->contactsBackendType(), $group . ' - ' . $user->getDisplayName()
 			);
+			$circle->setAltName($group);
 			$circle->setContactAddressBook($davCard->getAddressBookId());
 			$circle->setContactGroupName($group);
 

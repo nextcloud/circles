@@ -440,10 +440,15 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * @throws NoUserException
 	 */
 	private function editShareEntry($data) {
+		$name = $data['circle_name'];
+		if ($data['circle_alt_name'] !== '') {
+			$name = $data['circle_alt_name'];
+		}
+
 		$data['share_with'] =
 			sprintf(
-				'%s (%s, %s) [%s]', $data['circle_name'],
-				Circle::TypeLongString($data['circle_type']),
+				'%s (%s, %s) [%s]', $name,
+				$this->l10n->t(Circle::TypeLongString($data['circle_type'])),
 				$this->miscService->getDisplayName($data['circle_owner'], true), $data['share_with']
 			);
 
@@ -778,11 +783,16 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 
 		if (array_key_exists('circle_type', $data)
 			&& method_exists($share, 'setSharedWithDisplayName')) {
+			$name = $data['circle_name'];
+			if ($data['circle_alt_name'] !== '') {
+				$name = $data['circle_alt_name'];
+			}
+
 			$share->setSharedWithAvatar(CirclesService::getCircleIcon($data['circle_type']))
 				  ->setSharedWithDisplayName(
 					  sprintf(
-						  '%s (%s, %s)', $data['circle_name'],
-						  Circle::TypeLongString($data['circle_type']),
+						  '%s (%s, %s)', $name,
+						  $this->l10n->t(Circle::TypeLongString($data['circle_type'])),
 						  $this->miscService->getDisplayName($data['circle_owner'], true)
 					  )
 				  );

@@ -44,7 +44,7 @@ class CircleCreate extends AGlobalScaleEvent {
 
 
 	/**
-	 * Circles are created on the original instance, so return false;
+	 * Circles are created on the original instance, so do nothing;
 	 *
 	 * @param GSEvent $event
 	 * @param bool $localCheck

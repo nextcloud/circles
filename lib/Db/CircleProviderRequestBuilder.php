@@ -429,8 +429,8 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 		$qb->select(
 			's.id', 's.share_type', 's.share_with', 's.uid_owner', 's.uid_initiator',
 			's.parent', 's.item_type', 's.item_source', 's.item_target', 's.permissions', 's.stime',
-			's.accepted', 's.expiration',
-			's.token', 's.mail_send', 'c.type AS circle_type', 'c.name AS circle_name'
+			's.accepted', 's.expiration', 's.token', 's.mail_send', 'c.type AS circle_type',
+			'c.name AS circle_name', 'c.alt_name AS circle_alt_name'
 		);
 		$this->linkToCircleOwner($qb);
 		$this->joinShare($qb);
@@ -469,7 +469,8 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 			   's.*', 'f.fileid', 'f.path', 'f.permissions AS f_permissions', 'f.storage',
 			   'f.path_hash', 'f.parent AS f_parent', 'f.name', 'f.mimetype', 'f.mimepart',
 			   'f.size', 'f.mtime', 'f.storage_mtime', 'f.encrypted', 'f.unencrypted_size',
-			   'f.etag', 'f.checksum', 'c.type AS circle_type', 'c.name AS circle_name'
+			   'f.etag', 'f.checksum', 'c.type AS circle_type', 'c.name AS circle_name',
+			   'c.alt_name AS circle_alt_name'
 		   )
 		   ->selectAlias('st.id', 'storage_string_id');
 

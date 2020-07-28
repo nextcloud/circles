@@ -234,7 +234,8 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$qb = $this->getCirclesInsertSql();
 		$qb->setValue('unique_id', $qb->createNamedParameter($circle->getUniqueId()))
 		   ->setValue('long_id', $qb->createNamedParameter($circle->getUniqueId(true)))
-		   ->setValue('name', $qb->createNamedParameter($circle->getName()))
+		   ->setValue('name', $qb->createNamedParameter($circle->getName(true)))
+		   ->setValue('alt_name', $qb->createNamedParameter($circle->getAltName()))
 		   ->setValue('description', $qb->createNamedParameter($circle->getDescription()))
 		   ->setValue('contact_addressbook', $qb->createNamedParameter($circle->getContactAddressBook()))
 		   ->setValue('contact_groupname', $qb->createNamedParameter($circle->getContactGroupName()))

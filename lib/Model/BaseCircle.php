@@ -26,6 +26,7 @@
 
 namespace OCA\Circles\Model;
 
+use OC;
 use OCA\Circles\AppInfo\Application;
 use OCP\IL10N;
 
@@ -58,6 +59,9 @@ class BaseCircle {
 
 	/** @var string */
 	private $name;
+
+	/** @var string */
+	private $altName = '';
 
 	/** @var Member */
 	private $owner;
@@ -97,7 +101,7 @@ class BaseCircle {
 	private $links;
 
 	public function __construct($type = -1, $name = '') {
-		$this->l10n = \OC::$server->getL10N(Application::APP_NAME);
+		$this->l10n = OC::$server->getL10N(Application::APP_NAME);
 
 		if ($type > -1) {
 			$this->type = $type;
@@ -168,10 +172,34 @@ class BaseCircle {
 	}
 
 	/**
+	 * @param bool $real
+	 *
 	 * @return string
 	 */
-	public function getName() {
+	public function getName(bool $real = false) {
+		if (!$real && $this->altName !== '') {
+			return $this->altName;
+		}
+
 		return $this->name;
+	}
+
+	/**
+	 * @param string $name
+	 *
+	 * @return BaseCircle
+	 */
+	public function setAltName($name) {
+		$this->altName = $name;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getAltName() {
+		return $this->altName;
 	}
 
 	/**
@@ -365,6 +393,10 @@ class BaseCircle {
 		switch ($k) {
 			case 'circle_name':
 				$this->setName($v);
+				break;
+
+			case 'circle_alt_name':
+				$this->setAltName($v);
 				break;
 
 			case 'circle_desc':
