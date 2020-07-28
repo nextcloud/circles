@@ -165,7 +165,8 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$circles = [];
 		$cursor = $qb->execute();
 		while ($data = $cursor->fetch()) {
-			if ($name === '' || stripos(strtolower($data['name']), strtolower($name)) !== false) {
+			if ($name === '' || stripos(strtolower($data['name']), strtolower($name)) !== false
+				|| stripos(strtolower($data['alt_name']), strtolower($name)) !== false) {
 				$circles[] = $this->parseCirclesSelectSql($data);
 			}
 		}

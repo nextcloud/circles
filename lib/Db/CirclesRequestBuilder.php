@@ -173,6 +173,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 
 		$orX = $expr->orX($expr->gte('u.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)));
 		$orX->add($expr->eq('c.name', $qb->createNamedParameter($name)))
+			->add($expr->eq('c.alt_name', $qb->createNamedParameter($name)))
 			->add($expr->eq('c.unique_id', $qb->createNamedParameter($circleUniqueId)));
 
 		if ($this->leftJoinedNCGroupAndUser) {
