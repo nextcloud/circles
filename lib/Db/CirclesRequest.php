@@ -165,7 +165,8 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$circles = [];
 		$cursor = $qb->execute();
 		while ($data = $cursor->fetch()) {
-			if ($name === '' || stripos(strtolower($data['name']), strtolower($name)) !== false) {
+			if ($name === '' || stripos(strtolower($data['name']), strtolower($name)) !== false
+				|| stripos(strtolower($data['alt_name']), strtolower($name)) !== false) {
 				$circles[] = $this->parseCirclesSelectSql($data);
 			}
 		}
@@ -234,7 +235,8 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$qb = $this->getCirclesInsertSql();
 		$qb->setValue('unique_id', $qb->createNamedParameter($circle->getUniqueId()))
 		   ->setValue('long_id', $qb->createNamedParameter($circle->getUniqueId(true)))
-		   ->setValue('name', $qb->createNamedParameter($circle->getName()))
+		   ->setValue('name', $qb->createNamedParameter($circle->getName(true)))
+		   ->setValue('alt_name', $qb->createNamedParameter($circle->getAltName()))
 		   ->setValue('description', $qb->createNamedParameter($circle->getDescription()))
 		   ->setValue('contact_addressbook', $qb->createNamedParameter($circle->getContactAddressBook()))
 		   ->setValue('contact_groupname', $qb->createNamedParameter($circle->getContactGroupName()))

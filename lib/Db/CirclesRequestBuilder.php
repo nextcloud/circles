@@ -35,6 +35,7 @@ use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\TimezoneService;
+use OCP\DB\QueryBuilder\ICompositeExpression;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 use OCP\IL10N;
@@ -136,7 +137,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 * @param int $type
 	 * @param bool $forceAll
 	 *
-	 * @return \OCP\DB\QueryBuilder\ICompositeExpression
+	 * @return ICompositeExpression
 	 */
 	private function generateLimitPersonal(IQueryBuilder $qb, $userId, $type, $forceAll = false) {
 		if (!(Circle::CIRCLES_PERSONAL & (int)$type)) {
@@ -172,6 +173,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 
 		$orX = $expr->orX($expr->gte('u.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)));
 		$orX->add($expr->eq('c.name', $qb->createNamedParameter($name)))
+			->add($expr->eq('c.alt_name', $qb->createNamedParameter($name)))
 			->add($expr->eq('c.unique_id', $qb->createNamedParameter($circleUniqueId)));
 
 		if ($this->leftJoinedNCGroupAndUser) {
@@ -237,7 +239,6 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 */
 	public function leftJoinUserIdAsViewer(IQueryBuilder &$qb, string $userId, int $type, string $instanceId
 	) {
-
 		if ($qb->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
@@ -362,7 +363,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->selectDistinct('c.unique_id')
 		   ->addSelect(
-			   'c.id', 'c.name', 'c.description', 'c.settings', 'c.type', 'contact_addressbook',
+			   'c.id', 'c.name', 'c.alt_name', 'c.description', 'c.settings', 'c.type', 'contact_addressbook',
 			   'contact_groupname', 'c.creation'
 		   )
 		   ->from(CoreRequestBuilder::TABLE_CIRCLES, 'c');
@@ -383,6 +384,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		$circle->setId($data['id']);
 		$circle->setUniqueId($data['unique_id']);
 		$circle->setName($data['name']);
+		$circle->setAltName($data['alt_name']);
 		$circle->setDescription($data['description']);
 		if ($data['contact_addressbook'] !== null) {
 			$circle->setContactAddressBook($data['contact_addressbook']);

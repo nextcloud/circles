@@ -27,16 +27,39 @@
 
 namespace OCA\Circles\Collaboration\v1;
 
+use OC\User\NoUserException;
 use OCA\Circles\Api\v1\Circles;
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\MiscService;
+use OCP\AppFramework\QueryException;
 use OCP\Collaboration\Collaborators\ISearchPlugin;
 use OCP\Collaboration\Collaborators\ISearchResult;
 use OCP\Collaboration\Collaborators\SearchResultType;
+use OCP\IL10N;
 use OCP\Share;
 
 class CollaboratorSearchPlugin implements ISearchPlugin {
+
+
+	/** @var IL10N */
+	private $l10n;
+
+	/** @var MiscService */
+	private $miscService;
+
+
+	/**
+	 * CollaboratorSearchPlugin constructor.
+	 *
+	 * @throws QueryException
+	 */
+	public function __construct() {
+		$this->l10n = \OC::$server->getL10N(Application::APP_NAME);
+		$this->miscService = \OC::$server->query(MiscService::class);
+	}
+
 
 	/**
 	 * {@inheritdoc}
@@ -46,7 +69,12 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 
 		$circles = Circles::listCircles(Circle::CIRCLES_ALL, $search, Member::LEVEL_MEMBER);
 		foreach ($circles as $circle) {
-			$entry = $this->addResultEntry($circle);
+			try {
+				$entry = $this->addResultEntry($circle);
+			} catch (NoUserException $e) {
+				continue;
+			}
+
 			if (strtolower($circle->getName()) === strtolower($search)) {
 				$exact[] = $entry;
 			} else {
@@ -63,11 +91,20 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 	 * @param Circle $circle
 	 *
 	 * @return array
+	 * @throws NoUserException
 	 */
 	private function addResultEntry(Circle $circle) {
 
 		return [
-			'label' => $circle->getName(),
+			'label' => sprintf(
+				'%s (%s, %s)',
+				$circle->getName(),
+				$this->l10n->t($circle->getTypeLongString()),
+				$this->miscService->getDisplayName(
+					$circle->getOwner()
+						   ->getUserId(), true
+				)
+			),
 			'value' => [
 				'shareType'   => Share::SHARE_TYPE_CIRCLE,
 				'shareWith'   => $circle->getUniqueId(),

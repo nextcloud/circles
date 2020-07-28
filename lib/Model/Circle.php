@@ -27,10 +27,11 @@
 namespace OCA\Circles\Model;
 
 use daita\MySmallPhpTools\Traits\TArrayTools;
+use JsonSerializable;
 use OCA\Circles\Exceptions\CircleTypeNotValidException;
 use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 
-class Circle extends BaseCircle implements \JsonSerializable {
+class Circle extends BaseCircle implements JsonSerializable {
 
 
 	use TArrayTools;
@@ -85,7 +86,8 @@ class Circle extends BaseCircle implements \JsonSerializable {
 	public function jsonSerialize() {
 		$json = [
 			'id'               => $this->getId(),
-			'name'             => $this->getName(),
+			'name'             => $this->getName(true),
+			'alt_name'         => $this->getAltName(),
 			'owner'            => $this->getOwner(),
 			'user'             => $this->getViewer(),
 			'group'            => $this->getGroupViewer(),
@@ -146,6 +148,7 @@ class Circle extends BaseCircle implements \JsonSerializable {
 
 		$circle = new Circle($arr['type'], $arr['name']);
 
+		$circle->setAltName($arr['alt_name']);
 		$circle->setId($arr['id']);
 		$circle->setUniqueId($arr['unique_id']);
 		$circle->setDescription($arr['description']);

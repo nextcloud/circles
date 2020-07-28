@@ -43,7 +43,6 @@ use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
-use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\MemberIsNotOwnerException;
 use OCA\Circles\Exceptions\MembersLimitException;
@@ -159,7 +158,6 @@ class CirclesService {
 	 * @return Circle
 	 * @throws CircleAlreadyExistsException
 	 * @throws CircleTypeDisabledException
-	 * @throws MemberAlreadyExistsException
 	 * @throws Exception
 	 */
 	public function createCircle($type, $name, string $ownerId = '') {
@@ -179,7 +177,6 @@ class CirclesService {
 		}
 
 		$circle = new Circle($type, $name);
-
 		if ($ownerId === '') {
 			$ownerId = $this->userId;
 		}
@@ -256,7 +253,9 @@ class CirclesService {
 	public function detailsCircle($circleUniqueId, $forceAll = false) {
 
 		try {
-			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId, Member::TYPE_USER, '', $forceAll);
+			$circle = $this->circlesRequest->getCircle(
+				$circleUniqueId, $this->userId, Member::TYPE_USER, '', $forceAll
+			);
 			if ($this->viewerIsAdmin()
 				|| $circle->getHigherViewer()
 						  ->isLevel(Member::LEVEL_MEMBER)
