@@ -111,7 +111,7 @@ var define = {
 };
 
 
-$(document).ready(function () {
+$(window).on( "load", function () {
 
 	/**
 	 * @constructs Navigation
