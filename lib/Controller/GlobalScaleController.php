@@ -83,6 +83,7 @@ class GlobalScaleController extends BaseController {
 	 *
 	 * @param string $token
 	 *
+	 * @return DataResponse
 	 * @throws Exception
 	 */
 	public function asyncBroadcast(string $token) {
@@ -92,7 +93,8 @@ class GlobalScaleController extends BaseController {
 			$this->miscService->log(
 				'exception during async: ' . ['token' => $token, 'error' => $e->getMessage()]
 			);
-			$this->fail(['token' => $token, 'error' => $e->getMessage()]);
+
+			return $this->fail(['token' => $token, 'error' => $e->getMessage()]);
 		}
 
 		$this->async();
