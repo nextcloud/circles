@@ -29,85 +29,59 @@
 
 var links = {
 
-
 	linkCircle: function (circleId, remote, callback) {
-		var result = {status: -1};
-		$.ajax({
+		OCA.Circles.api.request({
 			method: 'POST',
 			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/link'),
 			data: {
 				remote: remote
 			}
-		}).done(function (res) {
-			api.onCallback(callback, res);
-		}).fail(function () {
-			api.onCallback(callback, result);
-		});
+		}, callback);
 	},
 
 
 	linkStatus: function (linkId, status, callback) {
-		var result = {status: -1};
-		$.ajax({
+		OCA.Circles.api.request({
 			method: 'POST',
 			url: OC.generateUrl('/apps/circles/v1/link/' + linkId + '/status'),
 			data: {
 				status: status
 			}
-		}).done(function (res) {
-			api.onCallback(callback, res);
-		}).fail(function () {
-			api.onCallback(callback, result);
-		});
+		}, callback);
 	},
 
 
 	linkGroup: function (circleId, groupId, callback) {
-		var result = {status: -1};
-		$.ajax({
+		OCA.Circles.api.request({
 			method: 'PUT',
 			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/groups'),
 			data: {
 				name: groupId
 			}
-		}).done(function (res) {
-			api.onCallback(callback, res);
-		}).fail(function () {
-			api.onCallback(callback, result);
-		});
+		}, callback);
 	},
 
 
 	unlinkGroup: function (circleId, groupId, callback) {
-		var result = {status: -1};
-		$.ajax({
+		OCA.Circles.api.request({
 			method: 'DELETE',
 			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/groups'),
 			data: {
 				group: groupId
 			}
-		}).done(function (res) {
-			api.onCallback(callback, res);
-		}).fail(function () {
-			api.onCallback(callback, result);
-		});
+		}, callback);
 	},
 
 
 	levelGroup: function (circleId, group, level, callback) {
-		var result = {status: -1};
-		$.ajax({
+		OCA.Circles.api.request({
 			method: 'POST',
 			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/group/level'),
 			data: {
 				group: group,
 				level: level
 			}
-		}).done(function (res) {
-			api.onCallback(callback, res);
-		}).fail(function () {
-			api.onCallback(callback, result);
-		});
+		}, callback);
 	}
 
 };
