@@ -47,6 +47,7 @@ class ConfigService {
 	const CIRCLES_ALLOW_NON_SSL_LINKS = 'allow_non_ssl_links';
 	const CIRCLES_NON_SSL_LOCAL = 'local_is_non_ssl';
 	const CIRCLES_SELF_SIGNED = 'self_signed_cert';
+	const LOCAL_CLOUD_ID = 'local_cloud_id';
 	const CIRCLES_ACTIVITY_ON_CREATION = 'creation_activity';
 	const CIRCLES_SKIP_INVITATION_STEP = 'skip_invitation_to_closed_circles';
 	const CIRCLES_SEARCH_FROM_COLLABORATOR = 'search_from_collaborator';
@@ -77,6 +78,7 @@ class ConfigService {
 		self::CIRCLES_ALLOW_NON_SSL_LINKS      => '0',
 		self::CIRCLES_NON_SSL_LOCAL            => '0',
 		self::CIRCLES_SELF_SIGNED              => '0',
+		self::LOCAL_CLOUD_ID                   => '',
 		self::CIRCLES_ACTIVITY_ON_CREATION     => '1',
 		self::CIRCLES_SKIP_INVITATION_STEP     => '0',
 		self::CIRCLES_SEARCH_FROM_COLLABORATOR => '0'
@@ -243,7 +245,7 @@ class ConfigService {
 		return $this->config->getAppValue('core', $key, $defaultValue);
 	}
 
-		/**
+	/**
 	 * Get a value by key
 	 *
 	 * @param string $key
@@ -255,9 +257,6 @@ class ConfigService {
 
 		return $this->config->getSystemValue($key, $defaultValue);
 	}
-
-
-
 
 
 	/**
@@ -525,9 +524,18 @@ class ConfigService {
 	 * @return string
 	 */
 	public function getLocalCloudId(): string {
-		return $this->getTrustedDomains()[0];
+		$localCloudId = $this->getAppValue(self::LOCAL_CLOUD_ID);
+		if ($localCloudId === '') {
+			return $this->getTrustedDomains()[0];
+		}
+
+		return $localCloudId;
 	}
 
+
+	/**
+	 * @return mixed
+	 */
 	public function getInstanceId() {
 		return $this->config->getSystemValue('instanceid');
 	}
