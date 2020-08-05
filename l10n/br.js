@@ -5,6 +5,7 @@ OC.L10N.register(
     "Public" : "Publik",
     "Admin" : "Administratour",
     "Unknown" : "Dianv",
+    "Blocked" : "Stanket",
     "Circles" : "Kelc'hioù",
     "Open »%s«" : "Digeriñ  »%s«",
     "Accept" : "Kadarnaat",
@@ -15,6 +16,7 @@ OC.L10N.register(
     "Modified" : "Cheñchet",
     "Settings" : "Arventennoù",
     "Username" : "anv implijer",
+    "Status" : "Stad",
     "Link" : "Liamm",
     "Description" : "Diskrivadur"
 },
