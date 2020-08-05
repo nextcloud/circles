@@ -30,12 +30,16 @@
 namespace OCA\Circles\Command;
 
 use daita\MySmallPhpTools\Traits\TArrayTools;
+use Exception;
 use OC\Core\Command\Base;
-use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
+use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\GlobalScaleService;
+use OCA\Circles\Service\GSUpstreamService;
 use OCP\IL10N;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
@@ -56,22 +60,29 @@ class CirclesTest extends Base {
 	/** @var GlobalScaleService */
 	private $globalScaleService;
 
+	/** @var GSUpstreamService */
+	private $gsUpstreamService;
+
 	/** @var ConfigService */
 	private $configService;
+
 
 	/**
 	 * CirclesList constructor.
 	 *
 	 * @param IL10N $l10n
 	 * @param GlobalScaleService $globalScaleService
+	 * @param GSUpstreamService $gsUpstreamService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IL10N $l10n, GlobalScaleService $globalScaleService, ConfigService $configService
+		IL10N $l10n, GlobalScaleService $globalScaleService, GSUpstreamService $gsUpstreamService,
+		ConfigService $configService
 	) {
 		parent::__construct();
 
 		$this->l10n = $l10n;
+		$this->gsUpstreamService = $gsUpstreamService;
 		$this->globalScaleService = $globalScaleService;
 		$this->configService = $configService;
 	}
@@ -80,7 +91,9 @@ class CirclesTest extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:test')
-			 ->setDescription('testing some features');
+			 ->setDescription('testing some features')
+			 ->addArgument('local', InputArgument::OPTIONAL, 'testing with a specific local cloud id')
+			 ->addOption('delay', 'd', InputOption::VALUE_REQUIRED, 'delay before checking result');
 	}
 
 
@@ -89,10 +102,46 @@ class CirclesTest extends Base {
 	 * @param OutputInterface $output
 	 *
 	 * @return int
+	 * @throws Exception
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		$instances = $this->globalScaleService->getInstances(true);
-		$output->writeln('<info>Instances: </info>' . json_encode($instances));
+		if ($input->getArgument('local')) {
+			define('TEMP_LOCAL_CLOUD_ID', $input->getArgument('local'));
+		}
+
+		$delay = 5;
+		if ($input->getOption('delay')) {
+			$delay = (int)$input->getOption('delay');
+		}
+
+		$instances =
+			array_merge([$this->configService->getLocalCloudId()], $this->globalScaleService->getInstances());
+
+		$test = new GSEvent(GSEvent::TEST, true, true);
+		$test->setAsync(true);
+		$wrapper = $this->gsUpstreamService->newEvent($test);
+
+		$output->writeln('Async request is sent, now waiting ' . $delay . ' seconds');
+		sleep($delay);
+		$output->writeln('Pause is over, checking results for ' . $wrapper->getToken());
+
+		$wrappers = $this->gsUpstreamService->getEventsByToken($wrapper->getToken());
+
+		$result = [];
+		foreach ($wrappers as $wrapper) {
+			$result[$wrapper->getInstance()] = $wrapper->getEvent();
+		}
+
+		foreach ($instances as $instance) {
+			$output->write($instance . ' ');
+			if (array_key_exists($instance, $result)
+				&& $result[$instance]->getResult()
+									 ->gInt('status') === 1) {
+				$output->writeln('<info>ok</info>');
+			} else {
+				$output->writeln('<error>fail</error>');
+			}
+		}
 
 		return 0;
 	}

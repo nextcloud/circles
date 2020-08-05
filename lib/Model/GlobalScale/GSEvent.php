@@ -50,6 +50,7 @@ class GSEvent implements JsonSerializable {
 	const SEVERITY_LOW = 1;
 	const SEVERITY_HIGH = 3;
 
+	const TEST = '\OCA\Circles\GlobalScale\Test';
 	const GLOBAL_SYNC = '\OCA\Circles\GlobalScale\GlobalSync';
 	const CIRCLE_STATUS = '\OCA\Circles\GlobalScale\CircleStatus';
 

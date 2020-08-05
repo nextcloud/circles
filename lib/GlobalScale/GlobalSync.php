@@ -40,7 +40,7 @@ use OCA\Circles\Model\Member;
 
 
 /**
- * Class MemberCreate
+ * Class GlobalSync
  *
  * @package OCA\Circles\GlobalScale
  */

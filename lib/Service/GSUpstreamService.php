@@ -127,9 +127,10 @@ class GSUpstreamService {
 	/**
 	 * @param GSEvent $event
 	 *
+	 * @return GSWrapper
 	 * @throws Exception
 	 */
-	public function newEvent(GSEvent $event) {
+	public function newEvent(GSEvent $event): GSWrapper {
 		$event->setSource($this->configService->getLocalCloudId());
 
 		try {
@@ -141,7 +142,7 @@ class GSUpstreamService {
 					$gs->manage($event);
 				}
 
-				$this->globalScaleService->asyncBroadcast($event);
+				return $this->globalScaleService->asyncBroadcast($event);
 			} else {
 //				$gs->verify($event); // needed ? as we check event on the 'master' of the circle
 				$this->confirmEvent($event);
