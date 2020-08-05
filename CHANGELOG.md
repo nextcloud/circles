@@ -1,6 +1,17 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+
+### 0.19.4
+
+- includes mails when searching for collaborator
+- introduction of Cached Name (GS)
+- introduction of Alternate Name
+- improvement on the front-end API
+- force local cloud id via settings
+- new test on Async and GS: ./occ circles:test
+ 
+
 ### 0.19.3
 
 - considering groups as members
