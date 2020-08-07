@@ -129,7 +129,7 @@ class CirclesTest extends Base {
 		}
 
 		$instances =
-			array_merge([$this->configService->getLocalCloudId()], $this->globalScaleService->getInstances());
+			array_merge($this->globalScaleService->getInstances(true));
 
 		$test = new GSEvent(GSEvent::TEST, true, true);
 		$test->setAsync(true);
