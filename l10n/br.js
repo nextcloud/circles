@@ -2,6 +2,7 @@ OC.L10N.register(
     "circles",
     {
     "Personal" : "Personel",
+    "Secret" : "Sekret",
     "Public" : "Publik",
     "Admin" : "Administratour",
     "Unknown" : "Dianv",
