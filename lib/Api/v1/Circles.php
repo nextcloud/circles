@@ -105,8 +105,8 @@ class Circles {
 	 * @throws ApiVersionIncompatibleException
 	 */
 	public static function compareVersion($apiVersion) {
-		if ((int)$apiVersion[0] !== Circles::API_VERSION[0]
-			|| (int)$apiVersion[1] !== Circles::API_VERSION[1]) {
+		if ((int)$apiVersion[0] !== self::API_VERSION[0]
+			|| (int)$apiVersion[1] !== self::API_VERSION[1]) {
 			throw new ApiVersionIncompatibleException('api_not_compatible');
 		}
 
