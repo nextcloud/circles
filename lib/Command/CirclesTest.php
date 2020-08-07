@@ -176,6 +176,9 @@ class CirclesTest extends Base {
 
 		$request = new Request('', Request::TYPE_GET);
 		$request->setAddressFromUrl($absolute);
+		if ($this->configService->getAppValue(ConfigService::CIRCLES_SELF_SIGNED) === '1') {
+			$request->setVerifyPeer(false);
+		}
 		if (method_exists($request, 'setFollowLocation')) {
 			$request->setFollowLocation(false);
 		}
