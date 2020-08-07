@@ -524,10 +524,6 @@ class ConfigService {
 	 * @return string
 	 */
 	public function getLocalCloudId(): string {
-		if (defined('TEMP_LOCAL_CLOUD_ID')) {
-			return TEMP_LOCAL_CLOUD_ID;
-		}
-
 		$localCloudId = $this->getAppValue(self::LOCAL_CLOUD_ID);
 		if ($localCloudId === '') {
 			return $this->getTrustedDomains()[0];

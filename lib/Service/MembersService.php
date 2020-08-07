@@ -161,7 +161,7 @@ class MembersService {
 		}
 
 		$curr = $this->membersRequest->getMembers($circle->getUniqueId(), $circle->getHigherViewer(), $force);
-		
+
 		$new = $this->addMassiveMembers($circle, $ident, $type);
 		if (empty($new)) {
 			$new = [$this->addSingleMember($circle, $ident, $type, $instance, $force)];
@@ -203,6 +203,10 @@ class MembersService {
 
 		$new = $event->getMember();
 		$new->setJoined($this->l10n->t('now'));
+
+		if ($new->getInstance() === $this->configService->getLocalCloudId()) {
+			$new->setInstance('');
+		}
 
 		return $new;
 	}

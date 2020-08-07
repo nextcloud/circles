@@ -136,20 +136,12 @@ class GlobalScaleService {
 			$wrapper = $this->gsEventsRequest->create($wrapper);
 		}
 
-		$path = $this->urlGenerator->linkToRoute(
+		$absolute = $this->urlGenerator->linkToRouteAbsolute(
 			'circles.GlobalScale.asyncBroadcast', ['token' => $wrapper->getToken()]
 		);
 
-		$request = new Request($path, Request::TYPE_PUT);
-
-		$baseUrl = $this->urlGenerator->getBaseUrl();
-		if (substr($baseUrl, 0, 16) === 'http://localhost') {
-			$request->setBaseUrl(substr($baseUrl, 16));
-			$request->setAddress($this->configService->getLocalCloudId());
-			$request->setProtocols(['https', 'http']);
-		} else {
-			$request->setAddressFromUrl($baseUrl);
-		}
+		$request = new Request('', Request::TYPE_PUT);
+		$request->setAddressFromUrl($absolute);
 
 		try {
 			$this->doRequest($request);
@@ -228,7 +220,10 @@ class GlobalScaleService {
 			$lookup = $this->configService->getGSStatus(ConfigService::GS_LOOKUP);
 			$request = new Request(ConfigService::GS_LOOKUP_INSTANCES, Request::TYPE_POST);
 
-			$user = $this->getRandomUser();
+			try {
+				$user = $this->getRandomUser();
+			} catch (NoUserException $e) {
+			}
 			$data = $this->signer->sign('lookupserver', ['federationId' => $user->getCloudId()], $user);
 			$request->setData($data);
 			$request->setAddressFromUrl($lookup);
@@ -242,8 +237,8 @@ class GlobalScaleService {
 
 				return [];
 			}
-		} catch (NoUserException | GSStatusException $e) {
-			$instances = [$this->configService->getLocalCloudId()];
+		} catch (GSStatusException $e) {
+			return $this->getLocalInstance($all);
 		}
 
 		if ($all) {
@@ -251,6 +246,22 @@ class GlobalScaleService {
 		}
 
 		return array_values(array_diff($instances, $this->configService->getTrustedDomains()));
+	}
+
+
+	/**
+	 * @param bool $all
+	 *
+	 * @return array
+	 */
+	private function getLocalInstance(bool $all): array {
+		if (!$all) {
+			return [];
+		}
+
+		$absolute = $this->urlGenerator->linkToRouteAbsolute('circles.Navigation.navigate');
+
+		return [parse_url($absolute, PHP_URL_HOST)];
 	}
 
 
@@ -287,7 +298,7 @@ class GlobalScaleService {
 			return array_shift($random);
 		}
 
-		throw  new NoUserException();
+		throw new NoUserException();
 	}
 
 }

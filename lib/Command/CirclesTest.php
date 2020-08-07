@@ -29,7 +29,13 @@
 
 namespace OCA\Circles\Command;
 
+use daita\MySmallPhpTools\Exceptions\RequestContentException;
+use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
+use daita\MySmallPhpTools\Exceptions\RequestResultSizeException;
+use daita\MySmallPhpTools\Exceptions\RequestServerException;
+use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Traits\TArrayTools;
+use daita\MySmallPhpTools\Traits\TRequest;
 use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\Model\GlobalScale\GSEvent;
@@ -37,7 +43,7 @@ use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\GlobalScaleService;
 use OCA\Circles\Service\GSUpstreamService;
 use OCP\IL10N;
-use Symfony\Component\Console\Input\InputArgument;
+use OCP\IURLGenerator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -52,10 +58,14 @@ class CirclesTest extends Base {
 
 
 	use TArrayTools;
+	use TRequest;
 
 
 	/** @var IL10N */
 	private $l10n;
+
+	/** @var IURLGenerator */
+	private $urlGenerator;
 
 	/** @var GlobalScaleService */
 	private $globalScaleService;
@@ -67,21 +77,27 @@ class CirclesTest extends Base {
 	private $configService;
 
 
+	/** @var int */
+	private $delay = 5;
+
+
 	/**
 	 * CirclesList constructor.
 	 *
 	 * @param IL10N $l10n
+	 * @param IURLGenerator $urlGenerator
 	 * @param GlobalScaleService $globalScaleService
 	 * @param GSUpstreamService $gsUpstreamService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IL10N $l10n, GlobalScaleService $globalScaleService, GSUpstreamService $gsUpstreamService,
-		ConfigService $configService
+		IL10N $l10n, IURLGenerator $urlGenerator, GlobalScaleService $globalScaleService,
+		GSUpstreamService $gsUpstreamService, ConfigService $configService
 	) {
 		parent::__construct();
 
 		$this->l10n = $l10n;
+		$this->urlGenerator = $urlGenerator;
 		$this->gsUpstreamService = $gsUpstreamService;
 		$this->globalScaleService = $globalScaleService;
 		$this->configService = $configService;
@@ -92,7 +108,6 @@ class CirclesTest extends Base {
 		parent::configure();
 		$this->setName('circles:test')
 			 ->setDescription('testing some features')
-			 ->addArgument('local', InputArgument::OPTIONAL, 'testing with a specific local cloud id')
 			 ->addOption('delay', 'd', InputOption::VALUE_REQUIRED, 'delay before checking result');
 	}
 
@@ -105,13 +120,12 @@ class CirclesTest extends Base {
 	 * @throws Exception
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		if ($input->getArgument('local')) {
-			define('TEMP_LOCAL_CLOUD_ID', $input->getArgument('local'));
+		if ($input->getOption('delay')) {
+			$this->delay = (int)$input->getOption('delay');
 		}
 
-		$delay = 5;
-		if ($input->getOption('delay')) {
-			$delay = (int)$input->getOption('delay');
+		if (!$this->testLocalAddress($output)) {
+			return 0;
 		}
 
 		$instances =
@@ -121,9 +135,9 @@ class CirclesTest extends Base {
 		$test->setAsync(true);
 		$wrapper = $this->gsUpstreamService->newEvent($test);
 
-		$output->writeln('Async request is sent, now waiting ' . $delay . ' seconds');
-		sleep($delay);
-		$output->writeln('Pause is over, checking results for ' . $wrapper->getToken());
+		$output->writeln('- Async request is sent, now waiting ' . $this->delay . ' seconds');
+		sleep($this->delay);
+		$output->writeln('- Pause is over, checking results for ' . $wrapper->getToken());
 
 		$wrappers = $this->gsUpstreamService->getEventsByToken($wrapper->getToken());
 
@@ -144,6 +158,40 @@ class CirclesTest extends Base {
 		}
 
 		return 0;
+	}
+
+
+	/**
+	 * @param OutputInterface $output
+	 *
+	 * @return bool
+	 * @throws RequestContentException
+	 * @throws RequestNetworkException
+	 * @throws RequestResultSizeException
+	 * @throws RequestServerException
+	 */
+	private function testLocalAddress(OutputInterface $output): bool {
+		$absolute = $this->urlGenerator->linkToRouteAbsolute('core.CSRFToken.index');
+		$output->write('- Simple request on ' . $absolute . ': ');
+
+		$request = new Request('', Request::TYPE_GET);
+		$request->setAddressFromUrl($absolute);
+		if (method_exists($request, 'setFollowLocation')) {
+			$request->setFollowLocation(false);
+		}
+
+		$this->doRequest($request);
+		$color = 'error';
+		if ($request->getResultCode() === 200) {
+			$color = 'info';
+		}
+		$output->writeln('<' . $color . '>' . $request->getResultCode() . '</' . $color . '>');
+
+		if ($request->getResultCode() === 200) {
+			return true;
+		}
+
+		return false;
 	}
 
 }
