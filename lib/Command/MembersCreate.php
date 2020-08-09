@@ -175,6 +175,9 @@ class MembersCreate extends Base {
 		}
 
 		$request = new Request('/users', Request::TYPE_GET);
+		if ($this->configService->getAppValue(ConfigService::CIRCLES_SELF_SIGNED) === '1') {
+			$request->setVerifyPeer(false);
+		}
 		$request->setProtocols(['https', 'http']);
 		$request->addData('search', $search);
 		$request->setAddressFromUrl($lookup);

@@ -141,6 +141,9 @@ class GlobalScaleService {
 		);
 
 		$request = new Request('', Request::TYPE_PUT);
+		if ($this->configService->getAppValue(ConfigService::CIRCLES_SELF_SIGNED) === '1') {
+			$request->setVerifyPeer(false);
+		}
 		$request->setAddressFromUrl($absolute);
 
 		try {
@@ -219,6 +222,9 @@ class GlobalScaleService {
 		try {
 			$lookup = $this->configService->getGSStatus(ConfigService::GS_LOOKUP);
 			$request = new Request(ConfigService::GS_LOOKUP_INSTANCES, Request::TYPE_POST);
+			if ($this->configService->getAppValue(ConfigService::CIRCLES_SELF_SIGNED) === '1') {
+				$request->setVerifyPeer(false);
+			}
 
 			try {
 				$user = $this->getRandomUser();
