@@ -64,7 +64,8 @@ class Circles {
 	const LEVEL_MEMBER = Member::LEVEL_MEMBER;
 	const LEVEL_MODERATOR = Member::LEVEL_MODERATOR;
 	const LEVEL_ADMIN = Member::LEVEL_ADMIN;
-	const LEVEL_OWNER = Member::LEVEL_OWNER
+	const LEVEL_OWNER = Member::LEVEL_OWNER;
+	
 
 	protected static function getContainer() {
 		$app = \OC::$server->query(Application::class);
