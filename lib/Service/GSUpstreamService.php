@@ -197,6 +197,9 @@ class GSUpstreamService {
 
 		$path = $this->urlGenerator->linkToRoute('circles.GlobalScale.broadcast');
 		$request = new Request($path, Request::TYPE_POST);
+		if ($this->configService->getAppValue(ConfigService::CIRCLES_SELF_SIGNED) === '1') {
+			$request->setVerifyPeer(false);
+		}
 
 		$protocols = ['https', 'http'];
 		if ($protocol !== '') {
@@ -231,6 +234,9 @@ class GSUpstreamService {
 		$path = $this->urlGenerator->linkToRoute('circles.GlobalScale.event');
 
 		$request = new Request($path, Request::TYPE_POST);
+		if ($this->configService->getAppValue(ConfigService::CIRCLES_SELF_SIGNED) === '1') {
+			$request->setVerifyPeer(false);
+		}
 		if ($this->get('REQUEST_SCHEME', $_SERVER) !== '') {
 			$request->setProtocols([$_SERVER['REQUEST_SCHEME']]);
 		} else {
@@ -444,6 +450,9 @@ class GSUpstreamService {
 
 		$path = $this->urlGenerator->linkToRoute('circles.GlobalScale.status');
 		$request = new Request($path, Request::TYPE_POST);
+		if ($this->configService->getAppValue(ConfigService::CIRCLES_SELF_SIGNED) === '1') {
+			$request->setVerifyPeer(false);
+		}
 
 		$request->setProtocols(['https', 'http']);
 		$request->setDataSerialize($event);
