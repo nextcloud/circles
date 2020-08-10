@@ -48,6 +48,24 @@ class Circles {
 
 	const API_VERSION = [0, 10, 0];
 
+	// Expose circle and member constants via API
+	const CIRCLES_PERSONAL = Circle::CIRCLES_PERSONAL;
+	const CIRCLES_SECRET = Circle::CIRCLES_SECRET;
+	const CIRCLES_CLOSED = Circle::CIRCLES_CLOSED;
+	const CIRCLES_PUBLIC = Circle::CIRCLES_PUBLIC;
+	const CIRCLES_ALL = Circle::CIRCLES_ALL;
+
+	const TYPE_USER = Member::TYPE_USER;
+	const TYPE_GROUP = Member::TYPE_GROUP;
+	const TYPE_MAIL = Member::TYPE_MAIL;
+	const TYPE_CONTACT = Member::TYPE_CONTACT;
+
+	const LEVEL_NONE = Member::LEVEL_NONE;
+	const LEVEL_MEMBER = Member::LEVEL_MEMBER;
+	const LEVEL_MODERATOR = Member::LEVEL_MODERATOR;
+	const LEVEL_ADMIN = Member::LEVEL_ADMIN;
+	const LEVEL_OWNER = Member::LEVEL_OWNER
+
 	protected static function getContainer() {
 		$app = \OC::$server->query(Application::class);
 
@@ -87,8 +105,8 @@ class Circles {
 	 * @throws ApiVersionIncompatibleException
 	 */
 	public static function compareVersion($apiVersion) {
-		if ((int)$apiVersion[0] !== Circles::API_VERSION[0]
-			|| (int)$apiVersion[1] !== Circles::API_VERSION[1]) {
+		if ((int)$apiVersion[0] !== self::API_VERSION[0]
+			|| (int)$apiVersion[1] !== self::API_VERSION[1]) {
 			throw new ApiVersionIncompatibleException('api_not_compatible');
 		}
 
@@ -165,7 +183,7 @@ class Circles {
 	 * rights from the current user. In case of Secret circle, name needs to be complete so the
 	 * circle is included in the list (or if the current user is the owner)
 	 *
-	 * example: Circles::listCircles(Circle::CIRCLES_ALL, '', 8, callback); will returns all
+	 * example: Circles::listCircles(Circles::CIRCLES_ALL, '', 8, callback); will returns all
 	 * circles when the current user is at least an Admin.
 	 *
 	 * @param mixed $type
@@ -204,7 +222,7 @@ class Circles {
 	 * @throws QueryException
 	 */
 	public static function joinedCircles($userId = '', $forceAll = false) {
-		return self::listCircles(Circle::CIRCLES_ALL, '', Member::LEVEL_MEMBER, $userId, $forceAll);
+		return self::listCircles(self::CIRCLES_ALL, '', self::LEVEL_MEMBER, $userId, $forceAll);
 	}
 
 
@@ -220,7 +238,7 @@ class Circles {
 	 */
 	public static function joinedCircleIds($userId = '') {
 		$circleIds = [];
-		$circles = self::listCircles(Circle::CIRCLES_ALL, '', Member::LEVEL_MEMBER, $userId);
+		$circles = self::listCircles(self::CIRCLES_ALL, '', self::LEVEL_MEMBER, $userId);
 		foreach ($circles as $circle) {
 			$circleIds[] = $circle->getUniqueId();
 		}
@@ -503,7 +521,7 @@ class Circles {
 		if ($frame->getCloudId() !== null) {
 			$name = $frame->getAuthor() . '@' . $frame->getCloudId();
 		} else {
-			$name = MiscService::getDisplay($frame->getAuthor(), Member::TYPE_USER);
+			$name = MiscService::getDisplay($frame->getAuthor(), self::TYPE_USER);
 		}
 
 		return [
