@@ -312,7 +312,6 @@ class GSUpstreamService {
 
 
 	/**
-	 * Deprecated ?
 	 * should be used to manage results from events, like sending mails on user creation
 	 *
 	 * @param string $token

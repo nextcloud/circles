@@ -27,12 +27,14 @@
 namespace OCA\Circles\Service;
 
 use Exception;
+use OC;
 use OC\User\NoUserException;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\MissingKeyInArrayException;
 use OCA\Circles\Model\Member;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
+use OCP\Contacts\ContactsMenu\IContactsStore;
 use OCP\ILogger;
 use OCP\IUserManager;
 
@@ -41,14 +43,20 @@ class MiscService {
 	/** @var ILogger */
 	private $logger;
 
+	/** @var IContactsStore */
+	private $contactsStore;
+
 	/** @var string */
 	private $appName;
 
 	/** @var IUserManager */
 	private $userManager;
 
-	public function __construct(ILogger $logger, $appName, IUserManager $userManager) {
+	public function __construct(
+		ILogger $logger, IContactsStore $contactsStore, $appName, IUserManager $userManager
+	) {
 		$this->logger = $logger;
+		$this->contactsStore = $contactsStore;
 		$this->appName = $appName;
 		$this->userManager = $userManager;
 	}
@@ -147,6 +155,18 @@ class MiscService {
 
 
 	/**
+	 * @param Member $member
+	 */
+	public function updateCachedName(Member $member) {
+		try {
+			$cachedName = $this->getDisplay($member->getUserId(), $member->getType());
+			$member->setCachedName($cachedName);
+		} catch (Exception $e) {
+		}
+	}
+
+
+	/**
 	 * @param string $ident
 	 * @param int $type
 	 *
@@ -172,8 +192,8 @@ class MiscService {
 			return;
 		}
 
-		$user = \OC::$server->getUserManager()
-							->get($ident);
+		$user = OC::$server->getUserManager()
+						   ->get($ident);
 		if ($user !== null) {
 			$display = $user->getDisplayName();
 		}
@@ -204,17 +224,19 @@ class MiscService {
 	 * @return mixed|string
 	 */
 	public static function getContactData($ident) {
-		if (!class_exists(\OCA\DAV\AppInfo\Application::class) || !strpos($ident, ':')) {
+		if (!class_exists(\OCA\DAV\CardDAV\ContactsManager::class) || !strpos($ident, ':')) {
 			return [];
 		}
 
 		list($userId, $contactId) = explode(':', $ident);
 
 		try {
-			/** @noinspection PhpUnnecessaryFullyQualifiedNameInspection */
-			$contactApp = new \OCA\DAV\AppInfo\Application();
-			$cm = \OC::$server->getContactsManager();
-			$contactApp->setupContactsProvider($cm, $userId);
+			/** @var \OCA\DAV\CardDAV\ContactsManager $cManager */
+			$cManager = OC::$server->query(\OCA\DAV\CardDAV\ContactsManager::class);
+			$urlGenerator = OC::$server->getURLGenerator();
+
+			$cm = OC::$server->getContactsManager();
+			$cManager->setupContactsProvider($cm, $userId, $urlGenerator);
 			$contact = $cm->search($contactId, ['UID']);
 
 			return array_shift($contact);

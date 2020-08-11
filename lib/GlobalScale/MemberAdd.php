@@ -114,6 +114,8 @@ class MemberAdd extends AGlobalScaleEvent {
 			$password = $this->miscService->token(15);
 		}
 
+		$this->miscService->updateCachedName($member);
+
 		$event->setData(new SimpleDataStore(['password' => $password]));
 		$event->setMember($member);
 	}
@@ -160,6 +162,11 @@ class MemberAdd extends AGlobalScaleEvent {
 				$links, $event->getResult()
 							  ->gArray('unknownShares')
 			);
+		}
+
+		if ($member->getType() !== Member::TYPE_MAIL
+			&& $member->getType() !== Member::TYPE_CONTACT) {
+			return;
 		}
 
 		if ($circle->getViewer() === null) {

@@ -286,7 +286,9 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->selectAlias('o.user_id', 'owner_userid')
+		   ->selectAlias('o.member_id', 'owner_member_id')
 		   ->selectAlias('o.instance', 'owner_instance')
+		   ->selectAlias('o.cached_name', 'owner_cached_name')
 		   ->selectAlias('o.status', 'owner_status')
 		   ->selectAlias('o.level', 'owner_level')
 		   ->leftJoin(
@@ -412,6 +414,8 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 
 		if (key_exists('owner_level', $data)) {
 			$owner = new Member($data['owner_userid'], Member::TYPE_USER, $circle->getUniqueId());
+			$owner->setCachedName($data['owner_cached_name']);
+			$owner->setMemberId($data['owner_member_id']);
 			$owner->setStatus($data['owner_status']);
 			$owner->setInstance($data['owner_instance']);
 			$owner->setLevel($data['owner_level']);

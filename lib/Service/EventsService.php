@@ -913,6 +913,11 @@ class EventsService {
 	private function createNotification(
 		Circle $circle, Member $author, string $userId, string $subject, string $object, string $objectId
 	) {
+		$authorName = $author->getCachedName();
+		if ($authorName === '') {
+			$authorName = $author->getUserId();
+		}
+
 		$now = $this->time->getDateTime();
 		$notification = $this->notificationManager->createNotification();
 		$notification->setApp('circles')
@@ -920,7 +925,7 @@ class EventsService {
 					 ->setUser($userId)
 					 ->setObject($object, $objectId)
 					 ->setSubject(
-						 $subject, [$author->getUserId(), $circle->getName(), json_encode($circle)]
+						 $subject, [$authorName, $circle->getName(), json_encode($circle)]
 					 );
 
 		return $notification;

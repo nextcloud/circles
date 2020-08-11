@@ -148,7 +148,9 @@ class Circle extends BaseCircle implements JsonSerializable {
 
 		$circle = new Circle($arr['type'], $arr['name']);
 
-		$circle->setAltName($arr['alt_name']);
+		if (array_key_exists('alt_name', $arr)) {
+			$circle->setAltName($arr['alt_name']);
+		}
 		$circle->setId($arr['id']);
 		$circle->setUniqueId($arr['unique_id']);
 		$circle->setDescription($arr['description']);

@@ -30,7 +30,6 @@
 namespace OCA\Circles\GlobalScale;
 
 
-use daita\MySmallPhpTools\Model\SimpleDataStore;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Exceptions\GlobalScaleDSyncException;
@@ -78,6 +77,9 @@ class MemberJoin extends AGlobalScaleEvent {
 		$member->joinCircle($circle->getType());
 
 		$this->circlesService->checkThatCircleIsNotFull($circle);
+
+		$this->miscService->updateCachedName($member);
+
 		$event->setMember($member);
 	}
 

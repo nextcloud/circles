@@ -30,7 +30,6 @@
 namespace OCA\Circles\GlobalScale;
 
 
-use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 
@@ -44,7 +43,7 @@ class CircleCreate extends AGlobalScaleEvent {
 
 
 	/**
-	 * Circles are created on the original instance, so do nothing;
+	 * Circles are created on the original instance, so do no check;
 	 *
 	 * @param GSEvent $event
 	 * @param bool $localCheck
@@ -52,13 +51,16 @@ class CircleCreate extends AGlobalScaleEvent {
 	 */
 	public function verify(GSEvent $event, bool $localCheck = false, bool $mustBeChecked = false): void {
 		//parent::verify($event, $localCheck, $mustBeChecked);
+		$this->miscService->updateCachedName(
+			$event->getCircle()
+				  ->getOwner()
+		);
 	}
 
 
 	/**
 	 * @param GSEvent $event
 	 *
-	 * @throws CircleAlreadyExistsException
 	 * @throws MemberAlreadyExistsException
 	 */
 	public function manage(GSEvent $event): void {
