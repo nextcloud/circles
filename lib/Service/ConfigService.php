@@ -467,6 +467,7 @@ class ConfigService {
 	/**
 	 * @param string $type
 	 *
+	 * @return array|bool|mixed
 	 * @throws GSStatusException
 	 */
 	public function getGSStatus(string $type = '') {

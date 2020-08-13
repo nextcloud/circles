@@ -29,7 +29,7 @@ class SettingsController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function getSettings() {
-		$params = [
+		return [
 			'membersLimit'          => $this->configService->getAppValue(
 				ConfigService::CIRCLES_MEMBERS_LIMIT
 			),
@@ -43,8 +43,6 @@ class SettingsController extends Controller {
 				ConfigService::CIRCLES_SKIP_INVITATION_STEP
 			)
 		];
-
-		return $params;
 	}
 
 

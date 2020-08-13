@@ -27,6 +27,7 @@
 namespace OCA\Circles\Controller;
 
 use Exception;
+use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Exceptions\LinkedGroupNotAllowedException;
 use OCP\AppFramework\Http\DataResponse;
 
@@ -42,6 +43,7 @@ class GroupsController extends BaseController {
 	 *
 	 * @return DataResponse
 	 * @throws LinkedGroupNotAllowedException
+	 * @throws GSStatusException
 	 */
 	public function add($uniqueId, $name) {
 		if (!$this->configService->isLinkedGroupsAllowed()) {

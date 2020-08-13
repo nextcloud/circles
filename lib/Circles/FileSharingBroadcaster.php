@@ -44,8 +44,6 @@ use OCA\Circles\Service\MiscService;
 use OCA\FederatedFileSharing\Notifications;
 use OCP\AppFramework\QueryException;
 use OCP\Defaults;
-use OCP\Federation\ICloudFederationFactory;
-use OCP\Federation\ICloudFederationProviderManager;
 use OCP\Federation\ICloudIdManager;
 use OCP\Files\IRootFolder;
 use OCP\Files\NotFoundException;
@@ -79,12 +77,6 @@ class FileSharingBroadcaster implements IBroadcaster {
 	/** @var IUserManager */
 	private $userManager;
 
-	/** @var ICloudFederationFactory */
-	private $federationFactory;
-
-	/** @var ICloudFederationProviderManager */
-	private $federationProviderManager;
-
 	/** @var ICloudIdManager */
 	private $federationCloudIdManager;
 
@@ -115,6 +107,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 	/** @var bool */
 	private $federatedEnabled = false;
 
+
 	/**
 	 * {@inheritdoc}
 	 */
@@ -128,8 +121,6 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$this->mailer = OC::$server->getMailer();
 		$this->rootFolder = OC::$server->getLazyRootFolder();
 		$this->userManager = OC::$server->getUserManager();
-		$this->federationFactory = OC::$server->getCloudFederationFactory();
-		$this->federationProviderManager = OC::$server->getCloudFederationProviderManager();
 		$this->federationCloudIdManager = OC::$server->getCloudIdManager();
 		$this->logger = OC::$server->getLogger();
 		$this->urlGenerator = OC::$server->getURLGenerator();
@@ -348,7 +339,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 * @param Circle $circle
 	 * @param IShare $share
 	 * @param string $address
-	 * @param string $token
+	 * @param SharesToken $token
 	 *
 	 * @return bool
 	 */
@@ -361,11 +352,11 @@ class FileSharingBroadcaster implements IBroadcaster {
 			$sharedByFederatedId = $share->getSharedBy();
 			if ($this->userManager->userExists($sharedByFederatedId)) {
 				$cloudId = $this->federationCloudIdManager->getCloudId($sharedByFederatedId, $localUrl);
-				$sharedByFederatedId = $cloudId->getId();
 			}
+			$sharedByFederatedId = $cloudId->getId();
 			$ownerCloudId = $this->federationCloudIdManager->getCloudId($share->getShareOwner(), $localUrl);
 
-			$send = $this->federationNotifications->sendRemoteShare(
+			return $this->federationNotifications->sendRemoteShare(
 				$token->getToken(),
 				$address,
 				$share->getNode()
@@ -377,8 +368,6 @@ class FileSharingBroadcaster implements IBroadcaster {
 				$sharedByFederatedId,
 				Share::TYPE_USER
 			);
-
-			return $send;
 		} catch (\Exception $e) {
 			$this->logger->logException(
 				$e, [

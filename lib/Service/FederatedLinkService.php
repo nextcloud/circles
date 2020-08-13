@@ -322,7 +322,7 @@ class FederatedLinkService {
 	 * @return bool
 	 * @throws Exception
 	 */
-	private function updateLinkRemote(FederatedLink &$link) {
+	private function updateLinkRemote(FederatedLink $link) {
 
 		try {
 			$client = $this->clientService->newClient();
@@ -378,7 +378,7 @@ class FederatedLinkService {
 	 * @param Circle $circle
 	 * @param FederatedLink $link
 	 */
-	private function checkUpdateLinkFromRemoteLinkRequestSent(Circle $circle, FederatedLink &$link) {
+	private function checkUpdateLinkFromRemoteLinkRequestSent(Circle $circle, FederatedLink $link) {
 
 		if ($link->getStatus() !== FederatedLink::STATUS_REQUEST_SENT) {
 			return;
@@ -393,7 +393,7 @@ class FederatedLinkService {
 	 * @param Circle $circle
 	 * @param FederatedLink $link
 	 */
-	private function checkUpdateLinkFromRemoteLinkRequested(Circle $circle, FederatedLink &$link) {
+	private function checkUpdateLinkFromRemoteLinkRequested(Circle $circle, FederatedLink $link) {
 
 		if ($link->getStatus() !== FederatedLink::STATUS_LINK_REQUESTED) {
 			return;
@@ -408,7 +408,7 @@ class FederatedLinkService {
 	 * @param Circle $circle
 	 * @param FederatedLink $link
 	 */
-	private function checkUpdateLinkFromRemoteLinkDown(Circle $circle, FederatedLink &$link) {
+	private function checkUpdateLinkFromRemoteLinkDown(Circle $circle, FederatedLink $link) {
 
 		if ($link->getStatus() < FederatedLink::STATUS_LINK_DOWN) {
 			return;

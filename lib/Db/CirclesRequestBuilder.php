@@ -66,7 +66,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 *
 	 * @param IQueryBuilder $qb
 	 */
-	protected function limitToNonPersonalCircle(IQueryBuilder &$qb) {
+	protected function limitToNonPersonalCircle(IQueryBuilder $qb) {
 		$expr = $qb->expr();
 
 		$qb->andWhere(
@@ -86,7 +86,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 * @throws ConfigNoCircleAvailableException
 	 */
 	protected function limitRegardingCircleType(
-		IQueryBuilder &$qb, string $userId, $circleUniqueId, int $type,
+		IQueryBuilder $qb, string $userId, $circleUniqueId, int $type,
 		string $name, bool $forceAll = false
 	) {
 		$orTypes = $this->generateLimit($qb, $circleUniqueId, $userId, $type, $name, $forceAll);
@@ -119,7 +119,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 * @return array
 	 */
 	private function generateLimit(
-		IQueryBuilder &$qb, $circleUniqueId, $userId, $type, $name, $forceAll = false
+		IQueryBuilder $qb, $circleUniqueId, $userId, $type, $name, $forceAll = false
 	) {
 		$orTypes = [];
 		array_push($orTypes, $this->generateLimitPersonal($qb, $userId, $type, $forceAll));
@@ -178,18 +178,16 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		if ($name !== '') {
 			$orX->add($expr->eq('c.alt_name', $qb->createNamedParameter($name)));
 		}
-		
+
 		if ($this->leftJoinedNCGroupAndUser) {
 			$orX->add($expr->gte('g.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)));
 		}
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$sqb = $expr->andX(
+		return $expr->andX(
 			$expr->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_SECRET)),
 			$expr->orX($orX)
 		);
-
-		return $sqb;
 	}
 
 
@@ -240,7 +238,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 * @param int $type
 	 * @param string $instanceId
 	 */
-	public function leftJoinUserIdAsViewer(IQueryBuilder &$qb, string $userId, int $type, string $instanceId
+	public function leftJoinUserIdAsViewer(IQueryBuilder $qb, string $userId, int $type, string $instanceId
 	) {
 		if ($qb->getType() !== QueryBuilder::SELECT) {
 			return;
@@ -275,7 +273,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param string $ownerId
 	 */
-	public function leftJoinOwner(IQueryBuilder &$qb, string $ownerId = '') {
+	public function leftJoinOwner(IQueryBuilder $qb, string $ownerId = '') {
 
 		if ($qb->getType() !== QueryBuilder::SELECT) {
 			return;

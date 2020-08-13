@@ -936,7 +936,7 @@ class EventsService {
 	 * @param string $context
 	 * @param array $arguments
 	 */
-	private function dispatch($context, $arguments) {
+	private function dispatch(string $context, $arguments) {
 		$this->eventDispatcher->dispatch($context, new GenericEvent(null, $arguments));
 	}
 

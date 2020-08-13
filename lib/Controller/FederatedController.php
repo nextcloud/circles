@@ -30,6 +30,7 @@ use Exception;
 use OC\AppFramework\Http;
 use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
+use OCA\Circles\Exceptions\MissingKeyInArrayException;
 use OCA\Circles\Exceptions\SharingFrameAlreadyExistException;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\SharingFrame;
@@ -144,6 +145,7 @@ class FederatedController extends Controller {
 	 * @param $data
 	 *
 	 * @return FederatedLink
+	 * @throws MissingKeyInArrayException
 	 */
 	private function generateNewLink($data) {
 		MiscService::mustContains($data, ['token', 'uniqueId', 'sourceName', 'address']);
@@ -176,6 +178,7 @@ class FederatedController extends Controller {
 	 * @param string $item
 	 *
 	 * @return DataResponse
+	 * @throws Exception
 	 */
 	public function receiveFederatedDelivery($apiVersion, $token, $uniqueId, $item) {
 

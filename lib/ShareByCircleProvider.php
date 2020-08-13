@@ -57,6 +57,7 @@ use OCA\Circles\Service\TimezoneService;
 use OCP\AppFramework\QueryException;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\Files\Folder;
+use OCP\Files\InvalidPathException;
 use OCP\Files\IRootFolder;
 use OCP\Files\Node;
 use OCP\Files\NotFoundException;
@@ -358,6 +359,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * @param IShare $share
 	 *
 	 * @return int
+	 * @throws NotFoundException
 	 */
 	private function createShareChild($userId, $share) {
 		$qb = $this->getBaseInsertSql($share);
@@ -407,6 +409,9 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * @param int $offset
 	 *
 	 * @return Share[]
+	 * @throws NoUserException
+	 * @throws NotFoundException
+	 * @throws InvalidPathException
 	 */
 	public function getSharesBy($userId, $shareType, $node, $reShares, $limit, $offset) {
 		$qb = $this->getBaseSelectSql();
@@ -489,6 +494,8 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * @param Node $path
 	 *
 	 * @return IShare[]|null
+	 * @throws InvalidPathException
+	 * @throws NotFoundException
 	 */
 	public function getSharesByPath(Node $path) {
 		$qb = $this->getBaseSelectSql();
@@ -516,11 +523,12 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * @param int $offset
 	 *
 	 * @return IShare[]
+	 * @throws Exceptions\GSStatusException
+	 * @throws InvalidPathException
+	 * @throws NotFoundException
 	 */
 	public function getSharedWith($userId, $shareType, $node, $limit, $offset) {
-		$shares = $this->getSharedWithCircleMembers($userId, $shareType, $node, $limit, $offset);
-
-		return $shares;
+		return $this->getSharedWithCircleMembers($userId, $shareType, $node, $limit, $offset);
 	}
 
 
@@ -532,6 +540,9 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * @param int $offset
 	 *
 	 * @return IShare[]
+	 * @throws Exceptions\GSStatusException
+	 * @throws InvalidPathException
+	 * @throws NotFoundException
 	 */
 	private function getSharedWithCircleMembers($userId, $shareType, $node, $limit, $offset) {
 
@@ -722,6 +733,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * @param array $data
 	 *
 	 * @return IShare
+	 * @throws IllegalIDChangeException
 	 */
 	private function createShareObject($data) {
 		$share = new Share($this->rootFolder, $this->userManager);
@@ -752,7 +764,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * @param IShare $share
 	 * @param $data
 	 */
-	private function assignShareObjectPropertiesFromParent(IShare &$share, $data) {
+	private function assignShareObjectPropertiesFromParent(IShare $share, $data) {
 		if (isset($data['f_permissions'])) {
 			$entryData = $data;
 			$entryData['permissions'] = $entryData['f_permissions'];
@@ -770,8 +782,10 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	/**
 	 * @param IShare $share
 	 * @param $data
+	 *
+	 * @throws NoUserException
 	 */
-	private function assignShareObjectSharesProperties(IShare &$share, $data) {
+	private function assignShareObjectSharesProperties(IShare $share, $data) {
 		$shareTime = new \DateTime();
 		$shareTime->setTimestamp((int)$data['stime']);
 
@@ -804,6 +818,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 * @param IShare $share
 	 *
 	 * @return Exception
+	 * @throws NotFoundException
 	 */
 	private function errorShareAlreadyExist($share) {
 		$share_src = $share->getNode()
@@ -827,6 +842,8 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	 *     get revived later)
 	 *
 	 * @return array
+	 * @throws InvalidPathException
+	 * @throws NotFoundException
 	 * @see IManager::getAccessList() for sample docs
 	 *
 	 * @since 12
@@ -970,9 +987,10 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 
 		$cursor = $qb->execute();
 		while ($data = $cursor->fetch()) {
-			$share = $this->createShareObject($data);
-
-			yield $share;
+			try {
+				yield $this->createShareObject($data);
+			} catch (IllegalIDChangeException $e) {
+			};
 		}
 		$cursor->closeCursor();
 	}

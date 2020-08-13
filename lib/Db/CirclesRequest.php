@@ -124,9 +124,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 			throw new CircleDoesNotExistException($this->l10n->t('Circle not found'));
 		}
 
-		$entry = $this->parseCirclesSelectSql($data);
-
-		return $entry;
+		return $this->parseCirclesSelectSql($data);
 	}
 
 
@@ -323,6 +321,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 * @param string $userId
 	 *
 	 * @throws CircleAlreadyExistsException
+	 * @throws ConfigNoCircleAvailableException
 	 */
 	public function updateCircle(Circle $circle, $userId = '') {
 		if (!$this->isCircleUnique($circle, $userId)) {
@@ -358,9 +357,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 			throw new CircleDoesNotExistException($this->l10n->t('Circle not found'));
 		}
 
-		$entry = $this->parseCirclesSelectSql($data);
-
-		return $entry;
+		return $this->parseCirclesSelectSql($data);
 	}
 
 

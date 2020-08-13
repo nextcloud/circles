@@ -26,7 +26,9 @@
 
 namespace OCA\Circles\Exceptions;
 
-class ApiVersionIncompatibleException extends \Exception {
+use Exception;
+
+class ApiVersionIncompatibleException extends Exception {
 
 }
 

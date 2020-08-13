@@ -110,6 +110,7 @@ class MembersService {
 	 * @param TokensRequest $tokensRequest
 	 * @param CirclesService $circlesService
 	 * @param EventsService $eventsService
+	 * @param GSUpstreamService $gsUpstreamService
 	 * @param FileSharingBroadcaster $fileSharingBroadcaster
 	 * @param MiscService $miscService
 	 */
@@ -246,7 +247,7 @@ class MembersService {
 	 * @throws CircleTypeNotValidException
 	 * @throws MemberCantJoinCircleException
 	 */
-	public function addMemberBasedOnItsType(Circle $circle, Member &$member) {
+	public function addMemberBasedOnItsType(Circle $circle, Member $member) {
 		$this->addLocalMember($circle, $member);
 		$this->addEmailAddress($member);
 		$this->addContact($member);
@@ -355,13 +356,12 @@ class MembersService {
 	/**
 	 * Verify if a mail have a valid format.
 	 *
-	 * @param $ident
-	 * @param $type
+	 * @param string $ident
+	 * @param int $type
 	 *
 	 * @throws EmailAccountInvalidFormatException
 	 */
-	private function verifyIdentEmailAddress(&$ident, $type) {
-
+	private function verifyIdentEmailAddress(string $ident, int $type) {
 		if ($type !== Member::TYPE_MAIL) {
 			return;
 		}
@@ -418,7 +418,6 @@ class MembersService {
 	 * @throws Exception
 	 */
 	private function addGroupMembers(Circle $circle, $groupId): array {
-
 		$group = OC::$server->getGroupManager()
 							->get($groupId);
 		if ($group === null) {

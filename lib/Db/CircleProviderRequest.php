@@ -28,6 +28,8 @@
 namespace OCA\Circles\Db;
 
 
+use OCA\Circles\Exceptions\GSStatusException;
+
 class CircleProviderRequest extends CircleProviderRequestBuilder {
 
 
@@ -38,6 +40,7 @@ class CircleProviderRequest extends CircleProviderRequestBuilder {
 	 * @param $offset
 	 *
 	 * @return array
+	 * @throws GSStatusException
 	 */
 	public function getFilesForCircles($userId, $circleUniqueIds, $limit, $offset) {
 

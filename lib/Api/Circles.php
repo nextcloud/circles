@@ -27,6 +27,7 @@
 namespace OCA\Circles\Api;
 
 
+use OC;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
@@ -47,7 +48,7 @@ class Circles {
 	 * @return Circle
 	 */
 	public static function detailsCircle($circleId) {
-		$app = \OC::$server->query(Application::class);
+		$app = OC::$server->query(Application::class);
 		$c = $app->getContainer();
 
 		return $c->query(CirclesService::class)

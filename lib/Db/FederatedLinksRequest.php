@@ -217,9 +217,7 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 			throw new FederatedLinkDoesNotExistException($this->l10n->t('Federated link not found'));
 		}
 
-		$entry = $this->parseLinksSelectSql($data);
-
-		return $entry;
+		return $this->parseLinksSelectSql($data);
 	}
 
 

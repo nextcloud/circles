@@ -26,11 +26,13 @@
 
 namespace OCA\Circles\Model;
 
+use JsonSerializable;
+use OC;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Service\MiscService;
 use OCP\IL10N;
 
-class BaseMember implements \JsonSerializable {
+class BaseMember implements JsonSerializable {
 
 	const LEVEL_NONE = 0;
 	const LEVEL_MEMBER = 1;
@@ -52,9 +54,6 @@ class BaseMember implements \JsonSerializable {
 
 	/** @var string */
 	private $circleUniqueId;
-
-	/** @var string */
-	private $circleContactGroupName;
 
 	/** @var IL10N */
 	protected $l10n;
@@ -109,7 +108,7 @@ class BaseMember implements \JsonSerializable {
 	 * @param int $type
 	 */
 	public function __construct($userId = '', $type = 0, $circleUniqueId = '') {
-		$this->l10n = \OC::$server->getL10N(Application::APP_NAME);
+		$this->l10n = OC::$server->getL10N(Application::APP_NAME);
 
 		$this->setType($type);
 		$this->setUserId($userId);
@@ -134,25 +133,6 @@ class BaseMember implements \JsonSerializable {
 	 * @return string
 	 */
 	public function getCircleId() {
-		return $this->circleUniqueId;
-	}
-
-
-	/**
-	 * @param string $circleContactGroupName
-	 *
-	 * @return $this
-	 */
-	public function setCircleContactGroupName($circleContactGroupName): self {
-		$this->circleContactGroupName = $circleContactGroupName;
-
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getCircleContactGroupName(): string {
 		return $this->circleUniqueId;
 	}
 

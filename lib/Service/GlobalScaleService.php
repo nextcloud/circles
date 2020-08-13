@@ -216,6 +216,7 @@ class GlobalScaleService {
 	 * @param bool $all
 	 *
 	 * @return array
+	 * @throws NoUserException
 	 */
 	public function getInstances(bool $all = false): array {
 		/** @var string $lookup */
@@ -226,10 +227,7 @@ class GlobalScaleService {
 				$request->setVerifyPeer(false);
 			}
 
-			try {
-				$user = $this->getRandomUser();
-			} catch (NoUserException $e) {
-			}
+			$user = $this->getRandomUser();
 			$data = $this->signer->sign('lookupserver', ['federationId' => $user->getCloudId()], $user);
 			$request->setData($data);
 			$request->setAddressFromUrl($lookup);

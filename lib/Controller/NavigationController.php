@@ -27,12 +27,9 @@
 namespace OCA\Circles\Controller;
 
 use Exception;
-use OCA\Circles\Api\v1\Circles;
-use OCA\Circles\Api\v1\ShotgunCircles;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Service\ConfigService;
-use OCA\Testing\Config;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\TemplateResponse;

@@ -10,6 +10,7 @@ namespace OCA\Circles\Db;
 
 
 use Doctrine\DBAL\Query\QueryBuilder;
+use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
@@ -97,7 +98,7 @@ class CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param int $id
 	 */
-	protected function limitToId(IQueryBuilder &$qb, $id) {
+	protected function limitToId(IQueryBuilder $qb, $id) {
 		$this->limitToDBField($qb, 'id', $id);
 	}
 
@@ -108,7 +109,7 @@ class CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param int $uniqueId
 	 */
-	protected function limitToUniqueId(IQueryBuilder &$qb, $uniqueId) {
+	protected function limitToUniqueId(IQueryBuilder $qb, $uniqueId) {
 		$this->limitToDBField($qb, 'unique_id', $uniqueId);
 	}
 
@@ -119,7 +120,7 @@ class CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param int $bookId
 	 */
-	protected function limitToAddressBookId(IQueryBuilder &$qb, $bookId) {
+	protected function limitToAddressBookId(IQueryBuilder $qb, $bookId) {
 		$this->limitToDBField($qb, 'contact_addressbook', (string)$bookId);
 	}
 
@@ -130,7 +131,7 @@ class CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param string $groupName
 	 */
-	protected function limitToContactGroup(IQueryBuilder &$qb, $groupName) {
+	protected function limitToContactGroup(IQueryBuilder $qb, $groupName) {
 		$this->limitToDBField($qb, 'contact_groupname', $groupName);
 	}
 
@@ -141,7 +142,7 @@ class CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param string $contactId
 	 */
-	protected function limitToContactId(IQueryBuilder &$qb, $contactId) {
+	protected function limitToContactId(IQueryBuilder $qb, $contactId) {
 		$this->limitToDBField($qb, 'contact_id', $contactId);
 	}
 
@@ -152,7 +153,7 @@ class CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param string $token
 	 */
-	protected function limitToToken(IQueryBuilder &$qb, $token) {
+	protected function limitToToken(IQueryBuilder $qb, $token) {
 		$this->limitToDBField($qb, 'token', $token);
 	}
 
@@ -163,7 +164,7 @@ class CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param $userId
 	 */
-	protected function limitToUserId(IQueryBuilder &$qb, $userId) {
+	protected function limitToUserId(IQueryBuilder $qb, $userId) {
 		$this->limitToDBField($qb, 'user_id', $userId);
 	}
 
@@ -174,7 +175,7 @@ class CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param $owner
 	 */
-	protected function limitToOwner(IQueryBuilder &$qb, $owner) {
+	protected function limitToOwner(IQueryBuilder $qb, $owner) {
 		$this->limitToDBField($qb, 'owner', $owner);
 	}
 
@@ -185,7 +186,7 @@ class CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param string $memberId
 	 */
-	protected function limitToMemberId(IQueryBuilder &$qb, string $memberId) {
+	protected function limitToMemberId(IQueryBuilder $qb, string $memberId) {
 		$this->limitToDBField($qb, 'member_id', $memberId);
 	}
 
@@ -196,7 +197,7 @@ class CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param int $type
 	 */
-	protected function limitToUserType(IQueryBuilder &$qb, $type) {
+	protected function limitToUserType(IQueryBuilder $qb, $type) {
 		$this->limitToDBField($qb, 'user_type', $type);
 	}
 
@@ -207,7 +208,7 @@ class CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param string $instance
 	 */
-	protected function limitToInstance(IQueryBuilder &$qb, string $instance) {
+	protected function limitToInstance(IQueryBuilder $qb, string $instance) {
 		$this->limitToDBField($qb, 'instance', $instance);
 	}
 
@@ -218,7 +219,7 @@ class CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param string $circleUniqueId
 	 */
-	protected function limitToCircleId(IQueryBuilder &$qb, $circleUniqueId) {
+	protected function limitToCircleId(IQueryBuilder $qb, $circleUniqueId) {
 		$this->limitToDBField($qb, 'circle_id', $circleUniqueId);
 	}
 
@@ -229,7 +230,7 @@ class CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param int $shareId
 	 */
-	protected function limitToShareId(IQueryBuilder &$qb, int $shareId) {
+	protected function limitToShareId(IQueryBuilder $qb, int $shareId) {
 		$this->limitToDBField($qb, 'share_id', $shareId);
 	}
 
@@ -240,7 +241,7 @@ class CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param string $mountpoint
 	 */
-	protected function limitToMountpoint(IQueryBuilder &$qb, string $mountpoint) {
+	protected function limitToMountpoint(IQueryBuilder $qb, string $mountpoint) {
 		$this->limitToDBField($qb, 'share_id', $mountpoint);
 	}
 
@@ -250,7 +251,7 @@ class CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param string $hash
 	 */
-	protected function limitToMountpointHash(IQueryBuilder &$qb, string $hash) {
+	protected function limitToMountpointHash(IQueryBuilder $qb, string $hash) {
 		$this->limitToDBField($qb, 'share_id', $hash);
 	}
 
@@ -262,7 +263,7 @@ class CoreRequestBuilder {
 //	 * @param string $circleUniqueId
 //	 * @param $length
 //	 */
-//	protected function limitToShortenUniqueId(IQueryBuilder &$qb, $circleUniqueId, $length) {
+//	protected function limitToShortenUniqueId(IQueryBuilder $qb, $circleUniqueId, $length) {
 //		$expr = $qb->expr();
 //		$pf = ($qb->getType() === QueryBuilder::SELECT) ? '`' . $this->default_select_alias . '`.' : '';
 //
@@ -282,7 +283,7 @@ class CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param int $groupId
 	 */
-	protected function limitToGroupId(IQueryBuilder &$qb, $groupId) {
+	protected function limitToGroupId(IQueryBuilder $qb, $groupId) {
 		$this->limitToDBField($qb, 'group_id', $groupId);
 	}
 
@@ -293,7 +294,7 @@ class CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param string $name
 	 */
-	protected function limitToName(IQueryBuilder &$qb, $name) {
+	protected function limitToName(IQueryBuilder $qb, $name) {
 		$this->limitToDBField($qb, 'name', $name);
 	}
 
@@ -304,7 +305,7 @@ class CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param string $name
 	 */
-	protected function limitToStatus(IQueryBuilder &$qb, $name) {
+	protected function limitToStatus(IQueryBuilder $qb, $name) {
 		$this->limitToDBFieldOrGreater($qb, 'status', $name);
 	}
 
@@ -315,7 +316,7 @@ class CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param string $type
 	 */
-	protected function limitToShareType(IQueryBuilder &$qb, string $type) {
+	protected function limitToShareType(IQueryBuilder $qb, string $type) {
 		$this->limitToDBField($qb, 'share_type', $type);
 	}
 
@@ -326,7 +327,7 @@ class CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param string $with
 	 */
-	protected function limitToShareWith(IQueryBuilder &$qb, string $with) {
+	protected function limitToShareWith(IQueryBuilder $qb, string $with) {
 		$this->limitToDBField($qb, 'share_with', $with);
 	}
 
@@ -340,7 +341,7 @@ class CoreRequestBuilder {
 	 * @param int $level
 	 * @param string|array $pf
 	 */
-	protected function limitToLevel(IQueryBuilder &$qb, $level, $pf = '') {
+	protected function limitToLevel(IQueryBuilder $qb, int $level, $pf = '') {
 		$expr = $qb->expr();
 
 		if ($pf === '') {
@@ -361,11 +362,12 @@ class CoreRequestBuilder {
 
 	/**
 	 * @param IQueryBuilder $qb
+	 * @param int $level
 	 * @param array $pf
 	 *
 	 * @return mixed
 	 */
-	private function generateLimitToLevelMultipleTableRequest(IQueryBuilder $qb, $level, $pf) {
+	private function generateLimitToLevelMultipleTableRequest(IQueryBuilder $qb, int $level, $pf) {
 		$expr = $qb->expr();
 		$orX = $expr->orX();
 
@@ -385,7 +387,7 @@ class CoreRequestBuilder {
 	 *
 	 * @param IQueryBuilder $qb
 	 */
-	protected function limitToMembersAndAlmost(IQueryBuilder &$qb) {
+	protected function limitToMembersAndAlmost(IQueryBuilder $qb) {
 		$expr = $qb->expr();
 
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
@@ -404,7 +406,7 @@ class CoreRequestBuilder {
 	 * @param string $field
 	 * @param string|integer $value
 	 */
-	private function limitToDBField(IQueryBuilder &$qb, $field, $value) {
+	private function limitToDBField(IQueryBuilder $qb, $field, $value) {
 		$expr = $qb->expr();
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
 		$qb->andWhere($expr->eq($pf . $field, $qb->createNamedParameter($value)));
@@ -416,7 +418,7 @@ class CoreRequestBuilder {
 	 * @param string $field
 	 * @param string|integer $value
 	 */
-	private function limitToDBFieldOrGreater(IQueryBuilder &$qb, $field, $value) {
+	private function limitToDBFieldOrGreater(IQueryBuilder $qb, $field, $value) {
 		$expr = $qb->expr();
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
 		$qb->andWhere($expr->gte($pf . $field, $qb->createNamedParameter($value)));
@@ -453,7 +455,7 @@ class CoreRequestBuilder {
 	 *
 	 * @param IQueryBuilder $qb
 	 */
-	protected function leftJoinCircle(IQueryBuilder &$qb) {
+	protected function leftJoinCircle(IQueryBuilder $qb) {
 		if ($qb->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
@@ -479,6 +481,8 @@ class CoreRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param string $userId
 	 * @param string $field
+	 *
+	 * @throws GSStatusException
 	 */
 	protected function leftJoinNCGroupAndUser(IQueryBuilder $qb, $userId, $field) {
 		if (!$this->configService->isLinkedGroupsAllowed()) {

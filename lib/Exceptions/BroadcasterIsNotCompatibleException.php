@@ -26,7 +26,9 @@
 
 namespace OCA\Circles\Exceptions;
 
-class BroadcasterIsNotCompatibleException extends \Exception {
+use Exception;
+
+class BroadcasterIsNotCompatibleException extends Exception {
 
 }
 

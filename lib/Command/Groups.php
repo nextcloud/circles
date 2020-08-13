@@ -32,7 +32,6 @@ use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Exceptions\CommandMissingArgumentException;
 use OCA\Circles\Exceptions\FakeException;
 use OCP\IL10N;
-use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -106,6 +105,7 @@ class Groups extends Base {
 	 * @param OutputInterface $output
 	 *
 	 * @throws FakeException
+	 * @throws CommandMissingArgumentException
 	 */
 	private function addLinkedGroups(InputInterface $input, OutputInterface $output) {
 		if ($input->getOption('link') !== true) {

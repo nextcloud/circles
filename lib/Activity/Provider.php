@@ -25,6 +25,7 @@
  *
  */
 
+
 namespace OCA\Circles\Activity;
 
 use Exception;
@@ -39,8 +40,13 @@ use OCA\Circles\Service\MiscService;
 use OCP\Activity\IEvent;
 use OCP\Activity\IManager;
 use OCP\Activity\IProvider;
-use OpenCloud\Common\Exceptions\InvalidArgumentError;
 
+
+/**
+ * Class Provider
+ *
+ * @package OCA\Circles\Activity
+ */
 class Provider implements IProvider {
 
 
@@ -132,7 +138,6 @@ class Provider implements IProvider {
 	}
 
 
-
 	/**
 	 * @param IEvent $event
 	 * @param Circle $circle
@@ -189,10 +194,9 @@ class Provider implements IProvider {
 	 * @param Circle $circle
 	 * @param array $params
 	 *
-	 * @throws InvalidArgumentError
+	 * @throws FakeException
 	 */
 	private function parseMemberAsMember(IEvent $event, Circle $circle, $params) {
-
 		if (!key_exists('member', $params)) {
 			return;
 		}
@@ -210,6 +214,8 @@ class Provider implements IProvider {
 	 * @param IEvent $event
 	 * @param Circle $circle
 	 * @param array $params
+	 *
+	 * @throws FakeException
 	 */
 	private function parseGroupAsModerator(IEvent $event, Circle $circle, $params) {
 		if (!key_exists('group', $params)) {
@@ -228,6 +234,8 @@ class Provider implements IProvider {
 	 * @param IEvent $event
 	 * @param Circle $circle
 	 * @param array $params
+	 *
+	 * @throws FakeException
 	 */
 	private function parseMemberAsModerator(IEvent $event, Circle $circle, $params) {
 		if (!key_exists('member', $params)) {
@@ -247,6 +255,8 @@ class Provider implements IProvider {
 	 * @param IEvent $event
 	 * @param Circle $circle
 	 * @param array $params
+	 *
+	 * @throws FakeException
 	 */
 	private function parseLinkAsModerator(IEvent $event, Circle $circle, $params) {
 

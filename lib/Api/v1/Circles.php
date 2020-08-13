@@ -30,6 +30,7 @@
 namespace OCA\Circles\Api\v1;
 
 
+use OC;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\ApiVersionIncompatibleException;
 use OCA\Circles\Model\Circle;
@@ -65,10 +66,10 @@ class Circles {
 	const LEVEL_MODERATOR = Member::LEVEL_MODERATOR;
 	const LEVEL_ADMIN = Member::LEVEL_ADMIN;
 	const LEVEL_OWNER = Member::LEVEL_OWNER;
-	
+
 
 	protected static function getContainer() {
-		$app = \OC::$server->query(Application::class);
+		$app = OC::$server->query(Application::class);
 
 		return $app->getContainer();
 	}
@@ -130,7 +131,6 @@ class Circles {
 	 * @param string $name
 	 *
 	 * @return Circle
-	 * @throws QueryException
 	 */
 	public static function createCircle($type, $name) {
 		$c = self::getContainer();
@@ -148,7 +148,6 @@ class Circles {
 	 * @param string $circleUniqueId
 	 *
 	 * @return Member
-	 * @throws QueryException
 	 */
 	public static function joinCircle($circleUniqueId) {
 		$c = self::getContainer();
@@ -167,7 +166,6 @@ class Circles {
 	 * @param string $circleUniqueId
 	 *
 	 * @return Member
-	 * @throws QueryException
 	 */
 	public static function leaveCircle($circleUniqueId) {
 		$c = self::getContainer();
@@ -195,13 +193,12 @@ class Circles {
 	 * @param bool $forceAll
 	 *
 	 * @return Circle[]
-	 * @throws QueryException
 	 */
 	public static function listCircles($type, $name = '', $level = 0, $userId = '', $forceAll = false) {
 		$c = self::getContainer();
 
 		if ($userId === '') {
-			$userId = \OC::$server->getUserSession()
+			$userId = OC::$server->getUserSession()
 								  ->getUser()
 								  ->getUID();
 		}
@@ -261,7 +258,6 @@ class Circles {
 	 * @param bool $forceAll
 	 *
 	 * @return Circle
-	 * @throws QueryException
 	 */
 	public static function detailsCircle($circleUniqueId, $forceAll = false) {
 		$c = self::getContainer();
@@ -280,7 +276,6 @@ class Circles {
 	 * @param array $settings
 	 *
 	 * @return Circle
-	 * @throws QueryException
 	 */
 	public static function settingsCircle($circleUniqueId, array $settings) {
 		$c = self::getContainer();
@@ -298,7 +293,6 @@ class Circles {
 	 * @param string $circleUniqueId
 	 *
 	 * @return mixed
-	 * @throws QueryException
 	 */
 	public static function destroyCircle($circleUniqueId) {
 		$c = self::getContainer();
@@ -319,7 +313,6 @@ class Circles {
 	 * @param int $type
 	 *
 	 * @return Member[]
-	 * @throws QueryException
 	 */
 	public static function addMember($circleUniqueId, $ident, $type) {
 		$c = self::getContainer();
@@ -341,7 +334,6 @@ class Circles {
 	 * @param bool $forceAll
 	 *
 	 * @return Member
-	 * @throws QueryException
 	 */
 	public static function getMember($circleUniqueId, $ident, $type, $forceAll = false) {
 		$c = self::getContainer();
@@ -362,7 +354,6 @@ class Circles {
 	 * @param int $type
 	 *
 	 * @return Member[]
-	 * @throws QueryException
 	 */
 	public static function removeMember($circleUniqueId, $ident, $type) {
 		$c = self::getContainer();
@@ -386,7 +377,6 @@ class Circles {
 	 * @param int $level
 	 *
 	 * @return Member[]
-	 * @throws QueryException
 	 */
 	public static function levelMember($circleUniqueId, $ident, $type, $level) {
 		$c = self::getContainer();
@@ -410,7 +400,6 @@ class Circles {
 	 * @param string $broadcaster
 	 *
 	 * @return mixed
-	 * @throws QueryException
 	 */
 	public static function shareToCircle(
 		$circleUniqueId, $source, $type, array $payload, $broadcaster
@@ -434,7 +423,6 @@ class Circles {
 	 * @param string $circleUniqueId
 	 *
 	 * @return mixed
-	 * @throws QueryException
 	 */
 	public static function getSharesFromCircle($circleUniqueId) {
 		$c = self::getContainer();
@@ -456,7 +444,6 @@ class Circles {
 	 * @param string $remote
 	 *
 	 * @return FederatedLink
-	 * @throws QueryException
 	 */
 	public static function linkCircle($circleUniqueId, $remote) {
 		$c = self::getContainer();
@@ -476,7 +463,7 @@ class Circles {
 	 * @return string
 	 */
 	public static function generateLink($circleUniqueId) {
-		return \OC::$server->getURLGenerator()
+		return OC::$server->getURLGenerator()
 						   ->linkToRoute('circles.Navigation.navigate') . '#' . $circleUniqueId;
 	}
 
@@ -491,7 +478,7 @@ class Circles {
 	 * @return string
 	 */
 	public static function generateAbsoluteLink($circleUniqueId) {
-		return \OC::$server->getURLGenerator()
+		return OC::$server->getURLGenerator()
 						   ->linkToRouteAbsolute('circles.Navigation.navigate') . '#' . $circleUniqueId;
 	}
 
@@ -506,7 +493,7 @@ class Circles {
 	 * @return string
 	 */
 	public static function generateRemoteLink(FederatedLink $link) {
-		return \OC::$server->getURLGenerator()
+		return OC::$server->getURLGenerator()
 						   ->linkToRoute('circles.Navigation.navigate') . '#' . $link->getUniqueId()
 			   . '-' . $link->getToken();
 	}
@@ -560,7 +547,6 @@ class Circles {
 	 * @param array $circleUniqueIds
 	 *
 	 * @return string[] array of object ids or empty array if none found
-	 * @throws QueryException
 	 */
 	public static function getFilesForCircles($circleUniqueIds) {
 		$c = self::getContainer();

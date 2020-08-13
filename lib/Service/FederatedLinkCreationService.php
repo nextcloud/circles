@@ -164,7 +164,7 @@ class FederatedLinkCreationService {
 	 *
 	 * @throws Exception
 	 */
-	public function requestedLinkFromRemoteCircle(Circle $circle, FederatedLink &$link) {
+	public function requestedLinkFromRemoteCircle(Circle $circle, FederatedLink $link) {
 
 		try {
 			$this->checkLinkRequestValidity($circle, $link);
@@ -253,6 +253,7 @@ class FederatedLinkCreationService {
 	 * @param $remote
 	 *
 	 * @return FederatedLink
+	 * @throws Exception
 	 */
 	private function generateNewLink($circleUniqueId, $remote) {
 
@@ -317,7 +318,7 @@ class FederatedLinkCreationService {
 	 *
 	 * @throws Exception
 	 */
-	private function eventOnRequestLink(Circle $circle, FederatedLink &$link, $status, $reason) {
+	private function eventOnRequestLink(Circle $circle, FederatedLink $link, $status, $reason) {
 
 		switch ($status) {
 			case FederatedLink::STATUS_LINK_UP:

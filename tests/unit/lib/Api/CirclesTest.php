@@ -38,6 +38,7 @@ use OCA\Circles\Exceptions\ModeratorIsNotHighEnoughException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Tests\Env;
+use OCP\AppFramework\QueryException;
 
 
 class CirclesTest extends \PHPUnit_Framework_TestCase {
@@ -97,7 +98,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 	protected function tearDown() {
 		Env::setUser(Env::ENV_TEST_OWNER1);
 		try {
-			foreach ($this->circles AS $circle) {
+			foreach ($this->circles as $circle) {
 				Circles::destroyCircle($circle->getId());
 			}
 		} catch (Exception $e) {
@@ -144,7 +145,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 		// OWNER1 Should be able to add/level anyone to Admin Level at least
 		try {
-			foreach ($circles AS $circle) {
+			foreach ($circles as $circle) {
 				$this->generateSimpleCircleWithAllLevel(
 					$circle->getId(), ($circle->getType() === Circle::CIRCLES_CLOSED)
 				);
@@ -160,7 +161,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 		Env::setUser(Env::ENV_TEST_ADMIN1);
 
 		try {
-			foreach ($circles AS $circle) {
+			foreach ($circles as $circle) {
 				Circles::addMember($circle->getId(), Env::ENV_TEST_ADMIN2, Member::TYPE_USER);
 
 				if ($circle->getType() === Circle::CIRCLES_CLOSED) {
@@ -184,7 +185,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 		// ADMIN1 should not be able to level anyone to Admin Level
 		Env::setUser(Env::ENV_TEST_ADMIN1);
 
-		foreach ($circles AS $circle) {
+		foreach ($circles as $circle) {
 
 			try {
 				Circles::levelMember(
@@ -231,7 +232,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 		Env::setUser(Env::ENV_TEST_MODERATOR1);
 
 		try {
-			foreach ($circles AS $circle) {
+			foreach ($circles as $circle) {
 				Circles::addMember($circle->getId(), Env::ENV_TEST_MODERATOR2, Member::TYPE_USER);
 				if ($circle->getType() === Circle::CIRCLES_CLOSED) {
 					// In closed circle, we need to confirm the invitation
@@ -250,7 +251,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 		// MODERATOR1 should not be able to add/level anyone to Moderator/Admin Level
 		Env::setUser(Env::ENV_TEST_MODERATOR1);
 
-		foreach ($circles AS $circle) {
+		foreach ($circles as $circle) {
 			try {
 				Circles::levelMember(
 					$circle->getId(), Env::ENV_TEST_MODERATOR2, Member::TYPE_USER,
@@ -295,7 +296,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 		// MEMBER1 should not be able to add/level anyone to any level
 		Env::setUser(Env::ENV_TEST_MEMBER1);
 
-		foreach ($circles AS $circle) {
+		foreach ($circles as $circle) {
 			try {
 				Circles::addMember(
 					$circle->getId(), Env::ENV_TEST_MEMBER2, Member::TYPE_USER
@@ -463,7 +464,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 			}
 		}
 
-		foreach ($circles AS $circle) {
+		foreach ($circles as $circle) {
 			Circles::destroyCircle($circle->getId());
 		}
 
@@ -479,7 +480,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 		Env::setUser(Env::ENV_TEST_OWNER1);
 
 		for ($i = 0; $i < 3; $i++) {
-			foreach ($this->circles AS $circle) {
+			foreach ($this->circles as $circle) {
 
 				try {
 					$member = Circles::getMember(
@@ -541,25 +542,26 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 					);
 
 
-						Circles::removeMember(
-							$circle->getId(), Env::ENV_TEST_MEMBER2, Member::TYPE_USER
-						);
-
-				try {
-					$member = Circles::getMember(
+					Circles::removeMember(
 						$circle->getId(), Env::ENV_TEST_MEMBER2, Member::TYPE_USER
 					);
-					$this->assertEquals(
-						[
-							Env::ENV_TEST_MEMBER2, Member::LEVEL_NONE, Member::STATUS_NONMEMBER,
-							$circle->getId()
-						]
-						, [
-							$member->getUserId(), $member->getLevel(), $member->getStatus(),
-							$member->getCircleId()
-						]
-					);
-				} catch (MemberDoesNotExistException $e) {}
+
+					try {
+						$member = Circles::getMember(
+							$circle->getId(), Env::ENV_TEST_MEMBER2, Member::TYPE_USER
+						);
+						$this->assertEquals(
+							[
+								Env::ENV_TEST_MEMBER2, Member::LEVEL_NONE, Member::STATUS_NONMEMBER,
+								$circle->getId()
+							]
+							, [
+								$member->getUserId(), $member->getLevel(), $member->getStatus(),
+								$member->getCircleId()
+							]
+						);
+					} catch (MemberDoesNotExistException $e) {
+					}
 
 				} catch (Exception $e) {
 					throw $e;
@@ -581,7 +583,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 		Env::setUser(Env::ENV_TEST_MEMBER3);
 
 		for ($i = 0; $i < 3; $i++) {
-			foreach ($this->circles AS $circle) {
+			foreach ($this->circles as $circle) {
 
 				try {
 					$member = Circles::getMember(
@@ -728,7 +730,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 		$this->assertCount(2, $listing);
 
 		$result = [];
-		foreach ($listing AS $circle) {
+		foreach ($listing as $circle) {
 			array_push($result, $circle->getName());
 		}
 
@@ -738,7 +740,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 		// Let's add user to all circle
 		Env::setUser(Env::ENV_TEST_OWNER1);
 		$circles = [$this->circles['Public'], $this->circles['Closed'], $this->circles['Secret']];
-		foreach ($circles AS $circle) {
+		foreach ($circles as $circle) {
 			$this->generateSimpleCircleWithAllLevel(
 				$circle->getId(), ($circle->getType() === Circle::CIRCLES_CLOSED)
 			);
@@ -752,7 +754,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 		$this->assertCount(4, $listing);
 
 		$result = [];
-		foreach ($listing AS $circle) {
+		foreach ($listing as $circle) {
 			array_push($result, $circle->getName());
 		}
 
@@ -773,7 +775,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 		$this->assertCount(3, $listing);
 
 		$result = [];
-		foreach ($listing AS $circle) {
+		foreach ($listing as $circle) {
 			array_push($result, $circle->getName());
 		}
 
@@ -861,6 +863,8 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 	 *
 	 * @param $circleId
 	 * @param bool $isClosed
+	 *
+	 * @throws QueryException
 	 */
 	protected function generateSimpleCircleWithAllLevel($circleId, $isClosed = false) {
 

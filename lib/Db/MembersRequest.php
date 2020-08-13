@@ -31,6 +31,7 @@ namespace OCA\Circles\Db;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
+use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Model\Member;
@@ -116,6 +117,7 @@ class MembersRequest extends MembersRequestBuilder {
 	 * @param bool $incGroup
 	 *
 	 * @return Member[]
+	 * @throws GSStatusException
 	 */
 	public function forceGetMembers(
 		$circleUniqueId, $level = Member::LEVEL_MEMBER, int $type = 0, $incGroup = false

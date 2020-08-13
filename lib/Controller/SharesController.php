@@ -141,6 +141,7 @@ class SharesController extends Controller {
 			$this->sharingFrameService->createFrame($circleUniqueId, $share);
 		} catch (\Exception $e) {
 			$this->miscService->log('Failed to create circle - ' . $e->getMessage(), 3);
+
 			return $this->fail(
 				[
 					'circle_id' => $circleUniqueId,
@@ -185,6 +186,7 @@ class SharesController extends Controller {
 	 * @param string $frameId
 	 *
 	 * @return DataResponse
+	 * @throws Exception
 	 */
 	public function initShareDelivery($circleId, $frameId) {
 

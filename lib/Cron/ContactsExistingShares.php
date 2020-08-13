@@ -40,6 +40,7 @@ use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Db\SharesRequest;
 use OCA\Circles\Db\TokensRequest;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
+use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Model\Member;
@@ -47,7 +48,6 @@ use OCA\Circles\Model\SharesToken;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\DavService;
 use OCA\Circles\Service\MiscService;
-use OCP\AppFramework\QueryException;
 use OCP\Files\IRootFolder;
 use OCP\IUserManager;
 use OCP\Share\Exceptions\IllegalIDChangeException;
@@ -89,9 +89,6 @@ class ContactsExistingShares extends TimedJob {
 	/** @var FileSharingBroadcaster */
 	private $fileSharingBroadcaster;
 
-	/** @var ConfigService */
-	private $configService;
-
 	/** @var MiscService */
 	private $miscService;
 
@@ -106,8 +103,6 @@ class ContactsExistingShares extends TimedJob {
 
 	/**
 	 * @param mixed $argument
-	 *
-	 * @throws QueryException
 	 */
 	protected function run($argument) {
 		$app = \OC::$server->query(Application::class);
@@ -121,10 +116,10 @@ class ContactsExistingShares extends TimedJob {
 		$this->tokensRequest = $c->query(TokensRequest::class);
 		$this->sharesRequest = $c->query(SharesRequest::class);
 		$this->fileSharingBroadcaster = $c->query(FileSharingBroadcaster::class);
-		$this->configService = $c->query(ConfigService::class);
 		$this->miscService = $c->query(MiscService::class);
 
-		if (!$this->configService->isContactsBackend()) {
+		$configService = $c->query(ConfigService::class);
+		if (!$configService->isContactsBackend()) {
 			return;
 		}
 
@@ -136,6 +131,7 @@ class ContactsExistingShares extends TimedJob {
 
 	/**
 	 * @return Member[]
+	 * @throws GSStatusException
 	 */
 	private function getNewMembers(): array {
 		$knownMembers = $this->membersRequest->forceGetAllRecentContactEdit();

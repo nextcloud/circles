@@ -43,7 +43,7 @@ use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
-use OCA\Circles\Exceptions\MemberDoesNotExistException;
+use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Exceptions\MemberIsNotOwnerException;
 use OCA\Circles\Exceptions\MembersLimitException;
 use OCA\Circles\Model\Circle;
@@ -282,7 +282,7 @@ class CirclesService {
 	 *
 	 * @throws Exception
 	 */
-	private function detailsCircleMembers(Circle &$circle) {
+	private function detailsCircleMembers(Circle $circle) {
 		if ($this->viewerIsAdmin()) {
 			$members = $this->membersRequest->forceGetMembers($circle->getUniqueId(), 0);
 		} else {
@@ -301,9 +301,9 @@ class CirclesService {
 	 *
 	 * @param Circle $circle
 	 *
-	 * @throws MemberDoesNotExistException
+	 * @throws GSStatusException
 	 */
-	private function detailsCircleLinkedGroups(Circle &$circle) {
+	private function detailsCircleLinkedGroups(Circle $circle) {
 		$groups = [];
 		if ($this->configService->isLinkedGroupsAllowed()) {
 			$groups =
@@ -321,7 +321,7 @@ class CirclesService {
 	 *
 	 * @param Circle $circle
 	 */
-	private function detailsCircleFederatedCircles(Circle &$circle) {
+	private function detailsCircleFederatedCircles(Circle $circle) {
 		$links = [];
 
 		try {
@@ -529,17 +529,16 @@ class CirclesService {
 	 * @param int $offset
 	 *
 	 * @return array
+	 * @throws GSStatusException
 	 */
 	public function getFilesForCircles($circleUniqueIds, $limit = -1, $offset = 0) {
 		if (!is_array($circleUniqueIds)) {
 			$circleUniqueIds = [$circleUniqueIds];
 		}
 
-		$objectIds = $this->circleProviderRequest->getFilesForCircles(
+		return $this->circleProviderRequest->getFilesForCircles(
 			$this->userId, $circleUniqueIds, $limit, $offset
 		);
-
-		return $objectIds;
 	}
 
 

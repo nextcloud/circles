@@ -247,7 +247,7 @@ class GroupsService {
 	 *
 	 * @throws \Exception
 	 */
-	private function editGroupLevel(Circle $circle, Member &$group, $level) {
+	private function editGroupLevel(Circle $circle, Member $group, $level) {
 		try {
 			$isMod = $circle->getHigherViewer();
 			$this->circlesService->hasToBeAdmin($isMod);

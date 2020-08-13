@@ -135,7 +135,7 @@ class MemberLevel extends AGlobalScaleEvent {
 	 * @throws MemberIsNotModeratorException
 	 * @throws ModeratorIsNotHighEnoughException
 	 */
-	private function verifyMemberLevel(GSEvent $event, Circle $circle, Member &$member, int $level) {
+	private function verifyMemberLevel(GSEvent $event, Circle $circle, Member $member, int $level) {
 		$member->hasToBeMember();
 		$member->cantBeOwner();
 
@@ -156,7 +156,7 @@ class MemberLevel extends AGlobalScaleEvent {
 	 * @throws MemberIsNotOwnerException
 	 * @throws MemberIsOwnerException
 	 */
-	private function verifySwitchOwner(GSEvent $event, Circle $circle, Member &$member) {
+	private function verifySwitchOwner(GSEvent $event, Circle $circle, Member $member) {
 		if (!$event->isForced()) {
 			$isMod = $circle->getHigherViewer();
 			$this->circlesService->hasToBeOwner($isMod);

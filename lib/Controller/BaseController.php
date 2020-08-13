@@ -98,6 +98,7 @@ class BaseController extends Controller {
 	 * @param SearchService $searchService
 	 * @param MembersService $membersService
 	 * @param GSUpstreamService $gsUpstreamService
+	 * @param GSDownstreamService $gsDownstreamService
 	 * @param GroupsService $groupsService
 	 * @param SharingFrameService $sharingFrameService
 	 * @param BroadcastService $broadcastService

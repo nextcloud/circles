@@ -41,6 +41,7 @@ use OCP\Federation\ICloudIdManager;
 use OCP\Files\Config\IMountProvider;
 use OCP\Files\Mount\IMountPoint;
 use OCP\Files\NotFoundException;
+use OCP\Files\NotPermittedException;
 use OCP\Files\Storage\IStorageFactory;
 use OCP\IUser;
 
@@ -146,6 +147,9 @@ class MountProvider implements IMountProvider {
 	/**
 	 * @param string $userId
 	 * @param GSShare $share
+	 *
+	 * @throws OC\User\NoUserException
+	 * @throws NotPermittedException
 	 */
 	private function fixDuplicateFile(string $userId, GSShare $share) {
 		$fs = \OC::$server->getRootFolder()

@@ -27,8 +27,6 @@ interface IBroadcaster {
 	 *
 	 * @param SharingFrame $frame
 	 * @param Circle $circle
-	 *
-	 * @return
 	 */
 	public function createShareToCircle(SharingFrame $frame, Circle $circle);
 
@@ -38,8 +36,6 @@ interface IBroadcaster {
 	 *
 	 * @param SharingFrame $frame
 	 * @param Circle $circle
-	 *
-	 * @return
 	 */
 	public function editShareToCircle(SharingFrame $frame, Circle $circle);
 
@@ -49,8 +45,6 @@ interface IBroadcaster {
 	 *
 	 * @param SharingFrame $frame
 	 * @param Circle $circle
-	 *
-	 * @return
 	 */
 	public function deleteShareToCircle(SharingFrame $frame, Circle $circle);
 
@@ -60,8 +54,6 @@ interface IBroadcaster {
 	 *
 	 * @param SharingFrame $frame
 	 * @param Member $member
-	 *
-	 * @return
 	 */
 	public function createShareToMember(SharingFrame $frame, Member $member);
 
@@ -71,8 +63,6 @@ interface IBroadcaster {
 	 *
 	 * @param SharingFrame $frame
 	 * @param Member $member
-	 *
-	 * @return
 	 */
 	public function editShareToMember(SharingFrame $frame, Member $member);
 
@@ -82,8 +72,6 @@ interface IBroadcaster {
 	 *
 	 * @param SharingFrame $frame
 	 * @param Member $member
-	 *
-	 * @return
 	 */
 	public function deleteShareToMember(SharingFrame $frame, Member $member);
 

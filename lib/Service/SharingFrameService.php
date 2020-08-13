@@ -34,6 +34,7 @@ use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\FederatedLinksRequest;
 use OCA\Circles\Db\SharingFrameRequest;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
+use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\PayloadDeliveryException;
 use OCA\Circles\Exceptions\SharingFrameAlreadyDeliveredException;
@@ -216,6 +217,9 @@ class SharingFrameService {
 	 * @param $viewerId
 	 *
 	 * @return SharingFrame[]
+	 * @throws CircleDoesNotExistException
+	 * @throws MemberDoesNotExistException
+	 * @throws ConfigNoCircleAvailableException
 	 */
 	public function forceGetFrameFromCircle($circleUniqueId, $viewerId) {
 
@@ -263,7 +267,7 @@ class SharingFrameService {
 	 * @return bool
 	 * @throws Exception
 	 */
-	public function receiveFrame($token, $uniqueId, SharingFrame &$frame) {
+	public function receiveFrame($token, $uniqueId, SharingFrame $frame) {
 		try {
 			$link = $this->federatedLinksRequest->getLinkFromToken((string)$token, (string)$uniqueId);
 			$circle = $this->circlesRequest->forceGetCircle($link->getCircleId());

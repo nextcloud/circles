@@ -55,9 +55,7 @@ class SharingFrameRequest extends SharingFrameRequestBuilder {
 			throw new SharingFrameDoesNotExistException($this->l10n->t('Sharing Frame does not exist'));
 		}
 
-		$entry = $this->parseSharesSelectSql($data);
-
-		return $entry;
+		return $this->parseSharesSelectSql($data);
 	}
 
 
