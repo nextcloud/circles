@@ -122,9 +122,9 @@ class GlobalScaleService {
 	/**
 	 * @param GSEvent $event
 	 *
-	 * @return GSWrapper
+	 * @return string
 	 */
-	public function asyncBroadcast(GSEvent $event): GSWrapper {
+	public function asyncBroadcast(GSEvent $event): string {
 		$wrapper = new GSWrapper();
 		$wrapper->setEvent($event);
 		$wrapper->setToken($this->uuid());
@@ -151,7 +151,7 @@ class GlobalScaleService {
 		} catch (RequestContentException | RequestNetworkException | RequestResultSizeException | RequestServerException $e) {
 		}
 
-		return $wrapper;
+		return $wrapper->getToken();
 	}
 
 

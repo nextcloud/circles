@@ -102,7 +102,7 @@ class MemberLevel extends AGlobalScaleEvent {
 		$this->cleanMember($member);
 
 		$member->setLevel($level);
-		$this->membersRequest->updateMember($member);
+		$this->membersRequest->updateMemberLevel($member);
 
 		if ($level === Member::LEVEL_OWNER) {
 			$circle = $event->getCircle();
@@ -112,7 +112,7 @@ class MemberLevel extends AGlobalScaleEvent {
 			}
 
 			$isMod->setLevel(Member::LEVEL_ADMIN);
-			$this->membersRequest->updateMember($isMod);
+			$this->membersRequest->updateMemberLevel($isMod);
 		}
 	}
 

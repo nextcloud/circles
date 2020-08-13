@@ -160,7 +160,9 @@ class MiscService {
 	public function updateCachedName(Member $member) {
 		try {
 			$cachedName = $this->getDisplay($member->getUserId(), $member->getType());
-			$member->setCachedName($cachedName);
+			if ($cachedName !== $member->getUserId()) {
+				$member->setCachedName($cachedName);
+			}
 		} catch (Exception $e) {
 		}
 	}

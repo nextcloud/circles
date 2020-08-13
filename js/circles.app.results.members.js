@@ -62,7 +62,6 @@ var resultMembers = {
 
 	generateItemUser: function(search, value) {
 		var instance = value.instance;
-		console.log(instance);
 		if (instance !== '') {
 			return '<div class="result_top">' +
 				resultMembers.enhanceSearchResult(search, value.data.display) + '</div>' +

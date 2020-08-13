@@ -75,10 +75,9 @@ class MemberJoin extends AGlobalScaleEvent {
 		);
 		$member->hasToBeAbleToJoinTheCircle();
 		$member->joinCircle($circle->getType());
+		$member->setCachedName($eventMember->getCachedName());
 
 		$this->circlesService->checkThatCircleIsNotFull($circle);
-
-		$this->miscService->updateCachedName($member);
 
 		$event->setMember($member);
 	}
@@ -96,7 +95,7 @@ class MemberJoin extends AGlobalScaleEvent {
 		if ($member->getJoined() === '') {
 			$this->membersRequest->createMember($member);
 		} else {
-			$this->membersRequest->updateMember($member);
+			$this->membersRequest->updateMemberLevel($member);
 		}
 
 		$this->eventsService->onMemberNew($circle, $member);

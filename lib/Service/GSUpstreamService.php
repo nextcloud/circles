@@ -127,10 +127,10 @@ class GSUpstreamService {
 	/**
 	 * @param GSEvent $event
 	 *
-	 * @return GSWrapper
+	 * @return string
 	 * @throws Exception
 	 */
-	public function newEvent(GSEvent $event): GSWrapper {
+	public function newEvent(GSEvent $event): string {
 		$event->setSource($this->configService->getLocalCloudId());
 
 		try {
@@ -144,10 +144,9 @@ class GSUpstreamService {
 
 				return $this->globalScaleService->asyncBroadcast($event);
 			} else {
-//				$gs->verify($event); // needed ? as we check event on the 'master' of the circle
 				$this->confirmEvent($event);
-				$this->miscService->log('confirmed: ' . json_encode($event));
-//				$gs->manage($event); // needed ? as we manage it throw the confirmEvent
+
+				return '';
 			}
 		} catch (Exception $e) {
 			$this->miscService->log(
@@ -155,6 +154,7 @@ class GSUpstreamService {
 			);
 			throw $e;
 		}
+
 	}
 
 
@@ -246,13 +246,13 @@ class GSUpstreamService {
 		$request->setDataSerialize($event);
 
 		$result = $this->retrieveJson($request);
-		$this->miscService->log('result ' . json_encode($result));
+		$this->miscService->log('result ' . json_encode($result), 0);
 		if ($this->getInt('status', $result) === 0) {
 			throw new GlobalScaleEventException($this->get('error', $result));
 		}
 
 		$updatedData = $this->getArray('event', $result);
-		$this->miscService->log('updatedEvent: ' . json_encode($updatedData));
+		$this->miscService->log('updatedEvent: ' . json_encode($updatedData), 0);
 		if (!empty($updatedData)) {
 			$updated = new GSEvent();
 			try {
@@ -289,9 +289,7 @@ class GSUpstreamService {
 		$circle = $event->getCircle();
 		$owner = $circle->getOwner();
 		if ($owner->getInstance() === ''
-			|| in_array(
-				$owner->getInstance(), $this->configService->getTrustedDomains()
-			)) {
+			|| in_array($owner->getInstance(), $this->configService->getTrustedDomains())) {
 			return true;
 		}
 

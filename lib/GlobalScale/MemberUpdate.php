@@ -30,50 +30,42 @@
 namespace OCA\Circles\GlobalScale;
 
 
-use OCA\Circles\Exceptions\MemberAlreadyExistsException;
+use OCA\Circles\Exceptions\CircleDoesNotExistException;
+use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
+use OCA\Circles\Exceptions\GlobalScaleDSyncException;
+use OCA\Circles\Exceptions\GlobalScaleEventException;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 
 
 /**
- * Class CircleCreate
+ * Class MemberUpdate
  *
  * @package OCA\Circles\GlobalScale
  */
-class CircleCreate extends AGlobalScaleEvent {
+class MemberUpdate extends AGlobalScaleEvent {
 
 
 	/**
-	 * Circles are created on the original instance, so do no check;
-	 *
 	 * @param GSEvent $event
 	 * @param bool $localCheck
 	 * @param bool $mustBeChecked
+	 *
+	 * @throws CircleDoesNotExistException
+	 * @throws ConfigNoCircleAvailableException
+	 * @throws GlobalScaleDSyncException
+	 * @throws GlobalScaleEventException
 	 */
 	public function verify(GSEvent $event, bool $localCheck = false, bool $mustBeChecked = false): void {
-		//parent::verify($event, $localCheck, $mustBeChecked);
+		parent::verify($event, false, false);
 	}
 
 
 	/**
 	 * @param GSEvent $event
-	 *
-	 * @throws MemberAlreadyExistsException
 	 */
 	public function manage(GSEvent $event): void {
-		if (!$event->hasCircle()) {
-			return;
-		}
-
-		$circle = $event->getCircle();
-		$this->circlesRequest->createCircle($circle);
-
-		$owner = $circle->getOwner();
-		if ($owner->getInstance() === '') {
-			$owner->setInstance($event->getSource());
-		}
-		$this->membersRequest->createMember($owner);
-
-		$this->eventsService->onCircleCreation($circle);
+		$member = $event->getMember();
+		$this->membersRequest->updateMemberInfo($member);
 	}
 
 
@@ -82,5 +74,6 @@ class CircleCreate extends AGlobalScaleEvent {
 	 */
 	public function result(array $events): void {
 	}
+
 }
 

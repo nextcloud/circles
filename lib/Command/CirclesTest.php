@@ -128,18 +128,17 @@ class CirclesTest extends Base {
 			return 0;
 		}
 
-		$instances =
-			array_merge($this->globalScaleService->getInstances(true));
+		$instances = array_merge($this->globalScaleService->getInstances(true));
 
 		$test = new GSEvent(GSEvent::TEST, true, true);
 		$test->setAsync(true);
-		$wrapper = $this->gsUpstreamService->newEvent($test);
+		$token = $this->gsUpstreamService->newEvent($test);
 
 		$output->writeln('- Async request is sent, now waiting ' . $this->delay . ' seconds');
 		sleep($this->delay);
-		$output->writeln('- Pause is over, checking results for ' . $wrapper->getToken());
+		$output->writeln('- Pause is over, checking results for ' . $token);
 
-		$wrappers = $this->gsUpstreamService->getEventsByToken($wrapper->getToken());
+		$wrappers = $this->gsUpstreamService->getEventsByToken($token);
 
 		$result = [];
 		foreach ($wrappers as $wrapper) {

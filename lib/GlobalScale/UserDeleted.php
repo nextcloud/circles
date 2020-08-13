@@ -148,7 +148,7 @@ class UserDeleted extends AGlobalScaleEvent {
 			try {
 				$member = $this->membersRequest->forceGetMemberById($memberId);
 				$member->setLevel(Member::LEVEL_OWNER);
-				$this->membersRequest->updateMember($member);
+				$this->membersRequest->updateMemberLevel($member);
 			} catch (MemberDoesNotExistException $e) {
 			}
 		}
