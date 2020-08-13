@@ -210,7 +210,7 @@ class MembersController extends BaseController {
 
 			$member = $this->membersService->getMemberById($memberId);
 			$data = $this->membersService->removeMember(
-				$member->getCircleId(), $member->getUserId(), $member->getType()
+				$member->getCircleId(), $member->getUserId(), $member->getType(), $member->getInstance()
 			);
 		} catch (\Exception $e) {
 			return

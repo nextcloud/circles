@@ -202,6 +202,8 @@ class MembersService {
 		$this->gsUpstreamService->newEvent($event);
 
 		$new = $event->getMember();
+		$new->setLevel(Member::LEVEL_MEMBER);
+		$new->setStatus(Member::STATUS_MEMBER);
 		$new->setJoined($this->l10n->t('now'));
 
 		if ($new->getInstance() === $this->configService->getLocalCloudId()) {
