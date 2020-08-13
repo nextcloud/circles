@@ -118,7 +118,7 @@ class GlobalSync extends AGlobalScaleEvent {
 				$this->miscService->log(
 					'updating member :' . json_encode($member) . ' from ' . json_encode($knownMember), 2
 				);
-				$this->membersRequest->updateMember($member);
+				$this->membersRequest->updateMemberLevel($member);
 			} catch (MemberDoesNotExistException $e) {
 				try {
 					$this->miscService->log(

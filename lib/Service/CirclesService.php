@@ -193,6 +193,8 @@ class CirclesService {
 		$owner->setCircleId($circle->getUniqueId())
 			  ->setLevel(Member::LEVEL_OWNER)
 			  ->setStatus(Member::STATUS_MEMBER);
+		$this->miscService->updateCachedName($owner);
+
 		$circle->setOwner($owner)
 			   ->setViewer($owner);
 
@@ -372,12 +374,14 @@ class CirclesService {
 	 * @return null|Member
 	 * @throws Exception
 	 */
-	public function joinCircle($circleUniqueId) {
+	public function joinCircle($circleUniqueId): Member {
 		try {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			$member = $this->membersRequest->getFreshNewMember(
 				$circleUniqueId, $this->userId, Member::TYPE_USER, ''
 			);
+
+			$this->miscService->updateCachedName($member);
 
 			$event = new GSEvent(GSEvent::MEMBER_JOIN);
 			$event->setCircle($circle);
@@ -608,4 +612,16 @@ class CirclesService {
 			);
 		}
 	}
+
+
+	/**
+	 * @param Member $member
+	 *
+	 * @return Circle
+	 * @throws CircleDoesNotExistException
+	 */
+	public function getCircleFromMembership(Member $member): Circle {
+		return $this->circlesRequest->forceGetCircle($member->getCircleId());
+	}
+
 }

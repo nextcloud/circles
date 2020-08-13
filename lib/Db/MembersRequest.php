@@ -538,7 +538,7 @@ class MembersRequest extends MembersRequestBuilder {
 	 *
 	 * @param Member $member
 	 */
-	public function updateMember(Member $member) {
+	public function updateMemberLevel(Member $member) {
 		$instance = $member->getInstance();
 		if ($instance === $this->configService->getLocalCloudId()) {
 			$instance = '';
@@ -552,6 +552,28 @@ class MembersRequest extends MembersRequestBuilder {
 
 		$qb->execute();
 	}
+
+
+	/**
+	 * update database entry for a specific Member.
+	 *
+	 * @param Member $member
+	 */
+	public function updateMemberInfo(Member $member) {
+		$instance = $member->getInstance();
+		if ($instance === $this->configService->getLocalCloudId()) {
+			$instance = '';
+		}
+
+		$qb = $this->getMembersUpdateSql(
+			$member->getCircleId(), $member->getUserId(), $instance, $member->getType()
+		);
+		$qb->set('note', $qb->createNamedParameter($member->getNote()))
+		   ->set('cached_name', $qb->createNamedParameter($member->getCachedName()));
+
+		$qb->execute();
+	}
+
 
 	/**
 	 * update database entry for a specific Member.

@@ -192,11 +192,11 @@ class MembersService {
 		$this->verifyIdentContact($ident, $type);
 
 		$member = $this->membersRequest->getFreshNewMember($circle->getUniqueId(), $ident, $type, $instance);
+		$this->miscService->updateCachedName($member);
 
 		$event = new GSEvent(GSEvent::MEMBER_ADD, false, $force);
 		$event->setSeverity(GSEvent::SEVERITY_HIGH);
 		$event->setAsync(true);
-
 		$event->setCircle($circle);
 		$event->setMember($member);
 		$this->gsUpstreamService->newEvent($event);
@@ -507,6 +507,20 @@ class MembersService {
 	 */
 	public function getMemberById(string $memberId): Member {
 		return $this->membersRequest->forceGetMemberById($memberId);
+	}
+
+
+	/**
+	 * @param Member $member
+	 *
+	 * @throws Exception
+	 */
+	public function updateMember(Member $member) {
+		$event = new GSEvent(GSEvent::MEMBER_UPDATE);
+		$event->setMember($member);
+		$event->setCircle($this->circlesService->getCircleFromMembership($member));
+
+		$this->gsUpstreamService->newEvent($event);
 	}
 
 

@@ -211,6 +211,7 @@ class BaseMember implements \JsonSerializable {
 		return $this->displayName;
 	}
 
+
 	public function setCachedName($display) {
 		$this->cachedName = $display;
 
@@ -220,6 +221,7 @@ class BaseMember implements \JsonSerializable {
 	public function getCachedName() {
 		return $this->cachedName;
 	}
+
 
 	public function setLevel($level) {
 		$this->level = (int)$level;
@@ -394,7 +396,10 @@ class BaseMember implements \JsonSerializable {
 		$member = new Member();
 		$member->setCircleId($arr['circle_id']);
 		$member->setMemberId($arr['member_id']);
-		$member->setCachedName($arr['cached_name']);
+		if (array_key_exists('cached_name', $arr)) {
+			$member->setCachedName($arr['cached_name']);
+		}
+
 		$member->setLevel($arr['level']);
 
 		$member->setType(MiscService::get($arr, 'user_type'));

@@ -349,11 +349,16 @@ class ProviderParser {
 	 * @return array <string,string|integer>
 	 */
 	protected function generateUserParameter(Member $member) {
+		$display = $member->getCachedName();
+		if ($display === '') {
+			$display = $member->getUserId();
+		}
+
 		return [
 			'type'    => 'user',
 			'id'      => $member->getUserId(),
-			'name'    => $this->miscService->getDisplayName($member->getUserId(), true),
-			'_parsed' => $this->miscService->getDisplayName($member->getUserId(), true)
+			'name'    => $display,
+			'_parsed' => $display
 		];
 	}
 

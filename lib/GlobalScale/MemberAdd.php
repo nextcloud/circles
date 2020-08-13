@@ -94,7 +94,6 @@ class MemberAdd extends AGlobalScaleEvent {
 		);
 
 		$circle = $event->getCircle();
-//		$this->storeAuthorFromEvent($circle);
 
 		if (!$event->isForced()) {
 			$circle->getHigherViewer()
@@ -130,23 +129,35 @@ class MemberAdd extends AGlobalScaleEvent {
 		if ($member->getJoined() === '') {
 			$this->membersRequest->createMember($member);
 		} else {
-			$this->membersRequest->updateMember($member);
+			$this->membersRequest->updateMemberLevel($member);
 		}
+
+		$this->miscService->updateCachedName($member);
+		$cachedName = $member->getCachedName();
 
 		$password = $event->getData()
 						  ->g('password');
 		$shares = $this->generateUnknownSharesLinks($circle, $member, $password);
 
-		$event->setResult(new SimpleDataStore(['unknownShares' => $shares]));
+		$event->setResult(
+			new SimpleDataStore(
+				[
+					'unknownShares' => $shares,
+					'cachedName'    => $cachedName
+				]
+			)
+		);
 		$this->eventsService->onMemberNew($circle, $member);
 	}
 
 
 	/**
 	 * @param GSEvent[] $events
+	 *
+	 * @throws Exception
 	 */
 	public function result(array $events): void {
-		$password = '';
+		$password = $cachedName = '';
 		$circle = $member = null;
 		$links = [];
 		foreach ($events as $event) {
@@ -155,13 +166,37 @@ class MemberAdd extends AGlobalScaleEvent {
 
 			$circle = $event->getCircle();
 			$member = $event->getMember();
+			$result = $event->getResult();
+			if ($result->g('cachedName') !== '') {
+				$cachedName = $result->g('cachedName');
+			}
 
-			$links = array_merge(
-				$links, $event->getResult()
-							  ->gArray('unknownShares')
-			);
+			$links = array_merge($links, $result->gArray('unknownShares'));
 		}
 
+		if ($circle === null || $member === null) {
+			return;
+		}
+
+		if ($cachedName !== '') {
+			$member->setCachedName($cachedName);
+			$this->membersService->updateMember($member);
+		}
+
+		if ($member->getType() === Member::TYPE_MAIL
+			|| $member->getType() === Member::TYPE_CONTACT) {
+			$this->memberIsMailbox($circle, $member, $links, $password);
+		}
+	}
+
+
+	/**
+	 * @param Circle|null $circle
+	 * @param Member|null $member
+	 * @param array $links
+	 * @param string $password
+	 */
+	private function memberIsMailbox(Circle $circle, Member $member, array $links, string $password) {
 		if ($circle->getViewer() === null) {
 			$author = $circle->getOwner()
 							 ->getUserId();
@@ -378,6 +413,5 @@ class MemberAdd extends AGlobalScaleEvent {
 		$message->useTemplate($emailTemplate);
 		$this->mailer->send($message);
 	}
-
 
 }

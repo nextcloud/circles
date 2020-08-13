@@ -321,6 +321,7 @@ class DavService {
 			$member->setType($type);
 			$member->setCircleId($circle->getUniqueId());
 			$member->setUserId($davCard->getUserId());
+			$this->miscService->updateCachedName($member);
 
 			try {
 				$this->membersRequest->createMember($member);
@@ -432,6 +433,7 @@ class DavService {
 				$member = new Member($davCard->getOwner(), Member::TYPE_USER, $circle->getUniqueId());
 				$member->setLevel(Member::LEVEL_OWNER);
 				$member->setStatus(Member::STATUS_MEMBER);
+				$this->miscService->updateCachedName($member);
 
 				$this->miscService->log('creating new Member: ' . json_encode($member), 0);
 				try {
