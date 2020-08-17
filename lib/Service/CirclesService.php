@@ -377,7 +377,6 @@ class CirclesService {
 			  ->sBool('local_admin', $this->viewerIsAdmin())
 			  ->sArray('settings', $settings);
 
-		$this->miscService->log(json_encode($settings));
 		if ($this->getBool('password_enforcement', $settings) === true
 			&& $this->getBool('password_single_enabled', $settings) === true
 			&& $this->get('password_single', $settings) !== ''
@@ -398,7 +397,6 @@ class CirclesService {
 	 * @param Circle $circle
 	 */
 	public function updatePasswordOnShares(Circle $circle) {
-		$this->miscService->log('---' . $circle->getPasswordSingle());
 		$this->tokensRequest->updateSinglePassword($circle->getUniqueId(), $circle->getPasswordSingle());
 	}
 
