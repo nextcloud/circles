@@ -43,7 +43,7 @@
 var actions = {
 
 
-	changeMemberLevel: function (member, type, instance, level) {
+	changeMemberLevel: function(member, type, instance, level) {
 		if (Number(level) === define.levelOwner) {
 			actions.changeMemberOwner(member, type, instance);
 			return;
@@ -53,7 +53,7 @@ var actions = {
 	},
 
 
-	changeGroupLevel: function (group, level) {
+	changeGroupLevel: function(group, level) {
 		if (level === 'remove_group') {
 			api.unlinkGroup(curr.circle, group, resultGroups.unlinkGroupResult);
 		} else {
@@ -63,11 +63,11 @@ var actions = {
 	},
 
 
-	changeMemberOwner: function (member, type, instance) {
+	changeMemberOwner: function(member, type, instance) {
 		OC.dialogs.confirm(
 			t('circles', 'Are you sure you want to transfer your ownership?', [member]),
 			t('circles', 'This action is irreversible'),
-			function (e) {
+			function(e) {
 				if (e === true) {
 					api.levelMember(curr.circle, member, type, instance, define.levelOwner,
 						resultMembers.levelMemberResult);
@@ -80,7 +80,7 @@ var actions = {
 	},
 
 
-	changeMemberStatus: function (member, type, instance, value) {
+	changeMemberStatus: function(member, type, instance, value) {
 		if (value === 'remove_member' || value === 'dismiss_request') {
 			api.removeMember(curr.circle, member, type, instance, resultMembers.removeMemberResult);
 		}
@@ -90,17 +90,17 @@ var actions = {
 	},
 
 
-	changeLinkStatus: function (link, value) {
+	changeLinkStatus: function(link, value) {
 		api.linkStatus(link, value, resultLinks.linkStatusResult);
 	},
 
 
-	validateEmail: function (email) {
+	validateEmail: function(email) {
 		var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 		return re.test(email);
 	},
 
-	selectCircle: function (circle_id) {
+	selectCircle: function(circle_id) {
 		curr.searchUser = '';
 		elements.addMember.val('');
 		elements.linkGroup.val('');
@@ -111,7 +111,7 @@ var actions = {
 	},
 
 
-	unselectCircle: function (circle_id) {
+	unselectCircle: function(circle_id) {
 		elements.mainUIMembersTable.emptyTable();
 		elements.navigation.children(".circle[circle-id='" + circle_id + "']").remove();
 		elements.emptyContent.show(400);
@@ -122,17 +122,20 @@ var actions = {
 	},
 
 
-	saveSettings: function () {
+	saveSettings: function() {
 		let data = {
 			circle_name: elements.settingsName.val(),
 			circle_desc: elements.settingsDesc.val(),
 			allow_links: (elements.settingsLink.is(":checked")),
 			password_enforcement: (elements.settingsPassword.is(":checked")),
-			members_limit: (elements.settingsLimit.val()),
+			password_single_enabled: (elements.settingsSinglePasswordEnabled.is(":checked")),
+			password_single: elements.settingsSinglePassword.val(),
+			members_limit: elements.settingsLimit.val(),
 			allow_links_auto: (elements.settingsLinkAuto.is(":checked")),
 			allow_links_files: (elements.settingsLinkFiles.is(":checked"))
 		};
 
+		console.log(JSON.stringify(data));
 		api.settingsCircle(curr.circle, data, settings.saveSettingsResult);
 	},
 
@@ -140,7 +143,7 @@ var actions = {
 	 *
 	 * @param search
 	 */
-	searchMembersRequest: function (search) {
+	searchMembersRequest: function(search) {
 
 		if (curr.searchUser === search) {
 			return;
@@ -155,7 +158,7 @@ var actions = {
 	 *
 	 * @param search
 	 */
-	searchGroupsRequest: function (search) {
+	searchGroupsRequest: function(search) {
 
 		if (curr.searchGroup === search) {
 			return;
@@ -173,7 +176,7 @@ var actions = {
 	},
 
 
-	getStringTypeFromType: function (type) {
+	getStringTypeFromType: function(type) {
 
 		switch (Number(type)) {
 			case define.typePersonal:
@@ -193,7 +196,7 @@ var actions = {
 	/**
 	 *
 	 */
-	onEventNewCircle: function () {
+	onEventNewCircle: function() {
 		curr.circle = 0;
 		curr.circleLevel = 0;
 
@@ -206,7 +209,7 @@ var actions = {
 	/**
 	 *
 	 */
-	onEventNewCircleName: function () {
+	onEventNewCircleName: function() {
 		this.onEventNewCircle();
 		nav.displayOptionsNewCircle((elements.newName.val() !== ''));
 	},
@@ -215,14 +218,13 @@ var actions = {
 	/**
 	 *
 	 */
-	onEventNewCircleType: function () {
+	onEventNewCircleType: function() {
 		this.onEventNewCircle();
 		elements.newTypeDefinition.children('div').fadeOut(300);
 		var selectedType = elements.newType.children('option:selected').val();
 		if (selectedType === '') {
 			elements.newType.addClass('select_none');
-		}
-		else {
+		} else {
 			elements.newType.removeClass('select_none');
 			$('#circles_new_type_' + selectedType).fadeIn(
 				300);

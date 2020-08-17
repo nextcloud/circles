@@ -30,6 +30,7 @@
 namespace OCA\Circles\Service;
 
 
+use daita\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
 use OC;
 use OCA\Circles\AppInfo\Application;
@@ -54,6 +55,10 @@ use OCP\IL10N;
 use OCP\IUserSession;
 
 class CirclesService {
+
+
+	use TArrayTools;
+
 
 	/** @var string */
 	private $userId;
@@ -353,6 +358,11 @@ class CirclesService {
 			$settings['members_limit'] = $circle->getSetting('members_limit');
 		}
 
+		if ($this->get('password_single', $settings) === ''
+			&& $circle->getSetting('password_single_enabled') === 'false') {
+			$settings['password_single_enabled'] = false;
+		}
+
 		// can only be run from the instance of the circle's owner.
 		$event = new GSEvent(GSEvent::CIRCLE_UPDATE);
 		$event->setCircle($circle);
@@ -361,6 +371,8 @@ class CirclesService {
 			  ->sArray('settings', $settings);
 
 		$this->gsUpstreamService->newEvent($event);
+
+		$circle->setSettings($settings);
 
 		return $circle;
 	}

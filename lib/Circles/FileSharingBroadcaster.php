@@ -216,8 +216,14 @@ class FileSharingBroadcaster implements IBroadcaster {
 				}
 
 				$password = '';
+				$sendPasswordByMail = true;
 				if ($this->configService->enforcePasswordProtection($circle)) {
-					$password = $this->miscService->token(15);
+					if ($circle->getSetting('password_single_enabled') === 'true') {
+						$password = $circle->getPasswordSingle();
+						$sendPasswordByMail = false;
+					} else {
+						$password = $this->miscService->token(15);
+					}
 				}
 
 				$sharesToken =
@@ -225,6 +231,10 @@ class FileSharingBroadcaster implements IBroadcaster {
 				$mails = [$member->getUserId()];
 				if ($member->getType() === Member::TYPE_CONTACT) {
 					$mails = $this->getMailsFromContact($member->getUserId());
+				}
+
+				if (!$sendPasswordByMail) {
+					$password = '';
 				}
 
 				foreach ($mails as $mail) {

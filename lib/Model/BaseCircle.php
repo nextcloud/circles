@@ -34,6 +34,7 @@ class BaseCircle {
 
 	const CIRCLES_SETTINGS_DEFAULT = [
 		'password_enforcement' => 'false',
+		'password_single'      => '',
 		'allow_links'          => 'false',
 		'allow_links_auto'     => 'false',
 		'allow_links_files'    => 'false'
@@ -77,6 +78,9 @@ class BaseCircle {
 
 	/** @var array */
 	private $settings = [];
+
+	/** @var string */
+	private $passwordSingle = '';
 
 	/** @var int */
 	private $type;
@@ -345,14 +349,22 @@ class BaseCircle {
 
 	/**
 	 * @param string|array $settings
+	 * @param bool $all
 	 *
 	 * @return $this
 	 */
-	public function setSettings($settings) {
+	public function setSettings($settings, bool $all = false) {
 		if (is_array($settings)) {
 			$this->settings = $settings;
 		} else if (is_string($settings)) {
 			$this->settings = (array)json_decode($settings, true);
+		}
+
+		if (array_key_exists('password_single', $this->settings)) {
+			$this->setPasswordSingle($this->settings['password_single']);
+			if (!$all) {
+				$this->settings['password_single'] = '';
+			}
 		}
 
 		return $this;
@@ -425,6 +437,22 @@ class BaseCircle {
 
 		return null;
 	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getPasswordSingle(): string {
+		return $this->passwordSingle;
+	}
+
+	/**
+	 * @param string $passwordSingle
+	 */
+	public function setPasswordSingle(string $passwordSingle): void {
+		$this->passwordSingle = $passwordSingle;
+	}
+
 
 	/**
 	 *

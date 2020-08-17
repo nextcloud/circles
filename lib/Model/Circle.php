@@ -138,10 +138,11 @@ class Circle extends BaseCircle implements JsonSerializable {
 	 * set all infos from an Array.
 	 *
 	 * @param $arr
+	 * @param bool $allSettings
 	 *
 	 * @return $this
 	 */
-	public static function fromArray($arr) {
+	public static function fromArray($arr, bool $allSettings = false) {
 		if ($arr === null || empty($arr)) {
 			return new Circle();
 		}
@@ -155,7 +156,7 @@ class Circle extends BaseCircle implements JsonSerializable {
 		$circle->setUniqueId($arr['unique_id']);
 		$circle->setDescription($arr['description']);
 
-		$circle->setSettings(self::getSettingsFromArray($arr));
+		$circle->setSettings(self::getSettingsFromArray($arr), $allSettings);
 		$circle->setLinks(self::getLinksFromArray($arr));
 		$circle->setCreation($arr['creation']);
 

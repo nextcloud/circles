@@ -378,10 +378,11 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 
 	/**
 	 * @param array $data
+	 * @param bool $allSettings
 	 *
 	 * @return Circle
 	 */
-	protected function parseCirclesSelectSql($data) {
+	protected function parseCirclesSelectSql($data, bool $allSettings = false) {
 
 		$circle = new Circle();
 		$circle->setId($data['id']);
@@ -395,7 +396,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		if ($data['contact_groupname'] !== null) {
 			$circle->setContactGroupName($data['contact_groupname']);
 		}
-		$circle->setSettings($data['settings']);
+		$circle->setSettings($data['settings'], $allSettings);
 		$circle->setType($data['type']);
 		$circle->setCreation($data['creation']);
 

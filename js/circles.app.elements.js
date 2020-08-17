@@ -71,6 +71,9 @@ var elements = {
 	settingsName: null,
 	settingsDesc: null,
 	settingsPassword: null,
+	settingsSinglePasswordEnabled: null,
+	settingsSinglePassword: null,
+	settingsEntrySinglePassword: null,
 	settingsLimit: null,
 	settingsEntryLimit: null,
 	settingsLink: null,
@@ -135,6 +138,9 @@ var elements = {
 		elements.settingsDesc = $('#settings-desc');
 		elements.settingsEntryLimit = $('#settings-entry-limit');
 		elements.settingsPassword = $('#settings-password');
+		elements.settingsSinglePassword = $('#single-password');
+		elements.settingsSinglePasswordEnabled = $('#single-password-enabled');
+		elements.settingsEntrySinglePassword = $('#settings-password-single');
 		elements.settingsLimit = $('#settings-limit');
 		// elements.settingsLimit.prop('disabled', !OC.isUserAdmin());
 

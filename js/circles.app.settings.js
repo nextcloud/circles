@@ -34,7 +34,7 @@
 
 var settings = {
 
-	displaySettings: function (display) {
+	displaySettings: function(display) {
 		if (display) {
 			settings.initUISettings();
 			elements.circleDesc.hide(define.animationSpeed);
@@ -46,10 +46,26 @@ var settings = {
 		}
 	},
 
-	initUISettings: function () {
+	initUISettings: function() {
 		elements.settingsName.val(curr.circleName);
 		elements.settingsDesc.val(curr.circleDesc);
 		elements.settingsLimit.val(curr.circleLimit);
+
+
+//		single-password-enabled
+		elements.settingsPassword.prop('checked',
+			(curr.circleSettings['password_enforcement'] === 'true'));
+		elements.settingsPassword.on('change', function() {
+			settings.interactUISettings();
+		});
+
+		elements.settingsSinglePassword.val('');
+		elements.settingsSinglePasswordEnabled.prop('checked',
+			(curr.circleSettings['password_single_enabled'] === 'true'));
+		elements.settingsSinglePasswordEnabled.on('change', function() {
+			settings.interactUISettings();
+		});
+
 		if (OC.isUserAdmin()) {
 			elements.settingsEntryLimit.show();
 		} else {
@@ -62,7 +78,7 @@ var settings = {
 		elements.settingsLinkFiles.prop('checked',
 			(curr.circleSettings['allow_links_files'] === 'true'));
 
-		elements.settingsLink.on('change', function () {
+		elements.settingsLink.on('change', function() {
 			settings.interactUISettings();
 		});
 
@@ -70,7 +86,22 @@ var settings = {
 	},
 
 
-	interactUISettings: function () {
+	interactUISettings: function() {
+		if (elements.settingsPassword.is(":checked")) {
+			settings.enableSetting(elements.settingsEntrySinglePassword, elements.settingsSinglePassword,
+				true);
+			settings.enableSetting(null, elements.settingsSinglePasswordEnabled, true);
+			if (elements.settingsSinglePasswordEnabled.is(":checked")) {
+				settings.enableSetting(null, elements.settingsSinglePassword, true);
+			} else {
+				settings.enableSetting(null, elements.settingsSinglePassword,
+					false);
+			}
+		} else {
+			settings.enableSetting(null, elements.settingsSinglePasswordEnabled, false);
+			settings.enableSetting(elements.settingsEntrySinglePassword, elements.settingsSinglePassword,
+				false);
+		}
 
 		if (curr.allowed_federated_circles !== '1' ||
 			curr.circleDetails.type === define.typePersonal) {
@@ -88,12 +119,14 @@ var settings = {
 			(elements.settingsLink.is(":checked")));
 	},
 
-	enableSetting: function (entry, input, enable) {
-		entry.stop().fadeTo(curr.animationSpeed, (enable) ? 1 : 0.3);
+	enableSetting: function(entry, input, enable) {
+		if (entry !== null) {
+			entry.stop().fadeTo(curr.animationSpeed, (enable) ? 1 : 0.3);
+		}
 		input.prop('disabled', !enable);
 	},
 
-	saveSettingsResult: function (result) {
+	saveSettingsResult: function(result) {
 		if (result.status < 1) {
 			OCA.notification.onFail(
 				t('circles', 'Issue while saving settings') + ': ' +

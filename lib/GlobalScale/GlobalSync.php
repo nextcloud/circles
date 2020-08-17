@@ -63,7 +63,7 @@ class GlobalSync extends AGlobalScaleEvent {
 		$data = $event->getData();
 		$circles = [];
 		foreach ($data->gAll() as $circle) {
-			$circle = Circle::fromArray($circle);
+			$circle = Circle::fromArray($circle, true);
 			$circles[] = $circle;
 
 			$this->syncCircle($circle, $event->getSource());
@@ -86,7 +86,7 @@ class GlobalSync extends AGlobalScaleEvent {
 	 */
 	private function syncCircle(Circle $circle, string $source): void {
 		try {
-			$knownCircle = $this->circlesRequest->forceGetCircle($circle->getUniqueId());
+			$knownCircle = $this->circlesRequest->forceGetCircle($circle->getUniqueId(), true);
 
 			if (!$this->compareCircles($knownCircle, $circle)) {
 				try {
