@@ -118,4 +118,14 @@ class SharingFrameRequest extends SharingFrameRequestBuilder {
 	}
 
 
+
+
+	public function updatePasswordOnShares(string $circleId, string $password) {
+		$qb = $this->getSharesUpdateSql($frame->getUniqueId());
+
+		$this->limitToShareWith($qb, $circleId);
+		$this->limitToShareType($qb, self::SHARE_TYPE);
+	}
+
+
 }

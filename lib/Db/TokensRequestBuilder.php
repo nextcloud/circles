@@ -61,12 +61,9 @@ class TokensRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * Base of the Sql Update request for Groups
 	 *
-	 * @param int $circleId
-	 * @param string $groupId
-	 *
 	 * @return IQueryBuilder
 	 */
-	protected function getTokensUpdateSql($circleId, $groupId) {
+	protected function getTokensUpdateSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$qb->update(self::TABLE_TOKENS);
 
