@@ -150,6 +150,7 @@ class MemberAdd extends AGlobalScaleEvent {
 
 		$password = $event->getData()
 						  ->g('password');
+
 		$shares = $this->generateUnknownSharesLinks($circle, $member, $password);
 		$result = [
 			'unknownShares' => $shares,
@@ -209,6 +210,7 @@ class MemberAdd extends AGlobalScaleEvent {
 			if ($member->getType() === Member::TYPE_MAIL) {
 				$recipients = [$member->getUserId()];
 			}
+
 			foreach ($recipients as $recipient) {
 				$this->memberIsMailbox($circle, $recipient, $links, $password);
 			}

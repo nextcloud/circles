@@ -36,6 +36,7 @@ use Exception;
 use OC;
 use OC\Share20\Share;
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Model\Circle;
@@ -101,6 +102,7 @@ class FileShare extends AGlobalScaleEvent {
 	 * @param GSEvent $event
 	 *
 	 * @throws GSStatusException
+	 * @throws CircleDoesNotExistException
 	 */
 	public function manage(GSEvent $event): void {
 		$circle = $event->getCircle();
@@ -153,6 +155,8 @@ class FileShare extends AGlobalScaleEvent {
 
 	/**
 	 * @param GSEvent[] $events
+	 *
+	 * @throws CircleDoesNotExistException
 	 */
 	public function result(array $events): void {
 		$event = null;
@@ -182,6 +186,8 @@ class FileShare extends AGlobalScaleEvent {
 	 * @param Circle $circle
 	 * @param string $memberId
 	 * @param array $emails
+	 *
+	 * @throws CircleDoesNotExistException
 	 */
 	private function sendShareToContact(GSEvent $event, Circle $circle, string $memberId, array $emails) {
 		try {
@@ -191,11 +197,12 @@ class FileShare extends AGlobalScaleEvent {
 			return;
 		}
 
+		$newCircle = $this->circlesRequest->forceGetCircle($circle->getUniqueId(), true);
 		$password = '';
 		$sendPasswordByMail = true;
-		if ($this->configService->enforcePasswordProtection($circle)) {
-			if ($circle->getSetting('password_single_enabled') === 'true') {
-				$password = $circle->getPasswordSingle();
+		if ($this->configService->enforcePasswordProtection($newCircle)) {
+			if ($newCircle->getSetting('password_single_enabled') === 'true') {
+				$password = $newCircle->getPasswordSingle();
 				$sendPasswordByMail = false;
 			} else {
 				$password = $this->miscService->token(15);

@@ -73,6 +73,7 @@ class CircleUpdate extends AGlobalScaleEvent {
 	 * @param GSEvent $event
 	 *
 	 * @throws CircleAlreadyExistsException
+	 * @throws ConfigNoCircleAvailableException
 	 */
 	public function manage(GSEvent $event): void {
 		if (!$event->hasCircle()) {
