@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file.
 
 
+### 0.19.5
+
+- allow circles' owner to define a single password for shares
+- fixing issue with async
+- fixing some issue in GS setup
+- enh: some const are now available within the Api class
+- fixing an issue on displayed secret circles on empty search
+- A cached name of the member is now broadcasted and displayed
+ 
+
 ### 0.19.4
 
 - includes mails when searching for collaborator
