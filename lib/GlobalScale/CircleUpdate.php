@@ -73,6 +73,7 @@ class CircleUpdate extends AGlobalScaleEvent {
 	 * @param GSEvent $event
 	 *
 	 * @throws CircleAlreadyExistsException
+	 * @throws ConfigNoCircleAvailableException
 	 */
 	public function manage(GSEvent $event): void {
 		if (!$event->hasCircle()) {
@@ -83,7 +84,10 @@ class CircleUpdate extends AGlobalScaleEvent {
 		$settings = $event->getData()
 						  ->gArray('settings');
 		$ak = array_keys($settings);
-		foreach ($ak AS $k) {
+		foreach ($ak as $k) {
+			if ($k === 'password_single') {
+				$circle->setPasswordSingle($settings[$k]);
+			}
 			$circle->setSetting($k, $settings[$k]);
 		}
 
@@ -97,6 +101,12 @@ class CircleUpdate extends AGlobalScaleEvent {
 				'circle_desc' => $circle->getDescription(),
 			]
 		);
+
+		$data = $event->getData();
+
+		if ($data->gBool('password_changed')) {
+			$this->circlesService->updatePasswordOnShares($circle);
+		}
 
 		$this->eventsService->onSettingsChange($circle, $oldSettings);
 	}

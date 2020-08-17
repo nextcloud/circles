@@ -164,5 +164,20 @@ class TokensRequest extends TokensRequestBuilder {
 		$qb->execute();
 	}
 
+
+	public function updateSinglePassword(string $circleId, string $password) {
+		$qb = $this->getTokensUpdateSql();
+
+		if ($password !== '') {
+			$hasher = \OC::$server->getHasher();
+			$password = $hasher->hash($password);
+		}
+
+		$this->limitToCircleId($qb, $circleId);
+		$qb->set('password', $qb->createNamedParameter($password));
+
+		$qb->execute();
+	}
+
 }
 

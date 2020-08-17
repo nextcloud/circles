@@ -30,6 +30,7 @@
 namespace OCA\Circles\Service;
 
 
+use daita\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
 use OC;
 use OCA\Circles\AppInfo\Application;
@@ -38,6 +39,7 @@ use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\FederatedLinksRequest;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Db\SharesRequest;
+use OCA\Circles\Db\TokensRequest;
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
@@ -54,6 +56,10 @@ use OCP\IL10N;
 use OCP\IUserSession;
 
 class CirclesService {
+
+
+	use TArrayTools;
+
 
 	/** @var string */
 	private $userId;
@@ -72,6 +78,9 @@ class CirclesService {
 
 	/** @var MembersRequest */
 	private $membersRequest;
+
+	/** @var TokensRequest */
+	private $tokensRequest;
 
 	/** @var SharesRequest */
 	private $sharesRequest;
@@ -102,6 +111,7 @@ class CirclesService {
 	 * @param ConfigService $configService
 	 * @param CirclesRequest $circlesRequest
 	 * @param MembersRequest $membersRequest
+	 * @param TokensRequest $tokensRequest
 	 * @param SharesRequest $sharesRequest
 	 * @param FederatedLinksRequest $federatedLinksRequest
 	 * @param GSUpstreamService $gsUpstreamService
@@ -117,6 +127,7 @@ class CirclesService {
 		ConfigService $configService,
 		CirclesRequest $circlesRequest,
 		MembersRequest $membersRequest,
+		TokensRequest $tokensRequest,
 		SharesRequest $sharesRequest,
 		FederatedLinksRequest $federatedLinksRequest,
 		GSUpstreamService $gsUpstreamService,
@@ -138,6 +149,7 @@ class CirclesService {
 		$this->configService = $configService;
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
+		$this->tokensRequest = $tokensRequest;
 		$this->sharesRequest = $sharesRequest;
 		$this->federatedLinksRequest = $federatedLinksRequest;
 		$this->gsUpstreamService = $gsUpstreamService;
@@ -353,6 +365,11 @@ class CirclesService {
 			$settings['members_limit'] = $circle->getSetting('members_limit');
 		}
 
+		if ($this->get('password_single', $settings) === ''
+			&& $circle->getSetting('password_single_enabled') === 'false') {
+			$settings['password_single_enabled'] = false;
+		}
+
 		// can only be run from the instance of the circle's owner.
 		$event = new GSEvent(GSEvent::CIRCLE_UPDATE);
 		$event->setCircle($circle);
@@ -360,9 +377,27 @@ class CirclesService {
 			  ->sBool('local_admin', $this->viewerIsAdmin())
 			  ->sArray('settings', $settings);
 
+		if ($this->getBool('password_enforcement', $settings) === true
+			&& $this->getBool('password_single_enabled', $settings) === true
+			&& $this->get('password_single', $settings) !== ''
+		) {
+			$event->getData()
+				  ->sBool('password_changed', true);
+		}
+
 		$this->gsUpstreamService->newEvent($event);
 
+		$circle->setSettings($settings);
+
 		return $circle;
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 */
+	public function updatePasswordOnShares(Circle $circle) {
+		$this->tokensRequest->updateSinglePassword($circle->getUniqueId(), $circle->getPasswordSingle());
 	}
 
 

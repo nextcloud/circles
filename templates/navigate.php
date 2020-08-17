@@ -362,12 +362,12 @@ style(Application::APP_NAME, 'navigation');
 
 					<tr>
 						<td class="left"><?php p($l->t('Name of the Circle')); ?></td>
-						<td><input type="text" id="settings-name" /></td>
+						<td colspan="2"><input type="text" id="settings-name" /></td>
 					</tr>
 
 					<tr>
 						<td class="left" style="vertical-align: top"><?php p($l->t('Description')); ?></td>
-						<td><textarea type="text" id="settings-desc"></textarea></td>
+						<td colspan="2"><textarea type="text" id="settings-desc"></textarea></td>
 					</tr>
 
 
@@ -379,7 +379,7 @@ style(Application::APP_NAME, 'navigation');
 									)
 								); ?></span>
 						</td>
-						<td><input type="text" value="" id="settings-limit"></td>
+						<td colspan="2"><input type="text" value="" id="settings-limit"></td>
 					</tr>
 
 					<tr id="settings-password-enforcement">
@@ -388,7 +388,19 @@ style(Application::APP_NAME, 'navigation');
 									$l->t('External share will be protected by a randomly generated password')
 								); ?></span>
 						</td>
-						<td><input type="checkbox" value="1" id="settings-password"></td>
+						<td colspan="2"><input type="checkbox" value="1" id="settings-password"></td>
+					</tr>
+
+					<tr id="settings-password-single">
+						<td class="left"><?php p($l->t('Single password')); ?><br />
+							<span class="hint"><?php p(
+									$l->t(
+										'One password for all shares. If not, a randomly generated password is sent by mail'
+									)
+								); ?></span>
+						</td>
+						<td><input type="checkbox" value="1" id="single-password-enabled"></td>
+						<td><input type="text" value="" id="single-password" placeholder="<?php p($l->t('Change password')); ?>"></td>
 					</tr>
 
 					<tr id="settings-entry-link">
@@ -399,7 +411,7 @@ style(Application::APP_NAME, 'navigation');
 									)
 								); ?></span>
 						</td>
-						<td><input type="checkbox" value="1" id="settings-link"></td>
+						<td colspan="2"><input type="checkbox" value="1" id="settings-link"></td>
 					</tr>
 					<!--<tr id="settings-entry-link-files">
 						<td class="left">Share Files With Linked Circles<br/>
@@ -416,11 +428,11 @@ style(Application::APP_NAME, 'navigation');
 									)
 								); ?></span>
 						</td>
-						<td><input type="checkbox" value="1" id="settings-link-auto"></td>
+						<td colspan="2"><input type="checkbox" value="1" id="settings-link-auto"></td>
 					</tr>
 
 					<tr>
-						<td colspan="2" style="text-align: center;">
+						<td colspan="3" style="text-align: center;">
 							<input type="submit" id="settings-submit"
 								   value="<?php p($l->t('Save settings')); ?>" />
 						</td>

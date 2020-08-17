@@ -36,6 +36,8 @@ use Exception;
 use OC;
 use OC\Share20\Share;
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\Exceptions\CircleDoesNotExistException;
+use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
@@ -98,6 +100,9 @@ class FileShare extends AGlobalScaleEvent {
 
 	/**
 	 * @param GSEvent $event
+	 *
+	 * @throws GSStatusException
+	 * @throws CircleDoesNotExistException
 	 */
 	public function manage(GSEvent $event): void {
 		$circle = $event->getCircle();
@@ -140,7 +145,7 @@ class FileShare extends AGlobalScaleEvent {
 		$accounts = [];
 		foreach ($members as $member) {
 			if ($member->getInstance() === '') {
-				$accounts[] = $this->getInfosFromContact($member);
+				$accounts[] = $this->miscService->getInfosFromContact($member);
 			}
 		}
 
@@ -150,6 +155,8 @@ class FileShare extends AGlobalScaleEvent {
 
 	/**
 	 * @param GSEvent[] $events
+	 *
+	 * @throws CircleDoesNotExistException
 	 */
 	public function result(array $events): void {
 		$event = null;
@@ -179,13 +186,10 @@ class FileShare extends AGlobalScaleEvent {
 	 * @param Circle $circle
 	 * @param string $memberId
 	 * @param array $emails
+	 *
+	 * @throws CircleDoesNotExistException
 	 */
 	private function sendShareToContact(GSEvent $event, Circle $circle, string $memberId, array $emails) {
-		$password = '';
-		if ($this->configService->enforcePasswordProtection($circle)) {
-			$password = $this->miscService->token(15);
-		}
-
 		try {
 			$member = $this->membersRequest->forceGetMemberById($memberId);
 			$share = $this->getShareFromData($event->getData());
@@ -193,11 +197,27 @@ class FileShare extends AGlobalScaleEvent {
 			return;
 		}
 
+		$newCircle = $this->circlesRequest->forceGetCircle($circle->getUniqueId(), true);
+		$password = '';
+		$sendPasswordByMail = true;
+		if ($this->configService->enforcePasswordProtection($newCircle)) {
+			if ($newCircle->getSetting('password_single_enabled') === 'true') {
+				$password = $newCircle->getPasswordSingle();
+				$sendPasswordByMail = false;
+			} else {
+				$password = $this->miscService->token(15);
+			}
+		}
+
 		try {
 			$sharesToken =
 				$this->tokensRequest->generateTokenForMember($member, (int)$share->getId(), $password);
 		} catch (TokenDoesNotExistException $e) {
 			return;
+		}
+
+		if (!$sendPasswordByMail) {
+			$password = '';
 		}
 
 		foreach ($emails as $mail) {
@@ -397,22 +417,6 @@ class FileShare extends AGlobalScaleEvent {
 		);
 
 		return $emailTemplate;
-	}
-
-
-	/**
-	 * @param Member $member
-	 *
-	 * @return array
-	 */
-	private function getInfosFromContact(Member $member): array {
-		$contact = MiscService::getContactData($member->getUserId());
-
-		return [
-			'memberId' => $member->getMemberId(),
-			'emails'   => $this->getArray('EMAIL', $contact),
-			'cloudIds' => $this->getArray('CLOUD', $contact)
-		];
 	}
 
 

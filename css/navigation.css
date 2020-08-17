@@ -343,6 +343,9 @@ div.circle .owner, div.circle .type, div.circle .resume {
 #settings-name {
 	width: 300px;
 }
+#single-password {
+	width: 270px;
+}
 
 #settings-desc {
 	width: 300px;

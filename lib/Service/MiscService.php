@@ -26,6 +26,7 @@
 
 namespace OCA\Circles\Service;
 
+use daita\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
 use OC;
 use OC\User\NoUserException;
@@ -39,6 +40,10 @@ use OCP\ILogger;
 use OCP\IUserManager;
 
 class MiscService {
+
+
+	use TArrayTools;
+
 
 	/** @var ILogger */
 	private $logger;
@@ -352,6 +357,23 @@ class MiscService {
 		}
 
 		return $str;
+	}
+
+
+	/**
+	 * @param Member $member
+	 *
+	 * @return array
+	 */
+	public function getInfosFromContact(Member $member) {
+		$contact = MiscService::getContactData($member->getUserId());
+
+		return [
+			'memberId' => $member->getMemberId(),
+			'emails'   => $this->getArray('EMAIL', $contact),
+			'cloudIds' => $this->getArray('CLOUD', $contact)
+		];
+
 	}
 
 }

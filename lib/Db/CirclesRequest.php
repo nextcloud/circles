@@ -33,6 +33,7 @@ namespace OCA\Circles\Db;
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
+use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 
@@ -48,11 +49,12 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 *          In case of interaction with users, Please use getCircle() instead.
 	 *
 	 * @param string $circleUniqueId
+	 * @param bool $allSettings
 	 *
 	 * @return Circle
 	 * @throws CircleDoesNotExistException
 	 */
-	public function forceGetCircle($circleUniqueId) {
+	public function forceGetCircle($circleUniqueId, bool $allSettings = false) {
 		$qb = $this->getCirclesSelectSql();
 
 		$this->leftJoinOwner($qb, '');
@@ -66,7 +68,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 			throw new CircleDoesNotExistException($this->l10n->t('Circle not found'));
 		}
 
-		return $this->parseCirclesSelectSql($data);
+		return $this->parseCirclesSelectSql($data, $allSettings);
 	}
 
 
@@ -89,7 +91,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 		$circles = [];
 		$cursor = $qb->execute();
 		while ($data = $cursor->fetch()) {
-			$circles[] = $this->parseCirclesSelectSql($data);
+			$circles[] = $this->parseCirclesSelectSql($data, true);
 		}
 		$cursor->closeCursor();
 
@@ -138,6 +140,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 *
 	 * @return Circle[]
 	 * @throws ConfigNoCircleAvailableException
+	 * @throws GSStatusException
 	 */
 	public function getCircles(
 		string $userId, int $circleType = 0, string $name = '', int $level = 0, bool $forceAll = false,
