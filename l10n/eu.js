@@ -295,6 +295,7 @@ OC.L10N.register(
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Aldatu kide kopuruaren muga. (0: default, -1: unlimited)",
     "Password enforcement" : "Pasahitz bidez betearazita",
     "External share will be protected by a randomly generated password" : "Kanpoko partekatzea ausazko pasahitz baten bidez babestua.",
+    "Change password" : "Aldatu pasahitza",
     "Allow Federated Links" : "Esteka federatuak onartu",
     "Makes the circle federated, and enables sharing between federated circles" : "Zirkuluak federatzen ditu, eta zirkulu federatuen artean partekatzea ahalbidetzen du",
     "Accept Link Request Automatically" : "Onartu automatikoki batzeko eskaerak",

@@ -293,6 +293,7 @@ OC.L10N.register(
     "Description" : "Lýsing",
     "Members limit" : "Takmörk meðlima",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Breyttu takmörkum á fjölda meðlima. (0: sjálfgefið, -1: ótakmarkað)",
+    "Change password" : "Breyta lykilorði",
     "Allow Federated Links" : "Leyfa skýjasambandstengla",
     "Makes the circle federated, and enables sharing between federated circles" : "Setur hringinn í skýjasamband og virkjar deilingu milli hringja í skýjasambandi (federated)",
     "Accept Link Request Automatically" : "Samþykkja sjálfkrafa beiðni um tengil",

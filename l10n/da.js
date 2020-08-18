@@ -144,6 +144,7 @@ OC.L10N.register(
     "Link" : "Link",
     "Linked" : "Linket",
     "Description" : "Beskrivelse",
+    "Change password" : "Skift kodeord",
     "Allow Federated Links" : "Tillad federarede links",
     "Save settings" : "Gem indstillinger"
 },

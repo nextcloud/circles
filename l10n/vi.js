@@ -290,6 +290,7 @@ OC.L10N.register(
     "Description" : "Mô tả",
     "Members limit" : "Giới hạn số thành viên",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Thay đổi giới hạn tới tổng số thành viên hiện hành. (0: mặc định, -1: không giới hạn)",
+    "Change password" : "Đổi mật khẩu",
     "Allow Federated Links" : "Cho phép Liên Kết Liên Bang",
     "Makes the circle federated, and enables sharing between federated circles" : "Kích hoạt vòng kết nối lên chế độ Liên Bang, và kích hoạt chia sẻ giữa các vòng kết nối Liên Bang",
     "Accept Link Request Automatically" : "Chấp Nhận Yêu Cầu Liên kết Một Cách Tự Động",

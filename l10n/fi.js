@@ -208,6 +208,7 @@ OC.L10N.register(
     "Name of the Circle" : "Piirin nimi",
     "Description" : "Kuvaus",
     "Members limit" : "Jäsenraja",
+    "Change password" : "Vaihda salasana",
     "Allow Federated Links" : "Salli federoidut linkit",
     "Accept Link Request Automatically" : "Hyväksy linkkipyynnöt automaattisesti",
     "Save settings" : "Tallenna asetukset",

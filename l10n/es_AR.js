@@ -98,6 +98,7 @@ OC.L10N.register(
     "Status" : "Estatus",
     "Joined" : "Se ha unido",
     "Link" : "Link",
-    "Description" : "Descripción"
+    "Description" : "Descripción",
+    "Change password" : "Cambiar contraseña"
 },
 "nplurals=2; plural=(n != 1);");

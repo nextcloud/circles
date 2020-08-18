@@ -278,6 +278,7 @@
     "Description" : "Опис",
     "Members limit" : "Ограничење броја чланова",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Промени ограничење броја чланова. (0: подразумевано, -1: неограничено)",
+    "Change password" : "Промени лозинку",
     "Allow Federated Links" : "Дозволи здружено везивање",
     "Makes the circle federated, and enables sharing between federated circles" : "Претвара круг у Здружени и укључује дељење измеђи Здружених Кругова",
     "Accept Link Request Automatically" : "Прихвати захтев за повезивањем аутоматски",

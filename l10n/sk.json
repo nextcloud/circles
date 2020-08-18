@@ -293,6 +293,7 @@
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Zmeniť obmedzenie počtu členov. (0: predvolené, -1: neobmedzené)",
     "Password enforcement" : "Vynútenie hesla",
     "External share will be protected by a randomly generated password" : "Externá zdieľaná položka bude chránená náhodne vygenerovaným heslom",
+    "Change password" : "Zmena hesla",
     "Allow Federated Links" : "Povoliť združené odkazy",
     "Makes the circle federated, and enables sharing between federated circles" : "Vytvoriť združený okruh a umožniť zdieľanie medzi združenými okruhmi",
     "Accept Link Request Automatically" : "Prijímať žiadosť o prepojenie automaticky",

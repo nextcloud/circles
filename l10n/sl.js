@@ -256,6 +256,7 @@ OC.L10N.register(
     "Description" : "Opis",
     "Members limit" : "Omejitev članov",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Omejitev števila članov (0: privzeto, -1: neomejeno)",
+    "Change password" : "Spremeni geslo",
     "Allow Federated Links" : "Dovoli zvezne povezave",
     "Makes the circle federated, and enables sharing between federated circles" : "Krog razširi na zvezne člane in omogoči souporabo na zvezni ravni.",
     "Accept Link Request Automatically" : "Samodejno sprejmi prošnje za povezovanje",

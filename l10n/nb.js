@@ -269,6 +269,7 @@ OC.L10N.register(
     "Description" : "Beskrivelse",
     "Members limit" : "Medlemsbegrensning",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Endre grense for antall medlemmer (0: standard, -1: udefinert).",
+    "Change password" : "Endre passord",
     "Allow Federated Links" : "Tillat sammenknyttede lenker",
     "Makes the circle federated, and enables sharing between federated circles" : "Knytter sammen sirkelen, og skrur på deling mellom sammenknyttede sirkler",
     "Accept Link Request Automatically" : "Godta lenkeforespørsel automatisk",

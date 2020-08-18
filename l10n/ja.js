@@ -293,6 +293,7 @@ OC.L10N.register(
     "Description" : "説明",
     "Members limit" : "メンバー制限",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "制限をメンバー数に変更します。 （0：デフォルト、-1：無制限）",
+    "Change password" : "パスワードの変更",
     "Allow Federated Links" : "統合リンクを許可する",
     "Makes the circle federated, and enables sharing between federated circles" : "サークルをフェデレーションし、フェデレーションサークル間で共有できるようにする",
     "Accept Link Request Automatically" : "自動的にリンク要求を受け入れる",

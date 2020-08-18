@@ -209,6 +209,7 @@ OC.L10N.register(
     "Link" : "Lidhja",
     "Linked" : "I lidhur",
     "Description" : "Përshkrim",
+    "Change password" : "Ndryshoni fjalëkalimin",
     "Allow Federated Links" : "Lejo Linqet e Federuara",
     "Save settings" : "Ruaj konfigurimet"
 },
