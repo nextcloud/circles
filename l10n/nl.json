@@ -291,6 +291,7 @@
     "Description" : "Omschrijving",
     "Members limit" : "Lidmaatschapslimiet",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Wijzig de limiet voor het aantal leden. (0: standaard, -1: onbeperkt)",
+    "Change password" : "Wijzig wachtwoord",
     "Allow Federated Links" : "Gefedereerde links toestaan",
     "Makes the circle federated, and enables sharing between federated circles" : "Maakt de kring gefedereerd en maakt het mogelijk om te delen binnen gefedereerde kringen",
     "Accept Link Request Automatically" : "Automatisch koppelings-verzoeken accepteren",

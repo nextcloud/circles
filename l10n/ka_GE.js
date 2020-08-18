@@ -263,6 +263,7 @@ OC.L10N.register(
     "Link" : "ბმული",
     "Linked" : "დაკავშირებულია",
     "Description" : "აღწერილობა",
+    "Change password" : "პაროლის შეცვლა",
     "Allow Federated Links" : "დართეთ ნება ფედერალურ ბმულებს",
     "Makes the circle federated, and enables sharing between federated circles" : "ხდის წრეს ფედერალურად და რთავს გაზიარებას ფედერალურ წრეებს შორის",
     "Accept Link Request Automatically" : "ბმულის მოთხოვნის ავტომატური დადასტურება",

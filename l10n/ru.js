@@ -292,6 +292,7 @@ OC.L10N.register(
     "Description" : "Описание",
     "Members limit" : "Лимит участников",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Измените лимит на количество участников. (0: по умолчанию, -1: неограниченно)",
+    "Change password" : "Изменить пароль",
     "Allow Federated Links" : "Разрешить связывание между серверами",
     "Makes the circle federated, and enables sharing between federated circles" : "Превращает этот круг в федеративный и разрешает обмен между федеративными кругами",
     "Accept Link Request Automatically" : "Автоматически принимать запросы связывания",

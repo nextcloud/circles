@@ -293,6 +293,7 @@ OC.L10N.register(
     "Description" : "Description",
     "Members limit" : "Members limit",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Change the limit to the number of members. (0: default, -1: unlimited)",
+    "Change password" : "Change password",
     "Allow Federated Links" : "Allow Federated Links",
     "Makes the circle federated, and enables sharing between federated circles" : "Makes the circle federated, and enables sharing between federated circles",
     "Accept Link Request Automatically" : "Accept Link Request Automatically",

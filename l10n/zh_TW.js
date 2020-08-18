@@ -115,6 +115,7 @@ OC.L10N.register(
     "Link" : "連結",
     "Linked" : "已連結",
     "Description" : "描述",
+    "Change password" : "變更密碼",
     "Save settings" : "儲存設定"
 },
 "nplurals=1; plural=0;");

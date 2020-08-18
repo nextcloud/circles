@@ -265,6 +265,7 @@
     "Description" : "Priskribo",
     "Members limit" : "Maksimuma nombro da membroj",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Ŝanĝi limon pri nombro da membroj (0: defaŭlta; -1: senlima).",
+    "Change password" : "Ŝanĝi la pasvorton",
     "Allow Federated Links" : "Permesi federaj ligiloj",
     "Makes the circle federated, and enables sharing between federated circles" : "Federigas la rondon, kaj ebligas kunhavigojn inter federaj rondoj",
     "Accept Link Request Automatically" : "Akcepti ligilo-peton aŭtomate",

@@ -269,6 +269,7 @@ OC.L10N.register(
     "Description" : "Leírás",
     "Members limit" : "Tagok limite",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "A tagok számának módosítása. (0: alapértelmezés szerinti, -1: korlátlan)",
+    "Change password" : "Jelszó megváltoztatása",
     "Allow Federated Links" : "Egyesített linkek engedélyezése",
     "Makes the circle federated, and enables sharing between federated circles" : "A köröket egységesítetté teszi és lehetővé teszi az egységes körök közti megosztást.",
     "Accept Link Request Automatically" : "Kapcsolati kérések automatikus elfogadása",

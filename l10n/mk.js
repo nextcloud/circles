@@ -76,6 +76,7 @@ OC.L10N.register(
     "Description" : "Опис",
     "Members limit" : "Лимит на членови",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Промени го бројот лимитот на членови. (0: стандардно, -1: наограничено)",
+    "Change password" : "Промени лозинка",
     "Allow Federated Links" : "Дозволи федерални врски",
     "Makes the circle federated, and enables sharing between federated circles" : "Прави федерација на кругот, и дозволува споделување помеѓу федералните кругови.",
     "Accept Link Request Automatically" : "Автоматски прифати го барањето за линк",

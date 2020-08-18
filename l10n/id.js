@@ -19,6 +19,7 @@ OC.L10N.register(
     "Username" : "Nama pengguna",
     "Status" : "Status",
     "Link" : "Tautan",
-    "Description" : "Deskrisi"
+    "Description" : "Deskrisi",
+    "Change password" : "Ubah kata sandi"
 },
 "nplurals=1; plural=0;");

@@ -102,6 +102,7 @@ OC.L10N.register(
     "Username" : "Nome d'usuariu",
     "Status" : "Estáu",
     "Link" : "Link",
-    "Description" : "Descripción"
+    "Description" : "Descripción",
+    "Change password" : "Camudar contraseña"
 },
 "nplurals=2; plural=(n != 1);");

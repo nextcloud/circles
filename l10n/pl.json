@@ -293,6 +293,7 @@
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Zmień limit dla ilości członków. (0: domyślny, -1: bez ograniczeń)",
     "Password enforcement" : "Wymuszanie hasła",
     "External share will be protected by a randomly generated password" : "Udostępnienie zewnętrzne będzie chronione losowo wygenerowanym hasłem",
+    "Change password" : "Zmień hasło",
     "Allow Federated Links" : "Zezwalaj na Linki Federacyjne",
     "Makes the circle federated, and enables sharing between federated circles" : "Sprawia, że krąg należy do federacji i umożliwia udostępnianie między kręgami federacyjnymi",
     "Accept Link Request Automatically" : "Akceptuj automatycznie link z prośbą",

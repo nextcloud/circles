@@ -270,6 +270,7 @@ OC.L10N.register(
     "Description" : "Descriere",
     "Members limit" : "Limită membri",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Schimbă limita la numărul de membri. (0: implicit, -1: nelimitat)",
+    "Change password" : "Schimbă parola",
     "Allow Federated Links" : "Permite Legături Federate",
     "Makes the circle federated, and enables sharing between federated circles" : "Face cercul federat, si permite distribuirea între cercuri federate",
     "Accept Link Request Automatically" : "Acceptă Automat Solicitări de Legătură",

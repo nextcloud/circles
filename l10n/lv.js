@@ -28,6 +28,7 @@ OC.L10N.register(
     "Username" : "Lietotājvārds",
     "Status" : "Status",
     "Link" : "Saite",
-    "Description" : "Apraksts"
+    "Description" : "Apraksts",
+    "Change password" : "Mainīt paroli"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);");

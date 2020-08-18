@@ -96,6 +96,7 @@
     "Status" : "Estatus",
     "Joined" : "Se ha unido",
     "Link" : "Link",
-    "Description" : "Descripción"
+    "Description" : "Descripción",
+    "Change password" : "Cambiar contraseña"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

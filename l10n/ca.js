@@ -280,6 +280,7 @@ OC.L10N.register(
     "Description" : "Descripció",
     "Members limit" : "Límit de membres",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Canvia el límit al nombre de membres. (0: per defecte, -1: il·limitat)",
+    "Change password" : "Canvia la contrasenya",
     "Allow Federated Links" : "Permet Enllaços Federats",
     "Makes the circle federated, and enables sharing between federated circles" : "Fa que el cercle sigui federat, i activa compartir entre cercles federats",
     "Accept Link Request Automatically" : "Accepta Automàticament una Petició d'Enllaç",

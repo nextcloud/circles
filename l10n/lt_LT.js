@@ -267,6 +267,7 @@ OC.L10N.register(
     "Group Name" : "Grupės pavadinimas",
     "Link" : "Nuoroda",
     "Description" : "Aprašas",
+    "Change password" : "Pakeisti slaptažodį",
     "Save settings" : "Įrašyti nustatymus",
     "Maximum number of members per circle" : "Didžiausias narių skaičius viename rate",
     "Allow linking of groups" : "Leisti grupių susiejimą",

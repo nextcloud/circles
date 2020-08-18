@@ -142,6 +142,7 @@
     "Link" : "Link",
     "Linked" : "Linket",
     "Description" : "Beskrivelse",
+    "Change password" : "Skift kodeord",
     "Allow Federated Links" : "Tillad federarede links",
     "Save settings" : "Gem indstillinger"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"

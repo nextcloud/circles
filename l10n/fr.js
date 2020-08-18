@@ -295,6 +295,7 @@ OC.L10N.register(
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Changez la limite du nombre de membres. (0: défaut, -1: illimité)",
     "Password enforcement" : "Soumission du mot de passe",
     "External share will be protected by a randomly generated password" : "Le partage externe sera protégé par un mot de passe généré aléatoirement",
+    "Change password" : "Changer le mot de passe",
     "Allow Federated Links" : "Autoriser les liens fédérés",
     "Makes the circle federated, and enables sharing between federated circles" : "Transforme le cercle en fédéré, et active le partage entre cercles fédérés",
     "Accept Link Request Automatically" : "Accepter une demande de lien automatiquement",

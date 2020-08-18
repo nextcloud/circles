@@ -165,6 +165,7 @@ OC.L10N.register(
     "Name of the Circle" : "שם המעגל",
     "Description" : "תיאור",
     "Members limit" : "מגבלת חברים",
+    "Change password" : "החלפת ססמה",
     "Save settings" : "הגדרות שמירה",
     "Maximum number of members per circle" : "מספר החברים המרבי למעגל",
     "Allow linking of groups" : "לאפשר קישור קבוצות",

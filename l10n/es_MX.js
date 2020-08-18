@@ -265,6 +265,7 @@ OC.L10N.register(
     "Link" : "Ligas",
     "Linked" : "Ligado",
     "Description" : "Descripción",
+    "Change password" : "Cambiar contraseña",
     "Allow Federated Links" : "Permitir Ligas Federadas",
     "Makes the circle federated, and enables sharing between federated circles" : "Hace al círculo federado y habilita el compartir entre círculos federados",
     "Accept Link Request Automatically" : "Aceptar las Solicitudes de Ligas Automáticamente",

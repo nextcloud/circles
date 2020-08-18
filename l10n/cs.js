@@ -295,6 +295,7 @@ OC.L10N.register(
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Změnit omezení počtu členů. (0: výchozí, -1: neomezený)",
     "Password enforcement" : "Vynucení hesla",
     "External share will be protected by a randomly generated password" : "Externí sdílení bude ochráněno vytvořením náhodného hesla",
+    "Change password" : "Změnit heslo",
     "Allow Federated Links" : "Umožnit federované odkazy",
     "Makes the circle federated, and enables sharing between federated circles" : "Nastaví okruh jako federovaný a zapne sdílení mezi sdruženými okruhy",
     "Accept Link Request Automatically" : "Automaticky přijímat žádost o připojení",

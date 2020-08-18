@@ -19,6 +19,7 @@ OC.L10N.register(
     "Settings" : "Instellings",
     "Username" : "Gebruikersnaam",
     "Link" : "Skakel",
-    "Description" : "Beskrywing"
+    "Description" : "Beskrywing",
+    "Change password" : "Verander wagwoord"
 },
 "nplurals=2; plural=(n != 1);");

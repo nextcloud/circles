@@ -62,6 +62,7 @@ OC.L10N.register(
     "Link" : "Връзка",
     "Linked" : "Свързан",
     "Description" : "Описание",
+    "Change password" : "Промени паролата",
     "Save settings" : "Запазване на настройките"
 },
 "nplurals=2; plural=(n != 1);");
