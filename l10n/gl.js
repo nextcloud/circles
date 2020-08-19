@@ -295,6 +295,8 @@ OC.L10N.register(
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Cambia o límite ao número de membros. (0: predeterminado, -1: ilimitado)",
     "Password enforcement" : "Obrigar o contrasinal",
     "External share will be protected by a randomly generated password" : "A compartición externa estará protexida por un contrasinal xerado ao chou",
+    "Single password" : "Contrasinal único",
+    "One password for all shares. If not, a randomly generated password is sent by mail" : "Un contrasinal para todos os recursos compartidos. Se non, xerase un contrasinal ao chou é enviase por correo",
     "Change password" : "Cambiar o contrasinal",
     "Allow Federated Links" : "Permitir as ligazóns federadas",
     "Makes the circle federated, and enables sharing between federated circles" : "Converte o círculo en federado e permite compartir entre círculos federados",

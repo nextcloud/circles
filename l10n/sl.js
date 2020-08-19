@@ -151,6 +151,7 @@ OC.L10N.register(
     "Click the button below to open it." : "Kliknite na gumb za odpiranje.",
     "Open »%s«" : "Odpri »%s«",
     "Password to access files" : "Geslo za dostop do datotek",
+    "%s shared multiple files with you." : "%s vam omogoči souporabo več datotek.",
     "The name of your circle must contain at least 3 characters" : "Ime kroga mora vsebovati vsaj 3 znake",
     "Linked Groups are not allowed on this Nextcloud" : "Povezane skupine na tej namestitvi Nextcloud niso dovoljene",
     "Federated circles are not allowed on this Nextcloud" : "Zvezni krogi na tej namestitvi Nextcloud niso dovoljeni.",
@@ -171,6 +172,7 @@ OC.L10N.register(
     "You are already a member of this circle" : "V tem krogu ste že član.",
     "The user is already a member of this circle" : "Uporabnik je že član kroga.",
     "The user has already been invited into this circle" : "Uporabnik je že bil povabljen v krog.",
+    "You are now a member of the Circle \"%2$s\"" : "Sedaj ste včlanjeni v krog »%2$s«.",
     "Accept" : "Sprejmi",
     "Refuse" : "Zavrni",
     "Leave the circle" : "Zapusti krog",
@@ -256,6 +258,10 @@ OC.L10N.register(
     "Description" : "Opis",
     "Members limit" : "Omejitev članov",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Omejitev števila članov (0: privzeto, -1: neomejeno)",
+    "Password enforcement" : "Vsiljevanje zaščite z geslom",
+    "External share will be protected by a randomly generated password" : "Zunanja mesta uporabe bodo zaščitena z naključno ustvarjenim geslom",
+    "Single password" : "Enojno geslo",
+    "One password for all shares. If not, a randomly generated password is sent by mail" : "Eno geslo za vsa mesta souporabe. Če to ni določeno, je ustvarjeno naključno geslo poslano na elektronski naslov.",
     "Change password" : "Spremeni geslo",
     "Allow Federated Links" : "Dovoli zvezne povezave",
     "Makes the circle federated, and enables sharing between federated circles" : "Krog razširi na zvezne člane in omogoči souporabo na zvezni ravni.",
@@ -267,6 +273,7 @@ OC.L10N.register(
     "Groups can be linked to circles." : "Skupine je mogoče povezovati v širše kroge.",
     "Allow federated circles" : "Dovoli zvezne kroge",
     "Circles from different Nextclouds can be linked together." : "Kroge z različnih oblakov Nextcloud je mogoče povezati.",
-    "Skip invitation step to closed circles" : "Preskoči korak vabila za zaprte kroge"
+    "Skip invitation step to closed circles" : "Preskoči korak vabila za zaprte kroge",
+    "Moderators can add member to closed circles without user approval." : "Moderatorji lahko dodajajo člane v zaprte kroge brez predhodne potrditve drugih članov."
 },
 "nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);");
