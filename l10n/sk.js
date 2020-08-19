@@ -295,6 +295,8 @@ OC.L10N.register(
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Zmeniť obmedzenie počtu členov. (0: predvolené, -1: neobmedzené)",
     "Password enforcement" : "Vynútenie hesla",
     "External share will be protected by a randomly generated password" : "Externá zdieľaná položka bude chránená náhodne vygenerovaným heslom",
+    "Single password" : "Jedno heslo",
+    "One password for all shares. If not, a randomly generated password is sent by mail" : "Jedno heslo pre všetky zdieľané položky. Ak nie, náhodne vygenerované heslo sa pošle e-mailom",
     "Change password" : "Zmena hesla",
     "Allow Federated Links" : "Povoliť združené odkazy",
     "Makes the circle federated, and enables sharing between federated circles" : "Vytvoriť združený okruh a umožniť zdieľanie medzi združenými okruhmi",

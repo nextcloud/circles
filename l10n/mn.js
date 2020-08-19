@@ -92,6 +92,7 @@ OC.L10N.register(
     "Link" : "Холбоос",
     "Linked" : "холбосон",
     "Description" : "Тодорхойлолт",
+    "Change password" : "Нууц үг солих",
     "Save settings" : "тохиргоог хадгалах"
 },
 "nplurals=2; plural=(n != 1);");
