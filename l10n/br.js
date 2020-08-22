@@ -5,6 +5,7 @@ OC.L10N.register(
     "Secret" : "Sekret",
     "Public" : "Publik",
     "Admin" : "Administratour",
+    "Owner" : "Perc'henner",
     "Unknown" : "Dianv",
     "Blocked" : "Stanket",
     "Circles" : "Kelc'hioù",
