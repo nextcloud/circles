@@ -295,6 +295,8 @@ OC.L10N.register(
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Αλλαγή του ορίου των μελών. (0: προεπιλογή, -1: χωρίς όριο)",
     "Password enforcement" : "Επιβολή κωδικού πρόσβασης",
     "External share will be protected by a randomly generated password" : "Το εξωτερικό κοινόχρηστο στοιχείο θα προστατεύεται από έναν τυχαίο κωδικό πρόσβασης",
+    "Single password" : "Απλό συνθηματικό",
+    "One password for all shares. If not, a randomly generated password is sent by mail" : "Χρήση ενός συνθηματικού για όλες τις κοινές χρήσεις. Σε αντίθετη περίπτωση, αποστέλλεται με email ένα τυχαίο συνθηματικό.",
     "Change password" : "Αλλαγή συνθημτικού",
     "Allow Federated Links" : "Να επιτρέπονται Ομόσπονδοι Σύνδεσμοι",
     "Makes the circle federated, and enables sharing between federated circles" : "Μετατρέπει τον κύκλο σε Ομόσπονδο και ενεργοποιεί το διαμοιρασμό μεταξύ Ομοσπονδιακών Κύκλων",
