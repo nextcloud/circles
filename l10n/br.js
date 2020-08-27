@@ -4,7 +4,7 @@ OC.L10N.register(
     "Personal" : "Personel",
     "Secret" : "Sekret",
     "Public" : "Publik",
-    "Admin" : "Administratour",
+    "Admin" : "Merour",
     "Owner" : "Perc'henner",
     "Unknown" : "Dianv",
     "Blocked" : "Stanket",
