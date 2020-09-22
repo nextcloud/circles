@@ -59,7 +59,7 @@
     "Issue while retrieving the list of circles" : "Грешка приликом дохватања списка кругова",
     "Group '{name}' successfully added to the circle" : "Група '{name}' успешно додата у круг",
     "Group '{name}' could not be added to the circle" : "Група '{name}' не може да се дода у круг",
-    "Group '{name}' updated" : "Група'{name}' ажурирана",
+    "Group '{name}' updated" : "Група '{name}' ажурирана",
     "Group '{name}' could not be updated" : "Група '{name}' не може да се ажурира",
     "Group '{name}' successfully removed from the circle" : "Група '{name}' успешно уклоњена из круга",
     "Group '{name}' could not be removed from the circle" : "Група '{name}' не може да се уклони из круга",
