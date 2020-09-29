@@ -291,6 +291,8 @@
     "Description" : "Opis",
     "Members limit" : "Ograničenje broja članova",
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Promijenite ograničenje na broj članova. (0: zadano, -1: neograničeno)",
+    "Password enforcement" : "Primjena zaporke",
+    "External share will be protected by a randomly generated password" : "Vanjsko dijeljenje bit će zaštićeno nasumično generiranom zaporkom",
     "Change password" : "Promijeni zaporku",
     "Allow Federated Links" : "Dopusti udružene poveznice",
     "Makes the circle federated, and enables sharing between federated circles" : "Krug postaje udružen i omogućuje dijeljenje između udruženih krugova",
