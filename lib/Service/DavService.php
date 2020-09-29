@@ -422,6 +422,7 @@ class DavService {
 				$this->configService->contactsBackendType(), $group . ' - ' . $user->getDisplayName()
 			);
 			$circle->setAltName($group);
+			$circle->generateUniqueId();
 			$circle->setContactAddressBook($davCard->getAddressBookId());
 			$circle->setContactGroupName($group);
 
