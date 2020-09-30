@@ -26,6 +26,7 @@
 
 namespace OCA\Circles\Service;
 
+use daita\MySmallPhpTools\Model\Nextcloud\NC19Request;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Model\Circle;
 use OCP\IConfig;
@@ -539,6 +540,20 @@ class ConfigService {
 	 */
 	public function getInstanceId() {
 		return $this->config->getSystemValue('instanceid');
+	}
+
+
+	/**
+	 * @param NC19Request $request
+	 */
+	public function configureRequest(NC19Request $request) {
+		if ($this->getAppValue(ConfigService::CIRCLES_SELF_SIGNED) === '1') {
+			$request->setVerifyPeer(false);
+		}
+
+		if ($this->getAppValue(ConfigService::CIRCLES_NON_SSL_LOCAL) === '1') {
+			$request->setLocalAddressAllowed(true);
+		}
 	}
 
 }

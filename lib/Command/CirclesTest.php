@@ -33,6 +33,7 @@ use daita\MySmallPhpTools\Exceptions\RequestContentException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\RequestResultSizeException;
 use daita\MySmallPhpTools\Exceptions\RequestServerException;
+use daita\MySmallPhpTools\Model\Nextcloud\NC19Request;
 use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use daita\MySmallPhpTools\Traits\TRequest;
@@ -173,14 +174,9 @@ class CirclesTest extends Base {
 		$absolute = $this->urlGenerator->linkToRouteAbsolute('core.CSRFToken.index');
 		$output->write('- Simple request on ' . $absolute . ': ');
 
-		$request = new Request('', Request::TYPE_GET);
+		$request = new NC19Request('', Request::TYPE_GET);
+		$this->configService->configureRequest($request);
 		$request->setAddressFromUrl($absolute);
-		if ($this->configService->getAppValue(ConfigService::CIRCLES_SELF_SIGNED) === '1') {
-			$request->setVerifyPeer(false);
-		}
-		if (method_exists($request, 'setFollowLocation')) {
-			$request->setFollowLocation(false);
-		}
 
 		$this->doRequest($request);
 		$color = 'error';

@@ -26,14 +26,12 @@
 
 namespace OCA\Circles\Search;
 
-use daita\MySmallPhpTools\Exceptions\RequestContentException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\RequestResultNotJsonException;
-use daita\MySmallPhpTools\Exceptions\RequestResultSizeException;
-use daita\MySmallPhpTools\Exceptions\RequestServerException;
+use daita\MySmallPhpTools\Model\Nextcloud\NC19Request;
 use daita\MySmallPhpTools\Model\Request;
+use daita\MySmallPhpTools\Traits\Nextcloud\TNC19Request;
 use daita\MySmallPhpTools\Traits\TArrayTools;
-use daita\MySmallPhpTools\Traits\TRequest;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\ISearch;
 use OCA\Circles\Model\Member;
@@ -50,7 +48,7 @@ use OCA\Circles\Service\MiscService;
 class GlobalScaleUsers implements ISearch {
 
 
-	use TRequest;
+	use TNC19Request;
 	use TArrayTools;
 
 
@@ -84,10 +82,8 @@ class GlobalScaleUsers implements ISearch {
 			return [];
 		}
 
-		$request = new Request('/users', Request::TYPE_GET);
-		if ($this->configService->getAppValue(ConfigService::CIRCLES_SELF_SIGNED) === '1') {
-			$request->setVerifyPeer(false);
-		}
+		$request = new NC19Request('/users', Request::TYPE_GET);
+		$this->configService->configureRequest($request);
 		$request->setProtocols(['https', 'http']);
 		$request->addData('search', $search);
 		$request->setAddressFromUrl($lookup);
@@ -95,13 +91,12 @@ class GlobalScaleUsers implements ISearch {
 		try {
 			$users = $this->retrieveJson($request);
 		} catch (
-		RequestContentException |
 		RequestNetworkException |
-		RequestResultSizeException |
-		RequestServerException |
 		RequestResultNotJsonException $e
 		) {
-			$this->miscService->log('Issue while retrieving instances from lookup: ' . get_class($e) . ' ' . $e->getMessage());
+			$this->miscService->log(
+				'Issue while retrieving instances from lookup: ' . get_class($e) . ' ' . $e->getMessage()
+			);
 
 			return [];
 		}

@@ -35,6 +35,7 @@ use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\RequestResultNotJsonException;
 use daita\MySmallPhpTools\Exceptions\RequestResultSizeException;
 use daita\MySmallPhpTools\Exceptions\RequestServerException;
+use daita\MySmallPhpTools\Model\Nextcloud\NC19Request;
 use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Traits\TRequest;
 use daita\MySmallPhpTools\Traits\TStringTools;
@@ -140,10 +141,8 @@ class GlobalScaleService {
 			'circles.GlobalScale.asyncBroadcast', ['token' => $wrapper->getToken()]
 		);
 
-		$request = new Request('', Request::TYPE_PUT);
-		if ($this->configService->getAppValue(ConfigService::CIRCLES_SELF_SIGNED) === '1') {
-			$request->setVerifyPeer(false);
-		}
+		$request = new NC19Request('', Request::TYPE_PUT);
+		$this->configService->configureRequest($request);
 		$request->setAddressFromUrl($absolute);
 
 		try {
@@ -222,10 +221,8 @@ class GlobalScaleService {
 		/** @var string $lookup */
 		try {
 			$lookup = $this->configService->getGSStatus(ConfigService::GS_LOOKUP);
-			$request = new Request(ConfigService::GS_LOOKUP_INSTANCES, Request::TYPE_POST);
-			if ($this->configService->getAppValue(ConfigService::CIRCLES_SELF_SIGNED) === '1') {
-				$request->setVerifyPeer(false);
-			}
+			$request = new NC19Request(ConfigService::GS_LOOKUP_INSTANCES, Request::TYPE_POST);
+			$this->configService->configureRequest($request);
 
 			$user = $this->getRandomUser();
 			$data = $this->signer->sign('lookupserver', ['federationId' => $user->getCloudId()], $user);
