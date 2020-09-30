@@ -35,6 +35,7 @@ use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\RequestResultNotJsonException;
 use daita\MySmallPhpTools\Exceptions\RequestResultSizeException;
 use daita\MySmallPhpTools\Exceptions\RequestServerException;
+use daita\MySmallPhpTools\Model\Nextcloud\NC19Request;
 use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\TArrayTools;
@@ -196,11 +197,8 @@ class GSUpstreamService {
 		$this->signEvent($event);
 
 		$path = $this->urlGenerator->linkToRoute('circles.GlobalScale.broadcast');
-		$request = new Request($path, Request::TYPE_POST);
-		if ($this->configService->getAppValue(ConfigService::CIRCLES_SELF_SIGNED) === '1') {
-			$request->setVerifyPeer(false);
-		}
-
+		$request = new NC19Request($path, Request::TYPE_POST);
+		$this->configService->configureRequest($request);
 		$protocols = ['https', 'http'];
 		if ($protocol !== '') {
 			$protocols = [$protocol];
@@ -233,10 +231,9 @@ class GSUpstreamService {
 		$owner = $circle->getOwner();
 		$path = $this->urlGenerator->linkToRoute('circles.GlobalScale.event');
 
-		$request = new Request($path, Request::TYPE_POST);
-		if ($this->configService->getAppValue(ConfigService::CIRCLES_SELF_SIGNED) === '1') {
-			$request->setVerifyPeer(false);
-		}
+		$request = new NC19Request($path, Request::TYPE_POST);
+		$this->configService->configureRequest($request);
+
 		if ($this->get('REQUEST_SCHEME', $_SERVER) !== '') {
 			$request->setProtocols([$_SERVER['REQUEST_SCHEME']]);
 		} else {
@@ -446,11 +443,8 @@ class GSUpstreamService {
 		$this->signEvent($event);
 
 		$path = $this->urlGenerator->linkToRoute('circles.GlobalScale.status');
-		$request = new Request($path, Request::TYPE_POST);
-		if ($this->configService->getAppValue(ConfigService::CIRCLES_SELF_SIGNED) === '1') {
-			$request->setVerifyPeer(false);
-		}
-
+		$request = new NC19Request($path, Request::TYPE_POST);
+		$this->configService->configureRequest($request);
 		$request->setProtocols(['https', 'http']);
 		$request->setDataSerialize($event);
 

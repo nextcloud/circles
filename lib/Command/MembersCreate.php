@@ -34,6 +34,7 @@ use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\RequestResultNotJsonException;
 use daita\MySmallPhpTools\Exceptions\RequestResultSizeException;
 use daita\MySmallPhpTools\Exceptions\RequestServerException;
+use daita\MySmallPhpTools\Model\Nextcloud\NC19Request;
 use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Traits\TRequest;
 use Exception;
@@ -174,10 +175,8 @@ class MembersCreate extends Base {
 			return '';
 		}
 
-		$request = new Request('/users', Request::TYPE_GET);
-		if ($this->configService->getAppValue(ConfigService::CIRCLES_SELF_SIGNED) === '1') {
-			$request->setVerifyPeer(false);
-		}
+		$request = new NC19Request('/users', Request::TYPE_GET);
+		$this->configService->configureRequest($request);
 		$request->setProtocols(['https', 'http']);
 		$request->addData('search', $search);
 		$request->setAddressFromUrl($lookup);
