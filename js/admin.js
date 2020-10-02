@@ -33,12 +33,11 @@ var elements = {
 	// test_async_wait: null,
 	members_limit: null,
 	allow_linked_groups: null,
-	allow_federated_circles: null,
 	skip_invitation_to_closed_circles: null
 };
 
 
-$(document).ready(function () {
+$(document).ready(function() {
 
 	// elements.test_async_start = $('#test_async_start');
 	// elements.test_async_reset = $('#test_async_reset');
@@ -46,7 +45,6 @@ $(document).ready(function () {
 	// elements.test_async_result = $('#test_async_result');
 	elements.members_limit = $('#members_limit');
 	elements.allow_linked_groups = $('#allow_linked_groups');
-	elements.allow_federated_circles = $('#allow_federated_circles');
 	elements.skip_invitation_to_closed_circles = $('#skip_invitation_to_closed_circles');
 
 	// elements.test_async_wait.hide().on('click', function () {
@@ -71,24 +69,19 @@ $(document).ready(function () {
 	// 	});
 	// });
 
-	elements.members_limit.on('change', function () {
+	elements.members_limit.on('change', function() {
 		saveChange();
 	});
 
-	elements.allow_linked_groups.on('change', function () {
+	elements.allow_linked_groups.on('change', function() {
 		saveChange();
 	});
 
-
-	elements.allow_federated_circles.on('change', function () {
+	elements.skip_invitation_to_closed_circles.on('change', function() {
 		saveChange();
 	});
 
-	elements.skip_invitation_to_closed_circles.on('change', function () {
-		saveChange();
-	});
-
-	saveChange = function () {
+	saveChange = function() {
 		$.ajax({
 			method: 'POST',
 			url: OC.generateUrl('/apps/circles/admin/settings'),
@@ -96,34 +89,31 @@ $(document).ready(function () {
 				members_limit: elements.members_limit.val(),
 				allow_linked_groups: (elements.allow_linked_groups.is(
 					':checked')) ? '1' : '0',
-				allow_federated_circles: (elements.allow_federated_circles.is(
-					':checked')) ? '1' : '0',
 				skip_invitation_to_closed_circles: (elements.skip_invitation_to_closed_circles.is(
 					':checked')) ? '1' : '0'
 			}
-		}).done(function (res) {
+		}).done(function(res) {
 			elements.members_limit.val(res.membersLimit);
 			elements.allow_linked_groups.prop('checked', (res.allowLinkedGroups === '1'));
-			elements.allow_federated_circles.prop('checked', (res.allowFederatedCircles === '1'));
 			elements.skip_invitation_to_closed_circles.prop('checked', (res.skipInvitationStep === '1'));
 		});
 	};
 
-	updateTestAsync = function () {
+	updateTestAsync = function() {
 		self.refreshResult();
 	};
 
 
-	refreshResult = function () {
+	refreshResult = function() {
 		$.ajax({
 			method: 'GET',
 			url: OC.generateUrl('/apps/circles/admin/testAsync')
-		}).done(function (res) {
+		}).done(function(res) {
 			self.displayTestAsync(res);
 		});
 	};
 
-	displayTestAsync = function (res) {
+	displayTestAsync = function(res) {
 		// displayTestAsyncResult(res);
 		// displayTestAsyncNewTest(res);
 		// displayTestAsyncReset(res);
@@ -185,12 +175,10 @@ $(document).ready(function () {
 		method: 'GET',
 		url: OC.generateUrl('/apps/circles/admin/settings'),
 		data: {}
-	}).done(function (res) {
+	}).done(function(res) {
 		elements.members_limit.val(res.membersLimit);
 		elements.allow_linked_groups.prop('checked', (res.allowLinkedGroups === '1'));
-		elements.allow_federated_circles.prop('checked', (res.allowFederatedCircles === '1'));
 		elements.skip_invitation_to_closed_circles.prop('checked', (res.skipInvitationStep === '1'));
-		
 	});
 	//
 	// var timerTestAsync = setInterval(function () {
