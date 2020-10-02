@@ -47,16 +47,13 @@ class SettingsController extends Controller {
 
 
 	public function setSettings(
-		$members_limit, $allow_linked_groups, $allow_federated_circles, $skip_invitation_to_closed_circles
+		$members_limit, $allow_linked_groups, $skip_invitation_to_closed_circles
 	) {
 		$this->configService->setAppValue(
 			ConfigService::CIRCLES_MEMBERS_LIMIT, $members_limit
 		);
 		$this->configService->setAppValue(
 			ConfigService::CIRCLES_ALLOW_LINKED_GROUPS, $allow_linked_groups
-		);
-		$this->configService->setAppValue(
-			ConfigService::CIRCLES_ALLOW_FEDERATED_CIRCLES, $allow_federated_circles
 		);
 		$this->configService->setAppValue(
 			ConfigService::CIRCLES_SKIP_INVITATION_STEP, $skip_invitation_to_closed_circles
