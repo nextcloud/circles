@@ -66,9 +66,6 @@ class SettingsController extends Controller {
 			ConfigService::CIRCLES_ALLOW_LINKED_GROUPS, $allow_linked_groups
 		);
 		$this->configService->setAppValue(
-			ConfigService::CIRCLES_ALLOW_FEDERATED_CIRCLES, $allow_federated_circles
-		);
-		$this->configService->setAppValue(
 			ConfigService::CIRCLES_SKIP_INVITATION_STEP, $skip_invitation_to_closed_circles
 		);
 
