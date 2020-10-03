@@ -304,9 +304,9 @@
     "Maximum number of members per circle" : "Maximálny poet členov v okruhu",
     "Allow linking of groups" : "Umožniť prepojovanie skupín",
     "Groups can be linked to circles." : "Skupiny môžu byť prepojené s okruhmi.",
-    "Allow federated circles" : "Povoliť združené okruhy",
-    "Circles from different Nextclouds can be linked together." : "Kruhy z rôznych Nextcloudov môžu byť spolu prepojené.",
     "Skip invitation step to closed circles" : "Preskočiť krok pozvania do uzavretých okruhov",
-    "Moderators can add member to closed circles without user approval." : "Moderátori môžu pridať člena do uzavretých okruhov bez súhlasu používateľa."
+    "Moderators can add member to closed circles without user approval." : "Moderátori môžu pridať člena do uzavretých okruhov bez súhlasu používateľa.",
+    "Allow federated circles" : "Povoliť združené okruhy",
+    "Circles from different Nextclouds can be linked together." : "Kruhy z rôznych Nextcloudov môžu byť spolu prepojené."
 },"pluralForm" :"nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);"
 }

@@ -306,9 +306,9 @@ OC.L10N.register(
     "Maximum number of members per circle" : "Bir çevrede bulunabilecek en fazla üye sayısı",
     "Allow linking of groups" : "Gruplar Bağlanabilsin",
     "Groups can be linked to circles." : "Grupların Çevrelere bağlanmasını sağlar.",
-    "Allow federated circles" : "Birleşik Çevreler Kullanılabilsin",
-    "Circles from different Nextclouds can be linked together." : "Farklı Nextcloud kopyaları üzerindeki çevreler birbirine bağlanabilir",
     "Skip invitation step to closed circles" : "Kapalı çevrelerde çağrı adımı atlansın",
-    "Moderators can add member to closed circles without user approval." : "Kapalı çevre sorumluları kullanıcı onayına gerek olmadan üye ekleyebilir."
+    "Moderators can add member to closed circles without user approval." : "Kapalı çevre sorumluları kullanıcı onayına gerek olmadan üye ekleyebilir.",
+    "Allow federated circles" : "Birleşik Çevreler Kullanılabilsin",
+    "Circles from different Nextclouds can be linked together." : "Farklı Nextcloud kopyaları üzerindeki çevreler birbirine bağlanabilir"
 },
 "nplurals=2; plural=(n > 1);");

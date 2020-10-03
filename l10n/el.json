@@ -304,9 +304,9 @@
     "Maximum number of members per circle" : "Μέγιστος αριθμός μελών ανα κύκλο",
     "Allow linking of groups" : "Να επιτρέπεται η σύνδεση ομάδων",
     "Groups can be linked to circles." : "Οι ομάδες μπορούν να συνδεθούν με τους κύκλους.",
-    "Allow federated circles" : "Να επιτρέπονται Ομόσπονδοι Σύνδεσμοι",
-    "Circles from different Nextclouds can be linked together." : "Κύκλοι και διαφορετικά Nextcloud μπορούν να συνδεθούν μεταξύ τους.",
     "Skip invitation step to closed circles" : "Παράλειψη του βήματος πρόσκλησης σε κλειστούς κύκλους",
-    "Moderators can add member to closed circles without user approval." : "Οι συντονιστές μπορούν να προσθέτουν μέλη σε κλειστούς κύκλους χωρίς την έγκριση των χρηστών."
+    "Moderators can add member to closed circles without user approval." : "Οι συντονιστές μπορούν να προσθέτουν μέλη σε κλειστούς κύκλους χωρίς την έγκριση των χρηστών.",
+    "Allow federated circles" : "Να επιτρέπονται Ομόσπονδοι Σύνδεσμοι",
+    "Circles from different Nextclouds can be linked together." : "Κύκλοι και διαφορετικά Nextcloud μπορούν να συνδεθούν μεταξύ τους."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
