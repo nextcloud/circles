@@ -304,9 +304,9 @@ OC.L10N.register(
     "Maximum number of members per circle" : "Maximalt antal medlemmar per cirkel",
     "Allow linking of groups" : "Tillåt länkning av grupper",
     "Groups can be linked to circles." : "Grupper kan länkas till cirklar.",
-    "Allow federated circles" : "Tillåt federerade cirklar",
-    "Circles from different Nextclouds can be linked together." : "Cirklar från olika Nextcloud kan länkas samman",
     "Skip invitation step to closed circles" : "Hoppa över inbjudan till stängda cirklar",
-    "Moderators can add member to closed circles without user approval." : "Moderatorer kan lägga till medlem i slutna kretsar utan användarens godkännande."
+    "Moderators can add member to closed circles without user approval." : "Moderatorer kan lägga till medlem i slutna kretsar utan användarens godkännande.",
+    "Allow federated circles" : "Tillåt federerade cirklar",
+    "Circles from different Nextclouds can be linked together." : "Cirklar från olika Nextcloud kan länkas samman"
 },
 "nplurals=2; plural=(n != 1);");

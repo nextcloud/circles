@@ -304,9 +304,9 @@
     "Maximum number of members per circle" : "Gehieneko kide kopurua zirkuluko",
     "Allow linking of groups" : "Onartu taldeak batzea",
     "Groups can be linked to circles." : "Taldeak batu daitezke zirkuluetara",
-    "Allow federated circles" : "Onartu zirkulu federatuak",
-    "Circles from different Nextclouds can be linked together." : "Nextcloud ezberdinetako zirkuluak beraien artean batu daitezke",
     "Skip invitation step to closed circles" : "Saltatu gonbidapen pausua zirkulu itxietan",
-    "Moderators can add member to closed circles without user approval." : "Moderatzaileek kideak gehitu ditzakete zirkulu itxietara erabiltzailearen baimenik gabe."
+    "Moderators can add member to closed circles without user approval." : "Moderatzaileek kideak gehitu ditzakete zirkulu itxietara erabiltzailearen baimenik gabe.",
+    "Allow federated circles" : "Onartu zirkulu federatuak",
+    "Circles from different Nextclouds can be linked together." : "Nextcloud ezberdinetako zirkuluak beraien artean batu daitezke"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

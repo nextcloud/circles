@@ -306,9 +306,9 @@ OC.L10N.register(
     "Maximum number of members per circle" : "Maximum aantal leden per kring",
     "Allow linking of groups" : "Toestaan koppelen van groepen",
     "Groups can be linked to circles." : "Groepen kunnen gekoppeld worden aan kringen.",
-    "Allow federated circles" : "Toestaan gefedereerde kringen",
-    "Circles from different Nextclouds can be linked together." : "Kringen van andere Nextcloud installaties kunnen aan elkaar gekoppeld worden.",
     "Skip invitation step to closed circles" : "Overslaan uitnodingsstappen voor besloten kringen",
-    "Moderators can add member to closed circles without user approval." : "Moderators kunnen zonder goedkering van de gebruiker leden toevoegen aan besloten kringen."
+    "Moderators can add member to closed circles without user approval." : "Moderators kunnen zonder goedkering van de gebruiker leden toevoegen aan besloten kringen.",
+    "Allow federated circles" : "Toestaan gefedereerde kringen",
+    "Circles from different Nextclouds can be linked together." : "Kringen van andere Nextcloud installaties kunnen aan elkaar gekoppeld worden."
 },
 "nplurals=2; plural=(n != 1);");

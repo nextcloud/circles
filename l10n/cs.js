@@ -306,9 +306,9 @@ OC.L10N.register(
     "Maximum number of members per circle" : "Nejvyšší umožněný počet členů v okruhu",
     "Allow linking of groups" : "Umožnit propojování skupin",
     "Groups can be linked to circles." : "Skupiny lze propojit s okruhy.",
-    "Allow federated circles" : "Umožnit federované okruhy",
-    "Circles from different Nextclouds can be linked together." : "Okruhy z různých instancí Nextcloud je možné propojit dohromady.",
     "Skip invitation step to closed circles" : "Přeskočit krok pozvání do uzavřených okruhů",
-    "Moderators can add member to closed circles without user approval." : "Moderátoři nepotřebují souhlas uživatele pro přidávání členů do uzavřených okruhů."
+    "Moderators can add member to closed circles without user approval." : "Moderátoři nepotřebují souhlas uživatele pro přidávání členů do uzavřených okruhů.",
+    "Allow federated circles" : "Umožnit federované okruhy",
+    "Circles from different Nextclouds can be linked together." : "Okruhy z různých instancí Nextcloud je možné propojit dohromady."
 },
 "nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;");

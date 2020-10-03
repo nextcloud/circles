@@ -304,9 +304,9 @@
     "Maximum number of members per circle" : "Màxim nombre de membres per cercle",
     "Allow linking of groups" : "Permet l'enllaç de grups",
     "Groups can be linked to circles." : "Els grups poden ser enllaçats a cercles.",
-    "Allow federated circles" : "Permet els cercles federats",
-    "Circles from different Nextclouds can be linked together." : "Es poden enllaçar cercles de diferents Nextclouds.",
     "Skip invitation step to closed circles" : "Saltar el pas d'invitació als cercles tancats",
-    "Moderators can add member to closed circles without user approval." : "Els moderadors poden afegir un membre als cercles tancats sense que l'usuari ho accepti."
+    "Moderators can add member to closed circles without user approval." : "Els moderadors poden afegir un membre als cercles tancats sense que l'usuari ho accepti.",
+    "Allow federated circles" : "Permet els cercles federats",
+    "Circles from different Nextclouds can be linked together." : "Es poden enllaçar cercles de diferents Nextclouds."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

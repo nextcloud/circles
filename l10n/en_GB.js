@@ -302,9 +302,9 @@ OC.L10N.register(
     "Maximum number of members per circle" : "Maximum number of members per circle",
     "Allow linking of groups" : "Allow linking of groups",
     "Groups can be linked to circles." : "Groups can be linked to circles.",
-    "Allow federated circles" : "Allow federated circles",
-    "Circles from different Nextclouds can be linked together." : "Circles from different Nextclouds can be linked together.",
     "Skip invitation step to closed circles" : "Skip invitation step to closed circles",
-    "Moderators can add member to closed circles without user approval." : "Moderators can add member to closed circles without user approval."
+    "Moderators can add member to closed circles without user approval." : "Moderators can add member to closed circles without user approval.",
+    "Allow federated circles" : "Allow federated circles",
+    "Circles from different Nextclouds can be linked together." : "Circles from different Nextclouds can be linked together."
 },
 "nplurals=2; plural=(n != 1);");
