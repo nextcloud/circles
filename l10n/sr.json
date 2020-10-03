@@ -304,9 +304,9 @@
     "Maximum number of members per circle" : "Максимални број чланова по кругу",
     "Allow linking of groups" : "Дозволи увезивање група",
     "Groups can be linked to circles." : "Групе се могу везати на кругове.",
-    "Allow federated circles" : "Дозволи здружене кругове",
-    "Circles from different Nextclouds can be linked together." : "Кругови са различитих Некстклауда се могу везати заједно.",
     "Skip invitation step to closed circles" : "Прескочи позивницу за затворене кругове",
-    "Moderators can add member to closed circles without user approval." : "Модератори могу да додају чланове у затворене кругове без одобрења корисника."
+    "Moderators can add member to closed circles without user approval." : "Модератори могу да додају чланове у затворене кругове без одобрења корисника.",
+    "Allow federated circles" : "Дозволи здружене кругове",
+    "Circles from different Nextclouds can be linked together." : "Кругови са различитих Некстклауда се могу везати заједно."
 },"pluralForm" :"nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);"
 }

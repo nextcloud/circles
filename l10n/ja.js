@@ -302,9 +302,9 @@ OC.L10N.register(
     "Maximum number of members per circle" : "サークルあたりのメンバーの最大数",
     "Allow linking of groups" : "グループのリンクを許可する",
     "Groups can be linked to circles." : "グループはサークルにリンクできます。",
-    "Allow federated circles" : "フェデレーションサークルを許可する",
-    "Circles from different Nextclouds can be linked together." : "異なるNextcloudのサークルをリンクすることができます。",
     "Skip invitation step to closed circles" : "クローズドサークルへの招待ステップをスキップ",
-    "Moderators can add member to closed circles without user approval." : "モデレーターは、ユーザーの承認なしにクローズドサークルにメンバーを追加できます。"
+    "Moderators can add member to closed circles without user approval." : "モデレーターは、ユーザーの承認なしにクローズドサークルにメンバーを追加できます。",
+    "Allow federated circles" : "フェデレーションサークルを許可する",
+    "Circles from different Nextclouds can be linked together." : "異なるNextcloudのサークルをリンクすることができます。"
 },
 "nplurals=1; plural=0;");
