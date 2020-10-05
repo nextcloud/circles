@@ -306,9 +306,9 @@ OC.L10N.register(
     "Maximum number of members per circle" : "Numero massimo di membri per cerchia",
     "Allow linking of groups" : "Consenti il collegamento dei gruppi",
     "Groups can be linked to circles." : "I gruppi possono essere collegati alle cerchie.",
-    "Allow federated circles" : "Consenti cerchie federate",
-    "Circles from different Nextclouds can be linked together." : "Le cerchie di Nextcloud diversi possono essere collegate tra di loro.",
     "Skip invitation step to closed circles" : "Salta la fase di invito alle cerchie chiuse",
-    "Moderators can add member to closed circles without user approval." : "I moderatori possono aggiungere membri alle cerchie chiuse senza approvazione dell'utente."
+    "Moderators can add member to closed circles without user approval." : "I moderatori possono aggiungere membri alle cerchie chiuse senza approvazione dell'utente.",
+    "Allow federated circles" : "Consenti cerchie federate",
+    "Circles from different Nextclouds can be linked together." : "Le cerchie di Nextcloud diversi possono essere collegate tra di loro."
 },
 "nplurals=2; plural=(n != 1);");

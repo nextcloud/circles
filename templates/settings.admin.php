@@ -26,12 +26,7 @@ style(Application::APP_NAME, 'admin');
 	<?php
 	}
 	?>
-	<p>
-		<input type="checkbox" value="1" id="allow_federated_circles" class="checkbox"/>
-		<label for="allow_federated_circles"><?php p($l->t('Allow federated circles')); ?></label>
-		<em><?php p($l->t('Circles from different Nextclouds can be linked together.')); ?></em>
-	</p>
-	<p>
+		<p>
 		<input type="checkbox" value="1" id="skip_invitation_to_closed_circles" class="checkbox"/>
 		<label for="skip_invitation_to_closed_circles"><?php p($l->t('Skip invitation step to closed circles')); ?></label>
 		<em><?php p($l->t('Moderators can add member to closed circles without user approval.')); ?></em>

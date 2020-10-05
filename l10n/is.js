@@ -306,9 +306,9 @@ OC.L10N.register(
     "Maximum number of members per circle" : "Hámarksfjöldi meðlima í hverjum hring",
     "Allow linking of groups" : "Leyfa tengingar hópa",
     "Groups can be linked to circles." : "Hópar geta verið tengdir hringjum.",
-    "Allow federated circles" : "Leyfa skýjasambandshringi",
-    "Circles from different Nextclouds can be linked together." : "Hringir úr mismunandi Nextcloud-skýjum geta verið tengdir saman.",
     "Skip invitation step to closed circles" : "Sleppa boðsskrefi inn í lokaða hringi",
-    "Moderators can add member to closed circles without user approval." : "Umsjónarmenn geta bætt meðlimum í lokaða hringi án samþykkis notanda."
+    "Moderators can add member to closed circles without user approval." : "Umsjónarmenn geta bætt meðlimum í lokaða hringi án samþykkis notanda.",
+    "Allow federated circles" : "Leyfa skýjasambandshringi",
+    "Circles from different Nextclouds can be linked together." : "Hringir úr mismunandi Nextcloud-skýjum geta verið tengdir saman."
 },
 "nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);");

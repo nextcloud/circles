@@ -297,9 +297,9 @@
     "Maximum number of members per circle" : "Tổng số thành viên tối đa mỗi vòng kết nối",
     "Allow linking of groups" : "Chấp nhận liên kết của các nhóm",
     "Groups can be linked to circles." : "Các nhóm có thể đuọc liên kết tới vòng kết nối.",
-    "Allow federated circles" : "Chấp nhận các vòng kết nối Liên Bang",
-    "Circles from different Nextclouds can be linked together." : "Các vòng kết nối từ các Nextcloud khác có thể được liên kết với nhau.",
     "Skip invitation step to closed circles" : "Bỏ qua thao tác gửi lời mời đối với các vòng kết nối Đóng",
-    "Moderators can add member to closed circles without user approval." : "Các điều hành viên có thể thêm thành viên vào các vòng kết nối Đóng mà không cần sự chấp thuận của người dùng."
+    "Moderators can add member to closed circles without user approval." : "Các điều hành viên có thể thêm thành viên vào các vòng kết nối Đóng mà không cần sự chấp thuận của người dùng.",
+    "Allow federated circles" : "Chấp nhận các vòng kết nối Liên Bang",
+    "Circles from different Nextclouds can be linked together." : "Các vòng kết nối từ các Nextcloud khác có thể được liên kết với nhau."
 },"pluralForm" :"nplurals=1; plural=0;"
 }

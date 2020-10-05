@@ -290,9 +290,9 @@ OC.L10N.register(
     "Maximum number of members per circle" : "每个圈子允许最多的成员数",
     "Allow linking of groups" : "允许链接的群组",
     "Groups can be linked to circles." : "群组可以链接到圈子。",
-    "Allow federated circles" : "允许联合圈：",
-    "Circles from different Nextclouds can be linked together." : "来自不同 Nextcloud 的圈子可以链接在一起。",
     "Skip invitation step to closed circles" : "跳过进入封闭圈子的邀请步骤",
-    "Moderators can add member to closed circles without user approval." : "主持人可以不经过用户同意向封闭圈子添加成员。"
+    "Moderators can add member to closed circles without user approval." : "主持人可以不经过用户同意向封闭圈子添加成员。",
+    "Allow federated circles" : "允许联合圈：",
+    "Circles from different Nextclouds can be linked together." : "来自不同 Nextcloud 的圈子可以链接在一起。"
 },
 "nplurals=1; plural=0;");
