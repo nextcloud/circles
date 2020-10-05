@@ -3,22 +3,24 @@
   "description": "circles",
   "minimum-stability": "stable",
   "license": "agpl",
+  "config": {
+    "vendor-dir": "composer/",
+    "optimize-autoloader": true,
+    "classmap-authoritative": true,
+    "autoloader-suffix": "Circles"
+  },
   "authors": [
     {
       "name": "Maxence Lange",
       "email": "maxence@nextcloud.com"
     }
   ],
-  "require": {
-    "daita/my-small-php-tools": "dev-master"
-  },
-  "config": {
-    "optimize-autoloader": true
-  },
   "autoload": {
     "psr-4": {
-      "UpdateServer\\": "src/",
-      "Tests\\": "tests/unit/"
+      "OCA\\Circles\\": "lib/"
     }
+  },
+  "require": {
+    "daita/my-small-php-tools": "dev-master"
   }
 }

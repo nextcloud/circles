@@ -43,7 +43,7 @@ Users won't be able to find this Circle using Nextcloud search engine.
 	<repository>https://github.com/nextcloud/circles.git</repository>
 	<screenshot>https://raw.githubusercontent.com/nextcloud/circles/master/screenshots/0.12.0.png</screenshot>
 	<dependencies>
-		<nextcloud min-version="19" max-version="19"/>
+		<nextcloud min-version="20" max-version="20"/>
 	</dependencies>
 
 	<background-jobs>

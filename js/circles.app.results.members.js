@@ -34,6 +34,7 @@
 /** global: api */
 
 
+
 var resultMembers = {
 
 
@@ -51,7 +52,7 @@ var resultMembers = {
 
 
 	enhanceSearchResult: function(search, display) {
-		display = escapeHTML(display);
+		display = nav.escapeHtml(display);
 		if (search.length > 0) {
 			display = display.replace(new RegExp('(' + search + ')', 'gi'), '<b>$1</b>');
 		}
@@ -108,7 +109,7 @@ var resultMembers = {
 		var currSearch = response.search;
 		$.each(response.result, function(index, value) {
 			elements.membersSearchResult.append('<div class="members_search" data-type="' +
-				value.type + '" data-ident="' + escapeHTML(value.ident) + '" data-instance="' + escapeHTML(value.instance) + '">' +
+				value.type + '" data-ident="' + nav.escapeHtml(value.ident) + '" data-instance="' + nav.escapeHtml(value.instance) + '">' +
 				resultMembers.generateItemResult(currSearch, value) + '</div>'
 			)
 			;

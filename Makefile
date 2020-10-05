@@ -35,10 +35,10 @@ clean:
 	rm -rf node_modules
 
 # composer packages
-composer:
+build-composer:
 	composer install --prefer-dist
 
-appstore: clean composer
+appstore: clean build-composer
 	mkdir -p $(sign_dir)
 	rsync -a \
 	--exclude=/build \

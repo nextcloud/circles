@@ -35,6 +35,7 @@
 /** global: api */
 /** global: define */
 
+
 var elements = {
 
 	newTypeDefinition: null,
@@ -342,7 +343,7 @@ var elements = {
 	fillExactMembersSearch: function(source, exact) {
 		curr.exactMemberSearchType = '';
 		$.each(exact, function(index, value) {
-			var details = escapeHTML(value.value.shareWith);
+			var details = nav.escapeHtml(value.value.shareWith);
 			if (source === 'groups') {
 				if (exact.length === 1) {
 					curr.exactMemberSearchType = 'group';
@@ -352,7 +353,7 @@ var elements = {
 
 			elements.membersSearchResult.append(
 				'<div class="members_search exact" source="' + source + '" searchresult="' +
-				escapeHTML(value.value.shareWith) + '">' + escapeHTML(value.label) + '   (' +
+				nav.escapeHtml(value.value.shareWith) + '">' + nav.escapeHtml(value.label) + '   (' +
 				details + ')</div>');
 		});
 
@@ -363,7 +364,7 @@ var elements = {
 		$.each(partial, function(index, value) {
 
 			var currSearch = elements.addMember.val().trim();
-			var line = escapeHTML(value.label);
+			var line = nav.escapeHtml(value.label);
 
 			if (source === 'groups') {
 				if (currSearch.length > 0) {
@@ -371,7 +372,7 @@ var elements = {
 				}
 				line += '   (group)';
 			} else {
-				line += '   (' + escapeHTML(value.value.shareWith) + ')';
+				line += '   (' + nav.escapeHtml(value.value.shareWith) + ')';
 				if (currSearch.length > 0) {
 					line = line.replace(new RegExp('(' + currSearch + ')', 'gi'), '<b>$1</b>');
 				}
@@ -379,7 +380,7 @@ var elements = {
 
 			elements.membersSearchResult.append(
 				'<div class="members_search" source="' + source + '" searchresult="' +
-				escapeHTML(value.value.shareWith) + '">' + line + '</div>');
+				nav.escapeHtml(value.value.shareWith) + '">' + line + '</div>');
 		});
 	},
 
@@ -395,8 +396,8 @@ var elements = {
 		$.each(exact, function(index, value) {
 			elements.groupsSearchResult.append(
 				'<div class="groups_search exact" searchresult="' +
-				escapeHTML(value.value.shareWith) + '">' + escapeHTML(value.label) + '   (' +
-				escapeHTML(value.value.shareWith) + ')</div>');
+				nav.escapeHtml(value.value.shareWith) + '">' + nav.escapeHtml(value.label) + '   (' +
+				nav.escapeHtml(value.value.shareWith) + ')</div>');
 		});
 
 	},
@@ -406,14 +407,14 @@ var elements = {
 		$.each(partial, function(index, value) {
 
 			var currSearch = elements.addMember.val().trim();
-			var line = escapeHTML(value.label) + '   (' + escapeHTML(value.value.shareWith) + ')';
+			var line = nav.escapeHtml(value.label) + '   (' + nav.escapeHtml(value.value.shareWith) + ')';
 			if (currSearch.length > 0) {
 				line = line.replace(new RegExp('(' + currSearch + ')', 'gi'), '<b>$1</b>');
 			}
 
 			elements.groupsSearchResult.append(
 				'<div class="groups_search" searchresult="' +
-				escapeHTML(value.value.shareWith) + '">' + line + '</div>');
+				nav.escapeHtml(value.value.shareWith) + '">' + line + '</div>');
 		});
 	},
 
@@ -432,12 +433,12 @@ var elements = {
 	generateTmplCircle: function(entry) {
 		var tmpl = $('#tmpl_circle').html();
 
-		tmpl = tmpl.replace(/%title%/g, escapeHTML(entry.name));
-		tmpl = tmpl.replace(/%type%/g, t('circles', escapeHTML(entry.type_string)));
-		tmpl = tmpl.replace(/%owner%/g, escapeHTML(entry.owner.display_name));
-		tmpl = tmpl.replace(/%status%/g, t('circles', escapeHTML(entry.user.status)));
-		tmpl = tmpl.replace(/%level_string%/g, t('circles', escapeHTML(entry.user.level_string)));
-		tmpl = tmpl.replace(/%creation%/g, escapeHTML(entry.creation));
+		tmpl = tmpl.replace(/%title%/g, nav.escapeHtml(entry.name));
+		tmpl = tmpl.replace(/%type%/g, t('circles', nav.escapeHtml(entry.type_string)));
+		tmpl = tmpl.replace(/%owner%/g, nav.escapeHtml(entry.owner.display_name));
+		tmpl = tmpl.replace(/%status%/g, t('circles', nav.escapeHtml(entry.user.status)));
+		tmpl = tmpl.replace(/%level_string%/g, t('circles', nav.escapeHtml(entry.user.level_string)));
+		tmpl = tmpl.replace(/%creation%/g, nav.escapeHtml(entry.creation));
 
 		return tmpl;
 	},
@@ -446,9 +447,9 @@ var elements = {
 	generateTmplMember: function(entry) {
 		var tmpl = $('#tmpl_member').html();
 
-		tmpl = tmpl.replace(/%username%/g, escapeHTML(entry.user_id));
-		tmpl = tmpl.replace(/%instance%/g, escapeHTML(entry.instance));
-		tmpl = tmpl.replace(/%type%/g, escapeHTML(entry.user_type));
+		tmpl = tmpl.replace(/%username%/g, nav.escapeHtml(entry.user_id));
+		tmpl = tmpl.replace(/%instance%/g, nav.escapeHtml(entry.instance));
+		tmpl = tmpl.replace(/%type%/g, nav.escapeHtml(entry.user_type));
 
 		let displayName = entry.display_name;
 		if (entry.cached_name !== '') {
@@ -458,11 +459,11 @@ var elements = {
 			displayName += ' (' + entry.instance + ')';
 		}
 
-		tmpl = tmpl.replace(/%displayname%/g, escapeHTML(displayName));
-		tmpl = tmpl.replace(/%level%/g, escapeHTML(entry.level));
-		tmpl = tmpl.replace(/%levelString%/g, escapeHTML(entry.level_string));
-		tmpl = tmpl.replace(/%status%/g, escapeHTML(entry.status));
-		tmpl = tmpl.replace(/%joined%/g, escapeHTML(entry.joined));
+		tmpl = tmpl.replace(/%displayname%/g, nav.escapeHtml(displayName));
+		tmpl = tmpl.replace(/%level%/g, nav.escapeHtml(entry.level));
+		tmpl = tmpl.replace(/%levelString%/g, nav.escapeHtml(entry.level_string));
+		tmpl = tmpl.replace(/%status%/g, nav.escapeHtml(entry.status));
+		tmpl = tmpl.replace(/%joined%/g, nav.escapeHtml(entry.joined));
 
 		return tmpl;
 	},
@@ -471,10 +472,10 @@ var elements = {
 	generateTmplGroup: function(entry) {
 		var tmpl = $('#tmpl_group').html();
 
-		tmpl = tmpl.replace(/%groupid%/g, escapeHTML(entry.user_id));
-		tmpl = tmpl.replace(/%level%/g, escapeHTML(entry.level));
-		tmpl = tmpl.replace(/%levelString%/g, escapeHTML(entry.level_string));
-//		tmpl = tmpl.replace(/%joined%/g, escapeHTML(entry.joined));
+		tmpl = tmpl.replace(/%groupid%/g, nav.escapeHtml(entry.user_id));
+		tmpl = tmpl.replace(/%level%/g, nav.escapeHtml(entry.level));
+		tmpl = tmpl.replace(/%levelString%/g, nav.escapeHtml(entry.level_string));
+//		tmpl = tmpl.replace(/%joined%/g, nav.escapeHtml(entry.joined));
 
 		return tmpl;
 	},
@@ -483,11 +484,11 @@ var elements = {
 	generateTmplLink: function(entry) {
 		var tmpl = $('#tmpl_link').html();
 
-		tmpl = tmpl.replace(/%id%/g, escapeHTML(entry.unique_id));
-		tmpl = tmpl.replace(/%token%/g, escapeHTML(entry.token));
-		tmpl = tmpl.replace(/%address%/g, escapeHTML(entry.address));
-		tmpl = tmpl.replace(/%status%/g, escapeHTML(entry.status));
-		tmpl = tmpl.replace(/%joined%/g, escapeHTML(entry.creation));
+		tmpl = tmpl.replace(/%id%/g, nav.escapeHtml(entry.unique_id));
+		tmpl = tmpl.replace(/%token%/g, nav.escapeHtml(entry.token));
+		tmpl = tmpl.replace(/%address%/g, nav.escapeHtml(entry.address));
+		tmpl = tmpl.replace(/%status%/g, nav.escapeHtml(entry.status));
+		tmpl = tmpl.replace(/%joined%/g, nav.escapeHtml(entry.creation));
 
 		return tmpl;
 	}

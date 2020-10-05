@@ -1,4 +1,7 @@
 <?php
+declare(strict_types=1);
+
+
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -27,8 +30,11 @@
  *
  */
 
+
 namespace OCA\Circles\AppInfo;
 
+
+use Closure;
 use OC;
 use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Exceptions\GSStatusException;
@@ -39,14 +45,21 @@ use OCA\Circles\Service\DavService;
 use OCA\Files\App as FilesApp;
 use OCP\App\ManagerEvent;
 use OCP\AppFramework\App;
+use OCP\AppFramework\Bootstrap\IBootContext;
+use OCP\AppFramework\Bootstrap\IBootstrap;
+use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\IAppContainer;
 use OCP\AppFramework\QueryException;
+use OCP\IServerContainer;
 use OCP\Util;
 
-require_once __DIR__ . '/../../appinfo/autoload.php';
 
-
-class Application extends App {
+/**
+ * Class Application
+ *
+ * @package OCA\Circles\AppInfo
+ */
+class Application extends App implements IBootstrap {
 
 	const APP_NAME = 'circles';
 
@@ -61,38 +74,56 @@ class Application extends App {
 	/** @var IAppContainer */
 	private $container;
 
+
 	/**
 	 * @param array $params
-	 *
-	 * @throws GSStatusException
-	 * @throws QueryException
 	 */
 	public function __construct(array $params = array()) {
 		parent::__construct(self::APP_NAME, $params);
-
-		$this->container = $this->getContainer();
-
-		$manager = OC::$server->getNotificationManager();
-		$manager->registerNotifierService(Notifier::class);
-
-		$this->configService = OC::$server->query(ConfigService::class);
-
-		$this->registerMountProvider();
-		$this->registerHooks();
-		$this->registerDavHooks();
 	}
 
 
 	/**
+	 * @param IRegistrationContext $context
+	 */
+	public function register(IRegistrationContext $context): void {
+	}
+
+
+	/**
+	 * @param IBootContext $context
+	 *
+	 * @throws \Throwable
+	 */
+	public function boot(IBootContext $context): void {
+		$manager = $context->getServerContainer()
+						   ->getNotificationManager();
+		$manager->registerNotifierService(Notifier::class);
+
+		$this->configService = $context->getAppContainer()
+									   ->get(ConfigService::class);
+
+		$context->injectFn(Closure::fromCallable([$this, 'registerMountProvider']));
+		$context->injectFn(Closure::fromCallable([$this, 'registerHooks']));
+		$context->injectFn(Closure::fromCallable([$this, 'registerDavHooks']));
+
+		$context->injectFn(Closure::fromCallable([$this, 'registerNavigation']));
+		$context->injectFn(Closure::fromCallable([$this, 'registerFilesNavigation']));
+		$context->injectFn(Closure::fromCallable([$this, 'registerFilesPlugin']));
+	}
+
+
+	/**
+	 * @param IServerContainer $container
+	 *
 	 * @throws GSStatusException
 	 * @throws QueryException
 	 */
-	public function registerMountProvider() {
+	public function registerMountProvider(IServerContainer $container) {
 		if (!$this->configService->getGSStatus(ConfigService::GS_ENABLED)) {
 			return;
 		}
-
-		$mountProviderCollection = \OC::$server->getMountProviderCollection();
+		$mountProviderCollection = $container->getMountProviderCollection();
 		$mountProviderCollection->registerProvider($this->container->query(MountProvider::class));
 	}
 
@@ -101,25 +132,41 @@ class Application extends App {
 	 * Register Hooks
 	 */
 	public function registerHooks() {
-		Util::connectHook(
-			'OC_User', 'post_deleteUser', '\OCA\Circles\Hooks\UserHooks', 'onUserDeleted'
-		);
-		Util::connectHook(
-			'OC_User', 'post_deleteGroup', '\OCA\Circles\Hooks\UserHooks', 'onGroupDeleted'
-		);
+		Util::connectHook('OC_User', 'post_deleteUser', '\OCA\Circles\Hooks\UserHooks', 'onUserDeleted');
+		Util::connectHook('OC_User', 'post_deleteGroup', '\OCA\Circles\Hooks\UserHooks', 'onGroupDeleted');
+	}
+
+
+	public function registerDavHooks(IServerContainer $container) {
+//			/** @var ConfigService $configService */
+//
+//			$configService = OC::$server->query(ConfigService::class);
+		if (!$this->configService->isContactsBackend()) {
+			return;
+		}
+
+		/** @var DavService $davService */
+		$davService = $container->get(DavService::class);
+
+		$event = OC::$server->getEventDispatcher();
+		$event->addListener(ManagerEvent::EVENT_APP_ENABLE, [$davService, 'onAppEnabled']);
+		$event->addListener('\OCA\DAV\CardDAV\CardDavBackend::createCard', [$davService, 'onCreateCard']);
+		$event->addListener('\OCA\DAV\CardDAV\CardDavBackend::updateCard', [$davService, 'onUpdateCard']);
+		$event->addListener('\OCA\DAV\CardDAV\CardDavBackend::deleteCard', [$davService, 'onDeleteCard']);
 	}
 
 
 	/**
 	 * Register Navigation elements
+	 *
+	 * @param IServerContainer $container
 	 */
-	public function registerNavigation() {
+	public function registerNavigation(IServerContainer $container) {
 		if (!$this->configService->stillFrontEnd()) {
 			return;
 		}
 
-		$appManager = $this->container->getServer()
-									  ->getNavigationManager();
+		$appManager = $container->getNavigationManager();
 		$appManager->add(
 			function() {
 				$urlGen = OC::$server->getURLGenerator();
@@ -135,11 +182,10 @@ class Application extends App {
 				];
 			}
 		);
-
 	}
 
-	public function registerFilesPlugin() {
-		$eventDispatcher = OC::$server->getEventDispatcher();
+	public function registerFilesPlugin(IServerContainer $container) {
+		$eventDispatcher = $container->getEventDispatcher();
 		$eventDispatcher->addListener(
 			'OCA\Files::loadAdditionalScripts',
 			function() {
@@ -174,27 +220,6 @@ class Application extends App {
 		);
 	}
 
-
-	public function registerDavHooks() {
-		try {
-			/** @var ConfigService $configService */
-			$configService = OC::$server->query(ConfigService::class);
-			if (!$configService->isContactsBackend()) {
-				return;
-			}
-
-			/** @var DavService $davService */
-			$davService = OC::$server->query(DavService::class);
-		} catch (QueryException $e) {
-			return;
-		}
-
-		$event = OC::$server->getEventDispatcher();
-		$event->addListener(ManagerEvent::EVENT_APP_ENABLE, [$davService, 'onAppEnabled']);
-		$event->addListener('\OCA\DAV\CardDAV\CardDavBackend::createCard', [$davService, 'onCreateCard']);
-		$event->addListener('\OCA\DAV\CardDAV\CardDavBackend::updateCard', [$davService, 'onUpdateCard']);
-		$event->addListener('\OCA\DAV\CardDAV\CardDavBackend::deleteCard', [$davService, 'onDeleteCard']);
-	}
 
 }
 
