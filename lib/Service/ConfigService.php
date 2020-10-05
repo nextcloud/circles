@@ -407,10 +407,14 @@ class ConfigService {
 	 * @return bool
 	 */
 	public function isContactsBackend(): bool {
-		return ($this->getAppValue(ConfigService::CIRCLES_CONTACT_BACKEND) !== '0');
+		return ($this->getAppValue(ConfigService::CIRCLES_CONTACT_BACKEND) !== '0'
+				&& $this->getAppValue(ConfigService::CIRCLES_CONTACT_BACKEND) !== '');
 	}
 
 
+	/**
+	 * @return int
+	 */
 	public function contactsBackendType(): int {
 		return (int)$this->getAppValue(ConfigService::CIRCLES_CONTACT_BACKEND);
 	}
@@ -420,7 +424,7 @@ class ConfigService {
 	 * @return bool
 	 */
 	public function stillFrontEnd(): bool {
-		if ($this->getAppValue(self::CIRCLES_CONTACT_BACKEND) !== '1') {
+		if (!$this->isContactsBackend()) {
 			return true;
 		}
 
@@ -438,7 +442,7 @@ class ConfigService {
 	 * @return bool
 	 */
 	public function sendPasswordByMail() {
-		if ($this->getAppValue(self::CIRCLES_CONTACT_BACKEND) === '1') {
+		if ($this->isContactsBackend()) {
 			return false;
 		}
 
@@ -453,7 +457,7 @@ class ConfigService {
 	 * @return bool
 	 */
 	public function enforcePasswordProtection(Circle $circle) {
-		if ($this->getAppValue(self::CIRCLES_CONTACT_BACKEND) === '1') {
+		if ($this->isContactsBackend()) {
 			return false;
 		}
 
@@ -552,7 +556,7 @@ class ConfigService {
 		}
 
 //		if ($this->getAppValue(ConfigService::CIRCLES_NON_SSL_LOCAL) === '1') {
-			$request->setLocalAddressAllowed(true);
+		$request->setLocalAddressAllowed(true);
 //		}
 	}
 
