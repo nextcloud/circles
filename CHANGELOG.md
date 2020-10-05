@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file.
 
 
+### 0.19.6
+
+- fixing a glitch when confirming a request to join a closed circle
+- generate a unique id on circles generated from the Contacts app
+- switching to Nextcloud IClient for local request
+- log exception on local request
+- disabling federated circles in Admin UI
+
+
 ### 0.19.5
 
 - allow circles' owner to define a single password for shares
