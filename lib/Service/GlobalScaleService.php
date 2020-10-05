@@ -124,6 +124,7 @@ class GlobalScaleService {
 	 * @param GSEvent $event
 	 *
 	 * @return string
+	 * @throws NoUserException
 	 */
 	public function asyncBroadcast(GSEvent $event): string {
 		$wrapper = new GSWrapper();
@@ -148,6 +149,8 @@ class GlobalScaleService {
 		try {
 			$this->doRequest($request);
 		} catch (RequestContentException | RequestNetworkException | RequestResultSizeException | RequestServerException $e) {
+			OC::$server->getLogger()
+					   ->logException($e, ['app' => 'circles']);
 		}
 
 		return $wrapper->getToken();

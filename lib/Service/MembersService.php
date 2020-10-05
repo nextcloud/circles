@@ -168,7 +168,7 @@ class MembersService {
 			$new = [$this->addSingleMember($circle, $ident, $type, $instance, $force)];
 		}
 
-		return array_merge($curr, $new);
+		return $this->filterDuplicate($curr, $new);
 	}
 
 
@@ -637,6 +637,30 @@ class MembersService {
 			  ->s('userId', $userId);
 
 		$this->gsUpstreamService->newEvent($event);
+	}
+
+
+	/**
+	 * @param Member[] $curr
+	 * @param Member[] $new
+	 *
+	 * @return array
+	 */
+	private function filterDuplicate(array $curr, array $new): array {
+		$base = [];
+		foreach ($curr as $currMember) {
+			$known = false;
+			foreach ($new as $newMember) {
+				if ($newMember->getMemberId() === $currMember->getMemberId()) {
+					$known = true;
+				}
+			}
+			if (!$known) {
+				$base[] = $currMember;
+			}
+		}
+
+		return array_merge($base, $new);
 	}
 
 
