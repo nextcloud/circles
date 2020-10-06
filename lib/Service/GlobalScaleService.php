@@ -182,11 +182,14 @@ class GlobalScaleService {
 	 * @return string
 	 */
 	public function getKey(): string {
-		// TODO: include a webfinger loader in core to share public keys
 		try {
 			$key = $this->configService->getGSStatus(ConfigService::GS_KEY);
 		} catch (GSStatusException $e) {
-			$key = $this->configService->getSystemValue('instanceid');
+			$key = $this->configService->getAppValue(ConfigService::CIRCLES_LOCAL_GSKEY);
+			if ($key === '') {
+				$key = $this->token(31);
+				$this->configService->setAppValue(ConfigService::CIRCLES_LOCAL_GSKEY, $key);
+			}
 		}
 
 		return md5('gskey:' . $key);
