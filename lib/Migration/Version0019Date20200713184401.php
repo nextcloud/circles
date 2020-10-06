@@ -75,7 +75,7 @@ class Version0019Date20200713184401 extends SimpleMigrationStep {
 			if (!$table->hasColumn('cached_name')) {
 				$table->addColumn(
 					'cached_name', 'string', [
-									  'notnull' => true,
+									  'notnull' => false,
 									  'length'  => 255,
 									  'default' => ''
 								  ]
