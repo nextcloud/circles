@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 
 
+### 0.20.1
+
+- fixing a migration issue on some database setup
+- fixing an issue on local instance
+
+
 ### 0.20.0 (NC20)
 
 - compat nc20
