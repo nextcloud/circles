@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 
-### 0.20.1
+### 0.20.2
 
 - fixing a migration issue on some database setup
 - fixing an issue on local instance
