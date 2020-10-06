@@ -427,7 +427,7 @@ class Version0019Date20200603080001 extends SimpleMigrationStep {
 			);
 			$table->addColumn(
 				'cached_name', 'string', [
-							 'notnull' => true,
+							 'notnull' => false,
 							 'length'  => 255,
 							 'default' => ''
 						 ]
