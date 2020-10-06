@@ -49,6 +49,7 @@ class ConfigService {
 	const CIRCLES_NON_SSL_LOCAL = 'local_is_non_ssl';
 	const CIRCLES_SELF_SIGNED = 'self_signed_cert';
 	const LOCAL_CLOUD_ID = 'local_cloud_id';
+	const CIRCLES_LOCAL_GSKEY = 'local_gskey';
 	const CIRCLES_ACTIVITY_ON_CREATION = 'creation_activity';
 	const CIRCLES_SKIP_INVITATION_STEP = 'skip_invitation_to_closed_circles';
 	const CIRCLES_SEARCH_FROM_COLLABORATOR = 'search_from_collaborator';
@@ -76,6 +77,7 @@ class ConfigService {
 		self::CIRCLES_ALLOW_LINKED_GROUPS      => '0',
 		self::CIRCLES_ALLOW_FEDERATED_CIRCLES  => '0',
 		self::CIRCLES_GS_ENABLED               => '0',
+		self::CIRCLES_LOCAL_GSKEY              => '',
 		self::CIRCLES_ALLOW_NON_SSL_LINKS      => '0',
 		self::CIRCLES_NON_SSL_LOCAL            => '0',
 		self::CIRCLES_SELF_SIGNED              => '0',
