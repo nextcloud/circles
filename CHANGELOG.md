@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 
-### 0.19.6
+### 0.19.7
 
 - fixing a glitch when confirming a request to join a closed circle
 - generate a unique id on circles generated from the Contacts app
