@@ -76,7 +76,7 @@ class Version0019Date20200726125713 extends SimpleMigrationStep {
 			if (!$table->hasColumn('alt_name')) {
 				$table->addColumn(
 					'alt_name', 'string', [
-								  'notnull' => true,
+								  'notnull' => false,
 								  'length'  => 127,
 								  'default' => ''
 							  ]

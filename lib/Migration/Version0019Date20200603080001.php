@@ -96,7 +96,7 @@ class Version0019Date20200603080001 extends SimpleMigrationStep {
 			);
 			$table->addColumn(
 				'alt_name', 'string', [
-							  'notnull' => true,
+							  'notnull' => false,
 							  'length'  => 127,
 							  'default' => ''
 						  ]
