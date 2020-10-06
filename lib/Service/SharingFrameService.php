@@ -27,9 +27,11 @@
 namespace OCA\Circles\Service;
 
 
+use daita\MySmallPhpTools\Model\Nextcloud\NC19Request;
+use daita\MySmallPhpTools\Model\Request;
+use daita\MySmallPhpTools\Traits\Nextcloud\TNC19Request;
 use Exception;
 use OCA\Circles\Api\v1\Circles;
-use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\FederatedLinksRequest;
 use OCA\Circles\Db\SharingFrameRequest;
@@ -49,6 +51,10 @@ use OCP\IUserSession;
 
 
 class SharingFrameService {
+
+
+	use TNC19Request;
+
 
 	/** @var string */
 	private $userId;
@@ -297,32 +303,23 @@ class SharingFrameService {
 	 * @return bool
 	 * @throws Exception
 	 */
-	public function initiateShare($circleUniqueId, $frameUniqueId) {
-		$args = [
-			'circleId' => $circleUniqueId,
-			'frameId'  => $frameUniqueId
-		];
-
-		$client = $this->clientService->newClient();
-		$addr = $this->configService->getLocalAddress() . \OC::$WEBROOT;
-		$opts = [
-			'body'            => $args,
-			'timeout'         => Application::CLIENT_TIMEOUT,
-			'connect_timeout' => Application::CLIENT_TIMEOUT
-		];
-
-		if ($this->configService->getAppValue(ConfigService::CIRCLES_SELF_SIGNED) === '1') {
-			$opts['verify'] = false;
-		}
+	public function initiateShare(string $circleUniqueId, string $frameUniqueId) {
+		$route = $this->urlGenerator->linkToRouteAbsolute('circles.Shares.initShareDelivery');
+		$request = new NC19Request('', Request::TYPE_POST);
+		$this->configService->configureRequest($request);
+		$request->setProtocols(['https', 'http']);
+		$request->addData('circleId', $circleUniqueId);
+		$request->addData('frameId', $frameUniqueId);
+		$request->setAddressFromUrl($route);
 
 		try {
-			$client->post($this->generatePayloadDeliveryURL($addr), $opts);
+			$this->doRequest($request);
 
 			return true;
 		} catch (Exception $e) {
 			$this->miscService->log(
-				'fail to initialise circle share to ' . $addr . ' for circle ' . $circleUniqueId . ' - '
-				. json_encode($opts) . ' - ' . $e->getMessage(), 3
+				'fail to initialise circle share with request ' . json_encode($request) . ' - '
+				. $e->getMessage(), 3
 			);
 			throw $e;
 		}
