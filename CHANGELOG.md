@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 
+### 0.20.3
+
+- fixing composer lib version
+
+
 ### 0.20.2
 
 - fixing a migration issue on some database setup

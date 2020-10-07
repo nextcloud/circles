@@ -3,5 +3,5 @@
 .buildpath
 .project
 build/
-vendor/
 .settings/
+composer/
