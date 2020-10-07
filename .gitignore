@@ -5,3 +5,5 @@
 build/
 vendor/
 .settings/
+
+composer/

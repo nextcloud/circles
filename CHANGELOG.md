@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 
+### 0.19.8
+
+- fixing an issue with composer
+
+
 ### 0.19.7
 
 - fixing a glitch when confirming a request to join a closed circle
