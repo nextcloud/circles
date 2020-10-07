@@ -52,6 +52,8 @@ appstore: clean build-composer
 	--exclude=/CONTRIBUTING.md \
 	--exclude=/issue_template.md \
 	--exclude=/README.md \
+	--exclude=/composer.json \
+	--exclude=/composer.lock \
 	--exclude=/.gitattributes \
 	--exclude=/.gitignore \
 	--exclude=/.scrutinizer.yml \
