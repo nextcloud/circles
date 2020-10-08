@@ -203,9 +203,14 @@ class MembersService {
 		$this->gsUpstreamService->newEvent($event);
 
 		$new = $event->getMember();
-		$new->setLevel(Member::LEVEL_MEMBER);
-		$new->setStatus(Member::STATUS_MEMBER);
 		$new->setJoined($this->l10n->t('now'));
+		if ($circle->getType() === Circle::CIRCLES_CLOSED) {
+//			$new->setLevel(Member::LEVEL_MEMBER);
+			$new->setStatus(Member::STATUS_INVITED);
+		} else {
+//			$new->setLevel(Member::LEVEL_MEMBER);
+			$new->setStatus(Member::STATUS_MEMBER);
+		}
 
 		if ($new->getInstance() === $this->configService->getLocalCloudId()) {
 			$new->setInstance('');
