@@ -4,4 +4,4 @@
 .project
 build/
 .settings/
-composer/
+vendor/

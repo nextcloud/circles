@@ -3,7 +3,7 @@
 
 use OCA\Circles\AppInfo\Application;
 
-script(Application::APP_NAME, 'admin');
+script(Application::APP_NAME, ['jquery', 'admin']);
 style(Application::APP_NAME, 'admin');
 
 ?>
