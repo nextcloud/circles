@@ -13,6 +13,7 @@ OC.L10N.register(
     "Public Circle" : "Јавен круг",
     "Personal" : "Сопствен",
     "Secret" : "Тајна",
+    "Closed" : "Затворено",
     "Public" : "Јавна",
     "Not a member" : "Не е член",
     "Member" : "Член",
