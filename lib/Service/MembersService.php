@@ -703,7 +703,7 @@ class MembersService {
 	 * @return string
 	 * @throws GSStatusException
 	 */
-	private function getUserDisplayName(string $ident, bool $fresh = false): string {
+	public function getUserDisplayName(string $ident, bool $fresh = false): string {
 		if ($this->configService->getGSStatus(ConfigService::GS_ENABLED)) {
 			return $this->getGlobalScaleUserDisplayName($ident);
 		}

@@ -40,7 +40,6 @@ use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\FederatedLinkService;
 use OCA\Circles\Service\MembersService;
-use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\SharingFrameService;
 use OCP\AppFramework\QueryException;
 use OCP\Util;
@@ -199,8 +198,8 @@ class Circles {
 
 		if ($userId === '') {
 			$userId = OC::$server->getUserSession()
-								  ->getUser()
-								  ->getUID();
+								 ->getUser()
+								 ->getUID();
 		}
 
 		return $c->query(CirclesService::class)
@@ -464,7 +463,7 @@ class Circles {
 	 */
 	public static function generateLink($circleUniqueId) {
 		return OC::$server->getURLGenerator()
-						   ->linkToRoute('circles.Navigation.navigate') . '#' . $circleUniqueId;
+						  ->linkToRoute('circles.Navigation.navigate') . '#' . $circleUniqueId;
 	}
 
 
@@ -479,7 +478,7 @@ class Circles {
 	 */
 	public static function generateAbsoluteLink($circleUniqueId) {
 		return OC::$server->getURLGenerator()
-						   ->linkToRouteAbsolute('circles.Navigation.navigate') . '#' . $circleUniqueId;
+						  ->linkToRouteAbsolute('circles.Navigation.navigate') . '#' . $circleUniqueId;
 	}
 
 
@@ -494,7 +493,7 @@ class Circles {
 	 */
 	public static function generateRemoteLink(FederatedLink $link) {
 		return OC::$server->getURLGenerator()
-						   ->linkToRoute('circles.Navigation.navigate') . '#' . $link->getUniqueId()
+						  ->linkToRoute('circles.Navigation.navigate') . '#' . $link->getUniqueId()
 			   . '-' . $link->getToken();
 	}
 
@@ -505,12 +504,15 @@ class Circles {
 	 * @return array
 	 */
 	public static function generateUserParameter(SharingFrame $frame) {
-
 		if ($frame->getCloudId() !== null) {
 			$name = $frame->getAuthor() . '@' . $frame->getCloudId();
 		} else {
-			// Obtenir CachedName !!
-			$name = MiscService::getDisplay($frame->getAuthor(), self::TYPE_USER);
+			try {
+				$membersService = \OC::$server->query(MembersService::class);
+				$name = $membersService->getUserDisplayName($frame->getAuthor(), false);
+			} catch (QueryException $e) {
+				$name = $frame->getAuthor();
+			}
 		}
 
 		return [
@@ -543,16 +545,16 @@ class Circles {
 	/**
 	 * Get a list of objects which are shred with $circleUniqueId.
 	 *
-	 * @since 0.14.0
-	 *
 	 * @param array $circleUniqueIds
 	 *
 	 * @return string[] array of object ids or empty array if none found
+	 * @since 0.14.0
+	 *
 	 */
 	public static function getFilesForCircles($circleUniqueIds) {
 		$c = self::getContainer();
 
 		return $c->query(CirclesService::class)
-			->getFilesForCircles($circleUniqueIds);
+				 ->getFilesForCircles($circleUniqueIds);
 	}
 }

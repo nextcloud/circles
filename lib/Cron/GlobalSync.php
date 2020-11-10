@@ -72,19 +72,15 @@ class GlobalSync extends TimedJob {
 		$gsUpstreamService = $c->query(GSUpstreamService::class);
 
 		$circles = $circlesService->getCirclesToSync();
+
 		foreach ($circles as $circle) {
-			//$membersService->updateCachedFromCircle($circle);
+			$membersService->updateCachedFromCircle($circle);
 		}
 
 		try {
 			$gsUpstreamService->synchronize($circles);
 		} catch (GSStatusException $e) {
 		}
-
-//		try {
-//			$gsUpstreamService->synchronize();
-//		} catch (GSStatusException $e) {
-//		}
 	}
 
 }
