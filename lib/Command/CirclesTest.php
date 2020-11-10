@@ -35,8 +35,8 @@ use daita\MySmallPhpTools\Exceptions\RequestResultSizeException;
 use daita\MySmallPhpTools\Exceptions\RequestServerException;
 use daita\MySmallPhpTools\Model\Nextcloud\NC19Request;
 use daita\MySmallPhpTools\Model\Request;
+use daita\MySmallPhpTools\Traits\Nextcloud\TNC19Request;
 use daita\MySmallPhpTools\Traits\TArrayTools;
-use daita\MySmallPhpTools\Traits\TRequest;
 use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\Model\GlobalScale\GSEvent;
@@ -59,7 +59,7 @@ class CirclesTest extends Base {
 
 
 	use TArrayTools;
-	use TRequest;
+	use TNC19Request;
 
 
 	/** @var IL10N */
@@ -109,7 +109,8 @@ class CirclesTest extends Base {
 		parent::configure();
 		$this->setName('circles:test')
 			 ->setDescription('testing some features')
-			 ->addOption('delay', 'd', InputOption::VALUE_REQUIRED, 'delay before checking result');
+			 ->addOption('delay', 'd', InputOption::VALUE_REQUIRED, 'delay before checking result')
+			 ->addOption('url', '', InputOption::VALUE_REQUIRED, 'specify a source url');
 	}
 
 
@@ -125,6 +126,7 @@ class CirclesTest extends Base {
 			$this->delay = (int)$input->getOption('delay');
 		}
 
+//		$url = $input->getOption('url');
 		if (!$this->testLocalAddress($output)) {
 			return 0;
 		}

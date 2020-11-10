@@ -68,10 +68,10 @@ class BaseMember implements JsonSerializable {
 	private $type = self::TYPE_USER;
 
 	/** @var string */
-	private $displayName = '';
-
-	/** @var string */
 	private $cachedName = '';
+
+	/** @var int */
+	private $cachedUpdate = 0;
 
 	/** @var int */
 	private $level;
@@ -160,7 +160,6 @@ class BaseMember implements JsonSerializable {
 
 	public function setUserId($userId) {
 		$this->userId = $userId;
-		$this->setDisplayName(MiscService::getDisplay($userId, $this->getType()));
 
 		return $this;
 	}
@@ -181,17 +180,6 @@ class BaseMember implements JsonSerializable {
 	}
 
 
-	public function setDisplayName($display) {
-		$this->displayName = $display;
-
-		return $this;
-	}
-
-	public function getDisplayName() {
-		return $this->displayName;
-	}
-
-
 	public function setCachedName($display) {
 		$this->cachedName = $display;
 
@@ -199,7 +187,22 @@ class BaseMember implements JsonSerializable {
 	}
 
 	public function getCachedName() {
+		if ($this->cachedName === '') {
+			return $this->userId;
+		}
+
 		return $this->cachedName;
+	}
+
+
+	public function setCachedUpdate(int $time) {
+		$this->cachedUpdate = $time;
+
+		return $this;
+	}
+
+	public function getCachedUpdate(): int {
+		return $this->cachedUpdate;
 	}
 
 
@@ -412,7 +415,6 @@ class BaseMember implements JsonSerializable {
 			'member_id'    => $this->getMemberId(),
 			'user_id'      => $this->getUserId(),
 			'user_type'    => $this->getType(),
-			'display_name' => $this->getDisplayName(),
 			'cached_name'  => $this->getCachedName(),
 			'contact_id'   => $this->getContactId(),
 			'level'        => $this->getLevel(),

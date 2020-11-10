@@ -301,8 +301,8 @@ class ProviderParser {
 		return [
 			'type'    => $member->getTypeName(),
 			'id'      => $member->getUserId(),
-			'name'    => $member->getDisplayName() . ' (' . $member->getTypeString() . ')',
-			'_parsed' => $member->getDisplayName()
+			'name'    => $member->getCachedName() . ' (' . $member->getTypeString() . ')',
+			'_parsed' => $member->getCachedName()
 		];
 	}
 

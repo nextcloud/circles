@@ -27,10 +27,17 @@
 namespace OCA\Circles\Service;
 
 
+use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
+use daita\MySmallPhpTools\Exceptions\RequestResultNotJsonException;
+use daita\MySmallPhpTools\Model\Nextcloud\NC19Request;
+use daita\MySmallPhpTools\Model\Request;
+use daita\MySmallPhpTools\Traits\Nextcloud\TNC19Request;
+use daita\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
 use OC;
 use OC\User\NoUserException;
 use OCA\Circles\Circles\FileSharingBroadcaster;
+use OCA\Circles\Db\AccountsRequest;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Db\SharesRequest;
@@ -40,6 +47,7 @@ use OCA\Circles\Exceptions\CircleTypeNotValidException;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Exceptions\EmailAccountInvalidFormatException;
 use OCA\Circles\Exceptions\GroupDoesNotExistException;
+use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberCantJoinCircleException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
@@ -57,6 +65,11 @@ use OCP\IUserManager;
  * @package OCA\Circles\Service
  */
 class MembersService {
+
+
+	use TNC19Request;
+	use TArrayTools;
+
 
 	/** @var string */
 	private $userId;
@@ -76,14 +89,14 @@ class MembersService {
 	/** @var MembersRequest */
 	private $membersRequest;
 
+	/** @var AccountsRequest */
+	private $accountsRequest;
+
 	/** @var SharesRequest */
 	private $sharesRequest;
 
 	/** @var TokensRequest */
 	private $tokensRequest;
-
-	/** @var CirclesService */
-	private $circlesService;
 
 	/** @var EventsService */
 	private $eventsService;
@@ -106,9 +119,9 @@ class MembersService {
 	 * @param ConfigService $configService
 	 * @param CirclesRequest $circlesRequest
 	 * @param MembersRequest $membersRequest
+	 * @param AccountsRequest $accountsRequest
 	 * @param SharesRequest $sharesRequest
 	 * @param TokensRequest $tokensRequest
-	 * @param CirclesService $circlesService
 	 * @param EventsService $eventsService
 	 * @param GSUpstreamService $gsUpstreamService
 	 * @param FileSharingBroadcaster $fileSharingBroadcaster
@@ -116,8 +129,8 @@ class MembersService {
 	 */
 	public function __construct(
 		$userId, IL10N $l10n, IUserManager $userManager, ConfigService $configService,
-		CirclesRequest $circlesRequest, MembersRequest $membersRequest, SharesRequest $sharesRequest,
-		TokensRequest $tokensRequest, CirclesService $circlesService, EventsService $eventsService,
+		CirclesRequest $circlesRequest, MembersRequest $membersRequest, AccountsRequest $accountsRequest,
+		SharesRequest $sharesRequest, TokensRequest $tokensRequest, EventsService $eventsService,
 		GSUpstreamService $gsUpstreamService, FileSharingBroadcaster $fileSharingBroadcaster,
 		MiscService $miscService
 	) {
@@ -127,9 +140,9 @@ class MembersService {
 		$this->configService = $configService;
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
+		$this->accountsRequest = $accountsRequest;
 		$this->sharesRequest = $sharesRequest;
 		$this->tokensRequest = $tokensRequest;
-		$this->circlesService = $circlesService;
 		$this->eventsService = $eventsService;
 		$this->gsUpstreamService = $gsUpstreamService;
 		$this->fileSharingBroadcaster = $fileSharingBroadcaster;
@@ -193,7 +206,7 @@ class MembersService {
 		$this->verifyIdentContact($ident, $type);
 
 		$member = $this->membersRequest->getFreshNewMember($circle->getUniqueId(), $ident, $type, $instance);
-		$this->miscService->updateCachedName($member);
+		$this->updateCachedName($member);
 
 		$event = new GSEvent(GSEvent::MEMBER_ADD, false, $force);
 		$event->setSeverity(GSEvent::SEVERITY_HIGH);
@@ -524,7 +537,7 @@ class MembersService {
 	public function updateMember(Member $member) {
 		$event = new GSEvent(GSEvent::MEMBER_UPDATE);
 		$event->setMember($member);
-		$event->setCircle($this->circlesService->getCircleFromMembership($member));
+		$event->setCircle($this->getCircleFromMembership($member));
 
 		$this->gsUpstreamService->newEvent($event);
 	}
@@ -642,6 +655,115 @@ class MembersService {
 			  ->s('userId', $userId);
 
 		$this->gsUpstreamService->newEvent($event);
+	}
+
+
+	/**
+	 * @param Member $member
+	 * @param bool $fresh
+	 */
+	public function updateCachedName(Member $member, bool $fresh = true) {
+		try {
+			$cachedName = '';
+			if ($member->getType() === Member::TYPE_USER) {
+				$cachedName = $this->getUserDisplayName($member->getUserId(), $fresh);
+			}
+
+			if ($member->getType() === Member::TYPE_CONTACT) {
+				$cachedName = $this->miscService->getContactDisplayName($member->getUserId());
+			}
+
+			if ($cachedName !== '') {
+				$member->setCachedName($cachedName);
+			}
+		} catch (Exception $e) {
+		}
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 */
+	public function updateCachedFromCircle(Circle $circle) {
+		$members = $this->membersRequest->forceGetMembers(
+			$circle->getUniqueId(), Member::LEVEL_NONE, Member::TYPE_USER
+		);
+
+		foreach ($members as $member) {
+			$this->updateCachedName($member, false);
+			$this->membersRequest->updateMemberInfo($member);
+		}
+	}
+
+
+	/**
+	 * @param string $ident
+	 * @param bool $fresh
+	 *
+	 * @return string
+	 * @throws GSStatusException
+	 */
+	private function getUserDisplayName(string $ident, bool $fresh = false): string {
+		if ($this->configService->getGSStatus(ConfigService::GS_ENABLED)) {
+			return $this->getGlobalScaleUserDisplayName($ident);
+		}
+
+		if (!$fresh) {
+			try {
+				$account = $this->accountsRequest->getFromUserId($ident);
+
+				return $this->get('displayName', $account);
+			} catch (MemberDoesNotExistException $e) {
+			}
+		}
+
+		$user = $this->userManager->get($ident);
+		if ($user === null) {
+			return '';
+		}
+
+		return $user->getDisplayName();
+	}
+
+
+	/**
+	 * @param string $ident
+	 *
+	 * @return string
+	 * @throws GSStatusException
+	 */
+	private function getGlobalScaleUserDisplayName(string $ident): string {
+		$lookup = $this->configService->getGSStatus(ConfigService::GS_LOOKUP);
+
+		$request = new NC19Request('/users', Request::TYPE_GET);
+		$this->configService->configureRequest($request);
+		$request->setProtocols(['https', 'http']);
+		$request->addData('search', $ident);
+		$request->addData('exact', '1');
+		$request->setAddressFromUrl($lookup);
+
+		try {
+			$users = $this->retrieveJson($request);
+
+			return $this->get('name.value', $users);
+		} catch (
+		RequestNetworkException |
+		RequestResultNotJsonException $e
+		) {
+		}
+
+		return '';
+	}
+
+
+	/**
+	 * @param Member $member
+	 *
+	 * @return Circle
+	 * @throws CircleDoesNotExistException
+	 */
+	public function getCircleFromMembership(Member $member): Circle {
+		return $this->circlesRequest->forceGetCircle($member->getCircleId());
 	}
 
 
