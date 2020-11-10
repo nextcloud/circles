@@ -560,6 +560,8 @@ class ConfigService {
 //		if ($this->getAppValue(ConfigService::CIRCLES_NON_SSL_LOCAL) === '1') {
 		$request->setLocalAddressAllowed(true);
 //		}
+
+
 	}
 
 }

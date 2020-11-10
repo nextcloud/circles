@@ -30,9 +30,10 @@
 namespace OCA\Circles\Command;
 
 use OC\Core\Command\Base;
-use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\GSStatusException;
+use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\GSUpstreamService;
+use OCA\Circles\Service\MembersService;
 use OCP\IL10N;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -49,6 +50,12 @@ class CirclesSync extends Base {
 	/** @var IL10N */
 	private $l10n;
 
+	/** @var MembersService */
+	private $membersService;
+
+	/** @var CirclesService */
+	private $circlesService;
+
 	/** @var GSUpstreamService */
 	private $gsUpstreamService;
 
@@ -57,11 +64,18 @@ class CirclesSync extends Base {
 	 * CirclesSync constructor.
 	 *
 	 * @param IL10N $l10n
+	 * @param CirclesService $circlesService
+	 * @param MembersService $membersService
 	 * @param GSUpstreamService $gsUpstreamService
 	 */
-	public function __construct(IL10N $l10n, GSUpstreamService $gsUpstreamService) {
+	public function __construct(
+		IL10N $l10n, CirclesService $circlesService, MembersService $membersService,
+		GSUpstreamService $gsUpstreamService
+	) {
 		parent::__construct();
 		$this->l10n = $l10n;
+		$this->circlesService = $circlesService;
+		$this->membersService = $membersService;
 		$this->gsUpstreamService = $gsUpstreamService;
 	}
 
@@ -81,10 +95,17 @@ class CirclesSync extends Base {
 	 * @param OutputInterface $output
 	 *
 	 * @return int
-	 * @throws GSStatusException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		$this->gsUpstreamService->synchronize();
+		$circles = $this->circlesService->getCirclesToSync();
+		foreach ($circles as $circle) {
+			$this->membersService->updateCachedFromCircle($circle);
+		}
+
+		try {
+			$this->gsUpstreamService->synchronize($circles);
+		} catch (GSStatusException $e) {
+		}
 
 		return 0;
 	}
