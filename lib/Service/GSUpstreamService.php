@@ -38,8 +38,8 @@ use daita\MySmallPhpTools\Exceptions\RequestServerException;
 use daita\MySmallPhpTools\Model\Nextcloud\NC19Request;
 use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
-use daita\MySmallPhpTools\Traits\Nextcloud\TNC19Request;
 use daita\MySmallPhpTools\Traits\TArrayTools;
+use daita\MySmallPhpTools\Traits\TRequest;
 use Exception;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\GSEventsRequest;
@@ -63,7 +63,7 @@ use OCP\IURLGenerator;
 class GSUpstreamService {
 
 
-	use TNC19Request;
+	use TRequest;
 	use TArrayTools;
 
 
@@ -274,6 +274,7 @@ class GSUpstreamService {
 	 * an other instance of Nextcloud
 	 *
 	 * @param GSEvent $event
+	 *asyncBroadcast
 	 *
 	 * @return bool
 	 */
@@ -340,15 +341,15 @@ class GSUpstreamService {
 
 
 	/**
-	 * @param array $sync
-	 *
 	 * @throws GSStatusException
 	 */
-	public function synchronize(array $sync) {
+	public function synchronize() {
 		$this->configService->getGSStatus();
 
+		$sync = $this->getCirclesToSync();
 		$this->synchronizeCircles($sync);
 		$this->removeDeprecatedCircles();
+
 		$this->removeDeprecatedEvents();
 	}
 
@@ -367,6 +368,30 @@ class GSUpstreamService {
 			} catch (RequestContentException | RequestNetworkException | RequestResultSizeException | RequestServerException | RequestResultNotJsonException $e) {
 			}
 		}
+	}
+
+
+	/**
+	 * @return Circle[]
+	 */
+	private function getCirclesToSync(): array {
+		$circles = $this->circlesRequest->forceGetCircles();
+
+		$sync = [];
+		foreach ($circles as $circle) {
+			if ($circle->getOwner()
+					   ->getInstance() !== ''
+				|| $circle->getType() === Circle::CIRCLES_PERSONAL) {
+				continue;
+			}
+
+			$members = $this->membersRequest->forceGetMembers($circle->getUniqueId());
+			$circle->setMembers($members);
+
+			$sync[] = $circle;
+		}
+
+		return $sync;
 	}
 
 

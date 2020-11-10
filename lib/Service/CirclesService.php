@@ -70,9 +70,6 @@ class CirclesService {
 	/** @var IGroupManager */
 	private $groupManager;
 
-	/** @var MembersService */
-	private $membersService;
-
 	/** @var ConfigService */
 	private $configService;
 
@@ -111,7 +108,6 @@ class CirclesService {
 	 * @param IL10N $l10n
 	 * @param IUserSession $userSession
 	 * @param IGroupManager $groupManager
-	 * @param MembersService $membersService
 	 * @param ConfigService $configService
 	 * @param CirclesRequest $circlesRequest
 	 * @param MembersRequest $membersRequest
@@ -128,7 +124,6 @@ class CirclesService {
 		IL10N $l10n,
 		IUserSession $userSession,
 		IGroupManager $groupManager,
-		MembersService $membersService,
 		ConfigService $configService,
 		CirclesRequest $circlesRequest,
 		MembersRequest $membersRequest,
@@ -151,7 +146,6 @@ class CirclesService {
 		$this->userId = $userId;
 		$this->l10n = $l10n;
 		$this->groupManager = $groupManager;
-		$this->membersService = $membersService;
 		$this->configService = $configService;
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
@@ -211,7 +205,7 @@ class CirclesService {
 		$owner->setCircleId($circle->getUniqueId())
 			  ->setLevel(Member::LEVEL_OWNER)
 			  ->setStatus(Member::STATUS_MEMBER);
-		$this->membersService->updateCachedName($owner);
+		$this->miscService->updateCachedName($owner);
 
 		$circle->setOwner($owner)
 			   ->setViewer($owner);
@@ -422,7 +416,7 @@ class CirclesService {
 				$circleUniqueId, $this->userId, Member::TYPE_USER, ''
 			);
 
-			$this->membersService->updateCachedName($member);
+			$this->miscService->updateCachedName($member);
 
 			$event = new GSEvent(GSEvent::MEMBER_JOIN);
 			$event->setCircle($circle);
@@ -483,33 +477,6 @@ class CirclesService {
 		$event->setCircle($circle);
 
 		$this->gsUpstreamService->newEvent($event);
-	}
-
-
-
-
-	/**
-	 * @return Circle[]
-	 */
-	public function getCirclesToSync(): array {
-		$circles = $this->circlesRequest->forceGetCircles();
-
-		$sync = [];
-		foreach ($circles as $circle) {
-			if ($circle->getOwner()
-					   ->getInstance() !== ''
-//				|| $circle->getType() === Circle::CIRCLES_PERSONAL
-			) {
-				continue;
-			}
-
-			$members = $this->membersRequest->forceGetMembers($circle->getUniqueId());
-			$circle->setMembers($members);
-
-			$sync[] = $circle;
-		}
-
-		return $sync;
 	}
 
 
@@ -678,6 +645,17 @@ class CirclesService {
 				$this->l10n->t('This member is not an admin of the circle')
 			);
 		}
+	}
+
+
+	/**
+	 * @param Member $member
+	 *
+	 * @return Circle
+	 * @throws CircleDoesNotExistException
+	 */
+	public function getCircleFromMembership(Member $member): Circle {
+		return $this->circlesRequest->forceGetCircle($member->getCircleId());
 	}
 
 }

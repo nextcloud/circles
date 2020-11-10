@@ -104,7 +104,6 @@ class MemberAdd extends AGlobalScaleEvent {
 			$circle->getUniqueId(), $ident, $eventMember->getType(), $eventMember->getInstance()
 		);
 		$member->hasToBeInviteAble();
-		$member->setCachedName($eventMember->getCachedName());
 
 		$this->circlesService->checkThatCircleIsNotFull($circle);
 		$this->membersService->addMemberBasedOnItsType($circle, $member);
@@ -146,11 +145,9 @@ class MemberAdd extends AGlobalScaleEvent {
 			$this->membersRequest->updateMemberLevel($member);
 		}
 
-
-		//
-		// TODO: verifiez comment se passe le cached name sur un member_add
-		//
+		$this->miscService->updateCachedName($member);
 		$cachedName = $member->getCachedName();
+
 		$password = $event->getData()
 						  ->g('password');
 

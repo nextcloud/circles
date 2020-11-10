@@ -254,7 +254,6 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		   ->selectAlias('u.status', 'viewer_status')
 		   ->selectAlias('u.member_id', 'viewer_member_id')
 		   ->selectAlias('u.cached_name', 'viewer_cached_name')
-		   ->selectAlias('u.cached_update', 'viewer_cached_update')
 		   ->selectAlias('u.level', 'viewer_level')
 		   ->leftJoin(
 			   $this->default_select_alias, CoreRequestBuilder::TABLE_MEMBERS, 'u',
@@ -288,7 +287,6 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		   ->selectAlias('o.member_id', 'owner_member_id')
 		   ->selectAlias('o.instance', 'owner_instance')
 		   ->selectAlias('o.cached_name', 'owner_cached_name')
-		   ->selectAlias('o.cached_update', 'owner_cached_update')
 		   ->selectAlias('o.status', 'owner_status')
 		   ->selectAlias('o.level', 'owner_level')
 		   ->leftJoin(

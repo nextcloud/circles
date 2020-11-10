@@ -34,7 +34,6 @@ class CoreRequestBuilder {
 	const TABLE_GSSHARES = 'circle_gsshares';
 	const TABLE_GSSHARES_MOUNTPOINT = 'circle_gsshares_mp';
 
-	const NC_TABLE_ACCOUNTS = 'accounts';
 	const NC_TABLE_GROUP_USER = 'group_user';
 
 	/** @var array */
@@ -407,7 +406,7 @@ class CoreRequestBuilder {
 	 * @param string $field
 	 * @param string|integer $value
 	 */
-	public function limitToDBField(IQueryBuilder $qb, $field, $value) {
+	private function limitToDBField(IQueryBuilder $qb, $field, $value) {
 		$expr = $qb->expr();
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
 		$qb->andWhere($expr->eq($pf . $field, $qb->createNamedParameter($value)));

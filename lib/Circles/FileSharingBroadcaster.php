@@ -292,9 +292,11 @@ class FileSharingBroadcaster implements IBroadcaster {
 		}
 
 		if ($circle->getViewer() === null) {
-			$author = $circle->getOwner();
+			$author = $circle->getOwner()
+							 ->getUserId();
 		} else {
-			$author = $circle->getViewer();
+			$author = $circle->getViewer()
+							 ->getUserId();
 		}
 
 		$recipient = $member->getUserId();
@@ -312,7 +314,9 @@ class FileSharingBroadcaster implements IBroadcaster {
 			$recipient = $emails[0];
 		}
 
-		$this->sendMailExitingShares($circle, $unknownShares, $author, $member, $recipient);
+		$this->sendMailExitingShares(
+			$circle, $unknownShares, MiscService::getDisplay($author, Member::TYPE_USER), $member, $recipient
+		);
 	}
 
 
@@ -409,13 +413,17 @@ class FileSharingBroadcaster implements IBroadcaster {
 			$this->l10n = OC::$server->getL10N(Application::APP_NAME, $lang);
 		}
 
-		$displayName = $this->miscService->getDisplayName($share->getSharedBy());
 		try {
 			$this->sendMail(
 				$share->getNode()
-					  ->getName(), $link, $displayName, $circle->getName(), $email
+					  ->getName(), $link,
+				MiscService::getDisplay($share->getSharedBy(), Member::TYPE_USER),
+				$circle->getName(), $email
 			);
-			$this->sendPasswordByMail($share, $displayName, $email, $password);
+			$this->sendPasswordByMail(
+				$share, MiscService::getDisplay($share->getSharedBy(), Member::TYPE_USER),
+				$email, $password
+			);
 		} catch (Exception $e) {
 			OC::$server->getLogger()
 					   ->log(1, 'Circles::sharedByMail - mail were not sent: ' . $e->getMessage());
@@ -581,12 +589,12 @@ class FileSharingBroadcaster implements IBroadcaster {
 	/**
 	 * @param Circle $circle
 	 * @param array $unknownShares
-	 * @param Member $author
+	 * @param string $author
 	 * @param Member $member
 	 * @param string $recipient
 	 */
 	public function sendMailExitingShares(
-		Circle $circle, array $unknownShares, Member $author, Member $member, string $recipient
+		Circle $circle, array $unknownShares, $author, Member $member, $recipient
 	) {
 		$data = [];
 
@@ -607,9 +615,9 @@ class FileSharingBroadcaster implements IBroadcaster {
 		}
 
 		try {
-			$template = $this->generateMailExitingShares($author->getCachedName(), $circle->getName());
+			$template = $this->generateMailExitingShares($author, $circle->getName());
 			$this->fillMailExistingShares($template, $data);
-			$this->sendMailExistingShares($template, $author->getCachedName(), $recipient);
+			$this->sendMailExistingShares($template, $author, $recipient);
 			$this->sendPasswordExistingShares($author, $recipient, $password);
 		} catch (Exception $e) {
 			$this->logger->log(2, 'Failed to send mail about existing share ' . $e->getMessage());
@@ -620,18 +628,19 @@ class FileSharingBroadcaster implements IBroadcaster {
 	/**
 	 * @param $author
 	 * @param string $email
+	 *
 	 * @param $password
 	 *
 	 * @throws Exception
 	 */
-	protected function sendPasswordExistingShares(Member $author, string $email, string $password) {
+	protected function sendPasswordExistingShares($author, $email, $password) {
 		if (!$this->configService->sendPasswordByMail() || $password === '') {
 			return;
 		}
 
 		$message = $this->mailer->createMessage();
 
-		$authorUser = $this->userManager->get($author->getUserId());
+		$authorUser = $this->userManager->get($author);
 		$authorName = ($authorUser instanceof IUser) ? $authorUser->getDisplayName() : $author;
 		$authorEmail = ($authorUser instanceof IUser) ? $authorUser->getEMailAddress() : null;
 

@@ -109,8 +109,10 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 				'shareType'   => Share::SHARE_TYPE_CIRCLE,
 				'shareWith'   => $circle->getUniqueId(),
 				'circleInfo'  => $circle->getInfo(),
-				'circleOwner' => $circle->getOwner()
-										->getCachedName()
+				'circleOwner' => MiscService::getDisplay(
+					$circle->getOwner()
+						   ->getUserId(), Member::TYPE_USER
+				)
 			],
 		];
 	}

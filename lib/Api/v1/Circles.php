@@ -509,7 +509,6 @@ class Circles {
 		if ($frame->getCloudId() !== null) {
 			$name = $frame->getAuthor() . '@' . $frame->getCloudId();
 		} else {
-			// Obtenir CachedName !!
 			$name = MiscService::getDisplay($frame->getAuthor(), self::TYPE_USER);
 		}
 

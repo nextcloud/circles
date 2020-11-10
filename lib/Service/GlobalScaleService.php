@@ -37,7 +37,7 @@ use daita\MySmallPhpTools\Exceptions\RequestResultSizeException;
 use daita\MySmallPhpTools\Exceptions\RequestServerException;
 use daita\MySmallPhpTools\Model\Nextcloud\NC19Request;
 use daita\MySmallPhpTools\Model\Request;
-use daita\MySmallPhpTools\Traits\Nextcloud\TNC19Request;
+use daita\MySmallPhpTools\Traits\TRequest;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OC;
 use OC\Security\IdentityProof\Signer;
@@ -64,7 +64,7 @@ use OCP\IUserSession;
 class GlobalScaleService {
 
 
-	use TNC19Request;
+	use TRequest;
 	use TStringTools;
 
 
@@ -124,6 +124,7 @@ class GlobalScaleService {
 	 * @param GSEvent $event
 	 *
 	 * @return string
+	 * @throws NoUserException
 	 */
 	public function asyncBroadcast(GSEvent $event): string {
 		$wrapper = new GSWrapper();
@@ -141,7 +142,7 @@ class GlobalScaleService {
 			'circles.GlobalScale.asyncBroadcast', ['token' => $wrapper->getToken()]
 		);
 
-		$request = new NC19Request('', Request::TYPE_POST);
+		$request = new NC19Request('', Request::TYPE_PUT);
 		$this->configService->configureRequest($request);
 		$request->setAddressFromUrl($absolute);
 
@@ -220,6 +221,7 @@ class GlobalScaleService {
 	 * @param bool $all
 	 *
 	 * @return array
+	 * @throws NoUserException
 	 */
 	public function getInstances(bool $all = false): array {
 		/** @var string $lookup */
@@ -228,9 +230,8 @@ class GlobalScaleService {
 			$request = new NC19Request(ConfigService::GS_LOOKUP_INSTANCES, Request::TYPE_POST);
 			$this->configService->configureRequest($request);
 
-//			$user = $this->getRandomUser();
-//			$data = $this->signer->sign('lookupserver', ['federationId' => $user->getCloudId()], $user);
-			$data = ['authKey' => $this->configService->getGSStatus(ConfigService::GS_KEY)];
+			$user = $this->getRandomUser();
+			$data = $this->signer->sign('lookupserver', ['federationId' => $user->getCloudId()], $user);
 			$request->setData($data);
 			$request->setAddressFromUrl($lookup);
 
@@ -266,9 +267,8 @@ class GlobalScaleService {
 		}
 
 		$absolute = $this->urlGenerator->linkToRouteAbsolute('circles.Navigation.navigate');
-		$local = parse_url($absolute);
 
-		return [$local['host'] . ':' . $local['port']];
+		return [parse_url($absolute, PHP_URL_HOST)];
 	}
 
 

@@ -72,9 +72,6 @@ class DavService {
 	/** @var FileSharingBroadcaster */
 	private $fileSharingBroadcaster;
 
-	/** @var MembersService */
-	private $membersService;
-
 	/** @var CirclesRequest */
 	private $circlesRequest;
 
@@ -99,25 +96,22 @@ class DavService {
 	 * @param IUserManager $userManager
 	 * @param CardDavBackend $cardDavBackend
 	 * @param ICloudIdManager $cloudManager
-	 * @param FileSharingBroadcaster $fileSharingBroadcaster
-	 * @param MembersService $membersService
 	 * @param CirclesRequest $circlesRequest
+	 * @param FileSharingBroadcaster $fileSharingBroadcaster
 	 * @param MembersRequest $membersRequest
 	 * @param ConfigService $configService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
 		$userId, IUserManager $userManager, CardDavBackend $cardDavBackend, ICloudIdManager $cloudManager,
-		FileSharingBroadcaster $fileSharingBroadcaster, MembersService $membersService,
-		CirclesRequest $circlesRequest, MembersRequest $membersRequest, ConfigService $configService,
-		MiscService $miscService
+		FileSharingBroadcaster $fileSharingBroadcaster, CirclesRequest $circlesRequest,
+		MembersRequest $membersRequest, ConfigService $configService, MiscService $miscService
 	) {
 		$this->userId = $userId;
 		$this->userManager = $userManager;
 		$this->cardDavBackend = $cardDavBackend;
 		$this->cloudManager = $cloudManager;
 		$this->fileSharingBroadcaster = $fileSharingBroadcaster;
-		$this->membersService = $membersService;
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
 		$this->configService = $configService;
@@ -327,7 +321,7 @@ class DavService {
 			$member->setType($type);
 			$member->setCircleId($circle->getUniqueId());
 			$member->setUserId($davCard->getUserId());
-			$this->membersService->updateCachedName($member);
+			$this->miscService->updateCachedName($member);
 
 			try {
 				$this->membersRequest->createMember($member);
@@ -437,14 +431,14 @@ class DavService {
 			);
 			try {
 				$this->circlesRequest->createCircle($circle);
-				$owner = new Member($davCard->getOwner(), Member::TYPE_USER, $circle->getUniqueId());
-				$owner->setLevel(Member::LEVEL_OWNER);
-				$owner->setStatus(Member::STATUS_MEMBER);
-				$this->membersService->updateCachedName($owner);
+				$member = new Member($davCard->getOwner(), Member::TYPE_USER, $circle->getUniqueId());
+				$member->setLevel(Member::LEVEL_OWNER);
+				$member->setStatus(Member::STATUS_MEMBER);
+				$this->miscService->updateCachedName($member);
 
-				$this->miscService->log('creating new Member: ' . json_encode($owner), 0);
+				$this->miscService->log('creating new Member: ' . json_encode($member), 0);
 				try {
-					$this->membersRequest->createMember($owner);
+					$this->membersRequest->createMember($member);
 				} catch (MemberAlreadyExistsException $e) {
 				}
 			} catch (CircleAlreadyExistsException $e) {

@@ -159,38 +159,16 @@ class MiscService {
 	}
 
 
-
 	/**
-	 * @param string $ident
-	 *
-	 * @return string
+	 * @param Member $member
 	 */
-	public function getContactDisplayName(string $ident): string {
-		if (!class_exists(\OCA\DAV\CardDAV\ContactsManager::class) || !strpos($ident, ':')) {
-			return '';
-		}
-
-		list($userId, $contactId) = explode(':', $ident);
-		$entries = [];
+	public function updateCachedName(Member $member) {
 		try {
-			/** @var \OCA\DAV\CardDAV\ContactsManager $cManager */
-			$cManager = OC::$server->query(\OCA\DAV\CardDAV\ContactsManager::class);
-			$urlGenerator = OC::$server->getURLGenerator();
-
-			$cm = OC::$server->getContactsManager();
-			$cManager->setupContactsProvider($cm, $userId, $urlGenerator);
-			$contact = $cm->search($contactId, ['UID']);
-
-			$entries = array_shift($contact);
+			$cachedName = $this->getDisplay($member->getUserId(), $member->getType());
+			if ($cachedName !== $member->getUserId()) {
+				$member->setCachedName($cachedName);
+			}
 		} catch (Exception $e) {
-		}
-
-		if (key_exists('FN', $entries) && $entries['FN'] !== '') {
-			return $entries['FN'];
-		}
-
-		if (key_exists('EMAIL', $entries) && $entries['EMAIL'] !== '') {
-			return $entries['EMAIL'];
 		}
 	}
 
@@ -200,8 +178,6 @@ class MiscService {
 	 * @param int $type
 	 *
 	 * @return string
-	 * @deprecated
-	 *
 	 */
 	public static function getDisplay($ident, $type) {
 		$display = $ident;
@@ -253,8 +229,6 @@ class MiscService {
 	 * @param $ident
 	 *
 	 * @return mixed|string
-	 * @deprecated
-	 *
 	 */
 	public static function getContactData($ident) {
 		if (!class_exists(\OCA\DAV\CardDAV\ContactsManager::class) || !strpos($ident, ':')) {
@@ -283,8 +257,6 @@ class MiscService {
 	/**
 	 * @param string $display
 	 * @param array $contact
-	 *
-	 * @deprecated
 	 */
 	private static function getDisplayContactFromArray(string &$display, array $contact) {
 		if (!is_array($contact)) {
@@ -303,7 +275,6 @@ class MiscService {
 			return;
 		}
 	}
-
 
 	/**
 	 * return Display Name if user exists and display name exists.

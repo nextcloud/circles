@@ -117,9 +117,10 @@ class MembersRequest extends MembersRequestBuilder {
 	 * @param bool $incGroup
 	 *
 	 * @return Member[]
+	 * @throws GSStatusException
 	 */
 	public function forceGetMembers(
-		string $circleUniqueId, $level = Member::LEVEL_MEMBER, int $type = 0, $incGroup = false
+		$circleUniqueId, $level = Member::LEVEL_MEMBER, int $type = 0, $incGroup = false
 	) {
 		$qb = $this->getMembersSelectSql();
 		$this->limitToMembersAndAlmost($qb);
@@ -138,11 +139,8 @@ class MembersRequest extends MembersRequestBuilder {
 		}
 		$cursor->closeCursor();
 
-		try {
-			if ($this->configService->isLinkedGroupsAllowed() && $incGroup === true) {
-				$this->includeGroupMembers($members, $circleUniqueId, $level);
-			}
-		} catch (GSStatusException $e) {
+		if ($this->configService->isLinkedGroupsAllowed() && $incGroup === true) {
+			$this->includeGroupMembers($members, $circleUniqueId, $level);
 		}
 
 		return $members;
@@ -221,7 +219,7 @@ class MembersRequest extends MembersRequestBuilder {
 	 *
 	 * @return Member[]
 	 */
-	public function getMembers(string $circleUniqueId, ?Member $viewer, bool $force = false) {
+	public function getMembers($circleUniqueId, ?Member $viewer, bool $force = false) {
 		try {
 			if ($force === false) {
 				$viewer->hasToBeMember();
@@ -490,7 +488,6 @@ class MembersRequest extends MembersRequestBuilder {
 			   ->setValue('member_id', $qb->createNamedParameter($member->getMemberId()))
 			   ->setValue('user_type', $qb->createNamedParameter($member->getType()))
 			   ->setValue('cached_name', $qb->createNamedParameter($member->getCachedName()))
-			   ->setValue('cached_update', $qb->createNamedParameter($this->timezoneService->getUTCDate()))
 			   ->setValue('instance', $qb->createNamedParameter($instance))
 			   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
 			   ->setValue('status', $qb->createNamedParameter($member->getStatus()))
@@ -574,8 +571,7 @@ class MembersRequest extends MembersRequestBuilder {
 			$member->getCircleId(), $member->getUserId(), $instance, $member->getType()
 		);
 		$qb->set('note', $qb->createNamedParameter($member->getNote()))
-		   ->set('cached_name', $qb->createNamedParameter($member->getCachedName()))
-		   ->set('cached_update', $qb->createNamedParameter($this->timezoneService->getUTCDate()));
+		   ->set('cached_name', $qb->createNamedParameter($member->getCachedName()));
 
 		$qb->execute();
 	}

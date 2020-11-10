@@ -96,8 +96,10 @@ class Sharees {
 				'shareType'   => Share::SHARE_TYPE_CIRCLE,
 				'shareWith'   => $entry->getUniqueId(),
 				'circleInfo'  => $entry->getInfo(),
-				'circleOwner' => $entry->getOwner()
-									   ->getCachedName()
+				'circleOwner' => MiscService::getDisplay(
+					$entry->getOwner()
+						  ->getUserId(), Member::TYPE_USER
+				)
 			],
 		];
 
