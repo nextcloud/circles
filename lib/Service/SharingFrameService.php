@@ -308,8 +308,8 @@ class SharingFrameService {
 		$request = new NC19Request('', Request::TYPE_POST);
 		$this->configService->configureRequest($request);
 		$request->setProtocols(['https', 'http']);
-		$request->addData('circleId', $circleUniqueId);
-		$request->addData('frameId', $frameUniqueId);
+		$request->addParam('circleId', $circleUniqueId);
+		$request->addParam('frameId', $frameUniqueId);
 		$request->setAddressFromUrl($route);
 
 		try {

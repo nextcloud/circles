@@ -36,6 +36,7 @@ use daita\MySmallPhpTools\Exceptions\RequestResultSizeException;
 use daita\MySmallPhpTools\Exceptions\RequestServerException;
 use daita\MySmallPhpTools\Model\Nextcloud\NC19Request;
 use daita\MySmallPhpTools\Model\Request;
+use daita\MySmallPhpTools\Traits\Nextcloud\TNC19Request;
 use daita\MySmallPhpTools\Traits\TRequest;
 use Exception;
 use OC\Core\Command\Base;
@@ -60,7 +61,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class MembersCreate extends Base {
 
 
-	use TRequest;
+	use TNC19Request;
 
 
 	/** @var IL10N */
