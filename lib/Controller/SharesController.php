@@ -189,7 +189,6 @@ class SharesController extends Controller {
 	 * @throws Exception
 	 */
 	public function initShareDelivery($circleId, $frameId) {
-
 		try {
 			$frame = $this->sharingFrameService->getFrameFromUniqueId($circleId, $frameId);
 		} catch (Exception $e) {
