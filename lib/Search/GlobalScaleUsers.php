@@ -95,7 +95,7 @@ class GlobalScaleUsers implements ISearch {
 		RequestResultNotJsonException $e
 		) {
 			$this->miscService->log(
-				'Issue while retrieving instances from lookup: ' . get_class($e) . ' ' . $e->getMessage()
+				'Issue while search users from lookup: ' . get_class($e) . ' ' . $e->getMessage()
 			);
 
 			return [];

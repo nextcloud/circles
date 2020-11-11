@@ -91,6 +91,12 @@ class MountManager {
 	}
 
 
+
+	public function getMountManager() {}
+
+	public function removeShare() {}
+
+
 	/**
 	 * @param int $gsShareId
 	 *
