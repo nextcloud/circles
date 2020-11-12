@@ -27,53 +27,47 @@
  */
 
 
-namespace OCA\Circles\GlobalScale;
+namespace OCA\Circles\Cron;
 
 
-use OCA\Circles\Model\GlobalScale\GSEvent;
+use OC\BackgroundJob\TimedJob;
+use OCA\Circles\AppInfo\Application;
+use OCA\Circles\Exceptions\GSStatusException;
+use OCA\Circles\Service\CirclesService;
+use OCA\Circles\Service\CleanService;
+use OCA\Circles\Service\GSUpstreamService;
+use OCA\Circles\Service\MembersService;
+use OCP\AppFramework\QueryException;
 
 
 /**
- * Class CircleDestroy
+ * Class Maintenance
  *
- * @package OCA\Circles\GlobalScale
+ * @package OCA\Cicles\Cron
  */
-class CircleDestroy extends AGlobalScaleEvent {
+class Maintenance extends TimedJob {
 
 
 	/**
-	 * Circles are destroyed from the original instance, or by admin
+	 * Cache constructor.
+	 */
+	public function __construct() {
+		$this->setInterval(10);
+	}
+
+
+	/**
+	 * @param $argument
 	 *
-	 * @param GSEvent $event
-	 * @param bool $localCheck
-	 * @param bool $mustBeChecked
+	 * @throws QueryException
 	 */
-	public function verify(GSEvent $event, bool $localCheck = false, bool $mustBeChecked = false): void {
-		//parent::verify($event, $localCheck, $mustBeChecked);
-	}
+	protected function run($argument) {
+		$app = \OC::$server->query(Application::class);
+		$c = $app->getContainer();
 
-
-	/**
-	 * @param GSEvent $event
-	 */
-	public function manage(GSEvent $event): void {
-		if (!$event->hasCircle()) {
-			return;
-		}
-
-		$circle = $event->getCircle();
-		$this->eventsService->onCircleDestruction($circle);
-
-		$this->sharesRequest->removeSharesToCircleId($circle->getUniqueId());
-		$this->membersRequest->removeAllFromCircle($circle->getUniqueId());
-		$this->circlesRequest->destroyCircle($circle->getUniqueId());
-	}
-
-
-	/**
-	 * @param GSEvent[] $events
-	 */
-	public function result(array $events): void {
+		/** @var CleanService $cleanService */
+		$cleanService = \OC::$server->query(CleanService::class);
+		$cleanService->clean();
 	}
 
 }
