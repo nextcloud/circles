@@ -42,6 +42,7 @@ Users won't be able to find this Circle using Nextcloud search engine.
 	</dependencies>
 
 	<background-jobs>
+		<job>OCA\Circles\Cron\Maintenance</job>
 		<job>OCA\Circles\Cron\ContactsExistingShares</job>
 	</background-jobs>
 

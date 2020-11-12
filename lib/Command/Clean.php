@@ -26,12 +26,9 @@
 
 namespace OCA\Circles\Command;
 
-use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\Db\CirclesRequest;
-use OCA\Circles\Db\CoreRequestBuilder;
-use OCA\Circles\Db\MembersRequest;
-use OCA\Circles\Exceptions\CircleDoesNotExistException;
+use OCA\Circles\Service\CleanService;
 use OCP\IDBConnection;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -39,14 +36,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Clean extends Base {
 
+
 	/** @var IDBConnection */
 	private $dbConnection;
 
 	/** @var CirclesRequest */
 	private $circlesRequest;
 
-	/** @var MembersRequest */
-	private $membersRequest;
+	/** @var CleanService */
+	private $cleanService;
 
 
 	/**
@@ -54,16 +52,15 @@ class Clean extends Base {
 	 *
 	 * @param IDBConnection $connection
 	 * @param CirclesRequest $circlesRequest
-	 * @param MembersRequest $membersRequest
+	 * @param CleanService $cleanService
 	 */
 	public function __construct(
-		IDBConnection $connection, CirclesRequest $circlesRequest, MembersRequest $membersRequest
+		IDBConnection $connection, CirclesRequest $circlesRequest, CleanService $cleanService
 	) {
 		parent::__construct();
 		$this->dbConnection = $connection;
 		$this->circlesRequest = $circlesRequest;
-		$this->membersRequest = $membersRequest;
-
+		$this->cleanService = $cleanService;
 	}
 
 	protected function configure() {
@@ -73,60 +70,11 @@ class Clean extends Base {
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output) {
+		$this->cleanService->clean();
+		$output->writeln('done');
 
-		try {
-			$this->fixUserType();
-			$this->removeCirclesWithNoOwner();
-			$this->removeMembersWithNoCircles();
-
-			$output->writeln('done');
-		} catch (Exception $e) {
-			$output->writeln($e->getMessage());
-		}
+		return 0;
 	}
 
-
-	private function fixUserType() {
-		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->update(CoreRequestBuilder::TABLE_MEMBERS)
-		   ->set('user_type', $qb->createNamedParameter(1))
-		   ->where(
-			   $qb->expr()
-				  ->eq('user_type', $qb->createNamedParameter(0))
-		   );
-
-		return $qb->execute();
-	}
-
-
-	private function removeCirclesWithNoOwner() {
-
-		$circles = $this->circlesRequest->forceGetCircles();
-
-		foreach ($circles as $circle) {
-			if ($circle->getOwner()
-					   ->getUserId() === null) {
-				$this->circlesRequest->destroyCircle($circle->getUniqueId());
-			}
-		}
-	}
-
-
-	private function removeMembersWithNoCircles() {
-
-		$members = $this->membersRequest->forceGetAllMembers();
-
-		foreach ($members as $member) {
-			try {
-				$this->circlesRequest->forceGetCircle($member->getCircleId());
-
-			} catch (CircleDoesNotExistException $e) {
-				$this->membersRequest->removeMember($member);
-			}
-		}
-
-	}
 }
-
-
 
