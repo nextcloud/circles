@@ -102,7 +102,10 @@ class SharesRequest extends SharesRequestBuilder {
 	public function getShares(): array {
 		$qb = $this->getSharesSelectSql();
 
+		$expr = $qb->expr();
+
 		$this->limitToShareType($qb, self::SHARE_TYPE);
+		$qb->andWhere($expr->isNull($this->default_select_alias . '.parent'));
 
 		$shares = [];
 		$cursor = $qb->execute();
