@@ -39,6 +39,8 @@ use OC;
 use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\GlobalScale\GSMount\MountProvider;
+use OCA\Circles\Listeners\GroupDeleted;
+use OCA\Circles\Listeners\UserDeleted;
 use OCA\Circles\Notification\Notifier;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\DavService;
@@ -50,8 +52,11 @@ use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\IAppContainer;
 use OCP\AppFramework\QueryException;
+use OCP\Group\Events\GroupDeletedEvent;
 use OCP\IServerContainer;
+use OCP\User\Events\UserDeletedEvent;
 use OCP\Util;
+use Throwable;
 
 
 require_once __DIR__ . '/../../vendor/autoload.php';
@@ -90,13 +95,15 @@ class Application extends App implements IBootstrap {
 	 * @param IRegistrationContext $context
 	 */
 	public function register(IRegistrationContext $context): void {
+		$context->registerEventListener(UserDeletedEvent::class, UserDeleted::class);
+		$context->registerEventListener(GroupDeletedEvent::class, GroupDeleted::class);
 	}
 
 
 	/**
 	 * @param IBootContext $context
 	 *
-	 * @throws \Throwable
+	 * @throws Throwable
 	 */
 	public function boot(IBootContext $context): void {
 		$manager = $context->getServerContainer()
@@ -107,7 +114,6 @@ class Application extends App implements IBootstrap {
 									   ->get(ConfigService::class);
 
 		$context->injectFn(Closure::fromCallable([$this, 'registerMountProvider']));
-		$context->injectFn(Closure::fromCallable([$this, 'registerHooks']));
 		$context->injectFn(Closure::fromCallable([$this, 'registerDavHooks']));
 
 		$context->injectFn(Closure::fromCallable([$this, 'registerNavigation']));
@@ -131,19 +137,7 @@ class Application extends App implements IBootstrap {
 	}
 
 
-	/**
-	 * Register Hooks
-	 */
-	public function registerHooks() {
-		Util::connectHook('OC_User', 'post_deleteUser', '\OCA\Circles\Hooks\UserHooks', 'onUserDeleted');
-		Util::connectHook('OC_User', 'post_deleteGroup', '\OCA\Circles\Hooks\UserHooks', 'onGroupDeleted');
-	}
-
-
 	public function registerDavHooks(IServerContainer $container) {
-//			/** @var ConfigService $configService */
-//
-//			$configService = OC::$server->query(ConfigService::class);
 		if (!$this->configService->isContactsBackend()) {
 			return;
 		}
