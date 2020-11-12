@@ -38,7 +38,6 @@ OC.L10N.register(
     "A link to <b>{remote}</b> could not be initiated" : "No fue posible inicializar el link a <b>{remote}</b>",
     "A link to <b>{remote}</b> has been requested." : "Se ha solicitado un link a <b>{remote}</b>.",
     "the link to <b>{remote}</b> is now up and running." : "el link a <b>{remote}</b> ahora está disponible y funcionando.",
-    "Member '{name}' updated" : "El miembro '{name}' fue actualizado",
     "Circles" : "Círculos",
     "The link between {circle} and {remote} has been shutdown remotely" : "El enlace entre {círculo} y {remoto} se ha cerrado de forma remota",
     "%s shared »%s« with you." : "%s ha compartido »%s« con usted.",
@@ -99,6 +98,7 @@ OC.L10N.register(
     "Joined" : "Se ha unido",
     "Link" : "Link",
     "Description" : "Descripción",
-    "Change password" : "Cambiar contraseña"
+    "Change password" : "Cambiar contraseña",
+    "Member '{name}' updated" : "El miembro '{name}' fue actualizado"
 },
 "nplurals=2; plural=(n != 1);");

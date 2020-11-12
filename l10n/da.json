@@ -70,16 +70,8 @@
     "The status of the link has been updated" : "Statusen på linket er opdateret.",
     "Local User" : "Lokal bruger",
     "Local Group" : "Lokal gruppe",
-    "The member '{name}' was added to the circle" : "Medlem '{name}' er tilføjet til cirklen",
-    "The member '{name}' could not be added to the circle" : "Gruppen '{name}' kunne ikke tilføjes til denne cirkel",
     "The email address '{email}' was added to the circle" : "Mail adressen '{email}' blev tilføjet til cirklen",
     "The email address '{email}' could not be added to the circle" : "Mail adressen '{email}' blev IKKE tilføjet til cirklen",
-    "The contact '{contact}' was added to the circle" : "Kontakten '{contact}' blev tilføjet til cirklen",
-    "The contact '{contact}' could not be added to the circle" : "Kontakten '{contact}' kunne IKKE tilføjes til cirklen",
-    "The member '{name}' was invited to the circle" : "Medlem '{name}' blev inviteret til cirklen",
-    "The member '{name}' could not be invited to the circle" : "Medlem '{name}' kunne ikke inviteres til cirklen",
-    "Member '{name}' updated" : "Medlem '{name}' opdateret",
-    "The member '{name}' could not be updated" : "Medlem '{name}' kunne ikke opdateres",
     "Issue while saving settings" : "Indstillingerne kunne ikke gemmes",
     "Settings saved." : "Indstillinger gemt.",
     "Circles" : "Cirkler",
@@ -158,6 +150,14 @@
     "Description" : "Beskrivelse",
     "Change password" : "Skift kodeord",
     "Allow Federated Links" : "Tillad federarede links",
-    "Save settings" : "Gem indstillinger"
+    "Save settings" : "Gem indstillinger",
+    "The member '{name}' was added to the circle" : "Medlem '{name}' er tilføjet til cirklen",
+    "The member '{name}' could not be added to the circle" : "Gruppen '{name}' kunne ikke tilføjes til denne cirkel",
+    "The contact '{contact}' was added to the circle" : "Kontakten '{contact}' blev tilføjet til cirklen",
+    "The contact '{contact}' could not be added to the circle" : "Kontakten '{contact}' kunne IKKE tilføjes til cirklen",
+    "The member '{name}' was invited to the circle" : "Medlem '{name}' blev inviteret til cirklen",
+    "The member '{name}' could not be invited to the circle" : "Medlem '{name}' kunne ikke inviteres til cirklen",
+    "Member '{name}' updated" : "Medlem '{name}' opdateret",
+    "The member '{name}' could not be updated" : "Medlem '{name}' kunne ikke opdateres"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

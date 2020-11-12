@@ -40,7 +40,6 @@ OC.L10N.register(
     " {type} '{name}' could not be created" : "{төрөл} '{нэр}' бий болгож чадахгүй байна",
     "The status of the link could not be updated" : "Холболтын статусыг шинэчлэх боломжгүй байна",
     "The status of the link has been updated" : "холбоос статус шинэчлэгдэж байна",
-    "Member '{name}' updated" : "Гишүүний '{нэр}'  шинэчлэх ",
     "Issue while saving settings" : "Тохиргоог хадгалах явцад асуудал гарсан",
     "Settings saved." : "Тохиргоог хадгалсан",
     "Circles" : "Тойрог",
@@ -93,6 +92,7 @@ OC.L10N.register(
     "Linked" : "холбосон",
     "Description" : "Тодорхойлолт",
     "Change password" : "Нууц үг солих",
-    "Save settings" : "тохиргоог хадгалах"
+    "Save settings" : "тохиргоог хадгалах",
+    "Member '{name}' updated" : "Гишүүний '{нэр}'  шинэчлэх "
 },
 "nplurals=2; plural=(n != 1);");

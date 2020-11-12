@@ -66,7 +66,6 @@ OC.L10N.register(
     "Group '{name}' successfully removed from the circle" : "群組 '{name}' 已成功自小圈圈移除",
     "Group '{name}' could not be removed from the circle" : "群組 '{name}' 無法從小圈圈移除",
     "Local User" : "本地用戶",
-    "The member '{name}' was invited to the circle" : "成員 {name} 已被邀請加入小圈圈",
     "Settings saved." : "設定已儲存",
     "You deleted {circle}" : "您刪除了 {circle}",
     "{author} deleted {circle}" : "{author} 刪除了 {circle}",
@@ -133,6 +132,7 @@ OC.L10N.register(
     "Name of the Circle" : "小圈圈名稱",
     "Description" : "描述",
     "Change password" : "變更密碼",
-    "Save settings" : "儲存設定"
+    "Save settings" : "儲存設定",
+    "The member '{name}' was invited to the circle" : "成員 {name} 已被邀請加入小圈圈"
 },
 "nplurals=1; plural=0;");
