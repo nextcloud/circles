@@ -37,7 +37,6 @@ OC.L10N.register(
     "A link to <b>{remote}</b> has been requested." : "Solicitóse un enllaz a <b>{remote}</b>.",
     "Local User" : "Usuariu llocal",
     "Local Group" : "Grupu llocal",
-    "The member '{name}' was added to the circle" : "Amestóse'l miembru «{name}» al círculu.",
     "Circles" : "Círculos",
     "You created the circle {circle}" : "Creesti'l círculu {circle}",
     "{author} created the circle {circle}" : "{author} creó'l círculu {circle}",
@@ -103,6 +102,7 @@ OC.L10N.register(
     "Status" : "Estáu",
     "Link" : "Link",
     "Description" : "Descripción",
-    "Change password" : "Camudar contraseña"
+    "Change password" : "Camudar contraseña",
+    "The member '{name}' was added to the circle" : "Amestóse'l miembru «{name}» al círculu."
 },
 "nplurals=2; plural=(n != 1);");
