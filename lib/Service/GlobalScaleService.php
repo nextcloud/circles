@@ -268,7 +268,11 @@ class GlobalScaleService {
 		$absolute = $this->urlGenerator->linkToRouteAbsolute('circles.Navigation.navigate');
 		$local = parse_url($absolute);
 
-		return [$local['host'] . ':' . $local['port']];
+		if (array_key_exists('port', $local)) {
+			return [$local['host'] . ':' . $local['port']];
+		} else {
+			return [$local['host']];
+		}
 	}
 
 
