@@ -148,8 +148,7 @@ class GlobalScaleService {
 		try {
 			$this->doRequest($request);
 		} catch (RequestContentException | RequestNetworkException | RequestResultSizeException | RequestServerException $e) {
-			OC::$server->getLogger()
-					   ->logException($e, ['app' => 'circles']);
+			$this->miscService->e($e);
 		}
 
 		return $wrapper->getToken();

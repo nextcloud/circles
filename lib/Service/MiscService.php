@@ -77,6 +77,14 @@ class MiscService {
 
 
 	/**
+	 * @param Exception $e
+	 */
+	public function e(Exception $e) {
+		$this->logger->logException($e, ['app' => 'circles']);
+	}
+
+
+	/**
 	 * @param $arr
 	 * @param $k
 	 *
@@ -157,7 +165,6 @@ class MiscService {
 
 		return $user->getUID();
 	}
-
 
 
 	/**
