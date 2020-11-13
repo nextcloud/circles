@@ -23,7 +23,7 @@ Users won't be able to find this Circle using Nextcloud search engine.
 
 		]]>
 	</description>
-	<version>0.18.9</version>
+	<version>0.18.10</version>
 	<licence>agpl</licence>
 	<author>Maxence Lange</author>
 	<documentation>

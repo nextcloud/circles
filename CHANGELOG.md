@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+### 0.18.10
+
+- better maintenance of circles and shares
 
 
 ### 0.18.9

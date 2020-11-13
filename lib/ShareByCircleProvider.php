@@ -417,7 +417,6 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 				$this->miscService->getDisplayName($data['circle_owner']), $data['share_with']
 			);
 
-
 		return $data;
 	}
 
