@@ -220,7 +220,7 @@
     "Trying to link a circle to itself" : "Próba podlinkowania się do własnego kręgu",
     "This link exists already" : "Ten link już istnieje",
     "The requested remote circle does not exist" : "Żądany zdalny krąg nie istnieje",
-    "The remote host is down or the Circles app is not installed on it" : "Zdalny host jest nieosiągalny lub aplikacja Kręgi nie jest na nim zainstalowana",
+    "The remote host is down or the Circles app is not installed on it" : "Zdalny host jest nieosiągalny lub nie zainstalowano na nim aplikacji Kręgi",
     "Cannot proceed with this status update" : "Nie można kontynuować z tym statusem aktualizacji",
     "Group contains too many members" : "Grupa zawiera zbyt wielu członków",
     "This group does not exist" : "Ta grupa nie istnieje",
