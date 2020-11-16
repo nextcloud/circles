@@ -137,13 +137,10 @@ class GlobalScaleService {
 			$wrapper = $this->gsEventsRequest->create($wrapper);
 		}
 
-		$absolute = $this->urlGenerator->linkToRouteAbsolute(
-			'circles.GlobalScale.asyncBroadcast', ['token' => $wrapper->getToken()]
-		);
-
 		$request = new NC19Request('', Request::TYPE_POST);
-		$this->configService->configureRequest($request);
-		$request->setAddressFromUrl($absolute);
+		$this->configService->configureRequest(
+			$request, 'circles.GlobalScale.asyncBroadcast', ['token' => $wrapper->getToken()]
+		);
 
 		try {
 			$this->doRequest($request);
@@ -226,13 +223,10 @@ class GlobalScaleService {
 		try {
 			$lookup = $this->configService->getGSStatus(ConfigService::GS_LOOKUP);
 			$request = new NC19Request(ConfigService::GS_LOOKUP_INSTANCES, Request::TYPE_POST);
+			$request->setProtocols(['https', 'http']);
+			$request->basedOnUrl($lookup);
 			$this->configService->configureRequest($request);
-
-//			$user = $this->getRandomUser();
-//			$data = $this->signer->sign('lookupserver', ['federationId' => $user->getCloudId()], $user);
-			$data = ['authKey' => $this->configService->getGSStatus(ConfigService::GS_KEY)];
-			$request->setData($data);
-			$request->setAddressFromUrl($lookup);
+			$request->addData('authKey', $this->configService->getGSStatus(ConfigService::GS_KEY));
 
 			try {
 				$instances = $this->retrieveJson($request);

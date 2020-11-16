@@ -31,6 +31,7 @@ use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Model\Circle;
 use OCP\IConfig;
 use OCP\IRequest;
+use OCP\IURLGenerator;
 use OCP\PreConditionNotMetException;
 use OCP\Util;
 
@@ -57,6 +58,8 @@ class ConfigService {
 	const CIRCLES_TEST_ASYNC_INIT = 'test_async_init';
 	const CIRCLES_TEST_ASYNC_HAND = 'test_async_hand';
 	const CIRCLES_TEST_ASYNC_COUNT = 'test_async_count';
+	const FORCE_NC_BASE = 'force_nc_base';
+	const TEST_NC_BASE = 'test_nc_base';
 
 	const GS_ENABLED = 'enabled';
 	const GS_MODE = 'mode';
@@ -64,6 +67,7 @@ class ConfigService {
 	const GS_LOOKUP = 'lookup';
 
 	const GS_LOOKUP_INSTANCES = '/instances';
+	const GS_LOOKUP_USERS = '/users';
 
 
 	private $defaults = [
@@ -82,6 +86,7 @@ class ConfigService {
 		self::CIRCLES_NON_SSL_LOCAL            => '0',
 		self::CIRCLES_SELF_SIGNED              => '0',
 		self::LOCAL_CLOUD_ID                   => '',
+		self::FORCE_NC_BASE                    => '',
 		self::CIRCLES_ACTIVITY_ON_CREATION     => '1',
 		self::CIRCLES_SKIP_INVITATION_STEP     => '0',
 		self::CIRCLES_SEARCH_FROM_COLLABORATOR => '0'
@@ -98,6 +103,9 @@ class ConfigService {
 
 	/** @var IRequest */
 	private $request;
+
+	/** @var IURLGenerator */
+	private $urlGenerator;
 
 	/** @var MiscService */
 	private $miscService;
@@ -124,15 +132,18 @@ class ConfigService {
 	 * @param IConfig $config
 	 * @param IRequest $request
 	 * @param string $userId
+	 * @param IURLGenerator $urlGenerator
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$appName, IConfig $config, IRequest $request, $userId, MiscService $miscService
+		$appName, IConfig $config, IRequest $request, $userId, IURLGenerator $urlGenerator,
+		MiscService $miscService
 	) {
 		$this->appName = $appName;
 		$this->config = $config;
 		$this->request = $request;
 		$this->userId = $userId;
+		$this->urlGenerator = $urlGenerator;
 		$this->miscService = $miscService;
 	}
 
@@ -551,13 +562,41 @@ class ConfigService {
 
 	/**
 	 * @param NC19Request $request
+	 * @param string $routeName
+	 * @param array $args
 	 */
-	public function configureRequest(NC19Request $request) {
+	public function configureRequest(NC19Request $request, string $routeName = '', array $args = []) {
+		$this->configureRequestAddress($request, $routeName, $args);
+
 		if ($this->getAppValue(ConfigService::CIRCLES_SELF_SIGNED) === '1') {
 			$request->setVerifyPeer(false);
 		}
 
 		$request->setLocalAddressAllowed(true);
+	}
+
+	/**
+	 * @param NC19Request $request
+	 * @param string $routeName
+	 * @param array $args
+	 *
+	 * @return string
+	 */
+	private function configureRequestAddress(NC19Request $request, string $routeName, array $args = []) {
+		if ($routeName === '') {
+			return;
+		}
+
+		$ncBase = ($this->getAppValue(self::TEST_NC_BASE)) ?
+			$this->getAppValue(self::TEST_NC_BASE) : $this->getAppValue(self::FORCE_NC_BASE);
+
+		if ($ncBase !== '') {
+			$absolute = rtrim($ncBase, '/') . $this->urlGenerator->linkToRoute($routeName, $args);
+		} else {
+			$absolute = $this->urlGenerator->linkToRouteAbsolute($routeName, $args);
+		}
+
+		$request->basedOnUrl($absolute);
 	}
 
 }

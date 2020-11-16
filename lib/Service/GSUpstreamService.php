@@ -204,10 +204,9 @@ class GSUpstreamService {
 			$protocols = [$protocol];
 		}
 
+		$request->setHost($instance);
 		$request->setProtocols($protocols);
 		$request->setDataSerialize($event);
-
-		$request->setAddress($instance);
 
 		$data = $this->retrieveJson($request);
 		$event->setResult(new SimpleDataStore($this->getArray('result', $data, [])));
@@ -232,6 +231,7 @@ class GSUpstreamService {
 		$path = $this->urlGenerator->linkToRoute('circles.GlobalScale.event');
 
 		$request = new NC19Request($path, Request::TYPE_POST);
+		$request->basedOnUrl($owner->getInstance());
 		$this->configService->configureRequest($request);
 
 		if ($this->get('REQUEST_SCHEME', $_SERVER) !== '') {
@@ -239,7 +239,6 @@ class GSUpstreamService {
 		} else {
 			$request->setProtocols(['https', 'http']);
 		}
-		$request->setAddressFromUrl($owner->getInstance());
 		$request->setDataSerialize($event);
 
 		$result = $this->retrieveJson($request);
@@ -427,7 +426,7 @@ class GSUpstreamService {
 		$notFound = false;
 		$foundWithNoOwner = false;
 		foreach ($this->globalScaleService->getInstances() as $instance) {
-			$request->setAddress($instance);
+			$request->setHost($instance);
 
 			try {
 				$result = $this->retrieveJson($request);
