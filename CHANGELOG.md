@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+### 0.20.4
+
+- caching display name
+- better maintenance of circles & shares
+- fixing an issue with new members
+
 
 ### 0.20.3
 
