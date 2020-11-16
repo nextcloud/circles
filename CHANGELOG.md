@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 
 
+### 0.19.9
+
+- caching display name
+- better maintenance of circles & shares
+- fixing an issue with new members
+
+
 ### 0.19.8
 
 - fixing an issue with composer
