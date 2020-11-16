@@ -690,8 +690,10 @@ class MembersService {
 		);
 
 		foreach ($members as $member) {
-			$this->updateCachedName($member, false);
-			$this->membersRequest->updateMemberInfo($member);
+			if (time() - $member->getCachedUpdate() > 72000) {
+				$this->updateCachedName($member, false);
+				$this->membersRequest->updateMemberInfo($member);
+			}
 		}
 	}
 
