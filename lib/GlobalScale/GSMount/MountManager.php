@@ -91,10 +91,18 @@ class MountManager {
 	}
 
 
+	// TODO: implement !
+	public function getMountManager() {
+		return $this;
+	}
 
-	public function getMountManager() {}
+	// TODO: implement !
+	public function removeShare($mountPoint) {
+	}
 
-	public function removeShare() {}
+	// TODO: implement !
+	public function removeMount($mountPoint) {
+	}
 
 
 	/**
