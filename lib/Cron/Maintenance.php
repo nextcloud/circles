@@ -32,11 +32,8 @@ namespace OCA\Circles\Cron;
 
 use OC\BackgroundJob\TimedJob;
 use OCA\Circles\AppInfo\Application;
-use OCA\Circles\Exceptions\GSStatusException;
-use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\CleanService;
-use OCA\Circles\Service\GSUpstreamService;
-use OCA\Circles\Service\MembersService;
+use OCA\Circles\Service\ConfigService;
 use OCP\AppFramework\QueryException;
 
 
@@ -66,8 +63,11 @@ class Maintenance extends TimedJob {
 		$c = $app->getContainer();
 
 		/** @var CleanService $cleanService */
-		$cleanService = \OC::$server->query(CleanService::class);
+		$cleanService = $c->query(CleanService::class);
 		$cleanService->clean();
+
+		$configService = $c->query(ConfigService::class);
+		$configService->setAppValue(ConfigService::TEST_NC_BASE, '');
 	}
 
 }

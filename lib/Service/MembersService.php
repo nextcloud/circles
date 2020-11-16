@@ -735,12 +735,12 @@ class MembersService {
 	private function getGlobalScaleUserDisplayName(string $ident): string {
 		$lookup = $this->configService->getGSStatus(ConfigService::GS_LOOKUP);
 
-		$request = new NC19Request('/users', Request::TYPE_GET);
+		$request = new NC19Request(ConfigService::GS_LOOKUP_USERS, Request::TYPE_GET);
 		$this->configService->configureRequest($request);
 		$request->setProtocols(['https', 'http']);
-		$request->addData('search', $ident);
-		$request->addData('exact', '1');
-		$request->setAddressFromUrl($lookup);
+		$request->basedOnUrl($lookup);
+		$request->addParam('search', $ident);
+		$request->addParam('exact', '1');
 
 		try {
 			$users = $this->retrieveJson($request);

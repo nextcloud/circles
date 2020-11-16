@@ -82,11 +82,11 @@ class GlobalScaleUsers implements ISearch {
 			return [];
 		}
 
-		$request = new NC19Request('/users', Request::TYPE_GET);
+		$request = new NC19Request(ConfigService::GS_LOOKUP_USERS, Request::TYPE_GET);
 		$this->configService->configureRequest($request);
 		$request->setProtocols(['https', 'http']);
-		$request->addData('search', $search);
-		$request->setAddressFromUrl($lookup);
+		$request->basedOnUrl($lookup);
+		$request->addParam('search', $search);
 
 		try {
 			$users = $this->retrieveJson($request);
