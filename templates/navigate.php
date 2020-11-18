@@ -32,11 +32,13 @@ style(Application::APP_NAME, 'notyf');
 
 Circles::addJavascriptAPI();
 script(
-	Application::APP_NAME, ['jquery',
+	Application::APP_NAME, [
+							 'jquery',
 							 'circles.app.elements', 'circles.app.actions',
 							 'circles.app.navigation', 'circles.app.settings',
-							 'circles.app', 'circles.app.results.circles', 'circles.app.results.members',
-							 'circles.app.results.groups', 'circles.app.results.links'
+							 'circles.app.results.circles', 'circles.app.results.members',
+							 'circles.app.results.groups', 'circles.app.results.links',
+							 'circles.app'
 						 ]
 );
 
