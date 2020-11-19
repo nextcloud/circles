@@ -132,7 +132,7 @@ class GSUpstreamService {
 	 * @throws Exception
 	 */
 	public function newEvent(GSEvent $event): string {
-		$event->setSource($this->configService->getLocalCloudId());
+		$event->setSource($this->configService->getLocalInstance());
 
 		try {
 			$gs = $this->globalScaleService->getGlobalScaleEvent($event);
@@ -357,7 +357,7 @@ class GSUpstreamService {
 	 */
 	public function synchronizeCircles(array $circles): void {
 		$event = new GSEvent(GSEvent::GLOBAL_SYNC, true);
-		$event->setSource($this->configService->getLocalCloudId());
+		$event->setSource($this->configService->getLocalInstance());
 		$event->setData(new SimpleDataStore($circles));
 
 		foreach ($this->globalScaleService->getInstances() as $instance) {
@@ -411,7 +411,7 @@ class GSUpstreamService {
 	 */
 	public function confirmCircleStatus(Circle $circle): bool {
 		$event = new GSEvent(GSEvent::CIRCLE_STATUS, true);
-		$event->setSource($this->configService->getLocalCloudId());
+		$event->setSource($this->configService->getLocalInstance());
 		$event->setCircle($circle);
 
 		$this->signEvent($event);

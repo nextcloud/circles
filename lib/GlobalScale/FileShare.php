@@ -73,7 +73,7 @@ class FileShare extends AGlobalScaleEvent {
 	 */
 	public function verify(GSEvent $event, bool $localCheck = false, bool $mustBeChecked = false): void {
 		// if event/file is local, we generate a federate share for the same circle on other instances
-		if ($event->getSource() !== $this->configService->getLocalCloudId()) {
+		if ($event->getSource() !== $this->configService->getLocalInstance()) {
 			return;
 		}
 
@@ -108,7 +108,7 @@ class FileShare extends AGlobalScaleEvent {
 		$circle = $event->getCircle();
 
 		// if event is not local, we create a federated file to the right instance of Nextcloud, using the right token
-		if ($event->getSource() !== $this->configService->getLocalCloudId()) {
+		if ($event->getSource() !== $this->configService->getLocalInstance()) {
 			try {
 				$share = $this->getShareFromData($event->getData());
 			} catch (Exception $e) {
