@@ -243,11 +243,11 @@ abstract class AGlobalScaleEvent {
 	 */
 	protected function compareMembers(Member $member1, Member $member2) {
 		if ($member1->getInstance() === '') {
-			$member1->setInstance($this->configService->getLocalCloudId());
+			$member1->setInstance($this->configService->getLocalInstance());
 		}
 
 		if ($member2->getInstance() === '') {
-			$member2->setInstance($this->configService->getLocalCloudId());
+			$member2->setInstance($this->configService->getLocalInstance());
 		}
 
 		if ($member1->getCircleId() !== $member2->getCircleId()
@@ -283,7 +283,7 @@ abstract class AGlobalScaleEvent {
 
 
 	protected function cleanMember(Member $member) {
-		if ($member->getInstance() === $this->configService->getLocalCloudId()) {
+		if ($member->getInstance() === $this->configService->getLocalInstance()) {
 			$member->setInstance('');
 		}
 	}
