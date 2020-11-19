@@ -434,7 +434,7 @@ var elements = {
 
 		tmpl = tmpl.replace(/%title%/g, escapeHTML(entry.name));
 		tmpl = tmpl.replace(/%type%/g, t('circles', escapeHTML(entry.type_string)));
-		tmpl = tmpl.replace(/%owner%/g, escapeHTML(entry.owner.display_name));
+		tmpl = tmpl.replace(/%owner%/g, escapeHTML(entry.owner.cached_name));
 		tmpl = tmpl.replace(/%status%/g, t('circles', escapeHTML(entry.user.status)));
 		tmpl = tmpl.replace(/%level_string%/g, t('circles', escapeHTML(entry.user.level_string)));
 		tmpl = tmpl.replace(/%creation%/g, escapeHTML(entry.creation));
