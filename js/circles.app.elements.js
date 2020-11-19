@@ -435,7 +435,7 @@ var elements = {
 
 		tmpl = tmpl.replace(/%title%/g, nav.escapeHtml(entry.name));
 		tmpl = tmpl.replace(/%type%/g, t('circles', nav.escapeHtml(entry.type_string)));
-		tmpl = tmpl.replace(/%owner%/g, nav.escapeHtml(entry.owner.display_name));
+		tmpl = tmpl.replace(/%owner%/g, nav.escapeHtml(entry.owner.cached_name));
 		tmpl = tmpl.replace(/%status%/g, t('circles', nav.escapeHtml(entry.user.status)));
 		tmpl = tmpl.replace(/%level_string%/g, t('circles', nav.escapeHtml(entry.user.level_string)));
 		tmpl = tmpl.replace(/%creation%/g, nav.escapeHtml(entry.creation));
