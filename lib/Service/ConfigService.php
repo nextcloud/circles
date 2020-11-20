@@ -148,6 +148,10 @@ class ConfigService {
 	}
 
 
+	/**
+	 * @return string
+	 * @deprecated
+	 */
 	public function getLocalAddress() {
 		return (($this->isLocalNonSSL()) ? 'http://' : '')
 			   . $this->request->getServerHost();
@@ -530,33 +534,53 @@ class ConfigService {
 	 * @return array
 	 */
 	public function getTrustedDomains(): array {
-		$domains = [];
-		foreach ($this->config->getSystemValue('trusted_domains', []) as $v) {
-			$domains[] = $v;
-		}
-
-		return $domains;
+		return array_values($this->config->getSystemValue('trusted_domains', []));
 	}
 
 
 	/**
+	 * - returns host+port, does not specify any protocol
+	 * - can be forced using LOCAL_CLOUD_ID
+	 * - use 'overwrite.cli.url'
+	 * - can use the first entry from trusted_domains is LOCAL_CLOUD_ID = 'use-trusted-domain'
+	 * - used mainly to assign instance and source to a request
+	 * - important only in remote environment; can be totally random in a jailed environment
+	 *
 	 * @return string
 	 */
-	public function getLocalCloudId(): string {
+	public function getLocalInstance(): string {
 		$localCloudId = $this->getAppValue(self::LOCAL_CLOUD_ID);
 		if ($localCloudId === '') {
+			$cliUrl = $this->config->getSystemValue('overwrite.cli.url', '');
+			$local = parse_url($cliUrl);
+			if (array_key_exists('port', $local)) {
+				return $local['host'] . ':' . $local['port'];
+			} else {
+				return $local['host'];
+			}
+		} else if ($localCloudId === 'use-trusted-domain') {
 			return $this->getTrustedDomains()[0];
+		} else {
+			return $localCloudId;
 		}
-
-		return $localCloudId;
 	}
 
 
 	/**
-	 * @return mixed
+	 * @param string $instance
+	 *
+	 * @return bool
 	 */
-	public function getInstanceId() {
-		return $this->config->getSystemValue('instanceid');
+	public function isLocalInstance(string $instance): bool {
+		if ($instance === $this->getLocalInstance()) {
+			return true;
+		}
+
+		if ($this->getAppValue(self::LOCAL_CLOUD_ID) === 'use-trusted-domain') {
+			return (in_array($instance, $this->getTrustedDomains()));
+		}
+
+		return false;
 	}
 
 
@@ -576,6 +600,10 @@ class ConfigService {
 	}
 
 	/**
+	 * - Create route using overwrite.cli.url.
+	 * - can be forced using FORCE_NC_BASE or TEST_BC_BASE (temporary)
+	 * - perfect for loopback request.
+	 *
 	 * @param NC19Request $request
 	 * @param string $routeName
 	 * @param array $args
