@@ -148,6 +148,10 @@ class ConfigService {
 	}
 
 
+	/**
+	 * @return string
+	 * @deprecated
+	 */
 	public function getLocalAddress() {
 		return (($this->isLocalNonSSL()) ? 'http://' : '')
 			   . $this->request->getServerHost();
@@ -558,6 +562,24 @@ class ConfigService {
 		} else {
 			return $localCloudId;
 		}
+	}
+
+
+	/**
+	 * @param string $instance
+	 *
+	 * @return bool
+	 */
+	public function isLocalInstance(string $instance): bool {
+		if ($instance === $this->getLocalInstance()) {
+			return true;
+		}
+
+		if ($this->getAppValue(self::LOCAL_CLOUD_ID) === 'use-trusted-domain') {
+			return (in_array($instance, $this->getTrustedDomains()));
+		}
+
+		return false;
 	}
 
 
