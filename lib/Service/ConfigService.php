@@ -544,6 +544,7 @@ class ConfigService {
 	 * - use 'overwrite.cli.url'
 	 * - can use the first entry from trusted_domains is LOCAL_CLOUD_ID = 'use-trusted-domain'
 	 * - used mainly to assign instance and source to a request
+	 * - important only in remote environment; can be totally random in a jailed environment
 	 *
 	 * @return string
 	 */
