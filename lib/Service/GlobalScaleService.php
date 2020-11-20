@@ -238,7 +238,11 @@ class GlobalScaleService {
 				return [];
 			}
 		} catch (GSStatusException $e) {
-			return $this->getLocalInstance($all);
+			if (!$all) {
+				return [];
+			}
+
+			return [$this->configService->getLocalInstance()];
 		}
 
 		if ($all) {
@@ -248,26 +252,6 @@ class GlobalScaleService {
 		return array_values(array_diff($instances, $this->configService->getTrustedDomains()));
 	}
 
-
-	/**
-	 * @param bool $all
-	 *
-	 * @return array
-	 */
-	private function getLocalInstance(bool $all): array {
-		if (!$all) {
-			return [];
-		}
-
-		$absolute = $this->urlGenerator->linkToRouteAbsolute('circles.Navigation.navigate');
-		$local = parse_url($absolute);
-
-		if (array_key_exists('port', $local)) {
-			return [$local['host'] . ':' . $local['port']];
-		} else {
-			return [$local['host']];
-		}
-	}
 
 
 	/**

@@ -225,7 +225,7 @@ class MembersService {
 			$new->setStatus(Member::STATUS_MEMBER);
 		}
 
-		if ($new->getInstance() === $this->configService->getLocalCloudId()) {
+		if ($this->configService->isLocalInstance($new->getInstance())) {
 			$new->setInstance('');
 		}
 
@@ -336,7 +336,7 @@ class MembersService {
 	 * @throws NoUserException
 	 */
 	public function verifyIdentBasedOnItsType(&$ident, $type, string $instance = '') {
-		if ($instance === $this->configService->getLocalCloudId()) {
+		if ($this->configService->isLocalInstance($instance)) {
 			$instance = '';
 		}
 

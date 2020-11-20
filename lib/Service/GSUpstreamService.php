@@ -132,11 +132,10 @@ class GSUpstreamService {
 	 * @throws Exception
 	 */
 	public function newEvent(GSEvent $event): string {
-		$event->setSource($this->configService->getLocalCloudId());
+		$event->setSource($this->configService->getLocalInstance());
 
 		try {
 			$gs = $this->globalScaleService->getGlobalScaleEvent($event);
-
 			if ($this->isLocalEvent($event)) {
 				$gs->verify($event, true);
 				if (!$event->isAsync()) {
@@ -196,16 +195,21 @@ class GSUpstreamService {
 	public function broadcastEvent(GSEvent $event, string $instance, string $protocol = ''): void {
 		$this->signEvent($event);
 
-		$path = $this->urlGenerator->linkToRoute('circles.GlobalScale.broadcast');
-		$request = new NC19Request($path, Request::TYPE_POST);
-		$this->configService->configureRequest($request);
-		$protocols = ['https', 'http'];
-		if ($protocol !== '') {
-			$protocols = [$protocol];
+		if ($this->configService->isLocalInstance($instance)) {
+			$request = new NC19Request('', Request::TYPE_POST);
+			$this->configService->configureRequest($request, 'circles.GlobalScale.broadcast');
+		} else {
+			$path = $this->urlGenerator->linkToRoute('circles.GlobalScale.broadcast');
+			$request = new NC19Request($path, Request::TYPE_POST);
+			$this->configService->configureRequest($request);
+			$protocols = ['https', 'http'];
+			if ($protocol !== '') {
+				$protocols = [$protocol];
+			}
+			$request->setInstance($instance);
+			$request->setProtocols($protocols);
 		}
 
-		$request->setHost($instance);
-		$request->setProtocols($protocols);
 		$request->setDataSerialize($event);
 
 		$data = $this->retrieveJson($request);
@@ -357,7 +361,7 @@ class GSUpstreamService {
 	 */
 	public function synchronizeCircles(array $circles): void {
 		$event = new GSEvent(GSEvent::GLOBAL_SYNC, true);
-		$event->setSource($this->configService->getLocalCloudId());
+		$event->setSource($this->configService->getLocalInstance());
 		$event->setData(new SimpleDataStore($circles));
 
 		foreach ($this->globalScaleService->getInstances() as $instance) {
@@ -411,7 +415,7 @@ class GSUpstreamService {
 	 */
 	public function confirmCircleStatus(Circle $circle): bool {
 		$event = new GSEvent(GSEvent::CIRCLE_STATUS, true);
-		$event->setSource($this->configService->getLocalCloudId());
+		$event->setSource($this->configService->getLocalInstance());
 		$event->setCircle($circle);
 
 		$this->signEvent($event);
