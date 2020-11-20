@@ -61,7 +61,7 @@ class MembersRequest extends MembersRequestBuilder {
 	public function forceGetMember($circleUniqueId, $userId, $type, string $instance = '') {
 		$qb = $this->getMembersSelectSql();
 
-		if ($instance === $this->configService->getLocalInstance()) {
+		if ($this->configService->isLocalInstance($instance)) {
 			$instance = '';
 		}
 
@@ -479,7 +479,7 @@ class MembersRequest extends MembersRequestBuilder {
 		}
 
 		$instance = $member->getInstance();
-		if ($instance === $this->configService->getLocalInstance()) {
+		if ($this->configService->isLocalInstance($instance)) {
 			$instance = '';
 		}
 
@@ -545,7 +545,7 @@ class MembersRequest extends MembersRequestBuilder {
 	 */
 	public function updateMemberLevel(Member $member) {
 		$instance = $member->getInstance();
-		if ($instance === $this->configService->getLocalInstance()) {
+		if ($this->configService->isLocalInstance($instance)) {
 			$instance = '';
 		}
 
@@ -566,7 +566,7 @@ class MembersRequest extends MembersRequestBuilder {
 	 */
 	public function updateMemberInfo(Member $member) {
 		$instance = $member->getInstance();
-		if ($instance === $this->configService->getLocalInstance()) {
+		if ($this->configService->isLocalInstance($instance)) {
 			$instance = '';
 		}
 
@@ -625,7 +625,7 @@ class MembersRequest extends MembersRequestBuilder {
 		}
 
 		$instance = $member->getInstance();
-		if ($instance === $this->configService->getLocalInstance()) {
+		if ($this->configService->isLocalInstance($instance)) {
 			$instance = '';
 		}
 
@@ -651,7 +651,7 @@ class MembersRequest extends MembersRequestBuilder {
 	 */
 	public function removeMember(Member $member) {
 		$instance = $member->getInstance();
-		if ($instance === $this->configService->getLocalInstance()) {
+		if ($this->configService->isLocalInstance($instance)) {
 			$instance = '';
 		}
 

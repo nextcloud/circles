@@ -161,7 +161,7 @@ class MemberAdd extends AGlobalScaleEvent {
 		];
 
 		if ($member->getType() === Member::TYPE_CONTACT
-			&& $member->getInstance() === $this->configService->getLocalInstance()) {
+			&& $this->configService->isLocalInstance($member->getInstance())) {
 			$result['contact'] = $this->miscService->getInfosFromContact($member);
 		}
 

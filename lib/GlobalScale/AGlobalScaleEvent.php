@@ -283,7 +283,7 @@ abstract class AGlobalScaleEvent {
 
 
 	protected function cleanMember(Member $member) {
-		if ($member->getInstance() === $this->configService->getLocalInstance()) {
+		if ($this->configService->isLocalInstance($member->getInstance())) {
 			$member->setInstance('');
 		}
 	}
