@@ -592,16 +592,14 @@ class ConfigService {
 	public function configureRequest(NC19Request $request, string $routeName = '', array $args = []) {
 		$this->configureRequestAddress($request, $routeName, $args);
 
-		if ($this->getAppValue(ConfigService::CIRCLES_SELF_SIGNED) === '1') {
-			$request->setVerifyPeer(false);
-		}
-
+		$request->setVerifyPeer($this->getAppValue(ConfigService::CIRCLES_SELF_SIGNED) !== '1');
 		$request->setLocalAddressAllowed(true);
 	}
 
 	/**
 	 * - Create route using overwrite.cli.url.
 	 * - can be forced using FORCE_NC_BASE or TEST_BC_BASE (temporary)
+	 * - can also be overwritten in config/config.php: 'circles.force_nc_base'
 	 * - perfect for loopback request.
 	 *
 	 * @param NC19Request $request
@@ -616,7 +614,7 @@ class ConfigService {
 		}
 
 		$ncBase = ($this->getAppValue(self::TEST_NC_BASE)) ?
-			$this->getAppValue(self::TEST_NC_BASE) : $this->getAppValue(self::FORCE_NC_BASE);
+			$this->getAppValue(self::TEST_NC_BASE) : $this->getForcedNcBase();
 
 		if ($ncBase !== '') {
 			$absolute = rtrim($ncBase, '/') . $this->urlGenerator->linkToRoute($routeName, $args);
@@ -625,6 +623,21 @@ class ConfigService {
 		}
 
 		$request->basedOnUrl($absolute);
+	}
+
+
+	/**
+	 * - return force_nc_base from config/config.php, then from FORCE_NC_BASE.
+	 *
+	 * @return string
+	 */
+	private function getForcedNcBase(): string {
+		$fromConfig = $this->config->getSystemValue('circles.force_nc_base', '');
+		if ($fromConfig !== '') {
+			return $fromConfig;
+		}
+
+		return $this->getAppValue(self::FORCE_NC_BASE);
 	}
 
 }
