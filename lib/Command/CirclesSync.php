@@ -86,7 +86,7 @@ class CirclesSync extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:manage:sync')
-			 ->setDescription('sync circles in GlobalScale env');
+			 ->setDescription('sync circles and members');
 	}
 
 
