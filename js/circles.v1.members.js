@@ -25,15 +25,18 @@
 
 /** global: OC */
 /** global: OCA */
+/** global: curr */
 
 var members = {
 
 	searchUsers: function(search, callback) {
+		curr.searchOrder++;
 		OCA.Circles.api.request({
 			method: 'GET',
 			url: OC.generateUrl('/apps/circles/v1/globalsearch'),
 			data: {
-				search: search
+				search: search,
+				order: curr.searchOrder
 			}
 		}, callback);
 	},

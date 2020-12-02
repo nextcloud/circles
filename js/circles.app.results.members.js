@@ -98,13 +98,18 @@ var resultMembers = {
 
 
 	searchMembersResult: function(response) {
-
-		elements.membersSearchResult.children().remove();
-
 		if (response === null) {
+			elements.membersSearchResult.children().remove();
 			elements.membersSearchResult.fadeOut(0);
 			return;
 		}
+
+		if (response.order < curr.searchOrderDisplayed) {
+			return;
+		}
+
+		elements.membersSearchResult.children().remove();
+		curr.searchOrderDisplayed = response.order;
 
 		var currSearch = response.search;
 		$.each(response.result, function(index, value) {

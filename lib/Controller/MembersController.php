@@ -235,14 +235,17 @@ class MembersController extends BaseController {
 	 * @NoAdminRequired
 	 *
 	 * @param string $search
+	 * @param int $order
 	 *
 	 * @return DataResponse
 	 */
-	public function searchGlobal($search) {
-
+	public function searchGlobal(string $search, int $order) {
 		try {
 			$this->mustHaveFrontEndEnabled();
 
+			if ($search === 't') {
+				sleep(5);
+			}
 			$result = $this->searchService->searchGlobal($search);
 		} catch (\Exception $e) {
 			return
@@ -264,7 +267,7 @@ class MembersController extends BaseController {
 			);
 		}
 
-		return $this->success(['search' => $search, 'result' => $result]);
+		return $this->success(['search' => $search, 'result' => $result, 'order' => $order]);
 	}
 
 }
