@@ -243,9 +243,6 @@ class MembersController extends BaseController {
 		try {
 			$this->mustHaveFrontEndEnabled();
 
-			if ($search === 't') {
-				sleep(5);
-			}
 			$result = $this->searchService->searchGlobal($search);
 		} catch (\Exception $e) {
 			return

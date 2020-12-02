@@ -592,6 +592,10 @@ class ConfigService {
 	public function configureRequest(NC19Request $request, string $routeName = '', array $args = []) {
 		$this->configureRequestAddress($request, $routeName, $args);
 
+		if ($this->getForcedNcBase() === '') {
+			$request->setProtocols(['https', 'http']);
+		}
+
 		$request->setVerifyPeer($this->getAppValue(ConfigService::CIRCLES_SELF_SIGNED) !== '1');
 		$request->setLocalAddressAllowed(true);
 	}
@@ -613,11 +617,9 @@ class ConfigService {
 			return;
 		}
 
-		$ncBase = ($this->getAppValue(self::TEST_NC_BASE)) ?
-			$this->getAppValue(self::TEST_NC_BASE) : $this->getForcedNcBase();
-
+		$ncBase = $this->getForcedNcBase();
 		if ($ncBase !== '') {
-			$absolute = rtrim($ncBase, '/') . $this->urlGenerator->linkToRoute($routeName, $args);
+			$absolute = $this->cleanLinkToRoute($ncBase, $routeName, $args);
 		} else {
 			$absolute = $this->urlGenerator->linkToRouteAbsolute($routeName, $args);
 		}
@@ -632,12 +634,37 @@ class ConfigService {
 	 * @return string
 	 */
 	private function getForcedNcBase(): string {
+		if ($this->getAppValue(self::TEST_NC_BASE) !== '') {
+			return $this->getAppValue(self::TEST_NC_BASE);
+		}
+
 		$fromConfig = $this->config->getSystemValue('circles.force_nc_base', '');
 		if ($fromConfig !== '') {
 			return $fromConfig;
 		}
 
 		return $this->getAppValue(self::FORCE_NC_BASE);
+	}
+
+
+	/**
+	 * sometimes, linkToRoute will include the base path to the nextcloud which will be duplicate with ncBase
+	 *
+	 * @param string $ncBase
+	 * @param string $routeName
+	 * @param array $args
+	 *
+	 * @return string
+	 */
+	private function cleanLinkToRoute(string $ncBase, string $routeName, array $args): string {
+		$link = $this->urlGenerator->linkToRoute($routeName, $args);
+		$forcedPath = rtrim(parse_url($ncBase, PHP_URL_PATH), '/');
+
+		if ($forcedPath !== '' && strpos($link, $forcedPath) === 0) {
+			$ncBase = substr($ncBase, 0, -strlen($forcedPath));
+		}
+
+		return rtrim($ncBase, '/') . $link;
 	}
 
 }

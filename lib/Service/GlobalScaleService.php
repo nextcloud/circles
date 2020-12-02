@@ -223,9 +223,8 @@ class GlobalScaleService {
 		try {
 			$lookup = $this->configService->getGSStatus(ConfigService::GS_LOOKUP);
 			$request = new NC19Request(ConfigService::GS_LOOKUP_INSTANCES, Request::TYPE_POST);
-			$request->setProtocols(['https', 'http']);
-			$request->basedOnUrl($lookup);
 			$this->configService->configureRequest($request);
+			$request->basedOnUrl($lookup);
 			$request->addData('authKey', $this->configService->getGSStatus(ConfigService::GS_KEY));
 
 			try {

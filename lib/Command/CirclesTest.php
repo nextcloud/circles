@@ -127,6 +127,8 @@ class CirclesTest extends Base {
 		$this->configService->setAppValue(ConfigService::TEST_NC_BASE, $input->getOption('url'));
 
 		if (!$this->testRequest($output, 'GET', 'core.CSRFToken.index')) {
+			$this->configService->setAppValue(ConfigService::TEST_NC_BASE, '');
+
 			return 0;
 		}
 
@@ -134,6 +136,8 @@ class CirclesTest extends Base {
 			$output, 'POST', 'circles.GlobalScale.asyncBroadcast',
 			['token' => 'test-dummy-token']
 		)) {
+			$this->configService->setAppValue(ConfigService::TEST_NC_BASE, '');
+
 			return 0;
 		}
 
@@ -182,6 +186,7 @@ class CirclesTest extends Base {
 	private function testRequest(OutputInterface $o, string $type, string $route, array $args = []): bool {
 		$request = new NC19Request('', Request::type($type));
 		$this->configService->configureRequest($request, $route, $args);
+		$request->setFollowLocation(false);
 
 		$o->write('- ' . $type . ' request on ' . $request->getCompleteUrl() . ': ');
 		$this->doRequest($request);

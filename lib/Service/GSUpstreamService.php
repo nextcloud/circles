@@ -162,11 +162,11 @@ class GSUpstreamService {
 	 * @param GSWrapper $wrapper
 	 * @param string $protocol
 	 */
-	public function broadcastWrapper(GSWrapper $wrapper, string $protocol): void {
+	public function broadcastWrapper(GSWrapper $wrapper): void {
 		$status = GSWrapper::STATUS_FAILED;
 
 		try {
-			$this->broadcastEvent($wrapper->getEvent(), $wrapper->getInstance(), $protocol);
+			$this->broadcastEvent($wrapper->getEvent(), $wrapper->getInstance());
 			$status = GSWrapper::STATUS_DONE;
 		} catch (RequestContentException | RequestNetworkException | RequestResultSizeException | RequestServerException | RequestResultNotJsonException $e) {
 		}
@@ -192,7 +192,7 @@ class GSUpstreamService {
 	 * @throws RequestResultSizeException
 	 * @throws RequestServerException
 	 */
-	public function broadcastEvent(GSEvent $event, string $instance, string $protocol = ''): void {
+	public function broadcastEvent(GSEvent $event, string $instance): void {
 		$this->signEvent($event);
 
 		if ($this->configService->isLocalInstance($instance)) {
@@ -202,12 +202,7 @@ class GSUpstreamService {
 			$path = $this->urlGenerator->linkToRoute('circles.GlobalScale.broadcast');
 			$request = new NC19Request($path, Request::TYPE_POST);
 			$this->configService->configureRequest($request);
-			$protocols = ['https', 'http'];
-			if ($protocol !== '') {
-				$protocols = [$protocol];
-			}
 			$request->setInstance($instance);
-			$request->setProtocols($protocols);
 		}
 
 		$request->setDataSerialize($event);
@@ -235,14 +230,9 @@ class GSUpstreamService {
 		$path = $this->urlGenerator->linkToRoute('circles.GlobalScale.event');
 
 		$request = new NC19Request($path, Request::TYPE_POST);
-		$request->basedOnUrl($owner->getInstance());
 		$this->configService->configureRequest($request);
+		$request->basedOnUrl($owner->getInstance());
 
-		if ($this->get('REQUEST_SCHEME', $_SERVER) !== '') {
-			$request->setProtocols([$_SERVER['REQUEST_SCHEME']]);
-		} else {
-			$request->setProtocols(['https', 'http']);
-		}
 		$request->setDataSerialize($event);
 
 		$result = $this->retrieveJson($request);
@@ -423,7 +413,6 @@ class GSUpstreamService {
 		$path = $this->urlGenerator->linkToRoute('circles.GlobalScale.status');
 		$request = new NC19Request($path, Request::TYPE_POST);
 		$this->configService->configureRequest($request);
-		$request->setProtocols(['https', 'http']);
 		$request->setDataSerialize($event);
 
 		$requestIssue = false;

@@ -305,7 +305,6 @@ class SharingFrameService {
 	 */
 	public function initiateShare(string $circleUniqueId, string $frameUniqueId) {
 		$request = new NC19Request('', Request::TYPE_POST);
-		$request->setProtocols(['https', 'http']);
 		$this->configService->configureRequest($request, 'circles.Shares.initShareDelivery');
 		$request->addParam('circleId', $circleUniqueId);
 		$request->addParam('frameId', $frameUniqueId);
