@@ -87,6 +87,7 @@ class ConfigService {
 		self::CIRCLES_SELF_SIGNED              => '0',
 		self::LOCAL_CLOUD_ID                   => '',
 		self::FORCE_NC_BASE                    => '',
+		self::TEST_NC_BASE                     => '',
 		self::CIRCLES_ACTIVITY_ON_CREATION     => '1',
 		self::CIRCLES_SKIP_INVITATION_STEP     => '0',
 		self::CIRCLES_SEARCH_FROM_COLLABORATOR => '0'
