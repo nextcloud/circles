@@ -1,6 +1,20 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+
+### 0.20.5
+
+- use https and http when in doubt
+- reset test_nc_base on all failure of the test
+- do not redirect when testing
+- filter result on search based on a queue
+- circles.force_nc_base can be set in config.php
+- better detection of local instance
+- force local request on local instance
+- better distinction between local_instance (internal) and local_cloud_id (remote)
+- fixing the displayed name of the owner in the list of Circles
+
+
 ### 0.20.4
 
 - caching display name
