@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 
-### 0.20.5
+### 0.20.6
 
 - use https and http when in doubt
 - reset test_nc_base on all failure of the test
