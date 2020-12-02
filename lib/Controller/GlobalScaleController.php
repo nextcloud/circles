@@ -100,7 +100,7 @@ class GlobalScaleController extends BaseController {
 		$this->async();
 		foreach ($wrappers as $wrapper) {
 			try {
-				$this->gsUpstreamService->broadcastWrapper($wrapper, $this->request->getServerProtocol());
+				$this->gsUpstreamService->broadcastWrapper($wrapper);
 			} catch (GSStatusException $e) {
 			}
 		}
