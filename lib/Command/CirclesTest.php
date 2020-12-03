@@ -36,6 +36,7 @@ use daita\MySmallPhpTools\Traits\Nextcloud\TNC19Request;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
 use OC\Core\Command\Base;
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\GlobalScaleService;
@@ -45,6 +46,7 @@ use OCP\IURLGenerator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 
 /**
@@ -157,18 +159,26 @@ class CirclesTest extends Base {
 			$result[$wrapper->getInstance()] = $wrapper->getEvent();
 		}
 
+		$localLooksGood = false;
 		foreach ($instances as $instance) {
 			$output->write($instance . ' ');
 			if (array_key_exists($instance, $result)
 				&& $result[$instance]->getResult()
 									 ->gInt('status') === 1) {
 				$output->writeln('<info>ok</info>');
+				if ($this->configService->isLocalInstance($instance)) {
+					$localLooksGood = true;
+				}
 			} else {
 				$output->writeln('<error>fail</error>');
 			}
 		}
 
 		$this->configService->setAppValue(ConfigService::TEST_NC_BASE, '');
+
+		if ($localLooksGood) {
+			$this->saveUrl($input, $output, $input->getOption('url'));
+		}
 
 		return 0;
 	}
@@ -202,6 +212,41 @@ class CirclesTest extends Base {
 		}
 
 		return false;
+	}
+
+
+	/**
+	 * @param InputInterface $input
+	 * @param OutputInterface $output
+	 * @param string $address
+	 */
+	private function saveUrl(InputInterface $input, OutputInterface $output, string $address): void {
+		if ($address === '') {
+			return;
+		}
+
+		$output->writeln('');
+		$output->writeln(
+			'The address <info>' . $address . '</info> seems to reach your local Nextcloud.'
+		);
+
+		$helper = $this->getHelper('question');
+		$output->writeln('');
+		$question = new ConfirmationQuestion(
+			'<info>Do you want to store this address in database ?</info> (y/N) ', false, '/^(y|Y)/i'
+		);
+
+		if (!$helper->ask($input, $output, $question)) {
+			$output->writeln('Configuration NOT saved');
+
+			return;
+		}
+
+		$this->configService->setAppValue(ConfigService::FORCE_NC_BASE, $address);
+		$output->writeln(
+			'New configuration <info>' . Application::APP_NAME . '.' . ConfigService::FORCE_NC_BASE . '=\''
+			. $address . '\'</info> stored in database'
+		);
 	}
 
 }
