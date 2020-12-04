@@ -199,7 +199,7 @@ class MemberAdd extends AGlobalScaleEvent {
 			}
 		}
 
-		if ($circle === null || $member === null) {
+		if (empty($links) || $circle === null || $member === null) {
 			return;
 		}
 
