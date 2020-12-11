@@ -936,7 +936,7 @@ class EventsService {
 					 ->setUser($userId)
 					 ->setObject($object, $objectId)
 					 ->setSubject(
-						 $subject, [$author->getUserId(), $circle->getName(), json_encode($circle)]
+						 $subject, [$author->getDisplayName(), $circle->getName(), json_encode($circle)]
 					 );
 
 		return $notification;
