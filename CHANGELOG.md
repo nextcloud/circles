@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+### 0.18.11
+
+- display name on notification
+
+
 ### 0.18.10
 
 - better maintenance of circles and shares
