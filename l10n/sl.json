@@ -165,6 +165,7 @@
     "On global events happening in any <strong>Circle</strong>" : "Za splošne dogodke v kateremkoli <strong>krogu</strong>",
     "Shared to Circles" : "Souporaba v krogu",
     "%s shared »%s« with you." : "%s vam omogoča souporabo »%s«.",
+    "%s shared »%s« with '%s'." : "%s omogoči souporabo »%s« z uporabnikom »%s«.",
     "%s on %s" : "%s na %s",
     "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n" : "%1$s vam omogoča souporabo »%2$s«.\nPo elektronski pošti bi morali prejeti tudi ločeno sporočilo s povezavo.\n",
     "Password to access »%s«" : "Geslo za dostop do »%s«",
