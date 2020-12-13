@@ -27,6 +27,7 @@
 namespace OCA\Circles\Service;
 
 use daita\MySmallPhpTools\Model\Nextcloud\NC19Request;
+use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Model\Circle;
 use OCP\IConfig;
@@ -36,6 +37,10 @@ use OCP\PreConditionNotMetException;
 use OCP\Util;
 
 class ConfigService {
+
+
+	use TStringTools;
+
 
 	const CIRCLES_ALLOW_CIRCLES = 'allow_circles';
 	const CIRCLES_CONTACT_BACKEND = 'contact_backend';
@@ -554,6 +559,17 @@ class ConfigService {
 		if ($localCloudId === '') {
 			$cliUrl = $this->config->getSystemValue('overwrite.cli.url', '');
 			$local = parse_url($cliUrl);
+			if (!is_array($local) || !array_key_exists('host', $local)) {
+				if ($cliUrl !== '') {
+					return $cliUrl;
+				}
+
+				$randomCloudId = $this->uuid();
+				$this->setAppValue(self::LOCAL_CLOUD_ID, $randomCloudId);
+
+				return $randomCloudId;
+			}
+
 			if (array_key_exists('port', $local)) {
 				return $local['host'] . ':' . $local['port'];
 			} else {
