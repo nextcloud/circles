@@ -34,9 +34,9 @@ use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\RequestResultNotJsonException;
 use daita\MySmallPhpTools\Exceptions\RequestResultSizeException;
 use daita\MySmallPhpTools\Exceptions\RequestServerException;
-use daita\MySmallPhpTools\Model\Nextcloud\NC19Request;
+use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
 use daita\MySmallPhpTools\Model\Request;
-use daita\MySmallPhpTools\Traits\Nextcloud\TNC19Request;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
 use Exception;
 use OC\Core\Command\Base;
 use OC\User\NoUserException;
@@ -60,7 +60,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class MembersCreate extends Base {
 
 
-	use TNC19Request;
+	use TNC21Request;
 
 
 	/** @var IL10N */
@@ -175,7 +175,7 @@ class MembersCreate extends Base {
 			return '';
 		}
 
-		$request = new NC19Request(ConfigService::GS_LOOKUP_USERS, Request::TYPE_GET);
+		$request = new NC21Request(ConfigService::GS_LOOKUP_USERS, Request::TYPE_GET);
 		$this->configService->configureRequest($request);
 		$request->basedOnUrl($lookup);
 		$request->addParam('search', $search);

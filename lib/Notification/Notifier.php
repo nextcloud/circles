@@ -113,7 +113,7 @@ class Notifier implements INotifier {
 			throw new InvalidArgumentException();
 		}
 
-		$l10n = OC::$server->getL10N(Application::APP_NAME, $languageCode);
+		$l10n = OC::$server->getL10N(Application::APP_ID, $languageCode);
 
 		$notification->setIcon(
 			$this->url->getAbsoluteURL($this->url->imagePath('circles', 'black_circle.svg'))

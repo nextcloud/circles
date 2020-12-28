@@ -68,6 +68,13 @@ return [
 		['name' => 'GlobalScale#event', 'url' => '/v1/gs/event', 'verb' => 'POST'],
 		['name' => 'GlobalScale#asyncBroadcast', 'url' => '/v1/gs/broadcast/async/{token}/', 'verb' => 'POST'],
 		['name' => 'GlobalScale#broadcast', 'url' => '/v1/gs/broadcast', 'verb' => 'POST'],
-		['name' => 'GlobalScale#status', 'url' => '/v1/gs/status', 'verb' => 'POST']
+		['name' => 'GlobalScale#status', 'url' => '/v1/gs/status', 'verb' => 'POST'],
+
+		['name' => 'Remote#incoming', 'url' => '/incoming', 'verb' => 'POST'],
+		['name' => 'Remote#test', 'url' => '/test', 'verb' => 'GET'],
+		['name' => 'Remote#circles', 'url' => '/circles', 'verb' => 'GET'],
+		['name' => 'Remote#circle', 'url' => '/circles/{circleId}', 'verb' => 'GET'],
+		['name' => 'Remote#members', 'url' => '/members', 'verb' => 'GET'],
+		['name' => 'Remote#member', 'url' => '/members/{memberId}', 'verb' => 'GET'],
 	]
 ];

@@ -569,24 +569,24 @@ class CirclesService {
 		switch ($type) {
 			case Circle::CIRCLES_PERSONAL:
 				return $urlGen->getAbsoluteURL(
-					$urlGen->imagePath(Application::APP_NAME, 'personal' . $ext)
+					$urlGen->imagePath(Application::APP_ID, 'personal' . $ext)
 				);
 			case Circle::CIRCLES_CLOSED:
 				return $urlGen->getAbsoluteURL(
-					$urlGen->imagePath(Application::APP_NAME, 'closed' . $ext)
+					$urlGen->imagePath(Application::APP_ID, 'closed' . $ext)
 				);
 			case Circle::CIRCLES_SECRET:
 				return $urlGen->getAbsoluteURL(
-					$urlGen->imagePath(Application::APP_NAME, 'secret' . $ext)
+					$urlGen->imagePath(Application::APP_ID, 'secret' . $ext)
 				);
 			case Circle::CIRCLES_PUBLIC:
 				return $urlGen->getAbsoluteURL(
-					$urlGen->imagePath(Application::APP_NAME, 'black_circle' . $ext)
+					$urlGen->imagePath(Application::APP_ID, 'black_circle' . $ext)
 				);
 		}
 
 		return $urlGen->getAbsoluteURL(
-			$urlGen->imagePath(Application::APP_NAME, 'black_circle' . $ext)
+			$urlGen->imagePath(Application::APP_ID, 'black_circle' . $ext)
 		);
 	}
 

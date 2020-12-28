@@ -35,9 +35,9 @@ use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\RequestResultNotJsonException;
 use daita\MySmallPhpTools\Exceptions\RequestResultSizeException;
 use daita\MySmallPhpTools\Exceptions\RequestServerException;
-use daita\MySmallPhpTools\Model\Nextcloud\NC19Request;
+use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
 use daita\MySmallPhpTools\Model\Request;
-use daita\MySmallPhpTools\Traits\Nextcloud\TNC19Request;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OC;
 use OC\Security\IdentityProof\Signer;
@@ -64,7 +64,7 @@ use OCP\IUserSession;
 class GlobalScaleService {
 
 
-	use TNC19Request;
+	use TNC21Request;
 	use TStringTools;
 
 
@@ -137,7 +137,7 @@ class GlobalScaleService {
 			$wrapper = $this->gsEventsRequest->create($wrapper);
 		}
 
-		$request = new NC19Request('', Request::TYPE_POST);
+		$request = new NC21Request('', Request::TYPE_POST);
 		$this->configService->configureRequest(
 			$request, 'circles.GlobalScale.asyncBroadcast', ['token' => $wrapper->getToken()]
 		);
@@ -221,7 +221,7 @@ class GlobalScaleService {
 		/** @var string $lookup */
 		try {
 			$lookup = $this->configService->getGSStatus(ConfigService::GS_LOOKUP);
-			$request = new NC19Request(ConfigService::GS_LOOKUP_INSTANCES, Request::TYPE_POST);
+			$request = new NC21Request(ConfigService::GS_LOOKUP_INSTANCES, Request::TYPE_POST);
 			$this->configService->configureRequest($request);
 			$request->basedOnUrl($lookup);
 			$request->addData('authKey', $this->configService->getGSStatus(ConfigService::GS_KEY));

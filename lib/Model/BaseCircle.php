@@ -105,7 +105,7 @@ class BaseCircle {
 	private $links;
 
 	public function __construct($type = -1, $name = '') {
-		$this->l10n = OC::$server->getL10N(Application::APP_NAME);
+		$this->l10n = OC::$server->getL10N(Application::APP_ID);
 
 		if ($type > -1) {
 			$this->type = $type;

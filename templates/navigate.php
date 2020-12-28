@@ -27,12 +27,12 @@
 use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\AppInfo\Application;
 
-script(Application::APP_NAME, 'vendor/notyf');
-style(Application::APP_NAME, 'notyf');
+script(Application::APP_ID, 'vendor/notyf');
+style(Application::APP_ID, 'notyf');
 
 Circles::addJavascriptAPI();
 script(
-	Application::APP_NAME, [
+	Application::APP_ID, [
 							 'jquery',
 							 'circles.app.elements', 'circles.app.actions',
 							 'circles.app.navigation', 'circles.app.settings',
@@ -42,7 +42,7 @@ script(
 						 ]
 );
 
-style(Application::APP_NAME, 'navigation');
+style(Application::APP_ID, 'navigation');
 ?>
 
 

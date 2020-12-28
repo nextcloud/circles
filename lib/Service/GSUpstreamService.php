@@ -35,10 +35,10 @@ use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\RequestResultNotJsonException;
 use daita\MySmallPhpTools\Exceptions\RequestResultSizeException;
 use daita\MySmallPhpTools\Exceptions\RequestServerException;
-use daita\MySmallPhpTools\Model\Nextcloud\NC19Request;
+use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
 use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
-use daita\MySmallPhpTools\Traits\Nextcloud\TNC19Request;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
 use OCA\Circles\Db\CirclesRequest;
@@ -63,7 +63,7 @@ use OCP\IURLGenerator;
 class GSUpstreamService {
 
 
-	use TNC19Request;
+	use TNC21Request;
 	use TArrayTools;
 
 
@@ -196,11 +196,11 @@ class GSUpstreamService {
 		$this->signEvent($event);
 
 		if ($this->configService->isLocalInstance($instance)) {
-			$request = new NC19Request('', Request::TYPE_POST);
+			$request = new NC21Request('', Request::TYPE_POST);
 			$this->configService->configureRequest($request, 'circles.GlobalScale.broadcast');
 		} else {
 			$path = $this->urlGenerator->linkToRoute('circles.GlobalScale.broadcast');
-			$request = new NC19Request($path, Request::TYPE_POST);
+			$request = new NC21Request($path, Request::TYPE_POST);
 			$this->configService->configureRequest($request);
 			$request->setInstance($instance);
 		}
@@ -229,7 +229,7 @@ class GSUpstreamService {
 		$owner = $circle->getOwner();
 		$path = $this->urlGenerator->linkToRoute('circles.GlobalScale.event');
 
-		$request = new NC19Request($path, Request::TYPE_POST);
+		$request = new NC21Request($path, Request::TYPE_POST);
 		$this->configService->configureRequest($request);
 		$request->basedOnUrl($owner->getInstance());
 
@@ -411,7 +411,7 @@ class GSUpstreamService {
 		$this->signEvent($event);
 
 		$path = $this->urlGenerator->linkToRoute('circles.GlobalScale.status');
-		$request = new NC19Request($path, Request::TYPE_POST);
+		$request = new NC21Request($path, Request::TYPE_POST);
 		$this->configService->configureRequest($request);
 		$request->setDataSerialize($event);
 

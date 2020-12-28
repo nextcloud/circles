@@ -56,7 +56,7 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 	 * @throws QueryException
 	 */
 	public function __construct() {
-		$this->l10n = \OC::$server->getL10N(Application::APP_NAME);
+		$this->l10n = \OC::$server->getL10N(Application::APP_ID);
 		$this->miscService = \OC::$server->query(MiscService::class);
 	}
 

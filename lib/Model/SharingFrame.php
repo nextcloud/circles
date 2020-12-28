@@ -259,7 +259,7 @@ class SharingFrame implements \JsonSerializable {
 	 * @throws SharingFrameSourceCannotBeAppCirclesException
 	 */
 	public function cannotBeFromCircles() {
-		if (strtolower($this->getSource()) === Application::APP_NAME) {
+		if (strtolower($this->getSource()) === Application::APP_ID) {
 			throw new SharingFrameSourceCannotBeAppCirclesException();
 		}
 	}
