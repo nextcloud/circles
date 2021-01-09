@@ -77,6 +77,7 @@
     "Members of the group '{name}' could not be added to the circle" : "Členovia skupiny '{name}' nemohli byť boli pridaní do kruhu",
     "Members of the group '{name}' were invited to the circle" : "Členovia skupiny '{name}' boli pozvaní do kruhu",
     "Members of the group '{name}' could not be invited to the circle" : "Členovia skupiny '{name}' nemohli byť pozvaní do okruhu",
+    "Member updated" : "Člen aktualizovaný",
     "Issue while saving settings" : "Problém počas ukladania nastavení",
     "Settings saved." : "Nastavenia uložené.",
     "Circles" : "Kruhy",
