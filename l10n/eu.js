@@ -79,6 +79,7 @@ OC.L10N.register(
     "Members of the group '{name}' could not be added to the circle" : "Ezin izan dira '{name}' taldeko kideak zirkulura gehitu",
     "Members of the group '{name}' were invited to the circle" : "'{name}' taldeko kideak zirkulura gonbidatu dira",
     "Members of the group '{name}' could not be invited to the circle" : "Ezin izan dira '{name}' taldeko kideak zirkulura gonbidatu",
+    "Member updated" : "Kidea eguneratuta",
     "Issue while saving settings" : "Arazoa ezarpenak gordetzean",
     "Settings saved." : "Ezarpenak gordeta.",
     "Circles" : "Zirkuluak",
