@@ -589,19 +589,19 @@ class ConfigService {
 	 * returns address based on LOCAL_CLOUD_ID, LOCAL_CLOUD_SCHEME and a routeName
 	 * perfect for urlId in ActivityPub env.
 	 *
-	 * @param string $routeName
+	 * @param string $route
 	 * @param array $args
 	 *
 	 * @return string
 	 */
-	public function getRemotePath(string $routeName, array $args = []): string {
+	public function getRemotePath(string $route = 'circles.Navigation.navigate', array $args = []): string {
 		$base = $this->getAppValue(self::LOCAL_CLOUD_SCHEME) . '://' . $this->getLocalInstance();
 
-		if ($routeName === '') {
+		if ($route === '') {
 			return $base;
 		}
 
-		return $base . $this->urlGenerator->linkToRoute($routeName, $args);
+		return $base . $this->urlGenerator->linkToRoute($route, $args);
 	}
 
 	/**

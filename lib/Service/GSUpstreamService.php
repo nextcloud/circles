@@ -39,7 +39,6 @@ use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
 use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
-use daita\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\GSEventsRequest;
@@ -64,7 +63,6 @@ class GSUpstreamService {
 
 
 	use TNC21Request;
-	use TArrayTools;
 
 
 	/** @var string */

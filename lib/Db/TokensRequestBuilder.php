@@ -39,7 +39,7 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
  *
  * @package OCA\Circles\Db
  */
-class TokensRequestBuilder extends CoreRequestBuilder {
+class TokensRequestBuilder extends DeprecatedRequestBuilder {
 
 
 	use TArrayTools;

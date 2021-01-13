@@ -30,7 +30,7 @@ use Exception;
 use OC\Core\Command\Base;
 use OC\Share\Share;
 use OCA\Circles\Db\CirclesRequest;
-use OCA\Circles\Db\CoreRequestBuilder;
+use OCA\Circles\Db\DeprecatedRequestBuilder;
 use OCA\Circles\Model\Circle;
 use OCP\IDBConnection;
 use Symfony\Component\Console\Input\InputInterface;
@@ -75,7 +75,7 @@ class FixUniqueId extends Base {
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->select('id', 'unique_id')
-		   ->from(CoreRequestBuilder::TABLE_CIRCLES);
+		   ->from(DeprecatedRequestBuilder::TABLE_CIRCLES);
 
 		$cursor = $qb->execute();
 		while ($data = $cursor->fetch()) {
@@ -87,7 +87,7 @@ class FixUniqueId extends Base {
 //				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_GROUPS
 //			);
 			$this->swapToShortenUniqueIdInTable(
-				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_LINKS
+				$circleId, $shortenUniqueId, DeprecatedRequestBuilder::TABLE_LINKS
 			);
 //
 //			$this->cleanBuggyDuplicateEntries(
@@ -95,11 +95,11 @@ class FixUniqueId extends Base {
 //			);
 
 			$this->swapToShortenUniqueIdInTable(
-				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_MEMBERS
+				$circleId, $shortenUniqueId, DeprecatedRequestBuilder::TABLE_MEMBERS
 			);
 
 			$this->swapToShortenUniqueIdInTable(
-				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_LINKS
+				$circleId, $shortenUniqueId, DeprecatedRequestBuilder::TABLE_LINKS
 			);
 
 			$this->swapToShortenUniqueIdInShares($circleId, $shortenUniqueId);

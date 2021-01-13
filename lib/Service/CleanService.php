@@ -31,7 +31,7 @@ namespace OCA\Circles\Service;
 
 
 use OCA\Circles\Db\CirclesRequest;
-use OCA\Circles\Db\CoreRequestBuilder;
+use OCA\Circles\Db\DeprecatedRequestBuilder;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Db\SharesRequest;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
@@ -88,7 +88,7 @@ class CleanService {
 
 	public function fixUserType() {
 		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->update(CoreRequestBuilder::TABLE_MEMBERS)
+		$qb->update(DeprecatedRequestBuilder::TABLE_MEMBERS)
 		   ->set('user_type', $qb->createNamedParameter(1))
 		   ->where(
 			   $qb->expr()

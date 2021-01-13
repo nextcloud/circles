@@ -30,9 +30,11 @@
 namespace OCA\Circles\Model;
 
 
+use daita\MySmallPhpTools\Db\Nextcloud\nc21\INC21QueryRow;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Signatory;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
+use OCA\Circles\Exceptions\RemoteUidException;
 
 
 /**
@@ -40,7 +42,7 @@ use JsonSerializable;
  *
  * @package OCA\Circles\Model
  */
-class AppService extends NC21Signatory implements JsonSerializable {
+class AppService extends NC21Signatory implements INC21QueryRow, JsonSerializable {
 
 
 	use TArrayTools;
@@ -57,6 +59,15 @@ class AppService extends NC21Signatory implements JsonSerializable {
 
 	/** @var string */
 	private $members = '';
+
+	/** @var string */
+	private $uid = '';
+
+	/** @var string */
+	private $authSigned = '';
+
+	/** @var bool */
+	private $identityAuthed = false;
 
 
 	/**
@@ -136,20 +147,137 @@ class AppService extends NC21Signatory implements JsonSerializable {
 
 
 	/**
+	 * @return $this
+	 */
+	public function setUidFromKey(): self {
+		$this->setUid(hash('sha512', $this->getPublicKey()));
+
+		return $this;
+	}
+
+	/**
+	 * @param string $uid
+	 *
+	 * @return AppService
+	 */
+	public function setUid(string $uid): self {
+		$this->uid = $uid;
+
+		return $this;
+	}
+
+	/**
+	 * @param bool $shorten
+	 *
+	 * @return string
+	 */
+	public function getUid(bool $shorten = false): string {
+		if ($shorten) {
+			return substr($this->uid, 0, 18);
+		}
+
+		return $this->uid;
+	}
+
+
+	/**
+	 * @param string $authSigned
+	 *
+	 * @return AppService
+	 */
+	public function setAuthSigned(string $authSigned): self {
+		$this->authSigned = $authSigned;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getAuthSigned(): string {
+		return $this->authSigned;
+	}
+
+
+	/**
+	 * @param bool $identityAuthed
+	 *
+	 * @return AppService
+	 */
+	public function setIdentityAuthed(bool $identityAuthed): self {
+		$this->identityAuthed = $identityAuthed;
+
+		return $this;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isIdentityAuthed(): bool {
+		return $this->identityAuthed;
+	}
+
+	/**
+	 * @throws RemoteUidException
+	 */
+	public function mustBeIdentityAuthed(): void {
+		if (!$this->isIdentityAuthed()) {
+			throw new RemoteUidException('identity not authed');
+		}
+	}
+
+
+	/**
+	 * @param array $data
+	 *
+	 * @return NC21Signatory
+	 */
+	public function import(array $data): NC21Signatory {
+		parent::import($data);
+
+		$this->setTest($this->get('test', $data));
+		$this->setIncoming($this->get('incoming', $data));
+		$this->setCircles($this->get('circles', $data));
+		$this->setMembers($this->get('members', $data));
+		$this->setAuthSigned($this->get('auth-signed', $data));
+		$this->setUid($this->get('uid', $data));
+
+		return $this;
+	}
+
+
+	/**
 	 * @return array
 	 */
 	public function jsonSerialize(): array {
-		return array_filter(
-			array_merge(
-				[
-					'test'     => $this->getTest(),
-					'incoming' => $this->getIncoming(),
-					'circles'  => $this->getCircles(),
-					'members'  => $this->getMembers()
-				],
-				parent::jsonSerialize()
-			)
-		);
+		$data = [
+			'uid'      => $this->getUid(true),
+			'test'     => $this->getTest(),
+			'incoming' => $this->getIncoming(),
+			'circles'  => $this->getCircles(),
+			'members'  => $this->getMembers(),
+		];
+
+		if ($this->getAuthSigned() !== '') {
+			$data['auth-signed'] = $this->getAlgorithm() . ':' . $this->getAuthSigned();
+		}
+
+		return array_filter(array_merge($data, parent::jsonSerialize()));
+	}
+
+
+	/**
+	 * @param array $data
+	 *
+	 * @return self
+	 */
+	public function importFromDatabase(array $data): INC21QueryRow {
+		$this->import($this->getArray('item', $data));
+		$this->setInstance($this->get('instance', $data));
+		$this->setId($this->get('href', $data));
+
+		return $this;
 	}
 
 }
+

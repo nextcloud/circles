@@ -93,7 +93,7 @@ class Groups extends Base {
 	 */
 	private function listLinkedGroups(InputInterface $input, OutputInterface $output) {
 		if ($input->getOption('list') !== true) {
-			return;
+			return ;
 		}
 
 		throw new FakeException();

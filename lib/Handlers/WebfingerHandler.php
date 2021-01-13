@@ -27,10 +27,12 @@
 namespace OCA\Circles\Handlers;
 
 
+use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use OC\URLGenerator;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\RemoteService;
 use OCP\Http\WellKnown\IHandler;
 use OCP\Http\WellKnown\IRequestContext;
 use OCP\Http\WellKnown\IResponse;
@@ -52,6 +54,9 @@ class WebfingerHandler implements IHandler {
 	/** @var URLGenerator */
 	private $urlGenerator;
 
+	/** @var RemoteService */
+	private $remoteService;
+
 	/** @var ConfigService */
 	private $configService;
 
@@ -60,10 +65,14 @@ class WebfingerHandler implements IHandler {
 	 * WebfingerHandler constructor.
 	 *
 	 * @param IURLGenerator $urlGenerator
+	 * @param RemoteService $remoteService
 	 * @param ConfigService $configService
 	 */
-	public function __construct(IURLGenerator $urlGenerator, ConfigService $configService) {
+	public function __construct(
+		IURLGenerator $urlGenerator, RemoteService $remoteService, ConfigService $configService
+	) {
 		$this->urlGenerator = $urlGenerator;
+		$this->remoteService = $remoteService;
 		$this->configService = $configService;
 	}
 
@@ -80,34 +89,30 @@ class WebfingerHandler implements IHandler {
 			return $response;
 		}
 
-		$request = $context->getHttpRequest();
-		$params = $request->getParams();
-		unset($params['service'], $params['_route']);
-		if (empty($params)) {
-			parse_str(parse_url($request->getRequestUri(), PHP_URL_QUERY), $params);
-		}
-
-		$subject = $this->get('resource', $params);
+		$subject = $this->get('resource', $context->getHttpRequest()->getParams());
 		if ($subject !== Application::APP_SUBJECT) {
 			return $response;
 		}
 
-//		if (!($response instanceof JrdResponse)) {
-		$response = new JrdResponse($subject);
-//		}
+		if (!($response instanceof JrdResponse)) {
+			$response = new JrdResponse($subject);
+		}
 
-		$href = $this->configService->getRemotePath('circles.Navigation.navigate');
+		try {
+			$this->remoteService->getAppSignatory();
+		} catch (SignatoryException $e) {
+			return $response;
+		}
 
-		return $response
-			->addLink(
-				Application::APP_REL, 'application/json', $href, [],
-				[
-					'app'     => Application::APP_ID,
-					'name'    => Application::APP_NAME,
-					'version' => $this->configService->getAppValue('installed_version'),
-					'api'     => Application::APP_API
-				]
-			);
+		$href = $this->configService->getRemotePath();
+		$info = [
+			'app'     => Application::APP_ID,
+			'name'    => Application::APP_NAME,
+			'version' => $this->configService->getAppValue('installed_version'),
+			'api'     => Application::APP_API
+		];
+
+		return $response->addLink(Application::APP_REL, 'application/json', $href, [], $info);
 	}
 
 }

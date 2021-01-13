@@ -32,7 +32,6 @@ use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21LocalSignatory;
 use Exception;
 use OC\AppFramework\Middleware\Security\Exceptions\NotLoggedInException;
 use OCA\Circles\AppInfo\Application;
-use OCA\Circles\Model\AppService;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Service\ConfigService;
 use OCP\AppFramework\Http;
@@ -130,15 +129,8 @@ class NavigationController extends BaseController {
 		$this->setup('app', 'circles');
 		$this->publicPageJsonLimited();
 
-		$url = $this->urlGenerator;
-		$app = new AppService($this->configService->getRemotePath('circles.Navigation.navigate'));
-		$this->buildSimpleSignatory($app, true);
-		$app->setTest($this->configService->getRemotePath('circles.Remote.test'));
-		$app->setIncoming($this->configService->getRemotePath('circles.Remote.incoming'));
-		$app->setCircles($this->configService->getRemotePath('circles.Remote.circles'));
-		$app->setMembers($this->configService->getRemotePath('circles.Remote.members'));
-
-		return new DataResponse($app);
+		$confirm = $this->request->getParam('auth', '');
+		return new DataResponse($this->remoteService->getAppSignatory(false, $confirm));
 	}
 
 }

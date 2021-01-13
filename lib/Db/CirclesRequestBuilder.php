@@ -40,7 +40,7 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 use OCP\IL10N;
 
-class CirclesRequestBuilder extends CoreRequestBuilder {
+class CirclesRequestBuilder extends DeprecatedRequestBuilder {
 
 
 	/** @var MembersRequest */
@@ -257,7 +257,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		   ->selectAlias('u.cached_update', 'viewer_cached_update')
 		   ->selectAlias('u.level', 'viewer_level')
 		   ->leftJoin(
-			   $this->default_select_alias, CoreRequestBuilder::TABLE_MEMBERS, 'u',
+			   $this->default_select_alias, DeprecatedRequestBuilder::TABLE_MEMBERS, 'u',
 			   $expr->andX(
 				   $expr->eq('u.circle_id', $pf . 'unique_id'),
 				   $expr->eq('u.user_id', $qb->createNamedParameter($userId)),
@@ -292,7 +292,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 		   ->selectAlias('o.status', 'owner_status')
 		   ->selectAlias('o.level', 'owner_level')
 		   ->leftJoin(
-			   $this->default_select_alias, CoreRequestBuilder::TABLE_MEMBERS, 'o',
+			   $this->default_select_alias, DeprecatedRequestBuilder::TABLE_MEMBERS, 'o',
 			   $expr->andX(
 				   $expr->eq('o.circle_id', $pf . 'unique_id'),
 				   $expr->eq('o.level', $qb->createNamedParameter(Member::LEVEL_OWNER)),
@@ -371,7 +371,7 @@ class CirclesRequestBuilder extends CoreRequestBuilder {
 			   'c.id', 'c.name', 'c.alt_name', 'c.description', 'c.settings', 'c.type', 'contact_addressbook',
 			   'contact_groupname', 'c.creation'
 		   )
-		   ->from(CoreRequestBuilder::TABLE_CIRCLES, 'c');
+		   ->from(DeprecatedRequestBuilder::TABLE_CIRCLES, 'c');
 		$this->default_select_alias = 'c';
 
 		return $qb;

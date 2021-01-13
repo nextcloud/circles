@@ -28,7 +28,6 @@ namespace OCA\Circles\Controller;
 
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Controller;
 use Exception;
-use OC\AppFramework\Http;
 use OCA\Circles\Service\BroadcastService;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\ConfigService;
@@ -40,8 +39,8 @@ use OCA\Circles\Service\MembersService;
 use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\SearchService;
 use OCA\Circles\Service\SharingFrameService;
+use OCA\Circles\Service\RemoteService;
 use OCP\AppFramework\Controller;
-use OCP\AppFramework\Http\DataResponse;
 use OCP\IL10N;
 use OCP\IRequest;
 use OCP\IURLGenerator;
@@ -91,6 +90,9 @@ class BaseController extends Controller {
 	/** @var FederatedLinkService */
 	protected $federatedLinkService;
 
+	/** @var RemoteService */
+	protected $remoteService;
+
 	/** @var MiscService */
 	protected $miscService;
 
@@ -113,6 +115,7 @@ class BaseController extends Controller {
 	 * @param SharingFrameService $sharingFrameService
 	 * @param BroadcastService $broadcastService
 	 * @param FederatedLinkService $federatedLinkService
+	 * @param RemoteService $remoteService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
@@ -131,6 +134,7 @@ class BaseController extends Controller {
 		SharingFrameService $sharingFrameService,
 		BroadcastService $broadcastService,
 		FederatedLinkService $federatedLinkService,
+		RemoteService $remoteService,
 		MiscService $miscService
 	) {
 		parent::__construct($appName, $request);
@@ -149,6 +153,7 @@ class BaseController extends Controller {
 		$this->sharingFrameService = $sharingFrameService;
 		$this->broadcastService = $broadcastService;
 		$this->federatedLinkService = $federatedLinkService;
+		$this->remoteService = $remoteService;
 		$this->miscService = $miscService;
 	}
 

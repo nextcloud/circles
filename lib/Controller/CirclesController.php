@@ -72,7 +72,6 @@ class CirclesController extends BaseController {
 	 * @return DataResponse
 	 */
 	public function listing($type, $name = '', $level = 0) {
-
 		try {
 			$this->mustHaveFrontEndEnabled();
 

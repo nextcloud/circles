@@ -38,7 +38,7 @@ use daita\MySmallPhpTools\Exceptions\SignatureException;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Controller;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Signature;
 use Exception;
-use OCA\Circles\Service\SignatureService;
+use OCA\Circles\Service\RemoteService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\IRequest;
@@ -55,14 +55,14 @@ class RemoteController extends Controller {
 	use TNC21Controller;
 
 
-	/** @var SignatureService */
-	private $signatureService;
+	/** @var RemoteService */
+	private $remoteService;
 
 
-	public function __construct(string $appName, IRequest $request, SignatureService $signatureService) {
+	public function __construct(string $appName, IRequest $request, RemoteService $remoteService) {
 		parent::__construct($appName, $request);
 
-		$this->signatureService = $signatureService;
+		$this->remoteService = $remoteService;
 	}
 
 
@@ -77,7 +77,7 @@ class RemoteController extends Controller {
 	 * @throws SignatureException
 	 */
 	public function test() {
-		return $this->successObj($this->signatureService->incomingTest());
+		return $this->successObj($this->remoteService->incomingTest());
 	}
 
 

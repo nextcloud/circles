@@ -38,7 +38,7 @@ use OCP\IDBConnection;
 use OCP\IGroupManager;
 use OCP\IL10N;
 
-class MembersRequestBuilder extends CoreRequestBuilder {
+class MembersRequestBuilder extends DeprecatedRequestBuilder {
 
 
 	/** @var IGroupManager */
@@ -129,7 +129,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function getMembersDeleteSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->delete(CoreRequestBuilder::TABLE_MEMBERS);
+		$qb->delete(DeprecatedRequestBuilder::TABLE_MEMBERS);
 
 		return $qb;
 	}
