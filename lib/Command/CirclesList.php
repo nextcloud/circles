@@ -33,6 +33,7 @@ use daita\MySmallPhpTools\Traits\TArrayTools;
 use OC\Core\Command\Base;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
+use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Model\Circle;
 use OCP\IL10N;
 use Symfony\Component\Console\Helper\Table;
@@ -141,12 +142,10 @@ class CirclesList extends Base {
 	 *
 	 * @return Circle[]
 	 * @throws ConfigNoCircleAvailableException
-	 * @throws \OCA\Circles\Exceptions\GSStatusException
+	 * @throws GSStatusException
 	 */
 	private function getCircles(string $owner, string $viewer, string $remote): array {
 		if ($remote !== '') {
-echo $remote . "\n";
-$circles = [];
 		} elseif ($viewer === '') {
 			$circles = $this->circlesRequest->forceGetCircles($owner);
 		} else {

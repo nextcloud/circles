@@ -88,13 +88,7 @@ class RemoteController extends Controller {
 	 */
 	public function incoming() {
 		try {
-
-			return $this->success(
-				[
-					'signed' => $this->hasAnnotation('SignedRequest'),
-					'value'  => $this->getAnnotationValue('SignedRequest.signatory')
-				]
-			);
+			return $this->success([]);
 		} catch (Exception $e) {
 			return $this->fail($e);
 		}

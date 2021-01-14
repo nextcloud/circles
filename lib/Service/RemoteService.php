@@ -247,7 +247,7 @@ class RemoteService extends NC21Signature {
 			}
 
 			try {
-				$stored = $this->remoteRequest->getFromHost($remote->getInstance());
+				$stored = $this->remoteRequest->getFromInstance($remote->getInstance());
 			} catch (RowNotFoundException $e) {
 				throw new RemoteNotFoundException();
 			}

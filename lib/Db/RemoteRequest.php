@@ -102,7 +102,7 @@ class RemoteRequest extends RemoteRequestBuilder {
 	 * @return AppService
 	 * @throws RowNotFoundException
 	 */
-	public function getFromHost(string $host): AppService {
+	public function getFromInstance(string $host): AppService {
 		$qb = $this->getRemoteSelectSql();
 		$qb->limitToInstance($host);
 
