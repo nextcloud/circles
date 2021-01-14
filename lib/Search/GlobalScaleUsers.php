@@ -28,9 +28,9 @@ namespace OCA\Circles\Search;
 
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\RequestResultNotJsonException;
-use daita\MySmallPhpTools\Model\Nextcloud\NC19Request;
+use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
 use daita\MySmallPhpTools\Model\Request;
-use daita\MySmallPhpTools\Traits\Nextcloud\TNC19Request;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\ISearch;
@@ -48,7 +48,7 @@ use OCA\Circles\Service\MiscService;
 class GlobalScaleUsers implements ISearch {
 
 
-	use TNC19Request;
+	use TNC21Request;
 	use TArrayTools;
 
 
@@ -82,7 +82,7 @@ class GlobalScaleUsers implements ISearch {
 			return [];
 		}
 
-		$request = new NC19Request(ConfigService::GS_LOOKUP_USERS, Request::TYPE_GET);
+		$request = new NC21Request(ConfigService::GS_LOOKUP_USERS, Request::TYPE_GET);
 		$this->configService->configureRequest($request);
 		$request->basedOnUrl($lookup);
 		$request->addParam('search', $search);

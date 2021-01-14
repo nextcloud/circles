@@ -26,7 +26,7 @@ class Filter implements IFilter {
 	 * @since 11.0.0
 	 */
 	public function getIdentifier() {
-		return Application::APP_NAME;
+		return Application::APP_ID;
 	}
 
 	/**
@@ -51,7 +51,7 @@ class Filter implements IFilter {
 	 */
 	public function getIcon() {
 		return $this->url->getAbsoluteURL(
-			$this->url->imagePath(Application::APP_NAME, 'black_circle.svg')
+			$this->url->imagePath(Application::APP_ID, 'black_circle.svg')
 		);
 	}
 
@@ -70,7 +70,7 @@ class Filter implements IFilter {
 	 * @since 11.0.0
 	 */
 	public function allowedApps() {
-		return [Application::APP_NAME];
+		return [Application::APP_ID];
 	}
 }
 

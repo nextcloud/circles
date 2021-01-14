@@ -38,7 +38,7 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
  *
  * @package OCA\Circles\Db
  */
-class AccountsRequestBuilder extends CoreRequestBuilder {
+class AccountsRequestBuilder extends DeprecatedRequestBuilder {
 
 
 	use TArrayTools;

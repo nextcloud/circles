@@ -244,7 +244,7 @@ class FileShare extends AGlobalScaleEvent {
 
 		$lang = $this->configService->getCoreValueForUser($share->getSharedBy(), 'lang', '');
 		if ($lang !== '') {
-			$this->l10n = OC::$server->getL10N(Application::APP_NAME, $lang);
+			$this->l10n = OC::$server->getL10N(Application::APP_ID, $lang);
 		}
 
 		try {

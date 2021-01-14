@@ -113,7 +113,7 @@ class Provider implements IProvider {
 	 * @param array $params
 	 */
 	private function initActivityParser(IEvent $event, $params) {
-		if ($event->getApp() !== Application::APP_NAME) {
+		if ($event->getApp() !== Application::APP_ID) {
 			throw new InvalidArgumentException();
 		}
 

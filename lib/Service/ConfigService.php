@@ -26,7 +26,7 @@
 
 namespace OCA\Circles\Service;
 
-use daita\MySmallPhpTools\Model\Nextcloud\NC19Request;
+use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Model\Circle;
@@ -54,7 +54,6 @@ class ConfigService {
 	const CIRCLES_ALLOW_NON_SSL_LINKS = 'allow_non_ssl_links';
 	const CIRCLES_NON_SSL_LOCAL = 'local_is_non_ssl';
 	const CIRCLES_SELF_SIGNED = 'self_signed_cert';
-	const LOCAL_CLOUD_ID = 'local_cloud_id';
 	const CIRCLES_LOCAL_GSKEY = 'local_gskey';
 	const CIRCLES_ACTIVITY_ON_CREATION = 'creation_activity';
 	const CIRCLES_SKIP_INVITATION_STEP = 'skip_invitation_to_closed_circles';
@@ -63,6 +62,8 @@ class ConfigService {
 	const CIRCLES_TEST_ASYNC_INIT = 'test_async_init';
 	const CIRCLES_TEST_ASYNC_HAND = 'test_async_hand';
 	const CIRCLES_TEST_ASYNC_COUNT = 'test_async_count';
+	const LOCAL_CLOUD_ID = 'local_cloud_id';
+	const LOCAL_CLOUD_SCHEME = 'local_cloud_scheme';
 	const FORCE_NC_BASE = 'force_nc_base';
 	const TEST_NC_BASE = 'test_nc_base';
 
@@ -91,6 +92,7 @@ class ConfigService {
 		self::CIRCLES_NON_SSL_LOCAL            => '0',
 		self::CIRCLES_SELF_SIGNED              => '0',
 		self::LOCAL_CLOUD_ID                   => '',
+		self::LOCAL_CLOUD_SCHEME               => 'https',
 		self::FORCE_NC_BASE                    => '',
 		self::TEST_NC_BASE                     => '',
 		self::CIRCLES_ACTIVITY_ON_CREATION     => '1',
@@ -584,6 +586,25 @@ class ConfigService {
 
 
 	/**
+	 * returns address based on LOCAL_CLOUD_ID, LOCAL_CLOUD_SCHEME and a routeName
+	 * perfect for urlId in ActivityPub env.
+	 *
+	 * @param string $route
+	 * @param array $args
+	 *
+	 * @return string
+	 */
+	public function getRemotePath(string $route = 'circles.Navigation.navigate', array $args = []): string {
+		$base = $this->getAppValue(self::LOCAL_CLOUD_SCHEME) . '://' . $this->getLocalInstance();
+
+		if ($route === '') {
+			return $base;
+		}
+
+		return $base . $this->urlGenerator->linkToRoute($route, $args);
+	}
+
+	/**
 	 * @param string $instance
 	 *
 	 * @return bool
@@ -602,11 +623,11 @@ class ConfigService {
 
 
 	/**
-	 * @param NC19Request $request
+	 * @param NC21Request $request
 	 * @param string $routeName
 	 * @param array $args
 	 */
-	public function configureRequest(NC19Request $request, string $routeName = '', array $args = []) {
+	public function configureRequest(NC21Request $request, string $routeName = '', array $args = []) {
 		$this->configureRequestAddress($request, $routeName, $args);
 
 		if ($this->getForcedNcBase() === '') {
@@ -623,13 +644,13 @@ class ConfigService {
 	 * - can also be overwritten in config/config.php: 'circles.force_nc_base'
 	 * - perfect for loopback request.
 	 *
-	 * @param NC19Request $request
+	 * @param NC21Request $request
 	 * @param string $routeName
 	 * @param array $args
 	 *
 	 * @return string
 	 */
-	private function configureRequestAddress(NC19Request $request, string $routeName, array $args = []) {
+	private function configureRequestAddress(NC21Request $request, string $routeName, array $args = []) {
 		if ($routeName === '') {
 			return;
 		}

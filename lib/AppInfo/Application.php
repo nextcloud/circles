@@ -39,6 +39,7 @@ use OC;
 use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\GlobalScale\GSMount\MountProvider;
+use OCA\Circles\Handlers\WebfingerHandler;
 use OCA\Circles\Listeners\GroupDeleted;
 use OCA\Circles\Listeners\UserDeleted;
 use OCA\Circles\Notification\Notifier;
@@ -53,6 +54,7 @@ use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\IAppContainer;
 use OCP\AppFramework\QueryException;
 use OCP\Group\Events\GroupDeletedEvent;
+use OCP\IRequest;
 use OCP\IServerContainer;
 use OCP\User\Events\UserDeletedEvent;
 use OCP\Util;
@@ -69,7 +71,12 @@ require_once __DIR__ . '/../../vendor/autoload.php';
  */
 class Application extends App implements IBootstrap {
 
-	const APP_NAME = 'circles';
+	const APP_ID = 'circles';
+	const APP_NAME = 'Circles';
+
+	const APP_SUBJECT = 'http://nextcloud.com/';
+	const APP_REL = 'https://apps.nextcloud.com/apps/circles';
+	const APP_API = 1;
 
 	const TEST_URL_ASYNC = '/index.php/apps/circles/admin/testAsync';
 
@@ -87,7 +94,7 @@ class Application extends App implements IBootstrap {
 	 * @param array $params
 	 */
 	public function __construct(array $params = array()) {
-		parent::__construct(self::APP_NAME, $params);
+		parent::__construct(self::APP_ID, $params);
 	}
 
 
@@ -97,6 +104,7 @@ class Application extends App implements IBootstrap {
 	public function register(IRegistrationContext $context): void {
 		$context->registerEventListener(UserDeletedEvent::class, UserDeleted::class);
 		$context->registerEventListener(GroupDeletedEvent::class, GroupDeleted::class);
+		$context->registerWellKnownHandler(WebfingerHandler::class);
 	}
 
 
@@ -167,14 +175,14 @@ class Application extends App implements IBootstrap {
 		$appManager->add(
 			function() {
 				$urlGen = OC::$server->getURLGenerator();
-				$navName = OC::$server->getL10N(self::APP_NAME)
+				$navName = OC::$server->getL10N(self::APP_ID)
 									  ->t('Circles');
 
 				return [
-					'id'    => self::APP_NAME,
+					'id'    => self::APP_ID,
 					'order' => 5,
 					'href'  => $urlGen->linkToRoute('circles.Navigation.navigate'),
-					'icon'  => $urlGen->imagePath(self::APP_NAME, 'circles.svg'),
+					'icon'  => $urlGen->imagePath(self::APP_ID, 'circles.svg'),
 					'name'  => $navName
 				];
 			}

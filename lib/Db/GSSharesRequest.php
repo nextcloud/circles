@@ -104,7 +104,7 @@ class GSSharesRequest extends GSSharesRequestBuilder {
 	 * @param string $userId
 	 */
 	private function joinMembership(IQueryBuilder $qb, string $userId) {
-		$qb->from(CoreRequestBuilder::TABLE_MEMBERS, 'm');
+		$qb->from(DeprecatedRequestBuilder::TABLE_MEMBERS, 'm');
 
 		$expr = $qb->expr();
 		$andX = $expr->andX();
@@ -129,7 +129,7 @@ class GSSharesRequest extends GSSharesRequestBuilder {
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->selectAlias('mp.mountPoint', 'gsshares_mountpoint')
-		   ->leftJoin($this->default_select_alias, CoreRequestBuilder::TABLE_GSSHARES_MOUNTPOINT, 'mp', $on);
+		   ->leftJoin($this->default_select_alias, DeprecatedRequestBuilder::TABLE_GSSHARES_MOUNTPOINT, 'mp', $on);
 	}
 
 

@@ -27,6 +27,13 @@ All notable changes to this project will be documented in this file.
 - fixing composer lib version
 
 
+### 21.0.0
+
+- compat nc21
+- first implementation of federated circles (2.0)
+- first implementation of new ExtendedQueryBuilder
+
+
 ### 0.20.2
 
 - fixing a migration issue on some database setup

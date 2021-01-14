@@ -30,9 +30,9 @@
 namespace OCA\Circles\Command;
 
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
-use daita\MySmallPhpTools\Model\Nextcloud\NC19Request;
+use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
 use daita\MySmallPhpTools\Model\Request;
-use daita\MySmallPhpTools\Traits\Nextcloud\TNC19Request;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
 use OC\Core\Command\Base;
@@ -42,7 +42,6 @@ use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\GlobalScaleService;
 use OCA\Circles\Service\GSUpstreamService;
 use OCP\IL10N;
-use OCP\IURLGenerator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -50,7 +49,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 
 /**
- * Class CirclesList
+ * Class CirclesTest
  *
  * @package OCA\Circles\Command
  */
@@ -58,14 +57,11 @@ class CirclesTest extends Base {
 
 
 	use TArrayTools;
-	use TNC19Request;
+	use TNC21Request;
 
 
 	/** @var IL10N */
 	private $l10n;
-
-	/** @var IURLGenerator */
-	private $urlGenerator;
 
 	/** @var GlobalScaleService */
 	private $globalScaleService;
@@ -82,22 +78,20 @@ class CirclesTest extends Base {
 
 
 	/**
-	 * CirclesList constructor.
+	 * CirclesTest constructor.
 	 *
 	 * @param IL10N $l10n
-	 * @param IURLGenerator $urlGenerator
 	 * @param GlobalScaleService $globalScaleService
 	 * @param GSUpstreamService $gsUpstreamService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IL10N $l10n, IURLGenerator $urlGenerator, GlobalScaleService $globalScaleService,
-		GSUpstreamService $gsUpstreamService, ConfigService $configService
+		IL10N $l10n, GlobalScaleService $globalScaleService, GSUpstreamService $gsUpstreamService,
+		ConfigService $configService
 	) {
 		parent::__construct();
 
 		$this->l10n = $l10n;
-		$this->urlGenerator = $urlGenerator;
 		$this->gsUpstreamService = $gsUpstreamService;
 		$this->globalScaleService = $globalScaleService;
 		$this->configService = $configService;
@@ -194,7 +188,7 @@ class CirclesTest extends Base {
 	 * @throws RequestNetworkException
 	 */
 	private function testRequest(OutputInterface $o, string $type, string $route, array $args = []): bool {
-		$request = new NC19Request('', Request::type($type));
+		$request = new NC21Request('', Request::type($type));
 		$this->configService->configureRequest($request, $route, $args);
 		$request->setFollowLocation(false);
 
@@ -202,12 +196,14 @@ class CirclesTest extends Base {
 		$this->doRequest($request);
 
 		$color = 'error';
-		if ($request->getResultCode() === 200) {
+		$result = $request->getResult();
+		if ($result->getStatusCode() === 200) {
 			$color = 'info';
 		}
-		$o->writeln('<' . $color . '>' . $request->getResultCode() . '</' . $color . '>');
 
-		if ($request->getResultCode() === 200) {
+		$o->writeln('<' . $color . '>' . $result->getStatusCode() . '</' . $color . '>');
+
+		if ($result->getStatusCode() === 200) {
 			return true;
 		}
 
@@ -244,7 +240,7 @@ class CirclesTest extends Base {
 
 		$this->configService->setAppValue(ConfigService::FORCE_NC_BASE, $address);
 		$output->writeln(
-			'New configuration <info>' . Application::APP_NAME . '.' . ConfigService::FORCE_NC_BASE . '=\''
+			'New configuration <info>' . Application::APP_ID . '.' . ConfigService::FORCE_NC_BASE . '=\''
 			. $address . '\'</info> stored in database'
 		);
 	}

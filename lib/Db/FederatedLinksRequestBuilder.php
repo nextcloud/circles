@@ -36,7 +36,7 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 use OCP\IL10N;
 
-class FederatedLinksRequestBuilder extends CoreRequestBuilder {
+class FederatedLinksRequestBuilder extends DeprecatedRequestBuilder {
 
 
 	/**

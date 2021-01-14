@@ -26,26 +26,40 @@
 
 namespace OCA\Circles\Controller;
 
+use daita\MySmallPhpTools\Exceptions\JsonNotRequestedException;
+use daita\MySmallPhpTools\Exceptions\SignatoryException;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21LocalSignatory;
 use Exception;
+use OC\AppFramework\Middleware\Security\Exceptions\NotLoggedInException;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Service\ConfigService;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
+use OCP\AppFramework\Http\Response;
 use OCP\AppFramework\Http\TemplateResponse;
 
 class NavigationController extends BaseController {
+
+
+	use TNC21LocalSignatory;
 
 
 	/**
 	 * @NoCSRFRequired
 	 * @NoAdminRequired
 	 * @NoSubAdminRequired
+	 * @PublicPage
 	 *
-	 * @return TemplateResponse
+	 * @return Response
 	 * @throws Exception
 	 */
-	public function navigate() {
+	public function navigate(): Response {
+		try {
+			return $this->appService();
+		} catch (JsonNotRequestedException $e) {
+		}
+
 		$this->mustHaveFrontEndEnabled();
 
 		$data = [
@@ -66,7 +80,7 @@ class NavigationController extends BaseController {
 		];
 
 		return new TemplateResponse(
-			Application::APP_NAME, 'navigate', $data
+			Application::APP_ID, 'navigate', $data
 		);
 	}
 
@@ -79,19 +93,44 @@ class NavigationController extends BaseController {
 	 */
 	public function settings() {
 		$data = [
-			'user_id' => $this->userId,
-			'allowed_circles'   => $this->configService->getAppValue(ConfigService::CIRCLES_ALLOW_CIRCLES),
-			'members_list' => $this->configService->getAppValue(ConfigService::CIRCLES_MEMBERS_LIMIT),
-			'allowed_linked_groups' => $this->configService->getAppValue(ConfigService::CIRCLES_ALLOW_LINKED_GROUPS),
-			'allowed_federated_circles' => $this->configService->getAppValue(ConfigService::CIRCLES_ALLOW_FEDERATED_CIRCLES),
-			'skip_invitation_to_closed_circles' => $this->configService->getAppValue(ConfigService::CIRCLES_SKIP_INVITATION_STEP),
-			'status'            => 1
+			'user_id'                           => $this->userId,
+			'allowed_circles'                   => $this->configService->getAppValue(
+				ConfigService::CIRCLES_ALLOW_CIRCLES
+			),
+			'members_list'                      => $this->configService->getAppValue(
+				ConfigService::CIRCLES_MEMBERS_LIMIT
+			),
+			'allowed_linked_groups'             => $this->configService->getAppValue(
+				ConfigService::CIRCLES_ALLOW_LINKED_GROUPS
+			),
+			'allowed_federated_circles'         => $this->configService->getAppValue(
+				ConfigService::CIRCLES_ALLOW_FEDERATED_CIRCLES
+			),
+			'skip_invitation_to_closed_circles' => $this->configService->getAppValue(
+				ConfigService::CIRCLES_SKIP_INVITATION_STEP
+			),
+			'status'                            => 1
 		];
 
 		return new DataResponse(
 			$data,
 			Http::STATUS_OK
 		);
+	}
+
+
+	/**
+	 * @return Response
+	 * @throws NotLoggedInException
+	 * @throws JsonNotRequestedException
+	 * @throws SignatoryException
+	 */
+	public function appService(): Response {
+		$this->setup('app', 'circles');
+		$this->publicPageJsonLimited();
+
+		$confirm = $this->request->getParam('auth', '');
+		return new DataResponse($this->remoteService->getAppSignatory(false, $confirm));
 	}
 
 }

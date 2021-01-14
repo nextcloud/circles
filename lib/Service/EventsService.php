@@ -752,7 +752,7 @@ class EventsService {
 	 */
 	private function generateEvent($type) {
 		$event = $this->activityManager->generateEvent();
-		$event->setApp(Application::APP_NAME)
+		$event->setApp(Application::APP_ID)
 			  ->setType($type);
 
 		//	if ($this->userId === null) {

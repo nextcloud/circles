@@ -117,7 +117,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 		}
 
 		$this->initiated = true;
-		$this->l10n = OC::$server->getL10N(Application::APP_NAME);
+		$this->l10n = OC::$server->getL10N(Application::APP_ID);
 		$this->mailer = OC::$server->getMailer();
 		$this->rootFolder = OC::$server->getLazyRootFolder();
 		$this->userManager = OC::$server->getUserManager();
@@ -406,7 +406,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 		$lang = $this->configService->getCoreValueForUser($share->getSharedBy(), 'lang', '');
 		if ($lang !== '') {
-			$this->l10n = OC::$server->getL10N(Application::APP_NAME, $lang);
+			$this->l10n = OC::$server->getL10N(Application::APP_ID, $lang);
 		}
 
 		$displayName = $this->miscService->getDisplayName($share->getSharedBy());

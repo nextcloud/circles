@@ -30,7 +30,7 @@ namespace OCA\Circles\Db;
 
 use OCP\DB\QueryBuilder\IQueryBuilder;
 
-class SharesRequestBuilder extends CoreRequestBuilder {
+class SharesRequestBuilder extends DeprecatedRequestBuilder {
 
 
 	/**

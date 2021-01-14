@@ -40,7 +40,7 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
  *
  * @package OCA\Circles\Db
  */
-class GSEventsRequestBuilder extends CoreRequestBuilder {
+class GSEventsRequestBuilder extends DeprecatedRequestBuilder {
 
 
 	/**

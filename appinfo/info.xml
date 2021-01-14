@@ -23,7 +23,7 @@ Users won't be able to find this Circle using Nextcloud search engine.
 
 		]]>
 	</description>
-	<version>0.20.6</version>
+	<version>21.0.0</version>
 	<licence>agpl</licence>
 	<author>Maxence Lange</author>
 	<types>
@@ -43,7 +43,7 @@ Users won't be able to find this Circle using Nextcloud search engine.
 	<repository>https://github.com/nextcloud/circles.git</repository>
 	<screenshot>https://raw.githubusercontent.com/nextcloud/circles/master/screenshots/0.12.0.png</screenshot>
 	<dependencies>
-		<nextcloud min-version="20" max-version="20"/>
+		<nextcloud min-version="21" max-version="21"/>
 	</dependencies>
 
 	<background-jobs>
@@ -64,6 +64,8 @@ Users won't be able to find this Circle using Nextcloud search engine.
 		<command>OCA\Circles\Command\CirclesDestroy</command>
 		<command>OCA\Circles\Command\CirclesDetails</command>
 		<command>OCA\Circles\Command\CirclesList</command>
+		<command>OCA\Circles\Command\CirclesRemote</command>
+		<command>OCA\Circles\Command\CirclesRemoteInit</command>
 		<command>OCA\Circles\Command\CirclesSync</command>
 		<command>OCA\Circles\Command\CirclesTest</command>
 		<command>OCA\Circles\Command\Clean</command>

@@ -39,7 +39,7 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\Files\NotFoundException;
 use OCP\Share\IShare;
 
-class CircleProviderRequestBuilder extends CoreRequestBuilder {
+class CircleProviderRequestBuilder extends DeprecatedRequestBuilder {
 
 
 	/**
@@ -222,7 +222,7 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	protected function linkCircleField(IQueryBuilder $qb, $shareId = -1) {
 		$expr = $qb->expr();
 
-		$qb->from(CoreRequestBuilder::TABLE_CIRCLES, 'c');
+		$qb->from(DeprecatedRequestBuilder::TABLE_CIRCLES, 'c');
 
 		$tmpOrX = $expr->eq('s.share_with', 'c.unique_id');
 
@@ -249,7 +249,7 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 
 		$qb->selectAlias('mo.user_id', 'circle_owner');
 		$qb->leftJoin(
-			'c', CoreRequestBuilder::TABLE_MEMBERS, 'mo', $expr->andX(
+			'c', DeprecatedRequestBuilder::TABLE_MEMBERS, 'mo', $expr->andX(
 			$expr->eq('mo.circle_id', 'c.unique_id'),
 			$expr->eq('mo.user_type', $qb->createNamedParameter(Member::TYPE_USER)),
 			$expr->eq('mo.level', $qb->createNamedParameter(Member::LEVEL_OWNER))
@@ -269,7 +269,7 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 	protected function linkToMember(
 		IQueryBuilder $qb, string $userId, bool $groupMemberAllowed, string $aliasCircles
 	) {
-		$qb->from(CoreRequestBuilder::TABLE_MEMBERS, 'mcm');
+		$qb->from(DeprecatedRequestBuilder::TABLE_MEMBERS, 'mcm');
 		$expr = $qb->expr();
 		$orX = $expr->orX();
 
@@ -349,7 +349,7 @@ class CircleProviderRequestBuilder extends CoreRequestBuilder {
 		$expr = $qb->expr();
 
 		$qb->addSelect('m.user_id')
-		   ->from(CoreRequestBuilder::TABLE_MEMBERS, 'm')
+		   ->from(DeprecatedRequestBuilder::TABLE_MEMBERS, 'm')
 		   ->andWhere(
 			   $expr->andX(
 				   $expr->eq('s.share_with', 'm.circle_id'),

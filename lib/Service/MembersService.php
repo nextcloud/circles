@@ -29,9 +29,9 @@ namespace OCA\Circles\Service;
 
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\RequestResultNotJsonException;
-use daita\MySmallPhpTools\Model\Nextcloud\NC19Request;
+use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
 use daita\MySmallPhpTools\Model\Request;
-use daita\MySmallPhpTools\Traits\Nextcloud\TNC19Request;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
 use OC;
@@ -67,7 +67,7 @@ use OCP\IUserManager;
 class MembersService {
 
 
-	use TNC19Request;
+	use TNC21Request;
 	use TArrayTools;
 
 
@@ -737,7 +737,7 @@ class MembersService {
 	private function getGlobalScaleUserDisplayName(string $ident): string {
 		$lookup = $this->configService->getGSStatus(ConfigService::GS_LOOKUP);
 
-		$request = new NC19Request(ConfigService::GS_LOOKUP_USERS, Request::TYPE_GET);
+		$request = new NC21Request(ConfigService::GS_LOOKUP_USERS, Request::TYPE_GET);
 		$this->configService->configureRequest($request);
 		$request->basedOnUrl($lookup);
 		$request->addParam('search', $ident);

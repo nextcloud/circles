@@ -33,6 +33,7 @@ use daita\MySmallPhpTools\Traits\TArrayTools;
 use OC\Core\Command\Base;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
+use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Model\Circle;
 use OCP\IL10N;
 use Symfony\Component\Console\Helper\Table;
@@ -80,7 +81,8 @@ class CirclesList extends Base {
 			 ->setDescription('listing current circles')
 			 ->addArgument('owner', InputArgument::OPTIONAL, 'filter by owner', '')
 			 ->addOption('viewer', '', InputOption::VALUE_REQUIRED, 'set viewer', '')
-			 ->addOption('json', '', InputOption::VALUE_NONE, 'returns result as JSON');
+			 ->addOption('json', '', InputOption::VALUE_NONE, 'returns result as JSON')
+			 ->addOption('remote', '', InputOption::VALUE_REQUIRED, 'remote Nextcloud address', '');
 	}
 
 
@@ -95,10 +97,11 @@ class CirclesList extends Base {
 		$owner = $input->getArgument('owner');
 		$viewer = $input->getOption('viewer');
 		$json = $input->getOption('json');
+		$remote = $input->getOption('remote');
 
 		$output = new ConsoleOutput();
 		$output = $output->section();
-		$circles = $this->getCircles($owner, $viewer);
+		$circles = $this->getCircles($owner, $viewer, $remote);
 
 		if ($json) {
 			echo json_encode($circles, JSON_PRETTY_PRINT) . "\n";
@@ -135,12 +138,15 @@ class CirclesList extends Base {
 	/**
 	 * @param string $owner
 	 * @param string $viewer
+	 * @param string $remote
 	 *
 	 * @return Circle[]
 	 * @throws ConfigNoCircleAvailableException
+	 * @throws GSStatusException
 	 */
-	private function getCircles(string $owner, string $viewer): array {
-		if ($viewer === '') {
+	private function getCircles(string $owner, string $viewer, string $remote): array {
+		if ($remote !== '') {
+		} elseif ($viewer === '') {
 			$circles = $this->circlesRequest->forceGetCircles($owner);
 		} else {
 			$circles = $this->circlesRequest->getCircles($viewer, 0, '', 0, true, $owner);
