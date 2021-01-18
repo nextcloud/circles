@@ -32,7 +32,7 @@ use Exception;
 use InvalidArgumentException;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\FakeException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CirclesService;
@@ -93,7 +93,7 @@ class Provider implements IProvider {
 			$params = $event->getSubjectParameters();
 			$this->initActivityParser($event, $params);
 
-			$circle = Circle::fromJSON($params['circle']);
+			$circle = DeprecatedCircle::fromJSON($params['circle']);
 
 			$this->setIcon($event, $circle);
 			$this->parseAsNonMember($event, $circle, $params);
@@ -125,9 +125,9 @@ class Provider implements IProvider {
 
 	/**
 	 * @param IEvent $event
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 */
-	private function setIcon(IEvent $event, Circle $circle) {
+	private function setIcon(IEvent $event, DeprecatedCircle $circle) {
 		$event->setIcon(
 			CirclesService::getCircleIcon(
 				$circle->getType(),
@@ -140,12 +140,12 @@ class Provider implements IProvider {
 
 	/**
 	 * @param IEvent $event
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param array $params
 	 *
 	 * @throws FakeException
 	 */
-	private function parseAsNonMember(IEvent $event, Circle $circle, $params) {
+	private function parseAsNonMember(IEvent $event, DeprecatedCircle $circle, $params) {
 		if ($event->getType() !== 'circles_as_non_member') {
 			return;
 		}
@@ -155,12 +155,12 @@ class Provider implements IProvider {
 
 	/**
 	 * @param IEvent $event
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param array $params
 	 *
 	 * @throws FakeException
 	 */
-	private function parseAsMember(IEvent $event, Circle $circle, $params) {
+	private function parseAsMember(IEvent $event, DeprecatedCircle $circle, $params) {
 		if ($event->getType() !== 'circles_as_member') {
 			return;
 		}
@@ -172,13 +172,13 @@ class Provider implements IProvider {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param IEvent $event
 	 * @param array $params
 	 *
 	 * @throws Exception
 	 */
-	private function parseAsModerator(IEvent $event, Circle $circle, $params) {
+	private function parseAsModerator(IEvent $event, DeprecatedCircle $circle, $params) {
 		if ($event->getType() !== 'circles_as_moderator') {
 			return;
 		}
@@ -191,12 +191,12 @@ class Provider implements IProvider {
 
 	/**
 	 * @param IEvent $event
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param array $params
 	 *
 	 * @throws FakeException
 	 */
-	private function parseMemberAsMember(IEvent $event, Circle $circle, $params) {
+	private function parseMemberAsMember(IEvent $event, DeprecatedCircle $circle, $params) {
 		if (!key_exists('member', $params)) {
 			return;
 		}
@@ -212,12 +212,12 @@ class Provider implements IProvider {
 
 	/**
 	 * @param IEvent $event
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param array $params
 	 *
 	 * @throws FakeException
 	 */
-	private function parseGroupAsModerator(IEvent $event, Circle $circle, $params) {
+	private function parseGroupAsModerator(IEvent $event, DeprecatedCircle $circle, $params) {
 		if (!key_exists('group', $params)) {
 			return;
 		}
@@ -232,12 +232,12 @@ class Provider implements IProvider {
 
 	/**
 	 * @param IEvent $event
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param array $params
 	 *
 	 * @throws FakeException
 	 */
-	private function parseMemberAsModerator(IEvent $event, Circle $circle, $params) {
+	private function parseMemberAsModerator(IEvent $event, DeprecatedCircle $circle, $params) {
 		if (!key_exists('member', $params)) {
 			return;
 		}
@@ -253,12 +253,12 @@ class Provider implements IProvider {
 
 	/**
 	 * @param IEvent $event
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param array $params
 	 *
 	 * @throws FakeException
 	 */
-	private function parseLinkAsModerator(IEvent $event, Circle $circle, $params) {
+	private function parseLinkAsModerator(IEvent $event, DeprecatedCircle $circle, $params) {
 
 		if (!key_exists('link', $params)) {
 			return;

@@ -28,7 +28,7 @@
 namespace OCA\Circles\Activity;
 
 use OCA\Circles\Api\v1\Circles;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\MiscService;
@@ -66,12 +66,12 @@ class ProviderParser {
 	 * general function to generate Circle event.
 	 *
 	 * @param IEvent $event
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param FederatedLink|null $remote
 	 * @param string $ownEvent
 	 * @param string $othersEvent
 	 */
-	protected function parseCircleEvent(IEvent $event, Circle $circle, $remote, $ownEvent, $othersEvent
+	protected function parseCircleEvent(IEvent $event, DeprecatedCircle $circle, $remote, $ownEvent, $othersEvent
 	) {
 		$data = [
 			'author' => $this->generateViewerParameter($circle),
@@ -149,14 +149,14 @@ class ProviderParser {
 	/**
 	 * general function to generate Member event.
 	 *
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param $member
 	 * @param IEvent $event
 	 * @param $ownEvent
 	 * @param $othersEvent
 	 */
 	protected function parseMemberEvent(
-		IEvent $event, Circle $circle, Member $member, $ownEvent, $othersEvent
+		IEvent $event, DeprecatedCircle $circle, Member $member, $ownEvent, $othersEvent
 	) {
 		$data = [
 			'circle' => $this->generateCircleParameter($circle),
@@ -177,12 +177,12 @@ class ProviderParser {
 	/**
 	 * general function to generate Link event.
 	 *
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param FederatedLink $remote
 	 * @param IEvent $event
 	 * @param string $line
 	 */
-	protected function parseLinkEvent(IEvent $event, Circle $circle, FederatedLink $remote, $line
+	protected function parseLinkEvent(IEvent $event, DeprecatedCircle $circle, FederatedLink $remote, $line
 	) {
 		$data = [
 			'circle' => $this->generateCircleParameter($circle),
@@ -196,14 +196,14 @@ class ProviderParser {
 	/**
 	 * general function to generate Circle+Member event.
 	 *
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param Member $member
 	 * @param IEvent $event
 	 * @param string $ownEvent
 	 * @param string $othersEvent
 	 */
 	protected function parseCircleMemberEvent(
-		IEvent $event, Circle $circle, Member $member, $ownEvent, $othersEvent
+		IEvent $event, DeprecatedCircle $circle, Member $member, $ownEvent, $othersEvent
 	) {
 		$data = [
 			'author'   => $this->generateViewerParameter($circle),
@@ -226,7 +226,7 @@ class ProviderParser {
 	/**
 	 * general function to generate Circle+Member advanced event.
 	 *
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param Member $member
 	 * @param IEvent $event
 	 * @param $ownEvent
@@ -234,7 +234,7 @@ class ProviderParser {
 	 * @param $othersEvent
 	 */
 	protected function parseCircleMemberAdvancedEvent(
-		IEvent $event, Circle $circle, Member $member, $ownEvent, $targetEvent, $othersEvent
+		IEvent $event, DeprecatedCircle $circle, Member $member, $ownEvent, $targetEvent, $othersEvent
 	) {
 		$data = [
 			'author' => $this->generateViewerParameter($circle),
@@ -259,12 +259,12 @@ class ProviderParser {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param string $userId
 	 *
 	 * @return bool
 	 */
-	protected function isViewerTheAuthor(Circle $circle, $userId) {
+	protected function isViewerTheAuthor(DeprecatedCircle $circle, $userId) {
 		if ($circle->getViewer() === null) {
 			return false;
 		}
@@ -279,11 +279,11 @@ class ProviderParser {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 *
 	 * @return string|array <string,string|integer>
 	 */
-	protected function generateViewerParameter(Circle $circle) {
+	protected function generateViewerParameter(DeprecatedCircle $circle) {
 		if ($circle->getViewer() === null) {
 			return [];
 		}
@@ -308,11 +308,11 @@ class ProviderParser {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 *
 	 * @return array<string,string|integer>
 	 */
-	protected function generateCircleParameter(Circle $circle) {
+	protected function generateCircleParameter(DeprecatedCircle $circle) {
 		return [
 			'type'    => 'circle',
 			'id'      => $circle->getId(),

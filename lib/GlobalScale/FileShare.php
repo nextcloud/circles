@@ -39,7 +39,7 @@ use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\GlobalScale\GSShare;
 use OCA\Circles\Model\Member;
@@ -183,13 +183,13 @@ class FileShare extends AGlobalScaleEvent {
 
 	/**
 	 * @param GSEvent $event
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param string $memberId
 	 * @param array $emails
 	 *
 	 * @throws CircleDoesNotExistException
 	 */
-	private function sendShareToContact(GSEvent $event, Circle $circle, string $memberId, array $emails) {
+	private function sendShareToContact(GSEvent $event, DeprecatedCircle $circle, string $memberId, array $emails) {
 		try {
 			$member = $this->membersRequest->forceGetMemberById($memberId);
 			$share = $this->getShareFromData($event->getData());
@@ -227,14 +227,14 @@ class FileShare extends AGlobalScaleEvent {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param IShare $share
 	 * @param string $email
 	 * @param SharesToken $sharesToken
 	 * @param string $password
 	 */
 	private function sharedByMail(
-		Circle $circle, IShare $share, string $email, SharesToken $sharesToken, string $password
+		DeprecatedCircle $circle, IShare $share, string $email, SharesToken $sharesToken, string $password
 	) {
 		// genelink
 		$link = $this->urlGenerator->linkToRouteAbsolute(

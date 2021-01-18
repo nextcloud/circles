@@ -41,7 +41,7 @@ use OCA\Circles\Exceptions\MemberIsNotOwnerException;
 use OCA\Circles\Exceptions\MemberIsOwnerException;
 use OCA\Circles\Exceptions\MemberTypeCantEditLevelException;
 use OCA\Circles\Exceptions\ModeratorIsNotHighEnoughException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\Member;
 
@@ -126,7 +126,7 @@ class MemberLevel extends AGlobalScaleEvent {
 
 	/**
 	 * @param GSEvent $event
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param Member $member
 	 * @param int $level
 	 *
@@ -135,7 +135,7 @@ class MemberLevel extends AGlobalScaleEvent {
 	 * @throws MemberIsNotModeratorException
 	 * @throws ModeratorIsNotHighEnoughException
 	 */
-	private function verifyMemberLevel(GSEvent $event, Circle $circle, Member $member, int $level) {
+	private function verifyMemberLevel(GSEvent $event, DeprecatedCircle $circle, Member $member, int $level) {
 		$member->hasToBeMember();
 		$member->cantBeOwner();
 
@@ -149,14 +149,14 @@ class MemberLevel extends AGlobalScaleEvent {
 
 	/**
 	 * @param GSEvent $event
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param Member $member
 	 *
 	 * @throws MemberDoesNotExistException
 	 * @throws MemberIsNotOwnerException
 	 * @throws MemberIsOwnerException
 	 */
-	private function verifySwitchOwner(GSEvent $event, Circle $circle, Member $member) {
+	private function verifySwitchOwner(GSEvent $event, DeprecatedCircle $circle, Member $member) {
 		if (!$event->isForced()) {
 			$isMod = $circle->getHigherViewer();
 			$this->circlesService->hasToBeOwner($isMod);

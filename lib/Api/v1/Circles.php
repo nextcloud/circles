@@ -33,7 +33,7 @@ namespace OCA\Circles\Api\v1;
 use OC;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\ApiVersionIncompatibleException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
@@ -49,11 +49,11 @@ class Circles {
 	const API_VERSION = [0, 10, 0];
 
 	// Expose circle and member constants via API
-	const CIRCLES_PERSONAL = Circle::CIRCLES_PERSONAL;
-	const CIRCLES_SECRET = Circle::CIRCLES_SECRET;
-	const CIRCLES_CLOSED = Circle::CIRCLES_CLOSED;
-	const CIRCLES_PUBLIC = Circle::CIRCLES_PUBLIC;
-	const CIRCLES_ALL = Circle::CIRCLES_ALL;
+	const CIRCLES_PERSONAL = DeprecatedCircle::CIRCLES_PERSONAL;
+	const CIRCLES_SECRET = DeprecatedCircle::CIRCLES_SECRET;
+	const CIRCLES_CLOSED = DeprecatedCircle::CIRCLES_CLOSED;
+	const CIRCLES_PUBLIC = DeprecatedCircle::CIRCLES_PUBLIC;
+	const CIRCLES_ALL = DeprecatedCircle::CIRCLES_ALL;
 
 	const TYPE_USER = Member::TYPE_USER;
 	const TYPE_GROUP = Member::TYPE_GROUP;
@@ -129,7 +129,7 @@ class Circles {
 	 * @param mixed $type
 	 * @param string $name
 	 *
-	 * @return Circle
+	 * @return DeprecatedCircle
 	 */
 	public static function createCircle($type, $name) {
 		$c = self::getContainer();
@@ -191,7 +191,7 @@ class Circles {
 	 *
 	 * @param bool $forceAll
 	 *
-	 * @return Circle[]
+	 * @return DeprecatedCircle[]
 	 */
 	public static function listCircles($type, $name = '', $level = 0, $userId = '', $forceAll = false) {
 		$c = self::getContainer();
@@ -215,7 +215,7 @@ class Circles {
 	 * @param string $userId
 	 * @param bool $forceAll
 	 *
-	 * @return Circle[]
+	 * @return DeprecatedCircle[]
 	 * @throws QueryException
 	 */
 	public static function joinedCircles($userId = '', $forceAll = false) {
@@ -256,7 +256,7 @@ class Circles {
 	 * @param string $circleUniqueId
 	 * @param bool $forceAll
 	 *
-	 * @return Circle
+	 * @return DeprecatedCircle
 	 */
 	public static function detailsCircle($circleUniqueId, $forceAll = false) {
 		$c = self::getContainer();
@@ -274,7 +274,7 @@ class Circles {
 	 * @param string $circleUniqueId
 	 * @param array $settings
 	 *
-	 * @return Circle
+	 * @return DeprecatedCircle
 	 */
 	public static function settingsCircle($circleUniqueId, array $settings) {
 		$c = self::getContainer();

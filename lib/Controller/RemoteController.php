@@ -36,7 +36,6 @@ use daita\MySmallPhpTools\Exceptions\MalformedArrayException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Exceptions\SignatureException;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Controller;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Signature;
 use Exception;
 use OCA\Circles\Service\RemoteService;
 use OCP\AppFramework\Controller;
@@ -102,7 +101,7 @@ class RemoteController extends Controller {
 	public function circles() {
 		$body = file_get_contents('php://input');
 
-		$circles = [];
+		$circles = ['ok' => 17];
 
 		return $this->success($circles);
 	}

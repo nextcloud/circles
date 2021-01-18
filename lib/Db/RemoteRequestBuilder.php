@@ -30,6 +30,7 @@ namespace OCA\Circles\Db;
 
 
 use daita\MySmallPhpTools\Exceptions\RowNotFoundException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Model\AppService;
 
 /**
@@ -96,11 +97,15 @@ class RemoteRequestBuilder extends CoreRequestBuilder {
 	 * @param CoreQueryBuilder $qb
 	 *
 	 * @return AppService
-	 * @throws RowNotFoundException
+	 * @throws RemoteNotFoundException
 	 */
 	public function getItemFromRequest(CoreQueryBuilder $qb): AppService {
 		/** @var AppService $appService */
-		$appService = $qb->asItem(AppService::class);
+		try {
+			$appService = $qb->asItem(AppService::class);
+		} catch (RowNotFoundException $e) {
+			throw new RemoteNotFoundException();
+		}
 
 		return $appService;
 	}

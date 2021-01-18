@@ -26,58 +26,29 @@
 
 namespace OCA\Circles\Model;
 
-use daita\MySmallPhpTools\Db\Nextcloud\nc21\INC21QueryRow;
-use JsonSerializable;
-
 
 /**
- * Class Circle
+ * Class ManagedModel
  *
  * @package OCA\Circles\Model
  */
-class Circle extends ManagedModel implements INC21QueryRow, JsonSerializable {
+class ManagedModel {
 
 
-	/** @var array */
-	private $members = [];
-
-
-	public function __construct() {
-	}
+	/** @var ModelManager */
+	private $modelManager;
 
 
 	/**
-	 * @param array $members
-	 *
-	 * @return Circle
+	 * @return ModelManager
 	 */
-	public function setMembers(array $members): self {
-		$this->members = $members;
-
-		return $this;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getMembers(): array {
-		if (empty($this->members)) {
-			$this->getManager()->getMembers($this);
+	protected function getManager(): ModelManager {
+		if ($this->modelManager === null) {
+			$this->modelManager = \OC::$server->get(ModelManager::class);
 		}
 
-		return $this->members;
-	}
-
-
-	public function import(): self {
-		return $this;
-	}
-
-	public function jsonSerialize(): array {
-	}
-
-	public function importFromDatabase(array $data): INC21QueryRow {
-		return $this;
+		return $this->modelManager;
 	}
 
 }
+

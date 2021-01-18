@@ -27,7 +27,7 @@
 namespace OCA\Circles\Api;
 
 use OCA\Circles\AppInfo\Application;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\MiscService;
@@ -66,7 +66,7 @@ class Sharees {
 							  ->getUID();
 
 		$data = $c->query(CirclesService::class)
-				  ->listCircles($userId, Circle::CIRCLES_ALL, $search, Member::LEVEL_MEMBER);
+				  ->listCircles($userId, DeprecatedCircle::CIRCLES_ALL, $search, Member::LEVEL_MEMBER);
 		$result = array(
 			'exact'   => ['circles'],
 			'circles' => []
@@ -84,7 +84,7 @@ class Sharees {
 
 	/**
 	 * @param $result
-	 * @param Circle $entry
+	 * @param DeprecatedCircle $entry
 	 * @param bool $exact
 	 *
 	 */

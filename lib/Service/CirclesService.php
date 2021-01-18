@@ -48,7 +48,7 @@ use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Exceptions\MemberIsNotOwnerException;
 use OCA\Circles\Exceptions\MembersLimitException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\Member;
 use OCP\IGroupManager;
@@ -173,7 +173,7 @@ class CirclesService {
 	 *
 	 * @param string $ownerId
 	 *
-	 * @return Circle
+	 * @return DeprecatedCircle
 	 * @throws CircleAlreadyExistsException
 	 * @throws CircleTypeDisabledException
 	 * @throws Exception
@@ -194,7 +194,7 @@ class CirclesService {
 			);
 		}
 
-		$circle = new Circle($type, $name);
+		$circle = new DeprecatedCircle($type, $name);
 		if ($ownerId === '') {
 			$ownerId = $this->userId;
 		}
@@ -234,7 +234,7 @@ class CirclesService {
 	 *
 	 * @param bool $forceAll
 	 *
-	 * @return Circle[]
+	 * @return DeprecatedCircle[]
 	 * @throws CircleTypeDisabledException
 	 * @throws Exception
 	 */
@@ -267,7 +267,7 @@ class CirclesService {
 	 * @param string $circleUniqueId
 	 * @param bool $forceAll
 	 *
-	 * @return Circle
+	 * @return DeprecatedCircle
 	 * @throws Exception
 	 */
 	public function detailsCircle($circleUniqueId, $forceAll = false) {
@@ -296,11 +296,11 @@ class CirclesService {
 	/**
 	 * get the Members list and add the result to the Circle.
 	 *
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 *
 	 * @throws Exception
 	 */
-	private function detailsCircleMembers(Circle $circle) {
+	private function detailsCircleMembers(DeprecatedCircle $circle) {
 		if ($this->viewerIsAdmin()) {
 			$members = $this->membersRequest->forceGetMembers($circle->getUniqueId(), 0);
 		} else {
@@ -317,11 +317,11 @@ class CirclesService {
 	 * // TODO - check this on GS setup
 	 * get the Linked Group list and add the result to the Circle.
 	 *
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 *
 	 * @throws GSStatusException
 	 */
-	private function detailsCircleLinkedGroups(Circle $circle) {
+	private function detailsCircleLinkedGroups(DeprecatedCircle $circle) {
 		$groups = [];
 		if ($this->configService->isLinkedGroupsAllowed()) {
 			$groups =
@@ -337,9 +337,9 @@ class CirclesService {
 	/**
 	 * get the Federated Circles list and add the result to the Circle.
 	 *
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 */
-	private function detailsCircleFederatedCircles(Circle $circle) {
+	private function detailsCircleFederatedCircles(DeprecatedCircle $circle) {
 		$links = [];
 
 		try {
@@ -360,7 +360,7 @@ class CirclesService {
 	 * @param string $circleUniqueId
 	 * @param array $settings
 	 *
-	 * @return Circle
+	 * @return DeprecatedCircle
 	 * @throws Exception
 	 */
 	public function settingsCircle(string $circleUniqueId, array $settings) {
@@ -400,9 +400,9 @@ class CirclesService {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 */
-	public function updatePasswordOnShares(Circle $circle) {
+	public function updatePasswordOnShares(DeprecatedCircle $circle) {
 		$this->tokensRequest->updateSinglePassword($circle->getUniqueId(), $circle->getPasswordSingle());
 	}
 
@@ -489,7 +489,7 @@ class CirclesService {
 
 
 	/**
-	 * @return Circle[]
+	 * @return DeprecatedCircle[]
 	 */
 	public function getCirclesToSync(): array {
 		$circles = $this->circlesRequest->forceGetCircles();
@@ -516,7 +516,7 @@ class CirclesService {
 	/**
 	 * @param $circleName
 	 *
-	 * @return Circle|null
+	 * @return DeprecatedCircle|null
 	 * @throws CircleDoesNotExistException
 	 */
 	public function infoCircleByName($circleName) {
@@ -533,11 +533,11 @@ class CirclesService {
 	 */
 	public function convertTypeStringToBitValue($type) {
 		$strings = [
-			'personal' => Circle::CIRCLES_PERSONAL,
-			'secret'   => Circle::CIRCLES_SECRET,
-			'closed'   => Circle::CIRCLES_CLOSED,
-			'public'   => Circle::CIRCLES_PUBLIC,
-			'all'      => Circle::CIRCLES_ALL
+			'personal' => DeprecatedCircle::CIRCLES_PERSONAL,
+			'secret'   => DeprecatedCircle::CIRCLES_SECRET,
+			'closed'   => DeprecatedCircle::CIRCLES_CLOSED,
+			'public'   => DeprecatedCircle::CIRCLES_PUBLIC,
+			'all'      => DeprecatedCircle::CIRCLES_ALL
 		];
 
 		if (!key_exists(strtolower($type), $strings)) {
@@ -567,19 +567,19 @@ class CirclesService {
 
 		$urlGen = OC::$server->getURLGenerator();
 		switch ($type) {
-			case Circle::CIRCLES_PERSONAL:
+			case DeprecatedCircle::CIRCLES_PERSONAL:
 				return $urlGen->getAbsoluteURL(
 					$urlGen->imagePath(Application::APP_ID, 'personal' . $ext)
 				);
-			case Circle::CIRCLES_CLOSED:
+			case DeprecatedCircle::CIRCLES_CLOSED:
 				return $urlGen->getAbsoluteURL(
 					$urlGen->imagePath(Application::APP_ID, 'closed' . $ext)
 				);
-			case Circle::CIRCLES_SECRET:
+			case DeprecatedCircle::CIRCLES_SECRET:
 				return $urlGen->getAbsoluteURL(
 					$urlGen->imagePath(Application::APP_ID, 'secret' . $ext)
 				);
-			case Circle::CIRCLES_PUBLIC:
+			case DeprecatedCircle::CIRCLES_PUBLIC:
 				return $urlGen->getAbsoluteURL(
 					$urlGen->imagePath(Application::APP_ID, 'black_circle' . $ext)
 				);
@@ -611,11 +611,11 @@ class CirclesService {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 *
 	 * @throws MembersLimitException
 	 */
-	public function checkThatCircleIsNotFull(Circle $circle) {
+	public function checkThatCircleIsNotFull(DeprecatedCircle $circle) {
 		$members =
 			$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MEMBER, 0, true);
 

@@ -39,7 +39,7 @@ use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Exceptions\GlobalScaleDSyncException;
 use OCA\Circles\Exceptions\GlobalScaleEventException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CirclesService;
@@ -264,12 +264,12 @@ abstract class AGlobalScaleEvent {
 
 
 	/**
-	 * @param Circle $circle1
-	 * @param Circle $circle2
+	 * @param DeprecatedCircle $circle1
+	 * @param DeprecatedCircle $circle2
 	 *
 	 * @return bool
 	 */
-	protected function compareCircles(Circle $circle1, Circle $circle2): bool {
+	protected function compareCircles(DeprecatedCircle $circle1, DeprecatedCircle $circle2): bool {
 		if ($circle1->getName() !== $circle2->getName()
 			|| $circle1->getDescription() !== $circle2->getDescription()
 			|| $circle1->getSettings(true) !== $circle2->getSettings(true)

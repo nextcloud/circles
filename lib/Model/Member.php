@@ -47,7 +47,7 @@ class Member extends BaseMember {
 			throw new CircleTypeNotValidException('Invalid circle type');
 		}
 
-		if ($circleType === Circle::CIRCLES_CLOSED) {
+		if ($circleType === DeprecatedCircle::CIRCLES_CLOSED) {
 			return $this->inviteIntoClosedCircle();
 		}
 
@@ -63,11 +63,11 @@ class Member extends BaseMember {
 	public function joinCircle($circleType) {
 
 		switch ($circleType) {
-			case Circle::CIRCLES_SECRET:
-			case Circle::CIRCLES_PUBLIC:
+			case DeprecatedCircle::CIRCLES_SECRET:
+			case DeprecatedCircle::CIRCLES_PUBLIC:
 				return $this->addMemberToCircle();
 
-			case Circle::CIRCLES_CLOSED:
+			case DeprecatedCircle::CIRCLES_CLOSED:
 				return $this->joinClosedCircle();
 		}
 

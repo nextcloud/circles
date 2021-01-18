@@ -48,7 +48,7 @@ use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Exceptions\JsonException;
 use OCA\Circles\Exceptions\ModelException;
 use OCA\Circles\GlobalScale\CircleStatus;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\GlobalScale\GSWrapper;
 use OCP\IURLGenerator;
@@ -381,11 +381,11 @@ class GSUpstreamService {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 *
 	 * @throws GSStatusException
 	 */
-	private function checkCircle(Circle $circle): void {
+	private function checkCircle(DeprecatedCircle $circle): void {
 		$status = $this->confirmCircleStatus($circle);
 
 		if (!$status) {
@@ -396,12 +396,12 @@ class GSUpstreamService {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 *
 	 * @return bool
 	 * @throws GSStatusException
 	 */
-	public function confirmCircleStatus(Circle $circle): bool {
+	public function confirmCircleStatus(DeprecatedCircle $circle): bool {
 		$event = new GSEvent(GSEvent::CIRCLE_STATUS, true);
 		$event->setSource($this->configService->getLocalInstance());
 		$event->setCircle($circle);

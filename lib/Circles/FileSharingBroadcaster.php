@@ -35,7 +35,7 @@ use OCA\Circles\Db\SharesRequest;
 use OCA\Circles\Db\TokensRequest;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\IBroadcaster;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharesToken;
 use OCA\Circles\Model\SharingFrame;
@@ -155,7 +155,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function createShareToCircle(SharingFrame $frame, Circle $circle) {
+	public function createShareToCircle(SharingFrame $frame, DeprecatedCircle $circle) {
 		if ($frame->is0Circle()) {
 			return false;
 		}
@@ -167,7 +167,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function deleteShareToCircle(SharingFrame $frame, Circle $circle) {
+	public function deleteShareToCircle(SharingFrame $frame, DeprecatedCircle $circle) {
 		return true;
 	}
 
@@ -175,7 +175,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function editShareToCircle(SharingFrame $frame, Circle $circle) {
+	public function editShareToCircle(SharingFrame $frame, DeprecatedCircle $circle) {
 		return true;
 	}
 
@@ -265,10 +265,10 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param Member $member
 	 */
-	public function sendMailAboutExistingShares(Circle $circle, Member $member) {
+	public function sendMailAboutExistingShares(DeprecatedCircle $circle, Member $member) {
 		if ($member->getType() !== Member::TYPE_MAIL && $member->getType() !== Member::TYPE_CONTACT
 			&& $member->getContactId() !== '') {
 			return;
@@ -342,14 +342,14 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param IShare $share
 	 * @param string $address
 	 * @param SharesToken $token
 	 *
 	 * @return bool
 	 */
-	public function sharedByFederated(Circle $circle, IShare $share, string $address, SharesToken $token
+	public function sharedByFederated(DeprecatedCircle $circle, IShare $share, string $address, SharesToken $token
 	): bool {
 		try {
 			$cloudId = $this->federationCloudIdManager->resolveCloudId($address);
@@ -389,14 +389,14 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param IShare $share
 	 * @param string $email
 	 * @param SharesToken $sharesToken
 	 * @param string $password
 	 */
 	private function sharedByMail(
-		Circle $circle, IShare $share, string $email, SharesToken $sharesToken, string $password
+		DeprecatedCircle $circle, IShare $share, string $email, SharesToken $sharesToken, string $password
 	) {
 		// genelink
 		$link = $this->urlGenerator->linkToRouteAbsolute(
@@ -579,14 +579,14 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param array $unknownShares
 	 * @param Member $author
 	 * @param Member $member
 	 * @param string $recipient
 	 */
 	public function sendMailExitingShares(
-		Circle $circle, array $unknownShares, Member $author, Member $member, string $recipient
+		DeprecatedCircle $circle, array $unknownShares, Member $author, Member $member, string $recipient
 	) {
 		$data = [];
 

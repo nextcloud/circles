@@ -1,12 +1,16 @@
 <?php
+
+declare(strict_types=1);
+
+
 /**
  * Circles - Bring cloud-users closer together.
  *
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@pontapreta.net>
- * @copyright 2017
+ * @author Maxence Lange <maxence@artificial-owl.com>
+ * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,60 +28,32 @@
  *
  */
 
+
 namespace OCA\Circles\Model;
 
-use daita\MySmallPhpTools\Db\Nextcloud\nc21\INC21QueryRow;
-use JsonSerializable;
 
+use OCA\Circles\Db\CirclesRequest;
 
 /**
- * Class Circle
+ * Class ModelManager
  *
  * @package OCA\Circles\Model
  */
-class Circle extends ManagedModel implements INC21QueryRow, JsonSerializable {
+class ModelManager {
 
 
-	/** @var array */
-	private $members = [];
+	/** @var CirclesRequest */
+	private $circlesRequest;
 
 
-	public function __construct() {
+	public function __construct(CirclesRequest $circlesRequest) {
+		$this->circlesRequest = $circlesRequest;
 	}
 
 
-	/**
-	 * @param array $members
-	 *
-	 * @return Circle
-	 */
-	public function setMembers(array $members): self {
-		$this->members = $members;
-
-		return $this;
+	public function getMembers(Circle $circle): void {
+		$circle->setMembers(['oui' => 1]);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function getMembers(): array {
-		if (empty($this->members)) {
-			$this->getManager()->getMembers($this);
-		}
-
-		return $this->members;
-	}
-
-
-	public function import(): self {
-		return $this;
-	}
-
-	public function jsonSerialize(): array {
-	}
-
-	public function importFromDatabase(array $data): INC21QueryRow {
-		return $this;
-	}
 
 }

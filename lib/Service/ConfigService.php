@@ -29,7 +29,7 @@ namespace OCA\Circles\Service;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Exceptions\GSStatusException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCP\IConfig;
 use OCP\IRequest;
 use OCP\IURLGenerator;
@@ -77,7 +77,7 @@ class ConfigService {
 
 
 	private $defaults = [
-		self::CIRCLES_ALLOW_CIRCLES            => Circle::CIRCLES_ALL,
+		self::CIRCLES_ALLOW_CIRCLES            => DeprecatedCircle::CIRCLES_ALL,
 		self::CIRCLES_CONTACT_BACKEND          => '0',
 		self::CIRCLES_STILL_FRONTEND           => '0',
 		self::CIRCLES_TEST_ASYNC_INIT          => '0',
@@ -477,11 +477,11 @@ class ConfigService {
 	/**
 	 * do we require a share by mail to be password protected
 	 *
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 *
 	 * @return bool
 	 */
-	public function enforcePasswordProtection(Circle $circle) {
+	public function enforcePasswordProtection(DeprecatedCircle $circle) {
 		if ($this->isContactsBackend()) {
 			return false;
 		}

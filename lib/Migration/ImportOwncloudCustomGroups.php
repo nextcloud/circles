@@ -23,7 +23,7 @@
 
 namespace OCA\Circles\Migration;
 
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\Member;
 use OCP\IConfig;
 use OCP\IDBConnection;
@@ -105,7 +105,7 @@ class ImportOwncloudCustomGroups implements IRepairStep {
 
 		while ($row = $result->fetch()) {
 			$insert->setParameter('name', $row['display_name'])
-				->setParameter('type', Circle::CIRCLES_CLOSED);
+				->setParameter('type', DeprecatedCircle::CIRCLES_CLOSED);
 
 			$insert->execute();
 			$output->advance();

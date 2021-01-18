@@ -35,7 +35,6 @@ use daita\MySmallPhpTools\ActivityPub\Nextcloud\nc21\NC21Signature;
 use daita\MySmallPhpTools\Exceptions\InvalidOriginException;
 use daita\MySmallPhpTools\Exceptions\MalformedArrayException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
-use daita\MySmallPhpTools\Exceptions\RowNotFoundException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Exceptions\SignatureException;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
@@ -44,6 +43,7 @@ use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21LocalSignatory;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Db\RemoteRequest;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RemoteUidException;
 use OCA\Circles\Model\AppService;
 use OCP\IURLGenerator;
@@ -118,9 +118,10 @@ class RemoteService extends NC21Signature {
 		$app->setCircles($this->configService->getRemotePath('circles.Remote.circles'));
 		$app->setMembers($this->configService->getRemotePath('circles.Remote.members'));
 
+		$app->setOrigData($app->jsonSerialize());
+
 		return $app;
 	}
-
 
 	/**
 	 * @throws SignatureException
@@ -136,6 +137,125 @@ class RemoteService extends NC21Signature {
 
 
 	/**
+	 * @param string $remote
+	 * @param array $data
+	 *
+	 * @return NC21SignedRequest
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws SignatureException
+	 */
+	public function outgoingTest(string $remote, array $data = ['test' => 42]): NC21SignedRequest {
+		$request = new NC21Request();
+		$request->basedOnUrl($remote);
+		$request->setFollowLocation(true);
+		$request->setLocalAddressAllowed(true);
+		$request->setTimeout(5);
+		$request->setData($data);
+
+		$app = $this->getAppSignatory();
+//		$app->setAlgorithm(NC21Signatory::SHA512);
+		$signedRequest = $this->signRequest($request, $app);
+		$this->doRequest($signedRequest->getOutgoingRequest());
+
+		return $signedRequest;
+	}
+
+	/**
+	 * @return NC21SignedRequest
+	 * @throws InvalidOriginException
+	 * @throws MalformedArrayException
+	 * @throws SignatoryException
+	 * @throws SignatureException
+	 */
+	public function incomingTest(): NC21SignedRequest {
+		return $this->incomingSignedRequest($this->configService->getLocalInstance());
+	}
+
+
+	/**
+	 * @param string $instance
+	 *
+	 * @return array
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws SignatureException
+	 */
+	public function getCircles(string $instance): array {
+		$result = $this->requestRemoteResource($instance, 'circles');
+		echo '--> ' . json_encode($result) . " \n";
+		//$url = $this->
+		$circles = [];
+
+		return $circles;
+	}
+
+
+	/**
+	 * @param string $instance
+	 * @param string $item
+	 *
+	 * @return array
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws SignatureException
+	 */
+	public function requestRemoteResource(string $instance, string $item): array {
+		$link = $this->getRemoteEntry($instance, $item);
+
+		$request = new NC21Request();
+		$request->basedOnUrl($link);
+		$request->setFollowLocation(true);
+		$request->setLocalAddressAllowed(true);
+		$request->setTimeout(5);
+//		$request->setData($data);
+
+		$app = $this->getAppSignatory();
+//		$app->setAlgorithm(NC21Signatory::SHA512);
+		$signedRequest = $this->signRequest($request, $app);
+		$this->doRequest($signedRequest->getOutgoingRequest());
+
+		return $signedRequest->getOutgoingRequest()->getResult()->getAsArray();
+	}
+
+
+//
+//	public function outgoing(string $instance, string $route) {
+//		$this->retrieveSignatory()
+//	}
+
+
+	/**
+	 * @param string $instance
+	 * @param string $item
+	 *
+	 * @return string
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws SignatoryException
+	 * @throws SignatureException
+	 */
+	public function getRemoteEntry(string $instance, string $item): string {
+		if ($this->configService->isLocalInstance($instance)) {
+			$remote = $this->getAppSignatory();
+		} else {
+			$remote = $this->remoteRequest->getFromInstance($instance);
+		}
+
+		$value = $this->get($item, $remote->getOrigData());
+		if ($value === '') {
+			throw new RemoteResourceNotFoundException();
+		}
+
+		return $value;
+	}
+
+
+	/**
 	 * @param string $keyId
 	 * @param bool $refresh
 	 * @param bool $auth
@@ -146,6 +266,7 @@ class RemoteService extends NC21Signature {
 	 */
 	public function retrieveSignatory(string $keyId, bool $refresh = false, bool $auth = false): AppService {
 		if (!$refresh) {
+			//		 return	$this->retrieveCachedSignatory($keyId);
 			throw new SignatoryException();
 		}
 
@@ -195,43 +316,6 @@ class RemoteService extends NC21Signature {
 
 
 	/**
-	 * @param string $remote
-	 * @param array $data
-	 *
-	 * @return NC21SignedRequest
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
-	 */
-	public function test(string $remote, array $data = ['test' => 42]): NC21SignedRequest {
-		$request = new NC21Request();
-		$request->basedOnUrl($remote);
-		$request->setFollowLocation(true);
-		$request->setLocalAddressAllowed(true);
-		$request->setTimeout(5);
-		$request->setData($data);
-
-		$app = $this->getAppSignatory();
-//		$app->setAlgorithm(NC21Signatory::SHA512);
-		$signedRequest = $this->signRequest($request, $app);
-		$this->doRequest($signedRequest->getOutgoingRequest());
-
-		return $signedRequest;
-	}
-
-
-	/**
-	 * @return NC21SignedRequest
-	 * @throws InvalidOriginException
-	 * @throws MalformedArrayException
-	 * @throws SignatoryException
-	 * @throws SignatureException
-	 */
-	public function incomingTest(): NC21SignedRequest {
-		return $this->incomingSignedRequest($this->configService->getLocalInstance());
-	}
-
-
-	/**
 	 * @param AppService $remote
 	 * @param AppService|null $stored
 	 *
@@ -241,16 +325,12 @@ class RemoteService extends NC21Signature {
 	public function confirmValidRemote(AppService $remote, ?AppService &$stored = null): void {
 		try {
 			$stored = $this->remoteRequest->getFromHref($remote->getId());
-		} catch (RowNotFoundException $e) {
+		} catch (RemoteNotFoundException $e) {
 			if ($remote->getInstance() === '') {
 				throw new RemoteNotFoundException();
 			}
 
-			try {
-				$stored = $this->remoteRequest->getFromInstance($remote->getInstance());
-			} catch (RowNotFoundException $e) {
-				throw new RemoteNotFoundException();
-			}
+			$stored = $this->remoteRequest->getFromInstance($remote->getInstance());
 		}
 
 		if ($stored->getUid() !== $remote->getUid(true)) {

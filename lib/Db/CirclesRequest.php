@@ -34,7 +34,7 @@ use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Exceptions\GSStatusException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\Member;
 
 class CirclesRequest extends CirclesRequestBuilder {
@@ -51,7 +51,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 * @param string $circleUniqueId
 	 * @param bool $allSettings
 	 *
-	 * @return Circle
+	 * @return DeprecatedCircle
 	 * @throws CircleDoesNotExistException
 	 */
 	public function forceGetCircle($circleUniqueId, bool $allSettings = false) {
@@ -82,7 +82,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 *
 	 * @param string $ownerId
 	 *
-	 * @return Circle[]
+	 * @return DeprecatedCircle[]
 	 */
 	public function forceGetCircles(string $ownerId = '') {
 		$qb = $this->getCirclesSelectSql();
@@ -109,7 +109,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 *
 	 * @param $name
 	 *
-	 * @return null|Circle
+	 * @return null|DeprecatedCircle
 	 * @throws CircleDoesNotExistException
 	 */
 	public function forceGetCircleByName($name) {
@@ -138,7 +138,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 * @param bool $forceAll
 	 * @param string $ownerId
 	 *
-	 * @return Circle[]
+	 * @return DeprecatedCircle[]
 	 * @throws ConfigNoCircleAvailableException
 	 * @throws GSStatusException
 	 */
@@ -147,7 +147,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 		string $ownerId = ''
 	) {
 		if ($circleType === 0) {
-			$circleType = Circle::CIRCLES_ALL;
+			$circleType = DeprecatedCircle::CIRCLES_ALL;
 		}
 
 		// todo - make it works based on $type
@@ -185,7 +185,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 * @param string $instanceId
 	 * @param bool $forceAll
 	 *
-	 * @return Circle
+	 * @return DeprecatedCircle
 	 * @throws CircleDoesNotExistException
 	 * @throws ConfigNoCircleAvailableException
 	 */
@@ -203,7 +203,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 			$this->leftJoinNCGroupAndUser($qb, $viewerId, 'c.unique_id');
 		}
 
-		$this->limitRegardingCircleType($qb, $viewerId, $circleUniqueId, Circle::CIRCLES_ALL, '', $forceAll);
+		$this->limitRegardingCircleType($qb, $viewerId, $circleUniqueId, DeprecatedCircle::CIRCLES_ALL, '', $forceAll);
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
@@ -230,9 +230,9 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 * Create a circle with $userId as its owner.
 	 * Will returns the circle
 	 *
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 */
-	public function createCircle(Circle $circle) {
+	public function createCircle(DeprecatedCircle $circle) {
 		$qb = $this->getCirclesInsertSql();
 		$qb->setValue('unique_id', $qb->createNamedParameter($circle->getUniqueId()))
 		   ->setValue('long_id', $qb->createNamedParameter($circle->getUniqueId(true)))
@@ -262,14 +262,14 @@ class CirclesRequest extends CirclesRequestBuilder {
 	/**
 	 * returns if the circle is already in database
 	 *
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param string $userId
 	 *
 	 * @return bool
 	 * @throws ConfigNoCircleAvailableException
 	 */
-	public function isCircleUnique(Circle $circle, $userId = '') {
-		if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
+	public function isCircleUnique(DeprecatedCircle $circle, $userId = '') {
+		if ($circle->getType() === DeprecatedCircle::CIRCLES_PERSONAL) {
 			return $this->isPersonalCircleUnique($circle, $userId);
 		}
 
@@ -292,19 +292,19 @@ class CirclesRequest extends CirclesRequestBuilder {
 	/**
 	 * return if the personal circle is unique
 	 *
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param string $userId
 	 *
 	 * @return bool
 	 * @throws ConfigNoCircleAvailableException
 	 */
-	private function isPersonalCircleUnique(Circle $circle, $userId = '') {
+	private function isPersonalCircleUnique(DeprecatedCircle $circle, $userId = '') {
 		if ($userId === '') {
 			return true;
 		}
 
 		$list = $this->getCircles(
-			$userId, Circle::CIRCLES_PERSONAL, $circle->getName(),
+			$userId, DeprecatedCircle::CIRCLES_PERSONAL, $circle->getName(),
 			Member::LEVEL_OWNER
 		);
 
@@ -320,13 +320,13 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param string $userId
 	 *
 	 * @throws CircleAlreadyExistsException
 	 * @throws ConfigNoCircleAvailableException
 	 */
-	public function updateCircle(Circle $circle, $userId = '') {
+	public function updateCircle(DeprecatedCircle $circle, $userId = '') {
 		if (!$this->isCircleUnique($circle, $userId)) {
 			throw new CircleAlreadyExistsException(
 				$this->l10n->t('A circle with that name exists')
@@ -345,7 +345,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	/**
 	 * @param string $uniqueId
 	 *
-	 * @return Circle
+	 * @return DeprecatedCircle
 	 * @throws CircleDoesNotExistException
 	 */
 	public function getCircleFromUniqueId($uniqueId) {
@@ -387,7 +387,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	/**
 	 * @param int $addressBookId
 	 *
-	 * @return Circle[]
+	 * @return DeprecatedCircle[]
 	 */
 	public function getFromContactBook(int $addressBookId): array {
 		$qb = $this->getCirclesSelectSql();
@@ -412,10 +412,10 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 * @param int $addressBookId
 	 * @param string $group
 	 *
-	 * @return Circle
+	 * @return DeprecatedCircle
 	 * @throws CircleDoesNotExistException
 	 */
-	public function getFromContactGroup(int $addressBookId, string $group): Circle {
+	public function getFromContactGroup(int $addressBookId, string $group): DeprecatedCircle {
 		$qb = $this->getCirclesSelectSql();
 		$this->limitToAddressBookId($qb, $addressBookId);
 		$this->limitToContactGroup($qb, $group);

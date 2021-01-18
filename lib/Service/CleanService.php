@@ -35,7 +35,7 @@ use OCA\Circles\Db\DeprecatedRequestBuilder;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Db\SharesRequest;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCP\IDBConnection;
 
 /**
@@ -126,7 +126,7 @@ class CleanService {
 
 	public function removeDeprecatedShares() {
 		$circles = array_map(
-			function(Circle $circle) {
+			function(DeprecatedCircle $circle) {
 				return $circle->getUniqueId();
 			}, $this->circlesRequest->forceGetCircles()
 		);

@@ -74,7 +74,7 @@ class DavCard implements JsonSerializable {
 	/** @var array */
 	private $groups = [];
 
-	/** @var Circle[] */
+	/** @var DeprecatedCircle[] */
 	private $circles = [];
 
 	/** @var string */
@@ -246,18 +246,18 @@ class DavCard implements JsonSerializable {
 
 
 	/**
-	 * @return Circle[]
+	 * @return DeprecatedCircle[]
 	 */
 	public function getCircles(): array {
 		return $this->circles;
 	}
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 *
 	 * @return $this
 	 */
-	public function addCircle(Circle $circle): self {
+	public function addCircle(DeprecatedCircle $circle): self {
 		$this->circles[] = $circle;
 
 		return $this;

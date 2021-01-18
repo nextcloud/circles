@@ -29,7 +29,7 @@ namespace OCA\Circles\Activity;
 
 
 use OCA\Circles\Exceptions\FakeException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
 use OCP\Activity\IEvent;
@@ -39,12 +39,12 @@ class ProviderSubjectGroup extends ProviderParser {
 
 	/**
 	 * @param IEvent $event
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param Member $group
 	 *
 	 * @throws FakeException
 	 */
-	public function parseGroupLink(IEvent $event, Circle $circle, Member $group) {
+	public function parseGroupLink(IEvent $event, DeprecatedCircle $circle, Member $group) {
 		if ($event->getSubject() !== 'group_link') {
 			return;
 		}
@@ -60,12 +60,12 @@ class ProviderSubjectGroup extends ProviderParser {
 
 	/**
 	 * @param IEvent $event
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param Member $group
 	 *
 	 * @throws FakeException
 	 */
-	public function parseGroupUnlink(IEvent $event, Circle $circle, Member $group) {
+	public function parseGroupUnlink(IEvent $event, DeprecatedCircle $circle, Member $group) {
 		if ($event->getSubject() !== 'group_unlink') {
 			return;
 		}
@@ -81,12 +81,12 @@ class ProviderSubjectGroup extends ProviderParser {
 
 	/**
 	 * @param IEvent $event
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param Member $group
 	 *
 	 * @throws FakeException
 	 */
-	public function parseGroupLevel(IEvent $event, Circle $circle, Member $group) {
+	public function parseGroupLevel(IEvent $event, DeprecatedCircle $circle, Member $group) {
 		if ($event->getSubject() !== 'group_level') {
 			return;
 		}

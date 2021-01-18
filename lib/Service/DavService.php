@@ -39,7 +39,7 @@ use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\NotLocalMemberException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\DavCard;
 use OCA\Circles\Model\Member;
 use OCA\DAV\CardDAV\CardDavBackend;
@@ -264,7 +264,7 @@ class DavService {
 		);
 
 		$circles = array_map(
-			function(Circle $circle) {
+			function(DeprecatedCircle $circle) {
 				return $circle->getUniqueId();
 			}, $davCard->getCircles()
 		);
@@ -306,11 +306,11 @@ class DavService {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param DavCard $davCard
 	 * @param int $type
 	 */
-	private function manageMember(Circle $circle, DavCard $davCard, int $type) {
+	private function manageMember(DeprecatedCircle $circle, DavCard $davCard, int $type) {
 		try {
 			$member =
 				$this->membersRequest->getContactMember($circle->getUniqueId(), $davCard->getUniqueId());
@@ -396,7 +396,7 @@ class DavService {
 	private function manageCircles(DavCard $davCard) {
 		$fromCard = $davCard->getGroups();
 		$current = array_map(
-			function(Circle $circle) {
+			function(DeprecatedCircle $circle) {
 				return $circle->getContactGroupName();
 			}, $this->getCirclesFromBook($davCard->getAddressBookId())
 		);
@@ -424,7 +424,7 @@ class DavService {
 			}
 
 			$user = $this->userManager->get($davCard->getOwner());
-			$circle = new Circle(
+			$circle = new DeprecatedCircle(
 				$this->configService->contactsBackendType(), $group . ' - ' . $user->getDisplayName()
 			);
 			$circle->setAltName($group);
@@ -474,7 +474,7 @@ class DavService {
 	/**
 	 * @param int $addressBookId
 	 *
-	 * @return Circle[]
+	 * @return DeprecatedCircle[]
 	 */
 	private function getCirclesFromBook(int $addressBookId): array {
 		return $this->circlesRequest->getFromBook($addressBookId);
@@ -627,7 +627,7 @@ class DavService {
 	/**
 	 * @param int $bookId
 	 *
-	 * @return Circle[]
+	 * @return DeprecatedCircle[]
 	 */
 	private function getExistingCirclesFromBook(int $bookId): array {
 		$circles = [];
@@ -645,7 +645,7 @@ class DavService {
 		$this->miscService->log('Found ' . sizeof($circles) . ' Circles from book=' . $bookId, 0);
 		$existing = array_unique(
 			array_map(
-				function(Circle $circle) {
+				function(DeprecatedCircle $circle) {
 					return $circle->getContactGroupName();
 				}, $circles
 			)

@@ -23,7 +23,7 @@
 
 namespace OCA\Circles\Migration;
 
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\Member;
 use OCP\IConfig;
 use OCP\IDBConnection;

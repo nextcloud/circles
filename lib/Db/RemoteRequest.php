@@ -29,6 +29,7 @@ namespace OCA\Circles\Db;
 
 
 use daita\MySmallPhpTools\Exceptions\RowNotFoundException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteUidException;
 use OCA\Circles\Model\AppService;
 
@@ -100,7 +101,7 @@ class RemoteRequest extends RemoteRequestBuilder {
 	 * @param string $host
 	 *
 	 * @return AppService
-	 * @throws RowNotFoundException
+	 * @throws RemoteNotFoundException
 	 */
 	public function getFromInstance(string $host): AppService {
 		$qb = $this->getRemoteSelectSql();
@@ -114,7 +115,7 @@ class RemoteRequest extends RemoteRequestBuilder {
 	 * @param string $href
 	 *
 	 * @return AppService
-	 * @throws RowNotFoundException
+	 * @throws RemoteNotFoundException
 	 */
 	public function getFromHref(string $href): AppService {
 		$qb = $this->getRemoteSelectSql();

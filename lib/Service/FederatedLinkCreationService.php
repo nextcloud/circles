@@ -36,7 +36,7 @@ use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 use OCA\Circles\Exceptions\FederatedLinkCreationException;
 use OCA\Circles\Exceptions\FederatedLinkDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedRemoteDoesNotAllowException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\FederatedLink;
 use OCP\Http\Client\IClientService;
 use OCP\IL10N;
@@ -159,12 +159,12 @@ class FederatedLinkCreationService {
 	/**
 	 * Create a new link into database and assign the correct status.
 	 *
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param FederatedLink $link
 	 *
 	 * @throws Exception
 	 */
-	public function requestedLinkFromRemoteCircle(Circle $circle, FederatedLink $link) {
+	public function requestedLinkFromRemoteCircle(DeprecatedCircle $circle, FederatedLink $link) {
 
 		try {
 			$this->checkLinkRequestValidity($circle, $link);
@@ -188,7 +188,7 @@ class FederatedLinkCreationService {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param FederatedLink $link
 	 *
 	 * @throws FederatedLinkCreationException
@@ -277,13 +277,13 @@ class FederatedLinkCreationService {
 	 * requestLink()
 	 *
 	 *
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param FederatedLink $link
 	 *
 	 * @return boolean
 	 * @throws Exception
 	 */
-	private function forceRequestNewLink(Circle $circle, FederatedLink &$link) {
+	private function forceRequestNewLink(DeprecatedCircle $circle, FederatedLink &$link) {
 		try {
 			$client = $this->clientService->newClient();
 			$args = ['sourceName' => $circle->getName()];
@@ -311,14 +311,14 @@ class FederatedLinkCreationService {
 	 * Called by requestLink() will update status and event
 	 * Will also manage errors returned by the remote link
 	 *
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param FederatedLink $link
 	 * @param int $status
 	 * @param string $reason
 	 *
 	 * @throws Exception
 	 */
-	private function eventOnRequestLink(Circle $circle, FederatedLink $link, $status, $reason) {
+	private function eventOnRequestLink(DeprecatedCircle $circle, FederatedLink $link, $status, $reason) {
 
 		switch ($status) {
 			case FederatedLink::STATUS_LINK_UP:

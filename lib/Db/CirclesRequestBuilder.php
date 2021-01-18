@@ -30,7 +30,7 @@ namespace OCA\Circles\Db;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
@@ -70,7 +70,7 @@ class CirclesRequestBuilder extends DeprecatedRequestBuilder {
 		$expr = $qb->expr();
 
 		$qb->andWhere(
-			$expr->neq('c.type', $qb->createNamedParameter(Circle::CIRCLES_PERSONAL))
+			$expr->neq('c.type', $qb->createNamedParameter(DeprecatedCircle::CIRCLES_PERSONAL))
 		);
 	}
 
@@ -140,13 +140,13 @@ class CirclesRequestBuilder extends DeprecatedRequestBuilder {
 	 * @return ICompositeExpression
 	 */
 	private function generateLimitPersonal(IQueryBuilder $qb, $userId, $type, $forceAll = false) {
-		if (!(Circle::CIRCLES_PERSONAL & (int)$type)) {
+		if (!(DeprecatedCircle::CIRCLES_PERSONAL & (int)$type)) {
 			return null;
 		}
 		$expr = $qb->expr();
 
 		$andX = $expr->andX();
-		$andX->add($expr->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_PERSONAL)));
+		$andX->add($expr->eq('c.type', $qb->createNamedParameter(DeprecatedCircle::CIRCLES_PERSONAL)));
 		$andX->add($expr->eq('o.instance', $qb->createNamedParameter('')));
 
 		if (!$forceAll) {
@@ -166,7 +166,7 @@ class CirclesRequestBuilder extends DeprecatedRequestBuilder {
 	 * @return string
 	 */
 	private function generateLimitSecret(IQueryBuilder $qb, $circleUniqueId, $type, $name) {
-		if (!(Circle::CIRCLES_SECRET & (int)$type)) {
+		if (!(DeprecatedCircle::CIRCLES_SECRET & (int)$type)) {
 			return null;
 		}
 		$expr = $qb->expr();
@@ -185,7 +185,7 @@ class CirclesRequestBuilder extends DeprecatedRequestBuilder {
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		return $expr->andX(
-			$expr->eq('c.type', $qb->createNamedParameter(Circle::CIRCLES_SECRET)),
+			$expr->eq('c.type', $qb->createNamedParameter(DeprecatedCircle::CIRCLES_SECRET)),
 			$expr->orX($orX)
 		);
 	}
@@ -198,14 +198,14 @@ class CirclesRequestBuilder extends DeprecatedRequestBuilder {
 	 * @return string
 	 */
 	private function generateLimitClosed(IQueryBuilder $qb, $type) {
-		if (!(Circle::CIRCLES_CLOSED & (int)$type)) {
+		if (!(DeprecatedCircle::CIRCLES_CLOSED & (int)$type)) {
 			return null;
 		}
 
 		return $qb->expr()
 				  ->eq(
 					  'c.type',
-					  $qb->createNamedParameter(Circle::CIRCLES_CLOSED)
+					  $qb->createNamedParameter(DeprecatedCircle::CIRCLES_CLOSED)
 				  );
 	}
 
@@ -217,14 +217,14 @@ class CirclesRequestBuilder extends DeprecatedRequestBuilder {
 	 * @return string
 	 */
 	private function generateLimitPublic(IQueryBuilder $qb, $type) {
-		if (!(Circle::CIRCLES_PUBLIC & (int)$type)) {
+		if (!(DeprecatedCircle::CIRCLES_PUBLIC & (int)$type)) {
 			return null;
 		}
 
 		return $qb->expr()
 				  ->eq(
 					  'c.type',
-					  $qb->createNamedParameter(Circle::CIRCLES_PUBLIC)
+					  $qb->createNamedParameter(DeprecatedCircle::CIRCLES_PUBLIC)
 				  );
 	}
 
@@ -382,11 +382,11 @@ class CirclesRequestBuilder extends DeprecatedRequestBuilder {
 	 * @param array $data
 	 * @param bool $allSettings
 	 *
-	 * @return Circle
+	 * @return DeprecatedCircle
 	 */
 	protected function parseCirclesSelectSql($data, bool $allSettings = false) {
 
-		$circle = new Circle();
+		$circle = new DeprecatedCircle();
 		$circle->setId($data['id']);
 		$circle->setUniqueId($data['unique_id']);
 		$circle->setName($data['name']);

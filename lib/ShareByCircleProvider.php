@@ -45,7 +45,7 @@ use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\MembersRequest;
 use OCA\Circles\Db\TokensRequest;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CirclesService;
@@ -453,7 +453,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 		$data['share_with'] =
 			sprintf(
 				'%s (%s, %s) [%s]', $name,
-				$this->l10n->t(Circle::TypeLongString($data['circle_type'])),
+				$this->l10n->t(DeprecatedCircle::TypeLongString($data['circle_type'])),
 				$this->miscService->getDisplayName($data['circle_owner'], true), $data['share_with']
 			);
 
@@ -806,7 +806,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 				  ->setSharedWithDisplayName(
 					  sprintf(
 						  '%s (%s, %s)', $name,
-						  $this->l10n->t(Circle::TypeLongString($data['circle_type'])),
+						  $this->l10n->t(DeprecatedCircle::TypeLongString($data['circle_type'])),
 						  $this->miscService->getDisplayName($data['circle_owner'], true)
 					  )
 				  );

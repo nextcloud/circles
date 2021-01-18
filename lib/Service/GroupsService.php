@@ -34,7 +34,7 @@ use OCA\Circles\Exceptions\GroupCannotBeOwnerException;
 use OCA\Circles\Exceptions\GroupDoesNotExistException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\Member;
 use OCP\IGroupManager;
 use OCP\IL10N;
@@ -210,7 +210,7 @@ class GroupsService {
 		$level = (int)$level;
 		try {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
-			if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
+			if ($circle->getType() === DeprecatedCircle::CIRCLES_PERSONAL) {
 				throw new CircleTypeNotValidException(
 					$this->l10n->t('You cannot edit level in a personal circle')
 				);
@@ -241,13 +241,13 @@ class GroupsService {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param Member $group
 	 * @param $level
 	 *
 	 * @throws \Exception
 	 */
-	private function editGroupLevel(Circle $circle, Member $group, $level) {
+	private function editGroupLevel(DeprecatedCircle $circle, Member $group, $level) {
 		try {
 			$isMod = $circle->getHigherViewer();
 			$this->circlesService->hasToBeAdmin($isMod);

@@ -37,7 +37,7 @@ use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
 use OCA\Circles\Exceptions\CircleTypeNotValidException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Service\CirclesService;
 use OCP\IL10N;
 use OCP\IUserManager;
@@ -118,10 +118,10 @@ class CirclesCreate extends Base {
 		}
 
 		$types = [
-			'personal' => Circle::CIRCLES_PERSONAL,
-			'secret'   => Circle::CIRCLES_SECRET,
-			'closed'   => Circle::CIRCLES_CLOSED,
-			'public'   => Circle::CIRCLES_PUBLIC
+			'personal' => DeprecatedCircle::CIRCLES_PERSONAL,
+			'secret'   => DeprecatedCircle::CIRCLES_SECRET,
+			'closed'   => DeprecatedCircle::CIRCLES_CLOSED,
+			'public'   => DeprecatedCircle::CIRCLES_PUBLIC
 		];
 
 		if (!key_exists(strtolower($type), $types)) {

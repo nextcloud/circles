@@ -32,7 +32,7 @@ use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21LocalSignatory;
 use Exception;
 use OC\AppFramework\Middleware\Security\Exceptions\NotLoggedInException;
 use OCA\Circles\AppInfo\Application;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Service\ConfigService;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
@@ -64,17 +64,17 @@ class NavigationController extends BaseController {
 
 		$data = [
 			'allowed_circles' => array(
-				Circle::CIRCLES_PERSONAL => $this->configService->isCircleAllowed(
-					Circle::CIRCLES_PERSONAL
+				DeprecatedCircle::CIRCLES_PERSONAL => $this->configService->isCircleAllowed(
+					DeprecatedCircle::CIRCLES_PERSONAL
 				),
-				Circle::CIRCLES_SECRET   => $this->configService->isCircleAllowed(
-					Circle::CIRCLES_SECRET
+				DeprecatedCircle::CIRCLES_SECRET   => $this->configService->isCircleAllowed(
+					DeprecatedCircle::CIRCLES_SECRET
 				),
-				Circle::CIRCLES_CLOSED   => $this->configService->isCircleAllowed(
-					Circle::CIRCLES_CLOSED
+				DeprecatedCircle::CIRCLES_CLOSED   => $this->configService->isCircleAllowed(
+					DeprecatedCircle::CIRCLES_CLOSED
 				),
-				Circle::CIRCLES_PUBLIC   => $this->configService->isCircleAllowed(
-					Circle::CIRCLES_PUBLIC
+				DeprecatedCircle::CIRCLES_PUBLIC   => $this->configService->isCircleAllowed(
+					DeprecatedCircle::CIRCLES_PUBLIC
 				),
 			)
 		];

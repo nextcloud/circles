@@ -42,7 +42,7 @@ use OCA\Circles\Exceptions\PayloadDeliveryException;
 use OCA\Circles\Exceptions\SharingFrameAlreadyDeliveredException;
 use OCA\Circles\Exceptions\SharingFrameAlreadyExistException;
 use OCA\Circles\Exceptions\SharingFrameDoesNotExistException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\SharingFrame;
 use OCP\Http\Client\IClientService;
@@ -180,10 +180,10 @@ class SharingFrameService {
 	 * Check if the source is NOT Circles.
 	 *
 	 * @param SharingFrame $frame
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param $broadcast
 	 */
-	private function generateHeaders(SharingFrame $frame, Circle $circle, $broadcast) {
+	private function generateHeaders(SharingFrame $frame, DeprecatedCircle $circle, $broadcast) {
 
 		try {
 			$frame->cannotBeFromCircles();
@@ -360,11 +360,11 @@ class SharingFrameService {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param SharingFrame $frame
 	 * @param FederatedLink[] $links
 	 */
-	private function forwardSharingFrameToFederatedLinks(Circle $circle, SharingFrame $frame, $links) {
+	private function forwardSharingFrameToFederatedLinks(DeprecatedCircle $circle, SharingFrame $frame, $links) {
 
 		$args = [
 			'apiVersion' => Circles::version(),

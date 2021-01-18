@@ -35,7 +35,7 @@ use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Exceptions\GlobalScaleDSyncException;
 use OCA\Circles\Exceptions\GlobalScaleEventException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\Member;
 
@@ -70,7 +70,7 @@ class UserDeleted extends AGlobalScaleEvent {
 			$members =
 				$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MEMBER);
 
-			if ($circle->getType() === Circle::CIRCLES_PERSONAL || sizeof($members) === 1) {
+			if ($circle->getType() === DeprecatedCircle::CIRCLES_PERSONAL || sizeof($members) === 1) {
 				$destroyedCircles[] = $circle->getUniqueId();
 				continue;
 			}

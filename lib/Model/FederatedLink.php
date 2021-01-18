@@ -193,7 +193,7 @@ class FederatedLink implements \JsonSerializable {
 			return $this->circleUniqueId;
 		}
 
-		return substr($this->circleUniqueId, 0, Circle::SHORT_UNIQUE_ID_LENGTH);
+		return substr($this->circleUniqueId, 0, DeprecatedCircle::SHORT_UNIQUE_ID_LENGTH);
 
 	}
 

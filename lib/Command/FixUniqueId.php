@@ -31,7 +31,7 @@ use OC\Core\Command\Base;
 use OC\Share\Share;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Db\DeprecatedRequestBuilder;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCP\IDBConnection;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -81,7 +81,7 @@ class FixUniqueId extends Base {
 		while ($data = $cursor->fetch()) {
 			$circleId = $data['id'];
 
-			$shortenUniqueId = substr($data['unique_id'], 0, Circle::SHORT_UNIQUE_ID_LENGTH);
+			$shortenUniqueId = substr($data['unique_id'], 0, DeprecatedCircle::SHORT_UNIQUE_ID_LENGTH);
 
 //			$this->swapToShortenUniqueIdInTable(
 //				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_GROUPS

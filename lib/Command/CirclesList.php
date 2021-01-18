@@ -34,7 +34,8 @@ use OC\Core\Command\Base;
 use OCA\Circles\Db\CirclesRequest;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Exceptions\GSStatusException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
+use OCA\Circles\Service\RemoteService;
 use OCP\IL10N;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
@@ -61,6 +62,9 @@ class CirclesList extends Base {
 	/** @var CirclesRequest */
 	private $circlesRequest;
 
+	/** @var RemoteService */
+	private $remoteService;
+
 
 	/**
 	 * CirclesList constructor.
@@ -68,10 +72,11 @@ class CirclesList extends Base {
 	 * @param IL10N $l10n
 	 * @param CirclesRequest $circlesRequest
 	 */
-	public function __construct(IL10N $l10n, CirclesRequest $circlesRequest) {
+	public function __construct(IL10N $l10n, CirclesRequest $circlesRequest, RemoteService $remoteService) {
 		parent::__construct();
 		$this->l10n = $l10n;
 		$this->circlesRequest = $circlesRequest;
+		$this->remoteService = $remoteService;
 	}
 
 
@@ -140,12 +145,13 @@ class CirclesList extends Base {
 	 * @param string $viewer
 	 * @param string $remote
 	 *
-	 * @return Circle[]
+	 * @return DeprecatedCircle[]
 	 * @throws ConfigNoCircleAvailableException
 	 * @throws GSStatusException
 	 */
 	private function getCircles(string $owner, string $viewer, string $remote): array {
 		if ($remote !== '') {
+			$circles = $this->remoteService->getCircles($remote);
 		} elseif ($viewer === '') {
 			$circles = $this->circlesRequest->forceGetCircles($owner);
 		} else {

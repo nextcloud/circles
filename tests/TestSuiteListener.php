@@ -28,7 +28,7 @@
 namespace OCA\Circles\Tests;
 
 
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 
 class Env implements \PHPUnit_Framework_TestListener {
 
@@ -158,10 +158,10 @@ class Env implements \PHPUnit_Framework_TestListener {
 
 	public static function listCircleTypes() {
 		return [
-			Circle::CIRCLES_PUBLIC,
-			Circle::CIRCLES_CLOSED,
-			Circle::CIRCLES_SECRET,
-			Circle::CIRCLES_PERSONAL
+			DeprecatedCircle::CIRCLES_PUBLIC,
+			DeprecatedCircle::CIRCLES_CLOSED,
+			DeprecatedCircle::CIRCLES_SECRET,
+			DeprecatedCircle::CIRCLES_PERSONAL
 		];
 	}
 }

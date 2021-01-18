@@ -52,7 +52,7 @@ use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberCantJoinCircleException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\MemberIsNotModeratorException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\Member;
 use OCP\IL10N;
@@ -188,7 +188,7 @@ class MembersService {
 	/**
 	 * add a single member to a circle.
 	 *
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param string $ident
 	 * @param int $type
 	 *
@@ -200,7 +200,7 @@ class MembersService {
 	 * @throws NoUserException
 	 * @throws Exception
 	 */
-	private function addSingleMember(Circle $circle, $ident, $type, $instance = '', bool $force = false
+	private function addSingleMember(DeprecatedCircle $circle, $ident, $type, $instance = '', bool $force = false
 	): Member {
 		$this->verifyIdentBasedOnItsType($ident, $type, $instance);
 		$this->verifyIdentContact($ident, $type);
@@ -217,7 +217,7 @@ class MembersService {
 
 		$new = $event->getMember();
 		$new->setJoined($this->l10n->t('now'));
-		if ($circle->getType() === Circle::CIRCLES_CLOSED) {
+		if ($circle->getType() === DeprecatedCircle::CIRCLES_CLOSED) {
 //			$new->setLevel(Member::LEVEL_MEMBER);
 			$new->setStatus(Member::STATUS_INVITED);
 		} else {
@@ -236,14 +236,14 @@ class MembersService {
 	/**
 	 * add a bunch of users to a circle based on the type of the 'bunch'
 	 *
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param string $ident
 	 * @param int $type
 	 *
 	 * @return Member[]
 	 * @throws Exception
 	 */
-	private function addMassiveMembers(Circle $circle, $ident, $type): array {
+	private function addMassiveMembers(DeprecatedCircle $circle, $ident, $type): array {
 		if ($type === Member::TYPE_GROUP) {
 			return $this->addGroupMembers($circle, $ident);
 		}
@@ -259,13 +259,13 @@ class MembersService {
 	/**
 	 * add a new member based on its type.
 	 *
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param Member $member
 	 *
 	 * @throws CircleTypeNotValidException
 	 * @throws MemberCantJoinCircleException
 	 */
-	public function addMemberBasedOnItsType(Circle $circle, Member $member) {
+	public function addMemberBasedOnItsType(DeprecatedCircle $circle, Member $member) {
 		$this->addLocalMember($circle, $member);
 		$this->addEmailAddress($member);
 		$this->addContact($member);
@@ -273,13 +273,13 @@ class MembersService {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param Member $member
 	 *
 	 * @throws CircleTypeNotValidException
 	 * @throws MemberCantJoinCircleException
 	 */
-	private function addLocalMember(Circle $circle, Member $member) {
+	private function addLocalMember(DeprecatedCircle $circle, Member $member) {
 
 		if ($member->getType() !== Member::TYPE_USER) {
 			return;
@@ -287,7 +287,7 @@ class MembersService {
 
 		$member->inviteToCircle($circle->getType());
 
-		if ($circle->getType() === Circle::CIRCLES_CLOSED && $this->configService->isInvitationSkipped()) {
+		if ($circle->getType() === DeprecatedCircle::CIRCLES_CLOSED && $this->configService->isInvitationSkipped()) {
 			$member->joinCircle($circle->getType());
 		}
 	}
@@ -429,13 +429,13 @@ class MembersService {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param string $groupId
 	 *
 	 * @return Member[]
 	 * @throws Exception
 	 */
-	private function addGroupMembers(Circle $circle, $groupId): array {
+	private function addGroupMembers(DeprecatedCircle $circle, $groupId): array {
 		$group = OC::$server->getGroupManager()
 							->get($groupId);
 		if ($group === null) {
@@ -459,12 +459,12 @@ class MembersService {
 	/**
 	 * // TODO - check this on GS setup
 	 *
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param string $mails
 	 *
 	 * @return Member[]
 	 */
-	private function addMassiveMails(Circle $circle, $mails): array {
+	private function addMassiveMails(DeprecatedCircle $circle, $mails): array {
 
 		$mails = trim($mails);
 		if (substr($mails, 0, 6) !== 'mails:') {
@@ -568,7 +568,7 @@ class MembersService {
 			$circle = $this->circlesRequest->forceGetCircle($circleUniqueId);
 		}
 
-		if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
+		if ($circle->getType() === DeprecatedCircle::CIRCLES_PERSONAL) {
 			throw new CircleTypeNotValidException(
 				$this->l10n->t('You cannot edit level in a personal circle')
 			);
@@ -682,9 +682,9 @@ class MembersService {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 */
-	public function updateCachedFromCircle(Circle $circle) {
+	public function updateCachedFromCircle(DeprecatedCircle $circle) {
 		$members = $this->membersRequest->forceGetMembers(
 			$circle->getUniqueId(), Member::LEVEL_NONE, Member::TYPE_USER
 		);
@@ -760,10 +760,10 @@ class MembersService {
 	/**
 	 * @param Member $member
 	 *
-	 * @return Circle
+	 * @return DeprecatedCircle
 	 * @throws CircleDoesNotExistException
 	 */
-	public function getCircleFromMembership(Member $member): Circle {
+	public function getCircleFromMembership(Member $member): DeprecatedCircle {
 		return $this->circlesRequest->forceGetCircle($member->getCircleId());
 	}
 

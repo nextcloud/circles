@@ -35,7 +35,7 @@ use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\Exceptions\JsonException;
 use OCA\Circles\Exceptions\ModelException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\Member;
 
 
@@ -78,7 +78,7 @@ class GSEvent implements JsonSerializable {
 	/** @var string */
 	private $source = '';
 
-	/** @var Circle */
+	/** @var DeprecatedCircle */
 	private $circle;
 
 	/** @var Member */
@@ -233,18 +233,18 @@ class GSEvent implements JsonSerializable {
 
 
 	/**
-	 * @return Circle
+	 * @return DeprecatedCircle
 	 */
-	public function getCircle(): Circle {
+	public function getCircle(): DeprecatedCircle {
 		return $this->circle;
 	}
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 *
 	 * @return GSEvent
 	 */
-	public function setCircle(Circle $circle): self {
+	public function setCircle(DeprecatedCircle $circle): self {
 		$this->circle = $circle;
 
 		return $this;
@@ -406,7 +406,7 @@ class GSEvent implements JsonSerializable {
 		$this->setAsync($this->getBool('async', $data));
 
 		if (array_key_exists('circle', $data)) {
-			$this->setCircle(Circle::fromArray($data['circle']));
+			$this->setCircle(DeprecatedCircle::fromArray($data['circle']));
 		}
 
 		if (array_key_exists('member', $data)) {

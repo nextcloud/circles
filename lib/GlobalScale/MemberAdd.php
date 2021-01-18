@@ -44,7 +44,7 @@ use OCA\Circles\Exceptions\MemberCantJoinCircleException;
 use OCA\Circles\Exceptions\MemberIsNotModeratorException;
 use OCA\Circles\Exceptions\MembersLimitException;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharesToken;
@@ -222,12 +222,12 @@ class MemberAdd extends AGlobalScaleEvent {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param string $recipient
 	 * @param array $links
 	 * @param string $password
 	 */
-	private function memberIsMailbox(Circle $circle, string $recipient, array $links, string $password) {
+	private function memberIsMailbox(DeprecatedCircle $circle, string $recipient, array $links, string $password) {
 		if ($circle->getViewer() === null) {
 			$author = $circle->getOwner()
 							 ->getUserId();
@@ -248,13 +248,13 @@ class MemberAdd extends AGlobalScaleEvent {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param Member $member
 	 * @param string $password
 	 *
 	 * @return array
 	 */
-	private function generateUnknownSharesLinks(Circle $circle, Member $member, string $password): array {
+	private function generateUnknownSharesLinks(DeprecatedCircle $circle, Member $member, string $password): array {
 		$unknownShares = $this->getUnknownShares($member);
 
 		$data = [];

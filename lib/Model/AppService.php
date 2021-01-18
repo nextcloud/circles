@@ -273,6 +273,7 @@ class AppService extends NC21Signatory implements INC21QueryRow, JsonSerializabl
 	 */
 	public function importFromDatabase(array $data): INC21QueryRow {
 		$this->import($this->getArray('item', $data));
+		$this->setOrigData($this->getArray('item', $data));
 		$this->setInstance($this->get('instance', $data));
 		$this->setId($this->get('href', $data));
 

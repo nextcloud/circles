@@ -28,7 +28,7 @@
 namespace OCA\Circles\Db;
 
 
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
@@ -124,7 +124,7 @@ class SharingFrameRequestBuilder extends DeprecatedRequestBuilder {
 	protected function parseSharesSelectSql($data) {
 		$frame = new SharingFrame($data['source'], $data['type']);
 
-		$circle = new Circle();
+		$circle = new DeprecatedCircle();
 		$circle->setUniqueId($data['circle_id']);
 		$circle->setSettings($data['circle_settings']);
 		if (key_exists('circle_type', $data)) {
