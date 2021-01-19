@@ -29,19 +29,19 @@
 
 namespace OCA\Circles\Command;
 
+use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Exceptions\SignatureException;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use OC\Core\Command\Base;
-use OCA\Circles\Db\DeprecatedCirclesRequest;
-use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
-use OCA\Circles\Exceptions\GSStatusException;
+use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
-use OCA\Circles\Model\DeprecatedCircle;
+use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\ModelManager;
+use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\RemoteService;
-use OCP\IL10N;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -61,27 +61,31 @@ class CirclesList extends Base {
 	use TArrayTools;
 
 
-	/** @var IL10N */
-	private $l10n;
-
-	/** @var DeprecatedCirclesRequest */
-	private $circlesRequest;
+	/** @var CircleService */
+	private $circleService;
 
 	/** @var RemoteService */
 	private $remoteService;
+
+	/** @var ModelManager */
+	private $modelManager;
 
 
 	/**
 	 * CirclesList constructor.
 	 *
-	 * @param IL10N $l10n
-	 * @param DeprecatedCirclesRequest $circlesRequest
+	 * @param CircleRequest $circleRequest
+	 * @param RemoteService $remoteService
+	 * @param ModelManager $modelManager
 	 */
-	public function __construct(IL10N $l10n, DeprecatedCirclesRequest $circlesRequest, RemoteService $remoteService) {
+	public function __construct(
+		CircleRequest $circleRequest, CircleService $circleService, RemoteService $remoteService,
+		ModelManager $modelManager
+	) {
 		parent::__construct();
-		$this->l10n = $l10n;
-		$this->circlesRequest = $circlesRequest;
+		$this->circleService = $circleService;
 		$this->remoteService = $remoteService;
+		$this->modelManager = $modelManager;
 	}
 
 
@@ -90,6 +94,7 @@ class CirclesList extends Base {
 		$this->setName('circles:manage:list')
 			 ->setDescription('listing current circles')
 			 ->addArgument('owner', InputArgument::OPTIONAL, 'filter by owner', '')
+			 ->addOption('all', '', InputOption::VALUE_NONE, 'display also hidden Circles')
 			 ->addOption('viewer', '', InputOption::VALUE_REQUIRED, 'set viewer', '')
 			 ->addOption('json', '', InputOption::VALUE_NONE, 'returns result as JSON')
 			 ->addOption('remote', '', InputOption::VALUE_REQUIRED, 'remote Nextcloud address', '');
@@ -101,7 +106,11 @@ class CirclesList extends Base {
 	 * @param OutputInterface $output
 	 *
 	 * @return int
-	 * @throws ConfigNoCircleAvailableException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws SignatureException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$owner = $input->getArgument('owner');
@@ -122,17 +131,19 @@ class CirclesList extends Base {
 		$table = new Table($output);
 		$table->setHeaders(['ID', 'Name', 'Type', 'Owner', 'Instance', 'Limit', 'Description']);
 		$table->render();
-		$output->writeln('');
 
-		$c = 0;
 		foreach ($circles as $circle) {
+			if ($circle->isHidden() && !$input->getOption('all')) {
+				continue;
+			}
+
 			$owner = $circle->getOwner();
 			$settings = $circle->getSettings();
 			$table->appendRow(
 				[
-					$circle->getUniqueId(),
+					$circle->getId(),
 					$circle->getName(),
-					$circle->getTypeLongString(),
+					json_encode($this->modelManager->getCircleTypes($circle, ModelManager::TYPES_SHORT)),
 					$owner->getUserId(),
 					$owner->getInstance(),
 					$this->getInt('members_limit', $settings, -1),
@@ -150,25 +161,24 @@ class CirclesList extends Base {
 	 * @param string $viewer
 	 * @param string $remote
 	 *
-	 * @return DeprecatedCircle[]
-	 * @throws ConfigNoCircleAvailableException
-	 * @throws GSStatusException
+	 * @return Circle[]
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
 	 * @throws RequestNetworkException
 	 * @throws SignatoryException
 	 * @throws SignatureException
+	 * @throws InvalidItemException
 	 */
 	private function getCircles(string $owner, string $viewer, string $remote): array {
-		if ($remote !== '') {
-			$circles = $this->remoteService->getCircles($remote);
-		} elseif ($viewer === '') {
-			$circles = $this->circlesRequest->forceGetCircles($owner);
-		} else {
-			$circles = $this->circlesRequest->getCircles($viewer, 0, '', 0, true, $owner);
+		if ($viewer !== '') {
+			$this->circleService->setLocalViewer($viewer);
 		}
 
-		return $circles;
+		if ($remote !== '') {
+			return $this->remoteService->getCircles($remote);
+		}
+
+		return $this->circleService->getCircles($owner);
 	}
 
 }

@@ -34,6 +34,7 @@ namespace OCA\Circles\Db;
 
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Member;
 
 
 /**
@@ -74,12 +75,30 @@ class CircleRequest extends CircleRequestBuilder {
 
 
 	/**
+	 * @param Member|null $viewer
+	 * @param string $ownerUserId
+	 *
+	 * @return Circle[]
+	 */
+	public function getCircles(?Member $viewer = null, string $ownerUserId = ''): array {
+		$qb = $this->getCircleSelectSql();
+		$qb->leftJoinOwner($ownerUserId);
+
+		if ($viewer !== null) {
+			$qb->limitToViewer($viewer);
+		}
+
+		return $this->getItemsFromRequest($qb);
+	}
+
+
+	/**
 	 * @param string $id
 	 *
 	 * @return Circle
 	 * @throws CircleNotFoundException
 	 */
-	public function getFromId(string $id): Circle {
+	public function getCircle(string $id): Circle {
 		$qb = $this->getCircleSelectSql();
 		$qb->limitToUniqueId($id);
 		$qb->leftJoinOwner();

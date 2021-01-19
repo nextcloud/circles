@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Model;
 
 use daita\MySmallPhpTools\Db\Nextcloud\nc21\INC21QueryRow;
+use daita\MySmallPhpTools\Model\Nextcloud\nc21\INC21Convert;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use DateTime;
 use JsonSerializable;
@@ -43,7 +44,7 @@ use OCA\Circles\Exceptions\MemberNotFoundException;
  *
  * @package OCA\Circles\Model
  */
-class Member extends ManagedModel implements INC21QueryRow, JsonSerializable {
+class Member extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSerializable {
 
 
 	use TArrayTools;
@@ -108,14 +109,24 @@ class Member extends ManagedModel implements INC21QueryRow, JsonSerializable {
 	private $joined = 0;
 
 
-	public function __construct() {
+	/**
+	 * Member constructor.
+	 *
+	 * @param string $userId
+	 * @param int $type
+	 * @param string $instance
+	 */
+	public function __construct(string $userId = '', int $type = self::TYPE_USER, $instance = '') {
+		$this->userId = $userId;
+		$this->userType = $type;
+		$this->instance = $instance;
 	}
 
 
 	/**
 	 * @param string $id
 	 *
-	 * @return Member
+	 * @return $this
 	 */
 	public function setId(string $id): self {
 		$this->id = $id;
@@ -361,9 +372,25 @@ class Member extends ManagedModel implements INC21QueryRow, JsonSerializable {
 
 
 	/**
+	 * @param array $data
+	 *
 	 * @return $this
 	 */
-	public function import(): self {
+	public function import(array $data): INC21Convert {
+		$this->setId($this->get('id', $data));
+		$this->setCircleId($this->get('circle_id', $data));
+		$this->setUserId($this->get('user_id', $data));
+		$this->setUserType($this->getInt('user_type', $data));
+		$this->setInstance($this->get('instance', $data));
+		$this->setLevel($this->getInt('level', $data));
+		$this->setStatus($this->get('status', $data));
+		$this->setCachedName($this->get('cached_name', $data));
+		$this->setCachedUpdate($this->getInt('cached_update', $data));
+		$this->setNote($this->get('note', $data));
+		$this->setContactId($this->get('contact_id', $data));
+		$this->setContactMeta($this->get('contact_meta', $data));
+		$this->setJoined($this->getInt('joined', $data));
+
 		return $this;
 	}
 
@@ -414,10 +441,10 @@ class Member extends ManagedModel implements INC21QueryRow, JsonSerializable {
 		$this->setContactId($this->get($prefix . 'contact_id', $data));
 		$this->setContactMeta($this->get($prefix . 'contact_meta', $data));
 
-		$cachedUpdate = $this->getInt($prefix . 'cached_update', $data);
+		$cachedUpdate = $this->get($prefix . 'cached_update', $data);
 		$this->setCachedUpdate(DateTime::createFromFormat('Y-m-d H:i:s', $cachedUpdate)->getTimestamp());
 
-		$joined = $this->getInt($prefix . 'joined', $data);
+		$joined = $this->get($prefix . 'joined', $data);
 		$this->setJoined(DateTime::createFromFormat('Y-m-d H:i:s', $joined)->getTimestamp());
 
 		return $this;

@@ -34,6 +34,7 @@ namespace OCA\Circles\Db;
 use daita\MySmallPhpTools\Db\Nextcloud\nc21\NC21ExtendedQueryBuilder;
 use Doctrine\DBAL\Query\QueryBuilder;
 use OCA\Circles\Model\DeprecatedMember;
+use OCA\Circles\Model\Member;
 
 /**
  * Class CoreQueryBuilder
@@ -55,6 +56,17 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 	 */
 	public function limitToInstance(string $host): void {
 		$this->limitToDBField('instance', $host, false);
+	}
+
+
+	public function limitToViewer(Member $viewer): void {
+		$this->leftJoinViewer($viewer);
+		$this->limitVisibility($viewer);
+
+//		if ($level > 0) {
+//			$this->limitToLevel($qb, $level, ['u', 'g']);
+//		}
+//		$this->limitRegardingCircleType($qb, $userId, -1, $circleType, $name, $forceAll);
 	}
 
 
@@ -96,6 +108,64 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 		if ($ownerId !== '') {
 			$this->andWhere($expr->eq('o.user_id', $this->createNamedParameter($ownerId)));
 		}
+	}
+
+
+	/**
+	 * Left join members to filter userId as viewer.
+	 *
+	 * @param Member $viewer
+	 */
+	public function leftJoinViewer(Member $viewer) {
+		if ($this->getType() !== QueryBuilder::SELECT) {
+			return;
+		}
+
+		$expr = $this->expr();
+		$pf = $this->getDefaultSelectAlias() . '.';
+
+		$this->selectAlias('v.user_id', 'viewer_user_id')
+			 ->selectAlias('v.user_type', 'viewer_user_type')
+			 ->selectAlias('v.member_id', 'viewer_member_id')
+			 ->selectAlias('v.circle_id', 'viewer_circle_id')
+			 ->selectAlias('v.instance', 'viewer_instance')
+			 ->selectAlias('v.cached_name', 'viewer_cached_name')
+			 ->selectAlias('v.cached_update', 'viewer_cached_update')
+			 ->selectAlias('v.status', 'viewer_status')
+			 ->selectAlias('v.level', 'viewer_level')
+			 ->selectAlias('v.note', 'viewer_note')
+			 ->selectAlias('v.contact_id', 'viewer_contact_id')
+			 ->selectAlias('v.contact_meta', 'viewer_contact_meta')
+			 ->selectAlias('v.joined', 'viewer_joined')
+			 ->leftJoin(
+				 $this->getDefaultSelectAlias(), CoreRequestBuilder::TABLE_MEMBERS, 'v',
+				 $expr->andX(
+					 $expr->eq('v.circle_id', $pf . 'unique_id'),
+					 $expr->eq('v.user_id', $this->createNamedParameter($viewer->getUserId())),
+					 $expr->eq('v.instance', $this->createNamedParameter($viewer->getInstance())),
+					 $expr->eq('v.user_type', $this->createNamedParameter($viewer->getUserType()))
+				 )
+			 );
+	}
+
+
+	protected function limitVisibility(Member $viewer) {
+//		$orTypes = $this->generateLimit($qb, $circleUniqueId, $userId, $type, $name, $forceAll);
+//		if (sizeof($orTypes) === 0) {
+//			throw new ConfigNoCircleAvailableException(
+//				$this->l10n->t(
+//					'You cannot use the Circles Application until your administrator has allowed at least one type of circles'
+//				)
+//			);
+//		}
+
+//		$orXTypes = $this->expr()
+//						 ->orX();
+//		foreach ($orTypes as $orType) {
+//			$orXTypes->add($orType);
+//		}
+//
+//		$qb->andWhere($orXTypes);
 	}
 
 }

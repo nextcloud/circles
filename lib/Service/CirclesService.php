@@ -36,8 +36,8 @@ use OC;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleProviderRequest;
 use OCA\Circles\Db\DeprecatedCirclesRequest;
-use OCA\Circles\Db\FederatedLinksRequest;
 use OCA\Circles\Db\DeprecatedMembersRequest;
+use OCA\Circles\Db\FederatedLinksRequest;
 use OCA\Circles\Db\SharesRequest;
 use OCA\Circles\Db\TokensRequest;
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
@@ -49,12 +49,19 @@ use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Exceptions\MemberIsNotOwnerException;
 use OCA\Circles\Exceptions\MembersLimitException;
 use OCA\Circles\Model\DeprecatedCircle;
-use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\DeprecatedMember;
+use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCP\IGroupManager;
 use OCP\IL10N;
 use OCP\IUserSession;
 
+
+/**
+ * Class CirclesService
+ *
+ * @deprecated
+ * @package OCA\Circles\Service
+ */
 class CirclesService {
 
 
@@ -486,8 +493,6 @@ class CirclesService {
 	}
 
 
-
-
 	/**
 	 * @return DeprecatedCircle[]
 	 */
@@ -617,7 +622,9 @@ class CirclesService {
 	 */
 	public function checkThatCircleIsNotFull(DeprecatedCircle $circle) {
 		$members =
-			$this->membersRequest->forceGetMembers($circle->getUniqueId(), DeprecatedMember::LEVEL_MEMBER, 0, true);
+			$this->membersRequest->forceGetMembers(
+				$circle->getUniqueId(), DeprecatedMember::LEVEL_MEMBER, 0, true
+			);
 
 		$limit = (int)$circle->getSetting('members_limit');
 		if ($limit === -1) {

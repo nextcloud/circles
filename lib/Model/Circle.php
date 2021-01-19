@@ -32,7 +32,11 @@ declare(strict_types=1);
 namespace OCA\Circles\Model;
 
 use daita\MySmallPhpTools\Db\Nextcloud\nc21\INC21QueryRow;
+use daita\MySmallPhpTools\Exceptions\InvalidItemException;
+use daita\MySmallPhpTools\Model\Nextcloud\nc21\INC21Convert;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Convert;
 use daita\MySmallPhpTools\Traits\TArrayTools;
+use DateTime;
 use JsonSerializable;
 
 
@@ -41,10 +45,11 @@ use JsonSerializable;
  *
  * @package OCA\Circles\Model
  */
-class Circle extends ManagedModel implements INC21QueryRow, JsonSerializable {
+class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSerializable {
 
 
 	use TArrayTools;
+	use TNC21Convert;
 
 
 	const TYPE_SINGLE = 1;        // Single member
@@ -58,15 +63,15 @@ class Circle extends ManagedModel implements INC21QueryRow, JsonSerializable {
 	const TYPE_FEDERATED = 256;   // Federated
 
 	static $DEF = [
-		1   => 'Single',
-		2   => 'Personal',
-		4   => 'Visible',
-		8   => 'Locked',
-		16  => 'Fast Invite',
-		32  => 'Request',
-		64  => 'Protected',
-		128 => '',
-		256 => 'Federated'
+		1   => '*S|Single',
+		2   => 'PU|Personal Use',
+		4   => 'V|Visible',
+		8   => 'IO|Invite Only',
+		16  => 'FI|Fast Invite',
+		32  => 'JR|Join Request',
+		64  => 'PP|Password Protected',
+		128 => '*H|Hidden',
+		256 => 'F|Federated'
 	];
 
 
@@ -82,11 +87,29 @@ class Circle extends ManagedModel implements INC21QueryRow, JsonSerializable {
 	/** @var string */
 	private $altName = '';
 
+	/** @var Member */
+	private $owner;
+
 	/** @var array */
 	private $members = [];
 
-	/** @var Member */
-	private $owner;
+	/** @var array */
+	private $settings = [];
+
+	/** @var string */
+	private $description = '';
+
+	/** @var string */
+	private $contactAddressBook = '';
+
+	/** @var string */
+	private $contactGroupName = '';
+
+	/** @var bool */
+	private $hidden = false;
+
+	/** @var int */
+	private $creation = 0;
 
 
 	public function __construct() {
@@ -95,7 +118,7 @@ class Circle extends ManagedModel implements INC21QueryRow, JsonSerializable {
 	/**
 	 * @param string $id
 	 *
-	 * @return Circle
+	 * @return self
 	 */
 	public function setId(string $id): self {
 		$this->id = $id;
@@ -114,10 +137,18 @@ class Circle extends ManagedModel implements INC21QueryRow, JsonSerializable {
 	/**
 	 * @param int $type
 	 *
-	 * @return Circle
+	 * @return self
 	 */
 	public function setType(int $type): self {
 		$this->type = $type;
+
+		$this->hidden = false;
+		foreach (array_keys(self::$DEF) as $def) {
+			if ($this->isType($def) && substr(self::$DEF[$def], 0, 1) === '*') {
+				$this->hidden = true;
+				break;
+			}
+		}
 
 		return $this;
 	}
@@ -135,14 +166,14 @@ class Circle extends ManagedModel implements INC21QueryRow, JsonSerializable {
 	 * @return bool
 	 */
 	public function isType(int $type): bool {
-		return (($this->getType() & $type) === 1);
+		return (($this->getType() & $type) !== 0);
 	}
 
 
 	/**
 	 * @param string $name
 	 *
-	 * @return Circle
+	 * @return self
 	 */
 	public function setName(string $name): self {
 		$this->name = $name;
@@ -161,7 +192,7 @@ class Circle extends ManagedModel implements INC21QueryRow, JsonSerializable {
 	/**
 	 * @param string $altName
 	 *
-	 * @return Circle
+	 * @return self
 	 */
 	public function setAltName(string $altName): self {
 		$this->altName = $altName;
@@ -202,7 +233,7 @@ class Circle extends ManagedModel implements INC21QueryRow, JsonSerializable {
 	/**
 	 * @param array $members
 	 *
-	 * @return Circle
+	 * @return self
 	 */
 	public function setMembers(array $members): self {
 		$this->members = $members;
@@ -221,9 +252,142 @@ class Circle extends ManagedModel implements INC21QueryRow, JsonSerializable {
 
 
 	/**
+	 * @param array $settings
+	 *
+	 * @return self
+	 */
+	public function setSettings(array $settings): self {
+		$this->settings = $settings;
+
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getSettings(): array {
+		return $this->settings;
+	}
+
+
+	/**
+	 * @param string $description
+	 *
+	 * @return self
+	 */
+	public function setDescription(string $description): self {
+		$this->description = $description;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDescription(): string {
+		return $this->description;
+	}
+
+
+	/**
+	 * @param string $contactAddressBook
+	 *
+	 * @return self
+	 */
+	public function setContactAddressBook(string $contactAddressBook): self {
+		$this->contactAddressBook = $contactAddressBook;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getContactAddressBook(): string {
+		return $this->contactAddressBook;
+	}
+
+
+	/**
+	 * @param string $contactGroupName
+	 *
+	 * @return self
+	 */
+	public function setContactGroupName(string $contactGroupName): self {
+		$this->contactGroupName = $contactGroupName;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getContactGroupName(): string {
+		return $this->contactGroupName;
+	}
+
+
+	/**
+	 * @param bool $hidden
+	 *
+	 * @return Circle
+	 */
+	public function setHidden(bool $hidden): self {
+		$this->hidden = $hidden;
+
+		return $this;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isHidden(): bool {
+		return $this->hidden;
+	}
+
+
+	/**
+	 * @param int $creation
+	 *
+	 * @return self
+	 */
+	public function setCreation(int $creation): self {
+		$this->creation = $creation;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getCreation(): int {
+		return $this->creation;
+	}
+
+
+	/**
+	 * @param array $data
+	 *
 	 * @return $this
 	 */
-	public function import(): self {
+	public function import(array $data): INC21Convert {
+		$this->setId($this->get('id', $data))
+			 ->setName($this->get('name', $data))
+			 ->setAltName($this->get('alt_name', $data))
+			 ->setType($this->getInt('type', $data))
+			 ->setSettings($this->getArray('settings', $data))
+//			 ->setContactAddressBook($this->get('contact_addressbook', $data))
+//			 ->setContactGroupName($this->get('contact_groupname', $data))
+			 ->setDescription($this->get('description', $data))
+			 ->setCreation($this->getInt('creation', $data));
+
+		try {
+			/** @var Member $owner */
+			$owner = $this->convert($this->getArray('owner', $data), Member::class);
+			$this->setOwner($owner);
+		} catch (InvalidItemException $e) {
+		}
+
 		return $this;
 	}
 
@@ -233,10 +397,14 @@ class Circle extends ManagedModel implements INC21QueryRow, JsonSerializable {
 	 */
 	public function jsonSerialize(): array {
 		$arr = [
-			'id'       => $this->getId(),
-			'name'     => $this->getName(),
-			'alt_name' => $this->getAltName(),
-
+			'id'          => $this->getId(),
+			'name'        => $this->getName(),
+			'alt_name'    => $this->getAltName(),
+			'type'        => $this->getType(),
+			'description' => $this->getDescription(),
+			'settings'    => $this->getSettings(),
+			'hidden'      => $this->isHidden(),
+			'creation'    => $this->getCreation()
 		];
 
 		if ($this->hasOwner()) {
@@ -255,7 +423,15 @@ class Circle extends ManagedModel implements INC21QueryRow, JsonSerializable {
 	public function importFromDatabase(array $data): INC21QueryRow {
 		$this->setId($this->get('unique_id', $data))
 			 ->setName($this->get('name', $data))
-			 ->setAltName($this->get('alt_name', $data));
+			 ->setAltName($this->get('alt_name', $data))
+			 ->setType($this->getInt('type', $data))
+			 ->setSettings($this->getArray('settings', $data))
+			 ->setContactAddressBook($this->get('contact_addressbook', $data))
+			 ->setContactGroupName($this->get('contact_groupname', $data))
+			 ->setDescription($this->get('description', $data));
+
+		$creation = $this->get('creation', $data);
+		$this->setCreation(DateTime::createFromFormat('Y-m-d H:i:s', $creation)->getTimestamp());
 
 		$this->getManager()->importOwnerFromDatabase($this, $data);
 

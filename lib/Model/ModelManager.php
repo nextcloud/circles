@@ -43,6 +43,10 @@ use OCA\Circles\Exceptions\MemberNotFoundException;
 class ModelManager {
 
 
+	const TYPES_SHORT = 1;
+	const TYPES_LONG = 2;
+
+
 	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
 
@@ -63,7 +67,7 @@ class ModelManager {
 	 * @param Circle $circle
 	 * @param array $data
 	 */
-	public function importOwnerFromDatabase(Circle $circle, array $data) {
+	public function importOwnerFromDatabase(Circle $circle, array $data): void {
 		try {
 			$owner = new Member();
 			$owner->importFromDatabase($data, 'owner_');
@@ -71,6 +75,35 @@ class ModelManager {
 		} catch (MemberNotFoundException $e) {
 		}
 	}
+
+
+	/**
+	 * @param Circle $circle
+	 * @param int $display
+	 *
+	 * @return array
+	 */
+	public function getCircleTypes(Circle $circle, int $display = self::TYPES_LONG): array {
+		$types = [];
+		foreach (array_keys(Circle::$DEF) as $def) {
+			if ($circle->isType($def)) {
+				list($short, $long) = explode('|', Circle::$DEF[$def]);
+				switch ($display) {
+
+					case self::TYPES_SHORT:
+						$types[] = $short;
+						break;
+
+					case self::TYPES_LONG:
+						$types[] = $long;
+						break;
+				}
+			}
+		}
+
+		return $types;
+	}
+
 
 }
 

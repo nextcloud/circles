@@ -32,6 +32,7 @@ namespace OCA\Circles\Service;
 
 
 use daita\MySmallPhpTools\ActivityPub\Nextcloud\nc21\NC21Signature;
+use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Exceptions\InvalidOriginException;
 use daita\MySmallPhpTools\Exceptions\MalformedArrayException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
@@ -39,6 +40,7 @@ use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Exceptions\SignatureException;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21SignedRequest;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Convert;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21LocalSignatory;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Db\RemoteRequest;
@@ -46,6 +48,7 @@ use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RemoteUidException;
 use OCA\Circles\Model\AppService;
+use OCA\Circles\Model\Circle;
 use OCP\IURLGenerator;
 
 
@@ -57,6 +60,7 @@ use OCP\IURLGenerator;
 class RemoteService extends NC21Signature {
 
 
+	use TNC21Convert;
 	use TNC21LocalSignatory;
 	use TStringTools;
 
@@ -176,21 +180,18 @@ class RemoteService extends NC21Signature {
 	/**
 	 * @param string $instance
 	 *
-	 * @return array
+	 * @return Circle[]
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
 	 * @throws RequestNetworkException
 	 * @throws SignatoryException
 	 * @throws SignatureException
+	 * @throws InvalidItemException
 	 */
 	public function getCircles(string $instance): array {
-		$result = $this->requestRemoteResource($instance, 'circles');
-		echo json_encode($result) . " \n";
-		exit();
-		//$url = $this->
-		$circles = [];
+		$circles = $this->requestRemoteResource($instance, 'circles');
 
-		return $circles;
+		return $this->convertArray($circles, Circle::class);
 	}
 
 
