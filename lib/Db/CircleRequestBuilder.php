@@ -33,24 +33,25 @@ namespace OCA\Circles\Db;
 
 
 use daita\MySmallPhpTools\Exceptions\RowNotFoundException;
-use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Model\AppService;
+use OCA\Circles\Model\Circle;
 
 
 /**
- * Class RemoteRequestBuilder
+ * Class CircleRequestBuilder
  *
  * @package OCA\Circles\Db
  */
-class RemoteRequestBuilder extends CoreRequestBuilder {
+class CircleRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
 	 * @return CoreQueryBuilder
 	 */
-	protected function getRemoteInsertSql(): CoreQueryBuilder {
+	protected function getCircleInsertSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->insert(self::TABLE_REMOTE)
+		$qb->insert(self::TABLE_CIRCLE)
 		   ->setValue('creation', $qb->createNamedParameter($this->timezoneService->getUTCDate()));
 
 		return $qb;
@@ -58,13 +59,13 @@ class RemoteRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * Base of the Sql Update request for Groups
+	 * @param string $id
 	 *
 	 * @return CoreQueryBuilder
 	 */
-	protected function getRemoteUpdateSql(): CoreQueryBuilder {
+	protected function getCircleUpdateSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->update(self::TABLE_REMOTE);
+		$qb->update(self::TABLE_CIRCLE);
 
 		return $qb;
 	}
@@ -73,12 +74,15 @@ class RemoteRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * @return CoreQueryBuilder
 	 */
-	protected function getRemoteSelectSql(): CoreQueryBuilder {
+	protected function getCircleSelectSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->select('r.id', 'r.uid', 'r.instance', 'r.href', 'r.item', 'r.creation')
-		   ->from(self::TABLE_REMOTE, 'r');
-
-		$qb->setDefaultSelectAlias('r');
+		$qb->selectDistinct('c.unique_id')
+		   ->addSelect(
+			   'c.name', 'c.alt_name', 'c.description', 'c.settings', 'c.type', 'contact_addressbook',
+			   'contact_groupname', 'c.creation'
+		   )
+		   ->from(self::TABLE_CIRCLE, 'c')
+		   ->setDefaultSelectAlias('c');
 
 		return $qb;
 	}
@@ -89,9 +93,9 @@ class RemoteRequestBuilder extends CoreRequestBuilder {
 	 *
 	 * @return CoreQueryBuilder
 	 */
-	protected function getRemoteDeleteSql(): CoreQueryBuilder {
+	protected function getCircleDeleteSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->delete(self::TABLE_REMOTE);
+		$qb->delete(self::TABLE_CIRCLE);
 
 		return $qb;
 	}
@@ -100,28 +104,28 @@ class RemoteRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * @param CoreQueryBuilder $qb
 	 *
-	 * @return AppService
-	 * @throws RemoteNotFoundException
+	 * @return Circle
+	 * @throws CircleNotFoundException
 	 */
-	public function getItemFromRequest(CoreQueryBuilder $qb): AppService {
-		/** @var AppService $appService */
+	public function getItemFromRequest(CoreQueryBuilder $qb): Circle {
+		/** @var Circle $circle */
 		try {
-			$appService = $qb->asItem(AppService::class);
+			$circle = $qb->asItem(Circle::class);
 		} catch (RowNotFoundException $e) {
-			throw new RemoteNotFoundException();
+			throw new CircleNotFoundException();
 		}
-
-		return $appService;
+		
+		return $circle;
 	}
 
 	/**
 	 * @param CoreQueryBuilder $qb
 	 *
-	 * @return AppService[]
+	 * @return Circle[]
 	 */
 	public function getItemsFromRequest(CoreQueryBuilder $qb): array {
 		/** @var AppService[] $result */
-		return $qb->asItems(AppService::class);
+		return $qb->asItems(Circle::class);
 	}
 
 }

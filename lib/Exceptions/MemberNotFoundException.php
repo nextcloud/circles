@@ -1,4 +1,8 @@
 <?php
+
+declare(strict_types=1);
+
+
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -6,7 +10,7 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@pontapreta.net>
- * @copyright 2017
+ * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,35 +28,18 @@
  *
  */
 
-namespace OCA\Circles\Api;
+namespace OCA\Circles\Exceptions;
+
+use Exception;
 
 
-use OC;
-use OCA\Circles\AppInfo\Application;
-use OCA\Circles\Model\DeprecatedCircle;
-use OCA\Circles\Model\FederatedLink;
-use OCA\Circles\Model\DeprecatedMember;
-use OCA\Circles\Model\SharingFrame;
-use OCA\Circles\Service\CirclesService;
+/**
+ * Class MemberNotFoundException
+ *
+ * @package OCA\Circles\Exceptions
+ */
+class MemberNotFoundException extends Exception {
 
-class Circles {
-
-	/**
-	 * Circles::detailsCircle();
-	 *
-	 * Returns details on the circle. If the current user is a member, the members list will be
-	 * return as well.
-	 *
-	 * @param $circleId
-	 *
-	 * @return DeprecatedCircle
-	 * @deprecated 13.0.0
-	 */
-	public static function detailsCircle($circleId) {
-		$app = OC::$server->query(Application::class);
-		$c = $app->getContainer();
-
-		return $c->query(CirclesService::class)
-				 ->detailsCircle($circleId);
-	}
 }
+
+

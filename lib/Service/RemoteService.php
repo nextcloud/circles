@@ -185,7 +185,8 @@ class RemoteService extends NC21Signature {
 	 */
 	public function getCircles(string $instance): array {
 		$result = $this->requestRemoteResource($instance, 'circles');
-		echo '--> ' . json_encode($result) . " \n";
+		echo json_encode($result) . " \n";
+		exit();
 		//$url = $this->
 		$circles = [];
 

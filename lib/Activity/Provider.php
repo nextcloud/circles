@@ -34,7 +34,7 @@ use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\FakeException;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\FederatedLink;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\MiscService;
 use OCP\Activity\IEvent;
@@ -201,7 +201,7 @@ class Provider implements IProvider {
 			return;
 		}
 
-		$member = Member::fromJSON($params['member']);
+		$member = DeprecatedMember::fromJSON($params['member']);
 
 		$this->parserMember->parseSubjectMemberJoin($event, $circle, $member);
 		$this->parserMember->parseSubjectMemberAdd($event, $circle, $member);
@@ -222,7 +222,7 @@ class Provider implements IProvider {
 			return;
 		}
 
-		$group = Member::fromJSON($params['group']);
+		$group = DeprecatedMember::fromJSON($params['group']);
 
 		$this->parserGroup->parseGroupLink($event, $circle, $group);
 		$this->parserGroup->parseGroupUnlink($event, $circle, $group);
@@ -242,7 +242,7 @@ class Provider implements IProvider {
 			return;
 		}
 
-		$member = Member::fromJSON($params['member']);
+		$member = DeprecatedMember::fromJSON($params['member']);
 
 		$this->parserMember->parseMemberInvited($event, $circle, $member);
 		$this->parserMember->parseMemberLevel($event, $circle, $member);

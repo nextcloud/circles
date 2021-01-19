@@ -35,9 +35,9 @@ use Exception;
 use OC;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleProviderRequest;
-use OCA\Circles\Db\CirclesRequest;
+use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\FederatedLinksRequest;
-use OCA\Circles\Db\MembersRequest;
+use OCA\Circles\Db\DeprecatedMembersRequest;
 use OCA\Circles\Db\SharesRequest;
 use OCA\Circles\Db\TokensRequest;
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
@@ -50,7 +50,7 @@ use OCA\Circles\Exceptions\MemberIsNotOwnerException;
 use OCA\Circles\Exceptions\MembersLimitException;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCP\IGroupManager;
 use OCP\IL10N;
 use OCP\IUserSession;
@@ -76,10 +76,10 @@ class CirclesService {
 	/** @var ConfigService */
 	private $configService;
 
-	/** @var CirclesRequest */
+	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
 
-	/** @var MembersRequest */
+	/** @var DeprecatedMembersRequest */
 	private $membersRequest;
 
 	/** @var TokensRequest */
@@ -113,8 +113,8 @@ class CirclesService {
 	 * @param IGroupManager $groupManager
 	 * @param MembersService $membersService
 	 * @param ConfigService $configService
-	 * @param CirclesRequest $circlesRequest
-	 * @param MembersRequest $membersRequest
+	 * @param DeprecatedCirclesRequest $circlesRequest
+	 * @param DeprecatedMembersRequest $membersRequest
 	 * @param TokensRequest $tokensRequest
 	 * @param SharesRequest $sharesRequest
 	 * @param FederatedLinksRequest $federatedLinksRequest
@@ -130,8 +130,8 @@ class CirclesService {
 		IGroupManager $groupManager,
 		MembersService $membersService,
 		ConfigService $configService,
-		CirclesRequest $circlesRequest,
-		MembersRequest $membersRequest,
+		DeprecatedCirclesRequest $circlesRequest,
+		DeprecatedMembersRequest $membersRequest,
 		TokensRequest $tokensRequest,
 		SharesRequest $sharesRequest,
 		FederatedLinksRequest $federatedLinksRequest,
@@ -207,10 +207,10 @@ class CirclesService {
 
 		$circle->generateUniqueId();
 
-		$owner = new Member($ownerId, Member::TYPE_USER);
+		$owner = new DeprecatedMember($ownerId, DeprecatedMember::TYPE_USER);
 		$owner->setCircleId($circle->getUniqueId())
-			  ->setLevel(Member::LEVEL_OWNER)
-			  ->setStatus(Member::STATUS_MEMBER);
+			  ->setLevel(DeprecatedMember::LEVEL_OWNER)
+			  ->setStatus(DeprecatedMember::STATUS_MEMBER);
 		$this->membersService->updateCachedName($owner);
 
 		$circle->setOwner($owner)
@@ -274,11 +274,11 @@ class CirclesService {
 
 		try {
 			$circle = $this->circlesRequest->getCircle(
-				$circleUniqueId, $this->userId, Member::TYPE_USER, '', $forceAll
+				$circleUniqueId, $this->userId, DeprecatedMember::TYPE_USER, '', $forceAll
 			);
 			if ($this->viewerIsAdmin()
 				|| $circle->getHigherViewer()
-						  ->isLevel(Member::LEVEL_MEMBER)
+						  ->isLevel(DeprecatedMember::LEVEL_MEMBER)
 				|| $forceAll === true
 			) {
 				$this->detailsCircleMembers($circle);
@@ -412,14 +412,14 @@ class CirclesService {
 	 *
 	 * @param string $circleUniqueId
 	 *
-	 * @return null|Member
+	 * @return null|DeprecatedMember
 	 * @throws Exception
 	 */
-	public function joinCircle($circleUniqueId): Member {
+	public function joinCircle($circleUniqueId): DeprecatedMember {
 		try {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			$member = $this->membersRequest->getFreshNewMember(
-				$circleUniqueId, $this->userId, Member::TYPE_USER, ''
+				$circleUniqueId, $this->userId, DeprecatedMember::TYPE_USER, ''
 			);
 
 			$this->membersService->updateCachedName($member);
@@ -441,7 +441,7 @@ class CirclesService {
 	 *
 	 * @param string $circleUniqueId
 	 *
-	 * @return null|Member
+	 * @return null|DeprecatedMember
 	 * @throws Exception
 	 */
 	public function leaveCircle($circleUniqueId) {
@@ -617,7 +617,7 @@ class CirclesService {
 	 */
 	public function checkThatCircleIsNotFull(DeprecatedCircle $circle) {
 		$members =
-			$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MEMBER, 0, true);
+			$this->membersRequest->forceGetMembers($circle->getUniqueId(), DeprecatedMember::LEVEL_MEMBER, 0, true);
 
 		$limit = (int)$circle->getSetting('members_limit');
 		if ($limit === -1) {
@@ -650,13 +650,13 @@ class CirclesService {
 	/**
 	 * should be moved.
 	 *
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 *
 	 * @throws MemberIsNotOwnerException
 	 */
-	public function hasToBeOwner(Member $member) {
+	public function hasToBeOwner(DeprecatedMember $member) {
 		if (!$this->groupManager->isAdmin($this->userId)
-			&& $member->getLevel() < Member::LEVEL_OWNER) {
+			&& $member->getLevel() < DeprecatedMember::LEVEL_OWNER) {
 			throw new MemberIsNotOwnerException(
 				$this->l10n->t('This member is not the owner of the circle')
 			);
@@ -667,13 +667,13 @@ class CirclesService {
 	/**
 	 * should be moved.
 	 *
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 *
 	 * @throws MemberIsNotOwnerException
 	 */
-	public function hasToBeAdmin(Member $member) {
+	public function hasToBeAdmin(DeprecatedMember $member) {
 		if (!$this->groupManager->isAdmin($member->getUserId())
-			&& $member->getLevel() < Member::LEVEL_ADMIN) {
+			&& $member->getLevel() < DeprecatedMember::LEVEL_ADMIN) {
 			throw new MemberIsNotOwnerException(
 				$this->l10n->t('This member is not an admin of the circle')
 			);

@@ -27,7 +27,7 @@
 namespace OCA\Circles\Command;
 
 use OC\Core\Command\Base;
-use OCA\Circles\Db\CirclesRequest;
+use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Service\CleanService;
 use OCP\IDBConnection;
 use Symfony\Component\Console\Input\InputInterface;
@@ -41,7 +41,7 @@ class Clean extends Base {
 	/** @var IDBConnection */
 	private $dbConnection;
 
-	/** @var CirclesRequest */
+	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
 
 	/** @var CleanService */
@@ -52,11 +52,11 @@ class Clean extends Base {
 	 * Clean constructor.
 	 *
 	 * @param IDBConnection $connection
-	 * @param CirclesRequest $circlesRequest
+	 * @param DeprecatedCirclesRequest $circlesRequest
 	 * @param CleanService $cleanService
 	 */
 	public function __construct(
-		IDBConnection $connection, CirclesRequest $circlesRequest, CleanService $cleanService
+		IDBConnection $connection, DeprecatedCirclesRequest $circlesRequest, CleanService $cleanService
 	) {
 		parent::__construct();
 		$this->dbConnection = $connection;

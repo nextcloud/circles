@@ -39,21 +39,21 @@ use OCP\IL10N;
 
 class SharingFrameRequestBuilder extends DeprecatedRequestBuilder {
 
-	/** @var CirclesRequest */
+	/** @var DeprecatedCirclesRequest */
 	protected $circlesRequest;
 
-	/** @var MembersRequest */
+	/** @var DeprecatedMembersRequest */
 	protected $membersRequest;
 
 	/**
 	 * CirclesRequestBuilder constructor.
 	 *
 	 * {@inheritdoc}
-	 * @param MembersRequest $membersRequest
+	 * @param DeprecatedMembersRequest $membersRequest
 	 */
 	public function __construct(
-		IL10N $l10n, IDBConnection $connection, CirclesRequest $circlesRequest,
-		MembersRequest $membersRequest, ConfigService $configService,
+		IL10N $l10n, IDBConnection $connection, DeprecatedCirclesRequest $circlesRequest,
+		DeprecatedMembersRequest $membersRequest, ConfigService $configService,
 		TimezoneService $timezoneService, MiscService $miscService
 	) {
 		parent::__construct($l10n, $connection, $configService, $timezoneService, $miscService);

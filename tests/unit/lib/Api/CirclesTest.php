@@ -36,7 +36,7 @@ use OCA\Circles\Exceptions\MemberIsNotModeratorException;
 use OCA\Circles\Exceptions\MemberIsNotOwnerException;
 use OCA\Circles\Exceptions\ModeratorIsNotHighEnoughException;
 use OCA\Circles\Model\DeprecatedCircle;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Tests\Env;
 use OCP\AppFramework\QueryException;
 
@@ -162,7 +162,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 		try {
 			foreach ($circles as $circle) {
-				Circles::addMember($circle->getId(), Env::ENV_TEST_ADMIN2, Member::TYPE_USER);
+				Circles::addMember($circle->getId(), Env::ENV_TEST_ADMIN2, DeprecatedMember::TYPE_USER);
 
 				if ($circle->getType() === DeprecatedCircle::CIRCLES_CLOSED) {
 					// In closed circle, we need to confirm the invitation
@@ -172,8 +172,8 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 				}
 
 				Circles::levelMember(
-					$circle->getId(), Env::ENV_TEST_ADMIN2, Member::TYPE_USER,
-					Member::LEVEL_MODERATOR
+					$circle->getId(), Env::ENV_TEST_ADMIN2, DeprecatedMember::TYPE_USER,
+					DeprecatedMember::LEVEL_MODERATOR
 				);
 			}
 		} catch (Exception $e) {
@@ -189,8 +189,8 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 			try {
 				Circles::levelMember(
-					$circle->getId(), Env::ENV_TEST_ADMIN3, Member::TYPE_USER,
-					Member::LEVEL_MODERATOR
+					$circle->getId(), Env::ENV_TEST_ADMIN3, DeprecatedMember::TYPE_USER,
+					DeprecatedMember::LEVEL_MODERATOR
 				);
 				$this->assertSame(true, false, 'should return an exception');
 			} catch (MemberDoesNotExistException $e) {
@@ -202,7 +202,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 			try {
 				Circles::levelMember(
-					$circle->getId(), Env::ENV_TEST_ADMIN2, Member::TYPE_USER, Member::LEVEL_ADMIN
+					$circle->getId(), Env::ENV_TEST_ADMIN2, DeprecatedMember::TYPE_USER, DeprecatedMember::LEVEL_ADMIN
 				);
 				$this->assertSame(true, false, 'should return an exception');
 			} catch (ModeratorIsNotHighEnoughException $e) {
@@ -214,7 +214,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 			try {
 				Circles::levelMember(
-					$circle->getId(), Env::ENV_TEST_ADMIN2, Member::TYPE_USER, Member::LEVEL_OWNER
+					$circle->getId(), Env::ENV_TEST_ADMIN2, DeprecatedMember::TYPE_USER, DeprecatedMember::LEVEL_OWNER
 				);
 				$this->assertSame(true, false, 'should return an exception');
 			} catch (MemberIsNotOwnerException $e) {
@@ -233,7 +233,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 		try {
 			foreach ($circles as $circle) {
-				Circles::addMember($circle->getId(), Env::ENV_TEST_MODERATOR2, Member::TYPE_USER);
+				Circles::addMember($circle->getId(), Env::ENV_TEST_MODERATOR2, DeprecatedMember::TYPE_USER);
 				if ($circle->getType() === DeprecatedCircle::CIRCLES_CLOSED) {
 					// In closed circle, we need to confirm the invitation
 					Env::setUser(Env::ENV_TEST_MODERATOR2);
@@ -254,8 +254,8 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 		foreach ($circles as $circle) {
 			try {
 				Circles::levelMember(
-					$circle->getId(), Env::ENV_TEST_MODERATOR2, Member::TYPE_USER,
-					Member::LEVEL_MODERATOR
+					$circle->getId(), Env::ENV_TEST_MODERATOR2, DeprecatedMember::TYPE_USER,
+					DeprecatedMember::LEVEL_MODERATOR
 				);
 				$this->assertSame(true, false, 'should return an exception');
 			} catch (ModeratorIsNotHighEnoughException $e) {
@@ -266,8 +266,8 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 			}
 			try {
 				Circles::levelMember(
-					$circle->getId(), Env::ENV_TEST_MODERATOR2, Member::TYPE_USER,
-					Member::LEVEL_ADMIN
+					$circle->getId(), Env::ENV_TEST_MODERATOR2, DeprecatedMember::TYPE_USER,
+					DeprecatedMember::LEVEL_ADMIN
 				);
 				$this->assertSame(true, false, 'should return an exception');
 			} catch (ModeratorIsNotHighEnoughException $e) {
@@ -278,8 +278,8 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 			}
 			try {
 				Circles::levelMember(
-					$circle->getId(), Env::ENV_TEST_MODERATOR2, Member::TYPE_USER,
-					Member::LEVEL_OWNER
+					$circle->getId(), Env::ENV_TEST_MODERATOR2, DeprecatedMember::TYPE_USER,
+					DeprecatedMember::LEVEL_OWNER
 				);
 				$this->assertSame(true, false, 'should return an exception');
 			} catch (MemberIsNotOwnerException $e) {
@@ -299,7 +299,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 		foreach ($circles as $circle) {
 			try {
 				Circles::addMember(
-					$circle->getId(), Env::ENV_TEST_MEMBER2, Member::TYPE_USER
+					$circle->getId(), Env::ENV_TEST_MEMBER2, DeprecatedMember::TYPE_USER
 				);
 				$this->assertSame(true, false, 'should return an exception');
 			} catch (MemberIsNotModeratorException $e) {
@@ -311,7 +311,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 			try {
 				Circles::levelMember(
-					$circle->getId(), Env::ENV_TEST_USER1, Member::TYPE_USER, Member::LEVEL_MEMBER
+					$circle->getId(), Env::ENV_TEST_USER1, DeprecatedMember::TYPE_USER, DeprecatedMember::LEVEL_MEMBER
 				);
 				$this->assertSame(true, false, 'should return an exception');
 			} catch (MemberDoesNotExistException $e) {
@@ -323,8 +323,8 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 			try {
 				Circles::levelMember(
-					$circle->getId(), Env::ENV_TEST_MEMBER1, Member::TYPE_USER,
-					Member::LEVEL_MODERATOR
+					$circle->getId(), Env::ENV_TEST_MEMBER1, DeprecatedMember::TYPE_USER,
+					DeprecatedMember::LEVEL_MODERATOR
 				);
 				$this->assertSame(true, false, 'should return an exception');
 			} catch (MemberIsNotModeratorException $e) {
@@ -338,7 +338,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 			try {
 				Circles::levelMember(
-					$circle->getId(), Env::ENV_TEST_OWNER1, Member::TYPE_USER, Member::LEVEL_MEMBER
+					$circle->getId(), Env::ENV_TEST_OWNER1, DeprecatedMember::TYPE_USER, DeprecatedMember::LEVEL_MEMBER
 				);
 				$this->assertSame(true, false, 'should return an exception');
 			} catch (MemberIsNotModeratorException $e) {
@@ -484,11 +484,11 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 				try {
 					$member = Circles::getMember(
-						$circle->getId(), Env::ENV_TEST_MEMBER2, Member::TYPE_USER
+						$circle->getId(), Env::ENV_TEST_MEMBER2, DeprecatedMember::TYPE_USER
 					);
 					$this->assertEquals(
 						[
-							Env::ENV_TEST_MEMBER2, Member::LEVEL_NONE, Member::STATUS_NONMEMBER,
+							Env::ENV_TEST_MEMBER2, DeprecatedMember::LEVEL_NONE, DeprecatedMember::STATUS_NONMEMBER,
 							$circle->getId()
 						]
 						, [
@@ -503,17 +503,17 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 
 				try {
-					Circles::addMember($circle->getId(), Env::ENV_TEST_MEMBER2, Member::TYPE_USER);
+					Circles::addMember($circle->getId(), Env::ENV_TEST_MEMBER2, DeprecatedMember::TYPE_USER);
 
 					// If Closed, we check that the user is not a member before confirming
 					// the invitation using member account
 					if ($circle->getType() === DeprecatedCircle::CIRCLES_CLOSED) {
 						$member = Circles::getMember(
-							$circle->getId(), Env::ENV_TEST_MEMBER2, Member::TYPE_USER
+							$circle->getId(), Env::ENV_TEST_MEMBER2, DeprecatedMember::TYPE_USER
 						);
 						$this->assertEquals(
 							[
-								Env::ENV_TEST_MEMBER2, Member::LEVEL_NONE, Member::STATUS_INVITED,
+								Env::ENV_TEST_MEMBER2, DeprecatedMember::LEVEL_NONE, DeprecatedMember::STATUS_INVITED,
 								$circle->getId()
 							]
 							, [
@@ -528,11 +528,11 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 					}
 
 					$member = Circles::getMember(
-						$circle->getId(), Env::ENV_TEST_MEMBER2, Member::TYPE_USER
+						$circle->getId(), Env::ENV_TEST_MEMBER2, DeprecatedMember::TYPE_USER
 					);
 					$this->assertEquals(
 						[
-							Env::ENV_TEST_MEMBER2, Member::LEVEL_MEMBER, Member::STATUS_MEMBER,
+							Env::ENV_TEST_MEMBER2, DeprecatedMember::LEVEL_MEMBER, DeprecatedMember::STATUS_MEMBER,
 							$circle->getId()
 						]
 						, [
@@ -543,16 +543,16 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 
 					Circles::removeMember(
-						$circle->getId(), Env::ENV_TEST_MEMBER2, Member::TYPE_USER
+						$circle->getId(), Env::ENV_TEST_MEMBER2, DeprecatedMember::TYPE_USER
 					);
 
 					try {
 						$member = Circles::getMember(
-							$circle->getId(), Env::ENV_TEST_MEMBER2, Member::TYPE_USER
+							$circle->getId(), Env::ENV_TEST_MEMBER2, DeprecatedMember::TYPE_USER
 						);
 						$this->assertEquals(
 							[
-								Env::ENV_TEST_MEMBER2, Member::LEVEL_NONE, Member::STATUS_NONMEMBER,
+								Env::ENV_TEST_MEMBER2, DeprecatedMember::LEVEL_NONE, DeprecatedMember::STATUS_NONMEMBER,
 								$circle->getId()
 							]
 							, [
@@ -587,11 +587,11 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 				try {
 					$member = Circles::getMember(
-						$circle->getId(), Env::ENV_TEST_MEMBER3, Member::TYPE_USER
+						$circle->getId(), Env::ENV_TEST_MEMBER3, DeprecatedMember::TYPE_USER
 					);
 					$this->assertEquals(
 						[
-							Env::ENV_TEST_MEMBER3, Member::LEVEL_NONE, Member::STATUS_NONMEMBER,
+							Env::ENV_TEST_MEMBER3, DeprecatedMember::LEVEL_NONE, DeprecatedMember::STATUS_NONMEMBER,
 							$circle->getId()
 						]
 						, [
@@ -635,12 +635,12 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 						if ($circle->getType() === DeprecatedCircle::CIRCLES_CLOSED) {
 							Env::setUser(Env::ENV_TEST_OWNER1);
 							$member = Circles::getMember(
-								$circle->getId(), Env::ENV_TEST_MEMBER3, Member::TYPE_USER
+								$circle->getId(), Env::ENV_TEST_MEMBER3, DeprecatedMember::TYPE_USER
 							);
 							$this->assertEquals(
 								[
-									Env::ENV_TEST_MEMBER3, Member::LEVEL_NONE,
-									Member::STATUS_REQUEST,
+									Env::ENV_TEST_MEMBER3, DeprecatedMember::LEVEL_NONE,
+									DeprecatedMember::STATUS_REQUEST,
 									$circle->getId()
 								]
 								, [
@@ -649,16 +649,16 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 								]
 							);
 
-							Circles::addMember($circle->getId(), Env::ENV_TEST_MEMBER3, Member::TYPE_USER);
+							Circles::addMember($circle->getId(), Env::ENV_TEST_MEMBER3, DeprecatedMember::TYPE_USER);
 							Env::setUser(Env::ENV_TEST_MEMBER3);
 						}
 
 						$member = Circles::getMember(
-							$circle->getId(), Env::ENV_TEST_MEMBER3, Member::TYPE_USER
+							$circle->getId(), Env::ENV_TEST_MEMBER3, DeprecatedMember::TYPE_USER
 						);
 						$this->assertEquals(
 							[
-								Env::ENV_TEST_MEMBER3, Member::LEVEL_MEMBER, Member::STATUS_MEMBER,
+								Env::ENV_TEST_MEMBER3, DeprecatedMember::LEVEL_MEMBER, DeprecatedMember::STATUS_MEMBER,
 								$circle->getId()
 							]
 							, [
@@ -676,7 +676,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 					// We check the member have no access to the circle
 					try {
 						Circles::getMember(
-							$circle->getId(), Env::ENV_TEST_MEMBER3, Member::TYPE_USER
+							$circle->getId(), Env::ENV_TEST_MEMBER3, DeprecatedMember::TYPE_USER
 						);
 						$this->assertSame(
 							true, false, 'should return an exception'
@@ -692,11 +692,11 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 					Env::setUser(Env::ENV_TEST_OWNER1);
 					try {
 						$member = Circles::getMember(
-							$circle->getId(), Env::ENV_TEST_MEMBER3, Member::TYPE_USER
+							$circle->getId(), Env::ENV_TEST_MEMBER3, DeprecatedMember::TYPE_USER
 						);
 						$this->assertEquals(
 							[
-								Env::ENV_TEST_MEMBER3, Member::LEVEL_NONE, Member::STATUS_NONMEMBER,
+								Env::ENV_TEST_MEMBER3, DeprecatedMember::LEVEL_NONE, DeprecatedMember::STATUS_NONMEMBER,
 								$circle->getId()
 							]
 							, [
@@ -803,7 +803,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 		// removing member from Circle
 		Env::setUser(Env::ENV_TEST_OWNER1);
 		Circles::removeMember(
-			$this->circles['Secret']->getId(), Env::ENV_TEST_MEMBER1, Member::TYPE_USER
+			$this->circles['Secret']->getId(), Env::ENV_TEST_MEMBER1, DeprecatedMember::TYPE_USER
 		);
 
 		// member with a search on secret
@@ -870,35 +870,35 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 		$curr = Env::currentUser();
 
-		Circles::addMember($circleId, Env::ENV_TEST_ADMIN1, Member::TYPE_USER);
+		Circles::addMember($circleId, Env::ENV_TEST_ADMIN1, DeprecatedMember::TYPE_USER);
 		if ($isClosed) {
 			Env::setUser(Env::ENV_TEST_ADMIN1);
 			Circles::joinCircle($circleId);
 			Env::setUser($curr);
 		}
 		Circles::levelMember(
-			$circleId, Env::ENV_TEST_ADMIN1, Member::TYPE_USER, Member::LEVEL_ADMIN
+			$circleId, Env::ENV_TEST_ADMIN1, DeprecatedMember::TYPE_USER, DeprecatedMember::LEVEL_ADMIN
 		);
 
 
-		Circles::addMember($circleId, Env::ENV_TEST_MODERATOR1, Member::TYPE_USER);
+		Circles::addMember($circleId, Env::ENV_TEST_MODERATOR1, DeprecatedMember::TYPE_USER);
 		if ($isClosed) {
 			Env::setUser(Env::ENV_TEST_MODERATOR1);
 			Circles::joinCircle($circleId);
 			Env::setUser($curr);
 		}
 		Circles::levelMember(
-			$circleId, Env::ENV_TEST_MODERATOR1, Member::TYPE_USER, Member::LEVEL_MODERATOR
+			$circleId, Env::ENV_TEST_MODERATOR1, DeprecatedMember::TYPE_USER, DeprecatedMember::LEVEL_MODERATOR
 		);
 
-		Circles::addMember($circleId, Env::ENV_TEST_MEMBER1, Member::TYPE_USER);
+		Circles::addMember($circleId, Env::ENV_TEST_MEMBER1, DeprecatedMember::TYPE_USER);
 		if ($isClosed) {
 			Env::setUser(Env::ENV_TEST_MEMBER1);
 			Circles::joinCircle($circleId);
 			Env::setUser($curr);
 		}
 		Circles::levelMember(
-			$circleId, Env::ENV_TEST_MEMBER1, Member::TYPE_USER, Member::LEVEL_MEMBER
+			$circleId, Env::ENV_TEST_MEMBER1, DeprecatedMember::TYPE_USER, DeprecatedMember::LEVEL_MEMBER
 		);
 	}
 

@@ -31,7 +31,7 @@ use OC\User\NoUserException;
 use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Model\DeprecatedCircle;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Service\MiscService;
 use OCP\AppFramework\QueryException;
 use OCP\Collaboration\Collaborators\ISearchPlugin;
@@ -67,7 +67,7 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 	public function search($search, $limit, $offset, ISearchResult $searchResult) {
 		$wide = $exact = [];
 
-		$circles = Circles::listCircles(DeprecatedCircle::CIRCLES_ALL, $search, Member::LEVEL_MEMBER);
+		$circles = Circles::listCircles(DeprecatedCircle::CIRCLES_ALL, $search, DeprecatedMember::LEVEL_MEMBER);
 		foreach ($circles as $circle) {
 			try {
 				$entry = $this->addResultEntry($circle);

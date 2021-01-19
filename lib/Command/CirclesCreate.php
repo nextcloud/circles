@@ -31,7 +31,7 @@ namespace OCA\Circles\Command;
 
 use OC\Core\Command\Base;
 use OC\User\NoUserException;
-use OCA\Circles\Db\CirclesRequest;
+use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
@@ -60,7 +60,7 @@ class CirclesCreate extends Base {
 	/** @var IUserManager */
 	private $userManager;
 
-	/** @var CirclesRequest */
+	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
 
 	/** @var CirclesService */
@@ -72,11 +72,11 @@ class CirclesCreate extends Base {
 	 *
 	 * @param IL10N $l10n
 	 * @param IUserManager $userManager
-	 * @param CirclesRequest $circlesRequest
+	 * @param DeprecatedCirclesRequest $circlesRequest
 	 * @param CirclesService $circlesService
 	 */
 	public function __construct(
-		IL10N $l10n, IUserManager $userManager, CirclesRequest $circlesRequest, CirclesService $circlesService
+		IL10N $l10n, IUserManager $userManager, DeprecatedCirclesRequest $circlesRequest, CirclesService $circlesService
 	) {
 		parent::__construct();
 		$this->l10n = $l10n;

@@ -24,7 +24,7 @@
 namespace OCA\Circles\Migration;
 
 use OCA\Circles\Model\DeprecatedCircle;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCP\IConfig;
 use OCP\IDBConnection;
 use OCP\Migration\IOutput;

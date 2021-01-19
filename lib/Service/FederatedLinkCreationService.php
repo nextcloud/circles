@@ -28,7 +28,7 @@ namespace OCA\Circles\Service;
 
 
 use Exception;
-use OCA\Circles\Db\CirclesRequest;
+use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\FederatedLinksRequest;
 use OCA\Circles\Exceptions\CircleTypeNotValidException;
 use OCA\Circles\Exceptions\FederatedCircleLinkFormatException;
@@ -49,7 +49,7 @@ class FederatedLinkCreationService {
 	/** @var IL10N */
 	private $l10n;
 
-	/** @var CirclesRequest */
+	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
 
 	/** @var ConfigService */
@@ -82,7 +82,7 @@ class FederatedLinkCreationService {
 	 *
 	 * @param string $userId
 	 * @param IL10N $l10n
-	 * @param CirclesRequest $circlesRequest
+	 * @param DeprecatedCirclesRequest $circlesRequest
 	 * @param ConfigService $configService
 	 * @param CirclesService $circlesService
 	 * @param BroadcastService $broadcastService
@@ -93,7 +93,7 @@ class FederatedLinkCreationService {
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$userId, IL10N $l10n, CirclesRequest $circlesRequest, ConfigService $configService,
+		$userId, IL10N $l10n, DeprecatedCirclesRequest $circlesRequest, ConfigService $configService,
 		CirclesService $circlesService, BroadcastService $broadcastService,
 		FederatedLinkService $federatedService,
 		FederatedLinksRequest $federatedLinksRequest, EventsService $eventsService,

@@ -39,7 +39,7 @@ use OCA\Circles\Exceptions\MemberCantJoinCircleException;
 use OCA\Circles\Exceptions\MemberIsBlockedException;
 use OCA\Circles\Exceptions\MembersLimitException;
 use OCA\Circles\Model\GlobalScale\GSEvent;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 
 
 /**
@@ -71,7 +71,7 @@ class MemberJoin extends AGlobalScaleEvent {
 		$eventMember = $event->getMember();
 
 		$member = $this->membersRequest->getFreshNewMember(
-			$circle->getUniqueId(), $eventMember->getUserId(), Member::TYPE_USER, $eventMember->getInstance()
+			$circle->getUniqueId(), $eventMember->getUserId(), DeprecatedMember::TYPE_USER, $eventMember->getInstance()
 		);
 		$member->hasToBeAbleToJoinTheCircle();
 		$member->joinCircle($circle->getType());

@@ -28,11 +28,11 @@
 namespace OCA\Circles\Service;
 
 use OCA\Circles\AppInfo\Application;
-use OCA\Circles\Db\CirclesRequest;
-use OCA\Circles\Db\MembersRequest;
+use OCA\Circles\Db\DeprecatedCirclesRequest;
+use OCA\Circles\Db\DeprecatedMembersRequest;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\FederatedLink;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCP\Activity\IEvent;
 use OCP\Activity\IManager as IActivityManager;
 use OCP\AppFramework\Utility\ITimeFactory;
@@ -68,10 +68,10 @@ class EventsService {
 	/** @var EventDispatcher */
 	private $eventDispatcher;
 
-	/** @var CirclesRequest */
+	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
 
-	/** @var MembersRequest */
+	/** @var DeprecatedMembersRequest */
 	private $membersRequest;
 
 	/** @var ConfigService */
@@ -91,15 +91,15 @@ class EventsService {
 	 * @param IUserManager $userManager
 	 * @param IURLGenerator $urlGenerator
 	 * @param EventDispatcher $eventDispatcher
-	 * @param CirclesRequest $circlesRequest
-	 * @param MembersRequest $membersRequest
+	 * @param DeprecatedCirclesRequest $circlesRequest
+	 * @param DeprecatedMembersRequest $membersRequest
 	 * @param ConfigService $configService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
 		$userId, ITimeFactory $time, IActivityManager $activityManager,
 		INotificationManager $notificationManager, IUserManager $userManager, IURLGenerator $urlGenerator,
-		EventDispatcher $eventDispatcher, CirclesRequest $circlesRequest, MembersRequest $membersRequest,
+		EventDispatcher $eventDispatcher, DeprecatedCirclesRequest $circlesRequest, DeprecatedMembersRequest $membersRequest,
 		ConfigService $configService, MiscService $miscService
 	) {
 		$this->userId = $userId;
@@ -165,7 +165,7 @@ class EventsService {
 		$event->setSubject('circle_delete', ['circle' => json_encode($circle)]);
 		$this->publishEvent(
 			$event,
-			$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MEMBER, 0, true)
+			$this->membersRequest->forceGetMembers($circle->getUniqueId(), DeprecatedMember::LEVEL_MEMBER, 0, true)
 		);
 
 		$this->dispatch('\OCA\Circles::onCircleDestruction', ['circle' => $circle]);
@@ -183,16 +183,16 @@ class EventsService {
 	 * If the level is Owner, we ignore the event.
 	 *
 	 * @param DeprecatedCircle $circle
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 */
-	public function onMemberNew(DeprecatedCircle $circle, Member $member) {
-		if ($member->getLevel() === Member::LEVEL_OWNER
+	public function onMemberNew(DeprecatedCircle $circle, DeprecatedMember $member) {
+		if ($member->getLevel() === DeprecatedMember::LEVEL_OWNER
 			|| $circle->getType() === DeprecatedCircle::CIRCLES_PERSONAL
 		) {
 			return;
 		}
 
-		if ($member->getLevel() === Member::LEVEL_NONE) {
+		if ($member->getLevel() === DeprecatedMember::LEVEL_NONE) {
 			$this->onMemberAlmost($circle, $member);
 
 			return;
@@ -208,7 +208,7 @@ class EventsService {
 			$event, array_merge(
 					  [$member],
 					  $this->membersRequest->forceGetMembers(
-						  $circle->getUniqueId(), Member::LEVEL_MODERATOR, 0, true
+						  $circle->getUniqueId(), DeprecatedMember::LEVEL_MODERATOR, 0, true
 					  )
 				  )
 		);
@@ -226,17 +226,17 @@ class EventsService {
 	 * Trigger onMemberInvitation() or onMemberInvitationRequest() based on Member Status
 	 *
 	 * @param DeprecatedCircle $circle
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 */
-	private function onMemberAlmost(DeprecatedCircle $circle, Member $member) {
+	private function onMemberAlmost(DeprecatedCircle $circle, DeprecatedMember $member) {
 
 		switch ($member->getStatus()) {
-			case Member::STATUS_INVITED:
+			case DeprecatedMember::STATUS_INVITED:
 				$this->onMemberInvited($circle, $member);
 
 				return;
 
-			case Member::STATUS_REQUEST:
+			case DeprecatedMember::STATUS_REQUEST:
 				$this->onMemberRequesting($circle, $member);
 
 				return;
@@ -251,9 +251,9 @@ class EventsService {
 	 * Broadcast an activity to the invited member and to the moderators of the circle.
 	 *
 	 * @param DeprecatedCircle $circle
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 */
-	private function onMemberInvited(DeprecatedCircle $circle, Member $member) {
+	private function onMemberInvited(DeprecatedCircle $circle, DeprecatedMember $member) {
 		if ($circle->getType() !== DeprecatedCircle::CIRCLES_CLOSED) {
 			return;
 		}
@@ -267,7 +267,7 @@ class EventsService {
 			$event, array_merge(
 					  [$member],
 					  $this->membersRequest->forceGetMembers(
-						  $circle->getUniqueId(), Member::LEVEL_MODERATOR, 0, true
+						  $circle->getUniqueId(), DeprecatedMember::LEVEL_MODERATOR, 0, true
 					  )
 				  )
 		);
@@ -284,9 +284,9 @@ class EventsService {
 	 * Broadcast an activity to the requester and to the moderators of the circle.
 	 *
 	 * @param DeprecatedCircle $circle
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 */
-	private function onMemberRequesting(DeprecatedCircle $circle, Member $member) {
+	private function onMemberRequesting(DeprecatedCircle $circle, DeprecatedMember $member) {
 		if ($circle->getType() !== DeprecatedCircle::CIRCLES_CLOSED) {
 			return;
 		}
@@ -301,7 +301,7 @@ class EventsService {
 			$event, array_merge(
 					  [$member],
 					  $this->membersRequest->forceGetMembers(
-						  $circle->getUniqueId(), Member::LEVEL_MODERATOR, 0, true
+						  $circle->getUniqueId(), DeprecatedMember::LEVEL_MODERATOR, 0, true
 					  )
 				  )
 		);
@@ -319,9 +319,9 @@ class EventsService {
 	 * We won't do anything if the circle is PERSONAL
 	 *
 	 * @param DeprecatedCircle $circle
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 */
-	public function onMemberLeaving(DeprecatedCircle $circle, Member $member) {
+	public function onMemberLeaving(DeprecatedCircle $circle, DeprecatedMember $member) {
 		if ($circle->getType() === DeprecatedCircle::CIRCLES_PERSONAL) {
 			return;
 		}
@@ -336,7 +336,7 @@ class EventsService {
 			$event, array_merge(
 					  [$member],
 					  $this->membersRequest->forceGetMembers(
-						  $circle->getUniqueId(), Member::LEVEL_MODERATOR, 0, true
+						  $circle->getUniqueId(), DeprecatedMember::LEVEL_MODERATOR, 0, true
 					  )
 				  )
 		);
@@ -356,10 +356,10 @@ class EventsService {
 	 * If the level is Owner, we identify the event as a Coup d'Etat and we broadcast all members.
 	 *
 	 * @param DeprecatedCircle $circle
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 */
-	public function onMemberLevel(DeprecatedCircle $circle, Member $member) {
-		if ($member->getLevel() === Member::LEVEL_OWNER) {
+	public function onMemberLevel(DeprecatedCircle $circle, DeprecatedMember $member) {
+		if ($member->getLevel() === DeprecatedMember::LEVEL_OWNER) {
 			$this->onMemberOwner($circle, $member);
 
 			return;
@@ -372,7 +372,7 @@ class EventsService {
 		);
 
 		$mods =
-			$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MODERATOR, 0, true);
+			$this->membersRequest->forceGetMembers($circle->getUniqueId(), DeprecatedMember::LEVEL_MODERATOR, 0, true);
 		$this->membersRequest->avoidDuplicateMembers($mods, [$member]);
 
 		$this->publishEvent($event, $mods);
@@ -386,9 +386,9 @@ class EventsService {
 	 * Called when the owner rights of a circle have be given to another member.
 	 *
 	 * @param DeprecatedCircle $circle
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 */
-	public function onMemberOwner(DeprecatedCircle $circle, Member $member) {
+	public function onMemberOwner(DeprecatedCircle $circle, DeprecatedMember $member) {
 		$event = $this->generateEvent('circles_as_moderator');
 		$event->setSubject(
 			'member_owner',
@@ -397,7 +397,7 @@ class EventsService {
 
 		$this->publishEvent(
 			$event,
-			$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MEMBER, 0, true)
+			$this->membersRequest->forceGetMembers($circle->getUniqueId(), DeprecatedMember::LEVEL_MEMBER, 0, true)
 		);
 
 		$this->dispatch('\OCA\Circles::onMemberOwner', ['circle' => $circle, 'member' => $member]);
@@ -412,9 +412,9 @@ class EventsService {
 	 * We won't do anything if the circle is PERSONAL
 	 *
 	 * @param DeprecatedCircle $circle
-	 * @param Member $group
+	 * @param DeprecatedMember $group
 	 */
-	public function onGroupLink(DeprecatedCircle $circle, Member $group) {
+	public function onGroupLink(DeprecatedCircle $circle, DeprecatedMember $group) {
 		if ($circle->getType() === DeprecatedCircle::CIRCLES_PERSONAL) {
 			return;
 		}
@@ -426,7 +426,7 @@ class EventsService {
 		);
 
 		$mods =
-			$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MODERATOR, 0, true);
+			$this->membersRequest->forceGetMembers($circle->getUniqueId(), DeprecatedMember::LEVEL_MODERATOR, 0, true);
 		$this->membersRequest->avoidDuplicateMembers(
 			$mods, $this->membersRequest->getGroupMemberMembers($group)
 		);
@@ -444,9 +444,9 @@ class EventsService {
 	 * circle. We won't do anything if the circle is PERSONAL
 	 *
 	 * @param DeprecatedCircle $circle
-	 * @param Member $group
+	 * @param DeprecatedMember $group
 	 */
-	public function onGroupUnlink(DeprecatedCircle $circle, Member $group) {
+	public function onGroupUnlink(DeprecatedCircle $circle, DeprecatedMember $group) {
 		if ($circle->getType() === DeprecatedCircle::CIRCLES_PERSONAL) {
 			return;
 		}
@@ -458,7 +458,7 @@ class EventsService {
 		);
 
 		$mods =
-			$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MODERATOR, 0, true);
+			$this->membersRequest->forceGetMembers($circle->getUniqueId(), DeprecatedMember::LEVEL_MODERATOR, 0, true);
 		$this->membersRequest->avoidDuplicateMembers(
 			$mods, $this->membersRequest->getGroupMemberMembers($group)
 		);
@@ -476,9 +476,9 @@ class EventsService {
 	 * demotion.
 	 *
 	 * @param DeprecatedCircle $circle
-	 * @param Member $group
+	 * @param DeprecatedMember $group
 	 */
-	public function onGroupLevel(DeprecatedCircle $circle, Member $group) {
+	public function onGroupLevel(DeprecatedCircle $circle, DeprecatedMember $group) {
 		if ($circle->getType() === DeprecatedCircle::CIRCLES_PERSONAL) {
 			return;
 		}
@@ -490,7 +490,7 @@ class EventsService {
 		);
 
 		$mods =
-			$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MODERATOR, 0, true);
+			$this->membersRequest->forceGetMembers($circle->getUniqueId(), DeprecatedMember::LEVEL_MODERATOR, 0, true);
 		$this->membersRequest->avoidDuplicateMembers(
 			$mods, $this->membersRequest->getGroupMemberMembers($group)
 		);
@@ -518,7 +518,7 @@ class EventsService {
 
 		$this->publishEvent(
 			$event,
-			$this->membersRequest->forceGetMembers($link->getCircleId(), Member::LEVEL_MODERATOR, 0, true)
+			$this->membersRequest->forceGetMembers($link->getCircleId(), DeprecatedMember::LEVEL_MODERATOR, 0, true)
 		);
 		$this->dispatch('\OCA\Circles::onLinkRequestSent', ['circle' => $circle, 'link' => $link]);
 	}
@@ -542,7 +542,7 @@ class EventsService {
 
 		$this->publishEvent(
 			$event,
-			$this->membersRequest->forceGetMembers($link->getCircleId(), Member::LEVEL_MODERATOR, 0, true)
+			$this->membersRequest->forceGetMembers($link->getCircleId(), DeprecatedMember::LEVEL_MODERATOR, 0, true)
 		);
 		$this->dispatch('\OCA\Circles::onLinkRequestReceived', ['circle' => $circle, 'link' => $link]);
 	}
@@ -566,7 +566,7 @@ class EventsService {
 
 		$this->publishEvent(
 			$event,
-			$this->membersRequest->forceGetMembers($link->getCircleId(), Member::LEVEL_MODERATOR, 0, true)
+			$this->membersRequest->forceGetMembers($link->getCircleId(), DeprecatedMember::LEVEL_MODERATOR, 0, true)
 		);
 		$this->dispatch('\OCA\Circles::onLinkRequestRejected', ['circle' => $circle, 'link' => $link]);
 	}
@@ -590,7 +590,7 @@ class EventsService {
 
 		$this->publishEvent(
 			$event,
-			$this->membersRequest->forceGetMembers($link->getCircleId(), Member::LEVEL_MODERATOR, 0, true)
+			$this->membersRequest->forceGetMembers($link->getCircleId(), DeprecatedMember::LEVEL_MODERATOR, 0, true)
 		);
 		$this->dispatch('\OCA\Circles::onLinkRequestCanceled', ['circle' => $circle, 'link' => $link]);
 	}
@@ -614,7 +614,7 @@ class EventsService {
 
 		$this->publishEvent(
 			$event,
-			$this->membersRequest->forceGetMembers($link->getCircleId(), Member::LEVEL_MODERATOR, 0, true)
+			$this->membersRequest->forceGetMembers($link->getCircleId(), DeprecatedMember::LEVEL_MODERATOR, 0, true)
 		);
 		$this->dispatch('\OCA\Circles::onLinkRequestAccepted', ['circle' => $circle, 'link' => $link]);
 	}
@@ -638,7 +638,7 @@ class EventsService {
 
 		$this->publishEvent(
 			$event,
-			$this->membersRequest->forceGetMembers($link->getCircleId(), Member::LEVEL_MODERATOR, 0, true)
+			$this->membersRequest->forceGetMembers($link->getCircleId(), DeprecatedMember::LEVEL_MODERATOR, 0, true)
 		);
 		$this->dispatch('\OCA\Circles::onLinkRequestAccepting', ['circle' => $circle, 'link' => $link]);
 	}
@@ -662,7 +662,7 @@ class EventsService {
 
 		$this->publishEvent(
 			$event,
-			$this->membersRequest->forceGetMembers($link->getCircleId(), Member::LEVEL_MODERATOR, 0, true)
+			$this->membersRequest->forceGetMembers($link->getCircleId(), DeprecatedMember::LEVEL_MODERATOR, 0, true)
 		);
 		$this->dispatch('\OCA\Circles::onLinkUp', ['circle' => $circle, 'link' => $link]);
 	}
@@ -686,7 +686,7 @@ class EventsService {
 
 		$this->publishEvent(
 			$event,
-			$this->membersRequest->forceGetMembers($link->getCircleId(), Member::LEVEL_MODERATOR, 0, true)
+			$this->membersRequest->forceGetMembers($link->getCircleId(), DeprecatedMember::LEVEL_MODERATOR, 0, true)
 		);
 		$this->dispatch('\OCA\Circles::onLinkDown', ['circle' => $circle, 'link' => $link]);
 	}
@@ -722,7 +722,7 @@ class EventsService {
 
 		$this->publishEvent(
 			$event,
-			$this->membersRequest->forceGetMembers($link->getCircleId(), Member::LEVEL_MODERATOR, 0, true)
+			$this->membersRequest->forceGetMembers($link->getCircleId(), DeprecatedMember::LEVEL_MODERATOR, 0, true)
 		);
 		$this->dispatch('\OCA\Circles::onLinkRemove', ['circle' => $circle, 'link' => $link]);
 	}
@@ -773,7 +773,7 @@ class EventsService {
 		foreach ($users as $user) {
 			if ($user instanceof IUser) {
 				$userId = $user->getUID();
-			} else if ($user instanceof Member) {
+			} else if ($user instanceof DeprecatedMember) {
 				$userId = $user->getUserId();
 			} else {
 				continue;
@@ -787,11 +787,11 @@ class EventsService {
 
 	/**
 	 * @param DeprecatedCircle $circle
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 */
-	private function notificationOnInvitation(DeprecatedCircle $circle, Member $member) {
+	private function notificationOnInvitation(DeprecatedCircle $circle, DeprecatedMember $member) {
 		$this->deleteNotification('membership_request', $member->getMemberId());
-		if ($member->getType() !== Member::TYPE_USER) {
+		if ($member->getType() !== DeprecatedMember::TYPE_USER) {
 			return;
 		}
 
@@ -821,10 +821,10 @@ class EventsService {
 
 	/**
 	 * @param DeprecatedCircle $circle
-	 * @param Member $author
+	 * @param DeprecatedMember $author
 	 */
-	private function notificationOnRequest(DeprecatedCircle $circle, Member $author) {
-		$members = $this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MODERATOR);
+	private function notificationOnRequest(DeprecatedCircle $circle, DeprecatedMember $author) {
+		$members = $this->membersRequest->forceGetMembers($circle->getUniqueId(), DeprecatedMember::LEVEL_MODERATOR);
 		foreach ($members as $member) {
 			$notification = $this->createNotification(
 				$circle, $author, $member->getUserId(), 'request_new', 'membership_request',
@@ -855,9 +855,9 @@ class EventsService {
 
 	/**
 	 * @param DeprecatedCircle $circle
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 */
-	private function notificationOnMemberNew(DeprecatedCircle $circle, Member $member) {
+	private function notificationOnMemberNew(DeprecatedCircle $circle, DeprecatedMember $member) {
 		$this->deleteNotification('membership_request', $member->getMemberId());
 		$this->deleteNotification('membership', $member->getMemberId());
 		if ($this->userId === $member->getUserId()) {
@@ -902,7 +902,7 @@ class EventsService {
 
 	/**
 	 * @param DeprecatedCircle $circle
-	 * @param Member $author
+	 * @param DeprecatedMember $author
 	 * @param string $userId
 	 * @param string $subject
 	 * @param string $object
@@ -911,7 +911,7 @@ class EventsService {
 	 * @return INotification
 	 */
 	private function createNotification(
-		DeprecatedCircle $circle, Member $author, string $userId, string $subject, string $object, string $objectId
+		DeprecatedCircle $circle, DeprecatedMember $author, string $userId, string $subject, string $object, string $objectId
 	) {
 		$authorName = $author->getCachedName();
 		if ($authorName === '') {

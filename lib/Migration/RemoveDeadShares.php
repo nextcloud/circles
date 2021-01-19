@@ -26,9 +26,9 @@
 
 namespace OCA\Circles\Migration;
 
-use OCA\Circles\Db\MembersRequest;
+use OCA\Circles\Db\DeprecatedMembersRequest;
 use OCA\Circles\Db\SharesRequest;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Service\ConfigService;
 use OCP\IConfig;
 use OCP\IDBConnection;
@@ -51,7 +51,7 @@ class RemoveDeadShares implements IRepairStep {
 	/** @var SharesRequest */
 	private $sharesRequest;
 
-	/** @var MembersRequest */
+	/** @var DeprecatedMembersRequest */
 	private $membersRequest;
 
 	/** @var ConfigService */
@@ -64,12 +64,12 @@ class RemoveDeadShares implements IRepairStep {
 	 * @param IDBConnection $connection
 	 * @param IConfig $config
 	 * @param SharesRequest $sharesRequest
-	 * @param MembersRequest $membersRequest
+	 * @param DeprecatedMembersRequest $membersRequest
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		IDBConnection $connection, IConfig $config, SharesRequest $sharesRequest,
-		MembersRequest $membersRequest, ConfigService $configService
+		DeprecatedMembersRequest $membersRequest, ConfigService $configService
 	) {
 		$this->connection = $connection;
 		$this->config = $config;
@@ -99,11 +99,11 @@ class RemoveDeadShares implements IRepairStep {
 		$members = $this->membersRequest->forceGetAllMembers();
 
 		foreach ($members as $member) {
-			if ($member->getLevel() > Member::LEVEL_NONE) {
+			if ($member->getLevel() > DeprecatedMember::LEVEL_NONE) {
 				continue;
 			}
 
-			if ($member->getType() === Member::TYPE_USER) {
+			if ($member->getType() === DeprecatedMember::TYPE_USER) {
 				$this->removeSharesFromMember($member);
 			}
 
@@ -116,7 +116,7 @@ class RemoveDeadShares implements IRepairStep {
 	}
 
 
-	private function removeSharesFromMember(Member $member) {
+	private function removeSharesFromMember(DeprecatedMember $member) {
 		$this->sharesRequest->removeSharesFromMember($member);
 	}
 

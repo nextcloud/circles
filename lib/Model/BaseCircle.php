@@ -64,13 +64,13 @@ class BaseCircle {
 	/** @var string */
 	private $altName = '';
 
-	/** @var Member */
+	/** @var DeprecatedMember */
 	private $owner;
 
-	/** @var Member */
+	/** @var DeprecatedMember */
 	private $viewer = null;
 
-	/** @var Member */
+	/** @var DeprecatedMember */
 	private $viewerGroup;
 
 	/** @var string */
@@ -95,10 +95,10 @@ class BaseCircle {
 	/** @var string */
 	private $creation;
 
-	/** @var Member[] */
+	/** @var DeprecatedMember[] */
 	private $members;
 
-	/** @var Member[] */
+	/** @var DeprecatedMember[] */
 	private $groups;
 
 	/** @var FederatedLink[] */
@@ -207,14 +207,14 @@ class BaseCircle {
 	}
 
 	/**
-	 * @return Member
+	 * @return DeprecatedMember
 	 */
 	public function getOwner() {
 		return $this->owner;
 	}
 
 	/**
-	 * @param Member $owner
+	 * @param DeprecatedMember $owner
 	 *
 	 * @return BaseCircle
 	 */
@@ -226,14 +226,14 @@ class BaseCircle {
 
 
 	/**
-	 * @return Member
+	 * @return DeprecatedMember
 	 */
 	public function getViewer() {
 		return $this->viewer;
 	}
 
 	/**
-	 * @param Member $user
+	 * @param DeprecatedMember $user
 	 *
 	 * @return BaseCircle
 	 */
@@ -250,14 +250,14 @@ class BaseCircle {
 
 
 	/**
-	 * @return Member
+	 * @return DeprecatedMember
 	 */
 	public function getGroupViewer() {
 		return $this->viewerGroup;
 	}
 
 	/**
-	 * @param Member $group
+	 * @param DeprecatedMember $group
 	 *
 	 * @return BaseCircle
 	 */
@@ -268,7 +268,7 @@ class BaseCircle {
 	}
 
 	/**
-	 * @return Member
+	 * @return DeprecatedMember
 	 */
 	public function getHigherViewer() {
 		if ($this->getGroupViewer() === null) {
@@ -503,7 +503,7 @@ class BaseCircle {
 	}
 
 	/**
-	 * @return Member[]
+	 * @return DeprecatedMember[]
 	 */
 	public function getMembers() {
 		return $this->members;

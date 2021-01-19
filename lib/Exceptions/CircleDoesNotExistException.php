@@ -26,6 +26,13 @@
 
 namespace OCA\Circles\Exceptions;
 
+
+/**
+ * Class CircleDoesNotExistException
+ *
+ * @deprecated
+ * @package OCA\Circles\Exceptions
+ */
 class CircleDoesNotExistException extends \Exception {
 
 }

@@ -32,6 +32,8 @@ namespace OCA\Circles\Db;
 
 
 use daita\MySmallPhpTools\Db\Nextcloud\nc21\NC21ExtendedQueryBuilder;
+use Doctrine\DBAL\Query\QueryBuilder;
+use OCA\Circles\Model\DeprecatedMember;
 
 /**
  * Class CoreQueryBuilder
@@ -42,12 +44,59 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 
 
 	/**
+	 * @param string $id
+	 */
+	public function limitToUniqueId(string $id): void {
+		$this->limitToDBField('unique_id', $id, false);
+	}
+
+	/**
 	 * @param string $host
 	 */
 	public function limitToInstance(string $host): void {
 		$this->limitToDBField('instance', $host, false);
 	}
 
+
+	/**
+	 * Left Join members table to get the owner of the circle.
+	 *
+	 * @param string $ownerId
+	 */
+	public function leftJoinOwner(string $ownerId = '') {
+		if ($this->getType() !== QueryBuilder::SELECT) {
+			return;
+		}
+
+		$expr = $this->expr();
+		$pf = $this->getDefaultSelectAlias() . '.';
+
+		$this->selectAlias('o.user_id', 'owner_user_id')
+			 ->selectAlias('o.user_type', 'owner_user_type')
+			 ->selectAlias('o.member_id', 'owner_member_id')
+			 ->selectAlias('o.circle_id', 'owner_circle_id')
+			 ->selectAlias('o.instance', 'owner_instance')
+			 ->selectAlias('o.cached_name', 'owner_cached_name')
+			 ->selectAlias('o.cached_update', 'owner_cached_update')
+			 ->selectAlias('o.status', 'owner_status')
+			 ->selectAlias('o.level', 'owner_level')
+			 ->selectAlias('o.note', 'owner_note')
+			 ->selectAlias('o.contact_id', 'owner_contact_id')
+			 ->selectAlias('o.contact_meta', 'owner_contact_meta')
+			 ->selectAlias('o.joined', 'owner_joined')
+			 ->leftJoin(
+				 $this->getDefaultSelectAlias(), CoreRequestBuilder::TABLE_MEMBERS, 'o',
+				 $expr->andX(
+					 $expr->eq('o.circle_id', $pf . 'unique_id'),
+					 $expr->eq('o.level', $this->createNamedParameter(DeprecatedMember::LEVEL_OWNER)),
+					 $expr->eq('o.user_type', $this->createNamedParameter(DeprecatedMember::TYPE_USER))
+				 )
+			 );
+
+		if ($ownerId !== '') {
+			$this->andWhere($expr->eq('o.user_id', $this->createNamedParameter($ownerId)));
+		}
+	}
 
 }
 

@@ -46,7 +46,7 @@ use OCA\Circles\Exceptions\MembersLimitException;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SharesToken;
 use OCP\IUser;
 use OCP\Mail\IEMailTemplate;
@@ -160,7 +160,7 @@ class MemberAdd extends AGlobalScaleEvent {
 			'cachedName'    => $cachedName
 		];
 
-		if ($member->getType() === Member::TYPE_CONTACT
+		if ($member->getType() === DeprecatedMember::TYPE_CONTACT
 			&& $this->configService->isLocalInstance($member->getInstance())) {
 			$result['contact'] = $this->miscService->getInfosFromContact($member);
 		}
@@ -208,9 +208,9 @@ class MemberAdd extends AGlobalScaleEvent {
 			$this->membersService->updateMember($member);
 		}
 
-		if ($member->getType() === Member::TYPE_MAIL
-			|| $member->getType() === Member::TYPE_CONTACT) {
-			if ($member->getType() === Member::TYPE_MAIL) {
+		if ($member->getType() === DeprecatedMember::TYPE_MAIL
+			|| $member->getType() === DeprecatedMember::TYPE_CONTACT) {
+			if ($member->getType() === DeprecatedMember::TYPE_MAIL) {
 				$recipients = [$member->getUserId()];
 			}
 
@@ -249,12 +249,12 @@ class MemberAdd extends AGlobalScaleEvent {
 
 	/**
 	 * @param DeprecatedCircle $circle
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 * @param string $password
 	 *
 	 * @return array
 	 */
-	private function generateUnknownSharesLinks(DeprecatedCircle $circle, Member $member, string $password): array {
+	private function generateUnknownSharesLinks(DeprecatedCircle $circle, DeprecatedMember $member, string $password): array {
 		$unknownShares = $this->getUnknownShares($member);
 
 		$data = [];
@@ -270,11 +270,11 @@ class MemberAdd extends AGlobalScaleEvent {
 
 
 	/**
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 *
 	 * @return array
 	 */
-	private function getUnknownShares(Member $member): array {
+	private function getUnknownShares(DeprecatedMember $member): array {
 		$allShares = $this->sharesRequest->getSharesForCircle($member->getCircleId());
 		$knownShares = array_map(
 			function(SharesToken $shareToken) {
@@ -296,13 +296,13 @@ class MemberAdd extends AGlobalScaleEvent {
 
 	/**
 	 * @param array $share
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 * @param string $password
 	 *
 	 * @return array
 	 * @throws TokenDoesNotExistException
 	 */
-	private function getMailLinkFromShare(array $share, Member $member, string $password = '') {
+	private function getMailLinkFromShare(array $share, DeprecatedMember $member, string $password = '') {
 		$sharesToken = $this->tokensRequest->generateTokenForMember($member, (int)$share['id'], $password);
 		$link = $this->urlGenerator->linkToRouteAbsolute(
 			'files_sharing.sharecontroller.showShare',

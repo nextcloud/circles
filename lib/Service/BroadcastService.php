@@ -29,8 +29,8 @@ namespace OCA\Circles\Service;
 
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use Exception;
-use OCA\Circles\Db\CirclesRequest;
-use OCA\Circles\Db\MembersRequest;
+use OCA\Circles\Db\DeprecatedCirclesRequest;
+use OCA\Circles\Db\DeprecatedMembersRequest;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\SharingFrame;
 
@@ -47,10 +47,10 @@ class BroadcastService {
 	/** @var ConfigService */
 	private $configService;
 
-	/** @var CirclesRequest */
+	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
 
-	/** @var MembersRequest */
+	/** @var DeprecatedMembersRequest */
 	private $membersRequest;
 
 	/** @var MiscService */
@@ -62,16 +62,16 @@ class BroadcastService {
 	 *
 	 * @param string $userId
 	 * @param ConfigService $configService
-	 * @param CirclesRequest $circlesRequest
-	 * @param MembersRequest $membersRequest
+	 * @param DeprecatedCirclesRequest $circlesRequest
+	 * @param DeprecatedMembersRequest $membersRequest
 	 * @param GSUpstreamService $gsUpstreamService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
 		$userId,
 		ConfigService $configService,
-		CirclesRequest $circlesRequest,
-		MembersRequest $membersRequest,
+		DeprecatedCirclesRequest $circlesRequest,
+		DeprecatedMembersRequest $membersRequest,
 		GSUpstreamService $gsUpstreamService,
 		MiscService $miscService
 	) {

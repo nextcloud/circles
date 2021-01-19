@@ -29,7 +29,7 @@ namespace OCA\Circles\Command;
 use Exception;
 use OC\Core\Command\Base;
 use OC\Share\Share;
-use OCA\Circles\Db\CirclesRequest;
+use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\DeprecatedRequestBuilder;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCP\IDBConnection;
@@ -42,10 +42,10 @@ class FixUniqueId extends Base {
 	/** @var IDBConnection */
 	protected $connection;
 
-	/** @var CirclesRequest */
+	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
 
-	public function __construct(CirclesRequest $circlesRequest, IDBConnection $connection) {
+	public function __construct(DeprecatedCirclesRequest $circlesRequest, IDBConnection $connection) {
 		parent::__construct();
 		$this->circlesRequest = $circlesRequest;
 		$this->connection = $connection;

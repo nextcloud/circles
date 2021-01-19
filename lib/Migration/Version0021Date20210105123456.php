@@ -67,8 +67,8 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 		/** @var ISchemaWrapper $schema */
 		$schema = $schemaClosure();
 
-		if (!$schema->hasTable('circle_remote')) {
-			$table = $schema->createTable('circle_remote');
+		if (!$schema->hasTable('circle_remotes')) {
+			$table = $schema->createTable('circle_remotes');
 			$table->addColumn(
 				'id', 'integer', [
 						'autoincrement' => true,

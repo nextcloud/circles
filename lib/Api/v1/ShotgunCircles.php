@@ -31,7 +31,7 @@ use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\ApiVersionIncompatibleException;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\FederatedLink;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\FederatedLinkService;

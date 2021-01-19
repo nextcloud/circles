@@ -1,12 +1,16 @@
 <?php
+
+declare(strict_types=1);
+
+
 /**
  * Circles - Bring cloud-users closer together.
  *
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@pontapreta.net>
- * @copyright 2017
+ * @author Maxence Lange <maxence@artificial-owl.com>
+ * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,244 +28,399 @@
  *
  */
 
+
 namespace OCA\Circles\Model;
 
-use OCA\Circles\Exceptions\CircleTypeNotValidException;
-use OCA\Circles\Exceptions\MemberAlreadyExistsException;
-use OCA\Circles\Exceptions\MemberCantJoinCircleException;
-use OCA\Circles\Exceptions\MemberDoesNotExistException;
-use OCA\Circles\Exceptions\MemberIsBlockedException;
-use OCA\Circles\Exceptions\MemberIsNotAdminException;
-use OCA\Circles\Exceptions\MemberIsNotModeratorException;
-use OCA\Circles\Exceptions\MemberIsNotOwnerException;
-use OCA\Circles\Exceptions\MemberIsOwnerException;
-use OCA\Circles\Exceptions\MemberTypeCantEditLevelException;
-use OCA\Circles\Exceptions\ModeratorIsNotHighEnoughException;
-
-class Member extends BaseMember {
+use daita\MySmallPhpTools\Db\Nextcloud\nc21\INC21QueryRow;
+use daita\MySmallPhpTools\Traits\TArrayTools;
+use DateTime;
+use JsonSerializable;
+use OCA\Circles\Exceptions\MemberNotFoundException;
 
 
-	public function inviteToCircle($circleType) {
+/**
+ * Class Member
+ *
+ * @package OCA\Circles\Model
+ */
+class Member extends ManagedModel implements INC21QueryRow, JsonSerializable {
 
-		if ($circleType === 0) {
-			throw new CircleTypeNotValidException('Invalid circle type');
-		}
 
-		if ($circleType === DeprecatedCircle::CIRCLES_CLOSED) {
-			return $this->inviteIntoClosedCircle();
-		}
+	use TArrayTools;
 
-		return $this->addMemberToCircle();
+
+	const LEVEL_NONE = 0;
+	const LEVEL_MEMBER = 1;
+	const LEVEL_MODERATOR = 4;
+	const LEVEL_ADMIN = 8;
+	const LEVEL_OWNER = 9;
+
+	const TYPE_USER = 1;
+	const TYPE_GROUP = 2;
+	const TYPE_MAIL = 3;
+	const TYPE_CONTACT = 4;
+
+	const STATUS_NONMEMBER = 'Unknown';
+	const STATUS_INVITED = 'Invited';
+	const STATUS_REQUEST = 'Requesting';
+	const STATUS_MEMBER = 'Member';
+	const STATUS_BLOCKED = 'Blocked';
+	const STATUS_KICKED = 'Kicked';
+
+
+	/** @var string */
+	private $id = '';
+
+	/** @var string */
+	private $circleId = '';
+
+	/** @var string */
+	private $userId = '';
+
+	/** @var int */
+	private $userType = self::TYPE_USER;
+
+	/** @var string */
+	private $instance = '';
+
+	/** @var int */
+	private $level = 0;
+
+	/** @var string */
+	private $status = 'Unknown';
+
+	/** @var string */
+	private $note = '';
+
+	/** @var string */
+	private $cachedName = '';
+
+	/** @var int */
+	private $cachedUpdate = 0;
+
+	/** @var string */
+	private $contactId = '';
+
+	/** @var string */
+	private $contactMeta = '';
+
+	/** @var int */
+	private $joined = 0;
+
+
+	public function __construct() {
 	}
 
 
 	/**
-	 * @param int $circleType
+	 * @param string $id
 	 *
-	 * @throws MemberCantJoinCircleException
+	 * @return Member
 	 */
-	public function joinCircle($circleType) {
+	public function setId(string $id): self {
+		$this->id = $id;
 
-		switch ($circleType) {
-			case DeprecatedCircle::CIRCLES_SECRET:
-			case DeprecatedCircle::CIRCLES_PUBLIC:
-				return $this->addMemberToCircle();
+		return $this;
+	}
 
-			case DeprecatedCircle::CIRCLES_CLOSED:
-				return $this->joinClosedCircle();
-		}
-
-		throw new MemberCantJoinCircleException($this->l10n->t('You cannot join this circle'));
+	/**
+	 * @return string
+	 */
+	public function getId(): string {
+		return $this->id;
 	}
 
 
 	/**
-	 * Update status of member like he joined a public circle.
-	 */
-	public function addMemberToCircle() {
-
-		if ($this->getStatus() === Member::STATUS_NONMEMBER
-			|| $this->getStatus() === Member::STATUS_KICKED
-		) {
-			$this->setAsAMember(Member::LEVEL_MEMBER);
-		}
-	}
-
-
-	/**
-	 * Update status of member like he joined a closed circle
-	 * (invite/request)
-	 */
-	private function joinClosedCircle() {
-
-		switch ($this->getStatus()) {
-			case Member::STATUS_NONMEMBER:
-			case Member::STATUS_KICKED:
-				$this->setStatus(Member::STATUS_REQUEST);
-				break;
-
-			case Member::STATUS_INVITED:
-				$this->setAsAMember(Member::LEVEL_MEMBER);
-				break;
-		}
-	}
-
-
-	private function inviteIntoClosedCircle() {
-		switch ($this->getStatus()) {
-			case Member::STATUS_NONMEMBER:
-			case Member::STATUS_KICKED:
-				$this->setStatus(Member::STATUS_INVITED);
-				break;
-
-			case Member::STATUS_REQUEST:
-				$this->setAsAMember(Member::LEVEL_MEMBER);
-				break;
-		}
-	}
-
-
-	/**
-	 * @throws MemberIsNotModeratorException
-	 */
-	public function hasToBeModerator() {
-		if ($this->getLevel() < self::LEVEL_MODERATOR) {
-			throw new MemberIsNotModeratorException(
-				$this->l10n->t('This member is not a moderator')
-			);
-		}
-	}
-
-
-	/**
-	 * @param $level
+	 * @param string $circleId
 	 *
-	 * @throws ModeratorIsNotHighEnoughException
+	 * @return Member
 	 */
-	public function hasToBeHigherLevel($level) {
-		if ($this->getLevel() <= $level) {
-			throw new ModeratorIsNotHighEnoughException(
-				$this->l10n->t('Insufficient privileges')
-			);
-		}
+	public function setCircleId(string $circleId): self {
+		$this->circleId = $circleId;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getCircleId(): string {
+		return $this->circleId;
 	}
 
 
 	/**
-	 * @throws MemberDoesNotExistException
-	 */
-	public function hasToBeMember() {
-		if ($this->getLevel() < self::LEVEL_MEMBER) {
-			throw new MemberDoesNotExistException($this->l10n->t('This member does not exist'));
-		}
-
-		return true;
-	}
-
-
-	/**
-	 * @throws MemberDoesNotExistException
-	 */
-	public function hasToBeMemberOrAlmost() {
-		if ($this->isAlmostMember() || $this->hasToBeMember()) {
-			return true;
-		}
-
-		throw new MemberDoesNotExistException($this->l10n->t('This member does not exist'));
-	}
-
-
-	/**
-	 * @throws MemberIsOwnerException
-	 */
-	public function cantBeOwner() {
-		if ($this->getLevel() === self::LEVEL_OWNER) {
-			throw new MemberIsOwnerException(
-				$this->l10n->t('This member is the owner of the circle')
-			);
-		}
-	}
-
-
-	/**
-	 * return if member already exists
+	 * @param string $userId
 	 *
-	 * @return bool
+	 * @return Member
 	 */
-	public function alreadyExistOrJoining() {
-		return ($this->getLevel() > Member::LEVEL_NONE
-				|| ($this->getStatus() !== Member::STATUS_NONMEMBER
-					&& $this->getStatus() !== Member::STATUS_REQUEST)
-		);
+	public function setUserId(string $userId): self {
+		$this->userId = $userId;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getUserId(): string {
+		return $this->userId;
 	}
 
 
 	/**
-	 * @param bool $able
+	 * @param int $userType
+	 *
+	 * @return Member
 	 */
-	public function broadcasting($able) {
-		$this->broadcasting = $able;
+	public function setUserType(int $userType): self {
+		$this->userType = $userType;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getUserType(): int {
+		return $this->userType;
 	}
 
 
 	/**
-	 * @return bool
+	 * @param string $instance
+	 *
+	 * @return Member
 	 */
-	public function isBroadcasting() {
-		return $this->broadcasting;
+	public function setInstance(string $instance): self {
+		$this->instance = $instance;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getInstance(): string {
+		return $this->instance;
 	}
 
 
 	/**
-	 * @throws MemberTypeCantEditLevelException
+	 * @param int $level
+	 *
+	 * @return Member
 	 */
-	public function levelHasToBeEditable() {
-		if ($this->getType() !== self::TYPE_USER) {
-			throw new MemberTypeCantEditLevelException(
-				$this->l10n->t('Level cannot be changed for this type of member')
-			);
-		}
+	public function setLevel(int $level): self {
+		$this->level = $level;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getLevel(): int {
+		return $this->level;
 	}
 
 
 	/**
-	 * @throws MemberAlreadyExistsException
-	 * @throws MemberIsBlockedException
+	 * @param string $status
+	 *
+	 * @return Member
 	 */
-	public function hasToBeAbleToJoinTheCircle() {
+	public function setStatus(string $status): self {
+		$this->status = $status;
 
-		if ($this->getLevel() > 0) {
-			throw new MemberAlreadyExistsException(
-				$this->l10n->t("You are already a member of this circle")
-			);
-		}
+		return $this;
+	}
 
-		if ($this->getStatus() === Member::STATUS_BLOCKED) {
-			throw new MemberIsBlockedException(
-				$this->l10n->t("You have been blocked from this circle")
-			);
-		}
+	/**
+	 * @return string
+	 */
+	public function getStatus(): string {
+		return $this->status;
 	}
 
 
 	/**
-	 * @throws MemberAlreadyExistsException
+	 * @param string $note
+	 *
+	 * @return Member
 	 */
-	public function hasToBeInviteAble() {
+	public function setNote(string $note): self {
+		$this->note = $note;
 
-		if ($this->getLevel() > 0) {
-			throw new MemberAlreadyExistsException(
-				$this->l10n->t("The user is already a member of this circle")
-			);
-		}
+		return $this;
+	}
 
-		if ($this->getStatus() === Member::STATUS_INVITED) {
-			throw new MemberAlreadyExistsException(
-				$this->l10n->t("The user has already been invited into this circle")
-			);
-		}
+	/**
+	 * @return string
+	 */
+	public function getNote(): string {
+		return $this->note;
+	}
+
+
+	/**
+	 * @param string $cachedName
+	 *
+	 * @return Member
+	 */
+	public function setCachedName(string $cachedName): self {
+		$this->cachedName = $cachedName;
+
+		return $this;
+	}
+
+
+	/**
+	 * @param int $cachedUpdate
+	 *
+	 * @return Member
+	 */
+	public function setCachedUpdate(int $cachedUpdate): self {
+		$this->cachedUpdate = $cachedUpdate;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getCachedUpdate(): int {
+		return $this->cachedUpdate;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getCachedName(): string {
+		return $this->cachedName;
+	}
+
+
+	/**
+	 * @param string $contactId
+	 *
+	 * @return Member
+	 */
+	public function setContactId(string $contactId): self {
+		$this->contactId = $contactId;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getContactId(): string {
+		return $this->contactId;
+	}
+
+
+	/**
+	 * @param string $contactMeta
+	 *
+	 * @return Member
+	 */
+	public function setContactMeta(string $contactMeta): self {
+		$this->contactMeta = $contactMeta;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getContactMeta(): string {
+		return $this->contactMeta;
+	}
+
+
+	/**
+	 * @param int $joined
+	 *
+	 * @return Member
+	 */
+	public function setJoined(int $joined): self {
+		$this->joined = $joined;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getJoined(): int {
+		return $this->joined;
+	}
+
+
+	/**
+	 * @return $this
+	 */
+	public function import(): self {
+		return $this;
+	}
+
+
+	/**
+	 * @return string[]
+	 */
+	public function jsonSerialize(): array {
+		return [
+			'id'            => $this->getId(),
+			'circle_id'     => $this->getCircleId(),
+			'user_id'       => $this->getUserId(),
+			'user_type'     => $this->getUserType(),
+			'instance'      => $this->getInstance(),
+			'level'         => $this->getLevel(),
+			'status'        => $this->getStatus(),
+			'cached_name'   => $this->getCachedName(),
+			'cached_update' => $this->getCachedUpdate(),
+			'note'          => $this->getNote(),
+			'contact_id'    => $this->getContactId(),
+			'contact_meta'  => $this->getContactMeta(),
+			'joined'        => $this->getJoined()
+		];
+	}
+
+
+	/**
+	 * @param array $data
+	 * @param string $prefix
+	 *
+	 * @return INC21QueryRow
+	 * @throws MemberNotFoundException
+	 */
+	public function importFromDatabase(array $data, string $prefix = ''): INC21QueryRow {
+		if (!array_key_exists($prefix . 'member_id', $data)) {
+			throw new MemberNotFoundException();
+		};
+
+		$this->setId($this->get($prefix . 'member_id', $data));
+		$this->setCircleId($this->get($prefix . 'circle_id', $data));
+		$this->setUserId($this->get($prefix . 'user_id', $data));
+		$this->setUserType($this->getInt($prefix . 'user_type', $data));
+		$this->setInstance($this->get($prefix . 'instance', $data));
+		$this->setLevel($this->getInt($prefix . 'level', $data));
+		$this->setStatus($this->get($prefix . 'status', $data));
+		$this->setCachedName($this->get($prefix . 'cached_name', $data));
+		$this->setNote($this->get($prefix . 'note', $data));
+		$this->setContactId($this->get($prefix . 'contact_id', $data));
+		$this->setContactMeta($this->get($prefix . 'contact_meta', $data));
+
+		$cachedUpdate = $this->getInt($prefix . 'cached_update', $data);
+		$this->setCachedUpdate(DateTime::createFromFormat('Y-m-d H:i:s', $cachedUpdate)->getTimestamp());
+
+		$joined = $this->getInt($prefix . 'joined', $data);
+		$this->setJoined(DateTime::createFromFormat('Y-m-d H:i:s', $joined)->getTimestamp());
+
+		return $this;
 	}
 
 }
-
-

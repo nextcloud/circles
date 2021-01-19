@@ -40,9 +40,9 @@ use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
 use Exception;
-use OCA\Circles\Db\CirclesRequest;
+use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\GSEventsRequest;
-use OCA\Circles\Db\MembersRequest;
+use OCA\Circles\Db\DeprecatedMembersRequest;
 use OCA\Circles\Exceptions\GlobalScaleEventException;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Exceptions\JsonException;
@@ -74,10 +74,10 @@ class GSUpstreamService {
 	/** @var GSEventsRequest */
 	private $gsEventsRequest;
 
-	/** @var CirclesRequest */
+	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
 
-	/** @var MembersRequest */
+	/** @var DeprecatedMembersRequest */
 	private $membersRequest;
 
 	/** @var GlobalScaleService */
@@ -96,8 +96,8 @@ class GSUpstreamService {
 	 * @param $userId
 	 * @param IURLGenerator $urlGenerator
 	 * @param GSEventsRequest $gsEventsRequest
-	 * @param CirclesRequest $circlesRequest
-	 * @param MembersRequest $membersRequest
+	 * @param DeprecatedCirclesRequest $circlesRequest
+	 * @param DeprecatedMembersRequest $membersRequest
 	 * @param GlobalScaleService $globalScaleService
 	 * @param ConfigService $configService
 	 * @param MiscService $miscService
@@ -106,8 +106,8 @@ class GSUpstreamService {
 		$userId,
 		IURLGenerator $urlGenerator,
 		GSEventsRequest $gsEventsRequest,
-		CirclesRequest $circlesRequest,
-		MembersRequest $membersRequest,
+		DeprecatedCirclesRequest $circlesRequest,
+		DeprecatedMembersRequest $membersRequest,
 		GlobalScaleService $globalScaleService,
 		ConfigService $configService,
 		MiscService $miscService

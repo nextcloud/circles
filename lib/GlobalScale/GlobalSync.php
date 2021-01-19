@@ -36,7 +36,7 @@ use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 
 
 /**
@@ -149,13 +149,13 @@ class GlobalSync extends AGlobalScaleEvent {
 
 
 	/**
-	 * @param Member $item
-	 * @param Member[] $members
+	 * @param DeprecatedMember $item
+	 * @param DeprecatedMember[] $members
 	 * @param string $source
 	 *
 	 * @throws MemberDoesNotExistException
 	 */
-	private function getMember(Member $item, array $members, string $source) {
+	private function getMember(DeprecatedMember $item, array $members, string $source) {
 		foreach ($members as $member) {
 			if ($member->getInstance() === '') {
 				$member->setInstance($source);

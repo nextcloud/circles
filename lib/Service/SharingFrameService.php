@@ -32,7 +32,7 @@ use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
 use Exception;
 use OCA\Circles\Api\v1\Circles;
-use OCA\Circles\Db\CirclesRequest;
+use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\FederatedLinksRequest;
 use OCA\Circles\Db\SharingFrameRequest;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
@@ -68,7 +68,7 @@ class SharingFrameService {
 	/** @var SharingFrameRequest */
 	private $sharingFrameRequest;
 
-	/** @var CirclesRequest */
+	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
 
 	/** @var FederatedLinksRequest */
@@ -95,7 +95,7 @@ class SharingFrameService {
 	 * @param IURLGenerator $urlGenerator
 	 * @param ConfigService $configService
 	 * @param SharingFrameRequest $sharingFrameRequest
-	 * @param CirclesRequest $circlesRequest
+	 * @param DeprecatedCirclesRequest $circlesRequest
 	 * @param FederatedLinksRequest $federatedLinksRequest
 	 * @param BroadcastService $broadcastService
 	 * @param FederatedLinkService $federatedLinkService
@@ -108,7 +108,7 @@ class SharingFrameService {
 		IURLGenerator $urlGenerator,
 		ConfigService $configService,
 		SharingFrameRequest $sharingFrameRequest,
-		CirclesRequest $circlesRequest,
+		DeprecatedCirclesRequest $circlesRequest,
 		FederatedLinksRequest $federatedLinksRequest,
 		BroadcastService $broadcastService,
 		FederatedLinkService $federatedLinkService,

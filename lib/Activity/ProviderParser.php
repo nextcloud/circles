@@ -30,7 +30,7 @@ namespace OCA\Circles\Activity;
 use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\FederatedLink;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Service\MiscService;
 use OCP\Activity\IEvent;
 use OCP\Activity\IManager;
@@ -156,7 +156,7 @@ class ProviderParser {
 	 * @param $othersEvent
 	 */
 	protected function parseMemberEvent(
-		IEvent $event, DeprecatedCircle $circle, Member $member, $ownEvent, $othersEvent
+		IEvent $event, DeprecatedCircle $circle, DeprecatedMember $member, $ownEvent, $othersEvent
 	) {
 		$data = [
 			'circle' => $this->generateCircleParameter($circle),
@@ -197,13 +197,13 @@ class ProviderParser {
 	 * general function to generate Circle+Member event.
 	 *
 	 * @param DeprecatedCircle $circle
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 * @param IEvent $event
 	 * @param string $ownEvent
 	 * @param string $othersEvent
 	 */
 	protected function parseCircleMemberEvent(
-		IEvent $event, DeprecatedCircle $circle, Member $member, $ownEvent, $othersEvent
+		IEvent $event, DeprecatedCircle $circle, DeprecatedMember $member, $ownEvent, $othersEvent
 	) {
 		$data = [
 			'author'   => $this->generateViewerParameter($circle),
@@ -227,14 +227,14 @@ class ProviderParser {
 	 * general function to generate Circle+Member advanced event.
 	 *
 	 * @param DeprecatedCircle $circle
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 * @param IEvent $event
 	 * @param $ownEvent
 	 * @param $targetEvent
 	 * @param $othersEvent
 	 */
 	protected function parseCircleMemberAdvancedEvent(
-		IEvent $event, DeprecatedCircle $circle, Member $member, $ownEvent, $targetEvent, $othersEvent
+		IEvent $event, DeprecatedCircle $circle, DeprecatedMember $member, $ownEvent, $targetEvent, $othersEvent
 	) {
 		$data = [
 			'author' => $this->generateViewerParameter($circle),
@@ -293,11 +293,11 @@ class ProviderParser {
 
 
 	/**
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 *
 	 * @return array|string <string,string|integer>
 	 */
-	protected function generateExternalMemberParameter(Member $member) {
+	protected function generateExternalMemberParameter(DeprecatedMember $member) {
 		return [
 			'type'    => $member->getTypeName(),
 			'id'      => $member->getUserId(),
@@ -344,11 +344,11 @@ class ProviderParser {
 
 
 	/**
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 *
 	 * @return array <string,string|integer>
 	 */
-	protected function generateUserParameter(Member $member) {
+	protected function generateUserParameter(DeprecatedMember $member) {
 		$display = $member->getCachedName();
 		if ($display === '') {
 			$display = $member->getUserId();
@@ -364,7 +364,7 @@ class ProviderParser {
 
 
 	/**
-	 * @param Member $group
+	 * @param DeprecatedMember $group
 	 *
 	 * @return array <string,string|integer>
 	 */

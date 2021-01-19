@@ -42,7 +42,7 @@ use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\GlobalScale\GSShare;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SharesToken;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\MiscService;
@@ -129,7 +129,7 @@ class FileShare extends AGlobalScaleEvent {
 		} else {
 			// if the event is local, we send mail to mail-as-members
 			$members = $this->membersRequest->forceGetMembers(
-				$circle->getUniqueId(), Member::LEVEL_MEMBER, Member::TYPE_MAIL, true
+				$circle->getUniqueId(), DeprecatedMember::LEVEL_MEMBER, DeprecatedMember::TYPE_MAIL, true
 			);
 
 			foreach ($members as $member) {
@@ -139,7 +139,7 @@ class FileShare extends AGlobalScaleEvent {
 
 		// we also fill the event's result for further things, like contact-as-members
 		$members = $this->membersRequest->forceGetMembers(
-			$circle->getUniqueId(), Member::LEVEL_MEMBER, Member::TYPE_CONTACT, true
+			$circle->getUniqueId(), DeprecatedMember::LEVEL_MEMBER, DeprecatedMember::TYPE_CONTACT, true
 		);
 
 		$accounts = [];
@@ -251,11 +251,11 @@ class FileShare extends AGlobalScaleEvent {
 			$this->sendMail(
 				$share->getNode()
 					  ->getName(), $link,
-				MiscService::getDisplay($share->getSharedBy(), Member::TYPE_USER),
+				MiscService::getDisplay($share->getSharedBy(), DeprecatedMember::TYPE_USER),
 				$circle->getName(), $email
 			);
 			$this->sendPasswordByMail(
-				$share, MiscService::getDisplay($share->getSharedBy(), Member::TYPE_USER),
+				$share, MiscService::getDisplay($share->getSharedBy(), DeprecatedMember::TYPE_USER),
 				$email, $password
 			);
 		} catch (Exception $e) {
@@ -427,11 +427,11 @@ class FileShare extends AGlobalScaleEvent {
 	 */
 	private function getMailAddressFromCircle(string $circleId): array {
 		$members = $this->membersRequest->forceGetMembers(
-			$circleId, Member::LEVEL_MEMBER, Member::TYPE_MAIL
+			$circleId, DeprecatedMember::LEVEL_MEMBER, DeprecatedMember::TYPE_MAIL
 		);
 
 		return array_map(
-			function(Member $member) {
+			function(DeprecatedMember $member) {
 				return $member->getUserId();
 			}, $members
 		);

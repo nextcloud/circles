@@ -166,7 +166,7 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 		if (array_key_exists('members', $arr) && is_array($arr['members'])) {
 			$members = [];
 			foreach ($arr['members'] as $item) {
-				$members[] = Member::fromArray($item);
+				$members[] = DeprecatedMember::fromArray($item);
 			}
 			$circle->setMembers($members);
 		}
@@ -181,13 +181,13 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 	 * @param $key
 	 * @param int $type
 	 *
-	 * @return null|Member
+	 * @return null|DeprecatedMember
 	 */
-	private static function getMemberFromArray($arr, $key, $type = Member::TYPE_USER) {
+	private static function getMemberFromArray($arr, $key, $type = DeprecatedMember::TYPE_USER) {
 
 		// TODO: 0.15.0 - remove condition is null
 		if (key_exists($key, $arr) && $arr[$key] !== null) {
-			$viewer = Member::fromArray($arr[$key]);
+			$viewer = DeprecatedMember::fromArray($arr[$key]);
 			$viewer->setType($type);
 
 			return $viewer;

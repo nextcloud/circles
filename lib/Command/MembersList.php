@@ -30,8 +30,8 @@
 namespace OCA\Circles\Command;
 
 use OC\Core\Command\Base;
-use OCA\Circles\Db\CirclesRequest;
-use OCA\Circles\Db\MembersRequest;
+use OCA\Circles\Db\DeprecatedCirclesRequest;
+use OCA\Circles\Db\DeprecatedMembersRequest;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCP\IL10N;
 use Symfony\Component\Console\Helper\Table;
@@ -53,10 +53,10 @@ class MembersList extends Base {
 	/** @var IL10N */
 	private $l10n;
 
-	/** @var CirclesRequest */
+	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
 
-	/** @var MembersRequest */
+	/** @var DeprecatedMembersRequest */
 	private $membersRequest;
 
 
@@ -64,10 +64,10 @@ class MembersList extends Base {
 	 * MembersList constructor.
 	 *
 	 * @param IL10N $l10n
-	 * @param CirclesRequest $circlesRequest
-	 * @param MembersRequest $membersRequest
+	 * @param DeprecatedCirclesRequest $circlesRequest
+	 * @param DeprecatedMembersRequest $membersRequest
 	 */
-	public function __construct(IL10N $l10n, CirclesRequest $circlesRequest, MembersRequest $membersRequest) {
+	public function __construct(IL10N $l10n, DeprecatedCirclesRequest $circlesRequest, DeprecatedMembersRequest $membersRequest) {
 		parent::__construct();
 		$this->l10n = $l10n;
 		$this->circlesRequest = $circlesRequest;

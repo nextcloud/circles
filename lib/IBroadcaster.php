@@ -5,7 +5,7 @@ namespace OCA\Circles;
 
 
 use OCA\Circles\Model\DeprecatedCircle;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SharingFrame;
 
 interface IBroadcaster {
@@ -53,26 +53,26 @@ interface IBroadcaster {
 	 * broadcast a creation of a Share to a $userId.
 	 *
 	 * @param SharingFrame $frame
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 */
-	public function createShareToMember(SharingFrame $frame, Member $member);
+	public function createShareToMember(SharingFrame $frame, DeprecatedMember $member);
 
 
 	/**
 	 * broadcast an edition of $share to $userId.
 	 *
 	 * @param SharingFrame $frame
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 */
-	public function editShareToMember(SharingFrame $frame, Member $member);
+	public function editShareToMember(SharingFrame $frame, DeprecatedMember $member);
 
 
 	/**
 	 * broadcast a destruction of $share to $userId.
 	 *
 	 * @param SharingFrame $frame
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 */
-	public function deleteShareToMember(SharingFrame $frame, Member $member);
+	public function deleteShareToMember(SharingFrame $frame, DeprecatedMember $member);
 
 }

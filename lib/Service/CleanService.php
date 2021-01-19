@@ -30,9 +30,9 @@
 namespace OCA\Circles\Service;
 
 
-use OCA\Circles\Db\CirclesRequest;
+use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\DeprecatedRequestBuilder;
-use OCA\Circles\Db\MembersRequest;
+use OCA\Circles\Db\DeprecatedMembersRequest;
 use OCA\Circles\Db\SharesRequest;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Model\DeprecatedCircle;
@@ -49,10 +49,10 @@ class CleanService {
 	/** @var IDBConnection */
 	private $dbConnection;
 
-	/** @var CirclesRequest */
+	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
 
-	/** @var MembersRequest */
+	/** @var DeprecatedMembersRequest */
 	private $membersRequest;
 
 	/** @var SharesRequest */
@@ -63,12 +63,12 @@ class CleanService {
 	 * Clean constructor.
 	 *
 	 * @param IDBConnection $connection
-	 * @param CirclesRequest $circlesRequest
-	 * @param MembersRequest $membersRequest
+	 * @param DeprecatedCirclesRequest $circlesRequest
+	 * @param DeprecatedMembersRequest $membersRequest
 	 * @param SharesRequest $sharesRequest
 	 */
 	public function __construct(
-		IDBConnection $connection, CirclesRequest $circlesRequest, MembersRequest $membersRequest,
+		IDBConnection $connection, DeprecatedCirclesRequest $circlesRequest, DeprecatedMembersRequest $membersRequest,
 		SharesRequest $sharesRequest
 	) {
 		$this->dbConnection = $connection;

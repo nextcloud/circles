@@ -32,7 +32,7 @@ namespace OCA\Circles\GlobalScale;
 
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Model\GlobalScale\GSEvent;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 
 
 /**
@@ -67,7 +67,7 @@ class CircleStatus extends AGlobalScaleEvent {
 
 		try {
 			$this->circlesRequest->forceGetCircle($circle->getUniqueId());
-			$owners = $this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_OWNER);
+			$owners = $this->membersRequest->forceGetMembers($circle->getUniqueId(), DeprecatedMember::LEVEL_OWNER);
 			if (!empty($owners)) {
 				$owner = $owners[0];
 				if ($owner->getInstance() === '') {

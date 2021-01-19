@@ -29,11 +29,16 @@
 
 namespace OCA\Circles\Command;
 
+use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
+use daita\MySmallPhpTools\Exceptions\SignatoryException;
+use daita\MySmallPhpTools\Exceptions\SignatureException;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use OC\Core\Command\Base;
-use OCA\Circles\Db\CirclesRequest;
+use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Exceptions\GSStatusException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Service\RemoteService;
 use OCP\IL10N;
@@ -59,7 +64,7 @@ class CirclesList extends Base {
 	/** @var IL10N */
 	private $l10n;
 
-	/** @var CirclesRequest */
+	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
 
 	/** @var RemoteService */
@@ -70,9 +75,9 @@ class CirclesList extends Base {
 	 * CirclesList constructor.
 	 *
 	 * @param IL10N $l10n
-	 * @param CirclesRequest $circlesRequest
+	 * @param DeprecatedCirclesRequest $circlesRequest
 	 */
-	public function __construct(IL10N $l10n, CirclesRequest $circlesRequest, RemoteService $remoteService) {
+	public function __construct(IL10N $l10n, DeprecatedCirclesRequest $circlesRequest, RemoteService $remoteService) {
 		parent::__construct();
 		$this->l10n = $l10n;
 		$this->circlesRequest = $circlesRequest;
@@ -148,6 +153,11 @@ class CirclesList extends Base {
 	 * @return DeprecatedCircle[]
 	 * @throws ConfigNoCircleAvailableException
 	 * @throws GSStatusException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws SignatureException
 	 */
 	private function getCircles(string $owner, string $viewer, string $remote): array {
 		if ($remote !== '') {

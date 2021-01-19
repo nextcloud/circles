@@ -27,7 +27,7 @@
 namespace OCA\Circles\Search;
 
 use OCA\Circles\ISearch;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SearchResult;
 
 class LocalGroups implements ISearch {
@@ -41,7 +41,7 @@ class LocalGroups implements ISearch {
 
 		$groups = $groupManager->search($search);
 		foreach ($groups as $group) {
-			$result[] = new SearchResult($group->getGID(), Member::TYPE_GROUP);
+			$result[] = new SearchResult($group->getGID(), DeprecatedMember::TYPE_GROUP);
 		}
 
 		return $result;

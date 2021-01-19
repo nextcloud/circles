@@ -35,9 +35,9 @@ use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Model\DeprecatedCircle;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 
-class CirclesRequest extends CirclesRequestBuilder {
+class DeprecatedCirclesRequest extends DeprecatedCirclesRequestBuilder {
 
 
 	/**
@@ -151,7 +151,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 		}
 
 		// todo - make it works based on $type
-		$typeViewer = Member::TYPE_USER;
+		$typeViewer = DeprecatedMember::TYPE_USER;
 
 		$qb = $this->getCirclesSelectSql();
 		$this->leftJoinUserIdAsViewer($qb, $userId, $typeViewer, '');
@@ -190,7 +190,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 	 * @throws ConfigNoCircleAvailableException
 	 */
 	public function getCircle(
-		string $circleUniqueId, string $viewerId, int $type = Member::TYPE_USER, string $instanceId = '',
+		string $circleUniqueId, string $viewerId, int $type = DeprecatedMember::TYPE_USER, string $instanceId = '',
 		bool $forceAll = false
 	) {
 		$qb = $this->getCirclesSelectSql();
@@ -305,7 +305,7 @@ class CirclesRequest extends CirclesRequestBuilder {
 
 		$list = $this->getCircles(
 			$userId, DeprecatedCircle::CIRCLES_PERSONAL, $circle->getName(),
-			Member::LEVEL_OWNER
+			DeprecatedMember::LEVEL_OWNER
 		);
 
 		foreach ($list as $test) {

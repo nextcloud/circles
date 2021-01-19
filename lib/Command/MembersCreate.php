@@ -40,9 +40,9 @@ use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
 use Exception;
 use OC\Core\Command\Base;
 use OC\User\NoUserException;
-use OCA\Circles\Db\MembersRequest;
+use OCA\Circles\Db\DeprecatedMembersRequest;
 use OCA\Circles\Exceptions\GSStatusException;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MembersService;
 use OCP\IL10N;
@@ -72,7 +72,7 @@ class MembersCreate extends Base {
 	/** @var MembersService */
 	private $membersService;
 
-	/** @var MembersRequest */
+	/** @var DeprecatedMembersRequest */
 	private $membersRequest;
 
 	/** @var ConfigService */
@@ -85,12 +85,12 @@ class MembersCreate extends Base {
 	 * @param IL10N $l10n
 	 * @param IUserManager $userManager
 	 * @param MembersService $membersService
-	 * @param MembersRequest $membersRequest
+	 * @param DeprecatedMembersRequest $membersRequest
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		IL10N $l10n, IUserManager $userManager, MembersService $membersService,
-		MembersRequest $membersRequest, ConfigService $configService
+		DeprecatedMembersRequest $membersRequest, ConfigService $configService
 	) {
 		parent::__construct();
 		$this->l10n = $l10n;
@@ -137,10 +137,10 @@ class MembersCreate extends Base {
 		}
 
 		$levels = [
-			'member'    => Member::LEVEL_MEMBER,
-			'moderator' => Member::LEVEL_MODERATOR,
-			'admin'     => Member::LEVEL_ADMIN,
-			'owner'     => Member::LEVEL_OWNER
+			'member'    => DeprecatedMember::LEVEL_MEMBER,
+			'moderator' => DeprecatedMember::LEVEL_MODERATOR,
+			'admin'     => DeprecatedMember::LEVEL_ADMIN,
+			'owner'     => DeprecatedMember::LEVEL_OWNER
 		];
 
 		if (!key_exists(strtolower($level), $levels)) {
@@ -149,10 +149,10 @@ class MembersCreate extends Base {
 
 		$level = $levels[strtolower($level)];
 
-		$this->membersService->addMember($circleId, $userId, Member::TYPE_USER, $instance, true);
-		$this->membersService->levelMember($circleId, $userId, Member::TYPE_USER, $instance, $level, true);
+		$this->membersService->addMember($circleId, $userId, DeprecatedMember::TYPE_USER, $instance, true);
+		$this->membersService->levelMember($circleId, $userId, DeprecatedMember::TYPE_USER, $instance, $level, true);
 
-		$member = $this->membersRequest->forceGetMember($circleId, $userId, Member::TYPE_USER, $instance);
+		$member = $this->membersRequest->forceGetMember($circleId, $userId, DeprecatedMember::TYPE_USER, $instance);
 		echo json_encode($member, JSON_PRETTY_PRINT) . "\n";
 
 		return 0;

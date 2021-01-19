@@ -36,7 +36,7 @@ use JsonSerializable;
 use OCA\Circles\Exceptions\JsonException;
 use OCA\Circles\Exceptions\ModelException;
 use OCA\Circles\Model\DeprecatedCircle;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 
 
 /**
@@ -81,7 +81,7 @@ class GSEvent implements JsonSerializable {
 	/** @var DeprecatedCircle */
 	private $circle;
 
-	/** @var Member */
+	/** @var DeprecatedMember */
 	private $member;
 
 	/** @var SimpleDataStore */
@@ -259,18 +259,18 @@ class GSEvent implements JsonSerializable {
 
 
 	/**
-	 * @return Member
+	 * @return DeprecatedMember
 	 */
-	public function getMember(): Member {
+	public function getMember(): DeprecatedMember {
 		return $this->member;
 	}
 
 	/**
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 *
 	 * @return GSEvent
 	 */
-	public function setMember(Member $member): self {
+	public function setMember(DeprecatedMember $member): self {
 		$this->member = $member;
 
 		return $this;
@@ -410,7 +410,7 @@ class GSEvent implements JsonSerializable {
 		}
 
 		if (array_key_exists('member', $data)) {
-			$this->setMember(Member::fromArray($data['member']));
+			$this->setMember(DeprecatedMember::fromArray($data['member']));
 		}
 
 		if (!$this->isValid()) {

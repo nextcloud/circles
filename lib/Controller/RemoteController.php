@@ -37,6 +37,8 @@ use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Exceptions\SignatureException;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Controller;
 use Exception;
+use OCA\Circles\Db\CircleRequest;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Service\RemoteService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
@@ -54,13 +56,19 @@ class RemoteController extends Controller {
 	use TNC21Controller;
 
 
+	/** @var CircleRequest */
+	private $circleRequest;
+
 	/** @var RemoteService */
 	private $remoteService;
 
 
-	public function __construct(string $appName, IRequest $request, RemoteService $remoteService) {
+	public function __construct(
+		string $appName, IRequest $request, CircleRequest $circleRequest, RemoteService $remoteService
+	) {
 		parent::__construct($appName, $request);
 
+		$this->circleRequest = $circleRequest;
 		$this->remoteService = $remoteService;
 	}
 
@@ -101,9 +109,13 @@ class RemoteController extends Controller {
 	public function circles() {
 		$body = file_get_contents('php://input');
 
-		$circles = ['ok' => 17];
+		$circles = $this->circleRequest->getFederated();
 
-		return $this->success($circles);
+		foreach ($circles as $c) {
+			$c->setType(Circle::TYPE_LOCKED | Circle::TYPE_VISIBLE);
+		}
+
+		return $this->success($circles, false);
 	}
 
 

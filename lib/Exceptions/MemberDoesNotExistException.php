@@ -27,6 +27,12 @@
 namespace OCA\Circles\Exceptions;
 
 
+/**
+ * Class MemberDoesNotExistException
+ *
+ * @deprecated
+ * @package OCA\Circles\Exceptions
+ */
 class MemberDoesNotExistException extends \Exception {
 
 }

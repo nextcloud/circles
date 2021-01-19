@@ -28,7 +28,7 @@
 namespace OCA\Circles\Db;
 
 
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 
 
 /**
@@ -42,9 +42,9 @@ class SharesRequest extends SharesRequestBuilder {
 	/**
 	 * remove shares from a member to a circle
 	 *
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 */
-	public function removeSharesFromMember(Member $member) {
+	public function removeSharesFromMember(DeprecatedMember $member) {
 		$qb = $this->getSharesDeleteSql();
 		$expr = $qb->expr();
 
