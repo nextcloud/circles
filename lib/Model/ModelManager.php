@@ -32,8 +32,8 @@ declare(strict_types=1);
 namespace OCA\Circles\Model;
 
 
-use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\Service\ConfigService;
 
 /**
  * Class ModelManager
@@ -47,12 +47,12 @@ class ModelManager {
 	const TYPES_LONG = 2;
 
 
-	/** @var DeprecatedCirclesRequest */
-	private $circlesRequest;
+	/** @var ConfigService */
+	private $configService;
 
 
-	public function __construct(DeprecatedCirclesRequest $circlesRequest) {
-		$this->circlesRequest = $circlesRequest;
+	public function __construct(ConfigService $configService) {
+		$this->configService = $configService;
 	}
 
 
@@ -71,6 +71,9 @@ class ModelManager {
 		try {
 			$owner = new Member();
 			$owner->importFromDatabase($data, 'owner_');
+			if ($owner->getInstance() === '') {
+				$owner->setInstance($this->configService->getLocalInstance());
+			}
 			$circle->setOwner($owner);
 		} catch (MemberNotFoundException $e) {
 		}

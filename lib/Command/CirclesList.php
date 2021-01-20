@@ -41,6 +41,7 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\ModelManager;
 use OCA\Circles\Service\CircleService;
+use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\RemoteService;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
@@ -61,30 +62,36 @@ class CirclesList extends Base {
 	use TArrayTools;
 
 
+	/** @var ModelManager */
+	private $modelManager;
+
 	/** @var CircleService */
 	private $circleService;
 
 	/** @var RemoteService */
 	private $remoteService;
 
-	/** @var ModelManager */
-	private $modelManager;
+	/** @var ConfigService */
+	private $configService;
 
 
 	/**
 	 * CirclesList constructor.
 	 *
+	 * @param ModelManager $modelManager
 	 * @param CircleService $circleService
 	 * @param RemoteService $remoteService
-	 * @param ModelManager $modelManager
+	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		CircleService $circleService, RemoteService $remoteService, ModelManager $modelManager
+		ModelManager $modelManager, CircleService $circleService, RemoteService $remoteService,
+		ConfigService $configService
 	) {
 		parent::__construct();
+		$this->modelManager = $modelManager;
 		$this->circleService = $circleService;
 		$this->remoteService = $remoteService;
-		$this->modelManager = $modelManager;
+		$this->configService = $configService;
 	}
 
 
@@ -120,7 +127,6 @@ class CirclesList extends Base {
 		$viewer = $input->getOption('viewer');
 		$json = $input->getOption('json');
 		$remote = $input->getOption('remote');
-		$display = ($input->getOption('def') ? ModelManager::TYPES_LONG : ModelManager::TYPES_SHORT);
 
 		$output = new ConsoleOutput();
 		$output = $output->section();
@@ -142,21 +148,22 @@ class CirclesList extends Base {
 		$table->setHeaders(['ID', 'Name', 'Type', 'Owner', 'Instance', 'Limit', 'Description']);
 		$table->render();
 
+		$local = $this->configService->getLocalInstance();
+		$display = ($input->getOption('def') ? ModelManager::TYPES_LONG : ModelManager::TYPES_SHORT);
 		foreach ($circles as $circle) {
 //			if ($circle->isHidden() && !$input->getOption('all')) {
 //				continue;
 //			}
 
 			$owner = $circle->getOwner();
-			$settings = $circle->getSettings();
 			$table->appendRow(
 				[
 					$circle->getId(),
 					$circle->getName(),
 					json_encode($this->modelManager->getCircleTypes($circle, $display)),
 					$owner->getUserId(),
-					$owner->getInstance(),
-					$this->getInt('members_limit', $settings, -1),
+					($owner->getInstance() === $local) ? '' : $owner->getInstance(),
+					$this->getInt('members_limit', $circle->getSettings(), -1),
 					substr($circle->getDescription(), 0, 30)
 				]
 			);

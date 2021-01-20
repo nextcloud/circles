@@ -38,7 +38,6 @@ use daita\MySmallPhpTools\Exceptions\SignatureException;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Controller;
 use Exception;
 use OCA\Circles\Db\CircleRequest;
-use OCA\Circles\Model\Circle;
 use OCA\Circles\Service\RemoteService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
@@ -107,13 +106,10 @@ class RemoteController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function circles() {
-		$body = file_get_contents('php://input');
-
 		$circles = $this->circleRequest->getFederated();
 
 		return $this->success($circles, false);
 	}
-
 
 }
 

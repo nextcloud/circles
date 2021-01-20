@@ -116,8 +116,8 @@ class CircleRequest extends CircleRequestBuilder {
 	 */
 	public function getFederated(): array {
 		$qb = $this->getCircleSelectSql();
-		$qb->leftJoinOwner();
 		$qb->filterConfig(Circle::CFG_FEDERATED);
+		$qb->leftJoinOwner();
 
 		return $this->getItemsFromRequest($qb);
 	}
