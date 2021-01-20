@@ -103,7 +103,7 @@ style(Application::APP_ID, 'navigation');
 			?>
 
 		</select>
-		<input id="circles_new_submit" type="submit" value="<?php p($l->t('Creation')); ?>"
+		<input id="circles_new_submit" type="submit" value="<?php p($l->t('Create circle')); ?>"
 			   style="display: none;" />
 
 		<div id="circles_new_type_definition" style="display: none;">
