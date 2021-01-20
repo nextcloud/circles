@@ -30,9 +30,11 @@
 namespace OCA\Circles\Command;
 
 use OC\Core\Command\Base;
-use OCA\Circles\Db\DeprecatedCirclesRequest;
-use OCA\Circles\Db\DeprecatedMembersRequest;
-use OCA\Circles\Exceptions\CircleDoesNotExistException;
+use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Model\Member;
+use OCA\Circles\Service\CircleService;
+use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\MemberService;
 use OCP\IL10N;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
@@ -53,25 +55,32 @@ class MembersList extends Base {
 	/** @var IL10N */
 	private $l10n;
 
-	/** @var DeprecatedCirclesRequest */
-	private $circlesRequest;
+	/** @var CircleService */
+	private $circleService;
 
-	/** @var DeprecatedMembersRequest */
-	private $membersRequest;
+	/** @var MemberService */
+	private $memberService;
+
+	/** @var ConfigService */
+	private $configService;
 
 
 	/**
 	 * MembersList constructor.
 	 *
 	 * @param IL10N $l10n
-	 * @param DeprecatedCirclesRequest $circlesRequest
-	 * @param DeprecatedMembersRequest $membersRequest
+	 * @param CircleService $circleService
+	 * @param MemberService $memberService
+	 * @param ConfigService $configService
 	 */
-	public function __construct(IL10N $l10n, DeprecatedCirclesRequest $circlesRequest, DeprecatedMembersRequest $membersRequest) {
+	public function __construct(
+		IL10N $l10n, CircleService $circleService, MemberService $memberService, ConfigService $configService
+	) {
 		parent::__construct();
 		$this->l10n = $l10n;
-		$this->circlesRequest = $circlesRequest;
-		$this->membersRequest = $membersRequest;
+		$this->circleService = $circleService;
+		$this->memberService = $memberService;
+		$this->configService = $configService;
 	}
 
 
@@ -89,15 +98,14 @@ class MembersList extends Base {
 	 * @param OutputInterface $output
 	 *
 	 * @return int
-	 * @throws CircleDoesNotExistException
+	 * @throws CircleNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$circleId = $input->getArgument('circle_id');
 		$json = $input->getOption('json');
 
-		$this->circlesRequest->forceGetCircle($circleId);
-
-		$members = $this->membersRequest->forceGetMembers($circleId);
+		$this->circleService->getCircle($circleId);
+		$members = $this->memberService->getMembers($circleId);
 
 		if ($json) {
 			echo json_encode($members, JSON_PRETTY_PRINT) . "\n";
@@ -113,14 +121,14 @@ class MembersList extends Base {
 		$table->render();
 		$output->writeln('');
 
-		$c = 0;
+		$local = $this->configService->getLocalInstance();
 		foreach ($members as $member) {
 			$table->appendRow(
 				[
-					$member->getMemberId(),
+					$member->getId(),
 					$member->getUserId(),
-					$member->getInstance(),
-					$member->getLevelString(),
+					($member->getInstance() === $local) ? '' : $member->getInstance(),
+					Member::$DEF_LEVEL[$member->getLevel()]
 				]
 			);
 		}

@@ -53,8 +53,8 @@ use OCA\Circles\Exceptions\MemberCantJoinCircleException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\MemberIsNotModeratorException;
 use OCA\Circles\Model\DeprecatedCircle;
-use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\DeprecatedMember;
+use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCP\IL10N;
 use OCP\IUserManager;
 
@@ -62,6 +62,7 @@ use OCP\IUserManager;
 /**
  * Class MembersService
  *
+ * @deprecated
  * @package OCA\Circles\Service
  */
 class MembersService {
@@ -129,7 +130,8 @@ class MembersService {
 	 */
 	public function __construct(
 		$userId, IL10N $l10n, IUserManager $userManager, ConfigService $configService,
-		DeprecatedCirclesRequest $circlesRequest, DeprecatedMembersRequest $membersRequest, AccountsRequest $accountsRequest,
+		DeprecatedCirclesRequest $circlesRequest, DeprecatedMembersRequest $membersRequest,
+		AccountsRequest $accountsRequest,
 		SharesRequest $sharesRequest, TokensRequest $tokensRequest, EventsService $eventsService,
 		GSUpstreamService $gsUpstreamService, FileSharingBroadcaster $fileSharingBroadcaster,
 		MiscService $miscService
@@ -200,7 +202,8 @@ class MembersService {
 	 * @throws NoUserException
 	 * @throws Exception
 	 */
-	private function addSingleMember(DeprecatedCircle $circle, $ident, $type, $instance = '', bool $force = false
+	private function addSingleMember(
+		DeprecatedCircle $circle, $ident, $type, $instance = '', bool $force = false
 	): DeprecatedMember {
 		$this->verifyIdentBasedOnItsType($ident, $type, $instance);
 		$this->verifyIdentContact($ident, $type);
@@ -287,7 +290,8 @@ class MembersService {
 
 		$member->inviteToCircle($circle->getType());
 
-		if ($circle->getType() === DeprecatedCircle::CIRCLES_CLOSED && $this->configService->isInvitationSkipped()) {
+		if ($circle->getType() === DeprecatedCircle::CIRCLES_CLOSED
+			&& $this->configService->isInvitationSkipped()) {
 			$member->joinCircle($circle->getType());
 		}
 	}

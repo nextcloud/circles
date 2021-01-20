@@ -68,6 +68,13 @@ class Member extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 	const STATUS_BLOCKED = 'Blocked';
 	const STATUS_KICKED = 'Kicked';
 
+	static $DEF_LEVEL = [
+		1 => 'Member',
+		4 => 'Moderator',
+		8 => 'Admin',
+		9 => 'Owner'
+	];
+
 
 	/** @var string */
 	private $id = '';
@@ -445,7 +452,12 @@ class Member extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 		$this->setCachedUpdate(DateTime::createFromFormat('Y-m-d H:i:s', $cachedUpdate)->getTimestamp());
 
 		$joined = $this->get($prefix . 'joined', $data);
+		// TODO: pass timezoneService using $params/_params
 		$this->setJoined(DateTime::createFromFormat('Y-m-d H:i:s', $joined)->getTimestamp());
+
+		if ($this->getInstance() === '') {
+			$this->setInstance($this->get('_params.local', $data));
+		}
 
 		return $this;
 	}

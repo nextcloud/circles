@@ -52,6 +52,13 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 	}
 
 	/**
+	 * @param string $id
+	 */
+	public function limitToCircleId(string $id): void {
+		$this->limitToDBField('circle_id', $id, false);
+	}
+
+	/**
 	 * @param string $host
 	 */
 	public function limitToInstance(string $host): void {
@@ -90,7 +97,7 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 			 ->selectAlias('m.contact_meta', 'member_contact_meta')
 			 ->selectAlias('m.joined', 'member_joined')
 			 ->leftJoin(
-				 $this->getDefaultSelectAlias(), CoreRequestBuilder::TABLE_MEMBERS, 'm',
+				 $this->getDefaultSelectAlias(), CoreRequestBuilder::TABLE_MEMBER, 'm',
 				 $expr->eq('m.circle_id', $pf . 'unique_id')
 			 );
 
@@ -131,7 +138,7 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 			 ->selectAlias('o.contact_meta', 'owner_contact_meta')
 			 ->selectAlias('o.joined', 'owner_joined')
 			 ->leftJoin(
-				 $this->getDefaultSelectAlias(), CoreRequestBuilder::TABLE_MEMBERS, 'o',
+				 $this->getDefaultSelectAlias(), CoreRequestBuilder::TABLE_MEMBER, 'o',
 				 $expr->andX(
 					 $expr->eq('o.circle_id', $pf . 'unique_id'),
 					 $expr->eq('o.level', $this->createNamedParameter(Member::LEVEL_OWNER))
@@ -168,7 +175,7 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 			 ->selectAlias('v.contact_meta', 'viewer_contact_meta')
 			 ->selectAlias('v.joined', 'viewer_joined')
 			 ->leftJoin(
-				 $this->getDefaultSelectAlias(), CoreRequestBuilder::TABLE_MEMBERS, 'v',
+				 $this->getDefaultSelectAlias(), CoreRequestBuilder::TABLE_MEMBER, 'v',
 				 $expr->andX(
 					 $expr->eq('v.circle_id', $pf . 'unique_id'),
 					 $expr->eq('v.user_id', $this->createNamedParameter($viewer->getUserId())),

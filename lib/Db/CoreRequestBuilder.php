@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Db;
 
 
+use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\TimezoneService;
 
 
@@ -46,7 +47,7 @@ class CoreRequestBuilder {
 	const SHARE_TYPE = 7;
 
 	const TABLE_CIRCLE = 'circle_circles';
-	const TABLE_MEMBERS = 'circle_members';
+	const TABLE_MEMBER = 'circle_members';
 	const TABLE_GROUPS = 'circle_groups';
 	const TABLE_SHARES = 'circle_shares';
 	const TABLE_LINKS = 'circle_links';
@@ -63,7 +64,7 @@ class CoreRequestBuilder {
 	private $tables = [
 		self::TABLE_CIRCLE,
 		self::TABLE_GROUPS,
-		self::TABLE_MEMBERS,
+		self::TABLE_MEMBER,
 		self::TABLE_SHARES,
 		self::TABLE_LINKS,
 		self::TABLE_TOKENS,
@@ -77,14 +78,19 @@ class CoreRequestBuilder {
 	/** @var TimezoneService */
 	protected $timezoneService;
 
+	/** @var ConfigService */
+	protected $configService;
+
 
 	/**
 	 * CoreRequestBuilder constructor.
 	 *
 	 * @param TimezoneService $timezoneService
+	 * @param ConfigService $configService
 	 */
-	public function __construct(TimezoneService $timezoneService) {
+	public function __construct(TimezoneService $timezoneService, ConfigService $configService) {
 		$this->timezoneService = $timezoneService;
+		$this->configService = $configService;
 	}
 
 

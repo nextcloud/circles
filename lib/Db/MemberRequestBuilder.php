@@ -33,25 +33,25 @@ namespace OCA\Circles\Db;
 
 
 use daita\MySmallPhpTools\Exceptions\RowNotFoundException;
-use OCA\Circles\Exceptions\CircleNotFoundException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\Model\Member;
 
 
 /**
- * Class CircleRequestBuilder
+ * Class MemberRequestBuilder
  *
  * @package OCA\Circles\Db
  */
-class CircleRequestBuilder extends CoreRequestBuilder {
+class MemberRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
 	 * @return CoreQueryBuilder
 	 */
-	protected function getCircleInsertSql(): CoreQueryBuilder {
+	protected function getMemberInsertSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->insert(self::TABLE_CIRCLE)
-		   ->setValue('creation', $qb->createNamedParameter($this->timezoneService->getUTCDate()));
+		$qb->insert(self::TABLE_MEMBER)
+		   ->setValue('joined', $qb->createNamedParameter($this->timezoneService->getUTCDate()));
 
 		return $qb;
 	}
@@ -60,9 +60,9 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * @return CoreQueryBuilder
 	 */
-	protected function getCircleUpdateSql(): CoreQueryBuilder {
+	protected function getMemberUpdateSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->update(self::TABLE_CIRCLE);
+		$qb->update(self::TABLE_MEMBER);
 
 		return $qb;
 	}
@@ -71,15 +71,15 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * @return CoreQueryBuilder
 	 */
-	protected function getCircleSelectSql(): CoreQueryBuilder {
+	protected function getMemberSelectSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->selectDistinct('c.unique_id')
-		   ->addSelect(
-			   'c.name', 'c.alt_name', 'c.description', 'c.settings', 'c.config', 'contact_addressbook',
-			   'contact_groupname', 'c.creation'
-		   )
-		   ->from(self::TABLE_CIRCLE, 'c')
-		   ->setDefaultSelectAlias('c');
+		$qb->select(
+			'm.user_id', 'm.instance', 'm.user_type', 'm.circle_id', 'm.level', 'm.status', 'm.note',
+			'm.contact_id', 'm.member_id', 'm.cached_name', 'm.cached_update', 'm.contact_meta', 'm.joined'
+		)
+		   ->from(self::TABLE_MEMBER, 'm')
+		   ->orderBy('m.joined')
+		   ->setDefaultSelectAlias('m');
 
 		return $qb;
 	}
@@ -90,9 +90,9 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 	 *
 	 * @return CoreQueryBuilder
 	 */
-	protected function getCircleDeleteSql(): CoreQueryBuilder {
+	protected function getMemberDeleteSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->delete(self::TABLE_CIRCLE);
+		$qb->delete(self::TABLE_MEMBER);
 
 		return $qb;
 	}
@@ -101,34 +101,34 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * @param CoreQueryBuilder $qb
 	 *
-	 * @return Circle
-	 * @throws CircleNotFoundException
+	 * @return Member
+	 * @throws MemberNotFoundException
 	 */
-	public function getItemFromRequest(CoreQueryBuilder $qb): Circle {
-		/** @var Circle $circle */
+	public function getItemFromRequest(CoreQueryBuilder $qb): Member {
+		/** @var Member $member */
 		try {
-			$circle = $qb->asItem(
-				Circle::class,
+			$member = $qb->asItem(
+				Member::class,
 				[
 					'local' => $this->configService->getLocalInstance()
 				]
 			);
 		} catch (RowNotFoundException $e) {
-			throw new CircleNotFoundException();
+			throw new MemberNotFoundException();
 		}
 
-		return $circle;
+		return $member;
 	}
 
 	/**
 	 * @param CoreQueryBuilder $qb
 	 *
-	 * @return Circle[]
+	 * @return Member[]
 	 */
 	public function getItemsFromRequest(CoreQueryBuilder $qb): array {
-		/** @var Circle[] $result */
+		/** @var Member[] $result */
 		return $qb->asItems(
-			Circle::class,
+			Member::class,
 			[
 				'local' => $this->configService->getLocalInstance()
 			]

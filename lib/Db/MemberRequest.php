@@ -38,41 +38,41 @@ use OCA\Circles\Model\Member;
 
 
 /**
- * Class CircleRequest
+ * Class MemberRequest
  *
  * @package OCA\Circles\Db
  */
-class CircleRequest extends CircleRequestBuilder {
+class MemberRequest extends MemberRequestBuilder {
 
 
-	/**
-	 * @param Circle $circle
-	 */
-	public function save(Circle $circle): void {
-		$qb = $this->getCircleInsertSql();
-		$qb->setValue('id', $qb->createNamedParameter($circle->getId()));
-//		   ->setValue('instance', $qb->createNamedParameter($circle->getInstance()))
-//		   ->setValue('href', $qb->createNamedParameter($remote->getId()))
-//		   ->setValue('item', $qb->createNamedParameter(json_encode($remote->getOrigData())));
+//	/**
+//	 * @param Circle $circle
+//	 */
+//	public function save(Circle $circle): void {
+//		$qb = $this->getCircleInsertSql();
+//		$qb->setValue('id', $qb->createNamedParameter($circle->getId()));
+////		   ->setValue('instance', $qb->createNamedParameter($circle->getInstance()))
+////		   ->setValue('href', $qb->createNamedParameter($remote->getId()))
+////		   ->setValue('item', $qb->createNamedParameter(json_encode($remote->getOrigData())));
+//
+//		$qb->execute();
+//	}
+//
 
-		$qb->execute();
-	}
-
-
-	/**
-	 * @param Circle $circle
-	 */
-	public function update(Circle $circle) {
-		$qb = $this->getCircleUpdateSql();
-//		$qb->set('uid', $qb->createNamedParameter($circle->getUid(true)))
-//		   ->set('href', $qb->createNamedParameter($circle->getId()))
-//		   ->set('item', $qb->createNamedParameter(json_encode($circle->getOrigData())));
-
-		$qb->limitToUniqueId($circle->getId());
-
-		$qb->execute();
-	}
-
+//	/**
+//	 * @param Circle $circle
+//	 */
+//	public function update(Circle $circle) {
+//		$qb = $this->getCircleUpdateSql();
+////		$qb->set('uid', $qb->createNamedParameter($circle->getUid(true)))
+////		   ->set('href', $qb->createNamedParameter($circle->getId()))
+////		   ->set('item', $qb->createNamedParameter(json_encode($circle->getOrigData())));
+//
+//		$qb->limitToUniqueId($circle->getId());
+//
+//		$qb->execute();
+//	}
+//
 
 	/**
 	 * @param Member|null $filter
@@ -80,17 +80,9 @@ class CircleRequest extends CircleRequestBuilder {
 	 *
 	 * @return Circle[]
 	 */
-	public function getCircles(?Member $filter = null, ?Member $viewer = null): array {
-		$qb = $this->getCircleSelectSql();
-		$qb->leftJoinOwner();
-
-		if (!is_null($viewer)) {
-			$qb->limitToViewer($viewer);
-		}
-
-		if (!is_null($filter)) {
-			$qb->limitToMembership($filter);
-		}
+	public function getMembers(string $circleId): array {
+		$qb = $this->getMemberSelectSql();
+		$qb->limitToCircleId($circleId);
 
 		return $this->getItemsFromRequest($qb);
 	}

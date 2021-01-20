@@ -71,9 +71,6 @@ class ModelManager {
 		try {
 			$owner = new Member();
 			$owner->importFromDatabase($data, 'owner_');
-			if ($owner->getInstance() === '') {
-				$owner->setInstance($this->configService->getLocalInstance());
-			}
 			$circle->setOwner($owner);
 		} catch (MemberNotFoundException $e) {
 		}

@@ -34,17 +34,18 @@ namespace OCA\Circles\Service;
 
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use OCA\Circles\Db\CircleRequest;
+use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 
 
 /**
- * Class CircleService
+ * Class MemberService
  *
  * @package OCA\Circles\Service
  */
-class CircleService {
+class MemberService {
 
 
 	use TArrayTools;
@@ -53,47 +54,49 @@ class CircleService {
 	/** @var CircleRequest */
 	private $circleRequest;
 
+	/** @var MemberRequest */
+	private $memberRequest;
 
 	/** @var Member */
 	private $viewer = null;
 
 
 	/**
-	 * CircleService constructor.
+	 * MemberService constructor.
 	 *
-	 * @param CircleRequest $circleRequest
+	 * @param MemberRequest $memberRequest
 	 */
-	public function __construct(CircleRequest $circleRequest) {
-		$this->circleRequest = $circleRequest;
+	public function __construct(MemberRequest $memberRequest) {
+		$this->memberRequest = $memberRequest;
 	}
+
+
+//	/**
+//	 * @param string $userId
+//	 */
+//	public function setLocalViewer(string $userId): void {
+//		$this->viewer = new Member($userId, Member::TYPE_USER, '');
+//	}
+//
+//	public function setViewer(Member $viewer): void {
+//		$this->viewer = $viewer;
+//	}
+//
+//	/**
+//	 * @return Member|null
+//	 */
+//	public function getViewer(): ?Member {
+//		return $this->viewer;
+//	}
 
 
 	/**
-	 * @param string $userId
-	 */
-	public function setLocalViewer(string $userId): void {
-		$this->viewer = new Member($userId, Member::TYPE_USER, '');
-	}
-
-	public function setViewer(Member $viewer): void {
-		$this->viewer = $viewer;
-	}
-
-	/**
-	 * @return Member|null
-	 */
-	public function getViewer(): ?Member {
-		return $this->viewer;
-	}
-
-
-	/**
-	 * @param Member|null $filter
+	 * @param string $circleId
 	 *
-	 * @return Circle[]
+	 * @return Member[]
 	 */
-	public function getCircles(?Member $filter = null): array {
-		return $this->circleRequest->getCircles($filter, $this->getViewer());
+	public function getMembers(string $circleId): array {
+		return $this->memberRequest->getMembers($circleId);
 	}
 
 
