@@ -170,7 +170,7 @@ $(document).ready(function () {
 			t('circles', 'Invited');
 			t('circles', 'Requesting');
 			t('circles', 'Blocked');
-			t('circles', 'Kicked');
+			t('circles', 'Removed');
 		},
 
 		retrieveSettings: function () {
