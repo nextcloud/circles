@@ -111,10 +111,6 @@ class RemoteController extends Controller {
 
 		$circles = $this->circleRequest->getFederated();
 
-		foreach ($circles as $c) {
-			$c->setType(Circle::TYPE_LOCKED | Circle::TYPE_VISIBLE);
-		}
-
 		return $this->success($circles, false);
 	}
 

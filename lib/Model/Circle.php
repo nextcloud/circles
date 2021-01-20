@@ -52,26 +52,53 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 	use TNC21Convert;
 
 
-	const TYPE_SINGLE = 1;        // Single member
-	const TYPE_PERSONAL = 2;      // Personal circle, only owner can see it
-	const TYPE_VISIBLE = 4;       // Visible to everyone, if not visible, people have to know its name to be able to join it
-	const TYPE_LOCKED = 8;        // Invite only
-	const TYPE_FAST_INVITE = 16;  // Fast invite, no need confirmation
-	const TYPE_REQUEST = 32;      // Request need to be confirmed by moderator
-	const TYPE_PROTECTED = 64;    // Password protected to join/request
-	const TYPE_HIDDEN = 128;      // Fully hidden, only backend Circles
-	const TYPE_FEDERATED = 256;   // Federated
+	// specific value
+	const CFG_CIRCLE = 0;        // only for code readability. Circle is locked by default.
+	const CFG_SINGLE = 1;        // Circle with only one single member.
+	const CFG_PERSONAL = 2;      // Personal circle, only the owner can see it.
+
+	// bitwise
+	const CFG_VISIBLE = 8;        // Visible to everyone, if not visible, people have to know its name to be able to find it
+	const CFG_OPEN = 16;          // Circle is open, people can join
+	const CFG_INVITE = 32;        // Adding a member generate an invitation that needs to be accepted
+	const CFG_REQUEST = 64;       // Request to join Circles needs to be confirmed by a moderator
+	const CFG_FRIEND = 128;       // Request to join Circles needs to be confirmed by a moderator
+	const CFG_PROTECTED = 256;    // Password protected to join/request
+	const CFG_NO_OWNER = 512;     // no owner, only members
+	const CFG_HIDDEN = 1024;      // Fully hidden, only backend Circles
+	const CFG_ROOT = 2048;        // Circle cannot be inside another Circle
+	const CFG_FEDERATED = 4096;   // Federated
+
+// examples:
+// CFG_OPEN: everyone can enter. moderator can add members.
+// CFG_OPEN + CFG_REQUEST: anyone can initiate a request to join the circle, moderator can add members
+// CFG_OPEN + CFG_INVITE: every one can enter, moderator must send invitation.
+// CFG_OPEN + CFG_INVITE + CFG_REQUEST: every one send a request, moderator must send invitation.
+// CFG_CIRCLE: no one can enter, moderator can add members.
+// CFG_INVITE: no one can enter, moderator must send invitation.
+// CFG_FRIEND: no one can enter, but all members can add new member.
+// CFG_FRIEND + CFG_REQUEST: no one can join the circle, but all members can request a moderator to accept new member
+// CFG_FRIEND + CFG_INVITE: no one can join the circle, but all members can add new member. An invitation will be generated
+// CFG_FRIEND + CFG_INVITE + CFG_REQUEST: no one can join the circle, but all members can request a moderator to accept new member. An invitation will be generated
+
+// CFG_REQUEST: useless
+// CFG_OPEN + CFG_FRIEND: useless
+// CFG_OPEN + CFG_FRIEND + CFG_REQUEST: useless
+
 
 	static $DEF = [
-		1   => '*S|Single',
-		2   => 'PU|Personal Use',
-		4   => 'V|Visible',
-		8   => 'IO|Invite Only',
-		16  => 'FI|Fast Invite',
-		32  => 'JR|Join Request',
-		64  => 'PP|Password Protected',
-		128 => '*H|Hidden',
-		256 => 'F|Federated'
+		1    => 'S|Single',
+		2    => 'P|Personal',
+		8    => 'V|Visible',
+		16   => 'O|Open',
+		32   => 'I|Invite',
+		64   => 'JR|Join Request',
+		128  => 'F|Friends',
+		256  => 'PP|Password Protected',
+		512  => 'NO|No Owner',
+		1024 => 'H|Hidden',
+		2048 => 'T|Root',
+		4096 => 'F|Federated'
 	];
 
 
@@ -79,7 +106,7 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 	private $id = '';
 
 	/** @var int */
-	private $type = 0;
+	private $config = 0;
 
 	/** @var string */
 	private $name = '';
@@ -105,8 +132,8 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 	/** @var string */
 	private $contactGroupName = '';
 
-	/** @var bool */
-	private $hidden = false;
+//	/** @var bool */
+//	private $hidden = false;
 
 	/** @var int */
 	private $creation = 0;
@@ -135,20 +162,20 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 
 
 	/**
-	 * @param int $type
+	 * @param int $config
 	 *
 	 * @return self
 	 */
-	public function setType(int $type): self {
-		$this->type = $type;
+	public function setConfig(int $config): self {
+		$this->config = $config;
 
-		$this->hidden = false;
-		foreach (array_keys(self::$DEF) as $def) {
-			if ($this->isType($def) && substr(self::$DEF[$def], 0, 1) === '*') {
-				$this->hidden = true;
-				break;
-			}
-		}
+//		$this->hidden = false;
+//		foreach (array_keys(self::$DEF) as $def) {
+//			if ($this->isType($def) && substr(self::$DEF[$def], 0, 1) === '*') {
+//				$this->setHidden(true);
+//				break;
+//			}
+//		}
 
 		return $this;
 	}
@@ -156,17 +183,17 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 	/**
 	 * @return int
 	 */
-	public function getType(): int {
-		return $this->type;
+	public function getConfig(): int {
+		return $this->config;
 	}
 
 	/**
-	 * @param int $type
+	 * @param int $flag
 	 *
 	 * @return bool
 	 */
-	public function isType(int $type): bool {
-		return (($this->getType() & $type) !== 0);
+	public function isConfig(int $flag): bool {
+		return (($this->getConfig() & $flag) !== 0);
 	}
 
 
@@ -327,23 +354,23 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 	}
 
 
-	/**
-	 * @param bool $hidden
-	 *
-	 * @return Circle
-	 */
-	public function setHidden(bool $hidden): self {
-		$this->hidden = $hidden;
-
-		return $this;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function isHidden(): bool {
-		return $this->hidden;
-	}
+//	/**
+//	 * @param bool $hidden
+//	 *
+//	 * @return Circle
+//	 */
+//	public function setHidden(bool $hidden): self {
+//		$this->hidden = $hidden;
+//
+//		return $this;
+//	}
+//
+//	/**
+//	 * @return bool
+//	 */
+//	public function isHidden(): bool {
+//		return $this->hidden;
+//	}
 
 
 	/**
@@ -374,7 +401,7 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 		$this->setId($this->get('id', $data))
 			 ->setName($this->get('name', $data))
 			 ->setAltName($this->get('alt_name', $data))
-			 ->setType($this->getInt('type', $data))
+			 ->setConfig($this->getInt('config', $data))
 			 ->setSettings($this->getArray('settings', $data))
 //			 ->setContactAddressBook($this->get('contact_addressbook', $data))
 //			 ->setContactGroupName($this->get('contact_groupname', $data))
@@ -400,10 +427,10 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 			'id'          => $this->getId(),
 			'name'        => $this->getName(),
 			'alt_name'    => $this->getAltName(),
-			'type'        => $this->getType(),
+			'config'      => $this->getConfig(),
 			'description' => $this->getDescription(),
 			'settings'    => $this->getSettings(),
-			'hidden'      => $this->isHidden(),
+			//			'hidden'      => $this->isHidden(),
 			'creation'    => $this->getCreation()
 		];
 
@@ -424,7 +451,7 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 		$this->setId($this->get('unique_id', $data))
 			 ->setName($this->get('name', $data))
 			 ->setAltName($this->get('alt_name', $data))
-			 ->setType($this->getInt('type', $data))
+			 ->setConfig($this->getInt('config', $data))
 			 ->setSettings($this->getArray('settings', $data))
 			 ->setContactAddressBook($this->get('contact_addressbook', $data))
 			 ->setContactGroupName($this->get('contact_groupname', $data))

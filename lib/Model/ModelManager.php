@@ -86,7 +86,7 @@ class ModelManager {
 	public function getCircleTypes(Circle $circle, int $display = self::TYPES_LONG): array {
 		$types = [];
 		foreach (array_keys(Circle::$DEF) as $def) {
-			if ($circle->isType($def)) {
+			if ($circle->isConfig($def)) {
 				list($short, $long) = explode('|', Circle::$DEF[$def]);
 				switch ($display) {
 

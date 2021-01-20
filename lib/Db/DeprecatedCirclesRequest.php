@@ -190,7 +190,8 @@ class DeprecatedCirclesRequest extends DeprecatedCirclesRequestBuilder {
 	 * @throws ConfigNoCircleAvailableException
 	 */
 	public function getCircle(
-		string $circleUniqueId, string $viewerId, int $type = DeprecatedMember::TYPE_USER, string $instanceId = '',
+		string $circleUniqueId, string $viewerId, int $type = DeprecatedMember::TYPE_USER,
+		string $instanceId = '',
 		bool $forceAll = false
 	) {
 		$qb = $this->getCirclesSelectSql();
@@ -203,7 +204,9 @@ class DeprecatedCirclesRequest extends DeprecatedCirclesRequestBuilder {
 			$this->leftJoinNCGroupAndUser($qb, $viewerId, 'c.unique_id');
 		}
 
-		$this->limitRegardingCircleType($qb, $viewerId, $circleUniqueId, DeprecatedCircle::CIRCLES_ALL, '', $forceAll);
+		$this->limitRegardingCircleType(
+			$qb, $viewerId, $circleUniqueId, DeprecatedCircle::CIRCLES_ALL, '', $forceAll
+		);
 
 		$cursor = $qb->execute();
 		$data = $cursor->fetch();
@@ -233,6 +236,9 @@ class DeprecatedCirclesRequest extends DeprecatedCirclesRequestBuilder {
 	 * @param DeprecatedCircle $circle
 	 */
 	public function createCircle(DeprecatedCircle $circle) {
+
+		$config = DeprecatedCircle::convertTypeToConfig($circle->getType());
+
 		$qb = $this->getCirclesInsertSql();
 		$qb->setValue('unique_id', $qb->createNamedParameter($circle->getUniqueId()))
 		   ->setValue('long_id', $qb->createNamedParameter($circle->getUniqueId(true)))
@@ -242,7 +248,8 @@ class DeprecatedCirclesRequest extends DeprecatedCirclesRequestBuilder {
 		   ->setValue('contact_addressbook', $qb->createNamedParameter($circle->getContactAddressBook()))
 		   ->setValue('contact_groupname', $qb->createNamedParameter($circle->getContactGroupName()))
 		   ->setValue('settings', $qb->createNamedParameter($circle->getSettings(true)))
-		   ->setValue('type', $qb->createNamedParameter($circle->getType()));
+		   ->setValue('type', $qb->createNamedParameter($circle->getType()))
+		   ->setValue('config', $qb->createNamedParameter($config));
 		$qb->execute();
 	}
 

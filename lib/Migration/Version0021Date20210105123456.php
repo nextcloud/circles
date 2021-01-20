@@ -9,7 +9,7 @@ declare(strict_types=1);
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2019
+ * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Migration;
 
 use Closure;
+use Doctrine\DBAL\Schema\SchemaException;
 use OCP\DB\ISchemaWrapper;
 use OCP\IDBConnection;
 use OCP\Migration\IOutput;
@@ -66,6 +67,19 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 	public function changeSchema(IOutput $output, Closure $schemaClosure, array $options) {
 		/** @var ISchemaWrapper $schema */
 		$schema = $schemaClosure();
+
+		try {
+			$circles = $schema->getTable('circle_circles');
+			$circles->addColumn(
+				'config', 'integer', [
+								 'notnull'  => false,
+								 'length'   => 11,
+								 'unsigned' => true,
+							 ]
+			);
+			$circles->addIndex(['config']);
+		} catch (SchemaException $e) {
+		}
 
 		if (!$schema->hasTable('circle_remotes')) {
 			$table = $schema->createTable('circle_remotes');

@@ -35,10 +35,10 @@ use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Exceptions\SignatureException;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use OC\Core\Command\Base;
-use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Model\ModelManager;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\RemoteService;
@@ -74,13 +74,12 @@ class CirclesList extends Base {
 	/**
 	 * CirclesList constructor.
 	 *
-	 * @param CircleRequest $circleRequest
+	 * @param CircleService $circleService
 	 * @param RemoteService $remoteService
 	 * @param ModelManager $modelManager
 	 */
 	public function __construct(
-		CircleRequest $circleRequest, CircleService $circleService, RemoteService $remoteService,
-		ModelManager $modelManager
+		CircleService $circleService, RemoteService $remoteService, ModelManager $modelManager
 	) {
 		parent::__construct();
 		$this->circleService = $circleService;
@@ -94,6 +93,8 @@ class CirclesList extends Base {
 		$this->setName('circles:manage:list')
 			 ->setDescription('listing current circles')
 			 ->addArgument('owner', InputArgument::OPTIONAL, 'filter by owner', '')
+			 ->addOption('level', '', InputOption::VALUE_REQUIRED, 'level of membership', Member::LEVEL_OWNER)
+			 ->addOption('def', '', InputOption::VALUE_NONE, 'display complete circle configuration')
 			 ->addOption('all', '', InputOption::VALUE_NONE, 'display also hidden Circles')
 			 ->addOption('viewer', '', InputOption::VALUE_REQUIRED, 'set viewer', '')
 			 ->addOption('json', '', InputOption::VALUE_NONE, 'returns result as JSON')
@@ -106,6 +107,7 @@ class CirclesList extends Base {
 	 * @param OutputInterface $output
 	 *
 	 * @return int
+	 * @throws InvalidItemException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
 	 * @throws RequestNetworkException
@@ -114,13 +116,21 @@ class CirclesList extends Base {
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$owner = $input->getArgument('owner');
+		$level = $input->getOption('level');
 		$viewer = $input->getOption('viewer');
 		$json = $input->getOption('json');
 		$remote = $input->getOption('remote');
+		$display = ($input->getOption('def') ? ModelManager::TYPES_LONG : ModelManager::TYPES_SHORT);
 
 		$output = new ConsoleOutput();
 		$output = $output->section();
-		$circles = $this->getCircles($owner, $viewer, $remote);
+
+		$filter = null;
+		if ($owner !== '') {
+			$filter = new Member($owner, Member::TYPE_USER, '');
+			$filter->setLevel((int)$level);
+		}
+		$circles = $this->getCircles($filter, $viewer, $remote);
 
 		if ($json) {
 			echo json_encode($circles, JSON_PRETTY_PRINT) . "\n";
@@ -133,9 +143,9 @@ class CirclesList extends Base {
 		$table->render();
 
 		foreach ($circles as $circle) {
-			if ($circle->isHidden() && !$input->getOption('all')) {
-				continue;
-			}
+//			if ($circle->isHidden() && !$input->getOption('all')) {
+//				continue;
+//			}
 
 			$owner = $circle->getOwner();
 			$settings = $circle->getSettings();
@@ -143,7 +153,7 @@ class CirclesList extends Base {
 				[
 					$circle->getId(),
 					$circle->getName(),
-					json_encode($this->modelManager->getCircleTypes($circle, ModelManager::TYPES_SHORT)),
+					json_encode($this->modelManager->getCircleTypes($circle, $display)),
 					$owner->getUserId(),
 					$owner->getInstance(),
 					$this->getInt('members_limit', $settings, -1),
@@ -157,19 +167,19 @@ class CirclesList extends Base {
 
 
 	/**
-	 * @param string $owner
+	 * @param Member|null $filter
 	 * @param string $viewer
 	 * @param string $remote
 	 *
 	 * @return Circle[]
+	 * @throws InvalidItemException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
 	 * @throws RequestNetworkException
 	 * @throws SignatoryException
 	 * @throws SignatureException
-	 * @throws InvalidItemException
 	 */
-	private function getCircles(string $owner, string $viewer, string $remote): array {
+	private function getCircles(?Member $filter, string $viewer, string $remote): array {
 		if ($viewer !== '') {
 			$this->circleService->setLocalViewer($viewer);
 		}
@@ -178,7 +188,7 @@ class CirclesList extends Base {
 			return $this->remoteService->getCircles($remote);
 		}
 
-		return $this->circleService->getCircles($owner);
+		return $this->circleService->getCircles($filter);
 	}
 
 }

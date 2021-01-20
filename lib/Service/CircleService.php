@@ -87,12 +87,12 @@ class CircleService {
 
 
 	/**
-	 * @param string $ownerUserId
+	 * @param Member|null $filter
 	 *
 	 * @return Circle[]
 	 */
-	public function getCircles(string $ownerUserId = ''): array {
-		return $this->circleRequest->getCircles($this->getViewer(), $ownerUserId);
+	public function getCircles(?Member $filter = null): array {
+		return $this->circleRequest->getCircles($this->getViewer(), $filter);
 	}
 
 }

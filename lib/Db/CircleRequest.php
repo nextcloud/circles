@@ -76,16 +76,20 @@ class CircleRequest extends CircleRequestBuilder {
 
 	/**
 	 * @param Member|null $viewer
-	 * @param string $ownerUserId
+	 * @param Member|null $filter
 	 *
 	 * @return Circle[]
 	 */
-	public function getCircles(?Member $viewer = null, string $ownerUserId = ''): array {
+	public function getCircles(?Member $viewer = null, ?Member $filter = null): array {
 		$qb = $this->getCircleSelectSql();
-		$qb->leftJoinOwner($ownerUserId);
+		$qb->leftJoinOwner();
 
-		if ($viewer !== null) {
+		if (!is_null($viewer)) {
 			$qb->limitToViewer($viewer);
+		}
+
+		if (!is_null($filter)) {
+			$qb->limitToMembership($filter);
 		}
 
 		return $this->getItemsFromRequest($qb);
@@ -113,6 +117,7 @@ class CircleRequest extends CircleRequestBuilder {
 	public function getFederated(): array {
 		$qb = $this->getCircleSelectSql();
 		$qb->leftJoinOwner();
+		$qb->filterConfig(Circle::CFG_FEDERATED);
 
 		return $this->getItemsFromRequest($qb);
 	}

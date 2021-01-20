@@ -284,6 +284,29 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 	}
 
 
+	/**
+	 * convert old type to new config (nc21)
+	 *
+	 * @param int $type
+	 *
+	 * @return int
+	 */
+	public static function convertTypeToConfig(int $type): int {
+		switch($type) {
+			case DeprecatedCircle::CIRCLES_PERSONAL:
+				return 2;
+			case DeprecatedCircle::CIRCLES_SECRET:
+				return 16;
+			case DeprecatedCircle::CIRCLES_CLOSED:
+				return 120;
+			case DeprecatedCircle::CIRCLES_PUBLIC:
+				return 8;
+		}
+
+		return 0;
+	}
+
+
 }
 
 

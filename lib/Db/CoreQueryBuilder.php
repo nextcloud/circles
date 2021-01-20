@@ -33,7 +33,7 @@ namespace OCA\Circles\Db;
 
 use daita\MySmallPhpTools\Db\Nextcloud\nc21\NC21ExtendedQueryBuilder;
 use Doctrine\DBAL\Query\QueryBuilder;
-use OCA\Circles\Model\DeprecatedMember;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 
 /**
@@ -60,22 +60,56 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 
 
 	public function limitToViewer(Member $viewer): void {
-		$this->leftJoinViewer($viewer);
-		$this->limitVisibility($viewer);
-
-//		if ($level > 0) {
-//			$this->limitToLevel($qb, $level, ['u', 'g']);
-//		}
-//		$this->limitRegardingCircleType($qb, $userId, -1, $circleType, $name, $forceAll);
+		$this->leftJoinViewer($viewer, 'v');
+		$this->limitVisibility('v');
 	}
 
 
 	/**
-	 * Left Join members table to get the owner of the circle.
-	 *
-	 * @param string $ownerId
+	 * @param Member $member
 	 */
-	public function leftJoinOwner(string $ownerId = '') {
+	public function limitToMembership(Member $member): void {
+		if ($this->getType() !== QueryBuilder::SELECT) {
+			return;
+		}
+
+		$expr = $this->expr();
+		$pf = $this->getDefaultSelectAlias() . '.';
+
+		$this->selectAlias('m.user_id', 'member_user_id')
+			 ->selectAlias('m.user_type', 'member_user_type')
+			 ->selectAlias('m.member_id', 'member_member_id')
+			 ->selectAlias('m.circle_id', 'member_circle_id')
+			 ->selectAlias('m.instance', 'member_instance')
+			 ->selectAlias('m.cached_name', 'member_cached_name')
+			 ->selectAlias('m.cached_update', 'member_cached_update')
+			 ->selectAlias('m.status', 'member_status')
+			 ->selectAlias('m.level', 'member_level')
+			 ->selectAlias('m.note', 'member_note')
+			 ->selectAlias('m.contact_id', 'member_contact_id')
+			 ->selectAlias('m.contact_meta', 'member_contact_meta')
+			 ->selectAlias('m.joined', 'member_joined')
+			 ->leftJoin(
+				 $this->getDefaultSelectAlias(), CoreRequestBuilder::TABLE_MEMBERS, 'm',
+				 $expr->eq('m.circle_id', $pf . 'unique_id')
+			 );
+
+		// TODO: Check in big table if it is better to put condition in andWhere() or in LeftJoin()
+		$this->andWhere(
+			$expr->andX(
+				$expr->eq('m.user_id', $this->createNamedParameter($member->getUserId())),
+				$expr->eq('m.user_type', $this->createNamedParameter($member->getUserType())),
+				$expr->eq('m.instance', $this->createNamedParameter($member->getInstance())),
+				$expr->gte('m.level', $this->createNamedParameter($member->getLevel()))
+			)
+		);
+	}
+
+
+	/**
+	 *
+	 */
+	public function leftJoinOwner() {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
@@ -100,14 +134,9 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 				 $this->getDefaultSelectAlias(), CoreRequestBuilder::TABLE_MEMBERS, 'o',
 				 $expr->andX(
 					 $expr->eq('o.circle_id', $pf . 'unique_id'),
-					 $expr->eq('o.level', $this->createNamedParameter(DeprecatedMember::LEVEL_OWNER)),
-					 $expr->eq('o.user_type', $this->createNamedParameter(DeprecatedMember::TYPE_USER))
+					 $expr->eq('o.level', $this->createNamedParameter(Member::LEVEL_OWNER))
 				 )
 			 );
-
-		if ($ownerId !== '') {
-			$this->andWhere($expr->eq('o.user_id', $this->createNamedParameter($ownerId)));
-		}
 	}
 
 
@@ -115,8 +144,9 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 	 * Left join members to filter userId as viewer.
 	 *
 	 * @param Member $viewer
+	 * @param string $alias
 	 */
-	public function leftJoinViewer(Member $viewer) {
+	public function leftJoinViewer(Member $viewer, string $alias = 'v') {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
@@ -142,14 +172,37 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 				 $expr->andX(
 					 $expr->eq('v.circle_id', $pf . 'unique_id'),
 					 $expr->eq('v.user_id', $this->createNamedParameter($viewer->getUserId())),
-					 $expr->eq('v.instance', $this->createNamedParameter($viewer->getInstance())),
-					 $expr->eq('v.user_type', $this->createNamedParameter($viewer->getUserType()))
+					 $expr->eq('v.user_type', $this->createNamedParameter($viewer->getUserType())),
+					 $expr->eq('v.instance', $this->createNamedParameter($viewer->getInstance()))
 				 )
 			 );
 	}
 
 
-	protected function limitVisibility(Member $viewer) {
+	/**
+	 * @param string $alias
+	 */
+	protected function limitVisibility(string $alias = 'v') {
+		$expr = $this->expr();
+
+		// Visibility to non-member is
+		// - 2 (Personal), if viewer is owner)
+		// - 4 (Visible to everyone)
+		$orX = $expr->orX();
+		$orX->add(
+			$expr->andX(
+				$expr->bitwiseAnd($this->getDefaultSelectAlias() . '.config', Circle::CFG_PERSONAL),
+				$expr->eq($alias . '.level', $this->createNamedParameter(Member::LEVEL_OWNER))
+			)
+		);
+		$orX->add($expr->bitwiseAnd($this->getDefaultSelectAlias() . '.config', Circle::CFG_VISIBLE));
+		$this->andWhere($orX);
+
+		// - 128 means fully hidden, filtering
+		$bitHidden = $expr->bitwiseAnd($this->getDefaultSelectAlias() . '.config', Circle::CFG_HIDDEN);
+		$this->andWhere($this->createFunction('NOT') . $bitHidden);
+
+
 //		$orTypes = $this->generateLimit($qb, $circleUniqueId, $userId, $type, $name, $forceAll);
 //		if (sizeof($orTypes) === 0) {
 //			throw new ConfigNoCircleAvailableException(
@@ -166,6 +219,14 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 //		}
 //
 //		$qb->andWhere($orXTypes);
+	}
+
+
+	/**
+	 * @param int $flag
+	 */
+	public function filterConfig(int $flag): void {
+		$this->andWhere($this->expr()->bitwiseAnd($this->getDefaultSelectAlias() . '.config', $flag));
 	}
 
 }

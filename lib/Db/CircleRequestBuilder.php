@@ -78,7 +78,7 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->selectDistinct('c.unique_id')
 		   ->addSelect(
-			   'c.name', 'c.alt_name', 'c.description', 'c.settings', 'c.type', 'contact_addressbook',
+			   'c.name', 'c.alt_name', 'c.description', 'c.settings', 'c.config', 'contact_addressbook',
 			   'contact_groupname', 'c.creation'
 		   )
 		   ->from(self::TABLE_CIRCLE, 'c')
@@ -114,7 +114,7 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 		} catch (RowNotFoundException $e) {
 			throw new CircleNotFoundException();
 		}
-		
+
 		return $circle;
 	}
 
