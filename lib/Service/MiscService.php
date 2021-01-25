@@ -32,7 +32,7 @@ use OC;
 use OC\User\NoUserException;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\MissingKeyInArrayException;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\Contacts\ContactsMenu\IContactsStore;
@@ -226,7 +226,7 @@ class MiscService {
 	 * @param int $type
 	 */
 	private static function getDisplayMember(&$display, $ident, $type) {
-		if ($type !== Member::TYPE_USER) {
+		if ($type !== DeprecatedMember::TYPE_USER) {
 			return;
 		}
 
@@ -244,7 +244,7 @@ class MiscService {
 	 * @param int $type
 	 */
 	private static function getDisplayContact(&$display, $ident, $type) {
-		if ($type !== Member::TYPE_CONTACT) {
+		if ($type !== DeprecatedMember::TYPE_CONTACT) {
 			return;
 		}
 
@@ -397,11 +397,11 @@ class MiscService {
 
 
 	/**
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 *
 	 * @return array
 	 */
-	public function getInfosFromContact(Member $member) {
+	public function getInfosFromContact(DeprecatedMember $member) {
 		$contact = MiscService::getContactData($member->getUserId());
 
 		return [

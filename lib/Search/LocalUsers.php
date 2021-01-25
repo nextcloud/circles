@@ -28,7 +28,7 @@ namespace OCA\Circles\Search;
 
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use OCA\Circles\ISearch;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SearchResult;
 use OCA\Circles\Service\ConfigService;
 use OCP\Collaboration\Collaborators\ISearch as ICollaboratorSearch;
@@ -74,7 +74,7 @@ class LocalUsers implements ISearch {
 		foreach ($users as $user) {
 			$result[] =
 				new SearchResult(
-					$user->getUID(), Member::TYPE_USER, '', ['display' => $user->getDisplayName()]
+					$user->getUID(), DeprecatedMember::TYPE_USER, '', ['display' => $user->getDisplayName()]
 				);
 		}
 
@@ -96,7 +96,7 @@ class LocalUsers implements ISearch {
 			$parsed[] =
 				new SearchResult(
 					$this->get('value.shareWith', $entry),
-					Member::TYPE_USER,
+					DeprecatedMember::TYPE_USER,
 					'',
 					['display' => $this->get('label', $entry)]
 				);

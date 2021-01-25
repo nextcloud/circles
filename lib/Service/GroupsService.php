@@ -27,15 +27,15 @@
 namespace OCA\Circles\Service;
 
 
-use OCA\Circles\Db\CirclesRequest;
-use OCA\Circles\Db\MembersRequest;
+use OCA\Circles\Db\DeprecatedCirclesRequest;
+use OCA\Circles\Db\DeprecatedMembersRequest;
 use OCA\Circles\Exceptions\CircleTypeNotValidException;
 use OCA\Circles\Exceptions\GroupCannotBeOwnerException;
 use OCA\Circles\Exceptions\GroupDoesNotExistException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
-use OCA\Circles\Model\Circle;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedCircle;
+use OCA\Circles\Model\DeprecatedMember;
 use OCP\IGroupManager;
 use OCP\IL10N;
 use OCP\IUserManager;
@@ -57,10 +57,10 @@ class GroupsService {
 	/** @var ConfigService */
 	private $configService;
 
-	/** @var CirclesRequest */
+	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
 
-	/** @var MembersRequest */
+	/** @var DeprecatedMembersRequest */
 	private $membersRequest;
 
 	/** @var CirclesService */
@@ -80,16 +80,16 @@ class GroupsService {
 	 * @param IGroupManager $groupManager
 	 * @param IUserManager $userManager
 	 * @param ConfigService $configService
-	 * @param CirclesRequest $circlesRequest
-	 * @param MembersRequest $membersRequest
+	 * @param DeprecatedCirclesRequest $circlesRequest
+	 * @param DeprecatedMembersRequest $membersRequest
 	 * @param CirclesService $circlesService
 	 * @param EventsService $eventsService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
 		$userId, IL10N $l10n, IGroupManager $groupManager, IUserManager $userManager,
-		ConfigService $configService, CirclesRequest $circlesRequest,
-		MembersRequest $membersRequest, CirclesService $circlesService,
+		ConfigService $configService, DeprecatedCirclesRequest $circlesRequest,
+		DeprecatedMembersRequest $membersRequest, CirclesService $circlesService,
 		EventsService $eventsService, MiscService $miscService
 	) {
 		$this->userId = $userId;
@@ -119,13 +119,13 @@ class GroupsService {
 			$this->circlesService->hasToBeAdmin($circle->getHigherViewer());
 
 			$allMembers =
-				$this->membersRequest->forceGetMembers($circleUniqueId, Member::LEVEL_MEMBER, 0, true);
+				$this->membersRequest->forceGetMembers($circleUniqueId, DeprecatedMember::LEVEL_MEMBER, 0, true);
 
 			$group = $this->groupManager->get($groupId);
 			$count = $group->count();
 
 			foreach ($allMembers as $member) {
-				if ($member->getType() !== Member::TYPE_USER) {
+				if ($member->getType() !== DeprecatedMember::TYPE_USER) {
 					continue;
 				}
 
@@ -151,7 +151,7 @@ class GroupsService {
 			throw $e;
 		}
 
-		$group->setLevel(Member::LEVEL_MEMBER);
+		$group->setLevel(DeprecatedMember::LEVEL_MEMBER);
 		$this->membersRequest->updateGroup($group);
 
 		$this->eventsService->onGroupLink($circle, $group);
@@ -168,7 +168,7 @@ class GroupsService {
 	 * @param $circleId
 	 * @param $groupId
 	 *
-	 * @return null|Member
+	 * @return null|DeprecatedMember
 	 * @throws MemberAlreadyExistsException
 	 * @throws GroupDoesNotExistException
 	 */
@@ -182,12 +182,12 @@ class GroupsService {
 			$instance = ''; // TODO: group are not used in GS yet.
 			$member = $this->membersRequest->forceGetGroup($circleId, $groupId, $instance);
 		} catch (MemberDoesNotExistException $e) {
-			$member = new Member($groupId, Member::TYPE_GROUP, $circleId);
+			$member = new DeprecatedMember($groupId, DeprecatedMember::TYPE_GROUP, $circleId);
 			$this->membersRequest->createMember($member);
 //			$this->membersRequest->insertGroup($member);
 		}
 
-		if ($member->getLevel() > Member::LEVEL_NONE) {
+		if ($member->getLevel() > DeprecatedMember::LEVEL_NONE) {
 			throw new MemberAlreadyExistsException(
 				$this->l10n->t('This group is already linked to the circle')
 			);
@@ -210,7 +210,7 @@ class GroupsService {
 		$level = (int)$level;
 		try {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
-			if ($circle->getType() === Circle::CIRCLES_PERSONAL) {
+			if ($circle->getType() === DeprecatedCircle::CIRCLES_PERSONAL) {
 				throw new CircleTypeNotValidException(
 					$this->l10n->t('You cannot edit level in a personal circle')
 				);
@@ -219,7 +219,7 @@ class GroupsService {
 			$instance = ''; // TODO: group are not used in GS yet.
 			$group = $this->membersRequest->forceGetGroup($circle->getUniqueId(), $groupId, $instance);
 			if ($group->getLevel() !== $level) {
-				if ($level === Member::LEVEL_OWNER) {
+				if ($level === DeprecatedMember::LEVEL_OWNER) {
 					throw new GroupCannotBeOwnerException(
 						$this->l10n->t('Group cannot be set as owner of a circle')
 					);
@@ -241,13 +241,13 @@ class GroupsService {
 
 
 	/**
-	 * @param Circle $circle
-	 * @param Member $group
+	 * @param DeprecatedCircle $circle
+	 * @param DeprecatedMember $group
 	 * @param $level
 	 *
 	 * @throws \Exception
 	 */
-	private function editGroupLevel(Circle $circle, Member $group, $level) {
+	private function editGroupLevel(DeprecatedCircle $circle, DeprecatedMember $group, $level) {
 		try {
 			$isMod = $circle->getHigherViewer();
 			$this->circlesService->hasToBeAdmin($isMod);

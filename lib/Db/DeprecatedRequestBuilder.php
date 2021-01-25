@@ -11,7 +11,7 @@ namespace OCA\Circles\Db;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use OCA\Circles\Exceptions\GSStatusException;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\TimezoneService;
@@ -33,7 +33,7 @@ class DeprecatedRequestBuilder {
 	const TABLE_GSEVENTS = 'circle_gsevents';
 	const TABLE_GSSHARES = 'circle_gsshares';
 	const TABLE_GSSHARES_MOUNTPOINT = 'circle_gsshares_mp';
-	const TABLE_REMOTE = 'circle_remote';
+	const TABLE_REMOTE = 'circle_remotes';
 
 	const NC_TABLE_ACCOUNTS = 'accounts';
 	const NC_TABLE_GROUP_USER = 'group_user';
@@ -396,9 +396,9 @@ class DeprecatedRequestBuilder {
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
 
 		$orX = $expr->orX();
-		$orX->add($expr->eq($pf . 'status', $qb->createNamedParameter(Member::STATUS_MEMBER)));
-		$orX->add($expr->eq($pf . 'status', $qb->createNamedParameter(Member::STATUS_INVITED)));
-		$orX->add($expr->eq($pf . 'status', $qb->createNamedParameter(Member::STATUS_REQUEST)));
+		$orX->add($expr->eq($pf . 'status', $qb->createNamedParameter(DeprecatedMember::STATUS_MEMBER)));
+		$orX->add($expr->eq($pf . 'status', $qb->createNamedParameter(DeprecatedMember::STATUS_INVITED)));
+		$orX->add($expr->eq($pf . 'status', $qb->createNamedParameter(DeprecatedMember::STATUS_REQUEST)));
 
 		$qb->andWhere($orX);
 	}
@@ -503,7 +503,7 @@ class DeprecatedRequestBuilder {
 			$this->default_select_alias, DeprecatedRequestBuilder::TABLE_MEMBERS, 'g',
 			$expr->andX(
 				$expr->eq('g.user_id', 'ncgu.gid'),
-				$expr->eq('g.user_type', $qb->createNamedParameter(Member::TYPE_GROUP)),
+				$expr->eq('g.user_type', $qb->createNamedParameter(DeprecatedMember::TYPE_GROUP)),
 				$expr->eq('g.instance', $qb->createNamedParameter('')),
 				$expr->eq('g.circle_id', $field)
 			)

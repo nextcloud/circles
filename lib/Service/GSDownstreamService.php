@@ -31,7 +31,7 @@ namespace OCA\Circles\Service;
 
 
 use Exception;
-use OCA\Circles\Db\CirclesRequest;
+use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\GSEventsRequest;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
@@ -59,7 +59,7 @@ class GSDownstreamService {
 	/** @var GSEventsRequest */
 	private $gsEventsRequest;
 
-	/** @var CirclesRequest */
+	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
 
 	/** @var GlobalScaleService */
@@ -78,7 +78,7 @@ class GSDownstreamService {
 	 * @param $userId
 	 * @param IURLGenerator $urlGenerator
 	 * @param GSEventsRequest $gsEventsRequest
-	 * @param CirclesRequest $circlesRequest
+	 * @param DeprecatedCirclesRequest $circlesRequest
 	 * @param GlobalScaleService $globalScaleService
 	 * @param ConfigService $configService
 	 * @param MiscService $miscService
@@ -87,7 +87,7 @@ class GSDownstreamService {
 		$userId,
 		IURLGenerator $urlGenerator,
 		GSEventsRequest $gsEventsRequest,
-		CirclesRequest $circlesRequest,
+		DeprecatedCirclesRequest $circlesRequest,
 		GlobalScaleService $globalScaleService,
 		ConfigService $configService,
 		MiscService $miscService

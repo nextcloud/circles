@@ -29,7 +29,7 @@
 namespace OCA\Circles\Db;
 
 
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\TimezoneService;
@@ -38,7 +38,7 @@ use OCP\IDBConnection;
 use OCP\IGroupManager;
 use OCP\IL10N;
 
-class MembersRequestBuilder extends DeprecatedRequestBuilder {
+class DeprecatedMembersRequestBuilder extends DeprecatedRequestBuilder {
 
 
 	/** @var IGroupManager */
@@ -138,10 +138,10 @@ class MembersRequestBuilder extends DeprecatedRequestBuilder {
 	/**
 	 * @param array $data
 	 *
-	 * @return Member
+	 * @return DeprecatedMember
 	 */
 	protected function parseMembersSelectSql(array $data) {
-		$member = new Member($data['user_id'], $data['user_type'], $data['circle_id']);
+		$member = new DeprecatedMember($data['user_id'], $data['user_type'], $data['circle_id']);
 		$member->setNote($data['note']);
 		$member->setContactId($data['contact_id']);
 		$member->setMemberId($data['member_id']);
@@ -168,19 +168,19 @@ class MembersRequestBuilder extends DeprecatedRequestBuilder {
 	/**
 	 * @param array $data
 	 *
-	 * @return Member
+	 * @return DeprecatedMember
 	 */
 	protected function parseGroupsSelectSql(array $data) {
-		$member = new Member();
+		$member = new DeprecatedMember();
 		$member->setCircleId($data['circle_id']);
 		$member->setNote($data['note']);
 		$member->setLevel($data['level']);
 
 		if (key_exists('user_id', $data)) {
-			$member->setType(Member::TYPE_USER);
+			$member->setType(DeprecatedMember::TYPE_USER);
 			$member->setUserId($data['user_id']);
 		} else {
-			$member->setType(Member::TYPE_GROUP);
+			$member->setType(DeprecatedMember::TYPE_GROUP);
 			$member->setUserId($data['group_id']);
 		}
 

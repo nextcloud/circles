@@ -34,10 +34,10 @@ use Exception;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCP\IGroup;
 
-class MembersRequest extends MembersRequestBuilder {
+class DeprecatedMembersRequest extends DeprecatedMembersRequestBuilder {
 
 
 	use TStringTools;
@@ -55,7 +55,7 @@ class MembersRequest extends MembersRequestBuilder {
 	 *
 	 * @param string $instance
 	 *
-	 * @return Member
+	 * @return DeprecatedMember
 	 * @throws MemberDoesNotExistException
 	 */
 	public function forceGetMember($circleUniqueId, $userId, $type, string $instance = '') {
@@ -85,10 +85,10 @@ class MembersRequest extends MembersRequestBuilder {
 	/**
 	 * @param string $memberId
 	 *
-	 * @return Member
+	 * @return DeprecatedMember
 	 * @throws MemberDoesNotExistException
 	 */
-	public function forceGetMemberById(string $memberId): Member {
+	public function forceGetMemberById(string $memberId): DeprecatedMember {
 		$qb = $this->getMembersSelectSql();
 
 		$this->limitToMemberId($qb, $memberId);
@@ -116,10 +116,10 @@ class MembersRequest extends MembersRequestBuilder {
 	 * @param int $type
 	 * @param bool $incGroup
 	 *
-	 * @return Member[]
+	 * @return DeprecatedMember[]
 	 */
 	public function forceGetMembers(
-		string $circleUniqueId, $level = Member::LEVEL_MEMBER, int $type = 0, $incGroup = false
+		string $circleUniqueId, $level = DeprecatedMember::LEVEL_MEMBER, int $type = 0, $incGroup = false
 	) {
 		$qb = $this->getMembersSelectSql();
 		$this->limitToMembersAndAlmost($qb);
@@ -156,7 +156,7 @@ class MembersRequest extends MembersRequestBuilder {
 	 *          In case of interaction with users, Please use getMembers() instead.
 	 *
 	 *
-	 * @return Member[]
+	 * @return DeprecatedMember[]
 	 */
 	public function forceGetAllMembers() {
 
@@ -177,11 +177,11 @@ class MembersRequest extends MembersRequestBuilder {
 	 * Returns members generated from Contacts that are not 'checked' (as not sent existing shares).
 	 *
 	 *
-	 * @return Member[]
+	 * @return DeprecatedMember[]
 	 */
 	public function forceGetAllRecentContactEdit() {
 		$qb = $this->getMembersSelectSql();
-		$this->limitToUserType($qb, Member::TYPE_CONTACT);
+		$this->limitToUserType($qb, DeprecatedMember::TYPE_CONTACT);
 
 		$expr = $qb->expr();
 		$orX = $expr->orX();
@@ -201,10 +201,10 @@ class MembersRequest extends MembersRequestBuilder {
 
 
 	/**
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 * @param bool $check
 	 */
-	public function checkMember(Member $member, bool $check) {
+	public function checkMember(DeprecatedMember $member, bool $check) {
 		$qb = $this->getMembersUpdateSql(
 			$member->getCircleId(), $member->getUserId(), $member->getInstance(), $member->getType()
 		);
@@ -216,22 +216,22 @@ class MembersRequest extends MembersRequestBuilder {
 
 	/**
 	 * @param string $circleUniqueId
-	 * @param Member $viewer
+	 * @param DeprecatedMember $viewer
 	 * @param bool $force
 	 *
-	 * @return Member[]
+	 * @return DeprecatedMember[]
 	 */
-	public function getMembers(string $circleUniqueId, ?Member $viewer, bool $force = false) {
+	public function getMembers(string $circleUniqueId, ?DeprecatedMember $viewer, bool $force = false) {
 		try {
 			if ($force === false) {
 				$viewer->hasToBeMember();
 			}
 
-			$members = $this->forceGetMembers($circleUniqueId, Member::LEVEL_NONE);
+			$members = $this->forceGetMembers($circleUniqueId, DeprecatedMember::LEVEL_NONE);
 			if ($force === false) {
-				if (!$viewer->isLevel(Member::LEVEL_MODERATOR)) {
+				if (!$viewer->isLevel(DeprecatedMember::LEVEL_MODERATOR)) {
 					array_map(
-						function(Member $m) {
+						function(DeprecatedMember $m) {
 							$m->setNote('');
 						}, $members
 					);
@@ -257,14 +257,14 @@ class MembersRequest extends MembersRequestBuilder {
 	 * @param string $groupId
 	 * @param string $instance
 	 *
-	 * @return Member
+	 * @return DeprecatedMember
 	 * @throws MemberDoesNotExistException
 	 */
 	public function forceGetGroup(string $circleUniqueId, string $groupId, string $instance) {
 		$qb = $this->getMembersSelectSql();
 
 		$this->limitToUserId($qb, $groupId);
-		$this->limitToUserType($qb, Member::TYPE_GROUP);
+		$this->limitToUserType($qb, DeprecatedMember::TYPE_GROUP);
 		$this->limitToInstance($qb, $instance);
 		$this->limitToCircleId($qb, $circleUniqueId);
 
@@ -285,7 +285,7 @@ class MembersRequest extends MembersRequestBuilder {
 	 * This function will get members of a circle throw NCGroups and fill the result an existing
 	 * Members List. In case of duplicate, higher level will be kept.
 	 *
-	 * @param Member[] $members
+	 * @param DeprecatedMember[] $members
 	 * @param string $circleUniqueId
 	 * @param int $level
 	 */
@@ -301,8 +301,8 @@ class MembersRequest extends MembersRequestBuilder {
 	 * Use this function to add members to the list (1st argument), keeping the higher level in case
 	 * of duplicate
 	 *
-	 * @param Member[] $members
-	 * @param Member[] $groupMembers
+	 * @param DeprecatedMember[] $members
+	 * @param DeprecatedMember[] $groupMembers
 	 */
 	public function avoidDuplicateMembers(array &$members, array $groupMembers) {
 		foreach ($groupMembers as $member) {
@@ -345,14 +345,14 @@ class MembersRequest extends MembersRequestBuilder {
 	 *
 	 * @param string $instance
 	 *
-	 * @return Member
+	 * @return DeprecatedMember
 	 */
 	public function getFreshNewMember($circleUniqueId, string $name, int $type, string $instance) {
 
 		try {
 			$member = $this->forceGetMember($circleUniqueId, $name, $type, $instance);
 		} catch (MemberDoesNotExistException $e) {
-			$member = new Member($name, $type, $circleUniqueId);
+			$member = new DeprecatedMember($name, $type, $circleUniqueId);
 			$member->setInstance($instance);
 //			$member->setMemberId($this->token(14));
 		}
@@ -379,12 +379,12 @@ class MembersRequest extends MembersRequestBuilder {
 	 * @param string $circleUniqueId
 	 * @param int $level
 	 *
-	 * @return Member[]
+	 * @return DeprecatedMember[]
 	 */
-	public function forceGetGroupMembers($circleUniqueId, $level = Member::LEVEL_MEMBER) {
+	public function forceGetGroupMembers($circleUniqueId, $level = DeprecatedMember::LEVEL_MEMBER) {
 		$qb = $this->getMembersSelectSql();
 
-		$this->limitToUserType($qb, Member::TYPE_GROUP);
+		$this->limitToUserType($qb, DeprecatedMember::TYPE_GROUP);
 		$this->limitToLevel($qb, $level);
 		$this->limitToCircleId($qb, $circleUniqueId);
 		$this->limitToNCGroupUser($qb);
@@ -403,11 +403,11 @@ class MembersRequest extends MembersRequestBuilder {
 	/**
 	 * returns all users from a Group as a list of Members.
 	 *
-	 * @param Member $group
+	 * @param DeprecatedMember $group
 	 *
-	 * @return Member[]
+	 * @return DeprecatedMember[]
 	 */
-	public function getGroupMemberMembers(Member $group) {
+	public function getGroupMemberMembers(DeprecatedMember $group) {
 		/** @var IGroup $grp */
 		$grp = $this->groupManager->get($group->getUserId());
 		if ($grp === null) {
@@ -419,7 +419,7 @@ class MembersRequest extends MembersRequestBuilder {
 		foreach ($users as $user) {
 			$member = clone $group;
 			//Member::fromJSON($this->l10n, json_encode($group));
-			$member->setType(Member::TYPE_USER);
+			$member->setType(DeprecatedMember::TYPE_USER);
 			$member->setUserId($user->getUID());
 			$members[] = $member;
 		}
@@ -437,19 +437,19 @@ class MembersRequest extends MembersRequestBuilder {
 	 * @param string $circleUniqueId
 	 * @param string $userId
 	 *
-	 * @return Member
+	 * @return DeprecatedMember
 	 */
 	public function forceGetHigherLevelGroupFromUser($circleUniqueId, $userId) {
 		$qb = $this->getMembersSelectSql();
 
-		$this->limitToUserType($qb, Member::TYPE_GROUP);
+		$this->limitToUserType($qb, DeprecatedMember::TYPE_GROUP);
 		$this->limitToInstance($qb, '');
 		$this->limitToCircleId($qb, $circleUniqueId);
 		$this->limitToNCGroupUser($qb);
 
 		$this->limitToNCGroupUser($qb, $userId);
 
-		/** @var Member $group */
+		/** @var DeprecatedMember $group */
 		$group = null;
 
 		$cursor = $qb->execute();
@@ -468,11 +468,11 @@ class MembersRequest extends MembersRequestBuilder {
 	/**
 	 * Insert Member into database.
 	 *
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 *
 	 * @throws MemberAlreadyExistsException
 	 */
-	public function createMember(Member $member) {
+	public function createMember(DeprecatedMember $member) {
 
 		if ($member->getMemberId() === '') {
 			$member->setMemberId($this->token(14));
@@ -508,26 +508,26 @@ class MembersRequest extends MembersRequestBuilder {
 
 	/**
 	 * @param string $circleUniqueId
-	 * @param Member $viewer
+	 * @param DeprecatedMember $viewer
 	 *
-	 * @return Member[]
+	 * @return DeprecatedMember[]
 	 */
-	public function getGroupsFromCircle($circleUniqueId, Member $viewer) {
-		if ($viewer->getLevel() < Member::LEVEL_MEMBER) {
+	public function getGroupsFromCircle($circleUniqueId, DeprecatedMember $viewer) {
+		if ($viewer->getLevel() < DeprecatedMember::LEVEL_MEMBER) {
 			return [];
 		}
 
 		$qb = $this->getMembersSelectSql();
 
-		$this->limitToUserType($qb, Member::TYPE_GROUP);
-		$this->limitToLevel($qb, Member::LEVEL_MEMBER);
+		$this->limitToUserType($qb, DeprecatedMember::TYPE_GROUP);
+		$this->limitToLevel($qb, DeprecatedMember::LEVEL_MEMBER);
 		$this->limitToInstance($qb, '');
 		$this->limitToCircleId($qb, $circleUniqueId);
 
 		$cursor = $qb->execute();
 		$groups = [];
 		while ($data = $cursor->fetch()) {
-			if ($viewer->getLevel() < Member::LEVEL_MODERATOR) {
+			if ($viewer->getLevel() < DeprecatedMember::LEVEL_MODERATOR) {
 				$data['note'] = '';
 			}
 			$groups[] = $this->parseGroupsSelectSql($data);
@@ -541,9 +541,9 @@ class MembersRequest extends MembersRequestBuilder {
 	/**
 	 * update database entry for a specific Member.
 	 *
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 */
-	public function updateMemberLevel(Member $member) {
+	public function updateMemberLevel(DeprecatedMember $member) {
 		$instance = $member->getInstance();
 		if ($this->configService->isLocalInstance($instance)) {
 			$instance = '';
@@ -562,9 +562,9 @@ class MembersRequest extends MembersRequestBuilder {
 	/**
 	 * update database entry for a specific Member.
 	 *
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 */
-	public function updateMemberInfo(Member $member) {
+	public function updateMemberInfo(DeprecatedMember $member) {
 		$instance = $member->getInstance();
 		if ($this->configService->isLocalInstance($instance)) {
 			$instance = '';
@@ -584,9 +584,9 @@ class MembersRequest extends MembersRequestBuilder {
 	/**
 	 * update database entry for a specific Member.
 	 *
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 */
-	public function updateContactMeta(Member $member) {
+	public function updateContactMeta(DeprecatedMember $member) {
 		$qb = $this->getMembersUpdateSql(
 			$member->getCircleId(), $member->getUserId(), $member->getInstance(), $member->getType()
 		);
@@ -617,9 +617,9 @@ class MembersRequest extends MembersRequestBuilder {
 	 *
 	 * remove All membership from a User. Used when removing a User from the Cloud.
 	 *
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 */
-	public function removeAllMembershipsFromUser(Member $member) {
+	public function removeAllMembershipsFromUser(DeprecatedMember $member) {
 		if ($member->getUserId() === '') {
 			return;
 		}
@@ -636,7 +636,7 @@ class MembersRequest extends MembersRequestBuilder {
 			$expr->andX(
 				$expr->eq('user_id', $qb->createNamedParameter($member->getUserId())),
 				$expr->eq('instance', $qb->createNamedParameter($instance)),
-				$expr->eq('user_type', $qb->createNamedParameter(Member::TYPE_USER))
+				$expr->eq('user_type', $qb->createNamedParameter(DeprecatedMember::TYPE_USER))
 			)
 		);
 
@@ -647,9 +647,9 @@ class MembersRequest extends MembersRequestBuilder {
 	/**
 	 * remove member, identified by its id, type and circleId
 	 *
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 */
-	public function removeMember(Member $member) {
+	public function removeMember(DeprecatedMember $member) {
 		$instance = $member->getInstance();
 		if ($this->configService->isLocalInstance($instance)) {
 			$instance = '';
@@ -670,11 +670,11 @@ class MembersRequest extends MembersRequestBuilder {
 	/**
 	 * update database entry for a specific Group.
 	 *
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 *
 	 * @return bool
 	 */
-	public function updateGroup(Member $member) {
+	public function updateGroup(DeprecatedMember $member) {
 		$qb = $this->getMembersUpdateSql(
 			$member->getCircleId(), $member->getUserId(), $member->getInstance(), $member->getType()
 		);
@@ -689,7 +689,7 @@ class MembersRequest extends MembersRequestBuilder {
 		$qb = $this->getMembersDeleteSql();
 
 		$this->limitToUserId($qb, $groupId);
-		$this->limitToUserType($qb, Member::TYPE_GROUP);
+		$this->limitToUserType($qb, DeprecatedMember::TYPE_GROUP);
 		$this->limitToInstance($qb, '');
 
 		$qb->execute();
@@ -699,7 +699,7 @@ class MembersRequest extends MembersRequestBuilder {
 	/**
 	 * @param string $contactId
 	 *
-	 * @return Member[]
+	 * @return DeprecatedMember[]
 	 */
 	public function getMembersByContactId(string $contactId = ''): array {
 		$qb = $this->getMembersSelectSql();
@@ -726,10 +726,10 @@ class MembersRequest extends MembersRequestBuilder {
 	 * @param string $circleId
 	 * @param string $contactId
 	 *
-	 * @return Member
+	 * @return DeprecatedMember
 	 * @throws MemberDoesNotExistException
 	 */
-	public function getContactMember(string $circleId, string $contactId): Member {
+	public function getContactMember(string $circleId, string $contactId): DeprecatedMember {
 		$qb = $this->getMembersSelectSql();
 		$this->limitToContactId($qb, $contactId);
 		$this->limitToCircleId($qb, $circleId);
@@ -749,12 +749,12 @@ class MembersRequest extends MembersRequestBuilder {
 	/**
 	 * @param string $contactId
 	 *
-	 * @return Member[]
+	 * @return DeprecatedMember[]
 	 */
 	public function getLocalContactMembers(string $contactId): array {
 		$qb = $this->getMembersSelectSql();
 		$this->limitToContactId($qb, $contactId);
-		$this->limitToUserType($qb, Member::TYPE_USER);
+		$this->limitToUserType($qb, DeprecatedMember::TYPE_USER);
 
 		$members = [];
 		$cursor = $qb->execute();

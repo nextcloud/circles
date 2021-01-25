@@ -41,9 +41,9 @@ use OCA\Circles\Exceptions\MemberIsNotOwnerException;
 use OCA\Circles\Exceptions\MemberIsOwnerException;
 use OCA\Circles\Exceptions\MemberTypeCantEditLevelException;
 use OCA\Circles\Exceptions\ModeratorIsNotHighEnoughException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 
 
 /**
@@ -78,9 +78,9 @@ class MemberLevel extends AGlobalScaleEvent {
 		}
 
 		$member->levelHasToBeEditable();
-		$circle = $event->getCircle();
+		$circle = $event->getDeprecatedCircle();
 
-		if ($level === Member::LEVEL_OWNER) {
+		if ($level === DeprecatedMember::LEVEL_OWNER) {
 			$this->verifySwitchOwner($event, $circle, $member);
 		} else {
 			$this->verifyMemberLevel($event, $circle, $member, $level);
@@ -104,14 +104,14 @@ class MemberLevel extends AGlobalScaleEvent {
 		$member->setLevel($level);
 		$this->membersRequest->updateMemberLevel($member);
 
-		if ($level === Member::LEVEL_OWNER) {
-			$circle = $event->getCircle();
+		if ($level === DeprecatedMember::LEVEL_OWNER) {
+			$circle = $event->getDeprecatedCircle();
 			$isMod = $circle->getOwner();
 			if ($isMod->getInstance() === '') {
 				$isMod->setInstance($event->getSource());
 			}
 
-			$isMod->setLevel(Member::LEVEL_ADMIN);
+			$isMod->setLevel(DeprecatedMember::LEVEL_ADMIN);
 			$this->membersRequest->updateMemberLevel($isMod);
 		}
 	}
@@ -126,8 +126,8 @@ class MemberLevel extends AGlobalScaleEvent {
 
 	/**
 	 * @param GSEvent $event
-	 * @param Circle $circle
-	 * @param Member $member
+	 * @param DeprecatedCircle $circle
+	 * @param DeprecatedMember $member
 	 * @param int $level
 	 *
 	 * @throws MemberDoesNotExistException
@@ -135,7 +135,7 @@ class MemberLevel extends AGlobalScaleEvent {
 	 * @throws MemberIsNotModeratorException
 	 * @throws ModeratorIsNotHighEnoughException
 	 */
-	private function verifyMemberLevel(GSEvent $event, Circle $circle, Member $member, int $level) {
+	private function verifyMemberLevel(GSEvent $event, DeprecatedCircle $circle, DeprecatedMember $member, int $level) {
 		$member->hasToBeMember();
 		$member->cantBeOwner();
 
@@ -149,14 +149,14 @@ class MemberLevel extends AGlobalScaleEvent {
 
 	/**
 	 * @param GSEvent $event
-	 * @param Circle $circle
-	 * @param Member $member
+	 * @param DeprecatedCircle $circle
+	 * @param DeprecatedMember $member
 	 *
 	 * @throws MemberDoesNotExistException
 	 * @throws MemberIsNotOwnerException
 	 * @throws MemberIsOwnerException
 	 */
-	private function verifySwitchOwner(GSEvent $event, Circle $circle, Member $member) {
+	private function verifySwitchOwner(GSEvent $event, DeprecatedCircle $circle, DeprecatedMember $member) {
 		if (!$event->isForced()) {
 			$isMod = $circle->getHigherViewer();
 			$this->circlesService->hasToBeOwner($isMod);

@@ -32,7 +32,7 @@ use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
 use Exception;
 use OCA\Circles\Api\v1\Circles;
-use OCA\Circles\Db\CirclesRequest;
+use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\FederatedLinksRequest;
 use OCA\Circles\Db\SharingFrameRequest;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
@@ -42,7 +42,7 @@ use OCA\Circles\Exceptions\PayloadDeliveryException;
 use OCA\Circles\Exceptions\SharingFrameAlreadyDeliveredException;
 use OCA\Circles\Exceptions\SharingFrameAlreadyExistException;
 use OCA\Circles\Exceptions\SharingFrameDoesNotExistException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\SharingFrame;
 use OCP\Http\Client\IClientService;
@@ -68,7 +68,7 @@ class SharingFrameService {
 	/** @var SharingFrameRequest */
 	private $sharingFrameRequest;
 
-	/** @var CirclesRequest */
+	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
 
 	/** @var FederatedLinksRequest */
@@ -95,7 +95,7 @@ class SharingFrameService {
 	 * @param IURLGenerator $urlGenerator
 	 * @param ConfigService $configService
 	 * @param SharingFrameRequest $sharingFrameRequest
-	 * @param CirclesRequest $circlesRequest
+	 * @param DeprecatedCirclesRequest $circlesRequest
 	 * @param FederatedLinksRequest $federatedLinksRequest
 	 * @param BroadcastService $broadcastService
 	 * @param FederatedLinkService $federatedLinkService
@@ -108,7 +108,7 @@ class SharingFrameService {
 		IURLGenerator $urlGenerator,
 		ConfigService $configService,
 		SharingFrameRequest $sharingFrameRequest,
-		CirclesRequest $circlesRequest,
+		DeprecatedCirclesRequest $circlesRequest,
 		FederatedLinksRequest $federatedLinksRequest,
 		BroadcastService $broadcastService,
 		FederatedLinkService $federatedLinkService,
@@ -180,10 +180,10 @@ class SharingFrameService {
 	 * Check if the source is NOT Circles.
 	 *
 	 * @param SharingFrame $frame
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param $broadcast
 	 */
-	private function generateHeaders(SharingFrame $frame, Circle $circle, $broadcast) {
+	private function generateHeaders(SharingFrame $frame, DeprecatedCircle $circle, $broadcast) {
 
 		try {
 			$frame->cannotBeFromCircles();
@@ -360,11 +360,11 @@ class SharingFrameService {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param SharingFrame $frame
 	 * @param FederatedLink[] $links
 	 */
-	private function forwardSharingFrameToFederatedLinks(Circle $circle, SharingFrame $frame, $links) {
+	private function forwardSharingFrameToFederatedLinks(DeprecatedCircle $circle, SharingFrame $frame, $links) {
 
 		$args = [
 			'apiVersion' => Circles::version(),

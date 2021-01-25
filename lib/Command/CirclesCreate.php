@@ -31,18 +31,15 @@ namespace OCA\Circles\Command;
 
 use OC\Core\Command\Base;
 use OC\User\NoUserException;
-use OCA\Circles\Db\CirclesRequest;
-use OCA\Circles\Exceptions\CircleAlreadyExistsException;
-use OCA\Circles\Exceptions\CircleDoesNotExistException;
-use OCA\Circles\Exceptions\CircleTypeDisabledException;
-use OCA\Circles\Exceptions\CircleTypeNotValidException;
-use OCA\Circles\Exceptions\MemberAlreadyExistsException;
-use OCA\Circles\Model\Circle;
-use OCA\Circles\Service\CirclesService;
+use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\RemoteEventException;
+use OCA\Circles\Service\CircleService;
+use OCA\Circles\Service\CurrentUserService;
 use OCP\IL10N;
 use OCP\IUserManager;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
@@ -60,11 +57,11 @@ class CirclesCreate extends Base {
 	/** @var IUserManager */
 	private $userManager;
 
-	/** @var CirclesRequest */
-	private $circlesRequest;
+	/** @var CurrentUserService */
+	private $currentUserService;
 
-	/** @var CirclesService */
-	private $circlesService;
+	/** @var CircleService */
+	private $circleService;
 
 
 	/**
@@ -72,17 +69,18 @@ class CirclesCreate extends Base {
 	 *
 	 * @param IL10N $l10n
 	 * @param IUserManager $userManager
-	 * @param CirclesRequest $circlesRequest
-	 * @param CirclesService $circlesService
+	 * @param CurrentUserService $currentUserService
+	 * @param CircleService $circleService
 	 */
 	public function __construct(
-		IL10N $l10n, IUserManager $userManager, CirclesRequest $circlesRequest, CirclesService $circlesService
+		IL10N $l10n, IUserManager $userManager, CurrentUserService $currentUserService,
+		CircleService $circleService
 	) {
 		parent::__construct();
 		$this->l10n = $l10n;
 		$this->userManager = $userManager;
-		$this->circlesRequest = $circlesRequest;
-		$this->circlesService = $circlesService;
+		$this->currentUserService = $currentUserService;
+		$this->circleService = $circleService;
 	}
 
 
@@ -91,8 +89,8 @@ class CirclesCreate extends Base {
 		$this->setName('circles:manage:create')
 			 ->setDescription('create a new circle')
 			 ->addArgument('owner', InputArgument::REQUIRED, 'owner of the circle')
-			 ->addArgument('type', InputArgument::REQUIRED, 'type of the circle')
-			 ->addArgument('name', InputArgument::REQUIRED, 'name of the circle');
+			 ->addArgument('name', InputArgument::REQUIRED, 'name of the circle')
+			 ->addOption('type', '', InputOption::VALUE_REQUIRED, 'type of the circle (deprecated)', '');
 	}
 
 
@@ -101,37 +99,21 @@ class CirclesCreate extends Base {
 	 * @param OutputInterface $output
 	 *
 	 * @return int
-	 * @throws CircleAlreadyExistsException
-	 * @throws CircleTypeNotValidException
-	 * @throws MemberAlreadyExistsException
 	 * @throws NoUserException
-	 * @throws CircleTypeDisabledException
-	 * @throws CircleDoesNotExistException
+	 * @throws CircleNotFoundException
+	 * @throws RemoteEventException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		$ownerId = $input->getArgument('owner');
-		$type = $input->getArgument('type');
+		$owner = $input->getArgument('owner');
 		$name = $input->getArgument('name');
+		$type = $input->getOption('type');
 
-		if ($this->userManager->get($ownerId) === null) {
+		if ($this->userManager->get($owner) === null) {
 			throw new NoUserException('user does not exist');
 		}
 
-		$types = [
-			'personal' => Circle::CIRCLES_PERSONAL,
-			'secret'   => Circle::CIRCLES_SECRET,
-			'closed'   => Circle::CIRCLES_CLOSED,
-			'public'   => Circle::CIRCLES_PUBLIC
-		];
-
-		if (!key_exists(strtolower($type), $types)) {
-			throw new CircleTypeNotValidException('unknown type: ' . json_encode(array_keys($types)));
-		}
-
-		$type = $types[strtolower($type)];
-
-		$circle = $this->circlesService->createCircle($type, $name, $ownerId);
-		$circle = $this->circlesRequest->forceGetCircle($circle->getUniqueId());
+		$this->currentUserService->setLocalViewer($owner);
+		$circle = $this->circleService->create($name);
 
 		echo json_encode($circle, JSON_PRETTY_PRINT) . "\n";
 

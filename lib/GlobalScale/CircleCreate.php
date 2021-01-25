@@ -64,7 +64,7 @@ class CircleCreate extends AGlobalScaleEvent {
 			return;
 		}
 
-		$circle = $event->getCircle();
+		$circle = $event->getDeprecatedCircle();
 		$this->circlesRequest->createCircle($circle);
 
 		$owner = $circle->getOwner();

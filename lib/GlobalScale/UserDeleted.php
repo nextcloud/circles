@@ -35,9 +35,9 @@ use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Exceptions\GlobalScaleDSyncException;
 use OCA\Circles\Exceptions\GlobalScaleEventException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 
 
 /**
@@ -62,15 +62,15 @@ class UserDeleted extends AGlobalScaleEvent {
 		parent::verify($event, $localCheck, true);
 
 		$member = $event->getMember();
-		$circles = $this->circlesRequest->getCircles($member->getUserId(), 0, '', Member::LEVEL_OWNER);
+		$circles = $this->circlesRequest->getCircles($member->getUserId(), 0, '', DeprecatedMember::LEVEL_OWNER);
 
 		$destroyedCircles = [];
 		$promotedAdmins = [];
 		foreach ($circles as $circle) {
 			$members =
-				$this->membersRequest->forceGetMembers($circle->getUniqueId(), Member::LEVEL_MEMBER);
+				$this->membersRequest->forceGetMembers($circle->getUniqueId(), DeprecatedMember::LEVEL_MEMBER);
 
-			if ($circle->getType() === Circle::CIRCLES_PERSONAL || sizeof($members) === 1) {
+			if ($circle->getType() === DeprecatedCircle::CIRCLES_PERSONAL || sizeof($members) === 1) {
 				$destroyedCircles[] = $circle->getUniqueId();
 				continue;
 			}
@@ -106,23 +106,23 @@ class UserDeleted extends AGlobalScaleEvent {
 
 
 	/**
-	 * @param Member[] $members
+	 * @param DeprecatedMember[] $members
 	 *
 	 * @return string
 	 */
 	private function getOlderAdmin(array $members) {
 		foreach ($members as $member) {
-			if ($member->getLevel() === Member::LEVEL_ADMIN) {
+			if ($member->getLevel() === DeprecatedMember::LEVEL_ADMIN) {
 				return $member->getMemberId();
 			}
 		}
 		foreach ($members as $member) {
-			if ($member->getLevel() === Member::LEVEL_MODERATOR) {
+			if ($member->getLevel() === DeprecatedMember::LEVEL_MODERATOR) {
 				return $member->getMemberId();
 			}
 		}
 		foreach ($members as $member) {
-			if ($member->getLevel() === Member::LEVEL_MEMBER) {
+			if ($member->getLevel() === DeprecatedMember::LEVEL_MEMBER) {
 				return $member->getMemberId();
 			}
 		}
@@ -147,7 +147,7 @@ class UserDeleted extends AGlobalScaleEvent {
 		foreach ($memberIds as $memberId) {
 			try {
 				$member = $this->membersRequest->forceGetMemberById($memberId);
-				$member->setLevel(Member::LEVEL_OWNER);
+				$member->setLevel(DeprecatedMember::LEVEL_OWNER);
 				$this->membersRequest->updateMemberLevel($member);
 			} catch (MemberDoesNotExistException $e) {
 			}

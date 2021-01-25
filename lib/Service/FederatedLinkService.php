@@ -30,7 +30,7 @@ namespace OCA\Circles\Service;
 use Exception;
 use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\AppInfo\Application;
-use OCA\Circles\Db\CirclesRequest;
+use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\FederatedLinksRequest;
 use OCA\Circles\Exceptions\CircleTypeNotValidException;
 use OCA\Circles\Exceptions\FederatedCircleLinkFormatException;
@@ -40,7 +40,7 @@ use OCA\Circles\Exceptions\FederatedLinkDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedLinkUpdateException;
 use OCA\Circles\Exceptions\FederatedRemoteIsDownException;
 use OCA\Circles\Exceptions\MemberIsNotAdminException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\FederatedLink;
 use OCP\Http\Client\IClientService;
 use OCP\Http\Client\IResponse;
@@ -56,7 +56,7 @@ class FederatedLinkService {
 	/** @var IL10N */
 	private $l10n;
 
-	/** @var CirclesRequest */
+	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
 
 	/** @var ConfigService */
@@ -86,7 +86,7 @@ class FederatedLinkService {
 	 *
 	 * @param string $userId
 	 * @param IL10N $l10n
-	 * @param CirclesRequest $circlesRequest
+	 * @param DeprecatedCirclesRequest $circlesRequest
 	 * @param ConfigService $configService
 	 * @param CirclesService $circlesService
 	 * @param BroadcastService $broadcastService
@@ -96,7 +96,7 @@ class FederatedLinkService {
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$userId, IL10N $l10n, CirclesRequest $circlesRequest, ConfigService $configService,
+		$userId, IL10N $l10n, DeprecatedCirclesRequest $circlesRequest, ConfigService $configService,
 		CirclesService $circlesService, BroadcastService $broadcastService,
 		FederatedLinksRequest $federatedLinksRequest, EventsService $eventsService,
 		IClientService $clientService, MiscService $miscService
@@ -157,13 +157,13 @@ class FederatedLinkService {
 
 	/**
 	 * @param FederatedLink $link
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param int $status
 	 *
 	 * @return FederatedLink[]
 	 * @throws Exception
 	 */
-	private function updateLinkStatus(FederatedLink $link, Circle $circle, $status) {
+	private function updateLinkStatus(FederatedLink $link, DeprecatedCircle $circle, $status) {
 
 		$this->eventOnUpdateLinkStatus($link, $circle, $status);
 
@@ -191,12 +191,12 @@ class FederatedLinkService {
 	 * If status does not need update, returns false;
 	 *
 	 * @param FederatedLink $link
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param int $status
 	 *
 	 * @return bool
 	 */
-	private function eventOnUpdateLinkStatus(FederatedLink $link, Circle $circle, $status) {
+	private function eventOnUpdateLinkStatus(FederatedLink $link, DeprecatedCircle $circle, $status) {
 
 		if ($status === FederatedLink::STATUS_LINK_REMOVE) {
 			$this->eventsService->onLinkRemove($circle, $link);
@@ -289,13 +289,13 @@ class FederatedLinkService {
 	 * in case of a request of status update from remote for a link up, we check the current
 	 * status of the link locally.
 	 *
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param FederatedLink $link
 	 * @param int $status
 	 *
 	 * @throws FederatedCircleStatusUpdateException
 	 */
-	private function checkUpdateLinkFromRemoteLinkUp(Circle $circle, FederatedLink $link, $status) {
+	private function checkUpdateLinkFromRemoteLinkUp(DeprecatedCircle $circle, FederatedLink $link, $status) {
 		if ((int)$status !== FederatedLink::STATUS_LINK_UP) {
 			return;
 		}
@@ -347,13 +347,13 @@ class FederatedLinkService {
 	 * in case of a request of status update from remote for a link down, we check the current
 	 * status of the link locally
 	 *
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param FederatedLink $link
 	 * @param int $status
 	 *
 	 * @throws FederatedCircleStatusUpdateException
 	 */
-	private function checkUpdateLinkFromRemoteLinkRemove(Circle $circle, FederatedLink $link, $status) {
+	private function checkUpdateLinkFromRemoteLinkRemove(DeprecatedCircle $circle, FederatedLink $link, $status) {
 
 		if ((int)$status !== FederatedLink::STATUS_LINK_REMOVE) {
 			return;
@@ -375,10 +375,10 @@ class FederatedLinkService {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param FederatedLink $link
 	 */
-	private function checkUpdateLinkFromRemoteLinkRequestSent(Circle $circle, FederatedLink $link) {
+	private function checkUpdateLinkFromRemoteLinkRequestSent(DeprecatedCircle $circle, FederatedLink $link) {
 
 		if ($link->getStatus() !== FederatedLink::STATUS_REQUEST_SENT) {
 			return;
@@ -390,10 +390,10 @@ class FederatedLinkService {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param FederatedLink $link
 	 */
-	private function checkUpdateLinkFromRemoteLinkRequested(Circle $circle, FederatedLink $link) {
+	private function checkUpdateLinkFromRemoteLinkRequested(DeprecatedCircle $circle, FederatedLink $link) {
 
 		if ($link->getStatus() !== FederatedLink::STATUS_LINK_REQUESTED) {
 			return;
@@ -405,10 +405,10 @@ class FederatedLinkService {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param FederatedLink $link
 	 */
-	private function checkUpdateLinkFromRemoteLinkDown(Circle $circle, FederatedLink $link) {
+	private function checkUpdateLinkFromRemoteLinkDown(DeprecatedCircle $circle, FederatedLink $link) {
 
 		if ($link->getStatus() < FederatedLink::STATUS_LINK_DOWN) {
 			return;

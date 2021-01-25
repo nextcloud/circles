@@ -32,7 +32,7 @@ use OC\AppFramework\Http;
 use OCA\Circles\Db\SharesRequest;
 use OCA\Circles\Db\TokensRequest;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SharesToken;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\BroadcastService;
@@ -218,7 +218,7 @@ class SharesController extends Controller {
 	private function checkContactMail(SharesToken $shareToken) {
 		try {
 			$this->membersService->getMember(
-				$shareToken->getCircleId(), $shareToken->getUserId(), Member::TYPE_MAIL, true
+				$shareToken->getCircleId(), $shareToken->getUserId(), DeprecatedMember::TYPE_MAIL, true
 			);
 
 			return;
@@ -227,7 +227,7 @@ class SharesController extends Controller {
 
 		try {
 			$this->membersService->getMember(
-				$shareToken->getCircleId(), $shareToken->getUserId(), Member::TYPE_CONTACT, true
+				$shareToken->getCircleId(), $shareToken->getUserId(), DeprecatedMember::TYPE_CONTACT, true
 			);
 
 			return;

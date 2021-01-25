@@ -30,18 +30,18 @@
 namespace OCA\Circles\GlobalScale;
 
 
-use OCA\Circles\Db\CirclesRequest;
+use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\GSSharesRequest;
-use OCA\Circles\Db\MembersRequest;
+use OCA\Circles\Db\DeprecatedMembersRequest;
 use OCA\Circles\Db\SharesRequest;
 use OCA\Circles\Db\TokensRequest;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Exceptions\GlobalScaleDSyncException;
 use OCA\Circles\Exceptions\GlobalScaleEventException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\EventsService;
@@ -87,10 +87,10 @@ abstract class AGlobalScaleEvent {
 	/** @var TokensRequest */
 	protected $tokensRequest;
 
-	/** @var CirclesRequest */
+	/** @var DeprecatedCirclesRequest */
 	protected $circlesRequest;
 
-	/** @var MembersRequest */
+	/** @var DeprecatedMembersRequest */
 	protected $membersRequest;
 
 	/** @var GSSharesRequest */
@@ -123,8 +123,8 @@ abstract class AGlobalScaleEvent {
 	 * @param IUserManager $userManager
 	 * @param SharesRequest $sharesRequest
 	 * @param TokensRequest $tokensRequest
-	 * @param CirclesRequest $circlesRequest
-	 * @param MembersRequest $membersRequest
+	 * @param DeprecatedCirclesRequest $circlesRequest
+	 * @param DeprecatedMembersRequest $membersRequest
 	 * @param GSSharesRequest $gsSharesRequest
 	 * @param CirclesService $circlesService
 	 * @param MembersService $membersService
@@ -141,8 +141,8 @@ abstract class AGlobalScaleEvent {
 		IUserManager $userManager,
 		SharesRequest $sharesRequest,
 		TokensRequest $tokensRequest,
-		CirclesRequest $circlesRequest,
-		MembersRequest $membersRequest,
+		DeprecatedCirclesRequest $circlesRequest,
+		DeprecatedMembersRequest $membersRequest,
 		GSSharesRequest $gsSharesRequest,
 		CirclesService $circlesService,
 		MembersService $membersService,
@@ -210,7 +210,7 @@ abstract class AGlobalScaleEvent {
 	 */
 	private function checkViewer(GSEvent $event, bool $mustBeChecked) {
 		if (!$event->hasCircle()
-			|| !$event->getCircle()
+			|| !$event->getDeprecatedCircle()
 					  ->hasViewer()) {
 			if ($mustBeChecked) {
 				throw new GlobalScaleEventException('GSEvent cannot be checked');
@@ -219,7 +219,7 @@ abstract class AGlobalScaleEvent {
 			}
 		}
 
-		$circle = $event->getCircle();
+		$circle = $event->getDeprecatedCircle();
 		$viewer = $circle->getHigherViewer();
 		$this->cleanMember($viewer);
 
@@ -231,17 +231,17 @@ abstract class AGlobalScaleEvent {
 			throw new GlobalScaleDSyncException('Viewer seems DSync');
 		}
 
-		$event->setCircle($localCircle);
+		$event->setDeprecatedCircle($localCircle);
 	}
 
 
 	/**
-	 * @param Member $member1
-	 * @param Member $member2
+	 * @param DeprecatedMember $member1
+	 * @param DeprecatedMember $member2
 	 *
 	 * @return bool
 	 */
-	protected function compareMembers(Member $member1, Member $member2) {
+	protected function compareMembers(DeprecatedMember $member1, DeprecatedMember $member2) {
 		if ($member1->getInstance() === '') {
 			$member1->setInstance($this->configService->getLocalInstance());
 		}
@@ -264,12 +264,12 @@ abstract class AGlobalScaleEvent {
 
 
 	/**
-	 * @param Circle $circle1
-	 * @param Circle $circle2
+	 * @param DeprecatedCircle $circle1
+	 * @param DeprecatedCircle $circle2
 	 *
 	 * @return bool
 	 */
-	protected function compareCircles(Circle $circle1, Circle $circle2): bool {
+	protected function compareCircles(DeprecatedCircle $circle1, DeprecatedCircle $circle2): bool {
 		if ($circle1->getName() !== $circle2->getName()
 			|| $circle1->getDescription() !== $circle2->getDescription()
 			|| $circle1->getSettings(true) !== $circle2->getSettings(true)
@@ -282,7 +282,7 @@ abstract class AGlobalScaleEvent {
 	}
 
 
-	protected function cleanMember(Member $member) {
+	protected function cleanMember(DeprecatedMember $member) {
 		if ($this->configService->isLocalInstance($member->getInstance())) {
 			$member->setInstance('');
 		}

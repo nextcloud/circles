@@ -57,44 +57,44 @@ style(Application::APP_ID, 'navigation');
 			<?php
 
 			// Personal Circle
-			if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PERSONAL]) {
+			if ($_['allowed_circles'][\OCA\Circles\Model\DeprecatedCircle::CIRCLES_PERSONAL]) {
 				print_unescaped(
 					sprintf(
 						'<option value="%s">%s</option>',
-						\OCA\Circles\Model\Circle::CIRCLES_PERSONAL,
+						\OCA\Circles\Model\DeprecatedCircle::CIRCLES_PERSONAL,
 						$l->t("Create a personal circle")
 					)
 				);
 			}
 
 			// Public Circle
-			if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PUBLIC]) {
+			if ($_['allowed_circles'][\OCA\Circles\Model\DeprecatedCircle::CIRCLES_PUBLIC]) {
 				print_unescaped(
 					sprintf(
 						'<option value="%s">%s</option>',
-						\OCA\Circles\Model\Circle::CIRCLES_PUBLIC,
+						\OCA\Circles\Model\DeprecatedCircle::CIRCLES_PUBLIC,
 						$l->t("Create a public circle")
 					)
 				);
 			}
 
 			// Closed Circle
-			if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_CLOSED]) {
+			if ($_['allowed_circles'][\OCA\Circles\Model\DeprecatedCircle::CIRCLES_CLOSED]) {
 				print_unescaped(
 					sprintf(
 						'<option value="%s">%s</option>',
-						\OCA\Circles\Model\Circle::CIRCLES_CLOSED,
+						\OCA\Circles\Model\DeprecatedCircle::CIRCLES_CLOSED,
 						$l->t("Create a closed circle")
 					)
 				);
 			}
 
 			// Secret Circle
-			if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_SECRET]) {
+			if ($_['allowed_circles'][\OCA\Circles\Model\DeprecatedCircle::CIRCLES_SECRET]) {
 				print_unescaped(
 					sprintf(
 						'<option value="%s">%s</option>',
-						\OCA\Circles\Model\Circle::CIRCLES_SECRET,
+						\OCA\Circles\Model\DeprecatedCircle::CIRCLES_SECRET,
 						$l->t("Create a secret circle")
 					)
 				);
@@ -157,33 +157,33 @@ style(Application::APP_ID, 'navigation');
 	<div id="circles_list">
 
 		<?php
-		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PERSONAL]) {
+		if ($_['allowed_circles'][\OCA\Circles\Model\DeprecatedCircle::CIRCLES_PERSONAL]) {
 			print_unescaped(
-				'<div circle-type="' . \OCA\Circles\Model\Circle::CIRCLES_PERSONAL . '">' . $l->t(
+				'<div circle-type="' . \OCA\Circles\Model\DeprecatedCircle::CIRCLES_PERSONAL . '">' . $l->t(
 					'Personal circles'
 				) . '</div>'
 			);
 		}
 
-		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_PUBLIC]) {
+		if ($_['allowed_circles'][\OCA\Circles\Model\DeprecatedCircle::CIRCLES_PUBLIC]) {
 			print_unescaped(
-				'<div circle-type="' . \OCA\Circles\Model\Circle::CIRCLES_PUBLIC . '">' . $l->t(
+				'<div circle-type="' . \OCA\Circles\Model\DeprecatedCircle::CIRCLES_PUBLIC . '">' . $l->t(
 					'Public circles'
 				) . '</div>'
 			);
 		}
 
-		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_CLOSED]) {
+		if ($_['allowed_circles'][\OCA\Circles\Model\DeprecatedCircle::CIRCLES_CLOSED]) {
 			print_unescaped(
-				'<div circle-type="' . \OCA\Circles\Model\Circle::CIRCLES_CLOSED . '">' . $l->t(
+				'<div circle-type="' . \OCA\Circles\Model\DeprecatedCircle::CIRCLES_CLOSED . '">' . $l->t(
 					'Closed circles'
 				) . '</div>'
 			);
 		}
 
-		if ($_['allowed_circles'][\OCA\Circles\Model\Circle::CIRCLES_SECRET]) {
+		if ($_['allowed_circles'][\OCA\Circles\Model\DeprecatedCircle::CIRCLES_SECRET]) {
 			print_unescaped(
-				'<div circle-type="' . \OCA\Circles\Model\Circle::CIRCLES_SECRET . '">' . $l->t(
+				'<div circle-type="' . \OCA\Circles\Model\DeprecatedCircle::CIRCLES_SECRET . '">' . $l->t(
 					'Secret circles'
 				) . '</div>'
 			);

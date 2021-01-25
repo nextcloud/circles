@@ -179,7 +179,7 @@ class CirclesRemote extends Base {
 			'test'  => 42,
 			'token' => $this->uuid()
 		];
-		$signedRequest = $this->remoteService->test($testUrl, $payload);
+		$signedRequest = $this->remoteService->outgoingTest($testUrl, $payload);
 		$output->writeln(' * Payload: ');
 		$output->writeln(json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 		$output->writeln('');

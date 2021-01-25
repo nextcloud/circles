@@ -28,7 +28,7 @@ namespace OCA\Circles\Service;
 
 
 use OCA\Circles\ISearch;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCP\IL10N;
 use OCP\IUserManager;
 
@@ -61,9 +61,9 @@ class ShareService {
 
 
 	/**
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 */
-	public function removeShareFromMember(Member $member) {
+	public function removeShareFromMember(DeprecatedMember $member) {
 
 
 

@@ -35,15 +35,15 @@ use OC\BackgroundJob\TimedJob;
 use OC\Share20\Share;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Circles\FileSharingBroadcaster;
-use OCA\Circles\Db\CirclesRequest;
-use OCA\Circles\Db\MembersRequest;
+use OCA\Circles\Db\DeprecatedCirclesRequest;
+use OCA\Circles\Db\DeprecatedMembersRequest;
 use OCA\Circles\Db\SharesRequest;
 use OCA\Circles\Db\TokensRequest;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SharesToken;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\DavService;
@@ -74,10 +74,10 @@ class ContactsExistingShares extends TimedJob {
 	/** @var DavService */
 	private $davService;
 
-	/** @var MembersRequest */
+	/** @var DeprecatedMembersRequest */
 	private $membersRequest;
 
-	/** @var CirclesRequest */
+	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
 
 	/** @var SharesRequest */
@@ -111,8 +111,8 @@ class ContactsExistingShares extends TimedJob {
 		$this->davService = $c->query(DavService::class);
 		$this->rootFolder = $c->query(IRootFolder::class);
 		$this->userManager = $c->query(IUserManager::class);
-		$this->membersRequest = $c->query(MembersRequest::class);
-		$this->circlesRequest = $c->query(CirclesRequest::class);
+		$this->membersRequest = $c->query(DeprecatedMembersRequest::class);
+		$this->circlesRequest = $c->query(DeprecatedCirclesRequest::class);
 		$this->tokensRequest = $c->query(TokensRequest::class);
 		$this->sharesRequest = $c->query(SharesRequest::class);
 		$this->fileSharingBroadcaster = $c->query(FileSharingBroadcaster::class);
@@ -130,7 +130,7 @@ class ContactsExistingShares extends TimedJob {
 
 
 	/**
-	 * @return Member[]
+	 * @return DeprecatedMember[]
 	 * @throws GSStatusException
 	 */
 	private function getNewMembers(): array {
@@ -158,7 +158,7 @@ class ContactsExistingShares extends TimedJob {
 				$davCard->getClouds(), $this->getArray('existing_shares.clouds', $contactMeta, [])
 			);
 
-			$owners = $this->membersRequest->forceGetMembers($member->getCircleId(), Member::LEVEL_OWNER);
+			$owners = $this->membersRequest->forceGetMembers($member->getCircleId(), DeprecatedMember::LEVEL_OWNER);
 			$owner = $owners[0];
 
 			// send mail to $missingMails
@@ -212,11 +212,11 @@ class ContactsExistingShares extends TimedJob {
 
 
 	/**
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 * @param string $key
 	 * @param string $value
 	 */
-	private function updateContactMeta(Member $member, string $key, string $value) {
+	private function updateContactMeta(DeprecatedMember $member, string $key, string $value) {
 		$current = $member->getContactMeta();
 		if (!array_key_exists('existing_shares', $current)) {
 			$current['existing_shares'] = [];

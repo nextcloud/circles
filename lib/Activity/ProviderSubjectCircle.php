@@ -29,9 +29,9 @@ namespace OCA\Circles\Activity;
 
 
 use OCA\Circles\Exceptions\FakeException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\FederatedLink;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCP\Activity\IEvent;
 
 class ProviderSubjectCircle extends ProviderParser {
@@ -39,11 +39,11 @@ class ProviderSubjectCircle extends ProviderParser {
 
 	/**
 	 * @param IEvent $event
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 *
 	 * @throws FakeException
 	 */
-	public function parseSubjectCircleCreate(IEvent $event, Circle $circle) {
+	public function parseSubjectCircleCreate(IEvent $event, DeprecatedCircle $circle) {
 		if ($event->getSubject() !== 'circle_create') {
 			return;
 		}
@@ -60,11 +60,11 @@ class ProviderSubjectCircle extends ProviderParser {
 
 	/**
 	 * @param IEvent $event
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 *
 	 * @throws FakeException
 	 */
-	public function parseSubjectCircleDelete(IEvent $event, Circle $circle) {
+	public function parseSubjectCircleDelete(IEvent $event, DeprecatedCircle $circle) {
 		if ($event->getSubject() !== 'circle_delete') {
 			return;
 		}

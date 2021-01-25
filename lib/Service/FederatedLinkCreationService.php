@@ -28,7 +28,7 @@ namespace OCA\Circles\Service;
 
 
 use Exception;
-use OCA\Circles\Db\CirclesRequest;
+use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\FederatedLinksRequest;
 use OCA\Circles\Exceptions\CircleTypeNotValidException;
 use OCA\Circles\Exceptions\FederatedCircleLinkFormatException;
@@ -36,7 +36,7 @@ use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 use OCA\Circles\Exceptions\FederatedLinkCreationException;
 use OCA\Circles\Exceptions\FederatedLinkDoesNotExistException;
 use OCA\Circles\Exceptions\FederatedRemoteDoesNotAllowException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\FederatedLink;
 use OCP\Http\Client\IClientService;
 use OCP\IL10N;
@@ -49,7 +49,7 @@ class FederatedLinkCreationService {
 	/** @var IL10N */
 	private $l10n;
 
-	/** @var CirclesRequest */
+	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
 
 	/** @var ConfigService */
@@ -82,7 +82,7 @@ class FederatedLinkCreationService {
 	 *
 	 * @param string $userId
 	 * @param IL10N $l10n
-	 * @param CirclesRequest $circlesRequest
+	 * @param DeprecatedCirclesRequest $circlesRequest
 	 * @param ConfigService $configService
 	 * @param CirclesService $circlesService
 	 * @param BroadcastService $broadcastService
@@ -93,7 +93,7 @@ class FederatedLinkCreationService {
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$userId, IL10N $l10n, CirclesRequest $circlesRequest, ConfigService $configService,
+		$userId, IL10N $l10n, DeprecatedCirclesRequest $circlesRequest, ConfigService $configService,
 		CirclesService $circlesService, BroadcastService $broadcastService,
 		FederatedLinkService $federatedService,
 		FederatedLinksRequest $federatedLinksRequest, EventsService $eventsService,
@@ -159,12 +159,12 @@ class FederatedLinkCreationService {
 	/**
 	 * Create a new link into database and assign the correct status.
 	 *
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param FederatedLink $link
 	 *
 	 * @throws Exception
 	 */
-	public function requestedLinkFromRemoteCircle(Circle $circle, FederatedLink $link) {
+	public function requestedLinkFromRemoteCircle(DeprecatedCircle $circle, FederatedLink $link) {
 
 		try {
 			$this->checkLinkRequestValidity($circle, $link);
@@ -188,7 +188,7 @@ class FederatedLinkCreationService {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param FederatedLink $link
 	 *
 	 * @throws FederatedLinkCreationException
@@ -277,13 +277,13 @@ class FederatedLinkCreationService {
 	 * requestLink()
 	 *
 	 *
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param FederatedLink $link
 	 *
 	 * @return boolean
 	 * @throws Exception
 	 */
-	private function forceRequestNewLink(Circle $circle, FederatedLink &$link) {
+	private function forceRequestNewLink(DeprecatedCircle $circle, FederatedLink &$link) {
 		try {
 			$client = $this->clientService->newClient();
 			$args = ['sourceName' => $circle->getName()];
@@ -311,14 +311,14 @@ class FederatedLinkCreationService {
 	 * Called by requestLink() will update status and event
 	 * Will also manage errors returned by the remote link
 	 *
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param FederatedLink $link
 	 * @param int $status
 	 * @param string $reason
 	 *
 	 * @throws Exception
 	 */
-	private function eventOnRequestLink(Circle $circle, FederatedLink $link, $status, $reason) {
+	private function eventOnRequestLink(DeprecatedCircle $circle, FederatedLink $link, $status, $reason) {
 
 		switch ($status) {
 			case FederatedLink::STATUS_LINK_UP:

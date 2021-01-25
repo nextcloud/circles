@@ -34,7 +34,7 @@ use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\ISearch;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SearchResult;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
@@ -109,7 +109,7 @@ class GlobalScaleUsers implements ISearch {
 
 			$result[] =
 				new SearchResult(
-					$this->get('userid.value', $user), Member::TYPE_USER, $instance,
+					$this->get('userid.value', $user), DeprecatedMember::TYPE_USER, $instance,
 					['display' => $this->get('name.value', $user)]
 				);
 		}

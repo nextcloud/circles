@@ -1,5 +1,8 @@
 <?php
 
+declare(strict_types=1);
+
+
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -7,7 +10,7 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2017
+ * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -30,10 +33,12 @@ namespace OCA\Circles\Db;
 
 
 use daita\MySmallPhpTools\Exceptions\RowNotFoundException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Model\AppService;
 
+
 /**
- * Class GSEventsRequestBuilder
+ * Class RemoteRequestBuilder
  *
  * @package OCA\Circles\Db
  */
@@ -96,11 +101,15 @@ class RemoteRequestBuilder extends CoreRequestBuilder {
 	 * @param CoreQueryBuilder $qb
 	 *
 	 * @return AppService
-	 * @throws RowNotFoundException
+	 * @throws RemoteNotFoundException
 	 */
 	public function getItemFromRequest(CoreQueryBuilder $qb): AppService {
 		/** @var AppService $appService */
-		$appService = $qb->asItem(AppService::class);
+		try {
+			$appService = $qb->asItem(AppService::class);
+		} catch (RowNotFoundException $e) {
+			throw new RemoteNotFoundException();
+		}
 
 		return $appService;
 	}

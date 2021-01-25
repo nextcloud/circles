@@ -39,10 +39,10 @@ use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\GlobalScale\GSShare;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SharesToken;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\MiscService;
@@ -105,7 +105,7 @@ class FileShare extends AGlobalScaleEvent {
 	 * @throws CircleDoesNotExistException
 	 */
 	public function manage(GSEvent $event): void {
-		$circle = $event->getCircle();
+		$circle = $event->getDeprecatedCircle();
 
 		// if event is not local, we create a federated file to the right instance of Nextcloud, using the right token
 		if (!$this->configService->isLocalInstance($event->getSource())) {
@@ -129,7 +129,7 @@ class FileShare extends AGlobalScaleEvent {
 		} else {
 			// if the event is local, we send mail to mail-as-members
 			$members = $this->membersRequest->forceGetMembers(
-				$circle->getUniqueId(), Member::LEVEL_MEMBER, Member::TYPE_MAIL, true
+				$circle->getUniqueId(), DeprecatedMember::LEVEL_MEMBER, DeprecatedMember::TYPE_MAIL, true
 			);
 
 			foreach ($members as $member) {
@@ -139,7 +139,7 @@ class FileShare extends AGlobalScaleEvent {
 
 		// we also fill the event's result for further things, like contact-as-members
 		$members = $this->membersRequest->forceGetMembers(
-			$circle->getUniqueId(), Member::LEVEL_MEMBER, Member::TYPE_CONTACT, true
+			$circle->getUniqueId(), DeprecatedMember::LEVEL_MEMBER, DeprecatedMember::TYPE_CONTACT, true
 		);
 
 		$accounts = [];
@@ -173,7 +173,7 @@ class FileShare extends AGlobalScaleEvent {
 			return;
 		}
 
-		$circle = $event->getCircle();
+		$circle = $event->getDeprecatedCircle();
 
 		foreach ($contacts as $contact) {
 			$this->sendShareToContact($event, $circle, $contact['memberId'], $contact['emails']);
@@ -183,13 +183,13 @@ class FileShare extends AGlobalScaleEvent {
 
 	/**
 	 * @param GSEvent $event
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param string $memberId
 	 * @param array $emails
 	 *
 	 * @throws CircleDoesNotExistException
 	 */
-	private function sendShareToContact(GSEvent $event, Circle $circle, string $memberId, array $emails) {
+	private function sendShareToContact(GSEvent $event, DeprecatedCircle $circle, string $memberId, array $emails) {
 		try {
 			$member = $this->membersRequest->forceGetMemberById($memberId);
 			$share = $this->getShareFromData($event->getData());
@@ -227,14 +227,14 @@ class FileShare extends AGlobalScaleEvent {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param IShare $share
 	 * @param string $email
 	 * @param SharesToken $sharesToken
 	 * @param string $password
 	 */
 	private function sharedByMail(
-		Circle $circle, IShare $share, string $email, SharesToken $sharesToken, string $password
+		DeprecatedCircle $circle, IShare $share, string $email, SharesToken $sharesToken, string $password
 	) {
 		// genelink
 		$link = $this->urlGenerator->linkToRouteAbsolute(
@@ -251,11 +251,11 @@ class FileShare extends AGlobalScaleEvent {
 			$this->sendMail(
 				$share->getNode()
 					  ->getName(), $link,
-				MiscService::getDisplay($share->getSharedBy(), Member::TYPE_USER),
+				MiscService::getDisplay($share->getSharedBy(), DeprecatedMember::TYPE_USER),
 				$circle->getName(), $email
 			);
 			$this->sendPasswordByMail(
-				$share, MiscService::getDisplay($share->getSharedBy(), Member::TYPE_USER),
+				$share, MiscService::getDisplay($share->getSharedBy(), DeprecatedMember::TYPE_USER),
 				$email, $password
 			);
 		} catch (Exception $e) {
@@ -427,11 +427,11 @@ class FileShare extends AGlobalScaleEvent {
 	 */
 	private function getMailAddressFromCircle(string $circleId): array {
 		$members = $this->membersRequest->forceGetMembers(
-			$circleId, Member::LEVEL_MEMBER, Member::TYPE_MAIL
+			$circleId, DeprecatedMember::LEVEL_MEMBER, DeprecatedMember::TYPE_MAIL
 		);
 
 		return array_map(
-			function(Member $member) {
+			function(DeprecatedMember $member) {
 				return $member->getUserId();
 			}, $members
 		);

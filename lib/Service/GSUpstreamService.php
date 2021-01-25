@@ -40,15 +40,15 @@ use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
 use Exception;
-use OCA\Circles\Db\CirclesRequest;
+use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\GSEventsRequest;
-use OCA\Circles\Db\MembersRequest;
+use OCA\Circles\Db\DeprecatedMembersRequest;
 use OCA\Circles\Exceptions\GlobalScaleEventException;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Exceptions\JsonException;
 use OCA\Circles\Exceptions\ModelException;
 use OCA\Circles\GlobalScale\CircleStatus;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\GlobalScale\GSWrapper;
 use OCP\IURLGenerator;
@@ -74,10 +74,10 @@ class GSUpstreamService {
 	/** @var GSEventsRequest */
 	private $gsEventsRequest;
 
-	/** @var CirclesRequest */
+	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
 
-	/** @var MembersRequest */
+	/** @var DeprecatedMembersRequest */
 	private $membersRequest;
 
 	/** @var GlobalScaleService */
@@ -96,8 +96,8 @@ class GSUpstreamService {
 	 * @param $userId
 	 * @param IURLGenerator $urlGenerator
 	 * @param GSEventsRequest $gsEventsRequest
-	 * @param CirclesRequest $circlesRequest
-	 * @param MembersRequest $membersRequest
+	 * @param DeprecatedCirclesRequest $circlesRequest
+	 * @param DeprecatedMembersRequest $membersRequest
 	 * @param GlobalScaleService $globalScaleService
 	 * @param ConfigService $configService
 	 * @param MiscService $miscService
@@ -106,8 +106,8 @@ class GSUpstreamService {
 		$userId,
 		IURLGenerator $urlGenerator,
 		GSEventsRequest $gsEventsRequest,
-		CirclesRequest $circlesRequest,
-		MembersRequest $membersRequest,
+		DeprecatedCirclesRequest $circlesRequest,
+		DeprecatedMembersRequest $membersRequest,
 		GlobalScaleService $globalScaleService,
 		ConfigService $configService,
 		MiscService $miscService
@@ -131,7 +131,6 @@ class GSUpstreamService {
 	 */
 	public function newEvent(GSEvent $event): string {
 		$event->setSource($this->configService->getLocalInstance());
-
 		try {
 			$gs = $this->globalScaleService->getGlobalScaleEvent($event);
 			if ($this->isLocalEvent($event)) {
@@ -158,7 +157,6 @@ class GSUpstreamService {
 
 	/**
 	 * @param GSWrapper $wrapper
-	 * @param string $protocol
 	 */
 	public function broadcastWrapper(GSWrapper $wrapper): void {
 		$status = GSWrapper::STATUS_FAILED;
@@ -223,7 +221,7 @@ class GSUpstreamService {
 	public function confirmEvent(GSEvent &$event): void {
 		$this->signEvent($event);
 
-		$circle = $event->getCircle();
+		$circle = $event->getDeprecatedCircle();
 		$owner = $circle->getOwner();
 		$path = $this->urlGenerator->linkToRoute('circles.GlobalScale.event');
 
@@ -273,7 +271,7 @@ class GSUpstreamService {
 			return true;
 		}
 
-		$circle = $event->getCircle();
+		$circle = $event->getDeprecatedCircle();
 		$owner = $circle->getOwner();
 		if ($owner->getInstance() === ''
 			|| in_array($owner->getInstance(), $this->configService->getTrustedDomains())) {
@@ -381,11 +379,11 @@ class GSUpstreamService {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 *
 	 * @throws GSStatusException
 	 */
-	private function checkCircle(Circle $circle): void {
+	private function checkCircle(DeprecatedCircle $circle): void {
 		$status = $this->confirmCircleStatus($circle);
 
 		if (!$status) {
@@ -396,15 +394,15 @@ class GSUpstreamService {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 *
 	 * @return bool
 	 * @throws GSStatusException
 	 */
-	public function confirmCircleStatus(Circle $circle): bool {
+	public function confirmCircleStatus(DeprecatedCircle $circle): bool {
 		$event = new GSEvent(GSEvent::CIRCLE_STATUS, true);
 		$event->setSource($this->configService->getLocalInstance());
-		$event->setCircle($circle);
+		$event->setDeprecatedCircle($circle);
 
 		$this->signEvent($event);
 

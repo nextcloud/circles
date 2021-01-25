@@ -34,9 +34,9 @@ use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 
 
 /**
@@ -63,7 +63,7 @@ class GlobalSync extends AGlobalScaleEvent {
 		$data = $event->getData();
 		$circles = [];
 		foreach ($data->gAll() as $circle) {
-			$circle = Circle::fromArray($circle, true);
+			$circle = DeprecatedCircle::fromArray($circle, true);
 			$circles[] = $circle;
 
 			$this->syncCircle($circle, $event->getSource());
@@ -81,10 +81,10 @@ class GlobalSync extends AGlobalScaleEvent {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param string $source
 	 */
-	private function syncCircle(Circle $circle, string $source): void {
+	private function syncCircle(DeprecatedCircle $circle, string $source): void {
 		try {
 			$knownCircle = $this->circlesRequest->forceGetCircle($circle->getUniqueId(), true);
 
@@ -133,7 +133,7 @@ class GlobalSync extends AGlobalScaleEvent {
 	}
 
 
-	private function removeDeprecateMembers(Circle $circle, string $source): void {
+	private function removeDeprecateMembers(DeprecatedCircle $circle, string $source): void {
 		$knownMembers = $this->membersRequest->forceGetMembers($circle->getUniqueId());
 
 		foreach ($knownMembers as $knownItem) {
@@ -149,13 +149,13 @@ class GlobalSync extends AGlobalScaleEvent {
 
 
 	/**
-	 * @param Member $item
-	 * @param Member[] $members
+	 * @param DeprecatedMember $item
+	 * @param DeprecatedMember[] $members
 	 * @param string $source
 	 *
 	 * @throws MemberDoesNotExistException
 	 */
-	private function getMember(Member $item, array $members, string $source) {
+	private function getMember(DeprecatedMember $item, array $members, string $source) {
 		foreach ($members as $member) {
 			if ($member->getInstance() === '') {
 				$member->setInstance($source);

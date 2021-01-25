@@ -36,7 +36,7 @@ use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Exceptions\GlobalScaleDSyncException;
 use OCA\Circles\Exceptions\GlobalScaleEventException;
 use OCA\Circles\Model\GlobalScale\GSEvent;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 
 
 /**
@@ -60,10 +60,10 @@ class CircleUpdate extends AGlobalScaleEvent {
 	public function verify(GSEvent $event, bool $localCheck = false, bool $mustBeChecked = false): void {
 		parent::verify($event, $localCheck, true);
 
-		$circle = $event->getCircle();
+		$circle = $event->getDeprecatedCircle();
 		$data = $event->getData();
 		$viewer = $circle->getHigherViewer();
-		if (!$data->gBool('local_admin') && $viewer->getLevel() !== Member::LEVEL_OWNER) {
+		if (!$data->gBool('local_admin') && $viewer->getLevel() !== DeprecatedMember::LEVEL_OWNER) {
 			throw new GlobalScaleDSyncException('Member is not Owner');
 		}
 	}
@@ -80,7 +80,7 @@ class CircleUpdate extends AGlobalScaleEvent {
 			return;
 		}
 
-		$circle = $event->getCircle();
+		$circle = $event->getDeprecatedCircle();
 		$settings = $event->getData()
 						  ->gArray('settings');
 		$ak = array_keys($settings);

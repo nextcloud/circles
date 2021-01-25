@@ -41,13 +41,13 @@ use OC\User\NoUserException;
 use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleProviderRequest;
-use OCA\Circles\Db\CirclesRequest;
-use OCA\Circles\Db\MembersRequest;
+use OCA\Circles\Db\DeprecatedCirclesRequest;
+use OCA\Circles\Db\DeprecatedMembersRequest;
 use OCA\Circles\Db\TokensRequest;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\GSUpstreamService;
@@ -99,10 +99,10 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 	/** @var MembersService */
 	private $membersService;
 
-	/** @var CirclesRequest */
+	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
 
-	/** @var MembersRequest */
+	/** @var DeprecatedMembersRequest */
 	private $membersRequest;
 
 	/** @var TokensRequest */
@@ -143,8 +143,8 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 		$this->logger = $logger;
 		$this->urlGenerator = $urlGenerator;
 		$this->membersService = $container->query(MembersService::class);
-		$this->circlesRequest = $container->query(CirclesRequest::class);
-		$this->membersRequest = $container->query(MembersRequest::class);
+		$this->circlesRequest = $container->query(DeprecatedCirclesRequest::class);
+		$this->membersRequest = $container->query(DeprecatedMembersRequest::class);
 		$this->gsUpstreamService = $container->query(GSUpstreamService::class);
 		$this->tokensRequest = $container->query(TokensRequest::class);
 	}
@@ -240,7 +240,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 		try {
 			$circle = $this->circlesRequest->forceGetCircle($share->getSharedWith());
 			$event = new GSEvent(GSEvent::FILE_UNSHARE, true);
-			$event->setCircle($circle);
+			$event->setDeprecatedCircle($circle);
 
 			$store = new SimpleDataStore();
 			$store->sArray(
@@ -453,7 +453,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 		$data['share_with'] =
 			sprintf(
 				'%s (%s, %s) [%s]', $name,
-				$this->l10n->t(Circle::TypeLongString($data['circle_type'])),
+				$this->l10n->t(DeprecatedCircle::TypeLongString($data['circle_type'])),
 				$this->miscService->getDisplayName($data['circle_owner'], true), $data['share_with']
 			);
 
@@ -667,7 +667,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 		$member = null;
 		try {
 			$member = $this->membersService->getMemberById($data['personal_member_id']);
-			if (!$member->isLevel(Member::LEVEL_MEMBER)) {
+			if (!$member->isLevel(DeprecatedMember::LEVEL_MEMBER)) {
 				throw new Exception();
 			}
 		} catch (Exception $e) {
@@ -806,7 +806,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 				  ->setSharedWithDisplayName(
 					  sprintf(
 						  '%s (%s, %s)', $name,
-						  $this->l10n->t(Circle::TypeLongString($data['circle_type'])),
+						  $this->l10n->t(DeprecatedCircle::TypeLongString($data['circle_type'])),
 						  $this->miscService->getDisplayName($data['circle_owner'], true)
 					  )
 				  );

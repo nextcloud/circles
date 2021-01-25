@@ -9,7 +9,7 @@ declare(strict_types=1);
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2019
+ * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Migration;
 
 use Closure;
+use Doctrine\DBAL\Schema\SchemaException;
 use OCP\DB\ISchemaWrapper;
 use OCP\IDBConnection;
 use OCP\Migration\IOutput;
@@ -67,8 +68,32 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 		/** @var ISchemaWrapper $schema */
 		$schema = $schemaClosure();
 
-		if (!$schema->hasTable('circle_remote')) {
-			$table = $schema->createTable('circle_remote');
+		try {
+			$circles = $schema->getTable('circle_circles');
+			if (!$circles->hasColumn('config')) {
+				$circles->addColumn(
+					'config', 'integer', [
+								'notnull'  => false,
+								'length'   => 11,
+								'unsigned' => true,
+							]
+				);
+			}
+			if (!$circles->hasColumn('instance')) {
+				$circles->addColumn(
+					'instance', 'string', [
+								  'notnull' => true,
+								  'default' => '',
+								  'length'  => 255
+							  ]
+				);
+			}
+			$circles->addIndex(['config']);
+		} catch (SchemaException $e) {
+		}
+
+		if (!$schema->hasTable('circle_remotes')) {
+			$table = $schema->createTable('circle_remotes');
 			$table->addColumn(
 				'id', 'integer', [
 						'autoincrement' => true,
@@ -110,6 +135,18 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 			$table->addUniqueIndex(['instance']);
 			$table->addIndex(['uid']);
 			$table->addIndex(['href']);
+		}
+
+		if (!$schema->hasTable('circle_memberships')) {
+//			$table = $schema->createTable('circle_memberships');
+//			$table->addColumn(
+//				'id', 'string', [
+//						 'notnull' => false,
+//						 'length'  => 15,
+//					 ]
+//			);
+
+//			$table->setIndex(['id']);
 		}
 
 		return $schema;

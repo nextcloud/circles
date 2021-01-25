@@ -27,7 +27,7 @@ All notable changes to this project will be documented in this file.
 - fixing composer lib version
 
 
-### 21.0.0
+### 21.0.0 (NC21)
 
 - compat nc21
 - first implementation of federated circles (2.0)

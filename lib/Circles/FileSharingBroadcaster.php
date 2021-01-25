@@ -35,8 +35,8 @@ use OCA\Circles\Db\SharesRequest;
 use OCA\Circles\Db\TokensRequest;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\IBroadcaster;
-use OCA\Circles\Model\Circle;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedCircle;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SharesToken;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\ConfigService;
@@ -155,7 +155,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function createShareToCircle(SharingFrame $frame, Circle $circle) {
+	public function createShareToCircle(SharingFrame $frame, DeprecatedCircle $circle) {
 		if ($frame->is0Circle()) {
 			return false;
 		}
@@ -167,7 +167,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function deleteShareToCircle(SharingFrame $frame, Circle $circle) {
+	public function deleteShareToCircle(SharingFrame $frame, DeprecatedCircle $circle) {
 		return true;
 	}
 
@@ -175,7 +175,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function editShareToCircle(SharingFrame $frame, Circle $circle) {
+	public function editShareToCircle(SharingFrame $frame, DeprecatedCircle $circle) {
 		return true;
 	}
 
@@ -185,7 +185,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 * @throws IllegalIDChangeException
 	 * @throws Exception
 	 */
-	public function createShareToMember(SharingFrame $frame, Member $member) {
+	public function createShareToMember(SharingFrame $frame, DeprecatedMember $member) {
 		if (!$frame->is0Circle()) {
 			return false;
 		}
@@ -196,7 +196,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 		}
 
 		$share = $this->generateShare($payload['share']);
-		if ($member->getType() === Member::TYPE_MAIL || $member->getType() === Member::TYPE_CONTACT) {
+		if ($member->getType() === DeprecatedMember::TYPE_MAIL || $member->getType() === DeprecatedMember::TYPE_CONTACT) {
 			$circle = $frame->getCircle();
 			try {
 				// federated shared in contact
@@ -229,7 +229,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 				$sharesToken =
 					$this->tokensRequest->generateTokenForMember($member, $share->getId(), $password);
 				$mails = [$member->getUserId()];
-				if ($member->getType() === Member::TYPE_CONTACT) {
+				if ($member->getType() === DeprecatedMember::TYPE_CONTACT) {
 					$mails = $this->getMailsFromContact($member->getUserId());
 				}
 
@@ -251,7 +251,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function deleteShareToMember(SharingFrame $frame, Member $member) {
+	public function deleteShareToMember(SharingFrame $frame, DeprecatedMember $member) {
 		return true;
 	}
 
@@ -259,17 +259,17 @@ class FileSharingBroadcaster implements IBroadcaster {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function editShareToMember(SharingFrame $frame, Member $member) {
+	public function editShareToMember(SharingFrame $frame, DeprecatedMember $member) {
 		return true;
 	}
 
 
 	/**
-	 * @param Circle $circle
-	 * @param Member $member
+	 * @param DeprecatedCircle $circle
+	 * @param DeprecatedMember $member
 	 */
-	public function sendMailAboutExistingShares(Circle $circle, Member $member) {
-		if ($member->getType() !== Member::TYPE_MAIL && $member->getType() !== Member::TYPE_CONTACT
+	public function sendMailAboutExistingShares(DeprecatedCircle $circle, DeprecatedMember $member) {
+		if ($member->getType() !== DeprecatedMember::TYPE_MAIL && $member->getType() !== DeprecatedMember::TYPE_CONTACT
 			&& $member->getContactId() !== '') {
 			return;
 		}
@@ -298,7 +298,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 		}
 
 		$recipient = $member->getUserId();
-		if ($member->getType() === Member::TYPE_CONTACT) {
+		if ($member->getType() === DeprecatedMember::TYPE_CONTACT) {
 			$data = MiscService::getContactData($member->getUserId());
 			if (!array_key_exists('EMAIL', $data)) {
 				return;
@@ -342,14 +342,14 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param IShare $share
 	 * @param string $address
 	 * @param SharesToken $token
 	 *
 	 * @return bool
 	 */
-	public function sharedByFederated(Circle $circle, IShare $share, string $address, SharesToken $token
+	public function sharedByFederated(DeprecatedCircle $circle, IShare $share, string $address, SharesToken $token
 	): bool {
 		try {
 			$cloudId = $this->federationCloudIdManager->resolveCloudId($address);
@@ -389,14 +389,14 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param IShare $share
 	 * @param string $email
 	 * @param SharesToken $sharesToken
 	 * @param string $password
 	 */
 	private function sharedByMail(
-		Circle $circle, IShare $share, string $email, SharesToken $sharesToken, string $password
+		DeprecatedCircle $circle, IShare $share, string $email, SharesToken $sharesToken, string $password
 	) {
 		// genelink
 		$link = $this->urlGenerator->linkToRouteAbsolute(
@@ -579,14 +579,14 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param array $unknownShares
-	 * @param Member $author
-	 * @param Member $member
+	 * @param DeprecatedMember $author
+	 * @param DeprecatedMember $member
 	 * @param string $recipient
 	 */
 	public function sendMailExitingShares(
-		Circle $circle, array $unknownShares, Member $author, Member $member, string $recipient
+		DeprecatedCircle $circle, array $unknownShares, DeprecatedMember $author, DeprecatedMember $member, string $recipient
 	) {
 		$data = [];
 
@@ -624,7 +624,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 *
 	 * @throws Exception
 	 */
-	protected function sendPasswordExistingShares(Member $author, string $email, string $password) {
+	protected function sendPasswordExistingShares(DeprecatedMember $author, string $email, string $password) {
 		if (!$this->configService->sendPasswordByMail() || $password === '') {
 			return;
 		}
@@ -689,13 +689,13 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 	/**
 	 * @param array $share
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 * @param string $password
 	 *
 	 * @return array
 	 * @throws TokenDoesNotExistException
 	 */
-	private function getMailLinkFromShare(array $share, Member $member, string $password = '') {
+	private function getMailLinkFromShare(array $share, DeprecatedMember $member, string $password = '') {
 		$sharesToken = $this->tokensRequest->generateTokenForMember($member, $share['id'], $password);
 		$link = $this->urlGenerator->linkToRouteAbsolute(
 			'files_sharing.sharecontroller.showShare',
