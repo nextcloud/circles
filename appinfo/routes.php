@@ -25,8 +25,6 @@
  */
 
 return [
-	'ocs'    => [
-	],
 	'routes' => [
 		['name' => 'Settings#getSettings', 'url' => '/admin/settings', 'verb' => 'GET'],
 		['name' => 'Settings#setSettings', 'url' => '/admin/settings', 'verb' => 'POST'],
@@ -74,7 +72,11 @@ return [
 		['name' => 'Remote#test', 'url' => '/test', 'verb' => 'GET'],
 		['name' => 'Remote#circles', 'url' => '/circles', 'verb' => 'GET'],
 		['name' => 'Remote#circle', 'url' => '/circles/{circleId}', 'verb' => 'GET'],
-		['name' => 'Remote#members', 'url' => '/members', 'verb' => 'GET'],
+		['name' => 'Remote#members', 'url' => '/circles/{circleId}/members', 'verb' => 'GET'],
 		['name' => 'Remote#member', 'url' => '/members/{memberId}', 'verb' => 'GET'],
+	],
+	'ocs' => [
+		['name' => 'Ocs#circles', 'url' => '/circles/', 'verb' => 'GET'],
+		['name' => 'Ocs#members', 'url' => '/circles/{circleId}/members/', 'verb' => 'GET'],
 	]
 ];
