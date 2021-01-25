@@ -94,6 +94,14 @@ class OcsController extends Controller {
 		try {
 			$circles = $this->circlesService->listCircles($user->getUID(), Circle::CIRCLES_ALL);
 
+			$circles = array_map(
+				function(Circle $circle) {
+					$circle->setSettings([]);
+
+					return $circle;
+				}, $circles
+			);
+
 			return new DataResponse($circles);
 		} catch (Exception $e) {
 			return new DataResponse(['message' => $$e->getMessage()], Http::STATUS_BAD_REQUEST);
@@ -113,7 +121,7 @@ class OcsController extends Controller {
 		try {
 			$circle = $this->circlesService->detailsCircle($circleId);
 			$members = ($circle->getMembers() === null) ? [] : $circle->getMembers();
-			
+
 			return new DataResponse($members);
 		} catch (Exception $e) {
 			return new DataResponse(['message' => $$e->getMessage()], Http::STATUS_BAD_REQUEST);
