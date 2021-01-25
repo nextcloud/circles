@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -8,7 +10,7 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2017
+ * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,43 +29,40 @@
  */
 
 
-namespace OCA\Circles\GlobalScale;
+namespace OCA\Circles\RemoteEvents;
 
 
-use OCA\Circles\Exceptions\MemberAlreadyExistsException;
-use OCA\Circles\Model\GlobalScale\GSEvent;
+use OCA\Circles\IRemoteEvent;
+use OCA\Circles\Model\Remote\RemoteEvent;
 
 
 /**
  * Class CircleCreate
  *
- * @package OCA\Circles\GlobalScale
+ * @package OCA\Circles\RemoteEvents
  */
-class CircleCreate extends AGlobalScaleEvent {
+class CircleCreate implements IRemoteEvent {
 
 
 	/**
 	 * Circles are created on the original instance, so do no check;
 	 *
-	 * @param GSEvent $event
-	 * @param bool $localCheck
-	 * @param bool $mustBeChecked
+	 * @param RemoteEvent $event
 	 */
-	public function verify(GSEvent $event, bool $localCheck = false, bool $mustBeChecked = false): void {
-		//parent::verify($event, $localCheck, $mustBeChecked);
+	public function verify(RemoteEvent $event): void {
+		//
 	}
 
 
 	/**
-	 * @param GSEvent $event
-	 *
-	 * @throws MemberAlreadyExistsException
+	 * @param RemoteEvent $event
 	 */
-	public function manage(GSEvent $event): void {
+	public function manage(RemoteEvent $event): void {
 		if (!$event->hasCircle()) {
 			return;
 		}
 
+		return;
 		$circle = $event->getDeprecatedCircle();
 		$this->circlesRequest->createCircle($circle);
 
@@ -78,7 +77,7 @@ class CircleCreate extends AGlobalScaleEvent {
 
 
 	/**
-	 * @param GSEvent[] $events
+	 * @param RemoteEvent[] $events
 	 */
 	public function result(array $events): void {
 	}

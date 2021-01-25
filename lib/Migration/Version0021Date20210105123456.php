@@ -70,13 +70,24 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 
 		try {
 			$circles = $schema->getTable('circle_circles');
-			$circles->addColumn(
-				'config', 'integer', [
-								 'notnull'  => false,
-								 'length'   => 11,
-								 'unsigned' => true,
-							 ]
-			);
+			if (!$circles->hasColumn('config')) {
+				$circles->addColumn(
+					'config', 'integer', [
+								'notnull'  => false,
+								'length'   => 11,
+								'unsigned' => true,
+							]
+				);
+			}
+			if (!$circles->hasColumn('instance')) {
+				$circles->addColumn(
+					'instance', 'string', [
+								  'notnull' => true,
+								  'default' => '',
+								  'length'  => 255
+							  ]
+				);
+			}
 			$circles->addIndex(['config']);
 		} catch (SchemaException $e) {
 		}
@@ -124,6 +135,18 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 			$table->addUniqueIndex(['instance']);
 			$table->addIndex(['uid']);
 			$table->addIndex(['href']);
+		}
+
+		if (!$schema->hasTable('circle_memberships')) {
+//			$table = $schema->createTable('circle_memberships');
+//			$table->addColumn(
+//				'id', 'string', [
+//						 'notnull' => false,
+//						 'length'  => 15,
+//					 ]
+//			);
+
+//			$table->setIndex(['id']);
 		}
 
 		return $schema;

@@ -61,7 +61,7 @@ class CircleDestroy extends AGlobalScaleEvent {
 			return;
 		}
 
-		$circle = $event->getCircle();
+		$circle = $event->getDeprecatedCircle();
 		$this->eventsService->onCircleDestruction($circle);
 
 		$this->sharesRequest->removeSharesToCircleId($circle->getUniqueId());

@@ -32,8 +32,10 @@ declare(strict_types=1);
 namespace OCA\Circles\Model;
 
 
+use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\MemberService;
 
 /**
  * Class ModelManager
@@ -47,19 +49,60 @@ class ModelManager {
 	const TYPES_LONG = 2;
 
 
+	/** @var MemberService */
+	private $memberService;
+
 	/** @var ConfigService */
 	private $configService;
 
+	/** @var MembershipRequest */
+	private $membershipRequest;
 
-	public function __construct(ConfigService $configService) {
+
+	/** @var bool */
+	private $fullDetails = false;
+
+
+	/**
+	 * ModelManager constructor.
+	 *
+	 * @param MemberService $memberService
+	 * @param ConfigService $configService
+	 * @param MembershipRequest $membershipRequest
+	 */
+	public function __construct(
+		MemberService $memberService, ConfigService $configService, MembershipRequest $membershipRequest
+	) {
+		$this->memberService = $memberService;
 		$this->configService = $configService;
+		$this->membershipRequest = $membershipRequest;
 	}
 
 
+	/**
+	 * @param Circle $circle
+	 */
 	public function getMembers(Circle $circle): void {
-		if (empty($circle->getMembers())) {
-			$circle->setMembers(['oui' => 1]);
-		}
+		$members = $this->memberService->getMembers($circle->getId());
+		$circle->setMembers($members);
+	}
+
+
+	/**
+	 * @param CurrentUser $currentUser
+	 */
+	public function getMemberships(CurrentUser $currentUser): void {
+		$memberships = $this->membershipRequest->getMemberships($currentUser->getId());
+		$currentUser->setMemberships($memberships);
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 */
+	public function memberOf(Circle $circle) {
+		//$members = $this->memberService->getMembers($circle->getId());
+		$circle->setMemberOf([]);
 	}
 
 
@@ -72,6 +115,20 @@ class ModelManager {
 			$owner = new Member();
 			$owner->importFromDatabase($data, 'owner_');
 			$circle->setOwner($owner);
+		} catch (MemberNotFoundException $e) {
+		}
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 * @param array $data
+	 */
+	public function importViewerFromDatabase(Circle $circle, array $data): void {
+		try {
+			$viewer = new Member();
+			$viewer->importFromDatabase($data, 'viewer_');
+			$circle->setViewer($viewer);
 		} catch (MemberNotFoundException $e) {
 		}
 	}
@@ -102,6 +159,21 @@ class ModelManager {
 		}
 
 		return $types;
+	}
+
+
+	/**
+	 * @param bool $full
+	 */
+	public function setFullDetails(bool $full): void {
+		$this->fullDetails = $full;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isFullDetails(): bool {
+		return $this->fullDetails;
 	}
 
 

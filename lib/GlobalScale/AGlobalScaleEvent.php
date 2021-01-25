@@ -210,7 +210,7 @@ abstract class AGlobalScaleEvent {
 	 */
 	private function checkViewer(GSEvent $event, bool $mustBeChecked) {
 		if (!$event->hasCircle()
-			|| !$event->getCircle()
+			|| !$event->getDeprecatedCircle()
 					  ->hasViewer()) {
 			if ($mustBeChecked) {
 				throw new GlobalScaleEventException('GSEvent cannot be checked');
@@ -219,7 +219,7 @@ abstract class AGlobalScaleEvent {
 			}
 		}
 
-		$circle = $event->getCircle();
+		$circle = $event->getDeprecatedCircle();
 		$viewer = $circle->getHigherViewer();
 		$this->cleanMember($viewer);
 
@@ -231,7 +231,7 @@ abstract class AGlobalScaleEvent {
 			throw new GlobalScaleDSyncException('Viewer seems DSync');
 		}
 
-		$event->setCircle($localCircle);
+		$event->setDeprecatedCircle($localCircle);
 	}
 
 

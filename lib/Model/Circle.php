@@ -43,6 +43,29 @@ use JsonSerializable;
 /**
  * Class Circle
  *
+ * ** examples of use of bitwise flags for members management:
+ *      CFG_OPEN, CFG_REQUEST, CFG_INVITE, CFG_FRIEND
+ *
+ * - CFG_OPEN                             => everyone can enter. moderator can add members.
+ * - CFG_OPEN | CFG_REQUEST               => anyone can initiate a request to join the circle, moderator can
+ *                                           add members
+ * - CFG_OPEN | CFG_INVITE                => every one can enter, moderator must send invitation.
+ * - CFG_OPEN | CFG_INVITE | CFG_REQUEST  => every one send a request, moderator must send invitation.
+ * - CFG_OPEN | CFG_FRIEND                => useless
+ * - CFG_OPEN | CFG_FRIEND | *            => useless
+ *
+ * - CFG_CIRCLE                           => no one can enter, moderator can add members.
+ *                                           default config, this is only for code readability.
+ * - CFG_INVITE                           => no one can enter, moderator must send invitation.
+ * - CFG_FRIEND                           => no one can enter, but all members can add new member.
+ * - CFG_REQUEST                          => useless (use CFG_OPEN | CFG_REQUEST)
+ * - CFG_FRIEND | CFG_REQUEST             => no one can join the circle, but all members can request a
+ *                                           moderator to accept new member
+ * - CFG_FRIEND | CFG_INVITE              => no one can join the circle, but all members can add new member.
+ *                                           An invitation will be generated
+ * - CFG_FRIEND | CFG_INVITE | CFG_REQUEST  => no one can join the circle, but all members can request a
+ *                                             moderator to accept new member. An invitation will be generated
+ *
  * @package OCA\Circles\Model
  */
 class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSerializable {
@@ -62,29 +85,14 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 	const CFG_OPEN = 16;          // Circle is open, people can join
 	const CFG_INVITE = 32;        // Adding a member generate an invitation that needs to be accepted
 	const CFG_REQUEST = 64;       // Request to join Circles needs to be confirmed by a moderator
-	const CFG_FRIEND = 128;       // Request to join Circles needs to be confirmed by a moderator
+	const CFG_FRIEND = 128;       // Members of the circle can invite their friends
 	const CFG_PROTECTED = 256;    // Password protected to join/request
 	const CFG_NO_OWNER = 512;     // no owner, only members
 	const CFG_HIDDEN = 1024;      // Fully hidden, only backend Circles
 	const CFG_ROOT = 2048;        // Circle cannot be inside another Circle
 	const CFG_FEDERATED = 4096;   // Federated
 
-// examples:
-// CFG_OPEN: everyone can enter. moderator can add members.
-// CFG_OPEN + CFG_REQUEST: anyone can initiate a request to join the circle, moderator can add members
-// CFG_OPEN + CFG_INVITE: every one can enter, moderator must send invitation.
-// CFG_OPEN + CFG_INVITE + CFG_REQUEST: every one send a request, moderator must send invitation.
-// CFG_CIRCLE: no one can enter, moderator can add members.
-// CFG_INVITE: no one can enter, moderator must send invitation.
-// CFG_FRIEND: no one can enter, but all members can add new member.
-// CFG_FRIEND + CFG_REQUEST: no one can join the circle, but all members can request a moderator to accept new member
-// CFG_FRIEND + CFG_INVITE: no one can join the circle, but all members can add new member. An invitation will be generated
-// CFG_FRIEND + CFG_INVITE + CFG_REQUEST: no one can join the circle, but all members can request a moderator to accept new member. An invitation will be generated
-
-// CFG_REQUEST: useless
-// CFG_OPEN + CFG_FRIEND: useless
-// CFG_OPEN + CFG_FRIEND + CFG_REQUEST: useless
-
+	const ID_LENGTH = 14;
 
 	static $DEF = [
 		1    => 'S|Single',
@@ -108,6 +116,9 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 	/** @var int */
 	private $config = 0;
 
+	/** @var int */
+	private $type = 0;
+
 	/** @var string */
 	private $name = '';
 
@@ -120,14 +131,17 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 	/** @var array */
 	private $members = [];
 
+	/** @var Member */
+	private $viewer;
+
 	/** @var array */
 	private $settings = [];
 
 	/** @var string */
 	private $description = '';
 
-	/** @var string */
-	private $contactAddressBook = '';
+	/** @var int */
+	private $contactAddressBook = 0;
 
 	/** @var string */
 	private $contactGroupName = '';
@@ -139,6 +153,15 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 	private $creation = 0;
 
 
+	/** @var Circle[] */
+	private $memberOf = null;
+
+	private $completeJson = false;
+
+
+	/**
+	 * Circle constructor.
+	 */
 	public function __construct() {
 	}
 
@@ -194,6 +217,24 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 	 */
 	public function isConfig(int $flag): bool {
 		return (($this->getConfig() & $flag) !== 0);
+	}
+
+
+	/**
+	 * @param int $type
+	 *
+	 * @deprecated
+	 */
+	public function setType(int $type): void {
+		$this->type = $type;
+	}
+
+	/**
+	 * @return int
+	 * @deprecated
+	 */
+	public function getType(): int {
+		return $this->type;
 	}
 
 
@@ -272,9 +313,33 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 	 * @return array
 	 */
 	public function getMembers(): array {
-		$this->getManager()->getMembers($this);
+		if (empty($this->members)) {
+			$this->getManager()->getMembers($this);
+		}
 
 		return $this->members;
+	}
+
+
+	/**
+	 * @param Member $viewer
+	 */
+	public function setViewer(Member $viewer): void {
+		$this->viewer = $viewer;
+	}
+
+	/**
+	 * @return Member
+	 */
+	public function getViewer(): Member {
+		return $this->viewer;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasViewer(): bool {
+		return ($this->viewer !== null);
 	}
 
 
@@ -317,20 +382,20 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 
 
 	/**
-	 * @param string $contactAddressBook
+	 * @param int $contactAddressBook
 	 *
 	 * @return self
 	 */
-	public function setContactAddressBook(string $contactAddressBook): self {
+	public function setContactAddressBook(int $contactAddressBook): self {
 		$this->contactAddressBook = $contactAddressBook;
 
 		return $this;
 	}
 
 	/**
-	 * @return string
+	 * @return int
 	 */
-	public function getContactAddressBook(): string {
+	public function getContactAddressBook(): int {
 		return $this->contactAddressBook;
 	}
 
@@ -371,6 +436,29 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 //	public function isHidden(): bool {
 //		return $this->hidden;
 //	}
+
+
+	/**
+	 * @param array $memberOf
+	 *
+	 * @return $this
+	 */
+	public function setMemberOf(array $memberOf): self {
+		$this->memberOf = $memberOf;
+
+		return $this;
+	}
+
+	/**
+	 * @return Circle[]
+	 */
+	public function memberOf(): array {
+		if ($this->memberOf === null) {
+			$this->getManager()->memberOf($this);
+		}
+
+		return $this->memberOf;
+	}
 
 
 	/**
@@ -438,6 +526,10 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 			$arr['owner'] = $this->getOwner();
 		}
 
+		if ($this->getManager()->isFullDetails()) {
+			$arr['memberOf'] = $this->memberOf();
+		}
+
 		return $arr;
 	}
 
@@ -453,7 +545,7 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 			 ->setAltName($this->get('alt_name', $data))
 			 ->setConfig($this->getInt('config', $data))
 			 ->setSettings($this->getArray('settings', $data))
-			 ->setContactAddressBook($this->get('contact_addressbook', $data))
+			 ->setContactAddressBook($this->getInt('contact_addressbook', $data))
 			 ->setContactGroupName($this->get('contact_groupname', $data))
 			 ->setDescription($this->get('description', $data));
 
@@ -461,6 +553,7 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 		$this->setCreation(DateTime::createFromFormat('Y-m-d H:i:s', $creation)->getTimestamp());
 
 		$this->getManager()->importOwnerFromDatabase($this, $data);
+		$this->getManager()->importViewerFromDatabase($this, $data);
 
 		return $this;
 	}

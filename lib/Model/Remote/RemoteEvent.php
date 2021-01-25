@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -8,7 +10,7 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2017
+ * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,65 +29,41 @@
  */
 
 
-namespace OCA\Circles\Model\GlobalScale;
+namespace OCA\Circles\Model\Remote;
 
 
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
-use OCA\Circles\Exceptions\JsonException;
-use OCA\Circles\Exceptions\ModelException;
 use OCA\Circles\Model\Circle;
-use OCA\Circles\Model\DeprecatedCircle;
-use OCA\Circles\Model\DeprecatedMember;
+use OCA\Circles\Model\Member;
 
 
 /**
- * Class GSEvent
+ * Class RemoteEvent
  *
- * @package OCA\Circles\Model\GlobalScale
+ * @package OCA\Circles\Model\Remote
  */
-class GSEvent implements JsonSerializable {
+class RemoteEvent implements JsonSerializable {
 
 
 	const SEVERITY_LOW = 1;
 	const SEVERITY_HIGH = 3;
-
-	const TEST = '\OCA\Circles\GlobalScale\Test';
-	const GLOBAL_SYNC = '\OCA\Circles\GlobalScale\GlobalSync';
-	const CIRCLE_STATUS = '\OCA\Circles\GlobalScale\CircleStatus';
-
-	const CIRCLE_CREATE = '\OCA\Circles\GlobalScale\CircleCreate';
-	const CIRCLE_UPDATE = '\OCA\Circles\GlobalScale\CircleUpdate';
-	const CIRCLE_DESTROY = '\OCA\Circles\GlobalScale\CircleDestroy';
-	const MEMBER_ADD = '\OCA\Circles\GlobalScale\MemberAdd';
-	const MEMBER_JOIN = '\OCA\Circles\GlobalScale\MemberJoin';
-	const MEMBER_LEAVE = '\OCA\Circles\GlobalScale\MemberLeave';
-	const MEMBER_LEVEL = '\OCA\Circles\GlobalScale\MemberLevel';
-	const MEMBER_UPDATE = '\OCA\Circles\GlobalScale\MemberUpdate';
-	const MEMBER_REMOVE = '\OCA\Circles\GlobalScale\MemberRemove';
-	const USER_DELETED = '\OCA\Circles\GlobalScale\UserDeleted';
-
-	const FILE_SHARE = '\OCA\Circles\GlobalScale\FileShare';
-	const FILE_UNSHARE = '\OCA\Circles\GlobalScale\FileUnshare';
 
 
 	use TArrayTools;
 
 
 	/** @var string */
-	private $type = '';
+	private $class;
 
 	/** @var string */
 	private $source = '';
 
-	/** @var DeprecatedCircle */
-	private $deprecatedCircle;
-
 	/** @var Circle */
 	private $circle;
 
-	/** @var DeprecatedMember */
+	/** @var Member */
 	private $member;
 
 	/** @var SimpleDataStore */
@@ -97,33 +75,29 @@ class GSEvent implements JsonSerializable {
 	/** @var SimpleDataStore */
 	private $result;
 
-	/** @var string */
-	private $key = '';
-
 	/** @var bool */
-	private $local = false;
-
-	/** @var bool */
-	private $force = false;
+	private $local;
 
 	/** @var bool */
 	private $async = false;
 
+
+	/** @var string */
+	private $wrapperToken = '';
+
 	/** @var bool */
-	private $checked = false;
+	private $verifiedViewer = false;
 
 
 	/**
-	 * GSEvent constructor.
+	 * RemoteEvent constructor.
 	 *
-	 * @param string $type
+	 * @param string $class
 	 * @param bool $local
-	 * @param bool $force
 	 */
-	function __construct(string $type = '', bool $local = false, bool $force = false) {
-		$this->type = $type;
+	function __construct(string $class = '', bool $local = false) {
+		$this->class = $class;
 		$this->local = $local;
-		$this->force = $force;
 		$this->data = new SimpleDataStore();
 		$this->result = new SimpleDataStore();
 	}
@@ -132,17 +106,17 @@ class GSEvent implements JsonSerializable {
 	/**
 	 * @return string
 	 */
-	public function getType(): string {
-		return $this->type;
+	public function getClass(): string {
+		return $this->class;
 	}
 
 	/**
-	 * @param mixed $type
+	 * @param mixed $class
 	 *
-	 * @return GSEvent
+	 * @return self
 	 */
-	public function setType($type): self {
-		$this->type = $type;
+	public function setClass($class): self {
+		$this->class = $class;
 
 		return $this;
 	}
@@ -158,7 +132,7 @@ class GSEvent implements JsonSerializable {
 	/**
 	 * @param string $source
 	 *
-	 * @return GSEvent
+	 * @return self
 	 */
 	public function setSource(string $source): self {
 		$this->source = $source;
@@ -167,16 +141,16 @@ class GSEvent implements JsonSerializable {
 			$this->member->setInstance($source);
 		}
 
-		if ($this->hasCircle()
-			&& $this->getDeprecatedCircle()
-					->hasViewer()
-			&& $this->getDeprecatedCircle()
-					->getViewer()
-					->getInstance() === '') {
-			$this->getDeprecatedCircle()
-				 ->getViewer()
-				 ->setInstance($source);
-		}
+//		if ($this->hasCircle()
+//			&& $this->getCircle()
+//					->hasViewer()
+//			&& $this->getCircle()
+//					->getViewer()
+//					->getInstance() === '') {
+//			$this->getCircle()
+//				 ->getViewer()
+//				 ->setInstance($source);
+//		}
 
 		return $this;
 	}
@@ -192,29 +166,10 @@ class GSEvent implements JsonSerializable {
 	/**
 	 * @param bool $local
 	 *
-	 * @return GSEvent
+	 * @return self
 	 */
 	public function setLocal(bool $local): self {
 		$this->local = $local;
-
-		return $this;
-	}
-
-
-	/**
-	 * @return bool
-	 */
-	public function isForced(): bool {
-		return $this->force;
-	}
-
-	/**
-	 * @param bool $force
-	 *
-	 * @return GSEvent
-	 */
-	public function setForced(bool $force): self {
-		$this->force = $force;
 
 		return $this;
 	}
@@ -230,7 +185,7 @@ class GSEvent implements JsonSerializable {
 	/**
 	 * @param bool $async
 	 *
-	 * @return GSEvent
+	 * @return self
 	 */
 	public function setAsync(bool $async): self {
 		$this->async = $async;
@@ -240,36 +195,53 @@ class GSEvent implements JsonSerializable {
 
 
 	/**
-	 * @return DeprecatedCircle
-	 * @deprecated
+	 * @param bool $verifiedViewer
 	 */
-	public function getDeprecatedCircle(): DeprecatedCircle {
-		return $this->deprecatedCircle;
-	}
-
-	/**
-	 * @param DeprecatedCircle $deprecatedCircle
-	 *
-	 * @return GSEvent
-	 * @deprecated
-	 */
-	public function setDeprecatedCircle(DeprecatedCircle $deprecatedCircle): self {
-		$this->deprecatedCircle = $deprecatedCircle;
-
-		return $this;
+	public function setVerifiedViewer(bool $verifiedViewer): void {
+		$this->verifiedViewer = $verifiedViewer;
 	}
 
 	/**
 	 * @return bool
 	 */
+	public function isVerifiedViewer(): bool {
+		return $this->verifiedViewer;
+	}
+
+
+	/**
+	 * @param string $wrapperToken
+	 *
+	 * @return RemoteEvent
+	 */
+	public function setWrapperToken(string $wrapperToken): self {
+		$this->wrapperToken = $wrapperToken;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getWrapperToken(): string {
+		return $this->wrapperToken;
+	}
+
+
+
+
+
+	/**
+	 * @return bool
+	 */
 	public function hasCircle(): bool {
-		return ($this->deprecatedCircle !== null || $this->circle !== null);
+		return ($this->circle !== null);
 	}
 
 	/**
 	 * @param Circle $circle
 	 *
-	 * @return GSEvent
+	 * @return self
 	 */
 	public function setCircle(Circle $circle): self {
 		$this->circle = $circle;
@@ -286,18 +258,18 @@ class GSEvent implements JsonSerializable {
 
 
 	/**
-	 * @return DeprecatedMember
+	 * @return Member
 	 */
-	public function getMember(): DeprecatedMember {
+	public function getMember(): Member {
 		return $this->member;
 	}
 
 	/**
-	 * @param DeprecatedMember $member
+	 * @param Member $member
 	 *
-	 * @return GSEvent
+	 * @return self
 	 */
-	public function setMember(DeprecatedMember $member): self {
+	public function setMember(Member $member): self {
 		$this->member = $member;
 
 		return $this;
@@ -314,7 +286,7 @@ class GSEvent implements JsonSerializable {
 	/**
 	 * @param SimpleDataStore $data
 	 *
-	 * @return GSEvent
+	 * @return self
 	 */
 	public function setData(SimpleDataStore $data): self {
 		$this->data = $data;
@@ -340,7 +312,7 @@ class GSEvent implements JsonSerializable {
 	/**
 	 * @param int $severity
 	 *
-	 * @return GSEvent
+	 * @return self
 	 */
 	public function setSeverity(int $severity): self {
 		$this->severity = $severity;
@@ -359,7 +331,7 @@ class GSEvent implements JsonSerializable {
 	/**
 	 * @param SimpleDataStore $result
 	 *
-	 * @return GSEvent
+	 * @return self
 	 */
 	public function setResult(SimpleDataStore $result): self {
 		$this->result = $result;
@@ -369,79 +341,28 @@ class GSEvent implements JsonSerializable {
 
 
 	/**
-	 * @return string
-	 */
-	public function getKey(): string {
-		return $this->key;
-	}
-
-	/**
-	 * @param string $key
-	 *
-	 * @return GSEvent
-	 */
-	public function setKey(string $key): self {
-		$this->key = $key;
-
-		return $this;
-	}
-
-
-	/**
-	 * @return bool
-	 */
-	public function isValid(): bool {
-		if ($this->getType() === '') {
-			return false;
-		}
-
-		return true;
-	}
-
-
-	/**
-	 * @param string $json
-	 *
-	 * @return GSEvent
-	 * @throws JsonException
-	 * @throws ModelException
-	 */
-	public function importFromJson(string $json): self {
-		$data = json_decode($json, true);
-		if (!is_array($data)) {
-			throw new JsonException('invalid JSON');
-		}
-
-		return $this->import($data);
-	}
-
-
-	/**
 	 * @param array $data
 	 *
-	 * @return GSEvent
-	 * @throws ModelException
+	 * @return self
 	 */
 	public function import(array $data): self {
-		$this->setType($this->get('type', $data));
+		$this->setClass($this->get('class', $data));
 		$this->setSeverity($this->getInt('severity', $data));
 		$this->setData(new SimpleDataStore($this->getArray('data', $data)));
 		$this->setResult(new SimpleDataStore($this->getArray('result', $data)));
 		$this->setSource($this->get('source', $data));
-		$this->setKey($this->get('key', $data));
-		$this->setForced($this->getBool('force', $data));
 		$this->setAsync($this->getBool('async', $data));
 
 		if (array_key_exists('circle', $data)) {
-			$this->setDeprecatedCircle(DeprecatedCircle::fromArray($data['circle']));
+			$circle = new Circle();
+			$circle->import($this->getArray('circle', $data));
+			$this->setCircle($circle);
 		}
 
 		if (array_key_exists('member', $data)) {
-			$this->setMember(DeprecatedMember::fromArray($data['member']));
-		}
-
-		if (!$this->isValid()) {
-			throw new ModelException('invalid GSEvent');
+			$member = new Member();
+			$member->import($this->getArray('member', $data));
+			$this->setMember($member);
 		}
 
 		return $this;
@@ -453,24 +374,20 @@ class GSEvent implements JsonSerializable {
 	 */
 	function jsonSerialize(): array {
 		$arr = [
-			'type'     => $this->getType(),
+			'class'    => $this->getClass(),
 			'severity' => $this->getSeverity(),
 			'data'     => $this->getData(),
 			'result'   => $this->getResult(),
-			'key'      => $this->getKey(),
 			'source'   => $this->getSource(),
-			'force'    => $this->isForced(),
 			'async'    => $this->isAsync()
 		];
 
 		if ($this->hasCircle()) {
-			$arr['circle'] = $this->getDeprecatedCircle();
+			$arr['circle'] = $this->getCircle();
 		}
 		if ($this->hasMember()) {
 			$arr['member'] = $this->getMember();
 		}
-
-		$this->cleanArray($arr);
 
 		return $arr;
 	}

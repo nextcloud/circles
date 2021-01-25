@@ -67,7 +67,7 @@ class MemberJoin extends AGlobalScaleEvent {
 	public function verify(GSEvent $event, bool $localCheck = false, bool $mustBeChecked = false): void {
 		parent::verify($event, false, false);
 
-		$circle = $event->getCircle();
+		$circle = $event->getDeprecatedCircle();
 		$eventMember = $event->getMember();
 
 		$member = $this->membersRequest->getFreshNewMember(
@@ -89,7 +89,7 @@ class MemberJoin extends AGlobalScaleEvent {
 	 * @throws MemberAlreadyExistsException
 	 */
 	public function manage(GSEvent $event): void {
-		$circle = $event->getCircle();
+		$circle = $event->getDeprecatedCircle();
 		$member = $event->getMember();
 
 		if ($member->getJoined() === '') {

@@ -32,7 +32,6 @@ namespace OCA\Circles\Service;
 
 use daita\MySmallPhpTools\Exceptions\RequestContentException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
-use daita\MySmallPhpTools\Exceptions\RequestResultNotJsonException;
 use daita\MySmallPhpTools\Exceptions\RequestResultSizeException;
 use daita\MySmallPhpTools\Exceptions\RequestServerException;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
@@ -210,46 +209,6 @@ class GlobalScaleService {
 	public function checkEvent(GSEvent $event): void {
 		$this->checkKey($event->getKey());
 	}
-
-
-	/**
-	 * @param bool $all
-	 *
-	 * @return array
-	 */
-	public function getInstances(bool $all = false): array {
-		/** @var string $lookup */
-		try {
-			$lookup = $this->configService->getGSStatus(ConfigService::GS_LOOKUP);
-			$request = new NC21Request(ConfigService::GS_LOOKUP_INSTANCES, Request::TYPE_POST);
-			$this->configService->configureRequest($request);
-			$request->basedOnUrl($lookup);
-			$request->addData('authKey', $this->configService->getGSStatus(ConfigService::GS_KEY));
-
-			try {
-				$instances = $this->retrieveJson($request);
-			} catch (RequestContentException | RequestNetworkException | RequestResultSizeException | RequestServerException | RequestResultNotJsonException $e) {
-				$this->miscService->log(
-					'Issue while retrieving instances from lookup: ' . get_class($e) . ' ' . $e->getMessage()
-				);
-
-				return [];
-			}
-		} catch (GSStatusException $e) {
-			if (!$all) {
-				return [];
-			}
-
-			return [$this->configService->getLocalInstance()];
-		}
-
-		if ($all) {
-			return $instances;
-		}
-
-		return array_values(array_diff($instances, $this->configService->getTrustedDomains()));
-	}
-
 
 
 	/**

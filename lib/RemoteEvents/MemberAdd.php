@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -8,7 +10,7 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2017
+ * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,7 +29,7 @@
  */
 
 
-namespace OCA\Circles\GlobalScale;
+namespace OCA\Circles\RemoteEvents;
 
 
 use daita\MySmallPhpTools\Model\SimpleDataStore;

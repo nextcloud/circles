@@ -32,7 +32,6 @@ declare(strict_types=1);
 namespace OCA\Circles\Db;
 
 
-use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 
@@ -45,76 +44,40 @@ use OCA\Circles\Model\Member;
 class MemberRequest extends MemberRequestBuilder {
 
 
-//	/**
-//	 * @param Circle $circle
-//	 */
-//	public function save(Circle $circle): void {
-//		$qb = $this->getCircleInsertSql();
-//		$qb->setValue('id', $qb->createNamedParameter($circle->getId()));
-////		   ->setValue('instance', $qb->createNamedParameter($circle->getInstance()))
-////		   ->setValue('href', $qb->createNamedParameter($remote->getId()))
-////		   ->setValue('item', $qb->createNamedParameter(json_encode($remote->getOrigData())));
-//
-//		$qb->execute();
-//	}
-//
+	/**
+	 * @param Member $member
+	 */
+	public function save(Member $member): void {
+		$instance = $member->getInstance();
+		if ($this->configService->isLocalInstance($instance)) {
+			$instance = '';
+		}
 
-//	/**
-//	 * @param Circle $circle
-//	 */
-//	public function update(Circle $circle) {
-//		$qb = $this->getCircleUpdateSql();
-////		$qb->set('uid', $qb->createNamedParameter($circle->getUid(true)))
-////		   ->set('href', $qb->createNamedParameter($circle->getId()))
-////		   ->set('item', $qb->createNamedParameter(json_encode($circle->getOrigData())));
-//
-//		$qb->limitToUniqueId($circle->getId());
-//
-//		$qb->execute();
-//	}
-//
+		$qb = $this->getMemberInsertSql();
+		$qb->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
+		   ->setValue('member_id', $qb->createNamedParameter($member->getId()))
+		   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
+		   ->setValue('user_type', $qb->createNamedParameter($member->getUserType()))
+		   ->setValue('cached_name', $qb->createNamedParameter($member->getCachedName()))
+		   ->setValue('cached_update', $qb->createNamedParameter($this->timezoneService->getUTCDate()))
+		   ->setValue('instance', $qb->createNamedParameter($instance))
+		   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
+		   ->setValue('status', $qb->createNamedParameter($member->getStatus()))
+		   ->setValue('contact_id', $qb->createNamedParameter($member->getContactId()))
+		   ->setValue('note', $qb->createNamedParameter($member->getNote()));
+
+		$qb->execute();
+	}
+
 
 	/**
-	 * @param Member|null $filter
-	 * @param Member|null $viewer
+	 * @param string $circleId
 	 *
 	 * @return Circle[]
 	 */
 	public function getMembers(string $circleId): array {
 		$qb = $this->getMemberSelectSql();
 		$qb->limitToCircleId($circleId);
-
-		return $this->getItemsFromRequest($qb);
-	}
-
-
-	/**
-	 * @param string $id
-	 * @param Member|null $viewer
-	 *
-	 * @return Circle
-	 * @throws CircleNotFoundException
-	 */
-	public function getCircle(string $id, ?Member $viewer = null): Circle {
-		$qb = $this->getCircleSelectSql();
-		$qb->limitToUniqueId($id);
-		$qb->leftJoinOwner();
-
-		if (!is_null($viewer)) {
-			$qb->limitToViewer($viewer);
-		}
-
-		return $this->getItemFromRequest($qb);
-	}
-
-
-	/**
-	 * @return Circle[]
-	 */
-	public function getFederated(): array {
-		$qb = $this->getCircleSelectSql();
-		$qb->filterConfig(Circle::CFG_FEDERATED);
-		$qb->leftJoinOwner();
 
 		return $this->getItemsFromRequest($qb);
 	}

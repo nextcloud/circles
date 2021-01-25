@@ -37,6 +37,7 @@ use daita\MySmallPhpTools\Traits\TArrayTools;
 use DateTime;
 use JsonSerializable;
 use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\IMember;
 
 
 /**
@@ -44,7 +45,7 @@ use OCA\Circles\Exceptions\MemberNotFoundException;
  *
  * @package OCA\Circles\Model
  */
-class Member extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSerializable {
+class Member extends ManagedModel implements IMember, INC21Convert, INC21QueryRow, JsonSerializable {
 
 
 	use TArrayTools;
@@ -56,6 +57,7 @@ class Member extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 	const LEVEL_ADMIN = 8;
 	const LEVEL_OWNER = 9;
 
+	const TYPE_CIRCLE = 16;
 	const TYPE_USER = 1;
 	const TYPE_GROUP = 2;
 	const TYPE_MAIL = 3;
@@ -67,6 +69,8 @@ class Member extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 	const STATUS_MEMBER = 'Member';
 	const STATUS_BLOCKED = 'Blocked';
 	const STATUS_KICKED = 'Kicked';
+
+	const ID_LENGTH = 14;
 
 	static $DEF_LEVEL = [
 		1 => 'Member',
@@ -83,13 +87,13 @@ class Member extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 	private $circleId = '';
 
 	/** @var string */
-	private $userId = '';
+	private $userId;
 
 	/** @var int */
-	private $userType = self::TYPE_USER;
+	private $userType;
 
 	/** @var string */
-	private $instance = '';
+	private $instance;
 
 	/** @var int */
 	private $level = 0;
@@ -379,6 +383,28 @@ class Member extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 
 
 	/**
+	 * @return bool
+	 */
+	public function isMember(): bool {
+		return ($this->level > 0);
+	}
+
+
+	/**
+	 * @param IMember $viewer
+	 *
+	 * @return self
+	 */
+	public function importFromCurrentUser(IMember $viewer): self {
+		$this->setUserId($viewer->getUserId());
+		$this->setUserType($viewer->getUserType());
+		$this->setInstance($viewer->getInstance());
+
+		return $this;
+	}
+
+
+	/**
 	 * @param array $data
 	 *
 	 * @return $this
@@ -449,11 +475,14 @@ class Member extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 		$this->setContactMeta($this->get($prefix . 'contact_meta', $data));
 
 		$cachedUpdate = $this->get($prefix . 'cached_update', $data);
-		$this->setCachedUpdate(DateTime::createFromFormat('Y-m-d H:i:s', $cachedUpdate)->getTimestamp());
+		if ($cachedUpdate !== '') {
+			$this->setCachedUpdate(DateTime::createFromFormat('Y-m-d H:i:s', $cachedUpdate)->getTimestamp());
+		}
 
 		$joined = $this->get($prefix . 'joined', $data);
-		// TODO: pass timezoneService using $params/_params
-		$this->setJoined(DateTime::createFromFormat('Y-m-d H:i:s', $joined)->getTimestamp());
+		if ($joined !== '') {
+			$this->setJoined(DateTime::createFromFormat('Y-m-d H:i:s', $joined)->getTimestamp());
+		}
 
 		if ($this->getInstance() === '') {
 			$this->setInstance($this->get('_params.local', $data));
@@ -461,5 +490,6 @@ class Member extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 
 		return $this;
 	}
+
 
 }

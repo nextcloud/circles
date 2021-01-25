@@ -78,7 +78,7 @@ class MemberLevel extends AGlobalScaleEvent {
 		}
 
 		$member->levelHasToBeEditable();
-		$circle = $event->getCircle();
+		$circle = $event->getDeprecatedCircle();
 
 		if ($level === DeprecatedMember::LEVEL_OWNER) {
 			$this->verifySwitchOwner($event, $circle, $member);
@@ -105,7 +105,7 @@ class MemberLevel extends AGlobalScaleEvent {
 		$this->membersRequest->updateMemberLevel($member);
 
 		if ($level === DeprecatedMember::LEVEL_OWNER) {
-			$circle = $event->getCircle();
+			$circle = $event->getDeprecatedCircle();
 			$isMod = $circle->getOwner();
 			if ($isMod->getInstance() === '') {
 				$isMod->setInstance($event->getSource());

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -8,7 +10,7 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2017
+ * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -41,8 +43,8 @@ use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
 use Exception;
 use OCA\Circles\Db\DeprecatedCirclesRequest;
-use OCA\Circles\Db\GSEventsRequest;
 use OCA\Circles\Db\DeprecatedMembersRequest;
+use OCA\Circles\Db\GSEventsRequest;
 use OCA\Circles\Exceptions\GlobalScaleEventException;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Exceptions\JsonException;
@@ -55,11 +57,11 @@ use OCP\IURLGenerator;
 
 
 /**
- * Class GSUpstreamService
+ * Class RemoteUpstreamService
  *
  * @package OCA\Circles\Service
  */
-class GSUpstreamService {
+class RemoteUpstreamService {
 
 
 	use TNC21Request;
@@ -80,8 +82,8 @@ class GSUpstreamService {
 	/** @var DeprecatedMembersRequest */
 	private $membersRequest;
 
-	/** @var GlobalScaleService */
-	private $globalScaleService;
+	/** @var RemoteEventService */
+	private $remoteEventService;
 
 	/** @var ConfigService */
 	private $configService;
@@ -98,7 +100,7 @@ class GSUpstreamService {
 	 * @param GSEventsRequest $gsEventsRequest
 	 * @param DeprecatedCirclesRequest $circlesRequest
 	 * @param DeprecatedMembersRequest $membersRequest
-	 * @param GlobalScaleService $globalScaleService
+	 * @param RemoteEventService $remoteEventService
 	 * @param ConfigService $configService
 	 * @param MiscService $miscService
 	 */
@@ -108,7 +110,7 @@ class GSUpstreamService {
 		GSEventsRequest $gsEventsRequest,
 		DeprecatedCirclesRequest $circlesRequest,
 		DeprecatedMembersRequest $membersRequest,
-		GlobalScaleService $globalScaleService,
+		RemoteEventService $remoteEventService,
 		ConfigService $configService,
 		MiscService $miscService
 	) {
@@ -117,41 +119,9 @@ class GSUpstreamService {
 		$this->gsEventsRequest = $gsEventsRequest;
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
-		$this->globalScaleService = $globalScaleService;
+		$this->remoteEventService = $remoteEventService;
 		$this->configService = $configService;
 		$this->miscService = $miscService;
-	}
-
-
-	/**
-	 * @param GSEvent $event
-	 *
-	 * @return string
-	 * @throws Exception
-	 */
-	public function newEvent(GSEvent $event): string {
-		$event->setSource($this->configService->getLocalInstance());
-		try {
-			$gs = $this->globalScaleService->getGlobalScaleEvent($event);
-			if ($this->isLocalEvent($event)) {
-				$gs->verify($event, true);
-				if (!$event->isAsync()) {
-					$gs->manage($event);
-				}
-
-				return $this->globalScaleService->asyncBroadcast($event);
-			} else {
-				$this->confirmEvent($event);
-
-				return '';
-			}
-		} catch (Exception $e) {
-			$this->miscService->log(
-				get_class($e) . ' on new event: ' . $e->getMessage() . ' - ' . json_encode($event), 1
-			);
-			throw $e;
-		}
-
 	}
 
 
@@ -210,75 +180,48 @@ class GSUpstreamService {
 
 	/**
 	 * @param GSEvent $event
-	 *
-	 * @throws RequestContentException
-	 * @throws RequestNetworkException
-	 * @throws RequestResultSizeException
-	 * @throws RequestServerException
-	 * @throws RequestResultNotJsonException
-	 * @throws GlobalScaleEventException
-	 */
-	public function confirmEvent(GSEvent &$event): void {
-		$this->signEvent($event);
-
-		$circle = $event->getDeprecatedCircle();
-		$owner = $circle->getOwner();
-		$path = $this->urlGenerator->linkToRoute('circles.GlobalScale.event');
-
-		$request = new NC21Request($path, Request::TYPE_POST);
-		$this->configService->configureRequest($request);
-		$request->basedOnUrl($owner->getInstance());
-
-		$request->setDataSerialize($event);
-
-		$result = $this->retrieveJson($request);
-		$this->miscService->log('result ' . json_encode($result), 0);
-		if ($this->getInt('status', $result) === 0) {
-			throw new GlobalScaleEventException($this->get('error', $result));
-		}
-
-		$updatedData = $this->getArray('event', $result);
-		$this->miscService->log('updatedEvent: ' . json_encode($updatedData), 0);
-		if (!empty($updatedData)) {
-			$updated = new GSEvent();
-			try {
-				$updated->import($updatedData);
-				$event = $updated;
-			} catch (Exception $e) {
-			}
-		}
-	}
-
-
-	/**
-	 * @param GSEvent $event
 	 */
 	private function signEvent(GSEvent $event) {
-		$event->setKey($this->globalScaleService->getKey());
+		$event->setKey($this->remoteEventService->getKey());
 	}
 
 
 	/**
-	 * We check that the event can be managed/checked locally or if the owner of the circle belongs to
-	 * an other instance of Nextcloud
+	 * @param bool $all
 	 *
-	 * @param GSEvent $event
-	 *
-	 * @return bool
+	 * @return array
 	 */
-	private function isLocalEvent(GSEvent $event): bool {
-		if ($event->isLocal()) {
-			return true;
+	public function getInstances(bool $all = false): array {
+		/** @var string $lookup */
+		try {
+			$lookup = $this->configService->getGSStatus(ConfigService::GS_LOOKUP);
+			$request = new NC21Request(ConfigService::GS_LOOKUP_INSTANCES, Request::TYPE_POST);
+			$this->configService->configureRequest($request);
+			$request->basedOnUrl($lookup);
+			$request->addData('authKey', $this->configService->getGSStatus(ConfigService::GS_KEY));
+
+			try {
+				$instances = $this->retrieveJson($request);
+			} catch (RequestContentException | RequestNetworkException | RequestResultSizeException | RequestServerException | RequestResultNotJsonException $e) {
+				$this->miscService->log(
+					'Issue while retrieving instances from lookup: ' . get_class($e) . ' ' . $e->getMessage()
+				);
+
+				return [];
+			}
+		} catch (GSStatusException $e) {
+			if (!$all) {
+				return [];
+			}
+
+			return [$this->configService->getLocalInstance()];
 		}
 
-		$circle = $event->getDeprecatedCircle();
-		$owner = $circle->getOwner();
-		if ($owner->getInstance() === ''
-			|| in_array($owner->getInstance(), $this->configService->getTrustedDomains())) {
-			return true;
+		if ($all) {
+			return $instances;
 		}
 
-		return false;
+		return array_values(array_diff($instances, $this->configService->getTrustedDomains()));
 	}
 
 
@@ -291,40 +234,6 @@ class GSUpstreamService {
 	 */
 	public function getEventsByToken(string $token): array {
 		return $this->gsEventsRequest->getByToken($token);
-	}
-
-
-	/**
-	 * should be used to manage results from events, like sending mails on user creation
-	 *
-	 * @param string $token
-	 */
-	public function manageResults(string $token): void {
-		try {
-			$wrappers = $this->gsEventsRequest->getByToken($token);
-		} catch (JsonException | ModelException $e) {
-			return;
-		}
-
-		$event = null;
-		$events = [];
-		foreach ($wrappers as $wrapper) {
-			if ($wrapper->getStatus() !== GSWrapper::STATUS_DONE) {
-				return;
-			}
-
-			$events[$wrapper->getInstance()] = $event = $wrapper->getEvent();
-		}
-
-		if ($event === null) {
-			return;
-		}
-
-		try {
-			$gs = $this->globalScaleService->getGlobalScaleEvent($event);
-			$gs->result($events);
-		} catch (GlobalScaleEventException $e) {
-		}
 	}
 
 
@@ -350,7 +259,7 @@ class GSUpstreamService {
 		$event->setSource($this->configService->getLocalInstance());
 		$event->setData(new SimpleDataStore($circles));
 
-		foreach ($this->globalScaleService->getInstances() as $instance) {
+		foreach ($this->getInstances() as $instance) {
 			try {
 				$this->broadcastEvent($event, $instance);
 			} catch (RequestContentException | RequestNetworkException | RequestResultSizeException | RequestServerException | RequestResultNotJsonException $e) {
@@ -414,7 +323,7 @@ class GSUpstreamService {
 		$requestIssue = false;
 		$notFound = false;
 		$foundWithNoOwner = false;
-		foreach ($this->globalScaleService->getInstances() as $instance) {
+		foreach ($this->remoteEventService->getInstances() as $instance) {
 			$request->setHost($instance);
 
 			try {

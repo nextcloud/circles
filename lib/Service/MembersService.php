@@ -214,7 +214,7 @@ class MembersService {
 		$event = new GSEvent(GSEvent::MEMBER_ADD, false, $force);
 		$event->setSeverity(GSEvent::SEVERITY_HIGH);
 		$event->setAsync(true);
-		$event->setCircle($circle);
+		$event->setDeprecatedCircle($circle);
 		$event->setMember($member);
 		$this->gsUpstreamService->newEvent($event);
 
@@ -541,7 +541,7 @@ class MembersService {
 	public function updateMember(DeprecatedMember $member) {
 		$event = new GSEvent(GSEvent::MEMBER_UPDATE);
 		$event->setMember($member);
-		$event->setCircle($this->getCircleFromMembership($member));
+		$event->setDeprecatedCircle($this->getCircleFromMembership($member));
 
 		$this->gsUpstreamService->newEvent($event);
 	}
@@ -581,7 +581,7 @@ class MembersService {
 		$member = $this->membersRequest->forceGetMember($circle->getUniqueId(), $name, $type, $instance);
 		if ($member->getLevel() !== $level) {
 			$event = new GSEvent(GSEvent::MEMBER_LEVEL, false, $force);
-			$event->setCircle($circle);
+			$event->setDeprecatedCircle($circle);
 
 			$event->getData()
 				  ->sInt('level', $level);
@@ -629,7 +629,7 @@ class MembersService {
 		$member = $this->membersRequest->forceGetMember($circleUniqueId, $name, $type, $instance);
 
 		$event = new GSEvent(GSEvent::MEMBER_REMOVE, false, $force);
-		$event->setCircle($circle);
+		$event->setDeprecatedCircle($circle);
 		$event->setMember($member);
 		$this->gsUpstreamService->newEvent($event);
 

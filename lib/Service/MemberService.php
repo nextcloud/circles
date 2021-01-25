@@ -33,10 +33,10 @@ namespace OCA\Circles\Service;
 
 
 use daita\MySmallPhpTools\Traits\TArrayTools;
+use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
-use OCA\Circles\Exceptions\CircleNotFoundException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Model\Member;
 
 
@@ -49,6 +49,7 @@ class MemberService {
 
 
 	use TArrayTools;
+	use TStringTools;
 
 
 	/** @var CircleRequest */
@@ -91,23 +92,23 @@ class MemberService {
 
 
 	/**
-	 * @param string $circleId
+	 * @param Member $member
 	 *
-	 * @return Member[]
+	 * @throws MemberAlreadyExistsException
 	 */
-	public function getMembers(string $circleId): array {
-		return $this->memberRequest->getMembers($circleId);
+	public function saveMember(Member $member) {
+		$member->setId($this->token(Member::ID_LENGTH));
+		$this->memberRequest->save($member);
 	}
 
 
 	/**
 	 * @param string $circleId
 	 *
-	 * @return Circle
-	 * @throws CircleNotFoundException
+	 * @return Member[]
 	 */
-	public function getCircle(string $circleId): Circle {
-		return $this->circleRequest->getCircle($circleId, $this->getViewer());
+	public function getMembers(string $circleId): array {
+		return $this->memberRequest->getMembers($circleId);
 	}
 
 }

@@ -60,7 +60,7 @@ class CircleUpdate extends AGlobalScaleEvent {
 	public function verify(GSEvent $event, bool $localCheck = false, bool $mustBeChecked = false): void {
 		parent::verify($event, $localCheck, true);
 
-		$circle = $event->getCircle();
+		$circle = $event->getDeprecatedCircle();
 		$data = $event->getData();
 		$viewer = $circle->getHigherViewer();
 		if (!$data->gBool('local_admin') && $viewer->getLevel() !== DeprecatedMember::LEVEL_OWNER) {
@@ -80,7 +80,7 @@ class CircleUpdate extends AGlobalScaleEvent {
 			return;
 		}
 
-		$circle = $event->getCircle();
+		$circle = $event->getDeprecatedCircle();
 		$settings = $event->getData()
 						  ->gArray('settings');
 		$ak = array_keys($settings);

@@ -48,6 +48,7 @@ class CoreRequestBuilder {
 
 	const TABLE_CIRCLE = 'circle_circles';
 	const TABLE_MEMBER = 'circle_members';
+	const TABLE_MEMBERSHIP = 'circle_membership';
 	const TABLE_GROUPS = 'circle_groups';
 	const TABLE_SHARES = 'circle_shares';
 	const TABLE_LINKS = 'circle_links';

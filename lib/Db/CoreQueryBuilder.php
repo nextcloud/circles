@@ -33,6 +33,7 @@ namespace OCA\Circles\Db;
 
 use daita\MySmallPhpTools\Db\Nextcloud\nc21\NC21ExtendedQueryBuilder;
 use Doctrine\DBAL\Query\QueryBuilder;
+use OCA\Circles\IMember;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 
@@ -48,14 +49,28 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 	 * @param string $id
 	 */
 	public function limitToUniqueId(string $id): void {
-		$this->limitToDBField('unique_id', $id, false);
+		$this->limitToDBField('unique_id', $id, true);
 	}
 
 	/**
 	 * @param string $id
 	 */
 	public function limitToCircleId(string $id): void {
-		$this->limitToDBField('circle_id', $id, false);
+		$this->limitToDBField('circle_id', $id, true);
+	}
+
+	/**
+	 * @param string $id
+	 */
+	public function limitToMemberId(string $id): void {
+		$this->limitToDBField('member_id', $id, true);
+	}
+
+	/**
+	 * @param int $config
+	 */
+	public function limitToConfig(int $config): void {
+		$this->limitToDBFieldInt('config', $config);
 	}
 
 	/**
@@ -66,16 +81,20 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 	}
 
 
-	public function limitToViewer(Member $viewer): void {
+	/**
+	 * @param IMember $viewer
+	 */
+	public function limitToViewer(IMember $viewer): void {
 		$this->leftJoinViewer($viewer, 'v');
 		$this->limitVisibility('v');
 	}
 
 
 	/**
-	 * @param Member $member
+	 * @param IMember $member
+	 * @param int $level
 	 */
-	public function limitToMembership(Member $member): void {
+	public function limitToMembership(IMember $member, int $level = Member::LEVEL_MEMBER): void {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
@@ -107,7 +126,7 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 				$expr->eq('m.user_id', $this->createNamedParameter($member->getUserId())),
 				$expr->eq('m.user_type', $this->createNamedParameter($member->getUserType())),
 				$expr->eq('m.instance', $this->createNamedParameter($member->getInstance())),
-				$expr->gte('m.level', $this->createNamedParameter($member->getLevel()))
+				$expr->gte('m.level', $this->createNamedParameter($level))
 			)
 		);
 	}
@@ -150,10 +169,10 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 	/**
 	 * Left join members to filter userId as viewer.
 	 *
-	 * @param Member $viewer
+	 * @param IMember $viewer
 	 * @param string $alias
 	 */
-	public function leftJoinViewer(Member $viewer, string $alias = 'v') {
+	public function leftJoinViewer(IMember $viewer, string $alias = 'v') {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
@@ -235,6 +254,8 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 	public function filterConfig(int $flag): void {
 		$this->andWhere($this->expr()->bitwiseAnd($this->getDefaultSelectAlias() . '.config', $flag));
 	}
+
+
 
 }
 

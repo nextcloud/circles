@@ -224,7 +224,7 @@ class CirclesService {
 			   ->setViewer($owner);
 
 		$event = new GSEvent(GSEvent::CIRCLE_CREATE, true);
-		$event->setCircle($circle);
+		$event->setDeprecatedCircle($circle);
 		$this->gsUpstreamService->newEvent($event);
 
 		return $circle;
@@ -385,7 +385,7 @@ class CirclesService {
 
 		// can only be run from the instance of the circle's owner.
 		$event = new GSEvent(GSEvent::CIRCLE_UPDATE);
-		$event->setCircle($circle);
+		$event->setDeprecatedCircle($circle);
 		$event->getData()
 			  ->sBool('local_admin', $this->viewerIsAdmin())
 			  ->sArray('settings', $settings);
@@ -432,7 +432,7 @@ class CirclesService {
 			$this->membersService->updateCachedName($member);
 
 			$event = new GSEvent(GSEvent::MEMBER_JOIN);
-			$event->setCircle($circle);
+			$event->setDeprecatedCircle($circle);
 			$event->setMember($member);
 			$this->gsUpstreamService->newEvent($event);
 		} catch (Exception $e) {
@@ -456,7 +456,7 @@ class CirclesService {
 		$member = $circle->getViewer();
 
 		$event = new GSEvent(GSEvent::MEMBER_LEAVE);
-		$event->setCircle($circle);
+		$event->setDeprecatedCircle($circle);
 		$event->setMember($member);
 		$this->gsUpstreamService->newEvent($event);
 
@@ -487,7 +487,7 @@ class CirclesService {
 		// removing a Circle is done only by owner, so can already be done by local user, or admin, or occ
 		// at this point, we already know that all condition are filled. we can force it.
 		$event = new GSEvent(GSEvent::CIRCLE_DESTROY, false, true);
-		$event->setCircle($circle);
+		$event->setDeprecatedCircle($circle);
 
 		$this->gsUpstreamService->newEvent($event);
 	}

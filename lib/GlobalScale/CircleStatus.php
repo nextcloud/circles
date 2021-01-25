@@ -62,7 +62,7 @@ class CircleStatus extends AGlobalScaleEvent {
 	 * @param GSEvent $event
 	 */
 	public function manage(GSEvent $event): void {
-		$circle = $event->getCircle();
+		$circle = $event->getDeprecatedCircle();
 		$status = self::STATUS_ERROR;
 
 		try {

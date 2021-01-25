@@ -105,7 +105,7 @@ class FileShare extends AGlobalScaleEvent {
 	 * @throws CircleDoesNotExistException
 	 */
 	public function manage(GSEvent $event): void {
-		$circle = $event->getCircle();
+		$circle = $event->getDeprecatedCircle();
 
 		// if event is not local, we create a federated file to the right instance of Nextcloud, using the right token
 		if (!$this->configService->isLocalInstance($event->getSource())) {
@@ -173,7 +173,7 @@ class FileShare extends AGlobalScaleEvent {
 			return;
 		}
 
-		$circle = $event->getCircle();
+		$circle = $event->getDeprecatedCircle();
 
 		foreach ($contacts as $contact) {
 			$this->sendShareToContact($event, $circle, $contact['memberId'], $contact['emails']);

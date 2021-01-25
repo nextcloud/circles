@@ -37,11 +37,13 @@ use daita\MySmallPhpTools\Traits\TArrayTools;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\ViewerNotFoundException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\ModelManager;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\CurrentUserService;
 use OCA\Circles\Service\RemoteService;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
@@ -65,6 +67,9 @@ class CirclesList extends Base {
 	/** @var ModelManager */
 	private $modelManager;
 
+	/** @var CurrentUserService */
+	private $currentUserService;
+
 	/** @var CircleService */
 	private $circleService;
 
@@ -79,19 +84,23 @@ class CirclesList extends Base {
 	 * CirclesList constructor.
 	 *
 	 * @param ModelManager $modelManager
+	 * @param CurrentUserService $currentUserService
 	 * @param CircleService $circleService
 	 * @param RemoteService $remoteService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		ModelManager $modelManager, CircleService $circleService, RemoteService $remoteService,
-		ConfigService $configService
+		ModelManager $modelManager, CurrentUserService $currentUserService, CircleService $circleService,
+		RemoteService $remoteService, ConfigService $configService
 	) {
 		parent::__construct();
 		$this->modelManager = $modelManager;
+		$this->currentUserService = $currentUserService;
 		$this->circleService = $circleService;
 		$this->remoteService = $remoteService;
 		$this->configService = $configService;
+
+		$this->currentUserService->bypassCurrentUserCondition(true);
 	}
 
 
@@ -120,6 +129,7 @@ class CirclesList extends Base {
 	 * @throws RequestNetworkException
 	 * @throws SignatoryException
 	 * @throws SignatureException
+	 * @throws ViewerNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$owner = $input->getArgument('owner');
@@ -136,6 +146,7 @@ class CirclesList extends Base {
 			$filter = new Member($owner, Member::TYPE_USER, '');
 			$filter->setLevel((int)$level);
 		}
+
 		$circles = $this->getCircles($filter, $viewer, $remote);
 
 		if ($json) {
@@ -185,12 +196,12 @@ class CirclesList extends Base {
 	 * @throws RequestNetworkException
 	 * @throws SignatoryException
 	 * @throws SignatureException
+	 * @throws ViewerNotFoundException
 	 */
 	private function getCircles(?Member $filter, string $viewer, string $remote): array {
 		if ($viewer !== '') {
-			$this->circleService->setLocalViewer($viewer);
+			$this->currentUserService->setLocalViewer($viewer);
 		}
-
 		if ($remote !== '') {
 			return $this->remoteService->getCircles($remote);
 		}

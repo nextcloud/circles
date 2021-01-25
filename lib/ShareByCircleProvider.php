@@ -240,7 +240,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 		try {
 			$circle = $this->circlesRequest->forceGetCircle($share->getSharedWith());
 			$event = new GSEvent(GSEvent::FILE_UNSHARE, true);
-			$event->setCircle($circle);
+			$event->setDeprecatedCircle($circle);
 
 			$store = new SimpleDataStore();
 			$store->sArray(

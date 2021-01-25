@@ -33,6 +33,7 @@ namespace OCA\Circles\Db;
 
 
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\IMember;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 
@@ -50,10 +51,16 @@ class CircleRequest extends CircleRequestBuilder {
 	 */
 	public function save(Circle $circle): void {
 		$qb = $this->getCircleInsertSql();
-		$qb->setValue('id', $qb->createNamedParameter($circle->getId()));
-//		   ->setValue('instance', $qb->createNamedParameter($circle->getInstance()))
-//		   ->setValue('href', $qb->createNamedParameter($remote->getId()))
-//		   ->setValue('item', $qb->createNamedParameter(json_encode($remote->getOrigData())));
+		$qb->setValue('unique_id', $qb->createNamedParameter($circle->getId()))
+		   ->setValue('long_id', $qb->createNamedParameter($circle->getId()))
+		   ->setValue('name', $qb->createNamedParameter($circle->getName()))
+		   ->setValue('alt_name', $qb->createNamedParameter($circle->getAltName()))
+		   ->setValue('description', $qb->createNamedParameter($circle->getDescription()))
+		   ->setValue('contact_addressbook', $qb->createNamedParameter($circle->getContactAddressBook()))
+		   ->setValue('contact_groupname', $qb->createNamedParameter($circle->getContactGroupName()))
+		   ->setValue('settings', $qb->createNamedParameter(json_encode($circle->getSettings())))
+		   ->setValue('type', $qb->createNamedParameter($circle->getType()))
+		   ->setValue('config', $qb->createNamedParameter($circle->getConfig()));
 
 		$qb->execute();
 	}
@@ -76,11 +83,11 @@ class CircleRequest extends CircleRequestBuilder {
 
 	/**
 	 * @param Member|null $filter
-	 * @param Member|null $viewer
+	 * @param IMember|null $viewer
 	 *
 	 * @return Circle[]
 	 */
-	public function getCircles(?Member $filter = null, ?Member $viewer = null): array {
+	public function getCircles(?Member $filter = null, ?IMember $viewer = null): array {
 		$qb = $this->getCircleSelectSql();
 		$qb->leftJoinOwner();
 
@@ -89,7 +96,7 @@ class CircleRequest extends CircleRequestBuilder {
 		}
 
 		if (!is_null($filter)) {
-			$qb->limitToMembership($filter);
+			$qb->limitToMembership($filter, $filter->getLevel());
 		}
 
 		return $this->getItemsFromRequest($qb);
@@ -117,6 +124,24 @@ class CircleRequest extends CircleRequestBuilder {
 
 
 	/**
+	 * method that return the single-user Circle based on a Viewer.
+	 *
+	 * @param IMember $viewer
+	 *
+	 * @return Circle
+	 * @throws CircleNotFoundException
+	 */
+	public function getViewerCircle(IMember $viewer): Circle {
+		$qb = $this->getCircleSelectSql();
+		$qb->leftJoinOwner();
+		$qb->limitToMembership($viewer, Member::LEVEL_OWNER);
+		$qb->limitToConfig(Circle::CFG_SINGLE);
+
+		return $this->getItemFromRequest($qb);
+	}
+
+
+	/**
 	 * @return Circle[]
 	 */
 	public function getFederated(): array {
@@ -126,6 +151,7 @@ class CircleRequest extends CircleRequestBuilder {
 
 		return $this->getItemsFromRequest($qb);
 	}
+
 
 }
 
