@@ -104,16 +104,17 @@ class CirclesCreate extends Base {
 	 * @throws RemoteEventException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		$owner = $input->getArgument('owner');
+		$ownerId = $input->getArgument('owner');
 		$name = $input->getArgument('name');
 		$type = $input->getOption('type');
 
-		if ($this->userManager->get($owner) === null) {
+		if ($this->userManager->get($ownerId) === null) {
 			throw new NoUserException('user does not exist');
 		}
 
-		$this->currentUserService->setLocalViewer($owner);
-		$circle = $this->circleService->create($name);
+//		$this->currentUserService->setLocalViewer($owner);
+		$owner = $this->currentUserService->createTemporaryViewer($ownerId);
+		$circle = $this->circleService->create($name, $owner);
 
 		echo json_encode($circle, JSON_PRETTY_PRINT) . "\n";
 

@@ -33,9 +33,11 @@ namespace OCA\Circles\Db;
 
 use daita\MySmallPhpTools\Db\Nextcloud\nc21\NC21ExtendedQueryBuilder;
 use Doctrine\DBAL\Query\QueryBuilder;
+use OC;
 use OCA\Circles\IMember;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Service\ConfigService;
 
 /**
  * Class CoreQueryBuilder
@@ -43,6 +45,32 @@ use OCA\Circles\Model\Member;
  * @package OCA\Circles\Db
  */
 class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
+
+
+	/** @var ConfigService */
+	private $configService;
+
+
+	/**
+	 * CoreQueryBuilder constructor.
+	 */
+	public function __construct() {
+		parent::__construct();
+
+		$this->configService = OC::$server->get(ConfigService::class);
+	}
+
+
+	/**
+	 * @param IMember $member
+	 *
+	 * @return string
+	 */
+	public function getInstance(IMember $member): string {
+		$instance = $member->getInstance();
+
+		return ($this->configService->isLocalInstance($instance)) ? '' : $instance;
+	}
 
 
 	/**
@@ -78,6 +106,13 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 	 */
 	public function limitToInstance(string $host): void {
 		$this->limitToDBField('instance', $host, false);
+	}
+
+	/**
+	 * @param string $token
+	 */
+	public function limitToToken(string $token): void {
+		$this->limitToDBField('instance', $token, true);
 	}
 
 
@@ -125,7 +160,7 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 			$expr->andX(
 				$expr->eq('m.user_id', $this->createNamedParameter($member->getUserId())),
 				$expr->eq('m.user_type', $this->createNamedParameter($member->getUserType())),
-				$expr->eq('m.instance', $this->createNamedParameter($member->getInstance())),
+				$expr->eq('m.instance', $this->createNamedParameter($this->getInstance($member))),
 				$expr->gte('m.level', $this->createNamedParameter($level))
 			)
 		);
@@ -254,7 +289,6 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 	public function filterConfig(int $flag): void {
 		$this->andWhere($this->expr()->bitwiseAnd($this->getDefaultSelectAlias() . '.config', $flag));
 	}
-
 
 
 }

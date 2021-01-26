@@ -41,7 +41,7 @@ use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
 use Exception;
 use OCA\Circles\Db\DeprecatedCirclesRequest;
-use OCA\Circles\Db\GSEventsRequest;
+use OCA\Circles\Db\RemoteWrapperRequest;
 use OCA\Circles\Db\DeprecatedMembersRequest;
 use OCA\Circles\Exceptions\GlobalScaleEventException;
 use OCA\Circles\Exceptions\GSStatusException;
@@ -71,8 +71,8 @@ class GSUpstreamService {
 	/** @var IURLGenerator */
 	private $urlGenerator;
 
-	/** @var GSEventsRequest */
-	private $gsEventsRequest;
+	/** @var RemoteWrapperRequest */
+	private $remoteWrapperRequest;
 
 	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
@@ -95,7 +95,7 @@ class GSUpstreamService {
 	 *
 	 * @param $userId
 	 * @param IURLGenerator $urlGenerator
-	 * @param GSEventsRequest $gsEventsRequest
+	 * @param RemoteWrapperRequest $remoteWrapperRequest
 	 * @param DeprecatedCirclesRequest $circlesRequest
 	 * @param DeprecatedMembersRequest $membersRequest
 	 * @param GlobalScaleService $globalScaleService
@@ -105,7 +105,7 @@ class GSUpstreamService {
 	public function __construct(
 		$userId,
 		IURLGenerator $urlGenerator,
-		GSEventsRequest $gsEventsRequest,
+		RemoteWrapperRequest $remoteWrapperRequest,
 		DeprecatedCirclesRequest $circlesRequest,
 		DeprecatedMembersRequest $membersRequest,
 		GlobalScaleService $globalScaleService,
@@ -114,7 +114,7 @@ class GSUpstreamService {
 	) {
 		$this->userId = $userId;
 		$this->urlGenerator = $urlGenerator;
-		$this->gsEventsRequest = $gsEventsRequest;
+		$this->remoteWrapperRequest = $remoteWrapperRequest;
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
 		$this->globalScaleService = $globalScaleService;
@@ -173,7 +173,7 @@ class GSUpstreamService {
 			$wrapper->setStatus(GSWrapper::STATUS_OVER);
 		}
 
-		$this->gsEventsRequest->update($wrapper);
+		$this->remoteWrapperRequest->update($wrapper);
 	}
 
 
@@ -193,9 +193,9 @@ class GSUpstreamService {
 
 		if ($this->configService->isLocalInstance($instance)) {
 			$request = new NC21Request('', Request::TYPE_POST);
-			$this->configService->configureRequest($request, 'circles.GlobalScale.broadcast');
+			$this->configService->configureRequest($request, 'circles.RemoteWrapper.broadcast');
 		} else {
-			$path = $this->urlGenerator->linkToRoute('circles.GlobalScale.broadcast');
+			$path = $this->urlGenerator->linkToRoute('circles.RemoteWrapper.broadcast');
 			$request = new NC21Request($path, Request::TYPE_POST);
 			$this->configService->configureRequest($request);
 			$request->setInstance($instance);
@@ -223,7 +223,7 @@ class GSUpstreamService {
 
 		$circle = $event->getDeprecatedCircle();
 		$owner = $circle->getOwner();
-		$path = $this->urlGenerator->linkToRoute('circles.GlobalScale.event');
+		$path = $this->urlGenerator->linkToRoute('circles.RemoteWrapper.event');
 
 		$request = new NC21Request($path, Request::TYPE_POST);
 		$this->configService->configureRequest($request);
@@ -290,7 +290,7 @@ class GSUpstreamService {
 	 * @throws ModelException
 	 */
 	public function getEventsByToken(string $token): array {
-		return $this->gsEventsRequest->getByToken($token);
+		return $this->remoteWrapperRequest->getByToken($token);
 	}
 
 
@@ -301,7 +301,7 @@ class GSUpstreamService {
 	 */
 	public function manageResults(string $token): void {
 		try {
-			$wrappers = $this->gsEventsRequest->getByToken($token);
+			$wrappers = $this->remoteWrapperRequest->getByToken($token);
 		} catch (JsonException | ModelException $e) {
 			return;
 		}
@@ -406,7 +406,7 @@ class GSUpstreamService {
 
 		$this->signEvent($event);
 
-		$path = $this->urlGenerator->linkToRoute('circles.GlobalScale.status');
+		$path = $this->urlGenerator->linkToRoute('circles.RemoteWrapper.status');
 		$request = new NC21Request($path, Request::TYPE_POST);
 		$this->configService->configureRequest($request);
 		$request->setDataSerialize($event);

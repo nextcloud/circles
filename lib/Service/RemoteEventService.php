@@ -40,7 +40,7 @@ use daita\MySmallPhpTools\Traits\TStringTools;
 use OC;
 use OC\Security\IdentityProof\Signer;
 use OCA\Circles\Db\CircleRequest;
-use OCA\Circles\Db\GSEventsRequest;
+use OCA\Circles\Db\RemoteWrapperRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Exceptions\JsonException;
@@ -82,8 +82,8 @@ class RemoteEventService extends NC21Signature {
 	/** @var Signer */
 	private $signer;
 
-	/** @var GSEventsRequest */
-	private $gsEventsRequest;
+	/** @var RemoteWrapperRequest */
+	private $remoteWrapperRequest;
 
 
 	private $circleRequest;
@@ -102,7 +102,7 @@ class RemoteEventService extends NC21Signature {
 	 * @param IUserManager $userManager
 	 * @param IUserSession $userSession
 	 * @param Signer $signer
-	 * @param GSEventsRequest $gsEventsRequest
+	 * @param RemoteWrapperRequest $remoteWrapperRequest
 	 * @param CircleRequest $circleRequest
 	 * @param ConfigService $configService
 	 * @param MiscService $miscService
@@ -112,7 +112,7 @@ class RemoteEventService extends NC21Signature {
 		IUserManager $userManager,
 		IUserSession $userSession,
 		Signer $signer,
-		GSEventsRequest $gsEventsRequest,
+		RemoteWrapperRequest $remoteWrapperRequest,
 		CircleRequest $circleRequest,
 		ConfigService $configService,
 		MiscService $miscService
@@ -121,7 +121,7 @@ class RemoteEventService extends NC21Signature {
 		$this->userManager = $userManager;
 		$this->userSession = $userSession;
 		$this->signer = $signer;
-		$this->gsEventsRequest = $gsEventsRequest;
+		$this->remoteWrapperRequest = $remoteWrapperRequest;
 		$this->circleRequest = $circleRequest;
 		$this->configService = $configService;
 		$this->miscService = $miscService;
@@ -134,13 +134,10 @@ class RemoteEventService extends NC21Signature {
 	 *
 	 * @param RemoteEvent $event
 	 *
-	 * @return string
 	 * @throws RemoteEventException
 	 */
 	public function newEvent(RemoteEvent $event): void {
-		// TODO: setSource
-		// TODO: Verify Viewer
-		//$event->setSource($this->configService->getLocalInstance());
+		$event->setSource($this->configService->getLocalInstance());
 		$this->verifyViewer($event);
 		try {
 			$gs = $this->getRemoteEvent($event);
@@ -173,23 +170,28 @@ class RemoteEventService extends NC21Signature {
 	 * @param RemoteEvent $event
 	 */
 	public function initBroadcast(RemoteEvent $event): void {
+		$instances = $this->getInstances($event->isAsync());
+		if (empty($instances)) {
+			return;
+		}
+
 		$wrapper = new RemoteWrapper();
 		$wrapper->setEvent($event);
 		$wrapper->setToken($this->uuid());
 		$wrapper->setCreation(time());
 		$wrapper->setSeverity($event->getSeverity());
 
-		foreach ($this->getInstances($event->isAsync()) as $instance) {
+		foreach ($instances as $instance) {
 			$wrapper->setInstance($instance);
-			$wrapper = $this->gsEventsRequest->create($wrapper);
+			$this->remoteWrapperRequest->create($wrapper);
 		}
-
-		$event->setWrapperToken($wrapper->getToken());
 
 		$request = new NC21Request('', Request::TYPE_POST);
 		$this->configService->configureRequest(
-			$request, 'circles.GlobalScale.asyncBroadcast', ['token' => $wrapper->getToken()]
+			$request, 'circles.RemoteWrapper.asyncBroadcast', ['token' => $wrapper->getToken()]
 		);
+
+		$event->setWrapperToken($wrapper->getToken());
 
 		try {
 			$this->doRequest($request);
@@ -199,7 +201,10 @@ class RemoteEventService extends NC21Signature {
 	}
 
 
-	private function verifyViewer(RemoteEvent $event) {
+	/**
+	 * @param RemoteEvent $event
+	 */
+	private function verifyViewer(RemoteEvent $event): void {
 		if (!$event->hasCircle() || !$event->getCircle()->hasViewer()) {
 			return;
 		}
@@ -298,16 +303,19 @@ class RemoteEventService extends NC21Signature {
 	 *
 	 * @return array
 	 */
-	private function getInstances(bool $all = false): array {
+	public function getInstances(bool $all = false): array {
 		$gsInstances = $this->getGlobalScaleInstances();
 		$remoteInstances = $this->getRemoteInstances();
+		$local = $this->configService->getLocalInstance();
 
-		$instances = array_merge([$this->configService->getLocalInstance()], $gsInstances, $remoteInstances);
+		$instances = array_merge([$local], $gsInstances, $remoteInstances);
 		if ($all) {
 			return $instances;
 		}
 
-		return array_values(array_diff($instances, $this->configService->getTrustedDomains()));
+		return array_values(
+			array_diff($instances, array_merge($this->configService->getTrustedDomains(), [$local]))
+		);
 	}
 
 
@@ -349,7 +357,7 @@ class RemoteEventService extends NC21Signature {
 	 */
 	public function manageResults(string $token): void {
 		try {
-			$wrappers = $this->gsEventsRequest->getByToken($token);
+			$wrappers = $this->remoteWrapperRequest->getByToken($token);
 		} catch (JsonException | ModelException $e) {
 			return;
 		}
@@ -384,7 +392,7 @@ class RemoteEventService extends NC21Signature {
 
 		$circle = $event->getCircle();
 		$owner = $circle->getOwner();
-		$path = $this->urlGenerator->linkToRoute('circles.GlobalScale.event');
+		$path = $this->urlGenerator->linkToRoute('circles.RemoteWrapper.event');
 
 		$request = new NC21Request($path, Request::TYPE_POST);
 		$this->configService->configureRequest($request);

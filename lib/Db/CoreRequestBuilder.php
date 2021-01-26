@@ -53,10 +53,11 @@ class CoreRequestBuilder {
 	const TABLE_SHARES = 'circle_shares';
 	const TABLE_LINKS = 'circle_links';
 	const TABLE_TOKENS = 'circle_tokens';
-	const TABLE_GSEVENTS = 'circle_gsevents';
 	const TABLE_GSSHARES = 'circle_gsshares';
 	const TABLE_GSSHARES_MOUNTPOINT = 'circle_gsshares_mp';
+
 	const TABLE_REMOTE = 'circle_remotes';
+	const TABLE_REMOTE_WRAPPER = 'circle_gsevents';
 
 	const NC_TABLE_ACCOUNTS = 'accounts';
 	const NC_TABLE_GROUP_USER = 'group_user';
@@ -69,10 +70,10 @@ class CoreRequestBuilder {
 		self::TABLE_SHARES,
 		self::TABLE_LINKS,
 		self::TABLE_TOKENS,
-		self::TABLE_GSEVENTS,
 		self::TABLE_GSSHARES,
 		self::TABLE_GSSHARES_MOUNTPOINT,
-		self::TABLE_REMOTE
+		self::TABLE_REMOTE,
+		self::TABLE_REMOTE_WRAPPER,
 	];
 
 

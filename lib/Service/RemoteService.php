@@ -141,6 +141,25 @@ class RemoteService extends NC21Signature {
 
 
 	/**
+	 * @param NC21Request $request
+	 *
+	 * @return array
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws SignatureException
+	 */
+	public function signAndRetrieveJson(NC21Request $request): array {
+		// TODO: Check outgoing instance from DB to confirm the current status.
+		// TODO: If instance is not known, check from LUS. Update DB with right status
+		// TODO: If instance is not known and not in GS, cancel.
+		// TODO: Instance can be thrusty (don't care about the Auth) or not
+		$signedRequest = $this->signOutgoingRequest($request, $this->getAppSignatory());
+
+		return $this->retrieveJson($signedRequest->getOutgoingRequest());
+	}
+
+
+	/**
 	 * @param string $remote
 	 * @param array $data
 	 *
@@ -159,7 +178,7 @@ class RemoteService extends NC21Signature {
 
 		$app = $this->getAppSignatory();
 //		$app->setAlgorithm(NC21Signatory::SHA512);
-		$signedRequest = $this->signRequest($request, $app);
+		$signedRequest = $this->signOutgoingRequest($request, $app);
 		$this->doRequest($signedRequest->getOutgoingRequest());
 
 		return $signedRequest;
@@ -218,7 +237,7 @@ class RemoteService extends NC21Signature {
 
 		$app = $this->getAppSignatory();
 //		$app->setAlgorithm(NC21Signatory::SHA512);
-		$signedRequest = $this->signRequest($request, $app);
+		$signedRequest = $this->signOutgoingRequest($request, $app);
 		$this->doRequest($signedRequest->getOutgoingRequest());
 
 		return $signedRequest->getOutgoingRequest()->getResult()->getAsArray();

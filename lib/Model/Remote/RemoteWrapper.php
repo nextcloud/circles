@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -30,6 +32,7 @@
 namespace OCA\Circles\Model\Remote;
 
 
+use daita\MySmallPhpTools\Db\Nextcloud\nc21\INC21QueryRow;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
 
@@ -39,7 +42,7 @@ use JsonSerializable;
  *
  * @package OCA\Circles\Model\Remote
  */
-class RemoteWrapper implements JsonSerializable {
+class RemoteWrapper implements INC21QueryRow, JsonSerializable {
 
 
 	use TArrayTools;

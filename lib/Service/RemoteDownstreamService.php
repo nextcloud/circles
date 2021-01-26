@@ -59,7 +59,7 @@ class RemoteDownstreamService {
 	private $urlGenerator;
 
 	/** @var GSEventsRequest */
-	private $gsEventsRequest;
+	private $remoteWrapperRequest;
 
 	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
@@ -79,7 +79,7 @@ class RemoteDownstreamService {
 	 *
 	 * @param $userId
 	 * @param IURLGenerator $urlGenerator
-	 * @param GSEventsRequest $gsEventsRequest
+	 * @param GSEventsRequest $remoteWrapperRequest
 	 * @param DeprecatedCirclesRequest $circlesRequest
 	 * @param GlobalScaleService $globalScaleService
 	 * @param ConfigService $configService
@@ -88,7 +88,7 @@ class RemoteDownstreamService {
 	public function __construct(
 		$userId,
 		IURLGenerator $urlGenerator,
-		GSEventsRequest $gsEventsRequest,
+		GSEventsRequest $remoteWrapperRequest,
 		DeprecatedCirclesRequest $circlesRequest,
 		GlobalScaleService $globalScaleService,
 		ConfigService $configService,
@@ -96,7 +96,7 @@ class RemoteDownstreamService {
 	) {
 		$this->userId = $userId;
 		$this->urlGenerator = $urlGenerator;
-		$this->gsEventsRequest = $gsEventsRequest;
+		$this->remoteWrapperRequest = $remoteWrapperRequest;
 		$this->circlesRequest = $circlesRequest;
 		$this->globalScaleService = $globalScaleService;
 		$this->configService = $configService;

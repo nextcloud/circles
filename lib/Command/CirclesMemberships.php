@@ -153,7 +153,7 @@ class CirclesMemberships extends Base {
 	 * @throws CircleNotFoundException
 	 */
 	private function indexLocalUser(string $userId): void {
-		$currentUser = new CurrentUser($userId, Member::TYPE_USER, '');
+		$currentUser = new CurrentUser($userId);
 		$this->currentUserService->setCurrentUser($currentUser);
 
 		$this->currentUserService->updateMemberships();

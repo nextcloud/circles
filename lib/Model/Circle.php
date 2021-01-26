@@ -530,7 +530,7 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 			$arr['memberOf'] = $this->memberOf();
 		}
 
-		return $arr;
+		return array_filter($arr);
 	}
 
 

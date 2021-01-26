@@ -41,7 +41,7 @@ use daita\MySmallPhpTools\Traits\TStringTools;
 use OC;
 use OC\Security\IdentityProof\Signer;
 use OC\User\NoUserException;
-use OCA\Circles\Db\GSEventsRequest;
+use OCA\Circles\Db\RemoteWrapperRequest;
 use OCA\Circles\Exceptions\GlobalScaleEventException;
 use OCA\Circles\Exceptions\GSKeyException;
 use OCA\Circles\Exceptions\GSStatusException;
@@ -79,8 +79,8 @@ class GlobalScaleService {
 	/** @var Signer */
 	private $signer;
 
-	/** @var GSEventsRequest */
-	private $gsEventsRequest;
+	/** @var RemoteWrapperRequest */
+	private $remoteWrapperRequest;
 
 	/** @var ConfigService */
 	private $configService;
@@ -96,7 +96,7 @@ class GlobalScaleService {
 	 * @param IUserManager $userManager
 	 * @param IUserSession $userSession
 	 * @param Signer $signer
-	 * @param GSEventsRequest $gsEventsRequest
+	 * @param RemoteWrapperRequest $remoteWrapperRequest
 	 * @param ConfigService $configService
 	 * @param MiscService $miscService
 	 */
@@ -105,7 +105,7 @@ class GlobalScaleService {
 		IUserManager $userManager,
 		IUserSession $userSession,
 		Signer $signer,
-		GSEventsRequest $gsEventsRequest,
+		RemoteWrapperRequest $remoteWrapperRequest,
 		ConfigService $configService,
 		MiscService $miscService
 	) {
@@ -113,7 +113,7 @@ class GlobalScaleService {
 		$this->userManager = $userManager;
 		$this->userSession = $userSession;
 		$this->signer = $signer;
-		$this->gsEventsRequest = $gsEventsRequest;
+		$this->remoteWrapperRequest = $remoteWrapperRequest;
 		$this->configService = $configService;
 		$this->miscService = $miscService;
 	}
@@ -133,12 +133,12 @@ class GlobalScaleService {
 
 		foreach ($this->getInstances($event->isAsync()) as $instance) {
 			$wrapper->setInstance($instance);
-			$wrapper = $this->gsEventsRequest->create($wrapper);
+			$wrapper = $this->remoteWrapperRequest->create($wrapper);
 		}
 
 		$request = new NC21Request('', Request::TYPE_POST);
 		$this->configService->configureRequest(
-			$request, 'circles.GlobalScale.asyncBroadcast', ['token' => $wrapper->getToken()]
+			$request, 'circles.RemoteWrapper.asyncBroadcast', ['token' => $wrapper->getToken()]
 		);
 
 		try {

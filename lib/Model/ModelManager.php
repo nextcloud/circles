@@ -163,6 +163,14 @@ class ModelManager {
 
 
 	/**
+	 * @return string
+	 */
+	public function getLocalInstance() {
+		return $this->configService->getLocalInstance();
+	}
+
+
+	/**
 	 * @param bool $full
 	 */
 	public function setFullDetails(bool $full): void {
@@ -175,7 +183,6 @@ class ModelManager {
 	public function isFullDetails(): bool {
 		return $this->fullDetails;
 	}
-
 
 }
 

@@ -1,4 +1,8 @@
 <?php
+
+declare(strict_types=1);
+
+
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -28,26 +32,23 @@
 namespace OCA\Circles\Db;
 
 
-use OCA\Circles\Exceptions\JsonException;
-use OCA\Circles\Exceptions\ModelException;
 use OCA\Circles\Model\GlobalScale\GSWrapper;
+use OCA\Circles\Model\Remote\RemoteWrapper;
 
 
 /**
- * Class GSEventsRequest
+ * Class RemoteWrapperRequest
  *
  * @package OCA\Circles\Db
  */
-class GSEventsRequest extends GSEventsRequestBuilder {
+class RemoteWrapperRequest extends RemoteWrapperRequestBuilder {
 
 
 	/**
-	 * @param GSWrapper $wrapper
-	 *
-	 * @return GSWrapper
+	 * @param RemoteWrapper $wrapper
 	 */
-	public function create(GSWrapper $wrapper): GSWrapper {
-		$qb = $this->getGSEventsInsertSql();
+	public function create(RemoteWrapper $wrapper): void {
+		$qb = $this->getRemoteWrapperInsertSql();
 		$qb->setValue('token', $qb->createNamedParameter($wrapper->getToken()))
 		   ->setValue('event', $qb->createNamedParameter(json_encode($wrapper->getEvent())))
 		   ->setValue('instance', $qb->createNamedParameter($wrapper->getInstance()))
@@ -56,20 +57,18 @@ class GSEventsRequest extends GSEventsRequestBuilder {
 		   ->setValue('creation', $qb->createNamedParameter($wrapper->getCreation()));
 
 		$qb->execute();
-
-		return $wrapper;
 	}
 
 	/**
-	 * @param GSWrapper $wrapper
+	 * @param RemoteWrapper $wrapper
 	 */
-	public function update(GSWrapper $wrapper): void {
-		$qb = $this->getGSEventsUpdateSql();
+	public function update(RemoteWrapper $wrapper): void {
+		$qb = $this->getRemoteWrapperUpdateSql();
 		$qb->set('event', $qb->createNamedParameter(json_encode($wrapper->getEvent())))
 		   ->set('status', $qb->createNamedParameter($wrapper->getStatus()));
 
-		$this->limitToInstance($qb, $wrapper->getInstance());
-		$this->limitToToken($qb, $wrapper->getToken());
+		$qb->limitToInstance($wrapper->getInstance());
+		$qb->limitToToken($wrapper->getToken());
 
 		$qb->execute();
 	}
@@ -78,22 +77,13 @@ class GSEventsRequest extends GSEventsRequestBuilder {
 	/**
 	 * @param string $token
 	 *
-	 * @return GSWrapper[]
-	 * @throws JsonException
-	 * @throws ModelException
+	 * @return RemoteWrapper[]
 	 */
 	public function getByToken(string $token): array {
-		$qb = $this->getGSEventsSelectSql();
-		$this->limitToToken($qb, $token);
+		$qb = $this->getRemoteWrapperSelectSql();
+		$qb->limitToToken($token);
 
-		$wrappers = [];
-		$cursor = $qb->execute();
-		while ($data = $cursor->fetch()) {
-			$wrappers[] = $this->parseGSEventsSelectSql($data);
-		}
-		$cursor->closeCursor();
-
-		return $wrappers;
+		return $this->getItemsFromRequest($qb);
 	}
 
 }

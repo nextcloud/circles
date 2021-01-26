@@ -69,6 +69,9 @@ class CurrentUserService {
 	/** @var MemberRequest */
 	private $memberRequest;
 
+	/** @var ConfigService */
+	private $configService;
+
 
 	/** @var CurrentUser */
 	private $currentUser = null;
@@ -83,13 +86,16 @@ class CurrentUserService {
 	 * @param MembershipRequest $membershipRequest
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
+	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		MembershipRequest $membershipRequest, CircleRequest $circleRequest, MemberRequest $memberRequest
+		MembershipRequest $membershipRequest, CircleRequest $circleRequest, MemberRequest $memberRequest,
+		ConfigService $configService
 	) {
 		$this->membershipRequest = $membershipRequest;
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
+		$this->configService = $configService;
 	}
 
 
@@ -99,7 +105,7 @@ class CurrentUserService {
 	 * @throws CircleNotFoundException
 	 */
 	public function setLocalViewer(string $userId): void {
-		$this->currentUser = new CurrentUser($userId, Member::TYPE_USER, '');
+		$this->currentUser = new CurrentUser($userId);
 		$this->fillSingleCircleId($this->currentUser);
 	}
 
@@ -109,6 +115,10 @@ class CurrentUserService {
 	 * @throws CircleNotFoundException
 	 */
 	public function setCurrentUser(IMember $currentUser): void {
+		if ($currentUser->getInstance() === '') {
+			$currentUser->setInstance($this->configService->getLocalInstance());
+		}
+
 		$this->currentUser = $currentUser;
 		$this->fillSingleCircleId($this->currentUser);
 	}
@@ -145,6 +155,20 @@ class CurrentUserService {
 	 */
 	public function bypassCurrentUserCondition(bool $bypass): void {
 		$this->bypass = $bypass;
+	}
+
+
+	/**
+	 * @param string $userId
+	 *
+	 * @return CurrentUser
+	 * @throws CircleNotFoundException
+	 */
+	public function createTemporaryViewer(string $userId): CurrentUser {
+		$temporaryUser = new CurrentUser($userId);
+		$this->fillSingleCircleId($temporaryUser);
+
+		return $temporaryUser;
 	}
 
 

@@ -432,7 +432,7 @@ class Member extends ManagedModel implements IMember, INC21Convert, INC21QueryRo
 	 * @return string[]
 	 */
 	public function jsonSerialize(): array {
-		return [
+		return array_filter([
 			'id'            => $this->getId(),
 			'circle_id'     => $this->getCircleId(),
 			'user_id'       => $this->getUserId(),
@@ -446,7 +446,7 @@ class Member extends ManagedModel implements IMember, INC21Convert, INC21QueryRo
 			'contact_id'    => $this->getContactId(),
 			'contact_meta'  => $this->getContactMeta(),
 			'joined'        => $this->getJoined()
-		];
+		]);
 	}
 
 

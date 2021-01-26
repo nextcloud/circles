@@ -37,22 +37,22 @@ use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\RequestResultNotJsonException;
 use daita\MySmallPhpTools\Exceptions\RequestResultSizeException;
 use daita\MySmallPhpTools\Exceptions\RequestServerException;
+use daita\MySmallPhpTools\Exceptions\SignatoryException;
+use daita\MySmallPhpTools\Exceptions\SignatureException;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
 use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
-use Exception;
 use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\DeprecatedMembersRequest;
-use OCA\Circles\Db\GSEventsRequest;
-use OCA\Circles\Exceptions\GlobalScaleEventException;
+use OCA\Circles\Db\RemoteWrapperRequest;
 use OCA\Circles\Exceptions\GSStatusException;
-use OCA\Circles\Exceptions\JsonException;
-use OCA\Circles\Exceptions\ModelException;
 use OCA\Circles\GlobalScale\CircleStatus;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\GlobalScale\GSWrapper;
+use OCA\Circles\Model\Remote\RemoteEvent;
+use OCA\Circles\Model\Remote\RemoteWrapper;
 use OCP\IURLGenerator;
 
 
@@ -67,14 +67,11 @@ class RemoteUpstreamService {
 	use TNC21Request;
 
 
-	/** @var string */
-	private $userId = '';
-
 	/** @var IURLGenerator */
 	private $urlGenerator;
 
-	/** @var GSEventsRequest */
-	private $gsEventsRequest;
+	/** @var RemoteWrapperRequest */
+	private $remoteWrapperRequest;
 
 	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
@@ -82,59 +79,45 @@ class RemoteUpstreamService {
 	/** @var DeprecatedMembersRequest */
 	private $membersRequest;
 
+	/** @var RemoteService */
+	private $remoteService;
+
 	/** @var RemoteEventService */
 	private $remoteEventService;
 
 	/** @var ConfigService */
 	private $configService;
 
-	/** @var MiscService */
-	private $miscService;
 
-
-	/**
-	 * GSUpstreamService constructor.
-	 *
-	 * @param $userId
-	 * @param IURLGenerator $urlGenerator
-	 * @param GSEventsRequest $gsEventsRequest
-	 * @param DeprecatedCirclesRequest $circlesRequest
-	 * @param DeprecatedMembersRequest $membersRequest
-	 * @param RemoteEventService $remoteEventService
-	 * @param ConfigService $configService
-	 * @param MiscService $miscService
-	 */
 	public function __construct(
-		$userId,
 		IURLGenerator $urlGenerator,
-		GSEventsRequest $gsEventsRequest,
+		RemoteWrapperRequest $remoteWrapperRequest,
 		DeprecatedCirclesRequest $circlesRequest,
 		DeprecatedMembersRequest $membersRequest,
+		RemoteService $remoteService,
 		RemoteEventService $remoteEventService,
-		ConfigService $configService,
-		MiscService $miscService
+		ConfigService $configService
 	) {
-		$this->userId = $userId;
 		$this->urlGenerator = $urlGenerator;
-		$this->gsEventsRequest = $gsEventsRequest;
+		$this->remoteWrapperRequest = $remoteWrapperRequest;
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
+		$this->remoteService = $remoteService;
 		$this->remoteEventService = $remoteEventService;
 		$this->configService = $configService;
-		$this->miscService = $miscService;
 	}
 
 
 	/**
-	 * @param GSWrapper $wrapper
+	 * @param RemoteWrapper $wrapper
 	 */
-	public function broadcastWrapper(GSWrapper $wrapper): void {
-		$status = GSWrapper::STATUS_FAILED;
+	public function broadcastWrapper(RemoteWrapper $wrapper): void {
+		$status = RemoteWrapper::STATUS_FAILED;
 
 		try {
 			$this->broadcastEvent($wrapper->getEvent(), $wrapper->getInstance());
 			$status = GSWrapper::STATUS_DONE;
-		} catch (RequestContentException | RequestNetworkException | RequestResultSizeException | RequestServerException | RequestResultNotJsonException $e) {
+		} catch (RequestNetworkException $e) {
 		}
 
 		if ($wrapper->getSeverity() === GSEvent::SEVERITY_HIGH) {
@@ -143,29 +126,24 @@ class RemoteUpstreamService {
 			$wrapper->setStatus(GSWrapper::STATUS_OVER);
 		}
 
-		$this->gsEventsRequest->update($wrapper);
+		$this->remoteWrapperRequest->update($wrapper);
 	}
 
 
 	/**
-	 * @param GSEvent $event
+	 * @param RemoteEvent $event
 	 * @param string $instance
-	 * @param string $protocol
 	 *
-	 * @throws RequestContentException
 	 * @throws RequestNetworkException
-	 * @throws RequestResultNotJsonException
-	 * @throws RequestResultSizeException
-	 * @throws RequestServerException
+	 * @throws SignatoryException
+	 * @throws SignatureException
 	 */
-	public function broadcastEvent(GSEvent $event, string $instance): void {
-		$this->signEvent($event);
-
+	public function broadcastEvent(RemoteEvent $event, string $instance): void {
 		if ($this->configService->isLocalInstance($instance)) {
 			$request = new NC21Request('', Request::TYPE_POST);
-			$this->configService->configureRequest($request, 'circles.GlobalScale.broadcast');
+			$this->configService->configureRequest($request, 'circles.RemoteWrapper.broadcast');
 		} else {
-			$path = $this->urlGenerator->linkToRoute('circles.GlobalScale.broadcast');
+			$path = $this->urlGenerator->linkToRoute('circles.RemoteWrapper.broadcast');
 			$request = new NC21Request($path, Request::TYPE_POST);
 			$this->configService->configureRequest($request);
 			$request->setInstance($instance);
@@ -173,69 +151,27 @@ class RemoteUpstreamService {
 
 		$request->setDataSerialize($event);
 
-		$data = $this->retrieveJson($request);
+		$data = $this->remoteService->signAndRetrieveJson($request);
 		$event->setResult(new SimpleDataStore($this->getArray('result', $data, [])));
-	}
-
-
-	/**
-	 * @param GSEvent $event
-	 */
-	private function signEvent(GSEvent $event) {
-		$event->setKey($this->remoteEventService->getKey());
-	}
-
-
-	/**
-	 * @param bool $all
-	 *
-	 * @return array
-	 */
-	public function getInstances(bool $all = false): array {
-		/** @var string $lookup */
-		try {
-			$lookup = $this->configService->getGSStatus(ConfigService::GS_LOOKUP);
-			$request = new NC21Request(ConfigService::GS_LOOKUP_INSTANCES, Request::TYPE_POST);
-			$this->configService->configureRequest($request);
-			$request->basedOnUrl($lookup);
-			$request->addData('authKey', $this->configService->getGSStatus(ConfigService::GS_KEY));
-
-			try {
-				$instances = $this->retrieveJson($request);
-			} catch (RequestContentException | RequestNetworkException | RequestResultSizeException | RequestServerException | RequestResultNotJsonException $e) {
-				$this->miscService->log(
-					'Issue while retrieving instances from lookup: ' . get_class($e) . ' ' . $e->getMessage()
-				);
-
-				return [];
-			}
-		} catch (GSStatusException $e) {
-			if (!$all) {
-				return [];
-			}
-
-			return [$this->configService->getLocalInstance()];
-		}
-
-		if ($all) {
-			return $instances;
-		}
-
-		return array_values(array_diff($instances, $this->configService->getTrustedDomains()));
 	}
 
 
 	/**
 	 * @param string $token
 	 *
-	 * @return GSWrapper[]
-	 * @throws JsonException
-	 * @throws ModelException
+	 * @return RemoteWrapper[]
 	 */
 	public function getEventsByToken(string $token): array {
-		return $this->gsEventsRequest->getByToken($token);
+		return $this->remoteWrapperRequest->getByToken($token);
 	}
 
+
+
+	//
+	//
+	//
+	//
+	//
 
 	/**
 	 * @param array $sync
@@ -259,7 +195,7 @@ class RemoteUpstreamService {
 		$event->setSource($this->configService->getLocalInstance());
 		$event->setData(new SimpleDataStore($circles));
 
-		foreach ($this->getInstances() as $instance) {
+		foreach ($this->remoteEventService->getInstances() as $instance) {
 			try {
 				$this->broadcastEvent($event, $instance);
 			} catch (RequestContentException | RequestNetworkException | RequestResultSizeException | RequestServerException | RequestResultNotJsonException $e) {
@@ -315,7 +251,7 @@ class RemoteUpstreamService {
 
 		$this->signEvent($event);
 
-		$path = $this->urlGenerator->linkToRoute('circles.GlobalScale.status');
+		$path = $this->urlGenerator->linkToRoute('circles.RemoteWrapper.status');
 		$request = new NC21Request($path, Request::TYPE_POST);
 		$this->configService->configureRequest($request);
 		$request->setDataSerialize($event);
@@ -328,7 +264,6 @@ class RemoteUpstreamService {
 
 			try {
 				$result = $this->retrieveJson($request);
-//				$this->miscService->log('result: ' . json_encode($result));
 				if ($this->getInt('status', $result, 0) !== 1) {
 					throw new RequestContentException('result status is not good');
 				}

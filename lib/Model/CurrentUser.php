@@ -75,7 +75,7 @@ class CurrentUser extends ManagedModel implements IMember, INC21Convert, INC21Qu
 	public function __construct(string $userId = '', int $type = Member::TYPE_USER, $instance = '') {
 		$this->userId = $userId;
 		$this->userType = $type;
-		$this->instance = $instance;
+		$this->setInstance($instance);
 	}
 
 
@@ -142,6 +142,10 @@ class CurrentUser extends ManagedModel implements IMember, INC21Convert, INC21Qu
 	 * @return self
 	 */
 	public function setInstance(string $instance): self {
+		if ($instance === '') {
+			$instance = $this->getManager()->getLocalInstance();
+		}
+
 		$this->instance = $instance;
 
 		return $this;

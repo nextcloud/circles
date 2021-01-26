@@ -38,8 +38,8 @@ use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\RemoteEventException;
 use OCA\Circles\Exceptions\ViewerNotFoundException;
-use OCA\Circles\IMember;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\CurrentUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Remote\RemoteEvent;
 use OCA\Circles\RemoteEvents\CircleCreate;
@@ -113,13 +113,15 @@ class CircleService {
 
 	/**
 	 * @param string $name
-	 * @param IMember|null $owner
+	 * @param CurrentUser|null $owner
 	 *
 	 * @return Circle
 	 * @throws RemoteEventException
+	 * @throws ViewerNotFoundException
 	 */
-	public function create(string $name, ?IMember $owner = null): Circle {
+	public function create(string $name, ?CurrentUser $owner = null): Circle {
 		if (is_null($owner)) {
+			$this->currentUserService->mustHaveCurrentUser();
 			$owner = $this->currentUserService->getCurrentUser();
 		}
 
@@ -140,7 +142,6 @@ class CircleService {
 
 		$event = new RemoteEvent(CircleCreate::class, true);
 		$event->setCircle($circle);
-
 		$this->remoteEventService->newEvent($event);
 
 		return $circle;

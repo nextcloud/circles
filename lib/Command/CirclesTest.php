@@ -129,7 +129,7 @@ class CirclesTest extends Base {
 		}
 
 		if (!$this->testRequest(
-			$output, 'POST', 'circles.GlobalScale.asyncBroadcast',
+			$output, 'POST', 'circles.RemoteWrapper.asyncBroadcast',
 			['token' => 'test-dummy-token']
 		)) {
 			$this->configService->setAppValue(ConfigService::TEST_NC_BASE, '');
