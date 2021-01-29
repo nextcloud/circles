@@ -65,13 +65,13 @@ return [
 		['name' => 'Groups#remove', 'url' => '/v1/circles/{uniqueId}/groups', 'verb' => 'DELETE'],
 		['name' => 'Shares#create', 'url' => '/v1/circles/{circleUniqueId}/share', 'verb' => 'PUT'],
 
-		['name' => 'RemoteWrapper#event', 'url' => '/v1/gs/event', 'verb' => 'POST'],
-		['name' => 'RemoteWrapper#asyncBroadcast', 'url' => '/v1/gs/broadcast/async/{token}/', 'verb' => 'POST'],
-		['name' => 'RemoteWrapper#broadcast', 'url' => '/v1/gs/broadcast', 'verb' => 'POST'],
-		['name' => 'RemoteWrapper#status', 'url' => '/v1/gs/status', 'verb' => 'POST'],
+		['name' => 'RemoteWrapper#asyncBroadcast', 'url' => '/async/{token}/', 'verb' => 'POST'],
+//		['name' => 'RemoteWrapper#broadcast', 'url' => '/v1/gs/broadcast', 'verb' => 'POST'],
+//		['name' => 'RemoteWrapper#status', 'url' => '/v1/gs/status', 'verb' => 'POST'],
 
-		['name' => 'Remote#incoming', 'url' => '/incoming', 'verb' => 'POST'],
 		['name' => 'Remote#test', 'url' => '/test', 'verb' => 'GET'],
+		['name' => 'Remote#event', 'url' => '/event', 'verb' => 'POST'],
+		['name' => 'Remote#incoming', 'url' => '/incoming', 'verb' => 'POST'],
 		['name' => 'Remote#circles', 'url' => '/circles', 'verb' => 'GET'],
 		['name' => 'Remote#circle', 'url' => '/circles/{circleId}', 'verb' => 'GET'],
 		['name' => 'Remote#members', 'url' => '/members', 'verb' => 'GET'],

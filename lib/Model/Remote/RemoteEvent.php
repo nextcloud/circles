@@ -81,12 +81,18 @@ class RemoteEvent implements JsonSerializable {
 	/** @var bool */
 	private $async = false;
 
+	/** @var string */
+	private $incomingOrigin = '';
+
 
 	/** @var string */
 	private $wrapperToken = '';
 
 	/** @var bool */
 	private $verifiedViewer = false;
+
+	/** @var bool */
+	private $verifiedCircle = false;
 
 
 	/**
@@ -193,12 +199,34 @@ class RemoteEvent implements JsonSerializable {
 		return $this;
 	}
 
+	/**
+	 * @param string $incomingOrigin
+	 *
+	 * @return self
+	 */
+	public function setIncomingOrigin(string $incomingOrigin): self {
+		$this->incomingOrigin = $incomingOrigin;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getIncomingOrigin(): string {
+		return $this->incomingOrigin;
+	}
+
 
 	/**
 	 * @param bool $verifiedViewer
+	 *
+	 * @return RemoteEvent
 	 */
-	public function setVerifiedViewer(bool $verifiedViewer): void {
+	public function setVerifiedViewer(bool $verifiedViewer): self {
 		$this->verifiedViewer = $verifiedViewer;
+
+		return $this;
 	}
 
 	/**
@@ -206,6 +234,25 @@ class RemoteEvent implements JsonSerializable {
 	 */
 	public function isVerifiedViewer(): bool {
 		return $this->verifiedViewer;
+	}
+
+
+	/**
+	 * @param bool $verifiedCircle
+	 *
+	 * @return RemoteEvent
+	 */
+	public function setVerifiedCircle(bool $verifiedCircle): self {
+		$this->verifiedCircle = $verifiedCircle;
+
+		return $this;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isVerifiedCircle(): bool {
+		return $this->verifiedCircle;
 	}
 
 
@@ -226,9 +273,6 @@ class RemoteEvent implements JsonSerializable {
 	public function getWrapperToken(): string {
 		return $this->wrapperToken;
 	}
-
-
-
 
 
 	/**

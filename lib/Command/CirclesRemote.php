@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -8,7 +10,7 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2017
+ * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -29,18 +31,21 @@
 
 namespace OCA\Circles\Command;
 
+use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Exceptions\SignatureException;
+use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
+use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21SignedRequest;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21WellKnown;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\Db\RemoteRequest;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteUidException;
-use OCA\Circles\Model\AppService;
+use OCA\Circles\Model\Remote\RemoteInstance;
 use OCA\Circles\Service\RemoteService;
-use OCP\IL10N;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -60,21 +65,23 @@ class CirclesRemote extends Base {
 	use TStringTools;
 
 
-	/** @var IL10N */
-	private $l10n;
+	/** @var RemoteRequest */
+	private $remoteRequest;
 
 	/** @var RemoteService */
 	private $remoteService;
 
 
 	/**
-	 * CirclesList constructor.
+	 * CirclesRemote constructor.
 	 *
+	 * @param RemoteRequest $remoteRequest
 	 * @param RemoteService $remoteService
 	 */
-	public function __construct(RemoteService $remoteService) {
+	public function __construct(RemoteRequest $remoteRequest, RemoteService $remoteService) {
 		parent::__construct();
 
+		$this->remoteRequest = $remoteRequest;
 		$this->remoteService = $remoteService;
 		$this->setup('app', 'circles');
 	}
@@ -143,7 +150,7 @@ class CirclesRemote extends Base {
 		);
 
 		try {
-			$remoteSignatory = $this->remoteService->retrieveSignatory($resource->g('id'), true, true);
+			$remoteSignatory = $this->remoteService->retrieveSignatory($resource->g('id'), true);
 			$output->writeln(' * No SignatureException: <info>Identity authed</info>');
 		} catch (SignatureException $e) {
 			$output->writeln(
@@ -179,7 +186,7 @@ class CirclesRemote extends Base {
 			'test'  => 42,
 			'token' => $this->uuid()
 		];
-		$signedRequest = $this->remoteService->outgoingTest($testUrl, $payload);
+		$signedRequest = $this->outgoingTest($testUrl, $payload);
 		$output->writeln(' * Payload: ');
 		$output->writeln(json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 		$output->writeln('');
@@ -210,7 +217,7 @@ class CirclesRemote extends Base {
 		if ($remoteSignatory->getUid() !== $localSignatory->getUid()) {
 			$remoteSignatory->setInstance($host);
 			try {
-				$stored = new AppService();
+				$stored = new RemoteInstance();
 				$this->remoteService->confirmValidRemote($remoteSignatory, $stored);
 				$output->writeln(
 					'<info>The remote instance ' . $host
@@ -246,9 +253,13 @@ class CirclesRemote extends Base {
 	/**
 	 * @param InputInterface $input
 	 * @param OutputInterface $output
-	 * @param AppService $remoteSignatory
+	 * @param RemoteInstance $remoteSignatory
+	 *
+	 * @throws RemoteUidException
 	 */
-	private function saveRemote(InputInterface $input, OutputInterface $output, AppService $remoteSignatory) {
+	private function saveRemote(
+		InputInterface $input, OutputInterface $output, RemoteInstance $remoteSignatory
+	) {
 		$output->writeln('');
 		$helper = $this->getHelper('question');
 
@@ -262,7 +273,7 @@ class CirclesRemote extends Base {
 		);
 
 		if ($helper->ask($input, $output, $question)) {
-			$this->remoteService->save($remoteSignatory);
+			$this->remoteRequest->save($remoteSignatory);
 			$output->writeln('<info>remote instance saved</info>');
 		}
 	}
@@ -271,10 +282,13 @@ class CirclesRemote extends Base {
 	/**
 	 * @param InputInterface $input
 	 * @param OutputInterface $output
-	 * @param AppService $remoteSignatory
+	 * @param RemoteInstance $remoteSignatory
+	 *
+	 * @throws RemoteUidException
 	 */
-	private function updateRemote(InputInterface $input, OutputInterface $output, AppService $remoteSignatory
-	) {
+	private function updateRemote(
+		InputInterface $input, OutputInterface $output, RemoteInstance $remoteSignatory
+	): void {
 		$output->writeln('');
 		$helper = $this->getHelper('question');
 
@@ -297,6 +311,30 @@ class CirclesRemote extends Base {
 		}
 	}
 
+
+	/**
+	 * @param string $remote
+	 * @param array $payload
+	 *
+	 * @return NC21SignedRequest
+	 * @throws SignatoryException
+	 * @throws SignatureException
+	 * @throws RequestNetworkException
+	 */
+	private function outgoingTest(string $remote, array $payload): NC21SignedRequest {
+		$request = new NC21Request();
+		$request->basedOnUrl($remote);
+		$request->setFollowLocation(true);
+		$request->setLocalAddressAllowed(true);
+		$request->setTimeout(5);
+		$request->setData($payload);
+
+		$app = $this->remoteService->getAppSignatory();
+		$signedRequest = $this->remoteService->signOutgoingRequest($request, $app);
+		$this->doRequest($signedRequest->getOutgoingRequest());
+
+		return $signedRequest;
+	}
 
 }
 

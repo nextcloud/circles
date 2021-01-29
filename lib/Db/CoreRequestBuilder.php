@@ -72,6 +72,7 @@ class CoreRequestBuilder {
 		self::TABLE_TOKENS,
 		self::TABLE_GSSHARES,
 		self::TABLE_GSSHARES_MOUNTPOINT,
+		self::TABLE_MEMBERSHIP,
 		self::TABLE_REMOTE,
 		self::TABLE_REMOTE_WRAPPER,
 	];

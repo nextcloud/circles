@@ -391,6 +391,26 @@ class Member extends ManagedModel implements IMember, INC21Convert, INC21QueryRo
 
 
 	/**
+	 * @param Member $member
+	 *
+	 * @return bool
+	 */
+	public function compareWith(Member $member): bool {
+		if ($this->getId() !== $member->getId()
+			|| $this->getCircleId() !== $member->getCircleId()
+			|| $this->getUserId() !== $member->getUserId()
+			|| $this->getUserType() <> $member->getUserType()
+			|| $this->getLevel() <> $member->getLevel()
+			|| $this->getStatus() !== $member->getStatus()
+			|| $this->getInstance() !== $member->getInstance()) {
+			return false;
+		}
+
+		return true;
+	}
+
+
+	/**
 	 * @param IMember $viewer
 	 *
 	 * @return self
@@ -432,21 +452,23 @@ class Member extends ManagedModel implements IMember, INC21Convert, INC21QueryRo
 	 * @return string[]
 	 */
 	public function jsonSerialize(): array {
-		return array_filter([
-			'id'            => $this->getId(),
-			'circle_id'     => $this->getCircleId(),
-			'user_id'       => $this->getUserId(),
-			'user_type'     => $this->getUserType(),
-			'instance'      => $this->getInstance(),
-			'level'         => $this->getLevel(),
-			'status'        => $this->getStatus(),
-			'cached_name'   => $this->getCachedName(),
-			'cached_update' => $this->getCachedUpdate(),
-			'note'          => $this->getNote(),
-			'contact_id'    => $this->getContactId(),
-			'contact_meta'  => $this->getContactMeta(),
-			'joined'        => $this->getJoined()
-		]);
+		return array_filter(
+			[
+				'id'            => $this->getId(),
+				'circle_id'     => $this->getCircleId(),
+				'user_id'       => $this->getUserId(),
+				'user_type'     => $this->getUserType(),
+				'instance'      => $this->getInstance(),
+				'level'         => $this->getLevel(),
+				'status'        => $this->getStatus(),
+				'cached_name'   => $this->getCachedName(),
+				'cached_update' => $this->getCachedUpdate(),
+				'note'          => $this->getNote(),
+				'contact_id'    => $this->getContactId(),
+				'contact_meta'  => $this->getContactMeta(),
+				'joined'        => $this->getJoined()
+			]
+		);
 	}
 
 
@@ -491,5 +513,5 @@ class Member extends ManagedModel implements IMember, INC21Convert, INC21QueryRo
 		return $this;
 	}
 
-
 }
+

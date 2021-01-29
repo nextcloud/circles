@@ -32,16 +32,13 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 
+use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Logger;
 use Exception;
-use OCA\Circles\Db\DeprecatedCirclesRequest;
-use OCA\Circles\Db\GSEventsRequest;
-use OCA\Circles\Exceptions\CircleDoesNotExistException;
-use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
-use OCA\Circles\Exceptions\GlobalScaleDSyncException;
-use OCA\Circles\Exceptions\GlobalScaleEventException;
-use OCA\Circles\Exceptions\GSKeyException;
-use OCA\Circles\Model\GlobalScale\GSEvent;
-use OCP\IURLGenerator;
+use OCA\Circles\Db\CircleRequest;
+use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteEventException;
+use OCA\Circles\Model\Remote\RemoteEvent;
 
 
 /**
@@ -52,110 +49,140 @@ use OCP\IURLGenerator;
 class RemoteDownstreamService {
 
 
-	/** @var string */
-	private $userId = '';
+	use TNC21Logger;
 
-	/** @var IURLGenerator */
-	private $urlGenerator;
 
-	/** @var GSEventsRequest */
-	private $remoteWrapperRequest;
+//	/** @var GlobalScaleService */
+//	private $globalScaleService;
+//
+//	/** @var ConfigService */
+//	private $configService;
+//
 
-	/** @var DeprecatedCirclesRequest */
-	private $circlesRequest;
 
-	/** @var GlobalScaleService */
-	private $globalScaleService;
+	/** @var CircleRequest */
+	private $circleRequest;
 
-	/** @var ConfigService */
-	private $configService;
-
-	/** @var MiscService */
-	private $miscService;
+	/** @var RemoteEventService */
+	private $remoteEventService;
 
 
 	/**
-	 * GSUpstreamService constructor.
+	 * RemoteDownstreamService constructor.
 	 *
-	 * @param $userId
-	 * @param IURLGenerator $urlGenerator
-	 * @param GSEventsRequest $remoteWrapperRequest
-	 * @param DeprecatedCirclesRequest $circlesRequest
-	 * @param GlobalScaleService $globalScaleService
+	 * @param CircleRequest $circleRequest
+	 * @param RemoteEventService $remoteEventService
 	 * @param ConfigService $configService
-	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$userId,
-		IURLGenerator $urlGenerator,
-		GSEventsRequest $remoteWrapperRequest,
-		DeprecatedCirclesRequest $circlesRequest,
-		GlobalScaleService $globalScaleService,
-		ConfigService $configService,
-		MiscService $miscService
+		CircleRequest $circleRequest,
+		RemoteEventService $remoteEventService,
+		ConfigService $configService
 	) {
-		$this->userId = $userId;
-		$this->urlGenerator = $urlGenerator;
-		$this->remoteWrapperRequest = $remoteWrapperRequest;
-		$this->circlesRequest = $circlesRequest;
-		$this->globalScaleService = $globalScaleService;
-		$this->configService = $configService;
-		$this->miscService = $miscService;
+		$this->setup('app', 'circles');
+
+		$this->circleRequest = $circleRequest;
+		$this->remoteEventService = $remoteEventService;
+//		$this->configService = $configService;
 	}
 
 
+//
+//
+//	/**
+//	 * @param GSEvent $event
+//	 *
+//	 * @throws CircleDoesNotExistException
+//	 * @throws ConfigNoCircleAvailableException
+//	 * @throws GSKeyException
+//	 * @throws GlobalScaleDSyncException
+//	 * @throws GlobalScaleEventException
+//	 */
+//	public function statusEvent(GSEvent $event) {
+//		$this->globalScaleService->checkEvent($event);
+//
+//		$gs = $this->globalScaleService->getGlobalScaleEvent($event);
+//		$gs->verify($event, false);
+//		$gs->manage($event);
+//	}
+//
+
+
 	/**
-	 * @param GSEvent $event
+	 * @param RemoteEvent $event
 	 *
-	 * @throws GSKeyException
-	 * @throws GlobalScaleEventException
-	 * @throws CircleDoesNotExistException
-	 * @throws ConfigNoCircleAvailableException
-	 * @throws GlobalScaleDSyncException
+	 * @throws RemoteEventException
 	 */
-	public function requestedEvent(GSEvent $event) {
-		$this->globalScaleService->checkEvent($event);
+	public function requestedEvent(RemoteEvent $event) {
+//		$gs = $this->remoteEventService->getRemoteEvent($event);
+//		if (!$this->remoteEventService->isLocalEvent($event)) {
+//			return;
+//		}
+//
+//		$gs->verify($event);
+//
+//		if (!$event->isAsync()) {
+//			$gs->manage($event);
+//		}
 
-		$gs = $this->globalScaleService->getGlobalScaleEvent($event);
-		$gs->verify($event, true);
-
-		if (!$event->isAsync()) {
-			$gs->manage($event);
-		}
-
-		$this->globalScaleService->asyncBroadcast($event);
+//		$this->globalScaleService->asyncBroadcast($event);
 	}
 
 
 	/**
-	 * @param GSEvent $event
+	 * @param RemoteEvent $event
 	 *
-	 * @throws CircleDoesNotExistException
-	 * @throws ConfigNoCircleAvailableException
-	 * @throws GSKeyException
-	 * @throws GlobalScaleDSyncException
-	 * @throws GlobalScaleEventException
+	 * @return array
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteEventException
 	 */
-	public function statusEvent(GSEvent $event) {
-		$this->globalScaleService->checkEvent($event);
+	public function incomingEvent(RemoteEvent $event): array {
+		$this->verifyCircle($event);
+		$this->verifyOriginEvent($event);
+		$result = [];
 
-		$gs = $this->globalScaleService->getGlobalScaleEvent($event);
-		$gs->verify($event, false);
-		$gs->manage($event);
-	}
+		\OC::$server->getLogger()->log(3, 'EVENT: ' . json_encode($event));
 
-
-	/**
-	 * @param GSEvent $event
-	 */
-	public function onNewEvent(GSEvent $event) {
 		try {
-			$this->globalScaleService->checkEvent($event);
-
-			$gs = $this->globalScaleService->getGlobalScaleEvent($event);
+			$gs = $this->remoteEventService->getRemoteEvent($event);
 			$gs->manage($event);
 		} catch (Exception $e) {
-			$this->miscService->log('issue onNewEvent: ' . json_encode($event) . ' - ' . $e->getMessage());
+			$this->e($e, ['event' => $event]);
+		}
+
+		return $result;
+	}
+
+
+	/**
+	 * @param RemoteEvent $event
+	 */
+	private function verifyCircle(RemoteEvent $event): void {
+		$circle = $event->getCircle();
+		try {
+			$localCircle = $this->circleRequest->getCircle($circle->getId());
+		} catch (CircleNotFoundException $e) {
+			return;
+		}
+
+		if (!$localCircle->compareWith($circle)) {
+			return;
+		}
+
+		$event->setVerifiedCircle(true);
+	}
+
+
+	/**
+	 * @param RemoteEvent $event
+	 *
+	 * @throws RemoteEventException
+	 * @throws OwnerNotFoundException
+	 */
+	private function verifyOriginEvent(RemoteEvent $event): void {
+		if ($event->getIncomingOrigin() !== $event->getCircle()->getInstance()) {
+			$this->debug('invalid origin', ['event' => $event]);
+			throw new RemoteEventException('invalid origin');
 		}
 	}
 

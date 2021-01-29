@@ -43,15 +43,20 @@ use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
 use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
+use Exception;
 use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\DeprecatedMembersRequest;
 use OCA\Circles\Db\RemoteWrapperRequest;
 use OCA\Circles\Exceptions\GSStatusException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\GlobalScale\CircleStatus;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\GlobalScale\GSWrapper;
 use OCA\Circles\Model\Remote\RemoteEvent;
+use OCA\Circles\Model\Remote\RemoteInstance;
 use OCA\Circles\Model\Remote\RemoteWrapper;
 use OCP\IURLGenerator;
 
@@ -117,7 +122,7 @@ class RemoteUpstreamService {
 		try {
 			$this->broadcastEvent($wrapper->getEvent(), $wrapper->getInstance());
 			$status = GSWrapper::STATUS_DONE;
-		} catch (RequestNetworkException $e) {
+		} catch (Exception $e) {
 		}
 
 		if ($wrapper->getSeverity() === GSEvent::SEVERITY_HIGH) {
@@ -137,22 +142,31 @@ class RemoteUpstreamService {
 	 * @throws RequestNetworkException
 	 * @throws SignatoryException
 	 * @throws SignatureException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws UnknownRemoteException
 	 */
 	public function broadcastEvent(RemoteEvent $event, string $instance): void {
-		if ($this->configService->isLocalInstance($instance)) {
-			$request = new NC21Request('', Request::TYPE_POST);
-			$this->configService->configureRequest($request, 'circles.RemoteWrapper.broadcast');
-		} else {
-			$path = $this->urlGenerator->linkToRoute('circles.RemoteWrapper.broadcast');
-			$request = new NC21Request($path, Request::TYPE_POST);
-			$this->configService->configureRequest($request);
-			$request->setInstance($instance);
-		}
+//		if ($this->configService->isLocalInstance($instance)) {
+//			$request = new NC21Request('', Request::TYPE_POST);
+//			$this->configService->configureRequest($request, 'circles.RemoteWrapper.broadcast');
+//		} else {
+//			$path = $this->urlGenerator->linkToRoute('circles.RemoteWrapper.broadcast');
+//			$request = new NC21Request($path, Request::TYPE_POST);
+//			$this->configService->configureRequest($request);
+//			$request->setInstance($instance);
+//		}
 
-		$request->setDataSerialize($event);
+//		$request->setDataSerialize($event);
 
-		$data = $this->remoteService->signAndRetrieveJson($request);
-		$event->setResult(new SimpleDataStore($this->getArray('result', $data, [])));
+		$data = $this->remoteService->requestRemoteInstance(
+			$instance,
+			RemoteInstance::INCOMING,
+			Request::TYPE_POST,
+			$event
+		);
+
+		$event->setResult(new SimpleDataStore($this->getArray('incoming', $data, [])));
 	}
 
 

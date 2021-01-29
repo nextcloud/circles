@@ -35,9 +35,15 @@ use daita\MySmallPhpTools\Exceptions\InvalidOriginException;
 use daita\MySmallPhpTools\Exceptions\MalformedArrayException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Exceptions\SignatureException;
+use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21SignedRequest;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Controller;
 use Exception;
 use OCA\Circles\Db\CircleRequest;
+use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Model\Remote\RemoteEvent;
+use OCA\Circles\Model\Remote\RemoteInstance;
+use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\RemoteDownstreamService;
 use OCA\Circles\Service\RemoteService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\DataResponse;
@@ -61,14 +67,70 @@ class RemoteController extends Controller {
 	/** @var RemoteService */
 	private $remoteService;
 
+	/** @var RemoteDownstreamService */
+	private $remoteDownstreamService;
 
+	/** @var ConfigService */
+	private $configService;
+
+
+	/**
+	 * RemoteController constructor.
+	 *
+	 * @param string $appName
+	 * @param IRequest $request
+	 * @param CircleRequest $circleRequest
+	 * @param RemoteService $remoteService
+	 * @param RemoteDownstreamService $remoteDownstreamService
+	 * @param ConfigService $configService
+	 */
 	public function __construct(
-		string $appName, IRequest $request, CircleRequest $circleRequest, RemoteService $remoteService
+		string $appName, IRequest $request, CircleRequest $circleRequest, RemoteService $remoteService,
+		RemoteDownstreamService $remoteDownstreamService, ConfigService $configService
 	) {
 		parent::__construct($appName, $request);
-
 		$this->circleRequest = $circleRequest;
 		$this->remoteService = $remoteService;
+		$this->remoteDownstreamService = $remoteDownstreamService;
+		$this->configService = $configService;
+
+		$this->setup('app', 'circles');
+	}
+
+
+	/**
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 *
+	 * @return DataResponse
+	 */
+	public function event(): DataResponse {
+		try {
+			$event = $this->extractEventFromRequest();
+			$result = $this->remoteDownstreamService->incomingEvent($event);
+
+			return $this->success($result);
+		} catch (Exception $e) {
+			return $this->fail($e);
+		}
+	}
+
+
+	/**
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 *
+	 * @return DataResponse
+	 */
+	public function incoming(): DataResponse {
+		try {
+			$event = $this->extractEventFromRequest();
+			$result = $this->remoteDownstreamService->incomingEvent($event);
+
+			return $this->success($result);
+		} catch (Exception $e) {
+			return $this->fail($e);
+		}
 	}
 
 
@@ -82,33 +144,61 @@ class RemoteController extends Controller {
 	 * @throws SignatoryException
 	 * @throws SignatureException
 	 */
-	public function test() {
-		return $this->successObj($this->remoteService->incomingTest());
+	public function test(): DataResponse {
+		$test = $this->remoteService->incomingSignedRequest($this->configService->getLocalInstance());
+
+		return $this->successObj($test);
 	}
 
 
 	/**
 	 * @PublicPage
 	 * @NoCSRFRequired
-	 * @SignedRequest(signatory=toto)
+	 *
+	 * @return DataResponse
 	 */
-	public function incoming() {
-		try {
-			return $this->success([]);
-		} catch (Exception $e) {
-			return $this->fail($e);
+	public function circles(): DataResponse {
+		$circles = $this->circleRequest->getFederated();
+
+		return $this->success($circles, false);
+	}
+
+
+	/**
+	 * @param NC21SignedRequest $signedRequest
+	 *
+	 * @throws SignatoryException
+	 */
+	private function confirmRemoteInstance(NC21SignedRequest $signedRequest) {
+		$signatory = $signedRequest->getSignatory();
+		if (!$signatory instanceof RemoteInstance
+			|| $signatory->getType() === RemoteInstance::TYPE_UNKNOWN) {
+			$this->debug('Could not confirm identity', ['signedRequest' => $signedRequest]);
+			throw new SignatoryException('could not confirm identity');
 		}
 	}
 
 
 	/**
-	 * @PublicPage
-	 * @NoCSRFRequired
+	 * @throws InvalidOriginException
+	 * @throws MalformedArrayException
+	 * @throws SignatoryException
+	 * @throws SignatureException
+	 * @throws CircleNotFoundException
 	 */
-	public function circles() {
-		$circles = $this->circleRequest->getFederated();
+	private function extractEventFromRequest(): RemoteEvent {
+		$signed = $this->remoteService->incomingSignedRequest($this->configService->getLocalInstance());
+		$this->confirmRemoteInstance($signed);
 
-		return $this->success($circles, false);
+		$event = new RemoteEvent();
+		$event->import(json_decode($signed->getBody(), true));
+		$event->setIncomingOrigin($signed->getOrigin());
+
+		if (!$event->hasCircle()) {
+			throw new CircleNotFoundException('Event contains no Circle');
+		}
+
+		return $event;
 	}
 
 }

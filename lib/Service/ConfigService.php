@@ -62,6 +62,7 @@ class ConfigService {
 	const CIRCLES_TEST_ASYNC_INIT = 'test_async_init';
 	const CIRCLES_TEST_ASYNC_HAND = 'test_async_hand';
 	const CIRCLES_TEST_ASYNC_COUNT = 'test_async_count';
+
 	const LOCAL_CLOUD_ID = 'local_cloud_id';
 	const LOCAL_CLOUD_SCHEME = 'local_cloud_scheme';
 	const FORCE_NC_BASE = 'force_nc_base';
@@ -550,7 +551,7 @@ class ConfigService {
 	 * - returns host+port, does not specify any protocol
 	 * - can be forced using LOCAL_CLOUD_ID
 	 * - use 'overwrite.cli.url'
-	 * - can use the first entry from trusted_domains is LOCAL_CLOUD_ID = 'use-trusted-domain'
+	 * - can use the first entry from trusted_domains if LOCAL_CLOUD_ID = 'use-trusted-domain'
 	 * - used mainly to assign instance and source to a request
 	 * - important only in remote environment; can be totally random in a jailed environment
 	 *
@@ -636,6 +637,8 @@ class ConfigService {
 
 		$request->setVerifyPeer($this->getAppValue(ConfigService::CIRCLES_SELF_SIGNED) !== '1');
 		$request->setLocalAddressAllowed(true);
+		$request->setFollowLocation(true);
+		$request->setTimeout(5);
 	}
 
 	/**

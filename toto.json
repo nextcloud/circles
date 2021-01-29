@@ -1,0 +1,31 @@
+{
+  "body": "{\"class\":\"OCA\\\\\\\\Circles\\\\\\\\RemoteEvents\\\\\\\\CircleCreate\",\"severity\":1,\"data\":[],\"result\":[],\"source\":\"nc21.local\",\"async\":false,\"circle\":{\"id\":\"r2rqe7VDv7ClhB\",\"name\":\"test a001\",\"owner\":{\"id\":\"P3lN4vCdT7s56v\",\"circle_id\":\"r2rqe7VDv7ClhB\",\"user_id\":\"test1\",\"user_type\":1,\"instance\":\"nc21.local\",\"level\":9,\"status\":\"Member\"}}}",
+  "time": 1611841230,
+  "incomingRequest": true,
+  "outgoingRequest": false,
+  "origin": "nc21.local",
+  "digest": "SHA-256=CDOKzqUEWWarHileqZw5QAj0pnTcTfPI6TS9hIR9aKw=",
+  "signatureHeader": {
+    "keyId": "http:\\/\\/nc21.local\\/index.php\\/apps\\/circles\\/#main-key",
+    "algorithm": "ras-sha256",
+    "headers": "content-length date digest host",
+    "signature": "p1AyDnx\\/sXvgnOJY\\/lQq4LnJCZyJVYmGDSRGfbD1N1M7kmHa9mrehJEv6Hb\\/aTlcFywtuc15AtOBTMc7UAmXmQNMgxjlZF+tx5iLyvTOeiAznKlrnzZlBsR\\/CjXZZnwh5Skz6lW+jEHeTm1R98djc70FvGt9iftEnedmlruCOhqybfscRweWymk1ofIcOU4nApb8AbTLaEK\\/vU+V71rIOL4WNN5fRuL6jIDsgOC5qOgnjwvrBbiaXdjfB\\/UCyopgSCsez845hIMmYr3\\/cifXKie9IQCtc+yPn+MsR15PjtYEYtZgKZzwe7pD7UIjWydu96heE8EkTwBfcDUdEdkLJg=="
+  },
+  "host": "nc21b.local",
+  "clearSignature": "(request-target): post \\/index.php\\/apps\\/circles\\/incoming\\ncontent-length: 320\\ndate: Thu, 28 Jan 2021 13:40:30 GMT\\ndigest: SHA-256=CDOKzqUEWWarHileqZw5QAj0pnTcTfPI6TS9hIR9aKw=\\nhost: nc21b.local",
+  "signedSignature": "cDFBeURueC9zWHZnbk9KWS9sUXE0TG5KQ1p5SlZZbUdEU1JHZmJEMU4xTTdrbUhhOW1yZWhKRXY2SGIvYVRsY0Z5d3R1YzE1QXRPQlRNYzdVQW1YbVFOTWd4amxaRit0eDVpTHl2VE9laUF6bktscm56WmxCc1IvQ2pYWlpud2g1U2t6NmxXK2pFSGVUbTFSOThkamM3MEZ2R3Q5aWZ0RW5lZG1scnVDT2hxeWJmc2NSd2VXeW1rMW9mSWNPVTRuQXBiOEFiVExhRUsvdlUrVjcxcklPTDRXTk41ZlJ1TDZqSURzZ09DNXFPZ25qd3ZyQmJpYVhkamZCL1VDeW9wZ1NDc2V6ODQ1aElNbVlyMy9jaWZYS2llOUlRQ3RjK3lQbitNc1IxNVBqdFlFWXRaZ0taendlN3BEN1VJald5ZHU5NmhlRThFa1R3QmZjRFVkRWRrTEpnPT0=",
+  "signatory": {
+    "uid": "b3c33301d2abfcffb1",
+    "event": "http:\\/\\/nc21.local\\/index.php\\/apps\\/circles\\/event",
+    "incoming": "http:\\/\\/nc21.local\\/index.php\\/apps\\/circles\\/incoming",
+    "test": "http:\\/\\/nc21.local\\/index.php\\/apps\\/circles\\/test",
+    "circles": "http:\\/\\/nc21.local\\/index.php\\/apps\\/circles\\/circles",
+    "members": "http:\\/\\/nc21.local\\/index.php\\/apps\\/circles\\/members",
+    "id": "http:\\/\\/nc21.local\\/index.php\\/apps\\/circles\\/",
+    "publicKey": {
+      "id": "http:\\/\\/nc21.local\\/index.php\\/apps\\/circles\\/#main-key",
+      "owner": "http:\\/\\/nc21.local\\/index.php\\/apps\\/circles\\/",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAs1GpOMasuhQvRih7xFdj\\nwnBqLSjjYvJ4C5Q23za9R+u1aipsmNnbq2EmiIagevRrxzIKpWmegndSZ7ZaypR9\\na5Bt3g8Wj+FzRbvPlW6wSNzVEOE6lmx9BhQndEWgtXuFXaXvwHhYLlr5c4O1VVYp\\nj+cZG\\/D9PaDhsvVvWh\\/FhvPc+5JzEb41YPervvGVaYGb5N+LOZrfa1bqPVBypWIX\\nSH9QloEJpgvovGi3jAtWFhTyU4FI6CWYgdGC5hqFfLOlb2m8sFJs7ZF\\/LH1guMWz\\nq\\/54Zz64pTfHOlPw5UQ9hNs1ib+8lU2ylOSMgjOVS\\/F0cw1s8eE14jzmF43sO091\\nJQIDAQAB\\n-----END PUBLIC KEY-----\\n"
+    }
+  }
+}

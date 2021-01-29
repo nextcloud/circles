@@ -33,22 +33,27 @@ namespace OCA\Circles\Service;
 
 use daita\MySmallPhpTools\ActivityPub\Nextcloud\nc21\NC21Signature;
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
-use daita\MySmallPhpTools\Exceptions\InvalidOriginException;
-use daita\MySmallPhpTools\Exceptions\MalformedArrayException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Exceptions\SignatureException;
+use daita\MySmallPhpTools\Exceptions\WellKnownLinkNotFoundException;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
-use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21SignedRequest;
+use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Signatory;
+use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Convert;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21LocalSignatory;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21WellKnown;
 use daita\MySmallPhpTools\Traits\TStringTools;
+use JsonSerializable;
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\RemoteRequest;
+use OCA\Circles\Exceptions\RemoteAlreadyExistsException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RemoteUidException;
-use OCA\Circles\Model\AppService;
+use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Remote\RemoteInstance;
 use OCP\IURLGenerator;
 
 
@@ -63,6 +68,7 @@ class RemoteService extends NC21Signature {
 	use TNC21Convert;
 	use TNC21LocalSignatory;
 	use TStringTools;
+	use TNC21WellKnown;
 
 
 	const UPDATE_DATA = 'data';
@@ -99,26 +105,27 @@ class RemoteService extends NC21Signature {
 
 
 	/**
-	 * @param bool $generate
+	 * Returns the Signatory model for the Circles app.
+	 * Can be signed with a confirmKey.
 	 *
+	 * @param bool $generate
 	 * @param string $confirmKey
 	 *
-	 * @return AppService
+	 * @return RemoteInstance
 	 * @throws SignatoryException
-	 * @throws SignatureException
 	 */
-	public function getAppSignatory(bool $generate = false, string $confirmKey = ''): AppService {
-		$app = new AppService($this->configService->getRemotePath());
+	public function getAppSignatory(bool $generate = true, string $confirmKey = ''): RemoteInstance {
+		$app = new RemoteInstance($this->configService->getRemotePath());
 		$this->fillSimpleSignatory($app, $generate);
 		$app->setUidFromKey();
 
 		if ($confirmKey !== '') {
 			$app->setAuthSigned($this->signString($confirmKey, $app));
-			$this->verifyString($confirmKey, base64_decode($app->getAuthSigned()), $app->getPublicKey());
 		}
 
-		$app->setTest($this->configService->getRemotePath('circles.Remote.test'));
+		$app->setEvent($this->configService->getRemotePath('circles.Remote.event'));
 		$app->setIncoming($this->configService->getRemotePath('circles.Remote.incoming'));
+		$app->setTest($this->configService->getRemotePath('circles.Remote.test'));
 		$app->setCircles($this->configService->getRemotePath('circles.Remote.circles'));
 		$app->setMembers($this->configService->getRemotePath('circles.Remote.members'));
 
@@ -127,8 +134,9 @@ class RemoteService extends NC21Signature {
 		return $app;
 	}
 
+
 	/**
-	 * @throws SignatureException
+	 * Reset the Signatory (and the Identity) for the Circles app.
 	 */
 	public function resetAppSignatory(): void {
 		try {
@@ -141,62 +149,8 @@ class RemoteService extends NC21Signature {
 
 
 	/**
-	 * @param NC21Request $request
+	 * TODO: might move this out from this class
 	 *
-	 * @return array
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
-	 * @throws SignatureException
-	 */
-	public function signAndRetrieveJson(NC21Request $request): array {
-		// TODO: Check outgoing instance from DB to confirm the current status.
-		// TODO: If instance is not known, check from LUS. Update DB with right status
-		// TODO: If instance is not known and not in GS, cancel.
-		// TODO: Instance can be thrusty (don't care about the Auth) or not
-		$signedRequest = $this->signOutgoingRequest($request, $this->getAppSignatory());
-
-		return $this->retrieveJson($signedRequest->getOutgoingRequest());
-	}
-
-
-	/**
-	 * @param string $remote
-	 * @param array $data
-	 *
-	 * @return NC21SignedRequest
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
-	 * @throws SignatureException
-	 */
-	public function outgoingTest(string $remote, array $data = ['test' => 42]): NC21SignedRequest {
-		$request = new NC21Request();
-		$request->basedOnUrl($remote);
-		$request->setFollowLocation(true);
-		$request->setLocalAddressAllowed(true);
-		$request->setTimeout(5);
-		$request->setData($data);
-
-		$app = $this->getAppSignatory();
-//		$app->setAlgorithm(NC21Signatory::SHA512);
-		$signedRequest = $this->signOutgoingRequest($request, $app);
-		$this->doRequest($signedRequest->getOutgoingRequest());
-
-		return $signedRequest;
-	}
-
-	/**
-	 * @return NC21SignedRequest
-	 * @throws InvalidOriginException
-	 * @throws MalformedArrayException
-	 * @throws SignatoryException
-	 * @throws SignatureException
-	 */
-	public function incomingTest(): NC21SignedRequest {
-		return $this->incomingSignedRequest($this->configService->getLocalInstance());
-	}
-
-
-	/**
 	 * @param string $instance
 	 *
 	 * @return Circle[]
@@ -206,34 +160,64 @@ class RemoteService extends NC21Signature {
 	 * @throws SignatoryException
 	 * @throws SignatureException
 	 * @throws InvalidItemException
+	 * @throws UnknownRemoteException
 	 */
 	public function getCircles(string $instance): array {
-		$circles = $this->requestRemoteResource($instance, 'circles');
+		$circles = $this->requestRemoteInstance($instance, RemoteInstance::CIRCLES);
 
 		return $this->convertArray($circles, Circle::class);
 	}
 
 
 	/**
+	 * Send a request to a remote instance, based on:
+	 * - instance: address as saved in database,
+	 * - item: the item to request (incoming, event, ...)
+	 * - type: GET, POST
+	 * - data: Serializable to be send if needed
+	 *
 	 * @param string $instance
 	 * @param string $item
+	 * @param int $type
+	 * @param JsonSerializable|null $object
 	 *
 	 * @return array
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
 	 * @throws RequestNetworkException
 	 * @throws SignatoryException
-	 * @throws SignatureException
+	 * @throws UnknownRemoteException
 	 */
-	public function requestRemoteResource(string $instance, string $item): array {
-		$link = $this->getRemoteEntry($instance, $item);
+	public function requestRemoteInstance(
+		string $instance,
+		string $item,
+		int $type = Request::TYPE_GET,
+		?JsonSerializable $object = null
+	): array {
 
-		$request = new NC21Request();
-		$request->basedOnUrl($link);
-		$request->setFollowLocation(true);
-		$request->setLocalAddressAllowed(true);
-		$request->setTimeout(5);
-//		$request->setData($data);
+		$request = new NC21Request('', $type);
+		if ($this->configService->isLocalInstance($instance)) {
+			$this->configService->configureRequest($request, 'circles.Remote.' . $item);
+		} else {
+			$this->configService->configureRequest($request);
+			$link = $this->getRemoteInstanceEntry($instance, $item);
+			$request->basedOnUrl($link);
+		}
+
+		//		if ($this->configService->isLocalInstance($instance)) {
+//			$request = new NC21Request('', Request::TYPE_POST);
+//			$this->configService->configureRequest($request, 'circles.RemoteWrapper.broadcast');
+//		} else {
+//			$path = $this->urlGenerator->linkToRoute('circles.RemoteWrapper.broadcast');
+//			$request = new NC21Request($path, Request::TYPE_POST);
+//			$this->configService->configureRequest($request);
+//			$request->setInstance($instance);
+//		}
+
+
+		if (!is_null($object)) {
+			$request->setDataSerialize($object);
+		}
 
 		$app = $this->getAppSignatory();
 //		$app->setAlgorithm(NC21Signatory::SHA512);
@@ -244,28 +228,19 @@ class RemoteService extends NC21Signature {
 	}
 
 
-//
-//	public function outgoing(string $instance, string $route) {
-//		$this->retrieveSignatory()
-//	}
-
-
 	/**
+	 * get the value of an entry from the Signatory of the RemoteInstance.
+	 *
 	 * @param string $instance
 	 * @param string $item
 	 *
 	 * @return string
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
-	 * @throws SignatoryException
-	 * @throws SignatureException
+	 * @throws UnknownRemoteException
 	 */
-	public function getRemoteEntry(string $instance, string $item): string {
-		if ($this->configService->isLocalInstance($instance)) {
-			$remote = $this->getAppSignatory();
-		} else {
-			$remote = $this->remoteRequest->getFromInstance($instance);
-		}
+	private function getRemoteInstanceEntry(string $instance, string $item): string {
+		$remote = $this->getCachedRemoteInstance($instance);
 
 		$value = $this->get($item, $remote->getOrigData());
 		if ($value === '') {
@@ -277,48 +252,124 @@ class RemoteService extends NC21Signature {
 
 
 	/**
-	 * @param string $keyId
-	 * @param bool $refresh
-	 * @param bool $auth
+	 * get RemoteInstance with confirmed identity from database.
 	 *
-	 * @return AppService
-	 * @throws SignatoryException
-	 * @throws SignatureException
+	 * @param string $instance
+	 *
+	 * @return RemoteInstance
+	 * @throws RemoteNotFoundException
+	 * @throws UnknownRemoteException
 	 */
-	public function retrieveSignatory(string $keyId, bool $refresh = false, bool $auth = false): AppService {
-		if (!$refresh) {
-			//		 return	$this->retrieveCachedSignatory($keyId);
-			throw new SignatoryException();
+	private function getCachedRemoteInstance(string $instance): RemoteInstance {
+		$remoteInstance = $this->remoteRequest->getFromInstance($instance);
+
+		if ($remoteInstance->getType() === RemoteInstance::TYPE_UNKNOWN) {
+			throw new UnknownRemoteException($instance . ' could not confirm its identity');
 		}
 
-		$appService = new AppService($keyId);
-		$confirm = '';
-		$params = [];
-		if ($auth) {
-			$confirm = $this->uuid();
-			$params['auth'] = $confirm;
-		}
-
-		$this->downloadSignatory($appService, $keyId, $params);
-		$appService->setUidFromKey();
-
-		$this->confirmAuth($appService, $confirm);
-
-		return $appService;
+		return $remoteInstance;
 	}
 
 
 	/**
-	 * @param AppService $remote
+	 * Add a remote instance, based on the address
+	 *
+	 * @param string $instance
+	 *
+	 * @return RemoteInstance
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws SignatureException
+	 * @throws WellKnownLinkNotFoundException
+	 */
+	public function retrieveRemoteInstance(string $instance): RemoteInstance {
+		$resource = $this->getResourceData($instance, Application::APP_SUBJECT, Application::APP_REL);
+
+		$remoteInstance = $this->retrieveSignatory($resource->g('id'), true);
+		$remoteInstance->setInstance($instance);
+
+		return $remoteInstance;
+	}
+
+
+	/**
+	 * retrieve Signatory.
+	 *
+	 * @param string $keyId
+	 * @param bool $refresh
+	 *
+	 * @return RemoteInstance
+	 * @throws SignatoryException
+	 * @throws SignatureException
+	 */
+	public function retrieveSignatory(string $keyId, bool $refresh = true): RemoteInstance {
+		if (!$refresh) {
+			try {
+				return $this->remoteRequest->getFromHref(NC21Signatory::removeFragment($keyId));
+			} catch (RemoteNotFoundException $e) {
+				throw new SignatoryException();
+			}
+		}
+
+		$remoteInstance = new RemoteInstance($keyId);
+		$confirm = $this->uuid();
+
+		$this->downloadSignatory($remoteInstance, $keyId, ['auth' => $confirm]);
+		$remoteInstance->setUidFromKey();
+
+		$this->confirmAuth($remoteInstance, $confirm);
+
+		return $remoteInstance;
+	}
+
+
+	/**
+	 * Add a remote instance, based on the address
+	 *
+	 * @param string $instance
+	 * @param string $type
+	 * @param bool $overwrite
+	 *
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws SignatureException
+	 * @throws WellKnownLinkNotFoundException
+	 * @throws RemoteAlreadyExistsException
+	 * @throws RemoteUidException
+	 */
+	public function addRemoteInstance(
+		string $instance, string $type = RemoteInstance::TYPE_EXTERNAL, bool $overwrite = false
+	): void {
+		if ($this->configService->isLocalInstance($instance)) {
+			throw new RemoteAlreadyExistsException('instance is local');
+		}
+
+		$remoteInstance = $this->retrieveRemoteInstance($instance);
+		$remoteInstance->setType($type);
+
+		try {
+			$known = $this->remoteRequest->searchDuplicate($remoteInstance);
+			if ($overwrite) {
+				$this->remoteRequest->deleteById($known);
+			} else {
+				throw new RemoteAlreadyExistsException('instance is already known');
+			}
+		} catch (RemoteNotFoundException $e) {
+		}
+
+		$this->remoteRequest->save($remoteInstance);
+	}
+
+
+	/**
+	 * Confirm the Auth of a RemoteInstance, based on the result from a request
+	 *
+	 * @param RemoteInstance $remote
 	 * @param string $auth
 	 *
 	 * @throws SignatureException
 	 */
-	private function confirmAuth(AppService $remote, string $auth): void {
-		if ($auth === '') {
-			return;
-		}
-
+	private function confirmAuth(RemoteInstance $remote, string $auth): void {
 		list($algo, $signed) = explode(':', $this->get('auth-signed', $remote->getOrigData()));
 		try {
 			if ($signed === null) {
@@ -327,23 +378,25 @@ class RemoteService extends NC21Signature {
 			$this->verifyString($auth, base64_decode($signed), $remote->getPublicKey(), $algo);
 			$remote->setIdentityAuthed(true);
 		} catch (SignatureException $e) {
-			$this->debug(
-				'Auth cannot be confirmed',
-				['auth' => $auth, 'signed' => $signed, 'signatory' => $remote]
+			$this->e(
+				$e,
+				['auth' => $auth, 'signed' => $signed, 'signatory' => $remote, 'msg' => 'auth not confirmed']
 			);
-			throw $e;
+			throw new SignatureException('auth not confirmed');
 		}
 	}
 
 
 	/**
-	 * @param AppService $remote
-	 * @param AppService|null $stored
+	 * TODO: confirm if method is really needed
+	 *
+	 * @param RemoteInstance $remote
+	 * @param RemoteInstance|null $stored
 	 *
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteUidException
 	 */
-	public function confirmValidRemote(AppService $remote, ?AppService &$stored = null): void {
+	public function confirmValidRemote(RemoteInstance $remote, ?RemoteInstance &$stored = null): void {
 		try {
 			$stored = $this->remoteRequest->getFromHref($remote->getId());
 		} catch (RemoteNotFoundException $e) {
@@ -361,31 +414,24 @@ class RemoteService extends NC21Signature {
 
 
 	/**
-	 * @param AppService $remote
-	 */
-	public function save(AppService $remote): void {
-		$this->remoteRequest->save($remote);
-	}
-
-	/**
-	 * @param AppService $remote
+	 * TODO: check if this method is not useless
+	 *
+	 * @param RemoteInstance $remote
 	 * @param string $update
 	 *
 	 * @throws RemoteUidException
 	 */
-	public function update(AppService $remote, string $update = self::UPDATE_DATA): void {
+	public function update(RemoteInstance $remote, string $update = self::UPDATE_DATA): void {
 		switch ($update) {
 			case self::UPDATE_DATA:
 				$this->remoteRequest->update($remote);
 				break;
 
 			case self::UPDATE_HREF:
-				$remote->mustBeIdentityAuthed();
 				$this->remoteRequest->updateHref($remote);
 				break;
 
 			case self::UPDATE_INSTANCE:
-				$remote->mustBeIdentityAuthed();
 				$this->remoteRequest->updateInstance($remote);
 				break;
 		}

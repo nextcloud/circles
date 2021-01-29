@@ -103,6 +103,13 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 					]
 			);
 			$table->addColumn(
+				'type', 'string', [
+						  'notnull' => true,
+						  'length'  => 15,
+						  'default' => 'Unknown'
+					  ]
+			);
+			$table->addColumn(
 				'uid', 'string', [
 						 'notnull' => false,
 						 'length'  => 20,
@@ -138,15 +145,35 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 		}
 
 		if (!$schema->hasTable('circle_memberships')) {
-//			$table = $schema->createTable('circle_memberships');
-//			$table->addColumn(
-//				'id', 'string', [
-//						 'notnull' => false,
-//						 'length'  => 15,
-//					 ]
-//			);
+			$table = $schema->createTable('circle_memberships');
 
-//			$table->setIndex(['id']);
+			$table->addColumn(
+				'id', 'string', [
+						'notnull' => true,
+						'length'  => 15,
+					]
+			);
+			$table->addColumn(
+				'circle_id', 'string', [
+							   'notnull' => true,
+							   'length'  => 15,
+						   ]
+			);
+			$table->addColumn(
+				'member_id', 'string', [
+							   'notnull' => true,
+							   'length'  => 15,
+						   ]
+			);
+			$table->addColumn(
+				'level', 'integer', [
+						   'notnull'  => true,
+						   'length'   => 1,
+						   'unsigned' => true
+					   ]
+			);
+
+			$table->addIndex(['id']);
 		}
 
 		return $schema;

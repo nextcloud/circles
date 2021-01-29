@@ -30,27 +30,15 @@
 namespace OCA\Circles\Service;
 
 
-use daita\MySmallPhpTools\Exceptions\RequestContentException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
-use daita\MySmallPhpTools\Exceptions\RequestResultSizeException;
-use daita\MySmallPhpTools\Exceptions\RequestServerException;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
 use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
 use daita\MySmallPhpTools\Traits\TStringTools;
-use OC;
 use OC\Security\IdentityProof\Signer;
-use OC\User\NoUserException;
 use OCA\Circles\Db\RemoteWrapperRequest;
-use OCA\Circles\Exceptions\GlobalScaleEventException;
-use OCA\Circles\Exceptions\GSKeyException;
 use OCA\Circles\Exceptions\GSStatusException;
-use OCA\Circles\GlobalScale\AGlobalScaleEvent;
-use OCA\Circles\Model\GlobalScale\GSEvent;
-use OCA\Circles\Model\GlobalScale\GSWrapper;
-use OCP\AppFramework\QueryException;
 use OCP\IURLGenerator;
-use OCP\IUser;
 use OCP\IUserManager;
 use OCP\IUserSession;
 
@@ -120,132 +108,157 @@ class GlobalScaleService {
 
 
 	/**
-	 * @param GSEvent $event
-	 *
-	 * @return string
+	 * @return array
 	 */
-	public function asyncBroadcast(GSEvent $event): string {
-		$wrapper = new GSWrapper();
-		$wrapper->setEvent($event);
-		$wrapper->setToken($this->uuid());
-		$wrapper->setCreation(time());
-		$wrapper->setSeverity($event->getSeverity());
-
-		foreach ($this->getInstances($event->isAsync()) as $instance) {
-			$wrapper->setInstance($instance);
-			$wrapper = $this->remoteWrapperRequest->create($wrapper);
-		}
-
-		$request = new NC21Request('', Request::TYPE_POST);
-		$this->configService->configureRequest(
-			$request, 'circles.RemoteWrapper.asyncBroadcast', ['token' => $wrapper->getToken()]
-		);
-
+	public function getGlobalScaleInstances(): array {
+		return ['nc21.local', 'nc21b.local', 'nc21c.local'];
 		try {
-			$this->doRequest($request);
-		} catch (RequestContentException | RequestNetworkException | RequestResultSizeException | RequestServerException $e) {
-			$this->miscService->e($e);
-		}
+			$lookup = $this->configService->getGSStatus(ConfigService::GS_LOOKUP);
+			$request = new NC21Request(ConfigService::GS_LOOKUP_INSTANCES, Request::TYPE_POST);
+			$this->configService->configureRequest($request);
+			$request->basedOnUrl($lookup);
+			$request->addData('authKey', $this->configService->getGSStatus(ConfigService::GS_KEY));
 
-		return $wrapper->getToken();
-	}
-
-
-	/**
-	 * @param GSEvent $event
-	 *
-	 * @return AGlobalScaleEvent
-	 * @throws GlobalScaleEventException
-	 */
-	public function getGlobalScaleEvent(GSEvent $event): AGlobalScaleEvent {
-		$class = $this->getClassNameFromEvent($event);
-		try {
-			$gs = OC::$server->query($class);
-			if (!$gs instanceof AGlobalScaleEvent) {
-				throw new GlobalScaleEventException($class . ' not an AGlobalScaleEvent');
+			try {
+				return $this->retrieveJson($request);
+			} catch (RequestNetworkException $e) {
+				$this->e($e, ['request' => $request]);
 			}
-
-			return $gs;
-		} catch (QueryException $e) {
-			throw new GlobalScaleEventException('AGlobalScaleEvent ' . $class . ' not found');
-		}
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getKey(): string {
-		try {
-			$key = $this->configService->getGSStatus(ConfigService::GS_KEY);
 		} catch (GSStatusException $e) {
-			$key = $this->configService->getAppValue(ConfigService::CIRCLES_LOCAL_GSKEY);
-			if ($key === '') {
-				$key = $this->token(31);
-				$this->configService->setAppValue(ConfigService::CIRCLES_LOCAL_GSKEY, $key);
-			}
 		}
 
-		return md5('gskey:' . $key);
-	}
-
-	/**
-	 * @param string $key
-	 *
-	 * @throws GSKeyException
-	 */
-	public function checkKey(string $key) {
-		if ($key !== $this->getKey()) {
-			throw new GSKeyException('invalid key');
-		}
+		return [];
 	}
 
 
-	/**
-	 * @param GSEvent $event
-	 *
-	 * @throws GSKeyException
-	 */
-	public function checkEvent(GSEvent $event): void {
-		$this->checkKey($event->getKey());
-	}
 
-
-	/**
-	 * @param GSEvent $event
-	 *
-	 * @return string
-	 * @throws GlobalScaleEventException
-	 */
-	private function getClassNameFromEvent(GSEvent $event): string {
-		$className = $event->getType();
-		if (substr($className, 0, 25) !== '\OCA\Circles\GlobalScale\\' || strpos($className, '.')) {
-			throw new GlobalScaleEventException(
-				$className . ' does not seems to be a secured AGlobalScaleEvent'
-			);
-		}
-
-		return $className;
-	}
-
-
-	/**
-	 * @return IUser
-	 * @throws NoUserException
-	 */
-	private function getRandomUser(): IUser {
-		$user = $this->userSession->getUser();
-		if ($user !== null) {
-			return $user;
-		}
-
-		$random = $this->userManager->search('', 1);
-		if (sizeof($random) > 0) {
-			return array_shift($random);
-		}
-
-		throw new NoUserException();
-	}
+//	/**
+//	 * @param GSEvent $event
+//	 *
+//	 * @return string
+//	 */
+//	public function asyncBroadcast(GSEvent $event): string {
+//		$wrapper = new GSWrapper();
+//		$wrapper->setEvent($event);
+//		$wrapper->setToken($this->uuid());
+//		$wrapper->setCreation(time());
+//		$wrapper->setSeverity($event->getSeverity());
+//
+//		foreach ($this->getInstances($event->isAsync()) as $instance) {
+//			$wrapper->setInstance($instance);
+//			$wrapper = $this->remoteWrapperRequest->create($wrapper);
+//		}
+//
+//		$request = new NC21Request('', Request::TYPE_POST);
+//		$this->configService->configureRequest(
+//			$request, 'circles.RemoteWrapper.asyncBroadcast', ['token' => $wrapper->getToken()]
+//		);
+//
+//		try {
+//			$this->doRequest($request);
+//		} catch (RequestContentException | RequestNetworkException | RequestResultSizeException | RequestServerException $e) {
+//			$this->miscService->e($e);
+//		}
+//
+//		return $wrapper->getToken();
+//	}
+//
+//
+//	/**
+//	 * @param GSEvent $event
+//	 *
+//	 * @return AGlobalScaleEvent
+//	 * @throws GlobalScaleEventException
+//	 */
+//	public function getGlobalScaleEvent(GSEvent $event): AGlobalScaleEvent {
+//		$class = $this->getClassNameFromEvent($event);
+//		try {
+//			$gs = OC::$server->query($class);
+//			if (!$gs instanceof AGlobalScaleEvent) {
+//				throw new GlobalScaleEventException($class . ' not an AGlobalScaleEvent');
+//			}
+//
+//			return $gs;
+//		} catch (QueryException $e) {
+//			throw new GlobalScaleEventException('AGlobalScaleEvent ' . $class . ' not found');
+//		}
+//	}
+//
+//
+//	/**
+//	 * @return string
+//	 */
+//	public function getKey(): string {
+//		try {
+//			$key = $this->configService->getGSStatus(ConfigService::GS_KEY);
+//		} catch (GSStatusException $e) {
+//			$key = $this->configService->getAppValue(ConfigService::CIRCLES_LOCAL_GSKEY);
+//			if ($key === '') {
+//				$key = $this->token(31);
+//				$this->configService->setAppValue(ConfigService::CIRCLES_LOCAL_GSKEY, $key);
+//			}
+//		}
+//
+//		return md5('gskey:' . $key);
+//	}
+//
+//	/**
+//	 * @param string $key
+//	 *
+//	 * @throws GSKeyException
+//	 */
+//	public function checkKey(string $key) {
+//		if ($key !== $this->getKey()) {
+//			throw new GSKeyException('invalid key');
+//		}
+//	}
+//
+//
+//	/**
+//	 * @param GSEvent $event
+//	 *
+//	 * @throws GSKeyException
+//	 */
+//	public function checkEvent(GSEvent $event): void {
+//		$this->checkKey($event->getKey());
+//	}
+//
+//
+//	/**
+//	 * @param GSEvent $event
+//	 *
+//	 * @return string
+//	 * @throws GlobalScaleEventException
+//	 */
+//	private function getClassNameFromEvent(GSEvent $event): string {
+//		$className = $event->getType();
+//		if (substr($className, 0, 25) !== '\OCA\Circles\GlobalScale\\' || strpos($className, '.')) {
+//			throw new GlobalScaleEventException(
+//				$className . ' does not seems to be a secured AGlobalScaleEvent'
+//			);
+//		}
+//
+//		return $className;
+//	}
+//
+//
+//	/**
+//	 * @return IUser
+//	 * @throws NoUserException
+//	 */
+//	private function getRandomUser(): IUser {
+//		$user = $this->userSession->getUser();
+//		if ($user !== null) {
+//			return $user;
+//		}
+//
+//		$random = $this->userManager->search('', 1);
+//		if (sizeof($random) > 0) {
+//			return array_shift($random);
+//		}
+//
+//		throw new NoUserException();
+//	}
 
 }
 

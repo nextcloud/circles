@@ -28,6 +28,7 @@ namespace OCA\Circles\Handlers;
 
 
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
+use daita\MySmallPhpTools\Exceptions\SignatureException;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use OC\URLGenerator;
 use OCA\Circles\AppInfo\Application;
@@ -83,6 +84,7 @@ class WebfingerHandler implements IHandler {
 	 * @param IResponse|null $response
 	 *
 	 * @return IResponse|null
+	 * @throws SignatureException
 	 */
 	public function handle(string $service, IRequestContext $context, ?IResponse $response): ?IResponse {
 		if ($service !== 'webfinger') {

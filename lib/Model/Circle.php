@@ -38,6 +38,7 @@ use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Convert;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use DateTime;
 use JsonSerializable;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
 
 
 /**
@@ -145,6 +146,9 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 
 	/** @var string */
 	private $contactGroupName = '';
+
+	/** @var string */
+	private $instance = '';
 
 //	/** @var bool */
 //	private $hidden = false;
@@ -340,6 +344,35 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 	 */
 	public function hasViewer(): bool {
 		return ($this->viewer !== null);
+	}
+
+	/**
+	 * @param string $instance
+	 *
+	 * @return Circle
+	 */
+	public function setInstance(string $instance): self {
+		if ($this->isConfig(self::CFG_NO_OWNER)) {
+			$this->instance = $instance;
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 * @throws OwnerNotFoundException
+	 */
+	public function getInstance(): string {
+		if ($this->isConfig(self::CFG_NO_OWNER)) {
+			return $this->instance;
+		}
+
+		if (!$this->hasOwner()) {
+			throw new OwnerNotFoundException('circle has no owner, or not set to have no owner');
+		}
+
+		return $this->getOwner()->getInstance();
 	}
 
 
@@ -544,6 +577,7 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 			 ->setName($this->get('name', $data))
 			 ->setAltName($this->get('alt_name', $data))
 			 ->setConfig($this->getInt('config', $data))
+			 ->setInstance($this->get('instance', $data))
 			 ->setSettings($this->getArray('settings', $data))
 			 ->setContactAddressBook($this->getInt('contact_addressbook', $data))
 			 ->setContactGroupName($this->get('contact_groupname', $data))
@@ -556,6 +590,27 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 		$this->getManager()->importViewerFromDatabase($this, $data);
 
 		return $this;
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 *
+	 * @return bool
+	 */
+	public function compareWith(Circle $circle): bool {
+		if ($this->getId() !== $circle->getId()
+			|| $this->getConfig() !== $circle->getConfig()) {
+			return false;
+		}
+
+		if ($this->hasOwner()
+			&& (!$circle->hasOwner()
+				|| !$this->getOwner()->compareWith($circle->getOwner()))) {
+			return false;
+		}
+
+		return true;
 	}
 
 }

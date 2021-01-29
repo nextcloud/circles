@@ -34,7 +34,7 @@ namespace OCA\Circles\Db;
 
 use daita\MySmallPhpTools\Exceptions\RowNotFoundException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
-use OCA\Circles\Model\AppService;
+use OCA\Circles\Model\Remote\RemoteInstance;
 
 
 /**
@@ -75,7 +75,7 @@ class RemoteRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function getRemoteSelectSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->select('r.id', 'r.uid', 'r.instance', 'r.href', 'r.item', 'r.creation')
+		$qb->select('r.id', 'r.type', 'r.uid', 'r.instance', 'r.href', 'r.item', 'r.creation')
 		   ->from(self::TABLE_REMOTE, 'r');
 
 		$qb->setDefaultSelectAlias('r');
@@ -100,13 +100,13 @@ class RemoteRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * @param CoreQueryBuilder $qb
 	 *
-	 * @return AppService
+	 * @return RemoteInstance
 	 * @throws RemoteNotFoundException
 	 */
-	public function getItemFromRequest(CoreQueryBuilder $qb): AppService {
-		/** @var AppService $appService */
+	public function getItemFromRequest(CoreQueryBuilder $qb): RemoteInstance {
+		/** @var RemoteInstance $appService */
 		try {
-			$appService = $qb->asItem(AppService::class);
+			$appService = $qb->asItem(RemoteInstance::class);
 		} catch (RowNotFoundException $e) {
 			throw new RemoteNotFoundException();
 		}
@@ -117,11 +117,12 @@ class RemoteRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * @param CoreQueryBuilder $qb
 	 *
-	 * @return AppService[]
+	 * @return RemoteInstance[]
 	 */
 	public function getItemsFromRequest(CoreQueryBuilder $qb): array {
-		/** @var AppService[] $result */
-		return $qb->asItems(AppService::class);
+		/** @var RemoteInstance[] $result */
+		return $qb->asItems(RemoteInstance::class);
 	}
 
 }
+

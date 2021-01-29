@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 
 /**
  * Circles - Bring cloud-users closer together.
@@ -8,7 +10,7 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@pontapreta.net>
- * @copyright 2017
+ * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,7 +29,7 @@
  */
 
 
-namespace OCA\Circles\Model;
+namespace OCA\Circles\Model\Remote;
 
 
 use daita\MySmallPhpTools\Db\Nextcloud\nc21\INC21QueryRow;
@@ -42,17 +44,36 @@ use OCA\Circles\Exceptions\RemoteUidException;
  *
  * @package OCA\Circles\Model
  */
-class AppService extends NC21Signatory implements INC21QueryRow, JsonSerializable {
+class RemoteInstance extends NC21Signatory implements INC21QueryRow, JsonSerializable {
 
 
 	use TArrayTools;
 
+	const TYPE_UNKNOWN = 'Unknown';    // not trusted
+	const TYPE_EXTERNAL = 'External';  // info about Federated Circles are not broadcasted by default.
+	const TYPE_TRUSTED = 'Trusted';    // evething about Federated Circles are broadcasted.
+	const TYPE_GLOBAL_SCALE = 'GlobalScale';  // every Circle is broadcasted,
+
+	const TEST = 'test';
+	const INCOMING = 'incoming';
+	const EVENT = 'event';
+	const CIRCLES = 'circles';
+
+
+	/** @var int */
+	private $dbId = 0;
+
+	/** @var string */
+	private $type = self::TYPE_UNKNOWN;
 
 	/** @var string */
 	private $test = '';
 
 	/** @var string */
 	private $incoming = '';
+
+	/** @var string */
+	private $event = '';
 
 	/** @var string */
 	private $circles = '';
@@ -71,12 +92,31 @@ class AppService extends NC21Signatory implements INC21QueryRow, JsonSerializabl
 
 
 	/**
-	 * @param string $test
+	 * @param int $dbId
 	 *
-	 * @return AppService
+	 * @return self
 	 */
-	public function setTest(string $test): self {
-		$this->test = $test;
+	public function setDbId(int $dbId): self {
+		$this->dbId = $dbId;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getDbId(): int {
+		return $this->dbId;
+	}
+
+
+	/**
+	 * @param string $type
+	 *
+	 * @return $this
+	 */
+	public function setType(string $type): self {
+		$this->type = $type;
 
 		return $this;
 	}
@@ -84,8 +124,8 @@ class AppService extends NC21Signatory implements INC21QueryRow, JsonSerializabl
 	/**
 	 * @return string
 	 */
-	public function getTest(): string {
-		return $this->test;
+	public function getType(): string {
+		return $this->type;
 	}
 
 
@@ -105,6 +145,44 @@ class AppService extends NC21Signatory implements INC21QueryRow, JsonSerializabl
 		$this->incoming = $incoming;
 
 		return $this;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getEvent(): string {
+		return $this->event;
+	}
+
+	/**
+	 * @param string $event
+	 *
+	 * @return self
+	 */
+	public function setEvent(string $event): self {
+		$this->event = $event;
+
+		return $this;
+	}
+
+
+	/**
+	 * @param string $test
+	 *
+	 * @return RemoteInstance
+	 */
+	public function setTest(string $test): self {
+		$this->test = $test;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getTest(): string {
+		return $this->test;
 	}
 
 
@@ -158,7 +236,7 @@ class AppService extends NC21Signatory implements INC21QueryRow, JsonSerializabl
 	/**
 	 * @param string $uid
 	 *
-	 * @return AppService
+	 * @return RemoteInstance
 	 */
 	public function setUid(string $uid): self {
 		$this->uid = $uid;
@@ -183,7 +261,7 @@ class AppService extends NC21Signatory implements INC21QueryRow, JsonSerializabl
 	/**
 	 * @param string $authSigned
 	 *
-	 * @return AppService
+	 * @return RemoteInstance
 	 */
 	public function setAuthSigned(string $authSigned): self {
 		$this->authSigned = $authSigned;
@@ -202,7 +280,7 @@ class AppService extends NC21Signatory implements INC21QueryRow, JsonSerializabl
 	/**
 	 * @param bool $identityAuthed
 	 *
-	 * @return AppService
+	 * @return RemoteInstance
 	 */
 	public function setIdentityAuthed(bool $identityAuthed): self {
 		$this->identityAuthed = $identityAuthed;
@@ -236,6 +314,7 @@ class AppService extends NC21Signatory implements INC21QueryRow, JsonSerializabl
 		parent::import($data);
 
 		$this->setTest($this->get('test', $data));
+		$this->setEvent($this->get('event', $data));
 		$this->setIncoming($this->get('incoming', $data));
 		$this->setCircles($this->get('circles', $data));
 		$this->setMembers($this->get('members', $data));
@@ -252,8 +331,9 @@ class AppService extends NC21Signatory implements INC21QueryRow, JsonSerializabl
 	public function jsonSerialize(): array {
 		$data = [
 			'uid'      => $this->getUid(true),
-			'test'     => $this->getTest(),
+			'event'    => $this->getEvent(),
 			'incoming' => $this->getIncoming(),
+			'test'     => $this->getTest(),
 			'circles'  => $this->getCircles(),
 			'members'  => $this->getMembers(),
 		];
@@ -272,8 +352,10 @@ class AppService extends NC21Signatory implements INC21QueryRow, JsonSerializabl
 	 * @return self
 	 */
 	public function importFromDatabase(array $data): INC21QueryRow {
+		$this->setDbId($this->getInt('id', $data));
 		$this->import($this->getArray('item', $data));
 		$this->setOrigData($this->getArray('item', $data));
+		$this->setType($this->get('type', $data));
 		$this->setInstance($this->get('instance', $data));
 		$this->setId($this->get('href', $data));
 

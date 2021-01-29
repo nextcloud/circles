@@ -72,26 +72,11 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 		return ($this->configService->isLocalInstance($instance)) ? '' : $instance;
 	}
 
-
-	/**
-	 * @param string $id
-	 */
-	public function limitToUniqueId(string $id): void {
-		$this->limitToDBField('unique_id', $id, true);
-	}
-
 	/**
 	 * @param string $id
 	 */
 	public function limitToCircleId(string $id): void {
 		$this->limitToDBField('circle_id', $id, true);
-	}
-
-	/**
-	 * @param string $id
-	 */
-	public function limitToMemberId(string $id): void {
-		$this->limitToDBField('member_id', $id, true);
 	}
 
 	/**
@@ -106,13 +91,6 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 	 */
 	public function limitToInstance(string $host): void {
 		$this->limitToDBField('instance', $host, false);
-	}
-
-	/**
-	 * @param string $token
-	 */
-	public function limitToToken(string $token): void {
-		$this->limitToDBField('instance', $token, true);
 	}
 
 
@@ -281,7 +259,6 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 //
 //		$qb->andWhere($orXTypes);
 	}
-
 
 	/**
 	 * @param int $flag
