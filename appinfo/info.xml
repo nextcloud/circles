@@ -62,10 +62,12 @@ Users won't be able to find this Circle using Nextcloud search engine.
 	<commands>
 		<command>OCA\Circles\Command\CirclesCreate</command>
 		<command>OCA\Circles\Command\CirclesList</command>
-		<command>OCA\Circles\Command\CirclesMemberships</command>
-		<command>OCA\Circles\Command\MembersCreate</command>
 		<command>OCA\Circles\Command\CirclesRemote</command>
 		<command>OCA\Circles\Command\CirclesRemoteCheck</command>
+
+		<command>OCA\Circles\Command\MembersCreate</command>
+
+		<command>OCA\Circles\Command\CirclesMemberships</command>
 
 		<command>OCA\Circles\Command\CirclesDestroy</command>
 		<command>OCA\Circles\Command\CirclesDetails</command>

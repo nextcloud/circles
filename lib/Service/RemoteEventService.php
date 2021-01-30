@@ -48,6 +48,7 @@ use OCA\Circles\Exceptions\ModelException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteEventException;
 use OCA\Circles\IRemoteEvent;
+use OCA\Circles\IRemoteEventBypassLocalCircleCheck;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\GlobalScale\GSWrapper;
 use OCA\Circles\Model\Remote\RemoteEvent;
@@ -144,6 +145,7 @@ class RemoteEventService extends NC21Signature {
 	 * @param RemoteEvent $event
 	 *
 	 * @throws RemoteEventException
+	 * @throws OwnerNotFoundException
 	 */
 	public function newEvent(RemoteEvent $event): void {
 		$event->setSource($this->configService->getLocalInstance());
@@ -188,9 +190,9 @@ class RemoteEventService extends NC21Signature {
 		$circle = $event->getCircle();
 		$viewer = $circle->getViewer();
 
-		// TODO: Verify Origin of Viewer (check based on the source of the request)
-//		if ($event->isLocal()) {
-//		}
+		if (!$this->configService->isLocalInstance($viewer->getInstance())) {
+			return;
+		}
 
 		try {
 			$localCircle = $this->circleRequest->getCircle($circle->getId(), $viewer);
@@ -244,6 +246,8 @@ class RemoteEventService extends NC21Signature {
 
 
 	/**
+	 * // TODO Rename Model/RemoteEvent and/or IRemoteEvent
+	 *
 	 * @param RemoteEvent $event
 	 *
 	 * @return IRemoteEvent
@@ -266,7 +270,22 @@ class RemoteEventService extends NC21Signature {
 			throw new RemoteEventException($class . ' not an IRemoteEvent');
 		}
 
+		$this->setRemoteEventBypass($event, $gs);
+
 		return $gs;
+	}
+
+
+	/**
+	 * Some event might need to bypass some checks
+	 *
+	 * @param RemoteEvent $event
+	 * @param IRemoteEvent $gs
+	 */
+	private function setRemoteEventBypass(RemoteEvent $event, IRemoteEvent $gs) {
+		if ($gs instanceof IRemoteEventBypassLocalCircleCheck) {
+			$event->bypass(RemoteEvent::BYPASS_LOCALCIRCLECHECK);
+		}
 	}
 
 

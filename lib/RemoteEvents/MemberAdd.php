@@ -45,7 +45,9 @@ use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberCantJoinCircleException;
 use OCA\Circles\Exceptions\MemberIsNotModeratorException;
 use OCA\Circles\Exceptions\MembersLimitException;
+use OCA\Circles\Exceptions\RemoteEventException;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
+use OCA\Circles\IRemoteEvent;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\DeprecatedMember;
@@ -60,7 +62,7 @@ use OCP\Util;
  *
  * @package OCA\Circles\GlobalScale
  */
-class MemberAdd extends AGlobalScaleEvent {
+class MemberAdd implements IRemoteEvent {
 
 
 	/**
@@ -79,17 +81,20 @@ class MemberAdd extends AGlobalScaleEvent {
 	 * @throws NoUserException
 	 * @throws CircleTypeNotValidException
 	 * @throws MemberIsNotModeratorException
+	 * @throws RemoteEventException
 	 */
-	public function verify(GSEvent $event, bool $localCheck = false, bool $mustBeChecked = false): void {
-		parent::verify($event, $localCheck, true);
+	public function verify(GSEvent $event): void {
+		if ($event->hasMember())
+			throw new RemoteEventException('event have no member linked');
 
 		$eventMember = $event->getMember();
-		$this->cleanMember($eventMember);
 
-		if ($eventMember->getInstance() === '') {
-			$eventMember->setInstance($event->getSource());
-		}
+//		if ($eventMember->getInstance() === '') {
+//			$eventMember->setInstance($event->getSource());
+//		}
 
+		echo json_encode($eventMember) . "\n";
+		return;
 		$ident = $eventMember->getUserId();
 		$this->membersService->verifyIdentBasedOnItsType(
 			$ident, $eventMember->getType(), $eventMember->getInstance()
@@ -140,35 +145,35 @@ class MemberAdd extends AGlobalScaleEvent {
 	 * @throws MemberAlreadyExistsException
 	 */
 	public function manage(GSEvent $event): void {
-		$circle = $event->getDeprecatedCircle();
-		$member = $event->getMember();
-		if ($member->getJoined() === '') {
-			$this->membersRequest->createMember($member);
-		} else {
-			$this->membersRequest->updateMemberLevel($member);
-		}
-
-
-		//
-		// TODO: verifiez comment se passe le cached name sur un member_add
-		//
-		$cachedName = $member->getCachedName();
-		$password = $event->getData()
-						  ->g('password');
-
-		$shares = $this->generateUnknownSharesLinks($circle, $member, $password);
-		$result = [
-			'unknownShares' => $shares,
-			'cachedName'    => $cachedName
-		];
-
-		if ($member->getType() === DeprecatedMember::TYPE_CONTACT
-			&& $this->configService->isLocalInstance($member->getInstance())) {
-			$result['contact'] = $this->miscService->getInfosFromContact($member);
-		}
-
-		$event->setResult(new SimpleDataStore($result));
-		$this->eventsService->onMemberNew($circle, $member);
+//		$circle = $event->getDeprecatedCircle();
+//		$member = $event->getMember();
+//		if ($member->getJoined() === '') {
+//			$this->membersRequest->createMember($member);
+//		} else {
+//			$this->membersRequest->updateMemberLevel($member);
+//		}
+//
+//
+//		//
+//		// TODO: verifiez comment se passe le cached name sur un member_add
+//		//
+//		$cachedName = $member->getCachedName();
+//		$password = $event->getData()
+//						  ->g('password');
+//
+//		$shares = $this->generateUnknownSharesLinks($circle, $member, $password);
+//		$result = [
+//			'unknownShares' => $shares,
+//			'cachedName'    => $cachedName
+//		];
+//
+//		if ($member->getType() === DeprecatedMember::TYPE_CONTACT
+//			&& $this->configService->isLocalInstance($member->getInstance())) {
+//			$result['contact'] = $this->miscService->getInfosFromContact($member);
+//		}
+//
+//		$event->setResult(new SimpleDataStore($result));
+//		$this->eventsService->onMemberNew($circle, $member);
 	}
 
 
@@ -178,48 +183,48 @@ class MemberAdd extends AGlobalScaleEvent {
 	 * @throws Exception
 	 */
 	public function result(array $events): void {
-		$password = $cachedName = '';
-		$circle = $member = null;
-		$links = [];
-		$recipients = [];
-		foreach ($events as $event) {
-			$data = $event->getData();
-			if ($data->gBool('passwordByMail') !== false) {
-				$password = $data->g('password');
-			}
-			$circle = $event->getDeprecatedCircle();
-			$member = $event->getMember();
-			$result = $event->getResult();
-			if ($result->g('cachedName') !== '') {
-				$cachedName = $result->g('cachedName');
-			}
-
-			$links = array_merge($links, $result->gArray('unknownShares'));
-			$contact = $result->gArray('contact');
-			if (!empty($contact)) {
-				$recipients = $contact['emails'];
-			}
-		}
-
-		if (empty($links) || $circle === null || $member === null) {
-			return;
-		}
-
-		if ($cachedName !== '') {
-			$member->setCachedName($cachedName);
-			$this->membersService->updateMember($member);
-		}
-
-		if ($member->getType() === DeprecatedMember::TYPE_MAIL
-			|| $member->getType() === DeprecatedMember::TYPE_CONTACT) {
-			if ($member->getType() === DeprecatedMember::TYPE_MAIL) {
-				$recipients = [$member->getUserId()];
-			}
-
-			foreach ($recipients as $recipient) {
-				$this->memberIsMailbox($circle, $recipient, $links, $password);
-			}
-		}
+//		$password = $cachedName = '';
+//		$circle = $member = null;
+//		$links = [];
+//		$recipients = [];
+//		foreach ($events as $event) {
+//			$data = $event->getData();
+//			if ($data->gBool('passwordByMail') !== false) {
+//				$password = $data->g('password');
+//			}
+//			$circle = $event->getDeprecatedCircle();
+//			$member = $event->getMember();
+//			$result = $event->getResult();
+//			if ($result->g('cachedName') !== '') {
+//				$cachedName = $result->g('cachedName');
+//			}
+//
+//			$links = array_merge($links, $result->gArray('unknownShares'));
+//			$contact = $result->gArray('contact');
+//			if (!empty($contact)) {
+//				$recipients = $contact['emails'];
+//			}
+//		}
+//
+//		if (empty($links) || $circle === null || $member === null) {
+//			return;
+//		}
+//
+//		if ($cachedName !== '') {
+//			$member->setCachedName($cachedName);
+//			$this->membersService->updateMember($member);
+//		}
+//
+//		if ($member->getType() === DeprecatedMember::TYPE_MAIL
+//			|| $member->getType() === DeprecatedMember::TYPE_CONTACT) {
+//			if ($member->getType() === DeprecatedMember::TYPE_MAIL) {
+//				$recipients = [$member->getUserId()];
+//			}
+//
+//			foreach ($recipients as $recipient) {
+//				$this->memberIsMailbox($circle, $recipient, $links, $password);
+//			}
+//		}
 	}
 
 

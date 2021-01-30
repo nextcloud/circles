@@ -36,6 +36,7 @@ use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\RemoteEventException;
 use OCA\Circles\IRemoteEvent;
+use OCA\Circles\IRemoteEventBypassLocalCircleCheck;
 use OCA\Circles\Model\Remote\RemoteEvent;
 use OCA\Circles\Service\ConfigService;
 
@@ -45,7 +46,9 @@ use OCA\Circles\Service\ConfigService;
  *
  * @package OCA\Circles\RemoteEvents
  */
-class CircleCreate implements IRemoteEvent {
+class CircleCreate implements
+	IRemoteEvent,
+	IRemoteEventBypassLocalCircleCheck {
 
 	/** @var CircleRequest */
 	private $circleRequest;

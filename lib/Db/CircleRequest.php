@@ -105,12 +105,12 @@ class CircleRequest extends CircleRequestBuilder {
 
 	/**
 	 * @param string $id
-	 * @param Member|null $viewer
+	 * @param IMember|null $viewer
 	 *
 	 * @return Circle
 	 * @throws CircleNotFoundException
 	 */
-	public function getCircle(string $id, ?Member $viewer = null): Circle {
+	public function getCircle(string $id, ?IMember $viewer = null): Circle {
 		$qb = $this->getCircleSelectSql();
 		$qb->limitToUniqueId($id);
 		$qb->leftJoinOwner();

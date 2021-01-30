@@ -33,6 +33,7 @@ use OC\Core\Command\Base;
 use OC\User\NoUserException;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\RemoteEventException;
+use OCA\Circles\Exceptions\ViewerNotFoundException;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\CurrentUserService;
 use OCP\IL10N;
@@ -99,9 +100,10 @@ class CirclesCreate extends Base {
 	 * @param OutputInterface $output
 	 *
 	 * @return int
-	 * @throws NoUserException
 	 * @throws CircleNotFoundException
+	 * @throws NoUserException
 	 * @throws RemoteEventException
+	 * @throws ViewerNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$ownerId = $input->getArgument('owner');
@@ -112,7 +114,6 @@ class CirclesCreate extends Base {
 			throw new NoUserException('user does not exist');
 		}
 
-//		$this->currentUserService->setLocalViewer($owner);
 		$owner = $this->currentUserService->createTemporaryViewer($ownerId);
 		$circle = $this->circleService->create($name, $owner);
 

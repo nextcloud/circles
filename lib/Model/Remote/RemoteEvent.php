@@ -50,6 +50,8 @@ class RemoteEvent implements JsonSerializable {
 	const SEVERITY_LOW = 1;
 	const SEVERITY_HIGH = 3;
 
+	const BYPASS_LOCALCIRCLECHECK = 1;
+
 
 	use TArrayTools;
 
@@ -93,6 +95,9 @@ class RemoteEvent implements JsonSerializable {
 
 	/** @var bool */
 	private $verifiedCircle = false;
+
+	/** @var int */
+	private $bypass = 0;
 
 
 	/**
@@ -436,6 +441,28 @@ class RemoteEvent implements JsonSerializable {
 		return $arr;
 	}
 
+
+	/**
+	 * @param int $flag
+	 *
+	 * @return RemoteEvent
+	 */
+	public function bypass(int $flag): self {
+		if (!$this->canBypass($flag)) {
+			$this->bypass += $flag;
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param int $flag
+	 *
+	 * @return bool
+	 */
+	public function canBypass(int $flag): bool {
+		return (($this->bypass & $flag) !== 0);
+	}
 
 }
 

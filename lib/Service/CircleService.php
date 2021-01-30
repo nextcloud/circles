@@ -91,25 +91,6 @@ class CircleService {
 		$this->memberService = $memberService;
 	}
 
-//
-//	/**
-//	 * @param string $userId
-//	 */
-//	public function setLocalViewer(string $userId): void {
-//		$this->viewer = new Viewer($userId, Member::TYPE_USER, '');
-//	}
-//
-//	public function setViewer(Member $viewer): void {
-//		$this->viewer = $viewer;
-//	}
-//
-//	/**
-//	 * @return Member|null
-//	 */
-//	public function getViewer(): ?Member {
-//		return $this->viewer;
-//	}
-
 
 	/**
 	 * @param string $name
@@ -131,26 +112,17 @@ class CircleService {
 
 		$member = new Member();
 		$member->importFromCurrentUser($owner);
-		$member->setId($this->token(Circle::ID_LENGTH))
+		$member->setId($this->token(Member::ID_LENGTH))
 			   ->setCircleId($circle->getId())
 			   ->setLevel(Member::LEVEL_OWNER)
 			   ->setStatus(Member::STATUS_MEMBER);
 		$circle->setOwner($member);
-
-//		$circle->setOwner($owner)
-//			   ->setViewer($owner);
 
 		$event = new RemoteEvent(CircleCreate::class, true);
 		$event->setCircle($circle);
 		$this->remoteEventService->newEvent($event);
 
 		return $circle;
-	}
-
-
-	public function saveCircle(Circle $circle): void {
-		$circle->setId($this->token(Circle::ID_LENGTH));
-		$this->circleRequest->save($circle);
 	}
 
 
@@ -172,9 +144,12 @@ class CircleService {
 	 *
 	 * @return Circle
 	 * @throws CircleNotFoundException
+	 * @throws ViewerNotFoundException
 	 */
 	public function getCircle(string $circleId): Circle {
-		return $this->circleRequest->getCircle($circleId, $this->getViewer());
+		$this->currentUserService->mustHaveCurrentUser();
+
+		return $this->circleRequest->getCircle($circleId, $this->currentUserService->getCurrentUser());
 	}
 
 }

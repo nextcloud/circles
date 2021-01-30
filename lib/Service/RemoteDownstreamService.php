@@ -133,18 +133,14 @@ class RemoteDownstreamService {
 	 * @param RemoteEvent $event
 	 *
 	 * @return array
-	 * @throws OwnerNotFoundException
-	 * @throws RemoteEventException
 	 */
 	public function incomingEvent(RemoteEvent $event): array {
-		$this->verifyCircle($event);
-		$this->verifyOriginEvent($event);
 		$result = [];
-
-		\OC::$server->getLogger()->log(3, 'EVENT: ' . json_encode($event));
-
 		try {
 			$gs = $this->remoteEventService->getRemoteEvent($event);
+			$this->confirmCircle($event);
+			$this->confirmOriginEvent($event);
+
 			$gs->manage($event);
 		} catch (Exception $e) {
 			$this->e($e, ['event' => $event]);
@@ -156,20 +152,31 @@ class RemoteDownstreamService {
 
 	/**
 	 * @param RemoteEvent $event
+	 *
+	 * @throws RemoteEventException
 	 */
-	private function verifyCircle(RemoteEvent $event): void {
+	private function confirmCircle(RemoteEvent $event): void {
+		if ($event->canBypass(RemoteEvent::BYPASS_LOCALCIRCLECHECK) || $this->verifyCircle($event)) {
+			return;
+		}
+
+		throw new RemoteEventException('could not verify circle');
+	}
+
+	/**
+	 * @param RemoteEvent $event
+	 *
+	 * @return bool
+	 */
+	private function verifyCircle(RemoteEvent $event): bool {
 		$circle = $event->getCircle();
 		try {
 			$localCircle = $this->circleRequest->getCircle($circle->getId());
 		} catch (CircleNotFoundException $e) {
-			return;
+			return false;
 		}
 
-		if (!$localCircle->compareWith($circle)) {
-			return;
-		}
-
-		$event->setVerifiedCircle(true);
+		return ($localCircle->compareWith($circle));
 	}
 
 
@@ -179,7 +186,7 @@ class RemoteDownstreamService {
 	 * @throws RemoteEventException
 	 * @throws OwnerNotFoundException
 	 */
-	private function verifyOriginEvent(RemoteEvent $event): void {
+	private function confirmOriginEvent(RemoteEvent $event): void {
 		if ($event->getIncomingOrigin() !== $event->getCircle()->getInstance()) {
 			$this->debug('invalid origin', ['event' => $event]);
 			throw new RemoteEventException('invalid origin');
