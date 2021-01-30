@@ -25,8 +25,6 @@
  */
 
 return [
-	'ocs'    => [
-	],
 	'routes' => [
 		['name' => 'Settings#getSettings', 'url' => '/admin/settings', 'verb' => 'GET'],
 		['name' => 'Settings#setSettings', 'url' => '/admin/settings', 'verb' => 'POST'],
@@ -66,8 +64,15 @@ return [
 		['name' => 'Shares#create', 'url' => '/v1/circles/{circleUniqueId}/share', 'verb' => 'PUT'],
 
 		['name' => 'GlobalScale#event', 'url' => '/v1/gs/event', 'verb' => 'POST'],
-		['name' => 'GlobalScale#asyncBroadcast', 'url' => '/v1/gs/broadcast/async/{token}/', 'verb' => 'POST'],
+		[
+			'name' => 'GlobalScale#asyncBroadcast', 'url' => '/v1/gs/broadcast/async/{token}/',
+			'verb' => 'POST'
+		],
 		['name' => 'GlobalScale#broadcast', 'url' => '/v1/gs/broadcast', 'verb' => 'POST'],
 		['name' => 'GlobalScale#status', 'url' => '/v1/gs/status', 'verb' => 'POST']
+	],
+	'ocs' => [
+		['name' => 'OcsApi#circles', 'url' => '/circles/', 'verb' => 'GET'],
+		['name' => 'OcsApi#members', 'url' => '/circles/{circleId}/members/', 'verb' => 'GET']
 	]
 ];
