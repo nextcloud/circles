@@ -32,27 +32,26 @@ declare(strict_types=1);
 namespace OCA\Circles\RemoteEvents;
 
 
-use daita\MySmallPhpTools\Model\SimpleDataStore;
+use daita\MySmallPhpTools\Traits\TStringTools;
 use Exception;
 use OC\User\NoUserException;
-use OCA\Circles\Exceptions\CircleDoesNotExistException;
-use OCA\Circles\Exceptions\CircleTypeNotValidException;
-use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
-use OCA\Circles\Exceptions\EmailAccountInvalidFormatException;
-use OCA\Circles\Exceptions\GlobalScaleDSyncException;
-use OCA\Circles\Exceptions\GlobalScaleEventException;
-use OCA\Circles\Exceptions\MemberAlreadyExistsException;
-use OCA\Circles\Exceptions\MemberCantJoinCircleException;
-use OCA\Circles\Exceptions\MemberIsNotModeratorException;
-use OCA\Circles\Exceptions\MembersLimitException;
+use OCA\Circles\Db\MemberRequest;
+use OCA\Circles\Exceptions\MemberLevelException;
+use OCA\Circles\Exceptions\MemberTypeNotFoundException;
 use OCA\Circles\Exceptions\RemoteEventException;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
+use OCA\Circles\Exceptions\UserTypeNotFoundException;
+use OCA\Circles\IMember;
 use OCA\Circles\IRemoteEvent;
 use OCA\Circles\Model\DeprecatedCircle;
-use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\DeprecatedMember;
+use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Remote\RemoteEvent;
 use OCA\Circles\Model\SharesToken;
+use OCA\Circles\Service\CircleService;
+use OCA\Circles\Service\ConfigService;
 use OCP\IUser;
+use OCP\IUserManager;
 use OCP\Mail\IEMailTemplate;
 use OCP\Util;
 
@@ -65,94 +64,128 @@ use OCP\Util;
 class MemberAdd implements IRemoteEvent {
 
 
+	use TStringTools;
+
+
+	/** @var IUserManager */
+	private $userManager;
+
+	/** @var MemberRequest */
+	private $memberRequest;
+
+	/** @var CircleService */
+	private $circleService;
+
+	/** @var ConfigService */
+	private $configService;
+
+
 	/**
-	 * @param GSEvent $event
-	 * @param bool $localCheck
-	 * @param bool $mustBeChecked
+	 * MemberAdd constructor.
 	 *
-	 * @throws CircleDoesNotExistException
-	 * @throws ConfigNoCircleAvailableException
-	 * @throws EmailAccountInvalidFormatException
-	 * @throws GlobalScaleDSyncException
-	 * @throws GlobalScaleEventException
-	 * @throws MemberAlreadyExistsException
-	 * @throws MemberCantJoinCircleException
-	 * @throws MembersLimitException
-	 * @throws NoUserException
-	 * @throws CircleTypeNotValidException
-	 * @throws MemberIsNotModeratorException
-	 * @throws RemoteEventException
+	 * @param IUserManager $userManager
+	 * @param MemberRequest $memberRequest
+	 * @param CircleService $circleService
+	 * @param ConfigService $configService
 	 */
-	public function verify(GSEvent $event): void {
-		if ($event->hasMember())
-			throw new RemoteEventException('event have no member linked');
-
-		$eventMember = $event->getMember();
-
-//		if ($eventMember->getInstance() === '') {
-//			$eventMember->setInstance($event->getSource());
-//		}
-
-		echo json_encode($eventMember) . "\n";
-		return;
-		$ident = $eventMember->getUserId();
-		$this->membersService->verifyIdentBasedOnItsType(
-			$ident, $eventMember->getType(), $eventMember->getInstance()
-		);
-
-		$circle = $event->getDeprecatedCircle();
-
-		if (!$event->isForced()) {
-			$circle->getHigherViewer()
-				   ->hasToBeModerator();
-		}
-
-		$member = $this->membersRequest->getFreshNewMember(
-			$circle->getUniqueId(), $ident, $eventMember->getType(), $eventMember->getInstance()
-		);
-		$member->hasToBeInviteAble();
-		$member->setCachedName($eventMember->getCachedName());
-
-		$this->circlesService->checkThatCircleIsNotFull($circle);
-		$this->membersService->addMemberBasedOnItsType($circle, $member);
-
-		$password = '';
-		$sendPasswordByMail = false;
-		if ($this->configService->enforcePasswordProtection($circle)) {
-			if ($circle->getSetting('password_single_enabled') === 'true') {
-				$password = $circle->getPasswordSingle();
-			} else {
-				$sendPasswordByMail = true;
-				$password = $this->miscService->token(15);
-			}
-		}
-
-		$event->setData(
-			new SimpleDataStore(
-				[
-					'password'       => $password,
-					'passwordByMail' => $sendPasswordByMail
-				]
-			)
-		);
-		$event->setMember($member);
+	public function __construct(
+		IUserManager $userManager, MemberRequest $memberRequest, CircleService $circleService,
+		ConfigService $configService
+	) {
+		$this->userManager = $userManager;
+		$this->memberRequest = $memberRequest;
+		$this->circleService = $circleService;
+		$this->configService = $configService;
 	}
 
 
 	/**
-	 * @param GSEvent $event
+	 * @param RemoteEvent $event
 	 *
-	 * @throws MemberAlreadyExistsException
+	 * @throws MemberLevelException
+	 * @throws NoUserException
+	 * @throws RemoteEventException
+	 * @throws UserTypeNotFoundException
+	 * @throws \OCA\Circles\Exceptions\MembersLimitException
 	 */
-	public function manage(GSEvent $event): void {
-//		$circle = $event->getDeprecatedCircle();
-//		$member = $event->getMember();
+	public function verify(RemoteEvent $event): void {
+		if (!$event->hasMember()) {
+			throw new RemoteEventException('event have no member linked');
+		}
+
+		$member = $event->getMember();
+		$circle = $event->getCircle();
+		$viewer = $circle->getViewer();
+
+		if ($viewer->getLevel() < Member::LEVEL_MODERATOR) {
+			throw new MemberLevelException('Viewer have no rights to add members to this Circles');
+		}
+
+		$this->confirmMemberFormat($member);
+		$member->setId($this->uuid(Member::ID_LENGTH));
+		$member->setCircleId($circle->getId());
+
+
+		// TODO: check Config on Circle to know if we set Level to 1 or just send an invitation
+		$member->setLevel(Member::LEVEL_MEMBER);
+		$member->setStatus(Member::STATUS_MEMBER);
+
+		echo json_encode($member) . "\n";
+
+		// TODO: Managing cached name
+		//		$member->setCachedName($eventMember->getCachedName());
+
+// check Circle is 'verified'
+		$this->circleService->confirmCircleNotFull($circle);
+
+		return;
+
+
+//		$member = $this->membersRequest->getFreshNewMember(
+//			$circle->getUniqueId(), $ident, $eventMember->getType(), $eventMember->getInstance()
+//		);
+//		$member->hasToBeInviteAble();
+//
+//		$this->membersService->addMemberBasedOnItsType($circle, $member);
+//
+//		$password = '';
+//		$sendPasswordByMail = false;
+//		if ($this->configService->enforcePasswordProtection($circle)) {
+//			if ($circle->getSetting('password_single_enabled') === 'true') {
+//				$password = $circle->getPasswordSingle();
+//			} else {
+//				$sendPasswordByMail = true;
+//				$password = $this->miscService->token(15);
+//			}
+//		}
+//
+//		$event->setData(
+//			new SimpleDataStore(
+//				[
+//					'password'       => $password,
+//					'passwordByMail' => $sendPasswordByMail
+//				]
+//			)
+//		);
+	}
+
+
+	/**
+	 * @param RemoteEvent $event
+	 *
+	 */
+	public function manage(RemoteEvent $event): void {
+		//$circle = $event->getCircle();
+		$member = $event->getMember();
 //		if ($member->getJoined() === '') {
 //			$this->membersRequest->createMember($member);
 //		} else {
 //			$this->membersRequest->updateMemberLevel($member);
 //		}
 //
+
+		$this->memberRequest->save($member);
+
 //
 //		//
 //		// TODO: verifiez comment se passe le cached name sur un member_add
@@ -178,7 +211,7 @@ class MemberAdd implements IRemoteEvent {
 
 
 	/**
-	 * @param GSEvent[] $events
+	 * @param RemoteEvent[] $events
 	 *
 	 * @throws Exception
 	 */
@@ -229,12 +262,137 @@ class MemberAdd implements IRemoteEvent {
 
 
 	/**
+	 * confirm the format of UserId, based on UserType.
+	 *
+	 * @param IMember $member
+	 *
+	 * @throws UserTypeNotFoundException
+	 * @throws NoUserException
+	 */
+	private function confirmMemberFormat(IMember $member): void {
+		switch ($member->getUserType()) {
+			case Member::TYPE_USER:
+				$this->confirmMemberTypeUser($member);
+				break;
+
+			// TODO #M003: confirm other UserType
+			default:
+				throw new UserTypeNotFoundException();
+		}
+	}
+
+
+	/**
+	 * @param IMember $member
+	 *
+	 * @throws NoUserException
+	 */
+	private function confirmMemberTypeUser(IMember $member): void {
+		if ($this->configService->isLocalInstance($member->getInstance())) {
+			$user = $this->userManager->get($member->getUserId());
+			if ($user === null) {
+				throw new NoUserException('user not found');
+			}
+
+			$member->setUserId($user->getUID());
+
+			return;
+		}
+
+		// TODO #M002: request the remote instance and check that user exists
+	}
+
+//	/**
+//	 * Verify if a local account is valid.
+//	 *
+//	 * @param $ident
+//	 * @param $type
+//	 *
+//	 * @param string $instance
+//	 *
+//	 * @throws NoUserException
+//	 */
+//	private function verifyIdentLocalMember(&$ident, $type, string $instance = '') {
+//		if ($type !== DeprecatedMember::TYPE_USER) {
+//			return;
+//		}
+//
+//		if ($instance === '') {
+//			try {
+//				$ident = $this->miscService->getRealUserId($ident);
+//			} catch (NoUserException $e) {
+//				throw new NoUserException($this->l10n->t("This user does not exist"));
+//			}
+//		}
+//	}
+//
+//
+//	/**
+//	 * Verify if a mail have a valid format.
+//	 *
+//	 * @param string $ident
+//	 * @param int $type
+//	 *
+//	 * @throws EmailAccountInvalidFormatException
+//	 */
+//	private function verifyIdentEmailAddress(string $ident, int $type) {
+//		if ($type !== DeprecatedMember::TYPE_MAIL) {
+//			return;
+//		}
+//
+//		if ($this->configService->isAccountOnly()) {
+//			throw new EmailAccountInvalidFormatException(
+//				$this->l10n->t('You cannot add a mail address as member of your Circle')
+//			);
+//		}
+//
+//		if (!filter_var($ident, FILTER_VALIDATE_EMAIL)) {
+//			throw new EmailAccountInvalidFormatException(
+//				$this->l10n->t('Email format is not valid')
+//			);
+//		}
+//	}
+//
+//
+//	/**
+//	 * Verify if a contact exist in current user address books.
+//	 *
+//	 * @param $ident
+//	 * @param $type
+//	 *
+//	 * @throws NoUserException
+//	 * @throws EmailAccountInvalidFormatException
+//	 */
+//	private function verifyIdentContact(&$ident, $type) {
+//		if ($type !== DeprecatedMember::TYPE_CONTACT) {
+//			return;
+//		}
+//
+//		if ($this->configService->isAccountOnly()) {
+//			throw new EmailAccountInvalidFormatException(
+//				$this->l10n->t('You cannot add a contact as member of your Circle')
+//			);
+//		}
+//
+//		$tmpContact = $this->userId . ':' . $ident;
+//		$result = MiscService::getContactData($tmpContact);
+//		if (empty($result)) {
+//			throw new NoUserException($this->l10n->t("This contact is not available"));
+//		}
+//
+//		$ident = $tmpContact;
+//	}
+
+
+	/**
 	 * @param DeprecatedCircle $circle
 	 * @param string $recipient
 	 * @param array $links
 	 * @param string $password
 	 */
-	private function memberIsMailbox(DeprecatedCircle $circle, string $recipient, array $links, string $password) {
+	private function memberIsMailbox(
+		DeprecatedCircle $circle, string $recipient, array $links, string $password
+	) {
 		if ($circle->getViewer() === null) {
 			$author = $circle->getOwner()
 							 ->getUserId();
@@ -261,7 +419,9 @@ class MemberAdd implements IRemoteEvent {
 	 *
 	 * @return array
 	 */
-	private function generateUnknownSharesLinks(DeprecatedCircle $circle, DeprecatedMember $member, string $password): array {
+	private function generateUnknownSharesLinks(
+		DeprecatedCircle $circle, DeprecatedMember $member, string $password
+	): array {
 		$unknownShares = $this->getUnknownShares($member);
 
 		$data = [];

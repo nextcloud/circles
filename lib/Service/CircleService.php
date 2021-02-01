@@ -35,8 +35,12 @@ namespace OCA\Circles\Service;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Db\CircleRequest;
+use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\MembersLimitException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteEventException;
+use OCA\Circles\Exceptions\ViewerNotConfirmedException;
 use OCA\Circles\Exceptions\ViewerNotFoundException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\CurrentUser;
@@ -60,35 +64,37 @@ class CircleService {
 	/** @var CircleRequest */
 	private $circleRequest;
 
-	private $currentUserService;
+	/** @var MemberRequest */
+	private $memberRequest;
 
-	/** @var MemberService */
-	private $memberService;
+	/** @var CurrentUserService */
+	private $currentUserService;
 
 	/** @var RemoteEventService */
 	private $remoteEventService;
 
-	/** @var Member */
-	private $viewer = null;
+	/** @var ConfigService */
+	private $configService;
 
 
 	/**
 	 * CircleService constructor.
 	 *
 	 * @param CircleRequest $circleRequest
+	 * @param MemberRequest $memberRequest
 	 * @param CurrentUserService $currentUserService
 	 * @param RemoteEventService $remoteEventService
-	 * @param MemberService $memberService
+	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		CircleRequest $circleRequest, CurrentUserService $currentUserService,
-		RemoteEventService $remoteEventService,
-		MemberService $memberService
+		CircleRequest $circleRequest, MemberRequest $memberRequest, CurrentUserService $currentUserService,
+		RemoteEventService $remoteEventService, ConfigService $configService
 	) {
 		$this->circleRequest = $circleRequest;
+		$this->memberRequest = $memberRequest;
 		$this->currentUserService = $currentUserService;
 		$this->remoteEventService = $remoteEventService;
-		$this->memberService = $memberService;
+		$this->configService = $configService;
 	}
 
 
@@ -97,12 +103,14 @@ class CircleService {
 	 * @param CurrentUser|null $owner
 	 *
 	 * @return Circle
+	 * @throws OwnerNotFoundException
 	 * @throws RemoteEventException
 	 * @throws ViewerNotFoundException
+	 * @throws ViewerNotConfirmedException
 	 */
 	public function create(string $name, ?CurrentUser $owner = null): Circle {
+		$this->currentUserService->mustHaveCurrentUser();
 		if (is_null($owner)) {
-			$this->currentUserService->mustHaveCurrentUser();
 			$owner = $this->currentUserService->getCurrentUser();
 		}
 
@@ -111,14 +119,15 @@ class CircleService {
 		$circle->setId($this->token(Circle::ID_LENGTH));
 
 		$member = new Member();
-		$member->importFromCurrentUser($owner);
+		$member->importFromIMember($owner);
 		$member->setId($this->token(Member::ID_LENGTH))
 			   ->setCircleId($circle->getId())
 			   ->setLevel(Member::LEVEL_OWNER)
 			   ->setStatus(Member::STATUS_MEMBER);
-		$circle->setOwner($member);
+		$circle->setOwner($member)
+			   ->setViewer($member);
 
-		$event = new RemoteEvent(CircleCreate::class, true);
+		$event = new RemoteEvent(CircleCreate::class);
 		$event->setCircle($circle);
 		$this->remoteEventService->newEvent($event);
 
@@ -150,6 +159,37 @@ class CircleService {
 		$this->currentUserService->mustHaveCurrentUser();
 
 		return $this->circleRequest->getCircle($circleId, $this->currentUserService->getCurrentUser());
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 *
+	 * @throws MembersLimitException
+	 */
+	public function confirmCircleNotFull(Circle $circle): void {
+		if ($this->isCircleFull($circle)) {
+			throw new MembersLimitException('circle is full');
+		}
+	}
+
+	/**
+	 * @param Circle $circle
+	 *
+	 * @return bool
+	 */
+	public function isCircleFull(Circle $circle): bool {
+		$members = $this->memberRequest->getMembers($circle->getId());
+
+		$limit = $this->getInt('members_limit', $circle->getSettings());
+		if ($limit === -1) {
+			return false;
+		}
+		if ($limit === 0) {
+			$limit = $this->configService->getAppValue(ConfigService::CIRCLES_MEMBERS_LIMIT);
+		}
+
+		return (sizeof($members) >= $limit);
 	}
 
 }

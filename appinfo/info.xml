@@ -60,12 +60,12 @@ Users won't be able to find this Circle using Nextcloud search engine.
 	</repair-steps>
 
 	<commands>
-		<command>OCA\Circles\Command\CirclesCreate</command>
 		<command>OCA\Circles\Command\CirclesList</command>
+		<command>OCA\Circles\Command\CirclesCreate</command>
 		<command>OCA\Circles\Command\CirclesRemote</command>
-		<command>OCA\Circles\Command\CirclesRemoteCheck</command>
+		<command>OCA\Circles\Command\MembersList</command>
 
-		<command>OCA\Circles\Command\MembersCreate</command>
+		<command>OCA\Circles\Command\MembersAdd</command>
 
 		<command>OCA\Circles\Command\CirclesMemberships</command>
 
@@ -76,7 +76,6 @@ Users won't be able to find this Circle using Nextcloud search engine.
 		<command>OCA\Circles\Command\Clean</command>
 		<command>OCA\Circles\Command\MembersDetails</command>
 		<command>OCA\Circles\Command\MembersLevel</command>
-		<command>OCA\Circles\Command\MembersList</command>
 		<command>OCA\Circles\Command\MembersRemove</command>
 		<command>OCA\Circles\Command\SyncContact</command>
 		<!--<command>OCA\Circles\Command\Groups</command>-->

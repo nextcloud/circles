@@ -32,6 +32,7 @@ namespace OCA\Circles\Command;
 use OC\Core\Command\Base;
 use OC\User\NoUserException;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteEventException;
 use OCA\Circles\Exceptions\ViewerNotFoundException;
 use OCA\Circles\Service\CircleService;
@@ -40,7 +41,6 @@ use OCP\IL10N;
 use OCP\IUserManager;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
@@ -82,6 +82,7 @@ class CirclesCreate extends Base {
 		$this->userManager = $userManager;
 		$this->currentUserService = $currentUserService;
 		$this->circleService = $circleService;
+
 	}
 
 
@@ -90,8 +91,7 @@ class CirclesCreate extends Base {
 		$this->setName('circles:manage:create')
 			 ->setDescription('create a new circle')
 			 ->addArgument('owner', InputArgument::REQUIRED, 'owner of the circle')
-			 ->addArgument('name', InputArgument::REQUIRED, 'name of the circle')
-			 ->addOption('type', '', InputOption::VALUE_REQUIRED, 'type of the circle (deprecated)', '');
+			 ->addArgument('name', InputArgument::REQUIRED, 'name of the circle');
 	}
 
 
@@ -104,17 +104,15 @@ class CirclesCreate extends Base {
 	 * @throws NoUserException
 	 * @throws RemoteEventException
 	 * @throws ViewerNotFoundException
+	 * @throws OwnerNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$ownerId = $input->getArgument('owner');
 		$name = $input->getArgument('name');
-		$type = $input->getOption('type');
 
-		if ($this->userManager->get($ownerId) === null) {
-			throw new NoUserException('user does not exist');
-		}
+		$this->currentUserService->bypassCurrentUserCondition(true);
 
-		$owner = $this->currentUserService->createTemporaryViewer($ownerId);
+		$owner = $this->currentUserService->createLocalCurrentUser($ownerId);
 		$circle = $this->circleService->create($name, $owner);
 
 		echo json_encode($circle, JSON_PRETTY_PRINT) . "\n";

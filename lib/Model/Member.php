@@ -411,14 +411,12 @@ class Member extends ManagedModel implements IMember, INC21Convert, INC21QueryRo
 
 
 	/**
-	 * @param IMember $viewer
+	 * @param IMember $member
 	 *
 	 * @return self
 	 */
-	public function importFromCurrentUser(IMember $viewer): self {
-		$this->setUserId($viewer->getUserId());
-		$this->setUserType($viewer->getUserType());
-		$this->setInstance($viewer->getInstance());
+	public function importFromIMember(IMember $member): IMember {
+		$this->getManager()->importFromIMember($this, $member);
 
 		return $this;
 	}

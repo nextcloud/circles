@@ -34,6 +34,7 @@ namespace OCA\Circles\Model;
 
 use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\IMember;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MemberService;
 
@@ -182,6 +183,17 @@ class ModelManager {
 	 */
 	public function isFullDetails(): bool {
 		return $this->fullDetails;
+	}
+
+
+	/**
+	 * @param IMember $dest
+	 * @param IMember $orig
+	 */
+	public function importFromIMember(IMember $dest, IMember $orig): void {
+		$dest->setUserId($orig->getUserId());
+		$dest->setUserType($orig->getUserType());
+		$dest->setInstance($orig->getInstance());
 	}
 
 }

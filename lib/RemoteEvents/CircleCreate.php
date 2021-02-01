@@ -34,9 +34,9 @@ namespace OCA\Circles\RemoteEvents;
 
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
-use OCA\Circles\Exceptions\RemoteEventException;
 use OCA\Circles\IRemoteEvent;
 use OCA\Circles\IRemoteEventBypassLocalCircleCheck;
+use OCA\Circles\IRemoteEventMustBeLocal;
 use OCA\Circles\Model\Remote\RemoteEvent;
 use OCA\Circles\Service\ConfigService;
 
@@ -48,7 +48,9 @@ use OCA\Circles\Service\ConfigService;
  */
 class CircleCreate implements
 	IRemoteEvent,
-	IRemoteEventBypassLocalCircleCheck {
+	IRemoteEventBypassLocalCircleCheck,
+	IRemoteEventMustBeLocal {
+
 
 	/** @var CircleRequest */
 	private $circleRequest;
@@ -76,20 +78,11 @@ class CircleCreate implements
 
 
 	/**
-	 * Circles are created on the original instance, so do no check;
+	 * Circles are created on the original instance, using IRemoteEventMustBeLocal
 	 *
 	 * @param RemoteEvent $event
-	 *
-	 * @throws RemoteEventException
 	 */
 	public function verify(RemoteEvent $event): void {
-		if (!$this->configService->isLocalInstance($event->getSource())) {
-			throw new RemoteEventException('Creation of Circle cannot be managed from a remote instance');
-		}
-
-		if ($event->getCircle()->getOwner()->getInstance() !== $event->getSource()) {
-			throw new RemoteEventException('Owner of the Circle must be belongs to local instance');
-		}
 	}
 
 

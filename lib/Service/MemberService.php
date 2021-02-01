@@ -36,8 +36,15 @@ use daita\MySmallPhpTools\Traits\TArrayTools;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
-use OCA\Circles\Exceptions\MemberAlreadyExistsException;
+use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteEventException;
+use OCA\Circles\Exceptions\ViewerNotFoundException;
+use OCA\Circles\IMember;
+use OCA\Circles\Model\CurrentUser;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Remote\RemoteEvent;
+use OCA\Circles\RemoteEvents\MemberAdd;
 
 
 /**
@@ -58,49 +65,42 @@ class MemberService {
 	/** @var MemberRequest */
 	private $memberRequest;
 
-	/** @var Member */
-	private $viewer = null;
+	/** @var CurrentUserService */
+	private $currentUserService;
+
+	/** @var RemoteEventService */
+	private $remoteEventService;
 
 
 	/**
 	 * MemberService constructor.
 	 *
+	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
+	 * @param CurrentUserService $currentUserService
+	 * @param RemoteEventService $remoteEventService
 	 */
-	public function __construct(MemberRequest $memberRequest) {
+	public function __construct(
+		CircleRequest $circleRequest, MemberRequest $memberRequest, CurrentUserService $currentUserService,
+		RemoteEventService $remoteEventService
+	) {
+		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
+		$this->currentUserService = $currentUserService;
+		$this->remoteEventService = $remoteEventService;
 	}
 
-
-//	/**
-//	 * @param string $userId
-//	 */
-//	public function setLocalViewer(string $userId): void {
-//		$this->viewer = new Member($userId, Member::TYPE_USER, '');
-//	}
-//
-//	public function setViewer(Member $viewer): void {
-//		$this->viewer = $viewer;
-//	}
 //
 //	/**
-//	 * @return Member|null
+//	 * @param Member $member
+//	 *
+//	 * @throws MemberAlreadyExistsException
 //	 */
-//	public function getViewer(): ?Member {
-//		return $this->viewer;
+//	public function saveMember(Member $member) {
+//		$member->setId($this->token(Member::ID_LENGTH));
+//		$this->memberRequest->save($member);
 //	}
-
-
-	/**
-	 * @param Member $member
-	 *
-	 * @throws MemberAlreadyExistsException
-	 */
-	public function saveMember(Member $member) {
-		$member->setId($this->token(Member::ID_LENGTH));
-		$this->memberRequest->save($member);
-	}
-
+//
 
 	/**
 	 * @param string $circleId
@@ -109,6 +109,53 @@ class MemberService {
 	 */
 	public function getMembers(string $circleId): array {
 		return $this->memberRequest->getMembers($circleId);
+	}
+
+
+	/**
+	 * @param string $circleId
+	 * @param IMember $member
+	 *
+	 * @throws CircleNotFoundException
+	 * @throws ViewerNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteEventException
+	 */
+	public function addMember(string $circleId, IMember $member) {
+		$this->currentUserService->mustHaveCurrentUser();
+		$circle = $this->circleRequest->getCircle($circleId, $this->currentUserService->getCurrentUser());
+
+		if ($member instanceof CurrentUser) {
+			$tmp = new Member();
+			$tmp->importFromIMember($member);
+			$member = $tmp;
+		}
+
+//		$member->setId($this->token(Member::ID_LENGTH))
+//			   ->setCircleId($circle->getId())
+
+//
+//		$member = new Member();
+//		$member->importFromIMember($owner);
+//		$member->setId($this->token(Member::ID_LENGTH))
+//			   ->setCircleId($circle->getId())
+//			   ->setLevel(Member::LEVEL_OWNER)
+//			   ->setStatus(Member::STATUS_MEMBER);
+//		$circle->setOwner($member);
+//
+		$event = new RemoteEvent(MemberAdd::class);
+		$event->setCircle($circle);
+		$event->setMember($member);
+		$this->remoteEventService->newEvent($event);
+
+//		return $circle;
+
+//
+//		// TODO: Use memberships to manage access level to a Circle !
+//		if ($circle->getViewer()->getLevel() < Member::LEVEL_MODERATOR) {
+//			throw new MemberLevelException('member have no rights to add a member to this circle');
+//		}
+
 	}
 
 }

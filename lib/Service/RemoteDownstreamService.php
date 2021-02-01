@@ -114,6 +114,10 @@ class RemoteDownstreamService {
 	 * @throws RemoteEventException
 	 */
 	public function requestedEvent(RemoteEvent $event) {
+//		if ($event instanceof IRemoteEventMustBeLocal) {
+//			return true;
+//		}
+
 //		$gs = $this->remoteEventService->getRemoteEvent($event);
 //		if (!$this->remoteEventService->isLocalEvent($event)) {
 //			return;

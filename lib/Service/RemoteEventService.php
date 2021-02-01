@@ -47,8 +47,10 @@ use OCA\Circles\Exceptions\JsonException;
 use OCA\Circles\Exceptions\ModelException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteEventException;
+use OCA\Circles\Exceptions\ViewerNotConfirmedException;
 use OCA\Circles\IRemoteEvent;
 use OCA\Circles\IRemoteEventBypassLocalCircleCheck;
+use OCA\Circles\IRemoteEventBypassViewerCheck;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\GlobalScale\GSWrapper;
 use OCA\Circles\Model\Remote\RemoteEvent;
@@ -146,6 +148,7 @@ class RemoteEventService extends NC21Signature {
 	 *
 	 * @throws RemoteEventException
 	 * @throws OwnerNotFoundException
+	 * @throws ViewerNotConfirmedException
 	 */
 	public function newEvent(RemoteEvent $event): void {
 		$event->setSource($this->configService->getLocalInstance());
@@ -153,7 +156,6 @@ class RemoteEventService extends NC21Signature {
 			throw new RemoteEventException('Event does not contains Circle');
 		}
 
-		$this->verifyViewer($event);
 		try {
 			$gs = $this->getRemoteEvent($event);
 		} catch (RemoteEventException $e) {
@@ -161,8 +163,10 @@ class RemoteEventService extends NC21Signature {
 			throw $e;
 		}
 
+		$this->confirmViewer($event);
+
 		try {
-			if ($this->isLocalEvent($event)) {
+			if ($this->configService->isLocalInstance($event->getCircle()->getInstance())) {
 				$gs->verify($event);
 				if (!$event->isAsync()) {
 					$gs->manage($event);
@@ -180,69 +184,63 @@ class RemoteEventService extends NC21Signature {
 
 
 	/**
+	 * This confirmation is optional, method is just here to avoid going too far away on the process
+	 *
 	 * @param RemoteEvent $event
+	 *
+	 * @throws ViewerNotConfirmedException
 	 */
-	private function verifyViewer(RemoteEvent $event): void {
-		if (!$event->getCircle()->hasViewer()) {
+	private function confirmViewer(RemoteEvent $event): void {
+		if ($event->canBypass(RemoteEvent::BYPASS_VIEWERCHECK)) {
 			return;
 		}
 
 		$circle = $event->getCircle();
-		$viewer = $circle->getViewer();
-
-		if (!$this->configService->isLocalInstance($viewer->getInstance())) {
-			return;
+		if (!$circle->hasViewer()
+			|| !$this->configService->isLocalInstance(
+				$circle->getViewer()->getInstance()
+			)) {
+			throw new ViewerNotConfirmedException('viewer does not exist or is not local');
 		}
-
-		try {
-			$localCircle = $this->circleRequest->getCircle($circle->getId(), $viewer);
-		} catch (CircleNotFoundException $e) {
-			return;
-		}
-
-		if (!$circle->compareWith($localCircle) || !$viewer->compareWith($localCircle->getViewer())) {
-			return;
-		}
-
-		$event->setVerifiedViewer(true)
-			  ->setVerifiedCircle(true);
 	}
 
 
-	/**
-	 * We check that the event can be managed/checked locally or if the owner of the circle belongs to
-	 * an other instance of Nextcloud
-	 *
-	 * @param RemoteEvent $event
-	 *
-	 * @return bool
-	 * @throws CircleNotFoundException
-	 * @throws OwnerNotFoundException
-	 */
-	public function isLocalEvent(RemoteEvent $event): bool {
-		if ($event->isLocal()) {
-			return true;
-		}
 
-		$circle = $event->getCircle();
-		if (!$circle->hasOwner()) {
-			return ($this->configService->isLocalInstance($circle->getInstance()));
-		}
-
-		if ($event->isVerifiedCircle()) {
-			$localCircle = $event->getCircle();
-		} else {
-			$localCircle = $this->circleRequest->getCircle($circle->getId());
-		}
-
-		$owner = $localCircle->getOwner();
-		if ($owner->getInstance() === ''
-			|| $this->configService->isLocalInstance($owner->getInstance())) {
-			return true;
-		}
-
-		return false;
-	}
+//	/**
+//	 * We check that the event can be managed/checked locally or if the owner of the circle belongs to
+//	 * an other instance of Nextcloud
+//	 *
+//	 * @param RemoteEvent $event
+//	 *
+//	 * @return bool
+//	 * @throws CircleNotFoundException
+//	 * @throws OwnerNotFoundException
+//	 */
+//	public function isLocalEvent(RemoteEvent $event): bool {
+////		if ($event->isLocal()) {
+////			return true;
+////		}
+//
+//		$circle = $event->getCircle();
+//
+////		if (!$circle->hasOwner()) {
+//		return ($this->configService->isLocalInstance($circle->getInstance()));
+////		}
+//
+////		if ($event->isVerifiedCircle()) {
+////			$localCircle = $event->getCircle();
+////		} else {
+////			$localCircle = $this->circleRequest->getCircle($circle->getId());
+////		}
+////
+////		$owner = $localCircle->getOwner();
+////		if ($owner->getInstance() === ''
+////			|| $this->configService->isLocalInstance($owner->getInstance())) {
+////			return true;
+////		}
+////
+////		return false;
+//	}
 
 
 	/**
@@ -285,6 +283,9 @@ class RemoteEventService extends NC21Signature {
 	private function setRemoteEventBypass(RemoteEvent $event, IRemoteEvent $gs) {
 		if ($gs instanceof IRemoteEventBypassLocalCircleCheck) {
 			$event->bypass(RemoteEvent::BYPASS_LOCALCIRCLECHECK);
+		}
+		if ($gs instanceof IRemoteEventBypassViewerCheck) {
+			$event->bypass(RemoteEvent::BYPASS_VIEWERCHECK);
 		}
 	}
 

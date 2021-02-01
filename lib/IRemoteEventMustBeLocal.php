@@ -33,21 +33,11 @@ namespace OCA\Circles;
 
 
 /**
- * Interface IMember
+ * Interface IRemoteEvent
  *
  * @package OCA\Circles
  */
-interface IMember {
-
-	public function getId(): string;
-
-	public function getUserId(): string;
-
-	public function getUserType(): int;
-
-	public function getInstance(): string;
-
-	public function importFromIMember(IMember $member): self;
+interface IRemoteEventMustBeLocal {
 
 }
 

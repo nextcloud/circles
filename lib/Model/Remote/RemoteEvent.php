@@ -35,6 +35,7 @@ namespace OCA\Circles\Model\Remote;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
+use OCA\Circles\Exceptions\ViewerNotConfirmedException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 
@@ -51,6 +52,7 @@ class RemoteEvent implements JsonSerializable {
 	const SEVERITY_HIGH = 3;
 
 	const BYPASS_LOCALCIRCLECHECK = 1;
+	const BYPASS_VIEWERCHECK = 2;
 
 
 	use TArrayTools;
@@ -78,9 +80,6 @@ class RemoteEvent implements JsonSerializable {
 	private $result;
 
 	/** @var bool */
-	private $local;
-
-	/** @var bool */
 	private $async = false;
 
 	/** @var string */
@@ -104,11 +103,9 @@ class RemoteEvent implements JsonSerializable {
 	 * RemoteEvent constructor.
 	 *
 	 * @param string $class
-	 * @param bool $local
 	 */
-	function __construct(string $class = '', bool $local = false) {
+	function __construct(string $class = '') {
 		$this->class = $class;
-		$this->local = $local;
 		$this->data = new SimpleDataStore();
 		$this->result = new SimpleDataStore();
 	}
@@ -170,25 +167,6 @@ class RemoteEvent implements JsonSerializable {
 	/**
 	 * @return bool
 	 */
-	public function isLocal(): bool {
-		return $this->local;
-	}
-
-	/**
-	 * @param bool $local
-	 *
-	 * @return self
-	 */
-	public function setLocal(bool $local): self {
-		$this->local = $local;
-
-		return $this;
-	}
-
-
-	/**
-	 * @return bool
-	 */
 	public function isAsync(): bool {
 		return $this->async;
 	}
@@ -239,6 +217,17 @@ class RemoteEvent implements JsonSerializable {
 	 */
 	public function isVerifiedViewer(): bool {
 		return $this->verifiedViewer;
+	}
+
+	/**
+	 * @throws ViewerNotConfirmedException
+	 */
+	public function confirmVerifiedViewer(): void {
+		if ($this->isVerifiedViewer()) {
+			return;
+		}
+
+		throw new ViewerNotConfirmedException();
 	}
 
 

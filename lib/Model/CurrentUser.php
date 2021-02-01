@@ -72,10 +72,10 @@ class CurrentUser extends ManagedModel implements IMember, INC21Convert, INC21Qu
 	 * @param int $type
 	 * @param string $instance
 	 */
-	public function __construct(string $userId = '', int $type = Member::TYPE_USER, $instance = '') {
+	public function __construct(string $userId = '', $instance = '', int $type = Member::TYPE_USER) {
 		$this->userId = $userId;
-		$this->userType = $type;
 		$this->setInstance($instance);
+		$this->userType = $type;
 	}
 
 
@@ -179,6 +179,18 @@ class CurrentUser extends ManagedModel implements IMember, INC21Convert, INC21Qu
 		}
 
 		return $this->memberships;
+	}
+
+
+	/**
+	 * @param IMember $member
+	 *
+	 * @return self
+	 */
+	public function importFromIMember(IMember $member): IMember {
+		$this->getManager()->importFromIMember($this, $member);
+
+		return $this;
 	}
 
 

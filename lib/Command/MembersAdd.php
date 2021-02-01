@@ -38,19 +38,18 @@ use daita\MySmallPhpTools\Exceptions\RequestResultSizeException;
 use daita\MySmallPhpTools\Exceptions\RequestServerException;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
 use daita\MySmallPhpTools\Model\Request;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
 use Exception;
 use OC\Core\Command\Base;
-use OC\User\NoUserException;
-use OCA\Circles\Db\DeprecatedMembersRequest;
+use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\GSStatusException;
-use OCA\Circles\Model\DeprecatedMember;
+use OCA\Circles\IMember;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
-use OCA\Circles\Service\MembersService;
-use OCP\IL10N;
-use OCP\IUserManager;
+use OCA\Circles\Service\CurrentUserService;
+use OCA\Circles\Service\MemberService;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
@@ -59,23 +58,17 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package OCA\Circles\Command
  */
-class MembersCreate extends Base {
+class MembersAdd extends Base {
 
 
-	use TNC21Request;
+	/** @var CurrentUserService */
+	private $currentUserService;
 
+	/** @var CircleRequest */
+	private $circleRequest;
 
-	/** @var IL10N */
-	private $l10n;
-
-	/** @var IUserManager */
-	private $userManager;
-
-	/** @var MembersService */
-	private $membersService;
-
-	/** @var DeprecatedMembersRequest */
-	private $membersRequest;
+	/** @var MemberService */
+	private $memberService;
 
 	/** @var ConfigService */
 	private $configService;
@@ -84,32 +77,32 @@ class MembersCreate extends Base {
 	/**
 	 * MembersCreate constructor.
 	 *
-	 * @param IL10N $l10n
-	 * @param IUserManager $userManager
-	 * @param MembersService $membersService
-	 * @param DeprecatedMembersRequest $membersRequest
+	 * @param CircleRequest $circleRequest
+	 * @param CurrentUserService $currentUserService
+	 * @param MemberService $memberService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IL10N $l10n, IUserManager $userManager, MembersService $membersService,
-		DeprecatedMembersRequest $membersRequest, ConfigService $configService
+		CircleRequest $circleRequest, CurrentUserService $currentUserService, MemberService $memberService,
+		ConfigService $configService
 	) {
 		parent::__construct();
-		$this->l10n = $l10n;
-		$this->userManager = $userManager;
-		$this->membersService = $membersService;
-		$this->membersRequest = $membersRequest;
+		$this->currentUserService = $currentUserService;
+		$this->circleRequest = $circleRequest;
+
+		$this->memberService = $memberService;
 		$this->configService = $configService;
 	}
 
 
 	protected function configure() {
 		parent::configure();
-		$this->setName('circles:members:create')
-			 ->setDescription('create a new member')
+		$this->setName('circles:members:add')
+			 ->setDescription('Add a member to a Circle')
 			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
 			 ->addArgument('user', InputArgument::REQUIRED, 'username of the member')
-			 ->addArgument('level', InputArgument::OPTIONAL, 'level of the member', 'member');
+			 ->addOption('viewer', '', InputOption::VALUE_REQUIRED, 'set a viewer', '')
+			 ->addOption('type', '', InputOption::VALUE_REQUIRED, 'type of the user', Member::TYPE_USER);
 	}
 
 
@@ -118,44 +111,34 @@ class MembersCreate extends Base {
 	 * @param OutputInterface $output
 	 *
 	 * @return int
-	 * @throws NoUserException
 	 * @throws Exception
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$circleId = $input->getArgument('circle_id');
+		$viewerId = $input->getOption('viewer');
 		$userId = $input->getArgument('user');
-		$level = $input->getArgument('level');
+		$userType = $input->getOption('type');
 
-		$instance = '';
-		$user = $this->userManager->get($userId);
-		if ($user === null) {
-			$userId = $this->findUserFromLookup($userId, $instance);
+		if ($viewerId !== '') {
+			$this->currentUserService->setLocalViewer($viewerId);
 		} else {
-			$userId = $user->getUID();
+			$localCircle = $this->circleRequest->getCircle($circleId);
+			if (!$this->configService->isLocalInstance($localCircle->getInstance())) {
+				throw new Exception('the Circle is not managed from this instance, please use --viewer');
+			}
+
+			// TODO: manage NO_OWNER circles
+			$owner = $localCircle->getOwner();
+			$this->currentUserService->setCurrentUser($owner);
 		}
 
-		if ($userId === '') {
-			throw new NoUserException('user does not exist');
-		}
+		$member = $this->currentUserService->createCurrentUser($userId, (int)$userType);
+		$this->memberService->addMember($circleId, $member);
 
-		$levels = [
-			'member'    => DeprecatedMember::LEVEL_MEMBER,
-			'moderator' => DeprecatedMember::LEVEL_MODERATOR,
-			'admin'     => DeprecatedMember::LEVEL_ADMIN,
-			'owner'     => DeprecatedMember::LEVEL_OWNER
-		];
-
-		if (!key_exists(strtolower($level), $levels)) {
-			throw new Exception('unknown level: ' . json_encode(array_keys($levels)));
-		}
-
-		$level = $levels[strtolower($level)];
-
-		$this->membersService->addMember($circleId, $userId, DeprecatedMember::TYPE_USER, $instance, true);
-		$this->membersService->levelMember($circleId, $userId, DeprecatedMember::TYPE_USER, $instance, $level, true);
-
-		$member = $this->membersRequest->forceGetMember($circleId, $userId, DeprecatedMember::TYPE_USER, $instance);
-		echo json_encode($member, JSON_PRETTY_PRINT) . "\n";
+////		$this->membersService->levelMember($circleId, $userId, DeprecatedMember::TYPE_USER, $instance, $level, true);
+////
+////		$member = $this->membersRequest->forceGetMember($circleId, $userId, DeprecatedMember::TYPE_USER, $instance);
+////		echo json_encode($member, JSON_PRETTY_PRINT) . "\n";
 
 		return 0;
 	}

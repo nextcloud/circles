@@ -48,11 +48,6 @@ class MemberRequest extends MemberRequestBuilder {
 	 * @param Member $member
 	 */
 	public function save(Member $member): void {
-		$instance = $member->getInstance();
-		if ($this->configService->isLocalInstance($instance)) {
-			$instance = '';
-		}
-
 		$qb = $this->getMemberInsertSql();
 		$qb->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
 		   ->setValue('member_id', $qb->createNamedParameter($member->getId()))
@@ -60,7 +55,7 @@ class MemberRequest extends MemberRequestBuilder {
 		   ->setValue('user_type', $qb->createNamedParameter($member->getUserType()))
 		   ->setValue('cached_name', $qb->createNamedParameter($member->getCachedName()))
 		   ->setValue('cached_update', $qb->createNamedParameter($this->timezoneService->getUTCDate()))
-		   ->setValue('instance', $qb->createNamedParameter($instance))
+		   ->setValue('instance', $qb->createNamedParameter($qb->getInstance($member)))
 		   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
 		   ->setValue('status', $qb->createNamedParameter($member->getStatus()))
 		   ->setValue('contact_id', $qb->createNamedParameter($member->getContactId()))

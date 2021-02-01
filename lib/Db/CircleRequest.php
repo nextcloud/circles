@@ -59,7 +59,7 @@ class CircleRequest extends CircleRequestBuilder {
 		   ->setValue('contact_addressbook', $qb->createNamedParameter($circle->getContactAddressBook()))
 		   ->setValue('contact_groupname', $qb->createNamedParameter($circle->getContactGroupName()))
 		   ->setValue('settings', $qb->createNamedParameter(json_encode($circle->getSettings())))
-		   ->setValue('type', $qb->createNamedParameter($circle->getType()))
+		   ->setValue('type', $qb->createNamedParameter(0))
 		   ->setValue('config', $qb->createNamedParameter($circle->getConfig()));
 
 		$qb->execute();

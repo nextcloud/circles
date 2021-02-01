@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -30,12 +32,14 @@
 namespace OCA\Circles\Command;
 
 use OC\Core\Command\Base;
+use OC\User\NoUserException;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\ViewerNotFoundException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\CurrentUserService;
 use OCA\Circles\Service\MemberService;
-use OCP\IL10N;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -52,8 +56,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 class MembersList extends Base {
 
 
-	/** @var IL10N */
-	private $l10n;
+	/** @var CurrentUserService */
+	private $currentUserService;
 
 	/** @var CircleService */
 	private $circleService;
@@ -68,16 +72,17 @@ class MembersList extends Base {
 	/**
 	 * MembersList constructor.
 	 *
-	 * @param IL10N $l10n
+	 * @param CurrentUserService $currentUserService
 	 * @param CircleService $circleService
 	 * @param MemberService $memberService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IL10N $l10n, CircleService $circleService, MemberService $memberService, ConfigService $configService
+		CurrentUserService $currentUserService, CircleService $circleService, MemberService $memberService,
+		ConfigService $configService
 	) {
 		parent::__construct();
-		$this->l10n = $l10n;
+		$this->currentUserService = $currentUserService;
 		$this->circleService = $circleService;
 		$this->memberService = $memberService;
 		$this->configService = $configService;
@@ -89,7 +94,8 @@ class MembersList extends Base {
 		$this->setName('circles:members:list')
 			 ->setDescription('listing members')
 			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
-			 ->addOption('json', '', InputOption::VALUE_NONE, 'returns result as JSON');
+			 ->addOption('json', '', InputOption::VALUE_NONE, 'returns result as JSON')
+			 ->addOption('viewer', '', InputOption::VALUE_REQUIRED, 'add a viewer to the request', '');
 	}
 
 
@@ -99,11 +105,14 @@ class MembersList extends Base {
 	 *
 	 * @return int
 	 * @throws CircleNotFoundException
+	 * @throws ViewerNotFoundException
+	 * @throws NoUserException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$circleId = $input->getArgument('circle_id');
 		$json = $input->getOption('json');
 
+		$this->currentUserService->commandLineViewer($input->getOption('viewer'), true);
 		$this->circleService->getCircle($circleId);
 		$members = $this->memberService->getMembers($circleId);
 
@@ -119,7 +128,6 @@ class MembersList extends Base {
 		$table = new Table($output);
 		$table->setHeaders(['ID', 'Username', 'Instance', 'Level']);
 		$table->render();
-		$output->writeln('');
 
 		$local = $this->configService->getLocalInstance();
 		foreach ($members as $member) {

@@ -72,6 +72,7 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 		return ($this->configService->isLocalInstance($instance)) ? '' : $instance;
 	}
 
+
 	/**
 	 * @param string $id
 	 */
@@ -212,7 +213,7 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 					 $expr->eq('v.circle_id', $pf . 'unique_id'),
 					 $expr->eq('v.user_id', $this->createNamedParameter($viewer->getUserId())),
 					 $expr->eq('v.user_type', $this->createNamedParameter($viewer->getUserType())),
-					 $expr->eq('v.instance', $this->createNamedParameter($viewer->getInstance()))
+					 $expr->eq('v.instance', $this->createNamedParameter($this->getInstance($viewer)))
 				 )
 			 );
 	}
@@ -225,9 +226,13 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 		$expr = $this->expr();
 
 		// Visibility to non-member is
+		// - 0 (default), if viewer is member
 		// - 2 (Personal), if viewer is owner)
 		// - 4 (Visible to everyone)
 		$orX = $expr->orX();
+		$orX->add(
+			$expr->andX($expr->gte($alias . '.level', $this->createNamedParameter(Member::LEVEL_MEMBER)))
+		);
 		$orX->add(
 			$expr->andX(
 				$expr->bitwiseAnd($this->getDefaultSelectAlias() . '.config', Circle::CFG_PERSONAL),
@@ -236,6 +241,11 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 		);
 		$orX->add($expr->bitwiseAnd($this->getDefaultSelectAlias() . '.config', Circle::CFG_VISIBLE));
 		$this->andWhere($orX);
+
+		// TODO: add a filter for allowing 1, 128
+		// - 1 means hidden to front-end, filtering
+		$bitHidden = $expr->bitwiseAnd($this->getDefaultSelectAlias() . '.config', Circle::CFG_SINGLE);
+		$this->andWhere($this->createFunction('NOT') . $bitHidden);
 
 		// - 128 means fully hidden, filtering
 		$bitHidden = $expr->bitwiseAnd($this->getDefaultSelectAlias() . '.config', Circle::CFG_HIDDEN);

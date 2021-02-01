@@ -35,16 +35,19 @@ namespace OCA\Circles\Service;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Logger;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use daita\MySmallPhpTools\Traits\TStringTools;
+use OC\User\NoUserException;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\Exceptions\ViewerNotFoundException;
 use OCA\Circles\IMember;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\CurrentUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
+use OCP\IUserManager;
 
 
 /**
@@ -59,6 +62,9 @@ class CurrentUserService {
 	use TStringTools;
 	use TNC21Logger;
 
+
+	/** @var IUserManager */
+	private $userManager;
 
 	/** @var MembershipRequest */
 	private $membershipRequest;
@@ -83,15 +89,17 @@ class CurrentUserService {
 	/**
 	 * ViewerService constructor.
 	 *
+	 * @param IUserManager $userManager
 	 * @param MembershipRequest $membershipRequest
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		MembershipRequest $membershipRequest, CircleRequest $circleRequest, MemberRequest $memberRequest,
-		ConfigService $configService
+		IUserManager $userManager, MembershipRequest $membershipRequest, CircleRequest $circleRequest,
+		MemberRequest $memberRequest, ConfigService $configService
 	) {
+		$this->userManager = $userManager;
 		$this->membershipRequest = $membershipRequest;
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
@@ -103,10 +111,10 @@ class CurrentUserService {
 	 * @param string $userId
 	 *
 	 * @throws CircleNotFoundException
+	 * @throws NoUserException
 	 */
 	public function setLocalViewer(string $userId): void {
-		$this->currentUser = new CurrentUser($userId);
-		$this->fillSingleCircleId($this->currentUser);
+		$this->currentUser = $this->createLocalCurrentUser($userId);
 	}
 
 	/**
@@ -115,9 +123,15 @@ class CurrentUserService {
 	 * @throws CircleNotFoundException
 	 */
 	public function setCurrentUser(IMember $currentUser): void {
-		if ($currentUser->getInstance() === '') {
-			$currentUser->setInstance($this->configService->getLocalInstance());
+		if ($currentUser instanceof Member) {
+			$tmp = new CurrentUser();
+			$tmp->importFromIMember($currentUser);
+			$currentUser = $tmp;
 		}
+
+//		if ($currentUser->getInstance() === '') {
+//			$currentUser->setInstance($this->configService->getLocalInstance());
+//		}
 
 		$this->currentUser = $currentUser;
 		$this->fillSingleCircleId($this->currentUser);
@@ -144,7 +158,6 @@ class CurrentUserService {
 		if ($this->bypass) {
 			return;
 		}
-
 		if (!$this->hasCurrentUser()) {
 			throw new ViewerNotFoundException();
 		}
@@ -163,12 +176,105 @@ class CurrentUserService {
 	 *
 	 * @return CurrentUser
 	 * @throws CircleNotFoundException
+	 * @throws NoUserException
 	 */
-	public function createTemporaryViewer(string $userId): CurrentUser {
-		$temporaryUser = new CurrentUser($userId);
-		$this->fillSingleCircleId($temporaryUser);
+	public function createLocalCurrentUser(string $userId): CurrentUser {
+		$user = $this->userManager->get($userId);
+		if ($user === null) {
+			throw new NoUserException('user ' . $userId . ' not found');
+		}
 
-		return $temporaryUser;
+		$currentUser = new CurrentUser($user->getUID());
+		$this->fillSingleCircleId($currentUser);
+
+		return $currentUser;
+	}
+
+
+	/**
+	 * @param string $userId
+	 * @param int $userType
+	 *
+	 * @return CurrentUser
+	 * @throws CircleNotFoundException
+	 * @throws NoUserException
+	 * @throws UserTypeNotFoundException
+	 */
+	public function createCurrentUser(string $userId, int $userType = Member::TYPE_USER): CurrentUser {
+		switch ($userType) {
+			case Member::TYPE_USER:
+				return $this->createCurrentUserTypeUser($userId);
+		}
+
+		throw new UserTypeNotFoundException();
+	}
+
+	/**
+	 * @param string $userId
+	 *
+	 * @return CurrentUser
+	 * @throws CircleNotFoundException
+	 * @throws NoUserException
+	 */
+	public function createCurrentUserTypeUser(string $userId): CurrentUser {
+		$userId = trim($userId, '@');
+		if (strpos($userId, '@') === false) {
+			$instance = $this->configService->getLocalInstance();
+		} else {
+			list($userId, $instance) = explode('@', $userId);
+		}
+
+		if ($this->configService->isLocalInstance($instance)) {
+			return $this->createLocalCurrentUser($userId);
+		} else {
+			return new CurrentUser($userId, $instance, Member::TYPE_USER);
+		}
+	}
+
+
+
+
+	/**
+	 * some ./occ commands allows to add a Viewer
+	 *
+	 * @param string $userId
+	 * @param bool $bypass
+	 *
+	 * @throws CircleNotFoundException
+	 * @throws NoUserException
+	 */
+	public function commandLineViewer(string $userId, bool $bypass = false) {
+		if ($userId !== '') {
+			$currentUser = $this->createCurrentUserTypeUser($userId);
+			$this->setCurrentUser($currentUser);
+		} elseif ($bypass) {
+			$this->bypassCurrentUserCondition(true);
+		}
+	}
+
+
+	/**
+	 * TODO: Is it needed outside of CirclesList ?
+	 *
+	 * @param string $userId
+	 * @param int $level
+	 *
+	 * @return Member
+	 * @throws CircleNotFoundException
+	 * @throws NoUserException
+	 */
+	public function createFilterMember(string $userId, int $level = Member::LEVEL_MEMBER): Member {
+		$userId = trim($userId, ',');
+		if (strpos($userId, ',') !== false) {
+			list($userId, $level) = explode(',', $userId);
+		}
+
+		$currentUser = $this->createCurrentUserTypeUser($userId);
+		$member = new Member();
+		$member->importFromIMember($currentUser)
+			   ->setLevel((int)$level);
+
+		return $member;
 	}
 
 
@@ -182,8 +288,11 @@ class CurrentUserService {
 			return;
 		}
 
-		$circle = $this->getSingleCircle($currentUser);
-		$currentUser->setId($circle->getId());
+		// only if currentUser is from LocalInstance
+		if ($this->configService->isLocalInstance($currentUser->getInstance())) {
+			$circle = $this->getSingleCircle($currentUser);
+			$currentUser->setId($circle->getId());
+		}
 	}
 
 
@@ -206,7 +315,7 @@ class CurrentUserService {
 			$this->circleRequest->save($circle);
 
 			$owner = new Member();
-			$owner->importFromCurrentUser($currentUser)
+			$owner->importFromIMember($currentUser)
 				  ->setLevel(Member::LEVEL_OWNER)
 				  ->setCircleId($id)
 				  ->setId($id)
@@ -279,7 +388,6 @@ class CurrentUserService {
 
 
 	}
-
 
 }
 

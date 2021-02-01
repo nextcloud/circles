@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -35,8 +37,11 @@ use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Exceptions\SignatureException;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use OC\Core\Command\Base;
+use OC\User\NoUserException;
+use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\ViewerNotFoundException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
@@ -99,8 +104,6 @@ class CirclesList extends Base {
 		$this->circleService = $circleService;
 		$this->remoteService = $remoteService;
 		$this->configService = $configService;
-
-		$this->currentUserService->bypassCurrentUserCondition(true);
 	}
 
 
@@ -108,13 +111,12 @@ class CirclesList extends Base {
 		parent::configure();
 		$this->setName('circles:manage:list')
 			 ->setDescription('listing current circles')
-			 ->addArgument('owner', InputArgument::OPTIONAL, 'filter by owner', '')
-			 ->addOption('level', '', InputOption::VALUE_REQUIRED, 'level of membership', Member::LEVEL_OWNER)
+			 ->addArgument('remote', InputArgument::OPTIONAL, 'remote Nextcloud address', '')
+			 ->addOption('member', '', InputOption::VALUE_REQUIRED, 'search for member', '')
 			 ->addOption('def', '', InputOption::VALUE_NONE, 'display complete circle configuration')
 			 ->addOption('all', '', InputOption::VALUE_NONE, 'display also hidden Circles')
 			 ->addOption('viewer', '', InputOption::VALUE_REQUIRED, 'set viewer', '')
-			 ->addOption('json', '', InputOption::VALUE_NONE, 'returns result as JSON')
-			 ->addOption('remote', '', InputOption::VALUE_REQUIRED, 'remote Nextcloud address', '');
+			 ->addOption('json', '', InputOption::VALUE_NONE, 'returns result as JSON');
 	}
 
 
@@ -123,31 +125,34 @@ class CirclesList extends Base {
 	 * @param OutputInterface $output
 	 *
 	 * @return int
+	 * @throws CircleNotFoundException
 	 * @throws InvalidItemException
+	 * @throws NoUserException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
 	 * @throws RequestNetworkException
 	 * @throws SignatoryException
 	 * @throws SignatureException
+	 * @throws UnknownRemoteException
 	 * @throws ViewerNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		$owner = $input->getArgument('owner');
-		$level = $input->getOption('level');
+		$member = $input->getOption('member');
 		$viewer = $input->getOption('viewer');
 		$json = $input->getOption('json');
-		$remote = $input->getOption('remote');
+		$remote = $input->getArgument('remote');
 
 		$output = new ConsoleOutput();
 		$output = $output->section();
 
+		$this->currentUserService->commandLineViewer($input->getOption('viewer'), true);
+
 		$filter = null;
-		if ($owner !== '') {
-			$filter = new Member($owner, Member::TYPE_USER, '');
-			$filter->setLevel((int)$level);
+		if ($member !== '') {
+			$filter = $this->currentUserService->createFilterMember($member);
 		}
 
-		$circles = $this->getCircles($filter, $viewer, $remote);
+		$circles = $this->getCircles($filter, $remote, $input->getOption('all'));
 
 		if ($json) {
 			echo json_encode($circles, JSON_PRETTY_PRINT) . "\n";
@@ -162,10 +167,6 @@ class CirclesList extends Base {
 		$local = $this->configService->getLocalInstance();
 		$display = ($input->getOption('def') ? ModelManager::TYPES_LONG : ModelManager::TYPES_SHORT);
 		foreach ($circles as $circle) {
-//			if ($circle->isHidden() && !$input->getOption('all')) {
-//				continue;
-//			}
-
 			$owner = $circle->getOwner();
 			$table->appendRow(
 				[
@@ -188,6 +189,7 @@ class CirclesList extends Base {
 	 * @param Member|null $filter
 	 * @param string $viewer
 	 * @param string $remote
+	 * @param bool $all
 	 *
 	 * @return Circle[]
 	 * @throws InvalidItemException
@@ -197,16 +199,30 @@ class CirclesList extends Base {
 	 * @throws SignatoryException
 	 * @throws SignatureException
 	 * @throws ViewerNotFoundException
+	 * @throws CircleNotFoundException
+	 * @throws UnknownRemoteException
+	 * @throws NoUserException
 	 */
-	private function getCircles(?Member $filter, string $viewer, string $remote): array {
-		if ($viewer !== '') {
-			$this->currentUserService->setLocalViewer($viewer);
-		}
+	private function getCircles(?Member $filter, string $remote, bool $all = false): array {
 		if ($remote !== '') {
-			return $this->remoteService->getCircles($remote);
+			$circles = $this->remoteService->getCircles($remote);
+		} else {
+			$circles = $this->circleService->getCircles($filter);
 		}
 
-		return $this->circleService->getCircles($filter);
+		if ($all) {
+			return $circles;
+		}
+
+		$filtered = [];
+		foreach ($circles as $circle) {
+			if (!$circle->isConfig(Circle::CFG_SINGLE)
+				&& !$circle->isConfig(Circle::CFG_HIDDEN)) {
+				$filtered[] = $circle;
+			}
+		}
+
+		return $filtered;
 	}
 
 }

@@ -225,24 +225,6 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 
 
 	/**
-	 * @param int $type
-	 *
-	 * @deprecated
-	 */
-	public function setType(int $type): void {
-		$this->type = $type;
-	}
-
-	/**
-	 * @return int
-	 * @deprecated
-	 */
-	public function getType(): int {
-		return $this->type;
-	}
-
-
-	/**
 	 * @param string $name
 	 *
 	 * @return self
@@ -282,9 +264,13 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 
 	/**
 	 * @param Member $owner
+	 *
+	 * @return self
 	 */
-	public function setOwner(Member $owner): void {
+	public function setOwner(Member $owner): self {
 		$this->owner = $owner;
+
+		return $this;
 	}
 
 	/**
@@ -327,9 +313,13 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 
 	/**
 	 * @param Member $viewer
+	 *
+	 * @return Circle
 	 */
-	public function setViewer(Member $viewer): void {
+	public function setViewer(Member $viewer): self {
 		$this->viewer = $viewer;
+
+		return $this;
 	}
 
 	/**

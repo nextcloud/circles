@@ -31,9 +31,11 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
+use daita\MySmallPhpTools\Exceptions\RequestContentException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Exceptions\SignatureException;
+use daita\MySmallPhpTools\Exceptions\WellKnownLinkNotFoundException;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21SignedRequest;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21WellKnown;
@@ -45,10 +47,14 @@ use OCA\Circles\Db\RemoteRequest;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteUidException;
 use OCA\Circles\Model\Remote\RemoteInstance;
+use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\GlobalScaleService;
 use OCA\Circles\Service\RemoteService;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
@@ -68,21 +74,42 @@ class CirclesRemote extends Base {
 	/** @var RemoteRequest */
 	private $remoteRequest;
 
+	/** @var GlobalScaleService */
+	private $globalScaleService;
+
 	/** @var RemoteService */
 	private $remoteService;
+
+	/** @var ConfigService */
+	private $configService;
+
+
+	/** @var InputInterface */
+	private $input;
+
+	/** @var OutputInterface */
+	private $output;
 
 
 	/**
 	 * CirclesRemote constructor.
 	 *
 	 * @param RemoteRequest $remoteRequest
+	 * @param GlobalScaleService $globalScaleService
 	 * @param RemoteService $remoteService
+	 * @param ConfigService $configService
 	 */
-	public function __construct(RemoteRequest $remoteRequest, RemoteService $remoteService) {
+	public function __construct(
+		RemoteRequest $remoteRequest, GlobalScaleService $globalScaleService, RemoteService $remoteService,
+		ConfigService $configService
+	) {
 		parent::__construct();
 
 		$this->remoteRequest = $remoteRequest;
+		$this->globalScaleService = $globalScaleService;
 		$this->remoteService = $remoteService;
+		$this->configService = $configService;
+
 		$this->setup('app', 'circles');
 	}
 
@@ -94,7 +121,7 @@ class CirclesRemote extends Base {
 		parent::configure();
 		$this->setName('circles:remote')
 			 ->setDescription('remote features')
-			 ->addArgument('host', InputArgument::REQUIRED, 'host of the remote instance of Nextcloud')
+			 ->addArgument('host', InputArgument::OPTIONAL, 'host of the remote instance of Nextcloud')
 			 ->addOption('all', '', InputOption::VALUE_NONE, 'display all information');
 	}
 
@@ -109,21 +136,45 @@ class CirclesRemote extends Base {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$host = $input->getArgument('host');
 
+		$this->input = $input;
+		$this->output = $output;
+
+		if ($host) {
+			$this->requestInstance($host);
+		} else {
+			$this->checkKnownInstance();
+		}
+
+		return 0;
+	}
+
+
+	/**
+	 * @param string $host
+	 *
+	 * @throws RemoteUidException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws SignatureException
+	 * @throws RequestContentException
+	 * @throws WellKnownLinkNotFoundException
+	 */
+	private function requestInstance(string $host): void {
 		$webfinger = $this->getWebfinger($host, Application::APP_SUBJECT);
-		if ($input->getOption('all')) {
-			$output->writeln('- Webfinger on <info>' . $host . '</info>');
-			$output->writeln(json_encode($webfinger, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-			$output->writeln('');
+		if ($this->input->getOption('all')) {
+			$this->output->writeln('- Webfinger on <info>' . $host . '</info>');
+			$this->output->writeln(json_encode($webfinger, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+			$this->output->writeln('');
 		}
 
-		if ($input->getOption('all')) {
+		if ($this->input->getOption('all')) {
 			$circleLink = $this->extractLink(Application::APP_REL, $webfinger);
-			$output->writeln('- Information about Circles app on <info>' . $host . '</info>');
-			$output->writeln(json_encode($circleLink, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-			$output->writeln('');
+			$this->output->writeln('- Information about Circles app on <info>' . $host . '</info>');
+			$this->output->writeln(json_encode($circleLink, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+			$this->output->writeln('');
 		}
 
-		$output->writeln('- Available services on <info>' . $host . '</info>');
+		$this->output->writeln('- Available services on <info>' . $host . '</info>');
 		foreach ($webfinger->getLinks() as $link) {
 			$app = $link->getProperty('name');
 			$ver = $link->getProperty('version');
@@ -134,52 +185,52 @@ class CirclesRemote extends Base {
 				$ver = 'v' . $ver;
 			}
 
-			$output->writeln(' * ' . $link->getRel() . ' ' . $app . $ver);
+			$this->output->writeln(' * ' . $link->getRel() . ' ' . $app . $ver);
 		}
-		$output->writeln('');
+		$this->output->writeln('');
 
-		$output->writeln('- Resources related to Circles on <info>' . $host . '</info>');
+		$this->output->writeln('- Resources related to Circles on <info>' . $host . '</info>');
 		$resource = $this->getResourceData($host, Application::APP_SUBJECT, Application::APP_REL);
-		$output->writeln(json_encode($resource, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-		$output->writeln('');
+		$this->output->writeln(json_encode($resource, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+		$this->output->writeln('');
 
 
 		$tempUid = $resource->g('uid');
-		$output->writeln(
+		$this->output->writeln(
 			'- Confirming UID=' . $tempUid . ' from parsed Signatory at <info>' . $host . '</info>'
 		);
 
 		try {
 			$remoteSignatory = $this->remoteService->retrieveSignatory($resource->g('id'), true);
-			$output->writeln(' * No SignatureException: <info>Identity authed</info>');
+			$this->output->writeln(' * No SignatureException: <info>Identity authed</info>');
 		} catch (SignatureException $e) {
-			$output->writeln(
+			$this->output->writeln(
 				'<error>' . $host . ' cannot auth its identity: ' . $e->getMessage() . '</error>'
 			);
 
-			return 0;
+			return;
 		}
 
-		$output->writeln(' * Found <info>' . $remoteSignatory->getUid() . '</info>');
+		$this->output->writeln(' * Found <info>' . $remoteSignatory->getUid() . '</info>');
 		if ($remoteSignatory->getUid(true) !== $tempUid) {
-			$output->writeln('<error>looks like ' . $host . ' is faking its identity');
+			$this->output->writeln('<error>looks like ' . $host . ' is faking its identity');
 
-			return 0;
+			return;
 		}
 
-		$output->writeln('');
+		$this->output->writeln('');
 
 		$testUrl = $resource->g('test');
-		$output->writeln('- Testing signed payload on <info>' . $testUrl . '</info>');
+		$this->output->writeln('- Testing signed payload on <info>' . $testUrl . '</info>');
 
 		try {
 			$localSignatory = $this->remoteService->getAppSignatory();
 		} catch (SignatoryException $e) {
-			$output->writeln(
+			$this->output->writeln(
 				'<error>Federated Circles not enabled locally. Please run ./occ circles:remote:init</error>'
 			);
 
-			return 0;
+			return;
 		}
 
 		$payload = [
@@ -187,31 +238,33 @@ class CirclesRemote extends Base {
 			'token' => $this->uuid()
 		];
 		$signedRequest = $this->outgoingTest($testUrl, $payload);
-		$output->writeln(' * Payload: ');
-		$output->writeln(json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-		$output->writeln('');
+		$this->output->writeln(' * Payload: ');
+		$this->output->writeln(json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+		$this->output->writeln('');
 
-		$output->writeln(' * Clear Signature: ');
-		$output->writeln('<comment>' . $signedRequest->getClearSignature() . '</comment>');
-		$output->writeln('');
+		$this->output->writeln(' * Clear Signature: ');
+		$this->output->writeln('<comment>' . $signedRequest->getClearSignature() . '</comment>');
+		$this->output->writeln('');
 
-		$output->writeln(' * Signed Signature (base64 encoded): ');
-		$output->writeln('<comment>' . base64_encode($signedRequest->getSignedSignature()) . '</comment>');
-		$output->writeln('');
+		$this->output->writeln(' * Signed Signature (base64 encoded): ');
+		$this->output->writeln(
+			'<comment>' . base64_encode($signedRequest->getSignedSignature()) . '</comment>'
+		);
+		$this->output->writeln('');
 
 		$result = $signedRequest->getOutgoingRequest()->getResult();
 		$code = $result->getStatusCode();
-		$output->writeln(' * Result: ' . (($code === 200) ? '<info>' . $code . '</info>' : $code));
-		$output->writeln(
+		$this->output->writeln(' * Result: ' . (($code === 200) ? '<info>' . $code . '</info>' : $code));
+		$this->output->writeln(
 			json_encode(json_decode($result->getContent(), true), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
 		);
-		$output->writeln('');
+		$this->output->writeln('');
 
-		if ($input->getOption('all')) {
-			$output->writeln('');
-			$output->writeln('<info>### Complete report ###</info>');
-			$output->writeln(json_encode($signedRequest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-			$output->writeln('');
+		if ($this->input->getOption('all')) {
+			$this->output->writeln('');
+			$this->output->writeln('<info>### Complete report ###</info>');
+			$this->output->writeln(json_encode($signedRequest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+			$this->output->writeln('');
 		}
 
 		if ($remoteSignatory->getUid() !== $localSignatory->getUid()) {
@@ -219,20 +272,20 @@ class CirclesRemote extends Base {
 			try {
 				$stored = new RemoteInstance();
 				$this->remoteService->confirmValidRemote($remoteSignatory, $stored);
-				$output->writeln(
+				$this->output->writeln(
 					'<info>The remote instance ' . $host
 					. ' is already known with this current identity</info>'
 				);
 
 				if ($remoteSignatory->getInstance() !== $stored->getInstance()) {
-					$output->writeln(
+					$this->output->writeln(
 						'- updating host from ' . $stored->getInstance() . ' to '
 						. $remoteSignatory->getInstance()
 					);
 					$this->remoteService->update($remoteSignatory, RemoteService::UPDATE_INSTANCE);
 				}
 				if ($remoteSignatory->getId() !== $stored->getId()) {
-					$output->writeln(
+					$this->output->writeln(
 						'- updating href/Id from ' . $stored->getId() . ' to '
 						. $remoteSignatory->getId()
 					);
@@ -240,30 +293,25 @@ class CirclesRemote extends Base {
 				}
 
 			} catch (RemoteUidException $e) {
-				$this->updateRemote($input, $output, $remoteSignatory);
+				$this->updateRemote($remoteSignatory);
 			} catch (RemoteNotFoundException $e) {
-				$this->saveRemote($input, $output, $remoteSignatory);
+				$this->saveRemote($remoteSignatory);
 			}
 		}
 
-		return 0;
 	}
 
 
 	/**
-	 * @param InputInterface $input
-	 * @param OutputInterface $output
 	 * @param RemoteInstance $remoteSignatory
 	 *
 	 * @throws RemoteUidException
 	 */
-	private function saveRemote(
-		InputInterface $input, OutputInterface $output, RemoteInstance $remoteSignatory
-	) {
-		$output->writeln('');
+	private function saveRemote(RemoteInstance $remoteSignatory) {
+		$this->output->writeln('');
 		$helper = $this->getHelper('question');
 
-		$output->writeln(
+		$this->output->writeln(
 			'The remote instance <info>' . $remoteSignatory->getInstance() . '</info> looks good.'
 		);
 		$question = new ConfirmationQuestion(
@@ -272,31 +320,27 @@ class CirclesRemote extends Base {
 			'/^(y|Y)/i'
 		);
 
-		if ($helper->ask($input, $output, $question)) {
+		if ($helper->ask($this->input, $this->output, $question)) {
 			$this->remoteRequest->save($remoteSignatory);
-			$output->writeln('<info>remote instance saved</info>');
+			$this->output->writeln('<info>remote instance saved</info>');
 		}
 	}
 
 
 	/**
-	 * @param InputInterface $input
-	 * @param OutputInterface $output
 	 * @param RemoteInstance $remoteSignatory
 	 *
 	 * @throws RemoteUidException
 	 */
-	private function updateRemote(
-		InputInterface $input, OutputInterface $output, RemoteInstance $remoteSignatory
-	): void {
-		$output->writeln('');
+	private function updateRemote(RemoteInstance $remoteSignatory): void {
+		$this->output->writeln('');
 		$helper = $this->getHelper('question');
 
-		$output->writeln(
+		$this->output->writeln(
 			'The remote instance <info>' . $remoteSignatory->getInstance()
 			. '</info> is known but <error>its identity has changed.</error>'
 		);
-		$output->writeln(
+		$this->output->writeln(
 			'<comment>If you are not sure on why identity changed, please say No to the next question and contact the admin of the remote instance</comment>'
 		);
 		$question = new ConfirmationQuestion(
@@ -305,9 +349,9 @@ class CirclesRemote extends Base {
 			'/^(y|Y)/i'
 		);
 
-		if ($helper->ask($input, $output, $question)) {
+		if ($helper->ask($this->input, $this->output, $question)) {
 			$this->remoteService->update($remoteSignatory);
-			$output->writeln('remote instance updated');
+			$this->output->writeln('remote instance updated');
 		}
 	}
 
@@ -317,9 +361,8 @@ class CirclesRemote extends Base {
 	 * @param array $payload
 	 *
 	 * @return NC21SignedRequest
-	 * @throws SignatoryException
-	 * @throws SignatureException
 	 * @throws RequestNetworkException
+	 * @throws SignatoryException
 	 */
 	private function outgoingTest(string $remote, array $payload): NC21SignedRequest {
 		$request = new NC21Request();
@@ -334,6 +377,84 @@ class CirclesRemote extends Base {
 		$this->doRequest($signedRequest->getOutgoingRequest());
 
 		return $signedRequest;
+	}
+
+
+	/**
+	 *
+	 */
+	private function checkKnownInstance(): void {
+		$this->verifyGSInstances();
+		$this->checkRemoteInstances();
+	}
+
+
+	/**
+	 *
+	 */
+	private function verifyGSInstances(): void {
+		$instances = $this->globalScaleService->getGlobalScaleInstances();
+		$known = array_map(
+			function(RemoteInstance $instance): string {
+				return $instance->getInstance();
+			}, $this->remoteRequest->getFromType(RemoteInstance::TYPE_GLOBAL_SCALE)
+		);
+
+		$missing = array_diff($instances, $known);
+		foreach ($missing as $instance) {
+			$this->syncGSInstance($instance);
+		}
+	}
+
+
+	/**
+	 * @param string $instance
+	 */
+	private function syncGSInstance(string $instance): void {
+		if ($this->configService->isLocalInstance($instance)) {
+			return;
+		}
+		$this->output->write('Adding <comment>' . $instance . '</comment>: ');
+		try {
+			$this->remoteService->addRemoteInstance($instance, RemoteInstance::TYPE_GLOBAL_SCALE, true);
+			$this->output->writeln('<info>ok</info>');
+		} catch (Exception $e) {
+			$msg = ($e->getMessage() === '') ? '' : ' (' . $e->getMessage() . ')';
+			$this->output->writeln('<error>' . get_class($e) . $msg . '</error>');
+		}
+	}
+
+
+	private function checkRemoteInstances(): void {
+		$instances = $this->remoteRequest->getAllInstances();
+
+		$output = new ConsoleOutput();
+		$output = $output->section();
+		$table = new Table($output);
+		$table->setHeaders(['instance', 'type', 'UID', 'Authed']);
+		$table->render();
+
+		foreach ($instances as $instance) {
+			try {
+				$current = $this->remoteService->retrieveRemoteInstance($instance->getInstance());
+				if ($current->getUid(true) === $instance->getUid(true)) {
+					$currentUid = '<info>' . $current->getUid(true) . '</info>';
+				} else {
+					$currentUid = '<error>' . $current->getUid(true) . '</error>';
+				}
+			} catch (Exception $e) {
+				$currentUid = '<error>' . $e->getMessage() . '</error>';
+			}
+
+			$table->appendRow(
+				[
+					$instance->getInstance(),
+					$instance->getType(),
+					$instance->getUid(),
+					$currentUid
+				]
+			);
+		}
 	}
 
 }
