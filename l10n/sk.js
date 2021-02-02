@@ -298,18 +298,6 @@ OC.L10N.register(
     "Allow linking of groups" : "Umožniť prepojovanie skupín",
     "Groups can be linked to circles." : "Skupiny môžu byť prepojené s okruhmi.",
     "Skip invitation step to closed circles" : "Preskočiť krok pozvania do uzavretých okruhov",
-    "Moderators can add member to closed circles without user approval." : "Moderátori môžu pridať člena do uzavretých okruhov bez súhlasu používateľa.",
-    "The member '{name}' was added to the circle" : "Člen/ka '{name}' bol/a pridaný/á do kruhu",
-    "The member '{name}' could not be added to the circle" : "Člena „{name}“ se nepodarilo pridať do okruhu.",
-    "The contact '{contact}' was added to the circle" : "Kontakt '{contact}' bol pridaný do kruhu",
-    "The contact '{contact}' could not be added to the circle" : "Kontakt '{contact}' nemohol byť pridaný do okruhu",
-    "The member '{name}' was invited to the circle" : "Člen '{name}' bol pozvaný do okruhu",
-    "The member '{name}' could not be invited to the circle" : "Člen '{name}' nemohol byť pozvaný do okruhu",
-    "The member '{name}' was removed from the circle" : "Člen '{name}' bol odstránený z okruhu",
-    "The member '{name}' could not be removed from the circle" : "Člen '{name}' nemohol byť odstránený z okruhu",
-    "Member '{name}' updated" : "Člen '{name}' bol aktualizovaný",
-    "The member '{name}' could not be updated" : "Člen '{name}' nemohol byť aktualizovaný",
-    "Allow federated circles" : "Povoliť združené okruhy",
-    "Circles from different Nextclouds can be linked together." : "Kruhy z rôznych Nextcloudov môžu byť spolu prepojené."
+    "Moderators can add member to closed circles without user approval." : "Moderátori môžu pridať člena do uzavretých okruhov bez súhlasu používateľa."
 },
 "nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);");

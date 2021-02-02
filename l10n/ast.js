@@ -102,7 +102,6 @@ OC.L10N.register(
     "Status" : "Estáu",
     "Link" : "Link",
     "Description" : "Descripción",
-    "Change password" : "Camudar contraseña",
-    "The member '{name}' was added to the circle" : "Amestóse'l miembru «{name}» al círculu."
+    "Change password" : "Camudar contraseña"
 },
 "nplurals=2; plural=(n != 1);");

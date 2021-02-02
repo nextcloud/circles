@@ -261,17 +261,6 @@ OC.L10N.register(
     "Accept Link Request Automatically" : "Aceptar las Solicitudes de Ligas Automáticamente",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Advertencia: Habilitar esta opción aceptará automáticamente las nuevas solicitudes de ligas de otros círculos. ",
     "Save settings" : "Guardar configuraciones",
-    "Groups can be linked to circles." : "Los grupos se pueden vincular a círculos",
-    "The member '{name}' was added to the circle" : "El miembro '{name}' fue agregado al círculo",
-    "The member '{name}' could not be added to the circle" : "El miembro '{name}' no pudo ser agregado al círculo",
-    "The contact '{contact}' was added to the circle" : "El contacto \"{contact}\" fue agregado al círculo",
-    "The contact '{contact}' could not be added to the circle" : "El contacto \"{contact}\" no pudo ser agregado al círculo",
-    "The member '{name}' was invited to the circle" : "El miembro '{name}' fue invitado al círculo",
-    "The member '{name}' could not be invited to the circle" : "El miembro '{name}' no pudo ser invitado al círculo",
-    "The member '{name}' was removed from the circle" : "El miembro '{name}' se eliminó del círculo",
-    "The member '{name}' could not be removed from the circle" : "El miembro '{name}' no pudo ser eliminado del círculo",
-    "Member '{name}' updated" : "El miembro '{name}' fue actualizado",
-    "The member '{name}' could not be updated" : "El miembro '{name}' no pudo ser actualizado",
-    "Circles from different Nextclouds can be linked together." : "Círculos de diferentes Nextclouds se pueden vincular juntos."
+    "Groups can be linked to circles." : "Los grupos se pueden vincular a círculos"
 },
 "nplurals=2; plural=(n != 1);");

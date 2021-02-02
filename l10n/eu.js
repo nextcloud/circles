@@ -307,18 +307,6 @@ OC.L10N.register(
     "Allow linking of groups" : "Onartu taldeak batzea",
     "Groups can be linked to circles." : "Taldeak batu daitezke zirkuluetara",
     "Skip invitation step to closed circles" : "Saltatu gonbidapen pausua zirkulu itxietan",
-    "Moderators can add member to closed circles without user approval." : "Moderatzaileek kideak gehitu ditzakete zirkulu itxietara erabiltzailearen baimenik gabe.",
-    "The member '{name}' was added to the circle" : "'{name}' kidea zirkulura gehitu da",
-    "The member '{name}' could not be added to the circle" : "'{name}' kidea ezin izan da zirkulura gehitu",
-    "The contact '{contact}' was added to the circle" : "'{contact}' kontaktua zirkulura gehitu da",
-    "The contact '{contact}' could not be added to the circle" : "Ezin izan da '{contact}' kontaktua zirkulura gehitu",
-    "The member '{name}' was invited to the circle" : "'{name}' kidea zirkulura gonbidatu da",
-    "The member '{name}' could not be invited to the circle" : "Ezin izan da '{name}' kidea zirkulura gonbidatu",
-    "The member '{name}' was removed from the circle" : "'{name}' kidea zirkulutik ezabatu da",
-    "The member '{name}' could not be removed from the circle" : "Ezin izan da '{name}' zirkulutik ezabatu",
-    "Member '{name}' updated" : "'{name}' kidea eguneratu da",
-    "The member '{name}' could not be updated" : "Ezin izan da '{name}' kidea eguneratu",
-    "Allow federated circles" : "Onartu zirkulu federatuak",
-    "Circles from different Nextclouds can be linked together." : "Nextcloud ezberdinetako zirkuluak beraien artean batu daitezke"
+    "Moderators can add member to closed circles without user approval." : "Moderatzaileek kideak gehitu ditzakete zirkulu itxietara erabiltzailearen baimenik gabe."
 },
 "nplurals=2; plural=(n != 1);");

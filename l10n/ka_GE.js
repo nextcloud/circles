@@ -259,17 +259,6 @@ OC.L10N.register(
     "Accept Link Request Automatically" : "ბმულის მოთხოვნის ავტომატური დადასტურება",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "გაფრთხილება: ამის ჩართვა ავტომატურად მიიღებს ახალი კავშირების მოთხოვნებს სხვა წრეებიდან.",
     "Save settings" : "პარამეტრების შენახვა",
-    "Groups can be linked to circles." : "ჯგუფები შეიძლება დაკავშირდნენ წრეებთან.",
-    "The member '{name}' was added to the circle" : "წევრი '{name}' დაემატა წრეს",
-    "The member '{name}' could not be added to the circle" : "წევრი '{name}' წრეს ვერ ემატება",
-    "The contact '{contact}' was added to the circle" : "კონტაქტი '{contact}' წრეს დაემატა",
-    "The contact '{contact}' could not be added to the circle" : "კონტაქტი '{contact}' წრეს ვერ ემატება",
-    "The member '{name}' was invited to the circle" : "წევრი '{name}' წრეში მოწვეულ იქნა",
-    "The member '{name}' could not be invited to the circle" : "წევრი '{name}' წრეში ვერ იქნა მოწვეული",
-    "The member '{name}' was removed from the circle" : "წევრი '{name}' წრიდან ამოიშალა",
-    "The member '{name}' could not be removed from the circle" : "წევრი '{name}' ვერ ამოიშალა წრიდან",
-    "Member '{name}' updated" : "წევრი '{name}' განახლდა",
-    "The member '{name}' could not be updated" : "წევრი '{name}' ვერ იქნა განახლებული",
-    "Circles from different Nextclouds can be linked together." : "წრეები სხვადასხვა Nextcloud-ებითან შეიძლება დაკავშირდნენ."
+    "Groups can be linked to circles." : "ჯგუფები შეიძლება დაკავშირდნენ წრეებთან."
 },
 "nplurals=2; plural=(n!=1);");

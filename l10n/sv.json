@@ -293,18 +293,6 @@
     "Allow linking of groups" : "Tillåt länkning av grupper",
     "Groups can be linked to circles." : "Grupper kan länkas till cirklar.",
     "Skip invitation step to closed circles" : "Hoppa över inbjudan till stängda cirklar",
-    "Moderators can add member to closed circles without user approval." : "Moderatorer kan lägga till medlem i slutna kretsar utan användarens godkännande.",
-    "The member '{name}' was added to the circle" : "Medlemmen '{name}' lades till cirkeln",
-    "The member '{name}' could not be added to the circle" : "Medlemmen '{name}' kunde inte läggas till cirkeln",
-    "The contact '{contact}' was added to the circle" : "Kontakten '{contact}' lades till i cirkeln",
-    "The contact '{contact}' could not be added to the circle" : "Kontakten '{contact}' Kunde inte läggas till i cirkeln",
-    "The member '{name}' was invited to the circle" : "Medlemmen '{name}' bjöds in till cirkeln",
-    "The member '{name}' could not be invited to the circle" : "Medlemmen '{name}' kunde inte bjudas in till cirkeln",
-    "The member '{name}' was removed from the circle" : "Medlemmen '{name}' togs bort från cirkeln",
-    "The member '{name}' could not be removed from the circle" : "Medlemmen '{name}' kunde inte tas bort från cirkeln",
-    "Member '{name}' updated" : "Medlem '{name}' uppdaterad",
-    "The member '{name}' could not be updated" : "Medlemmen '{name}' kunde inte uppdateras",
-    "Allow federated circles" : "Tillåt federerade cirklar",
-    "Circles from different Nextclouds can be linked together." : "Cirklar från olika Nextcloud kan länkas samman"
+    "Moderators can add member to closed circles without user approval." : "Moderatorer kan lägga till medlem i slutna kretsar utan användarens godkännande."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

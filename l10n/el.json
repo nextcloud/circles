@@ -305,18 +305,6 @@
     "Allow linking of groups" : "Να επιτρέπεται η σύνδεση ομάδων",
     "Groups can be linked to circles." : "Οι ομάδες μπορούν να συνδεθούν με τους κύκλους.",
     "Skip invitation step to closed circles" : "Παράλειψη του βήματος πρόσκλησης σε κλειστούς κύκλους",
-    "Moderators can add member to closed circles without user approval." : "Οι συντονιστές μπορούν να προσθέτουν μέλη σε κλειστούς κύκλους χωρίς την έγκριση των χρηστών.",
-    "The member '{name}' was added to the circle" : "Το μέλος '{name}' προστέθηκε στον κύκλο",
-    "The member '{name}' could not be added to the circle" : "Αδύνατη η προσθήκη του μέλους '{name}' στον κύκλο",
-    "The contact '{contact}' was added to the circle" : "Η επαφή '{contact}' προστέθηκε στον κύκλο",
-    "The contact '{contact}' could not be added to the circle" : "Η επαφή '{contact}' δεν μπορεί να προστεθεί στον κύκλο",
-    "The member '{name}' was invited to the circle" : "Το μέλος '{name}' προσκλήθηκε στον κύκλο",
-    "The member '{name}' could not be invited to the circle" : "Αδύνατη η πρόσκληση του μέλους '{name}' στον κύκλο",
-    "The member '{name}' was removed from the circle" : "Το μέλος '{name}' απομακρύνθηκε από τον κύκλο",
-    "The member '{name}' could not be removed from the circle" : "Αδύνατη η απομάκρυνση του μέλους '{name}' από τον κύκλο",
-    "Member '{name}' updated" : "Το μέλος '{name}' αναβαθμίστηκε",
-    "The member '{name}' could not be updated" : "Δεν μπορεί να γίνει ενημέρωση του μέλους '{name}'",
-    "Allow federated circles" : "Να επιτρέπονται Ομόσπονδοι Σύνδεσμοι",
-    "Circles from different Nextclouds can be linked together." : "Κύκλοι και διαφορετικά Nextcloud μπορούν να συνδεθούν μεταξύ τους."
+    "Moderators can add member to closed circles without user approval." : "Οι συντονιστές μπορούν να προσθέτουν μέλη σε κλειστούς κύκλους χωρίς την έγκριση των χρηστών."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

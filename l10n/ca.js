@@ -297,18 +297,6 @@ OC.L10N.register(
     "Allow linking of groups" : "Permet l'enllaç de grups",
     "Groups can be linked to circles." : "Els grups poden ser enllaçats a cercles.",
     "Skip invitation step to closed circles" : "Saltar el pas d'invitació als cercles tancats",
-    "Moderators can add member to closed circles without user approval." : "Els moderadors poden afegir un membre als cercles tancats sense que l'usuari ho accepti.",
-    "The member '{name}' was added to the circle" : "S'ha inclòs '{name}' al cercle",
-    "The member '{name}' could not be added to the circle" : "El membre '{name}' no s'ha pogut afegir al cercle",
-    "The contact '{contact}' was added to the circle" : "El contacte \"{contact}\" s'ha afegit al cercle",
-    "The contact '{contact}' could not be added to the circle" : "El contacte '{contact}' no s'ha pogut afegir al cercle",
-    "The member '{name}' was invited to the circle" : "S'ha convidat '{name}' al cercle",
-    "The member '{name}' could not be invited to the circle" : "No s'ha pogut convidar '{name}' al cercle",
-    "The member '{name}' was removed from the circle" : "S'ha suprimit '{name}' del cercle",
-    "The member '{name}' could not be removed from the circle" : "No s'ha pogut suprimit '{name}' del cercle",
-    "Member '{name}' updated" : "El membre '{name}' s'ha actualitzat",
-    "The member '{name}' could not be updated" : "El membre '{name}' no s'ha pogut actualitzar",
-    "Allow federated circles" : "Permet els cercles federats",
-    "Circles from different Nextclouds can be linked together." : "Es poden enllaçar cercles de diferents Nextclouds."
+    "Moderators can add member to closed circles without user approval." : "Els moderadors poden afegir un membre als cercles tancats sense que l'usuari ho accepti."
 },
 "nplurals=2; plural=(n != 1);");

@@ -267,18 +267,6 @@ OC.L10N.register(
     "Save settings" : "Beállítások mentése",
     "Maximum number of members per circle" : "Körönkénti tagok legnagyobb száma",
     "Allow linking of groups" : "Csoportok csatlakoztatásának engedélyezése",
-    "Groups can be linked to circles." : "Csoportok csatolhatók a körökhöz.",
-    "The member '{name}' was added to the circle" : "'{name}' tag hozzáadva a körhöz",
-    "The member '{name}' could not be added to the circle" : "'{name}' tag nem adható a körhöz",
-    "The contact '{contact}' was added to the circle" : "'{contact}' kapcsolat hozzáadva a körhöz",
-    "The contact '{contact}' could not be added to the circle" : "'{contact}' kapcsolat nem adható a körhöz",
-    "The member '{name}' was invited to the circle" : "'{name}' tag meghívva a körhöz",
-    "The member '{name}' could not be invited to the circle" : "'{name}' tag nem meghívható a körhöz",
-    "The member '{name}' was removed from the circle" : "A(z) '{name}' tag eltávolítva a körből",
-    "The member '{name}' could not be removed from the circle" : "A(z) '{name}' tag nem eltávolítható a körből",
-    "Member '{name}' updated" : "A(z) '{name}' tag frissítve",
-    "The member '{name}' could not be updated" : "A(z) '{name}' tag nem frissíthető",
-    "Allow federated circles" : "Egységesített körök engedélyezése",
-    "Circles from different Nextclouds can be linked together." : "Más Nextcloud-okból való körök összekapcsolhatók."
+    "Groups can be linked to circles." : "Csoportok csatolhatók a körökhöz."
 },
 "nplurals=2; plural=(n != 1);");

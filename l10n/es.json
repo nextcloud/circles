@@ -305,18 +305,6 @@
     "Allow linking of groups" : "Permitir enlace de grupos",
     "Groups can be linked to circles." : "Los grupos puedes ser unidos a círculos.",
     "Skip invitation step to closed circles" : "Saltar etapa de invitación para círculos cerrados",
-    "Moderators can add member to closed circles without user approval." : "Los moderadores podrán añadir miembros a los círculos privados sin aprobación del usuario.",
-    "The member '{name}' was added to the circle" : "Se ha añadido al círculo al miembro '{name}'",
-    "The member '{name}' could not be added to the circle" : "No se ha podido añadir al círculo al miembro '{name}'",
-    "The contact '{contact}' was added to the circle" : "Se ha añadido al contacto '{contact}' al círculo",
-    "The contact '{contact}' could not be added to the circle" : "No se ha podido añadir al contacto '{contact}' al círculo",
-    "The member '{name}' was invited to the circle" : "El miembro '{name}' ha sido invitado al círculo",
-    "The member '{name}' could not be invited to the circle" : "No se ha podido invitar al círculo al miembro '{name}'",
-    "The member '{name}' was removed from the circle" : "El miembro '{name}'  ha sido eliminado del círculo",
-    "The member '{name}' could not be removed from the circle" : "No se ha podido eliminar al miembro '{name}'  del círculo",
-    "Member '{name}' updated" : "Se ha actualizado al participante '{name}'",
-    "The member '{name}' could not be updated" : "No se ha podido actualizar el miembro '{name}' ",
-    "Allow federated circles" : "Permitir círculos federados",
-    "Circles from different Nextclouds can be linked together." : "Los círculos de diferentes Nextclouds pueden ser enlazados entre sí."
+    "Moderators can add member to closed circles without user approval." : "Los moderadores podrán añadir miembros a los círculos privados sin aprobación del usuario."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

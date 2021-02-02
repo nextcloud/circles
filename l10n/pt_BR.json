@@ -305,18 +305,6 @@
     "Allow linking of groups" : "Permitir a vinculação de grupos",
     "Groups can be linked to circles." : "Grupos podem ser linkados a círculos.",
     "Skip invitation step to closed circles" : "Pular a etapa do convite para círculos fechados",
-    "Moderators can add member to closed circles without user approval." : "Moderadores podem adicionar membros em círculos fechados sem a provação do usuário.",
-    "The member '{name}' was added to the circle" : "O usuário '{name}' foi adicionado ao círculo",
-    "The member '{name}' could not be added to the circle" : "O usuário '{name}' não pôde ser adicionado ao círculo",
-    "The contact '{contact}' was added to the circle" : "O contato '{contact}' foi adicionado ao círculo",
-    "The contact '{contact}' could not be added to the circle" : "O contato '{contact}' não pôde ser adicionado ao círculo",
-    "The member '{name}' was invited to the circle" : "O usuário '{name}' foi convidado para o círculo",
-    "The member '{name}' could not be invited to the circle" : "O usuário '{name}' não pôde ser convidado para o círculo",
-    "The member '{name}' was removed from the circle" : "O membro '{name}' foi excluído do círculo",
-    "The member '{name}' could not be removed from the circle" : "O membro '{name}' não pôde ser excluído do círculo",
-    "Member '{name}' updated" : "Usuário '{name}' atualizado",
-    "The member '{name}' could not be updated" : "O membro '{name}' não pôde ser atualizado",
-    "Allow federated circles" : "Permitir círculos federados",
-    "Circles from different Nextclouds can be linked together." : "Círculos de diferentes Nextclouds podem ser linkados juntos."
+    "Moderators can add member to closed circles without user approval." : "Moderadores podem adicionar membros em círculos fechados sem a provação do usuário."
 },"pluralForm" :"nplurals=2; plural=(n > 1);"
 }

@@ -152,14 +152,6 @@ OC.L10N.register(
     "Description" : "Beskrivelse",
     "Change password" : "Skift kodeord",
     "Allow Federated Links" : "Tillad federarede links",
-    "Save settings" : "Gem indstillinger",
-    "The member '{name}' was added to the circle" : "Medlem '{name}' er tilføjet til cirklen",
-    "The member '{name}' could not be added to the circle" : "Gruppen '{name}' kunne ikke tilføjes til denne cirkel",
-    "The contact '{contact}' was added to the circle" : "Kontakten '{contact}' blev tilføjet til cirklen",
-    "The contact '{contact}' could not be added to the circle" : "Kontakten '{contact}' kunne IKKE tilføjes til cirklen",
-    "The member '{name}' was invited to the circle" : "Medlem '{name}' blev inviteret til cirklen",
-    "The member '{name}' could not be invited to the circle" : "Medlem '{name}' kunne ikke inviteres til cirklen",
-    "Member '{name}' updated" : "Medlem '{name}' opdateret",
-    "The member '{name}' could not be updated" : "Medlem '{name}' kunne ikke opdateres"
+    "Save settings" : "Gem indstillinger"
 },
 "nplurals=2; plural=(n != 1);");
