@@ -136,7 +136,6 @@ OC.L10N.register(
     "Name of the Circle" : "小圈圈名稱",
     "Description" : "描述",
     "Change password" : "變更密碼",
-    "Save settings" : "儲存設定",
-    "The member '{name}' was invited to the circle" : "成員 {name} 已被邀請加入小圈圈"
+    "Save settings" : "儲存設定"
 },
 "nplurals=1; plural=0;");

@@ -305,18 +305,6 @@
     "Allow linking of groups" : "Leyfa tengingar hópa",
     "Groups can be linked to circles." : "Hópar geta verið tengdir hringjum.",
     "Skip invitation step to closed circles" : "Sleppa boðsskrefi inn í lokaða hringi",
-    "Moderators can add member to closed circles without user approval." : "Umsjónarmenn geta bætt meðlimum í lokaða hringi án samþykkis notanda.",
-    "The member '{name}' was added to the circle" : "Meðlimnum '{name}' var bætt í hringinn",
-    "The member '{name}' could not be added to the circle" : "Ekki var hægt að bæta meðlimnum '{name}' í hringinn",
-    "The contact '{contact}' was added to the circle" : "Tengiliðnum '{contact}' var bætt í hringinn",
-    "The contact '{contact}' could not be added to the circle" : "Ekki var hægt að bæta tengiliðnum '{contact}' í hringinn",
-    "The member '{name}' was invited to the circle" : "Meðlimnum '{name}' var boðið í hringinn",
-    "The member '{name}' could not be invited to the circle" : "Ekki var hægt að bjóða meðlimnum '{name}' í hringinn",
-    "The member '{name}' was removed from the circle" : "Meðlimurinn '{name}' var fjarlægður úr hringnum",
-    "The member '{name}' could not be removed from the circle" : "Meðliminn '{name}' var ekki hægt að fjarlægja úr hringnum",
-    "Member '{name}' updated" : "Meðlimurinn '{name}' uppfærður",
-    "The member '{name}' could not be updated" : "Ekki var hægt að uppfæra meðliminn '{name}'",
-    "Allow federated circles" : "Leyfa skýjasambandshringi",
-    "Circles from different Nextclouds can be linked together." : "Hringir úr mismunandi Nextcloud-skýjum geta verið tengdir saman."
+    "Moderators can add member to closed circles without user approval." : "Umsjónarmenn geta bætt meðlimum í lokaða hringi án samþykkis notanda."
 },"pluralForm" :"nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);"
 }

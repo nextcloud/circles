@@ -297,18 +297,6 @@ OC.L10N.register(
     "Allow linking of groups" : "Дозволи увезивање група",
     "Groups can be linked to circles." : "Групе се могу везати на кругове.",
     "Skip invitation step to closed circles" : "Прескочи позивницу за затворене кругове",
-    "Moderators can add member to closed circles without user approval." : "Модератори могу да додају чланове у затворене кругове без одобрења корисника.",
-    "The member '{name}' was added to the circle" : "Члан '{name}' додат у круг",
-    "The member '{name}' could not be added to the circle" : "Члан '{name}' не може да се дода у круг",
-    "The contact '{contact}' was added to the circle" : "Контакт '{contact}' додат у круг",
-    "The contact '{contact}' could not be added to the circle" : "Контакт '{contact}' не може да се дода у круг",
-    "The member '{name}' was invited to the circle" : "Члан '{name}' позван у круг",
-    "The member '{name}' could not be invited to the circle" : "Члан '{name}' не може бити позван у круг",
-    "The member '{name}' was removed from the circle" : "Члан '{name}' уклоњен из круга",
-    "The member '{name}' could not be removed from the circle" : "Члан '{name}' не може бити уклоњен из круга",
-    "Member '{name}' updated" : "Члан '{name}' ажуриран",
-    "The member '{name}' could not be updated" : "Члан '{name}' не може да се ажурира",
-    "Allow federated circles" : "Дозволи здружене кругове",
-    "Circles from different Nextclouds can be linked together." : "Кругови са различитих Некстклауда се могу везати заједно."
+    "Moderators can add member to closed circles without user approval." : "Модератори могу да додају чланове у затворене кругове без одобрења корисника."
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");

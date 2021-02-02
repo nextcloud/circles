@@ -291,18 +291,6 @@
     "Allow linking of groups" : "Allow linking of groups",
     "Groups can be linked to circles." : "Groups can be linked to circles.",
     "Skip invitation step to closed circles" : "Skip invitation step to closed circles",
-    "Moderators can add member to closed circles without user approval." : "Moderators can add member to closed circles without user approval.",
-    "The member '{name}' was added to the circle" : "The member '{name}' was added to the circle",
-    "The member '{name}' could not be added to the circle" : "The member '{name}' could not be added to the circle",
-    "The contact '{contact}' was added to the circle" : "The contact '{contact}' was added to the circle",
-    "The contact '{contact}' could not be added to the circle" : "The contact '{contact}' could not be added to the circle",
-    "The member '{name}' was invited to the circle" : "The member '{name}' was invited to the circle",
-    "The member '{name}' could not be invited to the circle" : "The member '{name}' could not be invited to the circle",
-    "The member '{name}' was removed from the circle" : "The member '{name}' was removed from the circle",
-    "The member '{name}' could not be removed from the circle" : "The member '{name}' could not be removed from the circle",
-    "Member '{name}' updated" : "Member '{name}' updated",
-    "The member '{name}' could not be updated" : "The member '{name}' could not be updated",
-    "Allow federated circles" : "Allow federated circles",
-    "Circles from different Nextclouds can be linked together." : "Circles from different Nextclouds can be linked together."
+    "Moderators can add member to closed circles without user approval." : "Moderators can add member to closed circles without user approval."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

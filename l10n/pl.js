@@ -307,18 +307,6 @@ OC.L10N.register(
     "Allow linking of groups" : "Zezwalaj na łączenie grup",
     "Groups can be linked to circles." : "Grupy mogą być łączone z kręgami.",
     "Skip invitation step to closed circles" : "Pomiń krok zaproszenia do zamkniętych kręgów",
-    "Moderators can add member to closed circles without user approval." : "Moderatorzy mogą dodawać członków do zamkniętych kręgów bez zgody użytkownika.",
-    "The member '{name}' was added to the circle" : "Członek '{name}' został dodany do kręgu",
-    "The member '{name}' could not be added to the circle" : "Członek '{name}' nie został dodany do kręgu",
-    "The contact '{contact}' was added to the circle" : "Kontakt '{contact}' został dodany do kręgu",
-    "The contact '{contact}' could not be added to the circle" : "Kontakt '{contact}' nie został dodany do kręgu",
-    "The member '{name}' was invited to the circle" : "Członek '{name}' został zaproszony do kręgu",
-    "The member '{name}' could not be invited to the circle" : "Członek '{name}' nie został zaproszony do kręgu",
-    "The member '{name}' was removed from the circle" : "Użytkownik '{name}' został usunięty z kręgu",
-    "The member '{name}' could not be removed from the circle" : "Nie udało się usunąć użytkownika '{name}' z kręgu",
-    "Member '{name}' updated" : "Użytkownik '{name}' został zaktualizowany",
-    "The member '{name}' could not be updated" : "Użytkownik '{name}' nie może zostać zaktualizowany",
-    "Allow federated circles" : "Zezwalaj na kręgi federacyjne",
-    "Circles from different Nextclouds can be linked together." : "Kręgi z różnych Nextcoud'ów mogą być łączone ze sobą."
+    "Moderators can add member to closed circles without user approval." : "Moderatorzy mogą dodawać członków do zamkniętych kręgów bez zgody użytkownika."
 },
 "nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);");

@@ -203,14 +203,6 @@ OC.L10N.register(
     "Description" : "Përshkrim",
     "Change password" : "Ndryshoni fjalëkalimin",
     "Allow Federated Links" : "Lejo Linqet e Federuara",
-    "Save settings" : "Ruaj konfigurimet",
-    "The member '{name}' was added to the circle" : "Anëtari '{emër}' u shtua në rreth",
-    "The member '{name}' could not be added to the circle" : "Anëtari '{name}' nuk mund të shtohej në rreth",
-    "The member '{name}' was invited to the circle" : "Anëtari '{name}' u ftua në rreth",
-    "The member '{name}' could not be invited to the circle" : "Anëtari '{name}' nuk mund të ftohet në rreth",
-    "The member '{name}' was removed from the circle" : "Anëtari '{name}' u hoq nga rrethi",
-    "The member '{name}' could not be removed from the circle" : "Anëtari '{name}' nuk mund të hiqej nga rrethi",
-    "Member '{name}' updated" : "Anëtari '{name}' është përditësuar",
-    "The member '{name}' could not be updated" : "Anëtari '{name}' nuk mund të përditësohej"
+    "Save settings" : "Ruaj konfigurimet"
 },
 "nplurals=2; plural=(n != 1);");

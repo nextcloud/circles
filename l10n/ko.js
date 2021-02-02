@@ -267,18 +267,6 @@ OC.L10N.register(
     "Save settings" : "설정 저장",
     "Maximum number of members per circle" : "서클당 최대 회원 수",
     "Allow linking of groups" : "그룹 링크 허용",
-    "Groups can be linked to circles." : "그룹을 서클에 연결할 수 있습니다.",
-    "The member '{name}' was added to the circle" : "회원 '{name}' 님을 서클 회원으로 추가함",
-    "The member '{name}' could not be added to the circle" : "회원 '{name}' 님을 서클 회원으로 추가할 수 없음",
-    "The contact '{contact}' was added to the circle" : "연락처 '{contact}'을(를) 서클에 추가함",
-    "The contact '{contact}' could not be added to the circle" : "연락처 '{contact}'을(를) 서클에 추가할 수 없음",
-    "The member '{name}' was invited to the circle" : "회원 '{name}' 님을 서클에 초대함",
-    "The member '{name}' could not be invited to the circle" : "회원 '{name}' 님을 서클에 초대할 수 없음",
-    "The member '{name}' was removed from the circle" : "회원 '{name}' 님을 서클 회원에서 삭제함",
-    "The member '{name}' could not be removed from the circle" : "회원 '{name}' 님을 서클 회원에서 삭제할 수 없음",
-    "Member '{name}' updated" : "회원 '{name}' 님을 업데이트함",
-    "The member '{name}' could not be updated" : "회원 '{name}' 님을 업데이트할 수 없음",
-    "Allow federated circles" : "연합 서클 허용",
-    "Circles from different Nextclouds can be linked together." : "다른 Nextcloud의 서클을 연결할 수 있습니다."
+    "Groups can be linked to circles." : "그룹을 서클에 연결할 수 있습니다."
 },
 "nplurals=1; plural=0;");

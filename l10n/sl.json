@@ -303,18 +303,6 @@
     "Allow linking of groups" : "Dovoli povezovanje med skupinami",
     "Groups can be linked to circles." : "Skupine je mogoče povezovati v širše kroge.",
     "Skip invitation step to closed circles" : "Preskoči korak vabila za zaprte kroge",
-    "Moderators can add member to closed circles without user approval." : "Moderatorji lahko dodajajo člane v zaprte kroge brez predhodne potrditve drugih članov.",
-    "The member '{name}' was added to the circle" : "Uporabnik »{name}« je dodan v krog",
-    "The member '{name}' could not be added to the circle" : "Člana »{name}« ni mogoče dodati v krog.",
-    "The contact '{contact}' was added to the circle" : "Stik »{contact}« je uspešno dodan v krog",
-    "The contact '{contact}' could not be added to the circle" : "Stika »{contact}« ni mogoče dodati v krog.",
-    "The member '{name}' was invited to the circle" : "Oseba »{name}« je povabljena v krog",
-    "The member '{name}' could not be invited to the circle" : "Člana »{name}« ni mogoče povabiti v krog.",
-    "The member '{name}' was removed from the circle" : "Član »{name}« je odstranjen iz kroga",
-    "The member '{name}' could not be removed from the circle" : "Člana »{name}« ni mogoče odstraniti iz skupine.",
-    "Member '{name}' updated" : "Nastavitve člana »{name}« so posodobljene",
-    "The member '{name}' could not be updated" : "Podatkov člana »{name}« ni mogoče posodobiti.",
-    "Allow federated circles" : "Dovoli zvezne kroge",
-    "Circles from different Nextclouds can be linked together." : "Kroge z različnih oblakov Nextcloud je mogoče povezati."
+    "Moderators can add member to closed circles without user approval." : "Moderatorji lahko dodajajo člane v zaprte kroge brez predhodne potrditve drugih članov."
 },"pluralForm" :"nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);"
 }

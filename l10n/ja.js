@@ -293,18 +293,6 @@ OC.L10N.register(
     "Allow linking of groups" : "グループのリンクを許可する",
     "Groups can be linked to circles." : "グループはサークルにリンクできます。",
     "Skip invitation step to closed circles" : "クローズドサークルへの招待ステップをスキップ",
-    "Moderators can add member to closed circles without user approval." : "モデレーターは、ユーザーの承認なしにクローズドサークルにメンバーを追加できます。",
-    "The member '{name}' was added to the circle" : "メンバー '{name}'がサークルに追加されました",
-    "The member '{name}' could not be added to the circle" : "メンバー '{name}'をサークルに追加できませんでした",
-    "The contact '{contact}' was added to the circle" : "連絡先 '{contact}'がサークルに追加されました",
-    "The contact '{contact}' could not be added to the circle" : "連絡先 '{contact}'をサークルに追加できませんでした",
-    "The member '{name}' was invited to the circle" : "メンバー '{name}'がサークルに招待されました",
-    "The member '{name}' could not be invited to the circle" : "メンバー '{name}'はサークルに招待できませんでした",
-    "The member '{name}' was removed from the circle" : "メンバー '{name}'がサークルから削除されました",
-    "The member '{name}' could not be removed from the circle" : "メンバー '{name}'はサークルから削除できませんでした",
-    "Member '{name}' updated" : "メンバー '{name}'が更新されました",
-    "The member '{name}' could not be updated" : "メンバー '{name}'を更新できませんでした",
-    "Allow federated circles" : "フェデレーションサークルを許可する",
-    "Circles from different Nextclouds can be linked together." : "異なるNextcloudのサークルをリンクすることができます。"
+    "Moderators can add member to closed circles without user approval." : "モデレーターは、ユーザーの承認なしにクローズドサークルにメンバーを追加できます。"
 },
 "nplurals=1; plural=0;");
