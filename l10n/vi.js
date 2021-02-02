@@ -297,18 +297,6 @@ OC.L10N.register(
     "Allow linking of groups" : "Chấp nhận liên kết của các nhóm",
     "Groups can be linked to circles." : "Các nhóm có thể đuọc liên kết tới vòng kết nối.",
     "Skip invitation step to closed circles" : "Bỏ qua thao tác gửi lời mời đối với các vòng kết nối Đóng",
-    "Moderators can add member to closed circles without user approval." : "Các điều hành viên có thể thêm thành viên vào các vòng kết nối Đóng mà không cần sự chấp thuận của người dùng.",
-    "The member '{name}' was added to the circle" : "Thành viên {'name'} đã được thêm vào vòng kết nối",
-    "The member '{name}' could not be added to the circle" : "Thành viên '{name}' không thể được thêm vào vòng kết nối",
-    "The contact '{contact}' was added to the circle" : "Liên hệ {'contact}' đã được thêm vào vòng kết nối",
-    "The contact '{contact}' could not be added to the circle" : "Liên hệ '{contact}' không thể được thêm vào vòng kết nối",
-    "The member '{name}' was invited to the circle" : "Thành viên '{name}' đã được mời vào vòng kết nối",
-    "The member '{name}' could not be invited to the circle" : "Thành viên '{name}' không thể được mời vào vòng kết nối",
-    "The member '{name}' was removed from the circle" : "Thành viên '{name}' đã được gỡ khỏi vòng kết nối",
-    "The member '{name}' could not be removed from the circle" : "Thành viên '{name}' không thể bị gỡ khỏi vòng kết nối",
-    "Member '{name}' updated" : "Thành viên {'name}' đã cập nhập",
-    "The member '{name}' could not be updated" : "Thành viên '{name}' không thể được cập nhập",
-    "Allow federated circles" : "Chấp nhận các vòng kết nối Liên Bang",
-    "Circles from different Nextclouds can be linked together." : "Các vòng kết nối từ các Nextcloud khác có thể được liên kết với nhau."
+    "Moderators can add member to closed circles without user approval." : "Các điều hành viên có thể thêm thành viên vào các vòng kết nối Đóng mà không cần sự chấp thuận của người dùng."
 },
 "nplurals=1; plural=0;");

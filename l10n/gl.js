@@ -307,18 +307,6 @@ OC.L10N.register(
     "Allow linking of groups" : "Permitir a ligazón de grupos",
     "Groups can be linked to circles." : "Os grupos poden ser ligados cos círculos.",
     "Skip invitation step to closed circles" : "Omitir o paso de convite a círculos pechados",
-    "Moderators can add member to closed circles without user approval." : "Os moderadores poden engadir participantes a círculos pechados sen a aprobación do usuario.",
-    "The member '{name}' was added to the circle" : "O participante «{name}» foi engadido ao círculo",
-    "The member '{name}' could not be added to the circle" : "Non foi posíbel engadir o participante «{name}» ao círculo",
-    "The contact '{contact}' was added to the circle" : "O contacto «{contact}» foi engadido como participante do círculo",
-    "The contact '{contact}' could not be added to the circle" : "Non foi posíbel engadir o contacto «{contact}» como participante no círculo",
-    "The member '{name}' was invited to the circle" : "O participante «{name}» foi convidado ao círculo",
-    "The member '{name}' could not be invited to the circle" : "Non foi posíbel convidar o participante «{name}» ao círculo",
-    "The member '{name}' was removed from the circle" : "O participante «{name}» foi retirado do círculo",
-    "The member '{name}' could not be removed from the circle" : "Non foi posíbel retirar a  «{name}» do circulo",
-    "Member '{name}' updated" : "O participante «{name}» foi acualizado",
-    "The member '{name}' could not be updated" : "Non foi posíbel actualizar ao participante «{name}»",
-    "Allow federated circles" : "Permitir os círculos federados",
-    "Circles from different Nextclouds can be linked together." : "Círculos de diferentes Nextcloud poden ser ligados entre si."
+    "Moderators can add member to closed circles without user approval." : "Os moderadores poden engadir participantes a círculos pechados sen a aprobación do usuario."
 },
 "nplurals=2; plural=(n != 1);");

@@ -154,7 +154,6 @@ OC.L10N.register(
     "Accept Link Request Automatically" : "Aceitar Automaticamente o Pedido de Associação",
     "Save settings" : "Guardar definições",
     "Allow linking of groups" : "Permitir associação de grupos",
-    "Groups can be linked to circles." : "Os grupos podem ser associados aos grupos.",
-    "Circles from different Nextclouds can be linked together." : "Os círculos de diferentes Nextclouds podem ser associados."
+    "Groups can be linked to circles." : "Os grupos podem ser associados aos grupos."
 },
 "nplurals=2; plural=(n != 1);");

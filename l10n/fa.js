@@ -146,16 +146,6 @@ OC.L10N.register(
     "Makes the circle federated, and enables sharing between federated circles" : "حلقه فدرالی فعالیت اشتراک گذاری بین محافل فدرال را ممکن می کند",
     "Accept Link Request Automatically" : "درخواست پیوند را بطور خودکار بپذیرید",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "هشدار: با فعال کردن این کار، به طور خودکار درخواست های پیوند جدید از حلقه های دیگر را می پذیرید.",
-    "Save settings" : "تنظیمات را ذخیره کن",
-    "The member '{name}' was added to the circle" : "عضو \"{name}\" به حلقه اضافه شد",
-    "The member '{name}' could not be added to the circle" : "عضو \"{name}\" نمی تواند به حلقه اضافه شود",
-    "The contact '{contact}' was added to the circle" : "مخاطب '{contact}' به حلقه اضافه شد",
-    "The contact '{contact}' could not be added to the circle" : "مخاطب '{contact}' نمی تواند به حلقه اضافه شود",
-    "The member '{name}' was invited to the circle" : "عضو \"{name could}\" به حلقه دعوت شد",
-    "The member '{name}' could not be invited to the circle" : "عضو \"{name could}\" نمی تواند به حلقه دعوت شود",
-    "The member '{name}' was removed from the circle" : "عضو '{name}' از حلقه حذف شد",
-    "The member '{name}' could not be removed from the circle" : "عضو \"{name\" نمی تواند از حلقه خارج شود",
-    "Member '{name}' updated" : "عضو '{name]' بروزرسانی شد",
-    "The member '{name}' could not be updated" : "عضو '{name]' بروزرسانی نشد"
+    "Save settings" : "تنظیمات را ذخیره کن"
 },
 "nplurals=2; plural=(n > 1);");

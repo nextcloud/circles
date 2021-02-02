@@ -268,18 +268,6 @@ OC.L10N.register(
     "Save settings" : "Salvează setări",
     "Maximum number of members per circle" : "Numă maxim de membri per cerc",
     "Allow linking of groups" : "Permite legarea grupurilor",
-    "Groups can be linked to circles." : "Grupurile pot fi legate de cercuri",
-    "The member '{name}' was added to the circle" : "Membrul '{name}' a fost adăugat în cerc",
-    "The member '{name}' could not be added to the circle" : "Membrul '{name}' nu a putut fi adăugat în cerc",
-    "The contact '{contact}' was added to the circle" : "Contactul '{contact}' a fost adăugat în cerc",
-    "The contact '{contact}' could not be added to the circle" : "Contactul '{contact}' nu a putut fi adăugat în cerc",
-    "The member '{name}' was invited to the circle" : "Membrul '{name}' a fost invitat în cerc",
-    "The member '{name}' could not be invited to the circle" : "Membrul '{name}' nu a putut fi invitat în cerc",
-    "The member '{name}' was removed from the circle" : "Membrul '{name}' a fost înlăturat din cerc",
-    "The member '{name}' could not be removed from the circle" : "Membrul '{name}' nu a putut fi înlăturat din cerc",
-    "Member '{name}' updated" : "Membrul '{name}' actualizat",
-    "The member '{name}' could not be updated" : "Membrul '{name}' nu a putut fi actualizat",
-    "Allow federated circles" : "Permite cercuri federate",
-    "Circles from different Nextclouds can be linked together." : "Cercuri din Nextcloud-uri diferite pot fi legate împreună"
+    "Groups can be linked to circles." : "Grupurile pot fi legate de cercuri"
 },
 "nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));");

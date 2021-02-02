@@ -98,7 +98,6 @@ OC.L10N.register(
     "Joined" : "Se ha unido",
     "Link" : "Link",
     "Description" : "Descripción",
-    "Change password" : "Cambiar contraseña",
-    "Member '{name}' updated" : "El miembro '{name}' fue actualizado"
+    "Change password" : "Cambiar contraseña"
 },
 "nplurals=2; plural=(n != 1);");

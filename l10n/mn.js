@@ -92,7 +92,6 @@ OC.L10N.register(
     "Linked" : "холбосон",
     "Description" : "Тодорхойлолт",
     "Change password" : "Нууц үг солих",
-    "Save settings" : "тохиргоог хадгалах",
-    "Member '{name}' updated" : "Гишүүний '{нэр}'  шинэчлэх "
+    "Save settings" : "тохиргоог хадгалах"
 },
 "nplurals=2; plural=(n != 1);");

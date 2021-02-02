@@ -307,18 +307,6 @@ OC.L10N.register(
     "Allow linking of groups" : "Gruplar Bağlanabilsin",
     "Groups can be linked to circles." : "Grupların Çevrelere bağlanmasını sağlar.",
     "Skip invitation step to closed circles" : "Kapalı çevrelerde çağrı adımı atlansın",
-    "Moderators can add member to closed circles without user approval." : "Kapalı çevre sorumluları kullanıcı onayına gerek olmadan üye ekleyebilir.",
-    "The member '{name}' was added to the circle" : "'{name}' adlı üye çevreye eklendi",
-    "The member '{name}' could not be added to the circle" : "'{name}' adlı üye çevreye eklenemedi",
-    "The contact '{contact}' was added to the circle" : "'{contact}' adlı kişi çevreye eklendi",
-    "The contact '{contact}' could not be added to the circle" : "'{contact}' adlı kişi çevreye eklenemedi",
-    "The member '{name}' was invited to the circle" : "'{name}' adlı üye çevreye çağrıldı",
-    "The member '{name}' could not be invited to the circle" : "'{name}' adlı üye çevreye çağrılamadı",
-    "The member '{name}' was removed from the circle" : "'{name}' adlı üye çevreden çıkarıldı",
-    "The member '{name}' could not be removed from the circle" : "'{name}' adlı üye çevreden çıkarılamadı",
-    "Member '{name}' updated" : "'{name}' üyesi güncellendi",
-    "The member '{name}' could not be updated" : "'{name}' adlı üye güncellenemedi",
-    "Allow federated circles" : "Birleşik Çevreler Kullanılabilsin",
-    "Circles from different Nextclouds can be linked together." : "Farklı Nextcloud kopyaları üzerindeki çevreler birbirine bağlanabilir"
+    "Moderators can add member to closed circles without user approval." : "Kapalı çevre sorumluları kullanıcı onayına gerek olmadan üye ekleyebilir."
 },
 "nplurals=2; plural=(n > 1);");

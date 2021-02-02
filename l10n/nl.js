@@ -307,18 +307,6 @@ OC.L10N.register(
     "Allow linking of groups" : "Toestaan koppelen van groepen",
     "Groups can be linked to circles." : "Groepen kunnen gekoppeld worden aan kringen.",
     "Skip invitation step to closed circles" : "Overslaan uitnodingsstappen voor besloten kringen",
-    "Moderators can add member to closed circles without user approval." : "Moderators kunnen zonder goedkering van de gebruiker leden toevoegen aan besloten kringen.",
-    "The member '{name}' was added to the circle" : "Het lid '{name}' was aan de kring toegevoegd",
-    "The member '{name}' could not be added to the circle" : "Het lid '{name}' kon niet aan de kring worden toegevoegd",
-    "The contact '{contact}' was added to the circle" : "De contact '{contact}' was toegevoegd aan de kring",
-    "The contact '{contact}' could not be added to the circle" : "De contact '{contact}' kan niet worden toegevoegd aan de kring",
-    "The member '{name}' was invited to the circle" : "Het lid '{name}' was voor de kring uitgenodigd",
-    "The member '{name}' could not be invited to the circle" : "Het lid '{name}' kon niet voor de kring worden uitgenodigd",
-    "The member '{name}' was removed from the circle" : "Het lid '{name}' was verwijderd uit de kring",
-    "The member '{name}' could not be removed from the circle" : "Het lid '{name}' kon niet worden verwijderd uit de kring",
-    "Member '{name}' updated" : "Lid '{name}' vernieuwd",
-    "The member '{name}' could not be updated" : "Het lid '{name}' kon niet worden vernieuwd",
-    "Allow federated circles" : "Toestaan gefedereerde kringen",
-    "Circles from different Nextclouds can be linked together." : "Kringen van andere Nextcloud installaties kunnen aan elkaar gekoppeld worden."
+    "Moderators can add member to closed circles without user approval." : "Moderators kunnen zonder goedkering van de gebruiker leden toevoegen aan besloten kringen."
 },
 "nplurals=2; plural=(n != 1);");

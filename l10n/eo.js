@@ -267,18 +267,6 @@ OC.L10N.register(
     "Allow linking of groups" : "Permesi interligi grupojn",
     "Groups can be linked to circles." : "Grupoj ligeblas al rondoj.",
     "Skip invitation step to closed circles" : "Preterpasi la etapon pri invito al fermitaj rondoj",
-    "Moderators can add member to closed circles without user approval." : "Kontrolantoj povas aldoni membrojn en malfermitaj rondoj sen uzant-aprobo.",
-    "The member '{name}' was added to the circle" : "La membro „{name}“ aldoniĝis al la rondo",
-    "The member '{name}' could not be added to the circle" : "La membro „{name}“ ne eblis esti aldonita al la rondo",
-    "The contact '{contact}' was added to the circle" : "La kontakto „{contact}“ aldoniĝis al la rondo",
-    "The contact '{contact}' could not be added to the circle" : "La kontakto „{contact}“ ne eblis esti aldonita al la rondo",
-    "The member '{name}' was invited to the circle" : "La membro „{name}“ estis invitita al la rondo",
-    "The member '{name}' could not be invited to the circle" : "La membro „{name}“ ne eblis esti invitita al la rondo",
-    "The member '{name}' was removed from the circle" : "Membro „{name}“ estis forigita el la rondo",
-    "The member '{name}' could not be removed from the circle" : "Membro „{name}“ ne eblis esti forigita el la rondo",
-    "Member '{name}' updated" : "Membro „{name}“ ĝisdatigita",
-    "The member '{name}' could not be updated" : "Membro „{name}“ ne eblis esti ĝisdatigita",
-    "Allow federated circles" : "Permesi federajn rondojn",
-    "Circles from different Nextclouds can be linked together." : "Rondoj el aliaj Nextcloud ligeblas kune."
+    "Moderators can add member to closed circles without user approval." : "Kontrolantoj povas aldoni membrojn en malfermitaj rondoj sen uzant-aprobo."
 },
 "nplurals=2; plural=(n != 1);");

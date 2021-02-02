@@ -305,18 +305,6 @@
     "Allow linking of groups" : "Разрешить связывание групп",
     "Groups can be linked to circles." : "Группы могут быть связаны с кругами.",
     "Skip invitation step to closed circles" : "Пропустить шаг приглашения к закрытым кругам",
-    "Moderators can add member to closed circles without user approval." : "Модераторы могут добавлять участников в закрытые круги без согласия пользователя.",
-    "The member '{name}' was added to the circle" : "Участник «{name}» был добавлен в круг",
-    "The member '{name}' could not be added to the circle" : "Участник «{name}» не может быть добавлен в круг",
-    "The contact '{contact}' was added to the circle" : "Контакт «{contact}» добавлен в круг",
-    "The contact '{contact}' could not be added to the circle" : "Контакт «{contact}» не может быть добавлен в круг",
-    "The member '{name}' was invited to the circle" : "Участник «{name}» был приглашён в круг",
-    "The member '{name}' could not be invited to the circle" : "Участник «{name}» не может быть приглашён в круг",
-    "The member '{name}' was removed from the circle" : "Участник {name} удалён из этого круга",
-    "The member '{name}' could not be removed from the circle" : "Участник {name} не может быть удалён из круга",
-    "Member '{name}' updated" : "Участник {name} был обновлён",
-    "The member '{name}' could not be updated" : "Участник {name} не может быть обновлён",
-    "Allow federated circles" : "Разрешить федеративные круги",
-    "Circles from different Nextclouds can be linked together." : "Могут быть связаны круги, расположенные на разных серверах Nextcloud."
+    "Moderators can add member to closed circles without user approval." : "Модераторы могут добавлять участников в закрытые круги без согласия пользователя."
 },"pluralForm" :"nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);"
 }

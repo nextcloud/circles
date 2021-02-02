@@ -305,18 +305,6 @@
     "Allow linking of groups" : "Consenti il collegamento dei gruppi",
     "Groups can be linked to circles." : "I gruppi possono essere collegati alle cerchie.",
     "Skip invitation step to closed circles" : "Salta la fase di invito alle cerchie chiuse",
-    "Moderators can add member to closed circles without user approval." : "I moderatori possono aggiungere membri alle cerchie chiuse senza approvazione dell'utente.",
-    "The member '{name}' was added to the circle" : "Il membro '{name}' è stato aggiunto alla cerchia",
-    "The member '{name}' could not be added to the circle" : "Il membro '{name}' non può essere aggiunto alla cerchia",
-    "The contact '{contact}' was added to the circle" : "Il contatto '{contact}' è stato aggiunto alla cerchia",
-    "The contact '{contact}' could not be added to the circle" : "Il contatto '{contact}' non può essere aggiunto alla cerchia",
-    "The member '{name}' was invited to the circle" : "Il membro '{name}' è stato invitato alla cerchia",
-    "The member '{name}' could not be invited to the circle" : "Il membro '{name}' non può essere invitato alla cerchia",
-    "The member '{name}' was removed from the circle" : "Il membro '{name}' è stato rimosso dalla cerchia",
-    "The member '{name}' could not be removed from the circle" : "Il membro '{name}' non può essere rimosso dalla cerchia",
-    "Member '{name}' updated" : "Membro '{name}' aggiornato",
-    "The member '{name}' could not be updated" : "Il membro '{name}' non può essere aggiornato",
-    "Allow federated circles" : "Consenti cerchie federate",
-    "Circles from different Nextclouds can be linked together." : "Le cerchie di Nextcloud diversi possono essere collegate tra di loro."
+    "Moderators can add member to closed circles without user approval." : "I moderatori possono aggiungere membri alle cerchie chiuse senza approvazione dell'utente."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

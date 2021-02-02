@@ -307,18 +307,6 @@ OC.L10N.register(
     "Allow linking of groups" : "允许链接的群组",
     "Groups can be linked to circles." : "群组可以链接到圈子。",
     "Skip invitation step to closed circles" : "跳过进入封闭圈子的邀请步骤",
-    "Moderators can add member to closed circles without user approval." : "主持人可以不经过用户同意向封闭圈子添加成员。",
-    "The member '{name}' was added to the circle" : "成员 “{name}” 已被添加到圈子",
-    "The member '{name}' could not be added to the circle" : "成员 “{name}” 无法被添加到圈子",
-    "The contact '{contact}' was added to the circle" : "联系人 “{contact}” 已被添加到圈子",
-    "The contact '{contact}' could not be added to the circle" : "联系人 “{contact}” 无法被添加到圈子",
-    "The member '{name}' was invited to the circle" : "成员 “{name}” 已被邀请到圈子",
-    "The member '{name}' could not be invited to the circle" : "成员 “{name}” 无法被邀请到圈子",
-    "The member '{name}' was removed from the circle" : "成员 “{name}” 已从圈子中移除",
-    "The member '{name}' could not be removed from the circle" : "成员 “{name}” 无法从圈子中移除",
-    "Member '{name}' updated" : "成员 '{name}' 已更新",
-    "The member '{name}' could not be updated" : "无法更新成员：'{name}'",
-    "Allow federated circles" : "允许联合圈：",
-    "Circles from different Nextclouds can be linked together." : "来自不同 Nextcloud 的圈子可以链接在一起。"
+    "Moderators can add member to closed circles without user approval." : "主持人可以不经过用户同意向封闭圈子添加成员。"
 },
 "nplurals=1; plural=0;");

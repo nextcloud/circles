@@ -265,18 +265,6 @@
     "Save settings" : "Lagre innstillinger",
     "Maximum number of members per circle" : "Makimalt antall brukere per sirkel",
     "Allow linking of groups" : "Tillat linking av grupper",
-    "Groups can be linked to circles." : "Grupper kan lenkes til sirkler.",
-    "The member '{name}' was added to the circle" : "Medlemmet '{name}' ble lagt til i sirkelen",
-    "The member '{name}' could not be added to the circle" : "Medlemmet '{name}' kunne ikke legges til i sirkelen",
-    "The contact '{contact}' was added to the circle" : "Kontakten '{contact}' ble innlemmet i sirkelen",
-    "The contact '{contact}' could not be added to the circle" : "Kontakten '{contact}' kunne ikke innlemmes i sirkelen",
-    "The member '{name}' was invited to the circle" : "Medlemmet '{name}' ble invitert til sirkelen",
-    "The member '{name}' could not be invited to the circle" : "Medlemmet '{name}' kunne ikke inviteres til sirkelen",
-    "The member '{name}' was removed from the circle" : "Medlemmet '{name}' ble fjernet fra sirkelen",
-    "The member '{name}' could not be removed from the circle" : "Medlemmet '{name}' kunne ikke fjernes fra sirkelen",
-    "Member '{name}' updated" : "Medlemmet '{name}' oppdatert",
-    "The member '{name}' could not be updated" : "Medlemmet '{name}' kunne ikke oppdateres",
-    "Allow federated circles" : "Tillatt fødererte sirkler",
-    "Circles from different Nextclouds can be linked together." : "Sirkler fra forskjellige Nextcloud-er kan lenkes sammen."
+    "Groups can be linked to circles." : "Grupper kan lenkes til sirkler."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
