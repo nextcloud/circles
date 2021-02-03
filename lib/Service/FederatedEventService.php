@@ -33,59 +33,47 @@ namespace OCA\Circles\Service;
 
 use daita\MySmallPhpTools\ActivityPub\Nextcloud\nc21\NC21Signature;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
+use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
 use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OC;
-use OC\Security\IdentityProof\Signer;
-use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\RemoteRequest;
 use OCA\Circles\Db\RemoteWrapperRequest;
-use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedEventException;
+use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\JsonException;
 use OCA\Circles\Exceptions\ModelException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
-use OCA\Circles\Exceptions\RemoteEventException;
-use OCA\Circles\Exceptions\ViewerNotConfirmedException;
-use OCA\Circles\IRemoteEvent;
-use OCA\Circles\IRemoteEventBypassLocalCircleCheck;
-use OCA\Circles\IRemoteEventBypassViewerCheck;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
+use OCA\Circles\IFederatedItem;
+use OCA\Circles\IFederatedItemBypassInitiatorCheck;
+use OCA\Circles\IFederatedItemBypassLocalCircleCheck;
+use OCA\Circles\IFederatedItemMustBeLocal;
+use OCA\Circles\IFederatedItemMustHaveMember;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Federated\FederatedEvent;
+use OCA\Circles\Model\Federated\RemoteInstance;
+use OCA\Circles\Model\Federated\RemoteWrapper;
 use OCA\Circles\Model\GlobalScale\GSWrapper;
-use OCA\Circles\Model\Remote\RemoteEvent;
-use OCA\Circles\Model\Remote\RemoteInstance;
-use OCA\Circles\Model\Remote\RemoteWrapper;
-use OCP\IURLGenerator;
-use OCP\IUserManager;
-use OCP\IUserSession;
 use ReflectionClass;
 use ReflectionException;
 
 
 /**
- * Class RemoteService
+ * Class FederatedEventService
  *
  * @package OCA\Circles\Service
  */
-class RemoteEventService extends NC21Signature {
+class FederatedEventService extends NC21Signature {
 
 
 	use TNC21Request;
 	use TStringTools;
 
-
-	/** @var IURLGenerator */
-	private $urlGenerator;
-
-	/** @var IUserManager */
-	private $userManager;
-
-	/** @var IUserSession */
-	private $userSession;
-
-	/** @var Signer */
-	private $signer;
 
 	/** @var RemoteWrapperRequest */
 	private $remoteWrapperRequest;
@@ -93,9 +81,8 @@ class RemoteEventService extends NC21Signature {
 	/** @var RemoteRequest */
 	private $remoteRequest;
 
-	/** @var CircleRequest */
-	private $circleRequest;
-
+	/** @var RemoteUpstreamService */
+	private $remoteUpstreamService;
 
 	/** @var ConfigService */
 	private $configService;
@@ -105,38 +92,21 @@ class RemoteEventService extends NC21Signature {
 
 
 	/**
-	 * GlobalScaleService constructor.
+	 * FederatedEventService constructor.
 	 *
-	 * @param IURLGenerator $urlGenerator
-	 * @param IUserManager $userManager
-	 * @param IUserSession $userSession
-	 * @param Signer $signer
 	 * @param RemoteWrapperRequest $remoteWrapperRequest
 	 * @param RemoteRequest $remoteRequest
-	 * @param CircleRequest $circleRequest
+	 * @param RemoteUpstreamService $remoteUpstreamService
 	 * @param ConfigService $configService
-	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		IURLGenerator $urlGenerator,
-		IUserManager $userManager,
-		IUserSession $userSession,
-		Signer $signer,
-		RemoteWrapperRequest $remoteWrapperRequest,
-		RemoteRequest $remoteRequest,
-		CircleRequest $circleRequest,
-		ConfigService $configService,
-		MiscService $miscService
+		RemoteWrapperRequest $remoteWrapperRequest, RemoteRequest $remoteRequest,
+		RemoteUpstreamService $remoteUpstreamService, ConfigService $configService
 	) {
-		$this->urlGenerator = $urlGenerator;
-		$this->userManager = $userManager;
-		$this->userSession = $userSession;
-		$this->signer = $signer;
 		$this->remoteWrapperRequest = $remoteWrapperRequest;
 		$this->remoteRequest = $remoteRequest;
-		$this->circleRequest = $circleRequest;
+		$this->remoteUpstreamService = $remoteUpstreamService;
 		$this->configService = $configService;
-		$this->miscService = $miscService;
 	}
 
 
@@ -144,63 +114,69 @@ class RemoteEventService extends NC21Signature {
 	 * Called when creating a new Event.
 	 * This method will manage the event locally and upstream the payload if needed.
 	 *
-	 * @param RemoteEvent $event
+	 * @param FederatedEvent $event
 	 *
-	 * @throws RemoteEventException
+	 * @throws InitiatorNotConfirmedException
 	 * @throws OwnerNotFoundException
-	 * @throws ViewerNotConfirmedException
+	 * @throws FederatedEventException
+	 * @throws RequestNetworkException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws UnknownRemoteException
+	 * @throws SignatoryException
 	 */
-	public function newEvent(RemoteEvent $event): void {
+	public function newEvent(FederatedEvent $event): void {
 		$event->setSource($this->configService->getLocalInstance());
-		if (!$event->hasCircle()) {
-			throw new RemoteEventException('Event does not contains Circle');
-		}
 
 		try {
-			$gs = $this->getRemoteEvent($event);
-		} catch (RemoteEventException $e) {
+			$federatedItem = $this->getFederatedItem($event, true);
+		} catch (FederatedEventException $e) {
 			$this->e($e);
 			throw $e;
 		}
 
-		$this->confirmViewer($event);
+		// TODO :: UNCOMMENT UNCOMMENT UNCOMMENT !! this is only commented in order to test something
+		$this->confirmInitiator($event, true);
 
-		try {
-			if ($this->configService->isLocalInstance($event->getCircle()->getInstance())) {
-				$gs->verify($event);
-				if (!$event->isAsync()) {
-					$gs->manage($event);
-				}
-
-				$this->initBroadcast($event);
-			} else {
-				//	$this->confirmEvent($event);
+		if ($this->configService->isLocalInstance($event->getCircle()->getInstance())) {
+			$federatedItem->verify($event);
+			if (!$event->isAsync()) {
+				$federatedItem->manage($event);
 			}
-		} catch (CircleNotFoundException $e) {
-			$this->e($e, ['event' => $event]);
-		}
 
+			$this->initBroadcast($event);
+		} else {
+			$this->remoteUpstreamService->confirmEvent($event);
+		}
 	}
 
 
 	/**
 	 * This confirmation is optional, method is just here to avoid going too far away on the process
 	 *
-	 * @param RemoteEvent $event
+	 * @param FederatedEvent $event
+	 * @param bool $local
 	 *
-	 * @throws ViewerNotConfirmedException
+	 * @throws InitiatorNotConfirmedException
 	 */
-	private function confirmViewer(RemoteEvent $event): void {
-		if ($event->canBypass(RemoteEvent::BYPASS_VIEWERCHECK)) {
+	public function confirmInitiator(FederatedEvent $event, bool $local = false): void {
+		if ($event->canBypass(FederatedEvent::BYPASS_INITIATORCHECK)) {
 			return;
 		}
 
 		$circle = $event->getCircle();
-		if (!$circle->hasViewer()
-			|| !$this->configService->isLocalInstance(
-				$circle->getViewer()->getInstance()
-			)) {
-			throw new ViewerNotConfirmedException('viewer does not exist or is not local');
+		if (!$circle->hasInitiator()) {
+			throw new InitiatorNotConfirmedException('initiator does not exist');
+		}
+
+		if ($local) {
+			if (!$this->configService->isLocalInstance($circle->getInitiator()->getInstance())) {
+				throw new InitiatorNotConfirmedException('initiator is not local');
+			}
+		} else {
+			if ($circle->getInitiator()->getInstance() !== $event->getIncomingOrigin()) {
+				throw new InitiatorNotConfirmedException('initiator must belong to remote instance');
+			}
 		}
 	}
 
@@ -244,48 +220,78 @@ class RemoteEventService extends NC21Signature {
 
 
 	/**
-	 * // TODO Rename Model/RemoteEvent and/or IRemoteEvent
+	 * @param FederatedEvent $event
+	 * @param bool $local
 	 *
-	 * @param RemoteEvent $event
-	 *
-	 * @return IRemoteEvent
-	 * @throws RemoteEventException
+	 * @return IFederatedItem
+	 * @throws FederatedEventException
 	 */
-	public function getRemoteEvent(RemoteEvent $event): IRemoteEvent {
+	public function getFederatedItem(FederatedEvent $event, bool $local = false): IFederatedItem {
 		$class = $event->getClass();
 		try {
 			$test = new ReflectionClass($class);
 		} catch (ReflectionException $e) {
-			throw new RemoteEventException('ReflectionException with ' . $class . ': ' . $e->getMessage());
+			throw new FederatedEventException('ReflectionException with ' . $class . ': ' . $e->getMessage());
 		}
 
-		if (!in_array(IRemoteEvent::class, $test->getInterfaceNames())) {
-			throw new RemoteEventException($class . ' does not implements IRemoteEvent');
+		if (!in_array(IFederatedItem::class, $test->getInterfaceNames())) {
+			throw new FederatedEventException($class . ' does not implements IFederatedItem');
 		}
 
-		$gs = OC::$server->get($class);
-		if (!$gs instanceof IRemoteEvent) {
-			throw new RemoteEventException($class . ' not an IRemoteEvent');
+		$item = OC::$server->get($class);
+		if (!$item instanceof IFederatedItem) {
+			throw new FederatedEventException($class . ' not an IFederatedItem');
 		}
 
-		$this->setRemoteEventBypass($event, $gs);
+		$this->setFederatedEventBypass($event, $item);
+		$this->confirmMustHaveCondition($event, $item, $local);
 
-		return $gs;
+		return $item;
 	}
 
 
 	/**
 	 * Some event might need to bypass some checks
 	 *
-	 * @param RemoteEvent $event
-	 * @param IRemoteEvent $gs
+	 * @param FederatedEvent $event
+	 * @param IFederatedItem $gs
 	 */
-	private function setRemoteEventBypass(RemoteEvent $event, IRemoteEvent $gs) {
-		if ($gs instanceof IRemoteEventBypassLocalCircleCheck) {
-			$event->bypass(RemoteEvent::BYPASS_LOCALCIRCLECHECK);
+	private function setFederatedEventBypass(FederatedEvent $event, IFederatedItem $gs) {
+		if ($gs instanceof IFederatedItemBypassLocalCircleCheck) {
+			$event->bypass(FederatedEvent::BYPASS_LOCALCIRCLECHECK);
 		}
-		if ($gs instanceof IRemoteEventBypassViewerCheck) {
-			$event->bypass(RemoteEvent::BYPASS_VIEWERCHECK);
+		if ($gs instanceof IFederatedItemBypassInitiatorCheck) {
+			$event->bypass(FederatedEvent::BYPASS_INITIATORCHECK);
+		}
+	}
+
+	/**
+	 * Some event might need to bypass some checks
+	 *
+	 * @param FederatedEvent $event
+	 * @param IFederatedItem $item
+	 * @param bool $local
+	 *
+	 * @throws FederatedEventException
+	 */
+	private function confirmMustHaveCondition(
+		FederatedEvent $event,
+		IFederatedItem $item,
+		bool $local = false
+	) {
+		if (!$event->hasCircle()) {
+			throw new FederatedEventException('FederatedItem has no Circle linked');
+		}
+		if ($item instanceof IFederatedItemMustHaveMember && !$event->hasMember()) {
+			throw new FederatedEventException('FederatedItem has no Member linked');
+		}
+		if ($event->hasMember() && !($item instanceof IFederatedItemMustHaveMember)) {
+			throw new FederatedEventException(
+				get_class($item) . ' does not implements IFederatedItemMustHaveMember '
+			);
+		}
+		if ($item instanceof IFederatedItemMustBeLocal && !$local) {
+			throw new FederatedEventException('FederatedItem must be local');
 		}
 	}
 
@@ -293,9 +299,9 @@ class RemoteEventService extends NC21Signature {
 	/**
 	 * async the process, generate a local request that will be closed.
 	 *
-	 * @param RemoteEvent $event
+	 * @param FederatedEvent $event
 	 */
-	public function initBroadcast(RemoteEvent $event): void {
+	public function initBroadcast(FederatedEvent $event): void {
 		$instances = $this->getInstances($event->isAsync());
 		if (empty($instances)) {
 			return;
@@ -396,46 +402,10 @@ class RemoteEventService extends NC21Signature {
 		}
 
 		try {
-			$gs = $this->getRemoteEvent($event);
+			$gs = $this->getFederatedItem($event);
 			$gs->result($events);
-		} catch (RemoteEventException $e) {
+		} catch (FederatedEventException $e) {
 		}
-	}
-
-
-	/**
-	 * @param RemoteEvent $event
-	 */
-	private function confirmEvent(RemoteEvent $event): void {
-//		$this->signEvent($event);
-
-		$circle = $event->getCircle();
-		$owner = $circle->getOwner();
-		$path = $this->urlGenerator->linkToRoute('circles.RemoteWrapper.event');
-
-		$request = new NC21Request($path, Request::TYPE_POST);
-		$this->configService->configureRequest($request);
-		$request->basedOnUrl($owner->getInstance());
-
-		$request->setDataSerialize($event);
-
-		$result = $this->retrieveJson($request);
-		$this->debug('confirming RemoteEvent', ['event' => $event, 'request' => $request]);
-//
-//		if ($this->getInt('status', $result) === 0) {
-//			throw new GlobalScaleEventException($this->get('error', $result));
-//		}
-
-//		$updatedData = $this->getArray('event', $result);
-//		$this->miscService->log('updatedEvent: ' . json_encode($updatedData), 0);
-//		if (!empty($updatedData)) {
-//			$updated = new GSEvent();
-//			try {
-//				$updated->import($updatedData);
-//				$event = $updated;
-//			} catch (Exception $e) {
-//			}
-//		}
 	}
 
 }

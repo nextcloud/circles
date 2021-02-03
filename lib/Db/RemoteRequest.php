@@ -35,7 +35,7 @@ namespace OCA\Circles\Db;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteUidException;
 use OCA\Circles\Model\Circle;
-use OCA\Circles\Model\Remote\RemoteInstance;
+use OCA\Circles\Model\Federated\RemoteInstance;
 
 
 /**

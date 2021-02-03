@@ -29,46 +29,15 @@ declare(strict_types=1);
  */
 
 
-namespace OCA\Circles\Model;
+namespace OCA\Circles;
 
-
-use OCA\Circles\IFederatedUser;
 
 /**
- * Class ManagedModel
+ * Interface IFederatedItemBypassInitiatorCheck
  *
- * @package OCA\Circles\Model
+ * @package OCA\Circles
  */
-class ManagedModel {
-
-
-	/** @var ModelManager */
-	private $modelManager;
-
-
-	/**
-	 * @return ModelManager
-	 */
-	protected function getManager(): ModelManager {
-		if ($this->modelManager === null) {
-			$this->modelManager = \OC::$server->get(ModelManager::class);
-		}
-
-		return $this->modelManager;
-	}
-
-
-	/** @noinspection PhpPossiblePolymorphicInvocationInspection */
-	public function importFromIFederatedUser(IFederatedUser $orig): void {
-		if (!($this instanceof IFederatedUser)) {
-			return;
-		}
-
-		$this->setSingleId($orig->getSingleId());
-		$this->setUserId($orig->getUserId());
-		$this->setUserType($orig->getUserType());
-		$this->setInstance($orig->getInstance());
-	}
+interface IFederatedItemBypassInitiatorCheck {
 
 }
 

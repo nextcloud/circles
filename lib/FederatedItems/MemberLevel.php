@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -27,61 +29,56 @@
  */
 
 
-namespace OCA\Circles\GlobalScale;
+namespace OCA\Circles\FederatedItems;
 
 
-use Exception;
-use OCA\Circles\Exceptions\CircleDoesNotExistException;
-use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
-use OCA\Circles\Exceptions\GlobalScaleDSyncException;
-use OCA\Circles\Exceptions\GlobalScaleEventException;
+use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\MemberIsNotModeratorException;
 use OCA\Circles\Exceptions\MemberIsNotOwnerException;
 use OCA\Circles\Exceptions\MemberIsOwnerException;
-use OCA\Circles\Exceptions\MemberTypeCantEditLevelException;
 use OCA\Circles\Exceptions\ModeratorIsNotHighEnoughException;
+use OCA\Circles\IFederatedItem;
+use OCA\Circles\IFederatedItemMustHaveMember;
 use OCA\Circles\Model\DeprecatedCircle;
-use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\DeprecatedMember;
+use OCA\Circles\Model\Federated\FederatedEvent;
+use OCA\Circles\Model\GlobalScale\GSEvent;
+use OCA\Circles\Model\Member;
 
 
 /**
  * Class MemberLevel
  *
- * @package OCA\Circles\GlobalScale
+ * @package OCA\Circles\FederatedItems
  */
-class MemberLevel extends AGlobalScaleEvent {
+class MemberLevel implements
+	IFederatedItem,
+	IFederatedItemMustHaveMember {
 
 
 	/**
-	 * @param GSEvent $event
-	 * @param bool $localCheck
+	 * @param FederatedEvent $event
 	 *
-	 * @param bool $mustBeChecked
-	 *
-	 * @throws CircleDoesNotExistException
-	 * @throws ConfigNoCircleAvailableException
-	 * @throws GlobalScaleDSyncException
-	 * @throws GlobalScaleEventException
-	 * @throws MemberTypeCantEditLevelException
-	 * @throws Exception
+	 * @throws FederatedEventException
+	 * @throws MemberDoesNotExistException
+	 * @throws MemberIsNotModeratorException
+	 * @throws MemberIsOwnerException
+	 * @throws ModeratorIsNotHighEnoughException
 	 */
-	public function verify(GSEvent $event, bool $localCheck = false, bool $mustBeChecked = true): void {
-		parent::verify($event, $localCheck, true);
-
+	public function verify(FederatedEvent $event): void {
+		$circle = $event->getCircle();
 		$member = $event->getMember();
 		$level = $event->getData()
 					   ->gInt('level');
+
 		if ($member->getLevel() === $level) {
-			throw new GlobalScaleDSyncException('level is not changed during the process');
+			throw new FederatedEventException('This member already have the selected level');
 		}
 
-		$member->levelHasToBeEditable();
-		$circle = $event->getDeprecatedCircle();
 
-		if ($level === DeprecatedMember::LEVEL_OWNER) {
-			$this->verifySwitchOwner($event, $circle, $member);
+		if ($level === Member::LEVEL_OWNER) {
+//			$this->verifySwitchOwner($event, $circle, $member);
 		} else {
 			$this->verifyMemberLevel($event, $circle, $member, $level);
 		}
@@ -90,35 +87,33 @@ class MemberLevel extends AGlobalScaleEvent {
 
 
 	/**
-	 * @param GSEvent $event
-	 *
-	 * @throws Exception
+	 * @param FederatedEvent $event
 	 */
-	public function manage(GSEvent $event): void {
+	public function manage(FederatedEvent $event): void {
 		$level = $event->getData()
 					   ->gInt('level');
-
-		$member = $event->getMember();
-		$this->cleanMember($member);
-
-		$member->setLevel($level);
-		$this->membersRequest->updateMemberLevel($member);
-
-		if ($level === DeprecatedMember::LEVEL_OWNER) {
-			$circle = $event->getDeprecatedCircle();
-			$isMod = $circle->getOwner();
-			if ($isMod->getInstance() === '') {
-				$isMod->setInstance($event->getSource());
-			}
-
-			$isMod->setLevel(DeprecatedMember::LEVEL_ADMIN);
-			$this->membersRequest->updateMemberLevel($isMod);
-		}
+//
+//		$member = $event->getMember();
+//		$this->cleanMember($member);
+//
+//		$member->setLevel($level);
+//		$this->membersRequest->updateMemberLevel($member);
+//
+//		if ($level === DeprecatedMember::LEVEL_OWNER) {
+//			$circle = $event->getDeprecatedCircle();
+//			$isMod = $circle->getOwner();
+//			if ($isMod->getInstance() === '') {
+//				$isMod->setInstance($event->getSource());
+//			}
+//
+//			$isMod->setLevel(DeprecatedMember::LEVEL_ADMIN);
+//			$this->membersRequest->updateMemberLevel($isMod);
+//		}
 	}
 
 
 	/**
-	 * @param GSEvent[] $events
+	 * @param FederatedEvent[] $events
 	 */
 	public function result(array $events): void {
 	}
@@ -135,7 +130,9 @@ class MemberLevel extends AGlobalScaleEvent {
 	 * @throws MemberIsNotModeratorException
 	 * @throws ModeratorIsNotHighEnoughException
 	 */
-	private function verifyMemberLevel(GSEvent $event, DeprecatedCircle $circle, DeprecatedMember $member, int $level) {
+	private function verifyMemberLevel(
+		GSEvent $event, DeprecatedCircle $circle, DeprecatedMember $member, int $level
+	) {
 		$member->hasToBeMember();
 		$member->cantBeOwner();
 

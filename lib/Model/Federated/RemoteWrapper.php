@@ -29,7 +29,7 @@ declare(strict_types=1);
  */
 
 
-namespace OCA\Circles\Model\Remote;
+namespace OCA\Circles\Model\Federated;
 
 
 use daita\MySmallPhpTools\Db\Nextcloud\nc21\INC21QueryRow;
@@ -57,14 +57,14 @@ class RemoteWrapper implements INC21QueryRow, JsonSerializable {
 	/** @var string */
 	private $token = '';
 
-	/** @var RemoteEvent */
+	/** @var FederatedEvent */
 	private $event;
 
 	/** @var string */
 	private $instance = '';
 
 	/** @var int */
-	private $severity = RemoteEvent::SEVERITY_LOW;
+	private $severity = FederatedEvent::SEVERITY_LOW;
 
 	/** @var int */
 	private $status = 0;
@@ -97,18 +97,18 @@ class RemoteWrapper implements INC21QueryRow, JsonSerializable {
 
 
 	/**
-	 * @return RemoteEvent
+	 * @return FederatedEvent
 	 */
-	public function getEvent(): RemoteEvent {
+	public function getEvent(): FederatedEvent {
 		return $this->event;
 	}
 
 	/**
-	 * @param RemoteEvent $event
+	 * @param FederatedEvent $event
 	 *
 	 * @return self
 	 */
-	public function setEvent(RemoteEvent $event): self {
+	public function setEvent(FederatedEvent $event): self {
 		$this->event = $event;
 
 		return $this;
@@ -206,10 +206,10 @@ class RemoteWrapper implements INC21QueryRow, JsonSerializable {
 	public function import(array $data): self {
 		$this->setToken($this->get('token', $data));
 		$this->setInstance($this->get('instance', $data));
-		$this->setSeverity($this->getInt('severity', $data, RemoteEvent::SEVERITY_LOW));
+		$this->setSeverity($this->getInt('severity', $data, FederatedEvent::SEVERITY_LOW));
 		$this->setStatus($this->getInt('status', $data, self::STATUS_INIT));
 
-		$event = new RemoteEvent();
+		$event = new FederatedEvent();
 		$event->import($this->getArray('event', $data));
 		$this->setEvent($event);
 
@@ -241,10 +241,10 @@ class RemoteWrapper implements INC21QueryRow, JsonSerializable {
 	public function importFromDatabase(array $data): INC21QueryRow {
 		$this->setToken($this->get('token', $data));
 		$this->setInstance($this->get('instance', $data));
-		$this->setSeverity($this->getInt('severity', $data, RemoteEvent::SEVERITY_LOW));
+		$this->setSeverity($this->getInt('severity', $data, FederatedEvent::SEVERITY_LOW));
 		$this->setStatus($this->getInt('status', $data, self::STATUS_INIT));
 
-		$event = new RemoteEvent();
+		$event = new FederatedEvent();
 		$event->import($this->getArray('event', $data));
 		$this->setEvent($event);
 

@@ -33,11 +33,11 @@ namespace OCA\Circles;
 
 
 /**
- * Interface IRemoteEvent
+ * Interface IFederatedItemMustHaveMember
  *
  * @package OCA\Circles
  */
-interface IRemoteEventBypassViewerCheck {
+interface IFederatedItemMustHaveMember {
 
 }
 

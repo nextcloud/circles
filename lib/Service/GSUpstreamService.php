@@ -151,7 +151,6 @@ class GSUpstreamService {
 			);
 			throw $e;
 		}
-
 	}
 
 

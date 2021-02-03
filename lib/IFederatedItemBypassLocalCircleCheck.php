@@ -33,11 +33,11 @@ namespace OCA\Circles;
 
 
 /**
- * Interface IRemoteEvent
+ * Interface IFederatedItemBypassLocalCircleCheck
  *
  * @package OCA\Circles
  */
-interface IRemoteEventBypassLocalCircleCheck {
+interface IFederatedItemBypassLocalCircleCheck {
 
 }
 

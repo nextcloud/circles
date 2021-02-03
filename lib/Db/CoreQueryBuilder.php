@@ -34,8 +34,9 @@ namespace OCA\Circles\Db;
 use daita\MySmallPhpTools\Db\Nextcloud\nc21\NC21ExtendedQueryBuilder;
 use Doctrine\DBAL\Query\QueryBuilder;
 use OC;
-use OCA\Circles\IMember;
+use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
 
@@ -45,6 +46,12 @@ use OCA\Circles\Service\ConfigService;
  * @package OCA\Circles\Db
  */
 class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
+
+
+	const PREFIX_MEMBER = 'member_';
+	const PREFIX_OWNER = 'owner_';
+	const PREFIX_INITIATOR = 'initiator_';
+	const PREFIX_CIRCLE = 'circle_';
 
 
 	/** @var ConfigService */
@@ -62,11 +69,11 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 
 
 	/**
-	 * @param IMember $member
+	 * @param IFederatedUser $member
 	 *
 	 * @return string
 	 */
-	public function getInstance(IMember $member): string {
+	public function getInstance(IFederatedUser $member): string {
 		$instance = $member->getInstance();
 
 		return ($this->configService->isLocalInstance($instance)) ? '' : $instance;
@@ -87,6 +94,14 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 		$this->limitToDBFieldInt('config', $config);
 	}
 
+
+	/**
+	 * @param string $singleId
+	 */
+	public function limitToSingleId(string $singleId): void {
+		$this->limitToDBField('single_id', $singleId, true);
+	}
+
 	/**
 	 * @param string $host
 	 */
@@ -96,124 +111,123 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 
 
 	/**
-	 * @param IMember $viewer
+	 * @param IFederatedUser $initiator
+	 * @param string $alias
 	 */
-	public function limitToViewer(IMember $viewer): void {
-		$this->leftJoinViewer($viewer, 'v');
-		$this->limitVisibility('v');
+	public function limitToInitiator(IFederatedUser $initiator, string $alias = ''): void {
+		$this->leftJoinInitiator($initiator, 'init', $alias);
+		$this->limitVisibility('init', $alias);
 	}
 
 
 	/**
-	 * @param IMember $member
+	 * @param IFederatedUser $member
 	 * @param int $level
 	 */
-	public function limitToMembership(IMember $member, int $level = Member::LEVEL_MEMBER): void {
+	public function limitToMembership(IFederatedUser $member, int $level = Member::LEVEL_MEMBER): void {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
 
 		$expr = $this->expr();
-		$pf = $this->getDefaultSelectAlias() . '.';
 
-		$this->selectAlias('m.user_id', 'member_user_id')
-			 ->selectAlias('m.user_type', 'member_user_type')
-			 ->selectAlias('m.member_id', 'member_member_id')
-			 ->selectAlias('m.circle_id', 'member_circle_id')
-			 ->selectAlias('m.instance', 'member_instance')
-			 ->selectAlias('m.cached_name', 'member_cached_name')
-			 ->selectAlias('m.cached_update', 'member_cached_update')
-			 ->selectAlias('m.status', 'member_status')
-			 ->selectAlias('m.level', 'member_level')
-			 ->selectAlias('m.note', 'member_note')
-			 ->selectAlias('m.contact_id', 'member_contact_id')
-			 ->selectAlias('m.contact_meta', 'member_contact_meta')
-			 ->selectAlias('m.joined', 'member_joined')
+		$alias = 'm';
+		$this->generateMemberSelectAlias($alias, self::PREFIX_MEMBER)
 			 ->leftJoin(
-				 $this->getDefaultSelectAlias(), CoreRequestBuilder::TABLE_MEMBER, 'm',
-				 $expr->eq('m.circle_id', $pf . 'unique_id')
+				 $this->getDefaultSelectAlias(), CoreRequestBuilder::TABLE_MEMBER, $alias,
+				 $expr->eq($alias . '.circle_id', $this->getDefaultSelectAlias() . '.unique_id')
 			 );
 
 		// TODO: Check in big table if it is better to put condition in andWhere() or in LeftJoin()
 		$this->andWhere(
 			$expr->andX(
-				$expr->eq('m.user_id', $this->createNamedParameter($member->getUserId())),
-				$expr->eq('m.user_type', $this->createNamedParameter($member->getUserType())),
-				$expr->eq('m.instance', $this->createNamedParameter($this->getInstance($member))),
-				$expr->gte('m.level', $this->createNamedParameter($level))
+				$expr->eq($alias . '.user_id', $this->createNamedParameter($member->getUserId())),
+				$expr->eq($alias . '.user_type', $this->createNamedParameter($member->getUserType())),
+				$expr->eq($alias . '.instance', $this->createNamedParameter($this->getInstance($member))),
+				$expr->gte($alias . '.level', $this->createNamedParameter($level))
 			)
 		);
 	}
 
 
 	/**
-	 *
+	 * @param FederatedUser|null $initiator
 	 */
-	public function leftJoinOwner() {
+	public function leftJoinCircle(?FederatedUser $initiator = null) {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
 
 		$expr = $this->expr();
-		$pf = $this->getDefaultSelectAlias() . '.';
 
-		$this->selectAlias('o.user_id', 'owner_user_id')
-			 ->selectAlias('o.user_type', 'owner_user_type')
-			 ->selectAlias('o.member_id', 'owner_member_id')
-			 ->selectAlias('o.circle_id', 'owner_circle_id')
-			 ->selectAlias('o.instance', 'owner_instance')
-			 ->selectAlias('o.cached_name', 'owner_cached_name')
-			 ->selectAlias('o.cached_update', 'owner_cached_update')
-			 ->selectAlias('o.status', 'owner_status')
-			 ->selectAlias('o.level', 'owner_level')
-			 ->selectAlias('o.note', 'owner_note')
-			 ->selectAlias('o.contact_id', 'owner_contact_id')
-			 ->selectAlias('o.contact_meta', 'owner_contact_meta')
-			 ->selectAlias('o.joined', 'owner_joined')
+		$alias = 'c';
+		$this->generateCircleSelectAlias($alias, self::PREFIX_CIRCLE)
 			 ->leftJoin(
-				 $this->getDefaultSelectAlias(), CoreRequestBuilder::TABLE_MEMBER, 'o',
+				 $this->getDefaultSelectAlias(), CoreRequestBuilder::TABLE_CIRCLE, $alias,
 				 $expr->andX(
-					 $expr->eq('o.circle_id', $pf . 'unique_id'),
-					 $expr->eq('o.level', $this->createNamedParameter(Member::LEVEL_OWNER))
+					 $expr->eq($alias . '.unique_id', $this->getDefaultSelectAlias() . '.circle_id')
+				 )
+			 );
+
+		if (!is_null($initiator)) {
+			$this->leftJoinOwner($alias);
+			$this->limitToInitiator($initiator, $alias);
+		}
+
+	}
+
+
+	/**
+	 * @param string $circleTableAlias
+	 */
+	public function leftJoinOwner(string $circleTableAlias = '') {
+		if ($this->getType() !== QueryBuilder::SELECT) {
+			return;
+		}
+
+		if ($circleTableAlias === '') {
+			$circleTableAlias = $this->getDefaultSelectAlias();
+		}
+		$expr = $this->expr();
+
+		$alias = 'o';
+		$this->generateMemberSelectAlias($alias, self::PREFIX_OWNER)
+			 ->leftJoin(
+				 $this->getDefaultSelectAlias(), CoreRequestBuilder::TABLE_MEMBER, $alias,
+				 $expr->andX(
+					 $expr->eq($alias . '.circle_id', $circleTableAlias . '.unique_id'),
+					 $expr->eq($alias . '.level', $this->createNamedParameter(Member::LEVEL_OWNER))
 				 )
 			 );
 	}
 
 
 	/**
-	 * Left join members to filter userId as viewer.
+	 * Left join members to filter userId as initiator.
 	 *
-	 * @param IMember $viewer
+	 * @param IFederatedUser $initiator
 	 * @param string $alias
+	 * @param string $aliasCircle
 	 */
-	public function leftJoinViewer(IMember $viewer, string $alias = 'v') {
+	public function leftJoinInitiator(
+		IFederatedUser $initiator, string $alias = 'init', string $aliasCircle = ''
+	) {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
 
 		$expr = $this->expr();
-		$pf = $this->getDefaultSelectAlias() . '.';
-
-		$this->selectAlias('v.user_id', 'viewer_user_id')
-			 ->selectAlias('v.user_type', 'viewer_user_type')
-			 ->selectAlias('v.member_id', 'viewer_member_id')
-			 ->selectAlias('v.circle_id', 'viewer_circle_id')
-			 ->selectAlias('v.instance', 'viewer_instance')
-			 ->selectAlias('v.cached_name', 'viewer_cached_name')
-			 ->selectAlias('v.cached_update', 'viewer_cached_update')
-			 ->selectAlias('v.status', 'viewer_status')
-			 ->selectAlias('v.level', 'viewer_level')
-			 ->selectAlias('v.note', 'viewer_note')
-			 ->selectAlias('v.contact_id', 'viewer_contact_id')
-			 ->selectAlias('v.contact_meta', 'viewer_contact_meta')
-			 ->selectAlias('v.joined', 'viewer_joined')
+		$aliasCircle = ($aliasCircle === '') ? $this->getDefaultSelectAlias() : $aliasCircle;
+		$this->generateMemberSelectAlias($alias, self::PREFIX_INITIATOR)
 			 ->leftJoin(
-				 $this->getDefaultSelectAlias(), CoreRequestBuilder::TABLE_MEMBER, 'v',
+				 $this->getDefaultSelectAlias(), CoreRequestBuilder::TABLE_MEMBER, $alias,
 				 $expr->andX(
-					 $expr->eq('v.circle_id', $pf . 'unique_id'),
-					 $expr->eq('v.user_id', $this->createNamedParameter($viewer->getUserId())),
-					 $expr->eq('v.user_type', $this->createNamedParameter($viewer->getUserType())),
-					 $expr->eq('v.instance', $this->createNamedParameter($this->getInstance($viewer)))
+					 $expr->eq($alias . '.circle_id', $aliasCircle . '.unique_id'),
+					 $expr->eq($alias . '.user_id', $this->createNamedParameter($initiator->getUserId())),
+					 $expr->eq($alias . '.user_type', $this->createNamedParameter($initiator->getUserType())),
+					 $expr->eq(
+						 $alias . '.instance', $this->createNamedParameter($this->getInstance($initiator))
+					 )
 				 )
 			 );
 	}
@@ -221,13 +235,15 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 
 	/**
 	 * @param string $alias
+	 * @param string $aliasCircle
 	 */
-	protected function limitVisibility(string $alias = 'v') {
+	protected function limitVisibility(string $alias = 'init', string $aliasCircle = '') {
 		$expr = $this->expr();
+		$aliasCircle = ($aliasCircle === '') ? $this->getDefaultSelectAlias() : $aliasCircle;
 
 		// Visibility to non-member is
-		// - 0 (default), if viewer is member
-		// - 2 (Personal), if viewer is owner)
+		// - 0 (default), if initiator is member
+		// - 2 (Personal), if initiator is owner)
 		// - 4 (Visible to everyone)
 		$orX = $expr->orX();
 		$orX->add(
@@ -235,20 +251,20 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 		);
 		$orX->add(
 			$expr->andX(
-				$expr->bitwiseAnd($this->getDefaultSelectAlias() . '.config', Circle::CFG_PERSONAL),
+				$expr->bitwiseAnd($aliasCircle . '.config', Circle::CFG_PERSONAL),
 				$expr->eq($alias . '.level', $this->createNamedParameter(Member::LEVEL_OWNER))
 			)
 		);
-		$orX->add($expr->bitwiseAnd($this->getDefaultSelectAlias() . '.config', Circle::CFG_VISIBLE));
+		$orX->add($expr->bitwiseAnd($aliasCircle . '.config', Circle::CFG_VISIBLE));
 		$this->andWhere($orX);
 
 		// TODO: add a filter for allowing 1, 128
 		// - 1 means hidden to front-end, filtering
-		$bitHidden = $expr->bitwiseAnd($this->getDefaultSelectAlias() . '.config', Circle::CFG_SINGLE);
+		$bitHidden = $expr->bitwiseAnd($aliasCircle . '.config', Circle::CFG_SINGLE);
 		$this->andWhere($this->createFunction('NOT') . $bitHidden);
 
 		// - 128 means fully hidden, filtering
-		$bitHidden = $expr->bitwiseAnd($this->getDefaultSelectAlias() . '.config', Circle::CFG_HIDDEN);
+		$bitHidden = $expr->bitwiseAnd($aliasCircle . '.config', Circle::CFG_HIDDEN);
 		$this->andWhere($this->createFunction('NOT') . $bitHidden);
 
 
@@ -277,6 +293,51 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 		$this->andWhere($this->expr()->bitwiseAnd($this->getDefaultSelectAlias() . '.config', $flag));
 	}
 
+
+	/**
+	 * @param string $alias
+	 * @param string $prefix
+	 *
+	 * @return $this
+	 */
+	private function generateCircleSelectAlias(string $alias, string $prefix): self {
+		$this->selectAlias($alias . '.unique_id', $prefix . 'unique_id')
+			 ->selectAlias($alias . '.name', $prefix . 'name')
+			 ->selectAlias($alias . '.alt_name', $prefix . 'alt_name')
+			 ->selectAlias($alias . '.description', $prefix . 'description')
+			 ->selectAlias($alias . '.settings', $prefix . 'settings')
+			 ->selectAlias($alias . '.config', $prefix . 'config')
+			 ->selectAlias($alias . '.contact_addressbook', $prefix . 'contact_addressbook')
+			 ->selectAlias($alias . '.contact_groupname', $prefix . 'contact_groupname')
+			 ->selectAlias($alias . '.creation', $prefix . 'creation');
+
+		return $this;
+	}
+
+	/**
+	 * @param string $alias
+	 * @param string $prefix
+	 *
+	 * @return $this
+	 */
+	private function generateMemberSelectAlias(string $alias, string $prefix): self {
+		$this->selectAlias($alias . '.circle_id', $prefix . 'circle_id')
+			 ->selectAlias($alias . '.single_id', $prefix . 'single_id')
+			 ->selectAlias($alias . '.user_id', $prefix . 'user_id')
+			 ->selectAlias($alias . '.user_type', $prefix . 'user_type')
+			 ->selectAlias($alias . '.member_id', $prefix . 'member_id')
+			 ->selectAlias($alias . '.instance', $prefix . 'instance')
+			 ->selectAlias($alias . '.cached_name', $prefix . 'cached_name')
+			 ->selectAlias($alias . '.cached_update', $prefix . 'cached_update')
+			 ->selectAlias($alias . '.status', $prefix . 'status')
+			 ->selectAlias($alias . '.level', $prefix . 'level')
+			 ->selectAlias($alias . '.note', $prefix . 'note')
+			 ->selectAlias($alias . '.contact_id', $prefix . 'contact_id')
+			 ->selectAlias($alias . '.contact_meta', $prefix . 'contact_meta')
+			 ->selectAlias($alias . '.joined', $prefix . 'joined');
+
+		return $this;
+	}
 
 }
 

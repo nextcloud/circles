@@ -38,6 +38,7 @@ use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Convert;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use DateTime;
 use JsonSerializable;
+use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 
 
@@ -93,10 +94,11 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 	const CFG_ROOT = 2048;        // Circle cannot be inside another Circle
 	const CFG_FEDERATED = 4096;   // Federated
 
-	const ID_LENGTH = 14;
+	const ID_LENGTH = 15;
 
 	static $DEF = [
-		1    => 'S|Single',
+		1 => 'S|Single',
+
 		2    => 'P|Personal',
 		8    => 'V|Visible',
 		16   => 'O|Open',
@@ -133,7 +135,7 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 	private $members = [];
 
 	/** @var Member */
-	private $viewer;
+	private $initiator;
 
 	/** @var array */
 	private $settings = [];
@@ -312,12 +314,12 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 
 
 	/**
-	 * @param Member $viewer
+	 * @param Member $initiator
 	 *
 	 * @return Circle
 	 */
-	public function setViewer(Member $viewer): self {
-		$this->viewer = $viewer;
+	public function setInitiator(Member $initiator): self {
+		$this->initiator = $initiator;
 
 		return $this;
 	}
@@ -325,15 +327,15 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 	/**
 	 * @return Member
 	 */
-	public function getViewer(): Member {
-		return $this->viewer;
+	public function getInitiator(): Member {
+		return $this->initiator;
 	}
 
 	/**
 	 * @return bool
 	 */
-	public function hasViewer(): bool {
-		return ($this->viewer !== null);
+	public function hasInitiator(): bool {
+		return ($this->initiator !== null);
 	}
 
 	/**
@@ -526,6 +528,13 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 		} catch (InvalidItemException $e) {
 		}
 
+		try {
+			/** @var Member $owner */
+			$initiator = $this->convert($this->getArray('initiator', $data), Member::class);
+			$this->setInitiator($initiator);
+		} catch (InvalidItemException $e) {
+		}
+
 		return $this;
 	}
 
@@ -549,6 +558,10 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 			$arr['owner'] = $this->getOwner();
 		}
 
+		if ($this->hasInitiator()) {
+			$arr['initiator'] = $this->getInitiator();
+		}
+
 		if ($this->getManager()->isFullDetails()) {
 			$arr['memberOf'] = $this->memberOf();
 		}
@@ -559,25 +572,31 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 
 	/**
 	 * @param array $data
+	 * @param string $prefix
 	 *
 	 * @return INC21QueryRow
+	 * @throws CircleNotFoundException
 	 */
-	public function importFromDatabase(array $data): INC21QueryRow {
-		$this->setId($this->get('unique_id', $data))
-			 ->setName($this->get('name', $data))
-			 ->setAltName($this->get('alt_name', $data))
-			 ->setConfig($this->getInt('config', $data))
-			 ->setInstance($this->get('instance', $data))
-			 ->setSettings($this->getArray('settings', $data))
-			 ->setContactAddressBook($this->getInt('contact_addressbook', $data))
-			 ->setContactGroupName($this->get('contact_groupname', $data))
-			 ->setDescription($this->get('description', $data));
+	public function importFromDatabase(array $data, string $prefix = ''): INC21QueryRow {
+		if (!array_key_exists($prefix . 'unique_id', $data)) {
+			throw new CircleNotFoundException();
+		}
 
-		$creation = $this->get('creation', $data);
+		$this->setId($this->get($prefix . 'unique_id', $data))
+			 ->setName($this->get($prefix . 'name', $data))
+			 ->setAltName($this->get($prefix . 'alt_name', $data))
+			 ->setConfig($this->getInt($prefix . 'config', $data))
+			 ->setInstance($this->get($prefix . 'instance', $data))
+			 ->setSettings($this->getArray($prefix . 'settings', $data))
+			 ->setContactAddressBook($this->getInt($prefix . 'contact_addressbook', $data))
+			 ->setContactGroupName($this->get($prefix . 'contact_groupname', $data))
+			 ->setDescription($this->get($prefix . 'description', $data));
+
+		$creation = $this->get($prefix . 'creation', $data);
 		$this->setCreation(DateTime::createFromFormat('Y-m-d H:i:s', $creation)->getTimestamp());
 
 		$this->getManager()->importOwnerFromDatabase($this, $data);
-		$this->getManager()->importViewerFromDatabase($this, $data);
+		$this->getManager()->importInitiatorFromDatabase($this, $data);
 
 		return $this;
 	}
@@ -587,9 +606,11 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 	 * @param Circle $circle
 	 *
 	 * @return bool
+	 * @throws OwnerNotFoundException
 	 */
 	public function compareWith(Circle $circle): bool {
 		if ($this->getId() !== $circle->getId()
+			|| $this->getInstance() !== $circle->getInstance()
 			|| $this->getConfig() !== $circle->getConfig()) {
 			return false;
 		}
@@ -600,7 +621,14 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 			return false;
 		}
 
+		if ($this->hasInitiator()
+			&& (!$circle->hasInitiator()
+				|| !$this->getInitiator()->compareWith($circle->getInitiator()))) {
+			return false;
+		}
+
 		return true;
 	}
 
 }
+

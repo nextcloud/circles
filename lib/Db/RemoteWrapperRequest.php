@@ -33,7 +33,7 @@ namespace OCA\Circles\Db;
 
 
 use OCA\Circles\Model\GlobalScale\GSWrapper;
-use OCA\Circles\Model\Remote\RemoteWrapper;
+use OCA\Circles\Model\Federated\RemoteWrapper;
 
 
 /**

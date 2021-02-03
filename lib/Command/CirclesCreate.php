@@ -32,11 +32,12 @@ namespace OCA\Circles\Command;
 use OC\Core\Command\Base;
 use OC\User\NoUserException;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
+use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
-use OCA\Circles\Exceptions\RemoteEventException;
-use OCA\Circles\Exceptions\ViewerNotFoundException;
+use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Service\CircleService;
-use OCA\Circles\Service\CurrentUserService;
+use OCA\Circles\Service\FederatedUserService;
 use OCP\IL10N;
 use OCP\IUserManager;
 use Symfony\Component\Console\Input\InputArgument;
@@ -58,8 +59,8 @@ class CirclesCreate extends Base {
 	/** @var IUserManager */
 	private $userManager;
 
-	/** @var CurrentUserService */
-	private $currentUserService;
+	/** @var FederatedUserService */
+	private $federatedUserService;
 
 	/** @var CircleService */
 	private $circleService;
@@ -70,17 +71,17 @@ class CirclesCreate extends Base {
 	 *
 	 * @param IL10N $l10n
 	 * @param IUserManager $userManager
-	 * @param CurrentUserService $currentUserService
+	 * @param FederatedUserService $federatedUserService
 	 * @param CircleService $circleService
 	 */
 	public function __construct(
-		IL10N $l10n, IUserManager $userManager, CurrentUserService $currentUserService,
+		IL10N $l10n, IUserManager $userManager, FederatedUserService $federatedUserService,
 		CircleService $circleService
 	) {
 		parent::__construct();
 		$this->l10n = $l10n;
 		$this->userManager = $userManager;
-		$this->currentUserService = $currentUserService;
+		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
 
 	}
@@ -102,17 +103,18 @@ class CirclesCreate extends Base {
 	 * @return int
 	 * @throws CircleNotFoundException
 	 * @throws NoUserException
-	 * @throws RemoteEventException
-	 * @throws ViewerNotFoundException
+	 * @throws FederatedEventException
+	 * @throws InitiatorNotFoundException
 	 * @throws OwnerNotFoundException
+	 * @throws InitiatorNotConfirmedException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$ownerId = $input->getArgument('owner');
 		$name = $input->getArgument('name');
 
-		$this->currentUserService->bypassCurrentUserCondition(true);
+		$this->federatedUserService->bypassCurrentUserCondition(true);
 
-		$owner = $this->currentUserService->createLocalCurrentUser($ownerId);
+		$owner = $this->federatedUserService->createLocalFederatedUser($ownerId);
 		$circle = $this->circleService->create($name, $owner);
 
 		echo json_encode($circle, JSON_PRETTY_PRINT) . "\n";

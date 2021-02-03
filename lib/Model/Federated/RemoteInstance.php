@@ -29,7 +29,7 @@ declare(strict_types=1);
  */
 
 
-namespace OCA\Circles\Model\Remote;
+namespace OCA\Circles\Model\Federated;
 
 
 use daita\MySmallPhpTools\Db\Nextcloud\nc21\INC21QueryRow;

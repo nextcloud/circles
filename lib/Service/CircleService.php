@@ -39,14 +39,14 @@ use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\MembersLimitException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
-use OCA\Circles\Exceptions\RemoteEventException;
-use OCA\Circles\Exceptions\ViewerNotConfirmedException;
-use OCA\Circles\Exceptions\ViewerNotFoundException;
+use OCA\Circles\Exceptions\FederatedEventException;
+use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
+use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Model\Circle;
-use OCA\Circles\Model\CurrentUser;
+use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
-use OCA\Circles\Model\Remote\RemoteEvent;
-use OCA\Circles\RemoteEvents\CircleCreate;
+use OCA\Circles\Model\Federated\FederatedEvent;
+use OCA\Circles\FederatedItems\CircleCreate;
 
 
 /**
@@ -67,11 +67,11 @@ class CircleService {
 	/** @var MemberRequest */
 	private $memberRequest;
 
-	/** @var CurrentUserService */
-	private $currentUserService;
+	/** @var FederatedUserService */
+	private $federatedUserService;
 
-	/** @var RemoteEventService */
-	private $remoteEventService;
+	/** @var FederatedEventService */
+	private $federatedEventService;
 
 	/** @var ConfigService */
 	private $configService;
@@ -82,36 +82,36 @@ class CircleService {
 	 *
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
-	 * @param CurrentUserService $currentUserService
-	 * @param RemoteEventService $remoteEventService
+	 * @param FederatedUserService $federatedUserService
+	 * @param FederatedEventService $federatedEventService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		CircleRequest $circleRequest, MemberRequest $memberRequest, CurrentUserService $currentUserService,
-		RemoteEventService $remoteEventService, ConfigService $configService
+		CircleRequest $circleRequest, MemberRequest $memberRequest, FederatedUserService $federatedUserService,
+		FederatedEventService $federatedEventService, ConfigService $configService
 	) {
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
-		$this->currentUserService = $currentUserService;
-		$this->remoteEventService = $remoteEventService;
+		$this->federatedUserService = $federatedUserService;
+		$this->federatedEventService = $federatedEventService;
 		$this->configService = $configService;
 	}
 
 
 	/**
 	 * @param string $name
-	 * @param CurrentUser|null $owner
+	 * @param FederatedUser|null $owner
 	 *
 	 * @return Circle
 	 * @throws OwnerNotFoundException
-	 * @throws RemoteEventException
-	 * @throws ViewerNotFoundException
-	 * @throws ViewerNotConfirmedException
+	 * @throws FederatedEventException
+	 * @throws InitiatorNotFoundException
+	 * @throws InitiatorNotConfirmedException
 	 */
-	public function create(string $name, ?CurrentUser $owner = null): Circle {
-		$this->currentUserService->mustHaveCurrentUser();
+	public function create(string $name, ?FederatedUser $owner = null): Circle {
+		$this->federatedUserService->mustHaveCurrentUser();
 		if (is_null($owner)) {
-			$owner = $this->currentUserService->getCurrentUser();
+			$owner = $this->federatedUserService->getCurrentUser();
 		}
 
 		$circle = new Circle();
@@ -119,17 +119,17 @@ class CircleService {
 		$circle->setId($this->token(Circle::ID_LENGTH));
 
 		$member = new Member();
-		$member->importFromIMember($owner);
+		$member->importFromIFederatedUser($owner);
 		$member->setId($this->token(Member::ID_LENGTH))
 			   ->setCircleId($circle->getId())
 			   ->setLevel(Member::LEVEL_OWNER)
 			   ->setStatus(Member::STATUS_MEMBER);
 		$circle->setOwner($member)
-			   ->setViewer($member);
+			   ->setInitiator($member);
 
-		$event = new RemoteEvent(CircleCreate::class);
+		$event = new FederatedEvent(CircleCreate::class);
 		$event->setCircle($circle);
-		$this->remoteEventService->newEvent($event);
+		$this->federatedEventService->newEvent($event);
 
 		return $circle;
 	}
@@ -139,12 +139,12 @@ class CircleService {
 	 * @param Member|null $filter
 	 *
 	 * @return Circle[]
-	 * @throws ViewerNotFoundException
+	 * @throws InitiatorNotFoundException
 	 */
 	public function getCircles(?Member $filter = null): array {
-		$this->currentUserService->mustHaveCurrentUser();
+		$this->federatedUserService->mustHaveCurrentUser();
 
-		return $this->circleRequest->getCircles($filter, $this->currentUserService->getCurrentUser());
+		return $this->circleRequest->getCircles($filter, $this->federatedUserService->getCurrentUser());
 	}
 
 
@@ -153,12 +153,12 @@ class CircleService {
 	 *
 	 * @return Circle
 	 * @throws CircleNotFoundException
-	 * @throws ViewerNotFoundException
+	 * @throws InitiatorNotFoundException
 	 */
 	public function getCircle(string $circleId): Circle {
-		$this->currentUserService->mustHaveCurrentUser();
+		$this->federatedUserService->mustHaveCurrentUser();
 
-		return $this->circleRequest->getCircle($circleId, $this->currentUserService->getCurrentUser());
+		return $this->circleRequest->getCircle($circleId, $this->federatedUserService->getCurrentUser());
 	}
 
 

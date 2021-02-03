@@ -20,8 +20,8 @@ I got lazy and afraid to get lost the first throw of code
 
 - [ ] #M003: confirm other type of User when adding a new member to a circle.
 - [ ] confirm MemberId and CircleId is really not known before creating entry in database.
-- Add better option to circles:manage:list
-
+- [x] Add better option to circles:manage:list
+- [ ] when generating Single circle, update single_id with the generated id in the table circle_members
 
 
 ### Ideas
@@ -36,12 +36,12 @@ Should I do it ?
 ### renaming
 Some Model/Method needs renaming for better readability
 
-- [ ] rename getViewer/setViewer to getInitiator/setInitiator
-- [ ] rename IMember to ICircleUser
+- [x] rename getViewer/setViewer to getInitiator/setInitiator
+- [x] rename IMember to IFederatedUser
 - [ ] rename Member to CircleMember
-- [ ] rename CurrentUser to CloudUser
-- [ ] rename IRemoteEvent to IRemoteItem or IRemoteCommand or IRemoteObject
-- [ ] rename RemoteEvent (needed ?)
+- [x] rename CurrentUser to FederatedUser
+- [x] rename IRemoteEvent to IFederatedItem, IFederatedCommand, IFederatedAction, IFederatedObject
+- [x] rename RemoteEvent to FederatedEvent
 
 
 

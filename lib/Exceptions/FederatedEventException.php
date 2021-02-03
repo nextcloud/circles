@@ -28,12 +28,61 @@
 
 namespace OCA\Circles\Exceptions;
 
+use Exception;
+use JsonSerializable;
+use Throwable;
+
+
 /**
- * Class RemoteEventException
+ * Class FederatedEventException
  *
  * @package OCA\Circles\Exceptions
  */
-class RemoteEventException extends \Exception {
+class FederatedEventException extends Exception implements JsonSerializable {
+
+
+	/** @var array */
+	private $params;
+
+
+	/**
+	 * FederatedEventException constructor.
+	 *
+	 * @param string $message
+	 * @param array $params
+	 * @param int $code
+	 * @param Throwable|null $previous
+	 */
+	public function __construct(
+		string $message = '', array $params = [], int $code = 0, ?Throwable $previous = null
+	) {
+		parent::__construct($message, $code, $previous);
+		$this->setParams($params);
+	}
+
+	/**
+	 * @param array $params
+	 */
+	private function setParams(array $params): void {
+		$this->params = $params;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getParams(): array {
+		return $this->params;
+	}
+
+	/**
+	 * @return mixed|void
+	 */
+	public function jsonSerialize(): array {
+		return [
+			'message' => $this->getMessage(),
+			'params'  => $this->getParams()
+		];
+	}
 
 }
 

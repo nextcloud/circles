@@ -92,6 +92,21 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 		} catch (SchemaException $e) {
 		}
 
+
+		try {
+			$circles = $schema->getTable('circle_members');
+			if (!$circles->hasColumn('single_id')) {
+				$circles->addColumn(
+					'single_id', 'string', [
+								   'notnull' => false,
+								   'length'  => 15
+							   ]
+				);
+			}
+		} catch (SchemaException $e) {
+		}
+
+
 		if (!$schema->hasTable('circle_remotes')) {
 			$table = $schema->createTable('circle_remotes');
 			$table->addColumn(

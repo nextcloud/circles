@@ -39,6 +39,7 @@ use daita\MySmallPhpTools\Exceptions\SignatureException;
 use daita\MySmallPhpTools\Exceptions\WellKnownLinkNotFoundException;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Signatory;
+use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21SignedRequest;
 use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Convert;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21LocalSignatory;
@@ -53,7 +54,7 @@ use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RemoteUidException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Model\Circle;
-use OCA\Circles\Model\Remote\RemoteInstance;
+use OCA\Circles\Model\Federated\RemoteInstance;
 use OCP\IURLGenerator;
 
 
@@ -163,18 +164,14 @@ class RemoteService extends NC21Signature {
 	 * @throws UnknownRemoteException
 	 */
 	public function getCircles(string $instance): array {
-		$circles = $this->requestRemoteInstance($instance, RemoteInstance::CIRCLES);
+		$circles = $this->resultRequestRemoteInstance($instance, RemoteInstance::CIRCLES);
 
 		return $this->convertArray($circles, Circle::class);
 	}
 
 
 	/**
-	 * Send a request to a remote instance, based on:
-	 * - instance: address as saved in database,
-	 * - item: the item to request (incoming, event, ...)
-	 * - type: GET, POST
-	 * - data: Serializable to be send if needed
+	 * shortcut to requestRemoteInstance that return result if available, or exception.
 	 *
 	 * @param string $instance
 	 * @param string $item
@@ -188,12 +185,45 @@ class RemoteService extends NC21Signature {
 	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
 	 */
-	public function requestRemoteInstance(
+	public function resultRequestRemoteInstance(
 		string $instance,
 		string $item,
 		int $type = Request::TYPE_GET,
 		?JsonSerializable $object = null
 	): array {
+		$signedRequest = $this->requestRemoteInstance($instance, $item, $type, $object);
+		if (!$signedRequest->getOutgoingRequest()->hasResult()) {
+			throw new RequestNetworkException();
+		}
+
+		return $signedRequest->getOutgoingRequest()->getResult()->getAsArray();
+	}
+
+	/**
+	 * Send a request to a remote instance, based on:
+	 * - instance: address as saved in database,
+	 * - item: the item to request (incoming, event, ...)
+	 * - type: GET, POST
+	 * - data: Serializable to be send if needed
+	 *
+	 * @param string $instance
+	 * @param string $item
+	 * @param int $type
+	 * @param JsonSerializable|null $object
+	 *
+	 * @return NC21SignedRequest
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws UnknownRemoteException
+	 */
+	public function requestRemoteInstance(
+		string $instance,
+		string $item,
+		int $type = Request::TYPE_GET,
+		?JsonSerializable $object = null
+	): NC21SignedRequest {
 
 		$request = new NC21Request('', $type);
 		if ($this->configService->isLocalInstance($instance)) {
@@ -214,7 +244,6 @@ class RemoteService extends NC21Signature {
 //			$request->setInstance($instance);
 //		}
 
-
 		if (!is_null($object)) {
 			$request->setDataSerialize($object);
 		}
@@ -222,9 +251,9 @@ class RemoteService extends NC21Signature {
 		$app = $this->getAppSignatory();
 //		$app->setAlgorithm(NC21Signatory::SHA512);
 		$signedRequest = $this->signOutgoingRequest($request, $app);
-		$this->doRequest($signedRequest->getOutgoingRequest());
+		$this->doRequest($signedRequest->getOutgoingRequest(), false);
 
-		return $signedRequest->getOutgoingRequest()->getResult()->getAsArray();
+		return $signedRequest;
 	}
 
 

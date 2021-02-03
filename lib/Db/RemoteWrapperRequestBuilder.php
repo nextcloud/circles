@@ -34,7 +34,7 @@ namespace OCA\Circles\Db;
 
 use daita\MySmallPhpTools\Exceptions\RowNotFoundException;
 use OCA\Circles\Exceptions\RemoteWrapperNotFoundException;
-use OCA\Circles\Model\Remote\RemoteWrapper;
+use OCA\Circles\Model\Federated\RemoteWrapper;
 
 
 /**

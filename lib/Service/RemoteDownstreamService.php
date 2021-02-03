@@ -35,10 +35,15 @@ namespace OCA\Circles\Service;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Logger;
 use Exception;
 use OCA\Circles\Db\CircleRequest;
+use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedEventDSyncException;
+use OCA\Circles\Exceptions\FederatedEventException;
+use OCA\Circles\Exceptions\GlobalScaleDSyncException;
+use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
+use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
-use OCA\Circles\Exceptions\RemoteEventException;
-use OCA\Circles\Model\Remote\RemoteEvent;
+use OCA\Circles\Model\Federated\FederatedEvent;
 
 
 /**
@@ -52,38 +57,39 @@ class RemoteDownstreamService {
 	use TNC21Logger;
 
 
-//	/** @var GlobalScaleService */
-//	private $globalScaleService;
-//
-//	/** @var ConfigService */
-//	private $configService;
-//
-
-
 	/** @var CircleRequest */
 	private $circleRequest;
 
-	/** @var RemoteEventService */
-	private $remoteEventService;
+	/** @var MemberRequest */
+	private $memberRequest;
+
+	/** @var FederatedEventService */
+	private $federatedEventService;
+
+	/** @var ConfigService */
+	private $configService;
 
 
 	/**
 	 * RemoteDownstreamService constructor.
 	 *
 	 * @param CircleRequest $circleRequest
-	 * @param RemoteEventService $remoteEventService
+	 * @param MemberRequest $memberRequest
+	 * @param FederatedEventService $federatedEventService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		CircleRequest $circleRequest,
-		RemoteEventService $remoteEventService,
+		MemberRequest $memberRequest,
+		FederatedEventService $federatedEventService,
 		ConfigService $configService
 	) {
 		$this->setup('app', 'circles');
 
 		$this->circleRequest = $circleRequest;
-		$this->remoteEventService = $remoteEventService;
-//		$this->configService = $configService;
+		$this->memberRequest = $memberRequest;
+		$this->federatedEventService = $federatedEventService;
+		$this->configService = $configService;
 	}
 
 
@@ -109,41 +115,58 @@ class RemoteDownstreamService {
 
 
 	/**
-	 * @param RemoteEvent $event
+	 * @param FederatedEvent $event
 	 *
-	 * @throws RemoteEventException
+	 * @throws FederatedEventException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws OwnerNotFoundException
+	 * @throws GlobalScaleDSyncException
+	 * @throws FederatedEventDSyncException
 	 */
-	public function requestedEvent(RemoteEvent $event) {
-//		if ($event instanceof IRemoteEventMustBeLocal) {
-//			return true;
-//		}
+	public function requestedEvent(FederatedEvent $event): void {
+		try {
+			$gs = $this->federatedEventService->getFederatedItem($event, false);
+		} catch (FederatedEventException $e) {
+			$this->e($e);
+			throw $e;
+		}
 
-//		$gs = $this->remoteEventService->getRemoteEvent($event);
-//		if (!$this->remoteEventService->isLocalEvent($event)) {
-//			return;
+		if (!$this->configService->isLocalInstance($event->getCircle()->getInstance())) {
+			throw new FederatedEventException('Circle is not from this instance');
+		}
+		$this->federatedEventService->confirmInitiator($event, false);
+		try {
+			$this->confirmContent($event);
+		} catch (Exception $e) {
+			throw new FederatedEventDSyncException();
+		}
+
+		$gs->verify($event);
+		// async.
+
+//			if (!$event->isAsync()) {
+//				$gs->manage($event);
+//			}
+//
+//			$this->initBroadcast($event);
+//		} else {
+//			$this->remoteUpstreamService->confirmEvent($event);
 //		}
 //
-//		$gs->verify($event);
-//
-//		if (!$event->isAsync()) {
-//			$gs->manage($event);
-//		}
-
-//		$this->globalScaleService->asyncBroadcast($event);
 	}
 
 
 	/**
-	 * @param RemoteEvent $event
+	 * @param FederatedEvent $event
 	 *
 	 * @return array
 	 */
-	public function incomingEvent(RemoteEvent $event): array {
+	public function incomingEvent(FederatedEvent $event): array {
 		$result = [];
 		try {
-			$gs = $this->remoteEventService->getRemoteEvent($event);
-			$this->confirmCircle($event);
+			$gs = $this->federatedEventService->getFederatedItem($event);
 			$this->confirmOriginEvent($event);
+			$this->confirmContent($event);
 
 			$gs->manage($event);
 		} catch (Exception $e) {
@@ -155,24 +178,38 @@ class RemoteDownstreamService {
 
 
 	/**
-	 * @param RemoteEvent $event
+	 * @param FederatedEvent $event
 	 *
-	 * @throws RemoteEventException
+	 * @throws FederatedEventDSyncException
+	 * @throws OwnerNotFoundException
 	 */
-	private function confirmCircle(RemoteEvent $event): void {
-		if ($event->canBypass(RemoteEvent::BYPASS_LOCALCIRCLECHECK) || $this->verifyCircle($event)) {
+	private function confirmContent(FederatedEvent $event): void {
+		$this->confirmCircle($event);
+		$this->confirmMember($event);
+	}
+
+
+	/**
+	 * @param FederatedEvent $event
+	 *
+	 * @throws OwnerNotFoundException
+	 * @throws FederatedEventDSyncException
+	 */
+	private function confirmCircle(FederatedEvent $event): void {
+		if ($event->canBypass(FederatedEvent::BYPASS_LOCALCIRCLECHECK) || $this->verifyCircle($event)) {
 			return;
 		}
 
-		throw new RemoteEventException('could not verify circle');
+		throw new FederatedEventDSyncException('Could not verify Circle');
 	}
 
 	/**
-	 * @param RemoteEvent $event
+	 * @param FederatedEvent $event
 	 *
 	 * @return bool
+	 * @throws OwnerNotFoundException
 	 */
-	private function verifyCircle(RemoteEvent $event): bool {
+	private function verifyCircle(FederatedEvent $event): bool {
 		$circle = $event->getCircle();
 		try {
 			$localCircle = $this->circleRequest->getCircle($circle->getId());
@@ -180,20 +217,54 @@ class RemoteDownstreamService {
 			return false;
 		}
 
-		return ($localCircle->compareWith($circle));
+		if (!$localCircle->compareWith($circle)) {
+			return false;
+		}
 	}
 
 
 	/**
-	 * @param RemoteEvent $event
+	 * @param FederatedEvent $event
 	 *
-	 * @throws RemoteEventException
+	 * @throws FederatedEventDSyncException
+	 */
+	private function confirmMember(FederatedEvent $event): void {
+		if (!$event->hasMember() || $this->verifyMember($event)) {
+			return;
+		}
+
+		throw new FederatedEventDSyncException('Could not verify Member');
+	}
+
+	/**
+	 * @param FederatedEvent $event
+	 *
+	 * @return bool
+	 */
+	private function verifyMember(FederatedEvent $event): bool {
+		$member = $event->getMember();
+		try {
+			$localMember = $this->memberRequest->getMember($member->getId());
+		} catch (MemberNotFoundException $e) {
+			return false;
+		}
+
+		if (!$localMember->compareWith($member)) {
+			return false;
+		}
+	}
+
+
+	/**
+	 * @param FederatedEvent $event
+	 *
+	 * @throws FederatedEventException
 	 * @throws OwnerNotFoundException
 	 */
-	private function confirmOriginEvent(RemoteEvent $event): void {
+	private function confirmOriginEvent(FederatedEvent $event): void {
 		if ($event->getIncomingOrigin() !== $event->getCircle()->getInstance()) {
 			$this->debug('invalid origin', ['event' => $event]);
-			throw new RemoteEventException('invalid origin');
+			throw new FederatedEventException('invalid origin');
 		}
 	}
 

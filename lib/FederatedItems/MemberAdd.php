@@ -29,7 +29,7 @@ declare(strict_types=1);
  */
 
 
-namespace OCA\Circles\RemoteEvents;
+namespace OCA\Circles\FederatedItems;
 
 
 use daita\MySmallPhpTools\Traits\TStringTools;
@@ -38,15 +38,16 @@ use OC\User\NoUserException;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\MemberLevelException;
 use OCA\Circles\Exceptions\MemberTypeNotFoundException;
-use OCA\Circles\Exceptions\RemoteEventException;
+use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
-use OCA\Circles\IMember;
-use OCA\Circles\IRemoteEvent;
+use OCA\Circles\IFederatedUser;
+use OCA\Circles\IFederatedItem;
+use OCA\Circles\IFederatedItemMustHaveMember;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\Member;
-use OCA\Circles\Model\Remote\RemoteEvent;
+use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\SharesToken;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
@@ -61,7 +62,9 @@ use OCP\Util;
  *
  * @package OCA\Circles\GlobalScale
  */
-class MemberAdd implements IRemoteEvent {
+class MemberAdd implements
+	IFederatedItem,
+	IFederatedItemMustHaveMember {
 
 
 	use TStringTools;
@@ -100,25 +103,22 @@ class MemberAdd implements IRemoteEvent {
 
 
 	/**
-	 * @param RemoteEvent $event
+	 * @param FederatedEvent $event
 	 *
 	 * @throws MemberLevelException
 	 * @throws NoUserException
-	 * @throws RemoteEventException
+	 * @throws FederatedEventException
 	 * @throws UserTypeNotFoundException
 	 * @throws \OCA\Circles\Exceptions\MembersLimitException
 	 */
-	public function verify(RemoteEvent $event): void {
-		if (!$event->hasMember()) {
-			throw new RemoteEventException('event have no member linked');
-		}
+	public function verify(FederatedEvent $event): void {
 
 		$member = $event->getMember();
 		$circle = $event->getCircle();
-		$viewer = $circle->getViewer();
+		$initiator = $circle->getInitiator();
 
-		if ($viewer->getLevel() < Member::LEVEL_MODERATOR) {
-			throw new MemberLevelException('Viewer have no rights to add members to this Circles');
+		if ($initiator->getLevel() < Member::LEVEL_MODERATOR) {
+			throw new MemberLevelException('Insufficient rights to add members to this Circle');
 		}
 
 		$this->confirmMemberFormat($member);
@@ -171,10 +171,10 @@ class MemberAdd implements IRemoteEvent {
 
 
 	/**
-	 * @param RemoteEvent $event
+	 * @param FederatedEvent $event
 	 *
 	 */
-	public function manage(RemoteEvent $event): void {
+	public function manage(FederatedEvent $event): void {
 		//$circle = $event->getCircle();
 		$member = $event->getMember();
 //		if ($member->getJoined() === '') {
@@ -211,7 +211,7 @@ class MemberAdd implements IRemoteEvent {
 
 
 	/**
-	 * @param RemoteEvent[] $events
+	 * @param FederatedEvent[] $events
 	 *
 	 * @throws Exception
 	 */
@@ -264,12 +264,12 @@ class MemberAdd implements IRemoteEvent {
 	/**
 	 * confirm the format of UserId, based on UserType.
 	 *
-	 * @param IMember $member
+	 * @param IFederatedUser $member
 	 *
 	 * @throws UserTypeNotFoundException
 	 * @throws NoUserException
 	 */
-	private function confirmMemberFormat(IMember $member): void {
+	private function confirmMemberFormat(IFederatedUser $member): void {
 		switch ($member->getUserType()) {
 			case Member::TYPE_USER:
 				$this->confirmMemberTypeUser($member);
@@ -283,11 +283,11 @@ class MemberAdd implements IRemoteEvent {
 
 
 	/**
-	 * @param IMember $member
+	 * @param IFederatedUser $member
 	 *
 	 * @throws NoUserException
 	 */
-	private function confirmMemberTypeUser(IMember $member): void {
+	private function confirmMemberTypeUser(IFederatedUser $member): void {
 		if ($this->configService->isLocalInstance($member->getInstance())) {
 			$user = $this->userManager->get($member->getUserId());
 			if ($user === null) {

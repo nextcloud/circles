@@ -40,12 +40,14 @@ use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Controller;
 use Exception;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
-use OCA\Circles\Model\Remote\RemoteEvent;
-use OCA\Circles\Model\Remote\RemoteInstance;
+use OCA\Circles\Exceptions\FederatedEventException;
+use OCA\Circles\Model\Federated\FederatedEvent;
+use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\RemoteDownstreamService;
 use OCA\Circles\Service\RemoteService;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\IRequest;
 
@@ -107,12 +109,19 @@ class RemoteController extends Controller {
 	public function event(): DataResponse {
 		try {
 			$event = $this->extractEventFromRequest();
-			$result = $this->remoteDownstreamService->incomingEvent($event);
-
-			return $this->success($result);
 		} catch (Exception $e) {
-			return $this->fail($e);
+			return $this->fail($e, [], Http::STATUS_BAD_REQUEST);
 		}
+
+		try {
+			$this->remoteDownstreamService->requestedEvent($event);
+		} catch (FederatedEventException $e) {
+			$event->setOutcome($e->getMessage(), $e->getParams(), false);
+		} catch (Exception $e) {
+			$event->setOutcome($e->getMessage(), [], false);
+		}
+
+		return $this->successObj($event->getOutcome());
 	}
 
 
@@ -184,19 +193,14 @@ class RemoteController extends Controller {
 	 * @throws MalformedArrayException
 	 * @throws SignatoryException
 	 * @throws SignatureException
-	 * @throws CircleNotFoundException
 	 */
-	private function extractEventFromRequest(): RemoteEvent {
+	private function extractEventFromRequest(): FederatedEvent {
 		$signed = $this->remoteService->incomingSignedRequest($this->configService->getLocalInstance());
 		$this->confirmRemoteInstance($signed);
 
-		$event = new RemoteEvent();
+		$event = new FederatedEvent();
 		$event->import(json_decode($signed->getBody(), true));
 		$event->setIncomingOrigin($signed->getOrigin());
-
-		if (!$event->hasCircle()) {
-			throw new CircleNotFoundException('Event contains no Circle');
-		}
 
 		return $event;
 	}

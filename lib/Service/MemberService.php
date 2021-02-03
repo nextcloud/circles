@@ -32,19 +32,25 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 
+use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Logger;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use daita\MySmallPhpTools\Traits\TStringTools;
+use Exception;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedEventException;
+use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
+use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\MemberLevelException;
+use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
-use OCA\Circles\Exceptions\RemoteEventException;
-use OCA\Circles\Exceptions\ViewerNotFoundException;
-use OCA\Circles\IMember;
-use OCA\Circles\Model\CurrentUser;
+use OCA\Circles\FederatedItems\MemberAdd;
+use OCA\Circles\FederatedItems\MemberLevel;
+use OCA\Circles\IFederatedUser;
+use OCA\Circles\Model\Federated\FederatedEvent;
+use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
-use OCA\Circles\Model\Remote\RemoteEvent;
-use OCA\Circles\RemoteEvents\MemberAdd;
 
 
 /**
@@ -57,6 +63,7 @@ class MemberService {
 
 	use TArrayTools;
 	use TStringTools;
+	use TNC21Logger;
 
 
 	/** @var CircleRequest */
@@ -65,11 +72,11 @@ class MemberService {
 	/** @var MemberRequest */
 	private $memberRequest;
 
-	/** @var CurrentUserService */
-	private $currentUserService;
+	/** @var FederatedUserService */
+	private $federatedUserService;
 
-	/** @var RemoteEventService */
-	private $remoteEventService;
+	/** @var FederatedEventService */
+	private $federatedEventService;
 
 
 	/**
@@ -77,17 +84,18 @@ class MemberService {
 	 *
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
-	 * @param CurrentUserService $currentUserService
-	 * @param RemoteEventService $remoteEventService
+	 * @param FederatedUserService $federatedUserService
+	 * @param FederatedEventService $federatedEventService
 	 */
 	public function __construct(
-		CircleRequest $circleRequest, MemberRequest $memberRequest, CurrentUserService $currentUserService,
-		RemoteEventService $remoteEventService
+		CircleRequest $circleRequest, MemberRequest $memberRequest,
+		FederatedUserService $federatedUserService,
+		FederatedEventService $federatedEventService
 	) {
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
-		$this->currentUserService = $currentUserService;
-		$this->remoteEventService = $remoteEventService;
+		$this->federatedUserService = $federatedUserService;
+		$this->federatedEventService = $federatedEventService;
 	}
 
 //
@@ -102,6 +110,34 @@ class MemberService {
 //	}
 //
 
+
+	/**
+	 * @param string $memberId
+	 *
+	 * @return Member
+	 * @throws InitiatorNotFoundException
+	 * @throws MemberLevelException
+	 */
+	public function getMember(string $memberId): Member {
+		$this->federatedUserService->mustHaveCurrentUser();
+
+		try {
+			$member = $this->memberRequest->getMember($memberId);
+			$circle = $this->circleRequest->getCircle(
+				$member->getCircleId(), $this->federatedUserService->getCurrentUser()
+			);
+			if (!$circle->getInitiator()->isMember()) {
+				throw new MemberLevelException();
+			}
+
+			return $member;
+		} catch (Exception $e) {
+			$this->e($e, ['id' => $memberId, 'initiator' => $this->federatedUserService->getCurrentUser()]);
+			throw new MemberLevelException('insufficient rights');
+		}
+	}
+
+
 	/**
 	 * @param string $circleId
 	 *
@@ -114,49 +150,82 @@ class MemberService {
 
 	/**
 	 * @param string $circleId
-	 * @param IMember $member
+	 * @param IFederatedUser $member
 	 *
 	 * @throws CircleNotFoundException
-	 * @throws ViewerNotFoundException
 	 * @throws OwnerNotFoundException
-	 * @throws RemoteEventException
+	 * @throws FederatedEventException
+	 * @throws InitiatorNotFoundException
+	 * @throws InitiatorNotConfirmedException
 	 */
-	public function addMember(string $circleId, IMember $member) {
-		$this->currentUserService->mustHaveCurrentUser();
-		$circle = $this->circleRequest->getCircle($circleId, $this->currentUserService->getCurrentUser());
+	public function addMember(string $circleId, IFederatedUser $member) {
+		$this->federatedUserService->mustHaveCurrentUser();
+		$circle = $this->circleRequest->getCircle($circleId, $this->federatedUserService->getCurrentUser());
 
-		if ($member instanceof CurrentUser) {
+		if ($member instanceof FederatedUser) {
 			$tmp = new Member();
-			$tmp->importFromIMember($member);
+			$tmp->importFromIFederatedUser($member);
 			$member = $tmp;
 		}
 
-//		$member->setId($this->token(Member::ID_LENGTH))
-//			   ->setCircleId($circle->getId())
-
-//
-//		$member = new Member();
-//		$member->importFromIMember($owner);
-//		$member->setId($this->token(Member::ID_LENGTH))
-//			   ->setCircleId($circle->getId())
-//			   ->setLevel(Member::LEVEL_OWNER)
-//			   ->setStatus(Member::STATUS_MEMBER);
-//		$circle->setOwner($member);
-//
-		$event = new RemoteEvent(MemberAdd::class);
+		$event = new FederatedEvent(MemberAdd::class);
 		$event->setCircle($circle);
 		$event->setMember($member);
-		$this->remoteEventService->newEvent($event);
 
-//		return $circle;
+		$this->federatedEventService->newEvent($event);
+	}
 
-//
-//		// TODO: Use memberships to manage access level to a Circle !
-//		if ($circle->getViewer()->getLevel() < Member::LEVEL_MODERATOR) {
-//			throw new MemberLevelException('member have no rights to add a member to this circle');
-//		}
+
+	/**
+	 * @param string $circleId
+	 * @param string $memberId
+	 * @param int $level
+	 *
+	 * @throws CircleNotFoundException
+	 * @throws FederatedEventException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws InitiatorNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws \OCA\Circles\Exceptions\RemoteNotFoundException
+	 * @throws \OCA\Circles\Exceptions\RemoteResourceNotFoundException
+	 * @throws \OCA\Circles\Exceptions\UnknownRemoteException
+	 * @throws \daita\MySmallPhpTools\Exceptions\RequestNetworkException
+	 * @throws \daita\MySmallPhpTools\Exceptions\SignatoryException
+	 * @throws MemberNotFoundException
+	 */
+	public function memberLevel(string $memberId, int $level): void {
+		$this->federatedUserService->mustHaveCurrentUser();
+
+		$member = $this->memberRequest->getMember($memberId, $this->federatedUserService->getCurrentUser());
+		echo json_encode($member, JSON_PRETTY_PRINT) . "\n";
+		$event = new FederatedEvent(MemberLevel::class);
+		$event->setCircle($member->getCircle());
+		$event->setMember($member);
+
+		$this->federatedEventService->newEvent($event);
 
 	}
+
+
+	/**
+	 * @param string $levelString
+	 *
+	 * @return int
+	 * @throws MemberLevelException
+	 */
+	public function parseLevelString(string $levelString): int {
+		$levelString = ucfirst(strtolower($levelString));
+		$level = array_search($levelString, Member::$DEF_LEVEL);
+
+		if (!$level) {
+			throw new MemberLevelException(
+				'Available levels: ' . implode(', ', array_values(Member::$DEF_LEVEL))
+			);
+		}
+
+		return (int)$level;
+	}
+
 
 }
 

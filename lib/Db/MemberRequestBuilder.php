@@ -74,8 +74,9 @@ class MemberRequestBuilder extends CoreRequestBuilder {
 	protected function getMemberSelectSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->select(
-			'm.user_id', 'm.instance', 'm.user_type', 'm.circle_id', 'm.level', 'm.status', 'm.note',
-			'm.contact_id', 'm.member_id', 'm.cached_name', 'm.cached_update', 'm.contact_meta', 'm.joined'
+			'm.circle_id', 'm.single_id', 'm.user_id', 'm.instance', 'm.user_type', 'm.level', 'm.status',
+			'm.note', 'm.contact_id', 'm.member_id', 'm.cached_name', 'm.cached_update', 'm.contact_meta',
+			'm.joined'
 		)
 		   ->from(self::TABLE_MEMBER, 'm')
 		   ->orderBy('m.joined')

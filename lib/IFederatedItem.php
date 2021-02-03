@@ -32,28 +32,28 @@ declare(strict_types=1);
 namespace OCA\Circles;
 
 
-use OCA\Circles\Model\Remote\RemoteEvent;
+use OCA\Circles\Model\Federated\FederatedEvent;
 
 
 /**
- * Interface IRemoteEvent
+ * Interface IFederatedItem
  *
  * @package OCA\Circles
  */
-interface IRemoteEvent {
+interface IFederatedItem {
 
 	/**
-	 * @param RemoteEvent $event
+	 * @param FederatedEvent $event
 	 */
-	public function verify(RemoteEvent $event): void;
+	public function verify(FederatedEvent $event): void;
 
 	/**
-	 * @param RemoteEvent $event
+	 * @param FederatedEvent $event
 	 */
-	public function manage(RemoteEvent $event): void;
+	public function manage(FederatedEvent $event): void;
 
 	/**
-	 * @param RemoteEvent[] $events
+	 * @param FederatedEvent[] $events
 	 */
 	public function result(array $events): void;
 

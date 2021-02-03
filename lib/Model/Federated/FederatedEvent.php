@@ -29,30 +29,29 @@ declare(strict_types=1);
  */
 
 
-namespace OCA\Circles\Model\Remote;
+namespace OCA\Circles\Model\Federated;
 
 
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
-use OCA\Circles\Exceptions\ViewerNotConfirmedException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 
 
 /**
- * Class RemoteEvent
+ * Class FederatedEvent
  *
- * @package OCA\Circles\Model\Remote
+ * @package OCA\Circles\Model\Federated
  */
-class RemoteEvent implements JsonSerializable {
+class FederatedEvent implements JsonSerializable {
 
 
 	const SEVERITY_LOW = 1;
 	const SEVERITY_HIGH = 3;
 
 	const BYPASS_LOCALCIRCLECHECK = 1;
-	const BYPASS_VIEWERCHECK = 2;
+	const BYPASS_INITIATORCHECK = 2;
 
 
 	use TArrayTools;
@@ -75,6 +74,9 @@ class RemoteEvent implements JsonSerializable {
 
 	/** @var int */
 	private $severity = self::SEVERITY_LOW;
+
+	/** @var SimpleDataStore */
+	private $outcome;
 
 	/** @var SimpleDataStore */
 	private $result;
@@ -100,7 +102,7 @@ class RemoteEvent implements JsonSerializable {
 
 
 	/**
-	 * RemoteEvent constructor.
+	 * FederatedEvent constructor.
 	 *
 	 * @param string $class
 	 */
@@ -108,6 +110,7 @@ class RemoteEvent implements JsonSerializable {
 		$this->class = $class;
 		$this->data = new SimpleDataStore();
 		$this->result = new SimpleDataStore();
+		$this->outcome = new SimpleDataStore();
 	}
 
 
@@ -204,7 +207,7 @@ class RemoteEvent implements JsonSerializable {
 	/**
 	 * @param bool $verifiedViewer
 	 *
-	 * @return RemoteEvent
+	 * @return FederatedEvent
 	 */
 	public function setVerifiedViewer(bool $verifiedViewer): self {
 		$this->verifiedViewer = $verifiedViewer;
@@ -212,48 +215,48 @@ class RemoteEvent implements JsonSerializable {
 		return $this;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function isVerifiedViewer(): bool {
-		return $this->verifiedViewer;
-	}
+//	/**
+//	 * @return bool
+//	 */
+//	public function isVerifiedViewer(): bool {
+//		return $this->verifiedViewer;
+//	}
 
-	/**
-	 * @throws ViewerNotConfirmedException
-	 */
-	public function confirmVerifiedViewer(): void {
-		if ($this->isVerifiedViewer()) {
-			return;
-		}
+//	/**
+//	 * @throws InitiatorNotConfirmedException
+//	 */
+//	public function confirmVerifiedViewer(): void {
+//		if ($this->isVerifiedViewer()) {
+//			return;
+//		}
+//
+//		throw new InitiatorNotConfirmedException();
+//	}
 
-		throw new ViewerNotConfirmedException();
-	}
 
-
-	/**
-	 * @param bool $verifiedCircle
-	 *
-	 * @return RemoteEvent
-	 */
-	public function setVerifiedCircle(bool $verifiedCircle): self {
-		$this->verifiedCircle = $verifiedCircle;
-
-		return $this;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function isVerifiedCircle(): bool {
-		return $this->verifiedCircle;
-	}
+//	/**
+//	 * @param bool $verifiedCircle
+//	 *
+//	 * @return FederatedEvent
+//	 */
+//	public function setVerifiedCircle(bool $verifiedCircle): self {
+//		$this->verifiedCircle = $verifiedCircle;
+//
+//		return $this;
+//	}
+//
+//	/**
+//	 * @return bool
+//	 */
+//	public function isVerifiedCircle(): bool {
+//		return $this->verifiedCircle;
+//	}
 
 
 	/**
 	 * @param string $wrapperToken
 	 *
-	 * @return RemoteEvent
+	 * @return FederatedEvent
 	 */
 	public function setWrapperToken(string $wrapperToken): self {
 		$this->wrapperToken = $wrapperToken;
@@ -362,6 +365,33 @@ class RemoteEvent implements JsonSerializable {
 	/**
 	 * @return SimpleDataStore
 	 */
+	public function getOutcome(): SimpleDataStore {
+		return $this->outcome;
+	}
+
+	/**
+	 * @param string $message
+	 * @param array $params
+	 * @param bool $success
+	 *
+	 * @return $this
+	 */
+	public function setOutcome(string $message, array $params = [], bool $success = true): self {
+		$this->outcome = new SimpleDataStore(
+			[
+				'message' => $message,
+				'params'  => $params,
+				'success' => $success
+			]
+		);
+
+		return $this;
+	}
+
+
+	/**
+	 * @return SimpleDataStore
+	 */
 	public function getResult(): SimpleDataStore {
 		return $this->result;
 	}
@@ -417,6 +447,7 @@ class RemoteEvent implements JsonSerializable {
 			'data'     => $this->getData(),
 			'result'   => $this->getResult(),
 			'source'   => $this->getSource(),
+			'outcome'  => $this->getOutcome(),
 			'async'    => $this->isAsync()
 		];
 
@@ -434,7 +465,7 @@ class RemoteEvent implements JsonSerializable {
 	/**
 	 * @param int $flag
 	 *
-	 * @return RemoteEvent
+	 * @return FederatedEvent
 	 */
 	public function bypass(int $flag): self {
 		if (!$this->canBypass($flag)) {

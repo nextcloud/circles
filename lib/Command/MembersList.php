@@ -34,11 +34,12 @@ namespace OCA\Circles\Command;
 use OC\Core\Command\Base;
 use OC\User\NoUserException;
 use OCA\Circles\Exceptions\CircleNotFoundException;
-use OCA\Circles\Exceptions\ViewerNotFoundException;
+use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
-use OCA\Circles\Service\CurrentUserService;
+use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
@@ -56,8 +57,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 class MembersList extends Base {
 
 
-	/** @var CurrentUserService */
-	private $currentUserService;
+	/** @var FederatedUserService */
+	private $federatedUserService;
 
 	/** @var CircleService */
 	private $circleService;
@@ -72,17 +73,18 @@ class MembersList extends Base {
 	/**
 	 * MembersList constructor.
 	 *
-	 * @param CurrentUserService $currentUserService
+	 * @param FederatedUserService $federatedUserService
 	 * @param CircleService $circleService
 	 * @param MemberService $memberService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		CurrentUserService $currentUserService, CircleService $circleService, MemberService $memberService,
+		FederatedUserService $federatedUserService, CircleService $circleService,
+		MemberService $memberService,
 		ConfigService $configService
 	) {
 		parent::__construct();
-		$this->currentUserService = $currentUserService;
+		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
 		$this->memberService = $memberService;
 		$this->configService = $configService;
@@ -92,10 +94,10 @@ class MembersList extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:members:list')
-			 ->setDescription('listing members')
+			 ->setDescription('listing Members from a Circle')
 			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
 			 ->addOption('json', '', InputOption::VALUE_NONE, 'returns result as JSON')
-			 ->addOption('viewer', '', InputOption::VALUE_REQUIRED, 'add a viewer to the request', '');
+			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '');
 	}
 
 
@@ -105,14 +107,16 @@ class MembersList extends Base {
 	 *
 	 * @return int
 	 * @throws CircleNotFoundException
-	 * @throws ViewerNotFoundException
+	 * @throws InitiatorNotFoundException
 	 * @throws NoUserException
+	 * @throws OwnerNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$circleId = $input->getArgument('circle_id');
 		$json = $input->getOption('json');
 
-		$this->currentUserService->commandLineViewer($input->getOption('viewer'), true);
+		$this->federatedUserService->commandLineInitiator($input->getOption('initiator'), $circleId, true);
+
 		$this->circleService->getCircle($circleId);
 		$members = $this->memberService->getMembers($circleId);
 
@@ -126,7 +130,7 @@ class MembersList extends Base {
 		$output = $output->section();
 
 		$table = new Table($output);
-		$table->setHeaders(['ID', 'Username', 'Instance', 'Level']);
+		$table->setHeaders(['ID', 'Single ID', 'Username', 'Instance', 'Level']);
 		$table->render();
 
 		$local = $this->configService->getLocalInstance();
@@ -134,6 +138,7 @@ class MembersList extends Base {
 			$table->appendRow(
 				[
 					$member->getId(),
+					$member->getSingleId(),
 					$member->getUserId(),
 					($member->getInstance() === $local) ? '' : $member->getInstance(),
 					Member::$DEF_LEVEL[$member->getLevel()]

@@ -42,10 +42,9 @@ use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\GSStatusException;
-use OCA\Circles\IMember;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
-use OCA\Circles\Service\CurrentUserService;
+use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -61,8 +60,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 class MembersAdd extends Base {
 
 
-	/** @var CurrentUserService */
-	private $currentUserService;
+	/** @var FederatedUserService */
+	private $federatedUserService;
 
 	/** @var CircleRequest */
 	private $circleRequest;
@@ -78,16 +77,17 @@ class MembersAdd extends Base {
 	 * MembersCreate constructor.
 	 *
 	 * @param CircleRequest $circleRequest
-	 * @param CurrentUserService $currentUserService
+	 * @param FederatedUserService $federatedUserService
 	 * @param MemberService $memberService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		CircleRequest $circleRequest, CurrentUserService $currentUserService, MemberService $memberService,
+		CircleRequest $circleRequest, FederatedUserService $federatedUserService,
+		MemberService $memberService,
 		ConfigService $configService
 	) {
 		parent::__construct();
-		$this->currentUserService = $currentUserService;
+		$this->federatedUserService = $federatedUserService;
 		$this->circleRequest = $circleRequest;
 
 		$this->memberService = $memberService;
@@ -101,7 +101,7 @@ class MembersAdd extends Base {
 			 ->setDescription('Add a member to a Circle')
 			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
 			 ->addArgument('user', InputArgument::REQUIRED, 'username of the member')
-			 ->addOption('viewer', '', InputOption::VALUE_REQUIRED, 'set a viewer', '')
+			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
 			 ->addOption('type', '', InputOption::VALUE_REQUIRED, 'type of the user', Member::TYPE_USER);
 	}
 
@@ -115,30 +115,16 @@ class MembersAdd extends Base {
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$circleId = $input->getArgument('circle_id');
-		$viewerId = $input->getOption('viewer');
 		$userId = $input->getArgument('user');
 		$userType = $input->getOption('type');
 
-		if ($viewerId !== '') {
-			$this->currentUserService->setLocalViewer($viewerId);
-		} else {
-			$localCircle = $this->circleRequest->getCircle($circleId);
-			if (!$this->configService->isLocalInstance($localCircle->getInstance())) {
-				throw new Exception('the Circle is not managed from this instance, please use --viewer');
-			}
+		//
+		$this->federatedUserService->commandLineInitiator($input->getOption('initiator'), $circleId,  false);
 
-			// TODO: manage NO_OWNER circles
-			$owner = $localCircle->getOwner();
-			$this->currentUserService->setCurrentUser($owner);
-		}
-
-		$member = $this->currentUserService->createCurrentUser($userId, (int)$userType);
+		$member = $this->federatedUserService->createFederatedUser($userId, (int)$userType);
 		$this->memberService->addMember($circleId, $member);
 
-////		$this->membersService->levelMember($circleId, $userId, DeprecatedMember::TYPE_USER, $instance, $level, true);
-////
-////		$member = $this->membersRequest->forceGetMember($circleId, $userId, DeprecatedMember::TYPE_USER, $instance);
-////		echo json_encode($member, JSON_PRETTY_PRINT) . "\n";
+//		echo json_encode($member, JSON_PRETTY_PRINT) . "\n";
 
 		return 0;
 	}

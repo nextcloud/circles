@@ -33,7 +33,7 @@ namespace OCA\Circles\Db;
 
 
 use OCA\Circles\Exceptions\CircleNotFoundException;
-use OCA\Circles\IMember;
+use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 
@@ -83,16 +83,16 @@ class CircleRequest extends CircleRequestBuilder {
 
 	/**
 	 * @param Member|null $filter
-	 * @param IMember|null $viewer
+	 * @param IFederatedUser|null $initiator
 	 *
 	 * @return Circle[]
 	 */
-	public function getCircles(?Member $filter = null, ?IMember $viewer = null): array {
+	public function getCircles(?Member $filter = null, ?IFederatedUser $initiator = null): array {
 		$qb = $this->getCircleSelectSql();
 		$qb->leftJoinOwner();
 
-		if (!is_null($viewer)) {
-			$qb->limitToViewer($viewer);
+		if (!is_null($initiator)) {
+			$qb->limitToInitiator($initiator);
 		}
 
 		if (!is_null($filter)) {
@@ -105,18 +105,18 @@ class CircleRequest extends CircleRequestBuilder {
 
 	/**
 	 * @param string $id
-	 * @param IMember|null $viewer
+	 * @param IFederatedUser|null $initiator
 	 *
 	 * @return Circle
 	 * @throws CircleNotFoundException
 	 */
-	public function getCircle(string $id, ?IMember $viewer = null): Circle {
+	public function getCircle(string $id, ?IFederatedUser $initiator = null): Circle {
 		$qb = $this->getCircleSelectSql();
 		$qb->limitToUniqueId($id);
 		$qb->leftJoinOwner();
 
-		if (!is_null($viewer)) {
-			$qb->limitToViewer($viewer);
+		if (!is_null($initiator)) {
+			$qb->limitToInitiator($initiator);
 		}
 
 		return $this->getItemFromRequest($qb);
@@ -126,15 +126,15 @@ class CircleRequest extends CircleRequestBuilder {
 	/**
 	 * method that return the single-user Circle based on a Viewer.
 	 *
-	 * @param IMember $viewer
+	 * @param IFederatedUser $initiator
 	 *
 	 * @return Circle
 	 * @throws CircleNotFoundException
 	 */
-	public function getViewerCircle(IMember $viewer): Circle {
+	public function getInitiatorCircle(IFederatedUser $initiator): Circle {
 		$qb = $this->getCircleSelectSql();
 		$qb->leftJoinOwner();
-		$qb->limitToMembership($viewer, Member::LEVEL_OWNER);
+		$qb->limitToMembership($initiator, Member::LEVEL_OWNER);
 		$qb->limitToConfig(Circle::CFG_SINGLE);
 
 		return $this->getItemFromRequest($qb);

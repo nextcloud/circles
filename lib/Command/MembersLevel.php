@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -32,13 +34,12 @@ namespace OCA\Circles\Command;
 use Exception;
 use OC\Core\Command\Base;
 use OC\User\NoUserException;
-use OCA\Circles\Db\DeprecatedMembersRequest;
-use OCA\Circles\Model\DeprecatedMember;
-use OCA\Circles\Service\MembersService;
-use OCP\IL10N;
-use OCP\IUserManager;
+use OCA\Circles\Db\MemberRequest;
+use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Service\MemberService;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
@@ -50,43 +51,39 @@ use Symfony\Component\Console\Output\OutputInterface;
 class MembersLevel extends Base {
 
 
-	/** @var IL10N */
-	private $l10n;
+	private $memberRequest;
 
-	/** @var IUserManager */
-	private $userManager;
+	/** @var FederatedUserService */
+	private $federatedUserService;
 
-	/** @var DeprecatedMembersRequest */
-	private $membersRequest;
-
-	/** @var MembersService */
-	private $membersService;
+	/** @var MemberService */
+	private $memberService;
 
 
 	/**
 	 * MembersLevel constructor.
 	 *
-	 * @param IL10N $l10n
-	 * @param IUserManager $userManager
-	 * @param DeprecatedMembersRequest $membersRequest
-	 * @param MembersService $membersService
+	 * @param MemberRequest $memberRequest
+	 * @param FederatedUserService $federatedUserService
+	 * @param MemberService $memberService
 	 */
 	public function __construct(
-		IL10N $l10n, IUserManager $userManager, DeprecatedMembersRequest $membersRequest, MembersService $membersService
+		MemberRequest $memberRequest, FederatedUserService $federatedUserService, MemberService $memberService
 	) {
 		parent::__construct();
-		$this->l10n = $l10n;
-		$this->userManager = $userManager;
-		$this->membersRequest = $membersRequest;
-		$this->membersService = $membersService;
+
+		$this->memberRequest = $memberRequest;
+		$this->federatedUserService = $federatedUserService;
+		$this->memberService = $memberService;
 	}
 
 
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:members:level')
-			 ->setDescription('Change level of a member')
-			 ->addArgument('member_id', InputArgument::REQUIRED, 'ID of the member')
+			 ->setDescription('Change the level of a member from a Circle')
+			 ->addArgument('member_id', InputArgument::REQUIRED, 'ID of the member from the Circle')
+			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
 			 ->addArgument('level', InputArgument::REQUIRED, 'new level');
 	}
 
@@ -101,30 +98,19 @@ class MembersLevel extends Base {
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$memberId = $input->getArgument('member_id');
-		$level = $input->getArgument('level');
 
-		$levels = [
-			'member'    => DeprecatedMember::LEVEL_MEMBER,
-			'moderator' => DeprecatedMember::LEVEL_MODERATOR,
-			'admin'     => DeprecatedMember::LEVEL_ADMIN,
-			'owner'     => DeprecatedMember::LEVEL_OWNER
-		];
-
-		if (!key_exists(strtolower($level), $levels)) {
-			throw new Exception('unknown level: ' . json_encode(array_keys($levels)));
-		}
-
-		$level = $levels[strtolower($level)];
-
-		$member = $this->membersService->getMemberById($memberId);
-		$this->membersService->levelMember(
-			$member->getCircleId(), $member->getUserId(), DeprecatedMember::TYPE_USER, $member->getInstance(), $level,
-			true
+		$member = $this->memberRequest->getMember($memberId);
+		echo json_encode($member, JSON_PRETTY_PRINT) . "\n";
+		$this->federatedUserService->commandLineInitiator(
+			$input->getOption('initiator'), $member->getCircleId()
 		);
 
-		$member = $this->membersRequest->forceGetMember(
-			$member->getCircleId(), $member->getUserId(), DeprecatedMember::TYPE_USER, $member->getInstance()
-		);
+		$level = $this->memberService->parseLevelString($input->getArgument('level'));
+		$this->memberService->memberLevel($memberId, $level);
+
+//		$member = $this->membersRequest->forceGetMember(
+//			$member->getCircleId(), $member->getUserId(), DeprecatedMember::TYPE_USER, $member->getInstance()
+//		);
 		echo json_encode($member, JSON_PRETTY_PRINT) . "\n";
 
 		return 0;

@@ -35,11 +35,11 @@ use daita\MySmallPhpTools\Traits\TArrayTools;
 use OC\Core\Command\Base;
 use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
-use OCA\Circles\Model\CurrentUser;
+use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\ModelManager;
 use OCA\Circles\Service\CircleService;
-use OCA\Circles\Service\CurrentUserService;
+use OCA\Circles\Service\FederatedUserService;
 use OCP\IGroupManager;
 use OCP\IUserManager;
 use Symfony\Component\Console\Input\InputInterface;
@@ -73,8 +73,8 @@ class CirclesMemberships extends Base {
 	/** @var CircleService */
 	private $circleService;
 
-	/** @var CurrentUserService */
-	private $currentUserService;
+	/** @var FederatedUserService */
+	private $federatedUserService;
 
 
 	/**
@@ -85,12 +85,12 @@ class CirclesMemberships extends Base {
 	 * @param ModelManager $modelManager
 	 * @param MembershipRequest $membershipRequest
 	 * @param CircleService $circleService
-	 * @param CurrentUserService $currentUserService
+	 * @param FederatedUserService $federatedUserService
 	 */
 	public function __construct(
 		IUserManager $userManager, IGroupManager $groupManager, ModelManager $modelManager,
 		MembershipRequest $membershipRequest, CircleService $circleService,
-		CurrentUserService $currentUserService
+		FederatedUserService $federatedUserService
 	) {
 		parent::__construct();
 		$this->userManager = $userManager;
@@ -99,7 +99,7 @@ class CirclesMemberships extends Base {
 		$this->membershipRequest = $membershipRequest;
 		$this->circleService = $circleService;
 
-		$this->currentUserService = $currentUserService;
+		$this->federatedUserService = $federatedUserService;
 	}
 
 
@@ -153,10 +153,11 @@ class CirclesMemberships extends Base {
 	 * @throws CircleNotFoundException
 	 */
 	private function indexLocalUser(string $userId): void {
-		$currentUser = new CurrentUser($userId);
-		$this->currentUserService->setCurrentUser($currentUser);
+		$currentUser = new FederatedUser();
+		$currentUser->setUserId($userId);
+		$this->federatedUserService->setCurrentUser($currentUser);
 
-		$this->currentUserService->updateMemberships();
+		$this->federatedUserService->updateMemberships();
 	}
 
 }

@@ -29,27 +29,27 @@ declare(strict_types=1);
  */
 
 
-namespace OCA\Circles\RemoteEvents;
+namespace OCA\Circles\FederatedItems;
 
 
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
-use OCA\Circles\IRemoteEvent;
-use OCA\Circles\IRemoteEventBypassLocalCircleCheck;
-use OCA\Circles\IRemoteEventMustBeLocal;
-use OCA\Circles\Model\Remote\RemoteEvent;
+use OCA\Circles\IFederatedItem;
+use OCA\Circles\IFederatedItemBypassLocalCircleCheck;
+use OCA\Circles\IFederatedItemMustBeLocal;
+use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Service\ConfigService;
 
 
 /**
  * Class CircleCreate
  *
- * @package OCA\Circles\RemoteEvents
+ * @package OCA\Circles\FederatedItems
  */
 class CircleCreate implements
-	IRemoteEvent,
-	IRemoteEventBypassLocalCircleCheck,
-	IRemoteEventMustBeLocal {
+	IFederatedItem,
+	IFederatedItemBypassLocalCircleCheck,
+	IFederatedItemMustBeLocal {
 
 
 	/** @var CircleRequest */
@@ -60,6 +60,7 @@ class CircleCreate implements
 
 	/** @var ConfigService */
 	private $configService;
+
 
 	/**
 	 * CircleCreate constructor.
@@ -78,18 +79,18 @@ class CircleCreate implements
 
 
 	/**
-	 * Circles are created on the original instance, using IRemoteEventMustBeLocal
+	 * Circles are created on the original instance, using IFederatedItemMustBeLocal
 	 *
-	 * @param RemoteEvent $event
+	 * @param FederatedEvent $event
 	 */
-	public function verify(RemoteEvent $event): void {
+	public function verify(FederatedEvent $event): void {
 	}
 
 
 	/**
-	 * @param RemoteEvent $event
+	 * @param FederatedEvent $event
 	 */
-	public function manage(RemoteEvent $event): void {
+	public function manage(FederatedEvent $event): void {
 		if (!$event->hasCircle()) {
 			return;
 		}
@@ -106,7 +107,7 @@ class CircleCreate implements
 
 
 	/**
-	 * @param RemoteEvent[] $events
+	 * @param FederatedEvent[] $events
 	 */
 	public function result(array $events): void {
 	}

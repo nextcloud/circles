@@ -46,7 +46,7 @@ use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\RemoteRequest;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteUidException;
-use OCA\Circles\Model\Remote\RemoteInstance;
+use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\GlobalScaleService;
 use OCA\Circles\Service\RemoteService;

@@ -37,7 +37,7 @@ use Exception;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Service\RemoteDownstreamService;
-use OCA\Circles\Service\RemoteEventService;
+use OCA\Circles\Service\FederatedEventService;
 use OCA\Circles\Service\RemoteUpstreamService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
@@ -58,8 +58,8 @@ class RemoteWrapperController extends Controller {
 	use TNC21Controller;
 
 
-	/** @var RemoteEventService */
-	private $remoteEventService;
+	/** @var FederatedEventService */
+	private $federatedEventService;
 
 	/** @var RemoteUpstreamService */
 	private $remoteUpstreamService;
@@ -73,17 +73,17 @@ class RemoteWrapperController extends Controller {
 	 *
 	 * @param string $appName
 	 * @param IRequest $request
-	 * @param RemoteEventService $remoteEventService
+	 * @param FederatedEventService $federatedEventService
 	 * @param RemoteUpstreamService $remoteUpstreamService
 	 * @param RemoteDownstreamService $remoteDownstreamService
 	 */
 	public function __construct(
 		string $appName, IRequest $request,
-		RemoteEventService $remoteEventService, RemoteUpstreamService $remoteUpstreamService,
+		FederatedEventService $federatedEventService, RemoteUpstreamService $remoteUpstreamService,
 		RemoteDownstreamService $remoteDownstreamService
 	) {
 		parent::__construct($appName, $request);
-		$this->remoteEventService = $remoteEventService;
+		$this->federatedEventService = $federatedEventService;
 		$this->remoteUpstreamService = $remoteUpstreamService;
 		$this->remoteDownstreamService = $remoteDownstreamService;
 	}
@@ -141,7 +141,7 @@ class RemoteWrapperController extends Controller {
 			}
 		}
 
-		$this->remoteEventService->manageResults($token);
+		$this->federatedEventService->manageResults($token);
 
 		// exit() or useless log will be generated
 		exit();

@@ -39,16 +39,17 @@ use daita\MySmallPhpTools\Traits\TArrayTools;
 use OC\Core\Command\Base;
 use OC\User\NoUserException;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
-use OCA\Circles\Exceptions\ViewerNotFoundException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\ModelManager;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
-use OCA\Circles\Service\CurrentUserService;
+use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\RemoteService;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
@@ -72,8 +73,8 @@ class CirclesList extends Base {
 	/** @var ModelManager */
 	private $modelManager;
 
-	/** @var CurrentUserService */
-	private $currentUserService;
+	/** @var FederatedUserService */
+	private $federatedUserService;
 
 	/** @var CircleService */
 	private $circleService;
@@ -89,18 +90,18 @@ class CirclesList extends Base {
 	 * CirclesList constructor.
 	 *
 	 * @param ModelManager $modelManager
-	 * @param CurrentUserService $currentUserService
+	 * @param FederatedUserService $federatedUserService
 	 * @param CircleService $circleService
 	 * @param RemoteService $remoteService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		ModelManager $modelManager, CurrentUserService $currentUserService, CircleService $circleService,
+		ModelManager $modelManager, FederatedUserService $federatedUserService, CircleService $circleService,
 		RemoteService $remoteService, ConfigService $configService
 	) {
 		parent::__construct();
 		$this->modelManager = $modelManager;
-		$this->currentUserService = $currentUserService;
+		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
 		$this->remoteService = $remoteService;
 		$this->configService = $configService;
@@ -115,7 +116,7 @@ class CirclesList extends Base {
 			 ->addOption('member', '', InputOption::VALUE_REQUIRED, 'search for member', '')
 			 ->addOption('def', '', InputOption::VALUE_NONE, 'display complete circle configuration')
 			 ->addOption('all', '', InputOption::VALUE_NONE, 'display also hidden Circles')
-			 ->addOption('viewer', '', InputOption::VALUE_REQUIRED, 'set viewer', '')
+			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
 			 ->addOption('json', '', InputOption::VALUE_NONE, 'returns result as JSON');
 	}
 
@@ -134,22 +135,22 @@ class CirclesList extends Base {
 	 * @throws SignatoryException
 	 * @throws SignatureException
 	 * @throws UnknownRemoteException
-	 * @throws ViewerNotFoundException
+	 * @throws InitiatorNotFoundException
+	 * @throws OwnerNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$member = $input->getOption('member');
-		$viewer = $input->getOption('viewer');
 		$json = $input->getOption('json');
 		$remote = $input->getArgument('remote');
 
 		$output = new ConsoleOutput();
 		$output = $output->section();
 
-		$this->currentUserService->commandLineViewer($input->getOption('viewer'), true);
+		$this->federatedUserService->commandLineInitiator($input->getOption('initiator'), '', true);
 
 		$filter = null;
 		if ($member !== '') {
-			$filter = $this->currentUserService->createFilterMember($member);
+			$filter = $this->federatedUserService->createFilterMember($member);
 		}
 
 		$circles = $this->getCircles($filter, $remote, $input->getOption('all'));
@@ -187,21 +188,18 @@ class CirclesList extends Base {
 
 	/**
 	 * @param Member|null $filter
-	 * @param string $viewer
 	 * @param string $remote
 	 * @param bool $all
 	 *
 	 * @return Circle[]
+	 * @throws InitiatorNotFoundException
 	 * @throws InvalidItemException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
 	 * @throws RequestNetworkException
 	 * @throws SignatoryException
 	 * @throws SignatureException
-	 * @throws ViewerNotFoundException
-	 * @throws CircleNotFoundException
 	 * @throws UnknownRemoteException
-	 * @throws NoUserException
 	 */
 	private function getCircles(?Member $filter, string $remote, bool $all = false): array {
 		if ($remote !== '') {

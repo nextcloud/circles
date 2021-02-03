@@ -37,7 +37,7 @@ use daita\MySmallPhpTools\Traits\TArrayTools;
 use DateTime;
 use JsonSerializable;
 use OCA\Circles\Exceptions\MemberNotFoundException;
-use OCA\Circles\IMember;
+use OCA\Circles\IFederatedUser;
 
 
 /**
@@ -45,7 +45,7 @@ use OCA\Circles\IMember;
  *
  * @package OCA\Circles\Model
  */
-class Member extends ManagedModel implements IMember, INC21Convert, INC21QueryRow, JsonSerializable {
+class Member extends ManagedModel implements IFederatedUser, INC21Convert, INC21QueryRow, JsonSerializable {
 
 
 	use TArrayTools;
@@ -70,7 +70,7 @@ class Member extends ManagedModel implements IMember, INC21Convert, INC21QueryRo
 	const STATUS_BLOCKED = 'Blocked';
 	const STATUS_KICKED = 'Kicked';
 
-	const ID_LENGTH = 14;
+	const ID_LENGTH = 15;
 
 	static $DEF_LEVEL = [
 		1 => 'Member',
@@ -87,13 +87,16 @@ class Member extends ManagedModel implements IMember, INC21Convert, INC21QueryRo
 	private $circleId = '';
 
 	/** @var string */
-	private $userId;
-
-	/** @var int */
-	private $userType;
+	private $singleId = '';
 
 	/** @var string */
-	private $instance;
+	private $userId = '';
+
+	/** @var int */
+	private $userType = self::TYPE_USER;
+
+	/** @var string */
+	private $instance = '';
 
 	/** @var int */
 	private $level = 0;
@@ -116,21 +119,18 @@ class Member extends ManagedModel implements IMember, INC21Convert, INC21QueryRo
 	/** @var string */
 	private $contactMeta = '';
 
+	/** @var Circle */
+	private $circle;
+
+
 	/** @var int */
 	private $joined = 0;
 
 
 	/**
 	 * Member constructor.
-	 *
-	 * @param string $userId
-	 * @param int $type
-	 * @param string $instance
 	 */
-	public function __construct(string $userId = '', int $type = self::TYPE_USER, $instance = '') {
-		$this->userId = $userId;
-		$this->userType = $type;
-		$this->instance = $instance;
+	public function __construct() {
 	}
 
 
@@ -169,6 +169,28 @@ class Member extends ManagedModel implements IMember, INC21Convert, INC21QueryRo
 	 */
 	public function getCircleId(): string {
 		return $this->circleId;
+	}
+
+
+	/**
+	 * This should replace user_id, user_type and instance; and will use the data from Circle with
+	 * Config=CFG_SINGLE
+	 *
+	 * @param string $singleId
+	 *
+	 * @return $this
+	 */
+	public function setSingleId(string $singleId): self {
+		$this->singleId = $singleId;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSingleId(): string {
+		return $this->singleId;
 	}
 
 
@@ -364,6 +386,32 @@ class Member extends ManagedModel implements IMember, INC21Convert, INC21QueryRo
 
 
 	/**
+	 * @param Circle $circle
+	 *
+	 * @return self
+	 */
+	public function setCircle(Circle $circle): self {
+		$this->circle = $circle;
+
+		return $this;
+	}
+
+	/**
+	 * @return Circle
+	 */
+	public function getCircle(): Circle {
+		return $this->circle;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasCircle(): bool {
+		return (!is_null($this->circle));
+	}
+
+
+	/**
 	 * @param int $joined
 	 *
 	 * @return Member
@@ -398,27 +446,16 @@ class Member extends ManagedModel implements IMember, INC21Convert, INC21QueryRo
 	public function compareWith(Member $member): bool {
 		if ($this->getId() !== $member->getId()
 			|| $this->getCircleId() !== $member->getCircleId()
+			|| $this->getSingleId() !== $member->getSingleId()
 			|| $this->getUserId() !== $member->getUserId()
 			|| $this->getUserType() <> $member->getUserType()
+			|| $this->getInstance() !== $member->getInstance()
 			|| $this->getLevel() <> $member->getLevel()
-			|| $this->getStatus() !== $member->getStatus()
-			|| $this->getInstance() !== $member->getInstance()) {
+			|| $this->getStatus() !== $member->getStatus()) {
 			return false;
 		}
 
 		return true;
-	}
-
-
-	/**
-	 * @param IMember $member
-	 *
-	 * @return self
-	 */
-	public function importFromIMember(IMember $member): IMember {
-		$this->getManager()->importFromIMember($this, $member);
-
-		return $this;
 	}
 
 
@@ -430,6 +467,7 @@ class Member extends ManagedModel implements IMember, INC21Convert, INC21QueryRo
 	public function import(array $data): INC21Convert {
 		$this->setId($this->get('id', $data));
 		$this->setCircleId($this->get('circle_id', $data));
+		$this->setSingleId($this->get('single_id', $data));
 		$this->setUserId($this->get('user_id', $data));
 		$this->setUserType($this->getInt('user_type', $data));
 		$this->setInstance($this->get('instance', $data));
@@ -450,10 +488,11 @@ class Member extends ManagedModel implements IMember, INC21Convert, INC21QueryRo
 	 * @return string[]
 	 */
 	public function jsonSerialize(): array {
-		return array_filter(
+		$arr = array_filter(
 			[
 				'id'            => $this->getId(),
 				'circle_id'     => $this->getCircleId(),
+				'single_id'     => $this->getSingleId(),
 				'user_id'       => $this->getUserId(),
 				'user_type'     => $this->getUserType(),
 				'instance'      => $this->getInstance(),
@@ -467,6 +506,12 @@ class Member extends ManagedModel implements IMember, INC21Convert, INC21QueryRo
 				'joined'        => $this->getJoined()
 			]
 		);
+
+		if ($this->hasCircle()) {
+			$arr['circle'] = $this->getCircle();
+		}
+
+		return $arr;
 	}
 
 
@@ -484,6 +529,7 @@ class Member extends ManagedModel implements IMember, INC21Convert, INC21QueryRo
 
 		$this->setId($this->get($prefix . 'member_id', $data));
 		$this->setCircleId($this->get($prefix . 'circle_id', $data));
+		$this->setSingleId($this->get($prefix . 'single_id', $data));
 		$this->setUserId($this->get($prefix . 'user_id', $data));
 		$this->setUserType($this->getInt($prefix . 'user_type', $data));
 		$this->setInstance($this->get($prefix . 'instance', $data));
@@ -506,6 +552,10 @@ class Member extends ManagedModel implements IMember, INC21Convert, INC21QueryRo
 
 		if ($this->getInstance() === '') {
 			$this->setInstance($this->get('_params.local', $data));
+		}
+
+		if ($prefix === '') {
+			$this->getManager()->importCircleFromDatabase($this, $data);
 		}
 
 		return $this;

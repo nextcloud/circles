@@ -32,7 +32,9 @@ declare(strict_types=1);
 namespace OCA\Circles\Db;
 
 
+use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 
 
@@ -50,6 +52,7 @@ class MemberRequest extends MemberRequestBuilder {
 	public function save(Member $member): void {
 		$qb = $this->getMemberInsertSql();
 		$qb->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
+		   ->setValue('single_id', $qb->createNamedParameter($member->getSingleId()))
 		   ->setValue('member_id', $qb->createNamedParameter($member->getId()))
 		   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
 		   ->setValue('user_type', $qb->createNamedParameter($member->getUserType()))
@@ -75,6 +78,26 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->limitToCircleId($circleId);
 
 		return $this->getItemsFromRequest($qb);
+	}
+
+
+	/**
+	 * @param string $memberId
+	 * @param FederatedUser|null $initiator
+	 *
+	 * @return Member
+	 * @throws MemberNotFoundException
+	 */
+	public function getMember(string $memberId, ?FederatedUser $initiator = null): Member {
+		$qb = $this->getMemberSelectSql();
+		$qb->limitToMemberId($memberId);
+
+		if (!is_null($initiator)) {
+			$qb->leftJoinCircle($initiator);
+		}
+
+
+		return $this->getItemFromRequest($qb);
 	}
 
 }

@@ -35,22 +35,22 @@ use daita\MySmallPhpTools\Db\Nextcloud\nc21\INC21QueryRow;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\INC21Convert;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
-use OCA\Circles\IMember;
+use OCA\Circles\IFederatedUser;
 
 
 /**
- * Class Viewer
+ * Class FederatedUser
  *
  * @package OCA\Circles\Model
  */
-class CurrentUser extends ManagedModel implements IMember, INC21Convert, INC21QueryRow, JsonSerializable {
+class FederatedUser extends ManagedModel implements IFederatedUser, INC21Convert, INC21QueryRow, JsonSerializable {
 
 
 	use TArrayTools;
 
 
 	/** @var string */
-	private $id = '';
+	private $singleId = '';
 
 	/** @var string */
 	private $userId;
@@ -66,26 +66,31 @@ class CurrentUser extends ManagedModel implements IMember, INC21Convert, INC21Qu
 
 
 	/**
-	 * Viewer constructor.
+	 * FederatedUser constructor.
 	 *
 	 * @param string $userId
 	 * @param int $type
 	 * @param string $instance
 	 */
-	public function __construct(string $userId = '', $instance = '', int $type = Member::TYPE_USER) {
-		$this->userId = $userId;
-		$this->setInstance($instance);
-		$this->userType = $type;
+	public function __construct() {
 	}
 
 
+	public function set(string $userId = '', $instance = '', int $type = Member::TYPE_USER): self {
+		$this->userId = $userId;
+		$this->setInstance($instance);
+		$this->userType = $type;
+
+		return $this;
+	}
+
 	/**
-	 * @param string $id
+	 * @param string $singleId
 	 *
 	 * @return self
 	 */
-	public function setId(string $id): self {
-		$this->id = $id;
+	public function setSingleId(string $singleId): self {
+		$this->singleId = $singleId;
 
 		return $this;
 	}
@@ -93,8 +98,8 @@ class CurrentUser extends ManagedModel implements IMember, INC21Convert, INC21Qu
 	/**
 	 * @return string
 	 */
-	public function getId(): string {
-		return $this->id;
+	public function getSingleId(): string {
+		return $this->singleId;
 	}
 
 
@@ -183,24 +188,12 @@ class CurrentUser extends ManagedModel implements IMember, INC21Convert, INC21Qu
 
 
 	/**
-	 * @param IMember $member
-	 *
-	 * @return self
-	 */
-	public function importFromIMember(IMember $member): IMember {
-		$this->getManager()->importFromIMember($this, $member);
-
-		return $this;
-	}
-
-
-	/**
 	 * @param array $data
 	 *
 	 * @return $this
 	 */
 	public function import(array $data): INC21Convert {
-		$this->setId($this->get('id', $data));
+		$this->setSingleId($this->get('id', $data));
 		$this->setUserId($this->get('user_id', $data));
 		$this->setUserType($this->getInt('user_type', $data));
 		$this->setInstance($this->get('instance', $data));
@@ -215,7 +208,7 @@ class CurrentUser extends ManagedModel implements IMember, INC21Convert, INC21Qu
 	 */
 	public function jsonSerialize(): array {
 		return [
-			'id'          => $this->getId(),
+			'id'          => $this->getSingleId(),
 			'user_id'     => $this->getUserId(),
 			'user_type'   => $this->getUserType(),
 			'instance'    => $this->getInstance(),
@@ -231,7 +224,7 @@ class CurrentUser extends ManagedModel implements IMember, INC21Convert, INC21Qu
 	 * @return INC21QueryRow
 	 */
 	public function importFromDatabase(array $data, string $prefix = ''): INC21QueryRow {
-		$this->setId($this->get($prefix . 'member_id', $data));
+		$this->setSingleId($this->get($prefix . 'member_id', $data));
 		$this->setUserId($this->get($prefix . 'user_id', $data));
 		$this->setUserType($this->getInt($prefix . 'user_type', $data));
 		$this->setInstance($this->get($prefix . 'instance', $data));
@@ -240,3 +233,4 @@ class CurrentUser extends ManagedModel implements IMember, INC21Convert, INC21Qu
 	}
 
 }
+

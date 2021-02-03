@@ -32,9 +32,10 @@ declare(strict_types=1);
 namespace OCA\Circles\Model;
 
 
+use OCA\Circles\Db\CoreQueryBuilder;
 use OCA\Circles\Db\MembershipRequest;
+use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
-use OCA\Circles\IMember;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MemberService;
 
@@ -90,11 +91,11 @@ class ModelManager {
 
 
 	/**
-	 * @param CurrentUser $currentUser
+	 * @param FederatedUser $federatedUser
 	 */
-	public function getMemberships(CurrentUser $currentUser): void {
-		$memberships = $this->membershipRequest->getMemberships($currentUser->getId());
-		$currentUser->setMemberships($memberships);
+	public function getMemberships(FederatedUser $federatedUser): void {
+		$memberships = $this->membershipRequest->getMemberships($federatedUser->getSingleId());
+		$federatedUser->setMemberships($memberships);
 	}
 
 
@@ -108,13 +109,26 @@ class ModelManager {
 
 
 	/**
+	 * @param Member $member
+	 * @param array $data
+	 */
+	public function importCircleFromDatabase(Member $member, array $data) {
+		try {
+			$circle = new Circle();
+			$circle->importFromDatabase($data, CoreQueryBuilder::PREFIX_CIRCLE);
+			$member->setCircle($circle);
+		} catch (CircleNotFoundException $e) {
+		}
+	}
+
+	/**
 	 * @param Circle $circle
 	 * @param array $data
 	 */
 	public function importOwnerFromDatabase(Circle $circle, array $data): void {
 		try {
 			$owner = new Member();
-			$owner->importFromDatabase($data, 'owner_');
+			$owner->importFromDatabase($data, CoreQueryBuilder::PREFIX_OWNER);
 			$circle->setOwner($owner);
 		} catch (MemberNotFoundException $e) {
 		}
@@ -125,11 +139,11 @@ class ModelManager {
 	 * @param Circle $circle
 	 * @param array $data
 	 */
-	public function importViewerFromDatabase(Circle $circle, array $data): void {
+	public function importInitiatorFromDatabase(Circle $circle, array $data): void {
 		try {
-			$viewer = new Member();
-			$viewer->importFromDatabase($data, 'viewer_');
-			$circle->setViewer($viewer);
+			$initiator = new Member();
+			$initiator->importFromDatabase($data, CoreQueryBuilder::PREFIX_INITIATOR);
+			$circle->setInitiator($initiator);
 		} catch (MemberNotFoundException $e) {
 		}
 	}
@@ -166,7 +180,7 @@ class ModelManager {
 	/**
 	 * @return string
 	 */
-	public function getLocalInstance() {
+	public function getLocalInstance(): string {
 		return $this->configService->getLocalInstance();
 	}
 
@@ -183,17 +197,6 @@ class ModelManager {
 	 */
 	public function isFullDetails(): bool {
 		return $this->fullDetails;
-	}
-
-
-	/**
-	 * @param IMember $dest
-	 * @param IMember $orig
-	 */
-	public function importFromIMember(IMember $dest, IMember $orig): void {
-		$dest->setUserId($orig->getUserId());
-		$dest->setUserType($orig->getUserType());
-		$dest->setInstance($orig->getInstance());
 	}
 
 }
