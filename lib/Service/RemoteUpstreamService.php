@@ -40,16 +40,16 @@ use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
 use Exception;
 use OCA\Circles\Db\RemoteWrapperRequest;
-use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
-use OCA\Circles\Model\GlobalScale\GSEvent;
-use OCA\Circles\Model\GlobalScale\GSWrapper;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\Federated\RemoteWrapper;
+use OCA\Circles\Model\GlobalScale\GSEvent;
+use OCA\Circles\Model\GlobalScale\GSWrapper;
 use OCP\AppFramework\Http;
 use OCP\IL10N;
 
@@ -171,7 +171,7 @@ class RemoteUpstreamService {
 	 * @throws RequestNetworkException
 	 * @throws FederatedEventException
 	 */
-	public function confirmEvent(FederatedEvent $event): string {
+	public function confirmEvent(FederatedEvent $event): void {
 		$data = $this->remoteService->requestRemoteInstance(
 			$event->getCircle()->getInstance(),
 			RemoteInstance::EVENT,
@@ -186,54 +186,14 @@ class RemoteUpstreamService {
 		}
 
 		$result = $data->getOutgoingRequest()->getResult();
+		$this->manageRequestOutcome($event, $result->getAsArray());
 
-		$data = new SimpleDataStore($result->getAsArray());
-		$message = $this->l10n->t($data->g('message'), $data->gArray('params'));
-		if ($result->getStatusCode() === Http::STATUS_OK && $data->gBool('status')) {
-			return $message;
+		$reading = $event->getReadingOutcome();
+		if ($result->getStatusCode() === Http::STATUS_OK && $reading->gBool('success')) {
+			return;
 		}
 
-		throw new FederatedEventException($message);
-//
-//		echo '___1' . json_encode($result) . "\n";
-//
-//		if ($result->hasException()) {
-//			$fails = $data->getOutgoingRequest()->getAllResults();
-//			foreach ($fails as $fail) {
-//
-//				if ($fail->getStatusCode() === Http::STATUS_BAD_REQUEST) {
-//					throw new RemoteEventException('Event is not valid');
-//				}
-//			}
-//
-//			throw new RequestNetworkException();
-//		}
-
-//		$path = $this->urlGenerator->linkToRoute('circles.RemoteWrapper.event');
-//
-//		$request = new NC21Request($path, Request::TYPE_POST);
-//		$this->configService->configureRequest($request);
-//		$request->basedOnUrl($owner->getInstance());
-//
-//		$request->setDataSerialize($event);
-//
-//		$result = $this->retrieveJson($request);
-//		$this->debug('confirming RemoteEvent', ['event' => $event, 'request' => $request]);
-////
-////		if ($this->getInt('status', $result) === 0) {
-////			throw new GlobalScaleEventException($this->get('error', $result));
-////		}
-//
-////		$updatedData = $this->getArray('event', $result);
-////		$this->miscService->log('updatedEvent: ' . json_encode($updatedData), 0);
-////		if (!empty($updatedData)) {
-////			$updated = new GSEvent();
-////			try {
-////				$updated->import($updatedData);
-////				$event = $updated;
-////			} catch (Exception $e) {
-////			}
-////		}
+		throw new FederatedEventException($reading->g('translated'));
 	}
 
 
@@ -410,6 +370,24 @@ class RemoteUpstreamService {
 //
 //	}
 
+
+	/**
+	 * @param FederatedEvent $event
+	 * @param array $result
+	 */
+	private function manageRequestOutcome(FederatedEvent $event, array $result): void {
+		$outcome = new SimpleDataStore($result);
+
+		$event->setDataOutcome($outcome->gArray('data'));
+		$event->setReadingOutcome(
+			$outcome->g('reading.message'),
+			$outcome->gArray('reading.params'),
+			$outcome->gBool('reading.success')
+		);
+
+		$reading = $event->getReadingOutcome();
+		$reading->s('translated', $this->l10n->t($reading->g('message'), $reading->gArray('params')));
+	}
 
 }
 

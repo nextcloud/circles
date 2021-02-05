@@ -122,9 +122,9 @@ class MembersAdd extends Base {
 		$this->federatedUserService->commandLineInitiator($input->getOption('initiator'), $circleId,  false);
 
 		$member = $this->federatedUserService->createFederatedUser($userId, (int)$userType);
-		$this->memberService->addMember($circleId, $member);
+		$outcome = $this->memberService->addMember($circleId, $member);
 
-//		echo json_encode($member, JSON_PRETTY_PRINT) . "\n";
+		echo json_encode($outcome, JSON_PRETTY_PRINT) . "\n";
 
 		return 0;
 	}

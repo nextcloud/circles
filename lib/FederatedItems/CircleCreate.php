@@ -35,8 +35,8 @@ namespace OCA\Circles\FederatedItems;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\IFederatedItem;
-use OCA\Circles\IFederatedItemBypassLocalCircleCheck;
-use OCA\Circles\IFederatedItemMustBeLocal;
+use OCA\Circles\IFederatedItemCircleCheckNotRequired;
+use OCA\Circles\IFederatedItemLocalOnly;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Service\ConfigService;
 
@@ -48,8 +48,8 @@ use OCA\Circles\Service\ConfigService;
  */
 class CircleCreate implements
 	IFederatedItem,
-	IFederatedItemBypassLocalCircleCheck,
-	IFederatedItemMustBeLocal {
+	IFederatedItemCircleCheckNotRequired,
+	IFederatedItemLocalOnly {
 
 
 	/** @var CircleRequest */

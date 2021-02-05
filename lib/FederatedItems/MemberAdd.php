@@ -37,17 +37,18 @@ use Exception;
 use OC\User\NoUserException;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\MemberLevelException;
+use OCA\Circles\Exceptions\MembersLimitException;
 use OCA\Circles\Exceptions\MemberTypeNotFoundException;
-use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
-use OCA\Circles\IFederatedUser;
 use OCA\Circles\IFederatedItem;
-use OCA\Circles\IFederatedItemMustHaveMember;
+use OCA\Circles\IFederatedItemMemberCheckNotRequired;
+use OCA\Circles\IFederatedItemMemberRequired;
+use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\DeprecatedMember;
-use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Federated\FederatedEvent;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharesToken;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
@@ -64,7 +65,8 @@ use OCP\Util;
  */
 class MemberAdd implements
 	IFederatedItem,
-	IFederatedItemMustHaveMember {
+	IFederatedItemMemberRequired,
+	IFederatedItemMemberCheckNotRequired {
 
 
 	use TStringTools;
@@ -107,12 +109,10 @@ class MemberAdd implements
 	 *
 	 * @throws MemberLevelException
 	 * @throws NoUserException
-	 * @throws FederatedEventException
 	 * @throws UserTypeNotFoundException
-	 * @throws \OCA\Circles\Exceptions\MembersLimitException
+	 * @throws MembersLimitException
 	 */
 	public function verify(FederatedEvent $event): void {
-
 		$member = $event->getMember();
 		$circle = $event->getCircle();
 		$initiator = $circle->getInitiator();
@@ -130,13 +130,14 @@ class MemberAdd implements
 		$member->setLevel(Member::LEVEL_MEMBER);
 		$member->setStatus(Member::STATUS_MEMBER);
 
-		echo json_encode($member) . "\n";
+		$event->setDataOutcome(['member' => $member]);
 
 		// TODO: Managing cached name
 		//		$member->setCachedName($eventMember->getCachedName());
-
 // check Circle is 'verified'
 		$this->circleService->confirmCircleNotFull($circle);
+
+		$event->setReadingOutcome('Member %s have been added to Circle', ['userId' => $member->getUserId()]);
 
 		return;
 

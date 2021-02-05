@@ -32,6 +32,9 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 
+use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
+use daita\MySmallPhpTools\Exceptions\SignatoryException;
+use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Logger;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use daita\MySmallPhpTools\Traits\TStringTools;
@@ -40,11 +43,15 @@ use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventException;
+use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\MemberLevelException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\FederatedItems\MemberAdd;
 use OCA\Circles\FederatedItems\MemberLevel;
 use OCA\Circles\IFederatedUser;
@@ -152,13 +159,20 @@ class MemberService {
 	 * @param string $circleId
 	 * @param IFederatedUser $member
 	 *
+	 * @return SimpleDataStore
 	 * @throws CircleNotFoundException
-	 * @throws OwnerNotFoundException
 	 * @throws FederatedEventException
-	 * @throws InitiatorNotFoundException
 	 * @throws InitiatorNotConfirmedException
+	 * @throws InitiatorNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws UnknownRemoteException
+	 * @throws FederatedItemException
 	 */
-	public function addMember(string $circleId, IFederatedUser $member) {
+	public function addMember(string $circleId, IFederatedUser $member): SimpleDataStore {
 		$this->federatedUserService->mustHaveCurrentUser();
 		$circle = $this->circleRequest->getCircle($circleId, $this->federatedUserService->getCurrentUser());
 
@@ -173,34 +187,34 @@ class MemberService {
 		$event->setMember($member);
 
 		$this->federatedEventService->newEvent($event);
+
+		return $event->getOutcome();
 	}
 
 
 	/**
-	 * @param string $circleId
 	 * @param string $memberId
 	 * @param int $level
 	 *
-	 * @throws CircleNotFoundException
 	 * @throws FederatedEventException
 	 * @throws InitiatorNotConfirmedException
 	 * @throws InitiatorNotFoundException
-	 * @throws OwnerNotFoundException
-	 * @throws \OCA\Circles\Exceptions\RemoteNotFoundException
-	 * @throws \OCA\Circles\Exceptions\RemoteResourceNotFoundException
-	 * @throws \OCA\Circles\Exceptions\UnknownRemoteException
-	 * @throws \daita\MySmallPhpTools\Exceptions\RequestNetworkException
-	 * @throws \daita\MySmallPhpTools\Exceptions\SignatoryException
 	 * @throws MemberNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws UnknownRemoteException
 	 */
 	public function memberLevel(string $memberId, int $level): void {
 		$this->federatedUserService->mustHaveCurrentUser();
 
 		$member = $this->memberRequest->getMember($memberId, $this->federatedUserService->getCurrentUser());
-		echo json_encode($member, JSON_PRETTY_PRINT) . "\n";
 		$event = new FederatedEvent(MemberLevel::class);
 		$event->setCircle($member->getCircle());
 		$event->setMember($member);
+		$event->setData(new SimpleDataStore(['level' => $level]));
 
 		$this->federatedEventService->newEvent($event);
 

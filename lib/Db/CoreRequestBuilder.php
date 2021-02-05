@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Db;
 
 
+use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\TimezoneService;
 
@@ -104,6 +105,28 @@ class CoreRequestBuilder {
 		return new CoreQueryBuilder();
 	}
 
+
+	/**
+	 * @param array $ids
+	 *
+	 * @throws InvalidIdException
+	 */
+	public function confirmValidIds(array $ids): void {
+		foreach ($ids as $id) {
+			$this->confirmValidId($id);
+		}
+	}
+
+	/**
+	 * @param string $id
+	 *
+	 * @throws InvalidIdException
+	 */
+	public function confirmValidId(string $id): void {
+		if (strlen($id) < 14) {
+			throw new InvalidIdException();
+		}
+	}
 }
 
 

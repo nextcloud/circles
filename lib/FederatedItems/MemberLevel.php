@@ -33,13 +33,14 @@ namespace OCA\Circles\FederatedItems;
 
 
 use OCA\Circles\Exceptions\FederatedEventException;
+use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\MemberIsNotModeratorException;
 use OCA\Circles\Exceptions\MemberIsNotOwnerException;
 use OCA\Circles\Exceptions\MemberIsOwnerException;
 use OCA\Circles\Exceptions\ModeratorIsNotHighEnoughException;
 use OCA\Circles\IFederatedItem;
-use OCA\Circles\IFederatedItemMustHaveMember;
+use OCA\Circles\IFederatedItemMemberRequired;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\Federated\FederatedEvent;
@@ -54,7 +55,7 @@ use OCA\Circles\Model\Member;
  */
 class MemberLevel implements
 	IFederatedItem,
-	IFederatedItemMustHaveMember {
+	IFederatedItemMemberRequired {
 
 
 	/**
@@ -73,14 +74,14 @@ class MemberLevel implements
 					   ->gInt('level');
 
 		if ($member->getLevel() === $level) {
-			throw new FederatedEventException('This member already have the selected level');
+			throw new FederatedItemException('This member already have the selected level');
 		}
 
 
 		if ($level === Member::LEVEL_OWNER) {
 //			$this->verifySwitchOwner($event, $circle, $member);
 		} else {
-			$this->verifyMemberLevel($event, $circle, $member, $level);
+//			$this->verifyMemberLevel($event, $circle, $member, $level);
 		}
 
 	}

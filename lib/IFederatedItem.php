@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles;
 
 
+use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Model\Federated\FederatedEvent;
 
 
@@ -44,6 +45,8 @@ interface IFederatedItem {
 
 	/**
 	 * @param FederatedEvent $event
+	 *
+	 * @throws FederatedItemException
 	 */
 	public function verify(FederatedEvent $event): void;
 

@@ -90,9 +90,10 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 	const CFG_FRIEND = 128;       // Members of the circle can invite their friends
 	const CFG_PROTECTED = 256;    // Password protected to join/request
 	const CFG_NO_OWNER = 512;     // no owner, only members
-	const CFG_HIDDEN = 1024;      // Fully hidden, only backend Circles
-	const CFG_ROOT = 2048;        // Circle cannot be inside another Circle
-	const CFG_FEDERATED = 4096;   // Federated
+	const CFG_HIDDEN = 1024;      // hidden from listing, but available as a share entity
+	const CFG_BACKEND = 2048;     // Fully hidden, only backend Circles
+	const CFG_ROOT = 4096;        // Circle cannot be inside another Circle
+	const CFG_FEDERATED = 8192;   // Federated
 
 	const ID_LENGTH = 15;
 

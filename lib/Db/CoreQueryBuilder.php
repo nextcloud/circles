@@ -258,14 +258,14 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 		$orX->add($expr->bitwiseAnd($aliasCircle . '.config', Circle::CFG_VISIBLE));
 		$this->andWhere($orX);
 
-		// TODO: add a filter for allowing 1, 128
-		// - 1 means hidden to front-end, filtering
-		$bitHidden = $expr->bitwiseAnd($aliasCircle . '.config', Circle::CFG_SINGLE);
-		$this->andWhere($this->createFunction('NOT') . $bitHidden);
 
-		// - 128 means fully hidden, filtering
-		$bitHidden = $expr->bitwiseAnd($aliasCircle . '.config', Circle::CFG_HIDDEN);
-		$this->andWhere($this->createFunction('NOT') . $bitHidden);
+		// TODO: add a filter for allowing those circles in some request
+		// - CFG_SINGLE, CFG_HIDDEN and CFG_BACKEND means hidden from listing, filtering
+		$orHidden = $expr->orX();
+		$orHidden->add($expr->bitwiseAnd($aliasCircle . '.config', Circle::CFG_SINGLE));
+		$orHidden->add($expr->bitwiseAnd($aliasCircle . '.config', Circle::CFG_HIDDEN));
+		$orHidden->add($expr->bitwiseAnd($aliasCircle . '.config', Circle::CFG_BACKEND));
+		$this->andWhere($this->createFunction('NOT') . $orHidden);
 
 
 //		$orTypes = $this->generateLimit($qb, $circleUniqueId, $userId, $type, $name, $forceAll);

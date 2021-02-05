@@ -42,6 +42,7 @@ use OC;
 use OCA\Circles\Db\RemoteRequest;
 use OCA\Circles\Db\RemoteWrapperRequest;
 use OCA\Circles\Exceptions\FederatedEventException;
+use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\JsonException;
 use OCA\Circles\Exceptions\ModelException;
@@ -50,10 +51,13 @@ use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\IFederatedItem;
-use OCA\Circles\IFederatedItemBypassInitiatorCheck;
-use OCA\Circles\IFederatedItemBypassLocalCircleCheck;
-use OCA\Circles\IFederatedItemMustBeLocal;
-use OCA\Circles\IFederatedItemMustHaveMember;
+use OCA\Circles\IFederatedItemCircleCheckNotRequired;
+use OCA\Circles\IFederatedItemInitiatorCheckNotRequired;
+use OCA\Circles\IFederatedItemLocalOnly;
+use OCA\Circles\IFederatedItemMemberCheckNotRequired;
+use OCA\Circles\IFederatedItemMemberEmpty;
+use OCA\Circles\IFederatedItemMemberOptional;
+use OCA\Circles\IFederatedItemMemberRequired;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
@@ -124,6 +128,7 @@ class FederatedEventService extends NC21Signature {
 	 * @throws RemoteResourceNotFoundException
 	 * @throws UnknownRemoteException
 	 * @throws SignatoryException
+	 * @throws FederatedItemException
 	 */
 	public function newEvent(FederatedEvent $event): void {
 		$event->setSource($this->configService->getLocalInstance());
@@ -135,9 +140,7 @@ class FederatedEventService extends NC21Signature {
 			throw $e;
 		}
 
-		// TODO :: UNCOMMENT UNCOMMENT UNCOMMENT !! this is only commented in order to test something
 		$this->confirmInitiator($event, true);
-
 		if ($this->configService->isLocalInstance($event->getCircle()->getInstance())) {
 			$federatedItem->verify($event);
 			if (!$event->isAsync()) {
@@ -166,16 +169,20 @@ class FederatedEventService extends NC21Signature {
 
 		$circle = $event->getCircle();
 		if (!$circle->hasInitiator()) {
-			throw new InitiatorNotConfirmedException('initiator does not exist');
+			throw new InitiatorNotConfirmedException('Initiator does not exist');
 		}
 
 		if ($local) {
 			if (!$this->configService->isLocalInstance($circle->getInitiator()->getInstance())) {
-				throw new InitiatorNotConfirmedException('initiator is not local');
+				throw new InitiatorNotConfirmedException(
+					'Initiator is not from the instance at the origin of the request'
+				);
 			}
 		} else {
 			if ($circle->getInitiator()->getInstance() !== $event->getIncomingOrigin()) {
-				throw new InitiatorNotConfirmedException('initiator must belong to remote instance');
+				throw new InitiatorNotConfirmedException(
+					'Initiator must belong to the instance at the origin of the request'
+				);
 			}
 		}
 	}
@@ -239,12 +246,12 @@ class FederatedEventService extends NC21Signature {
 		}
 
 		$item = OC::$server->get($class);
-		if (!$item instanceof IFederatedItem) {
+		if (!($item instanceof IFederatedItem)) {
 			throw new FederatedEventException($class . ' not an IFederatedItem');
 		}
 
 		$this->setFederatedEventBypass($event, $item);
-		$this->confirmMustHaveCondition($event, $item, $local);
+		$this->confirmRequiredCondition($event, $item, $local);
 
 		return $item;
 	}
@@ -257,16 +264,19 @@ class FederatedEventService extends NC21Signature {
 	 * @param IFederatedItem $gs
 	 */
 	private function setFederatedEventBypass(FederatedEvent $event, IFederatedItem $gs) {
-		if ($gs instanceof IFederatedItemBypassLocalCircleCheck) {
+		if ($gs instanceof IFederatedItemCircleCheckNotRequired) {
 			$event->bypass(FederatedEvent::BYPASS_LOCALCIRCLECHECK);
 		}
-		if ($gs instanceof IFederatedItemBypassInitiatorCheck) {
+		if ($gs instanceof IFederatedItemMemberCheckNotRequired) {
+			$event->bypass(FederatedEvent::BYPASS_LOCALMEMBERCHECK);
+		}
+		if ($gs instanceof IFederatedItemInitiatorCheckNotRequired) {
 			$event->bypass(FederatedEvent::BYPASS_INITIATORCHECK);
 		}
 	}
 
 	/**
-	 * Some event might need to bypass some checks
+	 * Some event might require additional check
 	 *
 	 * @param FederatedEvent $event
 	 * @param IFederatedItem $item
@@ -274,24 +284,30 @@ class FederatedEventService extends NC21Signature {
 	 *
 	 * @throws FederatedEventException
 	 */
-	private function confirmMustHaveCondition(
+	private function confirmRequiredCondition(
 		FederatedEvent $event,
 		IFederatedItem $item,
 		bool $local = false
 	) {
 		if (!$event->hasCircle()) {
-			throw new FederatedEventException('FederatedItem has no Circle linked');
+			throw new FederatedEventException('FederatedEvent has no Circle linked');
 		}
-		if ($item instanceof IFederatedItemMustHaveMember && !$event->hasMember()) {
-			throw new FederatedEventException('FederatedItem has no Member linked');
+		if ($item instanceof IFederatedItemMemberEmpty) {
+			$event->setMember(null);
 		}
-		if ($event->hasMember() && !($item instanceof IFederatedItemMustHaveMember)) {
+		if ($item instanceof IFederatedItemMemberRequired && !$event->hasMember()) {
+			throw new FederatedEventException('FederatedEvent has no Member linked');
+		}
+		if ($event->hasMember()
+			&& !($item instanceof IFederatedItemMemberRequired)
+			&& !($item instanceof IFederatedItemMemberOptional)) {
 			throw new FederatedEventException(
-				get_class($item) . ' does not implements IFederatedItemMustHaveMember '
+				get_class($item)
+				. ' does not implements IFederatedItemMemberOptional nor IFederatedItemMemberRequired'
 			);
 		}
-		if ($item instanceof IFederatedItemMustBeLocal && !$local) {
-			throw new FederatedEventException('FederatedItem must be local');
+		if ($item instanceof IFederatedItemLocalOnly && !$local) {
+			throw new FederatedEventException('FederatedItem must be executed locally');
 		}
 	}
 

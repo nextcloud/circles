@@ -33,7 +33,7 @@ namespace OCA\Circles\Exceptions;
 use Exception;
 
 
-class MemberLevelException extends Exception {
+class MemberLevelException extends FederatedItemException {
 
 }
 

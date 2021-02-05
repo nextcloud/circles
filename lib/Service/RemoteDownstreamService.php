@@ -33,13 +33,14 @@ namespace OCA\Circles\Service;
 
 
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Logger;
+use daita\MySmallPhpTools\Traits\TAsync;
 use Exception;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventDSyncException;
 use OCA\Circles\Exceptions\FederatedEventException;
-use OCA\Circles\Exceptions\GlobalScaleDSyncException;
+use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
@@ -55,6 +56,7 @@ class RemoteDownstreamService {
 
 
 	use TNC21Logger;
+	use TAsync;
 
 
 	/** @var CircleRequest */
@@ -117,32 +119,26 @@ class RemoteDownstreamService {
 	/**
 	 * @param FederatedEvent $event
 	 *
+	 * @throws FederatedEventDSyncException
 	 * @throws FederatedEventException
 	 * @throws InitiatorNotConfirmedException
 	 * @throws OwnerNotFoundException
-	 * @throws GlobalScaleDSyncException
-	 * @throws FederatedEventDSyncException
+	 * @throws FederatedItemException
 	 */
 	public function requestedEvent(FederatedEvent $event): void {
-		try {
-			$gs = $this->federatedEventService->getFederatedItem($event, false);
-		} catch (FederatedEventException $e) {
-			$this->e($e);
-			throw $e;
-		}
+		$gs = $this->federatedEventService->getFederatedItem($event, false);
 
 		if (!$this->configService->isLocalInstance($event->getCircle()->getInstance())) {
 			throw new FederatedEventException('Circle is not from this instance');
 		}
+
 		$this->federatedEventService->confirmInitiator($event, false);
-		try {
-			$this->confirmContent($event);
-		} catch (Exception $e) {
-			throw new FederatedEventDSyncException();
-		}
+		$this->confirmContent($event);
 
 		$gs->verify($event);
-		// async.
+
+// Async ??
+		$this->asyncObj($event->getOutcome());
 
 //			if (!$event->isAsync()) {
 //				$gs->manage($event);
@@ -153,6 +149,8 @@ class RemoteDownstreamService {
 //			$this->remoteUpstreamService->confirmEvent($event);
 //		}
 //
+
+		exit();
 	}
 
 
@@ -218,8 +216,15 @@ class RemoteDownstreamService {
 		}
 
 		if (!$localCircle->compareWith($circle)) {
+			$this->debug(
+				'failed to compare Circles',
+				['localCircle' => json_encode($localCircle), 'circle' => json_encode($circle)]
+			);
+
 			return false;
 		}
+
+		return true;
 	}
 
 
@@ -229,7 +234,8 @@ class RemoteDownstreamService {
 	 * @throws FederatedEventDSyncException
 	 */
 	private function confirmMember(FederatedEvent $event): void {
-		if (!$event->hasMember() || $this->verifyMember($event)) {
+		if ($event->canBypass(FederatedEvent::BYPASS_LOCALMEMBERCHECK) || !$event->hasMember()
+			|| $this->verifyMember($event)) {
 			return;
 		}
 
@@ -242,14 +248,23 @@ class RemoteDownstreamService {
 	 * @return bool
 	 */
 	private function verifyMember(FederatedEvent $event): bool {
+		$this->debug('verifyMember()', ['event' => $event]);
 		$member = $event->getMember();
+
 		try {
 			$localMember = $this->memberRequest->getMember($member->getId());
 		} catch (MemberNotFoundException $e) {
+			$this->debug('Member not found', ['member' => $member]);
+
 			return false;
 		}
 
 		if (!$localMember->compareWith($member)) {
+			$this->debug(
+				'failed to compare Members',
+				['localMember' => json_encode($localMember), 'member' => json_encode($member)]
+			);
+
 			return false;
 		}
 	}

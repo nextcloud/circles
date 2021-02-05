@@ -100,7 +100,6 @@ class MembersLevel extends Base {
 		$memberId = $input->getArgument('member_id');
 
 		$member = $this->memberRequest->getMember($memberId);
-		echo json_encode($member, JSON_PRETTY_PRINT) . "\n";
 		$this->federatedUserService->commandLineInitiator(
 			$input->getOption('initiator'), $member->getCircleId()
 		);

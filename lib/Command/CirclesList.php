@@ -215,7 +215,8 @@ class CirclesList extends Base {
 		$filtered = [];
 		foreach ($circles as $circle) {
 			if (!$circle->isConfig(Circle::CFG_SINGLE)
-				&& !$circle->isConfig(Circle::CFG_HIDDEN)) {
+				&& !$circle->isConfig(Circle::CFG_HIDDEN)
+				&& !$circle->isConfig(Circle::CFG_BACKEND)) {
 				$filtered[] = $circle;
 			}
 		}

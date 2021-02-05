@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Db;
 
 
+use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedUser;
@@ -48,8 +49,12 @@ class MemberRequest extends MemberRequestBuilder {
 
 	/**
 	 * @param Member $member
+	 *
+	 * @throws InvalidIdException
 	 */
 	public function save(Member $member): void {
+		$this->confirmValidIds([$member->getCircleId(), $member->getSingleId(), $member->getId()]);
+
 		$qb = $this->getMemberInsertSql();
 		$qb->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
 		   ->setValue('single_id', $qb->createNamedParameter($member->getSingleId()))

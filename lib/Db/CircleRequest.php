@@ -33,6 +33,7 @@ namespace OCA\Circles\Db;
 
 
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
@@ -48,8 +49,12 @@ class CircleRequest extends CircleRequestBuilder {
 
 	/**
 	 * @param Circle $circle
+	 *
+	 * @throws InvalidIdException
 	 */
 	public function save(Circle $circle): void {
+		$this->confirmValidId($circle->getId());
+
 		$qb = $this->getCircleInsertSql();
 		$qb->setValue('unique_id', $qb->createNamedParameter($circle->getId()))
 		   ->setValue('long_id', $qb->createNamedParameter($circle->getId()))

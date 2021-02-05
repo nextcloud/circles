@@ -252,6 +252,7 @@ class FederatedUserService {
 
 			return;
 		}
+
 		if ($circleId !== '') {
 			$localCircle = $this->circleRequest->getCircle($circleId);
 			if ($this->configService->isLocalInstance($localCircle->getInstance())) {

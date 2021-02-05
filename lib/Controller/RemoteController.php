@@ -39,8 +39,7 @@ use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21SignedRequest;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Controller;
 use Exception;
 use OCA\Circles\Db\CircleRequest;
-use OCA\Circles\Exceptions\CircleNotFoundException;
-use OCA\Circles\Exceptions\FederatedEventException;
+use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Service\ConfigService;
@@ -115,10 +114,13 @@ class RemoteController extends Controller {
 
 		try {
 			$this->remoteDownstreamService->requestedEvent($event);
-		} catch (FederatedEventException $e) {
-			$event->setOutcome($e->getMessage(), $e->getParams(), false);
+		} catch (FederatedItemException $e) {
+			$this->e($e, ['event' => $event]);
+			$event->setReadingOutcome($e->getMessage(), $e->getParams(), false);
 		} catch (Exception $e) {
-			$event->setOutcome($e->getMessage(), [], false);
+			$this->e($e);
+
+			return $this->fail($e, [], Http::STATUS_BAD_REQUEST);
 		}
 
 		return $this->successObj($event->getOutcome());

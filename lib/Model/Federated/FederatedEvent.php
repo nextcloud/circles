@@ -51,7 +51,8 @@ class FederatedEvent implements JsonSerializable {
 	const SEVERITY_HIGH = 3;
 
 	const BYPASS_LOCALCIRCLECHECK = 1;
-	const BYPASS_INITIATORCHECK = 2;
+	const BYPASS_LOCALMEMBERCHECK = 2;
+	const BYPASS_INITIATORCHECK = 4;
 
 
 	use TArrayTools;
@@ -76,7 +77,10 @@ class FederatedEvent implements JsonSerializable {
 	private $severity = self::SEVERITY_LOW;
 
 	/** @var SimpleDataStore */
-	private $outcome;
+	private $readingOutcome;
+
+	/** @var SimpleDataStore */
+	private $dataOutcome;
 
 	/** @var SimpleDataStore */
 	private $result;
@@ -110,7 +114,8 @@ class FederatedEvent implements JsonSerializable {
 		$this->class = $class;
 		$this->data = new SimpleDataStore();
 		$this->result = new SimpleDataStore();
-		$this->outcome = new SimpleDataStore();
+		$this->readingOutcome = new SimpleDataStore();
+		$this->dataOutcome = new SimpleDataStore();
 	}
 
 
@@ -306,11 +311,11 @@ class FederatedEvent implements JsonSerializable {
 	}
 
 	/**
-	 * @param Member $member
+	 * @param Member|null $member
 	 *
 	 * @return self
 	 */
-	public function setMember(Member $member): self {
+	public function setMember(?Member $member): self {
 		$this->member = $member;
 
 		return $this;
@@ -366,7 +371,19 @@ class FederatedEvent implements JsonSerializable {
 	 * @return SimpleDataStore
 	 */
 	public function getOutcome(): SimpleDataStore {
-		return $this->outcome;
+		return new SimpleDataStore(
+			[
+				'reading' => $this->getReadingOutcome(),
+				'data'    => $this->getDataOutcome()
+			]
+		);
+	}
+
+	/**
+	 * @return SimpleDataStore
+	 */
+	public function getReadingOutcome(): SimpleDataStore {
+		return $this->readingOutcome;
 	}
 
 	/**
@@ -376,14 +393,32 @@ class FederatedEvent implements JsonSerializable {
 	 *
 	 * @return $this
 	 */
-	public function setOutcome(string $message, array $params = [], bool $success = true): self {
-		$this->outcome = new SimpleDataStore(
+	public function setReadingOutcome(string $message, array $params = [], bool $success = true): self {
+		$this->readingOutcome = new SimpleDataStore(
 			[
 				'message' => $message,
 				'params'  => $params,
 				'success' => $success
 			]
 		);
+
+		return $this;
+	}
+
+	/**
+	 * @return SimpleDataStore
+	 */
+	public function getDataOutcome(): SimpleDataStore {
+		return $this->dataOutcome;
+	}
+
+	/**
+	 * @param array $data
+	 *
+	 * @return $this
+	 */
+	public function setDataOutcome(array $data): self {
+		$this->dataOutcome = new SimpleDataStore($data);
 
 		return $this;
 	}
@@ -447,7 +482,10 @@ class FederatedEvent implements JsonSerializable {
 			'data'     => $this->getData(),
 			'result'   => $this->getResult(),
 			'source'   => $this->getSource(),
-			'outcome'  => $this->getOutcome(),
+			'outcome'  => [
+				'message' => $this->getReadingOutcome(),
+				'data'    => $this->getDataOutcome()
+			],
 			'async'    => $this->isAsync()
 		];
 

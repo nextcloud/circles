@@ -1,8 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
-
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -10,7 +7,7 @@ declare(strict_types=1);
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2021
+ * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -29,15 +26,17 @@ declare(strict_types=1);
  */
 
 
-namespace OCA\Circles;
+namespace OCA\Circles\Exceptions;
+
+use Exception;
 
 
 /**
- * Interface IFederatedItemBypassLocalCircleCheck
+ * Class FederatedEventException
  *
- * @package OCA\Circles
+ * @package OCA\Circles\Exceptions
  */
-interface IFederatedItemBypassLocalCircleCheck {
+class InvalidIdException extends Exception {
 
 }
 

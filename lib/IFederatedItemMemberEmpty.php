@@ -33,11 +33,11 @@ namespace OCA\Circles;
 
 
 /**
- * Interface IFederatedItemBypassInitiatorCheck
+ * Interface IFederatedItemMustHaveMember
  *
  * @package OCA\Circles
  */
-interface IFederatedItemBypassInitiatorCheck {
+interface IFederatedItemMemberEmpty {
 
 }
 
