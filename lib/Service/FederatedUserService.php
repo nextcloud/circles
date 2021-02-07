@@ -46,6 +46,7 @@ use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedUser;
+use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
 use OCP\IUserManager;
@@ -327,7 +328,7 @@ class FederatedUserService {
 			return $this->circleRequest->getInitiatorCircle($federatedUser);
 		} catch (CircleNotFoundException $e) {
 			$circle = new Circle();
-			$id = $this->token(Circle::ID_LENGTH);
+			$id = $this->token(ManagedModel::ID_LENGTH);
 
 			$circle->setName('single:' . $federatedUser->getUserId() . ':' . $id)
 				   ->setId($id)

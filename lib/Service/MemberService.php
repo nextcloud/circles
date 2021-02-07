@@ -54,6 +54,7 @@ use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\FederatedItems\MemberAdd;
 use OCA\Circles\FederatedItems\MemberLevel;
+use OCA\Circles\FederatedItems\MemberRemove;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\FederatedUser;
@@ -194,9 +195,10 @@ class MemberService {
 
 	/**
 	 * @param string $memberId
-	 * @param int $level
 	 *
+	 * @return SimpleDataStore
 	 * @throws FederatedEventException
+	 * @throws FederatedItemException
 	 * @throws InitiatorNotConfirmedException
 	 * @throws InitiatorNotFoundException
 	 * @throws MemberNotFoundException
@@ -207,10 +209,41 @@ class MemberService {
 	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
 	 */
-	public function memberLevel(string $memberId, int $level): void {
+	public function removeMember(string $memberId): SimpleDataStore {
+		$this->federatedUserService->mustHaveCurrentUser();
+		$member = $this->memberRequest->getMember($memberId, $this->federatedUserService->getCurrentUser());
+
+		$event = new FederatedEvent(MemberRemove::class);
+		$event->setCircle($member->getCircle());
+		$event->setMember($member);
+
+		$this->federatedEventService->newEvent($event);
+
+		return $event->getOutcome();
+	}
+
+	/**
+	 * @param string $memberId
+	 * @param int $level
+	 *
+	 * @return SimpleDataStore
+	 * @throws FederatedEventException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws InitiatorNotFoundException
+	 * @throws MemberNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws UnknownRemoteException
+	 * @throws FederatedItemException
+	 */
+	public function memberLevel(string $memberId, int $level): SimpleDataStore {
 		$this->federatedUserService->mustHaveCurrentUser();
 
 		$member = $this->memberRequest->getMember($memberId, $this->federatedUserService->getCurrentUser());
+
 		$event = new FederatedEvent(MemberLevel::class);
 		$event->setCircle($member->getCircle());
 		$event->setMember($member);
@@ -218,28 +251,8 @@ class MemberService {
 
 		$this->federatedEventService->newEvent($event);
 
+		return $event->getOutcome();
 	}
-
-
-	/**
-	 * @param string $levelString
-	 *
-	 * @return int
-	 * @throws MemberLevelException
-	 */
-	public function parseLevelString(string $levelString): int {
-		$levelString = ucfirst(strtolower($levelString));
-		$level = array_search($levelString, Member::$DEF_LEVEL);
-
-		if (!$level) {
-			throw new MemberLevelException(
-				'Available levels: ' . implode(', ', array_values(Member::$DEF_LEVEL))
-			);
-		}
-
-		return (int)$level;
-	}
-
 
 }
 

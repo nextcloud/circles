@@ -10,7 +10,7 @@ declare(strict_types=1);
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2021
+ * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -32,58 +32,58 @@ declare(strict_types=1);
 namespace OCA\Circles\FederatedItems;
 
 
-use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
+use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\IFederatedItem;
-use OCA\Circles\IFederatedItemCircleCheckNotRequired;
-use OCA\Circles\IFederatedItemLocalOnly;
+use OCA\Circles\IFederatedItemMemberRequired;
 use OCA\Circles\Model\Federated\FederatedEvent;
-use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Model\Helpers\MemberHelper;
 
 
 /**
- * Class CircleCreate
+ * Class MemberLevel
  *
  * @package OCA\Circles\FederatedItems
  */
-class CircleCreate implements
+class MemberRemove implements
 	IFederatedItem,
-	IFederatedItemCircleCheckNotRequired,
-	IFederatedItemLocalOnly {
+	IFederatedItemMemberRequired {
 
-
-	/** @var CircleRequest */
-	private $circleRequest;
 
 	/** @var MemberRequest */
 	private $memberRequest;
 
-	/** @var ConfigService */
-	private $configService;
-
 
 	/**
-	 * CircleCreate constructor.
+	 * MemberAdd constructor.
 	 *
-	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
-	 * @param ConfigService $configService
 	 */
-	public function __construct(
-		CircleRequest $circleRequest, MemberRequest $memberRequest, ConfigService $configService
-	) {
-		$this->circleRequest = $circleRequest;
+	public function __construct(MemberRequest $memberRequest) {
 		$this->memberRequest = $memberRequest;
-		$this->configService = $configService;
 	}
 
 
 	/**
-	 * Circles are created on the original instance, using IFederatedItemMustBeLocal
-	 *
 	 * @param FederatedEvent $event
+	 *
+	 * @throws FederatedItemException
 	 */
 	public function verify(FederatedEvent $event): void {
+		$circle = $event->getCircle();
+		$member = $event->getMember();
+		$initiator = $circle->getInitiator();
+
+		$initiatorHelper = new MemberHelper($initiator);
+		$initiatorHelper->mustBeModerator();
+		$initiatorHelper->mustBeHigherLevelThan($member);
+
+		$memberHelper = new MemberHelper($member);
+		$memberHelper->mustBeMember();
+		$memberHelper->cannotBeOwner();
+
+		$event->setDataOutcome([]);
+		$event->setReadingOutcome('member is no more');
 	}
 
 
@@ -91,20 +91,8 @@ class CircleCreate implements
 	 * @param FederatedEvent $event
 	 */
 	public function manage(FederatedEvent $event): void {
-		if (!$event->hasCircle()) {
-			return;
-		}
-
-		$circle = $event->getCircle();
-		$owner = $circle->getOwner();
-
-		// TODO: confirm CircleId is unique
-		// TODO: confirm MemberId is unique
-		$this->circleRequest->save($circle);
-		$this->memberRequest->save($owner);
-
-		// TODO: EventsService
-		// $this->eventsService->onCircleCreation($circle);
+		$member = $event->getMember();
+		$this->memberRequest->delete($member);
 	}
 
 
@@ -113,5 +101,6 @@ class CircleCreate implements
 	 */
 	public function result(array $events): void {
 	}
+
 }
 

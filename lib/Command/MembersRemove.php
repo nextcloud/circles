@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -31,11 +33,14 @@ namespace OCA\Circles\Command;
 
 use Exception;
 use OC\Core\Command\Base;
+use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
+use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\MembersService;
-use OCP\IL10N;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
@@ -47,23 +52,30 @@ use Symfony\Component\Console\Output\OutputInterface;
 class MembersRemove extends Base {
 
 
-	/** @var IL10N */
-	private $l10n;
+	/** @var MemberRequest */
+	private $memberRequest;
+
+	/** @var FederatedUserService */
+	private $federatedUserService;
 
 	/** @var MembersService */
-	private $membersService;
+	private $memberService;
 
 
 	/**
 	 * MembersRemove constructor.
 	 *
-	 * @param IL10N $l10n
-	 * @param MembersService $membersService
+	 * @param MemberRequest $memberRequest
+	 * @param FederatedUserService $federatedUserService
+	 * @param MemberService $memberService
 	 */
-	public function __construct(IL10N $l10n, MembersService $membersService) {
+	public function __construct(
+		MemberRequest $memberRequest, FederatedUserService $federatedUserService, MemberService $memberService
+	) {
 		parent::__construct();
-		$this->l10n = $l10n;
-		$this->membersService = $membersService;
+		$this->memberRequest = $memberRequest;
+		$this->federatedUserService = $federatedUserService;
+		$this->memberService = $memberService;
 	}
 
 
@@ -71,7 +83,8 @@ class MembersRemove extends Base {
 		parent::configure();
 		$this->setName('circles:members:remove')
 			 ->setDescription('remove a member from a circle')
-			 ->addArgument('member_id', InputArgument::REQUIRED, 'ID of the member to be expel');
+			 ->addArgument('member_id', InputArgument::REQUIRED, 'ID of the member from the Circle')
+			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '');
 	}
 
 
@@ -86,8 +99,14 @@ class MembersRemove extends Base {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$memberId = $input->getArgument('member_id');
 
-		$member = $this->membersService->getMemberById($memberId);
-		$this->membersService->removeMember($member->getCircleId(), $member->getUserId(), $member->getType(), $member->getInstance(), true);
+		$member = $this->memberRequest->getMember($memberId);
+		$this->federatedUserService->commandLineInitiator(
+			$input->getOption('initiator'), $member->getCircleId()
+		);
+
+		$outcome = $this->memberService->removeMember($memberId);
+
+		echo json_encode($outcome, JSON_PRETTY_PRINT) . "\n";
 
 		return 0;
 	}

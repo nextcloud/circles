@@ -35,6 +35,7 @@ use Exception;
 use OC\Core\Command\Base;
 use OC\User\NoUserException;
 use OCA\Circles\Db\MemberRequest;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
 use Symfony\Component\Console\Input\InputArgument;
@@ -104,13 +105,10 @@ class MembersLevel extends Base {
 			$input->getOption('initiator'), $member->getCircleId()
 		);
 
-		$level = $this->memberService->parseLevelString($input->getArgument('level'));
-		$this->memberService->memberLevel($memberId, $level);
+		$level = Member::parseLevelString($input->getArgument('level'));
+		$outcome = $this->memberService->memberLevel($memberId, $level);
 
-//		$member = $this->membersRequest->forceGetMember(
-//			$member->getCircleId(), $member->getUserId(), DeprecatedMember::TYPE_USER, $member->getInstance()
-//		);
-		echo json_encode($member, JSON_PRETTY_PRINT) . "\n";
+		echo json_encode($outcome, JSON_PRETTY_PRINT) . "\n";
 
 		return 0;
 	}

@@ -42,6 +42,9 @@ use OCA\Circles\IFederatedUser;
 class ManagedModel {
 
 
+	const ID_LENGTH = 15;
+
+
 	/** @var ModelManager */
 	private $modelManager;
 

@@ -36,18 +36,23 @@ use daita\MySmallPhpTools\Traits\TStringTools;
 use Exception;
 use OC\User\NoUserException;
 use OCA\Circles\Db\MemberRequest;
+use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberLevelException;
+use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\MembersLimitException;
 use OCA\Circles\Exceptions\MemberTypeNotFoundException;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\IFederatedItem;
+use OCA\Circles\IFederatedItemAsync;
 use OCA\Circles\IFederatedItemMemberCheckNotRequired;
 use OCA\Circles\IFederatedItemMemberRequired;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\Federated\FederatedEvent;
+use OCA\Circles\Model\Helpers\MemberHelper;
+use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharesToken;
 use OCA\Circles\Service\CircleService;
@@ -65,6 +70,7 @@ use OCP\Util;
  */
 class MemberAdd implements
 	IFederatedItem,
+	IFederatedItemAsync,
 	IFederatedItemMemberRequired,
 	IFederatedItemMemberCheckNotRequired {
 
@@ -111,30 +117,35 @@ class MemberAdd implements
 	 * @throws NoUserException
 	 * @throws UserTypeNotFoundException
 	 * @throws MembersLimitException
+	 * @throws MemberAlreadyExistsException
 	 */
 	public function verify(FederatedEvent $event): void {
 		$member = $event->getMember();
 		$circle = $event->getCircle();
 		$initiator = $circle->getInitiator();
 
-		if ($initiator->getLevel() < Member::LEVEL_MODERATOR) {
-			throw new MemberLevelException('Insufficient rights to add members to this Circle');
+		$member->setCircleId($circle->getId());
+
+		$initiatorHelper = new MemberHelper($initiator);
+		$initiatorHelper->mustBeModerator();
+
+		try {
+			$this->memberRequest->searchMember($member);
+			// TODO: maybe member is requesting access
+			throw new MemberAlreadyExistsException('Member already exists');
+		} catch (MemberNotFoundException $e) {
 		}
 
 		$this->confirmMemberFormat($member);
-		$member->setId($this->uuid(Member::ID_LENGTH));
-		$member->setCircleId($circle->getId());
-
+		$member->setId($this->uuid(ManagedModel::ID_LENGTH));
 
 		// TODO: check Config on Circle to know if we set Level to 1 or just send an invitation
 		$member->setLevel(Member::LEVEL_MEMBER);
 		$member->setStatus(Member::STATUS_MEMBER);
-
 		$event->setDataOutcome(['member' => $member]);
 
 		// TODO: Managing cached name
 		//		$member->setCachedName($eventMember->getCachedName());
-// check Circle is 'verified'
 		$this->circleService->confirmCircleNotFull($circle);
 
 		$event->setReadingOutcome('Member %s have been added to Circle', ['userId' => $member->getUserId()]);
@@ -185,6 +196,7 @@ class MemberAdd implements
 //		}
 //
 
+		// TODO: confirm MemberId is unique
 		$this->memberRequest->save($member);
 
 //
@@ -276,7 +288,7 @@ class MemberAdd implements
 				$this->confirmMemberTypeUser($member);
 				break;
 
-			// TODO #M003: confirm other UserType
+			// TODO: confirm other UserType
 			default:
 				throw new UserTypeNotFoundException();
 		}

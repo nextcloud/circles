@@ -44,9 +44,11 @@ use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedUser;
+use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\FederatedItems\CircleCreate;
+use OCA\Circles\Model\ModelManager;
 
 
 /**
@@ -116,11 +118,11 @@ class CircleService {
 
 		$circle = new Circle();
 		$circle->setName($name);
-		$circle->setId($this->token(Circle::ID_LENGTH));
+		$circle->setId($this->token(ManagedModel::ID_LENGTH));
 
 		$member = new Member();
 		$member->importFromIFederatedUser($owner);
-		$member->setId($this->token(Member::ID_LENGTH))
+		$member->setId($this->token(ManagedModel::ID_LENGTH))
 			   ->setCircleId($circle->getId())
 			   ->setLevel(Member::LEVEL_OWNER)
 			   ->setStatus(Member::STATUS_MEMBER);

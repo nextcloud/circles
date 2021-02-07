@@ -32,19 +32,13 @@ declare(strict_types=1);
 namespace OCA\Circles\FederatedItems;
 
 
-use OCA\Circles\Exceptions\FederatedEventException;
+use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\FederatedItemException;
-use OCA\Circles\Exceptions\MemberDoesNotExistException;
-use OCA\Circles\Exceptions\MemberIsNotModeratorException;
-use OCA\Circles\Exceptions\MemberIsNotOwnerException;
-use OCA\Circles\Exceptions\MemberIsOwnerException;
-use OCA\Circles\Exceptions\ModeratorIsNotHighEnoughException;
+use OCA\Circles\Exceptions\MemberLevelException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemMemberRequired;
-use OCA\Circles\Model\DeprecatedCircle;
-use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\Federated\FederatedEvent;
-use OCA\Circles\Model\GlobalScale\GSEvent;
+use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\Member;
 
 
@@ -58,32 +52,52 @@ class MemberLevel implements
 	IFederatedItemMemberRequired {
 
 
+	/** @var MemberRequest */
+	private $memberRequest;
+
+
+	/**
+	 * MemberAdd constructor.
+	 *
+	 * @param MemberRequest $memberRequest
+	 */
+	public function __construct(MemberRequest $memberRequest) {
+		$this->memberRequest = $memberRequest;
+	}
+
+
 	/**
 	 * @param FederatedEvent $event
 	 *
-	 * @throws FederatedEventException
-	 * @throws MemberDoesNotExistException
-	 * @throws MemberIsNotModeratorException
-	 * @throws MemberIsOwnerException
-	 * @throws ModeratorIsNotHighEnoughException
+	 * @throws FederatedItemException
 	 */
 	public function verify(FederatedEvent $event): void {
 		$circle = $event->getCircle();
 		$member = $event->getMember();
-		$level = $event->getData()
-					   ->gInt('level');
+		$initiator = $circle->getInitiator();
+		$level = $event->getData()->gInt('level');
+
+		if ($level === 0) {
+			throw new FederatedItemException('invalid level');
+		}
 
 		if ($member->getLevel() === $level) {
 			throw new FederatedItemException('This member already have the selected level');
 		}
 
+		$initiatorHelper = new MemberHelper($initiator);
+		$initiatorHelper->mustBeModerator();
 
 		if ($level === Member::LEVEL_OWNER) {
-//			$this->verifySwitchOwner($event, $circle, $member);
+			$this->verifySwitchOwner($member, $initiator);
 		} else {
-//			$this->verifyMemberLevel($event, $circle, $member, $level);
+			$this->verifyMemberLevel($member, $initiator, $level);
 		}
 
+		$outcomeMember = clone $member;
+		$outcomeMember->setLevel($level);
+		$event->setDataOutcome(['member' => $outcomeMember]);
+		$event->setReadingOutcome('new level !');
 	}
 
 
@@ -91,25 +105,15 @@ class MemberLevel implements
 	 * @param FederatedEvent $event
 	 */
 	public function manage(FederatedEvent $event): void {
-		$level = $event->getData()
-					   ->gInt('level');
-//
-//		$member = $event->getMember();
-//		$this->cleanMember($member);
-//
-//		$member->setLevel($level);
-//		$this->membersRequest->updateMemberLevel($member);
-//
-//		if ($level === DeprecatedMember::LEVEL_OWNER) {
-//			$circle = $event->getDeprecatedCircle();
-//			$isMod = $circle->getOwner();
-//			if ($isMod->getInstance() === '') {
-//				$isMod->setInstance($event->getSource());
-//			}
-//
-//			$isMod->setLevel(DeprecatedMember::LEVEL_ADMIN);
-//			$this->membersRequest->updateMemberLevel($isMod);
-//		}
+		$member = clone $event->getMember();
+		$member->setLevel($event->getData()->gInt('level'));
+		$this->memberRequest->updateLevel($member);
+
+		if ($member->getLevel() === Member::LEVEL_OWNER) {
+			$oldOwner = clone $event->getCircle()->getOwner();
+			$oldOwner->setLevel(Member::LEVEL_ADMIN);
+			$this->memberRequest->updateLevel($oldOwner);
+		}
 	}
 
 
@@ -121,47 +125,36 @@ class MemberLevel implements
 
 
 	/**
-	 * @param GSEvent $event
-	 * @param DeprecatedCircle $circle
-	 * @param DeprecatedMember $member
+	 * @param Member $member
+	 * @param Member $initiator
 	 * @param int $level
 	 *
-	 * @throws MemberDoesNotExistException
-	 * @throws MemberIsOwnerException
-	 * @throws MemberIsNotModeratorException
-	 * @throws ModeratorIsNotHighEnoughException
+	 * @throws MemberLevelException
 	 */
-	private function verifyMemberLevel(
-		GSEvent $event, DeprecatedCircle $circle, DeprecatedMember $member, int $level
-	) {
-		$member->hasToBeMember();
-		$member->cantBeOwner();
+	private function verifyMemberLevel(Member $member, Member $initiator, int $level) {
+		$initiatorHelper = new MemberHelper($initiator);
+		$memberHelper = new MemberHelper($member);
 
-		if (!$event->isForced()) {
-			$isMod = $circle->getHigherViewer();
-			$isMod->hasToBeModerator();
-			$isMod->hasToBeHigherLevel($level);
-			$isMod->hasToBeHigherLevel($member->getLevel());
-		}
+		$memberHelper->mustBeMember();
+		$memberHelper->cannotBeOwner();
+
+		$initiatorHelper->mustBeModerator();
+		$initiatorHelper->mustHaveLevelAbove($level);
+		$initiatorHelper->mustBeHigherLevelThan($member);
 	}
 
 	/**
-	 * @param GSEvent $event
-	 * @param DeprecatedCircle $circle
-	 * @param DeprecatedMember $member
-	 *
-	 * @throws MemberDoesNotExistException
-	 * @throws MemberIsNotOwnerException
-	 * @throws MemberIsOwnerException
+	 * @param Member $member
+	 * @param Member $initiator
 	 */
-	private function verifySwitchOwner(GSEvent $event, DeprecatedCircle $circle, DeprecatedMember $member) {
-		if (!$event->isForced()) {
-			$isMod = $circle->getHigherViewer();
-			$this->circlesService->hasToBeOwner($isMod);
-		}
+	private function verifySwitchOwner(Member $member, Member $initiator) {
+		// TODO: check on NO_OWNER circle
+		$initiatorHelper = new MemberHelper($initiator);
+		$memberHelper = new MemberHelper($member);
 
-		$member->hasToBeMember();
-		$member->cantBeOwner();
+		$initiatorHelper->mustBeOwner();
+		$memberHelper->mustBeMember();
+		$memberHelper->cannotBeOwner();
 	}
 
 }

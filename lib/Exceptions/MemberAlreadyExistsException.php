@@ -1,4 +1,8 @@
 <?php
+
+declare(strict_types=1);
+
+
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -24,9 +28,16 @@
  *
  */
 
+
 namespace OCA\Circles\Exceptions;
 
-class MemberAlreadyExistsException extends \Exception {
+
+/**
+ * Class MemberAlreadyExistsException
+ *
+ * @package OCA\Circles\Exceptions
+ */
+class MemberAlreadyExistsException extends FederatedItemException {
 
 }
 

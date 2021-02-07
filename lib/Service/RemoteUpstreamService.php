@@ -40,6 +40,7 @@ use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
 use Exception;
 use OCA\Circles\Db\RemoteWrapperRequest;
+use OCA\Circles\Exceptions\FederatedEventDSyncException;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
@@ -170,6 +171,7 @@ class RemoteUpstreamService {
 	 * @throws OwnerNotFoundException
 	 * @throws RequestNetworkException
 	 * @throws FederatedEventException
+	 * @throws FederatedEventDSyncException
 	 */
 	public function confirmEvent(FederatedEvent $event): void {
 		$data = $this->remoteService->requestRemoteInstance(
@@ -180,29 +182,27 @@ class RemoteUpstreamService {
 		);
 
 		// TODO: check what is happening if website is down...
-		if (!$data->getOutgoingRequest()->hasResult()
-			|| $data->getOutgoingRequest()->getResult()->hasException()) {
+		if (!$data->getOutgoingRequest()->hasResult()) {
 			throw new RequestNetworkException();
 		}
 
 		$result = $data->getOutgoingRequest()->getResult();
-		$this->manageRequestOutcome($event, $result->getAsArray());
 
+		$this->manageRequestOutcome($event, $result->getAsArray());
 		$reading = $event->getReadingOutcome();
-		if ($result->getStatusCode() === Http::STATUS_OK && $reading->gBool('success')) {
+
+		if ($result->getStatusCode() === Http::STATUS_CONFLICT) {
+			throw new FederatedEventDSyncException($reading->g('translated'));
+		}
+
+		if ($result->getStatusCode() === Http::STATUS_OK && !$reading->gBool('fail')) {
 			return;
 		}
 
 		throw new FederatedEventException($reading->g('translated'));
 	}
 
-
-
-
-
-
-	//
-	//
+	
 	//
 	//
 	//
@@ -382,7 +382,7 @@ class RemoteUpstreamService {
 		$event->setReadingOutcome(
 			$outcome->g('reading.message'),
 			$outcome->gArray('reading.params'),
-			$outcome->gBool('reading.success')
+			$outcome->gBool('reading.fail')
 		);
 
 		$reading = $event->getReadingOutcome();

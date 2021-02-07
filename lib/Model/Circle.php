@@ -95,8 +95,6 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 	const CFG_ROOT = 4096;        // Circle cannot be inside another Circle
 	const CFG_FEDERATED = 8192;   // Federated
 
-	const ID_LENGTH = 15;
-
 	static $DEF = [
 		1 => 'S|Single',
 
@@ -510,8 +508,13 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 	 * @param array $data
 	 *
 	 * @return $this
+	 * @throws InvalidItemException
 	 */
 	public function import(array $data): INC21Convert {
+		if ($this->get('id', $data) === '') {
+			throw new InvalidItemException();
+		}
+
 		$this->setId($this->get('id', $data))
 			 ->setName($this->get('name', $data))
 			 ->setAltName($this->get('alt_name', $data))
@@ -521,6 +524,7 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 //			 ->setContactGroupName($this->get('contact_groupname', $data))
 			 ->setDescription($this->get('description', $data))
 			 ->setCreation($this->getInt('creation', $data));
+
 
 		try {
 			/** @var Member $owner */

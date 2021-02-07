@@ -31,6 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Controller;
 
+use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Exceptions\InvalidOriginException;
 use daita\MySmallPhpTools\Exceptions\MalformedArrayException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
@@ -39,6 +40,7 @@ use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21SignedRequest;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Controller;
 use Exception;
 use OCA\Circles\Db\CircleRequest;
+use OCA\Circles\Exceptions\FederatedEventDSyncException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
@@ -116,7 +118,9 @@ class RemoteController extends Controller {
 			$this->remoteDownstreamService->requestedEvent($event);
 		} catch (FederatedItemException $e) {
 			$this->e($e, ['event' => $event]);
-			$event->setReadingOutcome($e->getMessage(), $e->getParams(), false);
+			$event->setReadingOutcome($e->getMessage(), $e->getParams(), true);
+		} catch (FederatedEventDSyncException $e) {
+			return $this->fail($e, [], Http::STATUS_CONFLICT);
 		} catch (Exception $e) {
 			$this->e($e);
 
@@ -183,7 +187,8 @@ class RemoteController extends Controller {
 	private function confirmRemoteInstance(NC21SignedRequest $signedRequest) {
 		$signatory = $signedRequest->getSignatory();
 		if (!$signatory instanceof RemoteInstance
-			|| $signatory->getType() === RemoteInstance::TYPE_UNKNOWN) {
+			|| ((!$this->configService->isLocalInstance($signedRequest->getOrigin())
+				 && $signatory->getType() === RemoteInstance::TYPE_UNKNOWN))) {
 			$this->debug('Could not confirm identity', ['signedRequest' => $signedRequest]);
 			throw new SignatoryException('could not confirm identity');
 		}
@@ -195,6 +200,7 @@ class RemoteController extends Controller {
 	 * @throws MalformedArrayException
 	 * @throws SignatoryException
 	 * @throws SignatureException
+	 * @throws InvalidItemException
 	 */
 	private function extractEventFromRequest(): FederatedEvent {
 		$signed = $this->remoteService->incomingSignedRequest($this->configService->getLocalInstance());

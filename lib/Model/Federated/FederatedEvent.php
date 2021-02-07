@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Model\Federated;
 
 
+use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
@@ -389,16 +390,16 @@ class FederatedEvent implements JsonSerializable {
 	/**
 	 * @param string $message
 	 * @param array $params
-	 * @param bool $success
+	 * @param bool $fail
 	 *
 	 * @return $this
 	 */
-	public function setReadingOutcome(string $message, array $params = [], bool $success = true): self {
+	public function setReadingOutcome(string $message, array $params = [], bool $fail = false): self {
 		$this->readingOutcome = new SimpleDataStore(
 			[
 				'message' => $message,
 				'params'  => $params,
-				'success' => $success
+				'fail' => $fail
 			]
 		);
 
@@ -447,6 +448,7 @@ class FederatedEvent implements JsonSerializable {
 	 * @param array $data
 	 *
 	 * @return self
+	 * @throws InvalidItemException
 	 */
 	public function import(array $data): self {
 		$this->setClass($this->get('class', $data));
@@ -454,7 +456,6 @@ class FederatedEvent implements JsonSerializable {
 		$this->setData(new SimpleDataStore($this->getArray('data', $data)));
 		$this->setResult(new SimpleDataStore($this->getArray('result', $data)));
 		$this->setSource($this->get('source', $data));
-		$this->setAsync($this->getBool('async', $data));
 
 		if (array_key_exists('circle', $data)) {
 			$circle = new Circle();
@@ -485,8 +486,7 @@ class FederatedEvent implements JsonSerializable {
 			'outcome'  => [
 				'message' => $this->getReadingOutcome(),
 				'data'    => $this->getDataOutcome()
-			],
-			'async'    => $this->isAsync()
+			]
 		];
 
 		if ($this->hasCircle()) {

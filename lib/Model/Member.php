@@ -32,10 +32,13 @@ declare(strict_types=1);
 namespace OCA\Circles\Model;
 
 use daita\MySmallPhpTools\Db\Nextcloud\nc21\INC21QueryRow;
+use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\INC21Convert;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Convert;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use DateTime;
 use JsonSerializable;
+use OCA\Circles\Exceptions\MemberLevelException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\IFederatedUser;
 
@@ -49,6 +52,7 @@ class Member extends ManagedModel implements IFederatedUser, INC21Convert, INC21
 
 
 	use TArrayTools;
+	use TNC21Convert;
 
 
 	const LEVEL_NONE = 0;
@@ -69,8 +73,6 @@ class Member extends ManagedModel implements IFederatedUser, INC21Convert, INC21
 	const STATUS_MEMBER = 'Member';
 	const STATUS_BLOCKED = 'Blocked';
 	const STATUS_KICKED = 'Kicked';
-
-	const ID_LENGTH = 15;
 
 	static $DEF_LEVEL = [
 		1 => 'Member',
@@ -440,18 +442,23 @@ class Member extends ManagedModel implements IFederatedUser, INC21Convert, INC21
 
 	/**
 	 * @param Member $member
+	 * @param bool $full
 	 *
 	 * @return bool
 	 */
-	public function compareWith(Member $member): bool {
+	public function compareWith(Member $member, bool $full = true): bool {
 		if ($this->getId() !== $member->getId()
 			|| $this->getCircleId() !== $member->getCircleId()
-			|| $this->getSingleId() !== $member->getSingleId()
+			//			|| $this->getSingleId() !== $member->getSingleId()
 			|| $this->getUserId() !== $member->getUserId()
 			|| $this->getUserType() <> $member->getUserType()
-			|| $this->getInstance() !== $member->getInstance()
-			|| $this->getLevel() <> $member->getLevel()
-			|| $this->getStatus() !== $member->getStatus()) {
+			|| $this->getInstance() !== $member->getInstance()) {
+			return false;
+		}
+
+		if ($full
+			&& ($this->getLevel() <> $member->getLevel()
+				|| $this->getStatus() !== $member->getStatus())) {
 			return false;
 		}
 
@@ -463,8 +470,13 @@ class Member extends ManagedModel implements IFederatedUser, INC21Convert, INC21
 	 * @param array $data
 	 *
 	 * @return $this
+	 * @throws InvalidItemException
 	 */
 	public function import(array $data): INC21Convert {
+		if ($this->get('user_id', $data) === '') {
+			throw new InvalidItemException();
+		}
+
 		$this->setId($this->get('id', $data));
 		$this->setCircleId($this->get('circle_id', $data));
 		$this->setSingleId($this->get('single_id', $data));
@@ -479,6 +491,13 @@ class Member extends ManagedModel implements IFederatedUser, INC21Convert, INC21
 		$this->setContactId($this->get('contact_id', $data));
 		$this->setContactMeta($this->get('contact_meta', $data));
 		$this->setJoined($this->getInt('joined', $data));
+
+		try {
+			/** @var Circle $circle */
+			$circle = $this->convert($this->getArray('circle', $data), Circle::class);
+			$this->setCircle($circle);
+		} catch (InvalidItemException $e) {
+		}
 
 		return $this;
 	}
@@ -559,6 +578,25 @@ class Member extends ManagedModel implements IFederatedUser, INC21Convert, INC21
 		}
 
 		return $this;
+	}
+
+
+	/**
+	 * @param string $levelString
+	 *
+	 * @return int
+	 * @throws MemberLevelException
+	 */
+	public static function parseLevelString(string $levelString): int {
+		$levelString = ucfirst(strtolower($levelString));
+		$level = array_search($levelString, Member::$DEF_LEVEL);
+
+		if (!$level) {
+			$all = implode(', ', array_values(self::$DEF_LEVEL));
+			throw new MemberLevelException('Available levels: ' . $all);
+		}
+
+		return (int)$level;
 	}
 
 }

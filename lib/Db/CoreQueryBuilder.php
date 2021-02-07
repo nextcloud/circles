@@ -111,6 +111,14 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 
 
 	/**
+	 * @param int $userType
+	 */
+	public function limitToUserType(int $userType): void {
+		$this->limitToDBFieldInt('user_type', $userType);
+	}
+
+
+	/**
 	 * @param IFederatedUser $initiator
 	 * @param string $alias
 	 */

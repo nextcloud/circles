@@ -51,6 +51,7 @@ use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\IFederatedItem;
+use OCA\Circles\IFederatedItemAsync;
 use OCA\Circles\IFederatedItemCircleCheckNotRequired;
 use OCA\Circles\IFederatedItemInitiatorCheckNotRequired;
 use OCA\Circles\IFederatedItemLocalOnly;
@@ -150,6 +151,9 @@ class FederatedEventService extends NC21Signature {
 			$this->initBroadcast($event);
 		} else {
 			$this->remoteUpstreamService->confirmEvent($event);
+			if (!$event->isAsync()) {
+				$federatedItem->manage($event);
+			}
 		}
 	}
 
@@ -252,6 +256,7 @@ class FederatedEventService extends NC21Signature {
 
 		$this->setFederatedEventBypass($event, $item);
 		$this->confirmRequiredCondition($event, $item, $local);
+		$this->configureEvent($event, $item);
 
 		return $item;
 	}
@@ -313,12 +318,24 @@ class FederatedEventService extends NC21Signature {
 
 
 	/**
+	 * @param FederatedEvent $event
+	 * @param IFederatedItem $item
+	 */
+	private function configureEvent(FederatedEvent $event, IFederatedItem $item) {
+		if ($item instanceof IFederatedItemAsync) {
+			$event->setAsync(true);
+		}
+	}
+
+
+	/**
 	 * async the process, generate a local request that will be closed.
 	 *
 	 * @param FederatedEvent $event
+	 * @param array $filter
 	 */
-	public function initBroadcast(FederatedEvent $event): void {
-		$instances = $this->getInstances($event->isAsync());
+	public function initBroadcast(FederatedEvent $event, array $filter = []): void {
+		$instances = array_diff($this->getInstances($event->isAsync()), $filter);
 		if (empty($instances)) {
 			return;
 		}

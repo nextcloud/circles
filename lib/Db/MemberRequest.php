@@ -53,7 +53,9 @@ class MemberRequest extends MemberRequestBuilder {
 	 * @throws InvalidIdException
 	 */
 	public function save(Member $member): void {
-		$this->confirmValidIds([$member->getCircleId(), $member->getSingleId(), $member->getId()]);
+		// TODO: check singleId is not empty
+//		$this->confirmValidIds([$member->getCircleId(), $member->getSingleId(), $member->getId()]);
+		$this->confirmValidIds([$member->getCircleId(), $member->getId()]);
 
 		$qb = $this->getMemberInsertSql();
 		$qb->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
@@ -68,6 +70,39 @@ class MemberRequest extends MemberRequestBuilder {
 		   ->setValue('status', $qb->createNamedParameter($member->getStatus()))
 		   ->setValue('contact_id', $qb->createNamedParameter($member->getContactId()))
 		   ->setValue('note', $qb->createNamedParameter($member->getNote()));
+
+		$qb->execute();
+	}
+
+
+	/**
+	 * @param Member $member
+	 */
+	public function delete(Member $member) {
+		$qb = $this->getMemberDeleteSql();
+		$qb->limitToCircleId($member->getCircleId());
+		$qb->limitToUserId($member->getUserId());
+		$qb->limitToUserType($member->getUserType());
+		$qb->limitToInstance($qb->getInstance($member));
+//		$qb->limitToSingleId($federatedUser->getSingleId());
+
+		$qb->execute();
+	}
+
+
+	/**
+	 * @param Member $member
+	 */
+	public function updateLevel(Member $member): void {
+		$qb = $this->getMemberUpdateSql();
+		$qb->set('level', $qb->createNamedParameter($member->getLevel()));
+
+		$qb->limitToMemberId($member->getId());
+		$qb->limitToCircleId($member->getCircleId());
+		$qb->limitToUserId($member->getUserId());
+		$qb->limitToUserType($member->getUserType());
+		$qb->limitToInstance($qb->getInstance($member));
+		//		$qb->limitToSingleId($member->getSingleId());
 
 		$qb->execute();
 	}
@@ -101,6 +136,29 @@ class MemberRequest extends MemberRequestBuilder {
 			$qb->leftJoinCircle($initiator);
 		}
 
+
+		return $this->getItemFromRequest($qb);
+	}
+
+
+	/**
+	 * @param Member $member
+	 * @param FederatedUser|null $initiator
+	 *
+	 * @return Member
+	 * @throws MemberNotFoundException
+	 */
+	public function searchMember(Member $member, ?FederatedUser $initiator = null): Member {
+		$qb = $this->getMemberSelectSql();
+		$qb->limitToCircleId($member->getCircleId());
+		$qb->limitToUserId($member->getUserId());
+		$qb->limitToUserType($member->getUserType());
+		$qb->limitToInstance($qb->getInstance($member));
+//		$qb->limitToSingleId($federatedUser->getSingleId());
+
+		if (!is_null($initiator)) {
+			$qb->leftJoinCircle($initiator);
+		}
 
 		return $this->getItemFromRequest($qb);
 	}

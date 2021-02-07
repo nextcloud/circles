@@ -126,31 +126,23 @@ class RemoteDownstreamService {
 	 * @throws FederatedItemException
 	 */
 	public function requestedEvent(FederatedEvent $event): void {
-		$gs = $this->federatedEventService->getFederatedItem($event, false);
+		$item = $this->federatedEventService->getFederatedItem($event, false);
 
 		if (!$this->configService->isLocalInstance($event->getCircle()->getInstance())) {
 			throw new FederatedEventException('Circle is not from this instance');
 		}
 
 		$this->federatedEventService->confirmInitiator($event, false);
-		$this->confirmContent($event);
+		$this->confirmContent($event, true);
+		$item->verify($event);
 
-		$gs->verify($event);
+		$filter = [];
+		if (!$event->isAsync()) {
+			$item->manage($event);
+			$filter[] = $event->getIncomingOrigin();
+		}
 
-// Async ??
-		$this->asyncObj($event->getOutcome());
-
-//			if (!$event->isAsync()) {
-//				$gs->manage($event);
-//			}
-//
-//			$this->initBroadcast($event);
-//		} else {
-//			$this->remoteUpstreamService->confirmEvent($event);
-//		}
-//
-
-		exit();
+		$this->federatedEventService->initBroadcast($event, $filter);
 	}
 
 
@@ -164,7 +156,7 @@ class RemoteDownstreamService {
 		try {
 			$gs = $this->federatedEventService->getFederatedItem($event);
 			$this->confirmOriginEvent($event);
-			$this->confirmContent($event);
+			$this->confirmContent($event, false);
 
 			$gs->manage($event);
 		} catch (Exception $e) {
@@ -177,13 +169,14 @@ class RemoteDownstreamService {
 
 	/**
 	 * @param FederatedEvent $event
+	 * @param bool $full
 	 *
 	 * @throws FederatedEventDSyncException
 	 * @throws OwnerNotFoundException
 	 */
-	private function confirmContent(FederatedEvent $event): void {
+	private function confirmContent(FederatedEvent $event, bool $full = true): void {
 		$this->confirmCircle($event);
-		$this->confirmMember($event);
+		$this->confirmMember($event, $full);
 	}
 
 
@@ -230,12 +223,13 @@ class RemoteDownstreamService {
 
 	/**
 	 * @param FederatedEvent $event
+	 * @param bool $full
 	 *
 	 * @throws FederatedEventDSyncException
 	 */
-	private function confirmMember(FederatedEvent $event): void {
+	private function confirmMember(FederatedEvent $event, bool $full): void {
 		if ($event->canBypass(FederatedEvent::BYPASS_LOCALMEMBERCHECK) || !$event->hasMember()
-			|| $this->verifyMember($event)) {
+			|| $this->verifyMember($event, $full)) {
 			return;
 		}
 
@@ -244,10 +238,11 @@ class RemoteDownstreamService {
 
 	/**
 	 * @param FederatedEvent $event
+	 * @param bool $full
 	 *
 	 * @return bool
 	 */
-	private function verifyMember(FederatedEvent $event): bool {
+	private function verifyMember(FederatedEvent $event, bool $full): bool {
 		$this->debug('verifyMember()', ['event' => $event]);
 		$member = $event->getMember();
 
@@ -259,7 +254,7 @@ class RemoteDownstreamService {
 			return false;
 		}
 
-		if (!$localMember->compareWith($member)) {
+		if (!$localMember->compareWith($member, $full)) {
 			$this->debug(
 				'failed to compare Members',
 				['localMember' => json_encode($localMember), 'member' => json_encode($member)]
@@ -267,6 +262,8 @@ class RemoteDownstreamService {
 
 			return false;
 		}
+
+		return true;
 	}
 
 
