@@ -36,6 +36,7 @@ use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\Member;
 
 
@@ -111,17 +112,24 @@ class CircleRequest extends CircleRequestBuilder {
 	/**
 	 * @param string $id
 	 * @param IFederatedUser|null $initiator
+	 * @param RemoteInstance|null $instance
 	 *
 	 * @return Circle
 	 * @throws CircleNotFoundException
 	 */
-	public function getCircle(string $id, ?IFederatedUser $initiator = null): Circle {
+	public function getCircle(
+		string $id,
+		?IFederatedUser $initiator = null,
+		?RemoteInstance $instance = null
+	): Circle {
 		$qb = $this->getCircleSelectSql();
 		$qb->limitToUniqueId($id);
 		$qb->leftJoinOwner();
 
 		if (!is_null($initiator)) {
 			$qb->limitToInitiator($initiator);
+		} else if (!is_null($instance)) {
+			// TODO: filter based on RemoteInstance $instance
 		}
 
 		return $this->getItemFromRequest($qb);

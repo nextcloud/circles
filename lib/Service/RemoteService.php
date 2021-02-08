@@ -128,6 +128,11 @@ class RemoteService extends NC21Signature {
 		$app->setIncoming($this->configService->getRemotePath('circles.Remote.incoming'));
 		$app->setTest($this->configService->getRemotePath('circles.Remote.test'));
 		$app->setCircles($this->configService->getRemotePath('circles.Remote.circles'));
+		$app->setCircle(
+			urldecode(
+				$this->configService->getRemotePath('circles.Remote.circle', ['circleId' => '{circleId}'])
+			)
+		);
 		$app->setMembers($this->configService->getRemotePath('circles.Remote.members'));
 
 		$app->setOrigData($app->jsonSerialize());
@@ -177,6 +182,7 @@ class RemoteService extends NC21Signature {
 	 * @param string $item
 	 * @param int $type
 	 * @param JsonSerializable|null $object
+	 * @param array $params
 	 *
 	 * @return array
 	 * @throws RemoteNotFoundException
@@ -189,9 +195,10 @@ class RemoteService extends NC21Signature {
 		string $instance,
 		string $item,
 		int $type = Request::TYPE_GET,
-		?JsonSerializable $object = null
+		?JsonSerializable $object = null,
+		array $params = []
 	): array {
-		$signedRequest = $this->requestRemoteInstance($instance, $item, $type, $object);
+		$signedRequest = $this->requestRemoteInstance($instance, $item, $type, $object, $params);
 		if (!$signedRequest->getOutgoingRequest()->hasResult()) {
 			throw new RequestNetworkException();
 		}
@@ -210,6 +217,7 @@ class RemoteService extends NC21Signature {
 	 * @param string $item
 	 * @param int $type
 	 * @param JsonSerializable|null $object
+	 * @param array $params
 	 *
 	 * @return NC21SignedRequest
 	 * @throws RemoteNotFoundException
@@ -222,27 +230,18 @@ class RemoteService extends NC21Signature {
 		string $instance,
 		string $item,
 		int $type = Request::TYPE_GET,
-		?JsonSerializable $object = null
+		?JsonSerializable $object = null,
+		array $params = []
 	): NC21SignedRequest {
 
 		$request = new NC21Request('', $type);
 		if ($this->configService->isLocalInstance($instance)) {
-			$this->configService->configureRequest($request, 'circles.Remote.' . $item);
+			$this->configService->configureRequest($request, 'circles.Remote.' . $item, $params);
 		} else {
 			$this->configService->configureRequest($request);
-			$link = $this->getRemoteInstanceEntry($instance, $item);
+			$link = $this->getRemoteInstanceEntry($instance, $item, $params);
 			$request->basedOnUrl($link);
 		}
-
-		//		if ($this->configService->isLocalInstance($instance)) {
-//			$request = new NC21Request('', Request::TYPE_POST);
-//			$this->configService->configureRequest($request, 'circles.RemoteWrapper.broadcast');
-//		} else {
-//			$path = $this->urlGenerator->linkToRoute('circles.RemoteWrapper.broadcast');
-//			$request = new NC21Request($path, Request::TYPE_POST);
-//			$this->configService->configureRequest($request);
-//			$request->setInstance($instance);
-//		}
 
 		if (!is_null($object)) {
 			$request->setDataSerialize($object);
@@ -262,13 +261,14 @@ class RemoteService extends NC21Signature {
 	 *
 	 * @param string $instance
 	 * @param string $item
+	 * @param array $params
 	 *
 	 * @return string
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
 	 * @throws UnknownRemoteException
 	 */
-	private function getRemoteInstanceEntry(string $instance, string $item): string {
+	private function getRemoteInstanceEntry(string $instance, string $item, array $params = []): string {
 		$remote = $this->getCachedRemoteInstance($instance);
 
 		$value = $this->get($item, $remote->getOrigData());
@@ -276,7 +276,7 @@ class RemoteService extends NC21Signature {
 			throw new RemoteResourceNotFoundException();
 		}
 
-		return $value;
+		return $this->feedStringWithParams($value, $params);
 	}
 
 
@@ -289,7 +289,7 @@ class RemoteService extends NC21Signature {
 	 * @throws RemoteNotFoundException
 	 * @throws UnknownRemoteException
 	 */
-	private function getCachedRemoteInstance(string $instance): RemoteInstance {
+	public function getCachedRemoteInstance(string $instance): RemoteInstance {
 		$remoteInstance = $this->remoteRequest->getFromInstance($instance);
 
 		if ($remoteInstance->getType() === RemoteInstance::TYPE_UNKNOWN) {

@@ -58,6 +58,7 @@ class RemoteInstance extends NC21Signatory implements INC21QueryRow, JsonSeriali
 	const INCOMING = 'incoming';
 	const EVENT = 'event';
 	const CIRCLES = 'circles';
+	const CIRCLE = 'circle';
 
 
 	/** @var int */
@@ -77,6 +78,9 @@ class RemoteInstance extends NC21Signatory implements INC21QueryRow, JsonSeriali
 
 	/** @var string */
 	private $circles = '';
+
+	/** @var string */
+	private $circle = '';
 
 	/** @var string */
 	private $members = '';
@@ -208,6 +212,25 @@ class RemoteInstance extends NC21Signatory implements INC21QueryRow, JsonSeriali
 	/**
 	 * @return string
 	 */
+	public function getCircle(): string {
+		return $this->circle;
+	}
+
+	/**
+	 * @param string $circle
+	 *
+	 * @return self
+	 */
+	public function setCircle(string $circle): self {
+		$this->circle = $circle;
+
+		return $this;
+	}
+
+
+	/**
+	 * @return string
+	 */
 	public function getMembers(): string {
 		return $this->members;
 	}
@@ -317,6 +340,7 @@ class RemoteInstance extends NC21Signatory implements INC21QueryRow, JsonSeriali
 		$this->setEvent($this->get('event', $data));
 		$this->setIncoming($this->get('incoming', $data));
 		$this->setCircles($this->get('circles', $data));
+		$this->setCircle($this->get('circle', $data));
 		$this->setMembers($this->get('members', $data));
 		$this->setAuthSigned($this->get('auth-signed', $data));
 		$this->setUid($this->get('uid', $data));
@@ -335,6 +359,7 @@ class RemoteInstance extends NC21Signatory implements INC21QueryRow, JsonSeriali
 			'incoming' => $this->getIncoming(),
 			'test'     => $this->getTest(),
 			'circles'  => $this->getCircles(),
+			'circle'   => $this->getCircle(),
 			'members'  => $this->getMembers(),
 		];
 

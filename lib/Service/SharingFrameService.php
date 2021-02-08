@@ -196,7 +196,7 @@ class SharingFrameService {
 			$frame->generateUniqueId();
 
 		} catch (Exception $e) {
-			throw new $e;
+			throw $e;
 		}
 	}
 

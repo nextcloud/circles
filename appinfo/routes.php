@@ -72,9 +72,8 @@ return [
 		['name' => 'Remote#test', 'url' => '/test', 'verb' => 'GET'],
 		['name' => 'Remote#event', 'url' => '/event', 'verb' => 'POST'],
 		['name' => 'Remote#incoming', 'url' => '/incoming', 'verb' => 'POST'],
-		['name' => 'Remote#circles', 'url' => '/circles', 'verb' => 'GET'],
-		['name' => 'Remote#circle', 'url' => '/circles/{circleId}', 'verb' => 'GET'],
-		['name' => 'Remote#members', 'url' => '/members', 'verb' => 'GET'],
-		['name' => 'Remote#member', 'url' => '/members/{memberId}', 'verb' => 'GET'],
+		['name' => 'Remote#circles', 'url' => '/circles/', 'verb' => 'GET'],
+		['name' => 'Remote#circle', 'url' => '/circle/{circleId}/', 'verb' => 'GET'],
+		['name' => 'Remote#members', 'url' => '/members/', 'verb' => 'GET'],
 	]
 ];

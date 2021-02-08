@@ -45,6 +45,7 @@ use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
@@ -83,6 +84,9 @@ class FederatedUserService {
 
 	/** @var FederatedUser */
 	private $currentUser = null;
+
+	/** @var RemoteInstance */
+	private $remoteInstance = null;
 
 	/** @var bool */
 	private $bypass = false;
@@ -166,6 +170,21 @@ class FederatedUserService {
 	 */
 	public function bypassCurrentUserCondition(bool $bypass): void {
 		$this->bypass = $bypass;
+	}
+
+
+	/**
+	 * @param RemoteInstance $remoteInstance
+	 */
+	public function setRemoteInstance(RemoteInstance $remoteInstance): void {
+		$this->remoteInstance = $remoteInstance;
+	}
+
+	/**
+	 * @return RemoteInstance|null
+	 */
+	public function getRemoteInstance(): ?RemoteInstance {
+		return $this->remoteInstance;
 	}
 
 

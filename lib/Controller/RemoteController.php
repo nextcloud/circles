@@ -44,7 +44,9 @@ use OCA\Circles\Exceptions\FederatedEventDSyncException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
+use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\RemoteDownstreamService;
 use OCA\Circles\Service\RemoteService;
 use OCP\AppFramework\Controller;
@@ -73,6 +75,12 @@ class RemoteController extends Controller {
 	/** @var RemoteDownstreamService */
 	private $remoteDownstreamService;
 
+	/** @var FederatedUserService */
+	private $federatedUserService;
+
+	/** @var CircleService */
+	private $circleService;
+
 	/** @var ConfigService */
 	private $configService;
 
@@ -85,16 +93,21 @@ class RemoteController extends Controller {
 	 * @param CircleRequest $circleRequest
 	 * @param RemoteService $remoteService
 	 * @param RemoteDownstreamService $remoteDownstreamService
+	 * @param FederatedUserService $federatedUserService
+	 * @param CircleService $circleService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		string $appName, IRequest $request, CircleRequest $circleRequest, RemoteService $remoteService,
-		RemoteDownstreamService $remoteDownstreamService, ConfigService $configService
+		RemoteDownstreamService $remoteDownstreamService, FederatedUserService $federatedUserService,
+		CircleService $circleService, ConfigService $configService
 	) {
 		parent::__construct($appName, $request);
 		$this->circleRequest = $circleRequest;
 		$this->remoteService = $remoteService;
 		$this->remoteDownstreamService = $remoteDownstreamService;
+		$this->federatedUserService = $federatedUserService;
+		$this->circleService = $circleService;
 		$this->configService = $configService;
 
 		$this->setup('app', 'circles');
@@ -140,6 +153,7 @@ class RemoteController extends Controller {
 	public function incoming(): DataResponse {
 		try {
 			$event = $this->extractEventFromRequest();
+
 			$result = $this->remoteDownstreamService->incomingEvent($event);
 
 			return $this->success($result);
@@ -173,9 +187,44 @@ class RemoteController extends Controller {
 	 * @return DataResponse
 	 */
 	public function circles(): DataResponse {
-		$circles = $this->circleRequest->getFederated();
+//		$circles = $this->circleRequest->getFederated();
+//
+//		try {
+//			/** @var Circle $circle */
+//			$circle = $this->extractItemFromRequest(Circle::class, $signed);
+////			$event->setIncomingOrigin($signed->getOrigin());
+//
+//			//$result = $this->remoteDownstreamService->incomingEvent($event);
+//
+//			return $this->successObj($circle);
+//		} catch (Exception $e) {
+//			return $this->fail($e);
+//		}
+	}
 
-		return $this->success($circles, false);
+
+	/**
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 *
+	 * @param string $circleId
+	 *
+	 * @return DataResponse
+	 */
+	public function circle(string $circleId): DataResponse {
+		try {
+			$signed = $this->remoteService->incomingSignedRequest($this->configService->getLocalInstance());
+
+			$remoteInstance = $this->remoteService->getCachedRemoteInstance($signed->getOrigin());
+			$this->federatedUserService->setRemoteInstance($remoteInstance);
+			$this->federatedUserService->bypassCurrentUserCondition(true);
+
+			$circle = $this->circleService->getCircle($circleId);
+
+			return $this->successObj($circle);
+		} catch (Exception $e) {
+			return $this->fail($e);
+		}
 	}
 
 
@@ -196,6 +245,7 @@ class RemoteController extends Controller {
 
 
 	/**
+	 * @return FederatedEvent
 	 * @throws InvalidOriginException
 	 * @throws MalformedArrayException
 	 * @throws SignatoryException

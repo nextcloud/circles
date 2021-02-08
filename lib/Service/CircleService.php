@@ -32,23 +32,30 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 
+use daita\MySmallPhpTools\Exceptions\InvalidItemException;
+use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
+use daita\MySmallPhpTools\Exceptions\SignatoryException;
+use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
-use OCA\Circles\Exceptions\MembersLimitException;
-use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\MembersLimitException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
+use OCA\Circles\FederatedItems\CircleCreate;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Federated\FederatedEvent;
+use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
-use OCA\Circles\Model\Federated\FederatedEvent;
-use OCA\Circles\FederatedItems\CircleCreate;
-use OCA\Circles\Model\ModelManager;
 
 
 /**
@@ -69,6 +76,9 @@ class CircleService {
 	/** @var MemberRequest */
 	private $memberRequest;
 
+	/** @var RemoteService */
+	private $remoteService;
+
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
@@ -84,16 +94,19 @@ class CircleService {
 	 *
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
+	 * @param RemoteService $remoteService
 	 * @param FederatedUserService $federatedUserService
 	 * @param FederatedEventService $federatedEventService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		CircleRequest $circleRequest, MemberRequest $memberRequest, FederatedUserService $federatedUserService,
-		FederatedEventService $federatedEventService, ConfigService $configService
+		CircleRequest $circleRequest, MemberRequest $memberRequest, RemoteService $remoteService,
+		FederatedUserService $federatedUserService, FederatedEventService $federatedEventService,
+		ConfigService $configService
 	) {
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
+		$this->remoteService = $remoteService;
 		$this->federatedUserService = $federatedUserService;
 		$this->federatedEventService = $federatedEventService;
 		$this->configService = $configService;
@@ -160,7 +173,11 @@ class CircleService {
 	public function getCircle(string $circleId): Circle {
 		$this->federatedUserService->mustHaveCurrentUser();
 
-		return $this->circleRequest->getCircle($circleId, $this->federatedUserService->getCurrentUser());
+		return $this->circleRequest->getCircle(
+			$circleId,
+			$this->federatedUserService->getCurrentUser(),
+			$this->federatedUserService->getRemoteInstance()
+		);
 	}
 
 
@@ -192,6 +209,85 @@ class CircleService {
 		}
 
 		return (sizeof($members) >= $limit);
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 *
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws UnknownRemoteException
+	 * @throws OwnerNotFoundException
+	 */
+	public function syncCircle(Circle $circle): void {
+//		if ($this->configService->isLocalInstance($circle->getInstance())) {
+//			$this->syncLocalCircle($circle);
+//		} else {
+		$this->syncRemoteCircle($circle->getId(), $circle->getInstance());
+//		}
+	}
+
+	/**
+	 * @param Circle $circle
+	 */
+	private function syncLocalCircle(Circle $circle): void {
+
+	}
+
+	/**
+	 * @param string $circleId
+	 * @param string $instance
+	 *
+	 * @throws InvalidItemException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws UnknownRemoteException
+	 */
+	public function syncRemoteCircle(string $circleId, string $instance): void {
+		while (true) {
+			$circle = $this->retrieveCircleFromInstance($circleId, $instance);
+			if ($circle->getInstance() === $instance) {
+				break;
+			}
+
+			$instance = $circle->getInstance();
+		}
+
+		echo json_encode($circle);
+	}
+
+
+	/**
+	 * @param string $circleId
+	 * @param string $instance
+	 *
+	 * @return Circle
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws UnknownRemoteException
+	 * @throws InvalidItemException
+	 */
+	private function retrieveCircleFromInstance(string $circleId, string $instance): Circle {
+		$result = $this->remoteService->resultRequestRemoteInstance(
+			$instance,
+			RemoteInstance::CIRCLE,
+			Request::TYPE_GET,
+			null,
+			['circleId' => $circleId]
+		);
+
+		$circle = new Circle();
+		$circle->import($result);
+
+		return $circle;
 	}
 
 }
