@@ -130,8 +130,6 @@ class OcsApiController extends OCSController {
 
 
 	/**
-	 * @NoAdminRequired
-	 *
 	 * @param string $userId
 	 *
 	 * @return DataResponse
