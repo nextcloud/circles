@@ -73,6 +73,7 @@ return [
 	],
 	'ocs' => [
 		['name' => 'OcsApi#circles', 'url' => '/circles/', 'verb' => 'GET'],
-		['name' => 'OcsApi#members', 'url' => '/circles/{circleId}/members/', 'verb' => 'GET']
+		['name' => 'OcsApi#members', 'url' => '/circles/{circleId}/members/', 'verb' => 'GET'],
+		['name' => 'OcsApi#usersMembership', 'url' => '/users/{userId}/circles', 'verb' => 'GET']
 	]
 ];

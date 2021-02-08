@@ -128,5 +128,27 @@ class OcsApiController extends OCSController {
 		}
 	}
 
+
+	/**
+	 * @NoAdminRequired
+	 *
+	 * @param string $userId
+	 *
+	 * @return DataResponse
+	 */
+	public function usersMembership(string $userId): DataResponse {
+		try {
+			$circles = array_map(
+				function(Circle $circle): string {
+					return $circle->getUniqueId();
+				}, $this->membersService->getCirclesAvailableToUserId($userId)
+			);
+
+			return new DataResponse(json_decode(json_encode(['circles' => $circles]), true));
+		} catch (Exception $e) {
+			return new DataResponse(['message' => $$e->getMessage()], Http::STATUS_BAD_REQUEST);
+		}
+	}
+
 }
 
