@@ -80,6 +80,7 @@
     "Click the button below to open it." : "點下方連結開啟",
     "Open »%s«" : "開啟 »%s«",
     "The name of your circle must contain at least 3 characters" : "你的小圈圈名稱須至少包含三個字元",
+    "This user is already a member of the circle" : "此用戶已是小圈圈的一員了",
     "This member is not a moderator" : "該成員並非主持人",
     "You have been invited by %1$s into the Circle \"%2$s\"" : "你已被 \"%2$s\" 邀請加入小圈圈 \"%1$s\"",
     "You are now a member of the Circle \"%2$s\"" : "你現在是小圈圈 \"%2$s\" 的一員了",
