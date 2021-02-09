@@ -115,6 +115,7 @@ class CircleRequest extends CircleRequestBuilder {
 	 * @param string $id
 	 * @param IFederatedUser|null $initiator
 	 * @param RemoteInstance|null $remoteInstance
+	 * @param bool $allowExternal - allow request from external even if no members
 	 *
 	 * @return Circle
 	 * @throws CircleNotFoundException
@@ -122,7 +123,8 @@ class CircleRequest extends CircleRequestBuilder {
 	public function getCircle(
 		string $id,
 		?IFederatedUser $initiator = null,
-		?RemoteInstance $remoteInstance = null
+		?RemoteInstance $remoteInstance = null,
+		bool $allowExternal = false
 	): Circle {
 		$qb = $this->getCircleSelectSql();
 		$qb->limitToUniqueId($id);
@@ -131,7 +133,7 @@ class CircleRequest extends CircleRequestBuilder {
 		if (!is_null($initiator)) {
 			$qb->limitToInitiator($initiator);
 		} else if (!is_null($remoteInstance)) {
-			$qb->limitToRemoteInstance($remoteInstance->getInstance());
+			$qb->limitToRemoteInstance($remoteInstance->getInstance(), $allowExternal);
 		}
 
 		return $this->getItemFromRequest($qb);
