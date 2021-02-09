@@ -77,6 +77,50 @@ class MemberRequest extends MemberRequestBuilder {
 
 	/**
 	 * @param Member $member
+	 *
+	 * @throws InvalidIdException
+	 */
+	public function update(Member $member): void {
+		// TODO: check singleId is not empty
+//		$this->confirmValidIds([$member->getCircleId(), $member->getSingleId(), $member->getId()]);
+		$this->confirmValidIds([$member->getCircleId(), $member->getId()]);
+
+		$qb = $this->getMemberUpdateSql();
+		$qb->set('member_id', $qb->createNamedParameter($member->getId()))
+		   ->set('cached_name', $qb->createNamedParameter($member->getCachedName()))
+		   ->set('cached_update', $qb->createNamedParameter($this->timezoneService->getUTCDate()))
+		   ->set('level', $qb->createNamedParameter($member->getLevel()))
+		   ->set('status', $qb->createNamedParameter($member->getStatus()))
+		   ->set('contact_id', $qb->createNamedParameter($member->getContactId()))
+		   ->set('note', $qb->createNamedParameter($member->getNote()));
+
+		$qb->limitToCircleId($member->getCircleId());
+		$qb->limitToUserId($member->getUserId());
+		$qb->limitToUserType($member->getUserType());
+		$qb->limitToInstance($qb->getInstance($member));
+//		$qb->limitToSingleId($federatedUser->getSingleId());
+
+		$qb->execute();
+	}
+
+
+	/**
+	 * @param Member $member
+	 *
+	 * @throws InvalidIdException
+	 */
+	public function insertOrUpdate(Member $member): void {
+		try {
+			$this->searchMember($member);
+			$this->update($member);
+		} catch (MemberNotFoundException $e) {
+			$this->save($member);
+		}
+	}
+
+
+	/**
+	 * @param Member $member
 	 */
 	public function delete(Member $member) {
 		$qb = $this->getMemberDeleteSql();

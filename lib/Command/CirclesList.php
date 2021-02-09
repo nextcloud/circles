@@ -50,7 +50,7 @@ use OCA\Circles\Model\ModelManager;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
-use OCA\Circles\Service\RemoteService;
+use OCA\Circles\Service\RemoteStreamService;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -79,8 +79,8 @@ class CirclesList extends Base {
 	/** @var CircleService */
 	private $circleService;
 
-	/** @var RemoteService */
-	private $remoteService;
+	/** @var RemoteStreamService */
+	private $remoteStreamService;
 
 	/** @var ConfigService */
 	private $configService;
@@ -92,18 +92,18 @@ class CirclesList extends Base {
 	 * @param ModelManager $modelManager
 	 * @param FederatedUserService $federatedUserService
 	 * @param CircleService $circleService
-	 * @param RemoteService $remoteService
+	 * @param RemoteStreamService $remoteStreamService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		ModelManager $modelManager, FederatedUserService $federatedUserService, CircleService $circleService,
-		RemoteService $remoteService, ConfigService $configService
+		RemoteStreamService $remoteStreamService, ConfigService $configService
 	) {
 		parent::__construct();
 		$this->modelManager = $modelManager;
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
-		$this->remoteService = $remoteService;
+		$this->remoteStreamService = $remoteStreamService;
 		$this->configService = $configService;
 	}
 
@@ -203,7 +203,7 @@ class CirclesList extends Base {
 	 */
 	private function getCircles(?Member $filter, string $remote, bool $all = false): array {
 		if ($remote !== '') {
-			$circles = $this->remoteService->getCircles($remote);
+			$circles = $this->remoteStreamService->getCircles($remote);
 		} else {
 			$circles = $this->circleService->getCircles($filter);
 		}

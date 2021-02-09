@@ -130,7 +130,7 @@ class NavigationController extends BaseController {
 		$this->publicPageJsonLimited();
 
 		$confirm = $this->request->getParam('auth', '');
-		return new DataResponse($this->remoteService->getAppSignatory(false, $confirm));
+		return new DataResponse($this->remoteStreamService->getAppSignatory(false, $confirm));
 	}
 
 }

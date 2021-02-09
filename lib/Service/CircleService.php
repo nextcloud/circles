@@ -44,6 +44,7 @@ use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MembersLimitException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
@@ -76,14 +77,17 @@ class CircleService {
 	/** @var MemberRequest */
 	private $memberRequest;
 
-	/** @var RemoteService */
-	private $remoteService;
+	/** @var RemoteStreamService */
+	private $remoteStreamService;
 
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
 	/** @var FederatedEventService */
 	private $federatedEventService;
+
+	/** @var MemberService */
+	private $memberService;
 
 	/** @var ConfigService */
 	private $configService;
@@ -94,21 +98,23 @@ class CircleService {
 	 *
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
-	 * @param RemoteService $remoteService
+	 * @param RemoteStreamService $remoteStreamService
 	 * @param FederatedUserService $federatedUserService
 	 * @param FederatedEventService $federatedEventService
+	 * @param MemberService $memberService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		CircleRequest $circleRequest, MemberRequest $memberRequest, RemoteService $remoteService,
+		CircleRequest $circleRequest, MemberRequest $memberRequest, RemoteStreamService $remoteStreamService,
 		FederatedUserService $federatedUserService, FederatedEventService $federatedEventService,
-		ConfigService $configService
+		MemberService $memberService, ConfigService $configService
 	) {
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
-		$this->remoteService = $remoteService;
+		$this->remoteStreamService = $remoteStreamService;
 		$this->federatedUserService = $federatedUserService;
 		$this->federatedEventService = $federatedEventService;
+		$this->memberService = $memberService;
 		$this->configService = $configService;
 	}
 
@@ -209,85 +215,6 @@ class CircleService {
 		}
 
 		return (sizeof($members) >= $limit);
-	}
-
-
-	/**
-	 * @param Circle $circle
-	 *
-	 * @throws RemoteNotFoundException
-	 * @throws RemoteResourceNotFoundException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
-	 * @throws UnknownRemoteException
-	 * @throws OwnerNotFoundException
-	 */
-	public function syncCircle(Circle $circle): void {
-//		if ($this->configService->isLocalInstance($circle->getInstance())) {
-//			$this->syncLocalCircle($circle);
-//		} else {
-		$this->syncRemoteCircle($circle->getId(), $circle->getInstance());
-//		}
-	}
-
-	/**
-	 * @param Circle $circle
-	 */
-	private function syncLocalCircle(Circle $circle): void {
-
-	}
-
-	/**
-	 * @param string $circleId
-	 * @param string $instance
-	 *
-	 * @throws InvalidItemException
-	 * @throws OwnerNotFoundException
-	 * @throws RemoteNotFoundException
-	 * @throws RemoteResourceNotFoundException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
-	 * @throws UnknownRemoteException
-	 */
-	public function syncRemoteCircle(string $circleId, string $instance): void {
-		while (true) {
-			$circle = $this->retrieveCircleFromInstance($circleId, $instance);
-			if ($circle->getInstance() === $instance) {
-				break;
-			}
-
-			$instance = $circle->getInstance();
-		}
-
-		echo json_encode($circle);
-	}
-
-
-	/**
-	 * @param string $circleId
-	 * @param string $instance
-	 *
-	 * @return Circle
-	 * @throws RemoteNotFoundException
-	 * @throws RemoteResourceNotFoundException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
-	 * @throws UnknownRemoteException
-	 * @throws InvalidItemException
-	 */
-	private function retrieveCircleFromInstance(string $circleId, string $instance): Circle {
-		$result = $this->remoteService->resultRequestRemoteInstance(
-			$instance,
-			RemoteInstance::CIRCLE,
-			Request::TYPE_GET,
-			null,
-			['circleId' => $circleId]
-		);
-
-		$circle = new Circle();
-		$circle->import($result);
-
-		return $circle;
 	}
 
 }

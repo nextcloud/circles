@@ -32,8 +32,10 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 
+use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
+use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Logger;
 use daita\MySmallPhpTools\Traits\TArrayTools;
@@ -56,7 +58,9 @@ use OCA\Circles\FederatedItems\MemberAdd;
 use OCA\Circles\FederatedItems\MemberLevel;
 use OCA\Circles\FederatedItems\MemberRemove;
 use OCA\Circles\IFederatedUser;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
+use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 
@@ -86,6 +90,9 @@ class MemberService {
 	/** @var FederatedEventService */
 	private $federatedEventService;
 
+	/** @var RemoteStreamService */
+	private $remoteStreamService;
+
 
 	/**
 	 * MemberService constructor.
@@ -94,16 +101,18 @@ class MemberService {
 	 * @param MemberRequest $memberRequest
 	 * @param FederatedUserService $federatedUserService
 	 * @param FederatedEventService $federatedEventService
+	 * @param RemoteStreamService $remoteStreamService
 	 */
 	public function __construct(
 		CircleRequest $circleRequest, MemberRequest $memberRequest,
-		FederatedUserService $federatedUserService,
-		FederatedEventService $federatedEventService
+		FederatedUserService $federatedUserService, FederatedEventService $federatedEventService,
+		RemoteStreamService $remoteStreamService
 	) {
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
 		$this->federatedUserService = $federatedUserService;
 		$this->federatedEventService = $federatedEventService;
+		$this->remoteStreamService = $remoteStreamService;
 	}
 
 //

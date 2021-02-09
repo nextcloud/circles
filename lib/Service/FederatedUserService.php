@@ -41,6 +41,7 @@ use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\IFederatedUser;
@@ -341,6 +342,7 @@ class FederatedUserService {
 	 *
 	 * @return Circle
 	 * @throws CircleNotFoundException
+	 * @throws InvalidIdException
 	 */
 	public function getSingleCircle(FederatedUser $federatedUser): Circle {
 		try {

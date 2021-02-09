@@ -77,9 +77,11 @@ class CircleRequest extends CircleRequestBuilder {
 	 */
 	public function update(Circle $circle) {
 		$qb = $this->getCircleUpdateSql();
-//		$qb->set('uid', $qb->createNamedParameter($circle->getUid(true)))
-//		   ->set('href', $qb->createNamedParameter($circle->getId()))
-//		   ->set('item', $qb->createNamedParameter(json_encode($circle->getOrigData())));
+		$qb->set('name', $qb->createNamedParameter($circle->getName()))
+		   ->set('alt_name', $qb->createNamedParameter($circle->getAltName()))
+		   ->set('description', $qb->createNamedParameter($circle->getDescription()))
+		   ->set('settings', $qb->createNamedParameter(json_encode($circle->getSettings())))
+		   ->set('config', $qb->createNamedParameter($circle->getConfig()));
 
 		$qb->limitToUniqueId($circle->getId());
 
@@ -112,7 +114,7 @@ class CircleRequest extends CircleRequestBuilder {
 	/**
 	 * @param string $id
 	 * @param IFederatedUser|null $initiator
-	 * @param RemoteInstance|null $instance
+	 * @param RemoteInstance|null $remoteInstance
 	 *
 	 * @return Circle
 	 * @throws CircleNotFoundException
@@ -120,7 +122,7 @@ class CircleRequest extends CircleRequestBuilder {
 	public function getCircle(
 		string $id,
 		?IFederatedUser $initiator = null,
-		?RemoteInstance $instance = null
+		?RemoteInstance $remoteInstance = null
 	): Circle {
 		$qb = $this->getCircleSelectSql();
 		$qb->limitToUniqueId($id);
@@ -128,8 +130,8 @@ class CircleRequest extends CircleRequestBuilder {
 
 		if (!is_null($initiator)) {
 			$qb->limitToInitiator($initiator);
-		} else if (!is_null($instance)) {
-			// TODO: filter based on RemoteInstance $instance
+		} else if (!is_null($remoteInstance)) {
+			$qb->limitToRemoteInstance($remoteInstance->getInstance());
 		}
 
 		return $this->getItemFromRequest($qb);

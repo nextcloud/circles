@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Model;
 
 use daita\MySmallPhpTools\Db\Nextcloud\nc21\INC21QueryRow;
+use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\INC21Convert;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
@@ -67,10 +68,6 @@ class FederatedUser extends ManagedModel implements IFederatedUser, INC21Convert
 
 	/**
 	 * FederatedUser constructor.
-	 *
-	 * @param string $userId
-	 * @param int $type
-	 * @param string $instance
 	 */
 	public function __construct() {
 	}
@@ -191,8 +188,13 @@ class FederatedUser extends ManagedModel implements IFederatedUser, INC21Convert
 	 * @param array $data
 	 *
 	 * @return $this
+	 * @throws InvalidItemException
 	 */
 	public function import(array $data): INC21Convert {
+		if ($this->get('user_id', $data) === '') {
+			throw new InvalidItemException();
+		}
+
 		$this->setSingleId($this->get('id', $data));
 		$this->setUserId($this->get('user_id', $data));
 		$this->setUserType($this->getInt('user_type', $data));
@@ -212,7 +214,7 @@ class FederatedUser extends ManagedModel implements IFederatedUser, INC21Convert
 			'user_id'     => $this->getUserId(),
 			'user_type'   => $this->getUserType(),
 			'instance'    => $this->getInstance(),
-			'memberships' => $this->getMemberships()
+//			'memberships' => $this->getMemberships()
 		];
 	}
 

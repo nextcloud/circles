@@ -37,7 +37,7 @@ use OCA\Circles\Service\GSDownstreamService;
 use OCA\Circles\Service\GSUpstreamService;
 use OCA\Circles\Service\MembersService;
 use OCA\Circles\Service\MiscService;
-use OCA\Circles\Service\RemoteService;
+use OCA\Circles\Service\RemoteStreamService;
 use OCA\Circles\Service\SearchService;
 use OCA\Circles\Service\SharingFrameService;
 use OCP\AppFramework\Controller;
@@ -90,8 +90,8 @@ class BaseController extends Controller {
 	/** @var FederatedLinkService */
 	protected $federatedLinkService;
 
-	/** @var RemoteService */
-	protected $remoteService;
+	/** @var RemoteStreamService */
+	protected $remoteStreamService;
 
 	/** @var MiscService */
 	protected $miscService;
@@ -115,7 +115,7 @@ class BaseController extends Controller {
 	 * @param SharingFrameService $sharingFrameService
 	 * @param BroadcastService $broadcastService
 	 * @param FederatedLinkService $federatedLinkService
-	 * @param RemoteService $remoteService
+	 * @param RemoteStreamService $remoteStreamService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
@@ -134,7 +134,7 @@ class BaseController extends Controller {
 		SharingFrameService $sharingFrameService,
 		BroadcastService $broadcastService,
 		FederatedLinkService $federatedLinkService,
-		RemoteService $remoteService,
+		RemoteStreamService $remoteStreamService,
 		MiscService $miscService
 	) {
 		parent::__construct($appName, $request);
@@ -153,7 +153,7 @@ class BaseController extends Controller {
 		$this->sharingFrameService = $sharingFrameService;
 		$this->broadcastService = $broadcastService;
 		$this->federatedLinkService = $federatedLinkService;
-		$this->remoteService = $remoteService;
+		$this->remoteStreamService = $remoteStreamService;
 		$this->miscService = $miscService;
 	}
 

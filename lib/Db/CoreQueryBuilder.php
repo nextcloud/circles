@@ -36,6 +36,7 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use OC;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
@@ -129,6 +130,15 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 
 
 	/**
+	 * @param string $instance
+	 */
+	public function limitToRemoteInstance(string $instance): void {
+		$this->leftJoinRemoteInstance($instance, 'ri');
+		$this->limitRemoteVisibility('ri');
+	}
+
+
+	/**
 	 * @param IFederatedUser $member
 	 * @param int $level
 	 */
@@ -201,7 +211,7 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 		$alias = 'o';
 		$this->generateMemberSelectAlias($alias, self::PREFIX_OWNER)
 			 ->leftJoin(
-				 $this->getDefaultSelectAlias(), CoreRequestBuilder::TABLE_MEMBER, $alias,
+				 $circleTableAlias, CoreRequestBuilder::TABLE_MEMBER, $alias,
 				 $expr->andX(
 					 $expr->eq($alias . '.circle_id', $circleTableAlias . '.unique_id'),
 					 $expr->eq($alias . '.level', $this->createNamedParameter(Member::LEVEL_OWNER))
@@ -219,7 +229,7 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 	 */
 	public function leftJoinInitiator(
 		IFederatedUser $initiator, string $alias = 'init', string $aliasCircle = ''
-	) {
+	): void {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
@@ -228,7 +238,7 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 		$aliasCircle = ($aliasCircle === '') ? $this->getDefaultSelectAlias() : $aliasCircle;
 		$this->generateMemberSelectAlias($alias, self::PREFIX_INITIATOR)
 			 ->leftJoin(
-				 $this->getDefaultSelectAlias(), CoreRequestBuilder::TABLE_MEMBER, $alias,
+				 $aliasCircle, CoreRequestBuilder::TABLE_MEMBER, $alias,
 				 $expr->andX(
 					 $expr->eq($alias . '.circle_id', $aliasCircle . '.unique_id'),
 					 $expr->eq($alias . '.user_id', $this->createNamedParameter($initiator->getUserId())),
@@ -238,6 +248,25 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 					 )
 				 )
 			 );
+	}
+
+
+	/**
+	 * Left join remotes to filter visibility based on RemoteInstance.
+	 *
+	 * @param string $instance
+	 * @param string $alias
+	 */
+	public function leftJoinRemoteInstance(string $instance, string $alias = 'ri'): void {
+		if ($this->getType() !== QueryBuilder::SELECT) {
+			return;
+		}
+
+		$expr = $this->expr();
+		$this->leftJoin(
+			$this->getDefaultSelectAlias(), CoreRequestBuilder::TABLE_REMOTE, $alias,
+			$expr->eq($alias . '.instance', $this->createNamedParameter($instance))
+		);
 	}
 
 
@@ -293,6 +322,37 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 //
 //		$qb->andWhere($orXTypes);
 	}
+
+
+	/**
+	 * - global_scale: visibility on all Circles
+	 * - trusted: visibility on all FEDERATED Circle if owner is local
+	 * - external: visibility on all FEDERATED Circle if owner is local and with at least one member from
+	 * this instance, or if forced
+	 *             (searching for a specific circle ?)
+	 *
+	 * @param string $alias
+	 * @param string $aliasCircle
+	 */
+	protected function limitRemoteVisibility(string $alias = 'ri', string $aliasCircle = 'c') {
+		$expr = $this->expr();
+
+		$orX = $expr->orX();
+		$orX->add(
+			$expr->eq($alias . '.type', $this->createNamedParameter(RemoteInstance::TYPE_GLOBAL_SCALE))
+		);
+
+		$andTrusted = $expr->andX();
+		$andTrusted->add(
+			$expr->eq($alias . '.type', $this->createNamedParameter(RemoteInstance::TYPE_TRUSTED))
+		);
+		$andTrusted->add($expr->bitwiseAnd($aliasCircle . '.config', Circle::CFG_FEDERATED));
+		$andTrusted->add($expr->emptyString('o' . '.instance'));
+		$orX->add($andTrusted);
+
+		$this->andWhere($orX);
+	}
+
 
 	/**
 	 * @param int $flag

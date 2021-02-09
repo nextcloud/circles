@@ -31,12 +31,22 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-use Exception;
+use daita\MySmallPhpTools\Exceptions\InvalidItemException;
+use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
+use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use OC\Core\Command\Base;
+use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\InvalidIdException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
+use OCA\Circles\Service\RemoteService;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -54,11 +64,14 @@ class CirclesSync extends Base {
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
-	/** @var MemberService */
-	private $memberService;
+	/** @var RemoteService */
+	private $remoteService;
 
 	/** @var CircleService */
 	private $circleService;
+
+	/** @var MemberService */
+	private $memberService;
 
 	/** @var ConfigService */
 	private $configService;
@@ -68,16 +81,18 @@ class CirclesSync extends Base {
 	 * CirclesSync constructor.
 	 *
 	 * @param FederatedUserService $federatedUserService
+	 * @param RemoteService $remoteService
 	 * @param CircleService $circlesService
 	 * @param MemberService $membersService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		FederatedUserService $federatedUserService, CircleService $circlesService,
-		MemberService $membersService, ConfigService $configService
+		FederatedUserService $federatedUserService, RemoteService $remoteService,
+		CircleService $circlesService, MemberService $membersService, ConfigService $configService
 	) {
 		parent::__construct();
 		$this->federatedUserService = $federatedUserService;
+		$this->remoteService = $remoteService;
 		$this->circleService = $circlesService;
 		$this->memberService = $membersService;
 		$this->configService = $configService;
@@ -92,7 +107,8 @@ class CirclesSync extends Base {
 		$this->setName('circles:manage:sync')
 			 ->setDescription('Sync circles and members')
 			 ->addArgument('circle_id', InputArgument::OPTIONAL, 'ID of the circle', '')
-			 ->addOption('instance', '', InputOption::VALUE_REQUIRED, ' Instance of the circle', '')
+			 ->addOption('instance', '', InputOption::VALUE_REQUIRED, 'Instance of the circle', '')
+			 ->addOption('broadcast', '', InputOption::VALUE_NONE, 'Broadcast all circle from this instance')
 			 ->addOption('all', '', InputOption::VALUE_NONE, 'Sync all local circles');
 	}
 
@@ -102,42 +118,47 @@ class CirclesSync extends Base {
 	 * @param OutputInterface $output
 	 *
 	 * @return int
-	 * @throws Exception
+	 * @throws CircleNotFoundException
+	 * @throws InitiatorNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteNotFoundException
+	 * @throws InvalidIdException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws UnknownRemoteException
+	 * @throws InvalidItemException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$this->federatedUserService->bypassCurrentUserCondition(true);
 
-//		if ($input->getOption('all')) {
-//			$circles = [];
-//			foreach ($circles as $circle) {
-//				//$this->syncCircle($circle->getId());
-//			}
-//		} else {
-//			if ($circleId === '') {
-//				throw new Exception('missing circle_id or use --all option');
-//			}
+		if ($input->getOption('broadcast')) {
 
-		$circleId = $input->getArgument('circle_id');
-		$instance = $input->getOption('instance');
-		if ($instance !== '') {
-//			$circle = $this->circleService->getCircle($circleId);
-			$this->circleService->syncRemoteCircle($circleId, $instance);
+
+			return 0;
 		}
 
+		$circleId = (string)$input->getArgument('circle_id');
+		$instance = $input->getOption('instance');
+		if ($instance === '') {
+			try {
+				$circle = $this->circleService->getCircle($circleId);
+			} catch (CircleNotFoundException $e) {
+				throw new CircleNotFoundException(
+					'unknown circle, use --instance to retrieve the data from a remote instance'
+				);
+			}
+			$instance = $circle->getInstance();
+		}
 
-//		$circles = $this->circleService->getCirclesToSync();
-//		foreach ($circles as $circle) {
-//			$this->memberService->updateCachedFromCircle($circle);
-//		}
-//
-//		try {
-//			$this->gsUpstreamService->synchronize($circles);
-//		} catch (GSStatusException $e) {
-//		}
+		if ($this->configService->isLocalInstance($instance)) {
+			throw new RemoteNotFoundException('instance is local');
+		}
+
+		$this->remoteService->syncRemoteCircle($circleId, $instance);
 
 		return 0;
 	}
-
 
 }
 

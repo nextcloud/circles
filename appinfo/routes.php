@@ -69,11 +69,12 @@ return [
 //		['name' => 'RemoteWrapper#broadcast', 'url' => '/v1/gs/broadcast', 'verb' => 'POST'],
 //		['name' => 'RemoteWrapper#status', 'url' => '/v1/gs/status', 'verb' => 'POST'],
 
-		['name' => 'Remote#test', 'url' => '/test', 'verb' => 'GET'],
-		['name' => 'Remote#event', 'url' => '/event', 'verb' => 'POST'],
-		['name' => 'Remote#incoming', 'url' => '/incoming', 'verb' => 'POST'],
+		['name' => 'Remote#test', 'url' => '/test/', 'verb' => 'GET'],
+		['name' => 'Remote#event', 'url' => '/event/', 'verb' => 'POST'],
+		['name' => 'Remote#incoming', 'url' => '/incoming/', 'verb' => 'POST'],
 		['name' => 'Remote#circles', 'url' => '/circles/', 'verb' => 'GET'],
 		['name' => 'Remote#circle', 'url' => '/circle/{circleId}/', 'verb' => 'GET'],
-		['name' => 'Remote#members', 'url' => '/members/', 'verb' => 'GET'],
+		['name' => 'Remote#members', 'url' => '/members/{circleId}/', 'verb' => 'GET'],
+		['name' => 'Remote#member', 'url' => '/member/{type}/{userId}/', 'verb' => 'GET'],
 	]
 ];

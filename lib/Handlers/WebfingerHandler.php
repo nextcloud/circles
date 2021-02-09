@@ -33,7 +33,7 @@ use daita\MySmallPhpTools\Traits\TArrayTools;
 use OC\URLGenerator;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Service\ConfigService;
-use OCA\Circles\Service\RemoteService;
+use OCA\Circles\Service\RemoteStreamService;
 use OCP\Http\WellKnown\IHandler;
 use OCP\Http\WellKnown\IRequestContext;
 use OCP\Http\WellKnown\IResponse;
@@ -55,8 +55,8 @@ class WebfingerHandler implements IHandler {
 	/** @var URLGenerator */
 	private $urlGenerator;
 
-	/** @var RemoteService */
-	private $remoteService;
+	/** @var RemoteStreamService */
+	private $remoteStreamService;
 
 	/** @var ConfigService */
 	private $configService;
@@ -66,14 +66,14 @@ class WebfingerHandler implements IHandler {
 	 * WebfingerHandler constructor.
 	 *
 	 * @param IURLGenerator $urlGenerator
-	 * @param RemoteService $remoteService
+	 * @param RemoteStreamService $remoteStreamService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IURLGenerator $urlGenerator, RemoteService $remoteService, ConfigService $configService
+		IURLGenerator $urlGenerator, RemoteStreamService $remoteStreamService, ConfigService $configService
 	) {
 		$this->urlGenerator = $urlGenerator;
-		$this->remoteService = $remoteService;
+		$this->remoteStreamService = $remoteStreamService;
 		$this->configService = $configService;
 	}
 
@@ -101,7 +101,7 @@ class WebfingerHandler implements IHandler {
 		}
 
 		try {
-			$this->remoteService->getAppSignatory();
+			$this->remoteStreamService->getAppSignatory();
 		} catch (SignatoryException $e) {
 			return $response;
 		}

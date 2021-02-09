@@ -74,13 +74,19 @@ class Member extends ManagedModel implements IFederatedUser, INC21Convert, INC21
 	const STATUS_BLOCKED = 'Blocked';
 	const STATUS_KICKED = 'Kicked';
 
-	static $DEF_LEVEL = [
+	public static $DEF_LEVEL = [
 		1 => 'Member',
 		4 => 'Moderator',
 		8 => 'Admin',
 		9 => 'Owner'
 	];
 
+	public static $DEF_TYPE = [
+		1  => 'local',
+		16 => 'circle',
+		3  => 'mail',
+		4  => 'contact',
+	];
 
 	/** @var string */
 	private $id = '';

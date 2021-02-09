@@ -71,8 +71,8 @@ class RemoteUpstreamService {
 	/** @var RemoteWrapperRequest */
 	private $remoteWrapperRequest;
 
-	/** @var RemoteService */
-	private $remoteService;
+	/** @var RemoteStreamService */
+	private $remoteStreamService;
 
 	/** @var FederatedEventService */
 	private $federatedEventService;
@@ -84,12 +84,12 @@ class RemoteUpstreamService {
 	public function __construct(
 		IL10N $l10n,
 		RemoteWrapperRequest $remoteWrapperRequest,
-		RemoteService $remoteService,
+		RemoteStreamService $remoteStreamService,
 		ConfigService $configService
 	) {
 		$this->l10n = $l10n;
 		$this->remoteWrapperRequest = $remoteWrapperRequest;
-		$this->remoteService = $remoteService;
+		$this->remoteStreamService = $remoteStreamService;
 		$this->configService = $configService;
 	}
 
@@ -150,7 +150,7 @@ class RemoteUpstreamService {
 
 //		$request->setDataSerialize($event);
 
-		$data = $this->remoteService->resultRequestRemoteInstance(
+		$data = $this->remoteStreamService->resultRequestRemoteInstance(
 			$instance,
 			RemoteInstance::INCOMING,
 			Request::TYPE_POST,
@@ -174,7 +174,7 @@ class RemoteUpstreamService {
 	 * @throws FederatedEventDSyncException
 	 */
 	public function confirmEvent(FederatedEvent $event): void {
-		$data = $this->remoteService->requestRemoteInstance(
+		$data = $this->remoteStreamService->requestRemoteInstance(
 			$event->getCircle()->getInstance(),
 			RemoteInstance::EVENT,
 			Request::TYPE_POST,
@@ -202,7 +202,7 @@ class RemoteUpstreamService {
 		throw new FederatedEventException($reading->g('translated'));
 	}
 
-	
+
 	//
 	//
 	//

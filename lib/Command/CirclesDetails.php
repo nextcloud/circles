@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,12 +31,27 @@
 
 namespace OCA\Circles\Command;
 
+use daita\MySmallPhpTools\Exceptions\InvalidItemException;
+use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
+use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use OC\Core\Command\Base;
-use OCA\Circles\Db\DeprecatedCirclesRequest;
-use OCA\Circles\Exceptions\CircleDoesNotExistException;
-use OCP\IL10N;
+use OC\User\NoUserException;
+use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\InvalidIdException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
+use OCA\Circles\Service\CircleService;
+use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Service\MemberService;
+use OCA\Circles\Service\RemoteService;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
@@ -46,31 +63,54 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CirclesDetails extends Base {
 
 
-	/** @var IL10N */
-	private $l10n;
+	/** @var FederatedUserService */
+	private $federatedUserService;
 
-	/** @var DeprecatedCirclesRequest */
-	private $circlesRequest;
+	/** @var RemoteService */
+	private $remoteService;
+
+	/** @var MemberService */
+	private $memberService;
+
+	/** @var CircleService */
+	private $circleService;
+
+	/** @var ConfigService */
+	private $configService;
 
 
 	/**
 	 * CirclesDetails constructor.
 	 *
-	 * @param IL10N $l10n
-	 * @param DeprecatedCirclesRequest $circlesRequest
+	 * @param FederatedUserService $federatedUserService
+	 * @param RemoteService $remoteService
+	 * @param CircleService $circlesService
+	 * @param MemberService $membersService
+	 * @param ConfigService $configService
 	 */
-	public function __construct(IL10N $l10n, DeprecatedCirclesRequest $circlesRequest) {
+	public function __construct(
+		FederatedUserService $federatedUserService, RemoteService $remoteService,
+		CircleService $circlesService, MemberService $membersService, ConfigService $configService
+	) {
 		parent::__construct();
-		$this->l10n = $l10n;
-		$this->circlesRequest = $circlesRequest;
+		$this->federatedUserService = $federatedUserService;
+		$this->remoteService = $remoteService;
+		$this->circleService = $circlesService;
+		$this->memberService = $membersService;
+		$this->configService = $configService;
 	}
 
 
+	/**
+	 *
+	 */
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:manage:details')
 			 ->setDescription('get details about a circle by its ID')
-			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle');
+			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
+			 ->addOption('instance', '', InputOption::VALUE_REQUIRED, 'Instance of the circle', '')
+			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '');
 	}
 
 
@@ -79,14 +119,51 @@ class CirclesDetails extends Base {
 	 * @param OutputInterface $output
 	 *
 	 * @return int
-	 * @throws CircleDoesNotExistException
+	 * @throws CircleNotFoundException
+	 * @throws RemoteNotFoundException
+	 * @throws InitiatorNotFoundException
+	 * @throws InvalidIdException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws UnknownRemoteException
+	 * @throws NoUserException
+	 * @throws InvalidItemException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws RemoteInstanceException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		$circleId = $input->getArgument('circle_id');
+//
+//		$this->federatedUserService->bypassCurrentUserCondition(true);
 
-		$circle = $this->circlesRequest->forceGetCircle($circleId);
+		$circleId = (string)$input->getArgument('circle_id');
+		$instance = $input->getOption('instance');
+
+
+		if ($instance !== '') {
+			$circle = $this->remoteService->getCircleFromInstance($circleId, $instance);
+		} else {
+			$this->federatedUserService->commandLineInitiator(
+				$input->getOption('initiator'), $circleId, true
+			);
+
+			try {
+				$circle = $this->circleService->getCircle($circleId);
+			} catch (CircleNotFoundException $e) {
+				if ($this->federatedUserService->hasCurrentUser()) {
+					throw new CircleNotFoundException();
+				}
+				throw new CircleNotFoundException(
+					'unknown circle, use --instance to retrieve the data from a remote instance'
+				);
+			}
+		}
 
 		echo json_encode($circle, JSON_PRETTY_PRINT) . "\n";
+
+//		$circle = $this->circlesRequest->forceGetCircle($circleId);
+//
+//		echo json_encode($circle, JSON_PRETTY_PRINT) . "\n";
 
 		return 0;
 	}

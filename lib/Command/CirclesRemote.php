@@ -49,7 +49,7 @@ use OCA\Circles\Exceptions\RemoteUidException;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\GlobalScaleService;
-use OCA\Circles\Service\RemoteService;
+use OCA\Circles\Service\RemoteStreamService;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -77,8 +77,8 @@ class CirclesRemote extends Base {
 	/** @var GlobalScaleService */
 	private $globalScaleService;
 
-	/** @var RemoteService */
-	private $remoteService;
+	/** @var RemoteStreamService */
+	private $remoteStreamService;
 
 	/** @var ConfigService */
 	private $configService;
@@ -96,18 +96,18 @@ class CirclesRemote extends Base {
 	 *
 	 * @param RemoteRequest $remoteRequest
 	 * @param GlobalScaleService $globalScaleService
-	 * @param RemoteService $remoteService
+	 * @param RemoteStreamService $remoteStreamService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		RemoteRequest $remoteRequest, GlobalScaleService $globalScaleService, RemoteService $remoteService,
+		RemoteRequest $remoteRequest, GlobalScaleService $globalScaleService, RemoteStreamService $remoteStreamService,
 		ConfigService $configService
 	) {
 		parent::__construct();
 
 		$this->remoteRequest = $remoteRequest;
 		$this->globalScaleService = $globalScaleService;
-		$this->remoteService = $remoteService;
+		$this->remoteStreamService = $remoteStreamService;
 		$this->configService = $configService;
 
 		$this->setup('app', 'circles');
@@ -201,7 +201,7 @@ class CirclesRemote extends Base {
 		);
 
 		try {
-			$remoteSignatory = $this->remoteService->retrieveSignatory($resource->g('id'), true);
+			$remoteSignatory = $this->remoteStreamService->retrieveSignatory($resource->g('id'), true);
 			$this->output->writeln(' * No SignatureException: <info>Identity authed</info>');
 		} catch (SignatureException $e) {
 			$this->output->writeln(
@@ -224,7 +224,7 @@ class CirclesRemote extends Base {
 		$this->output->writeln('- Testing signed payload on <info>' . $testUrl . '</info>');
 
 		try {
-			$localSignatory = $this->remoteService->getAppSignatory();
+			$localSignatory = $this->remoteStreamService->getAppSignatory();
 		} catch (SignatoryException $e) {
 			$this->output->writeln(
 				'<error>Federated Circles not enabled locally. Please run ./occ circles:remote:init</error>'
@@ -271,7 +271,7 @@ class CirclesRemote extends Base {
 			$remoteSignatory->setInstance($host);
 			try {
 				$stored = new RemoteInstance();
-				$this->remoteService->confirmValidRemote($remoteSignatory, $stored);
+				$this->remoteStreamService->confirmValidRemote($remoteSignatory, $stored);
 				$this->output->writeln(
 					'<info>The remote instance ' . $host
 					. ' is already known with this current identity</info>'
@@ -282,14 +282,14 @@ class CirclesRemote extends Base {
 						'- updating host from ' . $stored->getInstance() . ' to '
 						. $remoteSignatory->getInstance()
 					);
-					$this->remoteService->update($remoteSignatory, RemoteService::UPDATE_INSTANCE);
+					$this->remoteStreamService->update($remoteSignatory, RemoteStreamService::UPDATE_INSTANCE);
 				}
 				if ($remoteSignatory->getId() !== $stored->getId()) {
 					$this->output->writeln(
 						'- updating href/Id from ' . $stored->getId() . ' to '
 						. $remoteSignatory->getId()
 					);
-					$this->remoteService->update($remoteSignatory, RemoteService::UPDATE_HREF);
+					$this->remoteStreamService->update($remoteSignatory, RemoteStreamService::UPDATE_HREF);
 				}
 
 			} catch (RemoteUidException $e) {
@@ -350,7 +350,7 @@ class CirclesRemote extends Base {
 		);
 
 		if ($helper->ask($this->input, $this->output, $question)) {
-			$this->remoteService->update($remoteSignatory);
+			$this->remoteStreamService->update($remoteSignatory);
 			$this->output->writeln('remote instance updated');
 		}
 	}
@@ -372,8 +372,8 @@ class CirclesRemote extends Base {
 		$request->setTimeout(5);
 		$request->setData($payload);
 
-		$app = $this->remoteService->getAppSignatory();
-		$signedRequest = $this->remoteService->signOutgoingRequest($request, $app);
+		$app = $this->remoteStreamService->getAppSignatory();
+		$signedRequest = $this->remoteStreamService->signOutgoingRequest($request, $app);
 		$this->doRequest($signedRequest->getOutgoingRequest());
 
 		return $signedRequest;
@@ -416,7 +416,7 @@ class CirclesRemote extends Base {
 		}
 		$this->output->write('Adding <comment>' . $instance . '</comment>: ');
 		try {
-			$this->remoteService->addRemoteInstance($instance, RemoteInstance::TYPE_GLOBAL_SCALE, true);
+			$this->remoteStreamService->addRemoteInstance($instance, RemoteInstance::TYPE_GLOBAL_SCALE, true);
 			$this->output->writeln('<info>ok</info>');
 		} catch (Exception $e) {
 			$msg = ($e->getMessage() === '') ? '' : ' (' . $e->getMessage() . ')';
@@ -436,7 +436,7 @@ class CirclesRemote extends Base {
 
 		foreach ($instances as $instance) {
 			try {
-				$current = $this->remoteService->retrieveRemoteInstance($instance->getInstance());
+				$current = $this->remoteStreamService->retrieveRemoteInstance($instance->getInstance());
 				if ($current->getUid(true) === $instance->getUid(true)) {
 					$currentUid = '<info>' . $current->getUid(true) . '</info>';
 				} else {

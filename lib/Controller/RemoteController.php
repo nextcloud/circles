@@ -40,6 +40,7 @@ use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21SignedRequest;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Controller;
 use Exception;
 use OCA\Circles\Db\CircleRequest;
+use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventDSyncException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Model\Federated\FederatedEvent;
@@ -47,8 +48,9 @@ use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\RemoteDownstreamService;
-use OCA\Circles\Service\RemoteService;
+use OCA\Circles\Service\RemoteStreamService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
@@ -69,8 +71,8 @@ class RemoteController extends Controller {
 	/** @var CircleRequest */
 	private $circleRequest;
 
-	/** @var RemoteService */
-	private $remoteService;
+	/** @var RemoteStreamService */
+	private $remoteStreamService;
 
 	/** @var RemoteDownstreamService */
 	private $remoteDownstreamService;
@@ -80,6 +82,9 @@ class RemoteController extends Controller {
 
 	/** @var CircleService */
 	private $circleService;
+
+	/** @var MemberService */
+	private $memberService;
 
 	/** @var ConfigService */
 	private $configService;
@@ -91,23 +96,26 @@ class RemoteController extends Controller {
 	 * @param string $appName
 	 * @param IRequest $request
 	 * @param CircleRequest $circleRequest
-	 * @param RemoteService $remoteService
+	 * @param RemoteStreamService $remoteStreamService
 	 * @param RemoteDownstreamService $remoteDownstreamService
 	 * @param FederatedUserService $federatedUserService
 	 * @param CircleService $circleService
+	 * @param MemberService $memberService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		string $appName, IRequest $request, CircleRequest $circleRequest, RemoteService $remoteService,
+		string $appName, IRequest $request, CircleRequest $circleRequest,
+		RemoteStreamService $remoteStreamService,
 		RemoteDownstreamService $remoteDownstreamService, FederatedUserService $federatedUserService,
-		CircleService $circleService, ConfigService $configService
+		CircleService $circleService, MemberService $memberService, ConfigService $configService
 	) {
 		parent::__construct($appName, $request);
 		$this->circleRequest = $circleRequest;
-		$this->remoteService = $remoteService;
+		$this->remoteStreamService = $remoteStreamService;
 		$this->remoteDownstreamService = $remoteDownstreamService;
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
+		$this->memberService = $memberService;
 		$this->configService = $configService;
 
 		$this->setup('app', 'circles');
@@ -174,7 +182,7 @@ class RemoteController extends Controller {
 	 * @throws SignatureException
 	 */
 	public function test(): DataResponse {
-		$test = $this->remoteService->incomingSignedRequest($this->configService->getLocalInstance());
+		$test = $this->remoteStreamService->incomingSignedRequest($this->configService->getLocalInstance());
 
 		return $this->successObj($test);
 	}
@@ -213,15 +221,71 @@ class RemoteController extends Controller {
 	 */
 	public function circle(string $circleId): DataResponse {
 		try {
-			$signed = $this->remoteService->incomingSignedRequest($this->configService->getLocalInstance());
+			$signed =
+				$this->remoteStreamService->incomingSignedRequest($this->configService->getLocalInstance());
+			$remoteInstance = $this->confirmRemoteInstance($signed);
 
-			$remoteInstance = $this->remoteService->getCachedRemoteInstance($signed->getOrigin());
 			$this->federatedUserService->setRemoteInstance($remoteInstance);
 			$this->federatedUserService->bypassCurrentUserCondition(true);
 
 			$circle = $this->circleService->getCircle($circleId);
 
 			return $this->successObj($circle);
+		} catch (CircleNotFoundException $e) {
+			return $this->success([], false);
+		} catch (Exception $e) {
+			return $this->fail($e);
+		}
+	}
+
+
+	/**
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 *
+	 * @param string $circleId
+	 *
+	 * @return DataResponse
+	 */
+	public function members(string $circleId): DataResponse {
+		try {
+			$signed =
+				$this->remoteStreamService->incomingSignedRequest($this->configService->getLocalInstance());
+			$remoteInstance = $this->confirmRemoteInstance($signed);
+
+//			$this->federatedUserService->setRemoteInstance($remoteInstance);
+//			$this->federatedUserService->bypassCurrentUserCondition(true);
+
+			$members = $this->memberService->getMembers($circleId);
+
+			return $this->success($members, false);
+		} catch (Exception $e) {
+			return $this->fail($e);
+		}
+	}
+
+
+	/**
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 *
+	 * @param string $type
+	 * @param string $userId
+	 *
+	 * @return DataResponse
+	 */
+	public function member(string $type, string $userId): DataResponse {
+		try {
+			$signed =
+				$this->remoteStreamService->incomingSignedRequest($this->configService->getLocalInstance());
+			$remoteInstance = $this->confirmRemoteInstance($signed);
+
+//			$this->federatedUserService->setRemoteInstance($remoteInstance);
+//			$this->federatedUserService->bypassCurrentUserCondition(true);
+
+			$federatedUser = $this->federatedUserService->createLocalFederatedUser($userId);
+
+			return $this->successObj($federatedUser);
 		} catch (Exception $e) {
 			return $this->fail($e);
 		}
@@ -231,16 +295,27 @@ class RemoteController extends Controller {
 	/**
 	 * @param NC21SignedRequest $signedRequest
 	 *
+	 * @return RemoteInstance
 	 * @throws SignatoryException
 	 */
-	private function confirmRemoteInstance(NC21SignedRequest $signedRequest) {
+	private function confirmRemoteInstance(NC21SignedRequest $signedRequest): RemoteInstance {
+		/** @var RemoteInstance $signatory */
 		$signatory = $signedRequest->getSignatory();
-		if (!$signatory instanceof RemoteInstance
-			|| ((!$this->configService->isLocalInstance($signedRequest->getOrigin())
-				 && $signatory->getType() === RemoteInstance::TYPE_UNKNOWN))) {
-			$this->debug('Could not confirm identity', ['signedRequest' => $signedRequest]);
-			throw new SignatoryException('could not confirm identity');
+
+		if (!$signatory instanceof RemoteInstance) {
+			$this->debug('Signatory is not a known RemoteInstance', ['signedRequest' => $signedRequest]);
+			throw new SignatoryException('Could not confirm identity');
 		}
+
+		\OC::$server->getLogger()->log(3, '###' . get_class($signatory));
+		// TODO: confirm local istance is safe ?
+		if (!$this->configService->isLocalInstance($signedRequest->getOrigin())
+			&& $signatory->getType() === RemoteInstance::TYPE_UNKNOWN) {
+			$this->debug('Could not confirm identity', ['signedRequest' => $signedRequest]);
+			throw new SignatoryException('Could not confirm identity');
+		}
+
+		return $signatory;
 	}
 
 
@@ -253,7 +328,7 @@ class RemoteController extends Controller {
 	 * @throws InvalidItemException
 	 */
 	private function extractEventFromRequest(): FederatedEvent {
-		$signed = $this->remoteService->incomingSignedRequest($this->configService->getLocalInstance());
+		$signed = $this->remoteStreamService->incomingSignedRequest($this->configService->getLocalInstance());
 		$this->confirmRemoteInstance($signed);
 
 		$event = new FederatedEvent();
