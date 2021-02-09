@@ -333,15 +333,6 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 		$this->andWhere($orX);
 
 
-		// TODO: add a filter for allowing those circles in some request
-		// - CFG_SINGLE, CFG_HIDDEN and CFG_BACKEND means hidden from listing, filtering
-		$orHidden = $expr->orX();
-		$orHidden->add($expr->bitwiseAnd($aliasCircle . '.config', Circle::CFG_SINGLE));
-		$orHidden->add($expr->bitwiseAnd($aliasCircle . '.config', Circle::CFG_HIDDEN));
-		$orHidden->add($expr->bitwiseAnd($aliasCircle . '.config', Circle::CFG_BACKEND));
-		$this->andWhere($this->createFunction('NOT') . $orHidden);
-
-
 //		$orTypes = $this->generateLimit($qb, $circleUniqueId, $userId, $type, $name, $forceAll);
 //		if (sizeof($orTypes) === 0) {
 //			throw new ConfigNoCircleAvailableException(
@@ -358,6 +349,25 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 //		}
 //
 //		$qb->andWhere($orXTypes);
+	}
+
+
+	/**
+	 * CFG_SINGLE, CFG_HIDDEN and CFG_BACKEND means hidden from listing.
+	 *
+	 * TODO: add a filter for allowing those circles in some request
+	 *
+	 * @param string $alias
+	 */
+	public function filterSystemCircles(string $alias = ''): void {
+		$alias = ($alias === '') ? $this->getDefaultSelectAlias() : $alias;
+		$expr = $this->expr();
+
+		$orHidden = $expr->orX();
+		$orHidden->add($expr->bitwiseAnd($alias . '.config', Circle::CFG_SINGLE));
+		$orHidden->add($expr->bitwiseAnd($alias . '.config', Circle::CFG_HIDDEN));
+		$orHidden->add($expr->bitwiseAnd($alias . '.config', Circle::CFG_BACKEND));
+		$this->andWhere($this->createFunction('NOT') . $orHidden);
 	}
 
 

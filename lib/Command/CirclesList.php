@@ -31,16 +31,16 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
-use daita\MySmallPhpTools\Exceptions\SignatureException;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use OC\Core\Command\Base;
 use OC\User\NoUserException;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
@@ -50,9 +50,8 @@ use OCA\Circles\Model\ModelManager;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
-use OCA\Circles\Service\RemoteStreamService;
+use OCA\Circles\Service\RemoteService;
 use Symfony\Component\Console\Helper\Table;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -76,14 +75,18 @@ class CirclesList extends Base {
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
+	/** @var RemoteService */
+	private $remoteService;
+
 	/** @var CircleService */
 	private $circleService;
 
-	/** @var RemoteStreamService */
-	private $remoteStreamService;
-
 	/** @var ConfigService */
 	private $configService;
+
+
+	/** @var InputInterface */
+	private $input;
 
 
 	/**
@@ -91,19 +94,19 @@ class CirclesList extends Base {
 	 *
 	 * @param ModelManager $modelManager
 	 * @param FederatedUserService $federatedUserService
+	 * @param RemoteService $remoteService
 	 * @param CircleService $circleService
-	 * @param RemoteStreamService $remoteStreamService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		ModelManager $modelManager, FederatedUserService $federatedUserService, CircleService $circleService,
-		RemoteStreamService $remoteStreamService, ConfigService $configService
+		ModelManager $modelManager, FederatedUserService $federatedUserService, RemoteService $remoteService,
+		CircleService $circleService, ConfigService $configService
 	) {
 		parent::__construct();
 		$this->modelManager = $modelManager;
 		$this->federatedUserService = $federatedUserService;
+		$this->remoteService = $remoteService;
 		$this->circleService = $circleService;
-		$this->remoteStreamService = $remoteStreamService;
 		$this->configService = $configService;
 	}
 
@@ -112,11 +115,11 @@ class CirclesList extends Base {
 		parent::configure();
 		$this->setName('circles:manage:list')
 			 ->setDescription('listing current circles')
-			 ->addArgument('remote', InputArgument::OPTIONAL, 'remote Nextcloud address', '')
+			 ->addOption('instance', '', InputOption::VALUE_REQUIRED, 'Instance of the circle', '')
+			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
 			 ->addOption('member', '', InputOption::VALUE_REQUIRED, 'search for member', '')
 			 ->addOption('def', '', InputOption::VALUE_NONE, 'display complete circle configuration')
 			 ->addOption('all', '', InputOption::VALUE_NONE, 'display also hidden Circles')
-			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
 			 ->addOption('json', '', InputOption::VALUE_NONE, 'returns result as JSON');
 	}
 
@@ -127,46 +130,65 @@ class CirclesList extends Base {
 	 *
 	 * @return int
 	 * @throws CircleNotFoundException
-	 * @throws InvalidItemException
+	 * @throws InitiatorNotFoundException
+	 * @throws MemberNotFoundException
 	 * @throws NoUserException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
+	 * @throws UnknownRemoteException
 	 * @throws RequestNetworkException
 	 * @throws SignatoryException
-	 * @throws SignatureException
-	 * @throws UnknownRemoteException
-	 * @throws InitiatorNotFoundException
-	 * @throws OwnerNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
+		$this->input = $input;
 		$member = $input->getOption('member');
-		$json = $input->getOption('json');
-		$remote = $input->getArgument('remote');
+		$instance = $input->getOption('instance');
+		$initiator = $input->getOption('initiator');
 
-		$output = new ConsoleOutput();
-		$output = $output->section();
-
-		$this->federatedUserService->commandLineInitiator($input->getOption('initiator'), '', true);
+		$this->federatedUserService->commandLineInitiator($initiator, '', true);
 
 		$filter = null;
 		if ($member !== '') {
 			$filter = $this->federatedUserService->createFilterMember($member);
 		}
 
-		$circles = $this->getCircles($filter, $remote, $input->getOption('all'));
+		if ($instance !== '') {
+			if ($member !== '') {
+				// TODO make --member working with --instance
+				throw new MemberNotFoundException('--member cannot be used with --instance');
+			}
 
-		if ($json) {
+			$circles = $this->remoteService->getCirclesFromInstance($instance);
+		} else {
+			$circles = $this->getCircles($filter, $input->getOption('all'));
+		}
+
+		if ($input->getOption('json')) {
 			echo json_encode($circles, JSON_PRETTY_PRINT) . "\n";
 
 			return 0;
 		}
 
+		$this->displayCircles($circles);
+
+		return 0;
+	}
+
+
+	/**
+	 * @param Circle[] $circles
+	 */
+	private function displayCircles(array $circles): void {
+		$output = new ConsoleOutput();
+		$output = $output->section();
 		$table = new Table($output);
 		$table->setHeaders(['ID', 'Name', 'Type', 'Owner', 'Instance', 'Limit', 'Description']);
 		$table->render();
 
 		$local = $this->configService->getLocalInstance();
-		$display = ($input->getOption('def') ? ModelManager::TYPES_LONG : ModelManager::TYPES_SHORT);
+		$display = ($this->input->getOption('def') ? ModelManager::TYPES_LONG : ModelManager::TYPES_SHORT);
 		foreach ($circles as $circle) {
 			$owner = $circle->getOwner();
 			$table->appendRow(
@@ -181,32 +203,17 @@ class CirclesList extends Base {
 				]
 			);
 		}
-
-		return 0;
 	}
-
 
 	/**
 	 * @param Member|null $filter
-	 * @param string $remote
 	 * @param bool $all
 	 *
 	 * @return Circle[]
 	 * @throws InitiatorNotFoundException
-	 * @throws InvalidItemException
-	 * @throws RemoteNotFoundException
-	 * @throws RemoteResourceNotFoundException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
-	 * @throws SignatureException
-	 * @throws UnknownRemoteException
 	 */
-	private function getCircles(?Member $filter, string $remote, bool $all = false): array {
-		if ($remote !== '') {
-			$circles = $this->remoteStreamService->getCircles($remote);
-		} else {
-			$circles = $this->circleService->getCircles($filter);
-		}
+	private function getCircles(?Member $filter, bool $all = false): array {
+		$circles = $this->circleService->getCircles($filter);
 
 		if ($all) {
 			return $circles;

@@ -195,19 +195,20 @@ class RemoteController extends Controller {
 	 * @return DataResponse
 	 */
 	public function circles(): DataResponse {
-//		$circles = $this->circleRequest->getFederated();
-//
-//		try {
-//			/** @var Circle $circle */
-//			$circle = $this->extractItemFromRequest(Circle::class, $signed);
-////			$event->setIncomingOrigin($signed->getOrigin());
-//
-//			//$result = $this->remoteDownstreamService->incomingEvent($event);
-//
-//			return $this->successObj($circle);
-//		} catch (Exception $e) {
-//			return $this->fail($e);
-//		}
+		try {
+			$signed =
+				$this->remoteStreamService->incomingSignedRequest($this->configService->getLocalInstance());
+			$remoteInstance = $this->confirmRemoteInstance($signed);
+
+			$this->federatedUserService->setRemoteInstance($remoteInstance);
+			$this->federatedUserService->bypassCurrentUserCondition(true);
+
+			$circles = $this->circleService->getCircles();
+
+			return $this->success($circles, false);
+		} catch (Exception $e) {
+			return $this->fail($e);
+		}
 	}
 
 
@@ -307,7 +308,7 @@ class RemoteController extends Controller {
 			throw new SignatoryException('Could not confirm identity');
 		}
 
-		\OC::$server->getLogger()->log(3, '###' . get_class($signatory));
+		\OC::$server->getLogger()->log(3, '###' . json_encode($signatory));
 		// TODO: confirm local istance is safe ?
 		if (!$this->configService->isLocalInstance($signedRequest->getOrigin())
 			&& $signatory->getType() === RemoteInstance::TYPE_UNKNOWN) {

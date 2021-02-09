@@ -360,15 +360,23 @@ class RemoteInstance extends NC21Signatory implements INC21QueryRow, JsonSeriali
 	public function import(array $data): NC21Signatory {
 		parent::import($data);
 
-		$this->setTest($this->get('test', $data));
-		$this->setEvent($this->get('event', $data));
-		$this->setIncoming($this->get('incoming', $data));
-		$this->setCircles($this->get('circles', $data));
-		$this->setCircle($this->get('circle', $data));
-		$this->setMembers($this->get('members', $data));
-		$this->setMember($this->get('member', $data));
-		$this->setAuthSigned($this->get('auth-signed', $data));
-		$this->setUid($this->get('uid', $data));
+		$this->setTest($this->get('test', $data))
+			 ->setEvent($this->get('event', $data))
+			 ->setIncoming($this->get('incoming', $data))
+			 ->setCircles($this->get('circles', $data))
+			 ->setCircle($this->get('circle', $data))
+			 ->setMembers($this->get('members', $data))
+			 ->setMember($this->get('member', $data))
+			 ->setUid($this->get('uid', $data));
+
+		$algo = '';
+		$authSigned = trim($this->get('auth-signed', $data), ':');
+		if (strpos($authSigned, ':') > 0) {
+			list($algo, $authSigned) = explode(':', $authSigned);
+		}
+
+		$this->setAuthSigned($authSigned)
+			 ->setAlgorithm($algo);
 
 		return $this;
 	}

@@ -88,16 +88,33 @@ class RemoteService extends NC21Signature {
 
 
 	/**
-	 * TODO: might move this out from this class
-	 *
 	 * @param string $instance
 	 *
 	 * @return Circle[]
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws UnknownRemoteException
 	 */
 	public function getCirclesFromInstance(string $instance): array {
-//		$circles = $this->resultRequestRemoteInstance($instance, RemoteInstance::CIRCLES);
-		return [];
-//		return $this->convertArray($circles, Circle::class);
+		$result = $this->remoteStreamService->resultRequestRemoteInstance(
+			$instance,
+			RemoteInstance::CIRCLES
+		);
+
+		$circles = [];
+		foreach ($result as $item) {
+			try {
+				$circle = new Circle();
+				$circle->import($item);
+				$circles[] = $circle;
+			} catch (InvalidItemException $e) {
+			}
+		}
+
+		return $circles;
 	}
 
 
@@ -157,6 +174,7 @@ class RemoteService extends NC21Signature {
 //		}
 	}
 
+
 	/**
 	 * @param Circle $circle
 	 */
@@ -166,8 +184,6 @@ class RemoteService extends NC21Signature {
 
 
 	/**
-	 * TODO: move to RemoteStreamService ?
-	 *
 	 * @param string $circleId
 	 * @param string $instance
 	 *

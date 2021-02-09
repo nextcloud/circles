@@ -38,7 +38,6 @@ use OC\Core\Command\Base;
 use OC\User\NoUserException;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
-use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
@@ -120,33 +119,32 @@ class CirclesDetails extends Base {
 	 *
 	 * @return int
 	 * @throws CircleNotFoundException
-	 * @throws RemoteNotFoundException
 	 * @throws InitiatorNotFoundException
-	 * @throws InvalidIdException
-	 * @throws OwnerNotFoundException
-	 * @throws RemoteResourceNotFoundException
-	 * @throws UnknownRemoteException
-	 * @throws NoUserException
 	 * @throws InvalidItemException
+	 * @throws NoUserException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
 	 * @throws RequestNetworkException
 	 * @throws SignatoryException
-	 * @throws RemoteInstanceException
+	 * @throws UnknownRemoteException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-//
-//		$this->federatedUserService->bypassCurrentUserCondition(true);
-
 		$circleId = (string)$input->getArgument('circle_id');
 		$instance = $input->getOption('instance');
-
+		$initiator = $input->getOption('initiator');
 
 		if ($instance !== '') {
+			if ($initiator !== '') {
+				// TODO make --initiator working with --instance
+				throw new InitiatorNotFoundException('--initiator cannot be used with --instance');
+			}
+
 			$circle = $this->remoteService->getCircleFromInstance($circleId, $instance);
 		} else {
-			$this->federatedUserService->commandLineInitiator(
-				$input->getOption('initiator'), $circleId, true
-			);
 
+			$this->federatedUserService->commandLineInitiator($initiator, $circleId, true);
 			try {
 				$circle = $this->circleService->getCircle($circleId);
 			} catch (CircleNotFoundException $e) {
@@ -160,10 +158,6 @@ class CirclesDetails extends Base {
 		}
 
 		echo json_encode($circle, JSON_PRETTY_PRINT) . "\n";
-
-//		$circle = $this->circlesRequest->forceGetCircle($circleId);
-//
-//		echo json_encode($circle, JSON_PRETTY_PRINT) . "\n";
 
 		return 0;
 	}
