@@ -33,7 +33,7 @@ namespace OCA\Circles\Model;
 
 use daita\MySmallPhpTools\Db\Nextcloud\nc21\INC21QueryRow;
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
-use daita\MySmallPhpTools\Model\Nextcloud\nc21\INC21Convert;
+use daita\MySmallPhpTools\IDeserializable;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\IFederatedUser;
@@ -44,7 +44,7 @@ use OCA\Circles\IFederatedUser;
  *
  * @package OCA\Circles\Model
  */
-class FederatedUser extends ManagedModel implements IFederatedUser, INC21Convert, INC21QueryRow, JsonSerializable {
+class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializable, INC21QueryRow, JsonSerializable {
 
 
 	use TArrayTools;
@@ -190,7 +190,7 @@ class FederatedUser extends ManagedModel implements IFederatedUser, INC21Convert
 	 * @return $this
 	 * @throws InvalidItemException
 	 */
-	public function import(array $data): INC21Convert {
+	public function import(array $data): IDeserializable {
 		if ($this->get('user_id', $data) === '') {
 			throw new InvalidItemException();
 		}
@@ -210,11 +210,11 @@ class FederatedUser extends ManagedModel implements IFederatedUser, INC21Convert
 	 */
 	public function jsonSerialize(): array {
 		return [
-			'id'          => $this->getSingleId(),
-			'user_id'     => $this->getUserId(),
-			'user_type'   => $this->getUserType(),
-			'instance'    => $this->getInstance(),
-//			'memberships' => $this->getMemberships()
+			'id'        => $this->getSingleId(),
+			'user_id'   => $this->getUserId(),
+			'user_type' => $this->getUserType(),
+			'instance'  => $this->getInstance(),
+			//			'memberships' => $this->getMemberships()
 		];
 	}
 

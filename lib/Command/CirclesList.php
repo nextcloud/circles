@@ -38,7 +38,6 @@ use OC\Core\Command\Base;
 use OC\User\NoUserException;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
-use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
@@ -131,15 +130,14 @@ class CirclesList extends Base {
 	 * @return int
 	 * @throws CircleNotFoundException
 	 * @throws InitiatorNotFoundException
-	 * @throws MemberNotFoundException
 	 * @throws NoUserException
 	 * @throws OwnerNotFoundException
 	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
-	 * @throws UnknownRemoteException
 	 * @throws RequestNetworkException
 	 * @throws SignatoryException
+	 * @throws UnknownRemoteException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$this->input = $input;
@@ -154,13 +152,13 @@ class CirclesList extends Base {
 			$filter = $this->federatedUserService->createFilterMember($member);
 		}
 
-		if ($instance !== '') {
-			if ($member !== '') {
-				// TODO make --member working with --instance
-				throw new MemberNotFoundException('--member cannot be used with --instance');
+		if ($instance !== '' && !$this->configService->isLocalInstance($instance)) {
+			$data = ['filter' => $filter];
+			if ($initiator) {
+				$data['initiator'] = $this->federatedUserService->createFederatedUserTypeUser($initiator);
 			}
 
-			$circles = $this->remoteService->getCirclesFromInstance($instance);
+			$circles = $this->remoteService->getCirclesFromInstance($instance, $data);
 		} else {
 			$circles = $this->getCircles($filter, $input->getOption('all'));
 		}

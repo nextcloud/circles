@@ -33,8 +33,8 @@ namespace OCA\Circles\Model;
 
 use daita\MySmallPhpTools\Db\Nextcloud\nc21\INC21QueryRow;
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
-use daita\MySmallPhpTools\Model\Nextcloud\nc21\INC21Convert;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Convert;
+use daita\MySmallPhpTools\IDeserializable;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Deserialize;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use DateTime;
 use JsonSerializable;
@@ -70,11 +70,11 @@ use OCA\Circles\Exceptions\OwnerNotFoundException;
  *
  * @package OCA\Circles\Model
  */
-class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSerializable {
+class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, JsonSerializable {
 
 
 	use TArrayTools;
-	use TNC21Convert;
+	use TNC21Deserialize;
 
 
 	// specific value
@@ -510,7 +510,7 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 	 * @return $this
 	 * @throws InvalidItemException
 	 */
-	public function import(array $data): INC21Convert {
+	public function import(array $data): IDeserializable {
 		if ($this->get('id', $data) === '') {
 			throw new InvalidItemException();
 		}
@@ -528,14 +528,14 @@ class Circle extends ManagedModel implements INC21Convert, INC21QueryRow, JsonSe
 
 		try {
 			/** @var Member $owner */
-			$owner = $this->convert($this->getArray('owner', $data), Member::class);
+			$owner = $this->deserialize($this->getArray('owner', $data), Member::class);
 			$this->setOwner($owner);
 		} catch (InvalidItemException $e) {
 		}
 
 		try {
-			/** @var Member $owner */
-			$initiator = $this->convert($this->getArray('initiator', $data), Member::class);
+			/** @var Member $initiator */
+			$initiator = $this->deserialize($this->getArray('initiator', $data), Member::class);
 			$this->setInitiator($initiator);
 		} catch (InvalidItemException $e) {
 		}

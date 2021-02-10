@@ -267,7 +267,7 @@ class FederatedUserService {
 	 * @throws NoUserException
 	 * @throws OwnerNotFoundException
 	 */
-	public function commandLineInitiator(string $userId, string $circleId = '', bool $bypass = false) {
+	public function commandLineInitiator(string $userId, string $circleId = '', bool $bypass = false): void {
 		if ($userId !== '') {
 			$this->setCurrentUser($this->createFederatedUserTypeUser($userId));
 
@@ -323,6 +323,7 @@ class FederatedUserService {
 	 * @param FederatedUser $federatedUser
 	 *
 	 * @throws CircleNotFoundException
+	 * @throws InvalidIdException
 	 */
 	private function fillSingleCircleId(FederatedUser $federatedUser): void {
 		if ($federatedUser->getSingleId() !== '') {

@@ -33,10 +33,12 @@ namespace OCA\Circles\Controller;
 
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Exceptions\InvalidOriginException;
+use daita\MySmallPhpTools\Exceptions\ItemNotFoundException;
 use daita\MySmallPhpTools\Exceptions\MalformedArrayException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Exceptions\SignatureException;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21SignedRequest;
+use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Controller;
 use Exception;
 use OCA\Circles\Db\CircleRequest;
@@ -45,6 +47,7 @@ use OCA\Circles\Exceptions\FederatedEventDSyncException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
+use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
@@ -200,8 +203,20 @@ class RemoteController extends Controller {
 				$this->remoteStreamService->incomingSignedRequest($this->configService->getLocalInstance());
 			$remoteInstance = $this->confirmRemoteInstance($signed);
 
+			// TODO Check the origin (and type of the remoteinstance) of the request to allow or not the initiator or the request itself
+			$data = new SimpleDataStore(json_decode($signed->getBody(), true));
+			try {
+				/** @var FederatedUser $initiator */
+				$initiator = $data->gObj('initiator', FederatedUser::class);
+				if (is_null($initiator)) {
+					throw new InvalidItemException();
+				}
+				$this->federatedUserService->setCurrentUser($initiator);
+			} catch (InvalidItemException | ItemNotFoundException $e) {
+				$this->federatedUserService->bypassCurrentUserCondition(true);
+			}
+
 			$this->federatedUserService->setRemoteInstance($remoteInstance);
-			$this->federatedUserService->bypassCurrentUserCondition(true);
 
 			$circles = $this->circleService->getCircles();
 
@@ -308,8 +323,6 @@ class RemoteController extends Controller {
 			throw new SignatoryException('Could not confirm identity');
 		}
 
-		\OC::$server->getLogger()->log(3, '###' . json_encode($signatory));
-		// TODO: confirm local istance is safe ?
 		if (!$this->configService->isLocalInstance($signedRequest->getOrigin())
 			&& $signatory->getType() === RemoteInstance::TYPE_UNKNOWN) {
 			$this->debug('Could not confirm identity', ['signedRequest' => $signedRequest]);

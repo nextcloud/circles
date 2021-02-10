@@ -136,12 +136,8 @@ class CirclesDetails extends Base {
 		$initiator = $input->getOption('initiator');
 
 		if ($instance !== '') {
-			if ($initiator !== '') {
-				// TODO make --initiator working with --instance
-				throw new InitiatorNotFoundException('--initiator cannot be used with --instance');
-			}
-
-			$circle = $this->remoteService->getCircleFromInstance($circleId, $instance);
+			$data = ['initiator' => $initiator];
+			$circle = $this->remoteService->getCircleFromInstance($circleId, $instance, $data);
 		} else {
 
 			$this->federatedUserService->commandLineInitiator($initiator, $circleId, true);

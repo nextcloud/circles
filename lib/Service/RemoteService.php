@@ -36,6 +36,7 @@ use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Model\Request;
+use daita\MySmallPhpTools\Model\SimpleDataStore;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
@@ -89,6 +90,7 @@ class RemoteService extends NC21Signature {
 
 	/**
 	 * @param string $instance
+	 * @param array $data
 	 *
 	 * @return Circle[]
 	 * @throws RemoteInstanceException
@@ -98,10 +100,12 @@ class RemoteService extends NC21Signature {
 	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
 	 */
-	public function getCirclesFromInstance(string $instance): array {
+	public function getCirclesFromInstance(string $instance, array $data = []): array {
 		$result = $this->remoteStreamService->resultRequestRemoteInstance(
 			$instance,
-			RemoteInstance::CIRCLES
+			RemoteInstance::CIRCLES,
+			Request::TYPE_GET,
+			new SimpleDataStore($data)
 		);
 
 		$circles = [];
@@ -121,23 +125,24 @@ class RemoteService extends NC21Signature {
 	/**
 	 * @param string $circleId
 	 * @param string $instance
+	 * @param array $data
 	 *
 	 * @return Circle
+	 * @throws CircleNotFoundException
+	 * @throws InvalidItemException
+	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
 	 * @throws RequestNetworkException
 	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
-	 * @throws InvalidItemException
-	 * @throws RemoteInstanceException
-	 * @throws CircleNotFoundException
 	 */
-	public function getCircleFromInstance(string $circleId, string $instance): Circle {
+	public function getCircleFromInstance(string $circleId, string $instance, array $data = []): Circle {
 		$result = $this->remoteStreamService->resultRequestRemoteInstance(
 			$instance,
 			RemoteInstance::CIRCLE,
 			Request::TYPE_GET,
-			null,
+			new SimpleDataStore($data),
 			['circleId' => $circleId]
 		);
 

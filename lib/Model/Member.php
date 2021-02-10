@@ -33,8 +33,8 @@ namespace OCA\Circles\Model;
 
 use daita\MySmallPhpTools\Db\Nextcloud\nc21\INC21QueryRow;
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
-use daita\MySmallPhpTools\Model\Nextcloud\nc21\INC21Convert;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Convert;
+use daita\MySmallPhpTools\IDeserializable;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Deserialize;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use DateTime;
 use JsonSerializable;
@@ -48,11 +48,11 @@ use OCA\Circles\IFederatedUser;
  *
  * @package OCA\Circles\Model
  */
-class Member extends ManagedModel implements IFederatedUser, INC21Convert, INC21QueryRow, JsonSerializable {
+class Member extends ManagedModel implements IFederatedUser, IDeserializable, INC21QueryRow, JsonSerializable {
 
 
 	use TArrayTools;
-	use TNC21Convert;
+	use TNC21Deserialize;
 
 
 	const LEVEL_NONE = 0;
@@ -478,7 +478,7 @@ class Member extends ManagedModel implements IFederatedUser, INC21Convert, INC21
 	 * @return $this
 	 * @throws InvalidItemException
 	 */
-	public function import(array $data): INC21Convert {
+	public function import(array $data): IDeserializable {
 		if ($this->get('user_id', $data) === '') {
 			throw new InvalidItemException();
 		}
@@ -500,7 +500,7 @@ class Member extends ManagedModel implements IFederatedUser, INC21Convert, INC21
 
 		try {
 			/** @var Circle $circle */
-			$circle = $this->convert($this->getArray('circle', $data), Circle::class);
+			$circle = $this->deserialize($this->getArray('circle', $data), Circle::class);
 			$this->setCircle($circle);
 		} catch (InvalidItemException $e) {
 		}
@@ -550,7 +550,7 @@ class Member extends ManagedModel implements IFederatedUser, INC21Convert, INC21
 	public function importFromDatabase(array $data, string $prefix = ''): INC21QueryRow {
 		if (!array_key_exists($prefix . 'member_id', $data)) {
 			throw new MemberNotFoundException();
-		};
+		}
 
 		$this->setId($this->get($prefix . 'member_id', $data));
 		$this->setCircleId($this->get($prefix . 'circle_id', $data));

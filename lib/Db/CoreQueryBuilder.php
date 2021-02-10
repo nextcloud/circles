@@ -133,21 +133,17 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 	 * @param string $instance
 	 * @param string $aliasCircle
 	 * @param string $aliasOwner
-	 * @param bool $allowExternal
+	 * @param bool $sensitive
 	 */
 	public function limitToRemoteInstance(
 		string $instance,
-		bool $allowExternal = false,
+		bool $sensitive = true,
 		string $aliasCircle = 'c',
 		string $aliasOwner = 'o'
 	): void {
 		$this->leftJoinRemoteInstance($instance, 'ri');
-		$aliasMembers = '';
-		if (!$allowExternal) {
-			$aliasMembers = 'mi';
-			$this->leftJoinMemberFromInstance($instance, $aliasMembers);
-		}
-		$this->limitRemoteVisibility('ri', $aliasCircle, $aliasOwner, $aliasMembers);
+		$this->leftJoinMemberFromInstance($instance, 'mi');
+		$this->limitRemoteVisibility($sensitive, 'ri', $aliasCircle, $aliasOwner, 'mi');
 	}
 
 
@@ -375,15 +371,18 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 	 * - global_scale: visibility on all Circles
 	 * - trusted: visibility on all FEDERATED Circle if owner is local
 	 * - external: visibility on all FEDERATED Circle if owner is local and with at least one member from
-	 * this instance, or if forced
-	 *             (searching for a specific circle ?)
+	 * this instance
+	 * - passive: no visibility on any Circle, user should be able to share to the circle without having
+	 * access to Circles' details not members
 	 *
+	 * @param bool $sensitive
 	 * @param string $alias
 	 * @param string $aliasCircle
 	 * @param string $aliasOwner
 	 * @param string $aliasMembers
 	 */
 	protected function limitRemoteVisibility(
+		bool $sensitive = true,
 		string $alias = 'ri',
 		string $aliasCircle = 'c',
 		string $aliasOwner = 'o',
@@ -396,21 +395,25 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 			$expr->eq($alias . '.type', $this->createNamedParameter(RemoteInstance::TYPE_GLOBAL_SCALE))
 		);
 
-		$orExtOrTrusted = $expr->orX();
-
-		$andExternal = $expr->andX();
-		$andExternal->add(
+		$orExtOrPassive = $expr->orX();
+		$orExtOrPassive->add(
 			$expr->eq($alias . '.type', $this->createNamedParameter(RemoteInstance::TYPE_EXTERNAL))
 		);
-		if ($aliasMembers !== '') {
-			$andExternal->add($expr->isNotNull($aliasMembers . '.instance'));
+		if (!$sensitive) {
+			$orExtOrPassive->add(
+				$expr->eq($alias . '.type', $this->createNamedParameter(RemoteInstance::TYPE_PASSIVE))
+			);
 		}
 
+		$andExternal = $expr->andX();
+		$andExternal->add($orExtOrPassive);
+		$andExternal->add($expr->isNotNull($aliasMembers . '.instance'));
+
+		$orExtOrTrusted = $expr->orX();
 		$orExtOrTrusted->add($andExternal);
 		$orExtOrTrusted->add(
 			$expr->eq($alias . '.type', $this->createNamedParameter(RemoteInstance::TYPE_TRUSTED))
 		);
-
 
 		$andTrusted = $expr->andX();
 		$andTrusted->add($orExtOrTrusted);

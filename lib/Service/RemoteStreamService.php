@@ -32,7 +32,6 @@ namespace OCA\Circles\Service;
 
 
 use daita\MySmallPhpTools\ActivityPub\Nextcloud\nc21\NC21Signature;
-use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Exceptions\SignatureException;
@@ -41,7 +40,7 @@ use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Signatory;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21SignedRequest;
 use daita\MySmallPhpTools\Model\Request;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Convert;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Deserialize;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21LocalSignatory;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21WellKnown;
 use daita\MySmallPhpTools\Traits\TStringTools;
@@ -54,7 +53,6 @@ use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RemoteUidException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
-use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCP\AppFramework\Http;
 use OCP\IURLGenerator;
@@ -68,7 +66,7 @@ use OCP\IURLGenerator;
 class RemoteStreamService extends NC21Signature {
 
 
-	use TNC21Convert;
+	use TNC21Deserialize;
 	use TNC21LocalSignatory;
 	use TStringTools;
 	use TNC21WellKnown;
@@ -171,26 +169,6 @@ class RemoteStreamService extends NC21Signature {
 			$this->removeSimpleSignatory($app);
 		} catch (SignatoryException $e) {
 		}
-	}
-
-
-	/**
-	 * TODO: might move this out from this class
-	 *
-	 * @param string $instance
-	 *
-	 * @return Circle[]
-	 * @throws RemoteNotFoundException
-	 * @throws RemoteResourceNotFoundException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
-	 * @throws InvalidItemException
-	 * @throws UnknownRemoteException
-	 */
-	public function getCircles(string $instance): array {
-		$circles = $this->resultRequestRemoteInstance($instance, RemoteInstance::CIRCLES);
-
-		return $this->convertArray($circles, Circle::class);
 	}
 
 

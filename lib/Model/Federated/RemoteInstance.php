@@ -50,8 +50,9 @@ class RemoteInstance extends NC21Signatory implements INC21QueryRow, JsonSeriali
 	use TArrayTools;
 
 	const TYPE_UNKNOWN = 'Unknown';    // not trusted
-	const TYPE_EXTERNAL = 'External';  // info about Federated Circles are not broadcasted by default.
-	const TYPE_TRUSTED = 'Trusted';    // evething about Federated Circles are broadcasted.
+	const TYPE_PASSIVE = 'Passive';    // Minimum information about Federated Circles are broadcasted if a member belongs to the circle.
+	const TYPE_EXTERNAL = 'External';  // info about Federated Circles and their members are broadcasted  if a member belongs to the circle.
+	const TYPE_TRUSTED = 'Trusted';    // everything about Federated Circles are broadcasted.
 	const TYPE_GLOBAL_SCALE = 'GlobalScale';  // every Circle is broadcasted,
 
 	const TEST = 'test';
