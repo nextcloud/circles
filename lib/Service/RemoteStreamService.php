@@ -247,6 +247,7 @@ class RemoteStreamService extends NC21Signature {
 		}
 
 		if (!is_null($object)) {
+			// TODO: on local, if object is empty, request takes 10s. check on other configuration
 			$request->setDataSerialize($object);
 		}
 

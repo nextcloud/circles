@@ -37,7 +37,6 @@ use OC;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\RemoteInstance;
-use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
 
@@ -267,7 +266,9 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 	 * @param string $alias
 	 * @param string $aliasCircle
 	 */
-	public function leftJoinMemberFromInstance(string $instance, string $alias = 'mi', string $aliasCircle = 'c') {
+	public function leftJoinMemberFromInstance(
+		string $instance, string $alias = 'mi', string $aliasCircle = 'c'
+	) {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
@@ -404,6 +405,25 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 			$orExtOrPassive->add(
 				$expr->eq($alias . '.type', $this->createNamedParameter(RemoteInstance::TYPE_PASSIVE))
 			);
+		} else {
+			if ($this->getDefaultSelectAlias() === 'm') {
+				$andPassive = $expr->andX();
+				$andPassive->add(
+					$expr->eq($alias . '.type', $this->createNamedParameter(RemoteInstance::TYPE_PASSIVE))
+				);
+				$orMemberOrLevel = $expr->orX();
+				$orMemberOrLevel->add(
+					$expr->eq($this->getDefaultSelectAlias() . '.instance', $alias . '.instance')
+				);
+				$orMemberOrLevel->add(
+					$expr->eq(
+						$this->getDefaultSelectAlias() . '.level',
+						$this->createNamedParameter(Member::LEVEL_OWNER)
+					)
+				);
+				$andPassive->add($orMemberOrLevel);
+				$orExtOrPassive->add($andPassive);
+			}
 		}
 
 		$andExternal = $expr->andX();
