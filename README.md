@@ -28,6 +28,18 @@ Anyone can find the circle and request an invitation; but only members will see 
 Non-members won't be able to find your secret circle using the search bar.
 
 
+### Membership levels
+
+Circle members can have different levels with different rights over the circle:
+
+- **Member**: lowest level, user is a member of the circle
+- **Moderator**: can add/remove/acccept/reject members from the circle and edit their user levels
+- **Admin**: all of _Moderator_ + edit the circle's settings
+- **Owner**: all of _Admin_ +  delete the circle
+
+In case the account of the Owner gets deleted, the oldest Admin will be promoted to Owner.
+
+
 ***
 # API (PHP & Javascript)
 
