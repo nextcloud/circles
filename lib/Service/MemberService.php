@@ -32,10 +32,8 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 
-use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
-use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Logger;
 use daita\MySmallPhpTools\Traits\TArrayTools;
@@ -58,9 +56,7 @@ use OCA\Circles\FederatedItems\MemberAdd;
 use OCA\Circles\FederatedItems\MemberLevel;
 use OCA\Circles\FederatedItems\MemberRemove;
 use OCA\Circles\IFederatedUser;
-use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
-use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 
@@ -159,9 +155,16 @@ class MemberService {
 	 * @param string $circleId
 	 *
 	 * @return Member[]
+	 * @throws InitiatorNotFoundException
 	 */
 	public function getMembers(string $circleId): array {
-		return $this->memberRequest->getMembers($circleId);
+		$this->federatedUserService->mustHaveCurrentUser();
+
+		return $this->memberRequest->getMembers(
+			$circleId,
+			$this->federatedUserService->getCurrentUser(),
+			$this->federatedUserService->getRemoteInstance()
+		);
 	}
 
 

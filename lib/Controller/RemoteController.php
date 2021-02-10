@@ -37,6 +37,7 @@ use daita\MySmallPhpTools\Exceptions\ItemNotFoundException;
 use daita\MySmallPhpTools\Exceptions\MalformedArrayException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Exceptions\SignatureException;
+use daita\MySmallPhpTools\Exceptions\UnknownTypeException;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21SignedRequest;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Controller;
@@ -48,6 +49,7 @@ use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
@@ -199,26 +201,11 @@ class RemoteController extends Controller {
 	 */
 	public function circles(): DataResponse {
 		try {
-			$signed =
-				$this->remoteStreamService->incomingSignedRequest($this->configService->getLocalInstance());
-			$remoteInstance = $this->confirmRemoteInstance($signed);
+			$data = $this->extractDataFromFromRequest();
 
-			// TODO Check the origin (and type of the remoteinstance) of the request to allow or not the initiator or the request itself
-			$data = new SimpleDataStore(json_decode($signed->getBody(), true));
-			try {
-				/** @var FederatedUser $initiator */
-				$initiator = $data->gObj('initiator', FederatedUser::class);
-				if (is_null($initiator)) {
-					throw new InvalidItemException();
-				}
-				$this->federatedUserService->setCurrentUser($initiator);
-			} catch (InvalidItemException | ItemNotFoundException $e) {
-				$this->federatedUserService->bypassCurrentUserCondition(true);
-			}
-
-			$this->federatedUserService->setRemoteInstance($remoteInstance);
-
-			$circles = $this->circleService->getCircles();
+			/** @var Member $filter */
+			$filter = $data->gObj('filter');
+			$circles = $this->circleService->getCircles($filter);
 
 			return $this->success($circles, false);
 		} catch (Exception $e) {
@@ -237,13 +224,7 @@ class RemoteController extends Controller {
 	 */
 	public function circle(string $circleId): DataResponse {
 		try {
-			$signed =
-				$this->remoteStreamService->incomingSignedRequest($this->configService->getLocalInstance());
-			$remoteInstance = $this->confirmRemoteInstance($signed);
-
-			$this->federatedUserService->setRemoteInstance($remoteInstance);
-			$this->federatedUserService->bypassCurrentUserCondition(true);
-
+			$this->extractDataFromFromRequest();
 			$circle = $this->circleService->getCircle($circleId);
 
 			return $this->successObj($circle);
@@ -265,13 +246,7 @@ class RemoteController extends Controller {
 	 */
 	public function members(string $circleId): DataResponse {
 		try {
-			$signed =
-				$this->remoteStreamService->incomingSignedRequest($this->configService->getLocalInstance());
-			$remoteInstance = $this->confirmRemoteInstance($signed);
-
-//			$this->federatedUserService->setRemoteInstance($remoteInstance);
-//			$this->federatedUserService->bypassCurrentUserCondition(true);
-
+			$this->extractDataFromFromRequest();
 			$members = $this->memberService->getMembers($circleId);
 
 			return $this->success($members, false);
@@ -350,6 +325,47 @@ class RemoteController extends Controller {
 		$event->setIncomingOrigin($signed->getOrigin());
 
 		return $event;
+	}
+
+
+	/**
+	 * @throws CircleNotFoundException
+	 * @throws InvalidOriginException
+	 * @throws MalformedArrayException
+	 * @throws SignatoryException
+	 * @throws SignatureException
+	 * @throws UnknownTypeException
+	 */
+	private function extractDataFromFromRequest(): SimpleDataStore {
+		$signed = $this->remoteStreamService->incomingSignedRequest($this->configService->getLocalInstance());
+		$remoteInstance = $this->confirmRemoteInstance($signed);
+
+		$data = new SimpleDataStore();
+		$store = new SimpleDataStore(json_decode($signed->getBody(), true));
+		try {
+			/** @var FederatedUser $initiator */
+			$initiator = $store->gObj('initiator', FederatedUser::class);
+			if (is_null($initiator)) {
+				throw new InvalidItemException();
+			}
+			$this->federatedUserService->setCurrentUser($initiator);
+		} catch (InvalidItemException | ItemNotFoundException $e) {
+			$this->federatedUserService->bypassCurrentUserCondition(true);
+		}
+
+		try {
+			/** @var FederatedUser $initiator */
+			$filter = $store->gObj('filter', Member::class);
+			if (is_null($filter)) {
+				throw new InvalidItemException();
+			}
+			$data->aObj('filter', $filter);
+		} catch (InvalidItemException | ItemNotFoundException $e) {
+		}
+
+		$this->federatedUserService->setRemoteInstance($remoteInstance);
+
+		return $data;
 	}
 
 }

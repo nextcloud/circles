@@ -145,8 +145,6 @@ class CirclesList extends Base {
 		$instance = $input->getOption('instance');
 		$initiator = $input->getOption('initiator');
 
-		$this->federatedUserService->commandLineInitiator($initiator, '', true);
-
 		$filter = null;
 		if ($member !== '') {
 			$filter = $this->federatedUserService->createFilterMember($member);
@@ -160,6 +158,7 @@ class CirclesList extends Base {
 
 			$circles = $this->remoteService->getCirclesFromInstance($instance, $data);
 		} else {
+			$this->federatedUserService->commandLineInitiator($initiator, '', true);
 			$circles = $this->getCircles($filter, $input->getOption('all'));
 		}
 

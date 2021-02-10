@@ -34,7 +34,9 @@ namespace OCA\Circles\Db;
 
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 
@@ -154,12 +156,23 @@ class MemberRequest extends MemberRequestBuilder {
 
 	/**
 	 * @param string $circleId
+	 * @param IFederatedUser|null $initiator
+	 * @param RemoteInstance|null $remoteInstance
 	 *
 	 * @return Circle[]
 	 */
-	public function getMembers(string $circleId): array {
+	public function getMembers(
+		string $circleId,
+		?IFederatedUser $initiator = null,
+		?RemoteInstance $remoteInstance = null
+	): array {
 		$qb = $this->getMemberSelectSql();
 		$qb->limitToCircleId($circleId);
+		$qb->leftJoinCircle($initiator);
+
+		if (!is_null($remoteInstance)) {
+			$qb->limitToRemoteInstance($remoteInstance->getInstance(), true);
+		}
 
 		return $this->getItemsFromRequest($qb);
 	}

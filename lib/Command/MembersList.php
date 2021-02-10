@@ -31,16 +31,22 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
+use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
+use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use OC\Core\Command\Base;
 use OC\User\NoUserException;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Model\Member;
-use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
+use OCA\Circles\Service\RemoteService;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -60,8 +66,8 @@ class MembersList extends Base {
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
-	/** @var CircleService */
-	private $circleService;
+	/** @var RemoteService */
+	private $remoteService;
 
 	/** @var MemberService */
 	private $memberService;
@@ -74,18 +80,17 @@ class MembersList extends Base {
 	 * MembersList constructor.
 	 *
 	 * @param FederatedUserService $federatedUserService
-	 * @param CircleService $circleService
+	 * @param RemoteService $remoteService
 	 * @param MemberService $memberService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		FederatedUserService $federatedUserService, CircleService $circleService,
-		MemberService $memberService,
-		ConfigService $configService
+		FederatedUserService $federatedUserService, RemoteService $remoteService,
+		MemberService $memberService, ConfigService $configService
 	) {
 		parent::__construct();
 		$this->federatedUserService = $federatedUserService;
-		$this->circleService = $circleService;
+		$this->remoteService = $remoteService;
 		$this->memberService = $memberService;
 		$this->configService = $configService;
 	}
@@ -96,8 +101,9 @@ class MembersList extends Base {
 		$this->setName('circles:members:list')
 			 ->setDescription('listing Members from a Circle')
 			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
-			 ->addOption('json', '', InputOption::VALUE_NONE, 'returns result as JSON')
-			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '');
+			 ->addOption('instance', '', InputOption::VALUE_REQUIRED, 'Instance of the circle', '')
+			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			 ->addOption('json', '', InputOption::VALUE_NONE, 'returns result as JSON');
 	}
 
 
@@ -110,17 +116,32 @@ class MembersList extends Base {
 	 * @throws InitiatorNotFoundException
 	 * @throws NoUserException
 	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws UnknownRemoteException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$circleId = $input->getArgument('circle_id');
-		$json = $input->getOption('json');
+		$instance = $input->getOption('instance');
+		$initiator = $input->getOption('initiator');
 
-		$this->federatedUserService->commandLineInitiator($input->getOption('initiator'), $circleId, true);
+		if ($instance !== '' && !$this->configService->isLocalInstance($instance)) {
+			$data = [];
+			if ($initiator) {
+				$data['initiator'] = $this->federatedUserService->createFederatedUserTypeUser($initiator);
+			}
 
-		$this->circleService->getCircle($circleId);
-		$members = $this->memberService->getMembers($circleId);
+			$members = $this->remoteService->getMembersFromInstance($circleId, $instance, $data);
+		} else {
+			$this->federatedUserService->commandLineInitiator($initiator, $circleId, true);
+			$members = $this->memberService->getMembers($circleId);
+		}
 
-		if ($json) {
+
+		if ($input->getOption('json')) {
 			echo json_encode($members, JSON_PRETTY_PRINT) . "\n";
 
 			return 0;

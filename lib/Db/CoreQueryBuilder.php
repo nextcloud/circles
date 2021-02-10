@@ -142,7 +142,7 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 		string $aliasOwner = 'o'
 	): void {
 		$this->leftJoinRemoteInstance($instance, 'ri');
-		$this->leftJoinMemberFromInstance($instance, 'mi');
+		$this->leftJoinMemberFromInstance($instance, 'mi', $aliasCircle);
 		$this->limitRemoteVisibility($sensitive, 'ri', $aliasCircle, $aliasOwner, 'mi');
 	}
 
@@ -178,9 +178,9 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 
 
 	/**
-	 * @param FederatedUser|null $initiator
+	 * @param IFederatedUser|null $initiator
 	 */
-	public function leftJoinCircle(?FederatedUser $initiator = null) {
+	public function leftJoinCircle(?IFederatedUser $initiator = null) {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
@@ -196,8 +196,8 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 				 )
 			 );
 
+		$this->leftJoinOwner($alias);
 		if (!is_null($initiator)) {
-			$this->leftJoinOwner($alias);
 			$this->limitToInitiator($initiator, $alias);
 		}
 
@@ -265,8 +265,9 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 	 *
 	 * @param string $instance
 	 * @param string $alias
+	 * @param string $aliasCircle
 	 */
-	public function leftJoinMemberFromInstance(string $instance, string $alias = 'mi') {
+	public function leftJoinMemberFromInstance(string $instance, string $alias = 'mi', string $aliasCircle = 'c') {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
@@ -276,7 +277,7 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 		$this->leftJoin(
 			$this->getDefaultSelectAlias(), CoreRequestBuilder::TABLE_MEMBER, $alias,
 			$expr->andX(
-				$expr->eq($alias . '.circle_id', $this->getDefaultSelectAlias() . '.unique_id'),
+				$expr->eq($alias . '.circle_id', $aliasCircle . '.unique_id'),
 				$expr->eq($alias . '.instance', $this->createNamedParameter($instance)),
 				$expr->gte($alias . '.level', $this->createNamedParameter(Member::LEVEL_MEMBER))
 			)

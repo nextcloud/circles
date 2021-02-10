@@ -158,6 +158,42 @@ class RemoteService extends NC21Signature {
 
 
 	/**
+	 * @param string $circleId
+	 * @param string $instance
+	 * @param array $data
+	 *
+	 * @return Member[]
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws UnknownRemoteException
+	 */
+	public function getMembersFromInstance(string $circleId, string $instance, array $data = []): array {
+		$result = $this->remoteStreamService->resultRequestRemoteInstance(
+			$instance,
+			RemoteInstance::MEMBERS,
+			Request::TYPE_GET,
+			new SimpleDataStore($data),
+			['circleId' => $circleId]
+		);
+
+		$members = [];
+		foreach ($result as $item) {
+			try {
+				$member = new Member();
+				$member->import($item);
+				$members[] = $member;
+			} catch (InvalidItemException $e) {
+			}
+		}
+
+		return $members;
+	}
+
+
+	/**
 	 * @param Circle $circle
 	 *
 	 * @throws CircleNotFoundException
@@ -244,41 +280,6 @@ class RemoteService extends NC21Signature {
 	public function syncRemoteMembers(Circle $circle) {
 		$members = $this->getMembersFromInstance($circle->getId(), $circle->getInstance());
 		// TODO: compare/update/insert members
-	}
-
-
-	/**
-	 * @param string $circleId
-	 * @param string $instance
-	 *
-	 * @return Member[]
-	 * @throws RemoteNotFoundException
-	 * @throws RemoteResourceNotFoundException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
-	 * @throws UnknownRemoteException
-	 * @throws RemoteInstanceException
-	 */
-	private function getMembersFromInstance(string $circleId, string $instance): array {
-		$result = $this->remoteStreamService->resultRequestRemoteInstance(
-			$instance,
-			RemoteInstance::MEMBERS,
-			Request::TYPE_GET,
-			null,
-			['circleId' => $circleId]
-		);
-
-		$members = [];
-		foreach ($result as $item) {
-			try {
-				$member = new Member();
-				$member->import($item);
-				$members[] = $member;
-			} catch (InvalidItemException $e) {
-			}
-		}
-
-		return $members;
 	}
 
 
