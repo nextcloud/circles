@@ -34,6 +34,11 @@ namespace OCA\Circles\FederatedItems;
 
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
+use OCA\Circles\Exceptions\CircleAlreadyExistsException;
+use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\InvalidIdException;
+use OCA\Circles\Exceptions\MemberAlreadyExistsException;
+use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemCircleCheckNotRequired;
 use OCA\Circles\IFederatedItemLocalOnly;
@@ -84,22 +89,36 @@ class CircleCreate implements
 	 * @param FederatedEvent $event
 	 */
 	public function verify(FederatedEvent $event): void {
+		$circle = $event->getCircle();
+
+		$event->setDataOutcome(['circle' => $circle]);
+		$event->setReadingOutcome('Circle %s have been created', ['circleName' => $circle->getName()]);
 	}
 
 
 	/**
 	 * @param FederatedEvent $event
+	 *
+	 * @throws InvalidIdException
+	 * @throws MemberAlreadyExistsException
+	 * @throws CircleAlreadyExistsException
 	 */
 	public function manage(FederatedEvent $event): void {
-		if (!$event->hasCircle()) {
-			return;
-		}
-
 		$circle = $event->getCircle();
 		$owner = $circle->getOwner();
 
-		// TODO: confirm CircleId is unique
-		// TODO: confirm MemberId is unique
+		try {
+			$this->circleRequest->getCircle($circle->getId());
+			throw new CircleAlreadyExistsException();
+		} catch (CircleNotFoundException $e) {
+		}
+
+		try {
+			$this->memberRequest->getMember($owner->getId());
+			throw new MemberAlreadyExistsException();
+		} catch (MemberNotFoundException $e) {
+		}
+
 		$this->circleRequest->save($circle);
 		$this->memberRequest->save($owner);
 
@@ -113,5 +132,6 @@ class CircleCreate implements
 	 */
 	public function result(array $events): void {
 	}
+
 }
 

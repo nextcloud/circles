@@ -46,6 +46,7 @@ use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventDSyncException;
 use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
@@ -271,12 +272,17 @@ class RemoteController extends Controller {
 				$this->remoteStreamService->incomingSignedRequest($this->configService->getLocalInstance());
 			$remoteInstance = $this->confirmRemoteInstance($signed);
 
-//			$this->federatedUserService->setRemoteInstance($remoteInstance);
-//			$this->federatedUserService->bypassCurrentUserCondition(true);
+			$this->federatedUserService->setRemoteInstance($remoteInstance);
 
-			$federatedUser = $this->federatedUserService->createLocalFederatedUser($userId);
+			if ($type === 'local') {
+				$federatedUser = $this->federatedUserService->createLocalFederatedUser($userId);
+			} else {
+				throw new FederatedUserNotFoundException();
+			}
 
 			return $this->successObj($federatedUser);
+		} catch (FederatedUserNotFoundException $e) {
+			return $this->success([], false);
 		} catch (Exception $e) {
 			return $this->fail($e);
 		}
@@ -329,7 +335,8 @@ class RemoteController extends Controller {
 
 
 	/**
-	 * @throws CircleNotFoundException
+	 * @return SimpleDataStore
+	 * @throws FederatedUserNotFoundException
 	 * @throws InvalidOriginException
 	 * @throws MalformedArrayException
 	 * @throws SignatoryException

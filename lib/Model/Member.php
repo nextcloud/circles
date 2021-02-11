@@ -40,6 +40,7 @@ use DateTime;
 use JsonSerializable;
 use OCA\Circles\Exceptions\MemberLevelException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\IFederatedUser;
 
 
@@ -455,7 +456,7 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	public function compareWith(Member $member, bool $full = true): bool {
 		if ($this->getId() !== $member->getId()
 			|| $this->getCircleId() !== $member->getCircleId()
-			//			|| $this->getSingleId() !== $member->getSingleId()
+			|| $this->getSingleId() !== $member->getSingleId()
 			|| $this->getUserId() !== $member->getUserId()
 			|| $this->getUserType() <> $member->getUserType()
 			|| $this->getInstance() !== $member->getInstance()) {
@@ -603,6 +604,24 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 		}
 
 		return (int)$level;
+	}
+
+	/**
+	 * @param string $typeString
+	 *
+	 * @return int
+	 * @throws UserTypeNotFoundException
+	 */
+	public static function parseTypeString(string $typeString): int {
+		$typeString = strtolower($typeString);
+		$type = array_search($typeString, Member::$DEF_TYPE);
+
+		if (!$type) {
+			$all = implode(', ', array_values(self::$DEF_TYPE));
+			throw new UserTypeNotFoundException('Available types: ' . $all);
+		}
+
+		return (int)$type;
 	}
 
 }

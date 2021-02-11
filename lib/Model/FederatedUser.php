@@ -234,5 +234,18 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 		return $this;
 	}
 
+
+	/**
+	 * @param IFederatedUser $member
+	 *
+	 * @return bool
+	 */
+	public function compareWith(IFederatedUser $member): bool {
+		return !($this->getSingleId() !== $member->getSingleId()
+				 || $this->getUserId() !== $member->getUserId()
+				 || $this->getUserType() <> $member->getUserType()
+				 || $this->getInstance() !== $member->getInstance());
+	}
+
 }
 

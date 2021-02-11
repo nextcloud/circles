@@ -41,6 +41,7 @@ use daita\MySmallPhpTools\Traits\TStringTools;
 use OC;
 use OCA\Circles\Db\RemoteRequest;
 use OCA\Circles\Db\RemoteWrapperRequest;
+use OCA\Circles\Exceptions\FederatedEventDSyncException;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
@@ -64,6 +65,7 @@ use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\Federated\RemoteWrapper;
 use OCA\Circles\Model\GlobalScale\GSWrapper;
+use OCP\IL10N;
 use ReflectionClass;
 use ReflectionException;
 
@@ -79,6 +81,8 @@ class FederatedEventService extends NC21Signature {
 	use TNC21Request;
 	use TStringTools;
 
+	/** @var IL10N */
+	private $l10n;
 
 	/** @var RemoteWrapperRequest */
 	private $remoteWrapperRequest;
@@ -99,15 +103,17 @@ class FederatedEventService extends NC21Signature {
 	/**
 	 * FederatedEventService constructor.
 	 *
+	 * @param IL10N $l10n
 	 * @param RemoteWrapperRequest $remoteWrapperRequest
 	 * @param RemoteRequest $remoteRequest
 	 * @param RemoteUpstreamService $remoteUpstreamService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		RemoteWrapperRequest $remoteWrapperRequest, RemoteRequest $remoteRequest,
+		IL10N $l10n, RemoteWrapperRequest $remoteWrapperRequest, RemoteRequest $remoteRequest,
 		RemoteUpstreamService $remoteUpstreamService, ConfigService $configService
 	) {
+		$this->l10n = $l10n;
 		$this->remoteWrapperRequest = $remoteWrapperRequest;
 		$this->remoteRequest = $remoteRequest;
 		$this->remoteUpstreamService = $remoteUpstreamService;
@@ -130,12 +136,13 @@ class FederatedEventService extends NC21Signature {
 	 * @throws UnknownRemoteException
 	 * @throws SignatoryException
 	 * @throws FederatedItemException
+	 * @throws FederatedEventDSyncException
 	 */
 	public function newEvent(FederatedEvent $event): void {
 		$event->setSource($this->configService->getLocalInstance());
 
 		try {
-			$federatedItem = $this->getFederatedItem($event, true);
+			$federatedItem = $this->getFederatedItem($event, false);
 		} catch (FederatedEventException $e) {
 			$this->e($e);
 			throw $e;
@@ -143,7 +150,15 @@ class FederatedEventService extends NC21Signature {
 
 		$this->confirmInitiator($event, true);
 		if ($this->configService->isLocalInstance($event->getCircle()->getInstance())) {
-			$federatedItem->verify($event);
+
+			try {
+				$federatedItem->verify($event);
+				$reading = $event->getReadingOutcome();
+				$reading->s('translated', $this->l10n->t($reading->g('message'), $reading->gArray('params')));
+			} catch (FederatedItemException $e) {
+				throw new FederatedItemException($this->l10n->t($e->getMessage(), $e->getParams()));
+			}
+
 			if (!$event->isAsync()) {
 				$federatedItem->manage($event);
 			}
@@ -155,6 +170,7 @@ class FederatedEventService extends NC21Signature {
 				$federatedItem->manage($event);
 			}
 		}
+
 	}
 
 
@@ -232,12 +248,12 @@ class FederatedEventService extends NC21Signature {
 
 	/**
 	 * @param FederatedEvent $event
-	 * @param bool $local
+	 * @param bool $checkLocalOnly
 	 *
 	 * @return IFederatedItem
 	 * @throws FederatedEventException
 	 */
-	public function getFederatedItem(FederatedEvent $event, bool $local = false): IFederatedItem {
+	public function getFederatedItem(FederatedEvent $event, bool $checkLocalOnly = true): IFederatedItem {
 		$class = $event->getClass();
 		try {
 			$test = new ReflectionClass($class);
@@ -255,7 +271,7 @@ class FederatedEventService extends NC21Signature {
 		}
 
 		$this->setFederatedEventBypass($event, $item);
-		$this->confirmRequiredCondition($event, $item, $local);
+		$this->confirmRequiredCondition($event, $item, $checkLocalOnly);
 		$this->configureEvent($event, $item);
 
 		return $item;
@@ -285,14 +301,14 @@ class FederatedEventService extends NC21Signature {
 	 *
 	 * @param FederatedEvent $event
 	 * @param IFederatedItem $item
-	 * @param bool $local
+	 * @param bool $checkLocalOnly
 	 *
 	 * @throws FederatedEventException
 	 */
 	private function confirmRequiredCondition(
 		FederatedEvent $event,
 		IFederatedItem $item,
-		bool $local = false
+		bool $checkLocalOnly = true
 	) {
 		if (!$event->hasCircle()) {
 			throw new FederatedEventException('FederatedEvent has no Circle linked');
@@ -311,7 +327,7 @@ class FederatedEventService extends NC21Signature {
 				. ' does not implements IFederatedItemMemberOptional nor IFederatedItemMemberRequired'
 			);
 		}
-		if ($item instanceof IFederatedItemLocalOnly && !$local) {
+		if ($item instanceof IFederatedItemLocalOnly && $checkLocalOnly) {
 			throw new FederatedEventException('FederatedItem must be executed locally');
 		}
 	}
@@ -435,7 +451,7 @@ class FederatedEventService extends NC21Signature {
 		}
 
 		try {
-			$gs = $this->getFederatedItem($event);
+			$gs = $this->getFederatedItem($event, false);
 			$gs->result($events);
 		} catch (FederatedEventException $e) {
 		}

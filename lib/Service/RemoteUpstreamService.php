@@ -66,6 +66,7 @@ class RemoteUpstreamService {
 	use TNC21Request;
 
 
+	/** @var IL10N */
 	private $l10n;
 
 	/** @var RemoteWrapperRequest */
@@ -82,9 +83,7 @@ class RemoteUpstreamService {
 
 
 	public function __construct(
-		IL10N $l10n,
-		RemoteWrapperRequest $remoteWrapperRequest,
-		RemoteStreamService $remoteStreamService,
+		IL10N $l10n, RemoteWrapperRequest $remoteWrapperRequest, RemoteStreamService $remoteStreamService,
 		ConfigService $configService
 	) {
 		$this->l10n = $l10n;

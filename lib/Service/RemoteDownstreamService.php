@@ -126,7 +126,7 @@ class RemoteDownstreamService {
 	 * @throws FederatedItemException
 	 */
 	public function requestedEvent(FederatedEvent $event): void {
-		$item = $this->federatedEventService->getFederatedItem($event, false);
+		$item = $this->federatedEventService->getFederatedItem($event, true);
 
 		if (!$this->configService->isLocalInstance($event->getCircle()->getInstance())) {
 			throw new FederatedEventException('Circle is not from this instance');
@@ -154,7 +154,7 @@ class RemoteDownstreamService {
 	public function incomingEvent(FederatedEvent $event): array {
 		$result = [];
 		try {
-			$gs = $this->federatedEventService->getFederatedItem($event);
+			$gs = $this->federatedEventService->getFederatedItem($event, false);
 			$this->confirmOriginEvent($event);
 			$this->confirmContent($event, false);
 

@@ -36,8 +36,9 @@ use daita\MySmallPhpTools\Traits\TStringTools;
 use Exception;
 use OC\User\NoUserException;
 use OCA\Circles\Db\MemberRequest;
+use OCA\Circles\Exceptions\FederatedUserException;
+use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
-use OCA\Circles\Exceptions\MemberLevelException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\MembersLimitException;
 use OCA\Circles\Exceptions\MemberTypeNotFoundException;
@@ -51,12 +52,14 @@ use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\Federated\FederatedEvent;
+use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharesToken;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\FederatedUserService;
 use OCP\IUser;
 use OCP\IUserManager;
 use OCP\Mail\IEMailTemplate;
@@ -81,6 +84,9 @@ class MemberAdd implements
 	/** @var IUserManager */
 	private $userManager;
 
+	/** @var FederatedUserService */
+	private $federatedUserService;
+
 	/** @var MemberRequest */
 	private $memberRequest;
 
@@ -95,15 +101,17 @@ class MemberAdd implements
 	 * MemberAdd constructor.
 	 *
 	 * @param IUserManager $userManager
+	 * @param FederatedUserService $federatedUserService
 	 * @param MemberRequest $memberRequest
 	 * @param CircleService $circleService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IUserManager $userManager, MemberRequest $memberRequest, CircleService $circleService,
-		ConfigService $configService
+		IUserManager $userManager, FederatedUserService $federatedUserService, MemberRequest $memberRequest,
+		CircleService $circleService, ConfigService $configService
 	) {
 		$this->userManager = $userManager;
+		$this->federatedUserService = $federatedUserService;
 		$this->memberRequest = $memberRequest;
 		$this->circleService = $circleService;
 		$this->configService = $configService;
@@ -113,11 +121,10 @@ class MemberAdd implements
 	/**
 	 * @param FederatedEvent $event
 	 *
-	 * @throws MemberLevelException
+	 * @throws MemberAlreadyExistsException
+	 * @throws MembersLimitException
 	 * @throws NoUserException
 	 * @throws UserTypeNotFoundException
-	 * @throws MembersLimitException
-	 * @throws MemberAlreadyExistsException
 	 */
 	public function verify(FederatedEvent $event): void {
 		$member = $event->getMember();
@@ -132,7 +139,9 @@ class MemberAdd implements
 		try {
 			$this->memberRequest->searchMember($member);
 			// TODO: maybe member is requesting access
-			throw new MemberAlreadyExistsException('Member already exists');
+			throw new MemberAlreadyExistsException(
+				'Member %s already exists', ['member' => $member->getUserId()]
+			);
 		} catch (MemberNotFoundException $e) {
 		}
 
@@ -156,7 +165,7 @@ class MemberAdd implements
 //		$member = $this->membersRequest->getFreshNewMember(
 //			$circle->getUniqueId(), $ident, $eventMember->getType(), $eventMember->getInstance()
 //		);
-//		$member->hasToBeInviteAble();
+//		$member->hasToBeInviteAble()
 //
 //		$this->membersService->addMemberBasedOnItsType($circle, $member);
 //
@@ -185,18 +194,26 @@ class MemberAdd implements
 	/**
 	 * @param FederatedEvent $event
 	 *
+	 * @throws InvalidIdException
 	 */
 	public function manage(FederatedEvent $event): void {
-		//$circle = $event->getCircle();
 		$member = $event->getMember();
-//		if ($member->getJoined() === '') {
-//			$this->membersRequest->createMember($member);
-//		} else {
-//			$this->membersRequest->updateMemberLevel($member);
-//		}
-//
 
-		// TODO: confirm MemberId is unique
+		try {
+			$this->memberRequest->getMember($member->getId());
+
+			return;
+		} catch (MemberNotFoundException $e) {
+		}
+
+		try {
+			$federatedUser = new FederatedUser();
+			$federatedUser->importFromIFederatedUser($member);
+			$this->federatedUserService->confirmSingleId($federatedUser);
+
+			return;
+		} catch (FederatedUserException $e) {
+		}
 		$this->memberRequest->save($member);
 
 //

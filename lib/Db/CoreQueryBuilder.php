@@ -374,8 +374,9 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 	 * - trusted: visibility on all FEDERATED Circle if owner is local
 	 * - external: visibility on all FEDERATED Circle if owner is local and with at least one member from
 	 * this instance
-	 * - passive: no visibility on any Circle, user should be able to share to the circle without having
-	 * access to Circles' details not members
+	 * - passive: no visibility on any Circle, only to members that belongs to the instance and the circles'
+	 *            owner.
+	 *            user should be able to share to the circle without having access to Circles' members
 	 *
 	 * @param bool $sensitive
 	 * @param string $alias

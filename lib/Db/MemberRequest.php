@@ -199,6 +199,19 @@ class MemberRequest extends MemberRequestBuilder {
 
 
 	/**
+	 * @param string $singleId
+	 *
+	 * @return Member[]
+	 */
+	public function getMembersBySingleId(string $singleId): array {
+		$qb = $this->getMemberSelectSql();
+		$qb->limitToSingleId($singleId);
+
+		return $this->getItemsFromRequest($qb);
+	}
+
+
+	/**
 	 * @param Member $member
 	 * @param FederatedUser|null $initiator
 	 *

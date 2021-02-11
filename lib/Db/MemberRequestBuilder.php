@@ -80,6 +80,7 @@ class MemberRequestBuilder extends CoreRequestBuilder {
 		)
 		   ->from(self::TABLE_MEMBER, 'm')
 		   ->orderBy('m.joined')
+			->groupBy('m.member_id')
 		   ->setDefaultSelectAlias('m');
 
 		return $qb;

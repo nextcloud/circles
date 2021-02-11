@@ -32,16 +32,23 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 
+use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
+use daita\MySmallPhpTools\Exceptions\SignatoryException;
+use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventException;
+use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\MembersLimitException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\FederatedItems\CircleCreate;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
@@ -115,12 +122,18 @@ class CircleService {
 	 * @param FederatedUser|null $owner
 	 *
 	 * @return Circle
-	 * @throws OwnerNotFoundException
 	 * @throws FederatedEventException
-	 * @throws InitiatorNotFoundException
 	 * @throws InitiatorNotConfirmedException
+	 * @throws InitiatorNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws FederatedItemException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws UnknownRemoteException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
 	 */
-	public function create(string $name, ?FederatedUser $owner = null): Circle {
+	public function create(string $name, ?FederatedUser $owner = null): SimpleDataStore {
 		$this->federatedUserService->mustHaveCurrentUser();
 		if (is_null($owner)) {
 			$owner = $this->federatedUserService->getCurrentUser();
@@ -143,23 +156,25 @@ class CircleService {
 		$event->setCircle($circle);
 		$this->federatedEventService->newEvent($event);
 
-		return $circle;
+		return $event->getOutcome();
 	}
 
 
 	/**
 	 * @param Member|null $filter
+	 * @param bool $filterSystemCircles
 	 *
 	 * @return Circle[]
 	 * @throws InitiatorNotFoundException
 	 */
-	public function getCircles(?Member $filter = null): array {
+	public function getCircles(?Member $filter = null, bool $filterSystemCircles = true): array {
 		$this->federatedUserService->mustHaveCurrentUser();
 
 		return $this->circleRequest->getCircles(
 			$filter,
 			$this->federatedUserService->getCurrentUser(),
-			$this->federatedUserService->getRemoteInstance()
+			$this->federatedUserService->getRemoteInstance(),
+			$filterSystemCircles
 		);
 	}
 

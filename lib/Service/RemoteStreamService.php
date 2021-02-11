@@ -40,6 +40,7 @@ use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Signatory;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21SignedRequest;
 use daita\MySmallPhpTools\Model\Request;
+use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Deserialize;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21LocalSignatory;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21WellKnown;
@@ -196,6 +197,7 @@ class RemoteStreamService extends NC21Signature {
 		?JsonSerializable $object = null,
 		array $params = []
 	): array {
+
 		$signedRequest = $this->requestRemoteInstance($instance, $item, $type, $object, $params);
 		if (!$signedRequest->getOutgoingRequest()->hasResult()) {
 			throw new RequestNetworkException();
@@ -246,8 +248,12 @@ class RemoteStreamService extends NC21Signature {
 			$request->basedOnUrl($link);
 		}
 
+		// TODO: on local, if object is empty, request takes 10s. check on other configuration
+		if (is_null($object) || empty(json_decode(json_encode($object), true))) {
+			$object = new SimpleDataStore(['empty' => 1]);
+		}
+
 		if (!is_null($object)) {
-			// TODO: on local, if object is empty, request takes 10s. check on other configuration
 			$request->setDataSerialize($object);
 		}
 

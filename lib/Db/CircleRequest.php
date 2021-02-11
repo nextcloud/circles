@@ -93,18 +93,22 @@ class CircleRequest extends CircleRequestBuilder {
 	 * @param Member|null $filter
 	 * @param IFederatedUser|null $initiator
 	 * @param RemoteInstance|null $remoteInstance
+	 * @param bool $filterSystemCircles
 	 *
 	 * @return Circle[]
 	 */
 	public function getCircles(
 		?Member $filter = null,
 		?IFederatedUser $initiator = null,
-		?RemoteInstance $remoteInstance = null
+		?RemoteInstance $remoteInstance = null,
+		bool $filterSystemCircles = true
 	): array {
 		$qb = $this->getCircleSelectSql();
-		$qb->filterSystemCircles();
 		$qb->leftJoinOwner();
 
+		if ($filterSystemCircles) {
+			$qb->filterSystemCircles();
+		}
 		if (!is_null($initiator)) {
 			$qb->limitToInitiator($initiator);
 		}
@@ -123,6 +127,7 @@ class CircleRequest extends CircleRequestBuilder {
 	 * @param string $id
 	 * @param IFederatedUser|null $initiator
 	 * @param RemoteInstance|null $remoteInstance
+	 * @param bool $filterSystemCircles
 	 *
 	 * @return Circle
 	 * @throws CircleNotFoundException
@@ -130,13 +135,16 @@ class CircleRequest extends CircleRequestBuilder {
 	public function getCircle(
 		string $id,
 		?IFederatedUser $initiator = null,
-		?RemoteInstance $remoteInstance = null
+		?RemoteInstance $remoteInstance = null,
+		bool $filterSystemCircles = true
 	): Circle {
 		$qb = $this->getCircleSelectSql();
-		$qb->filterSystemCircles();
 		$qb->limitToUniqueId($id);
 		$qb->leftJoinOwner();
 
+		if ($filterSystemCircles) {
+			$qb->filterSystemCircles();
+		}
 		if (!is_null($initiator)) {
 			$qb->limitToInitiator($initiator);
 		}

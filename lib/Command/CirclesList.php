@@ -31,13 +31,16 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
+use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use OC\Core\Command\Base;
 use OC\User\NoUserException;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
@@ -138,6 +141,9 @@ class CirclesList extends Base {
 	 * @throws RequestNetworkException
 	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
+	 * @throws InvalidItemException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$this->input = $input;
@@ -210,22 +216,22 @@ class CirclesList extends Base {
 	 * @throws InitiatorNotFoundException
 	 */
 	private function getCircles(?Member $filter, bool $all = false): array {
-		$circles = $this->circleService->getCircles($filter);
+		$circles = $this->circleService->getCircles($filter, !$all);
 
-		if ($all) {
+//		if ($all) {
 			return $circles;
-		}
+//		}
 
-		$filtered = [];
-		foreach ($circles as $circle) {
-			if (!$circle->isConfig(Circle::CFG_SINGLE)
-				&& !$circle->isConfig(Circle::CFG_HIDDEN)
-				&& !$circle->isConfig(Circle::CFG_BACKEND)) {
-				$filtered[] = $circle;
-			}
-		}
-
-		return $filtered;
+//		$filtered = [];
+//		foreach ($circles as $circle) {
+////			if (!$circle->isConfig(Circle::CFG_SINGLE)
+////				&& !$circle->isConfig(Circle::CFG_HIDDEN)
+////				&& !$circle->isConfig(Circle::CFG_BACKEND)) {
+//				$filtered[] = $circle;
+////			}
+//		}
+//
+//		return $filtered;
 	}
 
 }

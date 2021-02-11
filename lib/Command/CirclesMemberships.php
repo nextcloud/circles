@@ -33,15 +33,16 @@ namespace OCA\Circles\Command;
 
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use OC\Core\Command\Base;
+use OC\User\NoUserException;
 use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
-use OCA\Circles\Model\FederatedUser;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\Model\ModelManager;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedUserService;
 use OCP\IGroupManager;
 use OCP\IUserManager;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -106,8 +107,9 @@ class CirclesMemberships extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:memberships')
-			 ->setDescription('manage memberships')
-			 ->addOption('index', '', InputOption::VALUE_NONE, 'index memberships');
+			 ->setDescription('index and display memberships for local and federated users')
+			 ->addArgument('initiator', InputArgument::OPTIONAL, 'userId to generate memberships', '')
+			 ->addOption('all', '', InputOption::VALUE_NONE, 'index all local users');
 	}
 
 
@@ -116,17 +118,29 @@ class CirclesMemberships extends Base {
 	 * @param OutputInterface $output
 	 *
 	 * @return int
+	 * @throws CircleNotFoundException
+	 * @throws UserTypeNotFoundException
+	 * @throws NoUserException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		$userId = $input->getOption('user');
+		$all = $input->getOption('all');
+		$initiator = $input->getArgument('initiator');
 
-		if ($userId !== '') {
-			$this->manageUser($input, $output, $userId);
-		} else {
-			foreach ($this->userManager->search('') as $user) {
-				$this->manageUser($input, $output, $user->getUID());
-			}
+		if (!$all && $initiator === '') {
+			$output->writeln('<error>specify a user, or use --all</error>');
+
+			return 0;
 		}
+
+		$federatedUser = $this->federatedUserService->createFederatedUser($initiator);
+		echo json_encode($federatedUser, JSON_PRETTY_PRINT);
+//		if ($userId !== '') {
+//			$this->manageUser($input, $output, $userId);
+//		} else {
+//			foreach ($this->userManager->search('') as $user) {
+//				$this->manageUser($input, $output, $user->getUID());
+//			}
+//		}
 
 		return 0;
 	}
@@ -153,11 +167,11 @@ class CirclesMemberships extends Base {
 	 * @throws CircleNotFoundException
 	 */
 	private function indexLocalUser(string $userId): void {
-		$currentUser = new FederatedUser();
-		$currentUser->setUserId($userId);
-		$this->federatedUserService->setCurrentUser($currentUser);
+//		$currentUser = new FederatedUser();
+//		$currentUser->setUserId($userId);
+//		$this->federatedUserService->setCurrentUser($currentUser);
 
-		$this->federatedUserService->updateMemberships();
+//		$this->federatedUserService->updateMemberships();
 	}
 
 }

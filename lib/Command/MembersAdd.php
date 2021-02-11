@@ -102,7 +102,10 @@ class MembersAdd extends Base {
 			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
 			 ->addArgument('user', InputArgument::REQUIRED, 'username of the member')
 			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
-			 ->addOption('type', '', InputOption::VALUE_REQUIRED, 'type of the user', Member::TYPE_USER);
+			 ->addOption(
+				 'type', '', InputOption::VALUE_REQUIRED, 'type of the user',
+				 Member::$DEF_TYPE[Member::TYPE_USER]
+			 );
 	}
 
 
@@ -116,12 +119,12 @@ class MembersAdd extends Base {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$circleId = $input->getArgument('circle_id');
 		$userId = $input->getArgument('user');
-		$userType = $input->getOption('type');
 
-		//
-		$this->federatedUserService->commandLineInitiator($input->getOption('initiator'), $circleId,  false);
+		$this->federatedUserService->commandLineInitiator($input->getOption('initiator'), $circleId, false);
 
-		$member = $this->federatedUserService->createFederatedUser($userId, (int)$userType);
+		$type = Member::parseTypeString($input->getOption('type'));
+		$member = $this->federatedUserService->createFederatedUser($userId, (int)$type);
+
 		$outcome = $this->memberService->addMember($circleId, $member);
 
 		echo json_encode($outcome, JSON_PRETTY_PRINT) . "\n";
