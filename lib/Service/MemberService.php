@@ -42,6 +42,7 @@ use Exception;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedEventDSyncException;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
@@ -184,6 +185,7 @@ class MemberService {
 	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
 	 * @throws FederatedItemException
+	 * @throws FederatedEventDSyncException
 	 */
 	public function addMember(string $circleId, IFederatedUser $member): SimpleDataStore {
 		$this->federatedUserService->mustHaveCurrentUser();

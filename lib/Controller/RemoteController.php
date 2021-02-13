@@ -46,6 +46,7 @@ use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventDSyncException;
 use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
@@ -268,14 +269,16 @@ class RemoteController extends Controller {
 	 */
 	public function member(string $type, string $userId): DataResponse {
 		try {
-			$signed =
-				$this->remoteStreamService->incomingSignedRequest($this->configService->getLocalInstance());
-			$remoteInstance = $this->confirmRemoteInstance($signed);
-
-			$this->federatedUserService->setRemoteInstance($remoteInstance);
+			$this->extractDataFromFromRequest();
+//
+//			$signed =
+//				$this->remoteStreamService->incomingSignedRequest($this->configService->getLocalInstance());
+//			$remoteInstance = $this->confirmRemoteInstance($signed);
+//
+//			$this->federatedUserService->setRemoteInstance($remoteInstance);
 
 			if ($type === 'local') {
-				$federatedUser = $this->federatedUserService->createLocalFederatedUser($userId);
+				$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
 			} else {
 				throw new FederatedUserNotFoundException();
 			}
@@ -342,10 +345,17 @@ class RemoteController extends Controller {
 	 * @throws SignatoryException
 	 * @throws SignatureException
 	 * @throws UnknownTypeException
+	 * @throws FederatedUserException
 	 */
 	private function extractDataFromFromRequest(): SimpleDataStore {
 		$signed = $this->remoteStreamService->incomingSignedRequest($this->configService->getLocalInstance());
 		$remoteInstance = $this->confirmRemoteInstance($signed);
+
+		// There should be no need to confirm the need or the origin of the initiator as $remoteInstance
+		// already helps filtering request to the database.
+		// initiator here is only used to play with the visibility, on top of the visibility provided to
+		// the remote instance based on its type.
+		$this->federatedUserService->setRemoteInstance($remoteInstance);
 
 		$data = new SimpleDataStore();
 		$store = new SimpleDataStore(json_decode($signed->getBody(), true));
@@ -355,9 +365,9 @@ class RemoteController extends Controller {
 			if (is_null($initiator)) {
 				throw new InvalidItemException();
 			}
+
 			$this->federatedUserService->setCurrentUser($initiator);
 		} catch (InvalidItemException | ItemNotFoundException $e) {
-			$this->federatedUserService->bypassCurrentUserCondition(true);
 		}
 
 		try {
@@ -369,8 +379,6 @@ class RemoteController extends Controller {
 			$data->aObj('filter', $filter);
 		} catch (InvalidItemException | ItemNotFoundException $e) {
 		}
-
-		$this->federatedUserService->setRemoteInstance($remoteInstance);
 
 		return $data;
 	}

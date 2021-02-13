@@ -131,7 +131,7 @@ class MembersList extends Base {
 		if ($instance !== '' && !$this->configService->isLocalInstance($instance)) {
 			$data = [];
 			if ($initiator) {
-				$data['initiator'] = $this->federatedUserService->createFederatedUserTypeUser($initiator);
+				$data['initiator'] = $this->federatedUserService->getFederatedUser($initiator);
 			}
 
 			$members = $this->remoteService->getMembersFromInstance($circleId, $instance, $data);

@@ -114,7 +114,7 @@ class CirclesCreate extends Base {
 
 		$this->federatedUserService->bypassCurrentUserCondition(true);
 
-		$owner = $this->federatedUserService->createLocalFederatedUser($ownerId);
+		$owner = $this->federatedUserService->getLocalFederatedUser($ownerId);
 		$outcome = $this->circleService->create($name, $owner);
 
 		echo json_encode($outcome, JSON_PRETTY_PRINT) . "\n";

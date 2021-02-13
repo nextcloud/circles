@@ -153,13 +153,13 @@ class CirclesList extends Base {
 
 		$filter = null;
 		if ($member !== '') {
-			$filter = $this->federatedUserService->createFilterMember($member);
+			$filter = $this->federatedUserService->getFederatedMember($member);
 		}
 
 		if ($instance !== '' && !$this->configService->isLocalInstance($instance)) {
 			$data = ['filter' => $filter];
 			if ($initiator) {
-				$data['initiator'] = $this->federatedUserService->createFederatedUserTypeUser($initiator);
+				$data['initiator'] = $this->federatedUserService->getFederatedUser($initiator);
 			}
 
 			$circles = $this->remoteService->getCirclesFromInstance($instance, $data);
@@ -219,7 +219,7 @@ class CirclesList extends Base {
 		$circles = $this->circleService->getCircles($filter, !$all);
 
 //		if ($all) {
-			return $circles;
+		return $circles;
 //		}
 
 //		$filtered = [];

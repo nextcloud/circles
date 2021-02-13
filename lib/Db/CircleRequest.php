@@ -157,7 +157,7 @@ class CircleRequest extends CircleRequestBuilder {
 
 
 	/**
-	 * method that return the single-user Circle based on a Viewer.
+	 * method that return the single-user Circle based on a FederatedUser.
 	 *
 	 * @param IFederatedUser $initiator
 	 *

@@ -32,17 +32,28 @@ declare(strict_types=1);
 namespace OCA\Circles\FederatedItems;
 
 
+use daita\MySmallPhpTools\Exceptions\InvalidItemException;
+use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
+use daita\MySmallPhpTools\Exceptions\SignatoryException;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Logger;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use Exception;
 use OC\User\NoUserException;
 use OCA\Circles\Db\MemberRequest;
+use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedUserException;
+use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\MembersLimitException;
 use OCA\Circles\Exceptions\MemberTypeNotFoundException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsync;
@@ -79,6 +90,7 @@ class MemberAdd implements
 
 
 	use TStringTools;
+	use TNC21Logger;
 
 
 	/** @var IUserManager */
@@ -121,9 +133,20 @@ class MemberAdd implements
 	/**
 	 * @param FederatedEvent $event
 	 *
+	 * @throws CircleNotFoundException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
+	 * @throws InvalidItemException
 	 * @throws MemberAlreadyExistsException
 	 * @throws MembersLimitException
-	 * @throws NoUserException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws UnknownRemoteException
 	 * @throws UserTypeNotFoundException
 	 */
 	public function verify(FederatedEvent $event): void {
@@ -137,15 +160,18 @@ class MemberAdd implements
 		$initiatorHelper->mustBeModerator();
 
 		try {
-			$this->memberRequest->searchMember($member);
+			$knownMember = $this->memberRequest->searchMember($member);
 			// TODO: maybe member is requesting access
+			// TODO: check if it is a member or a mail or a circle and fix the returned message
 			throw new MemberAlreadyExistsException(
 				'Member %s already exists', ['member' => $member->getUserId()]
 			);
 		} catch (MemberNotFoundException $e) {
 		}
 
-		$this->confirmMemberFormat($member);
+		$federatedId = $member->getUserId() . '@' . $member->getInstance();
+		$federatedUser = $this->federatedUserService->getFederatedUser($federatedId, $member->getUserType());
+		$member->importFromIFederatedUser($federatedUser);
 		$member->setId($this->uuid(ManagedModel::ID_LENGTH));
 
 		// TODO: check Config on Circle to know if we set Level to 1 or just send an invitation
@@ -157,6 +183,7 @@ class MemberAdd implements
 		//		$member->setCachedName($eventMember->getCachedName());
 		$this->circleService->confirmCircleNotFull($circle);
 
+		// TODO: check if it is a member or a mail or a circle and fix the returned message
 		$event->setReadingOutcome('Member %s have been added to Circle', ['userId' => $member->getUserId()]);
 
 		return;
@@ -209,11 +236,13 @@ class MemberAdd implements
 		try {
 			$federatedUser = new FederatedUser();
 			$federatedUser->importFromIFederatedUser($member);
-			$this->federatedUserService->confirmSingleId($federatedUser);
+			$this->federatedUserService->confirmLocalSingleId($federatedUser);
+		} catch (FederatedUserException $e) {
+			$this->e($e, ['member' => $member]);
 
 			return;
-		} catch (FederatedUserException $e) {
 		}
+
 		$this->memberRequest->save($member);
 
 //
@@ -292,23 +321,37 @@ class MemberAdd implements
 
 
 	/**
-	 * confirm the format of UserId, based on UserType.
+	 * confirm the validity of a UserId, based on UserType.
 	 *
 	 * @param IFederatedUser $member
 	 *
+	 * @throws FederatedUserException
+	 * @throws InvalidIdException
 	 * @throws UserTypeNotFoundException
-	 * @throws NoUserException
+	 * @throws CircleNotFoundException
+	 * @throws FederatedUserNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws UnknownRemoteException
+	 * @throws InvalidItemException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
 	 */
-	private function confirmMemberFormat(IFederatedUser $member): void {
-		switch ($member->getUserType()) {
-			case Member::TYPE_USER:
-				$this->confirmMemberTypeUser($member);
-				break;
+	private function confirmMember(IFederatedUser $member): void {
 
-			// TODO: confirm other UserType
-			default:
-				throw new UserTypeNotFoundException();
-		}
+		// TODO: confirm SingleId ???
+//		switch ($member->getUserType()) {
+//			case Member::TYPE_USER:
+		$this->federatedUserService->getFederatedUser($member->getUserId(), $member->getUserType());
+//				break;
+//
+//			// TODO: confirm other UserType
+//			default:
+//				break;
+////				throw new UserTypeNotFoundException();
+//		}
 	}
 
 

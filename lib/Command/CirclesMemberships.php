@@ -31,16 +31,31 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
+use daita\MySmallPhpTools\Exceptions\InvalidItemException;
+use daita\MySmallPhpTools\Exceptions\ItemNotFoundException;
+use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
+use daita\MySmallPhpTools\Exceptions\SignatoryException;
+use daita\MySmallPhpTools\Exceptions\UnknownTypeException;
+use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21TreeNode;
+use daita\MySmallPhpTools\Model\SimpleDataStore;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21ConsoleTree;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use OC\Core\Command\Base;
-use OC\User\NoUserException;
+use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedUserException;
+use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Exceptions\InvalidIdException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
-use OCA\Circles\Model\ModelManager;
-use OCA\Circles\Service\CircleService;
+use OCA\Circles\Model\FederatedUser;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Service\FederatedUserService;
-use OCP\IGroupManager;
 use OCP\IUserManager;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -57,49 +72,44 @@ class CirclesMemberships extends Base {
 
 
 	use TArrayTools;
+	use TNC21ConsoleTree;
 
 
 	/** @var IUserManager */
 	private $userManager;
 
-	/** @var IGroupManager */
-	private $groupManager;
-
-	/** @var ModelManager */
-	private $modelManager;
+	/** @var MemberRequest */
+	private $memberRequest;
 
 	/** @var MembershipRequest */
 	private $membershipRequest;
 
-	/** @var CircleService */
-	private $circleService;
-
 	/** @var FederatedUserService */
 	private $federatedUserService;
+
+
+	/** @var array */
+	private $knownId = [];
 
 
 	/**
 	 * CirclesList constructor.
 	 *
 	 * @param IUserManager $userManager
-	 * @param IGroupManager $groupManager
-	 * @param ModelManager $modelManager
 	 * @param MembershipRequest $membershipRequest
-	 * @param CircleService $circleService
+	 * @param MemberRequest $memberRequest
 	 * @param FederatedUserService $federatedUserService
 	 */
 	public function __construct(
-		IUserManager $userManager, IGroupManager $groupManager, ModelManager $modelManager,
-		MembershipRequest $membershipRequest, CircleService $circleService,
+		IUserManager $userManager,
+		MembershipRequest $membershipRequest,
+		MemberRequest $memberRequest,
 		FederatedUserService $federatedUserService
 	) {
 		parent::__construct();
 		$this->userManager = $userManager;
-		$this->groupManager = $groupManager;
-		$this->modelManager = $modelManager;
+		$this->memberRequest = $memberRequest;
 		$this->membershipRequest = $membershipRequest;
-		$this->circleService = $circleService;
-
 		$this->federatedUserService = $federatedUserService;
 	}
 
@@ -108,8 +118,12 @@ class CirclesMemberships extends Base {
 		parent::configure();
 		$this->setName('circles:memberships')
 			 ->setDescription('index and display memberships for local and federated users')
-			 ->addArgument('initiator', InputArgument::OPTIONAL, 'userId to generate memberships', '')
-			 ->addOption('all', '', InputOption::VALUE_NONE, 'index all local users');
+			 ->addArgument('userId', InputArgument::OPTIONAL, 'userId to generate memberships', '')
+			 ->addOption('all', '', InputOption::VALUE_NONE, 'index all local users')
+			 ->addOption(
+				 'type', '', InputOption::VALUE_REQUIRED, 'type of the user',
+				 Member::$DEF_TYPE[Member::TYPE_USER]
+			 );
 	}
 
 
@@ -119,59 +133,109 @@ class CirclesMemberships extends Base {
 	 *
 	 * @return int
 	 * @throws CircleNotFoundException
+	 * @throws InvalidItemException
 	 * @throws UserTypeNotFoundException
-	 * @throws NoUserException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws UnknownRemoteException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$all = $input->getOption('all');
-		$initiator = $input->getArgument('initiator');
+		$userId = $input->getArgument('userId');
 
-		if (!$all && $initiator === '') {
+		if (!$all && $userId === '') {
 			$output->writeln('<error>specify a user, or use --all</error>');
 
 			return 0;
 		}
 
-		$federatedUser = $this->federatedUserService->createFederatedUser($initiator);
-		echo json_encode($federatedUser, JSON_PRETTY_PRINT);
-//		if ($userId !== '') {
-//			$this->manageUser($input, $output, $userId);
-//		} else {
-//			foreach ($this->userManager->search('') as $user) {
-//				$this->manageUser($input, $output, $user->getUID());
-//			}
-//		}
+		$type = Member::parseTypeString($input->getOption('type'));
+		$federatedUser = $this->federatedUserService->getFederatedUser($userId, (int)$type);
+
+		$output->writeln('UserId: <info>' . $federatedUser->getUserId() . '</info>');
+		$output->writeln('Instance: <info>' . $federatedUser->getInstance() . '</info>');
+		$output->writeln('UserType: <info>' . Member::$DEF_TYPE[$federatedUser->getUserType()] . '</info>');
+		$output->writeln('SingleId: <info>' . $federatedUser->getSingleId() . '</info>');
+		$output->writeln('');
+
+		$tree = new NC21TreeNode(null, new SimpleDataStore(['federatedUser' => $federatedUser]));
+		$this->generateMemberships($federatedUser->getSingleId(), $tree);
+		$this->drawTree($tree, [$this, 'displayLeaf'], 3);
 
 		return 0;
 	}
 
 
 	/**
-	 * @param InputInterface $input
-	 * @param OutputInterface $output
-	 * @param string $userId
+	 * @param string $id
+	 * @param NC21TreeNode $tree
+	 * @param array $knownIds
 	 */
-	private function manageUser(InputInterface $input, OutputInterface $output, string $userId): void {
-		if ($input->getOption('index')) {
-			try {
-				$this->indexLocalUser($userId);
-			} catch (CircleNotFoundException $e) {
+	private function generateMemberships(string $id, NC21TreeNode $tree, array $knownIds = []) {
+		$members = $this->memberRequest->getMembersBySingleId($id);
+		foreach ($members as $member) {
+			$item = new NC21TreeNode(
+				$tree, new SimpleDataStore(
+						 [
+							 'member'  => $member,
+							 'cycling' => in_array($member->getCircleId(), $knownIds)
+						 ]
+					 )
+			);
+			if (in_array($member->getCircleId(), $knownIds)) {
+				continue;
 			}
+			$knownIds[] = $id;
+			$this->generateMemberships($member->getCircleId(), $item, $knownIds);
+			$knownIds = [];
 		}
 	}
 
 
 	/**
-	 * @param string $userId
+	 * @param SimpleDataStore $data
+	 * @param int $line
 	 *
-	 * @throws CircleNotFoundException
+	 * @return string
 	 */
-	private function indexLocalUser(string $userId): void {
-//		$currentUser = new FederatedUser();
-//		$currentUser->setUserId($userId);
-//		$this->federatedUserService->setCurrentUser($currentUser);
+	public function displayLeaf(SimpleDataStore $data, int $line): string {
+		if ($line === 2) {
+			return '';
+		}
 
-//		$this->federatedUserService->updateMemberships();
+		if ($line === 3) {
+			$cycle = '';
+			if ($data->gBool('cycling')) {
+				$cycle = ' (loop detected)';
+			}
+			return $cycle;
+		}
+		try {
+
+			if ($data->hasKey('federatedUser')) {
+				/** @var FederatedUser $federatedUser */
+				$federatedUser = $data->gObj('federatedUser', FederatedUser::class);
+
+				return '<info>' . $federatedUser->getSingleId() . '</info>';
+			}
+
+			if ($data->hasKey('member')) {
+				/** @var Member $member */
+				$member = $data->gObj('member', Member::class);
+
+				return ' <info>' . $member->getCircleId() . '</info>';
+			}
+		} catch (InvalidItemException | ItemNotFoundException | UnknownTypeException $e) {
+		}
+
+		return '';
 	}
 
 }

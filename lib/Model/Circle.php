@@ -107,8 +107,9 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 		256  => 'PP|Password Protected',
 		512  => 'NO|No Owner',
 		1024 => 'H|Hidden',
-		2048 => 'T|Root',
-		4096 => 'F|Federated'
+		2048 => 'T|Backend',
+		4096 => 'T|Root',
+		8192 => 'F|Federated'
 	];
 
 

@@ -123,9 +123,9 @@ class MembersAdd extends Base {
 		$this->federatedUserService->commandLineInitiator($input->getOption('initiator'), $circleId, false);
 
 		$type = Member::parseTypeString($input->getOption('type'));
-		$member = $this->federatedUserService->createFederatedUser($userId, (int)$type);
 
-		$outcome = $this->memberService->addMember($circleId, $member);
+		$federatedUser = $this->federatedUserService->generateFederatedUser($userId, (int)$type);
+		$outcome = $this->memberService->addMember($circleId, $federatedUser);
 
 		echo json_encode($outcome, JSON_PRETTY_PRINT) . "\n";
 

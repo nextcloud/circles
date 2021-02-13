@@ -318,7 +318,6 @@ class RemoteService extends NC21Signature {
 		}
 		$federatedUser = new FederatedUser();
 		$federatedUser->import($result);
-
 		if ($federatedUser->getInstance() !== $instance) {
 			throw new InvalidItemException('incorrect instance');
 		}
