@@ -194,7 +194,7 @@ class MemberAdd implements
 		$this->circleService->confirmCircleNotFull($circle);
 
 		// TODO: check if it is a member or a mail or a circle and fix the returned message
-		$event->setReadingOutcome('Member %s have been added to Circle', ['userId' => $member->getUserId()]);
+		$event->setReadingOutcome(ucfirst(Member::$DEF_TYPE[$member->getUserType()]) . ' %s have been added to Circle', ['userId' => $member->getUserId()]);
 
 		return;
 

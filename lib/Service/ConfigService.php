@@ -73,6 +73,7 @@ class ConfigService {
 	const GS_MODE = 'mode';
 	const GS_KEY = 'key';
 	const GS_LOOKUP = 'lookup';
+	const GS_MOCKUP = 'mockup';
 
 	const GS_LOOKUP_INSTANCES = '/instances';
 	const GS_LOOKUP_USERS = '/users';
@@ -514,13 +515,18 @@ class ConfigService {
 	public function getGSStatus(string $type = '') {
 		$enabled = $this->config->getSystemValueBool('gs.enabled', false);
 		$lookup = $this->config->getSystemValue('lookup_server', '');
+		$mockup = $this->config->getSystemValue('gss.mockup', []);
 
 		if ($lookup === '' || !$enabled) {
 			if ($type === self::GS_ENABLED) {
 				return false;
 			}
 
-			throw new GSStatusException('GS and lookup are not configured : ' . $lookup . ', ' . $enabled);
+			if ($type !== self::GS_MOCKUP) {
+				throw new GSStatusException(
+					'GS and lookup are not configured : ' . $lookup . ', ' . $enabled
+				);
+			}
 		}
 
 		$clef = $this->config->getSystemValue('gss.jwt.key', '');
@@ -538,6 +544,9 @@ class ConfigService {
 
 			case self::GS_LOOKUP:
 				return $lookup;
+
+			case self::GS_MOCKUP:
+				return $mockup;
 		}
 
 		return [

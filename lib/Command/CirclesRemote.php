@@ -42,6 +42,7 @@ use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\RemoteRequest;
+use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteUidException;
 use OCA\Circles\Model\Federated\RemoteInstance;
@@ -405,6 +406,7 @@ class CirclesRemote extends Base {
 
 	/**
 	 *
+	 * @throws GSStatusException
 	 */
 	private function verifyGSInstances(): void {
 		$instances = $this->globalScaleService->getGlobalScaleInstances();

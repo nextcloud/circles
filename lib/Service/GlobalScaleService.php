@@ -109,9 +109,9 @@ class GlobalScaleService {
 
 	/**
 	 * @return array
+	 * @throws GSStatusException
 	 */
 	public function getGlobalScaleInstances(): array {
-		return ['nc21.local', 'nc21b.local', 'nc21c.local'];
 		try {
 			$lookup = $this->configService->getGSStatus(ConfigService::GS_LOOKUP);
 			$request = new NC21Request(ConfigService::GS_LOOKUP_INSTANCES, Request::TYPE_POST);
@@ -127,7 +127,7 @@ class GlobalScaleService {
 		} catch (GSStatusException $e) {
 		}
 
-		return [];
+		return $this->configService->getGSStatus(ConfigService::GS_MOCKUP);
 	}
 
 
