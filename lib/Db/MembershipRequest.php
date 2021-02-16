@@ -44,6 +44,48 @@ class MembershipRequest extends MembershipRequestBuilder {
 
 
 	/**
+	 * @param Membership $membership
+	 */
+	public function insert(Membership $membership) {
+		$qb = $this->getMembershipInsertSql();
+		$qb->setValue('id', $qb->createNamedParameter($membership->getId()));
+		$qb->setValue('circle_id', $qb->createNamedParameter($membership->getCircleId()));
+		$qb->setValue('member_id', $qb->createNamedParameter($membership->getMemberId()));
+		$qb->setValue('level', $qb->createNamedParameter($membership->getLevel()));
+
+		$qb->execute();
+	}
+
+
+	/**
+	 * @param Membership $membership
+	 */
+	public function update(Membership $membership) {
+		$qb = $this->getMembershipUpdateSql();
+		$qb->set('level', $qb->createNamedParameter($membership->getLevel()));
+
+		$qb->limitToIdString($membership->getId());
+		$qb->limitToCircleId($membership->getCircleId());
+		$qb->limitToMemberId($membership->getMemberId());
+
+		$qb->execute();
+	}
+
+
+	/**
+	 * @param Membership $membership
+	 */
+	public function delete(Membership $membership) {
+		$qb = $this->getMembershipDeleteSql();
+		$qb->limitToIdString($membership->getId());
+		$qb->limitToCircleId($membership->getCircleId());
+		$qb->limitToMemberId($membership->getMemberId());
+
+		$qb->execute();
+	}
+
+
+	/**
 	 * @param string $memberId
 	 *
 	 * @return Membership[]
@@ -54,6 +96,7 @@ class MembershipRequest extends MembershipRequestBuilder {
 
 		return $this->getItemsFromRequest($qb);
 	}
+
 
 }
 

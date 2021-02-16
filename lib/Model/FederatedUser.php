@@ -63,7 +63,7 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 	private $instance;
 
 	/** @var Membership[] */
-	private $memberships = [];
+	private $memberships = null;
 
 
 	/**

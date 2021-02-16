@@ -63,6 +63,7 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	const LEVEL_OWNER = 9;
 
 	const TYPE_CIRCLE = 16;
+	const TYPE_SINGLE = 8;
 	const TYPE_USER = 1;
 	const TYPE_GROUP = 2;
 	const TYPE_MAIL = 3;
@@ -75,6 +76,7 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	const STATUS_BLOCKED = 'Blocked';
 	const STATUS_KICKED = 'Kicked';
 
+
 	public static $DEF_LEVEL = [
 		1 => 'Member',
 		4 => 'Moderator',
@@ -83,8 +85,9 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	];
 
 	public static $DEF_TYPE = [
-		1  => 'local',
+		1  => 'user',
 		16 => 'circle',
+		8  => 'single',
 		3  => 'mail',
 		4  => 'contact',
 	];

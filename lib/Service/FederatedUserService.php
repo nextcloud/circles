@@ -38,6 +38,7 @@ use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Logger;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use daita\MySmallPhpTools\Traits\TStringTools;
+use Exception;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
@@ -263,6 +264,7 @@ class FederatedUserService {
 	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
 	 * @throws UserTypeNotFoundException
+	 * @throws MemberNotFoundException
 	 */
 	public function commandLineInitiator(string $userId, string $circleId = '', bool $bypass = false): void {
 		if ($userId !== '') {
@@ -305,8 +307,8 @@ class FederatedUserService {
 	 * @throws CircleNotFoundException
 	 * @throws FederatedUserException
 	 * @throws FederatedUserNotFoundException
-	 * @throws InvalidIdException
 	 * @throws InvalidItemException
+	 * @throws MemberNotFoundException
 	 * @throws OwnerNotFoundException
 	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
@@ -340,24 +342,53 @@ class FederatedUserService {
 	 * if $federatedId is a local username, will returns data from the local database.
 	 * Otherwise, the FederatedUser will not contains a SingleId.
 	 *
-	 * @param string $federatedId
+	 * @param string $userId
 	 * @param int $type
 	 *
 	 * @return FederatedUser
 	 */
-	public function generateFederatedUser(string $federatedId, int $type = Member::TYPE_USER): FederatedUser {
+	public function generateFederatedUser(string $userId, int $type = 0): FederatedUser {
+		$userId = trim($userId, '@');
+		if (strpos($userId, '@') === false) {
+			$instance = '';
+		} else {
+			list($userId, $instance) = $this->extractIdAndInstance($userId);
+		}
+
 		try {
-			return $this->memberRequest->getFederatedUserBySingleId($federatedId);
+			if (($type === 0 || $type === Member::TYPE_USER)
+				&& ($instance === '' || $this->configService->isLocalInstance($instance))) {
+				return $this->getLocalFederatedUser($userId);
+			}
+		} catch (CircleNotFoundException | FederatedUserNotFoundException | InvalidIdException $e) {
+		}
+
+		try {
+			if ($type === 0 || $type === Member::TYPE_SINGLE) {
+				$federatedUser = $this->memberRequest->getFederatedUserBySingleId($userId);
+				if ($instance === '' || $federatedUser->getInstance() === $instance) {
+					return $federatedUser;
+				}
+			}
 		} catch (MemberNotFoundException $e) {
 		}
 
 		try {
-			return $this->getLocalFederatedUser($federatedId);
-		} catch (CircleNotFoundException | FederatedUserNotFoundException | InvalidIdException $e) {
+			if ($type === 0 || $type === Member::TYPE_CIRCLE) {
+				$federatedUser = $this->circleRequest->getFederatedUserByCircleId($userId);
+				if ($instance === '' || $federatedUser->getInstance() === $instance) {
+					return $federatedUser;
+				}
+			}
+		} catch (CircleNotFoundException | OwnerNotFoundException $e) {
 		}
 
 		// TODO: search for other possible entries, like mail address
-		list($userId, $instance) = $this->extractIdAndInstance($federatedId);
+
+		if ($type === 0) {
+			$type = Member::TYPE_USER;
+		}
+
 		$federatedUser = new FederatedUser();
 		$federatedUser->set($userId, $instance, $type);
 
@@ -377,8 +408,9 @@ class FederatedUserService {
 	 * @throws CircleNotFoundException
 	 * @throws FederatedUserException
 	 * @throws FederatedUserNotFoundException
-	 * @throws InvalidIdException
 	 * @throws InvalidItemException
+	 * @throws MemberNotFoundException
+	 * @throws OwnerNotFoundException
 	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
@@ -386,14 +418,22 @@ class FederatedUserService {
 	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
 	 * @throws UserTypeNotFoundException
-	 * @throws OwnerNotFoundException
 	 */
 	public function getFederatedUser(string $federatedId, int $userType = Member::TYPE_USER): FederatedUser {
+		list($singleId, $instance) = $this->extractIdAndInstance($federatedId);
+
 		switch ($userType) {
 			case Member::TYPE_USER:
-				return $this->getFederatedUser_User($federatedId);
+				try {
+					return $this->getFederatedUser_User($singleId, $instance);
+				} catch (Exception $e) {
+				}
+
+				return $this->getFederatedUser_SingleId($singleId, $instance);
 			case Member::TYPE_CIRCLE:
-				return $this->getFederatedUser_Circle($federatedId);
+				return $this->getFederatedUser_Circle($singleId, $instance);
+			case Member::TYPE_SINGLE:
+				return $this->getFederatedUser_SingleId($singleId, $instance);
 		}
 
 		throw new UserTypeNotFoundException();
@@ -401,24 +441,56 @@ class FederatedUserService {
 
 
 	/**
-	 * @param string $federatedId
+	 * @param string $singleId
+	 * @param string $instance
 	 *
 	 * @return FederatedUser
-	 * @throws CircleNotFoundException
+	 * @throws FederatedUserException
 	 * @throws FederatedUserNotFoundException
-	 * @throws InvalidIdException
+	 * @throws InvalidItemException
+	 * @throws MemberNotFoundException
 	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
-	 * @throws UnknownRemoteException
-	 * @throws InvalidItemException
 	 * @throws RequestNetworkException
 	 * @throws SignatoryException
-	 * @throws FederatedUserException
+	 * @throws UnknownRemoteException
 	 */
-	private function getFederatedUser_User(string $federatedId): FederatedUser {
-		list($userId, $instance) = $this->extractIdAndInstance($federatedId);
+	private function getFederatedUser_SingleId(string $singleId, string $instance): FederatedUser {
+		if (strlen($singleId) !== ManagedModel::ID_LENGTH) {
+			throw new MemberNotFoundException();
+		}
 
+		if ($this->configService->isLocalInstance($instance)) {
+			return $this->memberRequest->getFederatedUserBySingleId($singleId);
+		} else {
+			$federatedUser =
+				$this->remoteService->getFederatedUserFromInstance($singleId, $instance, Member::TYPE_SINGLE);
+			$this->confirmLocalSingleId($federatedUser);
+
+			return $federatedUser;
+		}
+	}
+
+
+	/**
+	 * @param string $userId
+	 * @param string $instance
+	 *
+	 * @return FederatedUser
+	 * @throws CircleNotFoundException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
+	 * @throws InvalidItemException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws UnknownRemoteException
+	 */
+	private function getFederatedUser_User(string $userId, string $instance): FederatedUser {
 		if ($this->configService->isLocalInstance($instance)) {
 			return $this->getLocalFederatedUser($userId);
 		} else {
@@ -434,15 +506,14 @@ class FederatedUserService {
 	/**
 	 * // TODO: do we need to have this working on remote instance ?
 	 *
-	 * @param string $federatedId
+	 * @param string $circleId
+	 * @param string $instance
 	 *
 	 * @return FederatedUser
 	 * @throws CircleNotFoundException
 	 * @throws OwnerNotFoundException
 	 */
-	private function getFederatedUser_Circle(string $federatedId): FederatedUser {
-		list($circleId, $instance) = $this->extractIdAndInstance($federatedId);
-
+	private function getFederatedUser_Circle(string $circleId, string $instance): FederatedUser {
 		// TODO: check remote instance for existing circle
 //		if ($this->configService->isLocalInstance($instance)) {
 		$circle = $this->circleRequest->getCircle($circleId);
@@ -522,6 +593,7 @@ class FederatedUserService {
 			$owner->importFromIFederatedUser($federatedUser);
 			$owner->setLevel(Member::LEVEL_OWNER)
 				  ->setCircleId($id)
+				  ->setSingleId($id)
 				  ->setId($id)
 				  ->setCachedName($owner->getUserId())
 				  ->setStatus('Member');

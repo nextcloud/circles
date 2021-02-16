@@ -102,10 +102,7 @@ class MembersAdd extends Base {
 			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
 			 ->addArgument('user', InputArgument::REQUIRED, 'username of the member')
 			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
-			 ->addOption(
-				 'type', '', InputOption::VALUE_REQUIRED, 'type of the user',
-				 Member::$DEF_TYPE[Member::TYPE_USER]
-			 );
+			 ->addOption('type', '', InputOption::VALUE_REQUIRED, 'type of the user', '0');
 	}
 
 
@@ -119,11 +116,12 @@ class MembersAdd extends Base {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$circleId = $input->getArgument('circle_id');
 		$userId = $input->getArgument('user');
+		$type = $input->getOption('type');
+		if ($type !== '0') {
+			$type = Member::parseTypeString($type);
+		}
 
 		$this->federatedUserService->commandLineInitiator($input->getOption('initiator'), $circleId, false);
-
-		$type = Member::parseTypeString($input->getOption('type'));
-
 		$federatedUser = $this->federatedUserService->generateFederatedUser($userId, (int)$type);
 		$outcome = $this->memberService->addMember($circleId, $federatedUser);
 

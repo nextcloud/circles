@@ -270,14 +270,10 @@ class RemoteController extends Controller {
 	public function member(string $type, string $userId): DataResponse {
 		try {
 			$this->extractDataFromFromRequest();
-//
-//			$signed =
-//				$this->remoteStreamService->incomingSignedRequest($this->configService->getLocalInstance());
-//			$remoteInstance = $this->confirmRemoteInstance($signed);
-//
-//			$this->federatedUserService->setRemoteInstance($remoteInstance);
 
-			if ($type === 'local') {
+			if ($type === 'single') {
+				$federatedUser = $this->federatedUserService->getFederatedUser($userId, Member::TYPE_SINGLE);
+			} else if ($type === 'local') {
 				$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
 			} else {
 				throw new FederatedUserNotFoundException();

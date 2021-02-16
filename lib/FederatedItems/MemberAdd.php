@@ -148,6 +148,7 @@ class MemberAdd implements
 	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
 	 * @throws UserTypeNotFoundException
+	 * @throws MemberNotFoundException
 	 */
 	public function verify(FederatedEvent $event): void {
 		$member = $event->getMember();
@@ -159,19 +160,28 @@ class MemberAdd implements
 		$initiatorHelper = new MemberHelper($initiator);
 		$initiatorHelper->mustBeModerator();
 
+		$federatedId = $member->getUserId() . '@' . $member->getInstance();
+		try {
+			$federatedUser =
+				$this->federatedUserService->getFederatedUser($federatedId, $member->getUserType());
+		} catch (MemberNotFoundException $e) {
+			throw new MemberNotFoundException(
+				ucfirst(Member::$DEF_TYPE[$member->getUserType()]) . ' %s not found',
+				['member' => $member->getUserId() . '@' . $member->getInstance()]
+			);
+		}
+		$member->importFromIFederatedUser($federatedUser);
+
 		try {
 			$knownMember = $this->memberRequest->searchMember($member);
 			// TODO: maybe member is requesting access
-			// TODO: check if it is a member or a mail or a circle and fix the returned message
 			throw new MemberAlreadyExistsException(
-				'Member %s already exists', ['member' => $member->getUserId()]
+				ucfirst(Member::$DEF_TYPE[$member->getUserType()]) . ' %s is already a member',
+				['member' => $member->getUserId() . '@' . $member->getInstance()]
 			);
 		} catch (MemberNotFoundException $e) {
 		}
 
-		$federatedId = $member->getUserId() . '@' . $member->getInstance();
-		$federatedUser = $this->federatedUserService->getFederatedUser($federatedId, $member->getUserType());
-		$member->importFromIFederatedUser($federatedUser);
 		$member->setId($this->uuid(ManagedModel::ID_LENGTH));
 
 		// TODO: check Config on Circle to know if we set Level to 1 or just send an invitation

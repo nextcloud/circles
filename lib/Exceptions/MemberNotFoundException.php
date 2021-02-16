@@ -38,7 +38,7 @@ use Exception;
  *
  * @package OCA\Circles\Exceptions
  */
-class MemberNotFoundException extends Exception {
+class MemberNotFoundException extends FederatedItemException {
 
 }
 

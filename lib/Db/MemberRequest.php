@@ -225,7 +225,7 @@ class MemberRequest extends MemberRequestBuilder {
 
 		$member = $this->getItemFromRequest($qb);
 		$federatedUser = new FederatedUser();
-		$federatedUser->importFromIFederatedUser(($member));
+		$federatedUser->importFromIFederatedUser($member);
 
 		return $federatedUser;
 	}

@@ -34,9 +34,11 @@ namespace OCA\Circles\Db;
 
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\RemoteInstance;
+use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 
 
@@ -153,6 +155,27 @@ class CircleRequest extends CircleRequestBuilder {
 		}
 
 		return $this->getItemFromRequest($qb);
+	}
+
+
+	/**
+	 * @param string $circleId
+	 *
+	 * @return FederatedUser
+	 * @throws CircleNotFoundException
+	 * @throws OwnerNotFoundException
+	 */
+	public function getFederatedUserByCircleId(string $circleId): FederatedUser {
+		$qb = $this->getCircleSelectSql();
+		$qb->limitToUniqueId($circleId);
+		$qb->leftJoinOwner();
+
+		$circle = $this->getItemFromRequest($qb);
+		$federatedUser = new FederatedUser();
+		$federatedUser->set($circle->getId(), $circle->getInstance(), Member::TYPE_CIRCLE);
+		$federatedUser->setSingleId($circle->getId());
+
+		return $federatedUser;
 	}
 
 

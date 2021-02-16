@@ -63,22 +63,35 @@ class Membership extends ManagedModel implements INC21QueryRow, JsonSerializable
 	/**
 	 * Membership constructor.
 	 *
+	 * @param Member|null $member
+	 */
+	public function __construct(?Member $member = null) {
+		if (is_null($member)) {
+			return;
+		}
+
+		$this->setId($member->getSingleId());
+		$this->setCircleId($member->getCircleId());
+		$this->setMemberId($member->getId());
+		$this->setLevel($member->getLevel());
+	}
+
+
+	/**
 	 * @param string $id
 	 * @param string $circleId
 	 * @param string $memberId
 	 * @param int $level
+	 *
+	 * @return $this
 	 */
-	public function __construct(
-		string $id = '',
-		string $circleId = '',
-		string $memberId = '',
-		int $level = 0
-	) {
+	public function set(string $id = '', string $circleId = '', string $memberId = '', int $level = 0): self {
 		$this->id = $id;
 		$this->circleId = $circleId;
 		$this->memberId = $memberId;
 		$this->level = $level;
 	}
+
 
 	/**
 	 * @param string $id
