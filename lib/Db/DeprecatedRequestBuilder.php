@@ -512,24 +512,6 @@ class DeprecatedRequestBuilder {
 		$this->leftJoinedNCGroupAndUser = true;
 	}
 
-
-	/**
-	 *
-	 */
-	public function cleanDatabase(): void {
-		foreach ($this->tables as $table) {
-			$qb = $this->dbConnection->getQueryBuilder();
-			$qb->delete($table);
-			$qb->execute();
-		}
-
-		$qb = $this->dbConnection->getQueryBuilder();
-		$expr = $qb->expr();
-		$qb->delete(self::TABLE_FILE_SHARES);
-		$qb->where($expr->eq('share_type', $qb->createNamedParameter(self::SHARE_TYPE)));
-		$qb->execute();
-	}
-
 }
 
 

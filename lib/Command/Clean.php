@@ -27,8 +27,9 @@
 namespace OCA\Circles\Command;
 
 use OC\Core\Command\Base;
-use OCA\Circles\Db\DeprecatedCirclesRequest;
+use OCA\Circles\Db\CoreRequestBuilder;
 use OCA\Circles\Service\CleanService;
+use OCA\Circles\Service\ConfigService;
 use OCP\IDBConnection;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -41,27 +42,32 @@ class Clean extends Base {
 	/** @var IDBConnection */
 	private $dbConnection;
 
-	/** @var DeprecatedCirclesRequest */
-	private $circlesRequest;
+	/** @var CoreRequestBuilder */
+	private $coreRequestBuilder;
 
 	/** @var CleanService */
 	private $cleanService;
 
+	/** @var ConfigService */
+	private $configService;
 
 	/**
 	 * Clean constructor.
 	 *
 	 * @param IDBConnection $connection
-	 * @param DeprecatedCirclesRequest $circlesRequest
+	 * @param CoreRequestBuilder $coreRequestBuilder
 	 * @param CleanService $cleanService
+	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IDBConnection $connection, DeprecatedCirclesRequest $circlesRequest, CleanService $cleanService
+		IDBConnection $connection, CoreRequestBuilder $coreRequestBuilder, CleanService $cleanService,
+		ConfigService $configService
 	) {
 		parent::__construct();
 		$this->dbConnection = $connection;
-		$this->circlesRequest = $circlesRequest;
+		$this->coreRequestBuilder = $coreRequestBuilder;
 		$this->cleanService = $cleanService;
+		$this->configService = $configService;
 	}
 
 
@@ -69,7 +75,11 @@ class Clean extends Base {
 		parent::configure();
 		$this->setName('circles:clean')
 			 ->setDescription('remove all extra data from database')
-			 ->addOption('all', '', InputOption::VALUE_NONE, 'remove all data from the app');
+			 ->addOption('all', '', InputOption::VALUE_NONE, 'remove all data from the app')
+			 ->addOption(
+				 'uninstall', '', InputOption::VALUE_NONE,
+				 'Uninstall the apps and everything related to the app from the database'
+			 );
 	}
 
 
@@ -80,9 +90,15 @@ class Clean extends Base {
 	 * @return int
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		if ($input->getOption('all')) {
-			$this->circlesRequest->cleanDatabase();
-			$this->cleanService->removeDeprecatedShares();
+		$all = $input->getOption('all');
+		$uninstall = $input->getOption('uninstall');
+
+		if ($all || $uninstall) {
+			$this->coreRequestBuilder->cleanDatabase();
+			if ($uninstall) {
+				$this->coreRequestBuilder->uninstall();
+				$this->configService->unsetAppConfig();
+			}
 
 			return 0;
 		}

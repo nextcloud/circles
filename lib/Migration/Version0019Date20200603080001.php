@@ -141,39 +141,39 @@ class Version0019Date20200603080001 extends SimpleMigrationStep {
 			$table->addIndex(['type']);
 		}
 
-
-		if (!$schema->hasTable('circle_clouds')) {
-			$table = $schema->createTable('circle_clouds');
-			$table->addColumn(
-				'cloud_id', 'string', [
-							  'notnull' => true,
-							  'length'  => 64,
-						  ]
-			);
-			$table->addColumn(
-				'address', 'string', [
-							 'notnull' => true,
-							 'length'  => 255,
-						 ]
-			);
-			$table->addColumn(
-				'status', 'smallint', [
-							'notnull' => true,
-							'length'  => 1,
-						]
-			);
-			$table->addColumn(
-				'note', 'text', [
-						  'notnull' => false
-					  ]
-			);
-			$table->addColumn(
-				'created', 'datetime', [
-							 'notnull' => false,
-						 ]
-			);
-			$table->setPrimaryKey(['cloud_id']);
-		}
+//
+//		if (!$schema->hasTable('circle_clouds')) {
+//			$table = $schema->createTable('circle_clouds');
+//			$table->addColumn(
+//				'cloud_id', 'string', [
+//							  'notnull' => true,
+//							  'length'  => 64,
+//						  ]
+//			);
+//			$table->addColumn(
+//				'address', 'string', [
+//							 'notnull' => true,
+//							 'length'  => 255,
+//						 ]
+//			);
+//			$table->addColumn(
+//				'status', 'smallint', [
+//							'notnull' => true,
+//							'length'  => 1,
+//						]
+//			);
+//			$table->addColumn(
+//				'note', 'text', [
+//						  'notnull' => false
+//					  ]
+//			);
+//			$table->addColumn(
+//				'created', 'datetime', [
+//							 'notnull' => false,
+//						 ]
+//			);
+//			$table->setPrimaryKey(['cloud_id']);
+//		}
 
 
 		if (!$schema->hasTable('circle_groups')) {
@@ -615,9 +615,9 @@ class Version0019Date20200603080001 extends SimpleMigrationStep {
 		if ($schema->hasTable('circles_circles')) {
 			$this->copyTableCircles('circles_circles', 'circle_circles');
 		}
-		if ($schema->hasTable('circles_clouds')) {
-			$this->copyTable('circles_clouds', 'circle_clouds');
-		}
+//		if ($schema->hasTable('circles_clouds')) {
+//			$this->copyTable('circles_clouds', 'circle_clouds');
+//		}
 		if ($schema->hasTable('circles_groups')) {
 			$this->copyTable('circles_groups', 'circle_groups');
 		}

@@ -74,6 +74,7 @@ class RemoteStreamService extends NC21Signature {
 
 
 	const UPDATE_DATA = 'data';
+	const UPDATE_TYPE = 'type';
 	const UPDATE_INSTANCE = 'instance';
 	const UPDATE_HREF = 'href';
 
@@ -463,6 +464,10 @@ class RemoteStreamService extends NC21Signature {
 		switch ($update) {
 			case self::UPDATE_DATA:
 				$this->remoteRequest->update($remote);
+				break;
+
+			case self::UPDATE_TYPE:
+				$this->remoteRequest->updateType($remote);
 				break;
 
 			case self::UPDATE_HREF:

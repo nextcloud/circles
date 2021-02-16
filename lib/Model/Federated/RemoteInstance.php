@@ -55,6 +55,14 @@ class RemoteInstance extends NC21Signatory implements INC21QueryRow, JsonSeriali
 	const TYPE_TRUSTED = 'Trusted';    // everything about Federated Circles are broadcasted.
 	const TYPE_GLOBAL_SCALE = 'GlobalScale';  // every Circle is broadcasted,
 
+	public static $LIST_TYPE = [
+		self::TYPE_UNKNOWN,
+		self::TYPE_PASSIVE,
+		self::TYPE_EXTERNAL,
+		self::TYPE_TRUSTED,
+		self::TYPE_GLOBAL_SCALE
+	];
+
 	const TEST = 'test';
 	const INCOMING = 'incoming';
 	const EVENT = 'event';

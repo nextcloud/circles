@@ -159,8 +159,8 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 			$table->addIndex(['href']);
 		}
 
-		if (!$schema->hasTable('circle_memberships')) {
-			$table = $schema->createTable('circle_memberships');
+		if (!$schema->hasTable('circle_membership')) {
+			$table = $schema->createTable('circle_membership');
 
 			$table->addColumn(
 				'id', 'string', [

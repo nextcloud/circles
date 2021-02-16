@@ -28,6 +28,7 @@ namespace OCA\Circles\Service;
 
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
 use daita\MySmallPhpTools\Traits\TStringTools;
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCP\IConfig;
@@ -332,9 +333,18 @@ class ConfigService {
 	 *
 	 * @return string
 	 */
-	public function deleteAppValue($key) {
+	public function deleteAppValue($key): string {
 		return $this->config->deleteAppValue($this->appName, $key);
 	}
+
+
+	/**
+	 *
+	 */
+	public function unsetAppConfig() {
+		$this->config->deleteAppValues(Application::APP_ID);
+	}
+
 
 	/**
 	 * Get a user value by key

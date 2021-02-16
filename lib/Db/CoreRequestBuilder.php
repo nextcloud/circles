@@ -32,9 +32,12 @@ declare(strict_types=1);
 namespace OCA\Circles\Db;
 
 
+use OC\DB\Connection;
+use OC\DB\SchemaWrapper;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\TimezoneService;
+use OCP\IDBConnection;
 
 
 /**
@@ -127,7 +130,69 @@ class CoreRequestBuilder {
 			throw new InvalidIdException();
 		}
 	}
+
+
+	/**
+	 *
+	 */
+	public function cleanDatabase(): void {
+		foreach ($this->tables as $table) {
+			$qb = $this->getQueryBuilder();
+			$qb->delete($table);
+			$qb->execute();
+		}
+
+		$qb = $this->getQueryBuilder();
+		$expr = $qb->expr();
+		$qb->delete(self::TABLE_FILE_SHARES);
+		$qb->where($expr->eq('share_type', $qb->createNamedParameter(self::SHARE_TYPE)));
+		$qb->execute();
+	}
+
+
+	public function uninstall(): void {
+		$this->uninstallAppTables();
+		$this->uninstallFromMigrations();
+		$this->uninstallFromJobs();
+	}
+
+	/**
+	 * this just empty all tables from the app.
+	 */
+	public function uninstallAppTables() {
+		$dbConn = \OC::$server->get(Connection::class);
+		$schema = new SchemaWrapper($dbConn);
+
+		foreach ($this->tables as $table) {
+			if ($schema->hasTable($table)) {
+				$schema->dropTable($table);
+			}
+		}
+
+		$schema->performDropTableCalls();
+	}
+
+
+	/**
+	 *
+	 */
+	public function uninstallFromMigrations() {
+		$qb = $this->getQueryBuilder();
+		$qb->delete('migrations');
+		$qb->limitToDBField('app', 'circles');
+
+		$qb->execute();
+	}
+
+	/**
+	 *
+	 */
+	public function uninstallFromJobs() {
+		$qb = $this->getQueryBuilder();
+//		$qb->delete('jobs');
+//		$qb->where($this->exprLimitToDBField($qb, 'class', 'OCA\Circles\', true, true));
+//		$qb->execute();
+	}
+
 }
-
-
 

@@ -31,11 +31,9 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-use daita\MySmallPhpTools\Exceptions\RequestContentException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Exceptions\SignatureException;
-use daita\MySmallPhpTools\Exceptions\WellKnownLinkNotFoundException;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21SignedRequest;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21WellKnown;
@@ -100,7 +98,8 @@ class CirclesRemote extends Base {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		RemoteRequest $remoteRequest, GlobalScaleService $globalScaleService, RemoteStreamService $remoteStreamService,
+		RemoteRequest $remoteRequest, GlobalScaleService $globalScaleService,
+		RemoteStreamService $remoteStreamService,
 		ConfigService $configService
 	) {
 		parent::__construct();
@@ -122,6 +121,9 @@ class CirclesRemote extends Base {
 		$this->setName('circles:remote')
 			 ->setDescription('remote features')
 			 ->addArgument('host', InputArgument::OPTIONAL, 'host of the remote instance of Nextcloud')
+			 ->addOption(
+				 'type', '', InputOption::VALUE_REQUIRED, 'set type of remote', RemoteInstance::TYPE_UNKNOWN
+			 )
 			 ->addOption('all', '', InputOption::VALUE_NONE, 'display all information');
 	}
 
@@ -152,14 +154,11 @@ class CirclesRemote extends Base {
 	/**
 	 * @param string $host
 	 *
-	 * @throws RemoteUidException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
-	 * @throws SignatureException
-	 * @throws RequestContentException
-	 * @throws WellKnownLinkNotFoundException
+	 * @throws Exception
 	 */
 	private function requestInstance(string $host): void {
+		$remoteType = $this->getRemoteType();
+
 		$webfinger = $this->getWebfinger($host, Application::APP_SUBJECT);
 		if ($this->input->getOption('all')) {
 			$this->output->writeln('- Webfinger on <info>' . $host . '</info>');
@@ -269,6 +268,8 @@ class CirclesRemote extends Base {
 
 		if ($remoteSignatory->getUid() !== $localSignatory->getUid()) {
 			$remoteSignatory->setInstance($host);
+			$remoteSignatory->setType($remoteType);
+
 			try {
 				$stored = new RemoteInstance();
 				$this->remoteStreamService->confirmValidRemote($remoteSignatory, $stored);
@@ -277,12 +278,24 @@ class CirclesRemote extends Base {
 					. ' is already known with this current identity</info>'
 				);
 
+				if ($remoteSignatory->getType() !== $stored->getType()) {
+					$this->output->writeln(
+						'- updating type from ' . $stored->getType() . ' to '
+						. $remoteSignatory->getType()
+					);
+					$this->remoteStreamService->update(
+						$remoteSignatory, RemoteStreamService::UPDATE_TYPE
+					);
+				}
+
 				if ($remoteSignatory->getInstance() !== $stored->getInstance()) {
 					$this->output->writeln(
 						'- updating host from ' . $stored->getInstance() . ' to '
 						. $remoteSignatory->getInstance()
 					);
-					$this->remoteStreamService->update($remoteSignatory, RemoteStreamService::UPDATE_INSTANCE);
+					$this->remoteStreamService->update(
+						$remoteSignatory, RemoteStreamService::UPDATE_INSTANCE
+					);
 				}
 				if ($remoteSignatory->getId() !== $stored->getId()) {
 					$this->output->writeln(
@@ -315,7 +328,8 @@ class CirclesRemote extends Base {
 			'The remote instance <info>' . $remoteSignatory->getInstance() . '</info> looks good.'
 		);
 		$question = new ConfirmationQuestion(
-			'Would you like to allow the sharing of your circles with this remote instance ? (y/N) ',
+			'Would you like to identify this remote instance as \'' . $remoteSignatory->getType()
+			. '\' ? (y/N) ',
 			false,
 			'/^(y|Y)/i'
 		);
@@ -455,6 +469,20 @@ class CirclesRemote extends Base {
 				]
 			);
 		}
+	}
+
+
+	/**
+	 * @throws Exception
+	 */
+	private function getRemoteType(): string {
+		$type = ucfirst(strtolower($this->input->getOption('type')));
+
+		if (!in_array($type, RemoteInstance::$LIST_TYPE)) {
+			throw new Exception('Unknown type: ' . implode(', ', RemoteInstance::$LIST_TYPE));
+		}
+
+		return $type;
 	}
 
 }

@@ -104,6 +104,22 @@ class RemoteRequest extends RemoteRequestBuilder {
 	 *
 	 * @throws RemoteUidException
 	 */
+	public function updateType(RemoteInstance $remote) {
+		$remote->mustBeIdentityAuthed();
+		$qb = $this->getRemoteUpdateSql();
+		$qb->set('type', $qb->createNamedParameter($remote->getType()));
+
+		$qb->limitToDBField('uid', $remote->getUid(true), false);
+
+		$qb->execute();
+	}
+
+
+	/**
+	 * @param RemoteInstance $remote
+	 *
+	 * @throws RemoteUidException
+	 */
 	public function updateHref(RemoteInstance $remote) {
 		$remote->mustBeIdentityAuthed();
 		$qb = $this->getRemoteUpdateSql();
