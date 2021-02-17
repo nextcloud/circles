@@ -260,7 +260,7 @@ class RemoteService extends NC21Signature {
 			$instance = $circle->getInstance();
 		}
 
-		$this->circleRequest->update($circle);
+		$this->circleRequest->insertOrUpdate($circle);
 		$this->memberRequest->insertOrUpdate($circle->getOwner());
 
 		$this->syncRemoteMembers($circle);
@@ -280,7 +280,12 @@ class RemoteService extends NC21Signature {
 	 */
 	public function syncRemoteMembers(Circle $circle) {
 		$members = $this->getMembersFromInstance($circle->getId(), $circle->getInstance());
-		// TODO: compare/update/insert members
+		foreach ($members as $member) {
+			try {
+				$this->memberRequest->insertOrUpdate($member);
+			} catch (InvalidIdException $e) {
+			}
+		}
 	}
 
 
@@ -304,7 +309,6 @@ class RemoteService extends NC21Signature {
 		string $instance,
 		int $type = Member::TYPE_USER
 	): FederatedUser {
-
 		$result = $this->remoteStreamService->resultRequestRemoteInstance(
 			$instance,
 			RemoteInstance::MEMBER,
@@ -313,6 +317,7 @@ class RemoteService extends NC21Signature {
 			['type' => Member::$DEF_TYPE[$type], 'userId' => $userId]
 		);
 
+		\OC::$server->getLogger()->log(3, '>> ' . json_encode($result));
 		if (empty($result)) {
 			throw new FederatedUserNotFoundException();
 		}

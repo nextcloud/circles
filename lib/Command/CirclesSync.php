@@ -31,6 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
+
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
@@ -39,6 +40,7 @@ use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
@@ -128,12 +130,12 @@ class CirclesSync extends Base {
 	 * @throws InvalidItemException
 	 * @throws RequestNetworkException
 	 * @throws SignatoryException
+	 * @throws RemoteInstanceException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$this->federatedUserService->bypassCurrentUserCondition(true);
 
 		if ($input->getOption('broadcast')) {
-
 
 			return 0;
 		}
@@ -152,7 +154,7 @@ class CirclesSync extends Base {
 		}
 
 		if ($this->configService->isLocalInstance($instance)) {
-			throw new RemoteNotFoundException('instance is local');
+			throw new RemoteNotFoundException('Circle is local');
 		}
 
 		$this->remoteService->syncRemoteCircle($circleId, $instance);

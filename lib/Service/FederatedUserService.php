@@ -426,6 +426,8 @@ class FederatedUserService {
 			case Member::TYPE_USER:
 				try {
 					return $this->getFederatedUser_User($singleId, $instance);
+				} catch (RemoteNotFoundException $e) {
+					throw new RemoteNotFoundException('Instance %s not found', ['instance' => $instance]);
 				} catch (Exception $e) {
 				}
 
@@ -511,17 +513,29 @@ class FederatedUserService {
 	 *
 	 * @return FederatedUser
 	 * @throws CircleNotFoundException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidItemException
 	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws UnknownRemoteException
 	 */
 	private function getFederatedUser_Circle(string $circleId, string $instance): FederatedUser {
 		// TODO: check remote instance for existing circle
-//		if ($this->configService->isLocalInstance($instance)) {
-		$circle = $this->circleRequest->getCircle($circleId);
-		$federatedUser = new FederatedUser();
-		$federatedUser->set($circleId, $circle->getInstance(), Member::TYPE_CIRCLE);
-		$federatedUser->setSingleId($circleId);
-//		} else {
-//		}
+		if ($this->configService->isLocalInstance($instance)) {
+			$circle = $this->circleRequest->getCircle($circleId);
+			$federatedUser = new FederatedUser();
+			$federatedUser->set($circleId, $circle->getInstance(), Member::TYPE_CIRCLE);
+			$federatedUser->setSingleId($circleId);
+		} else {
+			$federatedUser =
+				$this->remoteService->getFederatedUserFromInstance($circleId, $instance, Member::TYPE_CIRCLE);
+			$this->confirmLocalSingleId($federatedUser);
+		}
 
 		return $federatedUser;
 	}

@@ -92,6 +92,44 @@ class CircleRequest extends CircleRequestBuilder {
 
 
 	/**
+	 * @param Circle $circle
+	 *
+	 * @throws InvalidIdException
+	 */
+	public function insertOrUpdate(Circle $circle): void {
+		try {
+			$this->getCircle($circle->getId());
+			$this->update($circle);
+		} catch (CircleNotFoundException $e) {
+			$this->save($circle);
+		}
+	}
+
+
+//
+//	/**
+//	 * @param Member $member
+//	 * @param FederatedUser|null $initiator
+//	 *
+//	 * @return Member
+//	 * @throws MemberNotFoundException
+//	 */
+//	public function searchMember(Member $member, ?FederatedUser $initiator = null): Member {
+//		$qb = $this->getCircleSelectSql();
+//		$qb->limitToCircleId($member->getCircleId());
+//		$qb->limitToUserId($member->getUserId());
+//		$qb->limitToUserType($member->getUserType());
+//		$qb->limitToInstance($qb->getInstance($member));
+////		$qb->limitToSingleId($federatedUser->getSingleId());
+//
+//		if (!is_null($initiator)) {
+//			$qb->leftJoinCircle($initiator);
+//		}
+//
+//		return $this->getItemFromRequest($qb);
+//	}
+
+	/**
 	 * @param Member|null $filter
 	 * @param IFederatedUser|null $initiator
 	 * @param RemoteInstance|null $remoteInstance

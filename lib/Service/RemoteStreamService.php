@@ -198,7 +198,6 @@ class RemoteStreamService extends NC21Signature {
 		?JsonSerializable $object = null,
 		array $params = []
 	): array {
-
 		$signedRequest = $this->requestRemoteInstance($instance, $item, $type, $object, $params);
 		if (!$signedRequest->getOutgoingRequest()->hasResult()) {
 			throw new RequestNetworkException();

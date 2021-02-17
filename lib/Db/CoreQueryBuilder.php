@@ -39,6 +39,7 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
+use OCP\DB\QueryBuilder\ICompositeExpression;
 
 /**
  * Class CoreQueryBuilder
@@ -142,7 +143,8 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 	): void {
 		$this->leftJoinRemoteInstance($instance, 'ri');
 		$this->leftJoinMemberFromInstance($instance, 'mi', $aliasCircle);
-		$this->limitRemoteVisibility($sensitive, 'ri', $aliasCircle, $aliasOwner, 'mi');
+		$this->leftJoinMemberFromRemoteCircle($instance, 'rco', $aliasCircle);
+		$this->limitRemoteVisibility($sensitive, 'ri', 'rco', $aliasCircle, $aliasOwner, 'mi');
 	}
 
 
@@ -266,7 +268,7 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 	 * @param string $alias
 	 * @param string $aliasCircle
 	 */
-	public function leftJoinMemberFromInstance(
+	private function leftJoinMemberFromInstance(
 		string $instance, string $alias = 'mi', string $aliasCircle = 'c'
 	) {
 		if ($this->getType() !== QueryBuilder::SELECT) {
@@ -281,6 +283,41 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 				$expr->eq($alias . '.circle_id', $aliasCircle . '.unique_id'),
 				$expr->eq($alias . '.instance', $this->createNamedParameter($instance)),
 				$expr->gte($alias . '.level', $this->createNamedParameter(Member::LEVEL_MEMBER))
+			)
+		);
+	}
+
+
+	/**
+	 * left join circle is member of a circle from remote instance
+	 *
+	 * @param string $instance
+	 * @param string $aliasRemoteOwner
+	 * @param string $aliasCircle
+	 */
+	private function leftJoinMemberFromRemoteCircle(
+		string $instance, string $aliasRemoteOwner = 'rco', string $aliasCircle = 'c'
+	) {
+		if ($this->getType() !== QueryBuilder::SELECT) {
+			return;
+		}
+
+		$alias = 'rc';
+		$expr = $this->expr();
+		$this->leftJoin(
+			$this->getDefaultSelectAlias(), CoreRequestBuilder::TABLE_MEMBER, $alias,
+			$expr->andX(
+				$expr->eq($alias . '.single_id', $aliasCircle . '.unique_id'),
+				$expr->emptyString($alias . '.instance'),
+				$expr->gte($alias . '.level', $this->createNamedParameter(Member::LEVEL_MEMBER))
+			)
+		);
+		$this->leftJoin(
+			$this->getDefaultSelectAlias(), CoreRequestBuilder::TABLE_MEMBER, $aliasRemoteOwner,
+			$expr->andX(
+				$expr->eq($alias . '.circle_id', $aliasRemoteOwner . '.circle_id'),
+				$expr->eq($aliasRemoteOwner . '.instance', $this->createNamedParameter($instance)),
+				$expr->eq($aliasRemoteOwner . '.level', $this->createNamedParameter(Member::LEVEL_OWNER))
 			)
 		);
 	}
@@ -372,14 +409,16 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 	/**
 	 * - global_scale: visibility on all Circles
 	 * - trusted: visibility on all FEDERATED Circle if owner is local
-	 * - external: visibility on all FEDERATED Circle if owner is local and with at least one member from
-	 * this instance
-	 * - passive: no visibility on any Circle, only to members that belongs to the instance and the circles'
-	 *            owner.
-	 *            user should be able to share to the circle without having access to Circles' members
+	 * - external: visibility on all FEDERATED Circle if owner is local and:
+	 *    - with if Circle contains at least one member from the remote instance
+	 *    - one circle from the remote instance contains the local circle as member, and confirmed (using
+	 *      sync locally)
+	 * - passive: like external, but the members list will only contains member from the local instance and
+	 * from the remote instance.
 	 *
 	 * @param bool $sensitive
 	 * @param string $alias
+	 * @param string $aliasRemoteOwner
 	 * @param string $aliasCircle
 	 * @param string $aliasOwner
 	 * @param string $aliasMembers
@@ -387,6 +426,7 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 	protected function limitRemoteVisibility(
 		bool $sensitive = true,
 		string $alias = 'ri',
+		string $aliasRemoteOwner = 'rco',
 		string $aliasCircle = 'c',
 		string $aliasOwner = 'o',
 		string $aliasMembers = 'mi'
@@ -408,28 +448,18 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 			);
 		} else {
 			if ($this->getDefaultSelectAlias() === 'm') {
-				$andPassive = $expr->andX();
-				$andPassive->add(
-					$expr->eq($alias . '.type', $this->createNamedParameter(RemoteInstance::TYPE_PASSIVE))
-				);
-				$orMemberOrLevel = $expr->orX();
-				$orMemberOrLevel->add(
-					$expr->eq($this->getDefaultSelectAlias() . '.instance', $alias . '.instance')
-				);
-				$orMemberOrLevel->add(
-					$expr->eq(
-						$this->getDefaultSelectAlias() . '.level',
-						$this->createNamedParameter(Member::LEVEL_OWNER)
-					)
-				);
-				$andPassive->add($orMemberOrLevel);
-				$orExtOrPassive->add($andPassive);
+				$orExtOrPassive->add($this->limitRemoteVisibility_Sensitive_Members($alias));
 			}
 		}
 
+
+		$orInstance = $expr->orX();
+		$orInstance->add($expr->isNotNull($aliasMembers . '.instance'));
+		$orInstance->add($expr->isNotNull($aliasRemoteOwner . '.instance'));
+
 		$andExternal = $expr->andX();
 		$andExternal->add($orExtOrPassive);
-		$andExternal->add($expr->isNotNull($aliasMembers . '.instance'));
+		$andExternal->add($orInstance);
 
 		$orExtOrTrusted = $expr->orX();
 		$orExtOrTrusted->add($andExternal);
@@ -444,6 +474,40 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 		$orX->add($andTrusted);
 
 		$this->andWhere($orX);
+	}
+
+
+	/**
+	 * Limit visibility on Sensitive information when search for members.
+	 *
+	 * @param string $alias
+	 *
+	 * @return ICompositeExpression
+	 */
+	private function limitRemoteVisibility_Sensitive_Members(string $alias = 'ri'): ICompositeExpression {
+		$expr = $this->expr();
+		$andPassive = $expr->andX();
+		$andPassive->add(
+			$expr->eq($alias . '.type', $this->createNamedParameter(RemoteInstance::TYPE_PASSIVE))
+		);
+
+		$orMemberOrLevel = $expr->orX();
+		$orMemberOrLevel->add(
+			$expr->eq($this->getDefaultSelectAlias() . '.instance', $alias . '.instance')
+		);
+		$orMemberOrLevel->add(
+			$expr->emptyString($this->getDefaultSelectAlias() . '.instance')
+		);
+
+		$orMemberOrLevel->add(
+			$expr->eq(
+				$this->getDefaultSelectAlias() . '.level',
+				$this->createNamedParameter(Member::LEVEL_OWNER)
+			)
+		);
+		$andPassive->add($orMemberOrLevel);
+
+		return $andPassive;
 	}
 
 

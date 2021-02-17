@@ -265,7 +265,11 @@ class MembersList extends Base {
 				$data['initiator'] = $this->federatedUserService->getFederatedUser($initiator);
 			}
 
-			$members = $this->remoteService->getMembersFromInstance($circleId, $instance, $data);
+			try {
+				$members = $this->remoteService->getMembersFromInstance($circleId, $instance, $data);
+			} catch (RemoteInstanceException $e) {
+				return [];
+			}
 		} else {
 			$this->federatedUserService->commandLineInitiator($initiator, $circleId, true);
 			$members = $this->memberService->getMembers($circleId);
@@ -274,15 +278,19 @@ class MembersList extends Base {
 		if (!is_null($tree)) {
 			foreach ($members as $member) {
 				if ($member->getUserType() === Member::TYPE_CIRCLE) {
-					if ($instance !== '' && !$this->configService->isLocalInstance($instance)) {
+					if (!$this->configService->isLocalInstance($member->getInstance())) {
 						$data = [];
 						if ($initiator) {
 							$data['initiator'] = $this->federatedUserService->getFederatedUser($initiator);
 						}
 
-						$circle = $this->remoteService->getCircleFromInstance(
-							$member->getSingleId(), $instance, $data
-						);
+						$circle = null;
+						try {
+							$circle = $this->remoteService->getCircleFromInstance(
+								$member->getSingleId(), $member->getInstance(), $data
+							);
+						} catch (CircleNotFoundException | RemoteInstanceException $e) {
+						}
 					} else {
 						$this->federatedUserService->commandLineInitiator(
 							$initiator, $member->getSingleId(), true
@@ -294,7 +302,7 @@ class MembersList extends Base {
 								 [
 									 'circle'  => $circle,
 									 'member'  => $member,
-									 'cycling' => in_array($member->getSingleId(), $knownIds)
+									 'cycling' => in_array($member->getSingleId(), $knownIds),
 								 ]
 							 )
 					);
@@ -355,7 +363,14 @@ class MembersList extends Base {
 					}
 				}
 
-				if ($lineNumber === 2 && !is_null($circle)) {
+				if ($lineNumber === 2) {
+					if (is_null($circle)) {
+						if ($member->getUserType() === Member::TYPE_CIRCLE) {
+							$line .= '<comment>(out of bounds)</comment>';
+						}
+
+						return $line;
+					}
 					$owner = $circle->getOwner();
 					$line .= '<info>Owner</info>: ' . $owner->getUserId() . '@' . $owner->getInstance();
 					$type =
