@@ -507,7 +507,7 @@ var nav = {
 				if (status === 'Member' || status === 'Invited') {
 					statusSelect.append($('<option>', {
 						value: 'remove_member',
-						text: t('circles', 'Kick this member')
+						text: t('circles', 'Remove from circle')
 					}));
 				}
 

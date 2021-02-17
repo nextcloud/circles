@@ -45,7 +45,7 @@ class BaseMember implements JsonSerializable {
 	const STATUS_REQUEST = 'Requesting';
 	const STATUS_MEMBER = 'Member';
 	const STATUS_BLOCKED = 'Blocked';
-	const STATUS_KICKED = 'Kicked';
+	const STATUS_KICKED = 'Removed';
 
 	const TYPE_USER = 1;
 	const TYPE_GROUP = 2;
