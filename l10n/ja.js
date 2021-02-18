@@ -32,14 +32,12 @@ OC.L10N.register(
     "Invited" : "招待された",
     "Requesting" : "リクエスト",
     "Blocked" : "ブロックされた",
-    "Kicked" : "キックした",
     "This operation will add/invite all members of the group to the circle" : "この操作では、グループのすべてのメンバーをサークルに追加/招待します",
     "Please confirm" : "確認してください",
     "Are you sure you want to leave this circle?" : "このサークルから退出してもよろしいですか？",
     "Are you sure you want to delete this circle?" : "このサークルを削除してもよろしいですか？",
     "Mail Address" : "メールアドレス",
     "Contact" : "連絡先",
-    "Kick this member" : "このメンバーをキックする",
     "Accept the request" : "要求を受け入れる",
     "Dismiss the request" : "要求を閉じる",
     "Unlink this group" : "このグループのリンクを解除する",
@@ -293,6 +291,8 @@ OC.L10N.register(
     "Allow linking of groups" : "グループのリンクを許可する",
     "Groups can be linked to circles." : "グループはサークルにリンクできます。",
     "Skip invitation step to closed circles" : "クローズドサークルへの招待ステップをスキップ",
-    "Moderators can add member to closed circles without user approval." : "モデレーターは、ユーザーの承認なしにクローズドサークルにメンバーを追加できます。"
+    "Moderators can add member to closed circles without user approval." : "モデレーターは、ユーザーの承認なしにクローズドサークルにメンバーを追加できます。",
+    "Kicked" : "キックした",
+    "Kick this member" : "このメンバーをキックする"
 },
 "nplurals=1; plural=0;");

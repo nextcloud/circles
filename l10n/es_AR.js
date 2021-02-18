@@ -18,12 +18,10 @@ OC.L10N.register(
     "Invited" : "Invitado",
     "Requesting" : "Solicitando",
     "Blocked" : "Bloqueado",
-    "Kicked" : "Expulsado",
     "Please confirm" : "Por favor confirmar",
     "Are you sure you want to delete this circle?" : "¿Está seguro que desea borrar este círculo?",
     "Mail Address" : "Dirección de Correo",
     "Contact" : "Contacto",
-    "Kick this member" : "Sacar a este miembro",
     "Accept the request" : "Aceptar la solicitud",
     "Dismiss the request" : "Descartar la solicitud",
     "Cannot join this circle" : "Usted no se puede unir a este círculo",
@@ -98,6 +96,8 @@ OC.L10N.register(
     "Joined" : "Se ha unido",
     "Link" : "Link",
     "Description" : "Descripción",
-    "Change password" : "Cambiar contraseña"
+    "Change password" : "Cambiar contraseña",
+    "Kicked" : "Expulsado",
+    "Kick this member" : "Sacar a este miembro"
 },
 "nplurals=2; plural=(n != 1);");

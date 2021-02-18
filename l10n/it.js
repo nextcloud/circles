@@ -32,14 +32,12 @@ OC.L10N.register(
     "Invited" : "Invitati",
     "Requesting" : "Richiedenti",
     "Blocked" : "Bloccati",
-    "Kicked" : "Espulsi",
     "This operation will add/invite all members of the group to the circle" : "Questa operazione aggiungerà/inviterà tutti i membri del gruppo alla cerchia",
     "Please confirm" : "Conferma",
     "Are you sure you want to leave this circle?" : "Sei sicuro di voler abbandonare questa cerchia?",
     "Are you sure you want to delete this circle?" : "Sei sicuro di voler eliminare questa cerchia?",
     "Mail Address" : "Indirizzo di posta",
     "Contact" : "Contatto",
-    "Kick this member" : "Espelli questo membro",
     "Accept the request" : "Accetta la richiesta",
     "Dismiss the request" : "Annulla la richiesta",
     "Unlink this group" : "Scollega questo gruppo",
@@ -307,6 +305,8 @@ OC.L10N.register(
     "Allow linking of groups" : "Consenti il collegamento dei gruppi",
     "Groups can be linked to circles." : "I gruppi possono essere collegati alle cerchie.",
     "Skip invitation step to closed circles" : "Salta la fase di invito alle cerchie chiuse",
-    "Moderators can add member to closed circles without user approval." : "I moderatori possono aggiungere membri alle cerchie chiuse senza approvazione dell'utente."
+    "Moderators can add member to closed circles without user approval." : "I moderatori possono aggiungere membri alle cerchie chiuse senza approvazione dell'utente.",
+    "Kicked" : "Espulsi",
+    "Kick this member" : "Espelli questo membro"
 },
 "nplurals=2; plural=(n != 1);");

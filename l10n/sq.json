@@ -30,14 +30,12 @@
     "Invited" : "I ftuar",
     "Requesting" : "Duke kerkuar",
     "Blocked" : "I bllokuar",
-    "Kicked" : "I nxjerrë jashtë",
     "This operation will add/invite all members of the group to the circle" : "Ky veprim do të shtojë/ftojë të gjithë anëtarët e grupit në rreth",
     "Please confirm" : "Ju lutem konfirmoni",
     "Are you sure you want to leave this circle?" : "Jeni i sigurtë që doni ta lini këtë rreth?",
     "Are you sure you want to delete this circle?" : "Jeni i sigurtë që doni ta fshini këtë rreth?",
     "Mail Address" : "Adresa e postës elektronike",
     "Contact" : "Kontakt",
-    "Kick this member" : "Dëboje këtë anëtar",
     "Accept the request" : "Prano kërkesën",
     "Dismiss the request" : "Hidh poshtë kërkesën",
     "Unlink this group" : "Shkëputeni këtë grup",
@@ -201,6 +199,8 @@
     "Description" : "Përshkrim",
     "Change password" : "Ndryshoni fjalëkalimin",
     "Allow Federated Links" : "Lejo Linqet e Federuara",
-    "Save settings" : "Ruaj konfigurimet"
+    "Save settings" : "Ruaj konfigurimet",
+    "Kicked" : "I nxjerrë jashtë",
+    "Kick this member" : "Dëboje këtë anëtar"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

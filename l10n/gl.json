@@ -30,14 +30,12 @@
     "Invited" : "Convidado",
     "Requesting" : "Solicitando",
     "Blocked" : "Bloqueado",
-    "Kicked" : "Expulsado",
     "This operation will add/invite all members of the group to the circle" : "Esta operación engadirá/convidará a todos os participante no grupo ao círculo",
     "Please confirm" : "Confírmeo",
     "Are you sure you want to leave this circle?" : "Confirma que quere abandonar este círculo?",
     "Are you sure you want to delete this circle?" : "Confirma que quere eliminar este círculo?",
     "Mail Address" : "Enderezo de correo",
     "Contact" : "Contacto",
-    "Kick this member" : "Expulsar a este participante",
     "Accept the request" : "Aceptar a solicitude",
     "Dismiss the request" : "Rexeitar a solicitude",
     "Unlink this group" : "Desligar este grupo",
@@ -305,6 +303,8 @@
     "Allow linking of groups" : "Permitir a ligazón de grupos",
     "Groups can be linked to circles." : "Os grupos poden ser ligados cos círculos.",
     "Skip invitation step to closed circles" : "Omitir o paso de convite a círculos pechados",
-    "Moderators can add member to closed circles without user approval." : "Os moderadores poden engadir participantes a círculos pechados sen a aprobación do usuario."
+    "Moderators can add member to closed circles without user approval." : "Os moderadores poden engadir participantes a círculos pechados sen a aprobación do usuario.",
+    "Kicked" : "Expulsado",
+    "Kick this member" : "Expulsar a este participante"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

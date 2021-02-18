@@ -25,13 +25,11 @@ OC.L10N.register(
     "Invited" : "مدعو",
     "Requesting" : "يطلب",
     "Blocked" : "محجوب",
-    "Kicked" : "مطرود",
     "This operation will add/invite all members of the group to the circle" : "هذه العملية ستقوم بـ إضافة/دعوة أعضاء المجموعة للحلقة",
     "Please confirm" : "الرجاء التأكيد",
     "Are you sure you want to leave this circle?" : "هل أنت متأكد من ترك هذه الحلقة؟",
     "Are you sure you want to delete this circle?" : "هل أنت متأكد من حذف هذه الحلقة؟",
     "Mail Address" : "عنوان البريد الإلكتروني",
-    "Kick this member" : "طرد هذا العضو",
     "Accept the request" : "قبول هذا العضو",
     "Dismiss the request" : "رفض الطلب",
     "Unlink this group" : "إلغاء ربط هذه المجموعة",
@@ -71,6 +69,8 @@ OC.L10N.register(
     "Link" : "الرابط",
     "Description" : "الوصف",
     "Change password" : "تعديل الكلمة السرية",
-    "Save settings" : "حفظ الإعدادات"
+    "Save settings" : "حفظ الإعدادات",
+    "Kicked" : "مطرود",
+    "Kick this member" : "طرد هذا العضو"
 },
 "nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;");

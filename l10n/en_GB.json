@@ -30,14 +30,12 @@
     "Invited" : "Invited",
     "Requesting" : "Requesting",
     "Blocked" : "Blocked",
-    "Kicked" : "Kicked",
     "This operation will add/invite all members of the group to the circle" : "This operation will add/invite all members of the group to the circle",
     "Please confirm" : "Please confirm",
     "Are you sure you want to leave this circle?" : "Are you sure you want to leave this circle?",
     "Are you sure you want to delete this circle?" : "Are you sure you want to delete this circle?",
     "Mail Address" : "Mail Address",
     "Contact" : "Contact",
-    "Kick this member" : "Kick this member",
     "Accept the request" : "Accept the request",
     "Dismiss the request" : "Dismiss the request",
     "Unlink this group" : "Unlink this group",
@@ -291,6 +289,8 @@
     "Allow linking of groups" : "Allow linking of groups",
     "Groups can be linked to circles." : "Groups can be linked to circles.",
     "Skip invitation step to closed circles" : "Skip invitation step to closed circles",
-    "Moderators can add member to closed circles without user approval." : "Moderators can add member to closed circles without user approval."
+    "Moderators can add member to closed circles without user approval." : "Moderators can add member to closed circles without user approval.",
+    "Kicked" : "Kicked",
+    "Kick this member" : "Kick this member"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

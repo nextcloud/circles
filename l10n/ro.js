@@ -32,14 +32,12 @@ OC.L10N.register(
     "Invited" : "Invitat",
     "Requesting" : "În curs de cerere",
     "Blocked" : "Blocat",
-    "Kicked" : "Dat afară",
     "This operation will add/invite all members of the group to the circle" : "Operațiunea va adăuga/invita toți membrii grupului în cerc",
     "Please confirm" : "Te rog confirmă",
     "Are you sure you want to leave this circle?" : "Ești sigur că vrei să părăsești acest cerc?",
     "Are you sure you want to delete this circle?" : "Ești sigur că vrei să ștergi acest cerc?",
     "Mail Address" : "Adresă Mail",
     "Contact" : "Contact",
-    "Kick this member" : "Dă afară acest membru",
     "Accept the request" : "Acceptă cererea",
     "Dismiss the request" : "Ignoră cererea",
     "Unlink this group" : "Dezleagă acest grup",
@@ -268,6 +266,8 @@ OC.L10N.register(
     "Save settings" : "Salvează setări",
     "Maximum number of members per circle" : "Numă maxim de membri per cerc",
     "Allow linking of groups" : "Permite legarea grupurilor",
-    "Groups can be linked to circles." : "Grupurile pot fi legate de cercuri"
+    "Groups can be linked to circles." : "Grupurile pot fi legate de cercuri",
+    "Kicked" : "Dat afară",
+    "Kick this member" : "Dă afară acest membru"
 },
 "nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));");
