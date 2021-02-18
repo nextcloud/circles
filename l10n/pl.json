@@ -30,14 +30,12 @@
     "Invited" : "Zaproszeni",
     "Requesting" : "Proszący o zaproszenie",
     "Blocked" : "Zablokowani",
-    "Kicked" : "Usunięci",
     "This operation will add/invite all members of the group to the circle" : "Ta operacja doda/zaprosi wszystkich członków grupy do tego kręgu",
     "Please confirm" : "Potwierdź",
     "Are you sure you want to leave this circle?" : "Jesteś pewny, że chcesz opuścić ten krąg?",
     "Are you sure you want to delete this circle?" : "Czy na pewno chcesz usunąć ten krąg?",
     "Mail Address" : "Adres e-mail",
     "Contact" : "Kontakt",
-    "Kick this member" : "Usuń członka",
     "Accept the request" : "Zakceptuj prośbę",
     "Dismiss the request" : "Odrzuć prośbę",
     "Unlink this group" : "Odłącz grupę",
@@ -305,6 +303,8 @@
     "Allow linking of groups" : "Zezwalaj na łączenie grup",
     "Groups can be linked to circles." : "Grupy mogą być łączone z kręgami.",
     "Skip invitation step to closed circles" : "Pomiń krok zaproszenia do zamkniętych kręgów",
-    "Moderators can add member to closed circles without user approval." : "Moderatorzy mogą dodawać członków do zamkniętych kręgów bez zgody użytkownika."
+    "Moderators can add member to closed circles without user approval." : "Moderatorzy mogą dodawać członków do zamkniętych kręgów bez zgody użytkownika.",
+    "Kicked" : "Usunięci",
+    "Kick this member" : "Usuń członka"
 },"pluralForm" :"nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);"
 }

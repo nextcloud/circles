@@ -32,14 +32,12 @@ OC.L10N.register(
     "Invited" : "Pozvaný",
     "Requesting" : "Žádání",
     "Blocked" : "Blokovaný",
-    "Kicked" : "Vyloučen",
     "This operation will add/invite all members of the group to the circle" : "Tato operace přidá/pozve všechny členy skupiny do okruhu",
     "Please confirm" : "Potvrďte",
     "Are you sure you want to leave this circle?" : "Opravdu chcete opustit tento okruh?",
     "Are you sure you want to delete this circle?" : "Opravdu chcete smazat tento okruh?",
     "Mail Address" : "E-mailová adresa",
     "Contact" : "Kontakt",
-    "Kick this member" : "Vyloučit tohoto člena",
     "Accept the request" : "Přijmout požadavek",
     "Dismiss the request" : "Skrýt požadavek",
     "Unlink this group" : "Odpojit tuto skupinu",
@@ -307,6 +305,8 @@ OC.L10N.register(
     "Allow linking of groups" : "Povolit propojování skupin",
     "Groups can be linked to circles." : "Skupiny lze propojit s okruhy.",
     "Skip invitation step to closed circles" : "Přeskočit krok pozvání do uzavřených okruhů",
-    "Moderators can add member to closed circles without user approval." : "Moderátoři nepotřebují souhlas uživatele pro přidávání členů do uzavřených okruhů."
+    "Moderators can add member to closed circles without user approval." : "Moderátoři nepotřebují souhlas uživatele pro přidávání členů do uzavřených okruhů.",
+    "Kicked" : "Vyloučen",
+    "Kick this member" : "Vyloučit tohoto člena"
 },
 "nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;");

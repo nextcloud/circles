@@ -30,14 +30,12 @@
     "Invited" : "Προσκεκλημένος",
     "Requesting" : "Γίνεται αίτημα",
     "Blocked" : "Αποκλεισμένος",
-    "Kicked" : "Εκδιώχθηκε",
     "This operation will add/invite all members of the group to the circle" : "Αυτή η λειτουργία θα προσθέσει/καλέσει όλα τα μέλη της ομάδας στον κύκλο",
     "Please confirm" : "Παρακαλούμε επιβεβαιώστε",
     "Are you sure you want to leave this circle?" : "Θέλετε σίγουρα να αποχωρήσετε από τον κύκλο;",
     "Are you sure you want to delete this circle?" : "Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό τον κύκλο;",
     "Mail Address" : "Διεύθυνση αλληλογραφίας",
     "Contact" : "Επαφή",
-    "Kick this member" : "Διώξτε αυτό το μέλος",
     "Accept the request" : "Αποδοχή αιτήματος",
     "Dismiss the request" : "Αποδέσμευση αιτήματος",
     "Unlink this group" : "Αποσυνδέστε αυτή την ομάδα",
@@ -305,6 +303,8 @@
     "Allow linking of groups" : "Να επιτρέπεται η σύνδεση ομάδων",
     "Groups can be linked to circles." : "Οι ομάδες μπορούν να συνδεθούν με τους κύκλους.",
     "Skip invitation step to closed circles" : "Παράλειψη του βήματος πρόσκλησης σε κλειστούς κύκλους",
-    "Moderators can add member to closed circles without user approval." : "Οι συντονιστές μπορούν να προσθέτουν μέλη σε κλειστούς κύκλους χωρίς την έγκριση των χρηστών."
+    "Moderators can add member to closed circles without user approval." : "Οι συντονιστές μπορούν να προσθέτουν μέλη σε κλειστούς κύκλους χωρίς την έγκριση των χρηστών.",
+    "Kicked" : "Εκδιώχθηκε",
+    "Kick this member" : "Διώξτε αυτό το μέλος"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

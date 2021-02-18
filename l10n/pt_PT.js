@@ -29,13 +29,11 @@ OC.L10N.register(
     "Invited" : "Convidado",
     "Requesting" : "A solicitar",
     "Blocked" : "Bloqueado",
-    "Kicked" : "Expulso",
     "Please confirm" : "Por favor, confirme",
     "Are you sure you want to leave this circle?" : "Tem a certeza que deseja sair deste círculo?",
     "Are you sure you want to delete this circle?" : "Tem a certeza que deseja eliminar este círculo?",
     "Mail Address" : "Endereço de Correio",
     "Contact" : "Contacto",
-    "Kick this member" : "Expulsar este membro",
     "Accept the request" : "Aceitar o pedido",
     "Dismiss the request" : "Rejeitar o pedido",
     "Unlink this group" : "Desassociar este grupo",
@@ -154,6 +152,8 @@ OC.L10N.register(
     "Accept Link Request Automatically" : "Aceitar Automaticamente o Pedido de Associação",
     "Save settings" : "Guardar definições",
     "Allow linking of groups" : "Permitir associação de grupos",
-    "Groups can be linked to circles." : "Os grupos podem ser associados aos grupos."
+    "Groups can be linked to circles." : "Os grupos podem ser associados aos grupos.",
+    "Kicked" : "Expulso",
+    "Kick this member" : "Expulsar este membro"
 },
 "nplurals=2; plural=(n != 1);");

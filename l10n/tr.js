@@ -32,14 +32,12 @@ OC.L10N.register(
     "Invited" : "Çağrılmış",
     "Requesting" : "İsteniyor",
     "Blocked" : "Engellenmiş",
-    "Kicked" : "Atılmış",
     "This operation will add/invite all members of the group to the circle" : "Bu işlem gruptaki tüm üyeleri çevreye ekleyecek ya da çağıracak",
     "Please confirm" : "Lütfen onaylayın",
     "Are you sure you want to leave this circle?" : "Bu çevreyi bırakmak istediğinize emin misiniz?",
     "Are you sure you want to delete this circle?" : "Bu çevreyi silmek istediğinize emin misiniz?",
     "Mail Address" : "Posta Adresi",
     "Contact" : "Kişi",
-    "Kick this member" : "Üyelikten çıkar",
     "Accept the request" : "İsteği kabul et",
     "Dismiss the request" : "İsteği yok say",
     "Unlink this group" : "Bu grubun bağlantısını kaldır",
@@ -307,6 +305,8 @@ OC.L10N.register(
     "Allow linking of groups" : "Gruplar Bağlanabilsin",
     "Groups can be linked to circles." : "Grupların Çevrelere bağlanmasını sağlar.",
     "Skip invitation step to closed circles" : "Kapalı çevrelerde çağrı adımı atlansın",
-    "Moderators can add member to closed circles without user approval." : "Kapalı çevre sorumluları kullanıcı onayına gerek olmadan üye ekleyebilir."
+    "Moderators can add member to closed circles without user approval." : "Kapalı çevre sorumluları kullanıcı onayına gerek olmadan üye ekleyebilir.",
+    "Kicked" : "Atılmış",
+    "Kick this member" : "Üyelikten çıkar"
 },
 "nplurals=2; plural=(n > 1);");

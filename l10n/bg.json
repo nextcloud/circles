@@ -30,14 +30,12 @@
     "Invited" : "Поканен",
     "Requesting" : "Заявка",
     "Blocked" : "Блокиран",
-    "Kicked" : "Изгонен",
     "This operation will add/invite all members of the group to the circle" : "Тази операция ще добави / покани всички членове на групата в кръга",
     "Please confirm" : "Моля, потвърдете",
     "Are you sure you want to leave this circle?" : "Сигурен ли сте, че искате да напуснете този кръг?",
     "Are you sure you want to delete this circle?" : "Сигурен ли сте, че искате да изтриете този кръг?",
     "Mail Address" : "Имейл адрес",
     "Contact" : "Контакт",
-    "Kick this member" : "Изгонване на този член",
     "Accept the request" : "Приемане на заявката",
     "Dismiss the request" : "Отхвърляне на заявката",
     "Unlink this group" : "Прекратяване на връзката с тази група",
@@ -305,6 +303,8 @@
     "Allow linking of groups" : "Позволяване на свързване на групи",
     "Groups can be linked to circles." : "Групите могат да бъдат свързани към кръгове.",
     "Skip invitation step to closed circles" : "Пропускане на стъпката за покана до затворени кръгове",
-    "Moderators can add member to closed circles without user approval." : "Модераторите могат да добавят член в затворени кръгове без одобрение от потребителя."
+    "Moderators can add member to closed circles without user approval." : "Модераторите могат да добавят член в затворени кръгове без одобрение от потребителя.",
+    "Kicked" : "Изгонен",
+    "Kick this member" : "Изгонване на този член"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

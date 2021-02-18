@@ -30,14 +30,12 @@
     "Invited" : "Được mời",
     "Requesting" : "Yêu cầu",
     "Blocked" : "Bị chặn",
-    "Kicked" : "Bị đá",
     "This operation will add/invite all members of the group to the circle" : "Thao tác này sẽ thêm vào/mời tất cả các thành viên của nhóm vào vòng liên kết",
     "Please confirm" : "Vui lòng xác nhận",
     "Are you sure you want to leave this circle?" : "Bạn có chắc bạn muốn rời khỏi vòng kết nối này",
     "Are you sure you want to delete this circle?" : "Bạn có chắc chắn muốn xóa vòng kết nối này?",
     "Mail Address" : "Địa chỉ thư",
     "Contact" : "Liên hệ",
-    "Kick this member" : "Đuổi thành viên này",
     "Accept the request" : "Chấp nhận yêu cầu",
     "Dismiss the request" : "Loại bỏ yêu cầu",
     "Unlink this group" : "Hủy liên kết nhóm này",
@@ -295,6 +293,8 @@
     "Allow linking of groups" : "Chấp nhận liên kết của các nhóm",
     "Groups can be linked to circles." : "Các nhóm có thể đuọc liên kết tới vòng kết nối.",
     "Skip invitation step to closed circles" : "Bỏ qua thao tác gửi lời mời đối với các vòng kết nối Đóng",
-    "Moderators can add member to closed circles without user approval." : "Các điều hành viên có thể thêm thành viên vào các vòng kết nối Đóng mà không cần sự chấp thuận của người dùng."
+    "Moderators can add member to closed circles without user approval." : "Các điều hành viên có thể thêm thành viên vào các vòng kết nối Đóng mà không cần sự chấp thuận của người dùng.",
+    "Kicked" : "Bị đá",
+    "Kick this member" : "Đuổi thành viên này"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

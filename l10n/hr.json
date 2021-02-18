@@ -30,14 +30,12 @@
     "Invited" : "Pozvan",
     "Requesting" : "Zahtjeva",
     "Blocked" : "Blokiran",
-    "Kicked" : "Izbačen",
     "This operation will add/invite all members of the group to the circle" : "Ova će radnja dodati/pozvati sve članove grupe u krug",
     "Please confirm" : "Potvrdite",
     "Are you sure you want to leave this circle?" : "Jeste li sigurni da želite napustiti ovaj krug?",
     "Are you sure you want to delete this circle?" : "Jeste li sigurni da želite izbrisati ovaj krug?",
     "Mail Address" : "Adresa e-pošte",
     "Contact" : "Kontakt",
-    "Kick this member" : "Izbaci ovog člana",
     "Accept the request" : "Prihvati zahtjev",
     "Dismiss the request" : "Odbaci zahtjev",
     "Unlink this group" : "Prekini vezu s ovom grupom",
@@ -305,6 +303,8 @@
     "Allow linking of groups" : "Dopusti povezivanje grupa",
     "Groups can be linked to circles." : "Grupe se mogu povezati s krugovima.",
     "Skip invitation step to closed circles" : "Preskoči korak pozivanja u zatvorene krugove",
-    "Moderators can add member to closed circles without user approval." : "Moderatori mogu dodati članove u zatvorene krugove bez odobrenja korisnika."
+    "Moderators can add member to closed circles without user approval." : "Moderatori mogu dodati članove u zatvorene krugove bez odobrenja korisnika.",
+    "Kicked" : "Izbačen",
+    "Kick this member" : "Izbaci ovog člana"
 },"pluralForm" :"nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;"
 }

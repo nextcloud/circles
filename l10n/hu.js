@@ -32,14 +32,12 @@ OC.L10N.register(
     "Invited" : "Meghívva",
     "Requesting" : "Kérelmezés",
     "Blocked" : "Blokkolva",
-    "Kicked" : "Kirúgva",
     "This operation will add/invite all members of the group to the circle" : "A művelet a csoport minden tagját hozzáadja/meghívja a körbe",
     "Please confirm" : "Kérlek erősítsd meg",
     "Are you sure you want to leave this circle?" : "Biztosan el akarod hagyni ezt a kört?",
     "Are you sure you want to delete this circle?" : "Biztosan törlöd ezt a kört?",
     "Mail Address" : "Levél cím",
     "Contact" : "Kapcsolat",
-    "Kick this member" : "A tag kirúgása",
     "Accept the request" : "Kérés elfogadása",
     "Dismiss the request" : "Kérés elutasítása",
     "Unlink this group" : "Csoport leválasztása",
@@ -267,6 +265,8 @@ OC.L10N.register(
     "Save settings" : "Beállítások mentése",
     "Maximum number of members per circle" : "Körönkénti tagok legnagyobb száma",
     "Allow linking of groups" : "Csoportok csatlakoztatásának engedélyezése",
-    "Groups can be linked to circles." : "Csoportok csatolhatók a körökhöz."
+    "Groups can be linked to circles." : "Csoportok csatolhatók a körökhöz.",
+    "Kicked" : "Kirúgva",
+    "Kick this member" : "A tag kirúgása"
 },
 "nplurals=2; plural=(n != 1);");

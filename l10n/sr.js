@@ -32,14 +32,12 @@ OC.L10N.register(
     "Invited" : "Позван",
     "Requesting" : "Захтевам",
     "Blocked" : "Блокиран",
-    "Kicked" : "Избачен",
     "This operation will add/invite all members of the group to the circle" : "Ова акција ће додати/позвати све чланове групе у круг",
     "Please confirm" : "Молимо потврдите",
     "Are you sure you want to leave this circle?" : "Да ли сте сигурни да желите да напустите круг?",
     "Are you sure you want to delete this circle?" : "Да ли сте сигурни да желите да обришете круг?",
     "Mail Address" : "Адреса е-поште",
     "Contact" : "Контакт",
-    "Kick this member" : "Избаци овог члана",
     "Accept the request" : "Прихвати захтев",
     "Dismiss the request" : "Одбаци захтев",
     "Unlink this group" : "Одвежи ову групу",
@@ -297,6 +295,8 @@ OC.L10N.register(
     "Allow linking of groups" : "Дозволи увезивање група",
     "Groups can be linked to circles." : "Групе се могу везати на кругове.",
     "Skip invitation step to closed circles" : "Прескочи позивницу за затворене кругове",
-    "Moderators can add member to closed circles without user approval." : "Модератори могу да додају чланове у затворене кругове без одобрења корисника."
+    "Moderators can add member to closed circles without user approval." : "Модератори могу да додају чланове у затворене кругове без одобрења корисника.",
+    "Kicked" : "Избачен",
+    "Kick this member" : "Избаци овог члана"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");

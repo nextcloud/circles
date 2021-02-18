@@ -24,12 +24,10 @@ OC.L10N.register(
     "Invited" : "Уригдах",
     "Requesting" : "Хүсэлт илгээх",
     "Blocked" : "Хаагдсан",
-    "Kicked" : "Өшиглөсөн",
     "Please confirm" : "баталгаажуулна уу",
     "Are you sure you want to leave this circle?" : "та энэ тойргийг орхихийг хүсэж байна уу?",
     "Are you sure you want to delete this circle?" : "Та энэ тойргийг устгахдаа итгэлтэй байна уу?",
     "Mail Address" : "шуудангийн хаяг",
-    "Kick this member" : "Энэ гишүүнийг хасах",
     "Accept the request" : "Хүсэлт хүлээн авах",
     "Dismiss the request" : "Хүсэлт алдаатай",
     "Cannot join this circle" : "Энэ тойрогт илсэж чадахгүй",
@@ -92,6 +90,8 @@ OC.L10N.register(
     "Linked" : "холбосон",
     "Description" : "Тодорхойлолт",
     "Change password" : "Нууц үг солих",
-    "Save settings" : "тохиргоог хадгалах"
+    "Save settings" : "тохиргоог хадгалах",
+    "Kicked" : "Өшиглөсөн",
+    "Kick this member" : "Энэ гишүүнийг хасах"
 },
 "nplurals=2; plural=(n != 1);");

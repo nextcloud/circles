@@ -30,14 +30,12 @@
     "Invited" : "已邀请",
     "Requesting" : "请求中",
     "Blocked" : "被阻止",
-    "Kicked" : "被踢出",
     "This operation will add/invite all members of the group to the circle" : "这个操作将会把分组中所有成员都添加/邀请到这个圈子",
     "Please confirm" : "请确认",
     "Are you sure you want to leave this circle?" : "您确定要离开这个圈子？",
     "Are you sure you want to delete this circle?" : "您确定要删除这个圈子？",
     "Mail Address" : "邮箱",
     "Contact" : "联系",
-    "Kick this member" : "踢开这个成员",
     "Accept the request" : "接受这个请求",
     "Dismiss the request" : "取消此请求",
     "Unlink this group" : "取消连接这个分组",
@@ -305,6 +303,8 @@
     "Allow linking of groups" : "允许链接的群组",
     "Groups can be linked to circles." : "群组可以链接到圈子。",
     "Skip invitation step to closed circles" : "跳过进入封闭圈子的邀请步骤",
-    "Moderators can add member to closed circles without user approval." : "主持人可以不经过用户同意向封闭圈子添加成员。"
+    "Moderators can add member to closed circles without user approval." : "主持人可以不经过用户同意向封闭圈子添加成员。",
+    "Kicked" : "被踢出",
+    "Kick this member" : "踢开这个成员"
 },"pluralForm" :"nplurals=1; plural=0;"
 }
