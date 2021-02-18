@@ -32,14 +32,12 @@ OC.L10N.register(
     "Invited" : "Convidat",
     "Requesting" : "S'està demanant",
     "Blocked" : "Blocat",
-    "Kicked" : "Expulsat",
     "This operation will add/invite all members of the group to the circle" : "Aquesta operació afegirà/convidarà a tots els membres del grup al cercle",
     "Please confirm" : "Confirmeu, si us plau",
     "Are you sure you want to leave this circle?" : "Esteu segurs que voleu deixar aquest cercle?",
     "Are you sure you want to delete this circle?" : "Esteu segurs que voleu suprimir aquest cercle?",
     "Mail Address" : "Adreça electrònica",
     "Contact" : "Contacte",
-    "Kick this member" : "Expulsa aquest membre",
     "Accept the request" : "Accepta la petició",
     "Dismiss the request" : "Declina la petició",
     "Unlink this group" : "Desconnecta aquest grup",
@@ -297,6 +295,8 @@ OC.L10N.register(
     "Allow linking of groups" : "Permet l'enllaç de grups",
     "Groups can be linked to circles." : "Els grups poden ser enllaçats a cercles.",
     "Skip invitation step to closed circles" : "Saltar el pas d'invitació als cercles tancats",
-    "Moderators can add member to closed circles without user approval." : "Els moderadors poden afegir un membre als cercles tancats sense que l'usuari ho accepti."
+    "Moderators can add member to closed circles without user approval." : "Els moderadors poden afegir un membre als cercles tancats sense que l'usuari ho accepti.",
+    "Kicked" : "Expulsat",
+    "Kick this member" : "Expulsa aquest membre"
 },
 "nplurals=2; plural=(n != 1);");

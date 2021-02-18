@@ -30,14 +30,12 @@
     "Invited" : "Boðinn",
     "Requesting" : "Biður um",
     "Blocked" : "Útilokaður",
-    "Kicked" : "Hent út",
     "This operation will add/invite all members of the group to the circle" : "Þessi aðgerð mun bæta við/bjóða öllum meðlimum hópsins í hringinn",
     "Please confirm" : "Endilega staðfestu þetta",
     "Are you sure you want to leave this circle?" : "Ertu viss um að þú viljir hætta í þessum hring?",
     "Are you sure you want to delete this circle?" : "Ertu viss um að þú viljir eyða þessum hring?",
     "Mail Address" : "Tölvupóstfang",
     "Contact" : "Tengiliður",
-    "Kick this member" : "Henda þessum meðlimi út",
     "Accept the request" : "Samþykkja beiðnina",
     "Dismiss the request" : "Hafna beiðninni",
     "Unlink this group" : "Aftengja þennan hóp",
@@ -305,6 +303,8 @@
     "Allow linking of groups" : "Leyfa tengingar hópa",
     "Groups can be linked to circles." : "Hópar geta verið tengdir hringjum.",
     "Skip invitation step to closed circles" : "Sleppa boðsskrefi inn í lokaða hringi",
-    "Moderators can add member to closed circles without user approval." : "Umsjónarmenn geta bætt meðlimum í lokaða hringi án samþykkis notanda."
+    "Moderators can add member to closed circles without user approval." : "Umsjónarmenn geta bætt meðlimum í lokaða hringi án samþykkis notanda.",
+    "Kicked" : "Hent út",
+    "Kick this member" : "Henda þessum meðlimi út"
 },"pluralForm" :"nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);"
 }

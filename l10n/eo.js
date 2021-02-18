@@ -32,14 +32,12 @@ OC.L10N.register(
     "Invited" : "Invitita",
     "Requesting" : "Petado",
     "Blocked" : "Barita",
-    "Kicked" : "Forpelita",
     "This operation will add/invite all members of the group to the circle" : "Tio operacio aldonos aŭ invitos ĉiujn membrojn el la grupo al la rondo",
     "Please confirm" : "Bv. konfirmi",
     "Are you sure you want to leave this circle?" : "Ĉu vi certas, ke vi volas forlasi tiun rondon?",
     "Are you sure you want to delete this circle?" : "Ĉu vi certas, ke vi volas forigi tiun rondon?",
     "Mail Address" : "Retpoŝtadreso",
     "Contact" : "Kontakto",
-    "Kick this member" : "Forpeli tiun membron",
     "Accept the request" : "Akcepti peton",
     "Dismiss the request" : "Ignori peton",
     "Unlink this group" : "Malligi tiun grupon",
@@ -267,6 +265,8 @@ OC.L10N.register(
     "Allow linking of groups" : "Permesi interligi grupojn",
     "Groups can be linked to circles." : "Grupoj ligeblas al rondoj.",
     "Skip invitation step to closed circles" : "Preterpasi la etapon pri invito al fermitaj rondoj",
-    "Moderators can add member to closed circles without user approval." : "Kontrolantoj povas aldoni membrojn en malfermitaj rondoj sen uzant-aprobo."
+    "Moderators can add member to closed circles without user approval." : "Kontrolantoj povas aldoni membrojn en malfermitaj rondoj sen uzant-aprobo.",
+    "Kicked" : "Forpelita",
+    "Kick this member" : "Forpeli tiun membron"
 },
 "nplurals=2; plural=(n != 1);");

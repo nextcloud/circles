@@ -32,14 +32,12 @@ OC.L10N.register(
     "Invited" : "הוזמן",
     "Requesting" : "בבקשה",
     "Blocked" : "נחסם",
-    "Kicked" : "גורש",
     "This operation will add/invite all members of the group to the circle" : "פעולה זו תוסיף/תזמין את כל החברים של הקבוצה למעגל",
     "Please confirm" : "נא לאשר",
     "Are you sure you want to leave this circle?" : "לעזוב את המעגל הזה?",
     "Are you sure you want to delete this circle?" : "למחוק את המעגל הזה?",
     "Mail Address" : "כתובת דוא״ל",
     "Contact" : "איש/אשת קשר",
-    "Kick this member" : "סילוק החבר הזה",
     "Accept the request" : "קבלת הבקשה",
     "Dismiss the request" : "דחיית הבקשה",
     "Unlink this group" : "ביטול קישור הקבוצה הזו",
@@ -179,6 +177,8 @@ OC.L10N.register(
     "Save settings" : "הגדרות שמירה",
     "Maximum number of members per circle" : "מספר החברים המרבי למעגל",
     "Allow linking of groups" : "לאפשר קישור קבוצות",
-    "Groups can be linked to circles." : "אפשר לקשר קבוצות למעגלים."
+    "Groups can be linked to circles." : "אפשר לקשר קבוצות למעגלים.",
+    "Kicked" : "גורש",
+    "Kick this member" : "סילוק החבר הזה"
 },
 "nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: (n % 10 == 0 && n % 1 == 0 && n > 10) ? 2 : 3;");

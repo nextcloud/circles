@@ -32,14 +32,12 @@ OC.L10N.register(
     "Invited" : "Invitado",
     "Requesting" : "Solicitando",
     "Blocked" : "Bloqueado",
-    "Kicked" : "Expulsado",
     "This operation will add/invite all members of the group to the circle" : "Esta operación agregará/invitará a todos los miembros del grupo al círculo",
     "Please confirm" : "Por favor confirma",
     "Are you sure you want to leave this circle?" : "¿Estás seguro que quieres dejar este círculo?",
     "Are you sure you want to delete this circle?" : "¿Estás seguro que deseas borrar este círculo?",
     "Mail Address" : "Dirección de correo",
     "Contact" : "Contacto",
-    "Kick this member" : "Sacar a este miembro",
     "Accept the request" : "Aceptar la solicitud",
     "Dismiss the request" : "Descartar la solicitud",
     "Unlink this group" : "Desligar este grupo",
@@ -260,6 +258,8 @@ OC.L10N.register(
     "Accept Link Request Automatically" : "Aceptar las Solicitudes de Ligas Automáticamente",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Advertencia: Habilitar esta opción aceptará automáticamente las nuevas solicitudes de ligas de otros círculos. ",
     "Save settings" : "Guardar configuraciones",
-    "Groups can be linked to circles." : "Los grupos se pueden vincular a círculos"
+    "Groups can be linked to circles." : "Los grupos se pueden vincular a círculos",
+    "Kicked" : "Expulsado",
+    "Kick this member" : "Sacar a este miembro"
 },
 "nplurals=2; plural=(n != 1);");

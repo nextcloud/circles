@@ -30,14 +30,12 @@
     "Invited" : "Gonbidatua",
     "Requesting" : "Eskatzen",
     "Blocked" : "Blokeatuta",
-    "Kicked" : "Kanporatua",
     "This operation will add/invite all members of the group to the circle" : "Ekintza honek taldeko kideak zirkulura gehituko/gonbidatuko ditu",
     "Please confirm" : "Berretsi",
     "Are you sure you want to leave this circle?" : "Ziur zaude zirkulu hau utzi nahi duzula?",
     "Are you sure you want to delete this circle?" : "Ziur zaude zirkulu hau ezabatu nahi duzula?",
     "Mail Address" : "Posta helbidea",
     "Contact" : "Kontaktua",
-    "Kick this member" : "Baztertu kide hau",
     "Accept the request" : "Onartu eskaera",
     "Dismiss the request" : "Baztertu eskaera",
     "Unlink this group" : "Talde hau lokabetu",
@@ -305,6 +303,8 @@
     "Allow linking of groups" : "Onartu taldeak batzea",
     "Groups can be linked to circles." : "Taldeak batu daitezke zirkuluetara",
     "Skip invitation step to closed circles" : "Saltatu gonbidapen pausua zirkulu itxietan",
-    "Moderators can add member to closed circles without user approval." : "Moderatzaileek kideak gehitu ditzakete zirkulu itxietara erabiltzailearen baimenik gabe."
+    "Moderators can add member to closed circles without user approval." : "Moderatzaileek kideak gehitu ditzakete zirkulu itxietara erabiltzailearen baimenik gabe.",
+    "Kicked" : "Kanporatua",
+    "Kick this member" : "Baztertu kide hau"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

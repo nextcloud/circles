@@ -30,14 +30,12 @@
     "Invited" : "Pakviestas",
     "Requesting" : "Prašoma",
     "Blocked" : "Blokuota",
-    "Kicked" : "Atmesta",
     "This operation will add/invite all members of the group to the circle" : "Ši operacija pridės/pakvies visus grupės narius į ratą",
     "Please confirm" : "Patvirtinkite",
     "Are you sure you want to leave this circle?" : "Ar tikrai norite išeiti iš šio rato?",
     "Are you sure you want to delete this circle?" : "Ar tikrai norite ištrinti šį ratą?",
     "Mail Address" : "Elektroninio pašto adresas",
     "Contact" : "Adresatas",
-    "Kick this member" : "Atmesti naudotoją",
     "Accept the request" : "Priimti užklausą",
     "Dismiss the request" : "Atmesti užklausą",
     "Unlink this group" : "Atsieti šią grupę",
@@ -261,6 +259,8 @@
     "Save settings" : "Įrašyti nustatymus",
     "Maximum number of members per circle" : "Didžiausias narių skaičius viename rate",
     "Allow linking of groups" : "Leisti grupių susiejimą",
-    "Groups can be linked to circles." : "Grupės gali būti susietos su ratais."
+    "Groups can be linked to circles." : "Grupės gali būti susietos su ratais.",
+    "Kicked" : "Atmesta",
+    "Kick this member" : "Atmesti naudotoją"
 },"pluralForm" :"nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);"
 }

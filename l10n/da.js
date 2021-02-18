@@ -32,14 +32,12 @@ OC.L10N.register(
     "Invited" : "Inviteret",
     "Requesting" : "Anmoder",
     "Blocked" : "Blokeret",
-    "Kicked" : "Smidt ud",
     "This operation will add/invite all members of the group to the circle" : "Denne handling vil tilføje/invitere alle medlemmer af gruppen til cirklen",
     "Please confirm" : "Bekræft venligst",
     "Are you sure you want to leave this circle?" : "Er du sikker på at du vil forlade denne cirkel?",
     "Are you sure you want to delete this circle?" : "Er du sikker på at du vil slette denne cirkel?",
     "Mail Address" : "Email addresse",
     "Contact" : "Kontakt",
-    "Kick this member" : "Fjern dette medlem",
     "Accept the request" : "Accepter anmodning",
     "Dismiss the request" : "Afvis anmodning",
     "Unlink this group" : "Fjern gruppe",
@@ -152,6 +150,8 @@ OC.L10N.register(
     "Description" : "Beskrivelse",
     "Change password" : "Skift kodeord",
     "Allow Federated Links" : "Tillad federarede links",
-    "Save settings" : "Gem indstillinger"
+    "Save settings" : "Gem indstillinger",
+    "Kicked" : "Smidt ud",
+    "Kick this member" : "Fjern dette medlem"
 },
 "nplurals=2; plural=(n != 1);");

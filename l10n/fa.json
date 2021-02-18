@@ -30,14 +30,12 @@
     "Invited" : "دعوت کردن",
     "Requesting" : "درخواست کردن",
     "Blocked" : "مسدود کردن",
-    "Kicked" : "اخراج کردن",
     "This operation will add/invite all members of the group to the circle" : "این عملیات تمام اعضای گروه را به حلقه اضافه یا دعوت می کند",
     "Please confirm" : "لطفا تأیید کنید",
     "Are you sure you want to leave this circle?" : "آیا مطمئن هستید که می خواهید این حلقه را ترک کنید؟",
     "Are you sure you want to delete this circle?" : "آیا مطمئن هستید که می خواهید این حلقه را حذف کنید؟",
     "Mail Address" : "آدرس رایانامه",
     "Contact" : "مخاطب",
-    "Kick this member" : "اخراج کردن کاربر",
     "Accept the request" : "درخواست را بپذیرید",
     "Dismiss the request" : "درخواست را رد کنید",
     "Unlink this group" : "این گروه را جدا کنید",
@@ -144,6 +142,8 @@
     "Makes the circle federated, and enables sharing between federated circles" : "حلقه فدرالی فعالیت اشتراک گذاری بین محافل فدرال را ممکن می کند",
     "Accept Link Request Automatically" : "درخواست پیوند را بطور خودکار بپذیرید",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "هشدار: با فعال کردن این کار، به طور خودکار درخواست های پیوند جدید از حلقه های دیگر را می پذیرید.",
-    "Save settings" : "تنظیمات را ذخیره کن"
+    "Save settings" : "تنظیمات را ذخیره کن",
+    "Kicked" : "اخراج کردن",
+    "Kick this member" : "اخراج کردن کاربر"
 },"pluralForm" :"nplurals=2; plural=(n > 1);"
 }

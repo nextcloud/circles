@@ -32,14 +32,12 @@ OC.L10N.register(
     "Invited" : "მოწვეულია",
     "Requesting" : "მიმდინარეობს მოთხოვნა",
     "Blocked" : "დაბლოკილია",
-    "Kicked" : "გაგდებულია",
     "This operation will add/invite all members of the group to the circle" : "ოპერაცია წრეში დაამატებს/მოიწვევს ყველა ჯგუფის წევრს",
     "Please confirm" : "გთხოვთ დაადასტუროთ",
     "Are you sure you want to leave this circle?" : "დარწმუნებული ხართ რომ გსურთ დატოვოთ ეს წრე?",
     "Are you sure you want to delete this circle?" : "დარწმუნებული ხართ რომ გსურთ გააუქმოთ ეს წრე?",
     "Mail Address" : "ელ-ფოსტის მისამართი",
     "Contact" : "კონტაქტი",
-    "Kick this member" : "ამ წევრის გაგდება",
     "Accept the request" : "მოთხოვნის მიღება",
     "Dismiss the request" : "მოთხოვნის დათხოვნა",
     "Unlink this group" : "ბმულის მოხსნა ჯგუფზე",
@@ -259,6 +257,8 @@ OC.L10N.register(
     "Accept Link Request Automatically" : "ბმულის მოთხოვნის ავტომატური დადასტურება",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "გაფრთხილება: ამის ჩართვა ავტომატურად მიიღებს ახალი კავშირების მოთხოვნებს სხვა წრეებიდან.",
     "Save settings" : "პარამეტრების შენახვა",
-    "Groups can be linked to circles." : "ჯგუფები შეიძლება დაკავშირდნენ წრეებთან."
+    "Groups can be linked to circles." : "ჯგუფები შეიძლება დაკავშირდნენ წრეებთან.",
+    "Kicked" : "გაგდებულია",
+    "Kick this member" : "ამ წევრის გაგდება"
 },
 "nplurals=2; plural=(n!=1);");

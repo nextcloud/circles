@@ -32,14 +32,12 @@ OC.L10N.register(
     "Invited" : "Povabljen",
     "Requesting" : "Prošnja za pristop",
     "Blocked" : "Blokiran",
-    "Kicked" : "Izločen",
     "This operation will add/invite all members of the group to the circle" : "S tem opravilom dodate/povabite vse člane skupine v krog",
     "Please confirm" : "Potrdite",
     "Are you sure you want to leave this circle?" : "Ali ste prepričani, da želite zapustiti ta krog?",
     "Are you sure you want to delete this circle?" : "Ali ste prepričani, da želite izbrisati ta krog?",
     "Mail Address" : "Elektronski naslov",
     "Contact" : "Stik",
-    "Kick this member" : "Izloči člana",
     "Accept the request" : "Sprejmi prošnjo za pristop",
     "Dismiss the request" : "Zavrni prošnjo za pristop",
     "Unlink this group" : "Odstrani povezavo s skupino",
@@ -305,6 +303,8 @@ OC.L10N.register(
     "Allow linking of groups" : "Dovoli povezovanje med skupinami",
     "Groups can be linked to circles." : "Skupine je mogoče povezovati v širše kroge.",
     "Skip invitation step to closed circles" : "Preskoči korak vabila za zaprte kroge",
-    "Moderators can add member to closed circles without user approval." : "Moderatorji lahko dodajajo člane v zaprte kroge brez predhodne potrditve drugih članov."
+    "Moderators can add member to closed circles without user approval." : "Moderatorji lahko dodajajo člane v zaprte kroge brez predhodne potrditve drugih članov.",
+    "Kicked" : "Izločen",
+    "Kick this member" : "Izloči člana"
 },
 "nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);");

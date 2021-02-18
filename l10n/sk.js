@@ -32,14 +32,12 @@ OC.L10N.register(
     "Invited" : "Pozvaný",
     "Requesting" : "Žiadajúci",
     "Blocked" : "Zablokovaný",
-    "Kicked" : "Vylúčený",
     "This operation will add/invite all members of the group to the circle" : "Táto operácia pridá/pozve všetkých členov skupiny do kruhu",
     "Please confirm" : "Prosím potvrďte",
     "Are you sure you want to leave this circle?" : "Naozaj chcete opustiť tento kruh?",
     "Are you sure you want to delete this circle?" : "Naozaj chcete zmazať tento kruh?",
     "Mail Address" : "E-mail adresa",
     "Contact" : "Kontakt",
-    "Kick this member" : "Vylúčiť tohto člena",
     "Accept the request" : "Prijať žiadosť",
     "Dismiss the request" : "Zamietnuť žiadosť",
     "Unlink this group" : "Zrušiť prepojenie tejto skupiny",
@@ -298,6 +296,8 @@ OC.L10N.register(
     "Allow linking of groups" : "Umožniť prepojovanie skupín",
     "Groups can be linked to circles." : "Skupiny môžu byť prepojené s okruhmi.",
     "Skip invitation step to closed circles" : "Preskočiť krok pozvania do uzavretých okruhov",
-    "Moderators can add member to closed circles without user approval." : "Moderátori môžu pridať člena do uzavretých okruhov bez súhlasu používateľa."
+    "Moderators can add member to closed circles without user approval." : "Moderátori môžu pridať člena do uzavretých okruhov bez súhlasu používateľa.",
+    "Kicked" : "Vylúčený",
+    "Kick this member" : "Vylúčiť tohto člena"
 },
 "nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);");

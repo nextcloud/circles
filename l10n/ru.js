@@ -32,14 +32,12 @@ OC.L10N.register(
     "Invited" : "Приглашён",
     "Requesting" : "Запрашивается",
     "Blocked" : "Заблокирован",
-    "Kicked" : "Исключён",
     "This operation will add/invite all members of the group to the circle" : "Это операция добавит / пригласит каждого из участников группы в круг",
     "Please confirm" : "Подтвердите, пожалуйста",
     "Are you sure you want to leave this circle?" : "Действительно покинуть этот круг?",
     "Are you sure you want to delete this circle?" : "Действительно удалить этот круг?",
     "Mail Address" : "Адрес эл. почты",
     "Contact" : "Контакт",
-    "Kick this member" : "Исключить участника",
     "Accept the request" : "Принять запрос",
     "Dismiss the request" : "Отклонить запрос",
     "Unlink this group" : "Прекратить связь с этой группой",
@@ -307,6 +305,8 @@ OC.L10N.register(
     "Allow linking of groups" : "Разрешить связывание групп",
     "Groups can be linked to circles." : "Группы могут быть связаны с кругами.",
     "Skip invitation step to closed circles" : "Пропустить шаг приглашения к закрытым кругам",
-    "Moderators can add member to closed circles without user approval." : "Модераторы могут добавлять участников в закрытые круги без согласия пользователя."
+    "Moderators can add member to closed circles without user approval." : "Модераторы могут добавлять участников в закрытые круги без согласия пользователя.",
+    "Kicked" : "Исключён",
+    "Kick this member" : "Исключить участника"
 },
 "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);");

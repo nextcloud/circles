@@ -25,13 +25,11 @@ OC.L10N.register(
     "Invited" : "Kutsutud",
     "Requesting" : "Taotleb",
     "Blocked" : "Blokeeritud",
-    "Kicked" : "Välja heidetud",
     "Please confirm" : "Palun kinnita",
     "Are you sure you want to leave this circle?" : "Kas oled kindel, et tahad sellest ringist lahkuda?",
     "Are you sure you want to delete this circle?" : "Kas oled kindel, et tahad selle ringi kustutada?",
     "Mail Address" : "Meiliaadress",
     "Contact" : "Kontakt",
-    "Kick this member" : "Heida see liige välja",
     "no error message" : "veateade puudub",
     "Settings saved." : "Seaded salvestatud.",
     "%s shared »%s« with you." : "%s jagas faili »%s« sinuga",
@@ -65,6 +63,8 @@ OC.L10N.register(
     "Change password" : "Muuda parooli",
     "Allow Federated Links" : "Luba liitlingid",
     "Makes the circle federated, and enables sharing between federated circles" : "Teeb ringi liitringiks ja lubab jagamise liitringide vahel",
-    "Save settings" : "Salvesta seaded"
+    "Save settings" : "Salvesta seaded",
+    "Kicked" : "Välja heidetud",
+    "Kick this member" : "Heida see liige välja"
 },
 "nplurals=2; plural=(n != 1);");

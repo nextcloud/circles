@@ -27,14 +27,12 @@
     "Invited" : "Kutsuttu",
     "Requesting" : "Pyytää",
     "Blocked" : "Estetty",
-    "Kicked" : "Erotettu",
     "This operation will add/invite all members of the group to the circle" : "Tämä toimenpide lisää/kutsuu kaikki ryhmän jäsenet piiriin",
     "Please confirm" : "Vahvista muutokset",
     "Are you sure you want to leave this circle?" : "Oletko varma, että haluat poistua tästä piiristä?",
     "Are you sure you want to delete this circle?" : "Oletko varma, että haluat poistaa tämän piirin?",
     "Mail Address" : "Sähköpostiosoite",
     "Contact" : "Yhteystieto",
-    "Kick this member" : "Erota jäsen",
     "Accept the request" : "Hyväksy pyyntö",
     "Dismiss the request" : "Hylkää pyyntö",
     "Unlink this group" : "Poista ryhmän linkitys",
@@ -265,6 +263,8 @@
     "Allow linking of groups" : "Salli ryhmien linkittäminen",
     "Groups can be linked to circles." : "Ryhmät voidaan linkittää piireihin.",
     "Skip invitation step to closed circles" : "Ohita kutsuvaihe suljettuihin piireihin",
-    "Moderators can add member to closed circles without user approval." : "Moderaattorit voivat lisätä jäsenen suljettuihin piireihin ilman käyttäjän hyväksyntää."
+    "Moderators can add member to closed circles without user approval." : "Moderaattorit voivat lisätä jäsenen suljettuihin piireihin ilman käyttäjän hyväksyntää.",
+    "Kicked" : "Erotettu",
+    "Kick this member" : "Erota jäsen"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
