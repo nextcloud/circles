@@ -16,11 +16,14 @@ OC.L10N.register(
     "Remove this link" : "මෙම සබැඳිය ඉවත් කරන්න",
     "Local User" : "ස්ථානීය පරිශීලක",
     "Local Group" : "ස්ථානීය සමූහය",
+    "Accept" : "පිළිගන්න",
     "Name" : "නම",
+    "Size" : "ප්‍රමාණය",
     "Settings" : "සැකසුම්",
     "Username" : "පරිශීලක නාමය",
     "Link" : "සබැඳිය",
     "Description" : "විස්තරය",
-    "Change password" : "මුරපදය වෙනස් කරන්න"
+    "Change password" : "මුරපදය වෙනස් කරන්න",
+    "Save settings" : "සැකසුම් සුරකින්න"
 },
 "nplurals=2; plural=(n != 1);");
