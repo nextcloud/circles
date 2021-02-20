@@ -174,6 +174,9 @@ class MemberRequest extends MemberRequestBuilder {
 			$qb->limitToRemoteInstance($remoteInstance->getInstance(), true);
 		}
 
+		$qb->orderBy($qb->getDefaultSelectAlias() . '.level', 'desc');
+		$qb->addOrderBy($qb->getDefaultSelectAlias() . '.cached_name', 'asc');
+
 		return $this->getItemsFromRequest($qb);
 	}
 

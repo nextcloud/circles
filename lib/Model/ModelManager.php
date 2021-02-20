@@ -47,10 +47,6 @@ use OCA\Circles\Service\MemberService;
 class ModelManager {
 
 
-	const TYPES_SHORT = 1;
-	const TYPES_LONG = 2;
-
-
 	/** @var MemberService */
 	private $memberService;
 
@@ -146,34 +142,6 @@ class ModelManager {
 			$circle->setInitiator($initiator);
 		} catch (MemberNotFoundException $e) {
 		}
-	}
-
-
-	/**
-	 * @param Circle $circle
-	 * @param int $display
-	 *
-	 * @return array
-	 */
-	public function getCircleTypes(Circle $circle, int $display = self::TYPES_LONG): array {
-		$types = [];
-		foreach (array_keys(Circle::$DEF) as $def) {
-			if ($circle->isConfig($def)) {
-				list($short, $long) = explode('|', Circle::$DEF[$def]);
-				switch ($display) {
-
-					case self::TYPES_SHORT:
-						$types[] = $short;
-						break;
-
-					case self::TYPES_LONG:
-						$types[] = $long;
-						break;
-				}
-			}
-		}
-
-		return $types;
 	}
 
 

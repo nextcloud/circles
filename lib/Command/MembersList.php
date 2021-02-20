@@ -54,7 +54,6 @@ use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
-use OCA\Circles\Model\ModelManager;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
@@ -79,9 +78,6 @@ class MembersList extends Base {
 	use TNC21ConsoleTree;
 
 
-	/** @var ModelManager */
-	private $modelManager;
-
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
@@ -101,7 +97,6 @@ class MembersList extends Base {
 	/**
 	 * MembersList constructor.
 	 *
-	 * @param ModelManager $modelManager
 	 * @param FederatedUserService $federatedUserService
 	 * @param RemoteService $remoteService
 	 * @param CircleService $circleService
@@ -109,11 +104,10 @@ class MembersList extends Base {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		ModelManager $modelManager, FederatedUserService $federatedUserService, RemoteService $remoteService,
+		FederatedUserService $federatedUserService, RemoteService $remoteService,
 		CircleService $circleService, MemberService $memberService, ConfigService $configService
 	) {
 		parent::__construct();
-		$this->modelManager = $modelManager;
 		$this->federatedUserService = $federatedUserService;
 		$this->remoteService = $remoteService;
 		$this->circleService = $circleService;
@@ -167,10 +161,7 @@ class MembersList extends Base {
 			$output->writeln('<info>Name</info>: ' . $circle->getName());
 			$owner = $circle->getOwner();
 			$output->writeln('<info>Owner</info>: ' . $owner->getUserId() . '@' . $owner->getInstance());
-			$type =
-				implode(
-					", ", $this->modelManager->getCircleTypes($circle, ModelManager::TYPES_LONG)
-				);
+			$type = implode(", ", Circle::getCircleTypes($circle, Circle::TYPES_LONG));
 			$output->writeln('<info>Config</info>: ' . $type);
 			$output->writeln(' ');
 
@@ -373,10 +364,7 @@ class MembersList extends Base {
 					}
 					$owner = $circle->getOwner();
 					$line .= '<info>Owner</info>: ' . $owner->getUserId() . '@' . $owner->getInstance();
-					$type =
-						implode(
-							", ", $this->modelManager->getCircleTypes($circle, ModelManager::TYPES_LONG)
-						);
+					$type = implode(", ", Circle::getCircleTypes($circle, Circle::TYPES_LONG));
 					$line .= ($type === '') ? '' : ' <info>Config</info>: ' . $type;
 				}
 

@@ -193,14 +193,14 @@ class CirclesList extends Base {
 		$table->render();
 
 		$local = $this->configService->getLocalInstance();
-		$display = ($this->input->getOption('def') ? ModelManager::TYPES_LONG : ModelManager::TYPES_SHORT);
+		$display = ($this->input->getOption('def') ? Circle::TYPES_LONG : Circle::TYPES_SHORT);
 		foreach ($circles as $circle) {
 			$owner = $circle->getOwner();
 			$table->appendRow(
 				[
 					$circle->getId(),
 					$circle->getName(),
-					json_encode($this->modelManager->getCircleTypes($circle, $display)),
+					json_encode(Circle::getCircleTypes($circle, $display)),
 					$owner->getUserId(),
 					($owner->getInstance() === $local) ? '' : $owner->getInstance(),
 					$this->getInt('members_limit', $circle->getSettings(), -1),

@@ -53,9 +53,9 @@ use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
-use OCA\Circles\Model\ModelManager;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MembershipService;
@@ -87,9 +87,6 @@ class CirclesMemberships extends Base {
 	/** @var MembershipRequest */
 	private $membershipRequest;
 
-	/** @var ModelManager */
-	private $modelManager;
-
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
@@ -110,7 +107,6 @@ class CirclesMemberships extends Base {
 	 * @param IUserManager $userManager
 	 * @param MembershipRequest $membershipRequest
 	 * @param MemberRequest $memberRequest
-	 * @param ModelManager $modelManager
 	 * @param MembershipService $membershipsService
 	 * @param FederatedUserService $federatedUserService
 	 * @param ConfigService $configService
@@ -119,7 +115,6 @@ class CirclesMemberships extends Base {
 		IUserManager $userManager,
 		MembershipRequest $membershipRequest,
 		MemberRequest $memberRequest,
-		ModelManager $modelManager,
 		MembershipService $membershipsService,
 		FederatedUserService $federatedUserService,
 		ConfigService $configService
@@ -128,7 +123,6 @@ class CirclesMemberships extends Base {
 		$this->userManager = $userManager;
 		$this->memberRequest = $memberRequest;
 		$this->membershipRequest = $membershipRequest;
-		$this->modelManager = $modelManager;
 		$this->membershipsService = $membershipsService;
 		$this->federatedUserService = $federatedUserService;
 		$this->configService = $configService;
@@ -292,8 +286,7 @@ class CirclesMemberships extends Base {
 				if ($lineNumber === 2) {
 					$owner = $circle->getOwner();
 					$line .= '<info>Owner</info>: ' . $owner->getUserId() . '@' . $owner->getInstance() . ' ';
-					$type =
-						implode(", ", $this->modelManager->getCircleTypes($circle, ModelManager::TYPES_LONG));
+					$type = implode(", ", Circle::getCircleTypes($circle, Circle::TYPES_LONG));
 					$line .= ($type === '') ? '' : '<info>Config</info>: ' . $type;
 				}
 

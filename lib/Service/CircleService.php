@@ -40,6 +40,7 @@ use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedEventDSyncException;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
@@ -49,6 +50,7 @@ use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
+use OCA\Circles\FederatedItems\CircleConfig;
 use OCA\Circles\FederatedItems\CircleCreate;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
@@ -156,6 +158,37 @@ class CircleService {
 		$event->setCircle($circle);
 		$this->federatedEventService->newEvent($event);
 
+		return $event->getOutcome();
+	}
+
+
+	/**
+	 * @param string $circleId
+	 * @param int $config
+	 *
+	 * @return SimpleDataStore
+	 * @throws CircleNotFoundException
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws InitiatorNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws UnknownRemoteException
+	 * @throws FederatedEventDSyncException
+	 */
+	public function updateConfig(string $circleId, int $config): SimpleDataStore {
+		$circle = $this->getCircle($circleId);
+
+		$event = new FederatedEvent(CircleConfig::class);
+		$event->setCircle($circle);
+		$event->setData(new SimpleDataStore(['config' => $config]));
+
+		$this->federatedEventService->newEvent($event);
+		
 		return $event->getOutcome();
 	}
 

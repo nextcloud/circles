@@ -196,7 +196,7 @@ class MemberAdd implements
 
 		// TODO: check if it is a member or a mail or a circle and fix the returned message
 		$event->setReadingOutcome(
-			ucfirst(Member::$DEF_TYPE[$member->getUserType()]) . ' %s have been added to Circle',
+			ucfirst(Member::$DEF_TYPE[$member->getUserType()]) . ' ' . '\'%s\' have been added to Circle',
 			['userId' => $member->getUserId()]
 		);
 

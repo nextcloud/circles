@@ -125,7 +125,7 @@ class MembersAdd extends Base {
 		$federatedUser = $this->federatedUserService->generateFederatedUser($userId, (int)$type);
 		$outcome = $this->memberService->addMember($circleId, $federatedUser);
 
-		echo json_encode($outcome, JSON_PRETTY_PRINT) . "\n";
+		$output->writeln(json_encode($outcome, JSON_PRETTY_PRINT));
 
 		return 0;
 	}

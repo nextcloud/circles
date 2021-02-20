@@ -34,27 +34,20 @@ namespace OCA\Circles\FederatedItems;
 
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
-use OCA\Circles\Exceptions\CircleAlreadyExistsException;
-use OCA\Circles\Exceptions\CircleNotFoundException;
-use OCA\Circles\Exceptions\InvalidIdException;
-use OCA\Circles\Exceptions\MemberAlreadyExistsException;
-use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\IFederatedItem;
-use OCA\Circles\IFederatedItemCircleCheckNotRequired;
-use OCA\Circles\IFederatedItemLocalOnly;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
+use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Service\ConfigService;
 
 
 /**
- * Class CircleCreate
+ * Class CircleConfig
  *
  * @package OCA\Circles\FederatedItems
  */
-class CircleCreate implements
-	IFederatedItem,
-	IFederatedItemCircleCheckNotRequired,
-	IFederatedItemLocalOnly {
+class CircleConfig implements IFederatedItem {
 
 
 	/** @var CircleRequest */
@@ -68,7 +61,7 @@ class CircleCreate implements
 
 
 	/**
-	 * CircleCreate constructor.
+	 * CircleConfig constructor.
 	 *
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
@@ -84,46 +77,47 @@ class CircleCreate implements
 
 
 	/**
-	 * Circles are created on the original instance, using IFederatedItemMustBeLocal
-	 *
 	 * @param FederatedEvent $event
+	 *
+	 * @throws FederatedItemException
 	 */
 	public function verify(FederatedEvent $event): void {
 		$circle = $event->getCircle();
+		$config = $event->getData()->gInt('config');
+
+		$initiatorHelper = new MemberHelper($circle->getInitiator());
+		$initiatorHelper->mustBeAdmin();
+
+		$listing = Circle::$DEF_CFG_CORE_FILTER;
+		if (!$circle->isConfig(Circle::CFG_SYSTEM)) {
+			$listing = array_merge($listing, Circle::$DEF_CFG_SYSTEM_FILTER);
+		}
+
+		$confirmed = true;
+		foreach ($listing as $item) {
+			if ($circle->isConfig($item, $config)) {
+				$confirmed = false;
+			}
+		}
+
+		if (!$confirmed || $config > Circle::$DEF_CFG_MAX) {
+			throw new FederatedItemException('Configuration value is not valid');
+		}
 
 		$event->setDataOutcome(['circle' => $circle]);
-		$event->setReadingOutcome('Circle \'%s\' have been created', ['circleName' => $circle->getName()]);
+		$event->setReadingOutcome('Configuration have been updated');
 	}
 
 
 	/**
 	 * @param FederatedEvent $event
-	 *
-	 * @throws InvalidIdException
-	 * @throws MemberAlreadyExistsException
-	 * @throws CircleAlreadyExistsException
 	 */
 	public function manage(FederatedEvent $event): void {
-		$circle = $event->getCircle();
-		$owner = $circle->getOwner();
+		$circle = clone $event->getCircle();
+		$config = $event->getData()->gInt('config');
 
-		try {
-			$this->circleRequest->getCircle($circle->getId());
-			throw new CircleAlreadyExistsException();
-		} catch (CircleNotFoundException $e) {
-		}
-
-		try {
-			$this->memberRequest->getMember($owner->getId());
-			throw new MemberAlreadyExistsException();
-		} catch (MemberNotFoundException $e) {
-		}
-
-		$this->circleRequest->save($circle);
-		$this->memberRequest->save($owner);
-
-		// TODO: EventsService
-		// $this->eventsService->onCircleCreation($circle);
+		$circle->setConfig($config);
+		$this->circleRequest->updateConfig($circle);
 	}
 
 

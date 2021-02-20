@@ -495,6 +495,7 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 		$orMemberOrLevel->add(
 			$expr->eq($this->getDefaultSelectAlias() . '.instance', $alias . '.instance')
 		);
+		// TODO: do we need this ? (display members from the local instance)
 		$orMemberOrLevel->add(
 			$expr->emptyString($this->getDefaultSelectAlias() . '.instance')
 		);
@@ -511,7 +512,7 @@ class CoreQueryBuilder extends NC21ExtendedQueryBuilder {
 	}
 
 
-	/**
+	/**ha
 	 * @param int $flag
 	 */
 	public function filterConfig(int $flag): void {

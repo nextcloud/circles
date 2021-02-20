@@ -77,12 +77,17 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 	use TNC21Deserialize;
 
 
+	const TYPES_SHORT = 1;
+	const TYPES_LONG = 2;
+
+
 	// specific value
 	const CFG_CIRCLE = 0;        // only for code readability. Circle is locked by default.
 	const CFG_SINGLE = 1;        // Circle with only one single member.
 	const CFG_PERSONAL = 2;      // Personal circle, only the owner can see it.
 
 	// bitwise
+	const CFG_SYSTEM = 4;         // System Circl (not managed by the official front-end). Meaning some config are limited
 	const CFG_VISIBLE = 8;        // Visible to everyone, if not visible, people have to know its name to be able to find it
 	const CFG_OPEN = 16;          // Circle is open, people can join
 	const CFG_INVITE = 32;        // Adding a member generate an invitation that needs to be accepted
@@ -95,10 +100,13 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 	const CFG_ROOT = 4096;        // Circle cannot be inside another Circle
 	const CFG_FEDERATED = 8192;   // Federated
 
-	static $DEF = [
-		1 => 'S|Single',
 
+	public static $DEF_CFG_MAX = 16383;
+
+	public static $DEF_CFG = [
+		1    => 'S|Single',
 		2    => 'P|Personal',
+		4    => 'Y|System',
 		8    => 'V|Visible',
 		16   => 'O|Open',
 		32   => 'I|Invite',
@@ -110,6 +118,19 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 		2048 => 'T|Backend',
 		4096 => 'T|Root',
 		8192 => 'F|Federated'
+	];
+
+	public static $DEF_CFG_CORE_FILTER = [
+		1,
+		2,
+		4
+	];
+
+	public static $DEF_CFG_SYSTEM_FILTER = [
+		512,
+		1024,
+		2048,
+		4096
 	];
 
 
@@ -218,11 +239,34 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 
 	/**
 	 * @param int $flag
+	 * @param int $test
 	 *
 	 * @return bool
 	 */
-	public function isConfig(int $flag): bool {
-		return (($this->getConfig() & $flag) !== 0);
+	public function isConfig(int $flag, int $test = 0): bool {
+		if ($test === 0) {
+			$test = $this->getConfig();
+		}
+
+		return (($test & $flag) !== 0);
+	}
+
+	/**
+	 * @param int $flag
+	 */
+	public function addConfig(int $flag): void {
+		if (!$this->isConfig($flag)) {
+			$this->config += $flag;
+		}
+	}
+
+	/**
+	 * @param int $flag
+	 */
+	public function remConfig(int $flag): void {
+		if ($this->isConfig($flag)) {
+			$this->config -= $flag;
+		}
 	}
 
 
@@ -634,6 +678,34 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 		}
 
 		return true;
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 * @param int $display
+	 *
+	 * @return array
+	 */
+	public static function getCircleTypes(Circle $circle, int $display = self::TYPES_LONG): array {
+		$types = [];
+		foreach (array_keys(Circle::$DEF_CFG) as $def) {
+			if ($circle->isConfig($def)) {
+				list($short, $long) = explode('|', Circle::$DEF_CFG[$def]);
+				switch ($display) {
+
+					case self::TYPES_SHORT:
+						$types[] = $short;
+						break;
+
+					case self::TYPES_LONG:
+						$types[] = $long;
+						break;
+				}
+			}
+		}
+
+		return $types;
 	}
 
 }
