@@ -128,7 +128,6 @@ class Application extends App implements IBootstrap {
 		$context->injectFn(Closure::fromCallable([$this, 'registerMountProvider']));
 		$context->injectFn(Closure::fromCallable([$this, 'registerDavHooks']));
 
-		$context->injectFn(Closure::fromCallable([$this, 'registerNavigation']));
 		$context->injectFn(Closure::fromCallable([$this, 'registerFilesNavigation']));
 		$context->injectFn(Closure::fromCallable([$this, 'registerFilesPlugin']));
 	}
@@ -165,34 +164,6 @@ class Application extends App implements IBootstrap {
 	}
 
 
-	/**
-	 * Register Navigation elements
-	 *
-	 * @param IServerContainer $container
-	 */
-	public function registerNavigation(IServerContainer $container) {
-		if (!$this->configService->stillFrontEnd()) {
-			return;
-		}
-
-		$appManager = $container->getNavigationManager();
-		$appManager->add(
-			function() {
-				$urlGen = OC::$server->getURLGenerator();
-				$navName = OC::$server->getL10N(self::APP_ID)
-									  ->t('Circles');
-
-				return [
-					'id'    => self::APP_ID,
-					'order' => 5,
-					'href'  => $urlGen->linkToRoute('circles.Navigation.navigate'),
-					'icon'  => $urlGen->imagePath(self::APP_ID, 'circles.svg'),
-					'name'  => $navName
-				];
-			}
-		);
-	}
-
 	public function registerFilesPlugin(IServerContainer $container) {
 		$eventDispatcher = $container->getEventDispatcher();
 		$eventDispatcher->addListener(
@@ -228,7 +199,6 @@ class Application extends App implements IBootstrap {
 			}
 		);
 	}
-
 
 }
 

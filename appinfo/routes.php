@@ -26,6 +26,8 @@
 
 return [
 	'ocs'    => [
+		['name' => 'Local#circles', 'url' => '/circles', 'verb' => 'GET'],
+		['name' => 'Local#create', 'url' => '/circles', 'verb' => 'POST']
 	],
 	'routes' => [
 		['name' => 'Settings#getSettings', 'url' => '/admin/settings', 'verb' => 'GET'],
@@ -34,7 +36,6 @@ return [
 		['name' => 'Test#testAsyncStatus', 'url' => '/admin/testAsync', 'verb' => 'GET'],
 		['name' => 'Test#testAsyncReset', 'url' => '/admin/testAsync', 'verb' => 'DELETE'],
 		['name' => 'Test#testAsyncRun', 'url' => '/admin/testAsync', 'verb' => 'PUT'],
-		['name' => 'Navigation#navigate', 'url' => '/', 'verb' => 'GET'],
 		['name' => 'Navigation#settings', 'url' => '/settings', 'verb' => 'GET'],
 		['name' => 'Circles#create', 'url' => '/v1/circles', 'verb' => 'PUT'],
 		['name' => 'Circles#listing', 'url' => '/v1/circles', 'verb' => 'GET'],
@@ -66,9 +67,10 @@ return [
 		['name' => 'Shares#create', 'url' => '/v1/circles/{circleUniqueId}/share', 'verb' => 'PUT'],
 
 		['name' => 'RemoteWrapper#asyncBroadcast', 'url' => '/async/{token}/', 'verb' => 'POST'],
-//		['name' => 'RemoteWrapper#broadcast', 'url' => '/v1/gs/broadcast', 'verb' => 'POST'],
-//		['name' => 'RemoteWrapper#status', 'url' => '/v1/gs/status', 'verb' => 'POST'],
+		//		['name' => 'RemoteWrapper#broadcast', 'url' => '/v1/gs/broadcast', 'verb' => 'POST'],
+		//		['name' => 'RemoteWrapper#status', 'url' => '/v1/gs/status', 'verb' => 'POST'],
 
+		['name' => 'Remote#appService', 'url' => '/', 'verb' => 'GET'],
 		['name' => 'Remote#test', 'url' => '/test/', 'verb' => 'GET'],
 		['name' => 'Remote#event', 'url' => '/event/', 'verb' => 'POST'],
 		['name' => 'Remote#incoming', 'url' => '/incoming/', 'verb' => 'POST'],

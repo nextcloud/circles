@@ -82,6 +82,14 @@ class RemoteUpstreamService {
 	private $configService;
 
 
+	/**
+	 * RemoteUpstreamService constructor.
+	 *
+	 * @param IL10N $l10n
+	 * @param RemoteWrapperRequest $remoteWrapperRequest
+	 * @param RemoteStreamService $remoteStreamService
+	 * @param ConfigService $configService
+	 */
 	public function __construct(
 		IL10N $l10n, RemoteWrapperRequest $remoteWrapperRequest, RemoteStreamService $remoteStreamService,
 		ConfigService $configService

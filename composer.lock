@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/daita/my-small-php-tools.git",
-                "reference": "de8ec51e51eb8a1e4d752dbd3a25bf07428f4cb9"
+                "reference": "1aa50b2063c7a9d73fad60e37be676229c4ed5bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/daita/my-small-php-tools/zipball/de8ec51e51eb8a1e4d752dbd3a25bf07428f4cb9",
-                "reference": "de8ec51e51eb8a1e4d752dbd3a25bf07428f4cb9",
+                "url": "https://api.github.com/repos/daita/my-small-php-tools/zipball/1aa50b2063c7a9d73fad60e37be676229c4ed5bf",
+                "reference": "1aa50b2063c7a9d73fad60e37be676229c4ed5bf",
                 "shasum": ""
             },
             "require": {
@@ -45,7 +45,7 @@
                 "issues": "https://github.com/daita/my-small-php-tools/issues",
                 "source": "https://github.com/daita/my-small-php-tools/tree/master"
             },
-            "time": "2021-02-16T02:17:26+00:00"
+            "time": "2021-02-22T13:33:04+00:00"
         }
     ],
     "packages-dev": [],

@@ -60,6 +60,7 @@ use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
+use OCP\IUser;
 use OCP\IUserManager;
 
 
@@ -128,15 +129,21 @@ class FederatedUserService {
 	}
 
 
-//	/**
-//	 * @param string $userId
-//	 *
-//	 * @throws CircleNotFoundException
-//	 * @throws NoUserException
-//	 */
-//	public function setLocalInitiator(string $userId): void {
-//		$this->currentUser = $this->createLocalFederatedUser($userId);
-//	}
+	/**
+	 * @param IUser|null $user
+	 *
+	 * @throws CircleNotFoundException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
+	 */
+	public function setLocalCurrentUser(?IUser $user) {
+		if ($user === null) {
+			return;
+		}
+
+		$this->currentUser = $this->getLocalFederatedUser($user->getUID());
+	}
+
 
 	/**
 	 * set a CurrentUser, based on a IFederatedUser.

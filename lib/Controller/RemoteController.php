@@ -34,6 +34,7 @@ namespace OCA\Circles\Controller;
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Exceptions\InvalidOriginException;
 use daita\MySmallPhpTools\Exceptions\ItemNotFoundException;
+use daita\MySmallPhpTools\Exceptions\JsonNotRequestedException;
 use daita\MySmallPhpTools\Exceptions\MalformedArrayException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Exceptions\SignatureException;
@@ -41,7 +42,9 @@ use daita\MySmallPhpTools\Exceptions\UnknownTypeException;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21SignedRequest;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Controller;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21LocalSignatory;
 use Exception;
+use OC\AppFramework\Middleware\Security\Exceptions\NotLoggedInException;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventDSyncException;
@@ -73,6 +76,7 @@ class RemoteController extends Controller {
 
 
 	use TNC21Controller;
+	use TNC21LocalSignatory;
 
 
 	/** @var CircleRequest */
@@ -126,6 +130,29 @@ class RemoteController extends Controller {
 		$this->configService = $configService;
 
 		$this->setup('app', 'circles');
+	}
+
+
+	/**
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 *
+	 * @return DataResponse
+	 * @throws NotLoggedInException
+	 * @throws SignatoryException
+	 */
+	public function appService(): DataResponse {
+		$this->setup('app', 'circles');
+
+		try {
+			$this->publicPageJsonLimited();
+		} catch (JsonNotRequestedException $e) {
+			return new DataResponse([]);
+		}
+
+		$confirm = $this->request->getParam('auth', '');
+
+		return new DataResponse($this->remoteStreamService->getAppSignatory(false, $confirm));
 	}
 
 

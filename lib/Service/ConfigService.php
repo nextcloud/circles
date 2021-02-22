@@ -614,7 +614,7 @@ class ConfigService {
 	 *
 	 * @return string
 	 */
-	public function getRemotePath(string $route = 'circles.Navigation.navigate', array $args = []): string {
+	public function getRemotePath(string $route = 'circles.Remote.appService', array $args = []): string {
 		$base = $this->getAppValue(self::LOCAL_CLOUD_SCHEME) . '://' . $this->getLocalInstance();
 
 		if ($route === '') {
