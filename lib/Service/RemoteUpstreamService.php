@@ -34,7 +34,6 @@ namespace OCA\Circles\Service;
 
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
-use daita\MySmallPhpTools\Exceptions\SignatureException;
 use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
@@ -43,6 +42,7 @@ use OCA\Circles\Db\RemoteWrapperRequest;
 use OCA\Circles\Exceptions\FederatedEventDSyncException;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
@@ -129,26 +129,14 @@ class RemoteUpstreamService {
 	 * @param FederatedEvent $event
 	 * @param string $instance
 	 *
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
-	 * @throws SignatureException
+	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
 	 */
 	public function broadcastEvent(FederatedEvent $event, string $instance): void {
-//		if ($this->configService->isLocalInstance($instance)) {
-//			$request = new NC21Request('', Request::TYPE_POST);
-//			$this->configService->configureRequest($request, 'circles.RemoteWrapper.broadcast');
-//		} else {
-//			$path = $this->urlGenerator->linkToRoute('circles.RemoteWrapper.broadcast');
-//			$request = new NC21Request($path, Request::TYPE_POST);
-//			$this->configService->configureRequest($request);
-//			$request->setInstance($instance);
-//		}
-
-//		$request->setDataSerialize($event);
-
 		$data = $this->remoteStreamService->resultRequestRemoteInstance(
 			$instance,
 			RemoteInstance::INCOMING,
@@ -156,7 +144,7 @@ class RemoteUpstreamService {
 			$event
 		);
 
-		$event->setResult(new SimpleDataStore($this->getArray('incoming', $data, [])));
+		$event->setResult(new SimpleDataStore($this->getArray('result', $data, [])));
 	}
 
 

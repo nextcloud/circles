@@ -34,10 +34,9 @@ use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Controller;
 use daita\MySmallPhpTools\Traits\TAsync;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use Exception;
-use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Model\GlobalScale\GSEvent;
-use OCA\Circles\Service\RemoteDownstreamService;
 use OCA\Circles\Service\FederatedEventService;
+use OCA\Circles\Service\RemoteDownstreamService;
 use OCA\Circles\Service\RemoteUpstreamService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
@@ -135,10 +134,7 @@ class RemoteWrapperController extends Controller {
 		// closing socket, keep current process running.
 		$this->async();
 		foreach ($wrappers as $wrapper) {
-			try {
-				$this->remoteUpstreamService->broadcastWrapper($wrapper);
-			} catch (GSStatusException $e) {
-			}
+			$this->remoteUpstreamService->broadcastWrapper($wrapper);
 		}
 
 		$this->federatedEventService->manageResults($token);

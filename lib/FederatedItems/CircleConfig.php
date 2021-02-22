@@ -100,11 +100,22 @@ class CircleConfig implements IFederatedItem {
 			}
 		}
 
+		// if federated, circle is root
+		if ($circle->isConfig(Circle::CFG_FEDERATED, $config) &&
+			!$circle->isConfig(Circle::CFG_ROOT, $config)) {
+			$config += Circle::CFG_ROOT;
+			// TODO: Check locally that circle is not a member of another circle.
+			// TODO  in that case, remove the membership (and update the memberships)
+			$event->getData()->sInt('config', $config);
+		}
+
 		if (!$confirmed || $config > Circle::$DEF_CFG_MAX) {
 			throw new FederatedItemException('Configuration value is not valid');
 		}
 
-		$event->setDataOutcome(['circle' => $circle]);
+		$new = clone $circle;
+		$new->setConfig($config);
+		$event->setDataOutcome(['circle' => $new]);
 		$event->setReadingOutcome('Configuration have been updated');
 	}
 
@@ -117,6 +128,9 @@ class CircleConfig implements IFederatedItem {
 		$config = $event->getData()->gInt('config');
 
 		$circle->setConfig($config);
+		// TODO: Check locally that circle is not un-federated during the process
+		// TODO: if the circle is managed remotely, remove the circle locally
+		// TODO: if the circle is managed locally, remove non-local users
 		$this->circleRequest->updateConfig($circle);
 	}
 

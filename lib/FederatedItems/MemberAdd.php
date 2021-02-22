@@ -47,7 +47,6 @@ use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\MembersLimitException;
-use OCA\Circles\Exceptions\MemberTypeNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
@@ -68,6 +67,7 @@ use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharesToken;
+use OCA\Circles\Service\CircleEventService;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
@@ -105,6 +105,9 @@ class MemberAdd implements
 	/** @var CircleService */
 	private $circleService;
 
+	/** @var CircleEventService */
+	private $circleEventService;
+
 	/** @var ConfigService */
 	private $configService;
 
@@ -116,16 +119,18 @@ class MemberAdd implements
 	 * @param FederatedUserService $federatedUserService
 	 * @param MemberRequest $memberRequest
 	 * @param CircleService $circleService
+	 * @param CircleEventService $circleEventService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		IUserManager $userManager, FederatedUserService $federatedUserService, MemberRequest $memberRequest,
-		CircleService $circleService, ConfigService $configService
+		CircleService $circleService, CircleEventService $circleEventService, ConfigService $configService
 	) {
 		$this->userManager = $userManager;
 		$this->federatedUserService = $federatedUserService;
 		$this->memberRequest = $memberRequest;
 		$this->circleService = $circleService;
+		$this->circleEventService = $circleEventService;
 		$this->configService = $configService;
 	}
 
@@ -136,9 +141,9 @@ class MemberAdd implements
 	 * @throws CircleNotFoundException
 	 * @throws FederatedUserException
 	 * @throws FederatedUserNotFoundException
-	 * @throws InvalidIdException
 	 * @throws InvalidItemException
 	 * @throws MemberAlreadyExistsException
+	 * @throws MemberNotFoundException
 	 * @throws MembersLimitException
 	 * @throws OwnerNotFoundException
 	 * @throws RemoteInstanceException
@@ -148,7 +153,6 @@ class MemberAdd implements
 	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
 	 * @throws UserTypeNotFoundException
-	 * @throws MemberNotFoundException
 	 */
 	public function verify(FederatedEvent $event): void {
 		$member = $event->getMember();
@@ -171,6 +175,7 @@ class MemberAdd implements
 				['member' => $member->getUserId() . '@' . $member->getInstance()]
 			);
 		}
+
 		$member->importFromIFederatedUser($federatedUser);
 
 		try {
@@ -258,6 +263,8 @@ class MemberAdd implements
 		}
 
 		$this->memberRequest->save($member);
+
+		$this->circleEventService->onMemberAdded($event);
 
 //
 //		//

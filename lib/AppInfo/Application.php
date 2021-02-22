@@ -37,9 +37,11 @@ namespace OCA\Circles\AppInfo;
 use Closure;
 use OC;
 use OCA\Circles\Api\v1\Circles;
+use OCA\Circles\Events\CircleMemberAddedEvent;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\GlobalScale\GSMount\MountProvider;
 use OCA\Circles\Handlers\WebfingerHandler;
+use OCA\Circles\Listeners\Files\MemberAdded;
 use OCA\Circles\Listeners\GroupDeleted;
 use OCA\Circles\Listeners\UserDeleted;
 use OCA\Circles\Notification\Notifier;
@@ -54,7 +56,6 @@ use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\IAppContainer;
 use OCP\AppFramework\QueryException;
 use OCP\Group\Events\GroupDeletedEvent;
-use OCP\IRequest;
 use OCP\IServerContainer;
 use OCP\User\Events\UserDeletedEvent;
 use OCP\Util;
@@ -104,6 +105,9 @@ class Application extends App implements IBootstrap {
 	public function register(IRegistrationContext $context): void {
 		$context->registerEventListener(UserDeletedEvent::class, UserDeleted::class);
 		$context->registerEventListener(GroupDeletedEvent::class, GroupDeleted::class);
+
+		$context->registerEventListener(CircleMemberAddedEvent::class, MemberAdded::class);
+
 		$context->registerWellKnownHandler(WebfingerHandler::class);
 	}
 

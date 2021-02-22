@@ -184,7 +184,7 @@ class CirclesConfig extends Base {
 				throw new InvalidArgumentException(
 					'Invalid config \'' . $item . '\'. Available values: '
 					. implode(', ', array_values($valid)) . '. '
-					. 'To disable a config, start the value with a underscore (_)'
+					. 'To disable a config, start the value with an underscore'
 				);
 			}
 

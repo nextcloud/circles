@@ -225,10 +225,11 @@ class RemoteWrapper implements INC21QueryRow, JsonSerializable {
 	function jsonSerialize(): array {
 		return [
 			'id'       => $this->getToken(),
+			'instance' => $this->getInstance(),
 			'event'    => $this->getEvent(),
 			'severity' => $this->getSeverity(),
-			'status'   => $this->getStatus(),
-			'creation' => $this->getCreation()
+			'status'   => $this->getStatus()
+//			'creation' => $this->getCreation()
 		];
 	}
 

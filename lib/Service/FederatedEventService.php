@@ -150,7 +150,6 @@ class FederatedEventService extends NC21Signature {
 
 		$this->confirmInitiator($event, true);
 		if ($this->configService->isLocalInstance($event->getCircle()->getInstance())) {
-
 			try {
 				$federatedItem->verify($event);
 				$reading = $event->getReadingOutcome();

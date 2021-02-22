@@ -148,11 +148,8 @@ class RemoteDownstreamService {
 
 	/**
 	 * @param FederatedEvent $event
-	 *
-	 * @return array
 	 */
-	public function incomingEvent(FederatedEvent $event): array {
-		$result = [];
+	public function incomingEvent(FederatedEvent $event): void {
 		try {
 			$gs = $this->federatedEventService->getFederatedItem($event, false);
 			$this->confirmOriginEvent($event);
@@ -162,8 +159,6 @@ class RemoteDownstreamService {
 		} catch (Exception $e) {
 			$this->e($e, ['event' => $event]);
 		}
-
-		return $result;
 	}
 
 

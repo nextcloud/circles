@@ -168,10 +168,9 @@ class RemoteController extends Controller {
 	public function incoming(): DataResponse {
 		try {
 			$event = $this->extractEventFromRequest();
+			$this->remoteDownstreamService->incomingEvent($event);
 
-			$result = $this->remoteDownstreamService->incomingEvent($event);
-
-			return $this->success($result);
+			return $this->success(['result' => $event->getResult()]);
 		} catch (Exception $e) {
 			return $this->fail($e);
 		}
@@ -260,6 +259,7 @@ class RemoteController extends Controller {
 
 	/**
 	 * ?? TODO: rename /member/ to /federatedUser/ ou /federated/  ?
+	 *
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
