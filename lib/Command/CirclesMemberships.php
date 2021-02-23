@@ -174,7 +174,6 @@ class CirclesMemberships extends Base {
 		$output->writeln('Type: <info>' . Member::$DEF_TYPE[$federatedUser->getUserType()] . '</info>');
 		$output->writeln('SingleId: <info>' . $federatedUser->getSingleId() . '</info>');
 
-
 		$output->writeln('');
 		$output->writeln('Memberships:');
 		$count = $this->membershipsService->onMemberUpdate($federatedUser);
@@ -196,6 +195,7 @@ class CirclesMemberships extends Base {
 
 		$tree = new NC21TreeNode(null, new SimpleDataStore(['federatedUser' => $federatedUser]));
 		$this->generateTree($federatedUser->getSingleId(), $tree);
+
 		$this->drawTree(
 			$tree, [$this, 'displayLeaf'],
 			[
@@ -222,6 +222,10 @@ class CirclesMemberships extends Base {
 
 		$members = $this->memberRequest->getMembersBySingleId($id);
 		foreach ($members as $member) {
+			if ($member->getCircle()->isConfig(Circle::CFG_SINGLE)) {
+				continue;
+			}
+
 			$item = new NC21TreeNode(
 				$tree, new SimpleDataStore(
 						 [
