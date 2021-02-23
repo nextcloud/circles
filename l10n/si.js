@@ -5,6 +5,7 @@ OC.L10N.register(
     "Personal" : "පුද්ගලික",
     "Secret" : "රහස",
     "Closed" : "වසා ඇත",
+    "Public" : "පොදු",
     "Not a member" : "සාමාජිකයෙක් නොවේ",
     "Member" : "සාමාජික",
     "Admin" : "පරිපාලක",
