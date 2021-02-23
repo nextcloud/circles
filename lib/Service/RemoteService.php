@@ -70,22 +70,28 @@ class RemoteService extends NC21Signature {
 	/** @var RemoteStreamService */
 	private $remoteStreamService;
 
+	/** @var ShareService */
+	private $shareService;
+
 
 	/**
-	 * RemoteStreamService constructor.
+	 * RemoteService constructor.
 	 *
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
 	 * @param RemoteStreamService $remoteStreamService
+	 * @param ShareService $shareService
 	 */
 	public function __construct(
-		CircleRequest $circleRequest, MemberRequest $memberRequest, RemoteStreamService $remoteStreamService
+		CircleRequest $circleRequest, MemberRequest $memberRequest, RemoteStreamService $remoteStreamService,
+		ShareService $shareService
 	) {
 		$this->setup('app', 'circles');
 
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
 		$this->remoteStreamService = $remoteStreamService;
+		$this->shareService = $shareService;
 	}
 
 
@@ -263,6 +269,8 @@ class RemoteService extends NC21Signature {
 		$this->circleRequest->insertOrUpdate($circle);
 		$this->memberRequest->insertOrUpdate($circle->getOwner());
 
+		$this->shareService->syncRemoteShares($circle);
+
 		$this->syncRemoteMembers($circle);
 	}
 
@@ -309,6 +317,7 @@ class RemoteService extends NC21Signature {
 		string $instance,
 		int $type = Member::TYPE_USER
 	): FederatedUser {
+
 		$result = $this->remoteStreamService->resultRequestRemoteInstance(
 			$instance,
 			RemoteInstance::MEMBER,
@@ -317,10 +326,10 @@ class RemoteService extends NC21Signature {
 			['type' => Member::$DEF_TYPE[$type], 'userId' => $userId]
 		);
 
-		\OC::$server->getLogger()->log(3, '>> ' . json_encode($result));
 		if (empty($result)) {
 			throw new FederatedUserNotFoundException();
 		}
+
 		$federatedUser = new FederatedUser();
 		$federatedUser->import($result);
 		if ($federatedUser->getInstance() !== $instance) {

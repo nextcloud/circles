@@ -10,7 +10,7 @@ declare(strict_types=1);
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2021
+ * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -29,51 +29,59 @@ declare(strict_types=1);
  */
 
 
-namespace OCA\Circles\Service;
+namespace OCA\Circles\FederatedItems;
 
 
-use OCA\Circles\Events\CircleMemberAddedEvent;
-use OCA\Circles\Events\SharedItemsSyncRequestedEvent;
+use daita\MySmallPhpTools\Model\SimpleDataStore;
+use OCA\Circles\IFederatedItem;
+use OCA\Circles\IFederatedItemInstanceMember;
+use OCA\Circles\IFederatedItemResult;
 use OCA\Circles\Model\Federated\FederatedEvent;
-use OCP\EventDispatcher\IEventDispatcher;
+use OCA\Circles\Service\CircleEventService;
 
 
 /**
- * Class CircleEventService
+ * Class SharesSync
  *
- * @package OCA\Circles\Service
+ * @package OCA\Circles\FederatedItems
  */
-class CircleEventService {
+class SharedItemsSync implements
+	IFederatedItem,
+	IFederatedItemInstanceMember,
+	IFederatedItemResult {
+
+// TODO: implements IFederatedItemInstanceMember and IFederatedItemResult to the check procedure
+
+	/** @var CircleEventService */
+	private $circleEventService;
 
 
-	/** @var IEventDispatcher */
-	private $eventDispatcher;
-
-
-	/**
-	 * CircleEventService constructor.
-	 *
-	 * @param IEventDispatcher $eventDispatcher
-	 */
-	public function __construct(IEventDispatcher $eventDispatcher) {
-		$this->eventDispatcher = $eventDispatcher;
+	public function __construct(CircleEventService $circleEventService) {
+		$this->circleEventService = $circleEventService;
 	}
 
 
 	/**
 	 * @param FederatedEvent $event
 	 */
-	public function onMemberAdded(FederatedEvent $event): void {
-		$this->eventDispatcher->dispatchTyped(new CircleMemberAddedEvent($event));
+	public function verify(FederatedEvent $event): void {
 	}
 
 
 	/**
-	 * @param FederatedEvent $federatedEvent
+	 * @param FederatedEvent $event
 	 */
-	public function onSharedItemsSyncRequested(FederatedEvent $federatedEvent) {
-		$event = new SharedItemsSyncRequestedEvent($federatedEvent);
-		$this->eventDispatcher->dispatchTyped($event);
+	public function manage(FederatedEvent $event): void {
+		$this->circleEventService->onSharedItemsSyncRequested($event);
+
+		$event->setResult(new SimpleDataStore(['shares' => 'ok']));
+	}
+
+
+	/**
+	 * @param FederatedEvent[] $events
+	 */
+	public function result(array $events): void {
 	}
 
 }

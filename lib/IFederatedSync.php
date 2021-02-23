@@ -32,12 +32,27 @@ declare(strict_types=1);
 namespace OCA\Circles;
 
 
+use daita\MySmallPhpTools\Model\SimpleDataStore;
+
+
 /**
- * Interface IFederatedItemAsync
+ * Interface IFederatedSync
  *
  * @package OCA\Circles
  */
-interface IFederatedItemAsync {
+interface IFederatedSync {
+
+	/**
+	 * @param string $circleId
+	 *
+	 * @return SimpleDataStore
+	 */
+	public function export(string $circleId): SimpleDataStore;
+
+	/**
+	 * @param SimpleDataStore $data
+	 */
+	public function import(SimpleDataStore $data): void;
 
 }
 

@@ -32,18 +32,18 @@ declare(strict_types=1);
 namespace OCA\Circles\Events;
 
 
+use JsonSerializable;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
-use OCA\Circles\Model\Member;
 use OCP\EventDispatcher\Event;
 
 
 /**
- * Class CircleMemberRemovedEvent
+ * Class CircleMemberAddedEvent
  *
  * @package OCA\Circles\Events
  */
-class CircleMemberRemovedEvent extends Event {
+class SharedItemsSyncRequestedEvent extends Event {
 
 
 	/** @var FederatedEvent */
@@ -52,12 +52,13 @@ class CircleMemberRemovedEvent extends Event {
 	/** @var Circle */
 	private $circle;
 
-	/** @var Member */
-	private $member;
+
+	/** @var array */
+	private $sharedItems = [];
 
 
 	/**
-	 * CircleMemberRemovedEvent constructor.
+	 * CircleMemberAddedEvent constructor.
 	 *
 	 * @param FederatedEvent $federatedEvent
 	 */
@@ -66,7 +67,6 @@ class CircleMemberRemovedEvent extends Event {
 
 		$this->federatedEvent = $federatedEvent;
 		$this->circle = $federatedEvent->getCircle();
-		$this->member = $federatedEvent->getMember();
 	}
 
 
@@ -77,6 +77,7 @@ class CircleMemberRemovedEvent extends Event {
 		return $this->federatedEvent;
 	}
 
+
 	/**
 	 * @return Circle
 	 */
@@ -84,11 +85,40 @@ class CircleMemberRemovedEvent extends Event {
 		return $this->circle;
 	}
 
+
 	/**
-	 * @return Member
+	 * @param string $appId
+	 * @param string $itemType
+	 * @param JsonSerializable $item
 	 */
-	public function getMember(): Member {
-		return $this->member;
+	public function addSharedItem(string $appId, string $itemType, JsonSerializable $item): void {
+		$this->initArray($appId, $itemType);
+		$this->sharedItems[$appId][$itemType][] = $item;
+	}
+
+	/**
+	 * @param string $appId
+	 * @param string $source
+	 * @param array $data
+	 */
+	public function addSharedArray(string $appId, string $source, array $data): void {
+		$this->initArray($appId, $source);
+		$this->sharedItems[$appId][$source][] = $data;
+	}
+
+
+	/**
+	 * @param string $appId
+	 * @param string $itemType
+	 */
+	private function initArray(string $appId, string $itemType) {
+		if (!is_array($this->sharedItems[$appId])) {
+			$this->sharedItems[$appId] = [];
+		}
+
+		if (!is_array($this->sharedItems[$appId][$itemType])) {
+			$this->sharedItems[$appId][$itemType] = [];
+		}
 	}
 
 }
