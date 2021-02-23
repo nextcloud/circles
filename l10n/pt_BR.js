@@ -77,7 +77,7 @@ OC.L10N.register(
     "Member could not be added to the circle" : "Membro não pôde ser adicionado ao círculo",
     "The email address '{email}' was added to the circle" : "O e-mail '{email}' foi adicionado ao círculo",
     "The email address '{email}' could not be added to the circle" : "O e-mail '{email}' não pôde ser adicionado ao círculo",
-    "A new contact was added to the circle" : "Um novo contato foi adicionado para o círculo",
+    "A new contact was added to the circle" : "Um novo contato foi adicionado ao círculo",
     "Contact could not be added to the circle" : "O contato não pôde ser adicionado ao círculo",
     "A new member was invited to the circle" : "Um novo membro foi convidado para o círculo",
     "Member could not be invited to the circle" : "Membro não pôde ser convidado para o círculo",
