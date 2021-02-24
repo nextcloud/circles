@@ -136,6 +136,10 @@ class RemoteDownstreamService {
 		$this->confirmContent($event, true);
 		$item->verify($event);
 
+		if ($event->isDataRequestOnly()) {
+			return;
+		}
+
 		$filter = [];
 		if (!$event->isAsync()) {
 			$item->manage($event);

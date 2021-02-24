@@ -89,6 +89,9 @@ class FederatedEvent implements JsonSerializable {
 	/** @var bool */
 	private $async = false;
 
+	/** @var bool */
+	private $dataRequestOnly = false;
+
 	/** @var string */
 	private $incomingOrigin = '';
 
@@ -190,6 +193,26 @@ class FederatedEvent implements JsonSerializable {
 
 		return $this;
 	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function isDataRequestOnly(): bool {
+		return $this->dataRequestOnly;
+	}
+
+	/**
+	 * @param bool $dataRequestOnly
+	 *
+	 * @return self
+	 */
+	public function setDataRequestOnly(bool $dataRequestOnly): self {
+		$this->dataRequestOnly = $dataRequestOnly;
+
+		return $this;
+	}
+
 
 	/**
 	 * @param string $incomingOrigin
@@ -399,12 +422,13 @@ class FederatedEvent implements JsonSerializable {
 			[
 				'message' => $message,
 				'params'  => $params,
-				'fail' => $fail
+				'fail'    => $fail
 			]
 		);
 
 		return $this;
 	}
+
 
 	/**
 	 * @return SimpleDataStore

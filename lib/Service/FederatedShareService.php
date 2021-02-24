@@ -95,10 +95,10 @@ class FederatedShareService extends NC21Signature {
 		$event = new FederatedEvent(ShareLock::class);
 		$event->setCircle($circle);
 
-		$this->federatedEventService->newEvent($event);
+		$data = $this->federatedEventService->newEvent($event);
 
 		/** @var FederatedShare $share */
-		$share = $event->getData()->gObj('federatedShare', FederatedShare::class);
+		$share = $data->gObj('federatedShare', FederatedShare::class);
 
 		return $share;
 	}

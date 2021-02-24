@@ -37,7 +37,7 @@ namespace OCA\Circles;
  *
  * @package OCA\Circles
  */
-interface IFederatedItemRequestOnly {
+interface IFederatedItemDataRequestOnly {
 
 }
 

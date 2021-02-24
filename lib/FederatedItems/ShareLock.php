@@ -37,7 +37,7 @@ use OCA\Circles\Db\ShareRequest;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemLimitedToInstanceWithMember;
-use OCA\Circles\IFederatedItemRequestOnly;
+use OCA\Circles\IFederatedItemDataRequestOnly;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\FederatedShare;
 use OCA\Circles\Model\ManagedModel;
@@ -51,7 +51,7 @@ use OCA\Circles\Model\ManagedModel;
 class ShareLock implements
 	IFederatedItem,
 	IFederatedItemLimitedToInstanceWithMember,
-	IFederatedItemRequestOnly {
+	IFederatedItemDataRequestOnly {
 
 // TODO: implements IFederatedItemRequestOnly. Exchange only between an instance and the instance that own the Circle
 
@@ -80,8 +80,8 @@ class ShareLock implements
 		$share->setInstance($event->getIncomingOrigin());
 
 		$this->shareRequest->save($share);
+		$event->setDataOutcome(['federatedShare' => $this->shareRequest->getShare($share->getUniqueId())]);
 
-		$event->getData()->sObj('federatedShare', $this->shareRequest->getShare($share->getUniqueId()));
 		// Create a unique ID, stored in database of the instance that 'owns' the Circle, that will 'lock'
 		// the share to an instance. meaning, only this instance can update data
 		// about a share

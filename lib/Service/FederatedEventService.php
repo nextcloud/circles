@@ -36,6 +36,7 @@ use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
 use daita\MySmallPhpTools\Model\Request;
+use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OC;
@@ -60,6 +61,7 @@ use OCA\Circles\IFederatedItemMemberCheckNotRequired;
 use OCA\Circles\IFederatedItemMemberEmpty;
 use OCA\Circles\IFederatedItemMemberOptional;
 use OCA\Circles\IFederatedItemMemberRequired;
+use OCA\Circles\IFederatedItemDataRequestOnly;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
@@ -139,7 +141,7 @@ class FederatedEventService extends NC21Signature {
 	 * @throws FederatedItemException
 	 * @throws FederatedEventDSyncException
 	 */
-	public function newEvent(FederatedEvent $event): void {
+	public function newEvent(FederatedEvent $event): ?SimpleDataStore {
 		$event->setSource($this->configService->getLocalInstance());
 
 		try {
@@ -159,6 +161,10 @@ class FederatedEventService extends NC21Signature {
 				throw new FederatedItemException($this->l10n->t($e->getMessage(), $e->getParams()));
 			}
 
+			if ($event->isDataRequestOnly()) {
+				return $event->getDataOutcome();
+			}
+
 			if (!$event->isAsync()) {
 				$federatedItem->manage($event);
 			}
@@ -166,11 +172,16 @@ class FederatedEventService extends NC21Signature {
 			$this->initBroadcast($event);
 		} else {
 			$this->remoteUpstreamService->confirmEvent($event);
+			if ($event->isDataRequestOnly()) {
+				return $event->getDataOutcome();
+			}
+
 			if (!$event->isAsync()) {
 				$federatedItem->manage($event);
 			}
 		}
 
+		return $event->getOutcome();
 	}
 
 
@@ -206,44 +217,6 @@ class FederatedEventService extends NC21Signature {
 			}
 		}
 	}
-
-
-
-//	/**
-//	 * We check that the event can be managed/checked locally or if the owner of the circle belongs to
-//	 * an other instance of Nextcloud
-//	 *
-//	 * @param RemoteEvent $event
-//	 *
-//	 * @return bool
-//	 * @throws CircleNotFoundException
-//	 * @throws OwnerNotFoundException
-//	 */
-//	public function isLocalEvent(RemoteEvent $event): bool {
-////		if ($event->isLocal()) {
-////			return true;
-////		}
-//
-//		$circle = $event->getCircle();
-//
-////		if (!$circle->hasOwner()) {
-//		return ($this->configService->isLocalInstance($circle->getInstance()));
-////		}
-//
-////		if ($event->isVerifiedCircle()) {
-////			$localCircle = $event->getCircle();
-////		} else {
-////			$localCircle = $this->circleRequest->getCircle($circle->getId());
-////		}
-////
-////		$owner = $localCircle->getOwner();
-////		if ($owner->getInstance() === ''
-////			|| $this->configService->isLocalInstance($owner->getInstance())) {
-////			return true;
-////		}
-////
-////		return false;
-//	}
 
 
 	/**
@@ -340,6 +313,9 @@ class FederatedEventService extends NC21Signature {
 	private function configureEvent(FederatedEvent $event, IFederatedItem $item) {
 		if ($item instanceof IFederatedItemAsyncProcess) {
 			$event->setAsync(true);
+		}
+		if ($item instanceof IFederatedItemDataRequestOnly) {
+			$event->setDataRequestOnly(true);
 		}
 	}
 
