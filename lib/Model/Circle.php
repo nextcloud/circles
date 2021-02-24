@@ -31,6 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
+
 use daita\MySmallPhpTools\Db\Nextcloud\nc21\INC21QueryRow;
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\IDeserializable;

@@ -38,7 +38,7 @@ use OCA\Circles\Db\CircleProviderRequest;
 use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\DeprecatedMembersRequest;
 use OCA\Circles\Db\FederatedLinksRequest;
-use OCA\Circles\Db\SharesRequest;
+use OCA\Circles\Db\FileSharesRequest;
 use OCA\Circles\Db\TokensRequest;
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
@@ -92,8 +92,8 @@ class CirclesService {
 	/** @var TokensRequest */
 	private $tokensRequest;
 
-	/** @var SharesRequest */
-	private $sharesRequest;
+	/** @var FileSharesRequest */
+	private $fileSharesRequest;
 
 	/** @var FederatedLinksRequest */
 	private $federatedLinksRequest;
@@ -123,7 +123,7 @@ class CirclesService {
 	 * @param DeprecatedCirclesRequest $circlesRequest
 	 * @param DeprecatedMembersRequest $membersRequest
 	 * @param TokensRequest $tokensRequest
-	 * @param SharesRequest $sharesRequest
+	 * @param FileSharesRequest $fileSharesRequest
 	 * @param FederatedLinksRequest $federatedLinksRequest
 	 * @param GSUpstreamService $gsUpstreamService
 	 * @param EventsService $eventsService
@@ -140,7 +140,7 @@ class CirclesService {
 		DeprecatedCirclesRequest $circlesRequest,
 		DeprecatedMembersRequest $membersRequest,
 		TokensRequest $tokensRequest,
-		SharesRequest $sharesRequest,
+		FileSharesRequest $fileSharesRequest,
 		FederatedLinksRequest $federatedLinksRequest,
 		GSUpstreamService $gsUpstreamService,
 		EventsService $eventsService,
@@ -163,7 +163,7 @@ class CirclesService {
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
 		$this->tokensRequest = $tokensRequest;
-		$this->sharesRequest = $sharesRequest;
+		$this->fileSharesRequest = $fileSharesRequest;
 		$this->federatedLinksRequest = $federatedLinksRequest;
 		$this->gsUpstreamService = $gsUpstreamService;
 		$this->eventsService = $eventsService;

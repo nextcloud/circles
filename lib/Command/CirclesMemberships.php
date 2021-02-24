@@ -40,6 +40,7 @@ use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21TreeNode;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21ConsoleTree;
 use daita\MySmallPhpTools\Traits\TArrayTools;
+use daita\MySmallPhpTools\Traits\TStringTools;
 use OC\Core\Command\Base;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
@@ -67,7 +68,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 
 /**
- * Class CirclesMembershipsIndex
+ * Class CirclesMemberships
  *
  * @package OCA\Circles\Command
  */
@@ -102,7 +103,7 @@ class CirclesMemberships extends Base {
 
 
 	/**
-	 * CirclesList constructor.
+	 * CirclesMemberships constructor.
 	 *
 	 * @param IUserManager $userManager
 	 * @param MembershipRequest $membershipRequest

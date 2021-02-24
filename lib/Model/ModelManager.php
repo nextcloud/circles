@@ -32,7 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Model;
 
 
-use OCA\Circles\Db\CoreQueryBuilder;
+use OCA\Circles\Db\CoreRequestBuilder;
 use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
@@ -111,7 +111,7 @@ class ModelManager {
 	public function importCircleFromDatabase(Member $member, array $data) {
 		try {
 			$circle = new Circle();
-			$circle->importFromDatabase($data, CoreQueryBuilder::PREFIX_CIRCLE);
+			$circle->importFromDatabase($data, CoreRequestBuilder::PREFIX_CIRCLE);
 			$member->setCircle($circle);
 		} catch (CircleNotFoundException $e) {
 		}
@@ -124,7 +124,7 @@ class ModelManager {
 	public function importOwnerFromDatabase(Circle $circle, array $data): void {
 		try {
 			$owner = new Member();
-			$owner->importFromDatabase($data, CoreQueryBuilder::PREFIX_OWNER);
+			$owner->importFromDatabase($data, CoreRequestBuilder::PREFIX_OWNER);
 			$circle->setOwner($owner);
 		} catch (MemberNotFoundException $e) {
 		}
@@ -138,7 +138,7 @@ class ModelManager {
 	public function importInitiatorFromDatabase(Circle $circle, array $data): void {
 		try {
 			$initiator = new Member();
-			$initiator->importFromDatabase($data, CoreQueryBuilder::PREFIX_INITIATOR);
+			$initiator->importFromDatabase($data, CoreRequestBuilder::PREFIX_INITIATOR);
 			$circle->setInitiator($initiator);
 		} catch (MemberNotFoundException $e) {
 		}

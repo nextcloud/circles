@@ -33,11 +33,11 @@ namespace OCA\Circles;
 
 
 /**
- * Interface IFederatedItemMustBeLocal
+ * Interface IFederatedItemInitiatorMustBeLocal
  *
  * @package OCA\Circles
  */
-interface IFederatedItemLocalOnly {
+interface IFederatedItemInitiatorMustBeLocal {
 
 }
 

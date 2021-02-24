@@ -75,7 +75,7 @@ class DeprecatedRequestBuilder {
 
 
 	/**
-	 * CoreRequestBuilder constructor.
+	 * CoreQueryBuilder constructor.
 	 *
 	 * @param IL10N $l10n
 	 * @param IDBConnection $connection

@@ -33,7 +33,7 @@ namespace OCA\Circles\GlobalScale;
 use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\GSSharesRequest;
 use OCA\Circles\Db\DeprecatedMembersRequest;
-use OCA\Circles\Db\SharesRequest;
+use OCA\Circles\Db\FileSharesRequest;
 use OCA\Circles\Db\TokensRequest;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
@@ -81,8 +81,8 @@ abstract class AGlobalScaleEvent {
 	/** @var IUserManager */
 	protected $userManager;
 
-	/** @var SharesRequest */
-	protected $sharesRequest;
+	/** @var FileSharesRequest */
+	protected $fileSharesRequest;
 
 	/** @var TokensRequest */
 	protected $tokensRequest;
@@ -121,7 +121,7 @@ abstract class AGlobalScaleEvent {
 	 * @param IMailer $mailer
 	 * @param Defaults $defaults
 	 * @param IUserManager $userManager
-	 * @param SharesRequest $sharesRequest
+	 * @param FileSharesRequest $fileSharesRequest
 	 * @param TokensRequest $tokensRequest
 	 * @param DeprecatedCirclesRequest $circlesRequest
 	 * @param DeprecatedMembersRequest $membersRequest
@@ -139,7 +139,7 @@ abstract class AGlobalScaleEvent {
 		IMailer $mailer,
 		Defaults $defaults,
 		IUserManager $userManager,
-		SharesRequest $sharesRequest,
+		FileSharesRequest $fileSharesRequest,
 		TokensRequest $tokensRequest,
 		DeprecatedCirclesRequest $circlesRequest,
 		DeprecatedMembersRequest $membersRequest,
@@ -156,7 +156,7 @@ abstract class AGlobalScaleEvent {
 		$this->mailer = $mailer;
 		$this->defaults = $defaults;
 		$this->userManager = $userManager;
-		$this->sharesRequest = $sharesRequest;
+		$this->fileSharesRequest = $fileSharesRequest;
 		$this->tokensRequest = $tokensRequest;
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;

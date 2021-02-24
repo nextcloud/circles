@@ -102,7 +102,7 @@ class MemberRemove extends AGlobalScaleEvent {
 		$this->membersRequest->removeMember($member);
 
 		$this->gsSharesRequest->removeGSSharesFromMember($member);
-		$this->sharesRequest->removeSharesFromMember($member);
+		$this->fileSharesRequest->removeSharesFromMember($member);
 		$this->tokensRequest->removeTokensFromMember($member);
 	}
 

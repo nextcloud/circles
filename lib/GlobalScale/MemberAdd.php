@@ -275,7 +275,7 @@ class MemberAdd extends AGlobalScaleEvent {
 	 * @return array
 	 */
 	private function getUnknownShares(DeprecatedMember $member): array {
-		$allShares = $this->sharesRequest->getSharesForCircle($member->getCircleId());
+		$allShares = $this->fileSharesRequest->getSharesForCircle($member->getCircleId());
 		$knownShares = array_map(
 			function(SharesToken $shareToken) {
 				return $shareToken->getShareId();

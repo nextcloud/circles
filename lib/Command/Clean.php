@@ -27,7 +27,7 @@
 namespace OCA\Circles\Command;
 
 use OC\Core\Command\Base;
-use OCA\Circles\Db\CoreRequestBuilder;
+use OCA\Circles\Db\CoreQueryBuilder;
 use OCA\Circles\Service\CleanService;
 use OCA\Circles\Service\ConfigService;
 use OCP\IDBConnection;
@@ -42,8 +42,8 @@ class Clean extends Base {
 	/** @var IDBConnection */
 	private $dbConnection;
 
-	/** @var CoreRequestBuilder */
-	private $coreRequestBuilder;
+	/** @var CoreQueryBuilder */
+	private $coreQueryBuilder;
 
 	/** @var CleanService */
 	private $cleanService;
@@ -55,17 +55,17 @@ class Clean extends Base {
 	 * Clean constructor.
 	 *
 	 * @param IDBConnection $connection
-	 * @param CoreRequestBuilder $coreRequestBuilder
+	 * @param CoreQueryBuilder $coreQueryBuilder
 	 * @param CleanService $cleanService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IDBConnection $connection, CoreRequestBuilder $coreRequestBuilder, CleanService $cleanService,
+		IDBConnection $connection, CoreQueryBuilder $coreQueryBuilder, CleanService $cleanService,
 		ConfigService $configService
 	) {
 		parent::__construct();
 		$this->dbConnection = $connection;
-		$this->coreRequestBuilder = $coreRequestBuilder;
+		$this->coreQueryBuilder = $coreQueryBuilder;
 		$this->cleanService = $cleanService;
 		$this->configService = $configService;
 	}
@@ -94,10 +94,9 @@ class Clean extends Base {
 		$uninstall = $input->getOption('uninstall');
 
 		if ($all || $uninstall) {
-			$this->coreRequestBuilder->cleanDatabase();
+			$this->coreQueryBuilder->cleanDatabase();
 			if ($uninstall) {
-				$this->coreRequestBuilder->uninstall();
-				$this->configService->unsetAppConfig();
+				$this->coreQueryBuilder->uninstall();
 			}
 
 			return 0;

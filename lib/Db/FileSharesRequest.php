@@ -36,7 +36,7 @@ use OCA\Circles\Model\DeprecatedMember;
  *
  * @package OCA\Circles\Db
  */
-class SharesRequest extends SharesRequestBuilder {
+class FileSharesRequest extends FileSharesRequestBuilder {
 
 
 	/**
@@ -44,8 +44,8 @@ class SharesRequest extends SharesRequestBuilder {
 	 *
 	 * @param DeprecatedMember $member
 	 */
-	public function removeSharesFromMember(DeprecatedMember $member) {
-		$qb = $this->getSharesDeleteSql();
+	public function removeSharesFromMember(DeprecatedMember $member): void {
+		$qb = $this->getFileSharesDeleteSql();
 		$expr = $qb->expr();
 
 		$andX = $expr->andX();
@@ -61,8 +61,8 @@ class SharesRequest extends SharesRequestBuilder {
 	/**
 	 * @param string $circleId
 	 */
-	public function removeSharesToCircleId(string $circleId) {
-		$qb = $this->getSharesDeleteSql();
+	public function removeSharesToCircleId(string $circleId): void {
+		$qb = $this->getFileSharesDeleteSql();
 		$expr = $qb->expr();
 
 		$andX = $expr->andX();
@@ -79,8 +79,8 @@ class SharesRequest extends SharesRequestBuilder {
 	 *
 	 * @return array
 	 */
-	public function getSharesForCircle(string $circleId) {
-		$qb = $this->getSharesSelectSql();
+	public function getSharesForCircle(string $circleId): array {
+		$qb = $this->getFileSharesSelectSql();
 
 		$this->limitToShareWith($qb, $circleId);
 		$this->limitToShareType($qb, self::SHARE_TYPE);
@@ -100,7 +100,7 @@ class SharesRequest extends SharesRequestBuilder {
 	 * @return array
 	 */
 	public function getShares(): array {
-		$qb = $this->getSharesSelectSql();
+		$qb = $this->getFileSharesSelectSql();
 
 		$expr = $qb->expr();
 

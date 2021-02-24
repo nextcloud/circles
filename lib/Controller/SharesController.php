@@ -29,7 +29,7 @@ namespace OCA\Circles\Controller;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use Exception;
 use OC\AppFramework\Http;
-use OCA\Circles\Db\SharesRequest;
+use OCA\Circles\Db\FileSharesRequest;
 use OCA\Circles\Db\TokensRequest;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Model\DeprecatedMember;
@@ -60,8 +60,8 @@ class SharesController extends Controller {
 	/** @var TokensRequest */
 	private $tokenRequest;
 
-	/** @var SharesRequest */
-	private $sharesRequest;
+	/** @var FileSharesRequest */
+	private $fileSharesRequest;
 
 	/** @var IURLGenerator */
 	private $urlGenerator;
@@ -88,7 +88,7 @@ class SharesController extends Controller {
 	 * @param $appName
 	 * @param IRequest $request
 	 * @param TokensRequest $tokenRequest
-	 * @param SharesRequest $sharesRequest
+	 * @param FileSharesRequest $fileSharesRequest
 	 * @param IURLGenerator $urlGenerator
 	 * @param MembersService $membersService
 	 * @param BroadcastService $broadcastService
@@ -97,7 +97,7 @@ class SharesController extends Controller {
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$appName, IRequest $request, TokensRequest $tokenRequest, SharesRequest $sharesRequest,
+		$appName, IRequest $request, TokensRequest $tokenRequest, FileSharesRequest $fileSharesRequest,
 		IUrlGenerator $urlGenerator, MembersService $membersService,
 		BroadcastService $broadcastService,
 		SharingFrameService $sharingFrameService, ConfigService $configService,
@@ -106,7 +106,7 @@ class SharesController extends Controller {
 		parent::__construct($appName, $request);
 
 		$this->tokenRequest = $tokenRequest;
-		$this->sharesRequest = $sharesRequest;
+		$this->fileSharesRequest = $fileSharesRequest;
 		$this->urlGenerator = $urlGenerator;
 		$this->membersService = $membersService;
 		$this->broadcastService = $broadcastService;

@@ -33,11 +33,11 @@ namespace OCA\Circles;
 
 
 /**
- * Interface IFederatedItemAsync
+ * Interface IFederatedItemAsyncProcess
  *
  * @package OCA\Circles
  */
-interface IFederatedItemAsync {
+interface IFederatedItemAsyncProcess {
 
 }
 

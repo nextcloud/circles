@@ -33,24 +33,23 @@ namespace OCA\Circles\Db;
 
 
 use daita\MySmallPhpTools\Exceptions\RowNotFoundException;
-use OCA\Circles\Model\Member;
-use OCA\Circles\Model\Membership;
-
+use OCA\Circles\Exceptions\FederatedShareNotFoundException;
+use OCA\Circles\Model\Federated\FederatedShare;
 
 /**
- * Class MembershipRequestBuilder
+ * Class ShareRequestBuilder
  *
  * @package OCA\Circles\Db
  */
-class MembershipRequestBuilder extends CoreQueryBuilder {
+class ShareRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
 	 * @return CoreRequestBuilder
 	 */
-	protected function getMembershipInsertSql(): CoreRequestBuilder {
+	protected function getShareInsertSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->insert(self::TABLE_MEMBERSHIP);
+		$qb->insert(self::TABLE_SHARE);
 
 		return $qb;
 	}
@@ -59,9 +58,12 @@ class MembershipRequestBuilder extends CoreQueryBuilder {
 	/**
 	 * @return CoreRequestBuilder
 	 */
-	protected function getMembershipUpdateSql(): CoreRequestBuilder {
+	protected function getShareSelectSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->update(self::TABLE_MEMBERSHIP);
+
+		$qb->select('s.id', 's.unique_id', 's.circle_id', 's.instance')
+		   ->from(self::TABLE_SHARE, 's')
+		   ->setDefaultSelectAlias('s');
 
 		return $qb;
 	}
@@ -70,50 +72,62 @@ class MembershipRequestBuilder extends CoreQueryBuilder {
 	/**
 	 * @return CoreRequestBuilder
 	 */
-	protected function getMembershipSelectSql(): CoreRequestBuilder {
+	protected function getShareUpdateSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->select('ms.id', 'ms.circle_id', 'ms.member_id', 'ms.level')
-		   ->from(self::TABLE_MEMBERSHIP, 'ms')
-		   ->setDefaultSelectAlias('ms');
+		$qb->update(self::TABLE_SHARE);
 
 		return $qb;
 	}
 
 
 	/**
-	 * Base of the Sql Delete request
-	 *
 	 * @return CoreRequestBuilder
 	 */
-	protected function getMembershipDeleteSql(): CoreRequestBuilder {
+	protected function getShareDeleteSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->delete(self::TABLE_MEMBERSHIP);
+		$qb->delete(self::TABLE_SHARE);
 
 		return $qb;
 	}
+
 
 
 	/**
 	 * @param CoreRequestBuilder $qb
 	 *
-	 * @return Member
-	 * @throws RowNotFoundException
+	 * @return FederatedShare
+	 * @throws FederatedShareNotFoundException
 	 */
-	public function getItemFromRequest(CoreRequestBuilder $qb): Member {
-		/** @var Member $member */
-		$member = $qb->asItem(Membership::class);
+	public function getItemFromRequest(CoreRequestBuilder $qb): FederatedShare {
+		/** @var FederatedShare $circle */
+		try {
+			$circle = $qb->asItem(
+				FederatedShare::class,
+				[
+					'local' => $this->configService->getLocalInstance()
+				]
+			);
+		} catch (RowNotFoundException $e) {
+			throw new FederatedShareNotFoundException();
+		}
 
-		return $member;
+		return $circle;
 	}
 
 	/**
 	 * @param CoreRequestBuilder $qb
 	 *
-	 * @return Membership[]
+	 * @return FederatedShare[]
 	 */
 	public function getItemsFromRequest(CoreRequestBuilder $qb): array {
-		/** @var Membership[] $result */
-		return $qb->asItems(Membership::class);
+		/** @var FederatedShare[] $result */
+		return $qb->asItems(
+			FederatedShare::class,
+			[
+				'local' => $this->configService->getLocalInstance()
+			]
+		);
 	}
+
 
 }

@@ -32,12 +32,15 @@ declare(strict_types=1);
 namespace OCA\Circles\FederatedItems;
 
 
-use daita\MySmallPhpTools\Model\SimpleDataStore;
+use daita\MySmallPhpTools\Traits\TStringTools;
+use OCA\Circles\Db\ShareRequest;
+use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemLimitedToInstanceWithMember;
-use OCA\Circles\IFederatedItemManageResult;
+use OCA\Circles\IFederatedItemRequestOnly;
 use OCA\Circles\Model\Federated\FederatedEvent;
-use OCA\Circles\Service\CircleEventService;
+use OCA\Circles\Model\Federated\FederatedShare;
+use OCA\Circles\Model\ManagedModel;
 
 
 /**
@@ -45,26 +48,43 @@ use OCA\Circles\Service\CircleEventService;
  *
  * @package OCA\Circles\FederatedItems
  */
-class SharedItemsSync implements
+class ShareLock implements
 	IFederatedItem,
 	IFederatedItemLimitedToInstanceWithMember,
-	IFederatedItemManageResult {
+	IFederatedItemRequestOnly {
 
-// TODO: implements IFederatedItemInstanceMember and IFederatedItemResult to the check procedure
+// TODO: implements IFederatedItemRequestOnly. Exchange only between an instance and the instance that own the Circle
 
-	/** @var CircleEventService */
-	private $circleEventService;
+	use TStringTools;
 
 
-	public function __construct(CircleEventService $circleEventService) {
-		$this->circleEventService = $circleEventService;
+	/** @var ShareRequest */
+	private $shareRequest;
+
+
+	public function __construct(ShareRequest $shareRequest) {
+		$this->shareRequest = $shareRequest;
 	}
 
 
 	/**
 	 * @param FederatedEvent $event
+	 *
+	 * @throws InvalidIdException
 	 */
 	public function verify(FederatedEvent $event): void {
+
+		$share = new FederatedShare();
+		$share->setUniqueId($this->token(ManagedModel::ID_LENGTH));
+		$share->setCircleId($event->getCircle()->getId());
+		$share->setInstance($event->getIncomingOrigin());
+
+		$this->shareRequest->save($share);
+
+		$event->getData()->sObj('federatedShare', $this->shareRequest->getShare($share->getUniqueId()));
+		// Create a unique ID, stored in database of the instance that 'owns' the Circle, that will 'lock'
+		// the share to an instance. meaning, only this instance can update data
+		// about a share
 	}
 
 
@@ -72,9 +92,9 @@ class SharedItemsSync implements
 	 * @param FederatedEvent $event
 	 */
 	public function manage(FederatedEvent $event): void {
-		$this->circleEventService->onSharedItemsSyncRequested($event);
-
-		$event->setResult(new SimpleDataStore(['shares' => 'ok']));
+//		$this->circleEventService->onSharedItemsSyncRequested($event);
+//
+//		$event->setResult(new SimpleDataStore(['shares' => 'ok']));
 	}
 
 

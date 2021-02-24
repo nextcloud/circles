@@ -52,10 +52,10 @@ use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\IFederatedItem;
-use OCA\Circles\IFederatedItemAsync;
+use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemCircleCheckNotRequired;
 use OCA\Circles\IFederatedItemInitiatorCheckNotRequired;
-use OCA\Circles\IFederatedItemLocalOnly;
+use OCA\Circles\IFederatedItemInitiatorMustBeLocal;
 use OCA\Circles\IFederatedItemMemberCheckNotRequired;
 use OCA\Circles\IFederatedItemMemberEmpty;
 use OCA\Circles\IFederatedItemMemberOptional;
@@ -80,6 +80,7 @@ class FederatedEventService extends NC21Signature {
 
 	use TNC21Request;
 	use TStringTools;
+
 
 	/** @var IL10N */
 	private $l10n;
@@ -326,7 +327,7 @@ class FederatedEventService extends NC21Signature {
 				. ' does not implements IFederatedItemMemberOptional nor IFederatedItemMemberRequired'
 			);
 		}
-		if ($item instanceof IFederatedItemLocalOnly && $checkLocalOnly) {
+		if ($item instanceof IFederatedItemInitiatorMustBeLocal && $checkLocalOnly) {
 			throw new FederatedEventException('FederatedItem must be executed locally');
 		}
 	}
@@ -337,7 +338,7 @@ class FederatedEventService extends NC21Signature {
 	 * @param IFederatedItem $item
 	 */
 	private function configureEvent(FederatedEvent $event, IFederatedItem $item) {
-		if ($item instanceof IFederatedItemAsync) {
+		if ($item instanceof IFederatedItemAsyncProcess) {
 			$event->setAsync(true);
 		}
 	}

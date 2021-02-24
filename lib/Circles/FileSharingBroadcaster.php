@@ -31,7 +31,7 @@ use Exception;
 use OC;
 use OC\Share20\Share;
 use OCA\Circles\AppInfo\Application;
-use OCA\Circles\Db\SharesRequest;
+use OCA\Circles\Db\FileSharesRequest;
 use OCA\Circles\Db\TokensRequest;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\IBroadcaster;
@@ -92,8 +92,8 @@ class FileSharingBroadcaster implements IBroadcaster {
 	/** @var IURLGenerator */
 	private $urlGenerator;
 
-	/** @var SharesRequest */
-	private $sharesRequest;
+	/** @var FileSharesRequest */
+	private $fileSharesRequest;
 
 	/** @var TokensRequest */
 	private $tokensRequest;
@@ -126,7 +126,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$this->urlGenerator = OC::$server->getURLGenerator();
 		try {
 			$this->defaults = OC::$server->query(Defaults::class);
-			$this->sharesRequest = OC::$server->query(SharesRequest::class);
+			$this->fileSharesRequest = OC::$server->query(FileSharesRequest::class);
 			$this->tokensRequest = OC::$server->query(TokensRequest::class);
 			$this->configService = OC::$server->query(ConfigService::class);
 			$this->miscService = OC::$server->query(MiscService::class);
@@ -276,7 +276,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 		$this->init();
 
-		$allShares = $this->sharesRequest->getSharesForCircle($member->getCircleId());
+		$allShares = $this->fileSharesRequest->getSharesForCircle($member->getCircleId());
 		$knownShares = array_map(
 			function(SharesToken $shareToken) {
 				return $shareToken->getShareId();

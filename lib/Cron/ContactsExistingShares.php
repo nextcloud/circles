@@ -37,7 +37,7 @@ use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Circles\FileSharingBroadcaster;
 use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\DeprecatedMembersRequest;
-use OCA\Circles\Db\SharesRequest;
+use OCA\Circles\Db\FileSharesRequest;
 use OCA\Circles\Db\TokensRequest;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\GSStatusException;
@@ -80,8 +80,8 @@ class ContactsExistingShares extends TimedJob {
 	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
 
-	/** @var SharesRequest */
-	private $sharesRequest;
+	/** @var FileSharesRequest */
+	private $fileSharesRequest;
 
 	/** @var TokensRequest */
 	private $tokensRequest;
@@ -114,7 +114,7 @@ class ContactsExistingShares extends TimedJob {
 		$this->membersRequest = $c->query(DeprecatedMembersRequest::class);
 		$this->circlesRequest = $c->query(DeprecatedCirclesRequest::class);
 		$this->tokensRequest = $c->query(TokensRequest::class);
-		$this->sharesRequest = $c->query(SharesRequest::class);
+		$this->fileSharesRequest = $c->query(FileSharesRequest::class);
 		$this->fileSharingBroadcaster = $c->query(FileSharingBroadcaster::class);
 		$this->miscService = $c->query(MiscService::class);
 
@@ -162,7 +162,7 @@ class ContactsExistingShares extends TimedJob {
 			$owner = $owners[0];
 
 			// send mail to $missingMails
-			$allShares = $this->sharesRequest->getSharesForCircle($member->getCircleId());
+			$allShares = $this->fileSharesRequest->getSharesForCircle($member->getCircleId());
 
 			foreach ($missingMails as $recipient) {
 				$this->fileSharingBroadcaster->sendMailExitingShares(

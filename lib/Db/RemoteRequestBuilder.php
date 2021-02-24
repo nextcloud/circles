@@ -42,13 +42,13 @@ use OCA\Circles\Model\Federated\RemoteInstance;
  *
  * @package OCA\Circles\Db
  */
-class RemoteRequestBuilder extends CoreRequestBuilder {
+class RemoteRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreRequestBuilder
 	 */
-	protected function getRemoteInsertSql(): CoreQueryBuilder {
+	protected function getRemoteInsertSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->insert(self::TABLE_REMOTE)
 		   ->setValue('creation', $qb->createNamedParameter($this->timezoneService->getUTCDate()));
@@ -60,9 +60,9 @@ class RemoteRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * Base of the Sql Update request for Groups
 	 *
-	 * @return CoreQueryBuilder
+	 * @return CoreRequestBuilder
 	 */
-	protected function getRemoteUpdateSql(): CoreQueryBuilder {
+	protected function getRemoteUpdateSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->update(self::TABLE_REMOTE);
 
@@ -71,9 +71,9 @@ class RemoteRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreRequestBuilder
 	 */
-	protected function getRemoteSelectSql(): CoreQueryBuilder {
+	protected function getRemoteSelectSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->select('r.id', 'r.type', 'r.uid', 'r.instance', 'r.href', 'r.item', 'r.creation')
 		   ->from(self::TABLE_REMOTE, 'r');
@@ -87,9 +87,9 @@ class RemoteRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * Base of the Sql Delete request
 	 *
-	 * @return CoreQueryBuilder
+	 * @return CoreRequestBuilder
 	 */
-	protected function getRemoteDeleteSql(): CoreQueryBuilder {
+	protected function getRemoteDeleteSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->delete(self::TABLE_REMOTE);
 
@@ -98,12 +98,12 @@ class RemoteRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @param CoreQueryBuilder $qb
+	 * @param CoreRequestBuilder $qb
 	 *
 	 * @return RemoteInstance
 	 * @throws RemoteNotFoundException
 	 */
-	public function getItemFromRequest(CoreQueryBuilder $qb): RemoteInstance {
+	public function getItemFromRequest(CoreRequestBuilder $qb): RemoteInstance {
 		/** @var RemoteInstance $appService */
 		try {
 			$appService = $qb->asItem(RemoteInstance::class);
@@ -115,11 +115,11 @@ class RemoteRequestBuilder extends CoreRequestBuilder {
 	}
 
 	/**
-	 * @param CoreQueryBuilder $qb
+	 * @param CoreRequestBuilder $qb
 	 *
 	 * @return RemoteInstance[]
 	 */
-	public function getItemsFromRequest(CoreQueryBuilder $qb): array {
+	public function getItemsFromRequest(CoreRequestBuilder $qb): array {
 		/** @var RemoteInstance[] $result */
 		return $qb->asItems(RemoteInstance::class);
 	}

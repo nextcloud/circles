@@ -42,13 +42,13 @@ use OCA\Circles\Model\Member;
  *
  * @package OCA\Circles\Db
  */
-class MemberRequestBuilder extends CoreRequestBuilder {
+class MemberRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreRequestBuilder
 	 */
-	protected function getMemberInsertSql(): CoreQueryBuilder {
+	protected function getMemberInsertSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->insert(self::TABLE_MEMBER)
 		   ->setValue('joined', $qb->createNamedParameter($this->timezoneService->getUTCDate()));
@@ -58,9 +58,9 @@ class MemberRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreRequestBuilder
 	 */
-	protected function getMemberUpdateSql(): CoreQueryBuilder {
+	protected function getMemberUpdateSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->update(self::TABLE_MEMBER);
 
@@ -69,9 +69,9 @@ class MemberRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreRequestBuilder
 	 */
-	protected function getMemberSelectSql(): CoreQueryBuilder {
+	protected function getMemberSelectSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->select(
 			'm.circle_id', 'm.member_id', 'm.single_id', 'm.user_id', 'm.instance', 'm.user_type', 'm.level', 'm.status',
@@ -90,9 +90,9 @@ class MemberRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * Base of the Sql Delete request
 	 *
-	 * @return CoreQueryBuilder
+	 * @return CoreRequestBuilder
 	 */
-	protected function getMemberDeleteSql(): CoreQueryBuilder {
+	protected function getMemberDeleteSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->delete(self::TABLE_MEMBER);
 
@@ -101,12 +101,12 @@ class MemberRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @param CoreQueryBuilder $qb
+	 * @param CoreRequestBuilder $qb
 	 *
 	 * @return Member
 	 * @throws MemberNotFoundException
 	 */
-	public function getItemFromRequest(CoreQueryBuilder $qb): Member {
+	public function getItemFromRequest(CoreRequestBuilder $qb): Member {
 		/** @var Member $member */
 		try {
 			$member = $qb->asItem(
@@ -123,11 +123,11 @@ class MemberRequestBuilder extends CoreRequestBuilder {
 	}
 
 	/**
-	 * @param CoreQueryBuilder $qb
+	 * @param CoreRequestBuilder $qb
 	 *
 	 * @return Member[]
 	 */
-	public function getItemsFromRequest(CoreQueryBuilder $qb): array {
+	public function getItemsFromRequest(CoreRequestBuilder $qb): array {
 		/** @var Member[] $result */
 		return $qb->asItems(
 			Member::class,

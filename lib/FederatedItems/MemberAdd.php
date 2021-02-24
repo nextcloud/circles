@@ -55,7 +55,7 @@ use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\IFederatedItem;
-use OCA\Circles\IFederatedItemAsync;
+use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemMemberCheckNotRequired;
 use OCA\Circles\IFederatedItemMemberRequired;
 use OCA\Circles\IFederatedUser;
@@ -84,7 +84,7 @@ use OCP\Util;
  */
 class MemberAdd implements
 	IFederatedItem,
-	IFederatedItemAsync,
+	IFederatedItemAsyncProcess,
 	IFederatedItemMemberRequired,
 	IFederatedItemMemberCheckNotRequired {
 
@@ -536,7 +536,7 @@ class MemberAdd implements
 	 * @return array
 	 */
 	private function getUnknownShares(DeprecatedMember $member): array {
-		$allShares = $this->sharesRequest->getSharesForCircle($member->getCircleId());
+		$allShares = $this->fileSharesRequest->getSharesForCircle($member->getCircleId());
 		$knownShares = array_map(
 			function(SharesToken $shareToken) {
 				return $shareToken->getShareId();

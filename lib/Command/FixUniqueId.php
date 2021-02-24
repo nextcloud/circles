@@ -84,14 +84,14 @@ class FixUniqueId extends Base {
 			$shortenUniqueId = substr($data['unique_id'], 0, DeprecatedCircle::SHORT_UNIQUE_ID_LENGTH);
 
 //			$this->swapToShortenUniqueIdInTable(
-//				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_GROUPS
+//				$circleId, $shortenUniqueId, CoreQueryBuilder::TABLE_GROUPS
 //			);
 			$this->swapToShortenUniqueIdInTable(
 				$circleId, $shortenUniqueId, DeprecatedRequestBuilder::TABLE_LINKS
 			);
 //
 //			$this->cleanBuggyDuplicateEntries(
-//				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_MEMBERS, 'user_id'
+//				$circleId, $shortenUniqueId, CoreQueryBuilder::TABLE_MEMBERS, 'user_id'
 //			);
 
 			$this->swapToShortenUniqueIdInTable(

@@ -40,7 +40,7 @@ use OCA\Circles\Circles\FileSharingBroadcaster;
 use OCA\Circles\Db\AccountsRequest;
 use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\DeprecatedMembersRequest;
-use OCA\Circles\Db\SharesRequest;
+use OCA\Circles\Db\FileSharesRequest;
 use OCA\Circles\Db\TokensRequest;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\CircleTypeNotValidException;
@@ -93,8 +93,8 @@ class MembersService {
 	/** @var AccountsRequest */
 	private $accountsRequest;
 
-	/** @var SharesRequest */
-	private $sharesRequest;
+	/** @var FileSharesRequest */
+	private $fileSharesRequest;
 
 	/** @var TokensRequest */
 	private $tokensRequest;
@@ -121,7 +121,7 @@ class MembersService {
 	 * @param DeprecatedCirclesRequest $circlesRequest
 	 * @param DeprecatedMembersRequest $membersRequest
 	 * @param AccountsRequest $accountsRequest
-	 * @param SharesRequest $sharesRequest
+	 * @param FileSharesRequest $fileSharesRequest
 	 * @param TokensRequest $tokensRequest
 	 * @param EventsService $eventsService
 	 * @param GSUpstreamService $gsUpstreamService
@@ -132,7 +132,7 @@ class MembersService {
 		$userId, IL10N $l10n, IUserManager $userManager, ConfigService $configService,
 		DeprecatedCirclesRequest $circlesRequest, DeprecatedMembersRequest $membersRequest,
 		AccountsRequest $accountsRequest,
-		SharesRequest $sharesRequest, TokensRequest $tokensRequest, EventsService $eventsService,
+		FileSharesRequest $fileSharesRequest, TokensRequest $tokensRequest, EventsService $eventsService,
 		GSUpstreamService $gsUpstreamService, FileSharingBroadcaster $fileSharingBroadcaster,
 		MiscService $miscService
 	) {
@@ -143,7 +143,7 @@ class MembersService {
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
 		$this->accountsRequest = $accountsRequest;
-		$this->sharesRequest = $sharesRequest;
+		$this->fileSharesRequest = $fileSharesRequest;
 		$this->tokensRequest = $tokensRequest;
 		$this->eventsService = $eventsService;
 		$this->gsUpstreamService = $gsUpstreamService;

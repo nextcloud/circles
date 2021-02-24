@@ -36,6 +36,7 @@ use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\IDeserializable;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
+use OCA\Circles\IFederatedModel;
 use OCA\Circles\IFederatedUser;
 
 
@@ -44,7 +45,7 @@ use OCA\Circles\IFederatedUser;
  *
  * @package OCA\Circles\Model
  */
-class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializable, INC21QueryRow, JsonSerializable {
+class FederatedUser extends ManagedModel implements IFederatedUser, IFederatedModel, IDeserializable, INC21QueryRow, JsonSerializable {
 
 
 	use TArrayTools;

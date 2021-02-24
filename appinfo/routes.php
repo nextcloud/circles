@@ -77,6 +77,6 @@ return [
 		['name' => 'Remote#circles', 'url' => '/circles/', 'verb' => 'GET'],
 		['name' => 'Remote#circle', 'url' => '/circle/{circleId}/', 'verb' => 'GET'],
 		['name' => 'Remote#members', 'url' => '/members/{circleId}/', 'verb' => 'GET'],
-		['name' => 'Remote#member', 'url' => '/member/{type}/{userId}/', 'verb' => 'GET'],
+		['name' => 'Remote#member', 'url' => '/member/{type}/{userId}/', 'verb' => 'GET']
 	]
 ];

@@ -191,6 +191,41 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 			$table->addIndex(['id']);
 		}
 
+
+		if (!$schema->hasTable('circle_shares')) {
+			$table = $schema->createTable('circle_shares');
+			$table->addColumn(
+				'id', 'integer', [
+						'autoincrement' => true,
+						'notnull'       => true,
+						'length'        => 4,
+						'unsigned'      => true,
+					]
+			);
+			$table->addColumn(
+				'unique_id', 'string', [
+							   'notnull' => true,
+							   'length'  => 15
+						   ]
+			);
+			$table->addColumn(
+				'circle_id', 'string', [
+							   'notnull' => true,
+							   'length'  => 15,
+						   ]
+			);
+			$table->addColumn(
+				'instance', 'string', [
+							  'notnull' => true,
+							  'length'  => 127,
+						  ]
+			);
+
+			$table->setPrimaryKey(['id']);
+			$table->addUniqueIndex(['unique_id']);
+			$table->addIndex(['circle_id', 'instance'], 'ci');
+		}
+
 		return $schema;
 	}
 

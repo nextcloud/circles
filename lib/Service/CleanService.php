@@ -33,7 +33,7 @@ namespace OCA\Circles\Service;
 use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\DeprecatedRequestBuilder;
 use OCA\Circles\Db\DeprecatedMembersRequest;
-use OCA\Circles\Db\SharesRequest;
+use OCA\Circles\Db\FileSharesRequest;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCP\IDBConnection;
@@ -55,8 +55,8 @@ class CleanService {
 	/** @var DeprecatedMembersRequest */
 	private $membersRequest;
 
-	/** @var SharesRequest */
-	private $sharesRequest;
+	/** @var FileSharesRequest */
+	private $fileSharesRequest;
 
 
 	/**
@@ -65,16 +65,16 @@ class CleanService {
 	 * @param IDBConnection $connection
 	 * @param DeprecatedCirclesRequest $circlesRequest
 	 * @param DeprecatedMembersRequest $membersRequest
-	 * @param SharesRequest $sharesRequest
+	 * @param FileSharesRequest $fileSharesRequest
 	 */
 	public function __construct(
 		IDBConnection $connection, DeprecatedCirclesRequest $circlesRequest, DeprecatedMembersRequest $membersRequest,
-		SharesRequest $sharesRequest
+		FileSharesRequest $fileSharesRequest
 	) {
 		$this->dbConnection = $connection;
 		$this->circlesRequest = $circlesRequest;
 		$this->membersRequest = $membersRequest;
-		$this->sharesRequest = $sharesRequest;
+		$this->fileSharesRequest = $fileSharesRequest;
 	}
 
 
@@ -135,13 +135,13 @@ class CleanService {
 			array_map(
 				function($share) {
 					return $share['share_with'];
-				}, $this->sharesRequest->getShares()
+				}, $this->fileSharesRequest->getShares()
 			)
 		);
 
 		foreach ($shares as $share) {
 			if (!in_array($share, $circles)) {
-				$this->sharesRequest->removeSharesToCircleId($share);
+				$this->fileSharesRequest->removeSharesToCircleId($share);
 			}
 		}
 	}

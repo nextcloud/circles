@@ -30,7 +30,7 @@ namespace OCA\Circles\Db;
 
 use OCP\DB\QueryBuilder\IQueryBuilder;
 
-class SharesRequestBuilder extends DeprecatedRequestBuilder {
+class FileSharesRequestBuilder extends DeprecatedRequestBuilder {
 
 
 	/**
@@ -38,7 +38,7 @@ class SharesRequestBuilder extends DeprecatedRequestBuilder {
 	 *
 	 * @return IQueryBuilder
 	 */
-	protected function getSharesDeleteSql() {
+	protected function getFileSharesDeleteSql(): IQueryBuilder {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$qb->delete(self::TABLE_FILE_SHARES);
 		$qb->where(
@@ -53,7 +53,7 @@ class SharesRequestBuilder extends DeprecatedRequestBuilder {
 	/**
 	 * @return IQueryBuilder
 	 */
-	protected function getSharesSelectSql() {
+	protected function getFileSharesSelectSql(): IQueryBuilder {
 		$qb = $this->dbConnection->getQueryBuilder();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
@@ -79,7 +79,7 @@ class SharesRequestBuilder extends DeprecatedRequestBuilder {
 	/**
 	 * @return IQueryBuilder
 	 */
-	protected function getSharesUpdateSql() {
+	protected function getFileSharesUpdateSql(): IQueryBuilder {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$qb->update(self::TABLE_FILE_SHARES);
 

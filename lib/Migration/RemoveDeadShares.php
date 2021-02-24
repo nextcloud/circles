@@ -27,7 +27,7 @@
 namespace OCA\Circles\Migration;
 
 use OCA\Circles\Db\DeprecatedMembersRequest;
-use OCA\Circles\Db\SharesRequest;
+use OCA\Circles\Db\FileSharesRequest;
 use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Service\ConfigService;
 use OCP\IConfig;
@@ -48,8 +48,8 @@ class RemoveDeadShares implements IRepairStep {
 	/** @var  IConfig */
 	protected $config;
 
-	/** @var SharesRequest */
-	private $sharesRequest;
+	/** @var FileSharesRequest */
+	private $fileSharesRequest;
 
 	/** @var DeprecatedMembersRequest */
 	private $membersRequest;
@@ -63,18 +63,18 @@ class RemoveDeadShares implements IRepairStep {
 	 *
 	 * @param IDBConnection $connection
 	 * @param IConfig $config
-	 * @param SharesRequest $sharesRequest
+	 * @param FileSharesRequest $fileSharesRequest
 	 * @param DeprecatedMembersRequest $membersRequest
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IDBConnection $connection, IConfig $config, SharesRequest $sharesRequest,
+		IDBConnection $connection, IConfig $config, FileSharesRequest $fileSharesRequest,
 		DeprecatedMembersRequest $membersRequest, ConfigService $configService
 	) {
 		$this->connection = $connection;
 		$this->config = $config;
 
-		$this->sharesRequest = $sharesRequest;
+		$this->fileSharesRequest = $fileSharesRequest;
 		$this->membersRequest = $membersRequest;
 		$this->configService = $configService;
 	}
@@ -117,7 +117,7 @@ class RemoveDeadShares implements IRepairStep {
 
 
 	private function removeSharesFromMember(DeprecatedMember $member) {
-		$this->sharesRequest->removeSharesFromMember($member);
+		$this->fileSharesRequest->removeSharesFromMember($member);
 	}
 
 

@@ -42,13 +42,13 @@ use OCA\Circles\Model\Circle;
  *
  * @package OCA\Circles\Db
  */
-class CircleRequestBuilder extends CoreRequestBuilder {
+class CircleRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreRequestBuilder
 	 */
-	protected function getCircleInsertSql(): CoreQueryBuilder {
+	protected function getCircleInsertSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->insert(self::TABLE_CIRCLE)
 		   ->setValue('creation', $qb->createNamedParameter($this->timezoneService->getUTCDate()));
@@ -58,9 +58,9 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreRequestBuilder
 	 */
-	protected function getCircleUpdateSql(): CoreQueryBuilder {
+	protected function getCircleUpdateSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->update(self::TABLE_CIRCLE);
 
@@ -69,9 +69,9 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreRequestBuilder
 	 */
-	protected function getCircleSelectSql(): CoreQueryBuilder {
+	protected function getCircleSelectSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->selectDistinct('c.unique_id')
 		   ->addSelect(
@@ -88,9 +88,9 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * Base of the Sql Delete request
 	 *
-	 * @return CoreQueryBuilder
+	 * @return CoreRequestBuilder
 	 */
-	protected function getCircleDeleteSql(): CoreQueryBuilder {
+	protected function getCircleDeleteSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->delete(self::TABLE_CIRCLE);
 
@@ -99,12 +99,12 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @param CoreQueryBuilder $qb
+	 * @param CoreRequestBuilder $qb
 	 *
 	 * @return Circle
 	 * @throws CircleNotFoundException
 	 */
-	public function getItemFromRequest(CoreQueryBuilder $qb): Circle {
+	public function getItemFromRequest(CoreRequestBuilder $qb): Circle {
 		/** @var Circle $circle */
 		try {
 			$circle = $qb->asItem(
@@ -121,11 +121,11 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 	}
 
 	/**
-	 * @param CoreQueryBuilder $qb
+	 * @param CoreRequestBuilder $qb
 	 *
 	 * @return Circle[]
 	 */
-	public function getItemsFromRequest(CoreQueryBuilder $qb): array {
+	public function getItemsFromRequest(CoreRequestBuilder $qb): array {
 		/** @var Circle[] $result */
 		return $qb->asItems(
 			Circle::class,

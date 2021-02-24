@@ -42,13 +42,13 @@ use OCA\Circles\Model\Federated\RemoteWrapper;
  *
  * @package OCA\Circles\Db
  */
-class RemoteWrapperRequestBuilder extends CoreRequestBuilder {
+class RemoteWrapperRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreRequestBuilder
 	 */
-	protected function getRemoteWrapperInsertSql(): CoreQueryBuilder {
+	protected function getRemoteWrapperInsertSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->insert(self::TABLE_REMOTE_WRAPPER);
 
@@ -57,9 +57,9 @@ class RemoteWrapperRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreRequestBuilder
 	 */
-	protected function getRemoteWrapperUpdateSql(): CoreQueryBuilder {
+	protected function getRemoteWrapperUpdateSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->update(self::TABLE_REMOTE_WRAPPER);
 
@@ -68,9 +68,9 @@ class RemoteWrapperRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreRequestBuilder
 	 */
-	protected function getRemoteWrapperSelectSql(): CoreQueryBuilder {
+	protected function getRemoteWrapperSelectSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
 
 		$qb->select('gse.token', 'gse.event', 'gse.instance', 'gse.severity', 'gse.status', 'gse.creation')
@@ -82,9 +82,9 @@ class RemoteWrapperRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreQueryBuilder
+	 * @return CoreRequestBuilder
 	 */
-	protected function getRemoteWrapperDeleteSql(): CoreQueryBuilder {
+	protected function getRemoteWrapperDeleteSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->delete(self::TABLE_REMOTE_WRAPPER);
 
@@ -93,12 +93,12 @@ class RemoteWrapperRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @param CoreQueryBuilder $qb
+	 * @param CoreRequestBuilder $qb
 	 *
 	 * @return RemoteWrapper
 	 * @throws RemoteWrapperNotFoundException
 	 */
-	public function getItemFromRequest(CoreQueryBuilder $qb): RemoteWrapper {
+	public function getItemFromRequest(CoreRequestBuilder $qb): RemoteWrapper {
 		/** @var RemoteWrapper $wrapper */
 		try {
 			$wrapper = $qb->asItem(RemoteWrapper::class);
@@ -110,11 +110,11 @@ class RemoteWrapperRequestBuilder extends CoreRequestBuilder {
 	}
 
 	/**
-	 * @param CoreQueryBuilder $qb
+	 * @param CoreRequestBuilder $qb
 	 *
 	 * @return RemoteWrapper[]
 	 */
-	public function getItemsFromRequest(CoreQueryBuilder $qb): array {
+	public function getItemsFromRequest(CoreRequestBuilder $qb): array {
 		/** @var RemoteWrapper[] $result */
 		return $qb->asItems(RemoteWrapper::class);
 	}
