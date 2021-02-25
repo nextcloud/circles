@@ -196,7 +196,7 @@ class FederatedShare implements IFederatedModel, JsonSerializable, INC21QueryRow
 	public function importFromDatabase(array $data): INC21QueryRow {
 		$this->setId($this->getInt('id', $data));
 		$this->setItemId($this->get('item_id', $data));
-//		$this->setCircleId($this->get('circle_id', $data));
+		$this->setCircleId($this->get('circle_id', $data));
 		$this->setInstance($this->get('instance', $data));
 
 		if ($this->getInstance() === '') {

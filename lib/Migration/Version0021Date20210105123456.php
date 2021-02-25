@@ -209,6 +209,12 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 						 ]
 			);
 			$table->addColumn(
+				'circle_id', 'string', [
+							 'notnull' => true,
+							 'length'  => 15
+						 ]
+			);
+			$table->addColumn(
 				'instance', 'string', [
 							  'notnull' => true,
 							  'length'  => 127,
@@ -216,7 +222,7 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 			);
 
 			$table->setPrimaryKey(['id']);
-			$table->addUniqueIndex(['item_id']);
+			$table->addUniqueIndex(['item_id', 'circle_id']);
 		}
 
 		return $schema;

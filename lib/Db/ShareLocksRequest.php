@@ -55,6 +55,7 @@ class ShareLocksRequest extends ShareLocksRequestBuilder {
 
 		$qb = $this->getShareLockInsertSql();
 		$qb->setValue('item_id', $qb->createNamedParameter($share->getItemId()))
+		   ->setValue('circle_id', $qb->createNamedParameter($share->getCircleId()))
 		   ->setValue('instance', $qb->createNamedParameter($qb->getInstance($share)));
 
 		$qb->execute();
@@ -63,14 +64,18 @@ class ShareLocksRequest extends ShareLocksRequestBuilder {
 
 	/**
 	 * @param string $itemId
+	 * @param string $circleId
 	 *
 	 * @return FederatedShare
 	 * @throws FederatedShareNotFoundException
 	 */
-	public function getShare(string $itemId): FederatedShare {
+	public function getShare(string $itemId, string $circleId = ''): FederatedShare {
 		$qb = $this->getShareLockSelectSql();
 
 		$qb->limitToItemId($itemId);
+		if ($circleId !== '') {
+			$qb->limitToCircleId($circleId);
+		}
 
 		return $this->getItemFromRequest($qb);
 	}

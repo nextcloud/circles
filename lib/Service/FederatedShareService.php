@@ -36,11 +36,13 @@ use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Exceptions\UnknownTypeException;
+use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventDSyncException;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedShareAlreadyLockedException;
 use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
+use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
@@ -77,6 +79,7 @@ class FederatedShareService extends NC21Signature {
 
 
 	/**
+	 * @param string $circleId
 	 * @param string $itemId
 	 *
 	 * @return FederatedShare
@@ -93,15 +96,19 @@ class FederatedShareService extends NC21Signature {
 	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
 	 * @throws UnknownTypeException
+	 * @throws CircleNotFoundException
+	 * @throws InitiatorNotFoundException
 	 */
-	public function lockItem(string $itemId): FederatedShare {
+	public function lockItem(string $circleId, string $itemId): FederatedShare {
+		$circle = $this->circleService->getCircle($circleId);
+
 		$event = new FederatedEvent(ItemLock::class);
+		$event->setCircle($circle);
 		$event->getData()->s('itemId', $itemId);
 		$data = $this->federatedEventService->newEvent($event);
 
 		/** @var FederatedShare $share */
 		$share = $data->gObj('federatedShare', FederatedShare::class);
-
 		if ($share->getLockStatus() === ItemLock::STATUS_INSTANCE_LOCKED) {
 			throw new FederatedShareAlreadyLockedException('item already locked by ' . $share->getInstance());
 		}

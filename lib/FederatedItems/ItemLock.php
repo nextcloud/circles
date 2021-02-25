@@ -37,7 +37,7 @@ use OCA\Circles\Db\ShareLocksRequest;
 use OCA\Circles\Exceptions\FederatedShareNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\IFederatedItem;
-use OCA\Circles\IFederatedItemCircleCheckNotRequired;
+use OCA\Circles\IFederatedItemCircleNotRequired;
 use OCA\Circles\IFederatedItemDataRequestOnly;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\FederatedShare;
@@ -50,7 +50,6 @@ use OCA\Circles\Model\Federated\FederatedShare;
  */
 class ItemLock implements
 	IFederatedItem,
-	IFederatedItemCircleCheckNotRequired,
 	IFederatedItemDataRequestOnly {
 
 
@@ -72,6 +71,9 @@ class ItemLock implements
 
 
 	/**
+	 * create lock in db if the lock does not exist for this circle.
+	 * will fail if the lock already exist for anothr instance, even for another circle
+	 *
 	 * @param FederatedEvent $event
 	 *
 	 * @throws InvalidIdException
@@ -81,25 +83,31 @@ class ItemLock implements
 		$itemId = $event->getData()->g('itemId');
 		$this->shareLockRequest->confirmValidId($itemId);
 
+		$status = '';
 		try {
 			$known = $this->shareLockRequest->getShare($itemId);
-			if ($known->getInstance() !== $event->getIncomingOrigin()) {
-				$known->setLockStatus(self::STATUS_ALREADY_LOCKED);
+
+			if ($known->getInstance() === $event->getIncomingOrigin()) {
+				$status = self::STATUS_ALREADY_LOCKED;
+				$known = $this->shareLockRequest->getShare($itemId, $event->getCircle()->getId());
 			} else {
-				$known->setLockStatus(self::STATUS_INSTANCE_LOCKED);
+				$status = self::STATUS_INSTANCE_LOCKED;
 			}
 		} catch (FederatedShareNotFoundException $e) {
 			$share = new FederatedShare();
 			$share->setItemId($itemId);
+			$share->setCircleId($event->getCircle()->getId());
 			$share->setInstance($event->getIncomingOrigin());
 
 			$this->shareLockRequest->save($share);
 			$known = $this->shareLockRequest->getShare($itemId);
-			$known->setLockStatus(self::STATUS_LOCKED);
+			if ($status === '') {
+				$status = self::STATUS_LOCKED;
+			}
 		}
 
+		$known->setLockStatus($status);
 		$event->setDataOutcome(['federatedShare' => $known]);
-		$event->getData()->s('status', self::STATUS_LOCKED);
 	}
 
 

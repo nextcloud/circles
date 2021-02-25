@@ -164,6 +164,8 @@ class FederatedEventService extends NC21Signature {
 
 		$this->confirmInitiator($event, true);
 		if ($this->configService->isLocalInstance($event->getCircle()->getInstance())) {
+			$event->setIncomingOrigin($event->getCircle()->getInstance());
+
 			try {
 				$federatedItem->verify($event);
 				$reading = $event->getReadingOutcome();
@@ -305,9 +307,12 @@ class FederatedEventService extends NC21Signature {
 		if (!$event->hasCircle()) {
 			throw new FederatedEventException('FederatedEvent has no Circle linked');
 		}
+
+		// TODO: enforce IFederatedItemMemberEmpty if no member
 		if ($item instanceof IFederatedItemMemberEmpty) {
 			$event->setMember(null);
 		}
+
 		if ($item instanceof IFederatedItemMemberRequired && !$event->hasMember()) {
 			throw new FederatedEventException('FederatedEvent has no Member linked');
 		}
