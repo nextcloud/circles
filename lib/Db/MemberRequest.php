@@ -168,7 +168,7 @@ class MemberRequest extends MemberRequestBuilder {
 	): array {
 		$qb = $this->getMemberSelectSql();
 		$qb->limitToCircleId($circleId);
-		$qb->leftJoinCircle($initiator);
+		$qb->leftJoinCircle($initiator, true);
 
 		if (!is_null($remoteInstance)) {
 			$qb->limitToRemoteInstance($remoteInstance->getInstance(), true);
@@ -193,11 +193,30 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->limitToMemberId($memberId);
 
 		if (!is_null($initiator)) {
-			$qb->leftJoinCircle($initiator);
+			$qb->leftJoinCircle($initiator, true);
 		}
 
-
 		return $this->getItemFromRequest($qb);
+	}
+
+
+	/**
+	 * @param string $circleId
+	 *
+	 * @return array
+	 */
+	public function getMemberInstances(string $circleId): array {
+		$qb = $this->getMemberSelectSql();
+		$qb->limitToCircleId($circleId);
+
+		$qb->andwhere($qb->expr()->nonEmptyString('m.instance'));
+		$qb->groupBy('m.instance');
+
+		return array_map(
+			function(Member $member): string {
+				return $member->getInstance();
+			}, $this->getItemsFromRequest($qb)
+		);
 	}
 
 
@@ -249,9 +268,7 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->limitToInstance($qb->getInstance($member));
 //		$qb->limitToSingleId($federatedUser->getSingleId());
 
-		if (!is_null($initiator)) {
-			$qb->leftJoinCircle($initiator);
-		}
+		$qb->leftJoinCircle($initiator);
 
 		return $this->getItemFromRequest($qb);
 	}

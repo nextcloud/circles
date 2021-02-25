@@ -34,10 +34,11 @@ namespace OCA\Circles\FederatedItems;
 
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Db\ShareRequest;
+use OCA\Circles\Exceptions\FederatedShareNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\IFederatedItem;
-use OCA\Circles\IFederatedItemLimitedToInstanceWithMember;
 use OCA\Circles\IFederatedItemDataRequestOnly;
+use OCA\Circles\IFederatedItemLimitedToInstanceWithMembership;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\FederatedShare;
 use OCA\Circles\Model\ManagedModel;
@@ -50,10 +51,9 @@ use OCA\Circles\Model\ManagedModel;
  */
 class ShareLock implements
 	IFederatedItem,
-	IFederatedItemLimitedToInstanceWithMember,
+	IFederatedItemLimitedToInstanceWithMembership,
 	IFederatedItemDataRequestOnly {
 
-// TODO: implements IFederatedItemRequestOnly. Exchange only between an instance and the instance that own the Circle
 
 	use TStringTools;
 
@@ -71,6 +71,7 @@ class ShareLock implements
 	 * @param FederatedEvent $event
 	 *
 	 * @throws InvalidIdException
+	 * @throws FederatedShareNotFoundException
 	 */
 	public function verify(FederatedEvent $event): void {
 
@@ -78,6 +79,8 @@ class ShareLock implements
 		$share->setUniqueId($this->token(ManagedModel::ID_LENGTH));
 		$share->setCircleId($event->getCircle()->getId());
 		$share->setInstance($event->getIncomingOrigin());
+
+		// TODO: confirm uniqueness of UniqueId
 
 		$this->shareRequest->save($share);
 		$event->setDataOutcome(['federatedShare' => $this->shareRequest->getShare($share->getUniqueId())]);

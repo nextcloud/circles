@@ -33,7 +33,7 @@ namespace OCA\Circles\Exceptions;
 use Exception;
 
 
-class InitiatorNotConfirmedException extends Exception {
+class InitiatorNotConfirmedException extends FederatedItemException {
 
 }
 

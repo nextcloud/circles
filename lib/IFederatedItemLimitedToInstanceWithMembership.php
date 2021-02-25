@@ -33,11 +33,11 @@ namespace OCA\Circles;
 
 
 /**
- * Interface IFederatedItemManageResult
+ * Interface IFederatedItemInstanceMember
  *
  * @package OCA\Circles
  */
-interface IFederatedItemManageResult {
+interface IFederatedItemLimitedToInstanceWithMembership {
 
 }
 

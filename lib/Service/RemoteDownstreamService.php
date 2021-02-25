@@ -132,8 +132,16 @@ class RemoteDownstreamService {
 			throw new FederatedEventException('Circle is not from this instance');
 		}
 
+		if ($event->isLimitedToInstanceWithMember()) {
+			$instances = $this->memberRequest->getMemberInstances($event->getCircle()->getId());
+			if (!in_array($event->getIncomingOrigin(), $instances)) {
+				throw new FederatedItemException('Instance have no members in this Circle');
+			}
+		}
+
 		$this->federatedEventService->confirmInitiator($event, false);
 		$this->confirmContent($event, true);
+
 		$item->verify($event);
 
 		if ($event->isDataRequestOnly()) {
@@ -223,6 +231,7 @@ class RemoteDownstreamService {
 	/**
 	 * @param FederatedEvent $event
 	 * @param bool $full
+	 * // TODO: Check IFederatedItemMember*
 	 *
 	 * @throws FederatedEventDSyncException
 	 */

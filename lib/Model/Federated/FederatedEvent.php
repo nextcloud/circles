@@ -54,7 +54,7 @@ class FederatedEvent implements JsonSerializable {
 	const BYPASS_LOCALCIRCLECHECK = 1;
 	const BYPASS_LOCALMEMBERCHECK = 2;
 	const BYPASS_INITIATORCHECK = 4;
-
+	const BYPASS_INITIATORMEMBERSHIP = 8;
 
 	use TArrayTools;
 
@@ -88,6 +88,9 @@ class FederatedEvent implements JsonSerializable {
 
 	/** @var bool */
 	private $async = false;
+
+	/** @var bool */
+	private $limitedToInstanceWithMember = false;
 
 	/** @var bool */
 	private $dataRequestOnly = false;
@@ -193,6 +196,26 @@ class FederatedEvent implements JsonSerializable {
 
 		return $this;
 	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function isLimitedToInstanceWithMember(): bool {
+		return $this->limitedToInstanceWithMember;
+	}
+
+	/**
+	 * @param bool $limitedToInstanceWithMember
+	 *
+	 * @return self
+	 */
+	public function setLimitedToInstanceWithMember(bool $limitedToInstanceWithMember): self {
+		$this->limitedToInstanceWithMember = $limitedToInstanceWithMember;
+
+		return $this;
+	}
+
 
 
 	/**

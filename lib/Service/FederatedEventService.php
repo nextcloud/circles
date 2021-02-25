@@ -40,6 +40,7 @@ use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OC;
+use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\RemoteRequest;
 use OCA\Circles\Db\RemoteWrapperRequest;
 use OCA\Circles\Exceptions\FederatedEventDSyncException;
@@ -55,18 +56,21 @@ use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemCircleCheckNotRequired;
+use OCA\Circles\IFederatedItemDataRequestOnly;
 use OCA\Circles\IFederatedItemInitiatorCheckNotRequired;
+use OCA\Circles\IFederatedItemInitiatorMembershipNotRequired;
 use OCA\Circles\IFederatedItemInitiatorMustBeLocal;
+use OCA\Circles\IFederatedItemLimitedToInstanceWithMembership;
 use OCA\Circles\IFederatedItemMemberCheckNotRequired;
 use OCA\Circles\IFederatedItemMemberEmpty;
 use OCA\Circles\IFederatedItemMemberOptional;
 use OCA\Circles\IFederatedItemMemberRequired;
-use OCA\Circles\IFederatedItemDataRequestOnly;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\Federated\RemoteWrapper;
 use OCA\Circles\Model\GlobalScale\GSWrapper;
+use OCA\Circles\Model\Member;
 use OCP\IL10N;
 use ReflectionClass;
 use ReflectionException;
@@ -93,6 +97,9 @@ class FederatedEventService extends NC21Signature {
 	/** @var RemoteRequest */
 	private $remoteRequest;
 
+	/** @var MemberRequest */
+	private $memberRequest;
+
 	/** @var RemoteUpstreamService */
 	private $remoteUpstreamService;
 
@@ -109,16 +116,19 @@ class FederatedEventService extends NC21Signature {
 	 * @param IL10N $l10n
 	 * @param RemoteWrapperRequest $remoteWrapperRequest
 	 * @param RemoteRequest $remoteRequest
+	 * @param MemberRequest $memberRequest
 	 * @param RemoteUpstreamService $remoteUpstreamService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		IL10N $l10n, RemoteWrapperRequest $remoteWrapperRequest, RemoteRequest $remoteRequest,
-		RemoteUpstreamService $remoteUpstreamService, ConfigService $configService
+		MemberRequest $memberRequest, RemoteUpstreamService $remoteUpstreamService,
+		ConfigService $configService
 	) {
 		$this->l10n = $l10n;
 		$this->remoteWrapperRequest = $remoteWrapperRequest;
 		$this->remoteRequest = $remoteRequest;
+		$this->memberRequest = $memberRequest;
 		$this->remoteUpstreamService = $remoteUpstreamService;
 		$this->configService = $configService;
 	}
@@ -130,6 +140,7 @@ class FederatedEventService extends NC21Signature {
 	 *
 	 * @param FederatedEvent $event
 	 *
+	 * @return SimpleDataStore
 	 * @throws InitiatorNotConfirmedException
 	 * @throws OwnerNotFoundException
 	 * @throws FederatedEventException
@@ -141,7 +152,7 @@ class FederatedEventService extends NC21Signature {
 	 * @throws FederatedItemException
 	 * @throws FederatedEventDSyncException
 	 */
-	public function newEvent(FederatedEvent $event): ?SimpleDataStore {
+	public function newEvent(FederatedEvent $event): SimpleDataStore {
 		$event->setSource($this->configService->getLocalInstance());
 
 		try {
@@ -216,6 +227,11 @@ class FederatedEventService extends NC21Signature {
 				);
 			}
 		}
+
+		if (!$event->canBypass(FederatedEvent::BYPASS_INITIATORMEMBERSHIP)
+			&& $circle->getInitiator()->getLevel() < Member::LEVEL_MEMBER) {
+			throw new InitiatorNotConfirmedException('Initiator must be a member of the Circle');
+		}
 	}
 
 
@@ -255,17 +271,20 @@ class FederatedEventService extends NC21Signature {
 	 * Some event might need to bypass some checks
 	 *
 	 * @param FederatedEvent $event
-	 * @param IFederatedItem $gs
+	 * @param IFederatedItem $item
 	 */
-	private function setFederatedEventBypass(FederatedEvent $event, IFederatedItem $gs) {
-		if ($gs instanceof IFederatedItemCircleCheckNotRequired) {
+	private function setFederatedEventBypass(FederatedEvent $event, IFederatedItem $item) {
+		if ($item instanceof IFederatedItemCircleCheckNotRequired) {
 			$event->bypass(FederatedEvent::BYPASS_LOCALCIRCLECHECK);
 		}
-		if ($gs instanceof IFederatedItemMemberCheckNotRequired) {
+		if ($item instanceof IFederatedItemMemberCheckNotRequired) {
 			$event->bypass(FederatedEvent::BYPASS_LOCALMEMBERCHECK);
 		}
-		if ($gs instanceof IFederatedItemInitiatorCheckNotRequired) {
+		if ($item instanceof IFederatedItemInitiatorCheckNotRequired) {
 			$event->bypass(FederatedEvent::BYPASS_INITIATORCHECK);
+		}
+		if ($item instanceof IFederatedItemInitiatorMembershipNotRequired) {
+			$event->bypass(FederatedEvent::BYPASS_INITIATORMEMBERSHIP);
 		}
 	}
 
@@ -314,6 +333,9 @@ class FederatedEventService extends NC21Signature {
 		if ($item instanceof IFederatedItemAsyncProcess) {
 			$event->setAsync(true);
 		}
+		if ($item instanceof IFederatedItemLimitedToInstanceWithMembership) {
+			$event->setLimitedToInstanceWithMember(true);
+		}
 		if ($item instanceof IFederatedItemDataRequestOnly) {
 			$event->setDataRequestOnly(true);
 		}
@@ -327,7 +349,7 @@ class FederatedEventService extends NC21Signature {
 	 * @param array $filter
 	 */
 	public function initBroadcast(FederatedEvent $event, array $filter = []): void {
-		$instances = array_diff($this->getInstances($event->isAsync()), $filter);
+		$instances = array_diff($this->getInstances($event), $filter);
 		if (empty($instances)) {
 			return;
 		}
@@ -359,23 +381,32 @@ class FederatedEventService extends NC21Signature {
 
 
 	/**
-	 * @param bool $all
+	 * @param FederatedEvent $event
 	 * @param Circle|null $circle
+	 * // TODO: use of $circle ??
 	 *
 	 * @return array
 	 */
-	public function getInstances(bool $all = false, ?Circle $circle = null): array {
+	public function getInstances(FederatedEvent $event, ?Circle $circle = null): array {
 		$local = $this->configService->getLocalInstance();
 		$instances = $this->remoteRequest->getOutgoingRecipient($circle);
-		$instances = array_merge(
-			[$local], array_map(
-						function(RemoteInstance $instance): string {
-							return $instance->getInstance();
-						}, $instances
-					)
+
+		$instances = array_map(
+			function(RemoteInstance $instance): string {
+				return $instance->getInstance();
+			}, $instances
 		);
 
-		if ($all) {
+		if ($event->isLimitedToInstanceWithMember()) {
+			$instances =
+				array_intersect(
+					$instances, $this->memberRequest->getMemberInstances($event->getCircle()->getId())
+				);
+		}
+
+		$instances = array_merge([$local], $instances);
+
+		if ($event->isAsync()) {
 			return $instances;
 		}
 

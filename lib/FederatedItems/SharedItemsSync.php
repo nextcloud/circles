@@ -34,8 +34,7 @@ namespace OCA\Circles\FederatedItems;
 
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use OCA\Circles\IFederatedItem;
-use OCA\Circles\IFederatedItemLimitedToInstanceWithMember;
-use OCA\Circles\IFederatedItemManageResult;
+use OCA\Circles\IFederatedItemLimitedToInstanceWithMembership;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Service\CircleEventService;
 
@@ -47,10 +46,9 @@ use OCA\Circles\Service\CircleEventService;
  */
 class SharedItemsSync implements
 	IFederatedItem,
-	IFederatedItemLimitedToInstanceWithMember,
-	IFederatedItemManageResult {
+	IFederatedItemLimitedToInstanceWithMembership {
 
-// TODO: implements IFederatedItemInstanceMember and IFederatedItemResult to the check procedure
+// TODO: implements IFederatedItemInstanceMember to the check procedure
 
 	/** @var CircleEventService */
 	private $circleEventService;

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -123,10 +124,15 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 	/**
 	 * @param IFederatedUser $initiator
 	 * @param string $alias
+	 * @param bool $mustBeMember
 	 */
-	public function limitToInitiator(IFederatedUser $initiator, string $alias = ''): void {
+	public function limitToInitiator(
+		IFederatedUser $initiator,
+		string $alias = '',
+		bool $mustBeMember = false
+	): void {
 		$this->leftJoinInitiator($initiator, 'init', $alias);
-		$this->limitVisibility('init', $alias);
+		$this->limitVisibility('init', $alias, $mustBeMember);
 	}
 
 
@@ -200,7 +206,7 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 
 		$this->leftJoinOwner($alias);
 		if (!is_null($initiator)) {
-			$this->limitToInitiator($initiator, $alias);
+			$this->limitToInitiator($initiator, $alias, true);
 		}
 
 	}
@@ -247,7 +253,14 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 
 		$expr = $this->expr();
 		$aliasCircle = ($aliasCircle === '') ? $this->getDefaultSelectAlias() : $aliasCircle;
-		$this->generateMemberSelectAlias($alias, self::PREFIX_INITIATOR)
+		$this->generateMemberSelectAlias(
+			$alias, self::PREFIX_INITIATOR,
+			[
+				'user_id'   => $initiator->getUserId(),
+				'user_type' => $initiator->getUserType(),
+				'instance'  => $initiator->getInstance()
+			]
+		)
 			 ->leftJoin(
 				 $aliasCircle, CoreQueryBuilder::TABLE_MEMBER, $alias,
 				 $expr->andX(
@@ -346,8 +359,13 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 	/**
 	 * @param string $alias
 	 * @param string $aliasCircle
+	 * @param bool $mustBeMember
 	 */
-	protected function limitVisibility(string $alias = 'init', string $aliasCircle = '') {
+	protected function limitVisibility(
+		string $alias = 'init',
+		string $aliasCircle = '',
+		bool $mustBeMember = false
+	) {
 		$expr = $this->expr();
 		$aliasCircle = ($aliasCircle === '') ? $this->getDefaultSelectAlias() : $aliasCircle;
 
@@ -365,7 +383,9 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 				$expr->eq($alias . '.level', $this->createNamedParameter(Member::LEVEL_OWNER))
 			)
 		);
-		$orX->add($expr->bitwiseAnd($aliasCircle . '.config', Circle::CFG_VISIBLE));
+		if (!$mustBeMember) {
+			$orX->add($expr->bitwiseAnd($aliasCircle . '.config', Circle::CFG_VISIBLE));
+		}
 		$this->andWhere($orX);
 
 
@@ -514,6 +534,7 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 
 
 	/**ha
+	 *
 	 * @param int $flag
 	 */
 	public function filterConfig(int $flag): void {
@@ -524,19 +545,15 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 	/**
 	 * @param string $alias
 	 * @param string $prefix
-	 *
-	 * @return $this
+	 * @param array $default
 	 */
-	private function generateCircleSelectAlias(string $alias, string $prefix): self {
-		$this->selectAlias($alias . '.unique_id', $prefix . 'unique_id')
-			 ->selectAlias($alias . '.name', $prefix . 'name')
-			 ->selectAlias($alias . '.alt_name', $prefix . 'alt_name')
-			 ->selectAlias($alias . '.description', $prefix . 'description')
-			 ->selectAlias($alias . '.settings', $prefix . 'settings')
-			 ->selectAlias($alias . '.config', $prefix . 'config')
-			 ->selectAlias($alias . '.contact_addressbook', $prefix . 'contact_addressbook')
-			 ->selectAlias($alias . '.contact_groupname', $prefix . 'contact_groupname')
-			 ->selectAlias($alias . '.creation', $prefix . 'creation');
+	private function generateCircleSelectAlias(string $alias, string $prefix, array $default = []): self {
+		$fields = [
+			'unique_id', 'name', 'alt_name', 'description', 'settings', 'config', 'contact_addressbook',
+			'contact_groupname', 'creation'
+		];
+
+		$this->generateSelectAlias($fields, $alias, $prefix, $default);
 
 		return $this;
 	}
@@ -544,24 +561,17 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 	/**
 	 * @param string $alias
 	 * @param string $prefix
+	 * @param array $default
 	 *
 	 * @return $this
 	 */
-	private function generateMemberSelectAlias(string $alias, string $prefix): self {
-		$this->selectAlias($alias . '.circle_id', $prefix . 'circle_id')
-			 ->selectAlias($alias . '.single_id', $prefix . 'single_id')
-			 ->selectAlias($alias . '.user_id', $prefix . 'user_id')
-			 ->selectAlias($alias . '.user_type', $prefix . 'user_type')
-			 ->selectAlias($alias . '.member_id', $prefix . 'member_id')
-			 ->selectAlias($alias . '.instance', $prefix . 'instance')
-			 ->selectAlias($alias . '.cached_name', $prefix . 'cached_name')
-			 ->selectAlias($alias . '.cached_update', $prefix . 'cached_update')
-			 ->selectAlias($alias . '.status', $prefix . 'status')
-			 ->selectAlias($alias . '.level', $prefix . 'level')
-			 ->selectAlias($alias . '.note', $prefix . 'note')
-			 ->selectAlias($alias . '.contact_id', $prefix . 'contact_id')
-			 ->selectAlias($alias . '.contact_meta', $prefix . 'contact_meta')
-			 ->selectAlias($alias . '.joined', $prefix . 'joined');
+	private function generateMemberSelectAlias(string $alias, string $prefix, array $default = []): self {
+		$fields = [
+			'circle_id', 'single_id', 'user_id', 'user_type', 'member_id', 'instance', 'cached_name',
+			'cached_update', 'status', 'level', 'note', 'contact_id', 'contact_meta', 'joined'
+		];
+
+		$this->generateSelectAlias($fields, $alias, $prefix, $default);
 
 		return $this;
 	}

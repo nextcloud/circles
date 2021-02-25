@@ -158,6 +158,7 @@ class RemoteRequest extends RemoteRequestBuilder {
 	 * - EXTERNAL if Circle is Federated and a contains a member from instance
 	 *
 	 * @param Circle|null $circle
+	 * // TODO: use of $circle ??
 	 *
 	 * @return RemoteInstance[]
 	 */
