@@ -33,15 +33,14 @@ namespace OCA\Circles\FederatedItems;
 
 
 use daita\MySmallPhpTools\Traits\TStringTools;
-use OCA\Circles\Db\ShareRequest;
+use OCA\Circles\Db\ShareLocksRequest;
 use OCA\Circles\Exceptions\FederatedShareNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\IFederatedItem;
+use OCA\Circles\IFederatedItemCircleCheckNotRequired;
 use OCA\Circles\IFederatedItemDataRequestOnly;
-use OCA\Circles\IFederatedItemLimitedToInstanceWithMembership;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\FederatedShare;
-use OCA\Circles\Model\ManagedModel;
 
 
 /**
@@ -49,21 +48,26 @@ use OCA\Circles\Model\ManagedModel;
  *
  * @package OCA\Circles\FederatedItems
  */
-class ShareLock implements
+class ItemLock implements
 	IFederatedItem,
-	IFederatedItemLimitedToInstanceWithMembership,
+	IFederatedItemCircleCheckNotRequired,
 	IFederatedItemDataRequestOnly {
 
 
 	use TStringTools;
 
 
-	/** @var ShareRequest */
-	private $shareRequest;
+	const STATUS_LOCKED = 'locked';
+	const STATUS_ALREADY_LOCKED = 'already_locked';
+	const STATUS_INSTANCE_LOCKED = 'instance_locked';
 
 
-	public function __construct(ShareRequest $shareRequest) {
-		$this->shareRequest = $shareRequest;
+	/** @var ShareLocksRequest */
+	private $shareLockRequest;
+
+
+	public function __construct(ShareLocksRequest $shareLockRequest) {
+		$this->shareLockRequest = $shareLockRequest;
 	}
 
 
@@ -74,20 +78,28 @@ class ShareLock implements
 	 * @throws FederatedShareNotFoundException
 	 */
 	public function verify(FederatedEvent $event): void {
+		$itemId = $event->getData()->g('itemId');
+		$this->shareLockRequest->confirmValidId($itemId);
 
-		$share = new FederatedShare();
-		$share->setUniqueId($this->token(ManagedModel::ID_LENGTH));
-		$share->setCircleId($event->getCircle()->getId());
-		$share->setInstance($event->getIncomingOrigin());
+		try {
+			$known = $this->shareLockRequest->getShare($itemId);
+			if ($known->getInstance() !== $event->getIncomingOrigin()) {
+				$known->setLockStatus(self::STATUS_ALREADY_LOCKED);
+			} else {
+				$known->setLockStatus(self::STATUS_INSTANCE_LOCKED);
+			}
+		} catch (FederatedShareNotFoundException $e) {
+			$share = new FederatedShare();
+			$share->setItemId($itemId);
+			$share->setInstance($event->getIncomingOrigin());
 
-		// TODO: confirm uniqueness of UniqueId
+			$this->shareLockRequest->save($share);
+			$known = $this->shareLockRequest->getShare($itemId);
+			$known->setLockStatus(self::STATUS_LOCKED);
+		}
 
-		$this->shareRequest->save($share);
-		$event->setDataOutcome(['federatedShare' => $this->shareRequest->getShare($share->getUniqueId())]);
-
-		// Create a unique ID, stored in database of the instance that 'owns' the Circle, that will 'lock'
-		// the share to an instance. meaning, only this instance can update data
-		// about a share
+		$event->setDataOutcome(['federatedShare' => $known]);
+		$event->getData()->s('status', self::STATUS_LOCKED);
 	}
 
 

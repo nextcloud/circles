@@ -42,7 +42,7 @@ use OCA\Circles\Model\Federated\FederatedShare;
  *
  * @package OCA\Circles\Db
  */
-class ShareRequest extends ShareRequestBuilder {
+class ShareLocksRequest extends ShareLocksRequestBuilder {
 
 
 	/**
@@ -51,11 +51,10 @@ class ShareRequest extends ShareRequestBuilder {
 	 * @throws InvalidIdException
 	 */
 	public function save(FederatedShare $share): void {
-		$this->confirmValidIds([$share->getCircleId(), $share->getUniqueId()]);
+		$this->confirmValidIds([$share->getItemId()]);
 
-		$qb = $this->getShareInsertSql();
-		$qb->setValue('unique_id', $qb->createNamedParameter($share->getUniqueId()))
-		   ->setValue('circle_id', $qb->createNamedParameter($share->getCircleId()))
+		$qb = $this->getShareLockInsertSql();
+		$qb->setValue('item_id', $qb->createNamedParameter($share->getItemId()))
 		   ->setValue('instance', $qb->createNamedParameter($qb->getInstance($share)));
 
 		$qb->execute();
@@ -63,15 +62,15 @@ class ShareRequest extends ShareRequestBuilder {
 
 
 	/**
-	 * @param string $uniqueId
+	 * @param string $itemId
 	 *
 	 * @return FederatedShare
 	 * @throws FederatedShareNotFoundException
 	 */
-	public function getShare(string $uniqueId): FederatedShare {
-		$qb = $this->getShareSelectSql();
+	public function getShare(string $itemId): FederatedShare {
+		$qb = $this->getShareLockSelectSql();
 
-		$qb->limitToUniqueId($uniqueId);
+		$qb->limitToItemId($itemId);
 
 		return $this->getItemFromRequest($qb);
 	}

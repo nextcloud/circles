@@ -33,20 +33,19 @@ namespace OCA\Circles\Service;
 
 use daita\MySmallPhpTools\ActivityPub\Nextcloud\nc21\NC21Signature;
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
-use daita\MySmallPhpTools\Exceptions\ItemNotFoundException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Exceptions\UnknownTypeException;
 use OCA\Circles\Exceptions\FederatedEventDSyncException;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\FederatedShareAlreadyLockedException;
 use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
-use OCA\Circles\FederatedItems\ShareLock;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\FederatedItems\ItemLock;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\FederatedShare;
 
@@ -62,43 +61,50 @@ class FederatedShareService extends NC21Signature {
 	/** @var FederatedEventService */
 	private $federatedEventService;
 
+	/** @var CircleService */
+	private $circleService;
+
 
 	/**
 	 * FederatedEventService constructor.
 	 *
 	 * @param FederatedEventService $federatedEventService
 	 */
-	public function __construct(FederatedEventService $federatedEventService) {
+	public function __construct(FederatedEventService $federatedEventService, CircleService $circleService) {
 		$this->federatedEventService = $federatedEventService;
+		$this->circleService = $circleService;
 	}
 
 
 	/**
-	 * @param Circle $circle
+	 * @param string $itemId
 	 *
 	 * @return FederatedShare
 	 * @throws FederatedEventDSyncException
 	 * @throws FederatedEventException
 	 * @throws FederatedItemException
+	 * @throws FederatedShareAlreadyLockedException
 	 * @throws InitiatorNotConfirmedException
+	 * @throws InvalidItemException
 	 * @throws OwnerNotFoundException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
 	 * @throws RequestNetworkException
 	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
-	 * @throws InvalidItemException
-	 * @throws ItemNotFoundException
 	 * @throws UnknownTypeException
 	 */
-	public function getFreshFederatedShare(Circle $circle): FederatedShare {
-		$event = new FederatedEvent(ShareLock::class);
-		$event->setCircle($circle);
-
+	public function lockItem(string $itemId): FederatedShare {
+		$event = new FederatedEvent(ItemLock::class);
+		$event->getData()->s('itemId', $itemId);
 		$data = $this->federatedEventService->newEvent($event);
 
 		/** @var FederatedShare $share */
 		$share = $data->gObj('federatedShare', FederatedShare::class);
+
+		if ($share->getLockStatus() === ItemLock::STATUS_INSTANCE_LOCKED) {
+			throw new FederatedShareAlreadyLockedException('item already locked by ' . $share->getInstance());
+		}
 
 		return $share;
 	}

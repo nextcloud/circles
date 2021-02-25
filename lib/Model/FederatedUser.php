@@ -45,7 +45,7 @@ use OCA\Circles\IFederatedUser;
  *
  * @package OCA\Circles\Model
  */
-class FederatedUser extends ManagedModel implements IFederatedUser, IFederatedModel, IDeserializable, INC21QueryRow, JsonSerializable {
+class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializable, INC21QueryRow, JsonSerializable {
 
 
 	use TArrayTools;

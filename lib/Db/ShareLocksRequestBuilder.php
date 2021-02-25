@@ -41,15 +41,15 @@ use OCA\Circles\Model\Federated\FederatedShare;
  *
  * @package OCA\Circles\Db
  */
-class ShareRequestBuilder extends CoreQueryBuilder {
+class ShareLocksRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
 	 * @return CoreRequestBuilder
 	 */
-	protected function getShareInsertSql(): CoreRequestBuilder {
+	protected function getShareLockInsertSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->insert(self::TABLE_SHARE);
+		$qb->insert(self::TABLE_SHARE_LOCKS);
 
 		return $qb;
 	}
@@ -58,11 +58,11 @@ class ShareRequestBuilder extends CoreQueryBuilder {
 	/**
 	 * @return CoreRequestBuilder
 	 */
-	protected function getShareSelectSql(): CoreRequestBuilder {
+	protected function getShareLockSelectSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
 
 		$qb->select('s.id', 's.unique_id', 's.circle_id', 's.instance')
-		   ->from(self::TABLE_SHARE, 's')
+		   ->from(self::TABLE_SHARE_LOCKS, 's')
 		   ->setDefaultSelectAlias('s');
 
 		return $qb;
@@ -72,9 +72,9 @@ class ShareRequestBuilder extends CoreQueryBuilder {
 	/**
 	 * @return CoreRequestBuilder
 	 */
-	protected function getShareUpdateSql(): CoreRequestBuilder {
+	protected function getShareLockUpdateSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->update(self::TABLE_SHARE);
+		$qb->update(self::TABLE_SHARE_LOCKS);
 
 		return $qb;
 	}
@@ -85,11 +85,10 @@ class ShareRequestBuilder extends CoreQueryBuilder {
 	 */
 	protected function getShareDeleteSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->delete(self::TABLE_SHARE);
+		$qb->delete(self::TABLE_SHARE_LOCKS);
 
 		return $qb;
 	}
-
 
 
 	/**

@@ -34,6 +34,7 @@ namespace OCA\Circles\Model\Federated;
 
 use daita\MySmallPhpTools\Db\Nextcloud\nc21\INC21QueryRow;
 use daita\MySmallPhpTools\IDeserializable;
+use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\IFederatedModel;
@@ -54,13 +55,19 @@ class FederatedShare implements IFederatedModel, JsonSerializable, INC21QueryRow
 	private $id = 0;
 
 	/** @var string */
-	private $uniqueId = '';
+	private $itemId = '';
 
 	/** @var string */
 	private $circleId = '';
 
 	/** @var string */
 	private $instance = '';
+
+	/** @var string */
+	private $lockStatus = '';
+
+	/** @var SimpleDataStore */
+	private $data;
 
 
 	/**
@@ -90,12 +97,12 @@ class FederatedShare implements IFederatedModel, JsonSerializable, INC21QueryRow
 
 
 	/**
-	 * @param string $uniqueId
+	 * @param string $itemId
 	 *
 	 * @return FederatedShare
 	 */
-	public function setUniqueId(string $uniqueId): self {
-		$this->uniqueId = $uniqueId;
+	public function setItemId(string $itemId): self {
+		$this->itemId = $itemId;
 
 		return $this;
 	}
@@ -103,8 +110,8 @@ class FederatedShare implements IFederatedModel, JsonSerializable, INC21QueryRow
 	/**
 	 * @return string
 	 */
-	public function getUniqueId(): string {
-		return $this->uniqueId;
+	public function getItemId(): string {
+		return $this->itemId;
 	}
 
 
@@ -138,6 +145,26 @@ class FederatedShare implements IFederatedModel, JsonSerializable, INC21QueryRow
 		return $this;
 	}
 
+
+	/**
+	 * @param string $lockStatus
+	 *
+	 * @return FederatedShare
+	 */
+	public function setLockStatus(string $lockStatus): self {
+		$this->lockStatus = $lockStatus;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getLockStatus(): string {
+		return $this->lockStatus;
+	}
+
+
 	/**
 	 * @return string
 	 */
@@ -153,7 +180,7 @@ class FederatedShare implements IFederatedModel, JsonSerializable, INC21QueryRow
 	 */
 	public function import(array $data): IDeserializable {
 		$this->setId($this->getInt('id', $data));
-		$this->setUniqueId($this->get('uniqueId', $data));
+		$this->setItemId($this->get('itemId', $data));
 		$this->setCircleId($this->get('circleId', $data));
 		$this->setInstance($this->get('instance', $data));
 
@@ -168,8 +195,8 @@ class FederatedShare implements IFederatedModel, JsonSerializable, INC21QueryRow
 	 */
 	public function importFromDatabase(array $data): INC21QueryRow {
 		$this->setId($this->getInt('id', $data));
-		$this->setUniqueId($this->get('unique_id', $data));
-		$this->setCircleId($this->get('circle_id', $data));
+		$this->setItemId($this->get('item_id', $data));
+//		$this->setCircleId($this->get('circle_id', $data));
 		$this->setInstance($this->get('instance', $data));
 
 		if ($this->getInstance() === '') {
@@ -186,7 +213,7 @@ class FederatedShare implements IFederatedModel, JsonSerializable, INC21QueryRow
 	public function jsonSerialize(): array {
 		return [
 			'id'       => $this->getId(),
-			'uniqueId' => $this->getUniqueId(),
+			'itemId'   => $this->getItemId(),
 			'circleId' => $this->getCircleId(),
 			'instance' => $this->getInstance()
 		];

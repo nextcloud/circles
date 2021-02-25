@@ -192,8 +192,8 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 		}
 
 
-		if (!$schema->hasTable('circle_shares')) {
-			$table = $schema->createTable('circle_shares');
+		if (!$schema->hasTable('circle_share_locks')) {
+			$table = $schema->createTable('circle_share_locks');
 			$table->addColumn(
 				'id', 'integer', [
 						'autoincrement' => true,
@@ -203,16 +203,10 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 					]
 			);
 			$table->addColumn(
-				'unique_id', 'string', [
-							   'notnull' => true,
-							   'length'  => 15
-						   ]
-			);
-			$table->addColumn(
-				'circle_id', 'string', [
-							   'notnull' => true,
-							   'length'  => 15,
-						   ]
+				'item_id', 'string', [
+							 'notnull' => true,
+							 'length'  => 15
+						 ]
 			);
 			$table->addColumn(
 				'instance', 'string', [
@@ -222,8 +216,7 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 			);
 
 			$table->setPrimaryKey(['id']);
-			$table->addUniqueIndex(['unique_id']);
-			$table->addIndex(['circle_id', 'instance'], 'ci');
+			$table->addUniqueIndex(['item_id']);
 		}
 
 		return $schema;

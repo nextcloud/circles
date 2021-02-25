@@ -72,12 +72,12 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 
 
 	/**
-	 * @param IFederatedModel $member
+	 * @param IFederatedModel $federatedModel
 	 *
 	 * @return string
 	 */
-	public function getInstance(IFederatedModel $member): string {
-		$instance = $member->getInstance();
+	public function getInstance(IFederatedModel $federatedModel): string {
+		$instance = $federatedModel->getInstance();
 
 		return ($this->configService->isLocalInstance($instance)) ? '' : $instance;
 	}
@@ -104,6 +104,15 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 	public function limitToSingleId(string $singleId): void {
 		$this->limitToDBField('single_id', $singleId, true);
 	}
+
+
+	/**
+	 * @param string $itemId
+	 */
+	public function limitToItemId(string $itemId): void {
+		$this->limitToDBField('item_id', $itemId, true);
+	}
+
 
 	/**
 	 * @param string $host

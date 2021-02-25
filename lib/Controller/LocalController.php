@@ -42,6 +42,7 @@ use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Service\MemberService;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCSController;
 use OCP\IRequest;
@@ -69,6 +70,9 @@ class LocalController extends OcsController {
 	/** @var CircleService */
 	private $circleService;
 
+	/** @var MemberService */
+	private $memberService;
+
 	/** @var ConfigService */
 	protected $configService;
 
@@ -81,16 +85,18 @@ class LocalController extends OcsController {
 	 * @param IUserSession $userSession
 	 * @param FederatedUserService $federatedUserService
 	 * @param CircleService $circleService
+	 * @param MemberService $memberService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		$appName, IRequest $request, IUserSession $userSession, FederatedUserService $federatedUserService,
-		CircleService $circleService, ConfigService $configService
+		CircleService $circleService, MemberService $memberService, ConfigService $configService
 	) {
 		parent::__construct($appName, $request);
 		$this->userSession = $userSession;
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
+		$this->memberService = $memberService;
 		$this->configService = $configService;
 	}
 
@@ -120,7 +126,6 @@ class LocalController extends OcsController {
 	 * @return DataResponse
 	 * @throws CircleNotFoundException
 	 * @throws FederatedUserNotFoundException
-	 * @throws InitiatorNotFoundException
 	 * @throws InvalidIdException
 	 */
 	public function create(string $name, bool $personal = false): DataResponse {
@@ -128,6 +133,58 @@ class LocalController extends OcsController {
 
 		try {
 			$result = $this->circleService->create($name);
+
+			return $this->successObj($result);
+		} catch (Exception $e) {
+			return $this->fail($e);
+		}
+	}
+
+
+	/**
+	 * @NoAdminRequired
+	 *
+	 * @param string $circleId
+	 *
+	 * @return DataResponse
+	 * @throws CircleNotFoundException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
+	 */
+	public function members(string $circleId): DataResponse {
+		$this->setCurrentFederatedUser();
+
+		try {
+			$members = $this->memberService->getMembers($circleId);
+//			$member = $this->federatedUserService->generateFederatedUser($userId, (int)$type);
+//			$result = $this->memberService->addMember($circleId, $member);
+
+			return $this->success($members);
+		} catch (Exception $e) {
+			return $this->fail($e);
+		}
+	}
+
+
+
+	/**
+	 * @NoAdminRequired
+	 *
+	 * @param string $circleId
+	 * @param string $userId
+	 * @param int $type
+	 *
+	 * @return DataResponse
+	 * @throws CircleNotFoundException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
+	 */
+	public function memberAdd(string $circleId, string $userId, int $type): DataResponse {
+		$this->setCurrentFederatedUser();
+
+		try {
+			$member = $this->federatedUserService->generateFederatedUser($userId, (int)$type);
+			$result = $this->memberService->addMember($circleId, $member);
 
 			return $this->successObj($result);
 		} catch (Exception $e) {

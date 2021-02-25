@@ -27,7 +27,10 @@
 return [
 	'ocs'    => [
 		['name' => 'Local#circles', 'url' => '/circles', 'verb' => 'GET'],
-		['name' => 'Local#create', 'url' => '/circles', 'verb' => 'POST']
+		['name' => 'Local#create', 'url' => '/circles', 'verb' => 'POST'],
+		['name' => 'Local#members', 'url' => '/circles/{circleId}/members', 'verb' => 'GET'],
+		['name' => 'Local#memberAdd', 'url' => '/circles/{circleId}/members', 'verb' => 'POST'],
+		['name' => 'Local#memberJoin', 'url' => '/circles/{circleId}/join', 'verb' => 'PUT'],
 	],
 	'routes' => [
 		['name' => 'Settings#getSettings', 'url' => '/admin/settings', 'verb' => 'GET'],

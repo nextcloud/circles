@@ -55,7 +55,7 @@ class CoreQueryBuilder {
 	const TABLE_MEMBERSHIP = 'circle_membership';
 	const TABLE_REMOTE = 'circle_remotes';
 	const TABLE_REMOTE_WRAPPER = 'circle_gsevents'; //rename ?
-	const TABLE_SHARE = 'circle_shares';
+	const TABLE_SHARE_LOCKS = 'circle_share_locks';
 
 	const TABLE_TOKENS = 'circle_tokens';
 	const TABLE_GSSHARES = 'circle_gsshares'; // rename ?
@@ -71,7 +71,7 @@ class CoreQueryBuilder {
 		self::TABLE_MEMBERSHIP,
 		self::TABLE_REMOTE,
 		self::TABLE_REMOTE_WRAPPER,
-		self::TABLE_SHARE,
+		self::TABLE_SHARE_LOCKS,
 
 		self::TABLE_TOKENS,
 		self::TABLE_GSSHARES,
@@ -124,6 +124,7 @@ class CoreQueryBuilder {
 	 * @throws InvalidIdException
 	 */
 	public function confirmValidId(string $id): void {
+		// TODO: lock size to 15
 		if (strlen($id) < 14) {
 			throw new InvalidIdException();
 		}

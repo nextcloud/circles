@@ -50,7 +50,7 @@ use OCA\Circles\IFederatedUser;
  *
  * @package OCA\Circles\Model
  */
-class Member extends ManagedModel implements IFederatedUser, IFederatedModel, IDeserializable, INC21QueryRow, JsonSerializable {
+class Member extends ManagedModel implements IFederatedUser, IDeserializable, INC21QueryRow, JsonSerializable {
 
 
 	use TArrayTools;

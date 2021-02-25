@@ -9,7 +9,7 @@ declare(strict_types=1);
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@artificial-owl.com>
+ * @author Maxence Lange <maxence@pontapreta.net>
  * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
@@ -28,22 +28,13 @@ declare(strict_types=1);
  *
  */
 
+namespace OCA\Circles\Exceptions;
 
-namespace OCA\Circles;
+use Exception;
 
 
-/**
- * Interface IFederatedUser
- *
- * @package OCA\Circles
- */
-interface IFederatedUser extends IFederatedModel {
-
-	public function getSingleId(): string;
-
-	public function getUserId(): string;
-
-	public function getUserType(): int;
+class FederatedShareAlreadyLockedException extends Exception {
 
 }
+
 
