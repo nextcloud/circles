@@ -6,6 +6,7 @@ OC.L10N.register(
     "Link Removed" : "Ligòngiu bogadu",
     "Link down" : "Ligòngiu no ativu",
     "Secret" : "Segretu",
+    "Owner" : "Mere",
     "Blocked" : "Blocadu",
     "Removed" : "Bogadu",
     "Please confirm" : "Cunfirma",
