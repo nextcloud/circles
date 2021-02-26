@@ -43,9 +43,11 @@ use OC;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\RemoteRequest;
 use OCA\Circles\Db\RemoteWrapperRequest;
+use OCA\Circles\Db\ShareLockRequest;
 use OCA\Circles\Exceptions\FederatedEventDSyncException;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\FederatedShareNotFoundException;
 use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\JsonException;
 use OCA\Circles\Exceptions\ModelException;
@@ -65,6 +67,7 @@ use OCA\Circles\IFederatedItemMemberCheckNotRequired;
 use OCA\Circles\IFederatedItemMemberEmpty;
 use OCA\Circles\IFederatedItemMemberOptional;
 use OCA\Circles\IFederatedItemMemberRequired;
+use OCA\Circles\IFederatedItemSharedItem;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
@@ -97,6 +100,9 @@ class FederatedEventService extends NC21Signature {
 	/** @var RemoteRequest */
 	private $remoteRequest;
 
+	/** @var ShareLockRequest */
+	private $shareLockRequest;
+
 	/** @var MemberRequest */
 	private $memberRequest;
 
@@ -117,17 +123,20 @@ class FederatedEventService extends NC21Signature {
 	 * @param RemoteWrapperRequest $remoteWrapperRequest
 	 * @param RemoteRequest $remoteRequest
 	 * @param MemberRequest $memberRequest
+	 * @param ShareLockRequest $shareLockRequest
 	 * @param RemoteUpstreamService $remoteUpstreamService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		IL10N $l10n, RemoteWrapperRequest $remoteWrapperRequest, RemoteRequest $remoteRequest,
-		MemberRequest $memberRequest, RemoteUpstreamService $remoteUpstreamService,
+		MemberRequest $memberRequest, ShareLockRequest $shareLockRequest,
+		RemoteUpstreamService $remoteUpstreamService,
 		ConfigService $configService
 	) {
 		$this->l10n = $l10n;
 		$this->remoteWrapperRequest = $remoteWrapperRequest;
 		$this->remoteRequest = $remoteRequest;
+		$this->shareLockRequest = $shareLockRequest;
 		$this->memberRequest = $memberRequest;
 		$this->remoteUpstreamService = $remoteUpstreamService;
 		$this->configService = $configService;
@@ -263,6 +272,7 @@ class FederatedEventService extends NC21Signature {
 
 		$this->setFederatedEventBypass($event, $item);
 		$this->confirmRequiredCondition($event, $item, $checkLocalOnly);
+		$this->confirmSharedItem($event, $item);
 		$this->configureEvent($event, $item);
 
 		return $item;
@@ -326,6 +336,29 @@ class FederatedEventService extends NC21Signature {
 		}
 		if ($item instanceof IFederatedItemInitiatorMustBeLocal && $checkLocalOnly) {
 			throw new FederatedEventException('FederatedItem must be executed locally');
+		}
+	}
+
+
+	/**
+	 * @param FederatedEvent $event
+	 * @param IFederatedItem $item
+	 *
+	 * @throws FederatedShareNotFoundException
+	 * @throws FederatedEventException
+	 */
+	private function confirmSharedItem(FederatedEvent $event, IFederatedItem $item): void {
+		if (!$item instanceof IFederatedItemSharedItem) {
+			return;
+		}
+
+		if ($event->getItemId() === '') {
+			throw new FederatedEventException('FederatedItem must contains ItemId');
+		}
+
+		$shareLock = $this->shareLockRequest->getShare($event->getItemId());
+		if ($shareLock->getInstance() !== $event->getIncomingOrigin()) {
+			throw new FederatedEventException('ShareLock belongs to another instance');
 		}
 	}
 

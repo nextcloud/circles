@@ -168,7 +168,7 @@ class MemberRequest extends MemberRequestBuilder {
 	): array {
 		$qb = $this->getMemberSelectSql();
 		$qb->limitToCircleId($circleId);
-		$qb->leftJoinCircle($initiator, true);
+		$qb->leftJoinCircle($initiator);
 
 		if (!is_null($remoteInstance)) {
 			$qb->limitToRemoteInstance($remoteInstance->getInstance(), true);
@@ -193,7 +193,7 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->limitToMemberId($memberId);
 
 		if (!is_null($initiator)) {
-			$qb->leftJoinCircle($initiator, true);
+			$qb->leftJoinCircle($initiator);
 		}
 
 		return $this->getItemFromRequest($qb);

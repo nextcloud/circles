@@ -68,6 +68,9 @@ class FederatedEvent implements JsonSerializable {
 	/** @var Circle */
 	private $circle;
 
+	/** @var string */
+	private $itemId = '';
+
 	/** @var Member */
 	private $member;
 
@@ -217,7 +220,6 @@ class FederatedEvent implements JsonSerializable {
 	}
 
 
-
 	/**
 	 * @return bool
 	 */
@@ -347,6 +349,26 @@ class FederatedEvent implements JsonSerializable {
 	 */
 	public function getCircle(): Circle {
 		return $this->circle;
+	}
+
+
+
+	/**
+	 * @param string $itemId
+	 *
+	 * @return self
+	 */
+	public function setItemId(string $itemId): self {
+		$this->itemId = $itemId;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getItemId(): string {
+		return $this->itemId;
 	}
 
 

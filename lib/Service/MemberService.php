@@ -127,22 +127,30 @@ class MemberService {
 
 	/**
 	 * @param string $memberId
+	 * @param string $circleId
 	 *
 	 * @return Member
 	 * @throws InitiatorNotFoundException
 	 * @throws MemberLevelException
 	 */
-	public function getMember(string $memberId): Member {
+	public function getMember(string $memberId, string $circleId = ''): Member {
 		$this->federatedUserService->mustHaveCurrentUser();
 
 		try {
-			$member = $this->memberRequest->getMember($memberId);
-			$circle = $this->circleRequest->getCircle(
-				$member->getCircleId(), $this->federatedUserService->getCurrentUser()
-			);
-			if (!$circle->getInitiator()->isMember()) {
-				throw new MemberLevelException();
+			$member =
+				$this->memberRequest->getMember($memberId, $this->federatedUserService->getCurrentUser());
+			if ($circleId !== '' && $member->getCircle()->getId() !== $circleId) {
+				throw new MemberNotFoundException();
 			}
+
+			// TODO: useless ?
+//			$circle = $this->circleRequest->getCircle(
+//				$member->getCircleId(), $this->federatedUserService->getCurrentUser()
+//			);
+
+//			if (!$circle->getInitiator()->isMember()) {
+//				throw new MemberLevelException();
+//			}
 
 			return $member;
 		} catch (Exception $e) {
@@ -222,6 +230,7 @@ class MemberService {
 	 * @throws RequestNetworkException
 	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
+	 * @throws FederatedEventDSyncException
 	 */
 	public function removeMember(string $memberId): SimpleDataStore {
 		$this->federatedUserService->mustHaveCurrentUser();
@@ -252,10 +261,10 @@ class MemberService {
 	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
 	 * @throws FederatedItemException
+	 * @throws FederatedEventDSyncException
 	 */
 	public function memberLevel(string $memberId, int $level): SimpleDataStore {
 		$this->federatedUserService->mustHaveCurrentUser();
-
 		$member = $this->memberRequest->getMember($memberId, $this->federatedUserService->getCurrentUser());
 
 		$event = new FederatedEvent(MemberLevel::class);

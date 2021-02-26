@@ -42,7 +42,7 @@ use OCA\Circles\Model\Federated\FederatedShare;
  *
  * @package OCA\Circles\Db
  */
-class ShareLocksRequest extends ShareLocksRequestBuilder {
+class ShareLockRequest extends ShareLockRequestBuilder {
 
 
 	/**

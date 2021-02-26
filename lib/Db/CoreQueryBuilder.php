@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Db;
 
 
+use Exception;
 use OC\DB\Connection;
 use OC\DB\SchemaWrapper;
 use OCA\Circles\Exceptions\InvalidIdException;
@@ -137,8 +138,11 @@ class CoreQueryBuilder {
 	public function cleanDatabase(): void {
 		foreach ($this->tables as $table) {
 			$qb = $this->getQueryBuilder();
-			$qb->delete($table);
-			$qb->execute();
+			try {
+				$qb->delete($table);
+				$qb->execute();
+			} catch (Exception $e) {
+			}
 		}
 
 		$qb = $this->getQueryBuilder();

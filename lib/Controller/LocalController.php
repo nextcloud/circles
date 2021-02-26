@@ -39,6 +39,8 @@ use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
+use OCA\Circles\Exceptions\MemberLevelException;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
@@ -156,15 +158,12 @@ class LocalController extends OcsController {
 
 		try {
 			$members = $this->memberService->getMembers($circleId);
-//			$member = $this->federatedUserService->generateFederatedUser($userId, (int)$type);
-//			$result = $this->memberService->addMember($circleId, $member);
 
 			return $this->success($members);
 		} catch (Exception $e) {
 			return $this->fail($e);
 		}
 	}
-
 
 
 	/**
@@ -185,6 +184,59 @@ class LocalController extends OcsController {
 		try {
 			$member = $this->federatedUserService->generateFederatedUser($userId, (int)$type);
 			$result = $this->memberService->addMember($circleId, $member);
+
+			return $this->successObj($result);
+		} catch (Exception $e) {
+			return $this->fail($e);
+		}
+	}
+
+
+	/**
+	 * @NoAdminRequired
+	 *
+	 * @param string $circleId
+	 * @param string $memberId
+	 * @param string $level
+	 *
+	 * @return DataResponse
+	 * @throws CircleNotFoundException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
+	 * @throws MemberLevelException
+	 */
+	public function memberLevel(string $circleId, string $memberId, string $level): DataResponse {
+		$this->setCurrentFederatedUser();
+
+		try {
+			$level = Member::parseLevelString($level);
+			$this->memberService->getMember($memberId, $circleId);
+			$result = $this->memberService->memberLevel($memberId, $level);
+
+			return $this->successObj($result);
+		} catch (Exception $e) {
+			return $this->fail($e);
+		}
+	}
+
+
+	/**
+	 * @NoAdminRequired
+	 *
+	 * @param string $circleId
+	 * @param string $memberId
+	 *
+	 * @return DataResponse
+	 * @throws CircleNotFoundException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
+	 */
+	public function memberRemove(string $circleId, string $memberId): DataResponse {
+		$this->setCurrentFederatedUser();
+
+		try {
+			$this->memberService->getMember($memberId, $circleId);
+			$result = $this->memberService->removeMember($memberId);
 
 			return $this->successObj($result);
 		} catch (Exception $e) {

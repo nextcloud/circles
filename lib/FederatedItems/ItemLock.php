@@ -33,7 +33,7 @@ namespace OCA\Circles\FederatedItems;
 
 
 use daita\MySmallPhpTools\Traits\TStringTools;
-use OCA\Circles\Db\ShareLocksRequest;
+use OCA\Circles\Db\ShareLockRequest;
 use OCA\Circles\Exceptions\FederatedShareNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\IFederatedItem;
@@ -44,7 +44,7 @@ use OCA\Circles\Model\Federated\FederatedShare;
 
 
 /**
- * Class SharesSync
+ * Class ItemLock
  *
  * @package OCA\Circles\FederatedItems
  */
@@ -61,11 +61,16 @@ class ItemLock implements
 	const STATUS_INSTANCE_LOCKED = 'instance_locked';
 
 
-	/** @var ShareLocksRequest */
+	/** @var ShareLockRequest */
 	private $shareLockRequest;
 
 
-	public function __construct(ShareLocksRequest $shareLockRequest) {
+	/**
+	 * ItemLock constructor.
+	 *
+	 * @param ShareLockRequest $shareLockRequest
+	 */
+	public function __construct(ShareLockRequest $shareLockRequest) {
 		$this->shareLockRequest = $shareLockRequest;
 	}
 
