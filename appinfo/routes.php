@@ -28,10 +28,24 @@ return [
 	'ocs'    => [
 		['name' => 'Local#circles', 'url' => '/circles', 'verb' => 'GET'],
 		['name' => 'Local#create', 'url' => '/circles', 'verb' => 'POST'],
+		['name' => 'Local#getSettings', 'url' => '/circles/{circleId}/settings', 'verb' => 'GET'],
+		['name' => 'Local#setSettings', 'url' => '/circles/{circleId}/settings', 'verb' => 'PUT'],
 		['name' => 'Local#members', 'url' => '/circles/{circleId}/members', 'verb' => 'GET'],
 		['name' => 'Local#memberAdd', 'url' => '/circles/{circleId}/members', 'verb' => 'POST'],
-		['name' => 'Local#memberJoin', 'url' => '/circles/{circleId}/join', 'verb' => 'PUT'],
+		[
+			'name' => 'Local#memberRemove', 'url' => '/circles/{circleId}/members/{memberId}',
+			'verb' => 'DELETE'
+		],
+		[
+			'name' => 'Local#memberLevel', 'url' => '/circles/{circleId}/members/{memberId}/level',
+			'verb' => 'PUT'
+		],
+
+		// to implement
+		['name' => 'Local#circleJoin', 'url' => '/circles/{circleId}/join', 'verb' => 'PUT'],
+		['name' => 'Local#circleLeave', 'url' => '/circles/{circleId}/leave', 'verb' => 'PUT']
 	],
+
 	'routes' => [
 		['name' => 'Settings#getSettings', 'url' => '/admin/settings', 'verb' => 'GET'],
 		['name' => 'Settings#setSettings', 'url' => '/admin/settings', 'verb' => 'POST'],
