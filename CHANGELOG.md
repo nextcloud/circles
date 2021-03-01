@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 
+### 0.21.0
+
+- Nextcloud 21 compat.
+
+
 ### 0.20.6
 
 - use https and http when in doubt
