@@ -242,6 +242,8 @@ class FileShare extends AGlobalScaleEvent {
 			['token' => $sharesToken->getToken()]
 		);
 
+		$link = $this->configService->patchFrontalLink($link);
+
 		$lang = $this->configService->getCoreValueForUser($share->getSharedBy(), 'lang', '');
 		if ($lang !== '') {
 			$this->l10n = OC::$server->getL10N(Application::APP_NAME, $lang);
