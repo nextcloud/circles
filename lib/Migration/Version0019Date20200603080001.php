@@ -401,7 +401,7 @@ class Version0019Date20200603080001 extends SimpleMigrationStep {
 						   ]
 			);
 			$table->addColumn(
-				'member_id', Type::STRING, [
+				'member_id', 'string', [
 							   'notnull' => false,
 							   'length'  => 15,
 						   ]
@@ -471,7 +471,7 @@ class Version0019Date20200603080001 extends SimpleMigrationStep {
 							  ]
 			);
 			$table->addColumn(
-				'contact_checked', Type::SMALLINT, [
+				'contact_checked', 'smallint', [
 									 'notnull' => false,
 									 'length'  => 1,
 								 ]
@@ -556,7 +556,7 @@ class Version0019Date20200603080001 extends SimpleMigrationStep {
 						   ]
 			);
 			$table->addColumn(
-				'member_id', Type::STRING, [
+				'member_id', 'string', [
 							   'notnull' => false,
 							   'length'  => 15,
 						   ]
@@ -586,7 +586,7 @@ class Version0019Date20200603080001 extends SimpleMigrationStep {
 						  ]
 			);
 			$table->addColumn(
-				'accepted', Type::SMALLINT, [
+				'accepted', 'smallint', [
 							  'notnull' => false,
 							  'length'  => 1,
 						  ]
