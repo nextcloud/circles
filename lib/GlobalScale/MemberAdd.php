@@ -308,6 +308,9 @@ class MemberAdd extends AGlobalScaleEvent {
 			'files_sharing.sharecontroller.showShare',
 			['token' => $sharesToken->getToken()]
 		);
+
+		$link = $this->configService->patchFrontalLink($link);
+
 		$author = $share['uid_initiator'];
 		$filename = basename($share['file_target']);
 
