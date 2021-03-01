@@ -1,5 +1,10 @@
 # Changelog
-All notable changes to this project will be documented in this file.
+
+
+
+### 0.20.7
+
+- adding a configuration to fix generated link on proxy setup: frontal_cloud_id
 
 
 ### 0.20.6
