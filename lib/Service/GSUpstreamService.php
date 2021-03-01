@@ -130,7 +130,7 @@ class GSUpstreamService {
 	 * @throws Exception
 	 */
 	public function newEvent(GSEvent $event): string {
-		$event->setSource($this->configService->getLocalInstance());
+		$event->setSource($this->configService->getFrontalInstance());
 		try {
 			$gs = $this->globalScaleService->getGlobalScaleEvent($event);
 			if ($this->isLocalEvent($event)) {
@@ -346,7 +346,7 @@ class GSUpstreamService {
 	 */
 	public function synchronizeCircles(array $circles): void {
 		$event = new GSEvent(GSEvent::GLOBAL_SYNC, true);
-		$event->setSource($this->configService->getLocalInstance());
+		$event->setSource($this->configService->getFrontalInstance());
 		$event->setData(new SimpleDataStore($circles));
 
 		foreach ($this->globalScaleService->getInstances() as $instance) {
@@ -400,7 +400,7 @@ class GSUpstreamService {
 	 */
 	public function confirmCircleStatus(DeprecatedCircle $circle): bool {
 		$event = new GSEvent(GSEvent::CIRCLE_STATUS, true);
-		$event->setSource($this->configService->getLocalInstance());
+		$event->setSource($this->configService->getFrontalInstance());
 		$event->setDeprecatedCircle($circle);
 
 		$this->signEvent($event);

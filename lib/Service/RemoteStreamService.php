@@ -118,7 +118,7 @@ class RemoteStreamService extends NC21Signature {
 	 * @throws SignatoryException
 	 */
 	public function getAppSignatory(bool $generate = true, string $confirmKey = ''): RemoteInstance {
-		$app = new RemoteInstance($this->configService->getRemotePath());
+		$app = new RemoteInstance($this->configService->getFrontalPath());
 		$this->fillSimpleSignatory($app, $generate);
 		$app->setUidFromKey();
 
@@ -126,13 +126,13 @@ class RemoteStreamService extends NC21Signature {
 			$app->setAuthSigned($this->signString($confirmKey, $app));
 		}
 
-		$app->setEvent($this->configService->getRemotePath('circles.Remote.event'));
-		$app->setIncoming($this->configService->getRemotePath('circles.Remote.incoming'));
-		$app->setTest($this->configService->getRemotePath('circles.Remote.test'));
-		$app->setCircles($this->configService->getRemotePath('circles.Remote.circles'));
+		$app->setEvent($this->configService->getFrontalPath('circles.Remote.event'));
+		$app->setIncoming($this->configService->getFrontalPath('circles.Remote.incoming'));
+		$app->setTest($this->configService->getFrontalPath('circles.Remote.test'));
+		$app->setCircles($this->configService->getFrontalPath('circles.Remote.circles'));
 		$app->setCircle(
 			urldecode(
-				$this->configService->getRemotePath(
+				$this->configService->getFrontalPath(
 					'circles.Remote.circle',
 					['circleId' => '{circleId}']
 				)
@@ -140,7 +140,7 @@ class RemoteStreamService extends NC21Signature {
 		);
 		$app->setMembers(
 			urldecode(
-				$this->configService->getRemotePath(
+				$this->configService->getFrontalPath(
 					'circles.Remote.members',
 					['circleId' => '{circleId}']
 				)
@@ -148,7 +148,7 @@ class RemoteStreamService extends NC21Signature {
 		);
 		$app->setMember(
 			urldecode(
-				$this->configService->getRemotePath(
+				$this->configService->getFrontalPath(
 					'circles.Remote.member',
 					['type' => '{type}', 'userId' => '{userId}']
 				)

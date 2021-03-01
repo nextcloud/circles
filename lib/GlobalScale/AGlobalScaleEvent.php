@@ -243,11 +243,11 @@ abstract class AGlobalScaleEvent {
 	 */
 	protected function compareMembers(DeprecatedMember $member1, DeprecatedMember $member2) {
 		if ($member1->getInstance() === '') {
-			$member1->setInstance($this->configService->getLocalInstance());
+			$member1->setInstance($this->configService->getFrontalInstance());
 		}
 
 		if ($member2->getInstance() === '') {
-			$member2->setInstance($this->configService->getLocalInstance());
+			$member2->setInstance($this->configService->getFrontalInstance());
 		}
 
 		if ($member1->getCircleId() !== $member2->getCircleId()

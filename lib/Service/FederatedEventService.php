@@ -162,7 +162,7 @@ class FederatedEventService extends NC21Signature {
 	 * @throws FederatedEventDSyncException
 	 */
 	public function newEvent(FederatedEvent $event): SimpleDataStore {
-		$event->setSource($this->configService->getLocalInstance());
+		$event->setSource($this->configService->getFrontalInstance());
 
 		try {
 			$federatedItem = $this->getFederatedItem($event, false);
@@ -426,7 +426,7 @@ class FederatedEventService extends NC21Signature {
 	 * @return array
 	 */
 	public function getInstances(FederatedEvent $event, ?Circle $circle = null): array {
-		$local = $this->configService->getLocalInstance();
+		$local = $this->configService->getFrontalInstance();
 		$instances = $this->remoteRequest->getOutgoingRecipient($circle);
 
 		$instances = array_map(

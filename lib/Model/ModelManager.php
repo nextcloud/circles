@@ -149,7 +149,7 @@ class ModelManager {
 	 * @return string
 	 */
 	public function getLocalInstance(): string {
-		return $this->configService->getLocalInstance();
+		return $this->configService->getFrontalInstance();
 	}
 
 

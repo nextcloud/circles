@@ -215,7 +215,7 @@ class RemoteController extends Controller {
 	 * @throws SignatureException
 	 */
 	public function test(): DataResponse {
-		$test = $this->remoteStreamService->incomingSignedRequest($this->configService->getLocalInstance());
+		$test = $this->remoteStreamService->incomingSignedRequest($this->configService->getFrontalInstance());
 
 		return $this->successObj($test);
 	}
@@ -353,7 +353,7 @@ class RemoteController extends Controller {
 	 * @throws InvalidItemException
 	 */
 	private function extractEventFromRequest(): FederatedEvent {
-		$signed = $this->remoteStreamService->incomingSignedRequest($this->configService->getLocalInstance());
+		$signed = $this->remoteStreamService->incomingSignedRequest($this->configService->getFrontalInstance());
 		$this->confirmRemoteInstance($signed);
 
 		$event = new FederatedEvent();
@@ -375,7 +375,7 @@ class RemoteController extends Controller {
 	 * @throws FederatedUserException
 	 */
 	private function extractDataFromFromRequest(): SimpleDataStore {
-		$signed = $this->remoteStreamService->incomingSignedRequest($this->configService->getLocalInstance());
+		$signed = $this->remoteStreamService->incomingSignedRequest($this->configService->getFrontalInstance());
 		$remoteInstance = $this->confirmRemoteInstance($signed);
 
 		// There should be no need to confirm the need or the origin of the initiator as $remoteInstance

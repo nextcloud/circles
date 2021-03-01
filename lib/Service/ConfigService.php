@@ -64,8 +64,13 @@ class ConfigService {
 	const CIRCLES_TEST_ASYNC_HAND = 'test_async_hand';
 	const CIRCLES_TEST_ASYNC_COUNT = 'test_async_count';
 
-	const LOCAL_CLOUD_ID = 'local_cloud_id';
-	const LOCAL_CLOUD_SCHEME = 'local_cloud_scheme';
+	const FRONTAL_CLOUD_ID = 'frontal_cloud_id';
+	const FRONTAL_CLOUD_SCHEME = 'frontal_cloud_scheme';
+	const INTERNAL_CLOUD_ID = 'internal_cloud_id';
+	const INTERNAL_CLOUD_SCHEME = 'internal_cloud_scheme';
+
+
+
 	const FORCE_NC_BASE = 'force_nc_base';
 	const TEST_NC_BASE = 'test_nc_base';
 
@@ -94,8 +99,10 @@ class ConfigService {
 		self::CIRCLES_ALLOW_NON_SSL_LINKS      => '0',
 		self::CIRCLES_NON_SSL_LOCAL            => '0',
 		self::CIRCLES_SELF_SIGNED              => '0',
-		self::LOCAL_CLOUD_ID                   => '',
-		self::LOCAL_CLOUD_SCHEME               => 'https',
+		self::FRONTAL_CLOUD_ID                 => '',
+		self::FRONTAL_CLOUD_SCHEME             => 'https',
+		self::INTERNAL_CLOUD_ID                 => '',
+		self::INTERNAL_CLOUD_SCHEME             => 'https',
 		self::FORCE_NC_BASE                    => '',
 		self::TEST_NC_BASE                     => '',
 		self::CIRCLES_ACTIVITY_ON_CREATION     => '1',
@@ -568,45 +575,52 @@ class ConfigService {
 
 	/**
 	 * - returns host+port, does not specify any protocol
-	 * - can be forced using LOCAL_CLOUD_ID
+	 * - can be forced using FRONTAL_CLOUD_ID
 	 * - use 'overwrite.cli.url'
-	 * - can use the first entry from trusted_domains if LOCAL_CLOUD_ID = 'use-trusted-domain'
+	 * - can use the first entry from trusted_domains if FRONTAL_CLOUD_ID = 'use-trusted-domain'
 	 * - used mainly to assign instance and source to a request
 	 * - important only in remote environment; can be totally random in a jailed environment
 	 *
 	 * @return string
 	 */
-	public function getLocalInstance(): string {
-		$localCloudId = $this->getAppValue(self::LOCAL_CLOUD_ID);
-		if ($localCloudId === '') {
+	public function getFrontalInstance(): string {
+		$frontalCloudId = $this->getAppValue(self::FRONTAL_CLOUD_ID);
+
+		// using old settings - Deprecated in NC25
+		if ($frontalCloudId === '') {
+			$frontalCloudId = $this->config->getAppValue($this->appName, 'local_cloud_id', '');
+			$this->setAppValue(self::FRONTAL_CLOUD_ID, $frontalCloudId);
+		}
+
+		if ($frontalCloudId === '') {
 			$cliUrl = $this->config->getSystemValue('overwrite.cli.url', '');
-			$local = parse_url($cliUrl);
-			if (!is_array($local) || !array_key_exists('host', $local)) {
+			$frontal = parse_url($cliUrl);
+			if (!is_array($frontal) || !array_key_exists('host', $frontal)) {
 				if ($cliUrl !== '') {
 					return $cliUrl;
 				}
 
 				$randomCloudId = $this->uuid();
-				$this->setAppValue(self::LOCAL_CLOUD_ID, $randomCloudId);
+				$this->setAppValue(self::FRONTAL_CLOUD_ID, $randomCloudId);
 
 				return $randomCloudId;
 			}
 
-			if (array_key_exists('port', $local)) {
-				return $local['host'] . ':' . $local['port'];
+			if (array_key_exists('port', $frontal)) {
+				return $frontal['host'] . ':' . $frontal['port'];
 			} else {
-				return $local['host'];
+				return $frontal['host'];
 			}
-		} else if ($localCloudId === 'use-trusted-domain') {
+		} else if ($frontalCloudId === 'use-trusted-domain') {
 			return $this->getTrustedDomains()[0];
 		} else {
-			return $localCloudId;
+			return $frontalCloudId;
 		}
 	}
 
 
 	/**
-	 * returns address based on LOCAL_CLOUD_ID, LOCAL_CLOUD_SCHEME and a routeName
+	 * returns address based on FRONTAL_CLOUD_ID, FRONTAL_CLOUD_SCHEME and a routeName
 	 * perfect for urlId in ActivityPub env.
 	 *
 	 * @param string $route
@@ -614,8 +628,8 @@ class ConfigService {
 	 *
 	 * @return string
 	 */
-	public function getRemotePath(string $route = 'circles.Remote.appService', array $args = []): string {
-		$base = $this->getAppValue(self::LOCAL_CLOUD_SCHEME) . '://' . $this->getLocalInstance();
+	public function getFrontalPath(string $route = 'circles.Remote.appService', array $args = []): string {
+		$base = $this->getAppValue(self::FRONTAL_CLOUD_SCHEME) . '://' . $this->getFrontalInstance();
 
 		if ($route === '') {
 			return $base;
@@ -630,11 +644,11 @@ class ConfigService {
 	 * @return bool
 	 */
 	public function isLocalInstance(string $instance): bool {
-		if ($instance === $this->getLocalInstance()) {
+		if ($instance === $this->getFrontalInstance()) {
 			return true;
 		}
 
-		if ($this->getAppValue(self::LOCAL_CLOUD_ID) === 'use-trusted-domain') {
+		if ($this->getAppValue(self::FRONTAL_CLOUD_ID) === 'use-trusted-domain') {
 			return (in_array($instance, $this->getTrustedDomains()));
 		}
 

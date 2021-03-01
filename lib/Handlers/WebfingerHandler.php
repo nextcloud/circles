@@ -106,7 +106,7 @@ class WebfingerHandler implements IHandler {
 			return $response;
 		}
 
-		$href = $this->configService->getRemotePath();
+		$href = $this->configService->getFrontalPath();
 		$info = [
 			'app'     => Application::APP_ID,
 			'name'    => Application::APP_NAME,

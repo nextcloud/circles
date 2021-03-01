@@ -196,7 +196,7 @@ class MembersList extends Base {
 		$table->setHeaders(['ID', 'Single ID', 'Type', 'Username', 'Instance', 'Level']);
 		$table->render();
 
-		$local = $this->configService->getLocalInstance();
+		$local = $this->configService->getFrontalInstance();
 		foreach ($members as $member) {
 			$table->appendRow(
 				[

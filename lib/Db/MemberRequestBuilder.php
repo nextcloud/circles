@@ -112,7 +112,7 @@ class MemberRequestBuilder extends CoreQueryBuilder {
 			$member = $qb->asItem(
 				Member::class,
 				[
-					'local' => $this->configService->getLocalInstance()
+					'local' => $this->configService->getFrontalInstance()
 				]
 			);
 		} catch (RowNotFoundException $e) {
@@ -132,7 +132,7 @@ class MemberRequestBuilder extends CoreQueryBuilder {
 		return $qb->asItems(
 			Member::class,
 			[
-				'local' => $this->configService->getLocalInstance()
+				'local' => $this->configService->getFrontalInstance()
 			]
 		);
 	}

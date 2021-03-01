@@ -103,7 +103,7 @@ class ShareLockRequestBuilder extends CoreQueryBuilder {
 			$circle = $qb->asItem(
 				FederatedShare::class,
 				[
-					'local' => $this->configService->getLocalInstance()
+					'local' => $this->configService->getFrontalInstance()
 				]
 			);
 		} catch (RowNotFoundException $e) {
@@ -123,7 +123,7 @@ class ShareLockRequestBuilder extends CoreQueryBuilder {
 		return $qb->asItems(
 			FederatedShare::class,
 			[
-				'local' => $this->configService->getLocalInstance()
+				'local' => $this->configService->getFrontalInstance()
 			]
 		);
 	}

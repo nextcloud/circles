@@ -559,7 +559,7 @@ class FederatedUserService {
 		$federatedId = trim($federatedId, '@');
 		if (strpos($federatedId, '@') === false) {
 			$userId = $federatedId;
-			$instance = $this->configService->getLocalInstance();
+			$instance = $this->configService->getFrontalInstance();
 		} else {
 			list($userId, $instance) = explode('@', $federatedId);
 		}

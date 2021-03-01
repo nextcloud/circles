@@ -110,7 +110,7 @@ class CircleRequestBuilder extends CoreQueryBuilder {
 			$circle = $qb->asItem(
 				Circle::class,
 				[
-					'local' => $this->configService->getLocalInstance()
+					'local' => $this->configService->getFrontalInstance()
 				]
 			);
 		} catch (RowNotFoundException $e) {
@@ -130,7 +130,7 @@ class CircleRequestBuilder extends CoreQueryBuilder {
 		return $qb->asItems(
 			Circle::class,
 			[
-				'local' => $this->configService->getLocalInstance()
+				'local' => $this->configService->getFrontalInstance()
 			]
 		);
 	}

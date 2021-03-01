@@ -192,7 +192,7 @@ class CirclesList extends Base {
 		$table->setHeaders(['ID', 'Name', 'Type', 'Owner', 'Instance', 'Limit', 'Description']);
 		$table->render();
 
-		$local = $this->configService->getLocalInstance();
+		$local = $this->configService->getFrontalInstance();
 		$display = ($this->input->getOption('def') ? Circle::TYPES_LONG : Circle::TYPES_SHORT);
 		foreach ($circles as $circle) {
 			$owner = $circle->getOwner();
