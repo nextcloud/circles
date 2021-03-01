@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 
+### 0.19.12
+
+- adding a configuration to fix generated link on proxy setup: frontal_cloud_id
+
+
 ### 0.19.11
 
 - use https and http when in doubt
