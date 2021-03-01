@@ -66,6 +66,9 @@ class ConfigService {
 	const FORCE_NC_BASE = 'force_nc_base';
 	const TEST_NC_BASE = 'test_nc_base';
 
+	const FRONTAL_CLOUD_ID = 'frontal_cloud_id';
+	const FRONTAL_CLOUD_SCHEME = 'frontal_cloud_scheme';
+
 	const GS_ENABLED = 'enabled';
 	const GS_MODE = 'mode';
 	const GS_KEY = 'key';
@@ -93,6 +96,8 @@ class ConfigService {
 		self::LOCAL_CLOUD_ID                   => '',
 		self::FORCE_NC_BASE                    => '',
 		self::TEST_NC_BASE                     => '',
+		self::FRONTAL_CLOUD_ID                 => '',
+		self::FRONTAL_CLOUD_SCHEME             => 'https',
 		self::CIRCLES_ACTIVITY_ON_CREATION     => '1',
 		self::CIRCLES_SKIP_INVITATION_STEP     => '0',
 		self::CIRCLES_SEARCH_FROM_COLLABORATOR => '0'
@@ -683,6 +688,28 @@ class ConfigService {
 
 		return rtrim($ncBase, '/') . $link;
 	}
+
+
+	public function patchFrontalLink(string $link) {
+		$frontal = $this->getAppValue(ConfigService::FRONTAL_CLOUD_ID);
+		if ($frontal === '') {
+			return $link;
+		}
+
+		$parsed = parse_url($link);
+		if (!is_array($parsed) || !array_key_exists('host', $parsed)) {
+			return $link;
+		}
+
+		if (array_key_exists('port', $parsed)) {
+			$host = $parsed['host'] . ':' . $parsed['port'];
+		} else {
+			$host = $parsed['host'];
+		}
+
+		return str_replace($host, $frontal, $link);
+	}
+
 
 }
 
