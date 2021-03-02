@@ -32,19 +32,18 @@ declare(strict_types=1);
 namespace OCA\Circles\Controller;
 
 
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Controller;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Deserialize;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Logger;
 use Exception;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
-use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
-use OCA\Circles\Exceptions\MemberLevelException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCSController;
 use OCP\IRequest;
@@ -60,7 +59,7 @@ class LocalController extends OcsController {
 
 
 	use TNC21Deserialize;
-	use TNC21Controller;
+	use TNC21Logger;
 
 
 	/** @var IUserSession */
@@ -91,8 +90,9 @@ class LocalController extends OcsController {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		$appName, IRequest $request, IUserSession $userSession, FederatedUserService $federatedUserService,
-		CircleService $circleService, MemberService $memberService, ConfigService $configService
+		string $appName, IRequest $request, IUserSession $userSession,
+		FederatedUserService $federatedUserService, CircleService $circleService,
+		MemberService $memberService, ConfigService $configService
 	) {
 		parent::__construct($appName, $request);
 		$this->userSession = $userSession;
@@ -100,6 +100,8 @@ class LocalController extends OcsController {
 		$this->circleService = $circleService;
 		$this->memberService = $memberService;
 		$this->configService = $configService;
+
+		$this->setup('app', 'circles');
 	}
 
 
@@ -107,15 +109,19 @@ class LocalController extends OcsController {
 	 * @NoAdminRequired
 	 *
 	 * @return DataResponse
-	 * @throws CircleNotFoundException
-	 * @throws FederatedUserNotFoundException
-	 * @throws InvalidIdException
-	 * @throws InitiatorNotFoundException
 	 */
 	public function circles(): DataResponse {
-		$this->setCurrentFederatedUser();
+		try {
+			$this->setCurrentFederatedUser();
+			$data = $this->circleService->getCircles();
+			$this->debug('success LocalController::circles()', ['data' => $data]);
 
-		return $this->success($this->circleService->getCircles(), false);
+			return new DataResponse(json_decode(json_encode($data), true));
+		} catch (Exception $e) {
+			$this->e($e, ['fail localController::circles()']);
+
+			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
+		}
 	}
 
 
@@ -126,19 +132,20 @@ class LocalController extends OcsController {
 	 * @param bool $personal
 	 *
 	 * @return DataResponse
-	 * @throws CircleNotFoundException
-	 * @throws FederatedUserNotFoundException
-	 * @throws InvalidIdException
 	 */
 	public function create(string $name, bool $personal = false): DataResponse {
-		$this->setCurrentFederatedUser();
+		$debug = ['name' => $name, 'personal' => $personal];
 
 		try {
-			$result = $this->circleService->create($name);
+			$this->setCurrentFederatedUser();
+			$circle = $this->circleService->create($name);
+			$this->debug('success LocalController::create()', array_merge($debug, ['circle' => $circle]));
 
-			return $this->successObj($result);
+			return new DataResponse(json_decode(json_encode($circle), true));
 		} catch (Exception $e) {
-			return $this->fail($e);
+			$this->e($e, array_merge(['fail localController::create()', $debug]));
+
+			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
 		}
 	}
 
@@ -149,19 +156,20 @@ class LocalController extends OcsController {
 	 * @param string $circleId
 	 *
 	 * @return DataResponse
-	 * @throws CircleNotFoundException
-	 * @throws FederatedUserNotFoundException
-	 * @throws InvalidIdException
 	 */
 	public function members(string $circleId): DataResponse {
-		$this->setCurrentFederatedUser();
+		$debug = ['circleId' => $circleId];
 
 		try {
+			$this->setCurrentFederatedUser();
 			$members = $this->memberService->getMembers($circleId);
+			$this->debug('success LocalController::members()', array_merge($debug, ['members' => $members]));
 
-			return $this->success($members);
+			return new DataResponse(json_decode(json_encode($members), true));
 		} catch (Exception $e) {
-			return $this->fail($e);
+			$this->e($e, array_merge(['fail localController::members()', $debug]));
+
+			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
 		}
 	}
 
@@ -174,20 +182,25 @@ class LocalController extends OcsController {
 	 * @param int $type
 	 *
 	 * @return DataResponse
-	 * @throws CircleNotFoundException
-	 * @throws FederatedUserNotFoundException
-	 * @throws InvalidIdException
 	 */
 	public function memberAdd(string $circleId, string $userId, int $type): DataResponse {
-		$this->setCurrentFederatedUser();
+		$debug = ['circleId' => $circleId, 'userId' => $userId, 'type' => $type];
 
 		try {
+			$this->setCurrentFederatedUser();
 			$member = $this->federatedUserService->generateFederatedUser($userId, (int)$type);
 			$result = $this->memberService->addMember($circleId, $member);
 
-			return $this->successObj($result);
+			$this->debug(
+				'success LocalController::memberAdd()',
+				array_merge($debug, ['member' => $member, 'result' => $result])
+			);
+
+			return new DataResponse(json_decode(json_encode($result), true));
 		} catch (Exception $e) {
-			return $this->fail($e);
+			$this->e($e, array_merge(['fail localController::memberAdd()', $debug]));
+
+			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
 		}
 	}
 
@@ -200,22 +213,25 @@ class LocalController extends OcsController {
 	 * @param string $level
 	 *
 	 * @return DataResponse
-	 * @throws CircleNotFoundException
-	 * @throws FederatedUserNotFoundException
-	 * @throws InvalidIdException
-	 * @throws MemberLevelException
 	 */
 	public function memberLevel(string $circleId, string $memberId, string $level): DataResponse {
-		$this->setCurrentFederatedUser();
+		$debug = ['circleId' => $circleId, 'memberId' => $memberId, 'level' => $level];
 
 		try {
+			$this->setCurrentFederatedUser();
 			$level = Member::parseLevelString($level);
 			$this->memberService->getMember($memberId, $circleId);
 			$result = $this->memberService->memberLevel($memberId, $level);
 
-			return $this->successObj($result);
+			$this->debug(
+				'success LocalController::memberLevel()', array_merge($debug, ['result' => $result])
+			);
+
+			return new DataResponse(json_decode(json_encode($result), true));
 		} catch (Exception $e) {
-			return $this->fail($e);
+			$this->e($e, array_merge(['fail localController::memberLevel()', $debug]));
+
+			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
 		}
 	}
 
@@ -227,20 +243,24 @@ class LocalController extends OcsController {
 	 * @param string $memberId
 	 *
 	 * @return DataResponse
-	 * @throws CircleNotFoundException
-	 * @throws FederatedUserNotFoundException
-	 * @throws InvalidIdException
 	 */
 	public function memberRemove(string $circleId, string $memberId): DataResponse {
-		$this->setCurrentFederatedUser();
+		$debug = ['circleId' => $circleId, 'memberId' => $memberId];
 
 		try {
+			$this->setCurrentFederatedUser();
 			$this->memberService->getMember($memberId, $circleId);
 			$result = $this->memberService->removeMember($memberId);
 
-			return $this->successObj($result);
+			$this->debug(
+				'success LocalController::memberRemove()', array_merge($debug, ['result' => $result])
+			);
+
+			return new DataResponse(json_decode(json_encode($result), true));
 		} catch (Exception $e) {
-			return $this->fail($e);
+			$this->e($e, array_merge(['fail localController::memberRemove()', $debug]));
+
+			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
 		}
 	}
 
