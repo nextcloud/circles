@@ -5,6 +5,8 @@ OC.L10N.register(
     "This action is irreversible" : "Custa atzione non dda podes annullare",
     "Link Removed" : "Ligòngiu bogadu",
     "Link down" : "Ligòngiu no ativu",
+    "Secret" : "Segretu",
+    "Owner" : "Mere",
     "Blocked" : "Blocadu",
     "Removed" : "Bogadu",
     "Please confirm" : "Cunfirma",
