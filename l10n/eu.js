@@ -39,6 +39,7 @@ OC.L10N.register(
     "Are you sure you want to delete this circle?" : "Ziur zaude zirkulu hau ezabatu nahi duzula?",
     "Mail Address" : "Posta helbidea",
     "Contact" : "Kontaktua",
+    "Remove from circle" : "Kendu zirkulutik",
     "Accept the request" : "Onartu eskaera",
     "Dismiss the request" : "Baztertu eskaera",
     "Unlink this group" : "Talde hau lokabetu",
