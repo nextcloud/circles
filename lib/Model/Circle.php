@@ -148,7 +148,7 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 	private $name = '';
 
 	/** @var string */
-	private $altName = '';
+	private $displayName = '';
 
 	/** @var Member */
 	private $owner;
@@ -278,6 +278,9 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 	 */
 	public function setName(string $name): self {
 		$this->name = $name;
+		if ($this->displayName === '') {
+			$this->displayName = $name;
+		}
 
 		return $this;
 	}
@@ -291,12 +294,14 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 
 
 	/**
-	 * @param string $altName
+	 * @param string $displayName
 	 *
 	 * @return self
 	 */
-	public function setAltName(string $altName): self {
-		$this->altName = $altName;
+	public function setDisplayName(string $displayName): self {
+		if ($displayName !== '') {
+			$this->displayName = $displayName;
+		}
 
 		return $this;
 	}
@@ -304,8 +309,8 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 	/**
 	 * @return string
 	 */
-	public function getAltName(): string {
-		return $this->altName;
+	public function getDisplayName(): string {
+		return $this->displayName;
 	}
 
 
@@ -563,7 +568,7 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 
 		$this->setId($this->get('id', $data))
 			 ->setName($this->get('name', $data))
-			 ->setAltName($this->get('alt_name', $data))
+			 ->setDisplayName($this->get('displayName', $data))
 			 ->setConfig($this->getInt('config', $data))
 			 ->setSettings($this->getArray('settings', $data))
 //			 ->setContactAddressBook($this->get('contact_addressbook', $data))
@@ -597,7 +602,7 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 		$arr = [
 			'id'          => $this->getId(),
 			'name'        => $this->getName(),
-			'alt_name'    => $this->getAltName(),
+			'displayName' => $this->getDisplayName(),
 			'config'      => $this->getConfig(),
 			'description' => $this->getDescription(),
 			'settings'    => $this->getSettings(),
@@ -635,7 +640,7 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 
 		$this->setId($this->get($prefix . 'unique_id', $data))
 			 ->setName($this->get($prefix . 'name', $data))
-			 ->setAltName($this->get($prefix . 'alt_name', $data))
+			 ->setDisplayName($this->get($prefix . 'alt_name', $data))
 			 ->setConfig($this->getInt($prefix . 'config', $data))
 			 ->setInstance($this->get($prefix . 'instance', $data))
 			 ->setSettings($this->getArray($prefix . 'settings', $data))

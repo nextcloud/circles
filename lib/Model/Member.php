@@ -38,10 +38,9 @@ use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Deserialize;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use DateTime;
 use JsonSerializable;
-use OCA\Circles\Exceptions\MemberLevelException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\Exceptions\ParseMemberLevelException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
-use OCA\Circles\IFederatedModel;
 use OCA\Circles\IFederatedUser;
 
 
@@ -121,10 +120,10 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	private $note = '';
 
 	/** @var string */
-	private $cachedName = '';
+	private $displayName = '';
 
 	/** @var int */
-	private $cachedUpdate = 0;
+	private $displayUpdate = 0;
 
 	/** @var string */
 	private $contactId = '';
@@ -214,6 +213,9 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	 */
 	public function setUserId(string $userId): self {
 		$this->userId = $userId;
+		if ($this->displayName === '') {
+			$this->displayName = $userId;
+		}
 
 		return $this;
 	}
@@ -322,24 +324,26 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 
 
 	/**
-	 * @param string $cachedName
+	 * @param string $displayName
 	 *
 	 * @return Member
 	 */
-	public function setCachedName(string $cachedName): self {
-		$this->cachedName = $cachedName;
+	public function setDisplayName(string $displayName): self {
+		if ($displayName !== '') {
+			$this->displayName = $displayName;
+		}
 
 		return $this;
 	}
 
 
 	/**
-	 * @param int $cachedUpdate
+	 * @param int $displayUpdate
 	 *
 	 * @return Member
 	 */
-	public function setCachedUpdate(int $cachedUpdate): self {
-		$this->cachedUpdate = $cachedUpdate;
+	public function setDisplayUpdate(int $displayUpdate): self {
+		$this->displayUpdate = $displayUpdate;
 
 		return $this;
 	}
@@ -347,16 +351,16 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	/**
 	 * @return int
 	 */
-	public function getCachedUpdate(): int {
-		return $this->cachedUpdate;
+	public function getDisplayUpdate(): int {
+		return $this->displayUpdate;
 	}
 
 
 	/**
 	 * @return string
 	 */
-	public function getCachedName(): string {
-		return $this->cachedName;
+	public function getDisplayName(): string {
+		return $this->displayName;
 	}
 
 
@@ -484,23 +488,23 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	 * @throws InvalidItemException
 	 */
 	public function import(array $data): IDeserializable {
-		if ($this->get('user_id', $data) === '') {
+		if ($this->get('userId', $data) === '') {
 			throw new InvalidItemException();
 		}
 
 		$this->setId($this->get('id', $data));
-		$this->setCircleId($this->get('circle_id', $data));
-		$this->setSingleId($this->get('single_id', $data));
-		$this->setUserId($this->get('user_id', $data));
-		$this->setUserType($this->getInt('user_type', $data));
+		$this->setCircleId($this->get('circleId', $data));
+		$this->setSingleId($this->get('singleId', $data));
+		$this->setUserId($this->get('userId', $data));
+		$this->setUserType($this->getInt('userType', $data));
 		$this->setInstance($this->get('instance', $data));
 		$this->setLevel($this->getInt('level', $data));
 		$this->setStatus($this->get('status', $data));
-		$this->setCachedName($this->get('cached_name', $data));
-		$this->setCachedUpdate($this->getInt('cached_update', $data));
+		$this->setDisplayName($this->get('displayName', $data));
+		$this->setDisplayUpdate($this->getInt('displayUpdate', $data));
 		$this->setNote($this->get('note', $data));
-		$this->setContactId($this->get('contact_id', $data));
-		$this->setContactMeta($this->get('contact_meta', $data));
+		$this->setContactId($this->get('contactId', $data));
+		$this->setContactMeta($this->get('contactMeta', $data));
 		$this->setJoined($this->getInt('joined', $data));
 
 		try {
@@ -521,18 +525,18 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 		$arr = array_filter(
 			[
 				'id'            => $this->getId(),
-				'circle_id'     => $this->getCircleId(),
-				'single_id'     => $this->getSingleId(),
-				'user_id'       => $this->getUserId(),
-				'user_type'     => $this->getUserType(),
+				'circleId'      => $this->getCircleId(),
+				'singleId'      => $this->getSingleId(),
+				'userId'        => $this->getUserId(),
+				'userType'      => $this->getUserType(),
 				'instance'      => $this->getInstance(),
 				'level'         => $this->getLevel(),
 				'status'        => $this->getStatus(),
-				'cached_name'   => $this->getCachedName(),
-				'cached_update' => $this->getCachedUpdate(),
+				'displayName'   => $this->getDisplayName(),
+				'displayUpdate' => $this->getDisplayUpdate(),
 				'note'          => $this->getNote(),
-				'contact_id'    => $this->getContactId(),
-				'contact_meta'  => $this->getContactMeta(),
+				'contactId'     => $this->getContactId(),
+				'contactMeta'   => $this->getContactMeta(),
 				'joined'        => $this->getJoined()
 			]
 		);
@@ -565,14 +569,14 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 		$this->setInstance($this->get($prefix . 'instance', $data));
 		$this->setLevel($this->getInt($prefix . 'level', $data));
 		$this->setStatus($this->get($prefix . 'status', $data));
-		$this->setCachedName($this->get($prefix . 'cached_name', $data));
+		$this->setDisplayName($this->get($prefix . 'cached_name', $data));
 		$this->setNote($this->get($prefix . 'note', $data));
 		$this->setContactId($this->get($prefix . 'contact_id', $data));
 		$this->setContactMeta($this->get($prefix . 'contact_meta', $data));
 
 		$cachedUpdate = $this->get($prefix . 'cached_update', $data);
 		if ($cachedUpdate !== '') {
-			$this->setCachedUpdate(DateTime::createFromFormat('Y-m-d H:i:s', $cachedUpdate)->getTimestamp());
+			$this->setDisplayUpdate(DateTime::createFromFormat('Y-m-d H:i:s', $cachedUpdate)->getTimestamp());
 		}
 
 		$joined = $this->get($prefix . 'joined', $data);
@@ -596,7 +600,7 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	 * @param string $levelString
 	 *
 	 * @return int
-	 * @throws MemberLevelException
+	 * @throws ParseMemberLevelException
 	 */
 	public static function parseLevelString(string $levelString): int {
 		$levelString = ucfirst(strtolower($levelString));
@@ -604,7 +608,7 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 
 		if (!$level) {
 			$all = implode(', ', array_values(self::$DEF_LEVEL));
-			throw new MemberLevelException('Available levels: ' . $all);
+			throw new ParseMemberLevelException('Available levels: ' . $all);
 		}
 
 		return (int)$level;
