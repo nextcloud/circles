@@ -110,6 +110,9 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	/** @var string */
 	private $instance = '';
 
+	/** @var bool */
+	private $local = false;
+
 	/** @var int */
 	private $level = 0;
 
@@ -263,6 +266,25 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	 */
 	public function getInstance(): string {
 		return $this->instance;
+	}
+
+
+	/**
+	 * @param bool $local
+	 *
+	 * @return Member
+	 */
+	public function setLocal(bool $local): self {
+		$this->local = $local;
+
+		return $this;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isLocal(): bool {
+		return $this->local;
 	}
 
 
@@ -498,6 +520,7 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 		$this->setUserId($this->get('userId', $data));
 		$this->setUserType($this->getInt('userType', $data));
 		$this->setInstance($this->get('instance', $data));
+		$this->setLocal($this->getBool('local', $data));
 		$this->setLevel($this->getInt('level', $data));
 		$this->setStatus($this->get('status', $data));
 		$this->setDisplayName($this->get('displayName', $data));
@@ -530,6 +553,7 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 				'userId'        => $this->getUserId(),
 				'userType'      => $this->getUserType(),
 				'instance'      => $this->getInstance(),
+				'local'         => $this->isLocal(),
 				'level'         => $this->getLevel(),
 				'status'        => $this->getStatus(),
 				'displayName'   => $this->getDisplayName(),
@@ -585,6 +609,7 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 		}
 
 		if ($this->getInstance() === '') {
+			$this->setLocal(true);
 			$this->setInstance($this->get('_params.local', $data));
 		}
 
