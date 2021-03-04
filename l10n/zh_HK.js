@@ -28,7 +28,7 @@ OC.L10N.register(
     "Moderator" : "主持人",
     "Admin" : "管理員",
     "Owner" : "所有者",
-    "Unknown" : "未知",
+    "Unknown" : "不詳",
     "Invited" : "已邀請",
     "Requesting" : "請求中",
     "Blocked" : "被阻止",
