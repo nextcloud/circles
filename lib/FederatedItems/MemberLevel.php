@@ -34,12 +34,14 @@ namespace OCA\Circles\FederatedItems;
 
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\FederatedItemBadRequestException;
 use OCA\Circles\Exceptions\MemberLevelException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemMemberRequired;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\Member;
+use OCP\AppFramework\Http;
 
 
 /**
@@ -70,6 +72,8 @@ class MemberLevel implements
 	 * @param FederatedEvent $event
 	 *
 	 * @throws FederatedItemException
+	 * @throws FederatedItemBadRequestException
+	 * @throws MemberLevelException
 	 */
 	public function verify(FederatedEvent $event): void {
 		$circle = $event->getCircle();
@@ -78,11 +82,12 @@ class MemberLevel implements
 		$level = $event->getData()->gInt('level');
 
 		if ($level === 0) {
-			throw new FederatedItemException('invalid level');
+			// TODO check all level
+			throw new FederatedItemBadRequestException('invalid level');
 		}
 
 		if ($member->getLevel() === $level) {
-			throw new FederatedItemException('This member already have the selected level');
+			throw new FederatedItemBadRequestException('This member already have the selected level');
 		}
 
 		$initiatorHelper = new MemberHelper($initiator);

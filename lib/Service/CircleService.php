@@ -123,17 +123,8 @@ class CircleService {
 	 * @param string $name
 	 * @param FederatedUser|null $owner
 	 *
-	 * @return Circle
-	 * @throws FederatedEventException
-	 * @throws InitiatorNotConfirmedException
+	 * @return SimpleDataStore
 	 * @throws InitiatorNotFoundException
-	 * @throws OwnerNotFoundException
-	 * @throws FederatedItemException
-	 * @throws RemoteNotFoundException
-	 * @throws RemoteResourceNotFoundException
-	 * @throws UnknownRemoteException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
 	 */
 	public function create(string $name, ?FederatedUser $owner = null): SimpleDataStore {
 		$this->federatedUserService->mustHaveCurrentUser();
@@ -188,7 +179,7 @@ class CircleService {
 		$event->setData(new SimpleDataStore(['config' => $config]));
 
 		$this->federatedEventService->newEvent($event);
-		
+
 		return $event->getOutcome();
 	}
 
@@ -236,9 +227,9 @@ class CircleService {
 	 * @throws MembersLimitException
 	 */
 	public function confirmCircleNotFull(Circle $circle): void {
-		if ($this->isCircleFull($circle)) {
-			throw new MembersLimitException('circle is full');
-		}
+//		if ($this->isCircleFull($circle)) {
+//			throw new MembersLimitException('Circle \'%s\' is full and cannot accept more members', ['circleName' => $circle->getDisplayName()]);
+//		}
 	}
 
 	/**

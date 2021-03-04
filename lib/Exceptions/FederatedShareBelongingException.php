@@ -28,11 +28,10 @@ declare(strict_types=1);
  *
  */
 
-
 namespace OCA\Circles\Exceptions;
 
 
-class FederatedUserException extends FederatedItemServerException {
+class FederatedShareBelongingException extends FederatedItemException {
 
 }
 

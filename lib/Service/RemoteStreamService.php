@@ -55,7 +55,6 @@ use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RemoteUidException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Model\Federated\RemoteInstance;
-use OCP\AppFramework\Http;
 use OCP\IURLGenerator;
 
 
@@ -184,12 +183,10 @@ class RemoteStreamService extends NC21Signature {
 	 * @param array $params
 	 *
 	 * @return array
+	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
-	 * @throws RemoteInstanceException
 	 */
 	public function resultRequestRemoteInstance(
 		string $instance,
@@ -200,13 +197,13 @@ class RemoteStreamService extends NC21Signature {
 	): array {
 		$signedRequest = $this->requestRemoteInstance($instance, $item, $type, $object, $params);
 		if (!$signedRequest->getOutgoingRequest()->hasResult()) {
-			throw new RequestNetworkException();
+			throw new RemoteInstanceException();
 		}
 
 		$result = $signedRequest->getOutgoingRequest()->getResult();
-		if ($result->getStatusCode() !== Http::STATUS_OK) {
-			throw new RemoteInstanceException();
-		}
+//		if ($result->getStatusCode() !== Http::STATUS_OK) {
+//			throw new RemoteInstanceException();
+//		}
 
 		return $result->getAsArray();
 	}
@@ -227,9 +224,8 @@ class RemoteStreamService extends NC21Signature {
 	 * @return NC21SignedRequest
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
+	 * @throws RemoteInstanceException
 	 */
 	public function requestRemoteInstance(
 		string $instance,
@@ -248,7 +244,7 @@ class RemoteStreamService extends NC21Signature {
 			$request->basedOnUrl($link);
 		}
 
-		// TODO: on local, if object is empty, request takes 10s. check on other configuration
+		// TODO: Work Around: on local, if object is empty, request takes 10s. check on other configuration
 		if (is_null($object) || empty(json_decode(json_encode($object), true))) {
 			$object = new SimpleDataStore(['empty' => 1]);
 		}
@@ -257,10 +253,14 @@ class RemoteStreamService extends NC21Signature {
 			$request->setDataSerialize($object);
 		}
 
-		$app = $this->getAppSignatory();
+		try {
+			$app = $this->getAppSignatory();
 //		$app->setAlgorithm(NC21Signatory::SHA512);
-		$signedRequest = $this->signOutgoingRequest($request, $app);
-		$this->doRequest($signedRequest->getOutgoingRequest(), false);
+			$signedRequest = $this->signOutgoingRequest($request, $app);
+			$this->doRequest($signedRequest->getOutgoingRequest(), false);
+		} catch (RequestNetworkException | SignatoryException $e) {
+			throw new RemoteInstanceException($e->getMessage());
+		}
 
 		return $signedRequest;
 	}

@@ -28,12 +28,11 @@ declare(strict_types=1);
  *
  */
 
+
 namespace OCA\Circles\Exceptions;
 
-use Exception;
 
-
-class UserTypeNotFoundException extends Exception {
+class UserTypeNotFoundException extends FederatedItemBadRequestException {
 
 }
 

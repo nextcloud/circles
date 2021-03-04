@@ -10,7 +10,7 @@ declare(strict_types=1);
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2017
+ * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -35,26 +35,14 @@ use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use OC\Core\Command\Base;
-use OCA\Circles\Exceptions\CircleNotFoundException;
-use OCA\Circles\Exceptions\FederatedEventDSyncException;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
-use OCA\Circles\Exceptions\FederatedUserException;
-use OCA\Circles\Exceptions\FederatedUserNotFoundException;
-use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
-use OCA\Circles\Exceptions\InvalidIdException;
-use OCA\Circles\Exceptions\MemberNotFoundException;
-use OCA\Circles\Exceptions\OwnerNotFoundException;
-use OCA\Circles\Exceptions\RemoteInstanceException;
-use OCA\Circles\Exceptions\RemoteNotFoundException;
-use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
-use OCA\Circles\Exceptions\UnknownRemoteException;
-use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
+use OCP\IL10N;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -70,6 +58,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CirclesConfig extends Base {
 
 
+	/** @var IL10N */
+	private $l10n;
+
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
@@ -83,15 +74,18 @@ class CirclesConfig extends Base {
 	/**
 	 * CirclesConfig constructor.
 	 *
+	 * @param IL10N $l10n
 	 * @param FederatedUserService $federatedUserService
 	 * @param CircleService $circlesService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		FederatedUserService $federatedUserService, CircleService $circlesService,
+		IL10N $l10n, FederatedUserService $federatedUserService, CircleService $circlesService,
 		ConfigService $configService
 	) {
 		parent::__construct();
+
+		$this->l10n = $l10n;
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circlesService;
 		$this->configService = $configService;
@@ -110,7 +104,8 @@ class CirclesConfig extends Base {
 				 'config', InputArgument::IS_ARRAY,
 				 'list of value to change in the configuration of the Circle'
 			 )
-			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '');
+			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
 	}
 
 
@@ -119,43 +114,42 @@ class CirclesConfig extends Base {
 	 * @param OutputInterface $output
 	 *
 	 * @return int
-	 * @throws CircleNotFoundException
-	 * @throws FederatedUserException
-	 * @throws FederatedUserNotFoundException
-	 * @throws InitiatorNotFoundException
-	 * @throws InvalidIdException
-	 * @throws InvalidItemException
-	 * @throws MemberNotFoundException
-	 * @throws OwnerNotFoundException
-	 * @throws RemoteInstanceException
-	 * @throws RemoteNotFoundException
-	 * @throws RemoteResourceNotFoundException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
-	 * @throws UnknownRemoteException
-	 * @throws UserTypeNotFoundException
-	 * @throws FederatedEventDSyncException
 	 * @throws FederatedEventException
 	 * @throws FederatedItemException
-	 * @throws InitiatorNotConfirmedException
+	 * @throws InitiatorNotFoundException
+	 * @throws InvalidItemException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$circleId = (string)$input->getArgument('circle_id');
 
-		$this->federatedUserService->commandLineInitiator($input->getOption('initiator'), $circleId, false);
-
-		$circle = $this->circleService->getCircle($circleId);
-
-		if (empty($input->getArgument('config'))) {
-			$output->writeln(
-				json_encode(Circle::getCircleTypes($circle, Circle::TYPES_LONG), JSON_PRETTY_PRINT)
+		try {
+			$this->federatedUserService->commandLineInitiator(
+				$input->getOption('initiator'), $circleId, false
 			);
 
-			return 0;
-		}
+			$circle = $this->circleService->getCircle($circleId);
 
-		$new = $this->generateConfig($circle, $input->getArgument('config'));
-		$outcome = $this->circleService->updateConfig($circleId, $new);
+			if (empty($input->getArgument('config'))) {
+				$output->writeln(
+					json_encode(Circle::getCircleTypes($circle, Circle::TYPES_LONG), JSON_PRETTY_PRINT)
+				);
+
+				return 0;
+			}
+
+			$new = $this->generateConfig($circle, $input->getArgument('config'));
+			$outcome = $this->circleService->updateConfig($circleId, $new);
+		} catch (FederatedItemException $e) {
+			if ($input->getOption('status-code')) {
+				throw new FederatedItemException(
+					' [' . get_class($e) . ', ' . $e->getStatus() . ']' . "\n" . $e->getMessage()
+				);
+			}
+
+			throw $e;
+		}
 
 		$output->writeln(json_encode($outcome, JSON_PRETTY_PRINT));
 

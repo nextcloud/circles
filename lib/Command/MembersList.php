@@ -108,6 +108,7 @@ class MembersList extends Base {
 		CircleService $circleService, MemberService $memberService, ConfigService $configService
 	) {
 		parent::__construct();
+
 		$this->federatedUserService = $federatedUserService;
 		$this->remoteService = $remoteService;
 		$this->circleService = $circleService;
@@ -158,6 +159,7 @@ class MembersList extends Base {
 		if ($input->getOption('tree')) {
 			$this->federatedUserService->commandLineInitiator($initiator, $circleId, true);
 			$circle = $this->circleService->getCircle($circleId);
+
 			$output->writeln('<info>Name</info>: ' . $circle->getName());
 			$owner = $circle->getOwner();
 			$output->writeln('<info>Owner</info>: ' . $owner->getUserId() . '@' . $owner->getInstance());

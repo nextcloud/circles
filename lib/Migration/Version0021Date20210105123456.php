@@ -82,7 +82,7 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 			if (!$circles->hasColumn('instance')) {
 				$circles->addColumn(
 					'instance', 'string', [
-								  'notnull' => true,
+								  'notnull' => false,
 								  'default' => '',
 								  'length'  => 255
 							  ]

@@ -36,7 +36,7 @@ namespace OCA\Circles\Exceptions;
  *
  * @package OCA\Circles\Exceptions
  */
-class RemoteNotFoundException extends FederatedItemException {
+class RemoteNotFoundException extends FederatedItemNotFoundException {
 
 }
 

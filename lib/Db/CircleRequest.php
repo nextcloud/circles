@@ -35,6 +35,7 @@ namespace OCA\Circles\Db;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\RemoteInstance;
@@ -62,7 +63,7 @@ class CircleRequest extends CircleRequestBuilder {
 		$qb->setValue('unique_id', $qb->createNamedParameter($circle->getId()))
 		   ->setValue('long_id', $qb->createNamedParameter($circle->getId()))
 		   ->setValue('name', $qb->createNamedParameter($circle->getName()))
-		   ->setValue('alt_name', $qb->createNamedParameter($circle->getAltName()))
+		   ->setValue('alt_name', $qb->createNamedParameter($circle->getDisplayName()))
 		   ->setValue('description', $qb->createNamedParameter($circle->getDescription()))
 		   ->setValue('contact_addressbook', $qb->createNamedParameter($circle->getContactAddressBook()))
 		   ->setValue('contact_groupname', $qb->createNamedParameter($circle->getContactGroupName()))
@@ -80,7 +81,7 @@ class CircleRequest extends CircleRequestBuilder {
 	public function update(Circle $circle) {
 		$qb = $this->getCircleUpdateSql();
 		$qb->set('name', $qb->createNamedParameter($circle->getName()))
-		   ->set('alt_name', $qb->createNamedParameter($circle->getAltName()))
+		   ->set('alt_name', $qb->createNamedParameter($circle->getDisplayName()))
 		   ->set('description', $qb->createNamedParameter($circle->getDescription()))
 		   ->set('settings', $qb->createNamedParameter(json_encode($circle->getSettings())))
 		   ->set('config', $qb->createNamedParameter($circle->getConfig()));
@@ -237,15 +238,19 @@ class CircleRequest extends CircleRequestBuilder {
 	 * @param IFederatedUser $initiator
 	 *
 	 * @return Circle
-	 * @throws CircleNotFoundException
+	 * @throws SingleCircleNotFoundException
 	 */
-	public function getInitiatorCircle(IFederatedUser $initiator): Circle {
+	public function getSingleCircle(IFederatedUser $initiator): Circle {
 		$qb = $this->getCircleSelectSql();
 		$qb->leftJoinOwner();
 		$qb->limitToMembership($initiator, Member::LEVEL_OWNER);
 		$qb->limitToConfig(Circle::CFG_SINGLE);
 
-		return $this->getItemFromRequest($qb);
+		try {
+			return $this->getItemFromRequest($qb);
+		} catch (CircleNotFoundException $e) {
+			throw new SingleCircleNotFoundException();
+		}
 	}
 
 

@@ -36,7 +36,7 @@ use Exception;
  *
  * @package OCA\Circles\Exceptions
  */
-class FederatedEventDSyncException extends Exception {
+class FederatedEventDSyncException extends FederatedItemConflictException {
 
 }
 

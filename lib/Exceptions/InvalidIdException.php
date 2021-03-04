@@ -36,7 +36,7 @@ use Exception;
  *
  * @package OCA\Circles\Exceptions
  */
-class InvalidIdException extends Exception {
+class InvalidIdException extends FederatedItemServerException {
 
 }
 

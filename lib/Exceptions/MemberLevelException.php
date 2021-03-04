@@ -37,7 +37,7 @@ namespace OCA\Circles\Exceptions;
  *
  * @package OCA\Circles\Exceptions
  */
-class MemberLevelException extends FederatedItemException {
+class MemberLevelException extends FederatedItemBadRequestException {
 
 }
 

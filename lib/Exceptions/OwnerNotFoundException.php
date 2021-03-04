@@ -28,13 +28,11 @@ declare(strict_types=1);
  *
  */
 
+
 namespace OCA\Circles\Exceptions;
 
-use Exception;
 
-
-class OwnerNotFoundException extends Exception {
+class OwnerNotFoundException extends FederatedItemServerException {
 
 }
-
 

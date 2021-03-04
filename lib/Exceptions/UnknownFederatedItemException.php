@@ -1,5 +1,6 @@
 <?php
 
+
 declare(strict_types=1);
 
 
@@ -9,8 +10,8 @@ declare(strict_types=1);
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@pontapreta.net>
- * @copyright 2021
+ * @author Maxence Lange <maxence@artificial-owl.com>
+ * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -32,8 +33,17 @@ declare(strict_types=1);
 namespace OCA\Circles\Exceptions;
 
 
-class FederatedUserException extends FederatedItemServerException {
+use Exception;
+use JsonSerializable;
+use Throwable;
+
+
+/**
+ * Class UnknownFederatedItemException
+ *
+ * @package OCA\Circles\Exceptions
+ */
+class UnknownFederatedItemException extends Exception {
 
 }
-
 

@@ -36,6 +36,7 @@ use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedEventDSyncException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
@@ -84,7 +85,7 @@ class CircleCreate implements
 
 
 	/**
-	 * Circles are created on the original instance, using IFederatedItemMustBeLocal
+	 * Circles are created on the original instance, using IFederatedItemInitiatorMustBeLocal
 	 *
 	 * @param FederatedEvent $event
 	 */
@@ -99,9 +100,8 @@ class CircleCreate implements
 	/**
 	 * @param FederatedEvent $event
 	 *
+	 * @throws FederatedEventDSyncException
 	 * @throws InvalidIdException
-	 * @throws MemberAlreadyExistsException
-	 * @throws CircleAlreadyExistsException
 	 */
 	public function manage(FederatedEvent $event): void {
 		$circle = $event->getCircle();
@@ -109,13 +109,13 @@ class CircleCreate implements
 
 		try {
 			$this->circleRequest->getCircle($circle->getId());
-			throw new CircleAlreadyExistsException();
+			throw new FederatedEventDSyncException('circle already exist');
 		} catch (CircleNotFoundException $e) {
 		}
 
 		try {
 			$this->memberRequest->getMember($owner->getId());
-			throw new MemberAlreadyExistsException();
+			throw new FederatedEventDSyncException('owner already exist');
 		} catch (MemberNotFoundException $e) {
 		}
 

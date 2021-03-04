@@ -131,14 +131,12 @@ class MemberService {
 	 *
 	 * @return Member
 	 * @throws InitiatorNotFoundException
-	 * @throws MemberLevelException
+	 * @throws MemberNotFoundException
 	 */
 	public function getMember(string $memberId, string $circleId = ''): Member {
 		$this->federatedUserService->mustHaveCurrentUser();
 
-		try {
-			$member =
-				$this->memberRequest->getMember($memberId, $this->federatedUserService->getCurrentUser());
+			$member = $this->memberRequest->getMember($memberId, $this->federatedUserService->getCurrentUser());
 			if ($circleId !== '' && $member->getCircle()->getId() !== $circleId) {
 				throw new MemberNotFoundException();
 			}
@@ -153,10 +151,10 @@ class MemberService {
 //			}
 
 			return $member;
-		} catch (Exception $e) {
-			$this->e($e, ['id' => $memberId, 'initiator' => $this->federatedUserService->getCurrentUser()]);
-			throw new MemberLevelException('insufficient rights');
-		}
+//		} catch (Exception $e) {
+//			$this->e($e, ['id' => $memberId, 'initiator' => $this->federatedUserService->getCurrentUser()]);
+//			throw new MemberLevelException('insufficient rights');
+//		}
 	}
 
 

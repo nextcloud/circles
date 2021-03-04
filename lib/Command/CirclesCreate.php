@@ -30,18 +30,16 @@
 namespace OCA\Circles\Command;
 
 use OC\Core\Command\Base;
-use OC\User\NoUserException;
-use OCA\Circles\Exceptions\CircleNotFoundException;
-use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
+use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
-use OCA\Circles\Exceptions\OwnerNotFoundException;
-use OCA\Circles\Exceptions\FederatedEventException;
+use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedUserService;
 use OCP\IL10N;
 use OCP\IUserManager;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
@@ -92,7 +90,8 @@ class CirclesCreate extends Base {
 		$this->setName('circles:manage:create')
 			 ->setDescription('create a new circle')
 			 ->addArgument('owner', InputArgument::REQUIRED, 'owner of the circle')
-			 ->addArgument('name', InputArgument::REQUIRED, 'name of the circle');
+			 ->addArgument('name', InputArgument::REQUIRED, 'name of the circle')
+			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
 	}
 
 
@@ -101,21 +100,29 @@ class CirclesCreate extends Base {
 	 * @param OutputInterface $output
 	 *
 	 * @return int
-	 * @throws CircleNotFoundException
-	 * @throws NoUserException
-	 * @throws FederatedEventException
+	 * @throws FederatedItemException
 	 * @throws InitiatorNotFoundException
-	 * @throws OwnerNotFoundException
-	 * @throws InitiatorNotConfirmedException
+	 * @throws SingleCircleNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$ownerId = $input->getArgument('owner');
 		$name = $input->getArgument('name');
 
-		$this->federatedUserService->bypassCurrentUserCondition(true);
+		try {
+			$this->federatedUserService->bypassCurrentUserCondition(true);
 
-		$owner = $this->federatedUserService->getLocalFederatedUser($ownerId);
-		$outcome = $this->circleService->create($name, $owner);
+			$owner = $this->federatedUserService->getLocalFederatedUser($ownerId);
+			$outcome = $this->circleService->create($name, $owner);
+
+		} catch (FederatedItemException $e) {
+			if ($input->getOption('status-code')) {
+				throw new FederatedItemException(
+					' [' . get_class($e) . ', ' . $e->getStatus() . ']' . "\n" . $e->getMessage()
+				);
+			}
+
+			throw $e;
+		}
 
 		echo json_encode($outcome, JSON_PRETTY_PRINT) . "\n";
 

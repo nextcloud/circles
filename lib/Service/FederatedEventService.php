@@ -44,9 +44,9 @@ use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\RemoteRequest;
 use OCA\Circles\Db\RemoteWrapperRequest;
 use OCA\Circles\Db\ShareLockRequest;
-use OCA\Circles\Exceptions\FederatedEventDSyncException;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\FederatedShareBelongingException;
 use OCA\Circles\Exceptions\FederatedShareNotFoundException;
 use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\JsonException;
@@ -150,38 +150,28 @@ class FederatedEventService extends NC21Signature {
 	 * @param FederatedEvent $event
 	 *
 	 * @return SimpleDataStore
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
 	 * @throws InitiatorNotConfirmedException
 	 * @throws OwnerNotFoundException
-	 * @throws FederatedEventException
 	 * @throws RequestNetworkException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
 	 * @throws UnknownRemoteException
 	 * @throws SignatoryException
-	 * @throws FederatedItemException
-	 * @throws FederatedEventDSyncException
 	 */
 	public function newEvent(FederatedEvent $event): SimpleDataStore {
 		$event->setSource($this->configService->getFrontalInstance());
 
-		try {
-			$federatedItem = $this->getFederatedItem($event, false);
-		} catch (FederatedEventException $e) {
-			$this->e($e);
-			throw $e;
-		}
+		$federatedItem = $this->getFederatedItem($event, false);
 
 		$this->confirmInitiator($event, true);
 		if ($this->configService->isLocalInstance($event->getCircle()->getInstance())) {
 			$event->setIncomingOrigin($event->getCircle()->getInstance());
 
-			try {
-				$federatedItem->verify($event);
-				$reading = $event->getReadingOutcome();
-				$reading->s('translated', $this->l10n->t($reading->g('message'), $reading->gArray('params')));
-			} catch (FederatedItemException $e) {
-				throw new FederatedItemException($this->l10n->t($e->getMessage(), $e->getParams()));
-			}
+			$federatedItem->verify($event);
+			$reading = $event->getReadingOutcome();
+			$reading->s('translated', $this->l10n->t($reading->g('message'), $reading->gArray('params')));
 
 			if ($event->isDataRequestOnly()) {
 				return $event->getDataOutcome();
@@ -272,8 +262,9 @@ class FederatedEventService extends NC21Signature {
 
 		$this->setFederatedEventBypass($event, $item);
 		$this->confirmRequiredCondition($event, $item, $checkLocalOnly);
-		$this->confirmSharedItem($event, $item);
 		$this->configureEvent($event, $item);
+
+//		$this->confirmSharedItem($event, $item);
 
 		return $item;
 	}
@@ -344,8 +335,10 @@ class FederatedEventService extends NC21Signature {
 	 * @param FederatedEvent $event
 	 * @param IFederatedItem $item
 	 *
-	 * @throws FederatedShareNotFoundException
 	 * @throws FederatedEventException
+	 * @throws FederatedShareBelongingException
+	 * @throws FederatedShareNotFoundException
+	 * @throws OwnerNotFoundException
 	 */
 	private function confirmSharedItem(FederatedEvent $event, IFederatedItem $item): void {
 		if (!$item instanceof IFederatedItemSharedItem) {
@@ -356,9 +349,11 @@ class FederatedEventService extends NC21Signature {
 			throw new FederatedEventException('FederatedItem must contains ItemId');
 		}
 
-		$shareLock = $this->shareLockRequest->getShare($event->getItemId());
-		if ($shareLock->getInstance() !== $event->getIncomingOrigin()) {
-			throw new FederatedEventException('ShareLock belongs to another instance');
+		if ($this->configService->isLocalInstance($event->getCircle()->getInstance())) {
+			$shareLock = $this->shareLockRequest->getShare($event->getItemId());
+			if ($shareLock->getInstance() !== $event->getIncomingOrigin()) {
+				throw new FederatedShareBelongingException('ShareLock belongs to another instance');
+			}
 		}
 	}
 

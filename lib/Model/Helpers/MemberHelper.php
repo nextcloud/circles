@@ -34,21 +34,21 @@ namespace OCA\Circles\Model\Helpers;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use OCA\Circles\Exceptions\MemberHelperException;
 use OCA\Circles\Exceptions\MemberLevelException;
+use OCA\Circles\Exceptions\ParseMemberLevelException;
 use OCA\Circles\Model\Member;
 
 
 /**
  * Class MemberHelper
  *
- *
- * @method void mustBeMember() @throws MemberHelperException
- * @method void mustBeModerator() @throws MemberHelperException
- * @method void mustBeAdmin() @throws MemberHelperException
- * @method void mustBeOwner() @throws MemberHelperException
- * @method void cannotBeMember() @throws MemberHelperException
- * @method void cannotBeModerator() @throws MemberHelperException
- * @method void cannotBeAdmin() @throws MemberHelperException
- * @method void cannotBeOwner() @throws MemberHelperException
+ * @method void mustBeMember() @throws MemberHelperException, MemberLevelException
+ * @method void mustBeModerator() @throws MemberHelperException, MemberLevelException
+ * @method void mustBeAdmin() @throws MemberHelperException, MemberLevelException
+ * @method void mustBeOwner() @throws MemberHelperException, MemberLevelException
+ * @method void cannotBeMember() @throws MemberHelperException, MemberLevelException
+ * @method void cannotBeModerator() @throws MemberHelperException, MemberLevelException
+ * @method void cannotBeAdmin() @throws MemberHelperException, MemberLevelException
+ * @method void cannotBeOwner() @throws MemberHelperException, MemberLevelException
  *
  * @package OCA\Circles\Model\Helpers
  */
@@ -103,7 +103,7 @@ class MemberHelper {
 	private function mustBe(string $levelString, array $arguments): void {
 		try {
 			$level = Member::parseLevelString($levelString);
-		} catch (MemberLevelException $e) {
+		} catch (ParseMemberLevelException $e) {
 			throw new MemberHelperException('method ' . $levelString . ' not found');
 		}
 
@@ -121,7 +121,7 @@ class MemberHelper {
 	private function cannotBe(string $levelString, array $arguments): void {
 		try {
 			$level = Member::parseLevelString($levelString);
-		} catch (MemberLevelException $e) {
+		} catch (ParseMemberLevelException $e) {
 			throw new MemberHelperException('method ' . $levelString . ' not found');
 		}
 

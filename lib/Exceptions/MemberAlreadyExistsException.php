@@ -37,7 +37,7 @@ namespace OCA\Circles\Exceptions;
  *
  * @package OCA\Circles\Exceptions
  */
-class MemberAlreadyExistsException extends FederatedItemException {
+class MemberAlreadyExistsException extends FederatedItemBadRequestException {
 
 }
 

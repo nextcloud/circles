@@ -70,7 +70,6 @@ class ConfigService {
 	const INTERNAL_CLOUD_SCHEME = 'internal_cloud_scheme';
 
 
-
 	const FORCE_NC_BASE = 'force_nc_base';
 	const TEST_NC_BASE = 'test_nc_base';
 
@@ -101,8 +100,8 @@ class ConfigService {
 		self::CIRCLES_SELF_SIGNED              => '0',
 		self::FRONTAL_CLOUD_ID                 => '',
 		self::FRONTAL_CLOUD_SCHEME             => 'https',
-		self::INTERNAL_CLOUD_ID                 => '',
-		self::INTERNAL_CLOUD_SCHEME             => 'https',
+		self::INTERNAL_CLOUD_ID                => '',
+		self::INTERNAL_CLOUD_SCHEME            => 'https',
 		self::FORCE_NC_BASE                    => '',
 		self::TEST_NC_BASE                     => '',
 		self::CIRCLES_ACTIVITY_ON_CREATION     => '1',
@@ -669,6 +668,7 @@ class ConfigService {
 		}
 
 		$request->setVerifyPeer($this->getAppValue(ConfigService::CIRCLES_SELF_SIGNED) !== '1');
+		$request->setHttpErrorsAllowed(true);
 		$request->setLocalAddressAllowed(true);
 		$request->setFollowLocation(true);
 		$request->setTimeout(5);

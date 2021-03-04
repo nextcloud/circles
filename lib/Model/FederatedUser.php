@@ -36,7 +36,6 @@ use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\IDeserializable;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
-use OCA\Circles\IFederatedModel;
 use OCA\Circles\IFederatedUser;
 
 

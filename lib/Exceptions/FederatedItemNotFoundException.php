@@ -28,11 +28,41 @@ declare(strict_types=1);
  *
  */
 
-
 namespace OCA\Circles\Exceptions;
 
 
-class FederatedUserException extends FederatedItemServerException {
+use OCP\AppFramework\Http;
+use Throwable;
+
+
+/**
+ * Class FederatedItemNotFoundException
+ *
+ * @package OCA\Circles\Exceptions
+ */
+class FederatedItemNotFoundException extends FederatedItemException {
+
+
+	const STATUS = Http::STATUS_NOT_FOUND;
+
+
+	/**
+	 * FederatedItemNotFoundException constructor.
+	 *
+	 * @param string $message
+	 * @param array $params
+	 * @param int $code
+	 * @param Throwable|null $previous
+	 */
+	public function __construct(
+		string $message = '',
+		array $params = [],
+		int $code = 0,
+		?Throwable $previous = null
+	) {
+		parent::__construct($message, $params, $code, $previous);
+		$this->setStatus(self::STATUS);
+	}
 
 }
 

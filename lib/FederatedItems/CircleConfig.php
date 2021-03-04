@@ -34,6 +34,7 @@ namespace OCA\Circles\FederatedItems;
 
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
+use OCA\Circles\Exceptions\FederatedItemBadRequestException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\Model\Circle;
@@ -110,7 +111,7 @@ class CircleConfig implements IFederatedItem {
 		}
 
 		if (!$confirmed || $config > Circle::$DEF_CFG_MAX) {
-			throw new FederatedItemException('Configuration value is not valid');
+			throw new FederatedItemBadRequestException('Configuration value is not valid');
 		}
 
 		$new = clone $circle;

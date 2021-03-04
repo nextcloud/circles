@@ -41,11 +41,13 @@ use daita\MySmallPhpTools\Model\Request;
 use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\Db\CircleRequest;
+use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
+use OCP\IL10N;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -59,6 +61,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class MembersAdd extends Base {
 
+
+	/** @var IL10N */
+	private $l10n;
 
 	/** @var FederatedUserService */
 	private $federatedUserService;
@@ -76,17 +81,19 @@ class MembersAdd extends Base {
 	/**
 	 * MembersCreate constructor.
 	 *
+	 * @param IL10N $l10n
 	 * @param CircleRequest $circleRequest
 	 * @param FederatedUserService $federatedUserService
 	 * @param MemberService $memberService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		CircleRequest $circleRequest, FederatedUserService $federatedUserService,
-		MemberService $memberService,
-		ConfigService $configService
+		IL10N $l10n, CircleRequest $circleRequest, FederatedUserService $federatedUserService,
+		MemberService $memberService, ConfigService $configService
 	) {
 		parent::__construct();
+
+		$this->l10n = $l10n;
 		$this->federatedUserService = $federatedUserService;
 		$this->circleRequest = $circleRequest;
 
@@ -102,6 +109,7 @@ class MembersAdd extends Base {
 			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
 			 ->addArgument('user', InputArgument::REQUIRED, 'username of the member')
 			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception')
 			 ->addOption('type', '', InputOption::VALUE_REQUIRED, 'type of the user', '0');
 	}
 
@@ -117,13 +125,26 @@ class MembersAdd extends Base {
 		$circleId = $input->getArgument('circle_id');
 		$userId = $input->getArgument('user');
 		$type = $input->getOption('type');
+
 		if ($type !== '0') {
 			$type = Member::parseTypeString($type);
 		}
 
-		$this->federatedUserService->commandLineInitiator($input->getOption('initiator'), $circleId, false);
-		$federatedUser = $this->federatedUserService->generateFederatedUser($userId, (int)$type);
-		$outcome = $this->memberService->addMember($circleId, $federatedUser);
+		try {
+			$this->federatedUserService->commandLineInitiator(
+				$input->getOption('initiator'), $circleId, false
+			);
+			$federatedUser = $this->federatedUserService->generateFederatedUser($userId, (int)$type);
+			$outcome = $this->memberService->addMember($circleId, $federatedUser);
+		} catch (FederatedItemException $e) {
+			if ($input->getOption('status-code')) {
+				throw new FederatedItemException(
+					' [' . get_class($e) . ', ' . $e->getStatus() . ']' . "\n" . $e->getMessage()
+				);
+			}
+
+			throw $e;
+		}
 
 		$output->writeln(json_encode($outcome, JSON_PRETTY_PRINT));
 

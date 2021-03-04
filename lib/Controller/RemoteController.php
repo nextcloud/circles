@@ -48,9 +48,13 @@ use OC\AppFramework\Middleware\Security\Exceptions\NotLoggedInException;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventDSyncException;
+use OCA\Circles\Exceptions\FederatedEventException;
+use OCA\Circles\Exceptions\FederatedItemBadRequestException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
@@ -142,8 +146,6 @@ class RemoteController extends Controller {
 	 * @throws SignatoryException
 	 */
 	public function appService(): DataResponse {
-		$this->setup('app', 'circles');
-
 		try {
 			$this->publicPageJsonLimited();
 		} catch (JsonNotRequestedException $e) {
@@ -166,23 +168,20 @@ class RemoteController extends Controller {
 		try {
 			$event = $this->extractEventFromRequest();
 		} catch (Exception $e) {
-			return $this->fail($e, [], Http::STATUS_BAD_REQUEST);
+			return $this->eventResponse($e, null, Http::STATUS_UNAUTHORIZED);
 		}
 
 		try {
 			$this->remoteDownstreamService->requestedEvent($event);
+		} catch (FederatedEventException $e) {
+			return $this->eventResponse($e, $event, Http::STATUS_INTERNAL_SERVER_ERROR);
 		} catch (FederatedItemException $e) {
-			$this->e($e, ['event' => $event]);
-			$event->setReadingOutcome($e->getMessage(), $e->getParams(), true);
-		} catch (FederatedEventDSyncException $e) {
-			return $this->fail($e, [], Http::STATUS_CONFLICT);
+			return $this->eventResponse($e, $event, $e->getStatus());
 		} catch (Exception $e) {
-			$this->e($e);
-
-			return $this->fail($e, [], Http::STATUS_BAD_REQUEST);
+			return $this->eventResponse($e, $event, Http::STATUS_BAD_REQUEST);
 		}
 
-		return $this->successObj($event->getOutcome());
+		return $this->eventResponse(null, $event);
 	}
 
 
@@ -197,9 +196,11 @@ class RemoteController extends Controller {
 			$event = $this->extractEventFromRequest();
 			$this->remoteDownstreamService->incomingEvent($event);
 
-			return $this->success(['result' => $event->getResult()]);
+			return new DataResponse(json_decode(json_encode($event->getResult()), true), Http::STATUS_OK);
 		} catch (Exception $e) {
-			return $this->fail($e);
+			$this->e($e);
+
+			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
 		}
 	}
 
@@ -217,7 +218,7 @@ class RemoteController extends Controller {
 	public function test(): DataResponse {
 		$test = $this->remoteStreamService->incomingSignedRequest($this->configService->getFrontalInstance());
 
-		return $this->successObj($test);
+		return new DataResponse(json_decode(json_encode($test), true));
 	}
 
 
@@ -235,9 +236,11 @@ class RemoteController extends Controller {
 			$filter = $data->gObj('filter');
 			$circles = $this->circleService->getCircles($filter);
 
-			return $this->success($circles, false);
+			return new DataResponse($circles);
 		} catch (Exception $e) {
-			return $this->fail($e);
+			$this->e($e);
+
+			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
 		}
 	}
 
@@ -255,11 +258,15 @@ class RemoteController extends Controller {
 			$this->extractDataFromFromRequest();
 			$circle = $this->circleService->getCircle($circleId);
 
-			return $this->successObj($circle);
+			return new DataResponse(json_decode(json_encode($circle), true));
 		} catch (CircleNotFoundException $e) {
-			return $this->success([], false);
+			$this->e($e);
+
+			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
 		} catch (Exception $e) {
-			return $this->fail($e);
+			$this->e($e);
+
+			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_BAD_REQUEST);
 		}
 	}
 
@@ -277,9 +284,11 @@ class RemoteController extends Controller {
 			$this->extractDataFromFromRequest();
 			$members = $this->memberService->getMembers($circleId);
 
-			return $this->success($members, false);
+			return new DataResponse($members);
 		} catch (Exception $e) {
-			return $this->fail($e);
+			$this->e($e);
+
+			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_BAD_REQUEST);
 		}
 	}
 
@@ -310,11 +319,15 @@ class RemoteController extends Controller {
 				throw new FederatedUserNotFoundException();
 			}
 
-			return $this->successObj($federatedUser);
+			return new DataResponse(json_decode(json_encode($federatedUser), true));
 		} catch (FederatedUserNotFoundException $e) {
-			return $this->success([], false);
+			$this->e($e);
+
+			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
 		} catch (Exception $e) {
-			return $this->fail($e);
+			$this->e($e);
+
+			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_BAD_REQUEST);
 		}
 	}
 
@@ -353,7 +366,8 @@ class RemoteController extends Controller {
 	 * @throws InvalidItemException
 	 */
 	private function extractEventFromRequest(): FederatedEvent {
-		$signed = $this->remoteStreamService->incomingSignedRequest($this->configService->getFrontalInstance());
+		$signed =
+			$this->remoteStreamService->incomingSignedRequest($this->configService->getFrontalInstance());
 		$this->confirmRemoteInstance($signed);
 
 		$event = new FederatedEvent();
@@ -366,16 +380,17 @@ class RemoteController extends Controller {
 
 	/**
 	 * @return SimpleDataStore
-	 * @throws FederatedUserNotFoundException
+	 * @throws FederatedItemBadRequestException
+	 * @throws FederatedUserException
 	 * @throws InvalidOriginException
 	 * @throws MalformedArrayException
 	 * @throws SignatoryException
 	 * @throws SignatureException
 	 * @throws UnknownTypeException
-	 * @throws FederatedUserException
 	 */
 	private function extractDataFromFromRequest(): SimpleDataStore {
-		$signed = $this->remoteStreamService->incomingSignedRequest($this->configService->getFrontalInstance());
+		$signed =
+			$this->remoteStreamService->incomingSignedRequest($this->configService->getFrontalInstance());
 		$remoteInstance = $this->confirmRemoteInstance($signed);
 
 		// There should be no need to confirm the need or the origin of the initiator as $remoteInstance
@@ -389,26 +404,58 @@ class RemoteController extends Controller {
 		try {
 			/** @var FederatedUser $initiator */
 			$initiator = $store->gObj('initiator', FederatedUser::class);
-			if (is_null($initiator)) {
-				throw new InvalidItemException();
+			if (!is_null($initiator)) {
+				$this->federatedUserService->setCurrentUser($initiator);
 			}
-
-			$this->federatedUserService->setCurrentUser($initiator);
-		} catch (InvalidItemException | ItemNotFoundException $e) {
+		} catch (InvalidItemException $e) {
 		}
 
 		try {
 			/** @var FederatedUser $initiator */
 			$filter = $store->gObj('filter', Member::class);
-			if (is_null($filter)) {
-				throw new InvalidItemException();
+			if (!is_null($filter)) {
+				$data->aObj('filter', $filter);
 			}
-			$data->aObj('filter', $filter);
-		} catch (InvalidItemException | ItemNotFoundException $e) {
+		} catch (InvalidItemException $e) {
 		}
 
 		return $data;
 	}
+
+
+	/**
+	 * @param Exception|null $e
+	 * @param FederatedEvent|null $event
+	 * @param int $status
+	 *
+	 * @return DataResponse
+	 */
+	public function eventResponse(
+		?Exception $e = null,
+		?FederatedEvent $event = null,
+		int $status = Http::STATUS_OK
+	): DataResponse {
+		$params = [];
+
+		if (!is_null($e)) {
+			if ($e instanceof FederatedItemException) {
+				$params = array_merge($e->getParams(), ['_exception' => $e]);
+			}
+
+			if (!is_null($event)) {
+				$event->setReadingOutcome(
+					$e->getMessage(),
+					$params,
+					true
+				);
+			}
+
+			$this->e($e, ['event' => $event]);
+		}
+
+		return new DataResponse(json_decode(json_encode($event->getOutcome()), true), $status);
+	}
+
 
 }
 

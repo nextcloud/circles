@@ -65,7 +65,7 @@ class MemberRequest extends MemberRequestBuilder {
 		   ->setValue('member_id', $qb->createNamedParameter($member->getId()))
 		   ->setValue('user_id', $qb->createNamedParameter($member->getUserId()))
 		   ->setValue('user_type', $qb->createNamedParameter($member->getUserType()))
-		   ->setValue('cached_name', $qb->createNamedParameter($member->getCachedName()))
+		   ->setValue('cached_name', $qb->createNamedParameter($member->getDisplayName()))
 		   ->setValue('cached_update', $qb->createNamedParameter($this->timezoneService->getUTCDate()))
 		   ->setValue('instance', $qb->createNamedParameter($qb->getInstance($member)))
 		   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
@@ -89,7 +89,7 @@ class MemberRequest extends MemberRequestBuilder {
 
 		$qb = $this->getMemberUpdateSql();
 		$qb->set('member_id', $qb->createNamedParameter($member->getId()))
-		   ->set('cached_name', $qb->createNamedParameter($member->getCachedName()))
+		   ->set('cached_name', $qb->createNamedParameter($member->getDisplayName()))
 		   ->set('cached_update', $qb->createNamedParameter($this->timezoneService->getUTCDate()))
 		   ->set('level', $qb->createNamedParameter($member->getLevel()))
 		   ->set('status', $qb->createNamedParameter($member->getStatus()))

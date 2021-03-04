@@ -9,7 +9,7 @@ declare(strict_types=1);
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Maxence Lange <maxence@artificial-owl.com>
  * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
@@ -29,11 +29,40 @@ declare(strict_types=1);
  */
 
 
-namespace OCA\Circles\Exceptions;
+namespace OCA\Circles\Service;
 
 
-class FederatedUserException extends FederatedItemServerException {
+use OCP\IL10N;
+
+
+/**
+ * Class ExceptionService
+ *
+ * @package OCA\Circles\Service
+ */
+class ExceptionService {
+
+
+	/** @var IL10N */
+	private $l10n;
+
+
+	/**
+	 * ExceptionService constructor.
+	 *
+	 * @param IL10N $l10n
+	 */
+	public function __construct(IL10N $l10n) {
+		$this->l10n = $l10n;
+	}
+
+
+	/**
+	 * @return IL10N
+	 */
+	public function getL10n(): IL10N {
+		return $this->l10n;
+	}
 
 }
-
 

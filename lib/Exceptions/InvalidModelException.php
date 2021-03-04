@@ -32,8 +32,12 @@ declare(strict_types=1);
 namespace OCA\Circles\Exceptions;
 
 
-class FederatedUserException extends FederatedItemServerException {
+/**
+ * Class MemberLevelException
+ *
+ * @package OCA\Circles\Exceptions
+ */
+class InvalidModelException extends FederatedItemBadRequestException {
 
 }
-
 

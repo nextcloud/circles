@@ -32,12 +32,27 @@ declare(strict_types=1);
 namespace OCA\Circles\Controller;
 
 
+use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
+use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Deserialize;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Logger;
 use Exception;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedEventDSyncException;
+use OCA\Circles\Exceptions\FederatedEventException;
+use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
+use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
+use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\ParseMemberLevelException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\SingleCircleNotFoundException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
@@ -111,16 +126,24 @@ class LocalController extends OcsController {
 	 * @return DataResponse
 	 */
 	public function circles(): DataResponse {
+		$debug = ['action' => 'localController::circles()'];
 		try {
 			$this->setCurrentFederatedUser();
+		} catch (Exception $e) {
+			$this->e($e, array_merge($debug, [Http::STATUS_INTERNAL_SERVER_ERROR]));
+
+			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_INTERNAL_SERVER_ERROR);
+		}
+
+		try {
 			$data = $this->circleService->getCircles();
-			$this->debug('success LocalController::circles()', ['data' => $data]);
+			$this->debug('success', array_merge($debug, ['data' => $data]));
 
 			return new DataResponse(json_decode(json_encode($data), true));
-		} catch (Exception $e) {
-			$this->e($e, ['fail localController::circles()']);
+		} catch (InitiatorNotFoundException $e) {
+			$this->e($e, array_merge($debug, [Http::STATUS_FORBIDDEN]));
 
-			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
+			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_FORBIDDEN);
 		}
 	}
 
@@ -134,20 +157,47 @@ class LocalController extends OcsController {
 	 * @return DataResponse
 	 */
 	public function create(string $name, bool $personal = false): DataResponse {
-		$debug = ['name' => $name, 'personal' => $personal];
-
+		$debug = ['action' => 'localController::create()', 'name' => $name, 'personal' => $personal];
 		try {
 			$this->setCurrentFederatedUser();
+		} catch (Exception $e) {
+			$this->e($e, array_merge($debug, [Http::STATUS_INTERNAL_SERVER_ERROR]));
+
+			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_INTERNAL_SERVER_ERROR);
+		}
+
+		try {
 			$circle = $this->circleService->create($name);
-			$this->debug('success LocalController::create()', array_merge($debug, ['circle' => $circle]));
+			$this->debug('success', array_merge($debug, ['circle' => $circle]));
 
 			return new DataResponse(json_decode(json_encode($circle), true));
-		} catch (Exception $e) {
-			$this->e($e, array_merge(['fail localController::create()', $debug]));
-
-			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
+		} catch (FederatedEventException $e) {
+			// 500
+		} catch (InitiatorNotConfirmedException $e) {
+			// 403
+		} catch (RemoteNotFoundException $e) {
+			// 403
+		} catch (FederatedItemException $e) {
+		} catch (InitiatorNotFoundException $e) {
+		} catch (OwnerNotFoundException $e) {
+			// 500
+		} catch (RemoteResourceNotFoundException $e) {
+		} catch (UnknownRemoteException $e) {
+		} catch (RequestNetworkException $e) {
+		} catch (SignatoryException $e) {
+//			$this->e($e, array_merge(['fail localController::create()', $debug]));
+//
+//			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
 		}
 	}
+
+	// 500 - soucis server
+	// 403 - soucis de droit
+	// 404 - soucis item (member, circle ou remote n'existe pas)
+	// 400 - bad request
+	// 408 - soucis federated
+
+
 
 
 	/**
@@ -158,18 +208,24 @@ class LocalController extends OcsController {
 	 * @return DataResponse
 	 */
 	public function members(string $circleId): DataResponse {
-		$debug = ['circleId' => $circleId];
-
+		$debug = ['action' => 'localController::members()', 'circleId' => $circleId];
 		try {
 			$this->setCurrentFederatedUser();
+		} catch (Exception $e) {
+			$this->e($e, array_merge($debug, [Http::STATUS_INTERNAL_SERVER_ERROR]));
+
+			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_INTERNAL_SERVER_ERROR);
+		}
+
+		try {
 			$members = $this->memberService->getMembers($circleId);
-			$this->debug('success LocalController::members()', array_merge($debug, ['members' => $members]));
+			$this->debug('success', array_merge($debug, ['members' => $members]));
 
 			return new DataResponse(json_decode(json_encode($members), true));
-		} catch (Exception $e) {
-			$this->e($e, array_merge(['fail localController::members()', $debug]));
+		} catch (InitiatorNotFoundException $e) {
+			$this->e($e, array_merge($debug, [Http::STATUS_FORBIDDEN]));
 
-			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
+			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_FORBIDDEN);
 		}
 	}
 
@@ -184,23 +240,41 @@ class LocalController extends OcsController {
 	 * @return DataResponse
 	 */
 	public function memberAdd(string $circleId, string $userId, int $type): DataResponse {
-		$debug = ['circleId' => $circleId, 'userId' => $userId, 'type' => $type];
-
+		$debug = [
+			'action'   => 'localController::memberAdd()',
+			'circleId' => $circleId,
+			'userId'   => $userId,
+			'type'     => $type
+		];
 		try {
 			$this->setCurrentFederatedUser();
+		} catch (Exception $e) {
+			$this->e($e, array_merge($debug, [Http::STATUS_INTERNAL_SERVER_ERROR]));
+
+			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_INTERNAL_SERVER_ERROR);
+		}
+
+		try {
 			$member = $this->federatedUserService->generateFederatedUser($userId, (int)$type);
 			$result = $this->memberService->addMember($circleId, $member);
-
-			$this->debug(
-				'success LocalController::memberAdd()',
-				array_merge($debug, ['member' => $member, 'result' => $result])
-			);
+			$this->debug('success', array_merge($debug, ['result' => $result]));
 
 			return new DataResponse(json_decode(json_encode($result), true));
-		} catch (Exception $e) {
-			$this->e($e, array_merge(['fail localController::memberAdd()', $debug]));
-
-			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
+		} catch (CircleNotFoundException $e) {
+		} catch (FederatedEventDSyncException $e) {
+		} catch (FederatedEventException $e) {
+		} catch (InitiatorNotConfirmedException $e) {
+		} catch (RemoteNotFoundException $e) {
+		} catch (FederatedItemException $e) {
+		} catch (InitiatorNotFoundException $e) {
+		} catch (OwnerNotFoundException $e) {
+		} catch (RemoteResourceNotFoundException $e) {
+		} catch (UnknownRemoteException $e) {
+		} catch (RequestNetworkException $e) {
+		} catch (SignatoryException $e) {
+//			$this->e($e, array_merge(['fail localController::memberAdd()', $debug]));
+//
+//			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
 		}
 	}
 
@@ -215,23 +289,50 @@ class LocalController extends OcsController {
 	 * @return DataResponse
 	 */
 	public function memberLevel(string $circleId, string $memberId, string $level): DataResponse {
-		$debug = ['circleId' => $circleId, 'memberId' => $memberId, 'level' => $level];
-
+		$debug = [
+			'action'   => 'localController::memberLevel()',
+			'circleId' => $circleId,
+			'memberId' => $memberId,
+			'level'    => $level
+		];
 		try {
 			$this->setCurrentFederatedUser();
+		} catch (Exception $e) {
+			$this->e($e, array_merge($debug, [Http::STATUS_INTERNAL_SERVER_ERROR]));
+
+			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_INTERNAL_SERVER_ERROR);
+		}
+
+		try {
 			$level = Member::parseLevelString($level);
 			$this->memberService->getMember($memberId, $circleId);
 			$result = $this->memberService->memberLevel($memberId, $level);
-
-			$this->debug(
-				'success LocalController::memberLevel()', array_merge($debug, ['result' => $result])
-			);
+			$this->debug('success', array_merge($debug, ['result' => $result]));
 
 			return new DataResponse(json_decode(json_encode($result), true));
-		} catch (Exception $e) {
-			$this->e($e, array_merge(['fail localController::memberLevel()', $debug]));
+		} catch (ParseMemberLevelException $e) {
 
-			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
+			$this->e($e, array_merge([Http::STATUS_BAD_REQUEST, $debug]));
+
+			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_BAD_REQUEST);
+		} catch (InitiatorNotFoundException | MemberNotFoundException $e) {
+
+			$this->e($e, array_merge([Http::STATUS_FORBIDDEN, $debug]));
+
+			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_FORBIDDEN);
+		} catch (FederatedEventDSyncException $e) {
+		} catch (FederatedEventException $e) {
+		} catch (InitiatorNotConfirmedException $e) {
+		} catch (RemoteNotFoundException $e) {
+		} catch (FederatedItemException $e) {
+		} catch (OwnerNotFoundException $e) {
+		} catch (RemoteResourceNotFoundException $e) {
+		} catch (UnknownRemoteException $e) {
+		} catch (RequestNetworkException $e) {
+		} catch (SignatoryException $e) {
+//			$this->e($e, array_merge(['fail localController::memberLevel()', $debug]));
+//
+//			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
 		}
 	}
 
@@ -245,30 +346,53 @@ class LocalController extends OcsController {
 	 * @return DataResponse
 	 */
 	public function memberRemove(string $circleId, string $memberId): DataResponse {
-		$debug = ['circleId' => $circleId, 'memberId' => $memberId];
-
+		$debug = [
+			'action'   => 'localController::memberRemove()',
+			'circleId' => $circleId,
+			'memberId' => $memberId
+		];
 		try {
 			$this->setCurrentFederatedUser();
+		} catch (Exception $e) {
+			$this->e($e, array_merge($debug, [Http::STATUS_INTERNAL_SERVER_ERROR]));
+
+			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_INTERNAL_SERVER_ERROR);
+		}
+
+		try {
 			$this->memberService->getMember($memberId, $circleId);
 			$result = $this->memberService->removeMember($memberId);
-
-			$this->debug(
-				'success LocalController::memberRemove()', array_merge($debug, ['result' => $result])
-			);
+			$this->debug('success', array_merge($debug, ['result' => $result]));
 
 			return new DataResponse(json_decode(json_encode($result), true));
-		} catch (Exception $e) {
-			$this->e($e, array_merge(['fail localController::memberRemove()', $debug]));
+		} catch (InitiatorNotFoundException | MemberNotFoundException $e) {
 
-			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
+			$this->e($e, array_merge([Http::STATUS_FORBIDDEN, $debug]));
+
+			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_FORBIDDEN);
+		} catch (FederatedEventDSyncException $e) {
+		} catch (FederatedEventException $e) {
+		} catch (InitiatorNotConfirmedException $e) {
+		} catch (RemoteNotFoundException $e) {
+		} catch (FederatedItemException $e) {
+		} catch (OwnerNotFoundException $e) {
+		} catch (RemoteResourceNotFoundException $e) {
+		} catch (UnknownRemoteException $e) {
+		} catch (RequestNetworkException $e) {
+		} catch (SignatoryException $e) {
+//
+//			$this->e($e, array_merge(['fail localController::memberRemove()', $debug]));
+//
+//			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
 		}
 	}
 
 
 	/**
-	 * @throws CircleNotFoundException
 	 * @throws FederatedUserNotFoundException
 	 * @throws InvalidIdException
+	 * @throws FederatedUserException
+	 * @throws SingleCircleNotFoundException
 	 */
 	private function setCurrentFederatedUser() {
 		$user = $this->userSession->getUser();

@@ -40,6 +40,7 @@ use daita\MySmallPhpTools\Model\SimpleDataStore;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
@@ -303,14 +304,12 @@ class RemoteService extends NC21Signature {
 	 * @param int $type
 	 *
 	 * @return FederatedUser
-	 * @throws InvalidItemException
+	 * @throws FederatedUserNotFoundException
+	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
-	 * @throws RemoteInstanceException
-	 * @throws FederatedUserNotFoundException
+	 * @throws FederatedUserException
 	 */
 	public function getFederatedUserFromInstance(
 		string $userId,
@@ -331,9 +330,13 @@ class RemoteService extends NC21Signature {
 		}
 
 		$federatedUser = new FederatedUser();
-		$federatedUser->import($result);
+		try {
+			$federatedUser->import($result);
+		} catch (InvalidItemException $e) {
+			throw new FederatedUserException('incorrect federated user returned from instance');
+		}
 		if ($federatedUser->getInstance() !== $instance) {
-			throw new InvalidItemException('incorrect instance');
+			throw new FederatedUserException('incorrect instance on returned federated user');
 		}
 
 		return $federatedUser;

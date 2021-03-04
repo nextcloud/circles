@@ -33,6 +33,7 @@ namespace OCA\Circles\Model\Federated;
 
 
 use daita\MySmallPhpTools\Db\Nextcloud\nc21\INC21QueryRow;
+use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
 
@@ -202,6 +203,7 @@ class RemoteWrapper implements INC21QueryRow, JsonSerializable {
 	 * @param array $data
 	 *
 	 * @return self
+	 * @throws InvalidItemException
 	 */
 	public function import(array $data): self {
 		$this->setToken($this->get('token', $data));
@@ -238,6 +240,7 @@ class RemoteWrapper implements INC21QueryRow, JsonSerializable {
 	 * @param array $data
 	 *
 	 * @return INC21QueryRow
+	 * @throws InvalidItemException
 	 */
 	public function importFromDatabase(array $data): INC21QueryRow {
 		$this->setToken($this->get('token', $data));

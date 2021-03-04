@@ -39,5 +39,7 @@ namespace OCA\Circles;
  */
 interface IFederatedItemSharedItem {
 
+	// meaning that the verify() will be run on the instance that locked the item, not on the main instance of the Circle.
+
 }
 

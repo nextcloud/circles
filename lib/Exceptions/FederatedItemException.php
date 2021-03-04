@@ -1,5 +1,9 @@
 <?php
 
+
+declare(strict_types=1);
+
+
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -7,7 +11,7 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2017
+ * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,25 +32,44 @@
 
 namespace OCA\Circles\Exceptions;
 
+
 use Exception;
 use JsonSerializable;
+use OCA\Circles\Service\ExceptionService;
+use OCP\AppFramework\Http;
 use Throwable;
 
 
 /**
- * Class FederatedEventException
+ * Class FederatedItemException
  *
  * @package OCA\Circles\Exceptions
  */
 class FederatedItemException extends Exception implements JsonSerializable {
 
 
+	static $CHILDREN = [
+		FederatedItemBadRequestException::class,
+		FederatedItemConflictException::class,
+		FederatedItemForbiddenException::class,
+		FederatedItemNotFoundException::class,
+		FederatedItemRemoteException::class,
+		FederatedItemServerException::class
+	];
+
+
+	/** @var string */
+	private $rawMessage;
+
 	/** @var array */
 	private $params;
 
+	/** @var int */
+	private $status = Http::STATUS_INTERNAL_SERVER_ERROR;
+
 
 	/**
-	 * FederatedEventException constructor.
+	 * FederatedItemException constructor.
 	 *
 	 * @param string $message
 	 * @param array $params
@@ -54,8 +77,23 @@ class FederatedItemException extends Exception implements JsonSerializable {
 	 * @param Throwable|null $previous
 	 */
 	public function __construct(
-		string $message = '', array $params = [], int $code = 0, ?Throwable $previous = null
+		string $message = '',
+		array $params = [],
+		int $code = 0,
+		?Throwable $previous = null
 	) {
+		$this->setRawMessage($message);
+
+		if ($message !== '') {
+			try {
+				/** @var ExceptionService $exceptionService */
+				$exceptionService = \OC::$server->get(ExceptionService::class);
+				$l10n = $exceptionService->getL10n();
+				$message = $l10n->t($message, $params);
+			} catch (Throwable $t) {
+			}
+		}
+
 		parent::__construct($message, $code, $previous);
 		$this->setParams($params);
 	}
@@ -74,12 +112,45 @@ class FederatedItemException extends Exception implements JsonSerializable {
 		return $this->params;
 	}
 
+
+	/**
+	 * @param string $message
+	 */
+	private function setRawMessage(string $message): void {
+		$this->rawMessage = $message;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getRawMessage(): string {
+		return $this->rawMessage;
+	}
+
+
+	/**
+	 * @param int $status
+	 */
+	protected function setStatus(int $status): void {
+		$this->status = $status;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getStatus(): int {
+		return $this->status;
+	}
+
+
 	/**
 	 * @return mixed|void
 	 */
 	public function jsonSerialize(): array {
 		return [
-			'message' => $this->getMessage(),
+			'class'   => get_class($this),
+			'status'  => $this->getStatus(),
+			'message' => $this->getRawMessage(),
 			'params'  => $this->getParams()
 		];
 	}

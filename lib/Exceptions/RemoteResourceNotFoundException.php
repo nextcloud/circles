@@ -30,11 +30,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Exceptions;
 
-use Exception;
 
-
-class RemoteResourceNotFoundException extends Exception {
+class RemoteResourceNotFoundException extends FederatedItemRemoteException {
 
 }
-
 

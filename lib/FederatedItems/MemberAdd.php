@@ -41,6 +41,11 @@ use Exception;
 use OC\User\NoUserException;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedItemBadRequestException;
+use OCA\Circles\Exceptions\FederatedItemForbiddenException;
+use OCA\Circles\Exceptions\FederatedItemNotFoundException;
+use OCA\Circles\Exceptions\FederatedItemRemoteException;
+use OCA\Circles\Exceptions\FederatedItemServerException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
@@ -138,21 +143,11 @@ class MemberAdd implements
 	/**
 	 * @param FederatedEvent $event
 	 *
-	 * @throws CircleNotFoundException
-	 * @throws FederatedUserException
-	 * @throws FederatedUserNotFoundException
-	 * @throws InvalidItemException
-	 * @throws MemberAlreadyExistsException
-	 * @throws MemberNotFoundException
-	 * @throws MembersLimitException
-	 * @throws OwnerNotFoundException
-	 * @throws RemoteInstanceException
-	 * @throws RemoteNotFoundException
-	 * @throws RemoteResourceNotFoundException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
-	 * @throws UnknownRemoteException
-	 * @throws UserTypeNotFoundException
+	 * @throws FederatedItemBadRequestException
+	 * @throws FederatedItemForbiddenException
+	 * @throws FederatedItemNotFoundException
+	 * @throws FederatedItemServerException
+	 * @throws FederatedItemRemoteException
 	 */
 	public function verify(FederatedEvent $event): void {
 		$member = $event->getMember();
@@ -165,13 +160,12 @@ class MemberAdd implements
 		$initiatorHelper->mustBeModerator();
 
 		$federatedId = $member->getUserId() . '@' . $member->getInstance();
-
 		try {
 			$federatedUser =
 				$this->federatedUserService->getFederatedUser($federatedId, $member->getUserType());
 		} catch (MemberNotFoundException $e) {
 			throw new MemberNotFoundException(
-				ucfirst(Member::$DEF_TYPE[$member->getUserType()]) . ' %s not found',
+				ucfirst(Member::$DEF_TYPE[$member->getUserType()]) . ' \'%s\' not found',
 				['member' => $member->getUserId() . '@' . $member->getInstance()]
 			);
 		}

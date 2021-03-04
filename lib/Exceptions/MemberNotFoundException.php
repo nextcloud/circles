@@ -30,15 +30,13 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Exceptions;
 
-use Exception;
-
 
 /**
  * Class MemberNotFoundException
  *
  * @package OCA\Circles\Exceptions
  */
-class MemberNotFoundException extends FederatedItemException {
+class MemberNotFoundException extends FederatedItemNotFoundException {
 
 }
 

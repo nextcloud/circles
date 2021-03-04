@@ -71,6 +71,9 @@ class FederatedEvent implements JsonSerializable {
 	/** @var string */
 	private $itemId = '';
 
+	/** @var string */
+	private $itemSource = '';
+
 	/** @var Member */
 	private $member;
 
@@ -352,7 +355,6 @@ class FederatedEvent implements JsonSerializable {
 	}
 
 
-
 	/**
 	 * @param string $itemId
 	 *
@@ -369,6 +371,25 @@ class FederatedEvent implements JsonSerializable {
 	 */
 	public function getItemId(): string {
 		return $this->itemId;
+	}
+
+
+	/**
+	 * @param string $itemSource
+	 *
+	 * @return self
+	 */
+	public function setItemSource(string $itemSource): self {
+		$this->itemSource = $itemSource;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getItemSource(): string {
+		return $this->itemSource;
 	}
 
 
@@ -525,12 +546,11 @@ class FederatedEvent implements JsonSerializable {
 		$this->setData(new SimpleDataStore($this->getArray('data', $data)));
 		$this->setResult(new SimpleDataStore($this->getArray('result', $data)));
 		$this->setSource($this->get('source', $data));
+		$this->setItemId($this->get('itemId', $data));
 
-		if (array_key_exists('circle', $data)) {
-			$circle = new Circle();
-			$circle->import($this->getArray('circle', $data));
-			$this->setCircle($circle);
-		}
+		$circle = new Circle();
+		$circle->import($this->getArray('circle', $data));
+		$this->setCircle($circle);
 
 		if (array_key_exists('member', $data)) {
 			$member = new Member();
@@ -552,7 +572,9 @@ class FederatedEvent implements JsonSerializable {
 			'data'     => $this->getData(),
 			'result'   => $this->getResult(),
 			'source'   => $this->getSource(),
-			'outcome'  => [
+			'itemId'   => $this->getItemId(),
+
+			'outcome' => [
 				'message' => $this->getReadingOutcome(),
 				'data'    => $this->getDataOutcome()
 			]

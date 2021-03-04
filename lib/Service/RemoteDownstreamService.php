@@ -129,13 +129,13 @@ class RemoteDownstreamService {
 		$item = $this->federatedEventService->getFederatedItem($event, true);
 
 		if (!$this->configService->isLocalInstance($event->getCircle()->getInstance())) {
-			throw new FederatedEventException('Circle is not from this instance');
+			throw new FederatedEventDSyncException('Circle is not from this instance');
 		}
 
 		if ($event->isLimitedToInstanceWithMember()) {
 			$instances = $this->memberRequest->getMemberInstances($event->getCircle()->getId());
 			if (!in_array($event->getIncomingOrigin(), $instances)) {
-				throw new FederatedItemException('Instance have no members in this Circle');
+				throw new FederatedEventException('Instance have no members in this Circle');
 			}
 		}
 
