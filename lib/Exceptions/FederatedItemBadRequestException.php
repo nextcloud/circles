@@ -43,7 +43,7 @@ use Throwable;
 class FederatedItemBadRequestException extends FederatedItemException {
 
 
-	const STATUS = Http::STATUS_FORBIDDEN;
+	const STATUS = Http::STATUS_BAD_REQUEST;
 
 
 	/**
