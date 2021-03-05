@@ -88,37 +88,39 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 	const CFG_PERSONAL = 2;      // Personal circle, only the owner can see it.
 
 	// bitwise
-	const CFG_SYSTEM = 4;         // System Circl (not managed by the official front-end). Meaning some config are limited
-	const CFG_VISIBLE = 8;        // Visible to everyone, if not visible, people have to know its name to be able to find it
-	const CFG_OPEN = 16;          // Circle is open, people can join
-	const CFG_INVITE = 32;        // Adding a member generate an invitation that needs to be accepted
-	const CFG_REQUEST = 64;       // Request to join Circles needs to be confirmed by a moderator
-	const CFG_FRIEND = 128;       // Members of the circle can invite their friends
-	const CFG_PROTECTED = 256;    // Password protected to join/request
-	const CFG_NO_OWNER = 512;     // no owner, only members
-	const CFG_HIDDEN = 1024;      // hidden from listing, but available as a share entity
-	const CFG_BACKEND = 2048;     // Fully hidden, only backend Circles
-	const CFG_ROOT = 4096;        // Circle cannot be inside another Circle
-	const CFG_FEDERATED = 8192;   // Federated
+	const CFG_SYSTEM = 4;            // System Circl (not managed by the official front-end). Meaning some config are limited
+	const CFG_VISIBLE = 8;           // Visible to everyone, if not visible, people have to know its name to be able to find it
+	const CFG_OPEN = 16;             // Circle is open, people can join
+	const CFG_INVITE = 32;           // Adding a member generate an invitation that needs to be accepted
+	const CFG_REQUEST = 64;          // Request to join Circles needs to be confirmed by a moderator
+	const CFG_FRIEND = 128;          // Members of the circle can invite their friends
+	const CFG_PROTECTED = 256;       // Password protected to join/request
+	const CFG_NO_OWNER = 512;        // no owner, only members
+	const CFG_HIDDEN = 1024;         // hidden from listing, but available as a share entity
+	const CFG_BACKEND = 2048;        // Fully hidden, only backend Circles
+	const CFG_ROOT = 4096;           // Circle cannot be inside another Circle
+	const CFG_CIRCLE_INVITE = 8192;  // Circle must confirm when invited in another circle
+	const CFG_FEDERATED = 16384;     // Federated
 
 
 	public static $DEF_CFG_MAX = 16383;
 
 	public static $DEF_CFG = [
-		1    => 'S|Single',
-		2    => 'P|Personal',
-		4    => 'Y|System',
-		8    => 'V|Visible',
-		16   => 'O|Open',
-		32   => 'I|Invite',
-		64   => 'JR|Join Request',
-		128  => 'F|Friends',
-		256  => 'PP|Password Protected',
-		512  => 'NO|No Owner',
-		1024 => 'H|Hidden',
-		2048 => 'T|Backend',
-		4096 => 'T|Root',
-		8192 => 'F|Federated'
+		1     => 'S|Single',
+		2     => 'P|Personal',
+		4     => 'Y|System',
+		8     => 'V|Visible',
+		16    => 'O|Open',
+		32    => 'I|Invite',
+		64    => 'JR|Join Request',
+		128   => 'F|Friends',
+		256   => 'PP|Password Protected',
+		512   => 'T|Root',
+		1024  => 'CI|Circle Invite',
+		2048  => 'NO|No Owner',
+		4096  => 'H|Hidden',
+		8192  => 'T|Backend',
+		16384 => 'F|Federated'
 	];
 
 	public static $DEF_CFG_CORE_FILTER = [
@@ -128,10 +130,10 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 	];
 
 	public static $DEF_CFG_SYSTEM_FILTER = [
-		512,
 		1024,
 		2048,
-		4096
+		4096,
+		8192
 	];
 
 

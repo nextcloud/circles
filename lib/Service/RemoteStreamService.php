@@ -352,7 +352,10 @@ class RemoteStreamService extends NC21Signature {
 		$remoteInstance = new RemoteInstance($keyId);
 		$confirm = $this->uuid();
 
-		$this->downloadSignatory($remoteInstance, $keyId, ['auth' => $confirm]);
+		$request = new NC21Request();
+		$this->configService->configureRequest($request);
+
+		$this->downloadSignatory($remoteInstance, $keyId, ['auth' => $confirm], $request);
 		$remoteInstance->setUidFromKey();
 
 		$this->confirmAuth($remoteInstance, $confirm);

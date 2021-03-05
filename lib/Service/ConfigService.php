@@ -683,10 +683,12 @@ class ConfigService {
 	 * @param NC21Request $request
 	 * @param string $routeName
 	 * @param array $args
-	 *
-	 * @return string
 	 */
-	private function configureRequestAddress(NC21Request $request, string $routeName, array $args = []) {
+	private function configureRequestAddress(
+		NC21Request $request,
+		string $routeName,
+		array $args = []
+	): void {
 		if ($routeName === '') {
 			return;
 		}
