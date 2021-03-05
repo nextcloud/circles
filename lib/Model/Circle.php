@@ -103,7 +103,7 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 	const CFG_FEDERATED = 16384;     // Federated
 
 
-	public static $DEF_CFG_MAX = 16383;
+	public static $DEF_CFG_MAX = 32767;
 
 	public static $DEF_CFG = [
 		1     => 'S|Single',

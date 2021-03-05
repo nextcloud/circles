@@ -40,7 +40,6 @@ use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
-use OCA\Circles\Exceptions\FederatedEventDSyncException;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
@@ -52,6 +51,7 @@ use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\FederatedItems\CircleConfig;
 use OCA\Circles\FederatedItems\CircleCreate;
+use OCA\Circles\FederatedItems\CircleJoin;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\FederatedUser;
@@ -169,7 +169,6 @@ class CircleService {
 	 * @throws RequestNetworkException
 	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
-	 * @throws FederatedEventDSyncException
 	 */
 	public function updateConfig(string $circleId, int $config): SimpleDataStore {
 		$circle = $this->getCircle($circleId);
@@ -177,6 +176,36 @@ class CircleService {
 		$event = new FederatedEvent(CircleConfig::class);
 		$event->setCircle($circle);
 		$event->setData(new SimpleDataStore(['config' => $config]));
+
+		$this->federatedEventService->newEvent($event);
+
+		return $event->getOutcome();
+	}
+
+
+	/**
+	 * @param string $circleId
+	 *
+	 * @return SimpleDataStore
+	 * @throws CircleNotFoundException
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws InitiatorNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws UnknownRemoteException
+	 */
+	public function circleJoin(string $circleId): SimpleDataStore {
+		$this->federatedUserService->mustHaveCurrentUser();
+
+		$circle = $this->circleRequest->getCircle($circleId, $this->federatedUserService->getCurrentUser());
+
+		$event = new FederatedEvent(CircleJoin::class);
+		$event->setCircle($circle);
 
 		$this->federatedEventService->newEvent($event);
 

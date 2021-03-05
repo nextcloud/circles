@@ -191,7 +191,6 @@ class MemberService {
 	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
 	 * @throws FederatedItemException
-	 * @throws FederatedEventDSyncException
 	 */
 	public function addMember(string $circleId, IFederatedUser $member): SimpleDataStore {
 		$this->federatedUserService->mustHaveCurrentUser();

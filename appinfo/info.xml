@@ -62,6 +62,8 @@ Users won't be able to find this Circle using Nextcloud search engine.
 	<commands>
 		<command>OCA\Circles\Command\CirclesCreate</command>
 		<command>OCA\Circles\Command\MembersAdd</command>
+		<command>OCA\Circles\Command\CirclesJoin</command>
+		<command>OCA\Circles\Command\CirclesLeave</command>
 
 		<command>OCA\Circles\Command\CirclesList</command>
 		<command>OCA\Circles\Command\CirclesRemote</command>

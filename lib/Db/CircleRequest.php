@@ -201,7 +201,7 @@ class CircleRequest extends CircleRequestBuilder {
 			$qb->filterSystemCircles();
 		}
 		if (!is_null($initiator)) {
-			$qb->limitToInitiator($initiator);
+			$qb->limitToInitiator($initiator, '', false, true);
 		}
 		if (!is_null($remoteInstance)) {
 			$qb->limitToRemoteInstance($remoteInstance->getInstance(), false);

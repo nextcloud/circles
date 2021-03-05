@@ -134,14 +134,16 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 	 * @param IFederatedUser $initiator
 	 * @param string $alias
 	 * @param bool $mustBeMember
+	 * @param bool $canBeVisitor
 	 */
 	public function limitToInitiator(
 		IFederatedUser $initiator,
 		string $alias = '',
-		bool $mustBeMember = false
+		bool $mustBeMember = false,
+		bool $canBeVisitor = false
 	): void {
 		$this->leftJoinInitiator($initiator, 'init', $alias);
-		$this->limitVisibility('init', $alias, $mustBeMember);
+		$this->limitVisibility('init', $alias, $mustBeMember, $canBeVisitor);
 	}
 
 
@@ -267,6 +269,7 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 			[
 				'user_id'   => $initiator->getUserId(),
 				'user_type' => $initiator->getUserType(),
+				'single_id' => $initiator->getSingleId(),
 				'instance'  => $initiator->getInstance()
 			]
 		)
@@ -276,6 +279,7 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 					 $expr->eq($alias . '.circle_id', $aliasCircle . '.unique_id'),
 					 $expr->eq($alias . '.user_id', $this->createNamedParameter($initiator->getUserId())),
 					 $expr->eq($alias . '.user_type', $this->createNamedParameter($initiator->getUserType())),
+					 $expr->eq($alias . '.single_id', $this->createNamedParameter($initiator->getSingleId())),
 					 $expr->eq(
 						 $alias . '.instance', $this->createNamedParameter($this->getInstance($initiator))
 					 )
@@ -369,11 +373,13 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 	 * @param string $alias
 	 * @param string $aliasCircle
 	 * @param bool $mustBeMember
+	 * @param bool $canBeVisitor
 	 */
 	protected function limitVisibility(
 		string $alias = 'init',
 		string $aliasCircle = '',
-		bool $mustBeMember = false
+		bool $mustBeMember = false,
+		bool $canBeVisitor = false
 	) {
 		$expr = $this->expr();
 		$aliasCircle = ($aliasCircle === '') ? $this->getDefaultSelectAlias() : $aliasCircle;
@@ -394,6 +400,10 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 		);
 		if (!$mustBeMember) {
 			$orX->add($expr->bitwiseAnd($aliasCircle . '.config', Circle::CFG_VISIBLE));
+		}
+		if ($canBeVisitor) {
+			// TODO: should find a better way, also filter on remote initiator on non-federated ?
+			$orX->add($expr->gte($aliasCircle . '.config', $this->createNamedParameter(0)));
 		}
 		$this->andWhere($orX);
 

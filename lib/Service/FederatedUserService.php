@@ -264,14 +264,10 @@ class FederatedUserService {
 	 * @throws CircleNotFoundException
 	 * @throws FederatedUserException
 	 * @throws FederatedUserNotFoundException
-	 * @throws InvalidIdException
-	 * @throws InvalidItemException
 	 * @throws OwnerNotFoundException
 	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
 	 * @throws UserTypeNotFoundException
 	 * @throws MemberNotFoundException
