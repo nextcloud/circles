@@ -125,7 +125,6 @@ class LocalController extends OcsController {
 
 			try {
 				$circle = $this->circleService->create($name);
-				$this->debug('success', array_merge($debug, ['circle' => $circle]));
 
 				return new DataResponse($circle->jsonSerialize());
 			} catch (FederatedItemException $e) {
