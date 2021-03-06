@@ -33,7 +33,6 @@ namespace OCA\Circles\Controller;
 
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Exceptions\InvalidOriginException;
-use daita\MySmallPhpTools\Exceptions\ItemNotFoundException;
 use daita\MySmallPhpTools\Exceptions\JsonNotRequestedException;
 use daita\MySmallPhpTools\Exceptions\MalformedArrayException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
@@ -46,15 +45,10 @@ use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21LocalSignatory;
 use Exception;
 use OC\AppFramework\Middleware\Security\Exceptions\NotLoggedInException;
 use OCA\Circles\Db\CircleRequest;
-use OCA\Circles\Exceptions\CircleNotFoundException;
-use OCA\Circles\Exceptions\FederatedEventDSyncException;
 use OCA\Circles\Exceptions\FederatedEventException;
-use OCA\Circles\Exceptions\FederatedItemBadRequestException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
-use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
-use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
@@ -149,7 +143,7 @@ class RemoteController extends Controller {
 		try {
 			$this->publicPageJsonLimited();
 		} catch (JsonNotRequestedException $e) {
-			return new DataResponse([]);
+			return new DataResponse();
 		}
 
 		$confirm = $this->request->getParam('auth', '');
@@ -181,7 +175,7 @@ class RemoteController extends Controller {
 			return $this->eventResponse($e, $event, Http::STATUS_BAD_REQUEST);
 		}
 
-		return $this->eventResponse(null, $event);
+		return new DataResponse($event->getOutcome()->jsonSerialize());
 	}
 
 
@@ -196,7 +190,7 @@ class RemoteController extends Controller {
 			$event = $this->extractEventFromRequest();
 			$this->remoteDownstreamService->incomingEvent($event);
 
-			return new DataResponse(json_decode(json_encode($event->getResult()), true), Http::STATUS_OK);
+			return new DataResponse($event->getResult()->jsonSerialize(), Http::STATUS_OK);
 		} catch (Exception $e) {
 			$this->e($e);
 
@@ -218,7 +212,7 @@ class RemoteController extends Controller {
 	public function test(): DataResponse {
 		$test = $this->remoteStreamService->incomingSignedRequest($this->configService->getFrontalInstance());
 
-		return new DataResponse(json_decode(json_encode($test), true));
+		return new DataResponse($test->jsonSerialize());
 	}
 
 
@@ -256,18 +250,19 @@ class RemoteController extends Controller {
 	public function circle(string $circleId): DataResponse {
 		try {
 			$this->extractDataFromFromRequest();
-			$circle = $this->circleService->getCircle($circleId);
 
-			return new DataResponse(json_decode(json_encode($circle), true));
-		} catch (CircleNotFoundException $e) {
-			$this->e($e);
+			try {
+				$circle = $this->circleService->getCircle($circleId);
 
-			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
+				return new DataResponse($circle->jsonSerialize());
+			} catch (FederatedItemException $e) {
+				return $this->eventResponse($e, null, $e->getStatus());
+			}
+
 		} catch (Exception $e) {
-			$this->e($e);
-
-			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_BAD_REQUEST);
+			return $this->eventResponse($e, null, Http::STATUS_INTERNAL_SERVER_ERROR);
 		}
+
 	}
 
 
@@ -319,7 +314,7 @@ class RemoteController extends Controller {
 				throw new FederatedUserNotFoundException();
 			}
 
-			return new DataResponse(json_decode(json_encode($federatedUser), true));
+			return new DataResponse($federatedUser->jsonSerialize());
 		} catch (FederatedUserNotFoundException $e) {
 			$this->e($e);
 
@@ -329,31 +324,6 @@ class RemoteController extends Controller {
 
 			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_BAD_REQUEST);
 		}
-	}
-
-
-	/**
-	 * @param NC21SignedRequest $signedRequest
-	 *
-	 * @return RemoteInstance
-	 * @throws SignatoryException
-	 */
-	private function confirmRemoteInstance(NC21SignedRequest $signedRequest): RemoteInstance {
-		/** @var RemoteInstance $signatory */
-		$signatory = $signedRequest->getSignatory();
-
-		if (!$signatory instanceof RemoteInstance) {
-			$this->debug('Signatory is not a known RemoteInstance', ['signedRequest' => $signedRequest]);
-			throw new SignatoryException('Could not confirm identity');
-		}
-
-		if (!$this->configService->isLocalInstance($signedRequest->getOrigin())
-			&& $signatory->getType() === RemoteInstance::TYPE_UNKNOWN) {
-			$this->debug('Could not confirm identity', ['signedRequest' => $signedRequest]);
-			throw new SignatoryException('Could not confirm identity');
-		}
-
-		return $signatory;
 	}
 
 
@@ -380,7 +350,6 @@ class RemoteController extends Controller {
 
 	/**
 	 * @return SimpleDataStore
-	 * @throws FederatedItemBadRequestException
 	 * @throws FederatedUserException
 	 * @throws InvalidOriginException
 	 * @throws MalformedArrayException
@@ -424,6 +393,31 @@ class RemoteController extends Controller {
 
 
 	/**
+	 * @param NC21SignedRequest $signedRequest
+	 *
+	 * @return RemoteInstance
+	 * @throws SignatoryException
+	 */
+	private function confirmRemoteInstance(NC21SignedRequest $signedRequest): RemoteInstance {
+		/** @var RemoteInstance $signatory */
+		$signatory = $signedRequest->getSignatory();
+
+		if (!$signatory instanceof RemoteInstance) {
+			$this->debug('Signatory is not a known RemoteInstance', ['signedRequest' => $signedRequest]);
+			throw new SignatoryException('Could not confirm identity');
+		}
+
+		if (!$this->configService->isLocalInstance($signedRequest->getOrigin())
+			&& $signatory->getType() === RemoteInstance::TYPE_UNKNOWN) {
+			$this->debug('Could not confirm identity', ['signedRequest' => $signedRequest]);
+			throw new SignatoryException('Could not confirm identity');
+		}
+
+		return $signatory;
+	}
+
+
+	/**
 	 * @param Exception|null $e
 	 * @param FederatedEvent|null $event
 	 * @param int $status
@@ -431,29 +425,30 @@ class RemoteController extends Controller {
 	 * @return DataResponse
 	 */
 	public function eventResponse(
-		?Exception $e = null,
+		Exception $e,
 		?FederatedEvent $event = null,
 		int $status = Http::STATUS_OK
 	): DataResponse {
+
 		$params = [];
-
-		if (!is_null($e)) {
-			if ($e instanceof FederatedItemException) {
-				$params = array_merge($e->getParams(), ['_exception' => $e]);
-			}
-
-			if (!is_null($event)) {
-				$event->setReadingOutcome(
-					$e->getMessage(),
-					$params,
-					true
-				);
-			}
-
-			$this->e($e, ['event' => $event]);
+		if ($e instanceof FederatedItemException) {
+			$params = array_merge($e->getParams(), ['_exception' => $e]);
 		}
 
-		return new DataResponse(json_decode(json_encode($event->getOutcome()), true), $status);
+		if (!is_null($event)) {
+			$event->setReadingOutcome(
+				$e->getMessage(),
+				$params
+			);
+
+			$this->e($e, ['event' => $event]);
+
+			return new DataResponse($event->getReadingOutcome()->jsonSerialize(), $status);
+		}
+
+		$this->e($e);
+
+		return new DataResponse(array_filter(['message' => $e->getMessage(), 'params' => $params]), $status);
 	}
 
 

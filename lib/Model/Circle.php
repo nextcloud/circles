@@ -624,7 +624,7 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 			$arr['memberOf'] = $this->memberOf();
 		}
 
-		return array_filter($arr);
+		return $arr;
 	}
 
 

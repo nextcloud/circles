@@ -114,7 +114,7 @@ class CircleRequestBuilder extends CoreQueryBuilder {
 				]
 			);
 		} catch (RowNotFoundException $e) {
-			throw new CircleNotFoundException();
+			throw new CircleNotFoundException('Circle not found');
 		}
 
 		return $circle;

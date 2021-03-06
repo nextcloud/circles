@@ -479,16 +479,14 @@ class FederatedEvent implements JsonSerializable {
 	/**
 	 * @param string $message
 	 * @param array $params
-	 * @param bool $fail
 	 *
 	 * @return $this
 	 */
-	public function setReadingOutcome(string $message, array $params = [], bool $fail = false): self {
+	public function setReadingOutcome(string $message, array $params = []): self {
 		$this->readingOutcome = new SimpleDataStore(
 			[
 				'message' => $message,
-				'params'  => $params,
-				'fail'    => $fail
+				'params'  => $params
 			]
 		);
 

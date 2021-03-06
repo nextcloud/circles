@@ -32,16 +32,11 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 
-use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
-use daita\MySmallPhpTools\Exceptions\SignatoryException;
-use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21RequestResult;
 use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
 use Exception;
 use OCA\Circles\Db\RemoteWrapperRequest;
-use OCA\Circles\Exceptions\FederatedEventDSyncException;
-use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
@@ -53,10 +48,7 @@ use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\Federated\RemoteWrapper;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\GlobalScale\GSWrapper;
-use OCP\AppFramework\Http;
 use OCP\IL10N;
-use ReflectionClass;
-use ReflectionException;
 
 
 /**
@@ -141,11 +133,10 @@ class RemoteUpstreamService {
 	 * @param FederatedEvent $event
 	 * @param string $instance
 	 *
+	 * @throws FederatedItemException
 	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
 	 */
 	public function broadcastEvent(FederatedEvent $event, string $instance): void {
@@ -163,37 +154,22 @@ class RemoteUpstreamService {
 	/**
 	 * @param FederatedEvent $event
 	 *
-	 * @throws FederatedEventDSyncException
-	 * @throws FederatedEventException
+	 * @throws FederatedItemException
 	 * @throws OwnerNotFoundException
 	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
 	 */
 	public function confirmEvent(FederatedEvent $event): void {
-		$data = $this->remoteStreamService->requestRemoteInstance(
+		$data = $this->remoteStreamService->resultRequestRemoteInstance(
 			$event->getCircle()->getInstance(),
 			RemoteInstance::EVENT,
 			Request::TYPE_POST,
 			$event
 		);
 
-		// TODO: check what is happening if website is down...
-		if (!$data->getOutgoingRequest()->hasResult()) {
-			throw new RemoteInstanceException();
-		}
-
-		$result = $data->getOutgoingRequest()->getResult();
-		$this->manageRequestOutcome($event, $result->getAsArray());
-
-		if ($result->getStatusCode() === Http::STATUS_OK) {
-			return;
-		}
-
-		throw $this->getFederatedItemExceptionFromResult($result, $event->getReadingOutcome());
+		$this->manageRequestOutcome($event, $data);
 	}
 
 
@@ -380,71 +356,6 @@ class RemoteUpstreamService {
 
 		$reading = $event->getReadingOutcome();
 		$reading->s('translated', $this->l10n->t($reading->g('message'), $reading->gArray('params')));
-	}
-
-
-	private function getFederatedItemExceptionFromResult(
-		NC21RequestResult $result,
-		SimpleDataStore $reading
-	): FederatedItemException {
-
-		$exception = $reading->gArray('params._exception');
-		if (empty($exception)) {
-			$e = $this->getFederatedItemExceptionFromStatus($result->getStatusCode());
-
-			return new $e($reading->g('message'));
-		}
-
-		$class = $this->get('class', $exception);
-		$message = $this->get('message', $exception);
-		$params = $this->getArray('params', $exception);
-		try {
-			$test = new ReflectionClass($class);
-			$this->confirmFederatedItemExceptionFromClass($test);
-			$e = $class;
-			echo $e;
-		} catch (ReflectionException | FederatedItemException $_e) {
-			$e = $this->getFederatedItemExceptionFromStatus($result->getStatusCode());
-		}
-
-		return new $e($message, $params);
-	}
-
-
-	/**
-	 * @param int $statusCode
-	 *
-	 * @return string
-	 */
-	private function getFederatedItemExceptionFromStatus(int $statusCode): string {
-		foreach (FederatedItemException::$CHILDREN as $e) {
-			if ($e::STATUS === $statusCode) {
-				return $e;
-			}
-		}
-
-		return FederatedItemException::class;
-	}
-
-
-	/**
-	 * @param ReflectionClass $class
-	 *
-	 * @return void
-	 * @throws FederatedItemException
-	 */
-	private function confirmFederatedItemExceptionFromClass(ReflectionClass $class): void {
-		while (true) {
-			foreach (FederatedItemException::$CHILDREN as $e) {
-				if ($class->getName() === $e) {
-					return;
-				}
-			}
-			$class = $class->getParentClass();
-			if (!$class) {
-				throw new FederatedItemException();
-			}
-		}
 	}
 
 }

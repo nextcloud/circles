@@ -37,6 +37,7 @@ use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Exceptions\SignatureException;
 use daita\MySmallPhpTools\Exceptions\WellKnownLinkNotFoundException;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
+use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21RequestResult;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Signatory;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21SignedRequest;
 use daita\MySmallPhpTools\Model\Request;
@@ -48,6 +49,7 @@ use daita\MySmallPhpTools\Traits\TStringTools;
 use JsonSerializable;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\RemoteRequest;
+use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\RemoteAlreadyExistsException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
@@ -55,7 +57,11 @@ use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RemoteUidException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Model\Federated\RemoteInstance;
+use OCP\AppFramework\Http;
+use OCP\IL10N;
 use OCP\IURLGenerator;
+use ReflectionClass;
+use ReflectionException;
 
 
 /**
@@ -78,6 +84,9 @@ class RemoteStreamService extends NC21Signature {
 	const UPDATE_HREF = 'href';
 
 
+	/** @var IL10N */
+	private $l10n;
+
 	/** @var IURLGenerator */
 	private $urlGenerator;
 
@@ -91,15 +100,17 @@ class RemoteStreamService extends NC21Signature {
 	/**
 	 * RemoteStreamService constructor.
 	 *
+	 * @param IL10N $l10n
 	 * @param IURLGenerator $urlGenerator
 	 * @param RemoteRequest $remoteRequest
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IURLGenerator $urlGenerator, RemoteRequest $remoteRequest, ConfigService $configService
+		IL10N $l10n, IURLGenerator $urlGenerator, RemoteRequest $remoteRequest, ConfigService $configService
 	) {
 		$this->setup('app', 'circles');
 
+		$this->l10n = $l10n;
 		$this->urlGenerator = $urlGenerator;
 		$this->remoteRequest = $remoteRequest;
 		$this->configService = $configService;
@@ -187,6 +198,7 @@ class RemoteStreamService extends NC21Signature {
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
 	 * @throws UnknownRemoteException
+	 * @throws FederatedItemException
 	 */
 	public function resultRequestRemoteInstance(
 		string $instance,
@@ -195,18 +207,21 @@ class RemoteStreamService extends NC21Signature {
 		?JsonSerializable $object = null,
 		array $params = []
 	): array {
+		// TODO: check what is happening if website is down...
 		$signedRequest = $this->requestRemoteInstance($instance, $item, $type, $object, $params);
 		if (!$signedRequest->getOutgoingRequest()->hasResult()) {
 			throw new RemoteInstanceException();
 		}
 
 		$result = $signedRequest->getOutgoingRequest()->getResult();
-//		if ($result->getStatusCode() !== Http::STATUS_OK) {
-//			throw new RemoteInstanceException();
-//		}
 
-		return $result->getAsArray();
+		if ($result->getStatusCode() === Http::STATUS_OK) {
+			return $result->getAsArray();
+		}
+
+		throw $this->getFederatedItemExceptionFromResult($result);
 	}
+
 
 	/**
 	 * Send a request to a remote instance, based on:
@@ -227,7 +242,7 @@ class RemoteStreamService extends NC21Signature {
 	 * @throws UnknownRemoteException
 	 * @throws RemoteInstanceException
 	 */
-	public function requestRemoteInstance(
+	private function requestRemoteInstance(
 		string $instance,
 		string $item,
 		int $type = Request::TYPE_GET,
@@ -425,6 +440,91 @@ class RemoteStreamService extends NC21Signature {
 			);
 			throw new SignatureException('auth not confirmed');
 		}
+	}
+
+//
+//	/**
+//	 * @param FederatedEvent $event
+//	 * @param array $result
+//	 */
+//	private function manageRequestOutcome(FederatedEvent $event, array $result): void {
+//		$outcome = new SimpleDataStore($result);
+//
+//		$event->setDataOutcome($outcome->gArray('data'));
+//		$event->setReadingOutcome(
+//			$outcome->g('reading.message'),
+//			$outcome->gArray('reading.params')
+//		);
+//
+//		$reading = $event->getReadingOutcome();
+//		$reading->s('translated', $this->l10n->t($reading->g('message'), $reading->gArray('params')));
+//	}
+
+
+	/**
+	 * @param NC21RequestResult $result
+	 *
+	 * @return FederatedItemException
+	 */
+	private function getFederatedItemExceptionFromResult(NC21RequestResult $result): FederatedItemException {
+		$data = $result->getAsArray();
+		$exception = $this->getArray('params._exception', $data);
+
+		if (empty($exception)) {
+			$e = $this->getFederatedItemExceptionFromStatus($result->getStatusCode());
+
+			return new $e($this->get('message', $data), $this->get('params', $data));
+		}
+
+		$class = $this->get('class', $exception);
+		$message = $this->get('message', $exception);
+		$params = $this->getArray('params', $exception);
+		try {
+			$test = new ReflectionClass($class);
+			$this->confirmFederatedItemExceptionFromClass($test);
+			$e = $class;
+		} catch (ReflectionException | FederatedItemException $_e) {
+			$e = $this->getFederatedItemExceptionFromStatus($result->getStatusCode());
+		}
+
+		return new $e($message, $params);
+	}
+
+
+	/**
+	 * @param ReflectionClass $class
+	 *
+	 * @return void
+	 * @throws FederatedItemException
+	 */
+	private function confirmFederatedItemExceptionFromClass(ReflectionClass $class): void {
+		while (true) {
+			foreach (FederatedItemException::$CHILDREN as $e) {
+				if ($class->getName() === $e) {
+					return;
+				}
+			}
+			$class = $class->getParentClass();
+			if (!$class) {
+				throw new FederatedItemException();
+			}
+		}
+	}
+
+
+	/**
+	 * @param int $statusCode
+	 *
+	 * @return string
+	 */
+	private function getFederatedItemExceptionFromStatus(int $statusCode): string {
+		foreach (FederatedItemException::$CHILDREN as $e) {
+			if ($e::STATUS === $statusCode) {
+				return $e;
+			}
+		}
+
+		return FederatedItemException::class;
 	}
 
 

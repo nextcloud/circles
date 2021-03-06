@@ -545,25 +545,23 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	 * @return string[]
 	 */
 	public function jsonSerialize(): array {
-		$arr = array_filter(
-			[
-				'id'            => $this->getId(),
-				'circleId'      => $this->getCircleId(),
-				'singleId'      => $this->getSingleId(),
-				'userId'        => $this->getUserId(),
-				'userType'      => $this->getUserType(),
-				'instance'      => $this->getInstance(),
-				'local'         => $this->isLocal(),
-				'level'         => $this->getLevel(),
-				'status'        => $this->getStatus(),
-				'displayName'   => $this->getDisplayName(),
-				'displayUpdate' => $this->getDisplayUpdate(),
-				'note'          => $this->getNote(),
-				'contactId'     => $this->getContactId(),
-				'contactMeta'   => $this->getContactMeta(),
-				'joined'        => $this->getJoined()
-			]
-		);
+		$arr = [
+			'id'            => $this->getId(),
+			'circleId'      => $this->getCircleId(),
+			'singleId'      => $this->getSingleId(),
+			'userId'        => $this->getUserId(),
+			'userType'      => $this->getUserType(),
+			'instance'      => $this->getInstance(),
+			'local'         => $this->isLocal(),
+			'level'         => $this->getLevel(),
+			'status'        => $this->getStatus(),
+			'displayName'   => $this->getDisplayName(),
+			'displayUpdate' => $this->getDisplayUpdate(),
+			'note'          => $this->getNote(),
+			'contactId'     => $this->getContactId(),
+			'contactMeta'   => $this->getContactMeta(),
+			'joined'        => $this->getJoined()
+		];
 
 		if ($this->hasCircle()) {
 			$arr['circle'] = $this->getCircle();

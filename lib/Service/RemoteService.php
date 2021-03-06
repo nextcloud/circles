@@ -141,8 +141,6 @@ class RemoteService extends NC21Signature {
 	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
 	 */
 	public function getCircleFromInstance(string $circleId, string $instance, array $data = []): Circle {
@@ -154,10 +152,11 @@ class RemoteService extends NC21Signature {
 			['circleId' => $circleId]
 		);
 
+
 		if (empty($result)) {
 			throw new CircleNotFoundException();
 		}
-
+echo json_encode($result, JSON_PRETTY_PRINT);
 		$circle = new Circle();
 		$circle->import($result);
 

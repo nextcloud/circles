@@ -36,6 +36,7 @@ use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
@@ -112,7 +113,9 @@ class CirclesDetails extends Base {
 			 ->setDescription('get details about a circle by its ID')
 			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
 			 ->addOption('instance', '', InputOption::VALUE_REQUIRED, 'Instance of the circle', '')
-			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '');
+			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
+
 	}
 
 
@@ -141,20 +144,29 @@ class CirclesDetails extends Base {
 		$instance = $input->getOption('instance');
 		$initiator = $input->getOption('initiator');
 
-		if ($instance !== '') {
-			$data = ['initiator' => $initiator];
-			$circle = $this->remoteService->getCircleFromInstance($circleId, $instance, $data);
-		} else {
+		try {
+			if ($instance !== '') {
+				$data = ['initiator' => $initiator];
+				$circle = $this->remoteService->getCircleFromInstance($circleId, $instance, $data);
+			} else {
 
-			try {
-				$this->federatedUserService->commandLineInitiator($initiator, $circleId, true);
-				$circle = $this->circleService->getCircle($circleId);
-			} catch (CircleNotFoundException $e) {
-				echo '__';
-				throw new CircleNotFoundException(
-					'unknown circle, use --instance to retrieve the data from a remote instance'
+				try {
+					$this->federatedUserService->commandLineInitiator($initiator, $circleId, true);
+					$circle = $this->circleService->getCircle($circleId);
+				} catch (CircleNotFoundException $e) {
+					throw new CircleNotFoundException(
+						'unknown circle, use --instance to retrieve the data from a remote instance'
+					);
+				}
+			}
+		} catch (FederatedItemException $e) {
+			if ($input->getOption('status-code')) {
+				throw new FederatedItemException(
+					' [' . get_class($e) . ', ' . $e->getStatus() . ']' . "\n" . $e->getMessage()
 				);
 			}
+
+			throw $e;
 		}
 
 		echo json_encode($circle, JSON_PRETTY_PRINT) . "\n";
