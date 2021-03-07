@@ -101,8 +101,7 @@ class MemberLevel implements
 
 		$outcomeMember = clone $member;
 		$outcomeMember->setLevel($level);
-		$event->setDataOutcome(['member' => $outcomeMember]);
-		$event->setReadingOutcome('new level !');
+		$event->setOutcome(['member' => $outcomeMember]);
 	}
 
 

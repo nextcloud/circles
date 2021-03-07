@@ -147,7 +147,7 @@ class CircleJoin implements
 		// TODO: check Config on Circle to know if we set Level to 1 or just send a join request
 		$member->setLevel(Member::LEVEL_MEMBER);
 		$member->setStatus(Member::STATUS_MEMBER);
-		$event->setDataOutcome(['member' => $member]);
+		$event->setOutcome(['member' => $member]);
 
 		$event->setMember($member);
 
@@ -157,10 +157,6 @@ class CircleJoin implements
 		$this->circleService->confirmCircleNotFull($circle);
 
 		// TODO: check if it is a member or a mail or a circle and fix the returned message
-		$event->setReadingOutcome(
-			ucfirst(Member::$DEF_TYPE[$member->getUserType()]) . ' ' . '\'%s\' has join the Circle \'%s\'',
-			['userId' => $member->getUserId(), 'circleName' => $circle->getDisplayName()]
-		);
 
 		return;
 
@@ -200,10 +196,6 @@ class CircleJoin implements
 //		$this->circleService->confirmCircleNotFull($circle);
 //
 //		// TODO: check if it is a member or a mail or a circle and fix the returned message
-//		$event->setReadingOutcome(
-//			ucfirst(Member::$DEF_TYPE[$member->getUserType()]) . ' ' . '\'%s\' have been added to Circle',
-//			['userId' => $member->getUserId()]
-//		);
 //
 //		return;
 

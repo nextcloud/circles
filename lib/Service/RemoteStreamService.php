@@ -442,24 +442,6 @@ class RemoteStreamService extends NC21Signature {
 		}
 	}
 
-//
-//	/**
-//	 * @param FederatedEvent $event
-//	 * @param array $result
-//	 */
-//	private function manageRequestOutcome(FederatedEvent $event, array $result): void {
-//		$outcome = new SimpleDataStore($result);
-//
-//		$event->setDataOutcome($outcome->gArray('data'));
-//		$event->setReadingOutcome(
-//			$outcome->g('reading.message'),
-//			$outcome->gArray('reading.params')
-//		);
-//
-//		$reading = $event->getReadingOutcome();
-//		$reading->s('translated', $this->l10n->t($reading->g('message'), $reading->gArray('params')));
-//	}
-
 
 	/**
 	 * @param NC21RequestResult $result
@@ -468,17 +450,11 @@ class RemoteStreamService extends NC21Signature {
 	 */
 	private function getFederatedItemExceptionFromResult(NC21RequestResult $result): FederatedItemException {
 		$data = $result->getAsArray();
-		$exception = $this->getArray('params._exception', $data);
 
-		if (empty($exception)) {
-			$e = $this->getFederatedItemExceptionFromStatus($result->getStatusCode());
+		$message = $this->get('message', $data);
+		$code = $this->getInt('code', $data);
+		$class = $this->get('class', $data);
 
-			return new $e($this->get('message', $data), $this->get('params', $data));
-		}
-
-		$class = $this->get('class', $exception);
-		$message = $this->get('message', $exception);
-		$params = $this->getArray('params', $exception);
 		try {
 			$test = new ReflectionClass($class);
 			$this->confirmFederatedItemExceptionFromClass($test);
@@ -487,7 +463,7 @@ class RemoteStreamService extends NC21Signature {
 			$e = $this->getFederatedItemExceptionFromStatus($result->getStatusCode());
 		}
 
-		return new $e($message, $params);
+		return new $e($message, $code);
 	}
 
 

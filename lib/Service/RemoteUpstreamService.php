@@ -348,14 +348,7 @@ class RemoteUpstreamService {
 	private function manageRequestOutcome(FederatedEvent $event, array $result): void {
 		$outcome = new SimpleDataStore($result);
 
-		$event->setDataOutcome($outcome->gArray('data'));
-		$event->setReadingOutcome(
-			$outcome->g('reading.message'),
-			$outcome->gArray('reading.params')
-		);
-
-		$reading = $event->getReadingOutcome();
-		$reading->s('translated', $this->l10n->t($reading->g('message'), $reading->gArray('params')));
+		$event->setOutcome($outcome->gArray('data'));
 	}
 
 }

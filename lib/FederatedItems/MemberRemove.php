@@ -82,8 +82,7 @@ class MemberRemove implements
 		$memberHelper->mustBeMember();
 		$memberHelper->cannotBeOwner();
 
-		$event->setDataOutcome([]);
-		$event->setReadingOutcome('member is no more');
+		$event->setOutcome([]);
 	}
 
 

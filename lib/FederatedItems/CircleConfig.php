@@ -102,8 +102,8 @@ class CircleConfig implements IFederatedItem {
 		}
 
 		// if federated, circle is root
-		if ($circle->isConfig(Circle::CFG_FEDERATED, $config) &&
-			!$circle->isConfig(Circle::CFG_ROOT, $config)) {
+		if ($circle->isConfig(Circle::CFG_FEDERATED, $config)
+			&& !$circle->isConfig(Circle::CFG_ROOT, $config)) {
 			$config += Circle::CFG_ROOT;
 			// TODO: Check locally that circle is not a member of another circle.
 			// TODO  in that case, remove the membership (and update the memberships)
@@ -116,8 +116,7 @@ class CircleConfig implements IFederatedItem {
 
 		$new = clone $circle;
 		$new->setConfig($config);
-		$event->setDataOutcome(['circle' => $new]);
-		$event->setReadingOutcome('Configuration have been updated');
+		$event->setOutcome(['circle' => $new]);
 	}
 
 

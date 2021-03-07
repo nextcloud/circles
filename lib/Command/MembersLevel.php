@@ -140,7 +140,7 @@ class MembersLevel extends Base {
 			throw $e;
 		}
 
-		echo json_encode($outcome, JSON_PRETTY_PRINT) . "\n";
+		$output->writeln(json_encode($outcome, JSON_PRETTY_PRINT));
 
 		return 0;
 	}

@@ -35,7 +35,6 @@ namespace OCA\Circles\Controller;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Deserialize;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Logger;
 use Exception;
-use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
@@ -62,9 +61,6 @@ class LocalController extends OcsController {
 
 	use TNC21Deserialize;
 	use TNC21Logger;
-
-
-	const DEFAULT_OCS_EXCEPTION = 500;
 
 
 	/** @var IUserSession */
@@ -122,16 +118,11 @@ class LocalController extends OcsController {
 	public function create(string $name, bool $personal = false): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
+			$circle = $this->circleService->create($name);
 
-			try {
-				$circle = $this->circleService->create($name);
-
-				return new DataResponse($circle->jsonSerialize());
-			} catch (FederatedItemException $e) {
-				throw new OCSException($e->getMessage(), $e->getStatus());
-			}
+			return new DataResponse($circle->jsonSerialize());
 		} catch (Exception $e) {
-			throw new OcsException($e->getMessage(), self::DEFAULT_OCS_EXCEPTION);
+			throw new OcsException($e->getMessage(), $e->getCode());
 		}
 	}
 
@@ -149,17 +140,12 @@ class LocalController extends OcsController {
 	public function memberAdd(string $circleId, string $userId, int $type): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
+			$member = $this->federatedUserService->generateFederatedUser($userId, (int)$type);
+			$result = $this->memberService->addMember($circleId, $member);
 
-			try {
-				$member = $this->federatedUserService->generateFederatedUser($userId, (int)$type);
-				$result = $this->memberService->addMember($circleId, $member);
-
-				return new DataResponse($result->jsonSerialize());
-			} catch (FederatedItemException $e) {
-				throw new OCSException($e->getMessage(), $e->getStatus());
-			}
+			return new DataResponse($result->jsonSerialize());
 		} catch (Exception $e) {
-			throw new OcsException($e->getMessage(), self::DEFAULT_OCS_EXCEPTION);
+			throw new OCSException($e->getMessage(), $e->getCode());
 		}
 	}
 
@@ -175,16 +161,11 @@ class LocalController extends OcsController {
 	public function circleJoin(string $circleId): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
+			$result = $this->circleService->circleJoin($circleId);
 
-			try {
-				$result = $this->circleService->circleJoin($circleId);
-
-				return new DataResponse($result->jsonSerialize());
-			} catch (FederatedItemException $e) {
-				throw new OCSException($e->getMessage(), $e->getStatus());
-			}
+			return new DataResponse($result->jsonSerialize());
 		} catch (Exception $e) {
-			throw new OcsException($e->getMessage(), self::DEFAULT_OCS_EXCEPTION);
+			throw new OCSException($e->getMessage(), $e->getCode());
 		}
 	}
 
@@ -202,18 +183,13 @@ class LocalController extends OcsController {
 	public function memberLevel(string $circleId, string $memberId, string $level): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
+			$level = Member::parseLevelString($level);
+			$this->memberService->getMember($memberId, $circleId);
+			$result = $this->memberService->memberLevel($memberId, $level);
 
-			try {
-				$level = Member::parseLevelString($level);
-				$this->memberService->getMember($memberId, $circleId);
-				$result = $this->memberService->memberLevel($memberId, $level);
-
-				return new DataResponse($result->jsonSerialize());
-			} catch (FederatedItemException $e) {
-				throw new OCSException($e->getMessage(), $e->getStatus());
-			}
+			return new DataResponse($result->jsonSerialize());
 		} catch (Exception $e) {
-			throw new OcsException($e->getMessage(), self::DEFAULT_OCS_EXCEPTION);
+			throw new OcsException($e->getMessage(), $e->getCode());
 		}
 	}
 
@@ -230,17 +206,12 @@ class LocalController extends OcsController {
 	public function memberRemove(string $circleId, string $memberId): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
+			$this->memberService->getMember($memberId, $circleId);
+			$result = $this->memberService->removeMember($memberId);
 
-			try {
-				$this->memberService->getMember($memberId, $circleId);
-				$result = $this->memberService->removeMember($memberId);
-
-				return new DataResponse($result->jsonSerialize());
-			} catch (FederatedItemException $e) {
-				throw new OCSException($e->getMessage(), $e->getStatus());
-			}
+			return new DataResponse($result->jsonSerialize());
 		} catch (Exception $e) {
-			throw new OcsException($e->getMessage(), self::DEFAULT_OCS_EXCEPTION);
+			throw new OCSException($e->getMessage(), $e->getCode());
 		}
 	}
 
@@ -257,7 +228,7 @@ class LocalController extends OcsController {
 
 			return new DataResponse($this->circleService->getCircles());
 		} catch (Exception $e) {
-			throw new OcsException($e->getMessage(), self::DEFAULT_OCS_EXCEPTION);
+			throw new OCSException($e->getMessage(), $e->getCode());
 		}
 	}
 
@@ -276,7 +247,7 @@ class LocalController extends OcsController {
 
 			return new DataResponse($this->memberService->getMembers($circleId));
 		} catch (Exception $e) {
-			throw new OcsException($e->getMessage(), self::DEFAULT_OCS_EXCEPTION);
+			throw new OCSException($e->getMessage(), $e->getCode());
 		}
 	}
 

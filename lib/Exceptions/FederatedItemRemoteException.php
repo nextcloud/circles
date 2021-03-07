@@ -50,17 +50,15 @@ class FederatedItemRemoteException extends FederatedItemException {
 	 * FederatedItemRemoteException constructor.
 	 *
 	 * @param string $message
-	 * @param array $params
 	 * @param int $code
 	 * @param Throwable|null $previous
 	 */
 	public function __construct(
 		string $message = '',
-		array $params = [],
 		int $code = 0,
 		?Throwable $previous = null
 	) {
-		parent::__construct($message, $params, $code, $previous);
+		parent::__construct($message, ($code > 0) ? $code : self::STATUS, $previous);
 		$this->setStatus(self::STATUS);
 	}
 

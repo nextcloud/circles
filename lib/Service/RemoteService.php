@@ -156,7 +156,7 @@ class RemoteService extends NC21Signature {
 		if (empty($result)) {
 			throw new CircleNotFoundException();
 		}
-echo json_encode($result, JSON_PRETTY_PRINT);
+
 		$circle = new Circle();
 		$circle->import($result);
 

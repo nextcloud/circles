@@ -51,7 +51,6 @@ use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
-use OCA\Circles\Exceptions\MembersLimitException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
@@ -76,6 +75,7 @@ use OCA\Circles\Service\CircleEventService;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
+use OCP\IL10N;
 use OCP\IUser;
 use OCP\IUserManager;
 use OCP\Mail\IEMailTemplate;
@@ -97,6 +97,9 @@ class MemberAdd implements
 	use TStringTools;
 	use TNC21Logger;
 
+
+	/** @var IL10N */
+	private $l10n;
 
 	/** @var IUserManager */
 	private $userManager;
@@ -120,6 +123,7 @@ class MemberAdd implements
 	/**
 	 * MemberAdd constructor.
 	 *
+	 * @param IL10N $l10n
 	 * @param IUserManager $userManager
 	 * @param FederatedUserService $federatedUserService
 	 * @param MemberRequest $memberRequest
@@ -128,9 +132,12 @@ class MemberAdd implements
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IUserManager $userManager, FederatedUserService $federatedUserService, MemberRequest $memberRequest,
+		IL10N $l10n, IUserManager $userManager, FederatedUserService $federatedUserService,
+		MemberRequest $memberRequest,
 		CircleService $circleService, CircleEventService $circleEventService, ConfigService $configService
 	) {
+		$this->l10n = $l10n;
+		$this->l10n->getLanguageCode();
 		$this->userManager = $userManager;
 		$this->federatedUserService = $federatedUserService;
 		$this->memberRequest = $memberRequest;
@@ -187,17 +194,13 @@ class MemberAdd implements
 		// TODO: check Config on Circle to know if we set Level to 1 or just send an invitation
 		$member->setLevel(Member::LEVEL_MEMBER);
 		$member->setStatus(Member::STATUS_MEMBER);
-		$event->setDataOutcome(['member' => $member]);
+		$event->setOutcome(['member' => $member]);
 
 		// TODO: Managing cached name
 		//		$member->setCachedName($eventMember->getCachedName());
 		$this->circleService->confirmCircleNotFull($circle);
 
 		// TODO: check if it is a member or a mail or a circle and fix the returned message
-		$event->setReadingOutcome(
-			ucfirst(Member::$DEF_TYPE[$member->getUserType()]) . ' ' . '\'%s\' have been added to Circle',
-			['userId' => $member->getUserId()]
-		);
 
 		return;
 

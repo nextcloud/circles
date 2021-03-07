@@ -112,7 +112,7 @@ class ItemLock implements
 		}
 
 		$known->setLockStatus($status);
-		$event->setDataOutcome(['federatedShare' => $known]);
+		$event->setOutcome(['federatedShare' => $known]);
 	}
 
 

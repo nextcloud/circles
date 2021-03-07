@@ -36,18 +36,18 @@ use Throwable;
 
 
 /**
- * Class FederatedItemServerException
+ * Class FederatedItemUnauthorizedException
  *
  * @package OCA\Circles\Exceptions
  */
-class FederatedItemServerException extends FederatedItemException {
+class FederatedItemUnauthorizedException extends FederatedItemException {
 
 
-	const STATUS = Http::STATUS_INTERNAL_SERVER_ERROR;
+	const STATUS = Http::STATUS_UNAUTHORIZED;
 
 
 	/**
-	 * FederatedItemServerException constructor.
+	 * FederatedItemUnauthorizedException constructor.
 	 *
 	 * @param string $message
 	 * @param int $code
@@ -58,7 +58,7 @@ class FederatedItemServerException extends FederatedItemException {
 		int $code = 0,
 		?Throwable $previous = null
 	) {
-		parent::__construct($message, ($code > 0) ? $code : self::STATUS, $previous);
+		parent::__construct($message, $code, $previous);
 		$this->setStatus(self::STATUS);
 	}
 

@@ -124,7 +124,16 @@ class CircleService {
 	 * @param FederatedUser|null $owner
 	 *
 	 * @return SimpleDataStore
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
+	 * @throws InitiatorNotConfirmedException
 	 * @throws InitiatorNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws UnknownRemoteException
 	 */
 	public function create(string $name, ?FederatedUser $owner = null): SimpleDataStore {
 		$this->federatedUserService->mustHaveCurrentUser();

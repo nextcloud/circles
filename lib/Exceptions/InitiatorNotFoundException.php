@@ -30,10 +30,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Exceptions;
 
-use Exception;
 
-
-class InitiatorNotFoundException extends Exception {
+class InitiatorNotFoundException extends FederatedItemUnauthorizedException {
 
 }
 

@@ -45,7 +45,6 @@ use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21LocalSignatory;
 use Exception;
 use OC\AppFramework\Middleware\Security\Exceptions\NotLoggedInException;
 use OCA\Circles\Db\CircleRequest;
-use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
@@ -162,20 +161,16 @@ class RemoteController extends Controller {
 		try {
 			$event = $this->extractEventFromRequest();
 		} catch (Exception $e) {
-			return $this->eventResponse($e, null, Http::STATUS_UNAUTHORIZED);
+			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
 		}
 
 		try {
 			$this->remoteDownstreamService->requestedEvent($event);
-		} catch (FederatedEventException $e) {
-			return $this->eventResponse($e, $event, Http::STATUS_INTERNAL_SERVER_ERROR);
-		} catch (FederatedItemException $e) {
-			return $this->eventResponse($e, $event, $e->getStatus());
-		} catch (Exception $e) {
-			return $this->eventResponse($e, $event, Http::STATUS_BAD_REQUEST);
-		}
 
-		return new DataResponse($event->getOutcome()->jsonSerialize());
+			return new DataResponse($event->getOutcome()->jsonSerialize());
+		} catch (Exception $e) {
+			return $this->exceptionResponse($e);
+		}
 	}
 
 
@@ -188,13 +183,16 @@ class RemoteController extends Controller {
 	public function incoming(): DataResponse {
 		try {
 			$event = $this->extractEventFromRequest();
+		} catch (Exception $e) {
+			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
+		}
+
+		try {
 			$this->remoteDownstreamService->incomingEvent($event);
 
-			return new DataResponse($event->getResult()->jsonSerialize(), Http::STATUS_OK);
+			return new DataResponse($event->getResult()->jsonSerialize());
 		} catch (Exception $e) {
-			$this->e($e);
-
-			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
+			return $this->exceptionResponse($e);
 		}
 	}
 
@@ -204,15 +202,16 @@ class RemoteController extends Controller {
 	 * @NoCSRFRequired
 	 *
 	 * @return DataResponse
-	 * @throws InvalidOriginException
-	 * @throws MalformedArrayException
-	 * @throws SignatoryException
-	 * @throws SignatureException
 	 */
 	public function test(): DataResponse {
-		$test = $this->remoteStreamService->incomingSignedRequest($this->configService->getFrontalInstance());
+		try {
+			$test =
+				$this->remoteStreamService->incomingSignedRequest($this->configService->getFrontalInstance());
 
-		return new DataResponse($test->jsonSerialize());
+			return new DataResponse($test->jsonSerialize());
+		} catch (Exception $e) {
+			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
+		}
 	}
 
 
@@ -225,16 +224,18 @@ class RemoteController extends Controller {
 	public function circles(): DataResponse {
 		try {
 			$data = $this->extractDataFromFromRequest();
+		} catch (Exception $e) {
+			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
+		}
 
+		try {
 			/** @var Member $filter */
 			$filter = $data->gObj('filter');
 			$circles = $this->circleService->getCircles($filter);
 
 			return new DataResponse($circles);
 		} catch (Exception $e) {
-			$this->e($e);
-
-			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
+			return $this->exceptionResponse($e);
 		}
 	}
 
@@ -250,19 +251,17 @@ class RemoteController extends Controller {
 	public function circle(string $circleId): DataResponse {
 		try {
 			$this->extractDataFromFromRequest();
-
-			try {
-				$circle = $this->circleService->getCircle($circleId);
-
-				return new DataResponse($circle->jsonSerialize());
-			} catch (FederatedItemException $e) {
-				return $this->eventResponse($e, null, $e->getStatus());
-			}
-
 		} catch (Exception $e) {
-			return $this->eventResponse($e, null, Http::STATUS_INTERNAL_SERVER_ERROR);
+			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
 		}
+		\OC::$server->getLogger()->log(3, '___');
+		try {
+			$circle = $this->circleService->getCircle($circleId);
 
+			return new DataResponse($circle->jsonSerialize());
+		} catch (Exception $e) {
+			return $this->exceptionResponse($e);
+		}
 	}
 
 
@@ -277,13 +276,16 @@ class RemoteController extends Controller {
 	public function members(string $circleId): DataResponse {
 		try {
 			$this->extractDataFromFromRequest();
+		} catch (Exception $e) {
+			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
+		}
+
+		try {
 			$members = $this->memberService->getMembers($circleId);
 
 			return new DataResponse($members);
 		} catch (Exception $e) {
-			$this->e($e);
-
-			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_BAD_REQUEST);
+			return $this->exceptionResponse($e);
 		}
 	}
 
@@ -302,7 +304,11 @@ class RemoteController extends Controller {
 	public function member(string $type, string $userId): DataResponse {
 		try {
 			$this->extractDataFromFromRequest();
+		} catch (Exception $e) {
+			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
+		}
 
+		try {
 			// FILTER CIRCLE BASED ON THE CONFIG/FEDERATED_8192 !!
 			if ($type === Member::$DEF_TYPE[Member::TYPE_SINGLE]) {
 				$federatedUser = $this->federatedUserService->getFederatedUser($userId, Member::TYPE_SINGLE);
@@ -311,18 +317,12 @@ class RemoteController extends Controller {
 			} else if ($type === Member::$DEF_TYPE[Member::TYPE_USER]) {
 				$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
 			} else {
-				throw new FederatedUserNotFoundException();
+				throw new FederatedUserNotFoundException('Entity not found');
 			}
 
 			return new DataResponse($federatedUser->jsonSerialize());
-		} catch (FederatedUserNotFoundException $e) {
-			$this->e($e);
-
-			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_NOT_FOUND);
 		} catch (Exception $e) {
-			$this->e($e);
-
-			return new DataResponse(['error' => $e->getMessage()], Http::STATUS_BAD_REQUEST);
+			return $this->exceptionResponse($e);
 		}
 	}
 
@@ -418,39 +418,24 @@ class RemoteController extends Controller {
 
 
 	/**
-	 * @param Exception|null $e
-	 * @param FederatedEvent|null $event
-	 * @param int $status
+	 * @param Exception $e
+	 * @param int $httpErrorCode
 	 *
 	 * @return DataResponse
 	 */
-	public function eventResponse(
-		Exception $e,
-		?FederatedEvent $event = null,
-		int $status = Http::STATUS_OK
-	): DataResponse {
-
-		$params = [];
+	public function exceptionResponse(Exception $e, $httpErrorCode = Http::STATUS_BAD_REQUEST): DataResponse {
 		if ($e instanceof FederatedItemException) {
-			$params = array_merge($e->getParams(), ['_exception' => $e]);
+			return new DataResponse($e->jsonSerialize(), $e->getStatus());
 		}
 
-		if (!is_null($event)) {
-			$event->setReadingOutcome(
-				$e->getMessage(),
-				$params
-			);
-
-			$this->e($e, ['event' => $event]);
-
-			return new DataResponse($event->getReadingOutcome()->jsonSerialize(), $status);
-		}
-
-		$this->e($e);
-
-		return new DataResponse(array_filter(['message' => $e->getMessage(), 'params' => $params]), $status);
+		return new DataResponse(
+			[
+				'message' => $e->getMessage(),
+				'code'    => $e->getCode()
+			],
+			($e->getCode() > 0) ? $e->getCode() : $httpErrorCode
+		);
 	}
-
 
 }
 

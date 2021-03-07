@@ -189,7 +189,7 @@ class FederatedUserService {
 			return;
 		}
 		if (!$this->hasCurrentUser() && !$this->hasRemoteInstance()) {
-			throw new InitiatorNotFoundException();
+			throw new InitiatorNotFoundException('Invalid initiator');
 		}
 	}
 

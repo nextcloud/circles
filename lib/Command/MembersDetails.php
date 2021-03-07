@@ -85,7 +85,7 @@ class MembersDetails extends Base {
 		$memberId = $input->getArgument('member_id');
 
 		$member = $this->membersRequest->forceGetMemberById($memberId);
-		echo json_encode($member, JSON_PRETTY_PRINT) . "\n";
+		$output->writeln(json_encode($member, JSON_PRETTY_PRINT));
 
 		return 0;
 	}

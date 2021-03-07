@@ -106,7 +106,7 @@ class MembersRemove extends Base {
 
 		$outcome = $this->memberService->removeMember($memberId);
 
-		echo json_encode($outcome, JSON_PRETTY_PRINT) . "\n";
+		$output->writeln(json_encode($outcome, JSON_PRETTY_PRINT));
 
 		return 0;
 	}

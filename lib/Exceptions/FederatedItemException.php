@@ -35,7 +35,6 @@ namespace OCA\Circles\Exceptions;
 
 use Exception;
 use JsonSerializable;
-use OCA\Circles\Service\ExceptionService;
 use OCP\AppFramework\Http;
 use Throwable;
 
@@ -58,73 +57,19 @@ class FederatedItemException extends Exception implements JsonSerializable {
 	];
 
 
-	/** @var string */
-	private $rawMessage;
-
-	/** @var array */
-	private $params;
-
 	/** @var int */
-	private $status = Http::STATUS_INTERNAL_SERVER_ERROR;
+	private $status = Http::STATUS_BAD_REQUEST;
 
 
 	/**
 	 * FederatedItemException constructor.
 	 *
 	 * @param string $message
-	 * @param array $params
 	 * @param int $code
 	 * @param Throwable|null $previous
 	 */
-	public function __construct(
-		string $message = '',
-		array $params = [],
-		int $code = 0,
-		?Throwable $previous = null
-	) {
-		$this->setRawMessage($message);
-
-		if ($message !== '') {
-			try {
-				/** @var ExceptionService $exceptionService */
-				$exceptionService = \OC::$server->get(ExceptionService::class);
-				$l10n = $exceptionService->getL10n();
-				$message = $l10n->t($message, $params);
-			} catch (Throwable $t) {
-			}
-		}
-
-		parent::__construct($message, $code, $previous);
-		$this->setParams($params);
-	}
-
-	/**
-	 * @param array $params
-	 */
-	private function setParams(array $params): void {
-		$this->params = $params;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getParams(): array {
-		return $this->params;
-	}
-
-
-	/**
-	 * @param string $message
-	 */
-	private function setRawMessage(string $message): void {
-		$this->rawMessage = $message;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getRawMessage(): string {
-		return $this->rawMessage;
+	public function __construct(string $message = '', int $code = 0, ?Throwable $previous = null) {
+		parent::__construct($message, ($code > 0) ? $code : $this->status, $previous);
 	}
 
 
@@ -144,14 +89,14 @@ class FederatedItemException extends Exception implements JsonSerializable {
 
 
 	/**
-	 * @return mixed|void
+	 * @return array
 	 */
 	public function jsonSerialize(): array {
 		return [
 			'class'   => get_class($this),
 			'status'  => $this->getStatus(),
-			'message' => $this->getRawMessage(),
-			'params'  => $this->getParams()
+			'code'    => $this->getCode(),
+			'message' => $this->getMessage()
 		];
 	}
 

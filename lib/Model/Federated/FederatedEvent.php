@@ -84,10 +84,7 @@ class FederatedEvent implements JsonSerializable {
 	private $severity = self::SEVERITY_LOW;
 
 	/** @var SimpleDataStore */
-	private $readingOutcome;
-
-	/** @var SimpleDataStore */
-	private $dataOutcome;
+	private $outcome;
 
 	/** @var SimpleDataStore */
 	private $result;
@@ -127,8 +124,7 @@ class FederatedEvent implements JsonSerializable {
 		$this->class = $class;
 		$this->data = new SimpleDataStore();
 		$this->result = new SimpleDataStore();
-		$this->readingOutcome = new SimpleDataStore();
-		$this->dataOutcome = new SimpleDataStore();
+		$this->outcome = new SimpleDataStore();
 	}
 
 
@@ -461,44 +457,7 @@ class FederatedEvent implements JsonSerializable {
 	 * @return SimpleDataStore
 	 */
 	public function getOutcome(): SimpleDataStore {
-		return new SimpleDataStore(
-			[
-				'reading' => $this->getReadingOutcome(),
-				'data'    => $this->getDataOutcome()
-			]
-		);
-	}
-
-	/**
-	 * @return SimpleDataStore
-	 */
-	public function getReadingOutcome(): SimpleDataStore {
-		return $this->readingOutcome;
-	}
-
-	/**
-	 * @param string $message
-	 * @param array $params
-	 *
-	 * @return $this
-	 */
-	public function setReadingOutcome(string $message, array $params = []): self {
-		$this->readingOutcome = new SimpleDataStore(
-			[
-				'message' => $message,
-				'params'  => $params
-			]
-		);
-
-		return $this;
-	}
-
-
-	/**
-	 * @return SimpleDataStore
-	 */
-	public function getDataOutcome(): SimpleDataStore {
-		return $this->dataOutcome;
+		return $this->outcome;
 	}
 
 	/**
@@ -506,8 +465,8 @@ class FederatedEvent implements JsonSerializable {
 	 *
 	 * @return $this
 	 */
-	public function setDataOutcome(array $data): self {
-		$this->dataOutcome = new SimpleDataStore($data);
+	public function setOutcome(array $data): self {
+		$this->outcome = new SimpleDataStore($data);
 
 		return $this;
 	}
@@ -571,11 +530,7 @@ class FederatedEvent implements JsonSerializable {
 			'result'   => $this->getResult(),
 			'source'   => $this->getSource(),
 			'itemId'   => $this->getItemId(),
-
-			'outcome' => [
-				'message' => $this->getReadingOutcome(),
-				'data'    => $this->getDataOutcome()
-			]
+			'outcome'  => $this->getOutcome()
 		];
 
 		if ($this->hasCircle()) {

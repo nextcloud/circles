@@ -92,8 +92,7 @@ class CircleCreate implements
 	public function verify(FederatedEvent $event): void {
 		$circle = $event->getCircle();
 
-		$event->setDataOutcome(['circle' => $circle]);
-		$event->setReadingOutcome('Circle \'%s\' have been created', ['circleName' => $circle->getName()]);
+		$event->setOutcome(['circle' => $circle]);
 	}
 
 

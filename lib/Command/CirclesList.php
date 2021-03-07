@@ -171,7 +171,7 @@ class CirclesList extends Base {
 		}
 
 		if ($input->getOption('json')) {
-			echo json_encode($circles, JSON_PRETTY_PRINT) . "\n";
+			$output->writeln(json_encode($circles, JSON_PRETTY_PRINT));
 
 			return 0;
 		}

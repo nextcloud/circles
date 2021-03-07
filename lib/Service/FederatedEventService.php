@@ -170,11 +170,9 @@ class FederatedEventService extends NC21Signature {
 			$event->setIncomingOrigin($event->getCircle()->getInstance());
 
 			$federatedItem->verify($event);
-			$reading = $event->getReadingOutcome();
-			$reading->s('translated', $this->l10n->t($reading->g('message'), $reading->gArray('params')));
 
 			if ($event->isDataRequestOnly()) {
-				return $event->getDataOutcome();
+				return $event->getOutcome();
 			}
 
 			if (!$event->isAsync()) {
@@ -185,7 +183,7 @@ class FederatedEventService extends NC21Signature {
 		} else {
 			$this->remoteUpstreamService->confirmEvent($event);
 			if ($event->isDataRequestOnly()) {
-				return $event->getDataOutcome();
+				return $event->getOutcome();
 			}
 
 			if (!$event->isAsync()) {
