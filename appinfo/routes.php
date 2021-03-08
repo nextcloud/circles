@@ -26,25 +26,25 @@
 
 return [
 	'ocs'    => [
-		['name' => 'Local#circles', 'url' => '/circles/', 'verb' => 'GET'],
-		['name' => 'Local#create', 'url' => '/circles/', 'verb' => 'POST'],
-		['name' => 'Local#search', 'url' => '/search/', 'verb' => 'POST'],
-		['name' => 'Local#members', 'url' => '/circles/{circleId}/members/', 'verb' => 'GET'],
-		['name' => 'Local#memberAdd', 'url' => '/circles/{circleId}/members/', 'verb' => 'POST'],
+		['name' => 'Local#circles', 'url' => '/circles', 'verb' => 'GET'],
+		['name' => 'Local#create', 'url' => '/circles', 'verb' => 'POST'],
+		['name' => 'Local#search', 'url' => '/search', 'verb' => 'GET'],
+		['name' => 'Local#members', 'url' => '/circles/{circleId}/members', 'verb' => 'GET'],
+		['name' => 'Local#memberAdd', 'url' => '/circles/{circleId}/members', 'verb' => 'POST'],
 		[
-			'name' => 'Local#memberRemove', 'url' => '/circles/{circleId}/members/{memberId}/',
+			'name' => 'Local#memberRemove', 'url' => '/circles/{circleId}/members/{memberId}',
 			'verb' => 'DELETE'
 		],
 		[
-			'name' => 'Local#memberLevel', 'url' => '/circles/{circleId}/members/{memberId}/level/',
+			'name' => 'Local#memberLevel', 'url' => '/circles/{circleId}/members/{memberId}/level',
 			'verb' => 'PUT'
 		],
 
 		// to implement
-		['name' => 'Local#getSettings', 'url' => '/circles/{circleId}/settings/', 'verb' => 'GET'],
-		['name' => 'Local#setSettings', 'url' => '/circles/{circleId}/settings/', 'verb' => 'PUT'],
-		['name' => 'Local#circleJoin', 'url' => '/circles/{circleId}/join/', 'verb' => 'PUT'],
-		['name' => 'Local#circleLeave', 'url' => '/circles/{circleId}/leave/', 'verb' => 'PUT']
+		['name' => 'Local#getSettings', 'url' => '/circles/{circleId}/settings', 'verb' => 'GET'],
+		['name' => 'Local#setSettings', 'url' => '/circles/{circleId}/settings', 'verb' => 'PUT'],
+		['name' => 'Local#circleJoin', 'url' => '/circles/{circleId}/join', 'verb' => 'PUT'],
+		['name' => 'Local#circleLeave', 'url' => '/circles/{circleId}/leave', 'verb' => 'PUT']
 	],
 
 	'routes' => [
