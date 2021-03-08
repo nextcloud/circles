@@ -116,7 +116,7 @@ class CircleConfig implements IFederatedItem {
 
 		$new = clone $circle;
 		$new->setConfig($config);
-		$event->setOutcome(['circle' => $new]);
+		$event->setOutcome($new->jsonSerialize());
 	}
 
 

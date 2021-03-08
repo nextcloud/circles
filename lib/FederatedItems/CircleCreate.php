@@ -34,11 +34,9 @@ namespace OCA\Circles\FederatedItems;
 
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
-use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventDSyncException;
 use OCA\Circles\Exceptions\InvalidIdException;
-use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemCircleCheckNotRequired;
@@ -92,7 +90,7 @@ class CircleCreate implements
 	public function verify(FederatedEvent $event): void {
 		$circle = $event->getCircle();
 
-		$event->setOutcome(['circle' => $circle]);
+		$event->setOutcome($circle->jsonSerialize());
 	}
 
 

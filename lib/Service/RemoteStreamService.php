@@ -260,7 +260,7 @@ class RemoteStreamService extends NC21Signature {
 		}
 
 		// TODO: Work Around: on local, if object is empty, request takes 10s. check on other configuration
-		if (is_null($object) || empty(json_decode(json_encode($object), true))) {
+		if (is_null($object) || empty($object->jsonSerialize())) {
 			$object = new SimpleDataStore(['empty' => 1]);
 		}
 

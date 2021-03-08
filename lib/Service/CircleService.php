@@ -140,7 +140,7 @@ class CircleService {
 		string $name,
 		?FederatedUser $owner = null,
 		bool $personal = false
-	): SimpleDataStore {
+	): array {
 
 		$this->federatedUserService->mustHaveCurrentUser();
 		if (is_null($owner)) {
@@ -175,7 +175,7 @@ class CircleService {
 	 * @param string $circleId
 	 * @param int $config
 	 *
-	 * @return SimpleDataStore
+	 * @return array
 	 * @throws CircleNotFoundException
 	 * @throws FederatedEventException
 	 * @throws FederatedItemException
@@ -188,7 +188,7 @@ class CircleService {
 	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
 	 */
-	public function updateConfig(string $circleId, int $config): SimpleDataStore {
+	public function updateConfig(string $circleId, int $config): array {
 		$circle = $this->getCircle($circleId);
 
 		$event = new FederatedEvent(CircleConfig::class);
@@ -204,7 +204,7 @@ class CircleService {
 	/**
 	 * @param string $circleId
 	 *
-	 * @return SimpleDataStore
+	 * @return array
 	 * @throws CircleNotFoundException
 	 * @throws FederatedEventException
 	 * @throws FederatedItemException
@@ -217,7 +217,7 @@ class CircleService {
 	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
 	 */
-	public function circleJoin(string $circleId): SimpleDataStore {
+	public function circleJoin(string $circleId): array {
 		$this->federatedUserService->mustHaveCurrentUser();
 
 		$circle = $this->circleRequest->getCircle($circleId, $this->federatedUserService->getCurrentUser());

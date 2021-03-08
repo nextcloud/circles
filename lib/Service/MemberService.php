@@ -32,24 +32,20 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 
-use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
-use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Logger;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use daita\MySmallPhpTools\Traits\TStringTools;
-use Exception;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
-use OCA\Circles\Exceptions\FederatedEventDSyncException;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
-use OCA\Circles\Exceptions\MemberLevelException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
@@ -136,12 +132,12 @@ class MemberService {
 	public function getMember(string $memberId, string $circleId = ''): Member {
 		$this->federatedUserService->mustHaveCurrentUser();
 
-			$member = $this->memberRequest->getMember($memberId, $this->federatedUserService->getCurrentUser());
-			if ($circleId !== '' && $member->getCircle()->getId() !== $circleId) {
-				throw new MemberNotFoundException();
-			}
+		$member = $this->memberRequest->getMember($memberId, $this->federatedUserService->getCurrentUser());
+		if ($circleId !== '' && $member->getCircle()->getId() !== $circleId) {
+			throw new MemberNotFoundException();
+		}
 
-			// TODO: useless ?
+		// TODO: useless ?
 //			$circle = $this->circleRequest->getCircle(
 //				$member->getCircleId(), $this->federatedUserService->getCurrentUser()
 //			);
@@ -150,7 +146,7 @@ class MemberService {
 //				throw new MemberLevelException();
 //			}
 
-			return $member;
+		return $member;
 //		} catch (Exception $e) {
 //			$this->e($e, ['id' => $memberId, 'initiator' => $this->federatedUserService->getCurrentUser()]);
 //			throw new MemberLevelException('insufficient rights');
@@ -179,20 +175,19 @@ class MemberService {
 	 * @param string $circleId
 	 * @param IFederatedUser $member
 	 *
-	 * @return SimpleDataStore
+	 * @return array
 	 * @throws CircleNotFoundException
 	 * @throws FederatedEventException
+	 * @throws FederatedItemException
 	 * @throws InitiatorNotConfirmedException
 	 * @throws InitiatorNotFoundException
 	 * @throws OwnerNotFoundException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
-	 * @throws FederatedItemException
+	 * @throws RemoteInstanceException
 	 */
-	public function addMember(string $circleId, IFederatedUser $member): SimpleDataStore {
+	public function addMember(string $circleId, IFederatedUser $member): array {
 		$this->federatedUserService->mustHaveCurrentUser();
 		$circle = $this->circleRequest->getCircle($circleId, $this->federatedUserService->getCurrentUser());
 
@@ -215,7 +210,7 @@ class MemberService {
 	/**
 	 * @param string $memberId
 	 *
-	 * @return SimpleDataStore
+	 * @return array
 	 * @throws FederatedEventException
 	 * @throws FederatedItemException
 	 * @throws InitiatorNotConfirmedException
@@ -224,12 +219,9 @@ class MemberService {
 	 * @throws OwnerNotFoundException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
-	 * @throws FederatedEventDSyncException
 	 */
-	public function removeMember(string $memberId): SimpleDataStore {
+	public function removeMember(string $memberId): array {
 		$this->federatedUserService->mustHaveCurrentUser();
 		$member = $this->memberRequest->getMember($memberId, $this->federatedUserService->getCurrentUser());
 
@@ -246,7 +238,7 @@ class MemberService {
 	 * @param string $memberId
 	 * @param int $level
 	 *
-	 * @return SimpleDataStore
+	 * @return array
 	 * @throws FederatedEventException
 	 * @throws InitiatorNotConfirmedException
 	 * @throws InitiatorNotFoundException
@@ -254,13 +246,10 @@ class MemberService {
 	 * @throws OwnerNotFoundException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
 	 * @throws FederatedItemException
-	 * @throws FederatedEventDSyncException
 	 */
-	public function memberLevel(string $memberId, int $level): SimpleDataStore {
+	public function memberLevel(string $memberId, int $level): array {
 		$this->federatedUserService->mustHaveCurrentUser();
 		$member = $this->memberRequest->getMember($memberId, $this->federatedUserService->getCurrentUser());
 

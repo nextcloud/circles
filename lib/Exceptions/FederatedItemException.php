@@ -53,7 +53,8 @@ class FederatedItemException extends Exception implements JsonSerializable {
 		FederatedItemForbiddenException::class,
 		FederatedItemNotFoundException::class,
 		FederatedItemRemoteException::class,
-		FederatedItemServerException::class
+		FederatedItemServerException::class,
+		FederatedItemUnauthorizedException::class
 	];
 
 

@@ -33,10 +33,8 @@ namespace OCA\Circles\Service;
 
 use daita\MySmallPhpTools\ActivityPub\Nextcloud\nc21\NC21Signature;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
-use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
 use daita\MySmallPhpTools\Model\Request;
-use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OC;
@@ -52,6 +50,7 @@ use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\JsonException;
 use OCA\Circles\Exceptions\ModelException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
@@ -149,18 +148,17 @@ class FederatedEventService extends NC21Signature {
 	 *
 	 * @param FederatedEvent $event
 	 *
-	 * @return SimpleDataStore
+	 * @return array
 	 * @throws FederatedEventException
 	 * @throws FederatedItemException
 	 * @throws InitiatorNotConfirmedException
 	 * @throws OwnerNotFoundException
-	 * @throws RequestNetworkException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
 	 * @throws UnknownRemoteException
-	 * @throws SignatoryException
+	 * @throws RemoteInstanceException
 	 */
-	public function newEvent(FederatedEvent $event): SimpleDataStore {
+	public function newEvent(FederatedEvent $event): array {
 		$event->setSource($this->configService->getFrontalInstance());
 
 		$federatedItem = $this->getFederatedItem($event, false);

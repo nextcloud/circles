@@ -83,8 +83,8 @@ class FederatedEvent implements JsonSerializable {
 	/** @var int */
 	private $severity = self::SEVERITY_LOW;
 
-	/** @var SimpleDataStore */
-	private $outcome;
+	/** @var array */
+	private $outcome = [];
 
 	/** @var SimpleDataStore */
 	private $result;
@@ -105,12 +105,6 @@ class FederatedEvent implements JsonSerializable {
 	/** @var string */
 	private $wrapperToken = '';
 
-	/** @var bool */
-	private $verifiedViewer = false;
-
-	/** @var bool */
-	private $verifiedCircle = false;
-
 	/** @var int */
 	private $bypass = 0;
 
@@ -124,7 +118,6 @@ class FederatedEvent implements JsonSerializable {
 		$this->class = $class;
 		$this->data = new SimpleDataStore();
 		$this->result = new SimpleDataStore();
-		$this->outcome = new SimpleDataStore();
 	}
 
 
@@ -255,55 +248,6 @@ class FederatedEvent implements JsonSerializable {
 	public function getIncomingOrigin(): string {
 		return $this->incomingOrigin;
 	}
-
-
-	/**
-	 * @param bool $verifiedViewer
-	 *
-	 * @return FederatedEvent
-	 */
-	public function setVerifiedViewer(bool $verifiedViewer): self {
-		$this->verifiedViewer = $verifiedViewer;
-
-		return $this;
-	}
-
-//	/**
-//	 * @return bool
-//	 */
-//	public function isVerifiedViewer(): bool {
-//		return $this->verifiedViewer;
-//	}
-
-//	/**
-//	 * @throws InitiatorNotConfirmedException
-//	 */
-//	public function confirmVerifiedViewer(): void {
-//		if ($this->isVerifiedViewer()) {
-//			return;
-//		}
-//
-//		throw new InitiatorNotConfirmedException();
-//	}
-
-
-//	/**
-//	 * @param bool $verifiedCircle
-//	 *
-//	 * @return FederatedEvent
-//	 */
-//	public function setVerifiedCircle(bool $verifiedCircle): self {
-//		$this->verifiedCircle = $verifiedCircle;
-//
-//		return $this;
-//	}
-//
-//	/**
-//	 * @return bool
-//	 */
-//	public function isVerifiedCircle(): bool {
-//		return $this->verifiedCircle;
-//	}
 
 
 	/**
@@ -454,9 +398,9 @@ class FederatedEvent implements JsonSerializable {
 
 
 	/**
-	 * @return SimpleDataStore
+	 * @return array
 	 */
-	public function getOutcome(): SimpleDataStore {
+	public function getOutcome(): array {
 		return $this->outcome;
 	}
 
@@ -466,7 +410,7 @@ class FederatedEvent implements JsonSerializable {
 	 * @return $this
 	 */
 	public function setOutcome(array $data): self {
-		$this->outcome = new SimpleDataStore($data);
+		$this->outcome = $data;
 
 		return $this;
 	}

@@ -43,6 +43,7 @@ use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
@@ -412,29 +413,27 @@ class FederatedUserService {
 	 *
 	 * @return FederatedUser
 	 * @throws CircleNotFoundException
+	 * @throws FederatedItemException
 	 * @throws FederatedUserException
 	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
 	 * @throws MemberNotFoundException
 	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
+	 * @throws SingleCircleNotFoundException
 	 * @throws UnknownRemoteException
 	 * @throws UserTypeNotFoundException
-	 * @throws RemoteInstanceException
 	 */
 	public function getFederatedUser(string $federatedId, int $userType = Member::TYPE_USER): FederatedUser {
 		list($singleId, $instance) = $this->extractIdAndInstance($federatedId);
 
 		switch ($userType) {
 			case Member::TYPE_USER:
-				try {
-					return $this->getFederatedUser_User($singleId, $instance);
-				} catch (RemoteNotFoundException $e) {
-					throw new RemoteNotFoundException('Instance %s not found', ['instance' => $instance]);
-				} catch (Exception $e) {
-				}
+				return $this->getFederatedUser_User($singleId, $instance);
 
-				return $this->getFederatedUser_SingleId($singleId, $instance);
+//				return $this->getFederatedUser_SingleId($singleId, $instance);
 			case Member::TYPE_CIRCLE:
 				return $this->getFederatedUser_Circle($singleId, $instance);
 			case Member::TYPE_SINGLE:
@@ -488,6 +487,7 @@ class FederatedUserService {
 	 * @throws RemoteResourceNotFoundException
 	 * @throws SingleCircleNotFoundException
 	 * @throws UnknownRemoteException
+	 * @throws FederatedItemException
 	 */
 	private function getFederatedUser_User(string $userId, string $instance): FederatedUser {
 		if ($this->configService->isLocalInstance($instance)) {

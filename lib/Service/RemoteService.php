@@ -40,6 +40,7 @@ use daita\MySmallPhpTools\Model\SimpleDataStore;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
@@ -309,6 +310,7 @@ class RemoteService extends NC21Signature {
 	 * @throws RemoteResourceNotFoundException
 	 * @throws UnknownRemoteException
 	 * @throws FederatedUserException
+	 * @throws FederatedItemException
 	 */
 	public function getFederatedUserFromInstance(
 		string $userId,

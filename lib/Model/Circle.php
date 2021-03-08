@@ -222,14 +222,6 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 	public function setConfig(int $config): self {
 		$this->config = $config;
 
-//		$this->hidden = false;
-//		foreach (array_keys(self::$DEF) as $def) {
-//			if ($this->isType($def) && substr(self::$DEF[$def], 0, 1) === '*') {
-//				$this->setHidden(true);
-//				break;
-//			}
-//		}
-
 		return $this;
 	}
 
@@ -496,25 +488,6 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 	}
 
 
-//	/**
-//	 * @param bool $hidden
-//	 *
-//	 * @return Circle
-//	 */
-//	public function setHidden(bool $hidden): self {
-//		$this->hidden = $hidden;
-//
-//		return $this;
-//	}
-//
-//	/**
-//	 * @return bool
-//	 */
-//	public function isHidden(): bool {
-//		return $this->hidden;
-//	}
-
-
 	/**
 	 * @param array $memberOf
 	 *
@@ -608,7 +581,6 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 			'config'      => $this->getConfig(),
 			'description' => $this->getDescription(),
 			'settings'    => $this->getSettings(),
-			//			'hidden'      => $this->isHidden(),
 			'creation'    => $this->getCreation()
 		];
 

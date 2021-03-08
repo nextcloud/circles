@@ -169,7 +169,7 @@ class RemoteUpstreamService {
 			$event
 		);
 
-		$this->manageRequestOutcome($event, $data);
+		$event->setOutcome($data);
 	}
 
 
@@ -339,17 +339,6 @@ class RemoteUpstreamService {
 ////		$this->deprecatedEvents();
 //
 //	}
-
-
-	/**
-	 * @param FederatedEvent $event
-	 * @param array $result
-	 */
-	private function manageRequestOutcome(FederatedEvent $event, array $result): void {
-		$outcome = new SimpleDataStore($result);
-
-		$event->setOutcome($outcome->gArray('data'));
-	}
 
 }
 

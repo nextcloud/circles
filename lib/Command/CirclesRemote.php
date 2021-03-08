@@ -478,13 +478,13 @@ class CirclesRemote extends Base {
 	 * @throws Exception
 	 */
 	private function getRemoteType(): string {
-		$type = ucfirst(strtolower($this->input->getOption('type')));
-
-		if (!in_array($type, RemoteInstance::$LIST_TYPE)) {
-			throw new Exception('Unknown type: ' . implode(', ', RemoteInstance::$LIST_TYPE));
+		foreach (RemoteInstance::$LIST_TYPE as $type) {
+			if (strtolower($this->input->getOption('type')) === strtolower($type)) {
+				return $type;
+			}
 		}
 
-		return $type;
+		throw new Exception('Unknown type: ' . implode(', ', RemoteInstance::$LIST_TYPE));
 	}
 
 }

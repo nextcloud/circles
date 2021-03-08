@@ -167,7 +167,7 @@ class RemoteController extends Controller {
 		try {
 			$this->remoteDownstreamService->requestedEvent($event);
 
-			return new DataResponse($event->getOutcome()->jsonSerialize());
+			return new DataResponse($event->getOutcome());
 		} catch (Exception $e) {
 			return $this->exceptionResponse($e);
 		}
@@ -254,7 +254,7 @@ class RemoteController extends Controller {
 		} catch (Exception $e) {
 			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
 		}
-		\OC::$server->getLogger()->log(3, '___');
+		
 		try {
 			$circle = $this->circleService->getCircle($circleId);
 
@@ -305,6 +305,8 @@ class RemoteController extends Controller {
 		try {
 			$this->extractDataFromFromRequest();
 		} catch (Exception $e) {
+			$this->e($e);
+
 			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
 		}
 

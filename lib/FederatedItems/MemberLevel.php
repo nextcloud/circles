@@ -101,7 +101,7 @@ class MemberLevel implements
 
 		$outcomeMember = clone $member;
 		$outcomeMember->setLevel($level);
-		$event->setOutcome(['member' => $outcomeMember]);
+		$event->setOutcome($outcomeMember->jsonSerialize());
 	}
 
 

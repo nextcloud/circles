@@ -147,7 +147,7 @@ class CircleJoin implements
 		// TODO: check Config on Circle to know if we set Level to 1 or just send a join request
 		$member->setLevel(Member::LEVEL_MEMBER);
 		$member->setStatus(Member::STATUS_MEMBER);
-		$event->setOutcome(['member' => $member]);
+		$event->setOutcome($member->jsonSerialize());
 
 		$event->setMember($member);
 

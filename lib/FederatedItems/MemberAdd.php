@@ -188,7 +188,7 @@ class MemberAdd implements
 		// TODO: check Config on Circle to know if we set Level to 1 or just send an invitation
 		$member->setLevel(Member::LEVEL_MEMBER);
 		$member->setStatus(Member::STATUS_MEMBER);
-		$event->setOutcome(['member' => $member]);
+		$event->setOutcome($member->jsonSerialize());
 
 		// TODO: Managing cached name
 		//		$member->setCachedName($eventMember->getCachedName());
