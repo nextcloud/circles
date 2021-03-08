@@ -80,7 +80,7 @@ class LocalController extends OcsController {
 
 
 	/**
-	 * BaseController constructor.
+	 * LocalController constructor.
 	 *
 	 * @param string $appName
 	 * @param IRequest $request
@@ -118,7 +118,7 @@ class LocalController extends OcsController {
 	public function create(string $name, bool $personal = false): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
-			$circle = $this->circleService->create($name);
+			$circle = $this->circleService->create($name, null, $personal);
 
 			return new DataResponse($circle->jsonSerialize());
 		} catch (Exception $e) {

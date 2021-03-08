@@ -9,7 +9,7 @@ declare(strict_types=1);
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Maxence Lange <maxence@artificial-owl.com>
  * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
@@ -29,15 +29,46 @@ declare(strict_types=1);
  */
 
 
-namespace OCA\Circles\Exceptions;
+namespace OCA\Circles;
 
 
 /**
- * Class SingleCircleNotFoundException
+ * Class StatusCode
  *
- * @package OCA\Circles\Exceptions
+ * @package OCA\Circles
  */
-class SingleCircleNotFoundException extends FederatedItemServerException {
+class StatusCode {
+
+
+	static $CIRCLE_CREATE = [
+		120 => 'Duplicate name'
+	];
+
+	static $CIRCLE_CONFIG = [
+		120 => 'Invalid configuration'
+	];
+
+	static $CIRCLE_JOIN = [
+		120 => 'You are already a member',
+		121 => 'Circle is full',
+	];
+
+	static $CIRCLE_LEAVE = [
+	];
+
+	static $MEMBER_ADD = [
+		120 => 'Unknown entity',
+		121 => 'Already member of the circle',
+		122 => 'Circle is full',
+		123 => 'The designed circle cannot be added'
+	];
+
+	static $MEMBER_LEVEL = [
+		120 => 'The designed member\'s level is too high'
+	];
+
+	static $MEMBER_REMOVE = [
+		120 => 'The designed member\'s level is too high',
+	];
 
 }
-

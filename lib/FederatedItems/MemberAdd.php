@@ -49,7 +49,6 @@ use OCA\Circles\Exceptions\FederatedItemServerException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
-use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
@@ -75,6 +74,7 @@ use OCA\Circles\Service\CircleEventService;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\StatusCode;
 use OCP\IL10N;
 use OCP\IUser;
 use OCP\IUserManager;
@@ -171,10 +171,7 @@ class MemberAdd implements
 			$federatedUser =
 				$this->federatedUserService->getFederatedUser($federatedId, $member->getUserType());
 		} catch (MemberNotFoundException $e) {
-			throw new MemberNotFoundException(
-				ucfirst(Member::$DEF_TYPE[$member->getUserType()]) . ' \'%s\' not found',
-				['member' => $member->getUserId() . '@' . $member->getInstance()]
-			);
+			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[120], 120);
 		}
 
 		$member->importFromIFederatedUser($federatedUser);
@@ -182,10 +179,7 @@ class MemberAdd implements
 		try {
 			$knownMember = $this->memberRequest->searchMember($member);
 			// TODO: maybe member is requesting access
-			throw new MemberAlreadyExistsException(
-				ucfirst(Member::$DEF_TYPE[$member->getUserType()]) . ' %s is already a member',
-				['member' => $member->getUserId() . '@' . $member->getInstance()]
-			);
+			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[121], 121);
 		} catch (MemberNotFoundException $e) {
 		}
 

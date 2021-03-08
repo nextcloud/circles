@@ -122,6 +122,7 @@ class CircleService {
 	/**
 	 * @param string $name
 	 * @param FederatedUser|null $owner
+	 * @param bool $personal
 	 *
 	 * @return SimpleDataStore
 	 * @throws FederatedEventException
@@ -135,7 +136,12 @@ class CircleService {
 	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
 	 */
-	public function create(string $name, ?FederatedUser $owner = null): SimpleDataStore {
+	public function create(
+		string $name,
+		?FederatedUser $owner = null,
+		bool $personal = false
+	): SimpleDataStore {
+
 		$this->federatedUserService->mustHaveCurrentUser();
 		if (is_null($owner)) {
 			$owner = $this->federatedUserService->getCurrentUser();
@@ -144,6 +150,9 @@ class CircleService {
 		$circle = new Circle();
 		$circle->setName($name);
 		$circle->setId($this->token(ManagedModel::ID_LENGTH));
+		if ($personal) {
+			$circle->setConfig(Circle::CFG_SINGLE);
+		}
 
 		$member = new Member();
 		$member->importFromIFederatedUser($owner);
