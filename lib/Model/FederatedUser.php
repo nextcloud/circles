@@ -226,7 +226,7 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 	 * @return INC21QueryRow
 	 */
 	public function importFromDatabase(array $data, string $prefix = ''): INC21QueryRow {
-		$this->setSingleId($this->get($prefix . 'member_id', $data));
+		$this->setSingleId($this->get($prefix . 'single_id', $data));
 		$this->setUserId($this->get($prefix . 'user_id', $data));
 		$this->setUserType($this->getInt($prefix . 'user_type', $data));
 		$this->setInstance($this->get($prefix . 'instance', $data));

@@ -29,39 +29,42 @@ declare(strict_types=1);
  */
 
 
-namespace OCA\Circles\Service;
+namespace OCA\Circles\Search;
 
 
-use OCP\IL10N;
+use OCA\Circles\Db\MemberRequest;
+use OCA\Circles\ISearch;
 
 
 /**
- * Class ExceptionService
+ * Class FederatedUsers
  *
- * @package OCA\Circles\Service
+ * @package OCA\Circles\Search
  */
-class ExceptionService {
+class FederatedUsers implements ISearch {
 
 
-	/** @var IL10N */
-	private $l10n;
+	/** @var MemberRequest */
+	private $memberRequest;
 
 
 	/**
-	 * ExceptionService constructor.
+	 * LocalUsers constructor.
 	 *
-	 * @param IL10N $l10n
+	 * @param MemberRequest $memberRequest
 	 */
-	public function __construct(IL10N $l10n) {
-		$this->l10n = $l10n;
+	public function __construct(MemberRequest $memberRequest) {
+		$this->memberRequest = $memberRequest;
 	}
 
 
 	/**
-	 * @return IL10N
+	 * @param string $needle
+	 *
+	 * @return array
 	 */
-	public function getL10n(): IL10N {
-		return $this->l10n;
+	public function search(string $needle): array {
+		return $this->memberRequest->searchFederatedUsers($needle);
 	}
 
 }

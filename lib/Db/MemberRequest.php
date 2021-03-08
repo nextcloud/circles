@@ -273,5 +273,19 @@ class MemberRequest extends MemberRequestBuilder {
 		return $this->getItemFromRequest($qb);
 	}
 
+
+	/**
+	 * @param string $needle
+	 *
+	 * @return FederatedUser[]
+	 */
+	public function searchFederatedUsers(string $needle): array {
+		$qb = $this->getMemberSelectSql();
+		$qb->searchInDBField('user_id', '%' . $needle . '%');
+		$qb->groupBy('single_id');
+
+		return $this->getItemsFromRequest($qb, true);
+	}
+
 }
 

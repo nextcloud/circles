@@ -44,6 +44,7 @@ use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
+use OCA\Circles\Service\SearchService;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCS\OCSException;
 use OCP\AppFramework\OCSController;
@@ -75,6 +76,9 @@ class LocalController extends OcsController {
 	/** @var MemberService */
 	private $memberService;
 
+	/** @var SearchService */
+	private $searchService;
+
 	/** @var ConfigService */
 	protected $configService;
 
@@ -88,18 +92,20 @@ class LocalController extends OcsController {
 	 * @param FederatedUserService $federatedUserService
 	 * @param CircleService $circleService
 	 * @param MemberService $memberService
+	 * @param SearchService $searchService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		string $appName, IRequest $request, IUserSession $userSession,
 		FederatedUserService $federatedUserService, CircleService $circleService,
-		MemberService $memberService, ConfigService $configService
+		MemberService $memberService, SearchService $searchService, ConfigService $configService
 	) {
 		parent::__construct($appName, $request);
 		$this->userSession = $userSession;
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
 		$this->memberService = $memberService;
+		$this->searchService = $searchService;
 		$this->configService = $configService;
 
 		$this->setup('app', 'circles');
@@ -121,6 +127,25 @@ class LocalController extends OcsController {
 			$circle = $this->circleService->create($name, null, $personal);
 
 			return new DataResponse($circle->jsonSerialize());
+		} catch (Exception $e) {
+			throw new OcsException($e->getMessage(), $e->getCode());
+		}
+	}
+
+
+	/**
+	 * @NoAdminRequired
+	 *
+	 * @param string $needle
+	 *
+	 * @return DataResponse
+	 * @throws OCSException
+	 */
+	public function search(string $needle): DataResponse {
+		try {
+			$this->setCurrentFederatedUser();
+
+			return new DataResponse($this->searchService->search($needle));
 		} catch (Exception $e) {
 			throw new OcsException($e->getMessage(), $e->getCode());
 		}

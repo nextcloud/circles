@@ -1,12 +1,16 @@
 <?php
+
+declare(strict_types=1);
+
+
 /**
  * Circles - Bring cloud-users closer together.
  *
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@pontapreta.net>
- * @copyright 2017
+ * @author Maxence Lange <maxence@artificial-owl.com>
+ * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,78 +28,54 @@
  *
  */
 
+
 namespace OCA\Circles\Service;
 
 
+use OC;
 use OCA\Circles\ISearch;
-use OCP\IL10N;
-use OCP\IUserManager;
+use OCA\Circles\Model\FederatedUser;
+use OCA\Circles\Search\FederatedUsers;
 
+
+/**
+ * Class SearchService
+ *
+ * @package OCA\Circles\Service
+ */
 class SearchService {
 
-	/** @var IL10N */
-	private $l10n;
 
-	/** @var IUserManager */
-	private $userManager;
+	static $SERVICES = [
+		FederatedUsers::class
+	];
 
-	/** @var ConfigService */
-	private $configService;
-
-	/** @var MiscService */
-	private $miscService;
-
-	/** @var string[] */
-	private $searchList;
 
 	/**
 	 * MembersService constructor.
 	 *
-	 * @param IL10N $l10n
-	 * @param IUserManager $userManager
-	 * @param ConfigService $configService
-	 * @param MiscService $miscService
 	 */
-	public function __construct(
-		IL10N $l10n, IUserManager $userManager, ConfigService $configService,
-		MiscService $miscService
-	) {
-		$this->l10n = $l10n;
-		$this->userManager = $userManager;
-		$this->configService = $configService;
-		$this->miscService = $miscService;
-
-		$this->loadSearch();
+	public function __construct() {
 	}
 
 
 	/**
-	 * load list of search engine
+	 * @param string $needle
+	 *
+	 * @return FederatedUser[]
 	 */
-	public function loadSearch() {
-		$this->searchList = [
-			'OCA\Circles\Search\LocalUsers',
-			'OCA\Circles\Search\GlobalScaleUsers',
-			'OCA\Circles\Search\LocalGroups',
-			'OCA\Circles\Search\Contacts'
-		];
-	}
-
-
-	public function searchGlobal($str) {
+	public function search(string $needle): array {
 		$result = [];
-		foreach ($this->searchList as $container) {
-			$searcher = \OC::$server->query((string)$container);
 
-			if (!($searcher instanceof ISearch)) {
-				$this->miscService->log('Search ' . $container . ' is not compatible exception');
-				continue;
-			}
+		foreach (self::$SERVICES as $service) {
+			/** @var ISearch $service */
+			$service = OC::$server->get($service);
 
-			$result = array_merge($result, $searcher->search($str));
+			$result = array_merge($result, $service->search($needle));
 		}
 
 		return $result;
 	}
 
 }
+

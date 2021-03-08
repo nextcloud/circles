@@ -34,6 +34,7 @@ namespace OCA\Circles\Db;
 
 use daita\MySmallPhpTools\Exceptions\RowNotFoundException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 
 
@@ -74,13 +75,14 @@ class MemberRequestBuilder extends CoreQueryBuilder {
 	protected function getMemberSelectSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->select(
-			'm.circle_id', 'm.member_id', 'm.single_id', 'm.user_id', 'm.instance', 'm.user_type', 'm.level', 'm.status',
+			'm.circle_id', 'm.member_id', 'm.single_id', 'm.user_id', 'm.instance', 'm.user_type', 'm.level',
+			'm.status',
 			'm.note', 'm.contact_id', 'm.cached_name', 'm.cached_update', 'm.contact_meta',
 			'm.joined'
 		)
 		   ->from(self::TABLE_MEMBER, 'm')
 		   ->orderBy('m.joined')
-			->groupBy('m.member_id')
+		   ->groupBy('m.member_id')
 		   ->setDefaultSelectAlias('m');
 
 		return $qb;
@@ -124,13 +126,19 @@ class MemberRequestBuilder extends CoreQueryBuilder {
 
 	/**
 	 * @param CoreRequestBuilder $qb
+	 * @param bool $asFederatedUser
 	 *
-	 * @return Member[]
+	 * @return Member|FederatedUser[]
 	 */
-	public function getItemsFromRequest(CoreRequestBuilder $qb): array {
-		/** @var Member[] $result */
+	public function getItemsFromRequest(CoreRequestBuilder $qb, bool $asFederatedUser = false): array {
+		$object = Member::class;
+		if ($asFederatedUser) {
+			$object = FederatedUser::class;
+		}
+
+		/** @var Member|FederatedUser[] $result */
 		return $qb->asItems(
-			Member::class,
+			$object,
 			[
 				'local' => $this->configService->getFrontalInstance()
 			]

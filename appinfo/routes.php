@@ -28,6 +28,7 @@ return [
 	'ocs'    => [
 		['name' => 'Local#circles', 'url' => '/circles/', 'verb' => 'GET'],
 		['name' => 'Local#create', 'url' => '/circles/', 'verb' => 'POST'],
+		['name' => 'Local#search', 'url' => '/search/', 'verb' => 'POST'],
 		['name' => 'Local#members', 'url' => '/circles/{circleId}/members/', 'verb' => 'GET'],
 		['name' => 'Local#memberAdd', 'url' => '/circles/{circleId}/members/', 'verb' => 'POST'],
 		[
