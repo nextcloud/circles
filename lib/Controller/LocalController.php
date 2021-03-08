@@ -145,7 +145,7 @@ class LocalController extends OcsController {
 		try {
 			$this->setCurrentFederatedUser();
 
-			return new DataResponse($this->searchService->search($needle));
+			return new DataResponse($this->searchService->search($term));
 		} catch (Exception $e) {
 			throw new OcsException($e->getMessage(), $e->getCode());
 		}
