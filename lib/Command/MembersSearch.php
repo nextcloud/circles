@@ -77,7 +77,7 @@ class MembersSearch extends Base {
 		parent::configure();
 		$this->setName('circles:members:search')
 			 ->setDescription('Change the level of a member from a Circle')
-			 ->addArgument('needle', InputArgument::REQUIRED, 'search')
+			 ->addArgument('term', InputArgument::REQUIRED, 'term to search')
 			 ->addOption('json', '', InputOption::VALUE_NONE, 'return result as JSON')
 			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
 			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');

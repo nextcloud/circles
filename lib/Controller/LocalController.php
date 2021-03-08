@@ -136,12 +136,12 @@ class LocalController extends OcsController {
 	/**
 	 * @NoAdminRequired
 	 *
-	 * @param string $needle
+	 * @param string $term
 	 *
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
-	public function search(string $needle): DataResponse {
+	public function search(string $term): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
 
