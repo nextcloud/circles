@@ -126,7 +126,7 @@ class LocalController extends OcsController {
 			$this->setCurrentFederatedUser();
 			$circle = $this->circleService->create($name, null, $personal);
 
-			return new DataResponse($circle->jsonSerialize());
+			return new DataResponse($circle);
 		} catch (Exception $e) {
 			throw new OcsException($e->getMessage(), $e->getCode());
 		}
@@ -168,7 +168,7 @@ class LocalController extends OcsController {
 			$member = $this->federatedUserService->generateFederatedUser($userId, (int)$type);
 			$result = $this->memberService->addMember($circleId, $member);
 
-			return new DataResponse($result->jsonSerialize());
+			return new DataResponse($result);
 		} catch (Exception $e) {
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
@@ -188,7 +188,7 @@ class LocalController extends OcsController {
 			$this->setCurrentFederatedUser();
 			$result = $this->circleService->circleJoin($circleId);
 
-			return new DataResponse($result->jsonSerialize());
+			return new DataResponse($result);
 		} catch (Exception $e) {
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
@@ -213,11 +213,11 @@ class LocalController extends OcsController {
 			} else {
 				$level = Member::parseLevelString($level);
 			}
-			
+
 			$this->memberService->getMember($memberId, $circleId);
 			$result = $this->memberService->memberLevel($memberId, $level);
 
-			return new DataResponse($result->jsonSerialize());
+			return new DataResponse($result);
 		} catch (Exception $e) {
 			throw new OcsException($e->getMessage(), $e->getCode());
 		}
@@ -239,7 +239,7 @@ class LocalController extends OcsController {
 			$this->memberService->getMember($memberId, $circleId);
 			$result = $this->memberService->removeMember($memberId);
 
-			return new DataResponse($result->jsonSerialize());
+			return new DataResponse($result);
 		} catch (Exception $e) {
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}

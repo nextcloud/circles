@@ -46,6 +46,7 @@ use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\MembersLimitException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
@@ -124,7 +125,7 @@ class CircleService {
 	 * @param FederatedUser|null $owner
 	 * @param bool $personal
 	 *
-	 * @return SimpleDataStore
+	 * @return array
 	 * @throws FederatedEventException
 	 * @throws FederatedItemException
 	 * @throws InitiatorNotConfirmedException
@@ -132,9 +133,8 @@ class CircleService {
 	 * @throws OwnerNotFoundException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
+	 * @throws RemoteInstanceException
 	 */
 	public function create(
 		string $name,
@@ -182,10 +182,9 @@ class CircleService {
 	 * @throws InitiatorNotConfirmedException
 	 * @throws InitiatorNotFoundException
 	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
 	 */
 	public function updateConfig(string $circleId, int $config): array {
@@ -211,10 +210,9 @@ class CircleService {
 	 * @throws InitiatorNotConfirmedException
 	 * @throws InitiatorNotFoundException
 	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
 	 */
 	public function circleJoin(string $circleId): array {
