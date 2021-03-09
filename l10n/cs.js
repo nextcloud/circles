@@ -39,7 +39,7 @@ OC.L10N.register(
     "Are you sure you want to delete this circle?" : "Opravdu chcete smazat tento okruh?",
     "Mail Address" : "E-mailová adresa",
     "Contact" : "Kontakt",
-    "Remove from circle" : "Odebrat z kruhu",
+    "Remove from circle" : "Odebrat z okruhu",
     "Accept the request" : "Přijmout požadavek",
     "Dismiss the request" : "Skrýt požadavek",
     "Unlink this group" : "Odpojit tuto skupinu",
