@@ -312,6 +312,10 @@ class ConfigService {
 			$defaultValue = $this->defaults[$key];
 		}
 
+		if ($this->config->getSystemValue('circles.' . $key, '') !== '') {
+			return $this->config->getSystemValue('circles.' . $key);
+		}
+
 		return $this->config->getAppValue($this->appName, $key, $defaultValue);
 	}
 
@@ -691,8 +695,6 @@ class ConfigService {
 
 
 	public function patchFrontalLink(string $link) {
-		\OC::$server->getLogger()->log(1, 'debug patchFrontLink: ' . $link);
-
 		$frontal = $this->getAppValue(ConfigService::FRONTAL_CLOUD_ID);
 		if ($frontal === '') {
 			return $link;
