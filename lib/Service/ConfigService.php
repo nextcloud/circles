@@ -743,5 +743,16 @@ class ConfigService {
 		return rtrim($ncBase, '/') . $link;
 	}
 
+
+	/**
+	 * @return array
+	 */
+	public function getSettings(): array {
+		[
+			'membersLimit' => 50
+		];
+	}
+
+
 }
 

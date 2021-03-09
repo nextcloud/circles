@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 
@@ -72,6 +73,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
  */
 class Application extends App implements IBootstrap {
 
+
 	const APP_ID = 'circles';
 	const APP_NAME = 'Circles';
 
@@ -92,6 +94,8 @@ class Application extends App implements IBootstrap {
 
 
 	/**
+	 * Application constructor.
+	 *
 	 * @param array $params
 	 */
 	public function __construct(array $params = array()) {
@@ -103,6 +107,7 @@ class Application extends App implements IBootstrap {
 	 * @param IRegistrationContext $context
 	 */
 	public function register(IRegistrationContext $context): void {
+		$context->registerCapability(Capabilities::class);
 		$context->registerEventListener(UserDeletedEvent::class, UserDeleted::class);
 		$context->registerEventListener(GroupDeletedEvent::class, GroupDeleted::class);
 
