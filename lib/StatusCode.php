@@ -49,8 +49,9 @@ class StatusCode {
 	];
 
 	static $CIRCLE_JOIN = [
-		120 => 'You are already a member',
 		121 => 'Circle is full',
+		122 => 'You are already a member',
+		123 => 'Already requesting to join the circle'
 	];
 
 	static $CIRCLE_LEAVE = [
@@ -58,9 +59,11 @@ class StatusCode {
 
 	static $MEMBER_ADD = [
 		120 => 'Unknown entity',
-		121 => 'Already member of the circle',
-		122 => 'Circle is full',
-		123 => 'The designed circle cannot be added'
+		121 => 'Circle is full',
+		122 => 'Already member of the circle',
+		123 => 'Already invited into the circle',
+		124 => 'Member is blocked',
+		125 => 'The designed circle cannot be added'
 	];
 
 	static $MEMBER_LEVEL = [

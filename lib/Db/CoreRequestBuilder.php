@@ -167,10 +167,9 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 
 
 	/**
-	 * @param IFederatedUser $member
-	 * @param int $level
+	 * @param Member $member
 	 */
-	public function limitToMembership(IFederatedUser $member, int $level = Member::LEVEL_MEMBER): void {
+	public function limitToMembership(Member $member): void {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
@@ -184,15 +183,42 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 				 $expr->eq($alias . '.circle_id', $this->getDefaultSelectAlias() . '.unique_id')
 			 );
 
-		// TODO: Check in big table if it is better to put condition in andWhere() or in LeftJoin()
-		$this->andWhere(
-			$expr->andX(
-				$expr->eq($alias . '.user_id', $this->createNamedParameter($member->getUserId())),
-				$expr->eq($alias . '.user_type', $this->createNamedParameter($member->getUserType())),
-				$expr->eq($alias . '.instance', $this->createNamedParameter($this->getInstance($member))),
-				$expr->gte($alias . '.level', $this->createNamedParameter($level))
-			)
-		);
+		$this->filterMembership($member, $alias);
+	}
+
+
+	/**
+	 * @param Member $member
+	 * @param string $alias
+	 */
+	public function filterMembership(Member $member, string $alias = ''): void {
+		if ($this->getType() !== QueryBuilder::SELECT) {
+			return;
+		}
+
+		$alias = ($alias === '') ? $this->getDefaultSelectAlias() : $alias;
+		$expr = $this->expr();
+		$andX = $expr->andX();
+
+		if ($member->getUserId() !== '') {
+			$andX->add($expr->eq($alias . '.user_id', $this->createNamedParameter($member->getUserId())));
+		}
+
+		if ($member->getUserType() > 0) {
+			$andX->add($expr->eq($alias . '.user_type', $this->createNamedParameter($member->getUserType())));
+		}
+
+		if ($member->getInstance() !== '') {
+			$andX->add(
+				$expr->eq($alias . '.instance', $this->createNamedParameter($this->getInstance($member)))
+			);
+		}
+
+		if ($member->getLevel() > 0) {
+			$andX->add($expr->gte($alias . '.level', $this->createNamedParameter($member->getLevel())));
+		}
+
+		$this->andWhere($andX);
 	}
 
 

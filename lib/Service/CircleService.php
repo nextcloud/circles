@@ -32,8 +32,6 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 
-use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
-use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use daita\MySmallPhpTools\Traits\TStringTools;
@@ -58,6 +56,7 @@ use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
+use OCA\Circles\StatusCode;
 
 
 /**
@@ -272,10 +271,11 @@ class CircleService {
 	 * @throws MembersLimitException
 	 */
 	public function confirmCircleNotFull(Circle $circle): void {
-//		if ($this->isCircleFull($circle)) {
-//			throw new MembersLimitException('Circle \'%s\' is full and cannot accept more members', ['circleName' => $circle->getDisplayName()]);
-//		}
+		if ($this->isCircleFull($circle)) {
+			throw new MembersLimitException(StatusCode::$MEMBER_ADD[121], 121);
+		}
 	}
+
 
 	/**
 	 * @param Circle $circle
@@ -283,7 +283,9 @@ class CircleService {
 	 * @return bool
 	 */
 	public function isCircleFull(Circle $circle): bool {
-		$members = $this->memberRequest->getMembers($circle->getId());
+		$filter = new Member();
+		$filter->setLevel(Member::LEVEL_MEMBER);
+		$members = $this->memberRequest->getMembers($circle->getId(), null, null, $filter);
 
 		$limit = $this->getInt('members_limit', $circle->getSettings());
 		if ($limit === -1) {

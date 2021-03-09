@@ -184,9 +184,9 @@ class FederatedEventService extends NC21Signature {
 				return $event->getOutcome();
 			}
 
-			if (!$event->isAsync()) {
-				$federatedItem->manage($event);
-			}
+//			if (!$event->isAsync()) {
+//				$federatedItem->manage($event);
+//			}
 		}
 
 		return $event->getOutcome();

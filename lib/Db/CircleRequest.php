@@ -168,7 +168,7 @@ class CircleRequest extends CircleRequestBuilder {
 			$qb->limitToInitiator($initiator);
 		}
 		if (!is_null($filter)) {
-			$qb->limitToMembership($filter, $filter->getLevel());
+			$qb->limitToMembership($filter);
 		}
 		if (!is_null($remoteInstance)) {
 			$qb->limitToRemoteInstance($remoteInstance->getInstance(), false);
@@ -243,7 +243,15 @@ class CircleRequest extends CircleRequestBuilder {
 	public function getSingleCircle(IFederatedUser $initiator): Circle {
 		$qb = $this->getCircleSelectSql();
 		$qb->leftJoinOwner();
-		$qb->limitToMembership($initiator, Member::LEVEL_OWNER);
+
+		$member = clone $initiator;
+		if ($initiator instanceof FederatedUser) {
+			$member = new Member();
+			$member->importFromIFederatedUser($initiator);
+			$member->setLevel(Member::LEVEL_OWNER);
+		}
+
+		$qb->limitToMembership($member);
 		$qb->limitToConfig(Circle::CFG_SINGLE);
 
 		try {

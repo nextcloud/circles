@@ -207,7 +207,8 @@ class MembersList extends Base {
 					Member::$DEF_TYPE[$member->getUserType()],
 					$member->getUserId(),
 					($member->getInstance() === $local) ? '' : $member->getInstance(),
-					Member::$DEF_LEVEL[$member->getLevel()]
+					$member->getLevel() > 0 ? Member::$DEF_LEVEL[$member->getLevel()] :
+						'(' . strtolower($member->getStatus()) . ')'
 				]
 			);
 		}

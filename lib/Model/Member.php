@@ -69,12 +69,10 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	const TYPE_MAIL = 3;
 	const TYPE_CONTACT = 4;
 
-	const STATUS_NONMEMBER = 'Unknown';
 	const STATUS_INVITED = 'Invited';
 	const STATUS_REQUEST = 'Requesting';
 	const STATUS_MEMBER = 'Member';
 	const STATUS_BLOCKED = 'Blocked';
-	const STATUS_KICKED = 'Kicked';
 
 
 	public static $DEF_LEVEL = [
@@ -105,7 +103,7 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	private $userId = '';
 
 	/** @var int */
-	private $userType = self::TYPE_USER;
+	private $userType = 0;
 
 	/** @var string */
 	private $instance = '';
@@ -466,14 +464,6 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	 */
 	public function getJoined(): int {
 		return $this->joined;
-	}
-
-
-	/**
-	 * @return bool
-	 */
-	public function isMember(): bool {
-		return ($this->level > 0);
 	}
 
 

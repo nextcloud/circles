@@ -143,7 +143,6 @@ class RemoteDownstreamService {
 		$this->confirmContent($event, true);
 
 		$item->verify($event);
-
 		if ($event->isDataRequestOnly()) {
 			return;
 		}
@@ -151,7 +150,8 @@ class RemoteDownstreamService {
 		$filter = [];
 		if (!$event->isAsync()) {
 			$item->manage($event);
-			$filter[] = $event->getIncomingOrigin();
+			// we dont filter anymore as some data might be change during the remote verify()
+//			$filter[] = $event->getIncomingOrigin();
 		}
 
 		$this->federatedEventService->initBroadcast($event, $filter);

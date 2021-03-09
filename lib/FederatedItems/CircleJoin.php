@@ -44,16 +44,18 @@ use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemInitiatorMembershipNotRequired;
+use OCA\Circles\IFederatedItemMemberCheckNotRequired;
 use OCA\Circles\IFederatedItemMemberOptional;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\FederatedUser;
-use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleEventService;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\StatusCode;
 use OCP\IUserManager;
 
 
@@ -65,6 +67,7 @@ use OCP\IUserManager;
 class CircleJoin implements
 	IFederatedItem,
 	IFederatedItemInitiatorMembershipNotRequired,
+	IFederatedItemMemberCheckNotRequired,
 	IFederatedItemMemberOptional {
 
 
@@ -124,39 +127,21 @@ class CircleJoin implements
 		$circle = $event->getCircle();
 		$initiator = $circle->getInitiator();
 
-		$initiatorHelper = new MemberHelper($initiator);
-		$initiatorHelper->cannotBeMember();
+//		$initiatorHelper = new MemberHelper($initiator);
+//		$initiatorHelper->cannotBeMember();
 
 		$member = new Member();
 		$member->importFromIFederatedUser($initiator);
-
-		try {
-			$knownMember = $this->memberRequest->searchMember($member);
-			// TODO: maybe member is already invited
-			throw new MemberAlreadyExistsException(
-				ucfirst(Member::$DEF_TYPE[$member->getUserType()]) . ' %s is already a member',
-				['member' => $member->getUserId() . '@' . $member->getInstance()]
-			);
-		} catch (MemberNotFoundException $e) {
-
-		}
-
-		$member->setId($this->uuid(ManagedModel::ID_LENGTH));
 		$member->setCircleId($circle->getId());
-
-		// TODO: check Config on Circle to know if we set Level to 1 or just send a join request
-		$member->setLevel(Member::LEVEL_MEMBER);
-		$member->setStatus(Member::STATUS_MEMBER);
-		$event->setOutcome($member->jsonSerialize());
-
-		$event->setMember($member);
-
-		// TODO: Managing cached name
-		//		$member->setCachedName($eventMember->getCachedName());
+		$this->manageMemberStatus($circle, $member);
 
 		$this->circleService->confirmCircleNotFull($circle);
 
-		// TODO: check if it is a member or a mail or a circle and fix the returned message
+		$event->setMember($member)
+			  ->setOutcome($member->jsonSerialize());
+
+		// TODO: Managing cached name
+		//		$member->setCachedName($eventMember->getCachedName());
 
 		return;
 
@@ -267,6 +252,52 @@ class CircleJoin implements
 	 * @throws Exception
 	 */
 	public function result(array $events): void {
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 * @param Member $member
+	 *
+	 * @throws FederatedItemBadRequestException
+	 */
+	private function manageMemberStatus(Circle $circle, Member $member) {
+		try {
+
+			$knownMember = $this->memberRequest->searchMember($member);
+			if ($knownMember->getLEvel() === Member::LEVEL_NONE) {
+				switch ($knownMember->getStatus()) {
+
+					case Member::STATUS_BLOCKED:
+						throw new Exception('TODOTODOTODO');
+
+					case Member::STATUS_REQUEST:
+						throw new MemberAlreadyExistsException(StatusCode::$CIRCLE_JOIN[123], 123);
+
+					case Member::STATUS_INVITED:
+						$member->setLevel(Member::LEVEL_MEMBER);
+						$member->setStatus(Member::STATUS_MEMBER);
+
+						return;
+				}
+			}
+
+			throw new MemberAlreadyExistsException(StatusCode::$CIRCLE_JOIN[122], 122);
+		} catch (MemberNotFoundException $e) {
+
+			if (!$circle->isConfig(Circle::CFG_OPEN)) {
+				throw new Exception('TODO TODO TODO - circle not open, cannot join!');
+			}
+
+			$member->setId($this->uuid(ManagedModel::ID_LENGTH));
+
+			if ($circle->isConfig(Circle::CFG_REQUEST)) {
+				$member->setStatus(Member::STATUS_REQUEST);
+			} else {
+				$member->setLevel(Member::LEVEL_MEMBER);
+				$member->setStatus(Member::STATUS_MEMBER);
+			}
+		}
 	}
 
 }

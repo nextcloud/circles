@@ -27,7 +27,7 @@
 namespace OCA\Circles\Exceptions;
 
 
-class MembersLimitException extends FederatedItemForbiddenException {
+class MembersLimitException extends FederatedItemBadRequestException {
 
 }
 

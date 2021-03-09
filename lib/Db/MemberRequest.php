@@ -158,13 +158,15 @@ class MemberRequest extends MemberRequestBuilder {
 	 * @param string $circleId
 	 * @param IFederatedUser|null $initiator
 	 * @param RemoteInstance|null $remoteInstance
+	 * @param Member|null $filter
 	 *
 	 * @return Circle[]
 	 */
 	public function getMembers(
 		string $circleId,
 		?IFederatedUser $initiator = null,
-		?RemoteInstance $remoteInstance = null
+		?RemoteInstance $remoteInstance = null,
+		?Member $filter = null
 	): array {
 		$qb = $this->getMemberSelectSql();
 		$qb->limitToCircleId($circleId);
@@ -172,6 +174,10 @@ class MemberRequest extends MemberRequestBuilder {
 
 		if (!is_null($remoteInstance)) {
 			$qb->limitToRemoteInstance($remoteInstance->getInstance(), true);
+		}
+
+		if (!is_null($filter)) {
+			$qb->filterMembership($filter);
 		}
 
 		$qb->orderBy($qb->getDefaultSelectAlias() . '.level', 'desc');

@@ -42,7 +42,7 @@ use OC\User\NoUserException;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedItemBadRequestException;
-use OCA\Circles\Exceptions\FederatedItemForbiddenException;
+use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedItemNotFoundException;
 use OCA\Circles\Exceptions\FederatedItemRemoteException;
 use OCA\Circles\Exceptions\FederatedItemServerException;
@@ -62,6 +62,7 @@ use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemMemberCheckNotRequired;
 use OCA\Circles\IFederatedItemMemberRequired;
 use OCA\Circles\IFederatedUser;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\Federated\FederatedEvent;
@@ -151,17 +152,15 @@ class MemberAdd implements
 	 * @param FederatedEvent $event
 	 *
 	 * @throws FederatedItemBadRequestException
-	 * @throws FederatedItemForbiddenException
 	 * @throws FederatedItemNotFoundException
 	 * @throws FederatedItemServerException
 	 * @throws FederatedItemRemoteException
+	 * @throws FederatedItemException
 	 */
 	public function verify(FederatedEvent $event): void {
 		$member = $event->getMember();
 		$circle = $event->getCircle();
 		$initiator = $circle->getInitiator();
-
-		$member->setCircleId($circle->getId());
 
 		$initiatorHelper = new MemberHelper($initiator);
 		$initiatorHelper->mustBeModerator();
@@ -175,26 +174,15 @@ class MemberAdd implements
 		}
 
 		$member->importFromIFederatedUser($federatedUser);
+		$member->setCircleId($circle->getId());
+		$this->manageMemberStatus($circle, $member);
 
-		try {
-			$knownMember = $this->memberRequest->searchMember($member);
-			// TODO: maybe member is requesting access
-			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[121], 121);
-		} catch (MemberNotFoundException $e) {
-		}
-
-		$member->setId($this->uuid(ManagedModel::ID_LENGTH));
-
-		// TODO: check Config on Circle to know if we set Level to 1 or just send an invitation
-		$member->setLevel(Member::LEVEL_MEMBER);
-		$member->setStatus(Member::STATUS_MEMBER);
-		$event->setOutcome($member->jsonSerialize());
+		$this->circleService->confirmCircleNotFull($circle);
 
 		// TODO: Managing cached name
 		//		$member->setCachedName($eventMember->getCachedName());
-		$this->circleService->confirmCircleNotFull($circle);
 
-		// TODO: check if it is a member or a mail or a circle and fix the returned message
+		$event->setOutcome($member->jsonSerialize());
 
 		return;
 
@@ -237,13 +225,6 @@ class MemberAdd implements
 		$member = $event->getMember();
 
 		try {
-			$this->memberRequest->getMember($member->getId());
-
-			return;
-		} catch (MemberNotFoundException $e) {
-		}
-
-		try {
 			$federatedUser = new FederatedUser();
 			$federatedUser->importFromIFederatedUser($member);
 			$this->federatedUserService->confirmLocalSingleId($federatedUser);
@@ -253,7 +234,7 @@ class MemberAdd implements
 			return;
 		}
 
-		$this->memberRequest->save($member);
+		$this->memberRequest->insertOrUpdate($member);
 
 		$this->circleEventService->onMemberAdded($event);
 
@@ -329,6 +310,52 @@ class MemberAdd implements
 //				$this->memberIsMailbox($circle, $recipient, $links, $password);
 //			}
 //		}
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 * @param Member $member
+	 *
+	 * @throws FederatedItemBadRequestException
+	 */
+	private function manageMemberStatus(Circle $circle, Member $member) {
+		try {
+			$knownMember = $this->memberRequest->searchMember($member);
+			$member->setId($knownMember->getId());
+
+			if ($knownMember->getLevel() === Member::LEVEL_NONE) {
+				switch ($knownMember->getStatus()) {
+					case Member::STATUS_BLOCKED:
+						if ($circle->isConfig(Circle::CFG_INVITE)) {
+							$member->setStatus(Member::STATUS_INVITED);
+						}
+
+						return;
+
+					case Member::STATUS_REQUEST:
+						$member->setLevel(Member::LEVEL_MEMBER);
+						$member->setStatus(Member::STATUS_MEMBER);
+
+						return;
+
+					case Member::STATUS_INVITED:
+						throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[123], 123);
+				}
+			}
+
+			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[122], 122);
+		} catch (MemberNotFoundException $e) {
+
+			$member->setId($this->uuid(ManagedModel::ID_LENGTH));
+
+			if ($circle->isConfig(Circle::CFG_INVITE)) {
+				$member->setStatus(Member::STATUS_INVITED);
+			} else {
+				$member->setLevel(Member::LEVEL_MEMBER);
+				$member->setStatus(Member::STATUS_MEMBER);
+			}
+		}
 	}
 
 
