@@ -38,7 +38,6 @@ use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\CirclesService;
-use OCA\Circles\Service\FederatedLinkService;
 use OCA\Circles\Service\MembersService;
 use OCA\Circles\Service\SharingFrameService;
 use OCP\AppFramework\QueryException;
@@ -428,27 +427,6 @@ class Circles {
 
 		return $c->query(SharingFrameService::class)
 				 ->getFrameFromCircle($circleUniqueId);
-	}
-
-
-	/**
-	 * Circles::linkCircle();
-	 *
-	 * Initiate a link procedure. Current user must be at least Admin of the circle.
-	 * circleId is the local circle and remote is the target for the link.
-	 * Remote format is: <circle_name>@<remote_host> when remote_host must be a valid HTTPS address.
-	 * Remote format is: <circle_name>@<remote_host> when remote_host must be a valid HTTPS address.
-	 *
-	 * @param string $circleUniqueId
-	 * @param string $remote
-	 *
-	 * @return FederatedLink
-	 */
-	public static function linkCircle($circleUniqueId, $remote) {
-		$c = self::getContainer();
-
-		return $c->query(FederatedLinkService::class)
-				 ->linkCircle($circleUniqueId, $remote);
 	}
 
 

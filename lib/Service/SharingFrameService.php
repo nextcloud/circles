@@ -77,8 +77,6 @@ class SharingFrameService {
 	/** @var BroadcastService */
 	private $broadcastService;
 
-	/** @var FederatedLinkService */
-	private $federatedLinkService;
 
 	/** @var IClientService */
 	private $clientService;
@@ -98,7 +96,6 @@ class SharingFrameService {
 	 * @param DeprecatedCirclesRequest $circlesRequest
 	 * @param FederatedLinksRequest $federatedLinksRequest
 	 * @param BroadcastService $broadcastService
-	 * @param FederatedLinkService $federatedLinkService
 	 * @param IClientService $clientService
 	 * @param MiscService $miscService
 	 */
@@ -111,7 +108,6 @@ class SharingFrameService {
 		DeprecatedCirclesRequest $circlesRequest,
 		FederatedLinksRequest $federatedLinksRequest,
 		BroadcastService $broadcastService,
-		FederatedLinkService $federatedLinkService,
 		IClientService $clientService,
 		MiscService $miscService
 	) {
@@ -130,7 +126,6 @@ class SharingFrameService {
 		$this->circlesRequest = $circlesRequest;
 		$this->federatedLinksRequest = $federatedLinksRequest;
 		$this->broadcastService = $broadcastService;
-		$this->federatedLinkService = $federatedLinkService;
 		$this->clientService = $clientService;
 		$this->miscService = $miscService;
 	}
@@ -323,16 +318,6 @@ class SharingFrameService {
 	}
 
 
-	/**
-	 * @param string $remote
-	 *
-	 * @return string
-	 */
-	private function generatePayloadDeliveryURL($remote) {
-		return $this->configService->generateRemoteHost($remote) .
-			   $this->urlGenerator->linkToRoute('circles.Shares.initShareDelivery');
-	}
-
 
 	/**
 	 * @param SharingFrame $frame
@@ -340,22 +325,22 @@ class SharingFrameService {
 	 * @throws Exception
 	 */
 	public function forwardSharingFrame(SharingFrame $frame) {
-
-		try {
-			$circle = $this->circlesRequest->forceGetCircle(
-				$frame->getCircle()
-					  ->getUniqueId()
-			);
-		} catch (CircleDoesNotExistException $e) {
-			throw new CircleDoesNotExistException('unknown_circle');
-		}
-
-		$links = $this->federatedLinksRequest->getLinksFromCircle(
-			$frame->getCircle()
-				  ->getUniqueId(), FederatedLink::STATUS_LINK_UP
-		);
-
-		$this->forwardSharingFrameToFederatedLinks($circle, $frame, $links);
+//
+//		try {
+//			$circle = $this->circlesRequest->forceGetCircle(
+//				$frame->getCircle()
+//					  ->getUniqueId()
+//			);
+//		} catch (CircleDoesNotExistException $e) {
+//			throw new CircleDoesNotExistException('unknown_circle');
+//		}
+//
+//		$links = $this->federatedLinksRequest->getLinksFromCircle(
+//			$frame->getCircle()
+//				  ->getUniqueId(), FederatedLink::STATUS_LINK_UP
+//		);
+//
+//		$this->forwardSharingFrameToFederatedLinks($circle, $frame, $links);
 	}
 
 
@@ -365,17 +350,17 @@ class SharingFrameService {
 	 * @param FederatedLink[] $links
 	 */
 	private function forwardSharingFrameToFederatedLinks(DeprecatedCircle $circle, SharingFrame $frame, $links) {
-
-		$args = [
-			'apiVersion' => Circles::version(),
-			'uniqueId'   => $circle->getUniqueId(true),
-			'item'       => json_encode($frame)
-		];
-
-		foreach ($links as $link) {
-			$args['token'] = $link->getToken(true);
-			$this->deliverSharingFrameToLink($link, $args);
-		}
+//
+//		$args = [
+//			'apiVersion' => Circles::version(),
+//			'uniqueId'   => $circle->getUniqueId(true),
+//			'item'       => json_encode($frame)
+//		];
+//
+//		foreach ($links as $link) {
+//			$args['token'] = $link->getToken(true);
+//			$this->deliverSharingFrameToLink($link, $args);
+//		}
 	}
 
 
@@ -386,27 +371,27 @@ class SharingFrameService {
 	 * @param array $args
 	 */
 	private function deliverSharingFrameToLink($link, $args) {
-
-		$client = $this->clientService->newClient();
-		try {
-			$request = $client->put(
-				$this->generatePayloadDeliveryURL($link->getAddress()), [
-																		  'body'            => $args,
-																		  'timeout'         => 10,
-																		  'connect_timeout' => 10,
-																	  ]
-			);
-
-			$result = json_decode($request->getBody(), true);
-			if ($result['status'] === -1) {
-				throw new PayloadDeliveryException($result['reason']);
-			}
-
-		} catch (Exception $e) {
-			$this->miscService->log(
-				'fail to send frame to ' . $link->getAddress() . ' - ' . $e->getMessage()
-			);
-		}
+//
+//		$client = $this->clientService->newClient();
+//		try {
+//			$request = $client->put(
+//				$this->generatePayloadDeliveryURL($link->getAddress()), [
+//																		  'body'            => $args,
+//																		  'timeout'         => 10,
+//																		  'connect_timeout' => 10,
+//																	  ]
+//			);
+//
+//			$result = json_decode($request->getBody(), true);
+//			if ($result['status'] === -1) {
+//				throw new PayloadDeliveryException($result['reason']);
+//			}
+//
+//		} catch (Exception $e) {
+//			$this->miscService->log(
+//				'fail to send frame to ' . $link->getAddress() . ' - ' . $e->getMessage()
+//			);
+//		}
 	}
 
 
@@ -414,7 +399,7 @@ class SharingFrameService {
 	 * @param SharingFrame $frame
 	 */
 	public function updateFrameWithCloudId(SharingFrame $frame) {
-		$frame->setCloudId($this->configService->getLocalAddress());
+//		$frame->setCloudId($this->configService->getLocalAddress());
 		$this->sharingFrameRequest->updateSharingFrame($frame);
 	}
 

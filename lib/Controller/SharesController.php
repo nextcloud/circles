@@ -189,24 +189,24 @@ class SharesController extends Controller {
 	 * @throws Exception
 	 */
 	public function initShareDelivery($circleId, $frameId) {
-		try {
-			$frame = $this->sharingFrameService->getFrameFromUniqueId($circleId, $frameId);
-		} catch (Exception $e) {
-			return $this->fail($e->getMessage());
-		}
-
-		// We don't want to keep the connection up
-		$this->miscService->asyncAndLeaveClientOutOfThis('done');
-
-		$this->broadcastService->broadcastFrame($frame);
-
-		// TODO - do not update cloudId to avoid duplicate, use it's own field and keep cloudId
-		$this->sharingFrameService->updateFrameWithCloudId($frame);
-		if ($this->configService->isFederatedCirclesAllowed()) {
-			$this->sharingFrameService->forwardSharingFrame($frame);
-		}
-
-		exit();
+//		try {
+//			$frame = $this->sharingFrameService->getFrameFromUniqueId($circleId, $frameId);
+//		} catch (Exception $e) {
+//			return $this->fail($e->getMessage());
+//		}
+//
+//		// We don't want to keep the connection up
+//		$this->miscService->asyncAndLeaveClientOutOfThis('done');
+//
+//		$this->broadcastService->broadcastFrame($frame);
+//
+//		// TODO - do not update cloudId to avoid duplicate, use it's own field and keep cloudId
+//		$this->sharingFrameService->updateFrameWithCloudId($frame);
+//		if ($this->configService->isFederatedCirclesAllowed()) {
+//			$this->sharingFrameService->forwardSharingFrame($frame);
+//		}
+//
+//		exit();
 	}
 
 

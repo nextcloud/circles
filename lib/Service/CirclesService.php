@@ -195,11 +195,11 @@ class CirclesService {
 			);
 		}
 
-		if (!$this->configService->isCircleAllowed($type)) {
-			throw new CircleTypeDisabledException(
-				$this->l10n->t('You cannot create this type of circle')
-			);
-		}
+//		if (!$this->configService->isCircleAllowed($type)) {
+//			throw new CircleTypeDisabledException(
+//				$this->l10n->t('You cannot create this type of circle')
+//			);
+//		}
 
 		$circle = new DeprecatedCircle($type, $name);
 		if ($ownerId === '') {
@@ -252,11 +252,11 @@ class CirclesService {
 			throw new Exception('UserID cannot be null');
 		}
 
-		if (!$this->configService->isCircleAllowed((int)$type)) {
-			throw new CircleTypeDisabledException(
-				$this->l10n->t('You cannot display this type of circle')
-			);
-		}
+//		if (!$this->configService->isCircleAllowed((int)$type)) {
+//			throw new CircleTypeDisabledException(
+//				$this->l10n->t('You cannot display this type of circle')
+//			);
+//		}
 
 		$data = [];
 		$result = $this->circlesRequest->getCircles($userId, $type, $name, $level, $forceAll);
@@ -634,7 +634,7 @@ class CirclesService {
 			return;
 		}
 		if ($limit === 0) {
-			$limit = $this->configService->getAppValue(ConfigService::CIRCLES_MEMBERS_LIMIT);
+			$limit = $this->configService->getAppValue(ConfigService::MEMBERS_LIMIT);
 		}
 
 		if (sizeof($members) >= $limit) {

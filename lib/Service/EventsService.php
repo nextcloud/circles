@@ -131,7 +131,7 @@ class EventsService {
 			return;
 		}
 
-		if ($this->configService->getAppValue(ConfigService::CIRCLES_ACTIVITY_ON_CREATION) === '1') {
+		if ($this->configService->getAppValue(ConfigService::ACTIVITY_ON_NEW_CIRCLE) === '1') {
 			$event = $this->generateEvent('circles_as_non_member');
 			$event->setSubject('circle_create', ['circle' => json_encode($circle)]);
 

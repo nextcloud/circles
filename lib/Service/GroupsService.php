@@ -139,7 +139,7 @@ class GroupsService {
 
 			$limit = (int)$circle->getSetting('members_limit');
 			if ($limit === 0) {
-				$limit = $this->configService->getAppValue(ConfigService::CIRCLES_MEMBERS_LIMIT);
+				$limit = $this->configService->getAppValue(ConfigService::MEMBERS_LIMIT);
 			}
 
 			if ($limit !== -1 && $count > $limit) {
