@@ -51,6 +51,7 @@ use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\FederatedItems\CircleConfig;
 use OCA\Circles\FederatedItems\CircleCreate;
 use OCA\Circles\FederatedItems\CircleJoin;
+use OCA\Circles\FederatedItems\CircleLeave;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\FederatedUser;
@@ -220,6 +221,35 @@ class CircleService {
 		$circle = $this->circleRequest->getCircle($circleId, $this->federatedUserService->getCurrentUser());
 
 		$event = new FederatedEvent(CircleJoin::class);
+		$event->setCircle($circle);
+
+		$this->federatedEventService->newEvent($event);
+
+		return $event->getOutcome();
+	}
+
+
+	/**
+	 * @param string $circleId
+	 *
+	 * @return array
+	 * @throws CircleNotFoundException
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws InitiatorNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws UnknownRemoteException
+	 */
+	public function circleLeave(string $circleId): array {
+		$this->federatedUserService->mustHaveCurrentUser();
+
+		$circle = $this->circleRequest->getCircle($circleId, $this->federatedUserService->getCurrentUser());
+
+		$event = new FederatedEvent(CircleLeave::class);
 		$event->setCircle($circle);
 
 		$this->federatedEventService->newEvent($event);

@@ -31,9 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-use daita\MySmallPhpTools\Exceptions\InvalidItemException;
-use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
-use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
@@ -105,9 +102,6 @@ class CirclesLeave extends Base {
 	 * @throws FederatedEventException
 	 * @throws FederatedItemException
 	 * @throws InitiatorNotFoundException
-	 * @throws InvalidItemException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$circleId = (string)$input->getArgument('circle_id');
@@ -115,7 +109,7 @@ class CirclesLeave extends Base {
 		try {
 			$this->federatedUserService->commandLineInitiator($input->getArgument('initiator'), '', false);
 
-			$outcome = $this->circleService->circleJoin($circleId);
+			$outcome = $this->circleService->circleLeave($circleId);
 		} catch (FederatedItemException $e) {
 			if ($input->getOption('status-code')) {
 				throw new FederatedItemException(

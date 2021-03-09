@@ -55,6 +55,7 @@ class StatusCode {
 	];
 
 	static $CIRCLE_LEAVE = [
+		120 => 'You are not a member'
 	];
 
 	static $MEMBER_ADD = [

@@ -130,7 +130,7 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->limitToUserId($member->getUserId());
 		$qb->limitToUserType($member->getUserType());
 		$qb->limitToInstance($qb->getInstance($member));
-//		$qb->limitToSingleId($federatedUser->getSingleId());
+		$qb->limitToSingleId($member->getSingleId());
 
 		$qb->execute();
 	}
