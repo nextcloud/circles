@@ -41,6 +41,7 @@ use OCA\Circles\IFederatedItemInitiatorMembershipNotRequired;
 use OCA\Circles\IFederatedItemMemberOptional;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\FederatedUser;
+use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\StatusCode;
 
 
@@ -82,6 +83,9 @@ class CircleLeave implements
 	public function verify(FederatedEvent $event): void {
 		$circle = $event->getCircle();
 		$member = $circle->getInitiator();
+
+		$memberHelper = new MemberHelper($member);
+		$memberHelper->cannotBeOwner();
 
 		if ($member->getId() === '') {
 			throw new MemberNotFoundException(StatusCode::$CIRCLE_LEAVE[120], 120);
