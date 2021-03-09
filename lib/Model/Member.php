@@ -620,6 +620,22 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 
 
 	/**
+	 * @param int $level
+	 *
+	 * @return int
+	 * @throws ParseMemberLevelException
+	 */
+	public static function parseLevelInt(int $level): int {
+		if (!array_key_exists($level, self::$DEF_LEVEL)) {
+			$all = implode(', ', array_keys(self::$DEF_LEVEL));
+			throw new ParseMemberLevelException('Available levels: ' . $all, 121);
+		}
+
+		return $level;
+	}
+
+
+	/**
 	 * @param string $levelString
 	 *
 	 * @return int
@@ -631,7 +647,7 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 
 		if (!$level) {
 			$all = implode(', ', array_values(self::$DEF_LEVEL));
-			throw new ParseMemberLevelException('Available levels: ' . $all);
+			throw new ParseMemberLevelException('Available levels: ' . $all, 121);
 		}
 
 		return (int)$level;

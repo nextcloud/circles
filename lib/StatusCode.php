@@ -64,7 +64,8 @@ class StatusCode {
 	];
 
 	static $MEMBER_LEVEL = [
-		120 => 'The designed member\'s level is too high'
+		120 => 'The designed member\'s level is too high',
+		121 => 'Incorrect Level'
 	];
 
 	static $MEMBER_REMOVE = [

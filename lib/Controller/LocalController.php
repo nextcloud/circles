@@ -200,15 +200,20 @@ class LocalController extends OcsController {
 	 *
 	 * @param string $circleId
 	 * @param string $memberId
-	 * @param string $level
+	 * @param string|int $level
 	 *
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
-	public function memberLevel(string $circleId, string $memberId, string $level): DataResponse {
+	public function memberLevel(string $circleId, string $memberId, $level): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
-			$level = Member::parseLevelString($level);
+			if (is_int($level)) {
+				$level = Member::parseLevelInt($level);
+			} else {
+				$level = Member::parseLevelString($level);
+			}
+			
 			$this->memberService->getMember($memberId, $circleId);
 			$result = $this->memberService->memberLevel($memberId, $level);
 
