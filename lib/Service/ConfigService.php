@@ -312,6 +312,10 @@ class ConfigService {
 			$defaultValue = $this->defaults[$key];
 		}
 
+		if ($this->config->getSystemValue('circles.' . $key, '') !== '') {
+			return $this->config->getSystemValue('circles.' . $key);
+		}
+
 		return $this->config->getAppValue($this->appName, $key, $defaultValue);
 	}
 
