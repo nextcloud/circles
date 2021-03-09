@@ -691,6 +691,8 @@ class ConfigService {
 
 
 	public function patchFrontalLink(string $link) {
+		\OC::$server->getLogger()->log(1, 'debug patchFrontLink: ' . $link);
+
 		$frontal = $this->getAppValue(ConfigService::FRONTAL_CLOUD_ID);
 		if ($frontal === '') {
 			return $link;
