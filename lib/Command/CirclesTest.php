@@ -37,11 +37,11 @@ use daita\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\AppInfo\Capabilities;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\GlobalScaleService;
 use OCA\Circles\Service\GSUpstreamService;
-use OCP\IL10N;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -60,8 +60,8 @@ class CirclesTest extends Base {
 	use TNC21Request;
 
 
-	/** @var IL10N */
-	private $l10n;
+	/** @var Capabilities */
+	private $capabilities;
 
 	/** @var GlobalScaleService */
 	private $globalScaleService;
@@ -80,18 +80,18 @@ class CirclesTest extends Base {
 	/**
 	 * CirclesTest constructor.
 	 *
-	 * @param IL10N $l10n
+	 * @param Capabilities $capabilities
 	 * @param GlobalScaleService $globalScaleService
 	 * @param GSUpstreamService $gsUpstreamService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IL10N $l10n, GlobalScaleService $globalScaleService, GSUpstreamService $gsUpstreamService,
-		ConfigService $configService
+		Capabilities $capabilities, GlobalScaleService $globalScaleService,
+		GSUpstreamService $gsUpstreamService, ConfigService $configService
 	) {
 		parent::__construct();
 
-		$this->l10n = $l10n;
+		$this->capabilities = $capabilities;
 		$this->gsUpstreamService = $gsUpstreamService;
 		$this->globalScaleService = $globalScaleService;
 		$this->configService = $configService;
@@ -103,6 +103,7 @@ class CirclesTest extends Base {
 		$this->setName('circles:test')
 			 ->setDescription('testing some features')
 			 ->addOption('delay', 'd', InputOption::VALUE_REQUIRED, 'delay before checking result')
+			 ->addOption('capabilities', '', InputOption::VALUE_NONE, 'listing app\s capabilities')
 			 ->addOption('url', '', InputOption::VALUE_REQUIRED, 'specify a source url', '');
 	}
 
@@ -115,6 +116,12 @@ class CirclesTest extends Base {
 	 * @throws Exception
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
+		if ($input->getOption('capabilities')) {
+			$output->writeln(json_encode($this->capabilities->getCapabilities(), JSON_PRETTY_PRINT));
+
+			return 0;
+		}
+
 		if ($input->getOption('delay')) {
 			$this->delay = (int)$input->getOption('delay');
 		}

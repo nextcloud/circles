@@ -130,6 +130,15 @@ class ConfigService {
 		return $this->get($key, $this->defaults);
 	}
 
+	/**
+	 * @param string $key
+	 *
+	 * @return int
+	 */
+	public function getAppValueInt(string $key): int {
+		return (int)$this->getAppValue($key);
+	}
+
 
 	/**
 	 * Set a value by key
@@ -241,7 +250,7 @@ class ConfigService {
 		return [
 			'allowedCircles'   => Circle::$DEF_CFG_MAX,
 			'allowedUserTypes' => Member::$DEF_TYPE_MAX,
-			'membersLimit'     => $this->getAppValue(self::MEMBERS_LIMIT)
+			'membersLimit'     => $this->getAppValueInt(self::MEMBERS_LIMIT)
 		];
 	}
 

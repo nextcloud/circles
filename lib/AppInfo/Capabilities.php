@@ -35,6 +35,8 @@ declare(strict_types=1);
 namespace OCA\Circles\AppInfo;
 
 
+use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
 use OCP\App\IAppManager;
 use OCP\Capabilities\ICapability;
@@ -73,9 +75,57 @@ class Capabilities implements ICapability {
 	public function getCapabilities(): array {
 		return [
 			Application::APP_ID => [
-				'version'  => $this->appManager->getAppVersion(Application::APP_ID),
-				'settings' => $this->configService->getSettings()
+				'version'   => $this->appManager->getAppVersion(Application::APP_ID),
+				'settings'  => $this->configService->getSettings(),
+				'constants' => $this->getConstants()
 			],
 		];
 	}
+
+
+	private function getConstants(): array {
+		return [
+			'circle' => [
+				'config' => $this->generateConstantsCircleConfig()
+			],
+			'member' => $this->generateConstantsMember()
+		];
+	}
+
+
+	/**
+	 * @return array
+	 */
+	private function generateConstantsCircleConfig(): array {
+		$constants = [
+			'flags'       => [],
+			'coreFlags'   => Circle::$DEF_CFG_CORE_FILTER,
+			'systemFlags' => Circle::$DEF_CFG_SYSTEM_FILTER
+		];
+
+		foreach (Circle::$DEF_CFG as $flag => $entry) {
+			list(, $def) = explode('|', $entry);
+			$constants['flags'][$flag] = $def;
+		}
+
+		return $constants;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	private function generateConstantsMember(): array {
+		return [
+			'type'   => Member::$DEF_TYPE,
+			'level'  => Member::$DEF_TYPE,
+			'status' => [
+				Member::STATUS_INVITED,
+				Member::STATUS_REQUEST,
+				Member::STATUS_MEMBER,
+				Member::STATUS_BLOCKED
+			]
+		];
+	}
+
 }
