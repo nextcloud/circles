@@ -27,6 +27,7 @@
 namespace OCA\Circles\Service;
 
 use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
+use daita\MySmallPhpTools\Traits\TArrayTools;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\GSStatusException;
@@ -34,13 +35,13 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\Member;
 use OCP\IConfig;
-use OCP\IRequest;
 use OCP\IURLGenerator;
 
 class ConfigService {
 
 
 	use TStringTools;
+	use TArrayTools;
 
 
 	const FRONTAL_CLOUD_ID = 'frontal_cloud_id';
@@ -90,59 +91,23 @@ class ConfigService {
 		self::CIRCLES_SEARCH_FROM_COLLABORATOR => '0',
 	];
 
-	/** @var string */
-	private $appName;
 
 	/** @var IConfig */
 	private $config;
 
-	/** @var string */
-	private $userId;
-
-	/** @var IRequest */
-	private $request;
-
 	/** @var IURLGenerator */
 	private $urlGenerator;
 
-	/** @var MiscService */
-	private $miscService;
-
-	/** @var int */
-	private $allowedCircle = -1;
-
-	/** @var int */
-	private $allowedLinkedGroups = -1;
-
-	/** @var int */
-	private $allowedFederatedCircles = -1;
-
-	/** @var int */
-	private $allowedNonSSLLinks = -1;
-
-	/** @var int */
-	private $localNonSSL = -1;
 
 	/**
 	 * ConfigService constructor.
 	 *
-	 * @param string $appName
 	 * @param IConfig $config
-	 * @param IRequest $request
-	 * @param string $userId
 	 * @param IURLGenerator $urlGenerator
-	 * @param MiscService $miscService
 	 */
-	public function __construct(
-		$appName, IConfig $config, IRequest $request, $userId, IURLGenerator $urlGenerator,
-		MiscService $miscService
-	) {
-		$this->appName = $appName;
+	public function __construct(IConfig $config, IURLGenerator $urlGenerator) {
 		$this->config = $config;
-		$this->request = $request;
-		$this->userId = $userId;
 		$this->urlGenerator = $urlGenerator;
-		$this->miscService = $miscService;
 	}
 
 
@@ -153,23 +118,37 @@ class ConfigService {
 	 *
 	 * @return string
 	 */
-	public function getCoreValue($key) {
-		$defaultValue = null;
+	public function getAppValue(string $key): string {
+		if (($value = $this->config->getAppValue(Application::APP_ID, $key, '')) !== '') {
+			return $value;
+		}
 
-		return $this->config->getAppValue('core', $key, $defaultValue);
+		if (($value = $this->config->getSystemValue('circles.' . $key, '')) !== '') {
+			return $value;
+		}
+
+		return $this->get($key, $this->defaults);
 	}
 
+
 	/**
-	 * Get a value by key
+	 * Set a value by key
 	 *
 	 * @param string $key
+	 * @param string $value
 	 *
-	 * @return string
+	 * @return void
 	 */
-	public function getSystemValue($key) {
-		$defaultValue = null;
+	public function setAppValue(string $key, string $value): void {
+		$this->config->setAppValue(Application::APP_ID, $key, $value);
+	}
 
-		return $this->config->getSystemValue($key, $defaultValue);
+
+	/**
+	 *
+	 */
+	public function unsetAppConfig(): void {
+		$this->config->deleteAppValues(Application::APP_ID);
 	}
 
 
@@ -184,45 +163,8 @@ class ConfigService {
 
 
 	/**
-	 * Get a value by key
-	 *
-	 * @param string $key
-	 *
-	 * @return string
-	 */
-	public function getAppValue($key) {
-		$defaultValue = null;
-
-		if (array_key_exists($key, $this->defaults)) {
-			$defaultValue = $this->defaults[$key];
-		}
-
-		return $this->config->getAppValue($this->appName, $key, $defaultValue);
-	}
-
-	/**
-	 * Set a value by key
-	 *
-	 * @param string $key
-	 * @param string $value
-	 *
-	 * @return void
-	 */
-	public function setAppValue($key, $value) {
-		$this->config->setAppValue($this->appName, $key, $value);
-	}
-
-
-	/**
-	 *
-	 */
-	public function unsetAppConfig() {
-		$this->config->deleteAppValues(Application::APP_ID);
-	}
-
-
-	/**
 	 * Get a user value by key and user
+	 *
 	 *
 	 * @param string $userId
 	 * @param string $key
@@ -238,6 +180,7 @@ class ConfigService {
 
 	/**
 	 * @return bool
+	 * @deprecated
 	 */
 	public function isContactsBackend(): bool {
 		return ($this->getAppValue(ConfigService::CIRCLES_CONTACT_BACKEND) !== '0'
@@ -247,6 +190,7 @@ class ConfigService {
 
 	/**
 	 * @return int
+	 * @deprecated
 	 */
 	public function contactsBackendType(): int {
 		return (int)$this->getAppValue(ConfigService::CIRCLES_CONTACT_BACKEND);
@@ -254,9 +198,10 @@ class ConfigService {
 
 
 	/**
+	 * @return bool
+	 * @deprecated
 	 * should the password for a mail share be send to the recipient
 	 *
-	 * @return bool
 	 */
 	public function sendPasswordByMail() {
 		if ($this->isContactsBackend()) {
@@ -267,11 +212,12 @@ class ConfigService {
 	}
 
 	/**
-	 * do we require a share by mail to be password protected
-	 *
 	 * @param DeprecatedCircle $circle
 	 *
 	 * @return bool
+	 * @deprecated
+	 * do we require a share by mail to be password protected
+	 *
 	 */
 	public function enforcePasswordProtection(DeprecatedCircle $circle) {
 		if ($this->isContactsBackend()) {
@@ -293,9 +239,9 @@ class ConfigService {
 	 */
 	public function getSettings(): array {
 		return [
-			'allowedCircles' => Circle::$DEF_CFG_MAX,
+			'allowedCircles'   => Circle::$DEF_CFG_MAX,
 			'allowedUserTypes' => Member::$DEF_TYPE_MAX,
-			'membersLimit'   => $this->getAppValue(self::MEMBERS_LIMIT)
+			'membersLimit'     => $this->getAppValue(self::MEMBERS_LIMIT)
 		];
 	}
 
@@ -375,7 +321,7 @@ class ConfigService {
 
 		// using old settings - Deprecated in NC25
 		if ($frontalCloudId === '') {
-			$frontalCloudId = $this->config->getAppValue($this->appName, 'local_cloud_id', '');
+			$frontalCloudId = $this->config->getAppValue(Application::APP_ID, 'local_cloud_id', '');
 			$this->setAppValue(self::FRONTAL_CLOUD_ID, $frontalCloudId);
 		}
 
@@ -448,7 +394,7 @@ class ConfigService {
 	 * @param string $routeName
 	 * @param array $args
 	 */
-	public function configureRequest(NC21Request $request, string $routeName = '', array $args = []) {
+	public function configureRequest(NC21Request $request, string $routeName = '', array $args = []): void {
 		$this->configureRequestAddress($request, $routeName, $args);
 
 		if ($this->getForcedNcBase() === '') {
