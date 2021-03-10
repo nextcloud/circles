@@ -554,7 +554,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 			$this->limitToFiles($qb, [$node->getId()]);
 		}
 
-		$this->linkToMember($qb, $userId, $this->configService->isLinkedGroupsAllowed(), 'c');
+		$this->linkToMember($qb, $userId, false, 'c');
 
 		$shares = [];
 		$cursor = $qb->execute();

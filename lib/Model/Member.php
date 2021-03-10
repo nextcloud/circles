@@ -90,6 +90,8 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 		16 => 'circle',
 	];
 
+	public static $DEF_TYPE_MAX = 31;
+
 
 	/** @var string */
 	private $id = '';
