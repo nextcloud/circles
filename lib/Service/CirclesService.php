@@ -267,9 +267,13 @@ class CirclesService {
 	public function detailsCircle($circleUniqueId, $forceAll = false) {
 
 		try {
-			$circle = $this->circlesRequest->getCircle(
-				$circleUniqueId, $this->userId, Member::TYPE_USER, '', $forceAll
-			);
+			if (!$forceAll) {
+				$circle = $this->circlesRequest->getCircle(
+					$circleUniqueId, $this->userId, Member::TYPE_USER, '', $forceAll
+				);
+			} else {
+				$circle = $this->circlesRequest->getCircleFromUniqueId($circleUniqueId);
+			}
 			if ($this->viewerIsAdmin()
 				|| $circle->getHigherViewer()
 						  ->isLevel(Member::LEVEL_MEMBER)
