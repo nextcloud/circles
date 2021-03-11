@@ -35,7 +35,19 @@ use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedEventException;
+use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\FederatedUserException;
+use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\GroupNotFoundException;
+use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
+use OCA\Circles\Exceptions\InvalidIdException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\SingleCircleNotFoundException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\FederatedItems\CircleCreate;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
@@ -53,9 +65,6 @@ class GroupService {
 
 
 	use TStringTools;
-
-
-	const SOURCE = 'NextcloudGroups';
 
 
 	/** @var IGroupManager */
@@ -95,6 +104,18 @@ class GroupService {
 	 *
 	 * @return Circle
 	 * @throws GroupNotFoundException
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws InvalidIdException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws SingleCircleNotFoundException
+	 * @throws UnknownRemoteException
 	 */
 	public function getGroupCircle(string $groupId): Circle {
 		$group = $this->groupManager->get($groupId);
@@ -125,7 +146,6 @@ class GroupService {
 		}
 
 		$circle->setDisplayName($groupId);
-
 
 
 		$event = new FederatedEvent(CircleCreate::class);
