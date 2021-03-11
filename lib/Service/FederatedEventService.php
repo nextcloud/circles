@@ -60,7 +60,7 @@ use OCA\Circles\IFederatedItemCircleCheckNotRequired;
 use OCA\Circles\IFederatedItemDataRequestOnly;
 use OCA\Circles\IFederatedItemInitiatorCheckNotRequired;
 use OCA\Circles\IFederatedItemInitiatorMembershipNotRequired;
-use OCA\Circles\IFederatedItemInitiatorMustBeLocal;
+use OCA\Circles\IFederatedItemMustBeInitializedLocally;
 use OCA\Circles\IFederatedItemLimitedToInstanceWithMembership;
 use OCA\Circles\IFederatedItemMemberCheckNotRequired;
 use OCA\Circles\IFederatedItemMemberEmpty;
@@ -321,7 +321,7 @@ class FederatedEventService extends NC21Signature {
 				. ' does not implements IFederatedItemMemberOptional nor IFederatedItemMemberRequired'
 			);
 		}
-		if ($item instanceof IFederatedItemInitiatorMustBeLocal && $checkLocalOnly) {
+		if ($item instanceof IFederatedItemMustBeInitializedLocally && $checkLocalOnly) {
 			throw new FederatedEventException('FederatedItem must be executed locally');
 		}
 	}

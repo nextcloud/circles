@@ -130,6 +130,8 @@ class CircleRequestBuilder extends CoreQueryBuilder {
 		return $qb->asItems(
 			Circle::class,
 			[
+				// TODO: we might need a getInstance() based on a frontal/internal request ?
+				// TODO: as on some setup, there 2 ways of defining the local instance (GS+Federated)
 				'local' => $this->configService->getFrontalInstance()
 			]
 		);

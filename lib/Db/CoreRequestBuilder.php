@@ -91,6 +91,13 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 	}
 
 	/**
+	 * @param string $name
+	 */
+	public function limitToName(string $name): void {
+		$this->limitToDBField('name', $name);
+	}
+
+	/**
 	 * @param int $config
 	 */
 	public function limitToConfig(int $config): void {
@@ -464,11 +471,11 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 		$alias = ($alias === '') ? $this->getDefaultSelectAlias() : $alias;
 		$expr = $this->expr();
 
-		$orHidden = $expr->orX();
-		$orHidden->add($expr->bitwiseAnd($alias . '.config', Circle::CFG_SINGLE));
-		$orHidden->add($expr->bitwiseAnd($alias . '.config', Circle::CFG_HIDDEN));
-		$orHidden->add($expr->bitwiseAnd($alias . '.config', Circle::CFG_BACKEND));
-		$this->andWhere($this->createFunction('NOT') . $orHidden);
+		$hide = $expr->andX();
+		$hide->add($expr->bitwiseAnd($alias . '.config', Circle::CFG_SINGLE));
+		$hide->add($expr->bitwiseAnd($alias . '.config', Circle::CFG_HIDDEN));
+		$hide->add($expr->bitwiseAnd($alias . '.config', Circle::CFG_BACKEND));
+		$this->andWhere($this->createFunction('NOT') . $hide);
 	}
 
 

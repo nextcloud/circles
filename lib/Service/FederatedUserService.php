@@ -101,6 +101,9 @@ class FederatedUserService {
 	/** @var FederatedUser */
 	private $currentUser = null;
 
+	/** @var FederatedUser */
+	private $currentApp = null;
+
 	/** @var RemoteInstance */
 	private $remoteInstance = null;
 
@@ -139,12 +142,25 @@ class FederatedUserService {
 	 * @throws InvalidIdException
 	 * @throws SingleCircleNotFoundException
 	 */
-	public function setLocalCurrentUser(?IUser $user) {
+	public function setLocalCurrentUser(?IUser $user): void {
 		if ($user === null) {
 			return;
 		}
 
 		$this->currentUser = $this->getLocalFederatedUser($user->getUID());
+	}
+
+
+	/**
+	 * @param string $appId
+	 *
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
+	 * @throws SingleCircleNotFoundException
+	 */
+	public function setLocalCurrentApp(string $appId): void {
+		$this->currentApp = $this->getAppInitiator($appId);
 	}
 
 
@@ -203,6 +219,21 @@ class FederatedUserService {
 
 
 	/**
+	 * @return FederatedUser|null
+	 */
+	public function getCurrentApp(): ?FederatedUser {
+		return $this->currentApp;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasCurrentApp(): bool {
+		return !is_null($this->currentApp);
+	}
+
+
+	/**
 	 * set a RemoteInstance, mostly from a remote request (RemoteController)
 	 * Used to limit rights in some request in the local database.
 	 *
@@ -247,6 +278,27 @@ class FederatedUserService {
 
 		$federatedUser = new FederatedUser();
 		$federatedUser->set($user->getUID());
+		$this->fillSingleCircleId($federatedUser);
+
+		return $federatedUser;
+	}
+
+
+	/**
+	 * Get the full FederatedUser for a local user.
+	 * Will generate the SingleId if none exist
+	 *
+	 * @param string $appId
+	 *
+	 * @return FederatedUser
+	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
+	 * @throws SingleCircleNotFoundException
+	 * @throws FederatedUserException
+	 */
+	public function getAppInitiator(string $appId): FederatedUser {
+		$federatedUser = new FederatedUser();
+		$federatedUser->set($appId, '', Member::TYPE_APP);
 		$this->fillSingleCircleId($federatedUser);
 
 		return $federatedUser;
@@ -558,9 +610,9 @@ class FederatedUserService {
 	/**
 	 * @param FederatedUser $federatedUser
 	 *
+	 * @throws FederatedUserException
 	 * @throws InvalidIdException
 	 * @throws SingleCircleNotFoundException
-	 * @throws FederatedUserException
 	 */
 	private function fillSingleCircleId(FederatedUser $federatedUser): void {
 		if ($federatedUser->getSingleId() !== '') {
@@ -593,7 +645,8 @@ class FederatedUserService {
 			$circle = new Circle();
 			$id = $this->token(ManagedModel::ID_LENGTH);
 
-			$circle->setName('single:' . $federatedUser->getUserId() . ':' . $id)
+			$prefix = ($federatedUser->getUserType() === Member::TYPE_APP) ? 'app' : 'single';
+			$circle->setName($prefix . ':' . $federatedUser->getUserId() . ':' . $id)
 				   ->setId($id)
 				   ->setConfig(Circle::CFG_SINGLE);
 			$this->circleRequest->save($circle);
@@ -623,7 +676,7 @@ class FederatedUserService {
 	private function confirmFederatedUser(FederatedUser $federatedUser): void {
 		if ($federatedUser->getUserId() === ''
 			|| $federatedUser->getSingleId() === ''
-			|| $federatedUser->getUserType() === ''
+			|| $federatedUser->getUserType() === 0
 			|| $federatedUser->getInstance() === '') {
 			$this->debug('FederatedUser is not empty', ['federatedUser' => $federatedUser]);
 			throw new FederatedUserException('FederatedUser is not complete');

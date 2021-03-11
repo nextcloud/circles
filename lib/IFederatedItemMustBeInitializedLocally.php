@@ -29,53 +29,15 @@ declare(strict_types=1);
  */
 
 
-namespace OCA\Circles\Service;
-
-
-use OC;
-use OCA\Circles\ISearch;
-use OCA\Circles\Model\FederatedUser;
-use OCA\Circles\Search\FederatedUsers;
+namespace OCA\Circles;
 
 
 /**
- * Class SearchService
+ * Interface IFederatedItemMustBeInitializedLocally
  *
- * @package OCA\Circles\Service
+ * @package OCA\Circles
  */
-class SearchService {
-
-
-	static $SERVICES = [
-		FederatedUsers::class
-	];
-
-
-	/**
-	 * SearchService constructor.
-	 *
-	 */
-	public function __construct() {
-	}
-
-
-	/**
-	 * @param string $needle
-	 *
-	 * @return FederatedUser[]
-	 */
-	public function search(string $needle): array {
-		$result = [];
-
-		foreach (self::$SERVICES as $service) {
-			/** @var ISearch $service */
-			$service = OC::$server->get($service);
-
-			$result = array_merge($result, $service->search($needle));
-		}
-
-		return $result;
-	}
+interface IFederatedItemMustBeInitializedLocally {
 
 }
 

@@ -32,24 +32,13 @@ declare(strict_types=1);
 namespace OCA\Circles\Command;
 
 
-use daita\MySmallPhpTools\Exceptions\InvalidItemException;
-use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
-use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use OC\Core\Command\Base;
-use OCA\Circles\Exceptions\CircleNotFoundException;
-use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\FederatedUserException;
+use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
-use OCA\Circles\Exceptions\OwnerNotFoundException;
-use OCA\Circles\Exceptions\RemoteInstanceException;
-use OCA\Circles\Exceptions\RemoteNotFoundException;
-use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
-use OCA\Circles\Exceptions\UnknownRemoteException;
-use OCA\Circles\Service\CircleService;
-use OCA\Circles\Service\ConfigService;
-use OCA\Circles\Service\FederatedUserService;
-use OCA\Circles\Service\MemberService;
-use OCA\Circles\Service\RemoteService;
-use Symfony\Component\Console\Input\InputArgument;
+use OCA\Circles\Exceptions\MigrationTo22Exception;
+use OCA\Circles\Exceptions\SingleCircleNotFoundException;
+use OCA\Circles\Service\SyncService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -63,41 +52,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CirclesSync extends Base {
 
 
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var RemoteService */
-	private $remoteService;
-
-	/** @var CircleService */
-	private $circleService;
-
-	/** @var MemberService */
-	private $memberService;
-
-	/** @var ConfigService */
-	private $configService;
-
+	/** @var SyncService */
+	private $syncService;
 
 	/**
 	 * CirclesSync constructor.
 	 *
-	 * @param FederatedUserService $federatedUserService
-	 * @param RemoteService $remoteService
-	 * @param CircleService $circlesService
-	 * @param MemberService $membersService
-	 * @param ConfigService $configService
+	 * @param SyncService $syncService
 	 */
-	public function __construct(
-		FederatedUserService $federatedUserService, RemoteService $remoteService,
-		CircleService $circlesService, MemberService $membersService, ConfigService $configService
-	) {
+	public function __construct(SyncService $syncService) {
 		parent::__construct();
-		$this->federatedUserService = $federatedUserService;
-		$this->remoteService = $remoteService;
-		$this->circleService = $circlesService;
-		$this->memberService = $membersService;
-		$this->configService = $configService;
+		$this->syncService = $syncService;
 	}
 
 
@@ -106,12 +71,17 @@ class CirclesSync extends Base {
 	 */
 	protected function configure() {
 		parent::configure();
-		$this->setName('circles:manage:sync')
-			 ->setDescription('Sync circles and members')
-			 ->addArgument('circle_id', InputArgument::OPTIONAL, 'ID of the circle', '')
-			 ->addOption('instance', '', InputOption::VALUE_REQUIRED, 'Instance of the circle', '')
-			 ->addOption('broadcast', '', InputOption::VALUE_NONE, 'Broadcast all circle from this instance')
-			 ->addOption('all', '', InputOption::VALUE_NONE, 'Sync all local circles');
+		$this->setName('circles:sync')
+			 ->setDescription('Sync Circles and Members')
+			 ->addOption('migration', '', InputOption::VALUE_NONE, 'Migrate from Circles 0.21.0')
+			 ->addOption('users', '', InputOption::VALUE_NONE, 'Sync Nextcloud Users')
+			 ->addOption('user', '', InputOption::VALUE_REQUIRED, 'Sync only a specific Nextcloud User', '')
+			 ->addOption('groups', '', InputOption::VALUE_NONE, 'Sync Nextcloud Groups')
+			 ->addOption('group', '', InputOption::VALUE_REQUIRED, 'Sync only a specific Nextcloud Group', '')
+			 ->addOption('contacts', '', InputOption::VALUE_NONE, 'Sync Contacts')
+			 ->addOption('remotes', '', InputOption::VALUE_NONE, 'Sync Remotes')
+			 ->addOption('remote', '', InputOption::VALUE_NONE, 'Sync only a specific Remote')
+			 ->addOption('global-scale', '', InputOption::VALUE_NONE, 'Sync GlobalScale');
 	}
 
 
@@ -120,44 +90,87 @@ class CirclesSync extends Base {
 	 * @param OutputInterface $output
 	 *
 	 * @return int
-	 * @throws CircleNotFoundException
-	 * @throws InitiatorNotFoundException
-	 * @throws OwnerNotFoundException
-	 * @throws RemoteNotFoundException
+	 * @throws MigrationTo22Exception
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
 	 * @throws InvalidIdException
-	 * @throws RemoteResourceNotFoundException
-	 * @throws UnknownRemoteException
-	 * @throws InvalidItemException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
-	 * @throws RemoteInstanceException
+	 * @throws SingleCircleNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		$this->federatedUserService->bypassCurrentUserCondition(true);
 
-		if ($input->getOption('broadcast')) {
+		$options = $input->getOptions();
+		unset($options['output']);
+		if (empty(array_filter($options))) {
+			$this->syncService->syncAll();
+			$output->writeln('- Sync done');
 
 			return 0;
 		}
 
-		$circleId = (string)$input->getArgument('circle_id');
-		$instance = $input->getOption('instance');
-		if ($instance === '') {
-			try {
-				$circle = $this->circleService->getCircle($circleId);
-			} catch (CircleNotFoundException $e) {
-				throw new CircleNotFoundException(
-					'unknown circle, use --instance to retrieve the data from a remote instance'
-				);
+		if ($input->getOption('migration')) {
+			// TODO: lock using setAppValue() to avoid duplicate process
+			if (!$this->syncService->migration()) {
+				throw new MigrationTo22Exception('Migration already performed successfully');
 			}
-			$instance = $circle->getInstance();
+			$output->writeln('- Migration went smoothly, enjoy using Circles 22!');
 		}
 
-		if ($this->configService->isLocalInstance($instance)) {
-			throw new RemoteNotFoundException('Circle is local');
+		if ($input->getOption('users')) {
+			$this->syncService->syncNextcloudUsers();
+			$output->writeln('- Nextcloud Users synced');
 		}
 
-		$this->remoteService->syncRemoteCircle($circleId, $instance);
+		if (($userId = $input->getOption('user')) !== '') {
+			$federatedUser = $this->syncService->syncNextcloudUser($userId);
+			$output->writeln(
+				'- Nextcloud User <info>' . $userId . '</info>/<info>' . $federatedUser->getSingleId()
+				. '</info> synced'
+			);
+		}
+
+		if ($input->getOption('groups')) {
+			$this->syncService->syncNextcloudGroups();
+			$output->writeln('- Nextcloud Groups synced');
+		}
+
+		if (($groupId = $input->getOption('group')) !== '') {
+			$circle = $this->syncService->syncNextcloudGroup($groupId);
+			$output->writeln(
+				'- Nextcloud Group <info>' . $groupId . '</info>/<info>' . $circle->getId()
+				. '</info> synced'
+			);
+		}
+
+
+//
+
+
+//			echo json_encode(array_filter($options), JSON_PRETTY_PRINT) . "\n";
+//			$output->writeln(json_encode($result), JSON_PRETTY_PRINT);
+
+//		if ($input->getOption('broadcast')) {
+//
+//			return 0;
+//		}
+//
+//		$circleId = (string)$input->getArgument('circle_id');
+//		$instance = $input->getOption('instance');
+//		if ($instance === '') {
+//			try {
+//				$circle = $this->circleService->getCircle($circleId);
+//			} catch (CircleNotFoundException $e) {
+//				throw new CircleNotFoundException(
+//					'unknown circle, use --instance to retrieve the data from a remote instance'
+//				);
+//			}
+//			$instance = $circle->getInstance();
+//		}
+//
+//		if ($this->configService->isLocalInstance($instance)) {
+//			throw new RemoteNotFoundException('Circle is local');
+//		}
+//
+//		$this->remoteService->syncRemoteCircle($circleId, $instance);
 
 		return 0;
 	}

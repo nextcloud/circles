@@ -40,7 +40,7 @@ use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemCircleCheckNotRequired;
-use OCA\Circles\IFederatedItemInitiatorMustBeLocal;
+use OCA\Circles\IFederatedItemMustBeInitializedLocally;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Service\ConfigService;
 
@@ -53,7 +53,7 @@ use OCA\Circles\Service\ConfigService;
 class CircleCreate implements
 	IFederatedItem,
 	IFederatedItemCircleCheckNotRequired,
-	IFederatedItemInitiatorMustBeLocal {
+	IFederatedItemMustBeInitializedLocally {
 
 
 	/** @var CircleRequest */
@@ -83,7 +83,7 @@ class CircleCreate implements
 
 
 	/**
-	 * Circles are created on the original instance, using IFederatedItemInitiatorMustBeLocal
+	 * Circles are created on the original instance, using IFederatedItemMustBeInitializedLocally
 	 *
 	 * @param FederatedEvent $event
 	 */

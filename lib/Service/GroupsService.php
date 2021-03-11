@@ -40,6 +40,11 @@ use OCP\IGroupManager;
 use OCP\IL10N;
 use OCP\IUserManager;
 
+/**
+ * Class GroupsService
+ * @deprecated
+ * @package OCA\Circles\Service
+ */
 class GroupsService {
 
 	/** @var string */

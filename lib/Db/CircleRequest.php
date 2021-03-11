@@ -263,6 +263,32 @@ class CircleRequest extends CircleRequestBuilder {
 
 
 	/**
+	 * @param Circle $circle
+	 *
+	 * @return Circle
+	 * @throws CircleNotFoundException
+	 */
+	public function searchCircle(Circle $circle): Circle {
+		$qb = $this->getCircleSelectSql();
+		$qb->leftJoinOwner();
+
+		if ($circle->getName() !== '') {
+			$qb->limitToName($circle->getName());
+		}
+		if ($circle->getConfig() > 0) {
+			$qb->limitToConfig($circle->getConfig());
+		}
+
+		if ($circle->hasOwner()) {
+//			$qb->leftJoinOwner();
+			$qb->filterMembership($circle->getOwner(), 'o');
+		}
+
+		return $this->getItemFromRequest($qb);
+	}
+
+
+	/**
 	 * @return Circle[]
 	 */
 	public function getFederated(): array {

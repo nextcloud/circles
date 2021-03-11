@@ -53,6 +53,7 @@ class ConfigService {
 	const SELF_SIGNED_CERT = 'self_signed_cert';
 	const MEMBERS_LIMIT = 'members_limit';
 	const ACTIVITY_ON_NEW_CIRCLE = 'creation_activity';
+	const MIGRATION_22 = 'migration_22';
 
 	// deprecated
 	const CIRCLES_CONTACT_BACKEND = 'contact_backend';
@@ -83,6 +84,7 @@ class ConfigService {
 		self::SELF_SIGNED_CERT       => '0',
 		self::MEMBERS_LIMIT          => '50',
 		self::ACTIVITY_ON_NEW_CIRCLE => '1',
+		self::MIGRATION_22           => '0',
 
 		self::FORCE_NC_BASE                    => '',
 		self::TEST_NC_BASE                     => '',
@@ -137,6 +139,15 @@ class ConfigService {
 	 */
 	public function getAppValueInt(string $key): int {
 		return (int)$this->getAppValue($key);
+	}
+
+	/**
+	 * @param string $key
+	 *
+	 * @return bool
+	 */
+	public function getAppValueBool(string $key): bool {
+		return ($this->getAppValueInt($key) === 1);
 	}
 
 

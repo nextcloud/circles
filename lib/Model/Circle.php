@@ -88,7 +88,7 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 	const CFG_PERSONAL = 2;      // Personal circle, only the owner can see it.
 
 	// bitwise
-	const CFG_SYSTEM = 4;            // System Circl (not managed by the official front-end). Meaning some config are limited
+	const CFG_SYSTEM = 4;            // System Circle (not managed by the official front-end). Meaning some config are limited
 	const CFG_VISIBLE = 8;           // Visible to everyone, if not visible, people have to know its name to be able to find it
 	const CFG_OPEN = 16;             // Circle is open, people can join
 	const CFG_INVITE = 32;           // Adding a member generate an invitation that needs to be accepted
@@ -115,11 +115,11 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 		64    => 'JR|Join Request',
 		128   => 'F|Friends',
 		256   => 'PP|Password Protected',
-		512   => 'T|Root',
-		1024  => 'CI|Circle Invite',
-		2048  => 'NO|No Owner',
-		4096  => 'H|Hidden',
-		8192  => 'T|Backend',
+		512   => 'NO|No Owner',
+		1024  => 'H|Hidden',
+		2048  => 'T|Backend',
+		4096  => 'T|Root',
+		8192  => 'CI|Circle Invite',
 		16384 => 'F|Federated'
 	];
 
@@ -142,9 +142,6 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 
 	/** @var int */
 	private $config = 0;
-
-	/** @var int */
-	private $type = 0;
 
 	/** @var string */
 	private $name = '';
@@ -185,8 +182,6 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 
 	/** @var Circle[] */
 	private $memberOf = null;
-
-	private $completeJson = false;
 
 
 	/**
@@ -400,12 +395,8 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 	 * @throws OwnerNotFoundException
 	 */
 	public function getInstance(): string {
-		if ($this->isConfig(self::CFG_NO_OWNER)) {
-			return $this->instance;
-		}
-
 		if (!$this->hasOwner()) {
-			throw new OwnerNotFoundException('circle has no owner, or not set to have no owner');
+			throw new OwnerNotFoundException('circle has no owner');
 		}
 
 		return $this->getOwner()->getInstance();
