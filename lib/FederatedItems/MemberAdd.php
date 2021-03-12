@@ -76,7 +76,6 @@ use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\StatusCode;
-use OCP\IL10N;
 use OCP\IUser;
 use OCP\IUserManager;
 use OCP\Mail\IEMailTemplate;
@@ -98,9 +97,6 @@ class MemberAdd implements
 	use TStringTools;
 	use TNC21Logger;
 
-
-	/** @var IL10N */
-	private $l10n;
 
 	/** @var IUserManager */
 	private $userManager;
@@ -124,7 +120,6 @@ class MemberAdd implements
 	/**
 	 * MemberAdd constructor.
 	 *
-	 * @param IL10N $l10n
 	 * @param IUserManager $userManager
 	 * @param FederatedUserService $federatedUserService
 	 * @param MemberRequest $memberRequest
@@ -133,12 +128,10 @@ class MemberAdd implements
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IL10N $l10n, IUserManager $userManager, FederatedUserService $federatedUserService,
+		IUserManager $userManager, FederatedUserService $federatedUserService,
 		MemberRequest $memberRequest,
 		CircleService $circleService, CircleEventService $circleEventService, ConfigService $configService
 	) {
-		$this->l10n = $l10n;
-		$this->l10n->getLanguageCode();
 		$this->userManager = $userManager;
 		$this->federatedUserService = $federatedUserService;
 		$this->memberRequest = $memberRequest;
@@ -165,13 +158,20 @@ class MemberAdd implements
 		$initiatorHelper = new MemberHelper($initiator);
 		$initiatorHelper->mustBeModerator();
 
-		$federatedId = $member->getUserId() . '@' . $member->getInstance();
 		try {
-			$federatedUser =
-				$this->federatedUserService->getFederatedUser($federatedId, $member->getUserType());
+			if ($member->getSingleId() !== '') {
+				$federatedUser = $this->federatedUserService->getFederatedUser_singleId(
+					$member->getSingleId(), $member->getInstance()
+				);
+			} else {
+				$federatedUser = $this->federatedUserService->getFederatedUser(
+					$member->getUserId() . '@' . $member->getInstance(), $member->getUserType()
+				);
+			}
 		} catch (MemberNotFoundException $e) {
 			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[120], 120);
 		}
+
 
 		$member->importFromIFederatedUser($federatedUser);
 		$member->setCircleId($circle->getId());

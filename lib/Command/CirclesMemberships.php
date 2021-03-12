@@ -40,7 +40,6 @@ use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21TreeNode;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21ConsoleTree;
 use daita\MySmallPhpTools\Traits\TArrayTools;
-use daita\MySmallPhpTools\Traits\TStringTools;
 use OC\Core\Command\Base;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
@@ -98,6 +97,10 @@ class CirclesMemberships extends Base {
 	private $configService;
 
 
+	/** @var InputInterface */
+	private $input;
+
+
 	/** @var array */
 	private $memberships = [];
 
@@ -138,6 +141,7 @@ class CirclesMemberships extends Base {
 		$this->setName('circles:memberships')
 			 ->setDescription('index and display memberships for local and federated users')
 			 ->addArgument('userId', InputArgument::REQUIRED, 'userId to generate memberships')
+			 ->addOption('display-name', '', InputOption::VALUE_NONE, 'display the displayName')
 			 ->addOption(
 				 'type', '', InputOption::VALUE_REQUIRED, 'type of the user',
 				 Member::$DEF_TYPE[Member::TYPE_USER]
@@ -165,6 +169,7 @@ class CirclesMemberships extends Base {
 	 * @throws UserTypeNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
+		$this->input = $input;
 		$userId = $input->getArgument('userId');
 
 		$type = Member::parseTypeString($input->getOption('type'));
@@ -177,6 +182,7 @@ class CirclesMemberships extends Base {
 
 		$output->writeln('');
 		$output->writeln('Memberships:');
+
 		$count = $this->membershipsService->onMemberUpdate($federatedUser);
 		if ($count === 0) {
 			$output->writeln('(database not updated)');
@@ -279,7 +285,8 @@ class CirclesMemberships extends Base {
 					if (!$this->configService->isLocalInstance($circle->getInstance())) {
 						$line .= '@' . $circle->getInstance();
 					}
-					$line .= ' (' . $circle->getName() . ')';
+					$line .= ' (' . ($this->input->getOption('display-name') ?
+						$circle->getDisplayName() : $circle->getName() ). ')';
 					$line .= ' <info>Level</info>: ' . Member::$DEF_LEVEL[$member->getLevel()];
 
 					$knownMembership = $this->memberships[$member->getCircleId()];

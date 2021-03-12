@@ -152,7 +152,7 @@ class CirclesDetails extends Base {
 
 				try {
 					$this->federatedUserService->commandLineInitiator($initiator, $circleId, true);
-					$circle = $this->circleService->getCircle($circleId);
+					$circle = $this->circleService->getCircle($circleId, 0);
 				} catch (CircleNotFoundException $e) {
 					throw new CircleNotFoundException(
 						'unknown circle, use --instance to retrieve the data from a remote instance'

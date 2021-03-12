@@ -210,21 +210,28 @@ class CircleRequest extends CircleRequestBuilder {
 
 
 	/**
-	 * @param string $circleId
+	 * @param string $singleId
 	 *
 	 * @return FederatedUser
 	 * @throws CircleNotFoundException
 	 * @throws OwnerNotFoundException
 	 */
-	public function getFederatedUserByCircleId(string $circleId): FederatedUser {
+	public function getFederatedUserBySingleId(string $singleId): FederatedUser {
 		$qb = $this->getCircleSelectSql();
-		$qb->limitToUniqueId($circleId);
+		$qb->limitToUniqueId($singleId);
 		$qb->leftJoinOwner();
 
 		$circle = $this->getItemFromRequest($qb);
+
 		$federatedUser = new FederatedUser();
-		$federatedUser->set($circle->getId(), $circle->getInstance(), Member::TYPE_CIRCLE);
 		$federatedUser->setSingleId($circle->getId());
+
+		if ($circle->isConfig(Circle::CFG_SINGLE)) {
+			$owner = $circle->getOwner();
+			$federatedUser->set($owner->getUserId(), $owner->getInstance(), $owner->getUserType());
+		} else {
+			$federatedUser->set($circle->getDisplayName(), $circle->getInstance(), Member::TYPE_CIRCLE);
+		}
 
 		return $federatedUser;
 	}

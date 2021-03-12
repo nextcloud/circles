@@ -145,7 +145,7 @@ class GroupService {
 		} catch (CircleNotFoundException $e) {
 		}
 
-		$circle->setDisplayName($groupId);
+		$circle->setDisplayName('Nextcloud Group \'' . $groupId . '\'');
 
 		$event = new FederatedEvent(CircleCreate::class);
 		$event->setCircle($circle);

@@ -48,7 +48,6 @@ use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\Model\Circle;
-use OCA\Circles\Model\Member;
 use OCA\Circles\Model\ModelManager;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
@@ -122,6 +121,7 @@ class CirclesList extends Base {
 			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
 			 ->addOption('member', '', InputOption::VALUE_REQUIRED, 'search for member', '')
 			 ->addOption('def', '', InputOption::VALUE_NONE, 'display complete circle configuration')
+			 ->addOption('display-name', '', InputOption::VALUE_NONE, 'display the displayName')
 			 ->addOption('all', '', InputOption::VALUE_NONE, 'display also hidden Circles')
 			 ->addOption('json', '', InputOption::VALUE_NONE, 'returns result as JSON');
 	}
@@ -167,7 +167,7 @@ class CirclesList extends Base {
 			$circles = $this->remoteService->getCirclesFromInstance($instance, $data);
 		} else {
 			$this->federatedUserService->commandLineInitiator($initiator, '', true);
-			$circles = $this->getCircles($filter, $input->getOption('all'));
+			$circles = $this->circleService->getCircles($filter, !$input->getOption('all'));
 		}
 
 		if ($input->getOption('json')) {
@@ -199,7 +199,7 @@ class CirclesList extends Base {
 			$table->appendRow(
 				[
 					$circle->getId(),
-					$circle->getName(),
+					$this->input->getOption('display-name') ? $circle->getDisplayName() : $circle->getName(),
 					json_encode(Circle::getCircleTypes($circle, $display)),
 					$owner->getUserId(),
 					($owner->getInstance() === $local) ? '' : $owner->getInstance(),
@@ -208,32 +208,6 @@ class CirclesList extends Base {
 				]
 			);
 		}
-	}
-
-	/**
-	 * @param Member|null $filter
-	 * @param bool $all
-	 *
-	 * @return Circle[]
-	 * @throws InitiatorNotFoundException
-	 */
-	private function getCircles(?Member $filter, bool $all = false): array {
-		$circles = $this->circleService->getCircles($filter, !$all);
-
-//		if ($all) {
-		return $circles;
-//		}
-
-//		$filtered = [];
-//		foreach ($circles as $circle) {
-////			if (!$circle->isConfig(Circle::CFG_SINGLE)
-////				&& !$circle->isConfig(Circle::CFG_HIDDEN)
-////				&& !$circle->isConfig(Circle::CFG_BACKEND)) {
-//				$filtered[] = $circle;
-////			}
-//		}
-//
-//		return $filtered;
 	}
 
 }

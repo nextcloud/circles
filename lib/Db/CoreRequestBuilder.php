@@ -463,8 +463,6 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 	/**
 	 * CFG_SINGLE, CFG_HIDDEN and CFG_BACKEND means hidden from listing.
 	 *
-	 * TODO: add a filter for allowing those circles in some request
-	 *
 	 * @param string $alias
 	 * @param int $flag
 	 */
@@ -481,11 +479,11 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 		$alias = ($alias === '') ? $this->getDefaultSelectAlias() : $alias;
 		foreach (Circle::$DEF_CFG as $cfg => $v) {
 			if ($flag & $cfg) {
-				$hide->add($expr->bitwiseAnd($alias . '.config', $cfg));
+				$hide->add($this->createFunction('NOT') . $expr->bitwiseAnd($alias . '.config', $cfg));
 			}
 		}
 
-		$this->andWhere($this->createFunction('NOT') . $hide);
+		$this->andWhere($hide);
 	}
 
 

@@ -62,13 +62,13 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	const LEVEL_ADMIN = 8;
 	const LEVEL_OWNER = 9;
 
-	const TYPE_SINGLE = 0;
 	const TYPE_USER = 1;
 	const TYPE_GROUP = 2;
 	const TYPE_MAIL = 4;
 	const TYPE_CONTACT = 8;
 	const TYPE_CIRCLE = 16;
-	const TYPE_APP = 1024;
+	const TYPE_SINGLE = 1024;
+	const TYPE_APP = 2048;
 
 	const STATUS_INVITED = 'Invited';
 	const STATUS_REQUEST = 'Requesting';
@@ -88,7 +88,8 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 		2  => 'group',
 		4  => 'mail',
 		8  => 'contact',
-		16 => 'circle'
+		16 => 'circle',
+		2048 => 'app'
 	];
 
 	public static $DEF_TYPE_MAX = 31;

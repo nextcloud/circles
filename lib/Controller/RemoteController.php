@@ -184,6 +184,7 @@ class RemoteController extends Controller {
 		try {
 			$event = $this->extractEventFromRequest();
 		} catch (Exception $e) {
+			$this->e($e);
 			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
 		}
 
@@ -254,7 +255,7 @@ class RemoteController extends Controller {
 		} catch (Exception $e) {
 			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
 		}
-		
+
 		try {
 			$circle = $this->circleService->getCircle($circleId);
 
