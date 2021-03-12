@@ -147,7 +147,6 @@ class GroupService {
 
 		$circle->setDisplayName($groupId);
 
-
 		$event = new FederatedEvent(CircleCreate::class);
 		$event->setCircle($circle);
 		$this->federatedEventService->newEvent($event);

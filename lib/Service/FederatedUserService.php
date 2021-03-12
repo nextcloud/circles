@@ -333,9 +333,8 @@ class FederatedUserService {
 		}
 
 		if ($circleId !== '') {
-			$localCircle = $this->circleRequest->getCircle($circleId);
+			$localCircle = $this->circleRequest->getCircle($circleId, null, null, 0);
 			if ($this->configService->isLocalInstance($localCircle->getInstance())) {
-				// TODO: manage NO_OWNER circles
 				$this->setCurrentUser($localCircle->getOwner());
 
 				return;

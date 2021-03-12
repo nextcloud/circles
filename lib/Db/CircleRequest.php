@@ -162,7 +162,7 @@ class CircleRequest extends CircleRequestBuilder {
 		$qb->leftJoinOwner();
 
 		if ($filterSystemCircles) {
-			$qb->filterSystemCircles();
+			$qb->filterCircles(Circle::CFG_SINGLE | Circle::CFG_HIDDEN | Circle::CFG_BACKEND);
 		}
 		if (!is_null($initiator)) {
 			$qb->limitToInitiator($initiator);
@@ -182,7 +182,7 @@ class CircleRequest extends CircleRequestBuilder {
 	 * @param string $id
 	 * @param IFederatedUser|null $initiator
 	 * @param RemoteInstance|null $remoteInstance
-	 * @param bool $filterSystemCircles
+	 * @param int $filter
 	 *
 	 * @return Circle
 	 * @throws CircleNotFoundException
@@ -191,15 +191,13 @@ class CircleRequest extends CircleRequestBuilder {
 		string $id,
 		?IFederatedUser $initiator = null,
 		?RemoteInstance $remoteInstance = null,
-		bool $filterSystemCircles = true
+		int $filter = Circle::CFG_BACKEND | Circle::CFG_SINGLE | Circle::CFG_HIDDEN
 	): Circle {
 		$qb = $this->getCircleSelectSql();
 		$qb->limitToUniqueId($id);
 		$qb->leftJoinOwner();
+		$qb->filterCircles($filter);
 
-		if ($filterSystemCircles) {
-			$qb->filterSystemCircles();
-		}
 		if (!is_null($initiator)) {
 			$qb->limitToInitiator($initiator, '', false, true);
 		}
@@ -280,7 +278,6 @@ class CircleRequest extends CircleRequestBuilder {
 		}
 
 		if ($circle->hasOwner()) {
-//			$qb->leftJoinOwner();
 			$qb->filterMembership($circle->getOwner(), 'o');
 		}
 

@@ -466,15 +466,25 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 	 * TODO: add a filter for allowing those circles in some request
 	 *
 	 * @param string $alias
+	 * @param int $flag
 	 */
-	public function filterSystemCircles(string $alias = ''): void {
-		$alias = ($alias === '') ? $this->getDefaultSelectAlias() : $alias;
-		$expr = $this->expr();
+	public function filterCircles(
+		int $flag = Circle::CFG_SINGLE | Circle::CFG_HIDDEN | Circle::CFG_BACKEND,
+		string $alias = ''
+	): void {
+		if ($flag === 0) {
+			return;
+		}
 
+		$expr = $this->expr();
 		$hide = $expr->andX();
-		$hide->add($expr->bitwiseAnd($alias . '.config', Circle::CFG_SINGLE));
-		$hide->add($expr->bitwiseAnd($alias . '.config', Circle::CFG_HIDDEN));
-		$hide->add($expr->bitwiseAnd($alias . '.config', Circle::CFG_BACKEND));
+		$alias = ($alias === '') ? $this->getDefaultSelectAlias() : $alias;
+		foreach (Circle::$DEF_CFG as $cfg => $v) {
+			if ($flag & $cfg) {
+				$hide->add($expr->bitwiseAnd($alias . '.config', $cfg));
+			}
+		}
+
 		$this->andWhere($this->createFunction('NOT') . $hide);
 	}
 

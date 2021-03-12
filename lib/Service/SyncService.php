@@ -32,17 +32,30 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 
+use daita\MySmallPhpTools\Traits\TStringTools;
 use Exception;
+use OCA\Circles\Db\MemberRequest;
+use OCA\Circles\Exceptions\FederatedEventException;
+use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\GroupNotFoundException;
+use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MigrationTo22Exception;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedUser;
+use OCA\Circles\Model\ManagedModel;
+use OCA\Circles\Model\Member;
 use OCP\IGroupManager;
 use OCP\IUserManager;
+
 
 /**
  * Class SyncService
@@ -52,14 +65,23 @@ use OCP\IUserManager;
 class SyncService {
 
 
+	use TStringTools;
+
+
 	/** @var IUserManager */
 	private $userManager;
 
 	/** @var IGroupManager */
 	private $groupManager;
 
+	/** @var MemberRequest */
+	private $memberRequest;
+
 	/** @var FederatedUserService */
 	private $federatedUserService;
+
+	/** @var MemberService */
+	private $memberService;
 
 	/** @var GroupService */
 	private $groupService;
@@ -73,20 +95,26 @@ class SyncService {
 	 *
 	 * @param IUserManager $userManager
 	 * @param IGroupManager $groupManager
+	 * @param MemberRequest $memberRequest
 	 * @param FederatedUserService $federatedUserService
+	 * @param MemberService $memberService
 	 * @param GroupService $groupService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		IUserManager $userManager,
 		IGroupManager $groupManager,
+		MemberRequest $memberRequest,
 		FederatedUserService $federatedUserService,
+		MemberService $memberService,
 		GroupService $groupService,
 		ConfigService $configService
 	) {
 		$this->userManager = $userManager;
 		$this->groupManager = $groupManager;
+		$this->memberRequest = $memberRequest;
 		$this->federatedUserService = $federatedUserService;
+		$this->memberService = $memberService;
 		$this->groupService = $groupService;
 		$this->configService = $configService;
 	}
@@ -158,7 +186,7 @@ class SyncService {
 	public function syncNextcloudGroups(): void {
 		foreach ($this->groupManager->search('') as $group) {
 			try {
-				$this->syncNextcloudUser($group->getGID());
+				$this->syncNextcloudGroup($group->getGID());
 			} catch (Exception $e) {
 			}
 		}
@@ -168,10 +196,37 @@ class SyncService {
 	 * @param string $groupId
 	 *
 	 * @return Circle
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
 	 * @throws GroupNotFoundException
+	 * @throws InvalidIdException
+	 * @throws SingleCircleNotFoundException
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws UnknownRemoteException
 	 */
 	public function syncNextcloudGroup(string $groupId): Circle {
-		return $this->groupService->getGroupCircle($groupId);
+		$circle = $this->groupService->getGroupCircle($groupId);
+
+		$group = $this->groupManager->get($groupId);
+		foreach ($group->getUsers() as $user) {
+			$federatedUser = $this->federatedUserService->getLocalFederatedUser($user->getUID());
+			$member = new Member();
+			$member->importFromIFederatedUser($federatedUser);
+			$member->setId($this->uuid(ManagedModel::ID_LENGTH));
+			$member->setCircleId($circle->getId());
+			$member->setLevel(Member::LEVEL_MEMBER);
+			$member->setStatus(Member::STATUS_MEMBER);
+
+			$this->memberRequest->insertOrUpdate($member);
+		}
+
+		return $circle;
 	}
 
 
