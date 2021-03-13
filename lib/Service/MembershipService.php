@@ -212,6 +212,10 @@ class MembershipService {
 
 		$count = 0;
 		foreach ($memberships as $item) {
+			if ($item->getCircleId() === $item->getId()) {
+				continue;
+			}
+
 			if (!in_array($item->getCircleId(), $circleIds)) {
 				$this->membershipRequest->insert($item);
 				$count++;

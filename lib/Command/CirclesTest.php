@@ -29,23 +29,16 @@
 
 namespace OCA\Circles\Command;
 
-use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
-use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
-use daita\MySmallPhpTools\Model\Request;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
+use daita\MySmallPhpTools\Exceptions\ItemNotFoundException;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
 use OC\Core\Command\Base;
-use OCA\Circles\AppInfo\Application;
-use OCA\Circles\AppInfo\Capabilities;
-use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Service\ConfigService;
-use OCA\Circles\Service\GlobalScaleService;
-use OCA\Circles\Service\GSUpstreamService;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Process\Process;
 
 
 /**
@@ -57,43 +50,27 @@ class CirclesTest extends Base {
 
 
 	use TArrayTools;
-	use TNC21Request;
 
-
-	/** @var Capabilities */
-	private $capabilities;
-
-	/** @var GlobalScaleService */
-	private $globalScaleService;
-
-	/** @var GSUpstreamService */
-	private $gsUpstreamService;
 
 	/** @var ConfigService */
 	private $configService;
 
 
-	/** @var int */
-	private $delay = 5;
+	/** @var array */
+	private $config = [];
+
+	/** @var array */
+	private $sessions = [];
 
 
 	/**
 	 * CirclesTest constructor.
 	 *
-	 * @param Capabilities $capabilities
-	 * @param GlobalScaleService $globalScaleService
-	 * @param GSUpstreamService $gsUpstreamService
 	 * @param ConfigService $configService
 	 */
-	public function __construct(
-		Capabilities $capabilities, GlobalScaleService $globalScaleService,
-		GSUpstreamService $gsUpstreamService, ConfigService $configService
-	) {
+	public function __construct(ConfigService $configService) {
 		parent::__construct();
 
-		$this->capabilities = $capabilities;
-		$this->gsUpstreamService = $gsUpstreamService;
-		$this->globalScaleService = $globalScaleService;
 		$this->configService = $configService;
 	}
 
@@ -102,9 +79,11 @@ class CirclesTest extends Base {
 		parent::configure();
 		$this->setName('circles:test')
 			 ->setDescription('testing some features')
-			 ->addOption('delay', 'd', InputOption::VALUE_REQUIRED, 'delay before checking result')
-			 ->addOption('capabilities', '', InputOption::VALUE_NONE, 'listing app\s capabilities')
-			 ->addOption('url', '', InputOption::VALUE_REQUIRED, 'specify a source url', '');
+			 ->addArgument('deprecated', InputArgument::OPTIONAL, '')
+			 ->addOption(
+				 'am-i-aware-this-will-delete-all-my-data', '', InputOption::VALUE_REQUIRED,
+				 'Well, are you ?', ''
+			 );
 	}
 
 
@@ -116,141 +95,85 @@ class CirclesTest extends Base {
 	 * @throws Exception
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		if ($input->getOption('capabilities')) {
-			$capabilities = $this->getArray('circles', $this->capabilities->getCapabilities());
-			$output->writeln(json_encode($capabilities, JSON_PRETTY_PRINT));
+		if ($input->getOption('am-i-aware-this-will-delete-all-my-data') == 'yes') {
+			$this->testCirclesApp();
 
 			return 0;
 		}
 
-		if ($input->getOption('delay')) {
-			$this->delay = (int)$input->getOption('delay');
-		}
-
-		$this->configService->setAppValue(ConfigService::TEST_NC_BASE, '');
-		$this->configService->setAppValue(ConfigService::TEST_NC_BASE, $input->getOption('url'));
-
-		if (!$this->testRequest($output, 'GET', 'core.CSRFToken.index')) {
-			$this->configService->setAppValue(ConfigService::TEST_NC_BASE, '');
-
-			return 0;
-		}
-
-		if (!$this->testRequest(
-			$output, 'POST', 'circles.RemoteWrapper.asyncBroadcast',
-			['token' => 'test-dummy-token']
-		)) {
-			$this->configService->setAppValue(ConfigService::TEST_NC_BASE, '');
-
-			return 0;
-		}
-
-		$test = new GSEvent(GSEvent::TEST, true, true);
-		$test->setAsync(true);
-		$token = $this->gsUpstreamService->newEvent($test);
-
-		$output->writeln('- Async request is sent, now waiting ' . $this->delay . ' seconds');
-		sleep($this->delay);
-		$output->writeln('- Pause is over, checking results for ' . $token);
-
-		$wrappers = $this->gsUpstreamService->getEventsByToken($token);
-
-		$result = [];
-		$instances = array_merge($this->globalScaleService->getInstances(true));
-		foreach ($wrappers as $wrapper) {
-			$result[$wrapper->getInstance()] = $wrapper->getEvent();
-		}
-
-		$localLooksGood = false;
-		foreach ($instances as $instance) {
-			$output->write($instance . ' ');
-			if (array_key_exists($instance, $result)
-				&& $result[$instance]->getResult()
-									 ->gInt('status') === 1) {
-				$output->writeln('<info>ok</info>');
-				if ($this->configService->isLocalInstance($instance)) {
-					$localLooksGood = true;
-				}
-			} else {
-				$output->writeln('<error>fail</error>');
-			}
-		}
-
-		$this->configService->setAppValue(ConfigService::TEST_NC_BASE, '');
-
-		if ($localLooksGood) {
-			$this->saveUrl($input, $output, $input->getOption('url'));
-		}
+		$output->writeln('');
+		$output->writeln(
+			'<error>Since Nextcloud 22, this command have changed, please read the message below:</error>'
+		);
+		$output->writeln('<error>This new command is to test the integrity of the Circles App.</error>');
+		$output->writeln(
+			'<error>Running this command will REMOVE all your current configuration and all your current Circles.</error>'
+		);
+		$output->writeln('<error>There is a huge probability that you do not want to do that.</error>');
+		$output->writeln('');
+		$output->writeln(
+			'<error>The old testing command you might looking for have moved to "./occ circles:check"</error>'
+		);
+		$output->writeln('');
 
 		return 0;
 	}
 
 
 	/**
-	 * @param OutputInterface $o
-	 * @param string $type
-	 * @param string $route
-	 * @param array $args
-	 *
-	 * @return bool
-	 * @throws RequestNetworkException
+	 * @throws ItemNotFoundException
 	 */
-	private function testRequest(OutputInterface $o, string $type, string $route, array $args = []): bool {
-		$request = new NC21Request('', Request::type($type));
-		$this->configService->configureRequest($request, $route, $args);
-		$request->setFollowLocation(false);
+	private function testCirclesApp() {
+		$this->loadConfiguration();
 
-		$o->write('- ' . $type . ' request on ' . $request->getCompleteUrl() . ': ');
-		$this->doRequest($request);
+		$listing = $this->occ('global-scale-1', 'circles:manage:list');
 
-		$color = 'error';
-		$result = $request->getResult();
-		if ($result->getStatusCode() === 200) {
-			$color = 'info';
-		}
-
-		$o->writeln('<' . $color . '>' . $result->getStatusCode() . '</' . $color . '>');
-
-		if ($result->getStatusCode() === 200) {
-			return true;
-		}
-
-		return false;
+		echo json_encode($listing, JSON_PRETTY_PRINT) . "\n";
 	}
 
 
 	/**
-	 * @param InputInterface $input
-	 * @param OutputInterface $output
-	 * @param string $address
+	 * @param string $instance
+	 * @param string $cmd
+	 *
+	 * @return array
+	 * @throws ItemNotFoundException
 	 */
-	private function saveUrl(InputInterface $input, OutputInterface $output, string $address): void {
-		if ($address === '') {
-			return;
+	private function occ(string $instance, string $cmd): array {
+		$configInstance = $this->getConfigInstance($instance);
+		$path = $this->get('path', $configInstance);
+		$occ = rtrim($path, '/') . '/occ';
+
+		$process = new Process(array_merge([$occ], explode(' ', $cmd), ['--output=json']));
+		$process->run();
+
+		return json_decode($process->getOutput(), true);
+	}
+
+
+	/**
+	 *
+	 */
+	private function loadConfiguration() {
+		$configuration = file_get_contents(__DIR__ . '/../../testConfiguration.json');
+		$this->config = json_decode($configuration, true);
+	}
+
+
+	/**
+	 * @param string $instance
+	 *
+	 * @return array
+	 * @throws ItemNotFoundException
+	 */
+	private function getConfigInstance(string $instance): array {
+		foreach ($this->getArray('instances', $this->config) as $item) {
+			if (strtolower($this->get('id', $item)) === strtolower($instance)) {
+				return $item;
+			}
 		}
 
-		$output->writeln('');
-		$output->writeln(
-			'The address <info>' . $address . '</info> seems to reach your local Nextcloud.'
-		);
-
-		$helper = $this->getHelper('question');
-		$output->writeln('');
-		$question = new ConfirmationQuestion(
-			'<info>Do you want to store this address in database ?</info> (y/N) ', false, '/^(y|Y)/i'
-		);
-
-		if (!$helper->ask($input, $output, $question)) {
-			$output->writeln('Configuration NOT saved');
-
-			return;
-		}
-
-		$this->configService->setAppValue(ConfigService::FORCE_NC_BASE, $address);
-		$output->writeln(
-			'New configuration <info>' . Application::APP_ID . '.' . ConfigService::FORCE_NC_BASE . '=\''
-			. $address . '\'</info> stored in database'
-		);
+		throw new ItemNotFoundException();
 	}
 
 }

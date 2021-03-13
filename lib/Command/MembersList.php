@@ -289,7 +289,7 @@ class MembersList extends Base {
 						$this->federatedUserService->commandLineInitiator(
 							$initiator, $member->getSingleId(), true
 						);
-						$circle = $this->circleService->getCircle($member->getSingleId());
+						$circle = $this->circleService->getCircle($member->getSingleId(), 0);
 					}
 					$node = new NC21TreeNode(
 						$tree, new SimpleDataStore(

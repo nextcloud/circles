@@ -1,0 +1,43 @@
+{
+  "instances": [
+    {
+      "id": "global-scale-1",
+      "type": "GlobalScale",
+      "path": "/home/maxence/sites/federated/orange/nextcloud",
+      "config": {
+        "frontal_cloud_id": "orange.local",
+        "frontal_cloud_scheme": "http"
+      },
+      "users": [
+        "cult",
+        "test1",
+        "test2",
+        "test3",
+        "test4",
+        "test5",
+        "test6",
+        "test7",
+        "test8",
+        "test9"
+      ],
+      "groups": {
+        "admin": [
+          "cult",
+          "test1",
+          "test9"
+        ],
+        "group1": [
+          "test2",
+          "test3",
+          "test4"
+        ],
+        "group2": [
+          "test3",
+          "test5",
+          "test7",
+          "test9"
+        ]
+      }
+    }
+  ]
+}
