@@ -38,6 +38,7 @@ use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Deserialize;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use DateTime;
 use JsonSerializable;
+use OCA\Circles\Db\CoreRequestBuilder;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\ParseMemberLevelException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
@@ -62,12 +63,12 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	const LEVEL_ADMIN = 8;
 	const LEVEL_OWNER = 9;
 
+	const TYPE_SINGLE = 0;
 	const TYPE_USER = 1;
 	const TYPE_GROUP = 2;
 	const TYPE_MAIL = 4;
 	const TYPE_CONTACT = 8;
 	const TYPE_CIRCLE = 16;
-	const TYPE_SINGLE = 1024;
 	const TYPE_APP = 2048;
 
 	const STATUS_INVITED = 'Invited';
@@ -84,11 +85,11 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	];
 
 	public static $DEF_TYPE = [
-		1  => 'user',
-		2  => 'group',
-		4  => 'mail',
-		8  => 'contact',
-		16 => 'circle',
+		1    => 'user',
+		2    => 'group',
+		4    => 'mail',
+		8    => 'contact',
+		16   => 'circle',
 		2048 => 'app'
 	];
 
@@ -109,6 +110,9 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 
 	/** @var int */
 	private $userType = 0;
+
+	/** @var string */
+	private $source = '';
 
 	/** @var string */
 	private $instance = '';
@@ -250,6 +254,25 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	 */
 	public function getUserType(): int {
 		return $this->userType;
+	}
+
+
+	/**
+	 * @param string $source
+	 *
+	 * @return self
+	 */
+	public function setSource(string $source): self {
+		$this->source = $source;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSource(): string {
+		return $this->source;
 	}
 
 
@@ -546,6 +569,7 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 			'singleId'      => $this->getSingleId(),
 			'userId'        => $this->getUserId(),
 			'userType'      => $this->getUserType(),
+			'source'        => $this->getSource(),
 			'instance'      => $this->getInstance(),
 			'local'         => $this->isLocal(),
 			'level'         => $this->getLevel(),
@@ -590,6 +614,11 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 		$this->setNote($this->get($prefix . 'note', $data));
 		$this->setContactId($this->get($prefix . 'contact_id', $data));
 		$this->setContactMeta($this->get($prefix . 'contact_meta', $data));
+
+		if ($prefix === '') {
+			$this->setSource($this->get(CoreRequestBuilder::PREFIX_CIRCLE_SOURCE . 'source', $data));
+		}
+
 
 		$cachedUpdate = $this->get($prefix . 'cached_update', $data);
 		if ($cachedUpdate !== '') {

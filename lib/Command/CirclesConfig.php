@@ -133,7 +133,7 @@ class CirclesConfig extends Base {
 
 			if (empty($input->getArgument('config'))) {
 				$output->writeln(
-					json_encode(Circle::getCircleTypes($circle, Circle::TYPES_LONG), JSON_PRETTY_PRINT)
+					json_encode(Circle::getCircleFlags($circle, Circle::FLAGS_LONG), JSON_PRETTY_PRINT)
 				);
 
 				return 0;

@@ -75,8 +75,8 @@ class CircleRequestBuilder extends CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->selectDistinct('c.unique_id')
 		   ->addSelect(
-			   'c.name', 'c.alt_name', 'c.description', 'c.settings', 'c.config', 'contact_addressbook',
-			   'contact_groupname', 'c.creation'
+			   'c.name', 'c.display_name', 'c.source', 'c.description', 'c.settings', 'c.config',
+			   'contact_addressbook', 'contact_groupname', 'c.creation'
 		   )
 		   ->from(self::TABLE_CIRCLE, 'c')
 		   ->setDefaultSelectAlias('c');

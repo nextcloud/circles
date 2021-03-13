@@ -55,6 +55,7 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 	const PREFIX_OWNER = 'owner_';
 	const PREFIX_INITIATOR = 'initiator_';
 	const PREFIX_CIRCLE = 'circle_';
+	const PREFIX_CIRCLE_SOURCE = 'circle_source_';
 
 
 	/** @var ConfigService */
@@ -232,7 +233,7 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 	/**
 	 * @param IFederatedUser|null $initiator
 	 */
-	public function leftJoinCircle(?IFederatedUser $initiator = null) {
+	public function leftJoinCircle(?IFederatedUser $initiator = null): void {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
@@ -243,23 +244,46 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 		$this->generateCircleSelectAlias($alias, self::PREFIX_CIRCLE)
 			 ->leftJoin(
 				 $this->getDefaultSelectAlias(), CoreQueryBuilder::TABLE_CIRCLE, $alias,
-				 $expr->andX(
-					 $expr->eq($alias . '.unique_id', $this->getDefaultSelectAlias() . '.circle_id')
-				 )
+				 $expr->eq($alias . '.unique_id', $this->getDefaultSelectAlias() . '.circle_id')
 			 );
 
 		$this->leftJoinOwner($alias);
 		if (!is_null($initiator)) {
 			$this->limitToInitiator($initiator, $alias, true);
 		}
+	}
 
+
+	/**
+	 */
+	public function leftJoinCircleSource(): void {
+		if ($this->getType() !== QueryBuilder::SELECT) {
+			return;
+		}
+
+		$expr = $this->expr();
+
+		$alias = 'c_source';
+		$this->generateCircleSelectAlias($alias, self::PREFIX_CIRCLE_SOURCE)
+			 ->leftJoin(
+				 $this->getDefaultSelectAlias(), CoreQueryBuilder::TABLE_CIRCLE, $alias,
+				 $expr->eq($alias . '.unique_id', $this->getDefaultSelectAlias() . '.single_id')
+			 );
+
+		$fields = [
+			'unique_id', 'name', 'display_name', 'source', 'description', 'settings', 'config',
+			'contact_addressbook',
+			'contact_groupname', 'creation'
+		];
+
+		$this->generateSelectAlias(['source'], $alias, self::PREFIX_CIRCLE_SOURCE);
 	}
 
 
 	/**
 	 * @param string $circleTableAlias
 	 */
-	public function leftJoinOwner(string $circleTableAlias = '') {
+	public function leftJoinOwner(string $circleTableAlias = ''): void {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
@@ -609,7 +633,8 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 	 */
 	private function generateCircleSelectAlias(string $alias, string $prefix, array $default = []): self {
 		$fields = [
-			'unique_id', 'name', 'alt_name', 'description', 'settings', 'config', 'contact_addressbook',
+			'unique_id', 'name', 'display_name', 'source', 'description', 'settings', 'config',
+			'contact_addressbook',
 			'contact_groupname', 'creation'
 		];
 

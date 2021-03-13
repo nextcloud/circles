@@ -417,10 +417,10 @@ class FederatedUserService {
 	public function getFederatedUser(string $federatedId, int $userType = Member::TYPE_USER): FederatedUser {
 		list($singleId, $instance) = $this->extractIdAndInstance($federatedId);
 		switch ($userType) {
-			case Member::TYPE_USER:
-				return $this->getFederatedUser_User($singleId, $instance);
 			case Member::TYPE_SINGLE:
 				return $this->getFederatedUser_SingleId($singleId, $instance);
+			case Member::TYPE_USER:
+				return $this->getFederatedUser_User($singleId, $instance);
 		}
 
 		throw new UserTypeNotFoundException();
@@ -442,22 +442,9 @@ class FederatedUserService {
 	 * @return FederatedUser
 	 */
 	public function generateFederatedUser(string $federatedId, int $type = 0): FederatedUser {
-		if ($type === 0 || $type === Member::TYPE_USER) {
-			try {
-				return $this->getFederatedUser($federatedId, Member::TYPE_USER);
-			} catch (Exception $e) {
-			}
-		}
-
-		if ($type === 0 || $type === Member::TYPE_SINGLE) {
-			try {
-				return $this->getFederatedUser($federatedId, Member::TYPE_SINGLE);
-			} catch (Exception $e) {
-			}
-		}
-
-		if ($type === 0) {
-			$type = Member::TYPE_USER;
+		try {
+			return $this->getFederatedUser($federatedId, $type);
+		} catch (Exception $e) {
 		}
 
 		list($userId, $instance) = $this->extractIdAndInstance($federatedId);

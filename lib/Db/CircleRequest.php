@@ -63,7 +63,8 @@ class CircleRequest extends CircleRequestBuilder {
 		$qb->setValue('unique_id', $qb->createNamedParameter($circle->getId()))
 		   ->setValue('long_id', $qb->createNamedParameter($circle->getId()))
 		   ->setValue('name', $qb->createNamedParameter($circle->getName()))
-		   ->setValue('alt_name', $qb->createNamedParameter($circle->getDisplayName()))
+		   ->setValue('source', $qb->createNamedParameter($circle->getSource()))
+		   ->setValue('display_name', $qb->createNamedParameter($circle->getDisplayName()))
 		   ->setValue('description', $qb->createNamedParameter($circle->getDescription()))
 		   ->setValue('contact_addressbook', $qb->createNamedParameter($circle->getContactAddressBook()))
 		   ->setValue('contact_groupname', $qb->createNamedParameter($circle->getContactGroupName()))
@@ -81,7 +82,7 @@ class CircleRequest extends CircleRequestBuilder {
 	public function update(Circle $circle) {
 		$qb = $this->getCircleUpdateSql();
 		$qb->set('name', $qb->createNamedParameter($circle->getName()))
-		   ->set('alt_name', $qb->createNamedParameter($circle->getDisplayName()))
+		   ->set('display_name', $qb->createNamedParameter($circle->getDisplayName()))
 		   ->set('description', $qb->createNamedParameter($circle->getDescription()))
 		   ->set('settings', $qb->createNamedParameter(json_encode($circle->getSettings())))
 		   ->set('config', $qb->createNamedParameter($circle->getConfig()));
@@ -230,7 +231,9 @@ class CircleRequest extends CircleRequestBuilder {
 			$owner = $circle->getOwner();
 			$federatedUser->set($owner->getUserId(), $owner->getInstance(), $owner->getUserType());
 		} else {
-			$federatedUser->set($circle->getDisplayName(), $circle->getInstance(), Member::TYPE_CIRCLE);
+			$federatedUser->set(
+				$circle->getDisplayName(), $circle->getInstance(), Member::TYPE_CIRCLE, $circle->getsource()
+			);
 		}
 
 		return $federatedUser;

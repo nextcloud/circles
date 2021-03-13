@@ -83,7 +83,8 @@ class MemberRequestBuilder extends CoreQueryBuilder {
 		   ->from(self::TABLE_MEMBER, 'm')
 		   ->orderBy('m.joined')
 		   ->groupBy('m.member_id')
-		   ->setDefaultSelectAlias('m');
+		   ->setDefaultSelectAlias('m')
+		   ->leftJoinCircleSource();
 
 		return $qb;
 	}

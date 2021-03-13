@@ -60,6 +60,9 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 	private $userType;
 
 	/** @var string */
+	private $source;
+
+	/** @var string */
 	private $instance;
 
 	/** @var Membership[] */
@@ -73,10 +76,17 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 	}
 
 
-	public function set(string $userId = '', $instance = '', int $type = Member::TYPE_USER): self {
+	public function set(
+		string $userId = '',
+		$instance = '',
+		int $type = Member::TYPE_USER,
+		string $source = ''
+	): self {
+
 		$this->userId = $userId;
 		$this->setInstance($instance);
 		$this->userType = $type;
+		$this->source = $source;
 
 		return $this;
 	}
@@ -135,6 +145,22 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 	 */
 	public function getUserType(): int {
 		return $this->userType;
+	}
+
+
+	/**
+	 * @param string $source
+	 *
+	 * @return $this
+	 */
+	public function setSource(string $source): self {
+		$this->source = $source;
+
+		return $this;
+	}
+
+	public function getSource(): string {
+		return $this->source;
 	}
 
 
@@ -198,6 +224,7 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 		$this->setSingleId($this->get('id', $data));
 		$this->setUserId($this->get('user_id', $data));
 		$this->setUserType($this->getInt('user_type', $data));
+		$this->setSource($this->get('source', $data));
 		$this->setInstance($this->get('instance', $data));
 
 //$this->setMemberships($this->getArray('memberships'));
@@ -213,6 +240,7 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 			'id'        => $this->getSingleId(),
 			'user_id'   => $this->getUserId(),
 			'user_type' => $this->getUserType(),
+			'source'    => $this->getSource(),
 			'instance'  => $this->getInstance(),
 			//			'memberships' => $this->getMemberships()
 		];

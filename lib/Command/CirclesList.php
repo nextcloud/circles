@@ -122,8 +122,7 @@ class CirclesList extends Base {
 			 ->addOption('member', '', InputOption::VALUE_REQUIRED, 'search for member', '')
 			 ->addOption('def', '', InputOption::VALUE_NONE, 'display complete circle configuration')
 			 ->addOption('display-name', '', InputOption::VALUE_NONE, 'display the displayName')
-			 ->addOption('all', '', InputOption::VALUE_NONE, 'display also hidden Circles')
-			 ->addOption('json', '', InputOption::VALUE_NONE, 'returns result as JSON');
+			 ->addOption('all', '', InputOption::VALUE_NONE, 'display also hidden Circles');
 	}
 
 
@@ -170,7 +169,7 @@ class CirclesList extends Base {
 			$circles = $this->circleService->getCircles($filter, !$input->getOption('all'));
 		}
 
-		if ($input->getOption('json')) {
+		if (strtolower($input->getOption('output')) === 'json') {
 			$output->writeln(json_encode($circles, JSON_PRETTY_PRINT));
 
 			return 0;
@@ -189,18 +188,19 @@ class CirclesList extends Base {
 		$output = new ConsoleOutput();
 		$output = $output->section();
 		$table = new Table($output);
-		$table->setHeaders(['ID', 'Name', 'Type', 'Owner', 'Instance', 'Limit', 'Description']);
+		$table->setHeaders(['ID', 'Name', 'Config', 'Source', 'Owner', 'Instance', 'Limit', 'Description']);
 		$table->render();
 
 		$local = $this->configService->getFrontalInstance();
-		$display = ($this->input->getOption('def') ? Circle::TYPES_LONG : Circle::TYPES_SHORT);
+		$display = ($this->input->getOption('def') ? Circle::FLAGS_LONG : Circle::FLAGS_SHORT);
 		foreach ($circles as $circle) {
 			$owner = $circle->getOwner();
 			$table->appendRow(
 				[
 					$circle->getId(),
 					$this->input->getOption('display-name') ? $circle->getDisplayName() : $circle->getName(),
-					json_encode(Circle::getCircleTypes($circle, $display)),
+					json_encode(Circle::getCircleFlags($circle, $display)),
+					$circle->getSource(),
 					$owner->getUserId(),
 					($owner->getInstance() === $local) ? '' : $owner->getInstance(),
 					$this->getInt('members_limit', $circle->getSettings(), -1),

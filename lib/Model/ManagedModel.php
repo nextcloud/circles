@@ -70,6 +70,7 @@ class ManagedModel {
 		$this->setSingleId($orig->getSingleId());
 		$this->setUserId($orig->getUserId());
 		$this->setUserType($orig->getUserType());
+		$this->setSource($orig->getSource());
 		$this->setInstance($orig->getInstance());
 	}
 

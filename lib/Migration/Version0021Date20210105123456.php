@@ -79,6 +79,15 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 							]
 				);
 			}
+			if (!$circles->hasColumn('source')) {
+				$circles->addColumn(
+					'source', 'string', [
+								'notnull' => false,
+								'default' => '',
+								'length'  => 63
+							]
+				);
+			}
 			if (!$circles->hasColumn('instance')) {
 				$circles->addColumn(
 					'instance', 'string', [
@@ -86,6 +95,15 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 								  'default' => '',
 								  'length'  => 255
 							  ]
+				);
+			}
+			if (!$circles->hasColumn('display_name')) {
+				$circles->addColumn(
+					'display_name', 'string', [
+									  'notnull' => false,
+									  'default' => '',
+									  'length'  => 127
+								  ]
 				);
 			}
 			$circles->addIndex(['config']);
@@ -101,6 +119,14 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 								   'notnull' => false,
 								   'length'  => 15
 							   ]
+				);
+			}
+			if (!$circles->hasColumn('circle_source')) {
+				$circles->addColumn(
+					'circle_source', 'string', [
+									   'notnull' => false,
+									   'length'  => 63
+								   ]
 				);
 			}
 		} catch (SchemaException $e) {
@@ -210,9 +236,9 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 			);
 			$table->addColumn(
 				'circle_id', 'string', [
-							 'notnull' => true,
-							 'length'  => 15
-						 ]
+							   'notnull' => true,
+							   'length'  => 15
+						   ]
 			);
 			$table->addColumn(
 				'instance', 'string', [

@@ -45,5 +45,7 @@ interface IFederatedUser extends IFederatedModel {
 
 	public function getUserType(): int;
 
+	public function getSource(): string;
+
 }
 

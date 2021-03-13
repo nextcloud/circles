@@ -78,7 +78,6 @@ class MembersSearch extends Base {
 		$this->setName('circles:members:search')
 			 ->setDescription('Change the level of a member from a Circle')
 			 ->addArgument('term', InputArgument::REQUIRED, 'term to search')
-			 ->addOption('json', '', InputOption::VALUE_NONE, 'return result as JSON')
 			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
 			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
 	}
@@ -91,11 +90,9 @@ class MembersSearch extends Base {
 	 * @return int
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		$needle = $input->getArgument('needle');
+		$result = $this->searchService->search($input->getArgument('needle'));
 
-		$result = $this->searchService->search($needle);
-
-		if ($input->getOption('json')) {
+		if (strtolower($input->getOption('output')) === 'json') {
 			$output->writeln(json_encode($result, JSON_PRETTY_PRINT));
 		}
 

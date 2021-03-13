@@ -124,8 +124,7 @@ class MembersList extends Base {
 			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
 			 ->addOption('instance', '', InputOption::VALUE_REQUIRED, 'Instance of the circle', '')
 			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
-			 ->addOption('tree', '', InputOption::VALUE_NONE, 'display members as a tree')
-			 ->addOption('json', '', InputOption::VALUE_NONE, 'returns result as JSON');
+			 ->addOption('tree', '', InputOption::VALUE_NONE, 'display members as a tree');
 	}
 
 
@@ -163,7 +162,7 @@ class MembersList extends Base {
 			$output->writeln('<info>Name</info>: ' . $circle->getName());
 			$owner = $circle->getOwner();
 			$output->writeln('<info>Owner</info>: ' . $owner->getUserId() . '@' . $owner->getInstance());
-			$type = implode(", ", Circle::getCircleTypes($circle, Circle::TYPES_LONG));
+			$type = implode(", ", Circle::getCircleFlags($circle, Circle::FLAGS_LONG));
 			$output->writeln('<info>Config</info>: ' . $type);
 			$output->writeln(' ');
 
@@ -185,7 +184,7 @@ class MembersList extends Base {
 			return 0;
 		}
 
-		if ($input->getOption('json')) {
+		if (strtolower($input->getOption('output')) === 'json') {
 			$output->writeln(json_encode($members, JSON_PRETTY_PRINT));
 
 			return 0;
@@ -195,7 +194,7 @@ class MembersList extends Base {
 		$output = $output->section();
 
 		$table = new Table($output);
-		$table->setHeaders(['ID', 'Single ID', 'Type', 'Username', 'Instance', 'Level']);
+		$table->setHeaders(['ID', 'Single ID', 'Type', 'Source', 'Username', 'Instance', 'Level']);
 		$table->render();
 
 		$local = $this->configService->getFrontalInstance();
@@ -205,6 +204,7 @@ class MembersList extends Base {
 					$member->getId(),
 					$member->getSingleId(),
 					Member::$DEF_TYPE[$member->getUserType()],
+					$member->getSource(),
 					$member->getUserId(),
 					($member->getInstance() === $local) ? '' : $member->getInstance(),
 					$member->getLevel() > 0 ? Member::$DEF_LEVEL[$member->getLevel()] :
@@ -367,7 +367,7 @@ class MembersList extends Base {
 					}
 					$owner = $circle->getOwner();
 					$line .= '<info>Owner</info>: ' . $owner->getUserId() . '@' . $owner->getInstance();
-					$type = implode(", ", Circle::getCircleTypes($circle, Circle::TYPES_LONG));
+					$type = implode(", ", Circle::getCircleFlags($circle, Circle::FLAGS_LONG));
 					$line .= ($type === '') ? '' : ' <info>Config</info>: ' . $type;
 				}
 

@@ -66,6 +66,8 @@ class GroupService {
 
 	use TStringTools;
 
+	const GROUP_TYPE = 'Nextcloud Group';
+
 
 	/** @var IGroupManager */
 	private $groupManager;
@@ -127,9 +129,10 @@ class GroupService {
 		$owner = $this->federatedUserService->getCurrentApp();
 
 		$circle = new Circle();
-		$circle->setName('group:' . $groupId);
-		$circle->setConfig(Circle::CFG_SYSTEM | Circle::CFG_NO_OWNER | Circle::CFG_HIDDEN);
-		$circle->setId($this->token(ManagedModel::ID_LENGTH));
+		$circle->setName('group:' . $groupId)
+			   ->setConfig(Circle::CFG_SYSTEM | Circle::CFG_NO_OWNER | Circle::CFG_HIDDEN)
+			   ->setId($this->token(ManagedModel::ID_LENGTH))
+			   ->setSource(self::GROUP_TYPE);
 
 		$member = new Member();
 		$member->importFromIFederatedUser($owner);
@@ -145,7 +148,7 @@ class GroupService {
 		} catch (CircleNotFoundException $e) {
 		}
 
-		$circle->setDisplayName('Nextcloud Group \'' . $groupId . '\'');
+		$circle->setDisplayName($groupId);
 
 		$event = new FederatedEvent(CircleCreate::class);
 		$event->setCircle($circle);
