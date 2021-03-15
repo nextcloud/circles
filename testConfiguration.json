@@ -38,6 +38,136 @@
           "test9"
         ]
       }
+    },
+    {
+      "id": "global-scale-2",
+      "type": "GlobalScale",
+      "path": "/home/maxence/sites/federated/green/nextcloud",
+      "config": {
+        "frontal_cloud_id": "green.local",
+        "frontal_cloud_scheme": "http"
+      },
+      "users": [
+        "cult",
+        "test1",
+        "test2",
+        "test3",
+        "test4",
+        "test5",
+        "test6",
+        "test7",
+        "test8",
+        "test9"
+      ],
+      "groups": {
+        "admin": [
+          "cult"
+        ]
+      }
+    },
+    {
+      "id": "global-scale-3",
+      "type": "GlobalScale",
+      "path": "/home/maxence/sites/federated/purple/nextcloud",
+      "config": {
+        "frontal_cloud_id": "purple.local",
+        "frontal_cloud_scheme": "http"
+      },
+      "users": [
+        "cult",
+        "test1",
+        "test2",
+        "test3",
+        "test4",
+        "test5",
+        "test6",
+        "test7",
+        "test8",
+        "test9"
+      ],
+      "groups": {
+        "admin": [
+          "cult"
+        ]
+      }
+    },
+    {
+      "id": "passive",
+      "type": "Passive",
+      "path": "/home/maxence/sites/federated/passive/nextcloud",
+      "config": {
+        "frontal_cloud_id": "passive.local",
+        "frontal_cloud_scheme": "http"
+      },
+      "users": [
+        "cult",
+        "test1",
+        "test2",
+        "test3",
+        "test4",
+        "test5",
+        "test6",
+        "test7",
+        "test8",
+        "test9"
+      ],
+      "groups": {
+        "admin": [
+          "cult"
+        ]
+      }
+    },
+    {
+      "id": "external",
+      "type": "External",
+      "path": "/home/maxence/sites/federated/external/nextcloud",
+      "config": {
+        "frontal_cloud_id": "external.local",
+        "frontal_cloud_scheme": "http"
+      },
+      "users": [
+        "cult",
+        "test1",
+        "test2",
+        "test3",
+        "test4",
+        "test5",
+        "test6",
+        "test7",
+        "test8",
+        "test9"
+      ],
+      "groups": {
+        "admin": [
+          "cult"
+        ]
+      }
+    },
+    {
+      "id": "trusted",
+      "type": "Trusted",
+      "path": "/home/maxence/sites/federated/trusted/nextcloud",
+      "config": {
+        "frontal_cloud_id": "trusted.local",
+        "frontal_cloud_scheme": "http"
+      },
+      "users": [
+        "cult",
+        "test1",
+        "test2",
+        "test3",
+        "test4",
+        "test5",
+        "test6",
+        "test7",
+        "test8",
+        "test9"
+      ],
+      "groups": {
+        "admin": [
+          "cult"
+        ]
+      }
     }
   ]
 }
