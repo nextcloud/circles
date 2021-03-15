@@ -30,7 +30,7 @@ namespace OCA\Circles\Migration;
 
 use Closure;
 use Doctrine\DBAL\Schema\SchemaException;
-use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use OCP\DB\ISchemaWrapper;
 use OCP\IDBConnection;
 use OCP\Migration\IOutput;
@@ -401,7 +401,7 @@ class Version0019Date20200603080001 extends SimpleMigrationStep {
 						   ]
 			);
 			$table->addColumn(
-				'member_id', Type::STRING, [
+				'member_id', Types::STRING, [
 							   'notnull' => false,
 							   'length'  => 15,
 						   ]
@@ -471,7 +471,7 @@ class Version0019Date20200603080001 extends SimpleMigrationStep {
 							  ]
 			);
 			$table->addColumn(
-				'contact_checked', Type::SMALLINT, [
+				'contact_checked', Types::SMALLINT, [
 									 'notnull' => false,
 									 'length'  => 1,
 								 ]
@@ -556,7 +556,7 @@ class Version0019Date20200603080001 extends SimpleMigrationStep {
 						   ]
 			);
 			$table->addColumn(
-				'member_id', Type::STRING, [
+				'member_id', Types::STRING, [
 							   'notnull' => false,
 							   'length'  => 15,
 						   ]
@@ -586,7 +586,7 @@ class Version0019Date20200603080001 extends SimpleMigrationStep {
 						  ]
 			);
 			$table->addColumn(
-				'accepted', Type::SMALLINT, [
+				'accepted', Types::SMALLINT, [
 							  'notnull' => false,
 							  'length'  => 1,
 						  ]
