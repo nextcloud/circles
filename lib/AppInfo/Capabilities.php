@@ -40,6 +40,7 @@ use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
 use OCP\App\IAppManager;
 use OCP\Capabilities\ICapability;
+use OCP\IL10N;
 
 
 /**
@@ -49,6 +50,9 @@ use OCP\Capabilities\ICapability;
  */
 class Capabilities implements ICapability {
 
+
+	/** @var IL10N */
+	private $l10n;
 
 	/** @var IAppManager */
 	private $appManager;
@@ -60,10 +64,12 @@ class Capabilities implements ICapability {
 	/**
 	 * Capabilities constructor.
 	 *
+	 * @param IL10N $l10n
 	 * @param IAppManager $appManager
 	 * @param ConfigService $configService
 	 */
-	public function __construct(IAppManager $appManager, ConfigService $configService) {
+	public function __construct(IL10N $l10n, IAppManager $appManager, ConfigService $configService) {
+		$this->l10n = $l10n;
 		$this->appManager = $appManager;
 		$this->configService = $configService;
 	}
@@ -75,20 +81,11 @@ class Capabilities implements ICapability {
 	public function getCapabilities(): array {
 		return [
 			Application::APP_ID => [
-				'version'   => $this->appManager->getAppVersion(Application::APP_ID),
-				'settings'  => $this->configService->getSettings(),
-				'constants' => $this->getConstants()
+				'version'  => $this->appManager->getAppVersion(Application::APP_ID),
+				'settings' => $this->configService->getSettings(),
+				'circle'   => $this->getCapabilitiesCircle(),
+				'member'   => $this->getCapabilitiesMember()
 			],
-		];
-	}
-
-
-	private function getConstants(): array {
-		return [
-			'circle' => [
-				'config' => $this->generateConstantsCircleConfig()
-			],
-			'member' => $this->generateConstantsMember()
 		];
 	}
 
@@ -96,34 +93,79 @@ class Capabilities implements ICapability {
 	/**
 	 * @return array
 	 */
-	private function generateConstantsCircleConfig(): array {
-		$constants = [
-			'flags'       => [],
+	private function getCapabilitiesCircle(): array {
+		return [
+			'constants' => $this->getCapabilitiesCircleConstants(),
+			'config'    => $this->getCapabilitiesCircleConfig()
+		];
+	}
+
+
+	/**
+	 * @return array
+	 */
+	private function getCapabilitiesMember(): array {
+		return [
+			'constants' => $this->getCapabilitiesMemberConstants()
+		];
+	}
+
+
+	/**
+	 * @return array
+	 */
+	private function getCapabilitiesCircleConstants(): array {
+		return [
+			'flags'  => [
+				1     => $this->l10n->t('Single'),
+				2     => $this->l10n->t('Personal'),
+				4     => $this->l10n->t('System'),
+				8     => $this->l10n->t('Visible'),
+				16    => $this->l10n->t('Open'),
+				32    => $this->l10n->t('Invite'),
+				64    => $this->l10n->t('Join Request'),
+				128   => $this->l10n->t('Friends'),
+				256   => $this->l10n->t('Password Protected'),
+				512   => $this->l10n->t('No Owner'),
+				1024  => $this->l10n->t('Hidden'),
+				2048  => $this->l10n->t('Backend'),
+				4096  => $this->l10n->t('Root'),
+				8192  => $this->l10n->t('Circle Invite'),
+				16384 => $this->l10n->t('Federated')
+			],
+			'source' => [
+				1  => $this->l10n->t('Nextcloud User'),
+				2  => $this->l10n->t('Nextcloud Group'),
+				3  => $this->l10n->t('Mail Address'),
+				4  => $this->l10n->t('Contact'),
+				10 => $this->l10n->t('Circle')
+			]
+		];
+	}
+
+
+	/**
+	 * @return array
+	 */
+	private function getCapabilitiesCircleConfig(): array {
+		return [
 			'coreFlags'   => Circle::$DEF_CFG_CORE_FILTER,
 			'systemFlags' => Circle::$DEF_CFG_SYSTEM_FILTER
 		];
-
-		foreach (Circle::$DEF_CFG as $flag => $entry) {
-			list(, $def) = explode('|', $entry);
-			$constants['flags'][$flag] = $def;
-		}
-
-		return $constants;
 	}
 
 
 	/**
 	 * @return array
 	 */
-	private function generateConstantsMember(): array {
+	private function getCapabilitiesMemberConstants(): array {
 		return [
-			'type'   => Member::$DEF_TYPE,
-			'level'  => Member::$DEF_TYPE,
-			'status' => [
-				Member::STATUS_INVITED,
-				Member::STATUS_REQUEST,
-				Member::STATUS_MEMBER,
-				Member::STATUS_BLOCKED
+			'type'  => Member::$TYPE,
+			'level' => [
+				1 => $this->l10n->t('Member'),
+				4 => $this->l10n->t('Moderator'),
+				8 => $this->l10n->t('Admin'),
+				9 => $this->l10n->t('Owner')
 			]
 		];
 	}

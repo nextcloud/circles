@@ -75,16 +75,16 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 					'config', 'integer', [
 								'notnull'  => false,
 								'length'   => 11,
-								'unsigned' => true,
+								'unsigned' => true
 							]
 				);
 			}
 			if (!$circles->hasColumn('source')) {
 				$circles->addColumn(
-					'source', 'string', [
-								'notnull' => false,
-								'default' => '',
-								'length'  => 63
+					'source', 'integer', [
+								'notnull'  => false,
+								'length'   => 5,
+								'unsigned' => true
 							]
 				);
 			}

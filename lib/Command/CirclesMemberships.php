@@ -144,7 +144,7 @@ class CirclesMemberships extends Base {
 			 ->addOption('display-name', '', InputOption::VALUE_NONE, 'display the displayName')
 			 ->addOption(
 				 'type', '', InputOption::VALUE_REQUIRED, 'type of the user',
-				 Member::$DEF_TYPE[Member::TYPE_USER]
+				 Member::$TYPE[Member::TYPE_USER]
 			 );
 	}
 
@@ -177,7 +177,7 @@ class CirclesMemberships extends Base {
 
 		$output->writeln('Id: <info>' . $federatedUser->getUserId() . '</info>');
 		$output->writeln('Instance: <info>' . $federatedUser->getInstance() . '</info>');
-		$output->writeln('Type: <info>' . Member::$DEF_TYPE[$federatedUser->getUserType()] . '</info>');
+		$output->writeln('Type: <info>' . Member::$TYPE[$federatedUser->getUserType()] . '</info>');
 		$output->writeln('SingleId: <info>' . $federatedUser->getSingleId() . '</info>');
 
 		$output->writeln('');

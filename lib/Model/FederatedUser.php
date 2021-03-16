@@ -34,6 +34,7 @@ namespace OCA\Circles\Model;
 use daita\MySmallPhpTools\Db\Nextcloud\nc21\INC21QueryRow;
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\IDeserializable;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Deserialize;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\IFederatedUser;
@@ -48,6 +49,7 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 
 
 	use TArrayTools;
+	use TNC21Deserialize;
 
 
 	/** @var string */
@@ -59,8 +61,11 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 	/** @var int */
 	private $userType;
 
-	/** @var string */
-	private $source;
+	/** @var Circle */
+	private $basedOn;
+
+	/** @var int */
+	private $config = 0;
 
 	/** @var string */
 	private $instance;
@@ -80,13 +85,13 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 		string $userId = '',
 		$instance = '',
 		int $type = Member::TYPE_USER,
-		string $source = ''
+		?Circle $basedOn = null
 	): self {
 
 		$this->userId = $userId;
 		$this->setInstance($instance);
 		$this->userType = $type;
-		$this->source = $source;
+		$this->basedOn = $basedOn;
 
 		return $this;
 	}
@@ -140,6 +145,7 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 		return $this;
 	}
 
+
 	/**
 	 * @return int
 	 */
@@ -149,18 +155,40 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 
 
 	/**
-	 * @param string $source
+	 * @param Circle|null $basedOn
 	 *
 	 * @return $this
 	 */
-	public function setSource(string $source): self {
-		$this->source = $source;
+	public function setBasedOn(?Circle $basedOn): self {
+		$this->basedOn = $basedOn;
 
 		return $this;
 	}
 
-	public function getSource(): string {
-		return $this->source;
+	/**
+	 * @return Circle|null
+	 */
+	public function getBasedOn(): ?Circle {
+		return $this->basedOn;
+	}
+
+
+	/**
+	 * @param int $config
+	 *
+	 * @return self
+	 */
+	public function setConfig(int $config): self {
+		$this->config = $config;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getConfig(): int {
+		return $this->config;
 	}
 
 
@@ -224,10 +252,16 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 		$this->setSingleId($this->get('id', $data));
 		$this->setUserId($this->get('user_id', $data));
 		$this->setUserType($this->getInt('user_type', $data));
-		$this->setSource($this->get('source', $data));
 		$this->setInstance($this->get('instance', $data));
+		//$this->setMemberships($this->getArray('memberships'));
 
-//$this->setMemberships($this->getArray('memberships'));
+		try {
+			/** @var Circle $circle */
+			$circle = $this->deserialize($this->getArray('basedOn', $data), Circle::class);
+			$this->setBasedOn($circle);
+		} catch (InvalidItemException $e) {
+		}
+
 		return $this;
 	}
 
@@ -240,8 +274,8 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 			'id'        => $this->getSingleId(),
 			'user_id'   => $this->getUserId(),
 			'user_type' => $this->getUserType(),
-			'source'    => $this->getSource(),
 			'instance'  => $this->getInstance(),
+			'basedOn'   => $this->getBasedOn(),
 			//			'memberships' => $this->getMemberships()
 		];
 	}

@@ -332,15 +332,15 @@ class CirclesService {
 	 * @throws GSStatusException
 	 */
 	private function detailsCircleLinkedGroups(DeprecatedCircle $circle) {
-		$groups = [];
-		if ($this->configService->isLinkedGroupsAllowed()) {
-			$groups =
-				$this->membersRequest->getGroupsFromCircle(
-					$circle->getUniqueId(), $circle->getHigherViewer()
-				);
-		}
-
-		$circle->setGroups($groups);
+//		$groups = [];
+//		if ($this->configService->isLinkedGroupsAllowed()) {
+//			$groups =
+//				$this->membersRequest->getGroupsFromCircle(
+//					$circle->getUniqueId(), $circle->getHigherViewer()
+//				);
+//		}
+//
+//		$circle->setGroups($groups);
 	}
 
 

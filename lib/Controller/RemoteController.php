@@ -313,11 +313,11 @@ class RemoteController extends Controller {
 
 		try {
 			// FILTER CIRCLE BASED ON THE CONFIG/FEDERATED_8192 !!
-			if ($type === Member::$DEF_TYPE[Member::TYPE_SINGLE]) {
+			if ($type === Member::$TYPE[Member::TYPE_SINGLE]) {
 				$federatedUser = $this->federatedUserService->getFederatedUser($userId, Member::TYPE_SINGLE);
-			} else if ($type === Member::$DEF_TYPE[Member::TYPE_CIRCLE]) {
+			} else if ($type === Member::$TYPE[Member::TYPE_CIRCLE]) {
 				$federatedUser = $this->federatedUserService->getFederatedUser($userId, Member::TYPE_CIRCLE);
-			} else if ($type === Member::$DEF_TYPE[Member::TYPE_USER]) {
+			} else if ($type === Member::$TYPE[Member::TYPE_USER]) {
 				$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
 			} else {
 				throw new FederatedUserNotFoundException('Entity not found');

@@ -43,7 +43,6 @@ use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
-use OCA\Circles\Service\GroupService;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -294,7 +293,7 @@ class CirclesTest extends Base {
 					$members[] = $circle;
 				}
 
-				if ($circle->getSource() === GroupService::GROUP_TYPE) {
+				if ($circle->getSource() === Member::TYPE_GROUP) {
 					$groups[] = $circle;
 				}
 			}
@@ -316,8 +315,8 @@ class CirclesTest extends Base {
 							   ->setLevel(Member::LEVEL_OWNER);
 				$compareTo = new Circle();
 				$compareTo->setOwner($compareToOwner)
-						  ->setName('single:' . $userId . ':{CIRCLEID}')
-						  ->setDisplayName('single:' . $userId . ':{CIRCLEID}');
+						  ->setName('user:' . $userId . ':{CIRCLEID}')
+						  ->setDisplayName('user:' . $userId . ':{CIRCLEID}');
 
 				$this->confirmCircleData($circle, $compareTo);
 				$this->r(true, $circle->getId());
@@ -338,7 +337,7 @@ class CirclesTest extends Base {
 
 			$compareTo = new Circle();
 			$compareTo->setOwner($compareToOwner)
-					  ->setConfig(Circle::CFG_SINGLE)
+					  ->setConfig(Circle::CFG_SINGLE | Circle::CFG_ROOT)
 //					  ->setConfig(Circle::CFG_HIDDEN + Circle::CFG_NO_OWNER + Circle::CFG_SYSTEM)
 					  ->setName('app:circles:{CIRCLEID}')
 					  ->setDisplayName('app:circles:{CIRCLEID}');
@@ -381,17 +380,13 @@ class CirclesTest extends Base {
 	 * @throws Exception
 	 */
 	private function confirmCircleData(Circle $circle, Circle $compareTo) {
-		if ($circle->isConfig(Circle::CFG_SINGLE) && $circle->getConfig() !== Circle::CFG_SINGLE) {
-			throw new Exception('Circle is set as Single but have more flags');
-		}
-
 		$owner = $circle->getOwner();
 		$compareToOwner = $compareTo->getOwner();
 
 		$params = [
 			'CIRCLEID' => $circle->getId()
 		];
-		
+
 		if ($compareTo->getName() !== ''
 			&& $this->feedStringWithParams($compareTo->getName(), $params) !== $circle->getName()) {
 			throw new Exception('wrong circle.name');
@@ -403,7 +398,7 @@ class CirclesTest extends Base {
 		}
 		if ($compareTo->getConfig() > 0
 			&& $compareTo->getConfig() !== $circle->getConfig()) {
-			throw new Exception('wrong circle.source');
+			throw new Exception('wrong circle.config');
 		}
 		if ($owner->getCircleId() !== $circle->getId()) {
 			throw new Exception('owner.circleId is different than circle.id');

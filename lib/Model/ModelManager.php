@@ -117,6 +117,21 @@ class ModelManager {
 		}
 	}
 
+
+	/**
+	 * @param Member $member
+	 * @param array $data
+	 */
+	public function importBasedOnFromDatabase(Member $member, array $data) {
+		try {
+			$circle = new Circle();
+			$circle->importFromDatabase($data, CoreRequestBuilder::PREFIX_BASED_ON);
+			$member->setBasedOn($circle);
+		} catch (CircleNotFoundException $e) {
+		}
+	}
+
+
 	/**
 	 * @param Circle $circle
 	 * @param array $data

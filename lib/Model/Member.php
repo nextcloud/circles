@@ -38,6 +38,7 @@ use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Deserialize;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use DateTime;
 use JsonSerializable;
+use OCA\Circles\AppInfo\Capabilities;
 use OCA\Circles\Db\CoreRequestBuilder;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\ParseMemberLevelException;
@@ -69,14 +70,34 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	const TYPE_MAIL = 4;
 	const TYPE_CONTACT = 8;
 	const TYPE_CIRCLE = 16;
-	const TYPE_APP = 2048;
+	const TYPE_APP = 20;
 
+
+	public static $TYPE = [
+		1  => 'user',
+		2  => 'group',
+		4  => 'mail',
+		8  => 'contact',
+		16 => 'circle'
+	];
+
+	/**
+	 * Note: When editing those values, update lib/Application/Capabilities.php
+	 *
+	 * @see Capabilities::generateConstantsMember()
+	 */
 	const STATUS_INVITED = 'Invited';
 	const STATUS_REQUEST = 'Requesting';
 	const STATUS_MEMBER = 'Member';
 	const STATUS_BLOCKED = 'Blocked';
 
 
+	/**
+	 * Note: When editing those values, update lib/Application/Capabilities.php
+	 *
+	 * @see Capabilities::generateConstantsMember()
+	 * @var array
+	 */
 	public static $DEF_LEVEL = [
 		1 => 'Member',
 		4 => 'Moderator',
@@ -84,14 +105,6 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 		9 => 'Owner'
 	];
 
-	public static $DEF_TYPE = [
-		1    => 'user',
-		2    => 'group',
-		4    => 'mail',
-		8    => 'contact',
-		16   => 'circle',
-		2048 => 'app'
-	];
 
 	public static $DEF_TYPE_MAX = 31;
 
@@ -111,8 +124,8 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	/** @var int */
 	private $userType = 0;
 
-	/** @var string */
-	private $source = '';
+	/** @var Circle */
+	private $basedOn;
 
 	/** @var string */
 	private $instance = '';
@@ -257,24 +270,24 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	}
 
 
-	/**
-	 * @param string $source
-	 *
-	 * @return self
-	 */
-	public function setSource(string $source): self {
-		$this->source = $source;
-
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getSource(): string {
-		return $this->source;
-	}
-
+//	/**
+//	 * @param int $source
+//	 *
+//	 * @return self
+//	 */
+//	public function setSource(int $source): self {
+//		$this->source = $source;
+//
+//		return $this;
+//	}
+//
+//	/**
+//	 * @return int
+//	 */
+//	public function getSource(): int {
+//		return $this->source;
+//	}
+//
 
 	/**
 	 * @param string $instance
@@ -292,6 +305,25 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	 */
 	public function getInstance(): string {
 		return $this->instance;
+	}
+
+
+	/**
+	 * @param Circle|null $basedOn
+	 *
+	 * @return $this
+	 */
+	public function setBasedOn(?Circle $basedOn): self {
+		$this->basedOn = $basedOn;
+
+		return $this;
+	}
+
+	/**
+	 * @return Circle|null
+	 */
+	public function getBasedOn(): ?Circle {
+		return $this->basedOn;
 	}
 
 
@@ -569,7 +601,7 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 			'singleId'      => $this->getSingleId(),
 			'userId'        => $this->getUserId(),
 			'userType'      => $this->getUserType(),
-			'source'        => $this->getSource(),
+			'basedOn'       => $this->getBasedOn(),
 			'instance'      => $this->getInstance(),
 			'local'         => $this->isLocal(),
 			'level'         => $this->getLevel(),
@@ -616,7 +648,7 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 		$this->setContactMeta($this->get($prefix . 'contact_meta', $data));
 
 		if ($prefix === '') {
-			$this->setSource($this->get(CoreRequestBuilder::PREFIX_CIRCLE_SOURCE . 'source', $data));
+//			$this->setBasedOn($this->getInt(CoreRequestBuilder::PREFIX_CIRCLE_BASED_ON . 'source', $data));
 		}
 
 
@@ -635,8 +667,12 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 			$this->setInstance($this->get('_params.local', $data));
 		}
 
-		if ($prefix === '') {
+		if (in_array($prefix, CoreRequestBuilder::$IMPORT_CIRCLE)) {
 			$this->getManager()->importCircleFromDatabase($this, $data);
+		}
+
+		if (in_array($prefix, CoreRequestBuilder::$IMPORT_BASED_ON)) {
+			$this->getManager()->importBasedOnFromDatabase($this, $data);
 		}
 
 		return $this;
@@ -685,10 +721,10 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	 */
 	public static function parseTypeString(string $typeString): int {
 		$typeString = strtolower($typeString);
-		$type = array_search($typeString, Member::$DEF_TYPE);
+		$type = array_search($typeString, Member::$TYPE);
 
 		if (!$type) {
-			$all = implode(', ', array_values(self::$DEF_TYPE));
+			$all = implode(', ', array_values(self::$TYPE));
 			throw new UserTypeNotFoundException('Available types: ' . $all);
 		}
 

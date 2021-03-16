@@ -55,7 +55,28 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 	const PREFIX_OWNER = 'owner_';
 	const PREFIX_INITIATOR = 'initiator_';
 	const PREFIX_CIRCLE = 'circle_';
-	const PREFIX_CIRCLE_SOURCE = 'circle_source_';
+	const PREFIX_BASED_ON = 'based_on_';
+
+	static $IMPORT_CIRCLE = [
+		'',
+		self::PREFIX_MEMBER
+	];
+
+	static $IMPORT_BASED_ON = [
+		'',
+		self::PREFIX_MEMBER
+	];
+
+	static $IMPORT_OWNER = [
+		'',
+		self::PREFIX_CIRCLE,
+		self::PREFIX_BASED_ON
+	];
+
+	static $IMPORT_INITIATOR = [
+		'',
+		self::PREFIX_CIRCLE
+	];
 
 
 	/** @var ConfigService */
@@ -103,6 +124,13 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 	 */
 	public function limitToConfig(int $config): void {
 		$this->limitToDBFieldInt('config', $config);
+	}
+
+	/**
+	 * @param int $config
+	 */
+	public function limitToConfigFlag(int $config): void {
+		$this->andWhere($this->expr()->bitwiseAnd($this->getDefaultSelectAlias() . '.config', $config));
 	}
 
 
@@ -256,27 +284,21 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 
 	/**
 	 */
-	public function leftJoinCircleSource(): void {
+	public function leftJoinBasedOnCircle(): void {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
 
 		$expr = $this->expr();
 
-		$alias = 'c_source';
-		$this->generateCircleSelectAlias($alias, self::PREFIX_CIRCLE_SOURCE)
+		$alias = 'cbo';
+		$this->generateCircleSelectAlias($alias, self::PREFIX_BASED_ON)
 			 ->leftJoin(
 				 $this->getDefaultSelectAlias(), CoreQueryBuilder::TABLE_CIRCLE, $alias,
 				 $expr->eq($alias . '.unique_id', $this->getDefaultSelectAlias() . '.single_id')
 			 );
 
-		$fields = [
-			'unique_id', 'name', 'display_name', 'source', 'description', 'settings', 'config',
-			'contact_addressbook',
-			'contact_groupname', 'creation'
-		];
-
-		$this->generateSelectAlias(['source'], $alias, self::PREFIX_CIRCLE_SOURCE);
+//		$this->generateSelectAlias(['source'], $alias, self::PREFIX_CIRCLE_BASED_ON);
 	}
 
 
@@ -630,12 +652,13 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 	 * @param string $alias
 	 * @param string $prefix
 	 * @param array $default
+	 *
+	 * @return CoreRequestBuilder
 	 */
 	private function generateCircleSelectAlias(string $alias, string $prefix, array $default = []): self {
 		$fields = [
 			'unique_id', 'name', 'display_name', 'source', 'description', 'settings', 'config',
-			'contact_addressbook',
-			'contact_groupname', 'creation'
+			'contact_addressbook', 'contact_groupname', 'creation'
 		];
 
 		$this->generateSelectAlias($fields, $alias, $prefix, $default);

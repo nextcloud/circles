@@ -39,6 +39,7 @@ use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Deserialize;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use DateTime;
 use JsonSerializable;
+use OCA\Circles\Db\CoreRequestBuilder;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 
@@ -105,6 +106,12 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 
 	public static $DEF_CFG_MAX = 32767;
 
+	/**
+	 * Note: When editing those values, update lib/Application/Capabilities.php
+	 *
+	 * @see Capabilities::getCapabilitiesCircleConstants()
+	 * @var array
+	 */
 	public static $DEF_CFG = [
 		1     => 'S|Single',
 		2     => 'P|Personal',
@@ -123,6 +130,22 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 		16384 => 'F|Federated'
 	];
 
+
+	/**
+	 * Note: When editing those values, update lib/Application/Capabilities.php
+	 *
+	 * @see Capabilities::getCapabilitiesCircleConstants()
+	 * @var array
+	 */
+	public static $DEF_SOURCE = [
+		1  => 'Nextcloud User',
+		2  => 'Nextcloud Group',
+		4  => 'Mail Address',
+		8  => 'Contact',
+		16 => 'Circle'
+	];
+
+
 	public static $DEF_CFG_CORE_FILTER = [
 		1,
 		2,
@@ -130,10 +153,9 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 	];
 
 	public static $DEF_CFG_SYSTEM_FILTER = [
+		512,
 		1024,
-		2048,
-		4096,
-		8192
+		2048
 	];
 
 
@@ -149,8 +171,8 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 	/** @var string */
 	private $displayName = '';
 
-	/** @var string */
-	private $source = '';
+	/** @var int */
+	private $source = 0;
 
 	/** @var Member */
 	private $owner;
@@ -307,20 +329,20 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 
 
 	/**
-	 * @param string $source
+	 * @param int $source
 	 *
 	 * @return Circle
 	 */
-	public function setSource(string $source): self {
+	public function setSource(int $source): self {
 		$this->source = $source;
 
 		return $this;
 	}
 
 	/**
-	 * @return string
+	 * @return int
 	 */
-	public function getSource(): string {
+	public function getSource(): int {
 		return $this->source;
 	}
 
@@ -557,7 +579,7 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 		$this->setId($this->get('id', $data))
 			 ->setName($this->get('name', $data))
 			 ->setDisplayName($this->get('displayName', $data))
-			 ->setSource($this->get('source', $data))
+			 ->setSource($this->getInt('source', $data))
 			 ->setConfig($this->getInt('config', $data))
 			 ->setSettings($this->getArray('settings', $data))
 //			 ->setContactAddressBook($this->get('contact_addressbook', $data))
@@ -631,7 +653,7 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 			 ->setName($this->get($prefix . 'name', $data))
 			 ->setDisplayName($this->get($prefix . 'display_name', $data))
 			 ->setConfig($this->getInt($prefix . 'config', $data))
-			 ->setSource($this->get($prefix . 'source', $data))
+			 ->setSource($this->getInt($prefix . 'source', $data))
 			 ->setInstance($this->get($prefix . 'instance', $data))
 			 ->setSettings($this->getArray($prefix . 'settings', $data))
 			 ->setContactAddressBook($this->getInt($prefix . 'contact_addressbook', $data))
@@ -641,8 +663,13 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 		$creation = $this->get($prefix . 'creation', $data);
 		$this->setCreation(DateTime::createFromFormat('Y-m-d H:i:s', $creation)->getTimestamp());
 
-		$this->getManager()->importOwnerFromDatabase($this, $data);
-		$this->getManager()->importInitiatorFromDatabase($this, $data);
+		if (in_array($prefix, CoreRequestBuilder::$IMPORT_OWNER)) {
+			$this->getManager()->importOwnerFromDatabase($this, $data);
+		}
+
+		if (in_array($prefix, CoreRequestBuilder::$IMPORT_INITIATOR)) {
+			$this->getManager()->importInitiatorFromDatabase($this, $data);
+		}
 
 		return $this;
 	}

@@ -203,8 +203,8 @@ class MembersList extends Base {
 				[
 					$member->getId(),
 					$member->getSingleId(),
-					Member::$DEF_TYPE[$member->getUserType()],
-					$member->getSource(),
+					Member::$TYPE[$member->getUserType()],
+					Circle::$DEF_SOURCE[$member->getBasedOn()->getSource()],
 					$member->getUserId(),
 					($member->getInstance() === $local) ? '' : $member->getInstance(),
 					$member->getLevel() > 0 ? Member::$DEF_LEVEL[$member->getLevel()] :

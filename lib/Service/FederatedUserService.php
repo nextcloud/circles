@@ -607,10 +607,15 @@ class FederatedUserService {
 			$circle = new Circle();
 			$id = $this->token(ManagedModel::ID_LENGTH);
 
-			$prefix = ($federatedUser->getUserType() === Member::TYPE_APP) ? 'app' : 'single';
+			$prefix = ($federatedUser->getUserType() === Member::TYPE_APP) ? 'app' : 'user';
 			$circle->setName($prefix . ':' . $federatedUser->getUserId() . ':' . $id)
-				   ->setId($id)
-				   ->setConfig(Circle::CFG_SINGLE);
+				   ->setId($id);
+
+			if ($federatedUser->getUserType() === Member::TYPE_APP) {
+				$circle->setConfig(Circle::CFG_SINGLE | Circle::CFG_ROOT);
+			} else {
+				$circle->setConfig(Circle::CFG_SINGLE);
+			}
 			$this->circleRequest->save($circle);
 
 			$owner = new Member();

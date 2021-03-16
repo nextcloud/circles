@@ -66,8 +66,6 @@ class GroupService {
 
 	use TStringTools;
 
-	const GROUP_TYPE = 'Nextcloud Group';
-
 
 	/** @var IGroupManager */
 	private $groupManager;
@@ -132,7 +130,7 @@ class GroupService {
 		$circle->setName('group:' . $groupId)
 			   ->setConfig(Circle::CFG_SYSTEM | Circle::CFG_NO_OWNER | Circle::CFG_HIDDEN)
 			   ->setId($this->token(ManagedModel::ID_LENGTH))
-			   ->setSource(self::GROUP_TYPE);
+			   ->setSource(Member::TYPE_GROUP);
 
 		$member = new Member();
 		$member->importFromIFederatedUser($owner);

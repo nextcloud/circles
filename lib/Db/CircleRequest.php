@@ -33,6 +33,7 @@ namespace OCA\Circles\Db;
 
 
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
@@ -216,6 +217,7 @@ class CircleRequest extends CircleRequestBuilder {
 	 * @return FederatedUser
 	 * @throws CircleNotFoundException
 	 * @throws OwnerNotFoundException
+	 * @throws FederatedUserNotFoundException
 	 */
 	public function getFederatedUserBySingleId(string $singleId): FederatedUser {
 		$qb = $this->getCircleSelectSql();
@@ -226,13 +228,13 @@ class CircleRequest extends CircleRequestBuilder {
 
 		$federatedUser = new FederatedUser();
 		$federatedUser->setSingleId($circle->getId());
-
+		
 		if ($circle->isConfig(Circle::CFG_SINGLE)) {
 			$owner = $circle->getOwner();
-			$federatedUser->set($owner->getUserId(), $owner->getInstance(), $owner->getUserType());
+			$federatedUser->set($owner->getUserId(), $owner->getInstance(), $owner->getUserType(), $circle);
 		} else {
 			$federatedUser->set(
-				$circle->getDisplayName(), $circle->getInstance(), Member::TYPE_CIRCLE, $circle->getsource()
+				$circle->getDisplayName(), $circle->getInstance(), Member::TYPE_CIRCLE, $circle
 			);
 		}
 
@@ -260,7 +262,7 @@ class CircleRequest extends CircleRequestBuilder {
 		}
 
 		$qb->limitToMembership($member);
-		$qb->limitToConfig(Circle::CFG_SINGLE);
+		$qb->limitToConfigFlag(Circle::CFG_SINGLE);
 
 		try {
 			return $this->getItemFromRequest($qb);

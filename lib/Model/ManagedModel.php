@@ -67,10 +67,11 @@ class ManagedModel {
 			return;
 		}
 
+		// TODO : move those methods to this class ?
 		$this->setSingleId($orig->getSingleId());
 		$this->setUserId($orig->getUserId());
 		$this->setUserType($orig->getUserType());
-		$this->setSource($orig->getSource());
+		$this->setBasedOn($orig->getBasedOn());
 		$this->setInstance($orig->getInstance());
 	}
 

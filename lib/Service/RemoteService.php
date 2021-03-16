@@ -323,7 +323,7 @@ class RemoteService extends NC21Signature {
 			RemoteInstance::MEMBER,
 			Request::TYPE_GET,
 			null,
-			['type' => Member::$DEF_TYPE[$type], 'userId' => $userId]
+			['type' => Member::$TYPE[$type], 'userId' => $userId]
 		);
 
 		if (empty($result)) {

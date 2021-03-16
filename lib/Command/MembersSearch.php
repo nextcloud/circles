@@ -118,7 +118,7 @@ class MembersSearch extends Base {
 				[
 					$entry->getSingleId(),
 					$entry->getUserId(),
-					Member::$DEF_TYPE[$entry->getUserType()],
+					Member::$TYPE[$entry->getUserType()],
 					($entry->getInstance() === $local) ? '' : $entry->getInstance(),
 				]
 			);

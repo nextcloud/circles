@@ -89,7 +89,7 @@ use OCP\Util;
  */
 class MemberAdd implements
 	IFederatedItem,
-	IFederatedItemAsyncProcess,
+//	IFederatedItemAsyncProcess,
 	IFederatedItemMemberRequired,
 	IFederatedItemMemberCheckNotRequired {
 
@@ -172,6 +172,12 @@ class MemberAdd implements
 			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[120], 120);
 		}
 
+		if ($federatedUser->getBasedOn()->isConfig(Circle::CFG_ROOT)) {
+			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[125], 125);
+		}
+//		if ($federatedUser->getUserType() === Member::TYPE_APP) {
+//			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[125], 125);
+//		}
 
 		$member->importFromIFederatedUser($federatedUser);
 		$member->setCircleId($circle->getId());

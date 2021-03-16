@@ -32,6 +32,9 @@ declare(strict_types=1);
 namespace OCA\Circles;
 
 
+use OCA\Circles\Model\Circle;
+
+
 /**
  * Interface IFederatedUser
  *
@@ -45,7 +48,10 @@ interface IFederatedUser extends IFederatedModel {
 
 	public function getUserType(): int;
 
-	public function getSource(): string;
+	// deprecated
+//	public function getSource(): int;
+
+	public function getBasedOn(): ?Circle;
 
 }
 
