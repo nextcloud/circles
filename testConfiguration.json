@@ -62,6 +62,17 @@
       "groups": {
         "admin": [
           "cult"
+        ],
+        "group1": [
+          "test2",
+          "test3",
+          "test4"
+        ],
+        "group2": [
+          "test1",
+          "test3",
+          "test5",
+          "test7"
         ]
       }
     },
@@ -87,7 +98,20 @@
       ],
       "groups": {
         "admin": [
-          "cult"
+          "cult",
+          "test4",
+          "test5"
+        ],
+        "group1": [
+          "test5",
+          "test6",
+          "test7"
+        ],
+        "group2": [
+          "test4",
+          "test5",
+          "test6",
+          "test7"
         ]
       }
     },
@@ -113,7 +137,19 @@
       ],
       "groups": {
         "admin": [
-          "cult"
+          "cult",
+          "test6"
+        ],
+        "group1": [
+          "test1",
+          "test7",
+          "test8"
+        ],
+        "group2": [
+          "cult",
+          "test3",
+          "test4",
+          "test6"
         ]
       }
     },
@@ -139,7 +175,22 @@
       ],
       "groups": {
         "admin": [
-          "cult"
+          "cult",
+          "test1",
+          "test2",
+          "test3",
+          "test4",
+          "test5",
+          "test6"
+        ],
+        "group1": [
+          "test2"
+        ],
+        "group2": [
+          "test3",
+          "test4",
+          "test5",
+          "test6"
         ]
       }
     },
@@ -165,7 +216,18 @@
       ],
       "groups": {
         "admin": [
-          "cult"
+          "cult",
+          "test7"
+        ],
+        "group1": [
+          "test1",
+          "test9"
+        ],
+        "group2": [
+          "test1",
+          "test3",
+          "test5",
+          "test7"
         ]
       }
     }

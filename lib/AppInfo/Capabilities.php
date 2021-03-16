@@ -130,9 +130,10 @@ class Capabilities implements ICapability {
 				512   => $this->l10n->t('No Owner'),
 				1024  => $this->l10n->t('Hidden'),
 				2048  => $this->l10n->t('Backend'),
-				4096  => $this->l10n->t('Root'),
-				8192  => $this->l10n->t('Circle Invite'),
-				16384 => $this->l10n->t('Federated')
+				4096  => $this->l10n->t('Local'),
+				8192  => $this->l10n->t('Root'),
+				16384  => $this->l10n->t('Circle Invite'),
+				32768 => $this->l10n->t('Federated')
 			],
 			'source' => [
 				1  => $this->l10n->t('Nextcloud User'),

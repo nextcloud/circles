@@ -99,12 +99,13 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 	const CFG_NO_OWNER = 512;        // no owner, only members
 	const CFG_HIDDEN = 1024;         // hidden from listing, but available as a share entity
 	const CFG_BACKEND = 2048;        // Fully hidden, only backend Circles
-	const CFG_ROOT = 4096;           // Circle cannot be inside another Circle
-	const CFG_CIRCLE_INVITE = 8192;  // Circle must confirm when invited in another circle
-	const CFG_FEDERATED = 16384;     // Federated
+	const CFG_LOCAL = 4096;         // Local even on GlobalScale
+	const CFG_ROOT = 8192;           // Circle cannot be inside another Circle
+	const CFG_CIRCLE_INVITE = 16384;  // Circle must confirm when invited in another circle
+	const CFG_FEDERATED = 32768;     // Federated
 
 
-	public static $DEF_CFG_MAX = 32767;
+	public static $DEF_CFG_MAX = 65535;
 
 	/**
 	 * Note: When editing those values, update lib/Application/Capabilities.php
@@ -125,9 +126,10 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 		512   => 'NO|No Owner',
 		1024  => 'H|Hidden',
 		2048  => 'T|Backend',
-		4096  => 'T|Root',
-		8192  => 'CI|Circle Invite',
-		16384 => 'F|Federated'
+		4096  => 'L|Local',
+		8192  => 'T|Root',
+		16384 => 'CI|Circle Invite',
+		32768 => 'F|Federated'
 	];
 
 

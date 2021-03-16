@@ -79,6 +79,9 @@ class CirclesTest extends Base {
 	private $configService;
 
 
+	/** @var InputInterface */
+	private $input;
+
 	/** @var OutputInterface */
 	private $output;
 
@@ -120,9 +123,10 @@ class CirclesTest extends Base {
 			 ->setDescription('testing some features')
 			 ->addArgument('deprecated', InputArgument::OPTIONAL, '')
 			 ->addOption(
-				 'am-i-aware-this-will-delete-all-my-data', '', InputOption::VALUE_REQUIRED,
+				 'are-you-aware-this-will-delete-all-my-data', '', InputOption::VALUE_REQUIRED,
 				 'Well, are you ?', ''
-			 );
+			 )
+			 ->addOption('bypass-init', '', InputOption::VALUE_NONE, 'Bypass Initialisation');
 	}
 
 
@@ -134,8 +138,10 @@ class CirclesTest extends Base {
 	 * @throws ItemNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
+		$this->input = $input;
 		$this->output = $output;
-		if ($input->getOption('am-i-aware-this-will-delete-all-my-data') == 'yes') {
+
+		if ($input->getOption('are-you-aware-this-will-delete-all-my-data') === 'yes-i-am') {
 			try {
 				$this->testCirclesApp();
 			} catch (Exception $e) {
@@ -172,12 +178,17 @@ class CirclesTest extends Base {
 	 * @throws ItemNotFoundException
 	 */
 	private function testCirclesApp() {
-		$this->t('Initialisation');
+		$this->t('Bootup');
 		$this->loadConfiguration();
-		$this->initEnvironment();
-		$this->confirmVersion();
-		$this->confirmEmptyCircles();
-		$this->syncCircles();
+
+		if (!$this->input->getOption('bypass-init')) {
+			$this->t('Initialisation');
+			$this->initEnvironment();
+			$this->reloadCirclesApp();
+			$this->confirmVersion();
+			$this->confirmEmptyCircles();
+			$this->syncCircles();
+		}
 
 		$this->t('Fresh installation status');
 		$this->statusFreshInstances();
@@ -215,7 +226,33 @@ class CirclesTest extends Base {
 	 * @throws ItemNotFoundException
 	 */
 	private function initEnvironment() {
-		$this->p('Init environment');
+		foreach ($this->getInstances() as $instance) {
+			$this->p('Creating users on ' . $instance);
+			foreach ($this->getConfigArray($instance, 'users') as $userId) {
+				$this->pm($userId);
+				$this->occ($instance, 'user:add ' . $userId, false, false);
+			}
+			$this->r();
+
+			foreach ($this->getConfigArray($instance, 'groups') as $groupId => $users) {
+				$this->p('Creating group <info>' . $groupId . '</info> on <info>' . $instance . '</info>');
+				$this->occ($instance, 'group:add ' . $groupId, false, false);
+				foreach ($users as $userId) {
+					$this->pm($userId);
+					$this->occ($instance, 'group:adduser ' . $groupId . ' ' . $userId, true, false);
+				}
+				$this->r();
+			}
+
+		}
+	}
+
+
+	/**
+	 * @throws ItemNotFoundException
+	 */
+	private function reloadCirclesApp() {
+		$this->p('Reload Circles App');
 		foreach ($this->getInstances(false) as $instance) {
 			$this->pm($instance);
 			$this->occ($instance, 'circles:clean --uninstall', false, false);
@@ -223,7 +260,7 @@ class CirclesTest extends Base {
 		}
 		$this->r();
 
-		$this->p('Init environment on local');
+		$this->p('Empty Circles database on local');
 		$this->coreQueryBuilder->cleanDatabase();
 		$this->r();
 	}
@@ -283,7 +320,10 @@ class CirclesTest extends Base {
 		foreach ($this->getInstances() as $instanceId) {
 			$this->p('Circles on ' . $instanceId);
 			$result = $this->occ($instanceId, 'circles:manage:list --all');
-			$this->r(true, sizeof($result) . ' circles');
+			$expectedSize = sizeof($this->getConfigArray($instanceId, 'groups'))
+							+ sizeof($this->getConfigArray($instanceId, 'users'))
+							+ 1;
+			$this->r((sizeof($result) === $expectedSize), sizeof($result) . ' circles');
 
 			$members = $groups = [];
 			foreach ($result as $item) {
@@ -338,7 +378,6 @@ class CirclesTest extends Base {
 			$compareTo = new Circle();
 			$compareTo->setOwner($compareToOwner)
 					  ->setConfig(Circle::CFG_SINGLE | Circle::CFG_ROOT)
-//					  ->setConfig(Circle::CFG_HIDDEN + Circle::CFG_NO_OWNER + Circle::CFG_SYSTEM)
 					  ->setName('app:circles:{CIRCLEID}')
 					  ->setDisplayName('app:circles:{CIRCLEID}');
 
@@ -572,7 +611,7 @@ class CirclesTest extends Base {
 		if ($result) {
 			$this->output->writeln('<info>' . (($info !== '') ? $info : 'done') . '</info>');
 		} else {
-			$this->output->writeln('<error>fail</error>');
+			$this->output->writeln('<error>' . (($info !== '') ? $info : 'done') . '</error>');
 		}
 	}
 
