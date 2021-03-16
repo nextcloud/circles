@@ -647,11 +647,6 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 		$this->setContactId($this->get($prefix . 'contact_id', $data));
 		$this->setContactMeta($this->get($prefix . 'contact_meta', $data));
 
-		if ($prefix === '') {
-//			$this->setBasedOn($this->getInt(CoreRequestBuilder::PREFIX_CIRCLE_BASED_ON . 'source', $data));
-		}
-
-
 		$cachedUpdate = $this->get($prefix . 'cached_update', $data);
 		if ($cachedUpdate !== '') {
 			$this->setDisplayUpdate(DateTime::createFromFormat('Y-m-d H:i:s', $cachedUpdate)->getTimestamp());

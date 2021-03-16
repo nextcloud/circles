@@ -228,7 +228,7 @@ class CircleRequest extends CircleRequestBuilder {
 
 		$federatedUser = new FederatedUser();
 		$federatedUser->setSingleId($circle->getId());
-		
+
 		if ($circle->isConfig(Circle::CFG_SINGLE)) {
 			$owner = $circle->getOwner();
 			$federatedUser->set($owner->getUserId(), $owner->getInstance(), $owner->getUserType(), $circle);

@@ -106,7 +106,8 @@ class Capabilities implements ICapability {
 	 */
 	private function getCapabilitiesMember(): array {
 		return [
-			'constants' => $this->getCapabilitiesMemberConstants()
+			'constants' => $this->getCapabilitiesMemberConstants(),
+			'config'    => $this->getCapabilitiesMemberConfig()
 		];
 	}
 
@@ -136,9 +137,9 @@ class Capabilities implements ICapability {
 			'source' => [
 				1  => $this->l10n->t('Nextcloud User'),
 				2  => $this->l10n->t('Nextcloud Group'),
-				3  => $this->l10n->t('Mail Address'),
-				4  => $this->l10n->t('Contact'),
-				10 => $this->l10n->t('Circle')
+				6  => $this->l10n->t('Mail Address'),
+				8  => $this->l10n->t('Contact'),
+				16 => $this->l10n->t('Circle')
 			]
 		];
 	}
@@ -160,13 +161,22 @@ class Capabilities implements ICapability {
 	 */
 	private function getCapabilitiesMemberConstants(): array {
 		return [
-			'type'  => Member::$TYPE,
 			'level' => [
 				1 => $this->l10n->t('Member'),
 				4 => $this->l10n->t('Moderator'),
 				8 => $this->l10n->t('Admin'),
 				9 => $this->l10n->t('Owner')
 			]
+		];
+	}
+
+
+	/**
+	 * @return array
+	 */
+	private function getCapabilitiesMemberConfig(): array {
+		return [
+			'type' => Member::$TYPE,
 		];
 	}
 
