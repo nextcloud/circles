@@ -131,7 +131,7 @@ class Application extends App implements IBootstrap {
 									   ->get(ConfigService::class);
 
 		$context->injectFn(Closure::fromCallable([$this, 'registerMountProvider']));
-		$context->injectFn(Closure::fromCallable([$this, 'registerDavHooks']));
+//		$context->injectFn(Closure::fromCallable([$this, 'registerDavHooks']));
 
 		$context->injectFn(Closure::fromCallable([$this, 'registerFilesNavigation']));
 		$context->injectFn(Closure::fromCallable([$this, 'registerFilesPlugin']));
