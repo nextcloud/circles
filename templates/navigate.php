@@ -397,7 +397,7 @@ style(Application::APP_ID, 'navigation');
 						<td class="left"><?php p($l->t('Single password')); ?><br />
 							<span class="hint"><?php p(
 									$l->t(
-										'One password for all shares. If not, a randomly generated password is sent by mail'
+										'One password for all shares. If not, a randomly generated password is sent by mail.'
 									)
 								); ?></span>
 						</td>
