@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Command;
 
 
+use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Exceptions\ItemNotFoundException;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use daita\MySmallPhpTools\Traits\TStringTools;
@@ -185,6 +186,7 @@ class CirclesTest extends Base {
 			$this->t('Initialisation');
 			$this->initEnvironment();
 			$this->reloadCirclesApp();
+			$this->configureCirclesApp();
 			$this->confirmVersion();
 			$this->confirmEmptyCircles();
 			$this->syncCircles();
@@ -192,7 +194,7 @@ class CirclesTest extends Base {
 
 		$this->t('Fresh installation status');
 		$this->statusFreshInstances();
-
+		$this->createRemoteLink();
 	}
 
 
@@ -268,6 +270,21 @@ class CirclesTest extends Base {
 
 	/**
 	 * @throws ItemNotFoundException
+	 */
+	private function configureCirclesApp() {
+		$this->p('Configure Circles App');
+		foreach ($this->getInstances(true) as $instance) {
+			$this->pm($instance);
+			foreach ($this->getConfigArray($instance, 'config') as $k => $v) {
+				$this->occ($instance, 'config:app:set --value ' . $v . ' circles ' . $k, true, false);
+			}
+		}
+		$this->r();
+	}
+
+
+	/**
+	 * @throws ItemNotFoundException
 	 * @throws Exception
 	 */
 	private function confirmVersion() {
@@ -316,6 +333,11 @@ class CirclesTest extends Base {
 	}
 
 
+	/**
+	 * @throws CircleNotFoundException
+	 * @throws ItemNotFoundException
+	 * @throws InvalidItemException
+	 */
 	private function statusFreshInstances() {
 		foreach ($this->getInstances() as $instanceId) {
 			$this->p('Circles on ' . $instanceId);
@@ -325,23 +347,29 @@ class CirclesTest extends Base {
 							+ 1;
 			$this->r((sizeof($result) === $expectedSize), sizeof($result) . ' circles');
 
-			$members = $groups = [];
+			$_members = $_groups = [];
 			foreach ($result as $item) {
 				$circle = new Circle();
 				$circle->import($item);
 				if ($circle->isConfig(Circle::CFG_SINGLE)) {
-					$members[] = $circle;
+					$_members[] = $circle;
 				}
 
 				if ($circle->getSource() === Member::TYPE_GROUP) {
-					$groups[] = $circle;
+					$_groups[] = $circle;
 				}
 			}
 
 			$instance = $this->getConfig($instanceId, 'config.frontal_cloud_id');
+
 			foreach ($this->getConfigArray($instanceId, 'users') as $userId) {
-				$this->p('Searching Single Circle for <comment>' . $userId . '@' . $instance . '</comment>');
-				$circle = $this->getSingleCircleForMember($members, $userId, $instance);
+				$this->p('Checking Single Circle for <comment>' . $userId . '@' . $instance . '</comment>');
+				$circle = $this->getSingleCircleForMember($_members, $userId, $instance);
+
+				$compareToOwnerBasedOn = new Circle();
+				$compareToOwnerBasedOn->setConfig(Circle::CFG_SINGLE)
+									  ->setName('user:' . $userId . ':{CIRCLEID}')
+									  ->setDisplayName('user:' . $userId . ':{CIRCLEID}');
 
 				$compareToOwner = new Member();
 				$compareToOwner->setUserId($userId)
@@ -352,9 +380,12 @@ class CirclesTest extends Base {
 							   ->setCircleId('{CIRCLEID}')
 							   ->setSingleId('{CIRCLEID}')
 							   ->setStatus(Member::STATUS_MEMBER)
-							   ->setLevel(Member::LEVEL_OWNER);
+							   ->setLevel(Member::LEVEL_OWNER)
+							   ->setBasedOn($compareToOwnerBasedOn);
+
 				$compareTo = new Circle();
 				$compareTo->setOwner($compareToOwner)
+						  ->setConfig(Circle::CFG_SINGLE)
 						  ->setName('user:' . $userId . ':{CIRCLEID}')
 						  ->setDisplayName('user:' . $userId . ':{CIRCLEID}');
 
@@ -362,8 +393,14 @@ class CirclesTest extends Base {
 				$this->r(true, $circle->getId());
 			}
 
-			$this->p('Searching Single Circle for <comment>Circles App</comment>');
-			$circle = $this->getSingleCircleForMember($members, 'circles', $instance);
+			$this->p('Checking Single Circle for <comment>Circles App</comment>');
+			$circle = $this->getSingleCircleForMember($_members, 'circles', $instance);
+
+			$compareToOwnerBasedOn = new Circle();
+			$compareToOwnerBasedOn->setConfig(Circle::CFG_SINGLE | Circle::CFG_ROOT)
+								  ->setName('app:circles:{CIRCLEID}')
+								  ->setDisplayName('app:circles:{CIRCLEID}');
+
 			$compareToOwner = new Member();
 			$compareToOwner->setUserId(Application::APP_ID)
 						   ->setUserType(Member::TYPE_APP)
@@ -373,7 +410,8 @@ class CirclesTest extends Base {
 						   ->setCircleId('{CIRCLEID}')
 						   ->setSingleId('{CIRCLEID}')
 						   ->setStatus(Member::STATUS_MEMBER)
-						   ->setLevel(Member::LEVEL_OWNER);
+						   ->setLevel(Member::LEVEL_ADMIN)
+						   ->setBasedOn($compareToOwnerBasedOn);
 
 			$compareTo = new Circle();
 			$compareTo->setOwner($compareToOwner)
@@ -384,10 +422,55 @@ class CirclesTest extends Base {
 			$this->confirmCircleData($circle, $compareTo);
 			$this->r(true, $circle->getId());
 
+			foreach ($this->getConfigArray($instanceId, 'groups') as $groupId => $members) {
+				$this->p('Checking Circle for <comment>' . $groupId . '@' . $instance . '</comment>');
+				$circle = $this->getCircleByName($_groups, 'group:' . $groupId);
+
+				$appCircle = $this->getSingleCircleForMember($_members, 'circles', $instance);
+				$appOwner = $appCircle->getOwner();
+
+				$compareToOwnerBasedOn = new Circle();
+				$compareToOwnerBasedOn->setConfig(Circle::CFG_SINGLE | Circle::CFG_ROOT)
+									  ->setName($appCircle->getName())
+									  ->setDisplayName($appCircle->getDisplayName());
+
+				$compareToOwner = new Member();
+				$compareToOwner->setUserId($appOwner->getUserId())
+							   ->setUserType($appOwner->getUserType())
+							   ->setInstance($appOwner->getInstance())
+							   ->setDisplayName($appOwner->getDisplayName())
+							   ->setCircleId('{CIRCLEID}')
+							   ->setSingleId($appOwner->getSingleId())
+							   ->setStatus($appOwner->getStatus())
+							   ->setLevel($appOwner->getLevel())
+							   ->setBasedOn($compareToOwnerBasedOn);
+
+				$compareTo = new Circle();
+				$compareTo->setOwner($compareToOwner)
+						  ->setConfig(Circle::CFG_SYSTEM | Circle::CFG_NO_OWNER | Circle::CFG_HIDDEN)
+						  ->setName('group:' . $groupId)
+						  ->setDisplayName($groupId);
+
+				$this->confirmCircleData($circle, $compareTo);
+				$this->r(true, $circle->getId());
+			}
 
 			$this->output->writeln('');
 		}
+	}
 
+
+	private function createRemoteLink() {
+		foreach ($this->getInstances() as $instanceId) {
+			$this->p('Init remote link from ' . $instanceId);
+			$links = $this->getConfigArray($instanceId, 'remote');
+			foreach ($links as $link => $type) {
+				$remote = $this->getConfig($link, 'config.frontal_cloud_id');
+				$this->pm($remote . '(' . $type . ')');
+				$this->occ($instanceId, 'circles:remote ' . $remote . ' --type ' . $type . ' --yes');
+			}
+			$this->r();
+		}
 	}
 
 
@@ -400,7 +483,6 @@ class CirclesTest extends Base {
 	 * @throws CircleNotFoundException
 	 */
 	private function getSingleCircleForMember(array $circles, string $userId, string $instance): Circle {
-		$currMember = null;
 		foreach ($circles as $circle) {
 			$owner = $circle->getOwner();
 			if ($owner->getUserId() === $userId && $owner->getInstance() === $instance) {
@@ -413,18 +495,33 @@ class CirclesTest extends Base {
 
 
 	/**
+	 * @param array $circles
+	 * @param string $name
+	 *
+	 * @return Circle
+	 * @throws CircleNotFoundException
+	 */
+	private function getCircleByName(array $circles, string $name): Circle {
+		foreach ($circles as $circle) {
+			if ($circle->getName() === $name) {
+				return $circle;
+			}
+		}
+
+		throw new CircleNotFoundException('cannot find \'' . $name . '\' in the list of Circles');
+	}
+
+	/**
 	 * @param Circle $circle
 	 * @param Circle $compareTo
 	 *
 	 * @throws Exception
 	 */
 	private function confirmCircleData(Circle $circle, Circle $compareTo) {
-		$owner = $circle->getOwner();
-		$compareToOwner = $compareTo->getOwner();
-
 		$params = [
 			'CIRCLEID' => $circle->getId()
 		];
+
 
 		if ($compareTo->getName() !== ''
 			&& $this->feedStringWithParams($compareTo->getName(), $params) !== $circle->getName()) {
@@ -433,41 +530,72 @@ class CirclesTest extends Base {
 		if ($compareTo->getDisplayName() !== ''
 			&& $this->feedStringWithParams($compareTo->getDisplayName(), $params)
 			   !== $circle->getDisplayName()) {
-			throw new Exception('wrong circle.displayName');
+			throw new Exception('wrong circle.displayName: ' . $circle->getDisplayName());
 		}
 		if ($compareTo->getConfig() > 0
 			&& $compareTo->getConfig() !== $circle->getConfig()) {
-			throw new Exception('wrong circle.config');
+			throw new Exception('wrong circle.config: ' . $circle->getConfig());
 		}
-		if ($owner->getCircleId() !== $circle->getId()) {
-			throw new Exception('owner.circleId is different than circle.id');
-		}
-		if ($compareToOwner->getId() !== ''
-			&& $this->feedStringWithParams($compareToOwner->getId(), $params) !== $owner->getId()) {
-			throw new Exception('wrong owner.memberId');
-		}
-		if ($compareToOwner->getCircleId() !== ''
-			&& $this->feedStringWithParams($compareToOwner->getCircleId(), $params)
-			   !== $owner->getCircleId()) {
-			throw new Exception('wrong owner.circleId');
-		}
-		if ($compareToOwner->getSingleId() !== ''
-			&& $this->feedStringWithParams($compareToOwner->getSingleId(), $params)
-			   !== $owner->getSingleId()) {
-			throw new Exception('wrong owner.singleId');
-		}
-		if ($compareToOwner->getUserId() !== ''
-			&& $this->feedStringWithParams($compareToOwner->getUserId(), $params) !== $owner->getUserId()) {
-			throw new Exception('wrong owner.userId');
-		}
-		if ($compareToOwner->getInstance() !== ''
-			&& $this->feedStringWithParams($compareToOwner->getInstance(), $params)
-			   !== $owner->getInstance()) {
-			throw new Exception('wrong owner.instance');
-		}
-		if ($compareToOwner->getUserType() > 0
-			&& $compareToOwner->getUserType() !== $owner->getUserType()) {
-			throw new Exception('wrong owner.userType');
+
+		$compareToOwner = $compareTo->getOwner();
+		if ($compareToOwner !== null) {
+			$owner = $circle->getOwner();
+			if ($owner === null) {
+				throw new Exception('empty owner');
+			}
+			if ($owner->getCircleId() !== $circle->getId()) {
+				throw new Exception('owner.circleId is different than circle.id');
+			}
+			if ($compareToOwner->getId() !== ''
+				&& $this->feedStringWithParams($compareToOwner->getId(), $params) !== $owner->getId()) {
+				throw new Exception('wrong owner.memberId');
+			}
+			if ($compareToOwner->getCircleId() !== ''
+				&& $this->feedStringWithParams($compareToOwner->getCircleId(), $params)
+				   !== $owner->getCircleId()) {
+				throw new Exception('wrong owner.circleId');
+			}
+			if ($compareToOwner->getSingleId() !== ''
+				&& $this->feedStringWithParams($compareToOwner->getSingleId(), $params)
+				   !== $owner->getSingleId()) {
+				throw new Exception('wrong owner.singleId');
+			}
+			if ($compareToOwner->getUserId() !== ''
+				&& $this->feedStringWithParams($compareToOwner->getUserId(), $params) !== $owner->getUserId(
+				)) {
+				throw new Exception('wrong owner.userId');
+			}
+			if ($compareToOwner->getInstance() !== ''
+				&& $this->feedStringWithParams($compareToOwner->getInstance(), $params)
+				   !== $owner->getInstance()) {
+				throw new Exception('wrong owner.instance');
+			}
+			if ($compareToOwner->getUserType() > 0
+				&& $compareToOwner->getUserType() !== $owner->getUserType()) {
+				throw new Exception('wrong owner.userType');
+			}
+
+			$compareToOwnerBasedOn = $compareToOwner->getBasedOn();
+			if ($compareToOwnerBasedOn !== null) {
+				$basedOn = $owner->getBasedOn();
+				if ($basedOn === null) {
+					throw new Exception('empty basedOn');
+				}
+				if ($compareToOwnerBasedOn->getName() !== ''
+					&& $this->feedStringWithParams($compareToOwnerBasedOn->getName(), $params)
+					   !== $basedOn->getName()) {
+					throw new Exception('wrong basedOn.name');
+				}
+				if ($compareToOwnerBasedOn->getDisplayName() !== ''
+					&& $this->feedStringWithParams($compareToOwnerBasedOn->getDisplayName(), $params)
+					   !== $basedOn->getDisplayName()) {
+					throw new Exception('wrong basedOn.displayName');
+				}
+				if ($compareToOwnerBasedOn->getConfig() > 0
+					&& $compareToOwnerBasedOn->getConfig() !== $basedOn->getConfig()) {
+					throw new Exception('wrong basedOn.config');
+				}
+			}
 		}
 
 	}

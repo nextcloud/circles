@@ -589,7 +589,6 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 			 ->setDescription($this->get('description', $data))
 			 ->setCreation($this->getInt('creation', $data));
 
-
 		try {
 			/** @var Member $owner */
 			$owner = $this->deserialize($this->getArray('owner', $data), Member::class);

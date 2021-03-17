@@ -37,6 +37,13 @@
           "test7",
           "test9"
         ]
+      },
+      "remote": {
+        "global-scale-2": "GlobalScale",
+        "global-scale-3": "GlobalScale",
+        "trusted": "Trusted",
+        "external": "External",
+        "passive": "Passive"
       }
     },
     {
@@ -74,6 +81,11 @@
           "test5",
           "test7"
         ]
+      },
+      "remote": {
+        "global-scale-1": "GlobalScale",
+        "global-scale-3": "GlobalScale",
+        "passive": "Passive"
       }
     },
     {
@@ -113,6 +125,11 @@
           "test6",
           "test7"
         ]
+      },
+      "remote": {
+        "global-scale-1": "GlobalScale",
+        "global-scale-2": "GlobalScale",
+        "external": "External"
       }
     },
     {
@@ -151,6 +168,10 @@
           "test4",
           "test6"
         ]
+      },
+      "remote": {
+        "trusted": "Trusted",
+        "external": "External"
       }
     },
     {
@@ -192,6 +213,11 @@
           "test5",
           "test6"
         ]
+      },
+      "remote": {
+        "global-scale-3": "GlobalScale",
+        "trusted": "Trusted",
+        "passive": "Passive"
       }
     },
     {
@@ -229,6 +255,10 @@
           "test5",
           "test7"
         ]
+      },
+      "remote": {
+        "external": "External",
+        "passive": "Passive"
       }
     }
   ]

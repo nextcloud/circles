@@ -125,6 +125,7 @@ class CirclesRemote extends Base {
 			 ->addOption(
 				 'type', '', InputOption::VALUE_REQUIRED, 'set type of remote', RemoteInstance::TYPE_UNKNOWN
 			 )
+			 ->addOption('yes', '', InputOption::VALUE_NONE, 'silently add the remote instance')
 			 ->addOption('all', '', InputOption::VALUE_NONE, 'display all information');
 	}
 
@@ -335,7 +336,7 @@ class CirclesRemote extends Base {
 			'/^(y|Y)/i'
 		);
 
-		if ($helper->ask($this->input, $this->output, $question)) {
+		if ($this->input->getOption('yes') || $helper->ask($this->input, $this->output, $question)) {
 			$this->remoteRequest->save($remoteSignatory);
 			$this->output->writeln('<info>remote instance saved</info>');
 		}

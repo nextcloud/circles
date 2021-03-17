@@ -64,13 +64,13 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 
 	static $IMPORT_BASED_ON = [
 		'',
-		self::PREFIX_MEMBER
+		self::PREFIX_MEMBER,
+		self::PREFIX_OWNER
 	];
 
 	static $IMPORT_OWNER = [
 		'',
-		self::PREFIX_CIRCLE,
-		self::PREFIX_BASED_ON
+		self::PREFIX_CIRCLE
 	];
 
 	static $IMPORT_INITIATOR = [
@@ -283,19 +283,21 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 
 
 	/**
+	 * @param string $memberAlias
 	 */
-	public function leftJoinBasedOnCircle(): void {
+	public function leftJoinBasedOnCircle($memberAlias = ''): void {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
 
-		$expr = $this->expr();
+		$memberAlias = ($memberAlias === '') ? $this->getDefaultSelectAlias() : $memberAlias;
 
+		$expr = $this->expr();
 		$alias = 'cbo';
 		$this->generateCircleSelectAlias($alias, self::PREFIX_BASED_ON)
 			 ->leftJoin(
-				 $this->getDefaultSelectAlias(), CoreQueryBuilder::TABLE_CIRCLE, $alias,
-				 $expr->eq($alias . '.unique_id', $this->getDefaultSelectAlias() . '.single_id')
+				 $memberAlias, CoreQueryBuilder::TABLE_CIRCLE, $alias,
+				 $expr->eq($alias . '.unique_id', $memberAlias . '.single_id')
 			 );
 
 //		$this->generateSelectAlias(['source'], $alias, self::PREFIX_CIRCLE_BASED_ON);
@@ -324,6 +326,8 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 					 $expr->eq($alias . '.level', $this->createNamedParameter(Member::LEVEL_OWNER))
 				 )
 			 );
+
+		$this->leftJoinBasedOnCircle('o');
 	}
 
 

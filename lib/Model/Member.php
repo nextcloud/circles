@@ -587,6 +587,13 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 		} catch (InvalidItemException $e) {
 		}
 
+		try {
+			/** @var Circle $circle */
+			$circle = $this->deserialize($this->getArray('basedOn', $data), Circle::class);
+			$this->setBasedOn($circle);
+		} catch (InvalidItemException $e) {
+		}
+
 		return $this;
 	}
 
