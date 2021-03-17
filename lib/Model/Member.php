@@ -674,7 +674,13 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 		}
 
 		if (in_array($prefix, CoreRequestBuilder::$IMPORT_BASED_ON)) {
-			$this->getManager()->importBasedOnFromDatabase($this, $data);
+			$this->getManager()->importBasedOnFromDatabase($this, $data, CoreRequestBuilder::PREFIX_BASED_ON);
+		}
+
+		if (in_array($prefix, CoreRequestBuilder::$IMPORT_OWNER_BASED_ON)) {
+			$this->getManager()->importBasedOnFromDatabase(
+				$this, $data, CoreRequestBuilder::PREFIX_OWNER_BASED_ON
+			);
 		}
 
 		return $this;

@@ -43,7 +43,6 @@ use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
-use OCP\IL10N;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -58,9 +57,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 class MembersLevel extends Base {
 
 
-	/** @var IL10N */
-	private $l10n;
-
 	/** @var MemberRequest */
 	private $memberRequest;
 
@@ -74,18 +70,15 @@ class MembersLevel extends Base {
 	/**
 	 * MembersLevel constructor.
 	 *
-	 * @param IL10N $l10n
 	 * @param MemberRequest $memberRequest
 	 * @param FederatedUserService $federatedUserService
 	 * @param MemberService $memberService
 	 */
 	public function __construct(
-		IL10N $l10n, MemberRequest $memberRequest, FederatedUserService $federatedUserService,
-		MemberService $memberService
+		MemberRequest $memberRequest, FederatedUserService $federatedUserService, MemberService $memberService
 	) {
 		parent::__construct();
 
-		$this->l10n = $l10n;
 		$this->memberRequest = $memberRequest;
 		$this->federatedUserService = $federatedUserService;
 		$this->memberService = $memberService;

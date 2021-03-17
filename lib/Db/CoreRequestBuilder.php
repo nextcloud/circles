@@ -55,6 +55,7 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 	const PREFIX_OWNER = 'owner_';
 	const PREFIX_INITIATOR = 'initiator_';
 	const PREFIX_CIRCLE = 'circle_';
+	const PREFIX_OWNER_BASED_ON = 'owner_based_on_';
 	const PREFIX_BASED_ON = 'based_on_';
 
 	static $IMPORT_CIRCLE = [
@@ -64,14 +65,18 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 
 	static $IMPORT_BASED_ON = [
 		'',
-		self::PREFIX_MEMBER,
-		self::PREFIX_OWNER
+		self::PREFIX_MEMBER
 	];
 
 	static $IMPORT_OWNER = [
 		'',
 		self::PREFIX_CIRCLE
 	];
+
+	static $IMPORT_OWNER_BASED_ON = [
+		self::PREFIX_OWNER
+	];
+
 
 	static $IMPORT_INITIATOR = [
 		'',
@@ -283,24 +288,29 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 
 
 	/**
-	 * @param string $memberAlias
+	 * @param bool $forOwner
 	 */
-	public function leftJoinBasedOnCircle($memberAlias = ''): void {
+	public function leftJoinBasedOnCircle(bool $forOwner = false): void {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
 
-		$memberAlias = ($memberAlias === '') ? $this->getDefaultSelectAlias() : $memberAlias;
+		if ($forOwner) {
+			$alias = 'obo';
+			$memberAlias = 'o';
+			$prefix = self::PREFIX_OWNER_BASED_ON;
+		} else {
+			$alias = 'mbo';
+			$memberAlias = $this->getDefaultSelectAlias();
+			$prefix = self::PREFIX_BASED_ON;
+		}
 
 		$expr = $this->expr();
-		$alias = 'cbo';
-		$this->generateCircleSelectAlias($alias, self::PREFIX_BASED_ON)
+		$this->generateCircleSelectAlias($alias, $prefix)
 			 ->leftJoin(
 				 $memberAlias, CoreQueryBuilder::TABLE_CIRCLE, $alias,
 				 $expr->eq($alias . '.unique_id', $memberAlias . '.single_id')
 			 );
-
-//		$this->generateSelectAlias(['source'], $alias, self::PREFIX_CIRCLE_BASED_ON);
 	}
 
 
@@ -327,7 +337,7 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 				 )
 			 );
 
-		$this->leftJoinBasedOnCircle('o');
+		$this->leftJoinBasedOnCircle(true);
 	}
 
 

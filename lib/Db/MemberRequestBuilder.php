@@ -76,8 +76,7 @@ class MemberRequestBuilder extends CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->select(
 			'm.circle_id', 'm.member_id', 'm.single_id', 'm.user_id', 'm.instance', 'm.user_type', 'm.level',
-			'm.status',
-			'm.note', 'm.contact_id', 'm.cached_name', 'm.cached_update', 'm.contact_meta',
+			'm.status', 'm.note', 'm.contact_id', 'm.cached_name', 'm.cached_update', 'm.contact_meta',
 			'm.joined'
 		)
 		   ->from(self::TABLE_MEMBER, 'm')

@@ -121,11 +121,12 @@ class ModelManager {
 	/**
 	 * @param Member $member
 	 * @param array $data
+	 * @param string $prefix
 	 */
-	public function importBasedOnFromDatabase(Member $member, array $data) {
+	public function importBasedOnFromDatabase(Member $member, array $data, string $prefix) {
 		try {
 			$circle = new Circle();
-			$circle->importFromDatabase($data, CoreRequestBuilder::PREFIX_BASED_ON);
+			$circle->importFromDatabase($data, $prefix);
 			$member->setBasedOn($circle);
 		} catch (CircleNotFoundException $e) {
 		}

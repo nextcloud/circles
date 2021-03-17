@@ -646,7 +646,7 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 	 * @throws CircleNotFoundException
 	 */
 	public function importFromDatabase(array $data, string $prefix = ''): INC21QueryRow {
-		if (!array_key_exists($prefix . 'unique_id', $data)) {
+		if ($this->get($prefix . 'unique_id', $data) === '') {
 			throw new CircleNotFoundException();
 		}
 
