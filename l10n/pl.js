@@ -296,7 +296,6 @@ OC.L10N.register(
     "Password enforcement" : "Wymuszanie hasła",
     "External share will be protected by a randomly generated password" : "Udostępnienie zewnętrzne będzie chronione losowo wygenerowanym hasłem",
     "Single password" : "Jednakowe hasło",
-    "One password for all shares. If not, a randomly generated password is sent by mail" : "Jedno hasło do wszystkich udostępnień. W przypadku jego braku, hasło jest wygenerowane losowo i wysłane e-mailem.",
     "Change password" : "Zmień hasło",
     "Allow Federated Links" : "Zezwalaj na Linki Federacyjne",
     "Makes the circle federated, and enables sharing between federated circles" : "Sprawia, że krąg należy do federacji i umożliwia udostępnianie między kręgami federacyjnymi",
@@ -309,6 +308,7 @@ OC.L10N.register(
     "Skip invitation step to closed circles" : "Pomiń krok zaproszenia do zamkniętych kręgów",
     "Moderators can add member to closed circles without user approval." : "Moderatorzy mogą dodawać członków do zamkniętych kręgów bez zgody użytkownika.",
     "Kicked" : "Usunięci",
-    "Kick this member" : "Usuń członka"
+    "Kick this member" : "Usuń członka",
+    "One password for all shares. If not, a randomly generated password is sent by mail" : "Jedno hasło do wszystkich udostępnień. W przypadku jego braku, hasło jest wygenerowane losowo i wysłane e-mailem."
 },
 "nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);");

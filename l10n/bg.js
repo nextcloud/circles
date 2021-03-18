@@ -294,7 +294,6 @@ OC.L10N.register(
     "Password enforcement" : "Прилагане на парола",
     "External share will be protected by a randomly generated password" : "Външното споделяне ще бъде защитено от произволно генерирана парола ",
     "Single password" : "Единична парола",
-    "One password for all shares. If not, a randomly generated password is sent by mail" : "Една парола за всички споделяния. Ако не, произволно генерирана парола се изпраща по пощата",
     "Change password" : "Промени паролата",
     "Allow Federated Links" : "Разрешаване на федерирани връзки",
     "Makes the circle federated, and enables sharing between federated circles" : "Прави кръга федериран и дава възможност за споделяне между федерирани кръгове",
@@ -307,6 +306,7 @@ OC.L10N.register(
     "Skip invitation step to closed circles" : "Пропускане на стъпката за покана до затворени кръгове",
     "Moderators can add member to closed circles without user approval." : "Модераторите могат да добавят член в затворени кръгове без одобрение от потребителя.",
     "Kicked" : "Изгонен",
-    "Kick this member" : "Изгонване на този член"
+    "Kick this member" : "Изгонване на този член",
+    "One password for all shares. If not, a randomly generated password is sent by mail" : "Една парола за всички споделяния. Ако не, произволно генерирана парола се изпраща по пощата"
 },
 "nplurals=2; plural=(n != 1);");

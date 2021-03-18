@@ -285,7 +285,6 @@ OC.L10N.register(
     "Password enforcement" : "Vynútenie hesla",
     "External share will be protected by a randomly generated password" : "Externá zdieľaná položka bude chránená náhodne vygenerovaným heslom",
     "Single password" : "Jedno heslo",
-    "One password for all shares. If not, a randomly generated password is sent by mail" : "Jedno heslo pre všetky zdieľané položky. Ak nie, náhodne vygenerované heslo sa pošle e-mailom",
     "Change password" : "Zmena hesla",
     "Allow Federated Links" : "Povoliť združené odkazy",
     "Makes the circle federated, and enables sharing between federated circles" : "Vytvoriť združený okruh a umožniť zdieľanie medzi združenými okruhmi",
@@ -298,6 +297,7 @@ OC.L10N.register(
     "Skip invitation step to closed circles" : "Preskočiť krok pozvania do uzavretých okruhov",
     "Moderators can add member to closed circles without user approval." : "Moderátori môžu pridať člena do uzavretých okruhov bez súhlasu používateľa.",
     "Kicked" : "Vylúčený",
-    "Kick this member" : "Vylúčiť tohto člena"
+    "Kick this member" : "Vylúčiť tohto člena",
+    "One password for all shares. If not, a randomly generated password is sent by mail" : "Jedno heslo pre všetky zdieľané položky. Ak nie, náhodne vygenerované heslo sa pošle e-mailom"
 },
 "nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);");

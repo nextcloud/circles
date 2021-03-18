@@ -294,7 +294,6 @@
     "Password enforcement" : "密碼強制",
     "External share will be protected by a randomly generated password" : "外部共享將由一個隨機生成的密碼保護",
     "Single password" : "單一密碼",
-    "One password for all shares. If not, a randomly generated password is sent by mail" : "對所有共享使用一個密碼。如果不，則通過郵件發送一個隨機生成的密碼",
     "Change password" : "更改密碼",
     "Allow Federated Links" : "允許聯合雲連結",
     "Makes the circle federated, and enables sharing between federated circles" : "將圈子轉為聯合雲，並啟用聯合圈之間的共享",
@@ -307,6 +306,7 @@
     "Skip invitation step to closed circles" : "跳過進入非公閞的圈子的邀請步驟",
     "Moderators can add member to closed circles without user approval." : "主持人可以不經過用戶同意向非公閞的圈子添加成員。",
     "Kicked" : "被踢出",
-    "Kick this member" : "踢走這位成員"
+    "Kick this member" : "踢走這位成員",
+    "One password for all shares. If not, a randomly generated password is sent by mail" : "對所有共享使用一個密碼。如果不，則通過郵件發送一個隨機生成的密碼"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

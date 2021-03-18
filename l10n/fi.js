@@ -254,7 +254,6 @@ OC.L10N.register(
     "Password enforcement" : "Pakota salasaa",
     "External share will be protected by a randomly generated password" : "Ulkoinen jako suojataan satunnaisesti generoidulla salasanalla",
     "Single password" : "Yksi salasana",
-    "One password for all shares. If not, a randomly generated password is sent by mail" : "Yksi salasana kaikille jaoille. Jos ei, satunnaisesti generoitu salasana lähetetään sähköpostitse",
     "Change password" : "Vaihda salasana",
     "Allow Federated Links" : "Salli federoidut linkit",
     "Makes the circle federated, and enables sharing between federated circles" : "Tekee piiristä federoidun ja ottaa käyttöön jaon federoitujen piirien kesken",
@@ -267,6 +266,7 @@ OC.L10N.register(
     "Skip invitation step to closed circles" : "Ohita kutsuvaihe suljettuihin piireihin",
     "Moderators can add member to closed circles without user approval." : "Moderaattorit voivat lisätä jäsenen suljettuihin piireihin ilman käyttäjän hyväksyntää.",
     "Kicked" : "Erotettu",
-    "Kick this member" : "Erota jäsen"
+    "Kick this member" : "Erota jäsen",
+    "One password for all shares. If not, a randomly generated password is sent by mail" : "Yksi salasana kaikille jaoille. Jos ei, satunnaisesti generoitu salasana lähetetään sähköpostitse"
 },
 "nplurals=2; plural=(n != 1);");

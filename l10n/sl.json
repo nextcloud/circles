@@ -292,7 +292,6 @@
     "Password enforcement" : "Vsiljevanje zaščite z geslom",
     "External share will be protected by a randomly generated password" : "Zunanja mesta uporabe bodo zaščitena z naključno ustvarjenim geslom",
     "Single password" : "Enojno geslo",
-    "One password for all shares. If not, a randomly generated password is sent by mail" : "Eno geslo za vsa mesta souporabe. Če to ni določeno, je ustvarjeno naključno geslo poslano na elektronski naslov.",
     "Change password" : "Spremeni geslo",
     "Allow Federated Links" : "Dovoli zvezne povezave",
     "Makes the circle federated, and enables sharing between federated circles" : "Krog razširi na zvezne člane in omogoči souporabo na zvezni ravni.",
@@ -305,6 +304,7 @@
     "Skip invitation step to closed circles" : "Preskoči korak vabila za zaprte kroge",
     "Moderators can add member to closed circles without user approval." : "Moderatorji lahko dodajajo člane v zaprte kroge brez predhodne potrditve drugih članov.",
     "Kicked" : "Izločen",
-    "Kick this member" : "Izloči člana"
+    "Kick this member" : "Izloči člana",
+    "One password for all shares. If not, a randomly generated password is sent by mail" : "Eno geslo za vsa mesta souporabe. Če to ni določeno, je ustvarjeno naključno geslo poslano na elektronski naslov."
 },"pluralForm" :"nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);"
 }
