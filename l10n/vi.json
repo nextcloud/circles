@@ -282,7 +282,6 @@
     "Password enforcement" : "Cơ chế tuân theo của mật khẩu",
     "External share will be protected by a randomly generated password" : "Chia sẻ ngoài máy chủ sẽ được bảo vệ bởi một mật khẩu tự thiết lập",
     "Single password" : "Mật khẩu đơn lẻ",
-    "One password for all shares. If not, a randomly generated password is sent by mail" : "Một mật khẩu cho tất cả các chia sẻ. Nếu không, một mật khẩu tự thiết lập sẽ được gửi qua thư điện tử",
     "Change password" : "Đổi mật khẩu",
     "Allow Federated Links" : "Cho phép Liên Kết Liên Bang",
     "Makes the circle federated, and enables sharing between federated circles" : "Kích hoạt vòng kết nối lên chế độ Liên Bang, và kích hoạt chia sẻ giữa các vòng kết nối Liên Bang",
@@ -295,6 +294,7 @@
     "Skip invitation step to closed circles" : "Bỏ qua thao tác gửi lời mời đối với các vòng kết nối Đóng",
     "Moderators can add member to closed circles without user approval." : "Các điều hành viên có thể thêm thành viên vào các vòng kết nối Đóng mà không cần sự chấp thuận của người dùng.",
     "Kicked" : "Bị đá",
-    "Kick this member" : "Đuổi thành viên này"
+    "Kick this member" : "Đuổi thành viên này",
+    "One password for all shares. If not, a randomly generated password is sent by mail" : "Một mật khẩu cho tất cả các chia sẻ. Nếu không, một mật khẩu tự thiết lập sẽ được gửi qua thư điện tử"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

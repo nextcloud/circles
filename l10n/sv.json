@@ -280,7 +280,6 @@
     "Change the limit to the number of members. (0: default, -1: unlimited)" : "Ändra gränsen för antalet medlemmar. (0: standard, -1: obegränsat)",
     "External share will be protected by a randomly generated password" : "Extern delning kommer att skyddas av ett slumpmässigt genererat lösenord",
     "Single password" : "Enskilt lösenord",
-    "One password for all shares. If not, a randomly generated password is sent by mail" : "Ett lösenord för alla delningar. Om inte, skickas ett slumpmässigt genererat lösenord via e-post",
     "Change password" : "Ändra lösenord",
     "Allow Federated Links" : "Tillåt federerade länkar",
     "Makes the circle federated, and enables sharing between federated circles" : "Gör cirkeln federerad och aktiverar delning mellan federerade cirklar",
@@ -293,6 +292,7 @@
     "Skip invitation step to closed circles" : "Hoppa över inbjudan till stängda cirklar",
     "Moderators can add member to closed circles without user approval." : "Moderatorer kan lägga till medlem i slutna kretsar utan användarens godkännande.",
     "Kicked" : "Borttagen",
-    "Kick this member" : "Ta bort denna medlem"
+    "Kick this member" : "Ta bort denna medlem",
+    "One password for all shares. If not, a randomly generated password is sent by mail" : "Ett lösenord för alla delningar. Om inte, skickas ett slumpmässigt genererat lösenord via e-post"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
