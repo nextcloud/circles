@@ -294,7 +294,6 @@ OC.L10N.register(
     "Password enforcement" : "Επιβολή κωδικού πρόσβασης",
     "External share will be protected by a randomly generated password" : "Το εξωτερικό κοινόχρηστο στοιχείο θα προστατεύεται από έναν τυχαίο κωδικό πρόσβασης",
     "Single password" : "Απλό συνθηματικό",
-    "One password for all shares. If not, a randomly generated password is sent by mail" : "Χρήση ενός συνθηματικού για όλες τις κοινές χρήσεις. Σε αντίθετη περίπτωση, αποστέλλεται με email ένα τυχαίο συνθηματικό.",
     "Change password" : "Αλλαγή συνθημτικού",
     "Allow Federated Links" : "Να επιτρέπονται Ομόσπονδοι Σύνδεσμοι",
     "Makes the circle federated, and enables sharing between federated circles" : "Μετατρέπει τον κύκλο σε Ομόσπονδο και ενεργοποιεί το διαμοιρασμό μεταξύ Ομοσπονδιακών Κύκλων",
@@ -307,6 +306,7 @@ OC.L10N.register(
     "Skip invitation step to closed circles" : "Παράλειψη του βήματος πρόσκλησης σε κλειστούς κύκλους",
     "Moderators can add member to closed circles without user approval." : "Οι συντονιστές μπορούν να προσθέτουν μέλη σε κλειστούς κύκλους χωρίς την έγκριση των χρηστών.",
     "Kicked" : "Εκδιώχθηκε",
-    "Kick this member" : "Διώξτε αυτό το μέλος"
+    "Kick this member" : "Διώξτε αυτό το μέλος",
+    "One password for all shares. If not, a randomly generated password is sent by mail" : "Χρήση ενός συνθηματικού για όλες τις κοινές χρήσεις. Σε αντίθετη περίπτωση, αποστέλλεται με email ένα τυχαίο συνθηματικό."
 },
 "nplurals=2; plural=(n != 1);");

@@ -296,7 +296,6 @@ OC.L10N.register(
     "Password enforcement" : "Pasahitz bidez betearazita",
     "External share will be protected by a randomly generated password" : "Kanpoko partekatzea ausazko pasahitz baten bidez babestuko da",
     "Single password" : "Pasahitz bakana",
-    "One password for all shares. If not, a randomly generated password is sent by mail" : "Pasahitz bakana partekatze guztietarako. Bestela, ausaz sortutako pasahitza postaz bidaliko da",
     "Change password" : "Aldatu pasahitza",
     "Allow Federated Links" : "Esteka federatuak onartu",
     "Makes the circle federated, and enables sharing between federated circles" : "Zirkuluak federatzen ditu, eta zirkulu federatuen artean partekatzea ahalbidetzen du",
@@ -309,6 +308,7 @@ OC.L10N.register(
     "Skip invitation step to closed circles" : "Saltatu gonbidapen pausua zirkulu itxietan",
     "Moderators can add member to closed circles without user approval." : "Moderatzaileek kideak gehitu ditzakete zirkulu itxietara erabiltzailearen baimenik gabe.",
     "Kicked" : "Kanporatua",
-    "Kick this member" : "Baztertu kide hau"
+    "Kick this member" : "Baztertu kide hau",
+    "One password for all shares. If not, a randomly generated password is sent by mail" : "Pasahitz bakana partekatze guztietarako. Bestela, ausaz sortutako pasahitza postaz bidaliko da"
 },
 "nplurals=2; plural=(n != 1);");

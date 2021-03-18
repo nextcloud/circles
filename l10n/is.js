@@ -294,7 +294,6 @@ OC.L10N.register(
     "Password enforcement" : "Þvingað lykilorð",
     "External share will be protected by a randomly generated password" : "Ytri sameign verður varin með lykilorði útbúnu af handahófi",
     "Single password" : "Einfalt lykilorð",
-    "One password for all shares. If not, a randomly generated password is sent by mail" : "Eitt lykilorð fyrir allar sameignir. Ef ekki, verður lykilorð útbúið af handahófi sent í pósti",
     "Change password" : "Breyta lykilorði",
     "Allow Federated Links" : "Leyfa skýjasambandstengla",
     "Makes the circle federated, and enables sharing between federated circles" : "Setur hringinn í skýjasamband og virkjar deilingu milli hringja í skýjasambandi (federated)",
@@ -307,6 +306,7 @@ OC.L10N.register(
     "Skip invitation step to closed circles" : "Sleppa boðsskrefi inn í lokaða hringi",
     "Moderators can add member to closed circles without user approval." : "Umsjónarmenn geta bætt meðlimum í lokaða hringi án samþykkis notanda.",
     "Kicked" : "Hent út",
-    "Kick this member" : "Henda þessum meðlimi út"
+    "Kick this member" : "Henda þessum meðlimi út",
+    "One password for all shares. If not, a randomly generated password is sent by mail" : "Eitt lykilorð fyrir allar sameignir. Ef ekki, verður lykilorð útbúið af handahófi sent í pósti"
 },
 "nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);");

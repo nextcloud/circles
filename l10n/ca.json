@@ -282,7 +282,6 @@
     "Password enforcement" : "Aplicació de contrasenya",
     "External share will be protected by a randomly generated password" : "La compartició externa estarà protegida per una contrasenya generada aleatòriament",
     "Single password" : "Contrasenya única",
-    "One password for all shares. If not, a randomly generated password is sent by mail" : "Una contrasenya per a totes les comparticions. Si no és així, s'envia per correu una contrasenya generada aleatòriament",
     "Change password" : "Canvia la contrasenya",
     "Allow Federated Links" : "Permet Enllaços Federats",
     "Makes the circle federated, and enables sharing between federated circles" : "Fa que el cercle sigui federat, i activa compartir entre cercles federats",
@@ -295,6 +294,7 @@
     "Skip invitation step to closed circles" : "Saltar el pas d'invitació als cercles tancats",
     "Moderators can add member to closed circles without user approval." : "Els moderadors poden afegir un membre als cercles tancats sense que l'usuari ho accepti.",
     "Kicked" : "Expulsat",
-    "Kick this member" : "Expulsa aquest membre"
+    "Kick this member" : "Expulsa aquest membre",
+    "One password for all shares. If not, a randomly generated password is sent by mail" : "Una contrasenya per a totes les comparticions. Si no és així, s'envia per correu una contrasenya generada aleatòriament"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
