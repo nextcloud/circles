@@ -294,6 +294,7 @@
     "Password enforcement" : "Parola dayatması",
     "External share will be protected by a randomly generated password" : "Dış paylaşım rastgele üretilmiş bir parola ile korunacak",
     "Single password" : "Tek parola",
+    "One password for all shares. If not, a randomly generated password is sent by mail." : "Bu seçenek etkinleştirildiğinde, tüm paylaşımlar için tek parola kullanılır. Devre dışı bırakıldığında, e-posta ile rastgele üretilen parolalar gönderilir.",
     "Change password" : "Parolayı değiştir",
     "Allow Federated Links" : "Birleşik Bağlantılar Kullanılabilsin",
     "Makes the circle federated, and enables sharing between federated circles" : "Çevreyi Birleşik yapar ve Birleşik Çevreler arasında paylaşımı etkinleştirir.",
