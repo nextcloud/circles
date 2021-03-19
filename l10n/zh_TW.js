@@ -296,6 +296,7 @@ OC.L10N.register(
     "Password enforcement" : "強制密碼",
     "External share will be protected by a randomly generated password" : "外部分享將受到隨機生成的密碼保護",
     "Single password" : "單密碼",
+    "One password for all shares. If not, a randomly generated password is sent by mail." : "所有分享使用同一個密碼。若不是，將會透過郵件傳送隨機生成的密碼。",
     "Change password" : "變更密碼",
     "Allow Federated Links" : "允許聯盟連結",
     "Makes the circle federated, and enables sharing between federated circles" : "讓小圈圈變為聯盟，並啟用聯盟小圈圈間的分享",

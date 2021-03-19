@@ -296,6 +296,7 @@ OC.L10N.register(
     "Password enforcement" : "Pasahitz bidez betearazita",
     "External share will be protected by a randomly generated password" : "Kanpoko partekatzea ausazko pasahitz baten bidez babestuko da",
     "Single password" : "Pasahitz bakana",
+    "One password for all shares. If not, a randomly generated password is sent by mail." : "Pasahitz bakarra partekatze guztietarako. Hala ez bada, ausaz sortutako pasahitza posta bidez bidaliko da.",
     "Change password" : "Aldatu pasahitza",
     "Allow Federated Links" : "Esteka federatuak onartu",
     "Makes the circle federated, and enables sharing between federated circles" : "Zirkuluak federatzen ditu, eta zirkulu federatuen artean partekatzea ahalbidetzen du",

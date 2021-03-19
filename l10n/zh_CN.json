@@ -294,6 +294,7 @@
     "Password enforcement" : "密码强制",
     "External share will be protected by a randomly generated password" : "外部共享将由一个随机生成的密码保护",
     "Single password" : "单一密码",
+    "One password for all shares. If not, a randomly generated password is sent by mail." : "所有共享使用一个密码。如果不是，则通过邮件发送随机生成的密码。",
     "Change password" : "更改密码",
     "Allow Federated Links" : "允许联合云链接",
     "Makes the circle federated, and enables sharing between federated circles" : "将圈子转为联合云，并启用联合圈之间的共享",
