@@ -294,6 +294,7 @@
     "Password enforcement" : "Vynucení hesla",
     "External share will be protected by a randomly generated password" : "Externí sdílení bude ochráněno vytvořením náhodného hesla",
     "Single password" : "Jediné heslo",
+    "One password for all shares. If not, a randomly generated password is sent by mail." : "Jedno heslo pro všechna sdílení. Pokud ne, je e-mailem zasláno náhodné vytvořené heslo.",
     "Change password" : "Změnit heslo",
     "Allow Federated Links" : "Povolit federované odkazy",
     "Makes the circle federated, and enables sharing between federated circles" : "Nastaví okruh jako federovaný a zapne sdílení mezi sdruženými okruhy",
