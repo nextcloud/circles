@@ -296,6 +296,7 @@ OC.L10N.register(
     "Password enforcement" : "Wachtwoord afdwingen",
     "External share will be protected by a randomly generated password" : "Externe share wordt beschermd door een willekeurig gegenereerd wachtwoord",
     "Single password" : "Enkel wachtwoord",
+    "One password for all shares. If not, a randomly generated password is sent by mail." : "Eén wachtwoord voor alle shares. Zo niet, dan wordt een willekeurig gegenereerd wachtwoord per mail verzonden.",
     "Change password" : "Wijzig wachtwoord",
     "Allow Federated Links" : "Gefedereerde links toestaan",
     "Makes the circle federated, and enables sharing between federated circles" : "Maakt de kring gefedereerd en maakt het mogelijk om te delen binnen gefedereerde kringen",
