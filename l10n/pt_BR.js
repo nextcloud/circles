@@ -296,6 +296,7 @@ OC.L10N.register(
     "Password enforcement" : "Aplicação de senha",
     "External share will be protected by a randomly generated password" : "O compartilhamento externo será protegido por uma senha gerada aleatoriamente",
     "Single password" : "Senha única",
+    "One password for all shares. If not, a randomly generated password is sent by mail." : "Uma senha para todas os compartilhamentos. Caso não, uma senha gerada aleatoriamente é enviada por mensagem de correio.",
     "Change password" : "Alterar senha",
     "Allow Federated Links" : "Permitir Links Federados",
     "Makes the circle federated, and enables sharing between federated circles" : "Faz o círculo federado e ativa o compartilhamento entre círculos federados",
