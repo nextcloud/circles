@@ -147,7 +147,8 @@ class CircleRequest extends CircleRequestBuilder {
 //	}
 
 	/**
-	 * @param Member|null $filter
+	 * @param Circle|null $circleFilter
+	 * @param Member|null $memberFilter
 	 * @param IFederatedUser|null $initiator
 	 * @param RemoteInstance|null $remoteInstance
 	 * @param bool $filterSystemCircles
@@ -155,7 +156,8 @@ class CircleRequest extends CircleRequestBuilder {
 	 * @return Circle[]
 	 */
 	public function getCircles(
-		?Member $filter = null,
+		?Circle $circleFilter = null,
+		?Member $memberFilter = null,
 		?IFederatedUser $initiator = null,
 		?RemoteInstance $remoteInstance = null,
 		bool $filterSystemCircles = true
@@ -169,8 +171,11 @@ class CircleRequest extends CircleRequestBuilder {
 		if (!is_null($initiator)) {
 			$qb->limitToInitiator($initiator);
 		}
-		if (!is_null($filter)) {
-			$qb->limitToMembership($filter);
+		if (!is_null($memberFilter)) {
+			$qb->limitToMembership($memberFilter);
+		}
+		if (!is_null($circleFilter)) {
+			$qb->filterCircle($circleFilter);
 		}
 		if (!is_null($remoteInstance)) {
 			$qb->limitToRemoteInstance($remoteInstance->getInstance(), false);

@@ -488,6 +488,7 @@ class DeprecatedRequestBuilder {
 	 * @throws GSStatusException
 	 */
 	protected function leftJoinNCGroupAndUser(IQueryBuilder $qb, $userId, $field) {
+		return;
 		if (!$this->configService->isLinkedGroupsAllowed()) {
 			return;
 		}

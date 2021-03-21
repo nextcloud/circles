@@ -215,6 +215,20 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 
 
 	/**
+	 * @param Circle $circle
+	 */
+	public function filterCircle(Circle $circle): void {
+		if ($this->getType() !== QueryBuilder::SELECT) {
+			return;
+		}
+
+		if ($circle->getDisplayName() !== '') {
+			$this->searchInDBField('display_name', '%' . $circle->getDisplayName() . '%');
+		}
+	}
+
+
+	/**
 	 * @param Member $member
 	 */
 	public function limitToMembership(Member $member): void {

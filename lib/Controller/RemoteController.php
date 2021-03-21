@@ -48,6 +48,7 @@ use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
@@ -232,9 +233,11 @@ class RemoteController extends Controller {
 		}
 
 		try {
-			/** @var Member $filter */
-			$filter = $data->gObj('filter');
-			$circles = $this->circleService->getCircles($filter);
+			/** @var Circle $filterCircle */
+			$filterCircle = $data->gObj('filterCircle');
+			/** @var Member $filterMember */
+			$filterMember = $data->gObj('filterMember');
+			$circles = $this->circleService->getCircles($filterCircle, $filterMember);
 
 			return new DataResponse($circles);
 		} catch (Exception $e) {
@@ -386,9 +389,18 @@ class RemoteController extends Controller {
 
 		try {
 			/** @var FederatedUser $initiator */
-			$filter = $store->gObj('filter', Member::class);
-			if (!is_null($filter)) {
-				$data->aObj('filter', $filter);
+			$filterMember = $store->gObj('filterMember', Member::class);
+			if (!is_null($filterMember)) {
+				$data->aObj('filterMember', $filterMember);
+			}
+		} catch (InvalidItemException $e) {
+		}
+
+		try {
+			/** @var FederatedUser $initiator */
+			$filterCircle = $store->gObj('filterCircle', Circle::class);
+			if (!is_null($filterCircle)) {
+				$data->aObj('filterCircle', $filterCircle);
 			}
 		} catch (InvalidItemException $e) {
 		}

@@ -64,6 +64,7 @@ use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
 use OCP\IUser;
 use OCP\IUserManager;
+use OCP\IUserSession;
 
 
 /**
@@ -78,6 +79,9 @@ class FederatedUserService {
 	use TStringTools;
 	use TNC21Logger;
 
+
+	/** @var IUserSession */
+	private $userSession;
 
 	/** @var IUserManager */
 	private $userManager;
@@ -114,6 +118,7 @@ class FederatedUserService {
 	/**
 	 * FederatedUserService constructor.
 	 *
+	 * @param IUserSession $userSession
 	 * @param IUserManager $userManager
 	 * @param MembershipRequest $membershipRequest
 	 * @param CircleRequest $circleRequest
@@ -122,15 +127,33 @@ class FederatedUserService {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IUserManager $userManager, MembershipRequest $membershipRequest, CircleRequest $circleRequest,
-		MemberRequest $memberRequest, RemoteService $remoteService, ConfigService $configService
+		IUserSession $userSession, IUserManager $userManager, MembershipRequest $membershipRequest,
+		CircleRequest $circleRequest, MemberRequest $memberRequest, RemoteService $remoteService,
+		ConfigService $configService
 	) {
+		$this->userSession = $userSession;
 		$this->userManager = $userManager;
 		$this->membershipRequest = $membershipRequest;
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
 		$this->remoteService = $remoteService;
 		$this->configService = $configService;
+	}
+
+
+	/**
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
+	 * @throws SingleCircleNotFoundException
+	 */
+	public function initCurrentUser() {
+		$user = $this->userSession->getUser();
+		if ($user === null) {
+			return;
+		}
+
+		$this->setLocalCurrentUser($user);
 	}
 
 

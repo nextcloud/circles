@@ -152,13 +152,13 @@ class CirclesList extends Base {
 		$instance = $input->getOption('instance');
 		$initiator = $input->getOption('initiator');
 
-		$filter = null;
+		$filterMember = null;
 		if ($member !== '') {
-			$filter = $this->federatedUserService->getFederatedMember($member);
+			$filterMember = $this->federatedUserService->getFederatedMember($member);
 		}
 
 		if ($instance !== '' && !$this->configService->isLocalInstance($instance)) {
-			$data = ['filter' => $filter];
+			$data = ['filterMember' => $filterMember];
 			if ($initiator) {
 				$data['initiator'] = $this->federatedUserService->getFederatedUser($initiator);
 			}
@@ -166,7 +166,7 @@ class CirclesList extends Base {
 			$circles = $this->remoteService->getCirclesFromInstance($instance, $data);
 		} else {
 			$this->federatedUserService->commandLineInitiator($initiator, '', true);
-			$circles = $this->circleService->getCircles($filter, !$input->getOption('all'));
+			$circles = $this->circleService->getCircles(null, $filterMember, !$input->getOption('all'));
 		}
 
 		if (strtolower($input->getOption('output')) === 'json') {

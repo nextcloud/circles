@@ -139,9 +139,9 @@ class DeprecatedMembersRequest extends DeprecatedMembersRequestBuilder {
 		$cursor->closeCursor();
 
 		try {
-			if ($this->configService->isLinkedGroupsAllowed() && $incGroup === true) {
-				$this->includeGroupMembers($members, $circleUniqueId, $level);
-			}
+//			if ($this->configService->isLinkedGroupsAllowed() && $incGroup === true) {
+//				$this->includeGroupMembers($members, $circleUniqueId, $level);
+//			}
 		} catch (GSStatusException $e) {
 		}
 

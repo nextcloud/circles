@@ -609,7 +609,7 @@ class CirclesTest extends Base {
 	 */
 	private function basicCirclesMembers() {
 	}
-	
+
 
 	/**
 	 * @param Circle $circle

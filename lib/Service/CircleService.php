@@ -259,17 +259,23 @@ class CircleService {
 
 
 	/**
-	 * @param Member|null $filter
+	 * @param Circle|null $circleFilter
+	 * @param Member|null $memberFilter
 	 * @param bool $filterSystemCircles
 	 *
 	 * @return Circle[]
 	 * @throws InitiatorNotFoundException
 	 */
-	public function getCircles(?Member $filter = null, bool $filterSystemCircles = true): array {
+	public function getCircles(
+		?Circle $circleFilter = null,
+		?Member $memberFilter = null,
+		bool $filterSystemCircles = true
+	): array {
 		$this->federatedUserService->mustHaveCurrentUser();
 
 		return $this->circleRequest->getCircles(
-			$filter,
+			$circleFilter,
+			$memberFilter,
 			$this->federatedUserService->getCurrentUser(),
 			$this->federatedUserService->getRemoteInstance(),
 			$filterSystemCircles
