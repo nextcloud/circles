@@ -127,6 +127,7 @@ class RemoteController extends Controller {
 		$this->configService = $configService;
 
 		$this->setup('app', 'circles');
+		$this->setupArray('enforceSignatureHeaders', ['digest', 'content-length']);
 	}
 
 
@@ -185,6 +186,7 @@ class RemoteController extends Controller {
 			$event = $this->extractEventFromRequest();
 		} catch (Exception $e) {
 			$this->e($e);
+
 			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
 		}
 

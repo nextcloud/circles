@@ -350,11 +350,11 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 
 
 	/**
-	 * @param Member $owner
+	 * @param ?Member $owner
 	 *
 	 * @return self
 	 */
-	public function setOwner(Member $owner): self {
+	public function setOwner(?Member $owner): self {
 		$this->owner = $owner;
 
 		return $this;
@@ -399,11 +399,11 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 
 
 	/**
-	 * @param Member $initiator
+	 * @param Member|null $initiator
 	 *
 	 * @return Circle
 	 */
-	public function setInitiator(Member $initiator): self {
+	public function setInitiator(?Member $initiator): self {
 		$this->initiator = $initiator;
 
 		return $this;

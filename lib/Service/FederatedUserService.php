@@ -315,15 +315,18 @@ class FederatedUserService {
 	 * @param bool $bypass
 	 *
 	 * @throws CircleNotFoundException
+	 * @throws FederatedItemException
 	 * @throws FederatedUserException
 	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
+	 * @throws MemberNotFoundException
 	 * @throws OwnerNotFoundException
 	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
+	 * @throws SingleCircleNotFoundException
 	 * @throws UnknownRemoteException
 	 * @throws UserTypeNotFoundException
-	 * @throws MemberNotFoundException
 	 */
 	public function commandLineInitiator(string $userId, string $circleId = '', bool $bypass = false): void {
 		if ($userId !== '') {
@@ -583,6 +586,8 @@ class FederatedUserService {
 
 		$circle = $this->getSingleCircle($federatedUser);
 		$federatedUser->setSingleId($circle->getId());
+		$circle->setOwner(null);
+		$federatedUser->setBasedOn($circle);
 	}
 
 

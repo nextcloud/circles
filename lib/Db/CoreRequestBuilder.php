@@ -56,7 +56,9 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 	const PREFIX_INITIATOR = 'initiator_';
 	const PREFIX_CIRCLE = 'circle_';
 	const PREFIX_OWNER_BASED_ON = 'owner_based_on_';
+	const PREFIX_INITIATOR_BASED_ON = 'initiator_based_on_';
 	const PREFIX_BASED_ON = 'based_on_';
+
 
 	static $IMPORT_CIRCLE = [
 		'',
@@ -71,6 +73,10 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 	static $IMPORT_OWNER = [
 		'',
 		self::PREFIX_CIRCLE
+	];
+
+	static $IMPORT_INITIATOR_BASED_ON = [
+		self::PREFIX_INITIATOR
 	];
 
 	static $IMPORT_OWNER_BASED_ON = [
@@ -185,6 +191,7 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 	): void {
 		$this->leftJoinInitiator($initiator, 'init', $alias);
 		$this->limitVisibility('init', $alias, $mustBeMember, $canBeVisitor);
+		$this->leftJoinBasedOnCircle(self::PREFIX_INITIATOR_BASED_ON);
 	}
 
 
@@ -288,25 +295,31 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 
 
 	/**
-	 * @param bool $forOwner
+	 * @param string $prefixBasedOn
 	 */
-	public function leftJoinBasedOnCircle(bool $forOwner = false): void {
+	public function leftJoinBasedOnCircle(string $prefixBasedOn = self::PREFIX_BASED_ON): void {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
 
-		if ($forOwner) {
-			$alias = 'obo';
-			$memberAlias = 'o';
-			$prefix = self::PREFIX_OWNER_BASED_ON;
-		} else {
-			$alias = 'mbo';
-			$memberAlias = $this->getDefaultSelectAlias();
-			$prefix = self::PREFIX_BASED_ON;
+		switch ($prefixBasedOn) {
+			case self::PREFIX_OWNER_BASED_ON:
+				$alias = 'obo';
+				$memberAlias = 'o';
+				break;
+
+			case self::PREFIX_INITIATOR_BASED_ON:
+				$alias = 'ibo';
+				$memberAlias = 'init';
+				break;
+
+			default:
+				$alias = 'mbo';
+				$memberAlias = $this->getDefaultSelectAlias();
 		}
 
 		$expr = $this->expr();
-		$this->generateCircleSelectAlias($alias, $prefix)
+		$this->generateCircleSelectAlias($alias, $prefixBasedOn)
 			 ->leftJoin(
 				 $memberAlias, CoreQueryBuilder::TABLE_CIRCLE, $alias,
 				 $expr->eq($alias . '.unique_id', $memberAlias . '.single_id')
@@ -337,7 +350,7 @@ class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
 				 )
 			 );
 
-		$this->leftJoinBasedOnCircle(true);
+		$this->leftJoinBasedOnCircle(self::PREFIX_OWNER_BASED_ON);
 	}
 
 
