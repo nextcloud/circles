@@ -132,7 +132,7 @@ class Capabilities implements ICapability {
 				2048  => $this->l10n->t('Backend'),
 				4096  => $this->l10n->t('Local'),
 				8192  => $this->l10n->t('Root'),
-				16384  => $this->l10n->t('Circle Invite'),
+				16384 => $this->l10n->t('Circle Invite'),
 				32768 => $this->l10n->t('Federated')
 			],
 			'source' => [

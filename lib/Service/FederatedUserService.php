@@ -637,7 +637,8 @@ class FederatedUserService {
 
 			$prefix = ($federatedUser->getUserType() === Member::TYPE_APP) ? 'app' : 'user';
 			$circle->setName($prefix . ':' . $federatedUser->getUserId() . ':' . $id)
-				   ->setId($id);
+				   ->setId($id)
+			->setSource($federatedUser->getUserType());
 
 			if ($federatedUser->getUserType() === Member::TYPE_APP) {
 				$circle->setConfig(Circle::CFG_SINGLE | Circle::CFG_ROOT);

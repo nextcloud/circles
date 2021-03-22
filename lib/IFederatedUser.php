@@ -48,9 +48,6 @@ interface IFederatedUser extends IFederatedModel {
 
 	public function getUserType(): int;
 
-	// deprecated
-//	public function getSource(): int;
-
 	public function getBasedOn(): ?Circle;
 
 }

@@ -140,11 +140,12 @@ class Circle extends ManagedModel implements IDeserializable, INC22QueryRow, Jso
 	 * @var array
 	 */
 	public static $DEF_SOURCE = [
-		1  => 'Nextcloud User',
-		2  => 'Nextcloud Group',
-		4  => 'Mail Address',
-		8  => 'Contact',
-		16 => 'Circle'
+		1     => 'Nextcloud User',
+		2     => 'Nextcloud Group',
+		4     => 'Mail Address',
+		8     => 'Contact',
+		16    => 'Circle',
+		10000 => 'Circles App'
 	];
 
 
