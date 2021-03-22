@@ -145,7 +145,7 @@ class Circle extends ManagedModel implements IDeserializable, INC22QueryRow, Jso
 		4     => 'Mail Address',
 		8     => 'Contact',
 		16    => 'Circle',
-		10000 => 'Circles App'
+		10001 => 'Circles App'
 	];
 
 

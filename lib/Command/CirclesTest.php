@@ -76,6 +76,11 @@ class CirclesTest extends Base {
 	];
 
 
+	static $TEST_CIRCLES = [
+		'test_001'
+	];
+
+
 	/** @var CoreQueryBuilder */
 	private $coreQueryBuilder;
 
@@ -103,6 +108,7 @@ class CirclesTest extends Base {
 
 	/** @var array */
 	private $federatedUsers = [];
+
 
 	/**
 	 * CirclesTest constructor.
@@ -209,13 +215,17 @@ class CirclesTest extends Base {
 		$this->buildingLocalDatabase();
 
 		$this->t('Testing Basic Circle Creation');
-		$this->basicCirclesCreation();
+		$this->circleCreation001();
 
 		$this->t('Adding local users and moderators');
-		$this->basicCirclesMembers();
-
-		$this->t('Adding globalscale admin');
-
+		$this->addLocalMemberByUserId();
+		$this->addLocalMemberBySingleId();
+		$this->addLocalMemberUsingMember();
+		$this->levelLocalMemberToModerator();
+		$this->addRemoteMemberUsingModerator();
+		$this->addRemoteMemberUsingRemoteMember();
+		$this->levelRemoteMemberToAdmin();
+		$this->addRemoteMemberUsingRemoteAdmin();
 
 	}
 
@@ -447,7 +457,7 @@ class CirclesTest extends Base {
 
 			foreach ($this->getConfigArray($instanceId, 'groups') as $groupId => $members) {
 				$this->p('Checking Circle for <comment>' . $groupId . '@' . $instance . '</comment>');
-				$circle = $this->getCircleByName($groupsList, 'group:' . $groupId);
+				$circle = $this->getCircleFromList($groupsList, 'group:' . $groupId);
 
 				$appCircle = $this->getSingleCircleForMember($membersList, 'circles', $instance);
 				$appOwner = $appCircle->getOwner();
@@ -535,62 +545,63 @@ class CirclesTest extends Base {
 	 * @throws InvalidItemException
 	 * @throws ItemNotFoundException
 	 */
-	private function basicCirclesCreation() {
+	private function circleCreation001() {
 		$this->p('Creating basic circle');
 
 		$localInstanceId = 'global-scale-1';
-		$owner = 'test1';
-		$name = 'test_001';
+		$name = self::$TEST_CIRCLES[0];
+		$owner = $this->getInstanceUsers($localInstanceId)[1];
 		$dataCreatedCircle001 = $this->occ($localInstanceId, 'circles:manage:create ' . $owner . ' ' . $name);
-		/** @var Circle $createdCircle001 */
-		$createdCircle001 = $this->deserialize($dataCreatedCircle001, Circle::class);
-		$this->r(true, $createdCircle001->getId());;
+		/** @var Circle $createdCircle */
+		$createdCircle = $this->deserialize($dataCreatedCircle001, Circle::class);
+		$this->circles[$localInstanceId][$createdCircle->getName()] = $createdCircle;
+		$this->r(true, $createdCircle->getId());;
 
 		$this->p('Comparing data returned at creation');
-		if ($createdCircle001->getId() === '' || $createdCircle001->getOwner()->getId() === '') {
+		if ($createdCircle->getId() === '' || $createdCircle->getOwner()->getId() === '') {
 			throw new InvalidItemException('empty id or owner.member_id');
 		}
 
 		$knownOwner = new Member();
 		$knownOwner->importFromIFederatedUser($this->federatedUsers[$localInstanceId][$owner]);
-		$knownOwner->setCircleId($createdCircle001->getId());
+		$knownOwner->setCircleId($createdCircle->getId());
 		$knownOwner->setLevel(Member::LEVEL_OWNER);
 		$knownOwner->setStatus(Member::STATUS_MEMBER);
-		$knownOwner->setId($createdCircle001->getOwner()->getId());
+		$knownOwner->setId($createdCircle->getOwner()->getId());
 
 		$compareTo = new Circle();
 		$compareTo->setOwner($knownOwner)
-				  ->setId($createdCircle001->getId())
+				  ->setId($createdCircle->getId())
 				  ->setInitiator($knownOwner)
 				  ->setConfig(Circle::CFG_CIRCLE)
 				  ->setName($name)
 				  ->setDisplayName($name);
 
-		$this->confirmCircleData($createdCircle001, $compareTo, 'circle', true);
+		$this->confirmCircleData($createdCircle, $compareTo, 'circle', true);
 		$this->r();
 
 
 		$this->p('Comparing local stored data');
-		$dataCircle = $this->occ($localInstanceId, 'circle:manage:details ' . $createdCircle001->getId());
+		$dataCircle = $this->occ($localInstanceId, 'circle:manage:details ' . $createdCircle->getId());
 
 		/** @var Circle $tmpCircle */
 		$tmpCircle = $this->deserialize($dataCircle, Circle::class);
-		$this->confirmCircleData($tmpCircle, $createdCircle001);
+		$this->confirmCircleData($tmpCircle, $createdCircle);
 		$this->r(true, $tmpCircle->getId());
 
 		$links = $this->getConfigArray('global-scale-1', 'remote');
 		foreach ($this->getInstances(false) as $instanceId) {
 			$this->p('Comparing data stored on ' . $instanceId);
 			$dataCircle =
-				$this->occ($instanceId, 'circle:manage:details ' . $createdCircle001->getId(), false);
+				$this->occ($instanceId, 'circle:manage:details ' . $createdCircle->getId(), false);
 
 			if ($instanceId === $localInstanceId || $links[$instanceId] === 'GlobalScale') {
 				/** @var Circle $tmpCircle */
 				$tmpCircle = $this->deserialize($dataCircle, Circle::class);
 				// we reset some data that should not be available on remote instance
-				$createdCircle001->setInitiator(null)
-								 ->getOwner()->setBasedOn(null);
-				$this->confirmCircleData($tmpCircle, $createdCircle001);
+				$createdCircle->setInitiator(null)
+							  ->getOwner()->setBasedOn(null);
+				$this->confirmCircleData($tmpCircle, $createdCircle);
 				$this->r(true, $tmpCircle->getId());
 			} else {
 				if (is_null($dataCircle)) {
@@ -606,10 +617,122 @@ class CirclesTest extends Base {
 	/**
 	 * @throws InvalidItemException
 	 * @throws ItemNotFoundException
+	 * @throws CircleNotFoundException
 	 */
-	private function basicCirclesMembers() {
+	private function addLocalMemberByUserId() {
+		$this->p('Adding local user as member, based on userId');
+
+		$localInstanceId = 'global-scale-1';
+		$name = self::$TEST_CIRCLES[0];
+		$userId = $this->getInstanceUsers($localInstanceId)[4];
+		$circle = $this->getCircleByName($localInstanceId, $name);
+		$dataAddedMember =
+			$this->occ(
+				$localInstanceId, 'circles:members:add ' . $circle->getId() . ' ' . $userId . ' --type user'
+			);
+		/** @var Member $addedMember */
+		$addedMember = $this->deserialize($dataAddedMember, Member::class);
+		$this->r(true, $addedMember->getId());;
+
+
+		// check test4
 	}
 
+
+	/**
+	 * @throws CircleNotFoundException
+	 * @throws InvalidItemException
+	 * @throws ItemNotFoundException
+	 */
+	private function addLocalMemberBySingleId() {
+		$this->p('Adding local user as member, based on singleId');
+
+		$localInstanceId = 'global-scale-1';
+		$name = self::$TEST_CIRCLES[0];
+		$circle = $this->getCircleByName($localInstanceId, $name);
+		$userId = $this->getInstanceUsers($localInstanceId)[6];
+		$userCircle = $this->getCircleByName($localInstanceId, 'user:' . $userId);
+		$user = $userCircle->getOwner();
+		$dataAddedMember =
+			$this->occ(
+				$localInstanceId, 'circles:members:add ' . $circle->getId() . ' ' . $user->getSingleId()
+			);
+		/** @var Member $addedMember */
+		$addedMember = $this->deserialize($dataAddedMember, Member::class);
+		$this->r(true, $addedMember->getId());;
+
+		// check test6
+	}
+
+
+	private function addLocalMemberUsingMember() {
+		// fail
+		$this->p('Adding local member using local Member');
+	}
+
+	private function levelLocalMemberToModerator() {
+		$this->p('Changing local level to Moderator');
+	}
+
+	private function addLocalMemberUsingModerator() {
+		$this->p('Adding local member using local Moderator');
+	}
+
+	private function levelLocalMemberToModeratorUsingModerator() {
+		// fail
+		$this->p('Changing local level to moderator using local Moderator');
+	}
+
+	private function addRemoteMemberUsingModerator() {
+		$this->p('Adding remote user using local Moderator');
+	}
+
+	private function addLocalMemberUsingRemoteMember() {
+		// fail
+		$this->p('Adding local user using remote Member');
+	}
+
+	private function addRemoteMemberUsingRemoteMember() {
+		// fail
+		$this->p('Adding remote user using remote Member');
+	}
+
+	private function levelRemoteMemberToAdmin() {
+		$this->p('Changing remote level to Admin');
+	}
+
+	private function addLocalMemberUsingRemoteAdmin() {
+		$this->p('Adding remote member using remote Admin');
+	}
+
+	private function addRemoteMemberUsingRemoteAdmin() {
+		$this->p('Adding remote member using remote Admin');
+	}
+
+	private function levelRemoteMemberToModeratorUsingRemoteAdmin() {
+	}
+
+	private function levelRemoteMemberToAdminUsingRemoteAdmin() {
+		// fail
+	}
+
+	private function verifyMemberList001() {
+	}
+
+	private function removeLocalMemberUsingRemoteMember() {
+	  // fail
+	}
+
+	private function removeLocalMemberUsingRemoteAdmin() {
+	}
+
+	
+	private function removeRemoteMemberUsingRemoteMember() {
+		// fail
+	}
+
+	private function removeRemoteMemberUsingRemoteAdmin() {
+	}
 
 	/**
 	 * @param Circle $circle
@@ -639,8 +762,8 @@ class CirclesTest extends Base {
 		$this->compare(
 			$compareTo->getDisplayName(), $circle->getDisplayName(), $prefix . '.displayName', $params
 		);
-		$this->compareInt($compareTo->getConfig(), $circle->getConfig(), $prefix . '.config', $params, true);
-		$this->compareInt($compareTo->getSource(), $circle->getSource(), $prefix . '.source', $params);
+		$this->compareInt($compareTo->getConfig(), $circle->getConfig(), $prefix . '.config', true);
+		$this->compareInt($compareTo->getSource(), $circle->getSource(), $prefix . '.source');
 
 		if ($compareTo->hasOwner()) {
 			$compareToOwner = $compareTo->getOwner();
@@ -690,7 +813,6 @@ class CirclesTest extends Base {
 		bool $versa = false,
 		array $params = []
 	) {
-
 		$this->compare($compareTo->getId(), $member->getId(), $prefix . '.id', $params);
 		$this->compare($compareTo->getCircleId(), $member->getCircleId(), $prefix . '.circleId', $params);
 		$this->compare($compareTo->getSingleId(), $member->getSingleId(), $prefix . '.singleId', $params);
@@ -698,9 +820,9 @@ class CirclesTest extends Base {
 		$this->compare(
 			$compareTo->getDisplayName(), $member->getDisplayName(), $prefix . '.displayName', $params
 		);
-		$this->compareInt($compareTo->getUserType(), $member->getUserType(), $prefix . '.userType', $params);
+		$this->compareInt($compareTo->getUserType(), $member->getUserType(), $prefix . '.userType');
 		$this->compare($compareTo->getInstance(), $member->getInstance(), $prefix . '.instance', $params);
-		$this->compareInt($compareTo->getLevel(), $member->getLevel(), $prefix . '.level', $params, true);
+		$this->compareInt($compareTo->getLevel(), $member->getLevel(), $prefix . '.level', true);
 		$this->compare($compareTo->getStatus(), $member->getStatus(), $prefix . '.status', $params);
 
 		$compareToBasedOn = $compareTo->getBasedOn();
@@ -739,8 +861,7 @@ class CirclesTest extends Base {
 	 *
 	 * @throws Exception
 	 */
-	private function compareInt(int $expected, int $compare, string $def, array $params, bool $force = false
-	) {
+	private function compareInt(int $expected, int $compare, string $def, bool $force = false) {
 		if (($expected > 0 || ($force && $expected >= 0))
 			&& $expected !== $compare) {
 			throw new Exception('wrong ' . $def . ': ' . $compare . ' (' . $expected . ')');
@@ -784,20 +905,41 @@ class CirclesTest extends Base {
 
 
 	/**
+	 * @param string $instanceId
+	 * @param string $name
+	 *
+	 * @return Circle
+	 * @throws CircleNotFoundException
+	 */
+	private function getCircleByName(string $instanceId, string $name): Circle {
+		if (array_key_exists($instanceId, $this->circles)
+			&& array_key_exists($name, $this->circles[$instanceId])) {
+			return $this->circles[$instanceId][$name];
+		}
+
+		throw new CircleNotFoundException(
+			'cannot extract \'' . $name . '\' from the list of generated Circles'
+		);
+	}
+
+
+	/**
 	 * @param array $circles
 	 * @param string $name
 	 *
 	 * @return Circle
 	 * @throws CircleNotFoundException
 	 */
-	private function getCircleByName(array $circles, string $name): Circle {
+	private function getCircleFromList(array $circles, string $name): Circle {
 		foreach ($circles as $circle) {
 			if ($circle->getName() === $name) {
 				return $circle;
 			}
 		}
 
-		throw new CircleNotFoundException('cannot find \'' . $name . '\' in the list of Circles');
+		throw new CircleNotFoundException(
+			'cannot extract  \'' . $name . '\' from the list of provided Circles'
+		);
 	}
 
 
@@ -842,6 +984,17 @@ class CirclesTest extends Base {
 		}
 
 		throw new ItemNotFoundException($instance . ' not found');
+	}
+
+
+	/**
+	 * @param $instanceId
+	 *
+	 * @return array
+	 * @throws ItemNotFoundException
+	 */
+	private function getInstanceUsers($instanceId): array {
+		return $this->getConfigArray($instanceId, 'users');
 	}
 
 

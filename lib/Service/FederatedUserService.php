@@ -176,14 +176,14 @@ class FederatedUserService {
 
 	/**
 	 * @param string $appId
+	 * @param int $appNumber
 	 *
 	 * @throws FederatedUserException
-	 * @throws FederatedUserNotFoundException
 	 * @throws InvalidIdException
 	 * @throws SingleCircleNotFoundException
 	 */
-	public function setLocalCurrentApp(string $appId): void {
-		$this->currentApp = $this->getAppInitiator($appId);
+	public function setLocalCurrentApp(string $appId, int $appNumber): void {
+		$this->currentApp = $this->getAppInitiator($appId, $appNumber);
 	}
 
 
@@ -312,16 +312,20 @@ class FederatedUserService {
 	 * Will generate the SingleId if none exist
 	 *
 	 * @param string $appId
+	 * @param int $appNumber
 	 *
 	 * @return FederatedUser
-	 * @throws FederatedUserNotFoundException
+	 * @throws FederatedUserException
 	 * @throws InvalidIdException
 	 * @throws SingleCircleNotFoundException
-	 * @throws FederatedUserException
 	 */
-	public function getAppInitiator(string $appId): FederatedUser {
+	public function getAppInitiator(string $appId, int $appNumber): FederatedUser {
+		$circle = new Circle();
+		$circle->setSource($appNumber);
+
 		$federatedUser = new FederatedUser();
-		$federatedUser->set($appId, '', Member::TYPE_APP);
+		$federatedUser->set($appId, '', Member::TYPE_APP, $circle);
+
 		$this->fillSingleCircleId($federatedUser);
 
 		return $federatedUser;
@@ -635,10 +639,12 @@ class FederatedUserService {
 			$circle = new Circle();
 			$id = $this->token(ManagedModel::ID_LENGTH);
 
+			$basedOn = $federatedUser->getBasedOn();
+			$source = (is_null($basedOn)) ? $federatedUser->getUserType() : $basedOn->getSource();
 			$prefix = ($federatedUser->getUserType() === Member::TYPE_APP) ? 'app' : 'user';
 			$circle->setName($prefix . ':' . $federatedUser->getUserId() . ':' . $id)
 				   ->setId($id)
-			->setSource($federatedUser->getUserType());
+				   ->setSource($source);
 
 			if ($federatedUser->getUserType() === Member::TYPE_APP) {
 				$circle->setConfig(Circle::CFG_SINGLE | Circle::CFG_ROOT);

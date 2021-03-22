@@ -123,7 +123,7 @@ class GroupService {
 			throw new GroupNotFoundException('group not found');
 		}
 
-		$this->federatedUserService->setLocalCurrentApp(Application::APP_ID);
+		$this->federatedUserService->setLocalCurrentApp(Application::APP_ID, Member::APP_CIRCLES);
 		$owner = $this->federatedUserService->getCurrentApp();
 
 		$circle = new Circle();

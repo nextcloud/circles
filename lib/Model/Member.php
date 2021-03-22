@@ -71,6 +71,7 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	const TYPE_CONTACT = 8;
 	const TYPE_CIRCLE = 16;
 	const TYPE_APP = 10000;
+	const APP_CIRCLES = 10001;
 
 
 	public static $TYPE = [

@@ -107,7 +107,7 @@ class Capabilities implements ICapability {
 	private function getCapabilitiesMember(): array {
 		return [
 			'constants' => $this->getCapabilitiesMemberConstants(),
-			'config'    => $this->getCapabilitiesMemberConfig()
+			'type'      => Member::$TYPE
 		];
 	}
 
@@ -118,30 +118,37 @@ class Capabilities implements ICapability {
 	private function getCapabilitiesCircleConstants(): array {
 		return [
 			'flags'  => [
-				1     => $this->l10n->t('Single'),
-				2     => $this->l10n->t('Personal'),
-				4     => $this->l10n->t('System'),
-				8     => $this->l10n->t('Visible'),
-				16    => $this->l10n->t('Open'),
-				32    => $this->l10n->t('Invite'),
-				64    => $this->l10n->t('Join Request'),
-				128   => $this->l10n->t('Friends'),
-				256   => $this->l10n->t('Password Protected'),
-				512   => $this->l10n->t('No Owner'),
-				1024  => $this->l10n->t('Hidden'),
-				2048  => $this->l10n->t('Backend'),
-				4096  => $this->l10n->t('Local'),
-				8192  => $this->l10n->t('Root'),
-				16384 => $this->l10n->t('Circle Invite'),
-				32768 => $this->l10n->t('Federated')
+				Circle::CFG_SINGLE        => $this->l10n->t('Single'),
+				Circle::CFG_PERSONAL      => $this->l10n->t('Personal'),
+				Circle::CFG_SYSTEM        => $this->l10n->t('System'),
+				Circle::CFG_VISIBLE       => $this->l10n->t('Visible'),
+				Circle::CFG_OPEN          => $this->l10n->t('Open'),
+				Circle::CFG_INVITE        => $this->l10n->t('Invite'),
+				Circle::CFG_REQUEST       => $this->l10n->t('Join Request'),
+				Circle::CFG_FRIEND        => $this->l10n->t('Friends'),
+				Circle::CFG_PROTECTED     => $this->l10n->t('Password Protected'),
+				Circle::CFG_NO_OWNER      => $this->l10n->t('No Owner'),
+				Circle::CFG_HIDDEN        => $this->l10n->t('Hidden'),
+				Circle::CFG_BACKEND       => $this->l10n->t('Backend'),
+				Circle::CFG_LOCAL         => $this->l10n->t('Local'),
+				Circle::CFG_ROOT          => $this->l10n->t('Root'),
+				Circle::CFG_CIRCLE_INVITE => $this->l10n->t('Circle Invite'),
+				Circle::CFG_FEDERATED     => $this->l10n->t('Federated')
 			],
-			'source' => [
-				1  => $this->l10n->t('Nextcloud User'),
-				2  => $this->l10n->t('Nextcloud Group'),
-				6  => $this->l10n->t('Mail Address'),
-				8  => $this->l10n->t('Contact'),
-				16 => $this->l10n->t('Circle')
-			]
+			'source' =>
+				[
+					'core'  => [
+						Member::TYPE_USER    => $this->l10n->t('Nextcloud User'),
+						Member::TYPE_GROUP   => $this->l10n->t('Nextcloud Group'),
+						Member::TYPE_MAIL    => $this->l10n->t('Mail Address'),
+						Member::TYPE_CONTACT => $this->l10n->t('Contact'),
+						Member::TYPE_CIRCLE  => $this->l10n->t('Circle'),
+						Member::TYPE_APP     => $this->l10n->t('Nextcloud App')
+					],
+					'extra' => [
+						Member::APP_CIRCLES => 'Circles App'
+					]
+				]
 		];
 	}
 
@@ -163,22 +170,13 @@ class Capabilities implements ICapability {
 	private function getCapabilitiesMemberConstants(): array {
 		return [
 			'level' => [
-				1 => $this->l10n->t('Member'),
-				4 => $this->l10n->t('Moderator'),
-				8 => $this->l10n->t('Admin'),
-				9 => $this->l10n->t('Owner')
+				Member::LEVEL_MEMBER    => $this->l10n->t('Member'),
+				Member::LEVEL_MODERATOR => $this->l10n->t('Moderator'),
+				Member::LEVEL_ADMIN     => $this->l10n->t('Admin'),
+				Member::LEVEL_OWNER     => $this->l10n->t('Owner')
 			]
 		];
 	}
 
-
-	/**
-	 * @return array
-	 */
-	private function getCapabilitiesMemberConfig(): array {
-		return [
-			'type' => Member::$TYPE,
-		];
-	}
-
 }
+
