@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file.
 
 
+
+### 22.0.0 (NC22)
+
+- compat nc22
+- first implementation of federated circles (2.0)
+- first implementation of new ExtendedQueryBuilder
+
+
 ### 0.20.6
 
 - use https and http when in doubt
@@ -25,13 +33,6 @@ All notable changes to this project will be documented in this file.
 ### 0.20.3
 
 - fixing composer lib version
-
-
-### 21.0.0 (NC21)
-
-- compat nc21
-- first implementation of federated circles (2.0)
-- first implementation of new ExtendedQueryBuilder
 
 
 ### 0.20.2

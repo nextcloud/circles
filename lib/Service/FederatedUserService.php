@@ -35,7 +35,7 @@ namespace OCA\Circles\Service;
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Logger;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use Exception;
@@ -77,7 +77,7 @@ class FederatedUserService {
 
 	use TArrayTools;
 	use TStringTools;
-	use TNC21Logger;
+	use TNC22Logger;
 
 
 	/** @var IUserSession */

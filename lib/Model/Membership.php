@@ -31,7 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
-use daita\MySmallPhpTools\Db\Nextcloud\nc21\INC21QueryRow;
+use daita\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
 
@@ -41,7 +41,7 @@ use JsonSerializable;
  *
  * @package OCA\Circles\Model
  */
-class Membership extends ManagedModel implements INC21QueryRow, JsonSerializable {
+class Membership extends ManagedModel implements INC22QueryRow, JsonSerializable {
 
 
 	use TArrayTools;
@@ -185,9 +185,9 @@ class Membership extends ManagedModel implements INC21QueryRow, JsonSerializable
 	/**
 	 * @param array $data
 	 *
-	 * @return INC21QueryRow
+	 * @return INC22QueryRow
 	 */
-	public function importFromDatabase(array $data): INC21QueryRow {
+	public function importFromDatabase(array $data): INC22QueryRow {
 		$this->setId($this->get('id', $data));
 		$this->setCircleId($this->get('circle_id', $data));
 		$this->setMemberId($this->get('member_id', $data));

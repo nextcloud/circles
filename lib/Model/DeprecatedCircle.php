@@ -285,7 +285,7 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 
 
 	/**
-	 * convert old type to new config (nc21)
+	 * convert old type to new config (nc22)
 	 *
 	 * @param int $type
 	 *

@@ -31,7 +31,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 
-use daita\MySmallPhpTools\ActivityPub\Nextcloud\nc21\NC21Signature;
+use daita\MySmallPhpTools\ActivityPub\Nextcloud\nc22\NC22Signature;
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
@@ -60,7 +60,7 @@ use OCA\Circles\Model\Member;
  *
  * @package OCA\Circles\Service
  */
-class RemoteService extends NC21Signature {
+class RemoteService extends NC22Signature {
 
 
 	/** @var CircleRequest */

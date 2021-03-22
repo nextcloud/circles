@@ -27,9 +27,9 @@
 namespace OCA\Circles\Service;
 
 
-use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
+use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
 use daita\MySmallPhpTools\Model\Request;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
 use Exception;
 use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Db\DeprecatedCirclesRequest;
@@ -53,7 +53,7 @@ use OCP\IUserSession;
 class SharingFrameService {
 
 
-	use TNC21Request;
+	use TNC22Request;
 
 
 	/** @var string */
@@ -299,7 +299,7 @@ class SharingFrameService {
 	 * @throws Exception
 	 */
 	public function initiateShare(string $circleUniqueId, string $frameUniqueId) {
-		$request = new NC21Request('', Request::TYPE_POST);
+		$request = new NC22Request('', Request::TYPE_POST);
 		$this->configService->configureRequest($request, 'circles.Shares.initShareDelivery');
 		$request->addParam('circleId', $circleUniqueId);
 		$request->addParam('frameId', $frameUniqueId);

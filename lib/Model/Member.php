@@ -31,10 +31,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
-use daita\MySmallPhpTools\Db\Nextcloud\nc21\INC21QueryRow;
+use daita\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\IDeserializable;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Deserialize;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use DateTime;
 use JsonSerializable;
@@ -51,11 +51,11 @@ use OCA\Circles\IFederatedUser;
  *
  * @package OCA\Circles\Model
  */
-class Member extends ManagedModel implements IFederatedUser, IDeserializable, INC21QueryRow, JsonSerializable {
+class Member extends ManagedModel implements IFederatedUser, IDeserializable, INC22QueryRow, JsonSerializable {
 
 
 	use TArrayTools;
-	use TNC21Deserialize;
+	use TNC22Deserialize;
 
 
 	const LEVEL_NONE = 0;
@@ -633,10 +633,10 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	 * @param array $data
 	 * @param string $prefix
 	 *
-	 * @return INC21QueryRow
+	 * @return INC22QueryRow
 	 * @throws MemberNotFoundException
 	 */
-	public function importFromDatabase(array $data, string $prefix = ''): INC21QueryRow {
+	public function importFromDatabase(array $data, string $prefix = ''): INC22QueryRow {
 		if (!array_key_exists($prefix . 'member_id', $data)) {
 			throw new MemberNotFoundException();
 		}

@@ -30,7 +30,7 @@
 namespace OCA\Circles\Controller;
 
 
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Controller;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Controller;
 use daita\MySmallPhpTools\Traits\TAsync;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use Exception;
@@ -54,7 +54,7 @@ class RemoteWrapperController extends Controller {
 
 	use TStringTools;
 	use TAsync;
-	use TNC21Controller;
+	use TNC22Controller;
 
 
 	/** @var FederatedEventService */

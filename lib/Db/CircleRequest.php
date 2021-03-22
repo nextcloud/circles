@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Db;
 
 
+use daita\MySmallPhpTools\Model\SimpleDataStore;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
@@ -151,21 +152,21 @@ class CircleRequest extends CircleRequestBuilder {
 	 * @param Member|null $memberFilter
 	 * @param IFederatedUser|null $initiator
 	 * @param RemoteInstance|null $remoteInstance
-	 * @param bool $filterSystemCircles
+	 * @param SimpleDataStore $params
 	 *
 	 * @return Circle[]
 	 */
 	public function getCircles(
-		?Circle $circleFilter = null,
-		?Member $memberFilter = null,
-		?IFederatedUser $initiator = null,
-		?RemoteInstance $remoteInstance = null,
-		bool $filterSystemCircles = true
+		?Circle $circleFilter,
+		?Member $memberFilter,
+		?IFederatedUser $initiator,
+		?RemoteInstance $remoteInstance,
+		SimpleDataStore $params
 	): array {
 		$qb = $this->getCircleSelectSql();
 		$qb->leftJoinOwner();
 
-		if ($filterSystemCircles) {
+		if (!$params->gBool('includeSystemCircles')) {
 			$qb->filterCircles(Circle::CFG_SINGLE | Circle::CFG_HIDDEN | Circle::CFG_BACKEND);
 		}
 		if (!is_null($initiator)) {
@@ -180,6 +181,8 @@ class CircleRequest extends CircleRequestBuilder {
 		if (!is_null($remoteInstance)) {
 			$qb->limitToRemoteInstance($remoteInstance->getInstance(), false);
 		}
+
+		$qb->chunk($params->gInt('offset'), $params->gInt('limit'));
 
 		return $this->getItemsFromRequest($qb);
 	}

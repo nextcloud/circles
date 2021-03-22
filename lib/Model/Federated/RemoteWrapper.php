@@ -32,7 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Model\Federated;
 
 
-use daita\MySmallPhpTools\Db\Nextcloud\nc21\INC21QueryRow;
+use daita\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
@@ -43,7 +43,7 @@ use JsonSerializable;
  *
  * @package OCA\Circles\Model\Remote
  */
-class RemoteWrapper implements INC21QueryRow, JsonSerializable {
+class RemoteWrapper implements INC22QueryRow, JsonSerializable {
 
 
 	use TArrayTools;
@@ -239,10 +239,10 @@ class RemoteWrapper implements INC21QueryRow, JsonSerializable {
 	/**
 	 * @param array $data
 	 *
-	 * @return INC21QueryRow
+	 * @return INC22QueryRow
 	 * @throws InvalidItemException
 	 */
-	public function importFromDatabase(array $data): INC21QueryRow {
+	public function importFromDatabase(array $data): INC22QueryRow {
 		$this->setToken($this->get('token', $data));
 		$this->setInstance($this->get('instance', $data));
 		$this->setSeverity($this->getInt('severity', $data, FederatedEvent::SEVERITY_LOW));

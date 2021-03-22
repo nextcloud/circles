@@ -26,7 +26,7 @@
 
 namespace OCA\Circles\Service;
 
-use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
+use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\AppInfo\Application;
@@ -410,11 +410,11 @@ class ConfigService {
 
 
 	/**
-	 * @param NC21Request $request
+	 * @param NC22Request $request
 	 * @param string $routeName
 	 * @param array $args
 	 */
-	public function configureRequest(NC21Request $request, string $routeName = '', array $args = []): void {
+	public function configureRequest(NC22Request $request, string $routeName = '', array $args = []): void {
 		$this->configureRequestAddress($request, $routeName, $args);
 
 		if ($this->getForcedNcBase() === '') {
@@ -434,12 +434,12 @@ class ConfigService {
 	 * - can also be overwritten in config/config.php: 'circles.force_nc_base'
 	 * - perfect for loopback request.
 	 *
-	 * @param NC21Request $request
+	 * @param NC22Request $request
 	 * @param string $routeName
 	 * @param array $args
 	 */
 	private function configureRequestAddress(
-		NC21Request $request,
+		NC22Request $request,
 		string $routeName,
 		array $args = []
 	): void {

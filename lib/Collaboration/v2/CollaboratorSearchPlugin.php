@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Collaboration\v2;
 
 
+use daita\MySmallPhpTools\Model\SimpleDataStore;
 use OC\Share20\Share;
 use OC\User\NoUserException;
 use OCA\Circles\Exceptions\FederatedUserException;
@@ -40,6 +41,7 @@ use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedUserService;
 use OCP\Collaboration\Collaborators\ISearchPlugin;
@@ -96,7 +98,20 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 		$filterCircle->setName($search)
 					 ->setDisplayName($search);
 
-		$circles = $this->circleService->getCircles($filterCircle);
+		$filterMember = new Member();
+		$filterMember->importFromIFederatedUser($this->federatedUserService->getCurrentUser());
+		$filterMember->setLevel(Member::LEVEL_MEMBER);
+
+		$circles = $this->circleService->getCircles(
+			$filterCircle, $filterMember,
+			new SimpleDataStore(
+				[
+					'limit'  => $limit,
+					'offset' => $offset
+				]
+			)
+		);
+
 		foreach ($circles as $circle) {
 			try {
 				$entry = $this->addResultEntry($circle);
@@ -125,14 +140,15 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 	 */
 	private function addResultEntry(Circle $circle): array {
 		return [
-			'label' => $circle->getDisplayName(),
-			'value' => [
-				'shareType'   => Share::TYPE_CIRCLE,
-				'shareWith'   => $circle->getId(),
-				'circleOwner' => $circle->getOwner()
-										->getDisplayName(),
-				'circle'      => $circle
+			'label'                => $circle->getDisplayName(),
+			'shareWithDescription' => $circle->getOwner()->getDisplayName(),
+			'value'                => [
+				'shareType' => Share::TYPE_CIRCLE,
+				'shareWith' => $circle->getId(),
+				'circle'    => $circle
 			],
 		];
 	}
+
 }
+

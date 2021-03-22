@@ -32,7 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Db;
 
 
-use daita\MySmallPhpTools\Db\Nextcloud\nc21\NC21ExtendedQueryBuilder;
+use daita\MySmallPhpTools\Db\Nextcloud\nc22\NC22ExtendedQueryBuilder;
 use Doctrine\DBAL\Query\QueryBuilder;
 use OC;
 use OCA\Circles\IFederatedModel;
@@ -48,7 +48,7 @@ use OCP\DB\QueryBuilder\ICompositeExpression;
  *
  * @package OCA\Circles\Db
  */
-class CoreRequestBuilder extends NC21ExtendedQueryBuilder {
+class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 
 
 	const PREFIX_MEMBER = 'member_';

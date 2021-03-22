@@ -32,7 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Model\Federated;
 
 
-use daita\MySmallPhpTools\Db\Nextcloud\nc21\INC21QueryRow;
+use daita\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
 use daita\MySmallPhpTools\IDeserializable;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\TArrayTools;
@@ -45,7 +45,7 @@ use OCA\Circles\IFederatedModel;
  *
  * @package OCA\Circles\Model\Federated
  */
-class FederatedShare implements IFederatedModel, JsonSerializable, INC21QueryRow, IDeserializable {
+class FederatedShare implements IFederatedModel, JsonSerializable, INC22QueryRow, IDeserializable {
 
 
 	use TArrayTools;
@@ -191,9 +191,9 @@ class FederatedShare implements IFederatedModel, JsonSerializable, INC21QueryRow
 	/**
 	 * @param array $data
 	 *
-	 * @return INC21QueryRow
+	 * @return INC22QueryRow
 	 */
-	public function importFromDatabase(array $data): INC21QueryRow {
+	public function importFromDatabase(array $data): INC22QueryRow {
 		$this->setId($this->getInt('id', $data));
 		$this->setItemId($this->get('item_id', $data));
 		$this->setCircleId($this->get('circle_id', $data));

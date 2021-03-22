@@ -31,9 +31,9 @@ namespace OCA\Circles\Service;
 
 
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
-use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
+use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
 use daita\MySmallPhpTools\Model\Request;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OC\Security\IdentityProof\Signer;
 use OCA\Circles\Db\RemoteWrapperRequest;
@@ -51,7 +51,7 @@ use OCP\IUserSession;
 class GlobalScaleService {
 
 
-	use TNC21Request;
+	use TNC22Request;
 	use TStringTools;
 
 
@@ -114,7 +114,7 @@ class GlobalScaleService {
 	public function getGlobalScaleInstances(): array {
 		try {
 			$lookup = $this->configService->getGSStatus(ConfigService::GS_LOOKUP);
-			$request = new NC21Request(ConfigService::GS_LOOKUP_INSTANCES, Request::TYPE_POST);
+			$request = new NC22Request(ConfigService::GS_LOOKUP_INSTANCES, Request::TYPE_POST);
 			$this->configService->configureRequest($request);
 			$request->basedOnUrl($lookup);
 			$request->addData('authKey', $this->configService->getGSStatus(ConfigService::GS_KEY));
@@ -149,7 +149,7 @@ class GlobalScaleService {
 //			$wrapper = $this->remoteWrapperRequest->create($wrapper);
 //		}
 //
-//		$request = new NC21Request('', Request::TYPE_POST);
+//		$request = new NC22Request('', Request::TYPE_POST);
 //		$this->configService->configureRequest(
 //			$request, 'circles.RemoteWrapper.asyncBroadcast', ['token' => $wrapper->getToken()]
 //		);

@@ -35,7 +35,7 @@ namespace OCA\Circles\FederatedItems;
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Logger;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use Exception;
 use OC\User\NoUserException;
@@ -95,7 +95,7 @@ class MemberAdd implements
 
 
 	use TStringTools;
-	use TNC21Logger;
+	use TNC22Logger;
 
 
 	/** @var IUserManager */

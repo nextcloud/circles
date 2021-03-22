@@ -32,8 +32,8 @@ declare(strict_types=1);
 namespace OCA\Circles\Model\Federated;
 
 
-use daita\MySmallPhpTools\Db\Nextcloud\nc21\INC21QueryRow;
-use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Signatory;
+use daita\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
+use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22Signatory;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\Exceptions\RemoteUidException;
@@ -44,7 +44,7 @@ use OCA\Circles\Exceptions\RemoteUidException;
  *
  * @package OCA\Circles\Model
  */
-class RemoteInstance extends NC21Signatory implements INC21QueryRow, JsonSerializable {
+class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSerializable {
 
 
 	use TArrayTools;
@@ -364,9 +364,9 @@ class RemoteInstance extends NC21Signatory implements INC21QueryRow, JsonSeriali
 	/**
 	 * @param array $data
 	 *
-	 * @return NC21Signatory
+	 * @return NC22Signatory
 	 */
-	public function import(array $data): NC21Signatory {
+	public function import(array $data): NC22Signatory {
 		parent::import($data);
 
 		$this->setTest($this->get('test', $data))
@@ -419,7 +419,7 @@ class RemoteInstance extends NC21Signatory implements INC21QueryRow, JsonSeriali
 	 *
 	 * @return self
 	 */
-	public function importFromDatabase(array $data): INC21QueryRow {
+	public function importFromDatabase(array $data): INC22QueryRow {
 		$this->setDbId($this->getInt('id', $data));
 		$this->import($this->getArray('item', $data));
 		$this->setOrigData($this->getArray('item', $data));

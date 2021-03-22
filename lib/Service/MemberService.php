@@ -33,7 +33,7 @@ namespace OCA\Circles\Service;
 
 
 use daita\MySmallPhpTools\Model\SimpleDataStore;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Logger;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Db\CircleRequest;
@@ -68,7 +68,7 @@ class MemberService {
 
 	use TArrayTools;
 	use TStringTools;
-	use TNC21Logger;
+	use TNC22Logger;
 
 
 	/** @var CircleRequest */

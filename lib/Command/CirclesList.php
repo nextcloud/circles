@@ -34,6 +34,7 @@ namespace OCA\Circles\Command;
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
+use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\CircleNotFoundException;
@@ -166,7 +167,8 @@ class CirclesList extends Base {
 			$circles = $this->remoteService->getCirclesFromInstance($instance, $data);
 		} else {
 			$this->federatedUserService->commandLineInitiator($initiator, '', true);
-			$circles = $this->circleService->getCircles(null, $filterMember, !$input->getOption('all'));
+			$params = new SimpleDataStore(['includeSystemCircles' => $input->getOption('all')]);
+			$circles = $this->circleService->getCircles(null, $filterMember, $params);
 		}
 
 		if (strtolower($input->getOption('output')) === 'json') {

@@ -34,9 +34,9 @@ namespace OCA\Circles\Command;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Exceptions\SignatureException;
-use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
-use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21SignedRequest;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21WellKnown;
+use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
+use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22SignedRequest;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22WellKnown;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use Exception;
 use OC\Core\Command\Base;
@@ -66,7 +66,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 class CirclesRemote extends Base {
 
 
-	use TNC21WellKnown;
+	use TNC22WellKnown;
 	use TStringTools;
 
 
@@ -376,12 +376,12 @@ class CirclesRemote extends Base {
 	 * @param string $remote
 	 * @param array $payload
 	 *
-	 * @return NC21SignedRequest
+	 * @return NC22SignedRequest
 	 * @throws RequestNetworkException
 	 * @throws SignatoryException
 	 */
-	private function outgoingTest(string $remote, array $payload): NC21SignedRequest {
-		$request = new NC21Request();
+	private function outgoingTest(string $remote, array $payload): NC22SignedRequest {
+		$request = new NC22Request();
 		$request->basedOnUrl($remote);
 		$request->setFollowLocation(true);
 		$request->setLocalAddressAllowed(true);

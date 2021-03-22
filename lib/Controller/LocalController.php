@@ -32,8 +32,8 @@ declare(strict_types=1);
 namespace OCA\Circles\Controller;
 
 
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Deserialize;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Logger;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use Exception;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
@@ -60,8 +60,8 @@ use OCP\IUserSession;
 class LocalController extends OcsController {
 
 
-	use TNC21Deserialize;
-	use TNC21Logger;
+	use TNC22Deserialize;
+	use TNC22Logger;
 
 
 	/** @var IUserSession */

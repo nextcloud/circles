@@ -31,11 +31,11 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 
-use daita\MySmallPhpTools\ActivityPub\Nextcloud\nc21\NC21Signature;
+use daita\MySmallPhpTools\ActivityPub\Nextcloud\nc22\NC22Signature;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
-use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
+use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
 use daita\MySmallPhpTools\Model\Request;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OC;
 use OCA\Circles\Db\MemberRequest;
@@ -83,10 +83,10 @@ use ReflectionException;
  *
  * @package OCA\Circles\Service
  */
-class FederatedEventService extends NC21Signature {
+class FederatedEventService extends NC22Signature {
 
 
-	use TNC21Request;
+	use TNC22Request;
 	use TStringTools;
 
 
@@ -394,7 +394,7 @@ class FederatedEventService extends NC21Signature {
 			$this->remoteWrapperRequest->create($wrapper);
 		}
 
-		$request = new NC21Request('', Request::TYPE_POST);
+		$request = new NC22Request('', Request::TYPE_POST);
 		$this->configService->configureRequest(
 			$request, 'circles.RemoteWrapper.asyncBroadcast', ['token' => $wrapper->getToken()]
 		);

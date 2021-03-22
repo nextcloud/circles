@@ -38,10 +38,10 @@ use daita\MySmallPhpTools\Exceptions\MalformedArrayException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Exceptions\SignatureException;
 use daita\MySmallPhpTools\Exceptions\UnknownTypeException;
-use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21SignedRequest;
+use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22SignedRequest;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Controller;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21LocalSignatory;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Controller;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22LocalSignatory;
 use Exception;
 use OC\AppFramework\Middleware\Security\Exceptions\NotLoggedInException;
 use OCA\Circles\Db\CircleRequest;
@@ -73,8 +73,8 @@ use OCP\IRequest;
 class RemoteController extends Controller {
 
 
-	use TNC21Controller;
-	use TNC21LocalSignatory;
+	use TNC22Controller;
+	use TNC22LocalSignatory;
 
 
 	/** @var CircleRequest */
@@ -410,12 +410,12 @@ class RemoteController extends Controller {
 
 
 	/**
-	 * @param NC21SignedRequest $signedRequest
+	 * @param NC22SignedRequest $signedRequest
 	 *
 	 * @return RemoteInstance
 	 * @throws SignatoryException
 	 */
-	private function confirmRemoteInstance(NC21SignedRequest $signedRequest): RemoteInstance {
+	private function confirmRemoteInstance(NC22SignedRequest $signedRequest): RemoteInstance {
 		/** @var RemoteInstance $signatory */
 		$signatory = $signedRequest->getSignatory();
 

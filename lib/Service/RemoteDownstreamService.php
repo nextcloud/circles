@@ -32,7 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Logger;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use daita\MySmallPhpTools\Traits\TAsync;
 use Exception;
 use OCA\Circles\Db\CircleRequest;
@@ -55,7 +55,7 @@ use OCA\Circles\Model\Federated\FederatedEvent;
 class RemoteDownstreamService {
 
 
-	use TNC21Logger;
+	use TNC22Logger;
 	use TAsync;
 
 

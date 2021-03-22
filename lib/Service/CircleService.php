@@ -261,7 +261,7 @@ class CircleService {
 	/**
 	 * @param Circle|null $circleFilter
 	 * @param Member|null $memberFilter
-	 * @param bool $filterSystemCircles
+	 * @param SimpleDataStore|null $params
 	 *
 	 * @return Circle[]
 	 * @throws InitiatorNotFoundException
@@ -269,16 +269,27 @@ class CircleService {
 	public function getCircles(
 		?Circle $circleFilter = null,
 		?Member $memberFilter = null,
-		bool $filterSystemCircles = true
+		?SimpleDataStore $params = null
 	): array {
 		$this->federatedUserService->mustHaveCurrentUser();
+
+		if ($params === null) {
+			$params = new SimpleDataStore();
+		}
+		$params->default(
+			[
+				'limit'                => -1,
+				'offset'               => 0,
+				'includeSystemCircles' => false
+			]
+		);
 
 		return $this->circleRequest->getCircles(
 			$circleFilter,
 			$memberFilter,
 			$this->federatedUserService->getCurrentUser(),
 			$this->federatedUserService->getRemoteInstance(),
-			$filterSystemCircles
+			$params
 		);
 	}
 

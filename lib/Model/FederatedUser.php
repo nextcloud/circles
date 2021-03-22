@@ -31,10 +31,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
-use daita\MySmallPhpTools\Db\Nextcloud\nc21\INC21QueryRow;
+use daita\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\IDeserializable;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Deserialize;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\IFederatedUser;
@@ -45,11 +45,11 @@ use OCA\Circles\IFederatedUser;
  *
  * @package OCA\Circles\Model
  */
-class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializable, INC21QueryRow, JsonSerializable {
+class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializable, INC22QueryRow, JsonSerializable {
 
 
 	use TArrayTools;
-	use TNC21Deserialize;
+	use TNC22Deserialize;
 
 
 	/** @var string */
@@ -285,9 +285,9 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 	 * @param array $data
 	 * @param string $prefix
 	 *
-	 * @return INC21QueryRow
+	 * @return INC22QueryRow
 	 */
-	public function importFromDatabase(array $data, string $prefix = ''): INC21QueryRow {
+	public function importFromDatabase(array $data, string $prefix = ''): INC22QueryRow {
 		$this->setSingleId($this->get($prefix . 'single_id', $data));
 		$this->setUserId($this->get($prefix . 'user_id', $data));
 		$this->setUserType($this->getInt($prefix . 'user_type', $data));

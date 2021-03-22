@@ -34,7 +34,7 @@ namespace OCA\Circles\Service;
 
 use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
 use Exception;
 use OCA\Circles\Db\RemoteWrapperRequest;
 use OCA\Circles\Exceptions\FederatedItemException;
@@ -59,7 +59,7 @@ use OCP\IL10N;
 class RemoteUpstreamService {
 
 
-	use TNC21Request;
+	use TNC22Request;
 
 
 	/** @var IL10N */
@@ -256,7 +256,7 @@ class RemoteUpstreamService {
 //		$this->signEvent($event);
 //
 //		$path = $this->urlGenerator->linkToRoute('circles.RemoteWrapper.status');
-//		$request = new NC21Request($path, Request::TYPE_POST);
+//		$request = new NC22Request($path, Request::TYPE_POST);
 //		$this->configService->configureRequest($request);
 //		$request->setDataSerialize($event);
 //

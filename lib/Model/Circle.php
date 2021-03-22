@@ -32,10 +32,10 @@ declare(strict_types=1);
 namespace OCA\Circles\Model;
 
 
-use daita\MySmallPhpTools\Db\Nextcloud\nc21\INC21QueryRow;
+use daita\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\IDeserializable;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Deserialize;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use DateTime;
 use JsonSerializable;
@@ -72,11 +72,11 @@ use OCA\Circles\Exceptions\OwnerNotFoundException;
  *
  * @package OCA\Circles\Model
  */
-class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, JsonSerializable {
+class Circle extends ManagedModel implements IDeserializable, INC22QueryRow, JsonSerializable {
 
 
 	use TArrayTools;
-	use TNC21Deserialize;
+	use TNC22Deserialize;
 
 
 	const FLAGS_SHORT = 1;
@@ -642,10 +642,10 @@ class Circle extends ManagedModel implements IDeserializable, INC21QueryRow, Jso
 	 * @param array $data
 	 * @param string $prefix
 	 *
-	 * @return INC21QueryRow
+	 * @return INC22QueryRow
 	 * @throws CircleNotFoundException
 	 */
-	public function importFromDatabase(array $data, string $prefix = ''): INC21QueryRow {
+	public function importFromDatabase(array $data, string $prefix = ''): INC22QueryRow {
 		if ($this->get($prefix . 'unique_id', $data) === '') {
 			throw new CircleNotFoundException();
 		}

@@ -30,9 +30,9 @@
 namespace OCA\Circles\Command;
 
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
-use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
+use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
 use daita\MySmallPhpTools\Model\Request;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
 use OC\Core\Command\Base;
@@ -58,7 +58,7 @@ class CirclesCheck extends Base {
 
 
 	use TArrayTools;
-	use TNC21Request;
+	use TNC22Request;
 
 
 	/** @var Capabilities */
@@ -199,7 +199,7 @@ class CirclesCheck extends Base {
 	 * @throws RequestNetworkException
 	 */
 	private function testRequest(OutputInterface $o, string $type, string $route, array $args = []): bool {
-		$request = new NC21Request('', Request::type($type));
+		$request = new NC22Request('', Request::type($type));
 		$this->configService->configureRequest($request, $route, $args);
 		$request->setFollowLocation(false);
 

@@ -36,9 +36,9 @@ use daita\MySmallPhpTools\Exceptions\ItemNotFoundException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Exceptions\UnknownTypeException;
-use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21TreeNode;
+use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22TreeNode;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21ConsoleTree;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22ConsoleTree;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedUserException;
@@ -75,7 +75,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class MembersList extends Base {
 
 
-	use TNC21ConsoleTree;
+	use TNC22ConsoleTree;
 
 
 	/** @var FederatedUserService */
@@ -166,7 +166,7 @@ class MembersList extends Base {
 			$output->writeln('<info>Config</info>: ' . $type);
 			$output->writeln(' ');
 
-			$tree = new NC21TreeNode(null, new SimpleDataStore(['circle' => $circle]));
+			$tree = new NC22TreeNode(null, new SimpleDataStore(['circle' => $circle]));
 		}
 
 		$members = $this->getMembers($circleId, $instance, $initiator, $tree);
@@ -221,7 +221,7 @@ class MembersList extends Base {
 	 * @param string $circleId
 	 * @param string $instance
 	 * @param string $initiator
-	 * @param NC21TreeNode|null $tree
+	 * @param NC22TreeNode|null $tree
 	 * @param array $knownIds
 	 *
 	 * @return array
@@ -245,7 +245,7 @@ class MembersList extends Base {
 		string $circleId,
 		string $instance,
 		string $initiator,
-		?NC21TreeNode $tree,
+		?NC22TreeNode $tree,
 		array $knownIds = []
 	): array {
 		if (in_array($circleId, $knownIds)) {
@@ -291,7 +291,7 @@ class MembersList extends Base {
 						);
 						$circle = $this->circleService->getCircle($member->getSingleId(), 0);
 					}
-					$node = new NC21TreeNode(
+					$node = new NC22TreeNode(
 						$tree, new SimpleDataStore(
 								 [
 									 'circle'  => $circle,
@@ -305,7 +305,7 @@ class MembersList extends Base {
 						$member->getSingleId(), $member->getInstance(), $initiator, $node, $knownIds
 					);
 				} else {
-					new NC21TreeNode(
+					new NC22TreeNode(
 						$tree, new SimpleDataStore(
 								 [
 									 'member'  => $member,

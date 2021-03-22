@@ -31,20 +31,20 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 
-use daita\MySmallPhpTools\ActivityPub\Nextcloud\nc21\NC21Signature;
+use daita\MySmallPhpTools\ActivityPub\Nextcloud\nc22\NC22Signature;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Exceptions\SignatureException;
 use daita\MySmallPhpTools\Exceptions\WellKnownLinkNotFoundException;
-use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
-use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21RequestResult;
-use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Signatory;
-use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21SignedRequest;
+use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
+use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22RequestResult;
+use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22Signatory;
+use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22SignedRequest;
 use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Deserialize;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21LocalSignatory;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21WellKnown;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22LocalSignatory;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22WellKnown;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use JsonSerializable;
 use OCA\Circles\AppInfo\Application;
@@ -69,13 +69,13 @@ use ReflectionException;
  *
  * @package OCA\Circles\Service
  */
-class RemoteStreamService extends NC21Signature {
+class RemoteStreamService extends NC22Signature {
 
 
-	use TNC21Deserialize;
-	use TNC21LocalSignatory;
+	use TNC22Deserialize;
+	use TNC22LocalSignatory;
 	use TStringTools;
-	use TNC21WellKnown;
+	use TNC22WellKnown;
 
 
 	const UPDATE_DATA = 'data';
@@ -236,7 +236,7 @@ class RemoteStreamService extends NC21Signature {
 	 * @param JsonSerializable|null $object
 	 * @param array $params
 	 *
-	 * @return NC21SignedRequest
+	 * @return NC22SignedRequest
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
 	 * @throws UnknownRemoteException
@@ -248,9 +248,9 @@ class RemoteStreamService extends NC21Signature {
 		int $type = Request::TYPE_GET,
 		?JsonSerializable $object = null,
 		array $params = []
-	): NC21SignedRequest {
+	): NC22SignedRequest {
 
-		$request = new NC21Request('', $type);
+		$request = new NC22Request('', $type);
 		if ($this->configService->isLocalInstance($instance)) {
 			$this->configService->configureRequest($request, 'circles.Remote.' . $item, $params);
 		} else {
@@ -270,7 +270,7 @@ class RemoteStreamService extends NC21Signature {
 
 		try {
 			$app = $this->getAppSignatory();
-//		$app->setAlgorithm(NC21Signatory::SHA512);
+//		$app->setAlgorithm(NC22Signatory::SHA512);
 			$signedRequest = $this->signOutgoingRequest($request, $app);
 			$this->doRequest($signedRequest->getOutgoingRequest(), false);
 		} catch (RequestNetworkException | SignatoryException $e) {
@@ -358,7 +358,7 @@ class RemoteStreamService extends NC21Signature {
 	public function retrieveSignatory(string $keyId, bool $refresh = true): RemoteInstance {
 		if (!$refresh) {
 			try {
-				return $this->remoteRequest->getFromHref(NC21Signatory::removeFragment($keyId));
+				return $this->remoteRequest->getFromHref(NC22Signatory::removeFragment($keyId));
 			} catch (RemoteNotFoundException $e) {
 				throw new SignatoryException();
 			}
@@ -367,7 +367,7 @@ class RemoteStreamService extends NC21Signature {
 		$remoteInstance = new RemoteInstance($keyId);
 		$confirm = $this->uuid();
 
-		$request = new NC21Request();
+		$request = new NC22Request();
 		$this->configService->configureRequest($request);
 
 		$this->downloadSignatory($remoteInstance, $keyId, ['auth' => $confirm], $request);
@@ -444,11 +444,11 @@ class RemoteStreamService extends NC21Signature {
 
 
 	/**
-	 * @param NC21RequestResult $result
+	 * @param NC22RequestResult $result
 	 *
 	 * @return FederatedItemException
 	 */
-	private function getFederatedItemExceptionFromResult(NC21RequestResult $result): FederatedItemException {
+	private function getFederatedItemExceptionFromResult(NC22RequestResult $result): FederatedItemException {
 		$data = $result->getAsArray();
 
 		$message = $this->get('message', $data);

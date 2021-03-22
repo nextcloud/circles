@@ -34,7 +34,7 @@ namespace OCA\Circles\Command;
 
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Exceptions\ItemNotFoundException;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Deserialize;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use Exception;
@@ -63,7 +63,7 @@ class CirclesTest extends Base {
 
 	use TArrayTools;
 	use TStringTools;
-	use TNC21Deserialize;
+	use TNC22Deserialize;
 
 
 	static $INSTANCES = [

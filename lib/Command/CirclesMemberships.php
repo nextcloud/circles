@@ -36,9 +36,9 @@ use daita\MySmallPhpTools\Exceptions\ItemNotFoundException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Exceptions\UnknownTypeException;
-use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21TreeNode;
+use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22TreeNode;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21ConsoleTree;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22ConsoleTree;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use OC\Core\Command\Base;
 use OCA\Circles\Db\MemberRequest;
@@ -75,7 +75,7 @@ class CirclesMemberships extends Base {
 
 
 	use TArrayTools;
-	use TNC21ConsoleTree;
+	use TNC22ConsoleTree;
 
 
 	/** @var IUserManager */
@@ -200,7 +200,7 @@ class CirclesMemberships extends Base {
 
 		$output->writeln('');
 
-		$tree = new NC21TreeNode(null, new SimpleDataStore(['federatedUser' => $federatedUser]));
+		$tree = new NC22TreeNode(null, new SimpleDataStore(['federatedUser' => $federatedUser]));
 		$this->generateTree($federatedUser->getSingleId(), $tree);
 
 		$this->drawTree(
@@ -218,10 +218,10 @@ class CirclesMemberships extends Base {
 
 	/**
 	 * @param string $id
-	 * @param NC21TreeNode $tree
+	 * @param NC22TreeNode $tree
 	 * @param array $knownIds
 	 */
-	private function generateTree(string $id, NC21TreeNode $tree, array $knownIds = []) {
+	private function generateTree(string $id, NC22TreeNode $tree, array $knownIds = []) {
 		if (in_array($id, $knownIds)) {
 			return;
 		}
@@ -233,7 +233,7 @@ class CirclesMemberships extends Base {
 				continue;
 			}
 
-			$item = new NC21TreeNode(
+			$item = new NC22TreeNode(
 				$tree, new SimpleDataStore(
 						 [
 							 'member'  => $member,

@@ -36,7 +36,7 @@ use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\RequestResultNotJsonException;
 use daita\MySmallPhpTools\Exceptions\RequestResultSizeException;
 use daita\MySmallPhpTools\Exceptions\RequestServerException;
-use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
+use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
 use daita\MySmallPhpTools\Model\Request;
 use Exception;
 use OC\Core\Command\Base;
@@ -168,7 +168,7 @@ class MembersAdd extends Base {
 			return '';
 		}
 
-		$request = new NC21Request(ConfigService::GS_LOOKUP_USERS, Request::TYPE_GET);
+		$request = new NC22Request(ConfigService::GS_LOOKUP_USERS, Request::TYPE_GET);
 		$this->configService->configureRequest($request);
 		$request->basedOnUrl($lookup);
 		$request->addParam('search', $search);

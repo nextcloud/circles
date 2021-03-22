@@ -32,7 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Logger;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\IFederatedUser;
@@ -47,7 +47,7 @@ use OCA\Circles\Model\Membership;
  */
 class MembershipService {
 
-	use TNC21Logger;
+	use TNC22Logger;
 
 
 	/** @var MembershipRequest */
