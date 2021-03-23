@@ -189,6 +189,7 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 		bool $mustBeMember = false,
 		bool $canBeVisitor = false
 	): void {
+		// TODO: Based on membership, not on USerID !!
 		$this->leftJoinInitiator($initiator, 'init', $alias);
 		$this->limitVisibility('init', $alias, $mustBeMember, $canBeVisitor);
 		$this->leftJoinBasedOnCircle(self::PREFIX_INITIATOR_BASED_ON);

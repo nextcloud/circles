@@ -393,16 +393,16 @@ class FederatedUserService {
 	 *
 	 * @return Member
 	 * @throws CircleNotFoundException
+	 * @throws FederatedItemException
 	 * @throws FederatedUserException
 	 * @throws FederatedUserNotFoundException
-	 * @throws InvalidItemException
+	 * @throws InvalidIdException
 	 * @throws MemberNotFoundException
 	 * @throws OwnerNotFoundException
 	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
+	 * @throws SingleCircleNotFoundException
 	 * @throws UnknownRemoteException
 	 * @throws UserTypeNotFoundException
 	 */
@@ -616,7 +616,7 @@ class FederatedUserService {
 
 		$circle = $this->getSingleCircle($federatedUser);
 		$federatedUser->setSingleId($circle->getId());
-		$circle->setOwner(null);
+		//$circle->setOwner(null);
 		$federatedUser->setBasedOn($circle);
 	}
 

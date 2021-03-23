@@ -75,6 +75,7 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 
 
 	public static $TYPE = [
+		0  => 'single',
 		1  => 'user',
 		2  => 'group',
 		4  => 'mail',
@@ -738,8 +739,8 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 		$typeString = strtolower($typeString);
 		$type = array_search($typeString, Member::$TYPE);
 
-		if (!$type) {
-			$all = implode(', ', array_values(self::$TYPE));
+		if ($type === false) {
+			 $all = implode(', ', array_values(self::$TYPE));
 			throw new UserTypeNotFoundException('Available types: ' . $all);
 		}
 
