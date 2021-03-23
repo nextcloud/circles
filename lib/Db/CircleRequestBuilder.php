@@ -79,6 +79,8 @@ class CircleRequestBuilder extends CoreQueryBuilder {
 			   'c.contact_addressbook', 'c.contact_groupname', 'c.creation'
 		   )
 		   ->from(self::TABLE_CIRCLE, 'c')
+		   ->groupBy('c.unique_id')
+			->orderBy('c.creation', 'asc')
 		   ->setDefaultSelectAlias('c');
 
 		return $qb;

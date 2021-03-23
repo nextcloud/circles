@@ -191,8 +191,9 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 	): void {
 		// TODO: Based on membership, not on USerID !!
 		$this->leftJoinInitiator($initiator, 'init', $alias);
-		$this->limitVisibility('init', $alias, $mustBeMember, $canBeVisitor);
+		$this->leftJoinMembership('mbs', 'init', $alias);
 		$this->leftJoinBasedOnCircle(self::PREFIX_INITIATOR_BASED_ON);
+		$this->limitVisibility('mbs', $alias, $mustBeMember, $canBeVisitor);
 	}
 
 
@@ -377,7 +378,9 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 	 * @param string $aliasCircle
 	 */
 	public function leftJoinInitiator(
-		IFederatedUser $initiator, string $alias = 'init', string $aliasCircle = ''
+		IFederatedUser $initiator,
+		string $alias = 'init',
+		string $aliasCircle = ''
 	): void {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
@@ -397,7 +400,6 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 			 ->leftJoin(
 				 $aliasCircle, CoreQueryBuilder::TABLE_MEMBER, $alias,
 				 $expr->andX(
-					 $expr->eq($alias . '.circle_id', $aliasCircle . '.unique_id'),
 					 $expr->eq($alias . '.user_id', $this->createNamedParameter($initiator->getUserId())),
 					 $expr->eq($alias . '.user_type', $this->createNamedParameter($initiator->getUserType())),
 					 $expr->eq($alias . '.single_id', $this->createNamedParameter($initiator->getSingleId())),
@@ -406,6 +408,28 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 					 )
 				 )
 			 );
+	}
+
+
+	private function leftJoinMembership(
+		string $alias = 'mbs',
+		string $aliasInit = 'init',
+		string $aliasCircle = ''
+	): void {
+		if ($this->getType() !== QueryBuilder::SELECT) {
+			return;
+		}
+
+		$expr = $this->expr();
+		$aliasCircle = ($aliasCircle === '') ? $this->getDefaultSelectAlias() : $aliasCircle;
+		$this->selectAlias($alias . '.level', self::PREFIX_INITIATOR . 'level');
+		$this->leftJoin(
+			$aliasCircle, CoreQueryBuilder::TABLE_MEMBERSHIP, $alias,
+			$expr->andX(
+				$expr->eq($alias . '.id', $aliasInit . '.single_id'),
+				$expr->eq($alias . '.circle_id', $aliasCircle . '.unique_id')
+			)
+		);
 	}
 
 
@@ -497,7 +521,7 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 	 * @param bool $canBeVisitor
 	 */
 	protected function limitVisibility(
-		string $alias = 'init',
+		string $alias = 'mbs',
 		string $aliasCircle = '',
 		bool $mustBeMember = false,
 		bool $canBeVisitor = false
