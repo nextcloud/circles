@@ -75,6 +75,7 @@ use OCA\Circles\Service\CircleEventService;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Service\GroupService;
 use OCA\Circles\StatusCode;
 use OCP\IUser;
 use OCP\IUserManager;
@@ -89,7 +90,7 @@ use OCP\Util;
  */
 class MemberAdd implements
 	IFederatedItem,
-//	IFederatedItemAsyncProcess,
+	IFederatedItemAsyncProcess,
 	IFederatedItemMemberRequired,
 	IFederatedItemMemberCheckNotRequired {
 
@@ -101,11 +102,14 @@ class MemberAdd implements
 	/** @var IUserManager */
 	private $userManager;
 
+	/** @var MemberRequest */
+	private $memberRequest;
+
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
-	/** @var MemberRequest */
-	private $memberRequest;
+	/** @var GroupService */
+	private $groupService;
 
 	/** @var CircleService */
 	private $circleService;
@@ -121,20 +125,22 @@ class MemberAdd implements
 	 * MemberAdd constructor.
 	 *
 	 * @param IUserManager $userManager
-	 * @param FederatedUserService $federatedUserService
 	 * @param MemberRequest $memberRequest
+	 * @param FederatedUserService $federatedUserService
+	 * @param GroupService $groupService
 	 * @param CircleService $circleService
 	 * @param CircleEventService $circleEventService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IUserManager $userManager, FederatedUserService $federatedUserService,
-		MemberRequest $memberRequest,
-		CircleService $circleService, CircleEventService $circleEventService, ConfigService $configService
+		IUserManager $userManager, MemberRequest $memberRequest, FederatedUserService $federatedUserService,
+		GroupService $groupService, CircleService $circleService, CircleEventService $circleEventService,
+		ConfigService $configService
 	) {
 		$this->userManager = $userManager;
-		$this->federatedUserService = $federatedUserService;
 		$this->memberRequest = $memberRequest;
+		$this->federatedUserService = $federatedUserService;
+		$this->groupService = $groupService;
 		$this->circleService = $circleService;
 		$this->circleEventService = $circleEventService;
 		$this->configService = $configService;
@@ -164,9 +170,17 @@ class MemberAdd implements
 					$member->getSingleId(), $member->getInstance()
 				);
 			} else {
-				$federatedUser = $this->federatedUserService->getFederatedUser(
-					$member->getUserId() . '@' . $member->getInstance(), $member->getUserType()
-				);
+				$userId = $member->getUserId() . '@' . $member->getInstance();
+				switch ($member->getUserType()) {
+					case Member::TYPE_GROUP:
+						$federatedUser = $this->groupService->getFederatedGroup($userId);
+						break;
+
+					default:
+						$federatedUser =
+							$this->federatedUserService->getFederatedUser($userId, $member->getUserType());
+						break;
+				}
 			}
 		} catch (MemberNotFoundException $e) {
 			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[120], 120);
@@ -175,12 +189,13 @@ class MemberAdd implements
 		if ($federatedUser->getBasedOn()->isConfig(Circle::CFG_ROOT)) {
 			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[125], 125);
 		}
-//		if ($federatedUser->getUserType() === Member::TYPE_APP) {
-//			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[125], 125);
-//		}
+		if ($federatedUser->getUserType() === Member::TYPE_APP) {
+			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[125], 125);
+		}
 
 		$member->importFromIFederatedUser($federatedUser);
 		$member->setCircleId($circle->getId());
+		$member->setCircle($circle);
 		$this->manageMemberStatus($circle, $member);
 
 		$this->circleService->confirmCircleNotFull($circle);

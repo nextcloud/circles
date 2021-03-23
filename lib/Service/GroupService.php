@@ -51,6 +51,7 @@ use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\FederatedItems\CircleCreate;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
+use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
 use OCP\IGroupManager;
@@ -79,6 +80,9 @@ class GroupService {
 	/** @var FederatedEventService */
 	private $federatedEventService;
 
+	/** @var ConfigService */
+	private $configService;
+
 
 	/**
 	 * GroupService constructor.
@@ -87,15 +91,17 @@ class GroupService {
 	 * @param CircleRequest $circleRequest
 	 * @param FederatedUserService $federatedUserService
 	 * @param FederatedEventService $federatedEventService
+	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		IGroupManager $groupManager, CircleRequest $circleRequest, FederatedUserService $federatedUserService,
-		FederatedEventService $federatedEventService
+		FederatedEventService $federatedEventService, ConfigService $configService
 	) {
 		$this->groupManager = $groupManager;
 		$this->circleRequest = $circleRequest;
 		$this->federatedUserService = $federatedUserService;
 		$this->federatedEventService = $federatedEventService;
+		$this->configService = $configService;
 	}
 
 
@@ -123,11 +129,69 @@ class GroupService {
 			throw new GroupNotFoundException('group not found');
 		}
 
+		$circle = $this->generateGroupCircle($groupId);
+
+		try {
+			return $this->circleRequest->searchCircle($circle);
+		} catch (CircleNotFoundException $e) {
+		}
+
+		$circle->setDisplayName($groupId);
+
+		$event = new FederatedEvent(CircleCreate::class);
+		$event->setCircle($circle);
+		$this->federatedEventService->newEvent($event);
+
+		return $circle;
+	}
+
+
+	/**
+	 * @param string $groupName
+	 *
+	 * @return FederatedUser
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws GroupNotFoundException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws InvalidIdException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws SingleCircleNotFoundException
+	 * @throws UnknownRemoteException
+	 */
+	public function getFederatedGroup(string $groupName): FederatedUser {
+		list($groupName, $instance) = $this->federatedUserService->extractIdAndInstance($groupName);
+
+		if ($this->configService->isLocalInstance($instance)) {
+			$circle = $this->getGroupCircle($groupName);
+			$federatedGroup = new FederatedUser();
+
+			return $federatedGroup->importFromCircle($circle);
+		} else {
+			// TODO: implement remote groups
+		}
+	}
+
+
+	/**
+	 * @param string $groupName
+	 *
+	 * @return Circle
+	 * @throws FederatedUserException
+	 * @throws InvalidIdException
+	 * @throws SingleCircleNotFoundException
+	 */
+	private function generateGroupCircle(string $groupName): Circle {
 		$this->federatedUserService->setLocalCurrentApp(Application::APP_ID, Member::APP_CIRCLES);
 		$owner = $this->federatedUserService->getCurrentApp();
 
 		$circle = new Circle();
-		$circle->setName('group:' . $groupId)
+		$circle->setName('group:' . $groupName)
 			   ->setConfig(Circle::CFG_SYSTEM | Circle::CFG_NO_OWNER | Circle::CFG_HIDDEN)
 			   ->setId($this->token(ManagedModel::ID_LENGTH))
 			   ->setSource(Member::TYPE_GROUP);
@@ -140,17 +204,6 @@ class GroupService {
 			   ->setStatus(Member::STATUS_MEMBER);
 		$circle->setOwner($member)
 			   ->setInitiator($member);
-
-		try {
-			return $this->circleRequest->searchCircle($circle);
-		} catch (CircleNotFoundException $e) {
-		}
-
-		$circle->setDisplayName($groupId);
-
-		$event = new FederatedEvent(CircleCreate::class);
-		$event->setCircle($circle);
-		$this->federatedEventService->newEvent($event);
 
 		return $circle;
 	}

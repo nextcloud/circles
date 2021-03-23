@@ -235,16 +235,7 @@ class CircleRequest extends CircleRequestBuilder {
 		$circle = $this->getItemFromRequest($qb);
 
 		$federatedUser = new FederatedUser();
-		$federatedUser->setSingleId($circle->getId());
-
-		if ($circle->isConfig(Circle::CFG_SINGLE)) {
-			$owner = $circle->getOwner();
-			$federatedUser->set($owner->getUserId(), $owner->getInstance(), $owner->getUserType(), $circle);
-		} else {
-			$federatedUser->set(
-				$circle->getDisplayName(), $circle->getInstance(), Member::TYPE_CIRCLE, $circle
-			);
-		}
+		$federatedUser->importFromCircle($circle);
 
 		return $federatedUser;
 	}

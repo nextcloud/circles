@@ -518,9 +518,12 @@ class FederatedUserService {
 	 * @param string $instance
 	 *
 	 * @return FederatedUser
+	 * @throws CircleNotFoundException
+	 * @throws FederatedItemException
 	 * @throws FederatedUserException
 	 * @throws FederatedUserNotFoundException
 	 * @throws MemberNotFoundException
+	 * @throws OwnerNotFoundException
 	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
@@ -586,7 +589,7 @@ class FederatedUserService {
 	 *
 	 * @return array
 	 */
-	private function extractIdAndInstance(string $federatedId): array {
+	public function extractIdAndInstance(string $federatedId): array {
 		$federatedId = trim($federatedId, '@');
 		if (strpos($federatedId, '@') === false) {
 			$userId = $federatedId;

@@ -37,6 +37,7 @@ use daita\MySmallPhpTools\IDeserializable;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\IFederatedUser;
 
 
@@ -260,6 +261,26 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 			$circle = $this->deserialize($this->getArray('basedOn', $data), Circle::class);
 			$this->setBasedOn($circle);
 		} catch (InvalidItemException $e) {
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 *
+	 * @return FederatedUser
+	 * @throws OwnerNotFoundException
+	 */
+	public function importFromCircle(Circle $circle): self {
+		$this->setSingleId($circle->getId());
+
+		if ($circle->isConfig(Circle::CFG_SINGLE)) {
+			$owner = $circle->getOwner();
+			$this->set($owner->getUserId(), $owner->getInstance(), $owner->getUserType(), $circle);
+		} else {
+			$this->set($circle->getDisplayName(), $circle->getInstance(), Member::TYPE_CIRCLE, $circle);
 		}
 
 		return $this;
