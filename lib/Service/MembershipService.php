@@ -32,10 +32,14 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 
+use daita\MySmallPhpTools\Exceptions\ItemNotFoundException;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
+use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
-use OCA\Circles\IFederatedUser;
+use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
 
@@ -47,11 +51,15 @@ use OCA\Circles\Model\Membership;
  */
 class MembershipService {
 
+
 	use TNC22Logger;
 
 
 	/** @var MembershipRequest */
 	private $membershipRequest;
+
+	/** @var CircleRequest */
+	private $circleRequest;
 
 	/** @var MemberRequest */
 	private $memberRequest;
@@ -61,32 +69,41 @@ class MembershipService {
 	 * MembershipService constructor.
 	 *
 	 * @param MembershipRequest $membershipRequest
+	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
 	 */
-	public function __construct(MembershipRequest $membershipRequest, MemberRequest $memberRequest) {
+	public function __construct(
+		MembershipRequest $membershipRequest,
+		CircleRequest $circleRequest,
+		MemberRequest $memberRequest
+	) {
 		$this->membershipRequest = $membershipRequest;
+		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
 	}
 
 
 	/**
-	 * @param IFederatedUser $member
-	 *
-	 * @return int
+	 * @param string $singleId
 	 */
-	public function onMemberUpdate(IFederatedUser $member): int {
-		if ($member->getUserType() === Member::TYPE_CIRCLE) {
-			$this->onCircleUpdate($member->getSingleId());
-		} else {
-			return $this->manageMemberships($member->getSingleId());
+	public function onUpdate(string $singleId): void {
+		try {
+			$this->circleRequest->getFederatedUserBySingleId($singleId);
+		} catch (CircleNotFoundException | FederatedUserNotFoundException | OwnerNotFoundException $e) {
+			$this->membershipRequest->removeBySingleId($singleId);
 		}
-	}
 
+		$children = array_unique(
+			array_merge(
+				[$singleId],
+				$this->getChildrenMembers($singleId),
+				$this->getChildrenMemberships($singleId)
+			)
+		);
 
-	/**
-	 * @param string $circleId
-	 */
-	public function onCircleUpdate(string $circleId): void {
+		foreach ($children as $singleId) {
+			$this->manageMemberships($singleId);
+		}
 
 	}
 
@@ -99,7 +116,51 @@ class MembershipService {
 	public function manageMemberships(string $singleId): int {
 		$memberships = $this->generateMemberships($singleId);
 
-		return $this->updateDatabaseMemberships($memberships, $singleId);
+		return $this->updateMembershipsDatabase($singleId, $memberships);
+	}
+
+
+	/**
+	 * @param string $id
+	 *
+	 * @return array
+	 */
+	private function getChildrenMembers(string $id): array {
+		$singleIds = array_map(
+			function(Member $item): string {
+				return $item->getSingleId();
+			}, $this->memberRequest->getMembers($id)
+		);
+
+		foreach ($singleIds as $singleId) {
+			if ($singleId !== $id) {
+				$singleIds = array_merge($singleIds, $this->getChildrenMembers($singleId));
+			}
+		}
+
+		return array_unique($singleIds);
+	}
+
+
+	/**
+	 * @param string $id
+	 *
+	 * @return array
+	 */
+	private function getChildrenMemberships(string $id): array {
+		$singleIds = array_map(
+			function(Membership $item): string {
+				return $item->getId();
+			}, $this->membershipRequest->getChildren($id)
+		);
+
+		foreach ($singleIds as $singleId) {
+			if ($singleId !== $id) {
+				$singleIds = array_merge($singleIds, $this->getChildrenMemberships($singleId));
+			}
+		}
+
+		return array_unique($singleIds);
 	}
 
 
@@ -111,7 +172,7 @@ class MembershipService {
 	 *
 	 * @return array
 	 */
-	private function generateMemberships(
+	public function generateMemberships(
 		string $singleId,
 		string $circleId = '',
 		array &$memberships = [],
@@ -156,12 +217,12 @@ class MembershipService {
 
 
 	/**
-	 * @param Membership[] $memberships
 	 * @param string $singleId
+	 * @param Membership[] $memberships
 	 *
 	 * @return int
 	 */
-	private function updateDatabaseMemberships(array $memberships, string $singleId): int {
+	public function updateMembershipsDatabase(string $singleId, array $memberships): int {
 		$known = $this->membershipRequest->getMemberships($singleId);
 
 		$count = 0;
@@ -204,36 +265,43 @@ class MembershipService {
 	 * @return int
 	 */
 	private function createNewMemberships(array $memberships, array $known): int {
-		$circleIds = array_map(
-			function(Membership $membership): string {
-				return $membership->getCircleId();
-			}, $known
-		);
-
 		$count = 0;
-		foreach ($memberships as $item) {
-			if ($item->getCircleId() === $item->getId()) {
+		foreach ($memberships as $membership) {
+			if ($membership->getCircleId() === $membership->getId()) {
 				continue;
 			}
 
-			if (!in_array($item->getCircleId(), $circleIds)) {
-				$this->membershipRequest->insert($item);
-				$count++;
-			} else {
-				foreach ($known as $knownItem) {
-					if ($knownItem->getCircleId() === $item->getCircleId()) {
-						if ($knownItem->getLevel() !== $item->getLevel()) {
-							$this->membershipRequest->update($item);
-							$count++;
-						}
-
-						break;
-					}
+			try {
+				$item = $this->getMembershipsFromList($known, $membership->getCircleId());
+				if ($item->getLevel() !== $membership->getLevel()) {
+					$this->membershipRequest->update($membership);
+					$count++;
 				}
+			} catch (ItemNotFoundException $e) {
+				$this->membershipRequest->insert($membership);
+				$count++;
 			}
 		}
 
 		return $count;
+	}
+
+
+	/**
+	 * @param Membership[] $list
+	 * @param string $circleId
+	 *
+	 * @return Membership
+	 * @throws ItemNotFoundException
+	 */
+	private function getMembershipsFromList(array $list, string $circleId): Membership {
+		foreach ($list as $item) {
+			if ($item->getCircleId() === $circleId) {
+				return $item;
+			}
+		}
+
+		throw new ItemNotFoundException();
 	}
 
 }

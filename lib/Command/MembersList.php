@@ -41,6 +41,7 @@ use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22ConsoleTree;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
@@ -50,6 +51,7 @@ use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\Model\Circle;
@@ -94,6 +96,9 @@ class MembersList extends Base {
 	private $configService;
 
 
+	/** @var InputInterface */
+	private $input;
+
 	/**
 	 * MembersList constructor.
 	 *
@@ -124,6 +129,7 @@ class MembersList extends Base {
 			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
 			 ->addOption('instance', '', InputOption::VALUE_REQUIRED, 'Instance of the circle', '')
 			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			 ->addOption('display-name', '', InputOption::VALUE_NONE, 'display the displayName')
 			 ->addOption('tree', '', InputOption::VALUE_NONE, 'display members as a tree');
 	}
 
@@ -134,7 +140,12 @@ class MembersList extends Base {
 	 *
 	 * @return int
 	 * @throws CircleNotFoundException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
 	 * @throws InitiatorNotFoundException
+	 * @throws InvalidIdException
+	 * @throws InvalidItemException
+	 * @throws MemberNotFoundException
 	 * @throws OwnerNotFoundException
 	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
@@ -142,14 +153,12 @@ class MembersList extends Base {
 	 * @throws RequestNetworkException
 	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
-	 * @throws FederatedUserException
-	 * @throws FederatedUserNotFoundException
-	 * @throws InvalidIdException
 	 * @throws UserTypeNotFoundException
-	 * @throws InvalidItemException
-	 * @throws MemberNotFoundException
+	 * @throws FederatedItemException
+	 * @throws SingleCircleNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
+		$this->input = $input;
 		$circleId = $input->getArgument('circle_id');
 		$instance = $input->getOption('instance');
 		$initiator = $input->getOption('initiator');
@@ -346,15 +355,17 @@ class MembersList extends Base {
 				$member = $data->gObj('member', Member::class);
 
 				if ($lineNumber === 1) {
-					$line .= '<info>' . $member->getUserId() . '</info>';
+					$line .= '<info>' . $member->getSingleId() . '</info>';
 					if (!$this->configService->isLocalInstance($member->getInstance())) {
 						$line .= '@' . $member->getInstance();
 					}
 					$line .= ' (' . Member::$DEF_LEVEL[$member->getLevel()] . ')';
 
-					if (!is_null($circle)) {
-						$line .= ' <info>Name</info>: ' . $circle->getName();
-					}
+					$name = ($this->input->getOption('display-name')) ?
+						$member->getDisplayName() : $member->getUserId();
+					$line .= ' <info>Name</info>: ' . $name;
+					$source = $member->getBasedOn()->getSource();
+					$line .= ' <info>Source</info>: ' . Circle::$DEF_SOURCE[$source];
 				}
 
 				if ($lineNumber === 2) {

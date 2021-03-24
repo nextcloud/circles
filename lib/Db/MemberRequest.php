@@ -240,24 +240,6 @@ class MemberRequest extends MemberRequestBuilder {
 		return $this->getItemsFromRequest($qb);
 	}
 
-//
-//	/**
-//	 * @param string $singleId
-//	 *
-//	 * @return FederatedUser
-//	 * @throws MemberNotFoundException
-//	 */
-//	public function getFederatedUserBySingleId(string $singleId): FederatedUser {
-//		$qb = $this->getMemberSelectSql();
-//		$qb->limitToSingleId($singleId);
-//
-//		$member = $this->getItemFromRequest($qb);
-//		$federatedUser = new FederatedUser();
-//		$federatedUser->importFromIFederatedUser($member);
-//
-//		return $federatedUser;
-//	}
-
 
 	/**
 	 * @param Member $member

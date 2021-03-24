@@ -86,17 +86,45 @@ class MembershipRequest extends MembershipRequestBuilder {
 
 
 	/**
-	 * @param string $memberId
+	 * @param string $singleId
 	 *
 	 * @return Membership[]
 	 */
-	public function getMemberships(string $memberId): array {
+	public function getMemberships(string $singleId): array {
 		$qb = $this->getMembershipSelectSql();
-		$qb->limitToIdString($memberId);
+		$qb->limitToIdString($singleId);
 
 		return $this->getItemsFromRequest($qb);
 	}
 
+
+
+
+	/**
+	 * @param string $singleId
+	 *
+	 * @return Membership[]
+	 */
+	public function getChildren(string $singleId): array {
+		$qb = $this->getMembershipSelectSql();
+		$qb->limitToCircleId($singleId);
+
+		return $this->getItemsFromRequest($qb);
+	}
+
+
+
+	/**
+	 * @param string $singleId
+	 *
+	 * @return void
+	 */
+	public function removeBySingleId(string $singleId): void {
+		$qb = $this->getMembershipDeleteSql();
+		$qb->limitToIdString($singleId);
+
+		$qb->execute();
+	}
 
 }
 

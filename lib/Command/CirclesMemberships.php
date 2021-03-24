@@ -33,36 +33,42 @@ namespace OCA\Circles\Command;
 
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Exceptions\ItemNotFoundException;
-use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
-use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Exceptions\UnknownTypeException;
 use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22TreeNode;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22ConsoleTree;
 use daita\MySmallPhpTools\Traits\TArrayTools;
+use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MembershipService;
 use OCP\IUserManager;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
@@ -90,6 +96,9 @@ class CirclesMemberships extends Base {
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
+	/** @var CircleService */
+	private $circleService;
+
 	/** @var MembershipService */
 	private $membershipsService;
 
@@ -111,24 +120,27 @@ class CirclesMemberships extends Base {
 	 * @param IUserManager $userManager
 	 * @param MembershipRequest $membershipRequest
 	 * @param MemberRequest $memberRequest
-	 * @param MembershipService $membershipsService
 	 * @param FederatedUserService $federatedUserService
+	 * @param CircleService $circleService
+	 * @param MembershipService $membershipsService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		IUserManager $userManager,
 		MembershipRequest $membershipRequest,
 		MemberRequest $memberRequest,
-		MembershipService $membershipsService,
 		FederatedUserService $federatedUserService,
+		CircleService $circleService,
+		MembershipService $membershipsService,
 		ConfigService $configService
 	) {
 		parent::__construct();
 		$this->userManager = $userManager;
 		$this->memberRequest = $memberRequest;
 		$this->membershipRequest = $membershipRequest;
-		$this->membershipsService = $membershipsService;
 		$this->federatedUserService = $federatedUserService;
+		$this->circleService = $circleService;
+		$this->membershipsService = $membershipsService;
 		$this->configService = $configService;
 	}
 
@@ -140,11 +152,12 @@ class CirclesMemberships extends Base {
 		parent::configure();
 		$this->setName('circles:memberships')
 			 ->setDescription('index and display memberships for local and federated users')
-			 ->addArgument('userId', InputArgument::REQUIRED, 'userId to generate memberships')
+			 ->addArgument('userId', InputArgument::OPTIONAL, 'userId to generate memberships', '')
 			 ->addOption('display-name', '', InputOption::VALUE_NONE, 'display the displayName')
+			 ->addOption('all', '', InputOption::VALUE_NONE, 'refresh memberships for all entities')
 			 ->addOption(
 				 'type', '', InputOption::VALUE_REQUIRED, 'type of the user',
-				 Member::$TYPE[Member::TYPE_USER]
+				 Member::$TYPE[Member::TYPE_SINGLE]
 			 );
 	}
 
@@ -157,20 +170,31 @@ class CirclesMemberships extends Base {
 	 * @throws CircleNotFoundException
 	 * @throws FederatedUserException
 	 * @throws FederatedUserNotFoundException
-	 * @throws InvalidItemException
 	 * @throws MemberNotFoundException
 	 * @throws OwnerNotFoundException
 	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
 	 * @throws UserTypeNotFoundException
+	 * @throws FederatedItemException
+	 * @throws InvalidIdException
+	 * @throws SingleCircleNotFoundException
+	 * @throws Exception
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$this->input = $input;
+
+		if ($input->getOption('all')) {
+			$this->manageAllMemberships();
+
+			return 0;
+		}
+
 		$userId = $input->getArgument('userId');
+		if ($userId === '') {
+			throw new Exception('Not enough arguments (missing: "userId").');
+		}
 
 		$type = Member::parseTypeString($input->getOption('type'));
 		$federatedUser = $this->federatedUserService->getFederatedUser($userId, (int)$type);
@@ -183,7 +207,7 @@ class CirclesMemberships extends Base {
 		$output->writeln('');
 		$output->writeln('Memberships:');
 
-		$count = $this->membershipsService->onMemberUpdate($federatedUser);
+		$count = $this->membershipsService->manageMemberships($federatedUser->getSingleId());
 		if ($count === 0) {
 			$output->writeln('(database not updated)');
 		} else {
@@ -286,7 +310,7 @@ class CirclesMemberships extends Base {
 						$line .= '@' . $circle->getInstance();
 					}
 					$line .= ' (' . ($this->input->getOption('display-name') ?
-						$circle->getDisplayName() : $circle->getName() ). ')';
+							$circle->getDisplayName() : $circle->getName()) . ')';
 					$line .= ' <info>Level</info>: ' . Member::$DEF_LEVEL[$member->getLevel()];
 
 					$knownMembership = $this->memberships[$member->getCircleId()];
@@ -297,7 +321,8 @@ class CirclesMemberships extends Base {
 
 				if ($lineNumber === 2) {
 					$owner = $circle->getOwner();
-					$line .= '<info>Owner</info>: ' . $owner->getUserId() . '@' . $owner->getInstance() . ' ';
+					$line .= '<info>Owner</info>: ' . $owner->getUserId() . '@' . $owner->getInstance();
+					$line .= ' (' . Circle::$DEF_SOURCE[$owner->getBasedOn()->getSource()] . ') ';
 					$type = implode(", ", Circle::getCircleFlags($circle, Circle::FLAGS_LONG));
 					$line .= ($type === '') ? '' : '<info>Config</info>: ' . $type;
 				}
@@ -308,6 +333,43 @@ class CirclesMemberships extends Base {
 		}
 
 		return '';
+	}
+
+
+	/**
+	 *
+	 * @throws InitiatorNotFoundException
+	 */
+	private function manageAllMemberships() {
+		$this->federatedUserService->bypassCurrentUserCondition(true);
+
+		$params = new SimpleDataStore(['includeSystemCircles' => true]);
+		$circles = $this->circleService->getCircles(null, null, $params);
+
+		$output = new ConsoleOutput();
+		$output = $output->section();
+		$table = new Table($output);
+		$table->setHeaders(['ID', 'Name', 'Source', 'Owner', 'Instance', 'Memberships', 'Updated']);
+		$table->render();
+
+		$local = $this->configService->getFrontalInstance();
+		foreach ($circles as $circle) {
+			$owner = $circle->getOwner();
+
+			$memberships = $this->membershipsService->generateMemberships($circle->getId());
+			$updated = $this->membershipsService->updateMembershipsDatabase($circle->getId(), $memberships);
+			$table->appendRow(
+				[
+					$circle->getId(),
+					$circle->getDisplayName(),
+					($circle->getSource() > 0) ? Circle::$DEF_SOURCE[$circle->getSource()] : '',
+					$owner->getUserId(),
+					($owner->getInstance() === $local) ? '' : $owner->getInstance(),
+					sizeof($memberships),
+					$updated
+				]
+			);
+		}
 	}
 
 }

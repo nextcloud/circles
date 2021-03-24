@@ -123,30 +123,6 @@ class CircleRequest extends CircleRequestBuilder {
 	}
 
 
-
-//
-//	/**
-//	 * @param Member $member
-//	 * @param FederatedUser|null $initiator
-//	 *
-//	 * @return Member
-//	 * @throws MemberNotFoundException
-//	 */
-//	public function searchMember(Member $member, ?FederatedUser $initiator = null): Member {
-//		$qb = $this->getCircleSelectSql();
-//		$qb->limitToCircleId($member->getCircleId());
-//		$qb->limitToUserId($member->getUserId());
-//		$qb->limitToUserType($member->getUserType());
-//		$qb->limitToInstance($qb->getInstance($member));
-////		$qb->limitToSingleId($federatedUser->getSingleId());
-//
-//		if (!is_null($initiator)) {
-//			$qb->leftJoinCircle($initiator);
-//		}
-//
-//		return $this->getItemFromRequest($qb);
-//	}
-
 	/**
 	 * @param Circle|null $circleFilter
 	 * @param Member|null $memberFilter
