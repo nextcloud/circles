@@ -58,6 +58,7 @@ use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\IFederatedItem;
+use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemMemberCheckNotRequired;
 use OCA\Circles\IFederatedItemMemberRequired;
 use OCA\Circles\IFederatedUser;
@@ -89,7 +90,7 @@ use OCP\Util;
  */
 class MemberAdd implements
 	IFederatedItem,
-//	IFederatedItemAsyncProcess,
+	IFederatedItemAsyncProcess,
 	IFederatedItemMemberRequired,
 	IFederatedItemMemberCheckNotRequired {
 
@@ -173,21 +174,6 @@ class MemberAdd implements
 					$this->federatedUserService->getFederatedUser($userId, $member->getUserType());
 			}
 
-//			if ($member->getSingleId() !== '') {
-//				$federatedUser = $this->federatedUserService->getFederatedUser_singleId(
-//					$member->getSingleId(), $member->getUserType()
-//				);
-//			} else {
-//				$userId = $member->getUserId() . '@' . $member->getInstance();
-//				switch ($member->getUserType()) {
-//					case Member::TYPE_GROUP:
-//						$federatedUser = $this->groupService->getFederatedGroup($userId);
-//						break;
-//
-//					default:
-//						break;
-//				}
-//			}
 		} catch (MemberNotFoundException $e) {
 			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[120], 120);
 		}
