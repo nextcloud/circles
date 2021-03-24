@@ -189,19 +189,13 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 			$table = $schema->createTable('circle_membership');
 
 			$table->addColumn(
-				'id', 'string', [
-						'notnull' => true,
-						'length'  => 15,
-					]
-			);
-			$table->addColumn(
-				'circle_id', 'string', [
+				'single_id', 'string', [
 							   'notnull' => true,
 							   'length'  => 15,
 						   ]
 			);
 			$table->addColumn(
-				'member_id', 'string', [
+				'circle_id', 'string', [
 							   'notnull' => true,
 							   'length'  => 15,
 						   ]
@@ -213,8 +207,15 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 						   'unsigned' => true
 					   ]
 			);
+			$table->addColumn(
+				'parent', 'string', [
+							'notnull' => true,
+							'length'  => 15,
+						]
+			);
 
-			$table->addIndex(['id']);
+			$table->addIndex(['single_id']);
+			$table->addUniqueIndex(['single_id', 'circle_id']);
 		}
 
 

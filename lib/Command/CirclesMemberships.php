@@ -40,6 +40,7 @@ use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22ConsoleTree;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
 use OC\Core\Command\Base;
+use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
@@ -87,11 +88,14 @@ class CirclesMemberships extends Base {
 	/** @var IUserManager */
 	private $userManager;
 
+	/** @var MembershipRequest */
+	private $membershipRequest;
+
 	/** @var MemberRequest */
 	private $memberRequest;
 
-	/** @var MembershipRequest */
-	private $membershipRequest;
+	/** @var CircleRequest */
+	private $circleRequest;
 
 	/** @var FederatedUserService */
 	private $federatedUserService;
@@ -120,6 +124,7 @@ class CirclesMemberships extends Base {
 	 * @param IUserManager $userManager
 	 * @param MembershipRequest $membershipRequest
 	 * @param MemberRequest $memberRequest
+	 * @param CircleRequest $circleRequest
 	 * @param FederatedUserService $federatedUserService
 	 * @param CircleService $circleService
 	 * @param MembershipService $membershipsService
@@ -129,6 +134,7 @@ class CirclesMemberships extends Base {
 		IUserManager $userManager,
 		MembershipRequest $membershipRequest,
 		MemberRequest $memberRequest,
+		CircleRequest $circleRequest,
 		FederatedUserService $federatedUserService,
 		CircleService $circleService,
 		MembershipService $membershipsService,
@@ -138,6 +144,7 @@ class CirclesMemberships extends Base {
 		$this->userManager = $userManager;
 		$this->memberRequest = $memberRequest;
 		$this->membershipRequest = $membershipRequest;
+		$this->circleRequest = $circleRequest;
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
 		$this->membershipsService = $membershipsService;
@@ -337,8 +344,10 @@ class CirclesMemberships extends Base {
 
 
 	/**
-	 *
+	 * @throws CircleNotFoundException
+	 * @throws FederatedUserNotFoundException
 	 * @throws InitiatorNotFoundException
+	 * @throws OwnerNotFoundException
 	 */
 	private function manageAllMemberships() {
 		$this->federatedUserService->bypassCurrentUserCondition(true);
@@ -349,15 +358,17 @@ class CirclesMemberships extends Base {
 		$output = new ConsoleOutput();
 		$output = $output->section();
 		$table = new Table($output);
-		$table->setHeaders(['ID', 'Name', 'Source', 'Owner', 'Instance', 'Memberships', 'Updated']);
+		$table->setHeaders(['Circle Id', 'Name', 'Source', 'Owner', 'Instance', 'Updated', 'Memberships']);
 		$table->render();
 
+		$count = 0;
 		$local = $this->configService->getFrontalInstance();
 		foreach ($circles as $circle) {
 			$owner = $circle->getOwner();
 
-			$memberships = $this->membershipsService->generateMemberships($circle->getId());
-			$updated = $this->membershipsService->updateMembershipsDatabase($circle->getId(), $memberships);
+			$updated = $this->membershipsService->manageMemberships($circle->getId());
+			$count += $updated;
+			$federatedUser = $this->circleRequest->getFederatedUserBySingleId($circle->getId());
 			$table->appendRow(
 				[
 					$circle->getId(),
@@ -365,11 +376,13 @@ class CirclesMemberships extends Base {
 					($circle->getSource() > 0) ? Circle::$DEF_SOURCE[$circle->getSource()] : '',
 					$owner->getUserId(),
 					($owner->getInstance() === $local) ? '' : $owner->getInstance(),
-					sizeof($memberships),
-					$updated
+					$updated,
+					sizeof($federatedUser->getMemberships())
 				]
 			);
 		}
+
+		$output->writeln($count . ' memberships updated');
 	}
 
 }

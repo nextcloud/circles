@@ -33,15 +33,15 @@ namespace OCA\Circles\FederatedItems;
 
 
 use OCA\Circles\Db\MemberRequest;
-use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedItemBadRequestException;
+use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\MemberLevelException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemMemberRequired;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\Member;
-use OCP\AppFramework\Http;
+use OCA\Circles\Service\MembershipService;
 
 
 /**
@@ -57,14 +57,19 @@ class MemberLevel implements
 	/** @var MemberRequest */
 	private $memberRequest;
 
+	/** @var MembershipService */
+	private $membershipService;
+
 
 	/**
 	 * MemberAdd constructor.
 	 *
 	 * @param MemberRequest $memberRequest
+	 * @param MembershipService $membershipService
 	 */
-	public function __construct(MemberRequest $memberRequest) {
+	public function __construct(MemberRequest $memberRequest, MembershipService $membershipService) {
 		$this->memberRequest = $memberRequest;
+		$this->membershipService = $membershipService;
 	}
 
 
@@ -118,6 +123,8 @@ class MemberLevel implements
 			$oldOwner->setLevel(Member::LEVEL_ADMIN);
 			$this->memberRequest->updateLevel($oldOwner);
 		}
+
+		$this->membershipService->onUpdate($member->getSingleId());
 	}
 
 

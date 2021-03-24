@@ -203,7 +203,7 @@ class MembersList extends Base {
 		$output = $output->section();
 
 		$table = new Table($output);
-		$table->setHeaders(['ID', 'Single ID', 'Type', 'Source', 'Username', 'Instance', 'Level']);
+		$table->setHeaders(['Member Id', 'Single Id', 'Type', 'Source', 'Username', 'Instance', 'Level']);
 		$table->render();
 
 		$local = $this->configService->getFrontalInstance();

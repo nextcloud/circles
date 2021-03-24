@@ -55,9 +55,7 @@ class MemberRequest extends MemberRequestBuilder {
 	 * @throws InvalidIdException
 	 */
 	public function save(Member $member): void {
-		// TODO: check singleId is not empty
-//		$this->confirmValidIds([$member->getCircleId(), $member->getSingleId(), $member->getId()]);
-		$this->confirmValidIds([$member->getCircleId(), $member->getId()]);
+		$this->confirmValidIds([$member->getCircleId(), $member->getSingleId(), $member->getId()]);
 
 		$qb = $this->getMemberInsertSql();
 		$qb->setValue('circle_id', $qb->createNamedParameter($member->getCircleId()))
@@ -83,9 +81,7 @@ class MemberRequest extends MemberRequestBuilder {
 	 * @throws InvalidIdException
 	 */
 	public function update(Member $member): void {
-		// TODO: check singleId is not empty
-//		$this->confirmValidIds([$member->getCircleId(), $member->getSingleId(), $member->getId()]);
-		$this->confirmValidIds([$member->getCircleId(), $member->getId()]);
+		$this->confirmValidIds([$member->getCircleId(), $member->getSingleId(), $member->getId()]);
 
 		$qb = $this->getMemberUpdateSql();
 		$qb->set('member_id', $qb->createNamedParameter($member->getId()))
@@ -100,7 +96,7 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->limitToUserId($member->getUserId());
 		$qb->limitToUserType($member->getUserType());
 		$qb->limitToInstance($qb->getInstance($member));
-//		$qb->limitToSingleId($federatedUser->getSingleId());
+		$qb->limitToSingleId($member->getSingleId());
 
 		$qb->execute();
 	}
@@ -148,7 +144,7 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->limitToUserId($member->getUserId());
 		$qb->limitToUserType($member->getUserType());
 		$qb->limitToInstance($qb->getInstance($member));
-		//		$qb->limitToSingleId($member->getSingleId());
+		$qb->limitToSingleId($member->getSingleId());
 
 		$qb->execute();
 	}

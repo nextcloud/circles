@@ -104,7 +104,6 @@ class MembershipService {
 		foreach ($children as $singleId) {
 			$this->manageMemberships($singleId);
 		}
-
 	}
 
 
@@ -150,7 +149,7 @@ class MembershipService {
 	private function getChildrenMemberships(string $id): array {
 		$singleIds = array_map(
 			function(Membership $item): string {
-				return $item->getId();
+				return $item->getSingleId();
 			}, $this->membershipRequest->getChildren($id)
 		);
 
@@ -183,8 +182,7 @@ class MembershipService {
 
 		$members = $this->memberRequest->getMembersBySingleId($circleId);
 		foreach ($members as $member) {
-			$membership = new Membership($member);
-			$membership->setId($singleId);
+			$membership = new Membership($member, $singleId);
 			$this->fillMemberships($membership, $memberships);
 
 			if (!in_array($member->getCircleId(), $knownIds)) {
@@ -205,7 +203,7 @@ class MembershipService {
 			if ($known->getCircleId() === $membership->getCircleId()) {
 				if ($known->getLevel() < $membership->getLevel()) {
 					$known->setLevel($membership->getLevel());
-					$known->setMemberId($membership->getMemberId());
+					$known->setParent($membership->getParent());
 				}
 
 				return;
@@ -267,7 +265,7 @@ class MembershipService {
 	private function createNewMemberships(array $memberships, array $known): int {
 		$count = 0;
 		foreach ($memberships as $membership) {
-			if ($membership->getCircleId() === $membership->getId()) {
+			if ($membership->getCircleId() === $membership->getSingleId()) {
 				continue;
 			}
 

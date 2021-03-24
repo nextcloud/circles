@@ -72,6 +72,9 @@ class RemoteService extends NC22Signature {
 	/** @var RemoteStreamService */
 	private $remoteStreamService;
 
+	/** @var MembershipService */
+	private $membershipService;
+
 	/** @var ShareService */
 	private $shareService;
 
@@ -82,17 +85,19 @@ class RemoteService extends NC22Signature {
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
 	 * @param RemoteStreamService $remoteStreamService
+	 * @param MembershipService $membershipService
 	 * @param ShareService $shareService
 	 */
 	public function __construct(
 		CircleRequest $circleRequest, MemberRequest $memberRequest, RemoteStreamService $remoteStreamService,
-		ShareService $shareService
+		MembershipService $membershipService, ShareService $shareService
 	) {
 		$this->setup('app', 'circles');
 
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
 		$this->remoteStreamService = $remoteStreamService;
+		$this->membershipService = $membershipService;
 		$this->shareService = $shareService;
 	}
 
@@ -270,9 +275,10 @@ class RemoteService extends NC22Signature {
 		$this->circleRequest->insertOrUpdate($circle);
 		$this->memberRequest->insertOrUpdate($circle->getOwner());
 
-		$this->shareService->syncRemoteShares($circle);
-
 		$this->syncRemoteMembers($circle);
+		$this->membershipService->onUpdate($circle->getId());
+
+		$this->shareService->syncRemoteShares($circle);
 	}
 
 
@@ -295,6 +301,8 @@ class RemoteService extends NC22Signature {
 			} catch (InvalidIdException $e) {
 			}
 		}
+
+		$this->membershipService->onUpdate($circle->getId());
 	}
 
 

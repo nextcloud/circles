@@ -190,7 +190,7 @@ class CirclesList extends Base {
 		$output = new ConsoleOutput();
 		$output = $output->section();
 		$table = new Table($output);
-		$table->setHeaders(['ID', 'Name', 'Config', 'Source', 'Owner', 'Instance', 'Limit', 'Description']);
+		$table->setHeaders(['Single Id', 'Name', 'Config', 'Source', 'Owner', 'Instance', 'Limit', 'Description']);
 		$table->render();
 
 		$local = $this->configService->getFrontalInstance();

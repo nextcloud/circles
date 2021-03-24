@@ -55,6 +55,7 @@ use OCA\Circles\Service\CircleEventService;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Service\MembershipService;
 use OCA\Circles\StatusCode;
 use OCP\IUserManager;
 
@@ -78,11 +79,14 @@ class CircleJoin implements
 	/** @var IUserManager */
 	private $userManager;
 
+	/** @var MemberRequest */
+	private $memberRequest;
+
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
-	/** @var MemberRequest */
-	private $memberRequest;
+	/** @var MembershipService */
+	private $membershipService;
 
 	/** @var CircleService */
 	private $circleService;
@@ -98,19 +102,22 @@ class CircleJoin implements
 	 * CircleJoin constructor.
 	 *
 	 * @param IUserManager $userManager
-	 * @param FederatedUserService $federatedUserService
 	 * @param MemberRequest $memberRequest
+	 * @param FederatedUserService $federatedUserService
+	 * @param MembershipService $membershipService
 	 * @param CircleService $circleService
 	 * @param CircleEventService $circleEventService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IUserManager $userManager, FederatedUserService $federatedUserService, MemberRequest $memberRequest,
-		CircleService $circleService, CircleEventService $circleEventService, ConfigService $configService
+		IUserManager $userManager, MemberRequest $memberRequest, FederatedUserService $federatedUserService,
+		MembershipService $membershipService, CircleService $circleService,
+		CircleEventService $circleEventService, ConfigService $configService
 	) {
 		$this->userManager = $userManager;
-		$this->federatedUserService = $federatedUserService;
 		$this->memberRequest = $memberRequest;
+		$this->federatedUserService = $federatedUserService;
+		$this->membershipService = $membershipService;
 		$this->circleService = $circleService;
 		$this->circleEventService = $circleEventService;
 		$this->configService = $configService;
@@ -240,6 +247,7 @@ class CircleJoin implements
 		}
 
 		$this->memberRequest->save($member);
+		$this->membershipService->onUpdate($member->getSingleId());
 
 //		$this->circleEventService->onCircleJoined($event);
 

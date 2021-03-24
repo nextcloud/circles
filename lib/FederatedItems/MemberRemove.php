@@ -38,6 +38,7 @@ use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemMemberRequired;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
+use OCA\Circles\Service\MembershipService;
 
 
 /**
@@ -53,14 +54,19 @@ class MemberRemove implements
 	/** @var MemberRequest */
 	private $memberRequest;
 
+	/** @var MembershipService */
+	private $membershipService;
+
 
 	/**
 	 * MemberAdd constructor.
 	 *
 	 * @param MemberRequest $memberRequest
+	 * @param MembershipService $membershipService
 	 */
-	public function __construct(MemberRequest $memberRequest) {
+	public function __construct(MemberRequest $memberRequest, MembershipService $membershipService) {
 		$this->memberRequest = $memberRequest;
+		$this->membershipService = $membershipService;
 	}
 
 
@@ -92,6 +98,8 @@ class MemberRemove implements
 	public function manage(FederatedEvent $event): void {
 		$member = $event->getMember();
 		$this->memberRequest->delete($member);
+
+		$this->membershipService->onUpdate($member->getSingleId());
 	}
 
 

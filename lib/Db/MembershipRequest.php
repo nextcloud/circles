@@ -48,9 +48,9 @@ class MembershipRequest extends MembershipRequestBuilder {
 	 */
 	public function insert(Membership $membership) {
 		$qb = $this->getMembershipInsertSql();
-		$qb->setValue('id', $qb->createNamedParameter($membership->getId()));
+		$qb->setValue('single_id', $qb->createNamedParameter($membership->getSingleId()));
 		$qb->setValue('circle_id', $qb->createNamedParameter($membership->getCircleId()));
-		$qb->setValue('member_id', $qb->createNamedParameter($membership->getMemberId()));
+		$qb->setValue('parent', $qb->createNamedParameter($membership->getParent()));
 		$qb->setValue('level', $qb->createNamedParameter($membership->getLevel()));
 
 		$qb->execute();
@@ -64,22 +64,8 @@ class MembershipRequest extends MembershipRequestBuilder {
 		$qb = $this->getMembershipUpdateSql();
 		$qb->set('level', $qb->createNamedParameter($membership->getLevel()));
 
-		$qb->limitToIdString($membership->getId());
+		$qb->limitToSingleId($membership->getSingleId());
 		$qb->limitToCircleId($membership->getCircleId());
-		$qb->limitToMemberId($membership->getMemberId());
-
-		$qb->execute();
-	}
-
-
-	/**
-	 * @param Membership $membership
-	 */
-	public function delete(Membership $membership) {
-		$qb = $this->getMembershipDeleteSql();
-		$qb->limitToIdString($membership->getId());
-		$qb->limitToCircleId($membership->getCircleId());
-		$qb->limitToMemberId($membership->getMemberId());
 
 		$qb->execute();
 	}
@@ -92,12 +78,10 @@ class MembershipRequest extends MembershipRequestBuilder {
 	 */
 	public function getMemberships(string $singleId): array {
 		$qb = $this->getMembershipSelectSql();
-		$qb->limitToIdString($singleId);
+		$qb->limitToSingleId($singleId);
 
 		return $this->getItemsFromRequest($qb);
 	}
-
-
 
 
 	/**
@@ -113,7 +97,6 @@ class MembershipRequest extends MembershipRequestBuilder {
 	}
 
 
-
 	/**
 	 * @param string $singleId
 	 *
@@ -121,7 +104,19 @@ class MembershipRequest extends MembershipRequestBuilder {
 	 */
 	public function removeBySingleId(string $singleId): void {
 		$qb = $this->getMembershipDeleteSql();
-		$qb->limitToIdString($singleId);
+		$qb->limitToSingleId($singleId);
+
+		$qb->execute();
+	}
+
+
+	/**
+	 * @param Membership $membership
+	 */
+	public function delete(Membership $membership) {
+		$qb = $this->getMembershipDeleteSql();
+		$qb->limitToSingleId($membership->getSingleId());
+		$qb->limitToCircleId($membership->getCircleId());
 
 		$qb->execute();
 	}

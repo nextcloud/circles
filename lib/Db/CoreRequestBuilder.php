@@ -428,7 +428,7 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 		$this->leftJoin(
 			$aliasCircle, CoreQueryBuilder::TABLE_MEMBERSHIP, $alias,
 			$expr->andX(
-				$expr->eq($alias . '.id', $aliasInit . '.single_id'),
+				$expr->eq($alias . '.single_id', $aliasInit . '.single_id'),
 				$expr->eq($alias . '.circle_id', $aliasCircle . '.unique_id')
 			)
 		);

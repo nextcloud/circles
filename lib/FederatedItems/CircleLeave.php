@@ -42,6 +42,7 @@ use OCA\Circles\IFederatedItemMemberOptional;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Helpers\MemberHelper;
+use OCA\Circles\Service\MembershipService;
 use OCA\Circles\StatusCode;
 
 
@@ -62,16 +63,23 @@ class CircleLeave implements
 	/** @var CircleRequest */
 	private $circleRequest;
 
+	/** @var MembershipService */
+	private $membershipService;
+
 
 	/**
 	 * CircleLeave constructor.
 	 *
 	 * @param MemberRequest $memberRequest
 	 * @param CircleRequest $circleRequest
+	 * @param MembershipService $membershipService
 	 */
-	public function __construct(MemberRequest $memberRequest, CircleRequest $circleRequest) {
+	public function __construct(
+		MemberRequest $memberRequest, CircleRequest $circleRequest, MembershipService $membershipService
+	) {
 		$this->memberRequest = $memberRequest;
 		$this->circleRequest = $circleRequest;
+		$this->membershipService = $membershipService;
 	}
 
 
@@ -109,6 +117,8 @@ class CircleLeave implements
 	public function manage(FederatedEvent $event): void {
 		$member = $event->getMember();
 		$this->memberRequest->delete($member);
+
+		$this->membershipService->onUpdate($member->getSingleId());
 	}
 
 

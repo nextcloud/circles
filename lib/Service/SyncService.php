@@ -83,8 +83,8 @@ class SyncService {
 	/** @var MemberService */
 	private $memberService;
 
-	/** @var GroupService */
-	private $groupService;
+	/** @var MembershipService */
+	private $membershipService;
 
 	/** @var ConfigService */
 	private $configService;
@@ -98,7 +98,7 @@ class SyncService {
 	 * @param MemberRequest $memberRequest
 	 * @param FederatedUserService $federatedUserService
 	 * @param MemberService $memberService
-	 * @param GroupService $groupService
+	 * @param MembershipService $membershipService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
@@ -107,7 +107,7 @@ class SyncService {
 		MemberRequest $memberRequest,
 		FederatedUserService $federatedUserService,
 		MemberService $memberService,
-		GroupService $groupService,
+		MembershipService $membershipService,
 		ConfigService $configService
 	) {
 		$this->userManager = $userManager;
@@ -115,7 +115,7 @@ class SyncService {
 		$this->memberRequest = $memberRequest;
 		$this->federatedUserService = $federatedUserService;
 		$this->memberService = $memberService;
-		$this->groupService = $groupService;
+		$this->membershipService = $membershipService;
 		$this->configService = $configService;
 	}
 
@@ -211,7 +211,7 @@ class SyncService {
 	 * @throws UnknownRemoteException
 	 */
 	public function syncNextcloudGroup(string $groupId): Circle {
-		$circle = $this->groupService->getGroupCircle($groupId);
+		$circle = $this->federatedUserService->getGroupCircle($groupId);
 
 		$group = $this->groupManager->get($groupId);
 		foreach ($group->getUsers() as $user) {
@@ -225,6 +225,8 @@ class SyncService {
 
 			$this->memberRequest->insertOrUpdate($member);
 		}
+
+		$this->membershipService->onUpdate($circle->getId());
 
 		return $circle;
 	}

@@ -58,7 +58,6 @@ use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\IFederatedItem;
-use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemMemberCheckNotRequired;
 use OCA\Circles\IFederatedItemMemberRequired;
 use OCA\Circles\IFederatedUser;
@@ -75,7 +74,7 @@ use OCA\Circles\Service\CircleEventService;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
-use OCA\Circles\Service\GroupService;
+use OCA\Circles\Service\MembershipService;
 use OCA\Circles\StatusCode;
 use OCP\IUser;
 use OCP\IUserManager;
@@ -90,7 +89,7 @@ use OCP\Util;
  */
 class MemberAdd implements
 	IFederatedItem,
-	IFederatedItemAsyncProcess,
+//	IFederatedItemAsyncProcess,
 	IFederatedItemMemberRequired,
 	IFederatedItemMemberCheckNotRequired {
 
@@ -108,8 +107,8 @@ class MemberAdd implements
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
-	/** @var GroupService */
-	private $groupService;
+	/** @var MembershipService */
+	private $membershipService;
 
 	/** @var CircleService */
 	private $circleService;
@@ -127,20 +126,20 @@ class MemberAdd implements
 	 * @param IUserManager $userManager
 	 * @param MemberRequest $memberRequest
 	 * @param FederatedUserService $federatedUserService
-	 * @param GroupService $groupService
+	 * @param MembershipService $membershipService
 	 * @param CircleService $circleService
 	 * @param CircleEventService $circleEventService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		IUserManager $userManager, MemberRequest $memberRequest, FederatedUserService $federatedUserService,
-		GroupService $groupService, CircleService $circleService, CircleEventService $circleEventService,
-		ConfigService $configService
+		MembershipService $membershipService, CircleService $circleService,
+		CircleEventService $circleEventService, ConfigService $configService
 	) {
 		$this->userManager = $userManager;
 		$this->memberRequest = $memberRequest;
 		$this->federatedUserService = $federatedUserService;
-		$this->groupService = $groupService;
+		$this->membershipService = $membershipService;
 		$this->circleService = $circleService;
 		$this->circleEventService = $circleEventService;
 		$this->configService = $configService;
@@ -166,22 +165,29 @@ class MemberAdd implements
 
 		try {
 			if ($member->getSingleId() !== '') {
-				$federatedUser = $this->federatedUserService->getFederatedUser_singleId(
-					$member->getSingleId(), $member->getInstance()
-				);
+				$userId = $member->getSingleId() . '@' . $member->getInstance();
+				$federatedUser = $this->federatedUserService->getFederatedUser($userId, Member::TYPE_SINGLE);
 			} else {
 				$userId = $member->getUserId() . '@' . $member->getInstance();
-				switch ($member->getUserType()) {
-					case Member::TYPE_GROUP:
-						$federatedUser = $this->groupService->getFederatedGroup($userId);
-						break;
-
-					default:
-						$federatedUser =
-							$this->federatedUserService->getFederatedUser($userId, $member->getUserType());
-						break;
-				}
+				$federatedUser =
+					$this->federatedUserService->getFederatedUser($userId, $member->getUserType());
 			}
+
+//			if ($member->getSingleId() !== '') {
+//				$federatedUser = $this->federatedUserService->getFederatedUser_singleId(
+//					$member->getSingleId(), $member->getUserType()
+//				);
+//			} else {
+//				$userId = $member->getUserId() . '@' . $member->getInstance();
+//				switch ($member->getUserType()) {
+//					case Member::TYPE_GROUP:
+//						$federatedUser = $this->groupService->getFederatedGroup($userId);
+//						break;
+//
+//					default:
+//						break;
+//				}
+//			}
 		} catch (MemberNotFoundException $e) {
 			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[120], 120);
 		}
@@ -253,7 +259,7 @@ class MemberAdd implements
 		}
 
 		$this->memberRequest->insertOrUpdate($member);
-
+		$this->membershipService->onUpdate($member->getSingleId());
 		$this->circleEventService->onMemberAdded($event);
 
 //

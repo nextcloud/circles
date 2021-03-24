@@ -43,6 +43,7 @@ use OCA\Circles\IFederatedItemCircleCheckNotRequired;
 use OCA\Circles\IFederatedItemMustBeInitializedLocally;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\MembershipService;
 
 
 /**
@@ -62,6 +63,9 @@ class CircleCreate implements
 	/** @var MemberRequest */
 	private $memberRequest;
 
+	/** @var MembershipService */
+	private $membershipService;
+
 	/** @var ConfigService */
 	private $configService;
 
@@ -71,13 +75,16 @@ class CircleCreate implements
 	 *
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
+	 * @param MembershipService $membershipService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		CircleRequest $circleRequest, MemberRequest $memberRequest, ConfigService $configService
+		CircleRequest $circleRequest, MemberRequest $memberRequest, MembershipService $membershipService,
+		ConfigService $configService
 	) {
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
+		$this->membershipService = $membershipService;
 		$this->configService = $configService;
 	}
 
@@ -118,6 +125,7 @@ class CircleCreate implements
 
 		$this->circleRequest->save($circle);
 		$this->memberRequest->save($owner);
+		$this->membershipService->onUpdate($owner->getSingleId());
 
 		// TODO: EventsService
 		// $this->eventsService->onCircleCreation($circle);

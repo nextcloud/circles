@@ -95,7 +95,7 @@ class CirclesCreate extends Base {
 			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception')
 			 ->addOption(
 				 'type', '', InputOption::VALUE_REQUIRED, 'type of the owner',
-				 Member::$TYPE[Member::TYPE_USER]
+				 Member::$TYPE[Member::TYPE_SINGLE]
 			 );
 	}
 
