@@ -201,6 +201,12 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 						   ]
 			);
 			$table->addColumn(
+				'member_id', 'string', [
+							   'notnull' => true,
+							   'length'  => 15,
+						   ]
+			);
+			$table->addColumn(
 				'level', 'integer', [
 						   'notnull'  => true,
 						   'length'   => 1,

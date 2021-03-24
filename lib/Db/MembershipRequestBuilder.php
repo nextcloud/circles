@@ -72,7 +72,7 @@ class MembershipRequestBuilder extends CoreQueryBuilder {
 	 */
 	protected function getMembershipSelectSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->select('ms.single_id', 'ms.circle_id', 'ms.level', 'ms.parent')
+		$qb->select('ms.single_id', 'ms.circle_id', 'ms.member_id', 'ms.level', 'ms.parent')
 		   ->from(self::TABLE_MEMBERSHIP, 'ms')
 		   ->setDefaultSelectAlias('ms');
 

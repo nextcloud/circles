@@ -389,7 +389,8 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 		$expr = $this->expr();
 		$aliasCircle = ($aliasCircle === '') ? $this->getDefaultSelectAlias() : $aliasCircle;
 
-		// Note: The field "self::PREFIX_INITIATOR . 'level'" is erased by leftJoinMembership()
+		// Note: Some field about the initiator are overwritten by leftJoinMembership() to better fit the
+		// real origin of the initiator
 		$this->generateMemberSelectAlias(
 			$alias, self::PREFIX_INITIATOR,
 			[
@@ -424,6 +425,9 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 
 		$expr = $this->expr();
 		$aliasCircle = ($aliasCircle === '') ? $this->getDefaultSelectAlias() : $aliasCircle;
+		// Note: overwriting some data about initiator.
+		$this->selectAlias($alias . '.member_id', self::PREFIX_INITIATOR . 'member_id');
+		$this->selectAlias($alias . '.circle_id', self::PREFIX_INITIATOR . 'circle_id');
 		$this->selectAlias($alias . '.level', self::PREFIX_INITIATOR . 'level');
 		$this->leftJoin(
 			$aliasCircle, CoreQueryBuilder::TABLE_MEMBERSHIP, $alias,

@@ -318,6 +318,7 @@ class CirclesMemberships extends Base {
 					}
 					$line .= ' (' . ($this->input->getOption('display-name') ?
 							$circle->getDisplayName() : $circle->getName()) . ')';
+					$line .= ' <info>MemberId</info>: ' . $member->getId();
 					$line .= ' <info>Level</info>: ' . Member::$DEF_LEVEL[$member->getLevel()];
 
 					$knownMembership = $this->memberships[$member->getCircleId()];

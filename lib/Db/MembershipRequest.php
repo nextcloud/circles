@@ -50,6 +50,7 @@ class MembershipRequest extends MembershipRequestBuilder {
 		$qb = $this->getMembershipInsertSql();
 		$qb->setValue('single_id', $qb->createNamedParameter($membership->getSingleId()));
 		$qb->setValue('circle_id', $qb->createNamedParameter($membership->getCircleId()));
+		$qb->setValue('member_id', $qb->createNamedParameter($membership->getMemberId()));
 		$qb->setValue('parent', $qb->createNamedParameter($membership->getParent()));
 		$qb->setValue('level', $qb->createNamedParameter($membership->getLevel()));
 
@@ -62,6 +63,7 @@ class MembershipRequest extends MembershipRequestBuilder {
 	 */
 	public function update(Membership $membership) {
 		$qb = $this->getMembershipUpdateSql();
+		$qb->set('member_id', $qb->createNamedParameter($membership->getMemberId()));
 		$qb->set('level', $qb->createNamedParameter($membership->getLevel()));
 
 		$qb->limitToSingleId($membership->getSingleId());

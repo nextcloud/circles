@@ -54,6 +54,9 @@ class Membership extends ManagedModel implements INC22QueryRow, JsonSerializable
 	private $circleId = '';
 
 	/** @var string */
+	private $memberId = '';
+
+	/** @var string */
 	private $parent = '';
 
 	/** @var int */
@@ -73,6 +76,7 @@ class Membership extends ManagedModel implements INC22QueryRow, JsonSerializable
 
 		$this->setSingleId(($singleId === '') ? $member->getSingleId() : $singleId);
 		$this->setCircleId($member->getCircleId());
+		$this->setMemberId($member->getId());
 		$this->setParent($member->getSingleId());
 		$this->setLevel($member->getLevel());
 	}
@@ -81,14 +85,23 @@ class Membership extends ManagedModel implements INC22QueryRow, JsonSerializable
 	/**
 	 * @param string $id
 	 * @param string $circleId
-	 * @param string $parent
+	 * @param string $memberId
 	 * @param int $level
+	 *
+	 * @param string $parent
 	 *
 	 * @return $this
 	 */
-	public function set(string $id = '', string $circleId = '', int $level = 0, string $parent = ''): self {
+	public function set(
+		string $id = '',
+		string $circleId = '',
+		string $memberId = '',
+		int $level = 0,
+		string $parent = ''
+	): self {
 		$this->singleId = $id;
 		$this->circleId = $circleId;
+		$this->memberId = $memberId;
 		$this->level = $level;
 		$this->parent = $parent;
 	}
@@ -129,6 +142,25 @@ class Membership extends ManagedModel implements INC22QueryRow, JsonSerializable
 	 */
 	public function getCircleId(): string {
 		return $this->circleId;
+	}
+
+
+	/**
+	 * @param string $memberId
+	 *
+	 * @return Membership
+	 */
+	public function setMemberId(string $memberId): self {
+		$this->memberId = $memberId;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getMemberId(): string {
+		return $this->memberId;
 	}
 
 
@@ -175,10 +207,11 @@ class Membership extends ManagedModel implements INC22QueryRow, JsonSerializable
 	 */
 	public function jsonSerialize(): array {
 		return [
-			'id'        => $this->getSingleId(),
-			'circle_id' => $this->getCircleId(),
-			'level'     => $this->getLevel(),
-			'parent'    => $this->getParent(),
+			'singleId' => $this->getSingleId(),
+			'circleId' => $this->getCircleId(),
+			'memberId' => $this->getMemberId(),
+			'level'    => $this->getLevel(),
+			'parent'   => $this->getParent(),
 		];
 	}
 
@@ -191,6 +224,7 @@ class Membership extends ManagedModel implements INC22QueryRow, JsonSerializable
 	public function importFromDatabase(array $data): INC22QueryRow {
 		$this->setSingleId($this->get('single_id', $data));
 		$this->setCircleId($this->get('circle_id', $data));
+		$this->setMemberId($this->get('member_id', $data));
 		$this->setLevel($this->getInt('level', $data));
 		$this->setParent($this->get('parent', $data));
 

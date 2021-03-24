@@ -36,6 +36,7 @@ use OCA\Circles\Db\CoreRequestBuilder;
 use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\IFederatedUser;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MemberService;
 
@@ -87,9 +88,9 @@ class ModelManager {
 
 
 	/**
-	 * @param FederatedUser $federatedUser
+	 * @param IFederatedUser $federatedUser
 	 */
-	public function getMemberships(FederatedUser $federatedUser): void {
+	public function getMemberships(IFederatedUser $federatedUser): void {
 		$memberships = $this->membershipRequest->getMemberships($federatedUser->getSingleId());
 		$federatedUser->setMemberships($memberships);
 	}
