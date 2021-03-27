@@ -161,6 +161,7 @@ class CirclesMemberships extends Base {
 			 ->setDescription('index and display memberships for local and federated users')
 			 ->addArgument('userId', InputArgument::OPTIONAL, 'userId to generate memberships', '')
 			 ->addOption('display-name', '', InputOption::VALUE_NONE, 'display the displayName')
+			 ->addOption('reset', '', InputOption::VALUE_NONE, 'reset memberships')
 			 ->addOption('all', '', InputOption::VALUE_NONE, 'refresh memberships for all entities')
 			 ->addOption(
 				 'type', '', InputOption::VALUE_REQUIRED, 'type of the user',
@@ -205,6 +206,12 @@ class CirclesMemberships extends Base {
 
 		$type = Member::parseTypeString($input->getOption('type'));
 		$federatedUser = $this->federatedUserService->getFederatedUser($userId, (int)$type);
+
+		if ($this->input->getOption('reset')) {
+			$this->membershipsService->resetMemberships($federatedUser->getSingleId());
+
+			return 0;
+		}
 
 		$output->writeln('Id: <info>' . $federatedUser->getUserId() . '</info>');
 		$output->writeln('Instance: <info>' . $federatedUser->getInstance() . '</info>');
@@ -326,7 +333,6 @@ class CirclesMemberships extends Base {
 						$line .= ' (' . Member::$DEF_LEVEL[$knownMembership->getLevel()] . ')';
 					}
 				}
-
 				if ($lineNumber === 2) {
 					$owner = $circle->getOwner();
 					$line .= '<info>Owner</info>: ' . $owner->getUserId() . '@' . $owner->getInstance();
@@ -351,6 +357,12 @@ class CirclesMemberships extends Base {
 	 * @throws OwnerNotFoundException
 	 */
 	private function manageAllMemberships() {
+		if ($this->input->getOption('reset')) {
+			$this->membershipsService->resetMemberships('', true);
+
+			return;
+		}
+
 		$this->federatedUserService->bypassCurrentUserCondition(true);
 
 		$params = new SimpleDataStore(['includeSystemCircles' => true]);

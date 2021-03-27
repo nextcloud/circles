@@ -87,6 +87,10 @@ class MembershipService {
 	 * @param string $singleId
 	 */
 	public function onUpdate(string $singleId): void {
+		if ($singleId === '') {
+			return;
+		}
+
 		try {
 			$this->circleRequest->getFederatedUserBySingleId($singleId);
 		} catch (CircleNotFoundException | FederatedUserNotFoundException | OwnerNotFoundException $e) {
@@ -168,6 +172,7 @@ class MembershipService {
 	 * @param string $circleId
 	 * @param array $memberships
 	 * @param array $knownIds
+	 * @param array $path
 	 *
 	 * @return array
 	 */
@@ -175,18 +180,26 @@ class MembershipService {
 		string $singleId,
 		string $circleId = '',
 		array &$memberships = [],
-		array $knownIds = []
+		array $knownIds = [],
+		array $path = []
 	): array {
 		$circleId = ($circleId === '') ? $singleId : $circleId;
+		if ($circleId === '') {
+			$circleId = $singleId;
+		} else if ($circleId !== $singleId) {
+			$path[] = $circleId;
+		}
+
 		$knownIds[] = $circleId;
 
 		$members = $this->memberRequest->getMembersBySingleId($circleId);
 		foreach ($members as $member) {
 			$membership = new Membership($member, $singleId);
+			$membership->setPath(array_reverse($path));
 			$this->fillMemberships($membership, $memberships);
 
 			if (!in_array($member->getCircleId(), $knownIds)) {
-				$this->generateMemberships($singleId, $member->getCircleId(), $memberships, $knownIds);
+				$this->generateMemberships($singleId, $member->getCircleId(), $memberships, $knownIds, $path);
 			}
 		}
 
@@ -196,13 +209,15 @@ class MembershipService {
 
 	/**
 	 * @param Membership $membership
-	 * @param array $memberships
+	 * @param Membership[] $memberships
 	 */
 	private function fillMemberships(Membership $membership, array &$memberships) {
 		foreach ($memberships as $known) {
 			if ($known->getCircleId() === $membership->getCircleId()) {
 				if ($known->getLevel() < $membership->getLevel()) {
 					$known->setLevel($membership->getLevel());
+					$known->setMemberId($membership->getMemberId());
+					$known->setSingleId($membership->getSingleId());
 					$known->setParent($membership->getParent());
 				}
 
@@ -300,6 +315,15 @@ class MembershipService {
 		}
 
 		throw new ItemNotFoundException();
+	}
+
+
+	/**
+	 * @param string $singleId
+	 * @param bool $all
+	 */
+	public function resetMemberships(string $singleId = '', bool $all = false) {
+		$this->membershipRequest->removeBySingleId($singleId, $all);
 	}
 
 }

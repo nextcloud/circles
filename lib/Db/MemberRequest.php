@@ -164,9 +164,9 @@ class MemberRequest extends MemberRequestBuilder {
 		?RemoteInstance $remoteInstance = null,
 		?Member $filter = null
 	): array {
-		$qb = $this->getMemberSelectSql();
+		$qb = $this->getMemberSelectSql($initiator);
 		$qb->limitToCircleId($circleId);
-		$qb->leftJoinCircle($initiator);
+		$qb->leftJoinCircle($initiator, false);
 
 		if (!is_null($remoteInstance)) {
 			$qb->limitToRemoteInstance($remoteInstance->getInstance(), true);

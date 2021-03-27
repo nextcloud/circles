@@ -32,8 +32,11 @@ declare(strict_types=1);
 namespace OCA\Circles\Model;
 
 use daita\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
+use daita\MySmallPhpTools\Exceptions\InvalidItemException;
+use daita\MySmallPhpTools\IDeserializable;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
+use OCA\Circles\Exceptions\MembershipNotFoundException;
 
 
 /**
@@ -41,7 +44,7 @@ use JsonSerializable;
  *
  * @package OCA\Circles\Model
  */
-class Membership extends ManagedModel implements INC22QueryRow, JsonSerializable {
+class Membership extends ManagedModel implements IDeserializable, INC22QueryRow, JsonSerializable {
 
 
 	use TArrayTools;
@@ -61,6 +64,9 @@ class Membership extends ManagedModel implements INC22QueryRow, JsonSerializable
 
 	/** @var int */
 	private $level = 0;
+
+	/** @var array */
+	private $path = [];
 
 
 	/**
@@ -203,32 +209,80 @@ class Membership extends ManagedModel implements INC22QueryRow, JsonSerializable
 
 
 	/**
+	 * @param array $path
+	 *
+	 * @return Membership
+	 */
+	public function setPath(array $path): self {
+		$this->path = $path;
+
+		return $this;
+	}
+
+	/**
 	 * @return array
 	 */
-	public function jsonSerialize(): array {
-		return [
-			'singleId' => $this->getSingleId(),
-			'circleId' => $this->getCircleId(),
-			'memberId' => $this->getMemberId(),
-			'level'    => $this->getLevel(),
-			'parent'   => $this->getParent(),
-		];
+	public function getPath(): array {
+		return $this->path;
 	}
 
 
 	/**
 	 * @param array $data
 	 *
-	 * @return INC22QueryRow
+	 * @return IDeserializable
+	 * @throws InvalidItemException
 	 */
-	public function importFromDatabase(array $data): INC22QueryRow {
-		$this->setSingleId($this->get('single_id', $data));
-		$this->setCircleId($this->get('circle_id', $data));
-		$this->setMemberId($this->get('member_id', $data));
+	public function import(array $data): IDeserializable {
+		if ($this->get('singleId', $data) === '') {
+			throw new InvalidItemException();
+		}
+
+		$this->setSingleId($this->get('singleId', $data));
+		$this->setCircleId($this->get('circleId', $data));
+//		$this->setMemberId($this->get('memberId', $data));
 		$this->setLevel($this->getInt('level', $data));
 		$this->setParent($this->get('parent', $data));
+		$this->setPath($this->getArray('path', $data));
 
 		return $this;
+	}
+
+	/**
+	 * @param array $data
+	 * @param string $prefix
+	 *
+	 * @return INC22QueryRow
+	 * @throws MembershipNotFoundException
+	 */
+	public function importFromDatabase(array $data, string $prefix = ''): INC22QueryRow {
+		if ($this->get($prefix . 'single_id', $data) === '') {
+			throw new MembershipNotFoundException();
+		}
+
+		$this->setSingleId($this->get($prefix . 'single_id', $data));
+		$this->setCircleId($this->get($prefix . 'circle_id', $data));
+//		$this->setMemberId($this->get($prefix . 'member_id', $data));
+		$this->setLevel($this->getInt($prefix . 'level', $data));
+		$this->setParent($this->get($prefix . 'parent', $data));
+		$this->setPath($this->getArray($prefix . 'path', $data));
+
+		return $this;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function jsonSerialize(): array {
+		return [
+			'singleId' => $this->getSingleId(),
+			'circleId' => $this->getCircleId(),
+			//			'memberId' => $this->getMemberId(),
+			'level'    => $this->getLevel(),
+			'parent'   => $this->getParent(),
+			'path'     => $this->getPath()
+		];
 	}
 
 }

@@ -52,12 +52,22 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 
 
 	const PREFIX_MEMBER = 'member_';
-	const PREFIX_OWNER = 'owner_';
-	const PREFIX_INITIATOR = 'initiator_';
 	const PREFIX_CIRCLE = 'circle_';
+	const PREFIX_OWNER = 'owner_';
 	const PREFIX_OWNER_BASED_ON = 'owner_based_on_';
+	const PREFIX_INITIATOR = 'initiator_';
 	const PREFIX_INITIATOR_BASED_ON = 'initiator_based_on_';
+	const PREFIX_INITIATOR_MEMBERSHIP = 'initiator_membership_';
+	const PREFIX_INITIATOR_INHERITED_BY = 'initiator_inherited_by_';
 	const PREFIX_BASED_ON = 'based_on_';
+	const PREFIX_BASED_ON_INITIATOR = 'based_on_initiator_';
+	const PREFIX_BASED_ON_INITIATOR_INHERITED_BY = 'based_on_initiator_inherited_by_';
+	const PREFIX_BASED_ON_INITIATOR_INHERITED_BY_MEMBERSHIP = 'based_on_initiator_inherited_by_membership_';
+
+	const EXTENSION_BASED_ON = '_based_on';
+	const EXTENSION_INITIATOR = '_initiator';
+	const EXTENSION_MEMBERSHIPS = '_memberships';
+	const EXTENSION_INHERITED_BY = '_inherited_by';
 
 
 	static $IMPORT_CIRCLE = [
@@ -79,14 +89,29 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 		self::PREFIX_INITIATOR
 	];
 
+	static $IMPORT_INITIATOR_INHERITED_BY = [
+		self::PREFIX_INITIATOR
+	];
+
 	static $IMPORT_OWNER_BASED_ON = [
 		self::PREFIX_OWNER
 	];
 
-
 	static $IMPORT_INITIATOR = [
 		'',
 		self::PREFIX_CIRCLE
+	];
+
+	static $IMPORT_BASED_ON_INITIATOR = [
+		self::PREFIX_BASED_ON
+	];
+
+	static $IMPORT_BASED_ON_INITIATOR_INHERITED_BY = [
+		self::PREFIX_BASED_ON_INITIATOR
+	];
+
+	static $IMPORT_BASED_ON_INITIATOR_INHERITED_BY_MEMBERSHIP = [
+		self::PREFIX_BASED_ON_INITIATOR_INHERITED_BY
 	];
 
 
@@ -174,26 +199,6 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 	 */
 	public function limitToUserType(int $userType): void {
 		$this->limitToDBFieldInt('user_type', $userType);
-	}
-
-
-	/**
-	 * @param IFederatedUser $initiator
-	 * @param string $alias
-	 * @param bool $mustBeMember
-	 * @param bool $canBeVisitor
-	 */
-	public function limitToInitiator(
-		IFederatedUser $initiator,
-		string $alias = '',
-		bool $mustBeMember = false,
-		bool $canBeVisitor = false
-	): void {
-		// TODO: Based on membership, not on USerID !!
-		$this->leftJoinInitiator($initiator, 'init', $alias);
-		$this->leftJoinMembership('mbs', 'init', $alias);
-		$this->leftJoinBasedOnCircle(self::PREFIX_INITIATOR_BASED_ON);
-		$this->limitVisibility('mbs', $alias, $mustBeMember, $canBeVisitor);
 	}
 
 
@@ -288,8 +293,12 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 
 	/**
 	 * @param IFederatedUser|null $initiator
+	 * @param bool $getData
 	 */
-	public function leftJoinCircle(?IFederatedUser $initiator = null): void {
+	public function leftJoinCircle(
+		?IFederatedUser $initiator = null,
+		bool $getData = true
+	): void {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
@@ -297,49 +306,54 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 		$expr = $this->expr();
 
 		$alias = 'c';
-		$this->generateCircleSelectAlias($alias, self::PREFIX_CIRCLE)
-			 ->leftJoin(
-				 $this->getDefaultSelectAlias(), CoreQueryBuilder::TABLE_CIRCLE, $alias,
-				 $expr->eq($alias . '.unique_id', $this->getDefaultSelectAlias() . '.circle_id')
-			 );
+		if ($getData) {
+			$this->generateCircleSelectAlias($alias, self::PREFIX_CIRCLE);
+			$this->leftJoinOwner($alias);
+		}
 
-		$this->leftJoinOwner($alias);
+		$this->leftJoin(
+			$this->getDefaultSelectAlias(), CoreQueryBuilder::TABLE_CIRCLE, $alias,
+			$expr->eq($alias . '.unique_id', $this->getDefaultSelectAlias() . '.circle_id')
+		);
+
 		if (!is_null($initiator)) {
-			$this->limitToInitiator($initiator, $alias, true);
+			$this->limitToInitiator($initiator, $alias, true, false, $getData);
 		}
 	}
 
 
 	/**
+	 * @param string $aliasMember
 	 * @param string $prefixBasedOn
+	 * @param IFederatedUser|null $initiator
 	 */
-	public function leftJoinBasedOnCircle(string $prefixBasedOn = self::PREFIX_BASED_ON): void {
+	public function leftJoinBasedOnCircle(
+		string $aliasMember,
+		string $prefixBasedOn = self::PREFIX_BASED_ON,
+		?IFederatedUser $initiator = null
+	): void {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
 
-		switch ($prefixBasedOn) {
-			case self::PREFIX_OWNER_BASED_ON:
-				$alias = 'obo';
-				$memberAlias = 'o';
-				break;
-
-			case self::PREFIX_INITIATOR_BASED_ON:
-				$alias = 'ibo';
-				$memberAlias = 'init';
-				break;
-
-			default:
-				$alias = 'mbo';
-				$memberAlias = $this->getDefaultSelectAlias();
-		}
+		$aliasCircle = $aliasMember . self::EXTENSION_BASED_ON;
 
 		$expr = $this->expr();
-		$this->generateCircleSelectAlias($alias, $prefixBasedOn)
+		$this->generateCircleSelectAlias($aliasCircle, $prefixBasedOn)
 			 ->leftJoin(
-				 $memberAlias, CoreQueryBuilder::TABLE_CIRCLE, $alias,
-				 $expr->eq($alias . '.unique_id', $memberAlias . '.single_id')
+				 $aliasMember, CoreQueryBuilder::TABLE_CIRCLE, $aliasCircle,
+				 $expr->eq($aliasCircle . '.unique_id', $aliasMember . '.single_id')
 			 );
+
+		if (!is_null($initiator)) {
+			$this->leftJoinInitiator(
+				$initiator,
+				$aliasCircle,
+				self::PREFIX_BASED_ON_INITIATOR,
+				self::PREFIX_BASED_ON_INITIATOR_INHERITED_BY,
+				self::PREFIX_BASED_ON_INITIATOR_INHERITED_BY_MEMBERSHIP
+			);
+		}
 	}
 
 
@@ -366,7 +380,41 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 				 )
 			 );
 
-		$this->leftJoinBasedOnCircle(self::PREFIX_OWNER_BASED_ON);
+		$this->leftJoinBasedOnCircle($alias, self::PREFIX_OWNER_BASED_ON);
+	}
+
+
+	/**
+	 * @param IFederatedUser $initiator
+	 * @param string $aliasCircle
+	 * @param bool $mustBeMember
+	 * @param bool $canBeVisitor
+	 * @param bool $getData
+	 */
+	public function limitToInitiator(
+		IFederatedUser $initiator,
+		string $aliasCircle = '',
+		bool $mustBeMember = false,
+		bool $canBeVisitor = false,
+		bool $getData = true
+	): void {
+		$aliasCircle = ($aliasCircle === '') ? $this->getDefaultSelectAlias() : $aliasCircle;
+
+		$this->leftJoinInitiator(
+			$initiator,
+			$aliasCircle,
+			self::PREFIX_INITIATOR,
+			self::PREFIX_INITIATOR_INHERITED_BY,
+			self::PREFIX_INITIATOR_MEMBERSHIP,
+			$getData
+		);
+		$this->limitInitiatorVisibility($aliasCircle, $mustBeMember, $canBeVisitor);
+		if ($getData) {
+			$this->leftJoinBasedOnCircle(
+				$aliasCircle . self::EXTENSION_INITIATOR,
+				self::PREFIX_INITIATOR_BASED_ON
+			);
+		}
 	}
 
 
@@ -374,68 +422,63 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 	 * Left join members to filter userId as initiator.
 	 *
 	 * @param IFederatedUser $initiator
-	 * @param string $alias
 	 * @param string $aliasCircle
+	 * @param string $prefixInitiator
+	 * @param string $prefixInitiatorInheritedBy
+	 * @param string $prefixMembership
+	 * @param bool $getData
 	 */
 	public function leftJoinInitiator(
 		IFederatedUser $initiator,
-		string $alias = 'init',
-		string $aliasCircle = ''
+		string $aliasCircle = 'c',
+		string $prefixInitiator = self::PREFIX_INITIATOR,
+		string $prefixInitiatorInheritedBy = self::PREFIX_INITIATOR_INHERITED_BY,
+		string $prefixMembership = self::PREFIX_INITIATOR_MEMBERSHIP,
+		bool $getData = true
 	): void {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
 
+		$aliasInitiator = $aliasCircle . self::EXTENSION_INITIATOR;
+		$aliasInitiatorMembership = $aliasInitiator . self::EXTENSION_MEMBERSHIPS;
+		$aliasInheritedBy = $aliasCircle . self::EXTENSION_INHERITED_BY;
+
 		$expr = $this->expr();
-		$aliasCircle = ($aliasCircle === '') ? $this->getDefaultSelectAlias() : $aliasCircle;
 
-		// Note: Some field about the initiator are overwritten by leftJoinMembership() to better fit the
-		// real origin of the initiator
-		$this->generateMemberSelectAlias(
-			$alias, self::PREFIX_INITIATOR,
-			[
-				'user_id'   => $initiator->getUserId(),
-				'user_type' => $initiator->getUserType(),
-				'single_id' => $initiator->getSingleId(),
-				'instance'  => $initiator->getInstance()
-			]
-		)
-			 ->leftJoin(
-				 $aliasCircle, CoreQueryBuilder::TABLE_MEMBER, $alias,
-				 $expr->andX(
-					 $expr->eq($alias . '.user_id', $this->createNamedParameter($initiator->getUserId())),
-					 $expr->eq($alias . '.user_type', $this->createNamedParameter($initiator->getUserType())),
-					 $expr->eq($alias . '.single_id', $this->createNamedParameter($initiator->getSingleId())),
-					 $expr->eq(
-						 $alias . '.instance', $this->createNamedParameter($this->getInstance($initiator))
-					 )
-				 )
-			 );
-	}
-
-
-	private function leftJoinMembership(
-		string $alias = 'mbs',
-		string $aliasInit = 'init',
-		string $aliasCircle = ''
-	): void {
-		if ($this->getType() !== QueryBuilder::SELECT) {
-			return;
+		if ($getData) {
+			$this->generateMemberSelectAlias($aliasInitiator, $prefixInitiator);
+			$this->generateMemberSelectAlias($aliasInheritedBy, $prefixInitiatorInheritedBy);
+			$this->generateMembershipSelectAlias($aliasInitiatorMembership, $prefixMembership);
 		}
 
-		$expr = $this->expr();
-		$aliasCircle = ($aliasCircle === '') ? $this->getDefaultSelectAlias() : $aliasCircle;
-		// Note: overwriting some data about initiator.
-		$this->selectAlias($alias . '.member_id', self::PREFIX_INITIATOR . 'member_id');
-		$this->selectAlias($alias . '.circle_id', self::PREFIX_INITIATOR . 'circle_id');
-		$this->selectAlias($alias . '.level', self::PREFIX_INITIATOR . 'level');
 		$this->leftJoin(
-			$aliasCircle, CoreQueryBuilder::TABLE_MEMBERSHIP, $alias,
+			$this->getDefaultSelectAlias(), CoreQueryBuilder::TABLE_MEMBERSHIP, $aliasInitiatorMembership,
 			$expr->andX(
-				$expr->eq($alias . '.single_id', $aliasInit . '.single_id'),
-				$expr->eq($alias . '.circle_id', $aliasCircle . '.unique_id')
+				$expr->eq(
+					$aliasInitiatorMembership . '.single_id',
+					$this->createNamedParameter($initiator->getSingleId())
+				),
+				$expr->eq($aliasInitiatorMembership . '.circle_id', $aliasCircle . '.unique_id')
 			)
 		);
+
+		$this->leftJoin(
+			$this->getDefaultSelectAlias(), CoreQueryBuilder::TABLE_MEMBER, $aliasInitiator,
+			$expr->andX(
+				$expr->eq($aliasInitiatorMembership . '.parent', $aliasInitiator . '.single_id'),
+				$expr->eq($aliasInitiatorMembership . '.circle_id', $aliasInitiator . '.circle_id')
+			)
+		);
+
+		$this->leftJoin(
+			$aliasInitiatorMembership, CoreQueryBuilder::TABLE_MEMBER, $aliasInheritedBy,
+			$expr->andX(
+				$expr->eq($aliasInitiatorMembership . '.single_id', $aliasInheritedBy . '.single_id'),
+				$expr->eq($aliasInitiatorMembership . '.single_id', $aliasInheritedBy . '.circle_id')
+			)
+		);
+
 	}
 
 
@@ -521,17 +564,17 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 
 
 	/**
-	 * @param string $alias
 	 * @param string $aliasCircle
 	 * @param bool $mustBeMember
 	 * @param bool $canBeVisitor
 	 */
-	protected function limitVisibility(
-		string $alias = 'mbs',
+	protected function limitInitiatorVisibility(
 		string $aliasCircle = '',
 		bool $mustBeMember = false,
 		bool $canBeVisitor = false
 	) {
+		$aliasMembership = $aliasCircle . self::EXTENSION_INITIATOR . self::EXTENSION_MEMBERSHIPS;
+
 		$expr = $this->expr();
 		$aliasCircle = ($aliasCircle === '') ? $this->getDefaultSelectAlias() : $aliasCircle;
 
@@ -541,12 +584,14 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 		// - 4 (Visible to everyone)
 		$orX = $expr->orX();
 		$orX->add(
-			$expr->andX($expr->gte($alias . '.level', $this->createNamedParameter(Member::LEVEL_MEMBER)))
+			$expr->andX(
+				$expr->gte($aliasMembership . '.level', $this->createNamedParameter(Member::LEVEL_MEMBER))
+			)
 		);
 		$orX->add(
 			$expr->andX(
 				$expr->bitwiseAnd($aliasCircle . '.config', Circle::CFG_PERSONAL),
-				$expr->eq($alias . '.level', $this->createNamedParameter(Member::LEVEL_OWNER))
+				$expr->eq($aliasMembership . '.level', $this->createNamedParameter(Member::LEVEL_OWNER))
 			)
 		);
 		if (!$mustBeMember) {
@@ -751,6 +796,21 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 			'cached_update', 'status', 'level', 'note', 'contact_id', 'contact_meta', 'joined'
 		];
 
+		$this->generateSelectAlias($fields, $alias, $prefix, $default);
+
+		return $this;
+	}
+
+
+	/**
+	 * @param string $alias
+	 * @param string $prefix
+	 * @param array $default
+	 *
+	 * @return $this
+	 */
+	private function generateMembershipSelectAlias(string $alias, string $prefix, array $default = []): self {
+		$fields = ['single_id', 'circle_id', 'level', 'parent', 'path'];
 		$this->generateSelectAlias($fields, $alias, $prefix, $default);
 
 		return $this;

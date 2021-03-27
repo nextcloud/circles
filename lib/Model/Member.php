@@ -129,6 +129,9 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	/** @var Circle */
 	private $basedOn;
 
+	/** @var FederatedUser */
+	private $inheritedBy;
+
 	/** @var string */
 	private $instance = '';
 
@@ -326,6 +329,25 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	 */
 	public function getBasedOn(): ?Circle {
 		return $this->basedOn;
+	}
+
+
+	/**
+	 * @param FederatedUser|null $inheritedBy
+	 *
+	 * @return $this
+	 */
+	public function setInheritedBy(?FederatedUser $inheritedBy): self {
+		$this->inheritedBy = $inheritedBy;
+
+		return $this;
+	}
+
+	/**
+	 * @return FederatedUser|null
+	 */
+	public function getInheritedBy(): ?FederatedUser {
+		return $this->inheritedBy;
 	}
 
 
@@ -596,38 +618,14 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 		} catch (InvalidItemException $e) {
 		}
 
-		return $this;
-	}
-
-
-	/**
-	 * @return string[]
-	 */
-	public function jsonSerialize(): array {
-		$arr = [
-			'id'            => $this->getId(),
-			'circleId'      => $this->getCircleId(),
-			'singleId'      => $this->getSingleId(),
-			'userId'        => $this->getUserId(),
-			'userType'      => $this->getUserType(),
-			'basedOn'       => $this->getBasedOn(),
-			'instance'      => $this->getInstance(),
-			'local'         => $this->isLocal(),
-			'level'         => $this->getLevel(),
-			'status'        => $this->getStatus(),
-			'displayName'   => $this->getDisplayName(),
-			'displayUpdate' => $this->getDisplayUpdate(),
-			'note'          => $this->getNote(),
-			'contactId'     => $this->getContactId(),
-			'contactMeta'   => $this->getContactMeta(),
-			'joined'        => $this->getJoined()
-		];
-
-		if ($this->hasCircle()) {
-			$arr['circle'] = $this->getCircle();
+		try {
+			/** @var Member $inheritedBy */
+			$inheritedBy = $this->deserialize($this->getArray('inheritedBy', $data), Membership::class);
+			$this->setInheritedBy($inheritedBy);
+		} catch (InvalidItemException $e) {
 		}
 
-		return $arr;
+		return $this;
 	}
 
 
@@ -639,7 +637,7 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	 * @throws MemberNotFoundException
 	 */
 	public function importFromDatabase(array $data, string $prefix = ''): INC22QueryRow {
-		if (!array_key_exists($prefix . 'member_id', $data)) {
+		if ($this->get($prefix . 'single_id', $data) === '') {
 			throw new MemberNotFoundException();
 		}
 
@@ -691,7 +689,54 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 			);
 		}
 
+		if (in_array($prefix, CoreRequestBuilder::$IMPORT_INITIATOR_INHERITED_BY)) {
+			$this->getManager()->importInheritedByFromDatabase(
+				$this, $data, CoreRequestBuilder::PREFIX_INITIATOR_INHERITED_BY
+			);
+		}
+
+		if (in_array($prefix, CoreRequestBuilder::$IMPORT_BASED_ON_INITIATOR_INHERITED_BY)) {
+			$this->getManager()->importInheritedByFromDatabase(
+				$this, $data, CoreRequestBuilder::PREFIX_BASED_ON_INITIATOR_INHERITED_BY
+			);
+		}
+
 		return $this;
+	}
+
+
+	/**
+	 * @return string[]
+	 */
+	public function jsonSerialize(): array {
+		$arr = [
+			'id'            => $this->getId(),
+			'circleId'      => $this->getCircleId(),
+			'singleId'      => $this->getSingleId(),
+			'userId'        => $this->getUserId(),
+			'userType'      => $this->getUserType(),
+			'basedOn'       => $this->getBasedOn(),
+			'instance'      => $this->getInstance(),
+			'local'         => $this->isLocal(),
+			'level'         => $this->getLevel(),
+			'status'        => $this->getStatus(),
+			'displayName'   => $this->getDisplayName(),
+			'displayUpdate' => $this->getDisplayUpdate(),
+			'note'          => $this->getNote(),
+			'contactId'     => $this->getContactId(),
+			'contactMeta'   => $this->getContactMeta(),
+			'joined'        => $this->getJoined()
+		];
+
+		if (!is_null($this->getInheritedBy())) {
+			$arr['inheritedBy'] = $this->getInheritedBy();
+		}
+
+		if ($this->hasCircle()) {
+			$arr['circle'] = $this->getCircle();
+		}
+
+		return $arr;
 	}
 
 
@@ -740,7 +785,7 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 		$type = array_search($typeString, Member::$TYPE);
 
 		if ($type === false) {
-			 $all = implode(', ', array_values(self::$TYPE));
+			$all = implode(', ', array_values(self::$TYPE));
 			throw new UserTypeNotFoundException('Available types: ' . $all);
 		}
 

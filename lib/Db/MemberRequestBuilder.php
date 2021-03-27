@@ -34,6 +34,7 @@ namespace OCA\Circles\Db;
 
 use daita\MySmallPhpTools\Exceptions\RowNotFoundException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 
@@ -70,9 +71,11 @@ class MemberRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
+	 * @param IFederatedUser|null $initiator
+	 *
 	 * @return CoreRequestBuilder
 	 */
-	protected function getMemberSelectSql(): CoreRequestBuilder {
+	protected function getMemberSelectSql(?IFederatedUser $initiator = null): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->select(
 			'm.circle_id', 'm.member_id', 'm.single_id', 'm.user_id', 'm.instance', 'm.user_type', 'm.level',
@@ -83,7 +86,7 @@ class MemberRequestBuilder extends CoreQueryBuilder {
 		   ->orderBy('m.joined')
 		   ->groupBy('m.member_id')
 		   ->setDefaultSelectAlias('m')
-		   ->leftJoinBasedOnCircle();
+		   ->leftJoinBasedOnCircle('m', CoreRequestBuilder::PREFIX_BASED_ON, $initiator);
 
 		return $qb;
 	}

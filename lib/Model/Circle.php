@@ -140,11 +140,11 @@ class Circle extends ManagedModel implements IDeserializable, INC22QueryRow, Jso
 	 * @var array
 	 */
 	public static $DEF_SOURCE = [
+		0     => 'Circle',
 		1     => 'Nextcloud User',
 		2     => 'Nextcloud Group',
 		4     => 'Mail Address',
 		8     => 'Contact',
-		16    => 'Circle',
 		10001 => 'Circles App'
 	];
 
@@ -670,7 +670,15 @@ class Circle extends ManagedModel implements IDeserializable, INC22QueryRow, Jso
 		}
 
 		if (in_array($prefix, CoreRequestBuilder::$IMPORT_INITIATOR)) {
-			$this->getManager()->importInitiatorFromDatabase($this, $data);
+			$this->getManager()->importInitiatorFromDatabase(
+				$this, $data, CoreRequestBuilder::PREFIX_INITIATOR
+			);
+		}
+
+		if (in_array($prefix, CoreRequestBuilder::$IMPORT_BASED_ON_INITIATOR)) {
+			$this->getManager()->importInitiatorFromDatabase(
+				$this, $data, CoreRequestBuilder::PREFIX_BASED_ON_INITIATOR
+			);
 		}
 
 		return $this;

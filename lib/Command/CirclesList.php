@@ -202,7 +202,7 @@ class CirclesList extends Base {
 					$circle->getId(),
 					$this->input->getOption('display-name') ? $circle->getDisplayName() : $circle->getName(),
 					json_encode(Circle::getCircleFlags($circle, $display)),
-					($circle->getSource() > 0) ? Circle::$DEF_SOURCE[$circle->getSource()] : '',
+					Circle::$DEF_SOURCE[$circle->getSource()],
 					$owner->getUserId(),
 					($owner->getInstance() === $local) ? '' : $owner->getInstance(),
 					$this->getInt('members_limit', $circle->getSettings(), -1),

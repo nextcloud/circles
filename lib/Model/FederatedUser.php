@@ -37,6 +37,9 @@ use daita\MySmallPhpTools\IDeserializable;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
+use OCA\Circles\Db\CoreRequestBuilder;
+use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\IFederatedUser;
 
@@ -82,6 +85,14 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 	}
 
 
+	/**
+	 * @param string $userId
+	 * @param string $instance
+	 * @param int $type
+	 * @param Circle|null $basedOn
+	 *
+	 * @return $this
+	 */
 	public function set(
 		string $userId = '',
 		$instance = '',
@@ -96,6 +107,7 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 
 		return $this;
 	}
+
 
 	/**
 	 * @param string $singleId
@@ -288,33 +300,52 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 
 
 	/**
-	 * @return string[]
-	 */
-	public function jsonSerialize(): array {
-		return [
-			'id'        => $this->getSingleId(),
-			'user_id'   => $this->getUserId(),
-			'user_type' => $this->getUserType(),
-			'instance'  => $this->getInstance(),
-			'basedOn'   => $this->getBasedOn(),
-			//			'memberships' => $this->getMemberships()
-		];
-	}
-
-
-	/**
 	 * @param array $data
 	 * @param string $prefix
 	 *
 	 * @return INC22QueryRow
+	 * @throws FederatedUserNotFoundException
 	 */
 	public function importFromDatabase(array $data, string $prefix = ''): INC22QueryRow {
+		if ($this->get($prefix . 'single_id', $data) === '') {
+			throw new FederatedUserNotFoundException();
+		}
+
 		$this->setSingleId($this->get($prefix . 'single_id', $data));
 		$this->setUserId($this->get($prefix . 'user_id', $data));
 		$this->setUserType($this->getInt($prefix . 'user_type', $data));
 		$this->setInstance($this->get($prefix . 'instance', $data));
 
+		if (in_array($prefix, CoreRequestBuilder::$IMPORT_BASED_ON_INITIATOR_INHERITED_BY_MEMBERSHIP)) {
+			$this->getManager()->importMembershipFromDatabase(
+				$this, $data, CoreRequestBuilder::PREFIX_BASED_ON_INITIATOR_INHERITED_BY_MEMBERSHIP
+			);
+		}
+
 		return $this;
+	}
+
+
+	/**
+	 * @return string[]
+	 */
+	public function jsonSerialize(): array {
+		$arr = [
+			'id'        => $this->getSingleId(),
+			'user_id'   => $this->getUserId(),
+			'user_type' => $this->getUserType(),
+			'instance'  => $this->getInstance()
+		];
+
+		if (!is_null($this->getBasedOn())) {
+			$arr['basedOn'] = $this->getBasedOn();
+		}
+
+		if (!is_null($this->memberships)) {
+			$arr['memberships'] = $this->getMemberships();
+		}
+
+		return $arr;
 	}
 
 

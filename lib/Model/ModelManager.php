@@ -35,7 +35,10 @@ namespace OCA\Circles\Model;
 use OCA\Circles\Db\CoreRequestBuilder;
 use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MemberService;
@@ -48,14 +51,14 @@ use OCA\Circles\Service\MemberService;
 class ModelManager {
 
 
+	/** @var MembershipRequest */
+	private $membershipRequest;
+
 	/** @var MemberService */
 	private $memberService;
 
 	/** @var ConfigService */
 	private $configService;
-
-	/** @var MembershipRequest */
-	private $membershipRequest;
 
 
 	/** @var bool */
@@ -70,16 +73,26 @@ class ModelManager {
 	 * @param MembershipRequest $membershipRequest
 	 */
 	public function __construct(
-		MemberService $memberService, ConfigService $configService, MembershipRequest $membershipRequest
+		MembershipRequest $membershipRequest, MemberService $memberService, ConfigService $configService
 	) {
+		$this->membershipRequest = $membershipRequest;
 		$this->memberService = $memberService;
 		$this->configService = $configService;
-		$this->membershipRequest = $membershipRequest;
+	}
+
+
+	/**
+	 * @return ConfigService
+	 */
+	public function getConfigService(): ConfigService {
+		return $this->configService;
 	}
 
 
 	/**
 	 * @param Circle $circle
+	 *
+	 * @throws InitiatorNotFoundException
 	 */
 	public function getMembers(Circle $circle): void {
 		$members = $this->memberService->getMembers($circle->getId());
@@ -135,6 +148,36 @@ class ModelManager {
 
 
 	/**
+	 * @param Member $member
+	 * @param array $data
+	 * @param string $prefix
+	 */
+	public function importInheritedByFromDatabase(Member $member, array $data, string $prefix) {
+		try {
+			$inheritedBy = new FederatedUser();
+			$inheritedBy->importFromDatabase($data, $prefix);
+			$member->setInheritedBy($inheritedBy);
+		} catch (FederatedUserNotFoundException $e) {
+		}
+	}
+
+
+	/**
+	 * @param FederatedUser $federatedUser
+	 * @param array $data
+	 * @param string $prefix
+	 */
+	public function importMembershipFromDatabase(FederatedUser $federatedUser, array $data, string $prefix) {
+		try {
+			$membership = new Membership();
+			$membership->importFromDatabase($data, $prefix);
+			$federatedUser->setMemberships([$membership]);
+		} catch (MembershipNotFoundException $e) {
+		}
+	}
+
+
+	/**
 	 * @param Circle $circle
 	 * @param array $data
 	 */
@@ -151,11 +194,12 @@ class ModelManager {
 	/**
 	 * @param Circle $circle
 	 * @param array $data
+	 * @param string $prefix
 	 */
-	public function importInitiatorFromDatabase(Circle $circle, array $data): void {
+	public function importInitiatorFromDatabase(Circle $circle, array $data, string $prefix): void {
 		try {
 			$initiator = new Member();
-			$initiator->importFromDatabase($data, CoreRequestBuilder::PREFIX_INITIATOR);
+			$initiator->importFromDatabase($data, $prefix);
 			$circle->setInitiator($initiator);
 		} catch (MemberNotFoundException $e) {
 		}

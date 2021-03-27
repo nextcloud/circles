@@ -50,9 +50,12 @@ class MembershipRequest extends MembershipRequestBuilder {
 		$qb = $this->getMembershipInsertSql();
 		$qb->setValue('single_id', $qb->createNamedParameter($membership->getSingleId()));
 		$qb->setValue('circle_id', $qb->createNamedParameter($membership->getCircleId()));
-		$qb->setValue('member_id', $qb->createNamedParameter($membership->getMemberId()));
+//		$qb->setValue('member_id', $qb->createNamedParameter($membership->getMemberId()));
 		$qb->setValue('parent', $qb->createNamedParameter($membership->getParent()));
 		$qb->setValue('level', $qb->createNamedParameter($membership->getLevel()));
+		$qb->setValue(
+			'path', $qb->createNamedParameter(json_encode($membership->getPath(), JSON_UNESCAPED_SLASHES))
+		);
 
 		$qb->execute();
 	}
@@ -63,8 +66,12 @@ class MembershipRequest extends MembershipRequestBuilder {
 	 */
 	public function update(Membership $membership) {
 		$qb = $this->getMembershipUpdateSql();
-		$qb->set('member_id', $qb->createNamedParameter($membership->getMemberId()));
+//		$qb->set('member_id', $qb->createNamedParameter($membership->getMemberId()));
 		$qb->set('level', $qb->createNamedParameter($membership->getLevel()));
+		$qb->set('parent', $qb->createNamedParameter($membership->getParent()));
+		$qb->set(
+			'path', $qb->createNamedParameter(json_encode($membership->getPath(), JSON_UNESCAPED_SLASHES))
+		);
 
 		$qb->limitToSingleId($membership->getSingleId());
 		$qb->limitToCircleId($membership->getCircleId());
@@ -101,12 +108,16 @@ class MembershipRequest extends MembershipRequestBuilder {
 
 	/**
 	 * @param string $singleId
+	 * @param bool $all
 	 *
 	 * @return void
 	 */
-	public function removeBySingleId(string $singleId): void {
+	public function removeBySingleId(string $singleId, bool $all = false): void {
 		$qb = $this->getMembershipDeleteSql();
-		$qb->limitToSingleId($singleId);
+
+		if (!$all) {
+			$qb->limitToSingleId($singleId);
+		}
 
 		$qb->execute();
 	}
