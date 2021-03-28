@@ -115,6 +115,7 @@ class WebfingerHandler implements IHandler {
 		$info = [
 			'app'     => Application::APP_ID,
 			'name'    => Application::APP_NAME,
+			'token'   => Application::APP_TOKEN,
 			'version' => $this->configService->getAppValue('installed_version'),
 			'api'     => Application::APP_API
 		];

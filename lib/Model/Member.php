@@ -314,6 +314,13 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 
 
 	/**
+	 * @return bool
+	 */
+	public function hasBasedOn(): bool {
+		return !is_null($this->basedOn);
+	}
+
+	/**
 	 * @param Circle|null $basedOn
 	 *
 	 * @return $this

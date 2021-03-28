@@ -213,7 +213,7 @@ class MembersList extends Base {
 					$member->getId(),
 					$member->getSingleId(),
 					Member::$TYPE[$member->getUserType()],
-					Circle::$DEF_SOURCE[$member->getBasedOn()->getSource()],
+					$member->hasBasedOn() ? Circle::$DEF_SOURCE[$member->getBasedOn()->getSource()] : '',
 					$member->getUserId(),
 					($member->getInstance() === $local) ? '' : $member->getInstance(),
 					$member->getLevel() > 0 ? Member::$DEF_LEVEL[$member->getLevel()] :
@@ -235,6 +235,7 @@ class MembersList extends Base {
 	 *
 	 * @return array
 	 * @throws CircleNotFoundException
+	 * @throws FederatedItemException
 	 * @throws FederatedUserException
 	 * @throws FederatedUserNotFoundException
 	 * @throws InitiatorNotFoundException
@@ -247,6 +248,7 @@ class MembersList extends Base {
 	 * @throws RemoteResourceNotFoundException
 	 * @throws RequestNetworkException
 	 * @throws SignatoryException
+	 * @throws SingleCircleNotFoundException
 	 * @throws UnknownRemoteException
 	 * @throws UserTypeNotFoundException
 	 */
@@ -364,7 +366,7 @@ class MembersList extends Base {
 					$name = ($this->input->getOption('display-name')) ?
 						$member->getDisplayName() : $member->getUserId();
 					$line .= ' <info>Name</info>: ' . $name;
-					$source = $member->getBasedOn()->getSource();
+					$source = ($member->hasBasedOn()) ? $member->getBasedOn()->getSource() : '';
 					$line .= ' <info>Source</info>: ' . Circle::$DEF_SOURCE[$source];
 				}
 

@@ -76,6 +76,7 @@ class Application extends App implements IBootstrap {
 
 	const APP_ID = 'circles';
 	const APP_NAME = 'Circles';
+const APP_TOKEN = '12345678';
 
 	const APP_SUBJECT = 'http://nextcloud.com/';
 	const APP_REL = 'https://apps.nextcloud.com/apps/circles';
