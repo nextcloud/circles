@@ -64,6 +64,7 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 	const INITIATOR = 'initiator';
 	const MEMBERSHIPS = 'memberships';
 	const INHERITED_BY = 'inheritedBy';
+	const OPTIONS = 'options';
 
 	public static $SQL_PATH = [
 		self::CIRCLE => [
@@ -79,7 +80,14 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 		],
 		self::MEMBER => [
 			self::CIRCLE   => [
+				self::OPTIONS   => [
+					'getData' => true
+				],
 				self::INITIATOR => [
+					self::OPTIONS => [
+						'mustBeMember' => false,
+						'canBeVisitor' => false
+					],
 					self::BASED_ON,
 					self::MEMBERSHIPS,
 					self::INHERITED_BY
@@ -87,13 +95,10 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 			],
 			self::BASED_ON => [
 				self::OWNER,
-				self::INITIATOR    => [
+				self::INITIATOR => [
 					self::BASED_ON,
 					self::MEMBERSHIPS,
 					self::INHERITED_BY
-				],
-				self::INHERITED_BY => [
-					self::MEMBERSHIPS
 				]
 			]
 		],
@@ -129,6 +134,9 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 	/** @var ConfigService */
 	private $configService;
 
+
+	/** @var array */
+	private $options = [];
 
 	/**
 	 * CoreRequestBuilder constructor.
@@ -313,20 +321,16 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 	/**
 	 * @param string $aliasMember
 	 * @param IFederatedUser|null $initiator
-	 * @param bool $getData
 	 *
 	 * @throws RequestBuilderException
 	 */
-	public function leftJoinCircle(
-		string $aliasMember,
-		?IFederatedUser $initiator = null,
-		bool $getData = true
-	): void {
+	public function leftJoinCircle(string $aliasMember, ?IFederatedUser $initiator = null): void {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
 
-		$aliasCircle = $this->generateAlias($aliasMember, self::CIRCLE);
+		$aliasCircle = $this->generateAlias($aliasMember, self::CIRCLE, $options);
+		$getData = $this->getBool('getData', $options, true);
 		$expr = $this->expr();
 
 		if ($getData) {
@@ -339,7 +343,14 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 		);
 
 		if (!is_null($initiator)) {
-			$this->limitToInitiator($aliasCircle, $initiator, true, false, $getData);
+			$this->setOptions(
+				explode('_', $aliasCircle), [
+											  'mustBeMember' => true,
+											  'canBeVisitor' => false
+										  ]
+			);
+
+			$this->limitToInitiator($aliasCircle, $initiator);
 		}
 
 		$this->leftJoinOwner($aliasCircle);
@@ -412,27 +423,15 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 	/**
 	 * @param IFederatedUser $initiator
 	 * @param string $aliasCircle
-	 * @param bool $mustBeMember
-	 * @param bool $canBeVisitor
-	 * @param bool $getData
 	 *
 	 * @throws RequestBuilderException
 	 */
-	public function limitToInitiator(
-		string $aliasCircle,
-		IFederatedUser $initiator,
-		bool $mustBeMember = false,
-		bool $canBeVisitor = false,
-		bool $getData = true
-	): void {
-		$this->leftJoinInitiator(
-			$aliasCircle,
-			$initiator,
-			$getData
-		);
-		$this->limitInitiatorVisibility($aliasCircle, $mustBeMember, $canBeVisitor);
+	public function limitToInitiator(string $aliasCircle, IFederatedUser $initiator): void {
+		$this->leftJoinInitiator($aliasCircle, $initiator);
+		$this->limitInitiatorVisibility($aliasCircle);
+		$aliasInitiator = $this->generateAlias($aliasCircle, self::INITIATOR, $options);
+		$getData = $this->getBool('getData', $options, true);
 
-		$aliasInitiator = $this->generateAlias($aliasCircle, self::INITIATOR);
 		if ($getData) {
 			$this->leftJoinBasedOn($aliasInitiator);
 		}
@@ -444,25 +443,24 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 	 *
 	 * @param IFederatedUser $initiator
 	 * @param string $aliasCircle
-	 * @param bool $getData
 	 */
 	public function leftJoinInitiator(
 		string $aliasCircle,
-		IFederatedUser $initiator,
-		bool $getData = true
+		IFederatedUser $initiator
 	): void {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
 
 		try {
-			$aliasInitiator = $this->generateAlias($aliasCircle, self::INITIATOR);
+			$aliasInitiator = $this->generateAlias($aliasCircle, self::INITIATOR, $options);
 			$aliasInheritedBy = $this->generateAlias($aliasInitiator, self::INHERITED_BY);
 			$aliasMembership = $this->generateAlias($aliasInitiator, self::MEMBERSHIPS);
 		} catch (RequestBuilderException $e) {
 			return;
 		}
 
+		$getData = $this->getBool('getData', $options, true);
 		$expr = $this->expr();
 
 		if ($getData) {
@@ -589,22 +587,16 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 
 	/**
 	 * @param string $aliasCircle
-	 * @param bool $mustBeMember
-	 * @param bool $canBeVisitor
 	 *
 	 * @throws RequestBuilderException
 	 */
-	protected function limitInitiatorVisibility(
-		string $aliasCircle = '',
-		bool $mustBeMember = false,
-		bool $canBeVisitor = false
-	) {
-
-		$aliasInitiator = $this->generateAlias($aliasCircle, self::INITIATOR);
+	protected function limitInitiatorVisibility(string $aliasCircle) {
+		$aliasInitiator = $this->generateAlias($aliasCircle, self::INITIATOR, $options);
 		$aliasMembership = $this->generateAlias($aliasInitiator, self::MEMBERSHIPS);
+		$mustBeMember = $this->getBool('mustBeMember', $options);
+		$canBeVisitor = $this->getBool('canBeVisitor', $options);
 
 		$expr = $this->expr();
-		$aliasCircle = ($aliasCircle === '') ? $this->getDefaultSelectAlias() : $aliasCircle;
 
 		// Visibility to non-member is
 		// - 0 (default), if initiator is member
@@ -840,22 +832,44 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 	 * @param array $path
 	 * @param array $options
 	 */
-	public function setOptions(array $path, array $options) {
+	public function setOptions(array $path, array $options): void {
+		$options = [self::OPTIONS => $options];
+		foreach (array_reverse($path) as $item) {
+			$options = [$item => $options];
+		}
 
+		$this->options = $options;
 	}
+
 
 	/**
 	 * @param string $base
 	 * @param string $extension
+	 * @param array|null $options
 	 *
 	 * @return string
 	 * @throws RequestBuilderException
 	 */
-	public function generateAlias(string $base, string $extension): string {
+	public function generateAlias(string $base, string $extension, ?array &$options = []): string {
 		$search = str_replace('_', '.', $base);
-		if (!$this->validKey($search . '.' . $extension, self::$SQL_PATH)
+		$path = $search . '.' . $extension;
+		if (!$this->validKey($path, self::$SQL_PATH)
 			&& !in_array($extension, $this->getArray($search, self::$SQL_PATH))) {
 			throw new RequestBuilderException($extension . ' not found in ' . $search);
+		}
+
+		if (!is_array($options)) {
+			$options = [];
+		}
+
+		$optionPath = '';
+		foreach (explode('.', $path) as $p) {
+			$optionPath = trim($optionPath . '.' . $p, '.');
+			$options = array_merge(
+				$options,
+				$this->getArray($optionPath . '.' . self::OPTIONS, self::$SQL_PATH),
+				$this->getArray($optionPath . '.' . self::OPTIONS, $this->options)
+			);
 		}
 
 		return $base . '_' . $extension;
