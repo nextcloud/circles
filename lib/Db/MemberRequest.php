@@ -34,6 +34,7 @@ namespace OCA\Circles\Db;
 
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\RemoteInstance;
@@ -157,6 +158,7 @@ class MemberRequest extends MemberRequestBuilder {
 	 * @param Member|null $filter
 	 *
 	 * @return Circle[]
+	 * @throws RequestBuilderException
 	 */
 	public function getMembers(
 		string $circleId,
@@ -166,14 +168,13 @@ class MemberRequest extends MemberRequestBuilder {
 	): array {
 		$qb = $this->getMemberSelectSql($initiator);
 		$qb->limitToCircleId($circleId);
-		$qb->leftJoinCircle($initiator, false);
+		$qb->leftJoinCircle(CoreRequestBuilder::MEMBER, $initiator, false);
 
 		if (!is_null($remoteInstance)) {
-			$qb->limitToRemoteInstance($remoteInstance->getInstance(), true);
+			$qb->limitToRemoteInstance($remoteInstance->getInstance(), true, 'circle');
 		}
-
 		if (!is_null($filter)) {
-			$qb->filterMembership($filter);
+			$qb->filterMembership(CoreRequestBuilder::MEMBER, $filter);
 		}
 
 		$qb->orderBy($qb->getDefaultSelectAlias() . '.level', 'desc');
@@ -189,13 +190,14 @@ class MemberRequest extends MemberRequestBuilder {
 	 *
 	 * @return Member
 	 * @throws MemberNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	public function getMember(string $memberId, ?FederatedUser $initiator = null): Member {
 		$qb = $this->getMemberSelectSql();
 		$qb->limitToMemberId($memberId);
 
 		if (!is_null($initiator)) {
-			$qb->leftJoinCircle($initiator);
+			$qb->leftJoinCircle(CoreRequestBuilder::MEMBER, $initiator);
 		}
 
 		return $this->getItemFromRequest($qb);
@@ -229,7 +231,7 @@ class MemberRequest extends MemberRequestBuilder {
 	 */
 	public function getMembersBySingleId(string $singleId): array {
 		$qb = $this->getMemberSelectSql();
-		$qb->leftJoinCircle();
+		$qb->leftJoinCircle(CoreRequestBuilder::MEMBER);
 
 		$qb->limitToSingleId($singleId);
 
@@ -243,6 +245,7 @@ class MemberRequest extends MemberRequestBuilder {
 	 *
 	 * @return Member
 	 * @throws MemberNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	public function searchMember(Member $member, ?FederatedUser $initiator = null): Member {
 		$qb = $this->getMemberSelectSql();
@@ -252,7 +255,7 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->limitToInstance($qb->getInstance($member));
 		$qb->limitToSingleId($member->getSingleId());
 
-		$qb->leftJoinCircle($initiator);
+		$qb->leftJoinCircle(CoreRequestBuilder::MEMBER, $initiator);
 
 		return $this->getItemFromRequest($qb);
 	}

@@ -39,7 +39,6 @@ use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use DateTime;
 use JsonSerializable;
-use OCA\Circles\Db\CoreRequestBuilder;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 
@@ -665,21 +664,7 @@ class Circle extends ManagedModel implements IDeserializable, INC22QueryRow, Jso
 		$creation = $this->get($prefix . 'creation', $data);
 		$this->setCreation(DateTime::createFromFormat('Y-m-d H:i:s', $creation)->getTimestamp());
 
-		if (in_array($prefix, CoreRequestBuilder::$IMPORT_OWNER)) {
-			$this->getManager()->importOwnerFromDatabase($this, $data);
-		}
-
-		if (in_array($prefix, CoreRequestBuilder::$IMPORT_INITIATOR)) {
-			$this->getManager()->importInitiatorFromDatabase(
-				$this, $data, CoreRequestBuilder::PREFIX_INITIATOR
-			);
-		}
-
-		if (in_array($prefix, CoreRequestBuilder::$IMPORT_BASED_ON_INITIATOR)) {
-			$this->getManager()->importInitiatorFromDatabase(
-				$this, $data, CoreRequestBuilder::PREFIX_BASED_ON_INITIATOR
-			);
-		}
+		$this->getManager()->manageImportFromDatabase($this, $data, $prefix);
 
 		return $this;
 	}

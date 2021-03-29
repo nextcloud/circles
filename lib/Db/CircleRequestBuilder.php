@@ -73,15 +73,22 @@ class CircleRequestBuilder extends CoreQueryBuilder {
 	 */
 	protected function getCircleSelectSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->selectDistinct('c.unique_id')
+		$qb->selectDistinct(CoreRequestBuilder::CIRCLE . '.unique_id')
 		   ->addSelect(
-			   'c.name', 'c.display_name', 'c.source', 'c.description', 'c.settings', 'c.config',
-			   'c.contact_addressbook', 'c.contact_groupname', 'c.creation'
+			   CoreRequestBuilder::CIRCLE . '.name',
+			   CoreRequestBuilder::CIRCLE . '.display_name',
+			   CoreRequestBuilder::CIRCLE . '.source',
+			   CoreRequestBuilder::CIRCLE . '.description',
+			   CoreRequestBuilder::CIRCLE . '.settings',
+			   CoreRequestBuilder::CIRCLE . '.config',
+			   CoreRequestBuilder::CIRCLE . '.contact_addressbook',
+			   CoreRequestBuilder::CIRCLE . '.contact_groupname',
+			   CoreRequestBuilder::CIRCLE . '.creation'
 		   )
-		   ->from(self::TABLE_CIRCLE, 'c')
-		   ->groupBy('c.unique_id')
-			->orderBy('c.creation', 'asc')
-		   ->setDefaultSelectAlias('c');
+		   ->from(self::TABLE_CIRCLE, CoreRequestBuilder::CIRCLE)
+		   ->groupBy(CoreRequestBuilder::CIRCLE . '.unique_id')
+		   ->orderBy(CoreRequestBuilder::CIRCLE . '.creation', 'asc')
+		   ->setDefaultSelectAlias(CoreRequestBuilder::CIRCLE);
 
 		return $qb;
 	}

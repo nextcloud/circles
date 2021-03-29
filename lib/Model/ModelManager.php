@@ -39,7 +39,6 @@ use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\MembershipNotFoundException;
-use OCA\Circles\IFederatedUser;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MemberService;
 
@@ -50,6 +49,9 @@ use OCA\Circles\Service\MemberService;
  */
 class ModelManager {
 
+
+	/** @var CoreRequestBuilder */
+	private $coreRequestBuilder;
 
 	/** @var MembershipRequest */
 	private $membershipRequest;
@@ -68,13 +70,16 @@ class ModelManager {
 	/**
 	 * ModelManager constructor.
 	 *
+	 * @param CoreRequestBuilder $coreRequestBuilder
+	 * @param MembershipRequest $membershipRequest
 	 * @param MemberService $memberService
 	 * @param ConfigService $configService
-	 * @param MembershipRequest $membershipRequest
 	 */
 	public function __construct(
-		MembershipRequest $membershipRequest, MemberService $memberService, ConfigService $configService
+		CoreRequestBuilder $coreRequestBuilder, MembershipRequest $membershipRequest,
+		MemberService $memberService, ConfigService $configService
 	) {
+		$this->coreRequestBuilder = $coreRequestBuilder;
 		$this->membershipRequest = $membershipRequest;
 		$this->memberService = $memberService;
 		$this->configService = $configService;
@@ -101,9 +106,9 @@ class ModelManager {
 
 
 	/**
-	 * @param IFederatedUser $federatedUser
+	 * @param FederatedUser $federatedUser
 	 */
-	public function getMemberships(IFederatedUser $federatedUser): void {
+	public function getMemberships(FederatedUser $federatedUser): void {
 		$memberships = $this->membershipRequest->getMemberships($federatedUser->getSingleId());
 		$federatedUser->setMemberships($memberships);
 	}
@@ -119,13 +124,78 @@ class ModelManager {
 
 
 	/**
+	 * @param ManagedModel $model
+	 * @param array $data
+	 * @param string $base
+	 */
+	public function manageImportFromDatabase(ManagedModel $model, array $data, string $base): void {
+		if ($model instanceof Circle) {
+			if ($base === '') {
+				$base = CoreRequestBuilder::CIRCLE;
+			}
+		}
+
+		if ($model instanceof Member) {
+			if ($base === '') {
+				$base = CoreRequestBuilder::MEMBER;
+			}
+		}
+
+		foreach ($this->coreRequestBuilder->getAvailablePath($base) as $path => $prefix) {
+			$this->importBasedOnPath($model, $data, $path, $prefix);
+		}
+	}
+
+
+	private function importBasedOnPath(ManagedModel $model, array $data, string $path, string $prefix) {
+		if ($model instanceof Circle) {
+			switch ($path) {
+				case CoreRequestBuilder::OWNER;
+					$this->importOwnerFromDatabase($model, $data, $prefix);
+					break;
+
+				case CoreRequestBuilder::INITIATOR;
+					$this->importInitiatorFromDatabase($model, $data, $prefix);
+					break;
+			}
+		}
+
+		if ($model instanceof Member) {
+			switch ($path) {
+				case CoreRequestBuilder::CIRCLE;
+					$this->importCircleFromDatabase($model, $data, $prefix);
+					break;
+
+				case CoreRequestBuilder::BASED_ON;
+					$this->importBasedOnFromDatabase($model, $data, $prefix);
+					break;
+
+				case CoreRequestBuilder::INHERITED_BY;
+					$this->importInheritedByFromDatabase($model, $data, $prefix);
+					break;
+			}
+		}
+
+		if ($model instanceof FederatedUser) {
+			switch ($path) {
+				case CoreRequestBuilder::MEMBERSHIPS;
+					$this->importMembershipFromDatabase($model, $data, $prefix);
+					break;
+			}
+		}
+
+	}
+
+
+	/**
 	 * @param Member $member
 	 * @param array $data
+	 * @param string $prefix
 	 */
-	public function importCircleFromDatabase(Member $member, array $data) {
+	public function importCircleFromDatabase(Member $member, array $data, string $prefix) {
 		try {
 			$circle = new Circle();
-			$circle->importFromDatabase($data, CoreRequestBuilder::PREFIX_CIRCLE);
+			$circle->importFromDatabase($data, $prefix);
 			$member->setCircle($circle);
 		} catch (CircleNotFoundException $e) {
 		}
@@ -180,11 +250,12 @@ class ModelManager {
 	/**
 	 * @param Circle $circle
 	 * @param array $data
+	 * @param string $prefix
 	 */
-	public function importOwnerFromDatabase(Circle $circle, array $data): void {
+	public function importOwnerFromDatabase(Circle $circle, array $data, string $prefix): void {
 		try {
 			$owner = new Member();
-			$owner->importFromDatabase($data, CoreRequestBuilder::PREFIX_OWNER);
+			$owner->importFromDatabase($data, $prefix);
 			$circle->setOwner($owner);
 		} catch (MemberNotFoundException $e) {
 		}

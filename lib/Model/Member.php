@@ -39,7 +39,6 @@ use daita\MySmallPhpTools\Traits\TArrayTools;
 use DateTime;
 use JsonSerializable;
 use OCA\Circles\AppInfo\Capabilities;
-use OCA\Circles\Db\CoreRequestBuilder;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\ParseMemberLevelException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
@@ -676,37 +675,7 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 			$this->setInstance($this->get('_params.local', $data));
 		}
 
-		if (in_array($prefix, CoreRequestBuilder::$IMPORT_CIRCLE)) {
-			$this->getManager()->importCircleFromDatabase($this, $data);
-		}
-
-		if (in_array($prefix, CoreRequestBuilder::$IMPORT_BASED_ON)) {
-			$this->getManager()->importBasedOnFromDatabase($this, $data, CoreRequestBuilder::PREFIX_BASED_ON);
-		}
-
-		if (in_array($prefix, CoreRequestBuilder::$IMPORT_OWNER_BASED_ON)) {
-			$this->getManager()->importBasedOnFromDatabase(
-				$this, $data, CoreRequestBuilder::PREFIX_OWNER_BASED_ON
-			);
-		}
-
-		if (in_array($prefix, CoreRequestBuilder::$IMPORT_INITIATOR_BASED_ON)) {
-			$this->getManager()->importBasedOnFromDatabase(
-				$this, $data, CoreRequestBuilder::PREFIX_INITIATOR_BASED_ON
-			);
-		}
-
-		if (in_array($prefix, CoreRequestBuilder::$IMPORT_INITIATOR_INHERITED_BY)) {
-			$this->getManager()->importInheritedByFromDatabase(
-				$this, $data, CoreRequestBuilder::PREFIX_INITIATOR_INHERITED_BY
-			);
-		}
-
-		if (in_array($prefix, CoreRequestBuilder::$IMPORT_BASED_ON_INITIATOR_INHERITED_BY)) {
-			$this->getManager()->importInheritedByFromDatabase(
-				$this, $data, CoreRequestBuilder::PREFIX_BASED_ON_INITIATOR_INHERITED_BY
-			);
-		}
+		$this->getManager()->manageImportFromDatabase($this, $data, $prefix);
 
 		return $this;
 	}

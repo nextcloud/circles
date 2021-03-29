@@ -78,15 +78,26 @@ class MemberRequestBuilder extends CoreQueryBuilder {
 	protected function getMemberSelectSql(?IFederatedUser $initiator = null): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->select(
-			'm.circle_id', 'm.member_id', 'm.single_id', 'm.user_id', 'm.instance', 'm.user_type', 'm.level',
-			'm.status', 'm.note', 'm.contact_id', 'm.cached_name', 'm.cached_update', 'm.contact_meta',
-			'm.joined'
+			CoreRequestBuilder::MEMBER . '.circle_id',
+			CoreRequestBuilder::MEMBER . '.member_id',
+			CoreRequestBuilder::MEMBER . '.single_id',
+			CoreRequestBuilder::MEMBER . '.user_id',
+			CoreRequestBuilder::MEMBER . '.instance',
+			CoreRequestBuilder::MEMBER . '.user_type',
+			CoreRequestBuilder::MEMBER . '.level',
+			CoreRequestBuilder::MEMBER . '.status',
+			CoreRequestBuilder::MEMBER . '.note',
+			CoreRequestBuilder::MEMBER . '.contact_id',
+			CoreRequestBuilder::MEMBER . '.cached_name',
+			CoreRequestBuilder::MEMBER . '.cached_update',
+			CoreRequestBuilder::MEMBER . '.contact_meta',
+			CoreRequestBuilder::MEMBER . '.joined'
 		)
-		   ->from(self::TABLE_MEMBER, 'm')
-		   ->orderBy('m.joined')
-		   ->groupBy('m.member_id')
-		   ->setDefaultSelectAlias('m')
-		   ->leftJoinBasedOnCircle('m', CoreRequestBuilder::PREFIX_BASED_ON, $initiator);
+		   ->from(self::TABLE_MEMBER, CoreRequestBuilder::MEMBER)
+		   ->orderBy(CoreRequestBuilder::MEMBER . '.joined')
+		   ->groupBy(CoreRequestBuilder::MEMBER . '.member_id')
+		   ->setDefaultSelectAlias(CoreRequestBuilder::MEMBER)
+		   ->leftJoinBasedOn(CoreRequestBuilder::MEMBER, $initiator);
 
 		return $qb;
 	}

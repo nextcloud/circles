@@ -37,6 +37,7 @@ use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
@@ -140,16 +141,19 @@ class CircleRequest extends CircleRequestBuilder {
 		SimpleDataStore $params
 	): array {
 		$qb = $this->getCircleSelectSql();
-		$qb->leftJoinOwner();
+		$qb->leftJoinOwner(CoreRequestBuilder::CIRCLE);
 
 		if (!$params->gBool('includeSystemCircles')) {
-			$qb->filterCircles(Circle::CFG_SINGLE | Circle::CFG_HIDDEN | Circle::CFG_BACKEND);
+			$qb->filterCircles(
+				CoreRequestBuilder::CIRCLE,
+				Circle::CFG_SINGLE | Circle::CFG_HIDDEN | Circle::CFG_BACKEND
+			);
 		}
 		if (!is_null($initiator)) {
-			$qb->limitToInitiator($initiator);
+			$qb->limitToInitiator(CoreRequestBuilder::CIRCLE, $initiator);
 		}
 		if (!is_null($memberFilter)) {
-			$qb->limitToMembership($memberFilter);
+			$qb->limitToMembership(CoreRequestBuilder::CIRCLE, $memberFilter);
 		}
 		if (!is_null($circleFilter)) {
 			$qb->filterCircle($circleFilter);
@@ -181,11 +185,18 @@ class CircleRequest extends CircleRequestBuilder {
 	): Circle {
 		$qb = $this->getCircleSelectSql();
 		$qb->limitToUniqueId($id);
-		$qb->leftJoinOwner();
-		$qb->filterCircles($filter);
+		$qb->filterCircles(CoreRequestBuilder::CIRCLE, $filter);
+
+		$qb->leftJoinOwner(CoreRequestBuilder::CIRCLE);
+		$qb->setOptions(
+			[CoreRequestBuilder::CIRCLE, CoreRequestBuilder::INITIATOR], [
+																		   'mustBeMember' => false,
+																		   'canBeVisitor' => true
+																	   ]
+		);
 
 		if (!is_null($initiator)) {
-			$qb->limitToInitiator($initiator, '', false, true);
+			$qb->limitToInitiator(CoreRequestBuilder::CIRCLE, $initiator, false, true);
 		}
 		if (!is_null($remoteInstance)) {
 			$qb->limitToRemoteInstance($remoteInstance->getInstance(), false);
@@ -206,7 +217,7 @@ class CircleRequest extends CircleRequestBuilder {
 	public function getFederatedUserBySingleId(string $singleId): FederatedUser {
 		$qb = $this->getCircleSelectSql();
 		$qb->limitToUniqueId($singleId);
-		$qb->leftJoinOwner();
+		$qb->leftJoinOwner(CoreRequestBuilder::CIRCLE);
 
 		$circle = $this->getItemFromRequest($qb);
 
@@ -227,7 +238,7 @@ class CircleRequest extends CircleRequestBuilder {
 	 */
 	public function getSingleCircle(IFederatedUser $initiator): Circle {
 		$qb = $this->getCircleSelectSql();
-		$qb->leftJoinOwner();
+		$qb->leftJoinOwner(CoreRequestBuilder::CIRCLE);
 
 		$member = clone $initiator;
 		if ($initiator instanceof FederatedUser) {
@@ -236,7 +247,7 @@ class CircleRequest extends CircleRequestBuilder {
 			$member->setLevel(Member::LEVEL_OWNER);
 		}
 
-		$qb->limitToMembership($member);
+		$qb->limitToMembership(CoreRequestBuilder::CIRCLE, $member);
 		$qb->limitToConfigFlag(Circle::CFG_SINGLE);
 
 		try {
@@ -252,10 +263,11 @@ class CircleRequest extends CircleRequestBuilder {
 	 *
 	 * @return Circle
 	 * @throws CircleNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	public function searchCircle(Circle $circle): Circle {
 		$qb = $this->getCircleSelectSql();
-		$qb->leftJoinOwner();
+		$qb->leftJoinOwner(CoreRequestBuilder::CIRCLE);
 
 		if ($circle->getName() !== '') {
 			$qb->limitToName($circle->getName());
@@ -265,7 +277,8 @@ class CircleRequest extends CircleRequestBuilder {
 		}
 
 		if ($circle->hasOwner()) {
-			$qb->filterMembership($circle->getOwner(), 'o');
+			$aliasOwner = $qb->generateAlias(CoreRequestBuilder::CIRCLE, CoreRequestBuilder::OWNER);
+			$qb->filterMembership($aliasOwner, $circle->getOwner());
 		}
 
 		return $this->getItemFromRequest($qb);
@@ -277,8 +290,8 @@ class CircleRequest extends CircleRequestBuilder {
 	 */
 	public function getFederated(): array {
 		$qb = $this->getCircleSelectSql();
-		$qb->filterConfig(Circle::CFG_FEDERATED);
-		$qb->leftJoinOwner();
+		$qb->filterConfig(CoreRequestBuilder::CIRCLE, Circle::CFG_FEDERATED);
+		$qb->leftJoinOwner(CoreRequestBuilder::CIRCLE);
 
 		return $this->getItemsFromRequest($qb);
 	}

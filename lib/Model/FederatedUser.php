@@ -37,9 +37,7 @@ use daita\MySmallPhpTools\IDeserializable;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
-use OCA\Circles\Db\CoreRequestBuilder;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
-use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\IFederatedUser;
 
@@ -316,11 +314,7 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 		$this->setUserType($this->getInt($prefix . 'user_type', $data));
 		$this->setInstance($this->get($prefix . 'instance', $data));
 
-		if (in_array($prefix, CoreRequestBuilder::$IMPORT_BASED_ON_INITIATOR_INHERITED_BY_MEMBERSHIP)) {
-			$this->getManager()->importMembershipFromDatabase(
-				$this, $data, CoreRequestBuilder::PREFIX_BASED_ON_INITIATOR_INHERITED_BY_MEMBERSHIP
-			);
-		}
+		$this->getManager()->manageImportFromDatabase($this, $data, $prefix);
 
 		return $this;
 	}
