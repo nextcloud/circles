@@ -241,7 +241,7 @@ class ModelManager {
 		try {
 			$membership = new Membership();
 			$membership->importFromDatabase($data, $prefix);
-			$federatedUser->setMemberships([$membership]);
+			$federatedUser->setLink($membership);
 		} catch (MembershipNotFoundException $e) {
 		}
 	}

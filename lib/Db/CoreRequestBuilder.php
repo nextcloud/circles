@@ -74,53 +74,40 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 			],
 			self::INITIATOR => [
 				self::BASED_ON,
-				self::MEMBERSHIPS,
-				self::INHERITED_BY
+				self::INHERITED_BY => [
+					self::MEMBERSHIPS
+				]
 			]
 		],
 		self::MEMBER => [
 			self::CIRCLE   => [
+				self::OWNER,
 				self::OPTIONS   => [
 					'getData' => true
 				],
 				self::INITIATOR => [
-					self::OPTIONS => [
+					self::OPTIONS      => [
 						'mustBeMember' => false,
 						'canBeVisitor' => false
 					],
 					self::BASED_ON,
-					self::MEMBERSHIPS,
-					self::INHERITED_BY
+					self::INHERITED_BY => [
+						self::MEMBERSHIPS
+					]
 				]
 			],
 			self::BASED_ON => [
 				self::OWNER,
 				self::INITIATOR => [
 					self::BASED_ON,
-					self::MEMBERSHIPS,
-					self::INHERITED_BY
+					self::INHERITED_BY => [
+						self::MEMBERSHIPS
+					]
 				]
 			]
 		],
 	];
 
-
-	// deprecated
-	const PREFIX_MEMBER = 'member_';
-	const PREFIX_CIRCLE = 'circle_';
-	const PREFIX_OWNER = 'owner_';
-	const PREFIX_BASED_ON = 'based_on_';
-	const PREFIX_INITIATOR = 'initiator_';
-	const PREFIX_MEMBERSHIPS = 'memberships_';
-	const PREFIX_INHERITED_BY = 'inherited_by_';
-	const PREFIX_OWNER_BASED_ON = 'owner_based_on_';
-	const PREFIX_INITIATOR_BASED_ON = 'initiator_based_on_';
-	const PREFIX_INITIATOR_MEMBERSHIP = 'initiator_membership_';
-	const PREFIX_INITIATOR_INHERITED_BY = 'initiator_inherited_by_';
-	const PREFIX_BASED_ON_OWNER = 'based_on_owner_';
-	const PREFIX_BASED_ON_INITIATOR = 'based_on_initiator_';
-	const PREFIX_BASED_ON_INITIATOR_INHERITED_BY = 'based_on_initiator_inherited_by_';
-	const PREFIX_BASED_ON_INITIATOR_INHERITED_BY_MEMBERSHIP = 'based_on_initiator_inherited_by_membership_';
 
 	const EXTENSION_CIRCLES = '_circles';
 	const EXTENSION_MEMBERS = '_members';
@@ -455,7 +442,7 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 		try {
 			$aliasInitiator = $this->generateAlias($aliasCircle, self::INITIATOR, $options);
 			$aliasInheritedBy = $this->generateAlias($aliasInitiator, self::INHERITED_BY);
-			$aliasMembership = $this->generateAlias($aliasInitiator, self::MEMBERSHIPS);
+			$aliasMembership = $this->generateAlias($aliasInheritedBy, self::MEMBERSHIPS);
 		} catch (RequestBuilderException $e) {
 			return;
 		}
@@ -592,7 +579,8 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 	 */
 	protected function limitInitiatorVisibility(string $aliasCircle) {
 		$aliasInitiator = $this->generateAlias($aliasCircle, self::INITIATOR, $options);
-		$aliasMembership = $this->generateAlias($aliasInitiator, self::MEMBERSHIPS);
+		$aliasInheritedBy = $this->generateAlias($aliasInitiator, self::INHERITED_BY);
+		$aliasMembership = $this->generateAlias($aliasInheritedBy, self::MEMBERSHIPS);
 		$mustBeMember = $this->getBool('mustBeMember', $options);
 		$canBeVisitor = $this->getBool('canBeVisitor', $options);
 

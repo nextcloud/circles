@@ -75,6 +75,9 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 	/** @var Membership[] */
 	private $memberships = null;
 
+	/** @var Membership */
+	private $link;
+
 
 	/**
 	 * FederatedUser constructor.
@@ -250,6 +253,25 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 
 
 	/**
+	 * @param Membership $link
+	 *
+	 * @return $this
+	 */
+	public function setLink(Membership $link): self {
+		$this->link = $link;
+
+		return $this;
+	}
+
+	/**
+	 * @return Membership
+	 */
+	public function getLink(): Membership {
+		return $this->link;
+	}
+
+
+	/**
 	 * @param array $data
 	 *
 	 * @return $this
@@ -337,6 +359,10 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 
 		if (!is_null($this->memberships)) {
 			$arr['memberships'] = $this->getMemberships();
+		}
+
+		if (!is_null($this->link)) {
+			$arr['link'] = $this->getLink();
 		}
 
 		return $arr;

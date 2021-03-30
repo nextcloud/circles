@@ -625,7 +625,7 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 		}
 
 		try {
-			/** @var Member $inheritedBy */
+			/** @var FederatedUSer $inheritedBy */
 			$inheritedBy = $this->deserialize($this->getArray('inheritedBy', $data), Membership::class);
 			$this->setInheritedBy($inheritedBy);
 		} catch (InvalidItemException $e) {
