@@ -176,7 +176,7 @@ class MemberRequest extends MemberRequestBuilder {
 			$qb->limitToRemoteInstance($remoteInstance->getInstance(), true, 'circle');
 		}
 		if (!is_null($filter)) {
-			$qb->filterMembership(CoreRequestBuilder::MEMBER, $filter);
+			$qb->filterDirectMembership(CoreRequestBuilder::MEMBER, $filter);
 		}
 
 		$qb->orderBy($qb->getDefaultSelectAlias() . '.level', 'desc');

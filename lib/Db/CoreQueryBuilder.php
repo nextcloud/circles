@@ -38,6 +38,7 @@ use OC\DB\SchemaWrapper;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\TimezoneService;
+use OCP\Share\IShare;
 
 
 /**
@@ -48,7 +49,9 @@ use OCA\Circles\Service\TimezoneService;
 class CoreQueryBuilder {
 
 
-	const TABLE_FILE_SHARES = 'share';
+	const TABLE_SHARE = 'share';
+	const TABLE_FILE_CACHE = 'filecache';
+	const TABLE_STORAGES = 'storages';
 	const SHARE_TYPE = 7;
 
 	const TABLE_CIRCLE = 'circle_circles';
@@ -147,8 +150,8 @@ class CoreQueryBuilder {
 
 		$qb = $this->getQueryBuilder();
 		$expr = $qb->expr();
-		$qb->delete(self::TABLE_FILE_SHARES);
-		$qb->where($expr->eq('share_type', $qb->createNamedParameter(self::SHARE_TYPE)));
+		$qb->delete(self::TABLE_SHARE);
+		$qb->where($expr->eq('share_type', $qb->createNamedParameter(IShare::TYPE_CIRCLE)));
 		$qb->execute();
 	}
 

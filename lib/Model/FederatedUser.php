@@ -95,7 +95,7 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 	 * @return $this
 	 */
 	public function set(
-		string $userId = '',
+		string $userId,
 		$instance = '',
 		int $type = Member::TYPE_USER,
 		?Circle $basedOn = null

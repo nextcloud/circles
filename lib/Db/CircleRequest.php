@@ -152,7 +152,7 @@ class CircleRequest extends CircleRequestBuilder {
 			$qb->limitToInitiator(CoreRequestBuilder::CIRCLE, $initiator);
 		}
 		if (!is_null($memberFilter)) {
-			$qb->limitToMembership(CoreRequestBuilder::CIRCLE, $memberFilter);
+			$qb->limitToDirectMembership(CoreRequestBuilder::CIRCLE, $memberFilter);
 		}
 		if (!is_null($circleFilter)) {
 			$qb->filterCircle($circleFilter);
@@ -246,7 +246,7 @@ class CircleRequest extends CircleRequestBuilder {
 			$member->setLevel(Member::LEVEL_OWNER);
 		}
 
-		$qb->limitToMembership(CoreRequestBuilder::CIRCLE, $member);
+		$qb->limitToDirectMembership(CoreRequestBuilder::CIRCLE, $member);
 		$qb->limitToConfigFlag(Circle::CFG_SINGLE);
 
 		try {
@@ -277,7 +277,7 @@ class CircleRequest extends CircleRequestBuilder {
 
 		if ($circle->hasOwner()) {
 			$aliasOwner = $qb->generateAlias(CoreRequestBuilder::CIRCLE, CoreRequestBuilder::OWNER);
-			$qb->filterMembership($aliasOwner, $circle->getOwner());
+			$qb->filterDirectMembership($aliasOwner, $circle->getOwner());
 		}
 
 		return $this->getItemFromRequest($qb);

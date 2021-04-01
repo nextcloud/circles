@@ -31,21 +31,23 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
+use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\Model\Circle;
@@ -133,10 +135,10 @@ class CirclesList extends Base {
 	 *
 	 * @return int
 	 * @throws CircleNotFoundException
+	 * @throws FederatedUserException
 	 * @throws FederatedUserNotFoundException
 	 * @throws InitiatorNotFoundException
 	 * @throws InvalidIdException
-	 * @throws InvalidItemException
 	 * @throws OwnerNotFoundException
 	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
@@ -144,8 +146,10 @@ class CirclesList extends Base {
 	 * @throws RequestNetworkException
 	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
-	 * @throws FederatedUserException
 	 * @throws UserTypeNotFoundException
+	 * @throws FederatedItemException
+	 * @throws MemberNotFoundException
+	 * @throws SingleCircleNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$this->input = $input;
@@ -190,7 +194,9 @@ class CirclesList extends Base {
 		$output = new ConsoleOutput();
 		$output = $output->section();
 		$table = new Table($output);
-		$table->setHeaders(['Single Id', 'Name', 'Config', 'Source', 'Owner', 'Instance', 'Limit', 'Description']);
+		$table->setHeaders(
+			['Single Id', 'Name', 'Config', 'Source', 'Owner', 'Instance', 'Limit', 'Description']
+		);
 		$table->render();
 
 		$local = $this->configService->getFrontalInstance();

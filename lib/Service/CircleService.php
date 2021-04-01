@@ -47,6 +47,7 @@ use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\FederatedItems\CircleConfig;
 use OCA\Circles\FederatedItems\CircleCreate;
@@ -301,6 +302,7 @@ class CircleService {
 	 * @return Circle
 	 * @throws CircleNotFoundException
 	 * @throws InitiatorNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	public function getCircle(
 		string $circleId,
