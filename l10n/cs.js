@@ -57,7 +57,7 @@ OC.L10N.register(
     "Cannot delete this circle" : "Tento okruh se nedaří smazat",
     " {type} '{name}' created" : " {type} „{name}“ vytvořen",
     " {type} '{name}' could not be created" : " {type} „{name}“ nemohl být vytvořen",
-    "Issue while retrieving the details of this circle" : "Problém při získávání podrobností o okruhu",
+    "Issue while retrieving the details of this circle" : "Problém při získávání podrobností o tomto okruhu",
     "Issue while retrieving the list of circles" : "Problém při získávání seznamu okruhů",
     "Group '{name}' successfully added to the circle" : "Skupina „{name}“ úspěšně přidána do okruhu",
     "Group '{name}' could not be added to the circle" : "Skupina „{name}“ nemohla být přidána k tomuto okruhu",
