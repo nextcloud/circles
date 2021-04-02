@@ -41,6 +41,7 @@ use OCA\Circles\IFederatedModel;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\RemoteInstance;
+use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
 use OCP\DB\QueryBuilder\ICompositeExpression;
@@ -57,6 +58,7 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 	use TArrayTools;
 
 
+	const SINGLE = 'single';
 	const CIRCLE = 'circle';
 	const MEMBER = 'member';
 	const OWNER = 'owner';
@@ -71,11 +73,19 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 
 
 	public static $SQL_PATH = [
+		self::SINGLE => [
+			self::MEMBER
+		],
 		self::CIRCLE => [
+			self::OPTIONS   => [
+				'getPersonalCircle' => true,
+				'canBeVisitor'      => true
+			],
 			self::MEMBER,
 			self::OWNER     => [
 				self::BASED_ON
 			],
+			self::MEMBERSHIPS,
 			self::INITIATOR => [
 				self::BASED_ON,
 				self::INHERITED_BY => [
@@ -85,13 +95,14 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 		],
 		self::MEMBER => [
 			self::CIRCLE   => [
-				self::OWNER,
 				self::OPTIONS   => [
 					'getData' => true
 				],
+				self::OWNER,
+				self::MEMBERSHIPS,
 				self::INITIATOR => [
 					self::OPTIONS      => [
-						'mustBeMember' => false,
+						'mustBeMember' => true,
 						'canBeVisitor' => false
 					],
 					self::BASED_ON,
@@ -102,6 +113,7 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 			],
 			self::BASED_ON => [
 				self::OWNER,
+				self::MEMBERSHIPS,
 				self::INITIATOR => [
 					self::BASED_ON,
 					self::INHERITED_BY => [
@@ -115,7 +127,12 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 			self::FILE_CACHE => [
 				self::STORAGES
 			],
+			self::MEMBERSHIPS,
+			self::CIRCLE     => [
+				self::OWNER
+			],
 			self::INITIATOR  => [
+				self::BASED_ON,
 				self::INHERITED_BY => [
 					self::MEMBERSHIPS
 				]
@@ -255,6 +272,14 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 
 
 	/**
+	 * @param int $shareId
+	 */
+	public function limitToShareParent(int $shareId): void {
+		$this->limitToDBFieldInt('parent', $shareId);
+	}
+
+
+	/**
 	 * @param Circle $circle
 	 */
 	public function filterCircle(Circle $circle): void {
@@ -298,14 +323,17 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 			return;
 		}
 
-		$aliasMember = $this->generateAlias($alias, self::MEMBER);
+		$aliasMember = $this->generateAlias($alias, self::MEMBER, $options);
+		$getData = $this->getBool('getData', $options, false);
 
 		$expr = $this->expr();
-		$this->generateMemberSelectAlias($aliasMember)
-			 ->leftJoin(
-				 $this->getDefaultSelectAlias(), CoreQueryBuilder::TABLE_MEMBER, $aliasMember,
-				 $expr->eq($aliasMember . '.circle_id', $this->getDefaultSelectAlias() . '.unique_id')
-			 );
+		if ($getData) {
+			$this->generateMemberSelectAlias($aliasMember);
+		}
+		$this->leftJoin(
+			$this->getDefaultSelectAlias(), CoreQueryBuilder::TABLE_MEMBER, $aliasMember,
+			$expr->eq($aliasMember . '.circle_id', $alias . '.unique_id')
+		);
 
 		$this->filterDirectMembership($aliasMember, $member);
 	}
@@ -354,18 +382,23 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 
 
 	/**
-	 * @param string $aliasMember
+	 * @param string $alias
 	 * @param IFederatedUser|null $initiator
+	 * @param string $field
 	 *
 	 * @throws RequestBuilderException
 	 */
-	public function leftJoinCircle(string $aliasMember, ?IFederatedUser $initiator = null): void {
+	public function leftJoinCircle(
+		string $alias,
+		?IFederatedUser $initiator = null,
+		string $field = 'circle_id'
+	): void {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
 
-		$aliasCircle = $this->generateAlias($aliasMember, self::CIRCLE, $options);
-		$getData = $this->getBool('getData', $options, true);
+		$aliasCircle = $this->generateAlias($alias, self::CIRCLE, $options);
+		$getData = $this->getBool('getData', $options, false);
 		$expr = $this->expr();
 
 		if ($getData) {
@@ -373,17 +406,17 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 		}
 
 		$this->leftJoin(
-			$this->getDefaultSelectAlias(), CoreQueryBuilder::TABLE_CIRCLE, $aliasCircle,
-			$expr->eq($aliasCircle . '.unique_id', $this->getDefaultSelectAlias() . '.circle_id')
+			$alias, CoreQueryBuilder::TABLE_CIRCLE, $aliasCircle,
+			$expr->eq($aliasCircle . '.unique_id', $alias . '.' . $field)
 		);
 
 		if (!is_null($initiator)) {
-			$this->setOptions(
-				explode('_', $aliasCircle), [
-											  'mustBeMember' => true,
-											  'canBeVisitor' => false
-										  ]
-			);
+//			$this->setOptions(
+//				explode('_', $aliasCircle), [
+//											  'mustBeMember' => true,
+//											  'canBeVisitor' => false
+//										  ]
+//			);
 
 			$this->limitToInitiator($aliasCircle, $initiator);
 		}
@@ -453,16 +486,36 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 
 
 	/**
-	 * @param IFederatedUser $initiator
+	 * @param string $alias
+	 * @param IFederatedUser $user
+	 * @param string $field
+	 *
+	 * @throws RequestBuilderException
+	 */
+	public function limitToMembership(string $alias, IFederatedUser $user, string $field = ''): void {
+		$this->leftJoinInitiator($alias, $user, $field);
+		$this->limitInitiatorVisibility($alias);
+//		$aliasInitiator = $this->generateAlias($aliasCircle, self::INITIATOR, $options);
+//		$getData = $this->getBool('getData', $options, true);
+//
+//		if ($getData) {
+//			$this->leftJoinBasedOn($aliasInitiator);
+//		}
+	}
+
+
+	/**
 	 * @param string $aliasCircle
+	 * @param IFederatedUser $initiator
 	 *
 	 * @throws RequestBuilderException
 	 */
 	public function limitToInitiator(string $aliasCircle, IFederatedUser $initiator): void {
+		// TODO: duplicate with limitToMembership ?
 		$this->leftJoinInitiator($aliasCircle, $initiator);
 		$this->limitInitiatorVisibility($aliasCircle);
 		$aliasInitiator = $this->generateAlias($aliasCircle, self::INITIATOR, $options);
-		$getData = $this->getBool('getData', $options, true);
+		$getData = $this->getBool('getData', $options, false);
 
 		if ($getData) {
 			$this->leftJoinBasedOn($aliasInitiator);
@@ -485,49 +538,114 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 		}
 
 		$field = ($field === '') ? 'unique_id' : $field;
-		$aliasInitiator = $this->generateAlias($alias, self::INITIATOR, $options);
-		$aliasInheritedBy = $this->generateAlias($aliasInitiator, self::INHERITED_BY);
-		$aliasMembership = $this->generateAlias($aliasInheritedBy, self::MEMBERSHIPS);
+		$aliasMembership = $this->generateAlias($alias, self::MEMBERSHIPS, $options);
 
-		$getData = $this->getBool('getData', $options, true);
+		$getData = $this->getBool('getData', $options, false);
 		$expr = $this->expr();
 
-		if ($getData) {
-			$this->generateMemberSelectAlias($aliasInitiator);
-			$this->generateMemberSelectAlias($aliasInheritedBy);
-			$this->generateMembershipSelectAlias($aliasMembership);
-		}
-
 		$this->leftJoin(
-			$aliasCircle, CoreQueryBuilder::TABLE_MEMBERSHIP, $aliasMembership,
+			$alias, CoreQueryBuilder::TABLE_MEMBERSHIP, $aliasMembership,
 			$expr->andX(
 				$expr->eq(
 					$aliasMembership . '.single_id',
 					$this->createNamedParameter($initiator->getSingleId())
 				),
-				$expr->orX(
-					$expr->eq($aliasMembership . '.circle_id', $aliasCircle . '.unique_id'),
-					$expr->eq($aliasMembership . '.parent', $aliasCircle . '.unique_id')
+				$expr->eq($aliasMembership . '.circle_id', $alias . '.' . $field)
+			)
+		);
+
+		if (!$getData) {
+			return;
+		}
+
+		try {
+			$aliasInitiator = $this->generateAlias($alias, self::INITIATOR);
+			$this->leftJoin(
+				$aliasMembership, CoreQueryBuilder::TABLE_MEMBER, $aliasInitiator,
+				$expr->andX(
+					$expr->eq($aliasMembership . '.parent', $aliasInitiator . '.single_id'),
+					$expr->eq($aliasMembership . '.circle_id', $aliasInitiator . '.circle_id')
 				)
-			)
-		);
+			);
 
-		$this->leftJoin(
-			$aliasMembership, CoreQueryBuilder::TABLE_MEMBER, $aliasInitiator,
+			$aliasInheritedBy = $this->generateAlias($aliasInitiator, self::INHERITED_BY);
+			$this->leftJoin(
+				$aliasInitiator, CoreQueryBuilder::TABLE_MEMBER, $aliasInheritedBy,
+				$expr->andX(
+					$expr->eq($aliasMembership . '.single_id', $aliasInheritedBy . '.single_id'),
+					$expr->eq($aliasMembership . '.single_id', $aliasInheritedBy . '.circle_id')
+				)
+			);
+
+			$this->generateMemberSelectAlias($aliasInitiator);
+			$this->generateMemberSelectAlias($aliasInheritedBy);
+			$aliasInheritedByMembership = $this->generateAlias($aliasInheritedBy, self::MEMBERSHIPS);
+			$this->generateMembershipSelectAlias($aliasMembership, $aliasInheritedByMembership);
+		} catch (RequestBuilderException $e) {
+		}
+	}
+
+
+	/**
+	 * @param string $alias
+	 *
+	 * @throws RequestBuilderException
+	 */
+	protected function limitInitiatorVisibility(string $alias) {
+//		$aliasInitiator = $this->generateAlias($alias, self::INITIATOR, $options);
+//		$aliasInheritedBy = $this->generateAlias($aliasInitiator, self::INHERITED_BY);
+		$aliasMembership = $this->generateAlias($alias, self::MEMBERSHIPS, $options);
+		$mustBeMember = $this->getBool('mustBeMember', $options, true);
+		$getPersonalCircle = $this->getBool('getPersonalCircle', $options, false);
+		$canBeVisitor = $this->getBool('canBeVisitor', $options, false);
+
+		$expr = $this->expr();
+
+		// Visibility to non-member is
+		// - 0 (default), if initiator is member
+		// - 2 (Personal), if initiator is owner)
+		// - 4 (Visible to everyone)
+		$orX = $expr->orX();
+		$orX->add(
 			$expr->andX(
-				$expr->eq($aliasMembership . '.parent', $aliasInitiator . '.single_id'),
-				$expr->eq($aliasMembership . '.circle_id', $aliasInitiator . '.circle_id')
+				$expr->gte($aliasMembership . '.level', $this->createNamedParameter(Member::LEVEL_MEMBER))
 			)
 		);
 
-		$this->leftJoin(
-			$aliasMembership, CoreQueryBuilder::TABLE_MEMBER, $aliasInheritedBy,
-			$expr->andX(
-				$expr->eq($aliasMembership . '.single_id', $aliasInheritedBy . '.single_id'),
-				$expr->eq($aliasMembership . '.single_id', $aliasInheritedBy . '.circle_id')
-			)
-		);
+		if ($getPersonalCircle) {
+			$orX->add(
+				$expr->andX(
+					$expr->bitwiseAnd($alias . '.config', Circle::CFG_PERSONAL),
+					$expr->eq($aliasMembership . '.level', $this->createNamedParameter(Member::LEVEL_OWNER))
+				)
+			);
+		}
+		if (!$mustBeMember) {
+			$orX->add($expr->bitwiseAnd($alias . '.config', Circle::CFG_VISIBLE));
+		}
+		if ($canBeVisitor) {
+			// TODO: should find a better way, also filter on remote initiator on non-federated ?
+			$orX->add($expr->gte($alias . '.config', $this->createNamedParameter(0)));
+		}
+		$this->andWhere($orX);
 
+
+//		$orTypes = $this->generateLimit($qb, $circleUniqueId, $userId, $type, $name, $forceAll);
+//		if (sizeof($orTypes) === 0) {
+//			throw new ConfigNoCircleAvailableException(
+//				$this->l10n->t(
+//					'You cannot use the Circles Application until your administrator has allowed at least one type of circles'
+//				)
+//			);
+//		}
+
+//		$orXTypes = $this->expr()
+//						 ->orX();
+//		foreach ($orTypes as $orType) {
+//			$orXTypes->add($orType);
+//		}
+//
+//		$qb->andWhere($orXTypes);
 	}
 
 
@@ -611,65 +729,6 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 				)
 			)
 		);
-	}
-
-
-	/**
-	 * @param string $aliasCircle
-	 *
-	 * @throws RequestBuilderException
-	 */
-	protected function limitInitiatorVisibility(string $aliasCircle) {
-		$aliasInitiator = $this->generateAlias($aliasCircle, self::INITIATOR, $options);
-		$aliasInheritedBy = $this->generateAlias($aliasInitiator, self::INHERITED_BY);
-		$aliasMembership = $this->generateAlias($aliasInheritedBy, self::MEMBERSHIPS);
-		$mustBeMember = $this->getBool('mustBeMember', $options, true);
-		$canBeVisitor = $this->getBool('canBeVisitor', $options, false);
-
-		$expr = $this->expr();
-
-		// Visibility to non-member is
-		// - 0 (default), if initiator is member
-		// - 2 (Personal), if initiator is owner)
-		// - 4 (Visible to everyone)
-		$orX = $expr->orX();
-		$orX->add(
-			$expr->andX(
-				$expr->gte($aliasMembership . '.level', $this->createNamedParameter(Member::LEVEL_MEMBER))
-			)
-		);
-		$orX->add(
-			$expr->andX(
-				$expr->bitwiseAnd($aliasCircle . '.config', Circle::CFG_PERSONAL),
-				$expr->eq($aliasMembership . '.level', $this->createNamedParameter(Member::LEVEL_OWNER))
-			)
-		);
-		if (!$mustBeMember) {
-			$orX->add($expr->bitwiseAnd($aliasCircle . '.config', Circle::CFG_VISIBLE));
-		}
-		if ($canBeVisitor) {
-			// TODO: should find a better way, also filter on remote initiator on non-federated ?
-			$orX->add($expr->gte($aliasCircle . '.config', $this->createNamedParameter(0)));
-		}
-		$this->andWhere($orX);
-
-
-//		$orTypes = $this->generateLimit($qb, $circleUniqueId, $userId, $type, $name, $forceAll);
-//		if (sizeof($orTypes) === 0) {
-//			throw new ConfigNoCircleAvailableException(
-//				$this->l10n->t(
-//					'You cannot use the Circles Application until your administrator has allowed at least one type of circles'
-//				)
-//			);
-//		}
-
-//		$orXTypes = $this->expr()
-//						 ->orX();
-//		foreach ($orTypes as $orType) {
-//			$orXTypes->add($orType);
-//		}
-//
-//		$qb->andWhere($orXTypes);
 	}
 
 
@@ -810,6 +869,55 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 
 
 	/**
+	 * Link to storage/filecache
+	 *
+	 * @param string $aliasShare
+	 *
+	 * @throws RequestBuilderException
+	 */
+	public function leftJoinFileCache(string $aliasShare) {
+		$expr = $this->expr();
+
+		$aliasFileCache = $this->generateAlias($aliasShare, self::FILE_CACHE);
+		$aliasStorages = $this->generateAlias($aliasFileCache, self::STORAGES);
+
+		$this->leftJoin(
+			$aliasShare, CoreQueryBuilder::TABLE_FILE_CACHE, $aliasFileCache,
+			$expr->eq($aliasShare . '.file_source', $aliasFileCache . '.fileid')
+		)
+			 ->leftJoin(
+				 $aliasFileCache, CoreQueryBuilder::TABLE_STORAGES, $aliasStorages,
+				 $expr->eq($aliasFileCache . '.storage', $aliasStorages . '.numeric_id')
+			 );
+	}
+
+
+	/**
+	 * @param string $aliasShare
+	 *
+	 * @throws RequestBuilderException
+	 */
+	public function leftJoinShareChild(string $aliasShare) {
+		$expr = $this->expr();
+
+		$aliasShareChild = $this->generateAlias($aliasShare, self::SHARE);
+		$aliasShareMembers = $this->generateAlias($aliasShare, self::MEMBERSHIPS);
+
+		$this->leftJoin(
+			$aliasShare, CoreQueryBuilder::TABLE_SHARE, $aliasShareChild,
+			$expr->andX(
+				$expr->eq($aliasShareChild . '.parent', $aliasShare . '.id'),
+				$expr->eq($aliasShareChild . '.share_with', $aliasShareMembers . '.single_id')
+			)
+		);
+
+		$this->selectAlias($aliasShareChild . '.id', 'child_id');
+		$this->selectAlias($aliasShareChild . '.file_target', 'child_file_target');
+//		$this->selectAlias($aliasShareParent . '.permissions', 'parent_perms');
+	}
+
+
+	/**
 	 * @param string $alias
 	 * @param array $default
 	 *
@@ -847,12 +955,17 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 	/**
 	 * @param string $alias
 	 * @param array $default
+	 * @param string $prefix
 	 *
 	 * @return $this
 	 */
-	private function generateMembershipSelectAlias(string $alias, array $default = []): self {
+	private function generateMembershipSelectAlias(
+		string $alias,
+		string $prefix = '',
+		array $default = []
+	): self {
 		$fields = ['single_id', 'circle_id', 'level', 'parent', 'path'];
-		$this->generateSelectAlias($fields, $alias, $alias, $default);
+		$this->generateSelectAlias($fields, $alias, ($prefix === '') ? $alias : $prefix, $default);
 
 		return $this;
 	}

@@ -53,6 +53,7 @@ use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
@@ -618,6 +619,7 @@ class FederatedUserService {
 	 * @throws FederatedUserException
 	 * @throws InvalidIdException
 	 * @throws SingleCircleNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	private function fillSingleCircleId(FederatedUser $federatedUser): void {
 		if ($federatedUser->getSingleId() !== '') {
@@ -626,7 +628,6 @@ class FederatedUserService {
 
 		$circle = $this->getSingleCircle($federatedUser);
 		$federatedUser->setSingleId($circle->getId());
-		//$circle->setOwner(null);
 		$federatedUser->setBasedOn($circle);
 	}
 
@@ -640,6 +641,7 @@ class FederatedUserService {
 	 * @throws InvalidIdException
 	 * @throws FederatedUserException
 	 * @throws SingleCircleNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	private function getSingleCircle(FederatedUser $federatedUser): Circle {
 		if (!$this->configService->isLocalInstance($federatedUser->getInstance())) {

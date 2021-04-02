@@ -184,16 +184,17 @@ class CircleRequest extends CircleRequestBuilder {
 		int $filter = Circle::CFG_BACKEND | Circle::CFG_SINGLE | Circle::CFG_HIDDEN
 	): Circle {
 		$qb = $this->getCircleSelectSql();
+		$qb->setOptions([CoreRequestBuilder::CIRCLE], ['getData' => true]);
+
 		$qb->limitToUniqueId($id);
 		$qb->filterCircles(CoreRequestBuilder::CIRCLE, $filter);
-
 		$qb->leftJoinOwner(CoreRequestBuilder::CIRCLE);
-		$qb->setOptions(
-			[CoreRequestBuilder::CIRCLE, CoreRequestBuilder::INITIATOR], [
-																		   'mustBeMember' => false,
-																		   'canBeVisitor' => true
-																	   ]
-		);
+//		$qb->setOptions(
+//			[CoreRequestBuilder::CIRCLE, CoreRequestBuilder::INITIATOR], [
+//																		   'mustBeMember' => false,
+//																		   'canBeVisitor' => true
+//																	   ]
+//		);
 
 		if (!is_null($initiator)) {
 			$qb->limitToInitiator(CoreRequestBuilder::CIRCLE, $initiator);
@@ -234,10 +235,10 @@ class CircleRequest extends CircleRequestBuilder {
 	 *
 	 * @return Circle
 	 * @throws SingleCircleNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	public function getSingleCircle(IFederatedUser $initiator): Circle {
-		$qb = $this->getCircleSelectSql();
-		$qb->leftJoinOwner(CoreRequestBuilder::CIRCLE);
+		$qb = $this->getCircleSelectSql(CoreRequestBuilder::SINGLE);
 
 		$member = clone $initiator;
 		if ($initiator instanceof FederatedUser) {
@@ -246,8 +247,8 @@ class CircleRequest extends CircleRequestBuilder {
 			$member->setLevel(Member::LEVEL_OWNER);
 		}
 
-		$qb->limitToDirectMembership(CoreRequestBuilder::CIRCLE, $member);
-		$qb->limitToConfigFlag(Circle::CFG_SINGLE);
+		$qb->limitToDirectMembership(CoreRequestBuilder::SINGLE, $member);
+		$qb->limitToConfig(Circle::CFG_SINGLE);
 
 		try {
 			return $this->getItemFromRequest($qb);

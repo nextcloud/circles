@@ -34,8 +34,8 @@ namespace OCA\Circles\Db;
 
 use daita\MySmallPhpTools\Exceptions\RowNotFoundException;
 use OC\Share20\Share;
+use OCA\Circles\Exceptions\ShareWrapperNotFoundException;
 use OCA\Circles\Model\ShareWrapper;
-use OCP\Share\Exceptions\ShareNotFound;
 
 
 /**
@@ -118,14 +118,14 @@ class ShareWrapperRequestBuilder extends CoreQueryBuilder {
 	 * @param CoreRequestBuilder $qb
 	 *
 	 * @return ShareWrapper
-	 * @throws ShareNotFound
+	 * @throws ShareWrapperNotFoundException
 	 */
 	public function getItemFromRequest(CoreRequestBuilder $qb): ShareWrapper {
 		/** @var ShareWrapper $shareWrapper */
 		try {
 			$shareWrapper = $qb->asItem(ShareWrapper::class);
 		} catch (RowNotFoundException $e) {
-			throw new ShareNotFound();
+			throw new ShareWrapperNotFoundException();
 		}
 
 		return $shareWrapper;

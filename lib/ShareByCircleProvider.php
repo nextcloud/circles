@@ -38,18 +38,19 @@ namespace OCA\Circles;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OC;
-use OCA\Circles\Db\ShareWrapperRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\Exceptions\ShareWrapperNotFoundException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\ShareWrapper;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Service\ShareWrapperService;
 use OCP\Files\Folder;
 use OCP\Files\InvalidPathException;
 use OCP\Files\IRootFolder;
@@ -99,8 +100,8 @@ class ShareByCircleProvider implements IShareProvider {
 	private $urlGenerator;
 
 
-	/** @var ShareWrapperRequest */
-	private $shareWrapperRequest;
+	/** @var ShareWrapperService */
+	private $shareWrapperService;
 
 	/** @var FederatedUserService */
 	private $federatedUserService;
@@ -130,8 +131,8 @@ class ShareByCircleProvider implements IShareProvider {
 		$this->logger = $logger;
 		$this->urlGenerator = $urlGenerator;
 
-		$this->shareWrapperRequest = OC::$server->get(ShareWrapperRequest::class);
 		$this->federatedUserService = OC::$server->get(FederatedUserService::class);
+		$this->shareWrapperService = OC::$server->get(ShareWrapperService::class);
 		$this->circleService = OC::$server->get(CircleService::class);
 	}
 
@@ -170,11 +171,11 @@ class ShareByCircleProvider implements IShareProvider {
 						->getId();
 
 		try {
-			$this->shareWrapperRequest->searchShare($share->getSharedWith(), $nodeId);
+			$this->shareWrapperService->searchShare($share->getSharedWith(), $nodeId);
 			throw new AlreadySharedException(
 				$this->l10n->t('This item is already shared with this circle'), $share
 			);
-		} catch (ShareNotFound $e) {
+		} catch (ShareWrapperNotFoundException $e) {
 		}
 
 		$this->federatedUserService->initCurrentUser();
@@ -184,7 +185,7 @@ class ShareByCircleProvider implements IShareProvider {
 		$initiatorHelper->mustBeMember();
 
 		$share->setToken($this->token(15));
-		$this->shareWrapperRequest->save($share);
+		$this->shareWrapperService->save($share);
 
 //		Circles::shareToCircle(
 //			$circle->getUniqueId(), 'files', '',
@@ -239,12 +240,28 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @param string $recipient
 	 *
 	 * @return IShare
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
+	 * @throws ShareWrapperNotFoundException
+	 * @throws SingleCircleNotFoundException
+	 * @throws IllegalIDChangeException
+	 * @throws NotFoundException
 	 */
 	public function move(IShare $share, $recipient): IShare {
-		OC::$server->getLogger()->log(3, 'CSP > move');
+		OC::$server->getLogger()->log(3, 'CSP > move' . $share->getId() . ' ' . $recipient);
+
+		$federatedUser = $this->federatedUserService->getLocalFederatedUser($recipient);
+		$child = $this->shareWrapperService->getChild($share, $federatedUser);
+		if ($child->getFileTarget() !== $share->getTarget()) {
+			$child->setFileTarget($share->getTarget());
+			\OC::$server->getLogger()->log(3, '### ' . json_encode($child));
+			$this->shareWrapperService->update($child);
+		}
 
 		return $share;
 	}
+
 
 	/**
 	 * @param string $userId
@@ -284,13 +301,27 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @param string|null $recipientId
 	 *
 	 * @return IShare
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
 	 * @throws IllegalIDChangeException
+	 * @throws InvalidIdException
 	 * @throws ShareNotFound
+	 * @throws SingleCircleNotFoundException
 	 */
 	public function getShareById($shareId, $recipientId = null): IShare {
 		OC::$server->getLogger()->log(3, 'CSP > getShareById');
 
-		$wrappedShare = $this->shareWrapperRequest->getShareById($shareId, $recipientId);
+		if ($recipientId === null) {
+			$federatedUser = null;
+		} else {
+			$federatedUser = $this->federatedUserService->getLocalFederatedUser($recipientId);
+		}
+
+		try {
+			$wrappedShare = $this->shareWrapperService->getShareById((int)$shareId, $federatedUser);
+		} catch (ShareWrapperNotFoundException $e) {
+			throw new  ShareNotFound();
+		}
 
 		return $wrappedShare->getShare($this->rootFolder, $this->userManager);
 	}
@@ -306,7 +337,7 @@ class ShareByCircleProvider implements IShareProvider {
 	 */
 	public function getSharesByPath(Node $path): array {
 		OC::$server->getLogger()->log(3, 'CSP > getSharesByPath');
-		$wrappedShares = $this->shareWrapperRequest->getSharesByFileId($path->getId());
+		$wrappedShares = $this->shareWrapperService->getSharesByFileId($path->getId());
 
 		return array_map(
 			function(ShareWrapper $wrapper) {
@@ -337,18 +368,14 @@ class ShareByCircleProvider implements IShareProvider {
 		if ($shareType !== IShare::TYPE_CIRCLE) {
 			return [];
 		}
-		OC::$server->getLogger()->log(3, 'CSP > getSharedWith');
 
 		$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
-
-		$wrappedShares = $this->shareWrapperRequest->getSharedWith(
+		$wrappedShares = $this->shareWrapperService->getSharedWith(
 			$federatedUser,
 			(!is_null($node)) ? $node->getId() : 0,
 			$limit,
 			$offset
 		);
-
-		\OC::$server->getLogger()->log(3, json_encode($wrappedShares));
 
 		return array_map(
 			function(ShareWrapper $wrapper) {

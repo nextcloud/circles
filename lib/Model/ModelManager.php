@@ -141,6 +141,12 @@ class ModelManager {
 			}
 		}
 
+		if ($model instanceof ShareWrapper) {
+			if ($base === '') {
+				$base = CoreRequestBuilder::SHARE;
+			}
+		}
+
 		foreach ($this->coreRequestBuilder->getAvailablePath($base) as $path => $prefix) {
 			$this->importBasedOnPath($model, $data, $path, $prefix);
 		}
@@ -180,6 +186,28 @@ class ModelManager {
 			switch ($path) {
 				case CoreRequestBuilder::MEMBERSHIPS;
 					$this->importMembershipFromDatabase($model, $data, $prefix);
+					break;
+			}
+		}
+
+		if ($model instanceof ShareWrapper) {
+			switch ($path) {
+				case CoreRequestBuilder::CIRCLE;
+					try {
+						$circle = new Circle();
+						$circle->importFromDatabase($data, $prefix);
+						$model->setCircle($circle);
+					} catch (CircleNotFoundException $e) {
+					}
+					break;
+
+				case CoreRequestBuilder::INITIATOR;
+					try {
+						$initiator = new Member();
+						$initiator->importFromDatabase($data, $prefix);
+						$model->setInitiator($initiator);
+					} catch (MemberNotFoundException $e) {
+					}
 					break;
 			}
 		}

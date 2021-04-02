@@ -50,7 +50,7 @@ use OCP\Share\IShare;
  *
  * @package OCA\Circles\Model
  */
-class ShareWrapper implements IDeserializable, INC22QueryRow, JsonSerializable {
+class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRow, JsonSerializable {
 
 
 	use TArrayTools;
@@ -98,6 +98,18 @@ class ShareWrapper implements IDeserializable, INC22QueryRow, JsonSerializable {
 
 	/** @var int */
 	private $shareType = 0;
+
+	/** @var Circle */
+	private $circle;
+
+	/** @var Member */
+	private $initiator;
+
+	/** @var int */
+	private $childId = 0;
+
+	/** @var string */
+	private $childFileTarget = '';
 
 
 	/**
@@ -366,6 +378,96 @@ class ShareWrapper implements IDeserializable, INC22QueryRow, JsonSerializable {
 
 
 	/**
+	 * @param Member $initiator
+	 *
+	 * @return ShareWrapper
+	 */
+	public function setInitiator(Member $initiator): self {
+		$this->initiator = $initiator;
+
+		return $this;
+	}
+
+	/**
+	 * @return Member
+	 */
+	public function getInitiator(): Member {
+		return $this->initiator;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasInitiator(): bool {
+		return (!is_null($this->initiator));
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 *
+	 * @return ShareWrapper
+	 */
+	public function setCircle(Circle $circle): self {
+		$this->circle = $circle;
+
+		return $this;
+	}
+
+	/**
+	 * @return Circle
+	 */
+	public function getCircle(): Circle {
+		return $this->circle;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasCircle(): bool {
+		return (!is_null($this->circle));
+	}
+
+
+	/**
+	 * @param int $childId
+	 *
+	 * @return ShareWrapper
+	 */
+	public function setChildId(int $childId): self {
+		$this->childId = $childId;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getChildId(): int {
+		return $this->childId;
+	}
+
+
+	/**
+	 * @param string $childFileTarget
+	 *
+	 * @return ShareWrapper
+	 */
+	public function setChildFileTarget(string $childFileTarget): self {
+		$this->childFileTarget = $childFileTarget;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getChildFileTarget(): string {
+		return $this->childFileTarget;
+	}
+
+
+	/**
 	 * @param IRootFolder $rootFolder
 	 * @param IUserManager $userManager
 	 *
@@ -388,6 +490,10 @@ class ShareWrapper implements IDeserializable, INC22QueryRow, JsonSerializable {
 			  ->setShareOwner($this->getShareOwner())
 			  ->setShareType($this->getShareType());
 
+		if ($this->getChildId() > 0) {
+			$share->setTarget($this->getChildFileTarget());
+		}
+
 		return $share;
 	}
 
@@ -397,24 +503,25 @@ class ShareWrapper implements IDeserializable, INC22QueryRow, JsonSerializable {
 
 	/**
 	 * @param array $data
+	 * @param string $prefix
 	 *
 	 * @return INC22QueryRow
 	 */
-	public function importFromDatabase(array $data): INC22QueryRow {
+	public function importFromDatabase(array $data, string $prefix = ''): INC22QueryRow {
 		$shareTime = new DateTime();
-		$shareTime->setTimestamp($this->getInt('stime', $data));
+		$shareTime->setTimestamp($this->getInt($prefix . 'stime', $data));
 
-		$this->setId($this->get('id', $data))
-			 ->setShareType($this->getInt('share_type', $data))
-			 ->setPermissions($this->getInt('permissions', $data))
-			 ->setItemType($this->get('item_type', $data))
-			 ->setItemSource($this->getInt('item_source', $data))
-			 ->setItemTarget($this->get('item_target', $data))
-			 ->setFileSource($this->getInt('file_source', $data))
-			 ->setFileTarget($this->get('file_target', $data))
-			 ->setSharedWith($this->get('share_with', $data))
-			 ->setSharedBy($this->get('uid_initiator', $data))
-			 ->setShareOwner($this->get('uid_owner', $data))
+		$this->setId($this->get($prefix . 'id', $data))
+			 ->setShareType($this->getInt($prefix . 'share_type', $data))
+			 ->setPermissions($this->getInt($prefix . 'permissions', $data))
+			 ->setItemType($this->get($prefix . 'item_type', $data))
+			 ->setItemSource($this->getInt($prefix . 'item_source', $data))
+			 ->setItemTarget($this->get($prefix . 'item_target', $data))
+			 ->setFileSource($this->getInt($prefix . 'file_source', $data))
+			 ->setFileTarget($this->get($prefix . 'file_target', $data))
+			 ->setSharedWith($this->get($prefix . 'share_with', $data))
+			 ->setSharedBy($this->get($prefix . 'uid_initiator', $data))
+			 ->setShareOwner($this->get($prefix . 'uid_owner', $data))
 			 ->setShareTime($shareTime);
 
 //		if (($password = $this->get('personal_password', $data, '')) !== '') {
@@ -423,21 +530,23 @@ class ShareWrapper implements IDeserializable, INC22QueryRow, JsonSerializable {
 //			$share->setPassword($this->get('password', $data, ''));
 //		}
 
-
-		$this->setSharesProperties($data);
-		$this->setParentProperties($data);
+		$this->setSharesProperties($data, $prefix);
+		$this->setParentProperties($data, $prefix);
 
 		$this->setProviderId(ShareByCircleProvider::IDENTIFIER)
 			 ->setStatus(Ishare::STATUS_ACCEPTED);
+
+		$this->getManager()->manageImportFromDatabase($this, $data, $prefix);
 
 		return $this;
 	}
 
 
 	/**
-	 * @param $data
+	 * @param array $data
+	 * @param string $prefix
 	 */
-	private function setSharesProperties($data) {
+	private function setSharesProperties(array $data, string $prefix) {
 
 //		if (array_key_exists('circle_type', $data)
 //			&& method_exists($share, 'setSharedWithDisplayName')) {
@@ -459,10 +568,14 @@ class ShareWrapper implements IDeserializable, INC22QueryRow, JsonSerializable {
 
 
 	/**
-	 * @param $data
+	 * @param array $data
+	 * @param string $prefix
 	 */
-	private function setParentProperties($data) {
-//		if (isset($data['f_permissions'])) {
+	private function setParentProperties(array $data, string $prefix) {
+		$this->setChildId($this->getInt($prefix . 'child_id', $data));
+		$this->setChildFileTarget($this->get($prefix . 'child_file_target', $data));
+
+		//		if (isset($data['f_permissions'])) {
 //			$entryData = $data;
 //			$entryData['permissions'] = $entryData['f_permissions'];
 //			$entryData['parent'] = $entryData['f_parent'];
@@ -480,23 +593,34 @@ class ShareWrapper implements IDeserializable, INC22QueryRow, JsonSerializable {
 	 * @return string[]
 	 */
 	public function jsonSerialize(): array {
-		return [
-			'id'          => $this->getId(),
-			'shareType'   => $this->getShareType(),
-			'providerId'  => $this->getProviderId(),
-			'permissions' => $this->getPermissions(),
-			'itemType'    => $this->getItemType(),
-			'itemSource'  => $this->getItemSource(),
-			'itemTarget'  => $this->getItemTarget(),
-			'fileSource'  => $this->getFileSource(),
-			'fileTarget'  => $this->getFileTarget(),
-			'status'      => $this->getStatus(),
-			'shareTime'   => $this->getShareTime()->getTimestamp(),
-			'sharedWith'  => $this->getSharedWith(),
-			'sharedBy'    => $this->getSharedBy(),
-			'shareOwner'  => $this->getShareOwner()
-
+		$arr = [
+			'id'              => $this->getId(),
+			'shareType'       => $this->getShareType(),
+			'providerId'      => $this->getProviderId(),
+			'permissions'     => $this->getPermissions(),
+			'itemType'        => $this->getItemType(),
+			'itemSource'      => $this->getItemSource(),
+			'itemTarget'      => $this->getItemTarget(),
+			'fileSource'      => $this->getFileSource(),
+			'fileTarget'      => $this->getFileTarget(),
+			'status'          => $this->getStatus(),
+			'shareTime'       => $this->getShareTime()->getTimestamp(),
+			'sharedWith'      => $this->getSharedWith(),
+			'sharedBy'        => $this->getSharedBy(),
+			'shareOwner'      => $this->getShareOwner(),
+			'childId'         => $this->getChildId(),
+			'childFileTarget' => $this->getChildFileTarget()
 		];
+
+		if ($this->hasCircle()) {
+			$arr['circle'] = $this->getCircle();
+		}
+
+		if ($this->hasInitiator()) {
+			$arr['initiator'] = $this->getInitiator();
+		}
+
+		return $arr;
 	}
 
 }

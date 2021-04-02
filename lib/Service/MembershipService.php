@@ -184,12 +184,7 @@ class MembershipService {
 		array $path = []
 	): array {
 		$circleId = ($circleId === '') ? $singleId : $circleId;
-		if ($circleId === '') {
-			$circleId = $singleId;
-		} else if ($circleId !== $singleId) {
-			$path[] = $circleId;
-		}
-
+		$path[] = $circleId;
 		$knownIds[] = $circleId;
 
 		$members = $this->memberRequest->getMembersBySingleId($circleId);
@@ -280,10 +275,6 @@ class MembershipService {
 	private function createNewMemberships(array $memberships, array $known): int {
 		$count = 0;
 		foreach ($memberships as $membership) {
-			if ($membership->getCircleId() === $membership->getSingleId()) {
-				continue;
-			}
-
 			try {
 				$item = $this->getMembershipsFromList($known, $membership->getCircleId());
 				if ($item->getLevel() !== $membership->getLevel()) {

@@ -33,12 +33,11 @@ namespace OCA\Circles\Db;
 
 
 use OCA\Circles\Exceptions\RequestBuilderException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Exceptions\ShareWrapperNotFoundException;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\ShareWrapper;
 use OCP\Files\NotFoundException;
 use OCP\Share\Exceptions\IllegalIDChangeException;
-use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IShare;
 
 
@@ -52,10 +51,12 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 
 	/**
 	 * @param IShare $share
+	 * @param int $parentId
 	 *
+	 * @return int
 	 * @throws NotFoundException
 	 */
-	public function save(IShare $share): void {
+	public function save(IShare $share, int $parentId = 0): int {
 //		$hasher = \OC::$server->getHasher();
 //		$password = ($share->getPassword() !== null) ? $hasher->hash($share->getPassword()) : '';
 		$password = '';
@@ -75,19 +76,37 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		   ->setValue('token', $qb->createNamedParameter($share->getToken()))
 		   ->setValue('stime', $qb->createFunction('UNIX_TIMESTAMP()'));
 
+		if ($parentId > 0) {
+			$qb->setValue('parent', $qb->createNamedParameter($parentId));
+		}
+
 		$qb->execute();
 		$id = $qb->getLastInsertId();
 		try {
 			$share->setId($id);
 		} catch (IllegalIDChangeException $e) {
 		}
+
+		return $id;
 	}
 
 
 	/**
-	 * @param Circle $circle
+	 * @param ShareWrapper $shareWrapper
 	 */
-	public function update(Circle $circle) {
+	public function update(ShareWrapper $shareWrapper): void {
+		\OC::$server->getLogger()->log(3, 'UPDATE: ' . json_encode($shareWrapper));
+		$qb = $this->getShareUpdateSql();
+		$qb->set('file_target', $qb->createNamedParameter($shareWrapper->getFileTarget()))
+		   ->set('share_with', $qb->createNamedParameter($shareWrapper->getSharedWith()))
+		   ->set('uid_owner', $qb->createNamedParameter($shareWrapper->getShareOwner()))
+		   ->set('uid_initiator', $qb->createNamedParameter($shareWrapper->getSharedBy()))
+		   ->set('accepted', $qb->createNamedParameter(IShare::STATUS_ACCEPTED))
+		   ->set('permissions', $qb->createNamedParameter($shareWrapper->getPermissions()));
+
+		$qb->limitToId((int)$shareWrapper->getId());
+
+		$qb->execute();
 	}
 
 
@@ -102,15 +121,31 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 
 
 	/**
-	 * @param string $shareId
-	 * @param string|null $recipientId
+	 * @param int $shareId
+	 * @param FederatedUser|null $federatedUser
 	 *
 	 * @return ShareWrapper
-	 * @throws ShareNotFound
+	 * @throws ShareWrapperNotFoundException
 	 */
-	public function getShareById(string $shareId, ?string $recipientId): ShareWrapper {
+	public function getShareById(int $shareId, ?FederatedUser $federatedUser = null): ShareWrapper {
 		$qb = $this->getShareSelectSql();
-		$qb->limitToIdString($shareId);
+		$qb->limitToId($shareId);
+
+		return $this->getItemFromRequest($qb);
+	}
+
+
+	/**
+	 * @param FederatedUser $federatedUser
+	 * @param int $shareId
+	 *
+	 * @return ShareWrapper
+	 * @throws ShareWrapperNotFoundException
+	 */
+	public function getChild(FederatedUser $federatedUser, int $shareId): ShareWrapper {
+		$qb = $this->getShareSelectSql();
+		$qb->limitToShareParent($shareId);
+		$qb->limitToShareWith($federatedUser->getSingleId());
 
 		return $this->getItemFromRequest($qb);
 	}
@@ -134,41 +169,35 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 	 * @param int $nodeId
 	 * @param int $offset
 	 * @param int $limit
+	 * @param bool $getData
 	 *
 	 * @return ShareWrapper[]
 	 * @throws RequestBuilderException
 	 */
-	public function getSharedWith(FederatedUser $federatedUser, int $nodeId, int $offset, int $limit): array {
+	public function getSharedWith(
+		FederatedUser $federatedUser,
+		int $nodeId,
+		int $offset,
+		int $limit,
+		bool $getData = false
+	): array {
 		$qb = $this->getShareSelectSql();
+		$qb->setOptions([CoreRequestBuilder::SHARE], ['getData' => $getData]);
 
-		$qb->setOptions([CoreRequestBuilder::SHARE], ['getData' => false]);
+		if ($getData) {
+			$qb->leftJoinCircle(CoreRequestBuilder::SHARE, null, 'share_with');
+		}
 
 		$qb->leftJoinFileCache(CoreRequestBuilder::SHARE);
 		$qb->limitToMembership(CoreRequestBuilder::SHARE, $federatedUser, 'share_with');
-//		$qb->leftJoinShareParent(CoreRequestBuilder::SHARE);
+		$qb->limitToDBFieldEmpty('parent', true);
+		$qb->leftJoinShareChild(CoreRequestBuilder::SHARE);
 
 		if ($nodeId > 0) {
 			$qb->limitToFileSource($nodeId);
 		}
 
 		$qb->chunk($offset, $limit);
-
-//
-//		$this->linkToMember($qb, $userId, false, 'c');
-//
-//		$shares = [];
-//		$cursor = $qb->execute();
-//		while ($data = $cursor->fetch()) {
-//			self::editShareFromParentEntry($data);
-//			if (self::isAccessibleResult($data)) {
-//				$shares[] = $this->createShareObject($data);
-//			}
-//		}
-//		$cursor->closeCursor();
-//
-//		return $shares;
-//		$qb = $this->getShareSelectSql();
-//		$qb->limitToDBFieldInt('file_source', $nodeId);
 
 		return $this->getItemsFromRequest($qb);
 	}
@@ -177,20 +206,21 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 	/**
 	 * returns the SQL request to get a specific share from the fileId and circleId
 	 *
-	 * @param string $circleId
+	 * @param string $singleId
 	 * @param int $fileId
 	 *
 	 * @return ShareWrapper
-	 * @throws ShareNotFound
+	 * @throws ShareWrapperNotFoundException
 	 */
-	public function searchShare(string $circleId, int $fileId): ShareWrapper {
+	public function searchShare(string $singleId, int $fileId): ShareWrapper {
 		$qb = $this->getShareSelectSql();
 		$qb->limitToDBFieldEmpty('parent', true);
-		$qb->limitToShareWith($circleId);
+		$qb->limitToShareWith($singleId);
 		$qb->limitToFileSource($fileId);
 
 		return $this->getItemFromRequest($qb);
 	}
+
 
 }
 
