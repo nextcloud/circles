@@ -149,7 +149,7 @@ class CircleRequest extends CircleRequestBuilder {
 			);
 		}
 		if (!is_null($initiator)) {
-			$qb->limitToInitiator(CoreRequestBuilder::CIRCLE, $initiator);
+			$qb->limitToMembership(CoreRequestBuilder::CIRCLE, $initiator);
 		}
 		if (!is_null($memberFilter)) {
 			$qb->limitToDirectMembership(CoreRequestBuilder::CIRCLE, $memberFilter);
@@ -197,7 +197,7 @@ class CircleRequest extends CircleRequestBuilder {
 //		);
 
 		if (!is_null($initiator)) {
-			$qb->limitToInitiator(CoreRequestBuilder::CIRCLE, $initiator);
+			$qb->limitToMembership(CoreRequestBuilder::CIRCLE, $initiator);
 		}
 		if (!is_null($remoteInstance)) {
 			$qb->limitToRemoteInstance($remoteInstance->getInstance(), false);

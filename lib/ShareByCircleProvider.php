@@ -255,7 +255,6 @@ class ShareByCircleProvider implements IShareProvider {
 		$child = $this->shareWrapperService->getChild($share, $federatedUser);
 		if ($child->getFileTarget() !== $share->getTarget()) {
 			$child->setFileTarget($share->getTarget());
-			\OC::$server->getLogger()->log(3, '### ' . json_encode($child));
 			$this->shareWrapperService->update($child);
 		}
 
@@ -288,11 +287,37 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @param int $offset
 	 *
 	 * @return IShare[]
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws IllegalIDChangeException
+	 * @throws InvalidIdException
+	 * @throws InvalidPathException
+	 * @throws NotFoundException
+	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
 	 */
 	public function getSharesBy($userId, $shareType, $node, $reshares, $limit, $offset): array {
+		if ($shareType !== IShare::TYPE_CIRCLE) {
+			return [];
+		}
+
 		OC::$server->getLogger()->log(3, 'CSP > getSharesBy');
 
-		return [];
+		$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
+		$wrappedShares = $this->shareWrapperService->getSharesBy(
+			$federatedUser,
+			(!is_null($node)) ? $node->getId() : 0,
+			$reshares,
+			$limit,
+			$offset,
+			true
+		);
+
+		return array_map(
+			function(ShareWrapper $wrapper) {
+				return $wrapper->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
+			}, $wrappedShares
+		);
 	}
 
 
@@ -323,7 +348,7 @@ class ShareByCircleProvider implements IShareProvider {
 			throw new  ShareNotFound();
 		}
 
-		return $wrappedShare->getShare($this->rootFolder, $this->userManager);
+		return $wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
 	}
 
 
@@ -341,7 +366,7 @@ class ShareByCircleProvider implements IShareProvider {
 
 		return array_map(
 			function(ShareWrapper $wrapper) {
-				return $wrapper->getShare($this->rootFolder, $this->userManager);
+				return $wrapper->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
 			}, $wrappedShares
 		);
 	}
@@ -379,10 +404,9 @@ class ShareByCircleProvider implements IShareProvider {
 
 		return array_map(
 			function(ShareWrapper $wrapper) {
-				return $wrapper->getShare($this->rootFolder, $this->userManager);
+				return $wrapper->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
 			}, $wrappedShares
 		);
-
 	}
 
 

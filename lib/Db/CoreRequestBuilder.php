@@ -418,7 +418,7 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 //										  ]
 //			);
 
-			$this->limitToInitiator($aliasCircle, $initiator);
+			$this->limitToMembership($aliasCircle, $initiator);
 		}
 
 		$this->leftJoinOwner($aliasCircle);
@@ -428,6 +428,8 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 	/**
 	 * @param string $aliasMember
 	 * @param IFederatedUser|null $initiator
+	 *
+	 * @throws RequestBuilderException
 	 */
 	public function leftJoinBasedOn(
 		string $aliasMember,
@@ -466,7 +468,8 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 		}
 
 		try {
-			$aliasOwner = $this->generateAlias($aliasCircle, self::OWNER);
+			$aliasOwner = $this->generateAlias($aliasCircle, self::OWNER, $options);
+			$getData = $this->getBool('getData', $options, false);
 		} catch (RequestBuilderException $e) {
 			return;
 		}
@@ -495,26 +498,8 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 	public function limitToMembership(string $alias, IFederatedUser $user, string $field = ''): void {
 		$this->leftJoinInitiator($alias, $user, $field);
 		$this->limitInitiatorVisibility($alias);
-//		$aliasInitiator = $this->generateAlias($aliasCircle, self::INITIATOR, $options);
-//		$getData = $this->getBool('getData', $options, true);
-//
-//		if ($getData) {
-//			$this->leftJoinBasedOn($aliasInitiator);
-//		}
-	}
 
-
-	/**
-	 * @param string $aliasCircle
-	 * @param IFederatedUser $initiator
-	 *
-	 * @throws RequestBuilderException
-	 */
-	public function limitToInitiator(string $aliasCircle, IFederatedUser $initiator): void {
-		// TODO: duplicate with limitToMembership ?
-		$this->leftJoinInitiator($aliasCircle, $initiator);
-		$this->limitInitiatorVisibility($aliasCircle);
-		$aliasInitiator = $this->generateAlias($aliasCircle, self::INITIATOR, $options);
+		$aliasInitiator = $this->generateAlias($alias, self::INITIATOR, $options);
 		$getData = $this->getBool('getData', $options, false);
 
 		if ($getData) {
@@ -914,6 +899,28 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 		$this->selectAlias($aliasShareChild . '.id', 'child_id');
 		$this->selectAlias($aliasShareChild . '.file_target', 'child_file_target');
 //		$this->selectAlias($aliasShareParent . '.permissions', 'parent_perms');
+	}
+
+
+	/**
+	 * @param string $alias
+	 * @param FederatedUser $federatedUser
+	 * @param bool $reshares
+	 */
+	public function limitToShareOwner(string $alias, FederatedUser $federatedUser, bool $reshares): void {
+		$expr = $this->expr();
+
+		$orX = $expr->orX(
+			$expr->eq($alias . '.uid_initiator', $this->createNamedParameter($federatedUser->getUserId()))
+		);
+
+		if ($reshares) {
+			$orX->add(
+				$expr->eq($alias . '.uid_owner', $this->createNamedParameter($federatedUser->getUserId()))
+			);
+		}
+
+		$this->andWhere($orX);
 	}
 
 

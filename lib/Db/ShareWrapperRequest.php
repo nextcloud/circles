@@ -95,7 +95,6 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 	 * @param ShareWrapper $shareWrapper
 	 */
 	public function update(ShareWrapper $shareWrapper): void {
-		\OC::$server->getLogger()->log(3, 'UPDATE: ' . json_encode($shareWrapper));
 		$qb = $this->getShareUpdateSql();
 		$qb->set('file_target', $qb->createNamedParameter($shareWrapper->getFileTarget()))
 		   ->set('share_with', $qb->createNamedParameter($shareWrapper->getSharedWith()))
@@ -204,6 +203,42 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 
 
 	/**
+	 * @param FederatedUser $federatedUser
+	 * @param int $nodeId
+	 * @param bool $reshares
+	 * @param int $offset
+	 * @param int $limit
+	 * @param bool $getData
+	 *
+	 * @return ShareWrapper[]
+	 * @throws RequestBuilderException
+	 */
+	public function getSharesBy(
+		FederatedUser $federatedUser,
+		int $nodeId,
+		bool $reshares,
+		int $offset,
+		int $limit,
+		bool $getData = false
+	): array {
+		$qb = $this->getShareSelectSql();
+		$qb->setOptions([CoreRequestBuilder::SHARE], ['getData' => $getData]);
+		$qb->leftJoinCircle(CoreRequestBuilder::SHARE, null, 'share_with');
+
+		$qb->limitToShareOwner(CoreRequestBuilder::SHARE, $federatedUser, $reshares);
+		$qb->limitToDBFieldEmpty('parent', true);
+
+		if ($nodeId > 0) {
+			$qb->limitToFileSource($nodeId);
+		}
+
+		$qb->chunk($offset, $limit);
+
+		return $this->getItemsFromRequest($qb);
+	}
+
+
+	/**
 	 * returns the SQL request to get a specific share from the fileId and circleId
 	 *
 	 * @param string $singleId
@@ -220,7 +255,6 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 
 		return $this->getItemFromRequest($qb);
 	}
-
 
 }
 

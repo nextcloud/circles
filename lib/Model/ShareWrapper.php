@@ -38,8 +38,10 @@ use daita\MySmallPhpTools\Traits\TArrayTools;
 use DateTime;
 use JsonSerializable;
 use OC\Share20\Share;
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\ShareByCircleProvider;
 use OCP\Files\IRootFolder;
+use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCP\Share\Exceptions\IllegalIDChangeException;
 use OCP\Share\IShare;
@@ -470,11 +472,17 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 	/**
 	 * @param IRootFolder $rootFolder
 	 * @param IUserManager $userManager
+	 * @param IURLGenerator $urlGenerator
 	 *
 	 * @return IShare
 	 * @throws IllegalIDChangeException
 	 */
-	public function getShare(IRootFolder $rootFolder, IUserManager $userManager): IShare {
+	public function getShare(
+		IRootFolder $rootFolder,
+		IUserManager $userManager,
+		IURLGenerator $urlGenerator
+	): IShare {
+
 		$share = new Share($rootFolder, $userManager);
 		$share->setId($this->getId());
 		$share->setPermissions($this->getPermissions());
@@ -493,6 +501,8 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 		if ($this->getChildId() > 0) {
 			$share->setTarget($this->getChildFileTarget());
 		}
+
+		$this->setShareDisplay($share, $urlGenerator);
 
 		return $share;
 	}
@@ -530,7 +540,6 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 //			$share->setPassword($this->get('password', $data, ''));
 //		}
 
-		$this->setSharesProperties($data, $prefix);
 		$this->setParentProperties($data, $prefix);
 
 		$this->setProviderId(ShareByCircleProvider::IDENTIFIER)
@@ -543,10 +552,29 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 
 
 	/**
-	 * @param array $data
-	 * @param string $prefix
+	 * @param IShare $share
+	 * @param IURLGenerator $urlGenerator
 	 */
-	private function setSharesProperties(array $data, string $prefix) {
+	private function setShareDisplay(IShare $share, IURLGenerator $urlGenerator) {
+		if (!$this->hasCircle()) {
+			return;
+		}
+
+		$circle = $this->getCircle();
+		$display = $circle->getDisplayName();
+		if ($circle->getSource() === 0) {
+			$display .= ' (Circle owned by ' . $circle->getOwner()->getDisplayName() . ')';
+		} else {
+			$display .= ' (' . Circle::$DEF_SOURCE[$circle->getSource()] . ')';
+		}
+
+		$share->setSharedWithDisplayName($display);
+
+		$icon = $urlGenerator->getAbsoluteURL(
+			$urlGenerator->imagePath(Application::APP_ID, 'black_circle.svg')
+		);
+		$share->setSharedWithAvatar($icon);
+
 
 //		if (array_key_exists('circle_type', $data)
 //			&& method_exists($share, 'setSharedWithDisplayName')) {

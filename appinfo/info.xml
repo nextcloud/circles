@@ -79,6 +79,7 @@ Users won't be able to find this Circle using Nextcloud search engine.
 		<command>OCA\Circles\Command\CirclesCheck</command>
 		<command>OCA\Circles\Command\CirclesTest</command>
 		<command>OCA\Circles\Command\Clean</command>
+		<command>OCA\Circles\Command\SharesFiles</command>
 		<command>OCA\Circles\Command\MembersDetails</command>
 		<command>OCA\Circles\Command\MembersLevel</command>
 		<command>OCA\Circles\Command\MembersRemove</command>

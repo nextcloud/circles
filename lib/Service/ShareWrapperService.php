@@ -138,6 +138,29 @@ class ShareWrapperService {
 
 	/**
 	 * @param FederatedUser $federatedUser
+	 * @param int $nodeId
+	 * @param bool $reshares
+	 * @param int $offset
+	 * @param int $limit
+	 * @param bool $getData
+	 *
+	 * @return ShareWrapper[]
+	 * @throws RequestBuilderException
+	 */
+	public function getSharesBy(
+		FederatedUser $federatedUser,
+		int $nodeId,
+		bool $reshares,
+		int $offset,
+		int $limit,
+		bool $getData = false
+	): array {
+		return $this->shareWrapperRequest->getSharesBy($federatedUser, $nodeId, $reshares, $offset, $limit, $getData);
+	}
+
+
+	/**
+	 * @param FederatedUser $federatedUser
 	 * @param IShare $share
 	 *
 	 * @return ShareWrapper
