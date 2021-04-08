@@ -239,6 +239,34 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 
 
 	/**
+	 * @param FederatedUser $federatedUser
+	 * @param int $nodeId
+	 * @param bool $reshares
+	 *
+	 * @return ShareWrapper[]
+	 * @throws RequestBuilderException
+	 */
+	public function getSharesInFolder(
+		FederatedUser $federatedUser,
+		int $nodeId,
+		bool $reshares
+	): array {
+		$qb = $this->getShareSelectSql();
+
+		$qb->leftJoinCircle(CoreRequestBuilder::SHARE, null, 'share_with');
+		$qb->limitToShareOwner(CoreRequestBuilder::SHARE, $federatedUser, $reshares);
+		$qb->leftJoinFileCache(CoreRequestBuilder::SHARE);
+		if ($nodeId > 0) {
+			$aliasFileCache = $qb->generateAlias(CoreRequestBuilder::SHARE, CoreRequestBuilder::FILE_CACHE);
+			$qb->limitToDBFieldInt('parent', $nodeId, $aliasFileCache);
+		}
+		$qb->limitToDBFieldEmpty('parent', true);
+
+		return $this->getItemsFromRequest($qb);
+	}
+
+
+	/**
 	 * returns the SQL request to get a specific share from the fileId and circleId
 	 *
 	 * @param string $singleId

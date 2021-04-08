@@ -37,6 +37,8 @@ use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use DateTime;
 use JsonSerializable;
+use OC;
+use OC\Files\Cache\Cache;
 use OC\Share20\Share;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\ShareByCircleProvider;
@@ -112,6 +114,9 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 
 	/** @var string */
 	private $childFileTarget = '';
+
+	/** @var FileCacheWrapper */
+	private $fileCache;
 
 
 	/**
@@ -470,6 +475,32 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 
 
 	/**
+	 * @param FileCacheWrapper $fileCache
+	 *
+	 * @return $this
+	 */
+	public function setFileCache(FileCacheWrapper $fileCache): self {
+		$this->fileCache = $fileCache;
+
+		return $this;
+	}
+
+	/**
+	 * @return FileCacheWrapper
+	 */
+	public function getFileCache(): FileCacheWrapper {
+		return $this->fileCache;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasFileCache(): bool {
+		return (!is_null($this->fileCache));
+	}
+
+
+	/**
 	 * @param IRootFolder $rootFolder
 	 * @param IUserManager $userManager
 	 * @param IURLGenerator $urlGenerator
@@ -481,8 +512,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 		IRootFolder $rootFolder,
 		IUserManager $userManager,
 		IURLGenerator $urlGenerator
-	): IShare {
-
+	): ?IShare {
 		$share = new Share($rootFolder, $userManager);
 		$share->setId($this->getId());
 		$share->setPermissions($this->getPermissions());
@@ -503,6 +533,17 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 		}
 
 		$this->setShareDisplay($share, $urlGenerator);
+
+		if ($this->hasFileCache()) {
+			if (!$this->getFileCache()->isAccessible()) {
+				return null;
+			}
+			$share->setNodeCacheEntry(
+				Cache::cacheEntryFromData(
+					$this->getFileCache()->getData(), OC::$server->getMimeTypeLoader()
+				)
+			);
+		}
 
 		return $share;
 	}
@@ -540,7 +581,8 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 //			$share->setPassword($this->get('password', $data, ''));
 //		}
 
-		$this->setParentProperties($data, $prefix);
+		$this->setChildId($this->getInt($prefix . 'child_id', $data));
+		$this->setChildFileTarget($this->get($prefix . 'child_file_target', $data));
 
 		$this->setProviderId(ShareByCircleProvider::IDENTIFIER)
 			 ->setStatus(Ishare::STATUS_ACCEPTED);
@@ -596,28 +638,6 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 
 
 	/**
-	 * @param array $data
-	 * @param string $prefix
-	 */
-	private function setParentProperties(array $data, string $prefix) {
-		$this->setChildId($this->getInt($prefix . 'child_id', $data));
-		$this->setChildFileTarget($this->get($prefix . 'child_file_target', $data));
-
-		//		if (isset($data['f_permissions'])) {
-//			$entryData = $data;
-//			$entryData['permissions'] = $entryData['f_permissions'];
-//			$entryData['parent'] = $entryData['f_parent'];
-//			$share->setNodeCacheEntry(
-//				Cache::cacheEntryFromData(
-//					$entryData,
-//					OC::$server->getMimeTypeLoader()
-//				)
-//			);
-//		}
-	}
-
-
-	/**
 	 * @return string[]
 	 */
 	public function jsonSerialize(): array {
@@ -646,6 +666,10 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 
 		if ($this->hasInitiator()) {
 			$arr['initiator'] = $this->getInitiator();
+		}
+
+		if ($this->hasFileCache()) {
+			$arr['fileCache'] = $this->getFileCache();
 		}
 
 		return $arr;

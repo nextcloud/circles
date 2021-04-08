@@ -155,7 +155,22 @@ class ShareWrapperService {
 		int $limit,
 		bool $getData = false
 	): array {
-		return $this->shareWrapperRequest->getSharesBy($federatedUser, $nodeId, $reshares, $offset, $limit, $getData);
+		return $this->shareWrapperRequest->getSharesBy(
+			$federatedUser, $nodeId, $reshares, $offset, $limit, $getData
+		);
+	}
+
+
+	/**
+	 * @param FederatedUser $federatedUser
+	 * @param int $nodeId
+	 * @param bool $reshares
+	 *
+	 * @return ShareWrapper[]
+	 * @throws RequestBuilderException
+	 */
+	public function getSharesInFolder(FederatedUser $federatedUser, int $nodeId, bool $reshares): array {
+		return $this->shareWrapperRequest->getSharesInFolder($federatedUser, $nodeId, $reshares);
 	}
 
 

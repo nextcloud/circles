@@ -866,10 +866,17 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 		$aliasFileCache = $this->generateAlias($aliasShare, self::FILE_CACHE);
 		$aliasStorages = $this->generateAlias($aliasFileCache, self::STORAGES);
 
-		$this->leftJoin(
-			$aliasShare, CoreQueryBuilder::TABLE_FILE_CACHE, $aliasFileCache,
-			$expr->eq($aliasShare . '.file_source', $aliasFileCache . '.fileid')
-		)
+		$fieldsFileCache = [
+			'fileid', 'path', 'permissions', 'storage', 'path_hash', 'parent', 'name', 'mimetype', 'mimepart',
+			'size', 'mtime', 'storage_mtime', 'encrypted', 'unencrypted_size', 'etag', 'checksum'
+		];
+
+		$this->generateSelectAlias($fieldsFileCache, $aliasFileCache, $aliasFileCache, [])
+			 ->generateSelectAlias(['id'], $aliasStorages, $aliasStorages, [])
+			 ->leftJoin(
+				 $aliasShare, CoreQueryBuilder::TABLE_FILE_CACHE, $aliasFileCache,
+				 $expr->eq($aliasShare . '.file_source', $aliasFileCache . '.fileid')
+			 )
 			 ->leftJoin(
 				 $aliasFileCache, CoreQueryBuilder::TABLE_STORAGES, $aliasStorages,
 				 $expr->eq($aliasFileCache . '.storage', $aliasStorages . '.numeric_id')

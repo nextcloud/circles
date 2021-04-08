@@ -209,6 +209,15 @@ class ModelManager {
 					} catch (MemberNotFoundException $e) {
 					}
 					break;
+
+				case CoreRequestBuilder::FILE_CACHE;
+					try {
+						$fileCache = new FileCacheWrapper();
+						$fileCache->importFromDatabase($data, $prefix);
+						$model->setFileCache($fileCache);
+					} catch (MemberNotFoundException $e) {
+					}
+					break;
 			}
 		}
 

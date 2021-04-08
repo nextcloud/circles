@@ -38,7 +38,6 @@ namespace OCA\Circles\AppInfo;
 use Closure;
 use OC;
 use OCA\Circles\Api\v1\Circles;
-use OCA\Circles\ShareByCircleProvider;
 use OCA\Circles\Events\CircleMemberAddedEvent;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\GlobalScale\GSMount\MountProvider;
@@ -59,7 +58,6 @@ use OCP\AppFramework\IAppContainer;
 use OCP\AppFramework\QueryException;
 use OCP\Group\Events\GroupDeletedEvent;
 use OCP\IServerContainer;
-use OCP\Share\IManager;
 use OCP\User\Events\UserDeletedEvent;
 use OCP\Util;
 use Throwable;
@@ -78,7 +76,7 @@ class Application extends App implements IBootstrap {
 
 	const APP_ID = 'circles';
 	const APP_NAME = 'Circles';
-	const APP_TOKEN = '12345678';
+	const APP_TOKEN = 'dvG7laa0_UU';
 
 	const APP_SUBJECT = 'http://nextcloud.com/';
 	const APP_REL = 'https://apps.nextcloud.com/apps/circles';
