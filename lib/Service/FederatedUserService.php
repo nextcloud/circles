@@ -333,6 +333,7 @@ class FederatedUserService {
 	 * @throws FederatedUserException
 	 * @throws InvalidIdException
 	 * @throws SingleCircleNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	public function getAppInitiator(string $appId, int $appNumber): FederatedUser {
 		$circle = new Circle();

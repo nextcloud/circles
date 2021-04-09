@@ -241,15 +241,16 @@ class CircleRequest extends CircleRequestBuilder {
 	public function getSingleCircle(IFederatedUser $initiator): Circle {
 		$qb = $this->getCircleSelectSql(CoreRequestBuilder::SINGLE);
 
-		$member = clone $initiator;
 		if ($initiator instanceof FederatedUser) {
 			$member = new Member();
 			$member->importFromIFederatedUser($initiator);
 			$member->setLevel(Member::LEVEL_OWNER);
+		} else {
+			$member = clone $initiator;
 		}
 
 		$qb->limitToDirectMembership(CoreRequestBuilder::SINGLE, $member);
-		$qb->limitToConfig(Circle::CFG_SINGLE);
+		$qb->limitToConfigFlag(Circle::CFG_SINGLE);
 
 		try {
 			return $this->getItemFromRequest($qb);
