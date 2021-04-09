@@ -58,7 +58,7 @@ class CoreQueryBuilder {
 	const TABLE_MEMBER = 'circle_members';
 	const TABLE_MEMBERSHIP = 'circle_membership';
 	const TABLE_REMOTE = 'circle_remotes';
-	const TABLE_REMOTE_WRAPPER = 'circle_gsevents'; //rename ?
+	const TABLE_EVENT = 'circle_events';
 	const TABLE_SHARE_LOCKS = 'circle_share_locks';
 
 	const TABLE_TOKENS = 'circle_tokens';
@@ -74,7 +74,7 @@ class CoreQueryBuilder {
 		self::TABLE_MEMBER,
 		self::TABLE_MEMBERSHIP,
 		self::TABLE_REMOTE,
-		self::TABLE_REMOTE_WRAPPER,
+		self::TABLE_EVENT,
 		self::TABLE_SHARE_LOCKS,
 
 		self::TABLE_TOKENS,

@@ -257,6 +257,7 @@ class LocalController extends OcsController {
 		try {
 			$this->setCurrentFederatedUser();
 			$this->memberService->getMember($memberId, $circleId);
+
 			$result = $this->memberService->removeMember($memberId);
 
 			return new DataResponse($result);

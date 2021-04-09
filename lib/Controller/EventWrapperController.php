@@ -33,8 +33,6 @@ namespace OCA\Circles\Controller;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Controller;
 use daita\MySmallPhpTools\Traits\TAsync;
 use daita\MySmallPhpTools\Traits\TStringTools;
-use Exception;
-use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Service\FederatedEventService;
 use OCA\Circles\Service\RemoteDownstreamService;
 use OCA\Circles\Service\RemoteUpstreamService;
@@ -49,7 +47,7 @@ use OCP\IRequest;
  *
  * @package OCA\Circles\Controller
  */
-class RemoteWrapperController extends Controller {
+class EventWrapperController extends Controller {
 
 
 	use TStringTools;
@@ -104,7 +102,7 @@ class RemoteWrapperController extends Controller {
 	public function asyncBroadcast(string $token): DataResponse {
 		$wrappers = $this->remoteUpstreamService->getEventsByToken($token);
 		if (empty($wrappers)) {
-			return new DataResponse(null, Http::STATUS_NOT_FOUND);
+			return new DataResponse(null, Http::STATUS_OK);
 		}
 
 		// closing socket, keep current process running.

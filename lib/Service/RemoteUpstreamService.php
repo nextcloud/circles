@@ -36,18 +36,16 @@ use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
 use Exception;
-use OCA\Circles\Db\RemoteWrapperRequest;
+use OCA\Circles\Db\EventWrapperRequest;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
+use OCA\Circles\Model\Federated\EventWrapper;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
-use OCA\Circles\Model\Federated\RemoteWrapper;
-use OCA\Circles\Model\GlobalScale\GSEvent;
-use OCA\Circles\Model\GlobalScale\GSWrapper;
 use OCP\IL10N;
 
 
@@ -65,8 +63,8 @@ class RemoteUpstreamService {
 	/** @var IL10N */
 	private $l10n;
 
-	/** @var RemoteWrapperRequest */
-	private $remoteWrapperRequest;
+	/** @var EventWrapperRequest */
+	private $eventWrapperRequest;
 
 	/** @var RemoteStreamService */
 	private $remoteStreamService;
@@ -82,16 +80,16 @@ class RemoteUpstreamService {
 	 * RemoteUpstreamService constructor.
 	 *
 	 * @param IL10N $l10n
-	 * @param RemoteWrapperRequest $remoteWrapperRequest
+	 * @param EventWrapperRequest $eventWrapperRequest
 	 * @param RemoteStreamService $remoteStreamService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IL10N $l10n, RemoteWrapperRequest $remoteWrapperRequest, RemoteStreamService $remoteStreamService,
+		IL10N $l10n, EventWrapperRequest $eventWrapperRequest, RemoteStreamService $remoteStreamService,
 		ConfigService $configService
 	) {
 		$this->l10n = $l10n;
-		$this->remoteWrapperRequest = $remoteWrapperRequest;
+		$this->eventWrapperRequest = $eventWrapperRequest;
 		$this->remoteStreamService = $remoteStreamService;
 		$this->configService = $configService;
 	}
@@ -100,32 +98,33 @@ class RemoteUpstreamService {
 	/**
 	 * @param string $token
 	 *
-	 * @return RemoteWrapper[]
+	 * @return EventWrapper[]
 	 */
 	public function getEventsByToken(string $token): array {
-		return $this->remoteWrapperRequest->getByToken($token);
+		return $this->eventWrapperRequest->getByToken($token);
 	}
 
 
 	/**
-	 * @param RemoteWrapper $wrapper
+	 * @param EventWrapper $wrapper
 	 */
-	public function broadcastWrapper(RemoteWrapper $wrapper): void {
-		$status = RemoteWrapper::STATUS_FAILED;
+	public function broadcastWrapper(EventWrapper $wrapper): void {
+		$status = EventWrapper::STATUS_FAILED;
 
 		try {
 			$this->broadcastEvent($wrapper->getEvent(), $wrapper->getInstance());
-			$status = GSWrapper::STATUS_DONE;
+			$status = EventWrapper::STATUS_DONE;
 		} catch (Exception $e) {
 		}
 
-		if ($wrapper->getSeverity() === GSEvent::SEVERITY_HIGH) {
+		if ($wrapper->getSeverity() === FederatedEvent::SEVERITY_HIGH) {
 			$wrapper->setStatus($status);
 		} else {
-			$wrapper->setStatus(GSWrapper::STATUS_OVER);
+			$wrapper->setStatus(EventWrapper::STATUS_OVER);
 		}
 
-		$this->remoteWrapperRequest->update($wrapper);
+		$wrapper->setResult($wrapper->getEvent()->getResult());
+		$this->eventWrapperRequest->update($wrapper);
 	}
 
 
@@ -147,7 +146,7 @@ class RemoteUpstreamService {
 			$event
 		);
 
-		$event->setResult(new SimpleDataStore($this->getArray('result', $data, [])));
+		$event->setResult(new SimpleDataStore($data));
 	}
 
 
@@ -255,7 +254,7 @@ class RemoteUpstreamService {
 //
 //		$this->signEvent($event);
 //
-//		$path = $this->urlGenerator->linkToRoute('circles.RemoteWrapper.status');
+//		$path = $this->urlGenerator->linkToRoute('circles.EventWrapper.status');
 //		$request = new NC22Request($path, Request::TYPE_POST);
 //		$this->configService->configureRequest($request);
 //		$request->setDataSerialize($event);

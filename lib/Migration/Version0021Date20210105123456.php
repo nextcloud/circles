@@ -185,6 +185,54 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 			$table->addIndex(['href']);
 		}
 
+
+		if (!$schema->hasTable('circle_events')) {
+			$table = $schema->createTable('circle_events');
+			$table->addColumn(
+				'token', 'string', [
+						   'notnull' => false,
+						   'length'  => 63,
+					   ]
+			);
+			$table->addColumn(
+				'event', 'text', [
+						   'notnull' => false
+					   ]
+			);
+			$table->addColumn(
+				'result', 'text', [
+							'notnull' => false
+						]
+			);
+			$table->addColumn(
+				'instance', 'string', [
+							  'length'  => 255,
+							  'notnull' => false
+						  ]
+			);
+			$table->addColumn(
+				'severity', 'integer', [
+							  'length'  => 3,
+							  'notnull' => false
+						  ]
+			);
+			$table->addColumn(
+				'status', 'integer', [
+							'length'  => 3,
+							'notnull' => false
+						]
+			);
+			$table->addColumn(
+				'creation', 'bigint', [
+							  'length'  => 14,
+							  'notnull' => false
+						  ]
+			);
+
+			$table->addUniqueIndex(['token', 'instance']);
+		}
+
+
 		if (!$schema->hasTable('circle_membership')) {
 			$table = $schema->createTable('circle_membership');
 

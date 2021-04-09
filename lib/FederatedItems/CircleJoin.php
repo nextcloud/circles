@@ -37,11 +37,11 @@ use daita\MySmallPhpTools\Traits\TStringTools;
 use Exception;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\FederatedItemBadRequestException;
-use OCA\Circles\Exceptions\FederatedItemForbiddenException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\Exceptions\MembersLimitException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemInitiatorMembershipNotRequired;
 use OCA\Circles\IFederatedItemMemberCheckNotRequired;
@@ -51,11 +51,10 @@ use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
-use OCA\Circles\Service\CircleEventService;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\FederatedUserService;
-use OCA\Circles\Service\MembershipService;
 use OCA\Circles\StatusCode;
 use OCP\IUserManager;
 
@@ -68,6 +67,7 @@ use OCP\IUserManager;
 class CircleJoin implements
 	IFederatedItem,
 	IFederatedItemInitiatorMembershipNotRequired,
+//	IFederatedItemAsyncProcess,
 	IFederatedItemMemberCheckNotRequired,
 	IFederatedItemMemberOptional {
 
@@ -85,14 +85,11 @@ class CircleJoin implements
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
-	/** @var MembershipService */
-	private $membershipService;
-
 	/** @var CircleService */
 	private $circleService;
 
-	/** @var CircleEventService */
-	private $circleEventService;
+	/** @var EventService */
+	private $eventService;
 
 	/** @var ConfigService */
 	private $configService;
@@ -104,22 +101,19 @@ class CircleJoin implements
 	 * @param IUserManager $userManager
 	 * @param MemberRequest $memberRequest
 	 * @param FederatedUserService $federatedUserService
-	 * @param MembershipService $membershipService
 	 * @param CircleService $circleService
-	 * @param CircleEventService $circleEventService
+	 * @param EventService $eventService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		IUserManager $userManager, MemberRequest $memberRequest, FederatedUserService $federatedUserService,
-		MembershipService $membershipService, CircleService $circleService,
-		CircleEventService $circleEventService, ConfigService $configService
+		CircleService $circleService, EventService $eventService, ConfigService $configService
 	) {
 		$this->userManager = $userManager;
 		$this->memberRequest = $memberRequest;
 		$this->federatedUserService = $federatedUserService;
-		$this->membershipService = $membershipService;
 		$this->circleService = $circleService;
-		$this->circleEventService = $circleEventService;
+		$this->eventService = $eventService;
 		$this->configService = $configService;
 	}
 
@@ -128,7 +122,7 @@ class CircleJoin implements
 	 * @param FederatedEvent $event
 	 *
 	 * @throws FederatedItemBadRequestException
-	 * @throws FederatedItemForbiddenException
+	 * @throws MembersLimitException
 	 */
 	public function verify(FederatedEvent $event): void {
 		$circle = $event->getCircle();
@@ -247,19 +241,17 @@ class CircleJoin implements
 		}
 
 		$this->memberRequest->save($member);
-		$this->membershipService->onUpdate($member->getSingleId());
 
-//		$this->circleEventService->onCircleJoined($event);
-
+		$this->eventService->memberJoining($event);
 	}
 
 
 	/**
-	 * @param FederatedEvent[] $events
-	 *
-	 * @throws Exception
+	 * @param FederatedEvent $event
+	 * @param array $results
 	 */
-	public function result(array $events): void {
+	public function result(FederatedEvent $event, array $results): void {
+		$this->eventService->memberJoined($event, $results);
 	}
 
 

@@ -434,6 +434,22 @@ class FederatedEvent implements JsonSerializable {
 		return $this;
 	}
 
+	/**
+	 * @param string $key
+	 * @param SimpleDataStore $result
+	 *
+	 * @return $this
+	 */
+	public function addResult(string $key, SimpleDataStore $result): self {
+		if (is_null($this->result)) {
+			$this->result = new SimpleDataStore();
+		}
+
+		$this->result->aData($key, $result);
+
+		return $this;
+	}
+
 
 	/**
 	 * @param array $data

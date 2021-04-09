@@ -29,51 +29,28 @@ declare(strict_types=1);
  */
 
 
-namespace OCA\Circles\Service;
+namespace OCA\Circles\Events;
 
 
-use OCA\Circles\Events\CircleMemberAddedEvent;
-use OCA\Circles\Events\SharedItemsSyncRequestedEvent;
 use OCA\Circles\Model\Federated\FederatedEvent;
-use OCP\EventDispatcher\IEventDispatcher;
 
 
 /**
- * Class CircleEventService
+ * Class CircleDestroyedEvent
  *
- * @package OCA\Circles\Service
+ * @package OCA\Circles\Events
  */
-class CircleEventService {
-
-
-	/** @var IEventDispatcher */
-	private $eventDispatcher;
+class CircleDestroyedEvent extends CircleResultGenericEvent {
 
 
 	/**
-	 * CircleEventService constructor.
+	 * CircleDestroyedEvent constructor.
 	 *
-	 * @param IEventDispatcher $eventDispatcher
-	 */
-	public function __construct(IEventDispatcher $eventDispatcher) {
-		$this->eventDispatcher = $eventDispatcher;
-	}
-
-
-	/**
-	 * @param FederatedEvent $event
-	 */
-	public function onMemberAdded(FederatedEvent $event): void {
-		$this->eventDispatcher->dispatchTyped(new CircleMemberAddedEvent($event));
-	}
-
-
-	/**
 	 * @param FederatedEvent $federatedEvent
+	 * @param array $results
 	 */
-	public function onSharedItemsSyncRequested(FederatedEvent $federatedEvent) {
-		$event = new SharedItemsSyncRequestedEvent($federatedEvent);
-		$this->eventDispatcher->dispatchTyped($event);
+	public function __construct(FederatedEvent $federatedEvent, array $results) {
+		parent::__construct($federatedEvent, $results);
 	}
 
 }

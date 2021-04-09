@@ -9,7 +9,7 @@ declare(strict_types=1);
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Maxence Lange <maxence@artificial-owl.com>
  * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
@@ -29,9 +29,29 @@ declare(strict_types=1);
  */
 
 
-namespace OCA\Circles\Exceptions;
+namespace OCA\Circles\Events;
 
-class RemoteWrapperNotFoundException extends \Exception {
+
+use OCA\Circles\Model\Federated\FederatedEvent;
+
+
+/**
+ * Class CircleCreatedEvent
+ *
+ * @package OCA\Circles\Events
+ */
+class CircleCreatedEvent extends CircleResultGenericEvent {
+
+
+	/**
+	 * CircleCreatedEvent constructor.
+	 *
+	 * @param FederatedEvent $federatedEvent
+	 * @param array $results
+	 */
+	public function __construct(FederatedEvent $federatedEvent, array $results) {
+		parent::__construct($federatedEvent, $results);
+	}
 
 }
 

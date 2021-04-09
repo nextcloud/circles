@@ -29,40 +29,27 @@ declare(strict_types=1);
  */
 
 
-namespace OCA\Circles\Listeners\Files;
+namespace OCA\Circles\Events;
 
 
-use daita\MySmallPhpTools\Traits\TStringTools;
-use OCA\Circles\Events\CircleMemberAddedEvent;
-use OCP\EventDispatcher\Event;
-use OCP\EventDispatcher\IEventListener;
+use OCA\Circles\Model\Federated\FederatedEvent;
 
 
 /**
- * Class MemberAdded
+ * Class DestroyingCircleEvent
  *
- * @package OCA\Circles\Listeners\Files
+ * @package OCA\Circles\Events
  */
-class MemberAdded implements IEventListener {
-
-
-	use TStringTools;
+class DestroyingCircleEvent extends CircleGenericEvent {
 
 
 	/**
-	 * @param Event $event
+	 * DestroyingCircleEvent constructor.
+	 *
+	 * @param FederatedEvent $federatedEvent
 	 */
-	public function handle(Event $event): void {
-		if (!$event instanceof CircleMemberAddedEvent) {
-			return;
-		}
-
-		$result = [];
-		foreach ($event->getResults() as $instance => $item) {
-			$result[$instance] = $item->gData('files');
-		}
-
-		\OC::$server->getLogger()->log(3, '>>> ' . json_encode($result));
+	public function __construct(FederatedEvent $federatedEvent) {
+		parent::__construct($federatedEvent);
 	}
 
 }

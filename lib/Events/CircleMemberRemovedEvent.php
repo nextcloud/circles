@@ -29,40 +29,51 @@ declare(strict_types=1);
  */
 
 
-namespace OCA\Circles\Listeners\Files;
+namespace OCA\Circles\Events;
 
 
-use daita\MySmallPhpTools\Traits\TStringTools;
-use OCA\Circles\Events\CircleMemberAddedEvent;
-use OCP\EventDispatcher\Event;
-use OCP\EventDispatcher\IEventListener;
+use OCA\Circles\Model\Federated\FederatedEvent;
 
 
 /**
- * Class MemberAdded
+ * Class CircleMemberRemovedEvent
  *
- * @package OCA\Circles\Listeners\Files
+ * @package OCA\Circles\Events
  */
-class MemberAdded implements IEventListener {
+class CircleMemberRemovedEvent extends CircleResultGenericEvent {
 
 
-	use TStringTools;
+	/** @var int */
+	private $type = 0;
 
 
 	/**
-	 * @param Event $event
+	 * CircleMemberRemovedEvent constructor.
+	 *
+	 * @param FederatedEvent $federatedEvent
+	 * @param array $results
 	 */
-	public function handle(Event $event): void {
-		if (!$event instanceof CircleMemberAddedEvent) {
-			return;
-		}
+	public function __construct(FederatedEvent $federatedEvent, array $results) {
+		parent::__construct($federatedEvent, $results);
+	}
 
-		$result = [];
-		foreach ($event->getResults() as $instance => $item) {
-			$result[$instance] = $item->gData('files');
-		}
 
-		\OC::$server->getLogger()->log(3, '>>> ' . json_encode($result));
+	/**
+	 * @param int $type
+	 *
+	 * @return $this
+	 */
+	public function setType(int $type): self {
+		$this->type = $type;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getType(): int {
+		return $this->type;
 	}
 
 }

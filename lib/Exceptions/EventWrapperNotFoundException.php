@@ -9,7 +9,7 @@ declare(strict_types=1);
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@artificial-owl.com>
+ * @author Maxence Lange <maxence@pontapreta.net>
  * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
@@ -29,41 +29,9 @@ declare(strict_types=1);
  */
 
 
-namespace OCA\Circles\Listeners\Files;
+namespace OCA\Circles\Exceptions;
 
-
-use daita\MySmallPhpTools\Traits\TStringTools;
-use OCA\Circles\Events\CircleMemberAddedEvent;
-use OCP\EventDispatcher\Event;
-use OCP\EventDispatcher\IEventListener;
-
-
-/**
- * Class MemberAdded
- *
- * @package OCA\Circles\Listeners\Files
- */
-class MemberAdded implements IEventListener {
-
-
-	use TStringTools;
-
-
-	/**
-	 * @param Event $event
-	 */
-	public function handle(Event $event): void {
-		if (!$event instanceof CircleMemberAddedEvent) {
-			return;
-		}
-
-		$result = [];
-		foreach ($event->getResults() as $instance => $item) {
-			$result[$instance] = $item->gData('files');
-		}
-
-		\OC::$server->getLogger()->log(3, '>>> ' . json_encode($result));
-	}
+class EventWrapperNotFoundException extends \Exception {
 
 }
 

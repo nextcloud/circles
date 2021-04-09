@@ -38,9 +38,9 @@ use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OC;
+use OCA\Circles\Db\EventWrapperRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\RemoteRequest;
-use OCA\Circles\Db\RemoteWrapperRequest;
 use OCA\Circles\Db\ShareLockRequest;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
@@ -60,18 +60,17 @@ use OCA\Circles\IFederatedItemCircleCheckNotRequired;
 use OCA\Circles\IFederatedItemDataRequestOnly;
 use OCA\Circles\IFederatedItemInitiatorCheckNotRequired;
 use OCA\Circles\IFederatedItemInitiatorMembershipNotRequired;
-use OCA\Circles\IFederatedItemMustBeInitializedLocally;
 use OCA\Circles\IFederatedItemLimitedToInstanceWithMembership;
 use OCA\Circles\IFederatedItemMemberCheckNotRequired;
 use OCA\Circles\IFederatedItemMemberEmpty;
 use OCA\Circles\IFederatedItemMemberOptional;
 use OCA\Circles\IFederatedItemMemberRequired;
+use OCA\Circles\IFederatedItemMustBeInitializedLocally;
 use OCA\Circles\IFederatedItemSharedItem;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Federated\EventWrapper;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
-use OCA\Circles\Model\Federated\RemoteWrapper;
-use OCA\Circles\Model\GlobalScale\GSWrapper;
 use OCA\Circles\Model\Member;
 use OCP\IL10N;
 use ReflectionClass;
@@ -93,8 +92,8 @@ class FederatedEventService extends NC22Signature {
 	/** @var IL10N */
 	private $l10n;
 
-	/** @var RemoteWrapperRequest */
-	private $remoteWrapperRequest;
+	/** @var EventWrapperRequest */
+	private $eventWrapperRequest;
 
 	/** @var RemoteRequest */
 	private $remoteRequest;
@@ -119,7 +118,7 @@ class FederatedEventService extends NC22Signature {
 	 * FederatedEventService constructor.
 	 *
 	 * @param IL10N $l10n
-	 * @param RemoteWrapperRequest $remoteWrapperRequest
+	 * @param EventWrapperRequest $eventWrapperRequest
 	 * @param RemoteRequest $remoteRequest
 	 * @param MemberRequest $memberRequest
 	 * @param ShareLockRequest $shareLockRequest
@@ -127,13 +126,13 @@ class FederatedEventService extends NC22Signature {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IL10N $l10n, RemoteWrapperRequest $remoteWrapperRequest, RemoteRequest $remoteRequest,
+		IL10N $l10n, EventWrapperRequest $eventWrapperRequest, RemoteRequest $remoteRequest,
 		MemberRequest $memberRequest, ShareLockRequest $shareLockRequest,
 		RemoteUpstreamService $remoteUpstreamService,
 		ConfigService $configService
 	) {
 		$this->l10n = $l10n;
-		$this->remoteWrapperRequest = $remoteWrapperRequest;
+		$this->eventWrapperRequest = $eventWrapperRequest;
 		$this->remoteRequest = $remoteRequest;
 		$this->shareLockRequest = $shareLockRequest;
 		$this->memberRequest = $memberRequest;
@@ -383,7 +382,7 @@ class FederatedEventService extends NC22Signature {
 			return;
 		}
 
-		$wrapper = new RemoteWrapper();
+		$wrapper = new EventWrapper();
 		$wrapper->setEvent($event);
 		$wrapper->setToken($this->uuid());
 		$wrapper->setCreation(time());
@@ -391,12 +390,12 @@ class FederatedEventService extends NC22Signature {
 
 		foreach ($instances as $instance) {
 			$wrapper->setInstance($instance);
-			$this->remoteWrapperRequest->create($wrapper);
+			$this->eventWrapperRequest->create($wrapper);
 		}
 
 		$request = new NC22Request('', Request::TYPE_POST);
 		$this->configService->configureRequest(
-			$request, 'circles.RemoteWrapper.asyncBroadcast', ['token' => $wrapper->getToken()]
+			$request, 'circles.EventWrapper.asyncBroadcast', ['token' => $wrapper->getToken()]
 		);
 
 		$event->setWrapperToken($wrapper->getToken());
@@ -467,28 +466,32 @@ class FederatedEventService extends NC22Signature {
 	 */
 	public function manageResults(string $token): void {
 		try {
-			$wrappers = $this->remoteWrapperRequest->getByToken($token);
+			$wrappers = $this->eventWrapperRequest->getByToken($token);
 		} catch (JsonException | ModelException $e) {
 			return;
 		}
 
 		$event = null;
-		$events = [];
+		$results = [];
 		foreach ($wrappers as $wrapper) {
-			if ($wrapper->getStatus() !== GSWrapper::STATUS_DONE) {
+			if ($wrapper->getStatus() !== EventWrapper::STATUS_DONE) {
 				return;
 			}
 
-			$events[$wrapper->getInstance()] = $event = $wrapper->getEvent();
+			if (is_null($event)) {
+				$event = $wrapper->getEvent();
+			}
+
+			$results[$wrapper->getInstance()] = $wrapper->getResult();
 		}
 
-		if ($event === null) {
+		if (is_null($event)) {
 			return;
 		}
 
 		try {
 			$gs = $this->getFederatedItem($event, false);
-			$gs->result($events);
+			$gs->result($event, $results);
 		} catch (FederatedEventException $e) {
 		}
 	}

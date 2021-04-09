@@ -32,18 +32,19 @@ declare(strict_types=1);
 namespace OCA\Circles\Listeners\Files;
 
 
+use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\TStringTools;
-use OCA\Circles\Events\CircleMemberAddedEvent;
+use OCA\Circles\Events\AddingCircleMemberEvent;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 
 
 /**
- * Class MemberAdded
+ * Class AddingMember
  *
  * @package OCA\Circles\Listeners\Files
  */
-class MemberAdded implements IEventListener {
+class AddingMember implements IEventListener {
 
 
 	use TStringTools;
@@ -53,16 +54,17 @@ class MemberAdded implements IEventListener {
 	 * @param Event $event
 	 */
 	public function handle(Event $event): void {
-		if (!$event instanceof CircleMemberAddedEvent) {
+		if (!$event instanceof AddingCircleMemberEvent) {
 			return;
 		}
 
-		$result = [];
-		foreach ($event->getResults() as $instance => $item) {
-			$result[$instance] = $item->gData('files');
-		}
+		$files = ['test' => $this->token()];
+		// check member is mail address
+		// check files shared to the circle
+		// generate a list
+		// feed events result
 
-		\OC::$server->getLogger()->log(3, '>>> ' . json_encode($result));
+		$event->getFederatedEvent()->addResult('files', new SimpleDataStore($files));
 	}
 
 }

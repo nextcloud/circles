@@ -71,11 +71,10 @@ use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharesToken;
-use OCA\Circles\Service\CircleEventService;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\FederatedUserService;
-use OCA\Circles\Service\MembershipService;
 use OCA\Circles\StatusCode;
 use OCP\IUser;
 use OCP\IUserManager;
@@ -108,14 +107,11 @@ class MemberAdd implements
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
-	/** @var MembershipService */
-	private $membershipService;
-
 	/** @var CircleService */
 	private $circleService;
 
-	/** @var CircleEventService */
-	private $circleEventService;
+	/** @var EventService */
+	private $eventService;
 
 	/** @var ConfigService */
 	private $configService;
@@ -127,22 +123,19 @@ class MemberAdd implements
 	 * @param IUserManager $userManager
 	 * @param MemberRequest $memberRequest
 	 * @param FederatedUserService $federatedUserService
-	 * @param MembershipService $membershipService
 	 * @param CircleService $circleService
-	 * @param CircleEventService $circleEventService
+	 * @param EventService $eventService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		IUserManager $userManager, MemberRequest $memberRequest, FederatedUserService $federatedUserService,
-		MembershipService $membershipService, CircleService $circleService,
-		CircleEventService $circleEventService, ConfigService $configService
+		CircleService $circleService, EventService $eventService, ConfigService $configService
 	) {
 		$this->userManager = $userManager;
 		$this->memberRequest = $memberRequest;
 		$this->federatedUserService = $federatedUserService;
-		$this->membershipService = $membershipService;
 		$this->circleService = $circleService;
-		$this->circleEventService = $circleEventService;
+		$this->eventService = $eventService;
 		$this->configService = $configService;
 	}
 
@@ -245,8 +238,8 @@ class MemberAdd implements
 		}
 
 		$this->memberRequest->insertOrUpdate($member);
-		$this->membershipService->onUpdate($member->getSingleId());
-		$this->circleEventService->onMemberAdded($event);
+
+		$this->eventService->memberAdding($event);
 
 //
 //		//
@@ -273,11 +266,13 @@ class MemberAdd implements
 
 
 	/**
-	 * @param FederatedEvent[] $events
-	 *
-	 * @throws Exception
+	 * @param FederatedEvent $event
+	 * @param array $results
 	 */
-	public function result(array $events): void {
+	public function result(FederatedEvent $event, array $results): void {
+		$this->eventService->memberAdded($event, $results);
+
+
 //		$password = $cachedName = '';
 //		$circle = $member = null;
 //		$links = [];
@@ -734,3 +729,4 @@ class MemberAdd implements
 	}
 
 }
+

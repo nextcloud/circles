@@ -38,11 +38,13 @@ namespace OCA\Circles\AppInfo;
 use Closure;
 use OC;
 use OCA\Circles\Api\v1\Circles;
+use OCA\Circles\Events\AddingCircleMemberEvent;
 use OCA\Circles\Events\CircleMemberAddedEvent;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\GlobalScale\GSMount\MountProvider;
 use OCA\Circles\Handlers\WebfingerHandler;
-use OCA\Circles\Listeners\Files\MemberAdded;
+use OCA\Circles\Listeners\Files\MemberAdded as ListenerFilesMemberAdded;
+use OCA\Circles\Listeners\Files\AddingMember as ListenerFilesAddingMember;
 use OCA\Circles\Listeners\GroupDeleted;
 use OCA\Circles\Listeners\UserDeleted;
 use OCA\Circles\Notification\Notifier;
@@ -82,8 +84,6 @@ class Application extends App implements IBootstrap {
 	const APP_REL = 'https://apps.nextcloud.com/apps/circles';
 	const APP_API = 1;
 
-	const TEST_URL_ASYNC = '/index.php/apps/circles/admin/testAsync';
-
 	const CLIENT_TIMEOUT = 3;
 
 
@@ -112,7 +112,8 @@ class Application extends App implements IBootstrap {
 		$context->registerEventListener(UserDeletedEvent::class, UserDeleted::class);
 		$context->registerEventListener(GroupDeletedEvent::class, GroupDeleted::class);
 
-		$context->registerEventListener(CircleMemberAddedEvent::class, MemberAdded::class);
+		$context->registerEventListener(AddingCircleMemberEvent::class, ListenerFilesAddingMember::class);
+		$context->registerEventListener(CircleMemberAddedEvent::class, ListenerFilesMemberAdded::class);
 
 		$context->registerWellKnownHandler(WebfingerHandler::class);
 	}

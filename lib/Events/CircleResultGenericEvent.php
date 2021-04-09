@@ -32,48 +32,82 @@ declare(strict_types=1);
 namespace OCA\Circles\Events;
 
 
+use daita\MySmallPhpTools\Model\SimpleDataStore;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
+use OCA\Circles\Model\Member;
+use OCP\EventDispatcher\Event;
 
 
 /**
- * Class CircleMemberAddedEvent
+ * Class CircleResultGenericEvent
  *
  * @package OCA\Circles\Events
  */
-class CircleMemberAddedEvent extends CircleResultGenericEvent {
+class CircleResultGenericEvent extends Event {
 
 
-	/** @var int */
-	private $type = 0;
+	/** @var FederatedEvent */
+	private $federatedEvent;
+
+	/** @var SimpleDataStore[] */
+	private $results;
+
+	/** @var Circle */
+	private $circle;
+
+	/** @var Member */
+	private $member;
 
 
 	/**
-	 * CircleMemberAddedEvent constructor.
+	 * CircleResultGenericEvent constructor.
 	 *
 	 * @param FederatedEvent $federatedEvent
-	 * @param array $results
+	 * @param SimpleDataStore[] $results
 	 */
 	public function __construct(FederatedEvent $federatedEvent, array $results) {
-		parent::__construct($federatedEvent, $results);
+		parent::__construct();
+
+		$this->federatedEvent = $federatedEvent;
+		$this->results = $results;
+
+		$this->circle = $this->federatedEvent->getCircle();
+		if ($this->federatedEvent->hasMember()) {
+			$this->member = $this->federatedEvent->getMember();
+		}
 	}
 
 
 	/**
-	 * @param int $type
-	 *
-	 * @return $this
+	 * @return FederatedEvent
 	 */
-	public function setType(int $type): self {
-		$this->type = $type;
-
-		return $this;
+	public function getFederatedEvent(): FederatedEvent {
+		return $this->federatedEvent;
 	}
 
+
 	/**
-	 * @return int
+	 * @return SimpleDataStore[]
 	 */
-	public function getType(): int {
-		return $this->type;
+	public function getResults(): array {
+		return $this->results;
+	}
+
+
+	/**
+	 * @return Circle
+	 */
+	public function getCircle(): Circle {
+		return $this->circle;
+	}
+
+
+	/**
+	 * @return Member|null
+	 */
+	public function getMember(): ?Member {
+		return $this->member;
 	}
 
 }

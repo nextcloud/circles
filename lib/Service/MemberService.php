@@ -48,6 +48,7 @@ use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\FederatedItems\MemberAdd;
 use OCA\Circles\FederatedItems\MemberLevel;
@@ -186,6 +187,7 @@ class MemberService {
 	 * @throws RemoteResourceNotFoundException
 	 * @throws UnknownRemoteException
 	 * @throws RemoteInstanceException
+	 * @throws RequestBuilderException
 	 */
 	public function addMember(string $circleId, IFederatedUser $member): array {
 		$this->federatedUserService->mustHaveCurrentUser();
@@ -198,6 +200,7 @@ class MemberService {
 		}
 
 		$event = new FederatedEvent(MemberAdd::class);
+		$event->setSeverity(FederatedEvent::SEVERITY_HIGH);
 		$event->setCircle($circle);
 		$event->setMember($member);
 

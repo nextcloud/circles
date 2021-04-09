@@ -215,6 +215,7 @@ class CircleService {
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
 	 * @throws UnknownRemoteException
+	 * @throws RequestBuilderException
 	 */
 	public function circleJoin(string $circleId): array {
 		$this->federatedUserService->mustHaveCurrentUser();
@@ -222,6 +223,7 @@ class CircleService {
 		$circle = $this->circleRequest->getCircle($circleId, $this->federatedUserService->getCurrentUser());
 
 		$event = new FederatedEvent(CircleJoin::class);
+		$event->setSeverity(FederatedEvent::SEVERITY_HIGH);
 		$event->setCircle($circle);
 
 		$this->federatedEventService->newEvent($event);

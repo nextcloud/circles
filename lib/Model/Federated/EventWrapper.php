@@ -34,16 +34,17 @@ namespace OCA\Circles\Model\Federated;
 
 use daita\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
+use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
 
 
 /**
- * Class RemoteWrapper
+ * Class EventWrapper
  *
  * @package OCA\Circles\Model\Remote
  */
-class RemoteWrapper implements INC22QueryRow, JsonSerializable {
+class EventWrapper implements INC22QueryRow, JsonSerializable {
 
 
 	use TArrayTools;
@@ -61,6 +62,9 @@ class RemoteWrapper implements INC22QueryRow, JsonSerializable {
 	/** @var FederatedEvent */
 	private $event;
 
+	/** @var SimpleDataStore */
+	private $result;
+
 	/** @var string */
 	private $instance = '';
 
@@ -75,6 +79,7 @@ class RemoteWrapper implements INC22QueryRow, JsonSerializable {
 
 
 	function __construct() {
+		$this->result = new SimpleDataStore();
 	}
 
 
@@ -120,6 +125,25 @@ class RemoteWrapper implements INC22QueryRow, JsonSerializable {
 	 */
 	public function hasEvent(): bool {
 		return ($this->event !== null);
+	}
+
+
+	/**
+	 * @param SimpleDataStore $result
+	 *
+	 * @return $this
+	 */
+	public function setResult(SimpleDataStore $result): self {
+		$this->result = $result;
+
+		return $this;
+	}
+
+	/**
+	 * @return SimpleDataStore
+	 */
+	public function getResult(): SimpleDataStore {
+		return $this->result;
 	}
 
 
@@ -215,6 +239,7 @@ class RemoteWrapper implements INC22QueryRow, JsonSerializable {
 		$event->import($this->getArray('event', $data));
 		$this->setEvent($event);
 
+		$this->setResult(new SimpleDataStore($this->getArray('result', $data)));
 		$this->setCreation($this->getInt('creation', $data));
 
 		return $this;
@@ -229,9 +254,10 @@ class RemoteWrapper implements INC22QueryRow, JsonSerializable {
 			'id'       => $this->getToken(),
 			'instance' => $this->getInstance(),
 			'event'    => $this->getEvent(),
+			'result'   => $this->getResult(),
 			'severity' => $this->getSeverity(),
 			'status'   => $this->getStatus()
-//			'creation' => $this->getCreation()
+			//			'creation' => $this->getCreation()
 		];
 	}
 
@@ -251,6 +277,8 @@ class RemoteWrapper implements INC22QueryRow, JsonSerializable {
 		$event = new FederatedEvent();
 		$event->import($this->getArray('event', $data));
 		$this->setEvent($event);
+
+		$this->setResult(new SimpleDataStore($this->getArray('result', $data)));
 
 		return $this;
 	}

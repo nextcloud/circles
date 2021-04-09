@@ -29,40 +29,61 @@ declare(strict_types=1);
  */
 
 
-namespace OCA\Circles\Listeners\Files;
+namespace OCA\Circles\Events;
 
 
-use daita\MySmallPhpTools\Traits\TStringTools;
-use OCA\Circles\Events\CircleMemberAddedEvent;
+use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Federated\FederatedEvent;
 use OCP\EventDispatcher\Event;
-use OCP\EventDispatcher\IEventListener;
 
 
 /**
- * Class MemberAdded
+ * Class CircleMemberAddedEvent
  *
- * @package OCA\Circles\Listeners\Files
+ * @package OCA\Circles\Events
  */
-class MemberAdded implements IEventListener {
+class CircleGenericEvent extends Event {
 
 
-	use TStringTools;
+	const INVITED = 1;
+	const JOINED = 2;
+	const REMOVED = 3;
+	const LEFT = 4;
+	const LEVEL = 5;
+
+
+	/** @var FederatedEvent */
+	private $federatedEvent;
+
+	/** @var Circle */
+	private $circle;
 
 
 	/**
-	 * @param Event $event
+	 * CircleMemberAddedEvent constructor.
+	 *
+	 * @param FederatedEvent $federatedEvent
 	 */
-	public function handle(Event $event): void {
-		if (!$event instanceof CircleMemberAddedEvent) {
-			return;
-		}
+	public function __construct(FederatedEvent $federatedEvent) {
+		parent::__construct();
 
-		$result = [];
-		foreach ($event->getResults() as $instance => $item) {
-			$result[$instance] = $item->gData('files');
-		}
+		$this->federatedEvent = $federatedEvent;
+		$this->circle = $federatedEvent->getCircle();
+	}
 
-		\OC::$server->getLogger()->log(3, '>>> ' . json_encode($result));
+
+	/**
+	 * @return FederatedEvent
+	 */
+	public function getFederatedEvent(): FederatedEvent {
+		return $this->federatedEvent;
+	}
+
+	/**
+	 * @return Circle
+	 */
+	public function getCircle(): Circle {
+		return $this->circle;
 	}
 
 }

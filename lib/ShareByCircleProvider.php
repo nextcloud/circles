@@ -49,6 +49,7 @@ use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\ShareWrapper;
 use OCA\Circles\Service\CircleService;
+use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\ShareWrapperService;
 use OCP\Files\Folder;
@@ -109,6 +110,9 @@ class ShareByCircleProvider implements IShareProvider {
 	/** @var CircleService */
 	private $circleService;
 
+	/** @var EventService */
+	private $eventService;
+
 
 	/**
 	 * ShareByCircleProvider constructor.
@@ -134,6 +138,7 @@ class ShareByCircleProvider implements IShareProvider {
 		$this->federatedUserService = OC::$server->get(FederatedUserService::class);
 		$this->shareWrapperService = OC::$server->get(ShareWrapperService::class);
 		$this->circleService = OC::$server->get(CircleService::class);
+		$this->eventService = OC::$server->get(EventService::class);
 	}
 
 
@@ -187,13 +192,16 @@ class ShareByCircleProvider implements IShareProvider {
 		$share->setToken($this->token(15));
 		$this->shareWrapperService->save($share);
 
-//		Circles::shareToCircle(
-//			$circle->getUniqueId(), 'files', '',
-//			['id' => $share->getId(), 'share' => $this->shareObjectToArray($share)],
-//			'\OCA\Circles\Circles\FileSharingBroadcaster'
-//		);
 
-		return $this->getShareById($share->getId());
+		try {
+			$wrappedShare = $this->shareWrapperService->getShareById((int)$share->getId());
+		} catch (ShareWrapperNotFoundException $e) {
+			throw new ShareNotFound();
+		}
+
+		$this->eventService->shareCreated($wrappedShare);
+
+		return $wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
 	}
 
 

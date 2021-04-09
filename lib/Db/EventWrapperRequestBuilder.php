@@ -33,8 +33,8 @@ namespace OCA\Circles\Db;
 
 
 use daita\MySmallPhpTools\Exceptions\RowNotFoundException;
-use OCA\Circles\Exceptions\RemoteWrapperNotFoundException;
-use OCA\Circles\Model\Federated\RemoteWrapper;
+use OCA\Circles\Exceptions\EventWrapperNotFoundException;
+use OCA\Circles\Model\Federated\EventWrapper;
 
 
 /**
@@ -42,15 +42,15 @@ use OCA\Circles\Model\Federated\RemoteWrapper;
  *
  * @package OCA\Circles\Db
  */
-class RemoteWrapperRequestBuilder extends CoreQueryBuilder {
+class EventWrapperRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
 	 * @return CoreRequestBuilder
 	 */
-	protected function getRemoteWrapperInsertSql(): CoreRequestBuilder {
+	protected function getEventWrapperInsertSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->insert(self::TABLE_REMOTE_WRAPPER);
+		$qb->insert(self::TABLE_EVENT);
 
 		return $qb;
 	}
@@ -59,9 +59,9 @@ class RemoteWrapperRequestBuilder extends CoreQueryBuilder {
 	/**
 	 * @return CoreRequestBuilder
 	 */
-	protected function getRemoteWrapperUpdateSql(): CoreRequestBuilder {
+	protected function getEventWrapperUpdateSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->update(self::TABLE_REMOTE_WRAPPER);
+		$qb->update(self::TABLE_EVENT);
 
 		return $qb;
 	}
@@ -70,11 +70,14 @@ class RemoteWrapperRequestBuilder extends CoreQueryBuilder {
 	/**
 	 * @return CoreRequestBuilder
 	 */
-	protected function getRemoteWrapperSelectSql(): CoreRequestBuilder {
+	protected function getEventWrapperSelectSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
 
-		$qb->select('gse.token', 'gse.event', 'gse.instance', 'gse.severity', 'gse.status', 'gse.creation')
-		   ->from(self::TABLE_REMOTE_WRAPPER, 'gse')
+		$qb->select(
+			'gse.token', 'gse.event', 'gse.result', 'gse.instance', 'gse.severity', 'gse.status',
+			'gse.creation'
+		)
+		   ->from(self::TABLE_EVENT, 'gse')
 		   ->setDefaultSelectAlias('gse');
 
 		return $qb;
@@ -84,9 +87,9 @@ class RemoteWrapperRequestBuilder extends CoreQueryBuilder {
 	/**
 	 * @return CoreRequestBuilder
 	 */
-	protected function getRemoteWrapperDeleteSql(): CoreRequestBuilder {
+	protected function getEventWrapperDeleteSql(): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->delete(self::TABLE_REMOTE_WRAPPER);
+		$qb->delete(self::TABLE_EVENT);
 
 		return $qb;
 	}
@@ -95,15 +98,15 @@ class RemoteWrapperRequestBuilder extends CoreQueryBuilder {
 	/**
 	 * @param CoreRequestBuilder $qb
 	 *
-	 * @return RemoteWrapper
-	 * @throws RemoteWrapperNotFoundException
+	 * @return EventWrapper
+	 * @throws EventWrapperNotFoundException
 	 */
-	public function getItemFromRequest(CoreRequestBuilder $qb): RemoteWrapper {
-		/** @var RemoteWrapper $wrapper */
+	public function getItemFromRequest(CoreRequestBuilder $qb): EventWrapper {
+		/** @var EventWrapper $wrapper */
 		try {
-			$wrapper = $qb->asItem(RemoteWrapper::class);
+			$wrapper = $qb->asItem(EventWrapper::class);
 		} catch (RowNotFoundException $e) {
-			throw new RemoteWrapperNotFoundException();
+			throw new EventWrapperNotFoundException();
 		}
 
 		return $wrapper;
@@ -112,11 +115,11 @@ class RemoteWrapperRequestBuilder extends CoreQueryBuilder {
 	/**
 	 * @param CoreRequestBuilder $qb
 	 *
-	 * @return RemoteWrapper[]
+	 * @return EventWrapper[]
 	 */
 	public function getItemsFromRequest(CoreRequestBuilder $qb): array {
-		/** @var RemoteWrapper[] $result */
-		return $qb->asItems(RemoteWrapper::class);
+		/** @var EventWrapper[] $result */
+		return $qb->asItems(EventWrapper::class);
 	}
 
 }

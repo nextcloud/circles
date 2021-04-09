@@ -32,25 +32,25 @@ declare(strict_types=1);
 namespace OCA\Circles\Db;
 
 
-use OCA\Circles\Model\GlobalScale\GSWrapper;
-use OCA\Circles\Model\Federated\RemoteWrapper;
+use OCA\Circles\Model\Federated\EventWrapper;
 
 
 /**
- * Class RemoteWrapperRequest
+ * Class EventWrapperRequest
  *
  * @package OCA\Circles\Db
  */
-class RemoteWrapperRequest extends RemoteWrapperRequestBuilder {
+class EventWrapperRequest extends EventWrapperRequestBuilder {
 
 
 	/**
-	 * @param RemoteWrapper $wrapper
+	 * @param EventWrapper $wrapper
 	 */
-	public function create(RemoteWrapper $wrapper): void {
-		$qb = $this->getRemoteWrapperInsertSql();
+	public function create(EventWrapper $wrapper): void {
+		$qb = $this->getEventWrapperInsertSql();
 		$qb->setValue('token', $qb->createNamedParameter($wrapper->getToken()))
 		   ->setValue('event', $qb->createNamedParameter(json_encode($wrapper->getEvent())))
+		   ->setValue('result', $qb->createNamedParameter(json_encode($wrapper->getResult())))
 		   ->setValue('instance', $qb->createNamedParameter($wrapper->getInstance()))
 		   ->setValue('severity', $qb->createNamedParameter($wrapper->getSeverity()))
 		   ->setValue('status', $qb->createNamedParameter($wrapper->getStatus()))
@@ -60,11 +60,11 @@ class RemoteWrapperRequest extends RemoteWrapperRequestBuilder {
 	}
 
 	/**
-	 * @param RemoteWrapper $wrapper
+	 * @param EventWrapper $wrapper
 	 */
-	public function update(RemoteWrapper $wrapper): void {
-		$qb = $this->getRemoteWrapperUpdateSql();
-		$qb->set('event', $qb->createNamedParameter(json_encode($wrapper->getEvent())))
+	public function update(EventWrapper $wrapper): void {
+		$qb = $this->getEventWrapperUpdateSql();
+		$qb->set('result', $qb->createNamedParameter(json_encode($wrapper->getResult())))
 		   ->set('status', $qb->createNamedParameter($wrapper->getStatus()));
 
 		$qb->limitToInstance($wrapper->getInstance());
@@ -77,10 +77,10 @@ class RemoteWrapperRequest extends RemoteWrapperRequestBuilder {
 	/**
 	 * @param string $token
 	 *
-	 * @return RemoteWrapper[]
+	 * @return EventWrapper[]
 	 */
 	public function getByToken(string $token): array {
-		$qb = $this->getRemoteWrapperSelectSql();
+		$qb = $this->getEventWrapperSelectSql();
 		$qb->limitToToken($token);
 
 		return $this->getItemsFromRequest($qb);

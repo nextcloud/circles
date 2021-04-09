@@ -77,9 +77,10 @@ class SharedItemsSync implements
 
 
 	/**
-	 * @param FederatedEvent[] $events
+	 * @param FederatedEvent $event
+	 * @param array $results
 	 */
-	public function result(array $events): void {
+	public function result(FederatedEvent $event, array $results): void {
 	}
 
 }
