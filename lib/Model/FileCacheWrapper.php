@@ -35,6 +35,7 @@ use daita\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\Db\CoreRequestBuilder;
+use OCA\Circles\Exceptions\FileCacheNotFoundException;
 
 
 /**
@@ -466,8 +467,13 @@ class FileCacheWrapper extends ManagedModel implements INC22QueryRow, JsonSerial
 	 * @param string $prefix
 	 *
 	 * @return INC22QueryRow
+	 * @throws FileCacheNotFoundException
 	 */
 	public function importFromDatabase(array $data, string $prefix = ''): INC22QueryRow {
+		if ($this->getInt($prefix . 'fileid', $data) === 0) {
+			throw new FileCacheNotFoundException();
+		}
+
 		$this->setId($this->getInt($prefix . 'fileid', $data));
 		$this->setPath($this->get($prefix . 'path', $data));
 		$this->setPermissions($this->getInt($prefix . 'permissions', $data));

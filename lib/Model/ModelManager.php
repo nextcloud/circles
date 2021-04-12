@@ -36,6 +36,7 @@ use OCA\Circles\Db\CoreRequestBuilder;
 use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Exceptions\FileCacheNotFoundException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\MembershipNotFoundException;
@@ -215,7 +216,7 @@ class ModelManager {
 						$fileCache = new FileCacheWrapper();
 						$fileCache->importFromDatabase($data, $prefix);
 						$model->setFileCache($fileCache);
-					} catch (MemberNotFoundException $e) {
+					} catch (FileCacheNotFoundException $e) {
 					}
 					break;
 			}

@@ -71,7 +71,7 @@ class ShareWrapperService {
 	 * @throws ShareWrapperNotFoundException
 	 */
 	public function searchShare(string $singleId, int $nodeId): ShareWrapper {
-		$this->shareWrapperRequest->searchShare($singleId, $nodeId);
+		return $this->shareWrapperRequest->searchShare($singleId, $nodeId);
 	}
 
 
@@ -206,5 +206,6 @@ class ShareWrapperService {
 
 		return $this->getShareById($childId, $federatedUser);
 	}
+
 }
 
