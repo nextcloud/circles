@@ -125,9 +125,14 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 	 *
 	 * @return ShareWrapper
 	 * @throws ShareWrapperNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	public function getShareById(int $shareId, ?FederatedUser $federatedUser = null): ShareWrapper {
 		$qb = $this->getShareSelectSql();
+
+		$qb->setOptions([CoreRequestBuilder::SHARE], ['getData' => true]);
+		$qb->leftJoinCircle(CoreRequestBuilder::SHARE, null, 'share_with');
+
 		$qb->limitToId($shareId);
 
 		return $this->getItemFromRequest($qb);
@@ -274,9 +279,14 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 	 *
 	 * @return ShareWrapper
 	 * @throws ShareWrapperNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	public function searchShare(string $singleId, int $fileId): ShareWrapper {
 		$qb = $this->getShareSelectSql();
+
+		$qb->setOptions([CoreRequestBuilder::SHARE], ['getData' => true]);
+		$qb->leftJoinCircle(CoreRequestBuilder::SHARE, null, 'share_with');
+
 		$qb->limitToDBFieldEmpty('parent', true);
 		$qb->limitToShareWith($singleId);
 		$qb->limitToFileSource($fileId);
