@@ -120,6 +120,36 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 
 
 	/**
+	 * @param string $circleId
+	 * @param FederatedUser|null $shareRecipient
+	 * @param FederatedUser|null $shareInitiator
+	 *
+	 * @return ShareWrapper[]
+	 * @throws RequestBuilderException
+	 */
+	public function getSharesToCircle(
+		string $circleId,
+		?FederatedUser $shareRecipient = null,
+		?FederatedUser $shareInitiator = null
+	): array {
+		$qb = $this->getShareSelectSql();
+		$qb->limitToShareWith($circleId);
+		$qb->limitToDBFieldEmpty('parent', true);
+
+		$qb->setOptions([CoreRequestBuilder::SHARE], ['getData' => true]);
+		if (!is_null($shareRecipient)) {
+			$qb->limitToMembership(CoreRequestBuilder::SHARE, $shareRecipient, 'share_with');
+			$qb->leftJoinShareChild(CoreRequestBuilder::SHARE);
+		}
+
+		if (!is_null($shareInitiator)) {
+		}
+
+		return $this->getItemsFromRequest($qb);
+	}
+
+
+	/**
 	 * @param int $shareId
 	 * @param FederatedUser|null $federatedUser
 	 *
@@ -132,8 +162,13 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 
 		$qb->setOptions([CoreRequestBuilder::SHARE], ['getData' => true]);
 		$qb->leftJoinCircle(CoreRequestBuilder::SHARE, null, 'share_with');
-
 		$qb->limitToId($shareId);
+
+		if (!is_null($federatedUser)) {
+			$qb->leftJoinFileCache(CoreRequestBuilder::SHARE);
+			$qb->limitToMembership(CoreRequestBuilder::SHARE, $federatedUser, 'share_with');
+			$qb->leftJoinShareChild(CoreRequestBuilder::SHARE);
+		}
 
 		return $this->getItemFromRequest($qb);
 	}

@@ -103,6 +103,7 @@ class SharesFiles extends Base {
 		$this->setName('circles:shares:files')
 			 ->setDescription('listing shares files')
 			 ->addArgument('file_id', InputArgument::OPTIONAL, 'filter on a File Id', '0')
+			 ->addOption('to', '', InputOption::VALUE_REQUIRED, 'get files shared TO CIRCLEID', '')
 			 ->addOption('with', '', InputOption::VALUE_REQUIRED, 'get files shared WITH USERID', '')
 			 ->addOption('by', '', InputOption::VALUE_REQUIRED, 'get files shared BY USERID', '')
 			 ->addOption('type', '', InputOption::VALUE_REQUIRED, 'type of the recipient', '0');
@@ -125,6 +126,14 @@ class SharesFiles extends Base {
 		$this->fileId = (int)$input->getArgument('file_id');
 		$json = (strtolower($input->getOption('output')) === 'json');
 
+		if ($input->getOption('to')) {
+			$this->sharedToCircle(
+				$input->getOption('to'), $input->getOption('with'), $input->getOption('by'), $json
+			);
+
+			return 0;
+		}
+
 		if ($input->getOption('with')) {
 			$this->sharedWith($input->getOption('with'), $json);
 
@@ -137,7 +146,66 @@ class SharesFiles extends Base {
 			return 0;
 		}
 
-		throw new Exception('Specify a FileId or an option --with, --by, --to');
+		throw new Exception('Specify a FileId or an option: --in, --with, --by, --to');
+	}
+
+
+	/**
+	 * @param string $circleId
+	 * @param string $with
+	 * @param string $by
+	 * @param bool $json
+	 *
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
+	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
+	 */
+	private function sharedToCircle(string $circleId, string $with, string $by, bool $json) {
+		$shareWrappers = $this->shareWrapperService->getSharesToCircle(
+			$circleId,
+			($with === '') ? null : $this->federatedUserService->getLocalFederatedUser($with),
+			($by === '') ? null : $this->federatedUserService->getLocalFederatedUser($by)
+		);
+
+		$output = new ConsoleOutput();
+		if ($json) {
+			$output->writeln(json_encode($shareWrappers, JSON_PRETTY_PRINT));
+
+			return;
+		}
+
+		$output = $output->section();
+		$table = new Table($output);
+		$table->setHeaders(
+			[
+				'Share Id', 'File ID', 'File Owner', 'Original Filename', 'Shared By', 'Displayed Name',
+				'Shared To', 'Recipient'
+			]
+		);
+		$table->render();
+
+		foreach ($shareWrappers as $share) {
+			$recipient = $share->getInitiator();
+			$sharedTo = $recipient->getDisplayName();
+			if (!$this->configService->isLocalInstance($recipient->getInstance())) {
+				$sharedTo .= '@' . $recipient->getInstance();
+			}
+			$table->appendRow(
+				[
+					$share->getId(),
+					$share->getItemSource(),
+					$share->getShareOwner(),
+					$share->getFileTarget(),
+					$share->getSharedBy(),
+					($share->getChildId() > 0) ? $share->getChildFileTarget() : $share->getFileTarget(),
+					$sharedTo,
+					$recipient->getSingleId()
+					. ', ' . Circle::$DEF_SOURCE[$recipient->getBasedOn()->getSource()]
+				]
+			);
+		}
 	}
 
 

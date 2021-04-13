@@ -35,6 +35,8 @@ namespace OCA\Circles\Listeners\Files;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Events\AddingCircleMemberEvent;
+use OCA\Circles\Model\Member;
+use OCA\Circles\Service\ShareWrapperService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 
@@ -50,6 +52,20 @@ class AddingMember implements IEventListener {
 	use TStringTools;
 
 
+	/** @var ShareWrapperService */
+	private $shareWrapperService;
+
+
+	/**
+	 * AddingMember constructor.
+	 *
+	 * @param ShareWrapperService $shareWrapperService
+	 */
+	public function __construct(ShareWrapperService $shareWrapperService) {
+		$this->shareWrapperService = $shareWrapperService;
+	}
+
+
 	/**
 	 * @param Event $event
 	 */
@@ -58,8 +74,14 @@ class AddingMember implements IEventListener {
 			return;
 		}
 
+		$member = $event->getMember();
+		if ($member->getUserType() !== Member::TYPE_MAIL) {
+			return;
+		}
+
+		$circle = $event->getCircle();
+		$files = $this->shareWrapperService->getSharesToCircle($circle->getId());
 		$files = ['test' => $this->token()];
-		// check member is mail address
 		// check files shared to the circle
 		// generate a list
 		// feed events result

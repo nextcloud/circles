@@ -194,7 +194,10 @@ class ShareByCircleProvider implements IShareProvider {
 		$this->shareWrapperService->save($share);
 
 		try {
-			$wrappedShare = $this->shareWrapperService->getShareById((int)$share->getId());
+			$wrappedShare = $this->shareWrapperService->getShareById(
+				(int)$share->getId(),
+				$this->federatedUserService->getCurrentUser()
+			);
 		} catch (ShareWrapperNotFoundException $e) {
 			throw new ShareNotFound();
 		}
@@ -255,6 +258,7 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @throws SingleCircleNotFoundException
 	 * @throws IllegalIDChangeException
 	 * @throws NotFoundException
+	 * @throws RequestBuilderException
 	 */
 	public function move(IShare $share, $recipient): IShare {
 		OC::$server->getLogger()->log(3, 'CSP > move' . $share->getId() . ' ' . $recipient);
@@ -266,7 +270,9 @@ class ShareByCircleProvider implements IShareProvider {
 			$this->shareWrapperService->update($child);
 		}
 
-		return $share;
+		$wrappedShare = $this->shareWrapperService->getShareById((int)$share->getId(), $federatedUser);
+
+		return $wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
 	}
 
 

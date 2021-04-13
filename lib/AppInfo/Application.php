@@ -177,18 +177,18 @@ class Application extends App implements IBootstrap {
 
 
 	public function registerFilesPlugin(IServerContainer $container) {
-		$eventDispatcher = $container->getEventDispatcher();
-		$eventDispatcher->addListener(
-			'OCA\Files::loadAdditionalScripts',
-			function() {
-				Circles::addJavascriptAPI();
-
-				Util::addScript('circles', 'files/circles.files.app');
-				Util::addScript('circles', 'files/circles.files.list');
-
-				Util::addStyle('circles', 'files/circles.filelist');
-			}
-		);
+//		$eventDispatcher = $container->getEventDispatcher();
+//		$eventDispatcher->addListener(
+//			'OCA\Files::loadAdditionalScripts',
+//			function() {
+//				Circles::addJavascriptAPI();
+//
+//				Util::addScript('circles', 'files/circles.files.app');
+//				Util::addScript('circles', 'files/circles.files.list');
+//
+//				Util::addStyle('circles', 'files/circles.filelist');
+//			}
+//		);
 	}
 
 

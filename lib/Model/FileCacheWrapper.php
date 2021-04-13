@@ -428,8 +428,7 @@ class FileCacheWrapper extends ManagedModel implements INC22QueryRow, JsonSerial
 			'fileid'           => $this->getId(),
 			'path'             => $this->getPath(),
 			'permissions'      => $this->getPermissions(),
-			'storage'          => $this->getStorage(),
-			'storage_id'       => $this->getStorageId(),
+			'storage'          => $this->getStorageId(), // strange, is it not !?
 			'path_hash'        => $this->getPathHash(),
 			'parent'           => $this->getParent(),
 			'name'             => $this->getName(),

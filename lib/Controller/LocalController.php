@@ -176,6 +176,16 @@ class LocalController extends OcsController {
 
 
 	/**
+	 * @param string $circleId
+	 * @param array $multi
+	 *
+	 * @return DataResponse
+	 */
+	public function membersAdd(string $circleId, array $multi): DataResponse {
+	}
+
+
+	/**
 	 * @NoAdminRequired
 	 *
 	 * @param string $circleId

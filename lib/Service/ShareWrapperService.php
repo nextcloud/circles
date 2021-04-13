@@ -94,11 +94,29 @@ class ShareWrapperService {
 
 
 	/**
+	 * @param string $circleId
+	 * @param FederatedUser|null $shareRecipient
+	 * @param FederatedUser|null $shareInitiator
+	 *
+	 * @return ShareWrapper[]
+	 * @throws RequestBuilderException
+	 */
+	public function getSharesToCircle(
+		string $circleId,
+		?FederatedUser $shareRecipient = null,
+		?FederatedUser $shareInitiator = null
+	): array {
+		return $this->shareWrapperRequest->getSharesToCircle($circleId, $shareRecipient, $shareInitiator);
+	}
+
+
+	/**
 	 * @param int $shareId
 	 * @param FederatedUser|null $federatedUser
 	 *
 	 * @return ShareWrapper
 	 * @throws ShareWrapperNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	public function getShareById(int $shareId, ?FederatedUser $federatedUser = null): ShareWrapper {
 		return $this->shareWrapperRequest->getShareById($shareId, $federatedUser);

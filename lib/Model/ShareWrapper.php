@@ -552,6 +552,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 	public function import(array $data): IDeserializable {
 	}
 
+
 	/**
 	 * @param array $data
 	 * @param string $prefix
@@ -581,10 +582,9 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 //			$share->setPassword($this->get('password', $data, ''));
 //		}
 
-		$this->setChildId($this->getInt($prefix . 'child_id', $data));
-		$this->setChildFileTarget($this->get($prefix . 'child_file_target', $data));
-
-		$this->setProviderId(ShareByCircleProvider::IDENTIFIER)
+		$this->setChildId($this->getInt($prefix . 'child_id', $data))
+			 ->setChildFileTarget($this->get($prefix . 'child_file_target', $data))
+			 ->setProviderId(ShareByCircleProvider::IDENTIFIER)
 			 ->setStatus(Ishare::STATUS_ACCEPTED);
 
 		$this->getManager()->manageImportFromDatabase($this, $data, $prefix);
