@@ -75,7 +75,7 @@ class Membership extends ManagedModel implements IDeserializable, INC22QueryRow,
 	 * @param Member|null $member
 	 * @param string $singleId
 	 */
-	public function __construct(?Member $member = null, string $singleId = '') {
+	public function __construct(?Member $member = null, string $singleId = '', string $parent = '') {
 		if (is_null($member)) {
 			return;
 		}
@@ -83,7 +83,7 @@ class Membership extends ManagedModel implements IDeserializable, INC22QueryRow,
 		$this->setSingleId(($singleId === '') ? $member->getSingleId() : $singleId);
 		$this->setCircleId($member->getCircleId());
 		$this->setMemberId($member->getId());
-		$this->setParent($member->getSingleId());
+		$this->setParent(($parent === $singleId) ? $member->getCircleId() : $parent);
 		$this->setLevel($member->getLevel());
 	}
 

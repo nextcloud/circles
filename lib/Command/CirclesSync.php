@@ -136,7 +136,7 @@ class CirclesSync extends Base {
 		if (($groupId = $input->getOption('group')) !== '') {
 			$circle = $this->syncService->syncNextcloudGroup($groupId);
 			$output->writeln(
-				'- Nextcloud Group <info>' . $groupId . '</info>/<info>' . $circle->getId()
+				'- Nextcloud Group <info>' . $groupId . '</info>/<info>' . $circle->getSingleId()
 				. '</info> synced'
 			);
 		}

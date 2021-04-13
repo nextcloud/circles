@@ -219,14 +219,14 @@ class SyncService {
 			$member = new Member();
 			$member->importFromIFederatedUser($federatedUser);
 			$member->setId($this->uuid(ManagedModel::ID_LENGTH));
-			$member->setCircleId($circle->getId());
+			$member->setCircleId($circle->getSingleId());
 			$member->setLevel(Member::LEVEL_MEMBER);
 			$member->setStatus(Member::STATUS_MEMBER);
 
 			$this->memberRequest->insertOrUpdate($member);
 		}
 
-		$this->membershipService->onUpdate($circle->getId());
+		$this->membershipService->onUpdate($circle->getSingleId());
 
 		return $circle;
 	}

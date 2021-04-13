@@ -33,15 +33,16 @@ namespace OCA\Circles\Model;
 
 
 use OCA\Circles\Db\CoreRequestBuilder;
+use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\FileCacheNotFoundException;
-use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\MembershipNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\IMemberships;
 use OCA\Circles\Service\ConfigService;
-use OCA\Circles\Service\MemberService;
 
 /**
  * Class ModelManager
@@ -54,11 +55,11 @@ class ModelManager {
 	/** @var CoreRequestBuilder */
 	private $coreRequestBuilder;
 
+	/** @var MemberRequest */
+	private $memberRequest;
+
 	/** @var MembershipRequest */
 	private $membershipRequest;
-
-	/** @var MemberService */
-	private $memberService;
 
 	/** @var ConfigService */
 	private $configService;
@@ -72,17 +73,17 @@ class ModelManager {
 	 * ModelManager constructor.
 	 *
 	 * @param CoreRequestBuilder $coreRequestBuilder
+	 * @param MemberRequest $memberRequest
 	 * @param MembershipRequest $membershipRequest
-	 * @param MemberService $memberService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		CoreRequestBuilder $coreRequestBuilder, MembershipRequest $membershipRequest,
-		MemberService $memberService, ConfigService $configService
+		CoreRequestBuilder $coreRequestBuilder, MemberRequest $memberRequest,
+		MembershipRequest $membershipRequest, ConfigService $configService
 	) {
 		$this->coreRequestBuilder = $coreRequestBuilder;
+		$this->memberRequest = $memberRequest;
 		$this->membershipRequest = $membershipRequest;
-		$this->memberService = $memberService;
 		$this->configService = $configService;
 	}
 
@@ -96,22 +97,36 @@ class ModelManager {
 
 
 	/**
-	 * @param Circle $circle
-	 *
-	 * @throws InitiatorNotFoundException
+	 * @param IMemberships $member
 	 */
-	public function getMembers(Circle $circle): void {
-		$members = $this->memberService->getMembers($circle->getId());
-		$circle->setMembers($members);
+	public function getMembers(IMemberships $member): void {
+		try {
+			$member->setMembers($this->memberRequest->getMembers($member->getSingleId()));
+		} catch (RequestBuilderException $e) {
+			// TODO: debug log
+		}
 	}
 
 
 	/**
-	 * @param FederatedUser $federatedUser
+	 * @param IMemberships $item
 	 */
-	public function getMemberships(FederatedUser $federatedUser): void {
-		$memberships = $this->membershipRequest->getMemberships($federatedUser->getSingleId());
-		$federatedUser->setMemberships($memberships);
+	public function getInheritedMembers(IMemberships $item): void {
+		try {
+			$item->setInheritedMembers($this->memberRequest->getInheritedMembers($item->getSingleId()));
+		} catch (RequestBuilderException $e) {
+			echo $e->getMessage();
+			// TODO: debug log
+		}
+	}
+
+
+	/**
+	 * @param IMemberships $member
+	 */
+	public function getMemberships(IMemberships $member): void {
+		$memberships = $this->membershipRequest->getMemberships($member->getSingleId());
+		$member->setMemberships($memberships);
 	}
 
 
@@ -119,8 +134,8 @@ class ModelManager {
 	 * @param Circle $circle
 	 */
 	public function memberOf(Circle $circle) {
-		//$members = $this->memberService->getMembers($circle->getId());
-		$circle->setMemberOf([]);
+//		$members = $this->memberService->getMembers($circle->getSingleId());
+//		$circle->setMemberOf([]);
 	}
 
 

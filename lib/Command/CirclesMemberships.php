@@ -319,7 +319,7 @@ class CirclesMemberships extends Base {
 				$circle = $member->getCircle();
 
 				if ($lineNumber === 1) {
-					$line .= '<info>' . $circle->getId() . '</info>';
+					$line .= '<info>' . $circle->getSingleId() . '</info>';
 					if (!$this->configService->isLocalInstance($circle->getInstance())) {
 						$line .= '@' . $circle->getInstance();
 					}
@@ -381,12 +381,12 @@ class CirclesMemberships extends Base {
 		foreach ($circles as $circle) {
 			$owner = $circle->getOwner();
 
-			$updated = $this->membershipsService->manageMemberships($circle->getId());
+			$updated = $this->membershipsService->manageMemberships($circle->getSingleId());
 			$count += $updated;
-			$federatedUser = $this->circleRequest->getFederatedUserBySingleId($circle->getId());
+			$federatedUser = $this->circleRequest->getFederatedUserBySingleId($circle->getSingleId());
 			$table->appendRow(
 				[
-					$circle->getId(),
+					$circle->getSingleId(),
 					$circle->getDisplayName(),
 					($circle->getSource() > 0) ? Circle::$DEF_SOURCE[$circle->getSource()] : '',
 					$owner->getUserId(),

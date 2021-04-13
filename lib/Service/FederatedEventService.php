@@ -428,7 +428,7 @@ class FederatedEventService extends NC22Signature {
 		if ($event->isLimitedToInstanceWithMember()) {
 			$instances =
 				array_intersect(
-					$instances, $this->memberRequest->getMemberInstances($event->getCircle()->getId())
+					$instances, $this->memberRequest->getMemberInstances($event->getCircle()->getSingleId())
 				);
 		}
 

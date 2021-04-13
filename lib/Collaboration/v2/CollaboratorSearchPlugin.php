@@ -144,7 +144,7 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 			'shareWithDescription' => $circle->getOwner()->getDisplayName(),
 			'value'                => [
 				'shareType' => Share::TYPE_CIRCLE,
-				'shareWith' => $circle->getId(),
+				'shareWith' => $circle->getSingleId(),
 				'circle'    => $circle
 			],
 		];

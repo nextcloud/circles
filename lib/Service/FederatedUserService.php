@@ -628,7 +628,7 @@ class FederatedUserService {
 		}
 
 		$circle = $this->getSingleCircle($federatedUser);
-		$federatedUser->setSingleId($circle->getId());
+		$federatedUser->setSingleId($circle->getSingleId());
 		$federatedUser->setBasedOn($circle);
 	}
 
@@ -660,7 +660,7 @@ class FederatedUserService {
 			$prefix = ($federatedUser->getUserType() === Member::TYPE_APP) ? 'app' : 'user';
 			$circle->setName($prefix . ':' . $federatedUser->getUserId() . ':' . $id)
 				   ->setDisplayName($federatedUser->getUserId())
-				   ->setId($id)
+				   ->setSingleId($id)
 				   ->setSource($source);
 
 			if ($federatedUser->getUserType() === Member::TYPE_APP) {
@@ -757,13 +757,13 @@ class FederatedUserService {
 		$circle = new Circle();
 		$circle->setName('group:' . $groupId)
 			   ->setConfig(Circle::CFG_SYSTEM | Circle::CFG_NO_OWNER | Circle::CFG_HIDDEN)
-			   ->setId($this->token(ManagedModel::ID_LENGTH))
+			   ->setSingleId($this->token(ManagedModel::ID_LENGTH))
 			   ->setSource(Member::TYPE_GROUP);
 
 		$member = new Member();
 		$member->importFromIFederatedUser($owner);
 		$member->setId($this->token(ManagedModel::ID_LENGTH))
-			   ->setCircleId($circle->getId())
+			   ->setCircleId($circle->getSingleId())
 			   ->setLevel(Member::LEVEL_OWNER)
 			   ->setStatus(Member::STATUS_MEMBER);
 		$circle->setOwner($member)

@@ -41,6 +41,7 @@ use DateTime;
 use JsonSerializable;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\IMemberships;
 
 
 /**
@@ -71,7 +72,7 @@ use OCA\Circles\Exceptions\OwnerNotFoundException;
  *
  * @package OCA\Circles\Model
  */
-class Circle extends ManagedModel implements IDeserializable, INC22QueryRow, JsonSerializable {
+class Circle extends ManagedModel implements IMemberships, IDeserializable, INC22QueryRow, JsonSerializable {
 
 
 	use TArrayTools;
@@ -162,7 +163,7 @@ class Circle extends ManagedModel implements IDeserializable, INC22QueryRow, Jso
 
 
 	/** @var string */
-	private $id = '';
+	private $singleId = '';
 
 	/** @var int */
 	private $config = 0;
@@ -178,9 +179,6 @@ class Circle extends ManagedModel implements IDeserializable, INC22QueryRow, Jso
 
 	/** @var Member */
 	private $owner;
-
-	/** @var array */
-	private $members = [];
 
 	/** @var Member */
 	private $initiator;
@@ -210,6 +208,15 @@ class Circle extends ManagedModel implements IDeserializable, INC22QueryRow, Jso
 	/** @var Circle[] */
 	private $memberOf = null;
 
+	/** @var Member[] */
+	private $members = null;
+
+	/** @var Member[] */
+	private $inheritedMembers = null;
+
+	/** @var Membership[] */
+	private $memberships = null;
+
 
 	/**
 	 * Circle constructor.
@@ -218,12 +225,12 @@ class Circle extends ManagedModel implements IDeserializable, INC22QueryRow, Jso
 	}
 
 	/**
-	 * @param string $id
+	 * @param string $singleId
 	 *
 	 * @return self
 	 */
-	public function setId(string $id): self {
-		$this->id = $id;
+	public function setSingleId(string $singleId): self {
+		$this->singleId = $singleId;
 
 		return $this;
 	}
@@ -231,8 +238,8 @@ class Circle extends ManagedModel implements IDeserializable, INC22QueryRow, Jso
 	/**
 	 * @return string
 	 */
-	public function getId(): string {
-		return $this->id;
+	public function getSingleId(): string {
+		return $this->singleId;
 	}
 
 
@@ -380,7 +387,7 @@ class Circle extends ManagedModel implements IDeserializable, INC22QueryRow, Jso
 	 *
 	 * @return self
 	 */
-	public function setMembers(array $members): self {
+	public function setMembers(array $members): IMemberships {
 		$this->members = $members;
 
 		return $this;
@@ -390,11 +397,57 @@ class Circle extends ManagedModel implements IDeserializable, INC22QueryRow, Jso
 	 * @return array
 	 */
 	public function getMembers(): array {
-		if (empty($this->members)) {
+		if (is_null($this->members)) {
 			$this->getManager()->getMembers($this);
 		}
 
 		return $this->members;
+	}
+
+
+	/**
+	 * @param array $members
+	 *
+	 * @return self
+	 */
+	public function setInheritedMembers(array $members): IMemberships {
+		$this->inheritedMembers = $members;
+
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getInheritedMembers(): array {
+		if (is_null($this->inheritedMembers)) {
+			$this->getManager()->getInheritedMembers($this);
+		}
+
+		return $this->inheritedMembers;
+	}
+
+
+	/**
+	 * @param array $memberships
+	 *
+	 * @return self
+	 */
+	public function setMemberships(array $memberships): IMemberships {
+		$this->memberships = $memberships;
+
+		return $this;
+	}
+
+	/**
+	 * @return Membership[]
+	 */
+	public function getMemberships(): array {
+		if (is_null($this->memberships)) {
+			$this->getManager()->getMemberships($this);
+		}
+
+		return $this->memberships;
 	}
 
 
@@ -578,7 +631,7 @@ class Circle extends ManagedModel implements IDeserializable, INC22QueryRow, Jso
 			throw new InvalidItemException();
 		}
 
-		$this->setId($this->get('id', $data))
+		$this->setSingleId($this->get('id', $data))
 			 ->setName($this->get('name', $data))
 			 ->setDisplayName($this->get('displayName', $data))
 			 ->setSource($this->getInt('source', $data))
@@ -612,7 +665,7 @@ class Circle extends ManagedModel implements IDeserializable, INC22QueryRow, Jso
 	 */
 	public function jsonSerialize(): array {
 		$arr = [
-			'id'          => $this->getId(),
+			'id'          => $this->getSingleId(),
 			'name'        => $this->getName(),
 			'displayName' => $this->getDisplayName(),
 			'source'      => $this->getSource(),
@@ -634,6 +687,18 @@ class Circle extends ManagedModel implements IDeserializable, INC22QueryRow, Jso
 			$arr['memberOf'] = $this->memberOf();
 		}
 
+		if (!is_null($this->members)) {
+			$arr['members'] = $this->getMembers();
+		}
+
+		if (!is_null($this->inheritedMembers)) {
+			$arr['inheritedMembers'] = $this->getInheritedMembers();
+		}
+
+		if (!is_null($this->memberships)) {
+			$arr['memberships'] = $this->getMemberships();
+		}
+
 		return $arr;
 	}
 
@@ -650,7 +715,7 @@ class Circle extends ManagedModel implements IDeserializable, INC22QueryRow, Jso
 			throw new CircleNotFoundException();
 		}
 
-		$this->setId($this->get($prefix . 'unique_id', $data))
+		$this->setSingleId($this->get($prefix . 'unique_id', $data))
 			 ->setName($this->get($prefix . 'name', $data))
 			 ->setDisplayName($this->get($prefix . 'display_name', $data))
 			 ->setConfig($this->getInt($prefix . 'config', $data))
@@ -677,7 +742,7 @@ class Circle extends ManagedModel implements IDeserializable, INC22QueryRow, Jso
 	 * @throws OwnerNotFoundException
 	 */
 	public function compareWith(Circle $circle): bool {
-		if ($this->getId() !== $circle->getId()
+		if ($this->getSingleId() !== $circle->getSingleId()
 			|| $this->getInstance() !== $circle->getInstance()
 			|| $this->getConfig() !== $circle->getConfig()) {
 			return false;

@@ -94,14 +94,14 @@ class ItemLock implements
 
 			if ($known->getInstance() === $event->getIncomingOrigin()) {
 				$status = self::STATUS_ALREADY_LOCKED;
-				$known = $this->shareLockRequest->getShare($itemId, $event->getCircle()->getId());
+				$known = $this->shareLockRequest->getShare($itemId, $event->getCircle()->getSingleId());
 			} else {
 				$status = self::STATUS_INSTANCE_LOCKED;
 			}
 		} catch (FederatedShareNotFoundException $e) {
 			$share = new FederatedShare();
 			$share->setItemId($itemId);
-			$share->setCircleId($event->getCircle()->getId());
+			$share->setCircleId($event->getCircle()->getSingleId());
 			$share->setInstance($event->getIncomingOrigin());
 
 			$this->shareLockRequest->save($share);

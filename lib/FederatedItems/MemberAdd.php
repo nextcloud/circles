@@ -176,7 +176,7 @@ class MemberAdd implements
 		}
 
 		$member->importFromIFederatedUser($federatedUser);
-		$member->setCircleId($circle->getId());
+		$member->setCircleId($circle->getSingleId());
 		$member->setCircle($circle);
 		$this->manageMemberStatus($circle, $member);
 

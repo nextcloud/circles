@@ -150,7 +150,7 @@ class CircleService {
 
 		$circle = new Circle();
 		$circle->setName($name);
-		$circle->setId($this->token(ManagedModel::ID_LENGTH));
+		$circle->setSingleId($this->token(ManagedModel::ID_LENGTH));
 		if ($personal) {
 			$circle->setConfig(Circle::CFG_SINGLE);
 		}
@@ -158,7 +158,7 @@ class CircleService {
 		$member = new Member();
 		$member->importFromIFederatedUser($owner);
 		$member->setId($this->token(ManagedModel::ID_LENGTH))
-			   ->setCircleId($circle->getId())
+			   ->setCircleId($circle->getSingleId())
 			   ->setLevel(Member::LEVEL_OWNER)
 			   ->setStatus(Member::STATUS_MEMBER);
 		$circle->setOwner($member)
@@ -341,7 +341,7 @@ class CircleService {
 	public function isCircleFull(Circle $circle): bool {
 		$filter = new Member();
 		$filter->setLevel(Member::LEVEL_MEMBER);
-		$members = $this->memberRequest->getMembers($circle->getId(), null, null, $filter);
+		$members = $this->memberRequest->getMembers($circle->getSingleId(), null, null, $filter);
 
 		$limit = $this->getInt('members_limit', $circle->getSettings());
 		if ($limit === -1) {

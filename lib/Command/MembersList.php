@@ -51,6 +51,7 @@ use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
@@ -128,6 +129,7 @@ class MembersList extends Base {
 			 ->setDescription('listing Members from a Circle')
 			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
 			 ->addOption('instance', '', InputOption::VALUE_REQUIRED, 'Instance of the circle', '')
+			 ->addOption('inherited', '', InputOption::VALUE_NONE, 'Display all inherited members')
 			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
 			 ->addOption('display-name', '', InputOption::VALUE_NONE, 'display the displayName')
 			 ->addOption('tree', '', InputOption::VALUE_NONE, 'display members as a tree');
@@ -156,6 +158,7 @@ class MembersList extends Base {
 	 * @throws UserTypeNotFoundException
 	 * @throws FederatedItemException
 	 * @throws SingleCircleNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$this->input = $input;
@@ -178,7 +181,13 @@ class MembersList extends Base {
 			$tree = new NC22TreeNode(null, new SimpleDataStore(['circle' => $circle]));
 		}
 
-		$members = $this->getMembers($circleId, $instance, $initiator, $tree);
+		if ($input->getOption('inherited')) {
+			$this->federatedUserService->commandLineInitiator($initiator, $circleId, true);
+			$circle = $this->circleService->getCircle($circleId);
+			$members = $circle->getInheritedMembers();
+		} else {
+			$members = $this->getMembers($circleId, $instance, $initiator, $tree);
+		}
 
 		if (!is_null($tree)) {
 			$this->drawTree(
@@ -203,13 +212,14 @@ class MembersList extends Base {
 		$output = $output->section();
 
 		$table = new Table($output);
-		$table->setHeaders(['Member Id', 'Single Id', 'Type', 'Source', 'Username', 'Instance', 'Level']);
+		$table->setHeaders(['Circle Id', 'Member Id', 'Single Id', 'Type', 'Source', 'Username', 'Instance', 'Level']);
 		$table->render();
 
 		$local = $this->configService->getFrontalInstance();
 		foreach ($members as $member) {
 			$table->appendRow(
 				[
+					$member->getCircleId(),
 					$member->getId(),
 					$member->getSingleId(),
 					Member::$TYPE[$member->getUserType()],
@@ -251,6 +261,7 @@ class MembersList extends Base {
 	 * @throws SingleCircleNotFoundException
 	 * @throws UnknownRemoteException
 	 * @throws UserTypeNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	private function getMembers(
 		string $circleId,
@@ -386,7 +397,7 @@ class MembersList extends Base {
 
 			} else {
 				if ($lineNumber === 1 && !is_null($circle)) {
-					$line .= '<info>' . $circle->getId() . '</info>';
+					$line .= '<info>' . $circle->getSingleId() . '</info>';
 					if (!$this->configService->isLocalInstance($circle->getInstance())) {
 						$line .= '@' . $circle->getInstance();
 					}

@@ -40,6 +40,7 @@ use JsonSerializable;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\IFederatedUser;
+use OCA\Circles\IMemberships;
 
 
 /**
@@ -47,7 +48,12 @@ use OCA\Circles\IFederatedUser;
  *
  * @package OCA\Circles\Model
  */
-class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializable, INC22QueryRow, JsonSerializable {
+class FederatedUser extends ManagedModel implements
+	IFederatedUser,
+	IMemberships,
+	IDeserializable,
+	INC22QueryRow,
+	JsonSerializable {
 
 
 	use TArrayTools;
@@ -72,11 +78,18 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 	/** @var string */
 	private $instance;
 
-	/** @var Membership[] */
-	private $memberships = null;
-
 	/** @var Membership */
 	private $link;
+
+
+	/** @var Member[] */
+	private $members = null;
+
+	/** @var Member[] */
+	private $inheritedMembers = null;
+
+	/** @var Membership[] */
+	private $memberships = null;
 
 
 	/**
@@ -230,12 +243,12 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 
 
 	/**
-	 * @param Membership[] $memberships
+	 * @param array $members
 	 *
 	 * @return self
 	 */
-	public function setMemberships(array $memberships): self {
-		$this->memberships = $memberships;
+	public function setMembers(array $members): IMemberships {
+		$this->members = $members;
 
 		return $this;
 	}
@@ -243,8 +256,54 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 	/**
 	 * @return array
 	 */
+	public function getMembers(): array {
+		if (is_null($this->members)) {
+			$this->getManager()->getMembers($this);
+		}
+
+		return $this->members;
+	}
+
+
+	/**
+	 * @param array $members
+	 *
+	 * @return self
+	 */
+	public function setInheritedMembers(array $members): IMemberships {
+		$this->inheritedMembers = $members;
+
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getInheritedMembers(): array {
+		if (is_null($this->inheritedMembers)) {
+			$this->getManager()->getInheritedMembers($this);
+		}
+
+		return $this->inheritedMembers;
+	}
+
+
+	/**
+	 * @param array $memberships
+	 *
+	 * @return self
+	 */
+	public function setMemberships(array $memberships): IMemberships {
+		$this->memberships = $memberships;
+
+		return $this;
+	}
+
+	/**
+	 * @return Membership[]
+	 */
 	public function getMemberships(): array {
-		if ($this->memberships === null) {
+		if (is_null($this->memberships)) {
 			$this->getManager()->getMemberships($this);
 		}
 
@@ -306,7 +365,7 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 	 * @throws OwnerNotFoundException
 	 */
 	public function importFromCircle(Circle $circle): self {
-		$this->setSingleId($circle->getId());
+		$this->setSingleId($circle->getSingleId());
 
 		if ($circle->isConfig(Circle::CFG_SINGLE)) {
 			$owner = $circle->getOwner();
@@ -357,12 +416,20 @@ class FederatedUser extends ManagedModel implements IFederatedUser, IDeserializa
 			$arr['basedOn'] = $this->getBasedOn();
 		}
 
-		if (!is_null($this->memberships)) {
-			$arr['memberships'] = $this->getMemberships();
-		}
-
 		if (!is_null($this->link)) {
 			$arr['link'] = $this->getLink();
+		}
+
+		if (!is_null($this->members)) {
+			$arr['members'] = $this->getMembers();
+		}
+
+		if (!is_null($this->inheritedMembers)) {
+			$arr['inheritedMembers'] = $this->getInheritedMembers();
+		}
+
+		if (!is_null($this->memberships)) {
+			$arr['memberships'] = $this->getMemberships();
 		}
 
 		return $arr;

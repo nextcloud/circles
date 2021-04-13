@@ -138,7 +138,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 
 		$qb->setOptions([CoreRequestBuilder::SHARE], ['getData' => true]);
 		if (!is_null($shareRecipient)) {
-			$qb->limitToMembership(CoreRequestBuilder::SHARE, $shareRecipient, 'share_with');
+			$qb->limitToInitiator(CoreRequestBuilder::SHARE, $shareRecipient, 'share_with');
 			$qb->leftJoinShareChild(CoreRequestBuilder::SHARE);
 		}
 
@@ -166,7 +166,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 
 		if (!is_null($federatedUser)) {
 			$qb->leftJoinFileCache(CoreRequestBuilder::SHARE);
-			$qb->limitToMembership(CoreRequestBuilder::SHARE, $federatedUser, 'share_with');
+			$qb->limitToInitiator(CoreRequestBuilder::SHARE, $federatedUser, 'share_with');
 			$qb->leftJoinShareChild(CoreRequestBuilder::SHARE);
 		}
 
@@ -228,7 +228,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		}
 
 		$qb->leftJoinFileCache(CoreRequestBuilder::SHARE);
-		$qb->limitToMembership(CoreRequestBuilder::SHARE, $federatedUser, 'share_with');
+		$qb->limitToInitiator(CoreRequestBuilder::SHARE, $federatedUser, 'share_with');
 		$qb->limitToDBFieldEmpty('parent', true);
 		$qb->leftJoinShareChild(CoreRequestBuilder::SHARE);
 

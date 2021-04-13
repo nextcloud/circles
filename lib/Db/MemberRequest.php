@@ -36,7 +36,6 @@ use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedUser;
-use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
@@ -152,22 +151,22 @@ class MemberRequest extends MemberRequestBuilder {
 
 
 	/**
-	 * @param string $circleId
+	 * @param string $singleId
 	 * @param IFederatedUser|null $initiator
 	 * @param RemoteInstance|null $remoteInstance
 	 * @param Member|null $filter
 	 *
-	 * @return Circle[]
+	 * @return Member[]
 	 * @throws RequestBuilderException
 	 */
 	public function getMembers(
-		string $circleId,
+		string $singleId,
 		?IFederatedUser $initiator = null,
 		?RemoteInstance $remoteInstance = null,
 		?Member $filter = null
 	): array {
 		$qb = $this->getMemberSelectSql($initiator);
-		$qb->limitToCircleId($circleId);
+		$qb->limitToCircleId($singleId);
 		$qb->leftJoinCircle(CoreRequestBuilder::MEMBER, $initiator);
 
 		if (!is_null($remoteInstance)) {
@@ -179,6 +178,24 @@ class MemberRequest extends MemberRequestBuilder {
 
 		$qb->orderBy($qb->getDefaultSelectAlias() . '.level', 'desc');
 		$qb->addOrderBy($qb->getDefaultSelectAlias() . '.cached_name', 'asc');
+
+		return $this->getItemsFromRequest($qb);
+	}
+
+
+	/**
+	 * @param string $singleId
+	 *
+	 * @return Member[]
+	 * @throws RequestBuilderException
+	 */
+	public function getInheritedMembers(string $singleId): array {
+		$qb = $this->getMemberSelectSql();
+		$qb->leftJoinCircle(CoreRequestBuilder::MEMBER);
+		$qb->limitToMemberships(CoreRequestBuilder::MEMBER, $singleId);
+
+//		$qb->orderBy($qb->getDefaultSelectAlias() . '.level', 'desc');
+//		$qb->addOrderBy($qb->getDefaultSelectAlias() . '.cached_name', 'asc');
 
 		return $this->getItemsFromRequest($qb);
 	}

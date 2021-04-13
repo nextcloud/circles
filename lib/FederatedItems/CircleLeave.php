@@ -105,7 +105,7 @@ class CircleLeave implements
 		$initiator = new FederatedUser();
 		$initiator->importFromIFederatedUser($member);
 
-		$outcome = $this->circleRequest->getCircle($circle->getId(), $initiator);
+		$outcome = $this->circleRequest->getCircle($circle->getSingleId(), $initiator);
 
 		$event->setOutcome($outcome->jsonSerialize());
 	}

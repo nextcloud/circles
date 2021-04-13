@@ -43,6 +43,7 @@ use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\ParseMemberLevelException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\IFederatedUser;
+use OCA\Circles\IMemberships;
 
 
 /**
@@ -50,7 +51,12 @@ use OCA\Circles\IFederatedUser;
  *
  * @package OCA\Circles\Model
  */
-class Member extends ManagedModel implements IFederatedUser, IDeserializable, INC22QueryRow, JsonSerializable {
+class Member extends ManagedModel implements
+	IMemberships,
+	IFederatedUser,
+	IDeserializable,
+	INC22QueryRow,
+	JsonSerializable {
 
 
 	use TArrayTools;
@@ -161,9 +167,18 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	/** @var Circle */
 	private $circle;
 
-
 	/** @var int */
 	private $joined = 0;
+
+
+	/** @var Member[] */
+	private $members = null;
+
+	/** @var Member[] */
+	private $inheritedMembers = null;
+
+	/** @var Membership[] */
+	private $memberships = null;
 
 
 	/**
@@ -557,6 +572,100 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 	}
 
 
+	/**    /**
+	 * @param array $members
+	 *
+	 * @return self
+	 */
+	public function setMembers(array $members): IMemberships {
+		$this->members = $members;
+
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getMembers(): array {
+		if (is_null($this->members)) {
+			$this->getManager()->getMembers($this);
+		}
+
+		return $this->members;
+	}
+
+
+	/**
+	 * @param array $members
+	 *
+	 * @return self
+	 */
+	public function setInheritedMembers(array $members): IMemberships {
+		$this->inheritedMembers = $members;
+
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getInheritedMembers(): array {
+		if (is_null($this->inheritedMembers)) {
+			$this->getManager()->getInheritedMembers($this);
+		}
+
+		return $this->inheritedMembers;
+	}
+
+
+	/**
+	 * @param array $memberships
+	 *
+	 * @return self
+	 */
+	public function setMemberships(array $memberships): IMemberships {
+		$this->memberships = $memberships;
+
+		return $this;
+	}
+
+	/**
+	 * @return Membership[]
+	 */
+	public function getMemberships(): array {
+		if (is_null($this->memberships)) {
+			$this->getManager()->getMemberships($this);
+		}
+
+		return $this->memberships;
+	}
+
+
+
+
+//	/**
+//	 * @param array $memberships
+//	 *
+//	 * @return self
+//	 */
+//	public function setMemberships(array $memberships): self {
+//		$this->members = $memberships;
+//
+//		return $this;
+//	}
+//
+//	/**
+//	 * @return array
+//	 */
+//	public function getMemberships(): array {
+//		if (is_null($this->members)) {
+//			$this->getManager()->getMemberships($this);
+//		}
+//
+//		return $this->members;
+//	}
+
+
 	/**
 	 * @param Member $member
 	 * @param bool $full
@@ -711,6 +820,19 @@ class Member extends ManagedModel implements IFederatedUser, IDeserializable, IN
 		if ($this->hasCircle()) {
 			$arr['circle'] = $this->getCircle();
 		}
+
+		if (!is_null($this->members)) {
+			$arr['members'] = $this->getMembers();
+		}
+
+		if (!is_null($this->inheritedMembers)) {
+			$arr['inheritedMembers'] = $this->getInheritedMembers();
+		}
+
+		if (!is_null($this->memberships)) {
+			$arr['memberships'] = $this->getMemberships();
+		}
+
 
 		return $arr;
 	}

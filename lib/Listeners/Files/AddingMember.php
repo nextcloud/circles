@@ -80,7 +80,8 @@ class AddingMember implements IEventListener {
 		}
 
 		$circle = $event->getCircle();
-		$files = $this->shareWrapperService->getSharesToCircle($circle->getId());
+//		$files = $this->shareWrapperService->getSharesToCircle($circle->getSingleId());
+		\OC::$server->getLogger()->log(3, '> ' . json_encode($circle->getInheritedMembers()));
 		$files = ['test' => $this->token()];
 		// check files shared to the circle
 		// generate a list

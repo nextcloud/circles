@@ -319,7 +319,7 @@ class SharesFiles extends Base {
 					$share->getFileTarget(),
 					$share->getSharedBy(),
 					$sharedTo,
-					$recipient->getId()
+					$recipient->getSingleId()
 					. ', ' . Circle::$DEF_SOURCE[$recipient->getSource()]
 				]
 			);

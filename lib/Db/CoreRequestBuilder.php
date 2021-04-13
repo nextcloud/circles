@@ -78,8 +78,7 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 		],
 		self::CIRCLE => [
 			self::OPTIONS   => [
-				'getPersonalCircle' => true,
-				'canBeVisitor'      => true
+				'getPersonalCircle' => true
 			],
 			self::MEMBER,
 			self::OWNER     => [
@@ -94,6 +93,7 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 			]
 		],
 		self::MEMBER => [
+			self::MEMBERSHIPS,
 			self::CIRCLE   => [
 				self::OPTIONS   => [
 					'getData' => true
@@ -418,7 +418,7 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 //										  ]
 //			);
 
-			$this->limitToMembership($aliasCircle, $initiator);
+			$this->limitToInitiator($aliasCircle, $initiator);
 		}
 
 		$this->leftJoinOwner($aliasCircle);
@@ -490,12 +490,47 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 
 	/**
 	 * @param string $alias
+	 * @param string $singleId
+	 *
+	 * @throws RequestBuilderException
+	 */
+	public function limitToMemberships(string $alias, string $singleId): void {
+		$aliasMembership = $this->generateAlias($alias, self::MEMBERSHIPS, $options);
+
+		$expr = $this->expr();
+		$this->leftJoinMemberships($alias);
+		$this->andWhere($expr->eq($aliasMembership . '.circle_id', $this->createNamedParameter($singleId)));
+	}
+
+
+	/**
+	 * @param string $alias
+	 *
+	 * @throws RequestBuilderException
+	 */
+	public function leftJoinMemberships(string $alias): void {
+		$expr = $this->expr();
+
+		$aliasMembership = $this->generateAlias($alias, self::MEMBERSHIPS, $options);
+
+		$this->leftJoin(
+			$alias, CoreQueryBuilder::TABLE_MEMBERSHIP, $aliasMembership,
+			$expr->andX(
+				$expr->eq($aliasMembership . '.single_id', $alias . '.single_id'),
+				$expr->eq($aliasMembership . '.parent', $alias . '.circle_id')
+			)
+		);
+	}
+
+
+	/**
+	 * @param string $alias
 	 * @param IFederatedUser $user
 	 * @param string $field
 	 *
 	 * @throws RequestBuilderException
 	 */
-	public function limitToMembership(string $alias, IFederatedUser $user, string $field = ''): void {
+	public function limitToInitiator(string $alias, IFederatedUser $user, string $field = ''): void {
 		$this->leftJoinInitiator($alias, $user, $field);
 		$this->limitInitiatorVisibility($alias);
 
@@ -548,7 +583,7 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 			$this->leftJoin(
 				$aliasMembership, CoreQueryBuilder::TABLE_MEMBER, $aliasInitiator,
 				$expr->andX(
-					$expr->eq($aliasMembership . '.parent', $aliasInitiator . '.single_id'),
+					$expr->eq($aliasMembership . '.single_id', $aliasInitiator . '.single_id'),
 					$expr->eq($aliasMembership . '.circle_id', $aliasInitiator . '.circle_id')
 				)
 			);
@@ -577,11 +612,9 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 	 * @throws RequestBuilderException
 	 */
 	protected function limitInitiatorVisibility(string $alias) {
-//		$aliasInitiator = $this->generateAlias($alias, self::INITIATOR, $options);
-//		$aliasInheritedBy = $this->generateAlias($aliasInitiator, self::INHERITED_BY);
 		$aliasMembership = $this->generateAlias($alias, self::MEMBERSHIPS, $options);
-		$mustBeMember = $this->getBool('mustBeMember', $options, true);
 		$getPersonalCircle = $this->getBool('getPersonalCircle', $options, false);
+		$mustBeMember = $this->getBool('mustBeMember', $options, true);
 		$canBeVisitor = $this->getBool('canBeVisitor', $options, false);
 
 		$expr = $this->expr();

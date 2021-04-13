@@ -133,7 +133,7 @@ class RemoteDownstreamService {
 		}
 
 		if ($event->isLimitedToInstanceWithMember()) {
-			$instances = $this->memberRequest->getMemberInstances($event->getCircle()->getId());
+			$instances = $this->memberRequest->getMemberInstances($event->getCircle()->getSingleId());
 			if (!in_array($event->getIncomingOrigin(), $instances)) {
 				throw new FederatedEventException('Instance have no members in this Circle');
 			}
@@ -210,7 +210,7 @@ class RemoteDownstreamService {
 	private function verifyCircle(FederatedEvent $event): bool {
 		$circle = $event->getCircle();
 		try {
-			$localCircle = $this->circleRequest->getCircle($circle->getId());
+			$localCircle = $this->circleRequest->getCircle($circle->getSingleId());
 		} catch (CircleNotFoundException $e) {
 			return false;
 		}

@@ -224,7 +224,7 @@ class RemoteService extends NC22Signature {
 //		if ($this->configService->isLocalInstance($circle->getInstance())) {
 //			$this->syncLocalCircle($circle);
 //		} else {
-		$this->syncRemoteCircle($circle->getId(), $circle->getInstance());
+		$this->syncRemoteCircle($circle->getSingleId(), $circle->getInstance());
 //		}
 	}
 
@@ -276,7 +276,7 @@ class RemoteService extends NC22Signature {
 		$this->memberRequest->insertOrUpdate($circle->getOwner());
 
 		$this->syncRemoteMembers($circle);
-		$this->membershipService->onUpdate($circle->getId());
+		$this->membershipService->onUpdate($circle->getSingleId());
 
 		$this->shareService->syncRemoteShares($circle);
 	}
@@ -294,7 +294,7 @@ class RemoteService extends NC22Signature {
 	 * @throws RemoteInstanceException
 	 */
 	public function syncRemoteMembers(Circle $circle) {
-		$members = $this->getMembersFromInstance($circle->getId(), $circle->getInstance());
+		$members = $this->getMembersFromInstance($circle->getSingleId(), $circle->getInstance());
 		foreach ($members as $member) {
 			try {
 				$this->memberRequest->insertOrUpdate($member);
@@ -302,7 +302,7 @@ class RemoteService extends NC22Signature {
 			}
 		}
 
-		$this->membershipService->onUpdate($circle->getId());
+		$this->membershipService->onUpdate($circle->getSingleId());
 	}
 
 

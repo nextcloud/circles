@@ -59,11 +59,11 @@ class CircleRequest extends CircleRequestBuilder {
 	 * @throws InvalidIdException
 	 */
 	public function save(Circle $circle): void {
-		$this->confirmValidId($circle->getId());
+		$this->confirmValidId($circle->getSingleId());
 
 		$qb = $this->getCircleInsertSql();
-		$qb->setValue('unique_id', $qb->createNamedParameter($circle->getId()))
-		   ->setValue('long_id', $qb->createNamedParameter($circle->getId()))
+		$qb->setValue('unique_id', $qb->createNamedParameter($circle->getSingleId()))
+		   ->setValue('long_id', $qb->createNamedParameter($circle->getSingleId()))
 		   ->setValue('name', $qb->createNamedParameter($circle->getName()))
 		   ->setValue('source', $qb->createNamedParameter($circle->getSource()))
 		   ->setValue('display_name', $qb->createNamedParameter($circle->getDisplayName()))
@@ -89,7 +89,7 @@ class CircleRequest extends CircleRequestBuilder {
 		   ->set('settings', $qb->createNamedParameter(json_encode($circle->getSettings())))
 		   ->set('config', $qb->createNamedParameter($circle->getConfig()));
 
-		$qb->limitToUniqueId($circle->getId());
+		$qb->limitToUniqueId($circle->getSingleId());
 
 		$qb->execute();
 	}
@@ -102,7 +102,7 @@ class CircleRequest extends CircleRequestBuilder {
 	 */
 	public function insertOrUpdate(Circle $circle): void {
 		try {
-			$this->getCircle($circle->getId());
+			$this->getCircle($circle->getSingleId());
 			$this->update($circle);
 		} catch (CircleNotFoundException $e) {
 			$this->save($circle);
@@ -117,7 +117,7 @@ class CircleRequest extends CircleRequestBuilder {
 		$qb = $this->getCircleUpdateSql();
 		$qb->set('config', $qb->createNamedParameter($circle->getConfig()));
 
-		$qb->limitToUniqueId($circle->getId());
+		$qb->limitToUniqueId($circle->getSingleId());
 
 		$qb->execute();
 	}
@@ -131,6 +131,7 @@ class CircleRequest extends CircleRequestBuilder {
 	 * @param SimpleDataStore $params
 	 *
 	 * @return Circle[]
+	 * @throws RequestBuilderException
 	 */
 	public function getCircles(
 		?Circle $circleFilter,
@@ -150,7 +151,7 @@ class CircleRequest extends CircleRequestBuilder {
 			);
 		}
 		if (!is_null($initiator)) {
-			$qb->limitToMembership(CoreRequestBuilder::CIRCLE, $initiator);
+			$qb->limitToInitiator(CoreRequestBuilder::CIRCLE, $initiator);
 		}
 		if (!is_null($memberFilter)) {
 			$qb->limitToDirectMembership(CoreRequestBuilder::CIRCLE, $memberFilter);
@@ -185,7 +186,7 @@ class CircleRequest extends CircleRequestBuilder {
 		int $filter = Circle::CFG_BACKEND | Circle::CFG_SINGLE | Circle::CFG_HIDDEN
 	): Circle {
 		$qb = $this->getCircleSelectSql();
-		$qb->setOptions([CoreRequestBuilder::CIRCLE], ['getData' => true]);
+		$qb->setOptions([CoreRequestBuilder::CIRCLE], ['getData' => true, 'canBeVisitor' => true]);
 
 		$qb->limitToUniqueId($id);
 		$qb->filterCircles(CoreRequestBuilder::CIRCLE, $filter);
@@ -198,7 +199,7 @@ class CircleRequest extends CircleRequestBuilder {
 //		);
 
 		if (!is_null($initiator)) {
-			$qb->limitToMembership(CoreRequestBuilder::CIRCLE, $initiator);
+			$qb->limitToInitiator(CoreRequestBuilder::CIRCLE, $initiator);
 		}
 		if (!is_null($remoteInstance)) {
 			$qb->limitToRemoteInstance($remoteInstance->getInstance(), false);

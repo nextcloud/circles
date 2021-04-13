@@ -189,7 +189,7 @@ class MembershipService {
 
 		$members = $this->memberRequest->getMembersBySingleId($circleId);
 		foreach ($members as $member) {
-			$membership = new Membership($member, $singleId);
+			$membership = new Membership($member, $singleId, $circleId);
 			$membership->setPath(array_reverse($path));
 			$this->fillMemberships($membership, $memberships);
 

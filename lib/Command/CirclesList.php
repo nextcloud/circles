@@ -205,7 +205,7 @@ class CirclesList extends Base {
 			$owner = $circle->getOwner();
 			$table->appendRow(
 				[
-					$circle->getId(),
+					$circle->getSingleId(),
 					$this->input->getOption('display-name') ? $circle->getDisplayName() : $circle->getName(),
 					json_encode(Circle::getCircleFlags($circle, $display)),
 					Circle::$DEF_SOURCE[$circle->getSource()],

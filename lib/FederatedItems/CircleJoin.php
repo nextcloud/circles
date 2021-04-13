@@ -133,7 +133,7 @@ class CircleJoin implements
 
 		$member = new Member();
 		$member->importFromIFederatedUser($initiator);
-		$member->setCircleId($circle->getId());
+		$member->setCircleId($circle->getSingleId());
 		$this->manageMemberStatus($circle, $member);
 
 		$this->circleService->confirmCircleNotFull($circle);

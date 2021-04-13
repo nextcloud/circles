@@ -112,7 +112,7 @@ class CircleCreate implements
 		$owner = $circle->getOwner();
 
 		try {
-			$this->circleRequest->getCircle($circle->getId());
+			$this->circleRequest->getCircle($circle->getSingleId());
 			throw new FederatedEventDSyncException('Circle already exist');
 		} catch (CircleNotFoundException $e) {
 		}

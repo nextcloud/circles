@@ -134,7 +134,7 @@ class MemberService {
 		$this->federatedUserService->mustHaveCurrentUser();
 
 		$member = $this->memberRequest->getMember($memberId, $this->federatedUserService->getCurrentUser());
-		if ($circleId !== '' && $member->getCircle()->getId() !== $circleId) {
+		if ($circleId !== '' && $member->getCircle()->getSingleId() !== $circleId) {
 			throw new MemberNotFoundException();
 		}
 
