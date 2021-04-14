@@ -36,6 +36,7 @@ use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedUser;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
@@ -127,6 +128,17 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->limitToUserType($member->getUserType());
 		$qb->limitToInstance($qb->getInstance($member));
 		$qb->limitToSingleId($member->getSingleId());
+
+		$qb->execute();
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 */
+	public function deleteAllFromCircle(Circle $circle) {
+		$qb = $this->getMemberDeleteSql();
+		$qb->limitToCircleId($circle->getSingleId());
 
 		$qb->execute();
 	}

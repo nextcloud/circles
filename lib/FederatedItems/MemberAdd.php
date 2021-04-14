@@ -75,6 +75,7 @@ use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Service\MembershipService;
 use OCA\Circles\StatusCode;
 use OCP\IUser;
 use OCP\IUserManager;
@@ -110,6 +111,8 @@ class MemberAdd implements
 	/** @var CircleService */
 	private $circleService;
 
+	private $membershipService;
+
 	/** @var EventService */
 	private $eventService;
 
@@ -124,17 +127,20 @@ class MemberAdd implements
 	 * @param MemberRequest $memberRequest
 	 * @param FederatedUserService $federatedUserService
 	 * @param CircleService $circleService
+	 * @param MembershipService $membershipService
 	 * @param EventService $eventService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		IUserManager $userManager, MemberRequest $memberRequest, FederatedUserService $federatedUserService,
-		CircleService $circleService, EventService $eventService, ConfigService $configService
+		CircleService $circleService, MembershipService $membershipService, EventService $eventService,
+		ConfigService $configService
 	) {
 		$this->userManager = $userManager;
 		$this->memberRequest = $memberRequest;
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
+		$this->membershipService = $membershipService;
 		$this->eventService = $eventService;
 		$this->configService = $configService;
 	}
@@ -238,6 +244,7 @@ class MemberAdd implements
 		}
 
 		$this->memberRequest->insertOrUpdate($member);
+		$this->membershipService->onUpdate($member->getSingleId());
 
 		$this->eventService->memberAdding($event);
 
@@ -271,7 +278,6 @@ class MemberAdd implements
 	 */
 	public function result(FederatedEvent $event, array $results): void {
 		$this->eventService->memberAdded($event, $results);
-
 
 //		$password = $cachedName = '';
 //		$circle = $member = null;

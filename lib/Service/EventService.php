@@ -64,19 +64,14 @@ class EventService {
 	/** @var IEventDispatcher */
 	private $eventDispatcher;
 
-	/** @var MembershipService */
-	private $membershipService;
-
 
 	/**
 	 * EventService constructor.
 	 *
 	 * @param IEventDispatcher $eventDispatcher
-	 * @param MembershipService $membershipService
 	 */
-	public function __construct(IEventDispatcher $eventDispatcher, MembershipService $membershipService) {
+	public function __construct(IEventDispatcher $eventDispatcher) {
 		$this->eventDispatcher = $eventDispatcher;
-		$this->membershipService = $membershipService;
 	}
 
 
@@ -126,12 +121,8 @@ class EventService {
 	 * @param FederatedEvent $federatedEvent
 	 */
 	public function memberAdding(FederatedEvent $federatedEvent): void {
-		$member = $federatedEvent->getMember();
-		$this->membershipService->onUpdate($member->getSingleId());
-
 		$event = new AddingCircleMemberEvent($federatedEvent);
 		$event->setType(CircleGenericEvent::INVITED);
-
 		$this->eventDispatcher->dispatchTyped($event);
 	}
 
@@ -158,12 +149,8 @@ class EventService {
 	 * @param FederatedEvent $federatedEvent
 	 */
 	public function memberJoining(FederatedEvent $federatedEvent): void {
-		$member = $federatedEvent->getMember();
-		$this->membershipService->onUpdate($member->getSingleId());
-
 		$event = new AddingCircleMemberEvent($federatedEvent);
 		$event->setType(CircleGenericEvent::JOINED);
-
 		$this->eventDispatcher->dispatchTyped($event);
 	}
 
@@ -173,7 +160,6 @@ class EventService {
 	 */
 	public function memberJoined(FederatedEvent $federatedEvent, array $results): void {
 		$event = new CircleMemberAddedEvent($federatedEvent, $results);
-
 		$event->setType(CircleGenericEvent::JOINED);
 		$this->eventDispatcher->dispatchTyped($event);
 	}

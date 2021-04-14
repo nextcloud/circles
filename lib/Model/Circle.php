@@ -672,15 +672,12 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 			'config'      => $this->getConfig(),
 			'description' => $this->getDescription(),
 			'settings'    => $this->getSettings(),
-			'creation'    => $this->getCreation()
+			'creation'    => $this->getCreation(),
+			'initiator'   => ($this->hasInitiator()) ? $this->getInitiator() : null
 		];
 
 		if ($this->hasOwner()) {
 			$arr['owner'] = $this->getOwner();
-		}
-
-		if ($this->hasInitiator()) {
-			$arr['initiator'] = $this->getInitiator();
 		}
 
 		if ($this->getManager()->isFullDetails()) {

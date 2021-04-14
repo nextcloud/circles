@@ -300,5 +300,16 @@ class CircleRequest extends CircleRequestBuilder {
 	}
 
 
+	/**
+	 * @param Circle $circle
+	 */
+	public function delete(Circle $circle) {
+		$qb = $this->getCircleDeleteSql();
+		$qb->limitToUniqueId($circle->getSingleId());
+
+		$qb->execute();
+	}
+
+
 }
 

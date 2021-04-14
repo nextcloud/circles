@@ -34,28 +34,24 @@ namespace OCA\Circles\FederatedItems;
 
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
-use OCA\Circles\Exceptions\CircleNotFoundException;
-use OCA\Circles\Exceptions\FederatedEventDSyncException;
-use OCA\Circles\Exceptions\InvalidIdException;
-use OCA\Circles\Exceptions\MemberNotFoundException;
-use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedItem;
-use OCA\Circles\IFederatedItemCircleCheckNotRequired;
-use OCA\Circles\IFederatedItemMustBeInitializedLocally;
+use OCA\Circles\IFederatedItemAsyncProcess;
+use OCA\Circles\IFederatedItemMemberEmpty;
 use OCA\Circles\Model\Federated\FederatedEvent;
+use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\MembershipService;
 
 
 /**
- * Class CircleCreate
+ * Class CircleDestroy
  *
  * @package OCA\Circles\FederatedItems
  */
-class CircleCreate implements
+class CircleDestroy implements
 	IFederatedItem,
-	IFederatedItemCircleCheckNotRequired,
-	IFederatedItemMustBeInitializedLocally {
+	IFederatedItemAsyncProcess,
+	IFederatedItemMemberEmpty {
 
 
 	/** @var CircleRequest */
@@ -64,29 +60,29 @@ class CircleCreate implements
 	/** @var MemberRequest */
 	private $memberRequest;
 
+
+	private $eventService;
+
 	/** @var MembershipService */
 	private $membershipService;
 
-	/** @var EventService */
-	private $eventService;
-
 
 	/**
-	 * CircleCreate constructor.
+	 * CircleDestroy constructor.
 	 *
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
-	 * @param MembershipService $membershipService
 	 * @param EventService $eventService
+	 * @param MembershipService $membershipService
 	 */
 	public function __construct(
-		CircleRequest $circleRequest, MemberRequest $memberRequest, MembershipService $membershipService,
-		EventService $eventService
+		CircleRequest $circleRequest, MemberRequest $memberRequest, EventService $eventService,
+		MembershipService $membershipService
 	) {
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
-		$this->membershipService = $membershipService;
 		$this->eventService = $eventService;
+		$this->membershipService = $membershipService;
 	}
 
 
@@ -95,6 +91,10 @@ class CircleCreate implements
 	 */
 	public function verify(FederatedEvent $event): void {
 		$circle = $event->getCircle();
+		$initiator = $circle->getInitiator();
+
+		$initiatorHelper = new MemberHelper($initiator);
+		$initiatorHelper->mustBeOwner();
 
 		$event->setOutcome($circle->jsonSerialize());
 	}
@@ -102,32 +102,15 @@ class CircleCreate implements
 
 	/**
 	 * @param FederatedEvent $event
-	 *
-	 * @throws FederatedEventDSyncException
-	 * @throws InvalidIdException
-	 * @throws RequestBuilderException
 	 */
 	public function manage(FederatedEvent $event): void {
 		$circle = $event->getCircle();
-		$owner = $circle->getOwner();
 
-		try {
-			$this->circleRequest->getCircle($circle->getSingleId());
-			throw new FederatedEventDSyncException('Circle already exist');
-		} catch (CircleNotFoundException $e) {
-		}
+		$this->circleRequest->delete($circle);
+		$this->memberRequest->deleteAllFromCircle($circle);
+		$this->membershipService->onUpdate($circle->getSingleId());
 
-		try {
-			$this->memberRequest->getMember($owner->getId());
-			throw new FederatedEventDSyncException('Owner already exist');
-		} catch (MemberNotFoundException $e) {
-		}
-
-		$this->circleRequest->save($circle);
-		$this->memberRequest->save($owner);
-		$this->membershipService->onUpdate($owner->getSingleId());
-
-		$this->eventService->circleCreating($event);
+		$this->eventService->circleDestroying($event);
 	}
 
 
@@ -136,7 +119,7 @@ class CircleCreate implements
 	 * @param array $results
 	 */
 	public function result(FederatedEvent $event, array $results): void {
-		$this->eventService->circleCreated($event, $results);
+		$this->eventService->circleDestroyed($event, $results);
 	}
 
 }

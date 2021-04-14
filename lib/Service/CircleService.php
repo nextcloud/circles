@@ -51,6 +51,7 @@ use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\FederatedItems\CircleConfig;
 use OCA\Circles\FederatedItems\CircleCreate;
+use OCA\Circles\FederatedItems\CircleDestroy;
 use OCA\Circles\FederatedItems\CircleJoin;
 use OCA\Circles\FederatedItems\CircleLeave;
 use OCA\Circles\Model\Circle;
@@ -165,6 +166,35 @@ class CircleService {
 			   ->setInitiator($member);
 
 		$event = new FederatedEvent(CircleCreate::class);
+		$event->setCircle($circle);
+		$this->federatedEventService->newEvent($event);
+
+		return $event->getOutcome();
+	}
+
+
+	/**
+	 * @param string $circleId
+	 *
+	 * @return array
+	 * @throws CircleNotFoundException
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws InitiatorNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
+	 */
+	public function destroy(string $circleId): array {
+		$this->federatedUserService->mustHaveCurrentUser();
+
+		$circle = $this->getCircle($circleId);
+
+		$event = new FederatedEvent(CircleDestroy::class);
 		$event->setCircle($circle);
 		$this->federatedEventService->newEvent($event);
 

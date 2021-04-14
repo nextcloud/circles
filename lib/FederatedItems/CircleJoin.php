@@ -55,6 +55,7 @@ use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Service\MembershipService;
 use OCA\Circles\StatusCode;
 use OCP\IUserManager;
 
@@ -88,6 +89,9 @@ class CircleJoin implements
 	/** @var CircleService */
 	private $circleService;
 
+	/** @var MembershipService */
+	private $membershipService;
+
 	/** @var EventService */
 	private $eventService;
 
@@ -102,17 +106,20 @@ class CircleJoin implements
 	 * @param MemberRequest $memberRequest
 	 * @param FederatedUserService $federatedUserService
 	 * @param CircleService $circleService
+	 * @param MembershipService $membershipService
 	 * @param EventService $eventService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		IUserManager $userManager, MemberRequest $memberRequest, FederatedUserService $federatedUserService,
-		CircleService $circleService, EventService $eventService, ConfigService $configService
+		CircleService $circleService, MembershipService $membershipService, EventService $eventService,
+		ConfigService $configService
 	) {
 		$this->userManager = $userManager;
 		$this->memberRequest = $memberRequest;
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
+		$this->membershipService = $membershipService;
 		$this->eventService = $eventService;
 		$this->configService = $configService;
 	}
@@ -241,7 +248,7 @@ class CircleJoin implements
 		}
 
 		$this->memberRequest->save($member);
-
+		$this->membershipService->onUpdate($member->getSingleId());
 		$this->eventService->memberJoining($event);
 	}
 
