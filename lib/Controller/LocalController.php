@@ -136,6 +136,26 @@ class LocalController extends OcsController {
 	/**
 	 * @NoAdminRequired
 	 *
+	 * @param string $circleId
+	 *
+	 * @return DataResponse
+	 * @throws OCSException
+	 */
+	public function destroy(string $circleId): DataResponse {
+		try {
+			$this->setCurrentFederatedUser();
+			$circle = $this->circleService->destroy($circleId);
+
+			return new DataResponse($circle);
+		} catch (Exception $e) {
+			throw new OcsException($e->getMessage(), $e->getCode());
+		}
+	}
+
+
+	/**
+	 * @NoAdminRequired
+	 *
 	 * @param string $term
 	 *
 	 * @return DataResponse
