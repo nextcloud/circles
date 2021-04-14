@@ -597,7 +597,17 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 				)
 			);
 
-			$this->generateMemberSelectAlias($aliasInitiator);
+			$default = [];
+			if ($this->getBool('canBeVisitor', $options)) {
+				$default = [
+					'user_id'   => $initiator->getUserId(),
+					'single_id' => $initiator->getSingleId(),
+					'instance'  => $initiator->getInstance(),
+					'user_type' => $initiator->getUserType()
+				];
+			}
+			$this->generateMemberSelectAlias($aliasInitiator, $default);
+
 			$this->generateMemberSelectAlias($aliasInheritedBy);
 			$aliasInheritedByMembership = $this->generateAlias($aliasInheritedBy, self::MEMBERSHIPS);
 			$this->generateMembershipSelectAlias($aliasMembership, $aliasInheritedByMembership);
