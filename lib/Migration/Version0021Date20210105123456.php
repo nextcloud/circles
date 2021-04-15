@@ -248,12 +248,6 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 							   'length'  => 15,
 						   ]
 			);
-//			$table->addColumn(
-//				'member_id', 'string', [
-//							   'notnull' => true,
-//							   'length'  => 15,
-//						   ]
-//			);
 			$table->addColumn(
 				'level', 'integer', [
 						   'notnull'  => true,
@@ -262,15 +256,28 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 					   ]
 			);
 			$table->addColumn(
-				'parent', 'string', [
-							'notnull' => true,
-							'length'  => 15,
-						]
+				'inheritance_first', 'string', [
+									   'notnull' => true,
+									   'length'  => 15,
+								   ]
 			);
 			$table->addColumn(
-				'path', 'text', [
-						  'notnull' => true
-					  ]
+				'inheritance_last', 'string', [
+									  'notnull' => true,
+									  'length'  => 15,
+								  ]
+			);
+			$table->addColumn(
+				'inheritance_depth', 'integer', [
+									   'notnull'  => true,
+									   'length'   => 2,
+									   'unsigned' => true
+								   ]
+			);
+			$table->addColumn(
+				'inheritance_path', 'text', [
+									  'notnull' => true
+								  ]
 			);
 
 			$table->addIndex(['single_id']);

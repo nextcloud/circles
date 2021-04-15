@@ -40,6 +40,7 @@ use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22TreeNode;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22ConsoleTree;
 use OC\Core\Command\Base;
+use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
@@ -81,6 +82,9 @@ class MembersList extends Base {
 	use TNC22ConsoleTree;
 
 
+	/** @var MemberRequest */
+	private $memberRequest;
+
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
@@ -103,6 +107,7 @@ class MembersList extends Base {
 	/**
 	 * MembersList constructor.
 	 *
+	 * @param MemberRequest $memberRequest
 	 * @param FederatedUserService $federatedUserService
 	 * @param RemoteService $remoteService
 	 * @param CircleService $circleService
@@ -110,11 +115,13 @@ class MembersList extends Base {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		FederatedUserService $federatedUserService, RemoteService $remoteService,
-		CircleService $circleService, MemberService $memberService, ConfigService $configService
+		MemberRequest $memberRequest, FederatedUserService $federatedUserService,
+		RemoteService $remoteService, CircleService $circleService, MemberService $memberService,
+		ConfigService $configService
 	) {
 		parent::__construct();
 
+		$this->memberRequest = $memberRequest;
 		$this->federatedUserService = $federatedUserService;
 		$this->remoteService = $remoteService;
 		$this->circleService = $circleService;
@@ -181,10 +188,11 @@ class MembersList extends Base {
 			$tree = new NC22TreeNode(null, new SimpleDataStore(['circle' => $circle]));
 		}
 
+
 		if ($input->getOption('inherited')) {
 			$this->federatedUserService->commandLineInitiator($initiator, $circleId, true);
 			$circle = $this->circleService->getCircle($circleId);
-			$members = $circle->getInheritedMembers();
+			$members = $circle->getInheritedMembers(true);
 		} else {
 			$members = $this->getMembers($circleId, $instance, $initiator, $tree);
 		}
@@ -212,21 +220,33 @@ class MembersList extends Base {
 		$output = $output->section();
 
 		$table = new Table($output);
-		$table->setHeaders(['Circle Id', 'Member Id', 'Single Id', 'Type', 'Source', 'Username', 'Instance', 'Level']);
+		$table->setHeaders(
+			[
+				'Circle Id', 'Circle Name', 'Member Id', 'Single Id', 'Type', 'Source', 'Username',
+				'Instance', 'Level'
+			]
+		);
 		$table->render();
 
 		$local = $this->configService->getFrontalInstance();
 		foreach ($members as $member) {
+			if ($member->getCircleId() === $circleId) {
+				$level = $member->getLevel();
+			} else {
+				$level = $member->getInheritanceFrom()->getLevel();
+			}
+
 			$table->appendRow(
 				[
 					$member->getCircleId(),
+					$member->getCircle()->getDisplayName(),
 					$member->getId(),
 					$member->getSingleId(),
 					Member::$TYPE[$member->getUserType()],
 					$member->hasBasedOn() ? Circle::$DEF_SOURCE[$member->getBasedOn()->getSource()] : '',
 					$member->getUserId(),
 					($member->getInstance() === $local) ? '' : $member->getInstance(),
-					$member->getLevel() > 0 ? Member::$DEF_LEVEL[$member->getLevel()] :
+					($level > 0) ? Member::$DEF_LEVEL[$level] :
 						'(' . strtolower($member->getStatus()) . ')'
 				]
 			);

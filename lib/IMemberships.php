@@ -59,12 +59,13 @@ interface IMemberships {
 	 */
 	public function getMembers(): array;
 
+
 	/**
 	 * @param Member[] $members
 	 *
 	 * @return $this
 	 */
-	public function setInheritedMembers(array $members): self;
+	public function setInheritedMembers(array $members, bool $detailed): self;
 
 	/**
 	 * @return Member[]

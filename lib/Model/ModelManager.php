@@ -110,10 +110,14 @@ class ModelManager {
 
 	/**
 	 * @param IMemberships $item
+	 * @param bool $detailed
 	 */
-	public function getInheritedMembers(IMemberships $item): void {
+	public function getInheritedMembers(IMemberships $item, bool $detailed = false): void {
 		try {
-			$item->setInheritedMembers($this->memberRequest->getInheritedMembers($item->getSingleId()));
+			$item->setInheritedMembers(
+				$this->memberRequest->getInheritedMembers($item->getSingleId(), $detailed),
+				$detailed
+			);
 		} catch (RequestBuilderException $e) {
 			echo $e->getMessage();
 			// TODO: debug log
@@ -194,6 +198,10 @@ class ModelManager {
 
 				case CoreRequestBuilder::INHERITED_BY;
 					$this->importInheritedByFromDatabase($model, $data, $prefix);
+					break;
+
+				case CoreRequestBuilder::INHERITANCE_FROM;
+					$this->importInheritanceFromFromDatabase($model, $data, $prefix);
 					break;
 			}
 		}
@@ -281,6 +289,21 @@ class ModelManager {
 			$inheritedBy->importFromDatabase($data, $prefix);
 			$member->setInheritedBy($inheritedBy);
 		} catch (FederatedUserNotFoundException $e) {
+		}
+	}
+
+
+	/**
+	 * @param Member $member
+	 * @param array $data
+	 * @param string $prefix
+	 */
+	public function importInheritanceFromFromDatabase(Member $member, array $data, string $prefix) {
+		try {
+			$inheritanceFrom = new Member();
+			$inheritanceFrom->importFromDatabase($data, $prefix);
+			$member->setInheritanceFrom($inheritanceFrom);
+		} catch (MemberNotFoundException $e) {
 		}
 	}
 

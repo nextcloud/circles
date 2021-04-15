@@ -189,12 +189,18 @@ class MembershipService {
 
 		$members = $this->memberRequest->getMembersBySingleId($circleId);
 		foreach ($members as $member) {
-			$membership = new Membership($member, $singleId, $circleId);
-			$membership->setPath(array_reverse($path));
+			$membership = new Membership($singleId, count($path) > 1 ? $path[1] : '', $member);
+			$membership->setInheritancePath(array_reverse($path))
+					   ->setInheritanceDepth(sizeof($path));
 			$this->fillMemberships($membership, $memberships);
-
 			if (!in_array($member->getCircleId(), $knownIds)) {
-				$this->generateMemberships($singleId, $member->getCircleId(), $memberships, $knownIds, $path);
+				$this->generateMemberships(
+					$singleId,
+					$member->getCircleId(),
+					$memberships,
+					$knownIds,
+					$path
+				);
 			}
 		}
 
@@ -211,9 +217,9 @@ class MembershipService {
 			if ($known->getCircleId() === $membership->getCircleId()) {
 				if ($known->getLevel() < $membership->getLevel()) {
 					$known->setLevel($membership->getLevel());
-					$known->setMemberId($membership->getMemberId());
+//					$known->setMemberId($membership->getMemberId());
 					$known->setSingleId($membership->getSingleId());
-					$known->setParent($membership->getParent());
+					$known->setInheritanceLast($membership->getInheritanceLast());
 				}
 
 				return;

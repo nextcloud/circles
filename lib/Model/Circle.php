@@ -214,6 +214,9 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	/** @var Member[] */
 	private $inheritedMembers = null;
 
+	/** @var bool */
+	private $detailedInheritedMember = false;
+
 	/** @var Membership[] */
 	private $memberships = null;
 
@@ -407,21 +410,26 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 
 	/**
 	 * @param array $members
+	 * @param bool $detailed
 	 *
 	 * @return self
 	 */
-	public function setInheritedMembers(array $members): IMemberships {
+	public function setInheritedMembers(array $members, bool $detailed): IMemberships {
 		$this->inheritedMembers = $members;
+		$this->detailedInheritedMember = $detailed;
 
 		return $this;
 	}
 
 	/**
+	 * @param bool $detailed
+	 *
 	 * @return array
 	 */
-	public function getInheritedMembers(): array {
-		if (is_null($this->inheritedMembers)) {
-			$this->getManager()->getInheritedMembers($this);
+	public function getInheritedMembers(bool $detailed = false): array {
+		if (is_null($this->inheritedMembers)
+			|| ($detailed && !$this->detailedInheritedMember)) {
+			$this->getManager()->getInheritedMembers($this, $detailed);
 		}
 
 		return $this->inheritedMembers;

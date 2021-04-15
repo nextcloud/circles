@@ -197,17 +197,23 @@ class MemberRequest extends MemberRequestBuilder {
 
 	/**
 	 * @param string $singleId
+	 * @param bool $getData
 	 *
 	 * @return Member[]
 	 * @throws RequestBuilderException
 	 */
-	public function getInheritedMembers(string $singleId): array {
-		$qb = $this->getMemberSelectSql();
-		$qb->leftJoinCircle(CoreRequestBuilder::MEMBER);
-		$qb->limitToMemberships(CoreRequestBuilder::MEMBER, $singleId);
+	public function getInheritedMembers(string $singleId, bool $getData = false): array {
+		$qb = $this->getMemberSelectSql(null, $getData);
 
-//		$qb->orderBy($qb->getDefaultSelectAlias() . '.level', 'desc');
-//		$qb->addOrderBy($qb->getDefaultSelectAlias() . '.cached_name', 'asc');
+		if ($getData) {
+			$qb->leftJoinCircle(CoreRequestBuilder::MEMBER);
+			$qb->setOptions([CoreRequestBuilder::MEMBER], ['getData' => $getData]);
+		}
+
+		$qb->limitToInheritedMemberships(CoreRequestBuilder::MEMBER, $singleId);
+
+		$aliasMembership = $qb->generateAlias(CoreRequestBuilder::MEMBER, CoreRequestBuilder::MEMBERSHIPS);
+		$qb->orderBy($aliasMembership . '.inheritance_depth', 'asc');
 
 		return $this->getItemsFromRequest($qb);
 	}

@@ -56,60 +56,43 @@ class Membership extends ManagedModel implements IDeserializable, INC22QueryRow,
 	/** @var string */
 	private $circleId = '';
 
-	/** @var string */
-	private $memberId = '';
-
-	/** @var string */
-	private $parent = '';
-
 	/** @var int */
 	private $level = 0;
 
+	/** @var string */
+	private $inheritanceFirst = '';
+
+	/** @var string */
+	private $inheritanceLast = '';
+
 	/** @var array */
-	private $path = [];
+	private $inheritancePath = [];
+
+	/** @var int */
+	private $inheritanceDepth = 0;
 
 
 	/**
 	 * Membership constructor.
 	 *
-	 * @param Member|null $member
 	 * @param string $singleId
+	 * @param Member|null $member
+	 * @param string $inheritanceLast
 	 */
-	public function __construct(?Member $member = null, string $singleId = '', string $parent = '') {
+	public function __construct(
+		string $singleId = '',
+		string $inheritanceLast = '',
+		?Member $member = null
+	) {
 		if (is_null($member)) {
 			return;
 		}
 
-		$this->setSingleId(($singleId === '') ? $member->getSingleId() : $singleId);
+		$this->setSingleId($singleId);
 		$this->setCircleId($member->getCircleId());
-		$this->setMemberId($member->getId());
-		$this->setParent(($parent === $singleId) ? $member->getCircleId() : $parent);
+		$this->setInheritanceFirst($member->getSingleId());
+		$this->setInheritanceLast($inheritanceLast === '' ? $member->getCircleId() : $inheritanceLast);
 		$this->setLevel($member->getLevel());
-	}
-
-
-	/**
-	 * @param string $id
-	 * @param string $circleId
-	 * @param string $memberId
-	 * @param int $level
-	 *
-	 * @param string $parent
-	 *
-	 * @return $this
-	 */
-	public function set(
-		string $id = '',
-		string $circleId = '',
-		string $memberId = '',
-		int $level = 0,
-		string $parent = ''
-	): self {
-		$this->singleId = $id;
-		$this->circleId = $circleId;
-		$this->memberId = $memberId;
-		$this->level = $level;
-		$this->parent = $parent;
 	}
 
 
@@ -152,44 +135,6 @@ class Membership extends ManagedModel implements IDeserializable, INC22QueryRow,
 
 
 	/**
-	 * @param string $memberId
-	 *
-	 * @return Membership
-	 */
-	public function setMemberId(string $memberId): self {
-		$this->memberId = $memberId;
-
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getMemberId(): string {
-		return $this->memberId;
-	}
-
-
-	/**
-	 * @param string $parent
-	 *
-	 * @return Membership
-	 */
-	public function setParent(string $parent): self {
-		$this->parent = $parent;
-
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getParent(): string {
-		return $this->parent;
-	}
-
-
-	/**
 	 * @param int $level
 	 *
 	 * @return Membership
@@ -209,12 +154,50 @@ class Membership extends ManagedModel implements IDeserializable, INC22QueryRow,
 
 
 	/**
-	 * @param array $path
+	 * @param string $inheritanceFirst
 	 *
 	 * @return Membership
 	 */
-	public function setPath(array $path): self {
-		$this->path = $path;
+	public function setInheritanceFirst(string $inheritanceFirst): self {
+		$this->inheritanceFirst = $inheritanceFirst;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getInheritanceFirst(): string {
+		return $this->inheritanceFirst;
+	}
+
+
+	/**
+	 * @param string $inheritanceLast
+	 *
+	 * @return Membership
+	 */
+	public function setInheritanceLast(string $inheritanceLast): self {
+		$this->inheritanceLast = $inheritanceLast;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getInheritanceLast(): string {
+		return $this->inheritanceLast;
+	}
+
+
+	/**
+	 * @param array $inheritancePath
+	 *
+	 * @return Membership
+	 */
+	public function setInheritancePath(array $inheritancePath): self {
+		$this->inheritancePath = $inheritancePath;
 
 		return $this;
 	}
@@ -222,8 +205,27 @@ class Membership extends ManagedModel implements IDeserializable, INC22QueryRow,
 	/**
 	 * @return array
 	 */
-	public function getPath(): array {
-		return $this->path;
+	public function getInheritancePath(): array {
+		return $this->inheritancePath;
+	}
+
+
+	/**
+	 * @param int $inheritanceDepth
+	 *
+	 * @return Membership
+	 */
+	public function setInheritanceDepth(int $inheritanceDepth): self {
+		$this->inheritanceDepth = $inheritanceDepth;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getInheritanceDepth(): int {
+		return $this->inheritanceDepth;
 	}
 
 
@@ -240,10 +242,11 @@ class Membership extends ManagedModel implements IDeserializable, INC22QueryRow,
 
 		$this->setSingleId($this->get('singleId', $data));
 		$this->setCircleId($this->get('circleId', $data));
-//		$this->setMemberId($this->get('memberId', $data));
 		$this->setLevel($this->getInt('level', $data));
-		$this->setParent($this->get('parent', $data));
-		$this->setPath($this->getArray('path', $data));
+		$this->setInheritanceFirst($this->get('inheritance_first', $data));
+		$this->setInheritanceLast($this->get('inheritance_last', $data));
+		$this->setInheritancePath($this->getArray('inheritance_path', $data));
+		$this->setInheritanceDepth($this->getInt('inheritance_depth', $data));
 
 		return $this;
 	}
@@ -262,10 +265,11 @@ class Membership extends ManagedModel implements IDeserializable, INC22QueryRow,
 
 		$this->setSingleId($this->get($prefix . 'single_id', $data));
 		$this->setCircleId($this->get($prefix . 'circle_id', $data));
-//		$this->setMemberId($this->get($prefix . 'member_id', $data));
 		$this->setLevel($this->getInt($prefix . 'level', $data));
-		$this->setParent($this->get($prefix . 'parent', $data));
-		$this->setPath($this->getArray($prefix . 'path', $data));
+		$this->setInheritanceFirst($this->get($prefix . 'inheritance_first', $data));
+		$this->setInheritanceLast($this->get($prefix . 'inheritance_last', $data));
+		$this->setInheritancePath($this->getArray($prefix . 'inheritance_path', $data));
+		$this->setInheritanceDepth($this->getInt($prefix . 'inheritance_depth', $data));
 
 		return $this;
 	}
@@ -276,12 +280,13 @@ class Membership extends ManagedModel implements IDeserializable, INC22QueryRow,
 	 */
 	public function jsonSerialize(): array {
 		return [
-			'singleId' => $this->getSingleId(),
-			'circleId' => $this->getCircleId(),
-			//			'memberId' => $this->getMemberId(),
-			'level'    => $this->getLevel(),
-			'parent'   => $this->getParent(),
-			'path'     => $this->getPath()
+			'singleId'          => $this->getSingleId(),
+			'circleId'          => $this->getCircleId(),
+			'level'             => $this->getLevel(),
+			'inheritance_first' => $this->getInheritanceFirst(),
+			'inheritance_last'  => $this->getInheritanceLast(),
+			'inheritance_path'  => $this->getInheritancePath(),
+			'inheritance_depth' => $this->getInheritanceDepth()
 		];
 	}
 

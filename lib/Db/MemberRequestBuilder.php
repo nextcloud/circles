@@ -34,6 +34,7 @@ namespace OCA\Circles\Db;
 
 use daita\MySmallPhpTools\Exceptions\RowNotFoundException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
@@ -72,10 +73,15 @@ class MemberRequestBuilder extends CoreQueryBuilder {
 
 	/**
 	 * @param IFederatedUser|null $initiator
+	 * @param bool $getBasedOn
 	 *
 	 * @return CoreRequestBuilder
+	 * @throws RequestBuilderException
 	 */
-	protected function getMemberSelectSql(?IFederatedUser $initiator = null): CoreRequestBuilder {
+	protected function getMemberSelectSql(
+		?IFederatedUser $initiator = null,
+		bool $getBasedOn = true
+	): CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->select(
 			CoreRequestBuilder::MEMBER . '.circle_id',
@@ -96,8 +102,11 @@ class MemberRequestBuilder extends CoreQueryBuilder {
 		   ->from(self::TABLE_MEMBER, CoreRequestBuilder::MEMBER)
 		   ->orderBy(CoreRequestBuilder::MEMBER . '.joined')
 		   ->groupBy(CoreRequestBuilder::MEMBER . '.member_id')
-		   ->setDefaultSelectAlias(CoreRequestBuilder::MEMBER)
-		   ->leftJoinBasedOn(CoreRequestBuilder::MEMBER, $initiator);
+		   ->setDefaultSelectAlias(CoreRequestBuilder::MEMBER);
+
+		if ($getBasedOn) {
+			$qb->leftJoinBasedOn(CoreRequestBuilder::MEMBER, $initiator);
+		}
 
 		return $qb;
 	}

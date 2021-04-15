@@ -134,6 +134,9 @@ class Member extends ManagedModel implements
 	/** @var Circle */
 	private $basedOn;
 
+	/** @var Member */
+	private $inheritanceFrom;
+
 	/** @var FederatedUser */
 	private $inheritedBy;
 
@@ -176,6 +179,9 @@ class Member extends ManagedModel implements
 
 	/** @var Member[] */
 	private $inheritedMembers = null;
+
+	/** @var bool */
+	private $detailedInheritedMember = false;
 
 	/** @var Membership[] */
 	private $memberships = null;
@@ -369,6 +375,25 @@ class Member extends ManagedModel implements
 	 */
 	public function getInheritedBy(): ?FederatedUser {
 		return $this->inheritedBy;
+	}
+
+
+	/**
+	 * @param Member|null $inheritanceFrom
+	 *
+	 * @return $this
+	 */
+	public function setInheritanceFrom(?Member $inheritanceFrom): self {
+		$this->inheritanceFrom = $inheritanceFrom;
+
+		return $this;
+	}
+
+	/**
+	 * @return Member|null
+	 */
+	public function getInheritanceFrom(): ?Member {
+		return $this->inheritanceFrom;
 	}
 
 
@@ -597,21 +622,26 @@ class Member extends ManagedModel implements
 
 	/**
 	 * @param array $members
+	 * @param bool $detailed
 	 *
 	 * @return self
 	 */
-	public function setInheritedMembers(array $members): IMemberships {
+	public function setInheritedMembers(array $members, bool $detailed): IMemberships {
 		$this->inheritedMembers = $members;
+		$this->detailedInheritedMember = $detailed;
 
 		return $this;
 	}
 
 	/**
+	 * @param bool $detailed
+	 *
 	 * @return array
 	 */
-	public function getInheritedMembers(): array {
-		if (is_null($this->inheritedMembers)) {
-			$this->getManager()->getInheritedMembers($this);
+	public function getInheritedMembers(bool $detailed = false): array {
+		if (is_null($this->inheritedMembers)
+			|| ($detailed && !$this->detailedInheritedMember)) {
+			$this->getManager()->getInheritedMembers($this, $detailed);
 		}
 
 		return $this->inheritedMembers;
@@ -815,6 +845,10 @@ class Member extends ManagedModel implements
 
 		if (!is_null($this->getInheritedBy())) {
 			$arr['inheritedBy'] = $this->getInheritedBy();
+		}
+
+		if (!is_null($this->getInheritanceFrom())) {
+			$arr['inheritanceFrom'] = $this->getInheritanceFrom();
 		}
 
 		if ($this->hasCircle()) {

@@ -48,14 +48,16 @@ class MembershipRequest extends MembershipRequestBuilder {
 	 */
 	public function insert(Membership $membership) {
 		$qb = $this->getMembershipInsertSql();
-		$qb->setValue('single_id', $qb->createNamedParameter($membership->getSingleId()));
 		$qb->setValue('circle_id', $qb->createNamedParameter($membership->getCircleId()));
-//		$qb->setValue('member_id', $qb->createNamedParameter($membership->getMemberId()));
-		$qb->setValue('parent', $qb->createNamedParameter($membership->getParent()));
+		$qb->setValue('single_id', $qb->createNamedParameter($membership->getSingleId()));
 		$qb->setValue('level', $qb->createNamedParameter($membership->getLevel()));
+		$qb->setValue('inheritance_first', $qb->createNamedParameter($membership->getInheritanceFirst()));
+		$qb->setValue('inheritance_last', $qb->createNamedParameter($membership->getInheritanceLast()));
 		$qb->setValue(
-			'path', $qb->createNamedParameter(json_encode($membership->getPath(), JSON_UNESCAPED_SLASHES))
+			'inheritance_path',
+			$qb->createNamedParameter(json_encode($membership->getInheritancePath(), JSON_UNESCAPED_SLASHES))
 		);
+		$qb->setValue('inheritance_depth', $qb->createNamedParameter($membership->getInheritanceDepth()));
 
 		$qb->execute();
 	}
@@ -66,12 +68,13 @@ class MembershipRequest extends MembershipRequestBuilder {
 	 */
 	public function update(Membership $membership) {
 		$qb = $this->getMembershipUpdateSql();
-//		$qb->set('member_id', $qb->createNamedParameter($membership->getMemberId()));
 		$qb->set('level', $qb->createNamedParameter($membership->getLevel()));
-		$qb->set('parent', $qb->createNamedParameter($membership->getParent()));
+		$qb->set('parent', $qb->createNamedParameter($membership->getInheritanceLast()));
 		$qb->set(
-			'path', $qb->createNamedParameter(json_encode($membership->getPath(), JSON_UNESCAPED_SLASHES))
+			'path',
+			$qb->createNamedParameter(json_encode($membership->getInheritancePath(), JSON_UNESCAPED_SLASHES))
 		);
+		$qb->set('depth', $qb->createNamedParameter($membership->getInheritanceDepth()));
 
 		$qb->limitToSingleId($membership->getSingleId());
 		$qb->limitToCircleId($membership->getCircleId());

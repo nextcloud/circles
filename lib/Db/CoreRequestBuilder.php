@@ -10,7 +10,7 @@ declare(strict_types=1);
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@pontapreta.net>
- * @copyright 2017
+ * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -65,6 +65,7 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 	const BASED_ON = 'basedOn';
 	const INITIATOR = 'initiator';
 	const MEMBERSHIPS = 'memberships';
+	const INHERITANCE_FROM = 'inheritanceFrom';
 	const INHERITED_BY = 'inheritedBy';
 	const SHARE = 'share';
 	const FILE_CACHE = 'fileCache';
@@ -94,6 +95,7 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 		],
 		self::MEMBER => [
 			self::MEMBERSHIPS,
+			self::INHERITANCE_FROM,
 			self::CIRCLE   => [
 				self::OPTIONS   => [
 					'getData' => true
@@ -440,7 +442,7 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 		}
 
 		try {
-			$aliasBasedOn = $this->generateAlias($aliasMember, self::BASED_ON);
+			$aliasBasedOn = $this->generateAlias($aliasMember, self::BASED_ON, $options);
 		} catch (RequestBuilderException $e) {
 			return;
 		}
@@ -489,16 +491,18 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 
 
 	/**
+	 * // TODO: rename to limitToInheritedMembers() ?
+	 *
 	 * @param string $alias
 	 * @param string $singleId
 	 *
 	 * @throws RequestBuilderException
 	 */
-	public function limitToMemberships(string $alias, string $singleId): void {
-		$aliasMembership = $this->generateAlias($alias, self::MEMBERSHIPS, $options);
+	public function limitToInheritedMemberships(string $alias, string $singleId): void {
+		$aliasMembership = $this->generateAlias($alias, self::MEMBERSHIPS);
 
 		$expr = $this->expr();
-		$this->leftJoinMemberships($alias);
+		$this->leftJoinInheritedMemberships($alias);
 		$this->andWhere($expr->eq($aliasMembership . '.circle_id', $this->createNamedParameter($singleId)));
 	}
 
@@ -508,7 +512,7 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 	 *
 	 * @throws RequestBuilderException
 	 */
-	public function leftJoinMemberships(string $alias): void {
+	public function leftJoinInheritedMemberships(string $alias): void {
 		$expr = $this->expr();
 
 		$aliasMembership = $this->generateAlias($alias, self::MEMBERSHIPS, $options);
@@ -516,10 +520,24 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 		$this->leftJoin(
 			$alias, CoreQueryBuilder::TABLE_MEMBERSHIP, $aliasMembership,
 			$expr->andX(
-				$expr->eq($aliasMembership . '.single_id', $alias . '.single_id'),
-				$expr->eq($aliasMembership . '.parent', $alias . '.circle_id')
+				$expr->eq($aliasMembership . '.inheritance_last', $alias . '.circle_id'),
+				$expr->eq($aliasMembership . '.single_id', $alias . '.single_id')
 			)
 		);
+
+		if (!$this->getBool('getData', $options, false)) {
+			return;
+		}
+
+		$aliasInheritanceFrom = $this->generateAlias($alias, self::INHERITANCE_FROM);
+		$this->generateMemberSelectAlias($aliasInheritanceFrom)
+			 ->leftJoin(
+				 $aliasMembership, CoreQueryBuilder::TABLE_MEMBER, $aliasInheritanceFrom,
+				 $expr->andX(
+					 $expr->eq($aliasMembership . '.circle_id', $aliasInheritanceFrom . '.circle_id'),
+					 $expr->eq($aliasMembership . '.inheritance_first', $aliasInheritanceFrom . '.single_id')
+				 )
+			 );
 	}
 
 
@@ -535,9 +553,7 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 		$this->limitInitiatorVisibility($alias);
 
 		$aliasInitiator = $this->generateAlias($alias, self::INITIATOR, $options);
-		$getData = $this->getBool('getData', $options, false);
-
-		if ($getData) {
+		if ($this->getBool('getData', $options, false)) {
 			$this->leftJoinBasedOn($aliasInitiator);
 		}
 	}
@@ -557,11 +573,9 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 			return;
 		}
 
+		$expr = $this->expr();
 		$field = ($field === '') ? 'unique_id' : $field;
 		$aliasMembership = $this->generateAlias($alias, self::MEMBERSHIPS, $options);
-
-		$getData = $this->getBool('getData', $options, false);
-		$expr = $this->expr();
 
 		$this->leftJoin(
 			$alias, CoreQueryBuilder::TABLE_MEMBERSHIP, $aliasMembership,
@@ -574,12 +588,12 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 			)
 		);
 
-		if (!$getData) {
+		if (!$this->getBool('getData', $options, false)) {
 			return;
 		}
 
 		try {
-			$aliasInitiator = $this->generateAlias($alias, self::INITIATOR);
+			$aliasInitiator = $this->generateAlias($alias, self::INITIATOR, $options);
 			$this->leftJoin(
 				$aliasMembership, CoreQueryBuilder::TABLE_MEMBER, $aliasInitiator,
 				$expr->andX(
@@ -593,7 +607,7 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 				$aliasInitiator, CoreQueryBuilder::TABLE_MEMBER, $aliasInheritedBy,
 				$expr->andX(
 					$expr->eq($aliasMembership . '.single_id', $aliasInheritedBy . '.single_id'),
-					$expr->eq($aliasMembership . '.single_id', $aliasInheritedBy . '.circle_id')
+					$expr->eq($aliasMembership . '.inheritance_first', $aliasInheritedBy . '.circle_id')
 				)
 			);
 
@@ -602,8 +616,8 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 				$default = [
 					'user_id'   => $initiator->getUserId(),
 					'single_id' => $initiator->getSingleId(),
-					'instance'  => $initiator->getInstance(),
-					'user_type' => $initiator->getUserType()
+					'user_type' => $initiator->getUserType(),
+					'instance'  => $initiator->getInstance()
 				];
 			}
 			$this->generateMemberSelectAlias($aliasInitiator, $default);
@@ -613,6 +627,31 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 			$this->generateMembershipSelectAlias($aliasMembership, $aliasInheritedByMembership);
 		} catch (RequestBuilderException $e) {
 		}
+	}
+
+
+	/**
+	 * @param string $alias
+	 * @param string $field
+	 *
+	 * @throws RequestBuilderException
+	 */
+	public function leftJoinMembers(string $alias, string $field = ''): void {
+		$expr = $this->expr();
+
+		$field = ($field === '') ? 'circle_id' : $field;
+		$aliasMembership = $this->generateAlias($alias, self::MEMBERSHIPS, $options);
+//		$aliasMembers = $this->generateAlias($aliasMembership, self::MEMBER);
+//		$this->generateMemberSelectAlias($aliasMembers);
+
+		$this->leftJoin(
+			$alias, CoreQueryBuilder::TABLE_MEMBERSHIP, $aliasMembership,
+			$expr->eq($aliasMembership . '.parent', $alias . '.' . $field)
+		);
+//		$this->leftJoin(
+//			$aliasMembership, CoreQueryBuilder::TABLE_MEMBER, $aliasMembers,
+//			$expr->eq($aliasMembership . '.single_id', $alias . '.single_id')
+//		);
 	}
 
 
@@ -936,7 +975,11 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 		$expr = $this->expr();
 
 		$aliasShareChild = $this->generateAlias($aliasShare, self::SHARE);
-		$aliasShareMembers = $this->generateAlias($aliasShare, self::MEMBERSHIPS);
+		$aliasShareMembers = $this->generateAlias($aliasShare, self::MEMBERSHIPS, $options);
+
+//		if ($this->getBool('getData', $options)) {
+//			$this->generateMemberSelectAlias($aliasShareMembers);
+//		}
 
 		$this->leftJoin(
 			$aliasShare, CoreQueryBuilder::TABLE_SHARE, $aliasShareChild,
@@ -1021,7 +1064,10 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 		string $prefix = '',
 		array $default = []
 	): self {
-		$fields = ['single_id', 'circle_id', 'level', 'parent', 'path'];
+		$fields = [
+			'single_id', 'circle_id', 'level', 'inheritance_first', 'inheritance_last', 'inheritance_path',
+			'inheritance_depth'
+		];
 		$this->generateSelectAlias($fields, $alias, ($prefix === '') ? $alias : $prefix, $default);
 
 		return $this;
