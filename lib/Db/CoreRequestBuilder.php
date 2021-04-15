@@ -597,7 +597,7 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 			$this->leftJoin(
 				$aliasMembership, CoreQueryBuilder::TABLE_MEMBER, $aliasInitiator,
 				$expr->andX(
-					$expr->eq($aliasMembership . '.single_id', $aliasInitiator . '.single_id'),
+					$expr->eq($aliasMembership . '.inheritance_first', $aliasInitiator . '.single_id'),
 					$expr->eq($aliasMembership . '.circle_id', $aliasInitiator . '.circle_id')
 				)
 			);
@@ -607,7 +607,7 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 				$aliasInitiator, CoreQueryBuilder::TABLE_MEMBER, $aliasInheritedBy,
 				$expr->andX(
 					$expr->eq($aliasMembership . '.single_id', $aliasInheritedBy . '.single_id'),
-					$expr->eq($aliasMembership . '.inheritance_first', $aliasInheritedBy . '.circle_id')
+					$expr->eq($aliasMembership . '.inheritance_last', $aliasInheritedBy . '.circle_id')
 				)
 			);
 

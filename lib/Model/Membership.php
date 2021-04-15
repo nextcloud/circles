@@ -243,10 +243,10 @@ class Membership extends ManagedModel implements IDeserializable, INC22QueryRow,
 		$this->setSingleId($this->get('singleId', $data));
 		$this->setCircleId($this->get('circleId', $data));
 		$this->setLevel($this->getInt('level', $data));
-		$this->setInheritanceFirst($this->get('inheritance_first', $data));
-		$this->setInheritanceLast($this->get('inheritance_last', $data));
-		$this->setInheritancePath($this->getArray('inheritance_path', $data));
-		$this->setInheritanceDepth($this->getInt('inheritance_depth', $data));
+		$this->setInheritanceFirst($this->get('inheritanceFirst', $data));
+		$this->setInheritanceLast($this->get('inheritanceLast', $data));
+		$this->setInheritancePath($this->getArray('inheritancePath', $data));
+		$this->setInheritanceDepth($this->getInt('inheritanceDepth', $data));
 
 		return $this;
 	}
@@ -280,13 +280,13 @@ class Membership extends ManagedModel implements IDeserializable, INC22QueryRow,
 	 */
 	public function jsonSerialize(): array {
 		return [
-			'singleId'          => $this->getSingleId(),
-			'circleId'          => $this->getCircleId(),
-			'level'             => $this->getLevel(),
-			'inheritance_first' => $this->getInheritanceFirst(),
-			'inheritance_last'  => $this->getInheritanceLast(),
-			'inheritance_path'  => $this->getInheritancePath(),
-			'inheritance_depth' => $this->getInheritanceDepth()
+			'singleId'         => $this->getSingleId(),
+			'circleId'         => $this->getCircleId(),
+			'level'            => $this->getLevel(),
+			'inheritanceFirst' => $this->getInheritanceFirst(),
+			'inheritanceLast'  => $this->getInheritanceLast(),
+			'inheritancePath'  => $this->getInheritancePath(),
+			'inheritanceDepth' => $this->getInheritanceDepth()
 		];
 	}
 
