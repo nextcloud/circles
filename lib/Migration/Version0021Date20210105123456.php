@@ -282,7 +282,7 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 
 			$table->addIndex(['single_id']);
 			$table->addUniqueIndex(['single_id', 'circle_id']);
-			$table->addIndex(['parent', 'circle_id']);
+			$table->addIndex(['inheritance_first', 'inheritance_last', 'circle_id']);
 		}
 
 
