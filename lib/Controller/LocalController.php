@@ -185,8 +185,8 @@ class LocalController extends OcsController {
 	public function memberAdd(string $circleId, string $userId, int $type): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
-			$member = $this->federatedUserService->generateFederatedUser($userId, (int)$type);
-			$result = $this->memberService->addMember($circleId, $member);
+			$federatedUser = $this->federatedUserService->generateFederatedUser($userId, (int)$type);
+			$result = $this->memberService->addMember($circleId, $federatedUser);
 
 			return new DataResponse($result);
 		} catch (Exception $e) {
@@ -196,12 +196,34 @@ class LocalController extends OcsController {
 
 
 	/**
+	 * @NoAdminRequired
+	 *
 	 * @param string $circleId
-	 * @param array $multi
+	 * @param array $members
 	 *
 	 * @return DataResponse
+	 * @throws OCSException
 	 */
-	public function membersAdd(string $circleId, array $multi): DataResponse {
+	public function membersAdd(string $circleId, array $members): DataResponse {
+		try {
+			$this->setCurrentFederatedUser();
+
+			$federatedUsers = [];
+			foreach ($members as $member) {
+				// TODO: generate Multiple FederatedUsers using a single SQL request
+				$federatedUsers[] = $this->federatedUserService->generateFederatedUser(
+					$this->get('id', $member),
+					Member::parseTypeString($this->get('type', $member))
+				);
+			}
+
+			$result = $this->memberService->addMembers($circleId, $federatedUsers);
+
+			return new DataResponse($result);
+		} catch (Exception $e) {
+			throw new OCSException($e->getMessage(), $e->getCode());
+		}
+
 	}
 
 

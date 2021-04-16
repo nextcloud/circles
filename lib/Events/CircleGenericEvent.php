@@ -47,9 +47,10 @@ class CircleGenericEvent extends Event {
 
 	const INVITED = 1;
 	const JOINED = 2;
-	const REMOVED = 3;
-	const LEFT = 4;
-	const LEVEL = 5;
+	const MULTIPLE = 3;
+	const REMOVED = 4;
+	const LEFT = 5;
+	const LEVEL = 6;
 
 
 	/** @var FederatedEvent */

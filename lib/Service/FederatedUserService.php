@@ -713,7 +713,7 @@ class FederatedUserService {
 	 *
 	 * @throws FederatedUserException
 	 */
-	public function confirmLocalSingleId(FederatedUser $federatedUser): void {
+	public function confirmLocalSingleId(IFederatedUser $federatedUser): void {
 		$members = $this->memberRequest->getMembersBySingleId($federatedUser->getSingleId());
 
 		foreach ($members as $member) {
@@ -725,6 +725,21 @@ class FederatedUserService {
 				throw new FederatedUserException('uniqueness of SingleId could not be confirmed');
 			}
 		}
+	}
+
+
+	/**
+	 * @param IFederatedUser $federatedUser
+	 *
+	 * @throws FederatedUserException
+	 * @throws RequestBuilderException
+	 */
+	public function confirmSingleIdUniqueness(IFederatedUser $federatedUser): void {
+		if (empty($this->memberRequest->getAlternateSingleId($federatedUser))) {
+			return;
+		}
+
+		throw new FederatedUserException('uniqueness of SingleId could not be confirmed');
 	}
 
 

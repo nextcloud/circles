@@ -307,11 +307,10 @@ class FederatedEventService extends NC22Signature {
 		// TODO: enforce IFederatedItemMemberEmpty if no member
 		if ($item instanceof IFederatedItemMemberEmpty) {
 			$event->setMember(null);
-		}
-
-		if ($item instanceof IFederatedItemMemberRequired && !$event->hasMember()) {
+		} else if ($item instanceof IFederatedItemMemberRequired && !$event->hasMember()) {
 			throw new FederatedEventException('FederatedEvent has no Member linked');
 		}
+
 		if ($event->hasMember()
 			&& !($item instanceof IFederatedItemMemberRequired)
 			&& !($item instanceof IFederatedItemMemberOptional)) {
@@ -320,6 +319,7 @@ class FederatedEventService extends NC22Signature {
 				. ' does not implements IFederatedItemMemberOptional nor IFederatedItemMemberRequired'
 			);
 		}
+
 		if ($item instanceof IFederatedItemMustBeInitializedLocally && $checkLocalOnly) {
 			throw new FederatedEventException('FederatedItem must be executed locally');
 		}

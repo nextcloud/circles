@@ -74,14 +74,19 @@ class AddingMember implements IEventListener {
 			return;
 		}
 
-		$member = $event->getMember();
-		if ($member->getUserType() !== Member::TYPE_MAIL) {
-			return;
+		$bypass = true;
+		foreach ($event->getMembers() as $member) {
+			if ($member->getUserType() === Member::TYPE_MAIL) {
+				$bypass = false;
+			}
+		}
+
+		if ($bypass) {
+//				return;
 		}
 
 		$circle = $event->getCircle();
 //		$files = $this->shareWrapperService->getSharesToCircle($circle->getSingleId());
-		\OC::$server->getLogger()->log(3, '> ' . json_encode($circle->getInheritedMembers()));
 		$files = ['test' => $this->token()];
 		// check files shared to the circle
 		// generate a list

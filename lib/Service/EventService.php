@@ -120,7 +120,7 @@ class EventService {
 	/**
 	 * @param FederatedEvent $federatedEvent
 	 */
-	public function memberAdding(FederatedEvent $federatedEvent): void {
+	public function singleMemberAdding(FederatedEvent $federatedEvent): void {
 		$event = new AddingCircleMemberEvent($federatedEvent);
 		$event->setType(CircleGenericEvent::INVITED);
 		$this->eventDispatcher->dispatchTyped($event);
@@ -130,10 +130,30 @@ class EventService {
 	 * @param FederatedEvent $federatedEvent
 	 * @param array $results
 	 */
-	public function memberAdded(FederatedEvent $federatedEvent, array $results): void {
-		$federatedEvent = new CircleMemberAddedEvent($federatedEvent, $results);
-		$federatedEvent->setType(CircleGenericEvent::INVITED);
-		$this->eventDispatcher->dispatchTyped($federatedEvent);
+	public function singleMemberAdded(FederatedEvent $federatedEvent, array $results): void {
+		$event = new CircleMemberAddedEvent($federatedEvent, $results);
+		$event->setType(CircleGenericEvent::INVITED);
+		$this->eventDispatcher->dispatchTyped($event);
+	}
+
+
+	/**
+	 * @param FederatedEvent $federatedEvent
+	 */
+	public function multipleMemberAdding(FederatedEvent $federatedEvent): void {
+		$event = new AddingCircleMemberEvent($federatedEvent);
+		$event->setType(CircleGenericEvent::MULTIPLE);
+		$this->eventDispatcher->dispatchTyped($event);
+	}
+
+	/**
+	 * @param FederatedEvent $federatedEvent
+	 * @param array $results
+	 */
+	public function multipleMemberAdded(FederatedEvent $federatedEvent, array $results): void {
+		$event = new CircleMemberAddedEvent($federatedEvent, $results);
+		$event->setType(CircleGenericEvent::MULTIPLE);
+		$this->eventDispatcher->dispatchTyped($event);
 	}
 
 

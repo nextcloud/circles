@@ -77,6 +77,9 @@ class FederatedEvent implements JsonSerializable {
 	/** @var Member */
 	private $member;
 
+	/** @var Member[] */
+	private $members = [];
+
 	/** @var SimpleDataStore */
 	private $data;
 
@@ -360,6 +363,25 @@ class FederatedEvent implements JsonSerializable {
 
 
 	/**
+	 * @return Member[]
+	 */
+	public function getMembers(): array {
+		return $this->members;
+	}
+
+	/**
+	 * @param Member[] $members
+	 *
+	 * @return self
+	 */
+	public function setMembers(array $members): self {
+		$this->members = $members;
+
+		return $this;
+	}
+
+
+	/**
 	 * @param SimpleDataStore $data
 	 *
 	 * @return self
@@ -475,6 +497,13 @@ class FederatedEvent implements JsonSerializable {
 			$this->setMember($member);
 		}
 
+		$members = [];
+		foreach ($this->getArray('members', $data) as $item) {
+			$member = new Member();
+			$members[] = $member->import($item);
+		}
+		$this->setMembers($members);
+
 		return $this;
 	}
 
@@ -490,7 +519,8 @@ class FederatedEvent implements JsonSerializable {
 			'result'   => $this->getResult(),
 			'source'   => $this->getSource(),
 			'itemId'   => $this->getItemId(),
-			'outcome'  => $this->getOutcome()
+			'outcome'  => $this->getOutcome(),
+			'members'  => $this->getMembers()
 		];
 
 		if ($this->hasCircle()) {

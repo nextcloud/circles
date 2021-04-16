@@ -37,6 +37,7 @@ return [
 		['name' => 'Local#search', 'url' => '/search', 'verb' => 'GET'],
 		['name' => 'Local#members', 'url' => '/circles/{circleId}/members', 'verb' => 'GET'],
 		['name' => 'Local#memberAdd', 'url' => '/circles/{circleId}/members', 'verb' => 'POST'],
+		['name' => 'Local#membersAdd', 'url' => '/circles/{circleId}/members/multi', 'verb' => 'POST'],
 		[
 			'name' => 'Local#memberRemove', 'url' => '/circles/{circleId}/members/{memberId}',
 			'verb' => 'DELETE'

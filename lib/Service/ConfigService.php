@@ -397,7 +397,7 @@ class ConfigService {
 	 * @return bool
 	 */
 	public function isLocalInstance(string $instance): bool {
-		if ($instance === $this->getFrontalInstance()) {
+		if (strtolower($instance) === strtolower($this->getFrontalInstance())) {
 			return true;
 		}
 

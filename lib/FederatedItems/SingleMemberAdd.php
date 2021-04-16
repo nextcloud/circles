@@ -50,10 +50,12 @@ use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\Exceptions\MembersLimitException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
@@ -88,7 +90,7 @@ use OCP\Util;
  *
  * @package OCA\Circles\GlobalScale
  */
-class MemberAdd implements
+class SingleMemberAdd implements
 	IFederatedItem,
 	IFederatedItemAsyncProcess,
 	IFederatedItemMemberRequired,
@@ -100,28 +102,29 @@ class MemberAdd implements
 
 
 	/** @var IUserManager */
-	private $userManager;
+	protected $userManager;
 
 	/** @var MemberRequest */
-	private $memberRequest;
+	protected $memberRequest;
 
 	/** @var FederatedUserService */
-	private $federatedUserService;
+	protected $federatedUserService;
 
 	/** @var CircleService */
-	private $circleService;
+	protected $circleService;
 
-	private $membershipService;
+	/** @var MembershipService */
+	protected $membershipService;
 
 	/** @var EventService */
-	private $eventService;
+	protected $eventService;
 
 	/** @var ConfigService */
-	private $configService;
+	protected $configService;
 
 
 	/**
-	 * MemberAdd constructor.
+	 * SingleMemberAdd constructor.
 	 *
 	 * @param IUserManager $userManager
 	 * @param MemberRequest $memberRequest
@@ -163,34 +166,9 @@ class MemberAdd implements
 		$initiatorHelper = new MemberHelper($initiator);
 		$initiatorHelper->mustBeModerator();
 
-		try {
-			if ($member->getSingleId() !== '') {
-				$userId = $member->getSingleId() . '@' . $member->getInstance();
-				$federatedUser = $this->federatedUserService->getFederatedUser($userId, Member::TYPE_SINGLE);
-			} else {
-				$userId = $member->getUserId() . '@' . $member->getInstance();
-				$federatedUser =
-					$this->federatedUserService->getFederatedUser($userId, $member->getUserType());
-			}
+		$member = $this->generateMember($circle, $member);
 
-		} catch (MemberNotFoundException $e) {
-			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[120], 120);
-		}
-
-		if ($federatedUser->getBasedOn()->isConfig(Circle::CFG_ROOT)) {
-			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[125], 125);
-		}
-
-		$member->importFromIFederatedUser($federatedUser);
-		$member->setCircleId($circle->getSingleId());
-		$member->setCircle($circle);
-		$this->manageMemberStatus($circle, $member);
-
-		$this->circleService->confirmCircleNotFull($circle);
-
-		// TODO: Managing cached name
-		//		$member->setCachedName($eventMember->getCachedName());
-
+		$event->setMembers([$member]);
 		$event->setOutcome($member->jsonSerialize());
 
 		return;
@@ -246,7 +224,7 @@ class MemberAdd implements
 		$this->memberRequest->insertOrUpdate($member);
 		$this->membershipService->onUpdate($member->getSingleId());
 
-		$this->eventService->memberAdding($event);
+		$this->eventService->singleMemberAdding($event);
 
 //
 //		//
@@ -277,7 +255,7 @@ class MemberAdd implements
 	 * @param array $results
 	 */
 	public function result(FederatedEvent $event, array $results): void {
-		$this->eventService->memberAdded($event, $results);
+		$this->eventService->singleMemberAdded($event, $results);
 
 //		$password = $cachedName = '';
 //		$circle = $member = null;
@@ -323,6 +301,56 @@ class MemberAdd implements
 //		}
 	}
 
+
+	/**
+	 * @param Circle $circle
+	 * @param FederatedUser $baseUser
+	 *
+	 * @return Member
+	 * @throws CircleNotFoundException
+	 * @throws FederatedItemBadRequestException
+	 * @throws FederatedItemException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws UnknownRemoteException
+	 * @throws UserTypeNotFoundException
+	 * @throws MembersLimitException
+	 * @throws SingleCircleNotFoundException
+	 */
+	protected function generateMember(Circle $circle, Member $member): Member {
+		try {
+			if ($member->getSingleId() !== '') {
+				$userId = $member->getSingleId() . '@' . $member->getInstance();
+				$federatedUser = $this->federatedUserService->getFederatedUser($userId, Member::TYPE_SINGLE);
+			} else {
+				$userId = $member->getUserId() . '@' . $member->getInstance();
+				$federatedUser =
+					$this->federatedUserService->getFederatedUser($userId, $member->getUserType());
+			}
+		} catch (MemberNotFoundException $e) {
+			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[120], 120);
+		}
+
+		if ($federatedUser->getBasedOn()->isConfig(Circle::CFG_ROOT)) {
+			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[125], 125);
+		}
+
+		$member->importFromIFederatedUser($federatedUser);
+		$member->setCircleId($circle->getSingleId());
+		$member->setCircle($circle);
+		$this->manageMemberStatus($circle, $member);
+
+		$this->circleService->confirmCircleNotFull($circle);
+
+		// TODO: Managing cached name
+		//		$member->setCachedName($eventMember->getCachedName());
+		return $member;
+	}
 
 	/**
 	 * @param Circle $circle

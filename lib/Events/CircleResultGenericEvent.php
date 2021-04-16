@@ -59,6 +59,9 @@ class CircleResultGenericEvent extends Event {
 	/** @var Member */
 	private $member;
 
+	/** @var Member[] */
+	private $members;
+
 
 	/**
 	 * CircleResultGenericEvent constructor.
@@ -72,10 +75,12 @@ class CircleResultGenericEvent extends Event {
 		$this->federatedEvent = $federatedEvent;
 		$this->results = $results;
 
-		$this->circle = $this->federatedEvent->getCircle();
-		if ($this->federatedEvent->hasMember()) {
-			$this->member = $this->federatedEvent->getMember();
+		$this->circle = $federatedEvent->getCircle();
+		if ($federatedEvent->hasMember()) {
+			$this->member = $federatedEvent->getMember();
 		}
+
+		$this->members = $federatedEvent->getMembers();
 	}
 
 
@@ -104,10 +109,25 @@ class CircleResultGenericEvent extends Event {
 
 
 	/**
+	 * @return bool
+	 */
+	public function hasMember(): bool {
+		return (!is_null($this->member));
+	}
+
+	/**
 	 * @return Member|null
 	 */
 	public function getMember(): ?Member {
 		return $this->member;
+	}
+
+
+	/**
+	 * @return Member[]
+	 */
+	public function getMembers(): array {
+		return $this->members;
 	}
 
 }

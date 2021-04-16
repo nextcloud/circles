@@ -62,7 +62,9 @@ class MemberAdded implements IEventListener {
 			$result[$instance] = $item->gData('files');
 		}
 
-		\OC::$server->getLogger()->log(3, '>>> ' . json_encode($result));
+		foreach ($event->getMembers() as $member) {
+			\OC::$server->getLogger()->log(3, 'MemberAdded: ' . json_encode($member->getInheritedMembers()));
+		}
 	}
 
 }

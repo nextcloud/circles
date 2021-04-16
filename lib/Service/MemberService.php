@@ -50,9 +50,10 @@ use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
-use OCA\Circles\FederatedItems\MemberAdd;
+use OCA\Circles\FederatedItems\MassiveMemberAdd;
 use OCA\Circles\FederatedItems\MemberLevel;
 use OCA\Circles\FederatedItems\MemberRemove;
+use OCA\Circles\FederatedItems\SingleMemberAdd;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\FederatedUser;
@@ -174,7 +175,7 @@ class MemberService {
 
 	/**
 	 * @param string $circleId
-	 * @param IFederatedUser $member
+	 * @param IFederatedUser $federatedUser
 	 *
 	 * @return array
 	 * @throws CircleNotFoundException
@@ -189,20 +190,59 @@ class MemberService {
 	 * @throws RemoteInstanceException
 	 * @throws RequestBuilderException
 	 */
-	public function addMember(string $circleId, IFederatedUser $member): array {
+	public function addMember(string $circleId, FederatedUser $federatedUser): array {
 		$this->federatedUserService->mustHaveCurrentUser();
 		$circle = $this->circleRequest->getCircle($circleId, $this->federatedUserService->getCurrentUser());
 
-		if ($member instanceof FederatedUser) {
-			$tmp = new Member();
-			$tmp->importFromIFederatedUser($member);
-			$member = $tmp;
-		}
+		$member = new Member();
+		$member->importFromIFederatedUser($federatedUser);
 
-		$event = new FederatedEvent(MemberAdd::class);
+		$event = new FederatedEvent(SingleMemberAdd::class);
 		$event->setSeverity(FederatedEvent::SEVERITY_HIGH);
 		$event->setCircle($circle);
 		$event->setMember($member);
+
+		$this->federatedEventService->newEvent($event);
+
+		return $event->getOutcome();
+	}
+
+
+	/**
+	 * @param string $circleId
+	 * @param IFederatedUser[] $members
+	 *
+	 * @return FederatedUser[]
+	 * @throws CircleNotFoundException
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws InitiatorNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws UnknownRemoteException
+	 * @throws RemoteInstanceException
+	 * @throws RequestBuilderException
+	 */
+	public function addMembers(string $circleId, array $federatedUsers): array {
+		$this->federatedUserService->mustHaveCurrentUser();
+		$circle = $this->circleRequest->getCircle($circleId, $this->federatedUserService->getCurrentUser());
+
+		$members = array_map(
+			function(FederatedUser $federatedUser) {
+				$member = new Member();
+				$member->importFromIFederatedUser($federatedUser);
+
+				return $member;
+			}, $federatedUsers
+		);
+
+		$event = new FederatedEvent(MassiveMemberAdd::class);
+		$event->setSeverity(FederatedEvent::SEVERITY_HIGH);
+		$event->setCircle($circle);
+		$event->setMembers($members);
+		$event->setData(new SimpleDataStore(['federatedUsers' => $members]));
 
 		$this->federatedEventService->newEvent($event);
 

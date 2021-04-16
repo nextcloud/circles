@@ -47,6 +47,9 @@ class CircleMemberGenericEvent extends CircleGenericEvent {
 	/** @var Member */
 	private $member;
 
+	/** @var Member[] */
+	private $members;
+
 
 	/**
 	 * CircleMemberAddedEvent constructor.
@@ -56,15 +59,34 @@ class CircleMemberGenericEvent extends CircleGenericEvent {
 	public function __construct(FederatedEvent $federatedEvent) {
 		parent::__construct($federatedEvent);
 
-		$this->member = $federatedEvent->getMember();
+		if ($federatedEvent->hasMember()) {
+			$this->member = $federatedEvent->getMember();
+		}
+
+		$this->members = $federatedEvent->getMembers();
 	}
 
+
+	/**
+	 * @return bool
+	 */
+	public function hasMember(): bool {
+		return (!is_null($this->member));
+	}
 
 	/**
 	 * @return Member
 	 */
 	public function getMember(): Member {
 		return $this->member;
+	}
+
+	
+	/**
+	 * @return Member[]
+	 */
+	public function getMembers(): array {
+		return $this->members;
 	}
 
 }

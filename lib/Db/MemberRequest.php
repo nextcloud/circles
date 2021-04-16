@@ -300,11 +300,35 @@ class MemberRequest extends MemberRequestBuilder {
 	 * @param string $needle
 	 *
 	 * @return FederatedUser[]
+	 * @throws RequestBuilderException
 	 */
 	public function searchFederatedUsers(string $needle): array {
 		$qb = $this->getMemberSelectSql();
 		$qb->searchInDBField('user_id', '%' . $needle . '%');
 		$qb->groupBy('single_id');
+
+		return $this->getItemsFromRequest($qb, true);
+	}
+
+
+	/**
+	 * @param IFederatedUser $federatedUser
+	 *
+	 * @return FederatedUser[]|Member
+	 * @throws RequestBuilderException
+	 */
+	public function getAlternateSingleId(IFederatedUser $federatedUser) {
+		$qb = $this->getMemberSelectSql();
+		$qb->limitToSingleId($federatedUser->getSingleId());
+
+		$expr = $qb->expr();
+		$orX = $expr->orX(
+			$qb->exprLimitToDBField('user_id', $federatedUser->getUserId(), false, true),
+			$qb->exprLimitToDBFieldInt('user_type', $federatedUser->getUserType(), false),
+			$qb->exprLimitToDBField('instance', $qb->getInstance($federatedUser), false, false)
+		);
+
+		$qb->andWhere($orX);
 
 		return $this->getItemsFromRequest($qb, true);
 	}
