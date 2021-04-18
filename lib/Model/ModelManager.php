@@ -229,7 +229,16 @@ class ModelManager {
 					try {
 						$initiator = new Member();
 						$initiator->importFromDatabase($data, $prefix);
-						$model->setInitiator($initiator);
+						$model->setInheritedBy($initiator);
+					} catch (MemberNotFoundException $e) {
+					}
+					break;
+
+				case CoreRequestBuilder::INHERITED_BY;
+					try {
+						$inheritedBy = new Member();
+						$inheritedBy->importFromDatabase($data, $prefix);
+						$model->setInheritedBy($inheritedBy);
 					} catch (MemberNotFoundException $e) {
 					}
 					break;

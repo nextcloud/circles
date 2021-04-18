@@ -146,7 +146,57 @@ class SharesFiles extends Base {
 			return 0;
 		}
 
-		throw new Exception('Specify a FileId or an option: --in, --with, --by, --to');
+		if ($this->fileId > 0) {
+			$this->sharedFile($json);
+
+			return 0;
+		}
+
+		throw new Exception('Specify a FileId or an option: --with (USER), --by (USER), --to (CIRCLE)');
+	}
+
+
+	private function sharedFile(bool $json): void {
+		$shareWrappers = $this->shareWrapperService->getSharesByFileId($this->fileId, true);
+
+		$output = new ConsoleOutput();
+		if ($json) {
+			$output->writeln(json_encode($shareWrappers, JSON_PRETTY_PRINT));
+
+			return;
+		}
+
+		$output = $output->section();
+		$table = new Table($output);
+		$table->setHeaders(
+			[
+				'Share Id', 'File Owner', 'Original Filename', 'Shared By', 'Shared To', 'Recipient'
+				, 'Target Name',
+			]
+		);
+		$table->render();
+
+		foreach ($shareWrappers as $share) {
+			$recipient = $share->getInheritedBy();
+			$sharedTo = $recipient->getDisplayName();
+			if (!$this->configService->isLocalInstance($recipient->getInstance())) {
+				$sharedTo .= '@' . $recipient->getInstance();
+			}
+			$circle = $share->getCircle();
+			$table->appendRow(
+				[
+					$share->getId(),
+					$share->getShareOwner(),
+					$share->getFileTarget(),
+					$share->getSharedBy(),
+					$circle->getDisplayName() . ' (' . $share->getSharedWith()
+					. ', ' . Circle::$DEF_SOURCE[$circle->getSource()] . ')',
+					$sharedTo . ' (' . $recipient->getSingleId()
+					. ', ' . Circle::$DEF_SOURCE[$recipient->getBasedOn()->getSource()] . ')',
+					($share->getChildId() > 0) ? $share->getChildFileTarget() : $share->getFileTarget(),
+				]
+			);
+		}
 	}
 
 
@@ -187,7 +237,7 @@ class SharesFiles extends Base {
 		$table->render();
 
 		foreach ($shareWrappers as $share) {
-			$recipient = $share->getInitiator();
+			$recipient = $share->getInheritedBy();
 			$sharedTo = $recipient->getDisplayName();
 			if (!$this->configService->isLocalInstance($recipient->getInstance())) {
 				$sharedTo .= '@' . $recipient->getInstance();
@@ -247,7 +297,7 @@ class SharesFiles extends Base {
 		$table->render();
 
 		foreach ($shareWrappers as $share) {
-			$recipient = $share->getInitiator();
+			$recipient = $share->getRecipient();
 			$sharedTo = $recipient->getDisplayName();
 			if (!$this->configService->isLocalInstance($recipient->getInstance())) {
 				$sharedTo .= '@' . $recipient->getInstance();

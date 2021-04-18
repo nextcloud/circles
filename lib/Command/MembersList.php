@@ -172,6 +172,7 @@ class MembersList extends Base {
 		$circleId = $input->getArgument('circle_id');
 		$instance = $input->getOption('instance');
 		$initiator = $input->getOption('initiator');
+		$inherited = $input->getOption('inherited');
 
 		$tree = null;
 		if ($input->getOption('tree')) {
@@ -186,10 +187,11 @@ class MembersList extends Base {
 			$output->writeln(' ');
 
 			$tree = new NC22TreeNode(null, new SimpleDataStore(['circle' => $circle]));
+			$inherited = false;
 		}
 
 
-		if ($input->getOption('inherited')) {
+		if ($inherited) {
 			$this->federatedUserService->commandLineInitiator($initiator, $circleId, true);
 			$circle = $this->circleService->getCircle($circleId);
 			$members = $circle->getInheritedMembers(true);

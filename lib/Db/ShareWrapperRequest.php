@@ -137,8 +137,9 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		$qb->limitToDBFieldEmpty('parent', true);
 
 		$qb->setOptions([CoreRequestBuilder::SHARE], ['getData' => true]);
+		$qb->leftJoinMembersByInheritance(CoreRequestBuilder::SHARE, 'share_with');
 		if (!is_null($shareRecipient)) {
-			$qb->limitToInitiator(CoreRequestBuilder::SHARE, $shareRecipient, 'share_with');
+//			$qb->limitToInitiator(CoreRequestBuilder::SHARE, $shareRecipient, 'share_with');
 			$qb->leftJoinShareChild(CoreRequestBuilder::SHARE);
 		}
 
@@ -192,12 +193,29 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 
 	/**
 	 * @param int $fileId
+	 * @param bool $getData
 	 *
 	 * @return ShareWrapper[]
+	 * @throws RequestBuilderException
 	 */
-	public function getSharesByFileId(int $fileId): array {
+	public function getSharesByFileId(int $fileId, bool $getData = false): array {
 		$qb = $this->getShareSelectSql();
 		$qb->limitToFileSource($fileId);
+
+		if ($getData) {
+			$qb->setOptions([CoreRequestBuilder::SHARE], ['getData' => $getData]);
+			$qb->leftJoinCircle(CoreRequestBuilder::SHARE, null, 'share_with');
+//			$qb->leftJoinFileCache(CoreRequestBuilder::SHARE);
+			$qb->limitToDBFieldEmpty('parent', true);
+
+
+			$aliasMembership = $qb->generateAlias(CoreRequestBuilder::SHARE, CoreRequestBuilder::MEMBERSHIPS);
+
+			$qb->leftJoinInheritedMembers(CoreRequestBuilder::SHARE, 'share_with');
+			$qb->leftJoinShareChild(CoreRequestBuilder::SHARE);
+
+			$qb->addGroupBy($aliasMembership . '.single_id');
+		}
 
 		return $this->getItemsFromRequest($qb);
 	}
@@ -222,13 +240,13 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 	): array {
 		$qb = $this->getShareSelectSql();
 		$qb->setOptions([CoreRequestBuilder::SHARE], ['getData' => $getData]);
-
 		if ($getData) {
 			$qb->leftJoinCircle(CoreRequestBuilder::SHARE, null, 'share_with');
 		}
 
-		$qb->leftJoinFileCache(CoreRequestBuilder::SHARE);
 		$qb->limitToInitiator(CoreRequestBuilder::SHARE, $federatedUser, 'share_with');
+
+		$qb->leftJoinFileCache(CoreRequestBuilder::SHARE);
 		$qb->limitToDBFieldEmpty('parent', true);
 		$qb->leftJoinShareChild(CoreRequestBuilder::SHARE);
 

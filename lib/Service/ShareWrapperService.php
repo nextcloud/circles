@@ -128,8 +128,8 @@ class ShareWrapperService {
 	 *
 	 * @return ShareWrapper[]
 	 */
-	public function getSharesByFileId(int $fileId): array {
-		return $this->shareWrapperRequest->getSharesByFileId($fileId);
+	public function getSharesByFileId(int $fileId, bool $getData = false): array {
+		return $this->shareWrapperRequest->getSharesByFileId($fileId, $getData);
 	}
 
 

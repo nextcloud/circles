@@ -291,7 +291,6 @@ class CircleJoin implements
 
 			throw new MemberAlreadyExistsException(StatusCode::$CIRCLE_JOIN[122], 122);
 		} catch (MemberNotFoundException $e) {
-
 			if (!$circle->isConfig(Circle::CFG_OPEN)) {
 				throw new Exception('TODO TODO TODO - circle not open, cannot join!');
 			}

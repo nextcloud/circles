@@ -94,7 +94,9 @@ class ShareWrapperRequestBuilder extends CoreQueryBuilder {
 		)
 		   ->from(self::TABLE_SHARE, CoreRequestBuilder::SHARE)
 		   ->setDefaultSelectAlias(CoreRequestBuilder::SHARE)
+		   ->groupBy(CoreRequestBuilder::SHARE . '.id')
 		   ->limitToShareType(Share::TYPE_CIRCLE);
+
 
 		return $qb;
 	}

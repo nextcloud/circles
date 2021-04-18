@@ -210,10 +210,11 @@ class MemberRequest extends MemberRequestBuilder {
 			$qb->setOptions([CoreRequestBuilder::MEMBER], ['getData' => $getData]);
 		}
 
-		$qb->limitToInheritedMemberships(CoreRequestBuilder::MEMBER, $singleId);
+		$qb->limitToMembersByInheritance(CoreRequestBuilder::MEMBER, $singleId);
 
 		$aliasMembership = $qb->generateAlias(CoreRequestBuilder::MEMBER, CoreRequestBuilder::MEMBERSHIPS);
 		$qb->orderBy($aliasMembership . '.inheritance_depth', 'asc');
+		$qb->groupBy(CoreRequestBuilder::MEMBER . '.single_id');
 
 		return $this->getItemsFromRequest($qb);
 	}

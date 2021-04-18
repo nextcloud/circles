@@ -106,9 +106,6 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 	/** @var Circle */
 	private $circle;
 
-	/** @var Member */
-	private $initiator;
-
 	/** @var int */
 	private $childId = 0;
 
@@ -118,6 +115,8 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 	/** @var FileCacheWrapper */
 	private $fileCache;
 
+	/** @var Member */
+	private $inheritedBy;
 
 	/**
 	 * @param string $id
@@ -385,32 +384,6 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 
 
 	/**
-	 * @param Member $initiator
-	 *
-	 * @return ShareWrapper
-	 */
-	public function setInitiator(Member $initiator): self {
-		$this->initiator = $initiator;
-
-		return $this;
-	}
-
-	/**
-	 * @return Member
-	 */
-	public function getInitiator(): Member {
-		return $this->initiator;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function hasInitiator(): bool {
-		return (!is_null($this->initiator));
-	}
-
-
-	/**
 	 * @param Circle $circle
 	 *
 	 * @return ShareWrapper
@@ -497,6 +470,32 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 	 */
 	public function hasFileCache(): bool {
 		return (!is_null($this->fileCache));
+	}
+
+
+	/**
+	 * @param Member $inheritedBy
+	 *
+	 * @return ShareWrapper
+	 */
+	public function setInheritedBy(Member $inheritedBy): self {
+		$this->inheritedBy = $inheritedBy;
+
+		return $this;
+	}
+
+	/**
+	 * @return Member
+	 */
+	public function getInheritedBy(): Member {
+		return $this->inheritedBy;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasInheritedBy(): bool {
+		return (!is_null($this->inheritedBy));
 	}
 
 
@@ -664,8 +663,8 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 			$arr['circle'] = $this->getCircle();
 		}
 
-		if ($this->hasInitiator()) {
-			$arr['initiator'] = $this->getInitiator();
+		if ($this->hasInheritedBy()) {
+			$arr['inheritedBy'] = $this->getInheritedBy();
 		}
 
 		if ($this->hasFileCache()) {
