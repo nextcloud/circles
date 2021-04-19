@@ -477,6 +477,8 @@ class FederatedUserService {
 				return $this->getFederatedUser_User($singleId, $instance);
 			case Member::TYPE_GROUP:
 				return $this->getFederatedUser_Group($singleId, $instance);
+			case Member::TYPE_MAIL:
+				return $this->getFederatedUser_Mail($federatedId);
 		}
 
 		throw new UserTypeNotFoundException();
@@ -599,6 +601,24 @@ class FederatedUserService {
 		} else {
 			// TODO: implement remote groups
 		}
+	}
+
+
+	/**
+	 * @param string $mailAddress
+	 *
+	 * @return FederatedUser
+	 * @throws FederatedUserException
+	 * @throws InvalidIdException
+	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
+	 */
+	public function getFederatedUser_Mail(string $mailAddress): FederatedUser {
+		$federatedUser = new FederatedUser();
+		$federatedUser->set($mailAddress, '', Member::TYPE_MAIL);
+		$this->fillSingleCircleId($federatedUser);
+
+		return $federatedUser;
 	}
 
 
