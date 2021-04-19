@@ -185,7 +185,7 @@ class LocalController extends OcsController {
 	public function memberAdd(string $circleId, string $userId, int $type): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
-			$federatedUser = $this->federatedUserService->generateFederatedUser($userId, (int)$type);
+			$federatedUser = $this->federatedUserService->generateFederatedUser($userId, $type);
 			$result = $this->memberService->addMember($circleId, $federatedUser);
 
 			return new DataResponse($result);
@@ -213,7 +213,7 @@ class LocalController extends OcsController {
 				// TODO: generate Multiple FederatedUsers using a single SQL request
 				$federatedUsers[] = $this->federatedUserService->generateFederatedUser(
 					$this->get('id', $member),
-					Member::parseTypeString($this->get('type', $member))
+					$this->getInt('type', $member)
 				);
 			}
 
