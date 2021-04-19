@@ -150,8 +150,10 @@ class CircleService {
 		}
 
 		$circle = new Circle();
-		$circle->setName($name);
-		$circle->setSingleId($this->token(ManagedModel::ID_LENGTH));
+		$circle->setName($name)
+			   ->setSingleId($this->token(ManagedModel::ID_LENGTH))
+			   ->setSource(Member::TYPE_CIRCLE);
+
 		if ($personal) {
 			$circle->setConfig(Circle::CFG_SINGLE);
 		}
