@@ -307,6 +307,7 @@ class FederatedUserService {
 	 * @throws InvalidIdException
 	 * @throws SingleCircleNotFoundException
 	 * @throws FederatedUserException
+	 * @throws RequestBuilderException
 	 */
 	public function getLocalFederatedUser(string $userId): FederatedUser {
 		$user = $this->userManager->get($userId);
@@ -461,6 +462,13 @@ class FederatedUserService {
 	 * @throws UserTypeNotFoundException
 	 */
 	public function getFederatedUser(string $federatedId, int $userType = Member::TYPE_USER): FederatedUser {
+		if ($userType === Member::TYPE_USER) {
+			try {
+				return $this->getLocalFederatedUser($federatedId);
+			} catch (Exception $e) {
+			}
+		}
+
 		list($singleId, $instance) = $this->extractIdAndInstance($federatedId);
 		switch ($userType) {
 			case Member::TYPE_SINGLE:
@@ -603,7 +611,7 @@ class FederatedUserService {
 	 */
 	public function extractIdAndInstance(string $federatedId): array {
 		$federatedId = trim($federatedId, '@');
-		if (strpos($federatedId, '@') === false) {
+		if (strrpos($federatedId, '@') === false) {
 			$userId = $federatedId;
 			$instance = $this->configService->getFrontalInstance();
 		} else {
