@@ -65,6 +65,7 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 	const BASED_ON = 'basedOn';
 	const INITIATOR = 'initiator';
 	const MEMBERSHIPS = 'memberships';
+	const UPSTREAM_MEMBERSHIPS = 'upstreamMemberships';
 	const INHERITANCE_FROM = 'inheritanceFrom';
 	const INHERITED_BY = 'inheritedBy';
 	const SHARE = 'share';
@@ -126,18 +127,25 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 		],
 		self::SHARE  => [
 			self::SHARE,
-			self::FILE_CACHE => [
+			self::FILE_CACHE           => [
 				self::STORAGES
+			],
+			self::UPSTREAM_MEMBERSHIPS => [
+				self::MEMBERSHIPS,
+				self::INHERITED_BY => [
+					self::BASED_ON
+				],
+				self::SHARE,
 			],
 			self::MEMBERSHIPS,
 			self::INHERITANCE_FROM,
-			self::INHERITED_BY => [
+			self::INHERITED_BY         => [
 				self::BASED_ON
 			],
-			self::CIRCLE     => [
+			self::CIRCLE               => [
 				self::OWNER
 			],
-			self::INITIATOR  => [
+			self::INITIATOR            => [
 				self::BASED_ON,
 				self::INHERITED_BY => [
 					self::MEMBERSHIPS
@@ -495,12 +503,17 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 
 
 	/**
+	 * if 'getData' is true, will returns 'inheritanceBy': the Member at the end of a sub-chain of
+	 * memberships (based on $field for Top Circle's singleId)
+	 *
 	 * @param string $alias
 	 * @param string $field
+	 * @param string $aliasInheritedBy
 	 *
 	 * @throws RequestBuilderException
 	 */
-	public function leftJoinInheritedMembers(string $alias, string $field = ''): void {
+	public function leftJoinInheritedMembers(string $alias, string $field = '', string $aliasInheritedBy = ''
+	): void {
 		$expr = $this->expr();
 
 		$field = ($field === '') ? 'circle_id' : $field;
@@ -515,7 +528,9 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 //			return;
 //		}
 
-		$aliasInheritedBy = $this->generateAlias($alias, self::INHERITED_BY);
+		if ($aliasInheritedBy === '') {
+			$aliasInheritedBy = $this->generateAlias($alias, self::INHERITED_BY);
+		}
 		$this->generateMemberSelectAlias($aliasInheritedBy)
 			 ->leftJoin(
 				 $alias, CoreQueryBuilder::TABLE_MEMBER, $aliasInheritedBy,
@@ -529,31 +544,25 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 	}
 
 
-
 	/**
-	 * @param string $alias
-	 * @param string $field
-	 *
 	 * @throws RequestBuilderException
 	 */
-	public function leftJoinMembers(string $alias, string $field = ''): void {
+	public function limitToInheritedMemberships(string $alias, string $singleId, string $field = ''): void {
 		$expr = $this->expr();
-
 		$field = ($field === '') ? 'circle_id' : $field;
-		$aliasMembership = $this->generateAlias($alias, self::MEMBERSHIPS, $options);
-//		$aliasMembers = $this->generateAlias($aliasMembership, self::MEMBER);
-//		$this->generateMemberSelectAlias($aliasMembers);
-
+		$aliasUpstreamMembership = $this->generateAlias($alias, self::UPSTREAM_MEMBERSHIPS, $options);
 		$this->leftJoin(
-			$alias, CoreQueryBuilder::TABLE_MEMBERSHIP, $aliasMembership,
-			$expr->eq($aliasMembership . '.parent', $alias . '.' . $field)
+			$alias, CoreQueryBuilder::TABLE_MEMBERSHIP, $aliasUpstreamMembership,
+			$expr->eq($aliasUpstreamMembership . '.single_id', $this->createNamedParameter($singleId))
 		);
-//		$this->leftJoin(
-//			$aliasMembership, CoreQueryBuilder::TABLE_MEMBER, $aliasMembers,
-//			$expr->eq($aliasMembership . '.single_id', $alias . '.single_id')
-//		);
-	}
 
+		$orX = $expr->orX(
+			$expr->eq($aliasUpstreamMembership . '.circle_id', $alias . '.' . $field),
+			$expr->eq($alias . '.' . $field, $this->createNamedParameter($singleId))
+		);
+
+		$this->andWhere($orX);
+	}
 
 
 	/**
@@ -612,9 +621,6 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 				 )
 			 );
 	}
-
-
-
 
 
 	/**
@@ -1024,22 +1030,19 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 	 *
 	 * @throws RequestBuilderException
 	 */
-	public function leftJoinShareChild(string $aliasShare) {
+	public function leftJoinShareChild(string $aliasShare, string $aliasShareMemberships = '') {
 		$expr = $this->expr();
 
 		$aliasShareChild = $this->generateAlias($aliasShare, self::SHARE);
-		$aliasShareMembers = $this->generateAlias($aliasShare, self::MEMBERSHIPS, $options);
-//		$aliasShareInheritedBy = $this->generateAlias($aliasShare, self::INHERITED_BY, $options);
-
-//		if ($this->getBool('getData', $options)) {
-//			$this->generateMemberSelectAlias($aliasShareMembers);
-//		}
+		if ($aliasShareMemberships === '') {
+			$aliasShareMemberships = $this->generateAlias($aliasShare, self::MEMBERSHIPS, $options);
+		}
 
 		$this->leftJoin(
-			$aliasShare, CoreQueryBuilder::TABLE_SHARE, $aliasShareChild,
+			$aliasShareMemberships, CoreQueryBuilder::TABLE_SHARE, $aliasShareChild,
 			$expr->andX(
 				$expr->eq($aliasShareChild . '.parent', $aliasShare . '.id'),
-				$expr->eq($aliasShareChild . '.share_with', $aliasShareMembers . '.single_id')
+				$expr->eq($aliasShareChild . '.share_with', $aliasShareMemberships . '.single_id')
 			)
 		);
 

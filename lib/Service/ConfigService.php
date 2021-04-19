@@ -342,7 +342,9 @@ class ConfigService {
 		// using old settings - Deprecated in NC25
 		if ($frontalCloudId === '') {
 			$frontalCloudId = $this->config->getAppValue(Application::APP_ID, 'local_cloud_id', '');
-			$this->setAppValue(self::FRONTAL_CLOUD_ID, $frontalCloudId);
+			if ($frontalCloudId !== '') {
+				$this->setAppValue(self::FRONTAL_CLOUD_ID, $frontalCloudId);
+			}
 		}
 
 		if ($frontalCloudId === '') {

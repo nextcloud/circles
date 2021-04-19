@@ -189,8 +189,7 @@ class MembersList extends Base {
 			$tree = new NC22TreeNode(null, new SimpleDataStore(['circle' => $circle]));
 			$inherited = false;
 		}
-
-
+		
 		if ($inherited) {
 			$this->federatedUserService->commandLineInitiator($initiator, $circleId, true);
 			$circle = $this->circleService->getCircle($circleId);

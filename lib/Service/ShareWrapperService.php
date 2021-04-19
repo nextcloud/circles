@@ -104,9 +104,15 @@ class ShareWrapperService {
 	public function getSharesToCircle(
 		string $circleId,
 		?FederatedUser $shareRecipient = null,
-		?FederatedUser $shareInitiator = null
+		?FederatedUser $shareInitiator = null,
+		bool $completeDetails = false
 	): array {
-		return $this->shareWrapperRequest->getSharesToCircle($circleId, $shareRecipient, $shareInitiator);
+		return $this->shareWrapperRequest->getSharesToCircle(
+			$circleId,
+			$shareRecipient,
+			$shareInitiator,
+			$completeDetails
+		);
 	}
 
 
@@ -171,10 +177,11 @@ class ShareWrapperService {
 		bool $reshares,
 		int $offset,
 		int $limit,
-		bool $getData = false
+		bool $getData = false,
+		bool $completeDetails = false
 	): array {
 		return $this->shareWrapperRequest->getSharesBy(
-			$federatedUser, $nodeId, $reshares, $offset, $limit, $getData
+			$federatedUser, $nodeId, $reshares, $offset, $limit, $getData, $completeDetails
 		);
 	}
 
