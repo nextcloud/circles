@@ -28,15 +28,54 @@ declare(strict_types=1);
  *
  */
 
-namespace OCA\Circles\Exceptions;
+
+namespace OCA\Circles\Listeners;
+
+
+use Exception;
+use OCA\Circles\Service\SyncService;
+use OCP\EventDispatcher\Event;
+use OCP\EventDispatcher\IEventListener;
+use OCP\Group\Events\UserAddedEvent;
 
 
 /**
- * Class MemberNotFoundException
+ * Class GroupMemberAdded
  *
- * @package OCA\Circles\Exceptions
+ * @package OCA\Circles\Events
  */
-class FileCacheNotFoundException extends FederatedItemNotFoundException {
+class GroupMemberAdded implements IEventListener {
+
+
+	/** @var SyncService */
+	private $syncService;
+
+
+	/**
+	 * GroupMemberAdded constructor.
+	 *
+	 * @param SyncService $syncService
+	 */
+	public function __construct(SyncService $syncService) {
+		$this->syncService = $syncService;
+	}
+
+
+	/**
+	 * @param Event $event
+	 */
+	public function handle(Event $event): void {
+		if (!($event instanceof UserAddedEvent)) {
+			return;
+		}
+
+		$group = $event->getGroup();
+		$user = $event->getUser();
+		try {
+			$this->syncService->groupMemberAdded($group->getGID(), $user->getUID());
+		} catch (Exception $e) {
+		}
+	}
 
 }
 

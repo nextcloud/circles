@@ -278,6 +278,9 @@ class CircleRequest extends CircleRequestBuilder {
 		if ($circle->getConfig() > 0) {
 			$qb->limitToConfig($circle->getConfig());
 		}
+		if ($circle->getSource() > 0) {
+			$qb->limitToSource($circle->getSource());
+		}
 
 		if ($circle->hasOwner()) {
 			$aliasOwner = $qb->generateAlias(CoreRequestBuilder::CIRCLE, CoreRequestBuilder::OWNER);
@@ -303,13 +306,12 @@ class CircleRequest extends CircleRequestBuilder {
 	/**
 	 * @param Circle $circle
 	 */
-	public function delete(Circle $circle) {
+	public function delete(Circle $circle): void {
 		$qb = $this->getCircleDeleteSql();
 		$qb->limitToUniqueId($circle->getSingleId());
 
 		$qb->execute();
 	}
-
 
 }
 

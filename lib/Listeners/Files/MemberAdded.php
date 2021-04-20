@@ -34,6 +34,7 @@ namespace OCA\Circles\Listeners\Files;
 
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Events\CircleMemberAddedEvent;
+use OCA\Circles\Model\Member;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 
@@ -57,14 +58,24 @@ class MemberAdded implements IEventListener {
 			return;
 		}
 
+		$federatedUsers = [];
+		foreach ($event->getMembers() as $member) {
+			if ($member->getUserType() === Member::TYPE_MAIL) {
+				$federatedUsers[] = $member;
+			}
+		}
+
+		if (empty($federatedUsers)) {
+			return;
+		}
+
 		$result = [];
 		foreach ($event->getResults() as $instance => $item) {
 			$result[$instance] = $item->gData('files');
 		}
 
-		foreach ($event->getMembers() as $member) {
-			\OC::$server->getLogger()->log(3, 'MemberAdded: ' . json_encode($member->getInheritedMembers()));
-		}
+		\OC::$server->getLogger()->log(3, 'FILES: ' . json_encode($result));
+		\OC::$server->getLogger()->log(3, 'MAILS: ' . json_encode($federatedUsers));
 	}
 
 }

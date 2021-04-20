@@ -76,6 +76,7 @@ class AddingMember implements IEventListener {
 		if (!$event instanceof AddingCircleMemberEvent) {
 			return;
 		}
+		\OC::$server->getLogger()->log(3, '###');
 
 		$bypass = true;
 		foreach ($event->getMembers() as $member) {
@@ -85,16 +86,11 @@ class AddingMember implements IEventListener {
 		}
 
 		if ($bypass) {
-//				return;
+			return;
 		}
 
 		$circle = $event->getCircle();
 		$files = $this->shareWrapperService->getSharesToCircle($circle->getSingleId());
-
-//		$files = ['test' => $this->token()];
-		// check files shared to the circle
-		// generate a list
-		// feed events result
 
 		$event->getFederatedEvent()->addResult('files', new SimpleDataStore($files));
 	}

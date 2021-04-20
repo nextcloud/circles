@@ -69,12 +69,13 @@ class MembershipRequest extends MembershipRequestBuilder {
 	public function update(Membership $membership) {
 		$qb = $this->getMembershipUpdateSql();
 		$qb->set('level', $qb->createNamedParameter($membership->getLevel()));
-		$qb->set('parent', $qb->createNamedParameter($membership->getInheritanceLast()));
+		$qb->set('inheritance_last', $qb->createNamedParameter($membership->getInheritanceLast()));
+		$qb->set('inheritance_first', $qb->createNamedParameter($membership->getInheritanceFirst()));
 		$qb->set(
-			'path',
+			'inheritance_path',
 			$qb->createNamedParameter(json_encode($membership->getInheritancePath(), JSON_UNESCAPED_SLASHES))
 		);
-		$qb->set('depth', $qb->createNamedParameter($membership->getInheritanceDepth()));
+		$qb->set('inheritance_depth', $qb->createNamedParameter($membership->getInheritanceDepth()));
 
 		$qb->limitToSingleId($membership->getSingleId());
 		$qb->limitToCircleId($membership->getCircleId());

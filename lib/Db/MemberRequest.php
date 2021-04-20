@@ -134,6 +134,30 @@ class MemberRequest extends MemberRequestBuilder {
 
 
 	/**
+	 * @param IFederatedUser $federatedUser
+	 */
+	public function deleteFederatedUser(IFederatedUser $federatedUser): void {
+		$qb = $this->getMemberDeleteSql();
+		$qb->limitToSingleId($federatedUser->getSingleId());
+
+		$qb->execute();
+	}
+
+
+	/**
+	 * @param IFederatedUser $federatedUser
+	 * @param Circle $circle
+	 */
+	public function deleteFederatedUserFromCircle(IFederatedUser $federatedUser, Circle $circle): void {
+		$qb = $this->getMemberDeleteSql();
+		$qb->limitToSingleId($federatedUser->getSingleId());
+		$qb->limitToCircleId($circle->getSingleId());
+
+		$qb->execute();
+	}
+
+
+	/**
 	 * @param Circle $circle
 	 */
 	public function deleteAllFromCircle(Circle $circle) {

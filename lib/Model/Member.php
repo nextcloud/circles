@@ -85,7 +85,8 @@ class Member extends ManagedModel implements
 		2  => 'group',
 		4  => 'mail',
 		8  => 'contact',
-		16 => 'circle'
+		16 => 'circle',
+		10000 => 'app'
 	];
 
 	/**

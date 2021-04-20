@@ -685,7 +685,10 @@ class FederatedUserService {
 
 			$basedOn = $federatedUser->getBasedOn();
 			$source = (is_null($basedOn)) ? $federatedUser->getUserType() : $basedOn->getSource();
-			$prefix = ($federatedUser->getUserType() === Member::TYPE_APP) ? 'app' : 'user';
+
+			$prefix = ($federatedUser->getUserType() === Member::TYPE_APP) ? 'app'
+				: Member::$TYPE[$federatedUser->getUserType()];
+
 			$circle->setName($prefix . ':' . $federatedUser->getUserId() . ':' . $id)
 				   ->setDisplayName($federatedUser->getUserId())
 				   ->setSingleId($id)
@@ -708,7 +711,7 @@ class FederatedUserService {
 				  ->setStatus('Member');
 
 			$this->memberRequest->save($owner);
-			// should not be needed
+			// TODO: should not be needed
 			// $this->membershipService->onUpdate($id);
 		}
 

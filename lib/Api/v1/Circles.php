@@ -5,7 +5,7 @@
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Maxence Lange <maxence@artificial-owl.com>
  * @author Vinicius Cubas Brand <vinicius@eita.org.br>
  * @author Daniel Tygel <dtygel@eita.org.br>
  *

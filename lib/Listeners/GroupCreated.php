@@ -10,7 +10,7 @@ declare(strict_types=1);
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2021
+ * @copyright 2020
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,15 +28,52 @@ declare(strict_types=1);
  *
  */
 
-namespace OCA\Circles\Exceptions;
+
+namespace OCA\Circles\Listeners;
+
+use Exception;
+use OCA\Circles\Service\SyncService;
+use OCP\EventDispatcher\Event;
+use OCP\EventDispatcher\IEventListener;
+use OCP\Group\Events\GroupCreatedEvent;
 
 
 /**
- * Class MemberNotFoundException
+ * Class GroupCreated
  *
- * @package OCA\Circles\Exceptions
+ * @package OCA\Circles\Events
  */
-class FileCacheNotFoundException extends FederatedItemNotFoundException {
+class GroupCreated implements IEventListener {
+
+
+	/** @var SyncService */
+	private $syncService;
+
+
+	/**
+	 * GroupCreated constructor.
+	 *
+	 * @param SyncService $syncService
+	 */
+	public function __construct(SyncService $syncService) {
+		$this->syncService = $syncService;
+	}
+
+
+	/**
+	 * @param Event $event
+	 */
+	public function handle(Event $event): void {
+		if (!($event instanceof GroupCreatedEvent)) {
+			return;
+		}
+
+		$group = $event->getGroup();
+		try {
+			$this->syncService->syncNextcloudGroup($group->getGID());
+		} catch (Exception $e) {
+		}
+	}
 
 }
 

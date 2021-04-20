@@ -145,6 +145,7 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 		2     => 'Nextcloud Group',
 		4     => 'Mail Address',
 		8     => 'Contact',
+		16    => 'Circle',
 		10001 => 'Circles App'
 	];
 

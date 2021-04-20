@@ -9,7 +9,7 @@ declare(strict_types=1);
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Maxence Lange <maxence@artificial-owl.com>
  * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
@@ -212,6 +212,13 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 	 */
 	public function limitToConfig(int $config): void {
 		$this->limitToDBFieldInt('config', $config);
+	}
+
+	/**
+	 * @param int $source
+	 */
+	public function limitToSource(int $source): void {
+		$this->limitToDBFieldInt('source', $source);
 	}
 
 	/**

@@ -9,7 +9,7 @@ declare(strict_types=1);
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Maxence Lange <maxence@artificial-owl.com>
  * @author Vinicius Cubas Brand <vinicius@eita.org.br>
  * @author Daniel Tygel <dtygel@eita.org.br>
  *
@@ -37,15 +37,18 @@ namespace OCA\Circles\AppInfo;
 
 use Closure;
 use OC;
-use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Events\AddingCircleMemberEvent;
 use OCA\Circles\Events\CircleMemberAddedEvent;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\GlobalScale\GSMount\MountProvider;
 use OCA\Circles\Handlers\WebfingerHandler;
-use OCA\Circles\Listeners\Files\MemberAdded as ListenerFilesMemberAdded;
 use OCA\Circles\Listeners\Files\AddingMember as ListenerFilesAddingMember;
+use OCA\Circles\Listeners\Files\MemberAdded as ListenerFilesMemberAdded;
+use OCA\Circles\Listeners\GroupCreated;
 use OCA\Circles\Listeners\GroupDeleted;
+use OCA\Circles\Listeners\GroupMemberAdded;
+use OCA\Circles\Listeners\GroupMemberRemoved;
+use OCA\Circles\Listeners\UserCreated;
 use OCA\Circles\Listeners\UserDeleted;
 use OCA\Circles\Notification\Notifier;
 use OCA\Circles\Service\ConfigService;
@@ -58,10 +61,13 @@ use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\IAppContainer;
 use OCP\AppFramework\QueryException;
+use OCP\Group\Events\GroupCreatedEvent;
 use OCP\Group\Events\GroupDeletedEvent;
+use OCP\Group\Events\UserAddedEvent;
+use OCP\Group\Events\UserRemovedEvent;
 use OCP\IServerContainer;
+use OCP\User\Events\UserCreatedEvent;
 use OCP\User\Events\UserDeletedEvent;
-use OCP\Util;
 use Throwable;
 
 
@@ -109,9 +115,18 @@ class Application extends App implements IBootstrap {
 	 */
 	public function register(IRegistrationContext $context): void {
 		$context->registerCapability(Capabilities::class);
-		$context->registerEventListener(UserDeletedEvent::class, UserDeleted::class);
-		$context->registerEventListener(GroupDeletedEvent::class, GroupDeleted::class);
 
+		// User Events
+		$context->registerEventListener(UserCreatedEvent::class, UserCreated::class);
+		$context->registerEventListener(UserDeletedEvent::class, UserDeleted::class);
+
+		// Group Events
+		$context->registerEventListener(GroupCreatedEvent::class, GroupCreated::class);
+		$context->registerEventListener(GroupDeletedEvent::class, GroupDeleted::class);
+		$context->registerEventListener(UserAddedEvent::class, GroupMemberAdded::class);
+		$context->registerEventListener(UserRemovedEvent::class, GroupMemberRemoved::class);
+
+		// Local Events (for Files/Shares management)
 		$context->registerEventListener(AddingCircleMemberEvent::class, ListenerFilesAddingMember::class);
 		$context->registerEventListener(CircleMemberAddedEvent::class, ListenerFilesMemberAdded::class);
 

@@ -148,7 +148,7 @@ class CirclesList extends Base {
 	 * @throws UnknownRemoteException
 	 * @throws UserTypeNotFoundException
 	 * @throws FederatedItemException
-	 * @throws MemberNotFoundException
+		 * @throws MemberNotFoundException
 	 * @throws SingleCircleNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
