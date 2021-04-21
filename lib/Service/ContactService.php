@@ -126,21 +126,21 @@ class ContactService {
 	 * @throws ContactAddressBookNotFoundException
 	 */
 	private function getContact(string $contactPath): array {
-		[$userId, $contactId, $addressBookKey] = explode(':', $contactPath, 3);
+		[$userId, $addressBookUri, $contactId] = explode('/', $contactPath, 3);
 
 		if ($userId === ''
 			|| $contactId === ''
-			|| $addressBookKey === ''
-			|| is_null($addressBookKey)
+			|| $addressBookUri === ''
+			|| is_null($contactId)
 		) {
-			throw new ContactFormatException('issue with contact format USERID:CONTACTID:ADDRESSBOOK');
+			throw new ContactFormatException('issue with contact format USERID/ADDRESSBOOK/CONTACTID');
 		}
 
 		$contactsManager = OC::$server->get(ContactsManager::class);
 		$cm = OC::$server->get(IManager::class);
 		$contactsManager->setupContactsProvider($cm, $userId, $this->urlGenerator);
 
-		$addressBook = $this->getAddressBook($cm, $addressBookKey);
+		$addressBook = $this->getAddressBook($cm, $addressBookUri);
 		$contacts = $addressBook->search(
 			$contactId, ['UID'],
 			[
@@ -159,14 +159,14 @@ class ContactService {
 
 	/**
 	 * @param IManager $cm
-	 * @param string $addressBookKey
+	 * @param string $addressBookUri
 	 *
 	 * @return IAddressBook
 	 * @throws ContactAddressBookNotFoundException
 	 */
-	private function getAddressBook(IManager $cm, string $addressBookKey): IAddressBook {
+	private function getAddressBook(IManager $cm, string $addressBookUri): IAddressBook {
 		foreach ($cm->getUserAddressBooks() as $addressBook) {
-			if ($addressBook->getDisplayName() === $addressBookKey) {
+			if ($addressBook->getUri() === $addressBookUri) {
 				return $addressBook;
 			}
 		}

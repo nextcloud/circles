@@ -193,7 +193,7 @@ class LocalController extends OcsController {
 					throw new OCSException('works only from local instance', 404);
 				}
 
-				$userId = $currentUser->getUserId() . ':' . $userId;
+				$userId = $currentUser->getUserId() . '/' . $userId;
 			}
 
 			$federatedUser = $this->federatedUserService->generateFederatedUser($userId, $type);
