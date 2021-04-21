@@ -189,7 +189,7 @@ class MembersList extends Base {
 			$tree = new NC22TreeNode(null, new SimpleDataStore(['circle' => $circle]));
 			$inherited = false;
 		}
-		
+
 		if ($inherited) {
 			$this->federatedUserService->commandLineInitiator($initiator, $circleId, true);
 			$circle = $this->circleService->getCircle($circleId);
@@ -245,7 +245,8 @@ class MembersList extends Base {
 					$member->getSingleId(),
 					Member::$TYPE[$member->getUserType()],
 					$member->hasBasedOn() ? Circle::$DEF_SOURCE[$member->getBasedOn()->getSource()] : '',
-					$member->getUserId(),
+					($this->input->getOption('display-name')) ?
+						$member->getBasedOn()->getDisplayName() : $member->getUserId(),
 					($member->getInstance() === $local) ? '' : $member->getInstance(),
 					($level > 0) ? Member::$DEF_LEVEL[$level] :
 						'(' . strtolower($member->getStatus()) . ')'
@@ -396,7 +397,7 @@ class MembersList extends Base {
 					$line .= ' (' . Member::$DEF_LEVEL[$member->getLevel()] . ')';
 
 					$name = ($this->input->getOption('display-name')) ?
-						$member->getDisplayName() : $member->getUserId();
+						$member->getBasedOn()->getDisplayName() : $member->getUserId();
 					$line .= ' <info>Name</info>: ' . $name;
 					$source = ($member->hasBasedOn()) ? $member->getBasedOn()->getSource() : '';
 					$line .= ' <info>Source</info>: ' . Circle::$DEF_SOURCE[$source];

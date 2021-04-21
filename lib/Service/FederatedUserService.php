@@ -40,6 +40,9 @@ use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\ContactAddressBookNotFoundException;
+use OCA\Circles\Exceptions\ContactFormatException;
+use OCA\Circles\Exceptions\ContactNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
@@ -111,6 +114,9 @@ class FederatedUserService {
 	/** @var ConfigService */
 	private $configService;
 
+	/** @var ContactService */
+	private $contactService;
+
 
 	/** @var FederatedUser */
 	private $currentUser = null;
@@ -136,13 +142,14 @@ class FederatedUserService {
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
 	 * @param RemoteService $remoteService
+	 * @param ContactService $contactService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		IUserSession $userSession, IUserManager $userManager, IGroupManager $groupManager,
 		FederatedEventService $federatedEventService, MembershipService $membershipService,
 		CircleRequest $circleRequest, MemberRequest $memberRequest, RemoteService $remoteService,
-		ConfigService $configService
+		ContactService $contactService, ConfigService $configService
 	) {
 		$this->userSession = $userSession;
 		$this->userManager = $userManager;
@@ -152,6 +159,7 @@ class FederatedUserService {
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
 		$this->remoteService = $remoteService;
+		$this->contactService = $contactService;
 		$this->configService = $configService;
 	}
 
@@ -460,6 +468,7 @@ class FederatedUserService {
 	 * @throws SingleCircleNotFoundException
 	 * @throws UnknownRemoteException
 	 * @throws UserTypeNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	public function getFederatedUser(string $federatedId, int $userType = Member::TYPE_USER): FederatedUser {
 		if ($userType === Member::TYPE_USER) {
@@ -479,6 +488,8 @@ class FederatedUserService {
 				return $this->getFederatedUser_Group($singleId, $instance);
 			case Member::TYPE_MAIL:
 				return $this->getFederatedUser_Mail($federatedId);
+			case Member::TYPE_CONTACT:
+				return $this->getFederatedUser_Contact($federatedId);
 		}
 
 		throw new UserTypeNotFoundException();
@@ -623,6 +634,27 @@ class FederatedUserService {
 
 
 	/**
+	 * @param string $contactPath
+	 *
+	 * @return FederatedUser
+	 * @throws FederatedUserException
+	 * @throws InvalidIdException
+	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
+	 */
+	public function getFederatedUser_Contact(string $contactPath): FederatedUser {
+		$federatedUser = new FederatedUser();
+		$federatedUser->setUserId($contactPath);
+		$federatedUser->setInstance('');
+		$federatedUser->setUserType(Member::TYPE_CONTACT);
+
+		$this->fillSingleCircleId($federatedUser);
+
+		return $federatedUser;
+	}
+
+
+	/**
 	 * extract userID and instance from a federatedId
 	 *
 	 * @param string $federatedId
@@ -690,7 +722,7 @@ class FederatedUserService {
 				: Member::$TYPE[$federatedUser->getUserType()];
 
 			$circle->setName($prefix . ':' . $federatedUser->getUserId() . ':' . $id)
-				   ->setDisplayName($federatedUser->getUserId())
+				   ->setDisplayName($this->getLocalDisplayName($federatedUser))
 				   ->setSingleId($id)
 				   ->setSource($source);
 
@@ -716,6 +748,23 @@ class FederatedUserService {
 		}
 
 		return $this->circleRequest->getSingleCircle($federatedUser);
+	}
+
+
+	/**
+	 * @param FederatedUser $federatedUser
+	 *
+	 * @return string
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
+	 */
+	private function getLocalDisplayName(FederatedUser $federatedUser): string {
+		if ($federatedUser->getUserType() === Member::TYPE_CONTACT) {
+			return $this->contactService->getDisplayName($federatedUser->getUserId());
+		}
+
+		return $federatedUser->getUserId();
 	}
 
 

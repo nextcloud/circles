@@ -161,6 +161,7 @@ class MemberService {
 	 *
 	 * @return Member[]
 	 * @throws InitiatorNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	public function getMembers(string $circleId): array {
 		$this->federatedUserService->mustHaveCurrentUser();

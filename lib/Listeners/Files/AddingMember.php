@@ -76,7 +76,6 @@ class AddingMember implements IEventListener {
 		if (!$event instanceof AddingCircleMemberEvent) {
 			return;
 		}
-		\OC::$server->getLogger()->log(3, '###');
 
 		$bypass = true;
 		foreach ($event->getMembers() as $member) {

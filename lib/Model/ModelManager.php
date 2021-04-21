@@ -119,7 +119,6 @@ class ModelManager {
 				$detailed
 			);
 		} catch (RequestBuilderException $e) {
-			echo $e->getMessage();
 			// TODO: debug log
 		}
 	}

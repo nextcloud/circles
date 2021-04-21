@@ -185,6 +185,17 @@ class LocalController extends OcsController {
 	public function memberAdd(string $circleId, string $userId, int $type): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
+
+			// exception in Contact
+			if ($type === Member::TYPE_CONTACT) {
+				$currentUser = $this->federatedUserService->getCurrentUser();
+				if (!$this->configService->isLocalInstance($currentUser->getInstance())) {
+					throw new OCSException('works only from local instance', 404);
+				}
+
+				$userId = $currentUser->getUserId() . ':' . $userId;
+			}
+
 			$federatedUser = $this->federatedUserService->generateFederatedUser($userId, $type);
 			$result = $this->memberService->addMember($circleId, $federatedUser);
 
