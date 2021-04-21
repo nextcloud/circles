@@ -158,12 +158,15 @@ class MemberRequest extends MemberRequestBuilder {
 
 
 	/**
+	 *
 	 * @param Circle $circle
 	 */
 	public function deleteAllFromCircle(Circle $circle) {
 		$qb = $this->getMemberDeleteSql();
-		$qb->limitToCircleId($circle->getSingleId());
-
+		$orX = $qb->expr()->orX();
+		$orX->add($qb->exprLimitToDBField('single_id', $circle->getSingleId()));
+		$orX->add($qb->exprLimitToDBField('circle_id', $circle->getSingleId()));
+		
 		$qb->execute();
 	}
 
