@@ -839,6 +839,7 @@ class FederatedUserService {
 	 * @throws RemoteResourceNotFoundException
 	 * @throws SingleCircleNotFoundException
 	 * @throws UnknownRemoteException
+	 * @throws RequestBuilderException
 	 */
 	public function getGroupCircle(string $groupId): Circle {
 		$group = $this->groupManager->get($groupId);
@@ -865,7 +866,7 @@ class FederatedUserService {
 			   ->setInitiator($member);
 
 		try {
-			return $this->circleRequest->searchCircle($circle);
+			return $this->circleRequest->searchCircle($circle, $owner);
 		} catch (CircleNotFoundException $e) {
 		}
 

@@ -53,7 +53,9 @@ use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
+use OCA\Circles\FederatedItems\SingleMemberAdd;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
@@ -87,6 +89,9 @@ class SyncService {
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
+	/** @var federatedEventService */
+	private $federatedEventService;
+
 	/** @var MemberService */
 	private $memberService;
 
@@ -102,8 +107,10 @@ class SyncService {
 	 *
 	 * @param IUserManager $userManager
 	 * @param IGroupManager $groupManager
+	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
 	 * @param FederatedUserService $federatedUserService
+	 * @param federatedEventService $federatedEventService
 	 * @param MemberService $memberService
 	 * @param MembershipService $membershipService
 	 * @param ConfigService $configService
@@ -114,6 +121,7 @@ class SyncService {
 		CircleRequest $circleRequest,
 		MemberRequest $memberRequest,
 		FederatedUserService $federatedUserService,
+		federatedEventService $federatedEventService,
 		MemberService $memberService,
 		MembershipService $membershipService,
 		ConfigService $configService
@@ -123,6 +131,7 @@ class SyncService {
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
 		$this->federatedUserService = $federatedUserService;
+		$this->federatedEventService = $federatedEventService;
 		$this->memberService = $memberService;
 		$this->membershipService = $membershipService;
 		$this->configService = $configService;
@@ -154,12 +163,15 @@ class SyncService {
 	}
 
 
+	/**
+	 * @return void
+	 */
 	public function syncAll(): void {
 		$this->syncNextcloudUsers();
-		$this->syncNextcloudGroups();
-		$this->syncContacts();
 		$this->syncGlobalScale();
 		$this->syncRemote();
+		$this->syncNextcloudGroups();
+		$this->syncContacts();
 	}
 
 
@@ -226,10 +238,15 @@ class SyncService {
 		$group = $this->groupManager->get($groupId);
 		foreach ($group->getUsers() as $user) {
 			$member = $this->generateGroupMember($circle, $user->getUID());
-			$this->memberRequest->insertOrUpdate($member);
+			$event = new FederatedEvent(SingleMemberAdd::class);
+			$event->setCircle($circle);
+			$event->setMember($member);
+			$this->federatedEventService->newEvent($event);
+
+//			$this->memberRequest->insertOrUpdate($member);
 		}
 
-		$this->membershipService->onUpdate($circle->getSingleId());
+//		$this->membershipService->onUpdate($circle->getSingleId());
 
 		return $circle;
 	}
@@ -336,9 +353,15 @@ class SyncService {
 	public function groupMemberAdded(string $groupId, string $userId): void {
 		$circle = $this->federatedUserService->getGroupCircle($groupId);
 		$member = $this->generateGroupMember($circle, $userId);
-		$this->memberRequest->insertOrUpdate($member);
 
-		$this->membershipService->onUpdate($member->getSingleId());
+		$event = new FederatedEvent(SingleMemberAdd::class);
+		$event->setCircle($circle);
+		$event->setMember($member);
+		$this->federatedEventService->newEvent($event);
+
+//		$this->memberRequest->insertOrUpdate($member);
+
+//		$this->membershipService->onUpdate($member->getSingleId());
 	}
 
 

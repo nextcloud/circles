@@ -44,6 +44,7 @@ use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Model\Federated\FederatedEvent;
 
 
@@ -206,11 +207,13 @@ class RemoteDownstreamService {
 	 *
 	 * @return bool
 	 * @throws OwnerNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	private function verifyCircle(FederatedEvent $event): bool {
 		$circle = $event->getCircle();
+
 		try {
-			$localCircle = $this->circleRequest->getCircle($circle->getSingleId());
+			$localCircle = $this->circleRequest->getCircle($circle->getSingleId(), null, null, 0);
 		} catch (CircleNotFoundException $e) {
 			return false;
 		}

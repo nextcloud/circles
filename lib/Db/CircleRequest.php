@@ -281,7 +281,7 @@ class CircleRequest extends CircleRequestBuilder {
 	 * @throws CircleNotFoundException
 	 * @throws RequestBuilderException
 	 */
-	public function searchCircle(Circle $circle): Circle {
+	public function searchCircle(Circle $circle, ?IFederatedUser $initiator = null): Circle {
 		$qb = $this->getCircleSelectSql();
 		$qb->leftJoinOwner(CoreRequestBuilder::CIRCLE);
 
@@ -298,6 +298,11 @@ class CircleRequest extends CircleRequestBuilder {
 		if ($circle->hasOwner()) {
 			$aliasOwner = $qb->generateAlias(CoreRequestBuilder::CIRCLE, CoreRequestBuilder::OWNER);
 			$qb->filterDirectMembership($aliasOwner, $circle->getOwner());
+		}
+
+		if (!is_null($initiator)) {
+			$qb->setOptions([CoreRequestBuilder::CIRCLE], ['getData' => true]);
+			$qb->limitToInitiator(CoreRequestBuilder::CIRCLE, $initiator);
 		}
 
 		return $this->getItemFromRequest($qb);
