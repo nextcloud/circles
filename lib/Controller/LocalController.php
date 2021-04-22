@@ -367,6 +367,53 @@ class LocalController extends OcsController {
 
 
 	/**
+	 * @param string $circleId
+	 * @param string $displayName
+	 *
+	 * @return DataResponse
+	 * @throws OCSException
+	 */
+	public function editDisplayName(string $circleId, string $displayName): DataResponse {
+		try {
+			$this->circleService->updateDisplayName($circleId, $displayName);
+		} catch (Exception $e) {
+			throw new OCSException($e->getMessage(), $e->getCode());
+		}
+	}
+
+
+	/**
+	 * @param array $settings
+	 *
+	 * @return DataResponse
+	 * @throws OCSException
+	 */
+	public function editDescription(string $circleId, string $description): DataResponse {
+		try {
+			$this->circleService->updateDescription($circleId, $description);
+		} catch (Exception $e) {
+			throw new OCSException($e->getMessage(), $e->getCode());
+		}
+	}
+
+
+	/**
+	 * @param string $circleId
+	 * @param array $settings
+	 *
+	 * @return DataResponse
+	 * @throws OCSException
+	 */
+	public function editSettings(string $circleId, array $settings): DataResponse {
+		try {
+			$this->circleService->updateSettings($circleId, $settings);
+		} catch (Exception $e) {
+			throw new OCSException($e->getMessage(), $e->getCode());
+		}
+	}
+
+
+	/**
 	 * @throws FederatedUserNotFoundException
 	 * @throws InvalidIdException
 	 * @throws FederatedUserException

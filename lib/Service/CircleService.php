@@ -52,8 +52,10 @@ use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\FederatedItems\CircleConfig;
 use OCA\Circles\FederatedItems\CircleCreate;
 use OCA\Circles\FederatedItems\CircleDestroy;
+use OCA\Circles\FederatedItems\CircleEdit;
 use OCA\Circles\FederatedItems\CircleJoin;
 use OCA\Circles\FederatedItems\CircleLeave;
+use OCA\Circles\FederatedItems\CircleSettings;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\FederatedUser;
@@ -226,6 +228,94 @@ class CircleService {
 		$event = new FederatedEvent(CircleConfig::class);
 		$event->setCircle($circle);
 		$event->setData(new SimpleDataStore(['config' => $config]));
+
+		$this->federatedEventService->newEvent($event);
+
+		return $event->getOutcome();
+	}
+
+
+	/**
+	 * @param string $circleId
+	 * @param string $displayName
+	 *
+	 * @return array
+	 * @throws CircleNotFoundException
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws InitiatorNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
+	 */
+	public function updateDisplayName(string $circleId, string $displayName) {
+		$circle = $this->getCircle($circleId);
+
+		$event = new FederatedEvent(CircleEdit::class);
+		$event->setCircle($circle);
+		$event->setData(new SimpleDataStore(['displayName' => $displayName]));
+
+		$this->federatedEventService->newEvent($event);
+
+		return $event->getOutcome();
+	}
+
+	/**
+	 * @param string $circleId
+	 * @param string $description
+	 *
+	 * @return array
+	 * @throws CircleNotFoundException
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws InitiatorNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
+	 */
+	public function updateDescription(string $circleId, string $description) {
+		$circle = $this->getCircle($circleId);
+
+		$event = new FederatedEvent(CircleEdit::class);
+		$event->setCircle($circle);
+		$event->setData(new SimpleDataStore(['description' => $description]));
+
+		$this->federatedEventService->newEvent($event);
+
+		return $event->getOutcome();
+	}
+
+	/**
+	 * @param string $circleId
+	 * @param array $settings
+	 *
+	 * @return array
+	 * @throws CircleNotFoundException
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws InitiatorNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
+	 */
+	public function updateSettings(string $circleId, array $settings) {
+		$circle = $this->getCircle($circleId);
+
+		$event = new FederatedEvent(CircleSettings::class);
+		$event->setCircle($circle);
+		$event->setData(new SimpleDataStore(['settings' => $settings]));
 
 		$this->federatedEventService->newEvent($event);
 

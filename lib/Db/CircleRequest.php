@@ -81,6 +81,19 @@ class CircleRequest extends CircleRequestBuilder {
 	/**
 	 * @param Circle $circle
 	 */
+	public function edit(Circle $circle): void {
+		$qb = $this->getCircleUpdateSql();
+		$qb->set('display_name', $qb->createNamedParameter($circle->getDisplayName()))
+		   ->set('description', $qb->createNamedParameter($circle->getDescription()));
+
+		$qb->limitToUniqueId($circle->getSingleId());
+
+		$qb->execute();
+	}
+
+	/**
+	 * @param Circle $circle
+	 */
 	public function update(Circle $circle) {
 		$qb = $this->getCircleUpdateSql();
 		$qb->set('name', $qb->createNamedParameter($circle->getName()))

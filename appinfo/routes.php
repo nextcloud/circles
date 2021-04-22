@@ -49,9 +49,9 @@ return [
 		['name' => 'Local#circleJoin', 'url' => '/circles/{circleId}/join', 'verb' => 'PUT'],
 		['name' => 'Local#circleLeave', 'url' => '/circles/{circleId}/leave', 'verb' => 'PUT'],
 
-		// to implement
-		['name' => 'Local#getSettings', 'url' => '/circles/{circleId}/settings', 'verb' => 'GET'],
-		['name' => 'Local#setSettings', 'url' => '/circles/{circleId}/settings', 'verb' => 'PUT']
+		['name' => 'Local#editDisplayName', 'url' => '/circles/{circleId}/displayName', 'verb' => 'PUT'],
+		['name' => 'Local#editDescription', 'url' => '/circles/{circleId}/description', 'verb' => 'PUT'],
+		['name' => 'Local#editSettings', 'url' => '/circles/{circleId}/settings', 'verb' => 'PUT']
 	],
 
 	'routes' => [

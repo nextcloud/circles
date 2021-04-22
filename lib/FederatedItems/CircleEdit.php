@@ -33,20 +33,17 @@ namespace OCA\Circles\FederatedItems;
 
 
 use OCA\Circles\Db\CircleRequest;
-use OCA\Circles\Exceptions\FederatedItemBadRequestException;
-use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\IFederatedItem;
-use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
 
 
 /**
- * Class CircleConfig
+ * Class CircleEdit
  *
  * @package OCA\Circles\FederatedItems
  */
-class CircleConfig implements IFederatedItem {
+class CircleEdit implements IFederatedItem {
 
 
 	/** @var CircleRequest */
@@ -54,7 +51,7 @@ class CircleConfig implements IFederatedItem {
 
 
 	/**
-	 * CircleConfig constructor.
+	 * CircleEdit constructor.
 	 *
 	 * @param CircleRequest $circleRequest
 	 */
@@ -65,43 +62,24 @@ class CircleConfig implements IFederatedItem {
 
 	/**
 	 * @param FederatedEvent $event
-	 *
-	 * @throws FederatedItemException
 	 */
 	public function verify(FederatedEvent $event): void {
 		$circle = $event->getCircle();
-		$config = $event->getData()->gInt('config');
 
 		$initiatorHelper = new MemberHelper($circle->getInitiator());
-		$initiatorHelper->mustBeAdmin();
+		$initiatorHelper->mustBeOwner();
 
-		$listing = Circle::$DEF_CFG_CORE_FILTER;
-		if (!$circle->isConfig(Circle::CFG_SYSTEM)) {
-			$listing = array_merge($listing, Circle::$DEF_CFG_SYSTEM_FILTER);
-		}
-
-		$confirmed = true;
-		foreach ($listing as $item) {
-			if ($circle->isConfig($item, $config)) {
-				$confirmed = false;
-			}
-		}
-
-		// if federated, circle is root
-		if ($circle->isConfig(Circle::CFG_FEDERATED, $config)
-			&& !$circle->isConfig(Circle::CFG_ROOT, $config)) {
-			$config += Circle::CFG_ROOT;
-			// TODO: Check locally that circle is not a member of another circle.
-			// TODO  in that case, remove the membership (and update the memberships)
-			$event->getData()->sInt('config', $config);
-		}
-
-		if (!$confirmed || $config > Circle::$DEF_CFG_MAX) {
-			throw new FederatedItemBadRequestException('Configuration value is not valid');
-		}
-
+		$data = $event->getData();
 		$new = clone $circle;
-		$new->setConfig($config);
+
+		if ($data->hasKey('displayName')) {
+			$new->setDisplayName($data->g('displayName'));
+		}
+
+		if ($data->hasKey('description')) {
+			$new->setDisplayName($data->g('description'));
+		}
+
 		$event->setOutcome($new->jsonSerialize());
 	}
 
@@ -111,13 +89,19 @@ class CircleConfig implements IFederatedItem {
 	 */
 	public function manage(FederatedEvent $event): void {
 		$circle = clone $event->getCircle();
-		$config = $event->getData()->gInt('config');
+		$data = $event->getData();
 
-		$circle->setConfig($config);
-		// TODO: Check locally that circle is not un-federated during the process
-		// TODO: if the circle is managed remotely, remove the circle locally
-		// TODO: if the circle is managed locally, remove non-local users
-		$this->circleRequest->updateConfig($circle);
+		// TODO: verify that event->GetCircle() is updated by the instance that owns the Circle so we can
+		// use it as a thrustable base
+		if ($data->hasKey('displayName')) {
+			$circle->setDisplayName($data->g('displayName'));
+		}
+
+		if ($data->hasKey('description')) {
+			$circle->setDescription($data->g('description'));
+		}
+
+		$this->circleRequest->edit($circle);
 	}
 
 
