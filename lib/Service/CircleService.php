@@ -252,7 +252,7 @@ class CircleService {
 	 * @throws RequestBuilderException
 	 * @throws UnknownRemoteException
 	 */
-	public function updateDisplayName(string $circleId, string $displayName) {
+	public function updateDisplayName(string $circleId, string $displayName): array {
 		$circle = $this->getCircle($circleId);
 
 		$event = new FederatedEvent(CircleEdit::class);
@@ -281,7 +281,7 @@ class CircleService {
 	 * @throws RequestBuilderException
 	 * @throws UnknownRemoteException
 	 */
-	public function updateDescription(string $circleId, string $description) {
+	public function updateDescription(string $circleId, string $description): array {
 		$circle = $this->getCircle($circleId);
 
 		$event = new FederatedEvent(CircleEdit::class);
