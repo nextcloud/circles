@@ -128,6 +128,7 @@ class CircleService {
 	 * @param string $name
 	 * @param FederatedUser|null $owner
 	 * @param bool $personal
+	 * @param bool $local
 	 *
 	 * @return array
 	 * @throws FederatedEventException
@@ -135,15 +136,16 @@ class CircleService {
 	 * @throws InitiatorNotConfirmedException
 	 * @throws InitiatorNotFoundException
 	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
 	 * @throws UnknownRemoteException
-	 * @throws RemoteInstanceException
 	 */
 	public function create(
 		string $name,
 		?FederatedUser $owner = null,
-		bool $personal = false
+		bool $personal = false,
+		bool $local = false
 	): array {
 
 		$this->federatedUserService->mustHaveCurrentUser();
@@ -158,6 +160,10 @@ class CircleService {
 
 		if ($personal) {
 			$circle->setConfig(Circle::CFG_SINGLE);
+		}
+
+		if ($local) {
+			$circle->addConfig(Circle::CFG_LOCAL);
 		}
 
 		$member = new Member();

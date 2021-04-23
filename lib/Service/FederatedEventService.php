@@ -388,7 +388,12 @@ class FederatedEventService extends NC22Signature {
 		$wrapper->setCreation(time());
 		$wrapper->setSeverity($event->getSeverity());
 
+		$circle = $event->getCircle();
 		foreach ($instances as $instance) {
+			if ($circle->isConfig(Circle::CFG_LOCAL) && !$this->configService->isLocalInstance($instance)) {
+				continue;
+			}
+
 			$wrapper->setInstance($instance);
 			$this->eventWrapperRequest->create($wrapper);
 		}
