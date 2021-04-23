@@ -26,12 +26,12 @@
           "test1",
           "test9"
         ],
-        "group1": [
+        "groupOrange1": [
           "test2",
           "test3",
           "test4"
         ],
-        "group2": [
+        "groupOrange2": [
           "test3",
           "test5",
           "test7",
@@ -70,12 +70,12 @@
         "admin": [
           "cult"
         ],
-        "group1": [
+        "groupGreen1": [
           "test2",
           "test3",
           "test4"
         ],
-        "group2": [
+        "groupGreen2": [
           "test1",
           "test3",
           "test5",
@@ -114,12 +114,12 @@
           "test4",
           "test5"
         ],
-        "group1": [
+        "groupPurple1": [
           "test5",
           "test6",
           "test7"
         ],
-        "group2": [
+        "groupPurple2": [
           "test4",
           "test5",
           "test6",
@@ -157,12 +157,12 @@
           "cult",
           "test6"
         ],
-        "group1": [
+        "groupPassive1": [
           "test1",
           "test7",
           "test8"
         ],
-        "group2": [
+        "groupPassive2": [
           "cult",
           "test3",
           "test4",
@@ -204,10 +204,10 @@
           "test5",
           "test6"
         ],
-        "group1": [
+        "groupExternal1": [
           "test2"
         ],
-        "group2": [
+        "groupExternal2": [
           "test3",
           "test4",
           "test5",
@@ -245,11 +245,11 @@
           "cult",
           "test7"
         ],
-        "group1": [
+        "groupTrusted1": [
           "test1",
           "test9"
         ],
-        "group2": [
+        "groupTrusted2": [
           "test1",
           "test3",
           "test5",

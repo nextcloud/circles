@@ -137,7 +137,8 @@ class CirclesTest extends Base {
 				 'Well, are you ?', ''
 			 )
 			 ->addOption('skip-init', '', InputOption::VALUE_NONE, 'Bypass Initialisation')
-			 ->addOption('skip-setup', '', InputOption::VALUE_NONE, 'Bypass Circles Setup');
+			 ->addOption('skip-setup', '', InputOption::VALUE_NONE, 'Bypass Circles Setup')
+			 ->addOption('only-setup', '', InputOption::VALUE_NONE, 'Stop after Circles Setup, pre-Sync');
 	}
 
 
@@ -206,6 +207,11 @@ class CirclesTest extends Base {
 			$this->configureCirclesApp();
 			$this->confirmVersion();
 			$this->confirmEmptyCircles();
+
+			if ($this->input->getOption('only-setup')) {
+				return;
+			}
+
 			$this->syncCircles();
 
 			$this->t('Fresh installation status');
@@ -563,7 +569,8 @@ class CirclesTest extends Base {
 		$localInstanceId = 'global-scale-1';
 		$name = self::$TEST_CIRCLES[0];
 		$owner = $this->getInstanceUsers($localInstanceId)[1];
-		$dataCreatedCircle001 = $this->occ($localInstanceId, 'circles:manage:create --type user ' . $owner . ' ' . $name);
+		$dataCreatedCircle001 =
+			$this->occ($localInstanceId, 'circles:manage:create --type user ' . $owner . ' ' . $name);
 		/** @var Circle $createdCircle */
 		$createdCircle = $this->deserialize($dataCreatedCircle001, Circle::class);
 		$this->circles[$localInstanceId][$createdCircle->getName()] = $createdCircle;
@@ -1121,7 +1128,8 @@ class CirclesTest extends Base {
 		$circle = $this->getCircleByName($instanceId, $circleName);
 		$dataAddedMember =
 			$this->occ(
-				$instanceId, 'circles:members:add ' . $circle->getSingleId() . ' ' . $userId . ' --type ' . $type
+				$instanceId,
+				'circles:members:add ' . $circle->getSingleId() . ' ' . $userId . ' --type ' . $type
 			);
 		/** @var Member $addedMember */
 		$addedMember = $this->deserialize($dataAddedMember, Member::class);
