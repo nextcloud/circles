@@ -294,6 +294,7 @@
     "Password enforcement" : "Требование пароля",
     "External share will be protected by a randomly generated password" : "Внешний доступ будет защищен случайно сгенерированным паролем",
     "Single password" : "Отдельный пароль",
+    "One password for all shares. If not, a randomly generated password is sent by mail." : "Один пароль для всех доступов. Если нет, то случайно сгенерированный пароль отправляется по почте.",
     "Change password" : "Изменить пароль",
     "Allow Federated Links" : "Разрешить связывание между серверами",
     "Makes the circle federated, and enables sharing between federated circles" : "Превращает этот круг в федеративный и разрешает обмен между федеративными кругами",
