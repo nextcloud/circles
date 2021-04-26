@@ -82,10 +82,21 @@ class Capabilities implements ICapability {
 		return [
 			Application::APP_ID => [
 				'version'  => $this->appManager->getAppVersion(Application::APP_ID),
+				'status'   => $this->getCapabilitiesStatus(),
 				'settings' => $this->configService->getSettings(),
 				'circle'   => $this->getCapabilitiesCircle(),
 				'member'   => $this->getCapabilitiesMember()
 			],
+		];
+	}
+
+
+	/**
+	 * @return array
+	 */
+	private function getCapabilitiesStatus(): array {
+		return [
+			'globalScale' => $this->configService->isGSAvailable()
 		];
 	}
 

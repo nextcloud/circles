@@ -167,7 +167,7 @@ class Application extends App implements IBootstrap {
 	 * @throws QueryException
 	 */
 	public function registerMountProvider(IServerContainer $container) {
-		if (!$this->configService->getGSStatus(ConfigService::GS_ENABLED)) {
+		if (!$this->configService->isGSAvailable()) {
 			return;
 		}
 		$mountProviderCollection = $container->getMountProviderCollection();

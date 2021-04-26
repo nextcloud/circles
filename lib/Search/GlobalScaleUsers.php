@@ -73,11 +73,11 @@ class GlobalScaleUsers implements ISearch {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function search($search) {
+	public function search(string $search): array {
 
 		/** @var string $lookup */
 		try {
-			$lookup = $this->configService->getGSStatus(ConfigService::GS_LOOKUP);
+			$lookup = $this->configService->getGSLookup();
 		} catch (GSStatusException $e) {
 			return [];
 		}

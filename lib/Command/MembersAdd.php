@@ -163,7 +163,7 @@ class MembersAdd extends Base {
 
 		/** @var string $lookup */
 		try {
-			$lookup = $this->configService->getGSStatus(ConfigService::GS_LOOKUP);
+			$lookup = $this->configService->getGSLookup();
 		} catch (GSStatusException $e) {
 			return '';
 		}

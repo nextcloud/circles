@@ -698,7 +698,7 @@ class MembersService {
 	 * @throws GSStatusException
 	 */
 	public function getUserDisplayName(string $ident, bool $fresh = false): string {
-		if ($this->configService->getGSStatus(ConfigService::GS_ENABLED)) {
+		if ($this->configService->isGSAvailable()) {
 			return $this->getGlobalScaleUserDisplayName($ident);
 		}
 
@@ -727,7 +727,7 @@ class MembersService {
 	 * @throws GSStatusException
 	 */
 	private function getGlobalScaleUserDisplayName(string $ident): string {
-		$lookup = $this->configService->getGSStatus(ConfigService::GS_LOOKUP);
+		$lookup = $this->configService->getGSLookup();
 
 		$request = new NC22Request(ConfigService::GS_LOOKUP_USERS, Request::TYPE_GET);
 		$this->configService->configureRequest($request);

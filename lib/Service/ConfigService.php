@@ -267,53 +267,69 @@ class ConfigService {
 
 
 	/**
-	 * @param string $type
-	 *
-	 * @return array|bool|mixed
+	 * @return bool
+	 */
+	public function isGSAvailable(): bool {
+		return $this->config->getSystemValueBool('gs.enabled', false);
+	}
+
+
+	/**
+	 * @return string
 	 * @throws GSStatusException
 	 */
-	public function getGSStatus(string $type = '') {
-		$enabled = $this->config->getSystemValueBool('gs.enabled', false);
+	public function getGSLookup(): string {
 		$lookup = $this->config->getSystemValue('lookup_server', '');
-		$mockup = $this->config->getSystemValue('gss.mockup', []);
 
-		if ($lookup === '' || !$enabled) {
-			if ($type === self::GS_ENABLED) {
-				return false;
-			}
-
-			if ($type !== self::GS_MOCKUP) {
-				throw new GSStatusException(
-					'GS and lookup are not configured : ' . $lookup . ', ' . $enabled
-				);
-			}
+		if (!$this->isGSAvailable() || $lookup === '') {
+			throw new  GSStatusException();
 		}
 
+		return $lookup;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getGSSMockup(): array {
+		return $this->config->getSystemValue('gss.mockup', []);
+	}
+
+
+	/**
+	 * @param string $type
+	 *
+	 * @return string
+	 */
+	public function getGSInfo(string $type): string {
 		$clef = $this->config->getSystemValue('gss.jwt.key', '');
 		$mode = $this->config->getSystemValue('gss.mode', '');
 
 		switch ($type) {
-			case self::GS_ENABLED:
-				return $enabled;
-
 			case self::GS_MODE:
 				return $mode;
 
 			case self::GS_KEY:
 				return $clef;
-
-			case self::GS_LOOKUP:
-				return $lookup;
-
-			case self::GS_MOCKUP:
-				return $mockup;
 		}
 
+
+		return '';
+	}
+
+
+	/**
+	 * @return array
+	 * @throws GSStatusException
+	 */
+	public function getGSData(): array {
 		return [
-			self::GS_ENABLED => $enabled,
-			self::GS_LOOKUP  => $lookup,
-			self::GS_MODE    => $clef,
-			self::GS_KEY     => $mode,
+			'enabled'     => $this->isGSAvailable(),
+			'lookup'      => $this->getGSLookup(),
+			'mockup'      => $this->getGSSMockup(),
+			self::GS_MODE => $this->config->getSystemValue('gss.mode', ''),
+			self::GS_KEY  => $this->config->getSystemValue('gss.jwt.key', ''),
 		];
 	}
 

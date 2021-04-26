@@ -41,8 +41,8 @@ use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
 use Exception;
 use OCA\Circles\Db\DeprecatedCirclesRequest;
-use OCA\Circles\Db\EventWrapperRequest;
 use OCA\Circles\Db\DeprecatedMembersRequest;
+use OCA\Circles\Db\EventWrapperRequest;
 use OCA\Circles\Exceptions\GlobalScaleEventException;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Exceptions\JsonException;
@@ -329,11 +329,11 @@ class GSUpstreamService {
 
 	/**
 	 * @param array $sync
-	 *
-	 * @throws GSStatusException
 	 */
 	public function synchronize(array $sync) {
-		$this->configService->getGSStatus();
+		if (!$this->configService->isGSAvailable()) {
+			return;
+		}
 
 		$this->synchronizeCircles($sync);
 		$this->removeDeprecatedCircles();

@@ -109,15 +109,14 @@ class GlobalScaleService {
 
 	/**
 	 * @return array
-	 * @throws GSStatusException
 	 */
 	public function getGlobalScaleInstances(): array {
 		try {
-			$lookup = $this->configService->getGSStatus(ConfigService::GS_LOOKUP);
+			$lookup = $this->configService->getGSLookup();
 			$request = new NC22Request(ConfigService::GS_LOOKUP_INSTANCES, Request::TYPE_POST);
 			$this->configService->configureRequest($request);
 			$request->basedOnUrl($lookup);
-			$request->addData('authKey', $this->configService->getGSStatus(ConfigService::GS_KEY));
+			$request->addData('authKey', $this->configService->getGSInfo(ConfigService::GS_KEY));
 
 			try {
 				return $this->retrieveJson($request);
@@ -127,7 +126,7 @@ class GlobalScaleService {
 		} catch (GSStatusException $e) {
 		}
 
-		return $this->configService->getGSStatus(ConfigService::GS_MOCKUP);
+		return $this->configService->getGSSMockup();
 	}
 
 

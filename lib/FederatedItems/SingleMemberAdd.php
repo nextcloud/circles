@@ -347,6 +347,8 @@ class SingleMemberAdd implements
 
 		$this->circleService->confirmCircleNotFull($circle);
 
+	//	$member->setDisplayName($member->getBasedOn()->getDisplayName());
+
 		// TODO: Managing cached name
 		//		$member->setCachedName($eventMember->getCachedName());
 		return $member;

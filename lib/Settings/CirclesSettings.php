@@ -62,7 +62,7 @@ class CirclesSettings implements ISettings {
 		return new TemplateResponse(
 			'circles', 'settings.admin',
 			[
-				'gsEnabled' => $this->configService->getGSStatus(ConfigService::GS_ENABLED)
+				'gsEnabled' => $this->configService->isGSAvailable()
 			]
 		);
 	}
