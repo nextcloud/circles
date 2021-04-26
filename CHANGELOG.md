@@ -2,6 +2,11 @@
 
 
 
+### 0.20.8
+
+- fix an issue with query on null on GS Setup
+
+
 ### 0.20.7
 
 - adding a configuration to fix generated link on proxy setup: frontal_cloud_id
