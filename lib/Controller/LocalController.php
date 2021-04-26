@@ -117,14 +117,15 @@ class LocalController extends OcsController {
 	 *
 	 * @param string $name
 	 * @param bool $personal
+	 * @param bool $local
 	 *
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
-	public function create(string $name, bool $personal = false): DataResponse {
+	public function create(string $name, bool $personal = false, bool $local = false): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
-			$circle = $this->circleService->create($name, null, $personal);
+			$circle = $this->circleService->create($name, null, $personal, $local);
 
 			return new DataResponse($circle);
 		} catch (Exception $e) {

@@ -227,6 +227,7 @@ class CircleService {
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
 	 * @throws UnknownRemoteException
+	 * @throws RequestBuilderException
 	 */
 	public function updateConfig(string $circleId, int $config): array {
 		$circle = $this->getCircle($circleId);
