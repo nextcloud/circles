@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+### 0.21.1
+
+- fix an issue with query on null on GS Setup
+
 
 ### 0.21.0
 
