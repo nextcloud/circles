@@ -4,11 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bc179f63f07c242d3b3f44fdbf15c8ab",
+    "content-hash": "15eedad7e405755f472cb4bfbd8c1925",
     "packages": [
         {
             "name": "daita/my-small-php-tools",
-            "version": "dev-master",
+            "version": "v22.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/daita/my-small-php-tools.git",
@@ -23,7 +23,6 @@
             "require": {
                 "php": ">=7.0"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -43,7 +42,7 @@
             "description": "My small PHP Tools",
             "support": {
                 "issues": "https://github.com/daita/my-small-php-tools/issues",
-                "source": "https://github.com/daita/my-small-php-tools/tree/master"
+                "source": "https://github.com/daita/my-small-php-tools/tree/v22.0.0"
             },
             "time": "2021-04-19T21:42:37+00:00"
         }
@@ -51,9 +50,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "daita/my-small-php-tools": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
