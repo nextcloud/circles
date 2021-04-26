@@ -133,7 +133,7 @@ class Application extends App implements IBootstrap {
 			return;
 		}
 		$mountProviderCollection = $container->getMountProviderCollection();
-		$mountProviderCollection->registerProvider($this->container->query(MountProvider::class));
+		$mountProviderCollection->registerProvider($container->get(MountProvider::class));
 	}
 
 
