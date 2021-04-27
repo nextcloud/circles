@@ -103,9 +103,10 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	const CFG_ROOT = 8192;           // Circle cannot be inside another Circle
 	const CFG_CIRCLE_INVITE = 16384;  // Circle must confirm when invited in another circle
 	const CFG_FEDERATED = 32768;     // Federated
+	const CFG_MOUNTPOINT = 65536;         // Generate a Files folder for this Circle
 
+	public static $DEF_CFG_MAX = 131071;
 
-	public static $DEF_CFG_MAX = 65535;
 
 	/**
 	 * Note: When editing those values, update lib/Application/Capabilities.php

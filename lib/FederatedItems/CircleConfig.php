@@ -87,6 +87,21 @@ class CircleConfig implements IFederatedItem {
 			}
 		}
 
+		if (!$circle->isConfig(Circle::CFG_OPEN, $config)
+			&& $circle->isConfig(Circle::CFG_REQUEST)
+			&& $circle->isConfig(Circle::CFG_REQUEST, $config)
+		) {
+			$config -= Circle::CFG_REQUEST;
+			$event->getData()->sInt('config', $config);
+		}
+
+		if ($circle->isConfig(Circle::CFG_REQUEST, $config)
+			&& !$circle->isConfig(Circle::CFG_OPEN)
+			&& !$circle->isConfig(Circle::CFG_OPEN, $config)) {
+			$config += Circle::CFG_OPEN;
+			$event->getData()->sInt('config', $config);
+		}
+
 		// if federated, circle is root
 		if ($circle->isConfig(Circle::CFG_FEDERATED, $config)
 			&& !$circle->isConfig(Circle::CFG_ROOT, $config)) {
