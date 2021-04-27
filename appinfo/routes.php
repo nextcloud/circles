@@ -51,7 +51,8 @@ return [
 
 		['name' => 'Local#editDisplayName', 'url' => '/circles/{circleId}/displayName', 'verb' => 'PUT'],
 		['name' => 'Local#editDescription', 'url' => '/circles/{circleId}/description', 'verb' => 'PUT'],
-		['name' => 'Local#editSettings', 'url' => '/circles/{circleId}/settings', 'verb' => 'PUT']
+		['name' => 'Local#editSettings', 'url' => '/circles/{circleId}/settings', 'verb' => 'PUT'],
+		['name' => 'Local#editConfig', 'url' => '/circles/{circleId}/config', 'verb' => 'PUT']
 	],
 
 	'routes' => [

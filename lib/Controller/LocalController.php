@@ -369,29 +369,15 @@ class LocalController extends OcsController {
 
 	/**
 	 * @param string $circleId
-	 * @param string $displayName
+	 * @param string $value
 	 *
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
-	public function editDisplayName(string $circleId, string $displayName): DataResponse {
+	public function editDisplayName(string $circleId, string $value): DataResponse {
 		try {
-			$this->circleService->updateDisplayName($circleId, $displayName);
-		} catch (Exception $e) {
-			throw new OCSException($e->getMessage(), $e->getCode());
-		}
-	}
-
-
-	/**
-	 * @param array $settings
-	 *
-	 * @return DataResponse
-	 * @throws OCSException
-	 */
-	public function editDescription(string $circleId, string $description): DataResponse {
-		try {
-			$this->circleService->updateDescription($circleId, $description);
+			$this->circleService->updateDisplayName($circleId, $value);
+			return new DataResponse($this->circleService->getCircle($circleId));
 		} catch (Exception $e) {
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
@@ -400,14 +386,51 @@ class LocalController extends OcsController {
 
 	/**
 	 * @param string $circleId
-	 * @param array $settings
+	 * @param string $value
 	 *
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
-	public function editSettings(string $circleId, array $settings): DataResponse {
+	public function editDescription(string $circleId, string $value): DataResponse {
 		try {
-			$this->circleService->updateSettings($circleId, $settings);
+			$this->circleService->updateDescription($circleId, $value);
+			return new DataResponse($this->circleService->getCircle($circleId));
+		} catch (Exception $e) {
+			throw new OCSException($e->getMessage(), $e->getCode());
+		}
+	}
+
+
+	/**
+	 * @param string $circleId
+	 * @param array $value
+	 *
+	 * @return DataResponse
+	 * @throws OCSException
+	 */
+	public function editSettings(string $circleId, array $value): DataResponse {
+		try {
+			$this->circleService->updateSettings($circleId, $value);
+			return new DataResponse($this->circleService->getCircle($circleId));
+		} catch (Exception $e) {
+			throw new OCSException($e->getMessage(), $e->getCode());
+		}
+	}
+
+
+	/**
+	 * @param string $circleId
+	 * @param int $value
+	 *
+	 * @return DataResponse
+	 * @throws OCSException
+	 */
+	public function editConfig(string $circleId, int $value): DataResponse {
+		try {
+			$this->setCurrentFederatedUser();
+
+			$this->circleService->updateConfig($circleId, $value);
+			return new DataResponse($this->circleService->getCircle($circleId));
 		} catch (Exception $e) {
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
