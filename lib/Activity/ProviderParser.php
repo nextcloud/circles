@@ -32,13 +32,13 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\MiscService;
+use OCA\Circles\Service\ConfigService;
 use OCP\Activity\IEvent;
 use OCP\Activity\IManager;
 use OCP\IL10N;
 use OCP\IURLGenerator;
 
 class ProviderParser {
-
 
 	/** @var MiscService */
 	protected $miscService;
@@ -52,13 +52,28 @@ class ProviderParser {
 	/** @var IManager */
 	protected $activityManager;
 
+	/** @var ConfigService */
+	protected $configService;
+
+	/**
+	 * @param IURLGenerator $url
+	 * @param IManager      $activityManager
+	 * @param IL10N         $l10n
+	 * @param MiscService   $miscService
+	 * @param ConfigService $configService
+	 */
 	public function __construct(
-		IURLGenerator $url, IManager $activityManager, IL10N $l10n, MiscService $miscService
+		IURLGenerator $url,
+		IManager $activityManager,
+		IL10N $l10n,
+		MiscService $miscService,
+		ConfigService $configService
 	) {
 		$this->url = $url;
 		$this->activityManager = $activityManager;
 		$this->l10n = $l10n;
 		$this->miscService = $miscService;
+		$this->configService = $configService;
 	}
 
 
