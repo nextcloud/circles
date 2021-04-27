@@ -88,7 +88,7 @@ class CircleConfig implements IFederatedItem {
 		}
 
 		if (!$circle->isConfig(Circle::CFG_OPEN, $config)
-			&& $circle->isConfig(Circle::CFG_REQUEST)
+			&& $circle->isConfig(Circle::CFG_OPEN)
 			&& $circle->isConfig(Circle::CFG_REQUEST, $config)
 		) {
 			$config -= Circle::CFG_REQUEST;
@@ -96,14 +96,22 @@ class CircleConfig implements IFederatedItem {
 		}
 
 		if ($circle->isConfig(Circle::CFG_REQUEST, $config)
-			&& !$circle->isConfig(Circle::CFG_OPEN)
+			&& !$circle->isConfig(Circle::CFG_REQUEST)
 			&& !$circle->isConfig(Circle::CFG_OPEN, $config)) {
 			$config += Circle::CFG_OPEN;
 			$event->getData()->sInt('config', $config);
 		}
 
-		// if federated, circle is root
+		if (!$circle->isConfig(Circle::CFG_ROOT, $config)
+			&& $circle->isConfig(Circle::CFG_ROOT)
+			&& $circle->isConfig(Circle::CFG_FEDERATED, $config)) {
+			$config -= Circle::CFG_FEDERATED;
+			// TODO: Broadcast message to other instances about loosing federated tag.
+			$event->getData()->sInt('config', $config);
+		}
+
 		if ($circle->isConfig(Circle::CFG_FEDERATED, $config)
+			&& !$circle->isConfig(Circle::CFG_FEDERATED)
 			&& !$circle->isConfig(Circle::CFG_ROOT, $config)) {
 			$config += Circle::CFG_ROOT;
 			// TODO: Check locally that circle is not a member of another circle.
