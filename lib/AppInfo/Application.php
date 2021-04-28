@@ -167,8 +167,8 @@ class Application extends App implements IBootstrap {
 			return;
 		}
 
-//		$mountProviderCollection = $container->get(IMountProviderCollection::class);
-//		$mountProviderCollection->registerProvider($container->get(CircleMountProvider::class));
+		$mountProviderCollection = $container->get(IMountProviderCollection::class);
+		$mountProviderCollection->registerProvider($container->get(CircleMountProvider::class));
 	}
 
 
