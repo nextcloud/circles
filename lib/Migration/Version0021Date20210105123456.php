@@ -286,6 +286,102 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 		}
 
 
+		if (!$schema->hasTable('circle_mount')) {
+			$table = $schema->createTable('circle_mount');
+			$table->addColumn(
+				'id', 'integer', [
+						'autoincrement' => true,
+						'notnull'       => true,
+						'length'        => 11,
+						'unsigned'      => true,
+					]
+			);
+			$table->addColumn(
+				'mount_id', 'string', [
+							  'notnull' => false,
+							  'length'  => 15
+						  ]
+			);
+			$table->addColumn(
+				'circle_id', 'string', [
+							   'notnull' => false,
+							   'length'  => 15
+						   ]
+			);
+			$table->addColumn(
+				'single_id', 'string', [
+						   'notnull' => false,
+						   'length'  => 15
+					   ]
+			);
+			$table->addColumn(
+				'token', 'string', [
+						   'notnull' => false,
+						   'length'  => 63
+					   ]
+			);
+			$table->addColumn(
+				'parent', 'integer', [
+							'notnull' => false,
+							'length'  => 11
+						]
+			);
+			$table->addColumn(
+				'mountpoint', 'text', [
+								'notnull' => false
+							]
+			);
+			$table->addColumn(
+				'mountpoint_hash', 'string', [
+									 'notnull' => false,
+									 'length'  => 64
+								 ]
+			);
+
+			$table->setPrimaryKey(['id']);
+			$table->addIndex(['circle_id', 'mount_id', 'parent', 'token'], 'cmpt');
+		}
+
+
+		if (!$schema->hasTable('circle_mountpoint')) {
+			$table = $schema->createTable('circle_mountpoint');
+			$table->addColumn(
+				'id', 'integer', [
+						'autoincrement' => true,
+						'notnull'       => true,
+						'length'        => 11,
+						'unsigned'      => true,
+					]
+			);
+			$table->addColumn(
+				'mount_id', 'string', [
+							  'notnull' => false,
+							  'length'  => 15
+						  ]
+			);
+			$table->addColumn(
+				'single_id', 'string', [
+							   'notnull' => false,
+							   'length'  => 15
+						   ]
+			);
+			$table->addColumn(
+				'mountpoint', 'text', [
+								'notnull' => false
+							]
+			);
+			$table->addColumn(
+				'mountpoint_hash', 'string', [
+									 'notnull' => false,
+									 'length'  => 64
+								 ]
+			);
+
+			$table->setPrimaryKey(['id']);
+			$table->addIndex(['mount_id', 'single_id'], 'ms');
+		}
+
+
 		if (!$schema->hasTable('circle_share_locks')) {
 			$table = $schema->createTable('circle_share_locks');
 			$table->addColumn(

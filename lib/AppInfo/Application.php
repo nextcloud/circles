@@ -39,8 +39,6 @@ use Closure;
 use OC;
 use OCA\Circles\Events\AddingCircleMemberEvent;
 use OCA\Circles\Events\CircleMemberAddedEvent;
-use OCA\Circles\Exceptions\GSStatusException;
-use OCA\Circles\GlobalScale\GSMount\MountProvider;
 use OCA\Circles\Handlers\WebfingerHandler;
 use OCA\Circles\Listeners\Files\AddingMember as ListenerFilesAddingMember;
 use OCA\Circles\Listeners\Files\MemberAdded as ListenerFilesMemberAdded;
@@ -50,6 +48,7 @@ use OCA\Circles\Listeners\GroupMemberAdded;
 use OCA\Circles\Listeners\GroupMemberRemoved;
 use OCA\Circles\Listeners\UserCreated;
 use OCA\Circles\Listeners\UserDeleted;
+use OCA\Circles\MountManager\CircleMountProvider;
 use OCA\Circles\Notification\Notifier;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\DavService;
@@ -60,7 +59,7 @@ use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\IAppContainer;
-use OCP\AppFramework\QueryException;
+use OCP\Files\Config\IMountProviderCollection;
 use OCP\Group\Events\GroupCreatedEvent;
 use OCP\Group\Events\GroupDeletedEvent;
 use OCP\Group\Events\UserAddedEvent;
@@ -162,19 +161,20 @@ class Application extends App implements IBootstrap {
 
 	/**
 	 * @param IServerContainer $container
-	 *
-	 * @throws GSStatusException
-	 * @throws QueryException
 	 */
 	public function registerMountProvider(IServerContainer $container) {
 		if (!$this->configService->isGSAvailable()) {
 			return;
 		}
-		$mountProviderCollection = $container->getMountProviderCollection();
-		$mountProviderCollection->registerProvider($container->get(MountProvider::class));
+
+//		$mountProviderCollection = $container->get(IMountProviderCollection::class);
+//		$mountProviderCollection->registerProvider($container->get(CircleMountProvider::class));
 	}
 
 
+	/**
+	 * @param IServerContainer $container
+	 */
 	public function registerDavHooks(IServerContainer $container) {
 		if (!$this->configService->isContactsBackend()) {
 			return;

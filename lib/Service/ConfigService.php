@@ -64,11 +64,8 @@ class ConfigService {
 	const FORCE_NC_BASE = 'force_nc_base';
 	const TEST_NC_BASE = 'test_nc_base';
 
-	const GS_ENABLED = 'enabled';
 	const GS_MODE = 'mode';
 	const GS_KEY = 'key';
-	const GS_LOOKUP = 'lookup';
-	const GS_MOCKUP = 'mockup';
 
 	const GS_LOOKUP_INSTANCES = '/instances';
 	const GS_LOOKUP_USERS = '/users';

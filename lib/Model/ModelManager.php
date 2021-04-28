@@ -166,6 +166,12 @@ class ModelManager {
 			}
 		}
 
+		if ($model instanceof Mount) {
+			if ($base === '') {
+				$base = CoreRequestBuilder::MOUNT;
+			}
+		}
+
 		foreach ($this->coreRequestBuilder->getAvailablePath($base) as $path => $prefix) {
 			$this->importBasedOnPath($model, $data, $path, $prefix);
 		}
@@ -174,99 +180,52 @@ class ModelManager {
 
 	private function importBasedOnPath(ManagedModel $model, array $data, string $path, string $prefix) {
 		if ($model instanceof Circle) {
-			switch ($path) {
-				case CoreRequestBuilder::OWNER;
-					$this->importOwnerFromDatabase($model, $data, $prefix);
-					break;
-
-				case CoreRequestBuilder::INITIATOR;
-					$this->importInitiatorFromDatabase($model, $data, $prefix);
-					break;
-			}
+			$this->importIntoCircle($model, $data, $path, $prefix);
 		}
 
 		if ($model instanceof Member) {
-			switch ($path) {
-				case CoreRequestBuilder::CIRCLE;
-					$this->importCircleFromDatabase($model, $data, $prefix);
-					break;
-
-				case CoreRequestBuilder::BASED_ON;
-					$this->importBasedOnFromDatabase($model, $data, $prefix);
-					break;
-
-				case CoreRequestBuilder::INHERITED_BY;
-					$this->importInheritedByFromDatabase($model, $data, $prefix);
-					break;
-
-				case CoreRequestBuilder::INHERITANCE_FROM;
-					$this->importInheritanceFromFromDatabase($model, $data, $prefix);
-					break;
-			}
+			$this->importIntoMember($model, $data, $path, $prefix);
 		}
 
 		if ($model instanceof FederatedUser) {
-			switch ($path) {
-				case CoreRequestBuilder::MEMBERSHIPS;
-					$this->importMembershipFromDatabase($model, $data, $prefix);
-					break;
-			}
+			$this->importIntoFederatedUser($model, $data, $path, $prefix);
 		}
 
 		if ($model instanceof ShareWrapper) {
-			switch ($path) {
-				case CoreRequestBuilder::CIRCLE;
-					try {
-						$circle = new Circle();
-						$circle->importFromDatabase($data, $prefix);
-						$model->setCircle($circle);
-					} catch (CircleNotFoundException $e) {
-					}
-					break;
-
-				case CoreRequestBuilder::INITIATOR;
-					try {
-						$initiator = new Member();
-						$initiator->importFromDatabase($data, $prefix);
-						$model->setInheritedBy($initiator);
-					} catch (MemberNotFoundException $e) {
-					}
-					break;
-
-				case CoreRequestBuilder::INHERITED_BY;
-					try {
-						$inheritedBy = new Member();
-						$inheritedBy->importFromDatabase($data, $prefix);
-						$model->setInheritedBy($inheritedBy);
-					} catch (MemberNotFoundException $e) {
-					}
-					break;
-
-				case CoreRequestBuilder::FILE_CACHE;
-					try {
-						$fileCache = new FileCacheWrapper();
-						$fileCache->importFromDatabase($data, $prefix);
-						$model->setFileCache($fileCache);
-					} catch (FileCacheNotFoundException $e) {
-					}
-					break;
-			}
+			$this->importIntoShareWrapper($model, $data, $path, $prefix);
 		}
 
+		if ($model instanceof Mount) {
+			$this->importIntoMount($model, $data, $path, $prefix);
+		}
 	}
 
 
 	/**
-	 * @param Member $member
+	 * @param Circle $circle
 	 * @param array $data
+	 * @param string $path
 	 * @param string $prefix
 	 */
-	public function importCircleFromDatabase(Member $member, array $data, string $prefix) {
-		try {
-			$circle = new Circle();
-			$circle->importFromDatabase($data, $prefix);
-			$member->setCircle($circle);
-		} catch (CircleNotFoundException $e) {
+	private function importIntoCircle(Circle $circle, array $data, string $path, string $prefix): void {
+		switch ($path) {
+			case CoreRequestBuilder::OWNER;
+				try {
+					$owner = new Member();
+					$owner->importFromDatabase($data, $prefix);
+					$circle->setOwner($owner);
+				} catch (MemberNotFoundException $e) {
+				}
+				break;
+
+			case CoreRequestBuilder::INITIATOR;
+				try {
+					$initiator = new Member();
+					$initiator->importFromDatabase($data, $prefix);
+					$circle->setInitiator($initiator);
+				} catch (MemberNotFoundException $e) {
+				}
+				break;
 		}
 	}
 
@@ -274,44 +233,46 @@ class ModelManager {
 	/**
 	 * @param Member $member
 	 * @param array $data
+	 * @param string $path
 	 * @param string $prefix
 	 */
-	public function importBasedOnFromDatabase(Member $member, array $data, string $prefix) {
-		try {
-			$circle = new Circle();
-			$circle->importFromDatabase($data, $prefix);
-			$member->setBasedOn($circle);
-		} catch (CircleNotFoundException $e) {
-		}
-	}
+	private function importIntoMember(Member $member, array $data, string $path, string $prefix): void {
+		switch ($path) {
+			case CoreRequestBuilder::CIRCLE;
+				try {
+					$circle = new Circle();
+					$circle->importFromDatabase($data, $prefix);
+					$member->setCircle($circle);
+				} catch (CircleNotFoundException $e) {
+				}
+				break;
 
+			case CoreRequestBuilder::BASED_ON;
+				try {
+					$circle = new Circle();
+					$circle->importFromDatabase($data, $prefix);
+					$member->setBasedOn($circle);
+				} catch (CircleNotFoundException $e) {
+				}
+				break;
 
-	/**
-	 * @param Member $member
-	 * @param array $data
-	 * @param string $prefix
-	 */
-	public function importInheritedByFromDatabase(Member $member, array $data, string $prefix) {
-		try {
-			$inheritedBy = new FederatedUser();
-			$inheritedBy->importFromDatabase($data, $prefix);
-			$member->setInheritedBy($inheritedBy);
-		} catch (FederatedUserNotFoundException $e) {
-		}
-	}
+			case CoreRequestBuilder::INHERITED_BY;
+				try {
+					$inheritedBy = new FederatedUser();
+					$inheritedBy->importFromDatabase($data, $prefix);
+					$member->setInheritedBy($inheritedBy);
+				} catch (FederatedUserNotFoundException $e) {
+				}
+				break;
 
-
-	/**
-	 * @param Member $member
-	 * @param array $data
-	 * @param string $prefix
-	 */
-	public function importInheritanceFromFromDatabase(Member $member, array $data, string $prefix) {
-		try {
-			$inheritanceFrom = new Member();
-			$inheritanceFrom->importFromDatabase($data, $prefix);
-			$member->setInheritanceFrom($inheritanceFrom);
-		} catch (MemberNotFoundException $e) {
+			case CoreRequestBuilder::INHERITANCE_FROM;
+				try {
+					$inheritanceFrom = new Member();
+					$inheritanceFrom->importFromDatabase($data, $prefix);
+					$member->setInheritanceFrom($inheritanceFrom);
+				} catch (MemberNotFoundException $e) {
+				}
+				break;
 		}
 	}
 
@@ -319,47 +280,113 @@ class ModelManager {
 	/**
 	 * @param FederatedUser $federatedUser
 	 * @param array $data
+	 * @param string $path
 	 * @param string $prefix
 	 */
-	public function importMembershipFromDatabase(FederatedUser $federatedUser, array $data, string $prefix) {
-		try {
-			$membership = new Membership();
-			$membership->importFromDatabase($data, $prefix);
-			$federatedUser->setLink($membership);
-		} catch (MembershipNotFoundException $e) {
+	private function importIntoFederatedUser(
+		FederatedUser $federatedUser,
+		array $data,
+		string $path,
+		string $prefix
+	): void {
+		switch ($path) {
+			case CoreRequestBuilder::MEMBERSHIPS;
+				try {
+					$membership = new Membership();
+					$membership->importFromDatabase($data, $prefix);
+					$federatedUser->setLink($membership);
+				} catch (MembershipNotFoundException $e) {
+				}
+				break;
 		}
 	}
 
 
 	/**
-	 * @param Circle $circle
+	 * @param ShareWrapper $shareWrapper
 	 * @param array $data
+	 * @param string $path
 	 * @param string $prefix
 	 */
-	public function importOwnerFromDatabase(Circle $circle, array $data, string $prefix): void {
-		try {
-			$owner = new Member();
-			$owner->importFromDatabase($data, $prefix);
-			$circle->setOwner($owner);
-		} catch (MemberNotFoundException $e) {
+	private function importIntoShareWrapper(
+		ShareWrapper $shareWrapper,
+		array $data,
+		string $path,
+		string $prefix
+	): void {
+		switch ($path) {
+			case CoreRequestBuilder::CIRCLE;
+				try {
+					$circle = new Circle();
+					$circle->importFromDatabase($data, $prefix);
+					$shareWrapper->setCircle($circle);
+				} catch (CircleNotFoundException $e) {
+				}
+				break;
+
+			case CoreRequestBuilder::INITIATOR;
+				try {
+					$initiator = new Member();
+					$initiator->importFromDatabase($data, $prefix);
+					$shareWrapper->setInheritedBy($initiator);
+				} catch (MemberNotFoundException $e) {
+				}
+				break;
+
+			case CoreRequestBuilder::INHERITED_BY;
+				try {
+					$inheritedBy = new Member();
+					$inheritedBy->importFromDatabase($data, $prefix);
+					$shareWrapper->setInheritedBy($inheritedBy);
+				} catch (MemberNotFoundException $e) {
+				}
+				break;
+
+			case CoreRequestBuilder::FILE_CACHE;
+				try {
+					$fileCache = new FileCacheWrapper();
+					$fileCache->importFromDatabase($data, $prefix);
+					$shareWrapper->setFileCache($fileCache);
+				} catch (FileCacheNotFoundException $e) {
+				}
+				break;
 		}
 	}
 
 
 	/**
-	 * @param Circle $circle
+	 * @param Mount $mount
 	 * @param array $data
+	 * @param string $path
 	 * @param string $prefix
 	 */
-	public function importInitiatorFromDatabase(Circle $circle, array $data, string $prefix): void {
-		try {
-			$initiator = new Member();
-			$initiator->importFromDatabase($data, $prefix);
-			$circle->setInitiator($initiator);
-		} catch (MemberNotFoundException $e) {
+	private function importIntoMount(
+		Mount $mount,
+		array $data,
+		string $path,
+		string $prefix
+	): void {
+		switch ($path) {
+			case CoreRequestBuilder::MEMBER;
+				try {
+					$member = new Member();
+					$member->importFromDatabase($data, $prefix);
+					$mount->setMember($member);
+				} catch (MemberNotFoundException $e) {
+				}
+				break;
+
+			case CoreRequestBuilder::INITIATOR;
+				try {
+					$initiator = new Member();
+					$initiator->importFromDatabase($data, $prefix);
+					$mount->setInitiator($initiator);
+				} catch (MemberNotFoundException $e) {
+					\OC::$server->getLogger()->log(3, '### ' . $e->getMessage());
+				}
+				break;
 		}
 	}
-
 
 	/**
 	 * @return string

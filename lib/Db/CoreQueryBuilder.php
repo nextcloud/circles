@@ -59,6 +59,10 @@ class CoreQueryBuilder {
 	const TABLE_MEMBERSHIP = 'circle_membership';
 	const TABLE_REMOTE = 'circle_remotes';
 	const TABLE_EVENT = 'circle_events';
+
+	const TABLE_MOUNT = 'circle_mount';
+	const TABLE_MOUNTPOINT = 'circle_mountpoint';
+
 	const TABLE_SHARE_LOCKS = 'circle_share_locks';
 
 	const TABLE_TOKENS = 'circle_tokens';

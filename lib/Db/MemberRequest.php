@@ -166,7 +166,7 @@ class MemberRequest extends MemberRequestBuilder {
 		$orX = $qb->expr()->orX();
 		$orX->add($qb->exprLimitToDBField('single_id', $circle->getSingleId()));
 		$orX->add($qb->exprLimitToDBField('circle_id', $circle->getSingleId()));
-		
+
 		$qb->execute();
 	}
 
@@ -209,7 +209,8 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->leftJoinCircle(CoreRequestBuilder::MEMBER, $initiator);
 
 		if (!is_null($remoteInstance)) {
-			$qb->limitToRemoteInstance($remoteInstance->getInstance(), true, 'circle');
+			$aliasCircle = $qb->generateAlias(CoreRequestBuilder::MEMBER, CoreRequestBuilder::CIRCLE);
+			$qb->limitToRemoteInstance(CoreRequestBuilder::MEMBER, $remoteInstance, true, $aliasCircle);
 		}
 		if (!is_null($filter)) {
 			$qb->filterDirectMembership(CoreRequestBuilder::MEMBER, $filter);

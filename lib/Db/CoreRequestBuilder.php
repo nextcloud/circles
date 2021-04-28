@@ -62,12 +62,15 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 	const CIRCLE = 'circle';
 	const MEMBER = 'member';
 	const OWNER = 'owner';
+	const REMOTE = 'remote';
 	const BASED_ON = 'basedOn';
 	const INITIATOR = 'initiator';
 	const MEMBERSHIPS = 'memberships';
 	const UPSTREAM_MEMBERSHIPS = 'upstreamMemberships';
 	const INHERITANCE_FROM = 'inheritanceFrom';
 	const INHERITED_BY = 'inheritedBy';
+	const MOUNT = 'mount';
+	const MOUNTPOINT = 'mountpoint';
 	const SHARE = 'share';
 	const FILE_CACHE = 'fileCache';
 	const STORAGES = 'storages';
@@ -91,6 +94,12 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 				self::BASED_ON,
 				self::INHERITED_BY => [
 					self::MEMBERSHIPS
+				]
+			],
+			self::REMOTE    => [
+				self::MEMBER,
+				self::CIRCLE => [
+					self::OWNER
 				]
 			]
 		],
@@ -123,6 +132,12 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 						self::MEMBERSHIPS
 					]
 				]
+			],
+			self::REMOTE   => [
+				self::MEMBER,
+				self::CIRCLE => [
+					self::OWNER
+				]
 			]
 		],
 		self::SHARE  => [
@@ -151,17 +166,18 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 					self::MEMBERSHIPS
 				]
 			]
+		],
+		self::MOUNT  => [
+			self::MEMBER,
+			self::INITIATOR => [
+				self::INHERITED_BY => [
+					self::MEMBERSHIPS
+				]
+			],
+			self::MOUNTPOINT,
+			self::MEMBERSHIPS
 		]
 	];
-
-
-	const EXTENSION_CIRCLES = '_circles';
-	const EXTENSION_MEMBERS = '_members';
-	const EXTENSION_OWNER = '_owner';
-	const EXTENSION_BASED_ON = '_based_on';
-	const EXTENSION_INITIATOR = '_initiator';
-	const EXTENSION_MEMBERSHIPS = '_memberships';
-	const EXTENSION_INHERITED_BY = '_inherited_by';
 
 
 	/** @var ConfigService */
@@ -315,21 +331,199 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 
 
 	/**
-	 * @param string $instance
-	 * @param bool $sensitive
+	 * @param string $alias
+	 * @param RemoteInstance $remoteInstance
+	 * @param bool $filterSensitiveData
 	 * @param string $aliasCircle
-	 * @param string $aliasRemote
+	 *
+	 * @throws RequestBuilderException
 	 */
 	public function limitToRemoteInstance(
-		string $instance,
-		bool $sensitive = true,
-		string $aliasCircle = 'c',
-		string $aliasRemote = 'remote'
+		string $alias,
+		RemoteInstance $remoteInstance,
+		bool $filterSensitiveData = true,
+		string $aliasCircle = ''
 	): void {
-		$this->leftJoinRemoteInstance($instance, $aliasRemote);
-		$this->leftJoinMemberFromInstance($instance, $aliasRemote, $aliasCircle);
-		$this->leftJoinMemberFromRemoteCircle($instance, $aliasRemote, $aliasCircle);
-		$this->limitRemoteVisibility($sensitive, $aliasRemote, $aliasCircle);
+
+		if ($aliasCircle === '') {
+			$aliasCircle = $alias;
+		}
+
+		$this->leftJoinRemoteInstance($alias, $remoteInstance);
+		$this->leftJoinMemberFromInstance($alias, $remoteInstance, $aliasCircle);
+		$this->leftJoinMemberFromRemoteCircle($alias, $remoteInstance, $aliasCircle);
+		$this->limitRemoteVisibility($alias, $filterSensitiveData, $aliasCircle);
+	}
+
+
+	/**
+	 * Left join remotes to filter visibility based on RemoteInstance.
+	 *
+	 * @param string $alias
+	 * @param RemoteInstance $remoteInstance
+	 *
+	 * @throws RequestBuilderException
+	 */
+	public function leftJoinRemoteInstance(string $alias, RemoteInstance $remoteInstance): void {
+		if ($this->getType() !== QueryBuilder::SELECT) {
+			return;
+		}
+
+		$aliasRemote = $this->generateAlias($alias, self::REMOTE);
+
+		$expr = $this->expr();
+		$this->leftJoin(
+			$this->getDefaultSelectAlias(), CoreQueryBuilder::TABLE_REMOTE, $aliasRemote,
+			$expr->eq($aliasRemote . '.instance', $this->createNamedParameter($remoteInstance->getInstance()))
+		);
+	}
+
+
+	/**
+	 * left join members to check memberships of someone from instance
+	 *
+	 * @param string $alias
+	 * @param RemoteInstance $remoteInstance
+	 * @param string $aliasCircle
+	 *
+	 * @throws RequestBuilderException
+	 */
+	private function leftJoinMemberFromInstance(
+		string $alias, RemoteInstance $remoteInstance, string $aliasCircle
+	) {
+		if ($this->getType() !== QueryBuilder::SELECT) {
+			return;
+		}
+
+		$aliasRemote = $this->generateAlias($alias, self::REMOTE);
+		$aliasRemoteMember = $this->generateAlias($aliasRemote, self::MEMBER);
+
+		$expr = $this->expr();
+		$this->leftJoin(
+			$this->getDefaultSelectAlias(), CoreQueryBuilder::TABLE_MEMBER, $aliasRemoteMember,
+			$expr->andX(
+				$expr->eq($aliasRemoteMember . '.circle_id', $aliasCircle . '.unique_id'),
+				$expr->eq(
+					$aliasRemoteMember . '.instance',
+					$this->createNamedParameter($remoteInstance->getInstance())
+				),
+				$expr->gte($aliasRemoteMember . '.level', $this->createNamedParameter(Member::LEVEL_MEMBER))
+			)
+		);
+	}
+
+
+	/**
+	 * left join circle is member of a circle from remote instance
+	 *
+	 * @param string $alias
+	 * @param RemoteInstance $remoteInstance
+	 * @param string $aliasCircle
+	 *
+	 * @throws RequestBuilderException
+	 */
+	private function leftJoinMemberFromRemoteCircle(
+		string $alias,
+		RemoteInstance $remoteInstance,
+		string $aliasCircle
+	) {
+		if ($this->getType() !== QueryBuilder::SELECT) {
+			return;
+		}
+
+		$aliasRemote = $this->generateAlias($alias, self::REMOTE);
+		$aliasRemoteCircle = $this->generateAlias($aliasRemote, self::CIRCLE);
+		$aliasRemoteCircleOwner = $this->generateAlias($aliasRemoteCircle, self::OWNER);
+
+		$expr = $this->expr();
+		$this->leftJoin(
+			$this->getDefaultSelectAlias(), CoreQueryBuilder::TABLE_MEMBER, $aliasRemoteCircle,
+			$expr->andX(
+				$expr->eq($aliasRemoteCircle . '.single_id', $aliasCircle . '.unique_id'),
+				$expr->emptyString($aliasRemoteCircle . '.instance'),
+				$expr->gte($aliasRemoteCircle . '.level', $this->createNamedParameter(Member::LEVEL_MEMBER))
+			)
+		);
+		$this->leftJoin(
+			$this->getDefaultSelectAlias(), CoreQueryBuilder::TABLE_MEMBER, $aliasRemoteCircleOwner,
+			$expr->andX(
+				$expr->eq($aliasRemoteCircle . '.circle_id', $aliasRemoteCircleOwner . '.circle_id'),
+				$expr->eq(
+					$aliasRemoteCircleOwner . '.instance',
+					$this->createNamedParameter($remoteInstance->getInstance())
+				),
+				$expr->eq(
+					$aliasRemoteCircleOwner . '.level', $this->createNamedParameter(Member::LEVEL_OWNER)
+				)
+			)
+		);
+	}
+
+
+	/**
+	 * - global_scale: visibility on all Circles
+	 * - trusted: visibility on all FEDERATED Circle if owner is local
+	 * - external: visibility on all FEDERATED Circle if owner is local and:
+	 *    - with if Circle contains at least one member from the remote instance
+	 *    - one circle from the remote instance contains the local circle as member, and confirmed (using
+	 *      sync locally)
+	 * - passive: like external, but the members list will only contains member from the local instance and
+	 * from the remote instance.
+	 *
+	 * @param string $alias
+	 * @param bool $sensitive
+	 * @param string $aliasCircle
+	 *
+	 * @throws RequestBuilderException
+	 */
+	protected function limitRemoteVisibility(string $alias, bool $sensitive, string $aliasCircle) {
+		$aliasRemote = $this->generateAlias($alias, self::REMOTE);
+		$aliasOwner = $this->generateAlias($aliasCircle, self::OWNER);
+		$aliasRemoteMember = $this->generateAlias($aliasRemote, self::MEMBER);
+		$aliasRemoteCircle = $this->generateAlias($aliasRemote, self::CIRCLE);
+		$aliasRemoteCircleOwner = $this->generateAlias($aliasRemoteCircle, self::OWNER);
+
+		$expr = $this->expr();
+		$orX = $expr->orX();
+		$orX->add(
+			$expr->eq($aliasRemote . '.type', $this->createNamedParameter(RemoteInstance::TYPE_GLOBAL_SCALE))
+		);
+
+		$orExtOrPassive = $expr->orX();
+		$orExtOrPassive->add(
+			$expr->eq($aliasRemote . '.type', $this->createNamedParameter(RemoteInstance::TYPE_EXTERNAL))
+		);
+		if (!$sensitive) {
+			$orExtOrPassive->add(
+				$expr->eq($aliasRemote . '.type', $this->createNamedParameter(RemoteInstance::TYPE_PASSIVE))
+			);
+		} else {
+			if ($this->getDefaultSelectAlias() === CoreRequestBuilder::MEMBER) {
+				$orExtOrPassive->add($this->limitRemoteVisibility_Sensitive_Members($aliasRemote));
+			}
+		}
+
+		$orInstance = $expr->orX();
+		$orInstance->add($expr->isNotNull($aliasRemoteMember . '.instance'));
+		$orInstance->add($expr->isNotNull($aliasRemoteCircleOwner . '.instance'));
+
+		$andExternal = $expr->andX();
+		$andExternal->add($orExtOrPassive);
+		$andExternal->add($orInstance);
+
+		$orExtOrTrusted = $expr->orX();
+		$orExtOrTrusted->add($andExternal);
+		$orExtOrTrusted->add(
+			$expr->eq($aliasRemote . '.type', $this->createNamedParameter(RemoteInstance::TYPE_TRUSTED))
+		);
+
+		$andTrusted = $expr->andX();
+		$andTrusted->add($orExtOrTrusted);
+		$andTrusted->add($expr->bitwiseAnd($aliasCircle . '.config', Circle::CFG_FEDERATED));
+		$andTrusted->add($expr->emptyString($aliasOwner . '.instance'));
+		$orX->add($andTrusted);
+
+		$this->andWhere($orX);
 	}
 
 
@@ -481,31 +675,78 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 
 
 	/**
-	 * @param string $aliasCircle
+	 * @param string $alias
+	 * @param string $field
+	 *
+	 * @throws RequestBuilderException
 	 */
-	public function leftJoinOwner(string $aliasCircle): void {
+	public function leftJoinOwner(string $alias, string $field = 'unique_id'): void {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
 
 		try {
-			$aliasOwner = $this->generateAlias($aliasCircle, self::OWNER, $options);
+			$aliasMember = $this->generateAlias($alias, self::OWNER, $options);
 			$getData = $this->getBool('getData', $options, false);
 		} catch (RequestBuilderException $e) {
 			return;
 		}
 
 		$expr = $this->expr();
-		$this->generateMemberSelectAlias($aliasOwner)
+		$this->generateMemberSelectAlias($aliasMember)
 			 ->leftJoin(
-				 $aliasCircle, CoreQueryBuilder::TABLE_MEMBER, $aliasOwner,
+				 $alias, CoreQueryBuilder::TABLE_MEMBER, $aliasMember,
 				 $expr->andX(
-					 $expr->eq($aliasOwner . '.circle_id', $aliasCircle . '.unique_id'),
-					 $expr->eq($aliasOwner . '.level', $this->createNamedParameter(Member::LEVEL_OWNER))
+					 $expr->eq($aliasMember . '.circle_id', $alias . '.' . $field),
+					 $expr->eq(
+						 $aliasMember . '.level',
+						 $this->createNamedParameter(Member::LEVEL_OWNER, self::PARAM_INT)
+					 )
 				 )
 			 );
 
-		$this->leftJoinBasedOn($aliasOwner);
+		$this->leftJoinBasedOn($aliasMember);
+	}
+
+
+	/**
+	 * @param string $alias
+	 * @param string $fieldCircleId
+	 * @param string $fieldSingleId
+	 *
+	 * @throws RequestBuilderException
+	 */
+	public function leftJoinMember(
+		string $alias,
+		string $fieldCircleId = 'circle_id',
+		string $fieldSingleId = 'single_id'
+	): void {
+		if ($this->getType() !== QueryBuilder::SELECT) {
+			return;
+		}
+
+		try {
+			$aliasMember = $this->generateAlias($alias, self::MEMBER, $options);
+			$getData = $this->getBool('getData', $options, false);
+		} catch (RequestBuilderException $e) {
+			return;
+		}
+
+		$expr = $this->expr();
+		$this->generateMemberSelectAlias($aliasMember)
+			 ->leftJoin(
+				 $alias, CoreQueryBuilder::TABLE_MEMBER, $aliasMember,
+				 $expr->andX(
+					 $expr->eq($aliasMember . '.circle_id', $alias . '.' . $fieldCircleId),
+					 $expr->eq($aliasMember . '.single_id', $alias . '.' . $fieldSingleId),
+					 $expr->gte(
+						 $aliasMember . '.level',
+						 $this->createNamedParameter(Member::LEVEL_MEMBER, self::PARAM_INT)
+					 )
+				 )
+			 );
+
+		$this->leftJoinBasedOn($aliasMember);
 	}
 
 
@@ -717,6 +958,7 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 			$aliasInheritedByMembership = $this->generateAlias($aliasInheritedBy, self::MEMBERSHIPS);
 			$this->generateMembershipSelectAlias($aliasMembership, $aliasInheritedByMembership);
 		} catch (RequestBuilderException $e) {
+			\OC::$server->getLogger()->log(3, '-- ' . $e->getMessage());
 		}
 	}
 
@@ -783,89 +1025,6 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 
 
 	/**
-	 * left join members to check memberships of someone from instance
-	 *
-	 * @param string $instance
-	 * @param string $aliasRemote
-	 * @param string $aliasCircle
-	 */
-	private function leftJoinMemberFromInstance(string $instance, string $aliasRemote, string $aliasCircle) {
-		if ($this->getType() !== QueryBuilder::SELECT) {
-			return;
-		}
-
-		$aliasRemoteMembers = $aliasRemote . self::EXTENSION_MEMBERS;
-		$expr = $this->expr();
-
-		$this->leftJoin(
-			$this->getDefaultSelectAlias(), CoreQueryBuilder::TABLE_MEMBER, $aliasRemoteMembers,
-			$expr->andX(
-				$expr->eq($aliasRemoteMembers . '.circle_id', $aliasCircle . '.unique_id'),
-				$expr->eq($aliasRemoteMembers . '.instance', $this->createNamedParameter($instance)),
-				$expr->gte($aliasRemoteMembers . '.level', $this->createNamedParameter(Member::LEVEL_MEMBER))
-			)
-		);
-	}
-
-
-	/**
-	 * Left join remotes to filter visibility based on RemoteInstance.
-	 *
-	 * @param string $instance
-	 * @param string $aliasRemote
-	 */
-	public function leftJoinRemoteInstance(string $instance, string $aliasRemote = 'remote'): void {
-		if ($this->getType() !== QueryBuilder::SELECT) {
-			return;
-		}
-
-		$expr = $this->expr();
-		$this->leftJoin(
-			$this->getDefaultSelectAlias(), CoreQueryBuilder::TABLE_REMOTE, $aliasRemote,
-			$expr->eq($aliasRemote . '.instance', $this->createNamedParameter($instance))
-		);
-	}
-
-
-	/**
-	 * left join circle is member of a circle from remote instance
-	 *
-	 * @param string $instance
-	 * @param string $aliasRemote
-	 * @param string $aliasCircle
-	 */
-	private function leftJoinMemberFromRemoteCircle(string $instance, string $aliasRemote, string $aliasCircle
-	) {
-		if ($this->getType() !== QueryBuilder::SELECT) {
-			return;
-		}
-
-		$aliasRemoteCircle = $aliasRemote . self::EXTENSION_CIRCLES;
-		$aliasRemoteCircleOwner = $aliasRemoteCircle . self::EXTENSION_OWNER;
-
-		$expr = $this->expr();
-		$this->leftJoin(
-			$this->getDefaultSelectAlias(), CoreQueryBuilder::TABLE_MEMBER, $aliasRemoteCircle,
-			$expr->andX(
-				$expr->eq($aliasRemoteCircle . '.single_id', $aliasCircle . '.unique_id'),
-				$expr->emptyString($aliasRemoteCircle . '.instance'),
-				$expr->gte($aliasRemoteCircle . '.level', $this->createNamedParameter(Member::LEVEL_MEMBER))
-			)
-		);
-		$this->leftJoin(
-			$this->getDefaultSelectAlias(), CoreQueryBuilder::TABLE_MEMBER, $aliasRemoteCircleOwner,
-			$expr->andX(
-				$expr->eq($aliasRemoteCircle . '.circle_id', $aliasRemoteCircleOwner . '.circle_id'),
-				$expr->eq($aliasRemoteCircleOwner . '.instance', $this->createNamedParameter($instance)),
-				$expr->eq(
-					$aliasRemoteCircleOwner . '.level', $this->createNamedParameter(Member::LEVEL_OWNER)
-				)
-			)
-		);
-	}
-
-
-	/**
 	 * CFG_SINGLE, CFG_HIDDEN and CFG_BACKEND means hidden from listing.
 	 *
 	 * @param string $aliasCircle
@@ -888,71 +1047,6 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 		}
 
 		$this->andWhere($hide);
-	}
-
-
-	/**
-	 * - global_scale: visibility on all Circles
-	 * - trusted: visibility on all FEDERATED Circle if owner is local
-	 * - external: visibility on all FEDERATED Circle if owner is local and:
-	 *    - with if Circle contains at least one member from the remote instance
-	 *    - one circle from the remote instance contains the local circle as member, and confirmed (using
-	 *      sync locally)
-	 * - passive: like external, but the members list will only contains member from the local instance and
-	 * from the remote instance.
-	 *
-	 * @param bool $sensitive
-	 * @param string $aliasRemote
-	 * @param string $aliasCircle
-	 */
-	protected function limitRemoteVisibility(bool $sensitive, string $aliasRemote, string $aliasCircle) {
-		$aliasOwner = $aliasCircle . self::EXTENSION_OWNER;
-		$aliasRemoteMember = $aliasRemote . self::EXTENSION_MEMBERS;
-		$aliasRemoteCircle = $aliasRemote . self::EXTENSION_CIRCLES;
-		$aliasRemoteCircleOwner = $aliasRemoteCircle . self::EXTENSION_OWNER;
-
-		$expr = $this->expr();
-		$orX = $expr->orX();
-		$orX->add(
-			$expr->eq($aliasRemote . '.type', $this->createNamedParameter(RemoteInstance::TYPE_GLOBAL_SCALE))
-		);
-
-		$orExtOrPassive = $expr->orX();
-		$orExtOrPassive->add(
-			$expr->eq($aliasRemote . '.type', $this->createNamedParameter(RemoteInstance::TYPE_EXTERNAL))
-		);
-		if (!$sensitive) {
-			$orExtOrPassive->add(
-				$expr->eq($aliasRemote . '.type', $this->createNamedParameter(RemoteInstance::TYPE_PASSIVE))
-			);
-		} else {
-			if ($this->getDefaultSelectAlias() === 'm') {
-				$orExtOrPassive->add($this->limitRemoteVisibility_Sensitive_Members($aliasRemote));
-			}
-		}
-
-
-		$orInstance = $expr->orX();
-		$orInstance->add($expr->isNotNull($aliasRemoteMember . '.instance'));
-		$orInstance->add($expr->isNotNull($aliasRemoteCircleOwner . '.instance'));
-
-		$andExternal = $expr->andX();
-		$andExternal->add($orExtOrPassive);
-		$andExternal->add($orInstance);
-
-		$orExtOrTrusted = $expr->orX();
-		$orExtOrTrusted->add($andExternal);
-		$orExtOrTrusted->add(
-			$expr->eq($aliasRemote . '.type', $this->createNamedParameter(RemoteInstance::TYPE_TRUSTED))
-		);
-
-		$andTrusted = $expr->andX();
-		$andTrusted->add($orExtOrTrusted);
-		$andTrusted->add($expr->bitwiseAnd($aliasCircle . '.config', Circle::CFG_FEDERATED));
-		$andTrusted->add($expr->emptyString($aliasOwner . '.instance'));
-		$orX->add($andTrusted);
-
-		$this->andWhere($orX);
 	}
 
 
@@ -1034,6 +1128,7 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 
 	/**
 	 * @param string $aliasShare
+	 * @param string $aliasShareMemberships
 	 *
 	 * @throws RequestBuilderException
 	 */
@@ -1078,6 +1173,33 @@ class CoreRequestBuilder extends NC22ExtendedQueryBuilder {
 		}
 
 		$this->andWhere($orX);
+	}
+
+
+	/**
+	 * @param string $aliasMount
+	 * @param string $aliasMountMemberships
+	 *
+	 * @throws RequestBuilderException
+	 */
+	public function leftJoinMountpoint(string $aliasMount, string $aliasMountMemberships = '') {
+		$expr = $this->expr();
+
+		$aliasMountpoint = $this->generateAlias($aliasMount, self::MOUNTPOINT);
+		if ($aliasMountMemberships === '') {
+			$aliasMountMemberships = $this->generateAlias($aliasMount, self::MEMBERSHIPS, $options);
+		}
+
+		$this->leftJoin(
+			$aliasMountMemberships, CoreQueryBuilder::TABLE_MOUNTPOINT, $aliasMountpoint,
+			$expr->andX(
+				$expr->eq($aliasMountpoint . '.mount_id', $aliasMount . '.mount_id'),
+				$expr->eq($aliasMountpoint . '.single_id', $aliasMountMemberships . '.single_id')
+			)
+		);
+
+		$this->selectAlias($aliasMountpoint . '.mountpoint', $aliasMountpoint . '_mountpoint');
+		$this->selectAlias($aliasMountpoint . '.mountpoint_hash', $aliasMountpoint . '_mountpoint_hash');
 	}
 
 

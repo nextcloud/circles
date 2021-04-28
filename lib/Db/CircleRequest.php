@@ -173,7 +173,7 @@ class CircleRequest extends CircleRequestBuilder {
 			$qb->filterCircle($circleFilter);
 		}
 		if (!is_null($remoteInstance)) {
-			$qb->limitToRemoteInstance($remoteInstance->getInstance(), false);
+			$qb->limitToRemoteInstance(CoreRequestBuilder::CIRCLE, $remoteInstance, false);
 		}
 
 		$qb->chunk($params->gInt('offset'), $params->gInt('limit'));
@@ -215,7 +215,7 @@ class CircleRequest extends CircleRequestBuilder {
 			$qb->limitToInitiator(CoreRequestBuilder::CIRCLE, $initiator);
 		}
 		if (!is_null($remoteInstance)) {
-			$qb->limitToRemoteInstance($remoteInstance->getInstance(), false);
+			$qb->limitToRemoteInstance(CoreRequestBuilder::CIRCLE, $remoteInstance, false);
 		}
 
 		return $this->getItemFromRequest($qb);
