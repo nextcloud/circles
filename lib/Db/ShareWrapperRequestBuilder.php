@@ -43,13 +43,13 @@ use OCA\Circles\Model\ShareWrapper;
  *
  * @package OCA\Circles\Db
  */
-class ShareWrapperRequestBuilder extends CoreQueryBuilder {
+class ShareWrapperRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreRequestBuilder
+	 * @return CoreQueryBuilder
 	 */
-	protected function getShareInsertSql(): CoreRequestBuilder {
+	protected function getShareInsertSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->insert(self::TABLE_SHARE);
 
@@ -58,9 +58,9 @@ class ShareWrapperRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
-	 * @return CoreRequestBuilder
+	 * @return CoreQueryBuilder
 	 */
-	protected function getShareUpdateSql(): CoreRequestBuilder {
+	protected function getShareUpdateSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->update(self::TABLE_SHARE);
 
@@ -69,32 +69,32 @@ class ShareWrapperRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
-	 * @return CoreRequestBuilder
+	 * @return CoreQueryBuilder
 	 */
-	protected function getShareSelectSql(): CoreRequestBuilder {
+	protected function getShareSelectSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->select(
-			CoreRequestBuilder::SHARE . '.id',
-			CoreRequestBuilder::SHARE . '.share_type',
-			CoreRequestBuilder::SHARE . '.share_with',
-			CoreRequestBuilder::SHARE . '.uid_owner',
-			CoreRequestBuilder::SHARE . '.uid_initiator',
-			CoreRequestBuilder::SHARE . '.parent',
-			CoreRequestBuilder::SHARE . '.item_type',
-			CoreRequestBuilder::SHARE . '.item_source',
-			CoreRequestBuilder::SHARE . '.item_target',
-			CoreRequestBuilder::SHARE . '.file_source',
-			CoreRequestBuilder::SHARE . '.file_target',
-			CoreRequestBuilder::SHARE . '.permissions',
-			CoreRequestBuilder::SHARE . '.stime',
-			CoreRequestBuilder::SHARE . '.accepted',
-			CoreRequestBuilder::SHARE . '.expiration',
-			CoreRequestBuilder::SHARE . '.token',
-			CoreRequestBuilder::SHARE . '.mail_send'
+			CoreQueryBuilder::SHARE . '.id',
+			CoreQueryBuilder::SHARE . '.share_type',
+			CoreQueryBuilder::SHARE . '.share_with',
+			CoreQueryBuilder::SHARE . '.uid_owner',
+			CoreQueryBuilder::SHARE . '.uid_initiator',
+			CoreQueryBuilder::SHARE . '.parent',
+			CoreQueryBuilder::SHARE . '.item_type',
+			CoreQueryBuilder::SHARE . '.item_source',
+			CoreQueryBuilder::SHARE . '.item_target',
+			CoreQueryBuilder::SHARE . '.file_source',
+			CoreQueryBuilder::SHARE . '.file_target',
+			CoreQueryBuilder::SHARE . '.permissions',
+			CoreQueryBuilder::SHARE . '.stime',
+			CoreQueryBuilder::SHARE . '.accepted',
+			CoreQueryBuilder::SHARE . '.expiration',
+			CoreQueryBuilder::SHARE . '.token',
+			CoreQueryBuilder::SHARE . '.mail_send'
 		)
-		   ->from(self::TABLE_SHARE, CoreRequestBuilder::SHARE)
-		   ->setDefaultSelectAlias(CoreRequestBuilder::SHARE)
-		   ->groupBy(CoreRequestBuilder::SHARE . '.id')
+		   ->from(self::TABLE_SHARE, CoreQueryBuilder::SHARE)
+		   ->setDefaultSelectAlias(CoreQueryBuilder::SHARE)
+		   ->groupBy(CoreQueryBuilder::SHARE . '.id')
 		   ->limitToShareType(Share::TYPE_CIRCLE);
 
 
@@ -105,9 +105,9 @@ class ShareWrapperRequestBuilder extends CoreQueryBuilder {
 	/**
 	 * Base of the Sql Delete request
 	 *
-	 * @return CoreRequestBuilder
+	 * @return CoreQueryBuilder
 	 */
-	protected function getShareDeleteSql(): CoreRequestBuilder {
+	protected function getShareDeleteSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->delete(self::TABLE_SHARE)
 		   ->limitToShareType(Share::TYPE_CIRCLE);
@@ -117,12 +117,12 @@ class ShareWrapperRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
-	 * @param CoreRequestBuilder $qb
+	 * @param CoreQueryBuilder $qb
 	 *
 	 * @return ShareWrapper
 	 * @throws ShareWrapperNotFoundException
 	 */
-	public function getItemFromRequest(CoreRequestBuilder $qb): ShareWrapper {
+	public function getItemFromRequest(CoreQueryBuilder $qb): ShareWrapper {
 		/** @var ShareWrapper $shareWrapper */
 		try {
 			$shareWrapper = $qb->asItem(
@@ -140,11 +140,11 @@ class ShareWrapperRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
-	 * @param CoreRequestBuilder $qb
+	 * @param CoreQueryBuilder $qb
 	 *
 	 * @return ShareWrapper[]
 	 */
-	public function getItemsFromRequest(CoreRequestBuilder $qb): array {
+	public function getItemsFromRequest(CoreQueryBuilder $qb): array {
 		/** @var ShareWrapper[] $result */
 		return $qb->asItems(
 			ShareWrapper::class,

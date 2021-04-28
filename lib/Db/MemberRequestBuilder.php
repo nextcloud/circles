@@ -45,13 +45,13 @@ use OCA\Circles\Model\Member;
  *
  * @package OCA\Circles\Db
  */
-class MemberRequestBuilder extends CoreQueryBuilder {
+class MemberRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreRequestBuilder
+	 * @return CoreQueryBuilder
 	 */
-	protected function getMemberInsertSql(): CoreRequestBuilder {
+	protected function getMemberInsertSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->insert(self::TABLE_MEMBER)
 		   ->setValue('joined', $qb->createNamedParameter($this->timezoneService->getUTCDate()));
@@ -61,9 +61,9 @@ class MemberRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
-	 * @return CoreRequestBuilder
+	 * @return CoreQueryBuilder
 	 */
-	protected function getMemberUpdateSql(): CoreRequestBuilder {
+	protected function getMemberUpdateSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->update(self::TABLE_MEMBER);
 
@@ -75,37 +75,37 @@ class MemberRequestBuilder extends CoreQueryBuilder {
 	 * @param IFederatedUser|null $initiator
 	 * @param bool $getBasedOn
 	 *
-	 * @return CoreRequestBuilder
+	 * @return CoreQueryBuilder
 	 * @throws RequestBuilderException
 	 */
 	protected function getMemberSelectSql(
 		?IFederatedUser $initiator = null,
 		bool $getBasedOn = true
-	): CoreRequestBuilder {
+	): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->select(
-			CoreRequestBuilder::MEMBER . '.circle_id',
-			CoreRequestBuilder::MEMBER . '.member_id',
-			CoreRequestBuilder::MEMBER . '.single_id',
-			CoreRequestBuilder::MEMBER . '.user_id',
-			CoreRequestBuilder::MEMBER . '.instance',
-			CoreRequestBuilder::MEMBER . '.user_type',
-			CoreRequestBuilder::MEMBER . '.level',
-			CoreRequestBuilder::MEMBER . '.status',
-			CoreRequestBuilder::MEMBER . '.note',
-			CoreRequestBuilder::MEMBER . '.contact_id',
-			CoreRequestBuilder::MEMBER . '.cached_name',
-			CoreRequestBuilder::MEMBER . '.cached_update',
-			CoreRequestBuilder::MEMBER . '.contact_meta',
-			CoreRequestBuilder::MEMBER . '.joined'
+			CoreQueryBuilder::MEMBER . '.circle_id',
+			CoreQueryBuilder::MEMBER . '.member_id',
+			CoreQueryBuilder::MEMBER . '.single_id',
+			CoreQueryBuilder::MEMBER . '.user_id',
+			CoreQueryBuilder::MEMBER . '.instance',
+			CoreQueryBuilder::MEMBER . '.user_type',
+			CoreQueryBuilder::MEMBER . '.level',
+			CoreQueryBuilder::MEMBER . '.status',
+			CoreQueryBuilder::MEMBER . '.note',
+			CoreQueryBuilder::MEMBER . '.contact_id',
+			CoreQueryBuilder::MEMBER . '.cached_name',
+			CoreQueryBuilder::MEMBER . '.cached_update',
+			CoreQueryBuilder::MEMBER . '.contact_meta',
+			CoreQueryBuilder::MEMBER . '.joined'
 		)
-		   ->from(self::TABLE_MEMBER, CoreRequestBuilder::MEMBER)
-		   ->orderBy(CoreRequestBuilder::MEMBER . '.joined')
-		   ->groupBy(CoreRequestBuilder::MEMBER . '.member_id')
-		   ->setDefaultSelectAlias(CoreRequestBuilder::MEMBER);
+		   ->from(self::TABLE_MEMBER, CoreQueryBuilder::MEMBER)
+		   ->orderBy(CoreQueryBuilder::MEMBER . '.joined')
+		   ->groupBy(CoreQueryBuilder::MEMBER . '.member_id')
+		   ->setDefaultSelectAlias(CoreQueryBuilder::MEMBER);
 
 		if ($getBasedOn) {
-			$qb->leftJoinBasedOn(CoreRequestBuilder::MEMBER, $initiator);
+			$qb->leftJoinBasedOn(CoreQueryBuilder::MEMBER, $initiator);
 		}
 
 		return $qb;
@@ -115,9 +115,9 @@ class MemberRequestBuilder extends CoreQueryBuilder {
 	/**
 	 * Base of the Sql Delete request
 	 *
-	 * @return CoreRequestBuilder
+	 * @return CoreQueryBuilder
 	 */
-	protected function getMemberDeleteSql(): CoreRequestBuilder {
+	protected function getMemberDeleteSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->delete(self::TABLE_MEMBER);
 
@@ -126,12 +126,12 @@ class MemberRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
-	 * @param CoreRequestBuilder $qb
+	 * @param CoreQueryBuilder $qb
 	 *
 	 * @return Member
 	 * @throws MemberNotFoundException
 	 */
-	public function getItemFromRequest(CoreRequestBuilder $qb): Member {
+	public function getItemFromRequest(CoreQueryBuilder $qb): Member {
 		/** @var Member $member */
 		try {
 			$member = $qb->asItem(
@@ -148,12 +148,12 @@ class MemberRequestBuilder extends CoreQueryBuilder {
 	}
 
 	/**
-	 * @param CoreRequestBuilder $qb
+	 * @param CoreQueryBuilder $qb
 	 * @param bool $asFederatedUser
 	 *
 	 * @return Member|FederatedUser[]
 	 */
-	public function getItemsFromRequest(CoreRequestBuilder $qb, bool $asFederatedUser = false): array {
+	public function getItemsFromRequest(CoreQueryBuilder $qb, bool $asFederatedUser = false): array {
 		$object = Member::class;
 		if ($asFederatedUser) {
 			$object = FederatedUser::class;

@@ -206,14 +206,14 @@ class MemberRequest extends MemberRequestBuilder {
 	): array {
 		$qb = $this->getMemberSelectSql($initiator);
 		$qb->limitToCircleId($singleId);
-		$qb->leftJoinCircle(CoreRequestBuilder::MEMBER, $initiator);
+		$qb->leftJoinCircle(CoreQueryBuilder::MEMBER, $initiator);
 
 		if (!is_null($remoteInstance)) {
-			$aliasCircle = $qb->generateAlias(CoreRequestBuilder::MEMBER, CoreRequestBuilder::CIRCLE);
-			$qb->limitToRemoteInstance(CoreRequestBuilder::MEMBER, $remoteInstance, true, $aliasCircle);
+			$aliasCircle = $qb->generateAlias(CoreQueryBuilder::MEMBER, CoreQueryBuilder::CIRCLE);
+			$qb->limitToRemoteInstance(CoreQueryBuilder::MEMBER, $remoteInstance, true, $aliasCircle);
 		}
 		if (!is_null($filter)) {
-			$qb->filterDirectMembership(CoreRequestBuilder::MEMBER, $filter);
+			$qb->filterDirectMembership(CoreQueryBuilder::MEMBER, $filter);
 		}
 
 		$qb->orderBy($qb->getDefaultSelectAlias() . '.level', 'desc');
@@ -234,15 +234,15 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb = $this->getMemberSelectSql(null, $getData);
 
 		if ($getData) {
-			$qb->leftJoinCircle(CoreRequestBuilder::MEMBER);
-			$qb->setOptions([CoreRequestBuilder::MEMBER], ['getData' => $getData]);
+			$qb->leftJoinCircle(CoreQueryBuilder::MEMBER);
+			$qb->setOptions([CoreQueryBuilder::MEMBER], ['getData' => $getData]);
 		}
 
-		$qb->limitToMembersByInheritance(CoreRequestBuilder::MEMBER, $singleId);
+		$qb->limitToMembersByInheritance(CoreQueryBuilder::MEMBER, $singleId);
 
-		$aliasMembership = $qb->generateAlias(CoreRequestBuilder::MEMBER, CoreRequestBuilder::MEMBERSHIPS);
+		$aliasMembership = $qb->generateAlias(CoreQueryBuilder::MEMBER, CoreQueryBuilder::MEMBERSHIPS);
 		$qb->orderBy($aliasMembership . '.inheritance_depth', 'asc');
-		$qb->groupBy(CoreRequestBuilder::MEMBER . '.single_id');
+		$qb->groupBy(CoreQueryBuilder::MEMBER . '.single_id');
 
 		return $this->getItemsFromRequest($qb);
 	}
@@ -261,7 +261,7 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->limitToMemberId($memberId);
 
 		if (!is_null($initiator)) {
-			$qb->leftJoinCircle(CoreRequestBuilder::MEMBER, $initiator);
+			$qb->leftJoinCircle(CoreQueryBuilder::MEMBER, $initiator);
 		}
 
 		return $this->getItemFromRequest($qb);
@@ -295,7 +295,7 @@ class MemberRequest extends MemberRequestBuilder {
 	 */
 	public function getMembersBySingleId(string $singleId): array {
 		$qb = $this->getMemberSelectSql();
-		$qb->leftJoinCircle(CoreRequestBuilder::MEMBER);
+		$qb->leftJoinCircle(CoreQueryBuilder::MEMBER);
 
 		$qb->limitToSingleId($singleId);
 
@@ -319,7 +319,7 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->limitToInstance($qb->getInstance($member));
 		$qb->limitToSingleId($member->getSingleId());
 
-		$qb->leftJoinCircle(CoreRequestBuilder::MEMBER, $initiator);
+		$qb->leftJoinCircle(CoreQueryBuilder::MEMBER, $initiator);
 
 		return $this->getItemFromRequest($qb);
 	}

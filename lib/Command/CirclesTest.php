@@ -40,7 +40,7 @@ use daita\MySmallPhpTools\Traits\TStringTools;
 use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\AppInfo\Application;
-use OCA\Circles\Db\CoreQueryBuilder;
+use OCA\Circles\Db\CoreRequestBuilder;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedUser;
@@ -81,7 +81,7 @@ class CirclesTest extends Base {
 	];
 
 
-	/** @var CoreQueryBuilder */
+	/** @var CoreRequestBuilder */
 	private $coreQueryBuilder;
 
 	/** @var ConfigService */
@@ -113,10 +113,10 @@ class CirclesTest extends Base {
 	/**
 	 * CirclesTest constructor.
 	 *
-	 * @param CoreQueryBuilder $coreQueryBuilder
+	 * @param CoreRequestBuilder $coreQueryBuilder
 	 * @param ConfigService $configService
 	 */
-	public function __construct(CoreQueryBuilder $coreQueryBuilder, ConfigService $configService) {
+	public function __construct(CoreRequestBuilder $coreQueryBuilder, ConfigService $configService) {
 		parent::__construct();
 
 		$this->coreQueryBuilder = $coreQueryBuilder;

@@ -42,13 +42,13 @@ use OCA\Circles\Model\Mount;
  *
  * @package OCA\Circles\Db
  */
-class MountRequestBuilder extends CoreQueryBuilder {
+class MountRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreRequestBuilder
+	 * @return CoreQueryBuilder
 	 */
-	protected function getMountInsertSql(): CoreRequestBuilder {
+	protected function getMountInsertSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->insert(self::TABLE_MOUNT);
 
@@ -57,9 +57,9 @@ class MountRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
-	 * @return CoreRequestBuilder
+	 * @return CoreQueryBuilder
 	 */
-	protected function getMountUpdateSql(): CoreRequestBuilder {
+	protected function getMountUpdateSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->update(self::TABLE_MOUNT);
 
@@ -70,9 +70,9 @@ class MountRequestBuilder extends CoreQueryBuilder {
 	/**
 	 * @param string $alias
 	 *
-	 * @return CoreRequestBuilder
+	 * @return CoreQueryBuilder
 	 */
-	protected function getMountSelectSql(string $alias = CoreRequestBuilder::MOUNT): CoreRequestBuilder {
+	protected function getMountSelectSql(string $alias = CoreQueryBuilder::MOUNT): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 
 		$qb->select(
@@ -93,9 +93,9 @@ class MountRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
-	 * @return CoreRequestBuilder
+	 * @return CoreQueryBuilder
 	 */
-	protected function getMountDeleteSql(): CoreRequestBuilder {
+	protected function getMountDeleteSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->delete(self::TABLE_MOUNT);
 
@@ -104,12 +104,12 @@ class MountRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
-	 * @param CoreRequestBuilder $qb
+	 * @param CoreQueryBuilder $qb
 	 *
 	 * @return Mount
 	 * @throws MountNotFoundException
 	 */
-	public function getItemFromRequest(CoreRequestBuilder $qb): Mount {
+	public function getItemFromRequest(CoreQueryBuilder $qb): Mount {
 		/** @var Mount $circle */
 		try {
 			$circle = $qb->asItem(
@@ -126,11 +126,11 @@ class MountRequestBuilder extends CoreQueryBuilder {
 	}
 
 	/**
-	 * @param CoreRequestBuilder $qb
+	 * @param CoreQueryBuilder $qb
 	 *
 	 * @return Mount[]
 	 */
-	public function getItemsFromRequest(CoreRequestBuilder $qb): array {
+	public function getItemsFromRequest(CoreQueryBuilder $qb): array {
 		/** @var Mount[] $result */
 		return $qb->asItems(
 			Mount::class,

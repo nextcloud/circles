@@ -27,7 +27,7 @@
 namespace OCA\Circles\Command;
 
 use OC\Core\Command\Base;
-use OCA\Circles\Db\CoreQueryBuilder;
+use OCA\Circles\Db\CoreRequestBuilder;
 use OCA\Circles\Service\CleanService;
 use OCA\Circles\Service\ConfigService;
 use OCP\IDBConnection;
@@ -42,7 +42,7 @@ class Clean extends Base {
 	/** @var IDBConnection */
 	private $dbConnection;
 
-	/** @var CoreQueryBuilder */
+	/** @var CoreRequestBuilder */
 	private $coreQueryBuilder;
 
 	/** @var CleanService */
@@ -55,12 +55,12 @@ class Clean extends Base {
 	 * Clean constructor.
 	 *
 	 * @param IDBConnection $connection
-	 * @param CoreQueryBuilder $coreQueryBuilder
+	 * @param CoreRequestBuilder $coreQueryBuilder
 	 * @param CleanService $cleanService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IDBConnection $connection, CoreQueryBuilder $coreQueryBuilder, CleanService $cleanService,
+		IDBConnection $connection, CoreRequestBuilder $coreQueryBuilder, CleanService $cleanService,
 		ConfigService $configService
 	) {
 		parent::__construct();

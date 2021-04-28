@@ -42,13 +42,13 @@ use OCA\Circles\Model\Federated\EventWrapper;
  *
  * @package OCA\Circles\Db
  */
-class EventWrapperRequestBuilder extends CoreQueryBuilder {
+class EventWrapperRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreRequestBuilder
+	 * @return CoreQueryBuilder
 	 */
-	protected function getEventWrapperInsertSql(): CoreRequestBuilder {
+	protected function getEventWrapperInsertSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->insert(self::TABLE_EVENT);
 
@@ -57,9 +57,9 @@ class EventWrapperRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
-	 * @return CoreRequestBuilder
+	 * @return CoreQueryBuilder
 	 */
-	protected function getEventWrapperUpdateSql(): CoreRequestBuilder {
+	protected function getEventWrapperUpdateSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->update(self::TABLE_EVENT);
 
@@ -68,9 +68,9 @@ class EventWrapperRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
-	 * @return CoreRequestBuilder
+	 * @return CoreQueryBuilder
 	 */
-	protected function getEventWrapperSelectSql(): CoreRequestBuilder {
+	protected function getEventWrapperSelectSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 
 		$qb->select(
@@ -85,9 +85,9 @@ class EventWrapperRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
-	 * @return CoreRequestBuilder
+	 * @return CoreQueryBuilder
 	 */
-	protected function getEventWrapperDeleteSql(): CoreRequestBuilder {
+	protected function getEventWrapperDeleteSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->delete(self::TABLE_EVENT);
 
@@ -96,12 +96,12 @@ class EventWrapperRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
-	 * @param CoreRequestBuilder $qb
+	 * @param CoreQueryBuilder $qb
 	 *
 	 * @return EventWrapper
 	 * @throws EventWrapperNotFoundException
 	 */
-	public function getItemFromRequest(CoreRequestBuilder $qb): EventWrapper {
+	public function getItemFromRequest(CoreQueryBuilder $qb): EventWrapper {
 		/** @var EventWrapper $wrapper */
 		try {
 			$wrapper = $qb->asItem(EventWrapper::class);
@@ -113,11 +113,11 @@ class EventWrapperRequestBuilder extends CoreQueryBuilder {
 	}
 
 	/**
-	 * @param CoreRequestBuilder $qb
+	 * @param CoreQueryBuilder $qb
 	 *
 	 * @return EventWrapper[]
 	 */
-	public function getItemsFromRequest(CoreRequestBuilder $qb): array {
+	public function getItemsFromRequest(CoreQueryBuilder $qb): array {
 		/** @var EventWrapper[] $result */
 		return $qb->asItems(EventWrapper::class);
 	}

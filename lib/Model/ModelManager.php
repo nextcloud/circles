@@ -32,7 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Model;
 
 
-use OCA\Circles\Db\CoreRequestBuilder;
+use OCA\Circles\Db\CoreQueryBuilder;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
@@ -52,7 +52,7 @@ use OCA\Circles\Service\ConfigService;
 class ModelManager {
 
 
-	/** @var CoreRequestBuilder */
+	/** @var CoreQueryBuilder */
 	private $coreRequestBuilder;
 
 	/** @var MemberRequest */
@@ -72,13 +72,13 @@ class ModelManager {
 	/**
 	 * ModelManager constructor.
 	 *
-	 * @param CoreRequestBuilder $coreRequestBuilder
+	 * @param CoreQueryBuilder $coreRequestBuilder
 	 * @param MemberRequest $memberRequest
 	 * @param MembershipRequest $membershipRequest
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		CoreRequestBuilder $coreRequestBuilder, MemberRequest $memberRequest,
+		CoreQueryBuilder $coreRequestBuilder, MemberRequest $memberRequest,
 		MembershipRequest $membershipRequest, ConfigService $configService
 	) {
 		$this->coreRequestBuilder = $coreRequestBuilder;
@@ -150,25 +150,25 @@ class ModelManager {
 	public function manageImportFromDatabase(ManagedModel $model, array $data, string $base): void {
 		if ($model instanceof Circle) {
 			if ($base === '') {
-				$base = CoreRequestBuilder::CIRCLE;
+				$base = CoreQueryBuilder::CIRCLE;
 			}
 		}
 
 		if ($model instanceof Member) {
 			if ($base === '') {
-				$base = CoreRequestBuilder::MEMBER;
+				$base = CoreQueryBuilder::MEMBER;
 			}
 		}
 
 		if ($model instanceof ShareWrapper) {
 			if ($base === '') {
-				$base = CoreRequestBuilder::SHARE;
+				$base = CoreQueryBuilder::SHARE;
 			}
 		}
 
 		if ($model instanceof Mount) {
 			if ($base === '') {
-				$base = CoreRequestBuilder::MOUNT;
+				$base = CoreQueryBuilder::MOUNT;
 			}
 		}
 
@@ -209,7 +209,7 @@ class ModelManager {
 	 */
 	private function importIntoCircle(Circle $circle, array $data, string $path, string $prefix): void {
 		switch ($path) {
-			case CoreRequestBuilder::OWNER;
+			case CoreQueryBuilder::OWNER;
 				try {
 					$owner = new Member();
 					$owner->importFromDatabase($data, $prefix);
@@ -218,7 +218,7 @@ class ModelManager {
 				}
 				break;
 
-			case CoreRequestBuilder::INITIATOR;
+			case CoreQueryBuilder::INITIATOR;
 				try {
 					$initiator = new Member();
 					$initiator->importFromDatabase($data, $prefix);
@@ -238,7 +238,7 @@ class ModelManager {
 	 */
 	private function importIntoMember(Member $member, array $data, string $path, string $prefix): void {
 		switch ($path) {
-			case CoreRequestBuilder::CIRCLE;
+			case CoreQueryBuilder::CIRCLE;
 				try {
 					$circle = new Circle();
 					$circle->importFromDatabase($data, $prefix);
@@ -247,7 +247,7 @@ class ModelManager {
 				}
 				break;
 
-			case CoreRequestBuilder::BASED_ON;
+			case CoreQueryBuilder::BASED_ON;
 				try {
 					$circle = new Circle();
 					$circle->importFromDatabase($data, $prefix);
@@ -256,7 +256,7 @@ class ModelManager {
 				}
 				break;
 
-			case CoreRequestBuilder::INHERITED_BY;
+			case CoreQueryBuilder::INHERITED_BY;
 				try {
 					$inheritedBy = new FederatedUser();
 					$inheritedBy->importFromDatabase($data, $prefix);
@@ -265,7 +265,7 @@ class ModelManager {
 				}
 				break;
 
-			case CoreRequestBuilder::INHERITANCE_FROM;
+			case CoreQueryBuilder::INHERITANCE_FROM;
 				try {
 					$inheritanceFrom = new Member();
 					$inheritanceFrom->importFromDatabase($data, $prefix);
@@ -290,7 +290,7 @@ class ModelManager {
 		string $prefix
 	): void {
 		switch ($path) {
-			case CoreRequestBuilder::MEMBERSHIPS;
+			case CoreQueryBuilder::MEMBERSHIPS;
 				try {
 					$membership = new Membership();
 					$membership->importFromDatabase($data, $prefix);
@@ -315,7 +315,7 @@ class ModelManager {
 		string $prefix
 	): void {
 		switch ($path) {
-			case CoreRequestBuilder::CIRCLE;
+			case CoreQueryBuilder::CIRCLE;
 				try {
 					$circle = new Circle();
 					$circle->importFromDatabase($data, $prefix);
@@ -324,7 +324,7 @@ class ModelManager {
 				}
 				break;
 
-			case CoreRequestBuilder::INITIATOR;
+			case CoreQueryBuilder::INITIATOR;
 				try {
 					$initiator = new Member();
 					$initiator->importFromDatabase($data, $prefix);
@@ -333,7 +333,7 @@ class ModelManager {
 				}
 				break;
 
-			case CoreRequestBuilder::INHERITED_BY;
+			case CoreQueryBuilder::INHERITED_BY;
 				try {
 					$inheritedBy = new Member();
 					$inheritedBy->importFromDatabase($data, $prefix);
@@ -342,7 +342,7 @@ class ModelManager {
 				}
 				break;
 
-			case CoreRequestBuilder::FILE_CACHE;
+			case CoreQueryBuilder::FILE_CACHE;
 				try {
 					$fileCache = new FileCacheWrapper();
 					$fileCache->importFromDatabase($data, $prefix);
@@ -367,7 +367,7 @@ class ModelManager {
 		string $prefix
 	): void {
 		switch ($path) {
-			case CoreRequestBuilder::MEMBER;
+			case CoreQueryBuilder::MEMBER;
 				try {
 					$member = new Member();
 					$member->importFromDatabase($data, $prefix);
@@ -376,7 +376,7 @@ class ModelManager {
 				}
 				break;
 
-			case CoreRequestBuilder::INITIATOR;
+			case CoreQueryBuilder::INITIATOR;
 				try {
 					$initiator = new Member();
 					$initiator->importFromDatabase($data, $prefix);

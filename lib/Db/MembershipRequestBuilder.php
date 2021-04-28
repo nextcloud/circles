@@ -42,13 +42,13 @@ use OCA\Circles\Model\Membership;
  *
  * @package OCA\Circles\Db
  */
-class MembershipRequestBuilder extends CoreQueryBuilder {
+class MembershipRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreRequestBuilder
+	 * @return CoreQueryBuilder
 	 */
-	protected function getMembershipInsertSql(): CoreRequestBuilder {
+	protected function getMembershipInsertSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->insert(self::TABLE_MEMBERSHIP);
 
@@ -57,9 +57,9 @@ class MembershipRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
-	 * @return CoreRequestBuilder
+	 * @return CoreQueryBuilder
 	 */
-	protected function getMembershipUpdateSql(): CoreRequestBuilder {
+	protected function getMembershipUpdateSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->update(self::TABLE_MEMBERSHIP);
 
@@ -68,21 +68,21 @@ class MembershipRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
-	 * @return CoreRequestBuilder
+	 * @return CoreQueryBuilder
 	 */
-	protected function getMembershipSelectSql(): CoreRequestBuilder {
+	protected function getMembershipSelectSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->select(
-			CoreRequestBuilder::MEMBER . '.single_id',
-			CoreRequestBuilder::MEMBER . '.circle_id',
-			CoreRequestBuilder::MEMBER . '.level',
-			CoreRequestBuilder::MEMBER . '.inheritance_first',
-			CoreRequestBuilder::MEMBER . '.inheritance_last',
-			CoreRequestBuilder::MEMBER . '.inheritance_path',
-			CoreRequestBuilder::MEMBER . '.inheritance_depth'
+			CoreQueryBuilder::MEMBER . '.single_id',
+			CoreQueryBuilder::MEMBER . '.circle_id',
+			CoreQueryBuilder::MEMBER . '.level',
+			CoreQueryBuilder::MEMBER . '.inheritance_first',
+			CoreQueryBuilder::MEMBER . '.inheritance_last',
+			CoreQueryBuilder::MEMBER . '.inheritance_path',
+			CoreQueryBuilder::MEMBER . '.inheritance_depth'
 		)
-		   ->from(self::TABLE_MEMBERSHIP, CoreRequestBuilder::MEMBER)
-		   ->setDefaultSelectAlias(CoreRequestBuilder::MEMBER);
+		   ->from(self::TABLE_MEMBERSHIP, CoreQueryBuilder::MEMBER)
+		   ->setDefaultSelectAlias(CoreQueryBuilder::MEMBER);
 
 		return $qb;
 	}
@@ -91,9 +91,9 @@ class MembershipRequestBuilder extends CoreQueryBuilder {
 	/**
 	 * Base of the Sql Delete request
 	 *
-	 * @return CoreRequestBuilder
+	 * @return CoreQueryBuilder
 	 */
-	protected function getMembershipDeleteSql(): CoreRequestBuilder {
+	protected function getMembershipDeleteSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->delete(self::TABLE_MEMBERSHIP);
 
@@ -102,12 +102,12 @@ class MembershipRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
-	 * @param CoreRequestBuilder $qb
+	 * @param CoreQueryBuilder $qb
 	 *
 	 * @return Member
 	 * @throws RowNotFoundException
 	 */
-	public function getItemFromRequest(CoreRequestBuilder $qb): Member {
+	public function getItemFromRequest(CoreQueryBuilder $qb): Member {
 		/** @var Member $member */
 		$member = $qb->asItem(Membership::class);
 
@@ -115,11 +115,11 @@ class MembershipRequestBuilder extends CoreQueryBuilder {
 	}
 
 	/**
-	 * @param CoreRequestBuilder $qb
+	 * @param CoreQueryBuilder $qb
 	 *
 	 * @return Membership[]
 	 */
-	public function getItemsFromRequest(CoreRequestBuilder $qb): array {
+	public function getItemsFromRequest(CoreQueryBuilder $qb): array {
 		/** @var Membership[] $result */
 		return $qb->asItems(Membership::class);
 	}

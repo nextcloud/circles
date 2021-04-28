@@ -154,26 +154,26 @@ class CircleRequest extends CircleRequestBuilder {
 		SimpleDataStore $params
 	): array {
 		$qb = $this->getCircleSelectSql();
-		$qb->leftJoinOwner(CoreRequestBuilder::CIRCLE);
-		$qb->setOptions([CoreRequestBuilder::CIRCLE], ['getData' => true, 'mustBeMember' => false]);
+		$qb->leftJoinOwner(CoreQueryBuilder::CIRCLE);
+		$qb->setOptions([CoreQueryBuilder::CIRCLE], ['getData' => true, 'mustBeMember' => false]);
 
 		if (!$params->gBool('includeSystemCircles')) {
 			$qb->filterCircles(
-				CoreRequestBuilder::CIRCLE,
+				CoreQueryBuilder::CIRCLE,
 				Circle::CFG_SINGLE | Circle::CFG_HIDDEN | Circle::CFG_BACKEND
 			);
 		}
 		if (!is_null($initiator)) {
-			$qb->limitToInitiator(CoreRequestBuilder::CIRCLE, $initiator);
+			$qb->limitToInitiator(CoreQueryBuilder::CIRCLE, $initiator);
 		}
 		if (!is_null($memberFilter)) {
-			$qb->limitToDirectMembership(CoreRequestBuilder::CIRCLE, $memberFilter);
+			$qb->limitToDirectMembership(CoreQueryBuilder::CIRCLE, $memberFilter);
 		}
 		if (!is_null($circleFilter)) {
 			$qb->filterCircle($circleFilter);
 		}
 		if (!is_null($remoteInstance)) {
-			$qb->limitToRemoteInstance(CoreRequestBuilder::CIRCLE, $remoteInstance, false);
+			$qb->limitToRemoteInstance(CoreQueryBuilder::CIRCLE, $remoteInstance, false);
 		}
 
 		$qb->chunk($params->gInt('offset'), $params->gInt('limit'));
@@ -199,11 +199,11 @@ class CircleRequest extends CircleRequestBuilder {
 		int $filter = Circle::CFG_BACKEND | Circle::CFG_SINGLE | Circle::CFG_HIDDEN
 	): Circle {
 		$qb = $this->getCircleSelectSql();
-		$qb->setOptions([CoreRequestBuilder::CIRCLE], ['getData' => true, 'canBeVisitor' => true]);
+		$qb->setOptions([CoreQueryBuilder::CIRCLE], ['getData' => true, 'canBeVisitor' => true]);
 
 		$qb->limitToUniqueId($id);
-		$qb->filterCircles(CoreRequestBuilder::CIRCLE, $filter);
-		$qb->leftJoinOwner(CoreRequestBuilder::CIRCLE);
+		$qb->filterCircles(CoreQueryBuilder::CIRCLE, $filter);
+		$qb->leftJoinOwner(CoreQueryBuilder::CIRCLE);
 //		$qb->setOptions(
 //			[CoreRequestBuilder::CIRCLE, CoreRequestBuilder::INITIATOR], [
 //																		   'mustBeMember' => false,
@@ -212,10 +212,10 @@ class CircleRequest extends CircleRequestBuilder {
 //		);
 
 		if (!is_null($initiator)) {
-			$qb->limitToInitiator(CoreRequestBuilder::CIRCLE, $initiator);
+			$qb->limitToInitiator(CoreQueryBuilder::CIRCLE, $initiator);
 		}
 		if (!is_null($remoteInstance)) {
-			$qb->limitToRemoteInstance(CoreRequestBuilder::CIRCLE, $remoteInstance, false);
+			$qb->limitToRemoteInstance(CoreQueryBuilder::CIRCLE, $remoteInstance, false);
 		}
 
 		return $this->getItemFromRequest($qb);
@@ -232,7 +232,7 @@ class CircleRequest extends CircleRequestBuilder {
 	public function getFederatedUserBySingleId(string $singleId): FederatedUser {
 		$qb = $this->getCircleSelectSql();
 		$qb->limitToUniqueId($singleId);
-		$qb->leftJoinOwner(CoreRequestBuilder::CIRCLE);
+		$qb->leftJoinOwner(CoreQueryBuilder::CIRCLE);
 
 		$circle = $this->getItemFromRequest($qb);
 
@@ -253,7 +253,7 @@ class CircleRequest extends CircleRequestBuilder {
 	 * @throws RequestBuilderException
 	 */
 	public function getSingleCircle(IFederatedUser $initiator): Circle {
-		$qb = $this->getCircleSelectSql(CoreRequestBuilder::SINGLE);
+		$qb = $this->getCircleSelectSql(CoreQueryBuilder::SINGLE);
 
 		if ($initiator instanceof FederatedUser) {
 			$member = new Member();
@@ -263,7 +263,7 @@ class CircleRequest extends CircleRequestBuilder {
 			$member = clone $initiator;
 		}
 
-		$qb->limitToDirectMembership(CoreRequestBuilder::SINGLE, $member);
+		$qb->limitToDirectMembership(CoreQueryBuilder::SINGLE, $member);
 		$qb->limitToConfigFlag(Circle::CFG_SINGLE);
 
 		try {
@@ -283,7 +283,7 @@ class CircleRequest extends CircleRequestBuilder {
 	 */
 	public function searchCircle(Circle $circle, ?IFederatedUser $initiator = null): Circle {
 		$qb = $this->getCircleSelectSql();
-		$qb->leftJoinOwner(CoreRequestBuilder::CIRCLE);
+		$qb->leftJoinOwner(CoreQueryBuilder::CIRCLE);
 
 		if ($circle->getName() !== '') {
 			$qb->limitToName($circle->getName());
@@ -296,13 +296,13 @@ class CircleRequest extends CircleRequestBuilder {
 		}
 
 		if ($circle->hasOwner()) {
-			$aliasOwner = $qb->generateAlias(CoreRequestBuilder::CIRCLE, CoreRequestBuilder::OWNER);
+			$aliasOwner = $qb->generateAlias(CoreQueryBuilder::CIRCLE, CoreQueryBuilder::OWNER);
 			$qb->filterDirectMembership($aliasOwner, $circle->getOwner());
 		}
 
 		if (!is_null($initiator)) {
-			$qb->setOptions([CoreRequestBuilder::CIRCLE], ['getData' => true]);
-			$qb->limitToInitiator(CoreRequestBuilder::CIRCLE, $initiator);
+			$qb->setOptions([CoreQueryBuilder::CIRCLE], ['getData' => true]);
+			$qb->limitToInitiator(CoreQueryBuilder::CIRCLE, $initiator);
 		}
 
 		return $this->getItemFromRequest($qb);
@@ -314,8 +314,8 @@ class CircleRequest extends CircleRequestBuilder {
 	 */
 	public function getFederated(): array {
 		$qb = $this->getCircleSelectSql();
-		$qb->filterConfig(CoreRequestBuilder::CIRCLE, Circle::CFG_FEDERATED);
-		$qb->leftJoinOwner(CoreRequestBuilder::CIRCLE);
+		$qb->filterConfig(CoreQueryBuilder::CIRCLE, Circle::CFG_FEDERATED);
+		$qb->leftJoinOwner(CoreQueryBuilder::CIRCLE);
 
 		return $this->getItemsFromRequest($qb);
 	}

@@ -34,7 +34,7 @@ namespace OCA\Circles\Model;
 use daita\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
-use OCA\Circles\Db\CoreRequestBuilder;
+use OCA\Circles\Db\CoreQueryBuilder;
 use OCA\Circles\Exceptions\FileCacheNotFoundException;
 
 
@@ -491,7 +491,7 @@ class FileCacheWrapper extends ManagedModel implements INC22QueryRow, JsonSerial
 		$this->setChecksum($this->get($prefix . 'checksum', $data));
 
 		// small hack as there is no reason to call a recursive method for a single entry from the table
-		$this->setStorage($this->get($prefix . CoreRequestBuilder::STORAGES . '_id', $data));
+		$this->setStorage($this->get($prefix . CoreQueryBuilder::STORAGES . '_id', $data));
 
 		return $this;
 	}

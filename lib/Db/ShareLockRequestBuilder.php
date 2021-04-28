@@ -41,13 +41,13 @@ use OCA\Circles\Model\Federated\FederatedShare;
  *
  * @package OCA\Circles\Db
  */
-class ShareLockRequestBuilder extends CoreQueryBuilder {
+class ShareLockRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
-	 * @return CoreRequestBuilder
+	 * @return CoreQueryBuilder
 	 */
-	protected function getShareLockInsertSql(): CoreRequestBuilder {
+	protected function getShareLockInsertSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->insert(self::TABLE_SHARE_LOCKS);
 
@@ -56,9 +56,9 @@ class ShareLockRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
-	 * @return CoreRequestBuilder
+	 * @return CoreQueryBuilder
 	 */
-	protected function getShareLockSelectSql(): CoreRequestBuilder {
+	protected function getShareLockSelectSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 
 		$qb->select('s.id', 's.item_id', 's.circle_id', 's.instance')
@@ -70,9 +70,9 @@ class ShareLockRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
-	 * @return CoreRequestBuilder
+	 * @return CoreQueryBuilder
 	 */
-	protected function getShareLockUpdateSql(): CoreRequestBuilder {
+	protected function getShareLockUpdateSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->update(self::TABLE_SHARE_LOCKS);
 
@@ -81,9 +81,9 @@ class ShareLockRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
-	 * @return CoreRequestBuilder
+	 * @return CoreQueryBuilder
 	 */
-	protected function getShareDeleteSql(): CoreRequestBuilder {
+	protected function getShareDeleteSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->delete(self::TABLE_SHARE_LOCKS);
 
@@ -92,12 +92,12 @@ class ShareLockRequestBuilder extends CoreQueryBuilder {
 
 
 	/**
-	 * @param CoreRequestBuilder $qb
+	 * @param CoreQueryBuilder $qb
 	 *
 	 * @return FederatedShare
 	 * @throws FederatedShareNotFoundException
 	 */
-	public function getItemFromRequest(CoreRequestBuilder $qb): FederatedShare {
+	public function getItemFromRequest(CoreQueryBuilder $qb): FederatedShare {
 		/** @var FederatedShare $circle */
 		try {
 			$circle = $qb->asItem(
@@ -114,11 +114,11 @@ class ShareLockRequestBuilder extends CoreQueryBuilder {
 	}
 
 	/**
-	 * @param CoreRequestBuilder $qb
+	 * @param CoreQueryBuilder $qb
 	 *
 	 * @return FederatedShare[]
 	 */
-	public function getItemsFromRequest(CoreRequestBuilder $qb): array {
+	public function getItemsFromRequest(CoreQueryBuilder $qb): array {
 		/** @var FederatedShare[] $result */
 		return $qb->asItems(
 			FederatedShare::class,

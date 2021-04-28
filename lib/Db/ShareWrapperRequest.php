@@ -136,13 +136,13 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 	): array {
 		$qb = $this->getShareSelectSql();
 		$qb->limitToDBFieldEmpty('parent', true);
-		$qb->setOptions([CoreRequestBuilder::SHARE], ['getData' => true]);
+		$qb->setOptions([CoreQueryBuilder::SHARE], ['getData' => true]);
 
-		$qb->leftJoinCircle(CoreRequestBuilder::SHARE, null, 'share_with');
+		$qb->leftJoinCircle(CoreQueryBuilder::SHARE, null, 'share_with');
 
 		$aliasUpstreamMembership =
-			$qb->generateAlias(CoreRequestBuilder::SHARE, CoreRequestBuilder::UPSTREAM_MEMBERSHIPS);
-		$qb->limitToInheritedMemberships(CoreRequestBuilder::SHARE, $circleId, 'share_with');
+			$qb->generateAlias(CoreQueryBuilder::SHARE, CoreQueryBuilder::UPSTREAM_MEMBERSHIPS);
+		$qb->limitToInheritedMemberships(CoreQueryBuilder::SHARE, $circleId, 'share_with');
 
 //		if (!is_null($shareRecipient)) {
 //			$qb->limitToInitiator(CoreRequestBuilder::SHARE, $shareRecipient, 'share_with');
@@ -151,12 +151,12 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		$qb->leftJoinInheritedMembers(
 			$aliasUpstreamMembership,
 			'circle_id',
-			$qb->generateAlias(CoreRequestBuilder::SHARE, CoreRequestBuilder::INHERITED_BY)
+			$qb->generateAlias(CoreQueryBuilder::SHARE, CoreQueryBuilder::INHERITED_BY)
 		);
 
-		$aliasMembership = $qb->generateAlias($aliasUpstreamMembership, CoreRequestBuilder::MEMBERSHIPS);
-		$qb->leftJoinFileCache(CoreRequestBuilder::SHARE);
-		$qb->leftJoinShareChild(CoreRequestBuilder::SHARE, $aliasMembership);
+		$aliasMembership = $qb->generateAlias($aliasUpstreamMembership, CoreQueryBuilder::MEMBERSHIPS);
+		$qb->leftJoinFileCache(CoreQueryBuilder::SHARE);
+		$qb->leftJoinShareChild(CoreQueryBuilder::SHARE, $aliasMembership);
 
 		if (!is_null($shareInitiator)) {
 		}
@@ -180,13 +180,13 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 	public function getShareById(int $shareId, ?FederatedUser $federatedUser = null): ShareWrapper {
 		$qb = $this->getShareSelectSql();
 
-		$qb->setOptions([CoreRequestBuilder::SHARE], ['getData' => true]);
-		$qb->leftJoinCircle(CoreRequestBuilder::SHARE, null, 'share_with');
+		$qb->setOptions([CoreQueryBuilder::SHARE], ['getData' => true]);
+		$qb->leftJoinCircle(CoreQueryBuilder::SHARE, null, 'share_with');
 		$qb->limitToId($shareId);
 
 		if (!is_null($federatedUser)) {
-			$qb->limitToInitiator(CoreRequestBuilder::SHARE, $federatedUser, 'share_with');
-			$qb->leftJoinShareChild(CoreRequestBuilder::SHARE);
+			$qb->limitToInitiator(CoreQueryBuilder::SHARE, $federatedUser, 'share_with');
+			$qb->leftJoinShareChild(CoreQueryBuilder::SHARE);
 		}
 
 		return $this->getItemFromRequest($qb);
@@ -221,14 +221,14 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		$qb->limitToFileSource($fileId);
 
 		if ($getData) {
-			$qb->setOptions([CoreRequestBuilder::SHARE], ['getData' => $getData]);
-			$qb->leftJoinCircle(CoreRequestBuilder::SHARE, null, 'share_with');
+			$qb->setOptions([CoreQueryBuilder::SHARE], ['getData' => $getData]);
+			$qb->leftJoinCircle(CoreQueryBuilder::SHARE, null, 'share_with');
 //			$qb->leftJoinFileCache(CoreRequestBuilder::SHARE);
 			$qb->limitToDBFieldEmpty('parent', true);
 
-			$aliasMembership = $qb->generateAlias(CoreRequestBuilder::SHARE, CoreRequestBuilder::MEMBERSHIPS);
-			$qb->leftJoinInheritedMembers(CoreRequestBuilder::SHARE, 'share_with');
-			$qb->leftJoinShareChild(CoreRequestBuilder::SHARE);
+			$aliasMembership = $qb->generateAlias(CoreQueryBuilder::SHARE, CoreQueryBuilder::MEMBERSHIPS);
+			$qb->leftJoinInheritedMembers(CoreQueryBuilder::SHARE, 'share_with');
+			$qb->leftJoinShareChild(CoreQueryBuilder::SHARE);
 
 			$qb->addGroupBy($aliasMembership . '.single_id');
 		}
@@ -255,16 +255,16 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		bool $getData = false
 	): array {
 		$qb = $this->getShareSelectSql();
-		$qb->setOptions([CoreRequestBuilder::SHARE], ['getData' => $getData]);
+		$qb->setOptions([CoreQueryBuilder::SHARE], ['getData' => $getData]);
 		if ($getData) {
-			$qb->leftJoinCircle(CoreRequestBuilder::SHARE, null, 'share_with');
+			$qb->leftJoinCircle(CoreQueryBuilder::SHARE, null, 'share_with');
 		}
 
-		$qb->limitToInitiator(CoreRequestBuilder::SHARE, $federatedUser, 'share_with');
+		$qb->limitToInitiator(CoreQueryBuilder::SHARE, $federatedUser, 'share_with');
 
-		$qb->leftJoinFileCache(CoreRequestBuilder::SHARE);
+		$qb->leftJoinFileCache(CoreQueryBuilder::SHARE);
 		$qb->limitToDBFieldEmpty('parent', true);
-		$qb->leftJoinShareChild(CoreRequestBuilder::SHARE);
+		$qb->leftJoinShareChild(CoreQueryBuilder::SHARE);
 
 		if ($nodeId > 0) {
 			$qb->limitToFileSource($nodeId);
@@ -298,10 +298,10 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		bool $completeDetails = false
 	): array {
 		$qb = $this->getShareSelectSql();
-		$qb->setOptions([CoreRequestBuilder::SHARE], ['getData' => $getData]);
-		$qb->leftJoinCircle(CoreRequestBuilder::SHARE, null, 'share_with');
+		$qb->setOptions([CoreQueryBuilder::SHARE], ['getData' => $getData]);
+		$qb->leftJoinCircle(CoreQueryBuilder::SHARE, null, 'share_with');
 
-		$qb->limitToShareOwner(CoreRequestBuilder::SHARE, $federatedUser, $reshares);
+		$qb->limitToShareOwner(CoreQueryBuilder::SHARE, $federatedUser, $reshares);
 		$qb->limitToDBFieldEmpty('parent', true);
 
 		if ($nodeId > 0) {
@@ -309,10 +309,10 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		}
 
 		if ($completeDetails) {
-			$aliasMembership = $qb->generateAlias(CoreRequestBuilder::SHARE, CoreRequestBuilder::MEMBERSHIPS);
-			$qb->leftJoinInheritedMembers(CoreRequestBuilder::SHARE, 'share_with');
-			$qb->leftJoinFileCache(CoreRequestBuilder::SHARE);
-			$qb->leftJoinShareChild(CoreRequestBuilder::SHARE, $aliasMembership);
+			$aliasMembership = $qb->generateAlias(CoreQueryBuilder::SHARE, CoreQueryBuilder::MEMBERSHIPS);
+			$qb->leftJoinInheritedMembers(CoreQueryBuilder::SHARE, 'share_with');
+			$qb->leftJoinFileCache(CoreQueryBuilder::SHARE);
+			$qb->leftJoinShareChild(CoreQueryBuilder::SHARE, $aliasMembership);
 			$qb->addGroupBy($aliasMembership . '.single_id');
 		}
 
@@ -337,11 +337,11 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 	): array {
 		$qb = $this->getShareSelectSql();
 
-		$qb->leftJoinCircle(CoreRequestBuilder::SHARE, null, 'share_with');
-		$qb->limitToShareOwner(CoreRequestBuilder::SHARE, $federatedUser, $reshares);
-		$qb->leftJoinFileCache(CoreRequestBuilder::SHARE);
+		$qb->leftJoinCircle(CoreQueryBuilder::SHARE, null, 'share_with');
+		$qb->limitToShareOwner(CoreQueryBuilder::SHARE, $federatedUser, $reshares);
+		$qb->leftJoinFileCache(CoreQueryBuilder::SHARE);
 		if ($nodeId > 0) {
-			$aliasFileCache = $qb->generateAlias(CoreRequestBuilder::SHARE, CoreRequestBuilder::FILE_CACHE);
+			$aliasFileCache = $qb->generateAlias(CoreQueryBuilder::SHARE, CoreQueryBuilder::FILE_CACHE);
 			$qb->limitToDBFieldInt('parent', $nodeId, $aliasFileCache);
 		}
 		$qb->limitToDBFieldEmpty('parent', true);
@@ -363,8 +363,8 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 	public function searchShare(string $singleId, int $fileId): ShareWrapper {
 		$qb = $this->getShareSelectSql();
 
-		$qb->setOptions([CoreRequestBuilder::SHARE], ['getData' => true]);
-		$qb->leftJoinCircle(CoreRequestBuilder::SHARE, null, 'share_with');
+		$qb->setOptions([CoreQueryBuilder::SHARE], ['getData' => true]);
+		$qb->leftJoinCircle(CoreQueryBuilder::SHARE, null, 'share_with');
 
 		$qb->limitToDBFieldEmpty('parent', true);
 		$qb->limitToShareWith($singleId);
