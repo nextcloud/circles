@@ -376,6 +376,8 @@ class LocalController extends OcsController {
 	 */
 	public function editDisplayName(string $circleId, string $value): DataResponse {
 		try {
+			$this->setCurrentFederatedUser();
+
 			$this->circleService->updateDisplayName($circleId, $value);
 			return new DataResponse($this->circleService->getCircle($circleId));
 		} catch (Exception $e) {
@@ -393,6 +395,8 @@ class LocalController extends OcsController {
 	 */
 	public function editDescription(string $circleId, string $value): DataResponse {
 		try {
+			$this->setCurrentFederatedUser();
+
 			$this->circleService->updateDescription($circleId, $value);
 			return new DataResponse($this->circleService->getCircle($circleId));
 		} catch (Exception $e) {
@@ -410,6 +414,8 @@ class LocalController extends OcsController {
 	 */
 	public function editSettings(string $circleId, array $value): DataResponse {
 		try {
+			$this->setCurrentFederatedUser();
+
 			$this->circleService->updateSettings($circleId, $value);
 			return new DataResponse($this->circleService->getCircle($circleId));
 		} catch (Exception $e) {
