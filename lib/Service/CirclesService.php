@@ -280,10 +280,9 @@ class CirclesService {
 			} else {
 				$circle = $this->circlesRequest->getCircleFromUniqueId($circleUniqueId);
 			}
-			if ($this->viewerIsAdmin()
+			if ($forceAll === true || $this->viewerIsAdmin()
 				|| $circle->getHigherViewer()
 						  ->isLevel(Member::LEVEL_MEMBER)
-				|| $forceAll === true
 			) {
 				$this->detailsCircleMembers($circle);
 				$this->detailsCircleLinkedGroups($circle);
