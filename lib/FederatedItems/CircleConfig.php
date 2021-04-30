@@ -36,6 +36,7 @@ use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\FederatedItemBadRequestException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\IFederatedItem;
+use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
@@ -46,7 +47,9 @@ use OCA\Circles\Model\Helpers\MemberHelper;
  *
  * @package OCA\Circles\FederatedItems
  */
-class CircleConfig implements IFederatedItem {
+class CircleConfig implements
+	IFederatedItem,
+	IFederatedItemAsyncProcess {
 
 
 	/** @var CircleRequest */
@@ -117,6 +120,7 @@ class CircleConfig implements IFederatedItem {
 			// TODO: Check locally that circle is not a member of another circle.
 			// TODO  in that case, remove the membership (and update the memberships)
 			$event->getData()->sInt('config', $config);
+			$event->getData()->sBool('broadcastAsFederated', true);
 		}
 
 		if (!$confirmed || $config > Circle::$DEF_CFG_MAX) {
@@ -125,6 +129,7 @@ class CircleConfig implements IFederatedItem {
 
 		$new = clone $circle;
 		$new->setConfig($config);
+
 		$event->setOutcome($new->jsonSerialize());
 	}
 
@@ -140,6 +145,10 @@ class CircleConfig implements IFederatedItem {
 		// TODO: Check locally that circle is not un-federated during the process
 		// TODO: if the circle is managed remotely, remove the circle locally
 		// TODO: if the circle is managed locally, remove non-local users
+
+		// TODO: Check locally that circle is not federated during the process
+		// TODO: sync if it is to broadcast to Trusted RemoteInstance
+
 		$this->circleRequest->updateConfig($circle);
 	}
 

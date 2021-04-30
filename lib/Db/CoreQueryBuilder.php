@@ -167,6 +167,9 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 				]
 			]
 		],
+		self::REMOTE => [
+			self::MEMBER
+		],
 		self::MOUNT  => [
 			self::MEMBER,
 			self::INITIATOR => [

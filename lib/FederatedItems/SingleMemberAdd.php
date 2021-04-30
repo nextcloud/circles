@@ -55,6 +55,7 @@ use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
@@ -68,6 +69,7 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\Federated\FederatedEvent;
+use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\ManagedModel;
@@ -78,6 +80,7 @@ use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MembershipService;
+use OCA\Circles\Service\RemoteStreamService;
 use OCA\Circles\StatusCode;
 use OCP\IUser;
 use OCP\IUserManager;
@@ -110,6 +113,9 @@ class SingleMemberAdd implements
 	/** @var FederatedUserService */
 	protected $federatedUserService;
 
+	/** @var RemoteStreamService */
+	protected $remoteStreamService;
+
 	/** @var CircleService */
 	protected $circleService;
 
@@ -136,12 +142,13 @@ class SingleMemberAdd implements
 	 */
 	public function __construct(
 		IUserManager $userManager, MemberRequest $memberRequest, FederatedUserService $federatedUserService,
-		CircleService $circleService, MembershipService $membershipService, EventService $eventService,
-		ConfigService $configService
+		RemoteStreamService $remoteStreamService, CircleService $circleService,
+		MembershipService $membershipService, EventService $eventService, ConfigService $configService
 	) {
 		$this->userManager = $userManager;
 		$this->memberRequest = $memberRequest;
 		$this->federatedUserService = $federatedUserService;
+		$this->remoteStreamService = $remoteStreamService;
 		$this->circleService = $circleService;
 		$this->membershipService = $membershipService;
 		$this->eventService = $eventService;
@@ -211,19 +218,11 @@ class SingleMemberAdd implements
 	public function manage(FederatedEvent $event): void {
 		$member = $event->getMember();
 
-		try {
-			$federatedUser = new FederatedUser();
-			$federatedUser->importFromIFederatedUser($member);
-			$this->federatedUserService->confirmLocalSingleId($federatedUser);
-		} catch (FederatedUserException $e) {
-			$this->e($e, ['member' => $member]);
-
+		if (!$this->insertOrUpdate($member)) {
 			return;
 		}
 
-		$this->memberRequest->insertOrUpdate($member);
 		$this->membershipService->onUpdate($member->getSingleId());
-
 		$this->eventService->singleMemberAdding($event);
 
 //
@@ -304,7 +303,7 @@ class SingleMemberAdd implements
 
 	/**
 	 * @param Circle $circle
-	 * @param FederatedUser $baseUser
+	 * @param Member $member
 	 *
 	 * @return Member
 	 * @throws CircleNotFoundException
@@ -313,14 +312,15 @@ class SingleMemberAdd implements
 	 * @throws FederatedUserException
 	 * @throws FederatedUserNotFoundException
 	 * @throws InvalidIdException
+	 * @throws MembersLimitException
 	 * @throws OwnerNotFoundException
 	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
+	 * @throws SingleCircleNotFoundException
 	 * @throws UnknownRemoteException
 	 * @throws UserTypeNotFoundException
-	 * @throws MembersLimitException
-	 * @throws SingleCircleNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	protected function generateMember(Circle $circle, Member $member): Member {
 		try {
@@ -340,6 +340,19 @@ class SingleMemberAdd implements
 			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[125], 125);
 		}
 
+		if (!$this->configService->isLocalInstance($member->getInstance())) {
+			if ($circle->isConfig(Circle::CFG_LOCAL)) {
+				throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[126], 126);
+			}
+
+			if (!$circle->isConfig(Circle::CFG_FEDERATED)) {
+				$remoteInstance = $this->remoteStreamService->getCachedRemoteInstance($member->getInstance());
+				if ($remoteInstance->getType() !== RemoteInstance::TYPE_GLOBAL_SCALE) {
+					throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[127], 127);
+				}
+			}
+		}
+
 		$member->importFromIFederatedUser($federatedUser);
 		$member->setCircleId($circle->getSingleId());
 		$member->setCircle($circle);
@@ -347,12 +360,17 @@ class SingleMemberAdd implements
 
 		$this->circleService->confirmCircleNotFull($circle);
 
-	//	$member->setDisplayName($member->getBasedOn()->getDisplayName());
+		// The idea is that adding the member during the self::verify() will help during the broadcasting
+		// of the event to Federated RemoteInstance for their first member.
+		$this->insertOrUpdate($member);
+
+		//	$member->setDisplayName($member->getBasedOn()->getDisplayName());
 
 		// TODO: Managing cached name
 		//		$member->setCachedName($eventMember->getCachedName());
 		return $member;
 	}
+
 
 	/**
 	 * @param Circle $circle
@@ -397,6 +415,29 @@ class SingleMemberAdd implements
 				$member->setStatus(Member::STATUS_MEMBER);
 			}
 		}
+	}
+
+
+	/**
+	 * @param Member $member
+	 *
+	 * @return bool
+	 * @throws InvalidIdException
+	 */
+	private function insertOrUpdate(Member $member): bool {
+		try {
+			$federatedUser = new FederatedUser();
+			$federatedUser->importFromIFederatedUser($member);
+			$this->federatedUserService->confirmLocalSingleId($federatedUser);
+		} catch (FederatedUserException $e) {
+			$this->e($e, ['member' => $member]);
+
+			return false;
+		}
+
+		$this->memberRequest->insertOrUpdate($member);
+
+		return true;
 	}
 
 

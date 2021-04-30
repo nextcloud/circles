@@ -64,12 +64,11 @@ class ShareService {
 
 	/**
 	 * @param Circle $circle
-	 * @param string $instance
 	 */
 	public function syncRemoteShares(Circle $circle) {
-		$event = new FederatedEvent(SharedItemsSync::class);
-		$event->setCircle($circle);
-		$this->federatedEventService->newEvent($event);
+//		$event = new FederatedEvent(SharedItemsSync::class);
+//		$event->setCircle($circle);
+//		$this->federatedEventService->newEvent($event);
 	}
 
 }

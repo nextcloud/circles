@@ -34,8 +34,11 @@ namespace OCA\Circles\Db;
 
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteUidException;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\RemoteInstance;
+use OCA\Circles\Model\Member;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 
 
 /**
@@ -157,26 +160,45 @@ class RemoteRequest extends RemoteRequestBuilder {
 	 * - TRUSTED if Circle is Federated
 	 * - EXTERNAL if Circle is Federated and a contains a member from instance
 	 *
-	 * @param Circle|null $circle
-	 * // TODO: use of $circle ??
+	 * @param Circle $circle
+	 * @param bool $broadcastAsFederated
 	 *
 	 * @return RemoteInstance[]
+	 * @throws RequestBuilderException
 	 */
-	public function getOutgoingRecipient(?Circle $circle = null): array {
+	public function getOutgoingRecipient(Circle $circle, bool $broadcastAsFederated = false): array {
 		$qb = $this->getRemoteSelectSql();
-		$orX = $qb->expr()->orX();
+		$expr = $qb->expr();
+		$orX = $expr->orX();
+
 		$orX->add($qb->exprLimitToDBField('type', RemoteInstance::TYPE_GLOBAL_SCALE, true, false));
+		if ($circle->isConfig(Circle::CFG_FEDERATED) || $broadcastAsFederated) {
 
-		if (!is_null($circle)) {
-			if ($circle->isConfig(Circle::CFG_FEDERATED)) {
-				$orX->add($qb->exprLimitToDBField('type', RemoteInstance::TYPE_TRUSTED, true, false));
-			}
+			// get all TRUSTED
+			$orX->add($qb->exprLimitToDBField('type', RemoteInstance::TYPE_TRUSTED, true, false));
 
-			// TODO: filter on EXTERNAL
-//		$orX->add()
+			// get EXTERNAL with Members
+			$aliasMember = $qb->generateAlias(CoreQueryBuilder::REMOTE, CoreQueryBuilder::MEMBER);
+			$qb->leftJoin(
+				CoreQueryBuilder::REMOTE, self::TABLE_MEMBER, $aliasMember,
+				$expr->andX(
+					$expr->eq($aliasMember . '.circle_id', $qb->createNamedParameter($circle->getSingleId())),
+					$expr->eq($aliasMember . '.instance', CoreQueryBuilder::REMOTE . '.instance'),
+					$expr->gte(
+						$aliasMember . '.level',
+						$qb->createNamedParameter(Member::LEVEL_MEMBER, IQueryBuilder::PARAM_INT)
+					)
+				)
+			);
+
+			$external = $expr->andX();
+			$external->add($qb->exprLimitToDBField('type', RemoteInstance::TYPE_EXTERNAL, true, false));
+			$external->add($expr->isNotNull($aliasMember . '.instance'));
+			$orX->add($external);
 		}
 
-		$qb->andWhere($orX);
+		$qb->andWhere($orX)
+		   ->groupBy(CoreQueryBuilder::REMOTE . '.instance');
 
 		return $this->getItemsFromRequest($qb);
 	}

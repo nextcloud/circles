@@ -71,14 +71,23 @@ class RemoteRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
+	 * @param string $alias
+	 *
 	 * @return CoreQueryBuilder
 	 */
-	protected function getRemoteSelectSql(): CoreQueryBuilder {
+	protected function getRemoteSelectSql(string $alias = CoreQueryBuilder::REMOTE): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->select('r.id', 'r.type', 'r.uid', 'r.instance', 'r.href', 'r.item', 'r.creation')
-		   ->from(self::TABLE_REMOTE, 'r');
-
-		$qb->setDefaultSelectAlias('r');
+		$qb->select(
+			$alias . '.id',
+			$alias . '.type',
+			$alias . '.uid',
+			$alias . '.instance',
+			$alias . '.href',
+			$alias . '.item',
+			$alias . '.creation'
+		)
+		   ->from(self::TABLE_REMOTE, $alias)
+		   ->setDefaultSelectAlias($alias);
 
 		return $qb;
 	}

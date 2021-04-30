@@ -32,6 +32,9 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 
+use daita\MySmallPhpTools\Exceptions\InvalidItemException;
+use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
+use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use daita\MySmallPhpTools\Traits\TAsync;
 use Exception;
@@ -42,9 +45,14 @@ use OCA\Circles\Exceptions\FederatedEventDSyncException;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
+use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Model\Federated\FederatedEvent;
 
 
@@ -69,6 +77,9 @@ class RemoteDownstreamService {
 	/** @var FederatedEventService */
 	private $federatedEventService;
 
+	/** @var RemoteService */
+	private $remoteService;
+
 	/** @var ConfigService */
 	private $configService;
 
@@ -85,6 +96,7 @@ class RemoteDownstreamService {
 		CircleRequest $circleRequest,
 		MemberRequest $memberRequest,
 		FederatedEventService $federatedEventService,
+		RemoteService $remoteService,
 		ConfigService $configService
 	) {
 		$this->setup('app', 'circles');
@@ -92,6 +104,7 @@ class RemoteDownstreamService {
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
 		$this->federatedEventService = $federatedEventService;
+		$this->remoteService = $remoteService;
 		$this->configService = $configService;
 	}
 
@@ -193,6 +206,7 @@ class RemoteDownstreamService {
 	 *
 	 * @throws OwnerNotFoundException
 	 * @throws FederatedEventDSyncException
+	 * @throws RequestBuilderException
 	 */
 	private function confirmCircle(FederatedEvent $event): void {
 		if ($event->canBypass(FederatedEvent::BYPASS_LOCALCIRCLECHECK) || $this->verifyCircle($event)) {
@@ -206,8 +220,17 @@ class RemoteDownstreamService {
 	 * @param FederatedEvent $event
 	 *
 	 * @return bool
+	 * @throws CircleNotFoundException
 	 * @throws OwnerNotFoundException
 	 * @throws RequestBuilderException
+	 * @throws InvalidIdException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws UnknownRemoteException
+	 * @throws InvalidItemException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
 	 */
 	private function verifyCircle(FederatedEvent $event): bool {
 		$circle = $event->getCircle();
@@ -215,7 +238,16 @@ class RemoteDownstreamService {
 		try {
 			$localCircle = $this->circleRequest->getCircle($circle->getSingleId(), null, null, 0);
 		} catch (CircleNotFoundException $e) {
-			return false;
+			try {
+				$this->remoteService->syncRemoteCircle(
+					$circle->getSingleId(),
+					$circle->getOwner()->getInstance()
+				);
+
+				return true;
+			} catch (Exception $e) {
+				return false;
+			}
 		}
 
 		if (!$localCircle->compareWith($circle)) {

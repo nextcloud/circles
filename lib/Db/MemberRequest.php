@@ -272,13 +272,14 @@ class MemberRequest extends MemberRequestBuilder {
 	 * @param string $circleId
 	 *
 	 * @return array
+	 * @throws RequestBuilderException
 	 */
 	public function getMemberInstances(string $circleId): array {
 		$qb = $this->getMemberSelectSql();
 		$qb->limitToCircleId($circleId);
 
-		$qb->andwhere($qb->expr()->nonEmptyString('m.instance'));
-		$qb->groupBy('m.instance');
+		$qb->andwhere($qb->expr()->nonEmptyString(CoreQueryBuilder::MEMBER . '.instance'));
+		$qb->groupBy(CoreQueryBuilder::MEMBER . '.instance');
 
 		return array_map(
 			function(Member $member): string {

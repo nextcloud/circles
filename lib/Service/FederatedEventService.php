@@ -53,6 +53,7 @@ use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
@@ -415,26 +416,36 @@ class FederatedEventService extends NC22Signature {
 
 	/**
 	 * @param FederatedEvent $event
-	 * @param Circle|null $circle
-	 * // TODO: use of $circle ??
 	 *
 	 * @return array
+	 * @throws RequestBuilderException
 	 */
-	public function getInstances(FederatedEvent $event, ?Circle $circle = null): array {
+	public function getInstances(FederatedEvent $event): array {
 		$local = $this->configService->getFrontalInstance();
-		$instances = $this->remoteRequest->getOutgoingRecipient($circle);
 
+		$circle = $event->getCircle();
 		$instances = array_map(
 			function(RemoteInstance $instance): string {
 				return $instance->getInstance();
-			}, $instances
+			},
+			$this->remoteRequest->getOutgoingRecipient(
+				$circle,
+				$event->getData()->gBool('broadcastAsFederated')
+			)
 		);
 
 		if ($event->isLimitedToInstanceWithMember()) {
 			$instances =
 				array_intersect(
-					$instances, $this->memberRequest->getMemberInstances($event->getCircle()->getSingleId())
+					$instances, $this->memberRequest->getMemberInstances($circle->getSingleId())
 				);
+		}
+
+		if ($event->hasMember()
+			&& !$this->configService->isLocalInstance(($event->getMember()->getInstance()))
+			&& !in_array($event->getMember()->getInstance(), $instances)) {
+			// At that point, we know that the member belongs to a _known_ remote instance
+			$instances[] = $event->getMember()->getInstance();
 		}
 
 		$instances = array_merge([$local], $instances);
