@@ -40,8 +40,10 @@ use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\FileCacheNotFoundException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\MembershipNotFoundException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IMemberships;
+use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Service\ConfigService;
 
 /**
@@ -271,6 +273,15 @@ class ModelManager {
 					$inheritanceFrom->importFromDatabase($data, $prefix);
 					$member->setInheritanceFrom($inheritanceFrom);
 				} catch (MemberNotFoundException $e) {
+				}
+				break;
+
+			case CoreQueryBuilder::REMOTE;
+				try {
+					$remoteInstance = new RemoteInstance();
+					$remoteInstance->importFromDatabase($data, $prefix);
+					$member->setRemoteInstance($remoteInstance);
+				} catch (RemoteNotFoundException $e) {
 				}
 				break;
 		}

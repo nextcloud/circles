@@ -44,6 +44,7 @@ use OCA\Circles\Exceptions\ParseMemberLevelException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\IMemberships;
+use OCA\Circles\Model\Federated\RemoteInstance;
 
 
 /**
@@ -80,12 +81,12 @@ class Member extends ManagedModel implements
 
 
 	public static $TYPE = [
-		0  => 'single',
-		1  => 'user',
-		2  => 'group',
-		4  => 'mail',
-		8  => 'contact',
-		16 => 'circle',
+		0     => 'single',
+		1     => 'user',
+		2     => 'group',
+		4     => 'mail',
+		8     => 'contact',
+		16    => 'circle',
 		10000 => 'app'
 	];
 
@@ -143,6 +144,9 @@ class Member extends ManagedModel implements
 
 	/** @var string */
 	private $instance = '';
+
+	/** @var RemoteInstance */
+	private $remoteInstance;
 
 	/** @var bool */
 	private $local = false;
@@ -296,25 +300,6 @@ class Member extends ManagedModel implements
 	}
 
 
-//	/**
-//	 * @param int $source
-//	 *
-//	 * @return self
-//	 */
-//	public function setSource(int $source): self {
-//		$this->source = $source;
-//
-//		return $this;
-//	}
-//
-//	/**
-//	 * @return int
-//	 */
-//	public function getSource(): int {
-//		return $this->source;
-//	}
-//
-
 	/**
 	 * @param string $instance
 	 *
@@ -331,6 +316,32 @@ class Member extends ManagedModel implements
 	 */
 	public function getInstance(): string {
 		return $this->instance;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function hasRemoteInstance(): bool {
+		return !is_null($this->remoteInstance);
+	}
+
+	/**
+	 * @param RemoteInstance $remoteInstance
+	 *
+	 * @return Member
+	 */
+	public function setRemoteInstance(RemoteInstance $remoteInstance): self {
+		$this->remoteInstance = $remoteInstance;
+
+		return $this;
+	}
+
+	/**
+	 * @return RemoteInstance
+	 */
+	public function getRemoteInstance(): RemoteInstance {
+		return $this->remoteInstance;
 	}
 
 
@@ -868,6 +879,9 @@ class Member extends ManagedModel implements
 			$arr['memberships'] = $this->getMemberships();
 		}
 
+		if ($this->hasRemoteInstance()) {
+			$arr['remoteInstance'] = $this->getRemoteInstance();
+		}
 
 		return $arr;
 	}

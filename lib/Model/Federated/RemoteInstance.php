@@ -36,6 +36,7 @@ use daita\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
 use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22Signatory;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteUidException;
 
 
@@ -83,6 +84,9 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 
 	/** @var string */
 	private $incoming = '';
+
+	/** @var string */
+	private $root = '';
 
 	/** @var string */
 	private $event = '';
@@ -161,6 +165,25 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 	 */
 	public function setIncoming(string $incoming): self {
 		$this->incoming = $incoming;
+
+		return $this;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getRoot(): string {
+		return $this->root;
+	}
+
+	/**
+	 * @param string $root
+	 *
+	 * @return $this
+	 */
+	public function setRoot(string $root): self {
+		$this->root = $root;
 
 		return $this;
 	}
@@ -371,6 +394,7 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 
 		$this->setTest($this->get('test', $data))
 			 ->setEvent($this->get('event', $data))
+			 ->setRoot($this->get('root', $data))
 			 ->setIncoming($this->get('incoming', $data))
 			 ->setCircles($this->get('circles', $data))
 			 ->setCircle($this->get('circle', $data))
@@ -397,6 +421,7 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 	public function jsonSerialize(): array {
 		$data = [
 			'uid'      => $this->getUid(true),
+			'root'     => $this->getRoot(),
 			'event'    => $this->getEvent(),
 			'incoming' => $this->getIncoming(),
 			'test'     => $this->getTest(),
@@ -416,16 +441,22 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 
 	/**
 	 * @param array $data
+	 * @param string $prefix
 	 *
 	 * @return self
+	 * @throws RemoteNotFoundException
 	 */
-	public function importFromDatabase(array $data): INC22QueryRow {
-		$this->setDbId($this->getInt('id', $data));
-		$this->import($this->getArray('item', $data));
-		$this->setOrigData($this->getArray('item', $data));
-		$this->setType($this->get('type', $data));
-		$this->setInstance($this->get('instance', $data));
-		$this->setId($this->get('href', $data));
+	public function importFromDatabase(array $data, string $prefix = ''): INC22QueryRow {
+		if ($this->getInt($prefix . 'id', $data) === 0) {
+			throw new RemoteNotFoundException();
+		}
+
+		$this->setDbId($this->getInt($prefix . 'id', $data));
+		$this->import($this->getArray($prefix . 'item', $data));
+		$this->setOrigData($this->getArray($prefix . 'item', $data));
+		$this->setType($this->get($prefix . 'type', $data));
+		$this->setInstance($this->get($prefix . 'instance', $data));
+		$this->setId($this->get($prefix . 'href', $data));
 
 		return $this;
 	}

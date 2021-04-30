@@ -181,7 +181,7 @@ class CircleMountProvider implements IMountProvider {
 		$data['manager'] = $this->circleMountManager;
 		$data['gsShareId'] = $mount->getId();
 		$data['cloudId'] = $this->cloudIdManager->getCloudId($data['owner'], $data['remote']);
-		$data['certificateManager'] = OC::$server->getCertificateManager($initiator->getUserId());
+		$data['certificateManager'] = OC::$server->getCertificateManager();
 		$data['HttpClientService'] = $this->clientService;
 
 		return new CircleMount(

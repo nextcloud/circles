@@ -304,14 +304,11 @@ class Mount extends ManagedModel implements IDeserializable, INC22QueryRow, Json
 	 * @return array
 	 */
 	public function toMount(): array {
-		$owner = $this->getMember();
-
-		// Todo: use RemoteInstance
-		$protocol = 'https';
+		$member = $this->getMember();
 
 		return [
-			'owner'       => $owner->getUserId(),
-			'remote'      => $protocol . '://' . $owner->getInstance(),
+			'owner'       => $member->getUserId(),
+			'remote'      => $member->getRemoteInstance()->getRoot(),
 			'token'       => $this->getToken(),
 			'share_token' => $this->getToken(),
 			'password'    => $this->getPassword(),
@@ -326,6 +323,7 @@ class Mount extends ManagedModel implements IDeserializable, INC22QueryRow, Json
 
 	/**
 	 * @param array $data
+	 * @param string $prefix
 	 *
 	 * @return Mount
 	 */

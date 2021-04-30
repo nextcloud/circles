@@ -136,6 +136,7 @@ class RemoteStreamService extends NC22Signature {
 			$app->setAuthSigned($this->signString($confirmKey, $app));
 		}
 
+		$app->setRoot($this->configService->getFrontalPath(''));
 		$app->setEvent($this->configService->getFrontalPath('circles.Remote.event'));
 		$app->setIncoming($this->configService->getFrontalPath('circles.Remote.incoming'));
 		$app->setTest($this->configService->getFrontalPath('circles.Remote.test'));

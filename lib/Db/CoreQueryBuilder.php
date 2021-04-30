@@ -171,7 +171,9 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 			self::MEMBER
 		],
 		self::MOUNT  => [
-			self::MEMBER,
+			self::MEMBER    => [
+				self::REMOTE
+			],
 			self::INITIATOR => [
 				self::INHERITED_BY => [
 					self::MEMBERSHIPS
@@ -334,6 +336,24 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 
 
 	/**
+	 * left join RemoteInstance based on a Member
+	 */
+	public function leftJoinRemoteInstance(string $alias): void {
+		$expr = $this->expr();
+
+		try {
+			$aliasRemoteInstance = $this->generateAlias($alias, self::REMOTE);
+			$this->generateRemoteInstanceSelectAlias($aliasRemoteInstance)
+				 ->leftJoin(
+					 $alias, CoreRequestBuilder::TABLE_REMOTE, $aliasRemoteInstance,
+					 $expr->eq($alias . '.instance', $aliasRemoteInstance . '.instance')
+				 );
+		} catch (RequestBuilderException $e) {
+		}
+	}
+
+
+	/**
 	 * @param string $alias
 	 * @param RemoteInstance $remoteInstance
 	 * @param bool $filterSensitiveData
@@ -352,7 +372,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 			$aliasCircle = $alias;
 		}
 
-		$this->leftJoinRemoteInstance($alias, $remoteInstance);
+		$this->leftJoinRemoteInstanceIncomingRequest($alias, $remoteInstance);
 		$this->leftJoinMemberFromInstance($alias, $remoteInstance, $aliasCircle);
 		$this->leftJoinMemberFromRemoteCircle($alias, $remoteInstance, $aliasCircle);
 		$this->limitRemoteVisibility($alias, $filterSensitiveData, $aliasCircle);
@@ -360,20 +380,22 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 
 
 	/**
-	 * Left join remotes to filter visibility based on RemoteInstance.
+	 * Left join RemoteInstance based on an incoming request
 	 *
 	 * @param string $alias
 	 * @param RemoteInstance $remoteInstance
 	 *
 	 * @throws RequestBuilderException
 	 */
-	public function leftJoinRemoteInstance(string $alias, RemoteInstance $remoteInstance): void {
+	public function leftJoinRemoteInstanceIncomingRequest(
+		string $alias,
+		RemoteInstance $remoteInstance
+	): void {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
 
 		$aliasRemote = $this->generateAlias($alias, self::REMOTE);
-
 		$expr = $this->expr();
 		$this->leftJoin(
 			$this->getDefaultSelectAlias(), CoreRequestBuilder::TABLE_REMOTE, $aliasRemote,
@@ -749,6 +771,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 				 )
 			 );
 
+		$this->leftJoinRemoteInstance($aliasMember);
 		$this->leftJoinBasedOn($aliasMember);
 	}
 
@@ -1258,6 +1281,21 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 			'inheritance_depth'
 		];
 		$this->generateSelectAlias($fields, $alias, ($prefix === '') ? $alias : $prefix, $default);
+
+		return $this;
+	}
+
+
+	/**
+	 * @param string $alias
+	 * @param array $default
+	 *
+	 * @return $this
+	 */
+	private function generateRemoteInstanceSelectAlias(string $alias, array $default = []): self {
+		$fields = ['id', 'type', 'uid', 'instance', 'href', 'item', 'creation'];
+
+		$this->generateSelectAlias($fields, $alias, $alias, $default);
 
 		return $this;
 	}
