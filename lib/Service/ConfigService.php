@@ -267,6 +267,10 @@ class ConfigService {
 	 * @return bool
 	 */
 	public function isGSAvailable(): bool {
+		if (!empty($this->getGSSMockup())) {
+			return true;
+		}
+
 		return $this->config->getSystemValueBool('gs.enabled', false);
 	}
 

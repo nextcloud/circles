@@ -393,7 +393,6 @@ class ModelManager {
 					$initiator->importFromDatabase($data, $prefix);
 					$mount->setInitiator($initiator);
 				} catch (MemberNotFoundException $e) {
-					\OC::$server->getLogger()->log(3, '### ' . $e->getMessage());
 				}
 				break;
 		}

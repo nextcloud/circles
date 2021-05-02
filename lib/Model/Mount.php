@@ -36,6 +36,8 @@ use daita\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
 use daita\MySmallPhpTools\IDeserializable;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
+use OCP\Federation\ICloudIdManager;
+use OCP\Http\Client\IClientService;
 
 
 /**
@@ -82,7 +84,22 @@ class Mount extends ManagedModel implements IDeserializable, INC22QueryRow, Json
 	/** @var string */
 	private $mountPointHash = '';
 
+	/** @var string */
+	private $storage;
 
+	/** @var ICloudIdManager */
+	private $cloudIdManager;
+
+	/** @var IClientService */
+	private $httpClientService;
+//
+//	/** @var CircleMountManager */
+//	private $mountManager;
+
+
+	/**
+	 * Mount constructor.
+	 */
 	public function __construct() {
 	}
 
@@ -301,18 +318,99 @@ class Mount extends ManagedModel implements IDeserializable, INC22QueryRow, Json
 
 
 	/**
+	 * @param ICloudIdManager $cloudIdManager
+	 *
+	 * @return Mount
+	 */
+	public function setCloudIdManager(ICloudIdManager $cloudIdManager): self {
+		$this->cloudIdManager = $cloudIdManager;
+
+		return $this;
+	}
+
+	/**
+	 * @return ICloudIdManager
+	 */
+	public function getCloudIdManager(): ICloudIdManager {
+		return $this->cloudIdManager;
+	}
+
+
+	/**
+	 * @param IClientService $httpClientService
+	 *
+	 * @return Mount
+	 */
+	public function setHttpClientService(IClientService $httpClientService): self {
+		$this->httpClientService = $httpClientService;
+
+		return $this;
+	}
+
+	/**
+	 * @return IClientService
+	 */
+	public function getHttpClientService(): IClientService {
+		return $this->httpClientService;
+	}
+
+//
+//	/**
+//	 * @param CircleMountManager $mountManager
+//	 *
+//	 * @return Mount
+//	 */
+//	public function setMountManager(CircleMountManager $mountManager): self {
+//		$this->mountManager = $mountManager;
+//
+//		return $this;
+//	}
+//
+//	/**
+//	 * @return CircleMountManager
+//	 */
+//	public function getMountManager(): CircleMountManager {
+//		return $this->mountManager;
+//	}
+//
+//
+//	/**
+//	 * @param string $storage
+//	 *
+//	 * @return Mount
+//	 */
+//	public function setStorage(string $storage): self {
+//		$this->storage = $storage;
+//
+//		return $this;
+//	}
+//
+//	/**
+//	 * @return string
+//	 */
+//	public function getStorage(): string {
+//		return $this->storage;
+//	}
+
+
+	/**
 	 * @return array
 	 */
 	public function toMount(): array {
 		$member = $this->getMember();
 
 		return [
-			'owner'       => $member->getUserId(),
-			'remote'      => $member->getRemoteInstance()->getRoot(),
-			'token'       => $this->getToken(),
-			'share_token' => $this->getToken(),
-			'password'    => $this->getPassword(),
-			'mountpoint'  => $this->getMountPoint(false)
+			'owner'             => $member->getUserId(),
+			'remote'            => $member->getRemoteInstance()->getRoot(),
+			'token'             => $this->getToken(),
+			'password'          => $this->getPassword(),
+			'mountpoint'        => $this->getMountPoint(false),
+			//			'manager'           => $this->getMountManager(),
+			'HttpClientService' => $this->getHttpClientService(),
+			'cloudId'           => $this->getCloudIdManager()->getCloudId(
+				$member->getUserId(),
+				$member->getRemoteInstance()->getRoot()
+			)
 		];
 	}
 
@@ -358,7 +456,8 @@ class Mount extends ManagedModel implements IDeserializable, INC22QueryRow, Json
 			'token'          => $this->getToken(),
 			'password'       => $this->getPassword(),
 			'mountPoint'     => $this->getMountPoint(),
-			'mountPointHash' => $this->getMountPointHash()
+			'mountPointHash' => $this->getMountPointHash(),
+			'toMount'        => $this->toMount()
 		];
 	}
 

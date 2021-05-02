@@ -69,7 +69,6 @@ class CircleMount extends MountPoint implements MoveableMount, JsonSerializable 
 	 *
 	 * @param Mount $mount
 	 * @param string $storage
-	 * @param array $options
 	 * @param CircleMountManager $manager
 	 * @param IStorageFactory|null $loader
 	 *
@@ -78,17 +77,21 @@ class CircleMount extends MountPoint implements MoveableMount, JsonSerializable 
 	public function __construct(
 		Mount $mount,
 		string $storage,
-		array $options,
 		CircleMountManager $manager,
 		?IStorageFactory $loader = null
 	) {
 		try {
-			parent::__construct($storage, $mount->getMountPoint(), $options, $loader);
+			parent::__construct(
+				$storage,
+				$mount->getMountPoint(false),
+				$mount->toMount(),
+				$loader
+			);
 		} catch (Exception $e) {
 			throw new MountPointConstructionException();
 		}
+
 		$this->mount = $mount;
-		$this->gsShareId = $this->getInt('gsShareId', $options);
 		$this->mountManager = $manager;
 	}
 

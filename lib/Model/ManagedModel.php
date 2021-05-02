@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Model;
 
 
+use OC;
 use OCA\Circles\IFederatedUser;
 
 /**
@@ -54,7 +55,7 @@ class ManagedModel {
 	 */
 	protected function getManager(): ModelManager {
 		if ($this->modelManager === null) {
-			$this->modelManager = \OC::$server->get(ModelManager::class);
+			$this->modelManager = OC::$server->get(ModelManager::class);
 		}
 
 		return $this->modelManager;

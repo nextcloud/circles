@@ -34,8 +34,6 @@ namespace OCA\Circles\MountManager;
 
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
-use OC;
-use OC\Http\Client\ClientService;
 use OCA\Circles\Db\MountRequest;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
@@ -44,8 +42,6 @@ use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MountPointConstructionException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
-use OCA\Circles\Model\GlobalScale\GSShare;
-use OCA\Circles\Model\GlobalScale\GSShareMountpoint;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Mount;
 use OCA\Circles\Service\ConfigService;
@@ -54,9 +50,8 @@ use OCA\Files_Sharing\External\Storage as ExternalStorage;
 use OCP\Federation\ICloudIdManager;
 use OCP\Files\Config\IMountProvider;
 use OCP\Files\Mount\IMountPoint;
-use OCP\Files\NotFoundException;
-use OCP\Files\NotPermittedException;
 use OCP\Files\Storage\IStorageFactory;
+use OCP\Http\Client\IClientService;
 use OCP\IUser;
 
 
@@ -75,7 +70,7 @@ class CircleMountProvider implements IMountProvider {
 	const EXTERNAL_STORAGE = ExternalStorage::class;
 
 
-	/** @var ClientService */
+	/** @var IClientService */
 	private $clientService;
 
 	/** @var CircleMountManager */
@@ -97,7 +92,7 @@ class CircleMountProvider implements IMountProvider {
 	/**
 	 * MountProvider constructor.
 	 *
-	 * @param ClientService $clientService
+	 * @param IClientService $clientService
 	 * @param CircleMountManager $circleMountManager
 	 * @param ICloudIdManager $cloudIdManager
 	 * @param MountRequest $mountRequest
@@ -105,7 +100,7 @@ class CircleMountProvider implements IMountProvider {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		ClientService $clientService,
+		IClientService $clientService,
 		CircleMountManager $circleMountManager,
 		ICloudIdManager $cloudIdManager,
 		MountRequest $mountRequest,
@@ -137,20 +132,15 @@ class CircleMountProvider implements IMountProvider {
 		$items = $this->mountRequest->getForUser($federatedUser);
 
 		$mounts = [];
-//		$mounts[$mount->getMountPoint()] = $mount;
-
 		foreach ($items as $item) {
 			try {
 //				if ($share->getMountPoint() !== '-') {
-//					$this->fixDuplicateFile($user->getUID(), $share);
+//					$this->fixDuplicateFile($user->getUID(), $gss.share);
 				$mounts[] = $this->generateCircleMount($item, $loader);
 //				}
 			} catch (Exception $e) {
 			}
 		}
-		\OC::$server->getLogger()->log(3, '## ' . json_encode($mounts));
-
-//		$mounts[] = $this->generateMount2();
 
 		return $mounts;
 	}
@@ -165,29 +155,22 @@ class CircleMountProvider implements IMountProvider {
 	 * @throws MountPointConstructionException
 	 */
 	public function generateCircleMount(Mount $mount, IStorageFactory $storageFactory): CircleMount {
-//		$protocol = 'https';
-//		if ($this->configService->isLocalNonSSL()) {
-//			$protocol = 'http';
-//		}
-
 		$initiator = $mount->getInitiator();
+
 		// TODO: right now, limited to Local Nextcloud User
 		if ($initiator->getUserType() !== Member::TYPE_USER
 			|| !$this->configService->isLocalInstance($initiator->getInstance())) {
 			throw new InitiatorNotFoundException();
 		}
 
-		$data = $mount->toMount();
-		$data['manager'] = $this->circleMountManager;
-		$data['gsShareId'] = $mount->getId();
-		$data['cloudId'] = $this->cloudIdManager->getCloudId($data['owner'], $data['remote']);
-		$data['certificateManager'] = OC::$server->getCertificateManager();
-		$data['HttpClientService'] = $this->clientService;
+		$mount->setCloudIdManager($this->cloudIdManager)
+			  ->setHttpClientService($this->clientService);
+//		->setStorage(self::EXTERNAL_STORAGE)
+//			  ->setMountManager($this->circleMountManager);
 
 		return new CircleMount(
 			$mount,
 			self::EXTERNAL_STORAGE,
-			$data,
 			$this->circleMountManager,
 			$storageFactory
 		);
@@ -195,76 +178,72 @@ class CircleMountProvider implements IMountProvider {
 
 
 	/**
-	 * @param GSShare $share
-	 * @param string $userId
-	 * @param IStorageFactory $storageFactory
+	 * @param int $gsShareId
+	 * @param string $target
 	 *
-	 * @return CircleMount
-	 * @throws Exception
+	 * @return bool
 	 */
-	public function generateMount(
-		GSShare $share, string $userId, IStorageFactory $storageFactory
-	) {
-		$protocol = 'https';
-		if ($this->configService->isLocalNonSSL()) {
-			$protocol = 'http';
-		}
+	public function renameShare(int $gsShareId, string $target) {
+//		try {
+//			if ($target !== '-') {
+//				$target = $this->stripPath($target);
+//				$this->gsSharesRequest->getShareMountPointByPath($this->userId, $target);
+//
+//				return false;
+//			}
+//		} catch (ShareNotFound $e) {
+//		}
+//
+//		$mountPoint = new GSShareMountpoint($gsShareId, $this->userId, $target);
+//		try {
+//			$this->gsSharesRequest->getShareMountPointById($gsShareId, $this->userId);
+//			$this->gsSharesRequest->updateShareMountPoint($mountPoint);
+//		} catch (ShareNotFound $e) {
+//			$this->gsSharesRequest->generateShareMountPoint($mountPoint);
+//		}
 
-		$data = $share->toMount($userId, $protocol);
-		$data['manager'] = $this->circleMountManager;
-		$data['gsShareId'] = $share->getId();
-		$data['cloudId'] = $this->cloudIdManager->getCloudId($data['owner'], $data['remote']);
-		$data['certificateManager'] = OC::$server->getCertificateManager($userId);
-		$data['HttpClientService'] = OC::$server->getHTTPClientService();
+		return true;
+	}
 
-		return new CircleMount(
-			self::EXTERNAL_STORAGE,
-			$share->getMountPoint($userId),
-			$data,
-			$this->circleMountManager,
-			$storageFactory
-		);
+
+	// TODO: implement !
+	public function getMountManager() {
+		return $this;
+	}
+
+	// TODO: implement !
+	public function removeShare($mountPoint) {
+	}
+
+	// TODO: implement !
+	public function removeMount($mountPoint) {
 	}
 
 
 	/**
-	 * @param string $userId
-	 * @param GSShare $share
+	 * @param int $gsShareId
 	 *
-	 * @throws OC\User\NoUserException
-	 * @throws NotPermittedException
+	 * @return bool
 	 */
-	private function fixDuplicateFile(string $userId, GSShare $share) {
-		$fs = \OC::$server->getRootFolder()
-						  ->getUserFolder($userId);
-
-		try {
-			$fs->get($share->getMountPoint());
-		} catch (NotFoundException $e) {
-			return;
-		}
-
-		$info = pathinfo($share->getMountPoint());
-		$filename = $this->get('dirname', $info) . '/' . $this->get('filename', $info);
-		$extension = $this->get('extension', $info);
-		$extension = ($extension === '') ? '' : '.' . $extension;
-
-		$n = 2;
-		while (true) {
-			$path = $filename . " ($n)" . $extension;
-			try {
-				$fs->get($path);
-			} catch (NotFoundException $e) {
-				$share->setMountPoint($path);
-				$mountPoint = new GSShareMountpoint($share->getId(), $userId, $path);
-				$this->gsSharesRequest->updateShareMountPoint($mountPoint);
-
-				return;
-			}
-
-			$n++;
-		}
+	public function unshare(int $gsShareId) {
+		return $this->renameShare($gsShareId, '-');
 	}
+
+
+	/**
+	 * remove '/user/files' from the path and trailing slashes
+	 *
+	 * @param string $path
+	 *
+	 * @return string
+	 */
+	protected function stripPath($path) {
+		return $path;
+//		$prefix = '/' . $this->userId . '/files';
+//
+//		return rtrim(substr($path, strlen($prefix)), '/');
+	}
+
 
 }
 
