@@ -53,23 +53,18 @@ class CircleMount extends MountPoint implements MoveableMount, JsonSerializable 
 	use TArrayTools;
 
 
-	/** @var CircleMountManager */
-	protected $mountManager;
-
-	/** @var int */
-	private $gsShareId = -1;
-
-
 	/** @var Mount */
 	private $mount;
 
+	/** @var string */
+	private $storageClass;
+
 
 	/**
-	 * Mount constructor.
+	 * CircleMount constructor.
 	 *
 	 * @param Mount $mount
 	 * @param string $storage
-	 * @param CircleMountManager $manager
 	 * @param IStorageFactory|null $loader
 	 *
 	 * @throws MountPointConstructionException
@@ -77,7 +72,6 @@ class CircleMount extends MountPoint implements MoveableMount, JsonSerializable 
 	public function __construct(
 		Mount $mount,
 		string $storage,
-		CircleMountManager $manager,
 		?IStorageFactory $loader = null
 	) {
 		try {
@@ -92,7 +86,7 @@ class CircleMount extends MountPoint implements MoveableMount, JsonSerializable 
 		}
 
 		$this->mount = $mount;
-		$this->mountManager = $manager;
+		$this->storageClass = $storage;
 	}
 
 
@@ -104,7 +98,7 @@ class CircleMount extends MountPoint implements MoveableMount, JsonSerializable 
 	 * @return bool
 	 */
 	public function moveMount($target) {
-		$result = $this->mountManager->renameShare($this->gsShareId, $target);
+		$result = $this->mount->getMountManager()->renameShare($this->gsShareId, $target);
 		$this->setMountPoint($target);
 
 		return $result;
@@ -117,7 +111,7 @@ class CircleMount extends MountPoint implements MoveableMount, JsonSerializable 
 	 * @return bool
 	 */
 	public function removeMount() {
-		return $this->mountManager->unshare($this->gsShareId);
+		return $this->mount->getMountManager()->unshare($this->gsShareId);
 	}
 
 
@@ -140,7 +134,8 @@ class CircleMount extends MountPoint implements MoveableMount, JsonSerializable 
 	 */
 	public function jsonSerialize(): array {
 		return [
-			'mount' => $this->mount
+			'mount'   => $this->mount,
+			'storage' => $this->storageClass
 		];
 	}
 

@@ -36,6 +36,7 @@ use daita\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
 use daita\MySmallPhpTools\IDeserializable;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
+use OCA\Circles\MountManager\CircleMountManager;
 use OCP\Federation\ICloudIdManager;
 use OCP\Http\Client\IClientService;
 
@@ -92,9 +93,9 @@ class Mount extends ManagedModel implements IDeserializable, INC22QueryRow, Json
 
 	/** @var IClientService */
 	private $httpClientService;
-//
-//	/** @var CircleMountManager */
-//	private $mountManager;
+
+	/** @var CircleMountManager */
+	private $mountManager;
 
 
 	/**
@@ -354,25 +355,26 @@ class Mount extends ManagedModel implements IDeserializable, INC22QueryRow, Json
 		return $this->httpClientService;
 	}
 
-//
-//	/**
-//	 * @param CircleMountManager $mountManager
-//	 *
-//	 * @return Mount
-//	 */
-//	public function setMountManager(CircleMountManager $mountManager): self {
-//		$this->mountManager = $mountManager;
-//
-//		return $this;
-//	}
-//
-//	/**
-//	 * @return CircleMountManager
-//	 */
-//	public function getMountManager(): CircleMountManager {
-//		return $this->mountManager;
-//	}
-//
+
+	/**
+	 * @param CircleMountManager $mountManager
+	 *
+	 * @return Mount
+	 */
+	public function setMountManager(CircleMountManager $mountManager): self {
+		$this->mountManager = $mountManager;
+
+		return $this;
+	}
+
+	/**
+	 * @return CircleMountManager
+	 */
+	public function getMountManager(): CircleMountManager {
+		return $this->mountManager;
+	}
+
+
 //
 //	/**
 //	 * @param string $storage
@@ -407,6 +409,7 @@ class Mount extends ManagedModel implements IDeserializable, INC22QueryRow, Json
 			'mountpoint'        => $this->getMountPoint(false),
 			//			'manager'           => $this->getMountManager(),
 			'HttpClientService' => $this->getHttpClientService(),
+			'manager'           => $this->getMountManager(),
 			'cloudId'           => $this->getCloudIdManager()->getCloudId(
 				$member->getUserId(),
 				$member->getRemoteInstance()->getRoot()
