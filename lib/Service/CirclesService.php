@@ -280,12 +280,11 @@ class CirclesService {
 			} else {
 				$circle = $this->circlesRequest->getCircleFromUniqueId($circleUniqueId);
 			}
-			if ($this->viewerIsAdmin()
+			if ($forceAll === true || $this->viewerIsAdmin()
 				|| $circle->getHigherViewer()
 						  ->isLevel(Member::LEVEL_MEMBER)
-				|| $forceAll === true
 			) {
-				$this->detailsCircleMembers($circle);
+				$this->detailsCircleMembers($circle, $forceAll);
 				$this->detailsCircleLinkedGroups($circle);
 				$this->detailsCircleFederatedCircles($circle);
 			}
@@ -304,8 +303,8 @@ class CirclesService {
 	 *
 	 * @throws Exception
 	 */
-	private function detailsCircleMembers(Circle $circle) {
-		if ($this->viewerIsAdmin()) {
+	private function detailsCircleMembers(Circle $circle, $forceAll = false) {
+		if ($forceAll || $this->viewerIsAdmin()) {
 			$members = $this->membersRequest->forceGetMembers($circle->getUniqueId(), 0);
 		} else {
 			$members = $this->membersRequest->getMembers(
