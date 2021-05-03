@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Model;
 
 use daita\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
+use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\IDeserializable;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use daita\MySmallPhpTools\Traits\TArrayTools;
@@ -82,6 +83,9 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 	/** @var string */
 	private $fileTarget = '';
 
+	/** @var string */
+	private $token = '';
+
 	/** @var int */
 	private $status = 0;
 
@@ -116,7 +120,11 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 	private $fileCache;
 
 	/** @var Member */
-	private $inheritedBy;
+	private $initiator;
+
+	/** @var Member */
+	private $owner;
+
 
 	/**
 	 * @param string $id
@@ -248,6 +256,25 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 	 */
 	public function getFileTarget(): string {
 		return $this->fileTarget;
+	}
+
+
+	/**
+	 * @param string $token
+	 *
+	 * @return ShareWrapper
+	 */
+	public function setToken(string $token): self {
+		$this->token = $token;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getToken(): string {
+		return $this->token;
 	}
 
 
@@ -474,12 +501,12 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 
 
 	/**
-	 * @param Member $inheritedBy
+	 * @param Member $initiator
 	 *
 	 * @return ShareWrapper
 	 */
-	public function setInheritedBy(Member $inheritedBy): self {
-		$this->inheritedBy = $inheritedBy;
+	public function setInitiator(Member $initiator): self {
+		$this->initiator = $initiator;
 
 		return $this;
 	}
@@ -487,15 +514,41 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 	/**
 	 * @return Member
 	 */
-	public function getInheritedBy(): Member {
-		return $this->inheritedBy;
+	public function getInitiator(): Member {
+		return $this->initiator;
 	}
 
 	/**
 	 * @return bool
 	 */
-	public function hasInheritedBy(): bool {
-		return (!is_null($this->inheritedBy));
+	public function hasViewer(): bool {
+		return (!is_null($this->initiator));
+	}
+
+
+	/**
+	 * @param Member $owner
+	 *
+	 * @return ShareWrapper
+	 */
+	public function setOwner(Member $owner): self {
+		$this->owner = $owner;
+
+		return $this;
+	}
+
+	/**
+	 * @return Member
+	 */
+	public function getOwner(): Member {
+		return $this->owner;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasOwner(): bool {
+		return (!is_null($this->owner));
 	}
 
 
@@ -538,57 +591,11 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 				return null;
 			}
 			$share->setNodeCacheEntry(
-				Cache::cacheEntryFromData(
-					$this->getFileCache()->getData(), OC::$server->getMimeTypeLoader()
-				)
+				Cache::cacheEntryFromData($this->getFileCache()->toCache(), OC::$server->getMimeTypeLoader())
 			);
 		}
 
 		return $share;
-	}
-
-
-	public function import(array $data): IDeserializable {
-	}
-
-
-	/**
-	 * @param array $data
-	 * @param string $prefix
-	 *
-	 * @return INC22QueryRow
-	 */
-	public function importFromDatabase(array $data, string $prefix = ''): INC22QueryRow {
-		$shareTime = new DateTime();
-		$shareTime->setTimestamp($this->getInt($prefix . 'stime', $data));
-
-		$this->setId($this->get($prefix . 'id', $data))
-			 ->setShareType($this->getInt($prefix . 'share_type', $data))
-			 ->setPermissions($this->getInt($prefix . 'permissions', $data))
-			 ->setItemType($this->get($prefix . 'item_type', $data))
-			 ->setItemSource($this->getInt($prefix . 'item_source', $data))
-			 ->setItemTarget($this->get($prefix . 'item_target', $data))
-			 ->setFileSource($this->getInt($prefix . 'file_source', $data))
-			 ->setFileTarget($this->get($prefix . 'file_target', $data))
-			 ->setSharedWith($this->get($prefix . 'share_with', $data))
-			 ->setSharedBy($this->get($prefix . 'uid_initiator', $data))
-			 ->setShareOwner($this->get($prefix . 'uid_owner', $data))
-			 ->setShareTime($shareTime);
-
-//		if (($password = $this->get('personal_password', $data, '')) !== '') {
-//			$share->setPassword($this->get('personal_password', $data, ''));
-//		} else if (($password = $this->get('password', $data, '')) !== '') {
-//			$share->setPassword($this->get('password', $data, ''));
-//		}
-
-		$this->setChildId($this->getInt($prefix . 'child_id', $data))
-			 ->setChildFileTarget($this->get($prefix . 'child_file_target', $data))
-			 ->setProviderId(ShareByCircleProvider::IDENTIFIER)
-			 ->setStatus(Ishare::STATUS_ACCEPTED);
-
-		$this->getManager()->manageImportFromDatabase($this, $data, $prefix);
-
-		return $this;
 	}
 
 
@@ -636,6 +643,98 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 	}
 
 
+	public function import(array $data): IDeserializable {
+		$shareTime = new DateTime();
+		$shareTime->setTimestamp($this->getInt('shareTime', $data));
+
+		$this->setId($this->get('id', $data))
+			 ->setShareType($this->getInt('shareType', $data))
+			 ->setPermissions($this->getInt('permissions', $data))
+			 ->setItemType($this->get('itemType', $data))
+			 ->setItemSource($this->getInt('itemSource', $data))
+			 ->setItemTarget($this->get('itemTarget', $data))
+			 ->setFileSource($this->getInt('fileSource', $data))
+			 ->setFileTarget($this->get('fileTarget', $data))
+			 ->setSharedWith($this->get('shareWith', $data))
+			 ->setSharedBy($this->get('uidInitiator', $data))
+			 ->setShareOwner($this->get('uidOwner', $data))
+			 ->setToken($this->get('token', $data))
+			 ->setShareTime($shareTime);
+
+		$this->setChildId($this->getInt('childId', $data))
+			 ->setChildFileTarget($this->get('childFileTarget', $data))
+			 ->setProviderId(ShareByCircleProvider::IDENTIFIER)
+			 ->setStatus(Ishare::STATUS_ACCEPTED);
+
+		try {
+			$circle = new Circle();
+			$this->setCircle($circle->import($this->getArray('circle', $data)));
+		} catch (InvalidItemException $e) {
+		}
+
+		try {
+			$fileCache = new FileCacheWrapper();
+			$this->setFileCache($fileCache->import($this->getArray('fileCache', $data)));
+		} catch (InvalidItemException $e) {
+		}
+
+		try {
+			$owner = new Member();
+			$this->setOwner($owner->import($this->getArray('owner', $data)));
+		} catch (InvalidItemException $e) {
+		}
+
+		try {
+			$member = new Member();
+			$this->setInitiator($member->import($this->getArray('viewer', $data)));
+		} catch (InvalidItemException $e) {
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * @param array $data
+	 * @param string $prefix
+	 *
+	 * @return INC22QueryRow
+	 */
+	public function importFromDatabase(array $data, string $prefix = ''): INC22QueryRow {
+		$shareTime = new DateTime();
+		$shareTime->setTimestamp($this->getInt($prefix . 'stime', $data));
+
+		$this->setId($this->get($prefix . 'id', $data))
+			 ->setShareType($this->getInt($prefix . 'share_type', $data))
+			 ->setPermissions($this->getInt($prefix . 'permissions', $data))
+			 ->setItemType($this->get($prefix . 'item_type', $data))
+			 ->setItemSource($this->getInt($prefix . 'item_source', $data))
+			 ->setItemTarget($this->get($prefix . 'item_target', $data))
+			 ->setFileSource($this->getInt($prefix . 'file_source', $data))
+			 ->setFileTarget($this->get($prefix . 'file_target', $data))
+			 ->setSharedWith($this->get($prefix . 'share_with', $data))
+			 ->setSharedBy($this->get($prefix . 'uid_initiator', $data))
+			 ->setShareOwner($this->get($prefix . 'uid_owner', $data))
+			 ->setToken($this->get($prefix . 'token', $data))
+			 ->setShareTime($shareTime);
+
+//		if (($password = $this->get('personal_password', $data, '')) !== '') {
+//			$share->setPassword($this->get('personal_password', $data, ''));
+//		} else if (($password = $this->get('password', $data, '')) !== '') {
+//			$share->setPassword($this->get('password', $data, ''));
+//		}
+
+		$this->setChildId($this->getInt($prefix . 'child_id', $data))
+			 ->setChildFileTarget($this->get($prefix . 'child_file_target', $data))
+			 ->setProviderId(ShareByCircleProvider::IDENTIFIER)
+			 ->setStatus(Ishare::STATUS_ACCEPTED);
+
+		$this->getManager()->manageImportFromDatabase($this, $data, $prefix);
+
+		return $this;
+	}
+
+
 	/**
 	 * @return string[]
 	 */
@@ -655,16 +754,21 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 			'sharedWith'      => $this->getSharedWith(),
 			'sharedBy'        => $this->getSharedBy(),
 			'shareOwner'      => $this->getShareOwner(),
+			'token'           => $this->getToken(),
 			'childId'         => $this->getChildId(),
 			'childFileTarget' => $this->getChildFileTarget()
 		];
+
+		if ($this->hasOwner()) {
+			$arr['owner'] = $this->getOwner();
+		}
 
 		if ($this->hasCircle()) {
 			$arr['circle'] = $this->getCircle();
 		}
 
-		if ($this->hasInheritedBy()) {
-			$arr['inheritedBy'] = $this->getInheritedBy();
+		if ($this->hasViewer()) {
+			$arr['viewer'] = $this->getInitiator();
 		}
 
 		if ($this->hasFileCache()) {

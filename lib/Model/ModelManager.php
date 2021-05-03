@@ -339,7 +339,7 @@ class ModelManager {
 				try {
 					$initiator = new Member();
 					$initiator->importFromDatabase($data, $prefix);
-					$shareWrapper->setInheritedBy($initiator);
+					$shareWrapper->setInitiator($initiator);
 				} catch (MemberNotFoundException $e) {
 				}
 				break;
@@ -348,7 +348,7 @@ class ModelManager {
 				try {
 					$inheritedBy = new Member();
 					$inheritedBy->importFromDatabase($data, $prefix);
-					$shareWrapper->setInheritedBy($inheritedBy);
+					$shareWrapper->setInitiator($inheritedBy);
 				} catch (MemberNotFoundException $e) {
 				}
 				break;
@@ -382,7 +382,7 @@ class ModelManager {
 				try {
 					$member = new Member();
 					$member->importFromDatabase($data, $prefix);
-					$mount->setMember($member);
+					$mount->setOwner($member);
 				} catch (MemberNotFoundException $e) {
 				}
 				break;

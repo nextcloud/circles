@@ -52,16 +52,17 @@ class MountRequest extends MountRequestBuilder {
 	/**
 	 * @param Mount $mount
 	 */
-	public function create(Mount $mount): void {
+	public function save(Mount $mount): void {
 		$hash = $this->token();
 		$qb = $this->getMountInsertSql();
 		$qb->setValue('circle_id', $qb->createNamedParameter($mount->getCircleId()))
-		   ->setValue('owner', $qb->createNamedParameter($mount->getMember()))
-//		   ->setValue('instance', $qb->createNamedParameter($mount->getInstance()))
+		   ->setValue('mount_id', $qb->createNamedParameter($mount->getMountId()))
+		   ->setValue('single_id', $qb->createNamedParameter($mount->getOwner()->getSingleId()))
 		   ->setValue('token', $qb->createNamedParameter($mount->getToken()))
 		   ->setValue('parent', $qb->createNamedParameter($mount->getParent()))
 		   ->setValue('mountpoint', $qb->createNamedParameter($mount->getMountPoint()))
 		   ->setValue('mountpoint_hash', $qb->createNamedParameter($hash));
+
 		$qb->execute();
 	}
 

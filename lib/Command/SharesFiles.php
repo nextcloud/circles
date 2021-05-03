@@ -219,7 +219,7 @@ class SharesFiles extends Base {
 
 		foreach ($shareWrappers as $share) {
 			if (!$filterRecipient) {
-				$recipient = $share->getInheritedBy();
+				$recipient = $share->getInitiator();
 				$sharedTo = $recipient->getDisplayName();
 				if (!$this->configService->isLocalInstance($recipient->getInstance())) {
 					$sharedTo .= '@' . $recipient->getInstance();

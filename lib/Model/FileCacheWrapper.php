@@ -32,6 +32,8 @@ declare(strict_types=1);
 namespace OCA\Circles\Model;
 
 use daita\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
+use daita\MySmallPhpTools\Exceptions\InvalidItemException;
+use daita\MySmallPhpTools\IDeserializable;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\Db\CoreQueryBuilder;
@@ -39,11 +41,11 @@ use OCA\Circles\Exceptions\FileCacheNotFoundException;
 
 
 /**
- * Class ShareWrapper
+ * Class FileCacheWrapper
  *
  * @package OCA\Circles\Model
  */
-class FileCacheWrapper extends ManagedModel implements INC22QueryRow, JsonSerializable {
+class FileCacheWrapper extends ManagedModel implements INC22QueryRow, IDeserializable, JsonSerializable {
 
 
 	use TArrayTools;
@@ -423,12 +425,12 @@ class FileCacheWrapper extends ManagedModel implements INC22QueryRow, JsonSerial
 	/**
 	 * @return array
 	 */
-	public function getData(): array {
+	public function toCache(): array {
 		return [
 			'fileid'           => $this->getId(),
 			'path'             => $this->getPath(),
 			'permissions'      => $this->getPermissions(),
-			'storage'          => $this->getStorageId(), // strange, is it not !?
+			'storage'          => $this->getStorageId(), // strange, it is not !?
 			'path_hash'        => $this->getPathHash(),
 			'parent'           => $this->getParent(),
 			'name'             => $this->getName(),
@@ -458,6 +460,39 @@ class FileCacheWrapper extends ManagedModel implements INC22QueryRow, JsonSerial
 
 		return !(explode('/', $this->getPath(), 2)[0] !== 'files'
 				 && explode(':', $this->getStorage(), 2)[0] === 'home');
+	}
+
+
+	/**
+	 * @param array $data
+	 *
+	 * @return self
+	 * @throws InvalidItemException
+	 */
+	public function import(array $data): IDeserializable {
+		if ($this->getInt('id', $data) === 0) {
+			throw new InvalidItemException();
+		}
+
+		$this->setId($this->getInt('id', $data))
+			 ->setPath($this->get('path', $data))
+			 ->setPermissions($this->getInt('permissions', $data))
+			 ->setStorage($this->get('storage', $data))
+			 ->setStorageId($this->getInt('storage', $data))
+			 ->setPathHash($this->get('pathHash', $data))
+			 ->setParent($this->getInt('parent', $data))
+			 ->setName($this->get('name', $data))
+			 ->setMimeType($this->getInt('mimeType', $data))
+			 ->setMimePart($this->getInt('mimePart', $data))
+			 ->setSize($this->getInt('size', $data))
+			 ->setMTime($this->getInt('mTime', $data))
+			 ->setStorageMTime($this->getInt('storageMTime', $data))
+			 ->setEncrypted($this->getBool('encrypted', $data))
+			 ->setUnencryptedSize($this->getInt('unencryptedSize', $data))
+			 ->setEtag($this->get('etag', $data))
+			 ->setChecksum($this->get('checksum', $data));
+
+		return $this;
 	}
 
 

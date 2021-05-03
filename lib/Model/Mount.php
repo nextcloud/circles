@@ -36,6 +36,7 @@ use daita\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
 use daita\MySmallPhpTools\IDeserializable;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
+use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\MountManager\CircleMountManager;
 use OCP\Federation\ICloudIdManager;
 use OCP\Http\Client\IClientService;
@@ -60,12 +61,12 @@ class Mount extends ManagedModel implements IDeserializable, INC22QueryRow, Json
 
 	/** @var string */
 	private $circleId = '';
-
-	/** @var string */
-	private $singleId = '';
+//
+//	/** @var string */
+//	private $singleId = '';
 
 	/** @var Member */
-	private $member;
+	private $owner;
 
 	/** @var Member */
 	private $initiator;
@@ -158,25 +159,25 @@ class Mount extends ManagedModel implements IDeserializable, INC22QueryRow, Json
 		return $this;
 	}
 
-
-	/**
-	 *
-	 * @return string
-	 */
-	public function getSingleId(): string {
-		return $this->singleId;
-	}
-
-	/**
-	 * @param string $singleId
-	 *
-	 * @return Mount
-	 */
-	public function setSingleId(string $singleId): self {
-		$this->singleId = $singleId;
-
-		return $this;
-	}
+//
+//	/**
+//	 *
+//	 * @return string
+//	 */
+//	public function getSingleId(): string {
+//		return $this->singleId;
+//	}
+//
+//	/**
+//	 * @param string $singleId
+//	 *
+//	 * @return Mount
+//	 */
+//	public function setSingleId(string $singleId): self {
+//		$this->singleId = $singleId;
+//
+//		return $this;
+//	}
 
 
 	/**
@@ -245,21 +246,28 @@ class Mount extends ManagedModel implements IDeserializable, INC22QueryRow, Json
 	/**
 	 * @return Member
 	 */
-	public function getMember(): Member {
-		return $this->member;
+	public function getOwner(): Member {
+		return $this->owner;
 	}
 
 	/**
-	 * @param Member $member
+	 * @param Member $owner
 	 *
 	 * @return Mount
 	 */
-	public function setMember(Member $member): self {
-		$this->member = $member;
+	public function setOwner(Member $owner): self {
+		$this->owner = $owner;
 
 		return $this;
 	}
 
+
+	/**
+	 * @return bool
+	 */
+	public function hasInitiator(): bool {
+		return !is_null($this->initiator);
+	}
 
 	/**
 	 * @return Member
@@ -399,7 +407,7 @@ class Mount extends ManagedModel implements IDeserializable, INC22QueryRow, Json
 	 * @return array
 	 */
 	public function toMount(): array {
-		$member = $this->getMember();
+		$member = $this->getOwner();
 
 		return [
 			'owner'             => $member->getUserId(),
@@ -418,7 +426,33 @@ class Mount extends ManagedModel implements IDeserializable, INC22QueryRow, Json
 	}
 
 
+	/**
+	 * @param ShareWrapper $wrappedShare
+	 *
+	 * @throws CircleNotFoundException
+	 */
+	public function fromShare(ShareWrapper $wrappedShare) {
+		if (!$wrappedShare->hasCircle()) {
+			throw new CircleNotFoundException('ShareWrapper has no Circle');
+		}
+
+		$circle = $wrappedShare->getCircle();
+		$this->setCircleId($circle->getSingleId());
+		$this->setOwner($wrappedShare->getOwner());
+		$this->setToken($wrappedShare->getToken());
+		$this->setParent(-1);
+		$this->setMountPoint($wrappedShare->getFileTarget());
+		$this->setMountPointHash('12345qwert');
+	}
+
+
+	/**
+	 * @param array $data
+	 *
+	 * @return IDeserializable
+	 */
 	public function import(array $data): IDeserializable {
+		return $this;
 	}
 
 
@@ -431,7 +465,6 @@ class Mount extends ManagedModel implements IDeserializable, INC22QueryRow, Json
 	public function importFromDatabase(array $data, string $prefix = ''): INC22QueryRow {
 		$this->setId($this->getInt('id', $data));
 		$this->setCircleId($this->get('circle_id', $data));
-		$this->setSingleId($this->get('single_id', $data));
 		$this->setToken($this->get('token', $data));
 		$this->setParent($this->getInt('parent', $data));
 		$this->setMountPoint($this->get('mountpoint', $data));
@@ -449,19 +482,24 @@ class Mount extends ManagedModel implements IDeserializable, INC22QueryRow, Json
 	 * @return array
 	 */
 	function jsonSerialize(): array {
-		return [
+		$arr = [
 			'id'             => $this->getId(),
 			'circleId'       => $this->getCircleId(),
 			'mountId'        => $this->getMountId(),
 			'parent'         => $this->getParent(),
-			'owner'          => $this->getMember(),
-			'initiator'      => $this->getInitiator(),
+			'owner'          => $this->getOwner(),
 			'token'          => $this->getToken(),
 			'password'       => $this->getPassword(),
 			'mountPoint'     => $this->getMountPoint(),
 			'mountPointHash' => $this->getMountPointHash(),
-			'toMount'        => $this->toMount()
 		];
+
+		if ($this->hasInitiator()) {
+			$arr['initiator'] = $this->getInitiator();
+			$arr['toMount'] = $this->toMount();
+		}
+
+		return $arr;
 	}
 
 }

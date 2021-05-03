@@ -39,17 +39,28 @@ use daita\MySmallPhpTools\Traits\TArrayTools;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OC;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedEventException;
+use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\ShareWrapperNotFoundException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
+use OCA\Circles\FederatedItems\FileShare;
+use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\ShareWrapper;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\EventService;
+use OCA\Circles\Service\FederatedEventService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\ShareWrapperService;
 use OCP\Files\Folder;
@@ -107,6 +118,9 @@ class ShareByCircleProvider implements IShareProvider {
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
+	/** @var FederatedEventService */
+	private $federatedEventService;
+
 	/** @var CircleService */
 	private $circleService;
 
@@ -136,6 +150,7 @@ class ShareByCircleProvider implements IShareProvider {
 		$this->urlGenerator = $urlGenerator;
 
 		$this->federatedUserService = OC::$server->get(FederatedUserService::class);
+		$this->federatedEventService = OC::$server->get(FederatedEventService::class);
 		$this->shareWrapperService = OC::$server->get(ShareWrapperService::class);
 		$this->circleService = OC::$server->get(CircleService::class);
 		$this->eventService = OC::$server->get(EventService::class);
@@ -156,16 +171,24 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @return IShare
 	 * @throws AlreadySharedException
 	 * @throws CircleNotFoundException
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws UnknownRemoteException
 	 * @throws FederatedUserException
 	 * @throws FederatedUserNotFoundException
+	 * @throws IllegalIDChangeException
 	 * @throws InitiatorNotFoundException
 	 * @throws InvalidIdException
-	 * @throws RequestBuilderException
-	 * @throws SingleCircleNotFoundException
-	 * @throws IllegalIDChangeException
 	 * @throws InvalidPathException
 	 * @throws NotFoundException
+	 * @throws RequestBuilderException
 	 * @throws ShareNotFound
+	 * @throws SingleCircleNotFoundException
 	 */
 	public function create(IShare $share): IShare {
 		if ($share->getShareType() !== IShare::TYPE_CIRCLE) {
@@ -186,6 +209,7 @@ class ShareByCircleProvider implements IShareProvider {
 
 		$this->federatedUserService->initCurrentUser();
 		$circle = $this->circleService->getCircle($share->getSharedWith());
+		$owner = $circle->getInitiator();
 
 		$initiatorHelper = new MemberHelper($circle->getInitiator());
 		$initiatorHelper->mustBeMember();
@@ -198,9 +222,20 @@ class ShareByCircleProvider implements IShareProvider {
 				(int)$share->getId(),
 				$this->federatedUserService->getCurrentUser()
 			);
+
+			// TODO: include setOwner in the SQL request directly (leftJoin)
+			$wrappedShare->setOwner($owner);
 		} catch (ShareWrapperNotFoundException $e) {
 			throw new ShareNotFound();
 		}
+
+		// TODO: Move that into a Dispatched Event
+		$event = new FederatedEvent(FileShare::class);
+		$event->setSeverity(FederatedEvent::SEVERITY_HIGH)
+			  ->setCircle($circle)
+			  ->getData()->sObj('wrappedShare', $wrappedShare);
+
+		$this->federatedEventService->newEvent($event);
 
 		$this->eventService->shareCreated($wrappedShare);
 
