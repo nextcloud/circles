@@ -38,6 +38,7 @@ use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\MemberLevelException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemMemberRequired;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\Member;
@@ -85,6 +86,10 @@ class MemberLevel implements
 		$member = $event->getMember();
 		$initiator = $circle->getInitiator();
 		$level = $event->getData()->gInt('level');
+
+		if ($circle->isConfig(Circle::CFG_SINGLE) || $circle->isConfig(Circle::CFG_PERSONAL)) {
+			throw new FederatedItemBadRequestException('This level cannot be edited');
+		}
 
 		if ($level === 0) {
 			// TODO check all level
