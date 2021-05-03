@@ -1,27 +1,32 @@
 # Nextcloud Circles
 
+
+_**Important Notes**: 
+ - `master` contains a version of Circles for NC22 and is not compatible with older version of Nextcloud_
+ - Because of the huge difference between the last version and version prior to 22.0.0, any bugfixes about Circles for NC21 and older version should be applied to stable21.
+
+
 **Bring cloud-users closer together.**
 
-![](https://raw.githubusercontent.com/nextcloud/circles/master/screenshots/0.12.0.png)
 
-Circles allows your users to create their own groups of users/colleagues/friends. 
+
+Circles allow your users to create their own groups of users/colleagues/friends. 
 Those groups of users (or circles) can then be used by any other app for sharing purpose 
-(files, social feed, status update, messaging, …) through the Circles API
+ through the Circles API
 
 ***
-# API (PHP & Javascript)
+# API (PHP & Javascript) (Deprecated since NC22)
 
 [Please visit our wiki to read more about the API.](https://github.com/nextcloud/circles/wiki)
 
-# Configuration
+# Installation
 
-## Allow usage of Circles in non-SSL environments
+(to be written)
 
-In non-SSL environments (like on development setups) it is necessary to set two config flags for Circles:
+# Documentation
 
-`./occ config:app:set circles --value 1 allow_non_ssl_links` 
+(to be written)
 
-`./occ config:app:set circles --value 1 local_is_non_ssl`
 
 # Credits
 

@@ -5,10 +5,13 @@ All notable changes to this project will be documented in this file.
 
 ### 22.0.0 (NC22)
 
-- compat nc22
+- Full rewrite of the app for Nextcloud 22
+- Type of Circles are gone, replaced by config flags  
 - first implementation of federated circles (2.0)
 - first implementation of new ExtendedQueryBuilder
-
+  
+  (changelog in progress)
+  
 
 ### 0.20.6
 
