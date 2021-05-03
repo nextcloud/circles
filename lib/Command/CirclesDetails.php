@@ -149,7 +149,6 @@ class CirclesDetails extends Base {
 				$data = ['initiator' => $initiator];
 				$circle = $this->remoteService->getCircleFromInstance($circleId, $instance, $data);
 			} else {
-
 				try {
 					$this->federatedUserService->commandLineInitiator($initiator, $circleId, true);
 					$circle = $this->circleService->getCircle($circleId, 0);

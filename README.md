@@ -1,20 +1,21 @@
 # Nextcloud Circles
 
 
-_**Important Notes**: 
+### Important Notes 
+
  - `master` contains a version of Circles for NC22 and is not compatible with older version of Nextcloud_
  - Because of the huge difference between the last version and version prior to 22.0.0, any bugfixes about Circles for NC21 and older version should be applied to stable21.
 
 
-**Bring cloud-users closer together.**
-
-
+### Bring cloud-users closer together
 
 Circles allow your users to create their own groups of users/colleagues/friends. 
 Those groups of users (or circles) can then be used by any other app for sharing purpose 
  through the Circles API
 
+
 ***
+
 # API (PHP & Javascript) (Deprecated since NC22)
 
 [Please visit our wiki to read more about the API.](https://github.com/nextcloud/circles/wiki)
