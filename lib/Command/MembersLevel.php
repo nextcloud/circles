@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,16 +31,21 @@
 
 namespace OCA\Circles\Command;
 
-use Exception;
+
+use daita\MySmallPhpTools\Exceptions\InvalidItemException;
+use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
+use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use OC\Core\Command\Base;
-use OC\User\NoUserException;
-use OCA\Circles\Db\MembersRequest;
+use OCA\Circles\Db\MemberRequest;
+use OCA\Circles\Exceptions\FederatedEventException;
+use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Model\Member;
-use OCA\Circles\Service\MembersService;
-use OCP\IL10N;
-use OCP\IUserManager;
+use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Service\MemberService;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
@@ -50,43 +57,42 @@ use Symfony\Component\Console\Output\OutputInterface;
 class MembersLevel extends Base {
 
 
-	/** @var IL10N */
-	private $l10n;
+	/** @var MemberRequest */
+	private $memberRequest;
 
-	/** @var IUserManager */
-	private $userManager;
+	/** @var FederatedUserService */
+	private $federatedUserService;
 
-	/** @var MembersRequest */
-	private $membersRequest;
-
-	/** @var MembersService */
-	private $membersService;
+	/** @var MemberService */
+	private $memberService;
 
 
 	/**
 	 * MembersLevel constructor.
 	 *
-	 * @param IL10N $l10n
-	 * @param IUserManager $userManager
-	 * @param MembersRequest $membersRequest
-	 * @param MembersService $membersService
+	 * @param MemberRequest $memberRequest
+	 * @param FederatedUserService $federatedUserService
+	 * @param MemberService $memberService
 	 */
 	public function __construct(
-		IL10N $l10n, IUserManager $userManager, MembersRequest $membersRequest, MembersService $membersService
+		MemberRequest $memberRequest, FederatedUserService $federatedUserService, MemberService $memberService
 	) {
 		parent::__construct();
-		$this->l10n = $l10n;
-		$this->userManager = $userManager;
-		$this->membersRequest = $membersRequest;
-		$this->membersService = $membersService;
+
+		$this->memberRequest = $memberRequest;
+		$this->federatedUserService = $federatedUserService;
+		$this->memberService = $memberService;
 	}
 
 
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:members:level')
-			 ->setDescription('Change level of a member')
-			 ->addArgument('member_id', InputArgument::REQUIRED, 'ID of the member')
+			 ->setDescription('Change the level of a member from a Circle')
+			 ->addArgument('member_id', InputArgument::REQUIRED, 'ID of the member from the Circle')
+			 ->addOption('circle', '', InputOption::VALUE_REQUIRED, 'ID of the circle', '')
+			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception')
 			 ->addArgument('level', InputArgument::REQUIRED, 'new level');
 	}
 
@@ -96,36 +102,38 @@ class MembersLevel extends Base {
 	 * @param OutputInterface $output
 	 *
 	 * @return int
-	 * @throws NoUserException
-	 * @throws Exception
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
+	 * @throws InitiatorNotFoundException
+	 * @throws InvalidItemException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$memberId = $input->getArgument('member_id');
-		$level = $input->getArgument('level');
+		$circleId = $input->getOption('circle');
 
-		$levels = [
-			'member'    => Member::LEVEL_MEMBER,
-			'moderator' => Member::LEVEL_MODERATOR,
-			'admin'     => Member::LEVEL_ADMIN,
-			'owner'     => Member::LEVEL_OWNER
-		];
+		try {
+			if ($circleId === '') {
+				$circleId = $this->memberRequest->getMember($memberId)->getCircleId();
+			}
 
-		if (!key_exists(strtolower($level), $levels)) {
-			throw new Exception('unknown level: ' . json_encode(array_keys($levels)));
+			$this->federatedUserService->commandLineInitiator($input->getOption('initiator'), $circleId);
+			$this->memberService->getMember($memberId, $circleId);
+
+			$level = Member::parseLevelString($input->getArgument('level'));
+			$outcome = $this->memberService->memberLevel($memberId, $level);
+		} catch (FederatedItemException $e) {
+			if ($input->getOption('status-code')) {
+				throw new FederatedItemException(
+					' [' . get_class($e) . ', ' . $e->getStatus() . ']' . "\n" . $e->getMessage()
+				);
+			}
+
+			throw $e;
 		}
 
-		$level = $levels[strtolower($level)];
-
-		$member = $this->membersService->getMemberById($memberId);
-		$this->membersService->levelMember(
-			$member->getCircleId(), $member->getUserId(), Member::TYPE_USER, $member->getInstance(), $level,
-			true
-		);
-
-		$member = $this->membersRequest->forceGetMember(
-			$member->getCircleId(), $member->getUserId(), Member::TYPE_USER, $member->getInstance()
-		);
-		echo json_encode($member, JSON_PRETTY_PRINT) . "\n";
+		$output->writeln(json_encode($outcome, JSON_PRETTY_PRINT));
 
 		return 0;
 	}

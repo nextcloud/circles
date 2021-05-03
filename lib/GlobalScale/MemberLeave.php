@@ -73,13 +73,13 @@ class MemberLeave extends AGlobalScaleEvent {
 	 * @param GSEvent $event
 	 */
 	public function manage(GSEvent $event): void {
-		$circle = $event->getCircle();
+		$circle = $event->getDeprecatedCircle();
 		$member = $event->getMember();
 
 		$this->eventsService->onMemberLeaving($circle, $member);
 
 		$this->membersRequest->removeMember($member);
-		$this->sharesRequest->removeSharesFromMember($member);
+		$this->fileSharesRequest->removeSharesFromMember($member);
 		$this->gsSharesRequest->removeGSSharesFromMember($member);
 	}
 

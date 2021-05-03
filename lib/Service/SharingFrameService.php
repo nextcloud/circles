@@ -5,7 +5,7 @@
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Maxence Lange <maxence@artificial-owl.com>
  * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
@@ -27,12 +27,12 @@
 namespace OCA\Circles\Service;
 
 
-use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
+use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
 use daita\MySmallPhpTools\Model\Request;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
 use Exception;
 use OCA\Circles\Api\v1\Circles;
-use OCA\Circles\Db\CirclesRequest;
+use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\FederatedLinksRequest;
 use OCA\Circles\Db\SharingFrameRequest;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
@@ -42,7 +42,7 @@ use OCA\Circles\Exceptions\PayloadDeliveryException;
 use OCA\Circles\Exceptions\SharingFrameAlreadyDeliveredException;
 use OCA\Circles\Exceptions\SharingFrameAlreadyExistException;
 use OCA\Circles\Exceptions\SharingFrameDoesNotExistException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\SharingFrame;
 use OCP\Http\Client\IClientService;
@@ -53,7 +53,7 @@ use OCP\IUserSession;
 class SharingFrameService {
 
 
-	use TNC21Request;
+	use TNC22Request;
 
 
 	/** @var string */
@@ -68,7 +68,7 @@ class SharingFrameService {
 	/** @var SharingFrameRequest */
 	private $sharingFrameRequest;
 
-	/** @var CirclesRequest */
+	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
 
 	/** @var FederatedLinksRequest */
@@ -77,8 +77,6 @@ class SharingFrameService {
 	/** @var BroadcastService */
 	private $broadcastService;
 
-	/** @var FederatedLinkService */
-	private $federatedLinkService;
 
 	/** @var IClientService */
 	private $clientService;
@@ -95,10 +93,9 @@ class SharingFrameService {
 	 * @param IURLGenerator $urlGenerator
 	 * @param ConfigService $configService
 	 * @param SharingFrameRequest $sharingFrameRequest
-	 * @param CirclesRequest $circlesRequest
+	 * @param DeprecatedCirclesRequest $circlesRequest
 	 * @param FederatedLinksRequest $federatedLinksRequest
 	 * @param BroadcastService $broadcastService
-	 * @param FederatedLinkService $federatedLinkService
 	 * @param IClientService $clientService
 	 * @param MiscService $miscService
 	 */
@@ -108,10 +105,9 @@ class SharingFrameService {
 		IURLGenerator $urlGenerator,
 		ConfigService $configService,
 		SharingFrameRequest $sharingFrameRequest,
-		CirclesRequest $circlesRequest,
+		DeprecatedCirclesRequest $circlesRequest,
 		FederatedLinksRequest $federatedLinksRequest,
 		BroadcastService $broadcastService,
-		FederatedLinkService $federatedLinkService,
 		IClientService $clientService,
 		MiscService $miscService
 	) {
@@ -130,7 +126,6 @@ class SharingFrameService {
 		$this->circlesRequest = $circlesRequest;
 		$this->federatedLinksRequest = $federatedLinksRequest;
 		$this->broadcastService = $broadcastService;
-		$this->federatedLinkService = $federatedLinkService;
 		$this->clientService = $clientService;
 		$this->miscService = $miscService;
 	}
@@ -180,10 +175,10 @@ class SharingFrameService {
 	 * Check if the source is NOT Circles.
 	 *
 	 * @param SharingFrame $frame
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param $broadcast
 	 */
-	private function generateHeaders(SharingFrame $frame, Circle $circle, $broadcast) {
+	private function generateHeaders(SharingFrame $frame, DeprecatedCircle $circle, $broadcast) {
 
 		try {
 			$frame->cannotBeFromCircles();
@@ -196,7 +191,7 @@ class SharingFrameService {
 			$frame->generateUniqueId();
 
 		} catch (Exception $e) {
-			throw new $e;
+			throw $e;
 		}
 	}
 
@@ -304,7 +299,7 @@ class SharingFrameService {
 	 * @throws Exception
 	 */
 	public function initiateShare(string $circleUniqueId, string $frameUniqueId) {
-		$request = new NC21Request('', Request::TYPE_POST);
+		$request = new NC22Request('', Request::TYPE_POST);
 		$this->configService->configureRequest($request, 'circles.Shares.initShareDelivery');
 		$request->addParam('circleId', $circleUniqueId);
 		$request->addParam('frameId', $frameUniqueId);
@@ -323,16 +318,6 @@ class SharingFrameService {
 	}
 
 
-	/**
-	 * @param string $remote
-	 *
-	 * @return string
-	 */
-	private function generatePayloadDeliveryURL($remote) {
-		return $this->configService->generateRemoteHost($remote) .
-			   $this->urlGenerator->linkToRoute('circles.Shares.initShareDelivery');
-	}
-
 
 	/**
 	 * @param SharingFrame $frame
@@ -340,42 +325,42 @@ class SharingFrameService {
 	 * @throws Exception
 	 */
 	public function forwardSharingFrame(SharingFrame $frame) {
-
-		try {
-			$circle = $this->circlesRequest->forceGetCircle(
-				$frame->getCircle()
-					  ->getUniqueId()
-			);
-		} catch (CircleDoesNotExistException $e) {
-			throw new CircleDoesNotExistException('unknown_circle');
-		}
-
-		$links = $this->federatedLinksRequest->getLinksFromCircle(
-			$frame->getCircle()
-				  ->getUniqueId(), FederatedLink::STATUS_LINK_UP
-		);
-
-		$this->forwardSharingFrameToFederatedLinks($circle, $frame, $links);
+//
+//		try {
+//			$circle = $this->circlesRequest->forceGetCircle(
+//				$frame->getCircle()
+//					  ->getUniqueId()
+//			);
+//		} catch (CircleDoesNotExistException $e) {
+//			throw new CircleDoesNotExistException('unknown_circle');
+//		}
+//
+//		$links = $this->federatedLinksRequest->getLinksFromCircle(
+//			$frame->getCircle()
+//				  ->getUniqueId(), FederatedLink::STATUS_LINK_UP
+//		);
+//
+//		$this->forwardSharingFrameToFederatedLinks($circle, $frame, $links);
 	}
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param SharingFrame $frame
 	 * @param FederatedLink[] $links
 	 */
-	private function forwardSharingFrameToFederatedLinks(Circle $circle, SharingFrame $frame, $links) {
-
-		$args = [
-			'apiVersion' => Circles::version(),
-			'uniqueId'   => $circle->getUniqueId(true),
-			'item'       => json_encode($frame)
-		];
-
-		foreach ($links as $link) {
-			$args['token'] = $link->getToken(true);
-			$this->deliverSharingFrameToLink($link, $args);
-		}
+	private function forwardSharingFrameToFederatedLinks(DeprecatedCircle $circle, SharingFrame $frame, $links) {
+//
+//		$args = [
+//			'apiVersion' => Circles::version(),
+//			'uniqueId'   => $circle->getUniqueId(true),
+//			'item'       => json_encode($frame)
+//		];
+//
+//		foreach ($links as $link) {
+//			$args['token'] = $link->getToken(true);
+//			$this->deliverSharingFrameToLink($link, $args);
+//		}
 	}
 
 
@@ -386,27 +371,27 @@ class SharingFrameService {
 	 * @param array $args
 	 */
 	private function deliverSharingFrameToLink($link, $args) {
-
-		$client = $this->clientService->newClient();
-		try {
-			$request = $client->put(
-				$this->generatePayloadDeliveryURL($link->getAddress()), [
-																		  'body'            => $args,
-																		  'timeout'         => 10,
-																		  'connect_timeout' => 10,
-																	  ]
-			);
-
-			$result = json_decode($request->getBody(), true);
-			if ($result['status'] === -1) {
-				throw new PayloadDeliveryException($result['reason']);
-			}
-
-		} catch (Exception $e) {
-			$this->miscService->log(
-				'fail to send frame to ' . $link->getAddress() . ' - ' . $e->getMessage()
-			);
-		}
+//
+//		$client = $this->clientService->newClient();
+//		try {
+//			$request = $client->put(
+//				$this->generatePayloadDeliveryURL($link->getAddress()), [
+//																		  'body'            => $args,
+//																		  'timeout'         => 10,
+//																		  'connect_timeout' => 10,
+//																	  ]
+//			);
+//
+//			$result = json_decode($request->getBody(), true);
+//			if ($result['status'] === -1) {
+//				throw new PayloadDeliveryException($result['reason']);
+//			}
+//
+//		} catch (Exception $e) {
+//			$this->miscService->log(
+//				'fail to send frame to ' . $link->getAddress() . ' - ' . $e->getMessage()
+//			);
+//		}
 	}
 
 
@@ -414,7 +399,7 @@ class SharingFrameService {
 	 * @param SharingFrame $frame
 	 */
 	public function updateFrameWithCloudId(SharingFrame $frame) {
-		$frame->setCloudId($this->configService->getLocalAddress());
+//		$frame->setCloudId($this->configService->getLocalAddress());
 		$this->sharingFrameRequest->updateSharingFrame($frame);
 	}
 

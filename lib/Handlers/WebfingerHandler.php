@@ -1,4 +1,8 @@
 <?php
+
+declare(strict_types=1);
+
+
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -6,7 +10,7 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2017
+ * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,15 +28,17 @@
  *
  */
 
+
 namespace OCA\Circles\Handlers;
 
 
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
+use daita\MySmallPhpTools\Exceptions\SignatureException;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use OC\URLGenerator;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Service\ConfigService;
-use OCA\Circles\Service\RemoteService;
+use OCA\Circles\Service\RemoteStreamService;
 use OCP\Http\WellKnown\IHandler;
 use OCP\Http\WellKnown\IRequestContext;
 use OCP\Http\WellKnown\IResponse;
@@ -54,8 +60,8 @@ class WebfingerHandler implements IHandler {
 	/** @var URLGenerator */
 	private $urlGenerator;
 
-	/** @var RemoteService */
-	private $remoteService;
+	/** @var RemoteStreamService */
+	private $remoteStreamService;
 
 	/** @var ConfigService */
 	private $configService;
@@ -65,14 +71,14 @@ class WebfingerHandler implements IHandler {
 	 * WebfingerHandler constructor.
 	 *
 	 * @param IURLGenerator $urlGenerator
-	 * @param RemoteService $remoteService
+	 * @param RemoteStreamService $remoteStreamService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IURLGenerator $urlGenerator, RemoteService $remoteService, ConfigService $configService
+		IURLGenerator $urlGenerator, RemoteStreamService $remoteStreamService, ConfigService $configService
 	) {
 		$this->urlGenerator = $urlGenerator;
-		$this->remoteService = $remoteService;
+		$this->remoteStreamService = $remoteStreamService;
 		$this->configService = $configService;
 	}
 
@@ -83,6 +89,7 @@ class WebfingerHandler implements IHandler {
 	 * @param IResponse|null $response
 	 *
 	 * @return IResponse|null
+	 * @throws SignatureException
 	 */
 	public function handle(string $service, IRequestContext $context, ?IResponse $response): ?IResponse {
 		if ($service !== 'webfinger') {
@@ -99,15 +106,16 @@ class WebfingerHandler implements IHandler {
 		}
 
 		try {
-			$this->remoteService->getAppSignatory();
+			$this->remoteStreamService->getAppSignatory();
 		} catch (SignatoryException $e) {
 			return $response;
 		}
 
-		$href = $this->configService->getRemotePath();
+		$href = $this->configService->getFrontalPath();
 		$info = [
 			'app'     => Application::APP_ID,
 			'name'    => Application::APP_NAME,
+			'token'   => Application::APP_TOKEN,
 			'version' => $this->configService->getAppValue('installed_version'),
 			'api'     => Application::APP_API
 		];

@@ -5,7 +5,7 @@
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Maxence Lange <maxence@artificial-owl.com>
  * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
@@ -27,8 +27,8 @@
 namespace OCA\Circles\Api;
 
 use OCA\Circles\AppInfo\Application;
-use OCA\Circles\Model\Circle;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedCircle;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\MiscService;
 use OCP\Share;
@@ -66,7 +66,7 @@ class Sharees {
 							  ->getUID();
 
 		$data = $c->query(CirclesService::class)
-				  ->listCircles($userId, Circle::CIRCLES_ALL, $search, Member::LEVEL_MEMBER);
+				  ->listCircles($userId, DeprecatedCircle::CIRCLES_ALL, $search, DeprecatedMember::LEVEL_MEMBER);
 		$result = array(
 			'exact'   => ['circles'],
 			'circles' => []
@@ -84,7 +84,7 @@ class Sharees {
 
 	/**
 	 * @param $result
-	 * @param Circle $entry
+	 * @param DeprecatedCircle $entry
 	 * @param bool $exact
 	 *
 	 */

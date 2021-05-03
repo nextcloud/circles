@@ -5,7 +5,7 @@
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Maxence Lange <maxence@artificial-owl.com>
  * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
@@ -27,7 +27,7 @@
 namespace OCA\Circles\Search;
 
 use OCA\Circles\ISearch;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SearchResult;
 use OCA\Circles\Service\MiscService;
 
@@ -49,7 +49,7 @@ class Contacts implements ISearch {
 			}
 
 			$data = $this->generateDataArray($contact);
-			$result[] = new SearchResult($contact['UID'], Member::TYPE_CONTACT, '', $data);
+			$result[] = new SearchResult($contact['UID'], DeprecatedMember::TYPE_CONTACT, '', $data);
 		}
 
 		return $result;

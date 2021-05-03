@@ -49,9 +49,9 @@ class CircleProviderRequest extends CircleProviderRequestBuilder {
 		$this->limitToPage($qb, $limit, $offset);
 		$this->limitToCircles($qb, $circleUniqueIds);
 
-		$this->linkToMember($qb, $userId, $this->configService->isLinkedGroupsAllowed(), 'c');
+		$this->linkToMember($qb, $userId, false, 'c');
 
-	//	$this->leftJoinShareInitiator($qb);
+		//	$this->leftJoinShareInitiator($qb);
 
 		$cursor = $qb->execute();
 

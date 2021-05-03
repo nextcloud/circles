@@ -5,7 +5,7 @@
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Maxence Lange <maxence@artificial-owl.com>
  * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
@@ -29,9 +29,9 @@ namespace OCA\Circles\Api;
 
 use OC;
 use OCA\Circles\AppInfo\Application;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\FederatedLink;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\CirclesService;
 
@@ -42,10 +42,11 @@ class Circles {
 	 *
 	 * Returns details on the circle. If the current user is a member, the members list will be
 	 * return as well.
-	 * @deprecated 13.0.0
+	 *
 	 * @param $circleId
 	 *
-	 * @return Circle
+	 * @return DeprecatedCircle
+	 * @deprecated 13.0.0
 	 */
 	public static function detailsCircle($circleId) {
 		$app = OC::$server->query(Application::class);

@@ -67,7 +67,7 @@ class MemberRemove extends AGlobalScaleEvent {
 	public function verify(GSEvent $event, bool $localCheck = false, bool $mustBeChecked = false): void {
 		parent::verify($event, $localCheck, true);
 
-		$circle = $event->getCircle();
+		$circle = $event->getDeprecatedCircle();
 		$member = $event->getMember();
 
 		$member->hasToBeMemberOrAlmost();
@@ -95,14 +95,14 @@ class MemberRemove extends AGlobalScaleEvent {
 	 * @throws MemberAlreadyExistsException
 	 */
 	public function manage(GSEvent $event): void {
-		$circle = $event->getCircle();
+		$circle = $event->getDeprecatedCircle();
 		$member = $event->getMember();
 
 		$this->eventsService->onMemberLeaving($circle, $member);
 		$this->membersRequest->removeMember($member);
 
 		$this->gsSharesRequest->removeGSSharesFromMember($member);
-		$this->sharesRequest->removeSharesFromMember($member);
+		$this->fileSharesRequest->removeSharesFromMember($member);
 		$this->tokensRequest->removeTokensFromMember($member);
 	}
 

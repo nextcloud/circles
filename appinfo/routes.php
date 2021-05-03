@@ -1,11 +1,15 @@
 <?php
+
+declare(strict_types=1);
+
+
 /**
  * Circles - Bring cloud-users closer together.
  *
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Maxence Lange <maxence@artificial-owl.com>
  * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
@@ -24,57 +28,50 @@
  *
  */
 
-return [
-	'ocs'    => [
-	],
-	'routes' => [
-		['name' => 'Settings#getSettings', 'url' => '/admin/settings', 'verb' => 'GET'],
-		['name' => 'Settings#setSettings', 'url' => '/admin/settings', 'verb' => 'POST'],
-		['name' => 'Test#testAsyncStart', 'url' => '/admin/testAsync', 'verb' => 'POST'],
-		['name' => 'Test#testAsyncStatus', 'url' => '/admin/testAsync', 'verb' => 'GET'],
-		['name' => 'Test#testAsyncReset', 'url' => '/admin/testAsync', 'verb' => 'DELETE'],
-		['name' => 'Test#testAsyncRun', 'url' => '/admin/testAsync', 'verb' => 'PUT'],
-		['name' => 'Navigation#navigate', 'url' => '/', 'verb' => 'GET'],
-		['name' => 'Navigation#settings', 'url' => '/settings', 'verb' => 'GET'],
-		['name' => 'Circles#create', 'url' => '/v1/circles', 'verb' => 'PUT'],
-		['name' => 'Circles#listing', 'url' => '/v1/circles', 'verb' => 'GET'],
-		['name' => 'Circles#details', 'url' => '/v1/circles/{uniqueId}', 'verb' => 'GET'],
-		['name' => 'Circles#settings', 'url' => '/v1/circles/{uniqueId}/settings', 'verb' => 'POST'],
-		['name' => 'Circles#destroy', 'url' => '/v1/circles/{uniqueId}', 'verb' => 'DELETE'],
-		['name' => 'Circles#join', 'url' => '/v1/circles/{uniqueId}/join', 'verb' => 'GET'],
-		['name' => 'Circles#leave', 'url' => '/v1/circles/{uniqueId}/leave', 'verb' => 'GET'],
-		['name' => 'Links#createLink', 'url' => '/v1/circles/{uniqueId}/link', 'verb' => 'POST'],
-		['name' => 'Links#updateLinkStatus', 'url' => '/v1/link/{linkId}/status', 'verb' => 'POST'],
-		['name' => 'Federated#requestedLink', 'url' => '/v1/link', 'verb' => 'PUT'],
-		['name' => 'Federated#updateLink', 'url' => '/v1/link', 'verb' => 'POST'],
-		['name' => 'Shares#initShareDelivery', 'url' => '/v1/payload', 'verb' => 'POST'],
-		['name' => 'Federated#receiveFederatedDelivery', 'url' => '/v1/payload', 'verb' => 'PUT'],
-		['name' => 'Members#searchGlobal', 'url' => '/v1/globalsearch', 'verb' => 'GET'],
-		//		[
-		//			'name'         => 'Members#importFromGroup', 'url' => '/v1/circles/{uniqueId}/groupmembers',
-		//			'verb'         => 'PUT'
-		//		],
-		['name' => 'Members#addMember', 'url' => '/v1/circles/{uniqueId}/member', 'verb' => 'PUT'],
-		['name' => 'Members#removeMember', 'url' => '/v1/circles/{uniqueId}/member', 'verb' => 'DELETE'],
-		['name' => 'Members#addMemberById', 'url' => '/v1/circles/member/{memberId}', 'verb' => 'PUT'],
-		['name' => 'Members#removeMemberById', 'url' => '/v1/circles/member/{memberId}', 'verb' => 'DELETE'],
 
-		['name' => 'Members#levelMember', 'url' => '/v1/circles/{uniqueId}/level', 'verb' => 'POST'],
-		['name' => 'Groups#add', 'url' => '/v1/circles/{uniqueId}/groups', 'verb' => 'PUT'],
-		['name' => 'Groups#level', 'url' => '/v1/circles/{uniqueId}/group/level', 'verb' => 'POST'],
-		['name' => 'Groups#remove', 'url' => '/v1/circles/{uniqueId}/groups', 'verb' => 'DELETE'],
+return [
+	'ocs' => [
+		['name' => 'Local#circles', 'url' => '/circles', 'verb' => 'GET'],
+		['name' => 'Local#create', 'url' => '/circles', 'verb' => 'POST'],
+		['name' => 'Local#destroy', 'url' => '/circles/{circleId}', 'verb' => 'DELETE'],
+		['name' => 'Local#search', 'url' => '/search', 'verb' => 'GET'],
+		['name' => 'Local#circleDetails', 'url' => '/circles/{circleId}', 'verb' => 'GET'],
+		['name' => 'Local#members', 'url' => '/circles/{circleId}/members', 'verb' => 'GET'],
+		['name' => 'Local#memberAdd', 'url' => '/circles/{circleId}/members', 'verb' => 'POST'],
+		['name' => 'Local#membersAdd', 'url' => '/circles/{circleId}/members/multi', 'verb' => 'POST'],
+		[
+			'name' => 'Local#memberRemove', 'url' => '/circles/{circleId}/members/{memberId}',
+			'verb' => 'DELETE'
+		],
+		[
+			'name' => 'Local#memberLevel', 'url' => '/circles/{circleId}/members/{memberId}/level',
+			'verb' => 'PUT'
+		],
+		['name' => 'Local#circleJoin', 'url' => '/circles/{circleId}/join', 'verb' => 'PUT'],
+		['name' => 'Local#circleLeave', 'url' => '/circles/{circleId}/leave', 'verb' => 'PUT'],
+
+		['name' => 'Local#editDisplayName', 'url' => '/circles/{circleId}/displayName', 'verb' => 'PUT'],
+		['name' => 'Local#editDescription', 'url' => '/circles/{circleId}/description', 'verb' => 'PUT'],
+		['name' => 'Local#editSettings', 'url' => '/circles/{circleId}/settings', 'verb' => 'PUT'],
+		['name' => 'Local#editConfig', 'url' => '/circles/{circleId}/config', 'verb' => 'PUT']
+	],
+
+	'routes' => [
+		['name' => 'Shares#initShareDelivery', 'url' => '/v1/payload', 'verb' => 'POST'],
 		['name' => 'Shares#create', 'url' => '/v1/circles/{circleUniqueId}/share', 'verb' => 'PUT'],
 
-		['name' => 'GlobalScale#event', 'url' => '/v1/gs/event', 'verb' => 'POST'],
-		['name' => 'GlobalScale#asyncBroadcast', 'url' => '/v1/gs/broadcast/async/{token}/', 'verb' => 'POST'],
-		['name' => 'GlobalScale#broadcast', 'url' => '/v1/gs/broadcast', 'verb' => 'POST'],
-		['name' => 'GlobalScale#status', 'url' => '/v1/gs/status', 'verb' => 'POST'],
 
-		['name' => 'Remote#incoming', 'url' => '/incoming', 'verb' => 'POST'],
-		['name' => 'Remote#test', 'url' => '/test', 'verb' => 'GET'],
-		['name' => 'Remote#circles', 'url' => '/circles', 'verb' => 'GET'],
-		['name' => 'Remote#circle', 'url' => '/circles/{circleId}', 'verb' => 'GET'],
-		['name' => 'Remote#members', 'url' => '/members', 'verb' => 'GET'],
-		['name' => 'Remote#member', 'url' => '/members/{memberId}', 'verb' => 'GET'],
+		['name' => 'EventWrapper#asyncBroadcast', 'url' => '/async/{token}/', 'verb' => 'POST'],
+		//		['name' => 'EventWrapper#broadcast', 'url' => '/v1/gs/broadcast', 'verb' => 'POST'],
+		//		['name' => 'EventWrapper#status', 'url' => '/v1/gs/status', 'verb' => 'POST'],
+
+		['name' => 'Remote#appService', 'url' => '/', 'verb' => 'GET'],
+		['name' => 'Remote#test', 'url' => '/test/', 'verb' => 'GET'],
+		['name' => 'Remote#event', 'url' => '/event/', 'verb' => 'POST'],
+		['name' => 'Remote#incoming', 'url' => '/incoming/', 'verb' => 'POST'],
+		['name' => 'Remote#circles', 'url' => '/circles/', 'verb' => 'GET'],
+		['name' => 'Remote#circle', 'url' => '/circle/{circleId}/', 'verb' => 'GET'],
+		['name' => 'Remote#members', 'url' => '/members/{circleId}/', 'verb' => 'GET'],
+		['name' => 'Remote#member', 'url' => '/member/{type}/{userId}/', 'verb' => 'GET']
 	]
 ];

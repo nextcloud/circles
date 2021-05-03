@@ -28,13 +28,13 @@ namespace OCA\Circles\Search;
 
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\RequestResultNotJsonException;
-use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
+use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
 use daita\MySmallPhpTools\Model\Request;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21Request;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\ISearch;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SearchResult;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
@@ -48,7 +48,7 @@ use OCA\Circles\Service\MiscService;
 class GlobalScaleUsers implements ISearch {
 
 
-	use TNC21Request;
+	use TNC22Request;
 	use TArrayTools;
 
 
@@ -73,16 +73,16 @@ class GlobalScaleUsers implements ISearch {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function search($search) {
+	public function search(string $search): array {
 
 		/** @var string $lookup */
 		try {
-			$lookup = $this->configService->getGSStatus(ConfigService::GS_LOOKUP);
+			$lookup = $this->configService->getGSLookup();
 		} catch (GSStatusException $e) {
 			return [];
 		}
 
-		$request = new NC21Request(ConfigService::GS_LOOKUP_USERS, Request::TYPE_GET);
+		$request = new NC22Request(ConfigService::GS_LOOKUP_USERS, Request::TYPE_GET);
 		$this->configService->configureRequest($request);
 		$request->basedOnUrl($lookup);
 		$request->addParam('search', $search);
@@ -109,7 +109,7 @@ class GlobalScaleUsers implements ISearch {
 
 			$result[] =
 				new SearchResult(
-					$this->get('userid.value', $user), Member::TYPE_USER, $instance,
+					$this->get('userid.value', $user), DeprecatedMember::TYPE_USER, $instance,
 					['display' => $this->get('name.value', $user)]
 				);
 		}

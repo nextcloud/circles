@@ -31,7 +31,7 @@ namespace OCA\Circles\Db;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Model\GlobalScale\GSShare;
 use OCA\Circles\Model\GlobalScale\GSShareMountpoint;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\Share\Exceptions\ShareNotFound;
 
@@ -87,9 +87,9 @@ class GSSharesRequest extends GSSharesRequestBuilder {
 
 
 	/**
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 */
-	public function removeGSSharesFromMember(Member $member) {
+	public function removeGSSharesFromMember(DeprecatedMember $member) {
 		$qb = $this->getGSSharesDeleteSql();
 		$this->limitToCircleId($qb, $member->getCircleId());
 		$this->limitToInstance($qb, $member->getInstance());
@@ -112,7 +112,7 @@ class GSSharesRequest extends GSSharesRequestBuilder {
 		$andX->add($expr->eq('m.user_id', $qb->createNamedParameter($userId)));
 		$andX->add($expr->eq('m.instance', $qb->createNamedParameter('')));
 		$andX->add($expr->gt('m.level', $qb->createNamedParameter(0)));
-		$andX->add($expr->eq('m.user_type', $qb->createNamedParameter(Member::TYPE_USER)));
+		$andX->add($expr->eq('m.user_type', $qb->createNamedParameter(DeprecatedMember::TYPE_USER)));
 		$andX->add($expr->eq('m.circle_id', 'gsh.circle_id'));
 
 		$qb->andWhere($andX);

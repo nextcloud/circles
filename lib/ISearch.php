@@ -1,12 +1,16 @@
 <?php
+
+declare(strict_types=1);
+
+
 /**
  * Circles - Bring cloud-users closer together.
  *
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@pontapreta.net>
- * @copyright 2017
+ * @author Maxence Lange <maxence@artificial-owl.com>
+ * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,18 +28,26 @@
  *
  */
 
+
 namespace OCA\Circles;
 
 
-use OCA\Circles\Model\SearchResult;
+use OCA\Circles\Model\FederatedUser;
 
+
+/**
+ * Interface ISearch
+ *
+ * @package OCA\Circles
+ */
 interface ISearch {
 
 	/**
-	 * @param string $search
+	 * @param string $needle
 	 *
-	 * @return SearchResult[]
+	 * @return FederatedUser[]
 	 */
-	public function search($search);
+	public function search(string $needle): array;
 
 }
+

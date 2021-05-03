@@ -23,8 +23,8 @@
 
 namespace OCA\Circles\Migration;
 
-use OCA\Circles\Model\Circle;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedCircle;
+use OCA\Circles\Model\DeprecatedMember;
 use OCP\IConfig;
 use OCP\IDBConnection;
 use OCP\Migration\IOutput;
@@ -105,7 +105,7 @@ class ImportOwncloudCustomGroups implements IRepairStep {
 
 		while ($row = $result->fetch()) {
 			$insert->setParameter('name', $row['display_name'])
-				->setParameter('type', Circle::CIRCLES_CLOSED);
+				->setParameter('type', DeprecatedCircle::CIRCLES_CLOSED);
 
 			$insert->execute();
 			$output->advance();
@@ -148,11 +148,11 @@ class ImportOwncloudCustomGroups implements IRepairStep {
 				continue;
 			}
 
-			$level = (int) $row['role'] === 1 ? Member::LEVEL_OWNER : Member::LEVEL_MEMBER;
+			$level = (int) $row['role'] === 1 ? DeprecatedMember::LEVEL_OWNER : DeprecatedMember::LEVEL_MEMBER;
 
-			if ($level === Member::LEVEL_OWNER) {
+			if ($level === DeprecatedMember::LEVEL_OWNER) {
 				if (isset($this->circleHasAdmin[$this->circlesById[$row['group_id']]])) {
-					$level = Member::LEVEL_MODERATOR;
+					$level = DeprecatedMember::LEVEL_MODERATOR;
 				} else {
 					$this->circleHasAdmin[$this->circlesById[$row['group_id']]] = $row['user_id'];
 				}

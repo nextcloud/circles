@@ -9,8 +9,8 @@ declare(strict_types=1);
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@pontapreta.net>
- * @copyright 2020
+ * @author Maxence Lange <maxence@artificial-owl.com>
+ * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -31,8 +31,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Listeners;
 
-use OCA\Circles\Service\MembersService;
-use OCA\Circles\Service\MiscService;
+use Exception;
+use OCA\Circles\Service\SyncService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\User\Events\UserDeletedEvent;
@@ -46,22 +46,16 @@ use OCP\User\Events\UserDeletedEvent;
 class UserDeleted implements IEventListener {
 
 
-	/** @var MembersService */
-	private $membersService;
-
-	/** @var MiscService */
-	private $miscService;
-
+	/** @var SyncService */
+	private $syncService;
 
 	/**
 	 * UserDeleted constructor.
 	 *
-	 * @param MembersService $membersService
-	 * @param MiscService $miscService
+	 * @param SyncService $syncService
 	 */
-	public function __construct(MembersService $membersService, MiscService $miscService) {
-		$this->membersService = $membersService;
-		$this->miscService = $miscService;
+	public function __construct(SyncService $syncService) {
+		$this->syncService = $syncService;
 	}
 
 
@@ -74,14 +68,10 @@ class UserDeleted implements IEventListener {
 		}
 
 		$user = $event->getUser();
-		if ($user === null) {
-			return;
-		}
 
 		try {
-			$this->membersService->onUserRemoved($user->getUID());
-		} catch (\Exception $e) {
-			$this->miscService->e($e);
+			$this->syncService->onUserRemoved($user->getUID());
+		} catch (Exception $e) {
 		}
 	}
 

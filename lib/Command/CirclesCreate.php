@@ -30,19 +30,17 @@
 namespace OCA\Circles\Command;
 
 use OC\Core\Command\Base;
-use OC\User\NoUserException;
-use OCA\Circles\Db\CirclesRequest;
-use OCA\Circles\Exceptions\CircleAlreadyExistsException;
-use OCA\Circles\Exceptions\CircleDoesNotExistException;
-use OCA\Circles\Exceptions\CircleTypeDisabledException;
-use OCA\Circles\Exceptions\CircleTypeNotValidException;
-use OCA\Circles\Exceptions\MemberAlreadyExistsException;
-use OCA\Circles\Model\Circle;
-use OCA\Circles\Service\CirclesService;
+use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\SingleCircleNotFoundException;
+use OCA\Circles\Model\Member;
+use OCA\Circles\Service\CircleService;
+use OCA\Circles\Service\FederatedUserService;
 use OCP\IL10N;
 use OCP\IUserManager;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
@@ -60,11 +58,11 @@ class CirclesCreate extends Base {
 	/** @var IUserManager */
 	private $userManager;
 
-	/** @var CirclesRequest */
-	private $circlesRequest;
+	/** @var FederatedUserService */
+	private $federatedUserService;
 
-	/** @var CirclesService */
-	private $circlesService;
+	/** @var CircleService */
+	private $circleService;
 
 
 	/**
@@ -72,17 +70,19 @@ class CirclesCreate extends Base {
 	 *
 	 * @param IL10N $l10n
 	 * @param IUserManager $userManager
-	 * @param CirclesRequest $circlesRequest
-	 * @param CirclesService $circlesService
+	 * @param FederatedUserService $federatedUserService
+	 * @param CircleService $circleService
 	 */
 	public function __construct(
-		IL10N $l10n, IUserManager $userManager, CirclesRequest $circlesRequest, CirclesService $circlesService
+		IL10N $l10n, IUserManager $userManager, FederatedUserService $federatedUserService,
+		CircleService $circleService
 	) {
 		parent::__construct();
 		$this->l10n = $l10n;
 		$this->userManager = $userManager;
-		$this->circlesRequest = $circlesRequest;
-		$this->circlesService = $circlesService;
+		$this->federatedUserService = $federatedUserService;
+		$this->circleService = $circleService;
+
 	}
 
 
@@ -91,8 +91,12 @@ class CirclesCreate extends Base {
 		$this->setName('circles:manage:create')
 			 ->setDescription('create a new circle')
 			 ->addArgument('owner', InputArgument::REQUIRED, 'owner of the circle')
-			 ->addArgument('type', InputArgument::REQUIRED, 'type of the circle')
-			 ->addArgument('name', InputArgument::REQUIRED, 'name of the circle');
+			 ->addArgument('name', InputArgument::REQUIRED, 'name of the circle')
+			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception')
+			 ->addOption(
+				 'type', '', InputOption::VALUE_REQUIRED, 'type of the owner',
+				 Member::$TYPE[Member::TYPE_SINGLE]
+			 );
 	}
 
 
@@ -101,39 +105,32 @@ class CirclesCreate extends Base {
 	 * @param OutputInterface $output
 	 *
 	 * @return int
-	 * @throws CircleAlreadyExistsException
-	 * @throws CircleTypeNotValidException
-	 * @throws MemberAlreadyExistsException
-	 * @throws NoUserException
-	 * @throws CircleTypeDisabledException
-	 * @throws CircleDoesNotExistException
+	 * @throws FederatedItemException
+	 * @throws InitiatorNotFoundException
+	 * @throws SingleCircleNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$ownerId = $input->getArgument('owner');
-		$type = $input->getArgument('type');
 		$name = $input->getArgument('name');
 
-		if ($this->userManager->get($ownerId) === null) {
-			throw new NoUserException('user does not exist');
+		try {
+			$this->federatedUserService->bypassCurrentUserCondition(true);
+
+			$type = Member::parseTypeString($input->getOption('type'));
+
+			$owner = $this->federatedUserService->getFederatedUser($ownerId, $type);
+			$outcome = $this->circleService->create($name, $owner);
+		} catch (FederatedItemException $e) {
+			if ($input->getOption('status-code')) {
+				throw new FederatedItemException(
+					' [' . get_class($e) . ', ' . $e->getStatus() . ']' . "\n" . $e->getMessage()
+				);
+			}
+
+			throw $e;
 		}
 
-		$types = [
-			'personal' => Circle::CIRCLES_PERSONAL,
-			'secret'   => Circle::CIRCLES_SECRET,
-			'closed'   => Circle::CIRCLES_CLOSED,
-			'public'   => Circle::CIRCLES_PUBLIC
-		];
-
-		if (!key_exists(strtolower($type), $types)) {
-			throw new CircleTypeNotValidException('unknown type: ' . json_encode(array_keys($types)));
-		}
-
-		$type = $types[strtolower($type)];
-
-		$circle = $this->circlesService->createCircle($type, $name, $ownerId);
-		$circle = $this->circlesRequest->forceGetCircle($circle->getUniqueId());
-
-		echo json_encode($circle, JSON_PRETTY_PRINT) . "\n";
+		$output->writeln(json_encode($outcome, JSON_PRETTY_PRINT));
 
 		return 0;
 	}

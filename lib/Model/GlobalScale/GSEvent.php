@@ -36,7 +36,8 @@ use JsonSerializable;
 use OCA\Circles\Exceptions\JsonException;
 use OCA\Circles\Exceptions\ModelException;
 use OCA\Circles\Model\Circle;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedCircle;
+use OCA\Circles\Model\DeprecatedMember;
 
 
 /**
@@ -78,10 +79,13 @@ class GSEvent implements JsonSerializable {
 	/** @var string */
 	private $source = '';
 
+	/** @var DeprecatedCircle */
+	private $deprecatedCircle;
+
 	/** @var Circle */
 	private $circle;
 
-	/** @var Member */
+	/** @var DeprecatedMember */
 	private $member;
 
 	/** @var SimpleDataStore */
@@ -104,6 +108,9 @@ class GSEvent implements JsonSerializable {
 
 	/** @var bool */
 	private $async = false;
+
+	/** @var bool */
+	private $checked = false;
 
 
 	/**
@@ -161,12 +168,12 @@ class GSEvent implements JsonSerializable {
 		}
 
 		if ($this->hasCircle()
-			&& $this->getCircle()
+			&& $this->getDeprecatedCircle()
 					->hasViewer()
-			&& $this->getCircle()
+			&& $this->getDeprecatedCircle()
 					->getViewer()
 					->getInstance() === '') {
-			$this->getCircle()
+			$this->getDeprecatedCircle()
 				 ->getViewer()
 				 ->setInstance($source);
 		}
@@ -233,10 +240,30 @@ class GSEvent implements JsonSerializable {
 
 
 	/**
-	 * @return Circle
+	 * @return DeprecatedCircle
+	 * @deprecated
 	 */
-	public function getCircle(): Circle {
-		return $this->circle;
+	public function getDeprecatedCircle(): DeprecatedCircle {
+		return $this->deprecatedCircle;
+	}
+
+	/**
+	 * @param DeprecatedCircle $deprecatedCircle
+	 *
+	 * @return GSEvent
+	 * @deprecated
+	 */
+	public function setDeprecatedCircle(DeprecatedCircle $deprecatedCircle): self {
+		$this->deprecatedCircle = $deprecatedCircle;
+
+		return $this;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasCircle(): bool {
+		return ($this->deprecatedCircle !== null || $this->circle !== null);
 	}
 
 	/**
@@ -251,26 +278,26 @@ class GSEvent implements JsonSerializable {
 	}
 
 	/**
-	 * @return bool
+	 * @return Circle
 	 */
-	public function hasCircle(): bool {
-		return ($this->circle !== null);
+	public function getCircle(): Circle {
+		return $this->circle;
 	}
 
 
 	/**
-	 * @return Member
+	 * @return DeprecatedMember
 	 */
-	public function getMember(): Member {
+	public function getMember(): DeprecatedMember {
 		return $this->member;
 	}
 
 	/**
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 *
 	 * @return GSEvent
 	 */
-	public function setMember(Member $member): self {
+	public function setMember(DeprecatedMember $member): self {
 		$this->member = $member;
 
 		return $this;
@@ -406,11 +433,11 @@ class GSEvent implements JsonSerializable {
 		$this->setAsync($this->getBool('async', $data));
 
 		if (array_key_exists('circle', $data)) {
-			$this->setCircle(Circle::fromArray($data['circle']));
+			$this->setDeprecatedCircle(DeprecatedCircle::fromArray($data['circle']));
 		}
 
 		if (array_key_exists('member', $data)) {
-			$this->setMember(Member::fromArray($data['member']));
+			$this->setMember(DeprecatedMember::fromArray($data['member']));
 		}
 
 		if (!$this->isValid()) {
@@ -437,7 +464,7 @@ class GSEvent implements JsonSerializable {
 		];
 
 		if ($this->hasCircle()) {
-			$arr['circle'] = $this->getCircle();
+			$arr['circle'] = $this->getDeprecatedCircle();
 		}
 		if ($this->hasMember()) {
 			$arr['member'] = $this->getMember();

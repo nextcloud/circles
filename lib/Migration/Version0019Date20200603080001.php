@@ -141,39 +141,39 @@ class Version0019Date20200603080001 extends SimpleMigrationStep {
 			$table->addIndex(['type']);
 		}
 
-
-		if (!$schema->hasTable('circle_clouds')) {
-			$table = $schema->createTable('circle_clouds');
-			$table->addColumn(
-				'cloud_id', 'string', [
-							  'notnull' => true,
-							  'length'  => 64,
-						  ]
-			);
-			$table->addColumn(
-				'address', 'string', [
-							 'notnull' => true,
-							 'length'  => 255,
-						 ]
-			);
-			$table->addColumn(
-				'status', 'smallint', [
-							'notnull' => true,
-							'length'  => 1,
-						]
-			);
-			$table->addColumn(
-				'note', 'text', [
-						  'notnull' => false
-					  ]
-			);
-			$table->addColumn(
-				'created', 'datetime', [
-							 'notnull' => false,
-						 ]
-			);
-			$table->setPrimaryKey(['cloud_id']);
-		}
+//
+//		if (!$schema->hasTable('circle_clouds')) {
+//			$table = $schema->createTable('circle_clouds');
+//			$table->addColumn(
+//				'cloud_id', 'string', [
+//							  'notnull' => true,
+//							  'length'  => 64,
+//						  ]
+//			);
+//			$table->addColumn(
+//				'address', 'string', [
+//							 'notnull' => true,
+//							 'length'  => 255,
+//						 ]
+//			);
+//			$table->addColumn(
+//				'status', 'smallint', [
+//							'notnull' => true,
+//							'length'  => 1,
+//						]
+//			);
+//			$table->addColumn(
+//				'note', 'text', [
+//						  'notnull' => false
+//					  ]
+//			);
+//			$table->addColumn(
+//				'created', 'datetime', [
+//							 'notnull' => false,
+//						 ]
+//			);
+//			$table->setPrimaryKey(['cloud_id']);
+//		}
 
 
 		if (!$schema->hasTable('circle_groups')) {
@@ -337,59 +337,6 @@ class Version0019Date20200603080001 extends SimpleMigrationStep {
 		}
 
 
-		if (!$schema->hasTable('circle_links')) {
-			$table = $schema->createTable('circle_links');
-			$table->addColumn(
-				'id', 'smallint', [
-						'autoincrement' => true,
-						'notnull'       => true,
-						'length'        => 3,
-						'unsigned'      => true,
-					]
-			);
-			$table->addColumn(
-				'status', 'smallint', [
-							'notnull' => true,
-							'length'  => 1,
-						]
-			);
-			$table->addColumn(
-				'circle_id', 'string', [
-							   'notnull' => true,
-							   'length'  => 64,
-						   ]
-			);
-			$table->addColumn(
-				'unique_id', 'string', [
-							   'notnull' => false,
-							   'length'  => 64,
-						   ]
-			);
-			$table->addColumn(
-				'address', 'string', [
-							 'notnull' => true,
-							 'length'  => 128,
-						 ]
-			);
-			$table->addColumn(
-				'token', 'string', [
-						   'notnull' => true,
-						   'length'  => 64,
-					   ]
-			);
-			$table->addColumn(
-				'key', 'string', [
-						 'notnull' => true,
-						 'length'  => 64,
-					 ]
-			);
-			$table->addColumn(
-				'creation', 'datetime', [
-							  'notnull' => false,
-						  ]
-			);
-			$table->setPrimaryKey(['id']);
-		}
 
 
 		if (!$schema->hasTable('circle_members')) {
@@ -481,72 +428,6 @@ class Version0019Date20200603080001 extends SimpleMigrationStep {
 		}
 
 
-		if (!$schema->hasTable('circle_shares')) {
-			$table = $schema->createTable('circle_shares');
-			$table->addColumn(
-				'id', 'integer', [
-						'autoincrement' => true,
-						'notnull'       => true,
-						'length'        => 4,
-						'unsigned'      => true,
-					]
-			);
-			$table->addColumn(
-				'unique_id', 'string', [
-							   'notnull' => false,
-							   'length'  => 32,
-						   ]
-			);
-			$table->addColumn(
-				'circle_id', 'string', [
-							   'notnull' => true,
-							   'length'  => 15,
-						   ]
-			);
-			$table->addColumn(
-				'source', 'string', [
-							'notnull' => true,
-							'length'  => 15,
-						]
-			);
-			$table->addColumn(
-				'type', 'string', [
-						  'notnull' => true,
-						  'length'  => 15,
-					  ]
-			);
-			$table->addColumn(
-				'author', 'string', [
-							'notnull' => true,
-							'length'  => 127,
-						]
-			);
-			$table->addColumn(
-				'cloud_id', 'string', [
-							  'notnull' => false,
-							  'length'  => 254,
-							  'default' => 'null',
-						  ]
-			);
-			$table->addColumn(
-				'headers', 'text', [
-							 'notnull' => false
-						 ]
-			);
-			$table->addColumn(
-				'payload', 'text', [
-							 'notnull' => true
-						 ]
-			);
-			$table->addColumn(
-				'creation', 'datetime', [
-							  'notnull' => false,
-						  ]
-			);
-			$table->setPrimaryKey(['id']);
-		}
-
-
 		if (!$schema->hasTable('circle_tokens')) {
 			$table = $schema->createTable('circle_tokens');
 			$table->addColumn(
@@ -615,9 +496,9 @@ class Version0019Date20200603080001 extends SimpleMigrationStep {
 		if ($schema->hasTable('circles_circles')) {
 			$this->copyTableCircles('circles_circles', 'circle_circles');
 		}
-		if ($schema->hasTable('circles_clouds')) {
-			$this->copyTable('circles_clouds', 'circle_clouds');
-		}
+//		if ($schema->hasTable('circles_clouds')) {
+//			$this->copyTable('circles_clouds', 'circle_clouds');
+//		}
 		if ($schema->hasTable('circles_groups')) {
 			$this->copyTable('circles_groups', 'circle_groups');
 		}

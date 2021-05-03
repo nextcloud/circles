@@ -1,5 +1,8 @@
 <?php
 
+declare(strict_types=1);
+
+
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -7,7 +10,7 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2017
+ * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -30,10 +33,12 @@ namespace OCA\Circles\Db;
 
 
 use daita\MySmallPhpTools\Exceptions\RowNotFoundException;
-use OCA\Circles\Model\AppService;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Model\Federated\RemoteInstance;
+
 
 /**
- * Class GSEventsRequestBuilder
+ * Class RemoteRequestBuilder
  *
  * @package OCA\Circles\Db
  */
@@ -66,14 +71,23 @@ class RemoteRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
+	 * @param string $alias
+	 *
 	 * @return CoreQueryBuilder
 	 */
-	protected function getRemoteSelectSql(): CoreQueryBuilder {
+	protected function getRemoteSelectSql(string $alias = CoreQueryBuilder::REMOTE): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->select('r.id', 'r.uid', 'r.instance', 'r.href', 'r.item', 'r.creation')
-		   ->from(self::TABLE_REMOTE, 'r');
-
-		$qb->setDefaultSelectAlias('r');
+		$qb->select(
+			$alias . '.id',
+			$alias . '.type',
+			$alias . '.uid',
+			$alias . '.instance',
+			$alias . '.href',
+			$alias . '.item',
+			$alias . '.creation'
+		)
+		   ->from(self::TABLE_REMOTE, $alias)
+		   ->setDefaultSelectAlias($alias);
 
 		return $qb;
 	}
@@ -95,12 +109,16 @@ class RemoteRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * @param CoreQueryBuilder $qb
 	 *
-	 * @return AppService
-	 * @throws RowNotFoundException
+	 * @return RemoteInstance
+	 * @throws RemoteNotFoundException
 	 */
-	public function getItemFromRequest(CoreQueryBuilder $qb): AppService {
-		/** @var AppService $appService */
-		$appService = $qb->asItem(AppService::class);
+	public function getItemFromRequest(CoreQueryBuilder $qb): RemoteInstance {
+		/** @var RemoteInstance $appService */
+		try {
+			$appService = $qb->asItem(RemoteInstance::class);
+		} catch (RowNotFoundException $e) {
+			throw new RemoteNotFoundException('Unknown remote instance');
+		}
 
 		return $appService;
 	}
@@ -108,11 +126,12 @@ class RemoteRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * @param CoreQueryBuilder $qb
 	 *
-	 * @return AppService[]
+	 * @return RemoteInstance[]
 	 */
 	public function getItemsFromRequest(CoreQueryBuilder $qb): array {
-		/** @var AppService[] $result */
-		return $qb->asItems(AppService::class);
+		/** @var RemoteInstance[] $result */
+		return $qb->asItems(RemoteInstance::class);
 	}
 
 }
+

@@ -6,7 +6,7 @@
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Maxence Lange <maxence@artificial-owl.com>
  * @author Vinicius Cubas Brand <vinicius@eita.org.br>
  * @author Daniel Tygel <dtygel@eita.org.br>
  *
@@ -33,7 +33,7 @@ namespace OCA\Circles\Db;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use OC;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCP\DB\QueryBuilder\ICompositeExpression;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\Files\NotFoundException;
@@ -251,8 +251,8 @@ class CircleProviderRequestBuilder extends DeprecatedRequestBuilder {
 		$qb->leftJoin(
 			'c', DeprecatedRequestBuilder::TABLE_MEMBERS, 'mo', $expr->andX(
 			$expr->eq('mo.circle_id', 'c.unique_id'),
-			$expr->eq('mo.user_type', $qb->createNamedParameter(Member::TYPE_USER)),
-			$expr->eq('mo.level', $qb->createNamedParameter(Member::LEVEL_OWNER))
+			$expr->eq('mo.user_type', $qb->createNamedParameter(DeprecatedMember::TYPE_USER)),
+			$expr->eq('mo.level', $qb->createNamedParameter(DeprecatedMember::LEVEL_OWNER))
 		)
 		);
 	}
@@ -300,9 +300,9 @@ class CircleProviderRequestBuilder extends DeprecatedRequestBuilder {
 
 		$andX->add($expr->eq($aliasM . '.user_id', $qb->createNamedParameter($userId)));
 		$andX->add($expr->eq($aliasM . '.circle_id', $aliasC . '.unique_id'));
-		$andX->add($expr->gte($aliasM . '.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)));
+		$andX->add($expr->gte($aliasM . '.level', $qb->createNamedParameter(DeprecatedMember::LEVEL_MEMBER)));
 		$andX->add($expr->eq($aliasM . '.instance', $qb->createNamedParameter('')));
-		$andX->add($expr->eq($aliasM . '.user_type', $qb->createNamedParameter(Member::TYPE_USER)));
+		$andX->add($expr->eq($aliasM . '.user_type', $qb->createNamedParameter(DeprecatedMember::TYPE_USER)));
 
 		return $andX;
 	}
@@ -331,10 +331,10 @@ class CircleProviderRequestBuilder extends DeprecatedRequestBuilder {
 		$andX = $expr->andX();
 
 		$andX->add($expr->eq($aliasM . '.user_id', 'ncgu.gid'));
-		$andX->add($expr->eq($aliasM . '.user_type', $qb->createNamedParameter(Member::TYPE_GROUP)));
+		$andX->add($expr->eq($aliasM . '.user_type', $qb->createNamedParameter(DeprecatedMember::TYPE_GROUP)));
 		$andX->add($expr->eq($aliasM . '.instance', $qb->createNamedParameter('')));
 		$andX->add($expr->eq($aliasM . '.circle_id', $aliasC . '.unique_id'));
-		$andX->add($expr->gte($aliasM . '.level', $qb->createNamedParameter(Member::LEVEL_MEMBER)));
+		$andX->add($expr->gte($aliasM . '.level', $qb->createNamedParameter(DeprecatedMember::LEVEL_MEMBER)));
 
 		return $andX;
 	}
@@ -353,7 +353,7 @@ class CircleProviderRequestBuilder extends DeprecatedRequestBuilder {
 		   ->andWhere(
 			   $expr->andX(
 				   $expr->eq('s.share_with', 'm.circle_id'),
-				   $expr->eq('m.user_type', $qb->createNamedParameter(Member::TYPE_USER))
+				   $expr->eq('m.user_type', $qb->createNamedParameter(DeprecatedMember::TYPE_USER))
 			   )
 		   );
 	}

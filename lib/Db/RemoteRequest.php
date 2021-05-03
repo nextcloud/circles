@@ -1,4 +1,8 @@
 <?php
+
+declare(strict_types=1);
+
+
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -6,7 +10,7 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2017
+ * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,13 +32,17 @@
 namespace OCA\Circles\Db;
 
 
-use daita\MySmallPhpTools\Exceptions\RowNotFoundException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteUidException;
-use OCA\Circles\Model\AppService;
+use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Federated\RemoteInstance;
+use OCA\Circles\Model\Member;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 
 
 /**
- * Class GSEventsRequest
+ * Class RemoteRequest
  *
  * @package OCA\Circles\Db
  */
@@ -42,13 +50,17 @@ class RemoteRequest extends RemoteRequestBuilder {
 
 
 	/**
-	 * @param AppService $remote
+	 * @param RemoteInstance $remote
+	 *
+	 * @throws RemoteUidException
 	 */
-	public function save(AppService $remote): void {
+	public function save(RemoteInstance $remote): void {
+		$remote->mustBeIdentityAuthed();
 		$qb = $this->getRemoteInsertSql();
 		$qb->setValue('uid', $qb->createNamedParameter($remote->getUid(true)))
 		   ->setValue('instance', $qb->createNamedParameter($remote->getInstance()))
 		   ->setValue('href', $qb->createNamedParameter($remote->getId()))
+		   ->setValue('type', $qb->createNamedParameter($remote->getType()))
 		   ->setValue('item', $qb->createNamedParameter(json_encode($remote->getOrigData())));
 
 		$qb->execute();
@@ -56,12 +68,16 @@ class RemoteRequest extends RemoteRequestBuilder {
 
 
 	/**
-	 * @param AppService $remote
+	 * @param RemoteInstance $remote
+	 *
+	 * @throws RemoteUidException
 	 */
-	public function update(AppService $remote) {
+	public function update(RemoteInstance $remote) {
+		$remote->mustBeIdentityAuthed();
 		$qb = $this->getRemoteUpdateSql();
 		$qb->set('uid', $qb->createNamedParameter($remote->getUid(true)))
 		   ->set('href', $qb->createNamedParameter($remote->getId()))
+		   ->set('type', $qb->createNamedParameter($remote->getType()))
 		   ->set('item', $qb->createNamedParameter(json_encode($remote->getOrigData())));
 
 		$qb->limitToInstance($remote->getInstance());
@@ -71,9 +87,12 @@ class RemoteRequest extends RemoteRequestBuilder {
 
 
 	/**
-	 * @param AppService $remote
+	 * @param RemoteInstance $remote
+	 *
+	 * @throws RemoteUidException
 	 */
-	public function updateInstance(AppService $remote) {
+	public function updateInstance(RemoteInstance $remote) {
+		$remote->mustBeIdentityAuthed();
 		$qb = $this->getRemoteUpdateSql();
 		$qb->set('instance', $qb->createNamedParameter($remote->getInstance()));
 
@@ -84,9 +103,28 @@ class RemoteRequest extends RemoteRequestBuilder {
 
 
 	/**
-	 * @param AppService $remote
+	 * @param RemoteInstance $remote
+	 *
+	 * @throws RemoteUidException
 	 */
-	public function updateHref(AppService $remote) {
+	public function updateType(RemoteInstance $remote) {
+		$remote->mustBeIdentityAuthed();
+		$qb = $this->getRemoteUpdateSql();
+		$qb->set('type', $qb->createNamedParameter($remote->getType()));
+
+		$qb->limitToDBField('uid', $remote->getUid(true), false);
+
+		$qb->execute();
+	}
+
+
+	/**
+	 * @param RemoteInstance $remote
+	 *
+	 * @throws RemoteUidException
+	 */
+	public function updateHref(RemoteInstance $remote) {
+		$remote->mustBeIdentityAuthed();
 		$qb = $this->getRemoteUpdateSql();
 		$qb->set('href', $qb->createNamedParameter($remote->getId()));
 
@@ -97,12 +135,82 @@ class RemoteRequest extends RemoteRequestBuilder {
 
 
 	/**
+	 * @return array
+	 */
+	public function getAllInstances(): array {
+		$qb = $this->getRemoteSelectSql();
+
+		return $this->getItemsFromRequest($qb);
+	}
+
+	/**
+	 * @return RemoteInstance[]
+	 */
+	public function getKnownInstances(): array {
+		$qb = $this->getRemoteSelectSql();
+		$qb->filterDBField('type', RemoteInstance::TYPE_UNKNOWN, false);
+
+		return $this->getItemsFromRequest($qb);
+	}
+
+
+	/**
+	 * - returns:
+	 * - all GLOBAL_SCALE
+	 * - TRUSTED if Circle is Federated
+	 * - EXTERNAL if Circle is Federated and a contains a member from instance
+	 *
+	 * @param Circle $circle
+	 * @param bool $broadcastAsFederated
+	 *
+	 * @return RemoteInstance[]
+	 * @throws RequestBuilderException
+	 */
+	public function getOutgoingRecipient(Circle $circle, bool $broadcastAsFederated = false): array {
+		$qb = $this->getRemoteSelectSql();
+		$expr = $qb->expr();
+		$orX = $expr->orX();
+
+		$orX->add($qb->exprLimitToDBField('type', RemoteInstance::TYPE_GLOBAL_SCALE, true, false));
+		if ($circle->isConfig(Circle::CFG_FEDERATED) || $broadcastAsFederated) {
+
+			// get all TRUSTED
+			$orX->add($qb->exprLimitToDBField('type', RemoteInstance::TYPE_TRUSTED, true, false));
+
+			// get EXTERNAL with Members
+			$aliasMember = $qb->generateAlias(CoreQueryBuilder::REMOTE, CoreQueryBuilder::MEMBER);
+			$qb->leftJoin(
+				CoreQueryBuilder::REMOTE, self::TABLE_MEMBER, $aliasMember,
+				$expr->andX(
+					$expr->eq($aliasMember . '.circle_id', $qb->createNamedParameter($circle->getSingleId())),
+					$expr->eq($aliasMember . '.instance', CoreQueryBuilder::REMOTE . '.instance'),
+					$expr->gte(
+						$aliasMember . '.level',
+						$qb->createNamedParameter(Member::LEVEL_MEMBER, IQueryBuilder::PARAM_INT)
+					)
+				)
+			);
+
+			$external = $expr->andX();
+			$external->add($qb->exprLimitToDBField('type', RemoteInstance::TYPE_EXTERNAL, true, false));
+			$external->add($expr->isNotNull($aliasMember . '.instance'));
+			$orX->add($external);
+		}
+
+		$qb->andWhere($orX)
+		   ->groupBy(CoreQueryBuilder::REMOTE . '.instance');
+
+		return $this->getItemsFromRequest($qb);
+	}
+
+
+	/**
 	 * @param string $host
 	 *
-	 * @return AppService
-	 * @throws RowNotFoundException
+	 * @return RemoteInstance
+	 * @throws RemoteNotFoundException
 	 */
-	public function getFromInstance(string $host): AppService {
+	public function getFromInstance(string $host): RemoteInstance {
 		$qb = $this->getRemoteSelectSql();
 		$qb->limitToInstance($host);
 
@@ -113,14 +221,55 @@ class RemoteRequest extends RemoteRequestBuilder {
 	/**
 	 * @param string $href
 	 *
-	 * @return AppService
-	 * @throws RowNotFoundException
+	 * @return RemoteInstance
+	 * @throws RemoteNotFoundException
 	 */
-	public function getFromHref(string $href): AppService {
+	public function getFromHref(string $href): RemoteInstance {
 		$qb = $this->getRemoteSelectSql();
 		$qb->limitToDBField('href', $href, false);
 
 		return $this->getItemFromRequest($qb);
+	}
+
+
+	/**
+	 * @param string $status
+	 *
+	 * @return RemoteInstance[]
+	 */
+	public function getFromType(string $status): array {
+		$qb = $this->getRemoteSelectSql();
+		$qb->limitToTypeString($status);
+
+		return $this->getItemsFromRequest($qb);
+	}
+
+
+	/**
+	 * @param RemoteInstance $remoteInstance
+	 *
+	 * @return RemoteInstance
+	 * @throws RemoteNotFoundException
+	 */
+	public function searchDuplicate(RemoteInstance $remoteInstance) {
+		$qb = $this->getRemoteSelectSql();
+		$orX = $qb->expr()->orX();
+		$orX->add($qb->exprLimitToDBField('href', $remoteInstance->getId(), true, false));
+		$orX->add($qb->exprLimitToDBField('uid', $remoteInstance->getUid(true), true));
+		$orX->add($qb->exprLimitToDBField('instance', $remoteInstance->getInstance(), true, false));
+		$qb->andWhere($orX);
+
+		return $this->getItemFromRequest($qb);
+	}
+
+
+	/**
+	 * @param RemoteInstance $remoteInstance
+	 */
+	public function deleteById(RemoteInstance $remoteInstance) {
+		$qb = $this->getRemoteDeleteSql();
+		$qb->limitToId($remoteInstance->getDbId());
+		$qb->execute();
 	}
 
 

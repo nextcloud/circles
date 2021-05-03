@@ -5,7 +5,7 @@
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Maxence Lange <maxence@artificial-owl.com>
  * @author Vinicius Cubas Brand <vinicius@eita.org.br>
  * @author Daniel Tygel <dtygel@eita.org.br>
  *
@@ -33,12 +33,11 @@ namespace OCA\Circles\Api\v1;
 use OC;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\ApiVersionIncompatibleException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\FederatedLink;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\CirclesService;
-use OCA\Circles\Service\FederatedLinkService;
 use OCA\Circles\Service\MembersService;
 use OCA\Circles\Service\SharingFrameService;
 use OCP\AppFramework\QueryException;
@@ -49,22 +48,22 @@ class Circles {
 	const API_VERSION = [0, 10, 0];
 
 	// Expose circle and member constants via API
-	const CIRCLES_PERSONAL = Circle::CIRCLES_PERSONAL;
-	const CIRCLES_SECRET = Circle::CIRCLES_SECRET;
-	const CIRCLES_CLOSED = Circle::CIRCLES_CLOSED;
-	const CIRCLES_PUBLIC = Circle::CIRCLES_PUBLIC;
-	const CIRCLES_ALL = Circle::CIRCLES_ALL;
+	const CIRCLES_PERSONAL = DeprecatedCircle::CIRCLES_PERSONAL;
+	const CIRCLES_SECRET = DeprecatedCircle::CIRCLES_SECRET;
+	const CIRCLES_CLOSED = DeprecatedCircle::CIRCLES_CLOSED;
+	const CIRCLES_PUBLIC = DeprecatedCircle::CIRCLES_PUBLIC;
+	const CIRCLES_ALL = DeprecatedCircle::CIRCLES_ALL;
 
-	const TYPE_USER = Member::TYPE_USER;
-	const TYPE_GROUP = Member::TYPE_GROUP;
-	const TYPE_MAIL = Member::TYPE_MAIL;
-	const TYPE_CONTACT = Member::TYPE_CONTACT;
+	const TYPE_USER = DeprecatedMember::TYPE_USER;
+	const TYPE_GROUP = DeprecatedMember::TYPE_GROUP;
+	const TYPE_MAIL = DeprecatedMember::TYPE_MAIL;
+	const TYPE_CONTACT = DeprecatedMember::TYPE_CONTACT;
 
-	const LEVEL_NONE = Member::LEVEL_NONE;
-	const LEVEL_MEMBER = Member::LEVEL_MEMBER;
-	const LEVEL_MODERATOR = Member::LEVEL_MODERATOR;
-	const LEVEL_ADMIN = Member::LEVEL_ADMIN;
-	const LEVEL_OWNER = Member::LEVEL_OWNER;
+	const LEVEL_NONE = DeprecatedMember::LEVEL_NONE;
+	const LEVEL_MEMBER = DeprecatedMember::LEVEL_MEMBER;
+	const LEVEL_MODERATOR = DeprecatedMember::LEVEL_MODERATOR;
+	const LEVEL_ADMIN = DeprecatedMember::LEVEL_ADMIN;
+	const LEVEL_OWNER = DeprecatedMember::LEVEL_OWNER;
 
 
 	protected static function getContainer() {
@@ -87,10 +86,10 @@ class Circles {
 
 
 	public static function addJavascriptAPI() {
-		Util::addScript(Application::APP_ID, 'circles.v1.circles');
-		Util::addScript(Application::APP_ID, 'circles.v1.members');
-		Util::addScript(Application::APP_ID, 'circles.v1.links');
-		Util::addScript(Application::APP_ID, 'circles.v1');
+//		Util::addScript(Application::APP_ID, 'circles.v1.circles');
+//		Util::addScript(Application::APP_ID, 'circles.v1.members');
+//		Util::addScript(Application::APP_ID, 'circles.v1.links');
+//		Util::addScript(Application::APP_ID, 'circles.v1');
 	}
 
 
@@ -129,7 +128,7 @@ class Circles {
 	 * @param mixed $type
 	 * @param string $name
 	 *
-	 * @return Circle
+	 * @return DeprecatedCircle
 	 */
 	public static function createCircle($type, $name) {
 		$c = self::getContainer();
@@ -146,7 +145,7 @@ class Circles {
 	 *
 	 * @param string $circleUniqueId
 	 *
-	 * @return Member
+	 * @return DeprecatedMember
 	 */
 	public static function joinCircle($circleUniqueId) {
 		$c = self::getContainer();
@@ -164,7 +163,7 @@ class Circles {
 	 *
 	 * @param string $circleUniqueId
 	 *
-	 * @return Member
+	 * @return DeprecatedMember
 	 */
 	public static function leaveCircle($circleUniqueId) {
 		$c = self::getContainer();
@@ -191,7 +190,7 @@ class Circles {
 	 *
 	 * @param bool $forceAll
 	 *
-	 * @return Circle[]
+	 * @return DeprecatedCircle[]
 	 */
 	public static function listCircles($type, $name = '', $level = 0, $userId = '', $forceAll = false) {
 		$c = self::getContainer();
@@ -215,7 +214,7 @@ class Circles {
 	 * @param string $userId
 	 * @param bool $forceAll
 	 *
-	 * @return Circle[]
+	 * @return DeprecatedCircle[]
 	 * @throws QueryException
 	 */
 	public static function joinedCircles($userId = '', $forceAll = false) {
@@ -256,7 +255,7 @@ class Circles {
 	 * @param string $circleUniqueId
 	 * @param bool $forceAll
 	 *
-	 * @return Circle
+	 * @return DeprecatedCircle
 	 */
 	public static function detailsCircle($circleUniqueId, $forceAll = false) {
 		$c = self::getContainer();
@@ -274,7 +273,7 @@ class Circles {
 	 * @param string $circleUniqueId
 	 * @param array $settings
 	 *
-	 * @return Circle
+	 * @return DeprecatedCircle
 	 */
 	public static function settingsCircle($circleUniqueId, array $settings) {
 		$c = self::getContainer();
@@ -311,7 +310,7 @@ class Circles {
 	 * @param string $ident
 	 * @param int $type
 	 *
-	 * @return Member[]
+	 * @return DeprecatedMember[]
 	 */
 	public static function addMember($circleUniqueId, $ident, $type) {
 		$c = self::getContainer();
@@ -332,7 +331,7 @@ class Circles {
 	 * @param int $type
 	 * @param bool $forceAll
 	 *
-	 * @return Member
+	 * @return DeprecatedMember
 	 */
 	public static function getMember($circleUniqueId, $ident, $type, $forceAll = false) {
 		$c = self::getContainer();
@@ -352,7 +351,7 @@ class Circles {
 	 * @param string $ident
 	 * @param int $type
 	 *
-	 * @return Member[]
+	 * @return DeprecatedMember[]
 	 */
 	public static function removeMember($circleUniqueId, $ident, $type) {
 		$c = self::getContainer();
@@ -375,7 +374,7 @@ class Circles {
 	 * @param int $type
 	 * @param int $level
 	 *
-	 * @return Member[]
+	 * @return DeprecatedMember[]
 	 */
 	public static function levelMember($circleUniqueId, $ident, $type, $level) {
 		$c = self::getContainer();
@@ -428,27 +427,6 @@ class Circles {
 
 		return $c->query(SharingFrameService::class)
 				 ->getFrameFromCircle($circleUniqueId);
-	}
-
-
-	/**
-	 * Circles::linkCircle();
-	 *
-	 * Initiate a link procedure. Current user must be at least Admin of the circle.
-	 * circleId is the local circle and remote is the target for the link.
-	 * Remote format is: <circle_name>@<remote_host> when remote_host must be a valid HTTPS address.
-	 * Remote format is: <circle_name>@<remote_host> when remote_host must be a valid HTTPS address.
-	 *
-	 * @param string $circleUniqueId
-	 * @param string $remote
-	 *
-	 * @return FederatedLink
-	 */
-	public static function linkCircle($circleUniqueId, $remote) {
-		$c = self::getContainer();
-
-		return $c->query(FederatedLinkService::class)
-				 ->linkCircle($circleUniqueId, $remote);
 	}
 
 

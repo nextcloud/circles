@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -30,11 +32,23 @@
 namespace OCA\Circles\Command;
 
 use OC\Core\Command\Base;
-use OCA\Circles\Db\MembersRequest;
-use OCA\Circles\Exceptions\MemberDoesNotExistException;
-use OCP\IL10N;
+use OCA\Circles\Db\MemberRequest;
+use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedUserException;
+use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
+use OCA\Circles\Exceptions\UserTypeNotFoundException;
+use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Service\MemberService;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
@@ -46,23 +60,30 @@ use Symfony\Component\Console\Output\OutputInterface;
 class MembersDetails extends Base {
 
 
-	/** @var IL10N */
-	private $l10n;
+	/** @var MemberRequest */
+	private $memberRequest;
 
-	/** @var MembersRequest */
-	private $membersRequest;
+	/** @var FederatedUserService */
+	private $federatedUserService;
+
+	/** @var MemberService */
+	private $memberService;
 
 
 	/**
 	 * MembersDetails constructor.
 	 *
-	 * @param IL10N $l10n
-	 * @param MembersRequest $membersRequest
+	 * @param MemberRequest $memberRequest
+	 * @param FederatedUserService $federatedUserService
+	 * @param MemberService $memberService
 	 */
-	public function __construct(IL10N $l10n, MembersRequest $membersRequest) {
+	public function __construct(
+		MemberRequest $memberRequest, FederatedUserService $federatedUserService, MemberService $memberService
+	) {
 		parent::__construct();
-		$this->l10n = $l10n;
-		$this->membersRequest = $membersRequest;
+		$this->memberRequest = $memberRequest;
+		$this->federatedUserService = $federatedUserService;
+		$this->memberService = $memberService;
 	}
 
 
@@ -70,7 +91,9 @@ class MembersDetails extends Base {
 		parent::configure();
 		$this->setName('circles:members:details')
 			 ->setDescription('get details about a member by its ID')
-			 ->addArgument('member_id', InputArgument::REQUIRED, 'ID of the member');
+			 ->addArgument('member_id', InputArgument::REQUIRED, 'ID of the member')
+			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
 	}
 
 
@@ -79,13 +102,27 @@ class MembersDetails extends Base {
 	 * @param OutputInterface $output
 	 *
 	 * @return int
-	 * @throws MemberDoesNotExistException
+	 * @throws MemberNotFoundException
+	 * @throws CircleNotFoundException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InitiatorNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws UnknownRemoteException
+	 * @throws UserTypeNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$memberId = $input->getArgument('member_id');
 
-		$member = $this->membersRequest->forceGetMemberById($memberId);
-		echo json_encode($member, JSON_PRETTY_PRINT) . "\n";
+		$circleId = $this->memberRequest->getMember($memberId)->getCircleId();
+
+		$this->federatedUserService->commandLineInitiator($input->getOption('initiator'), $circleId);
+		$member = $this->memberService->getMember($memberId);
+
+		$output->writeln(json_encode($member, JSON_PRETTY_PRINT));
 
 		return 0;
 	}

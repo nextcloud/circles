@@ -8,7 +8,7 @@ package_name=$(app_name)
 cert_dir=$(HOME)/.nextcloud/certificates
 github_account=nextcloud
 branch=master
-version+=0.20.6
+version+=22.0.0-alpha.1
 
 all: appstore
 
@@ -53,6 +53,7 @@ appstore: clean composer
 	--exclude=/issue_template.md \
 	--exclude=/README.md \
 	--exclude=/composer.json \
+	--exclude=/testConfiguration.json \
 	--exclude=/composer.lock \
 	--exclude=/.gitattributes \
 	--exclude=/.gitignore \

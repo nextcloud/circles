@@ -2,6 +2,17 @@
 All notable changes to this project will be documented in this file.
 
 
+
+### 22.0.0 (NC22)
+
+- Full rewrite of the app for Nextcloud 22
+- Type of Circles are gone, replaced by config flags  
+- first implementation of federated circles (2.0)
+- first implementation of new ExtendedQueryBuilder
+  
+  (changelog in progress)
+  
+
 ### 0.20.6
 
 - use https and http when in doubt
@@ -25,13 +36,6 @@ All notable changes to this project will be documented in this file.
 ### 0.20.3
 
 - fixing composer lib version
-
-
-### 21.0.0
-
-- compat nc21
-- first implementation of federated circles (2.0)
-- first implementation of new ExtendedQueryBuilder
 
 
 ### 0.20.2

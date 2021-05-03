@@ -31,22 +31,28 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 
-use daita\MySmallPhpTools\ActivityPub\Nextcloud\nc21\NC21Signature;
-use daita\MySmallPhpTools\Exceptions\InvalidOriginException;
-use daita\MySmallPhpTools\Exceptions\MalformedArrayException;
+use daita\MySmallPhpTools\ActivityPub\Nextcloud\nc22\NC22Signature;
+use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
-use daita\MySmallPhpTools\Exceptions\RowNotFoundException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
-use daita\MySmallPhpTools\Exceptions\SignatureException;
-use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21Request;
-use daita\MySmallPhpTools\Model\Nextcloud\nc21\NC21SignedRequest;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc21\TNC21LocalSignatory;
-use daita\MySmallPhpTools\Traits\TStringTools;
-use OCA\Circles\Db\RemoteRequest;
+use daita\MySmallPhpTools\Model\Request;
+use daita\MySmallPhpTools\Model\SimpleDataStore;
+use OCA\Circles\Db\CircleRequest;
+use OCA\Circles\Db\MemberRequest;
+use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\FederatedUserException;
+use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Exceptions\InvalidIdException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
-use OCA\Circles\Exceptions\RemoteUidException;
-use OCA\Circles\Model\AppService;
-use OCP\IURLGenerator;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
+use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Federated\RemoteInstance;
+use OCA\Circles\Model\FederatedUser;
+use OCA\Circles\Model\Member;
 
 
 /**
@@ -54,240 +60,295 @@ use OCP\IURLGenerator;
  *
  * @package OCA\Circles\Service
  */
-class RemoteService extends NC21Signature {
+class RemoteService extends NC22Signature {
 
 
-	use TNC21LocalSignatory;
-	use TStringTools;
+	/** @var CircleRequest */
+	private $circleRequest;
 
+	/** @var MemberRequest */
+	private $memberRequest;
 
-	const UPDATE_DATA = 'data';
-	const UPDATE_INSTANCE = 'instance';
-	const UPDATE_HREF = 'href';
+	/** @var RemoteStreamService */
+	private $remoteStreamService;
 
+	/** @var MembershipService */
+	private $membershipService;
 
-	/** @var IURLGenerator */
-	private $urlGenerator;
-
-	/** @var RemoteRequest */
-	private $remoteRequest;
-
-	/** @var ConfigService */
-	private $configService;
+	/** @var ShareService */
+	private $shareService;
 
 
 	/**
 	 * RemoteService constructor.
 	 *
-	 * @param IURLGenerator $urlGenerator
-	 * @param RemoteRequest $remoteRequest
-	 * @param ConfigService $configService
+	 * @param CircleRequest $circleRequest
+	 * @param MemberRequest $memberRequest
+	 * @param RemoteStreamService $remoteStreamService
+	 * @param MembershipService $membershipService
+	 * @param ShareService $shareService
 	 */
 	public function __construct(
-		IURLGenerator $urlGenerator, RemoteRequest $remoteRequest, ConfigService $configService
+		CircleRequest $circleRequest, MemberRequest $memberRequest, RemoteStreamService $remoteStreamService,
+		MembershipService $membershipService, ShareService $shareService
 	) {
 		$this->setup('app', 'circles');
 
-		$this->urlGenerator = $urlGenerator;
-		$this->remoteRequest = $remoteRequest;
-		$this->configService = $configService;
+		$this->circleRequest = $circleRequest;
+		$this->memberRequest = $memberRequest;
+		$this->remoteStreamService = $remoteStreamService;
+		$this->membershipService = $membershipService;
+		$this->shareService = $shareService;
 	}
 
 
 	/**
-	 * @param bool $generate
-	 *
-	 * @param string $confirmKey
-	 *
-	 * @return AppService
-	 * @throws SignatoryException
-	 * @throws SignatureException
-	 */
-	public function getAppSignatory(bool $generate = false, string $confirmKey = ''): AppService {
-		$app = new AppService($this->configService->getRemotePath());
-		$this->fillSimpleSignatory($app, $generate);
-		$app->setUidFromKey();
-
-		if ($confirmKey !== '') {
-			$app->setAuthSigned($this->signString($confirmKey, $app));
-			$this->verifyString($confirmKey, base64_decode($app->getAuthSigned()), $app->getPublicKey());
-		}
-
-		$app->setTest($this->configService->getRemotePath('circles.Remote.test'));
-		$app->setIncoming($this->configService->getRemotePath('circles.Remote.incoming'));
-		$app->setCircles($this->configService->getRemotePath('circles.Remote.circles'));
-		$app->setMembers($this->configService->getRemotePath('circles.Remote.members'));
-
-		return $app;
-	}
-
-
-	/**
-	 * @throws SignatureException
-	 */
-	public function resetAppSignatory(): void {
-		try {
-			$app = $this->getAppSignatory();
-
-			$this->removeSimpleSignatory($app);
-		} catch (SignatoryException $e) {
-		}
-	}
-
-
-	/**
-	 * @param string $keyId
-	 * @param bool $refresh
-	 * @param bool $auth
-	 *
-	 * @return AppService
-	 * @throws SignatoryException
-	 * @throws SignatureException
-	 */
-	public function retrieveSignatory(string $keyId, bool $refresh = false, bool $auth = false): AppService {
-		if (!$refresh) {
-			throw new SignatoryException();
-		}
-
-		$appService = new AppService($keyId);
-		$confirm = '';
-		$params = [];
-		if ($auth) {
-			$confirm = $this->uuid();
-			$params['auth'] = $confirm;
-		}
-
-		$this->downloadSignatory($appService, $keyId, $params);
-		$appService->setUidFromKey();
-
-		$this->confirmAuth($appService, $confirm);
-
-		return $appService;
-	}
-
-
-	/**
-	 * @param AppService $remote
-	 * @param string $auth
-	 *
-	 * @throws SignatureException
-	 */
-	private function confirmAuth(AppService $remote, string $auth): void {
-		if ($auth === '') {
-			return;
-		}
-
-		list($algo, $signed) = explode(':', $this->get('auth-signed', $remote->getOrigData()));
-		try {
-			if ($signed === null) {
-				throw new SignatureException('invalid auth-signed');
-			}
-			$this->verifyString($auth, base64_decode($signed), $remote->getPublicKey(), $algo);
-			$remote->setIdentityAuthed(true);
-		} catch (SignatureException $e) {
-			$this->debug(
-				'Auth cannot be confirmed',
-				['auth' => $auth, 'signed' => $signed, 'signatory' => $remote]
-			);
-			throw $e;
-		}
-	}
-
-
-	/**
-	 * @param string $remote
+	 * @param string $instance
 	 * @param array $data
 	 *
-	 * @return NC21SignedRequest
+	 * @return Circle[]
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
 	 * @throws RequestNetworkException
 	 * @throws SignatoryException
+	 * @throws UnknownRemoteException
 	 */
-	public function test(string $remote, array $data = ['test' => 42]): NC21SignedRequest {
-		$request = new NC21Request();
-		$request->basedOnUrl($remote);
-		$request->setFollowLocation(true);
-		$request->setLocalAddressAllowed(true);
-		$request->setTimeout(5);
-		$request->setData($data);
+	public function getCirclesFromInstance(string $instance, array $data = []): array {
+		$result = $this->remoteStreamService->resultRequestRemoteInstance(
+			$instance,
+			RemoteInstance::CIRCLES,
+			Request::TYPE_GET,
+			new SimpleDataStore($data)
+		);
 
-		$app = $this->getAppSignatory();
-//		$app->setAlgorithm(NC21Signatory::SHA512);
-		$signedRequest = $this->signRequest($request, $app);
-		$this->doRequest($signedRequest->getOutgoingRequest());
-
-		return $signedRequest;
-	}
-
-
-	/**
-	 * @return NC21SignedRequest
-	 * @throws InvalidOriginException
-	 * @throws MalformedArrayException
-	 * @throws SignatoryException
-	 * @throws SignatureException
-	 */
-	public function incomingTest(): NC21SignedRequest {
-		return $this->incomingSignedRequest($this->configService->getLocalInstance());
-	}
-
-
-	/**
-	 * @param AppService $remote
-	 * @param AppService|null $stored
-	 *
-	 * @throws RemoteNotFoundException
-	 * @throws RemoteUidException
-	 */
-	public function confirmValidRemote(AppService $remote, ?AppService &$stored = null): void {
-		try {
-			$stored = $this->remoteRequest->getFromHref($remote->getId());
-		} catch (RowNotFoundException $e) {
-			if ($remote->getInstance() === '') {
-				throw new RemoteNotFoundException();
-			}
-
+		$circles = [];
+		foreach ($result as $item) {
 			try {
-				$stored = $this->remoteRequest->getFromInstance($remote->getInstance());
-			} catch (RowNotFoundException $e) {
-				throw new RemoteNotFoundException();
+				$circle = new Circle();
+				$circle->import($item);
+				$circles[] = $circle;
+			} catch (InvalidItemException $e) {
 			}
 		}
 
-		if ($stored->getUid() !== $remote->getUid(true)) {
-			throw new RemoteUidException();
-		}
+		return $circles;
 	}
 
 
 	/**
-	 * @param AppService $remote
-	 */
-	public function save(AppService $remote): void {
-		$this->remoteRequest->save($remote);
-	}
-
-	/**
-	 * @param AppService $remote
-	 * @param string $update
+	 * @param string $circleId
+	 * @param string $instance
+	 * @param array $data
 	 *
-	 * @throws RemoteUidException
+	 * @return Circle
+	 * @throws CircleNotFoundException
+	 * @throws InvalidItemException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws UnknownRemoteException
 	 */
-	public function update(AppService $remote, string $update = self::UPDATE_DATA): void {
-		switch ($update) {
-			case self::UPDATE_DATA:
-				$this->remoteRequest->update($remote);
-				break;
+	public function getCircleFromInstance(string $circleId, string $instance, array $data = []): Circle {
+		$result = $this->remoteStreamService->resultRequestRemoteInstance(
+			$instance,
+			RemoteInstance::CIRCLE,
+			Request::TYPE_GET,
+			new SimpleDataStore($data),
+			['circleId' => $circleId]
+		);
 
-			case self::UPDATE_HREF:
-				$remote->mustBeIdentityAuthed();
-				$this->remoteRequest->updateHref($remote);
-				break;
 
-			case self::UPDATE_INSTANCE:
-				$remote->mustBeIdentityAuthed();
-				$this->remoteRequest->updateInstance($remote);
-				break;
+		if (empty($result)) {
+			throw new CircleNotFoundException();
 		}
+
+		$circle = new Circle();
+		$circle->import($result);
+
+		return $circle;
+	}
+
+
+	/**
+	 * @param string $circleId
+	 * @param string $instance
+	 * @param array $data
+	 *
+	 * @return Member[]
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws UnknownRemoteException
+	 */
+	public function getMembersFromInstance(string $circleId, string $instance, array $data = []): array {
+		$result = $this->remoteStreamService->resultRequestRemoteInstance(
+			$instance,
+			RemoteInstance::MEMBERS,
+			Request::TYPE_GET,
+			new SimpleDataStore($data),
+			['circleId' => $circleId]
+		);
+
+		$members = [];
+		foreach ($result as $item) {
+			try {
+				$member = new Member();
+				$member->import($item);
+				$members[] = $member;
+			} catch (InvalidItemException $e) {
+			}
+		}
+
+		return $members;
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 *
+	 * @throws CircleNotFoundException
+	 * @throws InvalidIdException
+	 * @throws InvalidItemException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws UnknownRemoteException
+	 * @throws RemoteInstanceException
+	 */
+	public function syncCircle(Circle $circle): void {
+//		if ($this->configService->isLocalInstance($circle->getInstance())) {
+//			$this->syncLocalCircle($circle);
+//		} else {
+		$this->syncRemoteCircle($circle->getSingleId(), $circle->getInstance());
+//		}
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 */
+	private function syncLocalCircle(Circle $circle): void {
+
+	}
+
+
+	/**
+	 * @param string $circleId
+	 * @param string $instance
+	 *
+	 * @throws InvalidItemException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws UnknownRemoteException
+	 * @throws CircleNotFoundException
+	 * @throws InvalidIdException
+	 * @throws RemoteInstanceException
+	 */
+	public function syncRemoteCircle(string $circleId, string $instance): void {
+		$loop = 0;
+		$knownInstance = [];
+		while (true) {
+			$loop++;
+			if ($loop > 10 || in_array($instance, $knownInstance)) {
+				throw new CircleNotFoundException(
+					'circle not found after browsing ' . implode(', ', $knownInstance)
+				);
+			}
+			$knownInstance[] = $instance;
+
+			$circle = $this->getCircleFromInstance($circleId, $instance);
+			if ($circle->getInstance() === $instance) {
+				break;
+			}
+
+			$instance = $circle->getInstance();
+		}
+
+		$this->circleRequest->insertOrUpdate($circle);
+		$this->memberRequest->insertOrUpdate($circle->getOwner());
+
+		$this->syncRemoteMembers($circle);
+		$this->membershipService->onUpdate($circle->getSingleId());
+
+		$this->shareService->syncRemoteShares($circle);
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 *
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws UnknownRemoteException
+	 * @throws RemoteInstanceException
+	 */
+	public function syncRemoteMembers(Circle $circle) {
+		$members = $this->getMembersFromInstance($circle->getSingleId(), $circle->getInstance());
+		foreach ($members as $member) {
+			try {
+				$this->memberRequest->insertOrUpdate($member);
+			} catch (InvalidIdException $e) {
+			}
+		}
+
+		$this->membershipService->onUpdate($circle->getSingleId());
+	}
+
+
+	/**
+	 * @param string $userId
+	 * @param string $instance
+	 * @param int $type
+	 *
+	 * @return FederatedUser
+	 * @throws FederatedUserNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws UnknownRemoteException
+	 * @throws FederatedUserException
+	 * @throws FederatedItemException
+	 */
+	public function getFederatedUserFromInstance(
+		string $userId,
+		string $instance,
+		int $type = Member::TYPE_USER
+	): FederatedUser {
+
+		$result = $this->remoteStreamService->resultRequestRemoteInstance(
+			$instance,
+			RemoteInstance::MEMBER,
+			Request::TYPE_GET,
+			null,
+			['type' => Member::$TYPE[$type], 'userId' => $userId]
+		);
+
+		if (empty($result)) {
+			throw new FederatedUserNotFoundException();
+		}
+
+		$federatedUser = new FederatedUser();
+		try {
+			$federatedUser->import($result);
+		} catch (InvalidItemException $e) {
+			throw new FederatedUserException('incorrect federated user returned from instance');
+		}
+		if ($federatedUser->getInstance() !== $instance) {
+			throw new FederatedUserException('incorrect instance on returned federated user');
+		}
+
+		return $federatedUser;
 	}
 
 }

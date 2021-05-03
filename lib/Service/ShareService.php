@@ -1,4 +1,8 @@
 <?php
+
+declare(strict_types=1);
+
+
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -6,7 +10,7 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2017
+ * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,50 +28,47 @@
  *
  */
 
+
 namespace OCA\Circles\Service;
 
 
-use OCA\Circles\ISearch;
-use OCA\Circles\Model\Member;
-use OCP\IL10N;
-use OCP\IUserManager;
+use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Federated\FederatedEvent;
 
+/**
+ * Class ShareService
+ *
+ * @package OCA\Circles\Service
+ */
 class ShareService {
 
-	/** @var IL10N */
-	private $l10n;
+
+	/** @var FederatedEventService */
+	private $federatedEventService;
 
 	/** @var ConfigService */
 	private $configService;
 
-	/** @var MiscService */
-	private $miscService;
 
 	/**
-	 * MembersService constructor.
+	 * ShareService constructor.
 	 *
-	 * @param IL10N $l10n
+	 * @param FederatedEventService $federatedEventService
 	 * @param ConfigService $configService
-	 * @param MiscService $miscService
 	 */
-	public function __construct(
-		IL10N $l10n, ConfigService $configService,
-		MiscService $miscService
-	) {
-		$this->l10n = $l10n;
+	public function __construct(FederatedEventService $federatedEventService, ConfigService $configService) {
+		$this->federatedEventService = $federatedEventService;
 		$this->configService = $configService;
-		$this->miscService = $miscService;
 	}
 
 
 	/**
-	 * @param Member $member
+	 * @param Circle $circle
 	 */
-	public function removeShareFromMember(Member $member) {
-
-
-
+	public function syncRemoteShares(Circle $circle) {
+//		$event = new FederatedEvent(SharedItemsSync::class);
+//		$event->setCircle($circle);
+//		$this->federatedEventService->newEvent($event);
 	}
-
 
 }

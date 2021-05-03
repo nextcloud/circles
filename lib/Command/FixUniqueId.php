@@ -29,9 +29,9 @@ namespace OCA\Circles\Command;
 use Exception;
 use OC\Core\Command\Base;
 use OC\Share\Share;
-use OCA\Circles\Db\CirclesRequest;
+use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\DeprecatedRequestBuilder;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCP\IDBConnection;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -42,10 +42,10 @@ class FixUniqueId extends Base {
 	/** @var IDBConnection */
 	protected $connection;
 
-	/** @var CirclesRequest */
+	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
 
-	public function __construct(CirclesRequest $circlesRequest, IDBConnection $connection) {
+	public function __construct(DeprecatedCirclesRequest $circlesRequest, IDBConnection $connection) {
 		parent::__construct();
 		$this->circlesRequest = $circlesRequest;
 		$this->connection = $connection;
@@ -81,17 +81,17 @@ class FixUniqueId extends Base {
 		while ($data = $cursor->fetch()) {
 			$circleId = $data['id'];
 
-			$shortenUniqueId = substr($data['unique_id'], 0, Circle::SHORT_UNIQUE_ID_LENGTH);
+			$shortenUniqueId = substr($data['unique_id'], 0, DeprecatedCircle::SHORT_UNIQUE_ID_LENGTH);
 
 //			$this->swapToShortenUniqueIdInTable(
-//				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_GROUPS
+//				$circleId, $shortenUniqueId, CoreQueryBuilder::TABLE_GROUPS
 //			);
 			$this->swapToShortenUniqueIdInTable(
 				$circleId, $shortenUniqueId, DeprecatedRequestBuilder::TABLE_LINKS
 			);
 //
 //			$this->cleanBuggyDuplicateEntries(
-//				$circleId, $shortenUniqueId, CoreRequestBuilder::TABLE_MEMBERS, 'user_id'
+//				$circleId, $shortenUniqueId, CoreQueryBuilder::TABLE_MEMBERS, 'user_id'
 //			);
 
 			$this->swapToShortenUniqueIdInTable(

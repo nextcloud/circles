@@ -5,7 +5,7 @@
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Maxence Lange <maxence@artificial-owl.com>
  * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
@@ -29,10 +29,10 @@ namespace OCA\Circles\Controller;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use Exception;
 use OC\AppFramework\Http;
-use OCA\Circles\Db\SharesRequest;
+use OCA\Circles\Db\FileSharesRequest;
 use OCA\Circles\Db\TokensRequest;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SharesToken;
 use OCA\Circles\Model\SharingFrame;
 use OCA\Circles\Service\BroadcastService;
@@ -60,8 +60,8 @@ class SharesController extends Controller {
 	/** @var TokensRequest */
 	private $tokenRequest;
 
-	/** @var SharesRequest */
-	private $sharesRequest;
+	/** @var FileSharesRequest */
+	private $fileSharesRequest;
 
 	/** @var IURLGenerator */
 	private $urlGenerator;
@@ -88,7 +88,7 @@ class SharesController extends Controller {
 	 * @param $appName
 	 * @param IRequest $request
 	 * @param TokensRequest $tokenRequest
-	 * @param SharesRequest $sharesRequest
+	 * @param FileSharesRequest $fileSharesRequest
 	 * @param IURLGenerator $urlGenerator
 	 * @param MembersService $membersService
 	 * @param BroadcastService $broadcastService
@@ -97,7 +97,7 @@ class SharesController extends Controller {
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
-		$appName, IRequest $request, TokensRequest $tokenRequest, SharesRequest $sharesRequest,
+		$appName, IRequest $request, TokensRequest $tokenRequest, FileSharesRequest $fileSharesRequest,
 		IUrlGenerator $urlGenerator, MembersService $membersService,
 		BroadcastService $broadcastService,
 		SharingFrameService $sharingFrameService, ConfigService $configService,
@@ -106,7 +106,7 @@ class SharesController extends Controller {
 		parent::__construct($appName, $request);
 
 		$this->tokenRequest = $tokenRequest;
-		$this->sharesRequest = $sharesRequest;
+		$this->fileSharesRequest = $fileSharesRequest;
 		$this->urlGenerator = $urlGenerator;
 		$this->membersService = $membersService;
 		$this->broadcastService = $broadcastService;
@@ -189,24 +189,24 @@ class SharesController extends Controller {
 	 * @throws Exception
 	 */
 	public function initShareDelivery($circleId, $frameId) {
-		try {
-			$frame = $this->sharingFrameService->getFrameFromUniqueId($circleId, $frameId);
-		} catch (Exception $e) {
-			return $this->fail($e->getMessage());
-		}
-
-		// We don't want to keep the connection up
-		$this->miscService->asyncAndLeaveClientOutOfThis('done');
-
-		$this->broadcastService->broadcastFrame($frame);
-
-		// TODO - do not update cloudId to avoid duplicate, use it's own field and keep cloudId
-		$this->sharingFrameService->updateFrameWithCloudId($frame);
-		if ($this->configService->isFederatedCirclesAllowed()) {
-			$this->sharingFrameService->forwardSharingFrame($frame);
-		}
-
-		exit();
+//		try {
+//			$frame = $this->sharingFrameService->getFrameFromUniqueId($circleId, $frameId);
+//		} catch (Exception $e) {
+//			return $this->fail($e->getMessage());
+//		}
+//
+//		// We don't want to keep the connection up
+//		$this->miscService->asyncAndLeaveClientOutOfThis('done');
+//
+//		$this->broadcastService->broadcastFrame($frame);
+//
+//		// TODO - do not update cloudId to avoid duplicate, use it's own field and keep cloudId
+//		$this->sharingFrameService->updateFrameWithCloudId($frame);
+//		if ($this->configService->isFederatedCirclesAllowed()) {
+//			$this->sharingFrameService->forwardSharingFrame($frame);
+//		}
+//
+//		exit();
 	}
 
 
@@ -218,7 +218,7 @@ class SharesController extends Controller {
 	private function checkContactMail(SharesToken $shareToken) {
 		try {
 			$this->membersService->getMember(
-				$shareToken->getCircleId(), $shareToken->getUserId(), Member::TYPE_MAIL, true
+				$shareToken->getCircleId(), $shareToken->getUserId(), DeprecatedMember::TYPE_MAIL, true
 			);
 
 			return;
@@ -227,7 +227,7 @@ class SharesController extends Controller {
 
 		try {
 			$this->membersService->getMember(
-				$shareToken->getCircleId(), $shareToken->getUserId(), Member::TYPE_CONTACT, true
+				$shareToken->getCircleId(), $shareToken->getUserId(), DeprecatedMember::TYPE_CONTACT, true
 			);
 
 			return;

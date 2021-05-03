@@ -28,7 +28,7 @@ namespace OCA\Circles\Command;
 
 use Exception;
 use OC\Core\Command\Base;
-use OCA\Circles\Db\CirclesRequest;
+use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Exceptions\CommandMissingArgumentException;
 use OCA\Circles\Exceptions\FakeException;
 use OCP\IL10N;
@@ -42,16 +42,16 @@ class Groups extends Base {
 	/** @var IL10N */
 	private $l10n;
 
-	/** @var CirclesRequest */
+	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
 
 	/**
 	 * Groups constructor.
 	 *
 	 * @param IL10N $l10n
-	 * @param CirclesRequest $circlesRequest
+	 * @param DeprecatedCirclesRequest $circlesRequest
 	 */
-	public function __construct(IL10N $l10n, CirclesRequest $circlesRequest) {
+	public function __construct(IL10N $l10n, DeprecatedCirclesRequest $circlesRequest) {
 		parent::__construct();
 		$this->l10n = $l10n;
 		$this->circlesRequest = $circlesRequest;

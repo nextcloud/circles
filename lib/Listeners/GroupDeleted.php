@@ -9,7 +9,7 @@ declare(strict_types=1);
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Maxence Lange <maxence@artificial-owl.com>
  * @copyright 2020
  * @license GNU AGPL version 3 or any later version
  *
@@ -31,7 +31,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Listeners;
 
-use OCA\Circles\Service\GroupsService;
+use Exception;
+use OCA\Circles\Service\SyncService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Group\Events\GroupDeletedEvent;
@@ -45,17 +46,17 @@ use OCP\Group\Events\GroupDeletedEvent;
 class GroupDeleted implements IEventListener {
 
 
-	/** @var GroupsService */
-	private $groupsService;
+	/** @var SyncService */
+	private $syncService;
 
 
 	/**
 	 * GroupDeleted constructor.
 	 *
-	 * @param GroupsService $groupsService
+	 * @param SyncService $syncService
 	 */
-	public function __construct(GroupsService $groupsService) {
-		$this->groupsService = $groupsService;
+	public function __construct(SyncService $syncService) {
+		$this->syncService = $syncService;
 	}
 
 
@@ -68,8 +69,10 @@ class GroupDeleted implements IEventListener {
 		}
 
 		$group = $event->getGroup();
-		$groupId = $group->getGID();
-		$this->groupsService->onGroupRemoved($groupId);
+		try {
+			$this->syncService->groupDeleted($group->getGID());
+		} catch (Exception $e) {
+		}
 	}
 
 }

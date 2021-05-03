@@ -31,8 +31,8 @@ namespace OCA\Circles\Service;
 
 
 use Exception;
-use OCA\Circles\Db\CirclesRequest;
-use OCA\Circles\Db\GSEventsRequest;
+use OCA\Circles\Db\DeprecatedCirclesRequest;
+use OCA\Circles\Db\EventWrapperRequest;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Exceptions\GlobalScaleDSyncException;
@@ -56,10 +56,10 @@ class GSDownstreamService {
 	/** @var IURLGenerator */
 	private $urlGenerator;
 
-	/** @var GSEventsRequest */
-	private $gsEventsRequest;
+	/** @var EventWrapperRequest */
+	private $eventWrapperRequest;
 
-	/** @var CirclesRequest */
+	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
 
 	/** @var GlobalScaleService */
@@ -77,8 +77,8 @@ class GSDownstreamService {
 	 *
 	 * @param $userId
 	 * @param IURLGenerator $urlGenerator
-	 * @param GSEventsRequest $gsEventsRequest
-	 * @param CirclesRequest $circlesRequest
+	 * @param EventWrapperRequest $eventWrapperRequest
+	 * @param DeprecatedCirclesRequest $circlesRequest
 	 * @param GlobalScaleService $globalScaleService
 	 * @param ConfigService $configService
 	 * @param MiscService $miscService
@@ -86,15 +86,15 @@ class GSDownstreamService {
 	public function __construct(
 		$userId,
 		IURLGenerator $urlGenerator,
-		GSEventsRequest $gsEventsRequest,
-		CirclesRequest $circlesRequest,
+		EventWrapperRequest $eventWrapperRequest,
+		DeprecatedCirclesRequest $circlesRequest,
 		GlobalScaleService $globalScaleService,
 		ConfigService $configService,
 		MiscService $miscService
 	) {
 		$this->userId = $userId;
 		$this->urlGenerator = $urlGenerator;
-		$this->gsEventsRequest = $gsEventsRequest;
+		$this->eventWrapperRequest = $eventWrapperRequest;
 		$this->circlesRequest = $circlesRequest;
 		$this->globalScaleService = $globalScaleService;
 		$this->configService = $configService;

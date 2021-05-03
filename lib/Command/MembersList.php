@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,11 +31,38 @@
 
 namespace OCA\Circles\Command;
 
+use daita\MySmallPhpTools\Exceptions\InvalidItemException;
+use daita\MySmallPhpTools\Exceptions\ItemNotFoundException;
+use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
+use daita\MySmallPhpTools\Exceptions\SignatoryException;
+use daita\MySmallPhpTools\Exceptions\UnknownTypeException;
+use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22TreeNode;
+use daita\MySmallPhpTools\Model\SimpleDataStore;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22ConsoleTree;
 use OC\Core\Command\Base;
-use OCA\Circles\Db\CirclesRequest;
-use OCA\Circles\Db\MembersRequest;
-use OCA\Circles\Exceptions\CircleDoesNotExistException;
-use OCP\IL10N;
+use OCA\Circles\Db\MemberRequest;
+use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\FederatedUserException;
+use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\InvalidIdException;
+use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\Exceptions\SingleCircleNotFoundException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
+use OCA\Circles\Exceptions\UserTypeNotFoundException;
+use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Member;
+use OCA\Circles\Service\CircleService;
+use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Service\MemberService;
+use OCA\Circles\Service\RemoteService;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -50,37 +79,67 @@ use Symfony\Component\Console\Output\OutputInterface;
 class MembersList extends Base {
 
 
-	/** @var IL10N */
-	private $l10n;
+	use TNC22ConsoleTree;
 
-	/** @var CirclesRequest */
-	private $circlesRequest;
 
-	/** @var MembersRequest */
-	private $membersRequest;
+	/** @var MemberRequest */
+	private $memberRequest;
 
+	/** @var FederatedUserService */
+	private $federatedUserService;
+
+	/** @var RemoteService */
+	private $remoteService;
+
+	/** @var CircleService */
+	private $circleService;
+
+	/** @var MemberService */
+	private $memberService;
+
+	/** @var ConfigService */
+	private $configService;
+
+
+	/** @var InputInterface */
+	private $input;
 
 	/**
 	 * MembersList constructor.
 	 *
-	 * @param IL10N $l10n
-	 * @param CirclesRequest $circlesRequest
-	 * @param MembersRequest $membersRequest
+	 * @param MemberRequest $memberRequest
+	 * @param FederatedUserService $federatedUserService
+	 * @param RemoteService $remoteService
+	 * @param CircleService $circleService
+	 * @param MemberService $memberService
+	 * @param ConfigService $configService
 	 */
-	public function __construct(IL10N $l10n, CirclesRequest $circlesRequest, MembersRequest $membersRequest) {
+	public function __construct(
+		MemberRequest $memberRequest, FederatedUserService $federatedUserService,
+		RemoteService $remoteService, CircleService $circleService, MemberService $memberService,
+		ConfigService $configService
+	) {
 		parent::__construct();
-		$this->l10n = $l10n;
-		$this->circlesRequest = $circlesRequest;
-		$this->membersRequest = $membersRequest;
+
+		$this->memberRequest = $memberRequest;
+		$this->federatedUserService = $federatedUserService;
+		$this->remoteService = $remoteService;
+		$this->circleService = $circleService;
+		$this->memberService = $memberService;
+		$this->configService = $configService;
 	}
 
 
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:members:list')
-			 ->setDescription('listing members')
+			 ->setDescription('listing Members from a Circle')
 			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
-			 ->addOption('json', '', InputOption::VALUE_NONE, 'returns result as JSON');
+			 ->addOption('instance', '', InputOption::VALUE_REQUIRED, 'Instance of the circle', '')
+			 ->addOption('inherited', '', InputOption::VALUE_NONE, 'Display all inherited members')
+			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			 ->addOption('display-name', '', InputOption::VALUE_NONE, 'display the displayName')
+			 ->addOption('tree', '', InputOption::VALUE_NONE, 'display members as a tree');
 	}
 
 
@@ -89,18 +148,71 @@ class MembersList extends Base {
 	 * @param OutputInterface $output
 	 *
 	 * @return int
-	 * @throws CircleDoesNotExistException
+	 * @throws CircleNotFoundException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InitiatorNotFoundException
+	 * @throws InvalidIdException
+	 * @throws InvalidItemException
+	 * @throws MemberNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws UnknownRemoteException
+	 * @throws UserTypeNotFoundException
+	 * @throws FederatedItemException
+	 * @throws SingleCircleNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
+		$this->input = $input;
 		$circleId = $input->getArgument('circle_id');
-		$json = $input->getOption('json');
+		$instance = $input->getOption('instance');
+		$initiator = $input->getOption('initiator');
+		$inherited = $input->getOption('inherited');
 
-		$this->circlesRequest->forceGetCircle($circleId);
+		$tree = null;
+		if ($input->getOption('tree')) {
+			$this->federatedUserService->commandLineInitiator($initiator, $circleId, true);
+			$circle = $this->circleService->getCircle($circleId);
 
-		$members = $this->membersRequest->forceGetMembers($circleId);
+			$output->writeln('<info>Name</info>: ' . $circle->getName());
+			$owner = $circle->getOwner();
+			$output->writeln('<info>Owner</info>: ' . $owner->getUserId() . '@' . $owner->getInstance());
+			$type = implode(", ", Circle::getCircleFlags($circle, Circle::FLAGS_LONG));
+			$output->writeln('<info>Config</info>: ' . $type);
+			$output->writeln(' ');
 
-		if ($json) {
-			echo json_encode($members, JSON_PRETTY_PRINT) . "\n";
+			$tree = new NC22TreeNode(null, new SimpleDataStore(['circle' => $circle]));
+			$inherited = false;
+		}
+
+		if ($inherited) {
+			$this->federatedUserService->commandLineInitiator($initiator, $circleId, true);
+			$circle = $this->circleService->getCircle($circleId);
+			$members = $circle->getInheritedMembers(true);
+		} else {
+			$members = $this->getMembers($circleId, $instance, $initiator, $tree);
+		}
+
+		if (!is_null($tree)) {
+			$this->drawTree(
+				$tree, [$this, 'displayLeaf'],
+				[
+					'height'       => 3,
+					'node-spacing' => 1,
+					'item-spacing' => 0,
+				]
+			);
+
+			return 0;
+		}
+
+		if (strtolower($input->getOption('output')) === 'json') {
+			$output->writeln(json_encode($members, JSON_PRETTY_PRINT));
 
 			return 0;
 		}
@@ -109,23 +221,217 @@ class MembersList extends Base {
 		$output = $output->section();
 
 		$table = new Table($output);
-		$table->setHeaders(['ID', 'Username', 'Instance', 'Level']);
+		$table->setHeaders(
+			[
+				'Circle Id', 'Circle Name', 'Member Id', 'Single Id', 'Type', 'Source', 'Username',
+				'Instance', 'Level'
+			]
+		);
 		$table->render();
-		$output->writeln('');
 
-		$c = 0;
+		$local = $this->configService->getFrontalInstance();
 		foreach ($members as $member) {
+			if ($member->getCircleId() === $circleId) {
+				$level = $member->getLevel();
+			} else {
+				$level = $member->getInheritanceFrom()->getLevel();
+			}
+
 			$table->appendRow(
 				[
-					$member->getMemberId(),
-					$member->getUserId(),
-					$member->getInstance(),
-					$member->getLevelString(),
+					$member->getCircleId(),
+					$member->getCircle()->getDisplayName(),
+					$member->getId(),
+					$member->getSingleId(),
+					Member::$TYPE[$member->getUserType()],
+					$member->hasBasedOn() ? Circle::$DEF_SOURCE[$member->getBasedOn()->getSource()] : '',
+					($this->input->getOption('display-name')) ?
+						$member->getBasedOn()->getDisplayName() : $member->getUserId(),
+					($member->getInstance() === $local) ? '' : $member->getInstance(),
+					($level > 0) ? Member::$DEF_LEVEL[$level] :
+						'(' . strtolower($member->getStatus()) . ')'
 				]
 			);
 		}
 
 		return 0;
+	}
+
+
+	/**
+	 * @param string $circleId
+	 * @param string $instance
+	 * @param string $initiator
+	 * @param NC22TreeNode|null $tree
+	 * @param array $knownIds
+	 *
+	 * @return array
+	 * @throws CircleNotFoundException
+	 * @throws FederatedItemException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InitiatorNotFoundException
+	 * @throws InvalidIdException
+	 * @throws InvalidItemException
+	 * @throws MemberNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws SingleCircleNotFoundException
+	 * @throws UnknownRemoteException
+	 * @throws UserTypeNotFoundException
+	 * @throws RequestBuilderException
+	 */
+	private function getMembers(
+		string $circleId,
+		string $instance,
+		string $initiator,
+		?NC22TreeNode $tree,
+		array $knownIds = []
+	): array {
+		if (in_array($circleId, $knownIds)) {
+			return [];
+		}
+		$knownIds[] = $circleId;
+
+		if ($instance !== '' && !$this->configService->isLocalInstance($instance)) {
+			$data = [];
+			if ($initiator) {
+				$data['initiator'] = $this->federatedUserService->getFederatedUser($initiator);
+			}
+
+			try {
+				$members = $this->remoteService->getMembersFromInstance($circleId, $instance, $data);
+			} catch (RemoteInstanceException $e) {
+				return [];
+			}
+		} else {
+			$this->federatedUserService->commandLineInitiator($initiator, $circleId, true);
+			$members = $this->memberService->getMembers($circleId);
+		}
+
+		if (!is_null($tree)) {
+			foreach ($members as $member) {
+				if ($member->getUserType() === Member::TYPE_CIRCLE) {
+					if (!$this->configService->isLocalInstance($member->getInstance())) {
+						$data = [];
+						if ($initiator) {
+							$data['initiator'] = $this->federatedUserService->getFederatedUser($initiator);
+						}
+
+						$circle = null;
+						try {
+							$circle = $this->remoteService->getCircleFromInstance(
+								$member->getSingleId(), $member->getInstance(), $data
+							);
+						} catch (CircleNotFoundException | RemoteInstanceException $e) {
+						}
+					} else {
+						$this->federatedUserService->commandLineInitiator(
+							$initiator, $member->getSingleId(), true
+						);
+						$circle = $this->circleService->getCircle($member->getSingleId(), 0);
+					}
+					$node = new NC22TreeNode(
+						$tree, new SimpleDataStore(
+								 [
+									 'circle'  => $circle,
+									 'member'  => $member,
+									 'cycling' => in_array($member->getSingleId(), $knownIds),
+								 ]
+							 )
+					);
+
+					$this->getMembers(
+						$member->getSingleId(), $member->getInstance(), $initiator, $node, $knownIds
+					);
+				} else {
+					new NC22TreeNode(
+						$tree, new SimpleDataStore(
+								 [
+									 'member'  => $member,
+									 'cycling' => in_array($member->getSingleId(), $knownIds)
+								 ]
+							 )
+					);
+				}
+			}
+		}
+
+		return $members;
+	}
+
+
+	/**
+	 * @param SimpleDataStore $data
+	 * @param int $lineNumber
+	 *
+	 * @return string
+	 * @throws OwnerNotFoundException
+	 */
+	public function displayLeaf(SimpleDataStore $data, int $lineNumber): string {
+		if ($lineNumber === 3) {
+			return ($data->gBool('cycling')) ? '<comment>(loop detected)</comment>' : '';
+		}
+
+		try {
+			$line = '';
+			$circle = null;
+			if ($data->hasKey('circle')) {
+				/** @var Circle $circle */
+				$circle = $data->gObj('circle', Circle::class);
+			}
+
+			if ($data->hasKey('member')) {
+				/** @var Member $member */
+				$member = $data->gObj('member', Member::class);
+
+				if ($lineNumber === 1) {
+					$line .= '<info>' . $member->getSingleId() . '</info>';
+					if (!$this->configService->isLocalInstance($member->getInstance())) {
+						$line .= '@' . $member->getInstance();
+					}
+					$line .= ' (' . Member::$DEF_LEVEL[$member->getLevel()] . ')';
+
+					$name = ($this->input->getOption('display-name')) ?
+						$member->getBasedOn()->getDisplayName() : $member->getUserId();
+					$line .= ' <info>Name</info>: ' . $name;
+					$source = ($member->hasBasedOn()) ? $member->getBasedOn()->getSource() : '';
+					$line .= ' <info>Source</info>: ' . Circle::$DEF_SOURCE[$source];
+				}
+
+				if ($lineNumber === 2) {
+					if (is_null($circle)) {
+						if ($member->getUserType() === Member::TYPE_CIRCLE) {
+							$line .= '<comment>(out of bounds)</comment>';
+						}
+
+						return $line;
+					}
+					$owner = $circle->getOwner();
+					$line .= '<info>Owner</info>: ' . $owner->getUserId() . '@' . $owner->getInstance();
+					$type = implode(", ", Circle::getCircleFlags($circle, Circle::FLAGS_LONG));
+					$line .= ($type === '') ? '' : ' <info>Config</info>: ' . $type;
+				}
+
+			} else {
+				if ($lineNumber === 1 && !is_null($circle)) {
+					$line .= '<info>' . $circle->getSingleId() . '</info>';
+					if (!$this->configService->isLocalInstance($circle->getInstance())) {
+						$line .= '@' . $circle->getInstance();
+					}
+				}
+			}
+
+			return $line;
+
+		} catch (InvalidItemException | ItemNotFoundException | UnknownTypeException $e) {
+		}
+
+		return '';
 	}
 
 }

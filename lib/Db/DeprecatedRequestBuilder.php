@@ -11,7 +11,7 @@ namespace OCA\Circles\Db;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use OCA\Circles\Exceptions\GSStatusException;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\TimezoneService;
@@ -33,7 +33,7 @@ class DeprecatedRequestBuilder {
 	const TABLE_GSEVENTS = 'circle_gsevents';
 	const TABLE_GSSHARES = 'circle_gsshares';
 	const TABLE_GSSHARES_MOUNTPOINT = 'circle_gsshares_mp';
-	const TABLE_REMOTE = 'circle_remote';
+	const TABLE_REMOTE = 'circle_remotes';
 
 	const NC_TABLE_ACCOUNTS = 'accounts';
 	const NC_TABLE_GROUP_USER = 'group_user';
@@ -75,7 +75,7 @@ class DeprecatedRequestBuilder {
 
 
 	/**
-	 * CoreRequestBuilder constructor.
+	 * CoreQueryBuilder constructor.
 	 *
 	 * @param IL10N $l10n
 	 * @param IDBConnection $connection
@@ -396,9 +396,9 @@ class DeprecatedRequestBuilder {
 		$pf = ($qb->getType() === QueryBuilder::SELECT) ? $this->default_select_alias . '.' : '';
 
 		$orX = $expr->orX();
-		$orX->add($expr->eq($pf . 'status', $qb->createNamedParameter(Member::STATUS_MEMBER)));
-		$orX->add($expr->eq($pf . 'status', $qb->createNamedParameter(Member::STATUS_INVITED)));
-		$orX->add($expr->eq($pf . 'status', $qb->createNamedParameter(Member::STATUS_REQUEST)));
+		$orX->add($expr->eq($pf . 'status', $qb->createNamedParameter(DeprecatedMember::STATUS_MEMBER)));
+		$orX->add($expr->eq($pf . 'status', $qb->createNamedParameter(DeprecatedMember::STATUS_INVITED)));
+		$orX->add($expr->eq($pf . 'status', $qb->createNamedParameter(DeprecatedMember::STATUS_REQUEST)));
 
 		$qb->andWhere($orX);
 	}
@@ -488,6 +488,7 @@ class DeprecatedRequestBuilder {
 	 * @throws GSStatusException
 	 */
 	protected function leftJoinNCGroupAndUser(IQueryBuilder $qb, $userId, $field) {
+		return;
 		if (!$this->configService->isLinkedGroupsAllowed()) {
 			return;
 		}
@@ -503,31 +504,13 @@ class DeprecatedRequestBuilder {
 			$this->default_select_alias, DeprecatedRequestBuilder::TABLE_MEMBERS, 'g',
 			$expr->andX(
 				$expr->eq('g.user_id', 'ncgu.gid'),
-				$expr->eq('g.user_type', $qb->createNamedParameter(Member::TYPE_GROUP)),
+				$expr->eq('g.user_type', $qb->createNamedParameter(DeprecatedMember::TYPE_GROUP)),
 				$expr->eq('g.instance', $qb->createNamedParameter('')),
 				$expr->eq('g.circle_id', $field)
 			)
 		);
 
 		$this->leftJoinedNCGroupAndUser = true;
-	}
-
-
-	/**
-	 *
-	 */
-	public function cleanDatabase(): void {
-		foreach ($this->tables as $table) {
-			$qb = $this->dbConnection->getQueryBuilder();
-			$qb->delete($table);
-			$qb->execute();
-		}
-
-		$qb = $this->dbConnection->getQueryBuilder();
-		$expr = $qb->expr();
-		$qb->delete(self::TABLE_FILE_SHARES);
-		$qb->where($expr->eq('share_type', $qb->createNamedParameter(self::SHARE_TYPE)));
-		$qb->execute();
 	}
 
 }

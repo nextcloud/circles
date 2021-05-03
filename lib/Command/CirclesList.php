@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,15 +31,32 @@
 
 namespace OCA\Circles\Command;
 
+use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
+use daita\MySmallPhpTools\Exceptions\SignatoryException;
+use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use OC\Core\Command\Base;
-use OCA\Circles\Db\CirclesRequest;
-use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
-use OCA\Circles\Exceptions\GSStatusException;
+use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\FederatedUserException;
+use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\InvalidIdException;
+use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\SingleCircleNotFoundException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
+use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\Model\Circle;
-use OCP\IL10N;
+use OCA\Circles\Model\ModelManager;
+use OCA\Circles\Service\CircleService;
+use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Service\RemoteService;
 use Symfony\Component\Console\Helper\Table;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -55,23 +74,45 @@ class CirclesList extends Base {
 	use TArrayTools;
 
 
-	/** @var IL10N */
-	private $l10n;
+	/** @var ModelManager */
+	private $modelManager;
 
-	/** @var CirclesRequest */
-	private $circlesRequest;
+	/** @var FederatedUserService */
+	private $federatedUserService;
+
+	/** @var RemoteService */
+	private $remoteService;
+
+	/** @var CircleService */
+	private $circleService;
+
+	/** @var ConfigService */
+	private $configService;
+
+
+	/** @var InputInterface */
+	private $input;
 
 
 	/**
 	 * CirclesList constructor.
 	 *
-	 * @param IL10N $l10n
-	 * @param CirclesRequest $circlesRequest
+	 * @param ModelManager $modelManager
+	 * @param FederatedUserService $federatedUserService
+	 * @param RemoteService $remoteService
+	 * @param CircleService $circleService
+	 * @param ConfigService $configService
 	 */
-	public function __construct(IL10N $l10n, CirclesRequest $circlesRequest) {
+	public function __construct(
+		ModelManager $modelManager, FederatedUserService $federatedUserService, RemoteService $remoteService,
+		CircleService $circleService, ConfigService $configService
+	) {
 		parent::__construct();
-		$this->l10n = $l10n;
-		$this->circlesRequest = $circlesRequest;
+		$this->modelManager = $modelManager;
+		$this->federatedUserService = $federatedUserService;
+		$this->remoteService = $remoteService;
+		$this->circleService = $circleService;
+		$this->configService = $configService;
 	}
 
 
@@ -79,10 +120,12 @@ class CirclesList extends Base {
 		parent::configure();
 		$this->setName('circles:manage:list')
 			 ->setDescription('listing current circles')
-			 ->addArgument('owner', InputArgument::OPTIONAL, 'filter by owner', '')
-			 ->addOption('viewer', '', InputOption::VALUE_REQUIRED, 'set viewer', '')
-			 ->addOption('json', '', InputOption::VALUE_NONE, 'returns result as JSON')
-			 ->addOption('remote', '', InputOption::VALUE_REQUIRED, 'remote Nextcloud address', '');
+			 ->addOption('instance', '', InputOption::VALUE_REQUIRED, 'Instance of the circle', '')
+			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			 ->addOption('member', '', InputOption::VALUE_REQUIRED, 'search for member', '')
+			 ->addOption('def', '', InputOption::VALUE_NONE, 'display complete circle configuration')
+			 ->addOption('display-name', '', InputOption::VALUE_NONE, 'display the displayName')
+			 ->addOption('all', '', InputOption::VALUE_NONE, 'display also hidden Circles');
 	}
 
 
@@ -91,68 +134,88 @@ class CirclesList extends Base {
 	 * @param OutputInterface $output
 	 *
 	 * @return int
-	 * @throws ConfigNoCircleAvailableException
+	 * @throws CircleNotFoundException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InitiatorNotFoundException
+	 * @throws InvalidIdException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws UnknownRemoteException
+	 * @throws UserTypeNotFoundException
+	 * @throws FederatedItemException
+		 * @throws MemberNotFoundException
+	 * @throws SingleCircleNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		$owner = $input->getArgument('owner');
-		$viewer = $input->getOption('viewer');
-		$json = $input->getOption('json');
-		$remote = $input->getOption('remote');
+		$this->input = $input;
+		$member = $input->getOption('member');
+		$instance = $input->getOption('instance');
+		$initiator = $input->getOption('initiator');
 
-		$output = new ConsoleOutput();
-		$output = $output->section();
-		$circles = $this->getCircles($owner, $viewer, $remote);
+		$filterMember = null;
+		if ($member !== '') {
+			$filterMember = $this->federatedUserService->getFederatedMember($member);
+		}
 
-		if ($json) {
-			echo json_encode($circles, JSON_PRETTY_PRINT) . "\n";
+		if ($instance !== '' && !$this->configService->isLocalInstance($instance)) {
+			$data = ['filterMember' => $filterMember];
+			if ($initiator) {
+				$data['initiator'] = $this->federatedUserService->getFederatedUser($initiator);
+			}
+
+			$circles = $this->remoteService->getCirclesFromInstance($instance, $data);
+		} else {
+			$this->federatedUserService->commandLineInitiator($initiator, '', true);
+			$params = new SimpleDataStore(['includeSystemCircles' => $input->getOption('all')]);
+			$circles = $this->circleService->getCircles(null, $filterMember, $params);
+		}
+
+		if (strtolower($input->getOption('output')) === 'json') {
+			$output->writeln(json_encode($circles, JSON_PRETTY_PRINT));
 
 			return 0;
 		}
 
-		$table = new Table($output);
-		$table->setHeaders(['ID', 'Name', 'Type', 'Owner', 'Instance', 'Limit', 'Description']);
-		$table->render();
-		$output->writeln('');
-
-		$c = 0;
-		foreach ($circles as $circle) {
-			$owner = $circle->getOwner();
-			$settings = $circle->getSettings();
-			$table->appendRow(
-				[
-					$circle->getUniqueId(),
-					$circle->getName(),
-					$circle->getTypeLongString(),
-					$owner->getUserId(),
-					$owner->getInstance(),
-					$this->getInt('members_limit', $settings, -1),
-					substr($circle->getDescription(), 0, 30)
-				]
-			);
-		}
+		$this->displayCircles($circles);
 
 		return 0;
 	}
 
 
 	/**
-	 * @param string $owner
-	 * @param string $viewer
-	 * @param string $remote
-	 *
-	 * @return Circle[]
-	 * @throws ConfigNoCircleAvailableException
-	 * @throws GSStatusException
+	 * @param Circle[] $circles
 	 */
-	private function getCircles(string $owner, string $viewer, string $remote): array {
-		if ($remote !== '') {
-		} elseif ($viewer === '') {
-			$circles = $this->circlesRequest->forceGetCircles($owner);
-		} else {
-			$circles = $this->circlesRequest->getCircles($viewer, 0, '', 0, true, $owner);
-		}
+	private function displayCircles(array $circles): void {
+		$output = new ConsoleOutput();
+		$output = $output->section();
+		$table = new Table($output);
+		$table->setHeaders(
+			['Single Id', 'Name', 'Config', 'Source', 'Owner', 'Instance', 'Limit', 'Description']
+		);
+		$table->render();
 
-		return $circles;
+		$local = $this->configService->getFrontalInstance();
+		$display = ($this->input->getOption('def') ? Circle::FLAGS_LONG : Circle::FLAGS_SHORT);
+		foreach ($circles as $circle) {
+			$owner = $circle->getOwner();
+			$table->appendRow(
+				[
+					$circle->getSingleId(),
+					$this->input->getOption('display-name') ? $circle->getDisplayName() : $circle->getName(),
+					json_encode(Circle::getCircleFlags($circle, $display)),
+					Circle::$DEF_SOURCE[$circle->getSource()],
+					$owner->getUserId(),
+					($owner->getInstance() === $local) ? '' : $owner->getInstance(),
+					$this->getInt('members_limit', $circle->getSettings(), -1),
+					substr($circle->getDescription(), 0, 30)
+				]
+			);
+		}
 	}
 
 }

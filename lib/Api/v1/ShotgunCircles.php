@@ -28,17 +28,8 @@ namespace OCA\Circles\Api\v1;
 
 
 use OCA\Circles\AppInfo\Application;
-use OCA\Circles\Exceptions\ApiVersionIncompatibleException;
-use OCA\Circles\Model\Circle;
-use OCA\Circles\Model\FederatedLink;
-use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SharingFrame;
-use OCA\Circles\Service\CirclesService;
-use OCA\Circles\Service\FederatedLinkService;
-use OCA\Circles\Service\MembersService;
-use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\SharingFrameService;
-use OCP\Util;
 
 /**
  * Better use the other one.

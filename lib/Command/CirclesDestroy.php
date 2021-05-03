@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -8,7 +10,7 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2017
+ * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -30,49 +32,65 @@
 namespace OCA\Circles\Command;
 
 use OC\Core\Command\Base;
-use OCA\Circles\Exceptions\CircleDoesNotExistException;
-use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
-use OCA\Circles\Exceptions\MemberIsNotOwnerException;
-use OCA\Circles\Service\CirclesService;
-use OCP\IL10N;
+use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\FederatedUserException;
+use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Exceptions\InvalidIdException;
+use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\Exceptions\SingleCircleNotFoundException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
+use OCA\Circles\Exceptions\UserTypeNotFoundException;
+use OCA\Circles\Service\CircleService;
+use OCA\Circles\Service\FederatedUserService;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
 /**
- * Class CirclesRemove
+ * Class CirclesDestroy
  *
  * @package OCA\Circles\Command
  */
 class CirclesDestroy extends Base {
 
 
-	/** @var IL10N */
-	private $l10n;
+	/** @var FederatedUserService */
+	private $federatedUserService;
 
-	/** @var CirclesService */
-	private $circlesService;
+	/** @var CircleService */
+	private $circleService;
 
 
 	/**
-	 * CirclesRemove constructor.
+	 * CirclesDestroy constructor.
 	 *
-	 * @param IL10N $l10n
-	 * @param CirclesService $circlesService
+	 * @param CircleService $circleService
 	 */
-	public function __construct(IL10N $l10n, CirclesService $circlesService) {
+	public function __construct(FederatedUserService $federatedUserService, CircleService $circleService) {
 		parent::__construct();
-		$this->l10n = $l10n;
-		$this->circlesService = $circlesService;
+		$this->federatedUserService = $federatedUserService;
+		$this->circleService = $circleService;
 	}
 
 
+	/**
+	 *
+	 */
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:manage:destroy')
 			 ->setDescription('destroy a circle by its ID')
-			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle to be destroyed');
+			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle to be destroyed')
+			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
 	}
 
 
@@ -81,14 +99,40 @@ class CirclesDestroy extends Base {
 	 * @param OutputInterface $output
 	 *
 	 * @return int
-	 * @throws CircleDoesNotExistException
-	 * @throws ConfigNoCircleAvailableException
-	 * @throws MemberIsNotOwnerException
+	 * @throws CircleNotFoundException
+	 * @throws FederatedItemException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
+	 * @throws MemberNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws SingleCircleNotFoundException
+	 * @throws UnknownRemoteException
+	 * @throws UserTypeNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$circleId = $input->getArgument('circle_id');
 
-		$this->circlesService->removeCircle($circleId, true);
+		try {
+			$this->federatedUserService->commandLineInitiator(
+				$input->getOption('initiator'), $circleId, false
+			);
+			$outcome = $this->circleService->destroy($circleId);
+		} catch (FederatedItemException $e) {
+			if ($input->getOption('status-code')) {
+				throw new FederatedItemException(
+					' [' . get_class($e) . ', ' . $e->getStatus() . ']' . "\n" . $e->getMessage()
+				);
+			}
+
+			throw $e;
+		}
+
+		$output->writeln(json_encode($outcome, JSON_PRETTY_PRINT));
 
 		return 0;
 	}

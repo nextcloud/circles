@@ -32,16 +32,16 @@ namespace OCA\Circles\Service;
 
 use Exception;
 use OCA\Circles\Circles\FileSharingBroadcaster;
-use OCA\Circles\Db\CirclesRequest;
-use OCA\Circles\Db\MembersRequest;
+use OCA\Circles\Db\DeprecatedCirclesRequest;
+use OCA\Circles\Db\DeprecatedMembersRequest;
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\NotLocalMemberException;
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\DavCard;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\DAV\CardDAV\CardDavBackend;
 use OCP\App\ManagerEvent;
 use OCP\Federation\ICloudIdManager;
@@ -75,10 +75,10 @@ class DavService {
 	/** @var MembersService */
 	private $membersService;
 
-	/** @var CirclesRequest */
+	/** @var DeprecatedCirclesRequest */
 	private $circlesRequest;
 
-	/** @var MembersRequest */
+	/** @var DeprecatedMembersRequest */
 	private $membersRequest;
 
 	/** @var ConfigService */
@@ -101,15 +101,15 @@ class DavService {
 	 * @param ICloudIdManager $cloudManager
 	 * @param FileSharingBroadcaster $fileSharingBroadcaster
 	 * @param MembersService $membersService
-	 * @param CirclesRequest $circlesRequest
-	 * @param MembersRequest $membersRequest
+	 * @param DeprecatedCirclesRequest $circlesRequest
+	 * @param DeprecatedMembersRequest $membersRequest
 	 * @param ConfigService $configService
 	 * @param MiscService $miscService
 	 */
 	public function __construct(
 		$userId, IUserManager $userManager, CardDavBackend $cardDavBackend, ICloudIdManager $cloudManager,
 		FileSharingBroadcaster $fileSharingBroadcaster, MembersService $membersService,
-		CirclesRequest $circlesRequest, MembersRequest $membersRequest, ConfigService $configService,
+		DeprecatedCirclesRequest $circlesRequest, DeprecatedMembersRequest $membersRequest, ConfigService $configService,
 		MiscService $miscService
 	) {
 		$this->userId = $userId;
@@ -165,7 +165,7 @@ class DavService {
 		$davCard = $this->generateDavCard($event, true);
 
 		$this->miscService->log('Deleting Card: ' . json_encode($davCard), 1);
-		$this->membersRequest->removeMembersByContactId($davCard->getUniqueId(), Member::TYPE_USER);
+		$this->membersRequest->removeMembersByContactId($davCard->getUniqueId(), DeprecatedMember::TYPE_USER);
 		$this->manageDeprecatedCircles($davCard->getAddressBookId());
 		$this->manageDeprecatedMembers($davCard);
 	}
@@ -264,7 +264,7 @@ class DavService {
 		);
 
 		$circles = array_map(
-			function(Circle $circle) {
+			function(DeprecatedCircle $circle) {
 				return $circle->getUniqueId();
 			}, $davCard->getCircles()
 		);
@@ -290,7 +290,7 @@ class DavService {
 	 */
 	private function manageLocalContact(DavCard $davCard) {
 		foreach ($davCard->getCircles() as $circle) {
-			$this->manageMember($circle, $davCard, Member::TYPE_USER);
+			$this->manageMember($circle, $davCard, DeprecatedMember::TYPE_USER);
 		}
 	}
 
@@ -300,17 +300,17 @@ class DavService {
 	 */
 	private function manageRemoteContact(DavCard $davCard) {
 		foreach ($davCard->getCircles() as $circle) {
-			$this->manageMember($circle, $davCard, Member::TYPE_CONTACT);
+			$this->manageMember($circle, $davCard, DeprecatedMember::TYPE_CONTACT);
 		}
 	}
 
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 * @param DavCard $davCard
 	 * @param int $type
 	 */
-	private function manageMember(Circle $circle, DavCard $davCard, int $type) {
+	private function manageMember(DeprecatedCircle $circle, DavCard $davCard, int $type) {
 		try {
 			$member =
 				$this->membersRequest->getContactMember($circle->getUniqueId(), $davCard->getUniqueId());
@@ -320,9 +320,9 @@ class DavService {
 				throw new MemberDoesNotExistException();
 			}
 		} catch (MemberDoesNotExistException $e) {
-			$member = new Member();
-			$member->setLevel(Member::LEVEL_MEMBER);
-			$member->setStatus(Member::STATUS_MEMBER);
+			$member = new DeprecatedMember();
+			$member->setLevel(DeprecatedMember::LEVEL_MEMBER);
+			$member->setStatus(DeprecatedMember::STATUS_MEMBER);
 			$member->setContactId($davCard->getUniqueId());
 			$member->setType($type);
 			$member->setCircleId($circle->getUniqueId());
@@ -396,7 +396,7 @@ class DavService {
 	private function manageCircles(DavCard $davCard) {
 		$fromCard = $davCard->getGroups();
 		$current = array_map(
-			function(Circle $circle) {
+			function(DeprecatedCircle $circle) {
 				return $circle->getContactGroupName();
 			}, $this->getCirclesFromBook($davCard->getAddressBookId())
 		);
@@ -424,7 +424,7 @@ class DavService {
 			}
 
 			$user = $this->userManager->get($davCard->getOwner());
-			$circle = new Circle(
+			$circle = new DeprecatedCircle(
 				$this->configService->contactsBackendType(), $group . ' - ' . $user->getDisplayName()
 			);
 			$circle->setAltName($group);
@@ -437,9 +437,9 @@ class DavService {
 			);
 			try {
 				$this->circlesRequest->createCircle($circle);
-				$owner = new Member($davCard->getOwner(), Member::TYPE_USER, $circle->getUniqueId());
-				$owner->setLevel(Member::LEVEL_OWNER);
-				$owner->setStatus(Member::STATUS_MEMBER);
+				$owner = new DeprecatedMember($davCard->getOwner(), DeprecatedMember::TYPE_USER, $circle->getUniqueId());
+				$owner->setLevel(DeprecatedMember::LEVEL_OWNER);
+				$owner->setStatus(DeprecatedMember::STATUS_MEMBER);
 				$this->membersService->updateCachedName($owner);
 
 				$this->miscService->log('creating new Member: ' . json_encode($owner), 0);
@@ -474,7 +474,7 @@ class DavService {
 	/**
 	 * @param int $addressBookId
 	 *
-	 * @return Circle[]
+	 * @return DeprecatedCircle[]
 	 */
 	private function getCirclesFromBook(int $addressBookId): array {
 		return $this->circlesRequest->getFromBook($addressBookId);
@@ -627,7 +627,7 @@ class DavService {
 	/**
 	 * @param int $bookId
 	 *
-	 * @return Circle[]
+	 * @return DeprecatedCircle[]
 	 */
 	private function getExistingCirclesFromBook(int $bookId): array {
 		$circles = [];
@@ -645,7 +645,7 @@ class DavService {
 		$this->miscService->log('Found ' . sizeof($circles) . ' Circles from book=' . $bookId, 0);
 		$existing = array_unique(
 			array_map(
-				function(Circle $circle) {
+				function(DeprecatedCircle $circle) {
 					return $circle->getContactGroupName();
 				}, $circles
 			)
@@ -660,12 +660,12 @@ class DavService {
 
 
 	/**
-	 * @param Member $contact
+	 * @param DeprecatedMember $contact
 	 *
 	 * @return DavCard
 	 * @throws MemberDoesNotExistException
 	 */
-	public function getDavCardFromMember(Member $contact): DavCard {
+	public function getDavCardFromMember(DeprecatedMember $contact): DavCard {
 		list($bookId, $cardUri) = explode('/', $contact->getContactId(), 2);
 		$this->miscService->log('Retrieving DavCard from book:' . $bookId . ', uri:' . $cardUri, 0);
 

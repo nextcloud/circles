@@ -5,7 +5,7 @@
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Maxence Lange <maxence@artificial-owl.com>
  * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
@@ -113,8 +113,8 @@ class BaseMember implements JsonSerializable {
 		$this->setType($type);
 		$this->setUserId($userId);
 		$this->setCircleId($circleUniqueId);
-		$this->setLevel(Member::LEVEL_NONE);
-		$this->setStatus(Member::STATUS_NONMEMBER);
+		$this->setLevel(DeprecatedMember::LEVEL_NONE);
+		$this->setStatus(DeprecatedMember::STATUS_NONMEMBER);
 	}
 
 
@@ -355,13 +355,13 @@ class BaseMember implements JsonSerializable {
 
 
 	public function isAlmostMember() {
-		return ($this->getStatus() === Member::STATUS_INVITED
-				|| $this->getStatus() === Member::STATUS_REQUEST);
+		return ($this->getStatus() === DeprecatedMember::STATUS_INVITED
+				|| $this->getStatus() === DeprecatedMember::STATUS_REQUEST);
 	}
 
 
 	protected function setAsAMember($level = 1) {
-		$this->setStatus(Member::STATUS_MEMBER);
+		$this->setStatus(DeprecatedMember::STATUS_MEMBER);
 		$this->setLevel($level);
 	}
 
@@ -369,14 +369,14 @@ class BaseMember implements JsonSerializable {
 	/**
 	 * @param $arr
 	 *
-	 * @return null|Member
+	 * @return null|DeprecatedMember
 	 */
 	public static function fromArray($arr) {
 		if ($arr === null) {
 			return null;
 		}
 
-		$member = new Member();
+		$member = new DeprecatedMember();
 		$member->setCircleId($arr['circle_id']);
 		$member->setMemberId($arr['member_id']);
 		if (array_key_exists('cached_name', $arr)) {
@@ -402,7 +402,7 @@ class BaseMember implements JsonSerializable {
 	/**
 	 * @param $json
 	 *
-	 * @return Member
+	 * @return DeprecatedMember
 	 */
 	public static function fromJSON($json) {
 		return self::fromArray(json_decode($json, true));

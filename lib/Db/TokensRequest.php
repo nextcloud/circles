@@ -30,7 +30,7 @@ namespace OCA\Circles\Db;
 
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SharesToken;
 
 
@@ -89,11 +89,11 @@ class TokensRequest extends TokensRequestBuilder {
 
 
 	/**
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 *
 	 * @return SharesToken[]
 	 */
-	public function getTokensFromMember(Member $member) {
+	public function getTokensFromMember(DeprecatedMember $member) {
 		$qb = $this->getTokensSelectSql();
 		$this->limitToUserId($qb, $member->getUserId());
 		$this->limitToCircleId($qb, $member->getCircleId());
@@ -110,14 +110,14 @@ class TokensRequest extends TokensRequestBuilder {
 
 
 	/**
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 * @param int $shareId
 	 * @param string $password
 	 *
 	 * @return SharesToken
 	 * @throws TokenDoesNotExistException
 	 */
-	public function generateTokenForMember(Member $member, int $shareId, string $password = ''): SharesToken {
+	public function generateTokenForMember(DeprecatedMember $member, int $shareId, string $password = ''): SharesToken {
 		try {
 			$token = $this->miscService->token(15);
 
@@ -154,9 +154,9 @@ class TokensRequest extends TokensRequestBuilder {
 
 
 	/**
-	 * @param Member $member
+	 * @param DeprecatedMember $member
 	 */
-	public function removeTokensFromMember(Member $member) {
+	public function removeTokensFromMember(DeprecatedMember $member) {
 		$qb = $this->getTokensDeleteSql();
 		$this->limitToCircleId($qb, $member->getCircleId());
 		$this->limitToUserId($qb, $member->getUserId());

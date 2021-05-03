@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 
@@ -8,7 +9,7 @@ declare(strict_types=1);
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Maxence Lange <maxence@artificial-owl.com>
  * @author Vinicius Cubas Brand <vinicius@eita.org.br>
  * @author Daniel Tygel <dtygel@eita.org.br>
  *
@@ -36,12 +37,18 @@ namespace OCA\Circles\AppInfo;
 
 use Closure;
 use OC;
-use OCA\Circles\Api\v1\Circles;
-use OCA\Circles\Exceptions\GSStatusException;
-use OCA\Circles\GlobalScale\GSMount\MountProvider;
+use OCA\Circles\Events\AddingCircleMemberEvent;
+use OCA\Circles\Events\CircleMemberAddedEvent;
 use OCA\Circles\Handlers\WebfingerHandler;
+use OCA\Circles\Listeners\Files\AddingMember as ListenerFilesAddingMember;
+use OCA\Circles\Listeners\Files\MemberAdded as ListenerFilesMemberAdded;
+use OCA\Circles\Listeners\GroupCreated;
 use OCA\Circles\Listeners\GroupDeleted;
+use OCA\Circles\Listeners\GroupMemberAdded;
+use OCA\Circles\Listeners\GroupMemberRemoved;
+use OCA\Circles\Listeners\UserCreated;
 use OCA\Circles\Listeners\UserDeleted;
+use OCA\Circles\MountManager\CircleMountProvider;
 use OCA\Circles\Notification\Notifier;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\DavService;
@@ -52,12 +59,14 @@ use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\AppFramework\IAppContainer;
-use OCP\AppFramework\QueryException;
+use OCP\Files\Config\IMountProviderCollection;
+use OCP\Group\Events\GroupCreatedEvent;
 use OCP\Group\Events\GroupDeletedEvent;
-use OCP\IRequest;
+use OCP\Group\Events\UserAddedEvent;
+use OCP\Group\Events\UserRemovedEvent;
 use OCP\IServerContainer;
+use OCP\User\Events\UserCreatedEvent;
 use OCP\User\Events\UserDeletedEvent;
-use OCP\Util;
 use Throwable;
 
 
@@ -71,14 +80,14 @@ require_once __DIR__ . '/../../vendor/autoload.php';
  */
 class Application extends App implements IBootstrap {
 
+
 	const APP_ID = 'circles';
 	const APP_NAME = 'Circles';
+	const APP_TOKEN = 'dvG7laa0_UU';
 
 	const APP_SUBJECT = 'http://nextcloud.com/';
 	const APP_REL = 'https://apps.nextcloud.com/apps/circles';
 	const APP_API = 1;
-
-	const TEST_URL_ASYNC = '/index.php/apps/circles/admin/testAsync';
 
 	const CLIENT_TIMEOUT = 3;
 
@@ -91,6 +100,8 @@ class Application extends App implements IBootstrap {
 
 
 	/**
+	 * Application constructor.
+	 *
 	 * @param array $params
 	 */
 	public function __construct(array $params = array()) {
@@ -102,8 +113,22 @@ class Application extends App implements IBootstrap {
 	 * @param IRegistrationContext $context
 	 */
 	public function register(IRegistrationContext $context): void {
+		$context->registerCapability(Capabilities::class);
+
+		// User Events
+		$context->registerEventListener(UserCreatedEvent::class, UserCreated::class);
 		$context->registerEventListener(UserDeletedEvent::class, UserDeleted::class);
+
+		// Group Events
+		$context->registerEventListener(GroupCreatedEvent::class, GroupCreated::class);
 		$context->registerEventListener(GroupDeletedEvent::class, GroupDeleted::class);
+		$context->registerEventListener(UserAddedEvent::class, GroupMemberAdded::class);
+		$context->registerEventListener(UserRemovedEvent::class, GroupMemberRemoved::class);
+
+		// Local Events (for Files/Shares management)
+		$context->registerEventListener(AddingCircleMemberEvent::class, ListenerFilesAddingMember::class);
+		$context->registerEventListener(CircleMemberAddedEvent::class, ListenerFilesMemberAdded::class);
+
 		$context->registerWellKnownHandler(WebfingerHandler::class);
 	}
 
@@ -114,17 +139,21 @@ class Application extends App implements IBootstrap {
 	 * @throws Throwable
 	 */
 	public function boot(IBootContext $context): void {
-		$manager = $context->getServerContainer()
-						   ->getNotificationManager();
+		$serverContainer = $context->getServerContainer();
+
+//		/** @var IManager $shareManager */
+//		$shareManager = $serverContainer->get(IManager::class);
+//		$shareManager->registerShareProvider(ShareByCircleProvider::class);
+
+		$manager = $serverContainer->getNotificationManager();
 		$manager->registerNotifierService(Notifier::class);
 
 		$this->configService = $context->getAppContainer()
 									   ->get(ConfigService::class);
 
 		$context->injectFn(Closure::fromCallable([$this, 'registerMountProvider']));
-		$context->injectFn(Closure::fromCallable([$this, 'registerDavHooks']));
+//		$context->injectFn(Closure::fromCallable([$this, 'registerDavHooks']));
 
-		$context->injectFn(Closure::fromCallable([$this, 'registerNavigation']));
 		$context->injectFn(Closure::fromCallable([$this, 'registerFilesNavigation']));
 		$context->injectFn(Closure::fromCallable([$this, 'registerFilesPlugin']));
 	}
@@ -132,19 +161,20 @@ class Application extends App implements IBootstrap {
 
 	/**
 	 * @param IServerContainer $container
-	 *
-	 * @throws GSStatusException
-	 * @throws QueryException
 	 */
 	public function registerMountProvider(IServerContainer $container) {
-		if (!$this->configService->getGSStatus(ConfigService::GS_ENABLED)) {
+		if (!$this->configService->isGSAvailable()) {
 			return;
 		}
-		$mountProviderCollection = $container->getMountProviderCollection();
-		$mountProviderCollection->registerProvider($container->get(MountProvider::class));
+
+		$mountProviderCollection = $container->get(IMountProviderCollection::class);
+		$mountProviderCollection->registerProvider($container->get(CircleMountProvider::class));
 	}
 
 
+	/**
+	 * @param IServerContainer $container
+	 */
 	public function registerDavHooks(IServerContainer $container) {
 		if (!$this->configService->isContactsBackend()) {
 			return;
@@ -161,47 +191,19 @@ class Application extends App implements IBootstrap {
 	}
 
 
-	/**
-	 * Register Navigation elements
-	 *
-	 * @param IServerContainer $container
-	 */
-	public function registerNavigation(IServerContainer $container) {
-		if (!$this->configService->stillFrontEnd()) {
-			return;
-		}
-
-		$appManager = $container->getNavigationManager();
-		$appManager->add(
-			function() {
-				$urlGen = OC::$server->getURLGenerator();
-				$navName = OC::$server->getL10N(self::APP_ID)
-									  ->t('Circles');
-
-				return [
-					'id'    => self::APP_ID,
-					'order' => 5,
-					'href'  => $urlGen->linkToRoute('circles.Navigation.navigate'),
-					'icon'  => $urlGen->imagePath(self::APP_ID, 'circles.svg'),
-					'name'  => $navName
-				];
-			}
-		);
-	}
-
 	public function registerFilesPlugin(IServerContainer $container) {
-		$eventDispatcher = $container->getEventDispatcher();
-		$eventDispatcher->addListener(
-			'OCA\Files::loadAdditionalScripts',
-			function() {
-				Circles::addJavascriptAPI();
-
-				Util::addScript('circles', 'files/circles.files.app');
-				Util::addScript('circles', 'files/circles.files.list');
-
-				Util::addStyle('circles', 'files/circles.filelist');
-			}
-		);
+//		$eventDispatcher = $container->getEventDispatcher();
+//		$eventDispatcher->addListener(
+//			'OCA\Files::loadAdditionalScripts',
+//			function() {
+//				Circles::addJavascriptAPI();
+//
+//				Util::addScript('circles', 'files/circles.files.app');
+//				Util::addScript('circles', 'files/circles.files.list');
+//
+//				Util::addStyle('circles', 'files/circles.filelist');
+//			}
+//		);
 	}
 
 
@@ -224,7 +226,6 @@ class Application extends App implements IBootstrap {
 			}
 		);
 	}
-
 
 }
 

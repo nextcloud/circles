@@ -6,7 +6,7 @@
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Maxence Lange <maxence@artificial-owl.com>
  * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
@@ -28,7 +28,7 @@
 namespace OCA\Circles\Tests;
 
 
-use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\DeprecatedCircle;
 
 class Env implements \PHPUnit_Framework_TestListener {
 
@@ -158,10 +158,10 @@ class Env implements \PHPUnit_Framework_TestListener {
 
 	public static function listCircleTypes() {
 		return [
-			Circle::CIRCLES_PUBLIC,
-			Circle::CIRCLES_CLOSED,
-			Circle::CIRCLES_SECRET,
-			Circle::CIRCLES_PERSONAL
+			DeprecatedCircle::CIRCLES_PUBLIC,
+			DeprecatedCircle::CIRCLES_CLOSED,
+			DeprecatedCircle::CIRCLES_SECRET,
+			DeprecatedCircle::CIRCLES_PERSONAL
 		];
 	}
 }

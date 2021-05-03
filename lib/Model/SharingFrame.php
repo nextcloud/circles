@@ -5,7 +5,7 @@
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Maxence Lange <maxence@pontapreta.net>
+ * @author Maxence Lange <maxence@artificial-owl.com>
  * @copyright 2017
  * @license GNU AGPL version 3 or any later version
  *
@@ -38,7 +38,7 @@ class SharingFrame implements \JsonSerializable {
 	/** @var string */
 	private $type;
 
-	/** @var Circle */
+	/** @var DeprecatedCircle */
 	private $circle;
 
 	/** @var string */
@@ -80,14 +80,14 @@ class SharingFrame implements \JsonSerializable {
 	}
 
 	/**
-	 * @param Circle $circle
+	 * @param DeprecatedCircle $circle
 	 */
 	public function setCircle($circle) {
 		$this->circle = $circle;
 	}
 
 	/**
-	 * @return Circle
+	 * @return DeprecatedCircle
 	 */
 	public function getCircle() {
 		return $this->circle;
@@ -328,10 +328,10 @@ class SharingFrame implements \JsonSerializable {
 	/**
 	 * @param array $arr
 	 *
-	 * @return Circle
+	 * @return DeprecatedCircle
 	 */
 	private static function getCircleFromArray($arr) {
-		return Circle::fromArray(MiscService::get($arr, 'circle', null));
+		return DeprecatedCircle::fromArray(MiscService::get($arr, 'circle', null));
 	}
 }
 

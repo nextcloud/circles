@@ -1,0 +1,265 @@
+{
+  "instances": [
+    {
+      "id": "global-scale-1",
+      "type": "GlobalScale",
+      "path": "/home/maxence/sites/federated/orange/nextcloud",
+      "config": {
+        "frontal_cloud_id": "orange.local",
+        "frontal_cloud_scheme": "http"
+      },
+      "users": [
+        "cult",
+        "test1",
+        "test2",
+        "test3",
+        "test4",
+        "test5",
+        "test6",
+        "test7",
+        "test8",
+        "test9"
+      ],
+      "groups": {
+        "admin": [
+          "cult",
+          "test1",
+          "test9"
+        ],
+        "groupOrange1": [
+          "test2",
+          "test3",
+          "test4"
+        ],
+        "groupOrange2": [
+          "test3",
+          "test5",
+          "test7",
+          "test9"
+        ]
+      },
+      "remote": {
+        "global-scale-2": "GlobalScale",
+        "global-scale-3": "GlobalScale",
+        "trusted": "Trusted",
+        "external": "External",
+        "passive": "Passive"
+      }
+    },
+    {
+      "id": "global-scale-2",
+      "type": "GlobalScale",
+      "path": "/home/maxence/sites/federated/green/nextcloud",
+      "config": {
+        "frontal_cloud_id": "green.local",
+        "frontal_cloud_scheme": "http"
+      },
+      "users": [
+        "cult",
+        "test1",
+        "test2",
+        "test3",
+        "test4",
+        "test5",
+        "test6",
+        "test7",
+        "test8",
+        "test9"
+      ],
+      "groups": {
+        "admin": [
+          "cult"
+        ],
+        "groupGreen1": [
+          "test2",
+          "test3",
+          "test4"
+        ],
+        "groupGreen2": [
+          "test1",
+          "test3",
+          "test5",
+          "test7"
+        ]
+      },
+      "remote": {
+        "global-scale-1": "GlobalScale",
+        "global-scale-3": "GlobalScale",
+        "passive": "Passive"
+      }
+    },
+    {
+      "id": "global-scale-3",
+      "type": "GlobalScale",
+      "path": "/home/maxence/sites/federated/purple/nextcloud",
+      "config": {
+        "frontal_cloud_id": "purple.local",
+        "frontal_cloud_scheme": "http"
+      },
+      "users": [
+        "cult",
+        "test1",
+        "test2",
+        "test3",
+        "test4",
+        "test5",
+        "test6",
+        "test7",
+        "test8",
+        "test9"
+      ],
+      "groups": {
+        "admin": [
+          "cult",
+          "test4",
+          "test5"
+        ],
+        "groupPurple1": [
+          "test5",
+          "test6",
+          "test7"
+        ],
+        "groupPurple2": [
+          "test4",
+          "test5",
+          "test6",
+          "test7"
+        ]
+      },
+      "remote": {
+        "global-scale-1": "GlobalScale",
+        "global-scale-2": "GlobalScale",
+        "external": "External"
+      }
+    },
+    {
+      "id": "passive",
+      "type": "Passive",
+      "path": "/home/maxence/sites/federated/passive/nextcloud",
+      "config": {
+        "frontal_cloud_id": "passive.local",
+        "frontal_cloud_scheme": "http"
+      },
+      "users": [
+        "cult",
+        "test1",
+        "test2",
+        "test3",
+        "test4",
+        "test5",
+        "test6",
+        "test7",
+        "test8",
+        "test9"
+      ],
+      "groups": {
+        "admin": [
+          "cult",
+          "test6"
+        ],
+        "groupPassive1": [
+          "test1",
+          "test7",
+          "test8"
+        ],
+        "groupPassive2": [
+          "cult",
+          "test3",
+          "test4",
+          "test6"
+        ]
+      },
+      "remote": {
+        "trusted": "Trusted",
+        "external": "External"
+      }
+    },
+    {
+      "id": "external",
+      "type": "External",
+      "path": "/home/maxence/sites/federated/external/nextcloud",
+      "config": {
+        "frontal_cloud_id": "external.local",
+        "frontal_cloud_scheme": "http"
+      },
+      "users": [
+        "cult",
+        "test1",
+        "test2",
+        "test3",
+        "test4",
+        "test5",
+        "test6",
+        "test7",
+        "test8",
+        "test9"
+      ],
+      "groups": {
+        "admin": [
+          "cult",
+          "test1",
+          "test2",
+          "test3",
+          "test4",
+          "test5",
+          "test6"
+        ],
+        "groupExternal1": [
+          "test2"
+        ],
+        "groupExternal2": [
+          "test3",
+          "test4",
+          "test5",
+          "test6"
+        ]
+      },
+      "remote": {
+        "global-scale-3": "GlobalScale",
+        "trusted": "Trusted",
+        "passive": "Passive"
+      }
+    },
+    {
+      "id": "trusted",
+      "type": "Trusted",
+      "path": "/home/maxence/sites/federated/trusted/nextcloud",
+      "config": {
+        "frontal_cloud_id": "trusted.local",
+        "frontal_cloud_scheme": "http"
+      },
+      "users": [
+        "cult",
+        "test1",
+        "test2",
+        "test3",
+        "test4",
+        "test5",
+        "test6",
+        "test7",
+        "test8",
+        "test9"
+      ],
+      "groups": {
+        "admin": [
+          "cult",
+          "test7"
+        ],
+        "groupTrusted1": [
+          "test1",
+          "test9"
+        ],
+        "groupTrusted2": [
+          "test1",
+          "test3",
+          "test5",
+          "test7"
+        ]
+      },
+      "remote": {
+        "external": "External",
+        "passive": "Passive"
+      }
+    }
+  ]
+}

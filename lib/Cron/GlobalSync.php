@@ -32,7 +32,6 @@ namespace OCA\Circles\Cron;
 
 use OC\BackgroundJob\TimedJob;
 use OCA\Circles\AppInfo\Application;
-use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\GSUpstreamService;
 use OCA\Circles\Service\MembersService;
@@ -77,10 +76,7 @@ class GlobalSync extends TimedJob {
 			$membersService->updateCachedFromCircle($circle);
 		}
 
-		try {
-			$gsUpstreamService->synchronize($circles);
-		} catch (GSStatusException $e) {
-		}
+		$gsUpstreamService->synchronize($circles);
 	}
 
 }
