@@ -2,9 +2,7 @@ OC.L10N.register(
     "circles",
     {
     "Personal" : "Personal",
-    "Public" : "Public",
     "Owner" : "Owner",
-    "Unknown" : "Incognite",
     "Accept" : "Acceptar",
     "Could not find share" : "Impossibile trovar le compartite",
     "No files in here" : "Nulle files ci",
@@ -12,6 +10,8 @@ OC.L10N.register(
     "Name" : "Nomine",
     "Size" : "Dimension",
     "Modified" : "Modificate",
+    "Public" : "Public",
+    "Unknown" : "Incognite",
     "Settings" : "Configurationes",
     "Username" : "Nomine de usator",
     "Link" : "Ligamine",
