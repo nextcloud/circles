@@ -212,7 +212,7 @@ class CirclesList extends Base {
 					$owner->getUserId(),
 					($owner->getInstance() === $local) ? '' : $owner->getInstance(),
 					$this->getInt('members_limit', $circle->getSettings(), -1),
-					substr($circle->getDescription(), 0, 30)
+					substr(str_replace("\n", ' ', $circle->getDescription()), 0, 30)
 				]
 			);
 		}

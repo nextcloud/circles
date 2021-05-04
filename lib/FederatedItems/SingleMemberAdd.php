@@ -164,6 +164,7 @@ class SingleMemberAdd implements
 	 * @throws FederatedItemServerException
 	 * @throws FederatedItemRemoteException
 	 * @throws FederatedItemException
+	 * @throws RequestBuilderException
 	 */
 	public function verify(FederatedEvent $event): void {
 		$member = $event->getMember();

@@ -79,6 +79,8 @@ class CoreRequestBuilder {
 		self::TABLE_MEMBERSHIP,
 		self::TABLE_REMOTE,
 		self::TABLE_EVENT,
+		self::TABLE_MOUNT,
+		self::TABLE_MOUNTPOINT,
 		self::TABLE_SHARE_LOCKS,
 
 		self::TABLE_TOKENS,

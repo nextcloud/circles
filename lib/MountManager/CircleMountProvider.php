@@ -158,8 +158,8 @@ class CircleMountProvider implements IMountProvider {
 		$initiator = $mount->getInitiator();
 
 		// TODO: right now, limited to Local Nextcloud User
-		if ($initiator->getUserType() !== Member::TYPE_USER
-			|| !$this->configService->isLocalInstance($initiator->getInstance())) {
+		if ($initiator->getInheritedBy()->getUserType() !== Member::TYPE_USER
+			|| !$this->configService->isLocalInstance($initiator->getInheritedBy()->getInstance())) {
 			throw new InitiatorNotFoundException();
 		}
 

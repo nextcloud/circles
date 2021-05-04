@@ -442,7 +442,7 @@ class Mount extends ManagedModel implements IDeserializable, INC22QueryRow, Json
 		$this->setToken($wrappedShare->getToken());
 		$this->setParent(-1);
 		$this->setMountPoint($wrappedShare->getFileTarget());
-		$this->setMountPointHash('12345qwert');
+		$this->setMountPointHash(md5($wrappedShare->getFileTarget()));
 	}
 
 
