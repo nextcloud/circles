@@ -72,7 +72,9 @@ class ManagedModel {
 		$this->setSingleId($orig->getSingleId());
 		$this->setUserId($orig->getUserId());
 		$this->setUserType($orig->getUserType());
-		$this->setBasedOn($orig->getBasedOn());
+		if ($orig->hasBasedOn()) {
+			$this->setBasedOn($orig->getBasedOn());
+		}
 		$this->setInstance($orig->getInstance());
 	}
 

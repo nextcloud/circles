@@ -40,9 +40,7 @@ use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Service\CircleService;
-use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
-use OCP\IL10N;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -58,37 +56,24 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CirclesConfig extends Base {
 
 
-	/** @var IL10N */
-	private $l10n;
-
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
 	/** @var CircleService */
 	private $circleService;
 
-	/** @var ConfigService */
-	private $configService;
-
 
 	/**
 	 * CirclesConfig constructor.
 	 *
-	 * @param IL10N $l10n
 	 * @param FederatedUserService $federatedUserService
 	 * @param CircleService $circlesService
-	 * @param ConfigService $configService
 	 */
-	public function __construct(
-		IL10N $l10n, FederatedUserService $federatedUserService, CircleService $circlesService,
-		ConfigService $configService
-	) {
+	public function __construct(FederatedUserService $federatedUserService, CircleService $circlesService) {
 		parent::__construct();
 
-		$this->l10n = $l10n;
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circlesService;
-		$this->configService = $configService;
 	}
 
 

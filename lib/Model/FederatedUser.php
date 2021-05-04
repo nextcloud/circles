@@ -185,6 +185,13 @@ class FederatedUser extends ManagedModel implements
 
 
 	/**
+	 * @return bool
+	 */
+	public function hasBasedOn(): bool {
+		return !is_null($this->basedOn);
+	}
+
+	/**
 	 * @param Circle|null $basedOn
 	 *
 	 * @return $this
@@ -196,9 +203,9 @@ class FederatedUser extends ManagedModel implements
 	}
 
 	/**
-	 * @return Circle|null
+	 * @return Circle
 	 */
-	public function getBasedOn(): ?Circle {
+	public function getBasedOn(): Circle {
 		return $this->basedOn;
 	}
 
@@ -246,6 +253,13 @@ class FederatedUser extends ManagedModel implements
 
 
 	/**
+	 * @return bool
+	 */
+	public function hasMembers(): bool {
+		return !is_null($this->members);
+	}
+
+	/**
 	 * @param array $members
 	 *
 	 * @return self
@@ -260,13 +274,20 @@ class FederatedUser extends ManagedModel implements
 	 * @return array
 	 */
 	public function getMembers(): array {
-		if (is_null($this->members)) {
+		if (!$this->hasMembers()) {
 			$this->getManager()->getMembers($this);
 		}
 
 		return $this->members;
 	}
 
+
+	/**
+	 * @return bool
+	 */
+	public function hasInheritedMembers(): bool {
+		return !is_null($this->inheritedMembers);
+	}
 
 	/**
 	 * @param array $members
@@ -318,6 +339,13 @@ class FederatedUser extends ManagedModel implements
 		return $this->memberships;
 	}
 
+
+	/**
+	 * @return bool
+	 */
+	public function hasLink(): bool {
+		return !is_null($this->link);
+	}
 
 	/**
 	 * @param Membership $link
@@ -420,19 +448,19 @@ class FederatedUser extends ManagedModel implements
 			'instance'  => $this->getInstance()
 		];
 
-		if (!is_null($this->getBasedOn())) {
+		if ($this->hasBasedOn()) {
 			$arr['basedOn'] = $this->getBasedOn();
 		}
 
-		if (!is_null($this->link)) {
+		if ($this->hasLink()) {
 			$arr['link'] = $this->getLink();
 		}
 
-		if (!is_null($this->members)) {
+		if ($this->hasMembers()) {
 			$arr['members'] = $this->getMembers();
 		}
 
-		if (!is_null($this->inheritedMembers)) {
+		if ($this->hasInheritedMembers()) {
 			$arr['inheritedMembers'] = $this->getInheritedMembers();
 		}
 

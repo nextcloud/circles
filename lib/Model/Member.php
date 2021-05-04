@@ -353,49 +353,63 @@ class Member extends ManagedModel implements
 	}
 
 	/**
-	 * @param Circle|null $basedOn
+	 * @param Circle $basedOn
 	 *
 	 * @return $this
 	 */
-	public function setBasedOn(?Circle $basedOn): self {
+	public function setBasedOn(Circle $basedOn): self {
 		$this->basedOn = $basedOn;
 
 		return $this;
 	}
 
 	/**
-	 * @return Circle|null
+	 * @return Circle
 	 */
-	public function getBasedOn(): ?Circle {
+	public function getBasedOn(): Circle {
 		return $this->basedOn;
 	}
 
 
 	/**
-	 * @param FederatedUser|null $inheritedBy
+	 * @return bool
+	 */
+	public function hasInheritedBy(): bool {
+		return !is_null($this->inheritedBy);
+	}
+
+	/**
+	 * @param FederatedUser $inheritedBy
 	 *
 	 * @return $this
 	 */
-	public function setInheritedBy(?FederatedUser $inheritedBy): self {
+	public function setInheritedBy(FederatedUser $inheritedBy): self {
 		$this->inheritedBy = $inheritedBy;
 
 		return $this;
 	}
 
 	/**
-	 * @return FederatedUser|null
+	 * @return FederatedUser
 	 */
-	public function getInheritedBy(): ?FederatedUser {
+	public function getInheritedBy(): FederatedUser {
 		return $this->inheritedBy;
 	}
 
 
 	/**
-	 * @param Member|null $inheritanceFrom
+	 * @return bool
+	 */
+	public function hasInheritanceFrom(): bool {
+		return !is_null($this->inheritanceFrom);
+	}
+
+	/**
+	 * @param Member $inheritanceFrom
 	 *
 	 * @return $this
 	 */
-	public function setInheritanceFrom(?Member $inheritanceFrom): self {
+	public function setInheritanceFrom(Member $inheritanceFrom): self {
 		$this->inheritanceFrom = $inheritanceFrom;
 
 		return $this;
@@ -842,7 +856,6 @@ class Member extends ManagedModel implements
 			'singleId'      => $this->getSingleId(),
 			'userId'        => $this->getUserId(),
 			'userType'      => $this->getUserType(),
-			'basedOn'       => $this->getBasedOn(),
 			'instance'      => $this->getInstance(),
 			'local'         => $this->isLocal(),
 			'level'         => $this->getLevel(),
@@ -855,11 +868,15 @@ class Member extends ManagedModel implements
 			'joined'        => $this->getJoined()
 		];
 
-		if (!is_null($this->getInheritedBy())) {
+		if ($this->hasBasedOn()) {
+			$arr['basedOn'] = $this->getBasedOn();
+		}
+
+		if ($this->hasInheritedBy()) {
 			$arr['inheritedBy'] = $this->getInheritedBy();
 		}
 
-		if (!is_null($this->getInheritanceFrom())) {
+		if ($this->hasInheritanceFrom()) {
 			$arr['inheritanceFrom'] = $this->getInheritanceFrom();
 		}
 
