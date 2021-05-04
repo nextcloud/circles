@@ -128,7 +128,7 @@ class GSSharesRequest extends GSSharesRequestBuilder {
 		$on->add($expr->eq('mp.share_id', $pf . 'id'));
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		$qb->selectAlias('mp.mountPoint', 'gsshares_mountpoint')
+		$qb->selectAlias('mp.mountpoint', 'gsshares_mountpoint')
 		   ->leftJoin($this->default_select_alias, CoreRequestBuilder::TABLE_GSSHARES_MOUNTPOINT, 'mp', $on);
 	}
 
