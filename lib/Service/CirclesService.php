@@ -285,7 +285,7 @@ class CirclesService {
 						  ->isLevel(Member::LEVEL_MEMBER)
 			) {
 				$this->detailsCircleMembers($circle, $forceAll);
-				$this->detailsCircleLinkedGroups($circle);
+				$this->detailsCircleLinkedGroups($circle, $forceAll);
 				$this->detailsCircleFederatedCircles($circle);
 			}
 		} catch (Exception $e) {
@@ -324,12 +324,12 @@ class CirclesService {
 	 *
 	 * @throws GSStatusException
 	 */
-	private function detailsCircleLinkedGroups(Circle $circle) {
+	private function detailsCircleLinkedGroups(Circle $circle, bool $forceAll = false) {
 		$groups = [];
 		if ($this->configService->isLinkedGroupsAllowed()) {
 			$groups =
 				$this->membersRequest->getGroupsFromCircle(
-					$circle->getUniqueId(), $circle->getHigherViewer()
+					$circle->getUniqueId(), $circle->getHigherViewer(), $forceAll
 				);
 		}
 
