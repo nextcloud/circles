@@ -512,8 +512,8 @@ class MembersRequest extends MembersRequestBuilder {
 	 *
 	 * @return Member[]
 	 */
-	public function getGroupsFromCircle($circleUniqueId, Member $viewer) {
-		if ($viewer->getLevel() < Member::LEVEL_MEMBER) {
+	public function getGroupsFromCircle($circleUniqueId, ?Member $viewer, bool $forceAll = false) {
+		if (!$forceAll && $viewer->getLevel() < Member::LEVEL_MEMBER) {
 			return [];
 		}
 
@@ -527,7 +527,7 @@ class MembersRequest extends MembersRequestBuilder {
 		$cursor = $qb->execute();
 		$groups = [];
 		while ($data = $cursor->fetch()) {
-			if ($viewer->getLevel() < Member::LEVEL_MODERATOR) {
+			if (!$forceAll && $viewer->getLevel() < Member::LEVEL_MODERATOR) {
 				$data['note'] = '';
 			}
 			$groups[] = $this->parseGroupsSelectSql($data);
