@@ -4,26 +4,25 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bc179f63f07c242d3b3f44fdbf15c8ab",
+    "content-hash": "adf375780a2f51ccbc7a04b7af8c9619",
     "packages": [
         {
             "name": "daita/my-small-php-tools",
-            "version": "dev-master",
+            "version": "v20.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/daita/my-small-php-tools.git",
-                "reference": "22b1f104891706bb750fe13402d0d4645c66e399"
+                "reference": "313ce2a22dd034f14da42f8f8cd00ee0b99f41b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/daita/my-small-php-tools/zipball/22b1f104891706bb750fe13402d0d4645c66e399",
-                "reference": "22b1f104891706bb750fe13402d0d4645c66e399",
+                "url": "https://api.github.com/repos/daita/my-small-php-tools/zipball/313ce2a22dd034f14da42f8f8cd00ee0b99f41b1",
+                "reference": "313ce2a22dd034f14da42f8f8cd00ee0b99f41b1",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.0"
+                "php": ">=7.0"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -43,17 +42,15 @@
             "description": "My small PHP Tools",
             "support": {
                 "issues": "https://github.com/daita/my-small-php-tools/issues",
-                "source": "https://github.com/daita/my-small-php-tools/tree/master"
+                "source": "https://github.com/daita/my-small-php-tools/tree/v20.0.1"
             },
-            "time": "2021-02-24T19:31:24+00:00"
+            "time": "2021-04-26T12:46:18+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "daita/my-small-php-tools": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

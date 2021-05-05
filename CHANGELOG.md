@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 
+### 0.19.13
+
+- fix a conflict with 3rd parties app
+
+
 ### 0.19.12
 
 - adding a configuration to fix generated link on proxy setup: frontal_cloud_id
