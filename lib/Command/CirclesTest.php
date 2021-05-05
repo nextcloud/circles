@@ -193,7 +193,7 @@ class CirclesTest extends Base {
 	 * @throws ItemNotFoundException
 	 */
 	private function testCirclesApp() {
-		$this->t('Bootup');
+		$this->t('Boot up');
 		$this->loadConfiguration();
 
 		if (!$this->input->getOption('skip-setup')) {
