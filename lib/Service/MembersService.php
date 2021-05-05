@@ -792,5 +792,17 @@ class MembersService {
 	}
 
 
+	/**
+	 * @param string $userId
+	 *
+	 * @return Circle[]
+	 * @throws ConfigNoCircleAvailableException
+	 * @throws GSStatusException
+	 */
+	public function getCirclesAvailableToUserId(string $userId): array {
+		return $this->circlesRequest->getCircles($userId, 0, '', 1, true);
+	}
+
+
 }
 
