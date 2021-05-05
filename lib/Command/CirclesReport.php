@@ -31,21 +31,27 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
+use daita\MySmallPhpTools\Console\Nextcloud\nc22\InteractiveShell;
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
+use daita\MySmallPhpTools\IInteractiveShellClient;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
 use OCA\Circles\Model\Report;
 use OCA\Circles\Service\CircleService;
+use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
@@ -54,7 +60,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @package OCA\Circles\Command
  */
-class CirclesReport extends Base {
+class CirclesReport extends Base implements IInteractiveShellClient {
 
 
 	use TNC22Deserialize;
@@ -70,6 +76,16 @@ class CirclesReport extends Base {
 	/** @var MemberService */
 	private $memberService;
 
+	/** @var ConfigService */
+	private $configService;
+
+	/** @var InteractiveShell */
+	private $interactiveShell;
+
+
+	/** @var OutputInterface */
+	private $output;
+
 
 	/**
 	 * CirclesReport constructor.
@@ -77,17 +93,20 @@ class CirclesReport extends Base {
 	 * @param FederatedUserService $federatedUserService
 	 * @param CircleService $circleService
 	 * @param MemberService $memberService
+	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		FederatedUserService $federatedUserService,
 		CircleService $circleService,
-		MemberService $memberService
+		MemberService $memberService,
+		ConfigService $configService
 	) {
 		parent::__construct();
 
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
 		$this->memberService = $memberService;
+		$this->configService = $configService;
 	}
 
 
@@ -97,7 +116,8 @@ class CirclesReport extends Base {
 	protected function configure() {
 		parent::configure();
 		$this->setName('circles:report')
-			 ->setDescription('read and write report');
+			 ->setDescription('Read and write obfuscated report')
+			 ->addOption('read', '', InputOption::VALUE_REQUIRED, 'File containing the report to read', '');
 	}
 
 
@@ -107,17 +127,19 @@ class CirclesReport extends Base {
 	 *
 	 * @return int
 	 * @throws InvalidItemException
+	 * @throws InitiatorNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		stream_set_blocking(STDIN, false);
-		$data = file_get_contents('php://stdin');
+		$filename = $input->getOption('read');
+		$this->output = $output;
 
-		if ($data === '') {
-			$this->generateReport($output);
+		if ($filename === '') {
+			$this->generateReport();
 		} else {
 			/** @var Report $report */
+			$data = file_get_contents($filename);
 			$report = $this->deserialize(json_decode($data, true), Report::class);
-			$this->readReport($output, $report);
+			$this->readReport($input, $report);
 		}
 
 		return 0;
@@ -125,12 +147,11 @@ class CirclesReport extends Base {
 
 
 	/**
-	 * @param OutputInterface $output
-	 *
 	 * @throws InitiatorNotFoundException
 	 */
-	private function generateReport(OutputInterface $output): void {
+	private function generateReport(): void {
 		$report = new Report();
+		$report->setSource($this->configService->getFrontalInstance());
 		$this->federatedUserService->bypassCurrentUserCondition(true);
 
 		$raw = $this->circleService->getCircles(
@@ -147,22 +168,57 @@ class CirclesReport extends Base {
 		}
 
 		$report->setCircles($circles);
-
-		$output->writeln(json_encode($report, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+		$this->output->writeln(json_encode($report, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 	}
 
 
 	/**
-	 * @param OutputInterface $output
+	 * @param InputInterface $input
 	 * @param Report $report
 	 */
-	private function readReport(OutputInterface $output, Report $report) {
-		echo json_encode($report);
+	private function readReport(InputInterface $input, Report $report) {
+		$output = new ConsoleOutput();
+		$this->output = $output->section();
+
+		$this->interactiveShell = new InteractiveShell($this, $input, $output, $this);
+		$commands = [
+			'oui.la.?type_IEntities',
+			'oui.ok.?type_IEntitiesAccounts',
+			'remoteInstance'
+		];
+
+		$this->interactiveShell->setCommands($commands);
+		$this->interactiveShell->run(
+			'Circles Report [<info>' . $report->getSource() . '</info>]:<comment>%PATH%</comment>$'
+		);
+	}
+
+
+	/**
+	 * @param string $source
+	 * @param string $field
+	 *
+	 * @return string[]
+	 */
+	public function fillCommandList(string $source, string $field): array {
+		echo $source . ' ' . $field . "\n";
+
+		return ['abcd', 'abdde', 'erfg'];
+	}
+
+
+	/**
+	 * @param string $command
+	 */
+	public function manageCommand(string $command): void {
+//		echo $command . "\n";
 	}
 
 
 	/**
 	 * @param Circle $circle
+	 *
+	 * @return Circle
 	 */
 	private function obfuscateCircle(Circle $circle): Circle {
 		$singleId = $this->obfuscateId($circle->getSingleId());
@@ -176,12 +232,35 @@ class CirclesReport extends Base {
 			$circle->setOwner($this->obfuscateMember($circle->getOwner()));
 		}
 
+		if ($circle->hasInitiator()) {
+			$circle->setInitiator($this->obfuscateMember($circle->getInitiator()));
+		}
+
+		if ($circle->hasMembers()) {
+			$members = [];
+			foreach ($circle->getMembers() as $member) {
+				$members[] = $this->obfuscateMember($member);
+			}
+			$circle->setMembers($members);
+		}
+
+		if ($circle->hasMemberships()) {
+			$memberships = [];
+			foreach ($circle->getMemberships() as $membership) {
+				$memberships[] = $this->obfuscateMembership($membership);
+			}
+			$circle->setMemberships($memberships);
+		}
+
+
 		return $circle;
 	}
 
 
 	/**
 	 * @param Member $member
+	 *
+	 * @return Member
 	 */
 	private function obfuscateMember(Member $member): Member {
 		$memberId = $this->obfuscateId($member->getId());
@@ -215,14 +294,17 @@ class CirclesReport extends Base {
 			$member->setInheritanceFrom($this->obfuscateMember($member->getInheritanceFrom()));
 		}
 
-		if ($member->hasInheritedBy()) {
-			$member->setInheritedBy($this->obfuscateFederatedUser($member->getInheritedBy()));
+		if ($member->hasRemoteInstance()) {
+			$member->setRemoteInstance($this->obfuscateRemoteInstance($member->getRemoteInstance()));
 		}
 
-//			$arr['members'] = $this->getMembers();
-//			$arr['inheritedMembers'] = $this->getInheritedMembers();
-//			$arr['memberships'] = $this->getMemberships();
-//			$arr['remoteInstance'] = $this->getRemoteInstance();
+		if ($member->hasMemberships()) {
+			$memberships = [];
+			foreach ($member->getMemberships() as $membership) {
+				$memberships[] = $this->obfuscateMembership($membership);
+			}
+			$member->setMemberships($memberships);
+		}
 
 		return $member;
 	}
@@ -246,12 +328,15 @@ class CirclesReport extends Base {
 			$federatedUser->setLink($this->obfuscateMembership($federatedUser->getLink()));
 		}
 
-		if ($federatedUser->hasMembers()) {
+		if ($federatedUser->hasMemberships()) {
+			$memberships = [];
+			foreach ($federatedUser->getMemberships() as $membership) {
+				$memberships[] = $this->obfuscateMembership($membership);
+			}
+			$federatedUser->setMemberships($memberships);
 		}
 
-//			$arr['members'] = $this->getMembers();
-//			$arr['inheritedMembers'] = $this->getInheritedMembers();
-//			$arr['memberships'] = $this->getMemberships();
+		return $federatedUser;
 	}
 
 
@@ -261,9 +346,28 @@ class CirclesReport extends Base {
 	 * @return Membership
 	 */
 	private function obfuscateMembership(Membership $membership): Membership {
+		$membership->setSingleId($this->obfuscateId($membership->getSingleId()));
+		$membership->setCircleId($this->obfuscateId($membership->getCircleId()));
+		$membership->setInheritanceFirst($this->obfuscateId($membership->getInheritanceFirst()));
+		$membership->setInheritanceLast($this->obfuscateId($membership->getInheritanceLast()));
 
+		$path = [];
+		foreach ($membership->getInheritancePath() as $item) {
+			$path[] = $this->obfuscateId($item);
+		}
+		$membership->setInheritancePath($path);
 
 		return $membership;
+	}
+
+
+	/**
+	 * @param RemoteInstance $remoteInstance
+	 *
+	 * @return RemoteInstance
+	 */
+	private function obfuscateRemoteInstance(RemoteInstance $remoteInstance): RemoteInstance {
+		return $remoteInstance;
 	}
 
 
@@ -275,7 +379,6 @@ class CirclesReport extends Base {
 	private function obfuscateId(string $id): string {
 		return substr($id, 0, 5) . '.' . md5(substr($id, 5));
 	}
-
 
 }
 

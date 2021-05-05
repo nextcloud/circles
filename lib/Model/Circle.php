@@ -206,9 +206,6 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	private $creation = 0;
 
 
-	/** @var Circle[] */
-	private $memberOf = null;
-
 	/** @var Member[] */
 	private $members = null;
 
@@ -387,6 +384,13 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 
 
 	/**
+	 * @return bool
+	 */
+	public function hasMembers(): bool {
+		return !is_null($this->members);
+	}
+
+	/**
 	 * @param array $members
 	 *
 	 * @return self
@@ -401,7 +405,7 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	 * @return array
 	 */
 	public function getMembers(): array {
-		if (is_null($this->members)) {
+		if (!$this->hasMembers()) {
 			$this->getManager()->getMembers($this);
 		}
 
@@ -438,6 +442,13 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 
 
 	/**
+	 * @return bool
+	 */
+	public function hasMemberships(): bool {
+		return !is_null($this->memberships);
+	}
+
+	/**
 	 * @param array $memberships
 	 *
 	 * @return self
@@ -452,7 +463,7 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	 * @return Membership[]
 	 */
 	public function getMemberships(): array {
-		if (is_null($this->memberships)) {
+		if (!$this->hasMemberships()) {
 			$this->getManager()->getMemberships($this);
 		}
 
@@ -588,29 +599,6 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 
 
 	/**
-	 * @param array $memberOf
-	 *
-	 * @return $this
-	 */
-	public function setMemberOf(array $memberOf): self {
-		$this->memberOf = $memberOf;
-
-		return $this;
-	}
-
-	/**
-	 * @return Circle[]
-	 */
-	public function memberOf(): array {
-		if ($this->memberOf === null) {
-			$this->getManager()->memberOf($this);
-		}
-
-		return $this->memberOf;
-	}
-
-
-	/**
 	 * @param int $creation
 	 *
 	 * @return self
@@ -689,11 +677,7 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 			$arr['owner'] = $this->getOwner();
 		}
 
-		if ($this->getManager()->isFullDetails()) {
-			$arr['memberOf'] = $this->memberOf();
-		}
-
-		if (!is_null($this->members)) {
+		if ($this->hasMembers()) {
 			$arr['members'] = $this->getMembers();
 		}
 
@@ -701,7 +685,7 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 			$arr['inheritedMembers'] = $this->getInheritedMembers();
 		}
 
-		if (!is_null($this->memberships)) {
+		if ($this->hasMemberships()) {
 			$arr['memberships'] = $this->getMemberships();
 		}
 

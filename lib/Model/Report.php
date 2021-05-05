@@ -47,11 +47,14 @@ class Report implements IDeserializable, JsonSerializable {
 
 	use TArrayTools;
 
+	/** @var string */
+	private $source = '';
+
 	/** @var Circle[] */
 	private $circles = [];
 
-	/** @var Member[] */
-	private $members = [];
+	/** @var array */
+	private $obfuscated = [];
 
 
 	/**
@@ -62,7 +65,28 @@ class Report implements IDeserializable, JsonSerializable {
 
 
 	/**
+	 * @param string $source
+	 *
+	 * @return Report
+	 */
+	public function setSource(string $source): self {
+		$this->source = $source;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSource(): string {
+		return $this->source;
+	}
+
+
+	/**
 	 * @param Circle[] $circles
+	 *
+	 * @return $this
 	 */
 	public function setCircles(array $circles): self {
 		$this->circles = $circles;
@@ -79,19 +103,21 @@ class Report implements IDeserializable, JsonSerializable {
 
 
 	/**
-	 * @param Member[] $members
+	 * @param array $obfuscated
+	 *
+	 * @return $this
 	 */
-	public function setMembers(array $members): self {
-		$this->members = $members;
+	public function setObfuscated(array $obfuscated): self {
+		$this->obfuscated = $obfuscated;
 
 		return $this;
 	}
 
 	/**
-	 * @return Member[]
+	 * @return array
 	 */
-	public function getMembers(): array {
-		return $this->members;
+	public function getObfuscated(): array {
+		return $this->obfuscated;
 	}
 
 
@@ -101,8 +127,9 @@ class Report implements IDeserializable, JsonSerializable {
 	 * @return IDeserializable
 	 */
 	public function import(array $data): IDeserializable {
+		$this->setSource($this->get('source', $data));
 		$this->setCircles($this->getArray('circles', $data));
-		$this->setMembers($this->getArray('members', $data));
+		$this->setObfuscated($this->getArray('obfuscated', $data));
 
 		return $this;
 	}
@@ -113,8 +140,9 @@ class Report implements IDeserializable, JsonSerializable {
 	 */
 	function jsonSerialize(): array {
 		return [
-			'circles' => $this->getCircles(),
-			'members' => $this->getMembers()
+			'source'     => $this->getSource(),
+			'circles'    => $this->getCircles(),
+			'obfuscated' => $this->getObfuscated()
 		];
 	}
 

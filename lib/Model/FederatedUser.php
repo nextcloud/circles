@@ -81,16 +81,6 @@ class FederatedUser extends ManagedModel implements
 	/** @var Membership */
 	private $link;
 
-
-	/** @var Member[] */
-	private $members = null;
-
-	/** @var Member[] */
-	private $inheritedMembers = null;
-
-	/** @var bool */
-	private $detailedInheritedMember = false;
-
 	/** @var Membership[] */
 	private $memberships = null;
 
@@ -255,67 +245,9 @@ class FederatedUser extends ManagedModel implements
 	/**
 	 * @return bool
 	 */
-	public function hasMembers(): bool {
-		return !is_null($this->members);
+	public function hasMemberships(): bool {
+		return !is_null($this->memberships);
 	}
-
-	/**
-	 * @param array $members
-	 *
-	 * @return self
-	 */
-	public function setMembers(array $members): IMemberships {
-		$this->members = $members;
-
-		return $this;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getMembers(): array {
-		if (!$this->hasMembers()) {
-			$this->getManager()->getMembers($this);
-		}
-
-		return $this->members;
-	}
-
-
-	/**
-	 * @return bool
-	 */
-	public function hasInheritedMembers(): bool {
-		return !is_null($this->inheritedMembers);
-	}
-
-	/**
-	 * @param array $members
-	 * @param bool $detailed
-	 *
-	 * @return self
-	 */
-	public function setInheritedMembers(array $members, bool $detailed): IMemberships {
-		$this->inheritedMembers = $members;
-		$this->detailedInheritedMember = $detailed;
-
-		return $this;
-	}
-
-	/**
-	 * @param bool $detailed
-	 *
-	 * @return array
-	 */
-	public function getInheritedMembers(bool $detailed = false): array {
-		if (is_null($this->inheritedMembers)
-			|| ($detailed && !$this->detailedInheritedMember)) {
-			$this->getManager()->getInheritedMembers($this, $detailed);
-		}
-
-		return $this->inheritedMembers;
-	}
-
 
 	/**
 	 * @param array $memberships
@@ -332,7 +264,7 @@ class FederatedUser extends ManagedModel implements
 	 * @return Membership[]
 	 */
 	public function getMemberships(): array {
-		if (is_null($this->memberships)) {
+		if (!$this->hasMemberships()) {
 			$this->getManager()->getMemberships($this);
 		}
 
@@ -454,14 +386,6 @@ class FederatedUser extends ManagedModel implements
 
 		if ($this->hasLink()) {
 			$arr['link'] = $this->getLink();
-		}
-
-		if ($this->hasMembers()) {
-			$arr['members'] = $this->getMembers();
-		}
-
-		if ($this->hasInheritedMembers()) {
-			$arr['inheritedMembers'] = $this->getInheritedMembers();
 		}
 
 		if (!is_null($this->memberships)) {
