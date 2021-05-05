@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.20.9
+
+- fix a conflict with 3rd parties app
+- fix an SQL issue in GlobalScale setup
 
 
 ### 0.20.8
