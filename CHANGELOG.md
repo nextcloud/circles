@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+
+### 0.21.2
+
+- fix a conflict with 3rd parties app
+- fix an SQL issue in GlobalScale setup
+
+
 ### 0.21.1
 
 - fix an issue with query on null on GS Setup
