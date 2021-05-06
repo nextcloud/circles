@@ -119,7 +119,6 @@ OC.L10N.register(
     "Password to access files" : "用以访问文件的密码",
     "%s shared multiple files with '%s'." : "%s 对 '%s' 共享了多个文件。",
     "%s shared multiple files with you." : "%s 对您共享了多个文件。",
-    "Bootup" : "启动",
     "Initialisation Nextcloud" : "初始化 Nextcloud",
     "Initialisation Circles App" : "初始化 Circles 应用",
     "Fresh installation status" : "全新安装状态",
