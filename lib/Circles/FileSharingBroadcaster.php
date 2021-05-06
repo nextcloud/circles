@@ -729,7 +729,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$emailTemplate = $this->mailer->createEMailTemplate('circles.ExistingShareNotification', []);
 		$emailTemplate->addHeader();
 
-		$text = $this->l10n->t('%s shared multiple files with \'%s\'.', [$author, $circleName]);
+		$text = $this->l10n->t('%s shared multiple files with "%s".', [$author, $circleName]);
 		$emailTemplate->addBodyText(htmlspecialchars($text), $text);
 
 		return $emailTemplate;
