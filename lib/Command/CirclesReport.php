@@ -31,7 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-use daita\MySmallPhpTools\Console\Nextcloud\nc22\InteractiveShell;
+use daita\MySmallPhpTools\Console\Nextcloud\nc22\NC22InteractiveShell;
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\IInteractiveShellClient;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
@@ -79,9 +79,6 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 	/** @var ConfigService */
 	private $configService;
 
-	/** @var InteractiveShell */
-	private $interactiveShell;
-
 
 	/** @var OutputInterface */
 	private $output;
@@ -117,6 +114,7 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 		parent::configure();
 		$this->setName('circles:report')
 			 ->setDescription('Read and write obfuscated report')
+			 ->addOption('local', '', InputOption::VALUE_NONE, 'Use local report')
 			 ->addOption('read', '', InputOption::VALUE_REQUIRED, 'File containing the report to read', '');
 	}
 
@@ -131,14 +129,26 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$filename = $input->getOption('read');
+		$local = $input->getOption('local');
 		$this->output = $output;
 
-		if ($filename === '') {
-			$this->generateReport();
-		} else {
+		$report = null;
+		if ($filename === '' || $local) {
+			$report = $this->generateReport();
+			if (!$local) {
+				$this->output->writeln(json_encode($report, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+
+				return 0;
+			}
+		}
+
+		if ($filename !== '') {
 			/** @var Report $report */
 			$data = file_get_contents($filename);
 			$report = $this->deserialize(json_decode($data, true), Report::class);
+		}
+
+		if (!is_null($report)) {
 			$this->readReport($input, $report);
 		}
 
@@ -149,7 +159,7 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 	/**
 	 * @throws InitiatorNotFoundException
 	 */
-	private function generateReport(): void {
+	private function generateReport(): Report {
 		$report = new Report();
 		$report->setSource($this->configService->getFrontalInstance());
 		$this->federatedUserService->bypassCurrentUserCondition(true);
@@ -168,7 +178,8 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 		}
 
 		$report->setCircles($circles);
-		$this->output->writeln(json_encode($report, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+
+		return $report;
 	}
 
 
@@ -180,15 +191,17 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 		$output = new ConsoleOutput();
 		$this->output = $output->section();
 
-		$this->interactiveShell = new InteractiveShell($this, $input, $output, $this);
+		$interactiveShell = new NC22InteractiveShell($this, $input, $this);
 		$commands = [
-			'oui.la.?type_IEntities',
-			'oui.ok.?type_IEntitiesAccounts',
+			'oui.?Test',
+			'oui.ok.abcd.1234.#IEntitiesAccounts',
+			'oui.ok.abcd.2345.#IEntitiesAccounts',
+			'oui.ok.abcd.4567.#IEntitiesAccounts',
 			'remoteInstance'
 		];
 
-		$this->interactiveShell->setCommands($commands);
-		$this->interactiveShell->run(
+		$interactiveShell->setCommands($commands);
+		$interactiveShell->run(
 			'Circles Report [<info>' . $report->getSource() . '</info>]:<comment>%PATH%</comment>$'
 		);
 	}
