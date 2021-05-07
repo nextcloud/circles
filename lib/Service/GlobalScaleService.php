@@ -146,6 +146,7 @@ class GlobalScaleService {
 			$this->doRequest($request);
 		} catch (RequestContentException | RequestNetworkException | RequestResultSizeException | RequestServerException $e) {
 			$this->miscService->e($e);
+			\OC::$server->getLogger()->log(3, json_encode($request));
 		}
 
 		return $wrapper->getToken();
