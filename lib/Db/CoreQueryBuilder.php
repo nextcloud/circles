@@ -62,6 +62,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	const CIRCLE = 'circle';
 	const MEMBER = 'member';
 	const OWNER = 'owner';
+	const FEDERATED_EVENT = 'federatedEvent';
 	const REMOTE = 'remote';
 	const BASED_ON = 'basedOn';
 	const INITIATOR = 'initiator';
@@ -191,6 +192,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 
 	/** @var array */
 	private $options = [];
+
 
 	/**
 	 * CoreRequestBuilder constructor.
@@ -1134,13 +1136,13 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		$aliasFileCache = $this->generateAlias($aliasShare, self::FILE_CACHE);
 		$aliasStorages = $this->generateAlias($aliasFileCache, self::STORAGES);
 
-		$fieldsFileCache = [
-			'fileid', 'path', 'permissions', 'storage', 'path_hash', 'parent', 'name', 'mimetype', 'mimepart',
-			'size', 'mtime', 'storage_mtime', 'encrypted', 'unencrypted_size', 'etag', 'checksum'
-		];
-
-		$this->generateSelectAlias($fieldsFileCache, $aliasFileCache, $aliasFileCache, [])
-			 ->generateSelectAlias(['id'], $aliasStorages, $aliasStorages, [])
+		$this->generateSelectAlias(
+			CoreRequestBuilder::$outsideTables[self::FILE_CACHE],
+			$aliasFileCache,
+			$aliasFileCache,
+			[]
+		)
+			 ->generateSelectAlias(CoreRequestBuilder::$outsideTables[self::STORAGES], $aliasStorages, $aliasStorages, [])
 			 ->leftJoin(
 				 $aliasShare, CoreRequestBuilder::TABLE_FILE_CACHE, $aliasFileCache,
 				 $expr->eq($aliasShare . '.file_source', $aliasFileCache . '.fileid')
@@ -1236,12 +1238,12 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	 * @return CoreQueryBuilder
 	 */
 	private function generateCircleSelectAlias(string $alias, array $default = []): self {
-		$fields = [
-			'unique_id', 'name', 'display_name', 'source', 'description', 'settings', 'config',
-			'contact_addressbook', 'contact_groupname', 'creation'
-		];
-
-		$this->generateSelectAlias($fields, $alias, $alias, $default);
+		$this->generateSelectAlias(
+			CoreRequestBuilder::$tables[CoreRequestBuilder::TABLE_CIRCLE],
+			$alias,
+			$alias,
+			$default
+		);
 
 		return $this;
 	}
@@ -1253,12 +1255,12 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	 * @return $this
 	 */
 	private function generateMemberSelectAlias(string $alias, array $default = []): self {
-		$fields = [
-			'circle_id', 'single_id', 'user_id', 'user_type', 'member_id', 'instance', 'cached_name',
-			'cached_update', 'status', 'level', 'note', 'contact_id', 'contact_meta', 'joined'
-		];
-
-		$this->generateSelectAlias($fields, $alias, $alias, $default);
+		$this->generateSelectAlias(
+			CoreRequestBuilder::$tables[CoreRequestBuilder::TABLE_MEMBER],
+			$alias,
+			$alias,
+			$default
+		);
 
 		return $this;
 	}
@@ -1276,11 +1278,12 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		string $prefix = '',
 		array $default = []
 	): self {
-		$fields = [
-			'single_id', 'circle_id', 'level', 'inheritance_first', 'inheritance_last', 'inheritance_path',
-			'inheritance_depth'
-		];
-		$this->generateSelectAlias($fields, $alias, ($prefix === '') ? $alias : $prefix, $default);
+		$this->generateSelectAlias(
+			CoreRequestBuilder::$tables[CoreRequestBuilder::TABLE_MEMBERSHIP],
+			$alias,
+			($prefix === '') ? $alias : $prefix,
+			$default
+		);
 
 		return $this;
 	}
@@ -1293,9 +1296,12 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	 * @return $this
 	 */
 	private function generateRemoteInstanceSelectAlias(string $alias, array $default = []): self {
-		$fields = ['id', 'type', 'uid', 'instance', 'href', 'item', 'creation'];
-
-		$this->generateSelectAlias($fields, $alias, $alias, $default);
+		$this->generateSelectAlias(
+			CoreRequestBuilder::$tables[CoreRequestBuilder::TABLE_REMOTE],
+			$alias,
+			$alias,
+			$default
+		);
 
 		return $this;
 	}

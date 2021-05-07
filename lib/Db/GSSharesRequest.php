@@ -37,6 +37,7 @@ use OCP\Share\Exceptions\ShareNotFound;
 
 
 /**
+ * @deprecated
  * Class GSSharesRequest
  *
  * @package OCA\Circles\Db

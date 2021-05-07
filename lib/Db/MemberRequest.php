@@ -242,7 +242,7 @@ class MemberRequest extends MemberRequestBuilder {
 
 		$aliasMembership = $qb->generateAlias(CoreQueryBuilder::MEMBER, CoreQueryBuilder::MEMBERSHIPS);
 		$qb->orderBy($aliasMembership . '.inheritance_depth', 'asc');
-		$qb->groupBy(CoreQueryBuilder::MEMBER . '.single_id');
+//		$qb->groupBy(CoreQueryBuilder::MEMBER . '.single_id');
 
 		return $this->getItemsFromRequest($qb);
 	}
@@ -279,7 +279,7 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->limitToCircleId($circleId);
 
 		$qb->andwhere($qb->expr()->nonEmptyString(CoreQueryBuilder::MEMBER . '.instance'));
-		$qb->groupBy(CoreQueryBuilder::MEMBER . '.instance');
+//		$qb->groupBy(CoreQueryBuilder::MEMBER . '.instance');
 
 		return array_map(
 			function(Member $member): string {
@@ -335,7 +335,7 @@ class MemberRequest extends MemberRequestBuilder {
 	public function searchFederatedUsers(string $needle): array {
 		$qb = $this->getMemberSelectSql();
 		$qb->searchInDBField('user_id', '%' . $needle . '%');
-		$qb->groupBy('single_id');
+//		$qb->groupBy('single_id');
 
 		return $this->getItemsFromRequest($qb, true);
 	}

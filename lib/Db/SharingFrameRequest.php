@@ -31,6 +31,12 @@ namespace OCA\Circles\Db;
 use OCA\Circles\Exceptions\SharingFrameDoesNotExistException;
 use OCA\Circles\Model\SharingFrame;
 
+/**
+ * @deprecated
+ * Class SharingFrameRequest
+ *
+ * @package OCA\Circles\Db
+ */
 class SharingFrameRequest extends SharingFrameRequestBuilder {
 
 

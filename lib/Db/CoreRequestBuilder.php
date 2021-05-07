@@ -73,22 +73,122 @@ class CoreRequestBuilder {
 	const NC_TABLE_GROUP_USER = 'group_user';
 
 	/** @var array */
-	private $tables = [
-		self::TABLE_CIRCLE,
-		self::TABLE_MEMBER,
-		self::TABLE_MEMBERSHIP,
-		self::TABLE_REMOTE,
-		self::TABLE_EVENT,
-		self::TABLE_MOUNT,
-		self::TABLE_MOUNTPOINT,
-		self::TABLE_SHARE_LOCKS,
-
-		self::TABLE_TOKENS,
-		self::TABLE_GSSHARES,
-		self::TABLE_GSSHARES_MOUNTPOINT
-
+	static $tables = [
+		self::TABLE_CIRCLE              => [
+			'unique_id',
+			'name',
+			'display_name',
+			'source',
+			'description',
+			'settings',
+			'config',
+			'contact_addressbook',
+			'contact_groupname',
+			'creation'
+		],
+		self::TABLE_MEMBER              => [
+			'circle_id',
+			'member_id',
+			'single_id',
+			'user_id',
+			'instance',
+			'user_type',
+			'level',
+			'status',
+			'note',
+			'contact_id',
+			'cached_name',
+			'cached_update',
+			'contact_meta',
+			'joined'
+		],
+		self::TABLE_MEMBERSHIP          => [
+			'single_id',
+			'circle_id',
+			'level',
+			'inheritance_first',
+			'inheritance_last',
+			'inheritance_path',
+			'inheritance_depth'
+		],
+		self::TABLE_REMOTE              => [
+			'id',
+			'type',
+			'uid',
+			'instance',
+			'href',
+			'item',
+			'creation'
+		],
+		self::TABLE_EVENT               => [
+			'token',
+			'event',
+			'result',
+			'instance',
+			'severity',
+			'status',
+			'creation'
+		],
+		self::TABLE_MOUNT               => [
+			'id',
+			'mount_id',
+			'circle_id',
+			'single_id',
+			'token',
+			'parent',
+			'mountpoint',
+			'mountpoint_hash'
+		],
+		self::TABLE_MOUNTPOINT          => [],
+		self::TABLE_SHARE_LOCKS         => [],
+		self::TABLE_TOKENS              => [],
+		self::TABLE_GSSHARES            => [],
+		self::TABLE_GSSHARES_MOUNTPOINT => []
 	];
 
+
+	static $outsideTables = [
+		self::TABLE_SHARE      => [
+			'id',
+			'share_type',
+			'share_with',
+			'uid_owner',
+			'uid_initiator',
+			'parent',
+			'item_type',
+			'item_source',
+			'item_target',
+			'file_source',
+			'file_target',
+			'permissions',
+			'stime',
+			'accepted',
+			'expiration',
+			'token',
+			'mail_send'
+		],
+		self::TABLE_FILE_CACHE => [
+			'fileid',
+			'path',
+			'permissions',
+			'storage',
+			'path_hash',
+			'parent',
+			'name',
+			'mimetype',
+			'mimepart',
+			'size',
+			'mtime',
+			'storage_mtime',
+			'encrypted',
+			'unencrypted_size',
+			'etag',
+			'checksum'
+		],
+		self::TABLE_STORAGES   => [
+			'id'
+		]
+	];
 
 	/** @var TimezoneService */
 	protected $timezoneService;
@@ -145,7 +245,7 @@ class CoreRequestBuilder {
 	 *
 	 */
 	public function cleanDatabase(): void {
-		foreach ($this->tables as $table) {
+		foreach (array_keys(self::$tables) as $table) {
 			$qb = $this->getQueryBuilder();
 			try {
 				$qb->delete($table);
@@ -176,7 +276,7 @@ class CoreRequestBuilder {
 		$dbConn = \OC::$server->get(Connection::class);
 		$schema = new SchemaWrapper($dbConn);
 
-		foreach ($this->tables as $table) {
+		foreach (array_keys(self::$tables) as $table) {
 			if ($schema->hasTable($table)) {
 				$schema->dropTable($table);
 			}

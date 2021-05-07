@@ -73,12 +73,11 @@ class EventWrapperRequestBuilder extends CoreRequestBuilder {
 	protected function getEventWrapperSelectSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 
-		$qb->select(
-			'gse.token', 'gse.event', 'gse.result', 'gse.instance', 'gse.severity', 'gse.status',
-			'gse.creation'
-		)
-		   ->from(self::TABLE_EVENT, 'gse')
-		   ->setDefaultSelectAlias('gse');
+		$qb->generateSelect(
+			self::TABLE_EVENT,
+			self::$tables[self::TABLE_EVENT],
+			CoreQueryBuilder::FEDERATED_EVENT
+		);
 
 		return $qb;
 	}

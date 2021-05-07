@@ -34,7 +34,8 @@ use OCA\Circles\Model\GlobalScale\GSShareMountpoint;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 
 
-/**
+/** * @deprecated
+
  * Class GSSharesRequestBuilder
  *
  * @package OCA\Circles\Db

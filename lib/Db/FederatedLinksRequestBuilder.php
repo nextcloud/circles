@@ -36,6 +36,13 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 use OCP\IL10N;
 
+
+/**
+ * @deprecated
+ * Class FederatedLinksRequestBuilder
+ *
+ * @package OCA\Circles\Db
+ */
 class FederatedLinksRequestBuilder extends DeprecatedRequestBuilder {
 
 

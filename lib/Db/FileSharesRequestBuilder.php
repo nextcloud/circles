@@ -30,6 +30,13 @@ namespace OCA\Circles\Db;
 
 use OCP\DB\QueryBuilder\IQueryBuilder;
 
+
+/**
+ * @deprecated
+ * Class FileSharesRequestBuilder
+ *
+ * @package OCA\Circles\Db
+ */
 class FileSharesRequestBuilder extends DeprecatedRequestBuilder {
 
 

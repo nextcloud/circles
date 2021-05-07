@@ -39,6 +39,12 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\Files\NotFoundException;
 use OCP\Share\IShare;
 
+/**
+ * @deprecated
+ * Class CircleProviderRequestBuilder
+ *
+ * @package OCA\Circles\Db
+ */
 class CircleProviderRequestBuilder extends DeprecatedRequestBuilder {
 
 

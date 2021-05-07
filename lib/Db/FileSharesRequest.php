@@ -32,6 +32,7 @@ use OCA\Circles\Model\DeprecatedMember;
 
 
 /**
+ * @deprecated
  * Class SharesRequest
  *
  * @package OCA\Circles\Db
