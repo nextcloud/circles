@@ -30,6 +30,12 @@ namespace OCA\Circles\Db;
 
 use OCA\Circles\Exceptions\GSStatusException;
 
+/**
+ * @deprecated
+ * Class CircleProviderRequest
+ *
+ * @package OCA\Circles\Db
+ */
 class CircleProviderRequest extends CircleProviderRequestBuilder {
 
 

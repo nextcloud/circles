@@ -74,19 +74,7 @@ class MountRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function getMountSelectSql(string $alias = CoreQueryBuilder::MOUNT): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
-
-		$qb->select(
-			$alias . '.id',
-			$alias . '.mount_id',
-			$alias . '.circle_id',
-			$alias . '.single_id',
-			$alias . '.token',
-			$alias . '.parent',
-			$alias . '.mountpoint',
-			$alias . '.mountpoint_hash'
-		)
-		   ->from(self::TABLE_MOUNT, $alias)
-		   ->setDefaultSelectAlias($alias);
+		$qb->generateSelect(self::TABLE_MOUNT, self::$tables[self::TABLE_MOUNT], $alias);
 
 		return $qb;
 	}

@@ -69,34 +69,15 @@ class ShareWrapperRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
+	 * @param string $alias
+	 *
 	 * @return CoreQueryBuilder
 	 */
-	protected function getShareSelectSql(): CoreQueryBuilder {
+	protected function getShareSelectSql(string $alias = CoreQueryBuilder::SHARE): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->select(
-			CoreQueryBuilder::SHARE . '.id',
-			CoreQueryBuilder::SHARE . '.share_type',
-			CoreQueryBuilder::SHARE . '.share_with',
-			CoreQueryBuilder::SHARE . '.uid_owner',
-			CoreQueryBuilder::SHARE . '.uid_initiator',
-			CoreQueryBuilder::SHARE . '.parent',
-			CoreQueryBuilder::SHARE . '.item_type',
-			CoreQueryBuilder::SHARE . '.item_source',
-			CoreQueryBuilder::SHARE . '.item_target',
-			CoreQueryBuilder::SHARE . '.file_source',
-			CoreQueryBuilder::SHARE . '.file_target',
-			CoreQueryBuilder::SHARE . '.permissions',
-			CoreQueryBuilder::SHARE . '.stime',
-			CoreQueryBuilder::SHARE . '.accepted',
-			CoreQueryBuilder::SHARE . '.expiration',
-			CoreQueryBuilder::SHARE . '.token',
-			CoreQueryBuilder::SHARE . '.mail_send'
-		)
-		   ->from(self::TABLE_SHARE, CoreQueryBuilder::SHARE)
-		   ->setDefaultSelectAlias(CoreQueryBuilder::SHARE)
-		   ->groupBy(CoreQueryBuilder::SHARE . '.id')
+		$qb->generateSelect(self::TABLE_SHARE, self::$outsideTables[self::TABLE_SHARE], $alias)
+		   ->generateGroupBy(self::$outsideTables[self::TABLE_SHARE], $alias)
 		   ->limitToShareType(Share::TYPE_CIRCLE);
-
 
 		return $qb;
 	}

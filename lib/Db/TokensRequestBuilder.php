@@ -35,6 +35,7 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
 
 
 /**
+ * @deprecated
  * Class TokensRequestBuilder
  *
  * @package OCA\Circles\Db

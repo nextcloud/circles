@@ -162,7 +162,11 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		}
 
 		if ($completeDetails) {
-			$qb->addGroupBy($aliasMembership . '.single_id');
+			$qb->generateGroupBy(
+				self::$tables[self::TABLE_MEMBERSHIP],
+				$aliasMembership,
+				true
+			);
 		}
 
 		return $this->getItemsFromRequest($qb);
@@ -230,7 +234,11 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 			$qb->leftJoinInheritedMembers(CoreQueryBuilder::SHARE, 'share_with');
 			$qb->leftJoinShareChild(CoreQueryBuilder::SHARE);
 
-			$qb->addGroupBy($aliasMembership . '.single_id');
+			$qb->generateGroupBy(
+				self::$tables[self::TABLE_MEMBERSHIP],
+				$aliasMembership,
+				true
+			);
 		}
 
 		return $this->getItemsFromRequest($qb);
@@ -313,7 +321,11 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 			$qb->leftJoinInheritedMembers(CoreQueryBuilder::SHARE, 'share_with');
 			$qb->leftJoinFileCache(CoreQueryBuilder::SHARE);
 			$qb->leftJoinShareChild(CoreQueryBuilder::SHARE, $aliasMembership);
-			$qb->addGroupBy($aliasMembership . '.single_id');
+			$qb->generateGroupBy(
+				self::$tables[self::TABLE_MEMBERSHIP],
+				$aliasMembership,
+				true
+			);
 		}
 
 		$qb->chunk($offset, $limit);

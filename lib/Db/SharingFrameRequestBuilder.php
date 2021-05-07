@@ -37,6 +37,12 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 use OCP\IL10N;
 
+/**
+ * @deprecated
+ * Class SharingFrameRequestBuilder
+ *
+ * @package OCA\Circles\Db
+ */
 class SharingFrameRequestBuilder extends DeprecatedRequestBuilder {
 
 	/** @var DeprecatedCirclesRequest */

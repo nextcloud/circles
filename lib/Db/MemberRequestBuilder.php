@@ -83,26 +83,13 @@ class MemberRequestBuilder extends CoreRequestBuilder {
 		bool $getBasedOn = true
 	): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->select(
-			CoreQueryBuilder::MEMBER . '.circle_id',
-			CoreQueryBuilder::MEMBER . '.member_id',
-			CoreQueryBuilder::MEMBER . '.single_id',
-			CoreQueryBuilder::MEMBER . '.user_id',
-			CoreQueryBuilder::MEMBER . '.instance',
-			CoreQueryBuilder::MEMBER . '.user_type',
-			CoreQueryBuilder::MEMBER . '.level',
-			CoreQueryBuilder::MEMBER . '.status',
-			CoreQueryBuilder::MEMBER . '.note',
-			CoreQueryBuilder::MEMBER . '.contact_id',
-			CoreQueryBuilder::MEMBER . '.cached_name',
-			CoreQueryBuilder::MEMBER . '.cached_update',
-			CoreQueryBuilder::MEMBER . '.contact_meta',
-			CoreQueryBuilder::MEMBER . '.joined'
+		$qb->generateSelect(
+			self::TABLE_MEMBER,
+			self::$tables[self::TABLE_MEMBER],
+			CoreQueryBuilder::MEMBER
 		)
-		   ->from(self::TABLE_MEMBER, CoreQueryBuilder::MEMBER)
-		   ->orderBy(CoreQueryBuilder::MEMBER . '.joined')
-		   ->groupBy(CoreQueryBuilder::MEMBER . '.member_id')
-		   ->setDefaultSelectAlias(CoreQueryBuilder::MEMBER);
+		   ->generateGroupBy(self::$tables[self::TABLE_MEMBER], CoreQueryBuilder::MEMBER)
+		   ->orderBy(CoreQueryBuilder::MEMBER . '.joined');
 
 		if ($getBasedOn) {
 			$qb->leftJoinBasedOn(CoreQueryBuilder::MEMBER, $initiator);

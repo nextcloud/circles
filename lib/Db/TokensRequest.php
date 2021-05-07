@@ -35,6 +35,7 @@ use OCA\Circles\Model\SharesToken;
 
 
 /**
+ * @deprecated
  * Class TokensRequest
  *
  * @package OCA\Circles\Db

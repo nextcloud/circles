@@ -198,7 +198,7 @@ class RemoteRequest extends RemoteRequestBuilder {
 		}
 
 		$qb->andWhere($orX)
-		   ->groupBy(CoreQueryBuilder::REMOTE . '.instance');
+		   ->generateGroupBy(self::$tables[self::TABLE_REMOTE], CoreQueryBuilder::REMOTE);
 
 		return $this->getItemsFromRequest($qb);
 	}

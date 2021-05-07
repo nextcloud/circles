@@ -31,6 +31,12 @@ namespace OCA\Circles\Db;
 use OCA\Circles\Exceptions\FederatedLinkDoesNotExistException;
 use OCA\Circles\Model\FederatedLink;
 
+/**
+ * @deprecated
+ * Class FederatedLinksRequest
+ *
+ * @package OCA\Circles\Db
+ */
 class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 
 
