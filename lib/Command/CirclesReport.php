@@ -34,6 +34,7 @@ namespace OCA\Circles\Command;
 use daita\MySmallPhpTools\Console\Nextcloud\nc22\NC22InteractiveShell;
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\IInteractiveShellClient;
+use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22InteractiveShellSession;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use daita\MySmallPhpTools\Traits\TArrayTools;
@@ -82,6 +83,9 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 
 	/** @var OutputInterface */
 	private $output;
+
+	/** @var Report */
+	private $report;
 
 
 	/**
@@ -161,7 +165,7 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 	 */
 	private function generateReport(): Report {
 		$report = new Report();
-		$report->setSource($this->configService->getFrontalInstance());
+		$report->setSource($this->configService->getLocalInstance());
 		$this->federatedUserService->bypassCurrentUserCondition(true);
 
 		$raw = $this->circleService->getCircles(
@@ -190,20 +194,20 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 	private function readReport(InputInterface $input, Report $report) {
 		$output = new ConsoleOutput();
 		$this->output = $output->section();
+		$this->report = $report;
 
 		$interactiveShell = new NC22InteractiveShell($this, $input, $this);
 		$commands = [
-			'oui.?Test',
-			'oui.ok.abcd.1234.#IEntitiesAccounts',
-			'oui.ok.abcd.2345.#IEntitiesAccounts',
-			'oui.ok.abcd.4567.#IEntitiesAccounts',
-			'remoteInstance'
+			'circles.list',
+			'circles.delete.#circleId',
+			'members.list.#circleId',
+			'members.details.#memberId',
+			'remoteInstance.list'
 		];
 
 		$interactiveShell->setCommands($commands);
-		$interactiveShell->run(
-			'Circles Report [<info>' . $report->getSource() . '</info>]:<comment>%PATH%</comment>$'
-		);
+
+		$interactiveShell->run();
 	}
 
 
@@ -392,6 +396,38 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 	private function obfuscateId(string $id): string {
 		return substr($id, 0, 5) . '.' . md5(substr($id, 5));
 	}
+
+
+	/**
+	 * @param NC22InteractiveShellSession $session
+	 */
+	public function onNewPrompt(NC22InteractiveShellSession $session): void {
+		$prompt =
+			'Circles Report [<info>' . $this->report->getSource() . '</info>]:<comment>%PATH%</comment>';
+
+		$commands = [];
+		if ($session->getData()->g('currentStatus') === 'write') {
+			$commands[] = 'cancel';
+			$commands[] = 'write';
+			$prompt .= '<error>#</error> ';
+		} else {
+			$commands[] = 'edit';
+			$prompt .= '$ ';
+		}
+
+		$session->setGlobalCommands($commands)
+				->setPrompt($prompt);
+	}
+
+
+	/**
+	 * @param NC22InteractiveShellSession $session
+	 * @param $command
+	 */
+	public function onNewCommand(NC22InteractiveShellSession $session, $command): void {
+		echo $session->getPath();
+	}
+
 
 }
 
