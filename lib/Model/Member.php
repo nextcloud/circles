@@ -178,16 +178,6 @@ class Member extends ManagedModel implements
 	/** @var int */
 	private $joined = 0;
 
-
-	/** @var Member[] */
-	private $members = null;
-
-	/** @var Member[] */
-	private $inheritedMembers = null;
-
-	/** @var bool */
-	private $detailedInheritedMember = false;
-
 	/** @var Membership[] */
 	private $memberships = null;
 
@@ -353,49 +343,63 @@ class Member extends ManagedModel implements
 	}
 
 	/**
-	 * @param Circle|null $basedOn
+	 * @param Circle $basedOn
 	 *
 	 * @return $this
 	 */
-	public function setBasedOn(?Circle $basedOn): self {
+	public function setBasedOn(Circle $basedOn): self {
 		$this->basedOn = $basedOn;
 
 		return $this;
 	}
 
 	/**
-	 * @return Circle|null
+	 * @return Circle
 	 */
-	public function getBasedOn(): ?Circle {
+	public function getBasedOn(): Circle {
 		return $this->basedOn;
 	}
 
 
 	/**
-	 * @param FederatedUser|null $inheritedBy
+	 * @return bool
+	 */
+	public function hasInheritedBy(): bool {
+		return !is_null($this->inheritedBy);
+	}
+
+	/**
+	 * @param FederatedUser $inheritedBy
 	 *
 	 * @return $this
 	 */
-	public function setInheritedBy(?FederatedUser $inheritedBy): self {
+	public function setInheritedBy(FederatedUser $inheritedBy): self {
 		$this->inheritedBy = $inheritedBy;
 
 		return $this;
 	}
 
 	/**
-	 * @return FederatedUser|null
+	 * @return FederatedUser
 	 */
-	public function getInheritedBy(): ?FederatedUser {
+	public function getInheritedBy(): FederatedUser {
 		return $this->inheritedBy;
 	}
 
 
 	/**
-	 * @param Member|null $inheritanceFrom
+	 * @return bool
+	 */
+	public function hasInheritanceFrom(): bool {
+		return !is_null($this->inheritanceFrom);
+	}
+
+	/**
+	 * @param Member $inheritanceFrom
 	 *
 	 * @return $this
 	 */
-	public function setInheritanceFrom(?Member $inheritanceFrom): self {
+	public function setInheritanceFrom(Member $inheritanceFrom): self {
 		$this->inheritanceFrom = $inheritanceFrom;
 
 		return $this;
@@ -609,56 +613,12 @@ class Member extends ManagedModel implements
 	}
 
 
-	/**    /**
-	 * @param array $members
-	 *
-	 * @return self
-	 */
-	public function setMembers(array $members): IMemberships {
-		$this->members = $members;
-
-		return $this;
-	}
-
 	/**
-	 * @return array
+	 * @return bool
 	 */
-	public function getMembers(): array {
-		if (is_null($this->members)) {
-			$this->getManager()->getMembers($this);
-		}
-
-		return $this->members;
+	public function hasMemberships(): bool {
+		return !is_null($this->memberships);
 	}
-
-
-	/**
-	 * @param array $members
-	 * @param bool $detailed
-	 *
-	 * @return self
-	 */
-	public function setInheritedMembers(array $members, bool $detailed): IMemberships {
-		$this->inheritedMembers = $members;
-		$this->detailedInheritedMember = $detailed;
-
-		return $this;
-	}
-
-	/**
-	 * @param bool $detailed
-	 *
-	 * @return array
-	 */
-	public function getInheritedMembers(bool $detailed = false): array {
-		if (is_null($this->inheritedMembers)
-			|| ($detailed && !$this->detailedInheritedMember)) {
-			$this->getManager()->getInheritedMembers($this, $detailed);
-		}
-
-		return $this->inheritedMembers;
-	}
-
 
 	/**
 	 * @param array $memberships
@@ -681,31 +641,6 @@ class Member extends ManagedModel implements
 
 		return $this->memberships;
 	}
-
-
-
-
-//	/**
-//	 * @param array $memberships
-//	 *
-//	 * @return self
-//	 */
-//	public function setMemberships(array $memberships): self {
-//		$this->members = $memberships;
-//
-//		return $this;
-//	}
-//
-//	/**
-//	 * @return array
-//	 */
-//	public function getMemberships(): array {
-//		if (is_null($this->members)) {
-//			$this->getManager()->getMemberships($this);
-//		}
-//
-//		return $this->members;
-//	}
 
 
 	/**
@@ -842,7 +777,6 @@ class Member extends ManagedModel implements
 			'singleId'      => $this->getSingleId(),
 			'userId'        => $this->getUserId(),
 			'userType'      => $this->getUserType(),
-			'basedOn'       => $this->getBasedOn(),
 			'instance'      => $this->getInstance(),
 			'local'         => $this->isLocal(),
 			'level'         => $this->getLevel(),
@@ -855,11 +789,15 @@ class Member extends ManagedModel implements
 			'joined'        => $this->getJoined()
 		];
 
-		if (!is_null($this->getInheritedBy())) {
+		if ($this->hasBasedOn()) {
+			$arr['basedOn'] = $this->getBasedOn();
+		}
+
+		if ($this->hasInheritedBy()) {
 			$arr['inheritedBy'] = $this->getInheritedBy();
 		}
 
-		if (!is_null($this->getInheritanceFrom())) {
+		if ($this->hasInheritanceFrom()) {
 			$arr['inheritanceFrom'] = $this->getInheritanceFrom();
 		}
 
@@ -867,15 +805,7 @@ class Member extends ManagedModel implements
 			$arr['circle'] = $this->getCircle();
 		}
 
-		if (!is_null($this->members)) {
-			$arr['members'] = $this->getMembers();
-		}
-
-		if (!is_null($this->inheritedMembers)) {
-			$arr['inheritedMembers'] = $this->getInheritedMembers();
-		}
-
-		if (!is_null($this->memberships)) {
+		if ($this->hasMemberships()) {
 			$arr['memberships'] = $this->getMemberships();
 		}
 

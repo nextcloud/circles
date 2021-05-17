@@ -32,7 +32,6 @@ declare(strict_types=1);
 namespace OCA\Circles;
 
 
-use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
 
 /**
@@ -46,31 +45,6 @@ interface IMemberships {
 	 * @return string
 	 */
 	public function getSingleId(): string;
-
-	/**
-	 * @param Member[] $members
-	 *
-	 * @return $this
-	 */
-	public function setMembers(array $members): self;
-
-	/**
-	 * @return Member[]
-	 */
-	public function getMembers(): array;
-
-
-	/**
-	 * @param Member[] $members
-	 *
-	 * @return $this
-	 */
-	public function setInheritedMembers(array $members, bool $detailed): self;
-
-	/**
-	 * @return Member[]
-	 */
-	public function getInheritedMembers(): array;
 
 	/**
 	 * @param Membership[] $memberships

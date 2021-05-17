@@ -81,16 +81,6 @@ class FederatedUser extends ManagedModel implements
 	/** @var Membership */
 	private $link;
 
-
-	/** @var Member[] */
-	private $members = null;
-
-	/** @var Member[] */
-	private $inheritedMembers = null;
-
-	/** @var bool */
-	private $detailedInheritedMember = false;
-
 	/** @var Membership[] */
 	private $memberships = null;
 
@@ -185,6 +175,13 @@ class FederatedUser extends ManagedModel implements
 
 
 	/**
+	 * @return bool
+	 */
+	public function hasBasedOn(): bool {
+		return !is_null($this->basedOn);
+	}
+
+	/**
 	 * @param Circle|null $basedOn
 	 *
 	 * @return $this
@@ -196,9 +193,9 @@ class FederatedUser extends ManagedModel implements
 	}
 
 	/**
-	 * @return Circle|null
+	 * @return Circle
 	 */
-	public function getBasedOn(): ?Circle {
+	public function getBasedOn(): Circle {
 		return $this->basedOn;
 	}
 
@@ -246,55 +243,11 @@ class FederatedUser extends ManagedModel implements
 
 
 	/**
-	 * @param array $members
-	 *
-	 * @return self
+	 * @return bool
 	 */
-	public function setMembers(array $members): IMemberships {
-		$this->members = $members;
-
-		return $this;
+	public function hasMemberships(): bool {
+		return !is_null($this->memberships);
 	}
-
-	/**
-	 * @return array
-	 */
-	public function getMembers(): array {
-		if (is_null($this->members)) {
-			$this->getManager()->getMembers($this);
-		}
-
-		return $this->members;
-	}
-
-
-	/**
-	 * @param array $members
-	 * @param bool $detailed
-	 *
-	 * @return self
-	 */
-	public function setInheritedMembers(array $members, bool $detailed): IMemberships {
-		$this->inheritedMembers = $members;
-		$this->detailedInheritedMember = $detailed;
-
-		return $this;
-	}
-
-	/**
-	 * @param bool $detailed
-	 *
-	 * @return array
-	 */
-	public function getInheritedMembers(bool $detailed = false): array {
-		if (is_null($this->inheritedMembers)
-			|| ($detailed && !$this->detailedInheritedMember)) {
-			$this->getManager()->getInheritedMembers($this, $detailed);
-		}
-
-		return $this->inheritedMembers;
-	}
-
 
 	/**
 	 * @param array $memberships
@@ -311,13 +264,20 @@ class FederatedUser extends ManagedModel implements
 	 * @return Membership[]
 	 */
 	public function getMemberships(): array {
-		if (is_null($this->memberships)) {
+		if (!$this->hasMemberships()) {
 			$this->getManager()->getMemberships($this);
 		}
 
 		return $this->memberships;
 	}
 
+
+	/**
+	 * @return bool
+	 */
+	public function hasLink(): bool {
+		return !is_null($this->link);
+	}
 
 	/**
 	 * @param Membership $link
@@ -420,20 +380,12 @@ class FederatedUser extends ManagedModel implements
 			'instance'  => $this->getInstance()
 		];
 
-		if (!is_null($this->getBasedOn())) {
+		if ($this->hasBasedOn()) {
 			$arr['basedOn'] = $this->getBasedOn();
 		}
 
-		if (!is_null($this->link)) {
+		if ($this->hasLink()) {
 			$arr['link'] = $this->getLink();
-		}
-
-		if (!is_null($this->members)) {
-			$arr['members'] = $this->getMembers();
-		}
-
-		if (!is_null($this->inheritedMembers)) {
-			$arr['inheritedMembers'] = $this->getInheritedMembers();
 		}
 
 		if (!is_null($this->memberships)) {

@@ -853,15 +853,19 @@ class CirclesTest extends Base {
 		$this->compareInt($compareTo->getLevel(), $member->getLevel(), $prefix . '.level', true);
 		$this->compare($compareTo->getStatus(), $member->getStatus(), $prefix . '.status', $params);
 
-		$compareToBasedOn = $compareTo->getBasedOn();
-		if ($compareToBasedOn !== null) {
-			$basedOn = $member->getBasedOn();
-			if ($basedOn === null) {
+		if ($compareTo->hasBasedOn()) {
+			if (!$member->hasBasedOn()) {
 				throw new Exception('empty ' . $prefix . '.basedOn');
 			}
-			$this->confirmCircleData($basedOn, $compareToBasedOn, $prefix . '.basedOn', false, $params);
+			$basedOn = $member->getBasedOn();
+			$this->confirmCircleData(
+				$basedOn,
+				$compareTo->getBasedOn(),
+				$prefix . '.basedOn',
+				false,
+				$params
+			);
 		}
-
 	}
 
 

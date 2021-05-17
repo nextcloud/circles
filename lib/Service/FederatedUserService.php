@@ -715,8 +715,11 @@ class FederatedUserService {
 			$circle = new Circle();
 			$id = $this->token(ManagedModel::ID_LENGTH);
 
-			$basedOn = $federatedUser->getBasedOn();
-			$source = (is_null($basedOn)) ? $federatedUser->getUserType() : $basedOn->getSource();
+			if ($federatedUser->hasBasedOn()) {
+				$source = $federatedUser->getBasedOn()->getSource();
+			} else {
+				$source = $federatedUser->getUserType();
+			}
 
 			$prefix = ($federatedUser->getUserType() === Member::TYPE_APP) ? 'app'
 				: Member::$TYPE[$federatedUser->getUserType()];

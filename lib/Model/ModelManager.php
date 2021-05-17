@@ -99,11 +99,11 @@ class ModelManager {
 
 
 	/**
-	 * @param IMemberships $member
+	 * @param Circle $circle
 	 */
-	public function getMembers(IMemberships $member): void {
+	public function getMembers(Circle $circle): void {
 		try {
-			$member->setMembers($this->memberRequest->getMembers($member->getSingleId()));
+			$circle->setMembers($this->memberRequest->getMembers($circle->getSingleId()));
 		} catch (RequestBuilderException $e) {
 			// TODO: debug log
 		}
@@ -111,13 +111,13 @@ class ModelManager {
 
 
 	/**
-	 * @param IMemberships $item
+	 * @param Circle $circle
 	 * @param bool $detailed
 	 */
-	public function getInheritedMembers(IMemberships $item, bool $detailed = false): void {
+	public function getInheritedMembers(Circle $circle, bool $detailed = false): void {
 		try {
-			$item->setInheritedMembers(
-				$this->memberRequest->getInheritedMembers($item->getSingleId(), $detailed),
+			$circle->setInheritedMembers(
+				$this->memberRequest->getInheritedMembers($circle->getSingleId(), $detailed),
 				$detailed
 			);
 		} catch (RequestBuilderException $e) {
@@ -132,15 +132,6 @@ class ModelManager {
 	public function getMemberships(IMemberships $member): void {
 		$memberships = $this->membershipRequest->getMemberships($member->getSingleId());
 		$member->setMemberships($memberships);
-	}
-
-
-	/**
-	 * @param Circle $circle
-	 */
-	public function memberOf(Circle $circle) {
-//		$members = $this->memberService->getMembers($circle->getSingleId());
-//		$circle->setMemberOf([]);
 	}
 
 
