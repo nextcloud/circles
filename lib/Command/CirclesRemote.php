@@ -42,7 +42,6 @@ use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\RemoteRequest;
-use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteUidException;
 use OCA\Circles\Model\Federated\RemoteInstance;
@@ -125,6 +124,10 @@ class CirclesRemote extends Base {
 			 ->addOption(
 				 'type', '', InputOption::VALUE_REQUIRED, 'set type of remote', RemoteInstance::TYPE_UNKNOWN
 			 )
+			 ->addOption(
+				 'iface', '', InputOption::VALUE_REQUIRED, 'set interface to use to contact remote',
+				 RemoteInstance::$LIST_IFACE[RemoteInstance::IFACE_FRONTAL]
+			 )
 			 ->addOption('yes', '', InputOption::VALUE_NONE, 'silently add the remote instance')
 			 ->addOption('all', '', InputOption::VALUE_NONE, 'display all information');
 	}
@@ -160,6 +163,7 @@ class CirclesRemote extends Base {
 	 */
 	private function requestInstance(string $host): void {
 		$remoteType = $this->getRemoteType();
+		$remoteIface = $this->getRemoteInterface();
 
 		$webfinger = $this->getWebfinger($host, Application::APP_SUBJECT);
 		if ($this->input->getOption('all')) {
@@ -269,8 +273,9 @@ class CirclesRemote extends Base {
 		}
 
 		if ($remoteSignatory->getUid() !== $localSignatory->getUid()) {
-			$remoteSignatory->setInstance($host);
-			$remoteSignatory->setType($remoteType);
+			$remoteSignatory->setInstance($host)
+							->setType($remoteType)
+							->setInterface($remoteIface);
 
 			try {
 				$stored = new RemoteInstance();
@@ -330,8 +335,9 @@ class CirclesRemote extends Base {
 			'The remote instance <info>' . $remoteSignatory->getInstance() . '</info> looks good.'
 		);
 		$question = new ConfirmationQuestion(
-			'Would you like to identify this remote instance as \'' . $remoteSignatory->getType()
-			. '\' ? (y/N) ',
+			'Would you like to identify this remote instance as \'<comment>' . $remoteSignatory->getType()
+			. '</comment>\' using interface \'<comment>' . RemoteInstance::$LIST_IFACE[$remoteSignatory->getInterface()]
+			. '</comment>\' ? (y/N) ',
 			false,
 			'/^(y|Y)/i'
 		);
@@ -407,14 +413,13 @@ class CirclesRemote extends Base {
 
 	/**
 	 *
-	 * @throws GSStatusException
 	 */
 	private function verifyGSInstances(): void {
 		$instances = $this->globalScaleService->getGlobalScaleInstances();
 		$known = array_map(
 			function(RemoteInstance $instance): string {
 				return $instance->getInstance();
-			}, $this->remoteRequest->getFromType(RemoteInstance::TYPE_GLOBAL_SCALE)
+			}, $this->remoteRequest->getFromType(RemoteInstance::TYPE_GLOBALSCALE)
 		);
 
 		$missing = array_diff($instances, $known);
@@ -433,7 +438,12 @@ class CirclesRemote extends Base {
 		}
 		$this->output->write('Adding <comment>' . $instance . '</comment>: ');
 		try {
-			$this->remoteStreamService->addRemoteInstance($instance, RemoteInstance::TYPE_GLOBAL_SCALE, true);
+			$this->remoteStreamService->addRemoteInstance(
+				$instance,
+				RemoteInstance::TYPE_GLOBALSCALE,
+				RemoteInstance::IFACE_INTERNAL,
+				true
+			);
 			$this->output->writeln('<info>ok</info>');
 		} catch (Exception $e) {
 			$msg = ($e->getMessage() === '') ? '' : ' (' . $e->getMessage() . ')';
@@ -448,7 +458,7 @@ class CirclesRemote extends Base {
 		$output = new ConsoleOutput();
 		$output = $output->section();
 		$table = new Table($output);
-		$table->setHeaders(['instance', 'type', 'UID', 'Authed']);
+		$table->setHeaders(['instance', 'type', 'iface', 'UID', 'Authed']);
 		$table->render();
 
 		foreach ($instances as $instance) {
@@ -467,6 +477,7 @@ class CirclesRemote extends Base {
 				[
 					$instance->getInstance(),
 					$instance->getType(),
+					RemoteInstance::$LIST_IFACE[$instance->getInterface()],
 					$instance->getUid(),
 					$currentUid
 				]
@@ -486,6 +497,19 @@ class CirclesRemote extends Base {
 		}
 
 		throw new Exception('Unknown type: ' . implode(', ', RemoteInstance::$LIST_TYPE));
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	private function getRemoteInterface(): int {
+		foreach (RemoteInstance::$LIST_IFACE as $iface => $def) {
+			if (strtolower($this->input->getOption('iface')) === strtolower($def)) {
+				return $iface;
+			}
+		}
+
+		throw new Exception('Unknown interface: ' . implode(', ', RemoteInstance::$LIST_IFACE));
 	}
 
 }

@@ -34,19 +34,31 @@ use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
 use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
 use daita\MySmallPhpTools\Traits\TArrayTools;
+use daita\MySmallPhpTools\Traits\TStringTools;
 use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\AppInfo\Capabilities;
-use OCA\Circles\Model\GlobalScale\GSEvent;
+use OCA\Circles\Exceptions\FederatedEventException;
+use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
+use OCA\Circles\FederatedItems\LoopbackTest;
+use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Service\ConfigService;
-use OCA\Circles\Service\GlobalScaleService;
-use OCA\Circles\Service\GSUpstreamService;
+use OCA\Circles\Service\FederatedEventService;
+use OCA\Circles\Service\RemoteService;
+use OCA\Circles\Service\RemoteStreamService;
+use OCA\Circles\Service\RemoteUpstreamService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Symfony\Component\Process\Process;
+use Symfony\Component\Console\Question\Question;
 
 
 /**
@@ -57,18 +69,31 @@ use Symfony\Component\Process\Process;
 class CirclesCheck extends Base {
 
 
+	use TStringTools;
 	use TArrayTools;
 	use TNC22Request;
 
 
+	static $checks = [
+		'internal',
+		'frontal',
+		'loopback'
+	];
+
 	/** @var Capabilities */
 	private $capabilities;
 
-	/** @var GlobalScaleService */
-	private $globalScaleService;
+	/** @var FederatedEventService */
+	private $federatedEventService;
 
-	/** @var GSUpstreamService */
-	private $gsUpstreamService;
+	/** @var RemoteService */
+	private $remoteService;
+
+	/** @var RemoteStreamService */
+	private $remoteStreamService;
+
+	/** @var RemoteUpstreamService */
+	private $remoteUpstreamService;
 
 	/** @var ConfigService */
 	private $configService;
@@ -80,23 +105,32 @@ class CirclesCheck extends Base {
 	/** @var array */
 	private $sessions = [];
 
+
 	/**
 	 * CirclesCheck constructor.
 	 *
 	 * @param Capabilities $capabilities
-	 * @param GlobalScaleService $globalScaleService
-	 * @param GSUpstreamService $gsUpstreamService
+	 * @param FederatedEvent $federatedEventService
+	 * @param RemoteService $remoteService
+	 * @param RemoteStreamService $remoteStreamService
+	 * @param RemoteUpstreamService $remoteUpstreamService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		Capabilities $capabilities, GlobalScaleService $globalScaleService,
-		GSUpstreamService $gsUpstreamService, ConfigService $configService
+		Capabilities $capabilities,
+		FederatedEventService $federatedEventService,
+		RemoteService $remoteService,
+		RemoteStreamService $remoteStreamService,
+		RemoteUpstreamService $remoteUpstreamService,
+		ConfigService $configService
 	) {
 		parent::__construct();
 
 		$this->capabilities = $capabilities;
-		$this->gsUpstreamService = $gsUpstreamService;
-		$this->globalScaleService = $globalScaleService;
+		$this->federatedEventService = $federatedEventService;
+		$this->remoteService = $remoteService;
+		$this->remoteStreamService = $remoteStreamService;
+		$this->remoteUpstreamService = $remoteUpstreamService;
 		$this->configService = $configService;
 	}
 
@@ -107,7 +141,8 @@ class CirclesCheck extends Base {
 			 ->setDescription('Checking your configuration')
 			 ->addOption('delay', 'd', InputOption::VALUE_REQUIRED, 'delay before checking result')
 			 ->addOption('capabilities', '', InputOption::VALUE_NONE, 'listing app\'s capabilities')
-			 ->addOption('url', '', InputOption::VALUE_REQUIRED, 'specify a source url', '');
+			 ->addOption('type', '', InputOption::VALUE_REQUIRED, 'configuration to check', '')
+			 ->addOption('test', '', InputOption::VALUE_REQUIRED, 'specify an url to test', '');
 	}
 
 
@@ -131,61 +166,455 @@ class CirclesCheck extends Base {
 		}
 
 		$this->configService->setAppValue(ConfigService::TEST_NC_BASE, '');
-		$this->configService->setAppValue(ConfigService::TEST_NC_BASE, $input->getOption('url'));
+		$test = $input->getOption('test');
+		$type = $input->getOption('type');
+		if ($test !== '' && $type === '') {
+			throw new Exception('Please specify a --type for the test');
+		}
+		if ($test !== '' && !in_array($type, self::$checks)) {
+			throw new Exception('Unknown type: ' . implode(', ', self::$checks));
+		}
 
+//		$this->configService->setAppValue(ConfigService::TEST_NC_BASE, $test);
+
+		if ($type === '' || $type === 'loopback') {
+			$output->writeln('### Checking <info>loopback</info> address.');
+			$this->checkLoopback($input, $output, $test);
+			$output->writeln('');
+			$output->writeln('');
+		}
+		if ($type === '' || $type === 'internal') {
+			$output->writeln('### Testing <info>internal</info> address.');
+			$this->checkInternal($input, $output, $test);
+			$output->writeln('');
+			$output->writeln('');
+		}
+		if ($type === '' || $type === 'frontal') {
+			$output->writeln('### Testing <info>frontal</info> address.');
+			$this->checkFrontal($input, $output, $test);
+			$output->writeln('');
+		}
+
+
+//
+//		if (!$this->testRequest($output, 'GET', 'core.CSRFToken.index')) {
+//			$this->configService->setAppValue(ConfigService::TEST_NC_BASE, '');
+//
+//			return 0;
+//		}
+//
+//		if (!$this->testRequest(
+//			$output, 'POST', 'circles.EventWrapper.asyncBroadcast',
+//			['token' => 'test-dummy-token']
+//		)) {
+//			$this->configService->setAppValue(ConfigService::TEST_NC_BASE, '');
+//
+//			return 0;
+//		}
+//
+//		$test = new GSEvent(GSEvent::TEST, true, true);
+//		$test->setAsync(true);
+//		$token = $this->gsUpstreamService->newEvent($test);
+//
+//		$output->writeln('- Async request is sent, now waiting ' . $this->delay . ' seconds');
+//		sleep($this->delay);
+//		$output->writeln('- Pause is over, checking results for ' . $token);
+//
+//		$wrappers = $this->gsUpstreamService->getEventsByToken($token);
+//
+//		$result = [];
+//		$instances = array_merge($this->globalScaleService->getInstances(true));
+//		foreach ($wrappers as $wrapper) {
+//			$result[$wrapper->getInstance()] = $wrapper->getEvent();
+//		}
+//
+//		$localLooksGood = false;
+//		foreach ($instances as $instance) {
+//			$output->write($instance . ' ');
+//			if (array_key_exists($instance, $result)
+//				&& $result[$instance]->getResult()
+//									 ->gInt('status') === 1) {
+//				$output->writeln('<info>ok</info>');
+//				if ($this->configService->isLocalInstance($instance)) {
+//					$localLooksGood = true;
+//				}
+//			} else {
+//				$output->writeln('<error>fail</error>');
+//			}
+//		}
+//
+//		$this->configService->setAppValue(ConfigService::TEST_NC_BASE, '');
+//
+//		if ($localLooksGood) {
+//			$this->saveUrl($input, $output, $input->getOption('url'));
+//		}
+
+		return 0;
+	}
+
+
+	/**
+	 * @param InputInterface $input
+	 * @param OutputInterface $output
+	 * @param string $test
+	 *
+	 * @throws Exception
+	 */
+	private function checkLoopback(InputInterface $input, OutputInterface $output, string $test = ''): void {
+		$output->writeln('. The <info>loopback</info> setting is mandatory and can be checked locally.');
+		$output->writeln(
+			'. The address you need to define here must be a reachable url of your Nextcloud from the hosting server itself.'
+		);
+		$output->writeln(
+			'. By default, the App will use the entry \'overwrite.cli.url\' from \'config/config.php\'.'
+		);
+
+		if ($test === '') {
+			$test = $this->configService->getLoopbackPath();
+		}
+
+		$output->writeln('');
+		$output->writeln('* testing current address: ' . $test);
+
+		try {
+			$this->setupLoopback($input, $output, $test);
+			$output->writeln('* <info>Loopback</info> address looks good');
+			$output->writeln('saving');
+		} catch (Exception $e) {
+			$output->writeln('<error>' . $e->getMessage() . '</error>');
+		}
+
+		$output->writeln('- You do not have a valid <info>loopback</info> address setup right now.');
+
+		$helper = $this->getHelper('question');
+		while (true) {
+			$question = new Question(
+				'<info>Please write down a new loopback address to test</info>: ', ''
+			);
+
+			$loopback = $helper->ask($input, $output, $question);
+			if (is_null($loopback) || $loopback === '') {
+				$output->writeln('exiting.');
+				throw new Exception('Your Circles App is not fully configured.');
+			}
+
+			try {
+				[$scheme, $cloudId] = $this->parseAddress($loopback);
+			} catch (Exception $e) {
+				$output->writeln('<error>format must be http[s]://domain.name[:post]</error>');
+				continue;
+			}
+
+			$loopback = $scheme . '://' . $cloudId;
+			$output->write('* testing address: ' . $loopback . ' ');
+
+			if ($this->testLoopback($input, $output, $loopback)) {
+				$output->writeln('<info>ok</info>');
+				$output->writeln('saving.');
+				$this->configService->setAppValue(ConfigService::LOOPBACK_CLOUD_SCHEME, $scheme);
+				$this->configService->setAppValue(ConfigService::LOOPBACK_CLOUD_ID, $cloudId);
+				$output->writeln(
+					'- Address <info>' . $loopback . '</info> is now used as <info>loopback</info>'
+				);
+
+				return;
+			}
+
+			$output->writeln('<error>fail</error>');
+		}
+//		while(true) {
+
+//			}
+	}
+
+
+	/**
+	 * @throws Exception
+	 */
+	private function setupLoopback(InputInterface $input, OutputInterface $output, string $address): void {
+		$e = null;
+		try {
+			[$scheme, $cloudId] = $this->parseAddress($address);
+
+			$this->configService->setAppValue(ConfigService::LOOPBACK_TMP_SCHEME, $scheme);
+			$this->configService->setAppValue(ConfigService::LOOPBACK_TMP_ID, $cloudId);
+			if (!$this->testLoopback($input, $output, $address)) {
+				throw new Exception('fail');
+			}
+		} catch (Exception $e) {
+		}
+
+		$this->configService->setAppValue(ConfigService::LOOPBACK_TMP_SCHEME, '');
+		$this->configService->setAppValue(ConfigService::LOOPBACK_TMP_ID, '');
+
+		if (!is_null($e)) {
+			throw $e;
+		}
+	}
+
+
+	/**
+	 * @param InputInterface $input
+	 * @param OutputInterface $output
+	 * @param string $address
+	 *
+	 * @return bool
+	 * @throws RequestNetworkException
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws UnknownRemoteException
+	 */
+	private function testLoopback(InputInterface $input, OutputInterface $output, string $address): bool {
 		if (!$this->testRequest($output, 'GET', 'core.CSRFToken.index')) {
-			$this->configService->setAppValue(ConfigService::TEST_NC_BASE, '');
-
-			return 0;
+			return false;
 		}
 
 		if (!$this->testRequest(
 			$output, 'POST', 'circles.EventWrapper.asyncBroadcast',
 			['token' => 'test-dummy-token']
 		)) {
-			$this->configService->setAppValue(ConfigService::TEST_NC_BASE, '');
-
-			return 0;
+			return false;
 		}
 
-		$test = new GSEvent(GSEvent::TEST, true, true);
+		$test = new FederatedEvent(LoopbackTest::class);
 		$test->setAsync(true);
-		$token = $this->gsUpstreamService->newEvent($test);
+		$this->federatedEventService->newEvent($test);
 
-		$output->writeln('- Async request is sent, now waiting ' . $this->delay . ' seconds');
-		sleep($this->delay);
-		$output->writeln('- Pause is over, checking results for ' . $token);
+//
+//		$output->writeln('- Async request is sent, now waiting ' . $this->delay . ' seconds');
+//		sleep($this->delay);
+//		$output->writeln('- Pause is over, checking results for ' . $token);
+//
+//		$wrappers = $this->gsUpstreamService->getEventsByToken($token);
+//
+//		$result = [];
+//		$instances = array_merge($this->globalScaleService->getInstances(true));
+//		foreach ($wrappers as $wrapper) {
+//			$result[$wrapper->getInstance()] = $wrapper->getEvent();
+//		}
+//
+//		$localLooksGood = false;
+//		foreach ($instances as $instance) {
+//			$output->write($instance . ' ');
+//			if (array_key_exists($instance, $result)
+//				&& $result[$instance]->getResult()
+//									 ->gInt('status') === 1) {
+//				$output->writeln('<info>ok</info>');
+//				if ($this->configService->isLocalInstance($instance)) {
+//					$localLooksGood = true;
+//				}
+//			} else {
+//				$output->writeln('<error>fail</error>');
+//			}
+//		}
+//
+//		$this->configService->setAppValue(ConfigService::TEST_NC_BASE, '');
+//
+//		if ($localLooksGood) {
+//			$this->saveUrl($input, $output, $input->getOption('url'));
+//		}
 
-		$wrappers = $this->gsUpstreamService->getEventsByToken($token);
-
-		$result = [];
-		$instances = array_merge($this->globalScaleService->getInstances(true));
-		foreach ($wrappers as $wrapper) {
-			$result[$wrapper->getInstance()] = $wrapper->getEvent();
+		if ($address === 'http://orange.local') {
+			return true;
 		}
 
-		$localLooksGood = false;
-		foreach ($instances as $instance) {
-			$output->write($instance . ' ');
-			if (array_key_exists($instance, $result)
-				&& $result[$instance]->getResult()
-									 ->gInt('status') === 1) {
-				$output->writeln('<info>ok</info>');
-				if ($this->configService->isLocalInstance($instance)) {
-					$localLooksGood = true;
-				}
-			} else {
-				$output->writeln('<error>fail</error>');
+		return false;
+	}
+
+
+	/**
+	 * @param InputInterface $input
+	 * @param OutputInterface $output
+	 * @param string $test
+	 */
+	private function checkInternal(InputInterface $input, OutputInterface $output, string $test): void {
+		$output->writeln(
+			'. The <info>internal</info> setting is mandatory only if you are willing to use Circles in a GlobalScale setup on a local network.'
+		);
+		$output->writeln(
+			'. The address you need to define here is the local address of your Nextcloud, reachable by all other instances of our GlobalScale.'
+		);
+
+
+	}
+
+
+	/**
+	 * @param InputInterface $input
+	 * @param OutputInterface $output
+	 * @param string $test
+	 */
+	private function checkFrontal(InputInterface $input, OutputInterface $output, string $test): void {
+		$output->writeln('. The <info>frontal</info> setting is optional.');
+		$output->writeln(
+			'. The purpose of this address is for your Federated Circle to reach other instances of Nextcloud over the Internet.'
+		);
+		$output->writeln(
+			'. The address you need to define here must be reachable from the Internet.'
+		);
+		$output->writeln(
+			'. By default, this feature is disabled (and is considered ALPHA in Nextcloud 22).'
+		);
+
+		$question = new ConfirmationQuestion(
+			'- <comment>Do you want to enable this feature ?</comment> (y/N) ', false, '/^(y|Y)/i'
+		);
+
+		$helper = $this->getHelper('question');
+		if (!$helper->ask($input, $output, $question)) {
+			$output->writeln('skipping.');
+
+			return;
+		}
+
+
+		while (true) {
+
+			$question = new Question(
+				'<info>Please write down a new frontal address to test</info>: ', ''
+			);
+
+			$frontal = $helper->ask($input, $output, $question);
+			if (is_null($frontal) || $frontal === '') {
+				$output->writeln('skipping.');
+
+				return;
 			}
+
+			try {
+				[$scheme, $cloudId] = $this->parseAddress($frontal);
+			} catch (Exception $e) {
+				$output->writeln('<error>format must be http[s]://domain.name[:post]</error>');
+				continue;
+			}
+
+			$frontal = $scheme . '://' . $cloudId;
+			break;
 		}
 
-		$this->configService->setAppValue(ConfigService::TEST_NC_BASE, '');
+		$question = new ConfirmationQuestion(
+			'<comment>Do you want to check the validity of this frontal address?</comment> (y/N) ', false,
+			'/^(y|Y)/i'
+		);
 
-		if ($localLooksGood) {
-			$this->saveUrl($input, $output, $input->getOption('url'));
+		if ($helper->ask($input, $output, $question)) {
+			$output->writeln(
+				'You will need to run this <info>curl</info> command from a remote terminal and paste its result: '
+			);
+			$output->writeln(
+				'     curl ' . $frontal . '/.well-known/webfinger?resource=http://nextcloud.com/'
+			);
+
+			$question = new Question('result: ', '');
+			$pasteWebfinger = $helper->ask($input, $output, $question);
+
+			echo '__ ' . $pasteWebfinger;
+
+			$output->writeln('TESTING !!');
+			$output->writeln('TESTING !!');
+			$output->writeln('TESTING !!');
 		}
 
-		return 0;
+		$output->writeln('saved');
+
+
+//		$output->writeln('.  1) The automatic way, requiring a valid remote instance of Nextcloud.');
+//		$output->writeln(
+//			'.  2) The manual way, using the <comment>curl</comment> command from a remote terminal.'
+//		);
+//		$output->writeln(
+//			'. If you prefer the automatic way, you will need to enter the valid remote instance of Nextcloud you want to use.'
+//		);
+//		$output->writeln('. If you want the manual way, just enter an empty field.');
+//		$output->writeln('');
+//		$output->writeln(
+//			'. If you do not known a valid remote instance of Nextcloud, you can use <comment>\'https://circles.artificial-owl.com/\'</comment>'
+//		);
+//		$output->writeln(
+//			'. Please note that no critical information will be shared during the process, and any data (ie. public key and address)'
+//		);
+//		$output->writeln(
+//			'  generated during the process will be wiped of the remote instance after few minutes.'
+//		);
+//		$output->writeln('');
+
+//		$question = new Question(
+//			'- <comment>Which remote instance of Nextcloud do you want to use in order to test your setup:</comment> (empty to bypass this step): '
+//		);
+//		$helper = $this->getHelper('question');
+//		$remote = $helper->ask($input, $output, $question);
+//		if (is_null($frontal) || $frontal === '') {
+//			$output->writeln('skipping.');
+//
+//			return;
+//		}
+//
+//		$output->writeln('. The confirmation step is optional and can be done in 2 different ways:');
+//
+//
+//		$output->writeln('');
+//		$question = new Question(
+//			'- <comment>Enter the <info>frontal</info> address you want to be used to identify your instance of Nextcloud over the Internet</comment>: '
+//		);
+//		$helper = $this->getHelper('question');
+//		$frontal = $helper->ask($input, $output, $question);
+
+//		while (true) {
+//			$question = new Question(
+//				'<info>Please write down a new frontal address to test</info>: ', ''
+//			);
+//
+//			$frontal = $helper->ask($input, $output, $question);
+//			if (is_null($frontal) || $frontal === '') {
+//				$output->writeln('skipping.');
+//
+//				return;
+//			}
+//
+//			try {
+//				[$scheme, $cloudId] = $this->parseAddress($test);
+//			} catch (Exception $e) {
+//				$output->writeln('<error>format must be http[s]://domain.name[:post]</error>');
+//				continue;
+//			}
+//
+//			$frontal = $scheme . '://' . $cloudId;
+//
+//			$output->write('* testing address: ' . $frontal . ' ');
+//
+//			if ($remote === '') {
+//				$output->writeln('remote empty, please run this curl request and paste the result in here');
+//				$output->writeln(
+//					'  curl ' . $frontal . '/.well-known/webfinger?resource=http://nextcloud.com/'
+//				);
+//				$question = new Question('result: ', '');
+//
+//				$resultWebfinger = $helper->ask($input, $output, $question);
+//
+//			} else {
+//			}
+//		}
+
+
+//		if ($remote === '') {
+//			$output->writeln('');
+//		}
+
+//		$output->writeln('');
+//		$output->writeln(
+//			'. By default, this feature is disabled. You will need to setup a valid entry to enabled it.'
+//		);
+
+//		$output->writeln('');
+//		$output->write('* testing current address: ' . $this->configService->getLoopbackPath() . ' ');
+
+
+//		$this->configService->getAppValue(ConfigService::CHECK_FRONTAL_USING);
 	}
 
 
@@ -198,12 +627,17 @@ class CirclesCheck extends Base {
 	 * @return bool
 	 * @throws RequestNetworkException
 	 */
-	private function testRequest(OutputInterface $o, string $type, string $route, array $args = []): bool {
+	private function testRequest(
+		OutputInterface $output,
+		string $type,
+		string $route,
+		array $args = []
+	): bool {
 		$request = new NC22Request('', Request::type($type));
-		$this->configService->configureRequest($request, $route, $args);
+		$this->configService->configureLoopbackRequest($request, $route, $args);
 		$request->setFollowLocation(false);
 
-		$o->write('- ' . $type . ' request on ' . $request->getCompleteUrl() . ': ');
+		$output->write('- ' . $type . ' request on ' . $request->getCompleteUrl() . ': ');
 		$this->doRequest($request);
 
 		$color = 'error';
@@ -212,7 +646,7 @@ class CirclesCheck extends Base {
 			$color = 'info';
 		}
 
-		$o->writeln('<' . $color . '>' . $result->getStatusCode() . '</' . $color . '>');
+		$output->writeln('<' . $color . '>' . $result->getStatusCode() . '</' . $color . '>');
 
 		if ($result->getStatusCode() === 200) {
 			return true;
@@ -254,6 +688,29 @@ class CirclesCheck extends Base {
 			'New configuration <info>' . Application::APP_ID . '.' . ConfigService::FORCE_NC_BASE . '=\''
 			. $address . '\'</info> stored in database'
 		);
+	}
+
+
+	/**
+	 * @param string $test
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
+	private function parseAddress(string $test): array {
+		$scheme = parse_url($test, PHP_URL_SCHEME);
+		$cloudId = parse_url($test, PHP_URL_HOST);
+		$cloudIdPort = parse_url($test, PHP_URL_PORT);
+
+		if (is_null($scheme) || is_null($cloudId)) {
+			throw new Exception();
+		}
+
+		if (!is_null($cloudIdPort)) {
+			$cloudId = $cloudId . ':' . $cloudIdPort;
+		}
+
+		return [$scheme, $cloudId];
 	}
 
 }

@@ -48,6 +48,7 @@ use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
@@ -139,6 +140,7 @@ class RemoteController extends Controller {
 	 * @return DataResponse
 	 * @throws NotLoggedInException
 	 * @throws SignatoryException
+	 * @throws RemoteInstanceException
 	 */
 	public function appService(): DataResponse {
 		try {
@@ -147,9 +149,13 @@ class RemoteController extends Controller {
 			return new DataResponse();
 		}
 
-		$confirm = $this->request->getParam('auth', '');
+		$signatory = $this->remoteStreamService->getAppSignatory(
+			$this->configService->isLocalInstance($this->request->getServerHost(), true),
+			false,
+			$this->request->getParam('auth', '')
+		);
 
-		return new DataResponse($this->remoteStreamService->getAppSignatory(false, $confirm));
+		return new DataResponse($signatory);
 	}
 
 
@@ -209,8 +215,9 @@ class RemoteController extends Controller {
 	 */
 	public function test(): DataResponse {
 		try {
-			$test =
-				$this->remoteStreamService->incomingSignedRequest($this->configService->getFrontalInstance());
+			$test = $this->remoteStreamService->incomingSignedRequest(
+				$this->configService->getValidLocalInstances()
+			);
 
 			return new DataResponse($test->jsonSerialize());
 		} catch (Exception $e) {
@@ -345,7 +352,7 @@ class RemoteController extends Controller {
 	 */
 	private function extractEventFromRequest(): FederatedEvent {
 		$signed =
-			$this->remoteStreamService->incomingSignedRequest($this->configService->getFrontalInstance());
+			$this->remoteStreamService->incomingSignedRequest($this->configService->getValidLocalInstances());
 		$this->confirmRemoteInstance($signed);
 
 		$event = new FederatedEvent();
@@ -367,7 +374,7 @@ class RemoteController extends Controller {
 	 */
 	private function extractDataFromFromRequest(): SimpleDataStore {
 		$signed =
-			$this->remoteStreamService->incomingSignedRequest($this->configService->getFrontalInstance());
+			$this->remoteStreamService->incomingSignedRequest($this->configService->getValidLocalInstances());
 		$remoteInstance = $this->confirmRemoteInstance($signed);
 
 		// There should be no need to confirm the need or the origin of the initiator as $remoteInstance

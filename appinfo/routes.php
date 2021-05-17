@@ -66,7 +66,7 @@ return [
 		//		['name' => 'EventWrapper#status', 'url' => '/v1/gs/status', 'verb' => 'POST'],
 
 		['name' => 'Remote#appService', 'url' => '/', 'verb' => 'GET'],
-		['name' => 'Remote#test', 'url' => '/test/', 'verb' => 'GET'],
+		['name' => 'Remote#test', 'url' => '/test', 'verb' => 'GET'],
 		['name' => 'Remote#event', 'url' => '/event/', 'verb' => 'POST'],
 		['name' => 'Remote#incoming', 'url' => '/incoming/', 'verb' => 'POST'],
 		['name' => 'Remote#circles', 'url' => '/circles/', 'verb' => 'GET'],
@@ -75,3 +75,4 @@ return [
 		['name' => 'Remote#member', 'url' => '/member/{type}/{userId}/', 'verb' => 'GET']
 	]
 ];
+

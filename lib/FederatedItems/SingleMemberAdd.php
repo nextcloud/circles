@@ -348,7 +348,7 @@ class SingleMemberAdd implements
 
 			if (!$circle->isConfig(Circle::CFG_FEDERATED)) {
 				$remoteInstance = $this->remoteStreamService->getCachedRemoteInstance($member->getInstance());
-				if ($remoteInstance->getType() !== RemoteInstance::TYPE_GLOBAL_SCALE) {
+				if ($remoteInstance->getType() !== RemoteInstance::TYPE_GLOBALSCALE) {
 					throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[127], 127);
 				}
 			}

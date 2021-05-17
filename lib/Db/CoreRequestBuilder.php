@@ -114,6 +114,7 @@ class CoreRequestBuilder {
 		self::TABLE_REMOTE              => [
 			'id',
 			'type',
+			'interface',
 			'uid',
 			'instance',
 			'href',

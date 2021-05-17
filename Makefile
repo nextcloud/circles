@@ -37,6 +37,7 @@ clean:
 # composer packages
 composer:
 	composer install --prefer-dist
+	composer upgrade --prefer-dist
 
 appstore: clean composer
 	mkdir -p $(sign_dir)

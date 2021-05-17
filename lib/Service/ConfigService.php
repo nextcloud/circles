@@ -31,6 +31,7 @@ use daita\MySmallPhpTools\Traits\TArrayTools;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\GSStatusException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\Member;
@@ -50,19 +51,15 @@ class ConfigService {
 	const INTERNAL_CLOUD_SCHEME = 'internal_cloud_scheme';
 	const LOOPBACK_CLOUD_ID = 'loopback_cloud_id';
 	const LOOPBACK_CLOUD_SCHEME = 'loopback_cloud_scheme';
+	const CHECK_FRONTAL_USING = 'check_frontal_using';
+	const CHECK_INTERNAL_USING = 'check_internal_using';
 	const SELF_SIGNED_CERT = 'self_signed_cert';
 	const MEMBERS_LIMIT = 'members_limit';
 	const ACTIVITY_ON_NEW_CIRCLE = 'creation_activity';
 	const MIGRATION_22 = 'migration_22';
 
-	// deprecated
-	const CIRCLES_CONTACT_BACKEND = 'contact_backend';
-	const CIRCLES_ACCOUNTS_ONLY = 'accounts_only'; // only UserType=1
-	const CIRCLES_SEARCH_FROM_COLLABORATOR = 'search_from_collaborator';
-
-
-	const FORCE_NC_BASE = 'force_nc_base';
-	const TEST_NC_BASE = 'test_nc_base';
+	const LOOPBACK_TMP_ID = 'loopback_tmp_id';
+	const LOOPBACK_TMP_SCHEME = 'loopback_tmp_scheme';
 
 	const GS_MODE = 'mode';
 	const GS_KEY = 'key';
@@ -71,13 +68,28 @@ class ConfigService {
 	const GS_LOOKUP_USERS = '/users';
 
 
+	// deprecated -- removing in NC25
+	const CIRCLES_CONTACT_BACKEND = 'contact_backend';
+	const CIRCLES_ACCOUNTS_ONLY = 'accounts_only'; // only UserType=1
+	const CIRCLES_SEARCH_FROM_COLLABORATOR = 'search_from_collaborator';
+
+	const FORCE_NC_BASE = 'force_nc_base';
+	const TEST_NC_BASE = 'test_nc_base';
+
+
+
 	private $defaults = [
-		self::FRONTAL_CLOUD_ID       => '',
-		self::FRONTAL_CLOUD_SCHEME   => 'https',
-		self::INTERNAL_CLOUD_ID      => '',
-		self::INTERNAL_CLOUD_SCHEME  => 'https',
-		self::LOOPBACK_CLOUD_ID      => '',
-		self::LOOPBACK_CLOUD_SCHEME  => 'https',
+		self::FRONTAL_CLOUD_ID      => '',
+		self::FRONTAL_CLOUD_SCHEME  => 'https',
+		self::INTERNAL_CLOUD_ID     => '',
+		self::INTERNAL_CLOUD_SCHEME => 'https',
+		self::LOOPBACK_CLOUD_ID     => '',
+		self::LOOPBACK_CLOUD_SCHEME => 'https',
+		self::CHECK_FRONTAL_USING   => 'https://test.artificial-owl.com/',
+		self::CHECK_INTERNAL_USING  => '',
+		self::LOOPBACK_TMP_ID       => '',
+		self::LOOPBACK_TMP_SCHEME   => '',
+
 		self::SELF_SIGNED_CERT       => '0',
 		self::MEMBERS_LIMIT          => '50',
 		self::ACTIVITY_ON_NEW_CIRCLE => '1',
@@ -344,19 +356,97 @@ class ConfigService {
 
 
 	/**
+	 * @return string
+	 */
+	public function getLoopbackInstance(): string {
+		$loopbackCloudId = $this->getAppValue(self::LOOPBACK_TMP_ID);
+		if ($loopbackCloudId !== '') {
+			return $loopbackCloudId;
+		}
+
+		$loopbackCloudId = $this->getAppValue(self::LOOPBACK_CLOUD_ID);
+		if ($loopbackCloudId !== '') {
+			return $loopbackCloudId;
+		}
+
+		$cliUrl = $this->getAppValue(self::FORCE_NC_BASE);
+		if ($cliUrl === '') {
+			$cliUrl = $this->config->getSystemValue('circles.force_nc_base', '');
+		}
+
+		if ($cliUrl === '') {
+			$cliUrl = $this->config->getSystemValue('overwrite.cli.url', '');
+		}
+
+		$loopback = parse_url($cliUrl);
+		if (!is_array($loopback) || !array_key_exists('host', $loopback)) {
+			return $cliUrl;
+		}
+
+		if (array_key_exists('port', $loopback)) {
+			$loopbackCloudId = $loopback['host'] . ':' . $loopback['port'];
+		} else {
+			$loopbackCloudId = $loopback['host'];
+		}
+
+		if (array_key_exists('scheme', $loopback)
+			&& $this->getAppValue(self::LOOPBACK_TMP_SCHEME) !== $loopback['scheme']) {
+			$this->setAppValue(self::LOOPBACK_TMP_SCHEME, $loopback['scheme']);
+		}
+
+		return $loopbackCloudId;
+	}
+
+	/**
+	 * returns loopback address based on getLoopbackInstance and LOOPBACK_CLOUD_SCHEME
+	 * should be used to async process
+	 *
+	 * @param string $route
+	 * @param array $args
+	 *
+	 * @return string
+	 */
+	public function getLoopbackPath(string $route = '', array $args = []): string {
+		$instance = $this->getLoopbackInstance();
+		$scheme = $this->getAppValue(self::LOOPBACK_TMP_SCHEME);
+		if ($scheme === '') {
+			$scheme = $this->getAppValue(self::LOOPBACK_CLOUD_SCHEME);
+		}
+
+		$base = $scheme . '://' . $instance;
+		if ($route === '') {
+			return $base;
+		}
+
+		return $base . $this->urlGenerator->linkToRoute($route, $args);
+	}
+
+
+	/**
+	 * - must be configured using INTERNAL_CLOUD_ID
 	 * - returns host+port, does not specify any protocol
-	 * - can be forced using FRONTAL_CLOUD_ID
-	 * - use 'overwrite.cli.url'
-	 * - can use the first entry from trusted_domains if FRONTAL_CLOUD_ID = 'use-trusted-domain'
+	 * - used mainly to assign instance and source to a request to local GlobalScale
+	 * - important only in GlobalScale environment
+	 *
+	 * @return string
+	 */
+	public function getInternalInstance(): string {
+		return $this->getAppValue(self::INTERNAL_CLOUD_ID);
+	}
+
+
+	/**
+	 * - must be configured using FRONTAL_CLOUD_ID
+	 * - returns host+port, does not specify any protocol
 	 * - used mainly to assign instance and source to a request
-	 * - important only in remote environment; can be totally random in a jailed environment
+	 * - important only in remote environment
 	 *
 	 * @return string
 	 */
 	public function getFrontalInstance(): string {
 		$frontalCloudId = $this->getAppValue(self::FRONTAL_CLOUD_ID);
 
-		// using old settings - Deprecated in NC25
+		// using old settings local_cloud_id from NC20, deprecated in NC25
 		if ($frontalCloudId === '') {
 			$frontalCloudId = $this->config->getAppValue(Application::APP_ID, 'local_cloud_id', '');
 			if ($frontalCloudId !== '') {
@@ -364,30 +454,7 @@ class ConfigService {
 			}
 		}
 
-		if ($frontalCloudId === '') {
-			$cliUrl = $this->config->getSystemValue('overwrite.cli.url', '');
-			$frontal = parse_url($cliUrl);
-			if (!is_array($frontal) || !array_key_exists('host', $frontal)) {
-				if ($cliUrl !== '') {
-					return $cliUrl;
-				}
-
-				$randomCloudId = $this->uuid();
-				$this->setAppValue(self::FRONTAL_CLOUD_ID, $randomCloudId);
-
-				return $randomCloudId;
-			}
-
-			if (array_key_exists('port', $frontal)) {
-				return $frontal['host'] . ':' . $frontal['port'];
-			} else {
-				return $frontal['host'];
-			}
-		} else if ($frontalCloudId === 'use-trusted-domain') {
-			return $this->getTrustedDomains()[0];
-		} else {
-			return $frontalCloudId;
-		}
+		return $frontalCloudId;
 	}
 
 
@@ -395,13 +462,25 @@ class ConfigService {
 	 * returns address based on FRONTAL_CLOUD_ID, FRONTAL_CLOUD_SCHEME and a routeName
 	 * perfect for urlId in ActivityPub env.
 	 *
+	 * @param bool $internal
 	 * @param string $route
 	 * @param array $args
 	 *
 	 * @return string
+	 * @throws RemoteInstanceException
 	 */
-	public function getFrontalPath(string $route = 'circles.Remote.appService', array $args = []): string {
-		$base = $this->getAppValue(self::FRONTAL_CLOUD_SCHEME) . '://' . $this->getFrontalInstance();
+	public function getInstancePath(
+		bool $internal = false,
+		string $route = 'circles.Remote.appService',
+		array $args = []
+	): string {
+		if ($internal && $this->getInternalInstance() !== '') {
+			$base = $this->getAppValue(self::INTERNAL_CLOUD_SCHEME) . '://' . $this->getInternalInstance();
+		} else if ($this->getFrontalInstance() !== '') {
+			$base = $this->getAppValue(self::FRONTAL_CLOUD_SCHEME) . '://' . $this->getFrontalInstance();
+		} else {
+			throw new RemoteInstanceException('not enabled');
+		}
 
 		if ($route === '') {
 			return $base;
@@ -411,88 +490,130 @@ class ConfigService {
 	}
 
 	/**
+	 * @param string $host
+	 * @param string $route
+	 * @param array $args
+	 *
+	 * @return string
+	 * @throws RemoteInstanceException
+	 */
+	public function getInstancePathBasedOnHost(
+		string $host,
+		string $route = 'circles.Remote.appService',
+		array $args = []
+	): string {
+		return $this->getInstancePath(
+			$this->isLocalInstance($host, true),
+			$route,
+			$args
+		);
+	}
+
+
+	/**
 	 * @param string $instance
+	 * @param bool $internal
 	 *
 	 * @return bool
 	 */
-	public function isLocalInstance(string $instance): bool {
+	public function isLocalInstance(string $instance, bool $internal = false): bool {
+		if (strtolower($instance) === strtolower($this->getInternalInstance())
+			&& $this->getInternalInstance() !== ''
+		) {
+			return true;
+		}
+
+		if (!$internal) {
+			return false;
+		}
+
 		if (strtolower($instance) === strtolower($this->getFrontalInstance())) {
 			return true;
 		}
 
-		if ($this->getAppValue(self::FRONTAL_CLOUD_ID) === 'use-trusted-domain') {
+//		if ($this->getAppValue(self::FRONTAL_CLOUD_ID) === 'use-trusted-domain') {
 			return (in_array($instance, $this->getTrustedDomains()));
+//		}
+
+//		return false;
+	}
+
+	/**
+	 * @param string $instance
+	 *
+	 * @return string
+	 */
+	public function displayInstance(string $instance): string {
+		if ($this->isLocalInstance($instance)) {
+			return '';
 		}
 
-		return false;
+		return $instance;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getLocalInstance(): string {
+		if ($this->getFrontalInstance() !== '') {
+			return $this->getFrontalInstance();
+		}
+
+		if ($this->getInternalInstance() !== '') {
+			return $this->getInternalInstance();
+		}
+
+		if ($this->getLoopbackInstance()) {
+			return $this->getLoopbackInstance();
+		}
+
+		return '';
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getValidLocalInstances(): array {
+		return array_filter(
+			array_unique(
+				[
+					$this->getFrontalInstance(),
+					$this->getInternalInstance()
+				]
+			)
+		);
+	}
+
+
+	/**
+	 * - Create route using getLoopbackAddress()
+	 * - perfect for loopback request.
+	 *
+	 * @param NC22Request $request
+	 * @param string $route
+	 * @param array $args
+	 */
+	public function configureLoopbackRequest(
+		NC22Request $request,
+		string $route = '',
+		array $args = []
+	): void {
+		$this->configureRequest($request);
+		$request->basedOnUrl($this->getLoopbackPath($route, $args));
 	}
 
 
 	/**
 	 * @param NC22Request $request
-	 * @param string $routeName
-	 * @param array $args
 	 */
-	public function configureRequest(NC22Request $request, string $routeName = '', array $args = []): void {
-		$this->configureRequestAddress($request, $routeName, $args);
-
-		if ($this->getForcedNcBase() === '') {
-			$request->setProtocols(['https', 'http']);
-		}
-
+	public function configureRequest(NC22Request $request): void {
 		$request->setVerifyPeer($this->getAppValue(ConfigService::SELF_SIGNED_CERT) !== '1');
+		$request->setProtocols(['https', 'http']);
 		$request->setHttpErrorsAllowed(true);
 		$request->setLocalAddressAllowed(true);
 		$request->setFollowLocation(true);
 		$request->setTimeout(5);
-	}
-
-	/**
-	 * - Create route using overwrite.cli.url.
-	 * - can be forced using FORCE_NC_BASE or TEST_BC_BASE (temporary)
-	 * - can also be overwritten in config/config.php: 'circles.force_nc_base'
-	 * - perfect for loopback request.
-	 *
-	 * @param NC22Request $request
-	 * @param string $routeName
-	 * @param array $args
-	 */
-	private function configureRequestAddress(
-		NC22Request $request,
-		string $routeName,
-		array $args = []
-	): void {
-		if ($routeName === '') {
-			return;
-		}
-
-		$ncBase = $this->getForcedNcBase();
-		if ($ncBase !== '') {
-			$absolute = $this->cleanLinkToRoute($ncBase, $routeName, $args);
-		} else {
-			$absolute = $this->urlGenerator->linkToRouteAbsolute($routeName, $args);
-		}
-
-		$request->basedOnUrl($absolute);
-	}
-
-
-	/**
-	 * - return force_nc_base from config/config.php, then from FORCE_NC_BASE.
-	 *
-	 * @return string
-	 */
-	private function getForcedNcBase(): string {
-		if ($this->getAppValue(self::TEST_NC_BASE) !== '') {
-			return $this->getAppValue(self::TEST_NC_BASE);
-		}
-
-		$fromConfig = $this->config->getSystemValue('circles.force_nc_base', '');
-		if ($fromConfig !== '') {
-			return $fromConfig;
-		}
-
-		return $this->getAppValue(self::FORCE_NC_BASE);
 	}
 
 

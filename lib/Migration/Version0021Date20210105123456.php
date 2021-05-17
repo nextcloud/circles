@@ -151,6 +151,13 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 					  ]
 			);
 			$table->addColumn(
+				'interface', 'integer', [
+						  'notnull' => true,
+						  'length'  => 1,
+						  'default' => 0
+					  ]
+			);
+			$table->addColumn(
 				'uid', 'string', [
 						 'notnull' => false,
 						 'length'  => 20,

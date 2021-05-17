@@ -31,14 +31,12 @@ use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
 use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
 use Exception;
-use OCA\Circles\Api\v1\Circles;
 use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\FederatedLinksRequest;
 use OCA\Circles\Db\SharingFrameRequest;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
-use OCA\Circles\Exceptions\PayloadDeliveryException;
 use OCA\Circles\Exceptions\SharingFrameAlreadyDeliveredException;
 use OCA\Circles\Exceptions\SharingFrameAlreadyExistException;
 use OCA\Circles\Exceptions\SharingFrameDoesNotExistException;
@@ -318,7 +316,6 @@ class SharingFrameService {
 	}
 
 
-
 	/**
 	 * @param SharingFrame $frame
 	 *
@@ -349,7 +346,8 @@ class SharingFrameService {
 	 * @param SharingFrame $frame
 	 * @param FederatedLink[] $links
 	 */
-	private function forwardSharingFrameToFederatedLinks(DeprecatedCircle $circle, SharingFrame $frame, $links) {
+	private function forwardSharingFrameToFederatedLinks(DeprecatedCircle $circle, SharingFrame $frame, $links
+	) {
 //
 //		$args = [
 //			'apiVersion' => Circles::version(),

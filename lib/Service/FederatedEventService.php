@@ -62,6 +62,7 @@ use OCA\Circles\IFederatedItemDataRequestOnly;
 use OCA\Circles\IFederatedItemInitiatorCheckNotRequired;
 use OCA\Circles\IFederatedItemInitiatorMembershipNotRequired;
 use OCA\Circles\IFederatedItemLimitedToInstanceWithMembership;
+use OCA\Circles\IFederatedItemLoopbackTest;
 use OCA\Circles\IFederatedItemMemberCheckNotRequired;
 use OCA\Circles\IFederatedItemMemberEmpty;
 use OCA\Circles\IFederatedItemMemberOptional;
@@ -157,15 +158,18 @@ class FederatedEventService extends NC22Signature {
 	 * @throws RemoteResourceNotFoundException
 	 * @throws UnknownRemoteException
 	 * @throws RemoteInstanceException
+	 * @throws RequestBuilderException
 	 */
 	public function newEvent(FederatedEvent $event): array {
-		$event->setSource($this->configService->getFrontalInstance());
+		$event->setSource($this->configService->getLocalInstance());
 
 		$federatedItem = $this->getFederatedItem($event, false);
 
 		$this->confirmInitiator($event, true);
-		if ($this->configService->isLocalInstance($event->getCircle()->getInstance())) {
-			$event->setIncomingOrigin($event->getCircle()->getInstance());
+		if ($event->canBypass(FederatedEvent::BYPASS_CIRCLE)
+			|| $this->configService->isLocalInstance($event->getCircle()->getInstance())) {
+//			$event->setIncomingOrigin($event->getCircle()->getInstance());
+			$event->setIncomingOrigin($this->configService->getLocalInstance());
 
 			$federatedItem->verify($event);
 
@@ -273,6 +277,10 @@ class FederatedEventService extends NC22Signature {
 	 * @param IFederatedItem $item
 	 */
 	private function setFederatedEventBypass(FederatedEvent $event, IFederatedItem $item) {
+		if ($item instanceof IFederatedItemLoopbackTest) {
+			$event->bypass(FederatedEvent::BYPASS_CIRCLE);
+			$event->bypass(FederatedEvent::BYPASS_INITIATORCHECK);
+		}
 		if ($item instanceof IFederatedItemCircleCheckNotRequired) {
 			$event->bypass(FederatedEvent::BYPASS_LOCALCIRCLECHECK);
 		}
@@ -301,7 +309,7 @@ class FederatedEventService extends NC22Signature {
 		IFederatedItem $item,
 		bool $checkLocalOnly = true
 	) {
-		if (!$event->hasCircle()) {
+		if (!$event->canBypass(FederatedEvent::BYPASS_CIRCLE) && !$event->hasCircle()) {
 			throw new FederatedEventException('FederatedEvent has no Circle linked');
 		}
 
@@ -376,6 +384,8 @@ class FederatedEventService extends NC22Signature {
 	 *
 	 * @param FederatedEvent $event
 	 * @param array $filter
+	 *
+	 * @throws RequestBuilderException
 	 */
 	public function initBroadcast(FederatedEvent $event, array $filter = []): void {
 		$instances = array_diff($this->getInstances($event), $filter);
@@ -389,9 +399,10 @@ class FederatedEventService extends NC22Signature {
 		$wrapper->setCreation(time());
 		$wrapper->setSeverity($event->getSeverity());
 
-		$circle = $event->getCircle();
 		foreach ($instances as $instance) {
-			if ($circle->isConfig(Circle::CFG_LOCAL) && !$this->configService->isLocalInstance($instance)) {
+			if ($event->hasCircle()
+				&& $event->getCircle()->isConfig(Circle::CFG_LOCAL)
+				&& !$this->configService->isLocalInstance($instance)) {
 				continue;
 			}
 
@@ -400,8 +411,10 @@ class FederatedEventService extends NC22Signature {
 		}
 
 		$request = new NC22Request('', Request::TYPE_POST);
-		$this->configService->configureRequest(
-			$request, 'circles.EventWrapper.asyncBroadcast', ['token' => $wrapper->getToken()]
+		$this->configService->configureLoopbackRequest(
+			$request,
+			'circles.EventWrapper.asyncBroadcast',
+			['token' => $wrapper->getToken()]
 		);
 
 		$event->setWrapperToken($wrapper->getToken());
@@ -422,6 +435,10 @@ class FederatedEventService extends NC22Signature {
 	 */
 	public function getInstances(FederatedEvent $event): array {
 		$local = $this->configService->getFrontalInstance();
+
+		if (!$event->hasCircle()) {
+			return [$this->configService->getLoopbackInstance()];
+		}
 
 		$circle = $event->getCircle();
 		$instances = array_map(

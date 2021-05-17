@@ -37,6 +37,7 @@ use daita\MySmallPhpTools\Exceptions\SignatureException;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use OC\URLGenerator;
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\RemoteStreamService;
 use OCP\Http\WellKnown\IHandler;
@@ -96,7 +97,8 @@ class WebfingerHandler implements IHandler {
 			return $response;
 		}
 
-		$subject = $this->get('resource', $context->getHttpRequest()->getParams());
+		$request = $context->getHttpRequest();
+		$subject = $this->get('resource', $request->getParams());
 		if ($subject !== Application::APP_SUBJECT) {
 			return $response;
 		}
@@ -106,12 +108,14 @@ class WebfingerHandler implements IHandler {
 		}
 
 		try {
-			$this->remoteStreamService->getAppSignatory();
-		} catch (SignatoryException $e) {
+			$this->remoteStreamService->getAppSignatory(
+				$this->configService->isLocalInstance($request->getServerHost(), true)
+			);
+		} catch (SignatoryException | RemoteInstanceException $e) {
 			return $response;
 		}
 
-		$href = $this->configService->getFrontalPath();
+		$href = $this->configService->getInstancePathBasedOnHost($request->getServerHost());
 		$info = [
 			'app'     => Application::APP_ID,
 			'name'    => Application::APP_NAME,
