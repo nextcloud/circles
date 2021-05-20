@@ -283,7 +283,7 @@ class FileShare extends AGlobalScaleEvent {
 		);
 
 		$subject = $this->l10n->t('%s shared »%s« with you.', [$author, $fileName]);
-		$text = $this->l10n->t('%s shared »%s« with \'%s\'.', [$author, $fileName, $circleName]);
+		$text = $this->l10n->t('%s shared »%s« with "%s".', [$author, $fileName, $circleName]);
 
 		$emailTemplate =
 			$this->generateEmailTemplate($subject, $text, $fileName, $link, $author, $circleName);
