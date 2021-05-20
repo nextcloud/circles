@@ -61,6 +61,7 @@ class RemoteRequest extends RemoteRequestBuilder {
 		   ->setValue('instance', $qb->createNamedParameter($remote->getInstance()))
 		   ->setValue('href', $qb->createNamedParameter($remote->getId()))
 		   ->setValue('type', $qb->createNamedParameter($remote->getType()))
+		   ->setValue('interface', $qb->createNamedParameter($remote->getInterface()))
 		   ->setValue('item', $qb->createNamedParameter(json_encode($remote->getOrigData())));
 
 		$qb->execute();
@@ -171,7 +172,8 @@ class RemoteRequest extends RemoteRequestBuilder {
 		$expr = $qb->expr();
 		$orX = $expr->orX();
 
-		$orX->add($qb->exprLimitToDBField('type', RemoteInstance::TYPE_GLOBAL_SCALE, true, false));
+		$orX->add($qb->exprLimitToDBField('type', RemoteInstance::TYPE_GLOBALSCALE, true, false));
+
 		if ($circle->isConfig(Circle::CFG_FEDERATED) || $broadcastAsFederated) {
 
 			// get all TRUSTED

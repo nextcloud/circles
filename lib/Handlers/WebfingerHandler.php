@@ -37,7 +37,9 @@ use daita\MySmallPhpTools\Exceptions\SignatureException;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use OC\URLGenerator;
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\Exceptions\UnknownInterfaceException;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\InterfaceService;
 use OCA\Circles\Service\RemoteStreamService;
 use OCP\Http\WellKnown\IHandler;
 use OCP\Http\WellKnown\IRequestContext;
@@ -63,6 +65,9 @@ class WebfingerHandler implements IHandler {
 	/** @var RemoteStreamService */
 	private $remoteStreamService;
 
+	/** @var InterfaceService */
+	private $interfaceService;
+
 	/** @var ConfigService */
 	private $configService;
 
@@ -72,13 +77,16 @@ class WebfingerHandler implements IHandler {
 	 *
 	 * @param IURLGenerator $urlGenerator
 	 * @param RemoteStreamService $remoteStreamService
+	 * @param InterfaceService $interfaceService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IURLGenerator $urlGenerator, RemoteStreamService $remoteStreamService, ConfigService $configService
+		IURLGenerator $urlGenerator, RemoteStreamService $remoteStreamService,
+		InterfaceService $interfaceService, ConfigService $configService
 	) {
 		$this->urlGenerator = $urlGenerator;
 		$this->remoteStreamService = $remoteStreamService;
+		$this->interfaceService = $interfaceService;
 		$this->configService = $configService;
 	}
 
@@ -96,7 +104,8 @@ class WebfingerHandler implements IHandler {
 			return $response;
 		}
 
-		$subject = $this->get('resource', $context->getHttpRequest()->getParams());
+		$request = $context->getHttpRequest();
+		$subject = $this->get('resource', $request->getParams());
 		if ($subject !== Application::APP_SUBJECT) {
 			return $response;
 		}
@@ -106,19 +115,20 @@ class WebfingerHandler implements IHandler {
 		}
 
 		try {
+			$this->interfaceService->setCurrentInterfaceFromRequest($request);
 			$this->remoteStreamService->getAppSignatory();
-		} catch (SignatoryException $e) {
+			$href = $this->interfaceService->getCloudPath('circles.Remote.appService');
+			$info = [
+				'app'     => Application::APP_ID,
+				'name'    => Application::APP_NAME,
+				'token'   => Application::APP_TOKEN,
+				'version' => $this->configService->getAppValue('installed_version'),
+				'api'     => Application::APP_API
+			];
+		} catch (UnknownInterfaceException | SignatoryException $e) {
 			return $response;
 		}
 
-		$href = $this->configService->getFrontalPath();
-		$info = [
-			'app'     => Application::APP_ID,
-			'name'    => Application::APP_NAME,
-			'token'   => Application::APP_TOKEN,
-			'version' => $this->configService->getAppValue('installed_version'),
-			'api'     => Application::APP_API
-		];
 
 		return $response->addLink(Application::APP_REL, 'application/json', $href, [], $info);
 	}

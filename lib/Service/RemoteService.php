@@ -148,8 +148,10 @@ class RemoteService extends NC22Signature {
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
 	 * @throws UnknownRemoteException
+	 * @throws FederatedItemException
 	 */
 	public function getCircleFromInstance(string $circleId, string $instance, array $data = []): Circle {
+		// TODO: check that $instance is not Local !!
 		$result = $this->remoteStreamService->resultRequestRemoteInstance(
 			$instance,
 			RemoteInstance::CIRCLE,
@@ -157,7 +159,6 @@ class RemoteService extends NC22Signature {
 			new SimpleDataStore($data),
 			['circleId' => $circleId]
 		);
-
 
 		if (empty($result)) {
 			throw new CircleNotFoundException();
@@ -176,11 +177,10 @@ class RemoteService extends NC22Signature {
 	 * @param array $data
 	 *
 	 * @return Member[]
+	 * @throws FederatedItemException
 	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
 	 */
 	public function getMembersFromInstance(string $circleId, string $instance, array $data = []): array {

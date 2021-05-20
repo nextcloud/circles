@@ -758,7 +758,7 @@ class Member extends ManagedModel implements
 
 		if ($this->getInstance() === '') {
 			$this->setLocal(true);
-			$this->setInstance($this->get('_params.local', $data));
+			$this->setInstance($this->getManager()->getLocalInstance());
 		}
 
 		$this->getManager()->manageImportFromDatabase($this, $data, $prefix);
@@ -777,7 +777,7 @@ class Member extends ManagedModel implements
 			'singleId'      => $this->getSingleId(),
 			'userId'        => $this->getUserId(),
 			'userType'      => $this->getUserType(),
-			'instance'      => $this->getInstance(),
+			'instance'      => $this->getManager()->fixInstance($this->getInstance()),
 			'local'         => $this->isLocal(),
 			'level'         => $this->getLevel(),
 			'status'        => $this->getStatus(),

@@ -513,7 +513,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		$expr = $this->expr();
 		$orX = $expr->orX();
 		$orX->add(
-			$expr->eq($aliasRemote . '.type', $this->createNamedParameter(RemoteInstance::TYPE_GLOBAL_SCALE))
+			$expr->eq($aliasRemote . '.type', $this->createNamedParameter(RemoteInstance::TYPE_GLOBALSCALE))
 		);
 
 		$orExtOrPassive = $expr->orX();

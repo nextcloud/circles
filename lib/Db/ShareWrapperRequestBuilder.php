@@ -106,12 +106,7 @@ class ShareWrapperRequestBuilder extends CoreRequestBuilder {
 	public function getItemFromRequest(CoreQueryBuilder $qb): ShareWrapper {
 		/** @var ShareWrapper $shareWrapper */
 		try {
-			$shareWrapper = $qb->asItem(
-				ShareWrapper::class,
-				[
-					'local' => $this->configService->getFrontalInstance()
-				]
-			);
+			$shareWrapper = $qb->asItem(ShareWrapper::class);
 		} catch (RowNotFoundException $e) {
 			throw new ShareWrapperNotFoundException();
 		}
@@ -127,12 +122,7 @@ class ShareWrapperRequestBuilder extends CoreRequestBuilder {
 	 */
 	public function getItemsFromRequest(CoreQueryBuilder $qb): array {
 		/** @var ShareWrapper[] $result */
-		return $qb->asItems(
-			ShareWrapper::class,
-			[
-				'local' => $this->configService->getFrontalInstance()
-			]
-		);
+		return $qb->asItems(ShareWrapper::class);
 	}
 
 }

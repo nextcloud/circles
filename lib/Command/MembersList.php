@@ -229,7 +229,6 @@ class MembersList extends Base {
 		);
 		$table->render();
 
-		$local = $this->configService->getFrontalInstance();
 		foreach ($members as $member) {
 			if ($member->getCircleId() === $circleId) {
 				$level = $member->getLevel();
@@ -247,7 +246,7 @@ class MembersList extends Base {
 					$member->hasBasedOn() ? Circle::$DEF_SOURCE[$member->getBasedOn()->getSource()] : '',
 					($this->input->getOption('display-name')) ?
 						$member->getBasedOn()->getDisplayName() : $member->getUserId(),
-					($member->getInstance() === $local) ? '' : $member->getInstance(),
+					$this->configService->displayInstance($member->getInstance()),
 					($level > 0) ? Member::$DEF_LEVEL[$level] :
 						'(' . strtolower($member->getStatus()) . ')'
 				]

@@ -91,7 +91,7 @@ class AddingMember implements IEventListener {
 		$circle = $event->getCircle();
 		$files = $this->shareWrapperService->getSharesToCircle($circle->getSingleId());
 
-		$event->getFederatedEvent()->addResult('files', new SimpleDataStore($files));
+			$event->getFederatedEvent()->addResult('files', new SimpleDataStore($files));
 	}
 
 }

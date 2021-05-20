@@ -54,14 +54,14 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 	const TYPE_PASSIVE = 'Passive';    // Minimum information about Federated Circles are broadcasted if a member belongs to the circle.
 	const TYPE_EXTERNAL = 'External';  // info about Federated Circles and their members are broadcasted  if a member belongs to the circle.
 	const TYPE_TRUSTED = 'Trusted';    // everything about Federated Circles are broadcasted.
-	const TYPE_GLOBAL_SCALE = 'GlobalScale';  // every Circle is broadcasted,
+	const TYPE_GLOBALSCALE = 'GlobalScale';  // every Circle is broadcasted,
 
 	public static $LIST_TYPE = [
 		self::TYPE_UNKNOWN,
 		self::TYPE_PASSIVE,
 		self::TYPE_EXTERNAL,
 		self::TYPE_TRUSTED,
-		self::TYPE_GLOBAL_SCALE
+		self::TYPE_GLOBALSCALE
 	];
 
 	const TEST = 'test';
@@ -78,6 +78,9 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 
 	/** @var string */
 	private $type = self::TYPE_UNKNOWN;
+
+	/** @var int */
+	private $interface = 0;
 
 	/** @var string */
 	private $test = '';
@@ -148,6 +151,25 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 	 */
 	public function getType(): string {
 		return $this->type;
+	}
+
+
+	/**
+	 * @param int $interface
+	 *
+	 * @return RemoteInstance
+	 */
+	public function setInterface(int $interface): self {
+		$this->interface = $interface;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getInterface(): int {
+		return $this->interface;
 	}
 
 
@@ -455,6 +477,7 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 		$this->import($this->getArray($prefix . 'item', $data));
 		$this->setOrigData($this->getArray($prefix . 'item', $data));
 		$this->setType($this->get($prefix . 'type', $data));
+		$this->setInterface($this->getInt($prefix . 'interface', $data));
 		$this->setInstance($this->get($prefix . 'instance', $data));
 		$this->setId($this->get($prefix . 'href', $data));
 

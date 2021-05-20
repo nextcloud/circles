@@ -42,9 +42,11 @@ use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\Exceptions\UnknownInterfaceException;
 use OCA\Circles\IMemberships;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\InterfaceService;
 
 /**
  * Class ModelManager
@@ -63,6 +65,9 @@ class ModelManager {
 	/** @var MembershipRequest */
 	private $membershipRequest;
 
+	/** @var InterfaceService */
+	private $interfaceService;
+
 	/** @var ConfigService */
 	private $configService;
 
@@ -80,12 +85,16 @@ class ModelManager {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		CoreQueryBuilder $coreRequestBuilder, MemberRequest $memberRequest,
-		MembershipRequest $membershipRequest, ConfigService $configService
+		CoreQueryBuilder $coreRequestBuilder,
+		MemberRequest $memberRequest,
+		MembershipRequest $membershipRequest,
+		InterfaceService $interfaceService,
+		ConfigService $configService
 	) {
 		$this->coreRequestBuilder = $coreRequestBuilder;
 		$this->memberRequest = $memberRequest;
 		$this->membershipRequest = $membershipRequest;
+		$this->interfaceService = $interfaceService;
 		$this->configService = $configService;
 	}
 
@@ -393,9 +402,26 @@ class ModelManager {
 	 * @return string
 	 */
 	public function getLocalInstance(): string {
-		return $this->configService->getFrontalInstance();
+		return $this->interfaceService->getLocalInstance();
 	}
 
+	/**
+	 * @param string $instance
+	 *
+	 * @return string
+	 * @throws UnknownInterfaceException
+	 */
+	public function fixInstance(string $instance): string {
+		if (!$this->interfaceService->hasCurrentInterface()) {
+			return $instance;
+		}
+
+		if (!$this->configService->isLocalInstance($instance)) {
+			return $instance;
+		}
+
+		return $this->interfaceService->getCloudInstance();
+	}
 
 	/**
 	 * @param bool $full

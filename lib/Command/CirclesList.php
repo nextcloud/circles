@@ -199,7 +199,6 @@ class CirclesList extends Base {
 		);
 		$table->render();
 
-		$local = $this->configService->getFrontalInstance();
 		$display = ($this->input->getOption('def') ? Circle::FLAGS_LONG : Circle::FLAGS_SHORT);
 		foreach ($circles as $circle) {
 			$owner = $circle->getOwner();
@@ -210,7 +209,7 @@ class CirclesList extends Base {
 					json_encode(Circle::getCircleFlags($circle, $display)),
 					Circle::$DEF_SOURCE[$circle->getSource()],
 					$owner->getUserId(),
-					($owner->getInstance() === $local) ? '' : $owner->getInstance(),
+					$this->configService->displayInstance($owner->getInstance()),
 					$this->getInt('members_limit', $circle->getSettings(), -1),
 					substr(str_replace("\n", ' ', $circle->getDescription()), 0, 30)
 				]

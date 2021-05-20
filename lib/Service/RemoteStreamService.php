@@ -55,10 +55,10 @@ use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RemoteUidException;
+use OCA\Circles\Exceptions\UnknownInterfaceException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCP\AppFramework\Http;
-use OCP\IL10N;
 use OCP\IURLGenerator;
 use ReflectionClass;
 use ReflectionException;
@@ -84,14 +84,14 @@ class RemoteStreamService extends NC22Signature {
 	const UPDATE_HREF = 'href';
 
 
-	/** @var IL10N */
-	private $l10n;
-
 	/** @var IURLGenerator */
 	private $urlGenerator;
 
 	/** @var RemoteRequest */
 	private $remoteRequest;
+
+	/** @var InterfaceService */
+	private $interfaceService;
 
 	/** @var ConfigService */
 	private $configService;
@@ -100,19 +100,22 @@ class RemoteStreamService extends NC22Signature {
 	/**
 	 * RemoteStreamService constructor.
 	 *
-	 * @param IL10N $l10n
 	 * @param IURLGenerator $urlGenerator
 	 * @param RemoteRequest $remoteRequest
+	 * @param InterfaceService $interfaceService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IL10N $l10n, IURLGenerator $urlGenerator, RemoteRequest $remoteRequest, ConfigService $configService
+		IURLGenerator $urlGenerator,
+		RemoteRequest $remoteRequest,
+		InterfaceService $interfaceService,
+		ConfigService $configService
 	) {
 		$this->setup('app', 'circles');
 
-		$this->l10n = $l10n;
 		$this->urlGenerator = $urlGenerator;
 		$this->remoteRequest = $remoteRequest;
+		$this->interfaceService = $interfaceService;
 		$this->configService = $configService;
 	}
 
@@ -126,9 +129,10 @@ class RemoteStreamService extends NC22Signature {
 	 *
 	 * @return RemoteInstance
 	 * @throws SignatoryException
+	 * @throws UnknownInterfaceException
 	 */
 	public function getAppSignatory(bool $generate = true, string $confirmKey = ''): RemoteInstance {
-		$app = new RemoteInstance($this->configService->getFrontalPath());
+		$app = new RemoteInstance($this->interfaceService->getCloudPath('circles.Remote.appService'));
 		$this->fillSimpleSignatory($app, $generate);
 		$app->setUidFromKey();
 
@@ -136,32 +140,25 @@ class RemoteStreamService extends NC22Signature {
 			$app->setAuthSigned($this->signString($confirmKey, $app));
 		}
 
-		$app->setRoot($this->configService->getFrontalPath(''));
-		$app->setEvent($this->configService->getFrontalPath('circles.Remote.event'));
-		$app->setIncoming($this->configService->getFrontalPath('circles.Remote.incoming'));
-		$app->setTest($this->configService->getFrontalPath('circles.Remote.test'));
-		$app->setCircles($this->configService->getFrontalPath('circles.Remote.circles'));
+		$app->setRoot($this->interfaceService->getCloudPath());
+		$app->setEvent($this->interfaceService->getCloudPath('circles.Remote.event'));
+		$app->setIncoming($this->interfaceService->getCloudPath('circles.Remote.incoming'));
+		$app->setTest($this->interfaceService->getCloudPath('circles.Remote.test'));
+		$app->setCircles($this->interfaceService->getCloudPath('circles.Remote.circles'));
 		$app->setCircle(
 			urldecode(
-				$this->configService->getFrontalPath(
-					'circles.Remote.circle',
-					['circleId' => '{circleId}']
-				)
+				$this->interfaceService->getCloudPath('circles.Remote.circle', ['circleId' => '{circleId}'])
 			)
 		);
 		$app->setMembers(
 			urldecode(
-				$this->configService->getFrontalPath(
-					'circles.Remote.members',
-					['circleId' => '{circleId}']
-				)
+				$this->interfaceService->getCloudPath('circles.Remote.members', ['circleId' => '{circleId}'])
 			)
 		);
 		$app->setMember(
 			urldecode(
-				$this->configService->getFrontalPath(
-					'circles.Remote.member',
-					['type' => '{type}', 'userId' => '{userId}']
+				$this->interfaceService->getCloudPath(
+					'circles.Remote.member', ['type' => '{type}', 'userId' => '{userId}']
 				)
 			)
 		);
@@ -208,6 +205,10 @@ class RemoteStreamService extends NC22Signature {
 		?JsonSerializable $object = null,
 		array $params = []
 	): array {
+		if (!$this->interfaceService->hasCurrentInterface()) {
+			$this->interfaceService->setCurrentInterfaceFromInstance($instance);
+		}
+
 		// TODO: check what is happening if website is down...
 		$signedRequest = $this->requestRemoteInstance($instance, $item, $type, $object, $params);
 		if (!$signedRequest->getOutgoingRequest()->hasResult()) {
@@ -242,6 +243,7 @@ class RemoteStreamService extends NC22Signature {
 	 * @throws RemoteResourceNotFoundException
 	 * @throws UnknownRemoteException
 	 * @throws RemoteInstanceException
+	 * @throws UnknownInterfaceException
 	 */
 	private function requestRemoteInstance(
 		string $instance,
@@ -250,15 +252,10 @@ class RemoteStreamService extends NC22Signature {
 		?JsonSerializable $object = null,
 		array $params = []
 	): NC22SignedRequest {
-
 		$request = new NC22Request('', $type);
-		if ($this->configService->isLocalInstance($instance)) {
-			$this->configService->configureRequest($request, 'circles.Remote.' . $item, $params);
-		} else {
-			$this->configService->configureRequest($request);
-			$link = $this->getRemoteInstanceEntry($instance, $item, $params);
-			$request->basedOnUrl($link);
-		}
+		$this->configService->configureRequest($request);
+		$link = $this->getRemoteInstanceEntry($instance, $item, $params);
+		$request->basedOnUrl($link);
 
 		// TODO: Work Around: on local, if object is empty, request takes 10s. check on other configuration
 		if (is_null($object) || empty($object->jsonSerialize())) {
@@ -385,24 +382,29 @@ class RemoteStreamService extends NC22Signature {
 	 *
 	 * @param string $instance
 	 * @param string $type
+	 * @param int $iface
 	 * @param bool $overwrite
 	 *
+	 * @throws RemoteAlreadyExistsException
+	 * @throws RemoteUidException
 	 * @throws RequestNetworkException
 	 * @throws SignatoryException
 	 * @throws SignatureException
 	 * @throws WellKnownLinkNotFoundException
-	 * @throws RemoteAlreadyExistsException
-	 * @throws RemoteUidException
 	 */
 	public function addRemoteInstance(
-		string $instance, string $type = RemoteInstance::TYPE_EXTERNAL, bool $overwrite = false
+		string $instance,
+		string $type = RemoteInstance::TYPE_EXTERNAL,
+		int $iface = InterfaceService::IFACE_FRONTAL,
+		bool $overwrite = false
 	): void {
 		if ($this->configService->isLocalInstance($instance)) {
 			throw new RemoteAlreadyExistsException('instance is local');
 		}
 
 		$remoteInstance = $this->retrieveRemoteInstance($instance);
-		$remoteInstance->setType($type);
+		$remoteInstance->setType($type)
+					   ->setInterface($iface);
 
 		try {
 			$known = $this->remoteRequest->searchDuplicate($remoteInstance);

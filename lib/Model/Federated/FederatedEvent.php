@@ -36,6 +36,7 @@ use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
+use OCA\Circles\Exceptions\UnknownInterfaceException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 
@@ -51,10 +52,11 @@ class FederatedEvent implements JsonSerializable {
 	const SEVERITY_LOW = 1;
 	const SEVERITY_HIGH = 3;
 
-	const BYPASS_LOCALCIRCLECHECK = 1;
-	const BYPASS_LOCALMEMBERCHECK = 2;
-	const BYPASS_INITIATORCHECK = 4;
-	const BYPASS_INITIATORMEMBERSHIP = 8;
+	const BYPASS_CIRCLE = 1;
+	const BYPASS_LOCALCIRCLECHECK = 2;
+	const BYPASS_LOCALMEMBERCHECK = 4;
+	const BYPASS_INITIATORCHECK = 8;
+	const BYPASS_INITIATORMEMBERSHIP = 16;
 
 	use TArrayTools;
 
@@ -478,6 +480,7 @@ class FederatedEvent implements JsonSerializable {
 	 *
 	 * @return self
 	 * @throws InvalidItemException
+	 * @throws UnknownInterfaceException
 	 */
 	public function import(array $data): self {
 		$this->setClass($this->get('class', $data));

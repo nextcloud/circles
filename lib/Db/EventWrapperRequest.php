@@ -46,12 +46,15 @@ class EventWrapperRequest extends EventWrapperRequestBuilder {
 	/**
 	 * @param EventWrapper $wrapper
 	 */
-	public function create(EventWrapper $wrapper): void {
+	public function save(EventWrapper $wrapper): void {
 		$qb = $this->getEventWrapperInsertSql();
 		$qb->setValue('token', $qb->createNamedParameter($wrapper->getToken()))
-		   ->setValue('event', $qb->createNamedParameter(json_encode($wrapper->getEvent())))
-		   ->setValue('result', $qb->createNamedParameter(json_encode($wrapper->getResult())))
+		   ->setValue(
+			   'event', $qb->createNamedParameter(json_encode($wrapper->getEvent(), JSON_UNESCAPED_SLASHES))
+		   )
+		   ->setValue('result', $qb->createNamedParameter(json_encode($wrapper->getResult(), JSON_UNESCAPED_SLASHES)))
 		   ->setValue('instance', $qb->createNamedParameter($wrapper->getInstance()))
+		   ->setValue('interface', $qb->createNamedParameter($wrapper->getInterface()))
 		   ->setValue('severity', $qb->createNamedParameter($wrapper->getSeverity()))
 		   ->setValue('status', $qb->createNamedParameter($wrapper->getStatus()))
 		   ->setValue('creation', $qb->createNamedParameter($wrapper->getCreation()));

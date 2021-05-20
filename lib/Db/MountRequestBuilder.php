@@ -100,12 +100,7 @@ class MountRequestBuilder extends CoreRequestBuilder {
 	public function getItemFromRequest(CoreQueryBuilder $qb): Mount {
 		/** @var Mount $circle */
 		try {
-			$circle = $qb->asItem(
-				Mount::class,
-				[
-					'local' => $this->configService->getFrontalInstance()
-				]
-			);
+			$circle = $qb->asItem(Mount::class);
 		} catch (RowNotFoundException $e) {
 			throw new MountNotFoundException('Mount not found');
 		}
@@ -120,14 +115,7 @@ class MountRequestBuilder extends CoreRequestBuilder {
 	 */
 	public function getItemsFromRequest(CoreQueryBuilder $qb): array {
 		/** @var Mount[] $result */
-		return $qb->asItems(
-			Mount::class,
-			[
-				// TODO: we might need a getInstance() based on a frontal/internal request ?
-				// TODO: as on some setup, there 2 ways of defining the local instance (GS+Federated)
-				'local' => $this->configService->getFrontalInstance()
-			]
-		);
+		return $qb->asItems(Mount::class);
 	}
 
 }

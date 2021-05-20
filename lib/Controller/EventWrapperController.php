@@ -33,6 +33,11 @@ namespace OCA\Circles\Controller;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Controller;
 use daita\MySmallPhpTools\Traits\TAsync;
 use daita\MySmallPhpTools\Traits\TStringTools;
+use Exception;
+use OCA\Circles\Db\EventWrapperRequest;
+use OCA\Circles\Model\Federated\EventWrapper;
+use OCA\Circles\Model\Federated\FederatedEvent;
+use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedEventService;
 use OCA\Circles\Service\RemoteDownstreamService;
 use OCA\Circles\Service\RemoteUpstreamService;
@@ -43,7 +48,7 @@ use OCP\IRequest;
 
 
 /**
- * Class GlobalScaleController
+ * Class EventWrapperController
  *
  * @package OCA\Circles\Controller
  */
@@ -55,6 +60,9 @@ class EventWrapperController extends Controller {
 	use TNC22Controller;
 
 
+	/** @var EventWrapperRequest */
+	private $eventWrapperRequest;
+
 	/** @var FederatedEventService */
 	private $federatedEventService;
 
@@ -64,25 +72,36 @@ class EventWrapperController extends Controller {
 	/** @var RemoteDownstreamService */
 	private $remoteDownstreamService;
 
+	/** @var ConfigService */
+	private $configService;
+
 
 	/**
-	 * GlobalScaleController constructor.
+	 * EventWrapperController constructor.
 	 *
 	 * @param string $appName
 	 * @param IRequest $request
+	 * @param EventWrapperRequest $eventWrapperRequest
 	 * @param FederatedEventService $federatedEventService
 	 * @param RemoteUpstreamService $remoteUpstreamService
 	 * @param RemoteDownstreamService $remoteDownstreamService
+	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		string $appName, IRequest $request,
-		FederatedEventService $federatedEventService, RemoteUpstreamService $remoteUpstreamService,
-		RemoteDownstreamService $remoteDownstreamService
+		string $appName,
+		IRequest $request,
+		EventWrapperRequest $eventWrapperRequest,
+		FederatedEventService $federatedEventService,
+		RemoteUpstreamService $remoteUpstreamService,
+		RemoteDownstreamService $remoteDownstreamService,
+		ConfigService $configService
 	) {
 		parent::__construct($appName, $request);
+		$this->eventWrapperRequest = $eventWrapperRequest;
 		$this->federatedEventService = $federatedEventService;
 		$this->remoteUpstreamService = $remoteUpstreamService;
 		$this->remoteDownstreamService = $remoteDownstreamService;
+		$this->configService = $configService;
 	}
 
 
@@ -107,8 +126,9 @@ class EventWrapperController extends Controller {
 
 		// closing socket, keep current process running.
 		$this->async();
+
 		foreach ($wrappers as $wrapper) {
-			$this->remoteUpstreamService->broadcastWrapper($wrapper);
+			$this->manageWrapper($wrapper);
 		}
 
 		$this->federatedEventService->manageResults($token);
@@ -139,6 +159,35 @@ class EventWrapperController extends Controller {
 //			return $this->fail(['data' => $data, 'error' => $e->getMessage()]);
 //		}
 //	}
+
+
+	/**
+	 * @param EventWrapper $wrapper
+	 */
+	private function manageWrapper(EventWrapper $wrapper): void {
+		$status = EventWrapper::STATUS_FAILED;
+
+		try {
+			if ($this->configService->isLocalInstance($wrapper->getInstance())) {
+				// TODO: verify that Result is updated
+				$gs = $this->federatedEventService->getFederatedItem($wrapper->getEvent(), false);
+				$gs->manage($wrapper->getEvent());
+			} else {
+				$this->remoteUpstreamService->broadcastEvent($wrapper);
+			}
+			$status = EventWrapper::STATUS_DONE;
+		} catch (Exception $e) {
+		}
+
+		if ($wrapper->getSeverity() === FederatedEvent::SEVERITY_HIGH) {
+			$wrapper->setStatus($status);
+		} else {
+			$wrapper->setStatus(EventWrapper::STATUS_OVER);
+		}
+
+		$wrapper->setResult($wrapper->getEvent()->getResult());
+		$this->eventWrapperRequest->update($wrapper);
+	}
 
 }
 

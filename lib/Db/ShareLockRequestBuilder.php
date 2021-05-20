@@ -100,12 +100,7 @@ class ShareLockRequestBuilder extends CoreRequestBuilder {
 	public function getItemFromRequest(CoreQueryBuilder $qb): FederatedShare {
 		/** @var FederatedShare $circle */
 		try {
-			$circle = $qb->asItem(
-				FederatedShare::class,
-				[
-					'local' => $this->configService->getFrontalInstance()
-				]
-			);
+			$circle = $qb->asItem(FederatedShare::class);
 		} catch (RowNotFoundException $e) {
 			throw new FederatedShareNotFoundException();
 		}
@@ -120,12 +115,7 @@ class ShareLockRequestBuilder extends CoreRequestBuilder {
 	 */
 	public function getItemsFromRequest(CoreQueryBuilder $qb): array {
 		/** @var FederatedShare[] $result */
-		return $qb->asItems(
-			FederatedShare::class,
-			[
-				'local' => $this->configService->getFrontalInstance()
-			]
-		);
+		return $qb->asItems(FederatedShare::class);
 	}
 
 

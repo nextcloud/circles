@@ -114,6 +114,7 @@ class CoreRequestBuilder {
 		self::TABLE_REMOTE              => [
 			'id',
 			'type',
+			'interface',
 			'uid',
 			'instance',
 			'href',
@@ -125,6 +126,7 @@ class CoreRequestBuilder {
 			'event',
 			'result',
 			'instance',
+			'interface',
 			'severity',
 			'status',
 			'creation'

@@ -112,14 +112,13 @@ class MembersSearch extends Base {
 		$table->setHeaders(['SingleId', 'UserId', 'UserType', 'Instance']);
 		$table->render();
 
-		$local = $this->configService->getFrontalInstance();
 		foreach ($result as $entry) {
 			$table->appendRow(
 				[
 					$entry->getSingleId(),
 					$entry->getUserId(),
 					Member::$TYPE[$entry->getUserType()],
-					($entry->getInstance() === $local) ? '' : $entry->getInstance(),
+					$this->configService->displayInstance($entry->getInstance())
 				]
 			);
 		}

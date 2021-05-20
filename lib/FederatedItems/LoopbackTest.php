@@ -34,30 +34,24 @@ namespace OCA\Circles\FederatedItems;
 
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use OCA\Circles\IFederatedItem;
-use OCA\Circles\IFederatedItemLimitedToInstanceWithMembership;
+use OCA\Circles\IFederatedItemLoopbackTest;
 use OCA\Circles\Model\Federated\FederatedEvent;
-use OCA\Circles\Service\CircleEventService;
 
 
 /**
- * Class SharesSync
+ * Class LoopbackTest
  *
  * @package OCA\Circles\FederatedItems
  */
-class SharedItemsSync implements
+class LoopbackTest implements
 	IFederatedItem,
-	IFederatedItemLimitedToInstanceWithMembership {
+	IFederatedItemLoopbackTest {
 
 
-	// TODO: testing that IFederatedItemLimitedToInstanceWithMembership is working (since multi-instance)
-// TODO: implements IFederatedItemInstanceMember to the check procedure
-
-	/** @var CircleEventService */
-	private $circleEventService;
-
-
-	public function __construct(CircleEventService $circleEventService) {
-		$this->circleEventService = $circleEventService;
+	/**
+	 * LoopbackTest constructor.
+	 */
+	public function __construct() {
 	}
 
 
@@ -72,9 +66,8 @@ class SharedItemsSync implements
 	 * @param FederatedEvent $event
 	 */
 	public function manage(FederatedEvent $event): void {
-		$this->circleEventService->onSharedItemsSyncRequested($event);
-
-		$event->setResult(new SimpleDataStore(['shares' => 'ok']));
+		$event->setResult(new SimpleDataStore(['status' => 1]));
+//		$event->setOutcome($new->jsonSerialize());
 	}
 
 

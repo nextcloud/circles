@@ -105,12 +105,7 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 	public function getItemFromRequest(CoreQueryBuilder $qb): Circle {
 		/** @var Circle $circle */
 		try {
-			$circle = $qb->asItem(
-				Circle::class,
-				[
-					'local' => $this->configService->getFrontalInstance()
-				]
-			);
+			$circle = $qb->asItem(Circle::class);
 		} catch (RowNotFoundException $e) {
 			throw new CircleNotFoundException('Circle not found');
 		}
@@ -125,14 +120,7 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 	 */
 	public function getItemsFromRequest(CoreQueryBuilder $qb): array {
 		/** @var Circle[] $result */
-		return $qb->asItems(
-			Circle::class,
-			[
-				// TODO: we might need a getInstance() based on a frontal/internal request ?
-				// TODO: as on some setup, there 2 ways of defining the local instance (GS+Federated)
-				'local' => $this->configService->getFrontalInstance()
-			]
-		);
+		return $qb->asItems(Circle::class);
 	}
 
 }

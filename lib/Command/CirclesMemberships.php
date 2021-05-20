@@ -377,7 +377,6 @@ class CirclesMemberships extends Base {
 		$table->render();
 
 		$count = 0;
-		$local = $this->configService->getFrontalInstance();
 		foreach ($circles as $circle) {
 			$owner = $circle->getOwner();
 
@@ -390,7 +389,7 @@ class CirclesMemberships extends Base {
 					$circle->getDisplayName(),
 					($circle->getSource() > 0) ? Circle::$DEF_SOURCE[$circle->getSource()] : '',
 					$owner->getUserId(),
-					($owner->getInstance() === $local) ? '' : $owner->getInstance(),
+					$this->configService->displayInstance($owner->getInstance()),
 					$updated,
 					sizeof($federatedUser->getMemberships())
 				]
