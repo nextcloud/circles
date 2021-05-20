@@ -38,6 +38,7 @@ namespace OCA\Circles\AppInfo;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\InterfaceService;
 use OCP\App\IAppManager;
 use OCP\Capabilities\ICapability;
 use OCP\IL10N;
@@ -78,11 +79,11 @@ class Capabilities implements ICapability {
 	/**
 	 * @return array
 	 */
-	public function getCapabilities(): array {
+	public function getCapabilities(bool $complete = false): array {
 		return [
 			Application::APP_ID => [
 				'version'  => $this->appManager->getAppVersion(Application::APP_ID),
-				'status'   => $this->getCapabilitiesStatus(),
+				'status'   => $this->getCapabilitiesStatus($complete),
 				'settings' => $this->configService->getSettings(),
 				'circle'   => $this->getCapabilitiesCircle(),
 				'member'   => $this->getCapabilitiesMember()
@@ -94,10 +95,27 @@ class Capabilities implements ICapability {
 	/**
 	 * @return array
 	 */
-	private function getCapabilitiesStatus(): array {
-		return [
+	private function getCapabilitiesStatus(bool $complete = false): array {
+		$status = [
 			'globalScale' => $this->configService->isGSAvailable()
 		];
+
+		if ($complete) {
+			$status = array_merge(
+				$status,
+				[
+					'internal' => $this->configService->getInternalInstance(),
+					'frontal'  => $this->configService->getFrontalInstance(),
+					'iface0'   => $this->configService->getIfaceInstance(InterfaceService::IFACE0),
+					'iface1'   => $this->configService->getIfaceInstance(InterfaceService::IFACE1),
+					'iface2'   => $this->configService->getIfaceInstance(InterfaceService::IFACE2),
+					'iface3'   => $this->configService->getIfaceInstance(InterfaceService::IFACE3),
+					'iface4'   => $this->configService->getIfaceInstance(InterfaceService::IFACE4)
+				]
+			);
+		}
+
+		return $status;
 	}
 
 

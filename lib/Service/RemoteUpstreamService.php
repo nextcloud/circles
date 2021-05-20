@@ -35,7 +35,6 @@ namespace OCA\Circles\Service;
 use daita\MySmallPhpTools\Model\Request;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
-use Exception;
 use OCA\Circles\Db\EventWrapperRequest;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
@@ -46,7 +45,6 @@ use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Model\Federated\EventWrapper;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
-use OCP\IL10N;
 
 
 /**
@@ -60,17 +58,14 @@ class RemoteUpstreamService {
 	use TNC22Request;
 
 
-	/** @var IL10N */
-	private $l10n;
-
 	/** @var EventWrapperRequest */
 	private $eventWrapperRequest;
 
 	/** @var RemoteStreamService */
 	private $remoteStreamService;
 
-	/** @var FederatedEventService */
-	private $federatedEventService;
+	/** @var InterfaceService */
+	private $interfaceService;
 
 	/** @var ConfigService */
 	private $configService;
@@ -79,18 +74,20 @@ class RemoteUpstreamService {
 	/**
 	 * RemoteUpstreamService constructor.
 	 *
-	 * @param IL10N $l10n
 	 * @param EventWrapperRequest $eventWrapperRequest
 	 * @param RemoteStreamService $remoteStreamService
+	 * @param InterfaceService $interfaceService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IL10N $l10n, EventWrapperRequest $eventWrapperRequest, RemoteStreamService $remoteStreamService,
+		EventWrapperRequest $eventWrapperRequest,
+		RemoteStreamService $remoteStreamService,
+		InterfaceService $interfaceService,
 		ConfigService $configService
 	) {
-		$this->l10n = $l10n;
 		$this->eventWrapperRequest = $eventWrapperRequest;
 		$this->remoteStreamService = $remoteStreamService;
+		$this->interfaceService = $interfaceService;
 		$this->configService = $configService;
 	}
 
@@ -107,30 +104,6 @@ class RemoteUpstreamService {
 
 	/**
 	 * @param EventWrapper $wrapper
-	 */
-	public function broadcastWrapper(EventWrapper $wrapper): void {
-		$status = EventWrapper::STATUS_FAILED;
-
-		try {
-			$this->broadcastEvent($wrapper->getEvent(), $wrapper->getInstance());
-			$status = EventWrapper::STATUS_DONE;
-		} catch (Exception $e) {
-		}
-
-		if ($wrapper->getSeverity() === FederatedEvent::SEVERITY_HIGH) {
-			$wrapper->setStatus($status);
-		} else {
-			$wrapper->setStatus(EventWrapper::STATUS_OVER);
-		}
-
-		$wrapper->setResult($wrapper->getEvent()->getResult());
-		$this->eventWrapperRequest->update($wrapper);
-	}
-
-
-	/**
-	 * @param FederatedEvent $event
-	 * @param string $instance
 	 *
 	 * @throws FederatedItemException
 	 * @throws RemoteInstanceException
@@ -138,15 +111,16 @@ class RemoteUpstreamService {
 	 * @throws RemoteResourceNotFoundException
 	 * @throws UnknownRemoteException
 	 */
-	public function broadcastEvent(FederatedEvent $event, string $instance): void {
+	public function broadcastEvent(EventWrapper $wrapper): void {
+		$this->interfaceService->setCurrentInterface($wrapper->getInterface());
 		$data = $this->remoteStreamService->resultRequestRemoteInstance(
-			$instance,
+			$wrapper->getInstance(),
 			RemoteInstance::INCOMING,
 			Request::TYPE_POST,
-			$event
+			$wrapper->getEvent()
 		);
 
-		$event->setResult(new SimpleDataStore($data));
+		$wrapper->getEvent()->setResult(new SimpleDataStore($data));
 	}
 
 

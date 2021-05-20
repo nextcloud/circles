@@ -48,6 +48,8 @@ class SharedItemsSync implements
 	IFederatedItem,
 	IFederatedItemLimitedToInstanceWithMembership {
 
+
+	// TODO: testing that IFederatedItemLimitedToInstanceWithMembership is working (since multi-instance)
 // TODO: implements IFederatedItemInstanceMember to the check procedure
 
 	/** @var CircleEventService */

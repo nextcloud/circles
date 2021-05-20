@@ -387,6 +387,8 @@ class LocalController extends OcsController {
 
 
 	/**
+	 * @NoAdminRequired
+	 *
 	 * @param string $circleId
 	 * @param string $value
 	 *
@@ -407,6 +409,8 @@ class LocalController extends OcsController {
 
 
 	/**
+	 * @NoAdminRequired
+	 *
 	 * @param string $circleId
 	 * @param string $value
 	 *
@@ -427,6 +431,8 @@ class LocalController extends OcsController {
 
 
 	/**
+	 * @NoAdminRequired
+	 *
 	 * @param string $circleId
 	 * @param array $value
 	 *
@@ -447,6 +453,8 @@ class LocalController extends OcsController {
 
 
 	/**
+ 	 * @NoAdminRequired
+	 *
 	 * @param string $circleId
 	 * @param int $value
 	 *

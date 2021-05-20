@@ -48,7 +48,7 @@ use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
-use OCA\Circles\Exceptions\RemoteInstanceException;
+use OCA\Circles\Exceptions\UnknownInterfaceException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
@@ -57,6 +57,7 @@ use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Service\InterfaceService;
 use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\RemoteDownstreamService;
 use OCA\Circles\Service\RemoteStreamService;
@@ -96,6 +97,9 @@ class RemoteController extends Controller {
 	/** @var MemberService */
 	private $memberService;
 
+	/** @var InterfaceService */
+	private $interfaceService;
+
 	/** @var ConfigService */
 	private $configService;
 
@@ -111,13 +115,20 @@ class RemoteController extends Controller {
 	 * @param FederatedUserService $federatedUserService
 	 * @param CircleService $circleService
 	 * @param MemberService $memberService
+	 * @param InterfaceService $interfaceService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		string $appName, IRequest $request, CircleRequest $circleRequest,
+		string $appName,
+		IRequest $request,
+		CircleRequest $circleRequest,
 		RemoteStreamService $remoteStreamService,
-		RemoteDownstreamService $remoteDownstreamService, FederatedUserService $federatedUserService,
-		CircleService $circleService, MemberService $memberService, ConfigService $configService
+		RemoteDownstreamService $remoteDownstreamService,
+		FederatedUserService $federatedUserService,
+		CircleService $circleService,
+		MemberService $memberService,
+		InterfaceService $interfaceService,
+		ConfigService $configService
 	) {
 		parent::__construct($appName, $request);
 		$this->circleRequest = $circleRequest;
@@ -126,6 +137,7 @@ class RemoteController extends Controller {
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
 		$this->memberService = $memberService;
+		$this->interfaceService = $interfaceService;
 		$this->configService = $configService;
 
 		$this->setup('app', 'circles');
@@ -140,7 +152,7 @@ class RemoteController extends Controller {
 	 * @return DataResponse
 	 * @throws NotLoggedInException
 	 * @throws SignatoryException
-	 * @throws RemoteInstanceException
+	 * @throws UnknownInterfaceException
 	 */
 	public function appService(): DataResponse {
 		try {
@@ -149,11 +161,8 @@ class RemoteController extends Controller {
 			return new DataResponse();
 		}
 
-		$signatory = $this->remoteStreamService->getAppSignatory(
-			$this->configService->isLocalInstance($this->request->getServerHost(), true),
-			false,
-			$this->request->getParam('auth', '')
-		);
+		$this->interfaceService->setCurrentInterfaceFromRequest($this->request);
+		$signatory = $this->remoteStreamService->getAppSignatory(false, $this->request->getParam('auth', ''));
 
 		return new DataResponse($signatory);
 	}
@@ -215,9 +224,8 @@ class RemoteController extends Controller {
 	 */
 	public function test(): DataResponse {
 		try {
-			$test = $this->remoteStreamService->incomingSignedRequest(
-				$this->configService->getValidLocalInstances()
-			);
+			$this->interfaceService->setCurrentInterfaceFromRequest($this->request);
+			$test = $this->remoteStreamService->incomingSignedRequest();
 
 			return new DataResponse($test->jsonSerialize());
 		} catch (Exception $e) {
@@ -349,10 +357,10 @@ class RemoteController extends Controller {
 	 * @throws SignatoryException
 	 * @throws SignatureException
 	 * @throws InvalidItemException
+	 * @throws UnknownInterfaceException
 	 */
 	private function extractEventFromRequest(): FederatedEvent {
-		$signed =
-			$this->remoteStreamService->incomingSignedRequest($this->configService->getValidLocalInstances());
+		$signed = $this->remoteStreamService->incomingSignedRequest();
 		$this->confirmRemoteInstance($signed);
 
 		$event = new FederatedEvent();
@@ -373,8 +381,7 @@ class RemoteController extends Controller {
 	 * @throws UnknownTypeException
 	 */
 	private function extractDataFromFromRequest(): SimpleDataStore {
-		$signed =
-			$this->remoteStreamService->incomingSignedRequest($this->configService->getValidLocalInstances());
+		$signed = $this->remoteStreamService->incomingSignedRequest();
 		$remoteInstance = $this->confirmRemoteInstance($signed);
 
 		// There should be no need to confirm the need or the origin of the initiator as $remoteInstance
@@ -436,6 +443,8 @@ class RemoteController extends Controller {
 			$this->debug('Could not confirm identity', ['signedRequest' => $signedRequest]);
 			throw new SignatoryException('Could not confirm identity');
 		}
+
+		$this->interfaceService->setCurrentInterface($signatory->getInterface());
 
 		return $signatory;
 	}

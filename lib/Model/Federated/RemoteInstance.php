@@ -56,20 +56,12 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 	const TYPE_TRUSTED = 'Trusted';    // everything about Federated Circles are broadcasted.
 	const TYPE_GLOBALSCALE = 'GlobalScale';  // every Circle is broadcasted,
 
-	const IFACE_INTERNAL = 0;
-	const IFACE_FRONTAL = 1;
-
 	public static $LIST_TYPE = [
 		self::TYPE_UNKNOWN,
 		self::TYPE_PASSIVE,
 		self::TYPE_EXTERNAL,
 		self::TYPE_TRUSTED,
 		self::TYPE_GLOBALSCALE
-	];
-
-	public static $LIST_IFACE = [
-		self::IFACE_INTERNAL => 'internal',
-		self::IFACE_FRONTAL  => 'frontal'
 	];
 
 	const TEST = 'test';

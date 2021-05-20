@@ -111,11 +111,14 @@ class FederatedUserService {
 	/** @var RemoteService */
 	private $remoteService;
 
-	/** @var ConfigService */
-	private $configService;
-
 	/** @var ContactService */
 	private $contactService;
+
+	/** @var InterfaceService */
+	private $interfaceService;
+
+	/** @var ConfigService */
+	private $configService;
 
 
 	/** @var FederatedUser */
@@ -149,7 +152,7 @@ class FederatedUserService {
 		IUserSession $userSession, IUserManager $userManager, IGroupManager $groupManager,
 		FederatedEventService $federatedEventService, MembershipService $membershipService,
 		CircleRequest $circleRequest, MemberRequest $memberRequest, RemoteService $remoteService,
-		ContactService $contactService, ConfigService $configService
+		ContactService $contactService, InterfaceService $interfaceService, ConfigService $configService
 	) {
 		$this->userSession = $userSession;
 		$this->userManager = $userManager;
@@ -160,6 +163,7 @@ class FederatedUserService {
 		$this->memberRequest = $memberRequest;
 		$this->remoteService = $remoteService;
 		$this->contactService = $contactService;
+		$this->interfaceService = $interfaceService;
 		$this->configService = $configService;
 	}
 
@@ -665,7 +669,7 @@ class FederatedUserService {
 		$federatedId = trim($federatedId, '@');
 		if (strrpos($federatedId, '@') === false) {
 			$userId = $federatedId;
-			$instance = $this->configService->getFrontalInstance();
+			$instance = $this->interfaceService->getLocalInstance();
 		} else {
 			list($userId, $instance) = explode('@', $federatedId);
 		}

@@ -69,6 +69,9 @@ class EventWrapper implements INC22QueryRow, JsonSerializable {
 	private $instance = '';
 
 	/** @var int */
+	private $interface = 0;
+
+	/** @var int */
 	private $severity = FederatedEvent::SEVERITY_LOW;
 
 	/** @var int */
@@ -169,6 +172,25 @@ class EventWrapper implements INC22QueryRow, JsonSerializable {
 	/**
 	 * @return int
 	 */
+	public function getInterface(): int {
+		return $this->interface;
+	}
+
+	/**
+	 * @param int $interface
+	 *
+	 * @return self
+	 */
+	public function setInterface(int $interface): self {
+		$this->interface = $interface;
+
+		return $this;
+	}
+
+
+	/**
+	 * @return int
+	 */
 	public function getSeverity(): int {
 		return $this->severity;
 	}
@@ -232,6 +254,7 @@ class EventWrapper implements INC22QueryRow, JsonSerializable {
 	public function import(array $data): self {
 		$this->setToken($this->get('token', $data));
 		$this->setInstance($this->get('instance', $data));
+		$this->setInterface($this->getInt('interface', $data));
 		$this->setSeverity($this->getInt('severity', $data, FederatedEvent::SEVERITY_LOW));
 		$this->setStatus($this->getInt('status', $data, self::STATUS_INIT));
 
@@ -251,12 +274,13 @@ class EventWrapper implements INC22QueryRow, JsonSerializable {
 	 */
 	function jsonSerialize(): array {
 		return [
-			'id'       => $this->getToken(),
-			'instance' => $this->getInstance(),
-			'event'    => $this->getEvent(),
-			'result'   => $this->getResult(),
-			'severity' => $this->getSeverity(),
-			'status'   => $this->getStatus()
+			'id'        => $this->getToken(),
+			'instance'  => $this->getInstance(),
+			'interface' => $this->getInterface(),
+			'event'     => $this->getEvent(),
+			'result'    => $this->getResult(),
+			'severity'  => $this->getSeverity(),
+			'status'    => $this->getStatus()
 			//			'creation' => $this->getCreation()
 		];
 	}
@@ -271,6 +295,7 @@ class EventWrapper implements INC22QueryRow, JsonSerializable {
 	public function importFromDatabase(array $data): INC22QueryRow {
 		$this->setToken($this->get('token', $data));
 		$this->setInstance($this->get('instance', $data));
+		$this->setInterface($this->getInt('interface', $data));
 		$this->setSeverity($this->getInt('severity', $data, FederatedEvent::SEVERITY_LOW));
 		$this->setStatus($this->getInt('status', $data, self::STATUS_INIT));
 

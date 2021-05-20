@@ -74,7 +74,6 @@ use OCA\Circles\Model\Federated\EventWrapper;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\Member;
-use OCP\IL10N;
 use ReflectionClass;
 use ReflectionException;
 
@@ -91,9 +90,6 @@ class FederatedEventService extends NC22Signature {
 	use TStringTools;
 
 
-	/** @var IL10N */
-	private $l10n;
-
 	/** @var EventWrapperRequest */
 	private $eventWrapperRequest;
 
@@ -109,36 +105,39 @@ class FederatedEventService extends NC22Signature {
 	/** @var RemoteUpstreamService */
 	private $remoteUpstreamService;
 
+	/** @var InterfaceService */
+	private $interfaceService;
+
 	/** @var ConfigService */
 	private $configService;
-
-	/** @var MiscService */
-	private $miscService;
 
 
 	/**
 	 * FederatedEventService constructor.
 	 *
-	 * @param IL10N $l10n
 	 * @param EventWrapperRequest $eventWrapperRequest
 	 * @param RemoteRequest $remoteRequest
 	 * @param MemberRequest $memberRequest
 	 * @param ShareLockRequest $shareLockRequest
 	 * @param RemoteUpstreamService $remoteUpstreamService
+	 * @param InterfaceService $interfaceService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IL10N $l10n, EventWrapperRequest $eventWrapperRequest, RemoteRequest $remoteRequest,
-		MemberRequest $memberRequest, ShareLockRequest $shareLockRequest,
+		EventWrapperRequest $eventWrapperRequest,
+		RemoteRequest $remoteRequest,
+		MemberRequest $memberRequest,
+		ShareLockRequest $shareLockRequest,
 		RemoteUpstreamService $remoteUpstreamService,
+		InterfaceService $interfaceService,
 		ConfigService $configService
 	) {
-		$this->l10n = $l10n;
 		$this->eventWrapperRequest = $eventWrapperRequest;
 		$this->remoteRequest = $remoteRequest;
 		$this->shareLockRequest = $shareLockRequest;
 		$this->memberRequest = $memberRequest;
 		$this->remoteUpstreamService = $remoteUpstreamService;
+		$this->interfaceService = $interfaceService;
 		$this->configService = $configService;
 	}
 
@@ -161,16 +160,18 @@ class FederatedEventService extends NC22Signature {
 	 * @throws RequestBuilderException
 	 */
 	public function newEvent(FederatedEvent $event): array {
-		$event->setSource($this->configService->getLocalInstance());
-
 		$federatedItem = $this->getFederatedItem($event, false);
-
 		$this->confirmInitiator($event, true);
-		if ($event->canBypass(FederatedEvent::BYPASS_CIRCLE)
-			|| $this->configService->isLocalInstance($event->getCircle()->getInstance())) {
-//			$event->setIncomingOrigin($event->getCircle()->getInstance());
-			$event->setIncomingOrigin($this->configService->getLocalInstance());
 
+		if ($event->canBypass(FederatedEvent::BYPASS_CIRCLE)) {
+			$instance = $this->interfaceService->getLocalInstance();
+		} else {
+			$instance = $event->getCircle()->getInstance();
+		}
+
+		$event->setSource($instance);
+		if ($this->configService->isLocalInstance($instance)) {
+			$event->setIncomingOrigin($instance);
 			$federatedItem->verify($event);
 
 			if ($event->isDataRequestOnly()) {
@@ -383,13 +384,12 @@ class FederatedEventService extends NC22Signature {
 	 * async the process, generate a local request that will be closed.
 	 *
 	 * @param FederatedEvent $event
-	 * @param array $filter
 	 *
 	 * @throws RequestBuilderException
 	 */
-	public function initBroadcast(FederatedEvent $event, array $filter = []): void {
-		$instances = array_diff($this->getInstances($event), $filter);
-		if (empty($instances)) {
+	public function initBroadcast(FederatedEvent $event): void {
+		$instances = $this->getInstances($event);
+		if (empty($instances) && !$event->isAsync()) {
 			return;
 		}
 
@@ -399,15 +399,20 @@ class FederatedEventService extends NC22Signature {
 		$wrapper->setCreation(time());
 		$wrapper->setSeverity($event->getSeverity());
 
+		if ($event->isAsync()) {
+			$wrapper->setInstance($this->configService->getLoopbackInstance());
+			$this->eventWrapperRequest->save($wrapper);
+			echo json_encode($wrapper);
+		}
+
 		foreach ($instances as $instance) {
-			if ($event->hasCircle()
-				&& $event->getCircle()->isConfig(Circle::CFG_LOCAL)
-				&& !$this->configService->isLocalInstance($instance)) {
-				continue;
+			if ($event->getCircle()->isConfig(Circle::CFG_LOCAL)) {
+				break;
 			}
 
-			$wrapper->setInstance($instance);
-			$this->eventWrapperRequest->create($wrapper);
+			$wrapper->setInstance($instance->getInstance());
+			$wrapper->setInterface($instance->getInterface());
+			$this->eventWrapperRequest->save($wrapper);
 		}
 
 		$request = new NC22Request('', Request::TYPE_POST);
@@ -430,65 +435,51 @@ class FederatedEventService extends NC22Signature {
 	/**
 	 * @param FederatedEvent $event
 	 *
-	 * @return array
+	 * @return RemoteInstance[]
 	 * @throws RequestBuilderException
 	 */
 	public function getInstances(FederatedEvent $event): array {
-		$local = $this->configService->getFrontalInstance();
-
 		if (!$event->hasCircle()) {
-			return [$this->configService->getLoopbackInstance()];
+			return [];
 		}
 
 		$circle = $event->getCircle();
-		$instances = array_map(
-			function(RemoteInstance $instance): string {
-				return $instance->getInstance();
-			},
-			$this->remoteRequest->getOutgoingRecipient(
-				$circle,
-				$event->getData()->gBool('broadcastAsFederated')
-			)
-		);
+		$broadcastAsFederated = $event->getData()->gBool('broadcastAsFederated');
+		$instances = $this->remoteRequest->getOutgoingRecipient($circle, $broadcastAsFederated);
 
 		if ($event->isLimitedToInstanceWithMember()) {
-			$instances =
-				array_intersect(
-					$instances, $this->memberRequest->getMemberInstances($circle->getSingleId())
-				);
+			$knownInstances = $this->memberRequest->getMemberInstances($circle->getSingleId());
+			$instances = array_filter(
+				array_map(
+					function(RemoteInstance $instance) use ($knownInstances) {
+						if (!in_array($instance->getInstance(), $knownInstances)) {
+							return null;
+						}
+
+						return $instance;
+					}, $instances
+				)
+			);
 		}
 
+		// Check that in case of event has Member, the instance of that member is in the list.
 		if ($event->hasMember()
-			&& !$this->configService->isLocalInstance(($event->getMember()->getInstance()))
-			&& !in_array($event->getMember()->getInstance(), $instances)) {
-			// At that point, we know that the member belongs to a _known_ remote instance
-			$instances[] = $event->getMember()->getInstance();
+			&& !$this->configService->isLocalInstance($event->getMember()->getInstance())) {
+			$currentInstances = array_map(
+				function(RemoteInstance $instance): string {
+					return $instance->getInstance();
+				}, $instances
+			);
+
+			if (!in_array($event->getMember()->getInstance(), $currentInstances)) {
+				try {
+					$instances[] = $this->remoteRequest->getFromInstance($event->getMember()->getInstance());
+				} catch (RemoteNotFoundException $e) {
+				}
+			}
 		}
 
-		$instances = array_merge([$local], $instances);
-
-		if ($event->isAsync()) {
-			return $instances;
-		}
-
-		return array_values(
-			array_diff($instances, array_merge($this->configService->getTrustedDomains(), [$local]))
-		);
-	}
-
-
-	/**
-	 * @param array $current
-	 */
-	private function updateGlobalScaleInstances(array $current): void {
-//		$known = $this->remoteRequest->getFromType(RemoteInstance::TYPE_GLOBAL_SCALE);
-	}
-
-	/**
-	 * @return array
-	 */
-	private function getRemoteInstances(): array {
-		return [];
+		return $instances;
 	}
 
 

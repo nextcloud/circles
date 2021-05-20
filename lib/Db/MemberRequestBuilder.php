@@ -121,12 +121,7 @@ class MemberRequestBuilder extends CoreRequestBuilder {
 	public function getItemFromRequest(CoreQueryBuilder $qb): Member {
 		/** @var Member $member */
 		try {
-			$member = $qb->asItem(
-				Member::class,
-				[
-					'local' => $this->configService->getFrontalInstance()
-				]
-			);
+			$member = $qb->asItem(Member::class);
 		} catch (RowNotFoundException $e) {
 			throw new MemberNotFoundException();
 		}
@@ -147,12 +142,7 @@ class MemberRequestBuilder extends CoreRequestBuilder {
 		}
 
 		/** @var Member|FederatedUser[] $result */
-		return $qb->asItems(
-			$object,
-			[
-				'local' => $this->configService->getFrontalInstance()
-			]
-		);
+		return $qb->asItems($object);
 	}
 
 }

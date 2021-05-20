@@ -1,4 +1,8 @@
 <?php
+
+declare(strict_types=1);
+
+
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -6,7 +10,7 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2017
+ * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,20 +28,27 @@
  *
  */
 
+
 namespace OCA\Circles\Service;
+
 
 use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\GSStatusException;
-use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\Member;
 use OCP\IConfig;
 use OCP\IURLGenerator;
 
+
+/**
+ * Class ConfigService
+ *
+ * @package OCA\Circles\Service
+ */
 class ConfigService {
 
 
@@ -51,8 +62,17 @@ class ConfigService {
 	const INTERNAL_CLOUD_SCHEME = 'internal_cloud_scheme';
 	const LOOPBACK_CLOUD_ID = 'loopback_cloud_id';
 	const LOOPBACK_CLOUD_SCHEME = 'loopback_cloud_scheme';
-	const CHECK_FRONTAL_USING = 'check_frontal_using';
-	const CHECK_INTERNAL_USING = 'check_internal_using';
+	const IFACE0_CLOUD_ID = 'iface0_cloud_id';
+	const IFACE0_CLOUD_SCHEME = 'iface0_cloud_scheme';
+	const IFACE1_CLOUD_ID = 'iface1_cloud_id';
+	const IFACE1_CLOUD_SCHEME = 'iface1_cloud_scheme';
+	const IFACE2_CLOUD_ID = 'iface2_cloud_id';
+	const IFACE2_CLOUD_SCHEME = 'iface2_cloud_scheme';
+	const IFACE3_CLOUD_ID = 'iface3_cloud_id';
+	const IFACE3_CLOUD_SCHEME = 'iface3_cloud_scheme';
+	const IFACE4_CLOUD_ID = 'iface4_cloud_id';
+	const IFACE4_CLOUD_SCHEME = 'iface4_cloud_scheme';
+
 	const SELF_SIGNED_CERT = 'self_signed_cert';
 	const MEMBERS_LIMIT = 'members_limit';
 	const ACTIVITY_ON_NEW_CIRCLE = 'creation_activity';
@@ -77,7 +97,6 @@ class ConfigService {
 	const TEST_NC_BASE = 'test_nc_base';
 
 
-
 	private $defaults = [
 		self::FRONTAL_CLOUD_ID      => '',
 		self::FRONTAL_CLOUD_SCHEME  => 'https',
@@ -85,10 +104,18 @@ class ConfigService {
 		self::INTERNAL_CLOUD_SCHEME => 'https',
 		self::LOOPBACK_CLOUD_ID     => '',
 		self::LOOPBACK_CLOUD_SCHEME => 'https',
-		self::CHECK_FRONTAL_USING   => 'https://test.artificial-owl.com/',
-		self::CHECK_INTERNAL_USING  => '',
 		self::LOOPBACK_TMP_ID       => '',
 		self::LOOPBACK_TMP_SCHEME   => '',
+		self::IFACE0_CLOUD_ID       => '',
+		self::IFACE0_CLOUD_SCHEME   => 'https',
+		self::IFACE1_CLOUD_ID       => '',
+		self::IFACE1_CLOUD_SCHEME   => 'https',
+		self::IFACE2_CLOUD_ID       => '',
+		self::IFACE2_CLOUD_SCHEME   => 'https',
+		self::IFACE3_CLOUD_ID       => '',
+		self::IFACE3_CLOUD_SCHEME   => 'https',
+		self::IFACE4_CLOUD_ID       => '',
+		self::IFACE4_CLOUD_SCHEME   => 'https',
 
 		self::SELF_SIGNED_CERT       => '0',
 		self::MEMBERS_LIMIT          => '50',
@@ -351,7 +378,11 @@ class ConfigService {
 	 * @return array
 	 */
 	public function getTrustedDomains(): array {
-		return array_values($this->config->getSystemValue('trusted_domains', []));
+		return array_map(
+			function(string $address) {
+				return strtolower($address);
+			}, $this->config->getSystemValue('trusted_domains', [])
+		);
 	}
 
 
@@ -429,6 +460,7 @@ class ConfigService {
 	 * - important only in GlobalScale environment
 	 *
 	 * @return string
+	 *
 	 */
 	public function getInternalInstance(): string {
 		return $this->getAppValue(self::INTERNAL_CLOUD_ID);
@@ -459,83 +491,48 @@ class ConfigService {
 
 
 	/**
-	 * returns address based on FRONTAL_CLOUD_ID, FRONTAL_CLOUD_SCHEME and a routeName
-	 * perfect for urlId in ActivityPub env.
-	 *
-	 * @param bool $internal
-	 * @param string $route
-	 * @param array $args
+	 * @param int $iface
 	 *
 	 * @return string
-	 * @throws RemoteInstanceException
 	 */
-	public function getInstancePath(
-		bool $internal = false,
-		string $route = 'circles.Remote.appService',
-		array $args = []
-	): string {
-		if ($internal && $this->getInternalInstance() !== '') {
-			$base = $this->getAppValue(self::INTERNAL_CLOUD_SCHEME) . '://' . $this->getInternalInstance();
-		} else if ($this->getFrontalInstance() !== '') {
-			$base = $this->getAppValue(self::FRONTAL_CLOUD_SCHEME) . '://' . $this->getFrontalInstance();
-		} else {
-			throw new RemoteInstanceException('not enabled');
+	public function getIfaceInstance(int $iface): string {
+		switch ($iface) {
+			case InterfaceService::IFACE0:
+				return $this->getAppValue(self::IFACE0_CLOUD_ID);
+			case InterfaceService::IFACE1:
+				return $this->getAppValue(self::IFACE1_CLOUD_ID);
+			case InterfaceService::IFACE2:
+				return $this->getAppValue(self::IFACE2_CLOUD_ID);
+			case InterfaceService::IFACE3:
+				return $this->getAppValue(self::IFACE3_CLOUD_ID);
+			case InterfaceService::IFACE4:
+				return $this->getAppValue(self::IFACE4_CLOUD_ID);
 		}
 
-		if ($route === '') {
-			return $base;
-		}
-
-		return $base . $this->urlGenerator->linkToRoute($route, $args);
-	}
-
-	/**
-	 * @param string $host
-	 * @param string $route
-	 * @param array $args
-	 *
-	 * @return string
-	 * @throws RemoteInstanceException
-	 */
-	public function getInstancePathBasedOnHost(
-		string $host,
-		string $route = 'circles.Remote.appService',
-		array $args = []
-	): string {
-		return $this->getInstancePath(
-			$this->isLocalInstance($host, true),
-			$route,
-			$args
-		);
+		return '';
 	}
 
 
 	/**
 	 * @param string $instance
-	 * @param bool $internal
 	 *
 	 * @return bool
 	 */
-	public function isLocalInstance(string $instance, bool $internal = false): bool {
-		if (strtolower($instance) === strtolower($this->getInternalInstance())
-			&& $this->getInternalInstance() !== ''
-		) {
-			return true;
-		}
-
-		if (!$internal) {
+	public function isLocalInstance(string $instance): bool {
+		if ($instance === '') { // TODO: is it an existing condition ?
 			return false;
 		}
 
-		if (strtolower($instance) === strtolower($this->getFrontalInstance())) {
+		$instance = strtolower($instance);
+		if ($instance === strtolower($this->getInternalInstance())) {
 			return true;
 		}
 
-//		if ($this->getAppValue(self::FRONTAL_CLOUD_ID) === 'use-trusted-domain') {
-			return (in_array($instance, $this->getTrustedDomains()));
-//		}
+		if ($instance === strtolower($this->getFrontalInstance())) {
+			return true;
+		}
 
-//		return false;
+		return (in_array($instance, $this->getTrustedDomains()));
 	}
 
 	/**
@@ -549,40 +546,6 @@ class ConfigService {
 		}
 
 		return $instance;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getLocalInstance(): string {
-		if ($this->getFrontalInstance() !== '') {
-			return $this->getFrontalInstance();
-		}
-
-		if ($this->getInternalInstance() !== '') {
-			return $this->getInternalInstance();
-		}
-
-		if ($this->getLoopbackInstance()) {
-			return $this->getLoopbackInstance();
-		}
-
-		return '';
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getValidLocalInstances(): array {
-		return array_filter(
-			array_unique(
-				[
-					$this->getFrontalInstance(),
-					$this->getInternalInstance()
-				]
-			)
-		);
 	}
 
 
@@ -614,27 +577,6 @@ class ConfigService {
 		$request->setLocalAddressAllowed(true);
 		$request->setFollowLocation(true);
 		$request->setTimeout(5);
-	}
-
-
-	/**
-	 * sometimes, linkToRoute will include the base path to the nextcloud which will be duplicate with ncBase
-	 *
-	 * @param string $ncBase
-	 * @param string $routeName
-	 * @param array $args
-	 *
-	 * @return string
-	 */
-	private function cleanLinkToRoute(string $ncBase, string $routeName, array $args): string {
-		$link = $this->urlGenerator->linkToRoute($routeName, $args);
-		$forcedPath = rtrim(parse_url($ncBase, PHP_URL_PATH), '/');
-
-		if ($forcedPath !== '' && strpos($link, $forcedPath) === 0) {
-			$ncBase = substr($ncBase, 0, -strlen($forcedPath));
-		}
-
-		return rtrim($ncBase, '/') . $link;
 	}
 
 }

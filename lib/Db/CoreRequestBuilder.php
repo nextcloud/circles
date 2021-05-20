@@ -126,6 +126,7 @@ class CoreRequestBuilder {
 			'event',
 			'result',
 			'instance',
+			'interface',
 			'severity',
 			'status',
 			'creation'

@@ -40,6 +40,7 @@ use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\UnknownInterfaceException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
@@ -49,6 +50,7 @@ use OCA\Circles\Model\Report;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Service\InterfaceService;
 use OCA\Circles\Service\MemberService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -77,6 +79,9 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 	/** @var MemberService */
 	private $memberService;
 
+	/** @var InterfaceService */
+	private $interfaceService;
+
 	/** @var ConfigService */
 	private $configService;
 
@@ -100,6 +105,7 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 		FederatedUserService $federatedUserService,
 		CircleService $circleService,
 		MemberService $memberService,
+		InterfaceService $interfaceService,
 		ConfigService $configService
 	) {
 		parent::__construct();
@@ -107,6 +113,7 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
 		$this->memberService = $memberService;
+		$this->interfaceService = $interfaceService;
 		$this->configService = $configService;
 	}
 
@@ -162,10 +169,11 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 
 	/**
 	 * @throws InitiatorNotFoundException
+	 * @throws UnknownInterfaceException
 	 */
 	private function generateReport(): Report {
 		$report = new Report();
-		$report->setSource($this->configService->getLocalInstance());
+		$report->setSource($this->interfaceService->getLocalInstance());
 		$this->federatedUserService->bypassCurrentUserCondition(true);
 
 		$raw = $this->circleService->getCircles(

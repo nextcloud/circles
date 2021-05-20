@@ -38,6 +38,7 @@ use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\IFederatedModel;
+use OCA\Circles\Model\ManagedModel;
 
 
 /**
@@ -45,7 +46,7 @@ use OCA\Circles\IFederatedModel;
  *
  * @package OCA\Circles\Model\Federated
  */
-class FederatedShare implements IFederatedModel, JsonSerializable, INC22QueryRow, IDeserializable {
+class FederatedShare extends ManagedModel implements IFederatedModel, JsonSerializable, INC22QueryRow, IDeserializable {
 
 
 	use TArrayTools;
@@ -200,7 +201,7 @@ class FederatedShare implements IFederatedModel, JsonSerializable, INC22QueryRow
 		$this->setInstance($this->get('instance', $data));
 
 		if ($this->getInstance() === '') {
-			$this->setInstance($this->get('_params.local', $data));
+			$this->setInstance($this->getManager()->getLocalInstance());
 		}
 
 		return $this;

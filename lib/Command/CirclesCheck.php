@@ -155,7 +155,7 @@ class CirclesCheck extends Base {
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		if ($input->getOption('capabilities')) {
-			$capabilities = $this->getArray('circles', $this->capabilities->getCapabilities());
+			$capabilities = $this->getArray('circles', $this->capabilities->getCapabilities(true));
 			$output->writeln(json_encode($capabilities, JSON_PRETTY_PRINT));
 
 			return 0;

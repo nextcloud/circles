@@ -47,6 +47,7 @@ use OCA\Circles\Exceptions\RemoteUidException;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\GlobalScaleService;
+use OCA\Circles\Service\InterfaceService;
 use OCA\Circles\Service\RemoteStreamService;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
@@ -78,6 +79,9 @@ class CirclesRemote extends Base {
 	/** @var RemoteStreamService */
 	private $remoteStreamService;
 
+	/** @var InterfaceService */
+	private $interfaceService;
+
 	/** @var ConfigService */
 	private $configService;
 
@@ -95,11 +99,14 @@ class CirclesRemote extends Base {
 	 * @param RemoteRequest $remoteRequest
 	 * @param GlobalScaleService $globalScaleService
 	 * @param RemoteStreamService $remoteStreamService
+	 * @param InterfaceService $interfaceService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		RemoteRequest $remoteRequest, GlobalScaleService $globalScaleService,
+		RemoteRequest $remoteRequest,
+		GlobalScaleService $globalScaleService,
 		RemoteStreamService $remoteStreamService,
+		InterfaceService $interfaceService,
 		ConfigService $configService
 	) {
 		parent::__construct();
@@ -107,6 +114,7 @@ class CirclesRemote extends Base {
 		$this->remoteRequest = $remoteRequest;
 		$this->globalScaleService = $globalScaleService;
 		$this->remoteStreamService = $remoteStreamService;
+		$this->interfaceService = $interfaceService;
 		$this->configService = $configService;
 
 		$this->setup('app', 'circles');
@@ -126,7 +134,7 @@ class CirclesRemote extends Base {
 			 )
 			 ->addOption(
 				 'iface', '', InputOption::VALUE_REQUIRED, 'set interface to use to contact remote',
-				 RemoteInstance::$LIST_IFACE[RemoteInstance::IFACE_FRONTAL]
+				 InterfaceService::$LIST_IFACE[InterfaceService::IFACE_FRONTAL]
 			 )
 			 ->addOption('yes', '', InputOption::VALUE_NONE, 'silently add the remote instance')
 			 ->addOption('all', '', InputOption::VALUE_NONE, 'display all information');
@@ -164,6 +172,7 @@ class CirclesRemote extends Base {
 	private function requestInstance(string $host): void {
 		$remoteType = $this->getRemoteType();
 		$remoteIface = $this->getRemoteInterface();
+		$this->interfaceService->setCurrentInterface($remoteIface);
 
 		$webfinger = $this->getWebfinger($host, Application::APP_SUBJECT);
 		if ($this->input->getOption('all')) {
@@ -336,7 +345,8 @@ class CirclesRemote extends Base {
 		);
 		$question = new ConfirmationQuestion(
 			'Would you like to identify this remote instance as \'<comment>' . $remoteSignatory->getType()
-			. '</comment>\' using interface \'<comment>' . RemoteInstance::$LIST_IFACE[$remoteSignatory->getInterface()]
+			. '</comment>\' using interface \'<comment>'
+			. InterfaceService::$LIST_IFACE[$remoteSignatory->getInterface()]
 			. '</comment>\' ? (y/N) ',
 			false,
 			'/^(y|Y)/i'
@@ -436,12 +446,13 @@ class CirclesRemote extends Base {
 		if ($this->configService->isLocalInstance($instance)) {
 			return;
 		}
+
 		$this->output->write('Adding <comment>' . $instance . '</comment>: ');
 		try {
 			$this->remoteStreamService->addRemoteInstance(
 				$instance,
 				RemoteInstance::TYPE_GLOBALSCALE,
-				RemoteInstance::IFACE_INTERNAL,
+				InterfaceService::IFACE_INTERNAL,
 				true
 			);
 			$this->output->writeln('<info>ok</info>');
@@ -477,7 +488,7 @@ class CirclesRemote extends Base {
 				[
 					$instance->getInstance(),
 					$instance->getType(),
-					RemoteInstance::$LIST_IFACE[$instance->getInterface()],
+					InterfaceService::$LIST_IFACE[$instance->getInterface()],
 					$instance->getUid(),
 					$currentUid
 				]
@@ -503,13 +514,13 @@ class CirclesRemote extends Base {
 	 * @throws Exception
 	 */
 	private function getRemoteInterface(): int {
-		foreach (RemoteInstance::$LIST_IFACE as $iface => $def) {
+		foreach (InterfaceService::$LIST_IFACE as $iface => $def) {
 			if (strtolower($this->input->getOption('iface')) === strtolower($def)) {
 				return $iface;
 			}
 		}
 
-		throw new Exception('Unknown interface: ' . implode(', ', RemoteInstance::$LIST_IFACE));
+		throw new Exception('Unknown interface: ' . implode(', ', InterfaceService::$LIST_IFACE));
 	}
 
 }

@@ -161,14 +161,11 @@ class RemoteDownstreamService {
 			return;
 		}
 
-		$filter = [];
 		if (!$event->isAsync()) {
 			$item->manage($event);
-			// we dont filter anymore as some data might be change during the remote verify()
-//			$filter[] = $event->getIncomingOrigin();
 		}
 
-		$this->federatedEventService->initBroadcast($event, $filter);
+		$this->federatedEventService->initBroadcast($event);
 	}
 
 
@@ -204,9 +201,18 @@ class RemoteDownstreamService {
 	/**
 	 * @param FederatedEvent $event
 	 *
-	 * @throws OwnerNotFoundException
+	 * @throws CircleNotFoundException
 	 * @throws FederatedEventDSyncException
+	 * @throws InvalidIdException
+	 * @throws InvalidItemException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
 	 * @throws RequestBuilderException
+	 * @throws RequestNetworkException
+	 * @throws SignatoryException
+	 * @throws UnknownRemoteException
 	 */
 	private function confirmCircle(FederatedEvent $event): void {
 		if ($event->canBypass(FederatedEvent::BYPASS_LOCALCIRCLECHECK) || $this->verifyCircle($event)) {
