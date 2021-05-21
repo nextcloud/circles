@@ -97,7 +97,6 @@ class WebfingerHandler implements IHandler {
 	 * @param IResponse|null $response
 	 *
 	 * @return IResponse|null
-	 * @throws SignatureException
 	 */
 	public function handle(string $service, IRequestContext $context, ?IResponse $response): ?IResponse {
 		if ($service !== 'webfinger') {
@@ -105,17 +104,19 @@ class WebfingerHandler implements IHandler {
 		}
 
 		$request = $context->getHttpRequest();
-		$subject = $this->get('resource', $request->getParams());
+		$subject = $request->getParam('resource', '');
 		if ($subject !== Application::APP_SUBJECT) {
 			return $response;
 		}
+
+		$token = $request->getParam('check', '');
 
 		if (!($response instanceof JrdResponse)) {
 			$response = new JrdResponse($subject);
 		}
 
 		try {
-			$this->interfaceService->setCurrentInterfaceFromRequest($request);
+			$this->interfaceService->setCurrentInterfaceFromRequest($request, $request->getParam('check', ''));
 			$this->remoteStreamService->getAppSignatory();
 			$href = $this->interfaceService->getCloudPath('circles.Remote.appService');
 			$info = [

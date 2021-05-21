@@ -72,6 +72,9 @@ class ConfigService {
 	const IFACE3_CLOUD_SCHEME = 'iface3_cloud_scheme';
 	const IFACE4_CLOUD_ID = 'iface4_cloud_id';
 	const IFACE4_CLOUD_SCHEME = 'iface4_cloud_scheme';
+	const IFACE_TEST_ID = 'iface_test_id';
+	const IFACE_TEST_SCHEME = 'iface_test_scheme';
+	const IFACE_TEST_TOKEN = 'iface_test_token';
 
 	const SELF_SIGNED_CERT = 'self_signed_cert';
 	const MEMBERS_LIMIT = 'members_limit';
@@ -116,6 +119,9 @@ class ConfigService {
 		self::IFACE3_CLOUD_SCHEME   => 'https',
 		self::IFACE4_CLOUD_ID       => '',
 		self::IFACE4_CLOUD_SCHEME   => 'https',
+		self::IFACE_TEST_ID         => '',
+		self::IFACE_TEST_SCHEME     => 'https',
+		self::IFACE_TEST_TOKEN      => '',
 
 		self::SELF_SIGNED_CERT       => '0',
 		self::MEMBERS_LIMIT          => '50',

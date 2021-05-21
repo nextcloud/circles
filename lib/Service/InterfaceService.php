@@ -55,6 +55,7 @@ class InterfaceService {
 	const IFACE4 = 5;
 	const IFACE_INTERNAL = 6;
 	const IFACE_FRONTAL = 7;
+	const IFACE_TEST = 99;
 
 	public static $LIST_IFACE = [
 		self::IFACE_INTERNAL => 'internal',
@@ -135,8 +136,9 @@ class InterfaceService {
 
 	/**
 	 * @param IRequest $request
+	 * @param string $testToken
 	 */
-	public function setCurrentInterfaceFromRequest(IRequest $request): void {
+	public function setCurrentInterfaceFromRequest(IRequest $request, string $testToken = ''): void {
 		$testing = [
 			self::IFACE_INTERNAL => $this->configService->getInternalInstance(),
 			self::IFACE_FRONTAL  => $this->configService->getFrontalInstance(),
@@ -146,6 +148,11 @@ class InterfaceService {
 			self::IFACE3         => $this->configService->getIfaceInstance(self::IFACE3),
 			self::IFACE4         => $this->configService->getIfaceInstance(self::IFACE4),
 		];
+
+		if ($testToken !== ''
+			&& $testToken === $this->configService->getAppValue(ConfigService::IFACE_TEST_TOKEN)) {
+			$testing[self::IFACE_TEST] = $this->getTestingInstance();
+		}
 
 		$serverHost = strtolower($request->getServerHost());
 		if ($serverHost === '') {
@@ -191,6 +198,8 @@ class InterfaceService {
 			case self::IFACE3:
 			case self::IFACE4:
 				return $this->configService->getIfaceInstance($this->getCurrentInterface());
+			case self::IFACE_TEST:
+				return $this->getTestingInstance();
 		}
 
 		throw new UnknownInterfaceException('unknown configured interface');
@@ -223,6 +232,9 @@ class InterfaceService {
 				break;
 			case self::IFACE4:
 				$scheme = $this->configService->getAppValue(ConfigService::IFACE4_CLOUD_SCHEME);
+				break;
+			case self::IFACE_TEST:
+				$scheme = $this->configService->getAppValue(ConfigService::IFACE_TEST_SCHEME);
 				break;
 		}
 
@@ -262,6 +274,14 @@ class InterfaceService {
 		}
 
 		return $this->configService->getLoopbackInstance();
+	}
+
+
+	/**
+	 * @return string
+	 */
+	private function getTestingInstance(): string {
+		return $this->configService->getAppValue(ConfigService::IFACE_TEST_ID);
 	}
 
 }
