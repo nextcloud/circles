@@ -37,6 +37,7 @@ use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
+use OCA\Circles\Exceptions\UnknownInterfaceException;
 
 
 /**
@@ -250,6 +251,7 @@ class EventWrapper implements INC22QueryRow, JsonSerializable {
 	 *
 	 * @return self
 	 * @throws InvalidItemException
+	 * @throws UnknownInterfaceException
 	 */
 	public function import(array $data): self {
 		$this->setToken($this->get('token', $data));
@@ -291,6 +293,7 @@ class EventWrapper implements INC22QueryRow, JsonSerializable {
 	 *
 	 * @return INC22QueryRow
 	 * @throws InvalidItemException
+	 * @throws UnknownInterfaceException
 	 */
 	public function importFromDatabase(array $data): INC22QueryRow {
 		$this->setToken($this->get('token', $data));

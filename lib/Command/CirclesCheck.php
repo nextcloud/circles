@@ -46,6 +46,7 @@ use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\FederatedItems\LoopbackTest;
 use OCA\Circles\Model\Federated\FederatedEvent;
@@ -368,6 +369,7 @@ class CirclesCheck extends Base {
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
 	 * @throws UnknownRemoteException
+	 * @throws RequestBuilderException
 	 */
 	private function testLoopback(InputInterface $input, OutputInterface $output, string $address): bool {
 		if (!$this->testRequest($output, 'GET', 'core.CSRFToken.index')) {
@@ -381,49 +383,44 @@ class CirclesCheck extends Base {
 			return false;
 		}
 
+		$output->write('- Creating async FederatedEvent ');
 		$test = new FederatedEvent(LoopbackTest::class);
-		$test->setAsync(true);
 		$this->federatedEventService->newEvent($test);
 
-//
-//		$output->writeln('- Async request is sent, now waiting ' . $this->delay . ' seconds');
-//		sleep($this->delay);
-//		$output->writeln('- Pause is over, checking results for ' . $token);
-//
-//		$wrappers = $this->gsUpstreamService->getEventsByToken($token);
-//
-//		$result = [];
-//		$instances = array_merge($this->globalScaleService->getInstances(true));
-//		foreach ($wrappers as $wrapper) {
-//			$result[$wrapper->getInstance()] = $wrapper->getEvent();
-//		}
-//
-//		$localLooksGood = false;
-//		foreach ($instances as $instance) {
-//			$output->write($instance . ' ');
-//			if (array_key_exists($instance, $result)
-//				&& $result[$instance]->getResult()
-//									 ->gInt('status') === 1) {
-//				$output->writeln('<info>ok</info>');
-//				if ($this->configService->isLocalInstance($instance)) {
-//					$localLooksGood = true;
-//				}
-//			} else {
-//				$output->writeln('<error>fail</error>');
-//			}
-//		}
-//
-//		$this->configService->setAppValue(ConfigService::TEST_NC_BASE, '');
-//
-//		if ($localLooksGood) {
-//			$this->saveUrl($input, $output, $input->getOption('url'));
-//		}
+		$output->writeln('<info>' . $test->getWrapperToken() . '</info>');
 
-		if ($address === 'http://orange.local') {
-			return true;
+		$output->writeln('- Waiting for async process to finish (' . $this->delay . 's)');
+		sleep($this->delay);
+
+		$output->write('- Checking status on FederatedEvent ');
+		$wrappers = $this->remoteUpstreamService->getEventsByToken($test->getWrapperToken());
+		if (count($wrappers) !== 1) {
+			$output->writeln('<error>Event created too many Wrappers</error>');
 		}
 
-		return false;
+		$wrapper = array_shift($wrappers);
+
+		$checkVerify = $wrapper->getEvent()->getData()->gInt('verify');
+		if ($checkVerify === LoopbackTest::VERIFY) {
+			$output->write('<info>verify=' . $checkVerify . '</info> ');
+		} else {
+			$output->writeln('<error>verify=' . $checkVerify . '</error>');
+
+			return false;
+		}
+
+		$checkManage = $wrapper->getResult()->gInt('manage');
+		if ($checkManage === LoopbackTest::MANAGE) {
+			$output->write('<info>manage=' . $checkManage . '</info> ');
+		} else {
+			$output->writeln('<error>manage=' . $checkManage . '</error>');
+
+			return false;
+		}
+
+		$output->writeln('');
+
+		return true;
 	}
 
 

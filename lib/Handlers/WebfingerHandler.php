@@ -130,7 +130,6 @@ class WebfingerHandler implements IHandler {
 			return $response;
 		}
 
-
 		return $response->addLink(Application::APP_REL, 'application/json', $href, [], $info);
 	}
 

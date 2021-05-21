@@ -34,6 +34,7 @@ namespace OCA\Circles\FederatedItems;
 
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use OCA\Circles\IFederatedItem;
+use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemLoopbackTest;
 use OCA\Circles\Model\Federated\FederatedEvent;
 
@@ -45,7 +46,12 @@ use OCA\Circles\Model\Federated\FederatedEvent;
  */
 class LoopbackTest implements
 	IFederatedItem,
+	IFederatedItemAsyncProcess,
 	IFederatedItemLoopbackTest {
+
+
+	const VERIFY = 17;
+	const MANAGE = 42;
 
 
 	/**
@@ -59,6 +65,7 @@ class LoopbackTest implements
 	 * @param FederatedEvent $event
 	 */
 	public function verify(FederatedEvent $event): void {
+		$event->setData(new SimpleDataStore(['verify' => self::VERIFY]));
 	}
 
 
@@ -66,8 +73,7 @@ class LoopbackTest implements
 	 * @param FederatedEvent $event
 	 */
 	public function manage(FederatedEvent $event): void {
-		$event->setResult(new SimpleDataStore(['status' => 1]));
-//		$event->setOutcome($new->jsonSerialize());
+		$event->setResult(new SimpleDataStore(['manage' => self::MANAGE]));
 	}
 
 
