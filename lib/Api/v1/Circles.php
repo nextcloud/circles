@@ -33,15 +33,24 @@ namespace OCA\Circles\Api\v1;
 use OC;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\ApiVersionIncompatibleException;
+use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedUserException;
+use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\InvalidIdException;
+use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\Exceptions\SingleCircleNotFoundException;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\DeprecatedCircle;
-use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\DeprecatedMember;
+use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Model\SharingFrame;
+use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\CirclesService;
+use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MembersService;
 use OCA\Circles\Service\SharingFrameService;
 use OCP\AppFramework\QueryException;
-use OCP\Util;
 
 class Circles {
 
@@ -255,13 +264,28 @@ class Circles {
 	 * @param string $circleUniqueId
 	 * @param bool $forceAll
 	 *
-	 * @return DeprecatedCircle
+	 * @return Circle
+	 * @throws CircleNotFoundException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InitiatorNotFoundException
+	 * @throws InvalidIdException
+	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
 	 */
-	public static function detailsCircle($circleUniqueId, $forceAll = false) {
-		$c = self::getContainer();
+	public static function detailsCircle(string $circleUniqueId, bool $forceAll = false): Circle {
+		/** @var FederatedUserService $federatedUserService */
+		$federatedUserService = \OC::$server->get(FederatedUserService::class);
+		if ($forceAll) {
+			$federatedUserService->bypassCurrentUserCondition($forceAll);
+		} else {
+			$federatedUserService->initCurrentUser();
+		}
 
-		return $c->query(CirclesService::class)
-				 ->detailsCircle($circleUniqueId, $forceAll);
+		/** @var CircleService $circleService */
+		$circleService = \OC::$server->get(CircleService::class);
+
+		return $circleService->getCircle($circleUniqueId);
 	}
 
 
