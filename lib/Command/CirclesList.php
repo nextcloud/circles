@@ -47,6 +47,7 @@ use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
@@ -148,8 +149,9 @@ class CirclesList extends Base {
 	 * @throws UnknownRemoteException
 	 * @throws UserTypeNotFoundException
 	 * @throws FederatedItemException
-		 * @throws MemberNotFoundException
+	 * @throws MemberNotFoundException
 	 * @throws SingleCircleNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$this->input = $input;

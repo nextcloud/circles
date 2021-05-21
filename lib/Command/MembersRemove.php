@@ -106,7 +106,9 @@ class MembersRemove extends Base {
 
 		$outcome = $this->memberService->removeMember($memberId);
 
-		$output->writeln(json_encode($outcome, JSON_PRETTY_PRINT));
+		if (strtolower($input->getOption('output')) === 'json') {
+			$output->writeln(json_encode($outcome, JSON_PRETTY_PRINT));
+		}
 
 		return 0;
 	}

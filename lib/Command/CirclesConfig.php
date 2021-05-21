@@ -136,7 +136,7 @@ class CirclesConfig extends Base {
 			throw $e;
 		}
 
-		if (strtolower($input->getOption('output')) !== 'none') {
+		if (strtolower($input->getOption('output')) === 'json') {
 			$output->writeln(json_encode($outcome, JSON_PRETTY_PRINT));
 		}
 
