@@ -391,12 +391,37 @@ class CircleService {
 
 
 	/**
+	 * @param string $circleId
+	 * @param int $filter
+	 *
+	 * @return Circle
+	 * @throws CircleNotFoundException
+	 * @throws InitiatorNotFoundException
+	 * @throws RequestBuilderException
+	 */
+	public function getCircle(
+		string $circleId,
+		int $filter = Circle::CFG_BACKEND | Circle::CFG_SINGLE | Circle::CFG_HIDDEN
+	): Circle {
+		$this->federatedUserService->mustHaveCurrentUser();
+
+		return $this->circleRequest->getCircle(
+			$circleId,
+			$this->federatedUserService->getCurrentUser(),
+			$this->federatedUserService->getRemoteInstance(),
+			$filter
+		);
+	}
+
+
+	/**
 	 * @param Circle|null $circleFilter
 	 * @param Member|null $memberFilter
 	 * @param SimpleDataStore|null $params
 	 *
 	 * @return Circle[]
 	 * @throws InitiatorNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	public function getCircles(
 		?Circle $circleFilter = null,
@@ -422,30 +447,6 @@ class CircleService {
 			$this->federatedUserService->getCurrentUser(),
 			$this->federatedUserService->getRemoteInstance(),
 			$params
-		);
-	}
-
-
-	/**
-	 * @param string $circleId
-	 * @param int $filter
-	 *
-	 * @return Circle
-	 * @throws CircleNotFoundException
-	 * @throws InitiatorNotFoundException
-	 * @throws RequestBuilderException
-	 */
-	public function getCircle(
-		string $circleId,
-		int $filter = Circle::CFG_BACKEND | Circle::CFG_SINGLE | Circle::CFG_HIDDEN
-	): Circle {
-		$this->federatedUserService->mustHaveCurrentUser();
-
-		return $this->circleRequest->getCircle(
-			$circleId,
-			$this->federatedUserService->getCurrentUser(),
-			$this->federatedUserService->getRemoteInstance(),
-			$filter
 		);
 	}
 

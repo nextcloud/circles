@@ -146,7 +146,9 @@ class MembersAdd extends Base {
 			throw $e;
 		}
 
-		$output->writeln(json_encode($outcome, JSON_PRETTY_PRINT));
+		if (strtolower($input->getOption('output')) !== 'none') {
+			$output->writeln(json_encode($outcome, JSON_PRETTY_PRINT));
+		}
 
 		return 0;
 	}

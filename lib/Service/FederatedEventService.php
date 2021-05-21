@@ -402,7 +402,6 @@ class FederatedEventService extends NC22Signature {
 		if ($event->isAsync()) {
 			$wrapper->setInstance($this->configService->getLoopbackInstance());
 			$this->eventWrapperRequest->save($wrapper);
-			echo json_encode($wrapper);
 		}
 
 		foreach ($instances as $instance) {

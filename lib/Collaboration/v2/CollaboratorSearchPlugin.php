@@ -33,15 +33,9 @@ namespace OCA\Circles\Collaboration\v2;
 
 
 use daita\MySmallPhpTools\Model\SimpleDataStore;
+use Exception;
 use OC\Share20\Share;
-use OC\User\NoUserException;
-use OCA\Circles\Exceptions\FederatedUserException;
-use OCA\Circles\Exceptions\FederatedUserNotFoundException;
-use OCA\Circles\Exceptions\InitiatorNotFoundException;
-use OCA\Circles\Exceptions\InvalidIdException;
-use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Model\Circle;
-use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedUserService;
 use OCP\Collaboration\Collaborators\ISearchPlugin;
@@ -83,42 +77,31 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 	 * @param ISearchResult $searchResult
 	 *
 	 * @return bool
-	 * @throws FederatedUserException
-	 * @throws FederatedUserNotFoundException
-	 * @throws InitiatorNotFoundException
-	 * @throws InvalidIdException
-	 * @throws SingleCircleNotFoundException
 	 */
 	public function search($search, $limit, $offset, ISearchResult $searchResult): bool {
-		$this->federatedUserService->initCurrentUser();
-
 		$wide = $exact = [];
 
 		$filterCircle = new Circle();
 		$filterCircle->setName($search)
 					 ->setDisplayName($search);
 
-		$filterMember = new Member();
-		$filterMember->importFromIFederatedUser($this->federatedUserService->getCurrentUser());
-		$filterMember->setLevel(Member::LEVEL_MEMBER);
-
-		$circles = $this->circleService->getCircles(
-			$filterCircle, $filterMember,
-			new SimpleDataStore(
-				[
-					'limit'  => $limit,
-					'offset' => $offset
-				]
-			)
-		);
+		try {
+			$this->federatedUserService->initCurrentUser();
+			$circles = $this->circleService->getCircles(
+				$filterCircle, null,
+				new SimpleDataStore(
+					[
+						'limit'  => $limit,
+						'offset' => $offset
+					]
+				)
+			);
+		} catch (Exception $e) {
+			return false;
+		}
 
 		foreach ($circles as $circle) {
-			try {
-				$entry = $this->addResultEntry($circle);
-			} catch (NoUserException $e) {
-				continue;
-			}
-
+			$entry = $this->addResultEntry($circle);
 			if (strtolower($circle->getName()) === strtolower($search)) {
 				$exact[] = $entry;
 			} else {

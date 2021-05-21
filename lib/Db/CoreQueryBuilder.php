@@ -1085,7 +1085,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	 *
 	 * @return ICompositeExpression
 	 */
-	private function limitRemoteVisibility_Sensitive_Members(string $alias = 'ri'): ICompositeExpression {
+	private function limitRemoteVisibility_Sensitive_Members(string $alias): ICompositeExpression {
 		$expr = $this->expr();
 		$andPassive = $expr->andX();
 		$andPassive->add(
@@ -1137,12 +1137,17 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		$aliasStorages = $this->generateAlias($aliasFileCache, self::STORAGES);
 
 		$this->generateSelectAlias(
-			CoreRequestBuilder::$outsideTables[self::FILE_CACHE],
+			CoreRequestBuilder::$outsideTables[CoreRequestBuilder::TABLE_FILE_CACHE],
 			$aliasFileCache,
 			$aliasFileCache,
 			[]
 		)
-			 ->generateSelectAlias(CoreRequestBuilder::$outsideTables[self::STORAGES], $aliasStorages, $aliasStorages, [])
+			 ->generateSelectAlias(
+				 CoreRequestBuilder::$outsideTables[CoreRequestBuilder::TABLE_STORAGES],
+				 $aliasStorages,
+				 $aliasStorages,
+				 []
+			 )
 			 ->leftJoin(
 				 $aliasShare, CoreRequestBuilder::TABLE_FILE_CACHE, $aliasFileCache,
 				 $expr->eq($aliasShare . '.file_source', $aliasFileCache . '.fileid')
@@ -1176,8 +1181,13 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 			)
 		);
 
-		$this->selectAlias($aliasShareChild . '.id', 'child_id');
-		$this->selectAlias($aliasShareChild . '.file_target', 'child_file_target');
+		$this->generateSelectAlias(
+			['id', 'file_target', 'permissions'],
+			$aliasShareChild,
+			'child_',
+			[]
+		);
+
 //		$this->selectAlias($aliasShareParent . '.permissions', 'parent_perms');
 	}
 

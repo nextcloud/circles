@@ -36,8 +36,6 @@ use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedUserService;
-use OCP\IL10N;
-use OCP\IUserManager;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -52,12 +50,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CirclesCreate extends Base {
 
 
-	/** @var IL10N */
-	private $l10n;
-
-	/** @var IUserManager */
-	private $userManager;
-
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
@@ -68,18 +60,14 @@ class CirclesCreate extends Base {
 	/**
 	 * CirclesCreate constructor.
 	 *
-	 * @param IL10N $l10n
-	 * @param IUserManager $userManager
 	 * @param FederatedUserService $federatedUserService
 	 * @param CircleService $circleService
 	 */
 	public function __construct(
-		IL10N $l10n, IUserManager $userManager, FederatedUserService $federatedUserService,
+		FederatedUserService $federatedUserService,
 		CircleService $circleService
 	) {
 		parent::__construct();
-		$this->l10n = $l10n;
-		$this->userManager = $userManager;
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
 
@@ -130,7 +118,9 @@ class CirclesCreate extends Base {
 			throw $e;
 		}
 
-		$output->writeln(json_encode($outcome, JSON_PRETTY_PRINT));
+		if (strtolower($input->getOption('output')) !== 'none') {
+			$output->writeln(json_encode($outcome, JSON_PRETTY_PRINT));
+		}
 
 		return 0;
 	}
