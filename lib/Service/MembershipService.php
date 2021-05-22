@@ -40,6 +40,7 @@ use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
 
@@ -64,6 +65,9 @@ class MembershipService {
 	/** @var MemberRequest */
 	private $memberRequest;
 
+	/** @var EventService */
+	private $eventService;
+
 
 	/**
 	 * MembershipService constructor.
@@ -71,15 +75,18 @@ class MembershipService {
 	 * @param MembershipRequest $membershipRequest
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
+	 * @param EventService $eventService
 	 */
 	public function __construct(
 		MembershipRequest $membershipRequest,
 		CircleRequest $circleRequest,
-		MemberRequest $memberRequest
+		MemberRequest $memberRequest,
+		EventService $eventService
 	) {
 		$this->membershipRequest = $membershipRequest;
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
+		$this->eventService = $eventService;
 	}
 
 
@@ -127,6 +134,7 @@ class MembershipService {
 	 * @param string $id
 	 *
 	 * @return array
+	 * @throws RequestBuilderException
 	 */
 	private function getChildrenMembers(string $id): array {
 		$singleIds = array_map(
@@ -239,61 +247,67 @@ class MembershipService {
 	public function updateMembershipsDatabase(string $singleId, array $memberships): int {
 		$known = $this->membershipRequest->getMemberships($singleId);
 
-		$count = 0;
-		$count += $this->removeDeprecatedMemberships($memberships, $known);
-		$count += $this->createNewMemberships($memberships, $known);
+		$deprecated = $this->removeDeprecatedMemberships($memberships, $known);
+		if (!empty($deprecated)) {
+			$this->eventService->membershipsRemoved($deprecated);
+		}
 
-		return $count;
+		$new = $this->createNewMemberships($memberships, $known);
+		if (!empty($new)) {
+			$this->eventService->membershipsCreated($new);
+		}
+
+		return count($deprecated) + count($new);
 	}
 
 
 	/**
-	 * @param array $memberships
-	 * @param array $known
+	 * @param Membership[] $memberships
+	 * @param Membership[] $known
 	 *
-	 * @return int
+	 * @return Membership[]
 	 */
-	private function removeDeprecatedMemberships(array $memberships, array $known): int {
+	private function removeDeprecatedMemberships(array $memberships, array $known): array {
 		$circleIds = array_map(
 			function(Membership $membership): string {
 				return $membership->getCircleId();
 			}, $memberships
 		);
 
-		$count = 0;
+		$deprecated = [];
 		foreach ($known as $item) {
 			if (!in_array($item->getCircleId(), $circleIds)) {
+				$deprecated[] = $item;
 				$this->membershipRequest->delete($item);
-				$count++;
 			}
 		}
 
-		return $count;
+		return $deprecated;
 	}
 
 
 	/**
-	 * @param array $memberships
-	 * @param array $known
+	 * @param Membership[] $memberships
+	 * @param Membership[] $known
 	 *
-	 * @return int
+	 * @return Membership[]
 	 */
-	private function createNewMemberships(array $memberships, array $known): int {
-		$count = 0;
+	private function createNewMemberships(array $memberships, array $known): array {
+		$new = [];
 		foreach ($memberships as $membership) {
 			try {
 				$item = $this->getMembershipsFromList($known, $membership->getCircleId());
 				if ($item->getLevel() !== $membership->getLevel()) {
 					$this->membershipRequest->update($membership);
-					$count++;
+					$new[] = $item;
 				}
 			} catch (ItemNotFoundException $e) {
 				$this->membershipRequest->insert($membership);
-				$count++;
+				$new[] = $membership;
 			}
 		}
 
-		return $count;
+		return $new;
 	}
 
 

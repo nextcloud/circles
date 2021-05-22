@@ -46,9 +46,12 @@ use OCA\Circles\Events\CircleMemberRemovedEvent;
 use OCA\Circles\Events\CreatingCircleEvent;
 use OCA\Circles\Events\DestroyingCircleEvent;
 use OCA\Circles\Events\EditingCircleMemberEvent;
+use OCA\Circles\Events\MembershipsCreatedEvent;
+use OCA\Circles\Events\MembershipsRemovedEvent;
 use OCA\Circles\Events\RemovingCircleMemberEvent;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Membership;
 use OCA\Circles\Model\ShareWrapper;
 use OCP\EventDispatcher\IEventDispatcher;
 
@@ -241,6 +244,24 @@ class EventService {
 	public function memberLeft(FederatedEvent $federatedEvent, array $results): void {
 		$event = new CircleMemberRemovedEvent($federatedEvent, $results);
 		$event->setType(CircleGenericEvent::LEFT);
+		$this->eventDispatcher->dispatchTyped($event);
+	}
+
+
+	/**
+	 * @param Membership[] $new
+	 */
+	public function membershipsCreated(array $new): void {
+		$event = new MembershipsCreatedEvent($new);
+		$this->eventDispatcher->dispatchTyped($event);
+	}
+
+
+	/**
+	 * @param Membership[] $deprecated
+	 */
+	public function membershipsRemoved(array $deprecated): void {
+		$event = new MembershipsRemovedEvent($deprecated);
 		$this->eventDispatcher->dispatchTyped($event);
 	}
 

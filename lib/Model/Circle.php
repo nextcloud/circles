@@ -98,12 +98,12 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	const CFG_PROTECTED = 256;       // Password protected to join/request
 	const CFG_NO_OWNER = 512;        // no owner, only members
 	const CFG_HIDDEN = 1024;         // hidden from listing, but available as a share entity
-	const CFG_BACKEND = 2048;        // Fully hidden, only backend Circles
-	const CFG_LOCAL = 4096;         // Local even on GlobalScale
-	const CFG_ROOT = 8192;           // Circle cannot be inside another Circle
-	const CFG_CIRCLE_INVITE = 16384;  // Circle must confirm when invited in another circle
-	const CFG_FEDERATED = 32768;     // Federated
-	const CFG_MOUNTPOINT = 65536;         // Generate a Files folder for this Circle
+	const CFG_BACKEND = 2048;            // Fully hidden, only backend Circles
+	const CFG_LOCAL = 4096;              // Local even on GlobalScale
+	const CFG_ROOT = 8192;               // Circle cannot be inside another Circle
+	const CFG_CIRCLE_INVITE = 16384;     // Circle must confirm when invited in another circle
+	const CFG_FEDERATED = 32768;         // Federated
+	const CFG_MOUNTPOINT = 65536;        // Generate a Files folder for this Circle
 
 	public static $DEF_CFG_MAX = 131071;
 
@@ -130,7 +130,8 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 		4096  => 'L|Local',
 		8192  => 'T|Root',
 		16384 => 'CI|Circle Invite',
-		32768 => 'F|Federated'
+		32768 => 'F|Federated',
+		65536 => 'M|Nountpoint'
 	];
 
 

@@ -54,6 +54,7 @@ use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
@@ -354,9 +355,9 @@ class CirclesMemberships extends Base {
 
 	/**
 	 * @throws CircleNotFoundException
-	 * @throws FederatedUserNotFoundException
 	 * @throws InitiatorNotFoundException
 	 * @throws OwnerNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	private function manageAllMemberships() {
 		if ($this->input->getOption('reset')) {

@@ -395,6 +395,7 @@ class MembersList extends Base {
 					}
 					$line .= ' (' . Member::$DEF_LEVEL[$member->getLevel()] . ')';
 
+					$line .= ' <info>MemberId</info>: ' . $member->getId();
 					$name = ($this->input->getOption('display-name')) ?
 						$member->getBasedOn()->getDisplayName() : $member->getUserId();
 					$line .= ' <info>Name</info>: ' . $name;

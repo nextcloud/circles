@@ -39,9 +39,11 @@ use Closure;
 use OC;
 use OCA\Circles\Events\AddingCircleMemberEvent;
 use OCA\Circles\Events\CircleMemberAddedEvent;
+use OCA\Circles\Events\MembershipsRemovedEvent;
 use OCA\Circles\Handlers\WebfingerHandler;
 use OCA\Circles\Listeners\Files\AddingMember as ListenerFilesAddingMember;
 use OCA\Circles\Listeners\Files\MemberAdded as ListenerFilesMemberAdded;
+use OCA\Circles\Listeners\Files\MembershipsRemoved as ListenerFilesMembershipsRemoved;
 use OCA\Circles\Listeners\GroupCreated;
 use OCA\Circles\Listeners\GroupDeleted;
 use OCA\Circles\Listeners\GroupMemberAdded;
@@ -128,6 +130,9 @@ class Application extends App implements IBootstrap {
 		// Local Events (for Files/Shares management)
 		$context->registerEventListener(AddingCircleMemberEvent::class, ListenerFilesAddingMember::class);
 		$context->registerEventListener(CircleMemberAddedEvent::class, ListenerFilesMemberAdded::class);
+		$context->registerEventListener(
+			MembershipsRemovedEvent::class, ListenerFilesMembershipsRemoved::class
+		);
 
 		$context->registerWellKnownHandler(WebfingerHandler::class);
 	}
@@ -217,11 +222,11 @@ class Application extends App implements IBootstrap {
 				$l = OC::$server->getL10N('circles');
 
 				return [
-					'id'      => 'circlesfilter',
+					'id' => 'circlesfilter',
 					'appname' => 'circles',
-					'script'  => 'files/list.php',
-					'order'   => 25,
-					'name'    => $l->t('Shared to Circles'),
+					'script' => 'files/list.php',
+					'order' => 25,
+					'name' => $l->t('Shared to Circles'),
 				];
 			}
 		);

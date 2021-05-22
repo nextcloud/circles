@@ -77,6 +77,8 @@ class Capabilities implements ICapability {
 
 
 	/**
+	 * @param bool $complete
+	 *
 	 * @return array
 	 */
 	public function getCapabilities(bool $complete = false): array {
@@ -93,6 +95,8 @@ class Capabilities implements ICapability {
 
 
 	/**
+	 * @param bool $complete
+	 *
 	 * @return array
 	 */
 	private function getCapabilitiesStatus(bool $complete = false): array {
@@ -162,7 +166,8 @@ class Capabilities implements ICapability {
 				Circle::CFG_LOCAL         => $this->l10n->t('Local'),
 				Circle::CFG_ROOT          => $this->l10n->t('Root'),
 				Circle::CFG_CIRCLE_INVITE => $this->l10n->t('Circle Invite'),
-				Circle::CFG_FEDERATED     => $this->l10n->t('Federated')
+				Circle::CFG_FEDERATED     => $this->l10n->t('Federated'),
+				Circle::CFG_MOUNTPOINT    => $this->l10n->t('Mountpoint')
 			],
 			'source' =>
 				[

@@ -35,6 +35,7 @@ namespace OCA\Circles\Db;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\ShareWrapperNotFoundException;
 use OCA\Circles\Model\FederatedUser;
+use OCA\Circles\Model\Membership;
 use OCA\Circles\Model\ShareWrapper;
 use OCP\Files\NotFoundException;
 use OCP\Share\Exceptions\IllegalIDChangeException;
@@ -104,6 +105,33 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		   ->set('permissions', $qb->createNamedParameter($shareWrapper->getPermissions()));
 
 		$qb->limitToId((int)$shareWrapper->getId());
+
+		$qb->execute();
+	}
+
+
+	/**
+	 * @param Membership $membership
+	 */
+	public function removeByMembership(Membership $membership) {
+		$qb = $this->getShareDeleteSql();
+		$qb->limitToShareWith($membership->getCircleId());
+		$qb->limit('uid_initiator', $membership->getSingleId());
+
+		$qb->execute();
+	}
+
+
+	/**
+	 * @param string $initiator
+	 * @param string $shareWith
+	 *
+	 * @deprecated in NC30 when initiator uses FederatedUser - use removeByMembership()
+	 */
+	public function removeByInitiatorAndShareWith(string $initiator, string $shareWith) {
+		$qb = $this->getShareDeleteSql();
+		$qb->limitToShareWith($shareWith);
+		$qb->limit('uid_initiator', $initiator);
 
 		$qb->execute();
 	}

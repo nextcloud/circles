@@ -1200,14 +1200,10 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	public function limitToShareOwner(string $alias, FederatedUser $federatedUser, bool $reshares): void {
 		$expr = $this->expr();
 
-		$orX = $expr->orX(
-			$expr->eq($alias . '.uid_initiator', $this->createNamedParameter($federatedUser->getUserId()))
-		);
+		$orX = $expr->orX($this->exprLimit('uid_initiator', $federatedUser->getUserId(), $alias));
 
 		if ($reshares) {
-			$orX->add(
-				$expr->eq($alias . '.uid_owner', $this->createNamedParameter($federatedUser->getUserId()))
-			);
+			$orX->add($this->exprLimit('uid_owner', $federatedUser->getUserId(), $alias));
 		}
 
 		$this->andWhere($orX);
