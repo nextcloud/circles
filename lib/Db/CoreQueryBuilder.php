@@ -1022,7 +1022,6 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 			$orX->add($expr->gte($alias . '.config', $this->createNamedParameter(0)));
 		}
 		if ($this->getBool('canBeVisitorOnOpen', $options, false)) {
-			echo '!!!!';
 			$andOpen = $expr->andX();
 			$andOpen->add($expr->bitwiseAnd($alias . '.config', Circle::CFG_OPEN));
 			$andOpen->add(
