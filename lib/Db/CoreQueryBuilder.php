@@ -653,13 +653,6 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		);
 
 		if (!is_null($initiator)) {
-//			$this->setOptions(
-//				explode('_', $aliasCircle), [
-//											  'mustBeMember' => true,
-//											  'canBeVisitor' => false
-//										  ]
-//			);
-
 			$this->limitToInitiator($aliasCircle, $initiator);
 		}
 
@@ -972,7 +965,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 			);
 
 			$default = [];
-			if ($this->getBool('canBeVisitor', $options)) {
+			if ($this->getBool('canBeVisitor', $options, false)) {
 				$default = [
 					'user_id'   => $initiator->getUserId(),
 					'single_id' => $initiator->getSingleId(),
@@ -999,8 +992,6 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	protected function limitInitiatorVisibility(string $alias) {
 		$aliasMembership = $this->generateAlias($alias, self::MEMBERSHIPS, $options);
 		$getPersonalCircle = $this->getBool('getPersonalCircle', $options, false);
-		$mustBeMember = $this->getBool('mustBeMember', $options, true);
-		$canBeVisitor = $this->getBool('canBeVisitor', $options, false);
 
 		$expr = $this->expr();
 
@@ -1023,12 +1014,21 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 				)
 			);
 		}
-		if (!$mustBeMember) {
+		if (!$this->getBool('mustBeMember', $options, true)) {
 			$orX->add($expr->bitwiseAnd($alias . '.config', Circle::CFG_VISIBLE));
 		}
-		if ($canBeVisitor) {
+		if ($this->getBool('canBeVisitor', $options, false)) {
 			// TODO: should find a better way, also filter on remote initiator on non-federated ?
 			$orX->add($expr->gte($alias . '.config', $this->createNamedParameter(0)));
+		}
+		if ($this->getBool('canBeVisitorOnOpen', $options, false)) {
+			echo '!!!!';
+			$andOpen = $expr->andX();
+			$andOpen->add($expr->bitwiseAnd($alias . '.config', Circle::CFG_OPEN));
+			$andOpen->add(
+				$this->createFunction('NOT') . $expr->bitwiseAnd($alias . '.config', Circle::CFG_REQUEST)
+			);
+			$orX->add($andOpen);
 		}
 		$this->andWhere($orX);
 

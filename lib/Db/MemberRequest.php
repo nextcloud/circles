@@ -206,6 +206,8 @@ class MemberRequest extends MemberRequestBuilder {
 	): array {
 		$qb = $this->getMemberSelectSql($initiator);
 		$qb->limitToCircleId($singleId);
+
+		$qb->setOptions([CoreQueryBuilder::MEMBER], ['canBeVisitorOnOpen' => true]);
 		$qb->leftJoinCircle(CoreQueryBuilder::MEMBER, $initiator);
 
 		if (!is_null($remoteInstance)) {
