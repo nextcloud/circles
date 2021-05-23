@@ -167,7 +167,7 @@ class ConfigService {
 			return $value;
 		}
 
-		if (($value = $this->config->getSystemValue('circles.' . $key, '')) !== '') {
+		if (($value = $this->config->getSystemValue(Application::APP_ID . '.' . $key, '')) !== '') {
 			return $value;
 		}
 
