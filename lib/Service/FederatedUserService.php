@@ -485,6 +485,7 @@ class FederatedUserService {
 		list($singleId, $instance) = $this->extractIdAndInstance($federatedId);
 		switch ($userType) {
 			case Member::TYPE_SINGLE:
+			case Member::TYPE_CIRCLE:
 				return $this->getFederatedUser_SingleId($singleId, $instance);
 			case Member::TYPE_USER:
 				return $this->getFederatedUser_User($singleId, $instance);
