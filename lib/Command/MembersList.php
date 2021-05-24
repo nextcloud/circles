@@ -104,6 +104,9 @@ class MembersList extends Base {
 	/** @var InputInterface */
 	private $input;
 
+	/** @var string */
+	private $treeType = '';
+
 	/**
 	 * MembersList constructor.
 	 *
@@ -139,7 +142,7 @@ class MembersList extends Base {
 			 ->addOption('inherited', '', InputOption::VALUE_NONE, 'Display all inherited members')
 			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
 			 ->addOption('display-name', '', InputOption::VALUE_NONE, 'display the displayName')
-			 ->addOption('tree', '', InputOption::VALUE_NONE, 'display members as a tree');
+			 ->addOption('tree', '', InputOption::VALUE_OPTIONAL, 'display members as a tree', false);
 	}
 
 
@@ -175,7 +178,9 @@ class MembersList extends Base {
 		$inherited = $input->getOption('inherited');
 
 		$tree = null;
-		if ($input->getOption('tree')) {
+		if ($input->getOption('tree') !== false) {
+			$this->treeType = (is_null($input->getOption('tree'))) ? 'all' : $input->getOption('tree');
+
 			$this->federatedUserService->commandLineInitiator($initiator, $circleId, true);
 			$circle = $this->circleService->getCircle($circleId);
 
@@ -348,14 +353,16 @@ class MembersList extends Base {
 						$member->getSingleId(), $member->getInstance(), $initiator, $node, $knownIds
 					);
 				} else {
-					new NC22TreeNode(
-						$tree, new SimpleDataStore(
-								 [
-									 'member'  => $member,
-									 'cycling' => in_array($member->getSingleId(), $knownIds)
-								 ]
-							 )
-					);
+					if ($this->treeType !== 'circles-only') {
+						new NC22TreeNode(
+							$tree, new SimpleDataStore(
+									 [
+										 'member'  => $member,
+										 'cycling' => in_array($member->getSingleId(), $knownIds)
+									 ]
+								 )
+						);
+					}
 				}
 			}
 		}
