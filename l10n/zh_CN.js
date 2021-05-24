@@ -92,6 +92,7 @@ OC.L10N.register(
     "Root" : "根路径",
     "Circle Invite" : "Circle 邀请",
     "Federated" : "联合的",
+    "Mountpoint" : "加载点",
     "Nextcloud User" : "NextCloud 用户",
     "Nextcloud Group" : "NextCloud 群组",
     "Mail Address" : "邮箱",
