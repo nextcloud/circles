@@ -38,7 +38,6 @@ use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
-use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Model\Member;
@@ -134,11 +133,12 @@ class MembershipService {
 
 	/**
 	 * @param string $id
+	 * @param array $knownIds
 	 *
 	 * @return array
 	 * @throws RequestBuilderException
 	 */
-	private function getChildrenMembers(string $id): array {
+	private function getChildrenMembers(string $id, array &$knownIds = []): array {
 		$singleIds = array_map(
 			function(Member $item): string {
 				return $item->getSingleId();
@@ -146,8 +146,9 @@ class MembershipService {
 		);
 
 		foreach ($singleIds as $singleId) {
-			if ($singleId !== $id) {
-				$singleIds = array_merge($singleIds, $this->getChildrenMembers($singleId));
+			if ($singleId !== $id && !in_array($singleId, $knownIds)) {
+				$knownIds[] = $singleId;
+				$singleIds = array_merge($singleIds, $this->getChildrenMembers($singleId, $knownIds));
 			}
 		}
 
@@ -157,10 +158,11 @@ class MembershipService {
 
 	/**
 	 * @param string $id
+	 * @param array $knownIds
 	 *
 	 * @return array
 	 */
-	private function getChildrenMemberships(string $id): array {
+	private function getChildrenMemberships(string $id, array &$knownIds = []): array {
 		$singleIds = array_map(
 			function(Membership $item): string {
 				return $item->getSingleId();
@@ -168,8 +170,9 @@ class MembershipService {
 		);
 
 		foreach ($singleIds as $singleId) {
-			if ($singleId !== $id) {
-				$singleIds = array_merge($singleIds, $this->getChildrenMemberships($singleId));
+			if ($singleId !== $id && !in_array($singleId, $knownIds)) {
+				$knownIds[] = $singleId;
+				$singleIds = array_merge($singleIds, $this->getChildrenMemberships($singleId, $knownIds));
 			}
 		}
 
