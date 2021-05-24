@@ -66,7 +66,8 @@ class StatusCode {
 		124 => 'Member is blocked',
 		125 => 'The designed circle cannot be added',
 		126 => 'Circle only accepts local users',
-		127 => 'Remote Users are not accepted in a non-federated Circle'
+		127 => 'Remote Users are not accepted in a non-federated Circle',
+		128 => 'Cannot add Circle as its own Member'
 	];
 
 	static $MEMBER_LEVEL = [

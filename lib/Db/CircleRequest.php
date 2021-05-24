@@ -228,6 +228,7 @@ class CircleRequest extends CircleRequestBuilder {
 	 * @return FederatedUser
 	 * @throws CircleNotFoundException
 	 * @throws OwnerNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	public function getFederatedUserBySingleId(string $singleId): FederatedUser {
 		$qb = $this->getCircleSelectSql();

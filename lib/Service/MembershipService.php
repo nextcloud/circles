@@ -92,6 +92,8 @@ class MembershipService {
 
 	/**
 	 * @param string $singleId
+	 *
+	 * @throws RequestBuilderException
 	 */
 	public function onUpdate(string $singleId): void {
 		if ($singleId === '') {
@@ -100,7 +102,7 @@ class MembershipService {
 
 		try {
 			$this->circleRequest->getFederatedUserBySingleId($singleId);
-		} catch (CircleNotFoundException | FederatedUserNotFoundException | OwnerNotFoundException $e) {
+		} catch (CircleNotFoundException | OwnerNotFoundException $e) {
 			$this->membershipRequest->removeBySingleId($singleId);
 		}
 

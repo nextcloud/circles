@@ -341,6 +341,10 @@ class SingleMemberAdd implements
 			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[125], 125);
 		}
 
+		if ($member->getSingleId() === $circle->getSingleId()) {
+			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[128], 128);
+		}
+
 		if (!$this->configService->isLocalInstance($member->getInstance())) {
 			if ($circle->isConfig(Circle::CFG_LOCAL)) {
 				throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[126], 126);
