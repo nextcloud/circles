@@ -265,14 +265,6 @@ class InterfaceService {
 			}
 		}
 
-		if ($this->configService->getFrontalInstance() !== '') {
-			return $this->configService->getFrontalInstance();
-		}
-
-		if ($this->configService->getInternalInstance() !== '') {
-			return $this->configService->getInternalInstance();
-		}
-
 		return $this->configService->getLoopbackInstance();
 	}
 

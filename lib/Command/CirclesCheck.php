@@ -270,8 +270,11 @@ class CirclesCheck extends Base {
 			'. By default, the App will use the entry \'overwrite.cli.url\' from \'config/config.php\'.'
 		);
 
+		$notDefault = false;
 		if ($test === '') {
 			$test = $this->configService->getLoopbackPath();
+		} else {
+			$notDefault = true;
 		}
 
 		$output->writeln('');
@@ -280,12 +283,17 @@ class CirclesCheck extends Base {
 		try {
 			$this->setupLoopback($input, $output, $test);
 			$output->writeln('* <info>Loopback</info> address looks good');
-			$output->writeln('saving');
+			if ($notDefault) {
+				$this->saveLoopback($input, $output, $test);
+			}
+
+			return;
 		} catch (Exception $e) {
-			$output->writeln('<error>' . $e->getMessage() . '</error>');
 		}
 
-		$output->writeln('- You do not have a valid <info>loopback</info> address setup right now.');
+		$output->writeln('');
+		$output->writeln('- <comment>You do not have a valid loopback address setup right now.</comment>');
+		$output->writeln('');
 
 		$helper = $this->getHelper('question');
 		while (true) {
@@ -310,22 +318,12 @@ class CirclesCheck extends Base {
 			$output->write('* testing address: ' . $loopback . ' ');
 
 			if ($this->testLoopback($input, $output, $loopback)) {
-				$output->writeln('<info>ok</info>');
-				$output->writeln('saving.');
-				$this->configService->setAppValue(ConfigService::LOOPBACK_CLOUD_SCHEME, $scheme);
-				$this->configService->setAppValue(ConfigService::LOOPBACK_CLOUD_ID, $cloudId);
-				$output->writeln(
-					'- Address <info>' . $loopback . '</info> is now used as <info>loopback</info>'
-				);
+				$output->writeln('* <info>Loopback</info> address looks good');
+				$this->saveLoopback($input, $output, $loopback);
 
 				return;
 			}
-
-			$output->writeln('<error>fail</error>');
 		}
-//		while(true) {
-
-//			}
 	}
 
 
@@ -340,7 +338,7 @@ class CirclesCheck extends Base {
 			$this->configService->setAppValue(ConfigService::LOOPBACK_TMP_SCHEME, $scheme);
 			$this->configService->setAppValue(ConfigService::LOOPBACK_TMP_ID, $cloudId);
 			if (!$this->testLoopback($input, $output, $address)) {
-				throw new Exception('fail');
+				throw new Exception();
 			}
 		} catch (Exception $e) {
 		}
@@ -396,6 +394,7 @@ class CirclesCheck extends Base {
 		$wrappers = $this->remoteUpstreamService->getEventsByToken($test->getWrapperToken());
 		if (count($wrappers) !== 1) {
 			$output->writeln('<error>Event created too many Wrappers</error>');
+			$output->writeln('<error>Event created too many Wrappers</error>');
 		}
 
 		$wrapper = array_shift($wrappers);
@@ -423,6 +422,35 @@ class CirclesCheck extends Base {
 		return true;
 	}
 
+
+	/**
+	 * @param InputInterface $input
+	 * @param OutputInterface $output
+	 * @param string $loopback
+	 *
+	 * @throws Exception
+	 */
+	private function saveLoopback(InputInterface $input, OutputInterface $output, string $loopback): void {
+		[$scheme, $cloudId] = $this->parseAddress($loopback);
+
+		$question = new ConfirmationQuestion(
+			'- Do you want to save <info>'. $loopback . '</info> as your <info>loopback</info> address ? (y/N) ', false, '/^(y|Y)/i'
+		);
+
+		$helper = $this->getHelper('question');
+		if (!$helper->ask($input, $output, $question)) {
+			$output->writeln('skipping.');
+
+			return;
+		}
+
+		$this->configService->setAppValue(ConfigService::LOOPBACK_CLOUD_SCHEME, $scheme);
+		$this->configService->setAppValue(ConfigService::LOOPBACK_CLOUD_ID, $cloudId);
+		$output->writeln(
+			'- Address <info>' . $loopback . '</info> is now used as <info>loopback</info>'
+		);
+
+	}
 
 	/**
 	 * @param InputInterface $input
@@ -622,7 +650,6 @@ class CirclesCheck extends Base {
 	 * @param array $args
 	 *
 	 * @return bool
-	 * @throws RequestNetworkException
 	 */
 	private function testRequest(
 		OutputInterface $output,
@@ -635,18 +662,22 @@ class CirclesCheck extends Base {
 		$request->setFollowLocation(false);
 
 		$output->write('- ' . $type . ' request on ' . $request->getCompleteUrl() . ': ');
-		$this->doRequest($request);
 
-		$color = 'error';
-		$result = $request->getResult();
-		if ($result->getStatusCode() === 200) {
-			$color = 'info';
-		}
+		try {
+			$this->doRequest($request);
+			$result = $request->getResult();
 
-		$output->writeln('<' . $color . '>' . $result->getStatusCode() . '</' . $color . '>');
+			$color = 'error';
+			if ($result->getStatusCode() === 200) {
+				$color = 'info';
+			}
 
-		if ($result->getStatusCode() === 200) {
-			return true;
+			$output->writeln('<' . $color . '>' . $result->getStatusCode() . '</' . $color . '>');
+			if ($result->getStatusCode() === 200) {
+				return true;
+			}
+		} catch (RequestNetworkException $e) {
+			$output->writeln('<error>fail</error>');
 		}
 
 		return false;
