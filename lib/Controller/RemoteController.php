@@ -365,7 +365,7 @@ class RemoteController extends Controller {
 
 		$event = new FederatedEvent();
 		$event->import(json_decode($signed->getBody(), true));
-		$event->setIncomingOrigin($signed->getOrigin());
+		$event->setSender($signed->getOrigin());
 
 		return $event;
 	}

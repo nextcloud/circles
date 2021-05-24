@@ -98,7 +98,7 @@ class FileShare implements
 	 * @throws CircleNotFoundException
 	 */
 	public function manage(FederatedEvent $event): void {
-		if ($this->configService->isLocalInstance($event->getSource())) {
+		if ($this->configService->isLocalInstance($event->getOrigin())) {
 			return;
 		}
 

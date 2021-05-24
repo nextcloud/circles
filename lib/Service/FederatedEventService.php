@@ -160,6 +160,8 @@ class FederatedEventService extends NC22Signature {
 	 * @throws RequestBuilderException
 	 */
 	public function newEvent(FederatedEvent $event): array {
+		$event->setOrigin($this->interfaceService->getLocalInstance());
+
 		$federatedItem = $this->getFederatedItem($event, false);
 		$this->confirmInitiator($event, true);
 
@@ -169,9 +171,8 @@ class FederatedEventService extends NC22Signature {
 			$instance = $event->getCircle()->getInstance();
 		}
 
-		$event->setSource($instance);
 		if ($this->configService->isLocalInstance($instance)) {
-			$event->setIncomingOrigin($instance);
+			$event->setSender($instance);
 			$federatedItem->verify($event);
 
 			if ($event->isDataRequestOnly()) {
@@ -223,7 +224,7 @@ class FederatedEventService extends NC22Signature {
 				);
 			}
 		} else {
-			if ($circle->getInitiator()->getInstance() !== $event->getIncomingOrigin()) {
+			if ($circle->getInitiator()->getInstance() !== $event->getSender()) {
 				throw new InitiatorNotConfirmedException(
 					'Initiator must belong to the instance at the origin of the request'
 				);
@@ -356,7 +357,7 @@ class FederatedEventService extends NC22Signature {
 
 		if ($this->configService->isLocalInstance($event->getCircle()->getInstance())) {
 			$shareLock = $this->shareLockRequest->getShare($event->getItemId());
-			if ($shareLock->getInstance() !== $event->getIncomingOrigin()) {
+			if ($shareLock->getInstance() !== $event->getSender()) {
 				throw new FederatedShareBelongingException('ShareLock belongs to another instance');
 			}
 		}

@@ -148,7 +148,7 @@ class RemoteDownstreamService {
 
 		if ($event->isLimitedToInstanceWithMember()) {
 			$instances = $this->memberRequest->getMemberInstances($event->getCircle()->getSingleId());
-			if (!in_array($event->getIncomingOrigin(), $instances)) {
+			if (!in_array($event->getSender(), $instances)) {
 				throw new FederatedEventException('Instance have no members in this Circle');
 			}
 		}
@@ -323,7 +323,7 @@ class RemoteDownstreamService {
 	 * @throws OwnerNotFoundException
 	 */
 	private function confirmOriginEvent(FederatedEvent $event): void {
-		if ($event->getIncomingOrigin() !== $event->getCircle()->getInstance()) {
+		if ($event->getSender() !== $event->getCircle()->getInstance()) {
 			$this->debug('invalid origin', ['event' => $event]);
 			throw new FederatedEventException('invalid origin');
 		}

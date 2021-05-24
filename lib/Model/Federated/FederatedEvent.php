@@ -64,7 +64,7 @@ class FederatedEvent implements JsonSerializable {
 	private $class;
 
 	/** @var string */
-	private $source = '';
+	private $origin = '';
 
 	/** @var Circle */
 	private $circle;
@@ -103,7 +103,7 @@ class FederatedEvent implements JsonSerializable {
 	private $dataRequestOnly = false;
 
 	/** @var string */
-	private $incomingOrigin = '';
+	private $sender = '';
 
 
 	/** @var string */
@@ -147,31 +147,23 @@ class FederatedEvent implements JsonSerializable {
 	/**
 	 * @return string
 	 */
-	public function getSource(): string {
-		return $this->source;
+	public function getOrigin(): string {
+		return $this->origin;
 	}
 
 	/**
-	 * @param string $source
+	 * Source (instance) of the event.
+	 *
+	 * @param string $origin
 	 *
 	 * @return self
 	 */
-	public function setSource(string $source): self {
-		$this->source = $source;
+	public function setOrigin(string $origin): self {
+		$this->origin = $origin;
 
-		if ($this->hasMember() && $this->member->getInstance() === '') {
-			$this->member->setInstance($source);
-		}
-
-//		if ($this->hasCircle()
-//			&& $this->getCircle()
-//					->hasViewer()
-//			&& $this->getCircle()
-//					->getViewer()
-//					->getInstance() === '') {
-//			$this->getCircle()
-//				 ->getViewer()
-//				 ->setInstance($source);
+		// Needed ?
+//		if ($this->hasMember() && $this->member->getInstance() === '') {
+//			$this->member->setInstance($source);
 //		}
 
 		return $this;
@@ -236,12 +228,15 @@ class FederatedEvent implements JsonSerializable {
 
 
 	/**
-	 * @param string $incomingOrigin
+	 *
+	 * Origin of the request
+	 *
+	 * @param string $sender
 	 *
 	 * @return self
 	 */
-	public function setIncomingOrigin(string $incomingOrigin): self {
-		$this->incomingOrigin = $incomingOrigin;
+	public function setSender(string $sender): self {
+		$this->sender = $sender;
 
 		return $this;
 	}
@@ -249,8 +244,8 @@ class FederatedEvent implements JsonSerializable {
 	/**
 	 * @return string
 	 */
-	public function getIncomingOrigin(): string {
-		return $this->incomingOrigin;
+	public function getSender(): string {
+		return $this->sender;
 	}
 
 
@@ -478,13 +473,14 @@ class FederatedEvent implements JsonSerializable {
 	 * @param array $data
 	 *
 	 * @return self
+	 * @throws InvalidItemException
 	 */
 	public function import(array $data): self {
 		$this->setClass($this->get('class', $data));
 		$this->setSeverity($this->getInt('severity', $data));
 		$this->setData(new SimpleDataStore($this->getArray('data', $data)));
 		$this->setResult(new SimpleDataStore($this->getArray('result', $data)));
-		$this->setSource($this->get('source', $data));
+		$this->setOrigin($this->get('origin', $data));
 		$this->setItemId($this->get('itemId', $data));
 
 		try {
@@ -520,7 +516,7 @@ class FederatedEvent implements JsonSerializable {
 			'severity' => $this->getSeverity(),
 			'data'     => $this->getData(),
 			'result'   => $this->getResult(),
-			'source'   => $this->getSource(),
+			'origin'   => $this->getOrigin(),
 			'itemId'   => $this->getItemId(),
 			'outcome'  => $this->getOutcome(),
 			'members'  => $this->getMembers()
