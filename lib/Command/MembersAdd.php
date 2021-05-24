@@ -40,14 +40,12 @@ use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
 use daita\MySmallPhpTools\Model\Request;
 use Exception;
 use OC\Core\Command\Base;
-use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
-use OCP\IL10N;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -55,21 +53,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 
 /**
- * Class MembersCreate
+ * Class MembersAdd
  *
  * @package OCA\Circles\Command
  */
 class MembersAdd extends Base {
 
 
-	/** @var IL10N */
-	private $l10n;
-
 	/** @var FederatedUserService */
 	private $federatedUserService;
-
-	/** @var CircleRequest */
-	private $circleRequest;
 
 	/** @var MemberService */
 	private $memberService;
@@ -79,23 +71,20 @@ class MembersAdd extends Base {
 
 
 	/**
-	 * MembersCreate constructor.
+	 * MembersAdd constructor.
 	 *
-	 * @param IL10N $l10n
-	 * @param CircleRequest $circleRequest
 	 * @param FederatedUserService $federatedUserService
 	 * @param MemberService $memberService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IL10N $l10n, CircleRequest $circleRequest, FederatedUserService $federatedUserService,
-		MemberService $memberService, ConfigService $configService
+		FederatedUserService $federatedUserService,
+		MemberService $memberService,
+		ConfigService $configService
 	) {
 		parent::__construct();
 
-		$this->l10n = $l10n;
 		$this->federatedUserService = $federatedUserService;
-		$this->circleRequest = $circleRequest;
 
 		$this->memberService = $memberService;
 		$this->configService = $configService;

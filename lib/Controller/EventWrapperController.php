@@ -30,10 +30,11 @@
 namespace OCA\Circles\Controller;
 
 
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Async;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Controller;
-use daita\MySmallPhpTools\Traits\TAsync;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use Exception;
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\EventWrapperRequest;
 use OCA\Circles\Model\Federated\EventWrapper;
 use OCA\Circles\Model\Federated\FederatedEvent;
@@ -56,7 +57,7 @@ class EventWrapperController extends Controller {
 
 
 	use TStringTools;
-	use TAsync;
+	use TNC22Async;
 	use TNC22Controller;
 
 
@@ -102,6 +103,9 @@ class EventWrapperController extends Controller {
 		$this->remoteUpstreamService = $remoteUpstreamService;
 		$this->remoteDownstreamService = $remoteDownstreamService;
 		$this->configService = $configService;
+
+		$this->setup('app', Application::APP_ID);
+		$this->setupInt(self::$SETUP_TIME_LIMIT, 900);
 	}
 
 
@@ -120,7 +124,7 @@ class EventWrapperController extends Controller {
 	 */
 	public function asyncBroadcast(string $token): DataResponse {
 		$wrappers = $this->remoteUpstreamService->getEventsByToken($token);
-		if (empty($wrappers)) {
+		if (empty($wrappers) && $token !== 'test-dummy-token') {
 			return new DataResponse(null, Http::STATUS_OK);
 		}
 
@@ -132,6 +136,11 @@ class EventWrapperController extends Controller {
 		}
 
 		$this->federatedEventService->manageResults($token);
+
+		// circles:check can check async is fine
+		if ($token === 'test-dummy-token') {
+			sleep(5);
+		}
 
 		// exit() or useless log will be generated
 		exit();

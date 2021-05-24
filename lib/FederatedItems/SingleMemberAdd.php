@@ -135,6 +135,7 @@ class SingleMemberAdd implements
 	 * @param IUserManager $userManager
 	 * @param MemberRequest $memberRequest
 	 * @param FederatedUserService $federatedUserService
+	 * @param RemoteStreamService $remoteStreamService
 	 * @param CircleService $circleService
 	 * @param MembershipService $membershipService
 	 * @param EventService $eventService
