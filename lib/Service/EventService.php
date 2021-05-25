@@ -52,6 +52,7 @@ use OCA\Circles\Events\RemovingCircleMemberEvent;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
+use OCA\Circles\Model\Mount;
 use OCA\Circles\Model\ShareWrapper;
 use OCP\EventDispatcher\IEventDispatcher;
 
@@ -269,7 +270,13 @@ class EventService {
 	/**
 	 * @param ShareWrapper $wrappedShare
 	 */
-	public function shareCreated(ShareWrapper $wrappedShare): void {
+	public function localShareCreated(ShareWrapper $wrappedShare): void {
+	}
+
+	/**
+	 * @param ShareWrapper $wrappedShare
+	 */
+	public function federatedShareCreated(ShareWrapper $wrappedShare, Mount $mount): void {
 //		Circles::shareToCircle(
 //			$circle->getUniqueId(), 'files', '',
 //			['id' => $share->getId(), 'share' => $this->shareObjectToArray($share)],
@@ -277,6 +284,18 @@ class EventService {
 //		);
 	}
 
+
+	/**
+	 * @param ShareWrapper $wrappedShare
+	 */
+	public function localShareDeleted(ShareWrapper $wrappedShare): void {
+	}
+
+	/**
+	 * @param ShareWrapper $wrappedShare
+	 */
+	public function federatedShareDeleted(ShareWrapper $wrappedShare): void {
+	}
 
 
 

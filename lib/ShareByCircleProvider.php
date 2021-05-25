@@ -54,7 +54,8 @@ use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\ShareWrapperNotFoundException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
-use OCA\Circles\FederatedItems\FileShare;
+use OCA\Circles\FederatedItems\Files\FileShare;
+use OCA\Circles\FederatedItems\Files\FileUnshare;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\ShareWrapper;
@@ -211,7 +212,7 @@ class ShareByCircleProvider implements IShareProvider {
 		$circle = $this->circleService->getCircle($share->getSharedWith());
 		$owner = $circle->getInitiator();
 
-		$initiatorHelper = new MemberHelper($circle->getInitiator());
+		$initiatorHelper = new MemberHelper($owner);
 		$initiatorHelper->mustBeMember();
 
 		$share->setToken($this->token(15));
@@ -223,21 +224,18 @@ class ShareByCircleProvider implements IShareProvider {
 				$this->federatedUserService->getCurrentUser()
 			);
 
-			// TODO: include setOwner in the SQL request directly (leftJoin)
 			$wrappedShare->setOwner($owner);
 		} catch (ShareWrapperNotFoundException $e) {
 			throw new ShareNotFound();
 		}
 
-		// TODO: Move that into a Dispatched Event
 		$event = new FederatedEvent(FileShare::class);
 		$event->setSeverity(FederatedEvent::SEVERITY_HIGH)
 			  ->setCircle($circle)
 			  ->getData()->sObj('wrappedShare', $wrappedShare);
 
 		$this->federatedEventService->newEvent($event);
-
-		$this->eventService->shareCreated($wrappedShare);
+		$this->eventService->localShareCreated($wrappedShare);
 
 		return $wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
 	}
@@ -256,9 +254,54 @@ class ShareByCircleProvider implements IShareProvider {
 
 	/**
 	 * @param IShare $share
+	 *
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws InvalidIdException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
+	 * @throws UnknownRemoteException
 	 */
 	public function delete(IShare $share): void {
-		OC::$server->getLogger()->log(3, 'CSP > delete');
+		if ($share->getShareType() !== IShare::TYPE_CIRCLE) {
+			return;
+		}
+
+		$this->federatedUserService->initCurrentUser();
+		try {
+			$wrappedShare = $this->shareWrapperService->getShareById(
+				(int)$share->getId(),
+				$this->federatedUserService->getCurrentUser()
+			);
+		} catch (ShareWrapperNotFoundException $e) {
+			return;
+		}
+
+		$this->shareWrapperService->delete($wrappedShare);
+
+		try {
+			$circle = $this->circleService->getCircle($share->getSharedWith());
+		} catch (CircleNotFoundException $e) {
+			return;
+		} catch (InitiatorNotFoundException $e) {
+			// force the unshare ?
+			return;
+		}
+
+		$event = new FederatedEvent(FileUnshare::class);
+		$event->setSeverity(FederatedEvent::SEVERITY_HIGH)
+			  ->setCircle($circle)
+			  ->getData()->sObj('wrappedShare', $wrappedShare);
+
+		$this->federatedEventService->newEvent($event);
+		$this->eventService->localShareDeleted($wrappedShare);
 	}
 
 	/**
@@ -327,8 +370,6 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @throws RequestBuilderException
 	 */
 	public function getSharesInFolder($userId, Folder $node, $reshares): array {
-		OC::$server->getLogger()->log(3, 'CSP > getSharesInFolder');
-
 		$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
 		$wrappedShares = $this->shareWrapperService->getSharesInFolder(
 			$federatedUser,
@@ -374,8 +415,6 @@ class ShareByCircleProvider implements IShareProvider {
 			return [];
 		}
 
-		OC::$server->getLogger()->log(3, 'CSP > getSharesBy');
-
 		$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
 		$wrappedShares = $this->shareWrapperService->getSharesBy(
 			$federatedUser,
@@ -407,11 +446,10 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @throws InvalidIdException
 	 * @throws ShareNotFound
 	 * @throws SingleCircleNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	public function getShareById($shareId, $recipientId = null): IShare {
-		OC::$server->getLogger()->log(3, 'CSP > getShareById');
-
-		if ($recipientId === null) {
+		if (is_null($recipientId)) {
 			$federatedUser = null;
 		} else {
 			$federatedUser = $this->federatedUserService->getLocalFederatedUser($recipientId);
@@ -436,7 +474,6 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @throws IllegalIDChangeException
 	 */
 	public function getSharesByPath(Node $path): array {
-		OC::$server->getLogger()->log(3, 'CSP > getSharesByPath');
 		$wrappedShares = $this->shareWrapperService->getSharesByFileId($path->getId());
 
 		return array_filter(
@@ -534,6 +571,20 @@ class ShareByCircleProvider implements IShareProvider {
 	public function getAccessList($nodes, $currentAccess): array {
 		OC::$server->getLogger()->log(3, 'CSP > getAccessList');
 
+		return [];
+	}
+
+
+	/**
+	 * We don't return a thing about children.
+	 * The call to this function is deprecated and should be removed in next release of NC.
+	 * Also, we get the children in the delete() method.
+	 *
+	 * @param IShare $parent
+	 *
+	 * @return array
+	 */
+	public function getChildren(IShare $parent): array {
 		return [];
 	}
 

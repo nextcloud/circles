@@ -53,6 +53,7 @@ class MountRequest extends MountRequestBuilder {
 	 * @param Mount $mount
 	 */
 	public function save(Mount $mount): void {
+		// TODO: fix hash
 		$hash = $this->token();
 		$qb = $this->getMountInsertSql();
 		$qb->setValue('circle_id', $qb->createNamedParameter($mount->getCircleId()))
@@ -62,6 +63,17 @@ class MountRequest extends MountRequestBuilder {
 		   ->setValue('parent', $qb->createNamedParameter($mount->getParent()))
 		   ->setValue('mountpoint', $qb->createNamedParameter($mount->getMountPoint()))
 		   ->setValue('mountpoint_hash', $qb->createNamedParameter($hash));
+
+		$qb->execute();
+	}
+
+
+	/**
+	 * @param string $token
+	 */
+	public function delete(string $token): void {
+		$qb = $this->getMountDeleteSql();
+		$qb->limitToToken($token);
 
 		$qb->execute();
 	}

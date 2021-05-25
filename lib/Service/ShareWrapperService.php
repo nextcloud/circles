@@ -94,6 +94,14 @@ class ShareWrapperService {
 
 
 	/**
+	 * @param ShareWrapper $shareWrapper
+	 */
+	public function delete(ShareWrapper $shareWrapper): void {
+		$this->shareWrapperRequest->delete((int)$shareWrapper->getId());
+	}
+
+
+	/**
 	 * @param string $circleId
 	 * @param FederatedUser|null $shareRecipient
 	 * @param FederatedUser|null $shareInitiator

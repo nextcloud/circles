@@ -29,7 +29,7 @@ declare(strict_types=1);
  */
 
 
-namespace OCA\Circles\FederatedItems;
+namespace OCA\Circles\FederatedItems\Files;
 
 
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
@@ -45,12 +45,13 @@ use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Mount;
 use OCA\Circles\Model\ShareWrapper;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\EventService;
 
 
 /**
  * Class FileShare
  *
- * @package OCA\Circles\FederatedItems
+ * @package OCA\Circles\FederatedItems\Files
  */
 class FileShare implements
 	IFederatedItem,
@@ -65,6 +66,9 @@ class FileShare implements
 	/** @var MountRequest */
 	private $mountRequest;
 
+	/** @var EventService */
+	private $eventService;
+
 	/** @var ConfigService */
 	private $configService;
 
@@ -75,8 +79,13 @@ class FileShare implements
 	 * @param MountRequest $mountRequest
 	 * @param ConfigService $configService
 	 */
-	public function __construct(MountRequest $mountRequest, ConfigService $configService) {
+	public function __construct(
+		MountRequest $mountRequest,
+		EventService $eventService,
+		ConfigService $configService
+	) {
 		$this->mountRequest = $mountRequest;
+		$this->eventService = $eventService;
 		$this->configService = $configService;
 	}
 
@@ -109,6 +118,7 @@ class FileShare implements
 		$mount->setMountId($this->token(15));
 
 		$this->mountRequest->save($mount);
+		$this->eventService->federatedShareCreated($wrappedShare, $mount);
 
 //		$this->mountRequest->create($mount);
 //		$circle = $event->getDeprecatedCircle();

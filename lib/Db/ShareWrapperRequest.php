@@ -413,5 +413,22 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		return $this->getItemFromRequest($qb);
 	}
 
+
+	/**
+	 * @param int $shareId
+	 */
+	public function delete(int $shareId): void {
+		$qb = $this->getShareDeleteSql();
+
+		$qb->andWhere(
+			$qb->expr()->orX(
+				$qb->exprLimitInt('id', $shareId),
+				$qb->exprLimitInt('parent', $shareId),
+			)
+		);
+
+		$qb->execute();
+	}
+
 }
 
