@@ -92,6 +92,7 @@ OC.L10N.register(
     "Root" : "Raiz",
     "Circle Invite" : "Convite do Círculo ",
     "Federated" : "Federado",
+    "Mount point" : "Ponto de montagem ",
     "Nextcloud User" : "Usuário Nextcloud ",
     "Nextcloud Group" : "Grupo Nextcloud ",
     "Mail Address" : "Endereço de Correspondência",
