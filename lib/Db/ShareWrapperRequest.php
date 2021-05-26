@@ -226,6 +226,30 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 
 
 	/**
+	 * @param string $token
+	 * @param FederatedUser|null $federatedUser
+	 *
+	 * @return ShareWrapper
+	 * @throws RequestBuilderException
+	 * @throws ShareWrapperNotFoundException
+	 */
+	public function getShareByToken(string $token, ?FederatedUser $federatedUser = null): ShareWrapper {
+		$qb = $this->getShareSelectSql();
+
+		$qb->setOptions([CoreQueryBuilder::SHARE], ['getData' => true]);
+		$qb->leftJoinCircle(CoreQueryBuilder::SHARE, null, 'share_with');
+		$qb->limitToToken($token);
+
+		if (!is_null($federatedUser)) {
+			$qb->limitToInitiator(CoreQueryBuilder::SHARE, $federatedUser, 'share_with');
+			$qb->leftJoinShareChild(CoreQueryBuilder::SHARE);
+		}
+
+		return $this->getItemFromRequest($qb);
+	}
+
+
+	/**
 	 * @param FederatedUser $federatedUser
 	 * @param int $shareId
 	 *

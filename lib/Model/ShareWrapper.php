@@ -586,6 +586,10 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 
 		$this->setShareDisplay($share, $urlGenerator);
 
+		if ($this->hasCircle()) {
+			$share->setSharedWithDisplayName($this->getCircle()->getDisplayName());
+		}
+
 		if ($this->hasFileCache()) {
 			if (!$this->getFileCache()->isAccessible()) {
 				return null;

@@ -141,9 +141,22 @@ class ShareWrapperService {
 	 * @param int $fileId
 	 *
 	 * @return ShareWrapper[]
+	 * @throws RequestBuilderException
 	 */
 	public function getSharesByFileId(int $fileId, bool $getData = false): array {
 		return $this->shareWrapperRequest->getSharesByFileId($fileId, $getData);
+	}
+
+	/**
+	 * @param string $token
+	 * @param FederatedUser|null $federatedUser
+	 *
+	 * @return ShareWrapper
+	 * @throws RequestBuilderException
+	 * @throws ShareWrapperNotFoundException
+	 */
+	public function getShareByToken(string $token, ?FederatedUser $federatedUser = null): ShareWrapper {
+		return $this->shareWrapperRequest->getShareByToken($token, $federatedUser);
 	}
 
 

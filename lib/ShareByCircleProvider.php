@@ -472,6 +472,7 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @throws InvalidPathException
 	 * @throws NotFoundException
 	 * @throws IllegalIDChangeException
+	 * @throws RequestBuilderException
 	 */
 	public function getSharesByPath(Node $path): array {
 		$wrappedShares = $this->shareWrapperService->getSharesByFileId($path->getId());
@@ -530,9 +531,20 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @param string $token
 	 *
 	 * @return IShare
+	 * @throws IllegalIDChangeException
+	 * @throws RequestBuilderException
+	 * @throws ShareNotFound
 	 */
 	public function getShareByToken($token): IShare {
 		OC::$server->getLogger()->log(3, 'CSP > getShareByToken');
+
+		try {
+			$wrappedShare = $this->shareWrapperService->getShareByToken($token);
+		} catch (ShareWrapperNotFoundException $e) {
+			throw new ShareNotFound();
+		}
+
+		return $wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
 	}
 
 
