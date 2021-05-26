@@ -82,6 +82,7 @@ class ModelManager {
 	 * @param CoreQueryBuilder $coreRequestBuilder
 	 * @param MemberRequest $memberRequest
 	 * @param MembershipRequest $membershipRequest
+	 * @param InterfaceService $interfaceService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
@@ -398,12 +399,23 @@ class ModelManager {
 		}
 	}
 
+
 	/**
 	 * @return string
 	 */
 	public function getLocalInstance(): string {
 		return $this->interfaceService->getLocalInstance();
 	}
+
+	/**
+	 * @param string $instance
+	 *
+	 * @return bool
+	 */
+	public function isLocalInstance(string $instance): bool {
+		return $this->configService->isLocalInstance($instance);
+	}
+
 
 	/**
 	 * @param string $instance

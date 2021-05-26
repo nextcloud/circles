@@ -402,10 +402,13 @@ class FederatedUser extends ManagedModel implements
 	 * @return bool
 	 */
 	public function compareWith(IFederatedUser $member): bool {
+		$local = ($this->getManager()->isLocalInstance($this->getInstance())
+				  && $this->getManager()->isLocalInstance($member->getInstance()));
+
 		return !($this->getSingleId() !== $member->getSingleId()
 				 || $this->getUserId() !== $member->getUserId()
 				 || $this->getUserType() <> $member->getUserType()
-				 || $this->getInstance() !== $member->getInstance());
+				 || (!$local && $this->getInstance() !== $member->getInstance()));
 	}
 
 }
