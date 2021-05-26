@@ -92,6 +92,7 @@ OC.L10N.register(
     "Root" : "根",
     "Circle Invite" : "小圈圈邀請",
     "Federated" : "已聯盟",
+    "Mount point" : "掛載點",
     "Nextcloud User" : "Nextcloud 使用者",
     "Nextcloud Group" : "Nextcloud 群組",
     "Mail Address" : "郵件地址",

@@ -92,6 +92,7 @@ OC.L10N.register(
     "Root" : "Kök",
     "Circle Invite" : "Çevre çağrısı",
     "Federated" : "Birleşik",
+    "Mount point" : "Bağlama noktası",
     "Nextcloud User" : "Nextcloud Kullanıcısı",
     "Nextcloud Group" : "Nextcloud Grubu",
     "Mail Address" : "Posta Adresi",
