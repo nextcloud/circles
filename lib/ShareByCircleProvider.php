@@ -514,7 +514,8 @@ class ShareByCircleProvider implements IShareProvider {
 			$federatedUser,
 			(!is_null($node)) ? $node->getId() : 0,
 			$limit,
-			$offset
+			$offset,
+			true
 		);
 
 		return array_filter(
