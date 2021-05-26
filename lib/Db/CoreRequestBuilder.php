@@ -52,20 +52,19 @@ class CoreRequestBuilder {
 	const TABLE_SHARE = 'share';
 	const TABLE_FILE_CACHE = 'filecache';
 	const TABLE_STORAGES = 'storages';
-	const SHARE_TYPE = 7;
 
-	const TABLE_CIRCLE = 'circle_circles';
-	const TABLE_MEMBER = 'circle_members';
-	const TABLE_MEMBERSHIP = 'circle_membership';
-	const TABLE_REMOTE = 'circle_remotes';
-	const TABLE_EVENT = 'circle_events';
+	const TABLE_CIRCLE = 'circles_circle';
+	const TABLE_MEMBER = 'circles_member';
+	const TABLE_MEMBERSHIP = 'circles_membership';
+	const TABLE_REMOTE = 'circles_remote';
+	const TABLE_EVENT = 'circles_event';
+	const TABLE_MOUNT = 'circles_mount';
+	const TABLE_MOUNTPOINT = 'circles_mountpoint';
 
-	const TABLE_MOUNT = 'circle_mount';
-	const TABLE_MOUNTPOINT = 'circle_mountpoint';
+	// wip
+	const TABLE_SHARE_LOCKS = 'circle_share_lock';
+	const TABLE_TOKENS = 'circles_token';
 
-	const TABLE_SHARE_LOCKS = 'circle_share_locks';
-
-	const TABLE_TOKENS = 'circle_tokens';
 	const TABLE_GSSHARES = 'circle_gsshares'; // rename ?
 	const TABLE_GSSHARES_MOUNTPOINT = 'circle_gsshares_mp'; // rename ?
 

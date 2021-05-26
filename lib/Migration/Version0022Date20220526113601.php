@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -27,10 +28,12 @@ declare(strict_types=1);
  *
  */
 
+
 namespace OCA\Circles\Migration;
 
 use Closure;
 use Doctrine\DBAL\Schema\SchemaException;
+use Doctrine\DBAL\Types\Types;
 use OCP\DB\ISchemaWrapper;
 use OCP\IDBConnection;
 use OCP\Migration\IOutput;
@@ -38,22 +41,17 @@ use OCP\Migration\SimpleMigrationStep;
 
 
 /**
- * Class Version0021Date20210105123456
+ * Class Version0022Date20220526113601
  *
  * @package OCA\Circles\Migration
  */
-class Version0021Date20210105123456 extends SimpleMigrationStep {
-
-
-	/** @var IDBConnection */
-	private $connection;
+class Version0022Date20220526113601 extends SimpleMigrationStep {
 
 
 	/**
 	 * @param IDBConnection $connection
 	 */
 	public function __construct(IDBConnection $connection) {
-		$this->connection = $connection;
 	}
 
 
@@ -63,78 +61,215 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 	 * @param array $options
 	 *
 	 * @return null|ISchemaWrapper
+	 * @throws SchemaException
 	 */
-	public function changeSchema(IOutput $output, Closure $schemaClosure, array $options) {
+	public function changeSchema(IOutput $output, Closure $schemaClosure, array $options): ?ISchemaWrapper {
 		/** @var ISchemaWrapper $schema */
 		$schema = $schemaClosure();
 
-		try {
-			$circles = $schema->getTable('circle_circles');
-			if (!$circles->hasColumn('config')) {
-				$circles->addColumn(
-					'config', 'integer', [
-								'notnull'  => false,
-								'length'   => 11,
-								'unsigned' => true
-							]
-				);
-			}
-			if (!$circles->hasColumn('source')) {
-				$circles->addColumn(
-					'source', 'integer', [
-								'notnull'  => false,
-								'length'   => 5,
-								'unsigned' => true
-							]
-				);
-			}
-			if (!$circles->hasColumn('instance')) {
-				$circles->addColumn(
-					'instance', 'string', [
+
+		/**
+		 * CIRCLES_CIRCLE
+		 */
+		if (!$schema->hasTable('circles_circle')) {
+			$table = $schema->createTable('circles_circle');
+
+			$table->addColumn(
+				'id', 'integer', [
+						'autoincrement' => true,
+						'notnull'       => true,
+						'length'        => 4,
+						'unsigned'      => true,
+					]
+			);
+			$table->addColumn(
+				'unique_id', 'string', [
+							   'notnull' => true,
+							   'length'  => 31,
+						   ]
+			);
+			$table->addColumn(
+				'name', 'string', [
+						  'notnull' => true,
+						  'length'  => 127,
+					  ]
+			);
+			$table->addColumn(
+				'display_name', 'string', [
 								  'notnull' => false,
 								  'default' => '',
-								  'length'  => 255
+								  'length'  => 127
 							  ]
-				);
-			}
-			if (!$circles->hasColumn('display_name')) {
-				$circles->addColumn(
-					'display_name', 'string', [
-									  'notnull' => false,
-									  'default' => '',
-									  'length'  => 127
-								  ]
-				);
-			}
-			$circles->addIndex(['config']);
-		} catch (SchemaException $e) {
-		}
-
-
-		try {
-			$circles = $schema->getTable('circle_members');
-			if (!$circles->hasColumn('single_id')) {
-				$circles->addColumn(
-					'single_id', 'string', [
-								   'notnull' => false,
-								   'length'  => 15
-							   ]
-				);
-			}
-			if (!$circles->hasColumn('circle_source')) {
-				$circles->addColumn(
-					'circle_source', 'string', [
+			);
+			$table->addColumn(
+				'instance', 'string', [
+							  'notnull' => false,
+							  'default' => '',
+							  'length'  => 255
+						  ]
+			);
+			$table->addColumn(
+				'config', 'integer', [
+							'notnull'  => false,
+							'length'   => 11,
+							'unsigned' => true
+						]
+			);
+			$table->addColumn(
+				'source', 'integer', [
+							'notnull'  => false,
+							'length'   => 5,
+							'unsigned' => true
+						]
+			);
+			$table->addColumn(
+				'settings', 'text', [
+							  'notnull' => false
+						  ]
+			);
+			$table->addColumn(
+				'description', 'text', [
+								 'notnull' => false
+							 ]
+			);
+			$table->addColumn(
+				'creation', 'datetime', [
+							  'notnull' => false,
+						  ]
+			);
+			$table->addColumn(
+				'contact_addressbook', 'integer', [
+										 'notnull'  => false,
+										 'unsigned' => true,
+										 'length'   => 7,
+									 ]
+			);
+			$table->addColumn(
+				'contact_groupname', 'string', [
 									   'notnull' => false,
-									   'length'  => 63
+									   'length'  => 127,
 								   ]
-				);
-			}
-		} catch (SchemaException $e) {
+			);
+
+			$table->setPrimaryKey(['id']);
+			$table->addUniqueIndex(['unique_id']);
+			$table->addIndex(['config']);
+			$table->addIndex(['instance']);
+			$table->addIndex(['source']);
 		}
 
 
-		if (!$schema->hasTable('circle_remotes')) {
-			$table = $schema->createTable('circle_remotes');
+		/**
+		 * CIRCLES_MEMBER
+		 */
+		if (!$schema->hasTable('circles_member')) {
+			$table = $schema->createTable('circles_member');
+
+			$table->addColumn(
+				'id', 'integer', [
+						'autoincrement' => true,
+						'notnull'       => true,
+						'length'        => 4,
+						'unsigned'      => true,
+					]
+			);
+			$table->addColumn(
+				'single_id', 'string', [
+							   'notnull' => false,
+							   'length'  => 31
+						   ]
+			);
+			$table->addColumn(
+				'circle_id', 'string', [
+							   'notnull' => true,
+							   'length'  => 31,
+						   ]
+			);
+			$table->addColumn(
+				'member_id', Types::STRING, [
+							   'notnull' => false,
+							   'length'  => 31,
+						   ]
+			);
+			$table->addColumn(
+				'user_id', 'string', [
+							 'notnull' => true,
+							 'length'  => 127,
+						 ]
+			);
+			$table->addColumn(
+				'user_type', 'smallint', [
+							   'notnull' => true,
+							   'length'  => 1,
+							   'default' => 1,
+						   ]
+			);
+			$table->addColumn(
+				'instance', 'string', [
+							  'default' => '',
+							  'length'  => 255
+						  ]
+			);
+			$table->addColumn(
+				'level', 'smallint', [
+						   'notnull' => true,
+						   'length'  => 1,
+					   ]
+			);
+			$table->addColumn(
+				'status', 'string', [
+							'notnull' => false,
+							'length'  => 15,
+						]
+			);
+			$table->addColumn(
+				'note', 'text', [
+						  'notnull' => false
+					  ]
+			);
+			$table->addColumn(
+				'cached_name', 'string', [
+								 'notnull' => false,
+								 'length'  => 255,
+								 'default' => ''
+							 ]
+			);
+			$table->addColumn(
+				'cached_update', 'datetime', [
+								   'notnull' => false,
+							   ]
+			);
+			$table->addColumn(
+				'contact_id', 'string', [
+								'notnull' => false,
+								'length'  => 127,
+							]
+			);
+			$table->addColumn(
+				'contact_meta', 'text', [
+								  'notnull' => false
+							  ]
+			);
+			$table->addColumn(
+				'joined', 'datetime', [
+							'notnull' => false,
+						]
+			);
+
+			$table->setPrimaryKey(['id']);
+			$table->addIndex(
+				['circle_id', 'single_id', 'user_id', 'user_type', 'instance', 'level'], 'csuil'
+			);
+			$table->addIndex(['circle_id', 'single_id'], 'cs');
+			$table->addIndex(['contact_id']);
+		}
+
+
+		/**
+		 * CIRCLES_REMOTE
+		 */
+		if (!$schema->hasTable('circles_remote')) {
+			$table = $schema->createTable('circles_remote');
 			$table->addColumn(
 				'id', 'integer', [
 						'autoincrement' => true,
@@ -193,8 +328,11 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 		}
 
 
-		if (!$schema->hasTable('circle_events')) {
-			$table = $schema->createTable('circle_events');
+		/**
+		 * CIRCLES_EVENT
+		 */
+		if (!$schema->hasTable('circles_event')) {
+			$table = $schema->createTable('circles_event');
 			$table->addColumn(
 				'token', 'string', [
 						   'notnull' => false,
@@ -247,8 +385,11 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 		}
 
 
-		if (!$schema->hasTable('circle_membership')) {
-			$table = $schema->createTable('circle_membership');
+		/**
+		 * CIRCLES_MEMBERSHIP
+		 */
+		if (!$schema->hasTable('circles_membership')) {
+			$table = $schema->createTable('circles_membership');
 
 			$table->addColumn(
 				'circle_id', 'string', [
@@ -300,8 +441,11 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 		}
 
 
-		if (!$schema->hasTable('circle_mount')) {
-			$table = $schema->createTable('circle_mount');
+		/**
+		 * CIRCLES_MOUNT
+		 */
+		if (!$schema->hasTable('circles_mount')) {
+			$table = $schema->createTable('circles_mount');
 			$table->addColumn(
 				'id', 'integer', [
 						'autoincrement' => true,
@@ -357,8 +501,11 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 		}
 
 
-		if (!$schema->hasTable('circle_mountpoint')) {
-			$table = $schema->createTable('circle_mountpoint');
+		/**
+		 * CIRCLES_MOUNTPOINT
+		 */
+		if (!$schema->hasTable('circles_mountpoint')) {
+			$table = $schema->createTable('circles_mountpoint');
 			$table->addColumn(
 				'id', 'integer', [
 						'autoincrement' => true,
@@ -396,8 +543,11 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 		}
 
 
-		if (!$schema->hasTable('circle_share_locks')) {
-			$table = $schema->createTable('circle_share_locks');
+		/**
+		 * CIRCLES_SHARE_LOCK
+		 */
+		if (!$schema->hasTable('circles_share_lock')) {
+			$table = $schema->createTable('circles_share_lock');
 			$table->addColumn(
 				'id', 'integer', [
 						'autoincrement' => true,
@@ -432,5 +582,5 @@ class Version0021Date20210105123456 extends SimpleMigrationStep {
 		return $schema;
 	}
 
-
 }
+

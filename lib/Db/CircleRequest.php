@@ -63,7 +63,6 @@ class CircleRequest extends CircleRequestBuilder {
 
 		$qb = $this->getCircleInsertSql();
 		$qb->setValue('unique_id', $qb->createNamedParameter($circle->getSingleId()))
-		   ->setValue('long_id', $qb->createNamedParameter($circle->getSingleId()))
 		   ->setValue('name', $qb->createNamedParameter($circle->getName()))
 		   ->setValue('source', $qb->createNamedParameter($circle->getSource()))
 		   ->setValue('display_name', $qb->createNamedParameter($circle->getDisplayName()))
@@ -71,7 +70,6 @@ class CircleRequest extends CircleRequestBuilder {
 		   ->setValue('contact_addressbook', $qb->createNamedParameter($circle->getContactAddressBook()))
 		   ->setValue('contact_groupname', $qb->createNamedParameter($circle->getContactGroupName()))
 		   ->setValue('settings', $qb->createNamedParameter(json_encode($circle->getSettings())))
-		   ->setValue('type', $qb->createNamedParameter(0))
 		   ->setValue('config', $qb->createNamedParameter($circle->getConfig()));
 
 		$qb->execute();
