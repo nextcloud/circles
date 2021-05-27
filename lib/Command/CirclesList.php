@@ -52,6 +52,7 @@ use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Model\ModelManager;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
@@ -164,10 +165,13 @@ class CirclesList extends Base {
 			$filterMember = $this->federatedUserService->getFederatedMember($member);
 		}
 
-		if ($instance !== '' && !$this->configService->isLocalInstance($instance)) {
+		if (!$this->configService->isLocalInstance($instance)) {
 			$data = ['filterMember' => $filterMember];
 			if ($initiator) {
-				$data['initiator'] = $this->federatedUserService->getFederatedUser($initiator);
+				$data['initiator'] = $this->federatedUserService->getFederatedUser(
+					$initiator,
+					Member::TYPE_USER
+				);
 			}
 
 			$circles = $this->remoteService->getCirclesFromInstance($instance, $data);

@@ -126,7 +126,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 	 * @param string $initiator
 	 * @param string $shareWith
 	 *
-	 * @deprecated in NC30 when initiator uses FederatedUser - use removeByMembership()
+	 * @deprecated in NC30 when initiator uses FederatedUser - then, we can use removeByMembership()
 	 */
 	public function removeByInitiatorAndShareWith(string $initiator, string $shareWith) {
 		$qb = $this->getShareDeleteSql();

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+
 /**
  * Circles - Bring cloud-users closer together.
  *

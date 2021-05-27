@@ -301,10 +301,13 @@ class MembersList extends Base {
 		}
 		$knownIds[] = $circleId;
 
-		if ($instance !== '' && !$this->configService->isLocalInstance($instance)) {
+		if (!$this->configService->isLocalInstance($instance)) {
 			$data = [];
 			if ($initiator) {
-				$data['initiator'] = $this->federatedUserService->getFederatedUser($initiator);
+				$data['initiator'] = $this->federatedUserService->getFederatedUser(
+					$initiator,
+					Member::TYPE_USER
+				);
 			}
 
 			try {
@@ -323,7 +326,10 @@ class MembersList extends Base {
 					if (!$this->configService->isLocalInstance($member->getInstance())) {
 						$data = [];
 						if ($initiator) {
-							$data['initiator'] = $this->federatedUserService->getFederatedUser($initiator);
+							$data['initiator'] = $this->federatedUserService->getFederatedUser(
+								$initiator,
+								Member::TYPE_USER
+							);
 						}
 
 						$circle = null;

@@ -383,10 +383,11 @@ class FederatedUserService {
 	 * @throws SingleCircleNotFoundException
 	 * @throws UnknownRemoteException
 	 * @throws UserTypeNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	public function commandLineInitiator(string $userId, string $circleId = '', bool $bypass = false): void {
 		if ($userId !== '') {
-			$this->setCurrentUser($this->getFederatedUser($userId));
+			$this->setCurrentUser($this->getFederatedUser($userId, Member::TYPE_USER));
 
 			return;
 		}
@@ -441,7 +442,7 @@ class FederatedUserService {
 			list($userId, $level) = explode(',', $userId);
 		}
 
-		$federatedUser = $this->getFederatedUser($userId);
+		$federatedUser = $this->getFederatedUser($userId, Member::TYPE_USER);
 		$member = new Member();
 		$member->importFromIFederatedUser($federatedUser);
 		$member->setLevel((int)$level);
@@ -456,7 +457,7 @@ class FederatedUserService {
 	 * If instance is not local, get the remote valid FederatedUser
 	 *
 	 * @param string $federatedId
-	 * @param int $userType
+	 * @param int $type
 	 *
 	 * @return FederatedUser
 	 * @throws CircleNotFoundException
@@ -474,8 +475,8 @@ class FederatedUserService {
 	 * @throws UserTypeNotFoundException
 	 * @throws RequestBuilderException
 	 */
-	public function getFederatedUser(string $federatedId, int $userType = Member::TYPE_USER): FederatedUser {
-		if ($userType === Member::TYPE_USER) {
+	public function getFederatedUser(string $federatedId, int $type = Member::TYPE_SINGLE): FederatedUser {
+		if ($type === Member::TYPE_USER) {
 			try {
 				return $this->getLocalFederatedUser($federatedId);
 			} catch (Exception $e) {
@@ -483,7 +484,7 @@ class FederatedUserService {
 		}
 
 		list($singleId, $instance) = $this->extractIdAndInstance($federatedId);
-		switch ($userType) {
+		switch ($type) {
 			case Member::TYPE_SINGLE:
 			case Member::TYPE_CIRCLE:
 				return $this->getFederatedUser_SingleId($singleId, $instance);

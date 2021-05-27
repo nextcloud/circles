@@ -44,6 +44,14 @@ use OCP\Notification\INotification;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
+
+/**
+ * @deprecated
+ *
+ * Class EventsService
+ *
+ * @package OCA\Circles\Service
+ */
 class EventsService {
 
 

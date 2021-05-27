@@ -57,13 +57,7 @@ return [
 	],
 
 	'routes' => [
-		['name' => 'Shares#initShareDelivery', 'url' => '/v1/payload', 'verb' => 'POST'],
-		['name' => 'Shares#create', 'url' => '/v1/circles/{circleUniqueId}/share', 'verb' => 'PUT'],
-
-
 		['name' => 'EventWrapper#asyncBroadcast', 'url' => '/async/{token}/', 'verb' => 'POST'],
-		//		['name' => 'EventWrapper#broadcast', 'url' => '/v1/gs/broadcast', 'verb' => 'POST'],
-		//		['name' => 'EventWrapper#status', 'url' => '/v1/gs/status', 'verb' => 'POST'],
 
 		['name' => 'Remote#appService', 'url' => '/', 'verb' => 'GET'],
 		['name' => 'Remote#test', 'url' => '/test', 'verb' => 'GET'],

@@ -34,12 +34,20 @@ use OC;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\ApiVersionIncompatibleException;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedEventException;
+use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\DeprecatedMember;
@@ -83,35 +91,36 @@ class Circles {
 
 
 	/**
+	 * @return int[]
+	 * @deprecated - removed in nc22
 	 * Circles::version();
 	 *
 	 * returns the current version of the API
 	 *
-	 * @return int[]
 	 */
 	public static function version() {
 		return self::API_VERSION;
 	}
 
 
+	/**
+	 * @deprecated - removed in nc22
+	 */
 	public static function addJavascriptAPI() {
-//		Util::addScript(Application::APP_ID, 'circles.v1.circles');
-//		Util::addScript(Application::APP_ID, 'circles.v1.members');
-//		Util::addScript(Application::APP_ID, 'circles.v1.links');
-//		Util::addScript(Application::APP_ID, 'circles.v1');
 	}
 
 
 	/**
+	 * @param array $apiVersion
+	 *
+	 * @return bool
+	 * @throws ApiVersionIncompatibleException
+	 * @deprecated - removed in nc22
 	 * Circles::compareVersion();
 	 *
 	 * Compare and return true if version is compatible.
 	 * Exception otherwise.
 	 *
-	 * @param array $apiVersion
-	 *
-	 * @return bool
-	 * @throws ApiVersionIncompatibleException
 	 */
 	public static function compareVersion($apiVersion) {
 		if ((int)$apiVersion[0] !== self::API_VERSION[0]
@@ -125,6 +134,7 @@ class Circles {
 
 	/**
 	 * Circles::createCircle();
+	 * @deprecated - removed in nc22
 	 *
 	 * Create a new circle and make the current user its owner.
 	 * You must specify type and name. type is one of this value:
@@ -149,6 +159,7 @@ class Circles {
 
 	/**
 	 * Circles::joinCircle();
+	 * @deprecated - removed in nc22
 	 *
 	 * This function will make the current user joining a circle identified by its Id.
 	 *
@@ -165,6 +176,7 @@ class Circles {
 
 
 	/**
+	 * @deprecated - removed in nc22
 	 * Circles::leaveCircle();
 	 *
 	 * This function will make the current user leaving the circle identified by its Id. Will fail
@@ -232,6 +244,7 @@ class Circles {
 
 
 	/**
+	 * @deprecated - removed in nc22
 	 * Circles::joinedCircleIds();
 	 *
 	 * Return all the circleIds the user is a member, if empty user, using current user.
@@ -290,6 +303,7 @@ class Circles {
 
 
 	/**
+	 * @deprecated - removed in nc22
 	 * Circles::settingsCircle();
 	 *
 	 * Save the settings. Settings is an array and current user need to be an admin
@@ -308,6 +322,7 @@ class Circles {
 
 
 	/**
+	 * @deprecated - removed in nc22
 	 * Circles::destroyCircle();
 	 *
 	 * This function will destroy the circle if the current user is the Owner.
@@ -325,6 +340,7 @@ class Circles {
 
 
 	/**
+	 * @deprecated - removed in nc22
 	 * Circles::addMember();
 	 *
 	 * This function will add a user as member of the circle. Current user need at least to be
