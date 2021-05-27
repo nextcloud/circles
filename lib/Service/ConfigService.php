@@ -76,6 +76,8 @@ class ConfigService {
 	const IFACE_TEST_SCHEME = 'iface_test_scheme';
 	const IFACE_TEST_TOKEN = 'iface_test_token';
 
+	const ROUTE_TO_CIRCLE = 'route_to_circle';
+
 	const SELF_SIGNED_CERT = 'self_signed_cert';
 	const MEMBERS_LIMIT = 'members_limit';
 	const ACTIVITY_ON_NEW_CIRCLE = 'creation_activity';
@@ -122,6 +124,8 @@ class ConfigService {
 		self::IFACE_TEST_ID         => '',
 		self::IFACE_TEST_SCHEME     => 'https',
 		self::IFACE_TEST_TOKEN      => '',
+
+		self::ROUTE_TO_CIRCLE        => 'contacts.contacts.directcircle',
 
 		self::SELF_SIGNED_CERT       => '0',
 		self::MEMBERS_LIMIT          => '50',
@@ -525,8 +529,8 @@ class ConfigService {
 	 * @return bool
 	 */
 	public function isLocalInstance(string $instance): bool {
-		if ($instance === '') { // TODO: is it an existing condition ?
-			return false;
+		if ($instance === '') {
+			return true;
 		}
 
 		$instance = strtolower($instance);

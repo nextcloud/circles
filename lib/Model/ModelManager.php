@@ -47,6 +47,7 @@ use OCA\Circles\IMemberships;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\InterfaceService;
+use OCP\IURLGenerator;
 
 /**
  * Class ModelManager
@@ -55,6 +56,9 @@ use OCA\Circles\Service\InterfaceService;
  */
 class ModelManager {
 
+
+	/** @var IURLGenerator */
+	private $urlGenerator;
 
 	/** @var CoreQueryBuilder */
 	private $coreRequestBuilder;
@@ -79,6 +83,7 @@ class ModelManager {
 	/**
 	 * ModelManager constructor.
 	 *
+	 * @param IURLGenerator $urlGenerator
 	 * @param CoreQueryBuilder $coreRequestBuilder
 	 * @param MemberRequest $memberRequest
 	 * @param MembershipRequest $membershipRequest
@@ -86,12 +91,14 @@ class ModelManager {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
+		IURLGenerator $urlGenerator,
 		CoreQueryBuilder $coreRequestBuilder,
 		MemberRequest $memberRequest,
 		MembershipRequest $membershipRequest,
 		InterfaceService $interfaceService,
 		ConfigService $configService
 	) {
+		$this->urlGenerator = $urlGenerator;
 		$this->coreRequestBuilder = $coreRequestBuilder;
 		$this->memberRequest = $memberRequest;
 		$this->membershipRequest = $membershipRequest;
@@ -434,6 +441,20 @@ class ModelManager {
 
 		return $this->interfaceService->getCloudInstance();
 	}
+
+
+	/**
+	 * @param string $singleId
+	 *
+	 * @return string
+	 */
+	public function generateLinkToCircle(string $singleId): string {
+		return $this->urlGenerator->linkToRouteAbsolute(
+			$this->configService->getAppValue(ConfigService::ROUTE_TO_CIRCLE),
+			['singleId' => $singleId]
+		);
+	}
+
 
 	/**
 	 * @param bool $full
