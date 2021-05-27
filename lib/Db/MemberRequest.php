@@ -261,7 +261,7 @@ class MemberRequest extends MemberRequestBuilder {
 	 * @throws MemberNotFoundException
 	 * @throws RequestBuilderException
 	 */
-	public function getMember(string $memberId, ?FederatedUser $initiator = null): Member {
+	public function getMemberById(string $memberId, ?FederatedUser $initiator = null): Member {
 		$qb = $this->getMemberSelectSql();
 		$qb->limitToMemberId($memberId);
 

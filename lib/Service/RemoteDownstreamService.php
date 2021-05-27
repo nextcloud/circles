@@ -296,7 +296,7 @@ class RemoteDownstreamService {
 		$member = $event->getMember();
 
 		try {
-			$localMember = $this->memberRequest->getMember($member->getId());
+			$localMember = $this->memberRequest->getMemberById($member->getId());
 		} catch (MemberNotFoundException $e) {
 			$this->debug('Member not found', ['member' => $member]);
 

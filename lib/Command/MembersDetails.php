@@ -117,10 +117,10 @@ class MembersDetails extends Base {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$memberId = $input->getArgument('member_id');
 
-		$circleId = $this->memberRequest->getMember($memberId)->getCircleId();
+		$circleId = $this->memberRequest->getMemberById($memberId)->getCircleId();
 
 		$this->federatedUserService->commandLineInitiator($input->getOption('initiator'), $circleId);
-		$member = $this->memberService->getMember($memberId);
+		$member = $this->memberService->getMemberById($memberId);
 
 		$output->writeln(json_encode($member, JSON_PRETTY_PRINT));
 

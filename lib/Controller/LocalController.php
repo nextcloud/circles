@@ -317,7 +317,7 @@ class LocalController extends OcsController {
 				$level = Member::parseLevelString($level);
 			}
 
-			$this->memberService->getMember($memberId, $circleId);
+			$this->memberService->getMemberById($memberId, $circleId);
 			$result = $this->memberService->memberLevel($memberId, $level);
 
 			return new DataResponse($result);
@@ -339,7 +339,7 @@ class LocalController extends OcsController {
 	public function memberRemove(string $circleId, string $memberId): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
-			$this->memberService->getMember($memberId, $circleId);
+			$this->memberService->getMemberById($memberId, $circleId);
 
 			$result = $this->memberService->removeMember($memberId);
 

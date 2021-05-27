@@ -231,7 +231,7 @@ class CircleJoin implements
 		$member = $event->getMember();
 
 		try {
-			$this->memberRequest->getMember($member->getId());
+			$this->memberRequest->getMemberById($member->getId());
 
 			return;
 		} catch (MemberNotFoundException $e) {

@@ -130,11 +130,13 @@ class MemberService {
 	 * @return Member
 	 * @throws InitiatorNotFoundException
 	 * @throws MemberNotFoundException
+	 * @throws RequestBuilderException
 	 */
-	public function getMember(string $memberId, string $circleId = ''): Member {
+	public function getMemberById(string $memberId, string $circleId = ''): Member {
 		$this->federatedUserService->mustHaveCurrentUser();
 
-		$member = $this->memberRequest->getMember($memberId, $this->federatedUserService->getCurrentUser());
+		$member =
+			$this->memberRequest->getMemberById($memberId, $this->federatedUserService->getCurrentUser());
 		if ($circleId !== '' && $member->getCircle()->getSingleId() !== $circleId) {
 			throw new MemberNotFoundException();
 		}
@@ -267,7 +269,8 @@ class MemberService {
 	 */
 	public function removeMember(string $memberId): array {
 		$this->federatedUserService->mustHaveCurrentUser();
-		$member = $this->memberRequest->getMember($memberId, $this->federatedUserService->getCurrentUser());
+		$member =
+			$this->memberRequest->getMemberById($memberId, $this->federatedUserService->getCurrentUser());
 
 		$event = new FederatedEvent(MemberRemove::class);
 		$event->setCircle($member->getCircle());
@@ -295,7 +298,8 @@ class MemberService {
 	 */
 	public function memberLevel(string $memberId, int $level): array {
 		$this->federatedUserService->mustHaveCurrentUser();
-		$member = $this->memberRequest->getMember($memberId, $this->federatedUserService->getCurrentUser());
+		$member =
+			$this->memberRequest->getMemberById($memberId, $this->federatedUserService->getCurrentUser());
 
 		$event = new FederatedEvent(MemberLevel::class);
 		$event->setCircle($member->getCircle());

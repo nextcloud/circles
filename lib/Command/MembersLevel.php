@@ -115,11 +115,11 @@ class MembersLevel extends Base {
 
 		try {
 			if ($circleId === '') {
-				$circleId = $this->memberRequest->getMember($memberId)->getCircleId();
+				$circleId = $this->memberRequest->getMemberById($memberId)->getCircleId();
 			}
 
 			$this->federatedUserService->commandLineInitiator($input->getOption('initiator'), $circleId);
-			$this->memberService->getMember($memberId, $circleId);
+			$this->memberService->getMemberById($memberId, $circleId);
 
 			$level = Member::parseLevelString($input->getArgument('level'));
 			$outcome = $this->memberService->memberLevel($memberId, $level);

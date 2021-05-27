@@ -118,7 +118,7 @@ class CircleCreate implements
 		}
 
 		try {
-			$this->memberRequest->getMember($owner->getId());
+			$this->memberRequest->getMemberById($owner->getId());
 			throw new FederatedEventDSyncException('Owner already exist');
 		} catch (MemberNotFoundException $e) {
 		}

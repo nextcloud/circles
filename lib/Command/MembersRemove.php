@@ -99,7 +99,7 @@ class MembersRemove extends Base {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$memberId = $input->getArgument('member_id');
 
-		$member = $this->memberRequest->getMember($memberId);
+		$member = $this->memberRequest->getMemberById($memberId);
 		$this->federatedUserService->commandLineInitiator(
 			$input->getOption('initiator'), $member->getCircleId()
 		);
