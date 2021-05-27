@@ -173,6 +173,13 @@ class FederatedShare extends ManagedModel implements IFederatedModel, JsonSerial
 		return $this->instance;
 	}
 
+	/**
+	 * @return bool
+	 */
+	public function isLocal(): bool {
+		return $this->getManager()->isLocalInstance($this->getInstance());
+	}
+
 
 	/**
 	 * @param array $data

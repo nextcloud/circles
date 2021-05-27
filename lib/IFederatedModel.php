@@ -39,7 +39,15 @@ namespace OCA\Circles;
  */
 interface IFederatedModel {
 
+	/**
+	 * @return string
+	 */
 	public function getInstance(): string;
+
+	/**
+	 * @return bool
+	 */
+	public function isLocal(): bool;
 
 }
 

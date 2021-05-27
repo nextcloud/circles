@@ -312,6 +312,14 @@ class Member extends ManagedModel implements
 	/**
 	 * @return bool
 	 */
+	public function isLocal(): bool {
+		return $this->getManager()->isLocalInstance($this->getInstance());
+	}
+
+
+	/**
+	 * @return bool
+	 */
 	public function hasRemoteInstance(): bool {
 		return !is_null($this->remoteInstance);
 	}
@@ -410,25 +418,6 @@ class Member extends ManagedModel implements
 	 */
 	public function getInheritanceFrom(): ?Member {
 		return $this->inheritanceFrom;
-	}
-
-
-	/**
-	 * @param bool $local
-	 *
-	 * @return Member
-	 */
-	public function setLocal(bool $local): self {
-		$this->local = $local;
-
-		return $this;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function isLocal(): bool {
-		return $this->local;
 	}
 
 
@@ -686,7 +675,6 @@ class Member extends ManagedModel implements
 		$this->setUserId($this->get('userId', $data));
 		$this->setUserType($this->getInt('userType', $data));
 		$this->setInstance($this->get('instance', $data));
-		$this->setLocal($this->getBool('local', $data));
 		$this->setLevel($this->getInt('level', $data));
 		$this->setStatus($this->get('status', $data));
 		$this->setDisplayName($this->get('displayName', $data));
@@ -757,7 +745,6 @@ class Member extends ManagedModel implements
 		}
 
 		if ($this->getInstance() === '') {
-			$this->setLocal(true);
 			$this->setInstance($this->getManager()->getLocalInstance());
 		}
 

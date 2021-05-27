@@ -245,6 +245,14 @@ class FederatedUser extends ManagedModel implements
 	/**
 	 * @return bool
 	 */
+	public function isLocal(): bool {
+		return $this->getManager()->isLocalInstance($this->getInstance());
+	}
+
+
+	/**
+	 * @return bool
+	 */
 	public function hasMemberships(): bool {
 		return !is_null($this->memberships);
 	}
