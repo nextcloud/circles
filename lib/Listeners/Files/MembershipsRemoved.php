@@ -33,8 +33,23 @@ namespace OCA\Circles\Listeners\Files;
 
 
 use daita\MySmallPhpTools\Traits\TStringTools;
+use OCA\Circles\CirclesManager;
 use OCA\Circles\Db\ShareWrapperRequest;
 use OCA\Circles\Events\MembershipsRemovedEvent;
+use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\FederatedUserException;
+use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Exceptions\InvalidIdException;
+use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\Exceptions\SingleCircleNotFoundException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
+use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\FederatedUserService;
 use OCP\EventDispatcher\Event;
@@ -52,6 +67,9 @@ class MembershipsRemoved implements IEventListener {
 	use TStringTools;
 
 
+	/** @var CirclesManager */
+	private $circlesManager;
+
 	/** @var ShareWrapperRequest */
 	private $shareWrapperRequest;
 
@@ -62,13 +80,16 @@ class MembershipsRemoved implements IEventListener {
 	/**
 	 * MembershipsRemoved constructor.
 	 *
+	 * @param CirclesManager $circlesManager
 	 * @param ShareWrapperRequest $shareWrapperRequest
 	 * @param FederatedUserService $federatedUserService
 	 */
 	public function __construct(
+		CirclesManager $circlesManager,
 		ShareWrapperRequest $shareWrapperRequest,
 		FederatedUserService $federatedUserService
 	) {
+		$this->circlesManager = $circlesManager;
 		$this->shareWrapperRequest = $shareWrapperRequest;
 		$this->federatedUserService = $federatedUserService;
 	}
@@ -76,6 +97,21 @@ class MembershipsRemoved implements IEventListener {
 
 	/**
 	 * @param Event $event
+	 *
+	 * @throws CircleNotFoundException
+	 * @throws FederatedItemException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
+	 * @throws MemberNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
+	 * @throws UnknownRemoteException
+	 * @throws UserTypeNotFoundException
 	 */
 	public function handle(Event $event): void {
 		if (!$event instanceof MembershipsRemovedEvent) {
@@ -83,13 +119,14 @@ class MembershipsRemoved implements IEventListener {
 		}
 
 		foreach ($event->getMemberships() as $membership) {
-//			$this->shareWrapperRequest->removeByMembership($membership);
-			// deprecated with ShareWrapperRequest::removeByInitiatorAndShareWith()
-			$federatedUser = $this->federatedUserService->getFederatedUser(
-				$membership->getSingleId(),
-				Member::TYPE_SINGLE
-			);
-			if ($federatedUser->getUserType() === Member::TYPE_USER) {
+			/*
+			 * deprecated with ShareWrapperRequest::removeByInitiatorAndShareWith()
+			 * will be replaced by:
+			 * // $this->shareWrapperRequest->removeByMembership($membership);
+			 */
+			$federatedUser = $this->circlesManager->getFederatedUser($membership->getSingleId());
+			if ($federatedUser->getUserType() === Member::TYPE_USER
+				&& $federatedUser->isLocal()) {
 				$this->shareWrapperRequest->removeByInitiatorAndShareWith(
 					$federatedUser->getUserId(),
 					$membership->getCircleId()
