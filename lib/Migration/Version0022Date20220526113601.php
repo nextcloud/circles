@@ -258,9 +258,10 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 
 			$table->setPrimaryKey(['id']);
 			$table->addIndex(
-				['circle_id', 'single_id', 'user_id', 'user_type', 'instance', 'level'], 'csuil'
+				['circle_id', 'single_id', 'user_id', 'user_type', 'instance', 'level'],
+				'circles_member_cisiuiutil'
 			);
-			$table->addIndex(['circle_id', 'single_id'], 'cs');
+			$table->addIndex(['circle_id', 'single_id'], 'circles_member_cisi');
 			$table->addIndex(['contact_id']);
 		}
 
@@ -437,7 +438,9 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 
 			$table->addIndex(['single_id']);
 			$table->addUniqueIndex(['single_id', 'circle_id']);
-			$table->addIndex(['inheritance_first', 'inheritance_last', 'circle_id'], 'ifilci');
+			$table->addIndex(
+				['inheritance_first', 'inheritance_last', 'circle_id'], 'circles_membership_ifilci'
+			);
 		}
 
 
@@ -497,7 +500,7 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 			);
 
 			$table->setPrimaryKey(['id']);
-			$table->addIndex(['circle_id', 'mount_id', 'parent', 'token'], 'cmpt');
+			$table->addIndex(['circle_id', 'mount_id', 'parent', 'token'], 'circles_mount_cimipt');
 		}
 
 
@@ -539,7 +542,7 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 			);
 
 			$table->setPrimaryKey(['id']);
-			$table->addIndex(['mount_id', 'single_id'], 'ms');
+			$table->addIndex(['mount_id', 'single_id'], 'circles_mountpoint_ms');
 		}
 
 
