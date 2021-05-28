@@ -77,6 +77,7 @@ class ConfigService {
 	const IFACE_TEST_TOKEN = 'iface_test_token';
 
 	const ROUTE_TO_CIRCLE = 'route_to_circle';
+	const EVENT_EXAMPLES = 'event_examples';
 
 	const SELF_SIGNED_CERT = 'self_signed_cert';
 	const MEMBERS_LIMIT = 'members_limit';
@@ -125,7 +126,8 @@ class ConfigService {
 		self::IFACE_TEST_SCHEME     => 'https',
 		self::IFACE_TEST_TOKEN      => '',
 
-		self::ROUTE_TO_CIRCLE        => 'contacts.contacts.directcircle',
+		self::ROUTE_TO_CIRCLE => 'contacts.contacts.directcircle',
+		self::EVENT_EXAMPLES  => '0',
 
 		self::SELF_SIGNED_CERT       => '0',
 		self::MEMBERS_LIMIT          => '50',

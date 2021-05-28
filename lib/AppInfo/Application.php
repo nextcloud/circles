@@ -39,8 +39,12 @@ use Closure;
 use OC;
 use OCA\Circles\Events\AddingCircleMemberEvent;
 use OCA\Circles\Events\CircleMemberAddedEvent;
+use OCA\Circles\Events\MembershipsCreatedEvent;
 use OCA\Circles\Events\MembershipsRemovedEvent;
 use OCA\Circles\Handlers\WebfingerHandler;
+use OCA\Circles\Listeners\Examples\ExampleCircleMemberAdded;
+use OCA\Circles\Listeners\Examples\ExampleMembershipsCreated;
+use OCA\Circles\Listeners\Examples\ExampleMembershipsRemoved;
 use OCA\Circles\Listeners\Files\AddingMember as ListenerFilesAddingMember;
 use OCA\Circles\Listeners\Files\MemberAdded as ListenerFilesMemberAdded;
 use OCA\Circles\Listeners\Files\MembershipsRemoved as ListenerFilesMembershipsRemoved;
@@ -135,6 +139,8 @@ class Application extends App implements IBootstrap {
 		);
 
 		$context->registerWellKnownHandler(WebfingerHandler::class);
+
+		$this->loadExampleEvents($context);
 	}
 
 
@@ -196,6 +202,19 @@ class Application extends App implements IBootstrap {
 	}
 
 
+	/**
+	 * @param IRegistrationContext $context
+	 */
+	private function loadExampleEvents(IRegistrationContext $context): void {
+		$context->registerEventListener(CircleMemberAddedEvent::class, ExampleCircleMemberAdded::class);
+		$context->registerEventListener(MembershipsCreatedEvent::class, ExampleMembershipsCreated::class);
+		$context->registerEventListener(MembershipsRemovedEvent::class, ExampleMembershipsRemoved::class);
+	}
+
+
+	/**
+	 * @param IServerContainer $container
+	 */
 	public function registerFilesPlugin(IServerContainer $container) {
 //		$eventDispatcher = $container->getEventDispatcher();
 //		$eventDispatcher->addListener(
@@ -222,11 +241,11 @@ class Application extends App implements IBootstrap {
 				$l = OC::$server->getL10N('circles');
 
 				return [
-					'id' => 'circlesfilter',
+					'id'      => 'circlesfilter',
 					'appname' => 'circles',
-					'script' => 'files/list.php',
-					'order' => 25,
-					'name' => $l->t('Shared to Circles'),
+					'script'  => 'files/list.php',
+					'order'   => 25,
+					'name'    => $l->t('Shared to Circles'),
 				];
 			}
 		);
