@@ -215,6 +215,7 @@ class CirclesRemote extends Base {
 		);
 
 		try {
+			/** @var RemoteInstance $remoteSignatory */
 			$remoteSignatory = $this->remoteStreamService->retrieveSignatory($resource->g('id'), true);
 			$this->output->writeln(' * No SignatureException: <info>Identity authed</info>');
 		} catch (SignatureException $e) {

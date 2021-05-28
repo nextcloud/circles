@@ -336,6 +336,7 @@ class RemoteStreamService extends NC22Signature {
 	public function retrieveRemoteInstance(string $instance): RemoteInstance {
 		$resource = $this->getResourceData($instance, Application::APP_SUBJECT, Application::APP_REL);
 
+		/** @var RemoteInstance $remoteInstance */
 		$remoteInstance = $this->retrieveSignatory($resource->g('id'), true);
 		$remoteInstance->setInstance($instance);
 
@@ -353,7 +354,7 @@ class RemoteStreamService extends NC22Signature {
 	 * @throws SignatoryException
 	 * @throws SignatureException
 	 */
-	public function retrieveSignatory(string $keyId, bool $refresh = true): RemoteInstance {
+	public function retrieveSignatory(string $keyId, bool $refresh = true): NC22Signatory {
 		if (!$refresh) {
 			try {
 				return $this->remoteRequest->getFromHref(NC22Signatory::removeFragment($keyId));
