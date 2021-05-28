@@ -573,6 +573,7 @@ class ConfigService {
 		array $args = []
 	): void {
 		$this->configureRequest($request);
+		$request->setVerifyPeer(false);
 		$request->basedOnUrl($this->getLoopbackPath($route, $args));
 	}
 
