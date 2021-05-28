@@ -30,6 +30,12 @@ use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\SharingFrameSourceCannotBeAppCirclesException;
 use OCA\Circles\Service\MiscService;
 
+/**
+ * @deprecated
+ * Class SharingFrame
+ *
+ * @package OCA\Circles\Model
+ */
 class SharingFrame implements \JsonSerializable {
 
 	/** @var string */

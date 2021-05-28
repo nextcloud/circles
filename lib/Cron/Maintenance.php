@@ -31,10 +31,6 @@ namespace OCA\Circles\Cron;
 
 
 use OC\BackgroundJob\TimedJob;
-use OCA\Circles\AppInfo\Application;
-use OCA\Circles\Service\CleanService;
-use OCA\Circles\Service\ConfigService;
-use OCP\AppFramework\QueryException;
 
 
 /**
@@ -55,19 +51,8 @@ class Maintenance extends TimedJob {
 
 	/**
 	 * @param $argument
-	 *
-	 * @throws QueryException
 	 */
 	protected function run($argument) {
-		$app = \OC::$server->query(Application::class);
-		$c = $app->getContainer();
-
-		/** @var CleanService $cleanService */
-		$cleanService = $c->query(CleanService::class);
-		$cleanService->clean();
-
-		$configService = $c->query(ConfigService::class);
-		$configService->setAppValue(ConfigService::TEST_NC_BASE, '');
 	}
 
 }

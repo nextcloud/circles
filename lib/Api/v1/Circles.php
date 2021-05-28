@@ -57,7 +57,6 @@ use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MembersService;
-use OCA\Circles\Service\SharingFrameService;
 use OCP\AppFramework\QueryException;
 
 class Circles {
@@ -424,50 +423,7 @@ class Circles {
 	}
 
 
-	/**
-	 * Circles::shareToCircle();
-	 *
-	 * This function will share an item (array) to the circle identified by its Id.
-	 * Source is the app that is sharing the item and type can be used by the app to identified the
-	 * payload.
-	 *
-	 * @param string $circleUniqueId
-	 * @param string $source
-	 * @param string $type
-	 * @param array $payload
-	 * @param string $broadcaster
-	 *
-	 * @return mixed
-	 */
-	public static function shareToCircle(
-		$circleUniqueId, $source, $type, array $payload, $broadcaster
-	) {
-		$c = self::getContainer();
 
-		$frame = new SharingFrame((string)$source, (string)$type);
-		$frame->setPayload($payload);
-
-		return $c->query(SharingFrameService::class)
-				 ->createFrame($circleUniqueId, $frame, (string)$broadcaster);
-	}
-
-
-	/**
-	 * Circles::getSharesFromCircle();
-	 *
-	 * This function will returns all item (array) shared to a specific circle identified by its Id,
-	 * source and type. Limited to current user session.
-	 *
-	 * @param string $circleUniqueId
-	 *
-	 * @return mixed
-	 */
-	public static function getSharesFromCircle($circleUniqueId) {
-		$c = self::getContainer();
-
-		return $c->query(SharingFrameService::class)
-				 ->getFrameFromCircle($circleUniqueId);
-	}
 
 
 	/**

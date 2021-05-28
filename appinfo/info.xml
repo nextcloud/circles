@@ -33,8 +33,8 @@ Those groups of users (or "circles") can then be used by any other app for shari
 
 	<background-jobs>
 		<job>OCA\Circles\Cron\Maintenance</job>
-		<job>OCA\Circles\Cron\ContactsExistingShares</job>
-		<job>OCA\Circles\Cron\GlobalSync</job>
+<!--		<job>OCA\Circles\Cron\ContactsExistingShares</job>-->
+<!--		<job>OCA\Circles\Cron\GlobalSync</job>-->
 	</background-jobs>
 
 <!--	<repair-steps>-->
