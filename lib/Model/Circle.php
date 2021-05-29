@@ -564,7 +564,7 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	/**
 	 * @return string
 	 */
-	public function getLink(): string {
+	public function getUrl(): string {
 		return $this->getManager()->generateLinkToCircle($this->getSingleId());
 	}
 
@@ -678,7 +678,7 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 			'config'      => $this->getConfig(),
 			'description' => $this->getDescription(),
 			'settings'    => $this->getSettings(),
-			'link'        => $this->getLink(),
+			'url'        => $this->getUrl(),
 			'creation'    => $this->getCreation(),
 			'initiator'   => ($this->hasInitiator()) ? $this->getInitiator() : null
 		];

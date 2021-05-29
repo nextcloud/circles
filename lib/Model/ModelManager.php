@@ -449,8 +449,10 @@ class ModelManager {
 	 * @return string
 	 */
 	public function generateLinkToCircle(string $singleId): string {
-		return $this->urlGenerator->linkToRouteAbsolute(
-			$this->configService->getAppValue(ConfigService::ROUTE_TO_CIRCLE),
+		return $this->urlGenerator->linkToRoute(
+			$this->configService->getAppValue(
+				ConfigService::ROUTE_TO_CIRCLE
+			),
 			['singleId' => $singleId]
 		);
 	}
