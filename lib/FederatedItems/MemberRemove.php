@@ -87,7 +87,6 @@ class MemberRemove implements
 		$initiatorHelper->mustBeHigherLevelThan($member);
 
 		$memberHelper = new MemberHelper($member);
-		$memberHelper->mustBeMember();
 		$memberHelper->cannotBeOwner();
 
 		$event->setOutcome([]);
