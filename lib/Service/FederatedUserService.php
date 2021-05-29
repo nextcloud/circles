@@ -191,15 +191,28 @@ class FederatedUserService {
 	 * @throws FederatedUserNotFoundException
 	 * @throws InvalidIdException
 	 * @throws SingleCircleNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	public function setLocalCurrentUser(?IUser $user): void {
 		if ($user === null) {
 			return;
 		}
 
-		$this->currentUser = $this->getLocalFederatedUser($user->getUID());
+		$this->setLocalCurrentUserId($user->getUID());
 	}
 
+	/**
+	 * @param string $userId
+	 *
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
+	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
+	 */
+	public function setLocalCurrentUserId(string $userId): void {
+		$this->currentUser = $this->getLocalFederatedUser($userId);
+	}
 
 	/**
 	 * @param string $appId
