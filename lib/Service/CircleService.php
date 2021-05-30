@@ -436,9 +436,13 @@ class CircleService {
 		}
 		$params->default(
 			[
-				'limit'                => -1,
-				'offset'               => 0,
-				'includeSystemCircles' => false
+				'limit'                  => -1,
+				'offset'                 => 0,
+				'mustBeMember'           => false,
+				'includeHiddenCircles'   => false,
+				'includeBackendCircles'  => false,
+				'includeSystemCircles'   => false,
+				'includePersonalCircles' => false
 			]
 		);
 

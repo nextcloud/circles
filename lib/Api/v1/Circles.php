@@ -30,34 +30,20 @@
 namespace OCA\Circles\Api\v1;
 
 
-use OC;
-use OCA\Circles\AppInfo\Application;
-use OCA\Circles\Exceptions\ApiVersionIncompatibleException;
+use daita\MySmallPhpTools\Model\SimpleDataStore;
 use OCA\Circles\Exceptions\CircleNotFoundException;
-use OCA\Circles\Exceptions\FederatedEventException;
-use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
-use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
-use OCA\Circles\Exceptions\OwnerNotFoundException;
-use OCA\Circles\Exceptions\RemoteInstanceException;
-use OCA\Circles\Exceptions\RemoteNotFoundException;
-use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
-use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\DeprecatedMember;
-use OCA\Circles\Model\FederatedLink;
-use OCA\Circles\Model\SharingFrame;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleService;
-use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\FederatedUserService;
-use OCA\Circles\Service\MembersService;
-use OCP\AppFramework\QueryException;
 
 class Circles {
 
@@ -82,117 +68,6 @@ class Circles {
 	const LEVEL_OWNER = DeprecatedMember::LEVEL_OWNER;
 
 
-	protected static function getContainer() {
-		$app = OC::$server->query(Application::class);
-
-		return $app->getContainer();
-	}
-
-
-	/**
-	 * @return int[]
-	 * @deprecated - removed in nc22
-	 * Circles::version();
-	 *
-	 * returns the current version of the API
-	 *
-	 */
-	public static function version() {
-		return self::API_VERSION;
-	}
-
-
-	/**
-	 * @deprecated - removed in nc22
-	 */
-	public static function addJavascriptAPI() {
-	}
-
-
-	/**
-	 * @param array $apiVersion
-	 *
-	 * @return bool
-	 * @throws ApiVersionIncompatibleException
-	 * @deprecated - removed in nc22
-	 * Circles::compareVersion();
-	 *
-	 * Compare and return true if version is compatible.
-	 * Exception otherwise.
-	 *
-	 */
-	public static function compareVersion($apiVersion) {
-		if ((int)$apiVersion[0] !== self::API_VERSION[0]
-			|| (int)$apiVersion[1] !== self::API_VERSION[1]) {
-			throw new ApiVersionIncompatibleException('api_not_compatible');
-		}
-
-		return true;
-	}
-
-
-	/**
-	 * Circles::createCircle();
-	 * @deprecated - removed in nc22
-	 *
-	 * Create a new circle and make the current user its owner.
-	 * You must specify type and name. type is one of this value:
-	 *
-	 * CIRCLES_PERSONAL is 1 or 'personal'
-	 * CIRCLES_SECRET is 2 or 'secret'
-	 * CIRCLES_CLOSED is 4 or 'closed'
-	 * CIRCLES_PUBLIC is 8 or 'public'
-	 *
-	 * @param mixed $type
-	 * @param string $name
-	 *
-	 * @return DeprecatedCircle
-	 */
-	public static function createCircle($type, $name) {
-		$c = self::getContainer();
-
-		return $c->query(CirclesService::class)
-				 ->createCircle($type, $name);
-	}
-
-
-	/**
-	 * Circles::joinCircle();
-	 * @deprecated - removed in nc22
-	 *
-	 * This function will make the current user joining a circle identified by its Id.
-	 *
-	 * @param string $circleUniqueId
-	 *
-	 * @return DeprecatedMember
-	 */
-	public static function joinCircle($circleUniqueId) {
-		$c = self::getContainer();
-
-		return $c->query(CirclesService::class)
-				 ->joinCircle($circleUniqueId);
-	}
-
-
-	/**
-	 * @deprecated - removed in nc22
-	 * Circles::leaveCircle();
-	 *
-	 * This function will make the current user leaving the circle identified by its Id. Will fail
-	 * if user is the owner of the circle.
-	 *
-	 * @param string $circleUniqueId
-	 *
-	 * @return DeprecatedMember
-	 */
-	public static function leaveCircle($circleUniqueId) {
-		$c = self::getContainer();
-
-		return $c->query(CirclesService::class)
-				 ->leaveCircle($circleUniqueId);
-	}
-
-
 	/**
 	 * Circles::listCircles();
 	 *
@@ -207,72 +82,87 @@ class Circles {
 	 * @param string $name
 	 * @param int $level
 	 * @param string $userId
-	 *
 	 * @param bool $forceAll
 	 *
-	 * @return DeprecatedCircle[]
+	 * @return Circle[]
 	 */
 	public static function listCircles($type, $name = '', $level = 0, $userId = '', $forceAll = false) {
-		$c = self::getContainer();
+		/** @var FederatedUserService $federatedUserService */
+		$federatedUserService = \OC::$server->get(FederatedUserService::class);
 
-		if ($userId === '') {
-			$userId = OC::$server->getUserSession()
-								 ->getUser()
-								 ->getUID();
+		$personalCircle = false;
+		if ($forceAll) {
+			$personalCircle = true;
 		}
 
-		return $c->query(CirclesService::class)
-				 ->listCircles($userId, $type, $name, $level, $forceAll);
+
+		if ($userId === '') {
+			$federatedUserService->initCurrentUser();
+		} else {
+			$federatedUserService->setLocalCurrentUserId($userId);
+		}
+
+		/** @var CircleService $circleService */
+		$circleService = \OC::$server->get(CircleService::class);
+
+		return $circleService->getCircles(
+			null,
+			null,
+			new SimpleDataStore(['includePersonalCircles' => $personalCircle])
+		);
 	}
 
 
 	/**
-	 * Circles::joinedCircles();
-	 *
-	 * Return all the circle the current user is a member.
-	 *
 	 * @param string $userId
 	 * @param bool $forceAll
 	 *
-	 * @return DeprecatedCircle[]
-	 * @throws QueryException
+	 * @return Circle[]
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InitiatorNotFoundException
+	 * @throws InvalidIdException
+	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
+	 *
+	 * @deprecated - used by apps/dav/lib/Connector/Sabre/Principal.php
+	 *
+	 * Circles::joinedCircles();
+	 *
+	 * Return all the circle the current user is a member.
 	 */
 	public static function joinedCircles($userId = '', $forceAll = false) {
-		return self::listCircles(self::CIRCLES_ALL, '', self::LEVEL_MEMBER, $userId, $forceAll);
-	}
+		/** @var FederatedUserService $federatedUserService */
+		$federatedUserService = \OC::$server->get(FederatedUserService::class);
 
-
-	/**
-	 * @deprecated - removed in nc22
-	 * Circles::joinedCircleIds();
-	 *
-	 * Return all the circleIds the user is a member, if empty user, using current user.
-	 *
-	 * @param $userId
-	 *
-	 * @return array
-	 * @throws QueryException
-	 */
-	public static function joinedCircleIds($userId = '') {
-		$circleIds = [];
-		$circles = self::listCircles(self::CIRCLES_ALL, '', self::LEVEL_MEMBER, $userId);
-		foreach ($circles as $circle) {
-			$circleIds[] = $circle->getUniqueId();
+		$personalCircle = false;
+		if ($forceAll) {
+			$personalCircle = true;
 		}
 
-		return $circleIds;
+		if ($userId === '') {
+			$federatedUserService->initCurrentUser();
+		} else {
+			$federatedUserService->setLocalCurrentUserId($userId);
+		}
+
+		/** @var CircleService $circleService */
+		$circleService = \OC::$server->get(CircleService::class);
+
+		return $circleService->getCircles(
+			null,
+			null,
+			new SimpleDataStore(
+				[
+					'mustBeMember'           => true,
+					'includePersonalCircles' => $personalCircle
+				]
+			)
+		);
 	}
 
 
 	/**
-	 * Circles::detailsCircle();
-	 *
-	 * WARNING - This function is called by the core - WARNING
-	 *                 Do not change it
-	 *
-	 * Returns details on the circle. If the current user is a member, the members list will be
-	 * return as well.
-	 *
 	 * @param string $circleUniqueId
 	 * @param bool $forceAll
 	 *
@@ -284,6 +174,19 @@ class Circles {
 	 * @throws InvalidIdException
 	 * @throws RequestBuilderException
 	 * @throws SingleCircleNotFoundException
+	 *
+	 * @deprecated - used by apps/dav/lib/Connector/Sabre/Principal.php
+	 *             - used by apps/files_sharing/lib/Controller/ShareAPIController.php
+	 *             - used by lib/private/Share20/Manager.php
+	 *
+	 * Circles::detailsCircle();
+	 *
+	 * WARNING - This function is called by the core - WARNING
+	 *                 Do not change it
+	 *
+	 * Returns details on the circle. If the current user is a member, the members list will be
+	 * return as well.
+	 *
 	 */
 	public static function detailsCircle(string $circleUniqueId, bool $forceAll = false): Circle {
 		/** @var FederatedUserService $federatedUserService */
@@ -302,233 +205,47 @@ class Circles {
 
 
 	/**
-	 * @deprecated - removed in nc22
-	 * Circles::settingsCircle();
-	 *
-	 * Save the settings. Settings is an array and current user need to be an admin
-	 *
-	 * @param string $circleUniqueId
-	 * @param array $settings
-	 *
-	 * @return DeprecatedCircle
-	 */
-	public static function settingsCircle($circleUniqueId, array $settings) {
-		$c = self::getContainer();
-
-		return $c->query(CirclesService::class)
-				 ->settingsCircle($circleUniqueId, $settings);
-	}
-
-
-	/**
-	 * @deprecated - removed in nc22
-	 * Circles::destroyCircle();
-	 *
-	 * This function will destroy the circle if the current user is the Owner.
-	 *
-	 * @param string $circleUniqueId
-	 *
-	 * @return mixed
-	 */
-	public static function destroyCircle($circleUniqueId) {
-		$c = self::getContainer();
-
-		return $c->query(CirclesService::class)
-				 ->removeCircle($circleUniqueId);
-	}
-
-
-	/**
-	 * @deprecated - removed in nc22
-	 * Circles::addMember();
-	 *
-	 * This function will add a user as member of the circle. Current user need at least to be
-	 * Moderator.
-	 *
-	 * @param string $circleUniqueId
-	 * @param string $ident
-	 * @param int $type
-	 *
-	 * @return DeprecatedMember[]
-	 */
-	public static function addMember($circleUniqueId, $ident, $type) {
-		$c = self::getContainer();
-
-		return $c->query(MembersService::class)
-				 ->addMember($circleUniqueId, $ident, $type);
-	}
-
-
-	/**
-	 * Circles::getMember();
-	 *
-	 * This function will return information on a member of the circle. Current user need at least
-	 * to be Member.
-	 *
 	 * @param string $circleUniqueId
 	 * @param string $ident
 	 * @param int $type
 	 * @param bool $forceAll
 	 *
-	 * @return DeprecatedMember
+	 * @return Member
+	 *
+	 * @deprecated - used by apps/files_sharing/lib/Controller/ShareAPIController.php
+	 *
+	 * Circles::getMember();
+	 *
+	 * This function will return information on a member of the circle. Current user need at least
+	 * to be Member.
+	 *
 	 */
 	public static function getMember($circleUniqueId, $ident, $type, $forceAll = false) {
-		$c = self::getContainer();
-
-		return $c->query(MembersService::class)
-				 ->getMember($circleUniqueId, $ident, $type, $forceAll);
+//		$c = self::getContainer();
+//
+//		return $c->query(MembersService::class)
+//				 ->getMember($circleUniqueId, $ident, $type, $forceAll);
 	}
 
 
 	/**
-	 * Circles::removeMember();
-	 *
-	 * This function will remove a member from the circle. Current user needs to be at least
-	 * Moderator and have a higher level that the targeted member.
-	 *
-	 * @param string $circleUniqueId
-	 * @param string $ident
-	 * @param int $type
-	 *
-	 * @return DeprecatedMember[]
-	 */
-	public static function removeMember($circleUniqueId, $ident, $type) {
-		$c = self::getContainer();
-
-		return $c->query(MembersService::class)
-				 ->removeMember($circleUniqueId, $ident, $type);
-	}
-
-
-	/**
-	 * Circles::levelMember();
-	 *
-	 * Edit the level of a member of the circle. The current level of the target needs to be lower
-	 * than the user that initiate the process (ie. the current user). The new level of the target
-	 * cannot be the same than the current level of the user that initiate the process (ie. the
-	 * current user).
-	 *
-	 * @param string $circleUniqueId
-	 * @param string $ident
-	 * @param int $type
-	 * @param int $level
-	 *
-	 * @return DeprecatedMember[]
-	 */
-	public static function levelMember($circleUniqueId, $ident, $type, $level) {
-		$c = self::getContainer();
-
-		return $c->query(MembersService::class)
-				 ->levelMember($circleUniqueId, $ident, $type, $level);
-	}
-
-
-
-
-
-	/**
-	 * Circles::generateLink();
-	 *
-	 * Returns the link to get access to a local circle.
-	 *
-	 * @param string $circleUniqueId
-	 *
-	 * @return string
-	 */
-	public static function generateLink($circleUniqueId) {
-		return OC::$server->getURLGenerator()
-						  ->linkToRoute('circles.Navigation.navigate') . '#' . $circleUniqueId;
-	}
-
-
-	/**
-	 * Circles::generateAbsoluteLink();
-	 *
-	 * Returns the absolute link to get access to a local circle.
-	 *
-	 * @param string $circleUniqueId
-	 *
-	 * @return string
-	 */
-	public static function generateAbsoluteLink($circleUniqueId) {
-		return OC::$server->getURLGenerator()
-						  ->linkToRouteAbsolute('circles.Navigation.navigate') . '#' . $circleUniqueId;
-	}
-
-
-	/**
-	 * Circles::generateRemoteLink();
-	 *
-	 * Returns the link to get access to a remote circle.
-	 *
-	 * @param FederatedLink $link
-	 *
-	 * @return string
-	 */
-	public static function generateRemoteLink(FederatedLink $link) {
-		return OC::$server->getURLGenerator()
-						  ->linkToRoute('circles.Navigation.navigate') . '#' . $link->getUniqueId()
-			   . '-' . $link->getToken();
-	}
-
-
-	/**
-	 * @param SharingFrame $frame
-	 *
-	 * @return array
-	 */
-	public static function generateUserParameter(SharingFrame $frame) {
-		if ($frame->getCloudId() !== null) {
-			$name = $frame->getAuthor() . '@' . $frame->getCloudId();
-		} else {
-			try {
-				$membersService = \OC::$server->query(MembersService::class);
-				$name = $membersService->getUserDisplayName($frame->getAuthor(), false);
-			} catch (QueryException $e) {
-				$name = $frame->getAuthor();
-			}
-		}
-
-		return [
-			'type' => 'user',
-			'id'   => $frame->getAuthor(),
-			'name' => $name
-		];
-	}
-
-
-	/**
-	 * @param SharingFrame $frame
-	 *
-	 * @return array
-	 */
-	public static function generateCircleParameter(SharingFrame $frame) {
-		return [
-			'type' => 'circle',
-			'id'   => $frame->getCircle()
-							->getUniqueId(),
-			'name' => $frame->getCircle()
-							->getName(),
-			'link' => self::generateLink(
-				$frame->getCircle()
-					  ->getUniqueId()
-			)
-		];
-	}
-
-	/**
-	 * Get a list of objects which are shred with $circleUniqueId.
-	 *
 	 * @param array $circleUniqueIds
 	 *
 	 * @return string[] array of object ids or empty array if none found
+	 *
+	 * @deprecated - used by apps/dav/lib/Connector/Sabre/FilesReportPlugin.php
+	 *
+	 * Get a list of objects which are shred with $circleUniqueId.
+	 *
 	 * @since 0.14.0
 	 *
 	 */
 	public static function getFilesForCircles($circleUniqueIds) {
-		$c = self::getContainer();
-
-		return $c->query(CirclesService::class)
-				 ->getFilesForCircles($circleUniqueIds);
+//		$c = self::getContainer();
+//
+//		return $c->query(CirclesService::class)
+//				 ->getFilesForCircles($circleUniqueIds);
 	}
+
 }
+
