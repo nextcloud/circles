@@ -202,6 +202,10 @@ class MembershipService {
 
 		$members = $this->memberRequest->getMembersBySingleId($circleId);
 		foreach ($members as $member) {
+			if ($member->getLevel() < Member::LEVEL_MEMBER) {
+				continue;
+			}
+
 			$membership = new Membership($singleId, count($path) > 1 ? $path[1] : '', $member);
 			$membership->setInheritancePath(array_reverse($path))
 					   ->setInheritanceDepth(sizeof($path));

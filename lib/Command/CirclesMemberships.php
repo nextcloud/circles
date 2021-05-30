@@ -268,7 +268,8 @@ class CirclesMemberships extends Base {
 
 		$members = $this->memberRequest->getMembersBySingleId($id);
 		foreach ($members as $member) {
-			if ($member->getCircle()->isConfig(Circle::CFG_SINGLE)) {
+			if ($member->getLevel() < Member::LEVEL_MEMBER
+				|| $member->getCircle()->isConfig(Circle::CFG_SINGLE)) {
 				continue;
 			}
 
