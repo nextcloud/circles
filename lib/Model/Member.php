@@ -846,6 +846,10 @@ class Member extends ManagedModel implements
 	 */
 	public static function parseTypeString(string $typeString): int {
 		$typeString = strtolower($typeString);
+		if (array_key_exists((int)$typeString, Member::$TYPE)) {
+			return (int)$typeString;
+		}
+
 		$type = array_search($typeString, Member::$TYPE);
 
 		if ($type === false) {
