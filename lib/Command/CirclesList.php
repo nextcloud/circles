@@ -124,6 +124,7 @@ class CirclesList extends Base {
 			 ->setDescription('listing current circles')
 			 ->addOption('instance', '', InputOption::VALUE_REQUIRED, 'Instance of the circle', '')
 			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			 ->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
 			 ->addOption('member', '', InputOption::VALUE_REQUIRED, 'search for member', '')
 			 ->addOption('def', '', InputOption::VALUE_NONE, 'display complete circle configuration')
 			 ->addOption('display-name', '', InputOption::VALUE_NONE, 'display the displayName')
@@ -170,13 +171,19 @@ class CirclesList extends Base {
 			if ($initiator) {
 				$data['initiator'] = $this->federatedUserService->getFederatedUser(
 					$initiator,
-					Member::TYPE_USER
+					Member::parseTypeString($input->getOption('initiator-type')),
 				);
 			}
 
 			$circles = $this->remoteService->getCirclesFromInstance($instance, $data);
 		} else {
-			$this->federatedUserService->commandLineInitiator($initiator, '', true);
+			$this->federatedUserService->commandLineInitiator(
+				$initiator,
+				Member::parseTypeString($input->getOption('initiator-type')),
+				'',
+				true
+			);
+
 			$params = new SimpleDataStore(['includeSystemCircles' => $input->getOption('all')]);
 			$circles = $this->circleService->getCircles(null, $filterMember, $params);
 		}

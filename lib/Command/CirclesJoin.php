@@ -31,14 +31,26 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
-use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use OC\Core\Command\Base;
+use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\FederatedUserException;
+use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\InvalidIdException;
+use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\Exceptions\SingleCircleNotFoundException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
+use OCA\Circles\Exceptions\UserTypeNotFoundException;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleService;
-use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -60,26 +72,21 @@ class CirclesJoin extends Base {
 	/** @var CircleService */
 	private $circleService;
 
-	/** @var ConfigService */
-	private $configService;
-
 
 	/**
 	 * CirclesJoin constructor.
 	 *
 	 * @param FederatedUserService $federatedUserService
 	 * @param CircleService $circlesService
-	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		FederatedUserService $federatedUserService, CircleService $circlesService,
-		ConfigService $configService
+		FederatedUserService $federatedUserService,
+		CircleService $circlesService
 	) {
 		parent::__construct();
 
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circlesService;
-		$this->configService = $configService;
 	}
 
 
@@ -92,6 +99,7 @@ class CirclesJoin extends Base {
 			 ->setDescription('emulate a user joining a Circle')
 			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
 			 ->addArgument('initiator', InputArgument::REQUIRED, 'initiator to the request')
+			 ->addOption('type', '', InputOption::VALUE_REQUIRED, 'type of the initiator', '0')
 			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
 	}
 
@@ -104,14 +112,31 @@ class CirclesJoin extends Base {
 	 * @throws FederatedEventException
 	 * @throws FederatedItemException
 	 * @throws InitiatorNotFoundException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
+	 * @throws CircleNotFoundException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws InvalidIdException
+	 * @throws MemberNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
+	 * @throws UnknownRemoteException
+	 * @throws UserTypeNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$circleId = (string)$input->getArgument('circle_id');
 
 		try {
-			$this->federatedUserService->commandLineInitiator($input->getArgument('initiator'), '', false);
+			$this->federatedUserService->commandLineInitiator(
+				$input->getArgument('initiator'),
+				Member::parseTypeString($input->getOption('type')),
+				'',
+				false
+			);
 
 			$outcome = $this->circleService->circleJoin($circleId);
 		} catch (FederatedItemException $e) {

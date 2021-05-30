@@ -37,9 +37,24 @@ use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use OC\Core\Command\Base;
 use OCA\Circles\Db\MemberRequest;
+use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\FederatedUserException;
+use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\InvalidIdException;
+use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\ParseMemberLevelException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\Exceptions\SingleCircleNotFoundException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
+use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
@@ -92,6 +107,7 @@ class MembersLevel extends Base {
 			 ->addArgument('member_id', InputArgument::REQUIRED, 'ID of the member from the Circle')
 			 ->addOption('circle', '', InputOption::VALUE_REQUIRED, 'ID of the circle', '')
 			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			 ->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
 			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception')
 			 ->addArgument('level', InputArgument::REQUIRED, 'new level');
 	}
@@ -105,9 +121,21 @@ class MembersLevel extends Base {
 	 * @throws FederatedEventException
 	 * @throws FederatedItemException
 	 * @throws InitiatorNotFoundException
-	 * @throws InvalidItemException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
+	 * @throws RequestBuilderException
+	 * @throws CircleNotFoundException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws InvalidIdException
+	 * @throws MemberNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws ParseMemberLevelException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws SingleCircleNotFoundException
+	 * @throws UnknownRemoteException
+	 * @throws UserTypeNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$memberId = $input->getArgument('member_id');
@@ -118,7 +146,13 @@ class MembersLevel extends Base {
 				$circleId = $this->memberRequest->getMemberById($memberId)->getCircleId();
 			}
 
-			$this->federatedUserService->commandLineInitiator($input->getOption('initiator'), $circleId);
+			$this->federatedUserService->commandLineInitiator(
+				$input->getOption('initiator'),
+				Member::parseTypeString($input->getOption('initiator-type')),
+				$circleId,
+				false
+			);
+
 			$this->memberService->getMemberById($memberId, $circleId);
 
 			$level = Member::parseLevelString($input->getArgument('level'));

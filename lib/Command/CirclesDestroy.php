@@ -46,6 +46,7 @@ use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedUserService;
 use Symfony\Component\Console\Input\InputArgument;
@@ -90,6 +91,7 @@ class CirclesDestroy extends Base {
 			 ->setDescription('destroy a circle by its ID')
 			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle to be destroyed')
 			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			 ->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
 			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
 	}
 
@@ -119,8 +121,12 @@ class CirclesDestroy extends Base {
 
 		try {
 			$this->federatedUserService->commandLineInitiator(
-				$input->getOption('initiator'), $circleId, false
+				$input->getOption('initiator'),
+				Member::parseTypeString($input->getOption('initiator-type')),
+				$circleId,
+				false
 			);
+
 			$outcome = $this->circleService->destroy($circleId);
 		} catch (FederatedItemException $e) {
 			if ($input->getOption('status-code')) {

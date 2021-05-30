@@ -98,6 +98,7 @@ class MembersAdd extends Base {
 			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
 			 ->addArgument('user', InputArgument::REQUIRED, 'username of the member')
 			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			 ->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
 			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception')
 			 ->addOption('type', '', InputOption::VALUE_REQUIRED, 'type of the user', '0');
 	}
@@ -121,8 +122,12 @@ class MembersAdd extends Base {
 
 		try {
 			$this->federatedUserService->commandLineInitiator(
-				$input->getOption('initiator'), $circleId, false
+				$input->getOption('initiator'),
+				Member::parseTypeString($input->getOption('initiator-type')),
+				$circleId,
+				false
 			);
+
 			$federatedUser = $this->federatedUserService->generateFederatedUser($userId, (int)$type);
 			$outcome = $this->memberService->addMember($circleId, $federatedUser);
 		} catch (FederatedItemException $e) {

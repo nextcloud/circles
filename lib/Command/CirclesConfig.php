@@ -35,10 +35,25 @@ use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use OC\Core\Command\Base;
+use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\FederatedUserException;
+use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\InvalidIdException;
+use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\Exceptions\SingleCircleNotFoundException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
+use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedUserService;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
@@ -90,6 +105,7 @@ class CirclesConfig extends Base {
 				 'list of value to change in the configuration of the Circle'
 			 )
 			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			 ->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
 			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
 	}
 
@@ -102,16 +118,30 @@ class CirclesConfig extends Base {
 	 * @throws FederatedEventException
 	 * @throws FederatedItemException
 	 * @throws InitiatorNotFoundException
-	 * @throws InvalidItemException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
+	 * @throws RequestBuilderException
+	 * @throws CircleNotFoundException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws InvalidIdException
+	 * @throws MemberNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws SingleCircleNotFoundException
+	 * @throws UnknownRemoteException
+	 * @throws UserTypeNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$circleId = (string)$input->getArgument('circle_id');
 
 		try {
 			$this->federatedUserService->commandLineInitiator(
-				$input->getOption('initiator'), $circleId, false
+				$input->getOption('initiator'),
+				Member::parseTypeString($input->getOption('initiator-type')),
+				$circleId,
+				false
 			);
 
 			$circle = $this->circleService->getCircle($circleId);

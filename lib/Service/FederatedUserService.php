@@ -398,9 +398,14 @@ class FederatedUserService {
 	 * @throws UserTypeNotFoundException
 	 * @throws RequestBuilderException
 	 */
-	public function commandLineInitiator(string $userId, string $circleId = '', bool $bypass = false): void {
+	public function commandLineInitiator(
+		string $userId,
+		int $userType = Member::TYPE_SINGLE,
+		string $circleId = '',
+		bool $bypass = false
+	): void {
 		if ($userId !== '') {
-			$this->setCurrentUser($this->getFederatedUser($userId, Member::TYPE_USER));
+			$this->setCurrentUser($this->getFederatedUser($userId, $userType));
 
 			return;
 		}

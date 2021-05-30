@@ -42,9 +42,11 @@ use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
@@ -101,6 +103,7 @@ class CirclesEdit extends Base {
 			 ->addArgument('edit', InputArgument::REQUIRED, 'displayName or description')
 			 ->addArgument('value', InputArgument::REQUIRED, 'new value')
 			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			 ->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
 			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
 
 	}
@@ -124,6 +127,7 @@ class CirclesEdit extends Base {
 	 * @throws SingleCircleNotFoundException
 	 * @throws UnknownRemoteException
 	 * @throws UserTypeNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$circleId = (string)$input->getArgument('circle_id');
@@ -132,7 +136,10 @@ class CirclesEdit extends Base {
 
 		try {
 			$this->federatedUserService->commandLineInitiator(
-				$input->getOption('initiator'), $circleId, false
+				$input->getOption('initiator'),
+				Member::parseTypeString($input->getOption('initiator-type')),
+				$circleId,
+				false
 			);
 
 			switch ($edit) {

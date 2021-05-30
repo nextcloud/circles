@@ -32,21 +32,23 @@ declare(strict_types=1);
 namespace OCA\Circles\Command;
 
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
-use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
-use daita\MySmallPhpTools\Exceptions\SignatoryException;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
@@ -114,6 +116,7 @@ class CirclesDetails extends Base {
 			 ->addArgument('circle_id', InputArgument::REQUIRED, 'ID of the circle')
 			 ->addOption('instance', '', InputOption::VALUE_REQUIRED, 'Instance of the circle', '')
 			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			 ->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
 			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
 
 	}
@@ -125,32 +128,45 @@ class CirclesDetails extends Base {
 	 *
 	 * @return int
 	 * @throws CircleNotFoundException
+	 * @throws FederatedItemException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
 	 * @throws InitiatorNotFoundException
 	 * @throws InvalidItemException
+	 * @throws MemberNotFoundException
 	 * @throws OwnerNotFoundException
 	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
-	 * @throws RequestNetworkException
-	 * @throws SignatoryException
 	 * @throws UnknownRemoteException
-	 * @throws FederatedUserException
-	 * @throws FederatedUserNotFoundException
-	 * @throws MemberNotFoundException
 	 * @throws UserTypeNotFoundException
+	 * @throws InvalidIdException
+	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$circleId = (string)$input->getArgument('circle_id');
 		$instance = $input->getOption('instance');
-		$initiator = $input->getOption('initiator');
 
 		try {
 			if ($instance !== '') {
-				$data = ['initiator' => $initiator];
-				$circle = $this->remoteService->getCircleFromInstance($circleId, $instance, $data);
+				$circle = $this->remoteService->getCircleFromInstance(
+					$circleId,
+					$instance,
+					[
+						'initiator'     => $input->getOption('initiator'),
+						'initiatorType' => Member::parseTypeString($input->getOption('initiator-type'))
+					]
+				);
 			} else {
 				try {
-					$this->federatedUserService->commandLineInitiator($initiator, $circleId, true);
+					$this->federatedUserService->commandLineInitiator(
+						$input->getOption('initiator'),
+						Member::parseTypeString($input->getOption('initiator-type')),
+						$circleId,
+						true
+					);
+
 					$circle = $this->circleService->getCircle($circleId, 0);
 				} catch (CircleNotFoundException $e) {
 					throw new CircleNotFoundException(

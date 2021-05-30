@@ -35,6 +35,7 @@ use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\MembersService;
@@ -84,7 +85,8 @@ class MembersRemove extends Base {
 		$this->setName('circles:members:remove')
 			 ->setDescription('remove a member from a circle')
 			 ->addArgument('member_id', InputArgument::REQUIRED, 'ID of the member from the Circle')
-			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '');
+			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			 ->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0');
 	}
 
 
@@ -100,8 +102,12 @@ class MembersRemove extends Base {
 		$memberId = $input->getArgument('member_id');
 
 		$member = $this->memberRequest->getMemberById($memberId);
+
 		$this->federatedUserService->commandLineInitiator(
-			$input->getOption('initiator'), $member->getCircleId()
+			$input->getOption('initiator'),
+			Member::parseTypeString($input->getOption('initiator-type')),
+			$member->getCircleId(),
+			false
 		);
 
 		$outcome = $this->memberService->removeMember($memberId);

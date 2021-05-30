@@ -141,6 +141,7 @@ class MembersList extends Base {
 			 ->addOption('instance', '', InputOption::VALUE_REQUIRED, 'Instance of the circle', '')
 			 ->addOption('inherited', '', InputOption::VALUE_NONE, 'Display all inherited members')
 			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
+			 ->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
 			 ->addOption('display-name', '', InputOption::VALUE_NONE, 'display the displayName')
 			 ->addOption('tree', '', InputOption::VALUE_OPTIONAL, 'display members as a tree', false);
 	}
@@ -175,13 +176,14 @@ class MembersList extends Base {
 		$circleId = $input->getArgument('circle_id');
 		$instance = $input->getOption('instance');
 		$initiator = $input->getOption('initiator');
+		$initiatorType = Member::parseTypeString($input->getOption('initiator-type'));
 		$inherited = $input->getOption('inherited');
 
 		$tree = null;
 		if ($input->getOption('tree') !== false) {
 			$this->treeType = (is_null($input->getOption('tree'))) ? 'all' : $input->getOption('tree');
 
-			$this->federatedUserService->commandLineInitiator($initiator, $circleId, true);
+			$this->federatedUserService->commandLineInitiator($initiator, $initiatorType, $circleId, true);
 			$circle = $this->circleService->getCircle($circleId);
 
 			$output->writeln('<info>Name</info>: ' . $circle->getName());
@@ -196,11 +198,11 @@ class MembersList extends Base {
 		}
 
 		if ($inherited) {
-			$this->federatedUserService->commandLineInitiator($initiator, $circleId, true);
+			$this->federatedUserService->commandLineInitiator($initiator, $initiatorType, $circleId, true);
 			$circle = $this->circleService->getCircle($circleId);
 			$members = $circle->getInheritedMembers(true);
 		} else {
-			$members = $this->getMembers($circleId, $instance, $initiator, $tree);
+			$members = $this->getMembers($circleId, $instance, $initiator, $initiatorType, $tree);
 		}
 
 		if (!is_null($tree)) {
@@ -266,6 +268,7 @@ class MembersList extends Base {
 	 * @param string $circleId
 	 * @param string $instance
 	 * @param string $initiator
+	 * @param int $initiatorType
 	 * @param NC22TreeNode|null $tree
 	 * @param array $knownIds
 	 *
@@ -282,17 +285,18 @@ class MembersList extends Base {
 	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
 	 * @throws RequestNetworkException
 	 * @throws SignatoryException
 	 * @throws SingleCircleNotFoundException
 	 * @throws UnknownRemoteException
 	 * @throws UserTypeNotFoundException
-	 * @throws RequestBuilderException
 	 */
 	private function getMembers(
 		string $circleId,
 		string $instance,
 		string $initiator,
+		int $initiatorType,
 		?NC22TreeNode $tree,
 		array $knownIds = []
 	): array {
@@ -316,7 +320,7 @@ class MembersList extends Base {
 				return [];
 			}
 		} else {
-			$this->federatedUserService->commandLineInitiator($initiator, $circleId, true);
+			$this->federatedUserService->commandLineInitiator($initiator, $initiatorType, $circleId, true);
 			$members = $this->memberService->getMembers($circleId);
 		}
 
@@ -341,7 +345,10 @@ class MembersList extends Base {
 						}
 					} else {
 						$this->federatedUserService->commandLineInitiator(
-							$initiator, $member->getSingleId(), true
+							$initiator,
+							$initiatorType,
+							$member->getSingleId(),
+							true
 						);
 						$circle = $this->circleService->getCircle($member->getSingleId(), 0);
 					}
@@ -356,7 +363,12 @@ class MembersList extends Base {
 					);
 
 					$this->getMembers(
-						$member->getSingleId(), $member->getInstance(), $initiator, $node, $knownIds
+						$member->getSingleId(),
+						$member->getInstance(),
+						$initiator,
+						$initiatorType,
+						$node,
+						$knownIds
 					);
 				} else {
 					if ($this->treeType !== 'circles-only') {
