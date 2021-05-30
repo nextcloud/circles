@@ -153,7 +153,13 @@ class CircleRequest extends CircleRequestBuilder {
 	): array {
 		$qb = $this->getCircleSelectSql();
 		$qb->leftJoinOwner(CoreQueryBuilder::CIRCLE);
-		$qb->setOptions([CoreQueryBuilder::CIRCLE], ['getData' => true, 'mustBeMember' => false]);
+		$qb->setOptions(
+			[CoreQueryBuilder::CIRCLE],
+			[
+				'getData'      => true,
+				'mustBeMember' => $params->gBool('mustBeMember')
+			]
+		);
 
 		if (!$params->gBool('includeSystemCircles')) {
 			$qb->filterCircles(

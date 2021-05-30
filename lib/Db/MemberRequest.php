@@ -298,6 +298,7 @@ class MemberRequest extends MemberRequestBuilder {
 	 * @param string $singleId
 	 *
 	 * @return Member[]
+	 * @throws RequestBuilderException
 	 */
 	public function getMembersBySingleId(string $singleId): array {
 		$qb = $this->getMemberSelectSql();
