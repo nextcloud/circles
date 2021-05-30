@@ -102,7 +102,7 @@ class FederatedUser extends ManagedModel implements
 	 */
 	public function set(
 		string $userId,
-		$instance = '',
+		string $instance = '',
 		int $type = Member::TYPE_USER,
 		?Circle $basedOn = null
 	): self {
@@ -226,6 +226,7 @@ class FederatedUser extends ManagedModel implements
 	 */
 	public function setInstance(string $instance): self {
 		if ($instance === '') {
+			// TODO: is it needed ?
 			$instance = $this->getManager()->getLocalInstance();
 		}
 

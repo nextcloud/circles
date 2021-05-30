@@ -723,10 +723,13 @@ class FederatedUserService {
 	 * @param FederatedUser $federatedUser
 	 *
 	 * @return Circle
-	 * @throws InvalidIdException
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
 	 * @throws FederatedUserException
-	 * @throws SingleCircleNotFoundException
+	 * @throws InvalidIdException
 	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
 	 */
 	private function getSingleCircle(FederatedUser $federatedUser): Circle {
 		if (!$this->configService->isLocalInstance($federatedUser->getInstance())) {
