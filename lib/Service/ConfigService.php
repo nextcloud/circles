@@ -544,6 +544,10 @@ class ConfigService {
 			return true;
 		}
 
+		if ($instance === strtolower($this->getLoopbackInstance())) {
+			return true;
+		}
+
 		return (in_array($instance, $this->getTrustedDomains()));
 	}
 
