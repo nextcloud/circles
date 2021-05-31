@@ -36,12 +36,14 @@ use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemInitiatorMembershipNotRequired;
 use OCA\Circles\IFederatedItemMemberOptional;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Helpers\MemberHelper;
+use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\StatusCode;
 
@@ -66,6 +68,9 @@ class CircleLeave implements
 	/** @var MembershipService */
 	private $membershipService;
 
+	/** @var EventService */
+	private $eventService;
+
 
 	/**
 	 * CircleLeave constructor.
@@ -73,13 +78,18 @@ class CircleLeave implements
 	 * @param MemberRequest $memberRequest
 	 * @param CircleRequest $circleRequest
 	 * @param MembershipService $membershipService
+	 * @param EventService $eventService
 	 */
 	public function __construct(
-		MemberRequest $memberRequest, CircleRequest $circleRequest, MembershipService $membershipService
+		MemberRequest $memberRequest,
+		CircleRequest $circleRequest,
+		MembershipService $membershipService,
+		EventService $eventService
 	) {
 		$this->memberRequest = $memberRequest;
 		$this->circleRequest = $circleRequest;
 		$this->membershipService = $membershipService;
+		$this->eventService = $eventService;
 	}
 
 
@@ -113,12 +123,16 @@ class CircleLeave implements
 
 	/**
 	 * @param FederatedEvent $event
+	 *
+	 * @throws RequestBuilderException
 	 */
 	public function manage(FederatedEvent $event): void {
 		$member = $event->getMember();
 		$this->memberRequest->delete($member);
 
 		$this->membershipService->onUpdate($member->getSingleId());
+
+		$this->eventService->memberLeaving($event);
 	}
 
 
@@ -127,6 +141,7 @@ class CircleLeave implements
 	 * @param array $results
 	 */
 	public function result(FederatedEvent $event, array $results): void {
+		$this->eventService->memberLeft($event, $results);
 	}
 
 }

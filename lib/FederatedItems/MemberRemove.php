@@ -34,11 +34,13 @@ namespace OCA\Circles\FederatedItems;
 
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemMemberRequired;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
+use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\MembershipService;
 
 
@@ -59,16 +61,25 @@ class MemberRemove implements
 	/** @var MembershipService */
 	private $membershipService;
 
+	/** @var EventService */
+	private $eventService;
+
 
 	/**
 	 * MemberAdd constructor.
 	 *
 	 * @param MemberRequest $memberRequest
 	 * @param MembershipService $membershipService
+	 * @param EventService $eventService
 	 */
-	public function __construct(MemberRequest $memberRequest, MembershipService $membershipService) {
+	public function __construct(
+		MemberRequest $memberRequest,
+		MembershipService $membershipService,
+		EventService $eventService
+	) {
 		$this->memberRequest = $memberRequest;
 		$this->membershipService = $membershipService;
+		$this->eventService = $eventService;
 	}
 
 
@@ -95,12 +106,16 @@ class MemberRemove implements
 
 	/**
 	 * @param FederatedEvent $event
+	 *
+	 * @throws RequestBuilderException
 	 */
 	public function manage(FederatedEvent $event): void {
 		$member = $event->getMember();
 		$this->memberRequest->delete($member);
 
 		$this->membershipService->onUpdate($member->getSingleId());
+
+		$this->eventService->memberRemoving($event);
 	}
 
 
@@ -109,6 +124,7 @@ class MemberRemove implements
 	 * @param array $results
 	 */
 	public function result(FederatedEvent $event, array $results): void {
+		$this->eventService->memberRemoved($event, $results);
 	}
 
 }
