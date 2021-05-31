@@ -182,6 +182,23 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 			],
 			self::MOUNTPOINT,
 			self::MEMBERSHIPS
+		],
+		self::HELPER => [
+			self::MEMBERSHIPS,
+			self::INITIATOR => [
+				self::INHERITED_BY => [
+					self::MEMBERSHIPS
+				]
+			],
+			self::CIRCLE    => [
+				self::OPTIONS => [
+					'getPersonalCircle' => true
+				],
+				self::MEMBER,
+				self::OWNER   => [
+					self::BASED_ON
+				]
+			]
 		]
 	];
 
@@ -627,18 +644,21 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	 * @param string $alias
 	 * @param IFederatedUser|null $initiator
 	 * @param string $field
+	 * @param string $helpedAlias
 	 *
 	 * @throws RequestBuilderException
 	 */
 	public function leftJoinCircle(
 		string $alias,
 		?IFederatedUser $initiator = null,
-		string $field = 'circle_id'
+		string $field = 'circle_id',
+		string $helperAlias = ''
 	): void {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
 
+		$helperAlias = ($helperAlias !== '') ? $helperAlias : $alias;
 		$aliasCircle = $this->generateAlias($alias, self::CIRCLE, $options);
 		$getData = $this->getBool('getData', $options, false);
 		$expr = $this->expr();
@@ -648,8 +668,10 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		}
 
 		$this->leftJoin(
-			$alias, CoreRequestBuilder::TABLE_CIRCLE, $aliasCircle,
-			$expr->eq($aliasCircle . '.unique_id', $alias . '.' . $field)
+			$helperAlias,
+			CoreRequestBuilder::TABLE_CIRCLE,
+			$aliasCircle,
+			$expr->eq($aliasCircle . '.unique_id', $helperAlias . '.' . $field)
 		);
 
 		if (!is_null($initiator)) {
@@ -898,17 +920,26 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	 * @param string $alias
 	 * @param IFederatedUser $user
 	 * @param string $field
+	 * @param string $helperAlias
 	 *
+	 * @return ICompositeExpression
 	 * @throws RequestBuilderException
 	 */
-	public function limitToInitiator(string $alias, IFederatedUser $user, string $field = ''): void {
-		$this->leftJoinInitiator($alias, $user, $field);
-		$this->limitInitiatorVisibility($alias);
+	public function limitToInitiator(
+		string $alias,
+		IFederatedUser $user,
+		string $field = '',
+		string $helperAlias = ''
+	): ICompositeExpression {
+		$this->leftJoinInitiator($alias, $user, $field, $helperAlias);
+		$where = $this->limitInitiatorVisibility($alias);
 
 		$aliasInitiator = $this->generateAlias($alias, self::INITIATOR, $options);
 		if ($this->getBool('getData', $options, false)) {
 			$this->leftJoinBasedOn($aliasInitiator);
 		}
+
+		return $where;
 	}
 
 
@@ -918,26 +949,32 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	 * @param string $alias
 	 * @param IFederatedUser $initiator
 	 * @param string $field
+	 * @param string $helperAlias
 	 *
 	 * @throws RequestBuilderException
 	 */
-	public function leftJoinInitiator(string $alias, IFederatedUser $initiator, string $field = ''): void {
+	public function leftJoinInitiator(
+		string $alias,
+		IFederatedUser $initiator,
+		string $field = '',
+		string $helperAlias = ''
+	): void {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
 
 		$expr = $this->expr();
 		$field = ($field === '') ? 'unique_id' : $field;
+		$helperAlias = ($helperAlias !== '') ? $helperAlias : $alias;
 		$aliasMembership = $this->generateAlias($alias, self::MEMBERSHIPS, $options);
 
 		$this->leftJoin(
-			$alias, CoreRequestBuilder::TABLE_MEMBERSHIP, $aliasMembership,
+			$helperAlias,
+			CoreRequestBuilder::TABLE_MEMBERSHIP,
+			$aliasMembership,
 			$expr->andX(
-				$expr->eq(
-					$aliasMembership . '.single_id',
-					$this->createNamedParameter($initiator->getSingleId())
-				),
-				$expr->eq($aliasMembership . '.circle_id', $alias . '.' . $field)
+				$this->exprLimit('single_id', $initiator->getSingleId(), $aliasMembership),
+				$expr->eq($aliasMembership . '.circle_id', $helperAlias . '.' . $field)
 			)
 		);
 
@@ -987,9 +1024,10 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	/**
 	 * @param string $alias
 	 *
+	 * @return ICompositeExpression
 	 * @throws RequestBuilderException
 	 */
-	protected function limitInitiatorVisibility(string $alias) {
+	protected function limitInitiatorVisibility(string $alias): ICompositeExpression {
 		$aliasMembership = $this->generateAlias($alias, self::MEMBERSHIPS, $options);
 		$getPersonalCircle = $this->getBool('getPersonalCircle', $options, false);
 
@@ -1029,9 +1067,10 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 			);
 			$orX->add($andOpen);
 		}
+
 		$this->andWhere($orX);
 
-
+		return $orX;
 //		$orTypes = $this->generateLimit($qb, $circleUniqueId, $userId, $type, $name, $forceAll);
 //		if (sizeof($orTypes) === 0) {
 //			throw new ConfigNoCircleAvailableException(
