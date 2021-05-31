@@ -273,6 +273,7 @@ class MemberService {
 			$this->memberRequest->getMemberById($memberId, $this->federatedUserService->getCurrentUser());
 
 		$event = new FederatedEvent(MemberRemove::class);
+		$event->setSeverity(FederatedEvent::SEVERITY_HIGH);
 		$event->setCircle($member->getCircle());
 		$event->setMember($member);
 
