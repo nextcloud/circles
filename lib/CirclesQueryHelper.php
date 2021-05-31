@@ -92,7 +92,6 @@ class CirclesQueryHelper {
 		IFederatedUser $federatedUser,
 		bool $fullDetails = false
 	): ICompositeExpression {
-		$this->queryBuilder->setBypassAliasGeneration(true);
 		$this->queryBuilder->setDefaultSelectAlias($alias);
 		$this->queryBuilder->setOptions(
 			[CoreQueryBuilder::HELPER],
@@ -121,7 +120,6 @@ class CirclesQueryHelper {
 		string $alias,
 		string $field
 	): void {
-		$this->queryBuilder->setBypassAliasGeneration(true);
 		$this->queryBuilder->setDefaultSelectAlias($alias);
 		$this->queryBuilder->setOptions(
 			[CoreQueryBuilder::HELPER],
