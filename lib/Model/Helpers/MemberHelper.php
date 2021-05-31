@@ -82,10 +82,12 @@ class MemberHelper {
 	public function __call(string $name, array $arguments): void {
 		if (substr(strtolower($name), 0, 8) === 'cannotbe') {
 			$this->cannotBe(substr($name, 8), $arguments);
+
 			return;
 		}
 		if (substr(strtolower($name), 0, 6) === 'mustbe') {
 			$this->mustBe(substr($name, 6), $arguments);
+
 			return;
 		}
 
@@ -148,6 +150,18 @@ class MemberHelper {
 	 *
 	 * @throws MemberLevelException
 	 */
+	public function mustHaveLevelAboveOrEqual(int $level) {
+		if ($this->member->getLevel() < $level) {
+			throw new MemberLevelException('Insufficient rights');
+		}
+	}
+
+
+	/**
+	 * @param int $level
+	 *
+	 * @throws MemberLevelException
+	 */
 	public function mustHaveLevelEqualOrAbove(int $level) {
 		if ($this->member->getLevel() < $level) {
 			throw new MemberLevelException('Insufficient rights');
@@ -163,6 +177,16 @@ class MemberHelper {
 	public function mustBeHigherLevelThan(Member $compare) {
 		$this->mustHaveLevelAbove($compare->getLevel());
 	}
+
+	/**
+	 * @param Member $compare
+	 *
+	 * @throws MemberLevelException
+	 */
+	public function mustBeHigherOrSameLevelThan(Member $compare) {
+		$this->mustHaveLevelEqualOrAbove($compare->getLevel());
+	}
+
 
 }
 
