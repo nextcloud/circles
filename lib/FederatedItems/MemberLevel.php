@@ -166,12 +166,19 @@ class MemberLevel implements
 		$memberHelper->cannotBeOwner();
 		$initiatorHelper->mustBeModerator();
 
-		if ($this->configService->getAppValueBool(ConfigService::HARD_MODERATION)) {
-			$initiatorHelper->mustHaveLevelAbove($level);
-			$initiatorHelper->mustBeHigherLevelThan($member);
-		} else {
-			$initiatorHelper->mustHaveLevelAboveOrEqual($level);
-			$initiatorHelper->mustBeHigherOrSameLevelThan($member);
+		switch ($this->configService->getAppValueInt(ConfigService::HARD_MODERATION)) {
+			case 0:
+				$initiatorHelper->mustHaveLevelAboveOrEqual($level);
+				$initiatorHelper->mustBeHigherOrSameLevelThan($member);
+				break;
+			case 1:
+				$initiatorHelper->mustHaveLevelAboveOrEqual($level);
+				$initiatorHelper->mustBeHigherLevelThan($member);
+				break;
+			case 2:
+				$initiatorHelper->mustHaveLevelAbove($level);
+				$initiatorHelper->mustBeHigherLevelThan($member);
+				break;
 		}
 	}
 
