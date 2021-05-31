@@ -42,6 +42,7 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MembershipService;
 
 
@@ -61,16 +62,25 @@ class MemberLevel implements
 	/** @var MembershipService */
 	private $membershipService;
 
+	/** @var ConfigService */
+	private $configService;
+
 
 	/**
 	 * MemberAdd constructor.
 	 *
 	 * @param MemberRequest $memberRequest
 	 * @param MembershipService $membershipService
+	 * @param ConfigService $configService
 	 */
-	public function __construct(MemberRequest $memberRequest, MembershipService $membershipService) {
+	public function __construct(
+		MemberRequest $memberRequest,
+		MembershipService $membershipService,
+		ConfigService $configService
+	) {
 		$this->memberRequest = $memberRequest;
 		$this->membershipService = $membershipService;
+		$this->configService = $configService;
 	}
 
 
@@ -154,10 +164,22 @@ class MemberLevel implements
 
 		$memberHelper->mustBeMember();
 		$memberHelper->cannotBeOwner();
-
 		$initiatorHelper->mustBeModerator();
-		$initiatorHelper->mustHaveLevelAbove($level);
-		$initiatorHelper->mustBeHigherLevelThan($member);
+
+		switch ($this->configService->getAppValueInt(ConfigService::HARD_MODERATION)) {
+			case 0:
+				$initiatorHelper->mustHaveLevelAboveOrEqual($level);
+				$initiatorHelper->mustBeHigherOrSameLevelThan($member);
+				break;
+			case 1:
+				$initiatorHelper->mustHaveLevelAboveOrEqual($level);
+				$initiatorHelper->mustBeHigherLevelThan($member);
+				break;
+			case 2:
+				$initiatorHelper->mustHaveLevelAbove($level);
+				$initiatorHelper->mustBeHigherLevelThan($member);
+				break;
+		}
 	}
 
 	/**
