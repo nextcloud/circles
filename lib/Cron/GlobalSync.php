@@ -60,6 +60,7 @@ class GlobalSync extends TimedJob {
 	 * @throws QueryException
 	 */
 	protected function run($argument) {
+		return;
 		$app = \OC::$server->query(Application::class);
 		$c = $app->getContainer();
 

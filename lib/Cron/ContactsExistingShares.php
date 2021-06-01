@@ -105,6 +105,7 @@ class ContactsExistingShares extends TimedJob {
 	 * @param mixed $argument
 	 */
 	protected function run($argument) {
+		return;
 		$app = \OC::$server->query(Application::class);
 		$c = $app->getContainer();
 

@@ -47,8 +47,6 @@ use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedShareBelongingException;
 use OCA\Circles\Exceptions\FederatedShareNotFoundException;
 use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
-use OCA\Circles\Exceptions\JsonException;
-use OCA\Circles\Exceptions\ModelException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
@@ -494,11 +492,7 @@ class FederatedEventService extends NC22Signature {
 	 * @param string $token
 	 */
 	public function manageResults(string $token): void {
-		try {
-			$wrappers = $this->eventWrapperRequest->getByToken($token);
-		} catch (JsonException | ModelException $e) {
-			return;
-		}
+		$wrappers = $this->eventWrapperRequest->getByToken($token);
 
 		$event = null;
 		$results = [];

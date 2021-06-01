@@ -52,7 +52,9 @@ class EventWrapperRequest extends EventWrapperRequestBuilder {
 		   ->setValue(
 			   'event', $qb->createNamedParameter(json_encode($wrapper->getEvent(), JSON_UNESCAPED_SLASHES))
 		   )
-		   ->setValue('result', $qb->createNamedParameter(json_encode($wrapper->getResult(), JSON_UNESCAPED_SLASHES)))
+		   ->setValue(
+			   'result', $qb->createNamedParameter(json_encode($wrapper->getResult(), JSON_UNESCAPED_SLASHES))
+		   )
 		   ->setValue('instance', $qb->createNamedParameter($wrapper->getInstance()))
 		   ->setValue('interface', $qb->createNamedParameter($wrapper->getInterface()))
 		   ->setValue('severity', $qb->createNamedParameter($wrapper->getSeverity()))
@@ -74,6 +76,33 @@ class EventWrapperRequest extends EventWrapperRequestBuilder {
 		$qb->limitToToken($wrapper->getToken());
 
 		$qb->execute();
+	}
+
+
+	/**
+	 * @param string $token
+	 * @param int $status
+	 */
+	public function updateAll(string $token, int $status): void {
+		$qb = $this->getEventWrapperUpdateSql();
+		$qb->set('status', $qb->createNamedParameter($status));
+
+		$qb->limitToToken($token);
+
+		$qb->execute();
+	}
+
+
+	/**
+	 * returns unique token not set as FAILED
+	 *
+	 * @return EventWrapper[]
+	 */
+	public function getFailedEvents(): array {
+		$qb = $this->getEventWrapperSelectSql();
+		$qb->limitInt('status', EventWrapper::STATUS_FAILED);
+
+		return $this->getItemsFromRequest($qb);
 	}
 
 

@@ -251,7 +251,6 @@ class EventWrapper implements INC22QueryRow, JsonSerializable {
 	 *
 	 * @return self
 	 * @throws InvalidItemException
-	 * @throws UnknownInterfaceException
 	 */
 	public function import(array $data): self {
 		$this->setToken($this->get('token', $data));
@@ -276,7 +275,7 @@ class EventWrapper implements INC22QueryRow, JsonSerializable {
 	 */
 	function jsonSerialize(): array {
 		return [
-			'id'        => $this->getToken(),
+			'token'     => $this->getToken(),
 			'instance'  => $this->getInstance(),
 			'interface' => $this->getInterface(),
 			'event'     => $this->getEvent(),
@@ -293,7 +292,6 @@ class EventWrapper implements INC22QueryRow, JsonSerializable {
 	 *
 	 * @return INC22QueryRow
 	 * @throws InvalidItemException
-	 * @throws UnknownInterfaceException
 	 */
 	public function importFromDatabase(array $data): INC22QueryRow {
 		$this->setToken($this->get('token', $data));

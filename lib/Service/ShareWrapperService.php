@@ -105,6 +105,7 @@ class ShareWrapperService {
 	 * @param string $circleId
 	 * @param FederatedUser|null $shareRecipient
 	 * @param FederatedUser|null $shareInitiator
+	 * @param bool $completeDetails
 	 *
 	 * @return ShareWrapper[]
 	 * @throws RequestBuilderException
