@@ -38,6 +38,11 @@ use OCA\Circles\Model\Federated\FederatedEvent;
 /**
  * Class CircleMemberAddedEvent
  *
+ * This Event is called when it has been confirmed that a Member have been added on all instances that use
+ * the Circle.
+ *
+ * WARNING: This Event is only called on the master instance of the Circle.
+ *
  * @package OCA\Circles\Events
  */
 class CircleMemberAddedEvent extends CircleResultGenericEvent {

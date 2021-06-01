@@ -216,6 +216,7 @@ class SingleMemberAdd implements
 	 * @param FederatedEvent $event
 	 *
 	 * @throws InvalidIdException
+	 * @throws RequestBuilderException
 	 */
 	public function manage(FederatedEvent $event): void {
 		$member = $event->getMember();
@@ -225,6 +226,7 @@ class SingleMemberAdd implements
 		}
 
 		$this->membershipService->onUpdate($member->getSingleId());
+
 		$this->eventService->singleMemberAdding($event);
 
 //
