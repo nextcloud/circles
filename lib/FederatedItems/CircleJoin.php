@@ -43,6 +43,7 @@ use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\MembersLimitException;
 use OCA\Circles\IFederatedItem;
+use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\IFederatedItemInitiatorMembershipNotRequired;
 use OCA\Circles\IFederatedItemMemberCheckNotRequired;
 use OCA\Circles\IFederatedItemMemberOptional;
@@ -68,7 +69,8 @@ use OCP\IUserManager;
 class CircleJoin implements
 	IFederatedItem,
 	IFederatedItemInitiatorMembershipNotRequired,
-//	IFederatedItemAsyncProcess,
+	IFederatedItemAsyncProcess,
+	IFederatedItemHighSeverity,
 	IFederatedItemMemberCheckNotRequired,
 	IFederatedItemMemberOptional {
 

@@ -40,6 +40,7 @@ use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
+use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\IFederatedItemMemberEmpty;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
@@ -53,6 +54,7 @@ use OCA\Circles\Model\Helpers\MemberHelper;
 class MassiveMemberAdd extends SingleMemberAdd implements
 	IFederatedItem,
 	IFederatedItemAsyncProcess,
+	IFederatedItemHighSeverity,
 	IFederatedItemMemberEmpty {
 
 

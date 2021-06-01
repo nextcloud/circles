@@ -230,8 +230,7 @@ class ShareByCircleProvider implements IShareProvider {
 		}
 
 		$event = new FederatedEvent(FileShare::class);
-		$event->setSeverity(FederatedEvent::SEVERITY_HIGH)
-			  ->setCircle($circle)
+		$event->setCircle($circle)
 			  ->getData()->sObj('wrappedShare', $wrappedShare);
 
 		$this->federatedEventService->newEvent($event);
@@ -296,8 +295,7 @@ class ShareByCircleProvider implements IShareProvider {
 		}
 
 		$event = new FederatedEvent(FileUnshare::class);
-		$event->setSeverity(FederatedEvent::SEVERITY_HIGH)
-			  ->setCircle($circle)
+		$event->setCircle($circle)
 			  ->getData()->sObj('wrappedShare', $wrappedShare);
 
 		$this->federatedEventService->newEvent($event);

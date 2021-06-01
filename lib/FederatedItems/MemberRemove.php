@@ -37,6 +37,7 @@ use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
+use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\IFederatedItemMemberRequired;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
@@ -52,6 +53,7 @@ use OCA\Circles\Service\MembershipService;
 class MemberRemove implements
 	IFederatedItem,
 	IFederatedItemAsyncProcess,
+	IFederatedItemHighSeverity,
 	IFederatedItemMemberRequired {
 
 

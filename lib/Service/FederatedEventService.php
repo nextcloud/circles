@@ -59,6 +59,7 @@ use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemCircleCheckNotRequired;
 use OCA\Circles\IFederatedItemDataRequestOnly;
+use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\IFederatedItemInitiatorCheckNotRequired;
 use OCA\Circles\IFederatedItemInitiatorMembershipNotRequired;
 use OCA\Circles\IFederatedItemLimitedToInstanceWithMembership;
@@ -260,6 +261,10 @@ class FederatedEventService extends NC22Signature {
 		$item = OC::$server->get($class);
 		if (!($item instanceof IFederatedItem)) {
 			throw new FederatedEventException($class . ' not an IFederatedItem');
+		}
+
+		if ($item instanceof IFederatedItemHighSeverity) {
+			$event->setSeverity(FederatedEvent::SEVERITY_HIGH);
 		}
 
 		$this->setFederatedEventBypass($event, $item);

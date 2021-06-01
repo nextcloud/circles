@@ -39,6 +39,7 @@ use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Db\MountRequest;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
+use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\IFederatedItemMemberEmpty;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\ShareWrapper;
@@ -53,6 +54,7 @@ use OCA\Circles\Service\EventService;
  */
 class FileUnshare implements
 	IFederatedItem,
+	IFederatedItemHighSeverity,
 	IFederatedItemAsyncProcess,
 	IFederatedItemMemberEmpty {
 

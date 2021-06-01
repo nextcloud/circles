@@ -36,6 +36,7 @@ use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
+use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\IFederatedItemMemberEmpty;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
@@ -50,6 +51,7 @@ use OCA\Circles\Service\MembershipService;
  */
 class CircleDestroy implements
 	IFederatedItem,
+	IFederatedItemHighSeverity,
 	IFederatedItemAsyncProcess,
 	IFederatedItemMemberEmpty {
 

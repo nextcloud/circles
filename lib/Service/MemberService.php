@@ -201,7 +201,6 @@ class MemberService {
 		$member->importFromIFederatedUser($federatedUser);
 
 		$event = new FederatedEvent(SingleMemberAdd::class);
-		$event->setSeverity(FederatedEvent::SEVERITY_HIGH);
 		$event->setCircle($circle);
 		$event->setMember($member);
 
@@ -242,7 +241,6 @@ class MemberService {
 		);
 
 		$event = new FederatedEvent(MassiveMemberAdd::class);
-		$event->setSeverity(FederatedEvent::SEVERITY_HIGH);
 		$event->setCircle($circle);
 		$event->setMembers($members);
 		$event->setData(new SimpleDataStore(['federatedUsers' => $members]));
@@ -273,7 +271,6 @@ class MemberService {
 			$this->memberRequest->getMemberById($memberId, $this->federatedUserService->getCurrentUser());
 
 		$event = new FederatedEvent(MemberRemove::class);
-		$event->setSeverity(FederatedEvent::SEVERITY_HIGH);
 		$event->setCircle($member->getCircle());
 		$event->setMember($member);
 

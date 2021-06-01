@@ -38,6 +38,7 @@ use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedItem;
+use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\IFederatedItemInitiatorMembershipNotRequired;
 use OCA\Circles\IFederatedItemMemberOptional;
 use OCA\Circles\Model\Federated\FederatedEvent;
@@ -55,6 +56,7 @@ use OCA\Circles\StatusCode;
  */
 class CircleLeave implements
 	IFederatedItem,
+	IFederatedItemHighSeverity,
 	IFederatedItemInitiatorMembershipNotRequired,
 	IFederatedItemMemberOptional {
 

@@ -62,6 +62,7 @@ use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
+use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\IFederatedItemMemberCheckNotRequired;
 use OCA\Circles\IFederatedItemMemberRequired;
 use OCA\Circles\IFederatedUser;
@@ -96,6 +97,7 @@ use OCP\Util;
 class SingleMemberAdd implements
 	IFederatedItem,
 	IFederatedItemAsyncProcess,
+	IFederatedItemHighSeverity,
 	IFederatedItemMemberRequired,
 	IFederatedItemMemberCheckNotRequired {
 

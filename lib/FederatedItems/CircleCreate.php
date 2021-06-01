@@ -41,6 +41,7 @@ use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemCircleCheckNotRequired;
+use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\IFederatedItemMustBeInitializedLocally;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Service\EventService;
@@ -54,6 +55,7 @@ use OCA\Circles\Service\MembershipService;
  */
 class CircleCreate implements
 	IFederatedItem,
+	IFederatedItemHighSeverity,
 	IFederatedItemCircleCheckNotRequired,
 	IFederatedItemMustBeInitializedLocally {
 

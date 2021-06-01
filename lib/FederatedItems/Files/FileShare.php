@@ -40,6 +40,7 @@ use OCA\Circles\Db\MountRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
+use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\IFederatedItemMemberEmpty;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Mount;
@@ -55,6 +56,7 @@ use OCA\Circles\Service\EventService;
  */
 class FileShare implements
 	IFederatedItem,
+	IFederatedItemHighSeverity,
 	IFederatedItemAsyncProcess,
 	IFederatedItemMemberEmpty {
 

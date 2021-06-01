@@ -177,7 +177,6 @@ class CircleService {
 			   ->setInitiator($member);
 
 		$event = new FederatedEvent(CircleCreate::class);
-		$event->setSeverity(FederatedEvent::SEVERITY_HIGH);
 		$event->setCircle($circle);
 		$this->federatedEventService->newEvent($event);
 
@@ -207,7 +206,6 @@ class CircleService {
 		$circle = $this->getCircle($circleId);
 
 		$event = new FederatedEvent(CircleDestroy::class);
-		$event->setSeverity(FederatedEvent::SEVERITY_HIGH);
 		$event->setCircle($circle);
 		$this->federatedEventService->newEvent($event);
 
@@ -355,7 +353,6 @@ class CircleService {
 		$circle = $this->circleRequest->getCircle($circleId, $this->federatedUserService->getCurrentUser());
 
 		$event = new FederatedEvent(CircleJoin::class);
-		$event->setSeverity(FederatedEvent::SEVERITY_HIGH);
 		$event->setCircle($circle);
 
 		$this->federatedEventService->newEvent($event);
@@ -385,7 +382,6 @@ class CircleService {
 		$circle = $this->circleRequest->getCircle($circleId, $this->federatedUserService->getCurrentUser());
 
 		$event = new FederatedEvent(CircleLeave::class);
-		$event->setSeverity(FederatedEvent::SEVERITY_HIGH);
 		$event->setCircle($circle);
 
 		$this->federatedEventService->newEvent($event);
