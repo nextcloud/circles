@@ -188,6 +188,7 @@ class ShareWrapperService {
 	 * @param int $offset
 	 * @param int $limit
 	 * @param bool $getData
+	 * @param bool $completeDetails
 	 *
 	 * @return ShareWrapper[]
 	 * @throws RequestBuilderException

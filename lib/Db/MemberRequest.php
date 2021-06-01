@@ -249,8 +249,6 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->orderBy($aliasMembership . '.inheritance_depth', 'asc')
 		   ->addGroupBy($aliasMembership . '.inheritance_depth');
 
-//		$qb->groupBy(CoreQueryBuilder::MEMBER . '.single_id');
-
 		return $this->getItemsFromRequest($qb);
 	}
 
@@ -359,9 +357,9 @@ class MemberRequest extends MemberRequestBuilder {
 
 		$expr = $qb->expr();
 		$orX = $expr->orX(
-			$qb->exprLimitToDBField('user_id', $federatedUser->getUserId(), false, true),
-			$qb->exprLimitToDBFieldInt('user_type', $federatedUser->getUserType(), false),
-			$qb->exprLimitToDBField('instance', $qb->getInstance($federatedUser), false, false)
+			$qb->exprFilter('user_id', $federatedUser->getUserId()),
+			$qb->exprFilter('user_type', $federatedUser->getUserType()),
+			$qb->exprFilter('instance', $qb->getInstance($federatedUser), '', false)
 		);
 
 		$qb->andWhere($orX);

@@ -48,7 +48,7 @@ use OCP\DB\QueryBuilder\ICompositeExpression;
 
 
 /**
- * Class CoreRequestBuilder
+ * Class CoreQueryBuilder
  *
  * @package OCA\Circles\Db
  */
@@ -62,20 +62,21 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	const CIRCLE = 'circle';
 	const MEMBER = 'member';
 	const OWNER = 'owner';
-	const FEDERATED_EVENT = 'federatedEvent';
+	const FEDERATED_EVENT = 'federatedevent';
 	const REMOTE = 'remote';
-	const BASED_ON = 'basedOn';
+	const BASED_ON = 'basedon';
 	const INITIATOR = 'initiator';
 	const MEMBERSHIPS = 'memberships';
-	const UPSTREAM_MEMBERSHIPS = 'upstreamMemberships';
-	const INHERITANCE_FROM = 'inheritanceFrom';
-	const INHERITED_BY = 'inheritedBy';
+	const UPSTREAM_MEMBERSHIPS = 'upstreammemberships';
+	const INHERITANCE_FROM = 'inheritancefrom';
+	const INHERITED_BY = 'inheritedby';
 	const MOUNT = 'mount';
 	const MOUNTPOINT = 'mountpoint';
 	const SHARE = 'share';
-	const FILE_CACHE = 'fileCache';
+	const FILE_CACHE = 'filecache';
 	const STORAGES = 'storages';
 	const OPTIONS = 'options';
+	const HELPER = 'circleshelper';
 
 
 	public static $SQL_PATH = [
@@ -212,7 +213,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 
 
 	/**
-	 * CoreRequestBuilder constructor.
+	 * CoreQueryBuilder constructor.
 	 */
 	public function __construct() {
 		parent::__construct();
