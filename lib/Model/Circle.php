@@ -144,7 +144,7 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	public static $DEF_SOURCE = [
 		1     => 'Nextcloud User',
 		2     => 'Nextcloud Group',
-		4     => 'Mail Address',
+		4     => 'Email Address',
 		8     => 'Contact',
 		16    => 'Circle',
 		10001 => 'Circles App'
