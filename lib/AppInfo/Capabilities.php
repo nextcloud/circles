@@ -174,7 +174,7 @@ class Capabilities implements ICapability {
 					'core'  => [
 						Member::TYPE_USER    => $this->l10n->t('Nextcloud User'),
 						Member::TYPE_GROUP   => $this->l10n->t('Nextcloud Group'),
-						Member::TYPE_MAIL    => $this->l10n->t('Mail Address'),
+						Member::TYPE_MAIL    => $this->l10n->t('Email Address'),
 						Member::TYPE_CONTACT => $this->l10n->t('Contact'),
 						Member::TYPE_CIRCLE  => $this->l10n->t('Circle'),
 						Member::TYPE_APP     => $this->l10n->t('Nextcloud App')
