@@ -80,6 +80,7 @@ OC.L10N.register(
     "Personal" : "個人",
     "System" : "系统",
     "Visible" : "可見",
+    "Open" : "開啟",
     "Invite" : "邀請",
     "Join Request" : "加入要求",
     "Friends" : "朋友",
