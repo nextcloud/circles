@@ -766,11 +766,11 @@ class SingleMemberAdd implements
 		$this->miscService->log("Sending password mail about existing files to '" . $email . "'", 0);
 
 		$plainBodyPart = $this->l10n->t(
-			"%1\$s shared multiple files with you.\nYou should have already received a separate mail with a link to access them.\n",
+			"%1\$s shared multiple files with you.\nYou should have already received a separate email with a link to access them.\n",
 			[$authorName]
 		);
 		$htmlBodyPart = $this->l10n->t(
-			'%1$s shared multiple files with you. You should have already received a separate mail with a link to access them.',
+			'%1$s shared multiple files with you. You should have already received a separate email with a link to access them.',
 			[$authorName]
 		);
 
