@@ -163,8 +163,8 @@ class Member extends ManagedModel implements
 	/** @var string */
 	private $status = 'Unknown';
 
-	/** @var string */
-	private $note = '';
+	/** @var array */
+	private $notes = [];
 
 	/** @var string */
 	private $displayName = '';
@@ -492,21 +492,76 @@ class Member extends ManagedModel implements
 
 
 	/**
-	 * @param string $note
+	 * @param array $notes
 	 *
 	 * @return Member
 	 */
-	public function setNote(string $note): self {
-		$this->note = $note;
+	public function setNotes(array $notes): self {
+		$this->notes = $notes;
 
 		return $this;
 	}
 
 	/**
+	 * @return array
+	 */
+	public function getNotes(): array {
+		return $this->notes;
+	}
+
+
+	/**
+	 * @param string $key
+	 *
 	 * @return string
 	 */
-	public function getNote(): string {
-		return $this->note;
+	public function getNote(string $key): string {
+		return $this->get($key, $this->notes);
+	}
+
+	/**
+	 * @param string $key
+	 *
+	 * @return array
+	 */
+	public function getNoteArray(string $key): array {
+		return $this->getArray($key, $this->notes);
+	}
+
+	/**
+	 * @param string $key
+	 * @param string $note
+	 *
+	 * @return $this
+	 */
+	public function setNote(string $key, string $note): self {
+		$this->notes[$key] = $note;
+
+		return $this;
+	}
+
+	/**
+	 * @param string $key
+	 * @param array $note
+	 *
+	 * @return $this
+	 */
+	public function setNoteArray(string $key, array $note): self {
+		$this->notes[$key] = $note;
+
+		return $this;
+	}
+
+	/**
+	 * @param string $key
+	 * @param JsonSerializable $obj
+	 *
+	 * @return $this
+	 */
+	public function setNoteObj(string $key, JsonSerializable $obj): self {
+		$this->notes[$key] = $obj;
+
+		return $this;
 	}
 
 
@@ -711,7 +766,7 @@ class Member extends ManagedModel implements
 		$this->setStatus($this->get('status', $data));
 		$this->setDisplayName($this->get('displayName', $data));
 		$this->setDisplayUpdate($this->getInt('displayUpdate', $data));
-		$this->setNote($this->get('note', $data));
+		$this->setNotes($this->getArray('notes', $data));
 		$this->setContactId($this->get('contactId', $data));
 		$this->setContactMeta($this->get('contactMeta', $data));
 		$this->setJoined($this->getInt('joined', $data));
@@ -769,7 +824,7 @@ class Member extends ManagedModel implements
 		$this->setLevel($this->getInt($prefix . 'level', $data));
 		$this->setStatus($this->get($prefix . 'status', $data));
 		$this->setDisplayName($this->get($prefix . 'cached_name', $data));
-		$this->setNote($this->get($prefix . 'note', $data));
+		$this->setNotes($this->getArray($prefix . 'note', $data));
 		$this->setContactId($this->get($prefix . 'contact_id', $data));
 		$this->setContactMeta($this->get($prefix . 'contact_meta', $data));
 
@@ -788,6 +843,18 @@ class Member extends ManagedModel implements
 		}
 
 		$this->getManager()->manageImportFromDatabase($this, $data, $prefix);
+
+		// in case invitedBy is not obtainable from 'invited_by', we reach data from 'note'
+		if (!$this->hasInvitedBy()) {
+			$invitedByArray = $this->getNoteArray('invitedBy');
+			if (!empty($invitedByArray)) {
+				try {
+					$invitedBy = new FederatedUser();
+					$this->setInvitedBy($invitedBy->import($invitedByArray));
+				} catch (InvalidItemException $e) {
+				}
+			}
+		}
 
 		return $this;
 	}
@@ -810,7 +877,7 @@ class Member extends ManagedModel implements
 			'status'        => $this->getStatus(),
 			'displayName'   => $this->getDisplayName(),
 			'displayUpdate' => $this->getDisplayUpdate(),
-			'note'          => $this->getNote(),
+			'notes'         => $this->getNotes(),
 			'contactId'     => $this->getContactId(),
 			'contactMeta'   => $this->getContactMeta(),
 			'joined'        => $this->getJoined()

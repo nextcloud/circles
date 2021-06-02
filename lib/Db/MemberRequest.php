@@ -70,7 +70,7 @@ class MemberRequest extends MemberRequestBuilder {
 		   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
 		   ->setValue('status', $qb->createNamedParameter($member->getStatus()))
 		   ->setValue('contact_id', $qb->createNamedParameter($member->getContactId()))
-		   ->setValue('note', $qb->createNamedParameter($member->getNote()));
+		   ->setValue('note', $qb->createNamedParameter(json_encode($member->getNotes())));
 
 		if ($member->hasInvitedBy()) {
 			$qb->setValue('invited_by', $qb->createNamedParameter($member->getInvitedBy()->getSingleId()));
@@ -95,7 +95,7 @@ class MemberRequest extends MemberRequestBuilder {
 		   ->set('level', $qb->createNamedParameter($member->getLevel()))
 		   ->set('status', $qb->createNamedParameter($member->getStatus()))
 		   ->set('contact_id', $qb->createNamedParameter($member->getContactId()))
-		   ->set('note', $qb->createNamedParameter($member->getNote()));
+		   ->set('note', $qb->createNamedParameter(json_encode($member->getNotes())));
 
 		$qb->limitToCircleId($member->getCircleId());
 		$qb->limitToUserId($member->getUserId());

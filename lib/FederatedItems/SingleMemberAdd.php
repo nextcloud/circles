@@ -366,6 +366,11 @@ class SingleMemberAdd implements
 		$member->importFromIFederatedUser($federatedUser);
 		$member->setCircleId($circle->getSingleId());
 		$member->setCircle($circle);
+
+		if ($member->hasInvitedBy()) {
+			$member->setNoteObj('invitedBy', $member->getInvitedBy());
+		}
+
 		$this->manageMemberStatus($circle, $member);
 
 		$this->circleService->confirmCircleNotFull($circle);

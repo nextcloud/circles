@@ -125,6 +125,8 @@ class CircleCreate implements
 		} catch (MemberNotFoundException $e) {
 		}
 
+		$owner->setNoteObj('invitedBy', $owner->getInvitedBy());
+
 		$this->circleRequest->save($circle);
 		$this->memberRequest->save($owner);
 		$this->membershipService->onUpdate($owner->getSingleId());
