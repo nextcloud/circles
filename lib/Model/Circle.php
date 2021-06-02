@@ -147,7 +147,8 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 		4     => 'Mail Address',
 		8     => 'Contact',
 		16    => 'Circle',
-		10001 => 'Circles App'
+		10001 => 'Circles App',
+		10002 => 'occ Command Line'
 	];
 
 
@@ -244,6 +245,13 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 		return $this->singleId;
 	}
 
+	/**
+	 * @return string
+	 * @deprecated - removed in NC23
+	 */
+	public function getUniqueId(): string {
+		return $this->getSingleId();
+	}
 
 	/**
 	 * @return string
@@ -439,7 +447,7 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	/**
 	 * @param bool $detailed
 	 *
-	 * @return array
+	 * @return Member[]
 	 */
 	public function getInheritedMembers(bool $detailed = false): array {
 		if (is_null($this->inheritedMembers)
@@ -687,7 +695,7 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 			'config'      => $this->getConfig(),
 			'description' => $this->getDescription(),
 			'settings'    => $this->getSettings(),
-			'url'        => $this->getUrl(),
+			'url'         => $this->getUrl(),
 			'creation'    => $this->getCreation(),
 			'initiator'   => ($this->hasInitiator()) ? $this->getInitiator() : null
 		];

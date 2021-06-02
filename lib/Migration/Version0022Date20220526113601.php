@@ -211,6 +211,12 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 						  ]
 			);
 			$table->addColumn(
+				'invited_by', 'string', [
+								'notnull' => true,
+								'length'  => 31,
+							]
+			);
+			$table->addColumn(
 				'level', 'smallint', [
 						   'notnull' => true,
 						   'length'  => 1,
@@ -374,6 +380,11 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 							'length'  => 3,
 							'notnull' => false
 						]
+			);
+			$table->addColumn(
+				'updated', 'datetime', [
+							 'notnull' => false,
+						 ]
 			);
 			$table->addColumn(
 				'creation', 'bigint', [

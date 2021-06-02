@@ -558,12 +558,12 @@ class ConfigService {
 	 *
 	 * @return string
 	 */
-	public function displayInstance(string $instance): string {
+	public function displayInstance(string $instance, bool $showAt = false): string {
 		if ($this->isLocalInstance($instance)) {
 			return '';
 		}
 
-		return $instance;
+		return (($showAt) ? '@' : '') . $instance;
 	}
 
 

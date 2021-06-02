@@ -200,6 +200,8 @@ class MemberService {
 		$member = new Member();
 		$member->importFromIFederatedUser($federatedUser);
 
+		$this->federatedUserService->setMemberPatron($member);
+
 		$event = new FederatedEvent(SingleMemberAdd::class);
 		$event->setCircle($circle);
 		$event->setMember($member);
@@ -231,10 +233,17 @@ class MemberService {
 		$this->federatedUserService->mustHaveCurrentUser();
 		$circle = $this->circleRequest->getCircle($circleId, $this->federatedUserService->getCurrentUser());
 
+		if ($this->federatedUserService->isInitiatedByOcc()) {
+			$patron = $this->federatedUserService->getAppInitiator('occ', Member::APP_OCC);
+		} else {
+			$patron = $this->federatedUserService->getCurrentUser();
+		}
+
 		$members = array_map(
-			function(FederatedUser $federatedUser) {
+			function(FederatedUser $federatedUser) use ($patron) {
 				$member = new Member();
 				$member->importFromIFederatedUser($federatedUser);
+				$member->setInvitedBy($patron);
 
 				return $member;
 			}, $federatedUsers

@@ -167,11 +167,23 @@ class SyncService {
 	 * @return void
 	 */
 	public function syncAll(): void {
+		$this->syncOcc();
 		$this->syncNextcloudUsers();
 		$this->syncGlobalScale();
 		$this->syncRemote();
 		$this->syncNextcloudGroups();
 		$this->syncContacts();
+	}
+
+
+	/**
+	 * @throws FederatedUserException
+	 * @throws InvalidIdException
+	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
+	 */
+	public function syncOcc(): void {
+		$this->federatedUserService->getAppInitiator('occ', Member::APP_OCC);
 	}
 
 

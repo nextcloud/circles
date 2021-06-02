@@ -41,6 +41,7 @@ use JsonSerializable;
 use OCA\Circles\AppInfo\Capabilities;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\ParseMemberLevelException;
+use OCA\Circles\Exceptions\UnknownInterfaceException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\IMemberships;
@@ -77,7 +78,9 @@ class Member extends ManagedModel implements
 	const TYPE_CONTACT = 8;
 	const TYPE_CIRCLE = 16;
 	const TYPE_APP = 10000;
+
 	const APP_CIRCLES = 10001;
+	const APP_OCC = 10002;
 
 
 	public static $TYPE = [
@@ -144,6 +147,9 @@ class Member extends ManagedModel implements
 
 	/** @var string */
 	private $instance = '';
+
+	/** @var FederatedUser */
+	private $invitedBy;
 
 	/** @var RemoteInstance */
 	private $remoteInstance;
@@ -314,6 +320,32 @@ class Member extends ManagedModel implements
 	 */
 	public function isLocal(): bool {
 		return $this->getManager()->isLocalInstance($this->getInstance());
+	}
+
+
+	/**
+	 * @param FederatedUser $invitedBy
+	 *
+	 * @return Member
+	 */
+	public function setInvitedBy(FederatedUser $invitedBy): Member {
+		$this->invitedBy = $invitedBy;
+
+		return $this;
+	}
+
+	/**
+	 * @return FederatedUser
+	 */
+	public function getInvitedBy(): FederatedUser {
+		return $this->invitedBy;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasInvitedBy(): bool {
+		return !is_null($this->invitedBy);
 	}
 
 
@@ -699,6 +731,13 @@ class Member extends ManagedModel implements
 		}
 
 		try {
+			/** @var FederatedUser $invitedBy */
+			$invitedBy = $this->deserialize($this->getArray('invitedBy', $data), FederatedUser::class);
+			$this->setInvitedBy($invitedBy);
+		} catch (InvalidItemException $e) {
+		}
+
+		try {
 			/** @var FederatedUSer $inheritedBy */
 			$inheritedBy = $this->deserialize($this->getArray('inheritedBy', $data), Membership::class);
 			$this->setInheritedBy($inheritedBy);
@@ -756,6 +795,7 @@ class Member extends ManagedModel implements
 
 	/**
 	 * @return string[]
+	 * @throws UnknownInterfaceException
 	 */
 	public function jsonSerialize(): array {
 		$arr = [
@@ -775,6 +815,10 @@ class Member extends ManagedModel implements
 			'contactMeta'   => $this->getContactMeta(),
 			'joined'        => $this->getJoined()
 		];
+
+		if ($this->hasInvitedBy()) {
+			$arr['invitedBy'] = $this->getInvitedBy();
+		}
 
 		if ($this->hasBasedOn()) {
 			$arr['basedOn'] = $this->getBasedOn();
