@@ -546,7 +546,7 @@ class SingleMemberAdd implements
 //
 //		if ($this->configService->isAccountOnly()) {
 //			throw new EmailAccountInvalidFormatException(
-//				$this->l10n->t('You cannot add a mail address as member of your Circle')
+//				$this->l10n->t('You cannot add a email address as member of your Circle')
 //			);
 //		}
 //
