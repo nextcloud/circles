@@ -490,11 +490,11 @@ class FileSharingBroadcaster implements IBroadcaster {
 			($initiatorUser instanceof IUser) ? $initiatorUser->getEMailAddress() : null;
 
 		$plainBodyPart = $this->l10n->t(
-			"%1\$s shared »%2\$s« with you.\nYou should have already received a separate mail with a link to access it.\n",
+			"%1\$s shared »%2\$s« with you.\nYou should have already received a separate email with a link to access it.\n",
 			[$initiatorDisplayName, $filename]
 		);
 		$htmlBodyPart = $this->l10n->t(
-			'%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it.',
+			'%1$s shared »%2$s« with you. You should have already received a separate email with a link to access it.',
 			[$initiatorDisplayName, $filename]
 		);
 
@@ -638,11 +638,11 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$this->logger->log(0, "Sending password mail about existing files to '" . $email . "'");
 
 		$plainBodyPart = $this->l10n->t(
-			"%1\$s shared multiple files with you.\nYou should have already received a separate mail with a link to access them.\n",
+			"%1\$s shared multiple files with you.\nYou should have already received a separate email with a link to access them.\n",
 			[$authorName]
 		);
 		$htmlBodyPart = $this->l10n->t(
-			'%1$s shared multiple files with you. You should have already received a separate mail with a link to access them.',
+			'%1$s shared multiple files with you. You should have already received a separate email with a link to access them.',
 			[$authorName]
 		);
 
