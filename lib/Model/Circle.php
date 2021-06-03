@@ -246,6 +246,15 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 
 
 	/**
+	 * @return string
+	 * @deprecated - removed in NC23
+	 */
+	public function getUniqueId(): string {
+		return $this->getSingleId();
+	}
+
+
+	/**
 	 * @param int $config
 	 *
 	 * @return self
