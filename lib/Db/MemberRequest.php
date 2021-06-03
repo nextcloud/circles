@@ -358,7 +358,7 @@ class MemberRequest extends MemberRequestBuilder {
 		$expr = $qb->expr();
 		$orX = $expr->orX(
 			$qb->exprFilter('user_id', $federatedUser->getUserId()),
-			$qb->exprFilter('user_type', $federatedUser->getUserType()),
+			$qb->exprFilterInt('user_type', $federatedUser->getUserType()),
 			$qb->exprFilter('instance', $qb->getInstance($federatedUser), '', false)
 		);
 
