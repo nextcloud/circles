@@ -447,7 +447,6 @@ class SingleMemberAdd implements
 		}
 
 		$patron = $member->getInvitedBy();
-		\OC::$server->getLogger()->log(3, '### ' . $event->getOrigin() . ' - ' . $patron->getInstance());
 		if ($patron->getInstance() !== $event->getOrigin()) {
 			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[130], 130);
 		}
