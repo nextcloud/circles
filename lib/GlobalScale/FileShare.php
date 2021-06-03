@@ -332,11 +332,11 @@ class FileShare extends AGlobalScaleEvent {
 			($initiatorUser instanceof IUser) ? $initiatorUser->getEMailAddress() : null;
 
 		$plainBodyPart = $this->l10n->t(
-			"%1\$s shared »%2\$s« with you.\nYou should have already received a separate mail with a link to access it.\n",
+			"%1\$s shared »%2\$s« with you.\nYou should have already received a separate email with a link to access it.\n",
 			[$initiatorDisplayName, $filename]
 		);
 		$htmlBodyPart = $this->l10n->t(
-			'%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it.',
+			'%1$s shared »%2$s« with you. You should have already received a separate email with a link to access it.',
 			[$initiatorDisplayName, $filename]
 		);
 
