@@ -281,6 +281,7 @@ class CircleRequest extends CircleRequestBuilder {
 
 	/**
 	 * @param Circle $circle
+	 * @param IFederatedUser|null $initiator
 	 *
 	 * @return Circle
 	 * @throws CircleNotFoundException
@@ -316,10 +317,12 @@ class CircleRequest extends CircleRequestBuilder {
 
 	/**
 	 * @return Circle[]
+	 * @throws RequestBuilderException
 	 */
 	public function getFederated(): array {
 		$qb = $this->getCircleSelectSql();
-		$qb->filterConfig(CoreQueryBuilder::CIRCLE, Circle::CFG_FEDERATED);
+		$qb->limitToConfigFlag(Circle::CFG_FEDERATED, CoreQueryBuilder::CIRCLE);
+
 		$qb->leftJoinOwner(CoreQueryBuilder::CIRCLE);
 
 		return $this->getItemsFromRequest($qb);

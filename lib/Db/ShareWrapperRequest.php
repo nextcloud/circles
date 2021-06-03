@@ -163,7 +163,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		bool $completeDetails = false
 	): array {
 		$qb = $this->getShareSelectSql();
-		$qb->limitToDBFieldEmpty('parent', true);
+		$qb->limitNull('parent', false);
 		$qb->setOptions([CoreQueryBuilder::SHARE], ['getData' => true]);
 
 		$qb->leftJoinCircle(CoreQueryBuilder::SHARE, null, 'share_with');
@@ -280,7 +280,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 			$qb->setOptions([CoreQueryBuilder::SHARE], ['getData' => $getData]);
 			$qb->leftJoinCircle(CoreQueryBuilder::SHARE, null, 'share_with');
 //			$qb->leftJoinFileCache(CoreRequestBuilder::SHARE);
-			$qb->limitToDBFieldEmpty('parent', true);
+			$qb->limitNull('parent', false);
 
 			$aliasMembership = $qb->generateAlias(CoreQueryBuilder::SHARE, CoreQueryBuilder::MEMBERSHIPS);
 			$qb->leftJoinInheritedMembers(CoreQueryBuilder::SHARE, 'share_with');
@@ -323,7 +323,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		$qb->limitToInitiator(CoreQueryBuilder::SHARE, $federatedUser, 'share_with');
 
 		$qb->leftJoinFileCache(CoreQueryBuilder::SHARE);
-		$qb->limitToDBFieldEmpty('parent', true);
+		$qb->limitNull('parent', false);
 		$qb->leftJoinShareChild(CoreQueryBuilder::SHARE);
 
 		if ($nodeId > 0) {
@@ -362,7 +362,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		$qb->leftJoinCircle(CoreQueryBuilder::SHARE, null, 'share_with');
 
 		$qb->limitToShareOwner(CoreQueryBuilder::SHARE, $federatedUser, $reshares);
-		$qb->limitToDBFieldEmpty('parent', true);
+		$qb->limitNull('parent', false);
 
 		if ($nodeId > 0) {
 			$qb->limitToFileSource($nodeId);
@@ -406,9 +406,9 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		$qb->leftJoinFileCache(CoreQueryBuilder::SHARE);
 		if ($nodeId > 0) {
 			$aliasFileCache = $qb->generateAlias(CoreQueryBuilder::SHARE, CoreQueryBuilder::FILE_CACHE);
-			$qb->limitToDBFieldInt('parent', $nodeId, $aliasFileCache);
+			$qb->limitInt('parent', $nodeId, $aliasFileCache);
 		}
-		$qb->limitToDBFieldEmpty('parent', true);
+		$qb->limitNull('parent', false);
 
 		return $this->getItemsFromRequest($qb);
 	}
@@ -430,7 +430,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		$qb->setOptions([CoreQueryBuilder::SHARE], ['getData' => true]);
 		$qb->leftJoinCircle(CoreQueryBuilder::SHARE, null, 'share_with');
 
-		$qb->limitToDBFieldEmpty('parent', true);
+		$qb->limitNull('parent', false);
 		$qb->limitToShareWith($singleId);
 		$qb->limitToFileSource($fileId);
 

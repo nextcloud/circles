@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "daita/my-small-php-tools",
-            "version": "v22.0.8",
+            "version": "v22.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/daita/my-small-php-tools.git",
-                "reference": "2850fab274b56405ad2bdb24d4185d4986dafc1c"
+                "reference": "646524e0c9917cd6d97a5be14bd260ea218f3e19"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/daita/my-small-php-tools/zipball/2850fab274b56405ad2bdb24d4185d4986dafc1c",
-                "reference": "2850fab274b56405ad2bdb24d4185d4986dafc1c",
+                "url": "https://api.github.com/repos/daita/my-small-php-tools/zipball/646524e0c9917cd6d97a5be14bd260ea218f3e19",
+                "reference": "646524e0c9917cd6d97a5be14bd260ea218f3e19",
                 "shasum": ""
             },
             "require": {
@@ -42,9 +42,9 @@
             "description": "My small PHP Tools",
             "support": {
                 "issues": "https://github.com/daita/my-small-php-tools/issues",
-                "source": "https://github.com/daita/my-small-php-tools/tree/v22.0.8"
+                "source": "https://github.com/daita/my-small-php-tools/tree/v22.0.9"
             },
-            "time": "2021-05-29T20:16:06+00:00"
+            "time": "2021-06-03T12:40:17+00:00"
         }
     ],
     "packages-dev": [],

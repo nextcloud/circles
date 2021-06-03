@@ -45,6 +45,7 @@ use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
 use OCP\DB\QueryBuilder\ICompositeExpression;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 
 
 /**
@@ -264,9 +265,10 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 
 	/**
 	 * @param int $config
+	 * @param string $alias
 	 */
-	public function limitToConfigFlag(int $config): void {
-		$this->andWhere($this->expr()->bitwiseAnd($this->getDefaultSelectAlias() . '.config', $config));
+	public function limitToConfigFlag(int $config, string $alias = ''): void {
+		$this->limitBitwise('config', $config, $alias);
 	}
 
 
@@ -564,7 +566,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 
 		$andTrusted = $expr->andX();
 		$andTrusted->add($orExtOrTrusted);
-		$andTrusted->add($expr->bitwiseAnd($aliasCircle . '.config', Circle::CFG_FEDERATED));
+		$andTrusted->add($this->exprLimitBitwise('config', Circle::CFG_FEDERATED, $aliasCircle));
 		$andTrusted->add($expr->emptyString($aliasOwner . '.instance'));
 		$orX->add($andTrusted);
 
@@ -634,7 +636,12 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		);
 
 		if ($member->getLevel() > 0) {
-			$andX->add($expr->gte($aliasMember . '.level', $this->createNamedParameter($member->getLevel())));
+			$andX->add(
+				$expr->gte(
+					$aliasMember . '.level',
+					$this->createNamedParameter($member->getLevel(), IQueryBuilder::PARAM_INT)
+				)
+			);
 		}
 
 		$this->andWhere($andX);
@@ -1048,13 +1055,13 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		if ($getPersonalCircle) {
 			$orX->add(
 				$expr->andX(
-					$expr->bitwiseAnd($alias . '.config', Circle::CFG_PERSONAL),
+					$this->exprLimitBitwise('config', Circle::CFG_PERSONAL, $alias),
 					$expr->eq($aliasMembership . '.level', $this->createNamedParameter(Member::LEVEL_OWNER))
 				)
 			);
 		}
 		if (!$this->getBool('mustBeMember', $options, true)) {
-			$orX->add($expr->bitwiseAnd($alias . '.config', Circle::CFG_VISIBLE));
+			$orX->add($this->exprLimitBitwise('config', Circle::CFG_VISIBLE, $alias));
 		}
 		if ($this->getBool('canBeVisitor', $options, false)) {
 			// TODO: should find a better way, also filter on remote initiator on non-federated ?
@@ -1062,10 +1069,8 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		}
 		if ($this->getBool('canBeVisitorOnOpen', $options, false)) {
 			$andOpen = $expr->andX();
-			$andOpen->add($expr->bitwiseAnd($alias . '.config', Circle::CFG_OPEN));
-			$andOpen->add(
-				$this->createFunction('NOT') . $expr->bitwiseAnd($alias . '.config', Circle::CFG_REQUEST)
-			);
+			$andOpen->add($this->exprLimitBitwise('config', Circle::CFG_OPEN, $alias));
+			$andOpen->add($this->exprFilterBitwise('config', Circle::CFG_REQUEST, $alias));
 			$orX->add($andOpen);
 		}
 
@@ -1109,7 +1114,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		$hide = $expr->andX();
 		foreach (Circle::$DEF_CFG as $cfg => $v) {
 			if ($flag & $cfg) {
-				$hide->add($this->createFunction('NOT') . $expr->bitwiseAnd($aliasCircle . '.config', $cfg));
+				$hide->add($this->exprFilterBitwise('config', $cfg, $aliasCircle));
 			}
 		}
 
@@ -1151,15 +1156,6 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		return $andPassive;
 	}
 
-
-	/**
-	 *
-	 * @param string $aliasCircle
-	 * @param int $flag
-	 */
-	public function filterConfig(string $aliasCircle, int $flag): void {
-		$this->andWhere($this->expr()->bitwiseAnd($aliasCircle . '.config', $flag));
-	}
 
 
 	/**
