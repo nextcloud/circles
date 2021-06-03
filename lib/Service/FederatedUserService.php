@@ -36,6 +36,7 @@ use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use Exception;
+use OC;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
@@ -133,6 +134,9 @@ class FederatedUserService {
 	/** @var bool */
 	private $bypass = false;
 
+	/** @var bool */
+	private $initiatedByOcc = false;
+
 
 	/**
 	 * FederatedUserService constructor.
@@ -146,6 +150,7 @@ class FederatedUserService {
 	 * @param MemberRequest $memberRequest
 	 * @param RemoteService $remoteService
 	 * @param ContactService $contactService
+	 * @param InterfaceService $interfaceService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
@@ -165,6 +170,10 @@ class FederatedUserService {
 		$this->contactService = $contactService;
 		$this->interfaceService = $interfaceService;
 		$this->configService = $configService;
+
+		if (OC::$CLI) {
+			$this->setInitiatedByOcc(true);
+		}
 	}
 
 
@@ -282,6 +291,40 @@ class FederatedUserService {
 
 
 	/**
+	 * @param bool $initiatedByOcc
+	 */
+	public function setInitiatedByOcc(bool $initiatedByOcc): void {
+		$this->initiatedByOcc = $initiatedByOcc;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isInitiatedByOcc(): bool {
+		return $this->initiatedByOcc;
+	}
+
+	/**
+	 * @param Member $member
+	 *
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
+	 * @throws FederatedUserException
+	 * @throws InvalidIdException
+	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
+	 */
+	public function setMemberPatron(Member $member): void {
+		if ($this->isInitiatedByOcc()) {
+			$member->setInvitedBy($this->getAppInitiator('occ', Member::APP_OCC));
+		} else {
+			$member->setInvitedBy($this->getCurrentUser());
+		}
+	}
+
+
+	/**
 	 * @return FederatedUser|null
 	 */
 	public function getCurrentApp(): ?FederatedUser {
@@ -356,10 +399,13 @@ class FederatedUserService {
 	 * @param int $appNumber
 	 *
 	 * @return FederatedUser
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
 	 * @throws FederatedUserException
 	 * @throws InvalidIdException
-	 * @throws SingleCircleNotFoundException
 	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
 	 */
 	public function getAppInitiator(string $appId, int $appNumber): FederatedUser {
 		$circle = new Circle();
@@ -380,6 +426,7 @@ class FederatedUserService {
 	 * TODO: manage non-user type ?
 	 *
 	 * @param string $userId
+	 * @param int $userType
 	 * @param string $circleId
 	 * @param bool $bypass
 	 *
@@ -393,10 +440,10 @@ class FederatedUserService {
 	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
 	 * @throws SingleCircleNotFoundException
 	 * @throws UnknownRemoteException
 	 * @throws UserTypeNotFoundException
-	 * @throws RequestBuilderException
 	 */
 	public function commandLineInitiator(
 		string $userId,
@@ -701,10 +748,13 @@ class FederatedUserService {
 	/**
 	 * @param FederatedUser $federatedUser
 	 *
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
 	 * @throws FederatedUserException
 	 * @throws InvalidIdException
-	 * @throws SingleCircleNotFoundException
 	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
 	 */
 	private function fillSingleCircleId(FederatedUser $federatedUser): void {
 		if ($federatedUser->getSingleId() !== '') {
@@ -772,6 +822,10 @@ class FederatedUserService {
 				  ->setDisplayName($owner->getUserId())
 				  ->setStatus('Member');
 
+			if ($federatedUser->getUserType() !== Member::TYPE_APP) {
+				$owner->setInvitedBy($this->getAppInitiator(Application::APP_ID, Member::APP_CIRCLES));
+			}
+
 			$this->memberRequest->save($owner);
 			// TODO: should not be needed
 			// $this->membershipService->onUpdate($id);
@@ -822,6 +876,7 @@ class FederatedUserService {
 	 * @param FederatedUser $federatedUser
 	 *
 	 * @throws FederatedUserException
+	 * @throws RequestBuilderException
 	 */
 	public function confirmLocalSingleId(IFederatedUser $federatedUser): void {
 		$members = $this->memberRequest->getMembersBySingleId($federatedUser->getSingleId());

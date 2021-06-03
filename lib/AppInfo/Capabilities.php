@@ -180,7 +180,8 @@ class Capabilities implements ICapability {
 						Member::TYPE_APP     => $this->l10n->t('Nextcloud App')
 					],
 					'extra' => [
-						Member::APP_CIRCLES => 'Circles App'
+						Member::APP_CIRCLES => 'Circles App',
+						Member::APP_OCC => 'occ Command Line'
 					]
 				]
 		];

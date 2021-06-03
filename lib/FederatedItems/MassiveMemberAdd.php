@@ -77,7 +77,7 @@ class MassiveMemberAdd extends SingleMemberAdd implements
 
 		foreach ($members as $member) {
 			try {
-				$filtered[] = $this->generateMember($circle, $member);
+				$filtered[] = $this->generateMember($event, $circle, $member);
 			} catch (Exception $e) {
 			}
 		}

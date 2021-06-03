@@ -230,8 +230,8 @@ class MembersList extends Base {
 		$table = new Table($output);
 		$table->setHeaders(
 			[
-				'Circle Id', 'Circle Name', 'Member Id', 'Single Id', 'Type', 'Source', 'Username',
-				'Instance', 'Level'
+				'Circle Id', 'Circle Name', 'Member Id', 'Single Id', 'Type', 'Source', 'Invited By',
+				'Username', 'Instance', 'Level'
 			]
 		);
 		$table->render();
@@ -251,6 +251,10 @@ class MembersList extends Base {
 					$member->getSingleId(),
 					Member::$TYPE[$member->getUserType()],
 					$member->hasBasedOn() ? Circle::$DEF_SOURCE[$member->getBasedOn()->getSource()] : '',
+					($member->hasInvitedBy()) ? $member->getInvitedBy()->getUserId()
+												. $this->configService->displayInstance(
+							$member->getInvitedBy()->getInstance(), true
+						) : 'Unknown',
 					($this->input->getOption('display-name')) ?
 						$member->getBasedOn()->getDisplayName() : $member->getUserId(),
 					$this->configService->displayInstance($member->getInstance()),

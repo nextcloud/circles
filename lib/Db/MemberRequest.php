@@ -70,7 +70,11 @@ class MemberRequest extends MemberRequestBuilder {
 		   ->setValue('level', $qb->createNamedParameter($member->getLevel()))
 		   ->setValue('status', $qb->createNamedParameter($member->getStatus()))
 		   ->setValue('contact_id', $qb->createNamedParameter($member->getContactId()))
-		   ->setValue('note', $qb->createNamedParameter($member->getNote()));
+		   ->setValue('note', $qb->createNamedParameter(json_encode($member->getNotes())));
+
+		if ($member->hasInvitedBy()) {
+			$qb->setValue('invited_by', $qb->createNamedParameter($member->getInvitedBy()->getSingleId()));
+		}
 
 		$qb->execute();
 	}
@@ -91,7 +95,7 @@ class MemberRequest extends MemberRequestBuilder {
 		   ->set('level', $qb->createNamedParameter($member->getLevel()))
 		   ->set('status', $qb->createNamedParameter($member->getStatus()))
 		   ->set('contact_id', $qb->createNamedParameter($member->getContactId()))
-		   ->set('note', $qb->createNamedParameter($member->getNote()));
+		   ->set('note', $qb->createNamedParameter(json_encode($member->getNotes())));
 
 		$qb->limitToCircleId($member->getCircleId());
 		$qb->limitToUserId($member->getUserId());
@@ -212,6 +216,7 @@ class MemberRequest extends MemberRequestBuilder {
 
 		$qb->setOptions([CoreQueryBuilder::MEMBER], ['canBeVisitorOnOpen' => true]);
 		$qb->leftJoinCircle(CoreQueryBuilder::MEMBER, $initiator);
+		$qb->leftJoinInvitedBy(CoreQueryBuilder::MEMBER);
 
 		if (!is_null($remoteInstance)) {
 			$aliasCircle = $qb->generateAlias(CoreQueryBuilder::MEMBER, CoreQueryBuilder::CIRCLE);
@@ -351,7 +356,7 @@ class MemberRequest extends MemberRequestBuilder {
 	 * @return FederatedUser[]|Member
 	 * @throws RequestBuilderException
 	 */
-	public function getAlternateSingleId(IFederatedUser $federatedUser) {
+	public function getAlternateSingleId(IFederatedUser $federatedUser): array {
 		$qb = $this->getMemberSelectSql();
 		$qb->limitToSingleId($federatedUser->getSingleId());
 

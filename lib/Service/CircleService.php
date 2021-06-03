@@ -173,6 +173,9 @@ class CircleService {
 			   ->setCircleId($circle->getSingleId())
 			   ->setLevel(Member::LEVEL_OWNER)
 			   ->setStatus(Member::STATUS_MEMBER);
+		
+		$this->federatedUserService->setMemberPatron($member);
+
 		$circle->setOwner($member)
 			   ->setInitiator($member);
 

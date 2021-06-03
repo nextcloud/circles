@@ -71,6 +71,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	const UPSTREAM_MEMBERSHIPS = 'upstreammemberships';
 	const INHERITANCE_FROM = 'inheritancefrom';
 	const INHERITED_BY = 'inheritedby';
+	const INVITED_BY = 'invitedby';
 	const MOUNT = 'mount';
 	const MOUNTPOINT = 'mountpoint';
 	const SHARE = 'share';
@@ -109,7 +110,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		self::MEMBER => [
 			self::MEMBERSHIPS,
 			self::INHERITANCE_FROM,
-			self::CIRCLE   => [
+			self::CIRCLE     => [
 				self::OPTIONS   => [
 					'getData' => true
 				],
@@ -123,10 +124,14 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 					self::BASED_ON,
 					self::INHERITED_BY => [
 						self::MEMBERSHIPS
+					],
+					self::INVITED_BY => [
+						self::OWNER,
+						self::BASED_ON
 					]
 				]
 			],
-			self::BASED_ON => [
+			self::BASED_ON   => [
 				self::OWNER,
 				self::MEMBERSHIPS,
 				self::INITIATOR => [
@@ -136,11 +141,15 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 					]
 				]
 			],
-			self::REMOTE   => [
+			self::REMOTE     => [
 				self::MEMBER,
 				self::CIRCLE => [
 					self::OWNER
 				]
+			],
+			self::INVITED_BY => [
+				self::OWNER,
+				self::BASED_ON
 			]
 		],
 		self::SHARE  => [
@@ -692,6 +701,33 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 
 	/**
 	 * @param string $aliasMember
+	 *
+	 * @throws RequestBuilderException
+	 */
+	public function leftJoinInvitedBy(string $aliasMember): void {
+		if ($this->getType() !== QueryBuilder::SELECT) {
+			return;
+		}
+
+		try {
+			$aliasInvitedBy = $this->generateAlias($aliasMember, self::INVITED_BY);
+		} catch (RequestBuilderException $e) {
+			return;
+		}
+
+		$expr = $this->expr();
+		$this->generateCircleSelectAlias($aliasInvitedBy)
+			 ->leftJoin(
+				 $aliasMember, CoreRequestBuilder::TABLE_CIRCLE, $aliasInvitedBy,
+				 $expr->eq($aliasMember . '.invited_by', $aliasInvitedBy . '.unique_id')
+			 );
+
+		$this->leftJoinOwner($aliasInvitedBy);
+	}
+
+
+	/**
+	 * @param string $aliasMember
 	 * @param IFederatedUser|null $initiator
 	 *
 	 * @throws RequestBuilderException
@@ -811,7 +847,10 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	 *
 	 * @throws RequestBuilderException
 	 */
-	public function leftJoinInheritedMembers(string $alias, string $field = '', string $aliasInheritedBy = ''
+	public function leftJoinInheritedMembers(
+		string $alias,
+		string $field = '',
+		string $aliasInheritedBy = ''
 	): void {
 		$expr = $this->expr();
 

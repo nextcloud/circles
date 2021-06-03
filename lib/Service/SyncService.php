@@ -38,6 +38,9 @@ use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\ContactAddressBookNotFoundException;
+use OCA\Circles\Exceptions\ContactFormatException;
+use OCA\Circles\Exceptions\ContactNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
@@ -167,11 +170,26 @@ class SyncService {
 	 * @return void
 	 */
 	public function syncAll(): void {
+		$this->syncOcc();
 		$this->syncNextcloudUsers();
 		$this->syncGlobalScale();
 		$this->syncRemote();
 		$this->syncNextcloudGroups();
 		$this->syncContacts();
+	}
+
+
+	/**
+	 * @throws FederatedUserException
+	 * @throws InvalidIdException
+	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
+	 */
+	public function syncOcc(): void {
+		$this->federatedUserService->getAppInitiator('occ', Member::APP_OCC);
 	}
 
 
@@ -326,6 +344,7 @@ class SyncService {
 		$member->setCircleId($circle->getSingleId());
 		$member->setLevel(Member::LEVEL_MEMBER);
 		$member->setStatus(Member::STATUS_MEMBER);
+		$member->setInvitedBy($this->federatedUserService->getCurrentApp());
 
 		return $member;
 	}

@@ -40,6 +40,7 @@ use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\FileCacheNotFoundException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\MembershipNotFoundException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownInterfaceException;
@@ -272,6 +273,17 @@ class ModelManager {
 					$inheritedBy->importFromDatabase($data, $prefix);
 					$member->setInheritedBy($inheritedBy);
 				} catch (FederatedUserNotFoundException $e) {
+				}
+				break;
+
+			case CoreQueryBuilder::INVITED_BY;
+				try {
+					$invitedByCircle = new Circle();
+					$invitedByCircle->importFromDatabase($data, $prefix);
+					$invitedBy = new FederatedUser();
+					$invitedBy->importFromCircle($invitedByCircle);
+					$member->setInvitedBy($invitedBy);
+				} catch (CircleNotFoundException | OwnerNotFoundException $e) {
 				}
 				break;
 
