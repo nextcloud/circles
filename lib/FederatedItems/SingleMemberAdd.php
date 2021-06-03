@@ -177,7 +177,7 @@ class SingleMemberAdd implements
 		$initiatorHelper = new MemberHelper($initiator);
 		$initiatorHelper->mustBeModerator();
 
-		$member = $this->generateMember($circle, $member);
+		$member = $this->generateMember($event, $circle, $member);
 
 		$event->setMembers([$member]);
 		$event->setOutcome($member->jsonSerialize());
@@ -328,7 +328,7 @@ class SingleMemberAdd implements
 	 * @throws UserTypeNotFoundException
 	 * @throws RequestBuilderException
 	 */
-	protected function generateMember(Circle $circle, Member $member): Member {
+	protected function generateMember(FederatedEvent $event, Circle $circle, Member $member): Member {
 		try {
 			if ($member->getSingleId() !== '') {
 				$userId = $member->getSingleId() . '@' . $member->getInstance();
@@ -367,9 +367,8 @@ class SingleMemberAdd implements
 		$member->setCircleId($circle->getSingleId());
 		$member->setCircle($circle);
 
-		if ($member->hasInvitedBy()) {
-			$member->setNoteObj('invitedBy', $member->getInvitedBy());
-		}
+		$this->confirmPatron($event, $member);
+		$member->setNoteObj('invitedBy', $member->getInvitedBy());
 
 		$this->manageMemberStatus($circle, $member);
 
@@ -392,6 +391,7 @@ class SingleMemberAdd implements
 	 * @param Member $member
 	 *
 	 * @throws FederatedItemBadRequestException
+	 * @throws RequestBuilderException
 	 */
 	private function manageMemberStatus(Circle $circle, Member $member) {
 		try {
@@ -430,6 +430,29 @@ class SingleMemberAdd implements
 				$member->setStatus(Member::STATUS_MEMBER);
 			}
 		}
+	}
+
+
+	/**
+	 * @param FederatedEvent $event
+	 * @param Member $member
+	 *
+	 * @throws FederatedItemBadRequestException
+	 * @throws FederatedUserException
+	 * @throws RequestBuilderException
+	 */
+	private function confirmPatron(FederatedEvent $event, Member $member): void {
+		if (!$member->hasInvitedBy()) {
+			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[129], 129);
+		}
+
+		$patron = $member->getInvitedBy();
+		\OC::$server->getLogger()->log(3, '### ' . $event->getOrigin() . ' - ' . $patron->getInstance());
+		if ($patron->getInstance() !== $event->getOrigin()) {
+			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[130], 130);
+		}
+
+		$this->federatedUserService->confirmLocalSingleId($patron);
 	}
 
 

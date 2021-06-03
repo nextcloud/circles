@@ -876,6 +876,7 @@ class FederatedUserService {
 	 * @param FederatedUser $federatedUser
 	 *
 	 * @throws FederatedUserException
+	 * @throws RequestBuilderException
 	 */
 	public function confirmLocalSingleId(IFederatedUser $federatedUser): void {
 		$members = $this->memberRequest->getMembersBySingleId($federatedUser->getSingleId());

@@ -67,7 +67,9 @@ class StatusCode {
 		125 => 'The designed circle cannot be added',
 		126 => 'Circle only accepts local users',
 		127 => 'Remote Users are not accepted in a non-federated Circle',
-		128 => 'Cannot add Circle as its own Member'
+		128 => 'Cannot add Circle as its own Member',
+		129 => 'Member does not contains a patron',
+		130 => 'Member is invited by an entity that does not belongs to the instance at the origin of the request'
 	];
 
 	static $MEMBER_LEVEL = [

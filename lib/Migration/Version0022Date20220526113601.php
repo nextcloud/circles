@@ -212,7 +212,7 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 			);
 			$table->addColumn(
 				'invited_by', 'string', [
-								'notnull' => true,
+								'notnull' => false,
 								'length'  => 31,
 							]
 			);

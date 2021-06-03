@@ -82,7 +82,7 @@ class Version0022Date20220601121545 extends SimpleMigrationStep {
 			if (!$table->hasColumn('invited_by')) {
 				$table->addColumn(
 					'invited_by', 'string', [
-									'notnull' => true,
+									'notnull' => false,
 									'length'  => 31,
 								]
 				);
