@@ -15,7 +15,6 @@ Those groups of users (or "circles") can then be used by any other app for shari
 		<filesystem/>
 		<dav/>
 	</types>
-
 	<documentation>
 		<admin>https://github.com/nextcloud/circles/wiki</admin>
 	</documentation>
@@ -30,7 +29,7 @@ Those groups of users (or "circles") can then be used by any other app for shari
 	<dependencies>
 		<nextcloud min-version="22" max-version="22"/>
 	</dependencies>
-
+	<default_enable />
 	<background-jobs>
 		<job>OCA\Circles\Cron\Maintenance</job>
 <!--		<job>OCA\Circles\Cron\ContactsExistingShares</job>-->
