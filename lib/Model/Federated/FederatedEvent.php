@@ -66,6 +66,9 @@ class FederatedEvent implements JsonSerializable {
 	/** @var string */
 	private $origin = '';
 
+	/** @var array */
+	private $originPerInterfaces = [];
+
 	/** @var Circle */
 	private $circle;
 
@@ -161,10 +164,33 @@ class FederatedEvent implements JsonSerializable {
 	public function setOrigin(string $origin): self {
 		$this->origin = $origin;
 
-		// Needed ?
-//		if ($this->hasMember() && $this->member->getInstance() === '') {
-//			$this->member->setInstance($source);
-//		}
+		return $this;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getOriginPerInterfaces(): array {
+		return $this->originPerInterfaces;
+	}
+
+	/**
+	 * @param array $originPerInterfaces
+	 *
+	 * @return FederatedEvent
+	 */
+	public function setOriginPerInterfaces(array $originPerInterfaces): self {
+		$this->originPerInterfaces = $originPerInterfaces;
+
+		return $this;
+	}
+
+	/**
+	 * @return $this
+	 */
+	public function obfuscateOriginPerInterfaces(): self {
+		$this->originPerInterfaces = [];
 
 		return $this;
 	}

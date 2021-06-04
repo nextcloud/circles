@@ -115,7 +115,7 @@ class Capabilities implements ICapability {
 		];
 
 		if ($complete) {
-			$status['interfaces'] = $this->interfaceService->getInterfaces();
+			$status['interfaces'] = $this->interfaceService->getInterfaces(true);
 		}
 
 		return $status;

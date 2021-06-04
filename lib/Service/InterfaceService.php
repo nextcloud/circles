@@ -170,30 +170,54 @@ class InterfaceService {
 
 
 	/**
+	 * @param string $instance
+	 *
+	 * @return int
+	 * @throws RemoteNotFoundException
+	 */
+	public function getInterfaceFromInstance(string $instance): int {
+		$remoteInstance = $this->remoteRequest->getFromInstance($instance);
+
+		return $remoteInstance->getInterface();
+	}
+
+	/**
 	 *
 	 */
 	public function setCurrentInterfaceFromInstance(string $instance): void {
 		try {
-			$remoteInstance = $this->remoteRequest->getFromInstance($instance);
-			$this->setCurrentInterface($remoteInstance->getInterface());
+			$this->setCurrentInterface($this->getInterfaceFromInstance($instance));
 		} catch (RemoteNotFoundException $e) {
 		}
 	}
 
 
 	/**
+	 * @param bool $useString
+	 *
 	 * @return array
 	 */
-	public function getInterfaces(): array {
-		return [
-			'internal' => $this->configService->getInternalInstance(),
-			'frontal'  => $this->configService->getFrontalInstance(),
-			'iface0'   => $this->configService->getIfaceInstance(InterfaceService::IFACE0),
-			'iface1'   => $this->configService->getIfaceInstance(InterfaceService::IFACE1),
-			'iface2'   => $this->configService->getIfaceInstance(InterfaceService::IFACE2),
-			'iface3'   => $this->configService->getIfaceInstance(InterfaceService::IFACE3),
-			'iface4'   => $this->configService->getIfaceInstance(InterfaceService::IFACE4)
+	public function getInterfaces(bool $useString = false): array {
+		$interfaces = [
+			self::IFACE_INTERNAL => $this->configService->getInternalInstance(),
+			self::IFACE_FRONTAL  => $this->configService->getFrontalInstance(),
+			self::IFACE0         => $this->configService->getIfaceInstance(InterfaceService::IFACE0),
+			self::IFACE1         => $this->configService->getIfaceInstance(InterfaceService::IFACE1),
+			self::IFACE2         => $this->configService->getIfaceInstance(InterfaceService::IFACE2),
+			self::IFACE3         => $this->configService->getIfaceInstance(InterfaceService::IFACE3),
+			self::IFACE4         => $this->configService->getIfaceInstance(InterfaceService::IFACE4)
 		];
+
+		if (!$useString) {
+			return $interfaces;
+		}
+
+		$detailed = [];
+		foreach ($interfaces as $id => $iface) {
+			$detailed[self::$LIST_IFACE[$id]] = $iface;
+		}
+
+		return $detailed;
 	}
 
 
