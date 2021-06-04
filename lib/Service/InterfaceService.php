@@ -182,6 +182,22 @@ class InterfaceService {
 
 
 	/**
+	 * @return array
+	 */
+	public function getInterfaces(): array {
+		return [
+			'internal' => $this->configService->getInternalInstance(),
+			'frontal'  => $this->configService->getFrontalInstance(),
+			'iface0'   => $this->configService->getIfaceInstance(InterfaceService::IFACE0),
+			'iface1'   => $this->configService->getIfaceInstance(InterfaceService::IFACE1),
+			'iface2'   => $this->configService->getIfaceInstance(InterfaceService::IFACE2),
+			'iface3'   => $this->configService->getIfaceInstance(InterfaceService::IFACE3),
+			'iface4'   => $this->configService->getIfaceInstance(InterfaceService::IFACE4)
+		];
+	}
+
+
+	/**
 	 * use this only if interface must be defined. If not, use getLocalInstance()
 	 *
 	 * @throws UnknownInterfaceException

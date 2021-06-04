@@ -58,6 +58,9 @@ class Capabilities implements ICapability {
 	/** @var IAppManager */
 	private $appManager;
 
+/** @var InterfaceService  */
+	private $interfaceService;
+
 	/** @var ConfigService */
 	private $configService;
 
@@ -67,11 +70,18 @@ class Capabilities implements ICapability {
 	 *
 	 * @param IL10N $l10n
 	 * @param IAppManager $appManager
+	 * @param InterfaceService $interfaceService
 	 * @param ConfigService $configService
 	 */
-	public function __construct(IL10N $l10n, IAppManager $appManager, ConfigService $configService) {
+	public function __construct(
+		IL10N $l10n,
+		IAppManager $appManager,
+		InterfaceService $interfaceService,
+		ConfigService $configService
+	) {
 		$this->l10n = $l10n;
 		$this->appManager = $appManager;
+		$this->interfaceService = $interfaceService;
 		$this->configService = $configService;
 	}
 
@@ -105,18 +115,7 @@ class Capabilities implements ICapability {
 		];
 
 		if ($complete) {
-			$status = array_merge(
-				$status,
-				[
-					'internal' => $this->configService->getInternalInstance(),
-					'frontal'  => $this->configService->getFrontalInstance(),
-					'iface0'   => $this->configService->getIfaceInstance(InterfaceService::IFACE0),
-					'iface1'   => $this->configService->getIfaceInstance(InterfaceService::IFACE1),
-					'iface2'   => $this->configService->getIfaceInstance(InterfaceService::IFACE2),
-					'iface3'   => $this->configService->getIfaceInstance(InterfaceService::IFACE3),
-					'iface4'   => $this->configService->getIfaceInstance(InterfaceService::IFACE4)
-				]
-			);
+			$status['interfaces'] = $this->interfaceService->getInterfaces();
 		}
 
 		return $status;
@@ -181,7 +180,7 @@ class Capabilities implements ICapability {
 					],
 					'extra' => [
 						Member::APP_CIRCLES => 'Circles App',
-						Member::APP_OCC => 'occ Command Line'
+						Member::APP_OCC     => 'occ Command Line'
 					]
 				]
 		];
