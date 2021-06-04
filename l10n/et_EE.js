@@ -2,7 +2,6 @@ OC.L10N.register(
     "circles",
     {
     "Personal" : "Isiklik",
-    "Mail Address" : "Meiliaadress",
     "Contact" : "Kontakt",
     "Circle" : "Ring",
     "Member" : "Liige",
@@ -45,6 +44,7 @@ OC.L10N.register(
     "Please confirm" : "Palun kinnita",
     "Are you sure you want to leave this circle?" : "Kas oled kindel, et tahad sellest ringist lahkuda?",
     "Are you sure you want to delete this circle?" : "Kas oled kindel, et tahad selle ringi kustutada?",
+    "Mail Address" : "Meiliaadress",
     "Kick this member" : "Heida see liige välja",
     "no error message" : "veateade puudub",
     "Settings saved." : "Seaded salvestatud.",
