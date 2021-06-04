@@ -2,7 +2,6 @@ OC.L10N.register(
     "circles",
     {
     "Personal" : "شخصي",
-    "Mail Address" : "عنوان البريد الإلكتروني",
     "Circle" : "حلقة",
     "Member" : "عضو",
     "Moderator" : "مراقب",
@@ -39,6 +38,7 @@ OC.L10N.register(
     "Please confirm" : "الرجاء التأكيد",
     "Are you sure you want to leave this circle?" : "هل أنت متأكد من ترك هذه الحلقة؟",
     "Are you sure you want to delete this circle?" : "هل أنت متأكد من حذف هذه الحلقة؟",
+    "Mail Address" : "عنوان البريد الإلكتروني",
     "Kick this member" : "طرد هذا العضو",
     "Accept the request" : "قبول هذا العضو",
     "Dismiss the request" : "رفض الطلب",

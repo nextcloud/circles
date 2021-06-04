@@ -2,7 +2,6 @@ OC.L10N.register(
     "circles",
     {
     "Personal" : "Personīgs",
-    "Mail Address" : "E-pasta adrese",
     "Contact" : "Kontakts",
     "Circle" : "Loks",
     "Admin" : "Admin",
@@ -24,6 +23,7 @@ OC.L10N.register(
     "Secret" : "Noslēpums",
     "Public" : "Publiska",
     "Unknown" : "Nezināms",
+    "Mail Address" : "E-pasta adrese",
     "Settings" : "Iestatījumi",
     "Username" : "Lietotājvārds",
     "Status" : "Status",

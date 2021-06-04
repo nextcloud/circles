@@ -2,7 +2,6 @@ OC.L10N.register(
     "circles",
     {
     "Personal" : "Persoonlik",
-    "Mail Address" : "Posadres",
     "Contact" : "Kontak",
     "Admin" : "Admin",
     "Owner" : "Eienaar",
@@ -16,6 +15,7 @@ OC.L10N.register(
     "Modified" : "Gewysig",
     "Secret" : "Geheim",
     "Unknown" : "Onbekend",
+    "Mail Address" : "Posadres",
     "Settings" : "Instellings",
     "Username" : "Gebruikersnaam",
     "Link" : "Skakel",
