@@ -138,6 +138,7 @@ class RemoteDownstreamService {
 	 * @throws InitiatorNotConfirmedException
 	 * @throws OwnerNotFoundException
 	 * @throws FederatedItemException
+	 * @throws RequestBuilderException
 	 */
 	public function requestedEvent(FederatedEvent $event): void {
 		$item = $this->federatedEventService->getFederatedItem($event, true);
@@ -153,6 +154,7 @@ class RemoteDownstreamService {
 			}
 		}
 
+		$event->setOrigin($event->getSender());
 		$this->federatedEventService->confirmInitiator($event, false);
 		$this->confirmContent($event, true);
 

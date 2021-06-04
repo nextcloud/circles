@@ -39,6 +39,7 @@ use daita\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\UnknownInterfaceException;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\IMemberships;
 
@@ -380,13 +381,14 @@ class FederatedUser extends ManagedModel implements
 
 	/**
 	 * @return string[]
+	 * @throws UnknownInterfaceException
 	 */
 	public function jsonSerialize(): array {
 		$arr = [
 			'id'        => $this->getSingleId(),
 			'user_id'   => $this->getUserId(),
 			'user_type' => $this->getUserType(),
-			'instance'  => $this->getInstance()
+			'instance'  => $this->getManager()->fixInstance($this->getInstance())
 		];
 
 		if ($this->hasBasedOn()) {

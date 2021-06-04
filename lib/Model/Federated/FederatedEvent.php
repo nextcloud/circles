@@ -145,6 +145,8 @@ class FederatedEvent implements JsonSerializable {
 
 
 	/**
+	 * Origin of the event.
+	 *
 	 * @return string
 	 */
 	public function getOrigin(): string {
@@ -152,8 +154,6 @@ class FederatedEvent implements JsonSerializable {
 	}
 
 	/**
-	 * Source (instance) of the event.
-	 *
 	 * @param string $origin
 	 *
 	 * @return self
@@ -517,6 +517,7 @@ class FederatedEvent implements JsonSerializable {
 			'data'     => $this->getData(),
 			'result'   => $this->getResult(),
 			'origin'   => $this->getOrigin(),
+			'sender'   => $this->getSender(),
 			'itemId'   => $this->getItemId(),
 			'outcome'  => $this->getOutcome(),
 			'members'  => $this->getMembers()

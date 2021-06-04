@@ -222,6 +222,7 @@ class SingleMemberAdd implements
 	 */
 	public function manage(FederatedEvent $event): void {
 		$member = $event->getMember();
+		$member->setNoteObj('invitedBy', $member->getInvitedBy());
 
 		if (!$this->insertOrUpdate($member)) {
 			return;
@@ -368,7 +369,6 @@ class SingleMemberAdd implements
 		$member->setCircle($circle);
 
 		$this->confirmPatron($event, $member);
-		$member->setNoteObj('invitedBy', $member->getInvitedBy());
 
 		$this->manageMemberStatus($circle, $member);
 
@@ -447,7 +447,7 @@ class SingleMemberAdd implements
 		}
 
 		$patron = $member->getInvitedBy();
-		if ($patron->getInstance() !== $event->getOrigin()) {
+		if ($patron->getInstance() !== $event->getSender()) {
 			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[130], 130);
 		}
 

@@ -205,11 +205,8 @@ class RemoteStreamService extends NC22Signature {
 		?JsonSerializable $object = null,
 		array $params = []
 	): array {
-		if (!$this->interfaceService->hasCurrentInterface()) {
-			$this->interfaceService->setCurrentInterfaceFromInstance($instance);
-		}
+		$this->interfaceService->setCurrentInterfaceFromInstance($instance);
 
-		// TODO: check what is happening if website is down...
 		$signedRequest = $this->requestRemoteInstance($instance, $item, $type, $object, $params);
 		if (!$signedRequest->getOutgoingRequest()->hasResult()) {
 			throw new RemoteInstanceException();

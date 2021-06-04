@@ -97,6 +97,8 @@ class MassiveMemberAdd extends SingleMemberAdd implements
 
 		foreach ($members as $member) {
 			try {
+				$member->setNoteObj('invitedBy', $member->getInvitedBy());
+
 				$this->federatedUserService->confirmSingleIdUniqueness($member);
 				$this->memberRequest->insertOrUpdate($member);
 				$this->membershipService->onUpdate($member->getSingleId());
