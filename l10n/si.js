@@ -2,7 +2,6 @@ OC.L10N.register(
     "circles",
     {
     "Personal" : "පුද්ගලික",
-    "Mail Address" : "තැපැල් ලිපිනය",
     "Member" : "සාමාජික",
     "Admin" : "පරිපාලක",
     "Owner" : "හිමිකරු",
@@ -16,6 +15,7 @@ OC.L10N.register(
     "Not a member" : "සාමාජිකයෙක් නොවේ",
     "Unknown" : "නොදන්නා",
     "Please confirm" : "කරුණාකර තහවුරු කරන්න",
+    "Mail Address" : "තැපැල් ලිපිනය",
     "Accept the request" : "ඉල්ලීම පිළිගන්න",
     "Remove this link" : "මෙම සබැඳිය ඉවත් කරන්න",
     "Local User" : "ස්ථානීය පරිශීලක",

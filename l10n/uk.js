@@ -2,7 +2,6 @@ OC.L10N.register(
     "circles",
     {
     "Personal" : "Особисте",
-    "Mail Address" : "Ваш e-mail",
     "Contact" : "Контакт",
     "Circle" : "Коло",
     "Member" : "Учасник",
@@ -50,6 +49,7 @@ OC.L10N.register(
     "Please confirm" : "Підтвердіть будь ласка",
     "Are you sure you want to leave this circle?" : "Ви впевнені, що бажаєте покинути це коло?",
     "Are you sure you want to delete this circle?" : "Ви впевнені, що бажаєте вилучити це коло?",
+    "Mail Address" : "Ваш e-mail",
     "Kick this member" : "Виключити учасника",
     "Accept the request" : "Прийняти запит",
     "Dismiss the request" : "Відхилити запит",

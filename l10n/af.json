@@ -1,6 +1,5 @@
 { "translations": {
     "Personal" : "Persoonlik",
-    "Mail Address" : "Posadres",
     "Contact" : "Kontak",
     "Admin" : "Admin",
     "Owner" : "Eienaar",
@@ -14,6 +13,7 @@
     "Modified" : "Gewysig",
     "Secret" : "Geheim",
     "Unknown" : "Onbekend",
+    "Mail Address" : "Posadres",
     "Settings" : "Instellings",
     "Username" : "Gebruikersnaam",
     "Link" : "Skakel",
