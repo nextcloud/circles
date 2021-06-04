@@ -186,6 +186,7 @@ class RemoteController extends Controller {
 
 			return new DataResponse($event->getOutcome());
 		} catch (Exception $e) {
+			$this->e($e, ['event' => $event]);
 			return $this->exceptionResponse($e);
 		}
 	}
