@@ -37,6 +37,7 @@ use daita\MySmallPhpTools\Traits\TArrayTools;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\GSStatusException;
+use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\Member;
@@ -553,8 +554,19 @@ class ConfigService {
 		return (in_array($instance, $this->getTrustedDomains()));
 	}
 
+
+	/**
+	 * @param IFederatedUser $federatedUser
+	 *
+	 * @return string
+	 */
+	public function displayFederatedUser(IFederatedUser $federatedUser): string {
+		return $federatedUser->getUserId() . $this->displayInstance($federatedUser->getInstance(), true);
+	}
+
 	/**
 	 * @param string $instance
+	 * @param bool $showAt
 	 *
 	 * @return string
 	 */
