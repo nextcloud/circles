@@ -154,6 +154,10 @@ class CircleService {
 			$owner = $this->federatedUserService->getCurrentUser();
 		}
 
+		if (is_null($owner)) {
+			throw new OwnerNotFoundException('owner not defined');
+		}
+
 		$circle = new Circle();
 		$circle->setName($name)
 			   ->setSingleId($this->token(ManagedModel::ID_LENGTH))
@@ -173,7 +177,7 @@ class CircleService {
 			   ->setCircleId($circle->getSingleId())
 			   ->setLevel(Member::LEVEL_OWNER)
 			   ->setStatus(Member::STATUS_MEMBER);
-		
+
 		$this->federatedUserService->setMemberPatron($member);
 
 		$circle->setOwner($member)

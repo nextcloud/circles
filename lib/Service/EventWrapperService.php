@@ -152,7 +152,6 @@ class EventWrapperService extends NC22Signature {
 	 */
 	public function retry() {
 		$tokens = $this->getFailedEvents();
-		echo json_encode($tokens) . "\n";
 		foreach ($tokens as $token) {
 			$this->confirmStatus($token, true);
 		}

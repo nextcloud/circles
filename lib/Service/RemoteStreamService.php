@@ -163,7 +163,7 @@ class RemoteStreamService extends NC22Signature {
 			)
 		);
 
-		$app->setOrigData($app->jsonSerialize());
+		$app->setOrigData($this->serialize($app));
 
 		return $app;
 	}

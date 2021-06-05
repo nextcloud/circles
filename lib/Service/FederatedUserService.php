@@ -182,6 +182,7 @@ class FederatedUserService {
 	 * @throws FederatedUserNotFoundException
 	 * @throws InvalidIdException
 	 * @throws SingleCircleNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	public function initCurrentUser() {
 		$user = $this->userSession->getUser();
@@ -254,6 +255,13 @@ class FederatedUserService {
 		$this->confirmFederatedUser($federatedUser);
 
 		$this->currentUser = $federatedUser;
+	}
+
+	/**
+	 *
+	 */
+	public function unsetCurrentUser(): void {
+		$this->currentUser = null;
 	}
 
 	/**
