@@ -67,7 +67,7 @@ class FederatedEvent implements JsonSerializable {
 	private $origin = '';
 
 	/** @var array */
-	private $originPerInterfaces = [];
+	private $interfaces = [];
 
 	/** @var Circle */
 	private $circle;
@@ -171,17 +171,17 @@ class FederatedEvent implements JsonSerializable {
 	/**
 	 * @return array
 	 */
-	public function getOriginPerInterfaces(): array {
-		return $this->originPerInterfaces;
+	public function getInterfaces(): array {
+		return $this->interfaces;
 	}
 
 	/**
-	 * @param array $originPerInterfaces
+	 * @param array $interfaces
 	 *
 	 * @return FederatedEvent
 	 */
-	public function setOriginPerInterfaces(array $originPerInterfaces): self {
-		$this->originPerInterfaces = $originPerInterfaces;
+	public function setInterfaces(array $interfaces): self {
+		$this->interfaces = $interfaces;
 
 		return $this;
 	}
@@ -189,8 +189,8 @@ class FederatedEvent implements JsonSerializable {
 	/**
 	 * @return $this
 	 */
-	public function obfuscateOriginPerInterfaces(): self {
-		$this->originPerInterfaces = [];
+	public function obfuscateInterfaces(): self {
+		$this->interfaces = [];
 
 		return $this;
 	}
@@ -507,6 +507,7 @@ class FederatedEvent implements JsonSerializable {
 		$this->setData(new SimpleDataStore($this->getArray('data', $data)));
 		$this->setResult(new SimpleDataStore($this->getArray('result', $data)));
 		$this->setOrigin($this->get('origin', $data));
+		$this->setInterfaces($this->getArray('interfaces', $data));
 		$this->setItemId($this->get('itemId', $data));
 
 		try {
@@ -538,15 +539,16 @@ class FederatedEvent implements JsonSerializable {
 	 */
 	function jsonSerialize(): array {
 		$arr = [
-			'class'    => $this->getClass(),
-			'severity' => $this->getSeverity(),
-			'data'     => $this->getData(),
-			'result'   => $this->getResult(),
-			'origin'   => $this->getOrigin(),
-			'sender'   => $this->getSender(),
-			'itemId'   => $this->getItemId(),
-			'outcome'  => $this->getOutcome(),
-			'members'  => $this->getMembers()
+			'class'      => $this->getClass(),
+			'severity'   => $this->getSeverity(),
+			'data'       => $this->getData(),
+			'result'     => $this->getResult(),
+			'origin'     => $this->getOrigin(),
+			'interfaces' => $this->getInterfaces(),
+			'sender'     => $this->getSender(),
+			'itemId'     => $this->getItemId(),
+			'outcome'    => $this->getOutcome(),
+			'members'    => $this->getMembers()
 		];
 
 		if ($this->hasCircle()) {

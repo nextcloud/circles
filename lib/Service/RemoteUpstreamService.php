@@ -113,16 +113,15 @@ class RemoteUpstreamService {
 	 */
 	public function broadcastEvent(EventWrapper $wrapper): void {
 		$this->interfaceService->setCurrentInterface($wrapper->getInterface());
-
 		$event = $wrapper->getEvent();
 
 		// If a different origin is available for the current interface, we overwrite the origin of the event
 		$interface = InterfaceService::$LIST_IFACE[$this->interfaceService->getCurrentInterface()];
-		if (($overwrite = $this->get($interface, $event->getOriginPerInterfaces())) !== '') {
+		if (($overwrite = $this->get($interface, $event->getInterfaces())) !== '') {
 			$event->setOrigin($overwrite);
 		}
 
-		$event->obfuscateOriginPerInterfaces();
+		$event->obfuscateInterfaces();
 		$data = $this->remoteStreamService->resultRequestRemoteInstance(
 			$wrapper->getInstance(),
 			RemoteInstance::INCOMING,
@@ -150,7 +149,7 @@ class RemoteUpstreamService {
 		// If main instance of the Circle is from the internet, we don't broadcast our private interfaces
 		if ($this->interfaceService->getInterfaceFromInstance($instance)
 			!== InterfaceService::IFACE_FRONTAL) {
-			$event->setOriginPerInterfaces($this->interfaceService->getInterfaces(true));
+			$event->setInterfaces($this->interfaceService->getInterfaces(true));
 		}
 
 		$data = $this->remoteStreamService->resultRequestRemoteInstance(
