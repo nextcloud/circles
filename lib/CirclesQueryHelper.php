@@ -55,6 +55,7 @@ class CirclesQueryHelper {
 	/** @var CoreQueryBuilder */
 	private $queryBuilder;
 
+
 	/**
 	 * CirclesQueryHelper constructor.
 	 *

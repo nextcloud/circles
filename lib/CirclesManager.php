@@ -32,10 +32,13 @@ declare(strict_types=1);
 namespace OCA\Circles;
 
 
+use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
@@ -48,6 +51,7 @@ use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedUserService;
@@ -62,9 +66,6 @@ use OCP\IUserSession;
  */
 class CirclesManager {
 
-
-	/** @var IUserSession */
-	private $userSession;
 
 	/** @var CirclesQueryHelper */
 	private $circlesQueryHelper;
@@ -89,13 +90,11 @@ class CirclesManager {
 	 * @param CirclesQueryHelper $circlesQueryHelper
 	 */
 	public function __construct(
-		IUserSession $userSession,
 		FederatedUserService $federatedUserService,
 		CircleService $circleService,
 		MemberService $memberService,
 		CirclesQueryHelper $circlesQueryHelper
 	) {
-		$this->userSession = $userSession;
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
 		$this->memberService = $memberService;
@@ -104,31 +103,160 @@ class CirclesManager {
 
 
 	/**
-	 * WIP
+	 * @param string $federatedId
+	 * @param int $type
 	 *
-	 * @return Circle
+	 * @return FederatedUser
+	 * @throws CircleNotFoundException
+	 * @throws FederatedItemException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
+	 * @throws MemberNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
+	 * @throws UnknownRemoteException
+	 * @throws UserTypeNotFoundException
 	 */
-//	public function create(): Circle {
-//	}
+	public function getFederatedUser(string $federatedId, int $type = Member::TYPE_SINGLE): FederatedUser {
+		return $this->federatedUserService->getFederatedUser($federatedId, $type);
+	}
 
 
 	/**
-	 * WIP
+	 * @throws FederatedUserNotFoundException
+	 * @throws SingleCircleNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws InvalidIdException
+	 * @throws FederatedUserException
+	 */
+	public function startSession(?FederatedUser $federatedUser = null): void {
+		if (is_null($federatedUser)) {
+			$this->federatedUserService->initCurrentUser();
+		} else {
+			$this->federatedUserService->setCurrentUser($federatedUser);
+		}
+	}
+
+	/**
 	 *
-	 * returns Circles available to Current User
+	 */
+	public function startSuperSession(): void {
+		$this->federatedUserService->unsetCurrentUser();
+		$this->federatedUserService->bypassCurrentUserCondition(true);
+	}
+
+	/**
 	 *
-	 * @return Circle[]
-	 * @throws InitiatorNotFoundException
+	 */
+	public function stopSession(): void {
+		$this->federatedUserService->unsetCurrentUser();
+		$this->federatedUserService->bypassCurrentUserCondition(false);
+	}
+
+
+	/**
+	 * @return IFederatedUser
 	 * @throws FederatedUserException
 	 * @throws FederatedUserNotFoundException
 	 * @throws InvalidIdException
 	 * @throws RequestBuilderException
 	 * @throws SingleCircleNotFoundException
 	 */
-//	public function getCircles(bool $asMember = false): array {
-//		$this->federatedUserService->initCurrentUser();
-//		$this->circleService->getCircles();
-//	}
+	public function getCurrentFederatedUser(): IFederatedUser {
+		return $this->federatedUserService->getCurrentUser();
+	}
+
+
+	/**
+	 * @return CirclesQueryHelper
+	 */
+	public function getQueryHelper(): CirclesQueryHelper {
+		return $this->circlesQueryHelper;
+	}
+
+
+	/**
+	 * @param string $name
+	 * @param FederatedUser|null $owner
+	 * @param bool $personal
+	 * @param bool $local
+	 *
+	 * @return Circle
+	 * @throws FederatedEventException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws FederatedItemException
+	 * @throws InitiatorNotFoundException
+	 * @throws InvalidItemException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
+	 */
+	public function createCircle(
+		string $name,
+		?FederatedUser $owner = null,
+		bool $personal = false,
+		bool $local = false
+	): Circle {
+		$outcome = $this->circleService->create($name, $owner, $personal, $local);
+		$circle = new Circle();
+		$circle->import($outcome);
+
+		return $circle;
+	}
+
+
+	/**
+	 * @param string $singleId
+	 *
+	 * @throws CircleNotFoundException
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws InitiatorNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
+	 */
+	public function destroyCircle(string $singleId): void {
+		$this->circleService->destroy($singleId);
+	}
+
+
+	/**
+	 * returns Circles available, based on current session
+	 *
+	 * @return Circle[]
+	 * @throws InitiatorNotFoundException
+	 * @throws RequestBuilderException
+	 */
+	public function getCircles(): array {
+		return $this->circleService->getCircles();
+	}
+
+
+	/**
+	 * @param string $singleId
+	 *
+	 * @return Circle
+	 * @throws CircleNotFoundException
+	 * @throws InitiatorNotFoundException
+	 * @throws RequestBuilderException
+	 */
+	public function getCircle(string $singleId): Circle {
+		return $this->circleService->getCircle($singleId);
+	}
+
 
 
 	/**
@@ -141,18 +269,6 @@ class CirclesManager {
 //	public function getAllCircles(): array {
 //		$this->federatedUserService->bypassCurrentUserCondition(true);
 //		$this->circleService->getCircles();
-//	}
-
-
-	/**
-	 * WIP
-	 *
-	 * @param string $singleId
-	 *
-	 * @return Circle
-	 */
-//	public function getCircle(string $singleId): Circle {
-//
 //	}
 
 
@@ -181,73 +297,7 @@ class CirclesManager {
 	 * @return Member
 	 */
 //	public function getMemberById(string $memberId): Member {
-//	}
 
-
-	/**
-	 * @return IFederatedUser
-	 * @throws FederatedUserException
-	 * @throws FederatedUserNotFoundException
-	 * @throws InvalidIdException
-	 * @throws RequestBuilderException
-	 * @throws SingleCircleNotFoundException
-	 */
-	public function getCurrentFederatedUser(): IFederatedUser {
-		$user = $this->userSession->getUser();
-		if ($user === null) {
-			throw new FederatedUserNotFoundException('current user session not found');
-		}
-
-		return $this->federatedUserService->getLocalFederatedUser($user->getUID());
-	}
-
-
-	/**
-	 * @param string $federatedId
-	 * @param int $type
-	 *
-	 * @return IFederatedUser
-	 * @throws CircleNotFoundException
-	 * @throws FederatedItemException
-	 * @throws FederatedUserException
-	 * @throws FederatedUserNotFoundException
-	 * @throws InvalidIdException
-	 * @throws MemberNotFoundException
-	 * @throws OwnerNotFoundException
-	 * @throws RemoteInstanceException
-	 * @throws RemoteNotFoundException
-	 * @throws RemoteResourceNotFoundException
-	 * @throws RequestBuilderException
-	 * @throws SingleCircleNotFoundException
-	 * @throws UnknownRemoteException
-	 * @throws UserTypeNotFoundException
-	 */
-	public function getFederatedUser(string $federatedId, int $type = Member::TYPE_SINGLE): IFederatedUser {
-		return $this->federatedUserService->getFederatedUser($federatedId, $type);
-	}
-
-
-	/**
-	 * @return CirclesQueryHelper
-	 */
-	public function getQueryHelper(): CirclesQueryHelper {
-		return $this->circlesQueryHelper;
-	}
-
-
-	/**
-	 * @param array $data
-	 * @param string $prefix
-	 *
-	 * @return Circle
-	 * @throws CircleNotFoundException
-	 */
-	public function extractCircle(array $data, string $prefix = ''): Circle {
-		$circle = new Circle();
-		$circle->importFromDatabase($data, $prefix);
-
-		return $circle;
-	}
 
 }
 
