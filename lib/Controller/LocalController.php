@@ -399,9 +399,9 @@ class LocalController extends OcsController {
 		try {
 			$this->setCurrentFederatedUser();
 
-			$this->circleService->updateDisplayName($circleId, $value);
+			$outcome = $this->circleService->updateDisplayName($circleId, $value);
 
-			return new DataResponse($this->circleService->getCircle($circleId));
+			return new DataResponse($outcome);
 		} catch (Exception $e) {
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
@@ -421,9 +421,9 @@ class LocalController extends OcsController {
 		try {
 			$this->setCurrentFederatedUser();
 
-			$this->circleService->updateDescription($circleId, $value);
+			$outcome = $this->circleService->updateDescription($circleId, $value);
 
-			return new DataResponse($this->circleService->getCircle($circleId));
+			return new DataResponse($outcome);
 		} catch (Exception $e) {
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
@@ -443,9 +443,9 @@ class LocalController extends OcsController {
 		try {
 			$this->setCurrentFederatedUser();
 
-			$this->circleService->updateSettings($circleId, $value);
+			$outcome = $this->circleService->updateSettings($circleId, $value);
 
-			return new DataResponse($this->circleService->getCircle($circleId));
+			return new DataResponse($outcome);
 		} catch (Exception $e) {
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
@@ -453,7 +453,7 @@ class LocalController extends OcsController {
 
 
 	/**
- 	 * @NoAdminRequired
+	 * @NoAdminRequired
 	 *
 	 * @param string $circleId
 	 * @param int $value
@@ -465,9 +465,9 @@ class LocalController extends OcsController {
 		try {
 			$this->setCurrentFederatedUser();
 
-			$this->circleService->updateConfig($circleId, $value);
+			$outcome = $this->circleService->updateConfig($circleId, $value);
 
-			return new DataResponse($this->circleService->getCircle($circleId));
+			return new DataResponse($outcome);
 		} catch (Exception $e) {
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
