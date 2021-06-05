@@ -116,6 +116,7 @@ class MemberRemove implements
 		$this->memberRequest->delete($member);
 
 		$this->membershipService->onUpdate($member->getSingleId());
+		// TODO: Remove invited members from this user that have not accepted their invitation
 
 		$this->eventService->memberRemoving($event);
 	}

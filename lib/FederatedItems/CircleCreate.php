@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\FederatedItems;
 
 
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
@@ -58,6 +59,9 @@ class CircleCreate implements
 	IFederatedItemHighSeverity,
 	IFederatedItemCircleCheckNotRequired,
 	IFederatedItemMustBeInitializedLocally {
+
+
+	use TNC22Deserialize;
 
 
 	/** @var CircleRequest */
@@ -98,7 +102,7 @@ class CircleCreate implements
 	public function verify(FederatedEvent $event): void {
 		$circle = $event->getCircle();
 
-		$event->setOutcome($circle->jsonSerialize());
+		$event->setOutcome($this->serialize($circle));
 	}
 
 

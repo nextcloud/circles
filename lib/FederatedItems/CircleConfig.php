@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\FederatedItems;
 
 
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\FederatedItemBadRequestException;
 use OCA\Circles\Exceptions\FederatedItemException;
@@ -50,6 +51,9 @@ use OCA\Circles\Model\Helpers\MemberHelper;
 class CircleConfig implements
 	IFederatedItem,
 	IFederatedItemAsyncProcess {
+
+
+	use TNC22Deserialize;
 
 
 	/** @var CircleRequest */
@@ -130,7 +134,7 @@ class CircleConfig implements
 		$new = clone $circle;
 		$new->setConfig($config);
 
-		$event->setOutcome($new->jsonSerialize());
+		$event->setOutcome($this->serialize($new));
 	}
 
 

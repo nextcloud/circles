@@ -32,8 +32,10 @@ declare(strict_types=1);
 namespace OCA\Circles\FederatedItems;
 
 
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemHighSeverity;
@@ -54,6 +56,9 @@ class CircleDestroy implements
 	IFederatedItemHighSeverity,
 	IFederatedItemAsyncProcess,
 	IFederatedItemMemberEmpty {
+
+
+	use TNC22Deserialize;
 
 
 	/** @var CircleRequest */
@@ -98,12 +103,14 @@ class CircleDestroy implements
 		$initiatorHelper = new MemberHelper($initiator);
 		$initiatorHelper->mustBeOwner();
 
-		$event->setOutcome($circle->jsonSerialize());
+		$event->setOutcome($this->serialize($circle));
 	}
 
 
 	/**
 	 * @param FederatedEvent $event
+	 *
+	 * @throws RequestBuilderException
 	 */
 	public function manage(FederatedEvent $event): void {
 		$circle = $event->getCircle();

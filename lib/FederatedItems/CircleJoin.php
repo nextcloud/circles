@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\FederatedItems;
 
 
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use Exception;
@@ -43,6 +44,7 @@ use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\MembersLimitException;
 use OCA\Circles\IFederatedItem;
+use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\IFederatedItemInitiatorMembershipNotRequired;
 use OCA\Circles\IFederatedItemMemberCheckNotRequired;
@@ -77,6 +79,7 @@ class CircleJoin implements
 
 	use TStringTools;
 	use TNC22Logger;
+	use TNC22Deserialize;
 
 
 	/** @var IUserManager */
@@ -148,7 +151,7 @@ class CircleJoin implements
 		$this->circleService->confirmCircleNotFull($circle);
 
 		$event->setMember($member)
-			  ->setOutcome($member->jsonSerialize());
+			  ->setOutcome($this->serialize($member));
 
 		// TODO: Managing cached name
 		//		$member->setCachedName($eventMember->getCachedName());

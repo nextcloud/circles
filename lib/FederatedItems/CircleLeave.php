@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\FederatedItems;
 
 
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\FederatedItemException;
@@ -59,6 +60,9 @@ class CircleLeave implements
 	IFederatedItemHighSeverity,
 	IFederatedItemInitiatorMembershipNotRequired,
 	IFederatedItemMemberOptional {
+
+
+	use TNC22Deserialize;
 
 
 	/** @var MemberRequest */
@@ -99,6 +103,7 @@ class CircleLeave implements
 	 * @param FederatedEvent $event
 	 *
 	 * @throws FederatedItemException
+	 * @throws RequestBuilderException
 	 */
 	public function verify(FederatedEvent $event): void {
 		$circle = $event->getCircle();
@@ -119,7 +124,7 @@ class CircleLeave implements
 
 		$outcome = $this->circleRequest->getCircle($circle->getSingleId(), $initiator);
 
-		$event->setOutcome($outcome->jsonSerialize());
+		$event->setOutcome($this->serialize($outcome));
 	}
 
 

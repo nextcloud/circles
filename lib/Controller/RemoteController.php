@@ -41,6 +41,7 @@ use daita\MySmallPhpTools\Exceptions\UnknownTypeException;
 use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22SignedRequest;
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Controller;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22LocalSignatory;
 use Exception;
 use OC\AppFramework\Middleware\Security\Exceptions\NotLoggedInException;
@@ -77,6 +78,7 @@ class RemoteController extends Controller {
 
 	use TNC22Controller;
 	use TNC22LocalSignatory;
+	use TNC22Deserialize;
 
 
 	/** @var CircleRequest */
@@ -187,6 +189,7 @@ class RemoteController extends Controller {
 			return new DataResponse($event->getOutcome());
 		} catch (Exception $e) {
 			$this->e($e, ['event' => $event]);
+
 			return $this->exceptionResponse($e);
 		}
 	}
@@ -210,7 +213,7 @@ class RemoteController extends Controller {
 		try {
 			$this->remoteDownstreamService->incomingEvent($event);
 
-			return new DataResponse($event->getResult()->jsonSerialize());
+			return new DataResponse($this->serialize($event->getResult()));
 		} catch (Exception $e) {
 			return $this->exceptionResponse($e);
 		}
@@ -228,7 +231,7 @@ class RemoteController extends Controller {
 			$this->interfaceService->setCurrentInterfaceFromRequest($this->request);
 			$test = $this->remoteStreamService->incomingSignedRequest();
 
-			return new DataResponse($test->jsonSerialize());
+			return new DataResponse($this->serialize($test));
 		} catch (Exception $e) {
 			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
 		}
@@ -280,7 +283,7 @@ class RemoteController extends Controller {
 		try {
 			$circle = $this->circleService->getCircle($circleId);
 
-			return new DataResponse($circle->jsonSerialize());
+			return new DataResponse($this->serialize($circle));
 		} catch (Exception $e) {
 			return $this->exceptionResponse($e);
 		}
@@ -344,7 +347,7 @@ class RemoteController extends Controller {
 				throw new FederatedUserNotFoundException('Entity not found');
 			}
 
-			return new DataResponse($federatedUser->jsonSerialize());
+			return new DataResponse($this->serialize($federatedUser));
 		} catch (Exception $e) {
 			return $this->exceptionResponse($e);
 		}
@@ -457,9 +460,12 @@ class RemoteController extends Controller {
 	 *
 	 * @return DataResponse
 	 */
-	public function exceptionResponse(Exception $e, $httpErrorCode = Http::STATUS_BAD_REQUEST): DataResponse {
+	public function exceptionResponse(
+		Exception $e,
+		int $httpErrorCode = Http::STATUS_BAD_REQUEST
+	): DataResponse {
 		if ($e instanceof FederatedItemException) {
-			return new DataResponse($e->jsonSerialize(), $e->getStatus());
+			return new DataResponse($this->serialize($e), $e->getStatus());
 		}
 
 		return new DataResponse(

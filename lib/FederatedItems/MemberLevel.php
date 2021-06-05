@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\FederatedItems;
 
 
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\FederatedItemBadRequestException;
 use OCA\Circles\Exceptions\FederatedItemException;
@@ -54,6 +55,9 @@ use OCA\Circles\Service\MembershipService;
 class MemberLevel implements
 	IFederatedItem,
 	IFederatedItemMemberRequired {
+
+
+	use TNC22Deserialize;
 
 
 	/** @var MemberRequest */
@@ -121,7 +125,7 @@ class MemberLevel implements
 
 		$outcomeMember = clone $member;
 		$outcomeMember->setLevel($level);
-		$event->setOutcome($outcomeMember->jsonSerialize());
+		$event->setOutcome($this->serialize($outcomeMember));
 	}
 
 

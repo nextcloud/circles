@@ -35,6 +35,7 @@ namespace OCA\Circles\FederatedItems;
 use daita\MySmallPhpTools\Exceptions\InvalidItemException;
 use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
 use daita\MySmallPhpTools\Exceptions\SignatoryException;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use Exception;
@@ -100,6 +101,9 @@ class SingleMemberAdd implements
 	IFederatedItemHighSeverity,
 	IFederatedItemMemberRequired,
 	IFederatedItemMemberCheckNotRequired {
+
+
+	use TNC22Deserialize;
 
 
 	use TStringTools;
@@ -180,7 +184,7 @@ class SingleMemberAdd implements
 		$member = $this->generateMember($event, $circle, $member);
 
 		$event->setMembers([$member]);
-		$event->setOutcome($member->jsonSerialize());
+		$event->setOutcome($this->serialize($member));
 
 		return;
 

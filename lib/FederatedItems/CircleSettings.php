@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\FederatedItems;
 
 
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\Model\Federated\FederatedEvent;
@@ -43,6 +44,9 @@ use OCA\Circles\Model\Federated\FederatedEvent;
  * @package OCA\Circles\FederatedItems
  */
 class CircleSettings implements IFederatedItem {
+
+
+	use TNC22Deserialize;
 
 
 	/** @var CircleRequest */
@@ -65,7 +69,7 @@ class CircleSettings implements IFederatedItem {
 	public function verify(FederatedEvent $event): void {
 		$circle = $event->getCircle();
 		$new = clone $circle;
-		$event->setOutcome($new->jsonSerialize());
+		$event->setOutcome($this->serialize($new));
 	}
 
 
