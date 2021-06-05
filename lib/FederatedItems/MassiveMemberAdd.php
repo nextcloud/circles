@@ -83,7 +83,7 @@ class MassiveMemberAdd extends SingleMemberAdd implements
 		}
 
 		$event->setMembers($filtered);
-		$event->setOutcome($this->serialize($filtered));
+		$event->setOutcome($this->serializeArray($filtered));
 	}
 
 
