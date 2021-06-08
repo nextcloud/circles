@@ -377,23 +377,30 @@ class FederatedUserService {
 	 * Will generate the SingleId if none exist
 	 *
 	 * @param string $userId
+	 * @param bool $check
 	 *
 	 * @return FederatedUser
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
+	 * @throws FederatedUserException
 	 * @throws FederatedUserNotFoundException
 	 * @throws InvalidIdException
-	 * @throws SingleCircleNotFoundException
-	 * @throws FederatedUserException
 	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
 	 */
-	public function getLocalFederatedUser(string $userId): FederatedUser {
-		$user = $this->userManager->get($userId);
-		if ($user === null) {
-			throw new FederatedUserNotFoundException('user ' . $userId . ' not found');
+	public function getLocalFederatedUser(string $userId, bool $check = true): FederatedUser {
+		if ($check) {
+			$user = $this->userManager->get($userId);
+			if ($user === null) {
+				throw new FederatedUserNotFoundException('user ' . $userId . ' not found');
+			}
+			$userId = $user->getUID();
 		}
 
 		$federatedUser = new FederatedUser();
-		$federatedUser->set($user->getUID());
-		$this->fillSingleCircleId($federatedUser);
+		$federatedUser->set($userId);
+		$this->fillSingleCircleId($federatedUser, $check);
 
 		return $federatedUser;
 	}
@@ -604,6 +611,15 @@ class FederatedUserService {
 
 
 	/**
+	 * @param FederatedUser $federatedUser
+	 */
+	public function deleteFederatedUser(FederatedUser $federatedUser): void {
+		$this->memberRequest->deleteFederatedUser($federatedUser);
+		$this->membershipService->deleteFederatedUser($federatedUser);
+	}
+
+
+	/**
 	 * @param string $singleId
 	 * @param string $instance
 	 *
@@ -755,6 +771,7 @@ class FederatedUserService {
 
 	/**
 	 * @param FederatedUser $federatedUser
+	 * @param bool $generate
 	 *
 	 * @throws ContactAddressBookNotFoundException
 	 * @throws ContactFormatException
@@ -764,12 +781,12 @@ class FederatedUserService {
 	 * @throws RequestBuilderException
 	 * @throws SingleCircleNotFoundException
 	 */
-	private function fillSingleCircleId(FederatedUser $federatedUser): void {
+	private function fillSingleCircleId(FederatedUser $federatedUser, bool $generate = true): void {
 		if ($federatedUser->getSingleId() !== '') {
 			return;
 		}
 
-		$circle = $this->getSingleCircle($federatedUser);
+		$circle = $this->getSingleCircle($federatedUser, $generate);
 		$federatedUser->setSingleId($circle->getSingleId());
 		$federatedUser->setBasedOn($circle);
 	}
@@ -779,6 +796,7 @@ class FederatedUserService {
 	 * get the Single Circle from a local user
 	 *
 	 * @param FederatedUser $federatedUser
+	 * @param bool $generate
 	 *
 	 * @return Circle
 	 * @throws ContactAddressBookNotFoundException
@@ -789,7 +807,7 @@ class FederatedUserService {
 	 * @throws RequestBuilderException
 	 * @throws SingleCircleNotFoundException
 	 */
-	private function getSingleCircle(FederatedUser $federatedUser): Circle {
+	private function getSingleCircle(FederatedUser $federatedUser, bool $generate = true): Circle {
 		if (!$this->configService->isLocalInstance($federatedUser->getInstance())) {
 			throw new FederatedUserException('FederatedUser must be local');
 		}
@@ -797,6 +815,10 @@ class FederatedUserService {
 		try {
 			return $this->circleRequest->getSingleCircle($federatedUser);
 		} catch (SingleCircleNotFoundException $e) {
+			if (!$generate) {
+				throw new SingleCircleNotFoundException();
+			}
+
 			$circle = new Circle();
 			$id = $this->token(ManagedModel::ID_LENGTH);
 

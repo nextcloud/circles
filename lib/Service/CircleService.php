@@ -384,6 +384,7 @@ class CircleService {
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
 	 * @throws UnknownRemoteException
+	 * @throws RequestBuilderException
 	 */
 	public function circleLeave(string $circleId): array {
 		$this->federatedUserService->mustHaveCurrentUser();

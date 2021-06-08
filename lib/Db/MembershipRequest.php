@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Db;
 
 
+use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Membership;
 
 
@@ -130,10 +131,21 @@ class MembershipRequest extends MembershipRequestBuilder {
 	/**
 	 * @param Membership $membership
 	 */
-	public function delete(Membership $membership) {
+	public function delete(Membership $membership): void {
 		$qb = $this->getMembershipDeleteSql();
 		$qb->limitToSingleId($membership->getSingleId());
 		$qb->limitToCircleId($membership->getCircleId());
+
+		$qb->execute();
+	}
+
+
+	/**
+	 * @param FederatedUser $federatedUser
+	 */
+	public function deleteFederatedUser(FederatedUser $federatedUser): void {
+		$qb = $this->getMembershipDeleteSql();
+		$qb->limitToSingleId($federatedUser->getSingleId());
 
 		$qb->execute();
 	}

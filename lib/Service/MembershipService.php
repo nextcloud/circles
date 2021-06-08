@@ -40,6 +40,7 @@ use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
 
@@ -344,6 +345,14 @@ class MembershipService {
 	 */
 	public function resetMemberships(string $singleId = '', bool $all = false) {
 		$this->membershipRequest->removeBySingleId($singleId, $all);
+	}
+
+
+	/**
+	 * @param FederatedUser $federatedUser
+	 */
+	public function deleteFederatedUser(FederatedUser $federatedUser) {
+		$this->membershipRequest->deleteFederatedUser($federatedUser);
 	}
 
 }
