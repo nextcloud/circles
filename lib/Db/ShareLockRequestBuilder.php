@@ -49,7 +49,7 @@ class ShareLockRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function getShareLockInsertSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->insert(self::TABLE_SHARE_LOCKS);
+		$qb->insert(self::TABLE_SHARE_LOCK);
 
 		return $qb;
 	}
@@ -62,7 +62,7 @@ class ShareLockRequestBuilder extends CoreRequestBuilder {
 		$qb = $this->getQueryBuilder();
 
 		$qb->select('s.id', 's.item_id', 's.circle_id', 's.instance')
-		   ->from(self::TABLE_SHARE_LOCKS, 's')
+		   ->from(self::TABLE_SHARE_LOCK, 's')
 		   ->setDefaultSelectAlias('s');
 
 		return $qb;
@@ -74,7 +74,7 @@ class ShareLockRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function getShareLockUpdateSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->update(self::TABLE_SHARE_LOCKS);
+		$qb->update(self::TABLE_SHARE_LOCK);
 
 		return $qb;
 	}
@@ -85,7 +85,7 @@ class ShareLockRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function getShareDeleteSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->delete(self::TABLE_SHARE_LOCKS);
+		$qb->delete(self::TABLE_SHARE_LOCK);
 
 		return $qb;
 	}
