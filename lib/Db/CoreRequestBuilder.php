@@ -77,6 +77,7 @@ class CoreRequestBuilder {
 			'unique_id',
 			'name',
 			'display_name',
+			'sanitized_name',
 			'source',
 			'description',
 			'settings',

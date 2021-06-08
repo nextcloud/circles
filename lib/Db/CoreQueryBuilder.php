@@ -125,7 +125,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 					self::INHERITED_BY => [
 						self::MEMBERSHIPS
 					],
-					self::INVITED_BY => [
+					self::INVITED_BY   => [
 						self::OWNER,
 						self::BASED_ON
 					]
@@ -255,7 +255,21 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	 * @param string $name
 	 */
 	public function limitToName(string $name): void {
-		$this->limitToDBField('name', $name);
+		$this->limit('name', $name);
+	}
+
+	/**
+	 * @param string $name
+	 */
+	public function limitToDisplayName(string $name): void {
+		$this->limit('display_name', $name, '', false);
+	}
+
+	/**
+	 * @param string $name
+	 */
+	public function limitToSanitizedName(string $name): void {
+		$this->limit('sanitized_name', $name, '', false);
 	}
 
 	/**
@@ -1194,7 +1208,6 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 
 		return $andPassive;
 	}
-
 
 
 	/**

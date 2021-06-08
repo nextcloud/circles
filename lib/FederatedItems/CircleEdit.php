@@ -34,9 +34,11 @@ namespace OCA\Circles\FederatedItems;
 
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use OCA\Circles\Db\CircleRequest;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
+use OCA\Circles\Service\CircleService;
 
 
 /**
@@ -53,19 +55,25 @@ class CircleEdit implements IFederatedItem {
 	/** @var CircleRequest */
 	private $circleRequest;
 
+	/** @var CircleService */
+	private $circleService;
 
 	/**
 	 * CircleEdit constructor.
 	 *
 	 * @param CircleRequest $circleRequest
+	 * @param CircleService $circleService
 	 */
-	public function __construct(CircleRequest $circleRequest) {
+	public function __construct(CircleRequest $circleRequest, CircleService $circleService) {
 		$this->circleRequest = $circleRequest;
+		$this->circleService = $circleService;
 	}
 
 
 	/**
 	 * @param FederatedEvent $event
+	 *
+	 * @throws RequestBuilderException
 	 */
 	public function verify(FederatedEvent $event): void {
 		$circle = $event->getCircle();
@@ -76,13 +84,15 @@ class CircleEdit implements IFederatedItem {
 		$data = $event->getData();
 		$new = clone $circle;
 
-		if ($data->hasKey('displayName')) {
-			$new->setDisplayName($data->g('displayName'));
+		if ($data->hasKey('name')) {
+			$new->setName($data->g('name'));
 		}
 
 		if ($data->hasKey('description')) {
-			$new->setDisplayName($data->g('description'));
+			$new->setDescription($data->g('description'));
 		}
+
+		$this->circleService->confirmName($new);
 
 		$event->setOutcome($this->serialize($new));
 	}
@@ -90,6 +100,8 @@ class CircleEdit implements IFederatedItem {
 
 	/**
 	 * @param FederatedEvent $event
+	 *
+	 * @throws RequestBuilderException
 	 */
 	public function manage(FederatedEvent $event): void {
 		$circle = clone $event->getCircle();
@@ -97,9 +109,11 @@ class CircleEdit implements IFederatedItem {
 
 		// TODO: verify that event->GetCircle() is updated by the instance that owns the Circle so we can
 		// use it as a thrustable base
-		if ($data->hasKey('displayName')) {
-			$circle->setDisplayName($data->g('displayName'));
+		if ($data->hasKey('name')) {
+			$circle->setName($data->g('name'));
 		}
+
+		$this->circleService->confirmName($circle);
 
 		if ($data->hasKey('description')) {
 			$circle->setDescription($data->g('description'));

@@ -45,6 +45,7 @@ use OCA\Circles\IFederatedItemCircleCheckNotRequired;
 use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\IFederatedItemMustBeInitializedLocally;
 use OCA\Circles\Model\Federated\FederatedEvent;
+use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\MembershipService;
 
@@ -70,6 +71,9 @@ class CircleCreate implements
 	/** @var MemberRequest */
 	private $memberRequest;
 
+	/** @var CircleService */
+	private $circleService;
+
 	/** @var MembershipService */
 	private $membershipService;
 
@@ -82,15 +86,20 @@ class CircleCreate implements
 	 *
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
+	 * @param CircleService $circleService
 	 * @param MembershipService $membershipService
 	 * @param EventService $eventService
 	 */
 	public function __construct(
-		CircleRequest $circleRequest, MemberRequest $memberRequest, MembershipService $membershipService,
+		CircleRequest $circleRequest,
+		MemberRequest $memberRequest,
+		CircleService $circleService,
+		MembershipService $membershipService,
 		EventService $eventService
 	) {
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
+		$this->circleService = $circleService;
 		$this->membershipService = $membershipService;
 		$this->eventService = $eventService;
 	}
@@ -122,6 +131,8 @@ class CircleCreate implements
 			throw new FederatedEventDSyncException('Circle already exist');
 		} catch (CircleNotFoundException $e) {
 		}
+
+		$this->circleService->confirmName($circle);
 
 		try {
 			$this->memberRequest->getMemberById($owner->getId());

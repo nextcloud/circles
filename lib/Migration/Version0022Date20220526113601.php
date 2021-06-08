@@ -102,6 +102,13 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 							  ]
 			);
 			$table->addColumn(
+				'sanitized_name', 'string', [
+									'notnull' => false,
+									'default' => '',
+									'length'  => 127
+								]
+			);
+			$table->addColumn(
 				'instance', 'string', [
 							  'notnull' => false,
 							  'default' => '',
@@ -156,6 +163,7 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 			$table->addIndex(['config']);
 			$table->addIndex(['instance']);
 			$table->addIndex(['source']);
+			$table->addIndex(['sanitized_name']);
 		}
 
 

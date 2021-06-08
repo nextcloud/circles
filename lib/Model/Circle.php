@@ -177,6 +177,9 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	/** @var string */
 	private $displayName = '';
 
+	/** @var string */
+	private $sanitizedName = '';
+
 	/** @var int */
 	private $source = 0;
 
@@ -312,9 +315,6 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	 */
 	public function setName(string $name): self {
 		$this->name = $name;
-		if ($this->displayName === '') {
-			$this->displayName = $name;
-		}
 
 		return $this;
 	}
@@ -333,9 +333,10 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	 * @return self
 	 */
 	public function setDisplayName(string $displayName): self {
-		if ($displayName !== '') {
-			$this->displayName = $displayName;
-		}
+//		if ($displayName !== '') {
+		$this->displayName = $displayName;
+
+//		}
 
 		return $this;
 	}
@@ -345,6 +346,25 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	 */
 	public function getDisplayName(): string {
 		return $this->displayName;
+	}
+
+
+	/**
+	 * @param string $sanitizedName
+	 *
+	 * @return Circle
+	 */
+	public function setSanitizedName(string $sanitizedName): self {
+		$this->sanitizedName = $sanitizedName;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSanitizedName(): string {
+		return $this->sanitizedName;
 	}
 
 
@@ -649,6 +669,7 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 		$this->setSingleId($this->get('id', $data))
 			 ->setName($this->get('name', $data))
 			 ->setDisplayName($this->get('displayName', $data))
+			 ->setSanitizedName($this->get('sanitizedName', $data))
 			 ->setSource($this->getInt('source', $data))
 			 ->setConfig($this->getInt('config', $data))
 			 ->setSettings($this->getArray('settings', $data))
@@ -680,16 +701,17 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	 */
 	public function jsonSerialize(): array {
 		$arr = [
-			'id'          => $this->getSingleId(),
-			'name'        => $this->getName(),
-			'displayName' => $this->getDisplayName(),
-			'source'      => $this->getSource(),
-			'config'      => $this->getConfig(),
-			'description' => $this->getDescription(),
-			'settings'    => $this->getSettings(),
-			'url'         => $this->getUrl(),
-			'creation'    => $this->getCreation(),
-			'initiator'   => ($this->hasInitiator()) ? $this->getInitiator() : null
+			'id'            => $this->getSingleId(),
+			'name'          => $this->getName(),
+			'displayName'   => $this->getDisplayName(),
+			'sanitizedName' => $this->getSanitizedName(),
+			'source'        => $this->getSource(),
+			'config'        => $this->getConfig(),
+			'description'   => $this->getDescription(),
+			'settings'      => $this->getSettings(),
+			'url'           => $this->getUrl(),
+			'creation'      => $this->getCreation(),
+			'initiator'     => ($this->hasInitiator()) ? $this->getInitiator() : null
 		];
 
 		if ($this->hasOwner()) {
@@ -727,6 +749,7 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 		$this->setSingleId($this->get($prefix . 'unique_id', $data))
 			 ->setName($this->get($prefix . 'name', $data))
 			 ->setDisplayName($this->get($prefix . 'display_name', $data))
+			 ->setSanitizedName($this->get($prefix . 'sanitized_name', $data))
 			 ->setConfig($this->getInt($prefix . 'config', $data))
 			 ->setSource($this->getInt($prefix . 'source', $data))
 			 ->setInstance($this->get($prefix . 'instance', $data))

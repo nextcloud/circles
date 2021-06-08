@@ -66,6 +66,7 @@ class CircleRequest extends CircleRequestBuilder {
 		   ->setValue('name', $qb->createNamedParameter($circle->getName()))
 		   ->setValue('source', $qb->createNamedParameter($circle->getSource()))
 		   ->setValue('display_name', $qb->createNamedParameter($circle->getDisplayName()))
+		   ->setValue('sanitized_name', $qb->createNamedParameter($circle->getSanitizedName()))
 		   ->setValue('description', $qb->createNamedParameter($circle->getDescription()))
 		   ->setValue('contact_addressbook', $qb->createNamedParameter($circle->getContactAddressBook()))
 		   ->setValue('contact_groupname', $qb->createNamedParameter($circle->getContactGroupName()))
@@ -293,6 +294,12 @@ class CircleRequest extends CircleRequestBuilder {
 
 		if ($circle->getName() !== '') {
 			$qb->limitToName($circle->getName());
+		}
+		if ($circle->getDisplayName() !== '') {
+			$qb->limitToDisplayName($circle->getDisplayName());
+		}
+		if ($circle->getSanitizedName() !== '') {
+			$qb->limitToSanitizedName($circle->getSanitizedName());
 		}
 		if ($circle->getConfig() > 0) {
 			$qb->limitToConfig($circle->getConfig());

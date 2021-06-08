@@ -159,17 +159,19 @@ class CircleService {
 		}
 
 		$circle = new Circle();
-		$circle->setName($name)
+		$circle->setName(trim($name))
 			   ->setSingleId($this->token(ManagedModel::ID_LENGTH))
 			   ->setSource(Member::TYPE_CIRCLE);
 
 		if ($personal) {
-			$circle->setConfig(Circle::CFG_SINGLE);
+			$circle->setConfig(Circle::CFG_PERSONAL);
 		}
 
 		if ($local) {
 			$circle->addConfig(Circle::CFG_LOCAL);
 		}
+
+		$this->confirmName($circle);
 
 		$member = new Member();
 		$member->importFromIFederatedUser($owner);
@@ -325,7 +327,7 @@ class CircleService {
 	 * @throws RequestBuilderException
 	 * @throws UnknownRemoteException
 	 */
-	public function updateSettings(string $circleId, array $settings) {
+	public function updateSettings(string $circleId, array $settings): array {
 		$circle = $this->getCircle($circleId);
 
 		$event = new FederatedEvent(CircleSettings::class);
@@ -459,6 +461,102 @@ class CircleService {
 			$this->federatedUserService->getRemoteInstance(),
 			$params
 		);
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 *
+	 * @throws RequestBuilderException
+	 */
+	public function confirmName(Circle $circle): void {
+		if ($circle->isConfig(Circle::CFG_SYSTEM)
+			|| $circle->isConfig(Circle::CFG_SINGLE)) {
+			return;
+		}
+
+		$this->confirmDisplayName($circle);
+		$this->confirmSanitizedName($circle);
+	}
+
+	/**
+	 * @param Circle $circle
+	 *
+	 * @throws RequestBuilderException
+	 */
+	private function confirmDisplayName(Circle $circle) {
+		$baseDisplayName = $circle->getName();
+
+		$i = 1;
+		while (true) {
+			$testDisplayName = $baseDisplayName . (($i > 1) ? ' (' . $i . ')' : '');
+			$test = new Circle();
+			$test->setDisplayName($testDisplayName);
+
+			try {
+				$stored = $this->circleRequest->searchCircle($test);
+				if ($stored->getSingleId() === $circle->getSingleId()) {
+					throw new CircleNotFoundException();
+				}
+			} catch (CircleNotFoundException $e) {
+				$circle->setDisplayName($testDisplayName);
+
+				return;
+			}
+
+			$i++;
+		}
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 *
+	 * @throws RequestBuilderException
+	 */
+	private function confirmSanitizedName(Circle $circle) {
+		$baseSanitizedName = $this->sanitizeName($circle->getName());
+		if ($baseSanitizedName === '') {
+			$baseSanitizedName = substr($circle->getSingleId(), 0, 3);
+		}
+
+		$i = 1;
+		while (true) {
+			$testSanitizedName = $baseSanitizedName . (($i > 1) ? '-' . $i : '');
+
+			$test = new Circle();
+			$test->setSanitizedName($testSanitizedName);
+
+			try {
+				$stored = $this->circleRequest->searchCircle($test);
+				if ($stored->getSingleId() === $circle->getSingleId()) {
+					throw new CircleNotFoundException();
+				}
+			} catch (CircleNotFoundException $e) {
+				$circle->setSanitizedName($testSanitizedName);
+
+				return;
+			}
+
+			$i++;
+		}
+	}
+
+	/**
+	 * @param string $name
+	 *
+	 * @return string
+	 */
+	public function sanitizeName(string $name): string {
+		$acceptedChars = 'qwertyuiopasdfghjklzxcvbnm ';
+		$sanitized = '';
+		for ($i = 0; $i < strlen($name); $i++) {
+			if (strpos($acceptedChars, strtolower($name[$i])) !== false) {
+				$sanitized .= $name[$i];
+			}
+		}
+
+		return str_replace(' ', '', ucwords($sanitized));
 	}
 
 
