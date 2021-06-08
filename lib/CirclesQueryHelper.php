@@ -35,8 +35,10 @@ namespace OCA\Circles;
 use OCA\Circles\Db\CoreQueryBuilder;
 use OCA\Circles\Db\CoreRequestBuilder;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Service\FederatedUserService;
 use OCP\DB\QueryBuilder\ICompositeExpression;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 
@@ -55,16 +57,22 @@ class CirclesQueryHelper {
 	/** @var CoreQueryBuilder */
 	private $queryBuilder;
 
+	/** @var FederatedUserService */
+	private $federatedUserService;
+
 
 	/**
 	 * CirclesQueryHelper constructor.
 	 *
 	 * @param CoreRequestBuilder $coreRequestBuilder
+	 * @param FederatedUserService $federatedUserService
 	 */
 	public function __construct(
-		CoreRequestBuilder $coreRequestBuilder
+		CoreRequestBuilder $coreRequestBuilder,
+		FederatedUserService $federatedUserService
 	) {
 		$this->coreRequestBuilder = $coreRequestBuilder;
+		$this->federatedUserService = $federatedUserService;
 	}
 
 
@@ -75,6 +83,43 @@ class CirclesQueryHelper {
 		$this->queryBuilder = $this->coreRequestBuilder->getQueryBuilder();
 
 		return $this->queryBuilder;
+	}
+
+
+	/**
+	 * @param string $alias
+	 * @param string $field
+	 * @param bool $fullDetails
+	 *
+	 * @return ICompositeExpression
+	 * @throws RequestBuilderException
+	 * @throws FederatedUserNotFoundException
+	 */
+	public function limitToSession(
+		string $alias,
+		string $field,
+		bool $fullDetails = false
+	): ICompositeExpression {
+		$session = $this->federatedUserService->getCurrentUser();
+		if (is_null($session)) {
+			throw new FederatedUserNotFoundException('session not initiated');
+		}
+
+		$this->queryBuilder->setDefaultSelectAlias($alias);
+		$this->queryBuilder->setOptions(
+			[CoreQueryBuilder::HELPER],
+			[
+				'getData'      => $fullDetails,
+				'mustBeMember' => true
+			]
+		);
+
+		return $this->queryBuilder->limitToInitiator(
+			CoreQueryBuilder::HELPER,
+			$session,
+			$field,
+			$alias
+		);
 	}
 
 

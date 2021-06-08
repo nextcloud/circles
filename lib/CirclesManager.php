@@ -161,11 +161,6 @@ class CirclesManager {
 
 	/**
 	 * @return IFederatedUser
-	 * @throws FederatedUserException
-	 * @throws FederatedUserNotFoundException
-	 * @throws InvalidIdException
-	 * @throws RequestBuilderException
-	 * @throws SingleCircleNotFoundException
 	 */
 	public function getCurrentFederatedUser(): IFederatedUser {
 		return $this->federatedUserService->getCurrentUser();
