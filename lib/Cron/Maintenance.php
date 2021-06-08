@@ -31,7 +31,7 @@ namespace OCA\Circles\Cron;
 
 
 use OC\BackgroundJob\TimedJob;
-use OCA\Circles\Service\EventWrapperService;
+use OCA\Circles\Service\MaintenanceService;
 
 
 /**
@@ -42,17 +42,17 @@ use OCA\Circles\Service\EventWrapperService;
 class Maintenance extends TimedJob {
 
 
-	/** @var EventWrapperService */
-	private $eventWrapperService;
+	/** @var MaintenanceService */
+	private $maintenanceService;
 
 
 	/**
 	 * Cache constructor.
 	 */
-	public function __construct(EventWrapperService $eventWrapperService) {
+	public function __construct(MaintenanceService $maintenanceService) {
 		$this->setInterval(10);
 
-		$this->eventWrapperService = $eventWrapperService;
+		$this->maintenanceService = $maintenanceService;
 	}
 
 
@@ -60,7 +60,7 @@ class Maintenance extends TimedJob {
 	 * @param $argument
 	 */
 	protected function run($argument) {
-		$this->eventWrapperService->retry();
+		$this->maintenanceService->runMaintenance();
 	}
 
 }

@@ -409,7 +409,7 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	 * @return bool
 	 */
 	public function hasOwner(): bool {
-		return ($this->owner !== null);
+		return !is_null($this->owner);
 	}
 
 
