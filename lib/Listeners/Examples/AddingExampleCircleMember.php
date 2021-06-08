@@ -35,8 +35,8 @@ namespace OCA\Circles\Listeners\Examples;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\Events\AddingCircleMemberEvent;
 use OCA\Circles\Events\CircleGenericEvent;
-use OCA\Circles\Events\CircleMemberAddedEvent;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
 use OCA\Circles\Service\ConfigService;
@@ -45,11 +45,11 @@ use OCP\EventDispatcher\IEventListener;
 
 
 /**
- * Class ExampleCircleMemberAdded
+ * Class AddingExampleCircleMember
  *
  * @package OCA\Circles\Listeners\Files
  */
-class ExampleCircleMemberAdded implements IEventListener {
+class AddingExampleCircleMember implements IEventListener {
 
 
 	use TStringTools;
@@ -61,7 +61,7 @@ class ExampleCircleMemberAdded implements IEventListener {
 
 
 	/**
-	 * ExampleCircleMemberAdded constructor.
+	 * AddingExampleCircleMember constructor.
 	 *
 	 * @param ConfigService $configService
 	 */
@@ -76,7 +76,7 @@ class ExampleCircleMemberAdded implements IEventListener {
 	 * @param Event $event
 	 */
 	public function handle(Event $event): void {
-		if (!$event instanceof CircleMemberAddedEvent) {
+		if (!$event instanceof AddingCircleMemberEvent) {
 			return;
 		}
 

@@ -70,7 +70,7 @@ class UserDeleted implements IEventListener {
 		$user = $event->getUser();
 
 		try {
-			$this->syncService->onUserRemoved($user->getUID());
+			$this->syncService->userDeleted($user->getUID());
 		} catch (Exception $e) {
 		}
 	}
