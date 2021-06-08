@@ -360,7 +360,7 @@ class LocalController extends OcsController {
 		try {
 			$this->setCurrentFederatedUser();
 
-			return new DataResponse($this->circleService->getCircles());
+			return new DataResponse($this->serializeArray($this->circleService->getCircles()));
 		} catch (Exception $e) {
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
