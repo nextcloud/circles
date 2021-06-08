@@ -62,7 +62,7 @@ class CoreRequestBuilder {
 	const TABLE_MOUNTPOINT = 'circles_mountpoint';
 
 	// wip
-	const TABLE_SHARE_LOCKS = 'circle_share_lock';
+	const TABLE_SHARE_LOCK = 'circles_share_lock';
 	const TABLE_TOKENS = 'circles_token';
 
 	const TABLE_GSSHARES = 'circle_gsshares'; // rename ?
@@ -142,7 +142,7 @@ class CoreRequestBuilder {
 			'mountpoint_hash'
 		],
 		self::TABLE_MOUNTPOINT          => [],
-		self::TABLE_SHARE_LOCKS         => [],
+		self::TABLE_SHARE_LOCK          => [],
 		self::TABLE_TOKENS              => [],
 		self::TABLE_GSSHARES            => [],
 		self::TABLE_GSSHARES_MOUNTPOINT => []
