@@ -549,7 +549,7 @@ class CircleService {
 	 * @return string
 	 */
 	public function sanitizeName(string $name): string {
-		$acceptedChars = 'qwertyuiopasdfghjklzxcvbnm ';
+		$acceptedChars = 'qwertyuiopasdfghjklzxcvbnm1234567890 ';
 		$sanitized = '';
 		for ($i = 0; $i < strlen($name); $i++) {
 			if (strpos($acceptedChars, strtolower($name[$i])) !== false) {
@@ -577,6 +577,7 @@ class CircleService {
 	 * @param Circle $circle
 	 *
 	 * @return bool
+	 * @throws RequestBuilderException
 	 */
 	public function isCircleFull(Circle $circle): bool {
 		$filter = new Member();
