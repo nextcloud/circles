@@ -143,6 +143,8 @@ class MemberRequest extends MemberRequestBuilder {
 	public function deleteFederatedUser(IFederatedUser $federatedUser): void {
 		$qb = $this->getMemberDeleteSql();
 		$qb->limitToSingleId($federatedUser->getSingleId());
+		$qb->limitToMemberId($federatedUser->getSingleId());
+		$qb->limitToCircleId($federatedUser->getSingleId());
 
 		$qb->execute();
 	}
@@ -189,7 +191,7 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->limitToCircleId($member->getCircleId());
 		$qb->limitToUserId($member->getUserId());
 		$qb->limitToUserType($member->getUserType());
-		$qb->limitToInstance($qb->getInstance($member));
+//		$qb->limitToInstance($qb->getInstance($member));
 		$qb->limitToSingleId($member->getSingleId());
 
 		$qb->execute();

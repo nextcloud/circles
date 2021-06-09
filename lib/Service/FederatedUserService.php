@@ -614,6 +614,7 @@ class FederatedUserService {
 	 * @param FederatedUser $federatedUser
 	 */
 	public function deleteFederatedUser(FederatedUser $federatedUser): void {
+		$this->circleRequest->deleteFederatedUser($federatedUser);
 		$this->memberRequest->deleteFederatedUser($federatedUser);
 		$this->membershipService->deleteFederatedUser($federatedUser);
 	}

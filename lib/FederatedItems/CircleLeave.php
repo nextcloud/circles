@@ -43,9 +43,12 @@ use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\IFederatedItemInitiatorMembershipNotRequired;
 use OCA\Circles\IFederatedItemMemberOptional;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Helpers\MemberHelper;
+use OCA\Circles\Model\Member;
+use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\StatusCode;
@@ -79,6 +82,9 @@ class CircleLeave implements
 	/** @var EventService */
 	private $eventService;
 
+	/** @var ConfigService */
+	private $configService;
+
 
 	/**
 	 * CircleLeave constructor.
@@ -87,17 +93,20 @@ class CircleLeave implements
 	 * @param CircleRequest $circleRequest
 	 * @param MembershipService $membershipService
 	 * @param EventService $eventService
+	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		MemberRequest $memberRequest,
 		CircleRequest $circleRequest,
 		MembershipService $membershipService,
-		EventService $eventService
+		EventService $eventService,
+		ConfigService $configService
 	) {
 		$this->memberRequest = $memberRequest;
 		$this->circleRequest = $circleRequest;
 		$this->membershipService = $membershipService;
 		$this->eventService = $eventService;
+		$this->configService = $configService;
 	}
 
 
@@ -111,9 +120,19 @@ class CircleLeave implements
 		$circle = $event->getCircle();
 		$member = $circle->getInitiator();
 
-		$memberHelper = new MemberHelper($member);
-		$memberHelper->cannotBeOwner();
-
+		if (!$event->getParams()->gBool('force')) {
+			$memberHelper = new MemberHelper($member);
+			$memberHelper->cannotBeOwner();
+		} else if ($this->configService->isLocalInstance($event->getOrigin())) {
+			if ($member->getLevel() === Member::LEVEL_OWNER) {
+				try {
+					$newOwner = $this->selectNewOwner($circle);
+					$event->getData()->s('newOwnerId', $newOwner->getId());
+				} catch (MemberNotFoundException $e) {
+					$event->getData()->sBool('destroyCircle', true);
+				}
+			}
+		}
 		if ($member->getId() === '') {
 			throw new MemberNotFoundException(StatusCode::$CIRCLE_LEAVE[120], 120);
 		}
@@ -134,14 +153,33 @@ class CircleLeave implements
 	 * @param FederatedEvent $event
 	 *
 	 * @throws RequestBuilderException
+	 * @throws MemberNotFoundException
 	 */
 	public function manage(FederatedEvent $event): void {
 		$member = $event->getMember();
+		$newOwnerId = $event->getData()->g('newOwnerId');
+		if ($newOwnerId !== '') {
+			$newOwner = $this->memberRequest->getMemberById($newOwnerId);
+			$newOwner->setLevel(Member::LEVEL_OWNER);
+			$this->memberRequest->updateLevel($newOwner);
+			$this->membershipService->onUpdate($newOwner->getSingleId());
+		}
+
 		$this->memberRequest->delete($member);
 
-		$this->membershipService->onUpdate($member->getSingleId());
+		$destroyingCircle = $event->getData()->gBool('destroyCircle');
+		if ($destroyingCircle) {
+			$circle = $event->getCircle();
+			$this->circleRequest->delete($circle);
+		}
 
+		$this->membershipService->onUpdate($member->getSingleId());
 		$this->eventService->memberLeaving($event);
+
+		if ($destroyingCircle) {
+			$this->membershipService->onUpdate($circle->getSingleId());
+			$this->eventService->circleDestroying($event);
+		}
 	}
 
 
@@ -151,6 +189,48 @@ class CircleLeave implements
 	 */
 	public function result(FederatedEvent $event, array $results): void {
 		$this->eventService->memberLeft($event, $results);
+
+		if ($event->getData()->gBool('destroyCircle')) {
+			$this->eventService->circleDestroyed($event, $results);
+		}
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 *
+	 * @return Member
+	 * @throws RequestBuilderException
+	 * @throws MemberNotFoundException
+	 */
+	private function selectNewOwner(Circle $circle): Member {
+		$members = $this->memberRequest->getMembers($circle->getSingleId());
+		$newOwner = null;
+		foreach ($members as $member) {
+			if ($member->getLevel() === Member::LEVEL_OWNER) {
+				continue;
+			}
+			if (is_null($newOwner)) {
+				$newOwner = $member;
+				continue;
+			}
+
+			if ($member->getLevel() > $newOwner->getLevel()) {
+				$newOwner = $member;
+			} else if ($member->getLevel() === $newOwner->getLevel()
+					   && ($member->getJoined() < $newOwner->getJoined()
+						   || ($this->configService->isLocalInstance($member->getInstance())
+							   && !$this->configService->isLocalInstance($newOwner->getInstance()))
+					   )) {
+				$newOwner = $member;
+			}
+		}
+
+		if (is_null($newOwner)) {
+			throw new MemberNotFoundException();
+		}
+
+		return $newOwner;
 	}
 
 }

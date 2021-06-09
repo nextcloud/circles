@@ -346,5 +346,17 @@ class CircleRequest extends CircleRequestBuilder {
 		$qb->execute();
 	}
 
+
+	/**
+	 * @param IFederatedUser $federatedUser
+	 */
+	public function deleteFederatedUser(IFederatedUser $federatedUser): void {
+		$qb = $this->getCircleDeleteSql();
+		$qb->limitToUniqueId($federatedUser->getSingleId());
+
+		$qb->execute();
+	}
+
+
 }
 
