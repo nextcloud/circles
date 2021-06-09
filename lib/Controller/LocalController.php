@@ -45,6 +45,7 @@ use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
+use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Service\SearchService;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCS\OCSException;
@@ -77,6 +78,9 @@ class LocalController extends OcsController {
 	/** @var MemberService */
 	private $memberService;
 
+	/** @var MembershipService */
+	private $membershipService;
+
 	/** @var SearchService */
 	private $searchService;
 
@@ -93,19 +97,27 @@ class LocalController extends OcsController {
 	 * @param FederatedUserService $federatedUserService
 	 * @param CircleService $circleService
 	 * @param MemberService $memberService
+	 * @param MembershipService $membershipService
 	 * @param SearchService $searchService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		string $appName, IRequest $request, IUserSession $userSession,
-		FederatedUserService $federatedUserService, CircleService $circleService,
-		MemberService $memberService, SearchService $searchService, ConfigService $configService
+		string $appName,
+		IRequest $request,
+		IUserSession $userSession,
+		FederatedUserService $federatedUserService,
+		CircleService $circleService,
+		MemberService $memberService,
+		MembershipService $membershipService,
+		SearchService $searchService,
+		ConfigService $configService
 	) {
 		parent::__construct($appName, $request);
 		$this->userSession = $userSession;
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
 		$this->memberService = $memberService;
+		$this->membershipService = $membershipService;
 		$this->searchService = $searchService;
 		$this->configService = $configService;
 
@@ -469,6 +481,27 @@ class LocalController extends OcsController {
 			$outcome = $this->circleService->updateConfig($circleId, $value);
 
 			return new DataResponse($this->serializeArray($outcome));
+		} catch (Exception $e) {
+			throw new OCSException($e->getMessage(), $e->getCode());
+		}
+	}
+
+
+	/**
+	 * @NoAdminRequired
+	 *
+	 * @param string $circleId
+	 * @param string $singleId
+	 *
+	 * @return DataResponse
+	 * @throws OCSException
+	 */
+	public function link(string $circleId, string $singleId): DataResponse {
+		try {
+			$this->setCurrentFederatedUser();
+			$membership = $this->membershipService->getMembership($circleId, $singleId);
+
+			return new DataResponse($this->serialize($membership));
 		} catch (Exception $e) {
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}

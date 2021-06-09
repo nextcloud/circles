@@ -188,6 +188,23 @@ class CircleRequest extends CircleRequestBuilder {
 
 
 	/**
+	 * @param array $circleIds
+	 *
+	 * @return array
+	 * @throws RequestBuilderException
+	 */
+	public function getCirclesByIds(array $circleIds): array {
+		$qb = $this->getCircleSelectSql();
+		$qb->setOptions([CoreQueryBuilder::CIRCLE], ['getData' => true, 'canBeVisitor' => true]);
+
+		$qb->limitInArray('unique_id', $circleIds);
+//		$qb->filterCircles(CoreQueryBuilder::CIRCLE, $filter);
+		$qb->leftJoinOwner(CoreQueryBuilder::CIRCLE);
+
+		return $this->getItemsFromRequest($qb);
+	}
+
+	/**
 	 * @param string $id
 	 * @param IFederatedUser|null $initiator
 	 * @param RemoteInstance|null $remoteInstance
@@ -356,7 +373,6 @@ class CircleRequest extends CircleRequestBuilder {
 
 		$qb->execute();
 	}
-
 
 }
 

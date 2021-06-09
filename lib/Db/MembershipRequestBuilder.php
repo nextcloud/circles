@@ -33,7 +33,7 @@ namespace OCA\Circles\Db;
 
 
 use daita\MySmallPhpTools\Exceptions\RowNotFoundException;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Model\Membership;
 
 
@@ -98,14 +98,18 @@ class MembershipRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * @param CoreQueryBuilder $qb
 	 *
-	 * @return Member
-	 * @throws RowNotFoundException
+	 * @return Membership
+	 * @throws MembershipNotFoundException
 	 */
-	public function getItemFromRequest(CoreQueryBuilder $qb): Member {
-		/** @var Member $member */
-		$member = $qb->asItem(Membership::class);
+	public function getItemFromRequest(CoreQueryBuilder $qb): Membership {
+		/** @var Membership $membership */
+		try {
+			$membership = $qb->asItem(Membership::class);
+		} catch (RowNotFoundException $e) {
+			throw new MembershipNotFoundException();
+		}
 
-		return $member;
+		return $membership;
 	}
 
 	/**

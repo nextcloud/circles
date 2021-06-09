@@ -38,6 +38,7 @@ use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Model\FederatedUser;
@@ -133,6 +134,109 @@ class MembershipService {
 
 
 	/**
+	 * @param string $circleId
+	 * @param string $singleId
+	 *
+	 * @return Membership
+	 * @throws MembershipNotFoundException
+	 * @throws RequestBuilderException
+	 */
+	public function getMembership(string $circleId, string $singleId): Membership {
+		$membership = $this->membershipRequest->getMembership($circleId, $singleId);
+		$details = $this->circleRequest->getCirclesByIds($membership->getInheritancePath());
+		$membership->setInheritanceDetails($details);
+
+		return $membership;
+	}
+
+
+	/**
+	 * @param string $singleId
+	 * @param bool $all
+	 */
+	public function resetMemberships(string $singleId = '', bool $all = false) {
+		$this->membershipRequest->removeBySingleId($singleId, $all);
+	}
+
+
+	/**
+	 * @param FederatedUser $federatedUser
+	 */
+	public function deleteFederatedUser(FederatedUser $federatedUser) {
+		$this->membershipRequest->deleteFederatedUser($federatedUser);
+	}
+
+
+	/**
+	 * @param string $singleId
+	 * @param string $circleId
+	 * @param array $memberships
+	 * @param array $knownIds
+	 * @param array $path
+	 *
+	 * @return array
+	 * @throws RequestBuilderException
+	 */
+	private function generateMemberships(
+		string $singleId,
+		string $circleId = '',
+		array &$memberships = [],
+		array $knownIds = [],
+		array $path = []
+	): array {
+		$circleId = ($circleId === '') ? $singleId : $circleId;
+		$path[] = $circleId;
+		$knownIds[] = $circleId;
+
+		$members = $this->memberRequest->getMembersBySingleId($circleId);
+		foreach ($members as $member) {
+			if ($member->getLevel() < Member::LEVEL_MEMBER) {
+				continue;
+			}
+
+			$membership = new Membership($singleId, count($path) > 1 ? $path[1] : '', $member);
+			$membership->setInheritancePath(array_reverse($path))
+					   ->setInheritanceDepth(sizeof($path));
+			$this->fillMemberships($membership, $memberships);
+			if (!in_array($member->getCircleId(), $knownIds)) {
+				$this->generateMemberships(
+					$singleId,
+					$member->getCircleId(),
+					$memberships,
+					$knownIds,
+					$path
+				);
+			}
+		}
+
+		return $memberships;
+	}
+
+
+	/**
+	 * @param string $singleId
+	 * @param Membership[] $memberships
+	 *
+	 * @return int
+	 */
+	private function updateMembershipsDatabase(string $singleId, array $memberships): int {
+		$known = $this->membershipRequest->getMemberships($singleId);
+
+		$deprecated = $this->removeDeprecatedMemberships($memberships, $known);
+		if (!empty($deprecated)) {
+			$this->eventService->membershipsRemoved($deprecated);
+		}
+
+		$new = $this->createNewMemberships($memberships, $known);
+		if (!empty($new)) {
+			$this->eventService->membershipsCreated($new);
+		}
+
+		return count($deprecated) + count($new);
+	}
+
+
+	/**
 	 * @param string $id
 	 * @param array $knownIds
 	 *
@@ -182,51 +286,6 @@ class MembershipService {
 
 
 	/**
-	 * @param string $singleId
-	 * @param string $circleId
-	 * @param array $memberships
-	 * @param array $knownIds
-	 * @param array $path
-	 *
-	 * @return array
-	 */
-	public function generateMemberships(
-		string $singleId,
-		string $circleId = '',
-		array &$memberships = [],
-		array $knownIds = [],
-		array $path = []
-	): array {
-		$circleId = ($circleId === '') ? $singleId : $circleId;
-		$path[] = $circleId;
-		$knownIds[] = $circleId;
-
-		$members = $this->memberRequest->getMembersBySingleId($circleId);
-		foreach ($members as $member) {
-			if ($member->getLevel() < Member::LEVEL_MEMBER) {
-				continue;
-			}
-
-			$membership = new Membership($singleId, count($path) > 1 ? $path[1] : '', $member);
-			$membership->setInheritancePath(array_reverse($path))
-					   ->setInheritanceDepth(sizeof($path));
-			$this->fillMemberships($membership, $memberships);
-			if (!in_array($member->getCircleId(), $knownIds)) {
-				$this->generateMemberships(
-					$singleId,
-					$member->getCircleId(),
-					$memberships,
-					$knownIds,
-					$path
-				);
-			}
-		}
-
-		return $memberships;
-	}
-
-
-	/**
 	 * @param Membership $membership
 	 * @param Membership[] $memberships
 	 */
@@ -245,29 +304,6 @@ class MembershipService {
 		}
 
 		$memberships[$membership->getCircleId()] = $membership;
-	}
-
-
-	/**
-	 * @param string $singleId
-	 * @param Membership[] $memberships
-	 *
-	 * @return int
-	 */
-	public function updateMembershipsDatabase(string $singleId, array $memberships): int {
-		$known = $this->membershipRequest->getMemberships($singleId);
-
-		$deprecated = $this->removeDeprecatedMemberships($memberships, $known);
-		if (!empty($deprecated)) {
-			$this->eventService->membershipsRemoved($deprecated);
-		}
-
-		$new = $this->createNewMemberships($memberships, $known);
-		if (!empty($new)) {
-			$this->eventService->membershipsCreated($new);
-		}
-
-		return count($deprecated) + count($new);
 	}
 
 
@@ -336,23 +372,6 @@ class MembershipService {
 		}
 
 		throw new ItemNotFoundException();
-	}
-
-
-	/**
-	 * @param string $singleId
-	 * @param bool $all
-	 */
-	public function resetMemberships(string $singleId = '', bool $all = false) {
-		$this->membershipRequest->removeBySingleId($singleId, $all);
-	}
-
-
-	/**
-	 * @param FederatedUser $federatedUser
-	 */
-	public function deleteFederatedUser(FederatedUser $federatedUser) {
-		$this->membershipRequest->deleteFederatedUser($federatedUser);
 	}
 
 }

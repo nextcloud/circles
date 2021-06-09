@@ -71,6 +71,9 @@ class Membership extends ManagedModel implements IDeserializable, INC22QueryRow,
 	/** @var int */
 	private $inheritanceDepth = 0;
 
+	/** @var array */
+	private $inheritanceDetails = [];
+
 
 	/**
 	 * Membership constructor.
@@ -230,6 +233,25 @@ class Membership extends ManagedModel implements IDeserializable, INC22QueryRow,
 
 
 	/**
+	 * @param array $inheritanceDetails
+	 *
+	 * @return Membership
+	 */
+	public function setInheritanceDetails(array $inheritanceDetails): self {
+		$this->inheritanceDetails = $inheritanceDetails;
+
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getInheritanceDetails(): array {
+		return $this->inheritanceDetails;
+	}
+
+
+	/**
 	 * @param array $data
 	 *
 	 * @return IDeserializable
@@ -279,7 +301,7 @@ class Membership extends ManagedModel implements IDeserializable, INC22QueryRow,
 	 * @return array
 	 */
 	public function jsonSerialize(): array {
-		return [
+		$result = [
 			'singleId'         => $this->getSingleId(),
 			'circleId'         => $this->getCircleId(),
 			'level'            => $this->getLevel(),
@@ -288,6 +310,12 @@ class Membership extends ManagedModel implements IDeserializable, INC22QueryRow,
 			'inheritancePath'  => $this->getInheritancePath(),
 			'inheritanceDepth' => $this->getInheritanceDepth()
 		];
+
+		if (!empty($this->getInheritanceDetails())) {
+			$result['inheritanceDetails'] = $this->getInheritanceDetails();
+		}
+
+		return $result;
 	}
 
 }

@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Db;
 
 
+use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Membership;
 
@@ -82,6 +83,22 @@ class MembershipRequest extends MembershipRequestBuilder {
 		$qb->limitToCircleId($membership->getCircleId());
 
 		$qb->execute();
+	}
+
+
+	/**
+	 * @param string $circleId
+	 * @param string $singleId
+	 *
+	 * @return Membership
+	 * @throws MembershipNotFoundException
+	 */
+	public function getMembership(string $circleId, string $singleId): Membership {
+		$qb = $this->getMembershipSelectSql();
+		$qb->limitToCircleId($circleId);
+		$qb->limitToSingleId($singleId);
+
+		return $this->getItemFromRequest($qb);
 	}
 
 
