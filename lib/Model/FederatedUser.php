@@ -70,6 +70,9 @@ class FederatedUser extends ManagedModel implements
 	/** @var int */
 	private $userType;
 
+	/** @var string */
+	private $displayName = '';
+
 	/** @var Circle */
 	private $basedOn;
 
@@ -97,6 +100,7 @@ class FederatedUser extends ManagedModel implements
 	 * @param string $userId
 	 * @param string $instance
 	 * @param int $type
+	 * @param string $displayName
 	 * @param Circle|null $basedOn
 	 *
 	 * @return $this
@@ -105,10 +109,12 @@ class FederatedUser extends ManagedModel implements
 		string $userId,
 		string $instance = '',
 		int $type = Member::TYPE_USER,
+		string $displayName = '',
 		?Circle $basedOn = null
 	): self {
 
 		$this->userId = $userId;
+		$this->displayName = ($displayName === '') ? $userId : $displayName;
 		$this->setInstance($instance);
 		$this->userType = $type;
 		$this->basedOn = $basedOn;
@@ -166,12 +172,29 @@ class FederatedUser extends ManagedModel implements
 		return $this;
 	}
 
-
 	/**
 	 * @return int
 	 */
 	public function getUserType(): int {
 		return $this->userType;
+	}
+
+	/**
+	 * @param string $displayName
+	 *
+	 * @return FederatedUser
+	 */
+	public function setDisplayName(string $displayName): self {
+		$this->displayName = $displayName;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDisplayName(): string {
+		return $this->displayName;
 	}
 
 
@@ -320,8 +343,9 @@ class FederatedUser extends ManagedModel implements
 		}
 
 		$this->setSingleId($this->get('id', $data));
-		$this->setUserId($this->get('user_id', $data));
-		$this->setUserType($this->getInt('user_type', $data));
+		$this->setUserId($this->get('userId', $data));
+		$this->setUserType($this->getInt('userType', $data));
+		$this->setDisplayName($this->get('displayName', $data));
 		$this->setInstance($this->get('instance', $data));
 		//$this->setMemberships($this->getArray('memberships'));
 
@@ -347,9 +371,21 @@ class FederatedUser extends ManagedModel implements
 
 		if ($circle->isConfig(Circle::CFG_SINGLE)) {
 			$owner = $circle->getOwner();
-			$this->set($owner->getUserId(), $owner->getInstance(), $owner->getUserType(), $circle);
+			$this->set(
+				$owner->getUserId(),
+				$owner->getInstance(),
+				$owner->getUserType(),
+				$owner->getDisplayName(),
+				$circle
+			);
 		} else {
-			$this->set($circle->getDisplayName(), $circle->getInstance(), Member::TYPE_CIRCLE, $circle);
+			$this->set(
+				$circle->getDisplayName(),
+				$circle->getInstance(),
+				Member::TYPE_CIRCLE,
+				$circle->getDisplayName(),
+				$circle
+			);
 		}
 
 		return $this;
@@ -371,6 +407,7 @@ class FederatedUser extends ManagedModel implements
 		$this->setSingleId($this->get($prefix . 'single_id', $data));
 		$this->setUserId($this->get($prefix . 'user_id', $data));
 		$this->setUserType($this->getInt($prefix . 'user_type', $data));
+		$this->setDisplayName($this->get($prefix . 'cached_name', $data));
 		$this->setInstance($this->get($prefix . 'instance', $data));
 
 		$this->getManager()->manageImportFromDatabase($this, $data, $prefix);
@@ -385,10 +422,11 @@ class FederatedUser extends ManagedModel implements
 	 */
 	public function jsonSerialize(): array {
 		$arr = [
-			'id'        => $this->getSingleId(),
-			'user_id'   => $this->getUserId(),
-			'user_type' => $this->getUserType(),
-			'instance'  => $this->getManager()->fixInstance($this->getInstance())
+			'id'          => $this->getSingleId(),
+			'userId'      => $this->getUserId(),
+			'userType'    => $this->getUserType(),
+			'displayName' => $this->getDisplayName(),
+			'instance'    => $this->getManager()->fixInstance($this->getInstance())
 		];
 
 		if ($this->hasBasedOn()) {

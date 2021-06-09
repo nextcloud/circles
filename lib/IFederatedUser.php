@@ -48,6 +48,8 @@ interface IFederatedUser extends IFederatedModel {
 
 	public function getUserType(): int;
 
+	public function getDisplayName(): string;
+
 	public function getBasedOn(): ?Circle;
 
 }

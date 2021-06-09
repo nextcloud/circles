@@ -427,7 +427,7 @@ class FederatedUserService {
 		$circle->setSource($appNumber);
 
 		$federatedUser = new FederatedUser();
-		$federatedUser->set($appId, '', Member::TYPE_APP, $circle);
+		$federatedUser->set($appId, '', Member::TYPE_APP, $appId, $circle);
 
 		$this->fillSingleCircleId($federatedUser);
 
@@ -715,6 +715,9 @@ class FederatedUserService {
 	 * @param string $mailAddress
 	 *
 	 * @return FederatedUser
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
 	 * @throws FederatedUserException
 	 * @throws InvalidIdException
 	 * @throws RequestBuilderException
@@ -733,6 +736,9 @@ class FederatedUserService {
 	 * @param string $contactPath
 	 *
 	 * @return FederatedUser
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
 	 * @throws FederatedUserException
 	 * @throws InvalidIdException
 	 * @throws RequestBuilderException
@@ -875,8 +881,18 @@ class FederatedUserService {
 	 * @throws ContactNotFoundException
 	 */
 	private function getLocalDisplayName(FederatedUser $federatedUser): string {
+		if (!$this->configService->isLocalInstance($federatedUser->getInstance())) {
+			return $federatedUser->getUserId();
+		}
+
 		if ($federatedUser->getUserType() === Member::TYPE_CONTACT) {
 			return $this->contactService->getDisplayName($federatedUser->getUserId());
+		}
+
+		if ($federatedUser->getUserType() === Member::TYPE_USER) {
+			$user = $this->userManager->get($federatedUser->getUserId());
+
+			return $user->getDisplayName();
 		}
 
 		return $federatedUser->getUserId();

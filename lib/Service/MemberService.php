@@ -273,6 +273,7 @@ class MemberService {
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
 	 * @throws UnknownRemoteException
+	 * @throws RequestBuilderException
 	 */
 	public function removeMember(string $memberId): array {
 		$this->federatedUserService->mustHaveCurrentUser();
@@ -302,6 +303,7 @@ class MemberService {
 	 * @throws RemoteResourceNotFoundException
 	 * @throws UnknownRemoteException
 	 * @throws FederatedItemException
+	 * @throws RequestBuilderException
 	 */
 	public function memberLevel(string $memberId, int $level): array {
 		$this->federatedUserService->mustHaveCurrentUser();
