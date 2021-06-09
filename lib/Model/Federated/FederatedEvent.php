@@ -66,9 +66,6 @@ class FederatedEvent implements JsonSerializable {
 	/** @var string */
 	private $origin = '';
 
-	/** @var array */
-	private $interfaces = [];
-
 	/** @var Circle */
 	private $circle;
 
@@ -167,34 +164,6 @@ class FederatedEvent implements JsonSerializable {
 	 */
 	public function setOrigin(string $origin): self {
 		$this->origin = $origin;
-
-		return $this;
-	}
-
-
-	/**
-	 * @return array
-	 */
-	public function getInterfaces(): array {
-		return $this->interfaces;
-	}
-
-	/**
-	 * @param array $interfaces
-	 *
-	 * @return FederatedEvent
-	 */
-	public function setInterfaces(array $interfaces): self {
-		$this->interfaces = $interfaces;
-
-		return $this;
-	}
-
-	/**
-	 * @return $this
-	 */
-	public function obfuscateInterfaces(): self {
-		$this->interfaces = [];
 
 		return $this;
 	}
@@ -563,7 +532,6 @@ class FederatedEvent implements JsonSerializable {
 		$this->setData(new SimpleDataStore($this->getArray('data', $data)));
 		$this->setResult(new SimpleDataStore($this->getArray('result', $data)));
 		$this->setOrigin($this->get('origin', $data));
-		$this->setInterfaces($this->getArray('interfaces', $data));
 		$this->setItemId($this->get('itemId', $data));
 
 		try {
@@ -595,17 +563,16 @@ class FederatedEvent implements JsonSerializable {
 	 */
 	function jsonSerialize(): array {
 		$arr = [
-			'class'      => $this->getClass(),
-			'severity'   => $this->getSeverity(),
-			'params'     => $this->getParams(),
-			'data'       => $this->getData(),
-			'result'     => $this->getResult(),
-			'origin'     => $this->getOrigin(),
-			'interfaces' => $this->getInterfaces(),
-			'sender'     => $this->getSender(),
-			'itemId'     => $this->getItemId(),
-			'outcome'    => $this->getOutcome(),
-			'members'    => $this->getMembers()
+			'class'    => $this->getClass(),
+			'severity' => $this->getSeverity(),
+			'params'   => $this->getParams(),
+			'data'     => $this->getData(),
+			'result'   => $this->getResult(),
+			'origin'   => $this->getOrigin(),
+			'sender'   => $this->getSender(),
+			'itemId'   => $this->getItemId(),
+			'outcome'  => $this->getOutcome(),
+			'members'  => $this->getMembers()
 		];
 
 		if ($this->hasCircle()) {

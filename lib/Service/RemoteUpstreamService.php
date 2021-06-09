@@ -113,20 +113,11 @@ class RemoteUpstreamService {
 	 */
 	public function broadcastEvent(EventWrapper $wrapper): void {
 		$this->interfaceService->setCurrentInterface($wrapper->getInterface());
-		$event = $wrapper->getEvent();
-
-		// If a different origin is available for the current interface, we overwrite the origin of the event
-		$interface = InterfaceService::$LIST_IFACE[$this->interfaceService->getCurrentInterface()];
-		if (($overwrite = $this->get($interface, $event->getInterfaces())) !== '') {
-			$event->setOrigin($overwrite);
-		}
-
-		$event->obfuscateInterfaces();
 		$data = $this->remoteStreamService->resultRequestRemoteInstance(
 			$wrapper->getInstance(),
 			RemoteInstance::INCOMING,
 			Request::TYPE_POST,
-			$event
+			$wrapper->getEvent()
 		);
 
 		$wrapper->getEvent()->setResult(new SimpleDataStore($data));
@@ -145,12 +136,6 @@ class RemoteUpstreamService {
 	 */
 	public function confirmEvent(FederatedEvent $event): void {
 		$instance = $event->getCircle()->getInstance();
-
-		// If main instance of the Circle is from the internet, we don't broadcast our private interfaces
-		if ($this->interfaceService->getInterfaceFromInstance($instance)
-			!== InterfaceService::IFACE_FRONTAL) {
-			$event->setInterfaces($this->interfaceService->getInterfaces(true));
-		}
 
 		$data = $this->remoteStreamService->resultRequestRemoteInstance(
 			$instance,
