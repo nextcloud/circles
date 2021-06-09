@@ -38,6 +38,14 @@ use OCA\Circles\Model\Federated\FederatedEvent;
 /**
  * Class CircleDestroyedEvent
  *
+ * This Event is called when it has been confirmed that the Circle have been destroyed on all instances
+ * related to the Circle.
+ *
+ * Meaning that the event won't be triggered until each instances have been once available during the
+ * retry-on-fail initiated in a background job
+ *
+ * WARNING: Unlike DestroyingCircleEvent, this Event is only called on the master instance of the Circle.
+ *
  * @package OCA\Circles\Events
  */
 class CircleDestroyedEvent extends CircleResultGenericEvent {

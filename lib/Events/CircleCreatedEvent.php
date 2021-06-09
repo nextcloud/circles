@@ -38,6 +38,15 @@ use OCA\Circles\Model\Federated\FederatedEvent;
 /**
  * Class CircleCreatedEvent
  *
+ * This Event is called when it has been confirmed that the Circle have been created on all targeted
+ * instances.
+ * Targeted instance for this event are usually the one configured as GlobalScale.
+ *
+ * Meaning that the event won't be triggered until each instances have been once available during the
+ * retry-on-fail initiated in a background job
+ *
+ * WARNING: Unlike CreatingCircleEvent, this Event is only called on the master instance of the Circle.
+ *
  * @package OCA\Circles\Events
  */
 class CircleCreatedEvent extends CircleResultGenericEvent {
