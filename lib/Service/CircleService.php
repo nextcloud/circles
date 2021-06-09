@@ -244,7 +244,7 @@ class CircleService {
 
 		$event = new FederatedEvent(CircleConfig::class);
 		$event->setCircle($circle);
-		$event->setData(new SimpleDataStore(['config' => $config]));
+		$event->setParams(new SimpleDataStore(['config' => $config]));
 
 		$this->federatedEventService->newEvent($event);
 
@@ -274,7 +274,7 @@ class CircleService {
 
 		$event = new FederatedEvent(CircleEdit::class);
 		$event->setCircle($circle);
-		$event->setData(new SimpleDataStore(['displayName' => $displayName]));
+		$event->setParams(new SimpleDataStore(['displayName' => $displayName]));
 
 		$this->federatedEventService->newEvent($event);
 
@@ -303,7 +303,7 @@ class CircleService {
 
 		$event = new FederatedEvent(CircleEdit::class);
 		$event->setCircle($circle);
-		$event->setData(new SimpleDataStore(['description' => $description]));
+		$event->setParams(new SimpleDataStore(['description' => $description]));
 
 		$this->federatedEventService->newEvent($event);
 
@@ -332,7 +332,7 @@ class CircleService {
 
 		$event = new FederatedEvent(CircleSettings::class);
 		$event->setCircle($circle);
-		$event->setData(new SimpleDataStore(['settings' => $settings]));
+		$event->setParams(new SimpleDataStore(['settings' => $settings]));
 
 		$this->federatedEventService->newEvent($event);
 
@@ -372,6 +372,7 @@ class CircleService {
 
 	/**
 	 * @param string $circleId
+	 * @param bool $force
 	 *
 	 * @return array
 	 * @throws CircleNotFoundException
@@ -383,16 +384,17 @@ class CircleService {
 	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
-	 * @throws UnknownRemoteException
 	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
 	 */
-	public function circleLeave(string $circleId): array {
+	public function circleLeave(string $circleId, bool $force = false): array {
 		$this->federatedUserService->mustHaveCurrentUser();
 
 		$circle = $this->circleRequest->getCircle($circleId, $this->federatedUserService->getCurrentUser());
 
 		$event = new FederatedEvent(CircleLeave::class);
 		$event->setCircle($circle);
+		$event->getParams()->sBool('force', $force);
 
 		$this->federatedEventService->newEvent($event);
 

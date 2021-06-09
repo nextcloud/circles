@@ -81,7 +81,7 @@ class CircleEdit implements IFederatedItem {
 		$initiatorHelper = new MemberHelper($circle->getInitiator());
 		$initiatorHelper->mustBeOwner();
 
-		$data = $event->getData();
+		$data = $event->getParams();
 		$new = clone $circle;
 
 		if ($data->hasKey('name')) {
@@ -105,7 +105,7 @@ class CircleEdit implements IFederatedItem {
 	 */
 	public function manage(FederatedEvent $event): void {
 		$circle = clone $event->getCircle();
-		$data = $event->getData();
+		$data = $event->getParams();
 
 		// TODO: verify that event->GetCircle() is updated by the instance that owns the Circle so we can
 		// use it as a thrustable base

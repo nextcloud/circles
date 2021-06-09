@@ -85,7 +85,7 @@ class ItemLock implements
 	 * @throws FederatedShareNotFoundException
 	 */
 	public function verify(FederatedEvent $event): void {
-		$itemId = $event->getData()->g('itemId');
+		$itemId = $event->getParams()->g('itemId');
 		$this->shareLockRequest->confirmValidId($itemId);
 
 		$status = '';

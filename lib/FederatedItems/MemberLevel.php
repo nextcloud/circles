@@ -100,7 +100,7 @@ class MemberLevel implements
 		$circle = $event->getCircle();
 		$member = $event->getMember();
 		$initiator = $circle->getInitiator();
-		$level = $event->getData()->gInt('level');
+		$level = $event->getParams()->gInt('level');
 
 		if ($circle->isConfig(Circle::CFG_SINGLE) || $circle->isConfig(Circle::CFG_PERSONAL)) {
 			throw new FederatedItemBadRequestException('This level cannot be edited');
@@ -123,6 +123,8 @@ class MemberLevel implements
 		} else {
 			$this->verifyMemberLevel($member, $initiator, $level);
 		}
+
+		$event->getData()->sInt('level', $level);
 
 		$outcomeMember = clone $member;
 		$outcomeMember->setLevel($level);

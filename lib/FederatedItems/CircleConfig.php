@@ -77,7 +77,7 @@ class CircleConfig implements
 	 */
 	public function verify(FederatedEvent $event): void {
 		$circle = $event->getCircle();
-		$config = $event->getData()->gInt('config');
+		$config = $event->getParams()->gInt('config');
 
 		$initiatorHelper = new MemberHelper($circle->getInitiator());
 		$initiatorHelper->mustBeAdmin();
@@ -99,14 +99,12 @@ class CircleConfig implements
 			&& $circle->isConfig(Circle::CFG_REQUEST, $config)
 		) {
 			$config -= Circle::CFG_REQUEST;
-			$event->getData()->sInt('config', $config);
 		}
 
 		if ($circle->isConfig(Circle::CFG_REQUEST, $config)
 			&& !$circle->isConfig(Circle::CFG_REQUEST)
 			&& !$circle->isConfig(Circle::CFG_OPEN, $config)) {
 			$config += Circle::CFG_OPEN;
-			$event->getData()->sInt('config', $config);
 		}
 
 		if (!$circle->isConfig(Circle::CFG_ROOT, $config)
@@ -114,7 +112,6 @@ class CircleConfig implements
 			&& $circle->isConfig(Circle::CFG_FEDERATED, $config)) {
 			$config -= Circle::CFG_FEDERATED;
 			// TODO: Broadcast message to other instances about loosing federated tag.
-			$event->getData()->sInt('config', $config);
 		}
 
 		if ($circle->isConfig(Circle::CFG_FEDERATED, $config)
@@ -123,13 +120,14 @@ class CircleConfig implements
 			$config += Circle::CFG_ROOT;
 			// TODO: Check locally that circle is not a member of another circle.
 			// TODO  in that case, remove the membership (and update the memberships)
-			$event->getData()->sInt('config', $config);
-			$event->getData()->sBool('broadcastAsFederated', true);
+			$event->getData()->sBool('_broadcastAsFederated', true);
 		}
 
 		if (!$confirmed || $config > Circle::$DEF_CFG_MAX) {
 			throw new FederatedItemBadRequestException('Configuration value is not valid');
 		}
+
+		$event->getData()->sInt('config', $config);
 
 		$new = clone $circle;
 		$new->setConfig($config);

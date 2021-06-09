@@ -114,7 +114,7 @@ class FileShare implements
 		}
 
 		/** @var ShareWrapper $wrappedShare */
-		$wrappedShare = $event->getData()->gObj('wrappedShare', ShareWrapper::class);
+		$wrappedShare = $event->getParams()->gObj('wrappedShare', ShareWrapper::class);
 		$mount = new Mount();
 		$mount->fromShare($wrappedShare);
 		$mount->setMountId($this->token(15));

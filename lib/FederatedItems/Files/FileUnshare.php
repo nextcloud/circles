@@ -112,7 +112,7 @@ class FileUnshare implements
 		}
 
 		/** @var ShareWrapper $wrappedShare */
-		$wrappedShare = $event->getData()->gObj('wrappedShare', ShareWrapper::class);
+		$wrappedShare = $event->getParams()->gObj('wrappedShare', ShareWrapper::class);
 
 		$this->mountRequest->delete($wrappedShare->getToken());
 		$this->eventService->federatedShareDeleted($wrappedShare);

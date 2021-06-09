@@ -447,7 +447,7 @@ class FederatedEventService extends NC22Signature {
 		}
 
 		$circle = $event->getCircle();
-		$broadcastAsFederated = $event->getData()->gBool('broadcastAsFederated');
+		$broadcastAsFederated = $event->getData()->gBool('_broadcastAsFederated');
 		$instances = $this->remoteRequest->getOutgoingRecipient($circle, $broadcastAsFederated);
 
 		if ($event->isLimitedToInstanceWithMember()) {

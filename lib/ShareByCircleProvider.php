@@ -231,7 +231,7 @@ class ShareByCircleProvider implements IShareProvider {
 
 		$event = new FederatedEvent(FileShare::class);
 		$event->setCircle($circle)
-			  ->getData()->sObj('wrappedShare', $wrappedShare);
+			  ->getParams()->sObj('wrappedShare', $wrappedShare);
 
 		$this->federatedEventService->newEvent($event);
 		$this->eventService->localShareCreated($wrappedShare);
@@ -296,7 +296,7 @@ class ShareByCircleProvider implements IShareProvider {
 
 		$event = new FederatedEvent(FileUnshare::class);
 		$event->setCircle($circle)
-			  ->getData()->sObj('wrappedShare', $wrappedShare);
+			  ->getParams()->sObj('wrappedShare', $wrappedShare);
 
 		$this->federatedEventService->newEvent($event);
 		$this->eventService->localShareDeleted($wrappedShare);

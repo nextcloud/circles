@@ -85,6 +85,9 @@ class FederatedEvent implements JsonSerializable {
 	private $members = [];
 
 	/** @var SimpleDataStore */
+	private $params;
+
+	/** @var SimpleDataStore */
 	private $data;
 
 	/** @var int */
@@ -123,6 +126,7 @@ class FederatedEvent implements JsonSerializable {
 	 */
 	function __construct(string $class = '') {
 		$this->class = $class;
+		$this->params = new SimpleDataStore();
 		$this->data = new SimpleDataStore();
 		$this->result = new SimpleDataStore();
 	}
@@ -404,6 +408,25 @@ class FederatedEvent implements JsonSerializable {
 
 
 	/**
+	 * @param SimpleDataStore $params
+	 *
+	 * @return self
+	 */
+	public function setParams(SimpleDataStore $params): self {
+		$this->params = $params;
+
+		return $this;
+	}
+
+	/**
+	 * @return SimpleDataStore
+	 */
+	public function getParams(): SimpleDataStore {
+		return $this->params;
+	}
+
+
+	/**
 	 * @param SimpleDataStore $data
 	 *
 	 * @return self
@@ -419,6 +442,15 @@ class FederatedEvent implements JsonSerializable {
 	 */
 	public function getData(): SimpleDataStore {
 		return $this->data;
+	}
+
+	/**
+	 * @return $this
+	 */
+	public function resetData(): self {
+		$this->data = new SimpleDataStore();
+
+		return $this;
 	}
 
 
@@ -496,6 +528,29 @@ class FederatedEvent implements JsonSerializable {
 
 
 	/**
+	 * @param int $flag
+	 *
+	 * @return FederatedEvent
+	 */
+	public function bypass(int $flag): self {
+		if (!$this->canBypass($flag)) {
+			$this->bypass += $flag;
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param int $flag
+	 *
+	 * @return bool
+	 */
+	public function canBypass(int $flag): bool {
+		return (($this->bypass & $flag) !== 0);
+	}
+
+
+	/**
 	 * @param array $data
 	 *
 	 * @return self
@@ -504,6 +559,7 @@ class FederatedEvent implements JsonSerializable {
 	public function import(array $data): self {
 		$this->setClass($this->get('class', $data));
 		$this->setSeverity($this->getInt('severity', $data));
+		$this->setParams(new SimpleDataStore($this->getArray('params', $data)));
 		$this->setData(new SimpleDataStore($this->getArray('data', $data)));
 		$this->setResult(new SimpleDataStore($this->getArray('result', $data)));
 		$this->setOrigin($this->get('origin', $data));
@@ -541,6 +597,7 @@ class FederatedEvent implements JsonSerializable {
 		$arr = [
 			'class'      => $this->getClass(),
 			'severity'   => $this->getSeverity(),
+			'params'     => $this->getParams(),
 			'data'       => $this->getData(),
 			'result'     => $this->getResult(),
 			'origin'     => $this->getOrigin(),
@@ -559,29 +616,6 @@ class FederatedEvent implements JsonSerializable {
 		}
 
 		return $arr;
-	}
-
-
-	/**
-	 * @param int $flag
-	 *
-	 * @return FederatedEvent
-	 */
-	public function bypass(int $flag): self {
-		if (!$this->canBypass($flag)) {
-			$this->bypass += $flag;
-		}
-
-		return $this;
-	}
-
-	/**
-	 * @param int $flag
-	 *
-	 * @return bool
-	 */
-	public function canBypass(int $flag): bool {
-		return (($this->bypass & $flag) !== 0);
 	}
 
 }

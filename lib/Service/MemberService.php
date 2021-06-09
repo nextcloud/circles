@@ -252,7 +252,7 @@ class MemberService {
 		$event = new FederatedEvent(MassiveMemberAdd::class);
 		$event->setCircle($circle);
 		$event->setMembers($members);
-		$event->setData(new SimpleDataStore(['federatedUsers' => $members]));
+		$event->setParams(new SimpleDataStore(['federatedUsers' => $members]));
 
 		$this->federatedEventService->newEvent($event);
 
@@ -311,7 +311,7 @@ class MemberService {
 		$event = new FederatedEvent(MemberLevel::class);
 		$event->setCircle($member->getCircle());
 		$event->setMember($member);
-		$event->setData(new SimpleDataStore(['level' => $level]));
+		$event->setParams(new SimpleDataStore(['level' => $level]));
 
 		$this->federatedEventService->newEvent($event);
 
