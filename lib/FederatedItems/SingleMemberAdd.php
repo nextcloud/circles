@@ -313,6 +313,7 @@ class SingleMemberAdd implements
 
 
 	/**
+	 * @param FederatedEvent $event
 	 * @param Circle $circle
 	 * @param Member $member
 	 *

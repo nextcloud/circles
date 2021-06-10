@@ -114,9 +114,9 @@ class FederatedUser extends ManagedModel implements
 	): self {
 
 		$this->userId = $userId;
-		$this->displayName = ($displayName === '') ? $userId : $displayName;
 		$this->setInstance($instance);
 		$this->userType = $type;
+		$this->displayName = ($displayName === '') ? $userId : $displayName;
 		$this->basedOn = $basedOn;
 
 		return $this;
