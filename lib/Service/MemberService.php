@@ -39,16 +39,22 @@ use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\ContactAddressBookNotFoundException;
+use OCA\Circles\Exceptions\ContactFormatException;
+use OCA\Circles\Exceptions\ContactNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\FederatedItems\MassiveMemberAdd;
 use OCA\Circles\FederatedItems\MemberLevel;
@@ -178,7 +184,7 @@ class MemberService {
 
 	/**
 	 * @param string $circleId
-	 * @param IFederatedUser $federatedUser
+	 * @param FederatedUser $federatedUser
 	 *
 	 * @return array
 	 * @throws CircleNotFoundException
@@ -187,11 +193,17 @@ class MemberService {
 	 * @throws InitiatorNotConfirmedException
 	 * @throws InitiatorNotFoundException
 	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
-	 * @throws UnknownRemoteException
-	 * @throws RemoteInstanceException
 	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
+	 * @throws FederatedUserException
+	 * @throws InvalidIdException
+	 * @throws SingleCircleNotFoundException
 	 */
 	public function addMember(string $circleId, FederatedUser $federatedUser): array {
 		$this->federatedUserService->mustHaveCurrentUser();

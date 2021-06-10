@@ -329,7 +329,11 @@ class SyncService {
 			   ->setConfig(Circle::CFG_SYSTEM | Circle::CFG_NO_OWNER | Circle::CFG_HIDDEN)
 			   ->setSource(Member::TYPE_GROUP);
 
-		$owner = $this->federatedUserService->getAppInitiator(Application::APP_ID, Member::APP_CIRCLES);
+		$owner = $this->federatedUserService->getAppInitiator(
+			Application::APP_ID,
+			Member::APP_CIRCLES,
+			Application::APP_NAME
+		);
 
 		$member = new Member();
 		$member->importFromIFederatedUser($owner);

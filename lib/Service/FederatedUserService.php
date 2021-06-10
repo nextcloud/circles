@@ -390,16 +390,18 @@ class FederatedUserService {
 	 * @throws SingleCircleNotFoundException
 	 */
 	public function getLocalFederatedUser(string $userId, bool $check = true): FederatedUser {
+		$displayName = $userId;
 		if ($check) {
 			$user = $this->userManager->get($userId);
 			if ($user === null) {
 				throw new FederatedUserNotFoundException('user ' . $userId . ' not found');
 			}
 			$userId = $user->getUID();
+			$displayName = $user->getDisplayName();
 		}
 
 		$federatedUser = new FederatedUser();
-		$federatedUser->set($userId);
+		$federatedUser->set($userId, '', Member::TYPE_USER, $displayName);
 		$this->fillSingleCircleId($federatedUser, $check);
 
 		return $federatedUser;
@@ -422,12 +424,18 @@ class FederatedUserService {
 	 * @throws RequestBuilderException
 	 * @throws SingleCircleNotFoundException
 	 */
-	public function getAppInitiator(string $appId, int $appNumber): FederatedUser {
+	public function getAppInitiator(
+		string $appId,
+		int $appNumber,
+		string $appDisplayName = ''
+	): FederatedUser {
+
+		$appDisplayName = ($appDisplayName === '') ? $appId : $appDisplayName;
 		$circle = new Circle();
 		$circle->setSource($appNumber);
 
 		$federatedUser = new FederatedUser();
-		$federatedUser->set($appId, '', Member::TYPE_APP, $appId, $circle);
+		$federatedUser->set($appId, '', Member::TYPE_APP, $appDisplayName, $circle);
 
 		$this->fillSingleCircleId($federatedUser);
 
@@ -635,11 +643,12 @@ class FederatedUserService {
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
 	 * @throws UnknownRemoteException
+	 * @throws RequestBuilderException
 	 */
 	public function getFederatedUser_SingleId(string $singleId, string $instance): FederatedUser {
-		if (strlen($singleId) !== ManagedModel::ID_LENGTH) {
-			throw new MemberNotFoundException();
-		}
+//		if (strlen($singleId) !== ManagedModel:::) {
+//			throw new MemberNotFoundException();
+//		}
 
 		if ($this->configService->isLocalInstance($instance)) {
 			return $this->circleRequest->getFederatedUserBySingleId($singleId);
@@ -667,6 +676,7 @@ class FederatedUserService {
 	 * @throws SingleCircleNotFoundException
 	 * @throws UnknownRemoteException
 	 * @throws FederatedItemException
+	 * @throws RequestBuilderException
 	 */
 	private function getFederatedUser_User(string $userId, string $instance): FederatedUser {
 		if ($this->configService->isLocalInstance($instance)) {
@@ -746,9 +756,12 @@ class FederatedUserService {
 	 */
 	public function getFederatedUser_Contact(string $contactPath): FederatedUser {
 		$federatedUser = new FederatedUser();
-		$federatedUser->setUserId($contactPath);
-		$federatedUser->setInstance('');
-		$federatedUser->setUserType(Member::TYPE_CONTACT);
+		$federatedUser->set(
+			$contactPath,
+			'',
+			Member::TYPE_CONTACT,
+			$this->contactService->getDisplayName($contactPath)
+		);
 
 		$this->fillSingleCircleId($federatedUser);
 
@@ -795,6 +808,7 @@ class FederatedUserService {
 
 		$circle = $this->getSingleCircle($federatedUser, $generate);
 		$federatedUser->setSingleId($circle->getSingleId());
+		$federatedUser->setDisplayName($circle->getDisplayName());
 		$federatedUser->setBasedOn($circle);
 	}
 
@@ -839,7 +853,7 @@ class FederatedUserService {
 				: Member::$TYPE[$federatedUser->getUserType()];
 
 			$circle->setName($prefix . ':' . $federatedUser->getUserId() . ':' . $id)
-				   ->setDisplayName($this->getLocalDisplayName($federatedUser))
+				   ->setDisplayName($federatedUser->getDisplayName())
 				   ->setSingleId($id)
 				   ->setSource($source);
 
@@ -856,11 +870,17 @@ class FederatedUserService {
 				  ->setCircleId($id)
 				  ->setSingleId($id)
 				  ->setId($id)
-				  ->setDisplayName($owner->getUserId())
+				  ->setDisplayName($owner->getDisplayName())
 				  ->setStatus('Member');
 
 			if ($federatedUser->getUserType() !== Member::TYPE_APP) {
-				$owner->setInvitedBy($this->getAppInitiator(Application::APP_ID, Member::APP_CIRCLES));
+				$owner->setInvitedBy(
+					$this->getAppInitiator(
+						Application::APP_ID,
+						Member::APP_CIRCLES,
+						Application::APP_NAME
+					)
+				);
 			}
 
 			$this->memberRequest->save($owner);
@@ -869,33 +889,6 @@ class FederatedUserService {
 		}
 
 		return $this->circleRequest->getSingleCircle($federatedUser);
-	}
-
-
-	/**
-	 * @param FederatedUser $federatedUser
-	 *
-	 * @return string
-	 * @throws ContactAddressBookNotFoundException
-	 * @throws ContactFormatException
-	 * @throws ContactNotFoundException
-	 */
-	private function getLocalDisplayName(FederatedUser $federatedUser): string {
-		if (!$this->configService->isLocalInstance($federatedUser->getInstance())) {
-			return $federatedUser->getUserId();
-		}
-
-		if ($federatedUser->getUserType() === Member::TYPE_CONTACT) {
-			return $this->contactService->getDisplayName($federatedUser->getUserId());
-		}
-
-		if ($federatedUser->getUserType() === Member::TYPE_USER) {
-			$user = $this->userManager->get($federatedUser->getUserId());
-
-			return $user->getDisplayName();
-		}
-
-		return $federatedUser->getUserId();
 	}
 
 
