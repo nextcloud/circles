@@ -85,6 +85,9 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 	/** @var string */
 	private $test = '';
 
+	/** @var array */
+	private $aliases = [];
+
 	/** @var string */
 	private $incoming = '';
 
@@ -170,6 +173,25 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 	 */
 	public function getInterface(): int {
 		return $this->interface;
+	}
+
+
+	/**
+	 * @param array $aliases
+	 *
+	 * @return RemoteInstance
+	 */
+	public function setAliases(array $aliases): self {
+		$this->aliases = $aliases;
+
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getAliases(): array {
+		return $this->aliases;
 	}
 
 
@@ -415,6 +437,7 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 		parent::import($data);
 
 		$this->setTest($this->get('test', $data))
+			 ->setAliases($this->getArray('aliases', $data))
 			 ->setEvent($this->get('event', $data))
 			 ->setRoot($this->get('root', $data))
 			 ->setIncoming($this->get('incoming', $data))
@@ -455,6 +478,10 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 
 		if ($this->getAuthSigned() !== '') {
 			$data['auth-signed'] = $this->getAlgorithm() . ':' . $this->getAuthSigned();
+		}
+
+		if (!empty($this->getAliases())) {
+			$data['aliases'] = $this->getAliases();
 		}
 
 		return array_filter(array_merge($data, parent::jsonSerialize()));

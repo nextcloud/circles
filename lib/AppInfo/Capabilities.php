@@ -10,10 +10,8 @@ declare(strict_types=1);
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @author Vinicius Cubas Brand <vinicius@eita.org.br>
- * @author Daniel Tygel <dtygel@eita.org.br>
  *
- * @copyright 2017
+ * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -58,7 +56,7 @@ class Capabilities implements ICapability {
 	/** @var IAppManager */
 	private $appManager;
 
-/** @var InterfaceService  */
+	/** @var InterfaceService */
 	private $interfaceService;
 
 	/** @var ConfigService */
@@ -115,7 +113,10 @@ class Capabilities implements ICapability {
 		];
 
 		if ($complete) {
-			$status['interfaces'] = $this->interfaceService->getInterfaces(true);
+			$status['interfaces'] = [
+				'all'      => $this->interfaceService->getInterfaces(true),
+				'internal' => $this->interfaceService->getInternalInterfaces(true)
+			];
 		}
 
 		return $status;

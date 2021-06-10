@@ -135,6 +135,41 @@ class InterfaceService {
 
 
 	/**
+	 * @return bool
+	 * @throws UnknownInterfaceException
+	 */
+	public function isCurrentInterfaceInternal(): bool {
+		return $this->isInterfaceInternal($this->getCurrentInterface());
+	}
+
+	/**
+	 * @param int $interface
+	 *
+	 * @return bool
+	 */
+	public function isInterfaceInternal(int $interface): bool {
+		if ($interface === self::IFACE_INTERNAL) {
+			return true;
+		}
+
+		switch ($interface) {
+			case self::IFACE0:
+				return $this->configService->getAppValueBool(ConfigService::IFACE0_INTERNAL);
+			case self::IFACE1:
+				return $this->configService->getAppValueBool(ConfigService::IFACE1_INTERNAL);
+			case self::IFACE2:
+				return $this->configService->getAppValueBool(ConfigService::IFACE2_INTERNAL);
+			case self::IFACE3:
+				return $this->configService->getAppValueBool(ConfigService::IFACE3_INTERNAL);
+			case self::IFACE4:
+				return $this->configService->getAppValueBool(ConfigService::IFACE4_INTERNAL);
+		}
+
+		return false;
+	}
+
+
+	/**
 	 * @param IRequest $request
 	 * @param string $testToken
 	 */
@@ -214,6 +249,36 @@ class InterfaceService {
 
 		$detailed = [];
 		foreach ($interfaces as $id => $iface) {
+			$detailed[self::$LIST_IFACE[$id]] = $iface;
+		}
+
+		return $detailed;
+	}
+
+
+	/**
+	 * @param bool $useString
+	 *
+	 * @return array
+	 */
+	public function getInternalInterfaces(bool $useString = false): array {
+		$interfaces = $this->getInterfaces(false);
+		$internalInterfaces = [];
+
+		foreach ($interfaces as $id => $iface) {
+			if (!$this->isInterfaceInternal($id)) {
+				continue;
+			}
+
+			$internalInterfaces[$id] = $iface;
+		}
+
+		if (!$useString) {
+			return $internalInterfaces;
+		}
+
+		$detailed = [];
+		foreach ($internalInterfaces as $id => $iface) {
 			$detailed[self::$LIST_IFACE[$id]] = $iface;
 		}
 

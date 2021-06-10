@@ -163,6 +163,10 @@ class RemoteStreamService extends NC22Signature {
 			)
 		);
 
+		if ($this->interfaceService->isCurrentInterfaceInternal()) {
+			$app->setAliases(array_filter(array_values($this->interfaceService->getInterfaces(false))));
+		}
+
 		$app->setOrigData($this->serialize($app));
 
 		return $app;
