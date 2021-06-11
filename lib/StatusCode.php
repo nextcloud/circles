@@ -77,6 +77,10 @@ class StatusCode {
 		121 => 'Incorrect Level'
 	];
 
+	static $MEMBER_DISPLAY_NAME = [
+		120 => 'DisplayName cannot be empty'
+	];
+
 	static $MEMBER_REMOVE = [
 		120 => 'The designed member\'s level is too high',
 	];

@@ -126,13 +126,17 @@ class MemberRequest extends MemberRequestBuilder {
 	/**
 	 * @param string $singleId
 	 * @param string $displayName
+	 * @param string $circleId
 	 */
-	public function updateDisplayName(string $singleId, string $displayName): void {
+	public function updateDisplayName(string $singleId, string $displayName, string $circleId = ''): void {
 		$qb = $this->getMemberUpdateSql();
 		$qb->set('cached_name', $qb->createNamedParameter($displayName))
 		   ->set('cached_update', $qb->createNamedParameter($this->timezoneService->getUTCDate()));
 
 		$qb->limitToSingleId($singleId);
+		if ($circleId !== '') {
+			$qb->limitToCircleId($circleId);
+		}
 
 		$qb->execute();
 	}
