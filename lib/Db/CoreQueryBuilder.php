@@ -377,6 +377,9 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		if ($circle->getDisplayName() !== '') {
 			$this->searchInDBField('display_name', '%' . $circle->getDisplayName() . '%');
 		}
+		if ($circle->getConfig() > 0) {
+			$this->limitBitwise('config', $circle->getConfig());
+		}
 	}
 
 

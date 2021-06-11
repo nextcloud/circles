@@ -60,7 +60,7 @@ class Maintenance extends TimedJob {
 	 * @param $argument
 	 */
 	protected function run($argument) {
-		$this->maintenanceService->runMaintenance();
+		$this->maintenanceService->runMaintenance(3);
 	}
 
 }

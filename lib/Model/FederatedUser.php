@@ -338,7 +338,7 @@ class FederatedUser extends ManagedModel implements
 	 * @throws InvalidItemException
 	 */
 	public function import(array $data): IDeserializable {
-		if ($this->get('user_id', $data) === '') {
+		if ($this->get('userId', $data) === '') {
 			throw new InvalidItemException();
 		}
 

@@ -77,6 +77,7 @@ class CirclesMaintenance extends Base {
 		parent::configure();
 		$this->setName('circles:maintenance')
 			 ->setDescription('Clean stuff, keeps the app running')
+			 ->addOption('level', '', InputOption::VALUE_REQUIRED, 'level of maintenance', '0')
 			 ->addOption(
 				 'reset', '', InputOption::VALUE_NONE, 'reset Circles; remove all data related to the App'
 			 )
@@ -96,6 +97,7 @@ class CirclesMaintenance extends Base {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$reset = $input->getOption('reset');
 		$uninstall = $input->getOption('uninstall');
+		$level = (int)$input->getOption('level');
 
 		if ($reset || $uninstall) {
 			$output->writeln('');
@@ -143,7 +145,7 @@ class CirclesMaintenance extends Base {
 		}
 
 		$this->maintenanceService->setOccOutput($output);
-		$this->maintenanceService->runMaintenance();
+		$this->maintenanceService->runMaintenance($level);
 
 		$output->writeln('');
 		$output->writeln('<info>done</info>');

@@ -123,6 +123,20 @@ class CircleRequest extends CircleRequestBuilder {
 
 
 	/**
+	 * @param string $singleId
+	 * @param string $displayName
+	 */
+	public function updateDisplayName(string $singleId, string $displayName): void {
+		$qb = $this->getCircleUpdateSql();
+		$qb->set('display_name', $qb->createNamedParameter($displayName));
+
+		$qb->limitToUniqueId($singleId);
+
+		$qb->execute();
+	}
+
+
+	/**
 	 * @param Circle $circle
 	 */
 	public function updateConfig(Circle $circle) {
