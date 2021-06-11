@@ -42,6 +42,7 @@ use OCA\Circles\Events\CircleMemberAddedEvent;
 use OCA\Circles\Events\MembershipsCreatedEvent;
 use OCA\Circles\Events\MembershipsRemovedEvent;
 use OCA\Circles\Handlers\WebfingerHandler;
+use OCA\Circles\Listeners\DeprecatedListener;
 use OCA\Circles\Listeners\Examples\AddingExampleCircleMember;
 use OCA\Circles\Listeners\Examples\ExampleMembershipsCreated;
 use OCA\Circles\Listeners\Examples\ExampleMembershipsRemoved;
@@ -71,8 +72,10 @@ use OCP\Group\Events\GroupDeletedEvent;
 use OCP\Group\Events\UserAddedEvent;
 use OCP\Group\Events\UserRemovedEvent;
 use OCP\IServerContainer;
+use OCP\IUser;
 use OCP\User\Events\UserCreatedEvent;
 use OCP\User\Events\UserDeletedEvent;
+use Symfony\Component\EventDispatcher\GenericEvent;
 use Throwable;
 
 
@@ -136,6 +139,18 @@ class Application extends App implements IBootstrap {
 		$context->registerEventListener(CircleMemberAddedEvent::class, ListenerFilesMemberAdded::class);
 		$context->registerEventListener(
 			MembershipsRemovedEvent::class, ListenerFilesMembershipsRemoved::class
+		);
+
+		// It seems that AccountManager use deprecated dispatcher, let's use a deprecated listener
+		$dispatcher = OC::$server->getEventDispatcher();
+		$dispatcher->addListener(
+			'OC\AccountManager::userUpdated', function(GenericEvent $event) {
+			/** @var IUser $user */
+			$user = $event->getSubject();
+			/** @var DeprecatedListener $deprecatedListener */
+			$deprecatedListener = OC::$server->get(DeprecatedListener::class);
+			$deprecatedListener->userAccountUpdated($user);
+		}
 		);
 
 		$context->registerWellKnownHandler(WebfingerHandler::class);
