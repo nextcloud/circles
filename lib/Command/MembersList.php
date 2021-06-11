@@ -252,7 +252,7 @@ class MembersList extends Base {
 					Member::$TYPE[$member->getUserType()],
 					$member->hasBasedOn() ? Circle::$DEF_SOURCE[$member->getBasedOn()->getSource()] : '',
 					($this->input->getOption('display-name')) ?
-						$member->getBasedOn()->getDisplayName() : $member->getUserId(),
+						$member->getDisplayName() : $member->getUserId(),
 					$this->configService->displayInstance($member->getInstance()),
 					($level > 0) ? Member::$DEF_LEVEL[$level] :
 						'(' . strtolower($member->getStatus()) . ')',
@@ -425,7 +425,7 @@ class MembersList extends Base {
 
 					$line .= ' <info>MemberId</info>: ' . $member->getId();
 					$name = ($this->input->getOption('display-name')) ?
-						$member->getBasedOn()->getDisplayName() : $member->getUserId();
+						$member->getDisplayName() : $member->getUserId();
 					$line .= ' <info>Name</info>: ' . $name;
 					$source = ($member->hasBasedOn()) ? $member->getBasedOn()->getSource() : '';
 					$line .= ' <info>Source</info>: ' . Circle::$DEF_SOURCE[$source];

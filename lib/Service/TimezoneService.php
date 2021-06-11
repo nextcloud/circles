@@ -64,7 +64,6 @@ class TimezoneService {
 	}
 
 
-
 	/**
 	 * @param string $userId
 	 * @param string $time
@@ -87,7 +86,7 @@ class TimezoneService {
 	/**
 	 * @return string
 	 */
-	public function getUTCDate() {
+	public function getUTCDate(): string {
 		$defaultTimezone = date_default_timezone_get();
 		date_default_timezone_set('UTC');
 		$format = date('Y-m-d H:i:s');

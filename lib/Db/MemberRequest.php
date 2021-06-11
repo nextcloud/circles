@@ -88,6 +88,7 @@ class MemberRequest extends MemberRequestBuilder {
 	public function update(Member $member): void {
 		$this->confirmValidIds([$member->getCircleId(), $member->getSingleId(), $member->getId()]);
 
+		// TODO: need for update member_id ?
 		$qb = $this->getMemberUpdateSql();
 		$qb->set('member_id', $qb->createNamedParameter($member->getId()))
 		   ->set('cached_name', $qb->createNamedParameter($member->getDisplayName()))
@@ -100,7 +101,7 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->limitToCircleId($member->getCircleId());
 		$qb->limitToUserId($member->getUserId());
 		$qb->limitToUserType($member->getUserType());
-		$qb->limitToInstance($qb->getInstance($member));
+//		$qb->limitToInstance($qb->getInstance($member));
 		$qb->limitToSingleId($member->getSingleId());
 
 		$qb->execute();
@@ -119,6 +120,21 @@ class MemberRequest extends MemberRequestBuilder {
 		} catch (MemberNotFoundException $e) {
 			$this->save($member);
 		}
+	}
+
+
+	/**
+	 * @param string $singleId
+	 * @param string $displayName
+	 */
+	public function updateDisplayName(string $singleId, string $displayName): void {
+		$qb = $this->getMemberUpdateSql();
+		$qb->set('cached_name', $qb->createNamedParameter($displayName))
+		   ->set('cached_update', $qb->createNamedParameter($this->timezoneService->getUTCDate()));
+
+		$qb->limitToSingleId($singleId);
+
+		$qb->execute();
 	}
 
 

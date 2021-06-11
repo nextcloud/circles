@@ -940,6 +940,7 @@ class FederatedUserService {
 	 * @throws RequestBuilderException
 	 */
 	public function confirmSingleIdUniqueness(IFederatedUser $federatedUser): void {
+		// TODO: use aliases!
 		if (empty($this->memberRequest->getAlternateSingleId($federatedUser))) {
 			return;
 		}

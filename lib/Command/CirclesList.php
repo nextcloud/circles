@@ -212,16 +212,17 @@ class CirclesList extends Base {
 		);
 		$table->render();
 
+		$displayName = $this->input->getOption('display-name');
 		$display = ($this->input->getOption('def') ? Circle::FLAGS_LONG : Circle::FLAGS_SHORT);
 		foreach ($circles as $circle) {
 			$owner = $circle->getOwner();
 			$table->appendRow(
 				[
 					$circle->getSingleId(),
-					$this->input->getOption('display-name') ? $circle->getDisplayName() : $circle->getName(),
+					$displayName ? $circle->getDisplayName() : $circle->getName(),
 					json_encode(Circle::getCircleFlags($circle, $display)),
 					Circle::$DEF_SOURCE[$circle->getSource()],
-					$owner->getUserId(),
+					$displayName ? $owner->getDisplayName() : $owner->getUserId(),
 					$this->configService->displayInstance($owner->getInstance()),
 					$this->getInt('members_limit', $circle->getSettings(), -1),
 					substr(str_replace("\n", ' ', $circle->getDescription()), 0, 30)

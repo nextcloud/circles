@@ -32,9 +32,15 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 
+use daita\MySmallPhpTools\Model\SimpleDataStore;
+use Exception;
 use OCA\Circles\Db\CircleRequest;
+use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Member;
+use OCP\IUserManager;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
@@ -46,8 +52,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 class MaintenanceService {
 
 
+	/** @var IUserManager */
+	private $userManager;
+
 	/** @var CircleRequest */
 	private $circleRequest;
+
+	/** @var MemberRequest */
+	private $memberRequest;
 
 	/** @var FederatedUserService */
 	private $federatedUserService;
@@ -66,17 +78,24 @@ class MaintenanceService {
 	/**
 	 * MaintenanceService constructor.
 	 *
+	 * @param IUserManager $userManager
+	 * @param CircleRequest $circleRequest
+	 * @param MemberRequest $memberRequest
 	 * @param FederatedUserService $federatedUserService
 	 * @param EventWrapperService $eventWrapperService
 	 * @param CircleService $circleService
 	 */
 	public function __construct(
+		IUserManager $userManager,
 		CircleRequest $circleRequest,
+		MemberRequest $memberRequest,
 		FederatedUserService $federatedUserService,
 		EventWrapperService $eventWrapperService,
 		CircleService $circleService
 	) {
+		$this->userManager = $userManager;
 		$this->circleRequest = $circleRequest;
+		$this->memberRequest = $memberRequest;
 		$this->federatedUserService = $federatedUserService;
 		$this->eventWrapperService = $eventWrapperService;
 		$this->circleService = $circleService;
@@ -94,20 +113,63 @@ class MaintenanceService {
 	/**
 	 *
 	 */
-	public function runMaintenance(): void {
+	public function runMaintenance(int $level = 0): void {
 		$this->federatedUserService->bypassCurrentUserCondition(true);
 
-		$this->output('remove circles with no owner');
-		$this->removeCirclesWithNoOwner();
+		try {
+			$this->output('remove circles with no owner');
+			$this->removeCirclesWithNoOwner();
+		} catch (Exception $e) {
+		}
 
-		$this->output('remove members with no circles');
-		$this->removeMembersWithNoCircles();
+		try {
+			$this->output('remove members with no circles');
+			$this->removeMembersWithNoCircles();
+		} catch (Exception $e) {
+		}
 
-		$this->output('remove deprecated shares');
+		try {
+			$this->output('remove deprecated shares');
 //		$this->removeDeprecatedShares();
+		} catch (Exception $e) {
+		}
 
-		$this->output('retry failed FederatedEvents');
-		$this->eventWrapperService->retry();
+		try {
+			$this->output('retry failed FederatedEvents');
+			$this->eventWrapperService->retry();
+		} catch (Exception $e) {
+		}
+
+		if ($level < 1) {
+			return;
+		}
+
+		if ($level < 2) {
+			return;
+		}
+
+		if ($level < 3) {
+			return;
+		}
+
+		if ($level < 5) {
+			$this->output('refresh displayNames older than 7d');
+			//	$this->refreshOldDisplayNames();
+		}
+
+		if ($level < 4) {
+			return;
+		}
+
+		if ($level < 5) {
+			return;
+		}
+
+		try {
+			$this->output('refresh DisplayNames');
+			$this->refreshDisplayName();
+		} catch (Exception $e) {
+		}
 	}
 
 
@@ -163,6 +225,26 @@ class MaintenanceService {
 //		}
 	}
 
+
+	/**
+	 * @throws RequestBuilderException
+	 * @throws InitiatorNotFoundException
+	 */
+	private function refreshDisplayName(): void {
+		$params = new SimpleDataStore(['includeSystemCircles' => true]);
+		$circleFilter = new Circle();
+		$circleFilter->setConfig(Circle::CFG_SINGLE);
+		$circles = $this->circleService->getCircles($circleFilter, null, $params);
+
+		foreach ($circles as $circle) {
+			$owner = $circle->getOwner();
+			if ($owner->getUserType() === Member::TYPE_USER) {
+				$user = $this->userManager->get($owner->getUserId());
+				$this->memberRequest->updateDisplayName($owner->getSingleId(), $user->getDisplayName());
+				$this->circleRequest->updateDisplayName($owner->getSingleId(), $user->getDisplayName());
+			}
+		}
+	}
 
 	/**
 	 * @param string $message
