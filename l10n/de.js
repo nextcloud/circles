@@ -95,6 +95,7 @@ OC.L10N.register(
     "Mount point" : "Einhängepunkt",
     "Nextcloud User" : "Nextcloud-Benutzer",
     "Nextcloud Group" : "Nextcloud-Gruppe",
+    "Email Address" : "E-Mail-Adresse",
     "Contact" : "Kontakt",
     "Circle" : "Kreis",
     "Nextcloud App" : "Nextcloud-App",
