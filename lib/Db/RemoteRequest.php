@@ -92,6 +92,22 @@ class RemoteRequest extends RemoteRequestBuilder {
 	 *
 	 * @throws RemoteUidException
 	 */
+	public function updateItem(RemoteInstance $remote) {
+		$remote->mustBeIdentityAuthed();
+		$qb = $this->getRemoteUpdateSql();
+		$qb->set('item', $qb->createNamedParameter(json_encode($remote->getOrigData())));
+
+		$qb->limitToDBField('uid', $remote->getUid(true), false);
+
+		$qb->execute();
+	}
+
+
+	/**
+	 * @param RemoteInstance $remote
+	 *
+	 * @throws RemoteUidException
+	 */
 	public function updateInstance(RemoteInstance $remote) {
 		$remote->mustBeIdentityAuthed();
 		$qb = $this->getRemoteUpdateSql();
@@ -136,7 +152,7 @@ class RemoteRequest extends RemoteRequestBuilder {
 
 
 	/**
-	 * @return array
+	 * @return RemoteInstance[]
 	 */
 	public function getAllInstances(): array {
 		$qb = $this->getRemoteSelectSql();
