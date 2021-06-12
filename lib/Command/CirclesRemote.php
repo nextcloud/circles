@@ -295,6 +295,10 @@ class CirclesRemote extends Base {
 					. ' is already known with this current identity</info>'
 				);
 
+
+				$this->output->writeln('- updating item');
+				$this->remoteStreamService->update($remoteSignatory, RemoteStreamService::UPDATE_ITEM);
+
 				if ($remoteSignatory->getType() !== $stored->getType()) {
 					$this->output->writeln(
 						'- updating type from ' . $stored->getType() . ' to '
@@ -354,6 +358,9 @@ class CirclesRemote extends Base {
 		);
 
 		if ($this->input->getOption('yes') || $helper->ask($this->input, $this->output, $question)) {
+			if (!$this->interfaceService->isInterfaceInternal($remoteSignatory->getInterface())) {
+				$remoteSignatory->setAliases([]);
+			}
 			$this->remoteRequest->save($remoteSignatory);
 			$this->output->writeln('<info>remote instance saved</info>');
 		}
@@ -470,7 +477,7 @@ class CirclesRemote extends Base {
 		$output = new ConsoleOutput();
 		$output = $output->section();
 		$table = new Table($output);
-		$table->setHeaders(['instance', 'type', 'iface', 'UID', 'Authed']);
+		$table->setHeaders(['Instance', 'Type', 'iface', 'UID', 'Authed', 'Aliases']);
 		$table->render();
 
 		foreach ($instances as $instance) {
@@ -491,7 +498,8 @@ class CirclesRemote extends Base {
 					$instance->getType(),
 					InterfaceService::$LIST_IFACE[$instance->getInterface()],
 					$instance->getUid(),
-					$currentUid
+					$currentUid,
+					json_encode($instance->getAliases())
 				]
 			);
 		}
