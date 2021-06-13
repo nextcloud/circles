@@ -100,13 +100,15 @@ class CirclesMaintenance extends Base {
 		$level = (int)$input->getOption('level');
 
 		if ($reset || $uninstall) {
+			$action = strtolower(($uninstall) ? 'uninstall' : 'reset');
+
 			$output->writeln('');
 			$output->writeln('');
 			$output->writeln(
 				'<error>WARNING! You are about to delete all data related to the Circles App!</error>'
 			);
 			$question = new ConfirmationQuestion(
-				'<comment>Do you really want to want to reset Circle ?</comment> (y/N) ', false, '/^(y|Y)/i'
+				'<comment>Do you really want to ' . $action . ' Circles ?</comment> (y/N) ', false, '/^(y|Y)/i'
 			);
 
 			$helper = $this->getHelper('question');
@@ -119,16 +121,15 @@ class CirclesMaintenance extends Base {
 			$output->writeln('');
 			$output->writeln('<error>WARNING! This operation is not reversible.</error>');
 
-			$keyword = ($uninstall) ? 'uninstall' : 'reset';
 
 			$question = new Question(
-				'<comment>Please confirm this destructive operation by typing \'' . $keyword
+				'<comment>Please confirm this destructive operation by typing \'' . $action
 				. '\'</comment>: ', ''
 			);
 
 			$helper = $this->getHelper('question');
 			$confirmation = $helper->ask($input, $output, $question);
-			if (strtolower($confirmation) !== strtolower($keyword)) {
+			if (strtolower($confirmation) !== $action) {
 				$output->writeln('aborted.');
 
 				return 0;
@@ -139,7 +140,7 @@ class CirclesMaintenance extends Base {
 				$this->coreQueryBuilder->uninstall();
 			}
 
-			$output->writeln('<info>' . $keyword . ' done</info>');
+			$output->writeln('<info>' . $action . ' done</info>');
 
 			return 0;
 		}
