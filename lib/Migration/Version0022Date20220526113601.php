@@ -414,13 +414,13 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 			$table->addColumn(
 				'circle_id', 'string', [
 							   'notnull' => true,
-							   'length'  => 15,
+							   'length'  => 31,
 						   ]
 			);
 			$table->addColumn(
 				'single_id', 'string', [
 							   'notnull' => true,
-							   'length'  => 15,
+							   'length'  => 31,
 						   ]
 			);
 			$table->addColumn(
@@ -433,13 +433,13 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 			$table->addColumn(
 				'inheritance_first', 'string', [
 									   'notnull' => true,
-									   'length'  => 15,
+									   'length'  => 31,
 								   ]
 			);
 			$table->addColumn(
 				'inheritance_last', 'string', [
 									  'notnull' => true,
-									  'length'  => 15,
+									  'length'  => 31,
 								  ]
 			);
 			$table->addColumn(
@@ -479,19 +479,19 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 			$table->addColumn(
 				'mount_id', 'string', [
 							  'notnull' => false,
-							  'length'  => 15
+							  'length'  => 31
 						  ]
 			);
 			$table->addColumn(
 				'circle_id', 'string', [
 							   'notnull' => false,
-							   'length'  => 15
+							   'length'  => 31
 						   ]
 			);
 			$table->addColumn(
 				'single_id', 'string', [
 							   'notnull' => false,
-							   'length'  => 15
+							   'length'  => 31
 						   ]
 			);
 			$table->addColumn(
@@ -539,13 +539,13 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 			$table->addColumn(
 				'mount_id', 'string', [
 							  'notnull' => false,
-							  'length'  => 15
+							  'length'  => 31
 						  ]
 			);
 			$table->addColumn(
 				'single_id', 'string', [
 							   'notnull' => false,
-							   'length'  => 15
+							   'length'  => 31
 						   ]
 			);
 			$table->addColumn(
@@ -581,13 +581,13 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 			$table->addColumn(
 				'item_id', 'string', [
 							 'notnull' => true,
-							 'length'  => 15
+							 'length'  => 31
 						 ]
 			);
 			$table->addColumn(
 				'circle_id', 'string', [
 							   'notnull' => true,
-							   'length'  => 15
+							   'length'  => 31
 						   ]
 			);
 			$table->addColumn(

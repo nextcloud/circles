@@ -99,9 +99,6 @@ class MemberRequest extends MemberRequestBuilder {
 		   ->set('note', $qb->createNamedParameter(json_encode($member->getNotes())));
 
 		$qb->limitToCircleId($member->getCircleId());
-		$qb->limitToUserId($member->getUserId());
-		$qb->limitToUserType($member->getUserType());
-//		$qb->limitToInstance($qb->getInstance($member));
 		$qb->limitToSingleId($member->getSingleId());
 
 		$qb->execute();
@@ -148,9 +145,6 @@ class MemberRequest extends MemberRequestBuilder {
 	public function delete(Member $member) {
 		$qb = $this->getMemberDeleteSql();
 		$qb->limitToCircleId($member->getCircleId());
-		$qb->limitToUserId($member->getUserId());
-		$qb->limitToUserType($member->getUserType());
-		$qb->limitToInstance($qb->getInstance($member));
 		$qb->limitToSingleId($member->getSingleId());
 
 		$qb->execute();
@@ -209,9 +203,6 @@ class MemberRequest extends MemberRequestBuilder {
 
 		$qb->limitToMemberId($member->getId());
 		$qb->limitToCircleId($member->getCircleId());
-		$qb->limitToUserId($member->getUserId());
-		$qb->limitToUserType($member->getUserType());
-//		$qb->limitToInstance($qb->getInstance($member));
 		$qb->limitToSingleId($member->getSingleId());
 
 		$qb->execute();
@@ -347,9 +338,6 @@ class MemberRequest extends MemberRequestBuilder {
 	public function searchMember(Member $member, ?FederatedUser $initiator = null): Member {
 		$qb = $this->getMemberSelectSql();
 		$qb->limitToCircleId($member->getCircleId());
-		$qb->limitToUserId($member->getUserId());
-		$qb->limitToUserType($member->getUserType());
-		$qb->limitToInstance($qb->getInstance($member));
 		$qb->limitToSingleId($member->getSingleId());
 
 		$qb->leftJoinCircle(CoreQueryBuilder::MEMBER, $initiator);
@@ -375,23 +363,24 @@ class MemberRequest extends MemberRequestBuilder {
 	/**
 	 * @param IFederatedUser $federatedUser
 	 *
-	 * @return FederatedUser[]|Member
+	 * @return Member[]
 	 * @throws RequestBuilderException
 	 */
 	public function getAlternateSingleId(IFederatedUser $federatedUser): array {
 		$qb = $this->getMemberSelectSql();
 		$qb->limitToSingleId($federatedUser->getSingleId());
 
-		$expr = $qb->expr();
-		$orX = $expr->orX(
-			$qb->exprFilter('user_id', $federatedUser->getUserId()),
-			$qb->exprFilterInt('user_type', $federatedUser->getUserType()),
-			$qb->exprFilter('instance', $qb->getInstance($federatedUser), '', false)
-		);
+		$qb->leftJoinRemoteInstance(CoreQueryBuilder::MEMBER);
+//		$expr = $qb->expr();
+//		$orX = $expr->orX(
+//			$qb->exprFilter('user_id', $federatedUser->getUserId()),
+//			$qb->exprFilterInt('user_type', $federatedUser->getUserType()),
+//			$qb->exprFilter('instance', $qb->getInstance($federatedUser), '', false)
+//		);
+//
+//		$qb->andWhere($orX);
 
-		$qb->andWhere($orX);
-
-		return $this->getItemsFromRequest($qb, true);
+		return $this->getItemsFromRequest($qb);
 	}
 
 }

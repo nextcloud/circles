@@ -44,7 +44,7 @@ use OCP\Migration\SimpleMigrationStep;
  *
  * @package OCA\Circles\Migration
  */
-class Version0022Date20220607181712 extends SimpleMigrationStep {
+class Version0022Date20220613112211 extends SimpleMigrationStep {
 
 
 	/**
@@ -104,6 +104,93 @@ class Version0022Date20220607181712 extends SimpleMigrationStep {
 				$table->addIndex(['sanitized_name']);
 			}
 		}
+
+
+		if ($schema->hasTable('circles_membership')) {
+			$table = $schema->getTable('circles_membership');
+			$table->changeColumn(
+				'circle_id', [
+							   'notnull' => true,
+							   'length'  => 31,
+						   ]
+			);
+			$table->changeColumn(
+				'single_id', [
+							   'notnull' => true,
+							   'length'  => 31,
+						   ]
+			);
+			$table->changeColumn(
+				'inheritance_first', [
+									   'notnull' => true,
+									   'length'  => 31,
+								   ]
+			);
+			$table->changeColumn(
+				'inheritance_last', [
+									  'notnull' => true,
+									  'length'  => 31,
+								  ]
+			);
+		}
+
+
+		if ($schema->hasTable('circles_mount')) {
+			$table = $schema->getTable('circles_mount');
+			$table->changeColumn(
+				'mount_id', [
+							  'notnull' => true,
+							  'length'  => 31,
+						  ]
+			);
+			$table->changeColumn(
+				'circle_id', [
+							   'notnull' => true,
+							   'length'  => 31,
+						   ]
+			);
+			$table->changeColumn(
+				'single_id', [
+							   'notnull' => true,
+							   'length'  => 31,
+						   ]
+			);
+		}
+
+
+		if ($schema->hasTable('circles_mountpoint')) {
+			$table = $schema->getTable('circles_mountpoint');
+			$table->changeColumn(
+				'mount_id', [
+							  'notnull' => true,
+							  'length'  => 31,
+						  ]
+			);
+			$table->changeColumn(
+				'single_id', [
+							   'notnull' => true,
+							   'length'  => 31,
+						   ]
+			);
+		}
+
+
+		if ($schema->hasTable('circles_share_lock')) {
+			$table = $schema->getTable('circles_share_lock');
+			$table->changeColumn(
+				'item_id', [
+							 'notnull' => true,
+							 'length'  => 31,
+						 ]
+			);
+			$table->changeColumn(
+				'circle_id', [
+							   'notnull' => true,
+							   'length'  => 31,
+						   ]
+			);
+		}
+
 
 		return $schema;
 	}

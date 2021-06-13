@@ -43,7 +43,7 @@ use OCA\Circles\IFederatedUser;
 class ManagedModel {
 
 
-	const ID_LENGTH = 15;
+	const ID_LENGTH = 31;
 
 
 	/** @var ModelManager */
@@ -77,7 +77,7 @@ class ManagedModel {
 		if ($orig->hasBasedOn()) {
 			$this->setBasedOn($orig->getBasedOn());
 		}
-		
+
 		$this->setInstance($orig->getInstance());
 	}
 

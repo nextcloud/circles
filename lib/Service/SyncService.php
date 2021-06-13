@@ -370,7 +370,7 @@ class SyncService {
 
 		$member = new Member();
 		$member->importFromIFederatedUser($federatedUser);
-		$member->setId($this->uuid(ManagedModel::ID_LENGTH));
+		$member->setId($this->token(ManagedModel::ID_LENGTH));
 		$member->setCircleId($circle->getSingleId());
 		$member->setLevel(Member::LEVEL_MEMBER);
 		$member->setStatus(Member::STATUS_MEMBER);

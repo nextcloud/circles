@@ -112,6 +112,9 @@ class FederatedUserService {
 	/** @var RemoteService */
 	private $remoteService;
 
+	/** @var RemoteStreamService */
+	private $remoteStreamService;
+
 	/** @var ContactService */
 	private $contactService;
 
@@ -149,15 +152,24 @@ class FederatedUserService {
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
 	 * @param RemoteService $remoteService
+	 * @param RemoteStreamService $remoteStreamService
 	 * @param ContactService $contactService
 	 * @param InterfaceService $interfaceService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IUserSession $userSession, IUserManager $userManager, IGroupManager $groupManager,
-		FederatedEventService $federatedEventService, MembershipService $membershipService,
-		CircleRequest $circleRequest, MemberRequest $memberRequest, RemoteService $remoteService,
-		ContactService $contactService, InterfaceService $interfaceService, ConfigService $configService
+		IUserSession $userSession,
+		IUserManager $userManager,
+		IGroupManager $groupManager,
+		FederatedEventService $federatedEventService,
+		MembershipService $membershipService,
+		CircleRequest $circleRequest,
+		MemberRequest $memberRequest,
+		RemoteService $remoteService,
+		RemoteStreamService $remoteStreamService,
+		ContactService $contactService,
+		InterfaceService $interfaceService,
+		ConfigService $configService
 	) {
 		$this->userSession = $userSession;
 		$this->userManager = $userManager;
@@ -167,6 +179,7 @@ class FederatedUserService {
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
 		$this->remoteService = $remoteService;
+		$this->remoteStreamService = $remoteStreamService;
 		$this->contactService = $contactService;
 		$this->interfaceService = $interfaceService;
 		$this->configService = $configService;
@@ -540,7 +553,7 @@ class FederatedUserService {
 
 
 	/**
-	 * get a valid FederatedUser, based on the federatedId (userId@instance) its the type.
+	 * get a valid FederatedUser, based on the federatedId (userId@instance) and its type.
 	 * If instance is local, get the local valid FederatedUser
 	 * If instance is not local, get the remote valid FederatedUser
 	 *
@@ -572,6 +585,7 @@ class FederatedUserService {
 		}
 
 		list($singleId, $instance) = $this->extractIdAndInstance($federatedId);
+
 		switch ($type) {
 			case Member::TYPE_SINGLE:
 			case Member::TYPE_CIRCLE:
@@ -646,16 +660,16 @@ class FederatedUserService {
 	 * @throws RequestBuilderException
 	 */
 	public function getFederatedUser_SingleId(string $singleId, string $instance): FederatedUser {
-//		if (strlen($singleId) !== ManagedModel:::) {
-//			throw new MemberNotFoundException();
-//		}
-
 		if ($this->configService->isLocalInstance($instance)) {
 			return $this->circleRequest->getFederatedUserBySingleId($singleId);
 		} else {
-			$federatedUser =
-				$this->remoteService->getFederatedUserFromInstance($singleId, $instance, Member::TYPE_SINGLE);
-			$this->confirmLocalSingleId($federatedUser);
+			$federatedUser = $this->remoteService->getFederatedUserFromInstance(
+				$singleId,
+				$instance,
+				Member::TYPE_SINGLE
+			);
+
+			$this->confirmSingleIdUniqueness($federatedUser);
 
 			return $federatedUser;
 		}
@@ -682,9 +696,13 @@ class FederatedUserService {
 		if ($this->configService->isLocalInstance($instance)) {
 			return $this->getLocalFederatedUser($userId);
 		} else {
-			$federatedUser =
-				$this->remoteService->getFederatedUserFromInstance($userId, $instance, Member::TYPE_USER);
-			$this->confirmLocalSingleId($federatedUser);
+			$federatedUser = $this->remoteService->getFederatedUserFromInstance(
+				$userId,
+				$instance,
+				Member::TYPE_USER
+			);
+
+			$this->confirmSingleIdUniqueness($federatedUser);
 
 			return $federatedUser;
 		}
@@ -708,6 +726,7 @@ class FederatedUserService {
 	 * @throws RemoteResourceNotFoundException
 	 * @throws SingleCircleNotFoundException
 	 * @throws UnknownRemoteException
+	 * @throws RequestBuilderException
 	 */
 	public function getFederatedUser_Group(string $groupName, string $instance): FederatedUser {
 		if ($this->configService->isLocalInstance($instance)) {
@@ -917,6 +936,7 @@ class FederatedUserService {
 	 *
 	 * @throws FederatedUserException
 	 * @throws RequestBuilderException
+	 * @deprecated: use confirmSingleIdUniqueness()
 	 */
 	public function confirmLocalSingleId(IFederatedUser $federatedUser): void {
 		$members = $this->memberRequest->getMembersBySingleId($federatedUser->getSingleId());
@@ -934,6 +954,8 @@ class FederatedUserService {
 
 
 	/**
+	 * // TODO: implement this check in a maintenance background job
+	 *
 	 * @param IFederatedUser $federatedUser
 	 *
 	 * @throws FederatedUserException
@@ -941,11 +963,43 @@ class FederatedUserService {
 	 */
 	public function confirmSingleIdUniqueness(IFederatedUser $federatedUser): void {
 		// TODO: use aliases!
-		if (empty($this->memberRequest->getAlternateSingleId($federatedUser))) {
-			return;
+		// TODO: check also with Circles singleId
+
+
+		$remote = null;
+		if (!$this->configService->isLocalInstance($federatedUser->getInstance())) {
+			$remote = $this->remoteStreamService->getCachedRemoteInstance($federatedUser->getInstance());
 		}
 
-		throw new FederatedUserException('uniqueness of SingleId could not be confirmed');
+		$knownMembers = $this->memberRequest->getAlternateSingleId($federatedUser);
+		foreach ($knownMembers as $knownMember) {
+			if ($this->configService->isLocalInstance($federatedUser->getInstance())) {
+				if ($this->configService->isLocalInstance($knownMember->getInstance())) {
+					return;
+				} else {
+					throw new FederatedUserException('uniqueness of SingleId could not be confirmed (001)');
+				}
+			}
+
+			if (!$knownMember->hasRemoteInstance()) {
+				throw new FederatedUserException('uniqueness of SingleId could not be confirmed (002)');
+			}
+
+			$knownRemote = $knownMember->getRemoteInstance();
+			if ($this->interfaceService->isInterfaceInternal($knownRemote->getInterface())
+				&& !in_array($federatedUser->getInstance(), $knownRemote->getAliases())) {
+				throw new FederatedUserException('uniqueness of SingleId could not be confirmed (003)');
+			}
+
+			if (is_null($remote)) {
+				throw new FederatedUserException('uniqueness of SingleId could not be confirmed (004)');
+			}
+
+			if ($this->interfaceService->isInterfaceInternal($remote->getInterface())
+				&& !in_array($knownMember->getInstance(), $remote->getAliases())) {
+				throw new FederatedUserException('uniqueness of SingleId could not be confirmed (005)');
+			}
+		}
 	}
 
 

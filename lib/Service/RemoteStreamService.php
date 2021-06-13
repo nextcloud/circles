@@ -79,6 +79,7 @@ class RemoteStreamService extends NC22Signature {
 
 
 	const UPDATE_DATA = 'data';
+	const UPDATE_ITEM = 'item';
 	const UPDATE_TYPE = 'type';
 	const UPDATE_INSTANCE = 'instance';
 	const UPDATE_HREF = 'href';
@@ -408,6 +409,10 @@ class RemoteStreamService extends NC22Signature {
 		$remoteInstance->setType($type)
 					   ->setInterface($iface);
 
+		if (!$this->interfaceService->isInterfaceInternal($remoteInstance->getInterface())) {
+			$remoteInstance->setAliases([]);
+		}
+
 		try {
 			$known = $this->remoteRequest->searchDuplicate($remoteInstance);
 			if ($overwrite) {
@@ -544,9 +549,17 @@ class RemoteStreamService extends NC22Signature {
 	 * @throws RemoteUidException
 	 */
 	public function update(RemoteInstance $remote, string $update = self::UPDATE_DATA): void {
+		if (!$this->interfaceService->isInterfaceInternal($remote->getInterface())) {
+			$remote->setAliases([]);
+		}
+
 		switch ($update) {
 			case self::UPDATE_DATA:
 				$this->remoteRequest->update($remote);
+				break;
+
+			case self::UPDATE_ITEM:
+				$this->remoteRequest->updateItem($remote);
 				break;
 
 			case self::UPDATE_TYPE:

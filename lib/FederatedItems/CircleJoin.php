@@ -43,6 +43,7 @@ use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\MembersLimitException;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemHighSeverity;
@@ -153,9 +154,6 @@ class CircleJoin implements
 		$event->setMember($member)
 			  ->setOutcome($this->serialize($member));
 
-		// TODO: Managing cached name
-		//		$member->setCachedName($eventMember->getCachedName());
-
 		return;
 
 //
@@ -231,6 +229,8 @@ class CircleJoin implements
 	 * @param FederatedEvent $event
 	 *
 	 * @throws InvalidIdException
+	 * @throws RequestBuilderException
+	 * @throws FederatedUserException
 	 */
 	public function manage(FederatedEvent $event): void {
 		$member = $event->getMember();
@@ -245,12 +245,12 @@ class CircleJoin implements
 		try {
 			$federatedUser = new FederatedUser();
 			$federatedUser->importFromIFederatedUser($member);
-			$this->federatedUserService->confirmLocalSingleId($federatedUser);
 		} catch (FederatedUserException $e) {
 			$this->e($e, ['member' => $member]);
 
 			return;
 		}
+		$this->federatedUserService->confirmSingleIdUniqueness($federatedUser);
 
 		$this->memberRequest->save($member);
 		$this->membershipService->onUpdate($member->getSingleId());
@@ -281,7 +281,7 @@ class CircleJoin implements
 				switch ($knownMember->getStatus()) {
 
 					case Member::STATUS_BLOCKED:
-						throw new Exception('TODOTODOTODO');
+						throw new Exception('Blocked');
 
 					case Member::STATUS_REQUEST:
 						throw new MemberAlreadyExistsException(StatusCode::$CIRCLE_JOIN[123], 123);
@@ -300,7 +300,7 @@ class CircleJoin implements
 				throw new Exception('TODO TODO TODO - circle not open, cannot join!');
 			}
 
-			$member->setId($this->uuid(ManagedModel::ID_LENGTH));
+			$member->setId($this->token(ManagedModel::ID_LENGTH));
 
 			if ($circle->isConfig(Circle::CFG_REQUEST)) {
 				$member->setStatus(Member::STATUS_REQUEST);

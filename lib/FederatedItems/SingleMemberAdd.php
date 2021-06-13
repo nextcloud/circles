@@ -72,7 +72,6 @@ use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
-use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
@@ -226,13 +225,13 @@ class SingleMemberAdd implements
 	 */
 	public function manage(FederatedEvent $event): void {
 		$member = $event->getMember();
-		$member->setNoteObj('invitedBy', $member->getInvitedBy());
+//		$member->setNoteObj('invitedBy', $member->getInvitedBy());
 
+
+//		$this->federatedUserService->confirmSingleIdUniqueness($member);
 		if (!$this->insertOrUpdate($member)) {
 			return;
 		}
-
-		$this->membershipService->onUpdate($member->getSingleId());
 
 		$this->eventService->singleMemberAdding($event);
 
@@ -339,11 +338,15 @@ class SingleMemberAdd implements
 			if ($member->getSingleId() !== '') {
 				$userId = $member->getSingleId() . '@' . $member->getInstance();
 				$federatedUser = $this->federatedUserService->getFederatedUser($userId, Member::TYPE_SINGLE);
+
 			} else {
 				$userId = $member->getUserId() . '@' . $member->getInstance();
-				$federatedUser =
-					$this->federatedUserService->getFederatedUser($userId, $member->getUserType());
+				$federatedUser = $this->federatedUserService->getFederatedUser(
+					$userId,
+					$member->getUserType()
+				);
 			}
+
 		} catch (MemberNotFoundException $e) {
 			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[120], 120);
 		}
@@ -374,19 +377,14 @@ class SingleMemberAdd implements
 		$member->setCircle($circle);
 
 		$this->confirmPatron($event, $member);
-
 		$this->manageMemberStatus($circle, $member);
 
 		$this->circleService->confirmCircleNotFull($circle);
 
 		// The idea is that adding the member during the self::verify() will help during the broadcasting
 		// of the event to Federated RemoteInstance for their first member.
-		$this->insertOrUpdate($member);
+		$this->memberRequest->insertOrUpdate($member);
 
-		//	$member->setDisplayName($member->getBasedOn()->getDisplayName());
-
-		// TODO: Managing cached name
-		//		$member->setCachedName($eventMember->getCachedName());
 		return $member;
 	}
 
@@ -425,8 +423,7 @@ class SingleMemberAdd implements
 
 			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[122], 122);
 		} catch (MemberNotFoundException $e) {
-
-			$member->setId($this->uuid(ManagedModel::ID_LENGTH));
+			$member->setId($this->token(ManagedModel::ID_LENGTH));
 
 			if ($circle->isConfig(Circle::CFG_INVITE)) {
 				$member->setStatus(Member::STATUS_INVITED);
@@ -456,7 +453,7 @@ class SingleMemberAdd implements
 			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[130], 130);
 		}
 
-		$this->federatedUserService->confirmLocalSingleId($patron);
+//		$this->federatedUserService->confirmLocalSingleId($patron);
 	}
 
 
@@ -465,19 +462,21 @@ class SingleMemberAdd implements
 	 *
 	 * @return bool
 	 * @throws InvalidIdException
+	 * @throws RequestBuilderException
 	 */
-	private function insertOrUpdate(Member $member): bool {
+	protected function insertOrUpdate(Member $member): bool {
 		try {
-			$federatedUser = new FederatedUser();
-			$federatedUser->importFromIFederatedUser($member);
-			$this->federatedUserService->confirmLocalSingleId($federatedUser);
+			$this->federatedUserService->confirmSingleIdUniqueness($member);
+
+			$member->setNoteObj('invitedBy', $member->getInvitedBy());
+
+			$this->memberRequest->insertOrUpdate($member);
+			$this->membershipService->onUpdate($member->getSingleId());
 		} catch (FederatedUserException $e) {
 			$this->e($e, ['member' => $member]);
 
 			return false;
 		}
-
-		$this->memberRequest->insertOrUpdate($member);
 
 		return true;
 	}
