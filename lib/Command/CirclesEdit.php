@@ -144,7 +144,7 @@ class CirclesEdit extends Base {
 
 			switch ($edit) {
 				case 'displayname':
-					$outcome = $this->circleService->updateDisplayName($circleId, $newValue);
+					$outcome = $this->circleService->updateName($circleId, $newValue);
 					break;
 
 				case 'description':

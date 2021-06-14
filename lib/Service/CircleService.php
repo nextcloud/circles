@@ -254,7 +254,7 @@ class CircleService {
 
 	/**
 	 * @param string $circleId
-	 * @param string $displayName
+	 * @param string $name
 	 *
 	 * @return array
 	 * @throws CircleNotFoundException
@@ -269,12 +269,12 @@ class CircleService {
 	 * @throws RequestBuilderException
 	 * @throws UnknownRemoteException
 	 */
-	public function updateDisplayName(string $circleId, string $displayName): array {
+	public function updateName(string $circleId, string $name): array {
 		$circle = $this->getCircle($circleId);
 
 		$event = new FederatedEvent(CircleEdit::class);
 		$event->setCircle($circle);
-		$event->setParams(new SimpleDataStore(['displayName' => $displayName]));
+		$event->setParams(new SimpleDataStore(['name' => $name]));
 
 		$this->federatedEventService->newEvent($event);
 
