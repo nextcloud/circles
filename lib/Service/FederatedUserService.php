@@ -577,6 +577,7 @@ class FederatedUserService {
 	 * @throws RequestBuilderException
 	 */
 	public function getFederatedUser(string $federatedId, int $type = Member::TYPE_SINGLE): FederatedUser {
+		// if type=user, we check that handle@domain is not an actual local user
 		if ($type === Member::TYPE_USER) {
 			try {
 				return $this->getLocalFederatedUser($federatedId);

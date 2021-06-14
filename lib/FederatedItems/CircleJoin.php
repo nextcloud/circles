@@ -250,6 +250,7 @@ class CircleJoin implements
 
 			return;
 		}
+
 		$this->federatedUserService->confirmSingleIdUniqueness($federatedUser);
 
 		$this->memberRequest->save($member);
@@ -272,12 +273,12 @@ class CircleJoin implements
 	 * @param Member $member
 	 *
 	 * @throws FederatedItemBadRequestException
+	 * @throws RequestBuilderException
 	 */
 	private function manageMemberStatus(Circle $circle, Member $member) {
 		try {
-
 			$knownMember = $this->memberRequest->searchMember($member);
-			if ($knownMember->getLEvel() === Member::LEVEL_NONE) {
+			if ($knownMember->getLevel() === Member::LEVEL_NONE) {
 				switch ($knownMember->getStatus()) {
 
 					case Member::STATUS_BLOCKED:
@@ -297,7 +298,7 @@ class CircleJoin implements
 			throw new MemberAlreadyExistsException(StatusCode::$CIRCLE_JOIN[122], 122);
 		} catch (MemberNotFoundException $e) {
 			if (!$circle->isConfig(Circle::CFG_OPEN)) {
-				throw new Exception('TODO TODO TODO - circle not open, cannot join!');
+				throw new FederatedItemBadRequestException(StatusCode::$CIRCLE_JOIN[124], 124);
 			}
 
 			$member->setId($this->token(ManagedModel::ID_LENGTH));

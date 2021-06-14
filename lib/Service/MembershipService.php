@@ -38,6 +38,7 @@ use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
@@ -103,7 +104,7 @@ class MembershipService {
 
 		try {
 			$this->circleRequest->getFederatedUserBySingleId($singleId);
-		} catch (CircleNotFoundException | OwnerNotFoundException $e) {
+		} catch (FederatedUserNotFoundException | OwnerNotFoundException $e) {
 			$this->membershipRequest->removeBySingleId($singleId);
 		}
 

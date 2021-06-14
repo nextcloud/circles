@@ -34,6 +34,7 @@ namespace OCA\Circles\Db;
 
 use daita\MySmallPhpTools\Model\SimpleDataStore;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
@@ -262,16 +263,20 @@ class CircleRequest extends CircleRequestBuilder {
 	 * @param string $singleId
 	 *
 	 * @return FederatedUser
-	 * @throws CircleNotFoundException
 	 * @throws OwnerNotFoundException
 	 * @throws RequestBuilderException
+	 * @throws FederatedUserNotFoundException
 	 */
 	public function getFederatedUserBySingleId(string $singleId): FederatedUser {
 		$qb = $this->getCircleSelectSql();
 		$qb->limitToUniqueId($singleId);
 		$qb->leftJoinOwner(CoreQueryBuilder::CIRCLE);
 
-		$circle = $this->getItemFromRequest($qb);
+		try {
+			$circle = $this->getItemFromRequest($qb);
+		} catch (CircleNotFoundException $e) {
+			throw new FederatedUserNotFoundException('singleId not found');
+		}
 
 		$federatedUser = new FederatedUser();
 		$federatedUser->importFromCircle($circle);

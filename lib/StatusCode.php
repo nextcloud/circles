@@ -51,7 +51,8 @@ class StatusCode {
 	static $CIRCLE_JOIN = [
 		121 => 'Circle is full',
 		122 => 'You are already a member',
-		123 => 'Already requesting to join the circle'
+		123 => 'Already requesting to join the circle',
+		124 => 'Circle is closed'
 	];
 
 	static $CIRCLE_LEAVE = [

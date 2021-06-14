@@ -355,7 +355,7 @@ class CirclesMemberships extends Base {
 
 
 	/**
-	 * @throws CircleNotFoundException
+	 * @throws FederatedUserNotFoundException
 	 * @throws InitiatorNotFoundException
 	 * @throws OwnerNotFoundException
 	 * @throws RequestBuilderException

@@ -85,7 +85,6 @@ class MembersAdd extends Base {
 		parent::__construct();
 
 		$this->federatedUserService = $federatedUserService;
-
 		$this->memberService = $memberService;
 		$this->configService = $configService;
 	}

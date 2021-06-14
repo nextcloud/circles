@@ -359,6 +359,9 @@ class SyncService {
 	 * @param string $userId
 	 *
 	 * @return Member
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
 	 * @throws FederatedUserException
 	 * @throws FederatedUserNotFoundException
 	 * @throws InvalidIdException

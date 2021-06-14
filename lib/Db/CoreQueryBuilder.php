@@ -1068,10 +1068,11 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 			$default = [];
 			if ($this->getBool('canBeVisitor', $options, false)) {
 				$default = [
-					'user_id'   => $initiator->getUserId(),
-					'single_id' => $initiator->getSingleId(),
-					'user_type' => $initiator->getUserType(),
-					'instance'  => $initiator->getInstance()
+					'user_id'     => $initiator->getUserId(),
+					'single_id'   => $initiator->getSingleId(),
+					'user_type'   => $initiator->getUserType(),
+					'cached_name' => $initiator->getDisplayName(),
+					'instance'    => $initiator->getInstance()
 				];
 			}
 			$this->generateMemberSelectAlias($aliasInitiator, $default);
