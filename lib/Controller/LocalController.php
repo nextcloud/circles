@@ -408,11 +408,11 @@ class LocalController extends OcsController {
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
-	public function editDisplayName(string $circleId, string $value): DataResponse {
+	public function editName(string $circleId, string $value): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
 
-			$outcome = $this->circleService->updateDisplayName($circleId, $value);
+			$outcome = $this->circleService->updateName($circleId, $value);
 
 			return new DataResponse($this->serializeArray($outcome));
 		} catch (Exception $e) {
