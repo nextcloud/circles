@@ -50,7 +50,7 @@ return [
 		['name' => 'Local#circleJoin', 'url' => '/circles/{circleId}/join', 'verb' => 'PUT'],
 		['name' => 'Local#circleLeave', 'url' => '/circles/{circleId}/leave', 'verb' => 'PUT'],
 
-		['name' => 'Local#editName', 'url' => '/circles/{circleId}/displayName', 'verb' => 'PUT'],
+		['name' => 'Local#editName', 'url' => '/circles/{circleId}/name', 'verb' => 'PUT'],
 		['name' => 'Local#editDescription', 'url' => '/circles/{circleId}/description', 'verb' => 'PUT'],
 		['name' => 'Local#editSettings', 'url' => '/circles/{circleId}/settings', 'verb' => 'PUT'],
 		['name' => 'Local#editConfig', 'url' => '/circles/{circleId}/config', 'verb' => 'PUT'],
