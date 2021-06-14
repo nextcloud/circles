@@ -360,7 +360,11 @@ class CircleService {
 		$this->federatedUserService->mustHaveCurrentUser();
 
 		$circle = $this->circleRequest->getCircle($circleId, $this->federatedUserService->getCurrentUser());
+		if (!$circle->getInitiator()->hasInvitedBy()) {
+			$this->federatedUserService->setMemberPatron($circle->getInitiator());
+		}
 
+		echo json_encode($circle, JSON_PRETTY_PRINT);
 		$event = new FederatedEvent(CircleJoin::class);
 		$event->setCircle($circle);
 

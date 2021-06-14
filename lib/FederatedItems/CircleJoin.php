@@ -136,17 +136,19 @@ class CircleJoin implements
 	 *
 	 * @throws FederatedItemBadRequestException
 	 * @throws MembersLimitException
+	 * @throws RequestBuilderException
 	 */
 	public function verify(FederatedEvent $event): void {
 		$circle = $event->getCircle();
 		$initiator = $circle->getInitiator();
 
-//		$initiatorHelper = new MemberHelper($initiator);
-//		$initiatorHelper->cannotBeMember();
-
 		$member = new Member();
 		$member->importFromIFederatedUser($initiator);
 		$member->setCircleId($circle->getSingleId());
+		if ($initiator->hasInvitedBy()) {
+			$member->setInvitedBy($initiator->getInvitedBy());
+		}
+
 		$this->manageMemberStatus($circle, $member);
 
 		$this->circleService->confirmCircleNotFull($circle);
