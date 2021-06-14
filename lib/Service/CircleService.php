@@ -529,7 +529,7 @@ class CircleService {
 
 		$i = 1;
 		while (true) {
-			$testSanitizedName = $baseSanitizedName . (($i > 1) ? '-' . $i : '');
+			$testSanitizedName = $baseSanitizedName . (($i > 1) ? ' (' . $i . ')' : '');
 
 			$test = new Circle();
 			$test->setSanitizedName($testSanitizedName);
@@ -555,15 +555,17 @@ class CircleService {
 	 * @return string
 	 */
 	public function sanitizeName(string $name): string {
-		$acceptedChars = 'qwertyuiopasdfghjklzxcvbnm1234567890 ';
-		$sanitized = '';
-		for ($i = 0; $i < strlen($name); $i++) {
-			if (strpos($acceptedChars, strtolower($name[$i])) !== false) {
-				$sanitized .= $name[$i];
-			}
-		}
+		// replace '/' with '-' to prevent directory traversal
+		// replacing instead of stripping seems the better tradeoff here
+		$sanitized = str_replace('/', '-', $name);
 
-		return str_replace(' ', '', ucwords($sanitized));
+		// remove characters which are illegal on Windows (includes illegal characters on Unix/Linux)
+		// see also \OC\Files\Storage\Common::verifyPosixPath(...)
+		/** @noinspection CascadeStringReplacementInspection */
+		$sanitized = str_replace(['*', '|', '\\', ':', '"', '<', '>', '?'], '', $sanitized);
+
+		// remove leading+trailing spaces and dots to prevent hidden files
+		return trim($sanitized, ' .');
 	}
 
 
