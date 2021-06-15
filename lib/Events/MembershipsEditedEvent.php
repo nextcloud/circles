@@ -32,55 +32,39 @@ declare(strict_types=1);
 namespace OCA\Circles\Events;
 
 
-use OCA\Circles\Model\Federated\FederatedEvent;
+use OCA\Circles\Model\Membership;
+use OCP\EventDispatcher\Event;
 
 
 /**
- * Class CircleMemberRemovedEvent
- *
- * This Event is called when it has been confirmed that a Member have been removed on all instances used
- * by the Circle.
- * Meaning that the event won't be triggered until each instances have been once available during the
- * retry-on-fail initiated in a background job
- *
- * WARNING: Unlike RemovingCircleMemberEvent, this Event is only called on the master instance of the Circle.
+ * Class MembershipsEditedEvent
  *
  * @package OCA\Circles\Events
  */
-class CircleMemberRemovedEvent extends CircleResultGenericEvent {
+class MembershipsEditedEvent extends Event {
 
 
-	/** @var int */
-	private $type = 0;
+	/** @var Membership[] */
+	private $memberships;
 
 
 	/**
-	 * CircleMemberRemovedEvent constructor.
+	 * MembershipsEditedEvent constructor.
 	 *
-	 * @param FederatedEvent $federatedEvent
-	 * @param array $results
+	 * @param Membership[] $memberships
 	 */
-	public function __construct(FederatedEvent $federatedEvent, array $results) {
-		parent::__construct($federatedEvent, $results);
+	public function __construct(array $memberships) {
+		parent::__construct();
+
+		$this->memberships = $memberships;
 	}
 
 
 	/**
-	 * @param int $type
-	 *
-	 * @return $this
+	 * @return Membership[]
 	 */
-	public function setType(int $type): self {
-		$this->type = $type;
-
-		return $this;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getType(): int {
-		return $this->type;
+	public function getMemberships(): array {
+		return $this->memberships;
 	}
 
 }

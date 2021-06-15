@@ -36,54 +36,31 @@ use OCA\Circles\Model\Federated\FederatedEvent;
 
 
 /**
- * Class RemovingCircleMemberEvent
+ * Class EditingCircleEvent
  *
- * This event is called when a member is removed from a Circle.
+ * This event is called when a circle is edited.
  * This event is called on every instance of Nextcloud related to the Circle.
  *
- * The entry is already removed from the members table.
- * The memberships of the member are already removed from the memberships table.
+ * The entry is already edited in the circles table.
+ * If needed, the entries in the memberships table are already edited.
  *
- * This is a good place if anything needs to be executed when a member have been removed from a Circle.
+ * This is a good place if anything needs to be executed when a circle is edited.
  *
- * If anything needs to be managed on the master instance of the Circle (ie. CircleMemberRemovedEvent), please use:
+ * If anything needs to be managed on the master instance of the Circle (ie. CircleEditedEvent), please use:
  *    $event->getFederatedEvent()->addResult(string $key, array $data);
  *
  * @package OCA\Circles\Events
  */
-class RemovingCircleMemberEvent extends CircleMemberGenericEvent {
-
-
-	/** @var int */
-	private $type = 0;
+class EditingCircleEvent extends CircleMemberGenericEvent {
 
 
 	/**
-	 * RemovingCircleMemberEvent constructor.
+	 * EditingCircleEvent constructor.
 	 *
 	 * @param FederatedEvent $federatedEvent
 	 */
 	public function __construct(FederatedEvent $federatedEvent) {
 		parent::__construct($federatedEvent);
-	}
-
-
-	/**
-	 * @param int $type
-	 *
-	 * @return $this
-	 */
-	public function setType(int $type): self {
-		$this->type = $type;
-
-		return $this;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getType(): int {
-		return $this->type;
 	}
 
 }

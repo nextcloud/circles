@@ -38,9 +38,11 @@ use OCA\Circles\Exceptions\FederatedItemBadRequestException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\MemberLevelException;
 use OCA\Circles\IFederatedItem;
+use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\IFederatedItemMemberEmpty;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\StatusCode;
 
@@ -52,6 +54,7 @@ use OCA\Circles\StatusCode;
  */
 class MemberDisplayName implements
 	IFederatedItem,
+	IFederatedItemHighSeverity,
 	IFederatedItemMemberEmpty {
 
 
@@ -64,6 +67,9 @@ class MemberDisplayName implements
 	/** @var MembershipService */
 	private $membershipService;
 
+	/** @var EventService */
+	private $eventService;
+
 	/** @var ConfigService */
 	private $configService;
 
@@ -73,15 +79,18 @@ class MemberDisplayName implements
 	 *
 	 * @param MemberRequest $memberRequest
 	 * @param MembershipService $membershipService
+	 * @param EventService $eventService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		MemberRequest $memberRequest,
 		MembershipService $membershipService,
+		EventService $eventService,
 		ConfigService $configService
 	) {
 		$this->memberRequest = $memberRequest;
 		$this->membershipService = $membershipService;
+		$this->eventService = $eventService;
 		$this->configService = $configService;
 	}
 
@@ -121,6 +130,8 @@ class MemberDisplayName implements
 
 		$member->setDisplayName($displayName);
 		$this->memberRequest->updateDisplayName($member->getSingleId(), $displayName, $circle->getSingleId());
+
+		$this->eventService->memberNameEditing($event);
 	}
 
 
@@ -129,6 +140,7 @@ class MemberDisplayName implements
 	 * @param array $results
 	 */
 	public function result(FederatedEvent $event, array $results): void {
+		$this->eventService->memberNameEdited($event, $results);
 	}
 
 }

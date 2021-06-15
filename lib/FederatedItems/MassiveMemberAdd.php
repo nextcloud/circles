@@ -42,6 +42,7 @@ use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\IFederatedItemMemberEmpty;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
+use OCA\Circles\Model\Member;
 
 
 /**
@@ -87,8 +88,6 @@ class MassiveMemberAdd extends SingleMemberAdd implements
 
 	/**
 	 * @param FederatedEvent $event
-	 *
-	 * @throws InvalidIdException
 	 */
 	public function manage(FederatedEvent $event): void {
 		$members = $event->getMembers();
@@ -98,15 +97,26 @@ class MassiveMemberAdd extends SingleMemberAdd implements
 			try {
 				if ($this->insertOrUpdate($member)) {
 					$filtered[] = $member;
+				} else {
+					$event->getData()->aObj('faulty', $member);
 				}
 			} catch (Exception $e) {
 			}
 		}
 
-		$event->setMembers($filtered);
-		if (!empty($filtered)) {
-			$this->eventService->multipleMemberAdding($event);
+		foreach ($filtered as $member) {
+			$event->setMember($member);
+			if ($member->getStatus() === Member::STATUS_INVITED) {
+				$this->eventService->memberInviting($event);
+			} else {
+				$this->eventService->memberAdding($event);
+			}
 		}
+
+//		$event->setMembers($filtered);
+//		if (!empty($filtered)) {
+//			$this->eventService->multipleMemberAdding($event);
+//		}
 	}
 
 

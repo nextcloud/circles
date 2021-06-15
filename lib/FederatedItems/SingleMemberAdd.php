@@ -225,15 +225,16 @@ class SingleMemberAdd implements
 	 */
 	public function manage(FederatedEvent $event): void {
 		$member = $event->getMember();
-//		$member->setNoteObj('invitedBy', $member->getInvitedBy());
 
-
-//		$this->federatedUserService->confirmSingleIdUniqueness($member);
 		if (!$this->insertOrUpdate($member)) {
 			return;
 		}
 
-		$this->eventService->singleMemberAdding($event);
+		if ($member->getStatus() === Member::STATUS_INVITED) {
+			$this->eventService->memberInviting($event);
+		} else {
+			$this->eventService->memberAdding($event);
+		}
 
 //
 //		//
@@ -264,7 +265,12 @@ class SingleMemberAdd implements
 	 * @param array $results
 	 */
 	public function result(FederatedEvent $event, array $results): void {
-		$this->eventService->singleMemberAdded($event, $results);
+		$member = $event->getMember();
+		if ($member->getStatus() === Member::STATUS_INVITED) {
+			$this->eventService->memberInvited($event, $results);
+		} else {
+			$this->eventService->memberAdded($event, $results);
+		}
 
 //		$password = $cachedName = '';
 //		$circle = $member = null;
