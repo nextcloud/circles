@@ -150,6 +150,40 @@ class CirclesManager {
 		$this->federatedUserService->bypassCurrentUserCondition(true);
 	}
 
+
+	/**
+	 * $userId - userId to emulate as initiator (can be empty)
+	 * $userType - specify if userIs not a singleId
+	 * $circleId - if no userId specified, will use the owner of the Circle as initiator
+	 *
+	 * @param string $userId
+	 * @param int $userType
+	 * @param string $circleId
+	 *
+	 * @throws CircleNotFoundException
+	 * @throws FederatedItemException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
+	 * @throws MemberNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
+	 * @throws UnknownRemoteException
+	 * @throws UserTypeNotFoundException
+	 */
+	public function startOccSession(
+		string $userId,
+		int $userType = Member::TYPE_SINGLE,
+		string $circleId = ''
+	): void {
+		$this->federatedUserService->commandLineInitiator($userId, $userType, $circleId);
+	}
+
+
 	/**
 	 *
 	 */
