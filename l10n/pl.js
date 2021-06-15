@@ -259,7 +259,7 @@ OC.L10N.register(
     "Member updated" : "Członek zaktualizowany",
     "Member could not be updated" : "Nie można zaktualizować członka",
     "Issue while saving settings" : "Błąd podczas zapisywania ustawień",
-    "Settings saved." : "Zapisano ustawienia.",
+    "Settings saved." : "Ustawienia zapisane.",
     "%s shared »%s« with '%s'." : "%s udostępnił »%s« z \"%s\".",
     "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n" : "%1$sudostępnił Tobie »%2$s«.\nPowinieneś otrzymać osobną wiadomość e-mail z linkiem do niego.\n",
     "%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it." : "%1$sudostępnił Tobie »%2$s«. Powinieneś otrzymać osobną wiadomość e-mail z linkiem do niego.",
