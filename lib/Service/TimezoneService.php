@@ -27,11 +27,17 @@
 namespace OCA\Circles\Service;
 
 
+use DateTime;
+use OC\AppFramework\Utility\TimeFactory;
+
 class TimezoneService {
 
 
 	/** @var string */
 	private $userId;
+
+	/** @var TimeFactory */
+	private $timeFactory;
 
 	/** @var ConfigService */
 	private $configService;
@@ -41,10 +47,16 @@ class TimezoneService {
 	 * TimezoneService constructor.
 	 *
 	 * @param string $userId
+	 * @param TimeFactory $timeFactory
 	 * @param ConfigService $configService
 	 */
-	public function __construct($userId, ConfigService $configService) {
+	public function __construct(
+		$userId,
+		TimeFactory $timeFactory,
+		ConfigService $configService
+	) {
 		$this->userId = $userId;
+		$this->timeFactory = $timeFactory;
 		$this->configService = $configService;
 	}
 
@@ -80,6 +92,16 @@ class TimezoneService {
 		$date->setTimezone(new \DateTimeZone($timezone));
 
 		return $date->format('Y-m-d H:i:s');
+	}
+
+
+	/**
+	 * @param string $time
+	 *
+	 * @return DateTime
+	 */
+	public function getDateTime(string $time = 'now'): DateTime {
+		return $this->timeFactory->getDateTime($time);
 	}
 
 

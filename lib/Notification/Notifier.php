@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -8,7 +10,7 @@
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2017
+ * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -30,9 +32,19 @@
 namespace OCA\Circles\Notification;
 
 
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
+use Exception;
 use InvalidArgumentException;
-use OC;
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\Exceptions\FederatedUserException;
+use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\InvalidIdException;
+use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\Exceptions\SingleCircleNotFoundException;
+use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Service\MemberService;
 use OCP\Contacts\IManager;
 use OCP\Federation\ICloudIdManager;
 use OCP\IL10N;
@@ -50,6 +62,9 @@ use OCP\Notification\INotifier;
 class Notifier implements INotifier {
 
 
+	use TNC22Logger;
+
+
 	/** @var IL10N */
 	private $l10n;
 
@@ -61,7 +76,7 @@ class Notifier implements INotifier {
 	protected $contactsManager;
 
 	/** @var IURLGenerator */
-	protected $url;
+	protected $urlGenerator;
 
 	/** @var array */
 	protected $federatedContacts;
@@ -69,16 +84,32 @@ class Notifier implements INotifier {
 	/** @var ICloudIdManager */
 	protected $cloudIdManager;
 
+	/** @var FederatedUserService */
+	private $federatedUserService;
+
+	/** @var MemberService */
+	private $memberService;
+
 
 	public function __construct(
-		IL10N $l10n, IFactory $factory, IManager $contactsManager, IURLGenerator $url,
-		ICloudIdManager $cloudIdManager
+		IL10N $l10n,
+		IFactory $factory,
+		IManager $contactsManager,
+		IURLGenerator $urlGenerator,
+		ICloudIdManager $cloudIdManager,
+		MemberService $memberService,
+		FederatedUserService $federatedUserService
 	) {
 		$this->l10n = $l10n;
 		$this->factory = $factory;
 		$this->contactsManager = $contactsManager;
-		$this->url = $url;
+		$this->urlGenerator = $urlGenerator;
 		$this->cloudIdManager = $cloudIdManager;
+
+		$this->federatedUserService = $federatedUserService;
+		$this->memberService = $memberService;
+
+		$this->setup('app', Application::APP_ID);
 	}
 
 	/**
@@ -88,7 +119,7 @@ class Notifier implements INotifier {
 	 * @since 17.0.0
 	 */
 	public function getID(): string {
-		return 'circles';
+		return Application::APP_ID;
 	}
 
 	/**
@@ -98,7 +129,7 @@ class Notifier implements INotifier {
 	 * @since 17.0.0
 	 */
 	public function getName(): string {
-		return $this->l10n->t('Circles');
+		return $this->l10n->t(Application::APP_NAME);
 	}
 
 	/**
@@ -109,33 +140,74 @@ class Notifier implements INotifier {
 	 * @throws InvalidArgumentException
 	 */
 	public function prepare(INotification $notification, string $languageCode): INotification {
-		if ($notification->getApp() !== 'circles') {
+		if ($notification->getApp() !== Application::APP_ID) {
 			throw new InvalidArgumentException();
 		}
 
-		$l10n = OC::$server->getL10N(Application::APP_ID, $languageCode);
+		$iconPath = $this->urlGenerator->imagePath(Application::APP_ID, 'black_circle.svg');
+		$notification->setIcon($this->urlGenerator->getAbsoluteURL($iconPath));
 
-		$notification->setIcon(
-			$this->url->getAbsoluteURL($this->url->imagePath('circles', 'black_circle.svg'))
+		if ($notification->getObjectType() === 'member') {
+			try {
+				$this->prepareMemberNotification($notification);
+			} catch (Exception $e) {
+				// TODO: delete notification
+			}
+		}
+
+		$this->prepareActions($notification);
+
+		return $notification;
+
+	}
+
+
+	/**
+	 * @param INotification $notification
+	 *
+	 * @throws InitiatorNotFoundException
+	 * @throws MemberNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
+	 * @throws SingleCircleNotFoundException
+	 */
+	private function prepareMemberNotification(INotification $notification) {
+		$this->federatedUserService->initCurrentUser();
+		$member = $this->memberService->getMemberById(
+			$notification->getObjectId(),
+			'',
+			true
 		);
-		$params = $notification->getSubjectParameters();
 
 		switch ($notification->getSubject()) {
+			case 'memberAdd':
+				$subject = $this->l10n->t(
+					'You are now a member of the Circle "%2$s"',
+					[
+						$member->getCircle()->getDisplayName()
+					]
+				);
+				break;
+
 			case 'invitation':
-				$notification->setParsedSubject(
-					$l10n->t('You have been invited by %1$s into the Circle "%2$s"', $params)
+				$subject = $this->l10n->t(
+					'You have been invited by %1$s into the Circle "%2$s"',
+					[
+						$member->getInvitedBy()->getDisplayName(),
+						$member->getCircle()->getDisplayName()
+					]
 				);
 				break;
 
-			case 'member_new':
-				$notification->setParsedSubject(
-					$l10n->t('You are now a member of the Circle "%2$s"', $params)
-				);
-				break;
-
-			case 'request_new':
-				$notification->setParsedSubject(
-					$l10n->t('%1$s sent a request to be a member of the Circle "%2$s"', $params)
+			case 'joinRequest':
+				$subject = $this->l10n->t(
+					'%1$s sent a request to be a member of the Circle "%2$s"',
+					[
+						$member->getDisplayName(),
+						$member->getCircle()->getDisplayName()
+					]
 				);
 				break;
 
@@ -143,28 +215,34 @@ class Notifier implements INotifier {
 				throw new InvalidArgumentException();
 		}
 
+		$notification->setParsedSubject($subject);
 
+	}
+
+
+	/**
+	 * @param INotification $notification
+	 */
+	private function prepareActions(INotification $notification): void {
 		foreach ($notification->getActions() as $action) {
 			switch ($action->getLabel()) {
 				case 'accept':
-					$action->setParsedLabel((string)$l10n->t('Accept'))
+					$action->setParsedLabel($this->l10n->t('Accept'))
 						   ->setPrimary(true);
 					break;
 
 				case 'refuse':
-					$action->setParsedLabel((string)$l10n->t('Refuse'));
+					$action->setParsedLabel($this->l10n->t('Refuse'));
 					break;
 
 				case 'leave':
-					$action->setParsedLabel((string)$l10n->t('Leave the circle'));
+					$action->setParsedLabel($this->l10n->t('Leave the circle'));
 					break;
 			}
 
 			$notification->addParsedAction($action);
 		}
-
-		return $notification;
-
 	}
 
 }
+

@@ -33,8 +33,10 @@ namespace OCA\Circles\Service;
 
 
 use daita\MySmallPhpTools\Model\SimpleDataStore;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use daita\MySmallPhpTools\Traits\TArrayTools;
 use daita\MySmallPhpTools\Traits\TStringTools;
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
@@ -74,6 +76,7 @@ class CircleService {
 
 	use TArrayTools;
 	use TStringTools;
+	use TNC22Logger;
 
 
 	/** @var CircleRequest */
@@ -110,9 +113,13 @@ class CircleService {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		CircleRequest $circleRequest, MemberRequest $memberRequest, RemoteStreamService $remoteStreamService,
-		FederatedUserService $federatedUserService, FederatedEventService $federatedEventService,
-		MemberService $memberService, ConfigService $configService
+		CircleRequest $circleRequest,
+		MemberRequest $memberRequest,
+		RemoteStreamService $remoteStreamService,
+		FederatedUserService $federatedUserService,
+		FederatedEventService $federatedEventService,
+		MemberService $memberService,
+		ConfigService $configService
 	) {
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
@@ -121,6 +128,8 @@ class CircleService {
 		$this->federatedEventService = $federatedEventService;
 		$this->memberService = $memberService;
 		$this->configService = $configService;
+
+		$this->setup('app', Application::APP_ID);
 	}
 
 

@@ -32,7 +32,12 @@ declare(strict_types=1);
 namespace OCA\Circles\Listeners\Notifications;
 
 
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
+use OCA\Circles\AppInfo\Application;
+use OCA\Circles\Events\CircleGenericEvent;
 use OCA\Circles\Events\RequestingCircleMemberEvent;
+use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\Service\NotificationService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 
@@ -45,22 +50,42 @@ use OCP\EventDispatcher\IEventListener;
 class RequestingMember implements IEventListener {
 
 
+	use TNC22Logger;
+
+
+	/** @var NotificationService */
+	private $notificationService;
+
+
 	/**
 	 * RequestingMember constructor.
 	 */
-	public function __construct() {
+	public function __construct(NotificationService $notificationService) {
+		$this->notificationService = $notificationService;
+
+		$this->setup('app', Application::APP_ID);
 	}
 
 
 	/**
 	 * @param Event $event
+	 *
+	 * @throws RequestBuilderException
 	 */
 	public function handle(Event $event): void {
 		if (!$event instanceof RequestingCircleMemberEvent) {
 			return;
 		}
 
+		$member = $event->getMember();
+
+		if ($event->getType() === CircleGenericEvent::REQUESTED) {
+			$this->notificationService->notificationRequested($member);
+		} else {
+			$this->notificationService->notificationInvited($member);
+		}
 	}
+
 
 }
 

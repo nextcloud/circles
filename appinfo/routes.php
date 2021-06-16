@@ -40,6 +40,10 @@ return [
 		['name' => 'Local#memberAdd', 'url' => '/circles/{circleId}/members', 'verb' => 'POST'],
 		['name' => 'Local#membersAdd', 'url' => '/circles/{circleId}/members/multi', 'verb' => 'POST'],
 		[
+			'name' => 'Local#memberConfirm', 'url' => '/circles/{circleId}/members/{memberId}',
+			'verb' => 'PUT'
+		],
+		[
 			'name' => 'Local#memberRemove', 'url' => '/circles/{circleId}/members/{memberId}',
 			'verb' => 'DELETE'
 		],

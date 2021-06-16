@@ -925,15 +925,24 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	 *
 	 * @param string $alias
 	 * @param string $singleId
+	 * @param int $level
 	 *
 	 * @throws RequestBuilderException
 	 */
-	public function limitToMembersByInheritance(string $alias, string $singleId): void {
+	public function limitToMembersByInheritance(string $alias, string $singleId, int $level = 0): void {
 		$this->leftJoinMembersByInheritance($alias);
 
 		$expr = $this->expr();
 		$aliasMembership = $this->generateAlias($alias, self::MEMBERSHIPS);
 		$this->andWhere($expr->eq($aliasMembership . '.circle_id', $this->createNamedParameter($singleId)));
+		if ($level > 1) {
+			$this->andWhere(
+				$expr->gte(
+					$aliasMembership . '.level',
+					$this->createNamedParameter($level, IQueryBuilder::PARAM_INT)
+				)
+			);
+		}
 	}
 
 
@@ -956,10 +965,10 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 
 		$this->leftJoin(
 			$alias, CoreRequestBuilder::TABLE_MEMBERSHIP, $aliasMembership,
-//			$expr->andX(
-			$expr->eq($aliasMembership . '.inheritance_last', $alias . '.' . $field)
-//				$expr->eq($aliasMembership . '.single_id', $alias . '.single_id')
-//			)
+			$expr->andX(
+				$expr->eq($aliasMembership . '.inheritance_last', $alias . '.' . $field),
+				$expr->eq($aliasMembership . '.single_id', $alias . '.single_id')
+			)
 		);
 
 		if (!$this->getBool('getData', $options, false)) {

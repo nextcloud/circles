@@ -236,7 +236,6 @@ class CoreRequestBuilder {
 	 * @throws InvalidIdException
 	 */
 	public function confirmValidId(string $id): void {
-		// TODO: lock size to 15
 		if (strlen($id) < 14) {
 			throw new InvalidIdException();
 		}

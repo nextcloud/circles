@@ -148,7 +148,7 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 		8     => 'Contact',
 		16    => 'Circle',
 		10001 => 'Circles App',
-		10002 => 'occ Command Line'
+		10002 => 'Admin Command Line'
 	];
 
 

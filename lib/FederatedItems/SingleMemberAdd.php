@@ -80,6 +80,7 @@ use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Service\RemoteStreamService;
 use OCA\Circles\StatusCode;
@@ -124,6 +125,9 @@ class SingleMemberAdd implements
 	/** @var CircleService */
 	protected $circleService;
 
+	/** @var MemberService */
+	protected $memberService;
+
 	/** @var MembershipService */
 	protected $membershipService;
 
@@ -142,20 +146,28 @@ class SingleMemberAdd implements
 	 * @param FederatedUserService $federatedUserService
 	 * @param RemoteStreamService $remoteStreamService
 	 * @param CircleService $circleService
+	 * @param MemberService $memberService
 	 * @param MembershipService $membershipService
 	 * @param EventService $eventService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IUserManager $userManager, MemberRequest $memberRequest, FederatedUserService $federatedUserService,
-		RemoteStreamService $remoteStreamService, CircleService $circleService,
-		MembershipService $membershipService, EventService $eventService, ConfigService $configService
+		IUserManager $userManager,
+		MemberRequest $memberRequest,
+		FederatedUserService $federatedUserService,
+		RemoteStreamService $remoteStreamService,
+		CircleService $circleService,
+		MemberService $memberService,
+		MembershipService $membershipService,
+		EventService $eventService,
+		ConfigService $configService
 	) {
 		$this->userManager = $userManager;
 		$this->memberRequest = $memberRequest;
 		$this->federatedUserService = $federatedUserService;
 		$this->remoteStreamService = $remoteStreamService;
 		$this->circleService = $circleService;
+		$this->memberService = $memberService;
 		$this->membershipService = $membershipService;
 		$this->eventService = $eventService;
 		$this->configService = $configService;
@@ -221,12 +233,13 @@ class SingleMemberAdd implements
 	 * @param FederatedEvent $event
 	 *
 	 * @throws InvalidIdException
+	 * @throws RemoteNotFoundException
 	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
 	 */
 	public function manage(FederatedEvent $event): void {
 		$member = $event->getMember();
-
-		if (!$this->insertOrUpdate($member)) {
+		if (!$this->memberService->insertOrUpdate($member)) {
 			return;
 		}
 
@@ -462,33 +475,6 @@ class SingleMemberAdd implements
 		}
 
 		$this->federatedUserService->confirmSingleIdUniqueness($patron);
-	}
-
-
-	/**
-	 * @param Member $member
-	 *
-	 * @return bool
-	 * @throws InvalidIdException
-	 * @throws RemoteNotFoundException
-	 * @throws RequestBuilderException
-	 * @throws UnknownRemoteException
-	 */
-	protected function insertOrUpdate(Member $member): bool {
-		try {
-			$this->federatedUserService->confirmSingleIdUniqueness($member);
-
-			$member->setNoteObj('invitedBy', $member->getInvitedBy());
-
-			$this->memberRequest->insertOrUpdate($member);
-			$this->membershipService->onUpdate($member->getSingleId());
-		} catch (FederatedUserException $e) {
-			$this->e($e, ['member' => $member]);
-
-			return false;
-		}
-
-		return true;
 	}
 
 

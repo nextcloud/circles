@@ -40,6 +40,7 @@ use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
+use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
@@ -336,6 +337,32 @@ class LocalController extends OcsController {
 			return new DataResponse($this->serializeArray($result));
 		} catch (Exception $e) {
 			throw new OcsException($e->getMessage(), $e->getCode());
+		}
+	}
+
+
+	/**
+	 * @NoAdminRequired
+	 *
+	 * @param string $circleId
+	 * @param string $memberId
+	 *
+	 * @return DataResponse
+	 * @throws OCSException
+	 */
+	public function memberConfirm(string $circleId, string $memberId): DataResponse {
+		try {
+			$this->setCurrentFederatedUser();
+
+			$member = $this->memberService->getMemberById($memberId, $circleId);
+			$federatedUser = new FederatedUser();
+			$federatedUser->importFromIFederatedUser($member);
+
+			$result = $this->memberService->addMember($circleId, $federatedUser);
+
+			return new DataResponse($this->serializeArray($result));
+		} catch (Exception $e) {
+			throw new OCSException($e->getMessage(), $e->getCode());
 		}
 	}
 
