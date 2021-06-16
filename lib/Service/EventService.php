@@ -36,6 +36,8 @@ namespace OCA\Circles\Service;
 
 
 use daita\MySmallPhpTools\Model\SimpleDataStore;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Events\AddingCircleMemberEvent;
 use OCA\Circles\Events\CircleCreatedEvent;
 use OCA\Circles\Events\CircleDestroyedEvent;
@@ -68,6 +70,9 @@ use OCP\EventDispatcher\IEventDispatcher;
 class EventService {
 
 
+	use TNC22Logger;
+
+
 	/** @var IEventDispatcher */
 	private $eventDispatcher;
 
@@ -79,6 +84,8 @@ class EventService {
 	 */
 	public function __construct(IEventDispatcher $eventDispatcher) {
 		$this->eventDispatcher = $eventDispatcher;
+
+		$this->setup('app', Application::APP_ID);
 	}
 
 
@@ -152,28 +159,6 @@ class EventService {
 	public function memberAdded(FederatedEvent $federatedEvent, array $results): void {
 		$event = new CircleMemberAddedEvent($federatedEvent, $results);
 		$event->setType(CircleGenericEvent::INVITED);
-		$this->eventDispatcher->dispatchTyped($event);
-	}
-
-
-	/**
-	 * @deprecated
-	 * @param FederatedEvent $federatedEvent
-	 */
-	public function multipleMemberAdding(FederatedEvent $federatedEvent): void {
-		$event = new AddingCircleMemberEvent($federatedEvent);
-		$event->setType(CircleGenericEvent::MULTIPLE);
-		$this->eventDispatcher->dispatchTyped($event);
-	}
-
-	/**
-	 * @deprecated
-	 * @param FederatedEvent $federatedEvent
-	 * @param array $results
-	 */
-	public function multipleMemberAdded(FederatedEvent $federatedEvent, array $results): void {
-		$event = new CircleMemberAddedEvent($federatedEvent, $results);
-		$event->setType(CircleGenericEvent::MULTIPLE);
 		$this->eventDispatcher->dispatchTyped($event);
 	}
 
@@ -348,6 +333,7 @@ class EventService {
 
 	/**
 	 * @param ShareWrapper $wrappedShare
+	 * @param Mount $mount
 	 */
 	public function federatedShareCreated(ShareWrapper $wrappedShare, Mount $mount): void {
 //		Circles::shareToCircle(

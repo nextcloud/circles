@@ -44,9 +44,10 @@ use OCA\Circles\Events\MembershipsRemovedEvent;
 use OCA\Circles\Events\RequestingCircleMemberEvent;
 use OCA\Circles\Handlers\WebfingerHandler;
 use OCA\Circles\Listeners\DeprecatedListener;
-use OCA\Circles\Listeners\Examples\AddingExampleCircleMember;
+use OCA\Circles\Listeners\Examples\ExampleAddingCircleMember;
 use OCA\Circles\Listeners\Examples\ExampleMembershipsCreated;
 use OCA\Circles\Listeners\Examples\ExampleMembershipsRemoved;
+use OCA\Circles\Listeners\Examples\ExampleRequestingCircleMember;
 use OCA\Circles\Listeners\Files\AddingMember as ListenerFilesAddingMember;
 use OCA\Circles\Listeners\Files\MemberAdded as ListenerFilesMemberAdded;
 use OCA\Circles\Listeners\Files\MembershipsRemoved as ListenerFilesMembershipsRemoved;
@@ -226,7 +227,10 @@ class Application extends App implements IBootstrap {
 	 * @param IRegistrationContext $context
 	 */
 	private function loadExampleEvents(IRegistrationContext $context): void {
-		$context->registerEventListener(AddingCircleMemberEvent::class, AddingExampleCircleMember::class);
+		$context->registerEventListener(AddingCircleMemberEvent::class, ExampleAddingCircleMember::class);
+		$context->registerEventListener(
+			RequestingCircleMemberEvent::class, ExampleRequestingCircleMember::class
+		);
 		$context->registerEventListener(MembershipsCreatedEvent::class, ExampleMembershipsCreated::class);
 		$context->registerEventListener(MembershipsRemovedEvent::class, ExampleMembershipsRemoved::class);
 	}
@@ -261,11 +265,11 @@ class Application extends App implements IBootstrap {
 				$l = OC::$server->getL10N('circles');
 
 				return [
-					'id'      => 'circlesfilter',
+					'id' => 'circlesfilter',
 					'appname' => 'circles',
-					'script'  => 'files/list.php',
-					'order'   => 25,
-					'name'    => $l->t('Shared to Circles'),
+					'script' => 'files/list.php',
+					'order' => 25,
+					'name' => $l->t('Shared to Circles'),
 				];
 			}
 		);

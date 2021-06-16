@@ -59,10 +59,9 @@ class MemberAdded implements IEventListener {
 		}
 
 		$federatedUsers = [];
-		foreach ($event->getMembers() as $member) {
-			if ($member->getUserType() === Member::TYPE_MAIL) {
-				$federatedUsers[] = $member;
-			}
+		$member = $event->getMember();
+		if ($member->getUserType() === Member::TYPE_MAIL) {
+			$federatedUsers[] = $member;
 		}
 
 		if (empty($federatedUsers)) {

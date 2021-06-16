@@ -33,7 +33,6 @@ namespace OCA\Circles\Listeners\Examples;
 
 
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
-use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Events\AddingCircleMemberEvent;
 use OCA\Circles\Events\CircleGenericEvent;
@@ -45,14 +44,13 @@ use OCP\EventDispatcher\IEventListener;
 
 
 /**
- * Class AddingExampleCircleMember
+ * Class ExampleAddingCircleMember
  *
  * @package OCA\Circles\Listeners\Files
  */
-class AddingExampleCircleMember implements IEventListener {
+class ExampleAddingCircleMember implements IEventListener {
 
 
-	use TStringTools;
 	use TNC22Logger;
 
 
@@ -61,7 +59,7 @@ class AddingExampleCircleMember implements IEventListener {
 
 
 	/**
-	 * AddingExampleCircleMember constructor.
+	 * ExampleAddingCircleMember constructor.
 	 *
 	 * @param ConfigService $configService
 	 */
@@ -84,50 +82,43 @@ class AddingExampleCircleMember implements IEventListener {
 			return;
 		}
 
-		$prefix = '[Example Event] (ExampleCircleMemberAdded) ';
+		$prefix = '[Example Event] (ExampleAddingCircleMember) ';
 
-		if ($event->getType() === CircleGenericEvent::MULTIPLE) {
-			$members = $event->getMembers();
-		} else {
-			$members = [$event->getMember()];
-		}
+		$circle = $event->getCircle();
+		$member = $event->getMember();
 
-		foreach ($members as $member) {
-			$circle = $event->getCircle();
-			$eventType = ($event->getType() === CircleGenericEvent::INVITED) ? 'invited' : 'joined';
+		$eventType = ($event->getType() === CircleGenericEvent::INVITED) ? 'invited' : 'joined';
 
-			$info = 'A new member have been added (' . $eventType . ') to a Circle. ';
+		$info = 'A new member have been added (' . $eventType . ') to a Circle. ';
 
-			$info .= 'userId: ' . $member->getUserId() . '; userType: ' . Member::$TYPE[$member->getUserType(
-				)]
-					 . '; singleId: ' . $member->getSingleId() . '; memberId: ' . $member->getId()
-					 . '; isLocal: ' . json_encode($member->isLocal()) . '; level: '
-					 . Member::$DEF_LEVEL[$member->getLevel()] . '; ';
+		$info .= 'userId: ' . $member->getUserId() . '; userType: ' . Member::$TYPE[$member->getUserType()]
+				 . '; singleId: ' . $member->getSingleId() . '; memberId: ' . $member->getId()
+				 . '; isLocal: ' . json_encode($member->isLocal()) . '; level: '
+				 . Member::$DEF_LEVEL[$member->getLevel()] . '; ';
 
-			$memberships = array_map(
-				function(Membership $membership) {
-					return $membership->getCircleId();
-				}, $circle->getMemberships()
+		$memberships = array_map(
+			function(Membership $membership) {
+				return $membership->getCircleId();
+			}, $circle->getMemberships()
+		);
+
+		$listMemberships = (count($memberships) > 0) ? implode(', ', $memberships) : 'none';
+		$info .= 'circleName: ' . $circle->getDisplayName() . '; circleId: ' . $circle->getSingleId()
+				 . '; Circle memberships: ' . $listMemberships . '.';
+
+		if ($member->getUserType() === Member::TYPE_CIRCLE) {
+			$basedOn = $member->getBasedOn();
+			$members = array_map(
+				function(Member $member) {
+					return $member->getUserId() . ' (' . Member::$TYPE[$member->getUserType()] . ')';
+				}, $basedOn->getInheritedMembers()
 			);
 
-			$listMemberships = (count($memberships) > 0) ? implode(', ', $memberships) : 'none';
-			$info .= 'circleName: ' . $circle->getDisplayName() . '; circleId: ' . $circle->getSingleId()
-					 . '; Circle memberships: ' . $listMemberships . '.';
-
-			if ($member->getUserType() === Member::TYPE_CIRCLE) {
-				$basedOn = $member->getBasedOn();
-				$members = array_map(
-					function(Member $member) {
-						return $member->getUserId() . ' (' . Member::$TYPE[$member->getUserType()] . ')';
-					}, $basedOn->getInheritedMembers()
-				);
-
-				$info .= ' Member is a Circle (singleId: ' . $basedOn->getSingleId()
-						 . ') that contains those inherited members: ' . implode(', ', $members);
-			}
-
-			$this->log(3, $prefix . $info);
+			$info .= ' Member is a Circle (singleId: ' . $basedOn->getSingleId()
+					 . ') that contains those inherited members: ' . implode(', ', $members);
 		}
+
+		$this->log(3, $prefix . $info);
 	}
 
 }

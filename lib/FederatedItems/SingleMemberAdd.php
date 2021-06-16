@@ -447,7 +447,9 @@ class SingleMemberAdd implements
 	 *
 	 * @throws FederatedItemBadRequestException
 	 * @throws FederatedUserException
+	 * @throws RemoteNotFoundException
 	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
 	 */
 	private function confirmPatron(FederatedEvent $event, Member $member): void {
 		if (!$member->hasInvitedBy()) {
@@ -459,7 +461,7 @@ class SingleMemberAdd implements
 			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[130], 130);
 		}
 
-//		$this->federatedUserService->confirmLocalSingleId($patron);
+		$this->federatedUserService->confirmSingleIdUniqueness($patron);
 	}
 
 
@@ -468,7 +470,9 @@ class SingleMemberAdd implements
 	 *
 	 * @return bool
 	 * @throws InvalidIdException
+	 * @throws RemoteNotFoundException
 	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
 	 */
 	protected function insertOrUpdate(Member $member): bool {
 		try {
