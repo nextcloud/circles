@@ -272,7 +272,7 @@ class MembershipService {
 		$singleIds = array_map(
 			function(Membership $item): string {
 				return $item->getSingleId();
-			}, $this->membershipRequest->getChildren($id)
+			}, $this->membershipRequest->getInherited($id)
 		);
 
 		foreach ($singleIds as $singleId) {

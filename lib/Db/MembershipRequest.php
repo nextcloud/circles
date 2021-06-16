@@ -35,6 +35,7 @@ namespace OCA\Circles\Db;
 use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Membership;
+use OCP\DB\QueryBuilder\IQueryBuilder;
 
 
 /**
@@ -117,12 +118,18 @@ class MembershipRequest extends MembershipRequestBuilder {
 
 	/**
 	 * @param string $singleId
+	 * @param int $level
 	 *
 	 * @return Membership[]
 	 */
-	public function getChildren(string $singleId): array {
+	public function getInherited(string $singleId, int $level = 0): array {
 		$qb = $this->getMembershipSelectSql();
 		$qb->limitToCircleId($singleId);
+
+		if ($level > 1) {
+			$expr = $qb->expr();
+			$qb->andWhere($expr->gte('level', $qb->createNamedParameter($level, IQueryBuilder::PARAM_INT)));
+		}
 
 		return $this->getItemsFromRequest($qb);
 	}

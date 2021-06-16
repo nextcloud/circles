@@ -88,6 +88,9 @@ class MemberService {
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
+	/** @var MembershipService */
+	private $membershipService;
+
 	/** @var FederatedEventService */
 	private $federatedEventService;
 
@@ -105,13 +108,17 @@ class MemberService {
 	 * @param RemoteStreamService $remoteStreamService
 	 */
 	public function __construct(
-		CircleRequest $circleRequest, MemberRequest $memberRequest,
-		FederatedUserService $federatedUserService, FederatedEventService $federatedEventService,
+		CircleRequest $circleRequest,
+		MemberRequest $memberRequest,
+		FederatedUserService $federatedUserService,
+		MembershipService $membershipService,
+		FederatedEventService $federatedEventService,
 		RemoteStreamService $remoteStreamService
 	) {
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
 		$this->federatedUserService = $federatedUserService;
+		$this->membershipService = $membershipService;
 		$this->federatedEventService = $federatedEventService;
 		$this->remoteStreamService = $remoteStreamService;
 	}
@@ -132,35 +139,31 @@ class MemberService {
 	/**
 	 * @param string $memberId
 	 * @param string $circleId
+	 * @param bool $canBeVisitor
 	 *
 	 * @return Member
 	 * @throws InitiatorNotFoundException
 	 * @throws MemberNotFoundException
 	 * @throws RequestBuilderException
 	 */
-	public function getMemberById(string $memberId, string $circleId = ''): Member {
+	public function getMemberById(
+		string $memberId,
+		string $circleId = '',
+		bool $canBeVisitor = false
+	): Member {
 		$this->federatedUserService->mustHaveCurrentUser();
 
 		$member =
-			$this->memberRequest->getMemberById($memberId, $this->federatedUserService->getCurrentUser());
+			$this->memberRequest->getMemberById(
+				$memberId,
+				$this->federatedUserService->getCurrentUser(),
+				$canBeVisitor
+			);
 		if ($circleId !== '' && $member->getCircle()->getSingleId() !== $circleId) {
 			throw new MemberNotFoundException();
 		}
 
-		// TODO: useless ?
-//			$circle = $this->circleRequest->getCircle(
-//				$member->getCircleId(), $this->federatedUserService->getCurrentUser()
-//			);
-
-//			if (!$circle->getInitiator()->isMember()) {
-//				throw new MemberLevelException();
-//			}
-
 		return $member;
-//		} catch (Exception $e) {
-//			$this->e($e, ['id' => $memberId, 'initiator' => $this->federatedUserService->getCurrentUser()]);
-//			throw new MemberLevelException('insufficient rights');
-//		}
 	}
 
 
@@ -330,6 +333,33 @@ class MemberService {
 		$this->federatedEventService->newEvent($event);
 
 		return $event->getOutcome();
+	}
+
+
+	/**
+	 * @param Member $member
+	 *
+	 * @return bool
+	 * @throws InvalidIdException
+	 * @throws RemoteNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
+	 */
+	public function insertOrUpdate(Member $member): bool {
+		try {
+			$this->federatedUserService->confirmSingleIdUniqueness($member);
+
+			$member->setNoteObj('invitedBy', $member->getInvitedBy());
+
+			$this->memberRequest->insertOrUpdate($member);
+			$this->membershipService->onUpdate($member->getSingleId());
+		} catch (FederatedUserException $e) {
+			$this->e($e, ['member' => $member]);
+
+			return false;
+		}
+
+		return true;
 	}
 
 }

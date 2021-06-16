@@ -91,7 +91,7 @@ class MassiveMemberAdd extends SingleMemberAdd implements
 	public function manage(FederatedEvent $event): void {
 		foreach ($event->getMembers() as $member) {
 			try {
-				if (!$this->insertOrUpdate($member)) {
+				if (!$this->memberService->insertOrUpdate($member)) {
 					continue;
 				}
 
