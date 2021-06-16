@@ -88,6 +88,13 @@ class FederatedUserService {
 	use TNC22Logger;
 
 
+	const CONFLICT_001 = 1;
+	const CONFLICT_002 = 2;
+	const CONFLICT_003 = 3;
+	const CONFLICT_004 = 4;
+	const CONFLICT_005 = 5;
+
+
 	/** @var IUserSession */
 	private $userSession;
 
@@ -960,12 +967,12 @@ class FederatedUserService {
 	 * @param IFederatedUser $federatedUser
 	 *
 	 * @throws FederatedUserException
+	 * @throws RemoteNotFoundException
 	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
 	 */
 	public function confirmSingleIdUniqueness(IFederatedUser $federatedUser): void {
-		// TODO: use aliases!
 		// TODO: check also with Circles singleId
-
 
 		$remote = null;
 		if (!$this->configService->isLocalInstance($federatedUser->getInstance())) {
@@ -978,31 +985,72 @@ class FederatedUserService {
 				if ($this->configService->isLocalInstance($knownMember->getInstance())) {
 					return;
 				} else {
-					throw new FederatedUserException('uniqueness of SingleId could not be confirmed (001)');
+					$this->markConflict($federatedUser, $knownMember, self::CONFLICT_001);
 				}
 			}
 
 			if (!$knownMember->hasRemoteInstance()) {
-				throw new FederatedUserException('uniqueness of SingleId could not be confirmed (002)');
+				$this->markConflict($federatedUser, $knownMember, self::CONFLICT_002);
 			}
 
 			$knownRemote = $knownMember->getRemoteInstance();
 			if ($this->interfaceService->isInterfaceInternal($knownRemote->getInterface())
 				&& !in_array($federatedUser->getInstance(), $knownRemote->getAliases())) {
-				throw new FederatedUserException('uniqueness of SingleId could not be confirmed (003)');
+				$this->markConflict($federatedUser, $knownMember, self::CONFLICT_003);
 			}
 
 			if (is_null($remote)) {
-				throw new FederatedUserException('uniqueness of SingleId could not be confirmed (004)');
+				$this->markConflict($federatedUser, $knownMember, self::CONFLICT_004);
 			}
 
 			if ($this->interfaceService->isInterfaceInternal($remote->getInterface())
 				&& !in_array($knownMember->getInstance(), $remote->getAliases())) {
-				throw new FederatedUserException('uniqueness of SingleId could not be confirmed (005)');
+				$this->markConflict($federatedUser, $knownMember, self::CONFLICT_005);
 			}
 		}
 	}
 
+
+	/**
+	 * @param IFederatedUser $federatedUser
+	 * @param Member $knownMember
+	 * @param int $conflict
+	 *
+	 * @throws FederatedUserException
+	 */
+	private function markConflict(IFederatedUser $federatedUser, Member $knownMember, int $conflict): void {
+		switch ($conflict) {
+			case self::CONFLICT_001:
+				$message = 'duplicate singleId from another instance';
+				break;
+			case self::CONFLICT_002:
+				$message = 'duplicate singleId has no known source';
+				break;
+			case self::CONFLICT_003:
+				$message = 'federatedUser is not an alias from duplicate singleId';
+				break;
+			case self::CONFLICT_004:
+				$message = 'federatedUser has no known source';
+				break;
+			case self::CONFLICT_005:
+				$message = 'duplicate singleId is not an alias of federatedUser';
+				break;
+
+			default:
+				$message = 'uniqueness of SingleId could not be confirmed';
+		}
+
+		// TODO: log conflict into database
+		$this->log(
+			3, $message, false,
+			[
+				'federatedUser' => $federatedUser,
+				'knownMember'   => $knownMember
+			]
+		);
+
+		throw new FederatedUserException($message);
+	}
 
 	/**
 	 * @param string $groupId

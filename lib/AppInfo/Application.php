@@ -127,6 +127,9 @@ class Application extends App implements IBootstrap {
 	public function register(IRegistrationContext $context): void {
 		$context->registerCapability(Capabilities::class);
 
+		// notification service
+		$context->registerNotifierService(Notifier::class);
+
 		// User Events
 		$context->registerEventListener(UserCreatedEvent::class, UserCreated::class);
 		$context->registerEventListener(UserDeletedEvent::class, UserDeleted::class);
@@ -176,9 +179,6 @@ class Application extends App implements IBootstrap {
 //		/** @var IManager $shareManager */
 //		$shareManager = $serverContainer->get(IManager::class);
 //		$shareManager->registerShareProvider(ShareByCircleProvider::class);
-
-		$manager = $serverContainer->getNotificationManager();
-		$manager->registerNotifierService(Notifier::class);
 
 		$this->configService = $context->getAppContainer()
 									   ->get(ConfigService::class);

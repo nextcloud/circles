@@ -43,7 +43,9 @@ use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\MembersLimitException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemHighSeverity;
@@ -52,13 +54,13 @@ use OCA\Circles\IFederatedItemMemberCheckNotRequired;
 use OCA\Circles\IFederatedItemMemberOptional;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
-use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\StatusCode;
 use OCP\IUserManager;
@@ -95,6 +97,9 @@ class CircleJoin implements
 	/** @var CircleService */
 	private $circleService;
 
+	/** @var MemberService */
+	private $memberService;
+
 	/** @var MembershipService */
 	private $membershipService;
 
@@ -117,14 +122,20 @@ class CircleJoin implements
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IUserManager $userManager, MemberRequest $memberRequest, FederatedUserService $federatedUserService,
-		CircleService $circleService, MembershipService $membershipService, EventService $eventService,
+		IUserManager $userManager,
+		MemberRequest $memberRequest,
+		FederatedUserService $federatedUserService,
+		CircleService $circleService,
+		MemberService $memberService,
+		MembershipService $membershipService,
+		EventService $eventService,
 		ConfigService $configService
 	) {
 		$this->userManager = $userManager;
 		$this->memberRequest = $memberRequest;
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
+		$this->memberService = $memberService;
 		$this->membershipService = $membershipService;
 		$this->eventService = $eventService;
 		$this->configService = $configService;
@@ -230,38 +241,23 @@ class CircleJoin implements
 	/**
 	 * @param FederatedEvent $event
 	 *
+	 * @throws FederatedUserException
 	 * @throws InvalidIdException
 	 * @throws RequestBuilderException
-	 * @throws FederatedUserException
+	 * @throws RemoteNotFoundException
+	 * @throws UnknownRemoteException
 	 */
 	public function manage(FederatedEvent $event): void {
 		$member = $event->getMember();
-
-		try {
-			$this->memberRequest->getMemberById($member->getId());
-
-			return;
-		} catch (MemberNotFoundException $e) {
-		}
-
-		try {
-			$federatedUser = new FederatedUser();
-			$federatedUser->importFromIFederatedUser($member);
-		} catch (FederatedUserException $e) {
-			$this->e($e, ['member' => $member]);
-
+		if (!$this->memberService->insertOrUpdate($member)) {
 			return;
 		}
-
-		$this->federatedUserService->confirmSingleIdUniqueness($federatedUser);
-
-		$this->memberRequest->save($member);
-		$this->membershipService->onUpdate($member->getSingleId());
 
 		if ($member->getStatus() === Member::STATUS_REQUEST) {
 			$this->eventService->memberRequesting($event);
 		} else {
-		$this->eventService->memberJoining($event);
+			$this->membershipService->onUpdate($member->getSingleId());
+			$this->eventService->memberJoining($event);
 		}
 	}
 
@@ -292,7 +288,6 @@ class CircleJoin implements
 			$knownMember = $this->memberRequest->searchMember($member);
 			if ($knownMember->getLevel() === Member::LEVEL_NONE) {
 				switch ($knownMember->getStatus()) {
-
 					case Member::STATUS_BLOCKED:
 						throw new Exception('Blocked');
 
@@ -300,6 +295,7 @@ class CircleJoin implements
 						throw new MemberAlreadyExistsException(StatusCode::$CIRCLE_JOIN[123], 123);
 
 					case Member::STATUS_INVITED:
+						$member->setId($knownMember->getId());
 						$member->setLevel(Member::LEVEL_MEMBER);
 						$member->setStatus(Member::STATUS_MEMBER);
 

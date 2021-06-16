@@ -181,7 +181,7 @@ class Capabilities implements ICapability {
 					],
 					'extra' => [
 						Member::APP_CIRCLES => 'Circles App',
-						Member::APP_OCC     => 'occ Command Line'
+						Member::APP_OCC     => 'Admin Command Line'
 					]
 				]
 		];

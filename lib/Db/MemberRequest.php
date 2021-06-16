@@ -88,7 +88,6 @@ class MemberRequest extends MemberRequestBuilder {
 	public function update(Member $member): void {
 		$this->confirmValidIds([$member->getCircleId(), $member->getSingleId(), $member->getId()]);
 
-		// TODO: need for update member_id ?
 		$qb = $this->getMemberUpdateSql();
 		$qb->set('member_id', $qb->createNamedParameter($member->getId()))
 		   ->set('cached_name', $qb->createNamedParameter($member->getDisplayName()))
@@ -109,6 +108,7 @@ class MemberRequest extends MemberRequestBuilder {
 	 * @param Member $member
 	 *
 	 * @throws InvalidIdException
+	 * @throws RequestBuilderException
 	 */
 	public function insertOrUpdate(Member $member): void {
 		try {
@@ -249,11 +249,12 @@ class MemberRequest extends MemberRequestBuilder {
 	/**
 	 * @param string $singleId
 	 * @param bool $getData
+	 * @param int $level
 	 *
 	 * @return Member[]
 	 * @throws RequestBuilderException
 	 */
-	public function getInheritedMembers(string $singleId, bool $getData = false): array {
+	public function getInheritedMembers(string $singleId, bool $getData = false, int $level = 0): array {
 		$qb = $this->getMemberSelectSql(null, $getData);
 
 		if ($getData) {
@@ -261,7 +262,7 @@ class MemberRequest extends MemberRequestBuilder {
 			$qb->setOptions([CoreQueryBuilder::MEMBER], ['getData' => $getData]);
 		}
 
-		$qb->limitToMembersByInheritance(CoreQueryBuilder::MEMBER, $singleId);
+		$qb->limitToMembersByInheritance(CoreQueryBuilder::MEMBER, $singleId, $level);
 
 		$aliasMembership = $qb->generateAlias(CoreQueryBuilder::MEMBER, CoreQueryBuilder::MEMBERSHIPS);
 		$qb->orderBy($aliasMembership . '.inheritance_depth', 'asc')
@@ -274,16 +275,22 @@ class MemberRequest extends MemberRequestBuilder {
 	/**
 	 * @param string $memberId
 	 * @param FederatedUser|null $initiator
+	 * @param bool $canBeVisitor
 	 *
 	 * @return Member
 	 * @throws MemberNotFoundException
 	 * @throws RequestBuilderException
 	 */
-	public function getMemberById(string $memberId, ?FederatedUser $initiator = null): Member {
+	public function getMemberById(
+		string $memberId,
+		?FederatedUser $initiator = null,
+		bool $canBeVisitor = false
+	): Member {
 		$qb = $this->getMemberSelectSql();
 		$qb->limitToMemberId($memberId);
 
 		if (!is_null($initiator)) {
+			$qb->setOptions([CoreQueryBuilder::MEMBER], ['canBeVisitor' => $canBeVisitor]);
 			$qb->leftJoinCircle(CoreQueryBuilder::MEMBER, $initiator);
 		}
 
