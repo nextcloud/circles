@@ -257,7 +257,12 @@ class CircleJoin implements
 
 		$this->memberRequest->save($member);
 		$this->membershipService->onUpdate($member->getSingleId());
+
+		if ($member->getStatus() === Member::STATUS_REQUEST) {
+			$this->eventService->memberRequesting($event);
+		} else {
 		$this->eventService->memberJoining($event);
+		}
 	}
 
 
@@ -266,7 +271,12 @@ class CircleJoin implements
 	 * @param array $results
 	 */
 	public function result(FederatedEvent $event, array $results): void {
-		$this->eventService->memberJoined($event, $results);
+		$member = $event->getMember();
+		if ($member->getStatus() === Member::STATUS_REQUEST) {
+			$this->eventService->memberRequested($event, $results);
+		} else {
+			$this->eventService->memberJoined($event, $results);
+		}
 	}
 
 

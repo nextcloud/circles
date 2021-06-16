@@ -32,7 +32,6 @@ declare(strict_types=1);
 namespace OCA\Circles\Listeners\Files;
 
 
-use daita\MySmallPhpTools\Model\SimpleDataStore;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Events\AddingCircleMemberEvent;
 use OCA\Circles\Exceptions\RequestBuilderException;
@@ -78,10 +77,9 @@ class AddingMember implements IEventListener {
 		}
 
 		$bypass = true;
-		foreach ($event->getMembers() as $member) {
-			if ($member->getUserType() === Member::TYPE_MAIL) {
-				$bypass = false;
-			}
+		$member = $event->getMember();
+		if ($member->getUserType() === Member::TYPE_MAIL) {
+			$bypass = false;
 		}
 
 		if ($bypass) {

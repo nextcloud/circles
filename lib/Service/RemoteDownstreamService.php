@@ -155,7 +155,8 @@ class RemoteDownstreamService {
 		}
 
 		$event->setOrigin($event->getSender());
-		$event->resetData();
+		$event->resetData()
+			  ->resetResult();
 
 		$this->federatedEventService->confirmInitiator($event, false);
 		$this->confirmContent($event, true);

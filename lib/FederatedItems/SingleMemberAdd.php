@@ -225,15 +225,16 @@ class SingleMemberAdd implements
 	 */
 	public function manage(FederatedEvent $event): void {
 		$member = $event->getMember();
-//		$member->setNoteObj('invitedBy', $member->getInvitedBy());
 
-
-//		$this->federatedUserService->confirmSingleIdUniqueness($member);
 		if (!$this->insertOrUpdate($member)) {
 			return;
 		}
 
-		$this->eventService->singleMemberAdding($event);
+		if ($member->getStatus() === Member::STATUS_INVITED) {
+			$this->eventService->memberInviting($event);
+		} else {
+			$this->eventService->memberAdding($event);
+		}
 
 //
 //		//
@@ -264,7 +265,12 @@ class SingleMemberAdd implements
 	 * @param array $results
 	 */
 	public function result(FederatedEvent $event, array $results): void {
-		$this->eventService->singleMemberAdded($event, $results);
+		$member = $event->getMember();
+		if ($member->getStatus() === Member::STATUS_INVITED) {
+			$this->eventService->memberInvited($event, $results);
+		} else {
+			$this->eventService->memberAdded($event, $results);
+		}
 
 //		$password = $cachedName = '';
 //		$circle = $member = null;
@@ -441,7 +447,9 @@ class SingleMemberAdd implements
 	 *
 	 * @throws FederatedItemBadRequestException
 	 * @throws FederatedUserException
+	 * @throws RemoteNotFoundException
 	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
 	 */
 	private function confirmPatron(FederatedEvent $event, Member $member): void {
 		if (!$member->hasInvitedBy()) {
@@ -453,7 +461,7 @@ class SingleMemberAdd implements
 			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[130], 130);
 		}
 
-//		$this->federatedUserService->confirmLocalSingleId($patron);
+		$this->federatedUserService->confirmSingleIdUniqueness($patron);
 	}
 
 
@@ -462,7 +470,9 @@ class SingleMemberAdd implements
 	 *
 	 * @return bool
 	 * @throws InvalidIdException
+	 * @throws RemoteNotFoundException
 	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
 	 */
 	protected function insertOrUpdate(Member $member): bool {
 		try {

@@ -41,11 +41,13 @@ use OCA\Circles\Events\AddingCircleMemberEvent;
 use OCA\Circles\Events\CircleMemberAddedEvent;
 use OCA\Circles\Events\MembershipsCreatedEvent;
 use OCA\Circles\Events\MembershipsRemovedEvent;
+use OCA\Circles\Events\RequestingCircleMemberEvent;
 use OCA\Circles\Handlers\WebfingerHandler;
 use OCA\Circles\Listeners\DeprecatedListener;
-use OCA\Circles\Listeners\Examples\AddingExampleCircleMember;
+use OCA\Circles\Listeners\Examples\ExampleAddingCircleMember;
 use OCA\Circles\Listeners\Examples\ExampleMembershipsCreated;
 use OCA\Circles\Listeners\Examples\ExampleMembershipsRemoved;
+use OCA\Circles\Listeners\Examples\ExampleRequestingCircleMember;
 use OCA\Circles\Listeners\Files\AddingMember as ListenerFilesAddingMember;
 use OCA\Circles\Listeners\Files\MemberAdded as ListenerFilesMemberAdded;
 use OCA\Circles\Listeners\Files\MembershipsRemoved as ListenerFilesMembershipsRemoved;
@@ -53,6 +55,7 @@ use OCA\Circles\Listeners\GroupCreated;
 use OCA\Circles\Listeners\GroupDeleted;
 use OCA\Circles\Listeners\GroupMemberAdded;
 use OCA\Circles\Listeners\GroupMemberRemoved;
+use OCA\Circles\Listeners\Notifications\RequestingMember as ListenerNotificationsRequestingMember;
 use OCA\Circles\Listeners\UserCreated;
 use OCA\Circles\Listeners\UserDeleted;
 use OCA\Circles\MountManager\CircleMountProvider;
@@ -134,11 +137,14 @@ class Application extends App implements IBootstrap {
 		$context->registerEventListener(UserAddedEvent::class, GroupMemberAdded::class);
 		$context->registerEventListener(UserRemovedEvent::class, GroupMemberRemoved::class);
 
-		// Local Events (for Files/Shares management)
+		// Local Events (for Files/Shares/Notifications management)
 		$context->registerEventListener(AddingCircleMemberEvent::class, ListenerFilesAddingMember::class);
 		$context->registerEventListener(CircleMemberAddedEvent::class, ListenerFilesMemberAdded::class);
 		$context->registerEventListener(
 			MembershipsRemovedEvent::class, ListenerFilesMembershipsRemoved::class
+		);
+		$context->registerEventListener(
+			RequestingCircleMemberEvent::class, ListenerNotificationsRequestingMember::class
 		);
 
 		// It seems that AccountManager use deprecated dispatcher, let's use a deprecated listener
@@ -221,7 +227,10 @@ class Application extends App implements IBootstrap {
 	 * @param IRegistrationContext $context
 	 */
 	private function loadExampleEvents(IRegistrationContext $context): void {
-		$context->registerEventListener(AddingCircleMemberEvent::class, AddingExampleCircleMember::class);
+		$context->registerEventListener(AddingCircleMemberEvent::class, ExampleAddingCircleMember::class);
+		$context->registerEventListener(
+			RequestingCircleMemberEvent::class, ExampleRequestingCircleMember::class
+		);
 		$context->registerEventListener(MembershipsCreatedEvent::class, ExampleMembershipsCreated::class);
 		$context->registerEventListener(MembershipsRemovedEvent::class, ExampleMembershipsRemoved::class);
 	}
@@ -256,11 +265,11 @@ class Application extends App implements IBootstrap {
 				$l = OC::$server->getL10N('circles');
 
 				return [
-					'id'      => 'circlesfilter',
+					'id' => 'circlesfilter',
 					'appname' => 'circles',
-					'script'  => 'files/list.php',
-					'order'   => 25,
-					'name'    => $l->t('Shared to Circles'),
+					'script' => 'files/list.php',
+					'order' => 25,
+					'name' => $l->t('Shared to Circles'),
 				];
 			}
 		);

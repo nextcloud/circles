@@ -29,52 +29,37 @@ declare(strict_types=1);
  */
 
 
-namespace OCA\Circles\Listeners\Files;
+namespace OCA\Circles\Listeners\Notifications;
 
 
-use daita\MySmallPhpTools\Traits\TStringTools;
-use OCA\Circles\Events\CircleMemberAddedEvent;
-use OCA\Circles\Model\Member;
+use OCA\Circles\Events\RequestingCircleMemberEvent;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 
 
 /**
- * Class MemberAdded
+ * Class RequestingMember
  *
- * @package OCA\Circles\Listeners\Files
+ * @package OCA\Circles\Listeners\Notifications
  */
-class MemberAdded implements IEventListener {
+class RequestingMember implements IEventListener {
 
 
-	use TStringTools;
+	/**
+	 * RequestingMember constructor.
+	 */
+	public function __construct() {
+	}
 
 
 	/**
 	 * @param Event $event
 	 */
 	public function handle(Event $event): void {
-		if (!$event instanceof CircleMemberAddedEvent) {
+		if (!$event instanceof RequestingCircleMemberEvent) {
 			return;
 		}
 
-		$federatedUsers = [];
-		$member = $event->getMember();
-		if ($member->getUserType() === Member::TYPE_MAIL) {
-			$federatedUsers[] = $member;
-		}
-
-		if (empty($federatedUsers)) {
-			return;
-		}
-
-		$result = [];
-		foreach ($event->getResults() as $instance => $item) {
-			$result[$instance] = $item->gData('files');
-		}
-
-		\OC::$server->getLogger()->log(3, 'FILES: ' . json_encode($result));
-		\OC::$server->getLogger()->log(3, 'MAILS: ' . json_encode($federatedUsers));
 	}
 
 }

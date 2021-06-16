@@ -39,12 +39,14 @@ use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\MemberLevelException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedItem;
+use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\IFederatedItemMemberRequired;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\MembershipService;
 
 
@@ -55,6 +57,7 @@ use OCA\Circles\Service\MembershipService;
  */
 class MemberLevel implements
 	IFederatedItem,
+	IFederatedItemHighSeverity,
 	IFederatedItemMemberRequired {
 
 
@@ -67,6 +70,9 @@ class MemberLevel implements
 	/** @var MembershipService */
 	private $membershipService;
 
+	/** @var EventService */
+	private $eventService;
+
 	/** @var ConfigService */
 	private $configService;
 
@@ -76,15 +82,18 @@ class MemberLevel implements
 	 *
 	 * @param MemberRequest $memberRequest
 	 * @param MembershipService $membershipService
+	 * @param EventService $eventService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		MemberRequest $memberRequest,
 		MembershipService $membershipService,
+		EventService $eventService,
 		ConfigService $configService
 	) {
 		$this->memberRequest = $memberRequest;
 		$this->membershipService = $membershipService;
+		$this->eventService = $eventService;
 		$this->configService = $configService;
 	}
 
@@ -149,6 +158,8 @@ class MemberLevel implements
 		}
 
 		$this->membershipService->onUpdate($member->getSingleId());
+
+		$this->eventService->memberLevelEditing($event);
 	}
 
 
@@ -157,6 +168,7 @@ class MemberLevel implements
 	 * @param array $results
 	 */
 	public function result(FederatedEvent $event, array $results): void {
+		$this->eventService->memberLevelEdited($event, $results);
 	}
 
 

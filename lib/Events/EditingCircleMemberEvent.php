@@ -38,6 +38,18 @@ use OCA\Circles\Model\Federated\FederatedEvent;
 /**
  * Class EditingCircleMemberEvent
  *
+ * This event is called when a member is edited.
+ * This event is called on every instance of Nextcloud related to the Circle.
+ *
+ * The entry is already edited in the members table.
+ * If needed, the entries in the memberships table are already edited.
+ *
+ * This is a good place if anything needs to be executed when a member is edited.
+ *
+ * If anything needs to be managed on the master instance of the Circle (ie. CircleMemberEditedEvent), please
+ * use:
+ *    $event->getFederatedEvent()->addResult(string $key, array $data);
+ *
  * @package OCA\Circles\Events
  */
 class EditingCircleMemberEvent extends CircleMemberGenericEvent {
@@ -45,6 +57,12 @@ class EditingCircleMemberEvent extends CircleMemberGenericEvent {
 
 	/** @var int */
 	private $type = 0;
+
+	/** @var int */
+	private $level = 0;
+
+	/** @var string */
+	private $displayName = '';
 
 
 	/**
@@ -74,6 +92,45 @@ class EditingCircleMemberEvent extends CircleMemberGenericEvent {
 	public function getType(): int {
 		return $this->type;
 	}
+
+
+	/**
+	 * @param int $level
+	 *
+	 * @return EditingCircleMemberEvent
+	 */
+	public function setLevel(int $level): self {
+		$this->level = $level;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getLevel(): int {
+		return $this->level;
+	}
+
+
+	/**
+	 * @param string $displayName
+	 *
+	 * @return EditingCircleMemberEvent
+	 */
+	public function setDisplayName(string $displayName): self {
+		$this->displayName = $displayName;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDisplayName(): string {
+		return $this->displayName;
+	}
+
 
 }
 

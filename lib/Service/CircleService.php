@@ -364,7 +364,6 @@ class CircleService {
 			$this->federatedUserService->setMemberPatron($circle->getInitiator());
 		}
 
-		echo json_encode($circle, JSON_PRETTY_PRINT);
 		$event = new FederatedEvent(CircleJoin::class);
 		$event->setCircle($circle);
 

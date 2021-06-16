@@ -35,13 +35,13 @@ namespace OCA\Circles\FederatedItems;
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use daita\MySmallPhpTools\Traits\TStringTools;
 use Exception;
-use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\IFederatedItemMemberEmpty;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
+use OCA\Circles\Model\Member;
 
 
 /**
@@ -87,25 +87,22 @@ class MassiveMemberAdd extends SingleMemberAdd implements
 
 	/**
 	 * @param FederatedEvent $event
-	 *
-	 * @throws InvalidIdException
 	 */
 	public function manage(FederatedEvent $event): void {
-		$members = $event->getMembers();
-
-		$filtered = [];
-		foreach ($members as $member) {
+		foreach ($event->getMembers() as $member) {
 			try {
-				if ($this->insertOrUpdate($member)) {
-					$filtered[] = $member;
+				if (!$this->insertOrUpdate($member)) {
+					continue;
+				}
+
+				$event->setMember($member);
+				if ($member->getStatus() === Member::STATUS_INVITED) {
+					$this->eventService->memberInviting($event);
+				} else {
+					$this->eventService->memberAdding($event);
 				}
 			} catch (Exception $e) {
 			}
-		}
-
-		$event->setMembers($filtered);
-		if (!empty($filtered)) {
-			$this->eventService->multipleMemberAdding($event);
 		}
 	}
 
@@ -115,7 +112,10 @@ class MassiveMemberAdd extends SingleMemberAdd implements
 	 * @param array $results
 	 */
 	public function result(FederatedEvent $event, array $results): void {
-		$this->eventService->multipleMemberAdded($event, $results);
+		foreach ($event->getMembers() as $member) {
+			$event->setMember($member);
+			$this->eventService->memberAdded($event, $results);
+		}
 	}
 
 }

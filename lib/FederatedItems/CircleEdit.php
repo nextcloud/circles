@@ -39,6 +39,7 @@ use OCA\Circles\IFederatedItem;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Service\CircleService;
+use OCA\Circles\Service\EventService;
 
 
 /**
@@ -58,15 +59,25 @@ class CircleEdit implements IFederatedItem {
 	/** @var CircleService */
 	private $circleService;
 
+	/** @var EventService */
+	private $eventService;
+
+
 	/**
 	 * CircleEdit constructor.
 	 *
 	 * @param CircleRequest $circleRequest
 	 * @param CircleService $circleService
+	 * @param EventService $eventService
 	 */
-	public function __construct(CircleRequest $circleRequest, CircleService $circleService) {
+	public function __construct(
+		CircleRequest $circleRequest,
+		CircleService $circleService,
+		EventService $eventService
+	) {
 		$this->circleRequest = $circleRequest;
 		$this->circleService = $circleService;
+		$this->eventService = $eventService;
 	}
 
 
@@ -120,6 +131,7 @@ class CircleEdit implements IFederatedItem {
 		}
 
 		$this->circleRequest->edit($circle);
+		$this->eventService->circleEditing($event);
 	}
 
 
@@ -128,6 +140,7 @@ class CircleEdit implements IFederatedItem {
 	 * @param array $results
 	 */
 	public function result(FederatedEvent $event, array $results): void {
+		$this->eventService->circleEdited($event, $results);
 	}
 
 }

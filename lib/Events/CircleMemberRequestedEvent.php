@@ -36,22 +36,18 @@ use OCA\Circles\Model\Federated\FederatedEvent;
 
 
 /**
- * Class RemovingCircleMemberEvent
+ * Class CircleMemberRequestedEvent
  *
- * This event is called when a member is removed from a Circle.
- * This event is called on every instance of Nextcloud related to the Circle.
+ * This Event is called when it has been confirmed that a Member's request/invitation is done on all instances
+ * used by the Circle.
+ * Meaning that the event won't be triggered until each instances have been once available during the
+ * retry-on-fail initiated in a background job
  *
- * The entry is already removed from the members table.
- * The memberships of the member are already removed from the memberships table.
- *
- * This is a good place if anything needs to be executed when a member have been removed from a Circle.
- *
- * If anything needs to be managed on the master instance of the Circle (ie. CircleMemberRemovedEvent), please use:
- *    $event->getFederatedEvent()->addResult(string $key, array $data);
+ * WARNING: Unlike RequestingCircleMemberEvent, this Event is only called on the master instance of the Circle.
  *
  * @package OCA\Circles\Events
  */
-class RemovingCircleMemberEvent extends CircleMemberGenericEvent {
+class CircleMemberRequestedEvent extends CircleResultGenericEvent {
 
 
 	/** @var int */
@@ -59,12 +55,13 @@ class RemovingCircleMemberEvent extends CircleMemberGenericEvent {
 
 
 	/**
-	 * RemovingCircleMemberEvent constructor.
+	 * CircleMemberRequestedEvent constructor.
 	 *
 	 * @param FederatedEvent $federatedEvent
+	 * @param array $results
 	 */
-	public function __construct(FederatedEvent $federatedEvent) {
-		parent::__construct($federatedEvent);
+	public function __construct(FederatedEvent $federatedEvent, array $results) {
+		parent::__construct($federatedEvent, $results);
 	}
 
 

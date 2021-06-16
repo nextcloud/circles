@@ -36,21 +36,26 @@ namespace OCA\Circles\Service;
 
 
 use daita\MySmallPhpTools\Model\SimpleDataStore;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Events\AddingCircleMemberEvent;
 use OCA\Circles\Events\CircleCreatedEvent;
 use OCA\Circles\Events\CircleDestroyedEvent;
+use OCA\Circles\Events\CircleEditedEvent;
 use OCA\Circles\Events\CircleGenericEvent;
 use OCA\Circles\Events\CircleMemberAddedEvent;
 use OCA\Circles\Events\CircleMemberEditedEvent;
 use OCA\Circles\Events\CircleMemberRemovedEvent;
+use OCA\Circles\Events\CircleMemberRequestedEvent;
 use OCA\Circles\Events\CreatingCircleEvent;
 use OCA\Circles\Events\DestroyingCircleEvent;
+use OCA\Circles\Events\EditingCircleEvent;
 use OCA\Circles\Events\EditingCircleMemberEvent;
 use OCA\Circles\Events\MembershipsCreatedEvent;
 use OCA\Circles\Events\MembershipsRemovedEvent;
 use OCA\Circles\Events\RemovingCircleMemberEvent;
+use OCA\Circles\Events\RequestingCircleMemberEvent;
 use OCA\Circles\Model\Federated\FederatedEvent;
-use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
 use OCA\Circles\Model\Mount;
 use OCA\Circles\Model\ShareWrapper;
@@ -65,6 +70,9 @@ use OCP\EventDispatcher\IEventDispatcher;
 class EventService {
 
 
+	use TNC22Logger;
+
+
 	/** @var IEventDispatcher */
 	private $eventDispatcher;
 
@@ -76,16 +84,12 @@ class EventService {
 	 */
 	public function __construct(IEventDispatcher $eventDispatcher) {
 		$this->eventDispatcher = $eventDispatcher;
+
+		$this->setup('app', Application::APP_ID);
 	}
 
 
 	/**
-	 * onCircleCreation()
-	 *
-	 * Called when a circle is created.
-	 * Broadcast an activity to the cloud
-	 * We won't do anything if the circle is not PUBLIC or CLOSED
-	 *
 	 * @param FederatedEvent $federatedEvent
 	 */
 	public function circleCreating(FederatedEvent $federatedEvent): void {
@@ -99,6 +103,24 @@ class EventService {
 	 */
 	public function circleCreated(FederatedEvent $federatedEvent, array $results): void {
 		$event = new CircleCreatedEvent($federatedEvent, $results);
+		$this->eventDispatcher->dispatchTyped($event);
+	}
+
+
+	/**
+	 * @param FederatedEvent $federatedEvent
+	 */
+	public function circleEditing(FederatedEvent $federatedEvent): void {
+		$event = new EditingCircleEvent($federatedEvent);
+		$this->eventDispatcher->dispatchTyped($event);
+	}
+
+	/**
+	 * @param FederatedEvent $federatedEvent
+	 * @param array $results
+	 */
+	public function circleEdited(FederatedEvent $federatedEvent, array $results): void {
+		$event = new CircleEditedEvent($federatedEvent, $results);
 		$this->eventDispatcher->dispatchTyped($event);
 	}
 
@@ -124,7 +146,7 @@ class EventService {
 	/**
 	 * @param FederatedEvent $federatedEvent
 	 */
-	public function singleMemberAdding(FederatedEvent $federatedEvent): void {
+	public function memberAdding(FederatedEvent $federatedEvent): void {
 		$event = new AddingCircleMemberEvent($federatedEvent);
 		$event->setType(CircleGenericEvent::INVITED);
 		$this->eventDispatcher->dispatchTyped($event);
@@ -134,7 +156,7 @@ class EventService {
 	 * @param FederatedEvent $federatedEvent
 	 * @param array $results
 	 */
-	public function singleMemberAdded(FederatedEvent $federatedEvent, array $results): void {
+	public function memberAdded(FederatedEvent $federatedEvent, array $results): void {
 		$event = new CircleMemberAddedEvent($federatedEvent, $results);
 		$event->setType(CircleGenericEvent::INVITED);
 		$this->eventDispatcher->dispatchTyped($event);
@@ -144,9 +166,9 @@ class EventService {
 	/**
 	 * @param FederatedEvent $federatedEvent
 	 */
-	public function multipleMemberAdding(FederatedEvent $federatedEvent): void {
-		$event = new AddingCircleMemberEvent($federatedEvent);
-		$event->setType(CircleGenericEvent::MULTIPLE);
+	public function memberInviting(FederatedEvent $federatedEvent): void {
+		$event = new RequestingCircleMemberEvent($federatedEvent);
+		$event->setType(CircleGenericEvent::INVITED);
 		$this->eventDispatcher->dispatchTyped($event);
 	}
 
@@ -154,18 +176,30 @@ class EventService {
 	 * @param FederatedEvent $federatedEvent
 	 * @param array $results
 	 */
-	public function multipleMemberAdded(FederatedEvent $federatedEvent, array $results): void {
-		$event = new CircleMemberAddedEvent($federatedEvent, $results);
-		$event->setType(CircleGenericEvent::MULTIPLE);
+	public function memberInvited(FederatedEvent $federatedEvent, array $results): void {
+		$event = new CircleMemberRequestedEvent($federatedEvent, $results);
+		$event->setType(CircleGenericEvent::INVITED);
 		$this->eventDispatcher->dispatchTyped($event);
 	}
 
 
-	public function memberInvited(Member $member): void {
+	/**
+	 * @param FederatedEvent $federatedEvent
+	 */
+	public function memberRequesting(FederatedEvent $federatedEvent): void {
+		$event = new RequestingCircleMemberEvent($federatedEvent);
+		$event->setType(CircleGenericEvent::REQUESTED);
+		$this->eventDispatcher->dispatchTyped($event);
 	}
 
-
-	public function memberRequest(Member $member): void {
+	/**
+	 * @param FederatedEvent $federatedEvent
+	 * @param array $results
+	 */
+	public function memberRequested(FederatedEvent $federatedEvent, array $results): void {
+		$event = new CircleMemberRequestedEvent($federatedEvent, $results);
+		$event->setType(CircleGenericEvent::REQUESTED);
+		$this->eventDispatcher->dispatchTyped($event);
 	}
 
 
@@ -192,8 +226,9 @@ class EventService {
 	/**
 	 * @param FederatedEvent $federatedEvent
 	 */
-	public function memberEditing(FederatedEvent $federatedEvent): void {
+	public function memberLevelEditing(FederatedEvent $federatedEvent): void {
 		$event = new EditingCircleMemberEvent($federatedEvent);
+		$event->setLevel($federatedEvent->getData()->gInt('level'));
 		$event->setType(CircleGenericEvent::LEVEL);
 		$this->eventDispatcher->dispatchTyped($event);
 	}
@@ -202,9 +237,32 @@ class EventService {
 	 * @param FederatedEvent $federatedEvent
 	 * @param array $results
 	 */
-	public function memberEdited(FederatedEvent $federatedEvent, array $results): void {
+	public function memberLevelEdited(FederatedEvent $federatedEvent, array $results): void {
 		$event = new CircleMemberEditedEvent($federatedEvent, $results);
+		$event->setNewLevel($federatedEvent->getData()->gInt('level'));
 		$event->setType(CircleGenericEvent::LEVEL);
+		$this->eventDispatcher->dispatchTyped($event);
+	}
+
+
+	/**
+	 * @param FederatedEvent $federatedEvent
+	 */
+	public function memberNameEditing(FederatedEvent $federatedEvent): void {
+		$event = new EditingCircleMemberEvent($federatedEvent);
+		$event->setDisplayName($federatedEvent->getData()->g('displayName'));
+		$event->setType(CircleGenericEvent::NAME);
+		$this->eventDispatcher->dispatchTyped($event);
+	}
+
+	/**
+	 * @param FederatedEvent $federatedEvent
+	 * @param array $results
+	 */
+	public function memberNameEdited(FederatedEvent $federatedEvent, array $results): void {
+		$event = new CircleMemberEditedEvent($federatedEvent, $results);
+		$event->setNewDisplayName($federatedEvent->getData()->g('displayName'));
+		$event->setType(CircleGenericEvent::NAME);
 		$this->eventDispatcher->dispatchTyped($event);
 	}
 
@@ -275,6 +333,7 @@ class EventService {
 
 	/**
 	 * @param ShareWrapper $wrappedShare
+	 * @param Mount $mount
 	 */
 	public function federatedShareCreated(ShareWrapper $wrappedShare, Mount $mount): void {
 //		Circles::shareToCircle(
