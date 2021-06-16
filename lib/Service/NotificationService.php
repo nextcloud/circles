@@ -146,9 +146,6 @@ class NotificationService {
 				continue;
 			}
 
-			$this->log(3, '### ' . json_encode($moderator));
-
-
 			$notification = $this->createMemberNotification(
 				$moderator->getUserId(),
 				$member->getId(),
