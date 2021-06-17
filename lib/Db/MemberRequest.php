@@ -273,6 +273,23 @@ class MemberRequest extends MemberRequestBuilder {
 
 
 	/**
+	 * @param string $circleId
+	 * @param string $singleId
+	 *
+	 * @return Member
+	 * @throws MemberNotFoundException
+	 * @throws RequestBuilderException
+	 */
+	public function getMember(string $circleId, string $singleId): Member {
+		$qb = $this->getMemberSelectSql();
+		$qb->limitToCircleId($circleId);
+		$qb->limitToSingleId($singleId);
+
+		return $this->getItemFromRequest($qb);
+	}
+
+
+	/**
 	 * @param string $memberId
 	 * @param FederatedUser|null $initiator
 	 * @param bool $canBeVisitor

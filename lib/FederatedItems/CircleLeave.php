@@ -33,6 +33,8 @@ namespace OCA\Circles\FederatedItems;
 
 
 use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
+use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\FederatedItemException;
@@ -68,6 +70,7 @@ class CircleLeave implements
 
 
 	use TNC22Deserialize;
+	use TNC22Logger;
 
 
 	/** @var MemberRequest */
@@ -107,6 +110,8 @@ class CircleLeave implements
 		$this->membershipService = $membershipService;
 		$this->eventService = $eventService;
 		$this->configService = $configService;
+
+		$this->setup('app', Application::APP_ID);
 	}
 
 
@@ -134,7 +139,12 @@ class CircleLeave implements
 			}
 		}
 		if ($member->getId() === '') {
-			throw new MemberNotFoundException(StatusCode::$CIRCLE_LEAVE[120], 120);
+			try {
+				// make it works for not-yet-members
+				$member = $this->memberRequest->getMember($circle->getSingleId(), $member->getSingleId());
+			} catch (MemberNotFoundException $e) {
+				throw new MemberNotFoundException(StatusCode::$CIRCLE_LEAVE[120], 120);
+			}
 		}
 
 		$event->setMember($member);
