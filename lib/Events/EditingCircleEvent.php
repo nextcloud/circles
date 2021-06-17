@@ -51,7 +51,7 @@ use OCA\Circles\Model\Federated\FederatedEvent;
  *
  * @package OCA\Circles\Events
  */
-class EditingCircleEvent extends CircleMemberGenericEvent {
+class EditingCircleEvent extends CircleGenericEvent {
 
 
 	/**
