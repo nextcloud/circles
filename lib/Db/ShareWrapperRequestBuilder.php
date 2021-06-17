@@ -32,7 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Db;
 
 
-use daita\MySmallPhpTools\Exceptions\RowNotFoundException;
+use ArtificialOwl\MySmallPhpTools\Exceptions\RowNotFoundException;
 use OC\Share20\Share;
 use OCA\Circles\Exceptions\ShareWrapperNotFoundException;
 use OCA\Circles\Model\ShareWrapper;

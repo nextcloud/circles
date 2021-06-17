@@ -30,7 +30,7 @@
 namespace OCA\Circles\Model\GlobalScale;
 
 
-use daita\MySmallPhpTools\Traits\TArrayTools;
+use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
 
 

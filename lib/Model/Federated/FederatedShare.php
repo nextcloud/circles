@@ -32,10 +32,10 @@ declare(strict_types=1);
 namespace OCA\Circles\Model\Federated;
 
 
-use daita\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
-use daita\MySmallPhpTools\IDeserializable;
-use daita\MySmallPhpTools\Model\SimpleDataStore;
-use daita\MySmallPhpTools\Traits\TArrayTools;
+use ArtificialOwl\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
+use ArtificialOwl\MySmallPhpTools\IDeserializable;
+use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
+use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\IFederatedModel;
 use OCA\Circles\Model\ManagedModel;

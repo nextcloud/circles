@@ -32,7 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\FederatedItems;
 
 
-use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
+use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;

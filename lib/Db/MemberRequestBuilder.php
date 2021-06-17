@@ -32,7 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Db;
 
 
-use daita\MySmallPhpTools\Exceptions\RowNotFoundException;
+use ArtificialOwl\MySmallPhpTools\Exceptions\RowNotFoundException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedUser;

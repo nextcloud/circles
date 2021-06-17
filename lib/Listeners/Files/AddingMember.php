@@ -32,7 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Listeners\Files;
 
 
-use daita\MySmallPhpTools\Traits\TStringTools;
+use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Events\AddingCircleMemberEvent;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Model\Member;

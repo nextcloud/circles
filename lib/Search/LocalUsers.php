@@ -26,7 +26,7 @@
 
 namespace OCA\Circles\Search;
 
-use daita\MySmallPhpTools\Traits\TArrayTools;
+use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use OCA\Circles\ISearch;
 use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SearchResult;

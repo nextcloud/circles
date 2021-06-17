@@ -32,8 +32,8 @@ declare(strict_types=1);
 namespace OCA\Circles\FederatedItems;
 
 
-use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
+use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
+use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;

@@ -31,9 +31,9 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 
-use daita\MySmallPhpTools\ActivityPub\Nextcloud\nc22\NC22Signature;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
-use daita\MySmallPhpTools\Traits\TStringTools;
+use ArtificialOwl\MySmallPhpTools\ActivityPub\Nextcloud\nc22\NC22Signature;
+use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
+use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use Exception;
 use OCA\Circles\Db\EventWrapperRequest;
 use OCA\Circles\Model\Federated\EventWrapper;

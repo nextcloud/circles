@@ -26,12 +26,12 @@
 
 namespace OCA\Circles\Search;
 
-use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
-use daita\MySmallPhpTools\Exceptions\RequestResultNotJsonException;
-use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
-use daita\MySmallPhpTools\Model\Request;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
-use daita\MySmallPhpTools\Traits\TArrayTools;
+use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
+use ArtificialOwl\MySmallPhpTools\Exceptions\RequestResultNotJsonException;
+use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
+use ArtificialOwl\MySmallPhpTools\Model\Request;
+use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
+use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\ISearch;
 use OCA\Circles\Model\DeprecatedMember;

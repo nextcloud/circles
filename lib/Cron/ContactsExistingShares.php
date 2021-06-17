@@ -30,7 +30,7 @@
 namespace OCA\Circles\Cron;
 
 
-use daita\MySmallPhpTools\Traits\TArrayTools;
+use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use OC\BackgroundJob\TimedJob;
 use OC\Share20\Share;
 use OCA\Circles\AppInfo\Application;

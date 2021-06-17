@@ -32,7 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Notification;
 
 
-use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
+use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use Exception;
 use InvalidArgumentException;
 use OCA\Circles\AppInfo\Application;

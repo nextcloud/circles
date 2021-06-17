@@ -32,7 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Listeners\Files;
 
 
-use daita\MySmallPhpTools\Traits\TStringTools;
+use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\CirclesManager;
 use OCA\Circles\Db\ShareWrapperRequest;
 use OCA\Circles\Events\MembershipsRemovedEvent;

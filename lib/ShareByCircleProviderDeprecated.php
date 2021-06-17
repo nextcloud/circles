@@ -31,7 +31,7 @@
 namespace OCA\Circles;
 
 
-use daita\MySmallPhpTools\Model\SimpleDataStore;
+use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use Exception;
 use OC;
 use OC\Files\Cache\Cache;

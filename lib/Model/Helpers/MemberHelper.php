@@ -31,7 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model\Helpers;
 
-use daita\MySmallPhpTools\Traits\TArrayTools;
+use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use OCA\Circles\Exceptions\MemberHelperException;
 use OCA\Circles\Exceptions\MemberLevelException;
 use OCA\Circles\Exceptions\ParseMemberLevelException;

@@ -30,7 +30,7 @@
 namespace OCA\Circles\GlobalScale\GSMount;
 
 
-use daita\MySmallPhpTools\Traits\TArrayTools;
+use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
 use OC;
 use OCA\Circles\Db\GSSharesRequest;

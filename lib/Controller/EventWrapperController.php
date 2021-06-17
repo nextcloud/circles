@@ -30,9 +30,9 @@
 namespace OCA\Circles\Controller;
 
 
-use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Async;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Controller;
-use daita\MySmallPhpTools\Traits\TStringTools;
+use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Async;
+use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Controller;
+use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\EventWrapperService;
