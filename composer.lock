@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "05956b275320babfb250bfe2821e2338",
+    "content-hash": "520f4691b553c011a8f8c9d54a34bb0c",
     "packages": [
         {
-            "name": "artificialowl/my-small-php-tools",
-            "version": "v22.1.0",
+            "name": "artificial-owl/my-small-php-tools",
+            "version": "v22.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ArtificialOwl/my-small-php-tools.git",
-                "reference": "5d859c50cbca9f5e7b0e03fab919496310d8b8f7"
+                "reference": "6ccec02e3e64612ee62312c36a8d6bd7766e618a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ArtificialOwl/my-small-php-tools/zipball/5d859c50cbca9f5e7b0e03fab919496310d8b8f7",
-                "reference": "5d859c50cbca9f5e7b0e03fab919496310d8b8f7",
+                "url": "https://api.github.com/repos/ArtificialOwl/my-small-php-tools/zipball/6ccec02e3e64612ee62312c36a8d6bd7766e618a",
+                "reference": "6ccec02e3e64612ee62312c36a8d6bd7766e618a",
                 "shasum": ""
             },
             "require": {
@@ -42,9 +42,9 @@
             "description": "My small PHP Tools",
             "support": {
                 "issues": "https://github.com/ArtificialOwl/my-small-php-tools/issues",
-                "source": "https://github.com/ArtificialOwl/my-small-php-tools/tree/v22.1.0"
+                "source": "https://github.com/ArtificialOwl/my-small-php-tools/tree/v22.1.1"
             },
-            "time": "2021-06-17T22:35:19+00:00"
+            "time": "2021-06-18T00:24:52+00:00"
         }
     ],
     "packages-dev": [],
