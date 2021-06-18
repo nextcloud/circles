@@ -251,13 +251,12 @@ class MembersList extends Base {
 					$member->getSingleId(),
 					Member::$TYPE[$member->getUserType()],
 					$member->hasBasedOn() ? Circle::$DEF_SOURCE[$member->getBasedOn()->getSource()] : '',
-					($this->input->getOption('display-name')) ?
-						$member->getDisplayName() : $member->getUserId(),
+					$this->configService->displayFederatedUser($member, $this->input->getOption('display-name')),
 					$this->configService->displayInstance($member->getInstance()),
 					($level > 0) ? Member::$DEF_LEVEL[$level] :
 						'(' . strtolower($member->getStatus()) . ')',
 					($member->hasInvitedBy()) ? $this->configService->displayFederatedUser(
-						$member->getInvitedBy()
+						$member->getInvitedBy(), $this->input->getOption('display-name')
 					) : 'Unknown'
 				]
 			);

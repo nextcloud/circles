@@ -449,8 +449,10 @@ class FederatedUserService {
 		int $appNumber,
 		string $appDisplayName = ''
 	): FederatedUser {
+		if ($appDisplayName === '') {
+			$appDisplayName = $this->get((string)$appNumber, Circle::$DEF_SOURCE, $appId);
+		}
 
-		$appDisplayName = ($appDisplayName === '') ? $appId : $appDisplayName;
 		$circle = new Circle();
 		$circle->setSource($appNumber);
 
