@@ -31,13 +31,13 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-use daita\MySmallPhpTools\Exceptions\RequestContentException;
-use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
-use daita\MySmallPhpTools\Exceptions\RequestResultNotJsonException;
-use daita\MySmallPhpTools\Exceptions\RequestResultSizeException;
-use daita\MySmallPhpTools\Exceptions\RequestServerException;
-use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
-use daita\MySmallPhpTools\Model\Request;
+use ArtificialOwl\MySmallPhpTools\Exceptions\RequestContentException;
+use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
+use ArtificialOwl\MySmallPhpTools\Exceptions\RequestResultNotJsonException;
+use ArtificialOwl\MySmallPhpTools\Exceptions\RequestResultSizeException;
+use ArtificialOwl\MySmallPhpTools\Exceptions\RequestServerException;
+use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
+use ArtificialOwl\MySmallPhpTools\Model\Request;
 use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\FederatedItemException;

@@ -32,9 +32,9 @@ declare(strict_types=1);
 namespace OCA\Circles\Model\Federated;
 
 
-use daita\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
-use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22Signatory;
-use daita\MySmallPhpTools\Traits\TArrayTools;
+use ArtificialOwl\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
+use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22Signatory;
+use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteUidException;

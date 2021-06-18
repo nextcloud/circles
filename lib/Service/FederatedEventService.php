@@ -31,12 +31,12 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 
-use daita\MySmallPhpTools\ActivityPub\Nextcloud\nc22\NC22Signature;
-use daita\MySmallPhpTools\Exceptions\RequestNetworkException;
-use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
-use daita\MySmallPhpTools\Model\Request;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
-use daita\MySmallPhpTools\Traits\TStringTools;
+use ArtificialOwl\MySmallPhpTools\ActivityPub\Nextcloud\nc22\NC22Signature;
+use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
+use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
+use ArtificialOwl\MySmallPhpTools\Model\Request;
+use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
+use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OC;
 use OCA\Circles\Db\EventWrapperRequest;
 use OCA\Circles\Db\MemberRequest;

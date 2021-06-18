@@ -30,7 +30,7 @@
 namespace OCA\Circles\Service;
 
 
-use daita\MySmallPhpTools\Traits\TArrayTools;
+use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
 use OC;
 use OCA\Circles\AppInfo\Application;

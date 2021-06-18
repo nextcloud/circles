@@ -31,10 +31,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
-use daita\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
-use daita\MySmallPhpTools\Exceptions\InvalidItemException;
-use daita\MySmallPhpTools\IDeserializable;
-use daita\MySmallPhpTools\Traits\TArrayTools;
+use ArtificialOwl\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
+use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
+use ArtificialOwl\MySmallPhpTools\IDeserializable;
+use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\Exceptions\MembershipNotFoundException;
 

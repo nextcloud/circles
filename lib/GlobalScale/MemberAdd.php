@@ -30,7 +30,7 @@
 namespace OCA\Circles\GlobalScale;
 
 
-use daita\MySmallPhpTools\Model\SimpleDataStore;
+use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use Exception;
 use OC\User\NoUserException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;

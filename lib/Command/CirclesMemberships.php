@@ -31,13 +31,13 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-use daita\MySmallPhpTools\Exceptions\InvalidItemException;
-use daita\MySmallPhpTools\Exceptions\ItemNotFoundException;
-use daita\MySmallPhpTools\Exceptions\UnknownTypeException;
-use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22TreeNode;
-use daita\MySmallPhpTools\Model\SimpleDataStore;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22ConsoleTree;
-use daita\MySmallPhpTools\Traits\TArrayTools;
+use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
+use ArtificialOwl\MySmallPhpTools\Exceptions\ItemNotFoundException;
+use ArtificialOwl\MySmallPhpTools\Exceptions\UnknownTypeException;
+use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22TreeNode;
+use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
+use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22ConsoleTree;
+use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\Db\CircleRequest;

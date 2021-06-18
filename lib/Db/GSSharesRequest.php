@@ -28,7 +28,7 @@
 namespace OCA\Circles\Db;
 
 
-use daita\MySmallPhpTools\Traits\TStringTools;
+use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Model\GlobalScale\GSShare;
 use OCA\Circles\Model\GlobalScale\GSShareMountpoint;
 use OCA\Circles\Model\DeprecatedMember;

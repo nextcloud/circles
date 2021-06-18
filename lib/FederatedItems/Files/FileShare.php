@@ -32,10 +32,10 @@ declare(strict_types=1);
 namespace OCA\Circles\FederatedItems\Files;
 
 
-use daita\MySmallPhpTools\Exceptions\InvalidItemException;
-use daita\MySmallPhpTools\Exceptions\UnknownTypeException;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
-use daita\MySmallPhpTools\Traits\TStringTools;
+use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
+use ArtificialOwl\MySmallPhpTools\Exceptions\UnknownTypeException;
+use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
+use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Db\MountRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\IFederatedItem;

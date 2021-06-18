@@ -32,9 +32,9 @@ declare(strict_types=1);
 namespace OCA\Circles\Handlers;
 
 
-use daita\MySmallPhpTools\Exceptions\SignatoryException;
-use daita\MySmallPhpTools\Exceptions\SignatureException;
-use daita\MySmallPhpTools\Traits\TArrayTools;
+use ArtificialOwl\MySmallPhpTools\Exceptions\SignatoryException;
+use ArtificialOwl\MySmallPhpTools\Exceptions\SignatureException;
+use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use OC\URLGenerator;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\UnknownInterfaceException;

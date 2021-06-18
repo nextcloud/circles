@@ -32,8 +32,8 @@ declare(strict_types=1);
 namespace OCA\Circles\Controller;
 
 
-use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
+use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
+use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use Exception;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;

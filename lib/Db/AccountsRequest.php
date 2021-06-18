@@ -28,7 +28,7 @@
 namespace OCA\Circles\Db;
 
 
-use daita\MySmallPhpTools\Traits\TStringTools;
+use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 
 class AccountsRequest extends AccountsRequestBuilder {

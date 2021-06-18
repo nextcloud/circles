@@ -32,7 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Collaboration\v2;
 
 
-use daita\MySmallPhpTools\Model\SimpleDataStore;
+use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use Exception;
 use OC\Share20\Share;
 use OCA\Circles\Model\Circle;

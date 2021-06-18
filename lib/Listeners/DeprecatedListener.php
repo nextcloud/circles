@@ -32,7 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Listeners;
 
 
-use daita\MySmallPhpTools\Model\SimpleDataStore;
+use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use Exception;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\ContactAddressBookNotFoundException;

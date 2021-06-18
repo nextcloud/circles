@@ -32,7 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\MountManager;
 
 
-use daita\MySmallPhpTools\Traits\TArrayTools;
+use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
 use JsonSerializable;
 use OC\Files\Mount\MountPoint;

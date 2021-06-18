@@ -29,7 +29,7 @@
 namespace OCA\Circles\Db;
 
 
-use daita\MySmallPhpTools\Traits\TArrayTools;
+use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 
 

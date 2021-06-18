@@ -31,13 +31,13 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-use daita\MySmallPhpTools\Console\Nextcloud\nc22\NC22InteractiveShell;
-use daita\MySmallPhpTools\Exceptions\InvalidItemException;
-use daita\MySmallPhpTools\IInteractiveShellClient;
-use daita\MySmallPhpTools\Model\Nextcloud\nc22\NC22InteractiveShellSession;
-use daita\MySmallPhpTools\Model\SimpleDataStore;
-use daita\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
-use daita\MySmallPhpTools\Traits\TArrayTools;
+use ArtificialOwl\MySmallPhpTools\Console\Nextcloud\nc22\NC22InteractiveShell;
+use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
+use ArtificialOwl\MySmallPhpTools\IInteractiveShellClient;
+use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22InteractiveShellSession;
+use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
+use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
+use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\UnknownInterfaceException;
@@ -298,7 +298,7 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 			   ->setUserId($singleId)
 			   ->setDisplayName($singleId)
 			   ->setDisplayUpdate(0)
-			   ->setNote('')
+			   ->setNotes('')
 			   ->setContactId('')
 			   ->setContactMeta('')
 			   ->setJoined(0);

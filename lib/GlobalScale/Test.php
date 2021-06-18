@@ -30,7 +30,7 @@
 namespace OCA\Circles\GlobalScale;
 
 
-use daita\MySmallPhpTools\Model\SimpleDataStore;
+use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 
 
