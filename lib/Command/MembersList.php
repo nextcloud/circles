@@ -251,7 +251,9 @@ class MembersList extends Base {
 					$member->getSingleId(),
 					Member::$TYPE[$member->getUserType()],
 					$member->hasBasedOn() ? Circle::$DEF_SOURCE[$member->getBasedOn()->getSource()] : '',
-					$this->configService->displayFederatedUser($member, $this->input->getOption('display-name')),
+					$this->configService->displayFederatedUser(
+						$member, $this->input->getOption('display-name')
+					),
 					$this->configService->displayInstance($member->getInstance()),
 					($level > 0) ? Member::$DEF_LEVEL[$level] :
 						'(' . strtolower($member->getStatus()) . ')',
@@ -423,9 +425,10 @@ class MembersList extends Base {
 					$line .= ' (' . Member::$DEF_LEVEL[$member->getLevel()] . ')';
 
 					$line .= ' <info>MemberId</info>: ' . $member->getId();
-					$name = ($this->input->getOption('display-name')) ?
-						$member->getDisplayName() : $member->getUserId();
-					$line .= ' <info>Name</info>: ' . $name;
+					$line .= ' <info>Name</info>: ' . $this->configService->displayFederatedUser(
+							$member,
+							$this->input->getOption('display-name')
+						);
 					$source = ($member->hasBasedOn()) ? $member->getBasedOn()->getSource() : '';
 					$line .= ' <info>Source</info>: ' . Circle::$DEF_SOURCE[$source];
 				}
