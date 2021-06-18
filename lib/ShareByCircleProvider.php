@@ -246,8 +246,6 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @return IShare
 	 */
 	public function update(IShare $share): IShare {
-		OC::$server->getLogger()->log(3, 'CSP > update');
-
 		return $share;
 	}
 
@@ -307,7 +305,6 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @param string $recipient
 	 */
 	public function deleteFromSelf(IShare $share, $recipient): void {
-		OC::$server->getLogger()->log(3, 'CSP > deleteFromSelf');
 	}
 
 	/**
@@ -317,8 +314,6 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @return IShare
 	 */
 	public function restore(IShare $share, string $recipient): IShare {
-		OC::$server->getLogger()->log(3, 'CSP > restore');
-
 		return $share;
 	}
 
@@ -337,8 +332,6 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @throws RequestBuilderException
 	 */
 	public function move(IShare $share, $recipient): IShare {
-		OC::$server->getLogger()->log(3, 'CSP > move' . $share->getId() . ' ' . $recipient);
-
 		$federatedUser = $this->federatedUserService->getLocalFederatedUser($recipient);
 		$child = $this->shareWrapperService->getChild($share, $federatedUser);
 		if ($child->getFileTarget() !== $share->getTarget()) {
@@ -535,8 +528,6 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @throws ShareNotFound
 	 */
 	public function getShareByToken($token): IShare {
-		OC::$server->getLogger()->log(3, 'CSP > getShareByToken');
-
 		try {
 			$wrappedShare = $this->shareWrapperService->getShareByToken($token);
 		} catch (ShareWrapperNotFoundException $e) {
@@ -552,7 +543,6 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @param int $shareType
 	 */
 	public function userDeleted($uid, $shareType): void {
-		OC::$server->getLogger()->log(3, 'CSP > userDeleted');
 	}
 
 
@@ -560,7 +550,6 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @param string $gid
 	 */
 	public function groupDeleted($gid): void {
-		OC::$server->getLogger()->log(3, 'CSP > groupDeleted');
 	}
 
 
@@ -569,7 +558,6 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @param string $gid
 	 */
 	public function userDeletedFromGroup($uid, $gid): void {
-		OC::$server->getLogger()->log(3, 'CSP > userDeletedFromGroup');
 	}
 
 
@@ -580,8 +568,6 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @return array
 	 */
 	public function getAccessList($nodes, $currentAccess): array {
-		OC::$server->getLogger()->log(3, 'CSP > getAccessList');
-
 		return [];
 	}
 
@@ -604,8 +590,6 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @return iterable
 	 */
 	public function getAllShares(): iterable {
-		OC::$server->getLogger()->log(3, 'CSP > getAllShares');
-
 //		$qb = $this->dbConnection->getQueryBuilder();
 //
 //		$qb->select(' * ')
