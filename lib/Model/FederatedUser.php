@@ -112,7 +112,6 @@ class FederatedUser extends ManagedModel implements
 		string $displayName = '',
 		?Circle $basedOn = null
 	): self {
-
 		$this->userId = $userId;
 		$this->setInstance($instance);
 		$this->userType = $type;

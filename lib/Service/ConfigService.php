@@ -567,11 +567,14 @@ class ConfigService {
 
 	/**
 	 * @param IFederatedUser $federatedUser
+	 * @param bool $displayName
 	 *
 	 * @return string
 	 */
-	public function displayFederatedUser(IFederatedUser $federatedUser): string {
-		return $federatedUser->getUserId() . $this->displayInstance($federatedUser->getInstance(), true);
+	public function displayFederatedUser(IFederatedUser $federatedUser, bool $displayName = false): string {
+		$name = ($displayName) ? $federatedUser->getDisplayName() : $federatedUser->getUserId();
+
+		return $name . $this->displayInstance($federatedUser->getInstance(), true);
 	}
 
 	/**
