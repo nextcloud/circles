@@ -62,6 +62,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	const SINGLE = 'single';
 	const CIRCLE = 'circle';
 	const MEMBER = 'member';
+	const MEMBER_COUNT = 'membercount';
 	const OWNER = 'owner';
 	const FEDERATED_EVENT = 'federatedevent';
 	const REMOTE = 'remote';
@@ -90,6 +91,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 				'getPersonalCircle' => true
 			],
 			self::MEMBER,
+			self::MEMBER_COUNT,
 			self::OWNER     => [
 				self::BASED_ON
 			],
@@ -671,6 +673,34 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		}
 
 		$this->andWhere($andX);
+	}
+
+
+	/**
+	 * @param string $alias
+	 *
+	 * @throws RequestBuilderException
+	 */
+	public function countMembers(string $alias): void {
+		if ($this->getType() !== QueryBuilder::SELECT) {
+			return;
+		}
+
+		$aliasMemberCount = $this->generateAlias($alias, self::MEMBER_COUNT, $options);
+		$getData = $this->getBool('getData', $options, false);
+		if (!$getData) {
+			return;
+		}
+
+		$expr = $this->expr();
+		$this->selectAlias(
+			$this->createFunction('COUNT(`' . $aliasMemberCount . '`.`member_id`)'),
+			(($alias !== $this->getDefaultSelectAlias()) ? $alias . '_' : '') . 'population'
+		);
+		$this->leftJoin(
+			$alias, CoreRequestBuilder::TABLE_MEMBER, $aliasMemberCount,
+			$expr->eq($alias . '.unique_id', $aliasMemberCount . '.circle_id')
+		);
 	}
 
 

@@ -198,6 +198,7 @@ class CircleRequest extends CircleRequestBuilder {
 			$qb->limitToRemoteInstance(CoreQueryBuilder::CIRCLE, $remoteInstance, false);
 		}
 
+		$qb->countMembers(CoreQueryBuilder::CIRCLE);
 		$qb->chunk($params->gInt('offset'), $params->gInt('limit'));
 
 		return $this->getItemsFromRequest($qb);
@@ -256,6 +257,7 @@ class CircleRequest extends CircleRequestBuilder {
 		if (!is_null($remoteInstance)) {
 			$qb->limitToRemoteInstance(CoreQueryBuilder::CIRCLE, $remoteInstance, false);
 		}
+		$qb->countMembers(CoreQueryBuilder::CIRCLE);
 
 		return $this->getItemFromRequest($qb);
 	}
