@@ -59,7 +59,6 @@ use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
-use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\FederatedItems\SingleMemberAdd;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
@@ -703,7 +702,6 @@ class SyncService {
 			while ($row = $cursor->fetch()) {
 				$data = new SimpleDataStore($row);
 
-				echo json_encode($data) . "\n";
 				$member = new Member();
 
 				$member->setCircleId($data->g('circle_id'))
@@ -755,7 +753,11 @@ class SyncService {
 		}
 
 		foreach ($members as $member) {
-			$this->memberRequest->save($member);
+			try {
+				$this->memberRequest->getMemberById($member->getId());
+			} catch (MemberNotFoundException $e) {
+				$this->memberRequest->save($member);
+			}
 		}
 	}
 
