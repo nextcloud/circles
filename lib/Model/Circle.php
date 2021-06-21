@@ -204,6 +204,9 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	/** @var string */
 	private $instance = '';
 
+	/** @var int */
+	private $population = 0;
+
 //	/** @var bool */
 //	private $hidden = false;
 
@@ -333,10 +336,7 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	 * @return self
 	 */
 	public function setDisplayName(string $displayName): self {
-//		if ($displayName !== '') {
 		$this->displayName = $displayName;
-
-//		}
 
 		return $this;
 	}
@@ -553,6 +553,25 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 
 
 	/**
+	 * @param int $population
+	 *
+	 * @return Circle
+	 */
+	public function setPopulation(int $population): self {
+		$this->population = $population;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getPopulation(): int {
+		return $this->population;
+	}
+
+
+	/**
 	 * @param array $settings
 	 *
 	 * @return self
@@ -672,6 +691,7 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 			 ->setSanitizedName($this->get('sanitizedName', $data))
 			 ->setSource($this->getInt('source', $data))
 			 ->setConfig($this->getInt('config', $data))
+			 ->setPopulation($this->getInt('population', $data))
 			 ->setSettings($this->getArray('settings', $data))
 //			 ->setContactAddressBook($this->get('contact_addressbook', $data))
 //			 ->setContactGroupName($this->get('contact_groupname', $data))
@@ -706,6 +726,7 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 			'displayName'   => $this->getDisplayName(),
 			'sanitizedName' => $this->getSanitizedName(),
 			'source'        => $this->getSource(),
+			'population'    => $this->getPopulation(),
 			'config'        => $this->getConfig(),
 			'description'   => $this->getDescription(),
 			'settings'      => $this->getSettings(),
@@ -753,6 +774,7 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 			 ->setConfig($this->getInt($prefix . 'config', $data))
 			 ->setSource($this->getInt($prefix . 'source', $data))
 			 ->setInstance($this->get($prefix . 'instance', $data))
+			 ->setPopulation($this->getInt($prefix . 'population', $data))
 			 ->setSettings($this->getArray($prefix . 'settings', $data))
 			 ->setContactAddressBook($this->getInt($prefix . 'contact_addressbook', $data))
 			 ->setContactGroupName($this->get($prefix . 'contact_groupname', $data))

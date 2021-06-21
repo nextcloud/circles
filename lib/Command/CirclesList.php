@@ -208,7 +208,7 @@ class CirclesList extends Base {
 		$output = $output->section();
 		$table = new Table($output);
 		$table->setHeaders(
-			['Single Id', 'Name', 'Config', 'Source', 'Owner', 'Instance', 'Limit', 'Description']
+			['Single Id', 'Name', 'Config', 'Source', 'Owner', 'Instance', 'Population', 'Description']
 		);
 		$table->render();
 
@@ -224,7 +224,7 @@ class CirclesList extends Base {
 					Circle::$DEF_SOURCE[$circle->getSource()],
 					$displayName ? $owner->getDisplayName() : $owner->getUserId(),
 					$this->configService->displayInstance($owner->getInstance()),
-					$this->getInt('members_limit', $circle->getSettings(), -1),
+					$circle->getPopulation() . '/' . $this->getInt('members_limit', $circle->getSettings(), -1),
 					substr(str_replace("\n", ' ', $circle->getDescription()), 0, 30)
 				]
 			);
