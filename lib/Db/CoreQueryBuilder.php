@@ -678,15 +678,18 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 
 	/**
 	 * @param string $alias
-	 *
-	 * @throws RequestBuilderException
 	 */
 	public function countMembers(string $alias): void {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
 
-		$aliasMemberCount = $this->generateAlias($alias, self::MEMBER_COUNT, $options);
+		try {
+			$aliasMemberCount = $this->generateAlias($alias, self::MEMBER_COUNT, $options);
+		} catch (RequestBuilderException $e) {
+			return;
+		}
+
 		$getData = $this->getBool('getData', $options, false);
 		if (!$getData) {
 			return;

@@ -208,7 +208,7 @@ class CirclesList extends Base {
 		$output = $output->section();
 		$table = new Table($output);
 		$table->setHeaders(
-			['Single Id', 'Name', 'Config', 'Source', 'Owner', 'Instance', 'Limit', 'Description']
+			['Single Id', 'Name', 'Config', 'Source', 'Owner', 'Instance', 'Population', 'Description']
 		);
 		$table->render();
 
