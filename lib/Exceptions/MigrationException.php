@@ -40,7 +40,7 @@ use Exception;
  *
  * @package OCA\Circles\Exceptions
  */
-class MigrationTo22Exception extends Exception {
+class MigrationException extends Exception {
 
 }
 
