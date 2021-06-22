@@ -36,6 +36,7 @@ use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use Exception;
+use OC;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
@@ -65,8 +66,11 @@ use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
+use OCA\DAV\CardDAV\ContactsManager;
+use OCP\Contacts\IManager;
 use OCP\IDBConnection;
 use OCP\IGroupManager;
+use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCP\Migration\IOutput;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -102,6 +106,9 @@ class SyncService {
 	/** @var IDBConnection */
 	private $dbConnection;
 
+	/** @var IURLGenerator */
+	private $urlGenerator;
+
 	/** @var CircleRequest */
 	private $circleRequest;
 
@@ -123,6 +130,9 @@ class SyncService {
 	/** @var MembershipService */
 	private $membershipService;
 
+	/** @var ContactService */
+	private $contactService;
+
 	/** @var TimezoneService */
 	private $timezoneService;
 
@@ -143,6 +153,7 @@ class SyncService {
 	 * @param IUserManager $userManager
 	 * @param IGroupManager $groupManager
 	 * @param IDBConnection $dbConnection
+	 * @param IURLGenerator $urlGenerator
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
 	 * @param FederatedUserService $federatedUserService
@@ -150,6 +161,7 @@ class SyncService {
 	 * @param CircleService $circleService
 	 * @param MemberService $memberService
 	 * @param MembershipService $membershipService
+	 * @param ContactService $contactService
 	 * @param TimezoneService $timezoneService
 	 * @param ConfigService $configService
 	 */
@@ -157,6 +169,7 @@ class SyncService {
 		IUserManager $userManager,
 		IGroupManager $groupManager,
 		IDBConnection $dbConnection,
+		IURLGenerator $urlGenerator,
 		CircleRequest $circleRequest,
 		MemberRequest $memberRequest,
 		FederatedUserService $federatedUserService,
@@ -164,12 +177,14 @@ class SyncService {
 		CircleService $circleService,
 		MemberService $memberService,
 		MembershipService $membershipService,
+		ContactService $contactService,
 		TimezoneService $timezoneService,
 		ConfigService $configService
 	) {
 		$this->userManager = $userManager;
 		$this->groupManager = $groupManager;
 		$this->dbConnection = $dbConnection;
+		$this->urlGenerator = $urlGenerator;
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
 		$this->federatedUserService = $federatedUserService;
@@ -177,6 +192,7 @@ class SyncService {
 		$this->circleService = $circleService;
 		$this->memberService = $memberService;
 		$this->membershipService = $membershipService;
+		$this->contactService = $contactService;
 		$this->timezoneService = $timezoneService;
 		$this->configService = $configService;
 
@@ -727,6 +743,7 @@ class SyncService {
 						break;
 					case 4:
 						$member->setUserType(8);
+						$this->fixContactId($member);
 						break;
 				}
 
@@ -778,6 +795,34 @@ class SyncService {
 			}
 		}
 	}
+
+
+	/**
+	 * @param Member $member
+	 *
+	 * @throws ContactAddressBookNotFoundException
+	 */
+	private function fixContactId(Member $member) {
+		list($userId, $contactId) = explode(':', $member->getUserId());
+
+		$contactsManager = OC::$server->get(ContactsManager::class);
+
+		/** @var IManager $cm */
+		$cm = OC::$server->get(IManager::class);
+		$contactsManager->setupContactsProvider($cm, $userId, $this->urlGenerator);
+
+		$contact = $cm->search($contactId, ['UID']);
+		if (sizeof($contact) === 1) {
+			$entry = array_shift($contact);
+			$addressBook =
+				$this->contactService->getAddressBoxById($cm, $this->get('addressbook-key', $entry));
+
+			$member->setUserId($userId . '/' . $addressBook->getUri() . '/' . $contactId);
+		}
+
+		echo $member->getUserId() . "\n";
+	}
+
 
 }
 
