@@ -38,7 +38,6 @@ Those groups of users (or "circles") can then be used by any other app for shari
 
 	<repair-steps>
 		<post-migration>
-			<step>OCA\Circles\Migration\Sync</step>
 			<step>OCA\Circles\Migration\Migration</step>
 		</post-migration>
 	</repair-steps>

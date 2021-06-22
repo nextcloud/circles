@@ -32,11 +32,9 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 
-use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use Exception;
-use OC;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
@@ -51,8 +49,6 @@ use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\GroupNotFoundException;
 use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\InvalidIdException;
-use OCA\Circles\Exceptions\MemberNotFoundException;
-use OCA\Circles\Exceptions\MigrationException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
@@ -66,14 +62,8 @@ use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
-use OCA\DAV\CardDAV\ContactsManager;
-use OCP\Contacts\IManager;
-use OCP\IDBConnection;
 use OCP\IGroupManager;
-use OCP\IURLGenerator;
 use OCP\IUserManager;
-use OCP\Migration\IOutput;
-use Symfony\Component\Console\Output\OutputInterface;
 
 
 /**
@@ -103,11 +93,6 @@ class SyncService {
 	/** @var IGroupManager */
 	private $groupManager;
 
-	/** @var IDBConnection */
-	private $dbConnection;
-
-	/** @var IURLGenerator */
-	private $urlGenerator;
 
 	/** @var CircleRequest */
 	private $circleRequest;
@@ -124,27 +109,14 @@ class SyncService {
 	/** @var CircleService */
 	private $circleService;
 
-	/** @var MemberService */
-	private $memberService;
-
 	/** @var MembershipService */
 	private $membershipService;
 
-	/** @var ContactService */
-	private $contactService;
-
-	/** @var TimezoneService */
-	private $timezoneService;
+	/** @var OutputService */
+	private $outputService;
 
 	/** @var ConfigService */
 	private $configService;
-
-
-	/** @var IOutput */
-	private $migrationOutput;
-
-	/** @var OutputInterface */
-	private $occOutput;
 
 
 	/**
@@ -152,66 +124,39 @@ class SyncService {
 	 *
 	 * @param IUserManager $userManager
 	 * @param IGroupManager $groupManager
-	 * @param IDBConnection $dbConnection
-	 * @param IURLGenerator $urlGenerator
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
 	 * @param FederatedUserService $federatedUserService
 	 * @param federatedEventService $federatedEventService
 	 * @param CircleService $circleService
-	 * @param MemberService $memberService
 	 * @param MembershipService $membershipService
-	 * @param ContactService $contactService
-	 * @param TimezoneService $timezoneService
+	 * @param OutputService $outputService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		IUserManager $userManager,
 		IGroupManager $groupManager,
-		IDBConnection $dbConnection,
-		IURLGenerator $urlGenerator,
 		CircleRequest $circleRequest,
 		MemberRequest $memberRequest,
 		FederatedUserService $federatedUserService,
 		federatedEventService $federatedEventService,
 		CircleService $circleService,
-		MemberService $memberService,
 		MembershipService $membershipService,
-		ContactService $contactService,
-		TimezoneService $timezoneService,
+		OutputService $outputService,
 		ConfigService $configService
 	) {
 		$this->userManager = $userManager;
 		$this->groupManager = $groupManager;
-		$this->dbConnection = $dbConnection;
-		$this->urlGenerator = $urlGenerator;
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
 		$this->federatedUserService = $federatedUserService;
 		$this->federatedEventService = $federatedEventService;
 		$this->circleService = $circleService;
-		$this->memberService = $memberService;
 		$this->membershipService = $membershipService;
-		$this->contactService = $contactService;
-		$this->timezoneService = $timezoneService;
+		$this->outputService = $outputService;
 		$this->configService = $configService;
 
 		$this->setup('app', Application::APP_ID);
-	}
-
-
-	/**
-	 * @param OutputInterface $output
-	 */
-	public function setOccOutput(OutputInterface $output): void {
-		$this->occOutput = $output;
-	}
-
-	/**
-	 * @param IOutput $output
-	 */
-	public function setMigrationOutput(IOutput $output): void {
-		$this->migrationOutput = $output;
 	}
 
 
@@ -221,10 +166,6 @@ class SyncService {
 	 * @return void
 	 */
 	public function sync(int $sync = self::SYNC_ALL): void {
-		if (!is_null($this->migrationOutput)) {
-			$this->migrationOutput->startProgress(7);
-		}
-
 		if ($this->shouldSync(self::SYNC_APPS, $sync)) {
 			$this->syncApps();
 		}
@@ -237,20 +178,16 @@ class SyncService {
 			$this->syncNextcloudGroups();
 		}
 
+		if ($this->shouldSync(self::SYNC_CONTACTS, $sync)) {
+			$this->syncContacts();
+		}
+
 		if ($this->shouldSync(self::SYNC_GLOBALSCALE, $sync)) {
 			$this->syncGlobalScale();
 		}
 
 		if ($this->shouldSync(self::SYNC_REMOTES, $sync)) {
 			$this->syncRemote();
-		}
-
-		if ($this->shouldSync(self::SYNC_CONTACTS, $sync)) {
-			$this->syncContacts();
-		}
-
-		if (!is_null($this->migrationOutput)) {
-			$this->migrationOutput->finishProgress();
 		}
 	}
 
@@ -269,7 +206,7 @@ class SyncService {
 	/**
 	 */
 	public function syncApps(): void {
-		$this->output('Syncing Nextcloud Apps', true);
+		$this->outputService->output('Syncing Nextcloud Apps');
 
 		try {
 			$this->federatedUserService->getAppInitiator('circles', Member::APP_CIRCLES);
@@ -284,14 +221,19 @@ class SyncService {
 	 * @return void
 	 */
 	public function syncNextcloudUsers(): void {
-		$this->output('Syncing Nextcloud Users', true);
+		$this->outputService->output('Syncing Nextcloud Users');
 
-		foreach ($this->userManager->search('') as $user) {
+		$users = $this->userManager->search('');
+		$this->outputService->startMigrationProgress(count($users));
+
+		foreach ($users as $user) {
 			try {
 				$this->syncNextcloudUser($user->getUID());
 			} catch (Exception $e) {
 			}
 		}
+
+		$this->outputService->finishMigrationProgress();
 	}
 
 	/**
@@ -308,6 +250,8 @@ class SyncService {
 	 * @throws SingleCircleNotFoundException
 	 */
 	public function syncNextcloudUser(string $userId): FederatedUser {
+		$this->outputService->output('Syncing Nextcloud User \'' . $userId . '\'', true);
+
 		return $this->federatedUserService->getLocalFederatedUser($userId);
 	}
 
@@ -316,14 +260,18 @@ class SyncService {
 	 * @return void
 	 */
 	public function syncNextcloudGroups(): void {
-		$this->output('Syncing Nextcloud Groups', true);
+		$this->outputService->output('Syncing Nextcloud Groups');
 
-		foreach ($this->groupManager->search('') as $group) {
+		$groups = $this->groupManager->search('');
+		$this->outputService->startMigrationProgress(count($groups));
+		foreach ($groups as $group) {
 			try {
 				$this->syncNextcloudGroup($group->getGID());
 			} catch (Exception $e) {
 			}
 		}
+
+		$this->outputService->finishMigrationProgress();
 	}
 
 	/**
@@ -346,6 +294,8 @@ class SyncService {
 	 * @throws RequestBuilderException
 	 */
 	public function syncNextcloudGroup(string $groupId): Circle {
+		$this->outputService->output('Syncing Nextcloud Group \'' . $groupId . '\'', true);
+
 		$circle = $this->federatedUserService->getGroupCircle($groupId);
 		$group = $this->groupManager->get($groupId);
 		foreach ($group->getUsers() as $user) {
@@ -475,7 +425,10 @@ class SyncService {
 	 * @param string $groupId
 	 * @param string $userId
 	 *
-	 * @return Member
+	 * @return void
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
 	 * @throws FederatedEventException
 	 * @throws FederatedItemException
 	 * @throws FederatedUserException
@@ -538,7 +491,7 @@ class SyncService {
 	 * @return void
 	 */
 	public function syncContacts(): void {
-		$this->output('Syncing Contacts', true);
+		$this->outputService->output('Syncing Contacts');
 	}
 
 
@@ -546,7 +499,7 @@ class SyncService {
 	 * @return void
 	 */
 	public function syncGlobalScale(): void {
-		$this->output('Syncing GlobalScale', true);
+		$this->outputService->output('Syncing GlobalScale');
 	}
 
 
@@ -554,7 +507,7 @@ class SyncService {
 	 * @return void
 	 */
 	public function syncRemote(): void {
-		$this->output('Syncing Remote Instance', true);
+		$this->outputService->output('Syncing Remote Instance');
 	}
 
 
@@ -565,264 +518,6 @@ class SyncService {
 	 */
 	public function syncRemoteCircle(string $circleId): void {
 	}
-
-
-	/**
-	 * @param bool $force
-	 *
-	 * @throws MigrationException
-	 * @throws RequestBuilderException
-	 */
-	public function migration(bool $force = false): void {
-		if ($this->configService->getAppValueBool(ConfigService::MIGRATION_RUN)) {
-			throw new MigrationException('A migration process is already running');
-		}
-		$this->configService->setAppValue(ConfigService::MIGRATION_RUN, '1');
-
-		if ($force) {
-			$this->configService->setAppValue(ConfigService::MIGRATION_22, '0');
-//			$this->configService->setAppValue(ConfigService::MIGRATION_23, '0');
-		}
-
-		$this->migrationTo22();
-		//	$this->migrationTo23();
-
-		$this->configService->setAppValue(ConfigService::MIGRATION_RUN, '0');
-	}
-
-	/**
-	 * @return void
-	 * @throws RequestBuilderException
-	 */
-	private function migrationTo22(): void {
-		if ($this->configService->getAppValueBool(ConfigService::MIGRATION_22)) {
-			return;
-		}
-
-		$this->output('Migrating to 22');
-
-		if (!is_null($this->migrationOutput)) {
-			$this->migrationOutput->startProgress(2);
-		}
-
-		$this->migrationTo22_Circles();
-		$this->migrationTo22_Members();
-
-		if (!is_null($this->migrationOutput)) {
-			$this->migrationOutput->finishProgress();
-		}
-
-		$this->configService->setAppValue(ConfigService::MIGRATION_22, '1');
-	}
-
-
-	/**
-	 *
-	 * @throws RequestBuilderException
-	 */
-	private function migrationTo22_Circles(): void {
-		$this->output('Migrating Circles', true);
-
-		$circles = [];
-
-		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->select('*')->from('circle_circles');
-
-		try {
-			$cursor = $qb->executeQuery();
-			while ($row = $cursor->fetch()) {
-				$data = new SimpleDataStore($row);
-
-				$circle = new Circle();
-				$circle->setSingleId($data->g('unique_id'))
-					   ->setName($data->g('name'))
-					   ->setDisplayName($data->g('display_name'))
-					   ->setSettings($data->gArray('settings'))
-					   ->setDescription($data->g('description'))
-					   ->setContactAddressBook($data->gInt('contact_addressbook'))
-					   ->setContactGroupName($data->g('contact_groupname'))
-					   ->setSource(Member::TYPE_CIRCLE);
-
-				$dTime = $this->timezoneService->getDateTime($data->g('creation'));
-				$circle->setCreation($dTime->getTimestamp());
-
-				if ($circle->getDisplayName() === '') {
-					$circle->setDisplayName($circle->getName());
-				}
-
-				$this->circleService->generateSanitizedName($circle);
-				switch ($data->gInt('type')) {
-					case 1: // personal
-						$config = Circle::CFG_PERSONAL;
-						break;
-
-					case 2: // secret
-						$config = Circle::CFG_CIRCLE;
-						break;
-
-					case 4: // closed
-						$config = Circle::CFG_OPEN + Circle::CFG_REQUEST;
-						break;
-
-					case 8: // public
-						$config = Circle::CFG_OPEN;
-						break;
-				}
-
-				$circles[] = $circle;
-			}
-
-			$cursor->closeCursor();
-		} catch (\OCP\DB\Exception $e) {
-		}
-
-		foreach ($circles as $circle) {
-			/** @var Circle $circle */
-			try {
-				try {
-					$this->circleRequest->getCircle($circle->getSingleId());
-				} catch (CircleNotFoundException $e) {
-					$this->circleRequest->save($circle);
-					usleep(50);
-				}
-			} catch (InvalidIdException $e) {
-			}
-		}
-	}
-
-
-	/**
-	 * @throws ContactAddressBookNotFoundException
-	 * @throws ContactFormatException
-	 * @throws ContactNotFoundException
-	 * @throws FederatedUserException
-	 * @throws InvalidIdException
-	 * @throws RequestBuilderException
-	 * @throws SingleCircleNotFoundException
-	 */
-	private function migrationTo22_Members(): void {
-		$this->output('Migrating Members', true);
-
-		$members = [];
-
-		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->select('*')->from('circle_members');
-
-		$appCircle = $this->federatedUserService->getAppInitiator(
-			Application::APP_ID,
-			Member::APP_CIRCLES
-		);
-
-		try {
-			$cursor = $qb->executeQuery();
-			while ($row = $cursor->fetch()) {
-				$data = new SimpleDataStore($row);
-
-				$member = new Member();
-
-				$member->setCircleId($data->g('circle_id'))
-					   ->setId($data->g('member_id'))
-					   ->setUserId($data->g('user_id'))
-					   ->setInstance($data->g('instance'))
-					   ->setDisplayName($data->g('cached_name'))
-					   ->setLevel($data->gInt('level'))
-					   ->setStatus($data->g('status'))
-					   ->setContactMeta($data->g('contact_meta'))
-					   ->setContactId($data->g('contact_id'))
-					   ->setInvitedBy($appCircle);
-
-				switch ($data->gInt('user_type')) {
-					case 1:
-						$member->setUserType(1);
-						break;
-					case 2:
-						$member->setUserType(2);
-						break;
-					case 3:
-						$member->setUserType(4);
-						break;
-					case 4:
-						$member->setUserType(8);
-						$this->fixContactId($member);
-						break;
-				}
-
-				try {
-					$singleMember = $this->federatedUserService->getFederatedUser(
-						$member->getUserId(),
-						$member->getUserType()
-					);
-				} catch (ContactFormatException $e) {
-					continue;
-				}
-				$member->setSingleId($singleMember->getSingleId());
-
-//					"cached_update":"2021-05-02 12:13:22",
-//					"joined":"2021-05-02 12:13:22",
-//					"contact_checked":null,"
-//					single_id":"wt6WQYYCry3EOud",
-//					"circle_source":null}
-
-				$members[] = $member;
-			}
-			$cursor->closeCursor();
-		} catch (\OCP\DB\Exception $e) {
-		}
-
-		foreach ($members as $member) {
-			try {
-				$this->memberRequest->getMemberById($member->getId());
-			} catch (MemberNotFoundException $e) {
-				$this->memberRequest->save($member);
-			}
-		}
-	}
-
-	/**
-	 * @param string $message
-	 * @param bool $advance
-	 */
-	private function output(string $message, bool $advance = false): void {
-		if (!is_null($this->occOutput)) {
-			$this->occOutput->writeln((($advance) ? '+' : '-') . ' ' . $message);
-		}
-
-		if (!is_null($this->migrationOutput)) {
-			if ($advance) {
-				$this->migrationOutput->advance(1, '(Circles) ' . $message);
-			} else {
-				$this->migrationOutput->info('(Circles) ' . $message);
-			}
-		}
-	}
-
-
-	/**
-	 * @param Member $member
-	 *
-	 * @throws ContactAddressBookNotFoundException
-	 */
-	private function fixContactId(Member $member) {
-		list($userId, $contactId) = explode(':', $member->getUserId());
-
-		$contactsManager = OC::$server->get(ContactsManager::class);
-
-		/** @var IManager $cm */
-		$cm = OC::$server->get(IManager::class);
-		$contactsManager->setupContactsProvider($cm, $userId, $this->urlGenerator);
-
-		$contact = $cm->search($contactId, ['UID']);
-		if (sizeof($contact) === 1) {
-			$entry = array_shift($contact);
-			$addressBook =
-				$this->contactService->getAddressBoxById($cm, $this->get('addressbook-key', $entry));
-
-			$member->setUserId($userId . '/' . $addressBook->getUri() . '/' . $contactId);
-		}
-
-		echo $member->getUserId() . "\n";
-	}
-
 
 }
 

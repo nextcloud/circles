@@ -33,10 +33,11 @@ namespace OCA\Circles\Migration;
 
 
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
+use Exception;
 use OCA\Circles\AppInfo\Application;
-use OCA\Circles\Exceptions\MigrationException;
 use OCA\Circles\Service\ConfigService;
-use OCA\Circles\Service\SyncService;
+use OCA\Circles\Service\MigrationService;
+use OCA\Circles\Service\OutputService;
 use OCP\Migration\IOutput;
 use OCP\Migration\IRepairStep;
 
@@ -52,8 +53,10 @@ class Migration implements IRepairStep {
 	use TNC22Logger;
 
 
-	/** @var SyncService */
-	private $syncService;
+	/** @var MigrationService */
+	private $migrationService;
+
+	private $outputService;
 
 	/** @var ConfigService */
 	private $configService;
@@ -62,11 +65,17 @@ class Migration implements IRepairStep {
 	/**
 	 * Migration constructor.
 	 *
-	 * @param SyncService $syncService
+	 * @param MigrationService $migrationService
+	 * @param OutputService $outputService
 	 * @param ConfigService $configService
 	 */
-	public function __construct(SyncService $syncService, ConfigService $configService) {
-		$this->syncService = $syncService;
+	public function __construct(
+		MigrationService $migrationService,
+		OutputService $outputService,
+		ConfigService $configService
+	) {
+		$this->migrationService = $migrationService;
+		$this->outputService = $outputService;
 		$this->configService = $configService;
 	}
 
@@ -75,7 +84,7 @@ class Migration implements IRepairStep {
 	 * @return string
 	 */
 	public function getName(): string {
-		return '(' . Application::APP_NAME . ') Migrating data from older version of the Circles App';
+		return 'Upgrading Circles App';
 	}
 
 
@@ -87,11 +96,11 @@ class Migration implements IRepairStep {
 			return;
 		}
 
-		$this->syncService->setMigrationOutput($output);
+		$this->outputService->setMigrationOutput($output);
 
 		try {
-			$this->syncService->migration();
-		} catch (MigrationException $e) {
+			$this->migrationService->migration();
+		} catch (Exception $e) {
 			$this->e($e);
 		}
 	}

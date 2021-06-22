@@ -33,11 +33,11 @@ namespace OCA\Circles\Service;
 
 
 use ArtificialOwl\MySmallPhpTools\Exceptions\ItemNotFoundException;
+use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
-use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
@@ -70,6 +70,9 @@ class MembershipService {
 	/** @var EventService */
 	private $eventService;
 
+	/** @var OutputService */
+	private $outputService;
+
 
 	/**
 	 * MembershipService constructor.
@@ -78,17 +81,20 @@ class MembershipService {
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
 	 * @param EventService $eventService
+	 * @param OutputService $outputService
 	 */
 	public function __construct(
 		MembershipRequest $membershipRequest,
 		CircleRequest $circleRequest,
 		MemberRequest $memberRequest,
-		EventService $eventService
+		EventService $eventService,
+		OutputService $outputService
 	) {
 		$this->membershipRequest = $membershipRequest;
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
 		$this->eventService = $eventService;
+		$this->outputService = $outputService;
 	}
 
 
@@ -119,6 +125,33 @@ class MembershipService {
 		foreach ($children as $singleId) {
 			$this->manageMemberships($singleId);
 		}
+	}
+
+
+	/**
+	 *
+	 */
+	public function manageAll(): void {
+		$params = new SimpleDataStore(['includeSystemCircles' => true]);
+		$circles = $this->circleRequest->getCircles(
+			null,
+			null,
+			null,
+			null,
+			$params
+		);
+
+		$this->outputService->startMigrationProgress(sizeof($circles));
+
+		foreach ($circles as $circle) {
+			$this->outputService->output(
+				'Caching memberships for \'' . $circle->getDisplayName() . '\'',
+				true
+			);
+			$this->manageMemberships($circle->getSingleId());
+		}
+
+		$this->outputService->finishMigrationProgress();
 	}
 
 

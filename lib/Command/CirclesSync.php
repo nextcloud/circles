@@ -33,9 +33,17 @@ namespace OCA\Circles\Command;
 
 
 use OC\Core\Command\Base;
+use OCA\Circles\Exceptions\ContactAddressBookNotFoundException;
+use OCA\Circles\Exceptions\ContactFormatException;
+use OCA\Circles\Exceptions\ContactNotFoundException;
+use OCA\Circles\Exceptions\FederatedUserException;
+use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MigrationException;
 use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\MigrationService;
+use OCA\Circles\Service\OutputService;
 use OCA\Circles\Service\SyncService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -53,6 +61,12 @@ class CirclesSync extends Base {
 	/** @var SyncService */
 	private $syncService;
 
+	/** @var MigrationService */
+	private $migrationService;
+
+	/** @var OutputService */
+	private $outputService;
+
 	/** @var ConfigService */
 	private $configService;
 
@@ -61,12 +75,20 @@ class CirclesSync extends Base {
 	 * CirclesSync constructor.
 	 *
 	 * @param SyncService $syncService
+	 * @param OutputService $outputService
 	 * @param ConfigService $configService
 	 */
-	public function __construct(SyncService $syncService, ConfigService $configService) {
+	public function __construct(
+		SyncService $syncService,
+		MigrationService $migrationService,
+		OutputService $outputService,
+		ConfigService $configService
+	) {
 		parent::__construct();
 
 		$this->syncService = $syncService;
+		$this->migrationService = $migrationService;
+		$this->outputService = $outputService;
 		$this->configService = $configService;
 	}
 
@@ -95,18 +117,24 @@ class CirclesSync extends Base {
 	 * @param OutputInterface $output
 	 *
 	 * @return int
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
+	 * @throws FederatedUserException
+	 * @throws InvalidIdException
 	 * @throws MigrationException
 	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
-		$this->syncService->setOccOutput($output);
+		$this->outputService->setOccOutput($output);
 
 		if ($input->getOption('migration')) {
 			if ($input->getOption('force-run')) {
 				$this->configService->setAppValue(ConfigService::MIGRATION_RUN, '0');
 			}
 
-			$this->syncService->migration($input->getOption('force'));
+			$this->migrationService->migration($input->getOption('force'));
 
 			$output->writeln('');
 			$output->writeln('Migration done');

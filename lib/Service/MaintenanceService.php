@@ -128,8 +128,10 @@ class MaintenanceService {
 		} catch (Exception $e) {
 		}
 
+
 		try {
-			$this->output('remove deprecated shares');
+			// TODO: waiting for confirmation of a good migration before cleaning orphan shares
+//			$this->output('remove deprecated shares');
 //		$this->removeDeprecatedShares();
 		} catch (Exception $e) {
 		}
@@ -152,11 +154,11 @@ class MaintenanceService {
 			return;
 		}
 
-		if ($level < 5) {
-			$this->output('refresh displayNames older than 7d');
-			//	$this->refreshOldDisplayNames();
-		}
-
+//		if ($level < 5) {
+//			$this->output('refresh displayNames older than 7d');
+//			//	$this->refreshOldDisplayNames();
+//		}
+//
 		if ($level < 4) {
 			return;
 		}

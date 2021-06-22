@@ -35,6 +35,7 @@ namespace OCA\Circles\Command;
 use OC\Core\Command\Base;
 use OCA\Circles\Db\CoreRequestBuilder;
 use OCA\Circles\Service\MaintenanceService;
+use OCA\Circles\Service\OutputService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -56,20 +57,26 @@ class CirclesMaintenance extends Base {
 	/** @var MaintenanceService */
 	private $maintenanceService;
 
+	/** @var OutputService */
+	private $outputService;
 
 	/**
 	 * CirclesMaintenance constructor.
 	 *
 	 * @param CoreRequestBuilder $coreQueryBuilder
 	 * @param MaintenanceService $maintenanceService
+	 * @param OutputService $outputService
 	 */
 	public function __construct(
 		CoreRequestBuilder $coreQueryBuilder,
-		MaintenanceService $maintenanceService
+		MaintenanceService $maintenanceService,
+		OutputService $outputService
 	) {
 		parent::__construct();
+
 		$this->coreQueryBuilder = $coreQueryBuilder;
 		$this->maintenanceService = $maintenanceService;
+		$this->outputService = $outputService;
 	}
 
 
@@ -108,7 +115,8 @@ class CirclesMaintenance extends Base {
 				'<error>WARNING! You are about to delete all data related to the Circles App!</error>'
 			);
 			$question = new ConfirmationQuestion(
-				'<comment>Do you really want to ' . $action . ' Circles ?</comment> (y/N) ', false, '/^(y|Y)/i'
+				'<comment>Do you really want to ' . $action . ' Circles ?</comment> (y/N) ', false,
+				'/^(y|Y)/i'
 			);
 
 			$helper = $this->getHelper('question');
@@ -145,7 +153,7 @@ class CirclesMaintenance extends Base {
 			return 0;
 		}
 
-		$this->maintenanceService->setOccOutput($output);
+		$this->outputService->setOccOutput($output);
 		$this->maintenanceService->runMaintenance($level);
 
 		$output->writeln('');
