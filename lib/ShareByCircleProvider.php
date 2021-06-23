@@ -39,6 +39,9 @@ use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OC;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\ContactAddressBookNotFoundException;
+use OCA\Circles\Exceptions\ContactFormatException;
+use OCA\Circles\Exceptions\ContactNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
@@ -322,14 +325,17 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @param string $recipient
 	 *
 	 * @return IShare
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
 	 * @throws FederatedUserException
 	 * @throws FederatedUserNotFoundException
-	 * @throws InvalidIdException
-	 * @throws ShareWrapperNotFoundException
-	 * @throws SingleCircleNotFoundException
 	 * @throws IllegalIDChangeException
+	 * @throws InvalidIdException
 	 * @throws NotFoundException
 	 * @throws RequestBuilderException
+	 * @throws ShareWrapperNotFoundException
+	 * @throws SingleCircleNotFoundException
 	 */
 	public function move(IShare $share, $recipient): IShare {
 		$federatedUser = $this->federatedUserService->getLocalFederatedUser($recipient);
@@ -392,6 +398,9 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @param int $offset
 	 *
 	 * @return IShare[]
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
 	 * @throws FederatedUserException
 	 * @throws FederatedUserNotFoundException
 	 * @throws IllegalIDChangeException
@@ -512,7 +521,7 @@ class ShareByCircleProvider implements IShareProvider {
 		return array_filter(
 			array_map(
 				function(ShareWrapper $wrapper) {
-					return $wrapper->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
+					return $wrapper->getShare($this->rootFolder, $this->userManager, $this->urlGenerator, true);
 				}, $wrappedShares
 			)
 		);
