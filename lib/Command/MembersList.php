@@ -39,6 +39,7 @@ use ArtificialOwl\MySmallPhpTools\Exceptions\UnknownTypeException;
 use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22TreeNode;
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22ConsoleTree;
+use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OC\Core\Command\Base;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
@@ -80,6 +81,7 @@ class MembersList extends Base {
 
 
 	use TNC22ConsoleTree;
+	use TStringTools;
 
 
 	/** @var MemberRequest */
@@ -106,6 +108,7 @@ class MembersList extends Base {
 
 	/** @var string */
 	private $treeType = '';
+
 
 	/**
 	 * MembersList constructor.
@@ -251,8 +254,10 @@ class MembersList extends Base {
 					$member->getSingleId(),
 					Member::$TYPE[$member->getUserType()],
 					$member->hasBasedOn() ? Circle::$DEF_SOURCE[$member->getBasedOn()->getSource()] : '',
-					$this->configService->displayFederatedUser(
-						$member, $this->input->getOption('display-name')
+					$this->cut(
+						$this->configService->displayFederatedUser(
+							$member, $this->input->getOption('display-name')
+						), 40
 					),
 					$this->configService->displayInstance($member->getInstance()),
 					($level > 0) ? Member::$DEF_LEVEL[$level] :
