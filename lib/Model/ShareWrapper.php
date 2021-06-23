@@ -563,7 +563,8 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 	public function getShare(
 		IRootFolder $rootFolder,
 		IUserManager $userManager,
-		IURLGenerator $urlGenerator
+		IURLGenerator $urlGenerator,
+		bool $nullOnMissingFileCache = false
 	): ?IShare {
 		$share = new Share($rootFolder, $userManager);
 		$share->setId($this->getId());
@@ -597,6 +598,8 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 			$share->setNodeCacheEntry(
 				Cache::cacheEntryFromData($this->getFileCache()->toCache(), OC::$server->getMimeTypeLoader())
 			);
+		} else if ($nullOnMissingFileCache) {
+			return null;
 		}
 
 		return $share;
