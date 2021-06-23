@@ -33,11 +33,17 @@ namespace OCA\Circles\Command;
 
 
 use OC\Core\Command\Base;
+use OCA\Circles\Exceptions\ContactAddressBookNotFoundException;
+use OCA\Circles\Exceptions\ContactFormatException;
+use OCA\Circles\Exceptions\ContactNotFoundException;
 use OCA\Circles\Exceptions\FederatedUserException;
-use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
-use OCA\Circles\Exceptions\MigrationTo22Exception;
+use OCA\Circles\Exceptions\MigrationException;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
+use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\MigrationService;
+use OCA\Circles\Service\OutputService;
 use OCA\Circles\Service\SyncService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -55,14 +61,35 @@ class CirclesSync extends Base {
 	/** @var SyncService */
 	private $syncService;
 
+	/** @var MigrationService */
+	private $migrationService;
+
+	/** @var OutputService */
+	private $outputService;
+
+	/** @var ConfigService */
+	private $configService;
+
+
 	/**
 	 * CirclesSync constructor.
 	 *
 	 * @param SyncService $syncService
+	 * @param OutputService $outputService
+	 * @param ConfigService $configService
 	 */
-	public function __construct(SyncService $syncService) {
+	public function __construct(
+		SyncService $syncService,
+		MigrationService $migrationService,
+		OutputService $outputService,
+		ConfigService $configService
+	) {
 		parent::__construct();
+
 		$this->syncService = $syncService;
+		$this->migrationService = $migrationService;
+		$this->outputService = $outputService;
+		$this->configService = $configService;
 	}
 
 
@@ -74,13 +101,13 @@ class CirclesSync extends Base {
 		$this->setName('circles:sync')
 			 ->setDescription('Sync Circles and Members')
 			 ->addOption('migration', '', InputOption::VALUE_NONE, 'Migrate from Circles 0.21.0')
+			 ->addOption('force', '', InputOption::VALUE_NONE, 'Force migration')
+			 ->addOption('force-run', '', InputOption::VALUE_NONE, 'Force migration run')
+			 ->addOption('apps', '', InputOption::VALUE_NONE, 'Sync Apps')
 			 ->addOption('users', '', InputOption::VALUE_NONE, 'Sync Nextcloud Users')
-			 ->addOption('user', '', InputOption::VALUE_REQUIRED, 'Sync only a specific Nextcloud User', '')
 			 ->addOption('groups', '', InputOption::VALUE_NONE, 'Sync Nextcloud Groups')
-			 ->addOption('group', '', InputOption::VALUE_REQUIRED, 'Sync only a specific Nextcloud Group', '')
 			 ->addOption('contacts', '', InputOption::VALUE_NONE, 'Sync Contacts')
 			 ->addOption('remotes', '', InputOption::VALUE_NONE, 'Sync Remotes')
-			 ->addOption('remote', '', InputOption::VALUE_NONE, 'Sync only a specific Remote')
 			 ->addOption('global-scale', '', InputOption::VALUE_NONE, 'Sync GlobalScale');
 	}
 
@@ -90,89 +117,66 @@ class CirclesSync extends Base {
 	 * @param OutputInterface $output
 	 *
 	 * @return int
-	 * @throws MigrationTo22Exception
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
 	 * @throws FederatedUserException
-	 * @throws FederatedUserNotFoundException
 	 * @throws InvalidIdException
+	 * @throws MigrationException
+	 * @throws RequestBuilderException
 	 * @throws SingleCircleNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
+		$this->outputService->setOccOutput($output);
 
-		$options = $input->getOptions();
-		unset($options['output']);
-		if (empty(array_filter($options))) {
-			$this->syncService->syncAll();
-			$output->writeln('- Sync done');
+		if ($input->getOption('migration')) {
+			if ($input->getOption('force-run')) {
+				$this->configService->setAppValue(ConfigService::MIGRATION_RUN, '0');
+			}
+
+			$this->migrationService->migration($input->getOption('force'));
+
+			$output->writeln('');
+			$output->writeln('Migration done');
 
 			return 0;
 		}
 
-		if ($input->getOption('migration')) {
-			// TODO: lock using setAppValue() to avoid duplicate process
-			if (!$this->syncService->migration()) {
-				throw new MigrationTo22Exception('Migration already performed successfully');
-			}
-			$output->writeln('- Migration went smoothly, enjoy using Circles 22!');
-		}
+		$sync = $this->filterSync($input);
+		$this->syncService->sync($sync);
 
-		if ($input->getOption('users')) {
-			$this->syncService->syncNextcloudUsers();
-			$output->writeln('- Nextcloud Users synced');
-		}
-
-		if (($userId = $input->getOption('user')) !== '') {
-			$federatedUser = $this->syncService->syncNextcloudUser($userId);
-			$output->writeln(
-				'- Nextcloud User <info>' . $userId . '</info>/<info>' . $federatedUser->getSingleId()
-				. '</info> synced'
-			);
-		}
-
-		if ($input->getOption('groups')) {
-			$this->syncService->syncNextcloudGroups();
-			$output->writeln('- Nextcloud Groups synced');
-		}
-
-		if (($groupId = $input->getOption('group')) !== '') {
-			$circle = $this->syncService->syncNextcloudGroup($groupId);
-			$output->writeln(
-				'- Nextcloud Group <info>' . $groupId . '</info>/<info>' . $circle->getSingleId()
-				. '</info> synced'
-			);
-		}
-
-
-//
-
-
-//			echo json_encode(array_filter($options), JSON_PRETTY_PRINT) . "\n";
-//			$output->writeln(json_encode($result), JSON_PRETTY_PRINT);
-
-//		if ($input->getOption('broadcast')) {
-//
-//			return 0;
-//		}
-//
-//		$circleId = (string)$input->getArgument('circle_id');
-//		$instance = $input->getOption('instance');
-//		if ($instance === '') {
-//			try {
-//				$circle = $this->circleService->getCircle($circleId);
-//			} catch (CircleNotFoundException $e) {
-//				throw new CircleNotFoundException(
-//					'unknown circle, use --instance to retrieve the data from a remote instance'
-//				);
-//			}
-//			$instance = $circle->getInstance();
-//		}
-//
-//		if ($this->configService->isLocalInstance($instance)) {
-//			throw new RemoteNotFoundException('Circle is local');
-//		}
-//
-//		$this->remoteService->syncRemoteCircle($circleId, $instance);
+		$output->writeln('');
+		$output->writeln('Sync done');
 
 		return 0;
+	}
+
+
+	private function filterSync(InputInterface $input): int {
+		$sync = 0;
+		if ($input->getOption('apps')) {
+			$sync += SyncService::SYNC_APPS;
+		}
+		if ($input->getOption('users')) {
+			$sync += SyncService::SYNC_USERS;
+		}
+		if ($input->getOption('groups')) {
+			$sync += SyncService::SYNC_GROUPS;
+		}
+		if ($input->getOption('global-scale')) {
+			$sync += SyncService::SYNC_GLOBALSCALE;
+		}
+		if ($input->getOption('remotes')) {
+			$sync += SyncService::SYNC_REMOTES;
+		}
+		if ($input->getOption('contacts')) {
+			$sync += SyncService::SYNC_CONTACTS;
+		}
+		if ($sync === 0) {
+			$sync = SyncService::SYNC_ALL;
+		}
+
+		return $sync;
 	}
 
 }

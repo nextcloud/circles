@@ -36,11 +36,11 @@ Those groups of users (or "circles") can then be used by any other app for shari
 		<!--		<job>OCA\Circles\Cron\GlobalSync</job>-->
 	</background-jobs>
 
-	<!--	<repair-steps>-->
-	<!--		<post-migration>-->
-	<!--			<step>OCA\Circles\Migration\ImportOwncloudCustomGroups</step>-->
-	<!--		</post-migration>-->
-	<!--	</repair-steps>-->
+	<repair-steps>
+		<post-migration>
+			<step>OCA\Circles\Migration\Migration</step>
+		</post-migration>
+	</repair-steps>
 
 	<commands>
 		<command>OCA\Circles\Command\CirclesCreate</command>

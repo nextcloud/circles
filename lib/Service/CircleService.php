@@ -491,7 +491,7 @@ class CircleService {
 		}
 
 		$this->confirmDisplayName($circle);
-		$this->confirmSanitizedName($circle);
+		$this->generateSanitizedName($circle);
 	}
 
 	/**
@@ -529,7 +529,7 @@ class CircleService {
 	 *
 	 * @throws RequestBuilderException
 	 */
-	private function confirmSanitizedName(Circle $circle) {
+	public function generateSanitizedName(Circle $circle) {
 		$baseSanitizedName = $this->sanitizeName($circle->getName());
 		if ($baseSanitizedName === '') {
 			$baseSanitizedName = substr($circle->getSingleId(), 0, 3);

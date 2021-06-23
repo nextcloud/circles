@@ -174,5 +174,23 @@ class ContactService {
 		throw new ContactAddressBookNotFoundException();
 	}
 
+
+	/**
+	 * @param IManager $cm
+	 * @param string $addressBookKey
+	 *
+	 * @return IAddressBook
+	 * @throws ContactAddressBookNotFoundException
+	 */
+	public function getAddressBoxById(IManager $cm, string $addressBookKey): IAddressBook {
+		foreach ($cm->getUserAddressBooks() as $addressBook) {
+			if ($addressBook->getKey() === $addressBookKey) {
+				return $addressBook;
+			}
+		}
+
+		throw new ContactAddressBookNotFoundException();
+	}
+
 }
 

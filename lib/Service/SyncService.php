@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 
+use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use Exception;
 use OCA\Circles\AppInfo\Application;
@@ -48,7 +49,6 @@ use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\GroupNotFoundException;
 use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\InvalidIdException;
-use OCA\Circles\Exceptions\MigrationTo22Exception;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
@@ -75,6 +75,16 @@ class SyncService {
 
 
 	use TStringTools;
+	use TNC22Logger;
+
+
+	const SYNC_APPS = 1;
+	const SYNC_USERS = 2;
+	const SYNC_GROUPS = 4;
+	const SYNC_GLOBALSCALE = 8;
+	const SYNC_REMOTES = 16;
+	const SYNC_CONTACTS = 32;
+	const SYNC_ALL = 63;
 
 
 	/** @var IUserManager */
@@ -82,6 +92,7 @@ class SyncService {
 
 	/** @var IGroupManager */
 	private $groupManager;
+
 
 	/** @var CircleRequest */
 	private $circleRequest;
@@ -98,11 +109,11 @@ class SyncService {
 	/** @var CircleService */
 	private $circleService;
 
-	/** @var MemberService */
-	private $memberService;
-
 	/** @var MembershipService */
 	private $membershipService;
+
+	/** @var OutputService */
+	private $outputService;
 
 	/** @var ConfigService */
 	private $configService;
@@ -118,8 +129,8 @@ class SyncService {
 	 * @param FederatedUserService $federatedUserService
 	 * @param federatedEventService $federatedEventService
 	 * @param CircleService $circleService
-	 * @param MemberService $memberService
 	 * @param MembershipService $membershipService
+	 * @param OutputService $outputService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
@@ -130,8 +141,8 @@ class SyncService {
 		FederatedUserService $federatedUserService,
 		federatedEventService $federatedEventService,
 		CircleService $circleService,
-		MemberService $memberService,
 		MembershipService $membershipService,
+		OutputService $outputService,
 		ConfigService $configService
 	) {
 		$this->userManager = $userManager;
@@ -141,61 +152,68 @@ class SyncService {
 		$this->federatedUserService = $federatedUserService;
 		$this->federatedEventService = $federatedEventService;
 		$this->circleService = $circleService;
-		$this->memberService = $memberService;
 		$this->membershipService = $membershipService;
+		$this->outputService = $outputService;
 		$this->configService = $configService;
+
+		$this->setup('app', Application::APP_ID);
 	}
 
 
 	/**
-	 * @return bool
-	 * @throws MigrationTo22Exception
+	 * @param int $sync
+	 *
+	 * @return void
 	 */
-	public function migration(): bool {
-		if ($this->configService->getAppValueBool(ConfigService::MIGRATION_22)) {
-			return false;
+	public function sync(int $sync = self::SYNC_ALL): void {
+		if ($this->shouldSync(self::SYNC_APPS, $sync)) {
+			$this->syncApps();
 		}
 
-		$this->migrationTo22();
-		$this->configService->setAppValue(ConfigService::MIGRATION_22, '1');
+		if ($this->shouldSync(self::SYNC_USERS, $sync)) {
+			$this->syncNextcloudUsers();
+		}
 
-		return true;
+		if ($this->shouldSync(self::SYNC_GROUPS, $sync)) {
+			$this->syncNextcloudGroups();
+		}
 
-	}
+		if ($this->shouldSync(self::SYNC_CONTACTS, $sync)) {
+			$this->syncContacts();
+		}
 
-	/**
-	 * @return void
-	 * @throws MigrationTo22Exception
-	 */
-	private function migrationTo22(): void {
-		throw new MigrationTo22Exception('migration failed');
-	}
+		if ($this->shouldSync(self::SYNC_GLOBALSCALE, $sync)) {
+			$this->syncGlobalScale();
+		}
 
-
-	/**
-	 * @return void
-	 */
-	public function syncAll(): void {
-		$this->syncOcc();
-		$this->syncNextcloudUsers();
-		$this->syncGlobalScale();
-		$this->syncRemote();
-		$this->syncNextcloudGroups();
-		$this->syncContacts();
+		if ($this->shouldSync(self::SYNC_REMOTES, $sync)) {
+			$this->syncRemote();
+		}
 	}
 
 
 	/**
-	 * @throws FederatedUserException
-	 * @throws InvalidIdException
-	 * @throws RequestBuilderException
-	 * @throws SingleCircleNotFoundException
-	 * @throws ContactAddressBookNotFoundException
-	 * @throws ContactFormatException
-	 * @throws ContactNotFoundException
+	 * @param int $item
+	 * @param int $all
+	 *
+	 * @return bool
 	 */
-	public function syncOcc(): void {
-		$this->federatedUserService->getAppInitiator('occ', Member::APP_OCC);
+	private function shouldSync(int $item, int $all): bool {
+		return (($item & $all) !== 0);
+	}
+
+
+	/**
+	 */
+	public function syncApps(): void {
+		$this->outputService->output('Syncing Nextcloud Apps');
+
+		try {
+			$this->federatedUserService->getAppInitiator('circles', Member::APP_CIRCLES);
+			$this->federatedUserService->getAppInitiator('occ', Member::APP_OCC);
+		} catch (Exception $e) {
+			$this->e($e);
+		}
 	}
 
 
@@ -203,25 +221,37 @@ class SyncService {
 	 * @return void
 	 */
 	public function syncNextcloudUsers(): void {
-		foreach ($this->userManager->search('') as $user) {
+		$this->outputService->output('Syncing Nextcloud Users');
+
+		$users = $this->userManager->search('');
+		$this->outputService->startMigrationProgress(count($users));
+
+		foreach ($users as $user) {
 			try {
 				$this->syncNextcloudUser($user->getUID());
 			} catch (Exception $e) {
 			}
 		}
+
+		$this->outputService->finishMigrationProgress();
 	}
 
 	/**
 	 * @param string $userId
 	 *
 	 * @return FederatedUser
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
 	 * @throws FederatedUserException
 	 * @throws FederatedUserNotFoundException
 	 * @throws InvalidIdException
-	 * @throws SingleCircleNotFoundException
 	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
 	 */
 	public function syncNextcloudUser(string $userId): FederatedUser {
+		$this->outputService->output('Syncing Nextcloud User \'' . $userId . '\'', true);
+
 		return $this->federatedUserService->getLocalFederatedUser($userId);
 	}
 
@@ -230,12 +260,18 @@ class SyncService {
 	 * @return void
 	 */
 	public function syncNextcloudGroups(): void {
-		foreach ($this->groupManager->search('') as $group) {
+		$this->outputService->output('Syncing Nextcloud Groups');
+
+		$groups = $this->groupManager->search('');
+		$this->outputService->startMigrationProgress(count($groups));
+		foreach ($groups as $group) {
 			try {
 				$this->syncNextcloudGroup($group->getGID());
 			} catch (Exception $e) {
 			}
 		}
+
+		$this->outputService->finishMigrationProgress();
 	}
 
 	/**
@@ -258,6 +294,8 @@ class SyncService {
 	 * @throws RequestBuilderException
 	 */
 	public function syncNextcloudGroup(string $groupId): Circle {
+		$this->outputService->output('Syncing Nextcloud Group \'' . $groupId . '\'', true);
+
 		$circle = $this->federatedUserService->getGroupCircle($groupId);
 		$group = $this->groupManager->get($groupId);
 		foreach ($group->getUsers() as $user) {
@@ -387,7 +425,10 @@ class SyncService {
 	 * @param string $groupId
 	 * @param string $userId
 	 *
-	 * @return Member
+	 * @return void
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
 	 * @throws FederatedEventException
 	 * @throws FederatedItemException
 	 * @throws FederatedUserException
@@ -450,6 +491,7 @@ class SyncService {
 	 * @return void
 	 */
 	public function syncContacts(): void {
+		$this->outputService->output('Syncing Contacts');
 	}
 
 
@@ -457,6 +499,7 @@ class SyncService {
 	 * @return void
 	 */
 	public function syncGlobalScale(): void {
+		$this->outputService->output('Syncing GlobalScale');
 	}
 
 
@@ -464,6 +507,7 @@ class SyncService {
 	 * @return void
 	 */
 	public function syncRemote(): void {
+		$this->outputService->output('Syncing Remote Instance');
 	}
 
 
@@ -474,7 +518,6 @@ class SyncService {
 	 */
 	public function syncRemoteCircle(string $circleId): void {
 	}
-
 
 }
 

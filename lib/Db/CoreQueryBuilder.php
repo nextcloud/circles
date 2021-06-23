@@ -711,7 +711,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	 * @param string $alias
 	 * @param IFederatedUser|null $initiator
 	 * @param string $field
-	 * @param string $helpedAlias
+	 * @param string $helperAlias
 	 *
 	 * @throws RequestBuilderException
 	 */
