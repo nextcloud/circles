@@ -35,6 +35,7 @@ use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
 use ArtificialOwl\MySmallPhpTools\Exceptions\SignatoryException;
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
+use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedItemException;
@@ -74,6 +75,7 @@ class CirclesList extends Base {
 
 
 	use TArrayTools;
+	use TStringTools;
 
 
 	/** @var ModelManager */
@@ -208,7 +210,7 @@ class CirclesList extends Base {
 		$output = $output->section();
 		$table = new Table($output);
 		$table->setHeaders(
-			['Single Id', 'Name', 'Config', 'Source', 'Owner', 'Instance', 'Population', 'Description']
+			['Single Id', 'Name', 'Config', 'Source', 'Owner', 'Instance', 'Population']
 		);
 		$table->render();
 
@@ -219,13 +221,14 @@ class CirclesList extends Base {
 			$table->appendRow(
 				[
 					$circle->getSingleId(),
-					$displayName ? $circle->getDisplayName() : $circle->getName(),
+					$this->cut(($displayName ? $circle->getDisplayName() : $circle->getName()), 40),
 					json_encode(Circle::getCircleFlags($circle, $display)),
 					Circle::$DEF_SOURCE[$circle->getSource()],
-					$displayName ? $owner->getDisplayName() : $owner->getUserId(),
+					$this->cut($displayName ? $owner->getDisplayName() : $owner->getUserId(), 40),
 					$this->configService->displayInstance($owner->getInstance()),
-					$circle->getPopulation() . '/' . $this->getInt('members_limit', $circle->getSettings(), -1),
-					substr(str_replace("\n", ' ', $circle->getDescription()), 0, 30)
+					$circle->getPopulation() . '/' . $this->getInt(
+						'members_limit', $circle->getSettings(), -1
+					)
 				]
 			);
 		}
