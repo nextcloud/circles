@@ -1123,7 +1123,6 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 			$aliasInheritedByMembership = $this->generateAlias($aliasInheritedBy, self::MEMBERSHIPS);
 			$this->generateMembershipSelectAlias($aliasMembership, $aliasInheritedByMembership);
 		} catch (RequestBuilderException $e) {
-			\OC::$server->getLogger()->log(3, '-- ' . $e->getMessage());
 		}
 	}
 

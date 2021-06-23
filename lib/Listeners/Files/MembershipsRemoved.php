@@ -125,13 +125,14 @@ class MembershipsRemoved implements IEventListener {
 			 * // $this->shareWrapperRequest->removeByMembership($membership);
 			 */
 			$federatedUser = $this->circlesManager->getFederatedUser($membership->getSingleId());
-			if ($federatedUser->getUserType() === Member::TYPE_USER
-				&& $federatedUser->isLocal()) {
-				$this->shareWrapperRequest->removeByInitiatorAndShareWith(
-					$federatedUser->getUserId(),
-					$membership->getCircleId()
-				);
-			}
+			// TODO confirm that members is really removed from the Circle
+//			if ($federatedUser->getUserType() === Member::TYPE_USER
+//				&& $federatedUser->isLocal()) {
+//				$this->shareWrapperRequest->removeByInitiatorAndShareWith(
+//					$federatedUser->getUserId(),
+//					$membership->getCircleId()
+//				);
+//			}
 		}
 	}
 
