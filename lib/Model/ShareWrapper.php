@@ -521,7 +521,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 	/**
 	 * @return bool
 	 */
-	public function hasViewer(): bool {
+	public function hasInitiator(): bool {
 		return (!is_null($this->initiator));
 	}
 
@@ -587,10 +587,6 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 
 		$this->setShareDisplay($share, $urlGenerator);
 
-		if ($this->hasCircle()) {
-			$share->setSharedWithDisplayName($this->getCircle()->getDisplayName());
-		}
-
 		if ($this->hasFileCache()) {
 			if (!$this->getFileCache()->isAccessible()) {
 				return null;
@@ -616,6 +612,14 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 		}
 
 		$circle = $this->getCircle();
+		if ($circle->isConfig(Circle::CFG_PERSONAL)
+			&& $this->hasInitiator()
+			&& $circle->getOwner()->getSingleId() !== $this->getInitiator()->getSingleId()) {
+			$share->setSharedWithDisplayName(' ');
+
+			return;
+		}
+
 		$display = $circle->getDisplayName();
 		if ($circle->getSource() === 0) {
 			$display .= ' (Circle owned by ' . $circle->getOwner()->getDisplayName() . ')';
@@ -774,7 +778,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 			$arr['circle'] = $this->getCircle();
 		}
 
-		if ($this->hasViewer()) {
+		if ($this->hasInitiator()) {
 			$arr['viewer'] = $this->getInitiator();
 		}
 

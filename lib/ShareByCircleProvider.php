@@ -495,6 +495,9 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @param int $offset
 	 *
 	 * @return IShare[]
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
 	 * @throws FederatedUserException
 	 * @throws FederatedUserNotFoundException
 	 * @throws IllegalIDChangeException
