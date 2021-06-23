@@ -243,9 +243,9 @@ class CoreRequestBuilder {
 
 
 	/**
-	 *
+	 * @param bool $shares
 	 */
-	public function cleanDatabase(): void {
+	public function cleanDatabase(bool $shares = false): void {
 		foreach (array_keys(self::$tables) as $table) {
 			$qb = $this->getQueryBuilder();
 			try {
@@ -255,11 +255,13 @@ class CoreRequestBuilder {
 			}
 		}
 
-		$qb = $this->getQueryBuilder();
-		$expr = $qb->expr();
-		$qb->delete(self::TABLE_SHARE);
-		$qb->where($expr->eq('share_type', $qb->createNamedParameter(IShare::TYPE_CIRCLE)));
-		$qb->execute();
+		if ($shares) {
+			$qb = $this->getQueryBuilder();
+			$expr = $qb->expr();
+			$qb->delete(self::TABLE_SHARE);
+			$qb->where($expr->eq('share_type', $qb->createNamedParameter(IShare::TYPE_CIRCLE)));
+			$qb->execute();
+		}
 	}
 
 

@@ -89,6 +89,9 @@ class CirclesMaintenance extends Base {
 				 'reset', '', InputOption::VALUE_NONE, 'reset Circles; remove all data related to the App'
 			 )
 			 ->addOption(
+				 'clean-shares', '', InputOption::VALUE_NONE, 'remove Circles\' shares'
+			 )
+			 ->addOption(
 				 'uninstall', '', InputOption::VALUE_NONE,
 				 'Uninstall the apps and everything related to the app from the database'
 			 );
@@ -143,7 +146,7 @@ class CirclesMaintenance extends Base {
 				return 0;
 			}
 
-			$this->coreQueryBuilder->cleanDatabase();
+			$this->coreQueryBuilder->cleanDatabase($input->getOption('clean-shares'));
 			if ($uninstall) {
 				$this->coreQueryBuilder->uninstall();
 			}
