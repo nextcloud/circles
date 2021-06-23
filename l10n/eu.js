@@ -92,6 +92,7 @@ OC.L10N.register(
     "Root" : "Erroa",
     "Circle Invite" : "Zirkulu gonbidapena",
     "Federated" : "Federatua",
+    "Mount point" : "Muntatze-puntua",
     "Nextcloud User" : "Nextcloud erabiltzailea",
     "Nextcloud Group" : "Nextcloud taldea",
     "Contact" : "Kontaktua",
