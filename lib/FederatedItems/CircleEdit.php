@@ -34,6 +34,7 @@ namespace OCA\Circles\FederatedItems;
 
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use OCA\Circles\Db\CircleRequest;
+use OCA\Circles\Exceptions\CircleNameTooShortException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\Model\Federated\FederatedEvent;
@@ -85,6 +86,7 @@ class CircleEdit implements IFederatedItem {
 	 * @param FederatedEvent $event
 	 *
 	 * @throws RequestBuilderException
+	 * @throws CircleNameTooShortException
 	 */
 	public function verify(FederatedEvent $event): void {
 		$circle = $event->getCircle();
@@ -96,11 +98,16 @@ class CircleEdit implements IFederatedItem {
 		$new = clone $circle;
 
 		if ($data->hasKey('name')) {
-			$new->setName($data->g('name'));
+			$new->setName($this->circleService->cleanCircleName($data->g('name')));
+			if (strlen($new->getName()) < 3) {
+				throw new CircleNameTooShortException('Circle name is too short');
+			}
+			$event->getData()->s('name', $new->getName());
 		}
 
 		if ($data->hasKey('description')) {
 			$new->setDescription($data->g('description'));
+			$event->getData()->s('description', $new->getDescription());
 		}
 
 		$this->circleService->confirmName($new);
@@ -116,7 +123,7 @@ class CircleEdit implements IFederatedItem {
 	 */
 	public function manage(FederatedEvent $event): void {
 		$circle = clone $event->getCircle();
-		$data = $event->getParams();
+		$data = $event->getData();
 
 		// TODO: verify that event->GetCircle() is updated by the instance that owns the Circle so we can
 		// use it as a thrustable base

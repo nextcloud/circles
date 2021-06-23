@@ -39,6 +39,7 @@ use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
+use OCA\Circles\Exceptions\CircleNameTooShortException;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
@@ -150,6 +151,7 @@ class CircleService {
 	 * @throws RemoteResourceNotFoundException
 	 * @throws UnknownRemoteException
 	 * @throws RequestBuilderException
+	 * @throws CircleNameTooShortException
 	 */
 	public function create(
 		string $name,
@@ -168,9 +170,13 @@ class CircleService {
 		}
 
 		$circle = new Circle();
-		$circle->setName(trim($name))
+		$circle->setName($this->cleanCircleName($name))
 			   ->setSingleId($this->token(ManagedModel::ID_LENGTH))
 			   ->setSource(Member::TYPE_CIRCLE);
+
+		if (strlen($circle->getName()) < 3) {
+			throw new CircleNameTooShortException('Circle name is too short');
+		}
 
 		if ($personal) {
 			$circle->setConfig(Circle::CFG_PERSONAL);
@@ -609,6 +615,18 @@ class CircleService {
 		}
 
 		return (sizeof($members) >= $limit);
+	}
+
+
+	/**
+	 * @param string $name
+	 *
+	 * @return string
+	 */
+	public function cleanCircleName(string $name): string {
+		$name = preg_replace('/\s+/', ' ', $name);
+
+		return trim($name);
 	}
 
 }
