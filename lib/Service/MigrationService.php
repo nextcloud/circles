@@ -291,15 +291,15 @@ class MigrationService {
 				break;
 
 			case 2: // secret
-				$circle->setConfig(Circle::CFG_CIRCLE);
+				$circle->setConfig(Circle::CFG_OPEN + Circle::CFG_CIRCLE);
 				break;
 
 			case 4: // closed
-				$circle->setConfig(Circle::CFG_OPEN + Circle::CFG_REQUEST);
+				$circle->setConfig(Circle::CFG_OPEN + Circle::CFG_REQUEST + Circle::CFG_VISIBLE);
 				break;
 
 			case 8: // public
-				$circle->setConfig(Circle::CFG_OPEN);
+				$circle->setConfig(Circle::CFG_OPEN + Circle::CFG_VISIBLE);
 				break;
 		}
 	}
