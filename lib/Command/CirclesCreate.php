@@ -32,6 +32,7 @@ namespace OCA\Circles\Command;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleService;
@@ -80,6 +81,8 @@ class CirclesCreate extends Base {
 			 ->setDescription('create a new circle')
 			 ->addArgument('owner', InputArgument::REQUIRED, 'owner of the circle')
 			 ->addArgument('name', InputArgument::REQUIRED, 'name of the circle')
+			 ->addOption('personal', '', InputOption::VALUE_NONE, 'create a personal circle')
+			 ->addOption('local', '', InputOption::VALUE_NONE, 'create a local circle')
 			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception')
 			 ->addOption(
 				 'type', '', InputOption::VALUE_REQUIRED, 'type of the owner',
@@ -96,6 +99,7 @@ class CirclesCreate extends Base {
 	 * @throws FederatedItemException
 	 * @throws InitiatorNotFoundException
 	 * @throws SingleCircleNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$ownerId = $input->getArgument('owner');
@@ -107,7 +111,12 @@ class CirclesCreate extends Base {
 			$type = Member::parseTypeString($input->getOption('type'));
 
 			$owner = $this->federatedUserService->getFederatedUser($ownerId, $type);
-			$outcome = $this->circleService->create($name, $owner);
+			$outcome = $this->circleService->create(
+				$name,
+				$owner,
+				$input->getOption('personal'),
+				$input->getOption('local')
+			);
 		} catch (FederatedItemException $e) {
 			if ($input->getOption('status-code')) {
 				throw new FederatedItemException(
