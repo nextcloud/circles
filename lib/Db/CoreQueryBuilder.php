@@ -1148,6 +1148,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		$orX->add(
 			$expr->andX(
 				$expr->gte($aliasMembership . '.level', $this->createNamedParameter(Member::LEVEL_MEMBER))
+				$this->exprFilterBitwise('config', Circle::CFG_PERSONAL, $alias)
 			)
 		);
 
