@@ -418,6 +418,13 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 						   ]
 			);
 			$table->addColumn(
+				'config', 'integer', [
+							'notnull'  => false,
+							'length'   => 11,
+							'unsigned' => true
+						]
+			);
+			$table->addColumn(
 				'single_id', 'string', [
 							   'notnull' => true,
 							   'length'  => 31,
@@ -455,7 +462,7 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 								  ]
 			);
 
-			$table->addIndex(['single_id']);
+			$table->addIndex(['single_id', 'config']);
 			$table->addUniqueIndex(['single_id', 'circle_id']);
 			$table->addIndex(
 				['inheritance_first', 'inheritance_last', 'circle_id'], 'circles_membership_ifilci'

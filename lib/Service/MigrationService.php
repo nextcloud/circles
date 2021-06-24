@@ -213,6 +213,7 @@ class MigrationService {
 		$this->syncService->sync();
 		$this->migrationTo22_Circles();
 		$this->migrationTo22_Members();
+		$this->membershipService->resetMemberships('', true);
 		$this->membershipService->manageAll();
 
 		$this->configService->setAppValue(ConfigService::MIGRATION_22, '1');

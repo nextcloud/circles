@@ -88,7 +88,8 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		],
 		self::CIRCLE => [
 			self::OPTIONS   => [
-				'getPersonalCircle' => true
+				'getPersonalCircleAsAdmin'     => true,
+				'filterPersonalCircleAsMember' => true
 			],
 			self::MEMBER,
 			self::MEMBER_COUNT,
@@ -205,7 +206,6 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 			],
 			self::CIRCLE    => [
 				self::OPTIONS => [
-					'getPersonalCircle' => true
 				],
 				self::MEMBER,
 				self::OWNER   => [
@@ -1135,7 +1135,8 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	 */
 	protected function limitInitiatorVisibility(string $alias): ICompositeExpression {
 		$aliasMembership = $this->generateAlias($alias, self::MEMBERSHIPS, $options);
-		$getPersonalCircle = $this->getBool('getPersonalCircle', $options, false);
+		$getPersonalCircleAsAdmin = $this->getBool('getPersonalCircleAsAdmin', $options, false);
+		$filterPersonalCircleAsMember = $this->getBool('filterPersonalCircleAsMember', $options, false);
 
 		$expr = $this->expr();
 
@@ -1144,21 +1145,24 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		// - 2 (Personal), if initiator is owner)
 		// - 4 (Visible to everyone)
 		$orX = $expr->orX();
-		$orX->add(
-			$expr->andX(
-				$expr->gte($aliasMembership . '.level', $this->createNamedParameter(Member::LEVEL_MEMBER)),
-				$this->exprFilterBitwise('config', Circle::CFG_PERSONAL, $alias)
-			)
-		);
-
-		if ($getPersonalCircle) {
+		if ($getPersonalCircleAsAdmin) {
 			$orX->add(
 				$expr->andX(
-					$this->exprLimitBitwise('config', Circle::CFG_PERSONAL, $alias),
+					$this->exprLimitBitwise('config', Circle::CFG_PERSONAL, $aliasMembership),
 					$expr->eq($aliasMembership . '.level', $this->createNamedParameter(Member::LEVEL_OWNER))
 				)
 			);
 		}
+
+		$andXMember = $expr->andX();
+		$andXMember->add(
+			$expr->gte($aliasMembership . '.level', $this->createNamedParameter(Member::LEVEL_MEMBER))
+		);
+		if ($filterPersonalCircleAsMember) {
+			$andXMember->add($this->exprFilterBitwise('config', Circle::CFG_PERSONAL, $aliasMembership));
+		}
+		$orX->add($andXMember);
+
 		if (!$this->getBool('mustBeMember', $options, true)) {
 			$orX->add($this->exprLimitBitwise('config', Circle::CFG_VISIBLE, $alias));
 		}

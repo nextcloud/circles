@@ -52,6 +52,7 @@ class MembershipRequest extends MembershipRequestBuilder {
 	public function insert(Membership $membership) {
 		$qb = $this->getMembershipInsertSql();
 		$qb->setValue('circle_id', $qb->createNamedParameter($membership->getCircleId()));
+		$qb->setValue('config', $qb->createNamedParameter($membership->getConfig()));
 		$qb->setValue('single_id', $qb->createNamedParameter($membership->getSingleId()));
 		$qb->setValue('level', $qb->createNamedParameter($membership->getLevel()));
 		$qb->setValue('inheritance_first', $qb->createNamedParameter($membership->getInheritanceFirst()));
