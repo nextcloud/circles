@@ -106,7 +106,6 @@ class CoreRequestBuilder {
 			'single_id',
 			'circle_id',
 			'level',
-			'config',
 			'inheritance_first',
 			'inheritance_last',
 			'inheritance_path',

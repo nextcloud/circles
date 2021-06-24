@@ -52,7 +52,6 @@ class MembershipRequest extends MembershipRequestBuilder {
 	public function insert(Membership $membership) {
 		$qb = $this->getMembershipInsertSql();
 		$qb->setValue('circle_id', $qb->createNamedParameter($membership->getCircleId()));
-		$qb->setValue('config', $qb->createNamedParameter($membership->getConfig()));
 		$qb->setValue('single_id', $qb->createNamedParameter($membership->getSingleId()));
 		$qb->setValue('level', $qb->createNamedParameter($membership->getLevel()));
 		$qb->setValue('inheritance_first', $qb->createNamedParameter($membership->getInheritanceFirst()));
@@ -99,6 +98,7 @@ class MembershipRequest extends MembershipRequestBuilder {
 		$qb = $this->getMembershipSelectSql();
 		$qb->limitToCircleId($circleId);
 		$qb->limitToSingleId($singleId);
+		$qb->leftJoinCircleConfig(self::TABLE_MEMBERSHIP);
 
 		return $this->getItemFromRequest($qb);
 	}
@@ -112,6 +112,7 @@ class MembershipRequest extends MembershipRequestBuilder {
 	public function getMemberships(string $singleId): array {
 		$qb = $this->getMembershipSelectSql();
 		$qb->limitToSingleId($singleId);
+		$qb->leftJoinCircleConfig(CoreQueryBuilder::MEMBERSHIPS);
 
 		return $this->getItemsFromRequest($qb);
 	}
@@ -126,6 +127,7 @@ class MembershipRequest extends MembershipRequestBuilder {
 	public function getInherited(string $singleId, int $level = 0): array {
 		$qb = $this->getMembershipSelectSql();
 		$qb->limitToCircleId($singleId);
+		$qb->leftJoinCircleConfig(self::TABLE_MEMBERSHIP);
 
 		if ($level > 1) {
 			$expr = $qb->expr();
