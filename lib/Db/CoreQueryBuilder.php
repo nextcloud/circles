@@ -69,6 +69,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	const BASED_ON = 'basedon';
 	const INITIATOR = 'initiator';
 	const MEMBERSHIPS = 'memberships';
+	const CONFIG = 'config';
 	const UPSTREAM_MEMBERSHIPS = 'upstreammemberships';
 	const INHERITANCE_FROM = 'inheritancefrom';
 	const INHERITED_BY = 'inheritedby';
@@ -83,43 +84,47 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 
 
 	public static $SQL_PATH = [
-		self::SINGLE => [
+		self::SINGLE      => [
 			self::MEMBER
 		],
-		self::CIRCLE => [
-			self::OPTIONS   => [
-				'getPersonalCircleAsAdmin'     => true,
-				'filterPersonalCircleAsMember' => true
+		self::CIRCLE      => [
+			self::OPTIONS     => [
 			],
 			self::MEMBER,
 			self::MEMBER_COUNT,
-			self::OWNER     => [
+			self::OWNER       => [
 				self::BASED_ON
 			],
-			self::MEMBERSHIPS,
-			self::INITIATOR => [
+			self::MEMBERSHIPS => [
+				self::CONFIG
+			],
+			self::INITIATOR   => [
 				self::BASED_ON,
 				self::INHERITED_BY => [
 					self::MEMBERSHIPS
 				]
 			],
-			self::REMOTE    => [
+			self::REMOTE      => [
 				self::MEMBER,
 				self::CIRCLE => [
 					self::OWNER
 				]
 			]
 		],
-		self::MEMBER => [
-			self::MEMBERSHIPS,
+		self::MEMBER      => [
+			self::MEMBERSHIPS => [
+				self::CONFIG
+			],
 			self::INHERITANCE_FROM,
-			self::CIRCLE     => [
-				self::OPTIONS   => [
+			self::CIRCLE      => [
+				self::OPTIONS     => [
 					'getData' => true
 				],
 				self::OWNER,
-				self::MEMBERSHIPS,
-				self::INITIATOR => [
+				self::MEMBERSHIPS => [
+					self::CONFIG
+				],
+				self::INITIATOR   => [
 					self::OPTIONS      => [
 						'mustBeMember' => true,
 						'canBeVisitor' => false
@@ -134,7 +139,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 					]
 				]
 			],
-			self::BASED_ON   => [
+			self::BASED_ON    => [
 				self::OWNER,
 				self::MEMBERSHIPS,
 				self::INITIATOR => [
@@ -144,18 +149,21 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 					]
 				]
 			],
-			self::REMOTE     => [
+			self::REMOTE      => [
 				self::MEMBER,
 				self::CIRCLE => [
 					self::OWNER
 				]
 			],
-			self::INVITED_BY => [
+			self::INVITED_BY  => [
 				self::OWNER,
 				self::BASED_ON
 			]
 		],
-		self::SHARE  => [
+		self::MEMBERSHIPS => [
+			self::CONFIG
+		],
+		self::SHARE       => [
 			self::SHARE,
 			self::FILE_CACHE           => [
 				self::STORAGES
@@ -167,7 +175,9 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 				],
 				self::SHARE,
 			],
-			self::MEMBERSHIPS,
+			self::MEMBERSHIPS          => [
+				self::CONFIG
+			],
 			self::INHERITANCE_FROM,
 			self::INHERITED_BY         => [
 				self::BASED_ON
@@ -182,29 +192,33 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 				]
 			]
 		],
-		self::REMOTE => [
+		self::REMOTE      => [
 			self::MEMBER
 		],
-		self::MOUNT  => [
-			self::MEMBER    => [
+		self::MOUNT       => [
+			self::MEMBER      => [
 				self::REMOTE
 			],
-			self::INITIATOR => [
+			self::INITIATOR   => [
 				self::INHERITED_BY => [
 					self::MEMBERSHIPS
 				]
 			],
 			self::MOUNTPOINT,
-			self::MEMBERSHIPS
+			self::MEMBERSHIPS => [
+				self::CONFIG
+			]
 		],
-		self::HELPER => [
-			self::MEMBERSHIPS,
-			self::INITIATOR => [
+		self::HELPER      => [
+			self::MEMBERSHIPS => [
+				self::CONFIG
+			],
+			self::INITIATOR   => [
 				self::INHERITED_BY => [
 					self::MEMBERSHIPS
 				]
 			],
-			self::CIRCLE    => [
+			self::CIRCLE      => [
 				self::OPTIONS => [
 				],
 				self::MEMBER,
@@ -1050,6 +1064,28 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 
 
 	/**
+	 * @param string $alias
+	 */
+	public function leftJoinCircleConfig(string $alias): void {
+		$expr = $this->expr();
+		try {
+			$aliasConfig = $this->generateAlias($alias, self::CONFIG, $options);
+			$this->selectAlias(
+				$aliasConfig . '.config',
+				(($alias !== $this->getDefaultSelectAlias()) ? $alias . '_' : '') . 'circle_config'
+			);
+			$this->leftJoin(
+				$alias,
+				CoreRequestBuilder::TABLE_CIRCLE,
+				$aliasConfig,
+				$expr->eq($alias . '.circle_id', $aliasConfig . '.unique_id')
+			);
+		} catch (RequestBuilderException $e) {
+		}
+	}
+
+
+	/**
 	 * Left join members to filter userId as initiator.
 	 *
 	 * @param string $alias
@@ -1083,6 +1119,17 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 				$expr->eq($aliasMembership . '.circle_id', $helperAlias . '.' . $field)
 			)
 		);
+
+		try {
+			$aliasMembershipCircle = $this->generateAlias($aliasMembership, self::CONFIG, $options);
+			$this->leftJoin(
+				$aliasMembership,
+				CoreRequestBuilder::TABLE_CIRCLE,
+				$aliasMembershipCircle,
+				$expr->eq($aliasMembership . '.circle_id', $aliasMembershipCircle . '.unique_id')
+			);
+		} catch (RequestBuilderException $e) {
+		}
 
 		if (!$this->getBool('getData', $options, false)) {
 			return;
@@ -1135,8 +1182,9 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	 */
 	protected function limitInitiatorVisibility(string $alias): ICompositeExpression {
 		$aliasMembership = $this->generateAlias($alias, self::MEMBERSHIPS, $options);
-		$getPersonalCircleAsAdmin = $this->getBool('getPersonalCircleAsAdmin', $options, false);
-		$filterPersonalCircleAsMember = $this->getBool('filterPersonalCircleAsMember', $options, false);
+		$aliasMembershipCircle = $this->generateAlias($aliasMembership, self::CONFIG, $options);
+
+		$filterPersonalCircle = $this->getBool('filterPersonalCircle', $options, true);
 
 		$expr = $this->expr();
 
@@ -1145,10 +1193,10 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		// - 2 (Personal), if initiator is owner)
 		// - 4 (Visible to everyone)
 		$orX = $expr->orX();
-		if ($getPersonalCircleAsAdmin) {
+		if ($filterPersonalCircle) {
 			$orX->add(
 				$expr->andX(
-					$this->exprLimitBitwise('config', Circle::CFG_PERSONAL, $aliasMembership),
+					$this->exprLimitBitwise('config', Circle::CFG_PERSONAL, $aliasMembershipCircle),
 					$expr->eq($aliasMembership . '.level', $this->createNamedParameter(Member::LEVEL_OWNER))
 				)
 			);
@@ -1158,8 +1206,10 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		$andXMember->add(
 			$expr->gte($aliasMembership . '.level', $this->createNamedParameter(Member::LEVEL_MEMBER))
 		);
-		if ($filterPersonalCircleAsMember) {
-			$andXMember->add($this->exprFilterBitwise('config', Circle::CFG_PERSONAL, $aliasMembership));
+		if ($filterPersonalCircle) {
+			$andXMember->add(
+				$this->exprFilterBitwise('config', Circle::CFG_PERSONAL, $aliasMembershipCircle)
+			);
 		}
 		$orX->add($andXMember);
 
@@ -1168,7 +1218,14 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		}
 		if ($this->getBool('canBeVisitor', $options, false)) {
 			// TODO: should find a better way, also filter on remote initiator on non-federated ?
-			$orX->add($expr->gte($alias . '.config', $this->createNamedParameter(0)));
+			$andXVisitor = $expr->andX();
+			$andXVisitor->add($expr->gte($alias . '.config', $this->createNamedParameter(0)));
+			if ($filterPersonalCircle) {
+				$andXVisitor->add(
+					$this->exprFilterBitwise('config', Circle::CFG_PERSONAL, $aliasMembershipCircle)
+				);
+			}
+			$orX->add($andXVisitor);
 		}
 		if ($this->getBool('canBeVisitorOnOpen', $options, false)) {
 			$andOpen = $expr->andX();
