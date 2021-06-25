@@ -147,6 +147,9 @@ class FederatedUserService {
 	/** @var bool */
 	private $initiatedByOcc = false;
 
+	/** @var FederatedUser */
+	private $initiatedByAdmin = null;
+
 
 	/**
 	 * FederatedUserService constructor.
@@ -333,6 +336,46 @@ class FederatedUserService {
 	}
 
 	/**
+	 * @return bool
+	 */
+	public function isInitiatedByAdmin(): bool {
+		return !is_null($this->initiatedByAdmin);
+	}
+
+	/**
+	 * @param FederatedUser $patron
+	 */
+	public function setInitiatedByAdmin(FederatedUser $patron): void {
+		$this->initiatedByAdmin = $patron;
+	}
+
+	/**
+	 * @return FederatedUser
+	 */
+	public function getInitiatedByAdmin(): FederatedUser {
+		return $this->initiatedByAdmin;
+	}
+
+	/**
+	 * @param IUser $user
+	 *
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
+	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
+	 */
+	public function setCurrentPatron(string $userId): void {
+		$patron = $this->getLocalFederatedUser($userId, false);
+
+		$this->setInitiatedByAdmin($patron);
+	}
+
+
+	/**
 	 * @param Member $member
 	 *
 	 * @throws ContactAddressBookNotFoundException
@@ -346,6 +389,8 @@ class FederatedUserService {
 	public function setMemberPatron(Member $member): void {
 		if ($this->isInitiatedByOcc()) {
 			$member->setInvitedBy($this->getAppInitiator('occ', Member::APP_OCC));
+		} else if ($this->isInitiatedByAdmin()) {
+			$member->setInvitedBy($this->getInitiatedByAdmin());
 		} else {
 			$member->setInvitedBy($this->getCurrentUser());
 		}
