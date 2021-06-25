@@ -31,6 +31,8 @@ declare(strict_types=1);
 
 return [
 	'ocs' => [
+
+		// LocalController
 		['name' => 'Local#circles', 'url' => '/circles', 'verb' => 'GET'],
 		['name' => 'Local#create', 'url' => '/circles', 'verb' => 'POST'],
 		['name' => 'Local#destroy', 'url' => '/circles/{circleId}', 'verb' => 'DELETE'],
@@ -58,7 +60,45 @@ return [
 		['name' => 'Local#editDescription', 'url' => '/circles/{circleId}/description', 'verb' => 'PUT'],
 		['name' => 'Local#editSettings', 'url' => '/circles/{circleId}/settings', 'verb' => 'PUT'],
 		['name' => 'Local#editConfig', 'url' => '/circles/{circleId}/config', 'verb' => 'PUT'],
-		['name' => 'Local#link', 'url' => '/link/{circleId}/{singleId}', 'verb' => 'GET']
+		['name' => 'Local#link', 'url' => '/link/{circleId}/{singleId}', 'verb' => 'GET'],
+
+		// AdminController
+		['name' => 'Admin#circles', 'url' => '/admin/{emulated}/circles', 'verb' => 'GET'],
+		['name' => 'Admin#create', 'url' => '/admin/{emulated}/circles', 'verb' => 'POST'],
+		['name' => 'Admin#destroy', 'url' => '/admin/{emulated}/circles/{circleId}', 'verb' => 'DELETE'],
+		[
+			'name' => 'Admin#memberAdd', 'url' => '/admin/{emulated}/circles/{circleId}/members',
+			'verb' => 'POST'
+		],
+		[
+			'name' => 'Admin#memberLevel',
+			'url'  => '/admin/{emulated}/circles/{circleId}/members/{memberId}/level',
+			'verb' => 'PUT'
+		],
+
+		['name' => 'Admin#circleDetails', 'url' => '/admin/{emulated}/circles/{circleId}', 'verb' => 'GET'],
+		['name' => 'Admin#members', 'url' => '/admin/{emulated}/circles/{circleId}/members', 'verb' => 'GET'],
+		['name' => 'Admin#memberAdd', 'url' => '/admin/{emulated}/circles/{circleId}/members', 'verb' => 'POST'],
+		[
+			'name' => 'Admin#memberConfirm', 'url' => '/admin/{emulated}/circles/{circleId}/members/{memberId}',
+			'verb' => 'PUT'
+		],
+		[
+			'name' => 'Admin#memberRemove', 'url' => '/admin/{emulated}/circles/{circleId}/members/{memberId}',
+			'verb' => 'DELETE'
+		],
+		[
+			'name' => 'Admin#memberLevel', 'url' => '/admin/{emulated}/circles/{circleId}/members/{memberId}/level',
+			'verb' => 'PUT'
+		],
+		['name' => 'Admin#circleJoin', 'url' => '/admin/{emulated}/circles/{circleId}/join', 'verb' => 'PUT'],
+		['name' => 'Admin#circleLeave', 'url' => '/admin/{emulated}/circles/{circleId}/leave', 'verb' => 'PUT'],
+		['name' => 'Admin#editName', 'url' => '/admin/{emulated}/circles/{circleId}/name', 'verb' => 'PUT'],
+		['name' => 'Admin#editDescription', 'url' => '/admin/{emulated}/circles/{circleId}/description', 'verb' => 'PUT'],
+		['name' => 'Admin#editSettings', 'url' => '/admin/{emulated}/circles/{circleId}/settings', 'verb' => 'PUT'],
+		['name' => 'Admin#editConfig', 'url' => '/admin/{emulated}/circles/{circleId}/config', 'verb' => 'PUT'],
+		['name' => 'Admin#link', 'url' => '/admin/{emulated}/link/{circleId}/{singleId}', 'verb' => 'GET'],
+
 	],
 
 	'routes' => [
