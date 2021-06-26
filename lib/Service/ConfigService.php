@@ -93,6 +93,8 @@ class ConfigService {
 	const MIGRATION_BYPASS = 'migration_bypass';
 	const MIGRATION_22 = 'migration_22';
 	const MIGRATION_RUN = 'migration_run';
+	const MAINTENANCE_UPDATE = 'maintenance_update';
+	const MAINTENANCE_RUN = 'maintenance_run';
 
 	const LOOPBACK_TMP_ID = 'loopback_tmp_id';
 	const LOOPBACK_TMP_SCHEME = 'loopback_tmp_scheme';
@@ -151,6 +153,8 @@ class ConfigService {
 		self::MIGRATION_BYPASS       => '0',
 		self::MIGRATION_22           => '0',
 		self::MIGRATION_RUN          => '0',
+		self::MAINTENANCE_UPDATE     => '[]',
+		self::MAINTENANCE_RUN        => '0',
 
 		self::FORCE_NC_BASE                    => '',
 		self::TEST_NC_BASE                     => '',

@@ -37,6 +37,7 @@ use Exception;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\MaintenanceException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
@@ -52,6 +53,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 class MaintenanceService {
 
 
+	const TIMEOUT = 18000;
+
+
 	/** @var IUserManager */
 	private $userManager;
 
@@ -61,6 +65,9 @@ class MaintenanceService {
 	/** @var MemberRequest */
 	private $memberRequest;
 
+	/** @var SyncService */
+	private $syncService;
+
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
@@ -69,6 +76,9 @@ class MaintenanceService {
 
 	/** @var CircleService */
 	private $circleService;
+
+	/** @var ConfigService */
+	private $configService;
 
 
 	/** @var OutputInterface */
@@ -84,21 +94,26 @@ class MaintenanceService {
 	 * @param FederatedUserService $federatedUserService
 	 * @param EventWrapperService $eventWrapperService
 	 * @param CircleService $circleService
+	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		IUserManager $userManager,
 		CircleRequest $circleRequest,
 		MemberRequest $memberRequest,
+		SyncService $syncService,
 		FederatedUserService $federatedUserService,
 		EventWrapperService $eventWrapperService,
-		CircleService $circleService
+		CircleService $circleService,
+		ConfigService $configService
 	) {
 		$this->userManager = $userManager;
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
+		$this->syncService = $syncService;
 		$this->federatedUserService = $federatedUserService;
 		$this->eventWrapperService = $eventWrapperService;
 		$this->circleService = $circleService;
+		$this->configService = $configService;
 	}
 
 
@@ -111,24 +126,108 @@ class MaintenanceService {
 
 
 	/**
+	 * level=1 -> run every minute
+	 * level=2 -> run every 5 minutes
+	 * level=3 -> run every hour
+	 * level=4 -> run every day
+	 * level=5 -> run every week
 	 *
+	 * @param int $level
+	 *
+	 * @throws MaintenanceException
 	 */
-	public function runMaintenance(int $level = 0): void {
+	public function runMaintenance(int $level): void {
 		$this->federatedUserService->bypassCurrentUserCondition(true);
 
+		$this->lockMaintenanceRun();
+		echo 'running maintenance(' . $level . ')' . "\n";
+
+		switch ($level) {
+			case 1:
+				$this->runMaintenance1();
+				break;
+			case 2:
+				$this->runMaintenance2();
+				break;
+			case 3:
+				$this->runMaintenance3();
+				break;
+			case 4:
+				$this->runMaintenance4();
+				break;
+			case 5:
+				$this->runMaintenance5();
+				break;
+		}
+
+		$this->configService->setAppValue(ConfigService::MAINTENANCE_RUN, '0');
+	}
+
+
+	/**
+	 * @throws MaintenanceException
+	 */
+	private function lockMaintenanceRun(): void {
+		$run = $this->configService->getAppValueInt(ConfigService::MAINTENANCE_RUN);
+		if ($run > time() - self::TIMEOUT) {
+			throw new MaintenanceException('maintenance already running');
+		}
+
+		$this->configService->setAppValue(ConfigService::MAINTENANCE_RUN, (string)time());
+	}
+
+
+	/**
+	 * every minute
+	 */
+	private function runMaintenance1(): void {
 		try {
 			$this->output('remove circles with no owner');
 			$this->removeCirclesWithNoOwner();
 		} catch (Exception $e) {
 		}
+	}
 
+
+	/**
+	 * every 10 minutes
+	 */
+	private function runMaintenance2(): void {
 		try {
 			$this->output('remove members with no circles');
 			$this->removeMembersWithNoCircles();
 		} catch (Exception $e) {
 		}
 
+		try {
+			$this->output('retry failed FederatedEvents (asap)');
+			$this->eventWrapperService->retry(EventWrapperService::RETRY_ASAP);
+		} catch (Exception $e) {
+		}
+	}
 
+
+	/**
+	 * every hour
+	 */
+	private function runMaintenance3(): void {
+		try {
+			$this->output('retry failed FederatedEvents (hourly)');
+			$this->eventWrapperService->retry(EventWrapperService::RETRY_HOURLY);
+		} catch (Exception $e) {
+		}
+	}
+
+
+	/**
+	 * every day
+	 */
+	private function runMaintenance4(): void {
+		try {
+			$this->output('retry failed FederatedEvents (daily)');
+			$this->eventWrapperService->retry(EventWrapperService::RETRY_DAILY);
+		} catch (Exception $e) {
+		}
 		try {
 			// TODO: waiting for confirmation of a good migration before cleaning orphan shares
 //			$this->output('remove deprecated shares');
@@ -137,41 +236,24 @@ class MaintenanceService {
 		}
 
 		try {
-			$this->output('retry failed FederatedEvents');
-			$this->eventWrapperService->retry();
+			$this->output('synchronizing local entities');
+			$this->syncService->sync();
 		} catch (Exception $e) {
 		}
+	}
 
-		if ($level < 1) {
-			return;
-		}
-
-		if ($level < 2) {
-			return;
-		}
-
-		if ($level < 3) {
-			return;
-		}
-
-//		if ($level < 5) {
+	/**
+	 * every week
+	 */
+	private function runMaintenance5(): void {
+//		try {
 //			$this->output('refresh displayNames older than 7d');
 //			//	$this->refreshOldDisplayNames();
+//			$this->output('refresh DisplayNames');
+//			$this->refreshDisplayName();
+//		} catch (Exception $e) {
 //		}
-//
-		if ($level < 4) {
-			return;
-		}
 
-		if ($level < 5) {
-			return;
-		}
-
-		try {
-			$this->output('refresh DisplayNames');
-			$this->refreshDisplayName();
-		} catch (Exception $e) {
-		}
 	}
 
 

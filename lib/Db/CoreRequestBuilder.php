@@ -128,6 +128,7 @@ class CoreRequestBuilder {
 			'instance',
 			'interface',
 			'severity',
+			'retry',
 			'status',
 			'creation'
 		],

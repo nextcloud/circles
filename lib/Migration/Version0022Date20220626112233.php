@@ -44,7 +44,7 @@ use OCP\Migration\SimpleMigrationStep;
  *
  * @package OCA\Circles\Migration
  */
-class Version0022Date20220623224231 extends SimpleMigrationStep {
+class Version0022Date20220626112233 extends SimpleMigrationStep {
 
 
 	/**
@@ -75,6 +75,14 @@ class Version0022Date20220623224231 extends SimpleMigrationStep {
 							 ]
 				);
 			}
+			if (!$table->hasColumn('retry')) {
+				$table->addColumn(
+					'retry', 'integer', [
+							   'length'  => 3,
+							   'notnull' => false
+						   ]
+				);
+			}
 		}
 
 		if ($schema->hasTable('circles_member')) {
@@ -90,7 +98,7 @@ class Version0022Date20220623224231 extends SimpleMigrationStep {
 			}
 		}
 
-		
+
 		if ($schema->hasTable('circles_circle')) {
 			$table = $schema->getTable('circles_circle');
 			if (!$table->hasColumn('sanitized_name')) {

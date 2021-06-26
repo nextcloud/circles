@@ -37,7 +37,6 @@ use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
-use OCA\Circles\Exceptions\UnknownInterfaceException;
 
 
 /**
@@ -74,6 +73,9 @@ class EventWrapper implements INC22QueryRow, JsonSerializable {
 
 	/** @var int */
 	private $severity = FederatedEvent::SEVERITY_LOW;
+
+	/** @var int */
+	private $retry = 0;
 
 	/** @var int */
 	private $status = 0;
@@ -205,6 +207,24 @@ class EventWrapper implements INC22QueryRow, JsonSerializable {
 		$this->severity = $severity;
 
 		return $this;
+	}
+
+	/**
+	 * @param int $retry
+	 *
+	 * @return EventWrapper
+	 */
+	public function setRetry(int $retry): self {
+		$this->retry = $retry;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getRetry(): int {
+		return $this->retry;
 	}
 
 

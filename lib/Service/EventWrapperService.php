@@ -52,6 +52,17 @@ class EventWrapperService extends NC22Signature {
 	use TStringTools;
 
 
+	const RETRY_ASAP = 'asap';
+	const RETRY_HOURLY = 'hourly';
+	const RETRY_DAILY = 'daily';
+	const RETRY_ERROR = 100;
+	static $RETRIES = [
+		'asap'   => [0, 5],
+		'hourly' => [5, 150],
+		'daily'  => [150, 300]
+	];
+
+
 	/** @var EventWrapperRequest */
 	private $eventWrapperRequest;
 
@@ -122,7 +133,7 @@ class EventWrapperService extends NC22Signature {
 		}
 
 		$status = EventWrapper::STATUS_FAILED;
-
+		$retry = $wrapper->getRetry();
 		try {
 			if ($this->configService->isLocalInstance($wrapper->getInstance())) {
 				$gs = $this->federatedEventService->getFederatedItem($wrapper->getEvent(), false);
@@ -132,6 +143,7 @@ class EventWrapperService extends NC22Signature {
 			}
 			$status = EventWrapper::STATUS_DONE;
 		} catch (Exception $e) {
+			$retry++;
 		}
 
 		if ($wrapper->getSeverity() !== FederatedEvent::SEVERITY_HIGH) {
@@ -139,6 +151,7 @@ class EventWrapperService extends NC22Signature {
 		}
 
 		$wrapper->setStatus($status);
+		$wrapper->setRetry($retry);
 		$wrapper->setResult($wrapper->getEvent()->getResult());
 
 		$this->eventWrapperRequest->update($wrapper);
@@ -148,10 +161,10 @@ class EventWrapperService extends NC22Signature {
 
 
 	/**
-	 * retry failed High Severity FederatedEvent
+	 * @param string $retry
 	 */
-	public function retry() {
-		$tokens = $this->getFailedEvents();
+	public function retry(string $retry) {
+		$tokens = $this->getFailedEvents(self::$RETRIES[$retry]);
 		foreach ($tokens as $token) {
 			$this->confirmStatus($token, true);
 		}
@@ -159,13 +172,15 @@ class EventWrapperService extends NC22Signature {
 
 
 	/**
-	 * returns token from failed FederatedEvent
+	 * @param array $retryRange
+	 *
+	 * @return array
 	 */
-	private function getFailedEvents(): array {
+	private function getFailedEvents(array $retryRange): array {
 		$token = array_map(
 			function(EventWrapper $event): string {
 				return $event->getToken();
-			}, $this->eventWrapperRequest->getFailedEvents()
+			}, $this->eventWrapperRequest->getFailedEvents($retryRange)
 		);
 
 		return array_values(array_unique($token));
