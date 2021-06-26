@@ -8,7 +8,7 @@
 Those groups of users (or "circles") can then be used by any other app for sharing purpose.
 		]]>
 	</description>
-	<version>22.0.0-beta.2</version>
+	<version>22.0.0-beta.3</version>
 	<licence>agpl</licence>
 	<author>Maxence Lange</author>
 	<types>
@@ -32,8 +32,6 @@ Those groups of users (or "circles") can then be used by any other app for shari
 	<default_enable/>
 	<background-jobs>
 		<job>OCA\Circles\Cron\Maintenance</job>
-		<!--		<job>OCA\Circles\Cron\ContactsExistingShares</job>-->
-		<!--		<job>OCA\Circles\Cron\GlobalSync</job>-->
 	</background-jobs>
 
 	<repair-steps>
