@@ -611,16 +611,6 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 
 	/**
 	 * @return string
-	 *
-	 * @deprecated 22.0.0 - Use `$this->getDescription()` instead
-	 */
-	public function gettypeLongString(): string {
-		return $this->description;
-	}
-
-
-	/**
-	 * @return string
 	 */
 	public function getUrl(): string {
 		return $this->getManager()->generateLinkToCircle($this->getSingleId());
@@ -856,3 +846,4 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	}
 
 }
+
