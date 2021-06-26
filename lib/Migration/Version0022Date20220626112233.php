@@ -44,7 +44,7 @@ use OCP\Migration\SimpleMigrationStep;
  *
  * @package OCA\Circles\Migration
  */
-class Version0022Date20220623224231 extends SimpleMigrationStep {
+class Version0022Date20220626112233 extends SimpleMigrationStep {
 
 
 	/**
@@ -73,6 +73,14 @@ class Version0022Date20220623224231 extends SimpleMigrationStep {
 					'updated', 'datetime', [
 								 'notnull' => false,
 							 ]
+				);
+			}
+			if (!$table->hasColumn('retry')) {
+				$table->addColumn(
+					'retry', 'integer', [
+							   'length'  => 3,
+							   'notnull' => false
+						   ]
 				);
 			}
 		}
