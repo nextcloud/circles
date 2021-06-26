@@ -10,6 +10,7 @@ declare(strict_types=1);
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
+ * @author René Gieling <github@dartcafe.de>
  * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
@@ -45,6 +46,7 @@ use OCA\Circles\Exceptions\UnknownInterfaceException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\IMemberships;
+use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\Federated\RemoteInstance;
 
 
@@ -295,15 +297,23 @@ class Member extends ManagedModel implements
 		return $this->userType;
 	}
 
-
 	/**
 	 * @return int
 	 * @deprecated 22.0.0 - Use `$this->getUserType()` instead
 	 */
 	public function getType(): int {
-		return $this->userType;
+		switch ($this->getUserType()) {
+			case (self::TYPE_USER):
+				return DeprecatedMember::TYPE_USER;
+			case (self::TYPE_GROUP):
+				return DeprecatedMember::TYPE_GROUP;
+			case (self::TYPE_MAIL):
+				return DeprecatedMember::TYPE_MAIL;
+			case (self::TYPE_CONTACT):
+				return DeprecatedMember::TYPE_CONTACT;
+		}
+		return $this->getUserType();
 	}
-
 
 	/**
 	 * @param string $instance
