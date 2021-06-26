@@ -297,6 +297,15 @@ class Member extends ManagedModel implements
 
 
 	/**
+	 * @return int
+	 * @deprecated 22.0.0 - Use `$this->getUserType()` instead
+	 */
+	public function getType(): int {
+		return $this->userType;
+	}
+
+
+	/**
 	 * @param string $instance
 	 *
 	 * @return Member
@@ -971,4 +980,3 @@ class Member extends ManagedModel implements
 	}
 
 }
-
