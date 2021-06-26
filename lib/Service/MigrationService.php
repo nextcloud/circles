@@ -91,9 +91,6 @@ class MigrationService {
 	/** @var MemberRequest */
 	private $memberRequest;
 
-	/** @var SyncService */
-	private $syncService;
-
 	/** @var MembershipService */
 	private $membershipService;
 
@@ -127,6 +124,7 @@ class MigrationService {
 	 * @param IURLGenerator $urlGenerator
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
+	 * @param MembershipService $membershipService
 	 * @param FederatedUserService $federatedUserService
 	 * @param CircleService $circleService
 	 * @param ContactService $contactService
@@ -139,7 +137,6 @@ class MigrationService {
 		IURLGenerator $urlGenerator,
 		CircleRequest $circleRequest,
 		MemberRequest $memberRequest,
-		SyncService $syncService,
 		MembershipService $membershipService,
 		FederatedUserService $federatedUserService,
 		CircleService $circleService,
@@ -152,7 +149,6 @@ class MigrationService {
 		$this->urlGenerator = $urlGenerator;
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
-		$this->syncService = $syncService;
 		$this->membershipService = $membershipService;
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
@@ -210,7 +206,6 @@ class MigrationService {
 
 		$this->outputService->output('Migrating to 22');
 
-		$this->syncService->sync();
 		$this->migrationTo22_Circles();
 		$this->migrationTo22_Members();
 		$this->membershipService->resetMemberships('', true);
@@ -317,7 +312,6 @@ class MigrationService {
 				$this->circleRequest->save($circle);
 			} catch (InvalidIdException $e) {
 			}
-			usleep(50);
 		} catch (RequestBuilderException $e) {
 		}
 	}
