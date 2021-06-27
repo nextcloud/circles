@@ -14,8 +14,7 @@ since_tag=v22.0.0-beta.1
 
 all: appstore
 
-release: appstore github-release 
-#github-upload
+release: appstore github-release github-upload
 
 github-release:
 	if [ -z "$(release_account)" ]; then \
