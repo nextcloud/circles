@@ -295,6 +295,14 @@ class Member extends ManagedModel implements
 		return $this->userType;
 	}
 
+	/**
+	 * @return int
+	 * @deprecated 22.0.0
+	 */
+	public function getType(): int {
+		return $this->getUserType();
+	}
+
 
 	/**
 	 * @param string $instance
