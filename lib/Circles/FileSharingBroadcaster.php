@@ -59,6 +59,11 @@ use OCP\Share\IShare;
 use OCP\Util;
 
 
+/**
+ * Class FileSharingBroadcaster
+ * @deprecated
+ * @package OCA\Circles\Circles
+ */
 class FileSharingBroadcaster implements IBroadcaster {
 
 
