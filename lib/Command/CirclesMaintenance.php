@@ -34,6 +34,7 @@ namespace OCA\Circles\Command;
 
 use OC\Core\Command\Base;
 use OCA\Circles\Db\CoreRequestBuilder;
+use OCA\Circles\Exceptions\MaintenanceException;
 use OCA\Circles\Service\MaintenanceService;
 use OCA\Circles\Service\OutputService;
 use Symfony\Component\Console\Input\InputInterface;
@@ -84,7 +85,7 @@ class CirclesMaintenance extends Base {
 		parent::configure();
 		$this->setName('circles:maintenance')
 			 ->setDescription('Clean stuff, keeps the app running')
-			 ->addOption('level', '', InputOption::VALUE_REQUIRED, 'level of maintenance', '0')
+			 ->addOption('level', '', InputOption::VALUE_REQUIRED, 'level of maintenance', '3')
 			 ->addOption(
 				 'reset', '', InputOption::VALUE_NONE, 'reset Circles; remove all data related to the App'
 			 )
@@ -131,7 +132,7 @@ class CirclesMaintenance extends Base {
 
 			$output->writeln('');
 			$output->writeln('<error>WARNING! This operation is not reversible.</error>');
-			
+
 			$question = new Question(
 				'<comment>Please confirm this destructive operation by typing \'' . $action
 				. '\'</comment>: ', ''
@@ -156,7 +157,12 @@ class CirclesMaintenance extends Base {
 		}
 
 		$this->outputService->setOccOutput($output);
-		$this->maintenanceService->runMaintenance($level);
+		for ($i = 1; $i <= $level; $i++) {
+			try {
+				$this->maintenanceService->runMaintenance($i);
+			} catch (MaintenanceException $e) {
+			}
+		}
 
 		$output->writeln('');
 		$output->writeln('<info>done</info>');
