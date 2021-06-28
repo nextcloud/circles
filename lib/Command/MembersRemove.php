@@ -34,11 +34,27 @@ namespace OCA\Circles\Command;
 use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\Db\MemberRequest;
+use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedEventException;
+use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\FederatedUserException;
+use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
+use OCA\Circles\Exceptions\InitiatorNotFoundException;
+use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
+use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\Exceptions\SingleCircleNotFoundException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
+use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
-use OCA\Circles\Service\MembersService;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -59,7 +75,7 @@ class MembersRemove extends Base {
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
-	/** @var MembersService */
+	/** @var MemberService */
 	private $memberService;
 
 
@@ -95,8 +111,23 @@ class MembersRemove extends Base {
 	 * @param OutputInterface $output
 	 *
 	 * @return int
-	 * @throws MemberDoesNotExistException
-	 * @throws Exception
+	 * @throws CircleNotFoundException
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws InitiatorNotFoundException
+	 * @throws InvalidIdException
+	 * @throws MemberNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
+	 * @throws UnknownRemoteException
+	 * @throws UserTypeNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$memberId = $input->getArgument('member_id');
