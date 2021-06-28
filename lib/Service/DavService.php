@@ -51,7 +51,7 @@ use Symfony\Component\EventDispatcher\GenericEvent;
 
 /**
  * Class DavService
- *
+ * @deprecated
  * @package OCA\Circles\Service
  */
 class DavService {

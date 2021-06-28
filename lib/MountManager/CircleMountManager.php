@@ -37,7 +37,7 @@ use OCP\Share\Exceptions\ShareNotFound;
 
 /**
  * Class CircleMountManager
- *
+ * @deprecated
  * @package OCA\Circles\MountManager
  */
 class CircleMountManager {

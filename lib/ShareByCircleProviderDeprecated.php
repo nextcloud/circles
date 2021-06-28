@@ -129,6 +129,8 @@ class ShareByCircleProviderDeprecated extends CircleProviderRequest implements I
 		IDBConnection $connection, ISecureRandom $secureRandom, IUserManager $userManager,
 		IRootFolder $rootFolder, IL10N $l10n, ILogger $logger, IURLGenerator $urlGenerator
 	) {
+		// kept but should not be loaded
+		exit();
 		$app = \OC::$server->query(Application::class);
 		$container = $app->getContainer();
 		$configService = $container->query(ConfigService::class);

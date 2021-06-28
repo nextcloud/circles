@@ -61,23 +61,23 @@ class GlobalSync extends TimedJob {
 	 */
 	protected function run($argument) {
 		return;
-		$app = \OC::$server->query(Application::class);
-		$c = $app->getContainer();
-
-		/** @var CirclesService $circlesService */
-		$circlesService = $c->query(CirclesService::class);
-		/** @var MembersService $membersService */
-		$membersService = $c->query(MembersService::class);
-		/** @var GSUpstreamService $gsUpstreamService */
-		$gsUpstreamService = $c->query(GSUpstreamService::class);
-
-		$circles = $circlesService->getCirclesToSync();
-
-		foreach ($circles as $circle) {
-			$membersService->updateCachedFromCircle($circle);
-		}
-
-		$gsUpstreamService->synchronize($circles);
+//		$app = \OC::$server->query(Application::class);
+//		$c = $app->getContainer();
+//
+//		/** @var CirclesService $circlesService */
+//		$circlesService = $c->query(CirclesService::class);
+//		/** @var MembersService $membersService */
+//		$membersService = $c->query(MembersService::class);
+//		/** @var GSUpstreamService $gsUpstreamService */
+//		$gsUpstreamService = $c->query(GSUpstreamService::class);
+//
+//		$circles = $circlesService->getCirclesToSync();
+//
+//		foreach ($circles as $circle) {
+//			$membersService->updateCachedFromCircle($circle);
+//		}
+//
+//		$gsUpstreamService->synchronize($circles);
 	}
 
 }
