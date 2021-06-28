@@ -1218,14 +1218,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		}
 		if ($this->getBool('canBeVisitor', $options, false)) {
 			// TODO: should find a better way, also filter on remote initiator on non-federated ?
-			$andXVisitor = $expr->andX();
-			$andXVisitor->add($expr->gte($alias . '.config', $this->createNamedParameter(0)));
-			if ($filterPersonalCircle) {
-				$andXVisitor->add(
-					$this->exprFilterBitwise('config', Circle::CFG_PERSONAL, $aliasMembershipCircle)
-				);
-			}
-			$orX->add($andXVisitor);
+			$orX->add($this->exprFilterInt('config', Circle::CFG_PERSONAL, $alias));
 		}
 		if ($this->getBool('canBeVisitorOnOpen', $options, false)) {
 			$andOpen = $expr->andX();
