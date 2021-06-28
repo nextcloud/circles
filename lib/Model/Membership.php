@@ -57,7 +57,7 @@ class Membership extends ManagedModel implements IDeserializable, INC22QueryRow,
 	private $circleId = '';
 
 	/** @var int */
-	private $config = 0;
+	private $circleConfig = 0;
 
 	/** @var int */
 	private $level = 0;
@@ -99,7 +99,6 @@ class Membership extends ManagedModel implements IDeserializable, INC22QueryRow,
 		$this->setCircleId($circle->getSingleId());
 		$this->setInheritanceFirst($member->getSingleId());
 		$this->setInheritanceLast($inheritanceLast === '' ? $member->getCircleId() : $inheritanceLast);
-		$this->setConfig($circle->getConfig());
 		$this->setLevel($member->getLevel());
 	}
 
@@ -143,12 +142,12 @@ class Membership extends ManagedModel implements IDeserializable, INC22QueryRow,
 
 
 	/**
-	 * @param int $config
+	 * @param int $circleConfig
 	 *
 	 * @return Membership
 	 */
-	public function setConfig(int $config): self {
-		$this->config = $config;
+	public function setCircleConfig(int $circleConfig): self {
+		$this->circleConfig = $circleConfig;
 
 		return $this;
 	}
@@ -156,8 +155,8 @@ class Membership extends ManagedModel implements IDeserializable, INC22QueryRow,
 	/**
 	 * @return int
 	 */
-	public function getConfig(): int {
-		return $this->config;
+	public function getCircleConfig(): int {
+		return $this->circleConfig;
 	}
 
 
@@ -288,8 +287,8 @@ class Membership extends ManagedModel implements IDeserializable, INC22QueryRow,
 
 		$this->setSingleId($this->get('singleId', $data));
 		$this->setCircleId($this->get('circleId', $data));
+		$this->setCircleConfig($this->getInt('circleConfig', $data));
 		$this->setLevel($this->getInt('level', $data));
-		$this->setConfig($this->getInt('config', $data));
 		$this->setInheritanceFirst($this->get('inheritanceFirst', $data));
 		$this->setInheritanceLast($this->get('inheritanceLast', $data));
 		$this->setInheritancePath($this->getArray('inheritancePath', $data));
@@ -313,7 +312,7 @@ class Membership extends ManagedModel implements IDeserializable, INC22QueryRow,
 		$this->setSingleId($this->get($prefix . 'single_id', $data));
 		$this->setCircleId($this->get($prefix . 'circle_id', $data));
 		$this->setLevel($this->getInt($prefix . 'level', $data));
-		$this->setConfig($this->getInt($prefix . 'config', $data));
+		$this->setCircleConfig($this->getInt($prefix . 'circle_config', $data));
 		$this->setInheritanceFirst($this->get($prefix . 'inheritance_first', $data));
 		$this->setInheritanceLast($this->get($prefix . 'inheritance_last', $data));
 		$this->setInheritancePath($this->getArray($prefix . 'inheritance_path', $data));
@@ -330,7 +329,7 @@ class Membership extends ManagedModel implements IDeserializable, INC22QueryRow,
 		$result = [
 			'singleId'         => $this->getSingleId(),
 			'circleId'         => $this->getCircleId(),
-			'config'           => $this->getConfig(),
+			'circleConfig'           => $this->getCircleConfig(),
 			'level'            => $this->getLevel(),
 			'inheritanceFirst' => $this->getInheritanceFirst(),
 			'inheritanceLast'  => $this->getInheritanceLast(),
