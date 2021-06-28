@@ -150,6 +150,14 @@ class AdminController extends OcsController {
 
 			return new DataResponse($this->serializeArray($circle));
 		} catch (Exception $e) {
+			$this->e(
+				$e, [
+					  'emulated' => $emulated,
+					  'name'     => $name,
+					  'members'  => $personal,
+					  'local'    => $local
+				  ]
+			);
 			throw new OcsException($e->getMessage(), $e->getCode());
 		}
 	}
@@ -169,6 +177,7 @@ class AdminController extends OcsController {
 
 			return new DataResponse($this->serializeArray($circle));
 		} catch (Exception $e) {
+			$this->e($e, ['emulated' => $emulated, 'circleId' => $circleId]);
 			throw new OcsException($e->getMessage(), $e->getCode());
 		}
 	}
@@ -202,6 +211,14 @@ class AdminController extends OcsController {
 
 			return new DataResponse($this->serializeArray($result));
 		} catch (Exception $e) {
+			$this->e(
+				$e, [
+					  'emulated' => $emulated,
+					  'circleId' => $circleId,
+					  'userId'   => $userId,
+					  'type'     => $type
+				  ]
+			);
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
 	}
@@ -230,6 +247,15 @@ class AdminController extends OcsController {
 
 			return new DataResponse($this->serializeArray($result));
 		} catch (Exception $e) {
+			$this->e(
+				$e,
+				[
+					'emulated' => $emulated,
+					'circleId' => $circleId,
+					'memberId' => $memberId,
+					'level'    => $level
+				]
+			);
 			throw new OcsException($e->getMessage(), $e->getCode());
 		}
 	}
@@ -247,6 +273,7 @@ class AdminController extends OcsController {
 
 			return new DataResponse($this->serializeArray($this->circleService->getCircles()));
 		} catch (Exception $e) {
+			$this->e($e, ['emulated' => $emulated]);
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
 	}
@@ -265,6 +292,7 @@ class AdminController extends OcsController {
 
 			return new DataResponse($this->serialize($this->circleService->getCircle($circleId)));
 		} catch (Exception $e) {
+			$this->e($e, ['emulated' => $emulated, 'circleId' => $circleId]);
 			throw new OcsException($e->getMessage(), $e->getCode());
 		}
 	}
@@ -284,6 +312,7 @@ class AdminController extends OcsController {
 
 			return new DataResponse($this->serializeArray($result));
 		} catch (Exception $e) {
+			$this->e($e, ['emulated' => $emulated, 'circleId' => $circleId]);
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
 	}
@@ -303,6 +332,7 @@ class AdminController extends OcsController {
 
 			return new DataResponse($this->serializeArray($result));
 		} catch (Exception $e) {
+			$this->e($e, ['emulated' => $emulated, 'circleId' => $circleId]);
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
 	}
@@ -328,6 +358,7 @@ class AdminController extends OcsController {
 
 			return new DataResponse($this->serializeArray($result));
 		} catch (Exception $e) {
+			$this->e($e, ['emulated' => $emulated, 'circleId' => $circleId, 'memberId' => $memberId]);
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
 	}
@@ -350,6 +381,7 @@ class AdminController extends OcsController {
 
 			return new DataResponse($this->serializeArray($result));
 		} catch (Exception $e) {
+			$this->e($e, ['emulated' => $emulated, 'circleId' => $circleId, 'memberId' => $memberId]);
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
 	}
@@ -368,6 +400,7 @@ class AdminController extends OcsController {
 
 			return new DataResponse($this->serializeArray($this->memberService->getMembers($circleId)));
 		} catch (Exception $e) {
+			$this->e($e, ['emulated' => $emulated, 'circleId' => $circleId]);
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
 	}
@@ -389,6 +422,7 @@ class AdminController extends OcsController {
 
 			return new DataResponse($this->serializeArray($outcome));
 		} catch (Exception $e) {
+			$this->e($e, ['emulated' => $emulated, 'circleId' => $circleId, 'value' => $value]);
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
 	}
@@ -410,6 +444,7 @@ class AdminController extends OcsController {
 
 			return new DataResponse($this->serializeArray($outcome));
 		} catch (Exception $e) {
+			$this->e($e, ['emulated' => $emulated, 'circleId' => $circleId, 'value' => $value]);
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
 	}
@@ -431,6 +466,7 @@ class AdminController extends OcsController {
 
 			return new DataResponse($this->serializeArray($outcome));
 		} catch (Exception $e) {
+			$this->e($e, ['emulated' => $emulated, 'circleId' => $circleId, 'value' => $value]);
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
 	}
@@ -452,6 +488,7 @@ class AdminController extends OcsController {
 
 			return new DataResponse($this->serializeArray($outcome));
 		} catch (Exception $e) {
+			$this->e($e, ['emulated' => $emulated, 'circleId' => $circleId, 'value' => $value]);
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
 	}
@@ -472,6 +509,7 @@ class AdminController extends OcsController {
 
 			return new DataResponse($this->serialize($membership));
 		} catch (Exception $e) {
+			$this->e($e, ['emulated' => $emulated, 'circleId' => $circleId, 'singleId' => $singleId]);
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
 	}
