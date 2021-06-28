@@ -39,8 +39,6 @@ use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Model\Circle;
-use OCA\Circles\Model\DeprecatedCircle;
-use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedUserService;
@@ -50,22 +48,22 @@ class Circles {
 	const API_VERSION = [0, 10, 0];
 
 	// Expose circle and member constants via API
-	const CIRCLES_PERSONAL = DeprecatedCircle::CIRCLES_PERSONAL;
-	const CIRCLES_SECRET = DeprecatedCircle::CIRCLES_SECRET;
-	const CIRCLES_CLOSED = DeprecatedCircle::CIRCLES_CLOSED;
-	const CIRCLES_PUBLIC = DeprecatedCircle::CIRCLES_PUBLIC;
-	const CIRCLES_ALL = DeprecatedCircle::CIRCLES_ALL;
+	const CIRCLES_PERSONAL = 1;
+	const CIRCLES_SECRET = 2;
+	const CIRCLES_CLOSED = 4;
+	const CIRCLES_PUBLIC = 8;
+	const CIRCLES_ALL = 15;
 
-	const TYPE_USER = DeprecatedMember::TYPE_USER;
-	const TYPE_GROUP = DeprecatedMember::TYPE_GROUP;
-	const TYPE_MAIL = DeprecatedMember::TYPE_MAIL;
-	const TYPE_CONTACT = DeprecatedMember::TYPE_CONTACT;
+	const TYPE_USER = Member::TYPE_USER;
+	const TYPE_GROUP = Member::TYPE_GROUP;
+	const TYPE_MAIL = Member::TYPE_MAIL;
+	const TYPE_CONTACT = Member::TYPE_CONTACT;
 
-	const LEVEL_NONE = DeprecatedMember::LEVEL_NONE;
-	const LEVEL_MEMBER = DeprecatedMember::LEVEL_MEMBER;
-	const LEVEL_MODERATOR = DeprecatedMember::LEVEL_MODERATOR;
-	const LEVEL_ADMIN = DeprecatedMember::LEVEL_ADMIN;
-	const LEVEL_OWNER = DeprecatedMember::LEVEL_OWNER;
+	const LEVEL_NONE = Member::LEVEL_NONE;
+	const LEVEL_MEMBER = Member::LEVEL_MEMBER;
+	const LEVEL_MODERATOR = Member::LEVEL_MODERATOR;
+	const LEVEL_ADMIN = Member::LEVEL_ADMIN;
+	const LEVEL_OWNER = Member::LEVEL_OWNER;
 
 
 	/**
