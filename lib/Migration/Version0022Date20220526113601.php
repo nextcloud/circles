@@ -384,6 +384,12 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 						  ]
 			);
 			$table->addColumn(
+				'retry', 'integer', [
+						   'length'  => 3,
+						   'notnull' => false
+					   ]
+			);
+			$table->addColumn(
 				'status', 'integer', [
 							'length'  => 3,
 							'notnull' => false
