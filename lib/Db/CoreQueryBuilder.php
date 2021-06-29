@@ -68,6 +68,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	const REMOTE = 'remote';
 	const BASED_ON = 'basedon';
 	const INITIATOR = 'initiator';
+	const DIRECT_INITIATOR = 'initiatordirect';
 	const MEMBERSHIPS = 'memberships';
 	const CONFIG = 'config';
 	const UPSTREAM_MEMBERSHIPS = 'upstreammemberships';
@@ -88,23 +89,26 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 			self::MEMBER
 		],
 		self::CIRCLE      => [
-			self::OPTIONS     => [
+			self::OPTIONS          => [
 			],
 			self::MEMBER,
 			self::MEMBER_COUNT,
-			self::OWNER       => [
+			self::OWNER            => [
 				self::BASED_ON
 			],
-			self::MEMBERSHIPS => [
+			self::MEMBERSHIPS      => [
 				self::CONFIG
 			],
-			self::INITIATOR   => [
+			self::DIRECT_INITIATOR => [
+				self::BASED_ON
+			],
+			self::INITIATOR        => [
 				self::BASED_ON,
 				self::INHERITED_BY => [
 					self::MEMBERSHIPS
 				]
 			],
-			self::REMOTE      => [
+			self::REMOTE           => [
 				self::MEMBER,
 				self::CIRCLE => [
 					self::OWNER
@@ -1135,6 +1139,26 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 			return;
 		}
 
+		// bypass memberships
+		if ($this->getBool('initiatorDirectMember', $options, false)) {
+			try {
+				$aliasDirectInitiator = $this->generateAlias($alias, self::DIRECT_INITIATOR, $options);
+
+				$this->generateMemberSelectAlias($aliasDirectInitiator)
+					 ->leftJoin(
+						 $helperAlias,
+						 CoreRequestBuilder::TABLE_MEMBER,
+						 $aliasDirectInitiator,
+						 $expr->andX(
+							 $this->exprLimit('single_id', $initiator->getSingleId(), $aliasDirectInitiator),
+							 $expr->eq($aliasDirectInitiator . '.circle_id', $helperAlias . '.' . $field)
+						 )
+					 );
+			} catch (RequestBuilderException $e) {
+			}
+		}
+
+
 		try {
 			$aliasInitiator = $this->generateAlias($alias, self::INITIATOR, $options);
 			$this->leftJoin(
@@ -1164,11 +1188,10 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 					'instance'    => $initiator->getInstance()
 				];
 			}
-			$this->generateMemberSelectAlias($aliasInitiator, $default);
-
-			$this->generateMemberSelectAlias($aliasInheritedBy);
 			$aliasInheritedByMembership = $this->generateAlias($aliasInheritedBy, self::MEMBERSHIPS);
-			$this->generateMembershipSelectAlias($aliasMembership, $aliasInheritedByMembership);
+			$this->generateMemberSelectAlias($aliasInitiator, $default)
+				 ->generateMemberSelectAlias($aliasInheritedBy)
+				 ->generateMembershipSelectAlias($aliasMembership, $aliasInheritedByMembership);
 		} catch (RequestBuilderException $e) {
 		}
 	}
@@ -1183,6 +1206,11 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	protected function limitInitiatorVisibility(string $alias): ICompositeExpression {
 		$aliasMembership = $this->generateAlias($alias, self::MEMBERSHIPS, $options);
 		$aliasMembershipCircle = $this->generateAlias($aliasMembership, self::CONFIG, $options);
+		$levelCheck = [$aliasMembership];
+
+		if ($this->getBool('initiatorDirectMember', $options, false)) {
+			array_push($levelCheck, $this->generateAlias($alias, self::DIRECT_INITIATOR, $options));
+		}
 
 		$filterPersonalCircle = $this->getBool('filterPersonalCircle', $options, true);
 
@@ -1193,6 +1221,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		// - 2 (Personal), if initiator is owner)
 		// - 4 (Visible to everyone)
 		$orX = $expr->orX();
+
 		if ($filterPersonalCircle) {
 			$orX->add(
 				$expr->andX(
@@ -1204,7 +1233,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 
 		$andXMember = $expr->andX();
 		$andXMember->add(
-			$expr->gte($aliasMembership . '.level', $this->createNamedParameter(Member::LEVEL_MEMBER))
+			$this->orXCheckLevel($levelCheck, Member::LEVEL_MEMBER),
 		);
 		if ($filterPersonalCircle) {
 			$andXMember->add(
@@ -1568,6 +1597,23 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		}
 
 		return $path;
+	}
+
+
+	/**
+	 * @param array $aliases
+	 * @param int $level
+	 *
+	 * @return ICompositeExpression
+	 */
+	private function orXCheckLevel(array $aliases, int $level): ICompositeExpression {
+		$expr = $this->expr();
+		$orX = $expr->orX();
+		foreach ($aliases as $alias) {
+			$orX->add($expr->gte($alias . '.level', $this->createNamedParameter($level)));
+		}
+
+		return $orX;
 	}
 
 }

@@ -174,8 +174,9 @@ class CircleRequest extends CircleRequestBuilder {
 		$qb->setOptions(
 			[CoreQueryBuilder::CIRCLE],
 			[
-				'getData'      => true,
-				'mustBeMember' => $params->gBool('mustBeMember')
+				'getData'               => true,
+				'mustBeMember'          => $params->gBool('mustBeMember'),
+				'initiatorDirectMember' => true
 			]
 		);
 
@@ -239,7 +240,14 @@ class CircleRequest extends CircleRequestBuilder {
 		int $filter = Circle::CFG_BACKEND | Circle::CFG_SINGLE | Circle::CFG_HIDDEN
 	): Circle {
 		$qb = $this->getCircleSelectSql();
-		$qb->setOptions([CoreQueryBuilder::CIRCLE], ['getData' => true, 'canBeVisitor' => true]);
+		$qb->setOptions(
+			[CoreQueryBuilder::CIRCLE],
+			[
+				'getData'               => true,
+				'canBeVisitor'          => true,
+				'initiatorDirectMember' => true
+			]
+		);
 
 		$qb->limitToUniqueId($id);
 		$qb->filterCircles(CoreQueryBuilder::CIRCLE, $filter);
