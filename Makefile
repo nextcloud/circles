@@ -9,8 +9,8 @@ cert_dir=$(HOME)/.nextcloud/certificates
 github_account=nextcloud
 release_account=nextcloud-releases
 branch=master
-version=22.0.0-beta.3
-since_tag=v22.0.0-beta.1
+version=22.0.0-beta.4
+since_tag=
 
 all: appstore
 
@@ -31,7 +31,7 @@ github-release:
 	fi; \
 	comparison="$$latest_tag..HEAD"; \
 	if [ -z "$$latest_tag" ]; then comparison=""; fi; \
-	changelog=$$(git log $$comparison --oneline --no-merges); \
+	changelog=$$(git log $$comparison --oneline --no-merges | sed -e 's/^/$(github_account)\/$(app_name)@/'); \
 	github-release release \
 		--user $$release_account \
 		--repo $(app_name) \
