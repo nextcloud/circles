@@ -31,7 +31,7 @@ github-release:
 	fi; \
 	comparison="$$latest_tag..HEAD"; \
 	if [ -z "$$latest_tag" ]; then comparison=""; fi; \
-	changelog=$$(git log $$comparison --oneline --no-merges); \
+	changelog=$$(git log $$comparison --oneline --no-merges | sed -e 's/^/$(github_account)\/$(app_name)@/'); \
 	github-release release \
 		--user $$release_account \
 		--repo $(app_name) \
