@@ -1,4 +1,4 @@
-app_name=circles
+app_name=Circles
 
 build_dir=$(CURDIR)/build/artifacts
 appstore_dir=$(build_dir)/appstore
@@ -7,28 +7,63 @@ sign_dir=$(build_dir)/sign
 package_name=$(app_name)
 cert_dir=$(HOME)/.nextcloud/certificates
 github_account=nextcloud
-branch=master
-version+=22.0.0-beta.2
+release_account=nextcloud-releases
+branch=stable22
+version=22.0.0-beta.4
+since_tag=22.0.0-beta.3
 
 all: appstore
 
 release: appstore github-release github-upload
 
 github-release:
+	if [ -z "$(release_account)" ]; then \
+		release_account=$(github_account); \
+		release_branch=$(branch); \
+	else \
+		release_account=$(release_account); \
+		release_branch=master; \
+	fi; \
+	if [ -z "$(since_tag)" ]; then \
+		latest_tag=$$(git describe --tags `git rev-list --tags --max-count=1`); \
+	else \
+		latest_tag=$(since_tag); \
+	fi; \
+	comparison="$$latest_tag..HEAD"; \
+	if [ -z "$$latest_tag" ]; then comparison=""; fi; \
+	changelog=$$(git log $$comparison --oneline --no-merges | sed -e 's/^/$(github_account)\/$(app_name)@/'); \
 	github-release release \
-		--user $(github_account) \
+		--user $$release_account \
 		--repo $(app_name) \
-		--target $(branch) \
-		--tag v$(version) \
-		--name "$(app_name) v$(version)"
+		--target $$release_branch \
+		--tag $(version) \
+		--description "**Changelog**<br/>$$changelog" \
+		--name "$(app_name) v$(version)"; \
+	if [ $(github_account) != $$release_account ]; then \
+	        link="https://github.com/$$release_account/$(app_name)/releases/download/$(version)/$(app_name)-$(version).tar.gz";\
+		github-release release \
+			--user $(github_account) \
+			--repo $(app_name) \
+			--target $(branch) \
+			--tag $(version) \
+			--description "**Download**<br />$$link<br /><br />**Changelog**<br/>$$changelog<br />" \
+			--name "$(app_name) v$(version)"; \
+	fi; \
+
 
 github-upload:
+	if [ -z "$(release_account)" ]; then \
+		release_account=$(github_account); \
+	else \
+		release_account=$(release_account); \
+	fi; \
 	github-release upload \
-		--user $(github_account) \
+		--user $$release_account \
 		--repo $(app_name) \
-		--tag v$(version) \
+		--tag $(version) \
 		--name "$(app_name)-$(version).tar.gz" \
 		--file $(build_dir)/$(app_name)-$(version).tar.gz
+
 
 clean:
 	rm -rf $(build_dir)
