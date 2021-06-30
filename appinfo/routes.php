@@ -97,8 +97,7 @@ return [
 		['name' => 'Admin#editDescription', 'url' => '/admin/{emulated}/circles/{circleId}/description', 'verb' => 'PUT'],
 		['name' => 'Admin#editSettings', 'url' => '/admin/{emulated}/circles/{circleId}/settings', 'verb' => 'PUT'],
 		['name' => 'Admin#editConfig', 'url' => '/admin/{emulated}/circles/{circleId}/config', 'verb' => 'PUT'],
-		['name' => 'Admin#link', 'url' => '/admin/{emulated}/link/{circleId}/{singleId}', 'verb' => 'GET'],
-
+		['name' => 'Admin#link', 'url' => '/admin/{emulated}/link/{circleId}/{singleId}', 'verb' => 'GET']
 	],
 
 	'routes' => [

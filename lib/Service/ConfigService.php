@@ -331,6 +331,7 @@ class ConfigService {
 	 */
 	public function getSettings(): array {
 		return [
+			'frontendEnabled'  => $this->getAppValueBool(self::FRONTEND_ENABLED),
 			'allowedCircles'   => Circle::$DEF_CFG_MAX,
 			'allowedUserTypes' => Member::$DEF_TYPE_MAX,
 			'membersLimit'     => $this->getAppValueInt(self::MEMBERS_LIMIT)
