@@ -1400,7 +1400,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		$this->generateSelectAlias(
 			['id', 'file_target', 'permissions'],
 			$aliasShareChild,
-			'child_',
+			'child',
 			[]
 		);
 
