@@ -308,8 +308,27 @@ class ShareByCircleProvider implements IShareProvider {
 	/**
 	 * @param IShare $share
 	 * @param string $recipient
+	 *
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
+	 * @throws NotFoundException
+	 * @throws RequestBuilderException
+	 * @throws ShareWrapperNotFoundException
+	 * @throws SingleCircleNotFoundException
 	 */
 	public function deleteFromSelf(IShare $share, $recipient): void {
+		$federatedUser = $this->federatedUserService->getLocalFederatedUser($recipient);
+		$child = $this->shareWrapperService->getChild($share, $federatedUser);
+		$this->debug('Shares::move()', ['federatedUser' => $federatedUser, 'child' => $child]);
+
+		if ($child->getPermissions() > 0) {
+			$child->setPermissions(0);
+			$this->shareWrapperService->update($child);
+		}
 	}
 
 	/**
@@ -342,6 +361,8 @@ class ShareByCircleProvider implements IShareProvider {
 	public function move(IShare $share, $recipient): IShare {
 		$federatedUser = $this->federatedUserService->getLocalFederatedUser($recipient);
 		$child = $this->shareWrapperService->getChild($share, $federatedUser);
+		$this->debug('Shares::move()', ['federatedUser' => $federatedUser, 'child' => $child]);
+
 		if ($child->getFileTarget() !== $share->getTarget()) {
 			$child->setFileTarget($share->getTarget());
 			$this->shareWrapperService->update($child);
@@ -359,14 +380,17 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @param bool $reshares
 	 *
 	 * @return array
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
 	 * @throws FederatedUserException
 	 * @throws FederatedUserNotFoundException
 	 * @throws IllegalIDChangeException
 	 * @throws InvalidIdException
 	 * @throws InvalidPathException
 	 * @throws NotFoundException
-	 * @throws SingleCircleNotFoundException
 	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
 	 */
 	public function getSharesInFolder($userId, Folder $node, $reshares): array {
 		$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
@@ -526,7 +550,9 @@ class ShareByCircleProvider implements IShareProvider {
 		return array_filter(
 			array_map(
 				function(ShareWrapper $wrapper) {
-					return $wrapper->getShare($this->rootFolder, $this->userManager, $this->urlGenerator, true);
+					return $wrapper->getShare(
+						$this->rootFolder, $this->userManager, $this->urlGenerator, true
+					);
 				}, $wrappedShares
 			)
 		);

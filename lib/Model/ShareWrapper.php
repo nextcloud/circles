@@ -116,6 +116,9 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 	/** @var string */
 	private $childFileTarget = '';
 
+	/** @var int */
+	private $childPermissions = 0;
+
 	/** @var FileCacheWrapper */
 	private $fileCache;
 
@@ -475,6 +478,25 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 
 
 	/**
+	 * @param int $childPermissions
+	 *
+	 * @return ShareWrapper
+	 */
+	public function setChildPermissions(int $childPermissions): self {
+		$this->childPermissions = $childPermissions;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getChildPermissions(): int {
+		return $this->childPermissions;
+	}
+
+
+	/**
 	 * @param FileCacheWrapper $fileCache
 	 *
 	 * @return $this
@@ -556,6 +578,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 	 * @param IRootFolder $rootFolder
 	 * @param IUserManager $userManager
 	 * @param IURLGenerator $urlGenerator
+	 * @param bool $nullOnMissingFileCache
 	 *
 	 * @return IShare
 	 * @throws IllegalIDChangeException
@@ -583,6 +606,9 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 
 		if ($this->getChildId() > 0) {
 			$share->setTarget($this->getChildFileTarget());
+			if ($this->getChildPermissions() < $this->getPermissions()) {
+				$share->setPermissions($this->getChildPermissions());
+			}
 		}
 
 		$this->setShareDisplay($share, $urlGenerator);
@@ -674,6 +700,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 
 		$this->setChildId($this->getInt('childId', $data))
 			 ->setChildFileTarget($this->get('childFileTarget', $data))
+			 ->setChildPermissions($this->getInt('childPermissions', $data))
 			 ->setProviderId(ShareByCircleProvider::IDENTIFIER)
 			 ->setStatus(Ishare::STATUS_ACCEPTED);
 
@@ -737,6 +764,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 
 		$this->setChildId($this->getInt($prefix . 'child_id', $data))
 			 ->setChildFileTarget($this->get($prefix . 'child_file_target', $data))
+			 ->setChildPermissions($this->getInt($prefix . 'child_permissions', $data))
 			 ->setProviderId(ShareByCircleProvider::IDENTIFIER)
 			 ->setStatus(Ishare::STATUS_ACCEPTED);
 
@@ -751,23 +779,24 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 	 */
 	public function jsonSerialize(): array {
 		$arr = [
-			'id'              => $this->getId(),
-			'shareType'       => $this->getShareType(),
-			'providerId'      => $this->getProviderId(),
-			'permissions'     => $this->getPermissions(),
-			'itemType'        => $this->getItemType(),
-			'itemSource'      => $this->getItemSource(),
-			'itemTarget'      => $this->getItemTarget(),
-			'fileSource'      => $this->getFileSource(),
-			'fileTarget'      => $this->getFileTarget(),
-			'status'          => $this->getStatus(),
-			'shareTime'       => $this->getShareTime()->getTimestamp(),
-			'sharedWith'      => $this->getSharedWith(),
-			'sharedBy'        => $this->getSharedBy(),
-			'shareOwner'      => $this->getShareOwner(),
-			'token'           => $this->getToken(),
-			'childId'         => $this->getChildId(),
-			'childFileTarget' => $this->getChildFileTarget()
+			'id'               => $this->getId(),
+			'shareType'        => $this->getShareType(),
+			'providerId'       => $this->getProviderId(),
+			'permissions'      => $this->getPermissions(),
+			'itemType'         => $this->getItemType(),
+			'itemSource'       => $this->getItemSource(),
+			'itemTarget'       => $this->getItemTarget(),
+			'fileSource'       => $this->getFileSource(),
+			'fileTarget'       => $this->getFileTarget(),
+			'status'           => $this->getStatus(),
+			'shareTime'        => $this->getShareTime()->getTimestamp(),
+			'sharedWith'       => $this->getSharedWith(),
+			'sharedBy'         => $this->getSharedBy(),
+			'shareOwner'       => $this->getShareOwner(),
+			'token'            => $this->getToken(),
+			'childId'          => $this->getChildId(),
+			'childFileTarget'  => $this->getChildFileTarget(),
+			'childPermissions' => $this->getChildPermissions()
 		];
 
 		if ($this->hasOwner()) {
