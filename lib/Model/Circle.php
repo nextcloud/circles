@@ -189,6 +189,9 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	/** @var Member */
 	private $initiator;
 
+	/** @var Member */
+	private $directInitiator;
+
 	/** @var array */
 	private $settings = [];
 
@@ -516,6 +519,13 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	 * @return Member
 	 */
 	public function getInitiator(): Member {
+		if (is_null($this->initiator)
+			|| ($this->initiator->getId() === ''
+				&& !is_null($this->directInitiator)
+				&& $this->directInitiator->getId() !== '')) {
+			return $this->directInitiator;
+		}
+
 		return $this->initiator;
 	}
 
@@ -523,8 +533,20 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	 * @return bool
 	 */
 	public function hasInitiator(): bool {
-		return ($this->initiator !== null);
+		return (!is_null($this->initiator) || !is_null($this->directInitiator));
 	}
+
+	/**
+	 * @param Member|null $directInitiator
+	 *
+	 * @return $this
+	 */
+	public function setDirectInitiator(?Member $directInitiator): self {
+		$this->directInitiator = $directInitiator;
+
+		return $this;
+	}
+
 
 	/**
 	 * @param string $instance

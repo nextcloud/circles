@@ -237,6 +237,15 @@ class ModelManager {
 				} catch (MemberNotFoundException $e) {
 				}
 				break;
+
+			case CoreQueryBuilder::DIRECT_INITIATOR;
+				try {
+					$directInitiator = new Member();
+					$directInitiator->importFromDatabase($data, $prefix);
+					$circle->setDirectInitiator($directInitiator);
+				} catch (MemberNotFoundException $e) {
+				}
+				break;
 		}
 	}
 
