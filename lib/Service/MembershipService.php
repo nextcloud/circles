@@ -224,7 +224,7 @@ class MembershipService {
 
 		$members = $this->memberRequest->getMembersBySingleId($circleId);
 		foreach ($members as $member) {
-			if ($member->getLevel() < Member::LEVEL_MEMBER) {
+			if (!$member->hasCircle() || $member->getLevel() < Member::LEVEL_MEMBER) {
 				continue;
 			}
 
