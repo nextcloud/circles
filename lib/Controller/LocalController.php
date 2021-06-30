@@ -37,6 +37,7 @@ use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use Exception;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Exceptions\FrontendException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
@@ -114,6 +115,7 @@ class LocalController extends OcsController {
 		ConfigService $configService
 	) {
 		parent::__construct($appName, $request);
+
 		$this->userSession = $userSession;
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
@@ -139,6 +141,7 @@ class LocalController extends OcsController {
 	public function create(string $name, bool $personal = false, bool $local = false): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
+
 			$circle = $this->circleService->create($name, null, $personal, $local);
 
 			return new DataResponse($this->serializeArray($circle));
@@ -160,6 +163,7 @@ class LocalController extends OcsController {
 	public function destroy(string $circleId): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
+
 			$circle = $this->circleService->destroy($circleId);
 
 			return new DataResponse($this->serializeArray($circle));
@@ -289,7 +293,7 @@ class LocalController extends OcsController {
 	public function circleJoin(string $circleId): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
-			\OC::$server->getLogger()->log(3, '--- ' . json_encode($circleId));
+
 			$result = $this->circleService->circleJoin($circleId);
 
 			return new DataResponse($this->serializeArray($result));
@@ -311,6 +315,7 @@ class LocalController extends OcsController {
 	public function circleLeave(string $circleId): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
+
 			$result = $this->circleService->circleLeave($circleId);
 
 			return new DataResponse($this->serializeArray($result));
@@ -334,6 +339,7 @@ class LocalController extends OcsController {
 	public function memberLevel(string $circleId, string $memberId, $level): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
+
 			if (is_int($level)) {
 				$level = Member::parseLevelInt($level);
 			} else {
@@ -390,8 +396,8 @@ class LocalController extends OcsController {
 	public function memberRemove(string $circleId, string $memberId): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
-			$this->memberService->getMemberById($memberId, $circleId);
 
+			$this->memberService->getMemberById($memberId, $circleId);
 			$result = $this->memberService->removeMember($memberId);
 
 			return new DataResponse($this->serializeArray($result));
@@ -560,8 +566,13 @@ class LocalController extends OcsController {
 	 * @throws FederatedUserException
 	 * @throws SingleCircleNotFoundException
 	 * @throws RequestBuilderException
+	 * @throws FrontendException
 	 */
 	private function setCurrentFederatedUser() {
+		if (!$this->configService->getAppValueBool(ConfigService::FRONTEND_ENABLED)) {
+			throw new FrontendException('frontend disabled');
+		}
+
 		$user = $this->userSession->getUser();
 		$this->federatedUserService->setLocalCurrentUser($user);
 	}

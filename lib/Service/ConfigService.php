@@ -83,6 +83,7 @@ class ConfigService {
 	const IFACE_TEST_TOKEN = 'iface_test_token';
 
 	const HARD_MODERATION = 'hard_moderation';
+	const FRONTEND_ENABLED = 'frontend_enabled';
 	const ROUTE_TO_CIRCLE = 'route_to_circle';
 	const EVENT_EXAMPLES = 'event_examples';
 
@@ -143,9 +144,10 @@ class ConfigService {
 		self::IFACE_TEST_SCHEME     => 'https',
 		self::IFACE_TEST_TOKEN      => '',
 
-		self::HARD_MODERATION => '0',
-		self::ROUTE_TO_CIRCLE => 'contacts.contacts.directcircle',
-		self::EVENT_EXAMPLES  => '0',
+		self::FRONTEND_ENABLED => '1',
+		self::HARD_MODERATION  => '0',
+		self::ROUTE_TO_CIRCLE  => 'contacts.contacts.directcircle',
+		self::EVENT_EXAMPLES   => '0',
 
 		self::SELF_SIGNED_CERT       => '0',
 		self::MEMBERS_LIMIT          => '50',
