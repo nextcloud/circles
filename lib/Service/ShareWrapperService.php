@@ -229,6 +229,7 @@ class ShareWrapperService {
 	 * @return ShareWrapper
 	 * @throws NotFoundException
 	 * @throws ShareWrapperNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	public function getChild(IShare $share, FederatedUser $federatedUser): ShareWrapper {
 		try {
@@ -247,6 +248,7 @@ class ShareWrapperService {
 	 * @return ShareWrapper
 	 * @throws ShareWrapperNotFoundException
 	 * @throws NotFoundException
+	 * @throws RequestBuilderException
 	 */
 	private function createChild(IShare $share, FederatedUser $federatedUser): ShareWrapper {
 		$share->setSharedWith($federatedUser->getSingleId());

@@ -35,6 +35,7 @@ declare(strict_types=1);
 namespace OCA\Circles;
 
 
+use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OC;
@@ -95,6 +96,7 @@ class ShareByCircleProvider implements IShareProvider {
 
 	use TArrayTools;
 	use TStringTools;
+	use TNC22Logger;
 
 
 	const IDENTIFIER = 'ocCircleShare';
