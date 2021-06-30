@@ -621,7 +621,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 		}
 
 		$display = $circle->getDisplayName();
-		if ($circle->getSource() === 0) {
+		if ($circle->getSource() === Member::TYPE_CIRCLE) {
 			$display .= ' (Circle owned by ' . $circle->getOwner()->getDisplayName() . ')';
 		} else {
 			$display .= ' (' . Circle::$DEF_SOURCE[$circle->getSource()] . ')';
