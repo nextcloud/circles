@@ -68,10 +68,6 @@ Those groups of users (or "circles") can then be used by any other app for shari
 <!--		<command>OCA\Circles\Command\SyncContact</command>-->
 	</commands>
 
-	<settings>
-		<admin>OCA\Circles\Settings\CirclesSettings</admin>
-	</settings>
-
 	<!--	<activity>-->
 	<!--		<settings>-->
 	<!--			<setting>OCA\Circles\Activity\SettingAsNonMember</setting>-->
