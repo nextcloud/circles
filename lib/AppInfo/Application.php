@@ -62,7 +62,7 @@ use OCA\Circles\MountManager\CircleMountProvider;
 use OCA\Circles\Notification\Notifier;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\DavService;
-use OCA\Files\App as FilesApp;
+//use OCA\Files\App as FilesApp;
 use OCP\App\ManagerEvent;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
@@ -259,20 +259,20 @@ class Application extends App implements IBootstrap {
 	 *
 	 */
 	public function registerFilesNavigation() {
-		$appManager = FilesApp::getNavigationManager();
-		$appManager->add(
-			function() {
-				$l = OC::$server->getL10N('circles');
-
-				return [
-					'id' => 'circlesfilter',
-					'appname' => 'circles',
-					'script' => 'files/list.php',
-					'order' => 25,
-					'name' => $l->t('Shared to Circles'),
-				];
-			}
-		);
+//		$appManager = FilesApp::getNavigationManager();
+//		$appManager->add(
+//			function() {
+//				$l = OC::$server->getL10N('circles');
+//
+//				return [
+//					'id' => 'circlesfilter',
+//					'appname' => 'circles',
+//					'script' => 'files/list.php',
+//					'order' => 25,
+//					'name' => $l->t('Shared to Circles'),
+//				];
+//			}
+//		);
 	}
 
 }
