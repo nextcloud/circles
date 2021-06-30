@@ -8,7 +8,7 @@
 Those groups of users (or "circles") can then be used by any other app for sharing purpose.
 		]]>
 	</description>
-	<version>22.0.0-beta.4</version>
+	<version>22.0.0-rc1</version>
 	<licence>agpl</licence>
 	<author>Maxence Lange</author>
 	<types>
@@ -65,7 +65,7 @@ Those groups of users (or "circles") can then be used by any other app for shari
 		<command>OCA\Circles\Command\MembersDetails</command>
 		<command>OCA\Circles\Command\MembersLevel</command>
 		<command>OCA\Circles\Command\MembersRemove</command>
-<!--		<command>OCA\Circles\Command\SyncContact</command>-->
+		<!--		<command>OCA\Circles\Command\SyncContact</command>-->
 	</commands>
 
 	<!--	<activity>-->
