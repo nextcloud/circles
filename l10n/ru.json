@@ -73,7 +73,6 @@
     "On events happening in a <strong>Circle</strong> of which you are a member" : "При событии в <strong>круге</strong>, которому вы принадлежите ",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Любое важное событие в модерируемом вами <strong>круге </strong> ",
     "On global events happening in any <strong>Circle</strong>" : "При глобальном событии в <strong>круге</strong>, которому вы принадлежите ",
-    "Shared to Circles" : "Предоставленный кругам общий доступ",
     "Personal" : "Личный",
     "Contact" : "Контакт",
     "Circle" : "Круг",
@@ -135,11 +134,6 @@
     "Name" : "Имя",
     "Size" : "Размер",
     "Modified" : "Изменён",
-    "Maximum number of members per circle" : "Максимальное количество участников круга ",
-    "Allow linking of groups" : "Разрешить связывание групп",
-    "Groups can be linked to circles." : "Группы могут быть связаны с кругами.",
-    "Skip invitation step to closed circles" : "Пропустить шаг приглашения к закрытым кругам",
-    "Moderators can add member to closed circles without user approval." : "Модераторы могут добавлять участников в закрытые круги без согласия пользователя.",
     "Are you sure you want to transfer your ownership?" : "Действительно передать свои права владения?",
     "This action is irreversible" : "Это действие необратимо",
     "Personal circle" : "Личный круг",
@@ -223,6 +217,7 @@
     "Member could not be updated" : "Участник не может быть обновлен",
     "Issue while saving settings" : "При сохранении настроек произошла ошибка.",
     "Settings saved." : "Настройки сохранены.",
+    "Shared to Circles" : "Предоставленный кругам общий доступ",
     "%s shared »%s« with '%s'." : "%s предоставил(а) доступ к «%s» пользователю %s.",
     "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n" : "%1$s предоставил(а) вам общий доступ к «%2$s».\nВы, скорее всего, уже получили отдельное письмо, содержащую ссылку для получения доступа.\n",
     "%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it." : "%1$s предоставил(а) вам доступ к «%2$s». Вы, скорее всего, уже получили отдельное письмо, содержащее ссылку для получения доступа.",
@@ -305,6 +300,11 @@
     "Makes the circle federated, and enables sharing between federated circles" : "Превращает этот круг в федеративный и разрешает обмен между федеративными кругами",
     "Accept Link Request Automatically" : "Автоматически принимать запросы связывания",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Внимание: при включении этого параметра запросы связывания, полученные из других кругов, будут приниматься автоматически.",
-    "Save settings" : "Сохранить изменения"
+    "Save settings" : "Сохранить изменения",
+    "Maximum number of members per circle" : "Максимальное количество участников круга ",
+    "Allow linking of groups" : "Разрешить связывание групп",
+    "Groups can be linked to circles." : "Группы могут быть связаны с кругами.",
+    "Skip invitation step to closed circles" : "Пропустить шаг приглашения к закрытым кругам",
+    "Moderators can add member to closed circles without user approval." : "Модераторы могут добавлять участников в закрытые круги без согласия пользователя."
 },"pluralForm" :"nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);"
 }

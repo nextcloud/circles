@@ -21,7 +21,6 @@ OC.L10N.register(
     "{member} joined {circle}" : "{member} juntou-se a {circle}",
     "You left {circle}" : "Saiu de {circle}",
     "{member} left {circle}" : "{member} saiu de {circle}",
-    "Shared to Circles" : "Partilhado com Círculos",
     "Personal" : "Pessoal",
     "Contact" : "Contacto",
     "Circle" : "Círculo",
@@ -58,8 +57,6 @@ OC.L10N.register(
     "Name" : "Nome",
     "Size" : "Tamanho",
     "Modified" : "Modificado",
-    "Allow linking of groups" : "Permitir associação de grupos",
-    "Groups can be linked to circles." : "Os grupos podem ser associados aos grupos.",
     "Are you sure you want to transfer your ownership?" : "Tem a certeza que deseja transferir a sua propriedade?",
     "This action is irreversible" : "Esta ação é irreversível",
     "Personal circle" : "Círculo pessoal",
@@ -110,6 +107,7 @@ OC.L10N.register(
     "Local User" : "Utilizador Local",
     "Local Group" : "Grupo Local",
     "Settings saved." : "Definições guardadas.",
+    "Shared to Circles" : "Partilhado com Círculos",
     "%s shared »%s« with '%s'." : "%s partilhou »%s« com '%s'.",
     "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n" : "%1$s partilhado »%2$s« contigo.\nJá deverá ter recebido um outro e-mail com uma hiperligação para o aceder.\n",
     "%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it." : "%1$s partilhou »%2$s« consigo. Já deverá ter recebido um outro e-mail com uma hiperligação para o aceder.",
@@ -154,6 +152,8 @@ OC.L10N.register(
     "Change password" : "Alterar palavra-passe",
     "Allow Federated Links" : "Permitir Associações Federadas",
     "Accept Link Request Automatically" : "Aceitar Automaticamente o Pedido de Associação",
-    "Save settings" : "Guardar definições"
+    "Save settings" : "Guardar definições",
+    "Allow linking of groups" : "Permitir associação de grupos",
+    "Groups can be linked to circles." : "Os grupos podem ser associados aos grupos."
 },
 "nplurals=2; plural=(n != 1);");

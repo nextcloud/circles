@@ -73,7 +73,6 @@
     "On events happening in a <strong>Circle</strong> of which you are a member" : "Vid händelser i en <strong>Cirkel</strong> där du är medlem",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Någon viktig händelse i en <strong>Cirkel</strong> du modererar",
     "On global events happening in any <strong>Circle</strong>" : "Vid globala händelser som händer i någon <strong>Cirkel</strong>",
-    "Shared to Circles" : "Delad med Cirklar",
     "Personal" : "Personlig",
     "Contact" : "Kontakta",
     "Circle" : "Cirkel",
@@ -135,11 +134,6 @@
     "Name" : "Namn",
     "Size" : "Storlek",
     "Modified" : "Ändrad",
-    "Maximum number of members per circle" : "Maximalt antal medlemmar per cirkel",
-    "Allow linking of groups" : "Tillåt länkning av grupper",
-    "Groups can be linked to circles." : "Grupper kan länkas till cirklar.",
-    "Skip invitation step to closed circles" : "Hoppa över inbjudan till stängda cirklar",
-    "Moderators can add member to closed circles without user approval." : "Moderatorer kan lägga till medlem i slutna kretsar utan användarens godkännande.",
     "Are you sure you want to transfer your ownership?" : "Är du säker att du vill ändra ägare?",
     "This action is irreversible" : "Handlingen kan inte ångras",
     "Personal circle" : "Personlig cirkel",
@@ -212,6 +206,7 @@
     "Members of the group '{name}' could not be invited to the circle" : "Medlemmar av gruppen '{name}' kunde inte bjudas in till cirkeln",
     "Issue while saving settings" : "Problem när inställningar sparades",
     "Settings saved." : "Inställningar sparades.",
+    "Shared to Circles" : "Delad med Cirklar",
     "%s shared »%s« with '%s'." : "%s delade »%s« med '%s'.",
     "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n" : "%1$s delade »%2$s« med dig.\nDu borde redan ha fått ett separat e-postmeddelande med en länk för åtkomst.\n",
     "%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it." : "%1$s delade »%2$s« med dig. Du borde redan ha fått ett separat e-postmeddelande med en länk för åtkomst.",
@@ -293,6 +288,11 @@
     "Makes the circle federated, and enables sharing between federated circles" : "Gör cirkeln federerad och aktiverar delning mellan federerade cirklar",
     "Accept Link Request Automatically" : "Acceptera länkförfrågan automatiskt",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Varning: Genom att aktivera detta kommer automatiskt nya länkförfrågningar att accepteras från andra cirklar.",
-    "Save settings" : "Spara inställningar"
+    "Save settings" : "Spara inställningar",
+    "Maximum number of members per circle" : "Maximalt antal medlemmar per cirkel",
+    "Allow linking of groups" : "Tillåt länkning av grupper",
+    "Groups can be linked to circles." : "Grupper kan länkas till cirklar.",
+    "Skip invitation step to closed circles" : "Hoppa över inbjudan till stängda cirklar",
+    "Moderators can add member to closed circles without user approval." : "Moderatorer kan lägga till medlem i slutna kretsar utan användarens godkännande."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
