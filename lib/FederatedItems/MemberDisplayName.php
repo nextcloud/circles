@@ -131,6 +131,7 @@ class MemberDisplayName implements
 		$member->setDisplayName($displayName);
 		$this->memberRequest->updateDisplayName($member->getSingleId(), $displayName, $circle->getSingleId());
 
+		$event->setMember($member);
 		$this->eventService->memberNameEditing($event);
 	}
 

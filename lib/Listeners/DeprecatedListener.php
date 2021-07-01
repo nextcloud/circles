@@ -110,10 +110,6 @@ class DeprecatedListener {
 	public function userAccountUpdated(IUser $user) {
 		$federatedUser = $this->federatedUserService->getLocalFederatedUser($user->getUID());
 
-		if ($federatedUser->getDisplayName() === $user->getUID()) {
-			return;
-		}
-
 		$this->circleRequest->updateDisplayName($federatedUser->getSingleId(), $user->getDisplayName());
 		$this->federatedUserService->setCurrentUser($federatedUser);
 
