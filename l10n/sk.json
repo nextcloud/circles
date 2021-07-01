@@ -73,7 +73,6 @@
     "On events happening in a <strong>Circle</strong> of which you are a member" : "Pri udalostiach odohrávajúcich sa v <strong>okrhu</strong>, ktorého ste členom/členkou",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Dôležité udalosti v <strong>okruhu</strong>, ktorý moderujete",
     "On global events happening in any <strong>Circle</strong>" : "Pri globálnych udalostiach, ktoré sa odohrávajú v ktoromkoľvek <strong>okruhu</strong>",
-    "Shared to Circles" : "Zdieľané do okruhov",
     "Personal" : "Osobný",
     "System" : "Systém",
     "Visible" : "Viditeľné",
@@ -148,11 +147,6 @@
     "Name" : "Názov",
     "Size" : "Veľkosť",
     "Modified" : "Upravené",
-    "Maximum number of members per circle" : "Maximálny poet členov v okruhu",
-    "Allow linking of groups" : "Umožniť prepojovanie skupín",
-    "Groups can be linked to circles." : "Skupiny môžu byť prepojené s okruhmi.",
-    "Skip invitation step to closed circles" : "Preskočiť krok pozvania do uzavretých okruhov",
-    "Moderators can add member to closed circles without user approval." : "Moderátori môžu pridať člena do uzavretých okruhov bez súhlasu používateľa.",
     "Are you sure you want to transfer your ownership?" : "Naozaj chcete previesť vlastníctvo?",
     "This action is irreversible" : "Táto akcia je nezvratná",
     "Personal circle" : "Osobný kruh",
@@ -227,6 +221,7 @@
     "Member updated" : "Člen aktualizovaný",
     "Issue while saving settings" : "Problém počas ukladania nastavení",
     "Settings saved." : "Nastavenia uložené.",
+    "Shared to Circles" : "Zdieľané do okruhov",
     "%s shared »%s« with '%s'." : "%s zdieľané »%s« s '%s'.",
     "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n" : "%1$s Vám sprístupnil »%2$s«.\nSpráva s odkazom by Vám už mala byť doručená.\n",
     "%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it." : "%1$s Vám sprístupnil »%2$s«. Správa s odkazom by Vám už mala byť doručená.",
@@ -309,6 +304,11 @@
     "Makes the circle federated, and enables sharing between federated circles" : "Vytvoriť združený okruh a umožniť zdieľanie medzi združenými okruhmi",
     "Accept Link Request Automatically" : "Prijímať žiadosť o prepojenie automaticky",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Varovanie: Ak to povolíte, automaticky sa prijmú nové požiadavky o prepojenia z iných okruhov.",
-    "Save settings" : "Uložiť nastavenia"
+    "Save settings" : "Uložiť nastavenia",
+    "Maximum number of members per circle" : "Maximálny poet členov v okruhu",
+    "Allow linking of groups" : "Umožniť prepojovanie skupín",
+    "Groups can be linked to circles." : "Skupiny môžu byť prepojené s okruhmi.",
+    "Skip invitation step to closed circles" : "Preskočiť krok pozvania do uzavretých okruhov",
+    "Moderators can add member to closed circles without user approval." : "Moderátori môžu pridať člena do uzavretých okruhov bez súhlasu používateľa."
 },"pluralForm" :"nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);"
 }

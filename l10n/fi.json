@@ -63,7 +63,6 @@
     "{member} sent a request to join {circle}" : "{member} lähetti pyynnön liittyä piiriin {circle}",
     "You are the new owner of {circle}" : "Olet piirin {circle} uusi omistaja",
     "{member} is the new owner of {circle}" : "{member} on piirin {circle} uusi omistaja",
-    "Shared to Circles" : "Jaettu piireille",
     "Personal" : "Henkilökohtainen",
     "Contact" : "Yhteystieto",
     "Circle" : "Piiri",
@@ -119,11 +118,6 @@
     "Name" : "Nimi",
     "Size" : "Koko",
     "Modified" : "Muokattu",
-    "Maximum number of members per circle" : "Käyttäjien enimmäismäärä piiriä kohden",
-    "Allow linking of groups" : "Salli ryhmien linkittäminen",
-    "Groups can be linked to circles." : "Ryhmät voidaan linkittää piireihin.",
-    "Skip invitation step to closed circles" : "Ohita kutsuvaihe suljettuihin piireihin",
-    "Moderators can add member to closed circles without user approval." : "Moderaattorit voivat lisätä jäsenen suljettuihin piireihin ilman käyttäjän hyväksyntää.",
     "Are you sure you want to transfer your ownership?" : "Haluatko varmasti siirtää omistajuutesi?",
     "This action is irreversible" : "Tämä toiminto on peruuttamaton",
     "Personal circle" : "Henkilökohtainen piiri",
@@ -191,6 +185,7 @@
     "Members of the group '{name}' could not be invited to the circle" : "Ryhmän '{name}' jäseniä ei voitu kutsua piiriin",
     "Issue while saving settings" : "Virhe tallennettaessa asetuksia",
     "Settings saved." : "Asetukset tallennettu.",
+    "Shared to Circles" : "Jaettu piireille",
     "%1$s shared multiple files with you.\nYou should have already received a separate mail with a link to access them.\n" : "%1$s jakoi useita tiedostoja kanssasi.\nOlet saanut jo sähköpostin, jossa on linkki niihin.\n",
     "%1$s shared multiple files with you. You should have already received a separate mail with a link to access them." : "%1$s jakoi useita tiedostoja kanssasi.\nOlet saanut jo sähköpostin, jossa on linkki niihin.",
     "%s shared multiple files with '%s'." : "%s jakoi useita tiedostoja jäsenen '%s' kanssa.",
@@ -265,6 +260,11 @@
     "Makes the circle federated, and enables sharing between federated circles" : "Tekee piiristä federoidun ja ottaa käyttöön jaon federoitujen piirien kesken",
     "Accept Link Request Automatically" : "Hyväksy linkkipyynnöt automaattisesti",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Varoitus: Jos tämä on käytössä, hyväksytään automaattisesti linkityspyynnöt muista piireistä.",
-    "Save settings" : "Tallenna asetukset"
+    "Save settings" : "Tallenna asetukset",
+    "Maximum number of members per circle" : "Käyttäjien enimmäismäärä piiriä kohden",
+    "Allow linking of groups" : "Salli ryhmien linkittäminen",
+    "Groups can be linked to circles." : "Ryhmät voidaan linkittää piireihin.",
+    "Skip invitation step to closed circles" : "Ohita kutsuvaihe suljettuihin piireihin",
+    "Moderators can add member to closed circles without user approval." : "Moderaattorit voivat lisätä jäsenen suljettuihin piireihin ilman käyttäjän hyväksyntää."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

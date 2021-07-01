@@ -73,7 +73,6 @@
     "On events happening in a <strong>Circle</strong> of which you are a member" : "Trên những sự kiên đang diễn ra trong một <strong> Vòng kết nối </strong> mà bạn là thành viên của nhóm",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Một sự kiện quan trọng trong một <strong> Vòng kết nối </strong> mà bạn đang điều hành",
     "On global events happening in any <strong>Circle</strong>" : "Trên những sự kiện chung đang diễn ra của tổ chức trong bất cứ <strong> Vòng kết nối </strong>",
-    "Shared to Circles" : "Đã được chia sẻ đến những Vòng kết nối",
     "Personal" : "Cá nhân",
     "Contact" : "Liên hệ",
     "Circle" : "Vòng kết nối",
@@ -135,11 +134,6 @@
     "Name" : "Tên",
     "Size" : "Kích cỡ",
     "Modified" : "Thay đổi",
-    "Maximum number of members per circle" : "Tổng số thành viên tối đa mỗi vòng kết nối",
-    "Allow linking of groups" : "Chấp nhận liên kết của các nhóm",
-    "Groups can be linked to circles." : "Các nhóm có thể đuọc liên kết tới vòng kết nối.",
-    "Skip invitation step to closed circles" : "Bỏ qua thao tác gửi lời mời đối với các vòng kết nối Đóng",
-    "Moderators can add member to closed circles without user approval." : "Các điều hành viên có thể thêm thành viên vào các vòng kết nối Đóng mà không cần sự chấp thuận của người dùng.",
     "Are you sure you want to transfer your ownership?" : "Bạn có chắc bạn muốn chuyển đổi quyền sở hữu?",
     "This action is irreversible" : "Hành động này không thể hoàn tác",
     "Personal circle" : "Vòng cá nhân",
@@ -213,6 +207,7 @@
     "Members of the group '{name}' could not be invited to the circle" : "Các thành viên của nhóm '{name}' không thể được mời vào vòng kết nối",
     "Issue while saving settings" : "Có vấn đề khi đang lưu các thiết lập",
     "Settings saved." : "Các thiết lập đã được lưu",
+    "Shared to Circles" : "Đã được chia sẻ đến những Vòng kết nối",
     "%s shared »%s« with '%s'." : "%s đã chia sẻ  »%s«  với '%s'.",
     "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n" : "%1$s đã chia sẻ »%2$s« với bạn.\nBạn có thể đã nhận được một thư khác với một liên kết để truy cập nó.\n",
     "%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it." : "%1$s đã chia sẻ »%2$s« với bạn. Bạn có thể đã nhận được một thư khác với một liên kết để truy cập nó.",
@@ -295,6 +290,11 @@
     "Makes the circle federated, and enables sharing between federated circles" : "Kích hoạt vòng kết nối lên chế độ Liên Bang, và kích hoạt chia sẻ giữa các vòng kết nối Liên Bang",
     "Accept Link Request Automatically" : "Chấp Nhận Yêu Cầu Liên kết Một Cách Tự Động",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Cảnh báo: Kích hoạt điều này sẽ chấp nhận các yêu cầu liên kết mới từ các vòng kết nối khác một cách tự động.",
-    "Save settings" : "Lưu các thiết lập"
+    "Save settings" : "Lưu các thiết lập",
+    "Maximum number of members per circle" : "Tổng số thành viên tối đa mỗi vòng kết nối",
+    "Allow linking of groups" : "Chấp nhận liên kết của các nhóm",
+    "Groups can be linked to circles." : "Các nhóm có thể đuọc liên kết tới vòng kết nối.",
+    "Skip invitation step to closed circles" : "Bỏ qua thao tác gửi lời mời đối với các vòng kết nối Đóng",
+    "Moderators can add member to closed circles without user approval." : "Các điều hành viên có thể thêm thành viên vào các vòng kết nối Đóng mà không cần sự chấp thuận của người dùng."
 },"pluralForm" :"nplurals=1; plural=0;"
 }

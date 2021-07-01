@@ -73,7 +73,6 @@ OC.L10N.register(
     "You are the new owner of {circle}" : "Du er den nye eieren av {circle}",
     "{member} is the new owner of {circle}" : "{member} er den nye eieren av {circle}",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Ønsker du å bli varslet om hendelser i <strong>sirkler</strong> du modererer?",
-    "Shared to Circles" : "Delt til Sirkler",
     "Personal" : "Personlig",
     "Contact" : "Kontakt",
     "Circle" : "Sirkel",
@@ -124,9 +123,6 @@ OC.L10N.register(
     "Name" : "Navn",
     "Size" : "Størrelse",
     "Modified" : "Endret",
-    "Maximum number of members per circle" : "Makimalt antall brukere per sirkel",
-    "Allow linking of groups" : "Tillat linking av grupper",
-    "Groups can be linked to circles." : "Grupper kan lenkes til sirkler.",
     "Are you sure you want to transfer your ownership?" : "Er du sikker på at du vil overføre ditt eierskap?",
     "This action is irreversible" : "Denne handlingen kan ikke angres.",
     "Personal circle" : "Personlig sirkel",
@@ -199,6 +195,7 @@ OC.L10N.register(
     "Members of the group '{name}' could not be invited to the circle" : "Medlemmer av gruppen '{name}' kunne ikke inviteres til sirkelen",
     "Issue while saving settings" : "Problem under lagring av innstillinger",
     "Settings saved." : "Innstillinger lagret.",
+    "Shared to Circles" : "Delt til Sirkler",
     "%s shared »%s« with '%s'." : "%s delte »%s« med '%s'.",
     "The name of your circle must contain at least 3 characters" : "Navnet på sirkelen din må inneholde minst 3 tegn",
     "Linked Groups are not allowed on this Nextcloud" : "Lenkede grupper er ikke tillatt i denne Nextclouden",
@@ -267,6 +264,9 @@ OC.L10N.register(
     "Makes the circle federated, and enables sharing between federated circles" : "Knytter sammen sirkelen, og skrur på deling mellom sammenknyttede sirkler",
     "Accept Link Request Automatically" : "Godta lenkeforespørsel automatisk",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Advarsel: Å skru på dette vil medføre automatisk godkjenning av nye lenkeforespørsler fra andre sirkler.",
-    "Save settings" : "Lagre innstillinger"
+    "Save settings" : "Lagre innstillinger",
+    "Maximum number of members per circle" : "Makimalt antall brukere per sirkel",
+    "Allow linking of groups" : "Tillat linking av grupper",
+    "Groups can be linked to circles." : "Grupper kan lenkes til sirkler."
 },
 "nplurals=2; plural=(n != 1);");

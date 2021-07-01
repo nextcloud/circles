@@ -73,7 +73,6 @@ OC.L10N.register(
     "You are the new owner of {circle}" : "Eres el nuevo dueño de {circle}",
     "{member} is the new owner of {circle}" : "{member} es el nuevo dueño de {circle}",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Cualquier evento importante en un <strong>Círculo</strong> que estés moderando",
-    "Shared to Circles" : "Compartido a Círculos",
     "Personal" : "Personal",
     "Contact" : "Contacto",
     "Circle" : "Círculo",
@@ -122,7 +121,6 @@ OC.L10N.register(
     "Name" : "Nombre",
     "Size" : "Tamaño",
     "Modified" : "Modificado",
-    "Groups can be linked to circles." : "Los grupos se pueden vincular a círculos",
     "Are you sure you want to transfer your ownership?" : "¿Estás seguro que quieres transferir tu propiedad?",
     "This action is irreversible" : "Esta acción es irreversible",
     "Personal circle" : "Círculo personal",
@@ -195,6 +193,7 @@ OC.L10N.register(
     "Members of the group '{name}' could not be invited to the circle" : "Miembros del grupo '{name}' no pudieron ser inivitados al círculo",
     "Issue while saving settings" : "Se presentó un tema al guardar las configuraciones",
     "Settings saved." : "Configuraciones guardadas.",
+    "Shared to Circles" : "Compartido a Círculos",
     "%s shared »%s« with '%s'." : "%s compartió »%s« con '%s'.",
     "The name of your circle must contain at least 3 characters" : "El nombre de tu círculo debe contener al menos 3 caracteres",
     "Linked Groups are not allowed on this Nextcloud" : "No se permiten Grupos Ligados en este Nextcloud",
@@ -261,6 +260,7 @@ OC.L10N.register(
     "Makes the circle federated, and enables sharing between federated circles" : "Hace al círculo federado y habilita el compartir entre círculos federados",
     "Accept Link Request Automatically" : "Aceptar las Solicitudes de Ligas Automáticamente",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Advertencia: Habilitar esta opción aceptará automáticamente las nuevas solicitudes de ligas de otros círculos. ",
-    "Save settings" : "Guardar configuraciones"
+    "Save settings" : "Guardar configuraciones",
+    "Groups can be linked to circles." : "Los grupos se pueden vincular a círculos"
 },
 "nplurals=2; plural=(n != 1);");

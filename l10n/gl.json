@@ -73,7 +73,6 @@
     "On events happening in a <strong>Circle</strong> of which you are a member" : "En eventos que ocorren nun <strong>círculo</strong> no que  vostede é participante",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Calquera evento importante nun Círculo do que vostede é o moderador",
     "On global events happening in any <strong>Circle</strong>" : "En eventos globais que suceden en calquera <strong>círculo</strong>",
-    "Shared to Circles" : "Compartido con Círculos",
     "Personal" : "Persoal",
     "Contact" : "Contacto",
     "Circle" : "Círculo",
@@ -135,11 +134,6 @@
     "Name" : "Nome",
     "Size" : "Tamaño",
     "Modified" : "Modificado",
-    "Maximum number of members per circle" : "Número máximo de participantes dun círculo.",
-    "Allow linking of groups" : "Permitir a ligazón de grupos",
-    "Groups can be linked to circles." : "Os grupos poden ser ligados cos círculos.",
-    "Skip invitation step to closed circles" : "Omitir o paso de convite a círculos pechados",
-    "Moderators can add member to closed circles without user approval." : "Os moderadores poden engadir participantes a círculos pechados sen a aprobación do usuario.",
     "Are you sure you want to transfer your ownership?" : "Confirma que quere transferir a súa propiedade?",
     "This action is irreversible" : "Esta acción é irreversíbel",
     "Personal circle" : "Círculo persoal",
@@ -223,6 +217,7 @@
     "Member could not be updated" : "Non foi posíbel actualizar o participante",
     "Issue while saving settings" : "Produciuse un incidente ao gardar os axustes",
     "Settings saved." : "Axustes gardados.",
+    "Shared to Circles" : "Compartido con Círculos",
     "%s shared »%s« with '%s'." : "%s compartiu «%s» con «%s».",
     "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n" : "%1$s compartiu «%2$s» con vostede.\nDebería ter recibido un correo por separado cunha ligazón acceder.\n",
     "%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it." : "%1$s compartiu «%2$s» con vostede. Debería ter recibido un correo por separado cunha ligazón acceder.",
@@ -305,6 +300,11 @@
     "Makes the circle federated, and enables sharing between federated circles" : "Converte o círculo en federado e permite compartir entre círculos federados",
     "Accept Link Request Automatically" : "Aceptar as solicitudes de ligazón automaticamente",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Aviso: ao activar isto aceptará automaticamente as novas solicitudes de ligazón dende outros círculos.",
-    "Save settings" : "Gardar os axustes"
+    "Save settings" : "Gardar os axustes",
+    "Maximum number of members per circle" : "Número máximo de participantes dun círculo.",
+    "Allow linking of groups" : "Permitir a ligazón de grupos",
+    "Groups can be linked to circles." : "Os grupos poden ser ligados cos círculos.",
+    "Skip invitation step to closed circles" : "Omitir o paso de convite a círculos pechados",
+    "Moderators can add member to closed circles without user approval." : "Os moderadores poden engadir participantes a círculos pechados sen a aprobación do usuario."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

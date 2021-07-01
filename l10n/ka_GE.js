@@ -73,7 +73,6 @@ OC.L10N.register(
     "You are the new owner of {circle}" : "თქვენ ხართ {circle} წრის ახალი მფლობელი",
     "{member} is the new owner of {circle}" : "{member} ახლა {circle} წრის ახალი მფლობელია",
     "Any important event in a <strong>Circle</strong> you are moderating" : "მნიშვნელოვანი მოვლენა <strong>წრეში</strong> რომლის მოდერატორიც ხართ",
-    "Shared to Circles" : "წრეებთან გაზიარებული",
     "Personal" : "პირადი",
     "Contact" : "კონტაქტი",
     "Circle" : "წრე",
@@ -120,7 +119,6 @@ OC.L10N.register(
     "Name" : "სახელი",
     "Size" : "ზომა",
     "Modified" : "შეიცვალა",
-    "Groups can be linked to circles." : "ჯგუფები შეიძლება დაკავშირდნენ წრეებთან.",
     "Are you sure you want to transfer your ownership?" : "დაწრუმებული ხართ, რომ გსურთ თქვენი მბლობელობის ტრანსფერი?",
     "This action is irreversible" : "ეს ქმედება არაა უკუქცევადი",
     "Personal circle" : "პირადი წრე",
@@ -193,6 +191,7 @@ OC.L10N.register(
     "Members of the group '{name}' could not be invited to the circle" : "ჯგუფ '{name}'-ის წევრები ვერ იქნენ მოწველდი წრეში",
     "Issue while saving settings" : "პრობლემა პარამეტრების შენახვისას",
     "Settings saved." : "პარამეტრები დამახსოვრდა.",
+    "Shared to Circles" : "წრეებთან გაზიარებული",
     "%s shared »%s« with '%s'." : "%s მომხმარებელმა »%s« გააზიარა '%s' მომხმარებელთან.",
     "The name of your circle must contain at least 3 characters" : "წრის სახელი უნდა მოიცავდეს მინიმუმ 3 სიმბოლოს",
     "Linked Groups are not allowed on this Nextcloud" : "დაკავშირებული ჯგუფები ამ Nextcloud-ზე ნებადართული არაა",
@@ -259,6 +258,7 @@ OC.L10N.register(
     "Makes the circle federated, and enables sharing between federated circles" : "ხდის წრეს ფედერალურად და რთავს გაზიარებას ფედერალურ წრეებს შორის",
     "Accept Link Request Automatically" : "ბმულის მოთხოვნის ავტომატური დადასტურება",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "გაფრთხილება: ამის ჩართვა ავტომატურად მიიღებს ახალი კავშირების მოთხოვნებს სხვა წრეებიდან.",
-    "Save settings" : "პარამეტრების შენახვა"
+    "Save settings" : "პარამეტრების შენახვა",
+    "Groups can be linked to circles." : "ჯგუფები შეიძლება დაკავშირდნენ წრეებთან."
 },
 "nplurals=2; plural=(n!=1);");
