@@ -607,11 +607,11 @@ class CircleService {
 		$members = $this->memberRequest->getMembers($circle->getSingleId(), null, null, $filter);
 
 		$limit = $this->getInt('members_limit', $circle->getSettings());
+		if ($limit === 0) {
+			$limit = $this->configService->getAppValueInt(ConfigService::MEMBERS_LIMIT);
+		}
 		if ($limit === -1) {
 			return false;
-		}
-		if ($limit === 0) {
-			$limit = $this->configService->getAppValue(ConfigService::MEMBERS_LIMIT);
 		}
 
 		return (sizeof($members) >= $limit);
