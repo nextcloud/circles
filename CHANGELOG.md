@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+### 0.19.14
+
+- escape html in 'shared files by Circles'
+
 
 ### 0.19.13
 
