@@ -73,7 +73,6 @@
     "On events happening in a <strong>Circle</strong> of which you are a member" : "當出現發生在一個您是其中一員的<strong>圈子</strong>的事件時",
     "Any important event in a <strong>Circle</strong> you are moderating" : "您正在<strong>圈子</strong>中主持的任何重要事件",
     "On global events happening in any <strong>Circle</strong>" : "當出現發生在任意<strong>圈子</strong>中的全局事件時",
-    "Shared to Circles" : "分享到圈子",
     "Single" : "單則",
     "Personal" : "個人",
     "System" : "系统",
@@ -170,11 +169,6 @@
     "Name" : "名稱",
     "Size" : "大小",
     "Modified" : "修改日期",
-    "Maximum number of members per circle" : "每個圈子允許最多的成員數",
-    "Allow linking of groups" : "允許連結的群組",
-    "Groups can be linked to circles." : "群組可以連結到圈子。",
-    "Skip invitation step to closed circles" : "跳過進入非公閞的圈子的邀請步驟",
-    "Moderators can add member to closed circles without user approval." : "主持人可以不經過用戶同意向非公閞的圈子添加成員。",
     "Are you sure you want to transfer your ownership?" : "您確定要轉移所有權嗎？",
     "This action is irreversible" : "此操作將無法逆轉",
     "Personal circle" : "個人圈子",
@@ -258,6 +252,7 @@
     "Member could not be updated" : "成員無法被更新",
     "Issue while saving settings" : "保存設置時出現問題",
     "Settings saved." : "設置已保存",
+    "Shared to Circles" : "分享到圈子",
     "%s shared »%s« with '%s'." : "%s 已共享 »%s« ，通過 '%s'。",
     "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n" : "%1$s 對您共享了 »%2$s«。\n您應已收到一封單獨的帶有訪問連結的郵件。\n",
     "%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it." : "%1$s 對您共享了 »%2$s«。您應已收到一封單獨的帶有訪問連結的郵件。",
@@ -340,6 +335,11 @@
     "Makes the circle federated, and enables sharing between federated circles" : "將圈子轉為聯合雲，並啟用聯合圈之間的共享",
     "Accept Link Request Automatically" : "自動接受連結請求",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "警告：啟用此選項將自動接受來自其他圈子的新連結請求。",
-    "Save settings" : "保存設置"
+    "Save settings" : "保存設置",
+    "Maximum number of members per circle" : "每個圈子允許最多的成員數",
+    "Allow linking of groups" : "允許連結的群組",
+    "Groups can be linked to circles." : "群組可以連結到圈子。",
+    "Skip invitation step to closed circles" : "跳過進入非公閞的圈子的邀請步驟",
+    "Moderators can add member to closed circles without user approval." : "主持人可以不經過用戶同意向非公閞的圈子添加成員。"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

@@ -75,7 +75,6 @@ OC.L10N.register(
     "On events happening in a <strong>Circle</strong> of which you are a member" : "Įvykiai, vykstantys  <strong>Rate</strong>, kurio narys Jūs esate",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Svarbūs įvykiai <strong>Rate</strong>, kuriame Jūs esate moderatorius",
     "On global events happening in any <strong>Circle</strong>" : "Visuotiniai įvykiai vykstantys  bet kuriame <strong>Rate</strong>",
-    "Shared to Circles" : "Bendrinama su  bendrystės ratu",
     "Personal" : "Asmeniniai",
     "Contact" : "Adresatas",
     "Circle" : "Ratas",
@@ -134,9 +133,6 @@ OC.L10N.register(
     "Name" : "Vardas",
     "Size" : "Dydis",
     "Modified" : "Pakeistas",
-    "Maximum number of members per circle" : "Didžiausias narių skaičius viename rate",
-    "Allow linking of groups" : "Leisti grupių susiejimą",
-    "Groups can be linked to circles." : "Grupės gali būti susietos su ratais.",
     "Are you sure you want to transfer your ownership?" : "Ar tikrai norite perduoti savo nuosavybės teisę?",
     "This action is irreversible" : "Šis veiksmas yra neatšaukiamas",
     "Personal circle" : "Asmeninis ratas",
@@ -210,6 +206,7 @@ OC.L10N.register(
     "Members of the group '{name}' could not be invited to the circle" : "Nepavyko grupės \"{name}\" narių pakviesti į ratą",
     "Issue while saving settings" : "Problemos, įrašant nustatymus",
     "Settings saved." : "Nustatymai įrašyti.",
+    "Shared to Circles" : "Bendrinama su  bendrystės ratu",
     "%s shared »%s« with '%s'." : "%s pradėjo bendrinti »%s« su '%s'.",
     "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n" : "%1$s pabendrino »%2$s« su jumis.\nJūs turėjote gauti laišką su nuoroda, bendrinamam failui pasiekti.\n",
     "%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it." : " %1$s pabendrino »%2$s« su jumis. Jūs turėjote gauti laišką su nuoroda, bendrinamam failui pasiekti.",
@@ -263,6 +260,9 @@ OC.L10N.register(
     "Name of the Circle" : "Rato pavadinimas",
     "Description" : "Aprašas",
     "Change password" : "Pakeisti slaptažodį",
-    "Save settings" : "Įrašyti nustatymus"
+    "Save settings" : "Įrašyti nustatymus",
+    "Maximum number of members per circle" : "Didžiausias narių skaičius viename rate",
+    "Allow linking of groups" : "Leisti grupių susiejimą",
+    "Groups can be linked to circles." : "Grupės gali būti susietos su ratais."
 },
 "nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);");

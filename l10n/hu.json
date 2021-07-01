@@ -73,7 +73,6 @@
     "On events happening in a <strong>Circle</strong> of which you are a member" : "Olyan eseményekről, amelyek egy <strong>kör</strong>ben zajlanak, amelynek tagja",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Bármely fontos esemény azon <strong>körökben </strong> melyeket moderálsz",
     "On global events happening in any <strong>Circle</strong>" : "Bármely <strong> Kör</strong>ben zajló globális eseményről",
-    "Shared to Circles" : "Körökkel megosztva",
     "Personal" : "Személyes",
     "Contact" : "Kapcsolat",
     "Circle" : "Kör",
@@ -135,11 +134,6 @@
     "Name" : "Név",
     "Size" : "Méret",
     "Modified" : "Módosítva",
-    "Maximum number of members per circle" : "Körönkénti tagok legnagyobb száma",
-    "Allow linking of groups" : "Csoportok csatlakoztatásának engedélyezése",
-    "Groups can be linked to circles." : "Csoportok csatolhatók a körökhöz.",
-    "Skip invitation step to closed circles" : "A meghívási lépés kihagyása zárt körökbe",
-    "Moderators can add member to closed circles without user approval." : "A moderátorok a felhasználó jóváhagyása nélkül felvehetnek tagokat zárt körökbe.",
     "Are you sure you want to transfer your ownership?" : "Biztosan átadod a tulajdonjogodat?",
     "This action is irreversible" : "Ez a művelet nem visszafordítható",
     "Personal circle" : "Személyes kör",
@@ -223,6 +217,7 @@
     "Member could not be updated" : "A tag nem frissíthető",
     "Issue while saving settings" : "Esemény a beállítások mentésekor",
     "Settings saved." : "Beállítások elmentve.",
+    "Shared to Circles" : "Körökkel megosztva",
     "%s shared »%s« with '%s'." : "%s megosztotta »%s« vele: '%s'.",
     "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n" : "%1$s megosztotta Önnel ezt: »%2$s«.\nKapnia kellett egy külön e-mailt, amelyben megtalálhatja a hozzáférést.\n",
     "%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it." : "%1$s megosztotta Önnel ezt: »%2$s«. Kapnia kellett egy külön e-mailt, amelyben megtalálhatja a hozzáférést.",
@@ -305,6 +300,11 @@
     "Makes the circle federated, and enables sharing between federated circles" : "A köröket egységesítetté teszi és lehetővé teszi az egységes körök közti megosztást.",
     "Accept Link Request Automatically" : "Kapcsolati kérések automatikus elfogadása",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Figyelem: ennek bekapcsolásával a kapcsolati kérések más köröktől automatikusan elfogadásra kerülnek.",
-    "Save settings" : "Beállítások mentése"
+    "Save settings" : "Beállítások mentése",
+    "Maximum number of members per circle" : "Körönkénti tagok legnagyobb száma",
+    "Allow linking of groups" : "Csoportok csatlakoztatásának engedélyezése",
+    "Groups can be linked to circles." : "Csoportok csatolhatók a körökhöz.",
+    "Skip invitation step to closed circles" : "A meghívási lépés kihagyása zárt körökbe",
+    "Moderators can add member to closed circles without user approval." : "A moderátorok a felhasználó jóváhagyása nélkül felvehetnek tagokat zárt körökbe."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
