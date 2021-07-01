@@ -1,5 +1,11 @@
 # Changelog
 
+
+### 0.20.10
+
+- escape html in 'shared files by Circles'
+
+
 ### 0.20.9
 
 - fix a conflict with 3rd parties app
