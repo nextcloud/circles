@@ -150,7 +150,7 @@ class ConfigService {
 		self::EVENT_EXAMPLES   => '0',
 
 		self::SELF_SIGNED_CERT       => '0',
-		self::MEMBERS_LIMIT          => '50',
+		self::MEMBERS_LIMIT          => '-1',
 		self::ACTIVITY_ON_NEW_CIRCLE => '1',
 		self::MIGRATION_BYPASS       => '0',
 		self::MIGRATION_22           => '0',
