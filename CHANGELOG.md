@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+
+### 0.18.12
+
+- escape html in 'shared files by Circles'
+
+
 ### 0.18.11
 
 - display name on notification
