@@ -22,6 +22,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+
+function escapeHTML(text) {
+	return text.toString()
+		.split('&').join('&amp;')
+		.split('<').join('&lt;')
+		.split('>').join('&gt;')
+		.split('"').join('&quot;')
+		.split('\'').join('&#039;')
+}
+
 (function() {
 	/**
 	 * @class OCA.Circles.FileList
@@ -124,12 +135,11 @@
 				},
 
 				formatResult: function (circle) {
-					return circle.name;
+					return escapeHTML(circle.name);
 				},
 
 				formatSelection: function (circle) {
-					return circle.name;
-					//return OC.SystemTags.getDescriptiveTag(tag)[0].outerHTML;
+					return escapeHTML(circle.name);
 				},
 
 				sortResults: function(results) {
