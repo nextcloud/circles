@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "artificial-owl/my-small-php-tools",
-            "version": "v22.1.4",
+            "version": "v22.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ArtificialOwl/my-small-php-tools.git",
-                "reference": "a2bea29012063176333a4dd257793996a3b250c3"
+                "reference": "f9f0330e82385f89c1b829ced3bce82521de382b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ArtificialOwl/my-small-php-tools/zipball/a2bea29012063176333a4dd257793996a3b250c3",
-                "reference": "a2bea29012063176333a4dd257793996a3b250c3",
+                "url": "https://api.github.com/repos/ArtificialOwl/my-small-php-tools/zipball/f9f0330e82385f89c1b829ced3bce82521de382b",
+                "reference": "f9f0330e82385f89c1b829ced3bce82521de382b",
                 "shasum": ""
             },
             "require": {
@@ -42,9 +42,9 @@
             "description": "My small PHP Tools",
             "support": {
                 "issues": "https://github.com/ArtificialOwl/my-small-php-tools/issues",
-                "source": "https://github.com/ArtificialOwl/my-small-php-tools/tree/v22.1.4"
+                "source": "https://github.com/ArtificialOwl/my-small-php-tools/tree/v22.1.5"
             },
-            "time": "2021-06-26T23:42:06+00:00"
+            "time": "2021-07-02T14:13:39+00:00"
         }
     ],
     "packages-dev": [],
