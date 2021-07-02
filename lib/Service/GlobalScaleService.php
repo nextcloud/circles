@@ -111,6 +111,11 @@ class GlobalScaleService {
 	 * @return array
 	 */
 	public function getGlobalScaleInstances(): array {
+		$mockup = $this->configService->getGSSMockup();
+		if (!empty($mockup)) {
+			return $mockup;
+		}
+
 		try {
 			$lookup = $this->configService->getGSLookup();
 			$request = new NC22Request(ConfigService::GS_LOOKUP_INSTANCES, Request::TYPE_POST);
@@ -126,7 +131,7 @@ class GlobalScaleService {
 		} catch (GSStatusException $e) {
 		}
 
-		return $this->configService->getGSSMockup();
+		return [];
 	}
 
 
