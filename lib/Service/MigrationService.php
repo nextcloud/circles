@@ -227,7 +227,7 @@ class MigrationService {
 				try {
 					$data = new SimpleDataStore($row);
 					$this->outputService->output(
-						'Migrating Circle \'' . $data->g('name') . '\'',
+						'Migrating Circle \'' . $data->g('name') . '\' (' . $data->g('unique_id') . ')',
 						true
 					);
 
@@ -331,7 +331,8 @@ class MigrationService {
 				try {
 					$data = new SimpleDataStore($row);
 					$this->outputService->output(
-						'Migrating Member \'' . $data->g('user_id') . '\'',
+						'Migrating Member \'' . $data->g('user_id') . '\' from \'' . $data->g('circle_id')
+						. '\'',
 						true
 					);
 
