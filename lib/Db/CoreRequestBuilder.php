@@ -296,7 +296,8 @@ class CoreRequestBuilder {
 	public function uninstallFromMigrations() {
 		$qb = $this->getQueryBuilder();
 		$qb->delete('migrations');
-		$qb->limitToDBField('app', 'circles');
+		$qb->limit('app', 'circles');
+		$qb->unlike('version', '001%');
 
 		$qb->execute();
 	}
