@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Db;
 
 
+use OCA\Circles\Exceptions\ShareTokenNotFoundException;
 use OCA\Circles\Model\ShareToken;
 
 
@@ -61,6 +62,20 @@ class ShareTokenRequest extends ShareTokenRequestBuilder {
 		$qb->execute();
 		$id = $qb->getLastInsertId();
 		$token->setDbId($id);
+	}
+
+
+	/**
+	 * @param string $token
+	 *
+	 * @return ShareToken
+	 * @throws ShareTokenNotFoundException
+	 */
+	public function getByToken(string $token): ShareToken {
+		$qb = $this->getTokenSelectSql();
+		$qb->limitToToken($token);
+
+		return $this->getItemFromRequest($qb);
 	}
 
 }
