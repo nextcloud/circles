@@ -40,6 +40,7 @@ use OC;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
+use OCA\Circles\Db\ShareTokenRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\ContactAddressBookNotFoundException;
 use OCA\Circles\Exceptions\ContactFormatException;
@@ -55,16 +56,19 @@ use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\Exceptions\ShareTokenNotFoundException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\ShareToken;
 use OCA\DAV\CardDAV\ContactsManager;
 use OCP\Contacts\IManager;
 use OCP\IDBConnection;
 use OCP\IURLGenerator;
+use OCP\Share\IShare;
 
 
 /**
@@ -90,6 +94,9 @@ class MigrationService {
 
 	/** @var MemberRequest */
 	private $memberRequest;
+
+	/** @var ShareTokenRequest */
+	private $shareTokenRequest;
 
 	/** @var MembershipService */
 	private $membershipService;
@@ -124,6 +131,7 @@ class MigrationService {
 	 * @param IURLGenerator $urlGenerator
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
+	 * @param ShareTokenRequest $shareTokenRequest
 	 * @param MembershipService $membershipService
 	 * @param FederatedUserService $federatedUserService
 	 * @param CircleService $circleService
@@ -137,6 +145,7 @@ class MigrationService {
 		IURLGenerator $urlGenerator,
 		CircleRequest $circleRequest,
 		MemberRequest $memberRequest,
+		ShareTokenRequest $shareTokenRequest,
 		MembershipService $membershipService,
 		FederatedUserService $federatedUserService,
 		CircleService $circleService,
@@ -149,6 +158,7 @@ class MigrationService {
 		$this->urlGenerator = $urlGenerator;
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
+		$this->shareTokenRequest = $shareTokenRequest;
 		$this->membershipService = $membershipService;
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
@@ -208,6 +218,7 @@ class MigrationService {
 
 		$this->migrationTo22_Circles();
 		$this->migrationTo22_Members();
+		$this->migrationTo22_Tokens();
 		$this->membershipService->resetMemberships('', true);
 		$this->membershipService->manageAll();
 
@@ -465,6 +476,74 @@ class MigrationService {
 				$this->memberRequest->save($member);
 			} catch (InvalidIdException $e) {
 			}
+		} catch (RequestBuilderException $e) {
+		}
+	}
+
+
+	/**
+	 */
+	public function migrationTo22_Tokens(): void {
+		$qb = $this->dbConnection->getQueryBuilder();
+		$qb->select('*')->from('circle_tokens');
+
+		try {
+			$cursor = $qb->executeQuery();
+			$this->outputService->startMigrationProgress($cursor->rowCount());
+
+			while ($row = $cursor->fetch()) {
+				try {
+					$data = new SimpleDataStore($row);
+					$this->outputService->output(
+						'Migrating ShareToken \'' . $data->g('token') . '\' for \'' . $data->g('user_id')
+						. '\'',
+						true
+					);
+
+					$shareToken = $this->generateShareTokenFrom21($data);
+					$this->saveGeneratedShareToken($shareToken);
+				} catch (Exception $e) {
+				}
+			}
+
+			$cursor->closeCursor();
+		} catch (\OCP\DB\Exception $e) {
+		}
+
+		$this->outputService->finishMigrationProgress();
+	}
+
+
+	/**
+	 * @param SimpleDataStore $data
+	 *
+	 * @return ShareToken
+	 * @throws MemberNotFoundException
+	 * @throws RequestBuilderException
+	 */
+	private function generateShareTokenFrom21(SimpleDataStore $data): ShareToken {
+		$shareToken = new ShareToken();
+		$member = $this->memberRequest->getMemberById($data->g('member_id'));
+
+		$shareToken->setShareId($data->gInt('share_id'))
+				   ->setCircleId($data->g('circle_id'))
+				   ->setSingleId($member->getSingleId())
+				   ->setMemberId($data->g('member_id'))
+				   ->setToken($data->g('token'))
+				   ->setPassword($data->g('password'))
+				   ->setAccepted(IShare::STATUS_ACCEPTED);
+
+		return $shareToken;
+	}
+
+	/**
+	 * @param ShareToken $shareToken
+	 */
+	private function saveGeneratedShareToken(ShareToken $shareToken): void {
+		try {
+			$this->shareTokenRequest->getByToken($shareToken->getToken());
+		} catch (ShareTokenNotFoundException $e) {
+			$this->shareTokenRequest->save($shareToken);
 		} catch (RequestBuilderException $e) {
 		}
 	}
