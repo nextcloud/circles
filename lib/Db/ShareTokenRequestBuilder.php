@@ -61,7 +61,7 @@ class ShareTokenRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function getTokenUpdateSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->update(self::TABLE_SHARE);
+		$qb->update(self::TABLE_TOKEN);
 
 		return $qb;
 	}
@@ -74,8 +74,8 @@ class ShareTokenRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function getTokenSelectSql(string $alias = CoreQueryBuilder::TOKEN): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->generateSelect(self::TABLE_TOKEN, self::$tables[self::TABLE_SHARE], $alias)
-		   ->generateGroupBy(self::$tables[self::TABLE_SHARE], $alias);
+		$qb->generateSelect(self::TABLE_TOKEN, self::$tables[self::TABLE_TOKEN], $alias)
+		   ->generateGroupBy(self::$tables[self::TABLE_TOKEN], $alias);
 
 		return $qb;
 	}
@@ -88,7 +88,7 @@ class ShareTokenRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function getTokenDeleteSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->delete(self::TABLE_SHARE);
+		$qb->delete(self::TABLE_TOKEN);
 
 		return $qb;
 	}
