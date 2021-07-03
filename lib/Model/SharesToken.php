@@ -34,7 +34,7 @@ use OCP\Share\IShare;
 
 /**
  * Class SharesToken
- *
+ * @deprecated
  * @package OCA\Circles\Model
  */
 class SharesToken implements JsonSerializable {

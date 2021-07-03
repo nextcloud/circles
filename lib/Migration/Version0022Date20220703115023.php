@@ -44,7 +44,7 @@ use OCP\Migration\SimpleMigrationStep;
  *
  * @package OCA\Circles\Migration
  */
-class Version0022Date20220626112233 extends SimpleMigrationStep {
+class Version0022Date20220703115023 extends SimpleMigrationStep {
 
 
 	/**
@@ -198,6 +198,68 @@ class Version0022Date20220626112233 extends SimpleMigrationStep {
 							   'length'  => 31,
 						   ]
 			);
+		}
+
+
+
+		/**
+		 * CIRCLES_TOKEN
+		 */
+		if (!$schema->hasTable('circles_token')) {
+			$table = $schema->createTable('circles_token');
+			$table->addColumn(
+				'id', 'integer', [
+						'autoincrement' => true,
+						'notnull'       => true,
+						'length'        => 11,
+						'unsigned'      => true,
+					]
+			);
+			$table->addColumn(
+				'share_id', 'integer', [
+							  'notnull' => false,
+							  'length'  => 11
+						  ]
+			);
+			$table->addColumn(
+				'circle_id', 'string', [
+							   'notnull' => false,
+							   'length'  => 31
+						   ]
+			);
+			$table->addColumn(
+				'single_id', 'string', [
+							   'notnull' => false,
+							   'length'  => 31
+						   ]
+			);
+			$table->addColumn(
+				'member_id', 'string', [
+							   'notnull' => false,
+							   'length'  => 31
+						   ]
+			);
+			$table->addColumn(
+				'token', 'string', [
+						   'notnull' => false,
+						   'length'  => 31
+					   ]
+			);
+			$table->addColumn(
+				'password', 'string', [
+							  'notnull' => false,
+							  'length'  => 31
+						  ]
+			);
+			$table->addColumn(
+				'accepted', 'integer', [
+							  'notnull' => false,
+							  'length'  => 1
+						  ]
+			);
+
+			$table->setPrimaryKey(['id']);
+			$table->addUniqueIndex(['share_id', 'circle_id', 'single_id', 'member_id', 'token'], 'sicisimit');
 		}
 
 

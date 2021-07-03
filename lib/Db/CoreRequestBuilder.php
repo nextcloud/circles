@@ -63,7 +63,7 @@ class CoreRequestBuilder {
 
 	// wip
 	const TABLE_SHARE_LOCK = 'circles_share_lock';
-	const TABLE_TOKENS = 'circles_token';
+	const TABLE_TOKEN = 'circles_token';
 
 	const TABLE_GSSHARES = 'circle_gsshares'; // rename ?
 	const TABLE_GSSHARES_MOUNTPOINT = 'circle_gsshares_mp'; // rename ?
@@ -144,7 +144,16 @@ class CoreRequestBuilder {
 		],
 		self::TABLE_MOUNTPOINT          => [],
 		self::TABLE_SHARE_LOCK          => [],
-		self::TABLE_TOKENS              => [],
+		self::TABLE_TOKEN               => [
+			'id',
+			'share_id',
+			'circle_id',
+			'single_id',
+			'member_id',
+			'token',
+			'password',
+			'accepted'
+		],
 		self::TABLE_GSSHARES            => [],
 		self::TABLE_GSSHARES_MOUNTPOINT => []
 	];
