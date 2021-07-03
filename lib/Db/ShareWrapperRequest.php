@@ -238,7 +238,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 
 		$qb->setOptions([CoreQueryBuilder::SHARE], ['getData' => true]);
 		$qb->leftJoinCircle(CoreQueryBuilder::SHARE, null, 'share_with');
-		$qb->limitToToken($token);
+		$qb->limitToShareToken(CoreQueryBuilder::SHARE, $token);
 
 		if (!is_null($federatedUser)) {
 			$qb->limitToInitiator(CoreQueryBuilder::SHARE, $federatedUser, 'share_with');

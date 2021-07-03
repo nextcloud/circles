@@ -80,6 +80,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	const SHARE = 'share';
 	const FILE_CACHE = 'filecache';
 	const STORAGES = 'storages';
+	const TOKEN = 'token';
 	const OPTIONS = 'options';
 	const HELPER = 'circleshelper';
 
@@ -169,6 +170,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		],
 		self::SHARE       => [
 			self::SHARE,
+			self::TOKEN,
 			self::FILE_CACHE           => [
 				self::STORAGES
 			],
@@ -1035,6 +1037,38 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 					 $expr->eq($aliasMembership . '.inheritance_first', $aliasInheritanceFrom . '.single_id')
 				 )
 			 );
+	}
+
+
+	/**
+	 * @param string $alias
+	 * @param string $token
+	 *
+	 * @throws RequestBuilderException
+	 */
+	public function limitToShareToken(string $alias, string $token): void {
+		$this->leftJoinShareToken($alias);
+
+		$aliasShareToken = $this->generateAlias($alias, self::TOKEN, $options);
+		$this->limit('token', $token, $aliasShareToken);
+	}
+
+	/**
+	 * @param string $alias
+	 * @param string $field
+	 *
+	 * @throws RequestBuilderException
+	 */
+	public function leftJoinShareToken(string $alias, string $field = ''): void {
+		$expr = $this->expr();
+
+		$field = ($field === '') ? 'id' : $field;
+		$aliasShareToken = $this->generateAlias($alias, self::TOKEN, $options);
+
+		$this->leftJoin(
+			$alias, CoreRequestBuilder::TABLE_TOKEN, $aliasShareToken,
+			$expr->eq($aliasShareToken . '.share_id', $alias . '.' . $field)
+		);
 	}
 
 
