@@ -249,9 +249,19 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @param IShare $share
 	 *
 	 * @return IShare
+	 * @throws IllegalIDChangeException
+	 * @throws ShareWrapperNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	public function update(IShare $share): IShare {
-		return $share;
+		$wrappedShare = $this->shareWrapperService->getShareById((int)$share->getId());
+		$wrappedShare->setPermissions($share->getPermissions())
+					 ->setShareOwner($share->getShareOwner())
+					 ->setSharedBy($share->getSharedBy());
+
+		$this->shareWrapperService->update($wrappedShare);
+
+		return $wrappedShare->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
 	}
 
 	/**
