@@ -633,6 +633,7 @@ class SingleMemberAdd implements
 		}
 
 		try {
+
 			$template = $this->generateMailExitingShares($author, $circle->getName());
 			$this->fillMailExistingShares($template, $links);
 			$this->sendMailExistingShares($template, $author, $recipient);

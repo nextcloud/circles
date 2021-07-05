@@ -41,6 +41,7 @@ use OCA\Circles\Events\AddingCircleMemberEvent;
 use OCA\Circles\Events\CircleMemberAddedEvent;
 use OCA\Circles\Events\MembershipsCreatedEvent;
 use OCA\Circles\Events\MembershipsRemovedEvent;
+use OCA\Circles\Events\RemovingCircleMemberEvent;
 use OCA\Circles\Events\RequestingCircleMemberEvent;
 use OCA\Circles\Handlers\WebfingerHandler;
 use OCA\Circles\Listeners\DeprecatedListener;
@@ -50,7 +51,7 @@ use OCA\Circles\Listeners\Examples\ExampleMembershipsRemoved;
 use OCA\Circles\Listeners\Examples\ExampleRequestingCircleMember;
 use OCA\Circles\Listeners\Files\AddingMember as ListenerFilesAddingMember;
 use OCA\Circles\Listeners\Files\MemberAdded as ListenerFilesMemberAdded;
-use OCA\Circles\Listeners\Files\MembershipsRemoved as ListenerFilesMembershipsRemoved;
+use OCA\Circles\Listeners\Files\RemovingMember as ListenerFilesRemovingMember;
 use OCA\Circles\Listeners\GroupCreated;
 use OCA\Circles\Listeners\GroupDeleted;
 use OCA\Circles\Listeners\GroupMemberAdded;
@@ -62,13 +63,11 @@ use OCA\Circles\MountManager\CircleMountProvider;
 use OCA\Circles\Notification\Notifier;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\DavService;
-//use OCA\Files\App as FilesApp;
 use OCP\App\ManagerEvent;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
-use OCP\AppFramework\IAppContainer;
 use OCP\Files\Config\IMountProviderCollection;
 use OCP\Group\Events\GroupCreatedEvent;
 use OCP\Group\Events\GroupDeletedEvent;
@@ -80,6 +79,8 @@ use OCP\User\Events\UserCreatedEvent;
 use OCP\User\Events\UserDeletedEvent;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Throwable;
+
+//use OCA\Files\App as FilesApp;
 
 
 require_once __DIR__ . '/../../vendor/autoload.php';
@@ -106,9 +107,6 @@ class Application extends App implements IBootstrap {
 
 	/** @var ConfigService */
 	private $configService;
-
-	/** @var IAppContainer */
-	private $container;
 
 
 	/**
@@ -143,9 +141,7 @@ class Application extends App implements IBootstrap {
 		// Local Events (for Files/Shares/Notifications management)
 		$context->registerEventListener(AddingCircleMemberEvent::class, ListenerFilesAddingMember::class);
 		$context->registerEventListener(CircleMemberAddedEvent::class, ListenerFilesMemberAdded::class);
-		$context->registerEventListener(
-			MembershipsRemovedEvent::class, ListenerFilesMembershipsRemoved::class
-		);
+		$context->registerEventListener(RemovingCircleMemberEvent::class, ListenerFilesRemovingMember::class);
 		$context->registerEventListener(
 			RequestingCircleMemberEvent::class, ListenerNotificationsRequestingMember::class
 		);

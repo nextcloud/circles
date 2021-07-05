@@ -66,6 +66,22 @@ class ShareTokenRequest extends ShareTokenRequestBuilder {
 
 
 	/**
+	 * @param ShareToken $shareToken
+	 *
+	 * @return ShareToken
+	 * @throws ShareTokenNotFoundException
+	 */
+	public function search(ShareToken $shareToken): ShareToken {
+		$qb = $this->getTokenSelectSql();
+		$qb->limitInt('share_id', $shareToken->getshareId());
+		$qb->limitToCircleId($shareToken->getCircleId());
+		$qb->limitToSingleId($shareToken->getSingleId());
+
+		return $this->getItemFromRequest($qb);
+	}
+
+
+	/**
 	 * @param string $token
 	 *
 	 * @return ShareToken
@@ -76,6 +92,19 @@ class ShareTokenRequest extends ShareTokenRequestBuilder {
 		$qb->limitToToken($token);
 
 		return $this->getItemFromRequest($qb);
+	}
+
+
+	/**
+	 * @param string $singleId
+	 * @param string $circleId
+	 */
+	public function removeTokens(string $singleId, string $circleId) {
+		$qb = $this->getTokenDeleteSql();
+		$qb->limitToSingleId($singleId);
+		$qb->limitToCircleId($circleId);
+
+		$qb->execute();
 	}
 
 }

@@ -47,7 +47,7 @@ use OCA\Circles\Model\Federated\FederatedEvent;
  * This is a good place if anything needs to be executed when a new member have been added to a Circle.
  *
  * If anything needs to be managed on the master instance of the Circle (ie. CircleMemberAddedEvent), please use:
- *    $event->getFederatedEvent()->addResult(string $key, array $data);
+ *    $event->getFederatedEvent()->setResultEntry(string $key, array $data);
  *
  * @package OCA\Circles\Events
  */

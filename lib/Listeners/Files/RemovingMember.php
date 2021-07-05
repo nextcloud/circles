@@ -34,63 +34,48 @@ namespace OCA\Circles\Listeners\Files;
 
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
-use Exception;
 use OCA\Circles\AppInfo\Application;
-use OCA\Circles\Events\AddingCircleMemberEvent;
-use OCA\Circles\Exceptions\RequestBuilderException;
-use OCA\Circles\Exceptions\ShareTokenAlreadyExistException;
+use OCA\Circles\Events\RemovingCircleMemberEvent;
+use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Model\Member;
-use OCA\Circles\Service\ConfigService;
-use OCA\Circles\Service\ContactService;
+use OCA\Circles\Model\Membership;
+use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\ShareTokenService;
-use OCA\Circles\Service\ShareWrapperService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 
 
 /**
- * Class AddingMember
+ * Class RemovingMember
  *
  * @package OCA\Circles\Listeners\Files
  */
-class AddingMember implements IEventListener {
+class RemovingMember implements IEventListener {
 
 
 	use TStringTools;
 	use TNC22Logger;
 
 
-	/** @var ShareWrapperService */
-	private $shareWrapperService;
+	/** @var MemberService */
+	private $memberService;
 
 	/** @var ShareTokenService */
 	private $shareTokenService;
 
-	/** @var ConfigService */
-	private $configService;
-
-	/** @var ContactService */
-	private $contactService;
-
 
 	/**
-	 * AddingMember constructor.
+	 * RemovingMember constructor.
 	 *
-	 * @param ShareWrapperService $shareWrapperService
+	 * @param MemberService $memberService
 	 * @param ShareTokenService $shareTokenService
-	 * @param ContactService $contactService
-	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		ShareWrapperService $shareWrapperService,
-		ShareTokenService $shareTokenService,
-		ContactService $contactService,
-		ConfigService $configService
+		MemberService $memberService,
+		ShareTokenService $shareTokenService
 	) {
-		$this->shareWrapperService = $shareWrapperService;
+		$this->memberService = $memberService;
 		$this->shareTokenService = $shareTokenService;
-		$this->contactService = $contactService;
-		$this->configService = $configService;
 
 		$this->setup('app', Application::APP_ID);
 	}
@@ -98,15 +83,12 @@ class AddingMember implements IEventListener {
 
 	/**
 	 * @param Event $event
-	 *
-	 * @throws RequestBuilderException
 	 */
 	public function handle(Event $event): void {
-		if (!$event instanceof AddingCircleMemberEvent) {
+		if (!$event instanceof RemovingCircleMemberEvent) {
 			return;
 		}
 
-		$result = [];
 		$member = $event->getMember();
 
 		if ($member->getUserType() === Member::TYPE_CIRCLE) {
@@ -116,7 +98,14 @@ class AddingMember implements IEventListener {
 		}
 
 		$circle = $event->getCircle();
-		$shares = $this->shareWrapperService->getSharesToCircle($circle->getSingleId());
+		$singleIds = array_merge(
+			[$circle->getSingleId()],
+			array_map(
+				function(Membership $membership) {
+					return $membership->getCircleId();
+				}, $circle->getMemberships()
+			)
+		);
 
 		/** @var Member[] $members */
 		foreach ($members as $member) {
@@ -126,43 +115,15 @@ class AddingMember implements IEventListener {
 				continue;
 			}
 
-			$files = [];
-			foreach ($shares as $share) {
+			foreach ($singleIds as $singleId) {
 				try {
-					$shareToken = $this->shareTokenService->generateShareToken($share, $member);
-				} catch (ShareTokenAlreadyExistException $e) {
+					$member->getMembership($singleId);
 					continue;
+				} catch (MembershipNotFoundException $e) {
 				}
 
-				$share->setShareToken($shareToken);
-				$files[] = $share;
+				$this->shareTokenService->removeTokens($member->getSingleId(), $singleId);
 			}
-
-			$result[$member->getId()] = [
-				'shares' => $files,
-				'mails'  => $this->getMailAddressesFromContact($member)
-			];
-		}
-
-		$event->getFederatedEvent()->setResultEntry('files', $result);
-	}
-
-
-	/**
-	 * @param Member $member
-	 *
-	 * @return array
-	 */
-	private function getMailAddressesFromContact(Member $member): array {
-		if ($member->getUserType() !== Member::TYPE_CONTACT
-			|| !$this->configService->isLocalInstance($member->getInstance())) {
-			return [];
-		}
-
-		try {
-			return $this->contactService->getMailAddresses($member->getUserId());
-		} catch (Exception $e) {
-			return [];
 		}
 	}
 
