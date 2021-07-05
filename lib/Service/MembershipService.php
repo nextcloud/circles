@@ -159,6 +159,7 @@ class MembershipService {
 	 * @param string $singleId
 	 *
 	 * @return int
+	 * @throws RequestBuilderException
 	 */
 	public function manageMemberships(string $singleId): int {
 		$memberships = $this->generateMemberships($singleId);

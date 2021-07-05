@@ -47,7 +47,7 @@ use OCA\Circles\Model\Federated\FederatedEvent;
  * This is a good place if anything needs to be executed when a member have been removed from a Circle.
  *
  * If anything needs to be managed on the master instance of the Circle (ie. CircleMemberRemovedEvent), please use:
- *    $event->getFederatedEvent()->addResult(string $key, array $data);
+ *    $event->getFederatedEvent()->setResultEntry(string $key, array $data);
  *
  * @package OCA\Circles\Events
  */

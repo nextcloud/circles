@@ -40,6 +40,7 @@ use DateTime;
 use JsonSerializable;
 use OCA\Circles\AppInfo\Capabilities;
 use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Exceptions\ParseMemberLevelException;
 use OCA\Circles\Exceptions\UnknownInterfaceException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
@@ -724,6 +725,22 @@ class Member extends ManagedModel implements
 		}
 
 		return $this->memberships;
+	}
+
+	/**
+	 * @param string $circleId
+	 *
+	 * @return Membership
+	 * @throws MembershipNotFoundException
+	 */
+	public function getMembership(string $circleId): Membership {
+		foreach ($this->getMemberships() as $membership) {
+			if ($membership->getCircleId() === $circleId) {
+				return $membership;
+			}
+		}
+
+		throw new MembershipNotFoundException();
 	}
 
 
