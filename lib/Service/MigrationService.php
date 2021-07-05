@@ -218,9 +218,10 @@ class MigrationService {
 
 		$this->migrationTo22_Circles();
 		$this->migrationTo22_Members();
-		$this->migrationTo22_Tokens();
 		$this->membershipService->resetMemberships('', true);
 		$this->membershipService->manageAll();
+
+		$this->migrationTo22_Tokens();
 
 		$this->configService->setAppValue(ConfigService::MIGRATION_22, '1');
 	}
@@ -404,7 +405,6 @@ class MigrationService {
 //					"cached_update":"2021-05-02 12:13:22",
 //					"joined":"2021-05-02 12:13:22",
 //					"contact_checked":null,"
-//					single_id":"wt6WQYYCry3EOud",
 //					"circle_source":null}
 
 		return $member;
@@ -524,6 +524,11 @@ class MigrationService {
 	private function generateShareTokenFrom21(SimpleDataStore $data): ShareToken {
 		$shareToken = new ShareToken();
 		$member = $this->memberRequest->getMemberById($data->g('member_id'));
+
+		if ($member->getUserType() !== Member::TYPE_MAIL
+			&& $member->getUserType() !== Member::TYPE_CONTACT) {
+			throw new MemberNotFoundException();
+		}
 
 		$shareToken->setShareId($data->gInt('share_id'))
 				   ->setCircleId($data->g('circle_id'))

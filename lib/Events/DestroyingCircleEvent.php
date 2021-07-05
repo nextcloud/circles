@@ -48,7 +48,7 @@ use OCA\Circles\Model\Federated\FederatedEvent;
  * This is a good place if anything needs to be executed when a Circle has been destroyed.
  *
  * If anything needs to be managed on the master instance of the Circle (ie. CircleDestroyedEvent), please use:
- *    $event->getFederatedEvent()->addResult(string $key, array $data);
+ *    $event->getFederatedEvent()->setResultEntry(string $key, array $data);
  * *
  * @package OCA\Circles\Events
  */
