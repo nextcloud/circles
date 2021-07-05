@@ -48,7 +48,7 @@ use OCA\Circles\Model\Federated\FederatedEvent;
  *
  * If anything needs to be managed on the master instance of the Circle (ie. CircleMemberEditedEvent), please
  * use:
- *    $event->getFederatedEvent()->addResult(string $key, array $data);
+ *    $event->getFederatedEvent()->setResultEntry(string $key, array $data);
  *
  * @package OCA\Circles\Events
  */

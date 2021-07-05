@@ -168,6 +168,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 
 		$qb->leftJoinCircle(CoreQueryBuilder::SHARE, null, 'share_with');
 
+		// TODO: filter direct-shares ?
 		$aliasUpstreamMembership =
 			$qb->generateAlias(CoreQueryBuilder::SHARE, CoreQueryBuilder::UPSTREAM_MEMBERSHIPS);
 		$qb->limitToInheritedMemberships(CoreQueryBuilder::SHARE, $circleId, 'share_with');
@@ -176,20 +177,18 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 //			$qb->limitToInitiator(CoreRequestBuilder::SHARE, $shareRecipient, 'share_with');
 //		}
 
-		$qb->leftJoinInheritedMembers(
-			$aliasUpstreamMembership,
-			'circle_id',
-			$qb->generateAlias(CoreQueryBuilder::SHARE, CoreQueryBuilder::INHERITED_BY)
-		);
+		// TODO: add shareInitiator and shareRecipient to filter the request
+		if (!is_null($shareRecipient) || $completeDetails) {
+			$qb->leftJoinInheritedMembers(
+				$aliasUpstreamMembership,
+				'circle_id',
+				$qb->generateAlias(CoreQueryBuilder::SHARE, CoreQueryBuilder::INHERITED_BY)
+			);
 
-		$aliasMembership = $qb->generateAlias($aliasUpstreamMembership, CoreQueryBuilder::MEMBERSHIPS);
-		$qb->leftJoinFileCache(CoreQueryBuilder::SHARE);
-		$qb->leftJoinShareChild(CoreQueryBuilder::SHARE, $aliasMembership);
+			$aliasMembership = $qb->generateAlias($aliasUpstreamMembership, CoreQueryBuilder::MEMBERSHIPS);
+			$qb->leftJoinFileCache(CoreQueryBuilder::SHARE);
+			$qb->leftJoinShareChild(CoreQueryBuilder::SHARE, $aliasMembership);
 
-		if (!is_null($shareInitiator)) {
-		}
-
-		if ($completeDetails) {
 			$qb->generateGroupBy(
 				self::$tables[self::TABLE_MEMBERSHIP],
 				$aliasMembership,

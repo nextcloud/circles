@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 
+use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Db\ShareWrapperRequest;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\ShareWrapperNotFoundException;
@@ -49,6 +50,9 @@ use OCP\Share\IShare;
 class ShareWrapperService {
 
 
+	use TStringTools;
+
+
 	/** @var ShareWrapperRequest */
 	private $shareWrapperRequest;
 
@@ -64,10 +68,11 @@ class ShareWrapperService {
 
 
 	/**
-	 * @param $singleId
-	 * @param $nodeId
+	 * @param string $singleId
+	 * @param int $nodeId
 	 *
 	 * @return ShareWrapper
+	 * @throws RequestBuilderException
 	 * @throws ShareWrapperNotFoundException
 	 */
 	public function searchShare(string $singleId, int $nodeId): ShareWrapper {
@@ -140,6 +145,7 @@ class ShareWrapperService {
 
 	/**
 	 * @param int $fileId
+	 * @param bool $getData
 	 *
 	 * @return ShareWrapper[]
 	 * @throws RequestBuilderException

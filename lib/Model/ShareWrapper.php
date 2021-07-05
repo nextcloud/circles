@@ -128,6 +128,9 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 	/** @var Member */
 	private $owner;
 
+	/** @var ShareToken */
+	private $shareToken;
+
 
 	/**
 	 * @param string $id
@@ -575,6 +578,32 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 
 
 	/**
+	 * @param ShareToken $shareToken
+	 *
+	 * @return ShareWrapper
+	 */
+	public function setShareToken(ShareToken $shareToken): self {
+		$this->shareToken = $shareToken;
+
+		return $this;
+	}
+
+	/**
+	 * @return ShareToken
+	 */
+	public function getShareToken(): ShareToken {
+		return $this->shareToken;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasShareToken(): bool {
+		return !is_null($this->shareToken);
+	}
+
+
+	/**
 	 * @param IRootFolder $rootFolder
 	 * @param IUserManager $userManager
 	 * @param IURLGenerator $urlGenerator
@@ -680,7 +709,17 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 	}
 
 
+	/**
+	 * @param array $data
+	 *
+	 * @return IDeserializable
+	 * @throws InvalidItemException
+	 */
 	public function import(array $data): IDeserializable {
+		if ($this->getInt('id', $data) === 0) {
+			throw new InvalidItemException();
+		}
+
 		$shareTime = new DateTime();
 		$shareTime->setTimestamp($this->getInt('shareTime', $data));
 
@@ -725,6 +764,12 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 		try {
 			$member = new Member();
 			$this->setInitiator($member->import($this->getArray('viewer', $data)));
+		} catch (InvalidItemException $e) {
+		}
+
+		try {
+			$shareToken = new ShareToken();
+			$this->setShareToken($shareToken->import($this->getArray('shareToken', $data)));
 		} catch (InvalidItemException $e) {
 		}
 
@@ -813,6 +858,10 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 
 		if ($this->hasFileCache()) {
 			$arr['fileCache'] = $this->getFileCache();
+		}
+
+		if ($this->hasShareToken()) {
+			$arr['shareToken'] = $this->getShareToken();
 		}
 
 		return $arr;

@@ -33,6 +33,7 @@ namespace OCA\Circles\Model;
 
 
 use ArtificialOwl\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
+use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
 use ArtificialOwl\MySmallPhpTools\IDeserializable;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
@@ -68,6 +69,9 @@ class ShareToken implements IDeserializable, INC22QueryRow, JsonSerializable {
 
 	/** @var int */
 	private $accepted = IShare::STATUS_PENDING;
+
+	/** @var string */
+	private $link = '';
 
 
 	/**
@@ -230,11 +234,35 @@ class ShareToken implements IDeserializable, INC22QueryRow, JsonSerializable {
 
 
 	/**
-	 * @param array $data
+	 * @param string $link
 	 *
 	 * @return ShareToken
 	 */
+	public function setLink(string $link): self {
+		$this->link = $link;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getLink(): string {
+		return $this->link;
+	}
+
+
+	/**
+	 * @param array $data
+	 *
+	 * @return ShareToken
+	 * @throws InvalidItemException
+	 */
 	public function import(array $data): IDeserializable {
+		if ($this->getInt('shareId', $data) === 0) {
+			throw new InvalidItemException();
+		}
+
 		$this->setShareId($this->getInt('shareId', $data));
 		$this->setCircleId($this->get('circleId', $data));
 		$this->setSingleId($this->get('singleId', $data));
@@ -242,6 +270,7 @@ class ShareToken implements IDeserializable, INC22QueryRow, JsonSerializable {
 		$this->setToken($this->get('token', $data));
 		$this->setPassword($this->get('password', $data));
 		$this->setAccepted($this->getInt('accepted', $data, IShare::STATUS_PENDING));
+		$this->setLink($this->get('link', $data));
 
 		return $this;
 	}
@@ -276,7 +305,8 @@ class ShareToken implements IDeserializable, INC22QueryRow, JsonSerializable {
 			'memberId' => $this->getMemberId(),
 			'token'    => $this->getToken(),
 			'password' => $this->getPassword(),
-			'accepted' => $this->getAccepted()
+			'accepted' => $this->getAccepted(),
+			'link'     => $this->getLink()
 		];
 	}
 

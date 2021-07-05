@@ -32,11 +32,23 @@ declare(strict_types=1);
 namespace OCA\Circles\Listeners\Files;
 
 
+use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
+use Exception;
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Events\CircleMemberAddedEvent;
+use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\ShareWrapper;
+use OCA\Circles\Service\ShareWrapperService;
+use OCP\Defaults;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
+use OCP\IL10N;
+use OCP\Mail\IEMailTemplate;
+use OCP\Mail\IMailer;
+use OCP\Util;
 
 
 /**
@@ -48,33 +60,193 @@ class MemberAdded implements IEventListener {
 
 
 	use TStringTools;
+	use TNC22Logger;
+
+
+	/** @var IL10N */
+	private $l10n;
+
+	/** @var IMailer */
+	private $mailer;
+
+	/** @var Defaults */
+	private $defaults;
+
+	/** @var ShareWrapperService */
+	private $shareWrapperService;
+
+
+	/**
+	 * MemberAdded constructor.
+	 *
+	 * @param IL10N $l10n
+	 * @param IMailer $mailer
+	 * @param Defaults $defaults
+	 * @param ShareWrapperService $shareWrapperService
+	 */
+	public function __construct(
+		IL10N $l10n,
+		IMailer $mailer,
+		Defaults $defaults,
+		ShareWrapperService $shareWrapperService
+	) {
+		$this->l10n = $l10n;
+		$this->mailer = $mailer;
+		$this->defaults = $defaults;
+		$this->shareWrapperService = $shareWrapperService;
+
+		$this->setup('app', Application::APP_ID);
+	}
 
 
 	/**
 	 * @param Event $event
+	 *
+	 * @throws RequestBuilderException
 	 */
 	public function handle(Event $event): void {
 		if (!$event instanceof CircleMemberAddedEvent) {
 			return;
 		}
 
-		$federatedUsers = [];
 		$member = $event->getMember();
-		if ($member->getUserType() === Member::TYPE_MAIL) {
-			$federatedUsers[] = $member;
+		$circle = $event->getCircle();
+
+		if ($member->getUserType() === Member::TYPE_CIRCLE) {
+			$members = $member->getBasedOn()->getInheritedMembers();
+		} else {
+			$members = [$member];
 		}
 
-		if (empty($federatedUsers)) {
+		/** @var Member[] $members */
+		foreach ($members as $member) {
+			if ($member->getUserType() !== Member::TYPE_MAIL
+				&& $member->getUserType() !== Member::TYPE_CONTACT
+			) {
+				continue;
+			}
+
+			$mails = [];
+			$shares = [];
+			foreach ($event->getResults() as $origin => $item) {
+				$files = $item->gData('files');
+				if (!$files->hasKey($member->getId())) {
+					continue;
+				}
+
+				$data = $files->gData($member->getId());
+				$shares = array_merge($shares, $data->gObjs('shares', ShareWrapper::class));
+
+				// TODO: is it safe to use $origin to compare getInstance() ?
+				if ($member->getUserType() === Member::TYPE_CONTACT && $member->getInstance() === $origin) {
+					$mails = $data->gArray('mails');
+				}
+			}
+
+			$this->generateMail($circle, $member, $shares, $mails);
+		}
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 * @param Member $member
+	 * @param ShareWrapper[] $shares
+	 * @param array $mails
+	 */
+	private function generateMail(Circle $circle, Member $member, array $shares, array $mails): void {
+		if (empty($shares)) {
 			return;
 		}
 
-		$result = [];
-		foreach ($event->getResults() as $instance => $item) {
-			$result[$instance] = $item->gData('files');
+		if ($member->getUserType() === Member::TYPE_MAIL) {
+			$mails = [$member->getUserId()];
 		}
 
-		\OC::$server->getLogger()->log(3, 'FILES: ' . json_encode($result));
-		\OC::$server->getLogger()->log(3, 'MAILS: ' . json_encode($federatedUsers));
+		if (empty($mails)) {
+			return;
+		}
+
+		if ($member->hasInvitedBy()) {
+			$invitedBy = $member->getInvitedBy()->getDisplayName();
+		} else {
+			$invitedBy = 'someone';
+		}
+
+		$links = [];
+		foreach ($shares as $share) {
+			$links[] = [
+				'filename' => $share->getFileTarget(),
+				'link'     => $share->getShareToken()->getLink()
+			];
+		}
+
+		$template = $this->generateMailExitingShares($invitedBy, $circle->getDisplayName());
+		$this->fillMailExistingShares($template, $links);
+		foreach ($mails as $mail) {
+			try {
+				$this->sendMailExistingShares($template, $invitedBy, $mail);
+			} catch (Exception $e) {
+			}
+		}
+	}
+
+
+	/**
+	 * @param string $author
+	 * @param string $circleName
+	 *
+	 * @return IEMailTemplate
+	 */
+	private function generateMailExitingShares(string $author, string $circleName): IEMailTemplate {
+		$emailTemplate = $this->mailer->createEMailTemplate('circles.ExistingShareNotification', []);
+		$emailTemplate->addHeader();
+
+		$text = $this->l10n->t('%s shared multiple files with "%s".', [$author, $circleName]);
+		$emailTemplate->addBodyText(htmlspecialchars($text), $text);
+
+		return $emailTemplate;
+	}
+
+	/**
+	 * @param IEMailTemplate $emailTemplate
+	 * @param array $links
+	 */
+	private function fillMailExistingShares(IEMailTemplate $emailTemplate, array $links) {
+		foreach ($links as $item) {
+			$emailTemplate->addBodyButton(
+				$this->l10n->t('Open »%s«', [htmlspecialchars($item['filename'])]), $item['link']
+			);
+		}
+	}
+
+
+	/**
+	 * @param IEMailTemplate $emailTemplate
+	 * @param string $author
+	 * @param string $recipient
+	 *
+	 * @throws Exception
+	 */
+	private function sendMailExistingShares(
+		IEMailTemplate $emailTemplate,
+		string $author,
+		string $recipient
+	) {
+		$subject = $this->l10n->t('%s shared multiple files with you.', [$author]);
+
+		$instanceName = $this->defaults->getName();
+		$senderName = $this->l10n->t('%s on %s', [$author, $instanceName]);
+
+		$message = $this->mailer->createMessage();
+
+		$message->setFrom([Util::getDefaultEmailAddress($instanceName) => $senderName]);
+		$message->setSubject($subject);
+		$message->setPlainBody($emailTemplate->renderText());
+		$message->setHtmlBody($emailTemplate->renderHtml());
+		$message->setTo([$recipient]);
+
+		$this->mailer->send($message);
 	}
 
 }
