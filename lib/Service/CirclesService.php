@@ -589,12 +589,12 @@ class CirclesService {
 				);
 			case DeprecatedCircle::CIRCLES_PUBLIC:
 				return $urlGen->getAbsoluteURL(
-					$urlGen->imagePath(Application::APP_ID, 'black_circle' . $ext)
+					$urlGen->imagePath(Application::APP_ID, 'circles' . $ext)
 				);
 		}
 
 		return $urlGen->getAbsoluteURL(
-			$urlGen->imagePath(Application::APP_ID, 'black_circle' . $ext)
+			$urlGen->imagePath(Application::APP_ID, 'circles' . $ext)
 		);
 	}
 
