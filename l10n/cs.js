@@ -103,7 +103,7 @@ OC.L10N.register(
     "Admin" : "Správce",
     "Owner" : "Vlastník",
     "%s shared »%s« with you." : "%s vám nasdílel(a) „%s“.",
-    "%s shared »%s« with \"%s\"." : "%s nasdílel(a) »%s« s \"%s\".",
+    "%s shared »%s« with \"%s\"." : "%s nasdílel(a) „%s“ uživateli \"%s\".",
     "%s on %s" : "%s na %s",
     "%1$s shared »%2$s« with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s s vámi sdílel(a) „%2$s“. Už jste měli dostat e-mail s přístupovými údaji.\n",
     "%1$s shared »%2$s« with you. You should have already received a separate email with a link to access it." : "%1$s s vámi sdílel(a) „%2$s“. Už jste měli dostat e-mail s přístupovými údaji.",
