@@ -33,6 +33,7 @@ namespace OCA\Circles\Service;
 
 
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
+use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use Exception;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
@@ -51,6 +52,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Service
  */
 class MaintenanceService {
+
+
+	use TNC22Logger;
 
 
 	const TIMEOUT = 18000;
@@ -91,6 +95,7 @@ class MaintenanceService {
 	 * @param IUserManager $userManager
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
+	 * @param SyncService $syncService
 	 * @param FederatedUserService $federatedUserService
 	 * @param EventWrapperService $eventWrapperService
 	 * @param CircleService $circleService
@@ -140,7 +145,7 @@ class MaintenanceService {
 		$this->federatedUserService->bypassCurrentUserCondition(true);
 
 		$this->lockMaintenanceRun();
-		echo 'running maintenance(' . $level . ')' . "\n";
+		$this->debug('running maintenance (' . $level . ')');
 
 		switch ($level) {
 			case 1:
