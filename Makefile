@@ -64,6 +64,11 @@ github-upload:
 		--name "$(package_name)-$(version).tar.gz" \
 		--file $(build_dir)/$(package_name)-$(version).tar.gz
 
+cs-check: composer-dev
+	composer cs:check
+
+cs-fix: composer-dev
+	composer cs:fix
 
 clean:
 	rm -rf $(build_dir)
@@ -73,6 +78,10 @@ clean:
 composer:
 	composer install --prefer-dist
 	composer upgrade --prefer-dist
+
+composer-dev:
+	composer install --prefer-dist --dev
+	composer upgrade --prefer-dist --dev
 
 appstore: clean composer
 	mkdir -p $(sign_dir)
