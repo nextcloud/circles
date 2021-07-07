@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,7 +31,6 @@
 
 namespace OCA\Circles\GlobalScale;
 
-
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\MemberAlreadyExistsException;
@@ -37,7 +38,6 @@ use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\DeprecatedMember;
-
 
 /**
  * Class GlobalSync
@@ -69,7 +69,6 @@ class GlobalSync extends AGlobalScaleEvent {
 			$this->syncCircle($circle, $event->getSource());
 			$this->removeDeprecateMembers($circle, $event->getSource());
 		}
-
 	}
 
 
@@ -129,7 +128,6 @@ class GlobalSync extends AGlobalScaleEvent {
 				}
 			}
 		}
-
 	}
 
 
@@ -168,6 +166,4 @@ class GlobalSync extends AGlobalScaleEvent {
 
 		throw new MemberDoesNotExistException();
 	}
-
 }
-

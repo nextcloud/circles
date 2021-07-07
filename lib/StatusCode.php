@@ -31,35 +31,32 @@ declare(strict_types=1);
 
 namespace OCA\Circles;
 
-
 /**
  * Class StatusCode
  *
  * @package OCA\Circles
  */
 class StatusCode {
-
-
-	static $CIRCLE_CREATE = [
+	public static $CIRCLE_CREATE = [
 		120 => 'Duplicate name'
 	];
 
-	static $CIRCLE_CONFIG = [
+	public static $CIRCLE_CONFIG = [
 		120 => 'Invalid configuration'
 	];
 
-	static $CIRCLE_JOIN = [
+	public static $CIRCLE_JOIN = [
 		121 => 'Circle is full',
 		122 => 'You are already a member',
 		123 => 'Already requesting to join the circle',
 		124 => 'Circle is closed'
 	];
 
-	static $CIRCLE_LEAVE = [
+	public static $CIRCLE_LEAVE = [
 		120 => 'You are not a member'
 	];
 
-	static $MEMBER_ADD = [
+	public static $MEMBER_ADD = [
 		120 => 'Unknown entity',
 		121 => 'Circle is full',
 		122 => 'Already member of the circle',
@@ -73,17 +70,16 @@ class StatusCode {
 		130 => 'Member is invited by an entity that does not belongs to the instance at the origin of the request'
 	];
 
-	static $MEMBER_LEVEL = [
+	public static $MEMBER_LEVEL = [
 		120 => 'The designed member\'s level is too high',
 		121 => 'Incorrect Level'
 	];
 
-	static $MEMBER_DISPLAY_NAME = [
+	public static $MEMBER_DISPLAY_NAME = [
 		120 => 'DisplayName cannot be empty'
 	];
 
-	static $MEMBER_REMOVE = [
+	public static $MEMBER_REMOVE = [
 		120 => 'The designed member\'s level is too high',
 	];
-
 }

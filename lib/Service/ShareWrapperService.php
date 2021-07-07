@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Db\ShareWrapperRequest;
 use OCA\Circles\Exceptions\RequestBuilderException;
@@ -41,15 +40,12 @@ use OCA\Circles\Model\ShareWrapper;
 use OCP\Files\NotFoundException;
 use OCP\Share\IShare;
 
-
 /**
  * Class ShareWrapperService
  *
  * @package OCA\Circles\Service
  */
 class ShareWrapperService {
-
-
 	use TStringTools;
 
 
@@ -262,6 +258,4 @@ class ShareWrapperService {
 
 		return $this->getShareById($childId, $federatedUser);
 	}
-
 }
-

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -28,7 +30,6 @@
 
 
 namespace OCA\Circles\Db;
-
 
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
@@ -113,7 +114,6 @@ class DeprecatedCirclesRequest extends DeprecatedCirclesRequestBuilder {
 	 * @throws CircleDoesNotExistException
 	 */
 	public function forceGetCircleByName($name) {
-
 		$qb = $this->getCirclesSelectSql();
 
 		$this->limitToName($qb, $name);
@@ -236,7 +236,6 @@ class DeprecatedCirclesRequest extends DeprecatedCirclesRequestBuilder {
 	 * @param DeprecatedCircle $circle
 	 */
 	public function createCircle(DeprecatedCircle $circle) {
-
 		$config = DeprecatedCircle::convertTypeToConfig($circle->getType());
 
 		$qb = $this->getCirclesInsertSql();
@@ -437,5 +436,4 @@ class DeprecatedCirclesRequest extends DeprecatedCirclesRequestBuilder {
 
 		return $this->parseCirclesSelectSql($data);
 	}
-
 }

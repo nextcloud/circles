@@ -39,15 +39,12 @@ use JsonSerializable;
 use OCA\Circles\Db\CoreQueryBuilder;
 use OCA\Circles\Exceptions\FileCacheNotFoundException;
 
-
 /**
  * Class FileCacheWrapper
  *
  * @package OCA\Circles\Model
  */
 class FileCacheWrapper extends ManagedModel implements INC22QueryRow, IDeserializable, JsonSerializable {
-
-
 	use TArrayTools;
 
 
@@ -427,22 +424,22 @@ class FileCacheWrapper extends ManagedModel implements INC22QueryRow, IDeseriali
 	 */
 	public function toCache(): array {
 		return [
-			'fileid'           => $this->getId(),
-			'path'             => $this->getPath(),
-			'permissions'      => $this->getPermissions(),
-			'storage'          => $this->getStorageId(), // strange, it is not !?
-			'path_hash'        => $this->getPathHash(),
-			'parent'           => $this->getParent(),
-			'name'             => $this->getName(),
-			'mimetype'         => $this->getMimeType(),
-			'mimepart'         => $this->getMimePart(),
-			'size'             => $this->getSize(),
-			'mtime'            => $this->getMTime(),
-			'storage_mtime'    => $this->getStorageMTime(),
-			'encrypted'        => $this->isEncrypted(),
+			'fileid' => $this->getId(),
+			'path' => $this->getPath(),
+			'permissions' => $this->getPermissions(),
+			'storage' => $this->getStorageId(), // strange, it is not !?
+			'path_hash' => $this->getPathHash(),
+			'parent' => $this->getParent(),
+			'name' => $this->getName(),
+			'mimetype' => $this->getMimeType(),
+			'mimepart' => $this->getMimePart(),
+			'size' => $this->getSize(),
+			'mtime' => $this->getMTime(),
+			'storage_mtime' => $this->getStorageMTime(),
+			'encrypted' => $this->isEncrypted(),
 			'unencrypted_size' => $this->getUnencryptedSize(),
-			'etag'             => $this->getEtag(),
-			'checksum'         => $this->getChecksum()
+			'etag' => $this->getEtag(),
+			'checksum' => $this->getChecksum()
 		];
 	}
 
@@ -537,25 +534,23 @@ class FileCacheWrapper extends ManagedModel implements INC22QueryRow, IDeseriali
 	 */
 	public function jsonSerialize(): array {
 		return [
-			'id'              => $this->getId(),
-			'path'            => $this->getPath(),
-			'permissions'     => $this->getPermissions(),
-			'storage'         => $this->getStorage(),
-			'storageId'       => $this->getStorageId(),
-			'pathHash'        => $this->getPathHash(),
-			'parent'          => $this->getParent(),
-			'name'            => $this->getName(),
-			'mimeType'        => $this->getMimeType(),
-			'mimePart'        => $this->getMimePart(),
-			'size'            => $this->getSize(),
-			'mTime'           => $this->getMTime(),
-			'storageMTime'    => $this->getStorageMTime(),
-			'encrypted'       => $this->isEncrypted(),
+			'id' => $this->getId(),
+			'path' => $this->getPath(),
+			'permissions' => $this->getPermissions(),
+			'storage' => $this->getStorage(),
+			'storageId' => $this->getStorageId(),
+			'pathHash' => $this->getPathHash(),
+			'parent' => $this->getParent(),
+			'name' => $this->getName(),
+			'mimeType' => $this->getMimeType(),
+			'mimePart' => $this->getMimePart(),
+			'size' => $this->getSize(),
+			'mTime' => $this->getMTime(),
+			'storageMTime' => $this->getStorageMTime(),
+			'encrypted' => $this->isEncrypted(),
 			'unencryptedSize' => $this->getUnencryptedSize(),
-			'etag'            => $this->getEtag(),
-			'checksum'        => $this->getChecksum()
+			'etag' => $this->getEtag(),
+			'checksum' => $this->getChecksum()
 		];
 	}
-
 }
-

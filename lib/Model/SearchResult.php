@@ -26,7 +26,6 @@
 
 namespace OCA\Circles\Model;
 
-
 class SearchResult implements \JsonSerializable {
 
 	/** @var string */
@@ -50,7 +49,7 @@ class SearchResult implements \JsonSerializable {
 	 * @param string $instance
 	 * @param array $data
 	 */
-	function __construct($ident = '', $type = 0, $instance = '', $data = []) {
+	public function __construct($ident = '', $type = 0, $instance = '', $data = []) {
 		$this->setIdent($ident);
 		$this->setType($type);
 		$this->setInstance($instance);
@@ -130,14 +129,12 @@ class SearchResult implements \JsonSerializable {
 	 * which is a value of any type other than a resource.
 	 * @since 5.4.0
 	 */
-	function jsonSerialize() {
-
+	public function jsonSerialize() {
 		return [
-			'ident'    => $this->getIdent(),
+			'ident' => $this->getIdent(),
 			'instance' => $this->getInstance(),
-			'type'     => $this->getType(),
-			'data'     => $this->getData()
+			'type' => $this->getType(),
+			'data' => $this->getData()
 		];
-
 	}
 }

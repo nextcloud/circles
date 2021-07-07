@@ -37,7 +37,6 @@ use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Group\Events\GroupDeletedEvent;
 
-
 /**
  * Class GroupDeleted
  *
@@ -74,6 +73,4 @@ class GroupDeleted implements IEventListener {
 		} catch (Exception $e) {
 		}
 	}
-
 }
-

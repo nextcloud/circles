@@ -31,10 +31,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-
 use OCA\Circles\Exceptions\ShareTokenNotFoundException;
 use OCA\Circles\Model\ShareToken;
-
 
 /**
  * Class ShareTokenRequest
@@ -106,6 +104,4 @@ class ShareTokenRequest extends ShareTokenRequestBuilder {
 
 		$qb->execute();
 	}
-
 }
-

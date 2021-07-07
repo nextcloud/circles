@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\FederatedItemBadRequestException;
@@ -42,7 +41,6 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
 
-
 /**
  * Class CircleConfig
  *
@@ -51,8 +49,6 @@ use OCA\Circles\Model\Helpers\MemberHelper;
 class CircleConfig implements
 	IFederatedItem,
 	IFederatedItemAsyncProcess {
-
-
 	use TNC22Deserialize;
 
 
@@ -161,6 +157,4 @@ class CircleConfig implements
 	 */
 	public function result(FederatedEvent $event, array $results): void {
 	}
-
 }
-

@@ -31,9 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Events;
 
-
 use OCA\Circles\Model\Federated\FederatedEvent;
-
 
 /**
  * Class CircleMemberRequestedEvent
@@ -82,6 +80,4 @@ class CircleMemberRequestedEvent extends CircleResultGenericEvent {
 	public function getType(): int {
 		return $this->type;
 	}
-
 }
-

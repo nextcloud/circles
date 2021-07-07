@@ -31,10 +31,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Events;
 
-
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Member;
-
 
 /**
  * Class CircleMemberAddedEvent
@@ -66,6 +64,4 @@ class CircleMemberGenericEvent extends CircleGenericEvent {
 	public function getMember(): Member {
 		return $this->member;
 	}
-
 }
-

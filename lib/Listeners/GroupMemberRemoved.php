@@ -37,7 +37,6 @@ use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Group\Events\UserRemovedEvent;
 
-
 /**
  * Class GroupMemberRemoved
  *
@@ -75,6 +74,4 @@ class GroupMemberRemoved implements IEventListener {
 		} catch (Exception $e) {
 		}
 	}
-
 }
-

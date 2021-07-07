@@ -31,9 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Events;
 
-
 use OCA\Circles\Model\Federated\FederatedEvent;
-
 
 /**
  * Class DestroyingCircleEvent
@@ -63,6 +61,4 @@ class DestroyingCircleEvent extends CircleGenericEvent {
 	public function __construct(FederatedEvent $federatedEvent) {
 		parent::__construct($federatedEvent);
 	}
-
 }
-

@@ -27,7 +27,6 @@
 
 namespace OCA\Circles\Db;
 
-
 use Doctrine\DBAL\Query\QueryBuilder;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Model\DeprecatedCircle;
@@ -275,7 +274,6 @@ class DeprecatedCirclesRequestBuilder extends DeprecatedRequestBuilder {
 	 * @param string $ownerId
 	 */
 	public function leftJoinOwner(IQueryBuilder $qb, string $ownerId = '') {
-
 		if ($qb->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
@@ -385,7 +383,6 @@ class DeprecatedCirclesRequestBuilder extends DeprecatedRequestBuilder {
 	 * @return DeprecatedCircle
 	 */
 	protected function parseCirclesSelectSql($data, bool $allSettings = false) {
-
 		$circle = new DeprecatedCircle();
 		$circle->setId($data['id']);
 		$circle->setUniqueId($data['unique_id']);
@@ -425,6 +422,4 @@ class DeprecatedCirclesRequestBuilder extends DeprecatedRequestBuilder {
 
 		return $circle;
 	}
-
-
 }

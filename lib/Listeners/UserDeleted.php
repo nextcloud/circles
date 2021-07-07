@@ -37,7 +37,6 @@ use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\User\Events\UserDeletedEvent;
 
-
 /**
  * Class UserDeleted
  *
@@ -74,6 +73,4 @@ class UserDeleted implements IEventListener {
 		} catch (Exception $e) {
 		}
 	}
-
 }
-

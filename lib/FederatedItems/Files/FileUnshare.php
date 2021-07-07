@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems\Files;
 
-
 use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
 use ArtificialOwl\MySmallPhpTools\Exceptions\UnknownTypeException;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
@@ -46,7 +45,6 @@ use OCA\Circles\Model\ShareWrapper;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\EventService;
 
-
 /**
  * Class FileUnshare
  *
@@ -57,8 +55,6 @@ class FileUnshare implements
 	IFederatedItemHighSeverity,
 	IFederatedItemAsyncProcess,
 	IFederatedItemMemberEmpty {
-
-
 	use TStringTools;
 	use TNC22Logger;
 
@@ -125,6 +121,4 @@ class FileUnshare implements
 	 */
 	public function result(FederatedEvent $event, array $results): void {
 	}
-
 }
-

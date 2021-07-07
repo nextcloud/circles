@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,9 +31,7 @@
 
 namespace OCA\Circles\GlobalScale;
 
-
 use OCA\Circles\Model\GlobalScale\GSEvent;
-
 
 /**
  * Class CircleDestroy
@@ -75,6 +75,4 @@ class CircleDestroy extends AGlobalScaleEvent {
 	 */
 	public function result(array $events): void {
 	}
-
 }
-

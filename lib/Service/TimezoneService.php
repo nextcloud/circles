@@ -26,7 +26,6 @@
 
 namespace OCA\Circles\Service;
 
-
 use DateTime;
 use OC\AppFramework\Utility\TimeFactory;
 
@@ -117,5 +116,3 @@ class TimezoneService {
 		return $format;
 	}
 }
-
-

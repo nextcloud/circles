@@ -31,13 +31,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Exceptions;
 
-
 /**
  * Class MemberAlreadyExistsException
  *
  * @package OCA\Circles\Exceptions
  */
 class MemberAlreadyExistsException extends FederatedItemBadRequestException {
-
 }
-

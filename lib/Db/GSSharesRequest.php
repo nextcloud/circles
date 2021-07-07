@@ -27,14 +27,12 @@
 
 namespace OCA\Circles\Db;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Model\GlobalScale\GSShare;
 use OCA\Circles\Model\GlobalScale\GSShareMountpoint;
 use OCA\Circles\Model\DeprecatedMember;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\Share\Exceptions\ShareNotFound;
-
 
 /**
  * @deprecated
@@ -43,8 +41,6 @@ use OCP\Share\Exceptions\ShareNotFound;
  * @package OCA\Circles\Db
  */
 class GSSharesRequest extends GSSharesRequestBuilder {
-
-
 	use TStringTools;
 
 
@@ -219,8 +215,4 @@ class GSSharesRequest extends GSSharesRequestBuilder {
 
 		return ($nb === 1);
 	}
-
-
-
 }
-

@@ -37,7 +37,6 @@ use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Group\Events\GroupCreatedEvent;
 
-
 /**
  * Class GroupCreated
  *
@@ -74,6 +73,4 @@ class GroupCreated implements IEventListener {
 		} catch (Exception $e) {
 		}
 	}
-
 }
-

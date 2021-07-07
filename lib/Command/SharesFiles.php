@@ -51,15 +51,12 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
 /**
  * Class SharesFilesList
  *
  * @package OCA\Circles\Command
  */
 class SharesFiles extends Base {
-
-
 	use TArrayTools;
 
 
@@ -239,11 +236,11 @@ class SharesFiles extends Base {
 			if (!$filterRecipient) {
 				$row = array_merge(
 					$row, [
-							$sharedTo . ' (' . $recipient->getSingleId() . ', '
-							. Circle::$DEF_SOURCE[$recipient->getBasedOn()->getSource()] . ')',
-							(($share->getChildId() > 0) ? $share->getChildFileTarget(
-							) : $share->getFileTarget()),
-						]
+						$sharedTo . ' (' . $recipient->getSingleId() . ', '
+						. Circle::$DEF_SOURCE[$recipient->getBasedOn()->getSource()] . ')',
+						(($share->getChildId() > 0) ? $share->getChildFileTarget(
+						) : $share->getFileTarget()),
+					]
 				);
 			}
 
@@ -275,7 +272,6 @@ class SharesFiles extends Base {
 		bool $all,
 		?bool &$filterRecipient = false
 	): array {
-
 		if ($fileId > 0) {
 			return $this->shareWrapperService->getSharesByFileId($this->fileId, true);
 		}
@@ -319,6 +315,4 @@ class SharesFiles extends Base {
 			'Specify a FileId or an option: --with (USER), --by (USER), --to (CIRCLE)'
 		);
 	}
-
 }
-

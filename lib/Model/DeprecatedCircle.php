@@ -32,8 +32,6 @@ use OCA\Circles\Exceptions\CircleTypeNotValidException;
 use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 
 class DeprecatedCircle extends BaseCircle implements JsonSerializable {
-
-
 	use TArrayTools;
 
 
@@ -85,23 +83,23 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 
 	public function jsonSerialize() {
 		$json = [
-			'id'               => $this->getId(),
-			'name'             => $this->getName(true),
-			'alt_name'         => $this->getAltName(),
-			'owner'            => $this->getOwner(),
-			'user'             => $this->getViewer(),
-			'group'            => $this->getGroupViewer(),
-			'viewer'           => $this->getHigherViewer(),
-			'description'      => $this->getDescription(),
-			'settings'         => $this->getSettings(),
-			'type'             => $this->getType(),
-			'creation'         => $this->getCreation(),
-			'type_string'      => $this->getTypeString(),
+			'id' => $this->getId(),
+			'name' => $this->getName(true),
+			'alt_name' => $this->getAltName(),
+			'owner' => $this->getOwner(),
+			'user' => $this->getViewer(),
+			'group' => $this->getGroupViewer(),
+			'viewer' => $this->getHigherViewer(),
+			'description' => $this->getDescription(),
+			'settings' => $this->getSettings(),
+			'type' => $this->getType(),
+			'creation' => $this->getCreation(),
+			'type_string' => $this->getTypeString(),
 			'type_long_string' => $this->getTypeLongString(),
-			'unique_id'        => $this->getUniqueId($this->fullJson),
-			'members'          => $this->getMembers(),
-			'groups'           => $this->getGroups(),
-			'links'            => $this->getLinks()
+			'unique_id' => $this->getUniqueId($this->fullJson),
+			'members' => $this->getMembers(),
+			'groups' => $this->getGroups(),
+			'links' => $this->getLinks()
 		];
 
 		if ($this->lightJson) {
@@ -194,7 +192,6 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 		}
 
 		return null;
-
 	}
 
 
@@ -292,7 +289,7 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 	 * @return int
 	 */
 	public static function convertTypeToConfig(int $type): int {
-		switch($type) {
+		switch ($type) {
 			case DeprecatedCircle::CIRCLES_PERSONAL:
 				return 2;
 			case DeprecatedCircle::CIRCLES_SECRET:
@@ -305,8 +302,4 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 
 		return 0;
 	}
-
-
 }
-
-

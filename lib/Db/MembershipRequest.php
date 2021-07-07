@@ -31,12 +31,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-
 use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Membership;
 use OCP\DB\QueryBuilder\IQueryBuilder;
-
 
 /**
  * Class MembershipRequest
@@ -176,6 +174,4 @@ class MembershipRequest extends MembershipRequestBuilder {
 
 		$qb->execute();
 	}
-
 }
-

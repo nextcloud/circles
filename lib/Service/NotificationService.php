@@ -34,7 +34,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\MemberRequest;
@@ -44,15 +43,12 @@ use OCP\IURLGenerator;
 use OCP\Notification\IManager as INotificationManager;
 use OCP\Notification\INotification;
 
-
 /**
  * Class NotificationService
  *
  * @package OCA\Circles\Service
  */
 class NotificationService {
-
-
 	use TNC22Logger;
 
 
@@ -178,7 +174,6 @@ class NotificationService {
 
 			$this->notificationManager->notify($notification);
 		}
-
 	}
 
 
@@ -233,6 +228,4 @@ class NotificationService {
 
 		return parse_url($absolute, PHP_URL_PATH);
 	}
-
 }
-

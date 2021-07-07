@@ -27,7 +27,6 @@
 
 namespace OCA\Circles\Db;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
@@ -38,8 +37,6 @@ use OCA\Circles\Model\DeprecatedMember;
 use OCP\IGroup;
 
 class DeprecatedMembersRequest extends DeprecatedMembersRequestBuilder {
-
-
 	use TStringTools;
 
 
@@ -159,7 +156,6 @@ class DeprecatedMembersRequest extends DeprecatedMembersRequestBuilder {
 	 * @return DeprecatedMember[]
 	 */
 	public function forceGetAllMembers() {
-
 		$qb = $this->getMembersSelectSql();
 
 		$members = [];
@@ -231,7 +227,7 @@ class DeprecatedMembersRequest extends DeprecatedMembersRequestBuilder {
 			if ($force === false) {
 				if (!$viewer->isLevel(DeprecatedMember::LEVEL_MODERATOR)) {
 					array_map(
-						function(DeprecatedMember $m) {
+						function (DeprecatedMember $m) {
 							$m->setNote('');
 						}, $members
 					);
@@ -309,7 +305,7 @@ class DeprecatedMembersRequest extends DeprecatedMembersRequestBuilder {
 			$index = $this->indexOfMember($members, $member->getUserId());
 			if ($index === -1) {
 				array_push($members, $member);
-			} else if ($members[$index]->getLevel() < $member->getLevel()) {
+			} elseif ($members[$index]->getLevel() < $member->getLevel()) {
 				$members[$index] = $member;
 			}
 		}
@@ -325,7 +321,6 @@ class DeprecatedMembersRequest extends DeprecatedMembersRequestBuilder {
 	 * @return int
 	 */
 	private function indexOfMember(array $members, $userId) {
-
 		foreach ($members as $k => $member) {
 			if ($member->getUserId() === $userId) {
 				return intval($k);
@@ -348,7 +343,6 @@ class DeprecatedMembersRequest extends DeprecatedMembersRequestBuilder {
 	 * @return DeprecatedMember
 	 */
 	public function getFreshNewMember($circleUniqueId, string $name, int $type, string $instance) {
-
 		try {
 			$member = $this->forceGetMember($circleUniqueId, $name, $type, $instance);
 		} catch (MemberDoesNotExistException $e) {
@@ -473,7 +467,6 @@ class DeprecatedMembersRequest extends DeprecatedMembersRequestBuilder {
 	 * @throws MemberAlreadyExistsException
 	 */
 	public function createMember(DeprecatedMember $member) {
-
 		if ($member->getMemberId() === '') {
 			$member->setMemberId($this->token(14));
 		}
@@ -785,6 +778,4 @@ class DeprecatedMembersRequest extends DeprecatedMembersRequestBuilder {
 
 		$qb->execute();
 	}
-
-
 }

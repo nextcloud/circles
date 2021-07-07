@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model\Federated;
 
-
 use ArtificialOwl\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
 use ArtificialOwl\MySmallPhpTools\IDeserializable;
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
@@ -40,15 +39,12 @@ use JsonSerializable;
 use OCA\Circles\IFederatedModel;
 use OCA\Circles\Model\ManagedModel;
 
-
 /**
  * Class FederatedShare
  *
  * @package OCA\Circles\Model\Federated
  */
 class FederatedShare extends ManagedModel implements IFederatedModel, JsonSerializable, INC22QueryRow, IDeserializable {
-
-
 	use TArrayTools;
 
 
@@ -74,7 +70,7 @@ class FederatedShare extends ManagedModel implements IFederatedModel, JsonSerial
 	/**
 	 * FederatedShare constructor.
 	 */
-	function __construct() {
+	public function __construct() {
 	}
 
 
@@ -220,12 +216,10 @@ class FederatedShare extends ManagedModel implements IFederatedModel, JsonSerial
 	 */
 	public function jsonSerialize(): array {
 		return [
-			'id'       => $this->getId(),
-			'itemId'   => $this->getItemId(),
+			'id' => $this->getId(),
+			'itemId' => $this->getItemId(),
 			'circleId' => $this->getCircleId(),
 			'instance' => $this->getInstance()
 		];
 	}
-
 }
-

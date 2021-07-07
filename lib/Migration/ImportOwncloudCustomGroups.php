@@ -224,5 +224,4 @@ class ImportOwncloudCustomGroups implements IRepairStep {
 		$alreadyImported = $this->config->getAppValue('circles', 'imported_custom_groups', 'false');
 		return !$alreadyImported && $this->connection->tableExists('custom_group') && $this->connection->tableExists('custom_group_member');
 	}
-
 }

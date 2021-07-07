@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use Exception;
@@ -43,7 +42,6 @@ use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\Member;
 
-
 /**
  * Class MemberAdd
  *
@@ -54,8 +52,6 @@ class MassiveMemberAdd extends SingleMemberAdd implements
 	IFederatedItemAsyncProcess,
 	IFederatedItemHighSeverity,
 	IFederatedItemMemberEmpty {
-
-
 	use TStringTools;
 	use TNC22Logger;
 
@@ -117,6 +113,4 @@ class MassiveMemberAdd extends SingleMemberAdd implements
 			$this->eventService->memberAdded($event, $results);
 		}
 	}
-
 }
-

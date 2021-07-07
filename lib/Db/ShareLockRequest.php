@@ -31,11 +31,9 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-
 use OCA\Circles\Exceptions\FederatedShareNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Model\Federated\FederatedShare;
-
 
 /**
  * Class ShareRequest
@@ -79,6 +77,4 @@ class ShareLockRequest extends ShareLockRequestBuilder {
 
 		return $this->getItemFromRequest($qb);
 	}
-
 }
-

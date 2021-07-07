@@ -30,7 +30,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-
 use ArtificialOwl\MySmallPhpTools\ActivityPub\Nextcloud\nc22\NC22Signature;
 use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
 use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
@@ -50,7 +49,6 @@ use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\FederatedItems\ItemLock;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\FederatedShare;
-
 
 /**
  * Class FederatedShareService
@@ -115,6 +113,4 @@ class FederatedShareService extends NC22Signature {
 
 		return $share;
 	}
-
 }
-

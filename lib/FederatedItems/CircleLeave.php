@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use OCA\Circles\AppInfo\Application;
@@ -55,7 +54,6 @@ use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\StatusCode;
 
-
 /**
  * Class CircleLeave
  *
@@ -67,8 +65,6 @@ class CircleLeave implements
 	IFederatedItemAsyncProcess,
 	IFederatedItemInitiatorMembershipNotRequired,
 	IFederatedItemMemberOptional {
-
-
 	use TNC22Deserialize;
 	use TNC22Logger;
 
@@ -128,7 +124,7 @@ class CircleLeave implements
 		if (!$event->getParams()->gBool('force')) {
 			$memberHelper = new MemberHelper($member);
 			$memberHelper->cannotBeOwner();
-		} else if ($this->configService->isLocalInstance($event->getOrigin())) {
+		} elseif ($this->configService->isLocalInstance($event->getOrigin())) {
 			if ($member->getLevel() === Member::LEVEL_OWNER) {
 				try {
 					$newOwner = $this->selectNewOwner($circle);
@@ -227,7 +223,7 @@ class CircleLeave implements
 
 			if ($member->getLevel() > $newOwner->getLevel()) {
 				$newOwner = $member;
-			} else if ($member->getLevel() === $newOwner->getLevel()
+			} elseif ($member->getLevel() === $newOwner->getLevel()
 					   && ($member->getJoined() < $newOwner->getJoined()
 						   || ($this->configService->isLocalInstance($member->getInstance())
 							   && !$this->configService->isLocalInstance($newOwner->getInstance()))
@@ -242,6 +238,4 @@ class CircleLeave implements
 
 		return $newOwner;
 	}
-
 }
-

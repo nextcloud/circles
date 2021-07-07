@@ -29,10 +29,8 @@
 
 namespace OCA\Circles\Model;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
-
 
 /**
  * Class DavCard
@@ -40,13 +38,11 @@ use JsonSerializable;
  * @package OCA\Circles\Model
  */
 class DavCard implements JsonSerializable {
-
-
 	use TArrayTools;
 
 
-	const TYPE_CONTACT = 1;
-	const TYPE_LOCAL = 2;
+	public const TYPE_CONTACT = 1;
+	public const TYPE_LOCAL = 2;
 //	const TYPE_FEDERATED = 3;
 
 
@@ -334,10 +330,10 @@ class DavCard implements JsonSerializable {
 	 */
 	private function parseDav(string $dav): array {
 		$result = [
-			'UID'        => '',
-			'FN'         => '',
-			'EMAILS'     => [],
-			'CLOUDS'     => [],
+			'UID' => '',
+			'FN' => '',
+			'EMAILS' => [],
+			'CLOUDS' => [],
 			'CATEGORIES' => []
 		];
 
@@ -346,11 +342,11 @@ class DavCard implements JsonSerializable {
 			if (trim($entry) === '' || strpos($entry, ':') === false) {
 				continue;
 			}
-			list($k, $v) = explode(':', $entry, 2);
+			[$k, $v] = explode(':', $entry, 2);
 
 			$k = strtoupper($k);
 			if (strpos($entry, ';') !== false) {
-				list($k) = explode(';', $entry, 2);
+				[$k] = explode(';', $entry, 2);
 			}
 
 			switch ($k) {
@@ -382,7 +378,6 @@ class DavCard implements JsonSerializable {
 		}
 
 		return $result;
-
 	}
 
 
@@ -392,16 +387,15 @@ class DavCard implements JsonSerializable {
 	public function jsonSerialize(): array {
 		return [
 			'addressBookId' => $this->getAddressBookId(),
-			'owner'         => $this->getOwner(),
-			'cardUri'       => $this->getCardUri(),
-			'contactId'     => $this->getContactId(),
-			'uniqueId'      => $this->getUniqueId(),
-			'fn'            => $this->getFn(),
-			'emails'        => $this->getEmails(),
-			'clouds'        => $this->getClouds(),
-			'groups'        => $this->getGroups(),
-			'userId'        => $this->getUserId()
+			'owner' => $this->getOwner(),
+			'cardUri' => $this->getCardUri(),
+			'contactId' => $this->getContactId(),
+			'uniqueId' => $this->getUniqueId(),
+			'fn' => $this->getFn(),
+			'emails' => $this->getEmails(),
+			'clouds' => $this->getClouds(),
+			'groups' => $this->getGroups(),
+			'userId' => $this->getUserId()
 		];
 	}
-
 }

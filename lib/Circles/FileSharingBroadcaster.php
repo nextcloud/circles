@@ -58,7 +58,6 @@ use OCP\Share\Exceptions\IllegalIDChangeException;
 use OCP\Share\IShare;
 use OCP\Util;
 
-
 /**
  * Class FileSharingBroadcaster
  * @deprecated
@@ -146,7 +145,6 @@ class FileSharingBroadcaster implements IBroadcaster {
 			$this->federatedEnabled = true;
 		} catch (QueryException $e) {
 		}
-
 	}
 
 
@@ -283,7 +281,7 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 		$allShares = $this->fileSharesRequest->getSharesForCircle($member->getCircleId());
 		$knownShares = array_map(
-			function(SharesToken $shareToken) {
+			function (SharesToken $shareToken) {
 				return $shareToken->getShareId();
 			},
 			$this->tokensRequest->getTokensFromMember($member)
@@ -382,10 +380,10 @@ class FileSharingBroadcaster implements IBroadcaster {
 		} catch (\Exception $e) {
 			$this->logger->logException(
 				$e, [
-					  'message' => 'Failed to notify remote server of circles-federated share',
-					  'level'   => ILogger::ERROR,
-					  'app'     => 'circles',
-				  ]
+					'message' => 'Failed to notify remote server of circles-federated share',
+					'level' => ILogger::ERROR,
+					'app' => 'circles',
+				]
 			);
 		}
 
@@ -505,12 +503,12 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 		$emailTemplate = $this->mailer->createEMailTemplate(
 			'sharebymail.RecipientPasswordNotification', [
-														   'filename'       => $filename,
-														   'password'       => $password,
-														   'initiator'      => $initiatorDisplayName,
-														   'initiatorEmail' => $initiatorEmailAddress,
-														   'shareWith'      => $shareWith,
-													   ]
+				'filename' => $filename,
+				'password' => $password,
+				'initiator' => $initiatorDisplayName,
+				'initiatorEmail' => $initiatorEmailAddress,
+				'shareWith' => $shareWith,
+			]
 		);
 
 		$emailTemplate->setSubject(
@@ -561,11 +559,11 @@ class FileSharingBroadcaster implements IBroadcaster {
 	) {
 		$emailTemplate = $this->mailer->createEMailTemplate(
 			'circles.ShareNotification', [
-										   'fileName'   => $fileName,
-										   'fileLink'   => $link,
-										   'author'     => $author,
-										   'circleName' => $circleName,
-									   ]
+				'fileName' => $fileName,
+				'fileLink' => $link,
+				'author' => $author,
+				'circleName' => $circleName,
+			]
 		);
 
 		$emailTemplate->addHeader();
@@ -653,9 +651,9 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 		$emailTemplate = $this->mailer->createEMailTemplate(
 			'sharebymail.RecipientPasswordNotification', [
-														   'password' => $password,
-														   'author'   => $author
-													   ]
+				'password' => $password,
+				'author' => $author
+			]
 		);
 
 		$emailTemplate->setSubject(
@@ -711,8 +709,8 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$filename = basename($share['file_target']);
 
 		return [
-			'author'   => $author,
-			'link'     => $link,
+			'author' => $author,
+			'link' => $link,
 			'filename' => $filename
 		];
 	}
@@ -813,5 +811,4 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 		return $contact['EMAIL'];
 	}
-
 }

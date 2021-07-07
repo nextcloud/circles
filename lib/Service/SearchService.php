@@ -31,12 +31,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-
 use OC;
 use OCA\Circles\ISearch;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Search\FederatedUsers;
-
 
 /**
  * Class SearchService
@@ -44,9 +42,7 @@ use OCA\Circles\Search\FederatedUsers;
  * @package OCA\Circles\Service
  */
 class SearchService {
-
-
-	static $SERVICES = [
+	public static $SERVICES = [
 		FederatedUsers::class
 	];
 
@@ -76,6 +72,4 @@ class SearchService {
 
 		return $result;
 	}
-
 }
-

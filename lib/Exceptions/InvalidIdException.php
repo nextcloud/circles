@@ -28,15 +28,10 @@
 
 namespace OCA\Circles\Exceptions;
 
-use Exception;
-
-
 /**
  * Class FederatedEventException
  *
  * @package OCA\Circles\Exceptions
  */
 class InvalidIdException extends FederatedItemServerException {
-
 }
-

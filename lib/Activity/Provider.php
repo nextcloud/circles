@@ -41,7 +41,6 @@ use OCP\Activity\IEvent;
 use OCP\Activity\IManager;
 use OCP\Activity\IProvider;
 
-
 /**
  * Class Provider
  *
@@ -88,7 +87,6 @@ class Provider implements IProvider {
 	 * {@inheritdoc}
 	 */
 	public function parse($lang, IEvent $event, IEvent $previousEvent = null) {
-
 		try {
 			$params = $event->getSubjectParameters();
 			$this->initActivityParser($event, $params);
@@ -99,7 +97,6 @@ class Provider implements IProvider {
 			$this->parseAsNonMember($event, $circle, $params);
 			$this->parseAsMember($event, $circle, $params);
 			$this->parseAsModerator($event, $circle, $params);
-
 		} catch (FakeException $e) {
 			/** clean exit */
 		}
@@ -259,7 +256,6 @@ class Provider implements IProvider {
 	 * @throws FakeException
 	 */
 	private function parseLinkAsModerator(IEvent $event, DeprecatedCircle $circle, $params) {
-
 		if (!key_exists('link', $params)) {
 			return;
 		}
@@ -278,6 +274,4 @@ class Provider implements IProvider {
 		$this->parserLink->parseLinkDown($event, $circle, $remote);
 		$this->parserLink->parseLinkRemove($event, $circle, $remote);
 	}
-
-
 }

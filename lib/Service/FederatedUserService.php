@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
@@ -74,25 +73,22 @@ use OCP\IUser;
 use OCP\IUserManager;
 use OCP\IUserSession;
 
-
 /**
  * Class FederatedUserService
  *
  * @package OCA\Circles\Service
  */
 class FederatedUserService {
-
-
 	use TArrayTools;
 	use TStringTools;
 	use TNC22Logger;
 
 
-	const CONFLICT_001 = 1;
-	const CONFLICT_002 = 2;
-	const CONFLICT_003 = 3;
-	const CONFLICT_004 = 4;
-	const CONFLICT_005 = 5;
+	public const CONFLICT_001 = 1;
+	public const CONFLICT_002 = 2;
+	public const CONFLICT_003 = 3;
+	public const CONFLICT_004 = 4;
+	public const CONFLICT_005 = 5;
 
 
 	/** @var IUserSession */
@@ -389,7 +385,7 @@ class FederatedUserService {
 	public function setMemberPatron(Member $member): void {
 		if ($this->isInitiatedByOcc()) {
 			$member->setInvitedBy($this->getAppInitiator('occ', Member::APP_OCC));
-		} else if ($this->isInitiatedByAdmin()) {
+		} elseif ($this->isInitiatedByAdmin()) {
 			$member->setInvitedBy($this->getInitiatedByAdmin());
 		} else {
 			$member->setInvitedBy($this->getCurrentUser());
@@ -594,7 +590,7 @@ class FederatedUserService {
 	public function getFederatedMember(string $userId, int $level = Member::LEVEL_MEMBER): Member {
 		$userId = trim($userId, ',');
 		if (strpos($userId, ',') !== false) {
-			list($userId, $level) = explode(',', $userId);
+			[$userId, $level] = explode(',', $userId);
 		}
 
 		$federatedUser = $this->getFederatedUser($userId, Member::TYPE_USER);
@@ -639,7 +635,7 @@ class FederatedUserService {
 			}
 		}
 
-		list($singleId, $instance) = $this->extractIdAndInstance($federatedId);
+		[$singleId, $instance] = $this->extractIdAndInstance($federatedId);
 
 		switch ($type) {
 			case Member::TYPE_SINGLE:
@@ -679,7 +675,7 @@ class FederatedUserService {
 		} catch (Exception $e) {
 		}
 
-		list($userId, $instance) = $this->extractIdAndInstance($federatedId);
+		[$userId, $instance] = $this->extractIdAndInstance($federatedId);
 		$federatedUser = new FederatedUser();
 		$federatedUser->set($userId, $instance, $type);
 
@@ -856,7 +852,7 @@ class FederatedUserService {
 			$userId = $federatedId;
 			$instance = $this->interfaceService->getLocalInstance();
 		} else {
-			list($userId, $instance) = explode('@', $federatedId);
+			[$userId, $instance] = explode('@', $federatedId);
 		}
 
 		return [$userId, $instance];
@@ -1092,7 +1088,7 @@ class FederatedUserService {
 			3, $message, false,
 			[
 				'federatedUser' => $federatedUser,
-				'knownMember'   => $knownMember
+				'knownMember' => $knownMember
 			]
 		);
 
@@ -1154,6 +1150,4 @@ class FederatedUserService {
 
 		return $circle;
 	}
-
 }
-

@@ -26,11 +26,9 @@
 
 namespace OCA\Circles\Model;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
 use OCP\Share\IShare;
-
 
 /**
  * Class SharesToken
@@ -38,8 +36,6 @@ use OCP\Share\IShare;
  * @package OCA\Circles\Model
  */
 class SharesToken implements JsonSerializable {
-
-
 	use TArrayTools;
 
 
@@ -65,7 +61,7 @@ class SharesToken implements JsonSerializable {
 	/**
 	 * SharesToken constructor.
 	 */
-	function __construct() {
+	public function __construct() {
 	}
 
 
@@ -186,7 +182,7 @@ class SharesToken implements JsonSerializable {
 	/**
 	 * @param array $data
 	 */
-	function import(array $data) {
+	public function import(array $data) {
 		$this->setCircleId($this->get('circle_id', $data, ''));
 		$this->setMemberId($this->get('member_id', $data, ''));
 		$this->setAccepted($this->getInt('accepted', $data, IShare::STATUS_PENDING));
@@ -199,16 +195,14 @@ class SharesToken implements JsonSerializable {
 	/**
 	 * @return array
 	 */
-	function jsonSerialize(): array {
+	public function jsonSerialize(): array {
 		return [
 			'circleId' => $this->getCircleId(),
 			'memberId' => $this->getMemberId(),
-			'userId'   => $this->getUserId(),
-			'shareId'  => $this->getShareId(),
-			'token'    => $this->getToken(),
+			'userId' => $this->getUserId(),
+			'shareId' => $this->getShareId(),
+			'token' => $this->getToken(),
 			'accepted' => $this->getAccepted()
 		];
 	}
-
 }
-

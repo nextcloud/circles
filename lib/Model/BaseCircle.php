@@ -31,23 +31,22 @@ use OCA\Circles\AppInfo\Application;
 use OCP\IL10N;
 
 class BaseCircle {
-
-	const CIRCLES_SETTINGS_DEFAULT = [
+	public const CIRCLES_SETTINGS_DEFAULT = [
 		'password_enforcement' => 'false',
-		'password_single'      => '',
-		'allow_links'          => 'false',
-		'allow_links_auto'     => 'false',
-		'allow_links_files'    => 'false'
+		'password_single' => '',
+		'allow_links' => 'false',
+		'allow_links_auto' => 'false',
+		'allow_links_files' => 'false'
 	];
 
-	const CIRCLES_PERSONAL = 1;
-	const CIRCLES_SECRET = 2;
-	const CIRCLES_CLOSED = 4;
-	const CIRCLES_PUBLIC = 8;
+	public const CIRCLES_PERSONAL = 1;
+	public const CIRCLES_SECRET = 2;
+	public const CIRCLES_CLOSED = 4;
+	public const CIRCLES_PUBLIC = 8;
 
-	const CIRCLES_ALL = 15;
+	public const CIRCLES_ALL = 15;
 
-	const SHORT_UNIQUE_ID_LENGTH = 14;
+	public const SHORT_UNIQUE_ID_LENGTH = 14;
 
 	/** @var int */
 	private $id;
@@ -356,7 +355,7 @@ class BaseCircle {
 	public function setSettings($settings, bool $all = false) {
 		if (is_array($settings)) {
 			$this->settings = $settings;
-		} else if (is_string($settings)) {
+		} elseif (is_string($settings)) {
 			$this->settings = (array)json_decode($settings, true);
 		}
 
@@ -376,7 +375,6 @@ class BaseCircle {
 	 * @return array|string
 	 */
 	public function getSettings($json = false) {
-
 		if ($json) {
 			return json_encode($this->settings);
 		}
@@ -580,7 +578,6 @@ class BaseCircle {
 	 * @return integer
 	 */
 	public static function typeInt($type) {
-
 		if (is_numeric($type)) {
 			return (int)$type;
 		}

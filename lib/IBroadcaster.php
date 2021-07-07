@@ -3,7 +3,6 @@
 
 namespace OCA\Circles;
 
-
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SharingFrame;
@@ -74,5 +73,4 @@ interface IBroadcaster {
 	 * @param DeprecatedMember $member
 	 */
 	public function deleteShareToMember(SharingFrame $frame, DeprecatedMember $member);
-
 }

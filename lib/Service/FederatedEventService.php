@@ -30,7 +30,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-
 use ArtificialOwl\MySmallPhpTools\ActivityPub\Nextcloud\nc22\NC22Signature;
 use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
 use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
@@ -76,15 +75,12 @@ use OCA\Circles\Model\Member;
 use ReflectionClass;
 use ReflectionException;
 
-
 /**
  * Class FederatedEventService
  *
  * @package OCA\Circles\Service
  */
 class FederatedEventService extends NC22Signature {
-
-
 	use TNC22Request;
 	use TStringTools;
 
@@ -321,7 +317,7 @@ class FederatedEventService extends NC22Signature {
 		// TODO: enforce IFederatedItemMemberEmpty if no member
 		if ($item instanceof IFederatedItemMemberEmpty) {
 			$event->setMember(null);
-		} else if ($item instanceof IFederatedItemMemberRequired && !$event->hasMember()) {
+		} elseif ($item instanceof IFederatedItemMemberRequired && !$event->hasMember()) {
 			throw new FederatedEventException('FederatedEvent has no Member linked');
 		}
 
@@ -454,7 +450,7 @@ class FederatedEventService extends NC22Signature {
 			$knownInstances = $this->memberRequest->getMemberInstances($circle->getSingleId());
 			$instances = array_filter(
 				array_map(
-					function(RemoteInstance $instance) use ($knownInstances) {
+					function (RemoteInstance $instance) use ($knownInstances) {
 						if (!in_array($instance->getInstance(), $knownInstances)) {
 							return null;
 						}
@@ -469,7 +465,7 @@ class FederatedEventService extends NC22Signature {
 		if ($event->hasMember()
 			&& !$this->configService->isLocalInstance($event->getMember()->getInstance())) {
 			$currentInstances = array_map(
-				function(RemoteInstance $instance): string {
+				function (RemoteInstance $instance): string {
 					return $instance->getInstance();
 				}, $instances
 			);
@@ -518,6 +514,4 @@ class FederatedEventService extends NC22Signature {
 		} catch (FederatedEventException $e) {
 		}
 	}
-
 }
-

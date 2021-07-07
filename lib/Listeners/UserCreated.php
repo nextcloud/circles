@@ -37,7 +37,6 @@ use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\User\Events\UserCreatedEvent;
 
-
 /**
  * Class UserCreated
  *
@@ -75,6 +74,4 @@ class UserCreated implements IEventListener {
 		} catch (Exception $e) {
 		}
 	}
-
 }
-

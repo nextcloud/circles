@@ -31,9 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Events;
 
-
 use OCA\Circles\Model\Federated\FederatedEvent;
-
 
 /**
  * Class CircleMemberEditedEvent
@@ -125,6 +123,4 @@ class CircleMemberEditedEvent extends CircleResultGenericEvent {
 	public function getNewDisplayName(): string {
 		return $this->newDisplayName;
 	}
-
 }
-

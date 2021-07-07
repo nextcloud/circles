@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
-
 use ArtificialOwl\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
 use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
 use ArtificialOwl\MySmallPhpTools\IDeserializable;
@@ -39,10 +38,7 @@ use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
 use OCP\Share\IShare;
 
-
 class ShareToken implements IDeserializable, INC22QueryRow, JsonSerializable {
-
-
 	use TArrayTools;
 
 
@@ -77,7 +73,7 @@ class ShareToken implements IDeserializable, INC22QueryRow, JsonSerializable {
 	/**
 	 * ShareToken constructor.
 	 */
-	function __construct() {
+	public function __construct() {
 	}
 
 
@@ -297,18 +293,16 @@ class ShareToken implements IDeserializable, INC22QueryRow, JsonSerializable {
 	/**
 	 * @return array
 	 */
-	function jsonSerialize(): array {
+	public function jsonSerialize(): array {
 		return [
-			'shareId'  => $this->getShareId(),
+			'shareId' => $this->getShareId(),
 			'circleId' => $this->getCircleId(),
 			'singleId' => $this->getSingleId(),
 			'memberId' => $this->getMemberId(),
-			'token'    => $this->getToken(),
+			'token' => $this->getToken(),
 			'password' => $this->getPassword(),
 			'accepted' => $this->getAccepted(),
-			'link'     => $this->getLink()
+			'link' => $this->getLink()
 		];
 	}
-
 }
-

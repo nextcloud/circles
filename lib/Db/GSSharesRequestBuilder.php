@@ -28,14 +28,12 @@
 
 namespace OCA\Circles\Db;
 
-
 use OCA\Circles\Model\GlobalScale\GSShare;
 use OCA\Circles\Model\GlobalScale\GSShareMountpoint;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 
-
 /** * @deprecated
-
+ *
  * Class GSSharesRequestBuilder
  *
  * @package OCA\Circles\Db
@@ -180,5 +178,4 @@ class GSSharesRequestBuilder extends DeprecatedRequestBuilder {
 
 		return $share;
 	}
-
 }

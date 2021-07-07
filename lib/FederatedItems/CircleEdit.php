@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\CircleNameTooShortException;
@@ -42,15 +41,12 @@ use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\EventService;
 
-
 /**
  * Class CircleEdit
  *
  * @package OCA\Circles\FederatedItems
  */
 class CircleEdit implements IFederatedItem {
-
-
 	use TNC22Deserialize;
 
 
@@ -149,6 +145,4 @@ class CircleEdit implements IFederatedItem {
 	public function result(FederatedEvent $event, array $results): void {
 		$this->eventService->circleEdited($event, $results);
 	}
-
 }
-

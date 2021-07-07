@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Db\RemoteRequest;
@@ -40,31 +39,29 @@ use OCA\Circles\Exceptions\UnknownInterfaceException;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 
-
 /**
  * Class InterfaceService
  *
  * @package OCA\Circles\Service
  */
 class InterfaceService {
-
-	const IFACE0 = 1;
-	const IFACE1 = 2;
-	const IFACE2 = 3;
-	const IFACE3 = 4;
-	const IFACE4 = 5;
-	const IFACE_INTERNAL = 6;
-	const IFACE_FRONTAL = 7;
-	const IFACE_TEST = 99;
+	public const IFACE0 = 1;
+	public const IFACE1 = 2;
+	public const IFACE2 = 3;
+	public const IFACE3 = 4;
+	public const IFACE4 = 5;
+	public const IFACE_INTERNAL = 6;
+	public const IFACE_FRONTAL = 7;
+	public const IFACE_TEST = 99;
 
 	public static $LIST_IFACE = [
 		self::IFACE_INTERNAL => 'internal',
-		self::IFACE_FRONTAL  => 'frontal',
-		self::IFACE0         => 'iface0',
-		self::IFACE1         => 'iface1',
-		self::IFACE2         => 'iface2',
-		self::IFACE3         => 'iface3',
-		self::IFACE4         => 'iface4',
+		self::IFACE_FRONTAL => 'frontal',
+		self::IFACE0 => 'iface0',
+		self::IFACE1 => 'iface1',
+		self::IFACE2 => 'iface2',
+		self::IFACE3 => 'iface3',
+		self::IFACE4 => 'iface4',
 	];
 
 
@@ -176,12 +173,12 @@ class InterfaceService {
 	public function setCurrentInterfaceFromRequest(IRequest $request, string $testToken = ''): void {
 		$testing = [
 			self::IFACE_INTERNAL => $this->configService->getInternalInstance(),
-			self::IFACE_FRONTAL  => $this->configService->getFrontalInstance(),
-			self::IFACE0         => $this->configService->getIfaceInstance(self::IFACE0),
-			self::IFACE1         => $this->configService->getIfaceInstance(self::IFACE1),
-			self::IFACE2         => $this->configService->getIfaceInstance(self::IFACE2),
-			self::IFACE3         => $this->configService->getIfaceInstance(self::IFACE3),
-			self::IFACE4         => $this->configService->getIfaceInstance(self::IFACE4),
+			self::IFACE_FRONTAL => $this->configService->getFrontalInstance(),
+			self::IFACE0 => $this->configService->getIfaceInstance(self::IFACE0),
+			self::IFACE1 => $this->configService->getIfaceInstance(self::IFACE1),
+			self::IFACE2 => $this->configService->getIfaceInstance(self::IFACE2),
+			self::IFACE3 => $this->configService->getIfaceInstance(self::IFACE3),
+			self::IFACE4 => $this->configService->getIfaceInstance(self::IFACE4),
 		];
 
 		if ($testToken !== ''
@@ -235,12 +232,12 @@ class InterfaceService {
 	public function getInterfaces(bool $useString = false): array {
 		$interfaces = [
 			self::IFACE_INTERNAL => $this->configService->getInternalInstance(),
-			self::IFACE_FRONTAL  => $this->configService->getFrontalInstance(),
-			self::IFACE0         => $this->configService->getIfaceInstance(InterfaceService::IFACE0),
-			self::IFACE1         => $this->configService->getIfaceInstance(InterfaceService::IFACE1),
-			self::IFACE2         => $this->configService->getIfaceInstance(InterfaceService::IFACE2),
-			self::IFACE3         => $this->configService->getIfaceInstance(InterfaceService::IFACE3),
-			self::IFACE4         => $this->configService->getIfaceInstance(InterfaceService::IFACE4)
+			self::IFACE_FRONTAL => $this->configService->getFrontalInstance(),
+			self::IFACE0 => $this->configService->getIfaceInstance(InterfaceService::IFACE0),
+			self::IFACE1 => $this->configService->getIfaceInstance(InterfaceService::IFACE1),
+			self::IFACE2 => $this->configService->getIfaceInstance(InterfaceService::IFACE2),
+			self::IFACE3 => $this->configService->getIfaceInstance(InterfaceService::IFACE3),
+			self::IFACE4 => $this->configService->getIfaceInstance(InterfaceService::IFACE4)
 		];
 
 		if (!$useString) {
@@ -380,6 +377,4 @@ class InterfaceService {
 	private function getTestingInstance(): string {
 		return $this->configService->getAppValue(ConfigService::IFACE_TEST_ID);
 	}
-
 }
-

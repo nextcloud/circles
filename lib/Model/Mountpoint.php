@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,10 +31,8 @@
 
 namespace OCA\Circles\Model;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
-
 
 /**
  * Class Mountpoint
@@ -40,8 +40,6 @@ use JsonSerializable;
  * @package OCA\Circles\Model
  */
 class Mountpoint implements JsonSerializable {
-
-
 	use TArrayTools;
 
 
@@ -143,13 +141,11 @@ class Mountpoint implements JsonSerializable {
 	/**
 	 * @return array
 	 */
-	function jsonSerialize(): array {
+	public function jsonSerialize(): array {
 		return [
-			'userId'     => $this->getUserId(),
-			'shareId'    => $this->getShareId(),
+			'userId' => $this->getUserId(),
+			'shareId' => $this->getShareId(),
 			'mountPoint' => $this->getMountPoint(),
 		];
 	}
-
 }
-

@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
-
 use OCA\Circles\Db\CoreQueryBuilder;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
@@ -220,7 +219,7 @@ class ModelManager {
 	 */
 	private function importIntoCircle(Circle $circle, array $data, string $path, string $prefix): void {
 		switch ($path) {
-			case CoreQueryBuilder::OWNER;
+			case CoreQueryBuilder::OWNER:
 				try {
 					$owner = new Member();
 					$owner->importFromDatabase($data, $prefix);
@@ -229,7 +228,7 @@ class ModelManager {
 				}
 				break;
 
-			case CoreQueryBuilder::INITIATOR;
+			case CoreQueryBuilder::INITIATOR:
 				try {
 					$initiator = new Member();
 					$initiator->importFromDatabase($data, $prefix);
@@ -238,7 +237,7 @@ class ModelManager {
 				}
 				break;
 
-			case CoreQueryBuilder::DIRECT_INITIATOR;
+			case CoreQueryBuilder::DIRECT_INITIATOR:
 				try {
 					$directInitiator = new Member();
 					$directInitiator->importFromDatabase($data, $prefix);
@@ -258,7 +257,7 @@ class ModelManager {
 	 */
 	private function importIntoMember(Member $member, array $data, string $path, string $prefix): void {
 		switch ($path) {
-			case CoreQueryBuilder::CIRCLE;
+			case CoreQueryBuilder::CIRCLE:
 				try {
 					$circle = new Circle();
 					$circle->importFromDatabase($data, $prefix);
@@ -267,7 +266,7 @@ class ModelManager {
 				}
 				break;
 
-			case CoreQueryBuilder::BASED_ON;
+			case CoreQueryBuilder::BASED_ON:
 				try {
 					$circle = new Circle();
 					$circle->importFromDatabase($data, $prefix);
@@ -276,7 +275,7 @@ class ModelManager {
 				}
 				break;
 
-			case CoreQueryBuilder::INHERITED_BY;
+			case CoreQueryBuilder::INHERITED_BY:
 				try {
 					$inheritedBy = new FederatedUser();
 					$inheritedBy->importFromDatabase($data, $prefix);
@@ -285,7 +284,7 @@ class ModelManager {
 				}
 				break;
 
-			case CoreQueryBuilder::INVITED_BY;
+			case CoreQueryBuilder::INVITED_BY:
 				try {
 					$invitedByCircle = new Circle();
 					$invitedByCircle->importFromDatabase($data, $prefix);
@@ -296,7 +295,7 @@ class ModelManager {
 				}
 				break;
 
-			case CoreQueryBuilder::INHERITANCE_FROM;
+			case CoreQueryBuilder::INHERITANCE_FROM:
 				try {
 					$inheritanceFrom = new Member();
 					$inheritanceFrom->importFromDatabase($data, $prefix);
@@ -305,7 +304,7 @@ class ModelManager {
 				}
 				break;
 
-			case CoreQueryBuilder::REMOTE;
+			case CoreQueryBuilder::REMOTE:
 				try {
 					$remoteInstance = new RemoteInstance();
 					$remoteInstance->importFromDatabase($data, $prefix);
@@ -330,7 +329,7 @@ class ModelManager {
 		string $prefix
 	): void {
 		switch ($path) {
-			case CoreQueryBuilder::MEMBERSHIPS;
+			case CoreQueryBuilder::MEMBERSHIPS:
 				try {
 					$membership = new Membership();
 					$membership->importFromDatabase($data, $prefix);
@@ -355,7 +354,7 @@ class ModelManager {
 		string $prefix
 	): void {
 		switch ($path) {
-			case CoreQueryBuilder::CIRCLE;
+			case CoreQueryBuilder::CIRCLE:
 				try {
 					$circle = new Circle();
 					$circle->importFromDatabase($data, $prefix);
@@ -364,7 +363,7 @@ class ModelManager {
 				}
 				break;
 
-			case CoreQueryBuilder::INITIATOR;
+			case CoreQueryBuilder::INITIATOR:
 				try {
 					$initiator = new Member();
 					$initiator->importFromDatabase($data, $prefix);
@@ -373,7 +372,7 @@ class ModelManager {
 				}
 				break;
 
-			case CoreQueryBuilder::INHERITED_BY;
+			case CoreQueryBuilder::INHERITED_BY:
 				try {
 					$inheritedBy = new Member();
 					$inheritedBy->importFromDatabase($data, $prefix);
@@ -382,7 +381,7 @@ class ModelManager {
 				}
 				break;
 
-			case CoreQueryBuilder::FILE_CACHE;
+			case CoreQueryBuilder::FILE_CACHE:
 				try {
 					$fileCache = new FileCacheWrapper();
 					$fileCache->importFromDatabase($data, $prefix);
@@ -407,7 +406,7 @@ class ModelManager {
 		string $prefix
 	): void {
 		switch ($path) {
-			case CoreQueryBuilder::MEMBER;
+			case CoreQueryBuilder::MEMBER:
 				try {
 					$member = new Member();
 					$member->importFromDatabase($data, $prefix);
@@ -416,7 +415,7 @@ class ModelManager {
 				}
 				break;
 
-			case CoreQueryBuilder::INITIATOR;
+			case CoreQueryBuilder::INITIATOR:
 				try {
 					$initiator = new Member();
 					$initiator->importFromDatabase($data, $prefix);
@@ -492,6 +491,4 @@ class ModelManager {
 	public function isFullDetails(): bool {
 		return $this->fullDetails;
 	}
-
 }
-

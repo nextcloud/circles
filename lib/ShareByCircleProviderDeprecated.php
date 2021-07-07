@@ -30,7 +30,6 @@
 
 namespace OCA\Circles;
 
-
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use Exception;
 use OC;
@@ -71,7 +70,6 @@ use OCP\Share\Exceptions\IllegalIDChangeException;
 use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IShare;
 use OCP\Share\IShareProvider;
-
 
 /**
  * Class ShareByCircleProvider
@@ -215,7 +213,6 @@ class ShareByCircleProviderDeprecated extends CircleProviderRequest implements I
 	 * @return IShare The share object
 	 */
 	public function update(IShare $share) {
-
 		$qb = $this->getBaseUpdateSql();
 		$this->limitToShare($qb, $share->getId());
 		$qb->set('permissions', $qb->createNamedParameter($share->getPermissions()))
@@ -247,8 +244,8 @@ class ShareByCircleProviderDeprecated extends CircleProviderRequest implements I
 			$store = new SimpleDataStore();
 			$store->sArray(
 				'share', [
-						   'id' => $share->getId()
-					   ]
+					'id' => $share->getId()
+				]
 			);
 			$event->setData($store);
 
@@ -288,7 +285,6 @@ class ShareByCircleProviderDeprecated extends CircleProviderRequest implements I
 	 *
 	 */
 	public function move(IShare $share, $userId) {
-
 		$childId = $this->getShareChildId($share, $userId);
 
 		$qb = $this->getBaseUpdateSql();
@@ -496,7 +492,7 @@ class ShareByCircleProviderDeprecated extends CircleProviderRequest implements I
 
 	/**
 	 * Get shares for a given path
-
+	 *
 	 * @param Node $path
 	 *
 	 * @return IShare[]|null
@@ -554,7 +550,6 @@ class ShareByCircleProviderDeprecated extends CircleProviderRequest implements I
 	 * @throws NotFoundException
 	 */
 	private function getSharedWithCircleMembers($userId, $shareType, $node, $limit, $offset) {
-
 		$qb = $this->getCompleteSelectSql();
 		$this->linkToFileCache($qb, $userId);
 		$this->limitToPage($qb, $limit, $offset);
@@ -753,7 +748,7 @@ class ShareByCircleProviderDeprecated extends CircleProviderRequest implements I
 
 		if (($password = $this->get('personal_password', $data, '')) !== '') {
 			$share->setPassword($this->get('personal_password', $data, ''));
-		} else if (($password = $this->get('password', $data, '')) !== '') {
+		} elseif (($password = $this->get('password', $data, '')) !== '') {
 			$share->setPassword($this->get('password', $data, ''));
 		}
 
@@ -835,7 +830,7 @@ class ShareByCircleProviderDeprecated extends CircleProviderRequest implements I
 						   ->getName();
 
 		$message = 'Sharing %s failed, this item is already shared with this circle';
-		$message_t = $this->l10n->t($message, array($share_src));
+		$message_t = $this->l10n->t($message, [$share_src]);
 		$this->logger->debug(
 			sprintf($message, $share_src, $share->getSharedWith()), ['app' => 'circles']
 		);
@@ -901,7 +896,6 @@ class ShareByCircleProviderDeprecated extends CircleProviderRequest implements I
 	 * @return array
 	 */
 	private function parseAccessListResult(IQueryBuilder $qb) {
-
 		$cursor = $qb->execute();
 		$users = [];
 
@@ -910,7 +904,7 @@ class ShareByCircleProviderDeprecated extends CircleProviderRequest implements I
 
 			if (!key_exists($userId, $users)) {
 				$users[$userId] = [
-					'node_id'   => $row['file_source'],
+					'node_id' => $row['file_source'],
 					'node_path' => $row['file_target']
 				];
 			}
@@ -929,14 +923,14 @@ class ShareByCircleProviderDeprecated extends CircleProviderRequest implements I
 	 */
 	private function shareObjectToArray(IShare $share) {
 		return [
-			'id'          => $share->getId(),
-			'sharedWith'  => $share->getSharedWith(),
-			'sharedBy'    => $share->getSharedBy(),
-			'nodeId'      => $share->getNodeId(),
-			'shareOwner'  => $share->getShareOwner(),
+			'id' => $share->getId(),
+			'sharedWith' => $share->getSharedWith(),
+			'sharedBy' => $share->getSharedBy(),
+			'nodeId' => $share->getNodeId(),
+			'shareOwner' => $share->getShareOwner(),
 			'permissions' => $share->getPermissions(),
-			'token'       => $share->getToken(),
-			'password'    => ($share->getPassword() === null) ? '' : $share->getPassword()
+			'token' => $share->getToken(),
+			'password' => ($share->getPassword() === null) ? '' : $share->getPassword()
 		];
 	}
 
@@ -1025,6 +1019,4 @@ class ShareByCircleProviderDeprecated extends CircleProviderRequest implements I
 
 		return $str;
 	}
-
-
 }

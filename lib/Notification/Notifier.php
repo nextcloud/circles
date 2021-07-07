@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Notification;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use Exception;
 use InvalidArgumentException;
@@ -53,15 +52,12 @@ use OCP\L10N\IFactory;
 use OCP\Notification\INotification;
 use OCP\Notification\INotifier;
 
-
 /**
  * Class Notifier
  *
  * @package OCA\Circles\Notification
  */
 class Notifier implements INotifier {
-
-
 	use TNC22Logger;
 
 
@@ -158,7 +154,6 @@ class Notifier implements INotifier {
 		$this->prepareActions($notification);
 
 		return $notification;
-
 	}
 
 
@@ -216,7 +211,6 @@ class Notifier implements INotifier {
 		}
 
 		$notification->setParsedSubject($subject);
-
 	}
 
 
@@ -243,6 +237,4 @@ class Notifier implements INotifier {
 			$notification->addParsedAction($action);
 		}
 	}
-
 }
-

@@ -30,13 +30,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Exceptions;
 
-
 /**
  * Class MemberNotFoundException
  *
  * @package OCA\Circles\Exceptions
  */
 class FileCacheNotFoundException extends FederatedItemNotFoundException {
-
 }
-

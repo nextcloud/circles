@@ -73,15 +73,12 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
 /**
  * Class CirclesMemberships
  *
  * @package OCA\Circles\Command
  */
 class CirclesMemberships extends Base {
-
-
 	use TArrayTools;
 	use TNC22ConsoleTree;
 
@@ -245,7 +242,7 @@ class CirclesMemberships extends Base {
 		$this->drawTree(
 			$tree, [$this, 'displayLeaf'],
 			[
-				'height'       => 3,
+				'height' => 3,
 				'node-spacing' => 0,
 				'item-spacing' => 1,
 			]
@@ -276,8 +273,8 @@ class CirclesMemberships extends Base {
 			$item = new NC22TreeNode(
 				$tree, new SimpleDataStore(
 						 [
-							 'member'  => $member,
-							 'cycling' => in_array($member->getCircleId(), $knownIds)
+						 	'member' => $member,
+						 	'cycling' => in_array($member->getCircleId(), $knownIds)
 						 ]
 					 )
 			);
@@ -400,6 +397,4 @@ class CirclesMemberships extends Base {
 
 		$output->writeln($count . ' memberships updated');
 	}
-
 }
-
