@@ -31,9 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles;
 
-
 use OCA\Circles\Model\Federated\FederatedEvent;
-
 
 /**
  * Interface IFederatedItemShareManagement
@@ -134,6 +132,4 @@ interface IFederatedItemShareManagement {
 	 * @param FederatedEvent $event
 	 */
 	public function shareDelete(FederatedEvent $event): void;
-
 }
-

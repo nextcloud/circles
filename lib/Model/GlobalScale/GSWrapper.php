@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,12 +31,10 @@
 
 namespace OCA\Circles\Model\GlobalScale;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\Exceptions\JsonException;
 use OCA\Circles\Exceptions\ModelException;
-
 
 /**
  * Class GSEvent
@@ -42,15 +42,13 @@ use OCA\Circles\Exceptions\ModelException;
  * @package OCA\Circles\Model\GlobalScale
  */
 class GSWrapper implements JsonSerializable {
-
-
 	use TArrayTools;
 
 
-	const STATUS_INIT = 0;
-	const STATUS_FAILED = 1;
-	const STATUS_DONE = 8;
-	const STATUS_OVER = 9;
+	public const STATUS_INIT = 0;
+	public const STATUS_FAILED = 1;
+	public const STATUS_DONE = 8;
+	public const STATUS_OVER = 9;
 
 
 	/** @var string */
@@ -72,7 +70,7 @@ class GSWrapper implements JsonSerializable {
 	private $creation;
 
 
-	function __construct() {
+	public function __construct() {
 	}
 
 
@@ -224,12 +222,12 @@ class GSWrapper implements JsonSerializable {
 	/**
 	 * @return array
 	 */
-	function jsonSerialize(): array {
+	public function jsonSerialize(): array {
 		$arr = [
-			'id'       => $this->getToken(),
-			'event'    => $this->getEvent(),
+			'id' => $this->getToken(),
+			'event' => $this->getEvent(),
 			'severity' => $this->getSeverity(),
-			'status'   => $this->getStatus(),
+			'status' => $this->getStatus(),
 			'creation' => $this->getCreation()
 		];
 
@@ -237,6 +235,4 @@ class GSWrapper implements JsonSerializable {
 
 		return $arr;
 	}
-
 }
-

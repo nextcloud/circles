@@ -49,15 +49,12 @@ use OCP\IUserManager;
 use OCP\Share\Exceptions\IllegalIDChangeException;
 use OCP\Share\IShare;
 
-
 /**
  * Class ShareWrapper
  *
  * @package OCA\Circles\Model
  */
 class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRow, JsonSerializable {
-
-
 	use TArrayTools;
 	use TNC22Deserialize;
 
@@ -649,7 +646,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 			$share->setNodeCacheEntry(
 				Cache::cacheEntryFromData($this->getFileCache()->toCache(), OC::$server->getMimeTypeLoader())
 			);
-		} else if ($nullOnMissingFileCache) {
+		} elseif ($nullOnMissingFileCache) {
 			return null;
 		}
 
@@ -824,23 +821,23 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 	 */
 	public function jsonSerialize(): array {
 		$arr = [
-			'id'               => $this->getId(),
-			'shareType'        => $this->getShareType(),
-			'providerId'       => $this->getProviderId(),
-			'permissions'      => $this->getPermissions(),
-			'itemType'         => $this->getItemType(),
-			'itemSource'       => $this->getItemSource(),
-			'itemTarget'       => $this->getItemTarget(),
-			'fileSource'       => $this->getFileSource(),
-			'fileTarget'       => $this->getFileTarget(),
-			'status'           => $this->getStatus(),
-			'shareTime'        => $this->getShareTime()->getTimestamp(),
-			'sharedWith'       => $this->getSharedWith(),
-			'sharedBy'         => $this->getSharedBy(),
-			'shareOwner'       => $this->getShareOwner(),
-			'token'            => $this->getToken(),
-			'childId'          => $this->getChildId(),
-			'childFileTarget'  => $this->getChildFileTarget(),
+			'id' => $this->getId(),
+			'shareType' => $this->getShareType(),
+			'providerId' => $this->getProviderId(),
+			'permissions' => $this->getPermissions(),
+			'itemType' => $this->getItemType(),
+			'itemSource' => $this->getItemSource(),
+			'itemTarget' => $this->getItemTarget(),
+			'fileSource' => $this->getFileSource(),
+			'fileTarget' => $this->getFileTarget(),
+			'status' => $this->getStatus(),
+			'shareTime' => $this->getShareTime()->getTimestamp(),
+			'sharedWith' => $this->getSharedWith(),
+			'sharedBy' => $this->getSharedBy(),
+			'shareOwner' => $this->getShareOwner(),
+			'token' => $this->getToken(),
+			'childId' => $this->getChildId(),
+			'childFileTarget' => $this->getChildFileTarget(),
 			'childPermissions' => $this->getChildPermissions()
 		];
 
@@ -866,6 +863,4 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 
 		return $arr;
 	}
-
 }
-

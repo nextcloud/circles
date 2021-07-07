@@ -29,7 +29,6 @@
 
 namespace OCA\Circles\Api\v1;
 
-
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedUserException;
@@ -44,26 +43,25 @@ use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedUserService;
 
 class Circles {
-
-	const API_VERSION = [0, 10, 0];
+	public const API_VERSION = [0, 10, 0];
 
 	// Expose circle and member constants via API
-	const CIRCLES_PERSONAL = 1;
-	const CIRCLES_SECRET = 2;
-	const CIRCLES_CLOSED = 4;
-	const CIRCLES_PUBLIC = 8;
-	const CIRCLES_ALL = 15;
+	public const CIRCLES_PERSONAL = 1;
+	public const CIRCLES_SECRET = 2;
+	public const CIRCLES_CLOSED = 4;
+	public const CIRCLES_PUBLIC = 8;
+	public const CIRCLES_ALL = 15;
 
-	const TYPE_USER = Member::TYPE_USER;
-	const TYPE_GROUP = Member::TYPE_GROUP;
-	const TYPE_MAIL = Member::TYPE_MAIL;
-	const TYPE_CONTACT = Member::TYPE_CONTACT;
+	public const TYPE_USER = Member::TYPE_USER;
+	public const TYPE_GROUP = Member::TYPE_GROUP;
+	public const TYPE_MAIL = Member::TYPE_MAIL;
+	public const TYPE_CONTACT = Member::TYPE_CONTACT;
 
-	const LEVEL_NONE = Member::LEVEL_NONE;
-	const LEVEL_MEMBER = Member::LEVEL_MEMBER;
-	const LEVEL_MODERATOR = Member::LEVEL_MODERATOR;
-	const LEVEL_ADMIN = Member::LEVEL_ADMIN;
-	const LEVEL_OWNER = Member::LEVEL_OWNER;
+	public const LEVEL_NONE = Member::LEVEL_NONE;
+	public const LEVEL_MEMBER = Member::LEVEL_MEMBER;
+	public const LEVEL_MODERATOR = Member::LEVEL_MODERATOR;
+	public const LEVEL_ADMIN = Member::LEVEL_ADMIN;
+	public const LEVEL_OWNER = Member::LEVEL_OWNER;
 
 
 	/**
@@ -152,7 +150,7 @@ class Circles {
 			null,
 			new SimpleDataStore(
 				[
-					'mustBeMember'           => true,
+					'mustBeMember' => true,
 					'includePersonalCircles' => $personalCircle
 				]
 			)
@@ -244,6 +242,4 @@ class Circles {
 //		return $c->query(CirclesService::class)
 //				 ->getFilesForCircles($circleUniqueIds);
 	}
-
 }
-

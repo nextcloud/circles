@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,7 +31,6 @@
 
 namespace OCA\Circles\GlobalScale;
 
-
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
@@ -37,7 +38,6 @@ use OCA\Circles\Exceptions\GlobalScaleDSyncException;
 use OCA\Circles\Exceptions\GlobalScaleEventException;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\DeprecatedMember;
-
 
 /**
  * Class CircleUpdate
@@ -118,4 +118,3 @@ class CircleUpdate extends AGlobalScaleEvent {
 	public function result(array $events): void {
 	}
 }
-

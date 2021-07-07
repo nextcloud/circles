@@ -32,8 +32,5 @@ namespace OCA\Circles\Exceptions;
 
 use Exception;
 
-
 class RemoteUidException extends Exception {
-
 }
-

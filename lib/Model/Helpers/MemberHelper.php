@@ -37,7 +37,6 @@ use OCA\Circles\Exceptions\MemberLevelException;
 use OCA\Circles\Exceptions\ParseMemberLevelException;
 use OCA\Circles\Model\Member;
 
-
 /**
  * Class MemberHelper
  *
@@ -53,8 +52,6 @@ use OCA\Circles\Model\Member;
  * @package OCA\Circles\Model\Helpers
  */
 class MemberHelper {
-
-
 	use TArrayTools;
 
 
@@ -186,7 +183,4 @@ class MemberHelper {
 	public function mustBeHigherOrSameLevelThan(Member $compare) {
 		$this->mustHaveLevelEqualOrAbove($compare->getLevel());
 	}
-
-
 }
-

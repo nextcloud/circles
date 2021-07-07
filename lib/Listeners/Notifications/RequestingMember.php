@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Listeners\Notifications;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Events\CircleGenericEvent;
@@ -41,15 +40,12 @@ use OCA\Circles\Service\NotificationService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 
-
 /**
  * Class RequestingMember
  *
  * @package OCA\Circles\Listeners\Notifications
  */
 class RequestingMember implements IEventListener {
-
-
 	use TNC22Logger;
 
 
@@ -85,7 +81,4 @@ class RequestingMember implements IEventListener {
 			$this->notificationService->notificationInvited($member);
 		}
 	}
-
-
 }
-

@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Collaboration\v2;
 
-
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use Exception;
 use OC\Share20\Share;
@@ -41,7 +40,6 @@ use OCA\Circles\Service\FederatedUserService;
 use OCP\Collaboration\Collaborators\ISearchPlugin;
 use OCP\Collaboration\Collaborators\ISearchResult;
 use OCP\Collaboration\Collaborators\SearchResultType;
-
 
 /**
  * Class CollaboratorSearchPlugin
@@ -91,7 +89,7 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 				$filterCircle, null,
 				new SimpleDataStore(
 					[
-						'limit'  => $limit,
+						'limit' => $limit,
 						'offset' => $offset
 					]
 				)
@@ -123,15 +121,13 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 	 */
 	private function addResultEntry(Circle $circle): array {
 		return [
-			'label'                => $circle->getDisplayName(),
+			'label' => $circle->getDisplayName(),
 			'shareWithDescription' => $circle->getOwner()->getDisplayName(),
-			'value'                => [
+			'value' => [
 				'shareType' => Share::TYPE_CIRCLE,
 				'shareWith' => $circle->getSingleId(),
-				'circle'    => $circle
+				'circle' => $circle
 			],
 		];
 	}
-
 }
-

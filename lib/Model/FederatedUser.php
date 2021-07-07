@@ -43,7 +43,6 @@ use OCA\Circles\Exceptions\UnknownInterfaceException;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\IMemberships;
 
-
 /**
  * Class FederatedUser
  *
@@ -55,8 +54,6 @@ class FederatedUser extends ManagedModel implements
 	IDeserializable,
 	INC22QueryRow,
 	JsonSerializable {
-
-
 	use TArrayTools;
 	use TNC22Deserialize;
 
@@ -421,11 +418,11 @@ class FederatedUser extends ManagedModel implements
 	 */
 	public function jsonSerialize(): array {
 		$arr = [
-			'id'          => $this->getSingleId(),
-			'userId'      => $this->getUserId(),
-			'userType'    => $this->getUserType(),
+			'id' => $this->getSingleId(),
+			'userId' => $this->getUserId(),
+			'userType' => $this->getUserType(),
 			'displayName' => $this->getDisplayName(),
-			'instance'    => $this->getManager()->fixInstance($this->getInstance())
+			'instance' => $this->getManager()->fixInstance($this->getInstance())
 		];
 
 		if ($this->hasBasedOn()) {
@@ -458,6 +455,4 @@ class FederatedUser extends ManagedModel implements
 				 || $this->getUserType() <> $member->getUserType()
 				 || (!$local && $this->getInstance() !== $member->getInstance()));
 	}
-
 }
-

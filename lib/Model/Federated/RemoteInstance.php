@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model\Federated;
 
-
 use ArtificialOwl\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
 use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22Signatory;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
@@ -39,22 +38,19 @@ use JsonSerializable;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteUidException;
 
-
 /**
  * Class AppService
  *
  * @package OCA\Circles\Model
  */
 class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSerializable {
-
-
 	use TArrayTools;
 
-	const TYPE_UNKNOWN = 'Unknown';    // not trusted
-	const TYPE_PASSIVE = 'Passive';    // Minimum information about Federated Circles are broadcasted if a member belongs to the circle.
-	const TYPE_EXTERNAL = 'External';  // info about Federated Circles and their members are broadcasted  if a member belongs to the circle.
-	const TYPE_TRUSTED = 'Trusted';    // everything about Federated Circles are broadcasted.
-	const TYPE_GLOBALSCALE = 'GlobalScale';  // every Circle is broadcasted,
+	public const TYPE_UNKNOWN = 'Unknown';    // not trusted
+	public const TYPE_PASSIVE = 'Passive';    // Minimum information about Federated Circles are broadcasted if a member belongs to the circle.
+	public const TYPE_EXTERNAL = 'External';  // info about Federated Circles and their members are broadcasted  if a member belongs to the circle.
+	public const TYPE_TRUSTED = 'Trusted';    // everything about Federated Circles are broadcasted.
+	public const TYPE_GLOBALSCALE = 'GlobalScale';  // every Circle is broadcasted,
 
 	public static $LIST_TYPE = [
 		self::TYPE_UNKNOWN,
@@ -64,13 +60,13 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 		self::TYPE_GLOBALSCALE
 	];
 
-	const TEST = 'test';
-	const INCOMING = 'incoming';
-	const EVENT = 'event';
-	const CIRCLES = 'circles';
-	const CIRCLE = 'circle';
-	const MEMBERS = 'members';
-	const MEMBER = 'member';
+	public const TEST = 'test';
+	public const INCOMING = 'incoming';
+	public const EVENT = 'event';
+	public const CIRCLES = 'circles';
+	public const CIRCLE = 'circle';
+	public const MEMBERS = 'members';
+	public const MEMBER = 'member';
 
 
 	/** @var int */
@@ -450,7 +446,7 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 		$algo = '';
 		$authSigned = trim($this->get('auth-signed', $data), ':');
 		if (strpos($authSigned, ':') > 0) {
-			list($algo, $authSigned) = explode(':', $authSigned);
+			[$algo, $authSigned] = explode(':', $authSigned);
 		}
 
 		$this->setAuthSigned($authSigned)
@@ -465,15 +461,15 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 	 */
 	public function jsonSerialize(): array {
 		$data = [
-			'uid'      => $this->getUid(true),
-			'root'     => $this->getRoot(),
-			'event'    => $this->getEvent(),
+			'uid' => $this->getUid(true),
+			'root' => $this->getRoot(),
+			'event' => $this->getEvent(),
 			'incoming' => $this->getIncoming(),
-			'test'     => $this->getTest(),
-			'circles'  => $this->getCircles(),
-			'circle'   => $this->getCircle(),
-			'members'  => $this->getMembers(),
-			'member'   => $this->getMember(),
+			'test' => $this->getTest(),
+			'circles' => $this->getCircles(),
+			'circle' => $this->getCircle(),
+			'members' => $this->getMembers(),
+			'member' => $this->getMember(),
 		];
 
 		if ($this->getAuthSigned() !== '') {
@@ -510,6 +506,4 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 
 		return $this;
 	}
-
 }
-

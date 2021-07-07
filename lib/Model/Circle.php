@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
-
 use ArtificialOwl\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
 use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
 use ArtificialOwl\MySmallPhpTools\IDeserializable;
@@ -42,7 +41,6 @@ use JsonSerializable;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\IMemberships;
-
 
 /**
  * Class Circle
@@ -73,37 +71,35 @@ use OCA\Circles\IMemberships;
  * @package OCA\Circles\Model
  */
 class Circle extends ManagedModel implements IMemberships, IDeserializable, INC22QueryRow, JsonSerializable {
-
-
 	use TArrayTools;
 	use TNC22Deserialize;
 
 
-	const FLAGS_SHORT = 1;
-	const FLAGS_LONG = 2;
+	public const FLAGS_SHORT = 1;
+	public const FLAGS_LONG = 2;
 
 
 	// specific value
-	const CFG_CIRCLE = 0;        // only for code readability. Circle is locked by default.
-	const CFG_SINGLE = 1;        // Circle with only one single member.
-	const CFG_PERSONAL = 2;      // Personal circle, only the owner can see it.
+	public const CFG_CIRCLE = 0;        // only for code readability. Circle is locked by default.
+	public const CFG_SINGLE = 1;        // Circle with only one single member.
+	public const CFG_PERSONAL = 2;      // Personal circle, only the owner can see it.
 
 	// bitwise
-	const CFG_SYSTEM = 4;            // System Circle (not managed by the official front-end). Meaning some config are limited
-	const CFG_VISIBLE = 8;           // Visible to everyone, if not visible, people have to know its name to be able to find it
-	const CFG_OPEN = 16;             // Circle is open, people can join
-	const CFG_INVITE = 32;           // Adding a member generate an invitation that needs to be accepted
-	const CFG_REQUEST = 64;          // Request to join Circles needs to be confirmed by a moderator
-	const CFG_FRIEND = 128;          // Members of the circle can invite their friends
-	const CFG_PROTECTED = 256;       // Password protected to join/request
-	const CFG_NO_OWNER = 512;        // no owner, only members
-	const CFG_HIDDEN = 1024;         // hidden from listing, but available as a share entity
-	const CFG_BACKEND = 2048;            // Fully hidden, only backend Circles
-	const CFG_LOCAL = 4096;              // Local even on GlobalScale
-	const CFG_ROOT = 8192;               // Circle cannot be inside another Circle
-	const CFG_CIRCLE_INVITE = 16384;     // Circle must confirm when invited in another circle
-	const CFG_FEDERATED = 32768;         // Federated
-	const CFG_MOUNTPOINT = 65536;        // Generate a Files folder for this Circle
+	public const CFG_SYSTEM = 4;            // System Circle (not managed by the official front-end). Meaning some config are limited
+	public const CFG_VISIBLE = 8;           // Visible to everyone, if not visible, people have to know its name to be able to find it
+	public const CFG_OPEN = 16;             // Circle is open, people can join
+	public const CFG_INVITE = 32;           // Adding a member generate an invitation that needs to be accepted
+	public const CFG_REQUEST = 64;          // Request to join Circles needs to be confirmed by a moderator
+	public const CFG_FRIEND = 128;          // Members of the circle can invite their friends
+	public const CFG_PROTECTED = 256;       // Password protected to join/request
+	public const CFG_NO_OWNER = 512;        // no owner, only members
+	public const CFG_HIDDEN = 1024;         // hidden from listing, but available as a share entity
+	public const CFG_BACKEND = 2048;            // Fully hidden, only backend Circles
+	public const CFG_LOCAL = 4096;              // Local even on GlobalScale
+	public const CFG_ROOT = 8192;               // Circle cannot be inside another Circle
+	public const CFG_CIRCLE_INVITE = 16384;     // Circle must confirm when invited in another circle
+	public const CFG_FEDERATED = 32768;         // Federated
+	public const CFG_MOUNTPOINT = 65536;        // Generate a Files folder for this Circle
 
 	public static $DEF_CFG_MAX = 131071;
 
@@ -115,20 +111,20 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	 * @var array
 	 */
 	public static $DEF_CFG = [
-		1     => 'S|Single',
-		2     => 'P|Personal',
-		4     => 'Y|System',
-		8     => 'V|Visible',
-		16    => 'O|Open',
-		32    => 'I|Invite',
-		64    => 'JR|Join Request',
-		128   => 'F|Friends',
-		256   => 'PP|Password Protected',
-		512   => 'NO|No Owner',
-		1024  => 'H|Hidden',
-		2048  => 'T|Backend',
-		4096  => 'L|Local',
-		8192  => 'T|Root',
+		1 => 'S|Single',
+		2 => 'P|Personal',
+		4 => 'Y|System',
+		8 => 'V|Visible',
+		16 => 'O|Open',
+		32 => 'I|Invite',
+		64 => 'JR|Join Request',
+		128 => 'F|Friends',
+		256 => 'PP|Password Protected',
+		512 => 'NO|No Owner',
+		1024 => 'H|Hidden',
+		2048 => 'T|Backend',
+		4096 => 'L|Local',
+		8192 => 'T|Root',
 		16384 => 'CI|Circle Invite',
 		32768 => 'F|Federated',
 		65536 => 'M|Nountpoint'
@@ -142,11 +138,11 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	 * @var array
 	 */
 	public static $DEF_SOURCE = [
-		1     => 'Nextcloud User',
-		2     => 'Nextcloud Group',
-		4     => 'Email Address',
-		8     => 'Contact',
-		16    => 'Circle',
+		1 => 'Nextcloud User',
+		2 => 'Nextcloud Group',
+		4 => 'Email Address',
+		8 => 'Contact',
+		16 => 'Circle',
 		10001 => 'Circles App',
 		10002 => 'Admin Command Line'
 	];
@@ -743,18 +739,18 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	 */
 	public function jsonSerialize(): array {
 		$arr = [
-			'id'            => $this->getSingleId(),
-			'name'          => $this->getName(),
-			'displayName'   => $this->getDisplayName(),
+			'id' => $this->getSingleId(),
+			'name' => $this->getName(),
+			'displayName' => $this->getDisplayName(),
 			'sanitizedName' => $this->getSanitizedName(),
-			'source'        => $this->getSource(),
-			'population'    => $this->getPopulation(),
-			'config'        => $this->getConfig(),
-			'description'   => $this->getDescription(),
-			'settings'      => $this->getSettings(),
-			'url'           => $this->getUrl(),
-			'creation'      => $this->getCreation(),
-			'initiator'     => ($this->hasInitiator()) ? $this->getInitiator() : null
+			'source' => $this->getSource(),
+			'population' => $this->getPopulation(),
+			'config' => $this->getConfig(),
+			'description' => $this->getDescription(),
+			'settings' => $this->getSettings(),
+			'url' => $this->getUrl(),
+			'creation' => $this->getCreation(),
+			'initiator' => ($this->hasInitiator()) ? $this->getInitiator() : null
 		];
 
 		if ($this->hasOwner()) {
@@ -850,7 +846,7 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 		$config = [];
 		foreach (array_keys(Circle::$DEF_CFG) as $def) {
 			if ($circle->isConfig($def)) {
-				list($short, $long) = explode('|', Circle::$DEF_CFG[$def]);
+				[$short, $long] = explode('|', Circle::$DEF_CFG[$def]);
 				switch ($display) {
 
 					case self::FLAGS_SHORT:
@@ -866,6 +862,4 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 
 		return $config;
 	}
-
 }
-

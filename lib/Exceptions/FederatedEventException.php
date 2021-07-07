@@ -37,6 +37,4 @@ namespace OCA\Circles\Exceptions;
  * @package OCA\Circles\Exceptions
  */
 class FederatedEventException extends FederatedItemServerException {
-
 }
-

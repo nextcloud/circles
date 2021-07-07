@@ -31,9 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Events;
 
-
 use OCA\Circles\Model\Federated\FederatedEvent;
-
 
 /**
  * Class CircleEditedEvent
@@ -60,6 +58,4 @@ class CircleEditedEvent extends CircleResultGenericEvent {
 	public function __construct(FederatedEvent $federatedEvent, array $results) {
 		parent::__construct($federatedEvent, $results);
 	}
-
 }
-

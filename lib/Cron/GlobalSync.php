@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,14 +31,12 @@
 
 namespace OCA\Circles\Cron;
 
-
 use OC\BackgroundJob\TimedJob;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\GSUpstreamService;
 use OCA\Circles\Service\MembersService;
 use OCP\AppFramework\QueryException;
-
 
 /**
  * Class GlobalSync
@@ -79,6 +79,4 @@ class GlobalSync extends TimedJob {
 //
 //		$gsUpstreamService->synchronize($circles);
 	}
-
 }
-

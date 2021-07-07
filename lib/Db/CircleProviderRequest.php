@@ -27,7 +27,6 @@
 
 namespace OCA\Circles\Db;
 
-
 use OCA\Circles\Exceptions\GSStatusException;
 
 /**
@@ -49,7 +48,6 @@ class CircleProviderRequest extends CircleProviderRequestBuilder {
 	 * @throws GSStatusException
 	 */
 	public function getFilesForCircles($userId, $circleUniqueIds, $limit, $offset) {
-
 		$qb = $this->getCompleteSelectSql();
 		$this->linkToFileCache($qb, $userId);
 		$this->limitToPage($qb, $limit, $offset);
@@ -102,5 +100,4 @@ class CircleProviderRequest extends CircleProviderRequestBuilder {
 			$data['file_target'] = $data['parent_target'];
 		}
 	}
-
 }

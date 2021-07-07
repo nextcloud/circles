@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,7 +31,6 @@
 
 namespace OCA\Circles\Service;
 
-
 use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
 use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
 use ArtificialOwl\MySmallPhpTools\Model\Request;
@@ -42,15 +43,12 @@ use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCP\IUserSession;
 
-
 /**
  * Class GlobalScaleService
  *
  * @package OCA\Circles\Service
  */
 class GlobalScaleService {
-
-
 	use TNC22Request;
 	use TStringTools;
 
@@ -263,6 +261,4 @@ class GlobalScaleService {
 //
 //		throw new NoUserException();
 //	}
-
 }
-

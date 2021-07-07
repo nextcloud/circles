@@ -44,7 +44,6 @@ use OCP\Notification\INotification;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
-
 /**
  * @deprecated
  *
@@ -144,7 +143,7 @@ class EventsService {
 			$event->setSubject('circle_create', ['circle' => json_encode($circle)]);
 
 			$this->userManager->callForSeenUsers(
-				function($user) use ($event) {
+				function ($user) use ($event) {
 					/** @var IUser $user */
 					$this->publishEvent($event, [$user]);
 				}
@@ -237,7 +236,6 @@ class EventsService {
 	 * @param DeprecatedMember $member
 	 */
 	private function onMemberAlmost(DeprecatedCircle $circle, DeprecatedMember $member) {
-
 		switch ($member->getStatus()) {
 			case DeprecatedMember::STATUS_INVITED:
 				$this->onMemberInvited($circle, $member);
@@ -781,7 +779,7 @@ class EventsService {
 		foreach ($users as $user) {
 			if ($user instanceof IUser) {
 				$userId = $user->getUID();
-			} else if ($user instanceof DeprecatedMember) {
+			} elseif ($user instanceof DeprecatedMember) {
 				$userId = $user->getUserId();
 			} else {
 				continue;
@@ -947,5 +945,4 @@ class EventsService {
 	private function dispatch(string $context, $arguments) {
 		$this->eventDispatcher->dispatch($context, new GenericEvent(null, $arguments));
 	}
-
 }

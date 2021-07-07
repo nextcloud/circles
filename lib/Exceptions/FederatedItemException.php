@@ -32,12 +32,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Exceptions;
 
-
 use Exception;
 use JsonSerializable;
 use OCP\AppFramework\Http;
 use Throwable;
-
 
 /**
  * Class FederatedItemException
@@ -45,9 +43,7 @@ use Throwable;
  * @package OCA\Circles\Exceptions
  */
 class FederatedItemException extends Exception implements JsonSerializable {
-
-
-	static $CHILDREN = [
+	public static $CHILDREN = [
 		FederatedItemBadRequestException::class,
 		FederatedItemConflictException::class,
 		FederatedItemForbiddenException::class,
@@ -94,12 +90,10 @@ class FederatedItemException extends Exception implements JsonSerializable {
 	 */
 	public function jsonSerialize(): array {
 		return [
-			'class'   => get_class($this),
-			'status'  => $this->getStatus(),
-			'code'    => $this->getCode(),
+			'class' => get_class($this),
+			'status' => $this->getStatus(),
+			'code' => $this->getCode(),
 			'message' => $this->getMessage()
 		];
 	}
-
 }
-

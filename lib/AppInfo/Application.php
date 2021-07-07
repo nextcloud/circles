@@ -34,7 +34,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\AppInfo;
 
-
 use Closure;
 use OC;
 use OCA\Circles\Events\AddingCircleMemberEvent;
@@ -92,17 +91,15 @@ require_once __DIR__ . '/../../vendor/autoload.php';
  * @package OCA\Circles\AppInfo
  */
 class Application extends App implements IBootstrap {
+	public const APP_ID = 'circles';
+	public const APP_NAME = 'Circles';
+	public const APP_TOKEN = 'dvG7laa0_UU';
 
+	public const APP_SUBJECT = 'http://nextcloud.com/';
+	public const APP_REL = 'https://apps.nextcloud.com/apps/circles';
+	public const APP_API = 1;
 
-	const APP_ID = 'circles';
-	const APP_NAME = 'Circles';
-	const APP_TOKEN = 'dvG7laa0_UU';
-
-	const APP_SUBJECT = 'http://nextcloud.com/';
-	const APP_REL = 'https://apps.nextcloud.com/apps/circles';
-	const APP_API = 1;
-
-	const CLIENT_TIMEOUT = 3;
+	public const CLIENT_TIMEOUT = 3;
 
 
 	/** @var ConfigService */
@@ -114,7 +111,7 @@ class Application extends App implements IBootstrap {
 	 *
 	 * @param array $params
 	 */
-	public function __construct(array $params = array()) {
+	public function __construct(array $params = []) {
 		parent::__construct(self::APP_ID, $params);
 	}
 
@@ -149,13 +146,13 @@ class Application extends App implements IBootstrap {
 		// It seems that AccountManager use deprecated dispatcher, let's use a deprecated listener
 		$dispatcher = OC::$server->getEventDispatcher();
 		$dispatcher->addListener(
-			'OC\AccountManager::userUpdated', function(GenericEvent $event) {
-			/** @var IUser $user */
-			$user = $event->getSubject();
-			/** @var DeprecatedListener $deprecatedListener */
-			$deprecatedListener = OC::$server->get(DeprecatedListener::class);
-			$deprecatedListener->userAccountUpdated($user);
-		}
+			'OC\AccountManager::userUpdated', function (GenericEvent $event) {
+				/** @var IUser $user */
+				$user = $event->getSubject();
+				/** @var DeprecatedListener $deprecatedListener */
+				$deprecatedListener = OC::$server->get(DeprecatedListener::class);
+				$deprecatedListener->userAccountUpdated($user);
+			}
 		);
 
 		$context->registerWellKnownHandler(WebfingerHandler::class);
@@ -270,6 +267,4 @@ class Application extends App implements IBootstrap {
 //			}
 //		);
 	}
-
 }
-

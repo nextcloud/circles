@@ -31,12 +31,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Events;
 
-
 use JsonSerializable;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCP\EventDispatcher\Event;
-
 
 /**
  * Class CircleMemberAddedEvent
@@ -120,6 +118,4 @@ class SharedItemsSyncRequestedEvent extends Event {
 			$this->sharedItems[$appId][$itemType] = [];
 		}
 	}
-
 }
-

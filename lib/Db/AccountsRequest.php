@@ -27,13 +27,10 @@
 
 namespace OCA\Circles\Db;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 
 class AccountsRequest extends AccountsRequestBuilder {
-
-
 	use TStringTools;
 
 
@@ -76,5 +73,4 @@ class AccountsRequest extends AccountsRequestBuilder {
 
 		return $accounts;
 	}
-
 }

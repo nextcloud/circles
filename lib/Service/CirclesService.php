@@ -29,7 +29,6 @@
 
 namespace OCA\Circles\Service;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
 use OC;
@@ -55,7 +54,6 @@ use OCP\IGroupManager;
 use OCP\IL10N;
 use OCP\IUserSession;
 
-
 /**
  * Class CirclesService
  *
@@ -63,8 +61,6 @@ use OCP\IUserSession;
  * @package OCA\Circles\Service
  */
 class CirclesService {
-
-
 	use TArrayTools;
 
 
@@ -147,7 +143,6 @@ class CirclesService {
 		CircleProviderRequest $circleProviderRequest,
 		MiscService $miscService
 	) {
-
 		if ($userId === null) {
 			$user = $userSession->getUser();
 			if ($user !== null) {
@@ -278,7 +273,6 @@ class CirclesService {
 	 * @throws Exception
 	 */
 	public function detailsCircle($circleUniqueId, $forceAll = false) {
-
 		try {
 			if (!$forceAll) {
 				$circle = $this->circlesRequest->getCircle(
@@ -542,10 +536,10 @@ class CirclesService {
 	public function convertTypeStringToBitValue($type) {
 		$strings = [
 			'personal' => DeprecatedCircle::CIRCLES_PERSONAL,
-			'secret'   => DeprecatedCircle::CIRCLES_SECRET,
-			'closed'   => DeprecatedCircle::CIRCLES_CLOSED,
-			'public'   => DeprecatedCircle::CIRCLES_PUBLIC,
-			'all'      => DeprecatedCircle::CIRCLES_ALL
+			'secret' => DeprecatedCircle::CIRCLES_SECRET,
+			'closed' => DeprecatedCircle::CIRCLES_CLOSED,
+			'public' => DeprecatedCircle::CIRCLES_PUBLIC,
+			'all' => DeprecatedCircle::CIRCLES_ALL
 		];
 
 		if (!key_exists(strtolower($type), $strings)) {
@@ -567,7 +561,6 @@ class CirclesService {
 	 * @return string
 	 */
 	public static function getCircleIcon($type, $png = false) {
-
 		$ext = '.svg';
 		if ($png === true) {
 			$ext = '.png';
@@ -642,7 +635,6 @@ class CirclesService {
 				'This circle already reach its limit on the number of members'
 			);
 		}
-
 	}
 
 	/**
@@ -689,5 +681,4 @@ class CirclesService {
 			);
 		}
 	}
-
 }

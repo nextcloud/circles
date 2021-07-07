@@ -27,7 +27,6 @@
 
 namespace OCA\Circles\Db;
 
-
 use OCA\Circles\Exceptions\FederatedLinkDoesNotExistException;
 use OCA\Circles\Model\FederatedLink;
 
@@ -68,7 +67,6 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 	 * @param FederatedLink $link
 	 */
 	public function update(FederatedLink $link) {
-
 		if ($link->getStatus() === FederatedLink::STATUS_LINK_REMOVE) {
 			$this->delete($link);
 
@@ -92,7 +90,6 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 	 * @param FederatedLink $link
 	 */
 	public function delete(FederatedLink $link) {
-
 		if ($link === null) {
 			return;
 		}
@@ -225,6 +222,4 @@ class FederatedLinksRequest extends FederatedLinksRequestBuilder {
 
 		return $this->parseLinksSelectSql($data);
 	}
-
-
 }

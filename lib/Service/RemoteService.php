@@ -30,7 +30,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-
 use ArtificialOwl\MySmallPhpTools\ActivityPub\Nextcloud\nc22\NC22Signature;
 use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
 use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
@@ -53,7 +52,6 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
-
 
 /**
  * Class RemoteService
@@ -233,7 +231,6 @@ class RemoteService extends NC22Signature {
 	 * @param Circle $circle
 	 */
 	private function syncLocalCircle(Circle $circle): void {
-
 	}
 
 
@@ -325,7 +322,6 @@ class RemoteService extends NC22Signature {
 		string $instance,
 		int $type = Member::TYPE_USER
 	): FederatedUser {
-
 		$result = $this->remoteStreamService->resultRequestRemoteInstance(
 			$instance,
 			RemoteInstance::MEMBER,
@@ -350,6 +346,4 @@ class RemoteService extends NC22Signature {
 
 		return $federatedUser;
 	}
-
 }
-

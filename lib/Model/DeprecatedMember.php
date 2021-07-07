@@ -31,18 +31,13 @@ use OCA\Circles\Exceptions\MemberAlreadyExistsException;
 use OCA\Circles\Exceptions\MemberCantJoinCircleException;
 use OCA\Circles\Exceptions\MemberDoesNotExistException;
 use OCA\Circles\Exceptions\MemberIsBlockedException;
-use OCA\Circles\Exceptions\MemberIsNotAdminException;
 use OCA\Circles\Exceptions\MemberIsNotModeratorException;
-use OCA\Circles\Exceptions\MemberIsNotOwnerException;
 use OCA\Circles\Exceptions\MemberIsOwnerException;
 use OCA\Circles\Exceptions\MemberTypeCantEditLevelException;
 use OCA\Circles\Exceptions\ModeratorIsNotHighEnoughException;
 
 class DeprecatedMember extends BaseMember {
-
-
 	public function inviteToCircle($circleType) {
-
 		if ($circleType === 0) {
 			throw new CircleTypeNotValidException('Invalid circle type');
 		}
@@ -61,7 +56,6 @@ class DeprecatedMember extends BaseMember {
 	 * @throws MemberCantJoinCircleException
 	 */
 	public function joinCircle($circleType) {
-
 		switch ($circleType) {
 			case DeprecatedCircle::CIRCLES_SECRET:
 			case DeprecatedCircle::CIRCLES_PUBLIC:
@@ -79,7 +73,6 @@ class DeprecatedMember extends BaseMember {
 	 * Update status of member like he joined a public circle.
 	 */
 	public function addMemberToCircle() {
-
 		if ($this->getStatus() === DeprecatedMember::STATUS_NONMEMBER
 			|| $this->getStatus() === DeprecatedMember::STATUS_KICKED
 		) {
@@ -93,7 +86,6 @@ class DeprecatedMember extends BaseMember {
 	 * (invite/request)
 	 */
 	private function joinClosedCircle() {
-
 		switch ($this->getStatus()) {
 			case DeprecatedMember::STATUS_NONMEMBER:
 			case DeprecatedMember::STATUS_KICKED:
@@ -229,7 +221,6 @@ class DeprecatedMember extends BaseMember {
 	 * @throws MemberIsBlockedException
 	 */
 	public function hasToBeAbleToJoinTheCircle() {
-
 		if ($this->getLevel() > 0) {
 			throw new MemberAlreadyExistsException(
 				$this->l10n->t("You are already a member of this circle")
@@ -248,7 +239,6 @@ class DeprecatedMember extends BaseMember {
 	 * @throws MemberAlreadyExistsException
 	 */
 	public function hasToBeInviteAble() {
-
 		if ($this->getLevel() > 0) {
 			throw new MemberAlreadyExistsException(
 				$this->l10n->t("The user is already a member of this circle")
@@ -261,7 +251,4 @@ class DeprecatedMember extends BaseMember {
 			);
 		}
 	}
-
 }
-
-

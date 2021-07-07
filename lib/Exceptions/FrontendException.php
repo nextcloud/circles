@@ -30,14 +30,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Exceptions;
 
-
 /**
  * Class FrontendException
  *
  * @package OCA\Circles\Exceptions
  */
 class FrontendException extends FederatedItemBadRequestException {
-
 }
-
-

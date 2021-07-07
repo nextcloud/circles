@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use Exception;
@@ -45,19 +44,16 @@ use OCA\Circles\Model\Member;
 use OCP\IUserManager;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
 /**
  * Class MaintenanceService
  *
  * @package OCA\Circles\Service
  */
 class MaintenanceService {
-
-
 	use TNC22Logger;
 
 
-	const TIMEOUT = 18000;
+	public const TIMEOUT = 18000;
 
 
 	/** @var IUserManager */
@@ -258,7 +254,6 @@ class MaintenanceService {
 //			$this->refreshDisplayName();
 //		} catch (Exception $e) {
 //		}
-
 	}
 
 
@@ -343,6 +338,4 @@ class MaintenanceService {
 			$this->output->writeln('- ' . $message);
 		}
 	}
-
 }
-

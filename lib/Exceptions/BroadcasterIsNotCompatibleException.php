@@ -29,6 +29,4 @@ namespace OCA\Circles\Exceptions;
 use Exception;
 
 class BroadcasterIsNotCompatibleException extends Exception {
-
 }
-

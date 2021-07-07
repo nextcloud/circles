@@ -31,13 +31,11 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Listeners;
 
-
 use Exception;
 use OCA\Circles\Service\SyncService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\Group\Events\UserAddedEvent;
-
 
 /**
  * Class GroupMemberAdded
@@ -76,6 +74,4 @@ class GroupMemberAdded implements IEventListener {
 		} catch (Exception $e) {
 		}
 	}
-
 }
-

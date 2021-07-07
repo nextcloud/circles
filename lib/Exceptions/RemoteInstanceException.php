@@ -31,13 +31,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Exceptions;
 
-
 /**
  * Class RemoteInstanceException
  *
  * @package OCA\Circles\Exceptions
  */
 class RemoteInstanceException extends FederatedItemRemoteException {
-
 }
-

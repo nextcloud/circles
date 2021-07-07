@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-
 use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
 use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
 use ArtificialOwl\MySmallPhpTools\Exceptions\SignatoryException;
@@ -55,15 +54,12 @@ use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Model\Federated\FederatedEvent;
 
-
 /**
  * Class RemoteDownstreamService
  *
  * @package OCA\Circles\Service
  */
 class RemoteDownstreamService {
-
-
 	use TNC22Logger;
 	use TAsync;
 
@@ -334,6 +330,4 @@ class RemoteDownstreamService {
 			throw new FederatedEventException('invalid origin');
 		}
 	}
-
 }
-

@@ -38,15 +38,12 @@ use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\Exceptions\MembershipNotFoundException;
 
-
 /**
  * Class Membership
  *
  * @package OCA\Circles\Model
  */
 class Membership extends ManagedModel implements IDeserializable, INC22QueryRow, JsonSerializable {
-
-
 	use TArrayTools;
 
 
@@ -327,13 +324,13 @@ class Membership extends ManagedModel implements IDeserializable, INC22QueryRow,
 	 */
 	public function jsonSerialize(): array {
 		$result = [
-			'singleId'         => $this->getSingleId(),
-			'circleId'         => $this->getCircleId(),
-			'circleConfig'           => $this->getCircleConfig(),
-			'level'            => $this->getLevel(),
+			'singleId' => $this->getSingleId(),
+			'circleId' => $this->getCircleId(),
+			'circleConfig' => $this->getCircleConfig(),
+			'level' => $this->getLevel(),
 			'inheritanceFirst' => $this->getInheritanceFirst(),
-			'inheritanceLast'  => $this->getInheritanceLast(),
-			'inheritancePath'  => $this->getInheritancePath(),
+			'inheritanceLast' => $this->getInheritanceLast(),
+			'inheritancePath' => $this->getInheritancePath(),
 			'inheritanceDepth' => $this->getInheritanceDepth()
 		];
 
@@ -343,6 +340,4 @@ class Membership extends ManagedModel implements IDeserializable, INC22QueryRow,
 
 		return $result;
 	}
-
 }
-

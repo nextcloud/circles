@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles;
 
-
 use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventException;
@@ -57,7 +56,6 @@ use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
 use OCP\IUserSession;
-
 
 /**
  * Class CirclesManager
@@ -326,7 +324,4 @@ class CirclesManager {
 	 * @return Member
 	 */
 //	public function getMemberById(string $memberId): Member {
-
-
 }
-

@@ -32,9 +32,5 @@ namespace OCA\Circles\Exceptions;
 
 use Exception;
 
-
 class FederatedShareAlreadyLockedException extends Exception {
-
 }
-
-

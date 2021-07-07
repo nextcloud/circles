@@ -31,9 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Exceptions;
 
-
 use Exception;
-
 
 /**
  * Class MigrationTo22Exception
@@ -41,6 +39,4 @@ use Exception;
  * @package OCA\Circles\Exceptions
  */
 class MigrationException extends Exception {
-
 }
-

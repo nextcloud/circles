@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model\Federated;
 
-
 use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
@@ -39,23 +38,20 @@ use JsonSerializable;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 
-
 /**
  * Class FederatedEvent
  *
  * @package OCA\Circles\Model\Federated
  */
 class FederatedEvent implements JsonSerializable {
+	public const SEVERITY_LOW = 1;
+	public const SEVERITY_HIGH = 3;
 
-
-	const SEVERITY_LOW = 1;
-	const SEVERITY_HIGH = 3;
-
-	const BYPASS_CIRCLE = 1;
-	const BYPASS_LOCALCIRCLECHECK = 2;
-	const BYPASS_LOCALMEMBERCHECK = 4;
-	const BYPASS_INITIATORCHECK = 8;
-	const BYPASS_INITIATORMEMBERSHIP = 16;
+	public const BYPASS_CIRCLE = 1;
+	public const BYPASS_LOCALCIRCLECHECK = 2;
+	public const BYPASS_LOCALMEMBERCHECK = 4;
+	public const BYPASS_INITIATORCHECK = 8;
+	public const BYPASS_INITIATORMEMBERSHIP = 16;
 
 	use TArrayTools;
 
@@ -121,7 +117,7 @@ class FederatedEvent implements JsonSerializable {
 	 *
 	 * @param string $class
 	 */
-	function __construct(string $class = '') {
+	public function __construct(string $class = '') {
 		$this->class = $class;
 		$this->params = new SimpleDataStore();
 		$this->data = new SimpleDataStore();
@@ -586,18 +582,18 @@ class FederatedEvent implements JsonSerializable {
 	/**
 	 * @return array
 	 */
-	function jsonSerialize(): array {
+	public function jsonSerialize(): array {
 		$arr = [
-			'class'    => $this->getClass(),
+			'class' => $this->getClass(),
 			'severity' => $this->getSeverity(),
-			'params'   => $this->getParams(),
-			'data'     => $this->getData(),
-			'result'   => $this->getResult(),
-			'origin'   => $this->getOrigin(),
-			'sender'   => $this->getSender(),
-			'itemId'   => $this->getItemId(),
-			'outcome'  => $this->getOutcome(),
-			'members'  => $this->getMembers()
+			'params' => $this->getParams(),
+			'data' => $this->getData(),
+			'result' => $this->getResult(),
+			'origin' => $this->getOrigin(),
+			'sender' => $this->getSender(),
+			'itemId' => $this->getItemId(),
+			'outcome' => $this->getOutcome(),
+			'members' => $this->getMembers()
 		];
 
 		if ($this->hasCircle()) {
@@ -609,6 +605,4 @@ class FederatedEvent implements JsonSerializable {
 
 		return $arr;
 	}
-
 }
-

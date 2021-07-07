@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,7 +31,6 @@
 
 namespace OCA\Circles\GlobalScale;
 
-
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use Exception;
 use OC\User\NoUserException;
@@ -51,7 +52,6 @@ use OCA\Circles\Model\SharesToken;
 use OCP\IUser;
 use OCP\Mail\IEMailTemplate;
 use OCP\Util;
-
 
 /**
  * Class MemberAdd
@@ -123,7 +123,7 @@ class MemberAdd extends AGlobalScaleEvent {
 		$event->setData(
 			new SimpleDataStore(
 				[
-					'password'       => $password,
+					'password' => $password,
 					'passwordByMail' => $sendPasswordByMail
 				]
 			)
@@ -157,7 +157,7 @@ class MemberAdd extends AGlobalScaleEvent {
 		$shares = $this->generateUnknownSharesLinks($circle, $member, $password);
 		$result = [
 			'unknownShares' => $shares,
-			'cachedName'    => $cachedName
+			'cachedName' => $cachedName
 		];
 
 		if ($member->getType() === DeprecatedMember::TYPE_CONTACT
@@ -277,7 +277,7 @@ class MemberAdd extends AGlobalScaleEvent {
 	private function getUnknownShares(DeprecatedMember $member): array {
 		$allShares = $this->fileSharesRequest->getSharesForCircle($member->getCircleId());
 		$knownShares = array_map(
-			function(SharesToken $shareToken) {
+			function (SharesToken $shareToken) {
 				return $shareToken->getShareId();
 			},
 			$this->tokensRequest->getTokensFromMember($member)
@@ -312,8 +312,8 @@ class MemberAdd extends AGlobalScaleEvent {
 		$filename = basename($share['file_target']);
 
 		return [
-			'author'   => $author,
-			'link'     => $link,
+			'author' => $author,
+			'link' => $link,
 			'filename' => $filename
 		];
 	}
@@ -405,9 +405,9 @@ class MemberAdd extends AGlobalScaleEvent {
 
 		$emailTemplate = $this->mailer->createEMailTemplate(
 			'sharebymail.RecipientPasswordNotification', [
-														   'password' => $password,
-														   'author'   => $author
-													   ]
+				'password' => $password,
+				'author' => $author
+			]
 		);
 
 		$emailTemplate->setSubject(
@@ -443,5 +443,4 @@ class MemberAdd extends AGlobalScaleEvent {
 		$message->useTemplate($emailTemplate);
 		$this->mailer->send($message);
 	}
-
 }

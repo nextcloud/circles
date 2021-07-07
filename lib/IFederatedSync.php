@@ -31,9 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles;
 
-
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
-
 
 /**
  * Interface IFederatedSync
@@ -53,6 +51,4 @@ interface IFederatedSync {
 	 * @param SimpleDataStore $data
 	 */
 	public function import(SimpleDataStore $data): void;
-
 }
-

@@ -31,13 +31,11 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemLoopbackTest;
 use OCA\Circles\Model\Federated\FederatedEvent;
-
 
 /**
  * Class LoopbackTest
@@ -48,10 +46,8 @@ class LoopbackTest implements
 	IFederatedItem,
 	IFederatedItemAsyncProcess,
 	IFederatedItemLoopbackTest {
-
-
-	const VERIFY = 17;
-	const MANAGE = 42;
+	public const VERIFY = 17;
+	public const MANAGE = 42;
 
 
 	/**
@@ -83,6 +79,4 @@ class LoopbackTest implements
 	 */
 	public function result(FederatedEvent $event, array $results): void {
 	}
-
 }
-

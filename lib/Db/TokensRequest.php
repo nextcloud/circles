@@ -27,12 +27,10 @@
 
 namespace OCA\Circles\Db;
 
-
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use OCA\Circles\Exceptions\TokenDoesNotExistException;
 use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SharesToken;
-
 
 /**
  * @deprecated
@@ -179,6 +177,4 @@ class TokensRequest extends TokensRequestBuilder {
 
 		$qb->execute();
 	}
-
 }
-

@@ -31,17 +31,14 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Db\ShareLockRequest;
 use OCA\Circles\Exceptions\FederatedShareNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\IFederatedItem;
-use OCA\Circles\IFederatedItemCircleNotRequired;
 use OCA\Circles\IFederatedItemDataRequestOnly;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\FederatedShare;
-
 
 /**
  * Class ItemLock
@@ -51,14 +48,12 @@ use OCA\Circles\Model\Federated\FederatedShare;
 class ItemLock implements
 	IFederatedItem,
 	IFederatedItemDataRequestOnly {
-
-
 	use TStringTools;
 
 
-	const STATUS_LOCKED = 'locked';
-	const STATUS_ALREADY_LOCKED = 'already_locked';
-	const STATUS_INSTANCE_LOCKED = 'instance_locked';
+	public const STATUS_LOCKED = 'locked';
+	public const STATUS_ALREADY_LOCKED = 'already_locked';
+	public const STATUS_INSTANCE_LOCKED = 'instance_locked';
 
 
 	/** @var ShareLockRequest */
@@ -132,6 +127,4 @@ class ItemLock implements
 	 */
 	public function result(FederatedEvent $event, array $results): void {
 	}
-
 }
-

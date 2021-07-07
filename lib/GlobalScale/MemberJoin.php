@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,7 +31,6 @@
 
 namespace OCA\Circles\GlobalScale;
 
-
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Exceptions\GlobalScaleDSyncException;
@@ -40,7 +41,6 @@ use OCA\Circles\Exceptions\MemberIsBlockedException;
 use OCA\Circles\Exceptions\MembersLimitException;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\DeprecatedMember;
-
 
 /**
  * Class MemberJoin
@@ -107,6 +107,4 @@ class MemberJoin extends AGlobalScaleEvent {
 	 */
 	public function result(array $events): void {
 	}
-
 }
-

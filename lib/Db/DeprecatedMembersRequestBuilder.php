@@ -28,7 +28,6 @@
 
 namespace OCA\Circles\Db;
 
-
 use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
@@ -188,5 +187,4 @@ class DeprecatedMembersRequestBuilder extends DeprecatedRequestBuilder {
 
 		return $member;
 	}
-
 }

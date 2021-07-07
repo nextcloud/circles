@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Listeners\Files;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use Exception;
@@ -50,15 +49,12 @@ use OCP\Mail\IEMailTemplate;
 use OCP\Mail\IMailer;
 use OCP\Util;
 
-
 /**
  * Class MemberAdded
  *
  * @package OCA\Circles\Listeners\Files
  */
 class MemberAdded implements IEventListener {
-
-
 	use TStringTools;
 	use TNC22Logger;
 
@@ -177,7 +173,7 @@ class MemberAdded implements IEventListener {
 		foreach ($shares as $share) {
 			$links[] = [
 				'filename' => $share->getFileTarget(),
-				'link'     => $share->getShareToken()->getLink()
+				'link' => $share->getShareToken()->getLink()
 			];
 		}
 
@@ -248,6 +244,4 @@ class MemberAdded implements IEventListener {
 
 		$this->mailer->send($message);
 	}
-
 }
-

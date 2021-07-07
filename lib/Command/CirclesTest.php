@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-
 use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
 use ArtificialOwl\MySmallPhpTools\Exceptions\ItemNotFoundException;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
@@ -40,7 +39,6 @@ use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\AppInfo\Application;
-use OCA\Circles\CirclesManager;
 use OCA\Circles\Db\CoreRequestBuilder;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Model\Circle;
@@ -53,21 +51,18 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 
-
 /**
  * Class CirclesTest
  *
  * @package OCA\Circles\Command
  */
 class CirclesTest extends Base {
-
-
 	use TArrayTools;
 	use TStringTools;
 	use TNC22Deserialize;
 
 
-	static $INSTANCES = [
+	public static $INSTANCES = [
 		'global-scale-1',
 		'global-scale-2',
 		'global-scale-3',
@@ -77,7 +72,7 @@ class CirclesTest extends Base {
 	];
 
 
-	static $TEST_CIRCLES = [
+	public static $TEST_CIRCLES = [
 		'test_001'
 	];
 
@@ -296,7 +291,6 @@ class CirclesTest extends Base {
 				}
 				$this->r();
 			}
-
 		}
 	}
 
@@ -575,7 +569,8 @@ class CirclesTest extends Base {
 		/** @var Circle $createdCircle */
 		$createdCircle = $this->deserialize($dataCreatedCircle001, Circle::class);
 		$this->circles[$localInstanceId][$createdCircle->getName()] = $createdCircle;
-		$this->r(true, $createdCircle->getSingleId());;
+		$this->r(true, $createdCircle->getSingleId());
+		;
 
 		$this->p('Comparing data returned at creation');
 		if ($createdCircle->getSingleId() === '' || $createdCircle->getOwner()->getId() === '') {
@@ -647,7 +642,8 @@ class CirclesTest extends Base {
 		$member = $this->getInstanceUsers($instanceId)[2];
 
 		$addedMember = $this->processMemberAdd($instanceId, $circleName, $member, 'user');
-		$this->r(true, $addedMember->getId());;
+		$this->r(true, $addedMember->getId());
+		;
 
 		// check test2
 	}
@@ -673,7 +669,8 @@ class CirclesTest extends Base {
 			);
 		/** @var Member $addedMember */
 		$addedMember = $this->deserialize($dataAddedMember, Member::class);
-		$this->r(true, $addedMember->getId());;
+		$this->r(true, $addedMember->getId());
+		;
 
 		// check test6
 	}
@@ -696,7 +693,8 @@ class CirclesTest extends Base {
 			);
 		/** @var Member $addedMember */
 		$addedMember = $this->deserialize($dataAddedMember, Member::class);
-		$this->r(true, $addedMember->getId());;
+		$this->r(true, $addedMember->getId());
+		;
 	}
 
 	private function levelLocalMemberToModerator() {
@@ -779,7 +777,6 @@ class CirclesTest extends Base {
 		bool $versa = false,
 		array $params = []
 	) {
-
 		if (empty($params)) {
 			$params = [
 				'CIRCLEID' => $circle->getSingleId()
@@ -1147,6 +1144,4 @@ class CirclesTest extends Base {
 
 		return $addedMember;
 	}
-
 }
-

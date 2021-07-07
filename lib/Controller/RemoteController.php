@@ -67,15 +67,12 @@ use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\IRequest;
 
-
 /**
  * Class RemoteController
  *
  * @package OCA\Circles\Controller
  */
 class RemoteController extends Controller {
-
-
 	use TNC22Controller;
 	use TNC22LocalSignatory;
 	use TNC22Deserialize;
@@ -339,9 +336,9 @@ class RemoteController extends Controller {
 			// FILTER CIRCLE BASED ON THE CONFIG/FEDERATED_8192 !!
 			if ($type === Member::$TYPE[Member::TYPE_SINGLE]) {
 				$federatedUser = $this->federatedUserService->getFederatedUser($userId, Member::TYPE_SINGLE);
-			} else if ($type === Member::$TYPE[Member::TYPE_CIRCLE]) {
+			} elseif ($type === Member::$TYPE[Member::TYPE_CIRCLE]) {
 				$federatedUser = $this->federatedUserService->getFederatedUser($userId, Member::TYPE_CIRCLE);
-			} else if ($type === Member::$TYPE[Member::TYPE_USER]) {
+			} elseif ($type === Member::$TYPE[Member::TYPE_USER]) {
 				$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
 			} else {
 				throw new FederatedUserNotFoundException('Entity not found');
@@ -471,11 +468,9 @@ class RemoteController extends Controller {
 		return new DataResponse(
 			[
 				'message' => $e->getMessage(),
-				'code'    => $e->getCode()
+				'code' => $e->getCode()
 			],
 			($e->getCode() > 0) ? $e->getCode() : $httpErrorCode
 		);
 	}
-
 }
-

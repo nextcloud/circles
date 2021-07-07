@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,7 +31,6 @@
 
 namespace OCA\Circles\GlobalScale\GSMount;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
 use OC;
@@ -45,19 +46,16 @@ use OCP\Files\NotPermittedException;
 use OCP\Files\Storage\IStorageFactory;
 use OCP\IUser;
 
-
 /**
  * Class MountProvider
  *
  * @package OCA\Circles\GlobalScale\GSMount
  */
 class MountProvider implements IMountProvider {
-
-
 	use TArrayTools;
 
 
-	const STORAGE = '\OCA\Files_Sharing\External\Storage';
+	public const STORAGE = '\OCA\Files_Sharing\External\Storage';
 
 
 	/** @var MountManager */
@@ -182,6 +180,4 @@ class MountProvider implements IMountProvider {
 			$n++;
 		}
 	}
-
 }
-

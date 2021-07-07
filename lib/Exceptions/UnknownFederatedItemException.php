@@ -32,11 +32,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Exceptions;
 
-
 use Exception;
-use JsonSerializable;
-use Throwable;
-
 
 /**
  * Class UnknownFederatedItemException
@@ -44,6 +40,4 @@ use Throwable;
  * @package OCA\Circles\Exceptions
  */
 class UnknownFederatedItemException extends Exception {
-
 }
-

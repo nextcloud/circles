@@ -31,11 +31,9 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-
 use ArtificialOwl\MySmallPhpTools\Exceptions\RowNotFoundException;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Model\Circle;
-
 
 /**
  * Class CircleRequestBuilder
@@ -122,5 +120,4 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 		/** @var Circle[] $result */
 		return $qb->asItems(Circle::class);
 	}
-
 }

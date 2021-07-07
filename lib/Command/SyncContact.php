@@ -38,7 +38,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
 /**
  * Class SyncContact
  *
@@ -161,6 +160,4 @@ class SyncContact extends Base {
 	private function displayStatus(OutputInterface $output) {
 		$output->writeln('not yet available');
 	}
-
 }
-

@@ -272,22 +272,21 @@ class SharingFrame implements \JsonSerializable {
 
 
 	public function jsonSerialize() {
-		return array(
+		return [
 			'unique_id' => $this->getUniqueId(),
-			'circle'    => $this->getCircle()
+			'circle' => $this->getCircle()
 								->getArray(false, true),
-			'source'    => $this->getSource(),
-			'type'      => $this->getType(),
-			'author'    => $this->getAuthor(),
-			'cloud_id'  => $this->getCloudId(),
-			'headers'   => $this->getHeaders(),
-			'payload'   => $this->getPayload(),
-			'creation'  => $this->getCreation(),
-		);
+			'source' => $this->getSource(),
+			'type' => $this->getType(),
+			'author' => $this->getAuthor(),
+			'cloud_id' => $this->getCloudId(),
+			'headers' => $this->getHeaders(),
+			'payload' => $this->getPayload(),
+			'creation' => $this->getCreation(),
+		];
 	}
 
 	public static function fromJSON($json) {
-
 		$arr = json_decode($json, true);
 
 		return self::fromArray($arr);
@@ -321,7 +320,6 @@ class SharingFrame implements \JsonSerializable {
 	 * @return array
 	 */
 	private static function getHeadersFromArray($arr) {
-
 		$headers = [];
 		if (key_exists('headers', $arr)) {
 			$headers = $arr['headers'];
@@ -340,4 +338,3 @@ class SharingFrame implements \JsonSerializable {
 		return DeprecatedCircle::fromArray(MiscService::get($arr, 'circle', null));
 	}
 }
-

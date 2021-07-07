@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,11 +31,9 @@
 
 namespace OCA\Circles\GlobalScale;
 
-
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\DeprecatedMember;
-
 
 /**
  * Class CircleStatus
@@ -41,12 +41,10 @@ use OCA\Circles\Model\DeprecatedMember;
  * @package OCA\Circles\GlobalScale
  */
 class CircleStatus extends AGlobalScaleEvent {
-
-
-	const STATUS_ERROR = -1;
-	const STATUS_OK = 1;
-	const STATUS_NOT_OWNER = 8;
-	const STATUS_NOT_FOUND = 404;
+	public const STATUS_ERROR = -1;
+	public const STATUS_OK = 1;
+	public const STATUS_NOT_OWNER = 8;
+	public const STATUS_NOT_FOUND = 404;
 
 
 	/**
@@ -93,4 +91,3 @@ class CircleStatus extends AGlobalScaleEvent {
 	public function result(array $events): void {
 	}
 }
-

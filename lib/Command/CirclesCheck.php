@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -61,21 +63,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 
-
 /**
  * Class CirclesCheck
  *
  * @package OCA\Circles\Command
  */
 class CirclesCheck extends Base {
-
-
 	use TStringTools;
 	use TArrayTools;
 	use TNC22Request;
 
 
-	static $checks = [
+	public static $checks = [
 		'internal',
 		'frontal',
 		'loopback'
@@ -449,7 +448,6 @@ class CirclesCheck extends Base {
 		$output->writeln(
 			'- Address <info>' . $loopback . '</info> is now used as <info>loopback</info>'
 		);
-
 	}
 
 	/**
@@ -464,8 +462,6 @@ class CirclesCheck extends Base {
 		$output->writeln(
 			'. The address you need to define here is the local address of your Nextcloud, reachable by all other instances of our GlobalScale.'
 		);
-
-
 	}
 
 
@@ -499,7 +495,6 @@ class CirclesCheck extends Base {
 
 
 		while (true) {
-
 			$question = new Question(
 				'<info>Please write down a new frontal address to test</info>: ', ''
 			);
@@ -740,6 +735,4 @@ class CirclesCheck extends Base {
 
 		return [$scheme, $cloudId];
 	}
-
 }
-

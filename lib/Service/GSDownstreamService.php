@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,7 +31,6 @@
 
 namespace OCA\Circles\Service;
 
-
 use Exception;
 use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\EventWrapperRequest;
@@ -40,7 +41,6 @@ use OCA\Circles\Exceptions\GlobalScaleEventException;
 use OCA\Circles\Exceptions\GSKeyException;
 use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCP\IURLGenerator;
-
 
 /**
  * Class GSDownstreamService
@@ -156,6 +156,4 @@ class GSDownstreamService {
 			$this->miscService->log('issue onNewEvent: ' . json_encode($event) . ' - ' . $e->getMessage());
 		}
 	}
-
 }
-

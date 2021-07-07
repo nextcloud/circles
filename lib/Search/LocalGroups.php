@@ -46,5 +46,4 @@ class LocalGroups implements ISearch {
 
 		return $result;
 	}
-
 }

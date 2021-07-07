@@ -37,7 +37,6 @@ class Contacts implements ISearch {
 	 * {@inheritdoc}
 	 */
 	public function search($search) {
-
 		$result = [];
 		$contactManager = \OC::$server->getContactsManager();
 
@@ -63,8 +62,8 @@ class Contacts implements ISearch {
 	 */
 	private function generateDataArray($contact) {
 		$data = [
-			'display'      => '',
-			'email'        => '',
+			'display' => '',
+			'email' => '',
 			'organization' => ''
 		];
 
@@ -75,4 +74,3 @@ class Contacts implements ISearch {
 		return $data;
 	}
 }
-

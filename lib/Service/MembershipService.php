@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-
 use ArtificialOwl\MySmallPhpTools\Exceptions\ItemNotFoundException;
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
@@ -46,15 +45,12 @@ use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
 
-
 /**
  * Class MembershipService
  *
  * @package OCA\Circles\Service
  */
 class MembershipService {
-
-
 	use TNC22Logger;
 
 
@@ -280,7 +276,7 @@ class MembershipService {
 	 */
 	private function getChildrenMembers(string $id, array &$knownIds = []): array {
 		$singleIds = array_map(
-			function(Member $item): string {
+			function (Member $item): string {
 				return $item->getSingleId();
 			}, $this->memberRequest->getMembers($id)
 		);
@@ -304,7 +300,7 @@ class MembershipService {
 	 */
 	private function getChildrenMemberships(string $id, array &$knownIds = []): array {
 		$singleIds = array_map(
-			function(Membership $item): string {
+			function (Membership $item): string {
 				return $item->getSingleId();
 			}, $this->membershipRequest->getInherited($id)
 		);
@@ -350,7 +346,7 @@ class MembershipService {
 	 */
 	private function removeDeprecatedMemberships(array $memberships, array $known): array {
 		$circleIds = array_map(
-			function(Membership $membership): string {
+			function (Membership $membership): string {
 				return $membership->getCircleId();
 			}, $memberships
 		);
@@ -408,6 +404,4 @@ class MembershipService {
 
 		throw new ItemNotFoundException();
 	}
-
 }
-

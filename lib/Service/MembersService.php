@@ -26,7 +26,6 @@
 
 namespace OCA\Circles\Service;
 
-
 use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
 use ArtificialOwl\MySmallPhpTools\Exceptions\RequestResultNotJsonException;
 use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
@@ -58,7 +57,6 @@ use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCP\IL10N;
 use OCP\IUserManager;
 
-
 /**
  * Class MembersService
  *
@@ -66,8 +64,6 @@ use OCP\IUserManager;
  * @package OCA\Circles\Service
  */
 class MembersService {
-
-
 	use TNC22Request;
 	use TArrayTools;
 
@@ -283,7 +279,6 @@ class MembersService {
 	 * @throws MemberCantJoinCircleException
 	 */
 	private function addLocalMember(DeprecatedCircle $circle, DeprecatedMember $member) {
-
 		if ($member->getType() !== DeprecatedMember::TYPE_USER) {
 			return;
 		}
@@ -303,7 +298,6 @@ class MembersService {
 	 * @param DeprecatedMember $member
 	 */
 	private function addEmailAddress(DeprecatedMember $member) {
-
 		if ($member->getType() !== DeprecatedMember::TYPE_MAIL) {
 			return;
 		}
@@ -319,7 +313,6 @@ class MembersService {
 	 * @param DeprecatedMember $member
 	 */
 	private function addContact(DeprecatedMember $member) {
-
 		if ($member->getType() !== DeprecatedMember::TYPE_CONTACT) {
 			return;
 		}
@@ -457,7 +450,6 @@ class MembersService {
 	 * @return DeprecatedMember[]
 	 */
 	private function addMassiveMails(DeprecatedCircle $circle, $mails): array {
-
 		$mails = trim($mails);
 		if (substr($mails, 0, 6) !== 'mails:') {
 			return [];
@@ -584,7 +576,6 @@ class MembersService {
 		} else {
 			return $this->membersRequest->forceGetMembers($circle->getUniqueId());
 		}
-
 	}
 
 
@@ -605,7 +596,6 @@ class MembersService {
 	public function removeMember(
 		string $circleUniqueId, string $name, int $type, string $instance, bool $force = false
 	): array {
-
 		if ($force === false) {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			$circle->getHigherViewer()
@@ -782,7 +772,4 @@ class MembersService {
 
 		return array_merge($base, $new);
 	}
-
-
 }
-

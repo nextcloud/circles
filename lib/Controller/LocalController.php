@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Controller;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use Exception;
@@ -55,15 +54,12 @@ use OCP\AppFramework\OCSController;
 use OCP\IRequest;
 use OCP\IUserSession;
 
-
 /**
  * Class LocalController
  *
  * @package OCA\Circles\Controller
  */
 class LocalController extends OcsController {
-
-
 	use TNC22Deserialize;
 	use TNC22Logger;
 
@@ -278,7 +274,6 @@ class LocalController extends OcsController {
 			$this->e($e, ['circleId' => $circleId, 'members' => $members]);
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
-
 	}
 
 
@@ -576,6 +571,4 @@ class LocalController extends OcsController {
 		$user = $this->userSession->getUser();
 		$this->federatedUserService->setLocalCurrentUser($user);
 	}
-
 }
-
