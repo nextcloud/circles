@@ -76,8 +76,8 @@ clean:
 
 # composer packages
 composer:
-	composer install --prefer-dist
-	composer upgrade --prefer-dist
+	composer install --prefer-dist --no-dev
+	composer upgrade --prefer-dist --no-dev
 
 composer-dev:
 	composer install --prefer-dist --dev
