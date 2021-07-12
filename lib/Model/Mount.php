@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
-
 use ArtificialOwl\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
 use ArtificialOwl\MySmallPhpTools\IDeserializable;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
@@ -41,15 +40,12 @@ use OCA\Circles\MountManager\CircleMountManager;
 use OCP\Federation\ICloudIdManager;
 use OCP\Http\Client\IClientService;
 
-
 /**
  * Class Mount
  *
  * @package OCA\Circles\Model
  */
 class Mount extends ManagedModel implements IDeserializable, INC22QueryRow, JsonSerializable {
-
-
 	use TArrayTools;
 
 
@@ -410,15 +406,15 @@ class Mount extends ManagedModel implements IDeserializable, INC22QueryRow, Json
 		$member = $this->getOwner();
 
 		return [
-			'owner'             => $member->getUserId(),
-			'remote'            => $member->getRemoteInstance()->getRoot(),
-			'token'             => $this->getToken(),
-			'password'          => $this->getPassword(),
-			'mountpoint'        => $this->getMountPoint(false),
+			'owner' => $member->getUserId(),
+			'remote' => $member->getRemoteInstance()->getRoot(),
+			'token' => $this->getToken(),
+			'password' => $this->getPassword(),
+			'mountpoint' => $this->getMountPoint(false),
 			//			'manager'           => $this->getMountManager(),
 			'HttpClientService' => $this->getHttpClientService(),
-			'manager'           => $this->getMountManager(),
-			'cloudId'           => $this->getCloudIdManager()->getCloudId(
+			'manager' => $this->getMountManager(),
+			'cloudId' => $this->getCloudIdManager()->getCloudId(
 				$member->getUserId(),
 				$member->getRemoteInstance()->getRoot()
 			)
@@ -481,16 +477,16 @@ class Mount extends ManagedModel implements IDeserializable, INC22QueryRow, Json
 	/**
 	 * @return array
 	 */
-	function jsonSerialize(): array {
+	public function jsonSerialize(): array {
 		$arr = [
-			'id'             => $this->getId(),
-			'circleId'       => $this->getCircleId(),
-			'mountId'        => $this->getMountId(),
-			'parent'         => $this->getParent(),
-			'owner'          => $this->getOwner(),
-			'token'          => $this->getToken(),
-			'password'       => $this->getPassword(),
-			'mountPoint'     => $this->getMountPoint(),
+			'id' => $this->getId(),
+			'circleId' => $this->getCircleId(),
+			'mountId' => $this->getMountId(),
+			'parent' => $this->getParent(),
+			'owner' => $this->getOwner(),
+			'token' => $this->getToken(),
+			'password' => $this->getPassword(),
+			'mountPoint' => $this->getMountPoint(),
 			'mountPointHash' => $this->getMountPointHash(),
 		];
 
@@ -501,6 +497,4 @@ class Mount extends ManagedModel implements IDeserializable, INC22QueryRow, Json
 
 		return $arr;
 	}
-
 }
-

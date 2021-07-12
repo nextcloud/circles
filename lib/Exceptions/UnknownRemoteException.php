@@ -31,9 +31,5 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Exceptions;
 
-
 class UnknownRemoteException extends FederatedItemRemoteException {
-
 }
-
-

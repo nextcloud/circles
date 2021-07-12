@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
-
 use OC;
 use OCA\Circles\IFederatedUser;
 
@@ -41,9 +40,7 @@ use OCA\Circles\IFederatedUser;
  * @package OCA\Circles\Model
  */
 class ManagedModel {
-
-
-	const ID_LENGTH = 31;
+	public const ID_LENGTH = 31;
 
 
 	/** @var ModelManager */
@@ -80,6 +77,4 @@ class ManagedModel {
 
 		$this->setInstance($orig->getInstance());
 	}
-
 }
-

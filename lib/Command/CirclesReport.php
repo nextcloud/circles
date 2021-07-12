@@ -57,15 +57,12 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
 /**
  * Class CirclesReport
  *
  * @package OCA\Circles\Command
  */
 class CirclesReport extends Base implements IInteractiveShellClient {
-
-
 	use TNC22Deserialize;
 	use TArrayTools;
 
@@ -435,7 +432,4 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 	public function onNewCommand(NC22InteractiveShellSession $session, $command): void {
 		echo $session->getPath();
 	}
-
-
 }
-

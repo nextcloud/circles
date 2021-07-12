@@ -65,15 +65,12 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
 /**
  * Class CirclesList
  *
  * @package OCA\Circles\Command
  */
 class CirclesList extends Base {
-
-
 	use TArrayTools;
 	use TStringTools;
 
@@ -233,6 +230,4 @@ class CirclesList extends Base {
 			);
 		}
 	}
-
 }
-

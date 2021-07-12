@@ -31,12 +31,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-
 use ArtificialOwl\MySmallPhpTools\Exceptions\RowNotFoundException;
 use OC\Share20\Share;
 use OCA\Circles\Exceptions\ShareWrapperNotFoundException;
 use OCA\Circles\Model\ShareWrapper;
-
 
 /**
  * Class ShareWrapperRequestBuilder
@@ -124,6 +122,4 @@ class ShareWrapperRequestBuilder extends CoreRequestBuilder {
 		/** @var ShareWrapper[] $result */
 		return $qb->asItems(ShareWrapper::class);
 	}
-
 }
-

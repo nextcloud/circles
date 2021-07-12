@@ -31,9 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-
 use OCA\Circles\Model\Federated\EventWrapper;
-
 
 /**
  * Class EventWrapperRequest
@@ -121,6 +119,4 @@ class EventWrapperRequest extends EventWrapperRequestBuilder {
 
 		return $this->getItemsFromRequest($qb);
 	}
-
 }
-

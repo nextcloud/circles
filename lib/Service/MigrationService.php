@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
@@ -70,15 +69,12 @@ use OCP\IDBConnection;
 use OCP\IURLGenerator;
 use OCP\Share\IShare;
 
-
 /**
  * Class MigrationService
  *
  * @package OCA\Circles\Service
  */
 class MigrationService {
-
-
 	use TStringTools;
 	use TNC22Logger;
 
@@ -446,7 +442,7 @@ class MigrationService {
 	 * @throws ContactAddressBookNotFoundException
 	 */
 	private function fixContactId(Member $member) {
-		list($userId, $contactId) = explode(':', $member->getUserId());
+		[$userId, $contactId] = explode(':', $member->getUserId());
 
 		$contactsManager = OC::$server->get(ContactsManager::class);
 
@@ -552,6 +548,4 @@ class MigrationService {
 		} catch (RequestBuilderException $e) {
 		}
 	}
-
 }
-

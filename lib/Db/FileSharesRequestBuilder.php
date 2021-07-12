@@ -27,9 +27,7 @@
 
 namespace OCA\Circles\Db;
 
-
 use OCP\DB\QueryBuilder\IQueryBuilder;
-
 
 /**
  * @deprecated
@@ -92,6 +90,4 @@ class FileSharesRequestBuilder extends DeprecatedRequestBuilder {
 
 		return $qb;
 	}
-
-
 }

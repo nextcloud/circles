@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
@@ -65,7 +64,6 @@ use OCA\Circles\Service\MembershipService;
 use OCA\Circles\StatusCode;
 use OCP\IUserManager;
 
-
 /**
  * Class CircleJoin
  *
@@ -78,8 +76,6 @@ class CircleJoin implements
 	IFederatedItemHighSeverity,
 	IFederatedItemMemberCheckNotRequired,
 	IFederatedItemMemberOptional {
-
-
 	use TStringTools;
 	use TNC22Logger;
 	use TNC22Deserialize;
@@ -319,6 +315,4 @@ class CircleJoin implements
 			}
 		}
 	}
-
 }
-

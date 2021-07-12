@@ -206,11 +206,11 @@ class ProviderParser {
 		IEvent $event, DeprecatedCircle $circle, DeprecatedMember $member, $ownEvent, $othersEvent
 	) {
 		$data = [
-			'author'   => $this->generateViewerParameter($circle),
-			'circle'   => $this->generateCircleParameter($circle),
-			'member'   => $this->generateUserParameter($member),
+			'author' => $this->generateViewerParameter($circle),
+			'circle' => $this->generateCircleParameter($circle),
+			'member' => $this->generateUserParameter($member),
 			'external' => $this->generateExternalMemberParameter($member),
-			'group'    => $this->generateGroupParameter($member),
+			'group' => $this->generateGroupParameter($member),
 		];
 
 		if ($this->isViewerTheAuthor($circle, $this->activityManager->getCurrentUserId())) {
@@ -299,9 +299,9 @@ class ProviderParser {
 	 */
 	protected function generateExternalMemberParameter(DeprecatedMember $member) {
 		return [
-			'type'    => $member->getTypeName(),
-			'id'      => $member->getUserId(),
-			'name'    => $member->getCachedName() . ' (' . $member->getTypeString() . ')',
+			'type' => $member->getTypeName(),
+			'id' => $member->getUserId(),
+			'name' => $member->getCachedName() . ' (' . $member->getTypeString() . ')',
 			'_parsed' => $member->getCachedName()
 		];
 	}
@@ -314,11 +314,11 @@ class ProviderParser {
 	 */
 	protected function generateCircleParameter(DeprecatedCircle $circle) {
 		return [
-			'type'    => 'circle',
-			'id'      => $circle->getId(),
-			'name'    => $circle->getName(),
+			'type' => 'circle',
+			'id' => $circle->getId(),
+			'name' => $circle->getName(),
 			'_parsed' => $circle->getName(),
-			'link'    => Circles::generateAbsoluteLink($circle->getUniqueId())
+			'link' => Circles::generateAbsoluteLink($circle->getUniqueId())
 		];
 	}
 
@@ -329,15 +329,14 @@ class ProviderParser {
 	 * @return array<string,string|integer>
 	 */
 	protected function generateRemoteCircleParameter($link) {
-
 		if ($link === null) {
 			return null;
 		}
 
 		return [
-			'type'    => 'circle',
-			'id'      => $link->getUniqueId(),
-			'name'    => $link->getToken() . '@' . $link->getAddress(),
+			'type' => 'circle',
+			'id' => $link->getUniqueId(),
+			'name' => $link->getToken() . '@' . $link->getAddress(),
 			'_parsed' => $link->getToken() . '@' . $link->getAddress()
 		];
 	}
@@ -355,9 +354,9 @@ class ProviderParser {
 		}
 
 		return [
-			'type'    => 'user',
-			'id'      => $member->getUserId(),
-			'name'    => $display,
+			'type' => 'user',
+			'id' => $member->getUserId(),
+			'name' => $display,
 			'_parsed' => $display
 		];
 	}
@@ -370,11 +369,10 @@ class ProviderParser {
 	 */
 	protected function generateGroupParameter($group) {
 		return [
-			'type'    => 'user-group',
-			'id'      => $group->getUserId(),
-			'name'    => $group->getUserId(),
+			'type' => 'user-group',
+			'id' => $group->getUserId(),
+			'name' => $group->getUserId(),
 			'_parsed' => $group->getUserId()
 		];
 	}
-
 }

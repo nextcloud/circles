@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 
@@ -70,5 +69,4 @@ class ShareService {
 //		$event->setCircle($circle);
 //		$this->federatedEventService->newEvent($event);
 	}
-
 }

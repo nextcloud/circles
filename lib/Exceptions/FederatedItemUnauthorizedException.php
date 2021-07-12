@@ -30,10 +30,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Exceptions;
 
-
 use OCP\AppFramework\Http;
 use Throwable;
-
 
 /**
  * Class FederatedItemUnauthorizedException
@@ -41,9 +39,7 @@ use Throwable;
  * @package OCA\Circles\Exceptions
  */
 class FederatedItemUnauthorizedException extends FederatedItemException {
-
-
-	const STATUS = Http::STATUS_UNAUTHORIZED;
+	public const STATUS = Http::STATUS_UNAUTHORIZED;
 
 
 	/**
@@ -61,6 +57,4 @@ class FederatedItemUnauthorizedException extends FederatedItemException {
 		parent::__construct($message, $code, $previous);
 		$this->setStatus(self::STATUS);
 	}
-
 }
-

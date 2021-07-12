@@ -26,7 +26,6 @@
 
 namespace OCA\Circles\Exceptions;
 
-
 /**
  * Class CircleDoesNotExistException
  *
@@ -34,6 +33,4 @@ namespace OCA\Circles\Exceptions;
  * @package OCA\Circles\Exceptions
  */
 class CircleDoesNotExistException extends \Exception {
-
 }
-

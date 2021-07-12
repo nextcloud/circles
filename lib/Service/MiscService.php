@@ -40,8 +40,6 @@ use OCP\ILogger;
 use OCP\IUserManager;
 
 class MiscService {
-
-
 	use TArrayTools;
 
 
@@ -67,10 +65,10 @@ class MiscService {
 	}
 
 	public function log($message, $level = 4) {
-		$data = array(
-			'app'   => $this->appName,
+		$data = [
+			'app' => $this->appName,
 			'level' => $level
-		);
+		];
 
 		$this->logger->log($level, $message, $data);
 	}
@@ -123,7 +121,7 @@ class MiscService {
 		$this->log(json_encode($data));
 
 		return new DataResponse(
-			array_merge($data, array('status' => 0)),
+			array_merge($data, ['status' => 0]),
 			Http::STATUS_NON_AUTHORATIVE_INFORMATION
 		);
 	}
@@ -136,7 +134,7 @@ class MiscService {
 	 */
 	public function success($data) {
 		return new DataResponse(
-			array_merge($data, array('status' => 1)),
+			array_merge($data, ['status' => 1]),
 			Http::STATUS_CREATED
 		);
 	}
@@ -177,7 +175,7 @@ class MiscService {
 			return '';
 		}
 
-		list($userId, $contactId) = explode(':', $ident);
+		[$userId, $contactId] = explode(':', $ident);
 		$entries = [];
 		try {
 			/** @var \OCA\DAV\CardDAV\ContactsManager $cManager */
@@ -268,7 +266,7 @@ class MiscService {
 			return [];
 		}
 
-		list($userId, $contactId) = explode(':', $ident);
+		[$userId, $contactId] = explode(':', $ident);
 
 		try {
 			/** @var \OCA\DAV\CardDAV\ContactsManager $cManager */
@@ -345,8 +343,8 @@ class MiscService {
 	 */
 	public static function generateClientBodyData($options = []) {
 		return [
-			'body'            => ['data' => $options],
-			'timeout'         => Application::CLIENT_TIMEOUT,
+			'body' => ['data' => $options],
+			'timeout' => Application::CLIENT_TIMEOUT,
 			'connect_timeout' => Application::CLIENT_TIMEOUT
 		];
 	}
@@ -406,11 +404,8 @@ class MiscService {
 
 		return [
 			'memberId' => $member->getMemberId(),
-			'emails'   => $this->getArray('EMAIL', $contact),
+			'emails' => $this->getArray('EMAIL', $contact),
 			'cloudIds' => $this->getArray('CLOUD', $contact)
 		];
-
 	}
-
 }
-

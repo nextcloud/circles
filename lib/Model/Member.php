@@ -48,7 +48,6 @@ use OCA\Circles\IFederatedUser;
 use OCA\Circles\IMemberships;
 use OCA\Circles\Model\Federated\RemoteInstance;
 
-
 /**
  * Class Member
  *
@@ -60,37 +59,35 @@ class Member extends ManagedModel implements
 	IDeserializable,
 	INC22QueryRow,
 	JsonSerializable {
-
-
 	use TArrayTools;
 	use TNC22Deserialize;
 
 
-	const LEVEL_NONE = 0;
-	const LEVEL_MEMBER = 1;
-	const LEVEL_MODERATOR = 4;
-	const LEVEL_ADMIN = 8;
-	const LEVEL_OWNER = 9;
+	public const LEVEL_NONE = 0;
+	public const LEVEL_MEMBER = 1;
+	public const LEVEL_MODERATOR = 4;
+	public const LEVEL_ADMIN = 8;
+	public const LEVEL_OWNER = 9;
 
-	const TYPE_SINGLE = 0;
-	const TYPE_USER = 1;
-	const TYPE_GROUP = 2;
-	const TYPE_MAIL = 4;
-	const TYPE_CONTACT = 8;
-	const TYPE_CIRCLE = 16;
-	const TYPE_APP = 10000;
+	public const TYPE_SINGLE = 0;
+	public const TYPE_USER = 1;
+	public const TYPE_GROUP = 2;
+	public const TYPE_MAIL = 4;
+	public const TYPE_CONTACT = 8;
+	public const TYPE_CIRCLE = 16;
+	public const TYPE_APP = 10000;
 
-	const APP_CIRCLES = 10001;
-	const APP_OCC = 10002;
+	public const APP_CIRCLES = 10001;
+	public const APP_OCC = 10002;
 
 
 	public static $TYPE = [
-		0     => 'single',
-		1     => 'user',
-		2     => 'group',
-		4     => 'mail',
-		8     => 'contact',
-		16    => 'circle',
+		0 => 'single',
+		1 => 'user',
+		2 => 'group',
+		4 => 'mail',
+		8 => 'contact',
+		16 => 'circle',
 		10000 => 'app'
 	];
 
@@ -99,10 +96,10 @@ class Member extends ManagedModel implements
 	 *
 	 * @see Capabilities::generateConstantsMember()
 	 */
-	const STATUS_INVITED = 'Invited';
-	const STATUS_REQUEST = 'Requesting';
-	const STATUS_MEMBER = 'Member';
-	const STATUS_BLOCKED = 'Blocked';
+	public const STATUS_INVITED = 'Invited';
+	public const STATUS_REQUEST = 'Requesting';
+	public const STATUS_MEMBER = 'Member';
+	public const STATUS_BLOCKED = 'Blocked';
 
 
 	/**
@@ -891,21 +888,21 @@ class Member extends ManagedModel implements
 	 */
 	public function jsonSerialize(): array {
 		$arr = [
-			'id'            => $this->getId(),
-			'circleId'      => $this->getCircleId(),
-			'singleId'      => $this->getSingleId(),
-			'userId'        => $this->getUserId(),
-			'userType'      => $this->getUserType(),
-			'instance'      => $this->getManager()->fixInstance($this->getInstance()),
-			'local'         => $this->isLocal(),
-			'level'         => $this->getLevel(),
-			'status'        => $this->getStatus(),
-			'displayName'   => $this->getDisplayName(),
+			'id' => $this->getId(),
+			'circleId' => $this->getCircleId(),
+			'singleId' => $this->getSingleId(),
+			'userId' => $this->getUserId(),
+			'userType' => $this->getUserType(),
+			'instance' => $this->getManager()->fixInstance($this->getInstance()),
+			'local' => $this->isLocal(),
+			'level' => $this->getLevel(),
+			'status' => $this->getStatus(),
+			'displayName' => $this->getDisplayName(),
 			'displayUpdate' => $this->getDisplayUpdate(),
-			'notes'         => $this->getNotes(),
-			'contactId'     => $this->getContactId(),
-			'contactMeta'   => $this->getContactMeta(),
-			'joined'        => $this->getJoined()
+			'notes' => $this->getNotes(),
+			'contactId' => $this->getContactId(),
+			'contactMeta' => $this->getContactMeta(),
+			'joined' => $this->getJoined()
 		];
 
 		if ($this->hasInvitedBy()) {
@@ -994,6 +991,4 @@ class Member extends ManagedModel implements
 
 		return (int)$type;
 	}
-
 }
-

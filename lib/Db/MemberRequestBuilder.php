@@ -31,14 +31,12 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-
 use ArtificialOwl\MySmallPhpTools\Exceptions\RowNotFoundException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
-
 
 /**
  * Class MemberRequestBuilder
@@ -144,5 +142,4 @@ class MemberRequestBuilder extends CoreRequestBuilder {
 		/** @var Member|FederatedUser[] $result */
 		return $qb->asItems($object);
 	}
-
 }

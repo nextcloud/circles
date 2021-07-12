@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteUidException;
 use OCA\Circles\Exceptions\RequestBuilderException;
@@ -39,7 +38,6 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\Member;
 use OCP\DB\QueryBuilder\IQueryBuilder;
-
 
 /**
  * Class RemoteRequest
@@ -289,7 +287,4 @@ class RemoteRequest extends RemoteRequestBuilder {
 		$qb->limitToId($remoteInstance->getDbId());
 		$qb->execute();
 	}
-
-
 }
-

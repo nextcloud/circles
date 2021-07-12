@@ -28,15 +28,10 @@
 
 namespace OCA\Circles\Exceptions;
 
-use Exception;
-
-
 /**
  * Class FederatedEventDSyncException
  *
  * @package OCA\Circles\Exceptions
  */
 class FederatedEventDSyncException extends FederatedItemConflictException {
-
 }
-

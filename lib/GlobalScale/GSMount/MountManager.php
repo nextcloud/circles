@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,11 +31,9 @@
 
 namespace OCA\Circles\GlobalScale\GSMount;
 
-
 use OCA\Circles\Db\GSSharesRequest;
 use OCA\Circles\Model\GlobalScale\GSShareMountpoint;
 use OCP\Share\Exceptions\ShareNotFound;
-
 
 /**
  * Class MountManager
@@ -127,6 +127,4 @@ class MountManager {
 
 		return rtrim(substr($path, strlen($prefix)), '/');
 	}
-
-
 }

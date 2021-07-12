@@ -2,7 +2,6 @@
 
 namespace OCA\Circles\Activity;
 
-
 use OCP\Activity\ISetting;
 use OCP\IL10N;
 
@@ -76,4 +75,3 @@ class SettingAsModerator implements ISetting {
 		return true;
 	}
 }
-

@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles;
 
-
 /**
  * Interface IFederatedModel
  *
@@ -48,6 +47,4 @@ interface IFederatedModel {
 	 * @return bool
 	 */
 	public function isLocal(): bool;
-
 }
-

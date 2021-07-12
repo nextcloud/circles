@@ -31,11 +31,9 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
-
 use ArtificialOwl\MySmallPhpTools\IDeserializable;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
-
 
 /**
  * Class Report
@@ -43,8 +41,6 @@ use JsonSerializable;
  * @package OCA\Circles\Model
  */
 class Report implements IDeserializable, JsonSerializable {
-
-
 	use TArrayTools;
 
 	/** @var string */
@@ -138,13 +134,11 @@ class Report implements IDeserializable, JsonSerializable {
 	/**
 	 * @return array
 	 */
-	function jsonSerialize(): array {
+	public function jsonSerialize(): array {
 		return [
-			'source'     => $this->getSource(),
-			'circles'    => $this->getCircles(),
+			'source' => $this->getSource(),
+			'circles' => $this->getCircles(),
 			'obfuscated' => $this->getObfuscated()
 		];
 	}
-
 }
-

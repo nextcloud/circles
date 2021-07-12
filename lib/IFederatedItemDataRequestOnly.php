@@ -31,13 +31,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles;
 
-
 /**
  * Interface IFederatedItemRequestOnly
  *
  * @package OCA\Circles
  */
 interface IFederatedItemDataRequestOnly {
-
 }
-

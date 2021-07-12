@@ -27,6 +27,4 @@
 namespace OCA\Circles\Exceptions;
 
 class MemberIsOwnerException extends \Exception {
-
 }
-

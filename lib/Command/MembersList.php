@@ -71,15 +71,12 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
 /**
  * Class MembersList
  *
  * @package OCA\Circles\Command
  */
 class MembersList extends Base {
-
-
 	use TNC22ConsoleTree;
 	use TStringTools;
 
@@ -212,7 +209,7 @@ class MembersList extends Base {
 			$this->drawTree(
 				$tree, [$this, 'displayLeaf'],
 				[
-					'height'       => 3,
+					'height' => 3,
 					'node-spacing' => 1,
 					'item-spacing' => 0,
 				]
@@ -364,9 +361,9 @@ class MembersList extends Base {
 					$node = new NC22TreeNode(
 						$tree, new SimpleDataStore(
 								 [
-									 'circle'  => $circle,
-									 'member'  => $member,
-									 'cycling' => in_array($member->getSingleId(), $knownIds),
+								 	'circle' => $circle,
+								 	'member' => $member,
+								 	'cycling' => in_array($member->getSingleId(), $knownIds),
 								 ]
 							 )
 					);
@@ -384,8 +381,8 @@ class MembersList extends Base {
 						new NC22TreeNode(
 							$tree, new SimpleDataStore(
 									 [
-										 'member'  => $member,
-										 'cycling' => in_array($member->getSingleId(), $knownIds)
+									 	'member' => $member,
+									 	'cycling' => in_array($member->getSingleId(), $knownIds)
 									 ]
 								 )
 						);
@@ -451,7 +448,6 @@ class MembersList extends Base {
 					$type = implode(", ", Circle::getCircleFlags($circle, Circle::FLAGS_LONG));
 					$line .= ($type === '') ? '' : ' <info>Config</info>: ' . $type;
 				}
-
 			} else {
 				if ($lineNumber === 1 && !is_null($circle)) {
 					$line .= '<info>' . $circle->getSingleId() . '</info>';
@@ -462,12 +458,9 @@ class MembersList extends Base {
 			}
 
 			return $line;
-
 		} catch (InvalidItemException | ItemNotFoundException | UnknownTypeException $e) {
 		}
 
 		return '';
 	}
-
 }
-

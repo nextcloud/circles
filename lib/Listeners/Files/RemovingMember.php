@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Listeners\Files;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\AppInfo\Application;
@@ -44,15 +43,12 @@ use OCA\Circles\Service\ShareTokenService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 
-
 /**
  * Class RemovingMember
  *
  * @package OCA\Circles\Listeners\Files
  */
 class RemovingMember implements IEventListener {
-
-
 	use TStringTools;
 	use TNC22Logger;
 
@@ -101,7 +97,7 @@ class RemovingMember implements IEventListener {
 		$singleIds = array_merge(
 			[$circle->getSingleId()],
 			array_map(
-				function(Membership $membership) {
+				function (Membership $membership) {
 					return $membership->getCircleId();
 				}, $circle->getMemberships()
 			)
@@ -126,6 +122,4 @@ class RemovingMember implements IEventListener {
 			}
 		}
 	}
-
 }
-

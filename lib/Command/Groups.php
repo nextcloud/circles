@@ -71,12 +71,10 @@ class Groups extends Base {
 
 
 	protected function execute(InputInterface $input, OutputInterface $output) {
-
 		try {
 			$this->listLinkedGroups($input, $output);
 			$this->addLinkedGroups($input, $output);
 			$this->delLinkedGroups($input, $output);
-
 		} catch (FakeException $e) {
 			$output->writeln('done');
 		} catch (Exception $e) {
@@ -112,7 +110,7 @@ class Groups extends Base {
 			return;
 		}
 
-		list($circleId, $group) = $this->getCircleIdAndGroupFromArguments($input);
+		[$circleId, $group] = $this->getCircleIdAndGroupFromArguments($input);
 
 		throw new FakeException();
 	}
@@ -129,7 +127,7 @@ class Groups extends Base {
 			return;
 		}
 
-		list($circleId, $group) = $this->getCircleIdAndGroupFromArguments($input);
+		[$circleId, $group] = $this->getCircleIdAndGroupFromArguments($input);
 
 		throw new FakeException();
 	}
@@ -148,6 +146,4 @@ class Groups extends Base {
 
 		return [$input->getArgument('circle_id'), $input->getArgument('group')];
 	}
-
 }
-

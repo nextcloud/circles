@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,10 +31,8 @@
 
 namespace OCA\Circles\Model\GlobalScale;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
-
 
 /**
  * Class GSShare
@@ -40,8 +40,6 @@ use JsonSerializable;
  * @package OCA\Circles\Model\GlobalScale
  */
 class GSShare implements JsonSerializable {
-
-
 	use TArrayTools;
 
 
@@ -292,12 +290,12 @@ class GSShare implements JsonSerializable {
 	 */
 	public function toMount(string $userId, string $protocol = 'https'): array {
 		return [
-			'owner'       => $this->getOwner(),
-			'remote'      => $protocol . '://' . $this->getInstance(),
-			'token'       => $this->getToken(),
+			'owner' => $this->getOwner(),
+			'remote' => $protocol . '://' . $this->getInstance(),
+			'token' => $this->getToken(),
 			'share_token' => $this->getToken(),
-			'password'    => $this->getPassword(),
-			'mountpoint'  => $this->getMountPoint($userId)
+			'password' => $this->getPassword(),
+			'mountpoint' => $this->getMountPoint($userId)
 		];
 	}
 
@@ -305,18 +303,16 @@ class GSShare implements JsonSerializable {
 	/**
 	 * @return array
 	 */
-	function jsonSerialize(): array {
+	public function jsonSerialize(): array {
 		return [
-			'id'                => $this->getId(),
+			'id' => $this->getId(),
 			'defaultMountPoint' => $this->getDefaultMountPoint(),
-			'mountPoint'        => $this->getMountPoint(),
-			'parent'            => $this->getParent(),
-			'owner'             => $this->getOwner(),
-			'instance'          => $this->getInstance(),
-			'token'             => $this->getToken(),
-			'password'          => $this->getPassword()
+			'mountPoint' => $this->getMountPoint(),
+			'parent' => $this->getParent(),
+			'owner' => $this->getOwner(),
+			'instance' => $this->getInstance(),
+			'token' => $this->getToken(),
+			'password' => $this->getPassword()
 		];
 	}
-
 }
-

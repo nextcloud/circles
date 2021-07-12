@@ -73,4 +73,3 @@ class Filter implements IFilter {
 		return [Application::APP_ID];
 	}
 }
-

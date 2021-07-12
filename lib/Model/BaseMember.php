@@ -33,24 +33,23 @@ use OCA\Circles\Service\MiscService;
 use OCP\IL10N;
 
 class BaseMember implements JsonSerializable {
+	public const LEVEL_NONE = 0;
+	public const LEVEL_MEMBER = 1;
+	public const LEVEL_MODERATOR = 4;
+	public const LEVEL_ADMIN = 8;
+	public const LEVEL_OWNER = 9;
 
-	const LEVEL_NONE = 0;
-	const LEVEL_MEMBER = 1;
-	const LEVEL_MODERATOR = 4;
-	const LEVEL_ADMIN = 8;
-	const LEVEL_OWNER = 9;
+	public const STATUS_NONMEMBER = 'Unknown';
+	public const STATUS_INVITED = 'Invited';
+	public const STATUS_REQUEST = 'Requesting';
+	public const STATUS_MEMBER = 'Member';
+	public const STATUS_BLOCKED = 'Blocked';
+	public const STATUS_KICKED = 'Removed';
 
-	const STATUS_NONMEMBER = 'Unknown';
-	const STATUS_INVITED = 'Invited';
-	const STATUS_REQUEST = 'Requesting';
-	const STATUS_MEMBER = 'Member';
-	const STATUS_BLOCKED = 'Blocked';
-	const STATUS_KICKED = 'Removed';
-
-	const TYPE_USER = 1;
-	const TYPE_GROUP = 2;
-	const TYPE_MAIL = 3;
-	const TYPE_CONTACT = 4;
+	public const TYPE_USER = 1;
+	public const TYPE_GROUP = 2;
+	public const TYPE_MAIL = 3;
+	public const TYPE_CONTACT = 4;
 
 	/** @var string */
 	private $circleUniqueId;
@@ -411,18 +410,18 @@ class BaseMember implements JsonSerializable {
 
 	public function jsonSerialize() {
 		return [
-			'circle_id'    => $this->getCircleId(),
-			'member_id'    => $this->getMemberId(),
-			'user_id'      => $this->getUserId(),
-			'user_type'    => $this->getType(),
-			'cached_name'  => $this->getCachedName(),
-			'contact_id'   => $this->getContactId(),
-			'level'        => $this->getLevel(),
+			'circle_id' => $this->getCircleId(),
+			'member_id' => $this->getMemberId(),
+			'user_id' => $this->getUserId(),
+			'user_type' => $this->getType(),
+			'cached_name' => $this->getCachedName(),
+			'contact_id' => $this->getContactId(),
+			'level' => $this->getLevel(),
 			'level_string' => $this->getLevelString(),
-			'status'       => $this->getStatus(),
-			'instance'     => $this->getInstance(),
-			'note'         => $this->getNote(),
-			'joined'       => $this->getJoined()
+			'status' => $this->getStatus(),
+			'instance' => $this->getInstance(),
+			'note' => $this->getNote(),
+			'joined' => $this->getJoined()
 		];
 	}
 

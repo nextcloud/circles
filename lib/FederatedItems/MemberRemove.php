@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\RequestBuilderException;
@@ -43,7 +42,6 @@ use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\MembershipService;
-
 
 /**
  * Class MemberLevel
@@ -129,6 +127,4 @@ class MemberRemove implements
 	public function result(FederatedEvent $event, array $results): void {
 		$this->eventService->memberRemoved($event, $results);
 	}
-
 }
-

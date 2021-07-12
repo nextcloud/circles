@@ -27,7 +27,4 @@
 namespace OCA\Circles\Exceptions;
 
 class CircleAlreadyExistsException extends \Exception {
-
 }
-
-

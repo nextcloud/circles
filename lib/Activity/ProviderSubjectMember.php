@@ -27,7 +27,6 @@
 
 namespace OCA\Circles\Activity;
 
-
 use OCA\Circles\Exceptions\FakeException;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\DeprecatedMember;
@@ -168,7 +167,6 @@ class ProviderSubjectMember extends ProviderParser {
 	 * @throws FakeException
 	 */
 	public function parseSubjectMemberLeft(IEvent $event, DeprecatedCircle $circle, DeprecatedMember $member) {
-
 		if ($event->getSubject() !== 'member_left') {
 			return;
 		}
@@ -232,7 +230,6 @@ class ProviderSubjectMember extends ProviderParser {
 	 * @throws FakeException
 	 */
 	public function parseSubjectMemberRemove(IEvent $event, DeprecatedCircle $circle, DeprecatedMember $member) {
-
 		if ($event->getSubject() !== 'member_remove') {
 			return;
 		}

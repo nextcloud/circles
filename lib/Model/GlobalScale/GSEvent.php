@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,7 +31,6 @@
 
 namespace OCA\Circles\Model\GlobalScale;
 
-
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
@@ -39,35 +40,32 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\DeprecatedMember;
 
-
 /**
  * Class GSEvent
  *
  * @package OCA\Circles\Model\GlobalScale
  */
 class GSEvent implements JsonSerializable {
+	public const SEVERITY_LOW = 1;
+	public const SEVERITY_HIGH = 3;
 
+	public const TEST = '\OCA\Circles\GlobalScale\Test';
+	public const GLOBAL_SYNC = '\OCA\Circles\GlobalScale\GlobalSync';
+	public const CIRCLE_STATUS = '\OCA\Circles\GlobalScale\CircleStatus';
 
-	const SEVERITY_LOW = 1;
-	const SEVERITY_HIGH = 3;
+	public const CIRCLE_CREATE = '\OCA\Circles\GlobalScale\CircleCreate';
+	public const CIRCLE_UPDATE = '\OCA\Circles\GlobalScale\CircleUpdate';
+	public const CIRCLE_DESTROY = '\OCA\Circles\GlobalScale\CircleDestroy';
+	public const MEMBER_ADD = '\OCA\Circles\GlobalScale\MemberAdd';
+	public const MEMBER_JOIN = '\OCA\Circles\GlobalScale\MemberJoin';
+	public const MEMBER_LEAVE = '\OCA\Circles\GlobalScale\MemberLeave';
+	public const MEMBER_LEVEL = '\OCA\Circles\GlobalScale\MemberLevel';
+	public const MEMBER_UPDATE = '\OCA\Circles\GlobalScale\MemberUpdate';
+	public const MEMBER_REMOVE = '\OCA\Circles\GlobalScale\MemberRemove';
+	public const USER_DELETED = '\OCA\Circles\GlobalScale\UserDeleted';
 
-	const TEST = '\OCA\Circles\GlobalScale\Test';
-	const GLOBAL_SYNC = '\OCA\Circles\GlobalScale\GlobalSync';
-	const CIRCLE_STATUS = '\OCA\Circles\GlobalScale\CircleStatus';
-
-	const CIRCLE_CREATE = '\OCA\Circles\GlobalScale\CircleCreate';
-	const CIRCLE_UPDATE = '\OCA\Circles\GlobalScale\CircleUpdate';
-	const CIRCLE_DESTROY = '\OCA\Circles\GlobalScale\CircleDestroy';
-	const MEMBER_ADD = '\OCA\Circles\GlobalScale\MemberAdd';
-	const MEMBER_JOIN = '\OCA\Circles\GlobalScale\MemberJoin';
-	const MEMBER_LEAVE = '\OCA\Circles\GlobalScale\MemberLeave';
-	const MEMBER_LEVEL = '\OCA\Circles\GlobalScale\MemberLevel';
-	const MEMBER_UPDATE = '\OCA\Circles\GlobalScale\MemberUpdate';
-	const MEMBER_REMOVE = '\OCA\Circles\GlobalScale\MemberRemove';
-	const USER_DELETED = '\OCA\Circles\GlobalScale\UserDeleted';
-
-	const FILE_SHARE = '\OCA\Circles\GlobalScale\FileShare';
-	const FILE_UNSHARE = '\OCA\Circles\GlobalScale\FileUnshare';
+	public const FILE_SHARE = '\OCA\Circles\GlobalScale\FileShare';
+	public const FILE_UNSHARE = '\OCA\Circles\GlobalScale\FileUnshare';
 
 
 	use TArrayTools;
@@ -120,7 +118,7 @@ class GSEvent implements JsonSerializable {
 	 * @param bool $local
 	 * @param bool $force
 	 */
-	function __construct(string $type = '', bool $local = false, bool $force = false) {
+	public function __construct(string $type = '', bool $local = false, bool $force = false) {
 		$this->type = $type;
 		$this->local = $local;
 		$this->force = $force;
@@ -451,16 +449,16 @@ class GSEvent implements JsonSerializable {
 	/**
 	 * @return array
 	 */
-	function jsonSerialize(): array {
+	public function jsonSerialize(): array {
 		$arr = [
-			'type'     => $this->getType(),
+			'type' => $this->getType(),
 			'severity' => $this->getSeverity(),
-			'data'     => $this->getData(),
-			'result'   => $this->getResult(),
-			'key'      => $this->getKey(),
-			'source'   => $this->getSource(),
-			'force'    => $this->isForced(),
-			'async'    => $this->isAsync()
+			'data' => $this->getData(),
+			'result' => $this->getResult(),
+			'key' => $this->getKey(),
+			'source' => $this->getSource(),
+			'force' => $this->isForced(),
+			'async' => $this->isAsync()
 		];
 
 		if ($this->hasCircle()) {
@@ -474,7 +472,4 @@ class GSEvent implements JsonSerializable {
 
 		return $arr;
 	}
-
-
 }
-

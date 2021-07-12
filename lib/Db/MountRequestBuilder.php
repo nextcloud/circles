@@ -31,11 +31,9 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-
 use ArtificialOwl\MySmallPhpTools\Exceptions\RowNotFoundException;
 use OCA\Circles\Exceptions\MountNotFoundException;
 use OCA\Circles\Model\Mount;
-
 
 /**
  * Class MountRequestBuilder
@@ -117,6 +115,4 @@ class MountRequestBuilder extends CoreRequestBuilder {
 		/** @var Mount[] $result */
 		return $qb->asItems(Mount::class);
 	}
-
 }
-

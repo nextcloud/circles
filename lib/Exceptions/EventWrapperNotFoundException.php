@@ -32,6 +32,4 @@ declare(strict_types=1);
 namespace OCA\Circles\Exceptions;
 
 class EventWrapperNotFoundException extends \Exception {
-
 }
-

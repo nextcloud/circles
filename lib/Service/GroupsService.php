@@ -26,7 +26,6 @@
 
 namespace OCA\Circles\Service;
 
-
 use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\DeprecatedMembersRequest;
 use OCA\Circles\Exceptions\CircleTypeNotValidException;
@@ -118,7 +117,6 @@ class GroupsService {
 	 * @throws \Exception
 	 */
 	public function linkGroup($circleUniqueId, $groupId) {
-
 		try {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
 			$this->circlesService->hasToBeAdmin($circle->getHigherViewer());
@@ -178,7 +176,6 @@ class GroupsService {
 	 * @throws GroupDoesNotExistException
 	 */
 	private function getFreshNewMember($circleId, $groupId) {
-
 		if (!$this->groupManager->groupExists($groupId)) {
 			throw new GroupDoesNotExistException($this->l10n->t("This group does not exist"));
 		}
@@ -211,7 +208,6 @@ class GroupsService {
 	 * @throws \Exception
 	 */
 	public function levelGroup($circleUniqueId, $groupId, $level) {
-
 		$level = (int)$level;
 		try {
 			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
@@ -241,7 +237,6 @@ class GroupsService {
 		} catch (\Exception $e) {
 			throw $e;
 		}
-
 	}
 
 
@@ -264,7 +259,6 @@ class GroupsService {
 
 			$group->setLevel($level);
 			$this->membersRequest->updateGroup($group);
-
 		} catch (\Exception $e) {
 			throw $e;
 		}
@@ -307,6 +301,4 @@ class GroupsService {
 	public function onGroupRemoved($groupId) {
 		$this->membersRequest->unlinkAllFromGroup($groupId);
 	}
-
-
 }

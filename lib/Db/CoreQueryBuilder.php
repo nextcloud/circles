@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-
 use ArtificialOwl\MySmallPhpTools\Db\Nextcloud\nc22\NC22ExtendedQueryBuilder;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use Doctrine\DBAL\Query\QueryBuilder;
@@ -47,90 +46,87 @@ use OCA\Circles\Service\ConfigService;
 use OCP\DB\QueryBuilder\ICompositeExpression;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 
-
 /**
  * Class CoreQueryBuilder
  *
  * @package OCA\Circles\Db
  */
 class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
-
-
 	use TArrayTools;
 
 
-	const SINGLE = 'single';
-	const CIRCLE = 'circle';
-	const MEMBER = 'member';
-	const MEMBER_COUNT = 'membercount';
-	const OWNER = 'owner';
-	const FEDERATED_EVENT = 'federatedevent';
-	const REMOTE = 'remote';
-	const BASED_ON = 'basedon';
-	const INITIATOR = 'initiator';
-	const DIRECT_INITIATOR = 'initiatordirect';
-	const MEMBERSHIPS = 'memberships';
-	const CONFIG = 'config';
-	const UPSTREAM_MEMBERSHIPS = 'upstreammemberships';
-	const INHERITANCE_FROM = 'inheritancefrom';
-	const INHERITED_BY = 'inheritedby';
-	const INVITED_BY = 'invitedby';
-	const MOUNT = 'mount';
-	const MOUNTPOINT = 'mountpoint';
-	const SHARE = 'share';
-	const FILE_CACHE = 'filecache';
-	const STORAGES = 'storages';
-	const TOKEN = 'token';
-	const OPTIONS = 'options';
-	const HELPER = 'circleshelper';
+	public const SINGLE = 'single';
+	public const CIRCLE = 'circle';
+	public const MEMBER = 'member';
+	public const MEMBER_COUNT = 'membercount';
+	public const OWNER = 'owner';
+	public const FEDERATED_EVENT = 'federatedevent';
+	public const REMOTE = 'remote';
+	public const BASED_ON = 'basedon';
+	public const INITIATOR = 'initiator';
+	public const DIRECT_INITIATOR = 'initiatordirect';
+	public const MEMBERSHIPS = 'memberships';
+	public const CONFIG = 'config';
+	public const UPSTREAM_MEMBERSHIPS = 'upstreammemberships';
+	public const INHERITANCE_FROM = 'inheritancefrom';
+	public const INHERITED_BY = 'inheritedby';
+	public const INVITED_BY = 'invitedby';
+	public const MOUNT = 'mount';
+	public const MOUNTPOINT = 'mountpoint';
+	public const SHARE = 'share';
+	public const FILE_CACHE = 'filecache';
+	public const STORAGES = 'storages';
+	public const TOKEN = 'token';
+	public const OPTIONS = 'options';
+	public const HELPER = 'circleshelper';
 
 
 	public static $SQL_PATH = [
-		self::SINGLE      => [
+		self::SINGLE => [
 			self::MEMBER
 		],
-		self::CIRCLE      => [
-			self::OPTIONS          => [
+		self::CIRCLE => [
+			self::OPTIONS => [
 			],
 			self::MEMBER,
 			self::MEMBER_COUNT,
-			self::OWNER            => [
+			self::OWNER => [
 				self::BASED_ON
 			],
-			self::MEMBERSHIPS      => [
+			self::MEMBERSHIPS => [
 				self::CONFIG
 			],
 			self::DIRECT_INITIATOR => [
 				self::BASED_ON
 			],
-			self::INITIATOR        => [
+			self::INITIATOR => [
 				self::BASED_ON,
 				self::INHERITED_BY => [
 					self::MEMBERSHIPS
 				]
 			],
-			self::REMOTE           => [
+			self::REMOTE => [
 				self::MEMBER,
 				self::CIRCLE => [
 					self::OWNER
 				]
 			]
 		],
-		self::MEMBER      => [
+		self::MEMBER => [
 			self::MEMBERSHIPS => [
 				self::CONFIG
 			],
 			self::INHERITANCE_FROM,
-			self::CIRCLE      => [
-				self::OPTIONS     => [
+			self::CIRCLE => [
+				self::OPTIONS => [
 					'getData' => true
 				],
 				self::OWNER,
 				self::MEMBERSHIPS => [
 					self::CONFIG
 				],
-				self::INITIATOR   => [
-					self::OPTIONS      => [
+				self::INITIATOR => [
+					self::OPTIONS => [
 						'mustBeMember' => true,
 						'canBeVisitor' => false
 					],
@@ -138,13 +134,13 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 					self::INHERITED_BY => [
 						self::MEMBERSHIPS
 					],
-					self::INVITED_BY   => [
+					self::INVITED_BY => [
 						self::OWNER,
 						self::BASED_ON
 					]
 				]
 			],
-			self::BASED_ON    => [
+			self::BASED_ON => [
 				self::OWNER,
 				self::MEMBERSHIPS,
 				self::INITIATOR => [
@@ -154,13 +150,13 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 					]
 				]
 			],
-			self::REMOTE      => [
+			self::REMOTE => [
 				self::MEMBER,
 				self::CIRCLE => [
 					self::OWNER
 				]
 			],
-			self::INVITED_BY  => [
+			self::INVITED_BY => [
 				self::OWNER,
 				self::BASED_ON
 			]
@@ -168,10 +164,10 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		self::MEMBERSHIPS => [
 			self::CONFIG
 		],
-		self::SHARE       => [
+		self::SHARE => [
 			self::SHARE,
 			self::TOKEN,
-			self::FILE_CACHE           => [
+			self::FILE_CACHE => [
 				self::STORAGES
 			],
 			self::UPSTREAM_MEMBERSHIPS => [
@@ -181,31 +177,31 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 				],
 				self::SHARE,
 			],
-			self::MEMBERSHIPS          => [
+			self::MEMBERSHIPS => [
 				self::CONFIG
 			],
 			self::INHERITANCE_FROM,
-			self::INHERITED_BY         => [
+			self::INHERITED_BY => [
 				self::BASED_ON
 			],
-			self::CIRCLE               => [
+			self::CIRCLE => [
 				self::OWNER
 			],
-			self::INITIATOR            => [
+			self::INITIATOR => [
 				self::BASED_ON,
 				self::INHERITED_BY => [
 					self::MEMBERSHIPS
 				]
 			]
 		],
-		self::REMOTE      => [
+		self::REMOTE => [
 			self::MEMBER
 		],
-		self::MOUNT       => [
-			self::MEMBER      => [
+		self::MOUNT => [
+			self::MEMBER => [
 				self::REMOTE
 			],
-			self::INITIATOR   => [
+			self::INITIATOR => [
 				self::INHERITED_BY => [
 					self::MEMBERSHIPS
 				]
@@ -215,20 +211,20 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 				self::CONFIG
 			]
 		],
-		self::HELPER      => [
+		self::HELPER => [
 			self::MEMBERSHIPS => [
 				self::CONFIG
 			],
-			self::INITIATOR   => [
+			self::INITIATOR => [
 				self::INHERITED_BY => [
 					self::MEMBERSHIPS
 				]
 			],
-			self::CIRCLE      => [
+			self::CIRCLE => [
 				self::OPTIONS => [
 				],
 				self::MEMBER,
-				self::OWNER   => [
+				self::OWNER => [
 					self::BASED_ON
 				]
 			]
@@ -437,7 +433,6 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		bool $filterSensitiveData = true,
 		string $aliasCircle = ''
 	): void {
-
 		if ($aliasCircle === '') {
 			$aliasCircle = $alias;
 		}
@@ -1215,11 +1210,11 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 			$default = [];
 			if ($this->getBool('canBeVisitor', $options, false)) {
 				$default = [
-					'user_id'     => $initiator->getUserId(),
-					'single_id'   => $initiator->getSingleId(),
-					'user_type'   => $initiator->getUserType(),
+					'user_id' => $initiator->getUserId(),
+					'single_id' => $initiator->getSingleId(),
+					'user_type' => $initiator->getUserType(),
 					'cached_name' => $initiator->getDisplayName(),
-					'instance'    => $initiator->getInstance()
+					'instance' => $initiator->getInstance()
 				];
 			}
 			$aliasInheritedByMembership = $this->generateAlias($aliasInheritedBy, self::MEMBERSHIPS);
@@ -1649,6 +1644,4 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 
 		return $orX;
 	}
-
 }
-

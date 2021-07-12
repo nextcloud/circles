@@ -40,18 +40,16 @@ use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Tests\Env;
 use OCP\AppFramework\QueryException;
 
-
 class CirclesTest extends \PHPUnit_Framework_TestCase {
+	public const NAME_PUBLIC_CIRCLE1 = '_circleNamePublic1';
+	public const NAME_SECRET_CIRCLE1 = '_circleNameSecret1';
+	public const NAME_CLOSED_CIRCLE1 = '_circleNameClosed1';
+	public const NAME_PERSONAL_CIRCLE1 = '_circleNamePersonal1';
 
-	const NAME_PUBLIC_CIRCLE1 = '_circleNamePublic1';
-	const NAME_SECRET_CIRCLE1 = '_circleNameSecret1';
-	const NAME_CLOSED_CIRCLE1 = '_circleNameClosed1';
-	const NAME_PERSONAL_CIRCLE1 = '_circleNamePersonal1';
-
-	const NAME_PUBLIC_CIRCLE2 = '_circleNamePublic2';
-	const NAME_SECRET_CIRCLE2 = '_circleNameSecret2';
-	const NAME_CLOSED_CIRCLE2 = '_circleNameClosed2';
-	const NAME_PERSONAL_CIRCLE2 = '_circleNamePersonal2';
+	public const NAME_PUBLIC_CIRCLE2 = '_circleNamePublic2';
+	public const NAME_SECRET_CIRCLE2 = '_circleNameSecret2';
+	public const NAME_CLOSED_CIRCLE2 = '_circleNameClosed2';
+	public const NAME_PERSONAL_CIRCLE2 = '_circleNamePersonal2';
 
 
 	/** @var DeprecatedCircle[] */
@@ -67,19 +65,18 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 	protected function setUp() {
 		Env::setUser(Env::ENV_TEST_OWNER1);
 
-		$this->circles = array();
+		$this->circles = [];
 		try {
 			$this->circles = [
-				'Public'   =>
+				'Public' =>
 					Circles::createCircle(DeprecatedCircle::CIRCLES_PUBLIC, self::NAME_PUBLIC_CIRCLE1),
-				'Secret'   =>
+				'Secret' =>
 					Circles::createCircle(DeprecatedCircle::CIRCLES_SECRET, self::NAME_SECRET_CIRCLE1),
-				'Closed'   =>
+				'Closed' =>
 					Circles::createCircle(DeprecatedCircle::CIRCLES_CLOSED, self::NAME_CLOSED_CIRCLE1),
 				'Personal' =>
 					Circles::createCircle(DeprecatedCircle::CIRCLES_PERSONAL, self::NAME_PERSONAL_CIRCLE1)
 			];
-
 		} catch (Exception $e) {
 			throw $e;
 		}
@@ -186,7 +183,6 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 		Env::setUser(Env::ENV_TEST_ADMIN1);
 
 		foreach ($circles as $circle) {
-
 			try {
 				Circles::levelMember(
 					$circle->getId(), Env::ENV_TEST_ADMIN3, DeprecatedMember::TYPE_USER,
@@ -348,7 +344,6 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 					'should have returned a MemberIsNotModeratorException - ' . $e->getMessage()
 				);
 			}
-
 		}
 
 		Env::logout();
@@ -398,7 +393,6 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 						true, false, 'should have returned a CircleAlreadyExistsException'
 					);
 				}
-
 			} else {
 				for ($j = 0; $j < sizeof($circleNames); $j++) {
 					try {
@@ -481,7 +475,6 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 		for ($i = 0; $i < 3; $i++) {
 			foreach ($this->circles as $circle) {
-
 				try {
 					$member = Circles::getMember(
 						$circle->getId(), Env::ENV_TEST_MEMBER2, DeprecatedMember::TYPE_USER
@@ -562,11 +555,9 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 						);
 					} catch (MemberDoesNotExistException $e) {
 					}
-
 				} catch (Exception $e) {
 					throw $e;
 				}
-
 			}
 		}
 
@@ -584,7 +575,6 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 		for ($i = 0; $i < 3; $i++) {
 			foreach ($this->circles as $circle) {
-
 				try {
 					$member = Circles::getMember(
 						$circle->getId(), Env::ENV_TEST_MEMBER3, DeprecatedMember::TYPE_USER
@@ -666,7 +656,6 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 								$member->getCircleId()
 							]
 						);
-
 					} catch (Exception $e) {
 						throw $e;
 					}
@@ -709,7 +698,6 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 						throw $e;
 					}
 					Env::setUser(Env::ENV_TEST_MEMBER3);
-
 				}
 			}
 		}
@@ -760,11 +748,11 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 		$this->assertEquals(
 			$result, [
-					   self::NAME_PUBLIC_CIRCLE1,
-					   self::NAME_SECRET_CIRCLE1,
-					   self::NAME_CLOSED_CIRCLE1,
-					   self::NAME_PERSONAL_CIRCLE1
-				   ]
+				self::NAME_PUBLIC_CIRCLE1,
+				self::NAME_SECRET_CIRCLE1,
+				self::NAME_CLOSED_CIRCLE1,
+				self::NAME_PERSONAL_CIRCLE1
+			]
 		);
 
 
@@ -781,10 +769,10 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 
 		$this->assertEquals(
 			$result, [
-					   self::NAME_PUBLIC_CIRCLE1,
-					   self::NAME_SECRET_CIRCLE1,
-					   self::NAME_CLOSED_CIRCLE1
-				   ]
+				self::NAME_PUBLIC_CIRCLE1,
+				self::NAME_SECRET_CIRCLE1,
+				self::NAME_CLOSED_CIRCLE1
+			]
 		);
 
 
@@ -867,7 +855,6 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 	 * @throws QueryException
 	 */
 	protected function generateSimpleCircleWithAllLevel($circleId, $isClosed = false) {
-
 		$curr = Env::currentUser();
 
 		Circles::addMember($circleId, Env::ENV_TEST_ADMIN1, DeprecatedMember::TYPE_USER);
@@ -901,5 +888,4 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 			$circleId, Env::ENV_TEST_MEMBER1, DeprecatedMember::TYPE_USER, DeprecatedMember::LEVEL_MEMBER
 		);
 	}
-
 }

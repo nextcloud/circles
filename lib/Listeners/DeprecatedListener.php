@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Listeners;
 
-
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use Exception;
 use OCA\Circles\Db\CircleRequest;
@@ -50,7 +49,6 @@ use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedEventService;
 use OCA\Circles\Service\FederatedUserService;
 use OCP\IUser;
-
 
 /**
  * Class DeprecatedListener
@@ -126,8 +124,5 @@ class DeprecatedListener {
 			} catch (Exception $e) {
 			}
 		}
-
 	}
-
 }
-

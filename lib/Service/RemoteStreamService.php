@@ -30,7 +30,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-
 use ArtificialOwl\MySmallPhpTools\ActivityPub\Nextcloud\nc22\NC22Signature;
 use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
 use ArtificialOwl\MySmallPhpTools\Exceptions\SignatoryException;
@@ -63,26 +62,23 @@ use OCP\IURLGenerator;
 use ReflectionClass;
 use ReflectionException;
 
-
 /**
  * Class RemoteStreamService
  *
  * @package OCA\Circles\Service
  */
 class RemoteStreamService extends NC22Signature {
-
-
 	use TNC22Deserialize;
 	use TNC22LocalSignatory;
 	use TStringTools;
 	use TNC22WellKnown;
 
 
-	const UPDATE_DATA = 'data';
-	const UPDATE_ITEM = 'item';
-	const UPDATE_TYPE = 'type';
-	const UPDATE_INSTANCE = 'instance';
-	const UPDATE_HREF = 'href';
+	public const UPDATE_DATA = 'data';
+	public const UPDATE_ITEM = 'item';
+	public const UPDATE_TYPE = 'type';
+	public const UPDATE_INSTANCE = 'instance';
+	public const UPDATE_HREF = 'href';
 
 
 	/** @var IURLGenerator */
@@ -436,7 +432,7 @@ class RemoteStreamService extends NC22Signature {
 	 * @throws SignatureException
 	 */
 	private function confirmAuth(RemoteInstance $remote, string $auth): void {
-		list($algo, $signed) = explode(':', $this->get('auth-signed', $remote->getOrigData()));
+		[$algo, $signed] = explode(':', $this->get('auth-signed', $remote->getOrigData()));
 		try {
 			if ($signed === null) {
 				throw new SignatureException('invalid auth-signed');
@@ -575,6 +571,4 @@ class RemoteStreamService extends NC22Signature {
 				break;
 		}
 	}
-
 }
-

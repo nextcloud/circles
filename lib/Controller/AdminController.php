@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Controller;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use Exception;
@@ -57,15 +56,12 @@ use OCP\AppFramework\OCSController;
 use OCP\IRequest;
 use OCP\IUserSession;
 
-
 /**
  * Class AdminController
  *
  * @package OCA\Circles\Controller
  */
 class AdminController extends OcsController {
-
-
 	use TNC22Deserialize;
 	use TNC22Logger;
 
@@ -152,11 +148,11 @@ class AdminController extends OcsController {
 		} catch (Exception $e) {
 			$this->e(
 				$e, [
-					  'emulated' => $emulated,
-					  'name'     => $name,
-					  'members'  => $personal,
-					  'local'    => $local
-				  ]
+					'emulated' => $emulated,
+					'name' => $name,
+					'members' => $personal,
+					'local' => $local
+				]
 			);
 			throw new OcsException($e->getMessage(), $e->getCode());
 		}
@@ -213,11 +209,11 @@ class AdminController extends OcsController {
 		} catch (Exception $e) {
 			$this->e(
 				$e, [
-					  'emulated' => $emulated,
-					  'circleId' => $circleId,
-					  'userId'   => $userId,
-					  'type'     => $type
-				  ]
+					'emulated' => $emulated,
+					'circleId' => $circleId,
+					'userId' => $userId,
+					'type' => $type
+				]
 			);
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
@@ -253,7 +249,7 @@ class AdminController extends OcsController {
 					'emulated' => $emulated,
 					'circleId' => $circleId,
 					'memberId' => $memberId,
-					'level'    => $level
+					'level' => $level
 				]
 			);
 			throw new OcsException($e->getMessage(), $e->getCode());
@@ -532,6 +528,4 @@ class AdminController extends OcsController {
 		$this->federatedUserService->setCurrentPatron($user->getUID());
 		$this->federatedUserService->setLocalCurrentUserId($emulated);
 	}
-
 }
-

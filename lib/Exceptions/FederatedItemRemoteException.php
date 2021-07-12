@@ -30,10 +30,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Exceptions;
 
-
 use OCP\AppFramework\Http;
 use Throwable;
-
 
 /**
  * Class FederatedItemRemoteException
@@ -41,9 +39,7 @@ use Throwable;
  * @package OCA\Circles\Exceptions
  */
 class FederatedItemRemoteException extends FederatedItemException {
-
-
-	const STATUS = Http::STATUS_REQUEST_TIMEOUT;
+	public const STATUS = Http::STATUS_REQUEST_TIMEOUT;
 
 
 	/**
@@ -61,6 +57,4 @@ class FederatedItemRemoteException extends FederatedItemException {
 		parent::__construct($message, ($code > 0) ? $code : self::STATUS, $previous);
 		$this->setStatus(self::STATUS);
 	}
-
 }
-

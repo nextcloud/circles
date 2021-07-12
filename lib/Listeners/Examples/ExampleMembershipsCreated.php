@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Listeners\Examples;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use Exception;
@@ -44,15 +43,12 @@ use OCA\Circles\Service\ConfigService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 
-
 /**
  * Class ExampleMembershipsCreated
  *
  * @package OCA\Circles\Listeners\Files
  */
 class ExampleMembershipsCreated implements IEventListener {
-
-
 	use TStringTools;
 	use TNC22Logger;
 
@@ -96,7 +92,7 @@ class ExampleMembershipsCreated implements IEventListener {
 		$prefix = '[Example Event] (ExampleMembershipsCreated) ';
 
 		$memberships = array_map(
-			function(Membership $membership) {
+			function (Membership $membership) {
 				$inheritance = ($membership->getInheritanceDepth() > 1) ?
 					'an inherited member' : 'a direct member';
 				try {
@@ -115,6 +111,4 @@ class ExampleMembershipsCreated implements IEventListener {
 
 		$this->log(3, $prefix . implode('. ', $memberships));
 	}
-
 }
-

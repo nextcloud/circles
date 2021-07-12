@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\ContactAddressBookNotFoundException;
 use OCA\Circles\Exceptions\ContactFormatException;
@@ -48,7 +47,6 @@ use OCA\Circles\Service\SyncService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-
 
 /**
  * Class CirclesSync
@@ -178,6 +176,4 @@ class CirclesSync extends Base {
 
 		return $sync;
 	}
-
 }
-

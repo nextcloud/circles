@@ -31,11 +31,9 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-
 use ArtificialOwl\MySmallPhpTools\Exceptions\RowNotFoundException;
 use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Model\Membership;
-
 
 /**
  * Class MembershipRequestBuilder
@@ -121,5 +119,4 @@ class MembershipRequestBuilder extends CoreRequestBuilder {
 		/** @var Membership[] $result */
 		return $qb->asItems(Membership::class);
 	}
-
 }

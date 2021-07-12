@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles;
 
-
 use OCA\Circles\Db\CoreQueryBuilder;
 use OCA\Circles\Db\CoreRequestBuilder;
 use OCA\Circles\Exceptions\CircleNotFoundException;
@@ -41,7 +40,6 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Service\FederatedUserService;
 use OCP\DB\QueryBuilder\ICompositeExpression;
 use OCP\DB\QueryBuilder\IQueryBuilder;
-
 
 /**
  * Class CirclesQueryHelper
@@ -109,7 +107,7 @@ class CirclesQueryHelper {
 		$this->queryBuilder->setOptions(
 			[CoreQueryBuilder::HELPER],
 			[
-				'getData'      => $fullDetails,
+				'getData' => $fullDetails,
 				'mustBeMember' => true
 			]
 		);
@@ -142,7 +140,7 @@ class CirclesQueryHelper {
 		$this->queryBuilder->setOptions(
 			[CoreQueryBuilder::HELPER],
 			[
-				'getData'      => $fullDetails,
+				'getData' => $fullDetails,
 				'mustBeMember' => true
 			]
 		);
@@ -193,6 +191,4 @@ class CirclesQueryHelper {
 
 		return $circle;
 	}
-
 }
-

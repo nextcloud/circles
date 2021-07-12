@@ -30,9 +30,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Exceptions;
 
-
 use Exception;
-
 
 /**
  * Class MaintenanceException
@@ -40,7 +38,4 @@ use Exception;
  * @package OCA\Circles\Exceptions
  */
 class MaintenanceException extends Exception {
-
 }
-
-
