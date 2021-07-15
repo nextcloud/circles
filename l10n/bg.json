@@ -73,7 +73,6 @@
     "On events happening in a <strong>Circle</strong> of which you are a member" : "На събития, случващи се в <strong>Circle</strong>, в който вие сте член",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Всяко важно събитие в <strong>Circle</strong>, което вие модерирате",
     "On global events happening in any <strong>Circle</strong>" : "На глобални събития, които се случват във всеки <strong>Circle</strong>",
-    "Shared to Circles" : "Споделено с Кръгове",
     "Personal" : "Лични",
     "Contact" : "Контакт",
     "Circle" : "Кръг",
@@ -135,11 +134,6 @@
     "Name" : "Име",
     "Size" : "Размер",
     "Modified" : "Променен на",
-    "Maximum number of members per circle" : "Максимален брой членове на кръг",
-    "Allow linking of groups" : "Позволяване на свързване на групи",
-    "Groups can be linked to circles." : "Групите могат да бъдат свързани към кръгове.",
-    "Skip invitation step to closed circles" : "Пропускане на стъпката за покана до затворени кръгове",
-    "Moderators can add member to closed circles without user approval." : "Модераторите могат да добавят член в затворени кръгове без одобрение от потребителя.",
     "Are you sure you want to transfer your ownership?" : "Сигурни ли сте че искате да прехвърлите собствеността си?",
     "This action is irreversible" : "Действието е необратимо",
     "Personal circle" : "Личен кръг",
@@ -223,6 +217,7 @@
     "Member could not be updated" : "Членът не можа да бъде актуализиран",
     "Issue while saving settings" : "Проблем по време на запазване на настройките",
     "Settings saved." : "Настройките са запазени.",
+    "Shared to Circles" : "Споделено с Кръгове",
     "%s shared »%s« with '%s'." : "%s сподели »%s« с '%s'",
     "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n" : "%1$s сподели »%2$s» с вас.\nВече трябва да сте получили отделна поща с връзка за достъп до него.\n",
     "%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it." : "%1$s сподели »%2$s» с вас.\nВече трябва да сте получили отделна поща с връзка за достъп до него.",
@@ -305,6 +300,11 @@
     "Makes the circle federated, and enables sharing between federated circles" : "Прави кръга федериран и дава възможност за споделяне между федерирани кръгове",
     "Accept Link Request Automatically" : "Автоматично приемане на заявката за връзка ",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Предупреждение: Активирането на това автоматично ще се приемат нови заявки за връзка от други кръгове.",
-    "Save settings" : "Запазване на настройките"
+    "Save settings" : "Запазване на настройките",
+    "Maximum number of members per circle" : "Максимален брой членове на кръг",
+    "Allow linking of groups" : "Позволяване на свързване на групи",
+    "Groups can be linked to circles." : "Групите могат да бъдат свързани към кръгове.",
+    "Skip invitation step to closed circles" : "Пропускане на стъпката за покана до затворени кръгове",
+    "Moderators can add member to closed circles without user approval." : "Модераторите могат да добавят член в затворени кръгове без одобрение от потребителя."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

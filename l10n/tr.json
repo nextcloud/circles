@@ -73,7 +73,6 @@
     "On events happening in a <strong>Circle</strong> of which you are a member" : "Üyesi olduğunuz bir <strong>Çevredeki</strong> olaylarda",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Sorumlusu olduğunuz bir <strong>Çevredeki</strong> önemli olaylarda",
     "On global events happening in any <strong>Circle</strong>" : "Herhangi bir <strong>Çevredeki</strong> genel olaylarda",
-    "Shared to Circles" : "Çevrelerle paylaşıldı",
     "Single" : "Tek",
     "Personal" : "Kişisel",
     "System" : "Sistem",
@@ -170,11 +169,6 @@
     "Name" : "Ad",
     "Size" : "Boyut",
     "Modified" : "Değiştirilme",
-    "Maximum number of members per circle" : "Bir çevrede bulunabilecek en fazla üye sayısı",
-    "Allow linking of groups" : "Gruplar bağlanabilsin",
-    "Groups can be linked to circles." : "Grupların çevrelere bağlanmasını sağlar.",
-    "Skip invitation step to closed circles" : "Kapalı çevrelerde çağrı adımı atlansın",
-    "Moderators can add member to closed circles without user approval." : "Kapalı çevre sorumluları kullanıcı onayına gerek olmadan üye ekleyebilir.",
     "Are you sure you want to transfer your ownership?" : "Sahipliğinizi devretmek istediğinize emin misiniz?",
     "This action is irreversible" : "Bu işlem geri alınamaz",
     "Personal circle" : "Kişisel çevre",
@@ -258,6 +252,7 @@
     "Member could not be updated" : "Üye güncellenemedi",
     "Issue while saving settings" : "Ayarlar kaydedilirken sorun çıktı",
     "Settings saved." : "Ayarlar kaydedildi.",
+    "Shared to Circles" : "Çevrelerle paylaşıldı",
     "%s shared »%s« with '%s'." : "%s »%s« ögesini '%s' ile paylaştı.",
     "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n" : "%1$s sizinle »%2$s« ögesini paylaştı.\nErişim bağlantısını içeren başka bir e-posta daha almış olmalısınız.\n",
     "%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it." : "%1$s sizinle »%2$s« ögesini paylaştı. Erişim bağlantısını içeren başka bir e-posta daha almış olmalısınız.",
@@ -340,6 +335,11 @@
     "Makes the circle federated, and enables sharing between federated circles" : "Çevreyi birleşik yapar ve birleşik çevreler arasında paylaşımı etkinleştirir.",
     "Accept Link Request Automatically" : "Bağlantı isteği otomatik olarak kabul edilsin",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Uyarı: Bu seçenek etkinleştirildiğinde, diğer çevrelerden gelen bağlantı istekleri otomatik olarak kabul edilir.",
-    "Save settings" : "Ayarları kaydet"
+    "Save settings" : "Ayarları kaydet",
+    "Maximum number of members per circle" : "Bir çevrede bulunabilecek en fazla üye sayısı",
+    "Allow linking of groups" : "Gruplar bağlanabilsin",
+    "Groups can be linked to circles." : "Grupların çevrelere bağlanmasını sağlar.",
+    "Skip invitation step to closed circles" : "Kapalı çevrelerde çağrı adımı atlansın",
+    "Moderators can add member to closed circles without user approval." : "Kapalı çevre sorumluları kullanıcı onayına gerek olmadan üye ekleyebilir."
 },"pluralForm" :"nplurals=2; plural=(n > 1);"
 }

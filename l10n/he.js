@@ -50,7 +50,6 @@ OC.L10N.register(
     "{member} sent a request to join {circle}" : "נשלחה בקשה על ידי {member} להצטרף אל {circle}",
     "You are the new owner of {circle}" : "קיבלת בעלות על {circle}",
     "{member} is the new owner of {circle}" : "הבעלות על {circle} הועברה לידי {member}",
-    "Shared to Circles" : "שותף למעגלים",
     "Single" : "בודד",
     "Personal" : "אישי",
     "System" : "מערכת",
@@ -123,9 +122,6 @@ OC.L10N.register(
     "Name" : "שם",
     "Size" : "גודל",
     "Modified" : "מועד שינוי",
-    "Maximum number of members per circle" : "מספר החברים המרבי למעגל",
-    "Allow linking of groups" : "לאפשר קישור קבוצות",
-    "Groups can be linked to circles." : "אפשר לקשר קבוצות למעגלים.",
     "Are you sure you want to transfer your ownership?" : "להעביר את הבעלות שלך?",
     "This action is irreversible" : "זו פעולה בלתי הפיכה",
     "Personal circle" : "מעגל אישי",
@@ -192,6 +188,7 @@ OC.L10N.register(
     "A new contact was added to the circle" : "איש קשר חדש נוסף למעגל",
     "Issue while saving settings" : "תקלות בעת שמירת ההגדרות",
     "Settings saved." : "ההגדרות נשמרו.",
+    "Shared to Circles" : "שותף למעגלים",
     "The name of your circle must contain at least 3 characters" : "שם המעגל שלך חייב להכיל לפחות 3 תווים",
     "Linked Groups are not allowed on this Nextcloud" : "אסור קבוצות מקושרות בעותק הזה של Nextcloud",
     "You cannot create this type of circle" : "אין לך אפשרות ליצור סוג כזה של מעגל",
@@ -242,6 +239,9 @@ OC.L10N.register(
     "External share will be protected by a randomly generated password" : "שיתופים חיצוניים ימוגנו בססמה אקראית",
     "Single password" : "ססמה אחידה",
     "Change password" : "החלפת ססמה",
-    "Save settings" : "הגדרות שמירה"
+    "Save settings" : "הגדרות שמירה",
+    "Maximum number of members per circle" : "מספר החברים המרבי למעגל",
+    "Allow linking of groups" : "לאפשר קישור קבוצות",
+    "Groups can be linked to circles." : "אפשר לקשר קבוצות למעגלים."
 },
 "nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: (n % 10 == 0 && n % 1 == 0 && n > 10) ? 2 : 3;");

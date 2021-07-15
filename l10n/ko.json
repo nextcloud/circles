@@ -71,7 +71,6 @@
     "You are the new owner of {circle}" : "여러분이 {circle}의 새 소유자가 됨",
     "{member} is the new owner of {circle}" : "{member} 님이 {circle}의 새 소유자가 됨",
     "Any important event in a <strong>Circle</strong> you are moderating" : "관리하는 <strong>서클</strong>의 중요한 이벤트",
-    "Shared to Circles" : "서클에 공유됨",
     "Personal" : "개인",
     "Contact" : "연락처",
     "Circle" : "서클",
@@ -122,9 +121,6 @@
     "Name" : "이름",
     "Size" : "크기",
     "Modified" : "수정한 날짜",
-    "Maximum number of members per circle" : "서클당 최대 회원 수",
-    "Allow linking of groups" : "그룹 링크 허용",
-    "Groups can be linked to circles." : "그룹을 서클에 연결할 수 있습니다.",
     "Are you sure you want to transfer your ownership?" : "소유권을 이전하시겠습니까?",
     "This action is irreversible" : "이 작업은 취소할 수 없습니다",
     "Personal circle" : "개인 서클",
@@ -197,6 +193,7 @@
     "Members of the group '{name}' could not be invited to the circle" : "'{name}' 그룹의 회원을 서클에 초대할 수 없음",
     "Issue while saving settings" : "설정을 저장하는 중 오류 발생",
     "Settings saved." : "설정을 저장했습니다.",
+    "Shared to Circles" : "서클에 공유됨",
     "%s shared »%s« with '%s'." : "%s 님이 \"%s\"을(를) '%s'와(과) 공유했습니다.",
     "The name of your circle must contain at least 3 characters" : "서클 이름은 최소 3글자여야 함",
     "Linked Groups are not allowed on this Nextcloud" : "이 Nextcloud에서 연결된 그룹을 허용하지 않음",
@@ -265,6 +262,9 @@
     "Makes the circle federated, and enables sharing between federated circles" : "서클을 연합 상태로 만들고 연합 서클 간 공유 활성화",
     "Accept Link Request Automatically" : "연결 요청 자동으로 수락",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "경고: 이 설정을 사용하면 다른 서클의 연결 요청을 자동으로 수락합니다.",
-    "Save settings" : "설정 저장"
+    "Save settings" : "설정 저장",
+    "Maximum number of members per circle" : "서클당 최대 회원 수",
+    "Allow linking of groups" : "그룹 링크 허용",
+    "Groups can be linked to circles." : "그룹을 서클에 연결할 수 있습니다."
 },"pluralForm" :"nplurals=1; plural=0;"
 }

@@ -73,7 +73,6 @@
     "On events happening in a <strong>Circle</strong> of which you are a member" : "Sobre els esdeveniments que ocorren a un <strong>Cercle</strong> del qual vostè és membre",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Qualsevol esdeveniment important d'un <strong>Cercle</strong> que esteu moderant",
     "On global events happening in any <strong>Circle</strong>" : "Sobre els esdeveniments globals que ocorren en qualsevol <strong>Cercle</strong>",
-    "Shared to Circles" : "Compartit als Cercles",
     "Personal" : "Personal",
     "Contact" : "Contacte",
     "Circle" : "Cercle",
@@ -135,11 +134,6 @@
     "Name" : "Nom",
     "Size" : "Mida",
     "Modified" : "Modificat",
-    "Maximum number of members per circle" : "Màxim nombre de membres per cercle",
-    "Allow linking of groups" : "Permet l'enllaç de grups",
-    "Groups can be linked to circles." : "Els grups poden ser enllaçats a cercles.",
-    "Skip invitation step to closed circles" : "Saltar el pas d'invitació als cercles tancats",
-    "Moderators can add member to closed circles without user approval." : "Els moderadors poden afegir un membre als cercles tancats sense que l'usuari ho accepti.",
     "Are you sure you want to transfer your ownership?" : "Segur que voleu transferir la vostra propietat?",
     "This action is irreversible" : "Aquesta acció és irreversible",
     "Personal circle" : "Cercle personal",
@@ -213,6 +207,7 @@
     "Members of the group '{name}' could not be invited to the circle" : "No s'han pogut convidar membres del grup '{name}' al cercle",
     "Issue while saving settings" : "Hi ha hagut una incidència mentre es desava la configuració",
     "Settings saved." : "S'han desat els paràmetres.",
+    "Shared to Circles" : "Compartit als Cercles",
     "%s shared »%s« with '%s'." : "%scompartit »%s« amb '%s'.",
     "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n" : "%1$s us ha compartit »%2$s«.\nJa hauríeu d’haver rebut un correu electrònic separat amb un enllaç per accedir-hi.\n",
     "%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it." : "%1$s us ha compartit »%2$s«. Ja hauríeu d’haver rebut un correu electrònic separat amb un enllaç per accedir-hi.",
@@ -295,6 +290,11 @@
     "Makes the circle federated, and enables sharing between federated circles" : "Fa que el cercle sigui federat, i activa compartir entre cercles federats",
     "Accept Link Request Automatically" : "Accepta Automàticament una Petició d'Enllaç",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Atenció: Activant això s'acceptarà automàticament noves peticions d'enllaços d'altres cercles.",
-    "Save settings" : "Desa els paràmetres"
+    "Save settings" : "Desa els paràmetres",
+    "Maximum number of members per circle" : "Màxim nombre de membres per cercle",
+    "Allow linking of groups" : "Permet l'enllaç de grups",
+    "Groups can be linked to circles." : "Els grups poden ser enllaçats a cercles.",
+    "Skip invitation step to closed circles" : "Saltar el pas d'invitació als cercles tancats",
+    "Moderators can add member to closed circles without user approval." : "Els moderadors poden afegir un membre als cercles tancats sense que l'usuari ho accepti."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

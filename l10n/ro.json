@@ -71,7 +71,6 @@
     "You are the new owner of {circle}" : "Ești noul proprietar al {circle}",
     "{member} is the new owner of {circle}" : "{member} este noul proprietar al {circle}",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Orice eveniment important într-un <strong>Cerc</strong> pe care îl moderezi",
-    "Shared to Circles" : "Distribuit în Cercuri",
     "Personal" : "Personal",
     "Contact" : "Contact",
     "Circle" : "Cerc",
@@ -123,9 +122,6 @@
     "Name" : "Nume",
     "Size" : "Mărime",
     "Modified" : "Modificat",
-    "Maximum number of members per circle" : "Numă maxim de membri per cerc",
-    "Allow linking of groups" : "Permite legarea grupurilor",
-    "Groups can be linked to circles." : "Grupurile pot fi legate de cercuri",
     "Are you sure you want to transfer your ownership?" : "Ești sigur că vrei sa îți transferi proprietatea?",
     "This action is irreversible" : "Această acțiune este ireversibilă",
     "Personal circle" : "Cerc personal",
@@ -198,6 +194,7 @@
     "Members of the group '{name}' could not be invited to the circle" : "Membrii grupului '{name}' nu au putut fi invitați în cerc",
     "Issue while saving settings" : "Problemă la salvarea setărilor",
     "Settings saved." : "Setări salvate.",
+    "Shared to Circles" : "Distribuit în Cercuri",
     "%s shared »%s« with '%s'." : "%s a împărțit »%s« cu '%s'.",
     "The name of your circle must contain at least 3 characters" : "Numele cercului tău trebuie să conțină cel puțin 3 caractere",
     "Linked Groups are not allowed on this Nextcloud" : "Grupuri Legate nu sunt permise în acest Nextcloud",
@@ -266,6 +263,9 @@
     "Makes the circle federated, and enables sharing between federated circles" : "Face cercul federat, si permite distribuirea între cercuri federate",
     "Accept Link Request Automatically" : "Acceptă Automat Solicitări de Legătură",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Atenție: Activarea acesteia va accepta automat solicitări noi de legătură de la alte cercuri.",
-    "Save settings" : "Salvează setări"
+    "Save settings" : "Salvează setări",
+    "Maximum number of members per circle" : "Numă maxim de membri per cerc",
+    "Allow linking of groups" : "Permite legarea grupurilor",
+    "Groups can be linked to circles." : "Grupurile pot fi legate de cercuri"
 },"pluralForm" :"nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));"
 }

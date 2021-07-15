@@ -73,7 +73,6 @@
     "On events happening in a <strong>Circle</strong> of which you are a member" : "On events happening in a <strong>Circle</strong> of which you are a member",
     "Any important event in a <strong>Circle</strong> you are moderating" : "Any important event in a <strong>Circle</strong> you are moderating",
     "On global events happening in any <strong>Circle</strong>" : "On global events happening in any <strong>Circle</strong>",
-    "Shared to Circles" : "Shared to Circles",
     "Personal" : "Personal",
     "Contact" : "Contact",
     "Circle" : "Circle",
@@ -135,11 +134,6 @@
     "Name" : "Name",
     "Size" : "Size",
     "Modified" : "Modified",
-    "Maximum number of members per circle" : "Maximum number of members per circle",
-    "Allow linking of groups" : "Allow linking of groups",
-    "Groups can be linked to circles." : "Groups can be linked to circles.",
-    "Skip invitation step to closed circles" : "Skip invitation step to closed circles",
-    "Moderators can add member to closed circles without user approval." : "Moderators can add member to closed circles without user approval.",
     "Are you sure you want to transfer your ownership?" : "Are you sure you want to transfer your ownership?",
     "This action is irreversible" : "This action is irreversible",
     "Personal circle" : "Personal circle",
@@ -213,6 +207,7 @@
     "Members of the group '{name}' could not be invited to the circle" : "Members of the group '{name}' could not be invited to the circle",
     "Issue while saving settings" : "Issue while saving settings",
     "Settings saved." : "Settings saved.",
+    "Shared to Circles" : "Shared to Circles",
     "%s shared »%s« with '%s'." : "%s shared »%s« with '%s'.",
     "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n" : "%1$s shared »%2$s« with you.\nYou should have already received a separate mail with a link to access it.\n",
     "%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it." : "%1$s shared »%2$s« with you. You should have already received a separate mail with a link to access it.",
@@ -291,6 +286,11 @@
     "Makes the circle federated, and enables sharing between federated circles" : "Makes the circle federated, and enables sharing between federated circles",
     "Accept Link Request Automatically" : "Accept Link Request Automatically",
     "Warning: Enabling this will automatically accept new link requests from other circles." : "Warning: Enabling this will automatically accept new link requests from other circles.",
-    "Save settings" : "Save settings"
+    "Save settings" : "Save settings",
+    "Maximum number of members per circle" : "Maximum number of members per circle",
+    "Allow linking of groups" : "Allow linking of groups",
+    "Groups can be linked to circles." : "Groups can be linked to circles.",
+    "Skip invitation step to closed circles" : "Skip invitation step to closed circles",
+    "Moderators can add member to closed circles without user approval." : "Moderators can add member to closed circles without user approval."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
