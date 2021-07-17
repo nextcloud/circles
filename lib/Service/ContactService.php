@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
@@ -44,15 +43,12 @@ use OCP\Contacts\IManager;
 use OCP\IAddressBook;
 use OCP\IURLGenerator;
 
-
 /**
  * Class ContactService
  *
  * @package OCA\Circles\Service
  */
 class ContactService {
-
-
 	use TArrayTools;
 	use TStringTools;
 	use TNC22Logger;
@@ -144,7 +140,7 @@ class ContactService {
 		$contacts = $addressBook->search(
 			$contactId, ['UID'],
 			[
-				'types'             => false,
+				'types' => false,
 				'escape_like_param' => false
 			]
 		);
@@ -191,6 +187,4 @@ class ContactService {
 
 		throw new ContactAddressBookNotFoundException();
 	}
-
 }
-

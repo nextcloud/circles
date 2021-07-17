@@ -37,7 +37,6 @@ use OCP\DB\ISchemaWrapper;
 use OCP\Migration\IOutput;
 use OCP\Migration\SimpleMigrationStep;
 
-
 /**
  * Class Version0021Date20210105123456
  *
@@ -87,6 +86,4 @@ class Version0022Date20220526111723 extends SimpleMigrationStep {
 
 		return $schema;
 	}
-
 }
-

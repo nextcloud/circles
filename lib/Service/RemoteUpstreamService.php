@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-
 use ArtificialOwl\MySmallPhpTools\Model\Request;
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
@@ -46,15 +45,12 @@ use OCA\Circles\Model\Federated\EventWrapper;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
 
-
 /**
  * Class RemoteUpstreamService
  *
  * @package OCA\Circles\Service
  */
 class RemoteUpstreamService {
-
-
 	use TNC22Request;
 
 
@@ -314,6 +310,4 @@ class RemoteUpstreamService {
 ////		$this->deprecatedEvents();
 //
 //	}
-
 }
-

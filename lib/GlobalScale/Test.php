@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,10 +31,8 @@
 
 namespace OCA\Circles\GlobalScale;
 
-
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use OCA\Circles\Model\GlobalScale\GSEvent;
-
 
 /**
  * Class Test
@@ -64,6 +64,4 @@ class Test extends AGlobalScaleEvent {
 	 */
 	public function result(array $events): void {
 	}
-
 }
-

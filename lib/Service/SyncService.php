@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use Exception;
@@ -65,26 +64,23 @@ use OCA\Circles\Model\Member;
 use OCP\IGroupManager;
 use OCP\IUserManager;
 
-
 /**
  * Class SyncService
  *
  * @package OCA\Circles\Service
  */
 class SyncService {
-
-
 	use TStringTools;
 	use TNC22Logger;
 
 
-	const SYNC_APPS = 1;
-	const SYNC_USERS = 2;
-	const SYNC_GROUPS = 4;
-	const SYNC_GLOBALSCALE = 8;
-	const SYNC_REMOTES = 16;
-	const SYNC_CONTACTS = 32;
-	const SYNC_ALL = 63;
+	public const SYNC_APPS = 1;
+	public const SYNC_USERS = 2;
+	public const SYNC_GROUPS = 4;
+	public const SYNC_GLOBALSCALE = 8;
+	public const SYNC_REMOTES = 16;
+	public const SYNC_CONTACTS = 32;
+	public const SYNC_ALL = 63;
 
 
 	/** @var IUserManager */
@@ -518,6 +514,4 @@ class SyncService {
 	 */
 	public function syncRemoteCircle(string $circleId): void {
 	}
-
 }
-

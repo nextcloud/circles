@@ -34,7 +34,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
@@ -85,21 +84,18 @@ use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IShare;
 use OCP\Share\IShareProvider;
 
-
 /**
  * Class ShareByCircleProvider
  *
  * @package OCA\Circles
  */
 class ShareByCircleProvider implements IShareProvider {
-
-
 	use TArrayTools;
 	use TStringTools;
 	use TNC22Logger;
 
 
-	const IDENTIFIER = 'ocCircleShare';
+	public const IDENTIFIER = 'ocCircleShare';
 
 
 	/** @var IUserManager */
@@ -463,7 +459,7 @@ class ShareByCircleProvider implements IShareProvider {
 
 		return array_filter(
 			array_map(
-				function(ShareWrapper $wrapper) {
+				function (ShareWrapper $wrapper) {
 					return $wrapper->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
 				}, $wrappedShares
 			)
@@ -515,7 +511,7 @@ class ShareByCircleProvider implements IShareProvider {
 
 		return array_filter(
 			array_map(
-				function(ShareWrapper $wrapper) {
+				function (ShareWrapper $wrapper) {
 					return $wrapper->getShare($this->rootFolder, $this->userManager, $this->urlGenerator);
 				}, $wrappedShares
 			)
@@ -559,7 +555,7 @@ class ShareByCircleProvider implements IShareProvider {
 
 		return array_filter(
 			array_map(
-				function(ShareWrapper $wrapper) {
+				function (ShareWrapper $wrapper) {
 					return $wrapper->getShare(
 						$this->rootFolder, $this->userManager, $this->urlGenerator, true
 					);
@@ -661,6 +657,4 @@ class ShareByCircleProvider implements IShareProvider {
 //		}
 //		$cursor->closeCursor();
 	}
-
 }
-

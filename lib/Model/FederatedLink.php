@@ -29,18 +29,16 @@ namespace OCA\Circles\Model;
 use OCA\Circles\Exceptions\FederatedCircleStatusUpdateException;
 
 class FederatedLink implements \JsonSerializable {
+	public const STATUS_ERROR = -1;
+	public const STATUS_LINK_REMOVE = 0;
+	public const STATUS_LINK_DOWN = 1;
+	public const STATUS_LINK_SETUP = 2;
+	public const STATUS_REQUEST_DECLINED = 4;
+	public const STATUS_REQUEST_SENT = 5;
+	public const STATUS_LINK_REQUESTED = 6;
+	public const STATUS_LINK_UP = 9;
 
-
-	const STATUS_ERROR = -1;
-	const STATUS_LINK_REMOVE = 0;
-	const STATUS_LINK_DOWN = 1;
-	const STATUS_LINK_SETUP = 2;
-	const STATUS_REQUEST_DECLINED = 4;
-	const STATUS_REQUEST_SENT = 5;
-	const STATUS_LINK_REQUESTED = 6;
-	const STATUS_LINK_UP = 9;
-
-	const SHORT_UNIQUE_ID_LENGTH = 12;
+	public const SHORT_UNIQUE_ID_LENGTH = 12;
 
 	/** @var int */
 	private $id;
@@ -194,7 +192,6 @@ class FederatedLink implements \JsonSerializable {
 		}
 
 		return substr($this->circleUniqueId, 0, DeprecatedCircle::SHORT_UNIQUE_ID_LENGTH);
-
 	}
 
 
@@ -309,7 +306,6 @@ class FederatedLink implements \JsonSerializable {
 			$this->hasToBeValidStatusUpdateWhileRequestDeclined($status);
 			$this->hasToBeValidStatusUpdateWhileLinkRequested($status);
 			$this->hasToBeValidStatusUpdateWhileRequestSent($status);
-
 		} catch (FederatedCircleStatusUpdateException $e) {
 			throw new FederatedCircleStatusUpdateException('The status could not be updated');
 		}
@@ -322,7 +318,6 @@ class FederatedLink implements \JsonSerializable {
 	 * @throws FederatedCircleStatusUpdateException
 	 */
 	private function hasToBeValidStatusUpdateWhileLinkDown($status) {
-
 		if ($this->getStatus() === self::STATUS_LINK_DOWN) {
 			return;
 		}
@@ -385,15 +380,15 @@ class FederatedLink implements \JsonSerializable {
 
 
 	public function jsonSerialize() {
-		return array(
-			'id'        => $this->getId(),
-			'token'     => $this->getToken($this->fullJson),
-			'address'   => $this->getAddress(),
-			'status'    => $this->getStatus(),
+		return [
+			'id' => $this->getId(),
+			'token' => $this->getToken($this->fullJson),
+			'address' => $this->getAddress(),
+			'status' => $this->getStatus(),
 			'circle_id' => $this->getCircleId(),
 			'unique_id' => $this->getUniqueId($this->fullJson),
-			'creation'  => $this->getCreation()
-		);
+			'creation' => $this->getCreation()
+		];
 	}
 
 
@@ -428,5 +423,4 @@ class FederatedLink implements \JsonSerializable {
 	public static function fromJSON($json) {
 		return self::fromArray(json_decode($json, true));
 	}
-
 }

@@ -39,7 +39,6 @@ use OCP\IDBConnection;
 use OCP\Migration\IOutput;
 use OCP\Migration\SimpleMigrationStep;
 
-
 /**
  * Class Version0022Date20220526113601
  *
@@ -76,86 +75,86 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 
 			$table->addColumn(
 				'id', 'integer', [
-						'autoincrement' => true,
-						'notnull'       => true,
-						'length'        => 4,
-						'unsigned'      => true,
-					]
+					'autoincrement' => true,
+					'notnull' => true,
+					'length' => 4,
+					'unsigned' => true,
+				]
 			);
 			$table->addColumn(
 				'unique_id', 'string', [
-							   'notnull' => true,
-							   'length'  => 31,
-						   ]
+					'notnull' => true,
+					'length' => 31,
+				]
 			);
 			$table->addColumn(
 				'name', 'string', [
-						  'notnull' => true,
-						  'length'  => 127,
-					  ]
+					'notnull' => true,
+					'length' => 127,
+				]
 			);
 			$table->addColumn(
 				'display_name', 'string', [
-								  'notnull' => false,
-								  'default' => '',
-								  'length'  => 127
-							  ]
+					'notnull' => false,
+					'default' => '',
+					'length' => 127
+				]
 			);
 			$table->addColumn(
 				'sanitized_name', 'string', [
-									'notnull' => false,
-									'default' => '',
-									'length'  => 127
-								]
+					'notnull' => false,
+					'default' => '',
+					'length' => 127
+				]
 			);
 			$table->addColumn(
 				'instance', 'string', [
-							  'notnull' => false,
-							  'default' => '',
-							  'length'  => 255
-						  ]
+					'notnull' => false,
+					'default' => '',
+					'length' => 255
+				]
 			);
 			$table->addColumn(
 				'config', 'integer', [
-							'notnull'  => false,
-							'length'   => 11,
-							'unsigned' => true
-						]
+					'notnull' => false,
+					'length' => 11,
+					'unsigned' => true
+				]
 			);
 			$table->addColumn(
 				'source', 'integer', [
-							'notnull'  => false,
-							'length'   => 5,
-							'unsigned' => true
-						]
+					'notnull' => false,
+					'length' => 5,
+					'unsigned' => true
+				]
 			);
 			$table->addColumn(
 				'settings', 'text', [
-							  'notnull' => false
-						  ]
+					'notnull' => false
+				]
 			);
 			$table->addColumn(
 				'description', 'text', [
-								 'notnull' => false
-							 ]
+					'notnull' => false
+				]
 			);
 			$table->addColumn(
 				'creation', 'datetime', [
-							  'notnull' => false,
-						  ]
+					'notnull' => false,
+				]
 			);
 			$table->addColumn(
 				'contact_addressbook', 'integer', [
-										 'notnull'  => false,
-										 'unsigned' => true,
-										 'length'   => 7,
-									 ]
+					'notnull' => false,
+					'unsigned' => true,
+					'length' => 7,
+				]
 			);
 			$table->addColumn(
 				'contact_groupname', 'string', [
-									   'notnull' => false,
-									   'length'  => 127,
-								   ]
+					'notnull' => false,
+					'length' => 127,
+				]
 			);
 
 			$table->setPrimaryKey(['id']);
@@ -175,99 +174,99 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 
 			$table->addColumn(
 				'id', 'integer', [
-						'autoincrement' => true,
-						'notnull'       => true,
-						'length'        => 4,
-						'unsigned'      => true,
-					]
+					'autoincrement' => true,
+					'notnull' => true,
+					'length' => 4,
+					'unsigned' => true,
+				]
 			);
 			$table->addColumn(
 				'single_id', 'string', [
-							   'notnull' => false,
-							   'length'  => 31
-						   ]
+					'notnull' => false,
+					'length' => 31
+				]
 			);
 			$table->addColumn(
 				'circle_id', 'string', [
-							   'notnull' => true,
-							   'length'  => 31,
-						   ]
+					'notnull' => true,
+					'length' => 31,
+				]
 			);
 			$table->addColumn(
 				'member_id', Types::STRING, [
-							   'notnull' => false,
-							   'length'  => 31,
-						   ]
+					'notnull' => false,
+					'length' => 31,
+				]
 			);
 			$table->addColumn(
 				'user_id', 'string', [
-							 'notnull' => true,
-							 'length'  => 127,
-						 ]
+					'notnull' => true,
+					'length' => 127,
+				]
 			);
 			$table->addColumn(
 				'user_type', 'smallint', [
-							   'notnull' => true,
-							   'length'  => 1,
-							   'default' => 1,
-						   ]
+					'notnull' => true,
+					'length' => 1,
+					'default' => 1,
+				]
 			);
 			$table->addColumn(
 				'instance', 'string', [
-							  'default' => '',
-							  'length'  => 255
-						  ]
+					'default' => '',
+					'length' => 255
+				]
 			);
 			$table->addColumn(
 				'invited_by', 'string', [
-								'notnull' => false,
-								'length'  => 31,
-							]
+					'notnull' => false,
+					'length' => 31,
+				]
 			);
 			$table->addColumn(
 				'level', 'smallint', [
-						   'notnull' => true,
-						   'length'  => 1,
-					   ]
+					'notnull' => true,
+					'length' => 1,
+				]
 			);
 			$table->addColumn(
 				'status', 'string', [
-							'notnull' => false,
-							'length'  => 15,
-						]
+					'notnull' => false,
+					'length' => 15,
+				]
 			);
 			$table->addColumn(
 				'note', 'text', [
-						  'notnull' => false
-					  ]
+					'notnull' => false
+				]
 			);
 			$table->addColumn(
 				'cached_name', 'string', [
-								 'notnull' => false,
-								 'length'  => 255,
-								 'default' => ''
-							 ]
+					'notnull' => false,
+					'length' => 255,
+					'default' => ''
+				]
 			);
 			$table->addColumn(
 				'cached_update', 'datetime', [
-								   'notnull' => false,
-							   ]
+					'notnull' => false,
+				]
 			);
 			$table->addColumn(
 				'contact_id', 'string', [
-								'notnull' => false,
-								'length'  => 127,
-							]
+					'notnull' => false,
+					'length' => 127,
+				]
 			);
 			$table->addColumn(
 				'contact_meta', 'text', [
-								  'notnull' => false
-							  ]
+					'notnull' => false
+				]
 			);
 			$table->addColumn(
 				'joined', 'datetime', [
-							'notnull' => false,
-						]
+					'notnull' => false,
+				]
 			);
 
 			$table->setPrimaryKey(['id']);
@@ -287,53 +286,53 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 			$table = $schema->createTable('circles_remote');
 			$table->addColumn(
 				'id', 'integer', [
-						'autoincrement' => true,
-						'notnull'       => true,
-						'length'        => 4,
-						'unsigned'      => true,
-					]
+					'autoincrement' => true,
+					'notnull' => true,
+					'length' => 4,
+					'unsigned' => true,
+				]
 			);
 			$table->addColumn(
 				'type', 'string', [
-						  'notnull' => true,
-						  'length'  => 15,
-						  'default' => 'Unknown'
-					  ]
+					'notnull' => true,
+					'length' => 15,
+					'default' => 'Unknown'
+				]
 			);
 			$table->addColumn(
 				'interface', 'integer', [
-							   'notnull' => true,
-							   'length'  => 1,
-							   'default' => 0
-						   ]
+					'notnull' => true,
+					'length' => 1,
+					'default' => 0
+				]
 			);
 			$table->addColumn(
 				'uid', 'string', [
-						 'notnull' => false,
-						 'length'  => 20,
-					 ]
+					'notnull' => false,
+					'length' => 20,
+				]
 			);
 			$table->addColumn(
 				'instance', 'string', [
-							  'notnull' => false,
-							  'length'  => 127,
-						  ]
+					'notnull' => false,
+					'length' => 127,
+				]
 			);
 			$table->addColumn(
 				'href', 'string', [
-						  'notnull' => false,
-						  'length'  => 254,
-					  ]
+					'notnull' => false,
+					'length' => 254,
+				]
 			);
 			$table->addColumn(
 				'item', 'text', [
-						  'notnull' => false,
-					  ]
+					'notnull' => false,
+				]
 			);
 			$table->addColumn(
 				'creation', 'datetime', [
-							  'notnull' => false,
-						  ]
+					'notnull' => false,
+				]
 			);
 
 			$table->setPrimaryKey(['id']);
@@ -350,61 +349,61 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 			$table = $schema->createTable('circles_event');
 			$table->addColumn(
 				'token', 'string', [
-						   'notnull' => false,
-						   'length'  => 63,
-					   ]
+					'notnull' => false,
+					'length' => 63,
+				]
 			);
 			$table->addColumn(
 				'event', 'text', [
-						   'notnull' => false
-					   ]
+					'notnull' => false
+				]
 			);
 			$table->addColumn(
 				'result', 'text', [
-							'notnull' => false
-						]
+					'notnull' => false
+				]
 			);
 			$table->addColumn(
 				'instance', 'string', [
-							  'length'  => 255,
-							  'notnull' => false
-						  ]
+					'length' => 255,
+					'notnull' => false
+				]
 			);
 			$table->addColumn(
 				'interface', 'integer', [
-							   'notnull' => true,
-							   'length'  => 1,
-							   'default' => 0
-						   ]
+					'notnull' => true,
+					'length' => 1,
+					'default' => 0
+				]
 			);
 			$table->addColumn(
 				'severity', 'integer', [
-							  'length'  => 3,
-							  'notnull' => false
-						  ]
+					'length' => 3,
+					'notnull' => false
+				]
 			);
 			$table->addColumn(
 				'retry', 'integer', [
-						   'length'  => 3,
-						   'notnull' => false
-					   ]
+					'length' => 3,
+					'notnull' => false
+				]
 			);
 			$table->addColumn(
 				'status', 'integer', [
-							'length'  => 3,
-							'notnull' => false
-						]
+					'length' => 3,
+					'notnull' => false
+				]
 			);
 			$table->addColumn(
 				'updated', 'datetime', [
-							 'notnull' => false,
-						 ]
+					'notnull' => false,
+				]
 			);
 			$table->addColumn(
 				'creation', 'bigint', [
-							  'length'  => 14,
-							  'notnull' => false
-						  ]
+					'length' => 14,
+					'notnull' => false
+				]
 			);
 
 			$table->addUniqueIndex(['token', 'instance']);
@@ -419,46 +418,46 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 
 			$table->addColumn(
 				'circle_id', 'string', [
-							   'notnull' => true,
-							   'length'  => 31,
-						   ]
+					'notnull' => true,
+					'length' => 31,
+				]
 			);
 			$table->addColumn(
 				'single_id', 'string', [
-							   'notnull' => true,
-							   'length'  => 31,
-						   ]
+					'notnull' => true,
+					'length' => 31,
+				]
 			);
 			$table->addColumn(
 				'level', 'integer', [
-						   'notnull'  => true,
-						   'length'   => 1,
-						   'unsigned' => true
-					   ]
+					'notnull' => true,
+					'length' => 1,
+					'unsigned' => true
+				]
 			);
 			$table->addColumn(
 				'inheritance_first', 'string', [
-									   'notnull' => true,
-									   'length'  => 31,
-								   ]
+					'notnull' => true,
+					'length' => 31,
+				]
 			);
 			$table->addColumn(
 				'inheritance_last', 'string', [
-									  'notnull' => true,
-									  'length'  => 31,
-								  ]
+					'notnull' => true,
+					'length' => 31,
+				]
 			);
 			$table->addColumn(
 				'inheritance_depth', 'integer', [
-									   'notnull'  => true,
-									   'length'   => 2,
-									   'unsigned' => true
-								   ]
+					'notnull' => true,
+					'length' => 2,
+					'unsigned' => true
+				]
 			);
 			$table->addColumn(
 				'inheritance_path', 'text', [
-									  'notnull' => true
-								  ]
+					'notnull' => true
+				]
 			);
 
 			$table->addIndex(['single_id']);
@@ -476,53 +475,53 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 			$table = $schema->createTable('circles_token');
 			$table->addColumn(
 				'id', 'integer', [
-						'autoincrement' => true,
-						'notnull'       => true,
-						'length'        => 11,
-						'unsigned'      => true,
-					]
+					'autoincrement' => true,
+					'notnull' => true,
+					'length' => 11,
+					'unsigned' => true,
+				]
 			);
 			$table->addColumn(
 				'share_id', 'integer', [
-							  'notnull' => false,
-							  'length'  => 11
-						  ]
+					'notnull' => false,
+					'length' => 11
+				]
 			);
 			$table->addColumn(
 				'circle_id', 'string', [
-							   'notnull' => false,
-							   'length'  => 31
-						   ]
+					'notnull' => false,
+					'length' => 31
+				]
 			);
 			$table->addColumn(
 				'single_id', 'string', [
-							   'notnull' => false,
-							   'length'  => 31
-						   ]
+					'notnull' => false,
+					'length' => 31
+				]
 			);
 			$table->addColumn(
 				'member_id', 'string', [
-							   'notnull' => false,
-							   'length'  => 31
-						   ]
+					'notnull' => false,
+					'length' => 31
+				]
 			);
 			$table->addColumn(
 				'token', 'string', [
-						   'notnull' => false,
-						   'length'  => 31
-					   ]
+					'notnull' => false,
+					'length' => 31
+				]
 			);
 			$table->addColumn(
 				'password', 'string', [
-							  'notnull' => false,
-							  'length'  => 31
-						  ]
+					'notnull' => false,
+					'length' => 31
+				]
 			);
 			$table->addColumn(
 				'accepted', 'integer', [
-							  'notnull' => false,
-							  'length'  => 1
-						  ]
+					'notnull' => false,
+					'length' => 1
+				]
 			);
 
 			$table->setPrimaryKey(['id']);
@@ -537,52 +536,52 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 			$table = $schema->createTable('circles_mount');
 			$table->addColumn(
 				'id', 'integer', [
-						'autoincrement' => true,
-						'notnull'       => true,
-						'length'        => 11,
-						'unsigned'      => true,
-					]
+					'autoincrement' => true,
+					'notnull' => true,
+					'length' => 11,
+					'unsigned' => true,
+				]
 			);
 			$table->addColumn(
 				'mount_id', 'string', [
-							  'notnull' => false,
-							  'length'  => 31
-						  ]
+					'notnull' => false,
+					'length' => 31
+				]
 			);
 			$table->addColumn(
 				'circle_id', 'string', [
-							   'notnull' => false,
-							   'length'  => 31
-						   ]
+					'notnull' => false,
+					'length' => 31
+				]
 			);
 			$table->addColumn(
 				'single_id', 'string', [
-							   'notnull' => false,
-							   'length'  => 31
-						   ]
+					'notnull' => false,
+					'length' => 31
+				]
 			);
 			$table->addColumn(
 				'token', 'string', [
-						   'notnull' => false,
-						   'length'  => 63
-					   ]
+					'notnull' => false,
+					'length' => 63
+				]
 			);
 			$table->addColumn(
 				'parent', 'integer', [
-							'notnull' => false,
-							'length'  => 11
-						]
+					'notnull' => false,
+					'length' => 11
+				]
 			);
 			$table->addColumn(
 				'mountpoint', 'text', [
-								'notnull' => false
-							]
+					'notnull' => false
+				]
 			);
 			$table->addColumn(
 				'mountpoint_hash', 'string', [
-									 'notnull' => false,
-									 'length'  => 64
-								 ]
+					'notnull' => false,
+					'length' => 64
+				]
 			);
 
 			$table->setPrimaryKey(['id']);
@@ -597,34 +596,34 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 			$table = $schema->createTable('circles_mountpoint');
 			$table->addColumn(
 				'id', 'integer', [
-						'autoincrement' => true,
-						'notnull'       => true,
-						'length'        => 11,
-						'unsigned'      => true,
-					]
+					'autoincrement' => true,
+					'notnull' => true,
+					'length' => 11,
+					'unsigned' => true,
+				]
 			);
 			$table->addColumn(
 				'mount_id', 'string', [
-							  'notnull' => false,
-							  'length'  => 31
-						  ]
+					'notnull' => false,
+					'length' => 31
+				]
 			);
 			$table->addColumn(
 				'single_id', 'string', [
-							   'notnull' => false,
-							   'length'  => 31
-						   ]
+					'notnull' => false,
+					'length' => 31
+				]
 			);
 			$table->addColumn(
 				'mountpoint', 'text', [
-								'notnull' => false
-							]
+					'notnull' => false
+				]
 			);
 			$table->addColumn(
 				'mountpoint_hash', 'string', [
-									 'notnull' => false,
-									 'length'  => 64
-								 ]
+					'notnull' => false,
+					'length' => 64
+				]
 			);
 
 			$table->setPrimaryKey(['id']);
@@ -639,29 +638,29 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 			$table = $schema->createTable('circles_share_lock');
 			$table->addColumn(
 				'id', 'integer', [
-						'autoincrement' => true,
-						'notnull'       => true,
-						'length'        => 4,
-						'unsigned'      => true,
-					]
+					'autoincrement' => true,
+					'notnull' => true,
+					'length' => 4,
+					'unsigned' => true,
+				]
 			);
 			$table->addColumn(
 				'item_id', 'string', [
-							 'notnull' => true,
-							 'length'  => 31
-						 ]
+					'notnull' => true,
+					'length' => 31
+				]
 			);
 			$table->addColumn(
 				'circle_id', 'string', [
-							   'notnull' => true,
-							   'length'  => 31
-						   ]
+					'notnull' => true,
+					'length' => 31
+				]
 			);
 			$table->addColumn(
 				'instance', 'string', [
-							  'notnull' => true,
-							  'length'  => 127,
-						  ]
+					'notnull' => true,
+					'length' => 127,
+				]
 			);
 
 			$table->setPrimaryKey(['id']);
@@ -670,6 +669,4 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 
 		return $schema;
 	}
-
 }
-

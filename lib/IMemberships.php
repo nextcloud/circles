@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles;
 
-
 use OCA\Circles\Model\Membership;
 
 /**
@@ -57,6 +56,4 @@ interface IMemberships {
 	 * @return Membership[]
 	 */
 	public function getMemberships(): array;
-
 }
-

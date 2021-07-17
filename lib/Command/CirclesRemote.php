@@ -57,15 +57,12 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
-
 /**
  * Class CirclesRemote
  *
  * @package OCA\Circles\Command
  */
 class CirclesRemote extends Base {
-
-
 	use TNC22WellKnown;
 	use TStringTools;
 
@@ -249,7 +246,7 @@ class CirclesRemote extends Base {
 		}
 
 		$payload = [
-			'test'  => 42,
+			'test' => 42,
 			'token' => $this->uuid()
 		];
 		$signedRequest = $this->outgoingTest($testUrl, $payload);
@@ -325,14 +322,12 @@ class CirclesRemote extends Base {
 					);
 					$this->remoteStreamService->update($remoteSignatory, RemoteStreamService::UPDATE_HREF);
 				}
-
 			} catch (RemoteUidException $e) {
 				$this->updateRemote($remoteSignatory);
 			} catch (RemoteNotFoundException $e) {
 				$this->saveRemote($remoteSignatory);
 			}
 		}
-
 	}
 
 
@@ -435,7 +430,7 @@ class CirclesRemote extends Base {
 	private function verifyGSInstances(): void {
 		$instances = $this->globalScaleService->getGlobalScaleInstances();
 		$known = array_map(
-			function(RemoteInstance $instance): string {
+			function (RemoteInstance $instance): string {
 				return $instance->getInstance();
 			}, $this->remoteRequest->getFromType(RemoteInstance::TYPE_GLOBALSCALE)
 		);
@@ -531,6 +526,4 @@ class CirclesRemote extends Base {
 
 		throw new Exception('Unknown interface: ' . implode(', ', InterfaceService::$LIST_IFACE));
 	}
-
 }
-

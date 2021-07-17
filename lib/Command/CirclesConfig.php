@@ -31,9 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\SignatoryException;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventException;
@@ -61,7 +58,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-
 
 /**
  * Class CirclesConfig
@@ -223,14 +219,12 @@ class CirclesConfig extends Base {
 
 		array_walk(
 			$listing,
-			function(string &$v): void {
-				list(, $long) = explode('|', $v);
+			function (string &$v): void {
+				[, $long] = explode('|', $v);
 				$v = strtoupper(str_replace(' ', '', $long));
 			}
 		);
 
 		return $listing;
 	}
-
 }
-

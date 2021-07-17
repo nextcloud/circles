@@ -28,11 +28,9 @@
 
 namespace OCA\Circles\Db;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use OCA\Circles\Model\SharesToken;
 use OCP\DB\QueryBuilder\IQueryBuilder;
-
 
 /**
  * @deprecated
@@ -41,8 +39,6 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
  * @package OCA\Circles\Db
  */
 class TokensRequestBuilder extends DeprecatedRequestBuilder {
-
-
 	use TArrayTools;
 
 
@@ -112,5 +108,4 @@ class TokensRequestBuilder extends DeprecatedRequestBuilder {
 
 		return $sharesToken;
 	}
-
 }

@@ -30,7 +30,6 @@
 
 namespace OCA\Circles\Db;
 
-
 use Doctrine\DBAL\Query\QueryBuilder;
 use OC;
 use OCA\Circles\Model\DeprecatedMember;
@@ -57,7 +56,6 @@ class CircleProviderRequestBuilder extends DeprecatedRequestBuilder {
 	 * @return IQueryBuilder
 	 */
 	protected function findShareParentSql($fileId, $circleId) {
-
 		$qb = $this->getBaseSelectSql();
 		$this->limitToShareParent($qb);
 		$this->limitToCircles($qb, [$circleId]);
@@ -74,9 +72,8 @@ class CircleProviderRequestBuilder extends DeprecatedRequestBuilder {
 	 * @param array $circleUniqueIds
 	 */
 	protected function limitToCircles(IQueryBuilder $qb, $circleUniqueIds) {
-
 		if (!is_array($circleUniqueIds)) {
-			$circleUniqueIds = array($circleUniqueIds);
+			$circleUniqueIds = [$circleUniqueIds];
 		}
 
 		$expr = $qb->expr();
@@ -162,9 +159,8 @@ class CircleProviderRequestBuilder extends DeprecatedRequestBuilder {
 	 * @param $files
 	 */
 	protected function limitToFiles(IQueryBuilder $qb, $files) {
-
 		if (!is_array($files)) {
-			$files = array($files);
+			$files = [$files];
 		}
 
 		$expr = $qb->expr();
@@ -327,7 +323,6 @@ class CircleProviderRequestBuilder extends DeprecatedRequestBuilder {
 	private function exprLinkToMemberAsGroupMember(
 		IQueryBuilder $qb, string $userId, string $aliasM, string $aliasC
 	) {
-
 		$expr = $qb->expr();
 		$qb->leftJoin(
 			$aliasM, self::NC_TABLE_GROUP_USER, 'ncgu',
@@ -386,7 +381,6 @@ class CircleProviderRequestBuilder extends DeprecatedRequestBuilder {
 		$qb->selectAlias('s2.id', 'parent_id');
 		$qb->selectAlias('s2.file_target', 'parent_target');
 		$qb->selectAlias('s2.permissions', 'parent_perms');
-
 	}
 
 

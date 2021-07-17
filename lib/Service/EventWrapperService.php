@@ -30,7 +30,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-
 use ArtificialOwl\MySmallPhpTools\ActivityPub\Nextcloud\nc22\NC22Signature;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
@@ -39,27 +38,24 @@ use OCA\Circles\Db\EventWrapperRequest;
 use OCA\Circles\Model\Federated\EventWrapper;
 use OCA\Circles\Model\Federated\FederatedEvent;
 
-
 /**
  * Class EventWrapperService
  *
  * @package OCA\Circles\Service
  */
 class EventWrapperService extends NC22Signature {
-
-
 	use TNC22Request;
 	use TStringTools;
 
 
-	const RETRY_ASAP = 'asap';
-	const RETRY_HOURLY = 'hourly';
-	const RETRY_DAILY = 'daily';
-	const RETRY_ERROR = 100;
-	static $RETRIES = [
-		'asap'   => [0, 5],
+	public const RETRY_ASAP = 'asap';
+	public const RETRY_HOURLY = 'hourly';
+	public const RETRY_DAILY = 'daily';
+	public const RETRY_ERROR = 100;
+	public static $RETRIES = [
+		'asap' => [0, 5],
 		'hourly' => [5, 150],
-		'daily'  => [150, 300]
+		'daily' => [150, 300]
 	];
 
 
@@ -178,13 +174,11 @@ class EventWrapperService extends NC22Signature {
 	 */
 	private function getFailedEvents(array $retryRange): array {
 		$token = array_map(
-			function(EventWrapper $event): string {
+			function (EventWrapper $event): string {
 				return $event->getToken();
 			}, $this->eventWrapperRequest->getFailedEvents($retryRange)
 		);
 
 		return array_values(array_unique($token));
 	}
-
 }
-

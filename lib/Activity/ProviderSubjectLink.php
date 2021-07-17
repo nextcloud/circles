@@ -27,11 +27,9 @@
 
 namespace OCA\Circles\Activity;
 
-
 use OCA\Circles\Exceptions\FakeException;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\FederatedLink;
-use OCA\Circles\Model\DeprecatedMember;
 use OCP\Activity\IEvent;
 
 class ProviderSubjectLink extends ProviderParser {
@@ -274,5 +272,4 @@ class ProviderSubjectLink extends ProviderParser {
 
 		throw new FakeException();
 	}
-
 }

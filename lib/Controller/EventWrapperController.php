@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,7 +31,6 @@
 
 namespace OCA\Circles\Controller;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Async;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Controller;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
@@ -44,15 +45,12 @@ use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\IRequest;
 
-
 /**
  * Class EventWrapperController
  *
  * @package OCA\Circles\Controller
  */
 class EventWrapperController extends Controller {
-
-
 	use TStringTools;
 	use TNC22Async;
 	use TNC22Controller;
@@ -165,6 +163,4 @@ class EventWrapperController extends Controller {
 //			return $this->fail(['data' => $data, 'error' => $e->getMessage()]);
 //		}
 //	}
-
 }
-

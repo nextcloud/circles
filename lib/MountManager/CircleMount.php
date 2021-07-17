@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\MountManager;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
 use JsonSerializable;
@@ -41,15 +40,12 @@ use OCA\Circles\Exceptions\MountPointConstructionException;
 use OCA\Circles\Model\Mount;
 use OCP\Files\Storage\IStorageFactory;
 
-
 /**
  * Class CircleMount
  *
  * @package OCA\Circles\MountManager
  */
 class CircleMount extends MountPoint implements MoveableMount, JsonSerializable {
-
-
 	use TArrayTools;
 
 
@@ -134,10 +130,8 @@ class CircleMount extends MountPoint implements MoveableMount, JsonSerializable 
 	 */
 	public function jsonSerialize(): array {
 		return [
-			'mount'   => $this->mount,
+			'mount' => $this->mount,
 			'storage' => $this->storageClass
 		];
 	}
-
 }
-

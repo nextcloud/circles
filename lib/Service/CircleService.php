@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
@@ -66,15 +65,12 @@ use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
 use OCA\Circles\StatusCode;
 
-
 /**
  * Class CircleService
  *
  * @package OCA\Circles\Service
  */
 class CircleService {
-
-
 	use TArrayTools;
 	use TStringTools;
 	use TNC22Logger;
@@ -159,7 +155,6 @@ class CircleService {
 		bool $personal = false,
 		bool $local = false
 	): array {
-
 		$this->federatedUserService->mustHaveCurrentUser();
 		if (is_null($owner)) {
 			$owner = $this->federatedUserService->getCurrentUser();
@@ -465,12 +460,12 @@ class CircleService {
 		}
 		$params->default(
 			[
-				'limit'                  => -1,
-				'offset'                 => 0,
-				'mustBeMember'           => false,
-				'includeHiddenCircles'   => false,
-				'includeBackendCircles'  => false,
-				'includeSystemCircles'   => false,
+				'limit' => -1,
+				'offset' => 0,
+				'mustBeMember' => false,
+				'includeHiddenCircles' => false,
+				'includeBackendCircles' => false,
+				'includeSystemCircles' => false,
 				'includePersonalCircles' => false
 			]
 		);
@@ -628,6 +623,4 @@ class CircleService {
 
 		return trim($name);
 	}
-
 }
-

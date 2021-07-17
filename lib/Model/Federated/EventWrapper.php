@@ -31,13 +31,11 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model\Federated;
 
-
 use ArtificialOwl\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
 use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
-
 
 /**
  * Class EventWrapper
@@ -45,15 +43,13 @@ use JsonSerializable;
  * @package OCA\Circles\Model\Remote
  */
 class EventWrapper implements INC22QueryRow, JsonSerializable {
-
-
 	use TArrayTools;
 
 
-	const STATUS_INIT = 0;
-	const STATUS_FAILED = 1;
-	const STATUS_DONE = 8;
-	const STATUS_OVER = 9;
+	public const STATUS_INIT = 0;
+	public const STATUS_FAILED = 1;
+	public const STATUS_DONE = 8;
+	public const STATUS_OVER = 9;
 
 
 	/** @var string */
@@ -84,7 +80,7 @@ class EventWrapper implements INC22QueryRow, JsonSerializable {
 	private $creation;
 
 
-	function __construct() {
+	public function __construct() {
 		$this->result = new SimpleDataStore();
 	}
 
@@ -293,15 +289,15 @@ class EventWrapper implements INC22QueryRow, JsonSerializable {
 	/**
 	 * @return array
 	 */
-	function jsonSerialize(): array {
+	public function jsonSerialize(): array {
 		return [
-			'token'     => $this->getToken(),
-			'instance'  => $this->getInstance(),
+			'token' => $this->getToken(),
+			'instance' => $this->getInstance(),
 			'interface' => $this->getInterface(),
-			'event'     => $this->getEvent(),
-			'result'    => $this->getResult(),
-			'severity'  => $this->getSeverity(),
-			'status'    => $this->getStatus()
+			'event' => $this->getEvent(),
+			'result' => $this->getResult(),
+			'severity' => $this->getSeverity(),
+			'status' => $this->getStatus()
 			//			'creation' => $this->getCreation()
 		];
 	}
@@ -328,6 +324,4 @@ class EventWrapper implements INC22QueryRow, JsonSerializable {
 
 		return $this;
 	}
-
 }
-

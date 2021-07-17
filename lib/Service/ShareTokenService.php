@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Db\ShareTokenRequest;
 use OCA\Circles\Exceptions\ShareTokenAlreadyExistException;
@@ -42,15 +41,12 @@ use OCA\Circles\Model\ShareWrapper;
 use OCP\IURLGenerator;
 use OCP\Share\IShare;
 
-
 /**
  * Class ShareTokenService
  *
  * @package OCA\Circles\Service
  */
 class ShareTokenService {
-
-
 	use TStringTools;
 
 
@@ -133,6 +129,4 @@ class ShareTokenService {
 	public function removeTokens(string $singleId, string $circleId) {
 		$this->shareTokenRequest->removeTokens($singleId, $circleId);
 	}
-
 }
-

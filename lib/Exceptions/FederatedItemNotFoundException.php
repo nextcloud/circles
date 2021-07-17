@@ -30,10 +30,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Exceptions;
 
-
 use OCP\AppFramework\Http;
 use Throwable;
-
 
 /**
  * Class FederatedItemNotFoundException
@@ -41,9 +39,7 @@ use Throwable;
  * @package OCA\Circles\Exceptions
  */
 class FederatedItemNotFoundException extends FederatedItemException {
-
-
-	const STATUS = Http::STATUS_NOT_FOUND;
+	public const STATUS = Http::STATUS_NOT_FOUND;
 
 
 	/**
@@ -61,6 +57,4 @@ class FederatedItemNotFoundException extends FederatedItemException {
 		parent::__construct($message, ($code > 0) ? $code : self::STATUS, $previous);
 		$this->setStatus(self::STATUS);
 	}
-
 }
-

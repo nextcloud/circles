@@ -34,7 +34,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use OCA\Circles\AppInfo\Application;
@@ -61,15 +60,12 @@ use OCA\Circles\Model\Mount;
 use OCA\Circles\Model\ShareWrapper;
 use OCP\EventDispatcher\IEventDispatcher;
 
-
 /**
  * Class EventService
  *
  * @package OCA\Circles\Service
  */
 class EventService {
-
-
 	use TNC22Logger;
 
 
@@ -365,6 +361,4 @@ class EventService {
 //		$event = new SharedItemsSyncRequestedEvent($federatedEvent);
 //		$this->eventDispatcher->dispatchTyped($event);
 //	}
-
 }
-

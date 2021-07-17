@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,13 +31,11 @@
 
 namespace OCA\Circles\Cron;
 
-
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use OC\BackgroundJob\TimedJob;
 use OCA\Circles\Exceptions\MaintenanceException;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MaintenanceService;
-
 
 /**
  * Class Maintenance
@@ -52,7 +52,7 @@ class Maintenance extends TimedJob {
 	private $configService;
 
 
-	static $DELAY =
+	public static $DELAY =
 		[
 			1 => 60,    // every minute
 			2 => 300,   // every 5 minutes
@@ -141,6 +141,4 @@ class Maintenance extends TimedJob {
 
 		return ($timeLastRun + self::$DELAY[$level] < $now);
 	}
-
 }
-

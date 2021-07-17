@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\MountManager;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
 use OCA\Circles\Db\MountRequest;
@@ -54,20 +53,17 @@ use OCP\Files\Storage\IStorageFactory;
 use OCP\Http\Client\IClientService;
 use OCP\IUser;
 
-
 /**
  * Class CircleMountProvider
  *
  * @package OCA\Circles\MountManager
  */
 class CircleMountProvider implements IMountProvider {
-
-
 	use TArrayTools;
 
 
 //	const LOCAL_STORAGE = ::class;
-	const EXTERNAL_STORAGE = ExternalStorage::class;
+	public const EXTERNAL_STORAGE = ExternalStorage::class;
 
 
 	/** @var IClientService */
@@ -242,7 +238,4 @@ class CircleMountProvider implements IMountProvider {
 //
 //		return rtrim(substr($path, strlen($prefix)), '/');
 	}
-
-
 }
-

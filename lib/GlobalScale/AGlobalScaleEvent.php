@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,7 +31,6 @@
 
 namespace OCA\Circles\GlobalScale;
 
-
 use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\GSSharesRequest;
 use OCA\Circles\Db\DeprecatedMembersRequest;
@@ -53,7 +54,6 @@ use OCP\IL10N;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCP\Mail\IMailer;
-
 
 /**
  * Class AGlobalScaleEvent
@@ -287,6 +287,4 @@ abstract class AGlobalScaleEvent {
 			$member->setInstance('');
 		}
 	}
-
 }
-

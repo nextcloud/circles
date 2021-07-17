@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
@@ -65,15 +64,12 @@ use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 
-
 /**
  * Class MemberService
  *
  * @package OCA\Circles\Service
  */
 class MemberService {
-
-
 	use TArrayTools;
 	use TStringTools;
 	use TNC22Logger;
@@ -255,7 +251,7 @@ class MemberService {
 		}
 
 		$members = array_map(
-			function(FederatedUser $federatedUser) use ($patron) {
+			function (FederatedUser $federatedUser) use ($patron) {
 				$member = new Member();
 				$member->importFromIFederatedUser($federatedUser);
 				$member->setInvitedBy($patron);
@@ -361,6 +357,4 @@ class MemberService {
 
 		return true;
 	}
-
 }
-

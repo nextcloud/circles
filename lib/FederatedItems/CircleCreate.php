@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
@@ -49,7 +48,6 @@ use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\MembershipService;
 
-
 /**
  * Class CircleCreate
  *
@@ -60,8 +58,6 @@ class CircleCreate implements
 	IFederatedItemHighSeverity,
 	IFederatedItemCircleCheckNotRequired,
 	IFederatedItemMustBeInitializedLocally {
-
-
 	use TNC22Deserialize;
 
 
@@ -159,6 +155,4 @@ class CircleCreate implements
 	public function result(FederatedEvent $event, array $results): void {
 		$this->eventService->circleCreated($event, $results);
 	}
-
 }
-

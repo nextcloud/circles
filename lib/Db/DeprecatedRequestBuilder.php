@@ -8,7 +8,6 @@
 
 namespace OCA\Circles\Db;
 
-
 use Doctrine\DBAL\Query\QueryBuilder;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Model\DeprecatedMember;
@@ -20,23 +19,22 @@ use OCP\IDBConnection;
 use OCP\IL10N;
 
 class DeprecatedRequestBuilder {
+	public const TABLE_FILE_SHARES = 'share';
+	public const SHARE_TYPE = 7;
 
-	const TABLE_FILE_SHARES = 'share';
-	const SHARE_TYPE = 7;
+	public const TABLE_CIRCLES = 'circle_circles';
+	public const TABLE_MEMBERS = 'circle_members';
+	public const TABLE_GROUPS = 'circle_groups';
+	public const TABLE_SHARES = 'circle_shares';
+	public const TABLE_LINKS = 'circle_links';
+	public const TABLE_TOKENS = 'circle_tokens';
+	public const TABLE_GSEVENTS = 'circle_gsevents';
+	public const TABLE_GSSHARES = 'circle_gsshares';
+	public const TABLE_GSSHARES_MOUNTPOINT = 'circle_gsshares_mp';
+	public const TABLE_REMOTE = 'circle_remotes';
 
-	const TABLE_CIRCLES = 'circle_circles';
-	const TABLE_MEMBERS = 'circle_members';
-	const TABLE_GROUPS = 'circle_groups';
-	const TABLE_SHARES = 'circle_shares';
-	const TABLE_LINKS = 'circle_links';
-	const TABLE_TOKENS = 'circle_tokens';
-	const TABLE_GSEVENTS = 'circle_gsevents';
-	const TABLE_GSSHARES = 'circle_gsshares';
-	const TABLE_GSSHARES_MOUNTPOINT = 'circle_gsshares_mp';
-	const TABLE_REMOTE = 'circle_remotes';
-
-	const NC_TABLE_ACCOUNTS = 'accounts';
-	const NC_TABLE_GROUP_USER = 'group_user';
+	public const NC_TABLE_ACCOUNTS = 'accounts';
+	public const NC_TABLE_GROUP_USER = 'group_user';
 
 	/** @var array */
 	private $tables = [
@@ -512,8 +510,4 @@ class DeprecatedRequestBuilder {
 
 		$this->leftJoinedNCGroupAndUser = true;
 	}
-
 }
-
-
-

@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
@@ -44,7 +43,6 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
-
 
 /**
  * Class CircleRequest
@@ -174,8 +172,8 @@ class CircleRequest extends CircleRequestBuilder {
 		$qb->setOptions(
 			[CoreQueryBuilder::CIRCLE],
 			[
-				'getData'               => true,
-				'mustBeMember'          => $params->gBool('mustBeMember'),
+				'getData' => true,
+				'mustBeMember' => $params->gBool('mustBeMember'),
 				'initiatorDirectMember' => true
 			]
 		);
@@ -243,8 +241,8 @@ class CircleRequest extends CircleRequestBuilder {
 		$qb->setOptions(
 			[CoreQueryBuilder::CIRCLE],
 			[
-				'getData'               => true,
-				'canBeVisitor'          => true,
+				'getData' => true,
+				'canBeVisitor' => true,
 				'initiatorDirectMember' => true
 			]
 		);
@@ -404,6 +402,4 @@ class CircleRequest extends CircleRequestBuilder {
 
 		$qb->execute();
 	}
-
 }
-

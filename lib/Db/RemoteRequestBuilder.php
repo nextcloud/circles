@@ -31,11 +31,9 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-
 use ArtificialOwl\MySmallPhpTools\Exceptions\RowNotFoundException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Model\Federated\RemoteInstance;
-
 
 /**
  * Class RemoteRequestBuilder
@@ -122,6 +120,4 @@ class RemoteRequestBuilder extends CoreRequestBuilder {
 		/** @var RemoteInstance[] $result */
 		return $qb->asItems(RemoteInstance::class);
 	}
-
 }
-

@@ -27,31 +27,28 @@
 
 namespace OCA\Circles\Tests;
 
-
 use OCA\Circles\Model\DeprecatedCircle;
 
 class Env implements \PHPUnit_Framework_TestListener {
+	public const ENV_TEST_OWNER1 = '_test_circles_owner1';
+	public const ENV_TEST_OWNER2 = '_test_circles_owner2';
+	public const ENV_TEST_OWNER3 = '_test_circles_owner3';
 
+	public const ENV_TEST_ADMIN1 = '_test_circles_admin1';
+	public const ENV_TEST_ADMIN2 = '_test_circles_admin2';
+	public const ENV_TEST_ADMIN3 = '_test_circles_admin3';
 
-	const ENV_TEST_OWNER1 = '_test_circles_owner1';
-	const ENV_TEST_OWNER2 = '_test_circles_owner2';
-	const ENV_TEST_OWNER3 = '_test_circles_owner3';
+	public const ENV_TEST_MODERATOR1 = '_test_circles_mod1';
+	public const ENV_TEST_MODERATOR2 = '_test_circles_mod2';
+	public const ENV_TEST_MODERATOR3 = '_test_circles_mod3';
 
-	const ENV_TEST_ADMIN1 = '_test_circles_admin1';
-	const ENV_TEST_ADMIN2 = '_test_circles_admin2';
-	const ENV_TEST_ADMIN3 = '_test_circles_admin3';
+	public const ENV_TEST_MEMBER1 = '_test_circles_member1';
+	public const ENV_TEST_MEMBER2 = '_test_circles_member2';
+	public const ENV_TEST_MEMBER3 = '_test_circles_member3';
 
-	const ENV_TEST_MODERATOR1 = '_test_circles_mod1';
-	const ENV_TEST_MODERATOR2 = '_test_circles_mod2';
-	const ENV_TEST_MODERATOR3 = '_test_circles_mod3';
-
-	const ENV_TEST_MEMBER1 = '_test_circles_member1';
-	const ENV_TEST_MEMBER2 = '_test_circles_member2';
-	const ENV_TEST_MEMBER3 = '_test_circles_member3';
-
-	const ENV_TEST_USER1 = '_test_circles_user1';
-	const ENV_TEST_USER2 = '_test_circles_user2';
-	const ENV_TEST_USER3 = '_test_circles_user3';
+	public const ENV_TEST_USER1 = '_test_circles_user1';
+	public const ENV_TEST_USER2 = '_test_circles_user2';
+	public const ENV_TEST_USER3 = '_test_circles_user3';
 
 
 	/** @var array<string> */
@@ -88,7 +85,7 @@ class Env implements \PHPUnit_Framework_TestListener {
 		$userManager = \OC::$server->getUserManager();
 		$this->users = self::listUsers();
 
-		foreach ($this->users AS $UID) {
+		foreach ($this->users as $UID) {
 			if ($userManager->userExists($UID) === false) {
 				$userManager->createUser($UID, $UID);
 			}
@@ -100,7 +97,7 @@ class Env implements \PHPUnit_Framework_TestListener {
 			return;
 		}
 
-		foreach ($this->users AS $UID) {
+		foreach ($this->users as $UID) {
 			$user = \OC::$server->getUserManager()
 								->get($UID);
 			if ($user !== null) {
@@ -114,7 +111,6 @@ class Env implements \PHPUnit_Framework_TestListener {
 	}
 
 	public static function setUser($which) {
-
 		$userSession = \OC::$server->getUserSession();
 		$userSession->setUser(
 			\OC::$server->getUserManager()
@@ -165,5 +161,3 @@ class Env implements \PHPUnit_Framework_TestListener {
 		];
 	}
 }
-
-

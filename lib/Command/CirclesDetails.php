@@ -59,7 +59,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
 /**
  * Class CirclesDetails
  *
@@ -118,7 +117,6 @@ class CirclesDetails extends Base {
 			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
 			 ->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
 			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
-
 	}
 
 
@@ -154,7 +152,7 @@ class CirclesDetails extends Base {
 					$circleId,
 					$instance,
 					[
-						'initiator'     => $input->getOption('initiator'),
+						'initiator' => $input->getOption('initiator'),
 						'initiatorType' => Member::parseTypeString($input->getOption('initiator-type'))
 					]
 				);
@@ -188,6 +186,4 @@ class CirclesDetails extends Base {
 
 		return 0;
 	}
-
 }
-

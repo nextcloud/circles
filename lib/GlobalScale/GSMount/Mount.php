@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,12 +31,10 @@
 
 namespace OCA\Circles\GlobalScale\GSMount;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
 use OC\Files\Mount\MountPoint;
 use OC\Files\Mount\MoveableMount;
-
 
 /**
  * Class Mount
@@ -42,8 +42,6 @@ use OC\Files\Mount\MoveableMount;
  * @package OCA\Circles\GlobalScale\GSMount
  */
 class Mount extends MountPoint implements MoveableMount {
-
-
 	use TArrayTools;
 
 
@@ -108,4 +106,3 @@ class Mount extends MountPoint implements MoveableMount {
 		return 'shared';
 	}
 }
-

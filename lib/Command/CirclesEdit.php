@@ -57,7 +57,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
 /**
  * Class CirclesEdit
  *
@@ -105,7 +104,6 @@ class CirclesEdit extends Base {
 			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
 			 ->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
 			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
-
 	}
 
 
@@ -170,6 +168,4 @@ class CirclesEdit extends Base {
 
 		return 0;
 	}
-
 }
-

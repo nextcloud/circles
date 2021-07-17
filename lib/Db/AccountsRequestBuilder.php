@@ -28,10 +28,8 @@
 
 namespace OCA\Circles\Db;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use OCP\DB\QueryBuilder\IQueryBuilder;
-
 
 /**
  * Class AccountsRequestBuilder
@@ -39,8 +37,6 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
  * @package OCA\Circles\Db
  */
 class AccountsRequestBuilder extends DeprecatedRequestBuilder {
-
-
 	use TArrayTools;
 
 
@@ -111,10 +107,8 @@ class AccountsRequestBuilder extends DeprecatedRequestBuilder {
 		}
 
 		return [
-			'userId'      => $entry['uid'],
+			'userId' => $entry['uid'],
 			'displayName' => $this->get('displayname.value', $data)
 		];
 	}
-
 }
-

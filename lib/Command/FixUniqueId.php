@@ -36,7 +36,6 @@ use OCP\IDBConnection;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
 class FixUniqueId extends Base {
 
 	/** @var IDBConnection */
@@ -58,7 +57,6 @@ class FixUniqueId extends Base {
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output) {
-
 		try {
 			$this->swapToShortenUniqueId();
 
@@ -70,7 +68,6 @@ class FixUniqueId extends Base {
 
 
 	private function swapToShortenUniqueId() {
-
 		$qb = $this->connection->getQueryBuilder();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
@@ -109,7 +106,6 @@ class FixUniqueId extends Base {
 
 
 	private function swapToShortenUniqueIdInTable($circleId, $shortenUniqueId, $table) {
-
 		$qb = $this->connection->getQueryBuilder();
 		$qb->update($table)
 		   ->where(
@@ -140,9 +136,4 @@ class FixUniqueId extends Base {
 		$qb->set('share_with', $qb->createNamedParameter($shortenUniqueId));
 		$qb->execute();
 	}
-
-
 }
-
-
-

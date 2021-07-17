@@ -2,10 +2,8 @@
 
 namespace OCA\Circles\Activity;
 
-
 use OCP\Activity\ISetting;
 use OCP\IL10N;
-
 
 /**
  * Class SettingAsNonMember
@@ -91,4 +89,3 @@ class SettingAsNonMember implements ISetting {
 		return false;
 	}
 }
-

@@ -27,6 +27,4 @@
 namespace OCA\Circles\Exceptions;
 
 class NotLocalMemberException extends \Exception {
-
 }
-

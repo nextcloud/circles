@@ -27,7 +27,6 @@
 
 namespace OCA\Circles\Db;
 
-
 use OCA\Circles\Model\FederatedLink;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
@@ -35,7 +34,6 @@ use OCA\Circles\Service\TimezoneService;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 use OCP\IL10N;
-
 
 /**
  * @deprecated
@@ -134,5 +132,4 @@ class FederatedLinksRequestBuilder extends DeprecatedRequestBuilder {
 
 		return $link;
 	}
-
 }

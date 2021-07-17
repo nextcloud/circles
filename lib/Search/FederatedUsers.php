@@ -31,10 +31,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Search;
 
-
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\ISearch;
-
 
 /**
  * Class FederatedUsers
@@ -66,6 +64,4 @@ class FederatedUsers implements ISearch {
 	public function search(string $needle): array {
 		return $this->memberRequest->searchFederatedUsers($needle);
 	}
-
 }
-

@@ -31,11 +31,9 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Events;
 
-
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCP\EventDispatcher\Event;
-
 
 /**
  * Class CircleMemberAddedEvent
@@ -43,17 +41,15 @@ use OCP\EventDispatcher\Event;
  * @package OCA\Circles\Events
  */
 class CircleGenericEvent extends Event {
-
-
-	const INVITED = 1;
-	const JOINED = 2;
+	public const INVITED = 1;
+	public const JOINED = 2;
 	/** @deprecated */
-	const MULTIPLE = 3;
-	const REMOVED = 4;
-	const LEFT = 5;
-	const LEVEL = 6;
-	const NAME = 7;
-	const REQUESTED = 8;
+	public const MULTIPLE = 3;
+	public const REMOVED = 4;
+	public const LEFT = 5;
+	public const LEVEL = 6;
+	public const NAME = 7;
+	public const REQUESTED = 8;
 
 
 	/** @var FederatedEvent */
@@ -89,6 +85,4 @@ class CircleGenericEvent extends Event {
 	public function getCircle(): Circle {
 		return $this->circle;
 	}
-
 }
-

@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Listeners\Files;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\CirclesManager;
 use OCA\Circles\Db\ShareWrapperRequest;
@@ -55,15 +54,12 @@ use OCA\Circles\Service\FederatedUserService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 
-
 /**
  * Class MembershipsRemoved
  *
  * @package OCA\Circles\Listeners\Files
  */
 class MembershipsRemoved implements IEventListener {
-
-
 	use TStringTools;
 
 
@@ -134,6 +130,4 @@ class MembershipsRemoved implements IEventListener {
 			}
 		}
 	}
-
 }
-

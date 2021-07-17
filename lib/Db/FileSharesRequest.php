@@ -27,9 +27,7 @@
 
 namespace OCA\Circles\Db;
 
-
 use OCA\Circles\Model\DeprecatedMember;
-
 
 /**
  * @deprecated
@@ -117,6 +115,4 @@ class FileSharesRequest extends FileSharesRequestBuilder {
 
 		return $shares;
 	}
-
 }
-

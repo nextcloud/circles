@@ -72,7 +72,7 @@ return [
 		],
 		[
 			'name' => 'Admin#memberLevel',
-			'url'  => '/admin/{emulated}/circles/{circleId}/members/{memberId}/level',
+			'url' => '/admin/{emulated}/circles/{circleId}/members/{memberId}/level',
 			'verb' => 'PUT'
 		],
 
@@ -113,4 +113,3 @@ return [
 		['name' => 'Remote#member', 'url' => '/member/{type}/{userId}/', 'verb' => 'GET']
 	]
 ];
-

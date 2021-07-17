@@ -30,9 +30,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Exceptions;
 
-
 use Exception;
-
 
 /**
  * Class ShareTokenAlreadyExistException
@@ -40,6 +38,4 @@ use Exception;
  * @package OCA\Circles\Exceptions
  */
 class ShareTokenAlreadyExistException extends Exception {
-
 }
-

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,7 +31,6 @@
 
 namespace OCA\Circles\GlobalScale;
 
-
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
@@ -54,15 +55,12 @@ use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IShare;
 use OCP\Util;
 
-
 /**
  * Class FileShare
  *
  * @package OCA\Circles\GlobalScale
  */
 class FileShare extends AGlobalScaleEvent {
-
-
 	use TArrayTools;
 
 
@@ -342,12 +340,12 @@ class FileShare extends AGlobalScaleEvent {
 
 		$emailTemplate = $this->mailer->createEMailTemplate(
 			'sharebymail.RecipientPasswordNotification', [
-														   'filename'       => $filename,
-														   'password'       => $password,
-														   'initiator'      => $initiatorDisplayName,
-														   'initiatorEmail' => $initiatorEmailAddress,
-														   'shareWith'      => $shareWith,
-													   ]
+				'filename' => $filename,
+				'password' => $password,
+				'initiator' => $initiatorDisplayName,
+				'initiatorEmail' => $initiatorEmailAddress,
+				'shareWith' => $shareWith,
+			]
 		);
 
 		$emailTemplate->setSubject(
@@ -398,11 +396,11 @@ class FileShare extends AGlobalScaleEvent {
 	) {
 		$emailTemplate = $this->mailer->createEMailTemplate(
 			'circles.ShareNotification', [
-										   'fileName'   => $fileName,
-										   'fileLink'   => $link,
-										   'author'     => $author,
-										   'circleName' => $circleName,
-									   ]
+				'fileName' => $fileName,
+				'fileLink' => $link,
+				'author' => $author,
+				'circleName' => $circleName,
+			]
 		);
 
 		$emailTemplate->addHeader();
@@ -431,7 +429,7 @@ class FileShare extends AGlobalScaleEvent {
 		);
 
 		return array_map(
-			function(DeprecatedMember $member) {
+			function (DeprecatedMember $member) {
 				return $member->getUserId();
 			}, $members
 		);
@@ -477,6 +475,4 @@ class FileShare extends AGlobalScaleEvent {
 
 		return $share;
 	}
-
-
 }

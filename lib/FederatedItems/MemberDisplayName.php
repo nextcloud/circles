@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\FederatedItemBadRequestException;
@@ -46,7 +45,6 @@ use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\StatusCode;
 
-
 /**
  * Class MemberDisplayName
  *
@@ -56,8 +54,6 @@ class MemberDisplayName implements
 	IFederatedItem,
 	IFederatedItemHighSeverity,
 	IFederatedItemMemberEmpty {
-
-
 	use TNC22Deserialize;
 
 
@@ -143,6 +139,4 @@ class MemberDisplayName implements
 	public function result(FederatedEvent $event, array $results): void {
 		$this->eventService->memberNameEdited($event, $results);
 	}
-
 }
-

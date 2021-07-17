@@ -27,6 +27,4 @@
 namespace OCA\Circles\Exceptions;
 
 class SharingFrameSourceCannotBeAppCirclesException extends \Exception {
-
 }
-

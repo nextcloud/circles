@@ -51,7 +51,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
 /**
  * Class MembersAdd
  *
@@ -186,7 +185,7 @@ class MembersAdd extends Base {
 				continue;
 			}
 
-			list(, $host) = explode('@', $user['federationId']);
+			[, $host] = explode('@', $user['federationId']);
 			if (strtolower($user['userid']['value']) === strtolower($search)) {
 				$userId = $user['userid']['value'];
 				$instance = $host;
@@ -203,6 +202,4 @@ class MembersAdd extends Base {
 
 		return $userId;
 	}
-
 }
-

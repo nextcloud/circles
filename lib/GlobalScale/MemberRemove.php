@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,7 +31,6 @@
 
 namespace OCA\Circles\GlobalScale;
 
-
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Exceptions\GlobalScaleDSyncException;
@@ -40,7 +41,6 @@ use OCA\Circles\Exceptions\MemberIsNotModeratorException;
 use OCA\Circles\Exceptions\MemberIsOwnerException;
 use OCA\Circles\Exceptions\ModeratorIsNotHighEnoughException;
 use OCA\Circles\Model\GlobalScale\GSEvent;
-
 
 /**
  * Class MemberDelete
@@ -105,6 +105,4 @@ class MemberRemove extends AGlobalScaleEvent {
 		$this->fileSharesRequest->removeSharesFromMember($member);
 		$this->tokensRequest->removeTokensFromMember($member);
 	}
-
 }
-

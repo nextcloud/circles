@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-
 use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
 use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
 use ArtificialOwl\MySmallPhpTools\Exceptions\SignatoryException;
@@ -89,7 +88,6 @@ use OCP\IUserManager;
 use OCP\Mail\IEMailTemplate;
 use OCP\Util;
 
-
 /**
  * Class MemberAdd
  *
@@ -101,8 +99,6 @@ class SingleMemberAdd implements
 	IFederatedItemHighSeverity,
 	IFederatedItemMemberRequired,
 	IFederatedItemMemberCheckNotRequired {
-
-
 	use TNC22Deserialize;
 
 
@@ -357,7 +353,6 @@ class SingleMemberAdd implements
 			if ($member->getSingleId() !== '') {
 				$userId = $member->getSingleId() . '@' . $member->getInstance();
 				$federatedUser = $this->federatedUserService->getFederatedUser($userId, Member::TYPE_SINGLE);
-
 			} else {
 				$userId = $member->getUserId() . '@' . $member->getInstance();
 				$federatedUser = $this->federatedUserService->getFederatedUser(
@@ -365,7 +360,6 @@ class SingleMemberAdd implements
 					$member->getUserType()
 				);
 			}
-
 		} catch (MemberNotFoundException $e) {
 			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[120], 120);
 		}
@@ -633,7 +627,6 @@ class SingleMemberAdd implements
 		}
 
 		try {
-
 			$template = $this->generateMailExitingShares($author, $circle->getName());
 			$this->fillMailExistingShares($template, $links);
 			$this->sendMailExistingShares($template, $author, $recipient);
@@ -676,7 +669,7 @@ class SingleMemberAdd implements
 	private function getUnknownShares(DeprecatedMember $member): array {
 		$allShares = $this->fileSharesRequest->getSharesForCircle($member->getCircleId());
 		$knownShares = array_map(
-			function(SharesToken $shareToken) {
+			function (SharesToken $shareToken) {
 				return $shareToken->getShareId();
 			},
 			$this->tokensRequest->getTokensFromMember($member)
@@ -711,8 +704,8 @@ class SingleMemberAdd implements
 		$filename = basename($share['file_target']);
 
 		return [
-			'author'   => $author,
-			'link'     => $link,
+			'author' => $author,
+			'link' => $link,
 			'filename' => $filename
 		];
 	}
@@ -804,9 +797,9 @@ class SingleMemberAdd implements
 
 		$emailTemplate = $this->mailer->createEMailTemplate(
 			'sharebymail.RecipientPasswordNotification', [
-														   'password' => $password,
-														   'author'   => $author
-													   ]
+				'password' => $password,
+				'author' => $author
+			]
 		);
 
 		$emailTemplate->setSubject(
@@ -842,6 +835,4 @@ class SingleMemberAdd implements
 		$message->useTemplate($emailTemplate);
 		$this->mailer->send($message);
 	}
-
 }
-

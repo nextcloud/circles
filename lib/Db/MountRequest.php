@@ -31,12 +31,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Mount;
-
 
 /**
  * Class GSSharesRequest
@@ -44,8 +42,6 @@ use OCA\Circles\Model\Mount;
  * @package OCA\Circles\Db
  */
 class MountRequest extends MountRequestBuilder {
-
-
 	use TStringTools;
 
 
@@ -288,7 +284,4 @@ class MountRequest extends MountRequestBuilder {
 //		return ($nb === 1);
 //	}
 //
-
-
 }
-

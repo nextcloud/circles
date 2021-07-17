@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,7 +31,6 @@
 
 namespace OCA\Circles\Service;
 
-
 use ArtificialOwl\MySmallPhpTools\Exceptions\RequestContentException;
 use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
 use ArtificialOwl\MySmallPhpTools\Exceptions\RequestResultNotJsonException;
@@ -53,15 +54,12 @@ use OCA\Circles\Model\GlobalScale\GSEvent;
 use OCA\Circles\Model\GlobalScale\GSWrapper;
 use OCP\IURLGenerator;
 
-
 /**
  * Class GSUpstreamService
  *
  * @package OCA\Circles\Service
  */
 class GSUpstreamService {
-
-
 	use TNC22Request;
 
 
@@ -442,7 +440,6 @@ class GSUpstreamService {
 				if ($status === CircleStatus::STATUS_NOT_FOUND) {
 					$notFound = true;
 				}
-
 			} catch (RequestContentException
 			| RequestNetworkException
 			| RequestResultNotJsonException
@@ -480,7 +477,6 @@ class GSUpstreamService {
 	 * @throws GSStatusException
 	 */
 	public function syncEvents() {
-
 	}
 
 	/**
@@ -488,9 +484,5 @@ class GSUpstreamService {
 	 */
 	private function removeDeprecatedEvents() {
 //		$this->deprecatedEvents();
-
 	}
-
-
 }
-

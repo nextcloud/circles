@@ -26,9 +26,5 @@
 
 namespace OCA\Circles\Exceptions;
 
-
 class CommandMissingArgumentException extends \Exception {
-
 }
-
-

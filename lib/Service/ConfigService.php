@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-
 use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
@@ -44,124 +43,121 @@ use OCA\Circles\Model\Member;
 use OCP\IConfig;
 use OCP\IURLGenerator;
 
-
 /**
  * Class ConfigService
  *
  * @package OCA\Circles\Service
  */
 class ConfigService {
-
-
 	use TStringTools;
 	use TArrayTools;
 
 
-	const FRONTAL_CLOUD_ID = 'frontal_cloud_id';
-	const FRONTAL_CLOUD_SCHEME = 'frontal_cloud_scheme';
-	const INTERNAL_CLOUD_ID = 'internal_cloud_id';
-	const INTERNAL_CLOUD_SCHEME = 'internal_cloud_scheme';
-	const LOOPBACK_CLOUD_ID = 'loopback_cloud_id';
-	const LOOPBACK_CLOUD_SCHEME = 'loopback_cloud_scheme';
-	const IFACE0_CLOUD_ID = 'iface0_cloud_id';
-	const IFACE0_CLOUD_SCHEME = 'iface0_cloud_scheme';
-	const IFACE0_INTERNAL = 'iface0_internal';
-	const IFACE1_CLOUD_ID = 'iface1_cloud_id';
-	const IFACE1_CLOUD_SCHEME = 'iface1_cloud_scheme';
-	const IFACE1_INTERNAL = 'iface1_internal';
-	const IFACE2_CLOUD_ID = 'iface2_cloud_id';
-	const IFACE2_CLOUD_SCHEME = 'iface2_cloud_scheme';
-	const IFACE2_INTERNAL = 'iface2_internal';
-	const IFACE3_CLOUD_ID = 'iface3_cloud_id';
-	const IFACE3_CLOUD_SCHEME = 'iface3_cloud_scheme';
-	const IFACE3_INTERNAL = 'iface3_internal';
-	const IFACE4_CLOUD_ID = 'iface4_cloud_id';
-	const IFACE4_CLOUD_SCHEME = 'iface4_cloud_scheme';
-	const IFACE4_INTERNAL = 'iface4_internal';
-	const IFACE_TEST_ID = 'iface_test_id';
-	const IFACE_TEST_SCHEME = 'iface_test_scheme';
-	const IFACE_TEST_TOKEN = 'iface_test_token';
+	public const FRONTAL_CLOUD_ID = 'frontal_cloud_id';
+	public const FRONTAL_CLOUD_SCHEME = 'frontal_cloud_scheme';
+	public const INTERNAL_CLOUD_ID = 'internal_cloud_id';
+	public const INTERNAL_CLOUD_SCHEME = 'internal_cloud_scheme';
+	public const LOOPBACK_CLOUD_ID = 'loopback_cloud_id';
+	public const LOOPBACK_CLOUD_SCHEME = 'loopback_cloud_scheme';
+	public const IFACE0_CLOUD_ID = 'iface0_cloud_id';
+	public const IFACE0_CLOUD_SCHEME = 'iface0_cloud_scheme';
+	public const IFACE0_INTERNAL = 'iface0_internal';
+	public const IFACE1_CLOUD_ID = 'iface1_cloud_id';
+	public const IFACE1_CLOUD_SCHEME = 'iface1_cloud_scheme';
+	public const IFACE1_INTERNAL = 'iface1_internal';
+	public const IFACE2_CLOUD_ID = 'iface2_cloud_id';
+	public const IFACE2_CLOUD_SCHEME = 'iface2_cloud_scheme';
+	public const IFACE2_INTERNAL = 'iface2_internal';
+	public const IFACE3_CLOUD_ID = 'iface3_cloud_id';
+	public const IFACE3_CLOUD_SCHEME = 'iface3_cloud_scheme';
+	public const IFACE3_INTERNAL = 'iface3_internal';
+	public const IFACE4_CLOUD_ID = 'iface4_cloud_id';
+	public const IFACE4_CLOUD_SCHEME = 'iface4_cloud_scheme';
+	public const IFACE4_INTERNAL = 'iface4_internal';
+	public const IFACE_TEST_ID = 'iface_test_id';
+	public const IFACE_TEST_SCHEME = 'iface_test_scheme';
+	public const IFACE_TEST_TOKEN = 'iface_test_token';
 
-	const HARD_MODERATION = 'hard_moderation';
-	const FRONTEND_ENABLED = 'frontend_enabled';
-	const ROUTE_TO_CIRCLE = 'route_to_circle';
-	const EVENT_EXAMPLES = 'event_examples';
+	public const HARD_MODERATION = 'hard_moderation';
+	public const FRONTEND_ENABLED = 'frontend_enabled';
+	public const ROUTE_TO_CIRCLE = 'route_to_circle';
+	public const EVENT_EXAMPLES = 'event_examples';
 
-	const SELF_SIGNED_CERT = 'self_signed_cert';
-	const MEMBERS_LIMIT = 'members_limit';
-	const ACTIVITY_ON_NEW_CIRCLE = 'creation_activity';
+	public const SELF_SIGNED_CERT = 'self_signed_cert';
+	public const MEMBERS_LIMIT = 'members_limit';
+	public const ACTIVITY_ON_NEW_CIRCLE = 'creation_activity';
 
-	const MIGRATION_BYPASS = 'migration_bypass';
-	const MIGRATION_22 = 'migration_22';
-	const MIGRATION_RUN = 'migration_run';
-	const MAINTENANCE_UPDATE = 'maintenance_update';
-	const MAINTENANCE_RUN = 'maintenance_run';
+	public const MIGRATION_BYPASS = 'migration_bypass';
+	public const MIGRATION_22 = 'migration_22';
+	public const MIGRATION_RUN = 'migration_run';
+	public const MAINTENANCE_UPDATE = 'maintenance_update';
+	public const MAINTENANCE_RUN = 'maintenance_run';
 
-	const LOOPBACK_TMP_ID = 'loopback_tmp_id';
-	const LOOPBACK_TMP_SCHEME = 'loopback_tmp_scheme';
+	public const LOOPBACK_TMP_ID = 'loopback_tmp_id';
+	public const LOOPBACK_TMP_SCHEME = 'loopback_tmp_scheme';
 
-	const GS_MODE = 'mode';
-	const GS_KEY = 'key';
+	public const GS_MODE = 'mode';
+	public const GS_KEY = 'key';
 
-	const GS_LOOKUP_INSTANCES = '/instances';
-	const GS_LOOKUP_USERS = '/users';
+	public const GS_LOOKUP_INSTANCES = '/instances';
+	public const GS_LOOKUP_USERS = '/users';
 
 
 	// deprecated -- removing in NC25
-	const CIRCLES_CONTACT_BACKEND = 'contact_backend';
-	const CIRCLES_ACCOUNTS_ONLY = 'accounts_only'; // only UserType=1
-	const CIRCLES_SEARCH_FROM_COLLABORATOR = 'search_from_collaborator';
+	public const CIRCLES_CONTACT_BACKEND = 'contact_backend';
+	public const CIRCLES_ACCOUNTS_ONLY = 'accounts_only'; // only UserType=1
+	public const CIRCLES_SEARCH_FROM_COLLABORATOR = 'search_from_collaborator';
 
-	const FORCE_NC_BASE = 'force_nc_base';
-	const TEST_NC_BASE = 'test_nc_base';
+	public const FORCE_NC_BASE = 'force_nc_base';
+	public const TEST_NC_BASE = 'test_nc_base';
 
 
 	private $defaults = [
-		self::FRONTAL_CLOUD_ID      => '',
-		self::FRONTAL_CLOUD_SCHEME  => 'https',
-		self::INTERNAL_CLOUD_ID     => '',
+		self::FRONTAL_CLOUD_ID => '',
+		self::FRONTAL_CLOUD_SCHEME => 'https',
+		self::INTERNAL_CLOUD_ID => '',
 		self::INTERNAL_CLOUD_SCHEME => 'https',
-		self::LOOPBACK_CLOUD_ID     => '',
+		self::LOOPBACK_CLOUD_ID => '',
 		self::LOOPBACK_CLOUD_SCHEME => 'https',
-		self::LOOPBACK_TMP_ID       => '',
-		self::LOOPBACK_TMP_SCHEME   => '',
-		self::IFACE0_CLOUD_ID       => '',
-		self::IFACE0_CLOUD_SCHEME   => 'https',
-		self::IFACE0_INTERNAL       => '0',
-		self::IFACE1_CLOUD_ID       => '',
-		self::IFACE1_CLOUD_SCHEME   => 'https',
-		self::IFACE1_INTERNAL       => '0',
-		self::IFACE2_CLOUD_ID       => '',
-		self::IFACE2_CLOUD_SCHEME   => 'https',
-		self::IFACE2_INTERNAL       => '0',
-		self::IFACE3_CLOUD_ID       => '',
-		self::IFACE3_CLOUD_SCHEME   => 'https',
-		self::IFACE3_INTERNAL       => '0',
-		self::IFACE4_CLOUD_ID       => '',
-		self::IFACE4_CLOUD_SCHEME   => 'https',
-		self::IFACE4_INTERNAL       => '0',
-		self::IFACE_TEST_ID         => '',
-		self::IFACE_TEST_SCHEME     => 'https',
-		self::IFACE_TEST_TOKEN      => '',
+		self::LOOPBACK_TMP_ID => '',
+		self::LOOPBACK_TMP_SCHEME => '',
+		self::IFACE0_CLOUD_ID => '',
+		self::IFACE0_CLOUD_SCHEME => 'https',
+		self::IFACE0_INTERNAL => '0',
+		self::IFACE1_CLOUD_ID => '',
+		self::IFACE1_CLOUD_SCHEME => 'https',
+		self::IFACE1_INTERNAL => '0',
+		self::IFACE2_CLOUD_ID => '',
+		self::IFACE2_CLOUD_SCHEME => 'https',
+		self::IFACE2_INTERNAL => '0',
+		self::IFACE3_CLOUD_ID => '',
+		self::IFACE3_CLOUD_SCHEME => 'https',
+		self::IFACE3_INTERNAL => '0',
+		self::IFACE4_CLOUD_ID => '',
+		self::IFACE4_CLOUD_SCHEME => 'https',
+		self::IFACE4_INTERNAL => '0',
+		self::IFACE_TEST_ID => '',
+		self::IFACE_TEST_SCHEME => 'https',
+		self::IFACE_TEST_TOKEN => '',
 
 		self::FRONTEND_ENABLED => '1',
-		self::HARD_MODERATION  => '0',
-		self::ROUTE_TO_CIRCLE  => 'contacts.contacts.directcircle',
-		self::EVENT_EXAMPLES   => '0',
+		self::HARD_MODERATION => '0',
+		self::ROUTE_TO_CIRCLE => 'contacts.contacts.directcircle',
+		self::EVENT_EXAMPLES => '0',
 
-		self::SELF_SIGNED_CERT       => '0',
-		self::MEMBERS_LIMIT          => '-1',
+		self::SELF_SIGNED_CERT => '0',
+		self::MEMBERS_LIMIT => '-1',
 		self::ACTIVITY_ON_NEW_CIRCLE => '1',
-		self::MIGRATION_BYPASS       => '0',
-		self::MIGRATION_22           => '0',
-		self::MIGRATION_RUN          => '0',
-		self::MAINTENANCE_UPDATE     => '[]',
-		self::MAINTENANCE_RUN        => '0',
+		self::MIGRATION_BYPASS => '0',
+		self::MIGRATION_22 => '0',
+		self::MIGRATION_RUN => '0',
+		self::MAINTENANCE_UPDATE => '[]',
+		self::MAINTENANCE_RUN => '0',
 
-		self::FORCE_NC_BASE                    => '',
-		self::TEST_NC_BASE                     => '',
-		self::CIRCLES_CONTACT_BACKEND          => '0',
-		self::CIRCLES_ACCOUNTS_ONLY            => '0',
+		self::FORCE_NC_BASE => '',
+		self::TEST_NC_BASE => '',
+		self::CIRCLES_CONTACT_BACKEND => '0',
+		self::CIRCLES_ACCOUNTS_ONLY => '0',
 		self::CIRCLES_SEARCH_FROM_COLLABORATOR => '0',
 	];
 
@@ -331,10 +327,10 @@ class ConfigService {
 	 */
 	public function getSettings(): array {
 		return [
-			'frontendEnabled'  => $this->getAppValueBool(self::FRONTEND_ENABLED),
-			'allowedCircles'   => Circle::$DEF_CFG_MAX,
+			'frontendEnabled' => $this->getAppValueBool(self::FRONTEND_ENABLED),
+			'allowedCircles' => Circle::$DEF_CFG_MAX,
 			'allowedUserTypes' => Member::$DEF_TYPE_MAX,
-			'membersLimit'     => $this->getAppValueInt(self::MEMBERS_LIMIT)
+			'membersLimit' => $this->getAppValueInt(self::MEMBERS_LIMIT)
 		];
 	}
 
@@ -402,11 +398,11 @@ class ConfigService {
 	 */
 	public function getGSData(): array {
 		return [
-			'enabled'     => $this->isGSAvailable(),
-			'lookup'      => $this->getGSLookup(),
-			'mockup'      => $this->getGSSMockup(),
+			'enabled' => $this->isGSAvailable(),
+			'lookup' => $this->getGSLookup(),
+			'mockup' => $this->getGSSMockup(),
 			self::GS_MODE => $this->config->getSystemValue('gss.mode', ''),
-			self::GS_KEY  => $this->config->getSystemValue('gss.jwt.key', ''),
+			self::GS_KEY => $this->config->getSystemValue('gss.jwt.key', ''),
 		];
 	}
 
@@ -416,7 +412,7 @@ class ConfigService {
 	 */
 	public function getTrustedDomains(): array {
 		return array_map(
-			function(string $address) {
+			function (string $address) {
 				return strtolower($address);
 			}, $this->config->getSystemValue('trusted_domains', [])
 		);
@@ -634,6 +630,4 @@ class ConfigService {
 		$request->setFollowLocation(true);
 		$request->setTimeout(5);
 	}
-
 }
-

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -42,7 +44,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
 /**
  * Class CirclesCreate
  *
@@ -71,7 +72,6 @@ class CirclesCreate extends Base {
 		parent::__construct();
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
-
 	}
 
 
@@ -133,6 +133,4 @@ class CirclesCreate extends Base {
 
 		return 0;
 	}
-
 }
-

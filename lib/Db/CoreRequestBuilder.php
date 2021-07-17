@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-
 use Exception;
 use OC\DB\Connection;
 use OC\DB\SchemaWrapper;
@@ -40,40 +39,37 @@ use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\TimezoneService;
 use OCP\Share\IShare;
 
-
 /**
  * Class CoreQueryBuilder
  *
  * @package OCA\Circles\Db
  */
 class CoreRequestBuilder {
+	public const TABLE_SHARE = 'share';
+	public const TABLE_FILE_CACHE = 'filecache';
+	public const TABLE_STORAGES = 'storages';
 
-
-	const TABLE_SHARE = 'share';
-	const TABLE_FILE_CACHE = 'filecache';
-	const TABLE_STORAGES = 'storages';
-
-	const TABLE_CIRCLE = 'circles_circle';
-	const TABLE_MEMBER = 'circles_member';
-	const TABLE_MEMBERSHIP = 'circles_membership';
-	const TABLE_REMOTE = 'circles_remote';
-	const TABLE_EVENT = 'circles_event';
-	const TABLE_MOUNT = 'circles_mount';
-	const TABLE_MOUNTPOINT = 'circles_mountpoint';
+	public const TABLE_CIRCLE = 'circles_circle';
+	public const TABLE_MEMBER = 'circles_member';
+	public const TABLE_MEMBERSHIP = 'circles_membership';
+	public const TABLE_REMOTE = 'circles_remote';
+	public const TABLE_EVENT = 'circles_event';
+	public const TABLE_MOUNT = 'circles_mount';
+	public const TABLE_MOUNTPOINT = 'circles_mountpoint';
 
 	// wip
-	const TABLE_SHARE_LOCK = 'circles_share_lock';
-	const TABLE_TOKEN = 'circles_token';
+	public const TABLE_SHARE_LOCK = 'circles_share_lock';
+	public const TABLE_TOKEN = 'circles_token';
 
-	const TABLE_GSSHARES = 'circle_gsshares'; // rename ?
-	const TABLE_GSSHARES_MOUNTPOINT = 'circle_gsshares_mp'; // rename ?
+	public const TABLE_GSSHARES = 'circle_gsshares'; // rename ?
+	public const TABLE_GSSHARES_MOUNTPOINT = 'circle_gsshares_mp'; // rename ?
 
-	const NC_TABLE_ACCOUNTS = 'accounts';
-	const NC_TABLE_GROUP_USER = 'group_user';
+	public const NC_TABLE_ACCOUNTS = 'accounts';
+	public const NC_TABLE_GROUP_USER = 'group_user';
 
 	/** @var array */
-	static $tables = [
-		self::TABLE_CIRCLE              => [
+	public static $tables = [
+		self::TABLE_CIRCLE => [
 			'unique_id',
 			'name',
 			'display_name',
@@ -86,7 +82,7 @@ class CoreRequestBuilder {
 			'contact_groupname',
 			'creation'
 		],
-		self::TABLE_MEMBER              => [
+		self::TABLE_MEMBER => [
 			'circle_id',
 			'member_id',
 			'single_id',
@@ -102,7 +98,7 @@ class CoreRequestBuilder {
 			'contact_meta',
 			'joined'
 		],
-		self::TABLE_MEMBERSHIP          => [
+		self::TABLE_MEMBERSHIP => [
 			'single_id',
 			'circle_id',
 			'level',
@@ -111,7 +107,7 @@ class CoreRequestBuilder {
 			'inheritance_path',
 			'inheritance_depth'
 		],
-		self::TABLE_REMOTE              => [
+		self::TABLE_REMOTE => [
 			'id',
 			'type',
 			'interface',
@@ -121,7 +117,7 @@ class CoreRequestBuilder {
 			'item',
 			'creation'
 		],
-		self::TABLE_EVENT               => [
+		self::TABLE_EVENT => [
 			'token',
 			'event',
 			'result',
@@ -132,7 +128,7 @@ class CoreRequestBuilder {
 			'status',
 			'creation'
 		],
-		self::TABLE_MOUNT               => [
+		self::TABLE_MOUNT => [
 			'id',
 			'mount_id',
 			'circle_id',
@@ -142,9 +138,9 @@ class CoreRequestBuilder {
 			'mountpoint',
 			'mountpoint_hash'
 		],
-		self::TABLE_MOUNTPOINT          => [],
-		self::TABLE_SHARE_LOCK          => [],
-		self::TABLE_TOKEN               => [
+		self::TABLE_MOUNTPOINT => [],
+		self::TABLE_SHARE_LOCK => [],
+		self::TABLE_TOKEN => [
 			'id',
 			'share_id',
 			'circle_id',
@@ -154,13 +150,13 @@ class CoreRequestBuilder {
 			'password',
 			'accepted'
 		],
-		self::TABLE_GSSHARES            => [],
+		self::TABLE_GSSHARES => [],
 		self::TABLE_GSSHARES_MOUNTPOINT => []
 	];
 
 
-	static $outsideTables = [
-		self::TABLE_SHARE      => [
+	public static $outsideTables = [
+		self::TABLE_SHARE => [
 			'id',
 			'share_type',
 			'share_with',
@@ -197,7 +193,7 @@ class CoreRequestBuilder {
 			'etag',
 			'checksum'
 		],
-		self::TABLE_STORAGES   => [
+		self::TABLE_STORAGES => [
 			'id'
 		]
 	];
@@ -320,6 +316,4 @@ class CoreRequestBuilder {
 //		$qb->where($this->exprLimitToDBField($qb, 'class', 'OCA\Circles\', true, true));
 //		$qb->execute();
 	}
-
 }
-

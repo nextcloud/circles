@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 
 /**
@@ -29,7 +31,6 @@
 
 namespace OCA\Circles\Cron;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use OC\BackgroundJob\TimedJob;
 use OC\Share20\Share;
@@ -53,15 +54,12 @@ use OCP\IUserManager;
 use OCP\Share\Exceptions\IllegalIDChangeException;
 use OCP\Share\IShare;
 
-
 /**
  * Class GlobalSync
  *
  * @package OCA\Cicles\Cron
  */
 class ContactsExistingShares extends TimedJob {
-
-
 	use TArrayTools;
 
 
@@ -256,6 +254,4 @@ class ContactsExistingShares extends TimedJob {
 
 		return $share;
 	}
-
 }
-

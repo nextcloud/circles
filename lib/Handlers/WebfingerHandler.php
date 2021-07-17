@@ -31,9 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Handlers;
 
-
 use ArtificialOwl\MySmallPhpTools\Exceptions\SignatoryException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\SignatureException;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use OC\URLGenerator;
 use OCA\Circles\AppInfo\Application;
@@ -47,15 +45,12 @@ use OCP\Http\WellKnown\IResponse;
 use OCP\Http\WellKnown\JrdResponse;
 use OCP\IURLGenerator;
 
-
 /**
  * Class WebfingerHandler
  *
  * @package OCA\Circles\Handlers
  */
 class WebfingerHandler implements IHandler {
-
-
 	use TArrayTools;
 
 
@@ -120,11 +115,11 @@ class WebfingerHandler implements IHandler {
 			$this->remoteStreamService->getAppSignatory();
 			$href = $this->interfaceService->getCloudPath('circles.Remote.appService');
 			$info = [
-				'app'     => Application::APP_ID,
-				'name'    => Application::APP_NAME,
-				'token'   => Application::APP_TOKEN,
+				'app' => Application::APP_ID,
+				'name' => Application::APP_NAME,
+				'token' => Application::APP_TOKEN,
 				'version' => $this->configService->getAppValue('installed_version'),
-				'api'     => Application::APP_API
+				'api' => Application::APP_API
 			];
 		} catch (UnknownInterfaceException | SignatoryException $e) {
 			return $response;
@@ -132,6 +127,4 @@ class WebfingerHandler implements IHandler {
 
 		return $response->addLink(Application::APP_REL, 'application/json', $href, [], $info);
 	}
-
 }
-

@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Listeners\Files;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use Exception;
@@ -47,15 +46,12 @@ use OCA\Circles\Service\ShareWrapperService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 
-
 /**
  * Class AddingMember
  *
  * @package OCA\Circles\Listeners\Files
  */
 class AddingMember implements IEventListener {
-
-
 	use TStringTools;
 	use TNC22Logger;
 
@@ -140,7 +136,7 @@ class AddingMember implements IEventListener {
 
 			$result[$member->getId()] = [
 				'shares' => $files,
-				'mails'  => $this->getMailAddressesFromContact($member)
+				'mails' => $this->getMailAddressesFromContact($member)
 			];
 		}
 
@@ -165,6 +161,4 @@ class AddingMember implements IEventListener {
 			return [];
 		}
 	}
-
 }
-

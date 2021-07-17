@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\ShareWrapperNotFoundException;
 use OCA\Circles\Model\FederatedUser;
@@ -40,7 +39,6 @@ use OCA\Circles\Model\ShareWrapper;
 use OCP\Files\NotFoundException;
 use OCP\Share\Exceptions\IllegalIDChangeException;
 use OCP\Share\IShare;
-
 
 /**
  * Class ShareWrapperRequest
@@ -452,6 +450,4 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 
 		$qb->execute();
 	}
-
 }
-

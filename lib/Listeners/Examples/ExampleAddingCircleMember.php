@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Listeners\Examples;
 
-
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Events\AddingCircleMemberEvent;
@@ -42,15 +41,12 @@ use OCA\Circles\Service\ConfigService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 
-
 /**
  * Class ExampleAddingCircleMember
  *
  * @package OCA\Circles\Listeners\Files
  */
 class ExampleAddingCircleMember implements IEventListener {
-
-
 	use TNC22Logger;
 
 
@@ -97,7 +93,7 @@ class ExampleAddingCircleMember implements IEventListener {
 				 . Member::$DEF_LEVEL[$member->getLevel()] . '; ';
 
 		$memberships = array_map(
-			function(Membership $membership) {
+			function (Membership $membership) {
 				return $membership->getCircleId();
 			}, $circle->getMemberships()
 		);
@@ -109,7 +105,7 @@ class ExampleAddingCircleMember implements IEventListener {
 		if ($member->getUserType() === Member::TYPE_CIRCLE) {
 			$basedOn = $member->getBasedOn();
 			$members = array_map(
-				function(Member $member) {
+				function (Member $member) {
 					return $member->getUserId() . ' (' . Member::$TYPE[$member->getUserType()] . ')';
 				}, $basedOn->getInheritedMembers()
 			);
@@ -120,6 +116,4 @@ class ExampleAddingCircleMember implements IEventListener {
 
 		$this->log(3, $prefix . $info);
 	}
-
 }
-

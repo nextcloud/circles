@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
@@ -40,7 +39,6 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
-
 
 /**
  * Class MemberRequest
@@ -328,7 +326,7 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->andwhere($qb->expr()->nonEmptyString(CoreQueryBuilder::MEMBER . '.instance'));
 
 		return array_map(
-			function(Member $member): string {
+			function (Member $member): string {
 				return $member->getInstance();
 			}, $this->getItemsFromRequest($qb)
 		);
@@ -406,6 +404,4 @@ class MemberRequest extends MemberRequestBuilder {
 
 		return $this->getItemsFromRequest($qb);
 	}
-
 }
-

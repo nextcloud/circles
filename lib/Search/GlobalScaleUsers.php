@@ -39,15 +39,12 @@ use OCA\Circles\Model\SearchResult;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
 
-
 /**
  * Class GlobalScaleUsers
  *
  * @package OCA\Circles\Search
  */
 class GlobalScaleUsers implements ISearch {
-
-
 	use TNC22Request;
 	use TArrayTools;
 
@@ -102,7 +99,7 @@ class GlobalScaleUsers implements ISearch {
 
 		$result = [];
 		foreach ($users as $user) {
-			list(, $instance) = explode('@', $this->get('federationId', $user), 2);
+			[, $instance] = explode('@', $this->get('federationId', $user), 2);
 			if ($this->configService->isLocalInstance($instance)) {
 				continue;
 			}
@@ -117,5 +114,3 @@ class GlobalScaleUsers implements ISearch {
 		return $result;
 	}
 }
-
-
