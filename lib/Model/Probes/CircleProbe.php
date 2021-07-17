@@ -31,9 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model\Probes;
 
-
 use OCA\Circles\Model\Circle;
-
 
 /**
  * Class CircleProbe
@@ -44,7 +42,7 @@ class CircleProbe extends MemberProbe {
 
 
 	/** @var array */
-	static $filters = [
+	public static $filters = [
 		Circle::CFG_SINGLE,
 		Circle::CFG_HIDDEN,
 		Circle::CFG_BACKEND,

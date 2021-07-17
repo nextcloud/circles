@@ -240,11 +240,11 @@ class SharesFiles extends Base {
 			if (!$filterRecipient) {
 				$row = array_merge(
 					$row, [
-							$sharedTo . ' (' . $recipient->getSingleId() . ', '
-							. Circle::$DEF_SOURCE[$recipient->getBasedOn()->getSource()] . ')',
-							(($share->getChildId() > 0) ? $share->getChildFileTarget(
-							) : $share->getFileTarget()),
-						]
+						$sharedTo . ' (' . $recipient->getSingleId() . ', '
+						. Circle::$DEF_SOURCE[$recipient->getBasedOn()->getSource()] . ')',
+						(($share->getChildId() > 0) ? $share->getChildFileTarget(
+						) : $share->getFileTarget()),
+					]
 				);
 			}
 
