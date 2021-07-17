@@ -37,11 +37,14 @@ use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use Exception;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
+use OCA\Circles\Db\ShareWrapperRequest;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\MaintenanceException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Probes\CircleProbe;
+use OCA\Circles\Model\ShareWrapper;
 use OCP\IUserManager;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -69,6 +72,9 @@ class MaintenanceService {
 	/** @var MemberRequest */
 	private $memberRequest;
 
+	/** @var ShareWrapperRequest */
+	private $shareWrapperRequest;
+
 	/** @var SyncService */
 	private $syncService;
 
@@ -95,6 +101,7 @@ class MaintenanceService {
 	 * @param IUserManager $userManager
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
+	 * @param ShareWrapperRequest $shareWrapperRequest
 	 * @param SyncService $syncService
 	 * @param FederatedUserService $federatedUserService
 	 * @param EventWrapperService $eventWrapperService
@@ -105,6 +112,7 @@ class MaintenanceService {
 		IUserManager $userManager,
 		CircleRequest $circleRequest,
 		MemberRequest $memberRequest,
+		ShareWrapperRequest $shareWrapperRequest,
 		SyncService $syncService,
 		FederatedUserService $federatedUserService,
 		EventWrapperService $eventWrapperService,
@@ -114,6 +122,7 @@ class MaintenanceService {
 		$this->userManager = $userManager;
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
+		$this->shareWrapperRequest = $shareWrapperRequest;
 		$this->syncService = $syncService;
 		$this->federatedUserService = $federatedUserService;
 		$this->eventWrapperService = $eventWrapperService;
@@ -235,8 +244,10 @@ class MaintenanceService {
 		}
 		try {
 			// TODO: waiting for confirmation of a good migration before cleaning orphan shares
-//			$this->output('remove deprecated shares');
-//		$this->removeDeprecatedShares();
+			if ($this->configService->getAppValue(ConfigService::MIGRATION_22_CONFIRMED)) {
+				$this->output('remove deprecated shares');
+				$this->removeDeprecatedShares();
+			}
 		} catch (Exception $e) {
 		}
 
@@ -267,7 +278,11 @@ class MaintenanceService {
 	 * @throws RequestBuilderException
 	 */
 	private function removeCirclesWithNoOwner(): void {
-		$circles = $this->circleService->getCircles();
+		$probe = new CircleProbe();
+		$probe->includeSystemCircles()
+			  ->includeSingleCircles()
+			  ->includePersonalCircles();
+		$circles = $this->circleService->getCircles($probe);
 		foreach ($circles as $circle) {
 			if (!$circle->hasOwner()) {
 				$this->circleRequest->delete($circle);
@@ -293,25 +308,29 @@ class MaintenanceService {
 
 
 	private function removeDeprecatedShares(): void {
-//		$circles = array_map(
-//			function(DeprecatedCircle $circle) {
-//				return $circle->getUniqueId();
-//			}, $this->circlesRequest->forceGetCircles()
-//		);
-//
-//		$shares = array_unique(
-//			array_map(
-//				function($share) {
-//					return $share['share_with'];
-//				}, $this->fileSharesRequest->getShares()
-//			)
-//		);
-//
-//		foreach ($shares as $share) {
-//			if (!in_array($share, $circles)) {
-//				$this->fileSharesRequest->removeSharesToCircleId($share);
-//			}
-//		}
+		$probe = new CircleProbe();
+		$probe->includePersonalCircles()
+			  ->includeSystemCircles();
+
+		$circles = array_map(
+			function (Circle $circle) {
+				return $circle->getSingleId();
+			}, $this->circleRequest->getCircles(null, $probe)
+		);
+
+		$shares = array_unique(
+			array_map(
+				function (ShareWrapper $share) {
+					return $share->getSharedWith();
+				}, $this->shareWrapperRequest->getShares()
+			)
+		);
+
+		foreach ($shares as $share) {
+			if (!in_array($share, $circles)) {
+				$this->shareWrapperRequest->deleteFromCircle($share);
+			}
+		}
 	}
 
 
@@ -320,10 +339,16 @@ class MaintenanceService {
 	 * @throws InitiatorNotFoundException
 	 */
 	private function refreshDisplayName(): void {
-		$params = new SimpleDataStore(['includeSystemCircles' => true]);
 		$circleFilter = new Circle();
 		$circleFilter->setConfig(Circle::CFG_SINGLE);
-		$circles = $this->circleService->getCircles($circleFilter, null, $params);
+
+		$probe = new CircleProbe();
+		$probe->includeSystemCircles()
+			  ->setFilterCircle($circleFilter)
+			  ->mustBeMember()
+			  ->canBeRequestingMembership();
+
+		$circles = $this->circleService->getCircles($probe);
 
 		foreach ($circles as $circle) {
 			$owner = $circle->getOwner();

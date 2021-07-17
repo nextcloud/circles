@@ -34,6 +34,9 @@ namespace OCA\Circles;
 
 use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\ContactAddressBookNotFoundException;
+use OCA\Circles\Exceptions\ContactFormatException;
+use OCA\Circles\Exceptions\ContactNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
@@ -42,6 +45,7 @@ use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
+use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
@@ -53,9 +57,12 @@ use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Membership;
+use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
+use OCA\Circles\Service\MembershipService;
 use OCP\IUserSession;
 
 
@@ -79,6 +86,9 @@ class CirclesManager {
 	/** @var MemberService */
 	private $memberService;
 
+	/** @var MembershipService */
+	private $membershipService;
+
 
 	/**
 	 * CirclesManager constructor.
@@ -93,11 +103,13 @@ class CirclesManager {
 		FederatedUserService $federatedUserService,
 		CircleService $circleService,
 		MemberService $memberService,
+		MembershipService $membershipService,
 		CirclesQueryHelper $circlesQueryHelper
 	) {
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
 		$this->memberService = $memberService;
+		$this->membershipService = $membershipService;
 		$this->circlesQueryHelper = $circlesQueryHelper;
 	}
 
@@ -269,36 +281,114 @@ class CirclesManager {
 	 * @throws InitiatorNotFoundException
 	 * @throws RequestBuilderException
 	 */
-	public function getCircles(): array {
-		return $this->circleService->getCircles();
+	public function getCircles(?CircleProbe $probe = null): array {
+		return $this->circleService->getCircles($probe);
 	}
 
 
 	/**
 	 * @param string $singleId
+	 * @param CircleProbe|null $probe
 	 *
 	 * @return Circle
 	 * @throws CircleNotFoundException
 	 * @throws InitiatorNotFoundException
 	 * @throws RequestBuilderException
 	 */
-	public function getCircle(string $singleId): Circle {
-		return $this->circleService->getCircle($singleId);
+	public function getCircle(string $singleId, ?CircleProbe $probe = null): Circle {
+		return $this->circleService->getCircle($singleId, $probe);
 	}
 
 
+	/**
+	 * @param string $circleId
+	 * @param FederatedUser $federatedUser
+	 *
+	 * @return Member
+	 * @throws CircleNotFoundException
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
+	 * @throws FederatedUserException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws InitiatorNotFoundException
+	 * @throws InvalidIdException
+	 * @throws InvalidItemException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
+	 * @throws UnknownRemoteException
+	 */
+	public function addMember(string $circleId, FederatedUser $federatedUser): Member {
+		$outcome = $this->memberService->addMember($circleId, $federatedUser);
+		$member = new Member();
+		$member->import($outcome);
+
+		return $member;
+	}
+
 
 	/**
-	 * WIP
+	 * @param string $memberId
+	 * @param int $level
 	 *
-	 * @return Circle[]
+	 * @return Member
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
+	 * @throws InitiatorNotConfirmedException
 	 * @throws InitiatorNotFoundException
+	 * @throws InvalidItemException
+	 * @throws MemberNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
+	 */
+	public function levelMember(string $memberId, int $level): Member {
+		$outcome = $this->memberService->memberLevel($memberId, $level);
+		$member = new Member();
+		$member->import($outcome);
+
+		return $member;
+	}
+
+
+	/**
+	 * @param string $memberId
+	 *
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws InitiatorNotFoundException
+	 * @throws MemberNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
+	 */
+	public function removeMember(string $memberId): void {
+		$this->memberService->removeMember($memberId);
+	}
+
+
+	/**
+	 * @param string $circleId
+	 * @param string $singleId
+	 *
+	 * @return Membership
+	 * @throws MembershipNotFoundException
 	 * @throws RequestBuilderException
 	 */
-//	public function getAllCircles(): array {
-//		$this->federatedUserService->bypassCurrentUserCondition(true);
-//		$this->circleService->getCircles();
-//	}
+	public function getLink(string $circleId, string $singleId): Membership {
+		return $this->membershipService->getMembership($circleId, $singleId);
+	}
 
 
 	/**

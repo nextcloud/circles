@@ -61,6 +61,7 @@ use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
@@ -369,8 +370,10 @@ class CirclesMemberships extends Base {
 
 		$this->federatedUserService->bypassCurrentUserCondition(true);
 
-		$params = new SimpleDataStore(['includeSystemCircles' => true]);
-		$circles = $this->circleService->getCircles(null, null, $params);
+		$probe = new CircleProbe();
+		$probe->includeSystemCircles()
+			  ->includePersonalCircles();
+		$circles = $this->circleService->getCircles($probe);
 
 		$output = new ConsoleOutput();
 		$output = $output->section();

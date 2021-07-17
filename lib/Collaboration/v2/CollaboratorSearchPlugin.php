@@ -36,6 +36,7 @@ use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use Exception;
 use OC\Share20\Share;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedUserService;
 use OCP\Collaboration\Collaborators\ISearchPlugin;

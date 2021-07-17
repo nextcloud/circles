@@ -37,6 +37,7 @@ use OCA\Circles\Db\ShareWrapperRequest;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\ShareWrapperNotFoundException;
 use OCA\Circles\Model\FederatedUser;
+use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\ShareWrapper;
 use OCP\Files\NotFoundException;
 use OCP\Share\IShare;
@@ -170,9 +171,7 @@ class ShareWrapperService {
 	/**
 	 * @param FederatedUser $federatedUser
 	 * @param int $nodeId
-	 * @param int $offset
-	 * @param int $limit
-	 * @param bool $getData
+	 * @param CircleProbe|null $probe
 	 *
 	 * @return ShareWrapper[]
 	 * @throws RequestBuilderException
@@ -180,11 +179,9 @@ class ShareWrapperService {
 	public function getSharedWith(
 		FederatedUser $federatedUser,
 		int $nodeId,
-		int $offset,
-		int $limit,
-		bool $getData = false
+		?CircleProbe $probe
 	): array {
-		return $this->shareWrapperRequest->getSharedWith($federatedUser, $nodeId, $offset, $limit, $getData);
+		return $this->shareWrapperRequest->getSharedWith($federatedUser, $nodeId, $probe);
 	}
 
 

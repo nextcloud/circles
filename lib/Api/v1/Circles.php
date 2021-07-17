@@ -40,6 +40,7 @@ use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedUserService;
 
@@ -103,11 +104,10 @@ class Circles {
 		/** @var CircleService $circleService */
 		$circleService = \OC::$server->get(CircleService::class);
 
-		return $circleService->getCircles(
-			null,
-			null,
-			new SimpleDataStore(['includePersonalCircles' => $personalCircle])
-		);
+		$probe = new CircleProbe();
+		$probe->includePersonalCircles($personalCircle);
+
+		return $circleService->getCircles($probe);
 	}
 
 

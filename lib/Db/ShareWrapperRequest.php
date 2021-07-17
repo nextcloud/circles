@@ -36,6 +36,7 @@ use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\ShareWrapperNotFoundException;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Membership;
+use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\ShareWrapper;
 use OCP\Files\NotFoundException;
 use OCP\Share\Exceptions\IllegalIDChangeException;
@@ -309,12 +310,18 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 	public function getSharedWith(
 		FederatedUser $federatedUser,
 		int $nodeId,
-		int $offset,
-		int $limit,
-		bool $getData = false
+		CircleProbe $probe
 	): array {
 		$qb = $this->getShareSelectSql();
-		$qb->setOptions([CoreQueryBuilder::SHARE], ['getData' => $getData, 'filterPersonalCircle' => false]);
+		$qb->setOptions(
+			[CoreQueryBuilder::SHARE],
+			array_merge(
+				$probe->getAsOptions(),
+				['getData' => true]
+			)
+		);
+
+		$getData = true;
 		if ($getData) {
 			$qb->leftJoinCircle(CoreQueryBuilder::SHARE, null, 'share_with');
 		}
@@ -329,7 +336,7 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 			$qb->limitToFileSource($nodeId);
 		}
 
-		$qb->chunk($offset, $limit);
+		$qb->chunk($probe->getItemsOffset(), $probe->getItemsLimit());
 
 		return $this->getItemsFromRequest($qb);
 	}

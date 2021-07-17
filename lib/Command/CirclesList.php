@@ -33,7 +33,6 @@ namespace OCA\Circles\Command;
 
 use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
 use ArtificialOwl\MySmallPhpTools\Exceptions\SignatoryException;
-use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OC\Core\Command\Base;
@@ -55,6 +54,7 @@ use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\ModelManager;
+use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
@@ -186,8 +186,13 @@ class CirclesList extends Base {
 				true
 			);
 
-			$params = new SimpleDataStore(['includeSystemCircles' => $input->getOption('all')]);
-			$circles = $this->circleService->getCircles(null, $filterMember, $params);
+			$probe = new CircleProbe();
+			if ($input->getOption('all')) {
+				$probe->includeSystemCircles()
+					  ->includeSingleCircles()
+					  ->includePersonalCircles();
+			}
+			$circles = $this->circleService->getCircles($probe);
 		}
 
 		if (strtolower($input->getOption('output')) === 'json') {

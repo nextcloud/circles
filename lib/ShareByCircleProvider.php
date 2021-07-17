@@ -62,6 +62,7 @@ use OCA\Circles\FederatedItems\Files\FileShare;
 use OCA\Circles\FederatedItems\Files\FileUnshare;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
+use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\ShareWrapper;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\EventService;
@@ -549,12 +550,16 @@ class ShareByCircleProvider implements IShareProvider {
 		}
 
 		$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
+		$probe = new CircleProbe();
+		$probe->includePersonalCircles()
+			  ->mustBeMember()
+			  ->setItemsLimit((int)$limit)
+			  ->setItemsOffset((int)$offset);
+
 		$wrappedShares = $this->shareWrapperService->getSharedWith(
 			$federatedUser,
 			(!is_null($node)) ? $node->getId() : 0,
-			$limit,
-			$offset,
-			true
+			$probe
 		);
 
 		return array_filter(

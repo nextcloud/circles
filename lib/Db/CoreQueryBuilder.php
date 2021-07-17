@@ -399,6 +399,9 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		if ($circle->getDisplayName() !== '') {
 			$this->searchInDBField('display_name', '%' . $circle->getDisplayName() . '%');
 		}
+		if ($circle->getSource() > 0) {
+			$this->limitInt('source', $circle->getSource());
+		}
 		if ($circle->getConfig() > 0) {
 			$this->limitBitwise('config', $circle->getConfig());
 		}
@@ -1213,7 +1216,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 			);
 
 			$default = [];
-			if ($this->getBool('canBeVisitor', $options, false)) {
+			if ($this->getBool('emulateVisitor', $options)) {
 				$default = [
 					'user_id'     => $initiator->getUserId(),
 					'single_id'   => $initiator->getSingleId(),
@@ -1246,8 +1249,6 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 			array_push($levelCheck, $this->generateAlias($alias, self::DIRECT_INITIATOR, $options));
 		}
 
-		$filterPersonalCircle = $this->getBool('filterPersonalCircle', $options, true);
-
 		$expr = $this->expr();
 
 		// Visibility to non-member is
@@ -1256,7 +1257,8 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		// - 4 (Visible to everyone)
 		$orX = $expr->orX();
 
-		if ($filterPersonalCircle) {
+		// filterPersonalCircles will remove access to Personal Circles as Owner
+		if (!$this->getBool('filterPersonalCircles', $options, false)) {
 			$orX->add(
 				$expr->andX(
 					$this->exprLimitBitwise('config', Circle::CFG_PERSONAL, $aliasMembershipCircle),
@@ -1265,28 +1267,31 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 			);
 		}
 
+		$minimumLevel = $this->getInt('minimumLevel', $options);
 		$andXMember = $expr->andX();
 		$andXMember->add(
-			$this->orXCheckLevel($levelCheck, Member::LEVEL_MEMBER),
+			$this->orXCheckLevel($levelCheck, $minimumLevel)
 		);
-		if ($filterPersonalCircle) {
+
+		if (!$this->getBool('includePersonalCircles', $options, false)) {
 			$andXMember->add(
 				$this->exprFilterBitwise('config', Circle::CFG_PERSONAL, $aliasMembershipCircle)
 			);
 		}
 		$orX->add($andXMember);
 
-		if (!$this->getBool('mustBeMember', $options, true)) {
+		if ($minimumLevel === 0 && $alias === self::CIRCLE) {
 			$orX->add($this->exprLimitBitwise('config', Circle::CFG_VISIBLE, $alias));
 		}
-		if ($this->getBool('canBeVisitor', $options, false)) {
-			// TODO: should find a better way, also filter on remote initiator on non-federated ?
-			$orX->add($this->exprFilterInt('config', Circle::CFG_PERSONAL, $alias));
-		}
-		if ($this->getBool('canBeVisitorOnOpen', $options, false)) {
+
+		// if Member can be Visitor, we only filter access to Personal Circles
+		if ($this->getBool('viewableThroughKeyhole', $options, false)) {
 			$andOpen = $expr->andX();
 			$andOpen->add($this->exprLimitBitwise('config', Circle::CFG_OPEN, $alias));
-			$andOpen->add($this->exprFilterBitwise('config', Circle::CFG_REQUEST, $alias));
+			$andOpen->add($this->exprLimitBitwise('config', Circle::CFG_VISIBLE, $alias));
+			if (!$this->configService->getAppValueBool(ConfigService::KEYHOLE_CFG_REQUEST)) {
+				$andOpen->add($this->exprFilterBitwise('config', Circle::CFG_REQUEST, $alias));
+			}
 			$orX->add($andOpen);
 		}
 
@@ -1313,15 +1318,10 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 
 
 	/**
-	 * CFG_SINGLE, CFG_HIDDEN and CFG_BACKEND means hidden from listing.
-	 *
 	 * @param string $aliasCircle
 	 * @param int $flag
 	 */
-	public function filterCircles(
-		string $aliasCircle,
-		int $flag = Circle::CFG_SINGLE | Circle::CFG_HIDDEN | Circle::CFG_BACKEND
-	): void {
+	public function filterCircles(string $aliasCircle, int $flag): void {
 		if ($flag === 0) {
 			return;
 		}
