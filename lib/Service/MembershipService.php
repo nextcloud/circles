@@ -32,7 +32,6 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 use ArtificialOwl\MySmallPhpTools\Exceptions\ItemNotFoundException;
-use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
@@ -44,6 +43,7 @@ use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
+use OCA\Circles\Model\Probes\CircleProbe;
 
 /**
  * Class MembershipService
@@ -128,14 +128,9 @@ class MembershipService {
 	 *
 	 */
 	public function manageAll(): void {
-		$params = new SimpleDataStore(['includeSystemCircles' => true]);
-		$circles = $this->circleRequest->getCircles(
-			null,
-			null,
-			null,
-			null,
-			$params
-		);
+		$probe = new CircleProbe();
+		$probe->includeSystemCircles();
+		$circles = $this->circleRequest->getCircles(null, $probe);
 
 		$this->outputService->startMigrationProgress(sizeof($circles));
 

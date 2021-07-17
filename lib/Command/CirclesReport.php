@@ -46,6 +46,7 @@ use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
+use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\Report;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
@@ -173,11 +174,9 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 		$report->setSource($this->interfaceService->getLocalInstance());
 		$this->federatedUserService->bypassCurrentUserCondition(true);
 
-		$raw = $this->circleService->getCircles(
-			null,
-			null,
-			new SimpleDataStore(['includeSystemCircles' => true])
-		);
+		$probe = new CircleProbe();
+		$probe->includeSystemCircles();
+		$raw = $this->circleService->getCircles($probe);
 
 		$circles = [];
 		foreach ($raw as $circle) {

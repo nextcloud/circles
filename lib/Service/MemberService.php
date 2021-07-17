@@ -63,6 +63,7 @@ use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Probes\MemberProbe;
 
 /**
  * Class MemberService
@@ -145,7 +146,7 @@ class MemberService {
 	public function getMemberById(
 		string $memberId,
 		string $circleId = '',
-		bool $canBeVisitor = false
+		?MemberProbe $probe = null
 	): Member {
 		$this->federatedUserService->mustHaveCurrentUser();
 
@@ -153,7 +154,7 @@ class MemberService {
 			$this->memberRequest->getMemberById(
 				$memberId,
 				$this->federatedUserService->getCurrentUser(),
-				$canBeVisitor
+				$probe
 			);
 		if ($circleId !== '' && $member->getCircle()->getSingleId() !== $circleId) {
 			throw new MemberNotFoundException();
@@ -173,10 +174,16 @@ class MemberService {
 	public function getMembers(string $circleId): array {
 		$this->federatedUserService->mustHaveCurrentUser();
 
+		$probe = new MemberProbe();
+		if ($this->federatedUserService->hasRemoteInstance()) {
+			$probe->setFilterRemoteInstance($this->federatedUserService->getRemoteInstance());
+		}
+		$probe->mustBeMember();
+
 		return $this->memberRequest->getMembers(
 			$circleId,
 			$this->federatedUserService->getCurrentUser(),
-			$this->federatedUserService->getRemoteInstance()
+			$probe
 		);
 	}
 

@@ -31,10 +31,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Collaboration\v2;
 
-use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use Exception;
 use OC\Share20\Share;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedUserService;
 use OCP\Collaboration\Collaborators\ISearchPlugin;
@@ -85,15 +85,16 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 
 		try {
 			$this->federatedUserService->initCurrentUser();
-			$circles = $this->circleService->getCircles(
-				$filterCircle, null,
-				new SimpleDataStore(
-					[
-						'limit' => $limit,
-						'offset' => $offset
-					]
-				)
-			);
+
+			$probe = new CircleProbe();
+			$probe->setItemsLimit($limit);
+			$probe->setItemsOffset($offset);
+			$probe->setFilterCircle($filterCircle);
+			
+			// Issue when searching for circle to be added as member
+			$probe->mustBeMember();
+
+			$circles = $this->circleService->getCircles($probe);
 		} catch (Exception $e) {
 			return false;
 		}

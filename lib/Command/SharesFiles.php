@@ -39,6 +39,7 @@ use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\ShareWrapper;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
@@ -236,11 +237,11 @@ class SharesFiles extends Base {
 			if (!$filterRecipient) {
 				$row = array_merge(
 					$row, [
-						$sharedTo . ' (' . $recipient->getSingleId() . ', '
-						. Circle::$DEF_SOURCE[$recipient->getBasedOn()->getSource()] . ')',
-						(($share->getChildId() > 0) ? $share->getChildFileTarget(
-						) : $share->getFileTarget()),
-					]
+							$sharedTo . ' (' . $recipient->getSingleId() . ', '
+							. Circle::$DEF_SOURCE[$recipient->getBasedOn()->getSource()] . ')',
+							(($share->getChildId() > 0) ? $share->getChildFileTarget(
+							) : $share->getFileTarget()),
+						]
 				);
 			}
 
@@ -302,12 +303,13 @@ class SharesFiles extends Base {
 		}
 
 		if ($with !== '') {
+			$probe = new CircleProbe();
+			$probe->includePersonalCircles();
+
 			return $this->shareWrapperService->getSharedWith(
 				$this->federatedUserService->getLocalFederatedUser($with),
 				$fileId,
-				-1,
-				0,
-				true
+				$probe
 			);
 		}
 

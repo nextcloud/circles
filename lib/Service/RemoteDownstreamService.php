@@ -53,6 +53,7 @@ use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Model\Federated\FederatedEvent;
+use OCA\Circles\Model\Probes\CircleProbe;
 
 /**
  * Class RemoteDownstreamService
@@ -244,7 +245,10 @@ class RemoteDownstreamService {
 		$circle = $event->getCircle();
 
 		try {
-			$localCircle = $this->circleRequest->getCircle($circle->getSingleId(), null, null, 0);
+			$probe = new CircleProbe();
+			$probe->includeSystemCircles()
+				  ->includePersonalCircles();
+			$localCircle = $this->circleRequest->getCircle($circle->getSingleId(), null, $probe);
 		} catch (CircleNotFoundException $e) {
 			try {
 				$this->remoteService->syncRemoteCircle(
