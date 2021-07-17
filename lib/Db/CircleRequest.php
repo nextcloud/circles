@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
@@ -40,9 +39,9 @@ use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
-use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Probes\CircleProbe;
 
 /**
  * Class CircleRequest
@@ -151,54 +150,42 @@ class CircleRequest extends CircleRequestBuilder {
 
 
 	/**
-	 * @param Circle|null $circleFilter
-	 * @param Member|null $memberFilter
 	 * @param IFederatedUser|null $initiator
-	 * @param RemoteInstance|null $remoteInstance
-	 * @param SimpleDataStore $params
+	 * @param CircleProbe $probe
 	 *
 	 * @return Circle[]
 	 * @throws RequestBuilderException
 	 */
-	public function getCircles(
-		?Circle $circleFilter,
-		?Member $memberFilter,
-		?IFederatedUser $initiator,
-		?RemoteInstance $remoteInstance,
-		SimpleDataStore $params
-	): array {
+	public function getCircles(?IFederatedUser $initiator, CircleProbe $probe): array {
 		$qb = $this->getCircleSelectSql();
 		$qb->leftJoinOwner(CoreQueryBuilder::CIRCLE);
 		$qb->setOptions(
 			[CoreQueryBuilder::CIRCLE],
-			[
-				'getData' => true,
-				'mustBeMember' => $params->gBool('mustBeMember'),
-				'initiatorDirectMember' => true
-			]
+			array_merge(
+				$probe->getAsOptions(),
+				[
+					'getData' => true,
+					'initiatorDirectMember' => true
+				]
+			)
 		);
 
-		if (!$params->gBool('includeSystemCircles')) {
-			$qb->filterCircles(
-				CoreQueryBuilder::CIRCLE,
-				Circle::CFG_SINGLE | Circle::CFG_HIDDEN | Circle::CFG_BACKEND
-			);
-		}
+		$qb->filterCircles(CoreQueryBuilder::CIRCLE, $probe->filtered());
 		if (!is_null($initiator)) {
 			$qb->limitToInitiator(CoreQueryBuilder::CIRCLE, $initiator);
 		}
-		if (!is_null($memberFilter)) {
-			$qb->limitToDirectMembership(CoreQueryBuilder::CIRCLE, $memberFilter);
+		if ($probe->hasFilterMember()) {
+			$qb->limitToDirectMembership(CoreQueryBuilder::CIRCLE, $probe->getFilterMember());
 		}
-		if (!is_null($circleFilter)) {
-			$qb->filterCircle($circleFilter);
+		if ($probe->hasFilterCircle()) {
+			$qb->filterCircle($probe->getFilterCircle());
 		}
-		if (!is_null($remoteInstance)) {
-			$qb->limitToRemoteInstance(CoreQueryBuilder::CIRCLE, $remoteInstance, false);
+		if ($probe->hasFilterRemoteInstance()) {
+			$qb->limitToRemoteInstance(CoreQueryBuilder::CIRCLE, $probe->getFilterRemoteInstance(), false);
 		}
 
 		$qb->countMembers(CoreQueryBuilder::CIRCLE);
-		$qb->chunk($params->gInt('offset'), $params->gInt('limit'));
+		$qb->chunk($probe->getItemsOffset(), $probe->getItemsLimit());
 
 		return $this->getItemsFromRequest($qb);
 	}
@@ -212,7 +199,9 @@ class CircleRequest extends CircleRequestBuilder {
 	 */
 	public function getCirclesByIds(array $circleIds): array {
 		$qb = $this->getCircleSelectSql();
-		$qb->setOptions([CoreQueryBuilder::CIRCLE], ['getData' => true, 'canBeVisitor' => true]);
+		$qb->setOptions(
+			[CoreQueryBuilder::CIRCLE], ['getData' => true, 'minimumLevel' => Member::LEVEL_NONE]
+		);
 
 		$qb->limitInArray('unique_id', $circleIds);
 //		$qb->filterCircles(CoreQueryBuilder::CIRCLE, $filter);
@@ -224,8 +213,7 @@ class CircleRequest extends CircleRequestBuilder {
 	/**
 	 * @param string $id
 	 * @param IFederatedUser|null $initiator
-	 * @param RemoteInstance|null $remoteInstance
-	 * @param int $filter
+	 * @param CircleProbe|null $probe
 	 *
 	 * @return Circle
 	 * @throws CircleNotFoundException
@@ -234,34 +222,43 @@ class CircleRequest extends CircleRequestBuilder {
 	public function getCircle(
 		string $id,
 		?IFederatedUser $initiator = null,
-		?RemoteInstance $remoteInstance = null,
-		int $filter = Circle::CFG_BACKEND | Circle::CFG_SINGLE | Circle::CFG_HIDDEN
+		?CircleProbe $probe = null
 	): Circle {
+		if (is_null($probe)) {
+			$probe = new CircleProbe();
+			$probe->includeSystemCircles()
+				  ->includeBackendCircles()
+				  ->includeHiddenCircles()
+				  ->emulateVisitor();
+		}
+
 		$qb = $this->getCircleSelectSql();
 		$qb->setOptions(
 			[CoreQueryBuilder::CIRCLE],
-			[
-				'getData' => true,
-				'canBeVisitor' => true,
-				'initiatorDirectMember' => true
-			]
+			array_merge(
+				$probe->getAsOptions(),
+				[
+					'getData' => true,
+					'initiatorDirectMember' => true
+				]
+			)
 		);
 
 		$qb->limitToUniqueId($id);
-		$qb->filterCircles(CoreQueryBuilder::CIRCLE, $filter);
+		$qb->filterCircles(CoreQueryBuilder::CIRCLE, $probe->filtered());
 		$qb->leftJoinOwner(CoreQueryBuilder::CIRCLE);
 //		$qb->setOptions(
 //			[CoreRequestBuilder::CIRCLE, CoreRequestBuilder::INITIATOR], [
 //																		   'mustBeMember' => false,
-//																		   'canBeVisitor' => true
+//																		   'viewableAsVisitor' => true
 //																	   ]
 //		);
 
 		if (!is_null($initiator)) {
 			$qb->limitToInitiator(CoreQueryBuilder::CIRCLE, $initiator);
 		}
-		if (!is_null($remoteInstance)) {
-			$qb->limitToRemoteInstance(CoreQueryBuilder::CIRCLE, $remoteInstance, false);
+		if ($probe->hasFilterRemoteInstance()) {
+			$qb->limitToRemoteInstance(CoreQueryBuilder::CIRCLE, $probe->getFilterRemoteInstance(), false);
 		}
 		$qb->countMembers(CoreQueryBuilder::CIRCLE);
 

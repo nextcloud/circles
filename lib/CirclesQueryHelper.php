@@ -37,6 +37,7 @@ use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Service\FederatedUserService;
 use OCP\DB\QueryBuilder\ICompositeExpression;
 use OCP\DB\QueryBuilder\IQueryBuilder;
@@ -108,7 +109,7 @@ class CirclesQueryHelper {
 			[CoreQueryBuilder::HELPER],
 			[
 				'getData' => $fullDetails,
-				'mustBeMember' => true
+				'minimumLevel' => Member::LEVEL_MEMBER
 			]
 		);
 
@@ -141,7 +142,7 @@ class CirclesQueryHelper {
 			[CoreQueryBuilder::HELPER],
 			[
 				'getData' => $fullDetails,
-				'mustBeMember' => true
+				'minimumLevel' => Member::LEVEL_MEMBER
 			]
 		);
 

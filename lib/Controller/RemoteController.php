@@ -55,6 +55,7 @@ use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
@@ -253,7 +254,12 @@ class RemoteController extends Controller {
 			$filterCircle = $data->gObj('filterCircle');
 			/** @var Member $filterMember */
 			$filterMember = $data->gObj('filterMember');
-			$circles = $this->circleService->getCircles($filterCircle, $filterMember);
+
+			$probe = new CircleProbe();
+			$probe->setFilterCircle($filterCircle)
+				  ->setFilterMember($filterMember);
+
+			$circles = $this->circleService->getCircles($probe);
 
 			return new DataResponse($circles);
 		} catch (Exception $e) {
