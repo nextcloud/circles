@@ -80,6 +80,7 @@ class ConfigService {
 
 	public const HARD_MODERATION = 'hard_moderation';
 	public const FRONTEND_ENABLED = 'frontend_enabled';
+	public const KEYHOLE_CFG_REQUEST = 'keyhole_cfg_request';
 	public const ROUTE_TO_CIRCLE = 'route_to_circle';
 	public const EVENT_EXAMPLES = 'event_examples';
 
@@ -89,6 +90,7 @@ class ConfigService {
 
 	public const MIGRATION_BYPASS = 'migration_bypass';
 	public const MIGRATION_22 = 'migration_22';
+	public const MIGRATION_22_CONFIRMED = 'migration_22_confirmed';
 	public const MIGRATION_RUN = 'migration_run';
 	public const MAINTENANCE_UPDATE = 'maintenance_update';
 	public const MAINTENANCE_RUN = 'maintenance_run';
@@ -142,6 +144,7 @@ class ConfigService {
 
 		self::FRONTEND_ENABLED => '1',
 		self::HARD_MODERATION => '0',
+		self::KEYHOLE_CFG_REQUEST => '0',
 		self::ROUTE_TO_CIRCLE => 'contacts.contacts.directcircle',
 		self::EVENT_EXAMPLES => '0',
 
@@ -150,6 +153,7 @@ class ConfigService {
 		self::ACTIVITY_ON_NEW_CIRCLE => '1',
 		self::MIGRATION_BYPASS => '0',
 		self::MIGRATION_22 => '0',
+		self::MIGRATION_22_CONFIRMED => '0',
 		self::MIGRATION_RUN => '0',
 		self::MAINTENANCE_UPDATE => '[]',
 		self::MAINTENANCE_RUN => '0',

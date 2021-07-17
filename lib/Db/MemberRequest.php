@@ -36,9 +36,9 @@ use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
-use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Probes\MemberProbe;
 
 /**
  * Class MemberRequest
@@ -210,8 +210,7 @@ class MemberRequest extends MemberRequestBuilder {
 	/**
 	 * @param string $singleId
 	 * @param IFederatedUser|null $initiator
-	 * @param RemoteInstance|null $remoteInstance
-	 * @param Member|null $filter
+	 * @param MemberProbe|null $probe
 	 *
 	 * @return Member[]
 	 * @throws RequestBuilderException
@@ -219,22 +218,38 @@ class MemberRequest extends MemberRequestBuilder {
 	public function getMembers(
 		string $singleId,
 		?IFederatedUser $initiator = null,
-		?RemoteInstance $remoteInstance = null,
-		?Member $filter = null
+		?MemberProbe $probe = null
 	): array {
+		if (is_null($probe)) {
+			$probe = new MemberProbe();
+		}
+
 		$qb = $this->getMemberSelectSql($initiator);
 		$qb->limitToCircleId($singleId);
 
-		$qb->setOptions([CoreQueryBuilder::MEMBER], ['canBeVisitorOnOpen' => true]);
+		$qb->setOptions(
+			[CoreQueryBuilder::MEMBER],
+			array_merge(
+				$probe->getAsOptions(),
+				['viewableThroughKeyhole' => true]
+			)
+		);
+
 		$qb->leftJoinCircle(CoreQueryBuilder::MEMBER, $initiator);
 		$qb->leftJoinInvitedBy(CoreQueryBuilder::MEMBER);
 
-		if (!is_null($remoteInstance)) {
+		if ($probe->hasFilterRemoteInstance()) {
 			$aliasCircle = $qb->generateAlias(CoreQueryBuilder::MEMBER, CoreQueryBuilder::CIRCLE);
-			$qb->limitToRemoteInstance(CoreQueryBuilder::MEMBER, $remoteInstance, true, $aliasCircle);
+			$qb->limitToRemoteInstance(
+				CoreQueryBuilder::MEMBER,
+				$probe->getFilterRemoteInstance(),
+				true,
+				$aliasCircle
+			);
 		}
-		if (!is_null($filter)) {
-			$qb->filterDirectMembership(CoreQueryBuilder::MEMBER, $filter);
+
+		if ($probe->hasFilterMember()) {
+			$qb->filterDirectMembership(CoreQueryBuilder::MEMBER, $probe->getFilterMember());
 		}
 
 		$qb->orderBy($qb->getDefaultSelectAlias() . '.level', 'desc');
@@ -290,7 +305,7 @@ class MemberRequest extends MemberRequestBuilder {
 	/**
 	 * @param string $memberId
 	 * @param FederatedUser|null $initiator
-	 * @param bool $canBeVisitor
+	 * @param MemberProbe|null $probe
 	 *
 	 * @return Member
 	 * @throws MemberNotFoundException
@@ -299,13 +314,17 @@ class MemberRequest extends MemberRequestBuilder {
 	public function getMemberById(
 		string $memberId,
 		?FederatedUser $initiator = null,
-		bool $canBeVisitor = false
+		?MemberProbe $probe = null
 	): Member {
+		if (is_null($probe)) {
+			$probe = new MemberProbe();
+		}
+
 		$qb = $this->getMemberSelectSql();
 		$qb->limitToMemberId($memberId);
+		$qb->setOptions([CoreQueryBuilder::MEMBER], $probe->getAsOptions());
 
 		if (!is_null($initiator)) {
-			$qb->setOptions([CoreQueryBuilder::MEMBER], ['canBeVisitor' => $canBeVisitor]);
 			$qb->leftJoinCircle(CoreQueryBuilder::MEMBER, $initiator);
 		}
 

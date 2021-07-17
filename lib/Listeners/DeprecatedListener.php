@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Listeners;
 
-use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use Exception;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\ContactAddressBookNotFoundException;
@@ -45,6 +44,7 @@ use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\FederatedItems\MemberDisplayName;
 use OCA\Circles\Model\Federated\FederatedEvent;
+use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedEventService;
 use OCA\Circles\Service\FederatedUserService;
@@ -111,8 +111,12 @@ class DeprecatedListener {
 		$this->circleRequest->updateDisplayName($federatedUser->getSingleId(), $user->getDisplayName());
 		$this->federatedUserService->setCurrentUser($federatedUser);
 
-		$params = new SimpleDataStore(['includeSystemCircles' => true]);
-		$circles = $this->circleService->getCircles(null, null, $params);
+		$probe = new CircleProbe();
+		$probe->includeSystemCircles()
+			  ->mustBeMember()
+			  ->canBeRequestingMembership();
+
+		$circles = $this->circleService->getCircles($probe);
 
 		foreach ($circles as $circle) {
 			$event = new FederatedEvent(MemberDisplayName::class);
