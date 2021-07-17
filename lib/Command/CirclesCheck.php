@@ -34,6 +34,7 @@ namespace OCA\Circles\Command;
 use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
 use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
 use ArtificialOwl\MySmallPhpTools\Model\Request;
+use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
@@ -655,6 +656,10 @@ class CirclesCheck extends Base {
 		$request = new NC22Request('', Request::type($type));
 		$this->configService->configureLoopbackRequest($request, $route, $args);
 		$request->setFollowLocation(false);
+
+		if ($request->getType() !== Request::TYPE_GET) {
+			$request->setDataSerialize(new SimpleDataStore(['empty' => 1]));
+		}
 
 		$output->write('- ' . $type . ' request on ' . $request->getCompleteUrl() . ': ');
 
