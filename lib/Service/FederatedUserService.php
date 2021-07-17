@@ -68,6 +68,7 @@ use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Probes\CircleProbe;
 use OCP\IGroupManager;
 use OCP\IUser;
 use OCP\IUserManager;
@@ -544,7 +545,10 @@ class FederatedUserService {
 		}
 
 		if ($circleId !== '') {
-			$localCircle = $this->circleRequest->getCircle($circleId, null, null, 0);
+			$probe = new CircleProbe();
+			$probe->includeSystemCircles()
+				  ->canBeRequestingMembership();
+			$localCircle = $this->circleRequest->getCircle($circleId, null, $probe);
 			if ($this->configService->isLocalInstance($localCircle->getInstance())) {
 				$this->setCurrentUser($localCircle->getOwner());
 

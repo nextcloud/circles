@@ -35,7 +35,6 @@ use ArtificialOwl\MySmallPhpTools\Console\Nextcloud\nc22\NC22InteractiveShell;
 use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
 use ArtificialOwl\MySmallPhpTools\IInteractiveShellClient;
 use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22InteractiveShellSession;
-use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use OC\Core\Command\Base;
@@ -46,6 +45,7 @@ use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
+use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\Report;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
@@ -173,11 +173,9 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 		$report->setSource($this->interfaceService->getLocalInstance());
 		$this->federatedUserService->bypassCurrentUserCondition(true);
 
-		$raw = $this->circleService->getCircles(
-			null,
-			null,
-			new SimpleDataStore(['includeSystemCircles' => true])
-		);
+		$probe = new CircleProbe();
+		$probe->includeSystemCircles();
+		$raw = $this->circleService->getCircles($probe);
 
 		$circles = [];
 		foreach ($raw as $circle) {
