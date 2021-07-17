@@ -31,9 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model\Probes;
 
-
 use OCA\Circles\Model\Member;
-
 
 /**
  * Class CircleProbe

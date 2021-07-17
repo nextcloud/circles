@@ -148,11 +148,11 @@ class AdminController extends OcsController {
 		} catch (Exception $e) {
 			$this->e(
 				$e, [
-					  'emulated' => $emulated,
-					  'name' => $name,
-					  'members' => $personal,
-					  'local' => $local
-				  ]
+					'emulated' => $emulated,
+					'name' => $name,
+					'members' => $personal,
+					'local' => $local
+				]
 			);
 			throw new OcsException($e->getMessage(), $e->getCode());
 		}
@@ -209,11 +209,11 @@ class AdminController extends OcsController {
 		} catch (Exception $e) {
 			$this->e(
 				$e, [
-					  'emulated' => $emulated,
-					  'circleId' => $circleId,
-					  'userId' => $userId,
-					  'type' => $type
-				  ]
+					'emulated' => $emulated,
+					'circleId' => $circleId,
+					'userId' => $userId,
+					'type' => $type
+				]
 			);
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
