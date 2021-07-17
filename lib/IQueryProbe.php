@@ -99,5 +99,4 @@ interface IQueryProbe {
 	 * @return array
 	 */
 	public function getAsOptions(): array;
-
 }

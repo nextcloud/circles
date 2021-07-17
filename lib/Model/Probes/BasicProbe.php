@@ -31,12 +31,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model\Probes;
 
-
 use OCA\Circles\IQueryProbe;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\Member;
-
 
 /**
  * Class BasicProbe
@@ -44,10 +42,8 @@ use OCA\Circles\Model\Member;
  * @package OCA\Circles\Model\Probes
  */
 class BasicProbe implements IQueryProbe {
-
-
-	const DETAILS_NONE = 0;
-	const DETAILS_ALL = 64;
+	public const DETAILS_NONE = 0;
+	public const DETAILS_ALL = 64;
 
 
 	/** @var int */
@@ -273,5 +269,4 @@ class BasicProbe implements IQueryProbe {
 	public function JsonSerialize(): array {
 		return $this->getAsOptions();
 	}
-
 }
