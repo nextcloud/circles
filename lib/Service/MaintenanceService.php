@@ -304,6 +304,7 @@ class MaintenanceService {
 	private function removeDeprecatedShares(): void {
 		$probe = new CircleProbe();
 		$probe->includePersonalCircles()
+			  ->includeSingleCircles()
 			  ->includeSystemCircles();
 
 		$circles = array_map(
@@ -337,10 +338,9 @@ class MaintenanceService {
 		$circleFilter->setConfig(Circle::CFG_SINGLE);
 
 		$probe = new CircleProbe();
-		$probe->includeSystemCircles()
+		$probe->includeSingleCircles()
 			  ->setFilterCircle($circleFilter)
-			  ->mustBeMember()
-			  ->canBeRequestingMembership();
+			  ->mustBeOwner();
 
 		$circles = $this->circleService->getCircles($probe);
 

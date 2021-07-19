@@ -91,7 +91,6 @@ class Circles {
 			$personalCircle = true;
 		}
 
-
 		if ($userId === '') {
 			$federatedUserService->initCurrentUser();
 		} else {
@@ -103,6 +102,7 @@ class Circles {
 
 		$probe = new CircleProbe();
 		$probe->includePersonalCircles($personalCircle);
+		$probe->filterHiddenCircles();
 
 		return $circleService->getCircles($probe);
 	}
@@ -147,6 +147,7 @@ class Circles {
 		$probe = new CircleProbe();
 		$probe->mustBeMember();
 		$probe->includePersonalCircles($personalCircle);
+		$probe->filterHiddenCircles();
 
 		return $circleService->getCircles($probe);
 	}
