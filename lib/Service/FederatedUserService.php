@@ -547,7 +547,7 @@ class FederatedUserService {
 		if ($circleId !== '') {
 			$probe = new CircleProbe();
 			$probe->includeSystemCircles()
-				  ->canBeRequestingMembership();
+				  ->includePersonalCircles();
 			$localCircle = $this->circleRequest->getCircle($circleId, null, $probe);
 			if ($this->configService->isLocalInstance($localCircle->getInstance())) {
 				$this->setCurrentUser($localCircle->getOwner());
@@ -958,8 +958,7 @@ class FederatedUserService {
 			}
 
 			$this->memberRequest->save($owner);
-			// TODO: should not be needed
-			// $this->membershipService->onUpdate($id);
+			$this->membershipService->onUpdate($id);
 		}
 
 		return $this->circleRequest->getSingleCircle($federatedUser);

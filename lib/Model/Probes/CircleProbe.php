@@ -45,18 +45,13 @@ class CircleProbe extends MemberProbe {
 	private $include = 0;
 
 	/** @var int */
-	private $filter = 0;
+	private $filter = Circle::CFG_SINGLE;
 
 
 	/**
 	 * CircleProbe constructor.
-	 *
-	 * @param bool $defaultFilters
 	 */
-	public function __construct(bool $defaultFilters = true) {
-		if ($defaultFilters) {
-			$this->filter = Circle::CFG_SINGLE | Circle::CFG_HIDDEN;
-		}
+	public function __construct() {
 	}
 
 

@@ -227,8 +227,6 @@ class CircleRequest extends CircleRequestBuilder {
 		if (is_null($probe)) {
 			$probe = new CircleProbe();
 			$probe->includeSystemCircles()
-				  ->includeBackendCircles()
-				  ->includeHiddenCircles()
 				  ->emulateVisitor();
 		}
 
