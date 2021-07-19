@@ -548,6 +548,7 @@ class ShareByCircleProvider implements IShareProvider {
 		$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
 		$probe = new CircleProbe();
 		$probe->includePersonalCircles()
+			  ->includeSystemCircles()
 			  ->mustBeMember()
 			  ->setItemsLimit((int)$limit)
 			  ->setItemsOffset((int)$offset);

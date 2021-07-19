@@ -447,12 +447,8 @@ class CircleService {
 	 * @throws InitiatorNotFoundException
 	 * @throws RequestBuilderException
 	 */
-	public function getCircles(?CircleProbe $probe = null): array {
+	public function getCircles(CircleProbe $probe): array {
 		$this->federatedUserService->mustHaveCurrentUser();
-
-		if (is_null($probe)) {
-			$probe = new CircleProbe();
-		}
 
 		return $this->circleRequest->getCircles(
 			$this->federatedUserService->getCurrentUser(),

@@ -39,15 +39,19 @@ use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\CirclesManager;
 use OCA\Circles\Db\CoreRequestBuilder;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\ConfigService;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 
@@ -148,6 +152,176 @@ class CirclesTest extends Base {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$this->input = $input;
 		$this->output = $output;
+
+
+		// loading CirclesManager
+		/** @var CirclesManager $circlesManager */
+		$circlesManager = \OC::$server->get(CirclesManager::class);
+//		$circlesManager->startSuperSession();
+
+
+		$federatedUser = $circlesManager->getFederatedUser('test1', Member::TYPE_USER);
+		$circlesManager->startSession($federatedUser);
+
+		$probe = new CircleProbe();
+		$probe->mustBeMember();
+
+		//$probe->includePersonalCircles();
+
+		// get hidden circles (to get Groups)
+//		$probe->includeHiddenCircles();
+
+//		$probe->includePersonalCircles();
+//		$probe->addOptionBool('filterPersonalCircles', true);
+//		$probe->mustBeMember();
+
+		$circles = $circlesManager->getCircles($probe);
+
+
+		// display result
+		$output = new ConsoleOutput();
+		$table = new Table($output->section());
+		$table->setHeaders(['SingleId', 'Circle Name', 'Type']);
+		$table->render();
+
+		foreach ($circles as $entry) {
+			$table->appendRow(
+				[
+					$entry->getSingleId(),
+					$entry->getDisplayName(),
+					Circle::$DEF_SOURCE[$entry->getSource()]
+				]
+			);
+		}
+
+
+		return 0;
+		$federatedUser = $circlesManager->getFederatedUser('test1', Member::TYPE_USER);
+		$circlesManager->startSession($federatedUser);
+		$circle = $circlesManager->getCircle($circleId);
+		$member = $circle->getInitiator();
+
+		// get the singleId of a Group
+		$federatedUser = $circlesManager->getFederatedUser('testGroup', Member::TYPE_GROUP);
+		echo 'singleId: ' . $federatedUser->getSingleId() . "\n";
+
+//		$federatedUser->getMemberships();
+
+
+		// get Circles available to test1
+		$federatedUser = $circlesManager->getFederatedUser('test1', Member::TYPE_USER);
+		$circlesManager->startSession($federatedUser);
+		$circles = $circlesManager->getCircles(
+			null,
+			null,
+			[
+				'mustBeMember' => true,
+				'include' => Circle::CFG_SYSTEM | Circle::CFG_HIDDEN
+			]
+		);
+
+
+		$output = new ConsoleOutput();
+		$table = new Table($output->section());
+		$table->setHeaders(['SingleId', 'Circle Name', 'Type']);
+		$table->render();
+
+		foreach ($circles as $entry) {
+			$table->appendRow(
+				[
+					$entry->getSingleId(),
+					$entry->getDisplayName(),
+					Circle::$DEF_SOURCE[$entry->getSource()]
+				]
+			);
+		}
+
+
+		// exit
+		return 0;
+
+
+		$members = array_map(
+			function (Member $member): string {
+				return $member->getUserId() . ' ' . $member->getSingleId() . '   - ' . $member->getUserType();
+			}, $circle->getInheritedMembers()
+		);
+
+		echo json_encode($members, JSON_PRETTY_PRINT);
+//		$circlesManager->startSession($federatedUser);
+
+//		$circlesManager->destroyCircle('XXHHLGdwQTxENgU');
+//		$circles = array_map(function(Circle $circle): string {
+//			return $circle->getDisplayName();
+//		}, $circlesManager->getCircles());
+		return 0;
+
+		$circlesManager->stopSession();
+
+
+		//echo json_encode($circles, JSON_PRETTY_PRINT);
+
+
+//		$circle = $circlesManager->createCircle('This is a test2');
+//
+//
+//		$federatedUser2 = $circlesManager->getFederatedUser('test3', Member::TYPE_USER);
+//		$circlesManager->startSession($federatedUser);
+//
+		////		$info = $circlesManager->getCircle($circle->getSingleId());
+		////echo json_encode($info);
+//
+//		$circles = $circlesManager->getCircles();
+//		foreach ($circles as $circle) {
+//			echo $circle->getDisplayName() . "\n";
+		////			$circlesManager->startSession($federatedUser2);
+		////			$circlesManager->destroyCircle($circle->getSingleId());
+//		}
+//
+//
+//		// testing getCircle()
+//
+//
+//		return 0;
+
+
+		// testing queryHelper;
+
+		$circlesQueryHelper = $circlesManager->getQueryHelper();
+
+		$qb = $circlesQueryHelper->getQueryBuilder();
+		$qb->select(
+			'test.id',
+			'test.shared_to',
+			'test.data'
+		)
+		   ->from('circles_test', 'test');
+
+
+		/** @var FederatedUser $federatedUser */
+		$federatedUser = $circlesManager->getFederatedUser('test1', Member::TYPE_USER);
+
+//		$circlesQueryHelper->limitToInheritedMembers('test', 'shared_to', $federatedUser, true);
+//		$circlesQueryHelper->addCircleDetails('test', 'shared_to');
+//
+//		$items = [];
+//		$cursor = $qb->execute();
+//		while ($row = $cursor->fetch()) {
+//			try {
+//				$items[] = [
+//					'id'     => $row['id'],
+//					'data'   => $row['data'],
+//					'circle' => $circlesQueryHelper->extractCircle($row)
+//				];
+//			} catch (Exception $e) {
+//			}
+//		}
+//		$cursor->closeCursor();
+//
+//		echo json_encode($items, JSON_PRETTY_PRINT);
+//
+//		return 0;
+
 
 		if ($input->getOption('are-you-aware-this-will-delete-all-my-data') === 'yes-i-am') {
 			try {
