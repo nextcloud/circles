@@ -42,6 +42,7 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\ConfigService;
 use OCP\DB\QueryBuilder\ICompositeExpression;
 use OCP\DB\QueryBuilder\IQueryBuilder;
@@ -1313,22 +1314,13 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 
 	/**
 	 * @param string $aliasCircle
-	 * @param int $flag
+	 * @param CircleProbe $probe
 	 */
-	public function filterCircles(string $aliasCircle, int $flag): void {
-		if ($flag === 0) {
-			return;
-		}
-
-		$expr = $this->expr();
-		$hide = $expr->andX();
-		foreach (Circle::$DEF_CFG as $cfg => $v) {
-			if ($flag & $cfg) {
-				$hide->add($this->exprFilterBitwise('config', $cfg, $aliasCircle));
-			}
-		}
-
-		$this->andWhere($hide);
+	public function filterCircles(string $aliasCircle, CircleProbe $probe): void {
+		$filter = $probe->filtered();
+		$include = $probe->included();
+		$config = ($filter | $include) - $include;
+		$this->filterBitwise('config', $config, $aliasCircle);
 	}
 
 
