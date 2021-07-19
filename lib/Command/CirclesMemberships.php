@@ -369,6 +369,7 @@ class CirclesMemberships extends Base {
 
 		$probe = new CircleProbe();
 		$probe->includeSystemCircles()
+			  ->includeSingleCircles()
 			  ->includePersonalCircles();
 		$circles = $this->circleService->getCircles($probe);
 
