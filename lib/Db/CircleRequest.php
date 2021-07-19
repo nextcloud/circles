@@ -170,7 +170,7 @@ class CircleRequest extends CircleRequestBuilder {
 			)
 		);
 
-		$qb->filterCircles(CoreQueryBuilder::CIRCLE, $probe->filtered());
+		$qb->filterCircles(CoreQueryBuilder::CIRCLE, $probe);
 		if (!is_null($initiator)) {
 			$qb->limitToInitiator(CoreQueryBuilder::CIRCLE, $initiator);
 		}
@@ -245,7 +245,7 @@ class CircleRequest extends CircleRequestBuilder {
 		);
 
 		$qb->limitToUniqueId($id);
-		$qb->filterCircles(CoreQueryBuilder::CIRCLE, $probe->filtered());
+		$qb->filterCircles(CoreQueryBuilder::CIRCLE, $probe);
 		$qb->leftJoinOwner(CoreQueryBuilder::CIRCLE);
 //		$qb->setOptions(
 //			[CoreRequestBuilder::CIRCLE, CoreRequestBuilder::INITIATOR], [

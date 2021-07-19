@@ -41,15 +41,23 @@ use OCA\Circles\Model\Circle;
 class CircleProbe extends MemberProbe {
 
 
-	/** @var array */
-	public static $filters = [
-		Circle::CFG_SINGLE,
-		Circle::CFG_HIDDEN,
-		Circle::CFG_BACKEND,
-	];
-
 	/** @var int */
 	private $include = 0;
+
+	/** @var int */
+	private $filter = 0;
+
+
+	/**
+	 * CircleProbe constructor.
+	 *
+	 * @param bool $defaultFilters
+	 */
+	public function __construct(bool $defaultFilters = true) {
+		if ($defaultFilters) {
+			$this->filter = Circle::CFG_SINGLE | Circle::CFG_HIDDEN;
+		}
+	}
 
 
 	/**
@@ -139,20 +147,94 @@ class CircleProbe extends MemberProbe {
 		return (($this->included() & $config) !== 0);
 	}
 
+
+	/**
+	 * @param bool $filter
+	 *
+	 * @return $this
+	 */
+	public function filterPersonalCircles(bool $filter = true): self {
+		$this->filter |= Circle::CFG_PERSONAL;
+		if (!$filter) {
+			$this->filter -= Circle::CFG_PERSONAL;
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param bool $filter
+	 *
+	 * @return $this
+	 */
+	public function filterSingleCircles(bool $filter = true): self {
+		$this->filter |= Circle::CFG_SINGLE;
+		if (!$filter) {
+			$this->filter -= Circle::CFG_SINGLE;
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param bool $filter
+	 *
+	 * @return $this
+	 */
+	public function filterSystemCircles(bool $filter = true): self {
+		$this->filter |= Circle::CFG_SYSTEM;
+		if (!$filter) {
+			$this->filter -= Circle::CFG_SYSTEM;
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param bool $filter
+	 *
+	 * @return $this
+	 */
+	public function filterHiddenCircles(bool $filter = true): self {
+		$this->filter |= Circle::CFG_HIDDEN;
+		if (!$filter) {
+			$this->filter -= Circle::CFG_HIDDEN;
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param bool $filter
+	 *
+	 * @return $this
+	 */
+	public function filterBackendCircles(bool $filter = true): self {
+		$this->filter |= Circle::CFG_BACKEND;
+		if (!$filter) {
+			$this->filter -= Circle::CFG_BACKEND;
+		}
+
+		return $this;
+	}
+
+
 	/**
 	 * @return int
 	 */
 	public function filtered(): int {
-		$filtered = 0;
-		foreach (self::$filters as $filter) {
-			if ($this->isIncluded($filter)) {
-				continue;
-			}
-			$filtered += $filter;
-		}
-
-		return $filtered;
+		return $this->filter;
 	}
+
+	/**
+	 * @param int $config
+	 *
+	 * @return bool
+	 */
+	public function isFiltered(int $config): bool {
+		return (($this->filtered() & $config) !== 0);
+	}
+
 
 	/**
 	 * @return array
@@ -162,9 +244,16 @@ class CircleProbe extends MemberProbe {
 			[
 				'included' => $this->included(),
 				'includeHiddenCircles' => $this->isIncluded(Circle::CFG_HIDDEN),
+				'includeSingleCircles' => $this->isIncluded(Circle::CFG_SINGLE),
 				'includeBackendCircles' => $this->isIncluded(Circle::CFG_BACKEND),
 				'includeSystemCircles' => $this->isIncluded(Circle::CFG_SYSTEM),
 				'includePersonalCircles' => $this->isIncluded(Circle::CFG_PERSONAL),
+				'filtered' => $this->included(),
+				'filterHiddenCircles' => $this->isIncluded(Circle::CFG_HIDDEN),
+				'filterSingleCircles' => $this->isIncluded(Circle::CFG_SINGLE),
+				'filterBackendCircles' => $this->isIncluded(Circle::CFG_BACKEND),
+				'filterSystemCircles' => $this->isIncluded(Circle::CFG_SYSTEM),
+				'filterPersonalCircles' => $this->isIncluded(Circle::CFG_PERSONAL),
 			],
 			parent::getAsOptions()
 		);
