@@ -87,10 +87,12 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 			$this->federatedUserService->initCurrentUser();
 
 			$probe = new CircleProbe();
-			$probe->setItemsLimit($limit);
-			$probe->setItemsOffset($offset);
-			$probe->setFilterCircle($filterCircle);
-			
+			$probe->filterHiddenCircles()
+				  ->filterBackendCircles()
+				  ->setItemsLimit($limit)
+				  ->setItemsOffset($offset)
+				  ->setFilterCircle($filterCircle);
+
 			// Issue when searching for circle to be added as member
 			$probe->mustBeMember();
 

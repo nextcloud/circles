@@ -42,6 +42,7 @@ use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
@@ -413,7 +414,11 @@ class LocalController extends OcsController {
 		try {
 			$this->setCurrentFederatedUser();
 
-			return new DataResponse($this->serializeArray($this->circleService->getCircles()));
+			$probe = new CircleProbe();
+			$probe->filterHiddenCircles()
+				  ->filterBackendCircles();
+
+			return new DataResponse($this->serializeArray($this->circleService->getCircles($probe)));
 		} catch (Exception $e) {
 			$this->e($e);
 			throw new OCSException($e->getMessage(), $e->getCode());
