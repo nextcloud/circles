@@ -62,6 +62,7 @@ use OCA\Circles\MountManager\CircleMountProvider;
 use OCA\Circles\Notification\Notifier;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\DavService;
+use OCA\Circles\UnifiedSearch\UnifiedSearchProvider;
 use OCP\App\ManagerEvent;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
@@ -155,6 +156,7 @@ class Application extends App implements IBootstrap {
 			}
 		);
 
+		$context->registerSearchProvider(UnifiedSearchProvider::class);
 		$context->registerWellKnownHandler(WebfingerHandler::class);
 
 		$this->loadExampleEvents($context);
