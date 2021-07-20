@@ -280,6 +280,12 @@ class CirclesManager {
 	 * @throws RequestBuilderException
 	 */
 	public function getCircles(?CircleProbe $probe = null): array {
+		if (is_null($probe)) {
+			$probe = new CircleProbe();
+			$probe->filterHiddenCircles()
+				  ->filterBackendCircles();
+		}
+
 		return $this->circleService->getCircles($probe);
 	}
 
