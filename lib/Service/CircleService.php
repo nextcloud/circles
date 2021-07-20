@@ -66,6 +66,7 @@ use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\Probes\MemberProbe;
 use OCA\Circles\StatusCode;
+use OCP\IL10N;
 
 /**
  * Class CircleService
@@ -77,6 +78,9 @@ class CircleService {
 	use TStringTools;
 	use TNC22Logger;
 
+
+	/** @var IL10N */
+	private $l10n;
 
 	/** @var CircleRequest */
 	private $circleRequest;
@@ -112,6 +116,7 @@ class CircleService {
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
+		IL10N $l10n,
 		CircleRequest $circleRequest,
 		MemberRequest $memberRequest,
 		RemoteStreamService $remoteStreamService,
@@ -120,6 +125,7 @@ class CircleService {
 		MemberService $memberService,
 		ConfigService $configService
 	) {
+		$this->l10n = $l10n;
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
 		$this->remoteStreamService = $remoteStreamService;
@@ -602,5 +608,26 @@ class CircleService {
 		$name = preg_replace('/\s+/', ' ', $name);
 
 		return trim($name);
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 *
+	 * @return string
+	 */
+	public function getDefinition(Circle $circle): string {
+		$source = Circle::$DEF_SOURCE[$circle->getSource()];
+		if ($circle->isConfig(Circle::CFG_NO_OWNER)) {
+			return $this->l10n->t('%s', [$source]);
+		}
+
+		return $this->l10n->t(
+			'%s owned by %s',
+			[
+				$source,
+				$this->configService->displayFederatedUser($circle->getOwner(), true)
+			]
+		);
 	}
 }
