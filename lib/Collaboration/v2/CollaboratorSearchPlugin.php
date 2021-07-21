@@ -31,8 +31,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Collaboration\v2;
 
+use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use Exception;
 use OC\Share20\Share;
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\CircleService;
@@ -40,6 +42,8 @@ use OCA\Circles\Service\FederatedUserService;
 use OCP\Collaboration\Collaborators\ISearchPlugin;
 use OCP\Collaboration\Collaborators\ISearchResult;
 use OCP\Collaboration\Collaborators\SearchResultType;
+use OCP\IRequest;
+use OCP\Share\IShare;
 
 /**
  * Class CollaboratorSearchPlugin
@@ -47,7 +51,11 @@ use OCP\Collaboration\Collaborators\SearchResultType;
  * @package OCA\Circles\Collaboration\v2
  */
 class CollaboratorSearchPlugin implements ISearchPlugin {
+	use TNC22Logger;
 
+
+	/** @var IRequest */
+	private $request;
 
 	/** @var FederatedUserService */
 	private $federatedUserService;
@@ -59,12 +67,20 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 	/**
 	 * CollaboratorSearchPlugin constructor.
 	 *
+	 * @param IRequest $request
 	 * @param FederatedUserService $federatedUserService
 	 * @param CircleService $circleService
 	 */
-	public function __construct(FederatedUserService $federatedUserService, CircleService $circleService) {
+	public function __construct(
+		IRequest $request,
+		FederatedUserService $federatedUserService,
+		CircleService $circleService
+	) {
+		$this->request = $request;
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
+
+		$this->setup('app', Application::APP_ID);
 	}
 
 
@@ -78,6 +94,13 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 	 */
 	public function search($search, $limit, $offset, ISearchResult $searchResult): bool {
 		$wide = $exact = [];
+		$fromFrontEnd = true;
+
+		// TODO: remove this, using a cleaner way to detect the source of the request
+		$shareType = $this->request->getParam('shareType');
+		if (in_array(IShare::TYPE_ROOM, $shareType)) {
+			$fromFrontEnd = false;
+		}
 
 		$filterCircle = new Circle();
 		$filterCircle->setName($search)
@@ -87,14 +110,12 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 			$this->federatedUserService->initCurrentUser();
 
 			$probe = new CircleProbe();
-			$probe->filterHiddenCircles()
-				  ->filterBackendCircles()
+			$probe->filterBackendCircles()
+				  ->filterSystemCircles()
 				  ->setItemsLimit($limit)
 				  ->setItemsOffset($offset)
-				  ->setFilterCircle($filterCircle);
-
-			// Issue when searching for circle to be added as member
-			$probe->mustBeMember();
+				  ->setFilterCircle($filterCircle)
+				  ->mustBeMember(!$fromFrontEnd);
 
 			$circles = $this->circleService->getCircles($probe);
 		} catch (Exception $e) {
@@ -125,7 +146,7 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 	private function addResultEntry(Circle $circle): array {
 		return [
 			'label' => $circle->getDisplayName(),
-			'shareWithDescription' => $circle->getOwner()->getDisplayName(),
+			'shareWithDescription' => $this->circleService->getDefinition($circle),
 			'value' => [
 				'shareType' => Share::TYPE_CIRCLE,
 				'shareWith' => $circle->getSingleId(),
