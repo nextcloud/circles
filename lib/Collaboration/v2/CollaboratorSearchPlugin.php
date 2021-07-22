@@ -115,7 +115,8 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 				  ->setItemsLimit($limit)
 				  ->setItemsOffset($offset)
 				  ->setFilterCircle($filterCircle)
-				  ->mustBeMember(!$fromFrontEnd);
+				  ->mustBeMember(!$fromFrontEnd)
+				  ->filterConfig(Circle::CFG_ROOT, $fromFrontEnd);
 
 			$circles = $this->circleService->getCircles($probe);
 		} catch (Exception $e) {
