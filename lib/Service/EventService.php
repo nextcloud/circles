@@ -50,6 +50,8 @@ use OCA\Circles\Events\CreatingCircleEvent;
 use OCA\Circles\Events\DestroyingCircleEvent;
 use OCA\Circles\Events\EditingCircleEvent;
 use OCA\Circles\Events\EditingCircleMemberEvent;
+use OCA\Circles\Events\Files\CreatingFileShareEvent;
+use OCA\Circles\Events\Files\FileShareCreatedEvent;
 use OCA\Circles\Events\MembershipsCreatedEvent;
 use OCA\Circles\Events\MembershipsRemovedEvent;
 use OCA\Circles\Events\RemovingCircleMemberEvent;
@@ -299,6 +301,29 @@ class EventService {
 	public function memberLeft(FederatedEvent $federatedEvent, array $results): void {
 		$event = new CircleMemberRemovedEvent($federatedEvent, $results);
 		$event->setType(CircleGenericEvent::LEFT);
+		$this->eventDispatcher->dispatchTyped($event);
+	}
+
+
+	/**
+	 * @param FederatedEvent $federatedEvent
+	 * @param Mount|null $mount
+	 */
+	public function fileShareCreating(FederatedEvent $federatedEvent, ?Mount $mount = null): void {
+		$event = new CreatingFileShareEvent($federatedEvent);
+		if (!is_null($mount)) {
+			$event->setMount($mount);
+		}
+		$this->eventDispatcher->dispatchTyped($event);
+	}
+
+
+	/**
+	 * @param FederatedEvent $federatedEvent
+	 * @param SimpleDataStore[] $result
+	 */
+	public function fileShareCreated(FederatedEvent $federatedEvent, array $result): void {
+		$event = new FileShareCreatedEvent($federatedEvent, $result);
 		$this->eventDispatcher->dispatchTyped($event);
 	}
 
