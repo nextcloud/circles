@@ -215,6 +215,22 @@ class CircleProbe extends MemberProbe {
 
 
 	/**
+	 * @param int $config
+	 * @param bool $filter
+	 *
+	 * @return $this
+	 */
+	public function filterConfig(int $config, bool $filter = true): self {
+		$this->filter |= $config;
+		if (!$filter) {
+			$this->filter -= $config;
+		}
+
+		return $this;
+	}
+
+
+	/**
 	 * @return int
 	 */
 	public function filtered(): int {
