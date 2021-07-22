@@ -34,10 +34,12 @@ namespace OCA\Circles\Service;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
+use Exception;
 use OC;
 use OCA\Circles\Exceptions\ContactAddressBookNotFoundException;
 use OCA\Circles\Exceptions\ContactFormatException;
 use OCA\Circles\Exceptions\ContactNotFoundException;
+use OCA\Circles\Model\Member;
 use OCA\DAV\CardDAV\ContactsManager;
 use OCP\Contacts\IManager;
 use OCP\IAddressBook;
@@ -186,5 +188,24 @@ class ContactService {
 		}
 
 		throw new ContactAddressBookNotFoundException();
+	}
+
+
+	/**
+	 * @param Member $member
+	 *
+	 * @return array
+	 */
+	public function getMailAddressesFromMember(Member $member): array {
+		if ($member->getUserType() !== Member::TYPE_CONTACT
+			|| !$this->configService->isLocalInstance($member->getInstance())) {
+			return [];
+		}
+
+		try {
+			return $this->getMailAddresses($member->getUserId());
+		} catch (Exception $e) {
+			return [];
+		}
 	}
 }

@@ -79,12 +79,18 @@ class ShareTokenService {
 	 *
 	 * @return ShareToken
 	 * @throws ShareTokenAlreadyExistException
+	 * @throws ShareTokenNotFoundException
 	 */
 	public function generateShareToken(
 		ShareWrapper $share,
 		Member $member,
 		string $password = ''
 	): ShareToken {
+		if ($member->getUserType() !== Member::TYPE_MAIL
+		&& $member->getUserType() !== Member::TYPE_CONTACT) {
+			throw new ShareTokenNotFoundException();
+		}
+
 		$token = $this->token(19);
 
 		$shareToken = new ShareToken();

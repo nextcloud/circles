@@ -35,23 +35,23 @@ use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use Exception;
 use OCA\Circles\AppInfo\Application;
-use OCA\Circles\Events\AddingCircleMemberEvent;
-use OCA\Circles\Exceptions\RequestBuilderException;
-use OCA\Circles\Exceptions\ShareTokenAlreadyExistException;
+use OCA\Circles\Events\Files\FileShareCreatedEvent;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\ShareWrapper;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\ContactService;
+use OCA\Circles\Service\SendMailService;
 use OCA\Circles\Service\ShareTokenService;
 use OCA\Circles\Service\ShareWrapperService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 
 /**
- * Class AddingMember
+ * Class ShareCreatedSendMail
  *
  * @package OCA\Circles\Listeners\Files
  */
-class AddingMember implements IEventListener {
+class ShareCreatedSendMail implements IEventListener {
 	use TStringTools;
 	use TNC22Logger;
 
@@ -62,6 +62,9 @@ class AddingMember implements IEventListener {
 	/** @var ShareTokenService */
 	private $shareTokenService;
 
+	/** @var SendMailService */
+	private $sendMailService;
+
 	/** @var ConfigService */
 	private $configService;
 
@@ -70,21 +73,24 @@ class AddingMember implements IEventListener {
 
 
 	/**
-	 * AddingMember constructor.
+	 * ShareCreatedSendMail constructor.
 	 *
 	 * @param ShareWrapperService $shareWrapperService
 	 * @param ShareTokenService $shareTokenService
+	 * @param SendMailService $sendMailService
 	 * @param ContactService $contactService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		ShareWrapperService $shareWrapperService,
 		ShareTokenService $shareTokenService,
+		SendMailService $sendMailService,
 		ContactService $contactService,
 		ConfigService $configService
 	) {
 		$this->shareWrapperService = $shareWrapperService;
 		$this->shareTokenService = $shareTokenService;
+		$this->sendMailService = $sendMailService;
 		$this->contactService = $contactService;
 		$this->configService = $configService;
 
@@ -94,71 +100,46 @@ class AddingMember implements IEventListener {
 
 	/**
 	 * @param Event $event
-	 *
-	 * @throws RequestBuilderException
 	 */
 	public function handle(Event $event): void {
-		if (!$event instanceof AddingCircleMemberEvent) {
+		if (!$event instanceof FileShareCreatedEvent) {
 			return;
 		}
 
-		$result = [];
-		$member = $event->getMember();
-
-		if ($member->getUserType() === Member::TYPE_CIRCLE) {
-			$members = $member->getBasedOn()->getInheritedMembers();
-		} else {
-			$members = [$member];
-		}
-
 		$circle = $event->getCircle();
-		$shares = $this->shareWrapperService->getSharesToCircle($circle->getSingleId());
 
-		/** @var Member[] $members */
-		foreach ($members as $member) {
+		foreach ($circle->getInheritedMembers() as $member) {
 			if ($member->getUserType() !== Member::TYPE_MAIL
-				&& $member->getUserType() !== Member::TYPE_CONTACT
-			) {
+				&& $member->getUserType() !== Member::TYPE_CONTACT) {
 				continue;
 			}
 
-			$files = [];
-			foreach ($shares as $share) {
-				try {
-					$shareToken = $this->shareTokenService->generateShareToken($share, $member);
-				} catch (ShareTokenAlreadyExistException $e) {
+			$mails = [];
+			$share = null;
+			foreach ($event->getResults() as $origin => $item) {
+				$shares = $item->gData('shares');
+				if (!$shares->hasKey($member->getId())) {
 					continue;
 				}
 
-				$share->setShareToken($shareToken);
-				$files[] = $share;
+				$data = $shares->gData($member->getId());
+				$mails = array_merge($mails, $data->gArray('mails'));
+
+				// TODO: is it safe to use $origin to compare getInstance() ?
+				// TODO: do we need to check the $origin ?
+				// TODO: Solution would be to check the origin based on aliases using RemoteInstanceService
+//				if ($member->getUserType() === Member::TYPE_CONTACT && $member->getInstance() === $origin) {
+				try {
+					$share = $data->gObj('share', ShareWrapper::class);
+				} catch (Exception $e) {
+				}
+
+//				}
 			}
 
-			$result[$member->getId()] = [
-				'shares' => $files,
-				'mails' => $this->getMailAddressesFromContact($member)
-			];
-		}
-
-		$event->getFederatedEvent()->setResultEntry('files', $result);
-	}
-
-
-	/**
-	 * @param Member $member
-	 *
-	 * @return array
-	 */
-	private function getMailAddressesFromContact(Member $member): array {
-		if ($member->getUserType() !== Member::TYPE_CONTACT
-			|| !$this->configService->isLocalInstance($member->getInstance())) {
-			return [];
-		}
-
-		try {
-			return $this->contactService->getMailAddresses($member->getUserId());
-		} catch (Exception $e) {
-			return [];
+			if (!is_null($share)) {
+				$this->sendMailService->generateMail($circle, $member, [$share], $mails);
+			}
 		}
 	}
 }
