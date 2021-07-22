@@ -150,6 +150,8 @@ OC.L10N.register(
     "Accept" : "Kabul et",
     "Refuse" : "Reddet",
     "Leave the circle" : "Çevreden çık",
+    "%s" : "%s",
+    "%s owned by %s" : "%s sahibi %s",
     "You need a specify a type of circle" : "Bir çevre türü belirtmelisiniz",
     "This member is not the owner of the circle" : "Bu üye çevrenin sahibi değil",
     "This member is not an admin of the circle" : "Bu üye çevrenin yöneticisi değil",

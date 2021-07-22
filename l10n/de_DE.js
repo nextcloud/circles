@@ -150,6 +150,8 @@ OC.L10N.register(
     "Accept" : "Annehmen",
     "Refuse" : "Ablehnen",
     "Leave the circle" : "Diesen Kreis verlassen",
+    "%s" : "%s",
+    "%s owned by %s" : "%s gehört %s",
     "You need a specify a type of circle" : "Sie benötigen einen bestimmten Kreis-Typ",
     "This member is not the owner of the circle" : "Dieses Mitglied ist nicht der Besitzer des Kreises",
     "This member is not an admin of the circle" : "Dieses Mitglied ist kein Administrator dieses Kreises ",
