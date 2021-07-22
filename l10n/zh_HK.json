@@ -148,6 +148,7 @@
     "Accept" : "接受",
     "Refuse" : "拒絕",
     "Leave the circle" : "離開圈子",
+    "%s owned by %s" : "%s 擁有的 %s",
     "You need a specify a type of circle" : "您需要指定一種類型的圈子",
     "This member is not the owner of the circle" : "此成員不是圈子的所有者",
     "This member is not an admin of the circle" : "該成員不是此圈子的管理員",

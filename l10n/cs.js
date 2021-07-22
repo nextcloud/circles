@@ -150,6 +150,8 @@ OC.L10N.register(
     "Accept" : "Přijmout",
     "Refuse" : "Odmítnout",
     "Leave the circle" : "Opustit okruh",
+    "%s" : "%s",
+    "%s owned by %s" : "%s vlastněné uživ. %s",
     "You need a specify a type of circle" : "Vyberte typ okruhu",
     "This member is not the owner of the circle" : "Tento člen není vlastníkem tohoto okruhu",
     "This member is not an admin of the circle" : "Tento člen není správcem okruhu",

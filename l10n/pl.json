@@ -148,6 +148,8 @@
     "Accept" : "Akceptuj",
     "Refuse" : "Odrzuć",
     "Leave the circle" : "Opuść krąg",
+    "%s" : "%s",
+    "%s owned by %s" : "%s należący do %s",
     "You need a specify a type of circle" : "Należy podać rodzaj kręgu",
     "This member is not the owner of the circle" : "Ten członek nie jest właścicielem kręgu",
     "This member is not an admin of the circle" : "Ten użytkownik nie jest administratorem kręgu",
