@@ -38,6 +38,8 @@ use Closure;
 use OC;
 use OCA\Circles\Events\AddingCircleMemberEvent;
 use OCA\Circles\Events\CircleMemberAddedEvent;
+use OCA\Circles\Events\Files\CreatingFileShareEvent;
+use OCA\Circles\Events\Files\FileShareCreatedEvent;
 use OCA\Circles\Events\MembershipsCreatedEvent;
 use OCA\Circles\Events\MembershipsRemovedEvent;
 use OCA\Circles\Events\RemovingCircleMemberEvent;
@@ -48,9 +50,11 @@ use OCA\Circles\Listeners\Examples\ExampleAddingCircleMember;
 use OCA\Circles\Listeners\Examples\ExampleMembershipsCreated;
 use OCA\Circles\Listeners\Examples\ExampleMembershipsRemoved;
 use OCA\Circles\Listeners\Examples\ExampleRequestingCircleMember;
-use OCA\Circles\Listeners\Files\AddingMember as ListenerFilesAddingMember;
-use OCA\Circles\Listeners\Files\MemberAdded as ListenerFilesMemberAdded;
+use OCA\Circles\Listeners\Files\AddingMemberSendMail as ListenerFilesAddingMemberSendMail;
+use OCA\Circles\Listeners\Files\CreatingShareSendMail as ListenerFilesCreatingShareSendMail;
+use OCA\Circles\Listeners\Files\MemberAddedSendMail as ListenerFilesMemberAddedSendMail;
 use OCA\Circles\Listeners\Files\RemovingMember as ListenerFilesRemovingMember;
+use OCA\Circles\Listeners\Files\ShareCreatedSendMail as ListenerFilesShareCreatedSendMail;
 use OCA\Circles\Listeners\GroupCreated;
 use OCA\Circles\Listeners\GroupDeleted;
 use OCA\Circles\Listeners\GroupMemberAdded;
@@ -137,11 +141,26 @@ class Application extends App implements IBootstrap {
 		$context->registerEventListener(UserRemovedEvent::class, GroupMemberRemoved::class);
 
 		// Local Events (for Files/Shares/Notifications management)
-		$context->registerEventListener(AddingCircleMemberEvent::class, ListenerFilesAddingMember::class);
-		$context->registerEventListener(CircleMemberAddedEvent::class, ListenerFilesMemberAdded::class);
+		$context->registerEventListener(
+			AddingCircleMemberEvent::class,
+			ListenerFilesAddingMemberSendMail::class
+		);
+		$context->registerEventListener(
+			CircleMemberAddedEvent::class,
+			ListenerFilesMemberAddedSendMail::class
+		);
+		$context->registerEventListener(
+			CreatingFileShareEvent::class,
+			ListenerFilesCreatingShareSendMail::class
+		);
+		$context->registerEventListener(
+			FileShareCreatedEvent::class,
+			ListenerFilesShareCreatedSendMail::class
+		);
 		$context->registerEventListener(RemovingCircleMemberEvent::class, ListenerFilesRemovingMember::class);
 		$context->registerEventListener(
-			RequestingCircleMemberEvent::class, ListenerNotificationsRequestingMember::class
+			RequestingCircleMemberEvent::class,
+			ListenerNotificationsRequestingMember::class
 		);
 
 		// It seems that AccountManager use deprecated dispatcher, let's use a deprecated listener

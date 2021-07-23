@@ -29,34 +29,24 @@ declare(strict_types=1);
  */
 
 
-namespace OCA\Circles\Listeners\Files;
+namespace OCA\Circles\Service;
 
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
-use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use Exception;
-use OCA\Circles\AppInfo\Application;
-use OCA\Circles\Events\CircleMemberAddedEvent;
-use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\ShareWrapper;
-use OCA\Circles\Service\ShareWrapperService;
 use OCP\Defaults;
-use OCP\EventDispatcher\Event;
-use OCP\EventDispatcher\IEventListener;
 use OCP\IL10N;
 use OCP\Mail\IEMailTemplate;
 use OCP\Mail\IMailer;
 use OCP\Util;
 
 /**
- * Class MemberAdded
+ * Class SendMailService
  *
- * @package OCA\Circles\Listeners\Files
+ * @package OCA\Circles\Service
  */
-class MemberAdded implements IEventListener {
-	use TStringTools;
-	use TNC22Logger;
+class SendMailService {
 
 
 	/** @var IL10N */
@@ -68,79 +58,22 @@ class MemberAdded implements IEventListener {
 	/** @var Defaults */
 	private $defaults;
 
-	/** @var ShareWrapperService */
-	private $shareWrapperService;
-
 
 	/**
-	 * MemberAdded constructor.
+	 * SendMailService constructor.
 	 *
 	 * @param IL10N $l10n
 	 * @param IMailer $mailer
 	 * @param Defaults $defaults
-	 * @param ShareWrapperService $shareWrapperService
 	 */
 	public function __construct(
 		IL10N $l10n,
 		IMailer $mailer,
-		Defaults $defaults,
-		ShareWrapperService $shareWrapperService
+		Defaults $defaults
 	) {
 		$this->l10n = $l10n;
 		$this->mailer = $mailer;
 		$this->defaults = $defaults;
-		$this->shareWrapperService = $shareWrapperService;
-
-		$this->setup('app', Application::APP_ID);
-	}
-
-
-	/**
-	 * @param Event $event
-	 *
-	 * @throws RequestBuilderException
-	 */
-	public function handle(Event $event): void {
-		if (!$event instanceof CircleMemberAddedEvent) {
-			return;
-		}
-
-		$member = $event->getMember();
-		$circle = $event->getCircle();
-
-		if ($member->getUserType() === Member::TYPE_CIRCLE) {
-			$members = $member->getBasedOn()->getInheritedMembers();
-		} else {
-			$members = [$member];
-		}
-
-		/** @var Member[] $members */
-		foreach ($members as $member) {
-			if ($member->getUserType() !== Member::TYPE_MAIL
-				&& $member->getUserType() !== Member::TYPE_CONTACT
-			) {
-				continue;
-			}
-
-			$mails = [];
-			$shares = [];
-			foreach ($event->getResults() as $origin => $item) {
-				$files = $item->gData('files');
-				if (!$files->hasKey($member->getId())) {
-					continue;
-				}
-
-				$data = $files->gData($member->getId());
-				$shares = array_merge($shares, $data->gObjs('shares', ShareWrapper::class));
-
-				// TODO: is it safe to use $origin to compare getInstance() ?
-				if ($member->getUserType() === Member::TYPE_CONTACT && $member->getInstance() === $origin) {
-					$mails = $data->gArray('mails');
-				}
-			}
-
-			$this->generateMail($circle, $member, $shares, $mails);
-		}
 	}
 
 
@@ -150,7 +83,7 @@ class MemberAdded implements IEventListener {
 	 * @param ShareWrapper[] $shares
 	 * @param array $mails
 	 */
-	private function generateMail(Circle $circle, Member $member, array $shares, array $mails): void {
+	public function generateMail(Circle $circle, Member $member, array $shares, array $mails): void {
 		if (empty($shares)) {
 			return;
 		}
@@ -181,7 +114,7 @@ class MemberAdded implements IEventListener {
 		$this->fillMailExistingShares($template, $links);
 		foreach ($mails as $mail) {
 			try {
-				$this->sendMailExistingShares($template, $invitedBy, $mail);
+				$this->sendMailExistingShares($template, $invitedBy, $mail, sizeof($links) > 1);
 			} catch (Exception $e) {
 			}
 		}
@@ -221,15 +154,21 @@ class MemberAdded implements IEventListener {
 	 * @param IEMailTemplate $emailTemplate
 	 * @param string $author
 	 * @param string $recipient
+	 * @param bool $multiple
 	 *
 	 * @throws Exception
 	 */
 	private function sendMailExistingShares(
 		IEMailTemplate $emailTemplate,
 		string $author,
-		string $recipient
+		string $recipient,
+		bool $multiple = false
 	) {
-		$subject = $this->l10n->t('%s shared multiple files with you.', [$author]);
+		if ($multiple) {
+			$subject = $this->l10n->t('%s shared multiple files with you.', [$author]);
+		} else {
+			$subject = $this->l10n->t('%s shared a file with you.', [$author]);
+		}
 
 		$instanceName = $this->defaults->getName();
 		$senderName = $this->l10n->t('%s on %s', [$author, $instanceName]);
