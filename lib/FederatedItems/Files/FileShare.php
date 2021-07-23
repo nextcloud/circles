@@ -75,6 +75,7 @@ class FileShare implements
 	 * FileShare constructor.
 	 *
 	 * @param MountRequest $mountRequest
+	 * @param EventService $eventService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
@@ -105,18 +106,23 @@ class FileShare implements
 	 * @throws CircleNotFoundException
 	 */
 	public function manage(FederatedEvent $event): void {
-		if ($this->configService->isLocalInstance($event->getOrigin())) {
-			return;
+		$mount = null;
+		if (!$this->configService->isLocalInstance($event->getOrigin())) {
+			/** @var ShareWrapper $wrappedShare */
+			$wrappedShare = $event->getParams()->gObj('wrappedShare', ShareWrapper::class);
+			$mount = new Mount();
+			$mount->fromShare($wrappedShare);
+			$mount->setMountId($this->token(15));
+
+			$this->mountRequest->save($mount);
 		}
 
-		/** @var ShareWrapper $wrappedShare */
-		$wrappedShare = $event->getParams()->gObj('wrappedShare', ShareWrapper::class);
-		$mount = new Mount();
-		$mount->fromShare($wrappedShare);
-		$mount->setMountId($this->token(15));
+		$this->eventService->fileShareCreating($event, $mount);
 
-		$this->mountRequest->save($mount);
-		$this->eventService->federatedShareCreated($wrappedShare, $mount);
+//		$this->eventService->federatedShareCreated($wrappedShare, $mount);
+
+
+//		$this->eventService->fileSharing($event);
 
 //		$this->mountRequest->create($mount);
 //		$circle = $event->getDeprecatedCircle();
@@ -172,6 +178,8 @@ class FileShare implements
 	 * @param array $results
 	 */
 	public function result(FederatedEvent $event, array $results): void {
+		$this->eventService->fileShareCreated($event, $results);
+
 //		$event = null;
 //		$contacts = [];
 //		foreach (array_keys($events) as $instance) {
