@@ -622,6 +622,10 @@ class CircleService {
 			return $this->l10n->t('%s', [$source]);
 		}
 
+		if ($circle->isConfig(Circle::CFG_PERSONAL)) {
+			return $this->l10n->t('Personal Circle');
+		}
+
 		return $this->l10n->t(
 			'%s owned by %s',
 			[
