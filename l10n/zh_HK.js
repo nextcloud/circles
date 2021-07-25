@@ -164,6 +164,7 @@ OC.L10N.register(
     "This user does not exist" : "此用戶不存在",
     "Email format is not valid" : "電子郵件格式無效",
     "This contact is not available" : "此聯繫人不可用",
+    "%s shared a file with you." : "%s 與您分享了檔案。",
     "This item is already shared with this circle" : "已和這社交圈子分享了此項目",
     "Could not find share" : "找不到分享",
     "Bring cloud-users closer together." : "把雲端用戶連接到一起。",
