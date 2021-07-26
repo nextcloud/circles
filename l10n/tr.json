@@ -163,6 +163,7 @@
     "This user does not exist" : "Bu kullanıcı bulunamadı",
     "Email format is not valid" : "E-posta biçimi geçersiz",
     "This contact is not available" : "Bu kişi kullanılamıyor",
+    "%s shared a file with you." : "%s sizinle bir dosya paylaştı.",
     "This item is already shared with this circle" : "Bu öge zaten bu çevre ile paylaşılmış",
     "Could not find share" : "Paylaşım bulunamadı",
     "Bring cloud-users closer together." : "Bulut kullanıcılarını bir araya getirir.",
