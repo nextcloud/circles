@@ -101,6 +101,7 @@ class CreatingShareSendMail implements IEventListener {
 		}
 
 		$circle = $event->getCircle();
+
 		$federatedEvent = $event->getFederatedEvent();
 
 		$result = [];
@@ -116,10 +117,12 @@ class CreatingShareSendMail implements IEventListener {
 					/** @var ShareWrapper $share */
 					$share = $federatedEvent->getParams()->gObj('wrappedShare', ShareWrapper::class);
 					$this->shareWrapperService->getShareById((int)$share->getId());
+
 					// we confirm share is not spoofed by the main instance of the Circle
 					if ($share->getSharedWith() !== $circle->getSingleId()) {
 						throw new ShareWrapperNotFoundException();
 					}
+
 					$shareToken = $this->shareTokenService->generateShareToken($share, $member);
 					$share->setShareToken($shareToken);
 				} catch (Exception $e) {
