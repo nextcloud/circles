@@ -35,6 +35,7 @@ use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Db\ShareTokenRequest;
 use OCA\Circles\Exceptions\ShareTokenAlreadyExistException;
 use OCA\Circles\Exceptions\ShareTokenNotFoundException;
+use OCA\Circles\Exceptions\UnknownInterfaceException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\ShareToken;
 use OCA\Circles\Model\ShareWrapper;
@@ -56,19 +57,31 @@ class ShareTokenService {
 	/** @var ShareTokenRequest */
 	private $shareTokenRequest;
 
+	/** @var ConfigService */
+	private $configService;
+
+	/** @var InterfaceService */
+	private $interfaceService;
+
 
 	/**
 	 * ShareTokenService constructor.
 	 *
 	 * @param IURLGenerator $urlGenerator
 	 * @param ShareTokenRequest $shareTokenRequest
+	 * @param InterfaceService $interfaceService
+	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		IURLGenerator $urlGenerator,
-		ShareTokenRequest $shareTokenRequest
+		ShareTokenRequest $shareTokenRequest,
+		InterfaceService $interfaceService,
+		ConfigService $configService
 	) {
 		$this->urlGenerator = $urlGenerator;
 		$this->shareTokenRequest = $shareTokenRequest;
+		$this->interfaceService = $interfaceService;
+		$this->configService = $configService;
 	}
 
 
@@ -87,7 +100,7 @@ class ShareTokenService {
 		string $password = ''
 	): ShareToken {
 		if ($member->getUserType() !== Member::TYPE_MAIL
-		&& $member->getUserType() !== Member::TYPE_CONTACT) {
+			&& $member->getUserType() !== Member::TYPE_CONTACT) {
 			throw new ShareTokenNotFoundException();
 		}
 
@@ -119,7 +132,7 @@ class ShareTokenService {
 	 * @param ShareToken $shareToken
 	 */
 	public function setShareTokenLink(ShareToken $shareToken): void {
-		$link = $this->urlGenerator->linkToRouteAbsolute(
+		$link = $this->interfaceService->getFrontalPath(
 			'files_sharing.sharecontroller.showShare',
 			['token' => $shareToken->getToken()]
 		);

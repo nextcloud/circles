@@ -31,8 +31,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
+use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
+use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\RemoteRequest;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\UnknownInterfaceException;
@@ -67,6 +69,7 @@ class InterfaceService {
 
 	use TStringTools;
 	use TArrayTools;
+	use TNC22Logger;
 
 
 	/** @var IURLGenerator */
@@ -101,6 +104,8 @@ class InterfaceService {
 		$this->urlGenerator = $urlGenerator;
 		$this->remoteRequest = $remoteRequest;
 		$this->configService = $configService;
+
+		$this->setup('app', Application::APP_ID);
 	}
 
 
@@ -225,6 +230,50 @@ class InterfaceService {
 
 
 	/**
+	 * @param int $interface
+	 *
+	 * @return bool
+	 */
+	public function isInterfaceConfigured(int $interface): bool {
+		try {
+			$config = $this->getCloudIdConfigKey($interface);
+		} catch (UnknownInterfaceException $e) {
+			return false;
+		}
+
+		return ($this->configService->getAppValue($config) !== '');
+	}
+
+
+	/**
+	 * @param int $interface
+	 *
+	 * @return string
+	 * @throws UnknownInterfaceException
+	 */
+	private function getCloudIdConfigKey(int $interface): string {
+		switch ($interface) {
+			case self::IFACE_INTERNAL:
+				return ConfigService::INTERNAL_CLOUD_ID;
+			case self::IFACE_FRONTAL:
+				return ConfigService::FRONTAL_CLOUD_ID;
+			case self::IFACE0:
+				return ConfigService::IFACE0_CLOUD_ID;
+			case self::IFACE1:
+				return ConfigService::IFACE1_CLOUD_ID;
+			case self::IFACE2:
+				return ConfigService::IFACE2_CLOUD_ID;
+			case self::IFACE3:
+				return ConfigService::IFACE3_CLOUD_ID;
+			case self::IFACE4:
+				return ConfigService::IFACE4_CLOUD_ID;
+		}
+
+		throw new UnknownInterfaceException('unknown interface');
+	}
+
+
+	/**
 	 * @param bool $useString
 	 *
 	 * @return array
@@ -288,8 +337,12 @@ class InterfaceService {
 	 *
 	 * @throws UnknownInterfaceException
 	 */
-	public function getCloudInstance(): string {
-		switch ($this->getCurrentInterface()) {
+	public function getCloudInstance(int $interface = 0): string {
+		if ($interface === 0) {
+			$interface = $this->getCurrentInterface();
+		}
+
+		switch ($interface) {
 			case self::IFACE_INTERNAL:
 				return $this->configService->getInternalInstance();
 			case self::IFACE_FRONTAL:
@@ -299,7 +352,7 @@ class InterfaceService {
 			case self::IFACE2:
 			case self::IFACE3:
 			case self::IFACE4:
-				return $this->configService->getIfaceInstance($this->getCurrentInterface());
+				return $this->configService->getIfaceInstance($interface);
 			case self::IFACE_TEST:
 				return $this->getTestingInstance();
 		}
@@ -311,9 +364,13 @@ class InterfaceService {
 	/**
 	 * @throws UnknownInterfaceException
 	 */
-	public function getCloudPath(string $route = '', array $args = []): string {
+	public function getCloudPath(string $route = '', array $args = [], int $interface = 0): string {
+		if ($interface === 0) {
+			$interface = $this->getCurrentInterface();
+		}
+
 		$scheme = '';
-		switch ($this->getCurrentInterface()) {
+		switch ($interface) {
 			case self::IFACE_INTERNAL:
 				$scheme = $this->configService->getAppValue(ConfigService::INTERNAL_CLOUD_SCHEME);
 				break;
@@ -372,9 +429,82 @@ class InterfaceService {
 
 
 	/**
+	 * @param string $route
+	 * @param array $args
+	 *
+	 * @return string
+	 */
+	public function getLocalPath(string $route, array $args): string {
+		$base = $this->configService->getAppValue(ConfigService::FRONTAL_CLOUD_BASE);
+		if ($base === '') {
+			return $this->configService->getLoopbackPath($route, $args);
+		}
+
+		return rtrim($base, '/') . $this->urlGenerator->linkToRoute($route, $args);
+	}
+
+
+	/**
+	 * should be used when trying to generate an address
+	 *
+	 * @param string $route
+	 * @param array $args
+	 *
+	 * @return string
+	 */
+	public function getFrontalPath(string $route, array $args): string {
+		$frontalBase = $this->configService->getAppValue(ConfigService::FRONTAL_CLOUD_BASE);
+		if ($frontalBase !== '') {
+			return $this->getLocalPath($route, $args);
+		}
+
+		if ($this->isInterfaceConfigured(self::IFACE_FRONTAL)) {
+			try {
+				return $this->getCloudPath($route, $args, self::IFACE_FRONTAL);
+			} catch (UnknownInterfaceException $e) {
+			}
+		}
+
+		$ifaces = [self::IFACE0, self::IFACE1, self::IFACE2, self::IFACE3, self::IFACE4];
+		foreach ($ifaces as $iface) {
+			if ($this->isInterfaceConfigured($iface) && !$this->isInterfaceInternal($iface)) {
+				try {
+					return $this->getCloudPath($route, $args, $iface);
+				} catch (UnknownInterfaceException $e) {
+				}
+			}
+		}
+
+		if ($this->isInterfaceConfigured(self::IFACE_INTERNAL)) {
+			try {
+				return $this->getCloudPath($route, $args, self::IFACE_INTERNAL);
+			} catch (UnknownInterfaceException $e) {
+			}
+		}
+
+		foreach ($ifaces as $iface) {
+			if ($this->isInterfaceConfigured($iface) && $this->isInterfaceInternal($iface)) {
+				try {
+					return $this->getCloudPath($route, $args, $iface);
+				} catch (UnknownInterfaceException $e) {
+				}
+			}
+		}
+
+		try {
+			return $this->getCloudPath($route, $args);
+		} catch (UnknownInterfaceException $e) {
+		}
+
+		return $this->getLocalPath($route, $args);
+	}
+
+
+	/**
 	 * @return string
 	 */
 	private function getTestingInstance(): string {
 		return $this->configService->getAppValue(ConfigService::IFACE_TEST_ID);
 	}
+
 }

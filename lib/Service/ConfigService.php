@@ -53,6 +53,7 @@ class ConfigService {
 	use TArrayTools;
 
 
+	public const FRONTAL_CLOUD_BASE = 'frontal_cloud_base';
 	public const FRONTAL_CLOUD_ID = 'frontal_cloud_id';
 	public const FRONTAL_CLOUD_SCHEME = 'frontal_cloud_scheme';
 	public const INTERNAL_CLOUD_ID = 'internal_cloud_id';
@@ -115,6 +116,7 @@ class ConfigService {
 
 
 	private $defaults = [
+		self::FRONTAL_CLOUD_BASE => '',
 		self::FRONTAL_CLOUD_ID => '',
 		self::FRONTAL_CLOUD_SCHEME => 'https',
 		self::INTERNAL_CLOUD_ID => '',
