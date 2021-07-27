@@ -52,6 +52,7 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Membership;
 
 /**
  * Class RemoteService
@@ -194,6 +195,76 @@ class RemoteService extends NC22Signature {
 		foreach ($result as $item) {
 			try {
 				$member = new Member();
+				$member->import($item);
+				$members[] = $member;
+			} catch (InvalidItemException $e) {
+			}
+		}
+
+		return $members;
+	}
+
+
+	/**
+	 * @param string $circleId
+	 * @param string $instance
+	 * @param array $data
+	 *
+	 * @return Member[]
+	 * @throws FederatedItemException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws UnknownRemoteException
+	 */
+	public function getInheritedFromInstance(string $circleId, string $instance, array $data = []): array {
+		$result = $this->remoteStreamService->resultRequestRemoteInstance(
+			$instance,
+			RemoteInstance::INHERITED,
+			Request::TYPE_GET,
+			new SimpleDataStore($data),
+			['circleId' => $circleId]
+		);
+
+		$members = [];
+		foreach ($result as $item) {
+			try {
+				$member = new Member();
+				$member->import($item);
+				$members[] = $member;
+			} catch (InvalidItemException $e) {
+			}
+		}
+
+		return $members;
+	}
+
+
+	/**
+	 * @param string $circleId
+	 * @param string $instance
+	 * @param array $data
+	 *
+	 * @return Membership[]
+	 * @throws FederatedItemException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws UnknownRemoteException
+	 */
+	public function getMembershipsFromInstance(string $circleId, string $instance, array $data = []): array {
+		$result = $this->remoteStreamService->resultRequestRemoteInstance(
+			$instance,
+			RemoteInstance::MEMBERSHIPS,
+			Request::TYPE_GET,
+			new SimpleDataStore($data),
+			['circleId' => $circleId]
+		);
+
+		$members = [];
+		foreach ($result as $item) {
+			try {
+				$member = new Membership();
 				$member->import($item);
 				$members[] = $member;
 			} catch (InvalidItemException $e) {
