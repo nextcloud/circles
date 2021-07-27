@@ -35,7 +35,6 @@ use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Db\ShareTokenRequest;
 use OCA\Circles\Exceptions\ShareTokenAlreadyExistException;
 use OCA\Circles\Exceptions\ShareTokenNotFoundException;
-use OCA\Circles\Exceptions\UnknownInterfaceException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\ShareToken;
 use OCA\Circles\Model\ShareWrapper;
