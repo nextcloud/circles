@@ -357,7 +357,7 @@ class MembersList extends Base {
 							$member->getSingleId(),
 							true
 						);
-						$circle = $this->circleService->getCircle($member->getSingleId(), 0);
+						$circle = $this->circleService->getCircle($member->getSingleId());
 					}
 					$node = new NC22TreeNode(
 						$tree, new SimpleDataStore(
@@ -435,8 +435,12 @@ class MembersList extends Base {
 							$member,
 							$this->input->getOption('display-name')
 						);
-					$source = ($member->hasBasedOn()) ? $member->getBasedOn()->getSource() : '';
-					$line .= ' <info>Source</info>: ' . Circle::$DEF_SOURCE[$source];
+					if ($member->hasBasedOn()) {
+						$line .= ' <info>Source</info>: '
+								 . Circle::$DEF_SOURCE[$member->getBasedOn()->getSource()];
+					} else {
+						$line .= ' <info>Type</info>: ' . Member::$TYPE[$member->getUserType()];
+					}
 				}
 
 				if ($lineNumber === 2) {
