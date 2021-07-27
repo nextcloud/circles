@@ -368,6 +368,12 @@ class SingleMemberAdd implements
 			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[125], 125);
 		}
 
+		if ($circle->isConfig(Circle::CFG_LOCAL)
+			&& $federatedUser->getUserType() === Member::TYPE_CIRCLE
+			&& !$federatedUser->getBasedOn()->isConfig(Circle::CFG_LOCAL)) {
+			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[131], 131);
+		}
+
 		if ($member->getSingleId() === $circle->getSingleId()) {
 			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[128], 128);
 		}
