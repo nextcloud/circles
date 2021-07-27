@@ -155,7 +155,24 @@ class RemoteStreamService extends NC22Signature {
 		$app->setMember(
 			urldecode(
 				$this->interfaceService->getCloudPath(
-					'circles.Remote.member', ['type' => '{type}', 'userId' => '{userId}']
+					'circles.Remote.member',
+					['type' => '{type}', 'userId' => '{userId}']
+				)
+			)
+		);
+		$app->setInherited(
+			urldecode(
+				$this->interfaceService->getCloudPath(
+					'circles.Remote.inherited',
+					['circleId' => '{circleId}']
+				)
+			)
+		);
+		$app->setMemberships(
+			urldecode(
+				$this->interfaceService->getCloudPath(
+					'circles.Remote.memberships',
+					['circleId' => '{circleId}']
 				)
 			)
 		);

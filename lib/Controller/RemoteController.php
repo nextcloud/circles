@@ -33,6 +33,7 @@ namespace OCA\Circles\Controller;
 
 use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
 use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidOriginException;
+use ArtificialOwl\MySmallPhpTools\Exceptions\ItemNotFoundException;
 use ArtificialOwl\MySmallPhpTools\Exceptions\JsonNotRequestedException;
 use ArtificialOwl\MySmallPhpTools\Exceptions\MalformedArrayException;
 use ArtificialOwl\MySmallPhpTools\Exceptions\SignatoryException;
@@ -61,6 +62,7 @@ use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\InterfaceService;
 use OCA\Circles\Service\MemberService;
+use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Service\RemoteDownstreamService;
 use OCA\Circles\Service\RemoteStreamService;
 use OCP\AppFramework\Controller;
@@ -97,6 +99,9 @@ class RemoteController extends Controller {
 	/** @var MemberService */
 	private $memberService;
 
+	/** @var MembershipService */
+	private $membershipService;
+
 	/** @var InterfaceService */
 	private $interfaceService;
 
@@ -115,6 +120,7 @@ class RemoteController extends Controller {
 	 * @param FederatedUserService $federatedUserService
 	 * @param CircleService $circleService
 	 * @param MemberService $memberService
+	 * @param MembershipService $membershipService
 	 * @param InterfaceService $interfaceService
 	 * @param ConfigService $configService
 	 */
@@ -127,6 +133,7 @@ class RemoteController extends Controller {
 		FederatedUserService $federatedUserService,
 		CircleService $circleService,
 		MemberService $memberService,
+		MembershipService $membershipService,
 		InterfaceService $interfaceService,
 		ConfigService $configService
 	) {
@@ -137,6 +144,7 @@ class RemoteController extends Controller {
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
 		$this->memberService = $memberService;
+		$this->membershipService = $membershipService;
 		$this->interfaceService = $interfaceService;
 		$this->configService = $configService;
 
@@ -358,13 +366,62 @@ class RemoteController extends Controller {
 
 
 	/**
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 *
+	 * @param string $circleId
+	 *
+	 * @return DataResponse
+	 */
+	public function inherited(string $circleId): DataResponse {
+		try {
+			$this->extractDataFromFromRequest();
+		} catch (Exception $e) {
+			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
+		}
+
+		try {
+			$circle = $this->circleService->getCircle($circleId);
+
+			return new DataResponse($circle->getInheritedMembers());
+		} catch (Exception $e) {
+			return $this->exceptionResponse($e);
+		}
+	}
+
+
+	/**
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 *
+	 * @param string $circleId
+	 *
+	 * @return DataResponse
+	 */
+	public function memberships(string $circleId): DataResponse {
+		try {
+			$this->extractDataFromFromRequest();
+		} catch (Exception $e) {
+			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
+		}
+
+		try {
+			$circle = $this->circleService->getCircle($circleId);
+
+			return new DataResponse($circle->getMemberships());
+		} catch (Exception $e) {
+			return $this->exceptionResponse($e);
+		}
+	}
+
+
+	/**
 	 * @return FederatedEvent
+	 * @throws InvalidItemException
 	 * @throws InvalidOriginException
 	 * @throws MalformedArrayException
 	 * @throws SignatoryException
 	 * @throws SignatureException
-	 * @throws InvalidItemException
-	 * @throws UnknownInterfaceException
 	 */
 	private function extractEventFromRequest(): FederatedEvent {
 		$signed = $this->remoteStreamService->incomingSignedRequest();
@@ -402,28 +459,22 @@ class RemoteController extends Controller {
 		try {
 			/** @var FederatedUser $initiator */
 			$initiator = $store->gObj('initiator', FederatedUser::class);
-			if (!is_null($initiator)) {
-				$this->federatedUserService->setCurrentUser($initiator);
-			}
-		} catch (InvalidItemException $e) {
+			$this->federatedUserService->setCurrentUser($initiator);
+		} catch (InvalidItemException | ItemNotFoundException $e) {
 		}
 
 		try {
 			/** @var FederatedUser $initiator */
 			$filterMember = $store->gObj('filterMember', Member::class);
-			if (!is_null($filterMember)) {
-				$data->aObj('filterMember', $filterMember);
-			}
-		} catch (InvalidItemException $e) {
+			$data->aObj('filterMember', $filterMember);
+		} catch (InvalidItemException | ItemNotFoundException $e) {
 		}
 
 		try {
 			/** @var FederatedUser $initiator */
 			$filterCircle = $store->gObj('filterCircle', Circle::class);
-			if (!is_null($filterCircle)) {
-				$data->aObj('filterCircle', $filterCircle);
-			}
-		} catch (InvalidItemException $e) {
+			$data->aObj('filterCircle', $filterCircle);
+		} catch (InvalidItemException | ItemNotFoundException $e) {
 		}
 
 		return $data;
