@@ -106,13 +106,13 @@ class NotificationService {
 		$declineAction = $notification->createAction();
 		$declineUrl = $this->linkToOCS('circles.Local.circleLeave', ['circleId' => $member->getCircleId()]);
 		$declineAction->setLabel('refuse')
-					  ->setLink($this->urlGenerator->getAbsoluteURL($declineUrl), 'PUT');
+					  ->setLink($declineUrl, 'PUT');
 		$notification->addAction($declineAction);
 
 		$acceptAction = $notification->createAction();
 		$acceptUrl = $this->linkToOCS('circles.Local.circleJoin', ['circleId' => $member->getCircleId()]);
 		$acceptAction->setLabel('accept')
-					 ->setLink($this->urlGenerator->getAbsoluteURL($acceptUrl), 'PUT');
+					 ->setLink($acceptUrl, 'PUT');
 		$notification->addAction($acceptAction);
 
 		$this->notificationManager->notify($notification);
@@ -157,7 +157,7 @@ class NotificationService {
 				]
 			);
 			$declineAction->setLabel('refuse')
-						  ->setLink($this->urlGenerator->getAbsoluteURL($declineUrl), 'DELETE');
+						  ->setLink($declineUrl, 'DELETE');
 			$notification->addAction($declineAction);
 
 			$acceptAction = $notification->createAction();
@@ -169,7 +169,7 @@ class NotificationService {
 				]
 			);
 			$acceptAction->setLabel('accept')
-						 ->setLink($this->urlGenerator->getAbsoluteURL($acceptUrl), 'PUT');
+						 ->setLink($acceptUrl, 'PUT');
 			$notification->addAction($acceptAction);
 
 			$this->notificationManager->notify($notification);

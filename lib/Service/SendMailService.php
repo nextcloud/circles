@@ -110,7 +110,12 @@ class SendMailService {
 			];
 		}
 
-		$template = $this->generateMailExitingShares($invitedBy, $circle->getDisplayName());
+		$template = $this->generateMailExitingShares(
+			$invitedBy,
+			$circle->getDisplayName(),
+			sizeof($links) > 1
+		);
+		
 		$this->fillMailExistingShares($template, $links);
 		foreach ($mails as $mail) {
 			try {
@@ -124,12 +129,23 @@ class SendMailService {
 	/**
 	 * @param string $author
 	 * @param string $circleName
+	 * @param bool $multiple
 	 *
 	 * @return IEMailTemplate
 	 */
-	private function generateMailExitingShares(string $author, string $circleName): IEMailTemplate {
+	private function generateMailExitingShares(
+		string $author,
+		string $circleName,
+		bool $multiple = false
+	): IEMailTemplate {
 		$emailTemplate = $this->mailer->createEMailTemplate('circles.ExistingShareNotification', []);
 		$emailTemplate->addHeader();
+
+		if ($multiple) {
+			$text = $this->l10n->t('%s shared multiple files with "%s".', [$author, $circleName]);
+		} else {
+			$text = $this->l10n->t('%s shared a file with "%s".', [$author, $circleName]);
+		}
 
 		$text = $this->l10n->t('%s shared multiple files with "%s".', [$author, $circleName]);
 		$emailTemplate->addBodyText(htmlspecialchars($text), $text);
