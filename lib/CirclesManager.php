@@ -396,6 +396,16 @@ class CirclesManager {
 
 
 	/**
+	 * @param Circle $circle
+	 *
+	 * @return string
+	 */
+	public function getDefinition(Circle $circle): string {
+		return $this->circleService->getDefinition($circle);
+	}
+
+
+	/**
 	 * WIP
 	 *
 	 * @param string $circleId
