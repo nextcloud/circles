@@ -67,6 +67,8 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 	public const CIRCLE = 'circle';
 	public const MEMBERS = 'members';
 	public const MEMBER = 'member';
+	public const MEMBERSHIPS = 'memberships';
+	public const INHERITED = 'inherited';
 
 
 	/** @var int */
@@ -104,6 +106,12 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 
 	/** @var string */
 	private $member = '';
+
+	/** @var string */
+	private $inherited = '';
+
+	/** @var string */
+	private $memberships = '';
 
 	/** @var string */
 	private $uid = '';
@@ -327,6 +335,44 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 	/**
 	 * @return string
 	 */
+	public function getInherited(): string {
+		return $this->inherited;
+	}
+
+	/**
+	 * @param string $inherited
+	 *
+	 * @return self
+	 */
+	public function setInherited(string $inherited): self {
+		$this->inherited = $inherited;
+
+		return $this;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getMemberships(): string {
+		return $this->memberships;
+	}
+
+	/**
+	 * @param string $memberships
+	 *
+	 * @return self
+	 */
+	public function setMemberships(string $memberships): self {
+		$this->memberships = $memberships;
+
+		return $this;
+	}
+
+
+	/**
+	 * @return string
+	 */
 	public function getMember(): string {
 		return $this->member;
 	}
@@ -441,6 +487,8 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 			 ->setCircle($this->get('circle', $data))
 			 ->setMembers($this->get('members', $data))
 			 ->setMember($this->get('member', $data))
+			 ->setInherited($this->get('inherited', $data))
+			 ->setMemberships($this->get('memberships', $data))
 			 ->setUid($this->get('uid', $data));
 
 		$algo = '';
@@ -470,6 +518,8 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 			'circle' => $this->getCircle(),
 			'members' => $this->getMembers(),
 			'member' => $this->getMember(),
+			'inherited' => $this->getInherited(),
+			'memberships' => $this->getMemberships()
 		];
 
 		if ($this->getAuthSigned() !== '') {
