@@ -506,5 +506,4 @@ class InterfaceService {
 	private function getTestingInstance(): string {
 		return $this->configService->getAppValue(ConfigService::IFACE_TEST_ID);
 	}
-
 }
