@@ -57,15 +57,12 @@ use OCA\Circles\Service\InterfaceService;
 use OCA\Circles\Service\RemoteService;
 use OCP\IURLGenerator;
 
-
 /**
  * Class ModelManager
  *
  * @package OCA\Circles\Model
  */
 class ModelManager {
-
-
 	use TNC22Logger;
 
 

@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\FederatedItems\Files;
 
 use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
+use ArtificialOwl\MySmallPhpTools\Exceptions\ItemNotFoundException;
 use ArtificialOwl\MySmallPhpTools\Exceptions\UnknownTypeException;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
@@ -104,6 +105,7 @@ class FileShare implements
 	 * @throws InvalidItemException
 	 * @throws UnknownTypeException
 	 * @throws CircleNotFoundException
+	 * @throws ItemNotFoundException
 	 */
 	public function manage(FederatedEvent $event): void {
 		$mount = null;

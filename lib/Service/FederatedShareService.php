@@ -69,6 +69,7 @@ class FederatedShareService extends NC22Signature {
 	 * FederatedEventService constructor.
 	 *
 	 * @param FederatedEventService $federatedEventService
+	 * @param CircleService $circleService
 	 */
 	public function __construct(FederatedEventService $federatedEventService, CircleService $circleService) {
 		$this->federatedEventService = $federatedEventService;

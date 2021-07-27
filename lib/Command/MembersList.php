@@ -40,6 +40,7 @@ use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22TreeNode;
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22ConsoleTree;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
+use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
@@ -412,7 +413,10 @@ class MembersList extends Base {
 			$circle = null;
 			if ($data->hasKey('circle')) {
 				/** @var Circle $circle */
-				$circle = $data->gObj('circle', Circle::class);
+				try {
+					$circle = $data->gObj('circle', Circle::class);
+				} catch (Exception $e) {
+				}
 			}
 
 			if ($data->hasKey('member')) {
