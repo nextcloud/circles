@@ -588,6 +588,10 @@ class ConfigService {
 	public function displayFederatedUser(IFederatedUser $federatedUser, bool $displayName = false): string {
 		$name = ($displayName) ? $federatedUser->getDisplayName() : $federatedUser->getUserId();
 
+		if ($federatedUser->getUserType() === Member::TYPE_MAIL) {
+			return $name . ' (' . $this->displayInstance($federatedUser->getInstance(), false) . ')';
+		}
+
 		return $name . $this->displayInstance($federatedUser->getInstance(), true);
 	}
 
