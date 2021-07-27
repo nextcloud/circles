@@ -31,23 +31,32 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
+use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
+use OCA\Circles\AppInfo\Application;
+use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\CoreQueryBuilder;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\FileCacheNotFoundException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownInterfaceException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\IMemberships;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\InterfaceService;
+use OCA\Circles\Service\RemoteService;
 use OCP\IURLGenerator;
+
 
 /**
  * Class ModelManager
@@ -57,11 +66,17 @@ use OCP\IURLGenerator;
 class ModelManager {
 
 
+	use TNC22Logger;
+
+
 	/** @var IURLGenerator */
 	private $urlGenerator;
 
 	/** @var CoreQueryBuilder */
 	private $coreRequestBuilder;
+
+	/** @var CircleRequest */
+	private $circleRequest;
 
 	/** @var MemberRequest */
 	private $memberRequest;
@@ -71,6 +86,9 @@ class ModelManager {
 
 	/** @var InterfaceService */
 	private $interfaceService;
+
+	/** @var RemoteService */
+	private $remoteService;
 
 	/** @var ConfigService */
 	private $configService;
@@ -85,25 +103,33 @@ class ModelManager {
 	 *
 	 * @param IURLGenerator $urlGenerator
 	 * @param CoreQueryBuilder $coreRequestBuilder
+	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
 	 * @param MembershipRequest $membershipRequest
 	 * @param InterfaceService $interfaceService
+	 * @param RemoteService $remoteService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		IURLGenerator $urlGenerator,
 		CoreQueryBuilder $coreRequestBuilder,
+		CircleRequest $circleRequest,
 		MemberRequest $memberRequest,
 		MembershipRequest $membershipRequest,
 		InterfaceService $interfaceService,
+		RemoteService $remoteService,
 		ConfigService $configService
 	) {
 		$this->urlGenerator = $urlGenerator;
 		$this->coreRequestBuilder = $coreRequestBuilder;
+		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
 		$this->membershipRequest = $membershipRequest;
 		$this->interfaceService = $interfaceService;
+		$this->remoteService = $remoteService;
 		$this->configService = $configService;
+
+		$this->setup('app', Application::APP_ID);
 	}
 
 
@@ -139,6 +165,36 @@ class ModelManager {
 			);
 		} catch (RequestBuilderException $e) {
 			// TODO: debug log
+		}
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 * @param bool $detailed
+	 *
+	 * @throws RemoteNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws FederatedItemException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws UnknownRemoteException
+	 */
+	public function getRemoteInheritedMembers(Circle $circle, bool $detailed = false): void {
+		foreach ($circle->getInheritedMembers() as $inherited) {
+			if ($inherited->getUserType() === Member::TYPE_CIRCLE
+				&& !$this->configService->isLocalInstance($inherited->getInstance())) {
+				try {
+					$this->circleRequest->getCircle($inherited->getSingleId());
+				} catch (CircleNotFoundException $e) {
+					$remote = $this->remoteService->getInheritedFromInstance(
+						$inherited->getSingleId(),
+						$inherited->getInstance()
+					);
+
+					$circle->addInheritedMembers($remote);
+				}
+			}
 		}
 	}
 
