@@ -43,6 +43,7 @@ use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Model\Probes\MemberProbe;
+use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
 use OCP\Contacts\IManager;
@@ -81,11 +82,14 @@ class Notifier implements INotifier {
 	/** @var ICloudIdManager */
 	protected $cloudIdManager;
 
+	/** @var MemberService */
+	private $memberService;
+
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
-	/** @var MemberService */
-	private $memberService;
+	/** @var ConfigService */
+	private $configService;
 
 
 	public function __construct(
@@ -95,7 +99,8 @@ class Notifier implements INotifier {
 		IURLGenerator $urlGenerator,
 		ICloudIdManager $cloudIdManager,
 		MemberService $memberService,
-		FederatedUserService $federatedUserService
+		FederatedUserService $federatedUserService,
+		ConfigService $configService
 	) {
 		$this->l10n = $l10n;
 		$this->factory = $factory;
@@ -105,6 +110,7 @@ class Notifier implements INotifier {
 
 		$this->federatedUserService = $federatedUserService;
 		$this->memberService = $memberService;
+		$this->configService = $configService;
 
 		$this->setup('app', Application::APP_ID);
 	}
@@ -203,7 +209,7 @@ class Notifier implements INotifier {
 				$subject = $this->l10n->t(
 					'%1$s sent a request to be a member of the Circle "%2$s"',
 					[
-						$member->getDisplayName(),
+						$this->configService->displayFederatedUser($member, true),
 						$member->getCircle()->getDisplayName()
 					]
 				);
