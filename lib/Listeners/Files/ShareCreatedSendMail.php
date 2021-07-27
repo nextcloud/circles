@@ -36,6 +36,12 @@ use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use Exception;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Events\Files\FileShareCreatedEvent;
+use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\ShareWrapper;
 use OCA\Circles\Service\ConfigService;
@@ -100,6 +106,13 @@ class ShareCreatedSendMail implements IEventListener {
 
 	/**
 	 * @param Event $event
+	 *
+	 * @throws FederatedItemException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
 	 */
 	public function handle(Event $event): void {
 		if (!$event instanceof FileShareCreatedEvent) {
@@ -108,7 +121,7 @@ class ShareCreatedSendMail implements IEventListener {
 
 		$circle = $event->getCircle();
 
-		foreach ($circle->getInheritedMembers() as $member) {
+		foreach ($circle->getInheritedMembers(false, false) as $member) {
 			if ($member->getUserType() !== Member::TYPE_MAIL
 				&& $member->getUserType() !== Member::TYPE_CONTACT) {
 				continue;
@@ -123,6 +136,8 @@ class ShareCreatedSendMail implements IEventListener {
 				}
 
 				$data = $shares->gData($member->getId());
+
+				// TODO: this must be run even if there is no shares, and only if the $origin === $member->getInstance() and its aliases
 				$mails = array_merge($mails, $data->gArray('mails'));
 
 				// TODO: is it safe to use $origin to compare getInstance() ?

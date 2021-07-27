@@ -39,7 +39,13 @@ use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use DateTime;
 use JsonSerializable;
 use OCA\Circles\Exceptions\CircleNotFoundException;
+use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\IMemberships;
 
 /**
@@ -456,14 +462,53 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	}
 
 	/**
+	 * @param array $members
+	 *
+	 * @return IMemberships
+	 */
+	public function addInheritedMembers(array $members): IMemberships {
+		$knownIds = array_map(
+			function (Member $member): string {
+				return $member->getId();
+			}, $this->inheritedMembers
+		);
+
+		foreach ($members as $member) {
+			if (!array_key_exists($member->getId(), $knownIds)) {
+				$this->inheritedMembers[] = $member;
+				$knownIds[] = $member->getId();
+			}
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * if $remote is true, it will returns also details on inherited members from remote+locals Circles.
+	 * This should be used only if extra details are required (mail address ?) as it will send a request to
+	 * the remote instance if the circleId is not locally known.
+	 * because of the resource needed to retrieve this data, $remote=true should not be used on main process !
+	 *
 	 * @param bool $detailed
+	 * @param bool $remote
 	 *
 	 * @return Member[]
+	 * @throws FederatedItemException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
 	 */
-	public function getInheritedMembers(bool $detailed = false): array {
+	public function getInheritedMembers(bool $detailed = false, bool $remote = false): array {
 		if (is_null($this->inheritedMembers)
 			|| ($detailed && !$this->detailedInheritedMember)) {
 			$this->getManager()->getInheritedMembers($this, $detailed);
+		}
+
+		if ($remote) {
+			$this->getManager()->getRemoteInheritedMembers($this, $detailed);
 		}
 
 		return $this->inheritedMembers;
