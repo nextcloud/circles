@@ -157,8 +157,7 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	public static $DEF_CFG_CORE_FILTER = [
 		1,
 		2,
-		4,
-		4096
+		4
 	];
 
 	public static $DEF_CFG_SYSTEM_FILTER = [

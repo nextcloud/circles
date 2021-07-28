@@ -90,6 +90,16 @@ class CircleConfig implements
 			}
 		}
 
+		if ($circle->isConfig(Circle::CFG_LOCAL, $config)
+			&& !$circle->isConfig(Circle::CFG_LOCAL)) {
+			$config -= Circle::CFG_LOCAL;
+		}
+
+		if (!$circle->isConfig(Circle::CFG_LOCAL, $config)
+			&& $circle->isConfig(Circle::CFG_LOCAL)) {
+			$config += Circle::CFG_LOCAL;
+		}
+
 		if (!$circle->isConfig(Circle::CFG_OPEN, $config)
 			&& $circle->isConfig(Circle::CFG_OPEN)
 			&& $circle->isConfig(Circle::CFG_REQUEST, $config)
