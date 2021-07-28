@@ -163,6 +163,8 @@
     "This user does not exist" : "Ten użytkownik nie istnieje",
     "Email format is not valid" : "Adres e-mail jest nieprawidłowy",
     "This contact is not available" : "Kontakt jest niedostępny",
+    "%s shared a file with \"%s\"." : "%s udostępnił plik z \"%s\".",
+    "%s shared a file with you." : "%s udostępnił Tobie plik.",
     "This item is already shared with this circle" : "Element jest już udostępniony w tym kręgu",
     "Could not find share" : "Nie można znaleźć udostępnienia",
     "Bring cloud-users closer together." : "Integruje użytkowników chmury.",
