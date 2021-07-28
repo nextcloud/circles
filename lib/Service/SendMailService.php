@@ -78,12 +78,13 @@ class SendMailService {
 
 
 	/**
+	 * @param string $author
 	 * @param Circle $circle
 	 * @param Member $member
 	 * @param ShareWrapper[] $shares
 	 * @param array $mails
 	 */
-	public function generateMail(Circle $circle, Member $member, array $shares, array $mails): void {
+	public function generateMail(string $author, Circle $circle, Member $member, array $shares, array $mails): void {
 		if (empty($shares)) {
 			return;
 		}
@@ -96,12 +97,6 @@ class SendMailService {
 			return;
 		}
 
-		if ($member->hasInvitedBy()) {
-			$invitedBy = $member->getInvitedBy()->getDisplayName();
-		} else {
-			$invitedBy = 'someone';
-		}
-
 		$links = [];
 		foreach ($shares as $share) {
 			$links[] = [
@@ -111,15 +106,15 @@ class SendMailService {
 		}
 
 		$template = $this->generateMailExitingShares(
-			$invitedBy,
+			$author,
 			$circle->getDisplayName(),
 			sizeof($links) > 1
 		);
-		
+
 		$this->fillMailExistingShares($template, $links);
 		foreach ($mails as $mail) {
 			try {
-				$this->sendMailExistingShares($template, $invitedBy, $mail, sizeof($links) > 1);
+				$this->sendMailExistingShares($template, $author, $mail, sizeof($links) > 1);
 			} catch (Exception $e) {
 			}
 		}
