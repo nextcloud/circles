@@ -441,6 +441,41 @@ class RemoteStreamService extends NC22Signature {
 
 
 	/**
+	 * @param string $address
+	 *
+	 * @return RemoteInstance
+	 * @throws RemoteNotFoundException
+	 */
+	public function getRemoteInstanceFromAddress(string $address): RemoteInstance {
+		$remotes = $this->remoteRequest->getAllInstances();
+		foreach ($remotes as $remote) {
+			if ($remote->getInstance() === $address || in_array($address, $remote->getAliases())) {
+				return $remote;
+			}
+		}
+
+		throw new RemoteNotFoundException();
+	}
+
+
+	/**
+	 * @param string $instance
+	 * @param string $check
+	 *
+	 * @return bool
+	 * @throws RemoteNotFoundException
+	 */
+	public function isFromSameInstance(string $instance, string $check): bool {
+		$remote = $this->getRemoteInstanceFromAddress($instance);
+		if ($remote->getInstance() === $check || in_array($check, $remote->getAliases())) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
 	 * Confirm the Auth of a RemoteInstance, based on the result from a request
 	 *
 	 * @param RemoteInstance $remote
