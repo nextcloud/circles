@@ -36,7 +36,13 @@ use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use Exception;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Events\Files\CreatingFileShareEvent;
+use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\ShareWrapperNotFoundException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\ShareWrapper;
 use OCA\Circles\Service\ConfigService;
@@ -94,6 +100,13 @@ class CreatingShareSendMail implements IEventListener {
 
 	/**
 	 * @param Event $event
+	 *
+	 * @throws FederatedItemException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
 	 */
 	public function handle(Event $event): void {
 		if (!$event instanceof CreatingFileShareEvent) {
@@ -105,7 +118,7 @@ class CreatingShareSendMail implements IEventListener {
 		$federatedEvent = $event->getFederatedEvent();
 
 		$result = [];
-		foreach ($circle->getInheritedMembers() as $member) {
+		foreach ($circle->getInheritedMembers(false, true) as $member) {
 			if ($member->getUserType() !== Member::TYPE_MAIL
 				&& $member->getUserType() !== Member::TYPE_CONTACT) {
 				continue;
@@ -136,6 +149,6 @@ class CreatingShareSendMail implements IEventListener {
 			];
 		}
 
-		$event->getFederatedEvent()->setResultEntry('shares', $result);
+		$event->getFederatedEvent()->setResultEntry('info', $result);
 	}
 }

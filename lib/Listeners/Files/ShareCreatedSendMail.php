@@ -46,6 +46,7 @@ use OCA\Circles\Model\Member;
 use OCA\Circles\Model\ShareWrapper;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\ContactService;
+use OCA\Circles\Service\RemoteStreamService;
 use OCA\Circles\Service\SendMailService;
 use OCA\Circles\Service\ShareTokenService;
 use OCA\Circles\Service\ShareWrapperService;
@@ -68,6 +69,9 @@ class ShareCreatedSendMail implements IEventListener {
 	/** @var ShareTokenService */
 	private $shareTokenService;
 
+	/** @var RemoteStreamService */
+	private $remoteStreamService;
+
 	/** @var SendMailService */
 	private $sendMailService;
 
@@ -83,6 +87,7 @@ class ShareCreatedSendMail implements IEventListener {
 	 *
 	 * @param ShareWrapperService $shareWrapperService
 	 * @param ShareTokenService $shareTokenService
+	 * @param RemoteStreamService $remoteStreamService
 	 * @param SendMailService $sendMailService
 	 * @param ContactService $contactService
 	 * @param ConfigService $configService
@@ -90,12 +95,14 @@ class ShareCreatedSendMail implements IEventListener {
 	public function __construct(
 		ShareWrapperService $shareWrapperService,
 		ShareTokenService $shareTokenService,
+		RemoteStreamService $remoteStreamService,
 		SendMailService $sendMailService,
 		ContactService $contactService,
 		ConfigService $configService
 	) {
 		$this->shareWrapperService = $shareWrapperService;
 		$this->shareTokenService = $shareTokenService;
+		$this->remoteStreamService = $remoteStreamService;
 		$this->sendMailService = $sendMailService;
 		$this->contactService = $contactService;
 		$this->configService = $configService;
@@ -109,7 +116,6 @@ class ShareCreatedSendMail implements IEventListener {
 	 *
 	 * @throws FederatedItemException
 	 * @throws RemoteInstanceException
-	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
 	 * @throws RequestBuilderException
 	 * @throws UnknownRemoteException
@@ -121,7 +127,7 @@ class ShareCreatedSendMail implements IEventListener {
 
 		$circle = $event->getCircle();
 
-		foreach ($circle->getInheritedMembers(false, false) as $member) {
+		foreach ($circle->getInheritedMembers(false, true) as $member) {
 			if ($member->getUserType() !== Member::TYPE_MAIL
 				&& $member->getUserType() !== Member::TYPE_CONTACT) {
 				continue;
@@ -130,30 +136,37 @@ class ShareCreatedSendMail implements IEventListener {
 			$mails = [];
 			$share = null;
 			foreach ($event->getResults() as $origin => $item) {
-				$shares = $item->gData('shares');
-				if (!$shares->hasKey($member->getId())) {
+				$info = $item->gData('info');
+				if (!$info->hasKey($member->getId())) {
 					continue;
 				}
 
-				$data = $shares->gData($member->getId());
-
-				// TODO: this must be run even if there is no shares, and only if the $origin === $member->getInstance() and its aliases
-				$mails = array_merge($mails, $data->gArray('mails'));
-
-				// TODO: is it safe to use $origin to compare getInstance() ?
-				// TODO: do we need to check the $origin ?
-				// TODO: Solution would be to check the origin based on aliases using RemoteInstanceService
-//				if ($member->getUserType() === Member::TYPE_CONTACT && $member->getInstance() === $origin) {
+				$data = $info->gData($member->getId());
 				try {
+					if (($this->configService->isLocalInstance($member->getInstance())
+						 && $this->configService->isLocalInstance($origin))
+						|| $this->remoteStreamService->isFromSameInstance($origin, $member->getInstance())) {
+						$mails = $data->gArray('mails');
+					}
+				} catch (RemoteNotFoundException $e) {
+					continue;
+				}
+
+				try {
+					/** @var ShareWrapper $share */
 					$share = $data->gObj('share', ShareWrapper::class);
 				} catch (Exception $e) {
 				}
-
-//				}
 			}
 
 			if (!is_null($share)) {
-				$this->sendMailService->generateMail($circle, $member, [$share], $mails);
+				if ($share->hasInitiator()) {
+					$author = $share->getInitiator()->getDisplayName();
+				} else {
+					$author = 'someone';
+				}
+
+				$this->sendMailService->generateMail($author, $circle, $member, [$share], $mails);
 			}
 		}
 	}

@@ -120,7 +120,13 @@ class MemberAddedSendMail implements IEventListener {
 //				}
 			}
 
-			$this->sendMailService->generateMail($circle, $member, $shares, $mails);
+			if ($member->hasInvitedBy()) {
+				$author = $member->getInvitedBy()->getDisplayName();
+			} else {
+				$author = 'someone';
+			}
+
+			$this->sendMailService->generateMail($author, $circle, $member, $shares, $mails);
 		}
 	}
 }
