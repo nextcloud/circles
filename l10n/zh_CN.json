@@ -163,6 +163,7 @@
     "This user does not exist" : "此用户不存在",
     "Email format is not valid" : "电子邮件格式无效",
     "This contact is not available" : "此联系人不可用",
+    "%s shared a file with \"%s\"." : "%s 和 \"%s\"分享了一个文件",
     "%s shared a file with you." : "%s 和你分享了一个文件",
     "This item is already shared with this circle" : "这个项目已经分享给这个圈子了",
     "Could not find share" : "查找不到共享",

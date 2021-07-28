@@ -165,6 +165,7 @@ OC.L10N.register(
     "This user does not exist" : "Tento uživatel neexistuje",
     "Email format is not valid" : "Neplatný formát e-mailu",
     "This contact is not available" : "Tento kontakt není k dispozici",
+    "%s shared a file with \"%s\"." : "%s nasdílel(a) soubor uživateli „%s“",
     "%s shared a file with you." : "%s vám nasdílel(a) soubor.",
     "This item is already shared with this circle" : "Tato položka už je v tomto okruhu sdílená",
     "Could not find share" : "Sdílení se nedaří nalézt",
