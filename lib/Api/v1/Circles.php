@@ -212,10 +212,7 @@ class Circles {
 	 *
 	 */
 	public static function getMember($circleUniqueId, $ident, $type, $forceAll = false) {
-//		$c = self::getContainer();
-//
-//		return $c->query(MembersService::class)
-//				 ->getMember($circleUniqueId, $ident, $type, $forceAll);
+		throw new \BadMethodCallException('Method is deprecated and not longer works');
 	}
 
 
@@ -232,9 +229,6 @@ class Circles {
 	 *
 	 */
 	public static function getFilesForCircles($circleUniqueIds) {
-//		$c = self::getContainer();
-//
-//		return $c->query(CirclesService::class)
-//				 ->getFilesForCircles($circleUniqueIds);
+		throw new \BadMethodCallException('Method is deprecated and not longer works');
 	}
 }
