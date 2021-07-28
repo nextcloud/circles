@@ -206,6 +206,11 @@ class CirclesConfig extends Base {
 	}
 
 
+	/**
+	 * @param Circle $circle
+	 *
+	 * @return array
+	 */
 	private function filterValidConfig(Circle $circle): array {
 		$listing = Circle::$DEF_CFG;
 		$filters = Circle::$DEF_CFG_CORE_FILTER;
