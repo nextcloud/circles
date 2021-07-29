@@ -550,7 +550,7 @@ class LocalController extends OcsController {
 	public function link(string $circleId, string $singleId): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
-			$membership = $this->membershipService->getMembership($circleId, $singleId);
+			$membership = $this->membershipService->getMembership($circleId, $singleId, true);
 
 			return new DataResponse($this->serialize($membership));
 		} catch (Exception $e) {

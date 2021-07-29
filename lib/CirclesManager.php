@@ -385,13 +385,14 @@ class CirclesManager {
 	/**
 	 * @param string $circleId
 	 * @param string $singleId
+	 * @param bool $detailed
 	 *
 	 * @return Membership
 	 * @throws MembershipNotFoundException
 	 * @throws RequestBuilderException
 	 */
-	public function getLink(string $circleId, string $singleId): Membership {
-		return $this->membershipService->getMembership($circleId, $singleId);
+	public function getLink(string $circleId, string $singleId, bool $detailed = false): Membership {
+		return $this->membershipService->getMembership($circleId, $singleId, $detailed);
 	}
 
 
