@@ -167,10 +167,12 @@ class MembershipService {
 	 * @throws MembershipNotFoundException
 	 * @throws RequestBuilderException
 	 */
-	public function getMembership(string $circleId, string $singleId): Membership {
+	public function getMembership(string $circleId, string $singleId, bool $detailed = false): Membership {
 		$membership = $this->membershipRequest->getMembership($circleId, $singleId);
-		$details = $this->circleRequest->getCirclesByIds($membership->getInheritancePath());
-		$membership->setInheritanceDetails($details);
+		if ($detailed) {
+			$details = $this->circleRequest->getCirclesByIds($membership->getInheritancePath());
+			$membership->setInheritanceDetails($details);
+		}
 
 		return $membership;
 	}
