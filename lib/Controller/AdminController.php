@@ -506,7 +506,7 @@ class AdminController extends OcsController {
 	public function link(string $emulated, string $circleId, string $singleId): DataResponse {
 		try {
 			$this->setLocalFederatedUser($emulated);
-			$membership = $this->membershipService->getMembership($circleId, $singleId);
+			$membership = $this->membershipService->getMembership($circleId, $singleId, true);
 
 			return new DataResponse($this->serialize($membership));
 		} catch (Exception $e) {
