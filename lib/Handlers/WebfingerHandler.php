@@ -111,7 +111,7 @@ class WebfingerHandler implements IHandler {
 		}
 
 		try {
-			$this->interfaceService->setCurrentInterfaceFromRequest($request, $request->getParam('check', ''));
+			$this->interfaceService->setCurrentInterfaceFromRequest($request, $request->getParam('test', ''));
 			$this->remoteStreamService->getAppSignatory();
 			$href = $this->interfaceService->getCloudPath('circles.Remote.appService');
 			$info = [
