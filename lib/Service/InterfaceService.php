@@ -369,31 +369,39 @@ class InterfaceService {
 			$interface = $this->getCurrentInterface();
 		}
 
-		$scheme = '';
+		$scheme = $path = '';
 		switch ($interface) {
 			case self::IFACE_INTERNAL:
 				$scheme = $this->configService->getAppValue(ConfigService::INTERNAL_CLOUD_SCHEME);
+				$path = $this->configService->getAppValue(ConfigService::INTERNAL_CLOUD_PATH);
 				break;
 			case self::IFACE_FRONTAL:
 				$scheme = $this->configService->getAppValue(ConfigService::FRONTAL_CLOUD_SCHEME);
+				$path = $this->configService->getAppValue(ConfigService::FRONTAL_CLOUD_PATH);
 				break;
 			case self::IFACE0:
 				$scheme = $this->configService->getAppValue(ConfigService::IFACE0_CLOUD_SCHEME);
+				$path = $this->configService->getAppValue(ConfigService::IFACE0_CLOUD_PATH);
 				break;
 			case self::IFACE1:
 				$scheme = $this->configService->getAppValue(ConfigService::IFACE1_CLOUD_SCHEME);
+				$path = $this->configService->getAppValue(ConfigService::IFACE1_CLOUD_PATH);
 				break;
 			case self::IFACE2:
 				$scheme = $this->configService->getAppValue(ConfigService::IFACE2_CLOUD_SCHEME);
+				$path = $this->configService->getAppValue(ConfigService::IFACE2_CLOUD_PATH);
 				break;
 			case self::IFACE3:
 				$scheme = $this->configService->getAppValue(ConfigService::IFACE3_CLOUD_SCHEME);
+				$path = $this->configService->getAppValue(ConfigService::IFACE3_CLOUD_PATH);
 				break;
 			case self::IFACE4:
 				$scheme = $this->configService->getAppValue(ConfigService::IFACE4_CLOUD_SCHEME);
+				$path = $this->configService->getAppValue(ConfigService::IFACE4_CLOUD_PATH);
 				break;
 			case self::IFACE_TEST:
 				$scheme = $this->configService->getAppValue(ConfigService::IFACE_TEST_SCHEME);
+				$path = $this->configService->getAppValue(ConfigService::IFACE_TEST_PATH);
 				break;
 		}
 
@@ -401,13 +409,12 @@ class InterfaceService {
 			throw new UnknownInterfaceException('misconfigured scheme');
 		}
 
-		$base = $scheme . '://' . $this->getCloudInstance();
-
+		$base = $scheme . '://' . $this->getCloudInstance($interface) . $path;
 		if ($route === '') {
 			return $base;
 		}
 
-		return $base . $this->urlGenerator->linkToRoute($route, $args);
+		return $base . $this->configService->linkToRoute($route, $args);
 	}
 
 
@@ -440,7 +447,7 @@ class InterfaceService {
 			return $this->configService->getLoopbackPath($route, $args);
 		}
 
-		return rtrim($base, '/') . $this->urlGenerator->linkToRoute($route, $args);
+		return rtrim($base, '/') . $this->configService->linkToRoute($route, $args);
 	}
 
 
