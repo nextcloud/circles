@@ -157,19 +157,21 @@ class RemoteController extends Controller {
 	 * @PublicPage
 	 * @NoCSRFRequired
 	 *
+	 * @param string $test
+	 *
 	 * @return DataResponse
 	 * @throws NotLoggedInException
 	 * @throws SignatoryException
 	 * @throws UnknownInterfaceException
 	 */
-	public function appService(): DataResponse {
+	public function appService(string $test = ''): DataResponse {
 		try {
 			$this->publicPageJsonLimited();
 		} catch (JsonNotRequestedException $e) {
 			return new DataResponse();
 		}
 
-		$this->interfaceService->setCurrentInterfaceFromRequest($this->request);
+		$this->interfaceService->setCurrentInterfaceFromRequest($this->request, $test);
 		$signatory = $this->remoteStreamService->getAppSignatory(false, $this->request->getParam('auth', ''));
 
 		return new DataResponse($signatory);

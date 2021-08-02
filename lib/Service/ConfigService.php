@@ -32,8 +32,10 @@ declare(strict_types=1);
 namespace OCA\Circles\Service;
 
 use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
+use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
+use OC;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\IFederatedUser;
@@ -51,33 +53,46 @@ use OCP\IURLGenerator;
 class ConfigService {
 	use TStringTools;
 	use TArrayTools;
+	use TNC22Logger;
 
 
 	public const FRONTAL_CLOUD_BASE = 'frontal_cloud_base';
 	public const FRONTAL_CLOUD_ID = 'frontal_cloud_id';
 	public const FRONTAL_CLOUD_SCHEME = 'frontal_cloud_scheme';
+	public const FRONTAL_CLOUD_PATH = 'frontal_cloud_path';
 	public const INTERNAL_CLOUD_ID = 'internal_cloud_id';
 	public const INTERNAL_CLOUD_SCHEME = 'internal_cloud_scheme';
+	public const INTERNAL_CLOUD_PATH = 'internal_cloud_path';
 	public const LOOPBACK_CLOUD_ID = 'loopback_cloud_id';
 	public const LOOPBACK_CLOUD_SCHEME = 'loopback_cloud_scheme';
+	public const LOOPBACK_CLOUD_PATH = 'loopback_cloud_path';
 	public const IFACE0_CLOUD_ID = 'iface0_cloud_id';
 	public const IFACE0_CLOUD_SCHEME = 'iface0_cloud_scheme';
+	public const IFACE0_CLOUD_PATH = 'iface0_cloud_path';
 	public const IFACE0_INTERNAL = 'iface0_internal';
 	public const IFACE1_CLOUD_ID = 'iface1_cloud_id';
 	public const IFACE1_CLOUD_SCHEME = 'iface1_cloud_scheme';
+	public const IFACE1_CLOUD_PATH = 'iface1_cloud_path';
 	public const IFACE1_INTERNAL = 'iface1_internal';
 	public const IFACE2_CLOUD_ID = 'iface2_cloud_id';
 	public const IFACE2_CLOUD_SCHEME = 'iface2_cloud_scheme';
+	public const IFACE2_CLOUD_PATH = 'iface2_cloud_path';
 	public const IFACE2_INTERNAL = 'iface2_internal';
 	public const IFACE3_CLOUD_ID = 'iface3_cloud_id';
 	public const IFACE3_CLOUD_SCHEME = 'iface3_cloud_scheme';
+	public const IFACE3_CLOUD_PATH = 'iface3_cloud_path';
 	public const IFACE3_INTERNAL = 'iface3_internal';
 	public const IFACE4_CLOUD_ID = 'iface4_cloud_id';
 	public const IFACE4_CLOUD_SCHEME = 'iface4_cloud_scheme';
+	public const IFACE4_CLOUD_PATH = 'iface4_cloud_path';
 	public const IFACE4_INTERNAL = 'iface4_internal';
 	public const IFACE_TEST_ID = 'iface_test_id';
 	public const IFACE_TEST_SCHEME = 'iface_test_scheme';
+	public const IFACE_TEST_PATH = 'iface_test_path';
 	public const IFACE_TEST_TOKEN = 'iface_test_token';
+	public const LOOPBACK_TMP_ID = 'loopback_tmp_id';
+	public const LOOPBACK_TMP_SCHEME = 'loopback_tmp_scheme';
+	public const LOOPBACK_TMP_PATH = 'loopback_tmp_path';
 
 	public const HARD_MODERATION = 'hard_moderation';
 	public const FRONTEND_ENABLED = 'frontend_enabled';
@@ -95,9 +110,6 @@ class ConfigService {
 	public const MIGRATION_RUN = 'migration_run';
 	public const MAINTENANCE_UPDATE = 'maintenance_update';
 	public const MAINTENANCE_RUN = 'maintenance_run';
-
-	public const LOOPBACK_TMP_ID = 'loopback_tmp_id';
-	public const LOOPBACK_TMP_SCHEME = 'loopback_tmp_scheme';
 
 	public const GS_MODE = 'mode';
 	public const GS_KEY = 'key';
@@ -119,30 +131,40 @@ class ConfigService {
 		self::FRONTAL_CLOUD_BASE => '',
 		self::FRONTAL_CLOUD_ID => '',
 		self::FRONTAL_CLOUD_SCHEME => 'https',
+		self::FRONTAL_CLOUD_PATH => '',
 		self::INTERNAL_CLOUD_ID => '',
 		self::INTERNAL_CLOUD_SCHEME => 'https',
+		self::INTERNAL_CLOUD_PATH => '',
 		self::LOOPBACK_CLOUD_ID => '',
 		self::LOOPBACK_CLOUD_SCHEME => 'https',
-		self::LOOPBACK_TMP_ID => '',
-		self::LOOPBACK_TMP_SCHEME => '',
+		self::LOOPBACK_CLOUD_PATH => '',
 		self::IFACE0_CLOUD_ID => '',
 		self::IFACE0_CLOUD_SCHEME => 'https',
+		self::IFACE0_CLOUD_PATH => '',
 		self::IFACE0_INTERNAL => '0',
 		self::IFACE1_CLOUD_ID => '',
 		self::IFACE1_CLOUD_SCHEME => 'https',
+		self::IFACE1_CLOUD_PATH => '',
 		self::IFACE1_INTERNAL => '0',
 		self::IFACE2_CLOUD_ID => '',
 		self::IFACE2_CLOUD_SCHEME => 'https',
+		self::IFACE2_CLOUD_PATH => '',
 		self::IFACE2_INTERNAL => '0',
 		self::IFACE3_CLOUD_ID => '',
 		self::IFACE3_CLOUD_SCHEME => 'https',
+		self::IFACE3_CLOUD_PATH => '',
 		self::IFACE3_INTERNAL => '0',
 		self::IFACE4_CLOUD_ID => '',
 		self::IFACE4_CLOUD_SCHEME => 'https',
+		self::IFACE4_CLOUD_PATH => '',
 		self::IFACE4_INTERNAL => '0',
 		self::IFACE_TEST_ID => '',
 		self::IFACE_TEST_SCHEME => 'https',
+		self::IFACE_TEST_PATH => '',
 		self::IFACE_TEST_TOKEN => '',
+		self::LOOPBACK_TMP_ID => '',
+		self::LOOPBACK_TMP_SCHEME => '',
+		self::LOOPBACK_TMP_PATH => '',
 
 		self::FRONTEND_ENABLED => '1',
 		self::HARD_MODERATION => '0',
@@ -184,6 +206,8 @@ class ConfigService {
 	public function __construct(IConfig $config, IURLGenerator $urlGenerator) {
 		$this->config = $config;
 		$this->urlGenerator = $urlGenerator;
+
+		$this->setup('app', Application::APP_ID);
 	}
 
 
@@ -464,6 +488,11 @@ class ConfigService {
 			$this->setAppValue(self::LOOPBACK_TMP_SCHEME, $loopback['scheme']);
 		}
 
+		if (array_key_exists('path', $loopback)
+			&& $this->getAppValue(self::LOOPBACK_TMP_PATH) !== $loopback['path']) {
+			$this->setAppValue(self::LOOPBACK_TMP_PATH, $loopback['path']);
+		}
+
 		return $loopbackCloudId;
 	}
 
@@ -483,12 +512,18 @@ class ConfigService {
 			$scheme = $this->getAppValue(self::LOOPBACK_CLOUD_SCHEME);
 		}
 
-		$base = $scheme . '://' . $instance;
+		$path = $this->getAppValue(self::LOOPBACK_TMP_PATH);
+		if ($path === '') {
+			$path = $this->getAppValue(self::LOOPBACK_CLOUD_PATH);
+		}
+
+		$base = $scheme . '://' . $instance . $path;
+
 		if ($route === '') {
 			return $base;
 		}
 
-		return $base . $this->urlGenerator->linkToRoute($route, $args);
+		return rtrim($base, '/') . $this->linkToRoute($route, $args);
 	}
 
 
@@ -639,5 +674,34 @@ class ConfigService {
 		$request->setLocalAddressAllowed(true);
 		$request->setFollowLocation(true);
 		$request->setTimeout(5);
+	}
+
+
+	/**
+	 * @param string $route
+	 * @param array $args
+	 *
+	 * @return string
+	 */
+	public function linkToRoute(string $route, array $args): string {
+		$path = $this->urlGenerator->linkToRoute($route, $args);
+
+		if (OC::$CLI) {
+			$knownPath = parse_url($this->config->getSystemValue('overwrite.cli.url'), PHP_URL_PATH);
+		} else {
+			$knownPath = OC::$WEBROOT;
+		}
+
+		$knownPath = rtrim($knownPath, '/');
+		if ($knownPath === '') {
+			return $path;
+		}
+
+		$pos = strpos($path, $knownPath);
+		if ($pos === 0) {
+			return substr($path, strlen($knownPath));
+		}
+
+		return $path;
 	}
 }
