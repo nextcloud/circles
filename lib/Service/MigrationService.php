@@ -187,6 +187,7 @@ class MigrationService {
 
 		if ($force) {
 			$this->configService->setAppValue(ConfigService::MIGRATION_22, '0');
+			$this->configService->setAppValue(ConfigService::MIGRATION_22_1, '0');
 //			$this->configService->setAppValue(ConfigService::MIGRATION_23, '0');
 		}
 
@@ -196,6 +197,7 @@ class MigrationService {
 		);
 
 		$this->migrationTo22();
+		$this->migrationTo22_1();
 		//	$this->migrationTo23();
 
 		$this->configService->setAppValue(ConfigService::MIGRATION_RUN, '0');
@@ -223,6 +225,23 @@ class MigrationService {
 	}
 
 
+	/**
+	 *
+	 */
+	private function migrationTo22_1(): void {
+		if ($this->configService->getAppValueBool(ConfigService::MIGRATION_22_1)) {
+			return;
+		}
+
+		$this->outputService->output('Migrating to 22.1.x');
+		$this->migrationTo22_1_SubShares();
+		$this->configService->setAppValue(ConfigService::MIGRATION_22_1, '1');
+	}
+
+
+	/**
+	 *
+	 */
 	private function migrationTo22_Circles(): void {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$qb->select('*')->from('circle_circles');
@@ -436,6 +455,76 @@ class MigrationService {
 	}
 
 
+	private function migrationTo22_1_SubShares(): void {
+		$qb = $this->dbConnection->getQueryBuilder();
+		$expr = $qb->expr();
+		$qb->select('*')
+		   ->from('share')
+		   ->where($expr->eq('share_type', $qb->createNamedParameter(IShare::TYPE_CIRCLE)))
+		   ->andWhere($expr->isNotNull('parent'));
+
+		try {
+			$cursor = $qb->executeQuery();
+			$this->outputService->startMigrationProgress($cursor->rowCount());
+
+			while ($row = $cursor->fetch()) {
+				try {
+					$data = new SimpleDataStore($row);
+					$federatedUser =
+						$this->federatedUserService->getLocalFederatedUser($data->g('share_with'));
+					$this->outputService->output(
+						'Migrating child share #' . $data->gInt('id') . ' owner: ' . $data->g('share_with')
+						. ' -> ' . $federatedUser->getSingleId(),
+						true
+					);
+
+					$this->updateSubShare($data, $federatedUser);
+				} catch (Exception $e) {
+				}
+			}
+
+			$cursor->closeCursor();
+		} catch (\OCP\DB\Exception $e) {
+		}
+
+		$this->outputService->finishMigrationProgress();
+	}
+
+
+	/**
+	 * @param SimpleDataStore $data
+	 * @param FederatedUser $federatedUser
+	 *
+	 * @throws \OCP\DB\Exception
+	 */
+	private function updateSubShare(SimpleDataStore $data, FederatedUser $federatedUser): void {
+		$qb = $this->dbConnection->getQueryBuilder();
+		$expr = $qb->expr();
+		$qb->select('*')
+		   ->from('share')
+		   ->where($expr->eq('share_type', $qb->createNamedParameter(IShare::TYPE_CIRCLE)))
+		   ->andWhere($expr->eq('parent', $qb->createNamedParameter($data->gInt('parent'))))
+		   ->andWhere($expr->eq('share_with', $qb->createNamedParameter($federatedUser->getSingleId())));
+
+		$cursor = $qb->executeQuery();
+		if ($cursor->rowCount() > 0) {
+			// TODO: delete current row ?
+			return;
+		}
+		$cursor->closeCursor();
+
+		$qb = $this->dbConnection->getQueryBuilder();
+		$expr = $qb->expr();
+		$qb->update('share')
+		   ->set('share_with', $qb->createNamedParameter($federatedUser->getSingleId()))
+		   ->where($expr->eq('share_type', $qb->createNamedParameter(IShare::TYPE_CIRCLE)))
+		   ->andWhere($expr->eq('id', $qb->createNamedParameter($data->gInt('id'))))
+		   ->setMaxResults(1);
+
+		$qb->executeStatement();
+	}
+
+
 	/**
 	 * @param Member $member
 	 *
@@ -548,4 +637,5 @@ class MigrationService {
 		} catch (RequestBuilderException $e) {
 		}
 	}
+
 }
