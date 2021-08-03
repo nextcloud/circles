@@ -106,6 +106,7 @@ class ConfigService {
 
 	public const MIGRATION_BYPASS = 'migration_bypass';
 	public const MIGRATION_22 = 'migration_22';
+	public const MIGRATION_22_1 = 'migration_22_1';
 	public const MIGRATION_22_CONFIRMED = 'migration_22_confirmed';
 	public const MIGRATION_RUN = 'migration_run';
 	public const MAINTENANCE_UPDATE = 'maintenance_update';
@@ -177,6 +178,7 @@ class ConfigService {
 		self::ACTIVITY_ON_NEW_CIRCLE => '1',
 		self::MIGRATION_BYPASS => '0',
 		self::MIGRATION_22 => '0',
+		self::MIGRATION_22_1 => '0',
 		self::MIGRATION_22_CONFIRMED => '0',
 		self::MIGRATION_RUN => '0',
 		self::MAINTENANCE_UPDATE => '[]',
