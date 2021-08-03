@@ -637,5 +637,4 @@ class MigrationService {
 		} catch (RequestBuilderException $e) {
 		}
 	}
-
 }
