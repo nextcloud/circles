@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 
 
+### 0.18.13
+
+- fix an issue during migration removing not-yet-members
+- users cannot directly join a secret circle
+
+
 ### 0.18.12
 
 - escape html in 'shared files by Circles'
