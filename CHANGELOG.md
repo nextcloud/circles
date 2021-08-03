@@ -1,6 +1,12 @@
 # Changelog
 
 
+### 0.20.11
+
+- fix an issue during migration removing not-yet-members
+- users cannot directly join a secret circle
+
+
 ### 0.20.10
 
 - escape html in 'shared files by Circles'
