@@ -63,10 +63,10 @@ class Member extends BaseMember {
 	public function joinCircle($circleType) {
 
 		switch ($circleType) {
-			case Circle::CIRCLES_SECRET:
 			case Circle::CIRCLES_PUBLIC:
 				return $this->addMemberToCircle();
 
+			case Circle::CIRCLES_SECRET:
 			case Circle::CIRCLES_CLOSED:
 				return $this->joinClosedCircle();
 		}
