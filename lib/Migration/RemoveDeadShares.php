@@ -108,7 +108,7 @@ class RemoveDeadShares implements IRepairStep {
 			}
 
 			try {
-				$this->membersRequest->removeMember($member);
+//				$this->membersRequest->removeMember($member);
 			} catch (\Exception $e) {
 			}
 		}
