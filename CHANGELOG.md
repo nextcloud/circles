@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+
+### 0.19.15
+
+- fix an issue during migration removing not-yet-members
+- users cannot directly join a secret circle
+
+
 ### 0.19.14
 
 - escape html in 'shared files by Circles'
