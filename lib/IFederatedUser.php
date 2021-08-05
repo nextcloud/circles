@@ -39,13 +39,25 @@ use OCA\Circles\Model\Circle;
  * @package OCA\Circles
  */
 interface IFederatedUser extends IFederatedModel {
-	public function getSingleId(): string;
 
+
+	/**
+	 * @return string
+	 */
 	public function getUserId(): string;
 
+	/**
+	 * @return int
+	 */
 	public function getUserType(): int;
 
+	/**
+	 * @return string
+	 */
 	public function getDisplayName(): string;
 
+	/**
+	 * @return Circle|null
+	 */
 	public function getBasedOn(): ?Circle;
 }

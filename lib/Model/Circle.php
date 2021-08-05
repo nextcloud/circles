@@ -40,13 +40,14 @@ use DateTime;
 use JsonSerializable;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
-use OCA\Circles\IMemberships;
+use OCA\Circles\IEntity;
 
 /**
  * Class Circle
@@ -76,7 +77,7 @@ use OCA\Circles\IMemberships;
  *
  * @package OCA\Circles\Model
  */
-class Circle extends ManagedModel implements IMemberships, IDeserializable, INC22QueryRow, JsonSerializable {
+class Circle extends ManagedModel implements IEntity, IDeserializable, INC22QueryRow, JsonSerializable {
 	use TArrayTools;
 	use TNC22Deserialize;
 
@@ -430,7 +431,7 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	 *
 	 * @return self
 	 */
-	public function setMembers(array $members): IMemberships {
+	public function setMembers(array $members): self {
 		$this->members = $members;
 
 		return $this;
@@ -454,7 +455,7 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	 *
 	 * @return self
 	 */
-	public function setInheritedMembers(array $members, bool $detailed): IMemberships {
+	public function setInheritedMembers(array $members, bool $detailed): self {
 		$this->inheritedMembers = $members;
 		$this->detailedInheritedMember = $detailed;
 
@@ -464,9 +465,9 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	/**
 	 * @param array $members
 	 *
-	 * @return IMemberships
+	 * @return Circle
 	 */
-	public function addInheritedMembers(array $members): IMemberships {
+	public function addInheritedMembers(array $members): self {
 		$knownIds = array_map(
 			function (Member $member): string {
 				return $member->getId();
@@ -527,7 +528,7 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 	 *
 	 * @return self
 	 */
-	public function setMemberships(array $memberships): IMemberships {
+	public function setMemberships(array $memberships): IEntity {
 		$this->memberships = $memberships;
 
 		return $this;
@@ -542,6 +543,21 @@ class Circle extends ManagedModel implements IMemberships, IDeserializable, INC2
 		}
 
 		return $this->memberships;
+	}
+
+
+	/**
+	 * @param string $singleId
+	 * @param bool $detailed
+	 *
+	 * @return Membership
+	 * @throws MembershipNotFoundException
+	 * @throws RequestBuilderException
+	 */
+	public function getLink(string $singleId, bool $detailed = false): Membership {
+		$this->getManager()->getLink($this, $singleId, $detailed);
+
+		throw new MembershipNotFoundException();
 	}
 
 

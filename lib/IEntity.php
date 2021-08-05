@@ -31,6 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles;
 
+use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Model\Membership;
 
 /**
@@ -38,7 +39,7 @@ use OCA\Circles\Model\Membership;
  *
  * @package OCA\Circles
  */
-interface IMemberships {
+interface IEntity {
 
 	/**
 	 * @return string
@@ -56,4 +57,13 @@ interface IMemberships {
 	 * @return Membership[]
 	 */
 	public function getMemberships(): array;
+
+	/**
+	 * @param string $singleId
+	 * @param bool $detailed
+	 *
+	 * @return Membership
+	 * @throws MembershipNotFoundException
+	 */
+	public function getLink(string $singleId, bool $detailed = false): Membership;
 }
