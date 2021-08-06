@@ -40,7 +40,6 @@ use OCA\Circles\Model\Circle;
  */
 interface IFederatedUser extends IFederatedModel {
 
-
 	/**
 	 * @return string
 	 */
@@ -57,7 +56,12 @@ interface IFederatedUser extends IFederatedModel {
 	public function getDisplayName(): string;
 
 	/**
-	 * @return Circle|null
+	 * @return Circle
 	 */
-	public function getBasedOn(): ?Circle;
+	public function getBasedOn(): Circle;
+
+	/**
+	 * @return bool
+	 */
+	public function hasBasedOn(): bool;
 }
