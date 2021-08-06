@@ -694,7 +694,7 @@ class ConfigService {
 			$knownPath = OC::$WEBROOT;
 		}
 
-		$knownPath = rtrim($knownPath, '/');
+		$knownPath = $knownPath ? rtrim($knownPath, '/') : '';
 		if ($knownPath === '') {
 			return $path;
 		}
