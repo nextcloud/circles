@@ -62,6 +62,7 @@ use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\ShareToken;
 use OCA\DAV\CardDAV\ContactsManager;
 use OCP\Contacts\IManager;
@@ -205,7 +206,7 @@ class MigrationService {
 
 
 	/**
-	 *
+	 * @throws RequestBuilderException
 	 */
 	private function migrationTo22(): void {
 		if ($this->configService->getAppValueBool(ConfigService::MIGRATION_22)) {
@@ -217,11 +218,43 @@ class MigrationService {
 		$this->migrationTo22_Circles();
 		$this->migrationTo22_Members();
 		$this->membershipService->resetMemberships('', true);
-		$this->membershipService->manageAll();
+		$this->migrationTo22_Members_Memberships();
 
 		$this->migrationTo22_Tokens();
 
 		$this->configService->setAppValue(ConfigService::MIGRATION_22, '1');
+	}
+
+
+	/**
+	 * @throws RequestBuilderException
+	 */
+	public function migrationTo22_Members_Memberships(): void {
+		$probe = new CircleProbe();
+		$probe->includeSystemCircles();
+		$circles = $this->circleRequest->getCircles(null, $probe);
+
+		$this->outputService->startMigrationProgress(sizeof($circles));
+
+		$done = [];
+		foreach ($circles as $circle) {
+			$this->outputService->output(
+				'Caching memberships for Members of \'' . $circle->getDisplayName() . '\'',
+				true
+			);
+
+			$members = $circle->getMembers();
+			foreach ($members as $member) {
+				if (in_array($member->getSingleId(), $done)) {
+					continue;
+				}
+
+				$this->membershipService->manageMemberships($member->getSingleId());
+				$done[] = $member->getSingleId();
+			}
+		}
+
+		$this->outputService->finishMigrationProgress();
 	}
 
 
