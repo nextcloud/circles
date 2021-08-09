@@ -203,7 +203,10 @@ class LocalController extends OcsController {
 		try {
 			$this->setCurrentFederatedUser();
 
-			return new DataResponse($this->serialize($this->circleService->getCircle($circleId)));
+			$probe = new CircleProbe();
+			$probe->includeNonVisibleCircles();
+
+			return new DataResponse($this->serialize($this->circleService->getCircle($circleId, $probe)));
 		} catch (Exception $e) {
 			$this->e($e, ['circleId' => $circleId]);
 			throw new OcsException($e->getMessage(), $e->getCode());
