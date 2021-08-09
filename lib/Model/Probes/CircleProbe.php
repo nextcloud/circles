@@ -47,6 +47,9 @@ class CircleProbe extends MemberProbe {
 	/** @var int */
 	private $filter = Circle::CFG_SINGLE;
 
+	/** @var bool */
+	private $includeNonVisible = false;
+
 
 	/**
 	 * CircleProbe constructor.
@@ -123,6 +126,24 @@ class CircleProbe extends MemberProbe {
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @param bool $include
+	 *
+	 * @return $this
+	 */
+	public function includeNonVisibleCircles(bool $include = true): self {
+		$this->includeNonVisible = $include;
+
+		return $this;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function nonVisibleCirclesIncluded(): bool {
+		return $this->includeNonVisible;
 	}
 
 
@@ -259,6 +280,7 @@ class CircleProbe extends MemberProbe {
 				'includeBackendCircles' => $this->isIncluded(Circle::CFG_BACKEND),
 				'includeSystemCircles' => $this->isIncluded(Circle::CFG_SYSTEM),
 				'includePersonalCircles' => $this->isIncluded(Circle::CFG_PERSONAL),
+				'includeNonVisibleCircles' => $this->nonVisibleCirclesIncluded(),
 				'filtered' => $this->included(),
 				'filterHiddenCircles' => $this->isIncluded(Circle::CFG_HIDDEN),
 				'filterSingleCircles' => $this->isIncluded(Circle::CFG_SINGLE),

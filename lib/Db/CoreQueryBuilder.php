@@ -1279,6 +1279,13 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 			$orX->add($this->exprLimitBitwise('config', Circle::CFG_VISIBLE, $alias));
 		}
 
+		if ($this->getBool('includeNonVisibleCircles', $options)) {
+			$andXNonVisible = $expr->andX();
+			$andXNonVisible->add($this->exprLimitBitwise('config', Circle::CFG_OPEN, $alias));
+			$andXNonVisible->add($this->exprFilterBitwise('config', Circle::CFG_VISIBLE, $alias));
+			$orX->add($andXNonVisible);
+		}
+
 		// if Member can be Visitor, we only filter access to Personal Circles
 		if ($this->getBool('viewableThroughKeyhole', $options, false)) {
 			$andOpen = $expr->andX();

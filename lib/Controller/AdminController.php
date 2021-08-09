@@ -291,7 +291,10 @@ class AdminController extends OcsController {
 		try {
 			$this->setLocalFederatedUser($emulated);
 
-			return new DataResponse($this->serialize($this->circleService->getCircle($circleId)));
+			$probe = new CircleProbe();
+			$probe->includeNonVisibleCircles();
+
+			return new DataResponse($this->serialize($this->circleService->getCircle($circleId, $probe)));
 		} catch (Exception $e) {
 			$this->e($e, ['emulated' => $emulated, 'circleId' => $circleId]);
 			throw new OcsException($e->getMessage(), $e->getCode());
