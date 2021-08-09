@@ -43,7 +43,6 @@ use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
-use OCA\Circles\Model\Probes\CircleProbe;
 
 /**
  * Class MembershipService
@@ -121,28 +120,6 @@ class MembershipService {
 		foreach ($children as $singleId) {
 			$this->manageMemberships($singleId);
 		}
-	}
-
-
-	/**
-	 *
-	 */
-	public function manageAll(): void {
-		$probe = new CircleProbe();
-		$probe->includeSystemCircles();
-		$circles = $this->circleRequest->getCircles(null, $probe);
-
-		$this->outputService->startMigrationProgress(sizeof($circles));
-
-		foreach ($circles as $circle) {
-			$this->outputService->output(
-				'Caching memberships for \'' . $circle->getDisplayName() . '\'',
-				true
-			);
-			$this->manageMemberships($circle->getSingleId());
-		}
-
-		$this->outputService->finishMigrationProgress();
 	}
 
 
