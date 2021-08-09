@@ -38,10 +38,12 @@ use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownInterfaceException;
 use OCA\Circles\IFederatedUser;
-use OCA\Circles\IMemberships;
+use OCA\Circles\IEntity;
 
 /**
  * Class FederatedUser
@@ -50,7 +52,7 @@ use OCA\Circles\IMemberships;
  */
 class FederatedUser extends ManagedModel implements
 	IFederatedUser,
-	IMemberships,
+	IEntity,
 	IDeserializable,
 	INC22QueryRow,
 	JsonSerializable {
@@ -78,9 +80,6 @@ class FederatedUser extends ManagedModel implements
 
 	/** @var string */
 	private $instance;
-
-	/** @var Membership */
-	private $link;
 
 	/** @var Membership[] */
 	private $memberships = null;
@@ -206,7 +205,7 @@ class FederatedUser extends ManagedModel implements
 	 *
 	 * @return $this
 	 */
-	public function setBasedOn(?Circle $basedOn): self {
+	public function setBasedOn(Circle $basedOn): self {
 		$this->basedOn = $basedOn;
 
 		return $this;
@@ -283,7 +282,7 @@ class FederatedUser extends ManagedModel implements
 	 *
 	 * @return self
 	 */
-	public function setMemberships(array $memberships): IMemberships {
+	public function setMemberships(array $memberships): IEntity {
 		$this->memberships = $memberships;
 
 		return $this;
@@ -301,29 +300,19 @@ class FederatedUser extends ManagedModel implements
 	}
 
 
-	/**
-	 * @return bool
-	 */
-	public function hasLink(): bool {
-		return !is_null($this->link);
-	}
 
 	/**
-	 * @param Membership $link
+	 * @param string $singleId
+	 * @param bool $detailed
 	 *
-	 * @return $this
-	 */
-	public function setLink(Membership $link): self {
-		$this->link = $link;
-
-		return $this;
-	}
-
-	/**
 	 * @return Membership
+	 * @throws MembershipNotFoundException
+	 * @throws RequestBuilderException
 	 */
-	public function getLink(): Membership {
-		return $this->link;
+	public function getLink(string $singleId, bool $detailed = false): Membership {
+		$this->getManager()->getLink($this, $singleId, $detailed);
+
+		throw new MembershipNotFoundException();
 	}
 
 
@@ -427,10 +416,6 @@ class FederatedUser extends ManagedModel implements
 
 		if ($this->hasBasedOn()) {
 			$arr['basedOn'] = $this->getBasedOn();
-		}
-
-		if ($this->hasLink()) {
-			$arr['link'] = $this->getLink();
 		}
 
 		if (!is_null($this->memberships)) {

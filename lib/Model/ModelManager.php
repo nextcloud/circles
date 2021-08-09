@@ -50,10 +50,11 @@ use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownInterfaceException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
-use OCA\Circles\IMemberships;
+use OCA\Circles\IEntity;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\InterfaceService;
+use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Service\RemoteService;
 use OCP\IURLGenerator;
 
@@ -84,6 +85,9 @@ class ModelManager {
 	/** @var InterfaceService */
 	private $interfaceService;
 
+	/** @var MembershipService */
+	private $membershipService;
+
 	/** @var RemoteService */
 	private $remoteService;
 
@@ -104,6 +108,7 @@ class ModelManager {
 	 * @param MemberRequest $memberRequest
 	 * @param MembershipRequest $membershipRequest
 	 * @param InterfaceService $interfaceService
+	 * @param MembershipService $membershipService
 	 * @param RemoteService $remoteService
 	 * @param ConfigService $configService
 	 */
@@ -114,6 +119,7 @@ class ModelManager {
 		MemberRequest $memberRequest,
 		MembershipRequest $membershipRequest,
 		InterfaceService $interfaceService,
+		MembershipService $membershipService,
 		RemoteService $remoteService,
 		ConfigService $configService
 	) {
@@ -123,6 +129,7 @@ class ModelManager {
 		$this->memberRequest = $memberRequest;
 		$this->membershipRequest = $membershipRequest;
 		$this->interfaceService = $interfaceService;
+		$this->membershipService = $membershipService;
 		$this->remoteService = $remoteService;
 		$this->configService = $configService;
 
@@ -197,11 +204,25 @@ class ModelManager {
 
 
 	/**
-	 * @param IMemberships $member
+	 * @param IEntity $member
 	 */
-	public function getMemberships(IMemberships $member): void {
+	public function getMemberships(IEntity $member): void {
 		$memberships = $this->membershipRequest->getMemberships($member->getSingleId());
 		$member->setMemberships($memberships);
+	}
+
+
+	/**
+	 * @param IEntity $member
+	 * @param string $circleId
+	 * @param bool $detailed
+	 *
+	 * @return Membership
+	 * @throws MembershipNotFoundException
+	 * @throws RequestBuilderException
+	 */
+	public function getLink(IEntity $member, string $circleId, bool $detailed = false): Membership {
+		return $this->membershipService->getMembership($circleId, $member->getSingleId(), $detailed);
 	}
 
 

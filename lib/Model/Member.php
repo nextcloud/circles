@@ -42,10 +42,11 @@ use OCA\Circles\AppInfo\Capabilities;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Exceptions\ParseMemberLevelException;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownInterfaceException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\IFederatedUser;
-use OCA\Circles\IMemberships;
+use OCA\Circles\IEntity;
 use OCA\Circles\Model\Federated\RemoteInstance;
 
 /**
@@ -54,7 +55,7 @@ use OCA\Circles\Model\Federated\RemoteInstance;
  * @package OCA\Circles\Model
  */
 class Member extends ManagedModel implements
-	IMemberships,
+	IEntity,
 	IFederatedUser,
 	IDeserializable,
 	INC22QueryRow,
@@ -707,7 +708,7 @@ class Member extends ManagedModel implements
 	 *
 	 * @return self
 	 */
-	public function setMemberships(array $memberships): IMemberships {
+	public function setMemberships(array $memberships): IEntity {
 		$this->memberships = $memberships;
 
 		return $this;
@@ -724,20 +725,32 @@ class Member extends ManagedModel implements
 		return $this->memberships;
 	}
 
+
 	/**
-	 * @param string $circleId
+	 * @param string $singleId
+	 * @param bool $detailed
 	 *
 	 * @return Membership
 	 * @throws MembershipNotFoundException
+	 * @throws RequestBuilderException
 	 */
-	public function getMembership(string $circleId): Membership {
-		foreach ($this->getMemberships() as $membership) {
-			if ($membership->getCircleId() === $circleId) {
-				return $membership;
-			}
-		}
+	public function getLink(string $singleId, bool $detailed = false): Membership {
+		$this->getManager()->getLink($this, $singleId, $detailed);
 
 		throw new MembershipNotFoundException();
+	}
+
+	/**
+	 * @param string $circleId
+	 * @param bool $detailed
+	 *
+	 * @return Membership
+	 * @throws MembershipNotFoundException
+	 * @throws RequestBuilderException
+	 * @deprecated - use getLink();
+	 */
+	public function getMembership(string $circleId, bool $detailed = false): Membership {
+		return $this->getLink($circleId, $detailed);
 	}
 
 

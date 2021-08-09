@@ -113,7 +113,7 @@ class RemovingMember implements IEventListener {
 
 			foreach ($singleIds as $singleId) {
 				try {
-					$member->getMembership($singleId);
+					$member->getLink($singleId);
 					continue;
 				} catch (MembershipNotFoundException $e) {
 				}
