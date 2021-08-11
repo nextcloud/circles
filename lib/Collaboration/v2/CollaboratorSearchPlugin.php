@@ -97,8 +97,9 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 		$fromFrontEnd = true;
 
 		// TODO: remove this, using a cleaner way to detect the source of the request
-		$shareType = $this->request->getParam('shareType');
-		if (in_array(IShare::TYPE_ROOM, $shareType)) {
+		$params = $this->request->getParams();
+		$shareType = $this->getArray('shareType', $params);
+		if (empty($shareType) || in_array(IShare::TYPE_ROOM, $shareType)) {
 			$fromFrontEnd = false;
 		}
 
