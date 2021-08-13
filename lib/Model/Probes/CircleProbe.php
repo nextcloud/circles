@@ -49,6 +49,8 @@ class CircleProbe extends MemberProbe {
 
 	/** @var bool */
 	private $includeNonVisible = false;
+	/** @var bool */
+	private $visitSingleCircles = false;
 
 
 	/**
@@ -85,6 +87,7 @@ class CircleProbe extends MemberProbe {
 
 		return $this;
 	}
+
 
 	/**
 	 * @param bool $include
@@ -144,6 +147,25 @@ class CircleProbe extends MemberProbe {
 	 */
 	public function nonVisibleCirclesIncluded(): bool {
 		return $this->includeNonVisible;
+	}
+
+
+	/**
+	 * @param bool $visit
+	 *
+	 * @return $this
+	 */
+	public function visitSingleCircles(bool $visit = true): self {
+		$this->visitSingleCircles = $visit;
+
+		return $this;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function visitingSingleCircles(): bool {
+		return $this->visitSingleCircles;
 	}
 
 
@@ -281,6 +303,7 @@ class CircleProbe extends MemberProbe {
 				'includeSystemCircles' => $this->isIncluded(Circle::CFG_SYSTEM),
 				'includePersonalCircles' => $this->isIncluded(Circle::CFG_PERSONAL),
 				'includeNonVisibleCircles' => $this->nonVisibleCirclesIncluded(),
+				'visitingSingleCircles' => $this->visitingSingleCircles(),
 				'filtered' => $this->included(),
 				'filterHiddenCircles' => $this->isIncluded(Circle::CFG_HIDDEN),
 				'filterSingleCircles' => $this->isIncluded(Circle::CFG_SINGLE),
