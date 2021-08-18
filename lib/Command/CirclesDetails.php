@@ -49,6 +49,7 @@ use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
@@ -165,7 +166,11 @@ class CirclesDetails extends Base {
 						true
 					);
 
-					$circle = $this->circleService->getCircle($circleId, 0);
+
+					$probe = new CircleProbe();
+					$probe->includeNonVisibleCircles();
+
+					$circle = $this->circleService->getCircle($circleId, $probe);
 				} catch (CircleNotFoundException $e) {
 					throw new CircleNotFoundException(
 						'unknown circle, use --instance to retrieve the data from a remote instance'
