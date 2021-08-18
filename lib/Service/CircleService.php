@@ -621,7 +621,8 @@ class CircleService {
 	 */
 	public function getDefinition(Circle $circle): string {
 		$source = Circle::$DEF_SOURCE[$circle->getSource()];
-		if ($circle->isConfig(Circle::CFG_NO_OWNER)) {
+		if ($circle->isConfig(Circle::CFG_NO_OWNER)
+			|| $circle->isConfig(Circle::CFG_SINGLE)) {
 			return $this->l10n->t('%s', [$source]);
 		}
 
