@@ -377,7 +377,10 @@ class CircleService {
 	public function circleJoin(string $circleId): array {
 		$this->federatedUserService->mustHaveCurrentUser();
 
-		$circle = $this->circleRequest->getCircle($circleId, $this->federatedUserService->getCurrentUser());
+		$probe = new CircleProbe();
+		$probe->includeNonVisibleCircles();
+
+		$circle = $this->circleRequest->getCircle($circleId, $this->federatedUserService->getCurrentUser(), $probe);
 		if (!$circle->getInitiator()->hasInvitedBy()) {
 			$this->federatedUserService->setMemberPatron($circle->getInitiator());
 		}
@@ -425,7 +428,7 @@ class CircleService {
 
 	/**
 	 * @param string $circleId
-	 * @param int $filter
+	 * @param CircleProbe|null $probe
 	 *
 	 * @return Circle
 	 * @throws CircleNotFoundException
