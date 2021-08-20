@@ -38,6 +38,7 @@ use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\Probes\MemberProbe;
 
 /**
@@ -288,15 +289,20 @@ class MemberRequest extends MemberRequestBuilder {
 	/**
 	 * @param string $circleId
 	 * @param string $singleId
+	 * @param CircleProbe|null $probe
 	 *
 	 * @return Member
 	 * @throws MemberNotFoundException
 	 * @throws RequestBuilderException
 	 */
-	public function getMember(string $circleId, string $singleId): Member {
+	public function getMember(string $circleId, string $singleId, ?CircleProbe $probe = null): Member {
 		$qb = $this->getMemberSelectSql();
 		$qb->limitToCircleId($circleId);
 		$qb->limitToSingleId($singleId);
+
+		if (!is_null($probe)) {
+			$qb->setOptions([CoreQueryBuilder::MEMBER], $probe->getAsOptions());
+		}
 
 		return $this->getItemFromRequest($qb);
 	}
