@@ -49,6 +49,7 @@ use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\MembershipService;
@@ -137,7 +138,13 @@ class CircleLeave implements
 		if ($member->getId() === '') {
 			try {
 				// make it works for not-yet-members
-				$member = $this->memberRequest->getMember($circle->getSingleId(), $member->getSingleId());
+				$probe = new CircleProbe();
+				$probe->includeNonVisibleCircles();
+				$member = $this->memberRequest->getMember(
+					$circle->getSingleId(),
+					$member->getSingleId(),
+					$probe
+				);
 			} catch (MemberNotFoundException $e) {
 				throw new MemberNotFoundException(StatusCode::$CIRCLE_LEAVE[120], 120);
 			}
@@ -224,10 +231,10 @@ class CircleLeave implements
 			if ($member->getLevel() > $newOwner->getLevel()) {
 				$newOwner = $member;
 			} elseif ($member->getLevel() === $newOwner->getLevel()
-					   && ($member->getJoined() < $newOwner->getJoined()
-						   || ($this->configService->isLocalInstance($member->getInstance())
-							   && !$this->configService->isLocalInstance($newOwner->getInstance()))
-					   )) {
+					  && ($member->getJoined() < $newOwner->getJoined()
+						  || ($this->configService->isLocalInstance($member->getInstance())
+							  && !$this->configService->isLocalInstance($newOwner->getInstance()))
+					  )) {
 				$newOwner = $member;
 			}
 		}
