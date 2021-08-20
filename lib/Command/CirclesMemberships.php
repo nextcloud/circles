@@ -335,9 +335,9 @@ class CirclesMemberships extends Base {
 				}
 				if ($lineNumber === 2) {
 					$owner = $circle->getOwner();
-					$line .= '<info>Owner</info>: ' . $owner->getUserId() . '@' . $owner->getInstance();
+					$line .= '<info>Owner</info>: ' . $owner->getUserId() . '@' . $owner->getInstance() . ' ';
 					if ($owner->hasBasedOn()) {
-						$line .= ' (' . Circle::$DEF_SOURCE[$owner->getBasedOn()->getSource()] . ') ';
+						$line .= '(' . Circle::$DEF_SOURCE[$owner->getBasedOn()->getSource()] . ') ';
 					}
 					$type = implode(", ", Circle::getCircleFlags($circle, Circle::FLAGS_LONG));
 					$line .= ($type === '') ? '' : '<info>Config</info>: ' . $type;
