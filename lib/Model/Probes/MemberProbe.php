@@ -34,7 +34,7 @@ namespace OCA\Circles\Model\Probes;
 use OCA\Circles\Model\Member;
 
 /**
- * Class CircleProbe
+ * Class MemberProbe
  *
  * @package OCA\Circles\Model\Probes
  */
@@ -49,6 +49,9 @@ class MemberProbe extends BasicProbe {
 
 	/** @var bool */
 	private $requestingMembership = false;
+
+	/** @var bool */
+	private $initiatorDirectMember = false;
 
 
 	/**
@@ -69,6 +72,25 @@ class MemberProbe extends BasicProbe {
 	 */
 	public function isRequestingMembership(): bool {
 		return $this->requestingMembership;
+	}
+
+
+	/**
+	 * @param bool $include
+	 *
+	 * @return $this
+	 */
+	public function initiatorAsDirectMember(bool $include = true): self {
+		$this->initiatorDirectMember = $include;
+
+		return $this;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function directMemberInitiator(): bool {
+		return $this->initiatorDirectMember;
 	}
 
 
@@ -144,7 +166,8 @@ class MemberProbe extends BasicProbe {
 			[
 				'minimumLevel' => $this->getMinimumLevel(),
 				'emulateVisitor' => $this->isEmulatingVisitor(),
-				'allowRequestingMembership' => $this->isRequestingMembership()
+				'allowRequestingMembership' => $this->isRequestingMembership(),
+				'initiatorDirectMember' => $this->directMemberInitiator(),
 			],
 			parent::getAsOptions()
 		);

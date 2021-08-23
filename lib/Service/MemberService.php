@@ -178,6 +178,7 @@ class MemberService {
 		if ($this->federatedUserService->hasRemoteInstance()) {
 			$probe->setFilterRemoteInstance($this->federatedUserService->getRemoteInstance());
 		}
+		$probe->initiatorAsDirectMember();
 		$probe->mustBeMember();
 
 		return $this->memberRequest->getMembers(
