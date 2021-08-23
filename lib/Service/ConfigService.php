@@ -38,7 +38,7 @@ use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OC;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\GSStatusException;
-use OCA\Circles\IFederatedUser;
+use OCP\Circles\Model\IFederatedUser;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\Member;
@@ -360,7 +360,7 @@ class ConfigService {
 	public function getSettings(): array {
 		return [
 			'frontendEnabled' => $this->getAppValueBool(self::FRONTEND_ENABLED),
-			'allowedCircles' => Circle::$DEF_CFG_MAX,
+			'allowedCircles' => Circle::CFG_MAX,
 			'allowedUserTypes' => Member::$DEF_TYPE_MAX,
 			'membersLimit' => $this->getAppValueInt(self::MEMBERS_LIMIT)
 		];

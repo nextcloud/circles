@@ -35,8 +35,8 @@ use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Db\ShareLockRequest;
 use OCA\Circles\Exceptions\FederatedShareNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
-use OCA\Circles\IFederatedItem;
-use OCA\Circles\IFederatedItemDataRequestOnly;
+use OCP\Circles\FederatedItem\IFederatedItem;
+use OCP\Circles\FederatedItem\IFederatedItemDataRequestOnly;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\FederatedShare;
 

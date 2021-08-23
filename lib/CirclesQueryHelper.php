@@ -99,10 +99,11 @@ class CirclesQueryHelper {
 		string $field,
 		bool $fullDetails = false
 	): ICompositeExpression {
-		$session = $this->federatedUserService->getCurrentUser();
-		if (is_null($session)) {
+		if (!$this->federatedUserService->hasCurrentUser()) {
 			throw new FederatedUserNotFoundException('session not initiated');
 		}
+
+		$session = $this->federatedUserService->getCurrentUser();
 
 		$this->queryBuilder->setDefaultSelectAlias($alias);
 		$this->queryBuilder->setOptions(

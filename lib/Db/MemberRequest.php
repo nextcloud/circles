@@ -34,7 +34,7 @@ namespace OCA\Circles\Db;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
-use OCA\Circles\IFederatedUser;
+use OCP\Circles\Model\IFederatedUser;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;

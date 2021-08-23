@@ -31,19 +31,20 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model\Probes;
 
-use OCA\Circles\IQueryProbe;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\Member;
+use OCP\Circles\Model\ICircle;
+use OCP\Circles\Model\IMember;
+use OCP\Circles\Model\IRemoteInstance;
+use OCP\Circles\Model\Probes\IProbe;
 
 /**
- * Class BasicProbe
+ * Class Probe
  *
  * @package OCA\Circles\Model\Probes
  */
-class BasicProbe implements IQueryProbe {
-	public const DETAILS_NONE = 0;
-	public const DETAILS_ALL = 64;
+class Probe implements IProbe {
 
 
 	/** @var int */
@@ -71,7 +72,7 @@ class BasicProbe implements IQueryProbe {
 	/**
 	 * @param int $itemsOffset
 	 *
-	 * @return BasicProbe
+	 * @return Probe
 	 */
 	public function setItemsOffset(int $itemsOffset): self {
 		$this->itemsOffset = $itemsOffset;
@@ -90,7 +91,7 @@ class BasicProbe implements IQueryProbe {
 	/**
 	 * @param int $itemsLimit
 	 *
-	 * @return BasicProbe
+	 * @return Probe
 	 */
 	public function setItemsLimit(int $itemsLimit): self {
 		$this->itemsLimit = $itemsLimit;
@@ -145,9 +146,9 @@ class BasicProbe implements IQueryProbe {
 	}
 
 	/**
-	 * @return Circle
+	 * @return ICircle
 	 */
-	public function getFilterCircle(): Circle {
+	public function getFilterCircle(): ICircle {
 		return $this->filterCircle;
 	}
 
@@ -171,9 +172,9 @@ class BasicProbe implements IQueryProbe {
 	}
 
 	/**
-	 * @return Member
+	 * @return IMember
 	 */
-	public function getFilterMember(): Member {
+	public function getFilterMember(): IMember {
 		return $this->filterMember;
 	}
 
@@ -197,9 +198,9 @@ class BasicProbe implements IQueryProbe {
 	}
 
 	/**
-	 * @return RemoteInstance
+	 * @return IRemoteInstance
 	 */
-	public function getFilterRemoteInstance(): RemoteInstance {
+	public function getFilterRemoteInstance(): IRemoteInstance {
 		return $this->filterRemoteInstance;
 	}
 

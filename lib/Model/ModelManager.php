@@ -42,7 +42,7 @@ use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\FileCacheNotFoundException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
-use OCA\Circles\Exceptions\MembershipNotFoundException;
+use OCP\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
@@ -50,12 +50,13 @@ use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownInterfaceException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
-use OCA\Circles\IEntity;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\InterfaceService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Service\RemoteService;
+use OCP\Circles\Model\IEntity;
+use OCP\Circles\Model\IMembership;
 use OCP\IURLGenerator;
 
 /**
@@ -221,7 +222,7 @@ class ModelManager {
 	 * @throws MembershipNotFoundException
 	 * @throws RequestBuilderException
 	 */
-	public function getLink(IEntity $member, string $circleId, bool $detailed = false): Membership {
+	public function getLink(IEntity $member, string $circleId, bool $detailed = false): IMembership {
 		return $this->membershipService->getMembership($circleId, $member->getSingleId(), $detailed);
 	}
 
@@ -405,9 +406,11 @@ class ModelManager {
 		switch ($path) {
 			case CoreQueryBuilder::MEMBERSHIPS:
 				try {
+					// TODO: find out why this is needed (membership on a federated user ? with not using Member ?!)
+//					\OC::$server->getLogger()->log(3, json_encode(debug_backtrace()));
 					$membership = new Membership();
 					$membership->importFromDatabase($data, $prefix);
-					$federatedUser->setLink($membership);
+					$federatedUser->setMembership($membership);
 				} catch (MembershipNotFoundException $e) {
 				}
 				break;

@@ -32,13 +32,14 @@ declare(strict_types=1);
 namespace OCA\Circles\Model\Probes;
 
 use OCA\Circles\Model\Circle;
+use OCP\Circles\Model\Probes\ICircleProbe;
 
 /**
  * Class CircleProbe
  *
  * @package OCA\Circles\Model\Probes
  */
-class CircleProbe extends MemberProbe {
+class CircleProbe extends MemberProbe implements ICircleProbe {
 
 
 	/** @var int */
@@ -128,6 +129,7 @@ class CircleProbe extends MemberProbe {
 		return $this;
 	}
 
+
 	/**
 	 * @param bool $include
 	 *
@@ -145,6 +147,8 @@ class CircleProbe extends MemberProbe {
 	public function nonVisibleCirclesIncluded(): bool {
 		return $this->includeNonVisible;
 	}
+
+
 
 
 	/**

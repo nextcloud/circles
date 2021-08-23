@@ -58,6 +58,7 @@ use OCA\Circles\FederatedItems\CircleEdit;
 use OCA\Circles\FederatedItems\CircleJoin;
 use OCA\Circles\FederatedItems\CircleLeave;
 use OCA\Circles\FederatedItems\CircleSettings;
+use OCP\Circles\Model\IFederatedUser;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\FederatedUser;
@@ -66,6 +67,7 @@ use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\Probes\MemberProbe;
 use OCA\Circles\StatusCode;
+use OCP\Circles\Model\IEntity;
 use OCP\IL10N;
 
 /**
@@ -615,11 +617,27 @@ class CircleService {
 
 
 	/**
+	 * @param IEntity $entity
+	 *
+	 * @return string
+	 */
+	public function getDefinition(IEntity $entity): string {
+		if ($entity instanceof Circle) {
+			return $this->getDefinitionCircle($entity);
+		}
+		if ($entity instanceof IFederatedUser) {
+			return $this->getDefinitionUser($entity);
+		}
+
+		return '';
+	}
+
+	/**
 	 * @param Circle $circle
 	 *
 	 * @return string
 	 */
-	public function getDefinition(Circle $circle): string {
+	public function getDefinitionCircle(Circle $circle): string {
 		$source = Circle::$DEF_SOURCE[$circle->getSource()];
 		if ($circle->isConfig(Circle::CFG_NO_OWNER)
 			|| $circle->isConfig(Circle::CFG_SINGLE)) {
@@ -637,5 +655,14 @@ class CircleService {
 				$this->configService->displayFederatedUser($circle->getOwner(), true)
 			]
 		);
+	}
+
+	/**
+	 * @param Member $federatedUser
+	 *
+	 * @return string
+	 */
+	public function getDefinitionUser(IFederatedUser $federatedUser): string {
+		return $this->l10n->t('%s', [Circle::$DEF_SOURCE[$federatedUser->getUserType()]]);
 	}
 }

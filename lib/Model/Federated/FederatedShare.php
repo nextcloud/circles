@@ -36,7 +36,7 @@ use ArtificialOwl\MySmallPhpTools\IDeserializable;
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
-use OCA\Circles\IFederatedModel;
+use OCP\Circles\Model\IFederatedModel;
 use OCA\Circles\Model\ManagedModel;
 
 /**

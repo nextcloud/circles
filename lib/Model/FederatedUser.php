@@ -38,12 +38,14 @@ use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
-use OCA\Circles\Exceptions\MembershipNotFoundException;
+use OCP\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownInterfaceException;
-use OCA\Circles\IFederatedUser;
-use OCA\Circles\IEntity;
+use OCP\Circles\Model\ICircle;
+use OCP\Circles\Model\IEntity;
+use OCP\Circles\Model\IFederatedUser;
+use OCP\Circles\Model\IMembership;
 
 /**
  * Class FederatedUser
@@ -52,7 +54,6 @@ use OCA\Circles\IEntity;
  */
 class FederatedUser extends ManagedModel implements
 	IFederatedUser,
-	IEntity,
 	IDeserializable,
 	INC22QueryRow,
 	JsonSerializable {
@@ -80,6 +81,9 @@ class FederatedUser extends ManagedModel implements
 
 	/** @var string */
 	private $instance;
+
+	/** @var Membership */
+	private $membership;
 
 	/** @var Membership[] */
 	private $memberships = null;
@@ -214,7 +218,7 @@ class FederatedUser extends ManagedModel implements
 	/**
 	 * @return Circle
 	 */
-	public function getBasedOn(): Circle {
+	public function getBasedOn(): ICircle {
 		return $this->basedOn;
 	}
 
@@ -269,6 +273,31 @@ class FederatedUser extends ManagedModel implements
 		return $this->getManager()->isLocalInstance($this->getInstance());
 	}
 
+	/**
+	 * @return bool
+	 */
+	public function hasMembership(): bool {
+		return !is_null($this->membership);
+	}
+
+	/**
+	 * @param Membership $membership
+	 *
+	 * @return $this
+	 */
+	public function setMembership(Membership $membership): self {
+		$this->membership = $membership;
+
+		return $this;
+	}
+
+	/**
+	 * @return Membership
+	 */
+	public function getMembership(): Membership {
+		return $this->membership;
+	}
+
 
 	/**
 	 * @return bool
@@ -300,7 +329,6 @@ class FederatedUser extends ManagedModel implements
 	}
 
 
-
 	/**
 	 * @param string $singleId
 	 * @param bool $detailed
@@ -309,7 +337,7 @@ class FederatedUser extends ManagedModel implements
 	 * @throws MembershipNotFoundException
 	 * @throws RequestBuilderException
 	 */
-	public function getLink(string $singleId, bool $detailed = false): Membership {
+	public function getLink(string $singleId, bool $detailed = false): IMembership {
 		$this->getManager()->getLink($this, $singleId, $detailed);
 
 		throw new MembershipNotFoundException();
@@ -338,6 +366,13 @@ class FederatedUser extends ManagedModel implements
 			/** @var Circle $circle */
 			$circle = $this->deserialize($this->getArray('basedOn', $data), Circle::class);
 			$this->setBasedOn($circle);
+		} catch (InvalidItemException $e) {
+		}
+
+		try {
+			/** @var Membership $membership */
+			$membership = $this->deserialize($this->getArray('membership', $data), Membership::class);
+			$this->setMembership($membership);
 		} catch (InvalidItemException $e) {
 		}
 
@@ -416,6 +451,10 @@ class FederatedUser extends ManagedModel implements
 
 		if ($this->hasBasedOn()) {
 			$arr['basedOn'] = $this->getBasedOn();
+		}
+
+		if ($this->hasMembership()) {
+			$arr['membership'] = $this->getMembership();
 		}
 
 		if (!is_null($this->memberships)) {

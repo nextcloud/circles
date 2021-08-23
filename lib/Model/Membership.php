@@ -36,14 +36,20 @@ use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
 use ArtificialOwl\MySmallPhpTools\IDeserializable;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
-use OCA\Circles\Exceptions\MembershipNotFoundException;
+use OCP\Circles\Exceptions\MembershipNotFoundException;
+use OCP\Circles\Model\IMembership;
 
 /**
  * Class Membership
  *
  * @package OCA\Circles\Model
  */
-class Membership extends ManagedModel implements IDeserializable, INC22QueryRow, JsonSerializable {
+class Membership extends ManagedModel implements
+	IMembership,
+	IDeserializable,
+	INC22QueryRow,
+	JsonSerializable {
+
 	use TArrayTools;
 
 

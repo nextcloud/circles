@@ -129,7 +129,7 @@ class CirclesMaintenance extends Base {
 			}
 
 			$output->writeln('');
-			$output->writeln('<error>WARNING! This operation is not reversible.</error>');
+			$output->writeln('<error>WARNING! This operation is NOT reversible and might AFFECT OTHER APPS.</error>');
 
 			$question = new Question(
 				'<comment>Please confirm this destructive operation by typing \'' . $action

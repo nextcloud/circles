@@ -35,8 +35,8 @@ use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\FederatedItemBadRequestException;
 use OCA\Circles\Exceptions\FederatedItemException;
-use OCA\Circles\IFederatedItem;
-use OCA\Circles\IFederatedItemAsyncProcess;
+use OCP\Circles\FederatedItem\IFederatedItem;
+use OCP\Circles\FederatedItem\IFederatedItemAsyncProcess;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
@@ -129,7 +129,7 @@ class CircleConfig implements
 			$event->getData()->sBool('_broadcastAsFederated', true);
 		}
 
-		if (!$confirmed || $config > Circle::$DEF_CFG_MAX) {
+		if (!$confirmed || $config > Circle::CFG_MAX) {
 			throw new FederatedItemBadRequestException('Configuration value is not valid');
 		}
 

@@ -32,7 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Model;
 
 use OC;
-use OCA\Circles\IFederatedUser;
+use OCP\Circles\Model\IFederatedUser;
 
 /**
  * Class ManagedModel

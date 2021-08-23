@@ -59,7 +59,8 @@ use OCA\Circles\FederatedItems\MassiveMemberAdd;
 use OCA\Circles\FederatedItems\MemberLevel;
 use OCA\Circles\FederatedItems\MemberRemove;
 use OCA\Circles\FederatedItems\SingleMemberAdd;
-use OCA\Circles\IFederatedUser;
+use OCA\Circles\Model\Probes\CircleProbe;
+use OCP\Circles\Model\IFederatedUser;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
@@ -178,6 +179,7 @@ class MemberService {
 		if ($this->federatedUserService->hasRemoteInstance()) {
 			$probe->setFilterRemoteInstance($this->federatedUserService->getRemoteInstance());
 		}
+		$probe->initiatorAsDirectMember();
 		$probe->mustBeMember();
 
 		return $this->memberRequest->getMembers(

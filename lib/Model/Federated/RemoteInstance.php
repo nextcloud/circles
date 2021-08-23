@@ -37,13 +37,18 @@ use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteUidException;
+use OCP\Circles\Model\IRemoteInstance;
 
 /**
  * Class AppService
  *
  * @package OCA\Circles\Model
  */
-class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSerializable {
+class RemoteInstance extends NC22Signatory implements
+	IRemoteInstance,
+	INC22QueryRow,
+	JsonSerializable {
+
 	use TArrayTools;
 
 	public const TYPE_UNKNOWN = 'Unknown';    // not trusted

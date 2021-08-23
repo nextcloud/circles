@@ -61,7 +61,7 @@ use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\FederatedItems\CircleCreate;
-use OCA\Circles\IFederatedUser;
+use OCP\Circles\Model\IFederatedUser;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
@@ -315,6 +315,13 @@ class FederatedUserService {
 	 */
 	public function bypassCurrentUserCondition(bool $bypass): void {
 		$this->bypass = $bypass;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function canBypassCurrentUserCondition(): bool {
+		return $this->bypass;
 	}
 
 

@@ -40,14 +40,16 @@ use DateTime;
 use JsonSerializable;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedItemException;
-use OCA\Circles\Exceptions\MembershipNotFoundException;
+use OCP\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
-use OCA\Circles\IEntity;
+use OCP\Circles\Model\IEntity;
+use OCP\Circles\Model\ICircle;
+use OCP\Circles\Model\IMembership;
 
 /**
  * Class Circle
@@ -77,38 +79,15 @@ use OCA\Circles\IEntity;
  *
  * @package OCA\Circles\Model
  */
-class Circle extends ManagedModel implements IEntity, IDeserializable, INC22QueryRow, JsonSerializable {
+class Circle extends ManagedModel implements
+	ICircle,
+	IDeserializable,
+	INC22QueryRow,
+	JsonSerializable {
+
 	use TArrayTools;
 	use TNC22Deserialize;
 
-
-	public const FLAGS_SHORT = 1;
-	public const FLAGS_LONG = 2;
-
-
-	// specific value
-	public const CFG_CIRCLE = 0;        // only for code readability. Circle is locked by default.
-	public const CFG_SINGLE = 1;        // Circle with only one single member.
-	public const CFG_PERSONAL = 2;      // Personal circle, only the owner can see it.
-
-	// bitwise
-	public const CFG_SYSTEM = 4;            // System Circle (not managed by the official front-end). Meaning some config are limited
-	public const CFG_VISIBLE = 8;           // Visible to everyone, if not visible, people have to know its name to be able to find it
-	public const CFG_OPEN = 16;             // Circle is open, people can join
-	public const CFG_INVITE = 32;           // Adding a member generate an invitation that needs to be accepted
-	public const CFG_REQUEST = 64;          // Request to join Circles needs to be confirmed by a moderator
-	public const CFG_FRIEND = 128;          // Members of the circle can invite their friends
-	public const CFG_PROTECTED = 256;       // Password protected to join/request
-	public const CFG_NO_OWNER = 512;        // no owner, only members
-	public const CFG_HIDDEN = 1024;         // hidden from listing, but available as a share entity
-	public const CFG_BACKEND = 2048;            // Fully hidden, only backend Circles
-	public const CFG_LOCAL = 4096;              // Local even on GlobalScale
-	public const CFG_ROOT = 8192;               // Circle cannot be inside another Circle
-	public const CFG_CIRCLE_INVITE = 16384;     // Circle must confirm when invited in another circle
-	public const CFG_FEDERATED = 32768;         // Federated
-	public const CFG_MOUNTPOINT = 65536;        // Generate a Files folder for this Circle
-
-	public static $DEF_CFG_MAX = 131071;
 
 
 	/**
@@ -150,6 +129,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, INC22Quer
 		4 => 'Email Address',
 		8 => 'Contact',
 		16 => 'Circle',
+		10000 => 'Nextcloud App',
 		10001 => 'Circles App',
 		10002 => 'Admin Command Line'
 	];
@@ -524,7 +504,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, INC22Quer
 	}
 
 	/**
-	 * @param array $memberships
+	 * @param IMembership[] $memberships
 	 *
 	 * @return self
 	 */
@@ -554,10 +534,8 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, INC22Quer
 	 * @throws MembershipNotFoundException
 	 * @throws RequestBuilderException
 	 */
-	public function getLink(string $singleId, bool $detailed = false): Membership {
-		$this->getManager()->getLink($this, $singleId, $detailed);
-
-		throw new MembershipNotFoundException();
+	public function getLink(string $singleId, bool $detailed = false): IMembership {
+		return $this->getManager()->getLink($this, $singleId, $detailed);
 	}
 
 
@@ -628,6 +606,15 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, INC22Quer
 		}
 
 		return $this->getOwner()->getInstance();
+	}
+
+
+	/**
+	 * @return bool
+	 * @throws OwnerNotFoundException
+	 */
+	public function isLocal(): bool {
+		return $this->getManager()->isLocalInstance($this->getInstance());
 	}
 
 

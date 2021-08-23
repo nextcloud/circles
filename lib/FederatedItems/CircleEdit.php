@@ -35,7 +35,7 @@ use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\CircleNameTooShortException;
 use OCA\Circles\Exceptions\RequestBuilderException;
-use OCA\Circles\IFederatedItem;
+use OCP\Circles\FederatedItem\IFederatedItem;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Service\CircleService;

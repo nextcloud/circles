@@ -33,7 +33,7 @@ namespace OCA\Circles\FederatedItems;
 
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use OCA\Circles\Db\CircleRequest;
-use OCA\Circles\IFederatedItem;
+use OCP\Circles\FederatedItem\IFederatedItem;
 use OCA\Circles\Model\Federated\FederatedEvent;
 
 /**

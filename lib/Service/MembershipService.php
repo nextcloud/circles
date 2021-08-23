@@ -37,12 +37,13 @@ use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
-use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
+use OCP\Circles\Exceptions\MembershipNotFoundException;
 
 /**
  * Class MembershipService
@@ -139,6 +140,7 @@ class MembershipService {
 	/**
 	 * @param string $circleId
 	 * @param string $singleId
+	 * @param bool $detailed
 	 *
 	 * @return Membership
 	 * @throws MembershipNotFoundException
@@ -196,6 +198,11 @@ class MembershipService {
 		$members = $this->memberRequest->getMembersBySingleId($circleId);
 		foreach ($members as $member) {
 			if (!$member->hasCircle() || $member->getLevel() < Member::LEVEL_MEMBER) {
+				continue;
+			}
+
+			if ($member->getCircle()->isConfig(Circle::CFG_NO_OWNER)
+				&& $member->getLevel() === Member::LEVEL_OWNER) {
 				continue;
 			}
 

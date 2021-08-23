@@ -37,11 +37,11 @@ use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
-use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
+use OCP\Circles\Model\IFederatedUser;
 
 /**
  * Class CircleRequest
@@ -355,7 +355,12 @@ class CircleRequest extends CircleRequestBuilder {
 		}
 
 		if (!is_null($initiator)) {
-			$qb->setOptions([CoreQueryBuilder::CIRCLE], ['getData' => true]);
+			$qb->setOptions(
+				[CoreQueryBuilder::CIRCLE], [
+				'getData' => true,
+				'initiatorDirectMember' => true
+			]
+			);
 			$qb->limitToInitiator(CoreQueryBuilder::CIRCLE, $initiator);
 		}
 

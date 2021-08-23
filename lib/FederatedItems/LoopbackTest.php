@@ -32,9 +32,9 @@ declare(strict_types=1);
 namespace OCA\Circles\FederatedItems;
 
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
-use OCA\Circles\IFederatedItem;
-use OCA\Circles\IFederatedItemAsyncProcess;
-use OCA\Circles\IFederatedItemLoopbackTest;
+use OCP\Circles\FederatedItem\IFederatedItem;
+use OCP\Circles\FederatedItem\IFederatedItemAsyncProcess;
+use OCP\Circles\FederatedItem\IFederatedItemLoopbackTest;
 use OCA\Circles\Model\Federated\FederatedEvent;
 
 /**

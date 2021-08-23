@@ -44,7 +44,6 @@ use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
-use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
@@ -62,6 +61,11 @@ use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\MembershipService;
+use OCP\Circles\Exceptions\MembershipNotFoundException;
+use OCP\Circles\ICirclesManager;
+use OCP\Circles\Model\IEntity;
+use OCP\Circles\Model\IFederatedUser;
+use OCP\Circles\Model\IMember;
 use OCP\IUserSession;
 
 /**
@@ -69,7 +73,7 @@ use OCP\IUserSession;
  *
  * @package OCA\Circles
  */
-class CirclesManager {
+class CirclesManager implements ICirclesManager {
 
 
 	/** @var CirclesQueryHelper */
@@ -152,6 +156,29 @@ class CirclesManager {
 		}
 	}
 
+
+	/**
+	 * @param string $userId
+	 *
+	 * @throws CircleNotFoundException
+	 * @throws FederatedItemException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
+	 * @throws MemberNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
+	 * @throws UnknownRemoteException
+	 * @throws UserTypeNotFoundException
+	 */
+	public function startUserSession(string $userId): void {
+		$this->startSession($this->getFederatedUser($userId, Member::TYPE_USER));
+	}
+
 	/**
 	 *
 	 */
@@ -204,10 +231,25 @@ class CirclesManager {
 
 
 	/**
-	 * @return IFederatedUser
+	 * @return IFederatedUser|null
 	 */
-	public function getCurrentFederatedUser(): IFederatedUser {
+	public function getCurrentFederatedUser(): ?IFederatedUser {
 		return $this->federatedUserService->getCurrentUser();
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasCurrentFederatedUser(): bool {
+		return $this->federatedUserService->hasCurrentUser();
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isSessionInitiated(): bool {
+		return $this->federatedUserService->canBypassCurrentUserCondition()
+			   || $this->federatedUserService->hasCurrentUser();
 	}
 
 
@@ -397,12 +439,12 @@ class CirclesManager {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param IEntity $entity
 	 *
 	 * @return string
 	 */
-	public function getDefinition(Circle $circle): string {
-		return $this->circleService->getDefinition($circle);
+	public function getDefinition(IEntity $entity): string {
+		return $this->circleService->getDefinition($entity);
 	}
 
 
@@ -424,11 +466,21 @@ class CirclesManager {
 
 
 	/**
-	 * WIP
+	 * @param string $circleId
+	 * @param string $singleId
 	 *
-	 * @param string $memberId
-	 *
-	 * @return Member
+	 * @return IMember
 	 */
-//	public function getMemberById(string $memberId): Member {
+	public function getMember(string $circleId, string $singleId): Member {
+//		$this->memberService->getMember($circleId, $singleId);
+	}
+
+	/**
+	 * @throws RequestBuilderException
+	 * @throws MemberNotFoundException
+	 * @throws InitiatorNotFoundException
+	 */
+	public function getMemberById(string $memberId): Member {
+		$this->memberService->getMemberById($memberId);
+	}
 }

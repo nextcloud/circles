@@ -40,14 +40,18 @@ use DateTime;
 use JsonSerializable;
 use OCA\Circles\AppInfo\Capabilities;
 use OCA\Circles\Exceptions\MemberNotFoundException;
-use OCA\Circles\Exceptions\MembershipNotFoundException;
+use OCP\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Exceptions\ParseMemberLevelException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownInterfaceException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
-use OCA\Circles\IFederatedUser;
-use OCA\Circles\IEntity;
 use OCA\Circles\Model\Federated\RemoteInstance;
+use OCP\Circles\Model\ICircle;
+use OCP\Circles\Model\IEntity;
+use OCP\Circles\Model\IFederatedUser;
+use OCP\Circles\Model\IMember;
+use OCP\Circles\Model\IMembership;
+
 
 /**
  * Class Member
@@ -55,7 +59,7 @@ use OCA\Circles\Model\Federated\RemoteInstance;
  * @package OCA\Circles\Model
  */
 class Member extends ManagedModel implements
-	IEntity,
+	IMember,
 	IFederatedUser,
 	IDeserializable,
 	INC22QueryRow,
@@ -403,7 +407,7 @@ class Member extends ManagedModel implements
 	/**
 	 * @return Circle
 	 */
-	public function getBasedOn(): Circle {
+	public function getBasedOn(): ICircle {
 		return $this->basedOn;
 	}
 
@@ -734,7 +738,7 @@ class Member extends ManagedModel implements
 	 * @throws MembershipNotFoundException
 	 * @throws RequestBuilderException
 	 */
-	public function getLink(string $singleId, bool $detailed = false): Membership {
+	public function getLink(string $singleId, bool $detailed = false): IMembership {
 		$this->getManager()->getLink($this, $singleId, $detailed);
 
 		throw new MembershipNotFoundException();

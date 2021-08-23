@@ -33,7 +33,7 @@ namespace OCA\Circles\Db;
 
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Exceptions\RequestBuilderException;
-use OCA\Circles\IFederatedUser;
+use OCP\Circles\Model\IFederatedUser;
 use OCA\Circles\Model\Mount;
 
 /**

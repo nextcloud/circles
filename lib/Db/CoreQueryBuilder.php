@@ -36,14 +36,14 @@ use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use Doctrine\DBAL\Query\QueryBuilder;
 use OC;
 use OCA\Circles\Exceptions\RequestBuilderException;
-use OCA\Circles\IFederatedModel;
-use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\ConfigService;
+use OCP\Circles\Model\IFederatedModel;
+use OCP\Circles\Model\IFederatedUser;
 use OCP\DB\QueryBuilder\ICompositeExpression;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 
@@ -126,6 +126,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 				self::MEMBERSHIPS => [
 					self::CONFIG
 				],
+				self::DIRECT_INITIATOR,
 				self::INITIATOR => [
 					self::OPTIONS => [
 						'minimumLevel' => Member::LEVEL_MEMBER
@@ -1156,13 +1157,36 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 			)
 		);
 
+
+		$listMembershipCircleAlias = [$aliasMembership];
+		if ($this->getBool('initiatorDirectMember', $options, false)) {
+			try {
+				$aliasDirectInitiator = $this->generateAlias($alias, self::DIRECT_INITIATOR, $options);
+				$listMembershipCircleAlias[] = $aliasDirectInitiator;
+			} catch (RequestBuilderException $e) {
+			}
+		}
+
 		try {
 			$aliasMembershipCircle = $this->generateAlias($aliasMembership, self::CONFIG, $options);
+			$orXMembershipCircle = $expr->orX();
+			array_map(
+				function (string $alias) use ($orXMembershipCircle, $aliasMembershipCircle) {
+					$orXMembershipCircle->add(
+						$this->expr()->eq(
+							$alias . '.circle_id',
+							$aliasMembershipCircle . '.unique_id'
+						)
+					);
+				},
+				$listMembershipCircleAlias
+			);
+
 			$this->leftJoin(
 				$aliasMembership,
 				CoreRequestBuilder::TABLE_CIRCLE,
 				$aliasMembershipCircle,
-				$expr->eq($aliasMembership . '.circle_id', $aliasMembershipCircle . '.unique_id')
+				$orXMembershipCircle
 			);
 		} catch (RequestBuilderException $e) {
 		}
@@ -1264,13 +1288,35 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 
 		$minimumLevel = $this->getInt('minimumLevel', $options);
 		$andXMember = $expr->andX();
-		$andXMember->add(
-			$this->orXCheckLevel($levelCheck, $minimumLevel)
+		$orXLevelCheck = $expr->orX();
+//		$andXMember->add($this->orXCheckLevel($levelCheck, $minimumLevel));
+//		$expr = $this->expr();
+//		$orX = $expr->orX();
+//		foreach ($aliases as $alias) {
+//			$orX->add($expr->gte($alias . '.level', $this->createNamedParameter($level)));
+//		}
+//
+//		return $orX;
+
+		array_map(
+			function (string $alias) use ($orXLevelCheck, $minimumLevel) {
+				$orXLevelCheck->add(
+					$this->expr()->gte(
+						$alias . '.level',
+						$this->createNamedParameter($minimumLevel)
+					)
+				);
+			},
+			$levelCheck
 		);
+		$andXMember->add($orXLevelCheck);
 
 		if (!$this->getBool('includePersonalCircles', $options, false)) {
 			$andXMember->add(
-				$this->exprFilterBitwise('config', Circle::CFG_PERSONAL, $aliasMembershipCircle)
+				$this->exprFilterBitwise(
+					'config', Circle::CFG_PERSONAL,
+					$aliasMembershipCircle
+				)
 			);
 		}
 		$orX->add($andXMember);
@@ -1627,19 +1673,19 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	}
 
 
-	/**
-	 * @param array $aliases
-	 * @param int $level
-	 *
-	 * @return ICompositeExpression
-	 */
-	private function orXCheckLevel(array $aliases, int $level): ICompositeExpression {
-		$expr = $this->expr();
-		$orX = $expr->orX();
-		foreach ($aliases as $alias) {
-			$orX->add($expr->gte($alias . '.level', $this->createNamedParameter($level)));
-		}
-
-		return $orX;
-	}
+//	/**
+//	 * @param array $aliases
+//	 * @param int $level
+//	 *
+//	 * @return ICompositeExpression
+//	 */
+//	private function orXCheckLevel(array $aliases, int $level): ICompositeExpression {
+//		$expr = $this->expr();
+//		$orX = $expr->orX();
+//		foreach ($aliases as $alias) {
+//			$orX->add($expr->gte($alias . '.level', $this->createNamedParameter($level)));
+//		}
+//
+//		return $orX;
+//	}
 }

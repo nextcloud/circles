@@ -35,7 +35,7 @@ use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Events\RemovingCircleMemberEvent;
-use OCA\Circles\Exceptions\MembershipNotFoundException;
+use OCP\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
 use OCA\Circles\Service\MemberService;
