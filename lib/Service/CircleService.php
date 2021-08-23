@@ -378,9 +378,15 @@ class CircleService {
 		$this->federatedUserService->mustHaveCurrentUser();
 
 		$probe = new CircleProbe();
-		$probe->includeNonVisibleCircles();
+		$probe->includeNonVisibleCircles()
+			  ->emulateVisitor();
 
-		$circle = $this->circleRequest->getCircle($circleId, $this->federatedUserService->getCurrentUser(), $probe);
+		$circle = $this->circleRequest->getCircle(
+			$circleId,
+			$this->federatedUserService->getCurrentUser(),
+			$probe
+		);
+
 		if (!$circle->getInitiator()->hasInvitedBy()) {
 			$this->federatedUserService->setMemberPatron($circle->getInitiator());
 		}
@@ -414,7 +420,15 @@ class CircleService {
 	public function circleLeave(string $circleId, bool $force = false): array {
 		$this->federatedUserService->mustHaveCurrentUser();
 
-		$circle = $this->circleRequest->getCircle($circleId, $this->federatedUserService->getCurrentUser());
+		$probe = new CircleProbe();
+		$probe->includeNonVisibleCircles()
+			  ->emulateVisitor();
+
+		$circle = $this->circleRequest->getCircle(
+			$circleId,
+			$this->federatedUserService->getCurrentUser(),
+			$probe
+		);
 
 		$event = new FederatedEvent(CircleLeave::class);
 		$event->setCircle($circle);
