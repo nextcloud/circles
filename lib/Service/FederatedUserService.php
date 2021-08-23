@@ -317,6 +317,13 @@ class FederatedUserService {
 		$this->bypass = $bypass;
 	}
 
+	/**
+	 * @return bool
+	 */
+	public function canBypassCurrentUserCondition(): bool {
+		return $this->bypass;
+	}
+
 
 	/**
 	 * @param bool $initiatedByOcc
