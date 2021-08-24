@@ -81,6 +81,9 @@ class FederatedUser extends ManagedModel implements
 	/** @var string */
 	private $instance;
 
+	/** @var Membership */
+	private $inheritance;
+
 	/** @var Membership[] */
 	private $memberships = null;
 
@@ -269,6 +272,31 @@ class FederatedUser extends ManagedModel implements
 		return $this->getManager()->isLocalInstance($this->getInstance());
 	}
 
+	/**
+	 * @return bool
+	 */
+	public function hasInheritance(): bool {
+		return !is_null($this->inheritance);
+	}
+
+	/**
+	 * @param Membership $inheritance
+	 *
+	 * @return $this
+	 */
+	public function setInheritance(Membership $inheritance): self {
+		$this->inheritance = $inheritance;
+
+		return $this;
+	}
+
+	/**
+	 * @return Membership
+	 */
+	public function getInheritance(): Membership {
+		return $this->inheritance;
+	}
+
 
 	/**
 	 * @return bool
@@ -338,6 +366,13 @@ class FederatedUser extends ManagedModel implements
 			/** @var Circle $circle */
 			$circle = $this->deserialize($this->getArray('basedOn', $data), Circle::class);
 			$this->setBasedOn($circle);
+		} catch (InvalidItemException $e) {
+		}
+
+		try {
+			/** @var Membership $membership */
+			$membership = $this->deserialize($this->getArray('membership', $data), Membership::class);
+			$this->setInheritance($membership);
 		} catch (InvalidItemException $e) {
 		}
 
@@ -416,6 +451,10 @@ class FederatedUser extends ManagedModel implements
 
 		if ($this->hasBasedOn()) {
 			$arr['basedOn'] = $this->getBasedOn();
+		}
+
+		if ($this->hasInheritance()) {
+			$arr['inheritance'] = $this->getInheritance();
 		}
 
 		if (!is_null($this->memberships)) {
