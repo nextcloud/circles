@@ -111,11 +111,11 @@ class CircleDestroy implements
 	public function manage(FederatedEvent $event): void {
 		$circle = $event->getCircle();
 
+		$this->eventService->circleDestroying($event);
+
 		$this->circleRequest->delete($circle);
 		$this->memberRequest->deleteAllFromCircle($circle);
 		$this->membershipService->onUpdate($circle->getSingleId());
-
-		$this->eventService->circleDestroying($event);
 	}
 
 
