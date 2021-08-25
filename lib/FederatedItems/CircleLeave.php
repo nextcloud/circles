@@ -36,6 +36,7 @@ use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
+use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
@@ -156,9 +157,12 @@ class CircleLeave implements
 		$initiator = new FederatedUser();
 		$initiator->importFromIFederatedUser($member);
 
-		$outcome = $this->circleRequest->getCircle($circle->getSingleId(), $initiator);
-
-		$event->setOutcome($this->serialize($outcome));
+		try {
+			$outcome = $this->circleRequest->getCircle($circle->getSingleId(), $initiator);
+			$event->setOutcome($this->serialize($outcome));
+		} catch (CircleNotFoundException $e) {
+			// if member have no visibility on the circle after leaving it, we don't fill outcome
+		}
 	}
 
 
