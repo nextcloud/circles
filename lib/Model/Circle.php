@@ -555,7 +555,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, INC22Quer
 	 * @throws MembershipNotFoundException
 	 * @throws RequestBuilderException
 	 */
-	public function getLink(string $singleId, bool $detailed = false): IMembership {
+	public function getLink(string $singleId, bool $detailed = false): Membership {
 		return $this->getManager()->getLink($this, $singleId, $detailed);
 	}
 
