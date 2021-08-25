@@ -355,7 +355,12 @@ class CircleRequest extends CircleRequestBuilder {
 		}
 
 		if (!is_null($initiator)) {
-			$qb->setOptions([CoreQueryBuilder::CIRCLE], ['getData' => true]);
+			$qb->setOptions(
+				[CoreQueryBuilder::CIRCLE], [
+					'getData' => true,
+					'initiatorDirectMember' => true
+				]
+			);
 			$qb->limitToInitiator(CoreQueryBuilder::CIRCLE, $initiator);
 		}
 
