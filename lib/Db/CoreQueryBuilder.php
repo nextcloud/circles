@@ -126,6 +126,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 				self::MEMBERSHIPS => [
 					self::CONFIG
 				],
+				self::DIRECT_INITIATOR,
 				self::INITIATOR => [
 					self::OPTIONS => [
 						'minimumLevel' => Member::LEVEL_MEMBER
@@ -1156,15 +1157,40 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 			)
 		);
 
+
+		$listMembershipCircleAlias = [$aliasMembership];
+		if ($this->getBool('initiatorDirectMember', $options, false)) {
+			try {
+				$aliasDirectInitiator = $this->generateAlias($alias, self::DIRECT_INITIATOR, $options);
+				$listMembershipCircleAlias[] = $aliasDirectInitiator;
+			} catch (RequestBuilderException $e) {
+				// meaning that this path does not require DIRECT_INITIATOR; can be safely ignored
+			}
+		}
+
 		try {
 			$aliasMembershipCircle = $this->generateAlias($aliasMembership, self::CONFIG, $options);
+			$orXMembershipCircle = $expr->orX();
+			array_map(
+				function (string $alias) use ($orXMembershipCircle, $aliasMembershipCircle) {
+					$orXMembershipCircle->add(
+						$this->expr()->eq(
+							$alias . '.circle_id',
+							$aliasMembershipCircle . '.unique_id'
+						)
+					);
+				},
+				$listMembershipCircleAlias
+			);
+
 			$this->leftJoin(
 				$aliasMembership,
 				CoreRequestBuilder::TABLE_CIRCLE,
 				$aliasMembershipCircle,
-				$expr->eq($aliasMembership . '.circle_id', $aliasMembershipCircle . '.unique_id')
+				$orXMembershipCircle
 			);
 		} catch (RequestBuilderException $e) {
+			// meaning that this path (ie. self::$SQL_PATH) does not require CONFIG; can be safely ignored
 		}
 
 		if (!$this->getBool('getData', $options, false)) {
@@ -1175,7 +1201,6 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		if ($this->getBool('initiatorDirectMember', $options, false)) {
 			try {
 				$aliasDirectInitiator = $this->generateAlias($alias, self::DIRECT_INITIATOR, $options);
-
 				$this->generateMemberSelectAlias($aliasDirectInitiator)
 					 ->leftJoin(
 						 $helperAlias,
@@ -1187,6 +1212,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 						 )
 					 );
 			} catch (RequestBuilderException $e) {
+				// meaning that this path does not require DIRECT_INITIATOR; can be safely ignored
 			}
 		}
 
@@ -1264,13 +1290,27 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 
 		$minimumLevel = $this->getInt('minimumLevel', $options);
 		$andXMember = $expr->andX();
-		$andXMember->add(
-			$this->orXCheckLevel($levelCheck, $minimumLevel)
+		$orXLevelCheck = $expr->orX();
+
+		array_map(
+			function (string $alias) use ($orXLevelCheck, $minimumLevel) {
+				$orXLevelCheck->add(
+					$this->expr()->gte(
+						$alias . '.level',
+						$this->createNamedParameter($minimumLevel)
+					)
+				);
+			},
+			$levelCheck
 		);
+		$andXMember->add($orXLevelCheck);
 
 		if (!$this->getBool('includePersonalCircles', $options, false)) {
 			$andXMember->add(
-				$this->exprFilterBitwise('config', Circle::CFG_PERSONAL, $aliasMembershipCircle)
+				$this->exprFilterBitwise(
+					'config', Circle::CFG_PERSONAL,
+					$aliasMembershipCircle
+				)
 			);
 		}
 		$orX->add($andXMember);
@@ -1624,22 +1664,5 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		}
 
 		return $path;
-	}
-
-
-	/**
-	 * @param array $aliases
-	 * @param int $level
-	 *
-	 * @return ICompositeExpression
-	 */
-	private function orXCheckLevel(array $aliases, int $level): ICompositeExpression {
-		$expr = $this->expr();
-		$orX = $expr->orX();
-		foreach ($aliases as $alias) {
-			$orX->add($expr->gte($alias . '.level', $this->createNamedParameter($level)));
-		}
-
-		return $orX;
 	}
 }
