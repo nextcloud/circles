@@ -1164,6 +1164,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 				$aliasDirectInitiator = $this->generateAlias($alias, self::DIRECT_INITIATOR, $options);
 				$listMembershipCircleAlias[] = $aliasDirectInitiator;
 			} catch (RequestBuilderException $e) {
+				// meaning that this path does not require DIRECT_INITIATOR; can be safely ignored
 			}
 		}
 
@@ -1189,6 +1190,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 				$orXMembershipCircle
 			);
 		} catch (RequestBuilderException $e) {
+			// meaning that this path (ie. self::$SQL_PATH) does not require CONFIG; can be safely ignored
 		}
 
 		if (!$this->getBool('getData', $options, false)) {
@@ -1199,7 +1201,6 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		if ($this->getBool('initiatorDirectMember', $options, false)) {
 			try {
 				$aliasDirectInitiator = $this->generateAlias($alias, self::DIRECT_INITIATOR, $options);
-
 				$this->generateMemberSelectAlias($aliasDirectInitiator)
 					 ->leftJoin(
 						 $helperAlias,
@@ -1211,6 +1212,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 						 )
 					 );
 			} catch (RequestBuilderException $e) {
+				// meaning that this path does not require DIRECT_INITIATOR; can be safely ignored
 			}
 		}
 
