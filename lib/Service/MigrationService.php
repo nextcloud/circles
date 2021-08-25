@@ -347,7 +347,7 @@ class MigrationService {
 				break;
 
 			case 2: // secret
-				$circle->setConfig(Circle::CFG_OPEN + Circle::CFG_CIRCLE);
+				$circle->setConfig(Circle::CFG_OPEN + Circle::CFG_REQUEST);
 				break;
 
 			case 4: // closed
