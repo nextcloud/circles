@@ -310,9 +310,7 @@ class FederatedUser extends ManagedModel implements
 	 * @throws RequestBuilderException
 	 */
 	public function getLink(string $singleId, bool $detailed = false): Membership {
-		$this->getManager()->getLink($this, $singleId, $detailed);
-
-		throw new MembershipNotFoundException();
+		return $this->getManager()->getLink($this, $singleId, $detailed);
 	}
 
 
