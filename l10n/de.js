@@ -165,6 +165,7 @@ OC.L10N.register(
     "This user does not exist" : "Dieser Benutzer existiert nicht",
     "Email format is not valid" : "Das E-Mail-Format ist ungültig",
     "This contact is not available" : "Dieser Kontakt ist nicht verfügbar",
+    "%s shared a file with you." : "%s hat eine Datei mit Dir geteilt.",
     "This item is already shared with this circle" : "Dieses Element wird bereits mit diesem Kreis geteilt",
     "Could not find share" : "Freigabe konnte nicht gefunden werden",
     "Bring cloud-users closer together." : "Bringe Cloudnutzer näher zueinander.",
