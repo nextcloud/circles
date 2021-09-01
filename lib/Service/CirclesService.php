@@ -271,6 +271,9 @@ class CirclesService {
 	 * @throws Exception
 	 */
 	public function detailsCircle($circleUniqueId, $forceAll = false) {
+		if (\OC::$CLI) {
+			$forceAll = true;
+		}
 
 		try {
 			if (!$forceAll) {
