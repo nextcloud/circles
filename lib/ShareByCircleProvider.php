@@ -450,12 +450,12 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 			$name = $data['circle_alt_name'];
 		}
 
-		$data['share_with'] =
-			sprintf(
-				'%s (%s, %s) [%s]', $name,
-				$this->l10n->t(Circle::TypeLongString($data['circle_type'])),
-				$this->miscService->getDisplayName($data['circle_owner'], true), $data['share_with']
-			);
+//		$data['share_with'] =
+//			sprintf(
+//				'%s (%s, %s) [%s]', $name,
+//				$this->l10n->t(Circle::TypeLongString($data['circle_type'])),
+//				$this->miscService->getDisplayName($data['circle_owner'], true), $data['share_with']
+//			);
 
 
 		return $data;
