@@ -90,6 +90,7 @@ OC.L10N.register(
     "Root" : "Koren",
     "Circle Invite" : "Povabilo v krog",
     "Federated" : "Zvezno",
+    "Mount point" : "Priklopna točka",
     "Nextcloud User" : "Uporabnik Nextcloud",
     "Nextcloud Group" : "Skupina Nextcloud",
     "Contact" : "Stik",
