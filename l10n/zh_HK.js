@@ -150,6 +150,7 @@ OC.L10N.register(
     "Accept" : "接受",
     "Refuse" : "拒絕",
     "Leave the circle" : "離開圈子",
+    "%s" : "%s",
     "Personal Circle" : "個人圈子",
     "%s owned by %s" : "%s 擁有的 %s",
     "You need a specify a type of circle" : "您需要指定一種類型的圈子",
