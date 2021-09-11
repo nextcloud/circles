@@ -93,6 +93,7 @@ OC.L10N.register(
     "Mount point" : "Priklopna točka",
     "Nextcloud User" : "Uporabnik Nextcloud",
     "Nextcloud Group" : "Skupina Nextcloud",
+    "Email Address" : "Elektronski naslov",
     "Contact" : "Stik",
     "Circle" : "Krog",
     "Nextcloud App" : "Program Nextcloud",
