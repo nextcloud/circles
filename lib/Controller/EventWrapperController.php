@@ -134,7 +134,7 @@ class EventWrapperController extends Controller {
 
 		// so circles:check can check async is fine
 		if ($token === 'test-dummy-token') {
-			sleep(5);
+			sleep(4);
 		}
 
 		// exit() or useless log will be generated
