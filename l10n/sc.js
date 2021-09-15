@@ -211,7 +211,7 @@ OC.L10N.register(
     "Dismiss the request" : "Iscarta sa rechesta",
     "Unlink this group" : "Iscollega custu grupu",
     "Remove this link" : "Boga·nche custu ligòngiu",
-    "Cancel the link request" : "Cantzella sa rechesta de ligòngiu",
+    "Cancel the link request" : "Annulla sa rechesta de ligòngiu",
     "Accept the link request" : "Atzeta sa rechesta de ligòngiu",
     "Reject the link request" : "Refuda sa rechesta de ligòngiu",
     "Cannot join this circle" : "Non faghet a intrare in custu giru",
