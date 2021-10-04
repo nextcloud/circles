@@ -450,7 +450,7 @@ class ShareByCircleProvider extends CircleProviderRequest implements IShareProvi
 			$name = $data['circle_alt_name'];
 		}
 
-		$data['share_with'] =
+		$data['share_with_displayname'] =
 			sprintf(
 				'%s (%s, %s) [%s]', $name,
 				$this->l10n->t(Circle::TypeLongString($data['circle_type'])),
