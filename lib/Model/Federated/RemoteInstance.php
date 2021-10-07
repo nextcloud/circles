@@ -60,7 +60,9 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 		self::TYPE_GLOBALSCALE
 	];
 
+	public const ROOT = 'root';
 	public const TEST = 'test';
+	public const ALIASES = 'aliases';
 	public const INCOMING = 'incoming';
 	public const EVENT = 'event';
 	public const CIRCLES = 'circles';
@@ -69,7 +71,8 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 	public const MEMBER = 'member';
 	public const MEMBERSHIPS = 'memberships';
 	public const INHERITED = 'inherited';
-
+	public const UID = 'uid';
+	public const AUTH_SIGNED = 'auth-signed';
 
 	/** @var int */
 	private $dbId = 0;
@@ -478,21 +481,21 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 	public function import(array $data): NC22Signatory {
 		parent::import($data);
 
-		$this->setTest($this->get('test', $data))
-			 ->setAliases($this->getArray('aliases', $data))
-			 ->setEvent($this->get('event', $data))
-			 ->setRoot($this->get('root', $data))
-			 ->setIncoming($this->get('incoming', $data))
-			 ->setCircles($this->get('circles', $data))
-			 ->setCircle($this->get('circle', $data))
-			 ->setMembers($this->get('members', $data))
-			 ->setMember($this->get('member', $data))
-			 ->setInherited($this->get('inherited', $data))
-			 ->setMemberships($this->get('memberships', $data))
-			 ->setUid($this->get('uid', $data));
+		$this->setTest($this->get(self::TEST, $data))
+			 ->setAliases($this->getArray(self::ALIASES, $data))
+			 ->setEvent($this->get(self::EVENT, $data))
+			 ->setRoot($this->get(self::ROOT, $data))
+			 ->setIncoming($this->get(self::INCOMING, $data))
+			 ->setCircles($this->get(self::CIRCLES, $data))
+			 ->setCircle($this->get(self::CIRCLE, $data))
+			 ->setMembers($this->get(self::MEMBERS, $data))
+			 ->setMember($this->get(self::MEMBER, $data))
+			 ->setInherited($this->get(self::INHERITED, $data))
+			 ->setMemberships($this->get(self::MEMBERSHIPS, $data))
+			 ->setUid($this->get(self::UID, $data));
 
 		$algo = '';
-		$authSigned = trim($this->get('auth-signed', $data), ':');
+		$authSigned = trim($this->get(self::AUTH_SIGNED, $data), ':');
 		if (strpos($authSigned, ':') > 0) {
 			[$algo, $authSigned] = explode(':', $authSigned);
 		}
@@ -509,25 +512,25 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 	 */
 	public function jsonSerialize(): array {
 		$data = [
-			'uid' => $this->getUid(true),
-			'root' => $this->getRoot(),
-			'event' => $this->getEvent(),
-			'incoming' => $this->getIncoming(),
-			'test' => $this->getTest(),
-			'circles' => $this->getCircles(),
-			'circle' => $this->getCircle(),
-			'members' => $this->getMembers(),
-			'member' => $this->getMember(),
-			'inherited' => $this->getInherited(),
-			'memberships' => $this->getMemberships()
+			self::UID => $this->getUid(true),
+			self::ROOT => $this->getRoot(),
+			self::EVENT => $this->getEvent(),
+			self::INCOMING => $this->getIncoming(),
+			self::TEST => $this->getTest(),
+			self::CIRCLES => $this->getCircles(),
+			self::CIRCLE => $this->getCircle(),
+			self::MEMBERS => $this->getMembers(),
+			self::MEMBER => $this->getMember(),
+			self::INHERITED => $this->getInherited(),
+			self::MEMBERSHIPS => $this->getMemberships()
 		];
 
 		if ($this->getAuthSigned() !== '') {
-			$data['auth-signed'] = $this->getAlgorithm() . ':' . $this->getAuthSigned();
+			$data[self::AUTH_SIGNED] = $this->getAlgorithm() . ':' . $this->getAuthSigned();
 		}
 
 		if (!empty($this->getAliases())) {
-			$data['aliases'] = $this->getAliases();
+			$data[self::ALIASES] = $this->getAliases();
 		}
 
 		return array_filter(array_merge($data, parent::jsonSerialize()));

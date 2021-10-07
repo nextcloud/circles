@@ -51,7 +51,7 @@ class CirclesMaintenance extends Base {
 
 
 	/** @var CoreRequestBuilder */
-	private $coreQueryBuilder;
+	private $coreRequestBuilder;
 
 	/** @var MaintenanceService */
 	private $maintenanceService;
@@ -62,18 +62,18 @@ class CirclesMaintenance extends Base {
 	/**
 	 * CirclesMaintenance constructor.
 	 *
-	 * @param CoreRequestBuilder $coreQueryBuilder
+	 * @param CoreRequestBuilder $coreRequestBuilder
 	 * @param MaintenanceService $maintenanceService
 	 * @param OutputService $outputService
 	 */
 	public function __construct(
-		CoreRequestBuilder $coreQueryBuilder,
+		CoreRequestBuilder $coreRequestBuilder,
 		MaintenanceService $maintenanceService,
 		OutputService $outputService
 	) {
 		parent::__construct();
 
-		$this->coreQueryBuilder = $coreQueryBuilder;
+		$this->coreRequestBuilder = $coreRequestBuilder;
 		$this->maintenanceService = $maintenanceService;
 		$this->outputService = $outputService;
 	}
@@ -144,9 +144,9 @@ class CirclesMaintenance extends Base {
 				return 0;
 			}
 
-			$this->coreQueryBuilder->cleanDatabase($input->getOption('clean-shares'));
+			$this->coreRequestBuilder->cleanDatabase($input->getOption('clean-shares'));
 			if ($uninstall) {
-				$this->coreQueryBuilder->uninstall();
+				$this->coreRequestBuilder->uninstall();
 			}
 
 			$output->writeln('<info>' . $action . ' done</info>');

@@ -484,7 +484,7 @@ class RemoteStreamService extends NC22Signature {
 	 * @throws SignatureException
 	 */
 	private function confirmAuth(RemoteInstance $remote, string $auth): void {
-		[$algo, $signed] = explode(':', $this->get('auth-signed', $remote->getOrigData()));
+		[$algo, $signed] = explode(':', $this->get(RemoteInstance::AUTH_SIGNED, $remote->getOrigData()));
 		try {
 			if ($signed === null) {
 				throw new SignatureException('invalid auth-signed');

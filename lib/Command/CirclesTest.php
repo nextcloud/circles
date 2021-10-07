@@ -113,13 +113,13 @@ class CirclesTest extends Base {
 	/**
 	 * CirclesTest constructor.
 	 *
-	 * @param CoreRequestBuilder $coreQueryBuilder
+	 * @param CoreRequestBuilder $coreRequestBuilder
 	 * @param ConfigService $configService
 	 */
-	public function __construct(CoreRequestBuilder $coreQueryBuilder, ConfigService $configService) {
+	public function __construct(CoreRequestBuilder $coreRequestBuilder, ConfigService $configService) {
 		parent::__construct();
 
-		$this->coreQueryBuilder = $coreQueryBuilder;
+		$this->coreQueryBuilder = $coreRequestBuilder;
 		$this->configService = $configService;
 	}
 
