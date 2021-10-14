@@ -344,8 +344,8 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 			$federatedUser->setBasedOn($this->obfuscateCircle($federatedUser->getBasedOn()));
 		}
 
-		if ($federatedUser->hasLink()) {
-			$federatedUser->setLink($this->obfuscateMembership($federatedUser->getLink()));
+		if ($federatedUser->hasInheritance()) {
+			$federatedUser->setInheritance($this->obfuscateMembership($federatedUser->getInheritance()));
 		}
 
 		if ($federatedUser->hasMemberships()) {
