@@ -397,11 +397,11 @@ class CirclesManager {
 
 
 	/**
-	 * @param Circle $circle
+	 * @param IEntity $circle
 	 *
 	 * @return string
 	 */
-	public function getDefinition(Circle $circle): string {
+	public function getDefinition(IEntity $circle): string {
 		return $this->circleService->getDefinition($circle);
 	}
 
