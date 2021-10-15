@@ -150,6 +150,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, INC22Quer
 		4 => 'Email Address',
 		8 => 'Contact',
 		16 => 'Circle',
+		10000 => 'Nextcloud App',
 		10001 => 'Circles App',
 		10002 => 'Admin Command Line'
 	];
@@ -555,9 +556,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, INC22Quer
 	 * @throws RequestBuilderException
 	 */
 	public function getLink(string $singleId, bool $detailed = false): Membership {
-		$this->getManager()->getLink($this, $singleId, $detailed);
-
-		throw new MembershipNotFoundException();
+		return $this->getManager()->getLink($this, $singleId, $detailed);
 	}
 
 
@@ -628,6 +627,15 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, INC22Quer
 		}
 
 		return $this->getOwner()->getInstance();
+	}
+
+
+	/**
+	 * @return bool
+	 * @throws OwnerNotFoundException
+	 */
+	public function isLocal(): bool {
+		return $this->getManager()->isLocalInstance($this->getInstance());
 	}
 
 
