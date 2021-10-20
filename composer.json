@@ -10,7 +10,7 @@
     }
   ],
   "require": {
-    "daita/my-small-php-tools": "~20"
+    "artificial-owl/my-small-php-tools": "~20"
   },
   "config": {
     "optimize-autoloader": true

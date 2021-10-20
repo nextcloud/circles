@@ -72,6 +72,7 @@ class CoreRequestBuilder {
 	/** @var bool */
 	protected $leftJoinedNCGroupAndUser = false;
 
+
 	/**
 	 * RequestBuilder constructor.
 	 *

@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "adf375780a2f51ccbc7a04b7af8c9619",
+    "content-hash": "c4e4c5059f7320af3bf70918fb5e160d",
     "packages": [
         {
-            "name": "daita/my-small-php-tools",
-            "version": "v20.0.1",
+            "name": "artificial-owl/my-small-php-tools",
+            "version": "v20.0.3",
             "source": {
                 "type": "git",
-                "url": "https://github.com/daita/my-small-php-tools.git",
-                "reference": "313ce2a22dd034f14da42f8f8cd00ee0b99f41b1"
+                "url": "https://github.com/ArtificialOwl/my-small-php-tools.git",
+                "reference": "8b287940b60ad6262c955fe845e4f6e0dffc35e6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/daita/my-small-php-tools/zipball/313ce2a22dd034f14da42f8f8cd00ee0b99f41b1",
-                "reference": "313ce2a22dd034f14da42f8f8cd00ee0b99f41b1",
+                "url": "https://api.github.com/repos/ArtificialOwl/my-small-php-tools/zipball/8b287940b60ad6262c955fe845e4f6e0dffc35e6",
+                "reference": "8b287940b60ad6262c955fe845e4f6e0dffc35e6",
                 "shasum": ""
             },
             "require": {
@@ -41,10 +41,10 @@
             ],
             "description": "My small PHP Tools",
             "support": {
-                "issues": "https://github.com/daita/my-small-php-tools/issues",
-                "source": "https://github.com/daita/my-small-php-tools/tree/v20.0.1"
+                "issues": "https://github.com/ArtificialOwl/my-small-php-tools/issues",
+                "source": "https://github.com/ArtificialOwl/my-small-php-tools/tree/v20.0.3"
             },
-            "time": "2021-04-26T12:46:18+00:00"
+            "time": "2021-10-13T22:45:22+00:00"
         }
     ],
     "packages-dev": [],

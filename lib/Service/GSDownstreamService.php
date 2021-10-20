@@ -153,7 +153,7 @@ class GSDownstreamService {
 			$gs = $this->globalScaleService->getGlobalScaleEvent($event);
 			$gs->manage($event);
 		} catch (Exception $e) {
-			$this->miscService->log('issue onNewEvent: ' . json_encode($event) . ' - ' . $e->getMessage());
+//			$this->miscService->log('issue onNewEvent: ' . json_encode($event) . ' - ' . $e->getMessage());
 		}
 	}
 

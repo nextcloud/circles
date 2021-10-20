@@ -7,3 +7,5 @@ vendor/
 .settings/
 
 composer/
+
+.php_cs.cache
