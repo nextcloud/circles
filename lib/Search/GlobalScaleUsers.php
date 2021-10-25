@@ -102,7 +102,12 @@ class GlobalScaleUsers implements ISearch {
 
 		$result = [];
 		foreach ($users as $user) {
-			list(, $instance) = explode('@', $this->get('federationId', $user), 2);
+			$cloudId = $this->get('federationId', $user);
+			$pos = strrpos($cloudId, '@');
+			if ($pos === false) {
+				continue;
+			}
+			$instance = substr($cloudId, $pos + 1);
 			if ($this->configService->isLocalInstance($instance)) {
 				continue;
 			}

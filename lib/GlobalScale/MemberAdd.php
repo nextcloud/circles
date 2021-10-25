@@ -214,7 +214,13 @@ class MemberAdd extends AGlobalScaleEvent {
 				$recipients = [$member->getUserId()];
 			}
 
+			$done = [];
 			foreach ($recipients as $recipient) {
+				if (in_array($recipient, $done)) {
+					continue;
+				}
+
+				$done[] = $recipient;
 				$this->memberIsMailbox($circle, $recipient, $links, $password);
 			}
 		}
