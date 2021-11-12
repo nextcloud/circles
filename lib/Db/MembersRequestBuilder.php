@@ -76,7 +76,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * @return IQueryBuilder
 	 */
-	protected function getMembersSelectSql() {
+	public function getMembersSelectSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
@@ -103,7 +103,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	 *
 	 * @return IQueryBuilder
 	 */
-	protected function getMembersUpdateSql(string $circleId, string $userId, string $instance, int $type) {
+	public function getMembersUpdateSql(string $circleId, string $userId, string $instance, int $type) {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$expr = $qb->expr();
 
@@ -127,7 +127,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	 *
 	 * @return IQueryBuilder
 	 */
-	protected function getMembersDeleteSql() {
+	public function getMembersDeleteSql() {
 		$qb = $this->dbConnection->getQueryBuilder();
 		$qb->delete(CoreRequestBuilder::TABLE_MEMBERS);
 
@@ -140,7 +140,7 @@ class MembersRequestBuilder extends CoreRequestBuilder {
 	 *
 	 * @return Member
 	 */
-	protected function parseMembersSelectSql(array $data) {
+	public function parseMembersSelectSql(array $data) {
 		$member = new Member($data['user_id'], $data['user_type'], $data['circle_id']);
 		$member->setNote($data['note']);
 		$member->setContactId($data['contact_id']);
