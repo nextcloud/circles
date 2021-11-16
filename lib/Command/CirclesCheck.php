@@ -392,8 +392,10 @@ class CirclesCheck extends Base {
 		[$scheme, $cloudId, $path] = $this->parseAddress($loopback);
 
 		$question = new ConfirmationQuestion(
-			'- Do you want to save <info>' . $loopback
-			. '</info> as your <info>loopback</info> address ? (y/N) ', false, '/^(y|Y)/i'
+																		'- Do you want to save <info>'
+																		. $loopback
+																		. '</info> as your <info>loopback</info> address ? (y/N) ',
+																		false, '/^(y|Y)/i'
 		);
 
 		$helper = $this->getHelper('question');
@@ -463,7 +465,8 @@ class CirclesCheck extends Base {
 			$fullInternal = rtrim($scheme . '://' . $cloudId . $path, '/');
 
 			$question = new ConfirmationQuestion(
-				'<comment>Do you want to check the validity of this internal address?</comment> (Y/n) ', true,
+				'<comment>Do you want to run a series of test to confirm the validity of this internal address?</comment> (Y/n) ',
+				true,
 				'/^(y|Y)/i'
 			);
 
@@ -573,8 +576,10 @@ class CirclesCheck extends Base {
 
 		$output->writeln('');
 		$question = new ConfirmationQuestion(
-			'- Do you want to save <info>' . $internal
-			. '</info> as your <info>internal</info> address ? (y/N) ', false, '/^(y|Y)/i'
+																		'- Do you want to save <info>'
+																		. $internal
+																		. '</info> as your <info>internal</info> address ? (y/N) ',
+																		false, '/^(y|Y)/i'
 		);
 
 		$helper = $this->getHelper('question');

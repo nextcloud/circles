@@ -10,7 +10,7 @@ declare(strict_types=1);
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2017
+ * @copyright 2021
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -32,30 +32,39 @@ declare(strict_types=1);
 namespace OCA\Circles\FederatedItems;
 
 use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedItem;
+use OCA\Circles\IFederatedItemForwardResult;
+use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\IFederatedItemLimitedToInstanceWithMembership;
 use OCA\Circles\Model\Federated\FederatedEvent;
-use OCA\Circles\Service\CircleEventService;
+use OCA\Circles\Service\GlobalEventService;
+use OCA\Circles\Service\ShareWrapperService;
+
 
 /**
- * Class SharesSync
  *
- * @package OCA\Circles\FederatedItems
  */
-class SharedItemsSync implements
+class SharedFilesSync implements
 	IFederatedItem,
+	IFederatedItemForwardResult,
+	IFederatedItemHighSeverity,
 	IFederatedItemLimitedToInstanceWithMembership {
 
 
-	// TODO: testing that IFederatedItemLimitedToInstanceWithMembership is working (since multi-instance)
-	// TODO: implements IFederatedItemInstanceMember to the check procedure
+	/** @var ShareWrapperService */
+	private $shareWrapperService;
 
-	/** @var CircleEventService */
-	private $circleEventService;
+	/** @var GlobalEventService */
+	private $globalEventService;
 
 
-	public function __construct(CircleEventService $circleEventService) {
-		$this->circleEventService = $circleEventService;
+	public function __construct(
+		ShareWrapperService $shareWrapperService,
+		GlobalEventService $globalEventService
+	) {
+		$this->shareWrapperService = $shareWrapperService;
+		$this->globalEventService = $globalEventService;
 	}
 
 
@@ -68,11 +77,16 @@ class SharedItemsSync implements
 
 	/**
 	 * @param FederatedEvent $event
+	 *
+	 * @throws RequestBuilderException
 	 */
 	public function manage(FederatedEvent $event): void {
-		$this->circleEventService->onSharedItemsSyncRequested($event);
+		\OC::$server->getLogger()->log(3, '### MANAGE');
+		$this->globalEventService->onSharedItemsSyncRequested($event);
+		$circle = $event->getCircle();
 
-		$event->setResult(new SimpleDataStore(['shares' => 'ok']));
+		$wrappedShares = $this->shareWrapperService->getSharesToCircle($circle->getSingleId());
+		$event->setResult(new SimpleDataStore(['shares' => $wrappedShares]));
 	}
 
 
@@ -81,5 +95,6 @@ class SharedItemsSync implements
 	 * @param array $results
 	 */
 	public function result(FederatedEvent $event, array $results): void {
+		\OC::$server->getLogger()->log(3, '### RESULT: ' . json_encode($results));
 	}
 }

@@ -29,45 +29,12 @@ declare(strict_types=1);
  */
 
 
-namespace OCA\Circles\Service;
-
-use OCA\Circles\FederatedItems\SharedFilesSync;
-use OCA\Circles\Model\Circle;
-use OCA\Circles\Model\Federated\FederatedEvent;
+namespace OCA\Circles;
 
 /**
- * Class ShareService
+ * Interface IFederatedItemForwardResult
  *
- * @package OCA\Circles\Service
+ * @package OCA\Circles
  */
-class ShareService {
-
-
-	/** @var FederatedEventService */
-	private $federatedEventService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
-	/**
-	 * ShareService constructor.
-	 *
-	 * @param FederatedEventService $federatedEventService
-	 * @param ConfigService $configService
-	 */
-	public function __construct(FederatedEventService $federatedEventService, ConfigService $configService) {
-		$this->federatedEventService = $federatedEventService;
-		$this->configService = $configService;
-	}
-
-
-	/**
-	 * @param Circle $circle
-	 */
-	public function syncRemoteShares(Circle $circle) {
-		$event = new FederatedEvent(SharedFilesSync::class);
-		$event->setCircle($circle);
-		$this->federatedEventService->newEvent($event);
-	}
+interface IFederatedItemForwardResult {
 }

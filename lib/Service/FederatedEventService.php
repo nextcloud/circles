@@ -56,6 +56,7 @@ use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemCircleCheckNotRequired;
 use OCA\Circles\IFederatedItemDataRequestOnly;
+use OCA\Circles\IFederatedItemForwardResult;
 use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\IFederatedItemInitiatorCheckNotRequired;
 use OCA\Circles\IFederatedItemInitiatorMembershipNotRequired;
@@ -191,6 +192,30 @@ class FederatedEventService extends NC22Signature {
 		}
 
 		return $event->getOutcome();
+	}
+
+
+	/**
+	 * @param FederatedEvent $event
+	 *
+	 * @return bool
+	 * @throws RequestNetworkException
+	 */
+	public function forwardEvent(FederatedEvent $event): bool {
+		if (!$event->isForwardResult() || $this->configService->isLocalInstance($event->getOrigin())) {
+			return false;
+		}
+
+		$remote = $this->remoteRequest->getFromInstance($event->getOrigin());
+		$request = new NC22Request('', Request::TYPE_POST);
+		$this->configService->configureRequest($request);
+		$request->basedOnUrl($remote->getForward());
+		$request->setDataSerialize($event);
+
+
+		$this->doRequest($request);
+
+		return true;
 	}
 
 
@@ -377,6 +402,9 @@ class FederatedEventService extends NC22Signature {
 		if ($item instanceof IFederatedItemDataRequestOnly) {
 			$event->setDataRequestOnly(true);
 		}
+		if ($item instanceof IFederatedItemForwardResult) {
+			$event->setForwardResult(true);
+		}
 	}
 
 
@@ -510,7 +538,9 @@ class FederatedEventService extends NC22Signature {
 
 		try {
 			$gs = $this->getFederatedItem($event, false);
-			$gs->result($event, $results);
+			if (!$this->forwardEvent($event)) {
+				$gs->result($event, $results);
+			}
 		} catch (FederatedEventException $e) {
 		}
 	}

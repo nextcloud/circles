@@ -50,7 +50,7 @@ class GlobalSync extends TimedJob {
 	 * Cache constructor.
 	 */
 	public function __construct() {
-		$this->setInterval(10);
+		$this->setInterval(900);
 	}
 
 

@@ -34,8 +34,11 @@ namespace OCA\Circles\Command;
 use OC\Core\Command\Base;
 use OCA\Circles\Db\CoreRequestBuilder;
 use OCA\Circles\Exceptions\MaintenanceException;
+use OCA\Circles\Service\CircleService;
+use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MaintenanceService;
 use OCA\Circles\Service\OutputService;
+use OCA\Circles\Service\ShareService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -104,6 +107,21 @@ class CirclesMaintenance extends Base {
 	 * @return int
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
+
+
+		/** @var ShareService $shareService */
+		$shareService = \OC::$server->get(ShareService::class);
+		/** @var CircleService $circleService */
+		$circleService = \OC::$server->get(CircleService::class);
+		/** @var FederatedUserService $federatedUserService */
+		$federatedUserService = \OC::$server->get(FederatedUserService::class);
+		$federatedUserService->setLocalCurrentUserId('test3A');
+
+		$circle = $circleService->getCircle('T3yPBiOeEn7Tv1KJ1BOkroECmaWEeuu');
+		$shareService->syncRemoteShares($circle);
+
+
+		return 0;
 		$reset = $input->getOption('reset');
 		$uninstall = $input->getOption('uninstall');
 		$level = (int)$input->getOption('level');
