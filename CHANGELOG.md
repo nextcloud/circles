@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 
+### 0.19.17
+
+- fix instances aliases
+- 
+
 ### 0.19.15
 
 - fix an issue during migration removing not-yet-members
