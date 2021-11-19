@@ -147,9 +147,9 @@ class MemberAdd extends AGlobalScaleEvent {
 		}
 
 
-		//
-		// TODO: verifiez comment se passe le cached name sur un member_add
-		//
+		$this->membersService->updateCachedName($member, false);
+		$this->membersRequest->updateMemberInfo($member);
+
 		$cachedName = $member->getCachedName();
 		$password = $event->getData()
 						  ->g('password');
