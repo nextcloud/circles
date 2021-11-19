@@ -100,7 +100,7 @@ class ConfigService {
 		self::FRONTAL_CLOUD_SCHEME             => 'https',
 		self::CIRCLES_ACTIVITY_ON_CREATION     => '1',
 		self::CIRCLES_SKIP_INVITATION_STEP     => '0',
-		self::CIRCLES_SEARCH_FROM_COLLABORATOR => '0'
+		self::CIRCLES_SEARCH_FROM_COLLABORATOR => '1'
 	];
 
 	/** @var string */
