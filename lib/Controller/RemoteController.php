@@ -56,6 +56,7 @@ use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Probes\BasicProbe;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
@@ -267,7 +268,8 @@ class RemoteController extends Controller {
 
 			$probe = new CircleProbe();
 			$probe->setFilterCircle($filterCircle)
-				  ->setFilterMember($filterMember);
+				  ->setFilterMember($filterMember)
+				  ->addDetail(BasicProbe::DETAILS_POPULATION);
 
 			$circles = $this->circleService->getCircles($probe);
 
