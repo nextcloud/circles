@@ -54,6 +54,7 @@ use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\ModelManager;
+use OCA\Circles\Model\Probes\BasicProbe;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
@@ -190,7 +191,8 @@ class CirclesList extends Base {
 
 			$probe = new CircleProbe();
 			$probe->filterHiddenCircles()
-				  ->filterBackendCircles();
+				  ->filterBackendCircles()
+				  ->addDetail(BasicProbe::DETAILS_POPULATION);
 
 			if ($input->getOption('system')) {
 				$probe->includeSystemCircles();
