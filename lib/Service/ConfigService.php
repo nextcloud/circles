@@ -103,6 +103,7 @@ class ConfigService {
 	public const SELF_SIGNED_CERT = 'self_signed_cert';
 	public const MEMBERS_LIMIT = 'members_limit';
 	public const ACTIVITY_ON_NEW_CIRCLE = 'creation_activity';
+	public const ALLOWED_TYPES = 'allowed_types';
 
 	public const MIGRATION_BYPASS = 'migration_bypass';
 	public const MIGRATION_22 = 'migration_22';
@@ -176,6 +177,8 @@ class ConfigService {
 		self::SELF_SIGNED_CERT => '0',
 		self::MEMBERS_LIMIT => '-1',
 		self::ACTIVITY_ON_NEW_CIRCLE => '1',
+		self::ALLOWED_TYPES => Member::ALLOWING_ALL_TYPES,
+
 		self::MIGRATION_BYPASS => '0',
 		self::MIGRATION_22 => '0',
 		self::MIGRATION_22_1 => '0',
