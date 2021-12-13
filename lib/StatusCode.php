@@ -68,7 +68,8 @@ class StatusCode {
 		128 => 'Cannot add Circle as its own Member',
 		129 => 'Member does not contains a patron',
 		130 => 'Member is invited by an entity that does not belongs to the instance at the origin of the request',
-		131 => 'Member is a non-local Circle'
+		131 => 'Member is a non-local Circle',
+		132 => 'Member type not allowed'
 	];
 
 	public static $MEMBER_LEVEL = [
