@@ -351,6 +351,12 @@ class SingleMemberAdd implements
 			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[120], 120);
 		}
 
+		$allowedTypes = $this->configService->getAppValueInt(ConfigService::ALLOWED_TYPES);
+		if ($federatedUser->getUserType() < Member::TYPE_APP
+			&& ($allowedTypes & $federatedUser->getUserType()) === 0) {
+			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[132], 132);
+		}
+
 		if ($federatedUser->getBasedOn()->isConfig(Circle::CFG_ROOT)) {
 			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[125], 125);
 		}
