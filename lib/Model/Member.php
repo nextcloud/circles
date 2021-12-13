@@ -77,6 +77,8 @@ class Member extends ManagedModel implements
 	public const TYPE_CIRCLE = 16;
 	public const TYPE_APP = 10000;
 
+	public const ALLOWING_ALL_TYPES = 31;
+
 	public const APP_CIRCLES = 10001;
 	public const APP_OCC = 10002;
 
