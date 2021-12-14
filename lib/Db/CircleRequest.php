@@ -300,7 +300,7 @@ class CircleRequest extends CircleRequestBuilder {
 	 * @throws RequestBuilderException
 	 */
 	public function getSingleCircle(IFederatedUser $initiator): Circle {
-		$qb = $this->getCircleSelectSql(CoreQueryBuilder::SINGLE);
+		$qb = $this->getCircleSelectSql(CoreQueryBuilder::SINGLE, true);
 
 		if ($initiator instanceof FederatedUser) {
 			$member = new Member();
