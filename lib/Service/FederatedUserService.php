@@ -716,6 +716,8 @@ class FederatedUserService {
 		$this->circleRequest->deleteFederatedUser($federatedUser);
 		$this->memberRequest->deleteFederatedUser($federatedUser);
 		$this->membershipService->deleteFederatedUser($federatedUser);
+
+		$this->cache->remove($this->generateCacheKey($federatedUser));
 	}
 
 
@@ -1194,13 +1196,15 @@ class FederatedUserService {
 	 */
 	private function getCachedSingleCircle(FederatedUser $federatedUser): Circle {
 		$key = $this->generateCacheKey($federatedUser);
-		if (!$this->cache->hasKey($key)) {
+		$cachedData = $this->cache->get($key);
+
+		if ($cachedData === null) {
 			throw new SingleCircleNotFoundException();
 		}
 
 		try {
 			/** @var Circle $singleCircle */
-			$singleCircle = $this->deserializeJson($this->cache->get($key), Circle::class);
+			$singleCircle = $this->deserializeJson($cachedData, Circle::class);
 		} catch (InvalidItemException $e) {
 			throw new SingleCircleNotFoundException();
 		}
