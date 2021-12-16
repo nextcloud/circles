@@ -639,7 +639,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		if ($getData) {
 			$this->generateMemberSelectAlias($aliasMember);
 		}
-		$this->leftJoin(
+		$this->innerJoin(
 			$this->getDefaultSelectAlias(), CoreRequestBuilder::TABLE_MEMBER, $aliasMember,
 			$expr->eq($aliasMember . '.circle_id', $alias . '.unique_id')
 		);
