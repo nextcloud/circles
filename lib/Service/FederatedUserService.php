@@ -31,6 +31,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
+use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
+use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
@@ -69,6 +71,8 @@ use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
+use OCP\ICache;
+use OCP\ICacheFactory;
 use OCP\IGroupManager;
 use OCP\IUser;
 use OCP\IUserManager;
@@ -83,7 +87,11 @@ class FederatedUserService {
 	use TArrayTools;
 	use TStringTools;
 	use TNC22Logger;
+	use TNC22Deserialize;
 
+
+	public const CACHE_SINGLE_CIRCLE = 'circles/singleCircle';
+	public const CACHE_SINGLE_CIRCLE_TTL = 900;
 
 	public const CONFLICT_001 = 1;
 	public const CONFLICT_002 = 2;
@@ -129,6 +137,9 @@ class FederatedUserService {
 	private $configService;
 
 
+	/** @var ICache */
+	private $cache;
+
 	/** @var FederatedUser */
 	private $currentUser = null;
 
@@ -154,6 +165,7 @@ class FederatedUserService {
 	 * @param IUserSession $userSession
 	 * @param IUserManager $userManager
 	 * @param IGroupManager $groupManager
+	 * @param ICacheFactory $cacheFactory
 	 * @param FederatedEventService $federatedEventService
 	 * @param MembershipService $membershipService
 	 * @param CircleRequest $circleRequest
@@ -168,6 +180,7 @@ class FederatedUserService {
 		IUserSession $userSession,
 		IUserManager $userManager,
 		IGroupManager $groupManager,
+		ICacheFactory $cacheFactory,
 		FederatedEventService $federatedEventService,
 		MembershipService $membershipService,
 		CircleRequest $circleRequest,
@@ -190,6 +203,8 @@ class FederatedUserService {
 		$this->contactService = $contactService;
 		$this->interfaceService = $interfaceService;
 		$this->configService = $configService;
+
+		$this->cache = $cacheFactory->createDistributed(self::CACHE_SINGLE_CIRCLE);
 
 		if (OC::$CLI) {
 			$this->setInitiatedByOcc(true);
@@ -694,6 +709,8 @@ class FederatedUserService {
 		$this->circleRequest->deleteFederatedUser($federatedUser);
 		$this->memberRequest->deleteFederatedUser($federatedUser);
 		$this->membershipService->deleteFederatedUser($federatedUser);
+
+		$this->cache->remove($this->generateCacheKey($federatedUser));
 	}
 
 
@@ -908,7 +925,12 @@ class FederatedUserService {
 		}
 
 		try {
-			return $this->circleRequest->getSingleCircle($federatedUser);
+			return $this->getCachedSingleCircle($federatedUser);
+		} catch (SingleCircleNotFoundException $e) {
+		}
+
+		try {
+			$singleCircle = $this->circleRequest->getSingleCircle($federatedUser);
 		} catch (SingleCircleNotFoundException $e) {
 			if (!$generate) {
 				throw new SingleCircleNotFoundException();
@@ -959,9 +981,13 @@ class FederatedUserService {
 
 			$this->memberRequest->save($owner);
 			$this->membershipService->onUpdate($id);
+
+			$singleCircle = $this->circleRequest->getSingleCircle($federatedUser);
 		}
 
-		return $this->circleRequest->getSingleCircle($federatedUser);
+		$this->cacheSingleCircle($federatedUser, $singleCircle);
+
+		return $singleCircle;
 	}
 
 
@@ -1152,5 +1178,50 @@ class FederatedUserService {
 		$this->federatedEventService->newEvent($event);
 
 		return $circle;
+	}
+
+
+	/**
+	 * @param FederatedUser $federatedUser
+	 *
+	 * @return Circle
+	 * @throws SingleCircleNotFoundException
+	 */
+	private function getCachedSingleCircle(FederatedUser $federatedUser): Circle {
+		$key = $this->generateCacheKey($federatedUser);
+		$cachedData = $this->cache->get($key);
+
+		if ($cachedData === null) {
+			throw new SingleCircleNotFoundException();
+		}
+
+		try {
+			/** @var Circle $singleCircle */
+			$singleCircle = $this->deserializeJson($cachedData, Circle::class);
+		} catch (InvalidItemException $e) {
+			throw new SingleCircleNotFoundException();
+		}
+
+		return $singleCircle;
+	}
+
+	/**
+	 * @param FederatedUser $federatedUser
+	 * @param Circle $singleCircle
+	 */
+	private function cacheSingleCircle(FederatedUser $federatedUser, Circle $singleCircle): void {
+		$key = $this->generateCacheKey($federatedUser);
+		$this->cache->set($key, json_encode($singleCircle), self::CACHE_SINGLE_CIRCLE_TTL);
+	}
+
+	/**
+	 * @param FederatedUser $federatedUser
+	 *
+	 * @return string
+	 */
+	private function generateCacheKey(FederatedUser $federatedUser): string {
+		return $federatedUser->getInstance() . '#'
+			   . $federatedUser->getUserType() . '#'
+			   . $federatedUser->getUserId();
 	}
 }
