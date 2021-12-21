@@ -38,6 +38,7 @@ use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\IFederatedItemMemberEmpty;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\Member;
@@ -64,8 +65,10 @@ class MassiveMemberAdd extends SingleMemberAdd implements
 		$initiator = $circle->getInitiator();
 
 		$initiatorHelper = new MemberHelper($initiator);
-		$initiatorHelper->mustBeModerator();
-
+		if (!$circle->isConfig(Circle::CFG_FRIEND)) {
+			$initiatorHelper->mustBeModerator();
+		}
+		
 		$members = $event->getMembers();
 		$filtered = [];
 
