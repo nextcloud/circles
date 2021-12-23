@@ -195,6 +195,11 @@ class ConfigService {
 	];
 
 
+	public const DISPLAY_NONE = 0;
+	public const DISPLAY_AT = 1;
+	public const DISPLAY_PARENTHESIS = 2;
+
+
 	/** @var IConfig */
 	private $config;
 
@@ -629,24 +634,34 @@ class ConfigService {
 		$name = ($displayName) ? $federatedUser->getDisplayName() : $federatedUser->getUserId();
 
 		if ($federatedUser->getUserType() === Member::TYPE_MAIL) {
-			return $name . ' (' . $this->displayInstance($federatedUser->getInstance(), false) . ')';
+			return $name . ' ' . $this->displayInstance(
+					$federatedUser->getInstance(),
+					self::DISPLAY_PARENTHESIS
+				);
 		}
 
-		return $name . $this->displayInstance($federatedUser->getInstance(), true);
+		return $name . $this->displayInstance($federatedUser->getInstance(), self::DISPLAY_AT);
 	}
 
 	/**
 	 * @param string $instance
-	 * @param bool $showAt
+	 * @param int $type
 	 *
 	 * @return string
 	 */
-	public function displayInstance(string $instance, bool $showAt = false): string {
+	public function displayInstance(string $instance, int $type = self::DISPLAY_NONE): string {
 		if ($this->isLocalInstance($instance)) {
 			return '';
 		}
 
-		return (($showAt) ? '@' : '') . $instance;
+		switch ($type) {
+			case self::DISPLAY_AT:
+				return '@' . $instance;
+			case self::DISPLAY_PARENTHESIS:
+				return '(' . $instance . ')';
+		}
+
+		return $instance;
 	}
 
 
