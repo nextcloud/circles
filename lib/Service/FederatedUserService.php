@@ -689,6 +689,10 @@ class FederatedUserService {
 	 * @return FederatedUser
 	 */
 	public function generateFederatedUser(string $federatedId, int $type = 0): FederatedUser {
+		if ($type === Member::TYPE_MAIL) {
+			$federatedId = strtolower($federatedId);
+		}
+
 		try {
 			return $this->getFederatedUser($federatedId, $type);
 		} catch (Exception $e) {
