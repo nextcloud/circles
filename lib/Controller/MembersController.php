@@ -26,8 +26,8 @@
 
 namespace OCA\Circles\Controller;
 
+use OCA\Circles\Model\Member;
 use OCA\Circles\Model\SearchResult;
-use OCA\Circles\Service\MiscService;
 use OCP\AppFramework\Http\DataResponse;
 
 class MembersController extends BaseController {
@@ -45,6 +45,9 @@ class MembersController extends BaseController {
 	 * @return DataResponse
 	 */
 	public function addMember($uniqueId, $ident, $type, $instance) {
+		if ((int)$type === Member::TYPE_MAIL) {
+			$ident = strtolower($ident);
+		}
 
 		try {
 			$this->mustHaveFrontEndEnabled();
