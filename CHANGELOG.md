@@ -2,6 +2,21 @@
 All notable changes to this project will be documented in this file.
 
 
+### 23.0.1
+
+- lighten multiple SQL request
+- caching local data about current session
+- mail address are now in lower case to avoid duplicate entries
+- Enforcing password where sharing file to an external member
+- better display of members when using command line
+- fix an issue with 'members can invite new people'
+- allow admin to limit to type of members allowed in a Circle
+
+
+### 23.0.0 (NC23)
+
+- compat nc23
+
 
 ### 22.0.0 (NC22)
 
