@@ -114,8 +114,8 @@ class CreatingShareSendMail implements IEventListener {
 		}
 
 		$circle = $event->getCircle();
-
 		$federatedEvent = $event->getFederatedEvent();
+		$hashedPasswords = $federatedEvent->getParams()->gArray('hashedPasswords');
 
 		$result = [];
 		foreach ($circle->getInheritedMembers(false, true) as $member) {
@@ -136,7 +136,12 @@ class CreatingShareSendMail implements IEventListener {
 						throw new ShareWrapperNotFoundException();
 					}
 
-					$shareToken = $this->shareTokenService->generateShareToken($share, $member);
+					$shareToken = $this->shareTokenService->generateShareToken(
+						$share,
+						$member,
+						$this->get($member->getSingleId(), $hashedPasswords)
+					);
+
 					$share->setShareToken($shareToken);
 				} catch (Exception $e) {
 					$share = null;
@@ -149,6 +154,6 @@ class CreatingShareSendMail implements IEventListener {
 			];
 		}
 
-		$event->getFederatedEvent()->setResultEntry('info', $result);
+		$federatedEvent->setResultEntry('info', $result);
 	}
 }
