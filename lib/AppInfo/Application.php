@@ -40,8 +40,10 @@ use OCA\Circles\Events\AddingCircleMemberEvent;
 use OCA\Circles\Events\CircleMemberAddedEvent;
 use OCA\Circles\Events\Files\CreatingFileShareEvent;
 use OCA\Circles\Events\Files\FileShareCreatedEvent;
+use OCA\Circles\Events\Files\PreparingFileShareEvent;
 use OCA\Circles\Events\MembershipsCreatedEvent;
 use OCA\Circles\Events\MembershipsRemovedEvent;
+use OCA\Circles\Events\PreparingCircleMemberEvent;
 use OCA\Circles\Events\RemovingCircleMemberEvent;
 use OCA\Circles\Events\RequestingCircleMemberEvent;
 use OCA\Circles\Handlers\WebfingerHandler;
@@ -52,7 +54,9 @@ use OCA\Circles\Listeners\Examples\ExampleMembershipsRemoved;
 use OCA\Circles\Listeners\Examples\ExampleRequestingCircleMember;
 use OCA\Circles\Listeners\Files\AddingMemberSendMail as ListenerFilesAddingMemberSendMail;
 use OCA\Circles\Listeners\Files\CreatingShareSendMail as ListenerFilesCreatingShareSendMail;
+use OCA\Circles\Listeners\Files\PreparingShareSendMail as ListenerFilesPreparingShareSendMail;
 use OCA\Circles\Listeners\Files\MemberAddedSendMail as ListenerFilesMemberAddedSendMail;
+use OCA\Circles\Listeners\Files\PreparingMemberSendMail as ListenerFilesPreparingMemberSendMail;
 use OCA\Circles\Listeners\Files\RemovingMember as ListenerFilesRemovingMember;
 use OCA\Circles\Listeners\Files\ShareCreatedSendMail as ListenerFilesShareCreatedSendMail;
 use OCA\Circles\Listeners\GroupCreated;
@@ -142,12 +146,20 @@ class Application extends App implements IBootstrap {
 
 		// Local Events (for Files/Shares/Notifications management)
 		$context->registerEventListener(
+			PreparingCircleMemberEvent::class,
+			ListenerFilesPreparingMemberSendMail::class
+		);
+		$context->registerEventListener(
 			AddingCircleMemberEvent::class,
 			ListenerFilesAddingMemberSendMail::class
 		);
 		$context->registerEventListener(
 			CircleMemberAddedEvent::class,
 			ListenerFilesMemberAddedSendMail::class
+		);
+		$context->registerEventListener(
+			PreparingFileShareEvent::class,
+			ListenerFilesPreparingShareSendMail::class
 		);
 		$context->registerEventListener(
 			CreatingFileShareEvent::class,
