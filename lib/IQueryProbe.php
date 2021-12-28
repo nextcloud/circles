@@ -59,11 +59,11 @@ interface IQueryProbe {
 	public function getDetails(): int;
 
 	/**
-	 * @param int $details
+	 * @param int $detail
 	 *
 	 * @return bool
 	 */
-	public function showDetails(int $details): bool;
+	public function showDetail(int $detail): bool;
 
 	/**
 	 * @return Circle

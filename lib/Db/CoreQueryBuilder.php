@@ -709,11 +709,6 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 			return;
 		}
 
-		$getData = $this->getBool('getData', $options, false);
-		if (!$getData) {
-			return;
-		}
-
 		$expr = $this->expr();
 		$this->selectAlias(
 			$this->createFunction('COUNT(`' . $aliasMemberCount . '`.`member_id`)'),

@@ -41,6 +41,7 @@ use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Probes\BasicProbe;
 use OCA\Circles\Model\Probes\CircleProbe;
 
 /**
@@ -184,7 +185,10 @@ class CircleRequest extends CircleRequestBuilder {
 			$qb->limitToRemoteInstance(CoreQueryBuilder::CIRCLE, $probe->getFilterRemoteInstance(), false);
 		}
 
-		$qb->countMembers(CoreQueryBuilder::CIRCLE);
+		if ($probe->showDetail(BasicProbe::DETAILS_POPULATION)) {
+			$qb->countMembers(CoreQueryBuilder::CIRCLE);
+		}
+
 		$qb->chunk($probe->getItemsOffset(), $probe->getItemsLimit());
 
 		return $this->getItemsFromRequest($qb);
@@ -258,7 +262,10 @@ class CircleRequest extends CircleRequestBuilder {
 		if ($probe->hasFilterRemoteInstance()) {
 			$qb->limitToRemoteInstance(CoreQueryBuilder::CIRCLE, $probe->getFilterRemoteInstance(), false);
 		}
-		$qb->countMembers(CoreQueryBuilder::CIRCLE);
+
+		if ($probe->showDetail(BasicProbe::DETAILS_POPULATION)) {
+			$qb->countMembers(CoreQueryBuilder::CIRCLE);
+		}
 
 		return $this->getItemFromRequest($qb);
 	}
@@ -356,7 +363,8 @@ class CircleRequest extends CircleRequestBuilder {
 
 		if (!is_null($initiator)) {
 			$qb->setOptions(
-				[CoreQueryBuilder::CIRCLE], [
+				[CoreQueryBuilder::CIRCLE],
+				[
 					'getData' => true,
 					'initiatorDirectMember' => true
 				]
