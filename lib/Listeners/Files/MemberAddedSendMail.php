@@ -31,6 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Listeners\Files;
 
+use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\AppInfo\Application;
@@ -93,6 +94,8 @@ class MemberAddedSendMail implements IEventListener {
 			$members = [$member];
 		}
 
+		$clearPasswords = $event->getFederatedEvent()->getInternal()->gArray('clearPasswords');
+
 		/** @var Member[] $members */
 		foreach ($members as $member) {
 			if ($member->getUserType() !== Member::TYPE_MAIL
@@ -101,23 +104,24 @@ class MemberAddedSendMail implements IEventListener {
 				continue;
 			}
 
-			$mails = [];
-			$shares = [];
+			$mails = $shares = [];
 			foreach ($event->getResults() as $origin => $item) {
-				$files = $item->gData('files');
-				if (!$files->hasKey($member->getId())) {
-					continue;
-				}
+				foreach ($item->gArray('files') as $filesArray) {
+					$files = new SimpleDataStore($filesArray);
+					if (!$files->hasKey($member->getId())) {
+						continue;
+					}
 
-				$data = $files->gData($member->getId());
-				$shares = array_merge($shares, $data->gObjs('shares', ShareWrapper::class));
+					$data = $files->gData($member->getId());
+					$shares = array_merge($shares, $data->gObjs('shares', ShareWrapper::class));
 
-				// TODO: is it safe to use $origin to compare getInstance() ?
-				// TODO: do we need to check the $origin ?
-				// TODO: Solution would be to check the origin based on aliases using RemoteInstanceService
+					// TODO: is it safe to use $origin to compare getInstance() ?
+					// TODO: do we need to check the $origin ?
+					// TODO: Solution would be to check the origin based on aliases using RemoteInstanceService
 //				if ($member->getUserType() === Member::TYPE_CONTACT && $member->getInstance() === $origin) {
-				$mails = $data->gArray('mails');
+					$mails = array_merge($mails, $data->gArray('mails'));
 //				}
+				}
 			}
 
 			if ($member->hasInvitedBy()) {
@@ -126,7 +130,14 @@ class MemberAddedSendMail implements IEventListener {
 				$author = 'someone';
 			}
 
-			$this->sendMailService->generateMail($author, $circle, $member, $shares, $mails);
+			$this->sendMailService->generateMail(
+				$author,
+				$circle,
+				$member,
+				$shares,
+				$mails,
+				$this->get($member->getSingleId(), $clearPasswords)
+			);
 		}
 	}
 }

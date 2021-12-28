@@ -81,6 +81,9 @@ class FederatedEvent implements JsonSerializable {
 	private $params;
 
 	/** @var SimpleDataStore */
+	private $internal;
+
+	/** @var SimpleDataStore */
 	private $data;
 
 	/** @var int */
@@ -120,6 +123,7 @@ class FederatedEvent implements JsonSerializable {
 	public function __construct(string $class = '') {
 		$this->class = $class;
 		$this->params = new SimpleDataStore();
+		$this->internal = new SimpleDataStore();
 		$this->data = new SimpleDataStore();
 		$this->result = new SimpleDataStore();
 	}
@@ -392,6 +396,34 @@ class FederatedEvent implements JsonSerializable {
 
 
 	/**
+	 * @param SimpleDataStore $internal
+	 *
+	 * @return self
+	 */
+	public function setInternal(SimpleDataStore $internal): self {
+		$this->internal = $internal;
+
+		return $this;
+	}
+
+	/**
+	 * @return SimpleDataStore
+	 */
+	public function getInternal(): SimpleDataStore {
+		return $this->internal;
+	}
+
+	/**
+	 * @return $this
+	 */
+	public function resetInternal(): self {
+		$this->internal = new SimpleDataStore();
+
+		return $this;
+	}
+
+
+	/**
 	 * @param SimpleDataStore $data
 	 *
 	 * @return self
@@ -413,6 +445,7 @@ class FederatedEvent implements JsonSerializable {
 	 * @return $this
 	 */
 	public function resetData(): self {
+		$this->resetInternal();
 		$this->data = new SimpleDataStore();
 
 		return $this;
@@ -550,6 +583,7 @@ class FederatedEvent implements JsonSerializable {
 		$this->setClass($this->get('class', $data));
 		$this->setSeverity($this->getInt('severity', $data));
 		$this->setParams(new SimpleDataStore($this->getArray('params', $data)));
+		$this->setInternal(new SimpleDataStore($this->getArray('internal', $data)));
 		$this->setData(new SimpleDataStore($this->getArray('data', $data)));
 		$this->setResult(new SimpleDataStore($this->getArray('result', $data)));
 		$this->setOrigin($this->get('origin', $data));
@@ -587,6 +621,7 @@ class FederatedEvent implements JsonSerializable {
 			'class' => $this->getClass(),
 			'severity' => $this->getSeverity(),
 			'params' => $this->getParams(),
+			'internal' => $this->getInternal(),
 			'data' => $this->getData(),
 			'result' => $this->getResult(),
 			'origin' => $this->getOrigin(),

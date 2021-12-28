@@ -99,6 +99,7 @@ class ConfigService {
 	public const KEYHOLE_CFG_REQUEST = 'keyhole_cfg_request';
 	public const ROUTE_TO_CIRCLE = 'route_to_circle';
 	public const EVENT_EXAMPLES = 'event_examples';
+	public const ENFORCE_PASSWORD = 'enforce_password';
 
 	public const SELF_SIGNED_CERT = 'self_signed_cert';
 	public const MEMBERS_LIMIT = 'members_limit';
@@ -129,7 +130,7 @@ class ConfigService {
 	public const TEST_NC_BASE = 'test_nc_base';
 
 
-	private $defaults = [
+	private static $defaults = [
 		self::FRONTAL_CLOUD_BASE => '',
 		self::FRONTAL_CLOUD_ID => '',
 		self::FRONTAL_CLOUD_SCHEME => 'https',
@@ -173,6 +174,7 @@ class ConfigService {
 		self::KEYHOLE_CFG_REQUEST => '0',
 		self::ROUTE_TO_CIRCLE => 'contacts.contacts.directcircle',
 		self::EVENT_EXAMPLES => '0',
+		self::ENFORCE_PASSWORD => '2',
 
 		self::SELF_SIGNED_CERT => '0',
 		self::MEMBERS_LIMIT => '-1',
@@ -237,7 +239,7 @@ class ConfigService {
 			return $value;
 		}
 
-		return $this->get($key, $this->defaults);
+		return $this->get($key, self::$defaults);
 	}
 
 	/**
@@ -329,15 +331,42 @@ class ConfigService {
 	 * @return bool
 	 * @deprecated
 	 * should the password for a mail share be send to the recipient
-	 *
 	 */
-	public function sendPasswordByMail() {
-		if ($this->isContactsBackend()) {
-			return false;
+	public function sendPasswordByMail(): bool {
+		return false;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function enforcePasswordOnSharedFile(): bool {
+		$localPolicy = $this->getAppValueInt(ConfigService::ENFORCE_PASSWORD);
+		if ($localPolicy !== $this->getInt(ConfigService::ENFORCE_PASSWORD, self::$defaults)) {
+			return ($localPolicy === 1);
 		}
 
-		return ($this->config->getAppValue('sharebymail', 'sendpasswordmail', 'yes') === 'yes');
+		// TODO: reimplement a way to set password protection on a single Circle
+//		if ($circle->getSetting('password_enforcement') === 'true') {
+//			return true;
+//		}
+
+		$sendPasswordMail = $this->config->getAppValue(
+			'sharebymail',
+			'sendpasswordmail',
+			'yes'
+		);
+
+		$enforcePasswordProtection = $this->config->getAppValue(
+			'core',
+			'shareapi_enforce_links_password',
+			'no'
+		);
+
+		return ($sendPasswordMail === 'yes'
+				&& $enforcePasswordProtection === 'yes');
 	}
+
 
 	/**
 	 * @param DeprecatedCircle $circle
@@ -348,15 +377,7 @@ class ConfigService {
 	 *
 	 */
 	public function enforcePasswordProtection(DeprecatedCircle $circle) {
-		if ($this->isContactsBackend()) {
-			return false;
-		}
-
-		if ($circle->getSetting('password_enforcement') === 'true') {
-			return true;
-		}
-
-		return ($this->config->getAppValue('sharebymail', 'enforcePasswordProtection', 'no') === 'yes');
+		return false;
 	}
 
 

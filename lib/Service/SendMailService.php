@@ -58,6 +58,9 @@ class SendMailService {
 	/** @var Defaults */
 	private $defaults;
 
+	/** @var ConfigService */
+	private $configService;
+
 
 	/**
 	 * SendMailService constructor.
@@ -65,15 +68,18 @@ class SendMailService {
 	 * @param IL10N $l10n
 	 * @param IMailer $mailer
 	 * @param Defaults $defaults
+	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		IL10N $l10n,
 		IMailer $mailer,
-		Defaults $defaults
+		Defaults $defaults,
+		ConfigService $configService
 	) {
 		$this->l10n = $l10n;
 		$this->mailer = $mailer;
 		$this->defaults = $defaults;
+		$this->configService = $configService;
 	}
 
 
@@ -83,8 +89,16 @@ class SendMailService {
 	 * @param Member $member
 	 * @param ShareWrapper[] $shares
 	 * @param array $mails
+	 * @param string $password
 	 */
-	public function generateMail(string $author, Circle $circle, Member $member, array $shares, array $mails): void {
+	public function generateMail(
+		string $author,
+		Circle $circle,
+		Member $member,
+		array $shares,
+		array $mails,
+		string $password = ''
+	): void {
 		if (empty($shares)) {
 			return;
 		}
@@ -117,6 +131,8 @@ class SendMailService {
 				$this->sendMailExistingShares($template, $author, $mail, sizeof($links) > 1);
 			} catch (Exception $e) {
 			}
+
+			$this->sendMailPassword($author, $circle->getDisplayName(), $mail, $password);
 		}
 	}
 
@@ -192,6 +208,76 @@ class SendMailService {
 		$message->setHtmlBody($emailTemplate->renderHtml());
 		$message->setTo([$recipient]);
 
+		$this->mailer->send($message);
+	}
+
+
+	/**
+	 * @param string $author
+	 * @param string $circleName
+	 * @param string $email
+	 * @param string $password
+	 */
+	private function sendMailPassword(
+		string $author,
+		string $circleName,
+		string $email,
+		string $password
+	): void {
+		if (!$this->configService->enforcePasswordOnSharedFile() || $password === '') {
+			return;
+		}
+
+		$message = $this->mailer->createMessage();
+		$plainBodyPart = $this->l10n->t(
+			"%1\$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n",
+			[$author]
+		);
+		$htmlBodyPart = $this->l10n->t(
+			'%1$s shared some content with you. You should have already received a separate email with a link to access it.',
+			[$author]
+		);
+
+		$emailTemplate = $this->mailer->createEMailTemplate(
+			'sharebymail.RecipientPasswordNotification',
+			[
+				'filename' => '',
+				'password' => $password,
+				'initiator' => $author,
+				//				'initiatorEmail' => Util::getDefaultEmailAddress(''),
+				'initiatorEmail' => '',
+				'shareWith' => $circleName
+			]
+		);
+
+		$emailTemplate->setSubject(
+			$this->l10n->t('Password to access content shared to you by %1$s', [$author])
+		);
+		$emailTemplate->addHeader();
+		$emailTemplate->addHeading($this->l10n->t('Password to access content'), false);
+		$emailTemplate->addBodyText(htmlspecialchars($htmlBodyPart), $plainBodyPart);
+		$emailTemplate->addBodyText($this->l10n->t('It is protected with the following password:'));
+		$emailTemplate->addBodyText($password);
+
+		// The "From" contains the sharers name
+		$instanceName = $this->defaults->getName();
+		$senderName = $this->l10n->t(
+			'%1$s via %2$s',
+			[
+				$author,
+				$instanceName
+			]
+		);
+		$message->setFrom([\OCP\Util::getDefaultEmailAddress($instanceName) => $senderName]);
+//		if ($initiatorEmailAddress !== null) {
+//			$message->setReplyTo([$initiatorEmailAddress => $initiatorDisplayName]);
+//			$emailTemplate->addFooter($instanceName . ' - ' . $this->defaults->getSlogan());
+//		} else {
+		$emailTemplate->addFooter();
+//		}
+
+		$message->setTo([$email]);
+		$message->useTemplate($emailTemplate);
 		$this->mailer->send($message);
 	}
 }

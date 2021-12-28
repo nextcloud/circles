@@ -155,7 +155,8 @@ class FederatedEventService extends NC22Signature {
 	 * @throws RequestBuilderException
 	 */
 	public function newEvent(FederatedEvent $event): array {
-		$event->setOrigin($this->interfaceService->getLocalInstance());
+		$event->setOrigin($this->interfaceService->getLocalInstance())
+			  ->resetData();
 
 		$federatedItem = $this->getFederatedItem($event, false);
 		$this->confirmInitiator($event, true);
