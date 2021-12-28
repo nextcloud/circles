@@ -450,11 +450,6 @@ class MigrationService {
 
 		$member->setSingleId($singleMember->getSingleId());
 
-//					"cached_update":"2021-05-02 12:13:22",
-//					"joined":"2021-05-02 12:13:22",
-//					"contact_checked":null,"
-//					"circle_source":null}
-
 		return $member;
 	}
 

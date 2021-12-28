@@ -43,7 +43,8 @@ use OCA\Circles\Model\Member;
  */
 class BasicProbe implements IQueryProbe {
 	public const DETAILS_NONE = 0;
-	public const DETAILS_ALL = 64;
+	public const DETAILS_POPULATION = 32;
+	public const DETAILS_ALL = 127;
 
 
 	/** @var int */
@@ -122,14 +123,24 @@ class BasicProbe implements IQueryProbe {
 		return $this->details;
 	}
 
+	/**
+	 * @param int $detail
+	 *
+	 * @return $this
+	 */
+	public function addDetail(int $detail): self {
+		$this->details |= $detail;
+
+		return $this;
+	}
 
 	/**
-	 * @param int $details
+	 * @param int $detail
 	 *
 	 * @return bool
 	 */
-	public function showDetails(int $details): bool {
-		return (($this->getDetails() & $details) !== 0);
+	public function showDetail(int $detail): bool {
+		return (($this->getDetails() & $detail) !== 0);
 	}
 
 
