@@ -52,8 +52,10 @@ use OCA\Circles\Events\EditingCircleEvent;
 use OCA\Circles\Events\EditingCircleMemberEvent;
 use OCA\Circles\Events\Files\CreatingFileShareEvent;
 use OCA\Circles\Events\Files\FileShareCreatedEvent;
+use OCA\Circles\Events\Files\PreparingFileShareEvent;
 use OCA\Circles\Events\MembershipsCreatedEvent;
 use OCA\Circles\Events\MembershipsRemovedEvent;
+use OCA\Circles\Events\PreparingCircleMemberEvent;
 use OCA\Circles\Events\RemovingCircleMemberEvent;
 use OCA\Circles\Events\RequestingCircleMemberEvent;
 use OCA\Circles\Model\Federated\FederatedEvent;
@@ -140,6 +142,14 @@ class EventService {
 		$this->eventDispatcher->dispatchTyped($event);
 	}
 
+
+	/**
+	 * @param FederatedEvent $federatedEvent
+	 */
+	public function memberPreparing(FederatedEvent $federatedEvent): void {
+		$event = new PreparingCircleMemberEvent($federatedEvent);
+		$this->eventDispatcher->dispatchTyped($event);
+	}
 
 	/**
 	 * @param FederatedEvent $federatedEvent
@@ -304,6 +314,14 @@ class EventService {
 		$this->eventDispatcher->dispatchTyped($event);
 	}
 
+
+	/**
+	 * @param FederatedEvent $federatedEvent
+	 */
+	public function fileSharePreparing(FederatedEvent $federatedEvent): void {
+		$event = new PreparingFileShareEvent($federatedEvent);
+		$this->eventDispatcher->dispatchTyped($event);
+	}
 
 	/**
 	 * @param FederatedEvent $federatedEvent

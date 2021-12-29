@@ -108,12 +108,15 @@ class RemoteUpstreamService {
 	 * @throws UnknownRemoteException
 	 */
 	public function broadcastEvent(EventWrapper $wrapper): void {
+		$event = clone $wrapper->getEvent();
+		$event->resetInternal();
+
 		$this->interfaceService->setCurrentInterface($wrapper->getInterface());
 		$data = $this->remoteStreamService->resultRequestRemoteInstance(
 			$wrapper->getInstance(),
 			RemoteInstance::INCOMING,
 			Request::TYPE_POST,
-			$wrapper->getEvent()
+			$event
 		);
 
 		$wrapper->getEvent()->setResult(new SimpleDataStore($data));

@@ -32,7 +32,6 @@ declare(strict_types=1);
 namespace OCA\Circles\FederatedItems\Files;
 
 use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\ItemNotFoundException;
 use ArtificialOwl\MySmallPhpTools\Exceptions\UnknownTypeException;
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
@@ -94,24 +93,26 @@ class FileShare implements
 	 * @param FederatedEvent $event
 	 */
 	public function verify(FederatedEvent $event): void {
-		// TODO: check and improve
-		// TODO: Could we use a share lock ?
+		// TODO: check (origin of file ?) and improve
+		// TODO: Use a share lock
+
+		$this->eventService->fileSharePreparing($event);
 	}
 
 
 	/**
 	 * @param FederatedEvent $event
 	 *
+	 * @throws CircleNotFoundException
 	 * @throws InvalidItemException
 	 * @throws UnknownTypeException
-	 * @throws CircleNotFoundException
-	 * @throws ItemNotFoundException
 	 */
 	public function manage(FederatedEvent $event): void {
 		$mount = null;
 		if (!$this->configService->isLocalInstance($event->getOrigin())) {
 			/** @var ShareWrapper $wrappedShare */
 			$wrappedShare = $event->getParams()->gObj('wrappedShare', ShareWrapper::class);
+
 			$mount = new Mount();
 			$mount->fromShare($wrappedShare);
 			$mount->setMountId($this->token(15));

@@ -37,7 +37,7 @@ use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Mount;
 
 /**
- * Class GSSharesRequest
+ * Class MountRequest
  *
  * @package OCA\Circles\Db
  */
@@ -49,8 +49,6 @@ class MountRequest extends MountRequestBuilder {
 	 * @param Mount $mount
 	 */
 	public function save(Mount $mount): void {
-		// TODO: fix hash
-		$hash = $this->token();
 		$qb = $this->getMountInsertSql();
 		$qb->setValue('circle_id', $qb->createNamedParameter($mount->getCircleId()))
 		   ->setValue('mount_id', $qb->createNamedParameter($mount->getMountId()))
@@ -58,7 +56,7 @@ class MountRequest extends MountRequestBuilder {
 		   ->setValue('token', $qb->createNamedParameter($mount->getToken()))
 		   ->setValue('parent', $qb->createNamedParameter($mount->getParent()))
 		   ->setValue('mountpoint', $qb->createNamedParameter($mount->getMountPoint()))
-		   ->setValue('mountpoint_hash', $qb->createNamedParameter($hash));
+		   ->setValue('mountpoint_hash', $qb->createNamedParameter(md5($mount->getMountPoint())));
 
 		$qb->execute();
 	}

@@ -36,6 +36,7 @@ use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
 use ArtificialOwl\MySmallPhpTools\IDeserializable;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
+use OCA\Circles\Exceptions\ShareTokenNotFoundException;
 use OCP\Share\IShare;
 
 class ShareToken implements IDeserializable, INC22QueryRow, JsonSerializable {
@@ -277,8 +278,13 @@ class ShareToken implements IDeserializable, INC22QueryRow, JsonSerializable {
 	 * @param string $prefix
 	 *
 	 * @return INC22QueryRow
+	 * @throws ShareTokenNotFoundException
 	 */
 	public function importFromDatabase(array $data, string $prefix = ''): INC22QueryRow {
+		if ($this->get($prefix . 'token', $data) === '') {
+			throw new ShareTokenNotFoundException();
+		}
+
 		$this->setShareId($this->getInt($prefix . 'share_id', $data));
 		$this->setCircleId($this->get($prefix . 'circle_id', $data));
 		$this->setSingleId($this->get($prefix . 'single_id', $data));
