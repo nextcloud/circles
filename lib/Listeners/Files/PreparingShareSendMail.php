@@ -128,6 +128,7 @@ class PreparingShareSendMail implements IEventListener {
 				 && $member->getUserType() !== Member::TYPE_CONTACT)
 				|| array_key_exists($member->getSingleId(), $clearPasswords)
 			) {
+				// Ignore members that are not 'mail' or the one we already generated a password
 				continue;
 			}
 
