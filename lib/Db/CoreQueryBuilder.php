@@ -1044,6 +1044,13 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 		$this->leftJoinShareToken($alias);
 
 		$aliasShareToken = $this->generateAlias($alias, self::TOKEN, $options);
+		$this->generateSelectAlias(
+			CoreRequestBuilder::$tables[CoreRequestBuilder::TABLE_TOKEN],
+			$aliasShareToken,
+			$aliasShareToken,
+			[]
+		);
+
 		$this->limit('token', $token, $aliasShareToken);
 	}
 

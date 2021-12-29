@@ -87,7 +87,7 @@ class ShareTokenService {
 	/**
 	 * @param ShareWrapper $share
 	 * @param Member $member
-	 * @param string $password
+	 * @param string $hashedPassword
 	 *
 	 * @return ShareToken
 	 * @throws ShareTokenAlreadyExistException
@@ -96,7 +96,7 @@ class ShareTokenService {
 	public function generateShareToken(
 		ShareWrapper $share,
 		Member $member,
-		string $password = ''
+		string $hashedPassword = ''
 	): ShareToken {
 		if ($member->getUserType() !== Member::TYPE_MAIL
 			&& $member->getUserType() !== Member::TYPE_CONTACT) {
@@ -104,14 +104,13 @@ class ShareTokenService {
 		}
 
 		$token = $this->token(19);
-
 		$shareToken = new ShareToken();
 		$shareToken->setShareId((int)$share->getId())
 				   ->setCircleId($share->getSharedWith())
 				   ->setSingleId($member->getSingleId())
 				   ->setMemberId($member->getId())
 				   ->setToken($token)
-				   ->setPassword($password)
+				   ->setPassword($hashedPassword)
 				   ->setAccepted(IShare::STATUS_ACCEPTED);
 
 		try {

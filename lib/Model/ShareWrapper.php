@@ -623,6 +623,9 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 		$share->setTarget($this->getFileTarget());
 		$share->setProviderId($this->getProviderId());
 		$share->setStatus($this->getStatus());
+		if ($this->hasShareToken() && $this->getShareToken()->getPassword() !== '') {
+			$share->setPassword($this->getShareToken()->getPassword());
+		}
 
 		$share->setShareTime($this->getShareTime())
 			  ->setSharedWith($this->getSharedWith())
