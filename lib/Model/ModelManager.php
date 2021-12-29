@@ -48,6 +48,7 @@ use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\Exceptions\ShareTokenNotFoundException;
 use OCA\Circles\Exceptions\UnknownInterfaceException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\IMemberships;
@@ -440,6 +441,15 @@ class ModelManager {
 					$fileCache->importFromDatabase($data, $prefix);
 					$shareWrapper->setFileCache($fileCache);
 				} catch (FileCacheNotFoundException $e) {
+				}
+				break;
+
+			case CoreQueryBuilder::TOKEN:
+				try {
+					$token = new ShareToken();
+					$token->importFromDatabase($data, $prefix);
+					$shareWrapper->setShareToken($token);
+				} catch (ShareTokenNotFoundException $e) {
 				}
 				break;
 		}

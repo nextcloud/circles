@@ -76,9 +76,9 @@ use OCA\Circles\StatusCode;
 use OCP\IUserManager;
 
 /**
- * Class MemberAdd
+ * Class SingleMemberAdd
  *
- * @package OCA\Circles\GlobalScale
+ * @package OCA\Circles\FederatedItems
  */
 class SingleMemberAdd implements
 	IFederatedItem,
@@ -182,35 +182,7 @@ class SingleMemberAdd implements
 		$event->setMembers([$member]);
 		$event->setOutcome($this->serialize($member));
 
-		return;
-
-
-//		$member = $this->membersRequest->getFreshNewMember(
-//			$circle->getUniqueId(), $ident, $eventMember->getType(), $eventMember->getInstance()
-//		);
-//		$member->hasToBeInviteAble()
-//
-//		$this->membersService->addMemberBasedOnItsType($circle, $member);
-//
-//		$password = '';
-//		$sendPasswordByMail = false;
-//		if ($this->configService->enforcePasswordProtection($circle)) {
-//			if ($circle->getSetting('password_single_enabled') === 'true') {
-//				$password = $circle->getPasswordSingle();
-//			} else {
-//				$sendPasswordByMail = true;
-//				$password = $this->miscService->token(15);
-//			}
-//		}
-//
-//		$event->setData(
-//			new SimpleDataStore(
-//				[
-//					'password'       => $password,
-//					'passwordByMail' => $sendPasswordByMail
-//				]
-//			)
-//		);
+		$this->eventService->memberPreparing($event);
 	}
 
 
@@ -234,7 +206,7 @@ class SingleMemberAdd implements
 			$this->eventService->memberAdding($event);
 		}
 
-//
+
 //		//
 //		// TODO: verifiez comment se passe le cached name sur un member_add
 //		//

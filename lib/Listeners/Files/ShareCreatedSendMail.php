@@ -126,6 +126,7 @@ class ShareCreatedSendMail implements IEventListener {
 		}
 
 		$circle = $event->getCircle();
+		$clearPasswords = $event->getFederatedEvent()->getInternal()->gArray('clearPasswords');
 
 		foreach ($circle->getInheritedMembers(false, true) as $member) {
 			if ($member->getUserType() !== Member::TYPE_MAIL
@@ -153,6 +154,7 @@ class ShareCreatedSendMail implements IEventListener {
 				}
 
 				try {
+					// are we sure the 'share' entry is valid and not spoofed !?
 					/** @var ShareWrapper $share */
 					$share = $data->gObj('share', ShareWrapper::class);
 				} catch (Exception $e) {
@@ -166,7 +168,14 @@ class ShareCreatedSendMail implements IEventListener {
 					$author = 'someone';
 				}
 
-				$this->sendMailService->generateMail($author, $circle, $member, [$share], $mails);
+				$this->sendMailService->generateMail(
+					$author,
+					$circle,
+					$member,
+					[$share],
+					$mails,
+					$this->get($member->getSingleId(), $clearPasswords)
+				);
 			}
 		}
 	}

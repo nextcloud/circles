@@ -143,8 +143,13 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @param IURLGenerator $urlGenerator
 	 */
 	public function __construct(
-		IDBConnection $connection, ISecureRandom $secureRandom, IUserManager $userManager,
-		IRootFolder $rootFolder, IL10N $l10n, ILogger $logger, IURLGenerator $urlGenerator
+		IDBConnection $connection,
+		ISecureRandom $secureRandom,
+		IUserManager $userManager,
+		IRootFolder $rootFolder,
+		IL10N $l10n,
+		ILogger $logger,
+		IURLGenerator $urlGenerator
 	) {
 		$this->userManager = $userManager;
 		$this->rootFolder = $rootFolder;
@@ -232,8 +237,8 @@ class ShareByCircleProvider implements IShareProvider {
 		}
 
 		$event = new FederatedEvent(FileShare::class);
-		$event->setCircle($circle)
-			  ->getParams()->sObj('wrappedShare', $wrappedShare);
+		$event->setCircle($circle);
+		$event->getParams()->sObj('wrappedShare', $wrappedShare);
 
 		$this->federatedEventService->newEvent($event);
 		$this->eventService->localShareCreated($wrappedShare);

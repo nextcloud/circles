@@ -33,10 +33,14 @@ namespace OCA\Circles\Listeners\Files;
 
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
-use Exception;
 use OCA\Circles\AppInfo\Application;
-use OCA\Circles\Events\AddingCircleMemberEvent;
+use OCA\Circles\Events\Files\PreparingFileShareEvent;
+use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\RemoteInstanceException;
+use OCA\Circles\Exceptions\RemoteNotFoundException;
+use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\ContactService;
@@ -44,16 +48,20 @@ use OCA\Circles\Service\ShareTokenService;
 use OCA\Circles\Service\ShareWrapperService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
+use OCP\Security\IHasher;
 
 /**
- * Class AddingMemberSendMail
+ * Class PreparingShareSendMail
  *
  * @package OCA\Circles\Listeners\Files
  */
-class AddingMemberSendMail implements IEventListener {
+class PreparingShareSendMail implements IEventListener {
 	use TStringTools;
 	use TNC22Logger;
 
+
+	/** @var IHasher */
+	private $hasher;
 
 	/** @var ShareWrapperService */
 	private $shareWrapperService;
@@ -69,19 +77,22 @@ class AddingMemberSendMail implements IEventListener {
 
 
 	/**
-	 * AddingMember constructor.
+	 * PreparingShareSendMail constructor.
 	 *
+	 * @param IHasher $hasher
 	 * @param ShareWrapperService $shareWrapperService
 	 * @param ShareTokenService $shareTokenService
 	 * @param ContactService $contactService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
+		IHasher $hasher,
 		ShareWrapperService $shareWrapperService,
 		ShareTokenService $shareTokenService,
 		ContactService $contactService,
 		ConfigService $configService
 	) {
+		$this->hasher = $hasher;
 		$this->shareWrapperService = $shareWrapperService;
 		$this->shareTokenService = $shareTokenService;
 		$this->contactService = $contactService;
@@ -94,55 +105,39 @@ class AddingMemberSendMail implements IEventListener {
 	/**
 	 * @param Event $event
 	 *
+	 * @throws FederatedItemException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
 	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
 	 */
 	public function handle(Event $event): void {
-		if (!$event instanceof AddingCircleMemberEvent) {
+		if (!$event instanceof PreparingFileShareEvent
+			|| !$this->configService->enforcePasswordOnSharedFile()) {
 			return;
-		}
-
-		$member = $event->getMember();
-		if ($member->getUserType() === Member::TYPE_CIRCLE) {
-			$members = $member->getBasedOn()->getInheritedMembers();
-		} else {
-			$members = [$member];
 		}
 
 		$circle = $event->getCircle();
 		$federatedEvent = $event->getFederatedEvent();
-		$shares = $this->shareWrapperService->getSharesToCircle($circle->getSingleId());
+		$clearPasswords = $federatedEvent->getInternal()->gArray('clearPasswords');
 		$hashedPasswords = $federatedEvent->getParams()->gArray('hashedPasswords');
 
-		$result = [];
-		foreach ($members as $member) {
-			if ($member->getUserType() !== Member::TYPE_MAIL
-				&& $member->getUserType() !== Member::TYPE_CONTACT
+		foreach ($circle->getInheritedMembers(false, true) as $member) {
+			if (($member->getUserType() !== Member::TYPE_MAIL
+				 && $member->getUserType() !== Member::TYPE_CONTACT)
+				|| array_key_exists($member->getSingleId(), $clearPasswords)
 			) {
+				// Ignore members that are not 'mail' or the one we already generated a password
 				continue;
 			}
 
-			$files = [];
-			foreach ($shares as $share) {
-				try {
-					$shareToken = $this->shareTokenService->generateShareToken(
-						$share,
-						$member,
-						$this->get($member->getSingleId(), $hashedPasswords)
-					);
-				} catch (Exception $e) {
-					continue;
-				}
-
-				$share->setShareToken($shareToken);
-				$files[] = clone $share;
-			}
-
-			$result[$member->getId()] = [
-				'shares' => $files,
-				'mails' => $this->contactService->getMailAddressesFromMember($member)
-			];
+			$clearPassword = $this->token(14);
+			$clearPasswords[$member->getSingleId()] = $clearPassword;
+			$hashedPasswords[$member->getSingleId()] = $this->hasher->hash($clearPassword);
 		}
 
-		$federatedEvent->addResultEntry('files', $result);
+		$federatedEvent->getInternal()->aArray('clearPasswords', $clearPasswords);
+		$federatedEvent->getParams()->aArray('hashedPasswords', $hashedPasswords);
 	}
 }
