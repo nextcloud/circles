@@ -585,6 +585,10 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @throws ShareNotFound
 	 */
 	public function getShareByToken($token): IShare {
+		if (is_null($token)) {
+			throw new ShareNotFound();
+		}
+
 		try {
 			$wrappedShare = $this->shareWrapperService->getShareByToken($token);
 		} catch (ShareWrapperNotFoundException $e) {
