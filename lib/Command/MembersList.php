@@ -232,7 +232,7 @@ class MembersList extends Base {
 		$table->setHeaders(
 			[
 				'Circle Id', 'Circle Name', 'Member Id', 'Single Id', 'Type', 'Source',
-				'Username', 'Instance', 'Level', 'Invited By'
+				'Username', 'Level', 'Invited By'
 			]
 		);
 		$table->render();
@@ -252,16 +252,15 @@ class MembersList extends Base {
 					$member->getSingleId(),
 					Member::$TYPE[$member->getUserType()],
 					$member->hasBasedOn() ? Circle::$DEF_SOURCE[$member->getBasedOn()->getSource()] : '',
-					$this->cut(
-						$this->configService->displayFederatedUser(
-							$member, $this->input->getOption('display-name')
-						), 40
+					$this->configService->displayFederatedUser(
+						$member,
+						$this->input->getOption('display-name')
 					),
-					$this->configService->displayInstance($member->getInstance()),
 					($level > 0) ? Member::$DEF_LEVEL[$level] :
 						'(' . strtolower($member->getStatus()) . ')',
 					($member->hasInvitedBy()) ? $this->configService->displayFederatedUser(
-						$member->getInvitedBy(), $this->input->getOption('display-name')
+						$member->getInvitedBy(),
+						$this->input->getOption('display-name')
 					) : 'Unknown'
 				]
 			);

@@ -648,17 +648,25 @@ class ConfigService {
 	/**
 	 * @param IFederatedUser $federatedUser
 	 * @param bool $displayName
+	 * @param bool $displayInstance
 	 *
 	 * @return string
 	 */
-	public function displayFederatedUser(IFederatedUser $federatedUser, bool $displayName = false): string {
+	public function displayFederatedUser(
+		IFederatedUser $federatedUser,
+		bool $displayName = false,
+		bool $displayInstance = true
+	): string {
 		$name = ($displayName) ? $federatedUser->getDisplayName() : $federatedUser->getUserId();
-
 		if ($federatedUser->getUserType() === Member::TYPE_MAIL) {
 			return $name . ' ' . $this->displayInstance(
 					$federatedUser->getInstance(),
 					self::DISPLAY_PARENTHESIS
 				);
+		}
+
+		if (!$displayInstance) {
+			return $name;
 		}
 
 		return $name . $this->displayInstance($federatedUser->getInstance(), self::DISPLAY_AT);
