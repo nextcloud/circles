@@ -299,7 +299,11 @@ class SyncService {
 			$event = new FederatedEvent(SingleMemberAdd::class);
 			$event->setCircle($circle);
 			$event->setMember($member);
-			$this->federatedEventService->newEvent($event);
+
+			try {
+				$this->federatedEventService->newEvent($event);
+			} catch (Exception $e) {
+			}
 
 //			$this->memberRequest->insertOrUpdate($member);
 		}
