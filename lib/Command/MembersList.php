@@ -361,9 +361,9 @@ class MembersList extends Base {
 					$node = new NC22TreeNode(
 						$tree, new SimpleDataStore(
 								 [
-									 'circle' => $circle,
-									 'member' => $member,
-									 'cycling' => in_array($member->getSingleId(), $knownIds),
+								 	'circle' => $circle,
+								 	'member' => $member,
+								 	'cycling' => in_array($member->getSingleId(), $knownIds),
 								 ]
 							 )
 					);
@@ -381,8 +381,8 @@ class MembersList extends Base {
 						new NC22TreeNode(
 							$tree, new SimpleDataStore(
 									 [
-										 'member' => $member,
-										 'cycling' => in_array($member->getSingleId(), $knownIds)
+									 	'member' => $member,
+									 	'cycling' => in_array($member->getSingleId(), $knownIds)
 									 ]
 								 )
 						);
