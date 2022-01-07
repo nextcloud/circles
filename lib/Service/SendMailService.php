@@ -251,7 +251,7 @@ class SendMailService {
 		);
 
 		$emailTemplate->setSubject(
-			$this->l10n->t('Password to access content shared to you by %1$s', [$author])
+			$this->l10n->t('Password to access content shared with you by %1$s', [$author])
 		);
 		$emailTemplate->addHeader();
 		$emailTemplate->addHeading($this->l10n->t('Password to access content'), false);
