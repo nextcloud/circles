@@ -169,7 +169,6 @@ OC.L10N.register(
     "%s shared a file with you." : "%s vám nazdieľal súbor.",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s s vami zdieľa nejaký obsah. Už ste mali dostať e-mail so samostatným odkazom na prístup k nemu.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s s vami zdieľa nejaký obsah. Už ste mali dostať e-mail s odkazom na prístup k ním.",
-    "Password to access content shared to you by %1$s" : "Heslo pre prístup k súborom, ktoré s vami zdieľa %1$s",
     "Password to access content" : "Heslo pre prístup k obsahu",
     "This item is already shared with this circle" : "Táto položka je už zdieľaná s týmto kruhom",
     "Could not find share" : "Nebolo možné nájsť sprístupnenie",
