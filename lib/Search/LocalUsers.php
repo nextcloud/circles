@@ -60,7 +60,7 @@ class LocalUsers implements ISearch {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function search($search) {
+	public function search($search): array {
 		$result = [];
 		$userManager = \OC::$server->getUserManager();
 
@@ -86,7 +86,8 @@ class LocalUsers implements ISearch {
 	 * @return array
 	 */
 	private function searchFromCollaborator($search): array {
-		[$temp, $hasMore] = $this->search->search($search, [IShare::TYPE_USER, IShare::TYPE_EMAIL], false, 50, 0);
+		[$temp, $hasMore] =
+			$this->search->search($search, [IShare::TYPE_USER, IShare::TYPE_EMAIL], false, 50, 0);
 
 		$result = array_merge($temp['exact']['users'], $temp['users']);
 		$parsed = [];

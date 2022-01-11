@@ -140,6 +140,7 @@ class RemoteStreamService extends NC22Signature {
 		$app->setRoot($this->interfaceService->getCloudPath());
 		$app->setEvent($this->interfaceService->getCloudPath('circles.Remote.event'));
 		$app->setIncoming($this->interfaceService->getCloudPath('circles.Remote.incoming'));
+		$app->setForward($this->interfaceService->getCloudPath('circles.Remote.forward'));
 		$app->setTest($this->interfaceService->getCloudPath('circles.Remote.test'));
 		$app->setCircles($this->interfaceService->getCloudPath('circles.Remote.circles'));
 		$app->setCircle(

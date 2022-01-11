@@ -225,6 +225,12 @@ class MaintenanceService {
 			$this->eventWrapperService->retry(EventWrapperService::RETRY_HOURLY);
 		} catch (Exception $e) {
 		}
+
+		try {
+//			$this->output('broadcast shares');
+//			$this->globalSyncService('')
+		} catch (Exception $e) {
+		}
 	}
 
 

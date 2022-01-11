@@ -235,6 +235,32 @@ class RemoteController extends Controller {
 	 *
 	 * @return DataResponse
 	 */
+	public function forward(): DataResponse {
+		try {
+			$event = $this->extractEventFromRequest();
+		} catch (Exception $e) {
+			$this->e($e);
+
+			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
+		}
+
+		try {
+			$this->remoteDownstreamService->forwardedEvent($event);
+
+			return new DataResponse($this->serialize($event->getResult()));
+		} catch (Exception $e) {
+			return $this->exceptionResponse($e);
+		}
+	}
+
+
+
+	/**
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 *
+	 * @return DataResponse
+	 */
 	public function test(): DataResponse {
 		try {
 			$this->interfaceService->setCurrentInterfaceFromRequest($this->request);

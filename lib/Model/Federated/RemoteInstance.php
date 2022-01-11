@@ -64,6 +64,7 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 	public const TEST = 'test';
 	public const ALIASES = 'aliases';
 	public const INCOMING = 'incoming';
+	public const FORWARD = 'forward';
 	public const EVENT = 'event';
 	public const CIRCLES = 'circles';
 	public const CIRCLE = 'circle';
@@ -91,6 +92,9 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 
 	/** @var string */
 	private $incoming = '';
+
+	/** @var string */
+	private $forward = '';
 
 	/** @var string */
 	private $root = '';
@@ -218,6 +222,25 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 		$this->incoming = $incoming;
 
 		return $this;
+	}
+
+
+	/**
+	 * @param string $forward
+	 *
+	 * @return RemoteInstance
+	 */
+	public function setForward(string $forward): self {
+		$this->forward = $forward;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getForward(): string {
+		return $this->forward;
 	}
 
 
@@ -486,6 +509,7 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 			 ->setEvent($this->get(self::EVENT, $data))
 			 ->setRoot($this->get(self::ROOT, $data))
 			 ->setIncoming($this->get(self::INCOMING, $data))
+			 ->setForward($this->get(self::FORWARD, $data))
 			 ->setCircles($this->get(self::CIRCLES, $data))
 			 ->setCircle($this->get(self::CIRCLE, $data))
 			 ->setMembers($this->get(self::MEMBERS, $data))
@@ -516,6 +540,7 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 			self::ROOT => $this->getRoot(),
 			self::EVENT => $this->getEvent(),
 			self::INCOMING => $this->getIncoming(),
+			self::FORWARD => $this->getForward(),
 			self::TEST => $this->getTest(),
 			self::CIRCLES => $this->getCircles(),
 			self::CIRCLE => $this->getCircle(),

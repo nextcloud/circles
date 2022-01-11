@@ -188,6 +188,25 @@ class RemoteDownstreamService {
 	}
 
 
+
+	/**
+	 * @param FederatedEvent $event
+	 */
+	public function forwardedEvent(FederatedEvent $event): void {
+		try {
+			$gs = $this->federatedEventService->getFederatedItem($event, false);
+			$this->confirmOriginEvent($event);
+			$this->confirmContent($event, false);
+
+			$gs->result($event, $event->getResult()->gAll());
+		} catch (Exception $e) {
+			$this->e($e, ['event' => $event]);
+		}
+	}
+
+
+
+
 	/**
 	 * @param FederatedEvent $event
 	 * @param bool $full

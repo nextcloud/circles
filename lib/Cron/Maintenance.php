@@ -68,7 +68,7 @@ class Maintenance extends TimedJob {
 		MaintenanceService $maintenanceService,
 		ConfigService $configService
 	) {
-		$this->setInterval(10);
+		$this->setInterval(900);
 
 		$this->maintenanceService = $maintenanceService;
 		$this->configService = $configService;

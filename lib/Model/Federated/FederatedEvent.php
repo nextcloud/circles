@@ -104,6 +104,9 @@ class FederatedEvent implements JsonSerializable {
 	/** @var bool */
 	private $dataRequestOnly = false;
 
+	/** @var bool */
+	private $forwardResult = false;
+
 	/** @var string */
 	private $sender = '';
 
@@ -223,6 +226,25 @@ class FederatedEvent implements JsonSerializable {
 		$this->dataRequestOnly = $dataRequestOnly;
 
 		return $this;
+	}
+
+
+	/**
+	 * @param bool $forwardResult
+	 *
+	 * @return FederatedEvent
+	 */
+	public function setForwardResult(bool $forwardResult): self {
+		$this->forwardResult = $forwardResult;
+
+		return $this;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isForwardResult(): bool {
+		return $this->forwardResult;
 	}
 
 
