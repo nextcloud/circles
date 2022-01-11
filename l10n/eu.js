@@ -167,6 +167,7 @@ OC.L10N.register(
     "This contact is not available" : "Kontaktu hori ez dago erabilgarri",
     "%s shared a file with \"%s\"." : "%s fitxategi bat partekatu du \"%s\"(r)ekin.",
     "%s shared a file with you." : "%s zurekin fitxategi bat partekatu du.",
+    "Password to access content" : "Edukia atzitzeko pasahitza",
     "This item is already shared with this circle" : "Elementu hau dagoeneko partekatu da zirkulu honekin",
     "Could not find share" : "Ezin da partekatzea topatu",
     "Bring cloud-users closer together." : "Elkartu gehiago hodei erabiltzaileak.",
