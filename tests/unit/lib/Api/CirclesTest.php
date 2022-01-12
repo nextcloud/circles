@@ -40,7 +40,9 @@ use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Tests\Env;
 use OCP\AppFramework\QueryException;
 
-class CirclesTest extends \PHPUnit_Framework_TestCase {
+use Test\TestCase;
+
+class CirclesTest extends TestCase {
 	public const NAME_PUBLIC_CIRCLE1 = '_circleNamePublic1';
 	public const NAME_SECRET_CIRCLE1 = '_circleNameSecret1';
 	public const NAME_CLOSED_CIRCLE1 = '_circleNameClosed1';
@@ -62,7 +64,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 	 *
 	 * @throws Exception
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		Env::setUser(Env::ENV_TEST_OWNER1);
 
 		$this->circles = [];
@@ -92,7 +94,7 @@ class CirclesTest extends \PHPUnit_Framework_TestCase {
 	 *
 	 * @throws Exception
 	 */
-	protected function tearDown() {
+	protected function tearDown(): void {
 		Env::setUser(Env::ENV_TEST_OWNER1);
 		try {
 			foreach ($this->circles as $circle) {
