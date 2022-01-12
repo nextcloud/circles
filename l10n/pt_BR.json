@@ -167,6 +167,7 @@
     "%s shared a file with you." : "%s compartilhou um arquivo com você.",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s compartilhou algum conteúdo com você.\nVocê já deve ter recebido um e-mail separado com um link para acessá-lo.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s compartilhou algum conteúdo com você. Você já deve ter recebido um e-mail separado com um link para acessá-lo.",
+    "Password to access content shared with you by %1$s" : "Senha para acessar o conteúdo compartilhado com você por %1$s",
     "Password to access content" : "Senha para acessar o conteúdo",
     "This item is already shared with this circle" : "Este item já está compartilhado com este círculo",
     "Could not find share" : "Não foi possível encontrar o compartilhamento",
