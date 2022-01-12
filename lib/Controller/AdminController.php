@@ -261,18 +261,21 @@ class AdminController extends OcsController {
 
 	/**
 	 * @param string $emulated
-	 *
+	 * @param int $limit
+	 * @param int $offset
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
-	public function circles(string $emulated): DataResponse {
+	public function circles(string $emulated, int $limit = -1, int $offset = 0): DataResponse {
 		try {
 			$this->setLocalFederatedUser($emulated);
 
 			$probe = new CircleProbe();
 			$probe->filterHiddenCircles()
 				  ->filterBackendCircles()
-				->addDetail(BasicProbe::DETAILS_POPULATION);
+				  ->addDetail(BasicProbe::DETAILS_POPULATION)
+				  ->setItemsLimit($limit)
+				  ->setItemsOffset($offset);
 
 			return new DataResponse($this->serializeArray($this->circleService->getCircles($probe)));
 		} catch (Exception $e) {
