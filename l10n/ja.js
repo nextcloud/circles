@@ -25,7 +25,7 @@ OC.L10N.register(
     "The request to link {circle} with {remote} has been accepted" : "{circle}と{remote}をリンクするリクエストが承認されました",
     "You dismissed the request to link {remote} with {circle}" : "{remote}と{circle}のリンクリクエストを却下しました。",
     "{author} dismissed the request to link {remote} with {circle}" : "{author}が{remote}と{circle}のリンクリクエストを却下しました",
-    "You canceled the request to link {circle} with {remote}" : "{サークル}と{リモート}とのリンクリクエストをキャンセルしました",
+    "You canceled the request to link {circle} with {remote}" : "{circle}と{remote}とのリンクリクエストをキャンセルしました",
     "{author} canceled the request to link {circle} with {remote}" : "{author}が{circle}と{remote}のリンクリクエストをキャンセルしました",
     "You accepted the request to link {remote} with {circle}" : "{リモート}と{サークル}のリンクリクエストを受け入れました。",
     "{author} accepted the request to link {remote} with {circle}" : "{author}が{remote}と{circle}のリンクリクエストを受け入れました",
