@@ -102,6 +102,13 @@ class ShareWrapperService {
 		$this->shareWrapperRequest->delete((int)$shareWrapper->getId());
 	}
 
+	/**
+	 * @param string $circleId
+	 */
+	public function deleteSharesToCircle(string $circleId) {
+		$this->shareWrapperRequest->deleteFromCircle($circleId);
+	}
+
 
 	/**
 	 * @param string $circleId
