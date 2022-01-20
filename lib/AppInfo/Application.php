@@ -38,6 +38,7 @@ use Closure;
 use OC;
 use OCA\Circles\Events\AddingCircleMemberEvent;
 use OCA\Circles\Events\CircleMemberAddedEvent;
+use OCA\Circles\Events\DestroyingCircleEvent;
 use OCA\Circles\Events\Files\CreatingFileShareEvent;
 use OCA\Circles\Events\Files\FileShareCreatedEvent;
 use OCA\Circles\Events\Files\PreparingFileShareEvent;
@@ -54,9 +55,10 @@ use OCA\Circles\Listeners\Examples\ExampleMembershipsRemoved;
 use OCA\Circles\Listeners\Examples\ExampleRequestingCircleMember;
 use OCA\Circles\Listeners\Files\AddingMemberSendMail as ListenerFilesAddingMemberSendMail;
 use OCA\Circles\Listeners\Files\CreatingShareSendMail as ListenerFilesCreatingShareSendMail;
-use OCA\Circles\Listeners\Files\PreparingShareSendMail as ListenerFilesPreparingShareSendMail;
+use OCA\Circles\Listeners\Files\DestroyingCircle as ListenerFilesDestroyingCircle;
 use OCA\Circles\Listeners\Files\MemberAddedSendMail as ListenerFilesMemberAddedSendMail;
 use OCA\Circles\Listeners\Files\PreparingMemberSendMail as ListenerFilesPreparingMemberSendMail;
+use OCA\Circles\Listeners\Files\PreparingShareSendMail as ListenerFilesPreparingShareSendMail;
 use OCA\Circles\Listeners\Files\RemovingMember as ListenerFilesRemovingMember;
 use OCA\Circles\Listeners\Files\ShareCreatedSendMail as ListenerFilesShareCreatedSendMail;
 use OCA\Circles\Listeners\GroupCreated;
@@ -174,6 +176,7 @@ class Application extends App implements IBootstrap {
 			RequestingCircleMemberEvent::class,
 			ListenerNotificationsRequestingMember::class
 		);
+		$context->registerEventListener(DestroyingCircleEvent::class, ListenerFilesDestroyingCircle::class);
 
 		// It seems that AccountManager use deprecated dispatcher, let's use a deprecated listener
 		$dispatcher = OC::$server->getEventDispatcher();
