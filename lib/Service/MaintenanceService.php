@@ -191,7 +191,7 @@ class MaintenanceService {
 	 */
 	private function runMaintenance1(): void {
 		try {
-			$this->output('remove circles with no owner');
+			$this->output('Remove circles with no owner');
 			$this->removeCirclesWithNoOwner();
 		} catch (Exception $e) {
 		}
@@ -203,13 +203,13 @@ class MaintenanceService {
 	 */
 	private function runMaintenance2(): void {
 		try {
-			$this->output('remove members with no circles');
+			$this->output('Remove members with no circles');
 			$this->removeMembersWithNoCircles();
 		} catch (Exception $e) {
 		}
 
 		try {
-			$this->output('retry failed FederatedEvents (asap)');
+			$this->output('Retry failed FederatedEvents (asap)');
 			$this->eventWrapperService->retry(EventWrapperService::RETRY_ASAP);
 		} catch (Exception $e) {
 		}
@@ -221,7 +221,7 @@ class MaintenanceService {
 	 */
 	private function runMaintenance3(): void {
 		try {
-			$this->output('retry failed FederatedEvents (hourly)');
+			$this->output('Retry failed FederatedEvents (hourly)');
 			$this->eventWrapperService->retry(EventWrapperService::RETRY_HOURLY);
 		} catch (Exception $e) {
 		}
@@ -233,21 +233,22 @@ class MaintenanceService {
 	 */
 	private function runMaintenance4(): void {
 		try {
-			$this->output('retry failed FederatedEvents (daily)');
+			$this->output('Retry failed FederatedEvents (daily)');
 			$this->eventWrapperService->retry(EventWrapperService::RETRY_DAILY);
 		} catch (Exception $e) {
 		}
+
 		try {
 			// TODO: waiting for confirmation of a good migration before cleaning orphan shares
-			if ($this->configService->getAppValue(ConfigService::MIGRATION_22_CONFIRMED)) {
-				$this->output('remove deprecated shares');
+			if ($this->configService->getAppValueBool(ConfigService::MIGRATION_22_CONFIRMED)) {
+				$this->output('Remove deprecated shares');
 				$this->removeDeprecatedShares();
 			}
 		} catch (Exception $e) {
 		}
 
 		try {
-			$this->output('synchronizing local entities');
+			$this->output('Synchronizing local entities');
 			$this->syncService->sync();
 		} catch (Exception $e) {
 		}
