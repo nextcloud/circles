@@ -358,6 +358,8 @@ class MembershipService {
 				if ($item->getLevel() !== $membership->getLevel()) {
 					$this->membershipRequest->update($membership);
 					$new[] = $item;
+				} else if ($item->getInheritancePath() !== $membership->getInheritancePath()) {
+					$this->membershipRequest->update($membership);
 				}
 			} catch (ItemNotFoundException $e) {
 				$this->membershipRequest->insert($membership);
