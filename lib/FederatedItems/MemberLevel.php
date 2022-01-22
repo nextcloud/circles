@@ -151,6 +151,7 @@ class MemberLevel implements
 			$oldOwner = clone $event->getCircle()->getOwner();
 			$oldOwner->setLevel(Member::LEVEL_ADMIN);
 			$this->memberRequest->updateLevel($oldOwner);
+			$this->membershipService->onUpdate($oldOwner->getSingleId());
 		}
 
 		$this->membershipService->onUpdate($member->getSingleId());
