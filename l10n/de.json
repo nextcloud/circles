@@ -167,6 +167,7 @@
     "%s shared a file with you." : "%s hat eine Datei mit Dir geteilt.",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s hat einen Inhalt mit Dir geteilt.\nDu solltest bereits eine weitere E-Mail mit einem Link für den Zugriff erhalten haben.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s hat einen Inhalt mit Dir geteilt. Du solltest bereits eine weitere E-Mail mit einem Link für den Zugriff erhalten haben.",
+    "Password to access content shared with you by %1$s" : "Passwort für den Zugriff auf den Inhalt, der von %1$s mit Dir geteilt wurde.",
     "Password to access content" : "Passwort für den Zugriff auf den Inhalt",
     "This item is already shared with this circle" : "Dieses Element wird bereits mit diesem Kreis geteilt",
     "Could not find share" : "Freigabe konnte nicht gefunden werden",
