@@ -76,6 +76,9 @@ class MaintenanceService {
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
+	/** @var MembershipService */
+	private $membershipService;
+
 	/** @var EventWrapperService */
 	private $eventWrapperService;
 
@@ -99,6 +102,7 @@ class MaintenanceService {
 	 * @param ShareWrapperRequest $shareWrapperRequest
 	 * @param SyncService $syncService
 	 * @param FederatedUserService $federatedUserService
+	 * @param MembershipService $membershipService
 	 * @param EventWrapperService $eventWrapperService
 	 * @param CircleService $circleService
 	 * @param ConfigService $configService
@@ -110,6 +114,7 @@ class MaintenanceService {
 		ShareWrapperRequest $shareWrapperRequest,
 		SyncService $syncService,
 		FederatedUserService $federatedUserService,
+		MembershipService $membershipService,
 		EventWrapperService $eventWrapperService,
 		CircleService $circleService,
 		ConfigService $configService
@@ -121,6 +126,7 @@ class MaintenanceService {
 		$this->syncService = $syncService;
 		$this->federatedUserService = $federatedUserService;
 		$this->eventWrapperService = $eventWrapperService;
+		$this->membershipService = $membershipService;
 		$this->circleService = $circleService;
 		$this->configService = $configService;
 	}
@@ -258,6 +264,12 @@ class MaintenanceService {
 	 * every week
 	 */
 	private function runMaintenance5(): void {
+		try {
+			$this->output('Update memberships');
+			$this->updateAllMemberships();
+		} catch (Exception $e) {
+		}
+
 //		try {
 //			$this->output('refresh displayNames older than 7d');
 //			//	$this->refreshOldDisplayNames();
@@ -329,6 +341,21 @@ class MaintenanceService {
 		}
 	}
 
+
+	/**
+	 * @throws InitiatorNotFoundException
+	 * @throws RequestBuilderException
+	 */
+	private function updateAllMemberships(): void {
+		$probe = new CircleProbe();
+		$probe->includeSystemCircles()
+			  ->includeSingleCircles()
+			  ->includePersonalCircles();
+
+		foreach ($this->circleService->getCircles($probe) as $circle) {
+			$this->membershipService->manageMemberships($circle->getSingleId());
+		}
+	}
 
 	/**
 	 * @throws RequestBuilderException
