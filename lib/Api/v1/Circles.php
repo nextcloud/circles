@@ -229,6 +229,9 @@ class Circles {
 	 *
 	 */
 	public static function getFilesForCircles($circleUniqueIds) {
+		if (empty($circleUniqueIds)) {
+			return [];
+		}
 		throw new \BadMethodCallException('Method is deprecated and not longer works');
 	}
 }
