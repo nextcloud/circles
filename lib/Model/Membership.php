@@ -95,7 +95,7 @@ class Membership extends ManagedModel implements IDeserializable, INC22QueryRow,
 		$this->setSingleId($singleId);
 		$this->setCircleId($circle->getSingleId());
 		$this->setInheritanceFirst($member->getSingleId());
-		$this->setInheritanceLast($inheritanceLast === '' ? $member->getCircleId() : $inheritanceLast);
+		$this->setInheritanceLast($inheritanceLast ?: $member->getCircleId());
 		$this->setLevel($member->getLevel());
 	}
 
