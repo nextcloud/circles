@@ -155,6 +155,7 @@ class CirclesMaintenance extends Base {
 		}
 
 		$this->outputService->setOccOutput($output);
+		$this->maintenanceService->setOccOutput($output);
 		for ($i = 1; $i <= $level; $i++) {
 			try {
 				$this->maintenanceService->runMaintenance($i);
