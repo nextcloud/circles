@@ -76,6 +76,9 @@ class MaintenanceService {
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
+	/** @var MembershipService */
+	private $membershipService;
+
 	/** @var EventWrapperService */
 	private $eventWrapperService;
 
@@ -99,6 +102,7 @@ class MaintenanceService {
 	 * @param ShareWrapperRequest $shareWrapperRequest
 	 * @param SyncService $syncService
 	 * @param FederatedUserService $federatedUserService
+	 * @param MembershipService $membershipService
 	 * @param EventWrapperService $eventWrapperService
 	 * @param CircleService $circleService
 	 * @param ConfigService $configService
@@ -110,6 +114,7 @@ class MaintenanceService {
 		ShareWrapperRequest $shareWrapperRequest,
 		SyncService $syncService,
 		FederatedUserService $federatedUserService,
+		MembershipService $membershipService,
 		EventWrapperService $eventWrapperService,
 		CircleService $circleService,
 		ConfigService $configService
@@ -121,6 +126,7 @@ class MaintenanceService {
 		$this->syncService = $syncService;
 		$this->federatedUserService = $federatedUserService;
 		$this->eventWrapperService = $eventWrapperService;
+		$this->membershipService = $membershipService;
 		$this->circleService = $circleService;
 		$this->configService = $configService;
 	}
@@ -191,7 +197,7 @@ class MaintenanceService {
 	 */
 	private function runMaintenance1(): void {
 		try {
-			$this->output('remove circles with no owner');
+			$this->output('Remove circles with no owner');
 			$this->removeCirclesWithNoOwner();
 		} catch (Exception $e) {
 		}
@@ -203,13 +209,13 @@ class MaintenanceService {
 	 */
 	private function runMaintenance2(): void {
 		try {
-			$this->output('remove members with no circles');
+			$this->output('Remove members with no circles');
 			$this->removeMembersWithNoCircles();
 		} catch (Exception $e) {
 		}
 
 		try {
-			$this->output('retry failed FederatedEvents (asap)');
+			$this->output('Retry failed FederatedEvents (asap)');
 			$this->eventWrapperService->retry(EventWrapperService::RETRY_ASAP);
 		} catch (Exception $e) {
 		}
@@ -221,7 +227,7 @@ class MaintenanceService {
 	 */
 	private function runMaintenance3(): void {
 		try {
-			$this->output('retry failed FederatedEvents (hourly)');
+			$this->output('Retry failed FederatedEvents (hourly)');
 			$this->eventWrapperService->retry(EventWrapperService::RETRY_HOURLY);
 		} catch (Exception $e) {
 		}
@@ -233,21 +239,22 @@ class MaintenanceService {
 	 */
 	private function runMaintenance4(): void {
 		try {
-			$this->output('retry failed FederatedEvents (daily)');
+			$this->output('Retry failed FederatedEvents (daily)');
 			$this->eventWrapperService->retry(EventWrapperService::RETRY_DAILY);
 		} catch (Exception $e) {
 		}
+
 		try {
 			// TODO: waiting for confirmation of a good migration before cleaning orphan shares
-			if ($this->configService->getAppValue(ConfigService::MIGRATION_22_CONFIRMED)) {
-				$this->output('remove deprecated shares');
+			if ($this->configService->getAppValueBool(ConfigService::MIGRATION_22_CONFIRMED)) {
+				$this->output('Remove deprecated shares');
 				$this->removeDeprecatedShares();
 			}
 		} catch (Exception $e) {
 		}
 
 		try {
-			$this->output('synchronizing local entities');
+			$this->output('Synchronizing local entities');
 			$this->syncService->sync();
 		} catch (Exception $e) {
 		}
@@ -257,6 +264,12 @@ class MaintenanceService {
 	 * every week
 	 */
 	private function runMaintenance5(): void {
+		try {
+			$this->output('Update memberships');
+			$this->updateAllMemberships();
+		} catch (Exception $e) {
+		}
+
 //		try {
 //			$this->output('refresh displayNames older than 7d');
 //			//	$this->refreshOldDisplayNames();
@@ -328,6 +341,21 @@ class MaintenanceService {
 		}
 	}
 
+
+	/**
+	 * @throws InitiatorNotFoundException
+	 * @throws RequestBuilderException
+	 */
+	private function updateAllMemberships(): void {
+		$probe = new CircleProbe();
+		$probe->includeSystemCircles()
+			  ->includeSingleCircles()
+			  ->includePersonalCircles();
+
+		foreach ($this->circleService->getCircles($probe) as $circle) {
+			$this->membershipService->manageMemberships($circle->getSingleId());
+		}
+	}
 
 	/**
 	 * @throws RequestBuilderException
