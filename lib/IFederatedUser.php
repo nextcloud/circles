@@ -43,6 +43,11 @@ interface IFederatedUser extends IFederatedModel {
 	/**
 	 * @return string
 	 */
+	public function getSingleId(): string;
+
+	/**
+	 * @return string
+	 */
 	public function getUserId(): string;
 
 	/**
