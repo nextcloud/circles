@@ -169,6 +169,7 @@ OC.L10N.register(
     "%s shared a file with you." : "%s ha condiviso un file con te.",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s ha condiviso qualcosa con te.\nDovresti aver già ricevuto un'email separata con un collegamento per accedervi.\n",
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s ha condiviso qualcosa con te. Dovresti aver già ricevuto un'email separata con un collegamento per accedervi.",
+    "Password to access content shared with you by %1$s" : "Password per accedere ai contenuti condivisi con te da %1$s",
     "Password to access content" : "Password per accedere ai contenuti",
     "This item is already shared with this circle" : "Questo elemento è già condiviso con questa cerchia",
     "Could not find share" : "Impossibile trovare la condivisione",
