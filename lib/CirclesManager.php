@@ -407,20 +407,14 @@ class CirclesManager {
 
 
 	/**
-	 * WIP
-	 *
 	 * @param string $circleId
 	 * @param string $singleId
 	 *
 	 * @return Member
-	 * @throws InitiatorNotFoundException
-	 * @throws MemberNotFoundException
-	 * @throws RequestBuilderException
 	 */
-//	public function getMember(string $circleId, string $singleId): Member {
-//		$this->federatedUserService->bypassCurrentUserCondition(true);
-//		$this->memberService->getMemberById($circleId, $singleId);
-//	}
+	public function getMember(string $circleId, string $singleId): Member {
+		$this->memberService->getMember($circleId, $singleId);
+	}
 
 
 	/**

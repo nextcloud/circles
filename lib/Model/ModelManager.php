@@ -157,6 +157,23 @@ class ModelManager {
 		}
 	}
 
+	/**
+	 * @param Membership $membership
+	 *
+	 * @throws RequestBuilderException
+	 */
+	public function getMember(Membership $membership): void {
+		try {
+			$membership->setMember(
+				$this->memberRequest->getMember(
+					$membership->getCircleId(),
+					$membership->getSingleId()
+				)
+			);
+		} catch (MemberNotFoundException $e) {
+			throw $e;
+		}
+	}
 
 	/**
 	 * @param Circle $circle

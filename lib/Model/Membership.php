@@ -36,7 +36,9 @@ use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
 use ArtificialOwl\MySmallPhpTools\IDeserializable;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use JsonSerializable;
+use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\MembershipNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
 
 /**
  * Class Membership
@@ -74,6 +76,8 @@ class Membership extends ManagedModel implements IDeserializable, INC22QueryRow,
 	/** @var array */
 	private $inheritanceDetails = [];
 
+	/** @var Member */
+	private $member;
 
 	/**
 	 * Membership constructor.
@@ -268,6 +272,35 @@ class Membership extends ManagedModel implements IDeserializable, INC22QueryRow,
 	 */
 	public function getInheritanceDetails(): array {
 		return $this->inheritanceDetails;
+	}
+
+
+	/**
+	 * @return Member
+	 * @throws RequestBuilderException
+	 * @throws MemberNotFoundException
+	 */
+	public function getMember(): Member {
+		if ($this->getInheritanceDepth() > 1) {
+			throw new MemberNotFoundException();
+		}
+
+		if (is_null($this->member)) {
+			$this->getManager()->getMember($this);
+		}
+
+		return $this->member;
+	}
+
+	/**
+	 * @param Member $member
+	 *
+	 * @return $this
+	 */
+	public function setMember(Member $member): self {
+		$this->member = $member;
+
+		return $this;
 	}
 
 

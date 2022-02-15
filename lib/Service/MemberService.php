@@ -63,6 +63,7 @@ use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\Probes\MemberProbe;
 
 /**
@@ -276,6 +277,23 @@ class MemberService {
 		$this->federatedEventService->newEvent($event);
 
 		return $event->getOutcome();
+	}
+
+
+	/**
+	 * @param string $circleId
+	 * @param string $singleId
+	 *
+	 * @return Member
+	 * @throws MemberNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws InitiatorNotFoundException
+	 */
+	public function getMember(string $circleId, string $singleId): Member {
+		$this->federatedUserService->mustHaveCurrentUser();
+//		$probe = new CircleProbe();
+		// Probe ? should be MemberProbe ?
+		return $this->memberRequest->getMember($circleId, $singleId);
 	}
 
 

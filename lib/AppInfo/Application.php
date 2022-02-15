@@ -215,7 +215,6 @@ class Application extends App implements IBootstrap {
 		$context->injectFn(Closure::fromCallable([$this, 'registerMountProvider']));
 //		$context->injectFn(Closure::fromCallable([$this, 'registerDavHooks']));
 
-		$context->injectFn(Closure::fromCallable([$this, 'registerFilesNavigation']));
 		$context->injectFn(Closure::fromCallable([$this, 'registerFilesPlugin']));
 	}
 
@@ -279,27 +278,6 @@ class Application extends App implements IBootstrap {
 //				Util::addScript('circles', 'files/circles.files.list');
 //
 //				Util::addStyle('circles', 'files/circles.filelist');
-//			}
-//		);
-	}
-
-
-	/**
-	 *
-	 */
-	public function registerFilesNavigation() {
-//		$appManager = FilesApp::getNavigationManager();
-//		$appManager->add(
-//			function() {
-//				$l = OC::$server->getL10N('circles');
-//
-//				return [
-//					'id' => 'circlesfilter',
-//					'appname' => 'circles',
-//					'script' => 'files/list.php',
-//					'order' => 25,
-//					'name' => $l->t('Shared to Circles'),
-//				];
 //			}
 //		);
 	}
