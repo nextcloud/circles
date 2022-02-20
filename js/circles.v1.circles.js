@@ -63,7 +63,7 @@ var circles = {
 
 	joinCircle: function (circleId, callback) {
 		OCA.Circles.api.request({
-			method: 'GET',
+			method: 'POST',
 			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/join'),
 			data: {}
 		}, callback);
@@ -81,7 +81,7 @@ var circles = {
 
 	leaveCircle: function (circleId, callback) {
 		OCA.Circles.api.request({
-			method: 'GET',
+			method: 'POST',
 			url: OC.generateUrl('/apps/circles/v1/circles/' + circleId + '/leave'),
 			data: {}
 		}, callback);

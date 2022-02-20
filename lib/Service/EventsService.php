@@ -805,7 +805,7 @@ class EventsService {
 			$this->urlGenerator->linkToRoute('circles.Circles.leave', ['uniqueId' => $circle->getUniqueId()]);
 
 		$declineAction->setLabel('refuse')
-					  ->setLink($this->urlGenerator->getAbsoluteURL($declineUrl), 'GET');
+					  ->setLink($this->urlGenerator->getAbsoluteURL($declineUrl), 'POST');
 		$notification->addAction($declineAction);
 
 		$acceptAction = $notification->createAction();
@@ -813,7 +813,7 @@ class EventsService {
 			$this->urlGenerator->linkToRoute('circles.Circles.join', ['uniqueId' => $circle->getUniqueId()]);
 
 		$acceptAction->setLabel('accept')
-					 ->setLink($this->urlGenerator->getAbsoluteURL($acceptUrl), 'GET');
+					 ->setLink($this->urlGenerator->getAbsoluteURL($acceptUrl), 'POST');
 		$notification->addAction($acceptAction);
 
 		$this->notificationManager->notify($notification);
@@ -875,7 +875,7 @@ class EventsService {
 		$leaveUrl =
 			$this->urlGenerator->linkToRoute('circles.Circles.leave', ['uniqueId' => $circle->getUniqueId()]);
 		$leave->setLabel('leave')
-			  ->setLink($this->urlGenerator->getAbsoluteURL($leaveUrl), 'GET');
+			  ->setLink($this->urlGenerator->getAbsoluteURL($leaveUrl), 'POST');
 
 		$notification->addAction($leave);
 
