@@ -105,7 +105,8 @@ class ConfigService {
 	public const MEMBERS_LIMIT = 'members_limit';
 	public const ACTIVITY_ON_NEW_CIRCLE = 'creation_activity';
 	public const ALLOWED_TYPES = 'allowed_types';
-
+	public const CIRCLE_TYPES_FORCE = 'circle_types_force';
+	public const CIRCLE_TYPES_BLOCK = 'circle_types_block';
 	public const MIGRATION_BYPASS = 'migration_bypass';
 	public const MIGRATION_22 = 'migration_22';
 	public const MIGRATION_22_1 = 'migration_22_1';
@@ -180,6 +181,8 @@ class ConfigService {
 		self::MEMBERS_LIMIT => '-1',
 		self::ACTIVITY_ON_NEW_CIRCLE => '1',
 		self::ALLOWED_TYPES => Member::ALLOWING_ALL_TYPES,
+		self::CIRCLE_TYPES_FORCE => '0',
+		self::CIRCLE_TYPES_BLOCK => '0',
 
 		self::MIGRATION_BYPASS => '0',
 		self::MIGRATION_22 => '0',
@@ -744,5 +747,20 @@ class ConfigService {
 		}
 
 		return $path;
+	}
+
+
+	/**
+	 * Enforce or Block circle's config/type
+	 *
+	 * @param Circle $circle
+	 */
+	public function confirmAllowedCircleTypes(Circle $circle): void {
+		$config = $circle->getConfig();
+		$config |= $this->getAppValueInt(ConfigService::CIRCLE_TYPES_FORCE);
+		$block = $this->getAppValueInt(ConfigService::CIRCLE_TYPES_BLOCK);
+		$config |= $block;
+		$config -= $block;
+		$circle->setConfig($config);
 	}
 }
