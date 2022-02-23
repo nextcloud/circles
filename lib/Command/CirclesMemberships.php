@@ -103,7 +103,7 @@ class CirclesMemberships extends Base {
 	private $circleService;
 
 	/** @var MembershipService */
-	private $membershipsService;
+	private $membershipService;
 
 	/** @var ConfigService */
 	private $configService;
@@ -126,7 +126,7 @@ class CirclesMemberships extends Base {
 	 * @param CircleRequest $circleRequest
 	 * @param FederatedUserService $federatedUserService
 	 * @param CircleService $circleService
-	 * @param MembershipService $membershipsService
+	 * @param MembershipService $membershipService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
@@ -136,7 +136,7 @@ class CirclesMemberships extends Base {
 		CircleRequest $circleRequest,
 		FederatedUserService $federatedUserService,
 		CircleService $circleService,
-		MembershipService $membershipsService,
+		MembershipService $membershipService,
 		ConfigService $configService
 	) {
 		parent::__construct();
@@ -146,7 +146,7 @@ class CirclesMemberships extends Base {
 		$this->circleRequest = $circleRequest;
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
-		$this->membershipsService = $membershipsService;
+		$this->membershipService = $membershipService;
 		$this->configService = $configService;
 	}
 
@@ -220,7 +220,7 @@ class CirclesMemberships extends Base {
 		$output->writeln('');
 		$output->writeln('Memberships:');
 
-		$count = $this->membershipsService->manageMemberships($federatedUser->getSingleId());
+		$count = $this->membershipService->manageMemberships($federatedUser->getSingleId());
 		if ($count === 0) {
 			$output->writeln('(database not updated)');
 		} else {
@@ -383,7 +383,7 @@ class CirclesMemberships extends Base {
 		foreach ($circles as $circle) {
 			$owner = $circle->getOwner();
 
-			$updated = $this->membershipsService->manageMemberships($circle->getSingleId());
+			$updated = $this->membershipService->manageMemberships($circle->getSingleId());
 			$count += $updated;
 			$federatedUser = $this->circleRequest->getFederatedUserBySingleId($circle->getSingleId());
 			$table->appendRow(
