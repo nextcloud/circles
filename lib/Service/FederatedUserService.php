@@ -1195,7 +1195,7 @@ class FederatedUserService {
 		$key = $this->generateCacheKey($federatedUser);
 		$cachedData = $this->cache->get($key);
 
-		if ($cachedData === null) {
+		if (!is_string($cachedData)) {
 			throw new SingleCircleNotFoundException();
 		}
 
