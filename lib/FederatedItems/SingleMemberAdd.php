@@ -411,7 +411,9 @@ class SingleMemberAdd implements
 		} catch (MemberNotFoundException $e) {
 			$member->setId($this->token(ManagedModel::ID_LENGTH));
 
-			if ($circle->isConfig(Circle::CFG_INVITE)) {
+			if ($circle->isConfig(Circle::CFG_INVITE)
+				&& $member->getUserType() !== Member::TYPE_MAIL
+				&& $member->getUserType() !== Member::TYPE_CONTACT) {
 				$member->setStatus(Member::STATUS_INVITED);
 			} else {
 				$member->setLevel(Member::LEVEL_MEMBER);
