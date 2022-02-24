@@ -40,6 +40,7 @@ use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
+use OCA\Circles\Service\ConfigService;
 
 /**
  * Class CircleConfig
@@ -55,14 +56,19 @@ class CircleConfig implements
 	/** @var CircleRequest */
 	private $circleRequest;
 
+	/** @var ConfigService */
+	private $configService;
+
 
 	/**
 	 * CircleConfig constructor.
 	 *
 	 * @param CircleRequest $circleRequest
+	 * @param ConfigService $configService
 	 */
-	public function __construct(CircleRequest $circleRequest) {
+	public function __construct(CircleRequest $circleRequest, ConfigService $configService) {
 		$this->circleRequest = $circleRequest;
+		$this->configService = $configService;
 	}
 
 
@@ -133,10 +139,11 @@ class CircleConfig implements
 			throw new FederatedItemBadRequestException('Configuration value is not valid');
 		}
 
-		$event->getData()->sInt('config', $config);
-
 		$new = clone $circle;
 		$new->setConfig($config);
+		$this->configService->confirmAllowedCircleTypes($new);
+
+		$event->getData()->sInt('config', $new->getConfig());
 
 		$event->setOutcome($this->serialize($new));
 	}

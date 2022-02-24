@@ -190,6 +190,7 @@ class CircleService {
 		}
 
 		$this->confirmName($circle);
+		$this->configService->confirmAllowedCircleTypes($circle);
 
 		$member = new Member();
 		$member->importFromIFederatedUser($owner);
