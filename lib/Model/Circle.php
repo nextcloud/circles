@@ -38,8 +38,11 @@ use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use DateTime;
 use JsonSerializable;
+use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\MemberHelperException;
+use OCA\Circles\Exceptions\MemberLevelException;
 use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
@@ -48,6 +51,8 @@ use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\IEntity;
+use OCA\Circles\Model\Helpers\MemberHelper;
+use OCP\Security\IHasher;
 
 /**
  * Class Circle
@@ -805,6 +810,12 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, INC22Quer
 
 	/**
 	 * @return array
+	 * @throws FederatedItemException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
 	 */
 	public function jsonSerialize(): array {
 		$arr = [
@@ -816,7 +827,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, INC22Quer
 			'population' => $this->getPopulation(),
 			'config' => $this->getConfig(),
 			'description' => $this->getDescription(),
-			'settings' => $this->getSettings(),
 			'url' => $this->getUrl(),
 			'creation' => $this->getCreation(),
 			'initiator' => ($this->hasInitiator()) ? $this->getInitiator() : null
@@ -836,6 +846,16 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, INC22Quer
 
 		if ($this->hasMemberships()) {
 			$arr['memberships'] = $this->getMemberships();
+		}
+
+		// settings should only be available to admin
+		if ($this->hasInitiator()) {
+			$initiatorHelper = new MemberHelper($this->getInitiator());
+			try {
+				$initiatorHelper->mustBeAdmin();
+				$arr['settings'] = $this->getSettings();
+			} catch (MemberHelperException | MemberLevelException $e) {
+			}
 		}
 
 		return $arr;
@@ -871,6 +891,26 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, INC22Quer
 		$this->setCreation(DateTime::createFromFormat('Y-m-d H:i:s', $creation)->getTimestamp());
 
 		$this->getManager()->manageImportFromDatabase($this, $data, $prefix);
+
+
+		// TODO: deprecated in NC27, remove those (17) lines that was needed to finalise migration to 24
+		// if password is not hashed (pre-22), hash it and update new settings in DB
+		$curr = $this->get('password_single', $this->getSettings());
+		if (strlen($curr) >= 1 && strlen($curr) < 64) {
+			/** @var IHasher $hasher */
+			$hasher = \OC::$server->get(IHasher::class);
+			/** @var CircleRequest $circleRequest */
+			$circleRequest = \OC::$server->get(CircleRequest::class);
+
+			$new = $hasher->hash($curr);
+			$settings = $this->getSettings();
+			$settings['password_single'] = $new;
+			$this->setSettings($settings);
+
+			$circleRequest->updateSettings($this);
+		}
+
+		// END deprecated NC27
 
 		return $this;
 	}

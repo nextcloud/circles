@@ -44,6 +44,7 @@ use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\ContactService;
+use OCA\Circles\Service\SendMailService;
 use OCA\Circles\Service\ShareTokenService;
 use OCA\Circles\Service\ShareWrapperService;
 use OCP\EventDispatcher\Event;
@@ -69,6 +70,9 @@ class PreparingShareSendMail implements IEventListener {
 	/** @var ShareTokenService */
 	private $shareTokenService;
 
+	/** @var SendMailService */
+	private $sendMailService;
+
 	/** @var ConfigService */
 	private $configService;
 
@@ -82,6 +86,7 @@ class PreparingShareSendMail implements IEventListener {
 	 * @param IHasher $hasher
 	 * @param ShareWrapperService $shareWrapperService
 	 * @param ShareTokenService $shareTokenService
+	 * @param SendMailService $sendMailService
 	 * @param ContactService $contactService
 	 * @param ConfigService $configService
 	 */
@@ -89,12 +94,14 @@ class PreparingShareSendMail implements IEventListener {
 		IHasher $hasher,
 		ShareWrapperService $shareWrapperService,
 		ShareTokenService $shareTokenService,
+		SendMailService $sendMailService,
 		ContactService $contactService,
 		ConfigService $configService
 	) {
 		$this->hasher = $hasher;
 		$this->shareWrapperService = $shareWrapperService;
 		$this->shareTokenService = $shareTokenService;
+		$this->sendMailService = $sendMailService;
 		$this->contactService = $contactService;
 		$this->configService = $configService;
 
@@ -113,16 +120,18 @@ class PreparingShareSendMail implements IEventListener {
 	 * @throws UnknownRemoteException
 	 */
 	public function handle(Event $event): void {
-		if (!$event instanceof PreparingFileShareEvent
-			|| !$this->configService->enforcePasswordOnSharedFile()) {
+		if (!$event instanceof PreparingFileShareEvent) {
 			return;
 		}
 
 		$circle = $event->getCircle();
-		$federatedEvent = $event->getFederatedEvent();
-		$clearPasswords = $federatedEvent->getInternal()->gArray('clearPasswords');
-		$hashedPasswords = $federatedEvent->getParams()->gArray('hashedPasswords');
+		if (!$this->configService->enforcePasswordOnSharedFile($circle)) {
+			return;
+		}
 
+		$federatedEvent = $event->getFederatedEvent();
+
+		$hashedPasswords = $clearPasswords = [];
 		foreach ($circle->getInheritedMembers(false, true) as $member) {
 			if (($member->getUserType() !== Member::TYPE_MAIL
 				 && $member->getUserType() !== Member::TYPE_CONTACT)
@@ -132,9 +141,9 @@ class PreparingShareSendMail implements IEventListener {
 				continue;
 			}
 
-			$clearPassword = $this->token(14);
+			[$clearPassword, $hashedPassword] = $this->sendMailService->getPassword($circle);
 			$clearPasswords[$member->getSingleId()] = $clearPassword;
-			$hashedPasswords[$member->getSingleId()] = $this->hasher->hash($clearPassword);
+			$hashedPasswords[$member->getSingleId()] = $hashedPassword;
 		}
 
 		$federatedEvent->getInternal()->aArray('clearPasswords', $clearPasswords);

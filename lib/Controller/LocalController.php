@@ -413,6 +413,7 @@ class LocalController extends OcsController {
 	 *
 	 * @param int $limit
 	 * @param int $offset
+	 *
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
@@ -505,20 +506,21 @@ class LocalController extends OcsController {
 	 * @NoAdminRequired
 	 *
 	 * @param string $circleId
-	 * @param array $value
+	 * @param string $setting
+	 * @param string|null $value
 	 *
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
-	public function editSettings(string $circleId, array $value): DataResponse {
+	public function editSetting(string $circleId, string $setting, ?string $value = null): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
 
-			$outcome = $this->circleService->updateSettings($circleId, $value);
+			$outcome = $this->circleService->updateSetting($circleId, $setting, $value);
 
 			return new DataResponse($this->serializeArray($outcome));
 		} catch (Exception $e) {
-			$this->e($e, ['circleId' => $circleId, 'value' => $value]);
+			$this->e($e, ['circleId' => $circleId, 'setting' => $setting, 'value' => $value]);
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
 	}
