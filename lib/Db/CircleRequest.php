@@ -151,6 +151,18 @@ class CircleRequest extends CircleRequestBuilder {
 
 
 	/**
+	 * @param Circle $circle
+	 */
+	public function updateSettings(Circle $circle) {
+		$qb = $this->getCircleUpdateSql();
+		$qb->set('settings', $qb->createNamedParameter(json_encode($circle->getSettings())));
+		$qb->limitToUniqueId($circle->getSingleId());
+
+		$qb->execute();
+	}
+
+
+	/**
 	 * @param IFederatedUser|null $initiator
 	 * @param CircleProbe $probe
 	 *
