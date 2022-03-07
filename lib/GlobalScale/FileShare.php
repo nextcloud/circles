@@ -198,14 +198,14 @@ class FileShare extends AGlobalScaleEvent {
 		$newCircle = $this->circlesRequest->forceGetCircle($circle->getUniqueId(), true);
 		$password = '';
 		$sendPasswordByMail = true;
-		if ($this->configService->enforcePasswordProtection($newCircle)) {
-			if ($newCircle->getSetting('password_single_enabled') === 'true') {
-				$password = $newCircle->getPasswordSingle();
-				$sendPasswordByMail = false;
-			} else {
-				$password = $this->miscService->token(15);
-			}
-		}
+//		if ($this->configService->enforcePasswordProtection($newCircle)) {
+//			if ($newCircle->getSetting('password_single_enabled') === 'true') {
+//				$password = $newCircle->getPasswordSingle();
+//				$sendPasswordByMail = false;
+//			} else {
+//				$password = $this->miscService->token(15);
+//			}
+//		}
 
 		try {
 			$sharesToken =
@@ -310,9 +310,9 @@ class FileShare extends AGlobalScaleEvent {
 	 * @throws Exception
 	 */
 	protected function sendPasswordByMail(IShare $share, $circleName, $email, $password) {
-		if (!$this->configService->sendPasswordByMail() || $password === '') {
-			return;
-		}
+//		if (!$this->configService->sendPasswordByMail() || $password === '') {
+//			return;
+//		}
 
 		$message = $this->mailer->createMessage();
 

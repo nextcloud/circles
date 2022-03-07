@@ -55,7 +55,7 @@ use OCP\Util;
 
 /**
  * Class MemberAdd
- *
+ * @deprecated
  * @package OCA\Circles\GlobalScale
  */
 class MemberAdd extends AGlobalScaleEvent {
@@ -111,14 +111,14 @@ class MemberAdd extends AGlobalScaleEvent {
 
 		$password = '';
 		$sendPasswordByMail = false;
-		if ($this->configService->enforcePasswordProtection($circle)) {
-			if ($circle->getSetting('password_single_enabled') === 'true') {
-				$password = $circle->getPasswordSingle();
-			} else {
-				$sendPasswordByMail = true;
-				$password = $this->miscService->token(15);
-			}
-		}
+//		if ($this->configService->enforcePasswordProtection($circle)) {
+//			if ($circle->getSetting('password_single_enabled') === 'true') {
+//				$password = $circle->getPasswordSingle();
+//			} else {
+//				$sendPasswordByMail = true;
+//				$password = $this->miscService->token(15);
+//			}
+//		}
 
 		$event->setData(
 			new SimpleDataStore(
