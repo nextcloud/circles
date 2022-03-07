@@ -57,6 +57,7 @@ Those groups of users (or "circles") can then be used by any other app for shari
 		<command>OCA\Circles\Command\CirclesDestroy</command>
 		<command>OCA\Circles\Command\CirclesDetails</command>
 		<command>OCA\Circles\Command\CirclesConfig</command>
+		<command>OCA\Circles\Command\CirclesSetting</command>
 		<command>OCA\Circles\Command\CirclesSync</command>
 		<command>OCA\Circles\Command\CirclesCheck</command>
 		<command>OCA\Circles\Command\CirclesTest</command>
