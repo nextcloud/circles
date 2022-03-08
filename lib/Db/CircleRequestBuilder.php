@@ -77,8 +77,7 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 		bool $single = false
 	): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->generateSelect(self::TABLE_CIRCLE, self::$tables[self::TABLE_CIRCLE], $alias, !$single)
-		   ->generateGroupBy(self::$tables[self::TABLE_CIRCLE], $alias);
+		$qb->generateSelect(self::TABLE_CIRCLE, self::$tables[self::TABLE_CIRCLE], $alias);
 
 		if (!$single) {
 			$qb->orderBy($alias . '.creation', 'asc');

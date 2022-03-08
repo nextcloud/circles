@@ -187,12 +187,6 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 			$aliasMembership = $qb->generateAlias($aliasUpstreamMembership, CoreQueryBuilder::MEMBERSHIPS);
 			$qb->leftJoinFileCache(CoreQueryBuilder::SHARE);
 			$qb->leftJoinShareChild(CoreQueryBuilder::SHARE, $aliasMembership);
-
-			$qb->generateGroupBy(
-				self::$tables[self::TABLE_MEMBERSHIP],
-				$aliasMembership,
-				true
-			);
 		}
 
 		return $this->getItemsFromRequest($qb);
@@ -283,12 +277,6 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 			$aliasMembership = $qb->generateAlias(CoreQueryBuilder::SHARE, CoreQueryBuilder::MEMBERSHIPS);
 			$qb->leftJoinInheritedMembers(CoreQueryBuilder::SHARE, 'share_with');
 			$qb->leftJoinShareChild(CoreQueryBuilder::SHARE);
-
-			$qb->generateGroupBy(
-				self::$tables[self::TABLE_MEMBERSHIP],
-				$aliasMembership,
-				true
-			);
 		}
 
 		return $this->getItemsFromRequest($qb);
@@ -377,11 +365,6 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 			$qb->leftJoinInheritedMembers(CoreQueryBuilder::SHARE, 'share_with');
 			$qb->leftJoinFileCache(CoreQueryBuilder::SHARE);
 			$qb->leftJoinShareChild(CoreQueryBuilder::SHARE, $aliasMembership);
-			$qb->generateGroupBy(
-				self::$tables[self::TABLE_MEMBERSHIP],
-				$aliasMembership,
-				true
-			);
 		}
 
 		$qb->chunk($offset, $limit);
