@@ -678,9 +678,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			);
 		}
 
-		$andX->add(
-			$expr->eq($aliasMember . '.instance', $this->createNamedParameter($this->getInstance($member)))
-		);
+		$this->limitToInstance($this->getInstance($member));
 
 		if ($member->getLevel() > 0) {
 			$andX->add(
