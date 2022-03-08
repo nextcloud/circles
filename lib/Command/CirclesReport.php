@@ -31,12 +31,9 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-use ArtificialOwl\MySmallPhpTools\Console\Nextcloud\nc22\NC22InteractiveShell;
-use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
-use ArtificialOwl\MySmallPhpTools\IInteractiveShellClient;
-use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22InteractiveShellSession;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
+use OCA\Circles\Tools\Traits\TDeserialize;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\UnknownInterfaceException;
@@ -63,7 +60,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class CirclesReport extends Base implements IInteractiveShellClient {
-	use TNC22Deserialize;
+	use TDeserialize;
 	use TArrayTools;
 
 
@@ -136,6 +133,8 @@ class CirclesReport extends Base implements IInteractiveShellClient {
 	 * @throws InitiatorNotFoundException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
+		throw new \Exception('not available');
+
 		$filename = $input->getOption('read');
 		$local = $input->getOption('local');
 		$this->output = $output;

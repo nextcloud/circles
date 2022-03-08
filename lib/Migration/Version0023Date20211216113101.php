@@ -74,11 +74,11 @@ class Version0023Date20211216113101 extends SimpleMigrationStep {
 			);
 		}
 
-		if ($schema->hasTable('circles_event')) {
-			$table = $schema->getTable('circles_event');
-			$table->setPrimaryKey(['token']);
-		}
-		
+//		if ($schema->hasTable('circles_event')) {
+//			$table = $schema->getTable('circles_event');
+//			$table->setPrimaryKey(['token', 'instance']);
+//		}
+
 		return $schema;
 	}
 }

@@ -31,7 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\UnifiedSearch;
 
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
+use OCA\Circles\Tools\Traits\TNCLogger;
 use Exception;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Model\Circle;
@@ -51,7 +51,7 @@ use OCP\Search\SearchResult;
  * @package OCA\Circles\UnifiedSearch
  */
 class UnifiedSearchProvider implements IProvider {
-	use TNC22Logger;
+	use TNCLogger;
 
 
 	public const ORDER = 9;

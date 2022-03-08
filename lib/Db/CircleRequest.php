@@ -185,10 +185,6 @@ class CircleRequest extends CircleRequestBuilder {
 			$qb->limitToRemoteInstance(CoreQueryBuilder::CIRCLE, $probe->getFilterRemoteInstance(), false);
 		}
 
-		if ($probe->showDetail(BasicProbe::DETAILS_POPULATION)) {
-			$qb->countMembers(CoreQueryBuilder::CIRCLE);
-		}
-
 		$qb->chunk($probe->getItemsOffset(), $probe->getItemsLimit());
 
 		return $this->getItemsFromRequest($qb);
@@ -234,7 +230,7 @@ class CircleRequest extends CircleRequestBuilder {
 				  ->emulateVisitor();
 		}
 
-		$qb = $this->getCircleSelectSql();
+		$qb = $this->getCircleSelectSql(CoreQueryBuilder::CIRCLE, true);
 		$qb->setOptions(
 			[CoreQueryBuilder::CIRCLE],
 			array_merge(
@@ -263,10 +259,11 @@ class CircleRequest extends CircleRequestBuilder {
 			$qb->limitToRemoteInstance(CoreQueryBuilder::CIRCLE, $probe->getFilterRemoteInstance(), false);
 		}
 
-		if ($probe->showDetail(BasicProbe::DETAILS_POPULATION)) {
-			$qb->countMembers(CoreQueryBuilder::CIRCLE);
-		}
+//		if ($probe->showDetail(BasicProbe::DETAILS_POPULATION)) {
+//			$qb->countMembers(CoreQueryBuilder::CIRCLE);
+//		}
 
+//		$test = $this->getItemFromRequest($qb);
 		return $this->getItemFromRequest($qb);
 	}
 
@@ -280,7 +277,7 @@ class CircleRequest extends CircleRequestBuilder {
 	 * @throws FederatedUserNotFoundException
 	 */
 	public function getFederatedUserBySingleId(string $singleId): FederatedUser {
-		$qb = $this->getCircleSelectSql();
+		$qb = $this->getCircleSelectSql(CoreQueryBuilder::CIRCLE, true);
 		$qb->limitToUniqueId($singleId);
 		$qb->leftJoinOwner(CoreQueryBuilder::CIRCLE);
 

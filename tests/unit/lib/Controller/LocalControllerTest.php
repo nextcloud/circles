@@ -23,7 +23,6 @@
 
 namespace OCA\Circles\Tests\Controller;
 
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Controller\LocalController;
 use OCA\Circles\Model\Circle;
@@ -35,6 +34,7 @@ use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Service\SearchService;
+use OCA\Circles\Tools\Traits\TDeserialize;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCS\OCSException;
 use OCP\IRequest;
@@ -46,7 +46,7 @@ use Test\TestCase;
  * @group DB
  */
 class LocalControllerTest extends TestCase {
-	use TNC22Deserialize;
+	use TDeserialize;
 
 	/** @var IRequest|MockObject */
 	private $request;
@@ -85,8 +85,14 @@ class LocalControllerTest extends TestCase {
 		$this->membershipService = $this->createMock(MembershipService::class);
 		$this->searchService = $this->createMock(SearchService::class);
 		$this->configService = $this->createMock(ConfigService::class);
-		$this->configService->expects($this->any())->method('getAppValueBool')->with(ConfigService::FRONTEND_ENABLED)->willReturn(true);
-		$this->localController = new LocalController(Application::APP_ID, $this->request, $this->userSession, $this->federatedUserService, $this->circleService, $this->memberService, $this->membershipService, $this->searchService, $this->configService);
+		$this->configService->expects($this->any())->method('getAppValueBool')->with(
+			ConfigService::FRONTEND_ENABLED
+		)->willReturn(true);
+		$this->localController = new LocalController(
+			Application::APP_ID, $this->request, $this->userSession, $this->federatedUserService,
+			$this->circleService, $this->memberService, $this->membershipService, $this->searchService,
+			$this->configService
+		);
 	}
 
 	/**
@@ -94,16 +100,17 @@ class LocalControllerTest extends TestCase {
 	 *
 	 * @param int $limit
 	 * @param int $offset
+	 *
 	 * @return void
 	 * @throws OCSException
 	 */
 	public function testCirclesList(int $limit, int $offset): void {
 		$probe = new CircleProbe();
 		$probe->filterHiddenCircles()
-			->filterBackendCircles()
-			->addDetail(BasicProbe::DETAILS_POPULATION)
-			->setItemsOffset($offset)
-			->setItemsLimit($limit);
+			  ->filterBackendCircles()
+			  ->addDetail(BasicProbe::DETAILS_POPULATION)
+			  ->setItemsOffset($offset)
+			  ->setItemsLimit($limit);
 		$circle1 = new Circle();
 		$circle1->setName('Circle One');
 		$circle2 = new Circle();
@@ -112,7 +119,9 @@ class LocalControllerTest extends TestCase {
 		$circle3->setName('Circle Three');
 		$circles = [$circle1, $circle2, $circle3];
 		$selectedCircles = array_slice($circles, $offset, $limit > 0 ? $limit : null);
-		$this->circleService->expects($this->once())->method('getCircles')->with($probe)->willReturn($selectedCircles);
+		$this->circleService->expects($this->once())->method('getCircles')->with($probe)->willReturn(
+			$selectedCircles
+		);
 		$response = new DataResponse($this->serializeArray($selectedCircles));
 		$this->assertEquals($response, $this->localController->circles($limit, $offset));
 	}

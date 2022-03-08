@@ -31,7 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-use ArtificialOwl\MySmallPhpTools\Exceptions\RowNotFoundException;
+use OCA\Circles\Tools\Exceptions\RowNotFoundException;
 use OCA\Circles\Exceptions\ShareTokenNotFoundException;
 use OCA\Circles\Model\ShareToken;
 
@@ -72,8 +72,8 @@ class ShareTokenRequestBuilder extends CoreRequestBuilder {
 	 */
 	protected function getTokenSelectSql(string $alias = CoreQueryBuilder::TOKEN): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->generateSelect(self::TABLE_TOKEN, self::$tables[self::TABLE_TOKEN], $alias)
-		   ->generateGroupBy(self::$tables[self::TABLE_TOKEN], $alias);
+		$qb->generateSelect(self::TABLE_TOKEN, self::$tables[self::TABLE_TOKEN], $alias);
+//		   ->/generateGroupBy(self::$tables[self::TABLE_TOKEN], $alias);
 
 		return $qb;
 	}

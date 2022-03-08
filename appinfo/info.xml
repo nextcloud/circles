@@ -49,7 +49,6 @@ Those groups of users (or "circles") can then be used by any other app for shari
 		<command>OCA\Circles\Command\CirclesList</command>
 		<command>OCA\Circles\Command\CirclesRemote</command>
 		<command>OCA\Circles\Command\MembersList</command>
-		<command>OCA\Circles\Command\MembersSearch</command>
 		<command>OCA\Circles\Command\CirclesEdit</command>
 
 		<command>OCA\Circles\Command\CirclesMemberships</command>

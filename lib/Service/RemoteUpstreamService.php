@@ -31,9 +31,9 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use ArtificialOwl\MySmallPhpTools\Model\Request;
-use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
+use OCA\Circles\Tools\Model\Request;
+use OCA\Circles\Tools\Model\SimpleDataStore;
+use OCA\Circles\Tools\Traits\TNCRequest;
 use OCA\Circles\Db\EventWrapperRequest;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
@@ -51,7 +51,7 @@ use OCA\Circles\Model\Federated\RemoteInstance;
  * @package OCA\Circles\Service
  */
 class RemoteUpstreamService {
-	use TNC22Request;
+	use TNCRequest;
 
 
 	/** @var EventWrapperRequest */
@@ -230,7 +230,7 @@ class RemoteUpstreamService {
 //		$this->signEvent($event);
 //
 //		$path = $this->urlGenerator->linkToRoute('circles.EventWrapper.status');
-//		$request = new NC22Request($path, Request::TYPE_POST);
+//		$request = new NCRequest($path, Request::TYPE_POST);
 //		$this->configService->configureRequest($request);
 //		$request->setDataSerialize($event);
 //

@@ -119,6 +119,11 @@ class DeprecatedListener {
 		$circles = $this->circleService->getCircles($probe);
 
 		foreach ($circles as $circle) {
+			// we are only interested in direct membership
+			if ($circle->getInitiator()->getSingleId() !== $federatedUser->getSingleId()) {
+				continue;
+			}
+
 			$event = new FederatedEvent(MemberDisplayName::class);
 			$event->setCircle($circle);
 			$event->getParams()->s('displayName', $user->getDisplayName());

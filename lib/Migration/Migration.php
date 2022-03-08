@@ -31,7 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Migration;
 
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
+use OCA\Circles\Tools\Traits\TNCLogger;
 use Exception;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MigrationService;
@@ -45,7 +45,7 @@ use OCP\Migration\IRepairStep;
  * @package OCA\Circles\Migration
  */
 class Migration implements IRepairStep {
-	use TNC22Logger;
+	use TNCLogger;
 
 
 	/** @var MigrationService */

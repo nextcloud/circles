@@ -31,13 +31,13 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-use ArtificialOwl\MySmallPhpTools\Exceptions\RequestContentException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\RequestResultNotJsonException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\RequestResultSizeException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\RequestServerException;
-use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
-use ArtificialOwl\MySmallPhpTools\Model\Request;
+use OCA\Circles\Tools\Exceptions\RequestContentException;
+use OCA\Circles\Tools\Exceptions\RequestNetworkException;
+use OCA\Circles\Tools\Exceptions\RequestResultNotJsonException;
+use OCA\Circles\Tools\Exceptions\RequestResultSizeException;
+use OCA\Circles\Tools\Exceptions\RequestServerException;
+use OCA\Circles\Tools\Model\NCRequest;
+use OCA\Circles\Tools\Model\Request;
 use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\FederatedItemException;
@@ -162,7 +162,7 @@ class MembersAdd extends Base {
 			return '';
 		}
 
-		$request = new NC22Request(ConfigService::GS_LOOKUP_USERS, Request::TYPE_GET);
+		$request = new NCRequest(ConfigService::GS_LOOKUP_USERS, Request::TYPE_GET);
 		$this->configService->configureRequest($request);
 		$request->basedOnUrl($lookup);
 		$request->addParam('search', $search);

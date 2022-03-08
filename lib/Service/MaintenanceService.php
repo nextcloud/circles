@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use Exception;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
@@ -43,6 +42,7 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\ShareWrapper;
+use OCA\Circles\Tools\Traits\TNCLogger;
 use OCP\IUserManager;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -52,7 +52,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Service
  */
 class MaintenanceService {
-	use TNC22Logger;
+	use TNCLogger;
 
 
 	public const TIMEOUT = 18000;
@@ -270,13 +270,11 @@ class MaintenanceService {
 		} catch (Exception $e) {
 		}
 
-//		try {
-//			$this->output('refresh displayNames older than 7d');
-//			//	$this->refreshOldDisplayNames();
-//			$this->output('refresh DisplayNames');
+		try {
+			$this->output('refresh displayNames older than 7d');
 //			$this->refreshDisplayName();
-//		} catch (Exception $e) {
-//		}
+		} catch (Exception $e) {
+		}
 	}
 
 
@@ -379,6 +377,11 @@ class MaintenanceService {
 				$this->memberRequest->updateDisplayName($owner->getSingleId(), $user->getDisplayName());
 				$this->circleRequest->updateDisplayName($owner->getSingleId(), $user->getDisplayName());
 			}
+//			if ($owner->getUserType() === Member::TYPE_GROUP) {
+//				$group = $this->groupManager->get($owner->getUserId());
+//				$this->memberRequest->updateDisplayName($owner->getSingleId(), $user->getDisplayName());
+//				$this->circleRequest->updateDisplayName($owner->getSingleId(), $user->getDisplayName());
+//			}
 		}
 	}
 

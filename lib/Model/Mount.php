@@ -31,9 +31,9 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
-use ArtificialOwl\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
-use ArtificialOwl\MySmallPhpTools\IDeserializable;
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
+use OCA\Circles\Tools\Db\IQueryRow;
+use OCA\Circles\Tools\IDeserializable;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\MountManager\CircleMountManager;
@@ -45,7 +45,7 @@ use OCP\Http\Client\IClientService;
  *
  * @package OCA\Circles\Model
  */
-class Mount extends ManagedModel implements IDeserializable, INC22QueryRow, JsonSerializable {
+class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSerializable {
 	use TArrayTools;
 
 
@@ -458,7 +458,7 @@ class Mount extends ManagedModel implements IDeserializable, INC22QueryRow, Json
 	 *
 	 * @return Mount
 	 */
-	public function importFromDatabase(array $data, string $prefix = ''): INC22QueryRow {
+	public function importFromDatabase(array $data, string $prefix = ''): IQueryRow {
 		$this->setId($this->getInt('id', $data));
 		$this->setCircleId($this->get('circle_id', $data));
 		$this->setToken($this->get('token', $data));

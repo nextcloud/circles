@@ -31,7 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-use ArtificialOwl\MySmallPhpTools\Exceptions\RowNotFoundException;
+use OCA\Circles\Tools\Exceptions\RowNotFoundException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedUser;
@@ -86,7 +86,7 @@ class MemberRequestBuilder extends CoreRequestBuilder {
 			self::$tables[self::TABLE_MEMBER],
 			CoreQueryBuilder::MEMBER
 		)
-		   ->generateGroupBy(self::$tables[self::TABLE_MEMBER], CoreQueryBuilder::MEMBER)
+//		   ->generateGroupBy(self::$tables[self::TABLE_MEMBER], CoreQueryBuilder::MEMBER)
 		   ->orderBy(CoreQueryBuilder::MEMBER . '.joined');
 
 		if ($getBasedOn) {

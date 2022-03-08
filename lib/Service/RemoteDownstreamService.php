@@ -31,11 +31,11 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\SignatoryException;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
-use ArtificialOwl\MySmallPhpTools\Traits\TAsync;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
+use OCA\Circles\Tools\Exceptions\RequestNetworkException;
+use OCA\Circles\Tools\Exceptions\SignatoryException;
+use OCA\Circles\Tools\Traits\TAsync;
+use OCA\Circles\Tools\Traits\TNCLogger;
 use Exception;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
@@ -61,7 +61,7 @@ use OCA\Circles\Model\Probes\CircleProbe;
  * @package OCA\Circles\Service
  */
 class RemoteDownstreamService {
-	use TNC22Logger;
+	use TNCLogger;
 	use TAsync;
 
 

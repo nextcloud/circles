@@ -30,21 +30,21 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use ArtificialOwl\MySmallPhpTools\ActivityPub\Nextcloud\nc22\NC22Signature;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
-use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use Exception;
 use OCA\Circles\Db\EventWrapperRequest;
 use OCA\Circles\Model\Federated\EventWrapper;
 use OCA\Circles\Model\Federated\FederatedEvent;
+use OCA\Circles\Tools\ActivityPub\NCSignature;
+use OCA\Circles\Tools\Traits\TNCRequest;
+use OCA\Circles\Tools\Traits\TStringTools;
 
 /**
  * Class EventWrapperService
  *
  * @package OCA\Circles\Service
  */
-class EventWrapperService extends NC22Signature {
-	use TNC22Request;
+class EventWrapperService extends NCSignature {
+	use TNCRequest;
 	use TStringTools;
 
 

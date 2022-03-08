@@ -31,8 +31,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Listeners\Files;
 
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
-use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
+use OCA\Circles\Tools\Traits\TNCLogger;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Events\PreparingCircleMemberEvent;
 use OCA\Circles\Exceptions\FederatedItemException;
@@ -57,7 +57,7 @@ use OCP\Security\IHasher;
  */
 class PreparingMemberSendMail implements IEventListener {
 	use TStringTools;
-	use TNC22Logger;
+	use TNCLogger;
 
 
 	/** @var IHasher */

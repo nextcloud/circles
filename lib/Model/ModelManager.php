@@ -31,7 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
+use OCA\Circles\Tools\Traits\TNCLogger;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\CoreQueryBuilder;
@@ -65,7 +65,7 @@ use OCP\IURLGenerator;
  * @package OCA\Circles\Model
  */
 class ModelManager {
-	use TNC22Logger;
+	use TNCLogger;
 
 
 	/** @var IURLGenerator */
@@ -554,9 +554,7 @@ class ModelManager {
 	 */
 	public function generateLinkToCircle(string $singleId): string {
 		return $this->urlGenerator->linkToRoute(
-			$this->configService->getAppValue(
-				ConfigService::ROUTE_TO_CIRCLE
-			),
+			$this->configService->getAppValue(ConfigService::ROUTE_TO_CIRCLE),
 			['singleId' => $singleId]
 		);
 	}

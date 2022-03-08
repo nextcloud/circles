@@ -31,8 +31,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Handlers;
 
-use ArtificialOwl\MySmallPhpTools\Exceptions\SignatoryException;
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
+use OCA\Circles\Tools\Exceptions\SignatoryException;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use OC\URLGenerator;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\UnknownInterfaceException;
