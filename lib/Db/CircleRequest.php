@@ -197,10 +197,6 @@ class CircleRequest extends CircleRequestBuilder {
 			$qb->limitToRemoteInstance(CoreQueryBuilder::CIRCLE, $probe->getFilterRemoteInstance(), false);
 		}
 
-		if ($probe->showDetail(BasicProbe::DETAILS_POPULATION)) {
-			$qb->countMembers(CoreQueryBuilder::CIRCLE);
-		}
-
 		$qb->chunk($probe->getItemsOffset(), $probe->getItemsLimit());
 
 		return $this->getItemsFromRequest($qb);
@@ -273,10 +269,6 @@ class CircleRequest extends CircleRequestBuilder {
 		}
 		if ($probe->hasFilterRemoteInstance()) {
 			$qb->limitToRemoteInstance(CoreQueryBuilder::CIRCLE, $probe->getFilterRemoteInstance(), false);
-		}
-
-		if ($probe->showDetail(BasicProbe::DETAILS_POPULATION)) {
-			$qb->countMembers(CoreQueryBuilder::CIRCLE);
 		}
 
 		return $this->getItemFromRequest($qb);
