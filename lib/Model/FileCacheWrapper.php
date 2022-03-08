@@ -31,10 +31,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
-use ArtificialOwl\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
-use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
-use ArtificialOwl\MySmallPhpTools\IDeserializable;
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
+use OCA\Circles\Tools\Db\IQueryRow;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
+use OCA\Circles\Tools\IDeserializable;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\Db\CoreQueryBuilder;
 use OCA\Circles\Exceptions\FileCacheNotFoundException;
@@ -44,7 +44,7 @@ use OCA\Circles\Exceptions\FileCacheNotFoundException;
  *
  * @package OCA\Circles\Model
  */
-class FileCacheWrapper extends ManagedModel implements INC22QueryRow, IDeserializable, JsonSerializable {
+class FileCacheWrapper extends ManagedModel implements IQueryRow, IDeserializable, JsonSerializable {
 	use TArrayTools;
 
 
@@ -497,10 +497,10 @@ class FileCacheWrapper extends ManagedModel implements INC22QueryRow, IDeseriali
 	 * @param array $data
 	 * @param string $prefix
 	 *
-	 * @return INC22QueryRow
+	 * @return IQueryRow
 	 * @throws FileCacheNotFoundException
 	 */
-	public function importFromDatabase(array $data, string $prefix = ''): INC22QueryRow {
+	public function importFromDatabase(array $data, string $prefix = ''): IQueryRow {
 		if ($this->getInt($prefix . 'fileid', $data) === 0) {
 			throw new FileCacheNotFoundException();
 		}

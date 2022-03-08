@@ -31,10 +31,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems\Files;
 
-use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\UnknownTypeException;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
-use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
+use OCA\Circles\Tools\Exceptions\UnknownTypeException;
+use OCA\Circles\Tools\Traits\TNCLogger;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OCA\Circles\Db\MountRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\IFederatedItem;
@@ -58,7 +58,7 @@ class FileShare implements
 	IFederatedItemAsyncProcess,
 	IFederatedItemMemberEmpty {
 	use TStringTools;
-	use TNC22Logger;
+	use TNCLogger;
 
 
 	/** @var MountRequest */

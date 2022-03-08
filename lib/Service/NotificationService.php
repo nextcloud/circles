@@ -34,7 +34,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
+use OCA\Circles\Tools\Traits\TNCLogger;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\RequestBuilderException;
@@ -49,7 +49,7 @@ use OCP\Notification\INotification;
  * @package OCA\Circles\Service
  */
 class NotificationService {
-	use TNC22Logger;
+	use TNCLogger;
 
 
 	/** @var IURLGenerator */

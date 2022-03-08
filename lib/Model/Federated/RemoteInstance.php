@@ -31,9 +31,9 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model\Federated;
 
-use ArtificialOwl\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
-use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22Signatory;
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
+use OCA\Circles\Tools\Db\IQueryRow;
+use OCA\Circles\Tools\Model\NCSignatory;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteUidException;
@@ -43,7 +43,7 @@ use OCA\Circles\Exceptions\RemoteUidException;
  *
  * @package OCA\Circles\Model
  */
-class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSerializable {
+class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable {
 	use TArrayTools;
 
 	public const TYPE_UNKNOWN = 'Unknown';    // not trusted
@@ -476,9 +476,9 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 	/**
 	 * @param array $data
 	 *
-	 * @return NC22Signatory
+	 * @return NCSignatory
 	 */
-	public function import(array $data): NC22Signatory {
+	public function import(array $data): NCSignatory {
 		parent::import($data);
 
 		$this->setTest($this->get(self::TEST, $data))
@@ -544,7 +544,7 @@ class RemoteInstance extends NC22Signatory implements INC22QueryRow, JsonSeriali
 	 * @return self
 	 * @throws RemoteNotFoundException
 	 */
-	public function importFromDatabase(array $data, string $prefix = ''): INC22QueryRow {
+	public function importFromDatabase(array $data, string $prefix = ''): IQueryRow {
 		if ($this->getInt($prefix . 'id', $data) === 0) {
 			throw new RemoteNotFoundException();
 		}

@@ -30,12 +30,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use ArtificialOwl\MySmallPhpTools\ActivityPub\Nextcloud\nc22\NC22Signature;
-use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
-use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
-use ArtificialOwl\MySmallPhpTools\Model\Request;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
-use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OC;
 use OCA\Circles\Db\EventWrapperRequest;
 use OCA\Circles\Db\MemberRequest;
@@ -72,6 +66,12 @@ use OCA\Circles\Model\Federated\EventWrapper;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Tools\ActivityPub\NCSignature;
+use OCA\Circles\Tools\Exceptions\RequestNetworkException;
+use OCA\Circles\Tools\Model\NCRequest;
+use OCA\Circles\Tools\Model\Request;
+use OCA\Circles\Tools\Traits\TNCRequest;
+use OCA\Circles\Tools\Traits\TStringTools;
 use ReflectionClass;
 use ReflectionException;
 
@@ -80,8 +80,8 @@ use ReflectionException;
  *
  * @package OCA\Circles\Service
  */
-class FederatedEventService extends NC22Signature {
-	use TNC22Request;
+class FederatedEventService extends NCSignature {
+	use TNCRequest;
 	use TStringTools;
 
 
@@ -415,7 +415,7 @@ class FederatedEventService extends NC22Signature {
 			$this->eventWrapperRequest->save($wrapper);
 		}
 
-		$request = new NC22Request('', Request::TYPE_POST);
+		$request = new NCRequest('', Request::TYPE_POST);
 		$this->configService->configureLoopbackRequest(
 			$request,
 			'circles.EventWrapper.asyncBroadcast',
