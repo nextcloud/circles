@@ -34,9 +34,9 @@ declare(strict_types=1);
 
 namespace OCA\Circles;
 
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
-use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
+use OCA\Circles\Tools\Traits\TNCLogger;
+use OCA\Circles\Tools\Traits\TArrayTools;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OC;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\ContactAddressBookNotFoundException;
@@ -93,7 +93,7 @@ use OCP\Share\IShareProvider;
 class ShareByCircleProvider implements IShareProvider {
 	use TArrayTools;
 	use TStringTools;
-	use TNC22Logger;
+	use TNCLogger;
 
 
 	public const IDENTIFIER = 'ocCircleShare';

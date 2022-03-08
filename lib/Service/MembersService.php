@@ -26,12 +26,12 @@
 
 namespace OCA\Circles\Service;
 
-use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\RequestResultNotJsonException;
-use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
-use ArtificialOwl\MySmallPhpTools\Model\Request;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
+use OCA\Circles\Tools\Exceptions\RequestNetworkException;
+use OCA\Circles\Tools\Exceptions\RequestResultNotJsonException;
+use OCA\Circles\Tools\Model\NCRequest;
+use OCA\Circles\Tools\Model\Request;
+use OCA\Circles\Tools\Traits\TNCRequest;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use Exception;
 use OC;
 use OC\User\NoUserException;
@@ -64,7 +64,7 @@ use OCP\IUserManager;
  * @package OCA\Circles\Service
  */
 class MembersService {
-	use TNC22Request;
+	use TNCRequest;
 	use TArrayTools;
 
 
@@ -719,7 +719,7 @@ class MembersService {
 	private function getGlobalScaleUserDisplayName(string $ident): string {
 		$lookup = $this->configService->getGSLookup();
 
-		$request = new NC22Request(ConfigService::GS_LOOKUP_USERS, Request::TYPE_GET);
+		$request = new NCRequest(ConfigService::GS_LOOKUP_USERS, Request::TYPE_GET);
 		$this->configService->configureRequest($request);
 		$request->basedOnUrl($lookup);
 		$request->addParam('search', $ident);

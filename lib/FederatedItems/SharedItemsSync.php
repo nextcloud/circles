@@ -31,7 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
+use OCA\Circles\Tools\Model\SimpleDataStore;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemLimitedToInstanceWithMembership;
 use OCA\Circles\Model\Federated\FederatedEvent;

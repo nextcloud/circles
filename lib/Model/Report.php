@@ -31,8 +31,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
-use ArtificialOwl\MySmallPhpTools\IDeserializable;
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
+use OCA\Circles\Tools\IDeserializable;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use JsonSerializable;
 
 /**

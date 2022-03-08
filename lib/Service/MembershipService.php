@@ -31,8 +31,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use ArtificialOwl\MySmallPhpTools\Exceptions\ItemNotFoundException;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
+use OCA\Circles\Tools\Exceptions\ItemNotFoundException;
+use OCA\Circles\Tools\Traits\TNCLogger;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
@@ -51,7 +51,7 @@ use OCA\Circles\Model\Membership;
  * @package OCA\Circles\Service
  */
 class MembershipService {
-	use TNC22Logger;
+	use TNCLogger;
 
 
 	/** @var MembershipRequest */

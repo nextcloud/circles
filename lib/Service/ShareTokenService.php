@@ -31,7 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OCA\Circles\Db\ShareTokenRequest;
 use OCA\Circles\Exceptions\ShareTokenAlreadyExistException;
 use OCA\Circles\Exceptions\ShareTokenNotFoundException;

@@ -28,7 +28,7 @@
 
 namespace OCA\Circles\Db;
 
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 
 /**

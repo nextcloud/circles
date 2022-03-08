@@ -29,7 +29,7 @@
 
 namespace OCA\Circles\Service;
 
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use Exception;
 use OC;
 use OCA\Circles\AppInfo\Application;

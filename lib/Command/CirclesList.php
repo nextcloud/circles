@@ -31,10 +31,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\SignatoryException;
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
-use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
+use OCA\Circles\Tools\Exceptions\RequestNetworkException;
+use OCA\Circles\Tools\Exceptions\SignatoryException;
+use OCA\Circles\Tools\Traits\TArrayTools;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedItemException;
