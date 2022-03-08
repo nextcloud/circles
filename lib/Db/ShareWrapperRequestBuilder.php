@@ -74,7 +74,6 @@ class ShareWrapperRequestBuilder extends CoreRequestBuilder {
 	protected function getShareSelectSql(string $alias = CoreQueryBuilder::SHARE): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->generateSelect(self::TABLE_SHARE, self::$outsideTables[self::TABLE_SHARE], $alias)
-		   ->generateGroupBy(self::$outsideTables[self::TABLE_SHARE], $alias)
 		   ->limitToShareType(Share::TYPE_CIRCLE);
 
 		return $qb;

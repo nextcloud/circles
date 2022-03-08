@@ -242,7 +242,7 @@ class CircleRequest extends CircleRequestBuilder {
 				  ->emulateVisitor();
 		}
 
-		$qb = $this->getCircleSelectSql();
+		$qb = $this->getCircleSelectSql(CoreQueryBuilder::CIRCLE, true);
 		$qb->setOptions(
 			[CoreQueryBuilder::CIRCLE],
 			array_merge(
@@ -284,7 +284,7 @@ class CircleRequest extends CircleRequestBuilder {
 	 * @throws FederatedUserNotFoundException
 	 */
 	public function getFederatedUserBySingleId(string $singleId): FederatedUser {
-		$qb = $this->getCircleSelectSql();
+		$qb = $this->getCircleSelectSql(CoreQueryBuilder::CIRCLE, true);
 		$qb->limitToUniqueId($singleId);
 		$qb->leftJoinOwner(CoreQueryBuilder::CIRCLE);
 
