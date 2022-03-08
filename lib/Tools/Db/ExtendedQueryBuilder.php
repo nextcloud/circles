@@ -1081,7 +1081,6 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	 * @param string $table
 	 * @param array $fields
 	 * @param string $alias
-	 * @param bool $distinct
 	 *
 	 * @return $this
 	 */
@@ -1089,7 +1088,6 @@ class ExtendedQueryBuilder extends QueryBuilder {
 		string $table,
 		array $fields,
 		string $alias = ''
-//		bool $distinct = false
 	): self {
 		$selectFields = array_map(
 			function (string $item) use ($alias) {
@@ -1101,13 +1099,8 @@ class ExtendedQueryBuilder extends QueryBuilder {
 			}, $fields
 		);
 
-//		if ($distinct) {
-//			$this->selectDistinct($selectFields);
-//		} else {
-		$this->select($selectFields);
-//		}
-
-		$this->from($table, $alias)
+		$this->select($selectFields)
+			 ->from($table, $alias)
 			 ->setDefaultSelectAlias($alias);
 
 		return $this;
@@ -1135,30 +1128,6 @@ class ExtendedQueryBuilder extends QueryBuilder {
 
 		foreach ($fields as $field) {
 			$this->selectAlias($alias . '.' . $field, $prefix . $field);
-		}
-
-		return $this;
-	}
-
-
-	/**
-	 * @param array $fields
-	 * @param string $alias
-	 * @param bool $add
-	 *
-	 * @return $this
-	 */
-	public function generateGroupBy(array $fields, string $alias = '', bool $add = false): self {
-		if ($alias !== '') {
-			$alias .= '.';
-		}
-
-		if (!$add) {
-			$this->groupBy($alias . array_pop($fields));
-		}
-
-		foreach ($fields as $field) {
-			$this->addGroupBy($alias . $field);
 		}
 
 		return $this;
