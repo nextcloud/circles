@@ -31,14 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\SignatoryException;
-use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
-use ArtificialOwl\MySmallPhpTools\Model\Request;
-use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
-use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use Exception;
 use OC;
 use OC\AppConfig;
@@ -63,6 +55,14 @@ use OCA\Circles\Service\InterfaceService;
 use OCA\Circles\Service\RemoteService;
 use OCA\Circles\Service\RemoteStreamService;
 use OCA\Circles\Service\RemoteUpstreamService;
+use OCA\Circles\Tools\Exceptions\RequestNetworkException;
+use OCA\Circles\Tools\Exceptions\SignatoryException;
+use OCA\Circles\Tools\Model\NCRequest;
+use OCA\Circles\Tools\Model\Request;
+use OCA\Circles\Tools\Model\SimpleDataStore;
+use OCA\Circles\Tools\Traits\TArrayTools;
+use OCA\Circles\Tools\Traits\TNCRequest;
+use OCA\Circles\Tools\Traits\TStringTools;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -77,7 +77,7 @@ use Symfony\Component\Console\Question\Question;
 class CirclesCheck extends Base {
 	use TStringTools;
 	use TArrayTools;
-	use TNC22Request;
+	use TNCRequest;
 
 
 	public static $checks = [
@@ -791,7 +791,7 @@ class CirclesCheck extends Base {
 		string $route,
 		array $args = []
 	): bool {
-		$request = new NC22Request('', Request::type($type));
+		$request = new NCRequest('', Request::type($type));
 		$this->configService->configureLoopbackRequest($request, $route, $args);
 		$request->setFollowLocation(false);
 

@@ -31,11 +31,11 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
-use ArtificialOwl\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
-use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
-use ArtificialOwl\MySmallPhpTools\IDeserializable;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
+use OCA\Circles\Tools\Db\IQueryRow;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
+use OCA\Circles\Tools\IDeserializable;
+use OCA\Circles\Tools\Traits\TDeserialize;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use DateTime;
 use JsonSerializable;
 use OCA\Circles\Db\CircleRequest;
@@ -82,9 +82,9 @@ use OCP\Security\IHasher;
  *
  * @package OCA\Circles\Model
  */
-class Circle extends ManagedModel implements IEntity, IDeserializable, INC22QueryRow, JsonSerializable {
+class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow, JsonSerializable {
 	use TArrayTools;
-	use TNC22Deserialize;
+	use TDeserialize;
 
 
 	public const FLAGS_SHORT = 1;
@@ -218,6 +218,9 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, INC22Quer
 
 	/** @var int */
 	private $population = 0;
+
+	/** @var int */
+	private $populationInherited = 0;
 
 //	/** @var bool */
 //	private $hidden = false;
@@ -664,6 +667,25 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, INC22Quer
 
 
 	/**
+	 * @param int $population
+	 *
+	 * @return Circle
+	 */
+	public function setPopulationInherited(int $population): self {
+		$this->populationInherited = $population;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getPopulationInherited(): int {
+		return $this->populationInherited;
+	}
+
+
+	/**
 	 * @param array $settings
 	 *
 	 * @return self
@@ -866,10 +888,10 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, INC22Quer
 	 * @param array $data
 	 * @param string $prefix
 	 *
-	 * @return INC22QueryRow
+	 * @return IQueryRow
 	 * @throws CircleNotFoundException
 	 */
-	public function importFromDatabase(array $data, string $prefix = ''): INC22QueryRow {
+	public function importFromDatabase(array $data, string $prefix = ''): IQueryRow {
 		if ($this->get($prefix . 'unique_id', $data) === '') {
 			throw new CircleNotFoundException();
 		}
@@ -881,7 +903,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, INC22Quer
 			 ->setConfig($this->getInt($prefix . 'config', $data))
 			 ->setSource($this->getInt($prefix . 'source', $data))
 			 ->setInstance($this->get($prefix . 'instance', $data))
-			 ->setPopulation($this->getInt($prefix . 'population', $data))
 			 ->setSettings($this->getArray($prefix . 'settings', $data))
 			 ->setContactAddressBook($this->getInt($prefix . 'contact_addressbook', $data))
 			 ->setContactGroupName($this->get($prefix . 'contact_groupname', $data))
@@ -889,6 +910,9 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, INC22Quer
 
 		$creation = $this->get($prefix . 'creation', $data);
 		$this->setCreation(DateTime::createFromFormat('Y-m-d H:i:s', $creation)->getTimestamp());
+
+		$this->setPopulation($this->getInt('population', $this->getSettings()));
+		$this->setPopulationInherited($this->getInt('populationInherited', $this->getSettings()));
 
 		$this->getManager()->manageImportFromDatabase($this, $data, $prefix);
 

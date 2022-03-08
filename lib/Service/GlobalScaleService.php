@@ -31,11 +31,11 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
-use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
-use ArtificialOwl\MySmallPhpTools\Model\Request;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
-use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
+use OCA\Circles\Tools\Exceptions\RequestNetworkException;
+use OCA\Circles\Tools\Model\NCRequest;
+use OCA\Circles\Tools\Model\Request;
+use OCA\Circles\Tools\Traits\TNCRequest;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OC\Security\IdentityProof\Signer;
 use OCA\Circles\Db\EventWrapperRequest;
 use OCA\Circles\Exceptions\GSStatusException;
@@ -49,7 +49,7 @@ use OCP\IUserSession;
  * @package OCA\Circles\Service
  */
 class GlobalScaleService {
-	use TNC22Request;
+	use TNCRequest;
 	use TStringTools;
 
 
@@ -116,7 +116,7 @@ class GlobalScaleService {
 
 		try {
 			$lookup = $this->configService->getGSLookup();
-			$request = new NC22Request(ConfigService::GS_LOOKUP_INSTANCES, Request::TYPE_POST);
+			$request = new NCRequest(ConfigService::GS_LOOKUP_INSTANCES, Request::TYPE_POST);
 			$this->configService->configureRequest($request);
 			$request->basedOnUrl($lookup);
 			$request->addData('authKey', $this->configService->getGSInfo(ConfigService::GS_KEY));

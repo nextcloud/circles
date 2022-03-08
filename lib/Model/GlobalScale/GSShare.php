@@ -31,7 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model\GlobalScale;
 
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use JsonSerializable;
 
 /**

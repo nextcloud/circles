@@ -31,15 +31,15 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use ArtificialOwl\MySmallPhpTools\Exceptions\RequestContentException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\RequestResultNotJsonException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\RequestResultSizeException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\RequestServerException;
-use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
-use ArtificialOwl\MySmallPhpTools\Model\Request;
-use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
+use OCA\Circles\Tools\Exceptions\RequestContentException;
+use OCA\Circles\Tools\Exceptions\RequestNetworkException;
+use OCA\Circles\Tools\Exceptions\RequestResultNotJsonException;
+use OCA\Circles\Tools\Exceptions\RequestResultSizeException;
+use OCA\Circles\Tools\Exceptions\RequestServerException;
+use OCA\Circles\Tools\Model\NCRequest;
+use OCA\Circles\Tools\Model\Request;
+use OCA\Circles\Tools\Model\SimpleDataStore;
+use OCA\Circles\Tools\Traits\TNCRequest;
 use Exception;
 use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\DeprecatedMembersRequest;
@@ -60,7 +60,7 @@ use OCP\IURLGenerator;
  * @package OCA\Circles\Service
  */
 class GSUpstreamService {
-	use TNC22Request;
+	use TNCRequest;
 
 
 	/** @var string */
@@ -189,11 +189,11 @@ class GSUpstreamService {
 		$this->signEvent($event);
 
 		if ($this->configService->isLocalInstance($instance)) {
-			$request = new NC22Request('', Request::TYPE_POST);
+			$request = new NCRequest('', Request::TYPE_POST);
 			$this->configService->configureRequest($request, 'circles.EventWrapper.broadcast');
 		} else {
 			$path = $this->urlGenerator->linkToRoute('circles.EventWrapper.broadcast');
-			$request = new NC22Request($path, Request::TYPE_POST);
+			$request = new NCRequest($path, Request::TYPE_POST);
 			$this->configService->configureRequest($request);
 			$request->setInstance($instance);
 		}
@@ -222,7 +222,7 @@ class GSUpstreamService {
 		$owner = $circle->getOwner();
 		$path = $this->urlGenerator->linkToRoute('circles.EventWrapper.event');
 
-		$request = new NC22Request($path, Request::TYPE_POST);
+		$request = new NCRequest($path, Request::TYPE_POST);
 		$this->configService->configureRequest($request);
 		$request->basedOnUrl($owner->getInstance());
 
@@ -404,7 +404,7 @@ class GSUpstreamService {
 		$this->signEvent($event);
 
 		$path = $this->urlGenerator->linkToRoute('circles.EventWrapper.status');
-		$request = new NC22Request($path, Request::TYPE_POST);
+		$request = new NCRequest($path, Request::TYPE_POST);
 		$this->configService->configureRequest($request);
 		$request->setDataSerialize($event);
 

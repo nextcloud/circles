@@ -31,15 +31,15 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
-use ArtificialOwl\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
-use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
-use ArtificialOwl\MySmallPhpTools\IDeserializable;
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
+use OCA\Circles\Tools\Db\IQueryRow;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
+use OCA\Circles\Tools\IDeserializable;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\Exceptions\ShareTokenNotFoundException;
 use OCP\Share\IShare;
 
-class ShareToken implements IDeserializable, INC22QueryRow, JsonSerializable {
+class ShareToken implements IDeserializable, IQueryRow, JsonSerializable {
 	use TArrayTools;
 
 
@@ -277,10 +277,10 @@ class ShareToken implements IDeserializable, INC22QueryRow, JsonSerializable {
 	 * @param array $data
 	 * @param string $prefix
 	 *
-	 * @return INC22QueryRow
+	 * @return IQueryRow
 	 * @throws ShareTokenNotFoundException
 	 */
-	public function importFromDatabase(array $data, string $prefix = ''): INC22QueryRow {
+	public function importFromDatabase(array $data, string $prefix = ''): IQueryRow {
 		if ($this->get($prefix . 'token', $data) === '') {
 			throw new ShareTokenNotFoundException();
 		}

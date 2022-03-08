@@ -10,7 +10,7 @@ declare(strict_types=1);
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2021
+ * @copyright 2022
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,27 +28,7 @@ declare(strict_types=1);
  *
  */
 
+namespace OCA\Circles\Exceptions;
 
-namespace OCA\Circles;
-
-use OCA\Circles\Tools\Model\SimpleDataStore;
-
-/**
- * Interface IFederatedSync
- *
- * @package OCA\Circles
- */
-interface IFederatedSync {
-
-	/**
-	 * @param string $circleId
-	 *
-	 * @return SimpleDataStore
-	 */
-	public function export(string $circleId): SimpleDataStore;
-
-	/**
-	 * @param SimpleDataStore $data
-	 */
-	public function import(SimpleDataStore $data): void;
+class JsonNotRequestedException extends FederatedItemNotFoundException {
 }

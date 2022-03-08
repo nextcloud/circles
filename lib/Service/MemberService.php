@@ -31,10 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
-use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
@@ -64,6 +60,10 @@ use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\MemberProbe;
+use OCA\Circles\Tools\Model\SimpleDataStore;
+use OCA\Circles\Tools\Traits\TArrayTools;
+use OCA\Circles\Tools\Traits\TNCLogger;
+use OCA\Circles\Tools\Traits\TStringTools;
 
 /**
  * Class MemberService
@@ -73,7 +73,7 @@ use OCA\Circles\Model\Probes\MemberProbe;
 class MemberService {
 	use TArrayTools;
 	use TStringTools;
-	use TNC22Logger;
+	use TNCLogger;
 
 
 	/** @var CircleRequest */
@@ -296,8 +296,10 @@ class MemberService {
 	 */
 	public function removeMember(string $memberId): array {
 		$this->federatedUserService->mustHaveCurrentUser();
-		$member =
-			$this->memberRequest->getMemberById($memberId, $this->federatedUserService->getCurrentUser());
+		$member = $this->memberRequest->getMemberById(
+			$memberId,
+			$this->federatedUserService->getCurrentUser()
+		);
 
 		$event = new FederatedEvent(MemberRemove::class);
 		$event->setCircle($member->getCircle());

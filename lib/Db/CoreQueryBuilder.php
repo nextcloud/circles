@@ -31,8 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-use ArtificialOwl\MySmallPhpTools\Db\Nextcloud\nc22\NC22ExtendedQueryBuilder;
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use Doctrine\DBAL\Query\QueryBuilder;
 use OC;
 use OCA\Circles\Exceptions\RequestBuilderException;
@@ -44,6 +42,8 @@ use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Tools\Db\ExtendedQueryBuilder;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use OCP\DB\QueryBuilder\ICompositeExpression;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 
@@ -52,7 +52,7 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
  *
  * @package OCA\Circles\Db
  */
-class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
+class CoreQueryBuilder extends ExtendedQueryBuilder {
 	use TArrayTools;
 
 
@@ -267,7 +267,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	 * @param string $id
 	 */
 	public function limitToCircleId(string $id): void {
-		$this->limitToDBField('circle_id', $id, true);
+		$this->limit('circle_id', $id, '', true);
 	}
 
 	/**
@@ -295,14 +295,14 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	 * @param int $config
 	 */
 	public function limitToConfig(int $config): void {
-		$this->limitToDBFieldInt('config', $config);
+		$this->limitInt('config', $config);
 	}
 
 	/**
 	 * @param int $source
 	 */
 	public function limitToSource(int $source): void {
-		$this->limitToDBFieldInt('source', $source);
+		$this->limitInt('source', $source);
 	}
 
 	/**
@@ -318,7 +318,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	 * @param string $singleId
 	 */
 	public function limitToSingleId(string $singleId): void {
-		$this->limitToDBField('single_id', $singleId, true);
+		$this->limit('single_id', $singleId, '', true);
 	}
 
 
@@ -326,7 +326,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	 * @param string $itemId
 	 */
 	public function limitToItemId(string $itemId): void {
-		$this->limitToDBField('item_id', $itemId, true);
+		$this->limit('item_id', $itemId, '', true);
 	}
 
 
@@ -334,7 +334,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	 * @param string $host
 	 */
 	public function limitToInstance(string $host): void {
-		$this->limitToDBField('instance', $host, false);
+		$this->limit('instance', $host, '', false);
 	}
 
 
@@ -342,7 +342,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	 * @param int $userType
 	 */
 	public function limitToUserType(int $userType): void {
-		$this->limitToDBFieldInt('user_type', $userType);
+		$this->limitInt('user_type', $userType);
 	}
 
 
@@ -350,7 +350,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	 * @param int $shareType
 	 */
 	public function limitToShareType(int $shareType): void {
-		$this->limitToDBFieldInt('share_type', $shareType);
+		$this->limitInt('share_type', $shareType);
 	}
 
 
@@ -358,7 +358,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	 * @param string $shareWith
 	 */
 	public function limitToShareWith(string $shareWith): void {
-		$this->limitToDBField('share_with', $shareWith);
+		$this->limit('share_with', $shareWith, '', true);
 	}
 
 
@@ -366,14 +366,14 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	 * @param int $nodeId
 	 */
 	public function limitToFileSource(int $nodeId): void {
-		$this->limitToDBFieldInt('file_source', $nodeId);
+		$this->limitInt('file_source', $nodeId);
 	}
 
 	/**
 	 * @param array $files
 	 */
 	public function limitToFileSourceArray(array $files): void {
-		$this->limitToDBFieldInArray('file_source', $files);
+		$this->limitArray('file_source', $files);
 	}
 
 
@@ -381,7 +381,7 @@ class CoreQueryBuilder extends NC22ExtendedQueryBuilder {
 	 * @param int $shareId
 	 */
 	public function limitToShareParent(int $shareId): void {
-		$this->limitToDBFieldInt('parent', $shareId);
+		$this->limitInt('parent', $shareId);
 	}
 
 
