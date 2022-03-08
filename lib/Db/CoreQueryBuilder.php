@@ -697,32 +697,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 	/**
 	 * @param string $alias
-	 */
-	public function countMembers(string $alias): void {
-		if ($this->getType() !== QueryBuilder::SELECT) {
-			return;
-		}
-
-		try {
-			$aliasMemberCount = $this->generateAlias($alias, self::MEMBER_COUNT, $options);
-		} catch (RequestBuilderException $e) {
-			return;
-		}
-
-		$expr = $this->expr();
-		$this->selectAlias(
-			$this->createFunction('COUNT(`' . $aliasMemberCount . '`.`member_id`)'),
-			(($alias !== $this->getDefaultSelectAlias()) ? $alias . '_' : '') . 'population'
-		);
-		$this->leftJoin(
-			$alias, CoreRequestBuilder::TABLE_MEMBER, $aliasMemberCount,
-			$expr->eq($alias . '.unique_id', $aliasMemberCount . '.circle_id')
-		);
-	}
-
-
-	/**
-	 * @param string $alias
 	 * @param IFederatedUser|null $initiator
 	 * @param string $field
 	 * @param string $helperAlias
