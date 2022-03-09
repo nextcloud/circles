@@ -41,6 +41,8 @@ use JsonSerializable;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\MemberHelperException;
+use OCA\Circles\Exceptions\MemberLevelException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
@@ -48,6 +50,8 @@ use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\IMemberships;
+use OCA\Circles\Model\Helpers\MemberHelper;
+use OCP\Security\IHasher;
 
 /**
  * Class Circle

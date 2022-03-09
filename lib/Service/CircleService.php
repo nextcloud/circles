@@ -57,7 +57,7 @@ use OCA\Circles\FederatedItems\CircleDestroy;
 use OCA\Circles\FederatedItems\CircleEdit;
 use OCA\Circles\FederatedItems\CircleJoin;
 use OCA\Circles\FederatedItems\CircleLeave;
-use OCA\Circles\FederatedItems\CircleSettings;
+use OCA\Circles\FederatedItems\CircleSetting;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\FederatedUser;
