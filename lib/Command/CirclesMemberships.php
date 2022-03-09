@@ -274,8 +274,8 @@ class CirclesMemberships extends Base {
 			$item = new TreeNode(
 				$tree, new SimpleDataStore(
 						 [
-							 'member' => $member,
-							 'cycling' => in_array($member->getCircleId(), $knownIds)
+						 	'member' => $member,
+						 	'cycling' => in_array($member->getCircleId(), $knownIds)
 						 ]
 					 )
 			);

@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Tools\Model;
 
-
 use GuzzleHttp\Exception\BadResponseException;
 use JsonSerializable;
 use OCA\Circles\Tools\Exceptions\RequestContentException;
@@ -39,14 +38,13 @@ use OCA\Circles\Tools\Traits\TArrayTools;
 use OCP\Http\Client\IResponse;
 
 class NCRequestResult implements JsonSerializable {
-
 	use TArrayTools;
 
 
-	const TYPE_STRING = 0;
-	const TYPE_BINARY = 1;
-	const TYPE_JSON = 2;
-	const TYPE_XRD = 3;
+	public const TYPE_STRING = 0;
+	public const TYPE_BINARY = 1;
+	public const TYPE_JSON = 2;
+	public const TYPE_XRD = 3;
 
 
 	/** @var int */
@@ -320,6 +318,4 @@ class NCRequestResult implements JsonSerializable {
 			'contentType' => $this->getContentType()
 		];
 	}
-
 }
-

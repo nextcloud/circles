@@ -31,23 +31,21 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Tools\Model;
 
-
 use JsonSerializable;
 use OCA\Circles\Tools\Traits\TArrayTools;
 
 class Request implements JsonSerializable {
-
 	use TArrayTools;
 
 
-	const TYPE_GET = 0;
-	const TYPE_POST = 1;
-	const TYPE_PUT = 2;
-	const TYPE_DELETE = 3;
+	public const TYPE_GET = 0;
+	public const TYPE_POST = 1;
+	public const TYPE_PUT = 2;
+	public const TYPE_DELETE = 3;
 
 
-	const QS_VAR_DUPLICATE = 1;
-	const QS_VAR_ARRAY = 2;
+	public const QS_VAR_DUPLICATE = 1;
+	public const QS_VAR_ARRAY = 2;
 
 
 	/** @var string */
@@ -243,7 +241,7 @@ class Request implements JsonSerializable {
 			return $this;
 		}
 
-		list($host, $port) = explode(':', $instance, 2);
+		[$host, $port] = explode(':', $instance, 2);
 		$this->setHost($host);
 		if ($port !== '') {
 			$this->setPort((int)$port);
@@ -282,13 +280,13 @@ class Request implements JsonSerializable {
 		$protocol = parse_url($url, PHP_URL_SCHEME);
 		if ($protocol === null) {
 			if (strpos($url, '/') > -1) {
-				list($address, $baseUrl) = explode('/', $url, 2);
+				[$address, $baseUrl] = explode('/', $url, 2);
 				$this->setBaseUrl('/' . $baseUrl);
 			} else {
 				$address = $url;
 			}
 			if (strpos($address, ':') > -1) {
-				list($address, $port) = explode(':', $address, 2);
+				[$address, $port] = explode(':', $address, 2);
 				$this->setPort((int)$port);
 			}
 			$this->setHost($address);
@@ -777,21 +775,21 @@ class Request implements JsonSerializable {
 	 */
 	public function jsonSerialize(): array {
 		return [
-			'protocols'      => $this->getProtocols(),
-			'used_protocol'  => $this->getUsedProtocol(),
-			'port'           => $this->getPort(),
-			'host'           => $this->getHost(),
-			'url'            => $this->getPath(),
-			'timeout'        => $this->getTimeout(),
-			'type'           => $this->getType(),
-			'cookies'        => $this->getCookies(),
-			'headers'        => $this->getHeaders(),
-			'params'         => $this->getParams(),
-			'data'           => $this->getData(),
-			'userAgent'      => $this->getUserAgent(),
+			'protocols' => $this->getProtocols(),
+			'used_protocol' => $this->getUsedProtocol(),
+			'port' => $this->getPort(),
+			'host' => $this->getHost(),
+			'url' => $this->getPath(),
+			'timeout' => $this->getTimeout(),
+			'type' => $this->getType(),
+			'cookies' => $this->getCookies(),
+			'headers' => $this->getHeaders(),
+			'params' => $this->getParams(),
+			'data' => $this->getData(),
+			'userAgent' => $this->getUserAgent(),
 			'followLocation' => $this->isFollowLocation(),
-			'verifyPeer'     => $this->isVerifyPeer(),
-			'binary'         => $this->isBinary()
+			'verifyPeer' => $this->isVerifyPeer(),
+			'binary' => $this->isBinary()
 		];
 	}
 
@@ -831,6 +829,4 @@ class Request implements JsonSerializable {
 
 		return '';
 	}
-
 }
-

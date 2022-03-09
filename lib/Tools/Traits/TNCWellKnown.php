@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Tools\Traits;
 
-
 use OCA\Circles\Tools\Exceptions\RequestNetworkException;
 use OCA\Circles\Tools\Exceptions\WellKnownLinkNotFoundException;
 use OCA\Circles\Tools\Model\NCRequest;
@@ -42,7 +41,7 @@ use OCA\Circles\Tools\Model\SimpleDataStore;
 trait TNCWellKnown {
 	use TNCRequest;
 
-	static $WEBFINGER = '/.well-known/webfinger';
+	public static $WEBFINGER = '/.well-known/webfinger';
 
 
 	/**
@@ -126,6 +125,4 @@ trait TNCWellKnown {
 
 		throw new WellKnownLinkNotFoundException();
 	}
-
 }
-
