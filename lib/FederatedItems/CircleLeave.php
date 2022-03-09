@@ -197,6 +197,8 @@ class CircleLeave implements
 			$this->membershipService->onUpdate($circle->getSingleId());
 			$this->eventService->circleDestroying($event);
 		}
+
+		$this->membershipService->updatePopulation($event->getCircle());
 	}
 
 
