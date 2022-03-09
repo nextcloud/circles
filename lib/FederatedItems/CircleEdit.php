@@ -33,6 +33,7 @@ namespace OCA\Circles\FederatedItems;
 
 use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use OCA\Circles\Db\CircleRequest;
+use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\CircleNameTooShortException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedItem;
@@ -53,6 +54,9 @@ class CircleEdit implements IFederatedItem {
 	/** @var CircleRequest */
 	private $circleRequest;
 
+	/** @var MemberRequest */
+	private $memberRequest;
+
 	/** @var CircleService */
 	private $circleService;
 
@@ -64,15 +68,18 @@ class CircleEdit implements IFederatedItem {
 	 * CircleEdit constructor.
 	 *
 	 * @param CircleRequest $circleRequest
+	 * @param MemberRequest $memberRequest
 	 * @param CircleService $circleService
 	 * @param EventService $eventService
 	 */
 	public function __construct(
 		CircleRequest $circleRequest,
+		MemberRequest $memberRequest,
 		CircleService $circleService,
 		EventService $eventService
 	) {
 		$this->circleRequest = $circleRequest;
+		$this->memberRequest = $memberRequest;
 		$this->circleService = $circleService;
 		$this->eventService = $eventService;
 	}
@@ -134,6 +141,7 @@ class CircleEdit implements IFederatedItem {
 		}
 
 		$this->circleRequest->edit($circle);
+		$this->memberRequest->updateDisplayName($circle->getSingleId(), $circle->getDisplayName());
 		$this->eventService->circleEditing($event);
 	}
 

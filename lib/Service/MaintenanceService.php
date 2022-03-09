@@ -43,6 +43,7 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\ShareWrapper;
+use OCP\IGroupManager;
 use OCP\IUserManager;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -60,6 +61,9 @@ class MaintenanceService {
 
 	/** @var IUserManager */
 	private $userManager;
+
+	/** @var IGroupManager */
+	private $groupManager;
 
 	/** @var CircleRequest */
 	private $circleRequest;
@@ -109,6 +113,7 @@ class MaintenanceService {
 	 */
 	public function __construct(
 		IUserManager $userManager,
+		IGroupManager $groupManager,
 		CircleRequest $circleRequest,
 		MemberRequest $memberRequest,
 		ShareWrapperRequest $shareWrapperRequest,
@@ -120,6 +125,7 @@ class MaintenanceService {
 		ConfigService $configService
 	) {
 		$this->userManager = $userManager;
+		$this->groupManager = $groupManager;
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
 		$this->shareWrapperRequest = $shareWrapperRequest;
@@ -272,11 +278,16 @@ class MaintenanceService {
 
 //		try {
 //			$this->output('refresh displayNames older than 7d');
-//			//	$this->refreshOldDisplayNames();
-//			$this->output('refresh DisplayNames');
 //			$this->refreshDisplayName();
 //		} catch (Exception $e) {
 //		}
+
+		try {
+			// Can be removed in NC27.
+			$this->output('fix sub-circle display name');
+			$this->fixSubCirclesDisplayName();
+		} catch (Exception $e) {
+		}
 	}
 
 
@@ -374,6 +385,10 @@ class MaintenanceService {
 
 		foreach ($circles as $circle) {
 			$owner = $circle->getOwner();
+			if ($owner->getDisplayUpdate() > (time() - 604800)) {
+				continue;
+			}
+
 			if ($owner->getUserType() === Member::TYPE_USER) {
 				$user = $this->userManager->get($owner->getUserId());
 				$this->memberRequest->updateDisplayName($owner->getSingleId(), $user->getDisplayName());
@@ -381,6 +396,23 @@ class MaintenanceService {
 			}
 		}
 	}
+
+
+	/**
+	 * @throws RequestBuilderException
+	 * @throws InitiatorNotFoundException
+	 */
+	private function fixSubCirclesDisplayName(): void {
+		$probe = new CircleProbe();
+		$probe->includeSingleCircles();
+		
+		$circles = $this->circleService->getCircles($probe);
+
+		foreach ($circles as $circle) {
+			$this->memberRequest->updateDisplayName($circle->getSingleId(), $circle->getDisplayName());
+		}
+	}
+
 
 	/**
 	 * @param string $message
