@@ -31,6 +31,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
+use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
+use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use Exception;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
@@ -39,18 +41,19 @@ use OCP\Defaults;
 use OCP\IL10N;
 use OCP\Mail\IEMailTemplate;
 use OCP\Mail\IMailer;
+use OCP\Security\IHasher;
 use OCP\Util;
 
-/**
- * Class SendMailService
- *
- * @package OCA\Circles\Service
- */
 class SendMailService {
+	use TArrayTools;
+	use TStringTools;
 
 
 	/** @var IL10N */
 	private $l10n;
+
+	/** @var IHasher */
+	private $hasher;
 
 	/** @var IMailer */
 	private $mailer;
@@ -72,11 +75,13 @@ class SendMailService {
 	 */
 	public function __construct(
 		IL10N $l10n,
+		IHasher $hasher,
 		IMailer $mailer,
 		Defaults $defaults,
 		ConfigService $configService
 	) {
 		$this->l10n = $l10n;
+		$this->hasher = $hasher;
 		$this->mailer = $mailer;
 		$this->defaults = $defaults;
 		$this->configService = $configService;
@@ -132,7 +137,7 @@ class SendMailService {
 			} catch (Exception $e) {
 			}
 
-			$this->sendMailPassword($author, $circle->getDisplayName(), $mail, $password);
+			$this->sendMailPassword($circle, $author, $mail, $password);
 		}
 	}
 
@@ -213,18 +218,20 @@ class SendMailService {
 
 
 	/**
+	 * @param Circle $circle
 	 * @param string $author
-	 * @param string $circleName
 	 * @param string $email
 	 * @param string $password
+	 *
+	 * @throws Exception
 	 */
 	private function sendMailPassword(
+		Circle $circle,
 		string $author,
-		string $circleName,
 		string $email,
 		string $password
 	): void {
-		if (!$this->configService->enforcePasswordOnSharedFile() || $password === '') {
+		if (!$this->configService->sendPasswordByMail($circle) || $password === '') {
 			return;
 		}
 
@@ -246,7 +253,7 @@ class SendMailService {
 				'initiator' => $author,
 				//				'initiatorEmail' => Util::getDefaultEmailAddress(''),
 				'initiatorEmail' => '',
-				'shareWith' => $circleName
+				'shareWith' => $circle->getDisplayName()
 			]
 		);
 
@@ -279,5 +286,24 @@ class SendMailService {
 		$message->setTo([$email]);
 		$message->useTemplate($emailTemplate);
 		$this->mailer->send($message);
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 *
+	 * @return array
+	 */
+	public function getPassword(Circle $circle): array {
+		$clearPassword = $hashedPassword = '';
+		if (!$this->configService->sendPasswordByMail($circle)) {
+			$hashedPassword = $this->get('password_single', $circle->getSettings());
+		}
+		if ($hashedPassword === '') {
+			$clearPassword = $this->token(14);
+			$hashedPassword = $this->hasher->hash($clearPassword);
+		}
+
+		return [$clearPassword, $hashedPassword];
 	}
 }

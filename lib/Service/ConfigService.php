@@ -40,7 +40,6 @@ use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
-use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\Member;
 use OCP\IConfig;
 use OCP\IURLGenerator;
@@ -331,56 +330,52 @@ class ConfigService {
 
 
 	/**
-	 * @return bool
-	 * @deprecated
-	 * should the password for a mail share be send to the recipient
-	 */
-	public function sendPasswordByMail(): bool {
-		return false;
-	}
-
-
-	/**
+	 * true if:
+	 *   - password is generated randomly
+	 *
+	 * @param Circle $circle
+	 *
 	 * @return bool
 	 */
-	public function enforcePasswordOnSharedFile(): bool {
-		$localPolicy = $this->getAppValueInt(ConfigService::ENFORCE_PASSWORD);
-		if ($localPolicy !== $this->getInt(ConfigService::ENFORCE_PASSWORD, self::$defaults)) {
-			return ($localPolicy === 1);
+	public function sendPasswordByMail(Circle $circle): bool {
+		if (!$this->enforcePasswordOnSharedFile($circle)) {
+			return false;
 		}
 
-		// TODO: reimplement a way to set password protection on a single Circle
-//		if ($circle->getSetting('password_enforcement') === 'true') {
-//			return true;
-//		}
-
-		$sendPasswordMail = $this->config->getAppValue(
-			'sharebymail',
-			'sendpasswordmail',
-			'yes'
-		);
-
-		$enforcePasswordProtection = $this->config->getAppValue(
-			'core',
-			'shareapi_enforce_links_password',
-			'no'
-		);
-
-		return ($sendPasswordMail === 'yes'
-				&& $enforcePasswordProtection === 'yes');
+		return (!$this->getBool('password_single_enabled', $circle->getSettings(), false)
+			|| $this->get('password_single', $circle->getSettings()) === '');
 	}
 
 
 	/**
-	 * @param DeprecatedCircle $circle
+	 * true if:
+	 *   - global setting of Nextcloud enforce password on shares.
+	 *   - setting of Circles' app enforce password on shares.
+	 *   - setting for specific Circle enforce password on shares.
+	 *
+	 * @param Circle $circle
 	 *
 	 * @return bool
-	 * @deprecated
-	 * do we require a share by mail to be password protected
-	 *
 	 */
-	public function enforcePasswordProtection(DeprecatedCircle $circle) {
-		return false;
+	public function enforcePasswordOnSharedFile(Circle $circle): bool {
+		if ($this->config->getAppValue(
+				'core',
+				'shareapi_enforce_links_password',
+				'no'
+			) === 'yes') {
+			return true;
+		}
+
+		if ($this->getAppValueInt(ConfigService::ENFORCE_PASSWORD) === 1) {
+			return true;
+		}
+
+		// Compat NC21
+		if ($this->getBool('password_enforcement', $circle->getSettings(), false)) {
+			return true;
+		}
+
+		return $this->getBool('enforce_password', $circle->getSettings(), false);
 	}
 
 

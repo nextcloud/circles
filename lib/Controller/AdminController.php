@@ -462,23 +462,27 @@ class AdminController extends OcsController {
 	/**
 	 * @param string $emulated
 	 * @param string $circleId
-	 * @param array $value
+	 * @param string $setting
+	 * @param string|null $value
 	 *
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
-	public function editSettings(string $emulated, string $circleId, array $value): DataResponse {
+	public function editSetting(string $emulated, string $circleId, string $setting, ?string $value = null): DataResponse {
 		try {
 			$this->setLocalFederatedUser($emulated);
 
-			$outcome = $this->circleService->updateSettings($circleId, $value);
+			$outcome = $this->circleService->updateSetting($circleId, $setting, $value);
 
 			return new DataResponse($this->serializeArray($outcome));
 		} catch (Exception $e) {
-			$this->e($e, ['emulated' => $emulated, 'circleId' => $circleId, 'value' => $value]);
+			$this->e($e, ['circleId' => $circleId, 'setting' => $setting, 'value' => $value]);
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
 	}
+
+
+
 
 
 	/**
