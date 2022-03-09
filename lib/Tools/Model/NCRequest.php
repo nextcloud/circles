@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Tools\Model;
 
-
 use OCP\Http\Client\IClient;
 
 class NCRequest extends Request {
@@ -166,11 +165,10 @@ class NCRequest extends Request {
 		return array_merge(
 			parent::jsonSerialize(),
 			[
-				'clientOptions'       => $this->getClientOptions(),
+				'clientOptions' => $this->getClientOptions(),
 				'localAddressAllowed' => $this->isLocalAddressAllowed(),
-				'result'              => $result
+				'result' => $result
 			]
 		);
 	}
 }
-

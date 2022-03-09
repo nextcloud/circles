@@ -55,12 +55,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Tools\Model;
 
-
 use JsonSerializable;
 use OCA\Circles\Tools\Traits\TArrayTools;
 
 class NCWebfinger implements JsonSerializable {
-
 	use TArrayTools;
 
 
@@ -189,13 +187,11 @@ class NCWebfinger implements JsonSerializable {
 	public function jsonSerialize(): array {
 		return array_filter(
 			[
-				'subject'    => $this->getSubject(),
-				'aliases'    => $this->getAliases(),
+				'subject' => $this->getSubject(),
+				'aliases' => $this->getAliases(),
 				'properties' => $this->getProperties(),
-				'links'      => $this->getLinks()
+				'links' => $this->getLinks()
 			]
 		);
 	}
-
 }
-

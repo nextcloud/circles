@@ -55,12 +55,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Tools\Model;
 
-
 use JsonSerializable;
 use OCA\Circles\Tools\Traits\TArrayTools;
 
 class NCWellKnownLink implements JsonSerializable {
-
 	use TArrayTools;
 
 
@@ -213,14 +211,12 @@ class NCWellKnownLink implements JsonSerializable {
 	public function jsonSerialize(): array {
 		return array_filter(
 			[
-				'rel'        => $this->getRel(),
-				'type'       => $this->getType(),
-				'href'       => $this->getHref(),
-				'titles'     => $this->getTitles(),
+				'rel' => $this->getRel(),
+				'type' => $this->getType(),
+				'href' => $this->getHref(),
+				'titles' => $this->getTitles(),
 				'properties' => $this->getProperties()
 			]
 		);
 	}
-
 }
-

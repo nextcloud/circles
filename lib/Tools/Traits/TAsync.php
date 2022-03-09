@@ -31,11 +31,9 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Tools\Traits;
 
-
 use JsonSerializable;
 
 trait TAsync {
-
 	use TNCSetup;
 
 
@@ -74,6 +72,4 @@ trait TAsync {
 	public function asyncObj(JsonSerializable $obj): void {
 		$this->async(json_encode($obj));
 	}
-
 }
-

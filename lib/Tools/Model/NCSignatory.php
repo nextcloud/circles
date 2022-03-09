@@ -31,17 +31,15 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Tools\Model;
 
-
 use JsonSerializable;
 use OCA\Circles\Tools\Traits\TArrayTools;
 
 class NCSignatory implements JsonSerializable {
-
 	use TArrayTools;
 
 
-	const SHA256 = 'sha256';
-	const SHA512 = 'sha512';
+	public const SHA256 = 'sha256';
+	public const SHA512 = 'sha512';
 
 
 	/** @var string */
@@ -268,11 +266,11 @@ class NCSignatory implements JsonSerializable {
 	 */
 	public function jsonSerialize(): array {
 		return [
-			'id'        => $this->getId(),
+			'id' => $this->getId(),
 			'publicKey' =>
 				[
-					'id'           => $this->getKeyId(),
-					'owner'        => $this->getKeyOwner(),
+					'id' => $this->getKeyId(),
+					'owner' => $this->getKeyOwner(),
 					'publicKeyPem' => $this->getPublicKey()
 				]
 		];
@@ -292,6 +290,4 @@ class NCSignatory implements JsonSerializable {
 
 		return $id;
 	}
-
 }
-

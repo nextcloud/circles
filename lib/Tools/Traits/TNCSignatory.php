@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Tools\Traits;
 
-
 use OCA\Circles\Tools\Exceptions\InvalidOriginException;
 use OCA\Circles\Tools\Exceptions\RequestNetworkException;
 use OCA\Circles\Tools\Exceptions\SignatoryException;
@@ -40,7 +39,6 @@ use OCA\Circles\Tools\Model\NCRequest;
 use OCA\Circles\Tools\Model\NCSignatory;
 
 trait TNCSignatory {
-
 	use TNCRequest;
 
 
@@ -80,7 +78,6 @@ trait TNCSignatory {
 		array $params = [],
 		?NCRequest $request = null
 	): void {
-
 		if (is_null($request)) {
 			$request = new NCRequest();
 			$request->setFollowLocation(true);
@@ -159,7 +156,7 @@ trait TNCSignatory {
 	) {
 		$res = openssl_pkey_new(
 			[
-				'digest_alg'       => $digest,
+				'digest_alg' => $digest,
 				'private_key_bits' => $bits,
 				'private_key_type' => $type,
 			]
@@ -207,6 +204,4 @@ trait TNCSignatory {
 			throw new SignatureException('signature issue');
 		}
 	}
-
 }
-
