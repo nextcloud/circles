@@ -31,18 +31,15 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Tools\Traits;
 
-
 use OC;
 use OCA\Circles\Tools\Exceptions\SignatoryException;
 use OCA\Circles\Tools\Model\NCSignatory;
 use OCP\IConfig;
 
 trait TNCLocalSignatory {
-
-
 	use TNCSignatory;
 
-	static $SIGNATORIES_APP = 'signatories';
+	public static $SIGNATORIES_APP = 'signatories';
 
 
 	/**
@@ -111,6 +108,4 @@ trait TNCLocalSignatory {
 		unset($signatories[$signatory->getId()]);
 		OC::$server->get(IConfig::class)->setAppValue($app, 'key_pairs', json_encode($signatories));
 	}
-
 }
-

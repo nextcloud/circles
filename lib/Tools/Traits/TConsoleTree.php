@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Tools\Traits;
 
-
 use OCA\Circles\Tools\Model\TreeNode;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -140,6 +139,4 @@ trait TConsoleTree {
 			}
 		}
 	}
-
 }
-

@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Tools\Model;
 
-
 use JsonSerializable;
 use OCP\IRequest;
 
@@ -346,6 +345,4 @@ class NCSignedRequest implements JsonSerializable {
 			'signatory' => ($this->hasSignatory()) ? $this->getSignatory() : false,
 		];
 	}
-
 }
-

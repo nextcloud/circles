@@ -55,7 +55,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Tools\ActivityPub;
 
-
 use DateTime;
 use Exception;
 use OC;
@@ -72,12 +71,10 @@ use OCA\Circles\Tools\Traits\TNCSignatory;
 use OCP\IRequest;
 
 class NCSignature {
+	public const DATE_HEADER = 'D, d M Y H:i:s T';
+	public const DATE_OBJECT = 'Y-m-d\TH:i:s\Z';
 
-
-	const DATE_HEADER = 'D, d M Y H:i:s T';
-	const DATE_OBJECT = 'Y-m-d\TH:i:s\Z';
-
-	const DATE_TTL = 300;
+	public const DATE_TTL = 300;
 
 
 	use TNCSignatory;
@@ -190,7 +187,7 @@ class NCSignature {
 				continue;
 			}
 
-			list($k, $v) = explode('=', $entry, 2);
+			[$k, $v] = explode('=', $entry, 2);
 			preg_match('/"([^"]+)"/', $v, $varr);
 			if ($varr[0] !== null) {
 				$v = trim($varr[0], '"');
@@ -413,6 +410,4 @@ class NCSignature {
 				return OPENSSL_ALGO_SHA256;
 		}
 	}
-
 }
-

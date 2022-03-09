@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Tools\Traits;
 
-
 use OCA\Circles\Tools\Model\NCRequest;
 use Exception;
 use GuzzleHttp\Exception\ClientException;
@@ -43,7 +42,6 @@ use OCP\Http\Client\IClientService;
 use OCP\Http\Client\IResponse;
 
 trait TNCRequest {
-
 	use TNCLogger;
 
 
@@ -177,6 +175,4 @@ trait TNCRequest {
 				throw new Exception('unknown request type ' . json_encode($request));
 		}
 	}
-
 }
-
