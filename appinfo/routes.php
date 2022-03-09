@@ -58,7 +58,7 @@ return [
 
 		['name' => 'Local#editName', 'url' => '/circles/{circleId}/name', 'verb' => 'PUT'],
 		['name' => 'Local#editDescription', 'url' => '/circles/{circleId}/description', 'verb' => 'PUT'],
-		['name' => 'Local#editSettings', 'url' => '/circles/{circleId}/settings', 'verb' => 'PUT'],
+		['name' => 'Local#editSetting', 'url' => '/circles/{circleId}/setting', 'verb' => 'PUT'],
 		['name' => 'Local#editConfig', 'url' => '/circles/{circleId}/config', 'verb' => 'PUT'],
 		['name' => 'Local#link', 'url' => '/link/{circleId}/{singleId}', 'verb' => 'GET'],
 
@@ -95,7 +95,7 @@ return [
 		['name' => 'Admin#circleLeave', 'url' => '/admin/{emulated}/circles/{circleId}/leave', 'verb' => 'PUT'],
 		['name' => 'Admin#editName', 'url' => '/admin/{emulated}/circles/{circleId}/name', 'verb' => 'PUT'],
 		['name' => 'Admin#editDescription', 'url' => '/admin/{emulated}/circles/{circleId}/description', 'verb' => 'PUT'],
-		['name' => 'Admin#editSettings', 'url' => '/admin/{emulated}/circles/{circleId}/settings', 'verb' => 'PUT'],
+		['name' => 'Admin#editSetting', 'url' => '/admin/{emulated}/circles/{circleId}/setting', 'verb' => 'PUT'],
 		['name' => 'Admin#editConfig', 'url' => '/admin/{emulated}/circles/{circleId}/config', 'verb' => 'PUT'],
 		['name' => 'Admin#link', 'url' => '/admin/{emulated}/link/{circleId}/{singleId}', 'verb' => 'GET']
 	],

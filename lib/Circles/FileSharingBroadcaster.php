@@ -220,14 +220,14 @@ class FileSharingBroadcaster implements IBroadcaster {
 
 				$password = '';
 				$sendPasswordByMail = true;
-				if ($this->configService->enforcePasswordProtection($circle)) {
-					if ($circle->getSetting('password_single_enabled') === 'true') {
-						$password = $circle->getPasswordSingle();
-						$sendPasswordByMail = false;
-					} else {
-						$password = $this->miscService->token(15);
-					}
-				}
+//				if ($this->configService->enforcePasswordProtection($circle)) {
+//					if ($circle->getSetting('password_single_enabled') === 'true') {
+//						$password = $circle->getPasswordSingle();
+//						$sendPasswordByMail = false;
+//					} else {
+//						$password = $this->miscService->token(15);
+//					}
+//				}
 
 				$sharesToken =
 					$this->tokensRequest->generateTokenForMember($member, $share->getId(), $password);
@@ -473,9 +473,9 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 * @throws Exception
 	 */
 	protected function sendPasswordByMail(IShare $share, $circleName, $email, $password) {
-		if (!$this->configService->sendPasswordByMail() || $password === '') {
-			return;
-		}
+//		if (!$this->configService->sendPasswordByMail() || $password === '') {
+//			return;
+//		}
 
 		$message = $this->mailer->createMessage();
 
@@ -594,9 +594,9 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$data = [];
 
 		$password = '';
-		if ($this->configService->enforcePasswordProtection($circle)) {
-			$password = $this->miscService->token(15);
-		}
+//		if ($this->configService->enforcePasswordProtection($circle)) {
+//			$password = $this->miscService->token(15);
+//		}
 
 		foreach ($unknownShares as $share) {
 			try {
@@ -628,9 +628,9 @@ class FileSharingBroadcaster implements IBroadcaster {
 	 * @throws Exception
 	 */
 	protected function sendPasswordExistingShares(DeprecatedMember $author, string $email, string $password) {
-		if (!$this->configService->sendPasswordByMail() || $password === '') {
-			return;
-		}
+//		if (!$this->configService->sendPasswordByMail() || $password === '') {
+//			return;
+//		}
 
 		$message = $this->mailer->createMessage();
 

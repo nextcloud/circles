@@ -44,11 +44,11 @@ use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\ContactService;
+use OCA\Circles\Service\SendMailService;
 use OCA\Circles\Service\ShareTokenService;
 use OCA\Circles\Service\ShareWrapperService;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
-use OCP\Security\IHasher;
 
 /**
  * Class PreparingMemberSendMail
@@ -60,14 +60,14 @@ class PreparingMemberSendMail implements IEventListener {
 	use TNC22Logger;
 
 
-	/** @var IHasher */
-	private $hasher;
-
 	/** @var ShareWrapperService */
 	private $shareWrapperService;
 
 	/** @var ShareTokenService */
 	private $shareTokenService;
+
+	/** @var SendMailService */
+	private $sendMailService;
 
 	/** @var ConfigService */
 	private $configService;
@@ -79,22 +79,22 @@ class PreparingMemberSendMail implements IEventListener {
 	/**
 	 * AddingMember constructor.
 	 *
-	 * @param IHasher $hasher
 	 * @param ShareWrapperService $shareWrapperService
 	 * @param ShareTokenService $shareTokenService
+	 * @param SendMailService $sendMailService
 	 * @param ContactService $contactService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
-		IHasher $hasher,
 		ShareWrapperService $shareWrapperService,
 		ShareTokenService $shareTokenService,
+		SendMailService $sendMailService,
 		ContactService $contactService,
 		ConfigService $configService
 	) {
-		$this->hasher = $hasher;
 		$this->shareWrapperService = $shareWrapperService;
 		$this->shareTokenService = $shareTokenService;
+		$this->sendMailService = $sendMailService;
 		$this->contactService = $contactService;
 		$this->configService = $configService;
 
@@ -113,8 +113,12 @@ class PreparingMemberSendMail implements IEventListener {
 	 * @throws UnknownRemoteException
 	 */
 	public function handle(Event $event): void {
-		if (!$event instanceof PreparingCircleMemberEvent
-			|| !$this->configService->enforcePasswordOnSharedFile()) {
+		if (!$event instanceof PreparingCircleMemberEvent) {
+			return;
+		}
+
+		$circle = $event->getCircle();
+		if (!$this->configService->enforcePasswordOnSharedFile($circle)) {
 			return;
 		}
 
@@ -126,9 +130,8 @@ class PreparingMemberSendMail implements IEventListener {
 		}
 
 		$federatedEvent = $event->getFederatedEvent();
-		$clearPasswords = $federatedEvent->getInternal()->gArray('clearPasswords');
-		$hashedPasswords = $federatedEvent->getParams()->gArray('hashedPasswords');
 
+		$hashedPasswords = $clearPasswords = [];
 		foreach ($members as $member) {
 			if (($member->getUserType() !== Member::TYPE_MAIL
 				 && $member->getUserType() !== Member::TYPE_CONTACT)
@@ -137,9 +140,9 @@ class PreparingMemberSendMail implements IEventListener {
 				continue;
 			}
 
-			$clearPassword = $this->token(14);
+			[$clearPassword, $hashedPassword] = $this->sendMailService->getPassword($circle);
 			$clearPasswords[$member->getSingleId()] = $clearPassword;
-			$hashedPasswords[$member->getSingleId()] = $this->hasher->hash($clearPassword);
+			$hashedPasswords[$member->getSingleId()] = $hashedPassword;
 		}
 
 		$federatedEvent->getInternal()->aArray('clearPasswords', $clearPasswords);
