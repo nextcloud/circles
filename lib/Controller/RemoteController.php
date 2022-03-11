@@ -109,6 +109,8 @@ class RemoteController extends Controller {
 	/** @var ConfigService */
 	private $configService;
 
+	/** @var IUserSession */
+	private $userSession;
 
 	/**
 	 * RemoteController constructor.
@@ -136,7 +138,8 @@ class RemoteController extends Controller {
 		MemberService $memberService,
 		MembershipService $membershipService,
 		InterfaceService $interfaceService,
-		ConfigService $configService
+		ConfigService $configService,
+		IUserSession $userSession
 	) {
 		parent::__construct($appName, $request);
 		$this->circleRequest = $circleRequest;
@@ -148,6 +151,7 @@ class RemoteController extends Controller {
 		$this->membershipService = $membershipService;
 		$this->interfaceService = $interfaceService;
 		$this->configService = $configService;
+		$this->userSession = $userSession;
 
 		$this->setup('app', 'circles');
 		$this->setupArray('enforceSignatureHeaders', ['digest', 'content-length']);
@@ -550,8 +554,7 @@ class RemoteController extends Controller {
 	 */
 	private function publicPageJsonLimited(): void {
 		if (!$this->jsonRequested()) {
-			if (!OC::$server->get(IUserSession::class)
-							->isLoggedIn()) {
+			if (!$this->userSession->isLoggedIn()) {
 				throw new NotLoggedInException();
 			}
 
@@ -580,8 +583,7 @@ class RemoteController extends Controller {
 	 * @return bool
 	 */
 	private function areWithinAcceptHeader(array $needles): bool {
-		$request = OC::$server->get(IRequest::class);
-		$accepts = array_map([$this, 'trimHeader'], explode(',', $request->getHeader('Accept')));
+		$accepts = array_map([$this, 'trimHeader'], explode(',', $this->request->getHeader('Accept')));
 
 		foreach ($accepts as $accept) {
 			if (in_array($accept, $needles)) {
