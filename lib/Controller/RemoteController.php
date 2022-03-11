@@ -32,7 +32,6 @@ declare(strict_types=1);
 namespace OCA\Circles\Controller;
 
 use Exception;
-use OC;
 use OC\AppFramework\Middleware\Security\Exceptions\NotLoggedInException;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\FederatedItemException;
