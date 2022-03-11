@@ -31,10 +31,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model\Federated;
 
-use ArtificialOwl\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
-use ArtificialOwl\MySmallPhpTools\IDeserializable;
-use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
+use OCA\Circles\Tools\Db\IQueryRow;
+use OCA\Circles\Tools\IDeserializable;
+use OCA\Circles\Tools\Model\SimpleDataStore;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\IFederatedModel;
 use OCA\Circles\Model\ManagedModel;
@@ -44,7 +44,7 @@ use OCA\Circles\Model\ManagedModel;
  *
  * @package OCA\Circles\Model\Federated
  */
-class FederatedShare extends ManagedModel implements IFederatedModel, JsonSerializable, INC22QueryRow, IDeserializable {
+class FederatedShare extends ManagedModel implements IFederatedModel, JsonSerializable, IQueryRow, IDeserializable {
 	use TArrayTools;
 
 
@@ -195,9 +195,9 @@ class FederatedShare extends ManagedModel implements IFederatedModel, JsonSerial
 	/**
 	 * @param array $data
 	 *
-	 * @return INC22QueryRow
+	 * @return IQueryRow
 	 */
-	public function importFromDatabase(array $data): INC22QueryRow {
+	public function importFromDatabase(array $data): IQueryRow {
 		$this->setId($this->getInt('id', $data));
 		$this->setItemId($this->get('item_id', $data));
 		$this->setCircleId($this->get('circle_id', $data));

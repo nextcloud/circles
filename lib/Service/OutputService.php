@@ -31,8 +31,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
-use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
+use OCA\Circles\Tools\Traits\TNCLogger;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\Migration\IOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -43,7 +43,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class OutputService {
 	use TStringTools;
-	use TNC22Logger;
+	use TNCLogger;
 
 
 	/** @var IOutput */

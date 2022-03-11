@@ -31,8 +31,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\GlobalScale;
 
-use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
+use OCA\Circles\Tools\Model\SimpleDataStore;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use Exception;
 use OC;
 use OC\Share20\Share;

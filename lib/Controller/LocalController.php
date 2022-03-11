@@ -31,8 +31,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Controller;
 
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
+use OCA\Circles\Tools\Traits\TDeserialize;
+use OCA\Circles\Tools\Traits\TNCLogger;
 use Exception;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
@@ -62,8 +62,8 @@ use OCP\IUserSession;
  * @package OCA\Circles\Controller
  */
 class LocalController extends OcsController {
-	use TNC22Deserialize;
-	use TNC22Logger;
+	use TDeserialize;
+	use TNCLogger;
 
 
 	/** @var IUserSession */

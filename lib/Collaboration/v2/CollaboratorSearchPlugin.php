@@ -31,7 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Collaboration\v2;
 
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
+use OCA\Circles\Tools\Traits\TNCLogger;
 use Exception;
 use OC\Share20\Share;
 use OCA\Circles\AppInfo\Application;
@@ -51,7 +51,7 @@ use OCP\Share\IShare;
  * @package OCA\Circles\Collaboration\v2
  */
 class CollaboratorSearchPlugin implements ISearchPlugin {
-	use TNC22Logger;
+	use TNCLogger;
 
 
 	/** @var IRequest */

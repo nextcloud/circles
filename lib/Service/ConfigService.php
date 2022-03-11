@@ -31,10 +31,10 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
-use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
+use OCA\Circles\Tools\Model\NCRequest;
+use OCA\Circles\Tools\Traits\TNCLogger;
+use OCA\Circles\Tools\Traits\TArrayTools;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OC;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\GSStatusException;
@@ -52,7 +52,7 @@ use OCP\IURLGenerator;
 class ConfigService {
 	use TStringTools;
 	use TArrayTools;
-	use TNC22Logger;
+	use TNCLogger;
 
 
 	public const FRONTAL_CLOUD_BASE = 'frontal_cloud_base';
@@ -696,12 +696,12 @@ class ConfigService {
 	 * - Create route using getLoopbackAddress()
 	 * - perfect for loopback request.
 	 *
-	 * @param NC22Request $request
+	 * @param NCRequest $request
 	 * @param string $route
 	 * @param array $args
 	 */
 	public function configureLoopbackRequest(
-		NC22Request $request,
+		NCRequest $request,
 		string $route = '',
 		array $args = []
 	): void {
@@ -712,9 +712,9 @@ class ConfigService {
 
 
 	/**
-	 * @param NC22Request $request
+	 * @param NCRequest $request
 	 */
-	public function configureRequest(NC22Request $request): void {
+	public function configureRequest(NCRequest $request): void {
 		$request->setVerifyPeer($this->getAppValue(ConfigService::SELF_SIGNED_CERT) !== '1');
 		$request->setProtocols(['https', 'http']);
 		$request->setHttpErrorsAllowed(true);

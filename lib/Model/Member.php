@@ -31,11 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
-use ArtificialOwl\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
-use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
-use ArtificialOwl\MySmallPhpTools\IDeserializable;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use DateTime;
 use JsonSerializable;
 use OCA\Circles\AppInfo\Capabilities;
@@ -45,9 +40,14 @@ use OCA\Circles\Exceptions\ParseMemberLevelException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownInterfaceException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
-use OCA\Circles\IFederatedUser;
 use OCA\Circles\IEntity;
+use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Federated\RemoteInstance;
+use OCA\Circles\Tools\Db\IQueryRow;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
+use OCA\Circles\Tools\IDeserializable;
+use OCA\Circles\Tools\Traits\TArrayTools;
+use OCA\Circles\Tools\Traits\TDeserialize;
 
 /**
  * Class Member
@@ -58,10 +58,10 @@ class Member extends ManagedModel implements
 	IEntity,
 	IFederatedUser,
 	IDeserializable,
-	INC22QueryRow,
+	IQueryRow,
 	JsonSerializable {
 	use TArrayTools;
-	use TNC22Deserialize;
+	use TDeserialize;
 
 
 	public const LEVEL_NONE = 0;
@@ -844,10 +844,10 @@ class Member extends ManagedModel implements
 	 * @param array $data
 	 * @param string $prefix
 	 *
-	 * @return INC22QueryRow
+	 * @return IQueryRow
 	 * @throws MemberNotFoundException
 	 */
-	public function importFromDatabase(array $data, string $prefix = ''): INC22QueryRow {
+	public function importFromDatabase(array $data, string $prefix = ''): IQueryRow {
 		if ($this->get($prefix . 'single_id', $data) === '') {
 			throw new MemberNotFoundException();
 		}
