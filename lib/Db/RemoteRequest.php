@@ -95,7 +95,7 @@ class RemoteRequest extends RemoteRequestBuilder {
 		$qb = $this->getRemoteUpdateSql();
 		$qb->set('item', $qb->createNamedParameter(json_encode($remote->getOrigData())));
 
-		$qb->limitToDBField('uid', $remote->getUid(true), false);
+		$qb->limit('uid', $remote->getUid(true), '', false);
 
 		$qb->execute();
 	}
@@ -111,7 +111,7 @@ class RemoteRequest extends RemoteRequestBuilder {
 		$qb = $this->getRemoteUpdateSql();
 		$qb->set('instance', $qb->createNamedParameter($remote->getInstance()));
 
-		$qb->limitToDBField('uid', $remote->getUid(true), false);
+		$qb->limit('uid', $remote->getUid(true), '', false);
 
 		$qb->execute();
 	}
@@ -127,7 +127,7 @@ class RemoteRequest extends RemoteRequestBuilder {
 		$qb = $this->getRemoteUpdateSql();
 		$qb->set('type', $qb->createNamedParameter($remote->getType()));
 
-		$qb->limitToDBField('uid', $remote->getUid(true), false);
+		$qb->limit('uid', $remote->getUid(true), '', false);
 
 		$qb->execute();
 	}
@@ -143,7 +143,7 @@ class RemoteRequest extends RemoteRequestBuilder {
 		$qb = $this->getRemoteUpdateSql();
 		$qb->set('href', $qb->createNamedParameter($remote->getId()));
 
-		$qb->limitToDBField('uid', $remote->getUid(true), false);
+		$qb->limit('uid', $remote->getUid(true), '', false);
 
 		$qb->execute();
 	}
@@ -163,7 +163,7 @@ class RemoteRequest extends RemoteRequestBuilder {
 	 */
 	public function getKnownInstances(): array {
 		$qb = $this->getRemoteSelectSql();
-		$qb->filterDBField('type', RemoteInstance::TYPE_UNKNOWN, false);
+		$qb->filter('type', RemoteInstance::TYPE_UNKNOWN, '', false);
 
 		return $this->getItemsFromRequest($qb);
 	}
@@ -186,12 +186,12 @@ class RemoteRequest extends RemoteRequestBuilder {
 		$expr = $qb->expr();
 		$orX = $expr->orX();
 
-		$orX->add($qb->exprLimitToDBField('type', RemoteInstance::TYPE_GLOBALSCALE, true, false));
+		$orX->add($qb->exprLimit('type', RemoteInstance::TYPE_GLOBALSCALE, '', false));
 
 		if ($circle->isConfig(Circle::CFG_FEDERATED) || $broadcastAsFederated) {
 
 			// get all TRUSTED
-			$orX->add($qb->exprLimitToDBField('type', RemoteInstance::TYPE_TRUSTED, true, false));
+			$orX->add($qb->exprLimit('type', RemoteInstance::TYPE_TRUSTED, '', false));
 
 			// get EXTERNAL with Members
 			$aliasMember = $qb->generateAlias(CoreQueryBuilder::REMOTE, CoreQueryBuilder::MEMBER);
@@ -208,13 +208,12 @@ class RemoteRequest extends RemoteRequestBuilder {
 			);
 
 			$external = $expr->andX();
-			$external->add($qb->exprLimitToDBField('type', RemoteInstance::TYPE_EXTERNAL, true, false));
+			$external->add($qb->exprLimit('type', RemoteInstance::TYPE_EXTERNAL, '', false));
 			$external->add($expr->isNotNull($aliasMember . '.instance'));
 			$orX->add($external);
 		}
 
-		$qb->andWhere($orX)
-		   ->generateGroupBy(self::$tables[self::TABLE_REMOTE], CoreQueryBuilder::REMOTE);
+		$qb->andWhere($orX);
 
 		return $this->getItemsFromRequest($qb);
 	}
@@ -242,7 +241,7 @@ class RemoteRequest extends RemoteRequestBuilder {
 	 */
 	public function getFromHref(string $href): RemoteInstance {
 		$qb = $this->getRemoteSelectSql();
-		$qb->limitToDBField('href', $href, false);
+		$qb->limit('href', $href, '', false);
 
 		return $this->getItemFromRequest($qb);
 	}
@@ -267,12 +266,12 @@ class RemoteRequest extends RemoteRequestBuilder {
 	 * @return RemoteInstance
 	 * @throws RemoteNotFoundException
 	 */
-	public function searchDuplicate(RemoteInstance $remoteInstance) {
+	public function searchDuplicate(RemoteInstance $remoteInstance): RemoteInstance {
 		$qb = $this->getRemoteSelectSql();
 		$orX = $qb->expr()->orX();
-		$orX->add($qb->exprLimitToDBField('href', $remoteInstance->getId(), true, false));
-		$orX->add($qb->exprLimitToDBField('uid', $remoteInstance->getUid(true), true));
-		$orX->add($qb->exprLimitToDBField('instance', $remoteInstance->getInstance(), true, false));
+		$orX->add($qb->exprLimit('href', $remoteInstance->getId(), '', false));
+		$orX->add($qb->exprLimit('uid', $remoteInstance->getUid(true), '', false));
+		$orX->add($qb->exprLimit('instance', $remoteInstance->getInstance(), '', false));
 		$qb->andWhere($orX);
 
 		return $this->getItemFromRequest($qb);

@@ -27,7 +27,7 @@
 
 namespace OCA\Circles\Db;
 
-use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
+use OCA\Circles\Tools\Traits\TStringTools;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
 use OCA\Circles\Exceptions\GSStatusException;

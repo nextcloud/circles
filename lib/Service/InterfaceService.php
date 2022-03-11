@@ -31,9 +31,9 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
-use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
+use OCA\Circles\Tools\Traits\TNCLogger;
+use OCA\Circles\Tools\Traits\TArrayTools;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\RemoteRequest;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
@@ -69,7 +69,7 @@ class InterfaceService {
 
 	use TStringTools;
 	use TArrayTools;
-	use TNC22Logger;
+	use TNCLogger;
 
 
 	/** @var IURLGenerator */

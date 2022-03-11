@@ -31,14 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\SignatoryException;
-use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
-use ArtificialOwl\MySmallPhpTools\Model\Request;
-use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
-use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use Exception;
 use OC;
 use OC\AppConfig;
@@ -63,6 +55,14 @@ use OCA\Circles\Service\InterfaceService;
 use OCA\Circles\Service\RemoteService;
 use OCA\Circles\Service\RemoteStreamService;
 use OCA\Circles\Service\RemoteUpstreamService;
+use OCA\Circles\Tools\Exceptions\RequestNetworkException;
+use OCA\Circles\Tools\Exceptions\SignatoryException;
+use OCA\Circles\Tools\Model\NCRequest;
+use OCA\Circles\Tools\Model\Request;
+use OCA\Circles\Tools\Model\SimpleDataStore;
+use OCA\Circles\Tools\Traits\TArrayTools;
+use OCA\Circles\Tools\Traits\TNCRequest;
+use OCA\Circles\Tools\Traits\TStringTools;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -77,7 +77,7 @@ use Symfony\Component\Console\Question\Question;
 class CirclesCheck extends Base {
 	use TStringTools;
 	use TArrayTools;
-	use TNC22Request;
+	use TNCRequest;
 
 
 	public static $checks = [
@@ -340,19 +340,25 @@ class CirclesCheck extends Base {
 			return false;
 		}
 
+		$timer = round(microtime(true) * 1000);
 		$output->write('- Creating async FederatedEvent ');
 		$test = new FederatedEvent(LoopbackTest::class);
 		$this->federatedEventService->newEvent($test);
-
-		$output->writeln('<info>' . $test->getWrapperToken() . '</info>');
+		$output->writeln(
+			'<info>' . $test->getWrapperToken() . '</info> ' .
+			'(took ' . (round(microtime(true) * 1000) - $timer) . 'ms)'
+		);
 
 		$output->writeln('- Waiting for async process to finish (5s)');
 		sleep(5);
 
 		$output->write('- Checking status on FederatedEvent ');
 		$wrappers = $this->remoteUpstreamService->getEventsByToken($test->getWrapperToken());
+
 		if (count($wrappers) !== 1) {
 			$output->writeln('<error>Event created too many Wrappers</error>');
+
+			return false;
 		}
 
 		$wrapper = array_shift($wrappers);
@@ -392,8 +398,10 @@ class CirclesCheck extends Base {
 		[$scheme, $cloudId, $path] = $this->parseAddress($loopback);
 
 		$question = new ConfirmationQuestion(
-			'- Do you want to save <info>' . $loopback
-			. '</info> as your <info>loopback</info> address ? (y/N) ', false, '/^(y|Y)/i'
+			'- Do you want to save <info>'
+			. $loopback
+			. '</info> as your <info>loopback</info> address ? (y/N) ',
+			false, '/^(y|Y)/i'
 		);
 
 		$helper = $this->getHelper('question');
@@ -573,8 +581,10 @@ class CirclesCheck extends Base {
 
 		$output->writeln('');
 		$question = new ConfirmationQuestion(
-			'- Do you want to save <info>' . $internal
-			. '</info> as your <info>internal</info> address ? (y/N) ', false, '/^(y|Y)/i'
+			'- Do you want to save <info>'
+			. $internal
+			. '</info> as your <info>internal</info> address ? (y/N) ',
+			false, '/^(y|Y)/i'
 		);
 
 		$helper = $this->getHelper('question');
@@ -781,7 +791,7 @@ class CirclesCheck extends Base {
 		string $route,
 		array $args = []
 	): bool {
-		$request = new NC22Request('', Request::type($type));
+		$request = new NCRequest('', Request::type($type));
 		$this->configService->configureLoopbackRequest($request, $route, $args);
 		$request->setFollowLocation(false);
 

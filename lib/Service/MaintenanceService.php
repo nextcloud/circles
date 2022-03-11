@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
 use Exception;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
@@ -44,6 +43,7 @@ use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\ShareWrapper;
 use OCP\IGroupManager;
+use OCA\Circles\Tools\Traits\TNCLogger;
 use OCP\IUserManager;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -53,7 +53,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Service
  */
 class MaintenanceService {
-	use TNC22Logger;
+	use TNCLogger;
 
 
 	public const TIMEOUT = 18000;

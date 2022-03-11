@@ -31,11 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
-use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use Exception;
 use OC;
 use OCA\Circles\AppInfo\Application;
@@ -71,6 +66,11 @@ use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
+use OCA\Circles\Tools\Traits\TArrayTools;
+use OCA\Circles\Tools\Traits\TDeserialize;
+use OCA\Circles\Tools\Traits\TNCLogger;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\ICache;
 use OCP\ICacheFactory;
 use OCP\IGroupManager;
@@ -86,8 +86,8 @@ use OCP\IUserSession;
 class FederatedUserService {
 	use TArrayTools;
 	use TStringTools;
-	use TNC22Logger;
-	use TNC22Deserialize;
+	use TNCLogger;
+	use TDeserialize;
 
 
 	public const CACHE_SINGLE_CIRCLE = 'circles/singleCircle';
