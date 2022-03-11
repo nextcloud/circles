@@ -31,7 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Events\Files;
 
-use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
+use OCA\Circles\Tools\Model\SimpleDataStore;
 use OCA\Circles\Events\CircleResultGenericEvent;
 use OCA\Circles\Model\Federated\FederatedEvent;
 

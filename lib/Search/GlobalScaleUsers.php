@@ -26,12 +26,12 @@
 
 namespace OCA\Circles\Search;
 
-use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\RequestResultNotJsonException;
-use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
-use ArtificialOwl\MySmallPhpTools\Model\Request;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Request;
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
+use OCA\Circles\Tools\Exceptions\RequestNetworkException;
+use OCA\Circles\Tools\Exceptions\RequestResultNotJsonException;
+use OCA\Circles\Tools\Model\NCRequest;
+use OCA\Circles\Tools\Model\Request;
+use OCA\Circles\Tools\Traits\TNCRequest;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\ISearch;
 use OCA\Circles\Model\DeprecatedMember;
@@ -45,7 +45,7 @@ use OCA\Circles\Service\MiscService;
  * @package OCA\Circles\Search
  */
 class GlobalScaleUsers implements ISearch {
-	use TNC22Request;
+	use TNCRequest;
 	use TArrayTools;
 
 
@@ -79,7 +79,7 @@ class GlobalScaleUsers implements ISearch {
 			return [];
 		}
 
-		$request = new NC22Request(ConfigService::GS_LOOKUP_USERS, Request::TYPE_GET);
+		$request = new NCRequest(ConfigService::GS_LOOKUP_USERS, Request::TYPE_GET);
 		$this->configService->configureRequest($request);
 		$request->basedOnUrl($lookup);
 		$request->addParam('search', $search);

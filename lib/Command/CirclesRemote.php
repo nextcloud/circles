@@ -31,13 +31,13 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\SignatoryException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\SignatureException;
-use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
-use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22SignedRequest;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22WellKnown;
-use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
+use OCA\Circles\Tools\Exceptions\RequestNetworkException;
+use OCA\Circles\Tools\Exceptions\SignatoryException;
+use OCA\Circles\Tools\Exceptions\SignatureException;
+use OCA\Circles\Tools\Model\NCRequest;
+use OCA\Circles\Tools\Model\NCSignedRequest;
+use OCA\Circles\Tools\Traits\TNCWellKnown;
+use OCA\Circles\Tools\Traits\TStringTools;
 use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\AppInfo\Application;
@@ -63,7 +63,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
  * @package OCA\Circles\Command
  */
 class CirclesRemote extends Base {
-	use TNC22WellKnown;
+	use TNCWellKnown;
 	use TStringTools;
 
 
@@ -395,12 +395,12 @@ class CirclesRemote extends Base {
 	 * @param string $remote
 	 * @param array $payload
 	 *
-	 * @return NC22SignedRequest
+	 * @return NCSignedRequest
 	 * @throws RequestNetworkException
 	 * @throws SignatoryException
 	 */
-	private function outgoingTest(string $remote, array $payload): NC22SignedRequest {
-		$request = new NC22Request();
+	private function outgoingTest(string $remote, array $payload): NCSignedRequest {
+		$request = new NCRequest();
 		$request->basedOnUrl($remote);
 		$request->setFollowLocation(true);
 		$request->setLocalAddressAllowed(true);

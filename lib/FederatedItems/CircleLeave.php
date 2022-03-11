@@ -31,8 +31,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
+use OCA\Circles\Tools\Traits\TDeserialize;
+use OCA\Circles\Tools\Traits\TNCLogger;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
@@ -67,8 +67,8 @@ class CircleLeave implements
 	IFederatedItemAsyncProcess,
 	IFederatedItemInitiatorMembershipNotRequired,
 	IFederatedItemMemberOptional {
-	use TNC22Deserialize;
-	use TNC22Logger;
+	use TDeserialize;
+	use TNCLogger;
 
 
 	/** @var MemberRequest */

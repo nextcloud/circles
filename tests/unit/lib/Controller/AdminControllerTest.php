@@ -23,7 +23,6 @@
 
 namespace OCA\Circles\Tests\Controller;
 
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Controller\AdminController;
 use OCA\Circles\Model\Circle;
@@ -35,6 +34,7 @@ use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Service\SearchService;
+use OCA\Circles\Tools\Traits\TDeserialize;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCS\OCSException;
 use OCP\IRequest;
@@ -47,7 +47,7 @@ use Test\TestCase;
  * @group DB
  */
 class AdminControllerTest extends TestCase {
-	use TNC22Deserialize;
+	use TDeserialize;
 
 	/** @var IRequest|MockObject */
 	private $request;

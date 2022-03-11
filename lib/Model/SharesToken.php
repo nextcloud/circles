@@ -26,7 +26,7 @@
 
 namespace OCA\Circles\Model;
 
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use JsonSerializable;
 use OCP\Share\IShare;
 

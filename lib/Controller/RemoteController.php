@@ -31,25 +31,13 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Controller;
 
-use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidOriginException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\ItemNotFoundException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\JsonNotRequestedException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\MalformedArrayException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\SignatoryException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\SignatureException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\UnknownTypeException;
-use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22SignedRequest;
-use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Controller;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22LocalSignatory;
 use Exception;
 use OC\AppFramework\Middleware\Security\Exceptions\NotLoggedInException;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
+use OCA\Circles\Exceptions\JsonNotRequestedException;
 use OCA\Circles\Exceptions\UnknownInterfaceException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
@@ -66,10 +54,22 @@ use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Service\RemoteDownstreamService;
 use OCA\Circles\Service\RemoteStreamService;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
+use OCA\Circles\Tools\Exceptions\InvalidOriginException;
+use OCA\Circles\Tools\Exceptions\ItemNotFoundException;
+use OCA\Circles\Tools\Exceptions\MalformedArrayException;
+use OCA\Circles\Tools\Exceptions\SignatoryException;
+use OCA\Circles\Tools\Exceptions\SignatureException;
+use OCA\Circles\Tools\Exceptions\UnknownTypeException;
+use OCA\Circles\Tools\Model\NCSignedRequest;
+use OCA\Circles\Tools\Model\SimpleDataStore;
+use OCA\Circles\Tools\Traits\TDeserialize;
+use OCA\Circles\Tools\Traits\TNCLocalSignatory;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\IRequest;
+use OCP\IUserSession;
 
 /**
  * Class RemoteController
@@ -77,9 +77,8 @@ use OCP\IRequest;
  * @package OCA\Circles\Controller
  */
 class RemoteController extends Controller {
-	use TNC22Controller;
-	use TNC22LocalSignatory;
-	use TNC22Deserialize;
+	use TNCLocalSignatory;
+	use TDeserialize;
 
 
 	/** @var CircleRequest */
@@ -109,6 +108,8 @@ class RemoteController extends Controller {
 	/** @var ConfigService */
 	private $configService;
 
+	/** @var IUserSession */
+	private $userSession;
 
 	/**
 	 * RemoteController constructor.
@@ -136,7 +137,8 @@ class RemoteController extends Controller {
 		MemberService $memberService,
 		MembershipService $membershipService,
 		InterfaceService $interfaceService,
-		ConfigService $configService
+		ConfigService $configService,
+		IUserSession $userSession
 	) {
 		parent::__construct($appName, $request);
 		$this->circleRequest = $circleRequest;
@@ -148,6 +150,7 @@ class RemoteController extends Controller {
 		$this->membershipService = $membershipService;
 		$this->interfaceService = $interfaceService;
 		$this->configService = $configService;
+		$this->userSession = $userSession;
 
 		$this->setup('app', 'circles');
 		$this->setupArray('enforceSignatureHeaders', ['digest', 'content-length']);
@@ -486,12 +489,12 @@ class RemoteController extends Controller {
 
 
 	/**
-	 * @param NC22SignedRequest $signedRequest
+	 * @param NCSignedRequest $signedRequest
 	 *
 	 * @return RemoteInstance
 	 * @throws SignatoryException
 	 */
-	private function confirmRemoteInstance(NC22SignedRequest $signedRequest): RemoteInstance {
+	private function confirmRemoteInstance(NCSignedRequest $signedRequest): RemoteInstance {
 		/** @var RemoteInstance $signatory */
 		$signatory = $signedRequest->getSignatory();
 
@@ -533,5 +536,75 @@ class RemoteController extends Controller {
 			],
 			($e->getCode() > 0) ? $e->getCode() : $httpErrorCode
 		);
+	}
+
+
+	/**
+	 * use this one if a method from a Controller is only PublicPage when remote client asking for Json
+	 *
+	 * try {
+	 *      $this->publicPageJsonLimited();
+	 *      return new DataResponse(['test' => 42]);
+	 * } catch (JsonNotRequestedException $e) {}
+	 *
+	 *
+	 * @throws NotLoggedInException
+	 * @throws JsonNotRequestedException
+	 */
+	private function publicPageJsonLimited(): void {
+		if (!$this->jsonRequested()) {
+			if (!$this->userSession->isLoggedIn()) {
+				throw new NotLoggedInException();
+			}
+
+			throw new JsonNotRequestedException();
+		}
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	private function jsonRequested(): bool {
+		return ($this->areWithinAcceptHeader(
+			[
+				'application/json',
+				'application/ld+json',
+				'application/activity+json'
+			]
+		));
+	}
+
+
+	/**
+	 * @param array $needles
+	 *
+	 * @return bool
+	 */
+	private function areWithinAcceptHeader(array $needles): bool {
+		$accepts = array_map([$this, 'trimHeader'], explode(',', $this->request->getHeader('Accept')));
+
+		foreach ($accepts as $accept) {
+			if (in_array($accept, $needles)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * @param string $header
+	 *
+	 * @return string
+	 */
+	private function trimHeader(string $header): string {
+		$header = trim($header);
+		$pos = strpos($header, ';');
+		if ($pos === false) {
+			return $header;
+		}
+
+		return substr($header, 0, $pos);
 	}
 }

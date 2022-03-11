@@ -34,8 +34,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
+use OCA\Circles\Tools\Model\SimpleDataStore;
+use OCA\Circles\Tools\Traits\TNCLogger;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Events\AddingCircleMemberEvent;
 use OCA\Circles\Events\CircleCreatedEvent;
@@ -70,7 +70,7 @@ use OCP\EventDispatcher\IEventDispatcher;
  * @package OCA\Circles\Service
  */
 class EventService {
-	use TNC22Logger;
+	use TNCLogger;
 
 
 	/** @var IEventDispatcher */

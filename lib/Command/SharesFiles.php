@@ -31,7 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
