@@ -31,13 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\ItemNotFoundException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\UnknownTypeException;
-use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22TreeNode;
-use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22ConsoleTree;
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
 use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\Db\CircleRequest;
@@ -66,6 +59,13 @@ use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MembershipService;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
+use OCA\Circles\Tools\Exceptions\ItemNotFoundException;
+use OCA\Circles\Tools\Exceptions\UnknownTypeException;
+use OCA\Circles\Tools\Model\SimpleDataStore;
+use OCA\Circles\Tools\Model\TreeNode;
+use OCA\Circles\Tools\Traits\TArrayTools;
+use OCA\Circles\Tools\Traits\TConsoleTree;
 use OCP\IUserManager;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
@@ -81,7 +81,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class CirclesMemberships extends Base {
 	use TArrayTools;
-	use TNC22ConsoleTree;
+	use TConsoleTree;
 
 
 	/** @var IUserManager */
@@ -237,7 +237,7 @@ class CirclesMemberships extends Base {
 
 		$output->writeln('');
 
-		$tree = new NC22TreeNode(null, new SimpleDataStore(['federatedUser' => $federatedUser]));
+		$tree = new TreeNode(null, new SimpleDataStore(['federatedUser' => $federatedUser]));
 		$this->generateTree($federatedUser->getSingleId(), $tree);
 
 		$this->drawTree(
@@ -255,10 +255,10 @@ class CirclesMemberships extends Base {
 
 	/**
 	 * @param string $id
-	 * @param NC22TreeNode $tree
+	 * @param TreeNode $tree
 	 * @param array $knownIds
 	 */
-	private function generateTree(string $id, NC22TreeNode $tree, array $knownIds = []) {
+	private function generateTree(string $id, TreeNode $tree, array $knownIds = []) {
 		if (in_array($id, $knownIds)) {
 			return;
 		}
@@ -271,7 +271,7 @@ class CirclesMemberships extends Base {
 				continue;
 			}
 
-			$item = new NC22TreeNode(
+			$item = new TreeNode(
 				$tree, new SimpleDataStore(
 						 [
 						 	'member' => $member,

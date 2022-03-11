@@ -31,11 +31,11 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
-use ArtificialOwl\MySmallPhpTools\Db\Nextcloud\nc22\INC22QueryRow;
-use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
-use ArtificialOwl\MySmallPhpTools\IDeserializable;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
-use ArtificialOwl\MySmallPhpTools\Traits\TArrayTools;
+use OCA\Circles\Tools\Db\IQueryRow;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
+use OCA\Circles\Tools\IDeserializable;
+use OCA\Circles\Tools\Traits\TDeserialize;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use DateTime;
 use JsonSerializable;
 use OC;
@@ -54,9 +54,9 @@ use OCP\Share\IShare;
  *
  * @package OCA\Circles\Model
  */
-class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRow, JsonSerializable {
+class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, JsonSerializable {
 	use TArrayTools;
-	use TNC22Deserialize;
+	use TDeserialize;
 
 
 	/** @var string */
@@ -781,9 +781,9 @@ class ShareWrapper extends ManagedModel implements IDeserializable, INC22QueryRo
 	 * @param array $data
 	 * @param string $prefix
 	 *
-	 * @return INC22QueryRow
+	 * @return IQueryRow
 	 */
-	public function importFromDatabase(array $data, string $prefix = ''): INC22QueryRow {
+	public function importFromDatabase(array $data, string $prefix = ''): IQueryRow {
 		$shareTime = new DateTime();
 		$shareTime->setTimestamp($this->getInt($prefix . 'stime', $data));
 

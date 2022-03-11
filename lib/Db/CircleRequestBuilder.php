@@ -31,7 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-use ArtificialOwl\MySmallPhpTools\Exceptions\RowNotFoundException;
+use OCA\Circles\Tools\Exceptions\RowNotFoundException;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Model\Circle;
 
@@ -77,8 +77,7 @@ class CircleRequestBuilder extends CoreRequestBuilder {
 		bool $single = false
 	): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->generateSelect(self::TABLE_CIRCLE, self::$tables[self::TABLE_CIRCLE], $alias, !$single)
-		   ->generateGroupBy(self::$tables[self::TABLE_CIRCLE], $alias);
+		$qb->generateSelect(self::TABLE_CIRCLE, self::$tables[self::TABLE_CIRCLE], $alias);
 
 		if (!$single) {
 			$qb->orderBy($alias . '.creation', 'asc');

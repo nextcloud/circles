@@ -31,8 +31,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
-use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
+use OCA\Circles\Tools\Traits\TNCLogger;
+use OCA\Circles\Tools\Traits\TStringTools;
 use Exception;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
@@ -54,7 +54,7 @@ class MassiveMemberAdd extends SingleMemberAdd implements
 	IFederatedItemHighSeverity,
 	IFederatedItemMemberEmpty {
 	use TStringTools;
-	use TNC22Logger;
+	use TNCLogger;
 
 
 	/**

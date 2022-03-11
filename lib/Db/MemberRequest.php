@@ -279,8 +279,7 @@ class MemberRequest extends MemberRequestBuilder {
 		$qb->limitToMembersByInheritance(CoreQueryBuilder::MEMBER, $singleId, $level);
 
 		$aliasMembership = $qb->generateAlias(CoreQueryBuilder::MEMBER, CoreQueryBuilder::MEMBERSHIPS);
-		$qb->orderBy($aliasMembership . '.inheritance_depth', 'asc')
-		   ->addGroupBy($aliasMembership . '.inheritance_depth');
+		$qb->orderBy($aliasMembership . '.inheritance_depth', 'asc');
 
 		return $this->getItemsFromRequest($qb);
 	}

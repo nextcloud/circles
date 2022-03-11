@@ -31,7 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
+use OCA\Circles\Tools\Traits\TDeserialize;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Exceptions\FederatedItemBadRequestException;
 use OCA\Circles\Exceptions\FederatedItemException;
@@ -57,7 +57,7 @@ class MemberLevel implements
 	IFederatedItem,
 	IFederatedItemHighSeverity,
 	IFederatedItemMemberRequired {
-	use TNC22Deserialize;
+	use TDeserialize;
 
 
 	/** @var MemberRequest */

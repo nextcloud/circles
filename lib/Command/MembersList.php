@@ -31,15 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\ItemNotFoundException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\SignatoryException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\UnknownTypeException;
-use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22TreeNode;
-use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22ConsoleTree;
-use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use Exception;
 use OC\Core\Command\Base;
 use OCA\Circles\Db\MemberRequest;
@@ -65,6 +56,15 @@ use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\RemoteService;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
+use OCA\Circles\Tools\Exceptions\ItemNotFoundException;
+use OCA\Circles\Tools\Exceptions\RequestNetworkException;
+use OCA\Circles\Tools\Exceptions\SignatoryException;
+use OCA\Circles\Tools\Exceptions\UnknownTypeException;
+use OCA\Circles\Tools\Model\SimpleDataStore;
+use OCA\Circles\Tools\Model\TreeNode;
+use OCA\Circles\Tools\Traits\TConsoleTree;
+use OCA\Circles\Tools\Traits\TStringTools;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -78,7 +78,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class MembersList extends Base {
-	use TNC22ConsoleTree;
+	use TConsoleTree;
 	use TStringTools;
 
 
@@ -194,7 +194,7 @@ class MembersList extends Base {
 			$output->writeln('<info>Config</info>: ' . $type);
 			$output->writeln(' ');
 
-			$tree = new NC22TreeNode(null, new SimpleDataStore(['circle' => $circle]));
+			$tree = new TreeNode(null, new SimpleDataStore(['circle' => $circle]));
 			$inherited = false;
 		}
 
@@ -276,7 +276,7 @@ class MembersList extends Base {
 	 * @param string $instance
 	 * @param string $initiator
 	 * @param int $initiatorType
-	 * @param NC22TreeNode|null $tree
+	 * @param TreeNode|null $tree
 	 * @param array $knownIds
 	 *
 	 * @return array
@@ -304,7 +304,7 @@ class MembersList extends Base {
 		string $instance,
 		string $initiator,
 		int $initiatorType,
-		?NC22TreeNode $tree,
+		?TreeNode $tree,
 		array $knownIds = []
 	): array {
 		if (in_array($circleId, $knownIds)) {
@@ -359,7 +359,7 @@ class MembersList extends Base {
 						);
 						$circle = $this->circleService->getCircle($member->getSingleId());
 					}
-					$node = new NC22TreeNode(
+					$node = new TreeNode(
 						$tree, new SimpleDataStore(
 								 [
 								 	'circle' => $circle,
@@ -379,7 +379,7 @@ class MembersList extends Base {
 					);
 				} else {
 					if ($this->treeType !== 'circles-only') {
-						new NC22TreeNode(
+						new TreeNode(
 							$tree, new SimpleDataStore(
 									 [
 									 	'member' => $member,
