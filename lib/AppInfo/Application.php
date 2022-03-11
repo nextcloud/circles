@@ -92,10 +92,6 @@ use Throwable;
 
 //use OCA\Files\App as FilesApp;
 
-
-require_once __DIR__ . '/../../vendor/autoload.php';
-
-
 /**
  * Class Application
  *
