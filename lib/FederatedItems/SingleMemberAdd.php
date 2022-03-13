@@ -206,6 +206,7 @@ class SingleMemberAdd implements
 			$this->eventService->memberAdding($event);
 		}
 
+		$this->membershipService->updatePopulation($event->getCircle());
 
 //		//
 //		// TODO: verifiez comment se passe le cached name sur un member_add
