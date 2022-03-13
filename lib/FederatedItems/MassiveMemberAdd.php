@@ -108,6 +108,8 @@ class MassiveMemberAdd extends SingleMemberAdd implements
 			} catch (Exception $e) {
 			}
 		}
+
+		$this->membershipService->updatePopulation($event->getCircle());
 	}
 
 

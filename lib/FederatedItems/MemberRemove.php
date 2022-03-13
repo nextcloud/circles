@@ -117,6 +117,7 @@ class MemberRemove implements
 		// TODO: Remove invited members from this user that have not accepted their invitation
 
 		$this->eventService->memberRemoving($event);
+		$this->membershipService->updatePopulation($event->getCircle());
 	}
 
 
