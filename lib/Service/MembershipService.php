@@ -387,4 +387,24 @@ class MembershipService {
 
 		throw new ItemNotFoundException();
 	}
+
+
+	/**
+	 * @param Circle $circle
+	 */
+	public function updatePopulation(Circle $circle): void {
+		$local = $inherited = 0;
+		$memberships = $this->membershipRequest->getInherited($circle->getSingleId(), Member::LEVEL_MEMBER);
+		foreach ($memberships as $membership) {
+			$inherited++;
+			if ($membership->getCircleId() === $circle->getSingleId()) {
+				$local++;
+			}
+		}
+
+		$settings = $circle->getSettings();
+		$settings['population'] = $local;
+		$settings['populationInherited'] = $inherited;
+		$this->circleRequest->updateSettings($circle->setSettings($settings));
+	}
 }

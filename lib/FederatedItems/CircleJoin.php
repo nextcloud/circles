@@ -255,6 +255,8 @@ class CircleJoin implements
 			$this->membershipService->onUpdate($member->getSingleId());
 			$this->eventService->memberJoining($event);
 		}
+
+		$this->membershipService->updatePopulation($event->getCircle());
 	}
 
 
