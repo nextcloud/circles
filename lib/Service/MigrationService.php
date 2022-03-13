@@ -31,9 +31,9 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Logger;
-use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
+use OCA\Circles\Tools\Model\SimpleDataStore;
+use OCA\Circles\Tools\Traits\TNCLogger;
+use OCA\Circles\Tools\Traits\TStringTools;
 use Exception;
 use OC;
 use OCA\Circles\AppInfo\Application;
@@ -77,7 +77,7 @@ use OCP\Share\IShare;
  */
 class MigrationService {
 	use TStringTools;
-	use TNC22Logger;
+	use TNCLogger;
 
 
 	/** @var IDBConnection */

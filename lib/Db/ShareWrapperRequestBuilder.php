@@ -31,7 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-use ArtificialOwl\MySmallPhpTools\Exceptions\RowNotFoundException;
+use OCA\Circles\Tools\Exceptions\RowNotFoundException;
 use OC\Share20\Share;
 use OCA\Circles\Exceptions\ShareWrapperNotFoundException;
 use OCA\Circles\Model\ShareWrapper;
@@ -74,7 +74,6 @@ class ShareWrapperRequestBuilder extends CoreRequestBuilder {
 	protected function getShareSelectSql(string $alias = CoreQueryBuilder::SHARE): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->generateSelect(self::TABLE_SHARE, self::$outsideTables[self::TABLE_SHARE], $alias)
-		   ->generateGroupBy(self::$outsideTables[self::TABLE_SHARE], $alias)
 		   ->limitToShareType(Share::TYPE_CIRCLE);
 
 		return $qb;

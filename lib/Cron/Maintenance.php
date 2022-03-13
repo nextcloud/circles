@@ -31,7 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Cron;
 
-use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
+use OCA\Circles\Tools\Model\SimpleDataStore;
 use OC\BackgroundJob\TimedJob;
 use OCA\Circles\Exceptions\MaintenanceException;
 use OCA\Circles\Service\ConfigService;

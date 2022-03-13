@@ -31,7 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Command;
 
-use ArtificialOwl\MySmallPhpTools\Exceptions\InvalidItemException;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
 use OC\Core\Command\Base;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedItemException;

@@ -30,21 +30,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use ArtificialOwl\MySmallPhpTools\ActivityPub\Nextcloud\nc22\NC22Signature;
-use ArtificialOwl\MySmallPhpTools\Exceptions\RequestNetworkException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\SignatoryException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\SignatureException;
-use ArtificialOwl\MySmallPhpTools\Exceptions\WellKnownLinkNotFoundException;
-use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22Request;
-use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22RequestResult;
-use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22Signatory;
-use ArtificialOwl\MySmallPhpTools\Model\Nextcloud\nc22\NC22SignedRequest;
-use ArtificialOwl\MySmallPhpTools\Model\Request;
-use ArtificialOwl\MySmallPhpTools\Model\SimpleDataStore;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22LocalSignatory;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22WellKnown;
-use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use JsonSerializable;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\RemoteRequest;
@@ -57,6 +42,21 @@ use OCA\Circles\Exceptions\RemoteUidException;
 use OCA\Circles\Exceptions\UnknownInterfaceException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Model\Federated\RemoteInstance;
+use OCA\Circles\Tools\ActivityPub\NCSignature;
+use OCA\Circles\Tools\Exceptions\RequestNetworkException;
+use OCA\Circles\Tools\Exceptions\SignatoryException;
+use OCA\Circles\Tools\Exceptions\SignatureException;
+use OCA\Circles\Tools\Exceptions\WellKnownLinkNotFoundException;
+use OCA\Circles\Tools\Model\NCRequest;
+use OCA\Circles\Tools\Model\NCRequestResult;
+use OCA\Circles\Tools\Model\NCSignatory;
+use OCA\Circles\Tools\Model\NCSignedRequest;
+use OCA\Circles\Tools\Model\Request;
+use OCA\Circles\Tools\Model\SimpleDataStore;
+use OCA\Circles\Tools\Traits\TDeserialize;
+use OCA\Circles\Tools\Traits\TNCLocalSignatory;
+use OCA\Circles\Tools\Traits\TNCWellKnown;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\AppFramework\Http;
 use OCP\IURLGenerator;
 use ReflectionClass;
@@ -67,11 +67,11 @@ use ReflectionException;
  *
  * @package OCA\Circles\Service
  */
-class RemoteStreamService extends NC22Signature {
-	use TNC22Deserialize;
-	use TNC22LocalSignatory;
+class RemoteStreamService extends NCSignature {
+	use TDeserialize;
+	use TNCLocalSignatory;
 	use TStringTools;
-	use TNC22WellKnown;
+	use TNCWellKnown;
 
 
 	public const UPDATE_DATA = 'data';
@@ -253,7 +253,7 @@ class RemoteStreamService extends NC22Signature {
 	 * @param JsonSerializable|null $object
 	 * @param array $params
 	 *
-	 * @return NC22SignedRequest
+	 * @return NCSignedRequest
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
 	 * @throws UnknownRemoteException
@@ -266,8 +266,8 @@ class RemoteStreamService extends NC22Signature {
 		int $type = Request::TYPE_GET,
 		?JsonSerializable $object = null,
 		array $params = []
-	): NC22SignedRequest {
-		$request = new NC22Request('', $type);
+	): NCSignedRequest {
+		$request = new NCRequest('', $type);
 		$this->configService->configureRequest($request);
 		$link = $this->getRemoteInstanceEntry($instance, $item, $params);
 		$request->basedOnUrl($link);
@@ -283,7 +283,7 @@ class RemoteStreamService extends NC22Signature {
 
 		try {
 			$app = $this->getAppSignatory();
-//		$app->setAlgorithm(NC22Signatory::SHA512);
+//		$app->setAlgorithm(NCSignatory::SHA512);
 			$signedRequest = $this->signOutgoingRequest($request, $app);
 			$this->doRequest($signedRequest->getOutgoingRequest(), false);
 		} catch (RequestNetworkException | SignatoryException $e) {
@@ -369,10 +369,10 @@ class RemoteStreamService extends NC22Signature {
 	 * @throws SignatoryException
 	 * @throws SignatureException
 	 */
-	public function retrieveSignatory(string $keyId, bool $refresh = true): NC22Signatory {
+	public function retrieveSignatory(string $keyId, bool $refresh = true): NCSignatory {
 		if (!$refresh) {
 			try {
-				return $this->remoteRequest->getFromHref(NC22Signatory::removeFragment($keyId));
+				return $this->remoteRequest->getFromHref(NCSignatory::removeFragment($keyId));
 			} catch (RemoteNotFoundException $e) {
 				throw new SignatoryException();
 			}
@@ -381,7 +381,7 @@ class RemoteStreamService extends NC22Signature {
 		$remoteInstance = new RemoteInstance($keyId);
 		$confirm = $this->uuid();
 
-		$request = new NC22Request();
+		$request = new NCRequest();
 		$this->configService->configureRequest($request);
 
 		$this->downloadSignatory($remoteInstance, $keyId, ['auth' => $confirm], $request);
@@ -502,11 +502,11 @@ class RemoteStreamService extends NC22Signature {
 
 
 	/**
-	 * @param NC22RequestResult $result
+	 * @param NCRequestResult $result
 	 *
 	 * @return FederatedItemException
 	 */
-	private function getFederatedItemExceptionFromResult(NC22RequestResult $result): FederatedItemException {
+	private function getFederatedItemExceptionFromResult(NCRequestResult $result): FederatedItemException {
 		$data = $result->getAsArray();
 
 		$message = $this->get('message', $data);

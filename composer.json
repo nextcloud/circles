@@ -22,9 +22,6 @@
       "OCA\\Circles\\": "lib/"
     }
   },
-  "require": {
-    "artificial-owl/my-small-php-tools": "~22"
-  },
   "scripts": {
     "cs:check": "php-cs-fixer fix --dry-run --diff",
     "cs:fix": "php-cs-fixer fix",

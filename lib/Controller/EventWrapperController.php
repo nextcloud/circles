@@ -31,15 +31,14 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Controller;
 
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Async;
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Controller;
-use ArtificialOwl\MySmallPhpTools\Traits\TStringTools;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\EventWrapperService;
 use OCA\Circles\Service\FederatedEventService;
 use OCA\Circles\Service\RemoteDownstreamService;
 use OCA\Circles\Service\RemoteUpstreamService;
+use OCA\Circles\Tools\Traits\TAsync;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\DataResponse;
@@ -52,8 +51,7 @@ use OCP\IRequest;
  */
 class EventWrapperController extends Controller {
 	use TStringTools;
-	use TNC22Async;
-	use TNC22Controller;
+	use TAsync;
 
 
 	/** @var EventWrapperService */

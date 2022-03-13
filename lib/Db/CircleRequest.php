@@ -41,7 +41,6 @@ use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
-use OCA\Circles\Model\Probes\BasicProbe;
 use OCA\Circles\Model\Probes\CircleProbe;
 
 /**
@@ -197,10 +196,6 @@ class CircleRequest extends CircleRequestBuilder {
 			$qb->limitToRemoteInstance(CoreQueryBuilder::CIRCLE, $probe->getFilterRemoteInstance(), false);
 		}
 
-		if ($probe->showDetail(BasicProbe::DETAILS_POPULATION)) {
-			$qb->countMembers(CoreQueryBuilder::CIRCLE);
-		}
-
 		$qb->chunk($probe->getItemsOffset(), $probe->getItemsLimit());
 
 		return $this->getItemsFromRequest($qb);
@@ -246,7 +241,7 @@ class CircleRequest extends CircleRequestBuilder {
 				  ->emulateVisitor();
 		}
 
-		$qb = $this->getCircleSelectSql();
+		$qb = $this->getCircleSelectSql(CoreQueryBuilder::CIRCLE, true);
 		$qb->setOptions(
 			[CoreQueryBuilder::CIRCLE],
 			array_merge(
@@ -275,10 +270,6 @@ class CircleRequest extends CircleRequestBuilder {
 			$qb->limitToRemoteInstance(CoreQueryBuilder::CIRCLE, $probe->getFilterRemoteInstance(), false);
 		}
 
-		if ($probe->showDetail(BasicProbe::DETAILS_POPULATION)) {
-			$qb->countMembers(CoreQueryBuilder::CIRCLE);
-		}
-
 		return $this->getItemFromRequest($qb);
 	}
 
@@ -292,7 +283,7 @@ class CircleRequest extends CircleRequestBuilder {
 	 * @throws FederatedUserNotFoundException
 	 */
 	public function getFederatedUserBySingleId(string $singleId): FederatedUser {
-		$qb = $this->getCircleSelectSql();
+		$qb = $this->getCircleSelectSql(CoreQueryBuilder::CIRCLE, true);
 		$qb->limitToUniqueId($singleId);
 		$qb->leftJoinOwner(CoreQueryBuilder::CIRCLE);
 
