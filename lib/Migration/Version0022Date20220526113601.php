@@ -97,7 +97,7 @@ class Version0022Date20220526113601 extends SimpleMigrationStep {
 				'display_name', 'string', [
 					'notnull' => false,
 					'default' => '',
-					'length' => 127
+					'length' => 255
 				]
 			);
 			$table->addColumn(

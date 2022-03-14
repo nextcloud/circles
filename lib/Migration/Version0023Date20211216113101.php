@@ -10,7 +10,7 @@ declare(strict_types=1);
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2021
+ * @copyright 2022
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -31,11 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Migration;
 
-use Closure;
-use Doctrine\DBAL\Schema\SchemaException;
-use OCP\DB\ISchemaWrapper;
 use OCP\IDBConnection;
-use OCP\Migration\IOutput;
 use OCP\Migration\SimpleMigrationStep;
 
 /**
@@ -52,33 +48,4 @@ class Version0023Date20211216113101 extends SimpleMigrationStep {
 	public function __construct(IDBConnection $connection) {
 	}
 
-
-	/**
-	 * @param IOutput $output
-	 * @param Closure $schemaClosure The `\Closure` returns a `ISchemaWrapper`
-	 * @param array $options
-	 *
-	 * @return null|ISchemaWrapper
-	 * @throws SchemaException
-	 */
-	public function changeSchema(IOutput $output, Closure $schemaClosure, array $options): ?ISchemaWrapper {
-		/** @var ISchemaWrapper $schema */
-		$schema = $schemaClosure();
-
-		if ($schema->hasTable('circles_token')) {
-			$table = $schema->getTable('circles_token');
-			$table->changeColumn(
-				'password', [
-					'length' => 127
-				]
-			);
-		}
-
-		if ($schema->hasTable('circles_event')) {
-			$table = $schema->getTable('circles_event');
-			$table->setPrimaryKey(['token']);
-		}
-		
-		return $schema;
-	}
 }
