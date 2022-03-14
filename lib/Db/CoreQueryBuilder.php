@@ -163,6 +163,13 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			]
 		],
 		self::MEMBERSHIPS => [
+			self::CIRCLE => [
+				self::MEMBERSHIPS => [ // needed ?
+									   self::CONFIG,
+									   self::INITIATOR
+				],
+				self::INITIATOR => [self::INHERITED_BY => [self::MEMBERSHIPS]]
+			],
 			self::CONFIG
 		],
 		self::SHARE => [
@@ -382,6 +389,14 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	 */
 	public function limitToShareParent(int $shareId): void {
 		$this->limitInt('parent', $shareId);
+	}
+
+
+	/**
+	 * @param int $level
+	 */
+	public function minLevel(int $level): void {
+		$this->gt('level', $level, true);
 	}
 
 
@@ -1130,7 +1145,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 				$expr->eq($aliasMembership . '.circle_id', $helperAlias . '.' . $field)
 			)
 		);
-
 
 		$listMembershipCircleAlias = [$aliasMembership];
 		if ($this->getBool('initiatorDirectMember', $options, false)) {

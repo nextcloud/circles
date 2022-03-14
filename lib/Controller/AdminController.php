@@ -31,8 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Controller;
 
-use OCA\Circles\Tools\Traits\TDeserialize;
-use OCA\Circles\Tools\Traits\TNCLogger;
 use Exception;
 use OCA\Circles\Exceptions\ContactAddressBookNotFoundException;
 use OCA\Circles\Exceptions\ContactFormatException;
@@ -46,12 +44,15 @@ use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\BasicProbe;
 use OCA\Circles\Model\Probes\CircleProbe;
+use OCA\Circles\Model\Probes\MemberProbe;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Service\SearchService;
+use OCA\Circles\Tools\Traits\TDeserialize;
+use OCA\Circles\Tools\Traits\TNCLogger;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCS\OCSException;
 use OCP\AppFramework\OCSController;
@@ -150,11 +151,11 @@ class AdminController extends OcsController {
 		} catch (Exception $e) {
 			$this->e(
 				$e, [
-					'emulated' => $emulated,
-					'name' => $name,
-					'members' => $personal,
-					'local' => $local
-				]
+					  'emulated' => $emulated,
+					  'name' => $name,
+					  'members' => $personal,
+					  'local' => $local
+				  ]
 			);
 			throw new OcsException($e->getMessage(), $e->getCode());
 		}
@@ -211,11 +212,11 @@ class AdminController extends OcsController {
 		} catch (Exception $e) {
 			$this->e(
 				$e, [
-					'emulated' => $emulated,
-					'circleId' => $circleId,
-					'userId' => $userId,
-					'type' => $type
-				]
+					  'emulated' => $emulated,
+					  'circleId' => $circleId,
+					  'userId' => $userId,
+					  'type' => $type
+				  ]
 			);
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
@@ -263,6 +264,7 @@ class AdminController extends OcsController {
 	 * @param string $emulated
 	 * @param int $limit
 	 * @param int $offset
+	 *
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
@@ -468,7 +470,12 @@ class AdminController extends OcsController {
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
-	public function editSetting(string $emulated, string $circleId, string $setting, ?string $value = null): DataResponse {
+	public function editSetting(
+		string $emulated,
+		string $circleId,
+		string $setting,
+		?string $value = null
+	): DataResponse {
 		try {
 			$this->setLocalFederatedUser($emulated);
 
@@ -480,9 +487,6 @@ class AdminController extends OcsController {
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
 	}
-
-
-
 
 
 	/**
@@ -523,6 +527,39 @@ class AdminController extends OcsController {
 			return new DataResponse($this->serialize($membership));
 		} catch (Exception $e) {
 			$this->e($e, ['emulated' => $emulated, 'circleId' => $circleId, 'singleId' => $singleId]);
+			throw new OCSException($e->getMessage(), $e->getCode());
+		}
+	}
+
+
+	/**
+	 * @param string $emulated
+	 * @param string $type
+	 * @param int $level
+	 * @param string $details
+	 *
+	 * @return DataResponse
+	 * @throws OCSException
+	 */
+	public function memberships(
+		string $emulated,
+		string $type = 'inherited',
+		int $level = Member::LEVEL_MEMBER,
+		string $details = 'false'
+	): DataResponse {
+		try {
+			$this->setLocalFederatedUser($emulated);
+
+			$probe = new MemberProbe();
+			$probe->setMinimumLevel($level);
+			$probe->initiatorAsDirectMember((strtolower($type) === 'direct'));
+			$probe->detailedMembership(strtolower($details) === 'true');
+
+			$result = $this->memberService->getMemberships($probe);
+
+			return new DataResponse($this->serializeArray($result));
+		} catch (Exception $e) {
+			$this->e($e, ['type' => $type, 'level' => $level]);
 			throw new OCSException($e->getMessage(), $e->getCode());
 		}
 	}

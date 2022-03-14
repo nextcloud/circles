@@ -53,6 +53,9 @@ class MemberProbe extends BasicProbe {
 	/** @var bool */
 	private $initiatorDirectMember = false;
 
+	/** @var bool */
+	private $detailedMembership = false;
+
 
 	/**
 	 * allow the initiator as a requesting member
@@ -74,6 +77,19 @@ class MemberProbe extends BasicProbe {
 		return $this->requestingMembership;
 	}
 
+
+	/**
+	 * returns memberships with details about Circle and Initiator
+	 */
+	public function detailedMembership(bool $detailed = true): self {
+		$this->detailedMembership = $detailed;
+
+		return $this;
+	}
+
+	public function isDetailedMembership(): bool {
+		return $this->detailedMembership;
+	}
 
 	/**
 	 * @param bool $include
@@ -109,6 +125,17 @@ class MemberProbe extends BasicProbe {
 		return $this->emulateVisitor;
 	}
 
+
+	/**
+	 * @param int $level
+	 *
+	 * @return $this
+	 */
+	public function setMinimumLevel(int $level): self {
+		$this->minimumLevel = $level;
+
+		return $this;
+	}
 
 	/**
 	 * @return int

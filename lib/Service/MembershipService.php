@@ -31,8 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use OCA\Circles\Tools\Exceptions\ItemNotFoundException;
-use OCA\Circles\Tools\Traits\TNCLogger;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
@@ -44,6 +42,8 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
+use OCA\Circles\Tools\Exceptions\ItemNotFoundException;
+use OCA\Circles\Tools\Traits\TNCLogger;
 
 /**
  * Class MembershipService
@@ -232,7 +232,7 @@ class MembershipService {
 	 * @return int
 	 */
 	private function updateMembershipsDatabase(string $singleId, array $memberships): int {
-		$known = $this->membershipRequest->getMemberships($singleId);
+		$known = $this->membershipRequest->getMembershipsBySingleId($singleId);
 
 		$deprecated = $this->removeDeprecatedMemberships($memberships, $known);
 		if (!empty($deprecated)) {

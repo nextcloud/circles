@@ -55,6 +55,7 @@ return [
 		],
 		['name' => 'Local#circleJoin', 'url' => '/circles/{circleId}/join', 'verb' => 'PUT'],
 		['name' => 'Local#circleLeave', 'url' => '/circles/{circleId}/leave', 'verb' => 'PUT'],
+		['name' => 'Local#memberships', 'url' => '/memberships', 'verb' => 'GET'],
 
 		['name' => 'Local#editName', 'url' => '/circles/{circleId}/name', 'verb' => 'PUT'],
 		['name' => 'Local#editDescription', 'url' => '/circles/{circleId}/description', 'verb' => 'PUT'],
@@ -93,6 +94,7 @@ return [
 		],
 		['name' => 'Admin#circleJoin', 'url' => '/admin/{emulated}/circles/{circleId}/join', 'verb' => 'PUT'],
 		['name' => 'Admin#circleLeave', 'url' => '/admin/{emulated}/circles/{circleId}/leave', 'verb' => 'PUT'],
+		['name' => 'Admin#memberships', 'url' => '/admin/{emulated}/memberships', 'verb' => 'GET'],
 		['name' => 'Admin#editName', 'url' => '/admin/{emulated}/circles/{circleId}/name', 'verb' => 'PUT'],
 		['name' => 'Admin#editDescription', 'url' => '/admin/{emulated}/circles/{circleId}/description', 'verb' => 'PUT'],
 		['name' => 'Admin#editSetting', 'url' => '/admin/{emulated}/circles/{circleId}/setting', 'verb' => 'PUT'],
