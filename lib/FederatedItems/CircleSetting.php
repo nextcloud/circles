@@ -31,17 +31,17 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-use ArtificialOwl\MySmallPhpTools\Traits\Nextcloud\nc22\TNC22Deserialize;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
+use OCA\Circles\Tools\Traits\TDeserialize;
 
 class CircleSetting implements
 	IFederatedItem,
 	IFederatedItemAsyncProcess {
-	use TNC22Deserialize;
+	use TDeserialize;
 
 
 	/** @var CircleRequest */
