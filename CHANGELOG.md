@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+### 22.3.0
+
+- support Oracle,
+- lighten most SQL requests,
+- allow configuration of a Single password per Circle,
+- fixing an issue with circles as members displayed name
+
 
 ### 22.2.0
 

@@ -64,61 +64,61 @@ class Version0024Date20220203123902 extends SimpleMigrationStep {
 			$table = $schema->createTable('circles_event');
 			$table->addColumn(
 				'token', 'string', [
-						   'notnull' => false,
-						   'length' => 63,
-					   ]
+					'notnull' => false,
+					'length' => 63,
+				]
 			);
 			$table->addColumn(
 				'event', 'text', [
-						   'notnull' => false
-					   ]
+					'notnull' => false
+				]
 			);
 			$table->addColumn(
 				'result', 'text', [
-							'notnull' => false
-						]
+					'notnull' => false
+				]
 			);
 			$table->addColumn(
 				'instance', 'string', [
-							  'length' => 255,
-							  'notnull' => false
-						  ]
+					'length' => 255,
+					'notnull' => false
+				]
 			);
 			$table->addColumn(
 				'interface', 'integer', [
-							   'notnull' => true,
-							   'length' => 1,
-							   'default' => 0
-						   ]
+					'notnull' => true,
+					'length' => 1,
+					'default' => 0
+				]
 			);
 			$table->addColumn(
 				'severity', 'integer', [
-							  'length' => 3,
-							  'notnull' => false
-						  ]
+					'length' => 3,
+					'notnull' => false
+				]
 			);
 			$table->addColumn(
 				'retry', 'integer', [
-						   'length' => 3,
-						   'notnull' => false
-					   ]
+					'length' => 3,
+					'notnull' => false
+				]
 			);
 			$table->addColumn(
 				'status', 'integer', [
-							'length' => 3,
-							'notnull' => false
-						]
+					'length' => 3,
+					'notnull' => false
+				]
 			);
 			$table->addColumn(
 				'updated', 'datetime', [
-							 'notnull' => false,
-						 ]
+					'notnull' => false,
+				]
 			);
 			$table->addColumn(
 				'creation', 'bigint', [
-							  'length' => 14,
-							  'notnull' => false
-						  ]
+					'length' => 14,
+					'notnull' => false
+				]
 			);
 
 			$table->setPrimaryKey(['token', 'instance']);
@@ -126,5 +126,4 @@ class Version0024Date20220203123902 extends SimpleMigrationStep {
 
 		return $schema;
 	}
-
 }
