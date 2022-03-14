@@ -47,5 +47,4 @@ class Version0023Date20211216113101 extends SimpleMigrationStep {
 	 */
 	public function __construct(IDBConnection $connection) {
 	}
-
 }
