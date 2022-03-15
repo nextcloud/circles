@@ -56,30 +56,29 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	use TArrayTools;
 
 
-	public const SINGLE = 'single';
-	public const CIRCLE = 'circle';
-	public const MEMBER = 'member';
-	public const MEMBER_COUNT = 'membercount';
-	public const OWNER = 'owner';
-	public const FEDERATED_EVENT = 'federatedevent';
-	public const REMOTE = 'remote';
-	public const BASED_ON = 'basedon';
-	public const INITIATOR = 'initiator';
-	public const DIRECT_INITIATOR = 'initiatordirect';
-	public const MEMBERSHIPS = 'memberships';
-	public const CONFIG = 'config';
-	public const UPSTREAM_MEMBERSHIPS = 'upstreammemberships';
-	public const INHERITANCE_FROM = 'inheritancefrom';
-	public const INHERITED_BY = 'inheritedby';
-	public const INVITED_BY = 'invitedby';
-	public const MOUNT = 'mount';
-	public const MOUNTPOINT = 'mountpoint';
-	public const SHARE = 'share';
-	public const FILE_CACHE = 'filecache';
-	public const STORAGES = 'storages';
-	public const TOKEN = 'token';
-	public const OPTIONS = 'options';
-	public const HELPER = 'circleshelper';
+	public const SINGLE = 'cs';
+	public const CIRCLE = 'cc';
+	public const MEMBER = 'mm';
+	public const OWNER = 'wn';
+	public const FEDERATED_EVENT = 'ev';
+	public const REMOTE = 'rm';
+	public const BASED_ON = 'on';
+	public const INITIATOR = 'in';
+	public const DIRECT_INITIATOR = 'di';
+	public const MEMBERSHIPS = 'ms';
+	public const CONFIG = 'cf';
+	public const UPSTREAM_MEMBERSHIPS = 'up';
+	public const INHERITANCE_FROM = 'ih';
+	public const INHERITED_BY = 'by';
+	public const INVITED_BY = 'nv';
+	public const MOUNT = 'mo';
+	public const MOUNTPOINT = 'mp';
+	public const SHARE = 'sh';
+	public const FILE_CACHE = 'fc';
+	public const STORAGES = 'st';
+	public const TOKEN = 'tk';
+	public const OPTIONS = 'pt';
+	public const HELPER = 'hp';
 
 
 	public static $SQL_PATH = [
@@ -90,7 +89,6 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			self::OPTIONS => [
 			],
 			self::MEMBER,
-			self::MEMBER_COUNT,
 			self::OWNER => [
 				self::BASED_ON
 			],
