@@ -51,7 +51,7 @@ class Filter implements IFilter {
 	 */
 	public function getIcon() {
 		return $this->url->getAbsoluteURL(
-			$this->url->imagePath(Application::APP_ID, 'circles.svg')
+			$this->url->imagePath(Application::APP_ID, 'circles_black.svg')
 		);
 	}
 

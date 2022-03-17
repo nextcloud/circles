@@ -685,7 +685,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		$share->setSharedWithDisplayName($display);
 
 		$icon = $urlGenerator->getAbsoluteURL(
-			$urlGenerator->imagePath(Application::APP_ID, 'circles.svg')
+			$urlGenerator->imagePath(Application::APP_ID, 'circles_black.svg')
 		);
 		$share->setSharedWithAvatar($icon);
 

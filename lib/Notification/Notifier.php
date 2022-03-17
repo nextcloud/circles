@@ -147,7 +147,7 @@ class Notifier implements INotifier {
 			throw new InvalidArgumentException();
 		}
 
-		$iconPath = $this->urlGenerator->imagePath(Application::APP_ID, 'circles.svg');
+		$iconPath = $this->urlGenerator->imagePath(Application::APP_ID, 'circles_black.svg');
 		$notification->setIcon($this->urlGenerator->getAbsoluteURL($iconPath));
 
 		if ($notification->getObjectType() === 'member') {

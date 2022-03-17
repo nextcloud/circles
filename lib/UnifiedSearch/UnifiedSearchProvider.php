@@ -160,7 +160,7 @@ class UnifiedSearchProvider implements IProvider {
 	private function convertSearchResult(array $circles): array {
 		$result = [];
 
-		$iconPath = $this->urlGenerator->imagePath(Application::APP_ID, 'circles.svg');
+		$iconPath = $this->urlGenerator->imagePath(Application::APP_ID, 'circles_black.svg');
 		$icon = $this->urlGenerator->getAbsoluteURL($iconPath);
 		foreach ($circles as $circle) {
 			$result[] = new UnifiedSearchResult(
