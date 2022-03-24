@@ -180,7 +180,7 @@ OC.L10N.register(
     "Name" : "Ad",
     "Size" : "Boyut",
     "Modified" : "Değiştirilme",
-    "Are you sure you want to transfer your ownership?" : "Sahipliğinizi devretmek istediğinize emin misiniz?",
+    "Are you sure you want to transfer your ownership?" : "Sahipliğinizi aktarmak istediğinize emin misiniz?",
     "This action is irreversible" : "Bu işlem geri alınamaz",
     "Personal circle" : "Kişisel çevre",
     "Secret circle" : "Gizli çevre",
