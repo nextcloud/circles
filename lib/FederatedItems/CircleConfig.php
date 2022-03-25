@@ -76,6 +76,7 @@ class CircleConfig implements
 	 * @param FederatedEvent $event
 	 *
 	 * @throws FederatedItemException
+	 * @throws \OCA\Circles\Exceptions\RequestBuilderException
 	 */
 	public function verify(FederatedEvent $event): void {
 		$circle = $event->getCircle();
@@ -141,7 +142,8 @@ class CircleConfig implements
 
 		$new = clone $circle;
 		$new->setConfig($config);
-		$this->configService->confirmAllowedCircleTypes($new);
+
+		$this->configService->confirmAllowedCircleTypes($new, $circle);
 
 		$event->getData()->sInt('config', $new->getConfig());
 
