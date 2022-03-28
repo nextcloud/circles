@@ -31,16 +31,18 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-use OCA\Circles\Tools\Traits\TDeserialize;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\FederatedItemBadRequestException;
 use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\PermissionService;
+use OCA\Circles\Tools\Traits\TDeserialize;
 
 /**
  * Class CircleConfig
@@ -56,6 +58,9 @@ class CircleConfig implements
 	/** @var CircleRequest */
 	private $circleRequest;
 
+	/** @var PermissionService */
+	private $permissionService;
+
 	/** @var ConfigService */
 	private $configService;
 
@@ -64,10 +69,16 @@ class CircleConfig implements
 	 * CircleConfig constructor.
 	 *
 	 * @param CircleRequest $circleRequest
+	 * @param PermissionService $permissionService
 	 * @param ConfigService $configService
 	 */
-	public function __construct(CircleRequest $circleRequest, ConfigService $configService) {
+	public function __construct(
+		CircleRequest $circleRequest,
+		PermissionService $permissionService,
+		ConfigService $configService
+	) {
 		$this->circleRequest = $circleRequest;
+		$this->permissionService = $permissionService;
 		$this->configService = $configService;
 	}
 
@@ -76,6 +87,7 @@ class CircleConfig implements
 	 * @param FederatedEvent $event
 	 *
 	 * @throws FederatedItemException
+	 * @throws RequestBuilderException
 	 */
 	public function verify(FederatedEvent $event): void {
 		$circle = $event->getCircle();
@@ -141,7 +153,7 @@ class CircleConfig implements
 
 		$new = clone $circle;
 		$new->setConfig($config);
-		$this->configService->confirmAllowedCircleTypes($new);
+		$this->permissionService->confirmAllowedCircleTypes($new, $circle);
 
 		$event->getData()->sInt('config', $new->getConfig());
 
