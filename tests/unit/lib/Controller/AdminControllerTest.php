@@ -111,10 +111,13 @@ class AdminControllerTest extends TestCase {
 			->setItemsLimit($limit);
 		$circle1 = new Circle();
 		$circle1->setName('Circle One');
+		$circle1->setSingleId('CircleOne');
 		$circle2 = new Circle();
 		$circle2->setName('Circle Two');
+		$circle2->setSingleId('CircleTwo');
 		$circle3 = new Circle();
 		$circle3->setName('Circle Three');
+		$circle3->setSingleId('CircleThree');
 		$circles = [$circle1, $circle2, $circle3];
 		$selectedCircles = array_slice($circles, $offset, $limit > 0 ? $limit : null);
 		$this->circleService->expects($this->once())->method('getCircles')->with($probe)->willReturn($selectedCircles);

@@ -69,8 +69,8 @@ class Version0024Date20220203123901 extends SimpleMigrationStep {
 			$table = $schema->getTable('circles_token');
 			$table->changeColumn(
 				'password', [
-							  'length' => 127
-						  ]
+					'length' => 127
+				]
 			);
 		}
 
@@ -105,5 +105,4 @@ class Version0024Date20220203123901 extends SimpleMigrationStep {
 
 		return $schema;
 	}
-
 }
