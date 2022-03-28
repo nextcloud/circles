@@ -28,8 +28,14 @@
 namespace OCA\Circles\Tests;
 
 use OCA\Circles\Model\DeprecatedCircle;
+use PHPUnit\Framework\TestListener;
+use PHPUnit\Framework\Test;
+use PHPUnit\Framework\TestSuite;
+use PHPUnit\Framework\AssertionFailedError;
+use PHPUnit\Framework\Warning;
+use Throwable;
 
-class Env implements \PHPUnit_Framework_TestListener {
+class Env implements TestListener {
 	public const ENV_TEST_OWNER1 = '_test_circles_owner1';
 	public const ENV_TEST_OWNER2 = '_test_circles_owner2';
 	public const ENV_TEST_OWNER3 = '_test_circles_owner3';
@@ -54,31 +60,31 @@ class Env implements \PHPUnit_Framework_TestListener {
 	/** @var array<string> */
 	private $users;
 
-	public function addError(\PHPUnit_Framework_Test $test, \Exception $e, $time) {
+	public function addError(Test $test, Throwable $e, float $time): void {
 	}
 
 	public function addFailure(
-		\PHPUnit_Framework_Test $test, \PHPUnit_Framework_AssertionFailedError $e, $time
-	) {
+		Test $test, AssertionFailedError $e, float $time
+	): void {
 	}
 
-	public function addIncompleteTest(\PHPUnit_Framework_Test $test, \Exception $e, $time) {
+	public function addIncompleteTest(Test $test, Throwable $e, float $time): void {
 	}
 
-	public function addRiskyTest(\PHPUnit_Framework_Test $test, \Exception $e, $time) {
+	public function addRiskyTest(Test $test, Throwable $e, float $time): void {
 	}
 
-	public function addSkippedTest(\PHPUnit_Framework_Test $test, \Exception $e, $time) {
+	public function addSkippedTest(Test $test, Throwable $e, float $time): void {
 	}
 
-	public function startTest(\PHPUnit_Framework_Test $test) {
+	public function startTest(Test $test): void {
 	}
 
-	public function endTest(\PHPUnit_Framework_Test $test, $time) {
+	public function endTest(Test $test, float $time): void {
 	}
 
-	public function startTestSuite(\PHPUnit_Framework_TestSuite $suite) {
-		if ($suite->getName() !== '.') {
+	public function startTestSuite(TestSuite $suite): void {
+		if ($suite->getName() !== 'OCA\Circles\Tests\Api\CirclesTest') {
 			return;
 		}
 
@@ -92,7 +98,7 @@ class Env implements \PHPUnit_Framework_TestListener {
 		}
 	}
 
-	public function endTestSuite(\PHPUnit_Framework_TestSuite $suite) {
+	public function endTestSuite(TestSuite $suite): void {
 		if ($suite->getName() !== '.') {
 			return;
 		}
@@ -106,8 +112,8 @@ class Env implements \PHPUnit_Framework_TestListener {
 		}
 	}
 
-	public function addWarning(\PHPUnit_Framework_Test $test, \PHPUnit_Framework_Warning $e, $time
-	) {
+	public function addWarning(Test $test, Warning $e, float $time
+	): void {
 	}
 
 	public static function setUser($which) {
@@ -117,8 +123,7 @@ class Env implements \PHPUnit_Framework_TestListener {
 						->get($which)
 		);
 
-		return $userSession->getUser()
-						   ->getUID();
+		return $userSession->getUser()->getUID();
 	}
 
 	public static function currentUser() {
