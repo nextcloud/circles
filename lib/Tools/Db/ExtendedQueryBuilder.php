@@ -45,7 +45,7 @@ use OCA\Circles\Tools\Traits\TArrayTools;
 use OCP\DB\QueryBuilder\ICompositeExpression;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
-use OCP\ILogger;
+use Psr\Log\LoggerInterface;
 
 class ExtendedQueryBuilder extends QueryBuilder {
 	use TArrayTools;
@@ -62,7 +62,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 		parent::__construct(
 			OC::$server->get(IDBConnection::class),
 			OC::$server->get(SystemConfig::class),
-			OC::$server->get(ILogger::class)
+			OC::$server->get(LoggerInterface::class)
 		);
 	}
 
