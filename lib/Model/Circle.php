@@ -31,11 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
-use OCA\Circles\Tools\Db\IQueryRow;
-use OCA\Circles\Tools\Exceptions\InvalidItemException;
-use OCA\Circles\Tools\IDeserializable;
-use OCA\Circles\Tools\Traits\TDeserialize;
-use OCA\Circles\Tools\Traits\TArrayTools;
 use DateTime;
 use JsonSerializable;
 use OCA\Circles\Db\CircleRequest;
@@ -52,6 +47,11 @@ use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\IEntity;
 use OCA\Circles\Model\Helpers\MemberHelper;
+use OCA\Circles\Tools\Db\IQueryRow;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
+use OCA\Circles\Tools\IDeserializable;
+use OCA\Circles\Tools\Traits\TArrayTools;
+use OCA\Circles\Tools\Traits\TDeserialize;
 use OCP\Security\IHasher;
 
 /**
@@ -112,8 +112,8 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	public const CFG_CIRCLE_INVITE = 16384;     // Circle must confirm when invited in another circle
 	public const CFG_FEDERATED = 32768;         // Federated
 	public const CFG_MOUNTPOINT = 65536;        // Generate a Files folder for this Circle
-
-	public static $DEF_CFG_MAX = 131071;
+	public const CFG_APP = 131072;          // Some features are not available to the OCS API (ie. destroying Circle)
+	public static $DEF_CFG_MAX = 262143;
 
 
 	/**
@@ -139,7 +139,8 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		8192 => 'T|Root',
 		16384 => 'CI|Circle Invite',
 		32768 => 'F|Federated',
-		65536 => 'M|Nountpoint'
+		65536 => 'M|Nountpoint',
+		131072 => 'A|App'
 	];
 
 
@@ -157,7 +158,9 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		16 => 'Circle',
 		10000 => 'Nextcloud App',
 		10001 => 'Circles App',
-		10002 => 'Admin Command Line'
+		10002 => 'Admin Command Line',
+		11000 => '3rd party app',
+		11010 => 'Collectives App'
 	];
 
 

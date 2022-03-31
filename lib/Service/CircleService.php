@@ -172,6 +172,10 @@ class CircleService {
 		}
 
 		if (is_null($owner)) {
+			$owner = $this->federatedUserService->getCurrentApp();
+		}
+
+		if (is_null($owner)) {
 			throw new OwnerNotFoundException('owner not defined');
 		}
 
@@ -247,6 +251,7 @@ class CircleService {
 	/**
 	 * @param string $circleId
 	 * @param int $config
+	 * @param bool $superSession
 	 *
 	 * @return array
 	 * @throws CircleNotFoundException
@@ -258,15 +263,23 @@ class CircleService {
 	 * @throws RemoteInstanceException
 	 * @throws RemoteNotFoundException
 	 * @throws RemoteResourceNotFoundException
-	 * @throws UnknownRemoteException
 	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
 	 */
 	public function updateConfig(string $circleId, int $config): array {
+		$this->federatedUserService->mustHaveCurrentUser();
 		$circle = $this->getCircle($circleId);
 
 		$event = new FederatedEvent(CircleConfig::class);
 		$event->setCircle($circle);
-		$event->setParams(new SimpleDataStore(['config' => $config]));
+		$event->setParams(
+			new SimpleDataStore(
+				[
+					'config' => $config,
+					'superSession' => $this->federatedUserService->canBypassCurrentUserCondition()
+				]
+			)
+		);
 
 		$this->federatedEventService->newEvent($event);
 
@@ -477,7 +490,7 @@ class CircleService {
 
 		return $this->circleRequest->getCircle(
 			$circleId,
-			$this->federatedUserService->getCurrentUser(),
+			$this->federatedUserService->getCurrentEntity(),
 			$probe
 		);
 	}

@@ -68,9 +68,10 @@ class CircleProbe extends MemberProbe {
 	 * @return $this
 	 */
 	public function includePersonalCircles(bool $include = true): self {
-		$this->include |= Circle::CFG_PERSONAL;
-		if (!$include) {
-			$this->include -= Circle::CFG_PERSONAL;
+		if ($include) {
+			$this->include |= Circle::CFG_PERSONAL;
+		} else {
+			$this->include &= ~Circle::CFG_PERSONAL;
 		}
 
 		return $this;
@@ -84,9 +85,10 @@ class CircleProbe extends MemberProbe {
 	 * @return $this
 	 */
 	public function includeSingleCircles(bool $include = true): self {
-		$this->include |= Circle::CFG_SINGLE;
-		if (!$include) {
-			$this->include -= Circle::CFG_SINGLE;
+		if ($include) {
+			$this->include |= Circle::CFG_SINGLE;
+		} else {
+			$this->include &= ~Circle::CFG_SINGLE;
 		}
 
 		return $this;
@@ -100,9 +102,10 @@ class CircleProbe extends MemberProbe {
 	 * @return $this
 	 */
 	public function includeSystemCircles(bool $include = true): self {
-		$this->include |= Circle::CFG_SYSTEM;
-		if (!$include) {
-			$this->include -= Circle::CFG_SYSTEM;
+		if ($include) {
+			$this->include |= Circle::CFG_SYSTEM;
+		} else {
+			$this->include &= ~Circle::CFG_SYSTEM;
 		}
 
 		return $this;
@@ -116,9 +119,10 @@ class CircleProbe extends MemberProbe {
 	 * @return $this
 	 */
 	public function includeHiddenCircles(bool $include = true): self {
-		$this->include |= Circle::CFG_HIDDEN;
-		if (!$include) {
-			$this->include -= Circle::CFG_HIDDEN;
+		if ($include) {
+			$this->include |= Circle::CFG_HIDDEN;
+		} else {
+			$this->include &= ~Circle::CFG_HIDDEN;
 		}
 
 		return $this;
@@ -132,9 +136,10 @@ class CircleProbe extends MemberProbe {
 	 * @return $this
 	 */
 	public function includeBackendCircles(bool $include = true): self {
-		$this->include |= Circle::CFG_BACKEND;
-		if (!$include) {
-			$this->include -= Circle::CFG_BACKEND;
+		if ($include) {
+			$this->include |= Circle::CFG_BACKEND;
+		} else {
+			$this->include &= ~Circle::CFG_BACKEND;
 		}
 
 		return $this;
@@ -215,9 +220,10 @@ class CircleProbe extends MemberProbe {
 	 * @return $this
 	 */
 	public function filterPersonalCircles(bool $filter = true): self {
-		$this->filter |= Circle::CFG_PERSONAL;
-		if (!$filter) {
-			$this->filter -= Circle::CFG_PERSONAL;
+		if ($filter) {
+			$this->filter |= Circle::CFG_PERSONAL;
+		} else {
+			$this->filter &= ~Circle::CFG_PERSONAL;
 		}
 
 		return $this;
@@ -231,9 +237,10 @@ class CircleProbe extends MemberProbe {
 	 * @return $this
 	 */
 	public function filterSingleCircles(bool $filter = true): self {
-		$this->filter |= Circle::CFG_SINGLE;
-		if (!$filter) {
-			$this->filter -= Circle::CFG_SINGLE;
+		if ($filter) {
+			$this->filter |= Circle::CFG_SINGLE;
+		} else {
+			$this->filter &= ~Circle::CFG_SINGLE;
 		}
 
 		return $this;
@@ -247,9 +254,10 @@ class CircleProbe extends MemberProbe {
 	 * @return $this
 	 */
 	public function filterSystemCircles(bool $filter = true): self {
-		$this->filter |= Circle::CFG_SYSTEM;
-		if (!$filter) {
-			$this->filter -= Circle::CFG_SYSTEM;
+		if ($filter) {
+			$this->filter |= Circle::CFG_SYSTEM;
+		} else {
+			$this->filter &= ~Circle::CFG_SYSTEM;
 		}
 
 		return $this;
@@ -263,9 +271,10 @@ class CircleProbe extends MemberProbe {
 	 * @return $this
 	 */
 	public function filterHiddenCircles(bool $filter = true): self {
-		$this->filter |= Circle::CFG_HIDDEN;
-		if (!$filter) {
-			$this->filter -= Circle::CFG_HIDDEN;
+		if ($filter) {
+			$this->filter |= Circle::CFG_HIDDEN;
+		} else {
+			$this->filter &= ~Circle::CFG_HIDDEN;
 		}
 
 		return $this;
@@ -279,9 +288,10 @@ class CircleProbe extends MemberProbe {
 	 * @return $this
 	 */
 	public function filterBackendCircles(bool $filter = true): self {
-		$this->filter |= Circle::CFG_BACKEND;
-		if (!$filter) {
-			$this->filter -= Circle::CFG_BACKEND;
+		if ($filter) {
+			$this->filter |= Circle::CFG_BACKEND;
+		} else {
+			$this->filter &= ~Circle::CFG_BACKEND;
 		}
 
 		return $this;
@@ -297,9 +307,10 @@ class CircleProbe extends MemberProbe {
 	 * @return $this
 	 */
 	public function filterConfig(int $config, bool $filter = true): self {
-		$this->filter |= $config;
-		if (!$filter) {
-			$this->filter -= $config;
+		if ($filter) {
+			$this->filter |= $config;
+		} else {
+			$this->filter &= ~$config;
 		}
 
 		return $this;
