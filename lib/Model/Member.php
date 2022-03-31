@@ -81,6 +81,7 @@ class Member extends ManagedModel implements
 
 	public const APP_CIRCLES = 10001;
 	public const APP_OCC = 10002;
+	public const APP_DEFAULT = 11000;
 
 
 	public static $TYPE = [

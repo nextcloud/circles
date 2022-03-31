@@ -50,11 +50,13 @@ use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MemberNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
+use OCA\Circles\Exceptions\RemoteCircleException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
+use OCA\Circles\Exceptions\SuperSessionException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\FederatedItems\CircleCreate;
@@ -263,8 +265,12 @@ class FederatedUserService {
 	 * @param string $appId
 	 * @param int $appNumber
 	 *
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
 	 * @throws FederatedUserException
 	 * @throws InvalidIdException
+	 * @throws RequestBuilderException
 	 * @throws SingleCircleNotFoundException
 	 */
 	public function setLocalCurrentApp(string $appId, int $appNumber): void {
@@ -320,7 +326,7 @@ class FederatedUserService {
 		if ($this->bypass) {
 			return;
 		}
-		if (!$this->hasCurrentUser() && !$this->hasRemoteInstance()) {
+		if (!$this->hasCurrentEntity() && !$this->hasRemoteInstance()) {
 			throw new InitiatorNotFoundException('Invalid initiator');
 		}
 	}
@@ -330,6 +336,18 @@ class FederatedUserService {
 	 */
 	public function bypassCurrentUserCondition(bool $bypass): void {
 		$this->bypass = $bypass;
+	}
+
+
+	/**
+	 * @throws SuperSessionException
+	 */
+	public function confirmSuperSession(): void {
+		if ($this->canBypassCurrentUserCondition()) {
+			return;
+		}
+
+		throw new SuperSessionException('Must initialise Super Session');
 	}
 
 
@@ -399,7 +417,9 @@ class FederatedUserService {
 	 * @throws SingleCircleNotFoundException
 	 */
 	public function setMemberPatron(Member $member): void {
-		if ($this->isInitiatedByOcc()) {
+		if ($this->hasCurrentApp()) {
+			$member->setInvitedBy($this->getCurrentApp());
+		} elseif ($this->isInitiatedByOcc()) {
 			$member->setInvitedBy($this->getAppInitiator('occ', Member::APP_OCC));
 		} elseif ($this->isInitiatedByAdmin()) {
 			$member->setInvitedBy($this->getInitiatedByAdmin());
@@ -421,6 +441,25 @@ class FederatedUserService {
 	 */
 	public function hasCurrentApp(): bool {
 		return !is_null($this->currentApp);
+	}
+
+
+	/**
+	 * @return FederatedUser|null
+	 */
+	public function getCurrentEntity(): ?FederatedUser {
+		if ($this->hasCurrentUser()) {
+			return $this->getCurrentUser();
+		}
+
+		return $this->getCurrentApp();
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasCurrentEntity(): bool {
+		return !is_null($this->currentApp) || !is_null($this->currentUser);
 	}
 
 
@@ -507,7 +546,11 @@ class FederatedUserService {
 		string $appDisplayName = ''
 	): FederatedUser {
 		if ($appDisplayName === '') {
-			$appDisplayName = $this->get((string)$appNumber, Circle::$DEF_SOURCE, $appId);
+			$appDisplayName = $this->get(
+				(string)$appNumber,
+				Circle::$DEF_SOURCE,
+				Circle::$DEF_SOURCE[Member::APP_DEFAULT]
+			);
 		}
 
 		$circle = new Circle();
@@ -560,14 +603,11 @@ class FederatedUserService {
 		}
 
 		if ($circleId !== '') {
-			$probe = new CircleProbe();
-			$probe->includeSystemCircles()
-				  ->includePersonalCircles();
-			$localCircle = $this->circleRequest->getCircle($circleId, null, $probe);
-			if ($this->configService->isLocalInstance($localCircle->getInstance())) {
-				$this->setCurrentUser($localCircle->getOwner());
+			try {
+				$this->setOwnerAsCurrentUser($circleId);
 
 				return;
+			} catch (RemoteCircleException $e) {
 			}
 		}
 
@@ -578,6 +618,29 @@ class FederatedUserService {
 		}
 
 		$this->bypassCurrentUserCondition($bypass);
+	}
+
+
+	/**
+	 * @param string $circleId
+	 *
+	 * @throws CircleNotFoundException
+	 * @throws FederatedUserException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteCircleException
+	 * @throws RequestBuilderException
+	 */
+	public function setOwnerAsCurrentUser(string $circleId): void {
+		$probe = new CircleProbe();
+		$probe->includeSystemCircles()
+			  ->includePersonalCircles();
+		
+		$localCircle = $this->circleRequest->getCircle($circleId, null, $probe);
+		if ($this->configService->isLocalInstance($localCircle->getInstance())) {
+			$this->setCurrentUser($localCircle->getOwner());
+		} else {
+			throw new RemoteCircleException();
+		}
 	}
 
 
