@@ -72,6 +72,10 @@ class StatusCode {
 		132 => 'Member type not allowed'
 	];
 
+	public static $CIRCLE_DESTROY = [
+		120 => 'Circle is managed from an other app'
+	];
+
 	public static $MEMBER_LEVEL = [
 		120 => 'The designed member\'s level is too high',
 		121 => 'Incorrect Level'

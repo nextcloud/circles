@@ -102,6 +102,10 @@ class CirclesConfig extends Base {
 			 )
 			 ->addOption('initiator', '', InputOption::VALUE_REQUIRED, 'set an initiator to the request', '')
 			 ->addOption('initiator-type', '', InputOption::VALUE_REQUIRED, 'set initiator type', '0')
+			 ->addOption(
+				 'super-session', '',
+				 InputOption::VALUE_NONE, 'use super session to bypass some condition'
+			 )
 			 ->addOption('status-code', '', InputOption::VALUE_NONE, 'display status code on exception');
 	}
 
@@ -133,12 +137,16 @@ class CirclesConfig extends Base {
 		$circleId = (string)$input->getArgument('circle_id');
 
 		try {
-			$this->federatedUserService->commandLineInitiator(
-				$input->getOption('initiator'),
-				Member::parseTypeString($input->getOption('initiator-type')),
-				$circleId,
-				false
-			);
+			if ($input->getArgument('super-session')) {
+				$this->federatedUserService->bypassCurrentUserCondition(true);
+			} else {
+				$this->federatedUserService->commandLineInitiator(
+					$input->getOption('initiator'),
+					Member::parseTypeString($input->getOption('initiator-type')),
+					$circleId,
+					false
+				);
+			}
 
 			$circle = $this->circleService->getCircle($circleId);
 

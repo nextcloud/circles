@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles;
 
-use OCA\Circles\Tools\Exceptions\InvalidItemException;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\ContactAddressBookNotFoundException;
 use OCA\Circles\Exceptions\ContactFormatException;
@@ -59,10 +58,11 @@ use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\CircleService;
+use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\MembershipService;
-use OCP\IUserSession;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
 
 /**
  * Class CirclesManager
@@ -71,9 +71,6 @@ use OCP\IUserSession;
  */
 class CirclesManager {
 
-
-	/** @var CirclesQueryHelper */
-	private $circlesQueryHelper;
 
 	/** @var FederatedUserService */
 	private $federatedUserService;
@@ -87,14 +84,21 @@ class CirclesManager {
 	/** @var MembershipService */
 	private $membershipService;
 
+	/** @var ConfigService */
+	private $configService;
+
+	/** @var CirclesQueryHelper */
+	private $circlesQueryHelper;
+
 
 	/**
 	 * CirclesManager constructor.
 	 *
-	 * @param IUserSession $userSession
 	 * @param FederatedUserService $federatedUserService
 	 * @param CircleService $circleService
 	 * @param MemberService $memberService
+	 * @param MembershipService $membershipService
+	 * @param ConfigService $configService
 	 * @param CirclesQueryHelper $circlesQueryHelper
 	 */
 	public function __construct(
@@ -102,12 +106,14 @@ class CirclesManager {
 		CircleService $circleService,
 		MemberService $memberService,
 		MembershipService $membershipService,
+		ConfigService $configService,
 		CirclesQueryHelper $circlesQueryHelper
 	) {
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
 		$this->memberService = $memberService;
 		$this->membershipService = $membershipService;
+		$this->configService = $configService;
 		$this->circlesQueryHelper = $circlesQueryHelper;
 	}
 
@@ -136,6 +142,29 @@ class CirclesManager {
 		return $this->federatedUserService->getFederatedUser($federatedId, $type);
 	}
 
+	/**
+	 * @param string $userId
+	 *
+	 * @return FederatedUser
+	 * @throws CircleNotFoundException
+	 * @throws FederatedItemException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
+	 * @throws MemberNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
+	 * @throws UnknownRemoteException
+	 * @throws UserTypeNotFoundException
+	 */
+	public function getLocalFederatedUser(string $userId): FederatedUser {
+		return $this->getFederatedUser($userId, Member::TYPE_USER);
+	}
+
 
 	/**
 	 * @throws FederatedUserNotFoundException
@@ -160,6 +189,22 @@ class CirclesManager {
 		$this->federatedUserService->bypassCurrentUserCondition(true);
 	}
 
+
+	/**
+	 * @param string $appId
+	 * @param int $appSerial
+	 *
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
+	 * @throws FederatedUserException
+	 * @throws InvalidIdException
+	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
+	 */
+	public function startAppSession(string $appId, int $appSerial = Member::APP_DEFAULT): void {
+		$this->federatedUserService->setLocalCurrentApp($appId, $appSerial);
+	}
 
 	/**
 	 * $userId - userId to emulate as initiator (can be empty)
@@ -301,6 +346,66 @@ class CirclesManager {
 	 */
 	public function getCircle(string $singleId, ?CircleProbe $probe = null): Circle {
 		return $this->circleService->getCircle($singleId, $probe);
+	}
+
+
+	/**
+	 * @param Circle $circle
+	 *
+	 * @throws CircleNotFoundException
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws InitiatorNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
+	 */
+	public function updateConfig(Circle $circle): void {
+		$this->circleService->updateConfig($circle->getSingleId(), $circle->getConfig());
+	}
+
+
+	/**
+	 * @param string $circleId
+	 * @param bool $enabled
+	 *
+	 * @throws CircleNotFoundException
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
+	 * @throws FederatedUserException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws InitiatorNotFoundException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws UnknownRemoteException
+	 */
+	public function flagAsAppManaged(string $circleId, bool $enabled = true): void {
+		$this->federatedUserService->confirmSuperSession();
+		$this->federatedUserService->setOwnerAsCurrentUser($circleId);
+
+		$probe = new CircleProbe();
+		$probe->includeSystemCircles();
+
+		$localCircle = $this->circleService->getCircle($circleId, $probe);
+		if (!$this->configService->isLocalInstance($localCircle->getInstance())) {
+			throw new CircleNotFoundException('This Circle is not managed from this instance');
+		}
+
+		$config = $localCircle->getConfig();
+		if ($enabled) {
+			$config |= Circle::CFG_APP;
+		} else {
+			$config &= ~Circle::CFG_APP;
+		}
+
+		$this->circleService->updateConfig($circleId, $config);
 	}
 
 
