@@ -31,16 +31,16 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use OCA\Circles\Tools\Model\NCRequest;
-use OCA\Circles\Tools\Traits\TNCLogger;
-use OCA\Circles\Tools\Traits\TArrayTools;
-use OCA\Circles\Tools\Traits\TStringTools;
 use OC;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Tools\Model\NCRequest;
+use OCA\Circles\Tools\Traits\TArrayTools;
+use OCA\Circles\Tools\Traits\TNCLogger;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\IConfig;
 use OCP\IURLGenerator;
 
@@ -343,7 +343,7 @@ class ConfigService {
 		}
 
 		return (!$this->getBool('password_single_enabled', $circle->getSettings(), false)
-			|| $this->get('password_single', $circle->getSettings()) === '');
+				|| $this->get('password_single', $circle->getSettings()) === '');
 	}
 
 
@@ -761,9 +761,7 @@ class ConfigService {
 	public function confirmAllowedCircleTypes(Circle $circle): void {
 		$config = $circle->getConfig();
 		$config |= $this->getAppValueInt(ConfigService::CIRCLE_TYPES_FORCE);
-		$block = $this->getAppValueInt(ConfigService::CIRCLE_TYPES_BLOCK);
-		$config |= $block;
-		$config -= $block;
+		$config &= ~$this->getAppValueInt(ConfigService::CIRCLE_TYPES_BLOCK);
 		$circle->setConfig($config);
 	}
 }
