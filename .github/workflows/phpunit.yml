@@ -210,6 +210,7 @@ jobs:
       matrix:
         php-versions: ['7.4']
         databases: ['oci']
+        server-versions: ["master"]
 
     name: php${{ matrix.php-versions }}-${{ matrix.databases }}
 
