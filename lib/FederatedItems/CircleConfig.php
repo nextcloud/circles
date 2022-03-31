@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\FederatedItems;
 
-use OCA\Circles\Tools\Traits\TDeserialize;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Exceptions\FederatedItemBadRequestException;
 use OCA\Circles\Exceptions\FederatedItemException;
@@ -41,6 +40,7 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Tools\Traits\TDeserialize;
 
 /**
  * Class CircleConfig
@@ -87,6 +87,15 @@ class CircleConfig implements
 		$listing = Circle::$DEF_CFG_CORE_FILTER;
 		if (!$circle->isConfig(Circle::CFG_SYSTEM)) {
 			$listing = array_merge($listing, Circle::$DEF_CFG_SYSTEM_FILTER);
+		}
+
+		// filtering config values when not using Super Session
+		if (!$event->getParams()->gBool('superSession')) {
+			if ($circle->isConfig(Circle::CFG_APP)) {
+				$config |= Circle::CFG_APP;
+			} else {
+				$config &= ~Circle::CFG_APP;
+			}
 		}
 
 		$confirmed = true;
