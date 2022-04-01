@@ -63,6 +63,7 @@ use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Tools\Exceptions\InvalidItemException;
+use Throwable;
 
 /**
  * Class CirclesManager
@@ -205,6 +206,40 @@ class CirclesManager {
 	public function startAppSession(string $appId, int $appSerial = Member::APP_DEFAULT): void {
 		$this->federatedUserService->setLocalCurrentApp($appId, $appSerial);
 	}
+
+	
+	/**
+	 * Run a single method as Super, then Super level will be removed
+	 *
+	 * @throws Throwable
+	 * @noinspection PhpUndefinedVariableInspection
+	 */
+	public function runAsSuperSession(string $method, array $params = []) {
+		$currentUser = $this->federatedUserService->getCurrentUser();
+		$this->startSuperSession();
+
+		$throwable = null;
+		try {
+			$result = call_user_func_array([$this, $method], $params);
+		} catch (Throwable $t) {
+			$throwable = $t;
+		}
+
+		$this->federatedUserService->bypassCurrentUserCondition(false);
+		if (!is_null($currentUser)) {
+			try {
+				$this->federatedUserService->setCurrentUser($currentUser);
+			} catch (FederatedUserException $e) {
+			}
+		}
+
+		if (!is_null($throwable)) {
+			throw $throwable;
+		}
+
+		return $result;
+	}
+
 
 	/**
 	 * $userId - userId to emulate as initiator (can be empty)
