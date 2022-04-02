@@ -112,25 +112,10 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 	/**
 	 * @param Membership $membership
 	 */
-	public function removeByMembership(Membership $membership) {
+	public function deleteByMembership(Membership $membership) {
 		$qb = $this->getShareDeleteSql();
 		$qb->limitToShareWith($membership->getCircleId());
 		$qb->limit('uid_initiator', $membership->getSingleId());
-
-		$qb->execute();
-	}
-
-
-	/**
-	 * @param string $initiator
-	 * @param string $shareWith
-	 *
-	 * @deprecated in NC30 when initiator uses FederatedUser - then, we can use removeByMembership()
-	 */
-	public function removeByInitiatorAndShareWith(string $initiator, string $shareWith) {
-		$qb = $this->getShareDeleteSql();
-		$qb->limitToShareWith($shareWith);
-		$qb->limit('uid_initiator', $initiator);
 
 		$qb->execute();
 	}
@@ -441,13 +426,16 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		$qb->execute();
 	}
 
-
 	/**
 	 * @param string $circleId
+	 * @param string $initiator
 	 */
-	public function deleteFromCircle(string $circleId): void {
+	public function deleteSharesToCircle(string $circleId, string $initiator = ''): void {
 		$qb = $this->getShareDeleteSql();
 		$qb->andWhere($qb->exprLimit('share_with', $circleId));
+		if ($initiator !== '') {
+			$qb->limit('uid_initiator', $initiator);
+		}
 
 		$qb->execute();
 	}

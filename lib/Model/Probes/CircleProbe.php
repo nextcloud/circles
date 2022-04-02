@@ -367,6 +367,13 @@ class CircleProbe extends MemberProbe {
 
 
 	/**
+	 * @return string
+	 */
+	public function getChecksum(): string {
+		return md5(json_encode($this->getAsOptions()));
+	}
+
+	/**
 	 * Return a JSON object with includes as options
 	 *
 	 * @return array

@@ -121,58 +121,6 @@ class FileShare implements
 		}
 
 		$this->eventService->fileShareCreating($event, $mount);
-
-//		$this->eventService->federatedShareCreated($wrappedShare, $mount);
-
-
-//		$this->eventService->fileSharing($event);
-
-//		$this->mountRequest->create($mount);
-//		$circle = $event->getDeprecatedCircle();
-//
-//		// if event is not local, we create a federated file to the right instance of Nextcloud, using the right token
-//		if (!$this->configService->isLocalInstance($event->getSource())) {
-//			try {
-//				$share = $this->getShareFromData($event->getData());
-//			} catch (Exception $e) {
-//				return;
-//			}
-//
-//			$data = $event->getData();
-//			$token = $data->g('gs_federated');
-//			$filename = $data->g('gs_filename');
-//
-//			$gsShare = new GSShare($share->getSharedWith(), $token);
-//			$gsShare->setOwner($share->getShareOwner());
-//			$gsShare->setInstance($event->getSource());
-//			$gsShare->setParent(-1);
-//			$gsShare->setMountPoint($filename);
-//
-//			$this->gsSharesRequest->create($gsShare);
-//		} else {
-//			// if the event is local, we send mail to mail-as-members
-//			$members = $this->membersRequest->forceGetMembers(
-//				$circle->getUniqueId(), DeprecatedMember::LEVEL_MEMBER, DeprecatedMember::TYPE_MAIL, true
-//			);
-//
-//			foreach ($members as $member) {
-//				$this->sendShareToContact($event, $circle, $member->getMemberId(), [$member->getUserId()]);
-//			}
-//		}
-//
-//		// we also fill the event's result for further things, like contact-as-members
-//		$members = $this->membersRequest->forceGetMembers(
-//			$circle->getUniqueId(), DeprecatedMember::LEVEL_MEMBER, DeprecatedMember::TYPE_CONTACT, true
-//		);
-//
-//		$accounts = [];
-//		foreach ($members as $member) {
-//			if ($member->getInstance() === '') {
-//				$accounts[] = $this->miscService->getInfosFromContact($member);
-//			}
-//		}
-//
-//		$event->setResult(new SimpleDataStore(['contacts' => $accounts]));
 	}
 
 
@@ -182,25 +130,5 @@ class FileShare implements
 	 */
 	public function result(FederatedEvent $event, array $results): void {
 		$this->eventService->fileShareCreated($event, $results);
-
-//		$event = null;
-//		$contacts = [];
-//		foreach (array_keys($events) as $instance) {
-//			$event = $events[$instance];
-//			$contacts = array_merge(
-//				$contacts, $event->getResult()
-//								 ->gArray('contacts')
-//			);
-//		}
-//
-//		if ($event === null || !$event->hasCircle()) {
-//			return;
-//		}
-//
-//		$circle = $event->getDeprecatedCircle();
-//
-//		foreach ($contacts as $contact) {
-//			$this->sendShareToContact($event, $circle, $contact['memberId'], $contact['emails']);
-//		}
 	}
 }

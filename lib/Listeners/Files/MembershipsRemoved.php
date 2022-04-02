@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Listeners\Files;
 
-use OCA\Circles\Tools\Traits\TStringTools;
 use OCA\Circles\CirclesManager;
 use OCA\Circles\Db\ShareWrapperRequest;
 use OCA\Circles\Events\MembershipsRemovedEvent;
@@ -51,6 +50,8 @@ use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Exceptions\UserTypeNotFoundException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Service\ShareWrapperService;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 
@@ -66,8 +67,7 @@ class MembershipsRemoved implements IEventListener {
 	/** @var CirclesManager */
 	private $circlesManager;
 
-	/** @var ShareWrapperRequest */
-	private $shareWrapperRequest;
+	private ShareWrapperService $shareWrapperService;
 
 	/** @var FederatedUserService */
 	private $federatedUserService;
@@ -77,16 +77,16 @@ class MembershipsRemoved implements IEventListener {
 	 * MembershipsRemoved constructor.
 	 *
 	 * @param CirclesManager $circlesManager
-	 * @param ShareWrapperRequest $shareWrapperRequest
+	 * @param ShareWrapperService $shareWrapperService
 	 * @param FederatedUserService $federatedUserService
 	 */
 	public function __construct(
 		CirclesManager $circlesManager,
-		ShareWrapperRequest $shareWrapperRequest,
+		ShareWrapperService $shareWrapperService,
 		FederatedUserService $federatedUserService
 	) {
 		$this->circlesManager = $circlesManager;
-		$this->shareWrapperRequest = $shareWrapperRequest;
+		$this->shareWrapperService = $shareWrapperService;
 		$this->federatedUserService = $federatedUserService;
 	}
 
@@ -123,9 +123,9 @@ class MembershipsRemoved implements IEventListener {
 			$federatedUser = $this->circlesManager->getFederatedUser($membership->getSingleId());
 			if ($federatedUser->getUserType() === Member::TYPE_USER
 				&& $federatedUser->isLocal()) {
-				$this->shareWrapperRequest->removeByInitiatorAndShareWith(
-					$federatedUser->getUserId(),
-					$membership->getCircleId()
+				$this->shareWrapperService->deleteSharesToCircle(
+					$membership->getCircleId(),
+					$federatedUser->getUserId()
 				);
 			}
 		}

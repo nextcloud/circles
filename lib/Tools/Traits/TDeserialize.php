@@ -78,14 +78,19 @@ trait TDeserialize {
 
 
 	/**
-	 * @param array $data
+	 * @param string $json
 	 * @param string $class
 	 *
 	 * @return IDeserializable[]
 	 * @throws InvalidItemException
 	 */
-	public function deserializeArray(array $data, string $class): array {
+	public function deserializeArray(string $json, string $class): array {
 		$arr = [];
+		$data = json_decode($json, true);
+		if (!is_array($data)) {
+			return $arr;
+		}
+
 		foreach ($data as $entry) {
 			$arr[] = $this->deserialize($entry, $class);
 		}

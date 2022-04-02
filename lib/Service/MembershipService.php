@@ -31,8 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use OCA\Circles\Tools\Exceptions\ItemNotFoundException;
-use OCA\Circles\Tools\Traits\TNCLogger;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\MembershipRequest;
@@ -44,6 +42,8 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
+use OCA\Circles\Tools\Exceptions\ItemNotFoundException;
+use OCA\Circles\Tools\Traits\TNCLogger;
 
 /**
  * Class MembershipService
@@ -66,6 +66,8 @@ class MembershipService {
 	/** @var EventService */
 	private $eventService;
 
+	private ShareWrapperService $shareWrapperService;
+
 	/** @var OutputService */
 	private $outputService;
 
@@ -77,6 +79,7 @@ class MembershipService {
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
 	 * @param EventService $eventService
+	 * @param ShareWrapperService $shareWrapperService
 	 * @param OutputService $outputService
 	 */
 	public function __construct(
@@ -84,12 +87,14 @@ class MembershipService {
 		CircleRequest $circleRequest,
 		MemberRequest $memberRequest,
 		EventService $eventService,
+		ShareWrapperService $shareWrapperService,
 		OutputService $outputService
 	) {
 		$this->membershipRequest = $membershipRequest;
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
 		$this->eventService = $eventService;
+		$this->shareWrapperService = $shareWrapperService;
 		$this->outputService = $outputService;
 	}
 
@@ -337,6 +342,9 @@ class MembershipService {
 			if (!in_array($item->getCircleId(), $circleIds)) {
 				$deprecated[] = $item;
 				$this->membershipRequest->delete($item);
+
+				// clearing the getSharedWith() cache for singleId related to the membership
+				$this->shareWrapperService->clearCache($item->getSingleId());
 			}
 		}
 
@@ -365,6 +373,9 @@ class MembershipService {
 				$this->membershipRequest->insert($membership);
 				$new[] = $membership;
 			}
+
+			// clearing the getSharedWith() cache for singleId related to the membership
+			$this->shareWrapperService->clearCache($membership->getSingleId());
 		}
 
 		return $new;
