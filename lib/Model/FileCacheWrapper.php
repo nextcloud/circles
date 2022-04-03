@@ -475,7 +475,7 @@ class FileCacheWrapper extends ManagedModel implements IQueryRow, IDeserializabl
 			 ->setPath($this->get('path', $data))
 			 ->setPermissions($this->getInt('permissions', $data))
 			 ->setStorage($this->get('storage', $data))
-			 ->setStorageId($this->getInt('storage', $data))
+			 ->setStorageId($this->getInt('storageId', $data))
 			 ->setPathHash($this->get('pathHash', $data))
 			 ->setParent($this->getInt('parent', $data))
 			 ->setName($this->get('name', $data))

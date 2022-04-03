@@ -42,8 +42,8 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\ShareWrapper;
-use OCP\IGroupManager;
 use OCA\Circles\Tools\Traits\TNCLogger;
+use OCP\IGroupManager;
 use OCP\IUserManager;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -80,6 +80,8 @@ class MaintenanceService {
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
+	private ShareWrapperService $shareWrapperService;
+
 	/** @var MembershipService */
 	private $membershipService;
 
@@ -101,11 +103,13 @@ class MaintenanceService {
 	 * MaintenanceService constructor.
 	 *
 	 * @param IUserManager $userManager
+	 * @param IGroupManager $groupManager
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
 	 * @param ShareWrapperRequest $shareWrapperRequest
 	 * @param SyncService $syncService
 	 * @param FederatedUserService $federatedUserService
+	 * @param ShareWrapperService $shareWrapperService
 	 * @param MembershipService $membershipService
 	 * @param EventWrapperService $eventWrapperService
 	 * @param CircleService $circleService
@@ -119,6 +123,7 @@ class MaintenanceService {
 		ShareWrapperRequest $shareWrapperRequest,
 		SyncService $syncService,
 		FederatedUserService $federatedUserService,
+		ShareWrapperService $shareWrapperService,
 		MembershipService $membershipService,
 		EventWrapperService $eventWrapperService,
 		CircleService $circleService,
@@ -131,6 +136,7 @@ class MaintenanceService {
 		$this->shareWrapperRequest = $shareWrapperRequest;
 		$this->syncService = $syncService;
 		$this->federatedUserService = $federatedUserService;
+		$this->shareWrapperService = $shareWrapperService;
 		$this->eventWrapperService = $eventWrapperService;
 		$this->membershipService = $membershipService;
 		$this->circleService = $circleService;
@@ -347,7 +353,7 @@ class MaintenanceService {
 
 		foreach ($shares as $share) {
 			if (!in_array($share, $circles)) {
-				$this->shareWrapperRequest->deleteFromCircle($share);
+				$this->shareWrapperService->deleteSharesToCircle($share, '', true);
 			}
 		}
 	}
@@ -405,7 +411,7 @@ class MaintenanceService {
 	private function fixSubCirclesDisplayName(): void {
 		$probe = new CircleProbe();
 		$probe->includeSingleCircles();
-		
+
 		$circles = $this->circleService->getCircles($probe);
 
 		foreach ($circles as $circle) {
