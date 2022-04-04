@@ -99,6 +99,9 @@ class CircleService {
 	/** @var MemberService */
 	private $memberService;
 
+	/** @var PermissionService */
+	private $permissionService;
+
 	/** @var ConfigService */
 	private $configService;
 
@@ -112,6 +115,7 @@ class CircleService {
 	 * @param FederatedUserService $federatedUserService
 	 * @param FederatedEventService $federatedEventService
 	 * @param MemberService $memberService
+	 * @param PermissionService $permissionService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
@@ -123,6 +127,7 @@ class CircleService {
 		FederatedUserService $federatedUserService,
 		FederatedEventService $federatedEventService,
 		MemberService $memberService,
+		PermissionService $permissionService,
 		ConfigService $configService
 	) {
 		$this->l10n = $l10n;
@@ -133,6 +138,7 @@ class CircleService {
 		$this->federatedUserService = $federatedUserService;
 		$this->federatedEventService = $federatedEventService;
 		$this->memberService = $memberService;
+		$this->permissionService = $permissionService;
 		$this->configService = $configService;
 
 		$this->setup('app', Application::APP_ID);
@@ -195,7 +201,7 @@ class CircleService {
 		}
 
 		$this->confirmName($circle);
-		$this->configService->confirmAllowedCircleTypes($circle);
+		$this->permissionService->confirmAllowedCircleTypes($circle);
 
 		$member = new Member();
 		$member->importFromIFederatedUser($owner);

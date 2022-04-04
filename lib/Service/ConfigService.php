@@ -106,6 +106,10 @@ class ConfigService {
 	public const ALLOWED_TYPES = 'allowed_types';
 	public const CIRCLE_TYPES_FORCE = 'circle_types_force';
 	public const CIRCLE_TYPES_BLOCK = 'circle_types_block';
+
+	public const BYPASS_CIRCLE_TYPES = 'bypass_circle_types';
+	public const LIMIT_CIRCLE_CREATION = 'limit_circle_creation';
+
 	public const MIGRATION_BYPASS = 'migration_bypass';
 	public const MIGRATION_22 = 'migration_22';
 	public const MIGRATION_22_1 = 'migration_22_1';
@@ -182,6 +186,9 @@ class ConfigService {
 		self::ALLOWED_TYPES => Member::ALLOWING_ALL_TYPES,
 		self::CIRCLE_TYPES_FORCE => '0',
 		self::CIRCLE_TYPES_BLOCK => '0',
+
+		self::BYPASS_CIRCLE_TYPES => '',
+		self::LIMIT_CIRCLE_CREATION => '',
 
 		self::MIGRATION_BYPASS => '0',
 		self::MIGRATION_22 => '0',

@@ -31,8 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Controller;
 
-use OCA\Circles\Tools\Traits\TDeserialize;
-use OCA\Circles\Tools\Traits\TNCLogger;
 use Exception;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
@@ -49,7 +47,10 @@ use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\MembershipService;
+use OCA\Circles\Service\PermissionService;
 use OCA\Circles\Service\SearchService;
+use OCA\Circles\Tools\Traits\TDeserialize;
+use OCA\Circles\Tools\Traits\TNCLogger;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\OCS\OCSException;
 use OCP\AppFramework\OCSController;
@@ -81,6 +82,9 @@ class LocalController extends OcsController {
 	/** @var MembershipService */
 	private $membershipService;
 
+	/** @var PermissionService */
+	private $permissionService;
+
 	/** @var SearchService */
 	private $searchService;
 
@@ -109,6 +113,7 @@ class LocalController extends OcsController {
 		CircleService $circleService,
 		MemberService $memberService,
 		MembershipService $membershipService,
+		PermissionService $permissionService,
 		SearchService $searchService,
 		ConfigService $configService
 	) {
@@ -119,6 +124,7 @@ class LocalController extends OcsController {
 		$this->circleService = $circleService;
 		$this->memberService = $memberService;
 		$this->membershipService = $membershipService;
+		$this->permissionService = $permissionService;
 		$this->searchService = $searchService;
 		$this->configService = $configService;
 
@@ -139,6 +145,7 @@ class LocalController extends OcsController {
 	public function create(string $name, bool $personal = false, bool $local = false): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
+			$this->permissionService->confirmCircleCreation();
 
 			$circle = $this->circleService->create($name, null, $personal, $local);
 
@@ -572,14 +579,15 @@ class LocalController extends OcsController {
 
 
 	/**
-	 * @throws FederatedUserNotFoundException
-	 * @throws InvalidIdException
+	 * @return void
 	 * @throws FederatedUserException
-	 * @throws SingleCircleNotFoundException
-	 * @throws RequestBuilderException
+	 * @throws FederatedUserNotFoundException
 	 * @throws FrontendException
+	 * @throws InvalidIdException
+	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
 	 */
-	private function setCurrentFederatedUser() {
+	private function setCurrentFederatedUser(): void {
 		if (!$this->configService->getAppValueBool(ConfigService::FRONTEND_ENABLED)) {
 			throw new FrontendException('frontend disabled');
 		}
