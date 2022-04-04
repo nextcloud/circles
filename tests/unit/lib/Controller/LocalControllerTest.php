@@ -33,6 +33,7 @@ use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\MembershipService;
+use OCA\Circles\Service\PermissionService;
 use OCA\Circles\Service\SearchService;
 use OCA\Circles\Tools\Traits\TDeserialize;
 use OCP\AppFramework\Http\DataResponse;
@@ -69,6 +70,9 @@ class LocalControllerTest extends TestCase {
 	/** @var SearchService|MockObject */
 	private $searchService;
 
+	/** @var PermissionService|MockObject */
+	private $permissionService;
+
 	/** @var ConfigService|MockObject */
 	private $configService;
 
@@ -84,9 +88,19 @@ class LocalControllerTest extends TestCase {
 		$this->memberService = $this->createMock(MemberService::class);
 		$this->membershipService = $this->createMock(MembershipService::class);
 		$this->searchService = $this->createMock(SearchService::class);
+		$this->permissionService = $this->createMock(PermissionService::class);
 		$this->configService = $this->createMock(ConfigService::class);
 		$this->configService->expects($this->any())->method('getAppValueBool')->with(ConfigService::FRONTEND_ENABLED)->willReturn(true);
-		$this->localController = new LocalController(Application::APP_ID, $this->request, $this->userSession, $this->federatedUserService, $this->circleService, $this->memberService, $this->membershipService, $this->searchService, $this->configService);
+		$this->localController = new LocalController(Application::APP_ID,
+													 $this->request,
+													 $this->userSession,
+													 $this->federatedUserService,
+													 $this->circleService,
+													 $this->memberService,
+													 $this->membershipService,
+													 $this->permissionService,
+													 $this->searchService,
+													 $this->configService);
 	}
 
 	/**
