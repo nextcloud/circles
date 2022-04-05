@@ -352,4 +352,4 @@ OC.L10N.register(
     "Skip invitation step to closed circles" : "Ignorer l'invitation aux cercles fermés",
     "Moderators can add member to closed circles without user approval." : "Les modérateurs peuvent ajouter un membre aux cercles fermés sans autorisation de l'utilisateur."
 },
-"nplurals=2; plural=(n > 1);");
+"nplurals=3; plural=(n==0 || n==1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");
