@@ -60,6 +60,7 @@ trait TConsoleTree {
 		);
 
 		$output = new ConsoleOutput();
+		$prec = 0;
 
 		while (true) {
 			$node = $root->current();
