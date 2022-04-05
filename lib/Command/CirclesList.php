@@ -257,9 +257,9 @@ class CirclesList extends Base {
 					Circle::$DEF_SOURCE[$circle->getSource()],
 					$this->cut($displayName ? $owner->getDisplayName() : $owner->getUserId(), 40),
 					$this->configService->displayInstance($owner->getInstance()),
-					$circle->getPopulation() . '/' . $this->getInt(
-						'members_limit', $circle->getSettings(), -1
-					)
+					$circle->getPopulation() . '/'
+					. $this->getInt('members_limit', $circle->getSettings(), -1)
+					. ' (' . $circle->getPopulationInherited() . ')'
 				]
 			);
 		}
