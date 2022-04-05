@@ -142,7 +142,9 @@ class CircleCreate implements
 
 		$this->circleRequest->save($circle);
 		$this->memberRequest->save($owner);
+
 		$this->membershipService->onUpdate($owner->getSingleId());
+		$this->membershipService->updatePopulation($circle);
 
 		$this->eventService->circleCreating($event);
 	}
