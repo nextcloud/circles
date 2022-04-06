@@ -172,6 +172,14 @@ class CirclesConfig extends Base {
 
 		if (strtolower($input->getOption('output')) === 'json') {
 			$output->writeln(json_encode($outcome, JSON_PRETTY_PRINT));
+		} elseif (strtolower($input->getOption('output')) !== 'none') {
+			$circle = $this->circleService->getCircle($circleId);
+			$output->writeln(
+				json_encode(
+					Circle::getCircleFlags($circle, Circle::FLAGS_LONG),
+					JSON_PRETTY_PRINT
+				)
+			);
 		}
 
 		return 0;
