@@ -159,6 +159,7 @@ class Circle extends ManagedModel implements
 		4 => 'Email Address',
 		8 => 'Contact',
 		16 => 'Circle',
+		10000 => 'Nextcloud App',
 		10001 => 'Circles App',
 		10002 => 'Admin Command Line',
 		11000 => '3rd party app',
@@ -627,6 +628,15 @@ class Circle extends ManagedModel implements
 		}
 
 		return $this->getOwner()->getInstance();
+	}
+
+
+	/**
+	 * @return bool
+	 * @throws OwnerNotFoundException
+	 */
+	public function isLocal(): bool {
+		return $this->getManager()->isLocalInstance($this->getInstance());
 	}
 
 
