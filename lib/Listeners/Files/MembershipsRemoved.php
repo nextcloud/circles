@@ -123,7 +123,7 @@ class MembershipsRemoved implements IEventListener {
 			$federatedUser = $this->circlesManager->getFederatedUser($membership->getSingleId());
 			if ($federatedUser->getUserType() === Member::TYPE_USER
 				&& $federatedUser->isLocal()) {
-				$this->shareWrapperService->deleteSharesToCircle(
+				$this->shareWrapperService->deleteUserSharesToCircle(
 					$membership->getCircleId(),
 					$federatedUser->getUserId()
 				);
