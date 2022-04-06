@@ -314,6 +314,14 @@ class MaintenanceService {
 	}
 
 
+	private function removeOrphanShares(): void {
+		$this->shareWrapperRequest->removeOrphanShares();
+	}
+
+
+	/**
+	 * @throws RequestBuilderException
+	 */
 	private function removeDeprecatedShares(): void {
 		$probe = new CircleProbe();
 		$probe->includePersonalCircles()
