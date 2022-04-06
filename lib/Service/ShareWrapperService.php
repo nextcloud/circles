@@ -112,6 +112,15 @@ class ShareWrapperService {
 
 	/**
 	 * @param string $circleId
+	 */
+	public function deleteAllSharesToCircle(string $circleId): void {
+		$this->cache->clear('');
+		$this->shareWrapperRequest->deleteSharesToCircle($circleId, '');
+	}
+
+
+	/**
+	 * @param string $circleId
 	 * @param FederatedUser|null $shareRecipient
 	 * @param FederatedUser|null $shareInitiator
 	 * @param bool $completeDetails
