@@ -165,6 +165,7 @@ OC.L10N.register(
     "This user does not exist" : "此用戶不存在",
     "Email format is not valid" : "電子郵件格式無效",
     "This contact is not available" : "此聯繫人不可用",
+    "You have no permission to create a new circle" : "您沒有權限來創建新社交圈子",
     "%s shared a file with \"%s\"." : "%s 與「%s」分享了一個檔案。",
     "%s shared a file with you." : "%s 與您分享了檔案。",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s 和您分享了一些内容。\n您應已收到一封帶有訪問連結的電郵。\n",
