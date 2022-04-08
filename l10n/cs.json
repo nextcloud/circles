@@ -163,6 +163,7 @@
     "This user does not exist" : "Tento uživatel neexistuje",
     "Email format is not valid" : "Neplatný formát e-mailu",
     "This contact is not available" : "Tento kontakt není k dispozici",
+    "You have no permission to create a new circle" : "Nemáte oprávnění pro vytváření nových okruhů",
     "%s shared a file with \"%s\"." : "%s nasdílel(a) soubor uživateli „%s“",
     "%s shared a file with you." : "%s vám nasdílel(a) soubor.",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s vám nasdílel(a) nějaký obsah.\nUž by vám měl přijít zvlášť e-mail s odkazem pro přístup k němu.\n",

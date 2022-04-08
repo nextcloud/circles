@@ -165,6 +165,7 @@ OC.L10N.register(
     "This user does not exist" : "Ten użytkownik nie istnieje",
     "Email format is not valid" : "Adres e-mail jest nieprawidłowy",
     "This contact is not available" : "Kontakt jest niedostępny",
+    "You have no permission to create a new circle" : "Nie masz uprawnień do utworzenia nowego kręgu",
     "%s shared a file with \"%s\"." : "%s udostępnił plik z \"%s\".",
     "%s shared a file with you." : "%s udostępnił Tobie plik.",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s udostępnił Tobie niektóre treści.\nPowinieneś już otrzymać osobną wiadomość e-mail z linkiem, aby uzyskać do niego dostęp.\n",
