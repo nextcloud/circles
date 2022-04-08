@@ -163,6 +163,7 @@
     "This user does not exist" : "Ez a felhasználó nem létezik",
     "Email format is not valid" : "Az e-mail formátum érvénytelen",
     "This contact is not available" : "A névjegy nem érhető el",
+    "You have no permission to create a new circle" : "Nincs jogosultsága arra, hogy új kört hozzon létre",
     "%s shared a file with \"%s\"." : "%s megosztott egy fájlt a következővel: „%s”.",
     "%s shared a file with you." : "%s megosztott egy fájlt Önnel.",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s tartalmat osztott meg Önnel.\nMár meg kellett volna kapnia a különálló e-mailt, amely a hozzáféréshez szükséges hivatkozást tartalmazza.\n",
