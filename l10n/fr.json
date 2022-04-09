@@ -163,6 +163,7 @@
     "This user does not exist" : "Cet utilisateur n'existe pas",
     "Email format is not valid" : "Le format d'Email est invalide",
     "This contact is not available" : "Ce contact n'est pas disponible",
+    "You have no permission to create a new circle" : "Vous n'avez pas l'autorisation de créer un nouveau cercle",
     "%s shared a file with \"%s\"." : "%s a partagé un fichier avec \"%s\".",
     "%s shared a file with you." : "%sa partagé un fichier avec vous.",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s a partagé quelque chose avec vous\nVous devriez avoir déjà reçu un courriel séparé avec un lien pour y accéder\n",
