@@ -163,6 +163,7 @@
     "This user does not exist" : "此使用者不存在",
     "Email format is not valid" : "電子郵件格式無效",
     "This contact is not available" : "此聯絡人不可用",
+    "You have no permission to create a new circle" : "您無權建立新的小圈圈",
     "%s shared a file with \"%s\"." : "%s 與「%s」分享了一個檔案。",
     "%s shared a file with you." : "%s 與您分享了一個檔案。",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s 與您分享了一些內容。\n您應該會收到一封包含存取連結的電子郵件。\n",

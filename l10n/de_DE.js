@@ -165,6 +165,7 @@ OC.L10N.register(
     "This user does not exist" : "Dieser Benutzer existiert nicht",
     "Email format is not valid" : "Das E-Mail-Format ist ungültig",
     "This contact is not available" : "Dieser Kontakt ist nicht verfügbar",
+    "You have no permission to create a new circle" : "Sie haben nicht die Berechtigung einen neuen Kreis zu erstellen",
     "%s shared a file with \"%s\"." : "%s hat eine Datei mit \"%s\" geteilt.",
     "%s shared a file with you." : "%s hat eine Datei mit Ihnen geteilt.",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s hat einigen Inhalt mit Ihnen geteilt.\nSie sollten bereits eine weitere E-Mail mit einem Link für den Zugriff erhalten haben.\n",
