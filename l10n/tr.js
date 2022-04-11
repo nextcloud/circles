@@ -165,6 +165,7 @@ OC.L10N.register(
     "This user does not exist" : "Bu kullanıcı bulunamadı",
     "Email format is not valid" : "E-posta biçimi geçersiz",
     "This contact is not available" : "Bu kişi kullanılamıyor",
+    "You have no permission to create a new circle" : "Yeni bir çevre ekleme izniniz yok",
     "%s shared a file with \"%s\"." : "%s, \"%s\" ile bir dosya paylaştı.",
     "%s shared a file with you." : "%s sizinle bir dosya paylaştı.",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s sizinle bir içerik paylaştı.\nErişim bağlantısını içeren başka bir e-posta daha almış olmalısınız.\n",
