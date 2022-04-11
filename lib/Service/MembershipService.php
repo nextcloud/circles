@@ -303,17 +303,25 @@ class MembershipService {
 
 
 	/**
+	 * Add the new membership if unknown or Update known membership if:
+	 *  - new membership comes with more power
+	 *  - level is the same, but inheritance is shorter
+	 *
 	 * @param Membership $membership
 	 * @param Membership[] $memberships
 	 */
 	private function fillMemberships(Membership $membership, array &$memberships) {
 		foreach ($memberships as $known) {
 			if ($known->getCircleId() === $membership->getCircleId()) {
-				if ($known->getLevel() < $membership->getLevel()) {
+				if ($known->getLevel() < $membership->getLevel()
+					|| ($known->getLevel() === $membership->getLevel()
+						&& $known->getInheritanceDepth() > $membership->getInheritanceDepth())
+				) {
 					$known->setLevel($membership->getLevel());
-//					$known->setMemberId($membership->getMemberId());
-					$known->setSingleId($membership->getSingleId());
+					$known->setInheritanceFirst($membership->getInheritanceFirst());
 					$known->setInheritanceLast($membership->getInheritanceLast());
+					$known->setInheritanceDepth($membership->getInheritanceDepth());
+					$known->setInheritancePath($membership->getInheritancePath());
 				}
 
 				return;
@@ -363,7 +371,8 @@ class MembershipService {
 		foreach ($memberships as $membership) {
 			try {
 				$item = $this->getMembershipsFromList($known, $membership->getCircleId());
-				if ($item->getLevel() !== $membership->getLevel()) {
+				if ($item->getLevel() !== $membership->getLevel()
+					|| $item->getInheritanceDepth() !== $membership->getInheritanceDepth()) {
 					$this->membershipRequest->update($membership);
 					$new[] = $item;
 				} elseif ($item->getInheritancePath() !== $membership->getInheritancePath()) {
