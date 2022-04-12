@@ -462,6 +462,14 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 
 
 	/**
+	 * @return Membership[]
+	 */
+	public function getAccountedMemberships(bool $detailed = false): array {
+		return $this->getManager()->getAccountedMemberships($this, $detailed);
+	}
+
+
+	/**
 	 * @param array $members
 	 * @param bool $detailed
 	 *
@@ -515,7 +523,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	 * @throws UnknownRemoteException
 	 */
 	public function getInheritedMembers(bool $detailed = false, bool $remote = false): array {
-		if (is_null($this->inheritedMembers)
+		if (is_null($this->inheritedMembers) // fix: array cannot be null.
 			|| ($detailed && !$this->detailedInheritedMember)) {
 			$this->getManager()->getInheritedMembers($this, $detailed);
 		}
@@ -549,12 +557,8 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	/**
 	 * @return Membership[]
 	 */
-	public function getMemberships(): array {
-		if (!$this->hasMemberships()) {
-			$this->getManager()->getMemberships($this);
-		}
-
-		return $this->memberships;
+	public function getMemberships(bool $detailed = false, int $level = 0): array {
+		return $this->getManager()->getMemberships($this, $detailed, $level);
 	}
 
 

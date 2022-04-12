@@ -307,6 +307,10 @@ class CircleJoin implements
 				throw new FederatedItemBadRequestException(StatusCode::$CIRCLE_JOIN[124], 124);
 			}
 
+			if ($this->membershipService->limitToGroupMembersOnly($member, $circle)) {
+				throw new FederatedItemBadRequestException(StatusCode::$CIRCLE_JOIN[125], 125);
+			}
+
 			$member->setId($this->token(ManagedModel::ID_LENGTH));
 
 			if ($circle->isConfig(Circle::CFG_REQUEST)) {

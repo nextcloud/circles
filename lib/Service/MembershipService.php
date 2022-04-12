@@ -38,12 +38,14 @@ use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
+use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
 use OCA\Circles\Tools\Exceptions\ItemNotFoundException;
 use OCA\Circles\Tools\Traits\TNCLogger;
+use OCP\Share\IManager;
 
 /**
  * Class MembershipService
@@ -53,6 +55,9 @@ use OCA\Circles\Tools\Traits\TNCLogger;
 class MembershipService {
 	use TNCLogger;
 
+
+	/** @var IManager */
+	private $shareManager;
 
 	/** @var MembershipRequest */
 	private $membershipRequest;
@@ -75,6 +80,7 @@ class MembershipService {
 	/**
 	 * MembershipService constructor.
 	 *
+	 * @param IManager $shareManager
 	 * @param MembershipRequest $membershipRequest
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
@@ -83,6 +89,7 @@ class MembershipService {
 	 * @param OutputService $outputService
 	 */
 	public function __construct(
+		IManager $shareManager,
 		MembershipRequest $membershipRequest,
 		CircleRequest $circleRequest,
 		MemberRequest $memberRequest,
@@ -90,6 +97,7 @@ class MembershipService {
 		ShareWrapperService $shareWrapperService,
 		OutputService $outputService
 	) {
+		$this->shareManager = $shareManager;
 		$this->membershipRequest = $membershipRequest;
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
@@ -288,7 +296,7 @@ class MembershipService {
 		$singleIds = array_map(
 			function (Membership $item): string {
 				return $item->getSingleId();
-			}, $this->membershipRequest->getInherited($id)
+			}, $this->membershipRequest->getAccounted($id)
 		);
 
 		foreach ($singleIds as $singleId) {
@@ -405,7 +413,11 @@ class MembershipService {
 	 */
 	public function updatePopulation(Circle $circle): void {
 		$local = $inherited = 0;
-		$memberships = $this->membershipRequest->getInherited($circle->getSingleId(), Member::LEVEL_MEMBER);
+		$memberships = $this->membershipRequest->getAccounted(
+			$circle->getSingleId(),
+			false,
+			Member::LEVEL_MEMBER
+		);
 		foreach ($memberships as $membership) {
 			$inherited++;
 			if ($membership->getCircleId() === $circle->getSingleId()) {
@@ -417,5 +429,81 @@ class MembershipService {
 		$settings['population'] = $local;
 		$settings['populationInherited'] = $inherited;
 		$this->circleRequest->updateSettings($circle->setSettings($settings));
+	}
+
+
+	/**
+	 * based on Core Configuration, limit new members to shareGroupMembersOnly
+	 * returns false if the new member is good to go.
+	 *
+	 * @param FederatedUser $federatedUser
+	 * @param Circle $circle
+	 *
+	 * @return bool
+	 * @throws RequestBuilderException
+	 */
+	public function limitToGroupMembersOnly(IFederatedUser $federatedUser, Circle $circle): bool {
+		if (!$this->shareManager->shareWithGroupMembersOnly()) {
+			return false;
+		}
+
+		// bypass limit if Circle is not managed by a real user
+		if ($circle->getOwner()->getUserType() !== Member::TYPE_USER) {
+			return false;
+		}
+
+		// we get all valid owner from the chain of circles upstream of the current circle.
+		// valid owner are the one based on an actual local user account.
+		// We do not need to check Circles that cannot be created from the OCS API.
+		$owners = array_filter(
+			array_map(function (Membership $membership): ?Member {
+				if (!$membership->hasCircle()) {
+					return null;
+				}
+				$owner = $membership->getCircle()->getOwner();
+				if ($owner->getUserType() !== Member::TYPE_USER) {
+					return null;
+				}
+
+				return $owner;
+			}, $circle->getMemberships(true))
+		);
+
+		$owners[] = $circle->getOwner();
+
+		// foreach owners, we need to confirm at least one identical Nextcloud Group
+		// with each accounted memberships
+		foreach ($federatedUser->getAccountedMemberships(true) as $accounted) {
+			$accountedMemberships = array_filter(
+				array_map(function (Membership $membership): ?string {
+					if ($membership->getCircle()->getSource() !== Member::TYPE_GROUP) {
+						return null;
+					}
+
+					return $membership->getCircleId();
+				}, $accounted->getInheritedBy()->getMemberships(true))
+			);
+
+			foreach ($owners as $owner) {
+				$ownerMemberships = array_filter(
+					array_map(function (Membership $membership): ?string {
+						if ($membership->getCircle()->getSource() !== Member::TYPE_GROUP) {
+							return null;
+						}
+
+						return $membership->getCircleId();
+					}, $owner->getMemberships(true))
+				);
+
+
+				// We compare list of circles based on Nextcloud Group to which both (owner and accounted) belongs to.
+				// If not we stop
+				if (empty(array_intersect($accountedMemberships, $ownerMemberships))) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 }

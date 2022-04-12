@@ -49,7 +49,8 @@ class StatusCode {
 		121 => 'Circle is full',
 		122 => 'You are already a member',
 		123 => 'Already requesting to join the circle',
-		124 => 'Circle is closed'
+		124 => 'Circle is closed',
+		125 => 'You must belongs to one of the Nextcloud Groups from Circle\'s owner'
 	];
 
 	public static $CIRCLE_LEAVE = [
@@ -69,7 +70,8 @@ class StatusCode {
 		129 => 'Member does not contains a patron',
 		130 => 'Member is invited by an entity that does not belongs to the instance at the origin of the request',
 		131 => 'Member is a non-local Circle',
-		132 => 'Member type not allowed'
+		132 => 'Member type not allowed',
+		133 => 'Member must belongs to one of the Nextcloud Groups from Circle\'s owner'
 	];
 
 	public static $CIRCLE_DESTROY = [

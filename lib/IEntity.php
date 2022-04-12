@@ -48,17 +48,28 @@ interface IEntity {
 
 	/**
 	 * @param Membership[] $memberships
+	 * @deprecated - do not use outside of the app itself, will be removed.
 	 *
 	 * @return $this
 	 */
 	public function setMemberships(array $memberships): self;
 
 	/**
+	 * TODO: might be better to have use abstract instead of interface
 	 * @return Membership[]
 	 */
 	public function getMemberships(): array;
 
 	/**
+	 * returns all memberships that can be hidden behind this entity, including this one.
+	 * TODO: might be better to have use abstract instead of interface
+	 *
+	 * @return Membership[]
+	 */
+	public function getAccountedMemberships(bool $detailed): array;
+
+	/**
+	 * TODO: might be better to have use abstract instead of interface
 	 * @param string $singleId
 	 * @param bool $detailed
 	 *

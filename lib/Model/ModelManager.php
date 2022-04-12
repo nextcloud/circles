@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
-use OCA\Circles\Tools\Traits\TNCLogger;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\CoreQueryBuilder;
@@ -57,6 +56,7 @@ use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\InterfaceService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Service\RemoteService;
+use OCA\Circles\Tools\Traits\TNCLogger;
 use OCP\IURLGenerator;
 
 /**
@@ -169,8 +169,20 @@ class ModelManager {
 				$detailed
 			);
 		} catch (RequestBuilderException $e) {
-			// TODO: debug log
+			$this->e($e, ['singleId' => $circle->getSingleId(), 'detailed' => $detailed]);
 		}
+	}
+
+
+	/**
+	 * @param Circle $entity
+	 * @param bool $detailed
+	 * @param int $level
+	 *
+	 * @return array
+	 */
+	public function getAccountedMemberships(IEntity $entity, bool $detailed = false, int $level = 0): array {
+		return $this->membershipRequest->getAccounted($entity->getSingleId(), $detailed, $level);
 	}
 
 
@@ -206,10 +218,13 @@ class ModelManager {
 
 	/**
 	 * @param IEntity $member
+	 * @param bool $detailed
+	 * @param int $level
+	 *
+	 * @return Membership[]
 	 */
-	public function getMemberships(IEntity $member): void {
-		$memberships = $this->membershipRequest->getMemberships($member->getSingleId());
-		$member->setMemberships($memberships);
+	public function getMemberships(IEntity $member, bool $detailed = false, int $level = 0): array {
+		return $this->membershipRequest->getMemberships($member->getSingleId(), $detailed, $level);
 	}
 
 
@@ -245,6 +260,12 @@ class ModelManager {
 			}
 		}
 
+		if ($model instanceof Membership) {
+			if ($base === '') {
+				$base = CoreQueryBuilder::MEMBERSHIPS;
+			}
+		}
+
 		if ($model instanceof ShareWrapper) {
 			if ($base === '') {
 				$base = CoreQueryBuilder::SHARE;
@@ -270,6 +291,10 @@ class ModelManager {
 
 		if ($model instanceof Member) {
 			$this->importIntoMember($model, $data, $path, $prefix);
+		}
+
+		if ($model instanceof Membership) {
+			$this->importIntoMembership($model, $data, $path, $prefix);
 		}
 
 		if ($model instanceof FederatedUser) {
@@ -385,6 +410,40 @@ class ModelManager {
 					$remoteInstance->importFromDatabase($data, $prefix);
 					$member->setRemoteInstance($remoteInstance);
 				} catch (RemoteNotFoundException $e) {
+				}
+				break;
+		}
+	}
+
+
+	/**
+	 * @param Membership $membership
+	 * @param array $data
+	 * @param string $path
+	 * @param string $prefix
+	 */
+	private function importIntoMembership(
+		Membership $membership,
+		array $data,
+		string $path,
+		string $prefix
+	): void {
+		switch ($path) {
+			case CoreQueryBuilder::CIRCLE:
+				try {
+					$member = new Circle();
+					$member->importFromDatabase($data, $prefix);
+					$membership->setCircle($member);
+				} catch (CircleNotFoundException $e) {
+				}
+				break;
+
+			case CoreQueryBuilder::INHERITED_BY:
+				try {
+					$inheritedBy = new FederatedUser();
+					$inheritedBy->importFromDatabase($data, $prefix);
+					$membership->setInheritedBy($inheritedBy);
+				} catch (FederatedUserNotFoundException $e) {
 				}
 				break;
 		}

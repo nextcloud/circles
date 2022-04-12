@@ -136,7 +136,7 @@ class MemberService {
 	/**
 	 * @param string $memberId
 	 * @param string $circleId
-	 * @param bool $canBeVisitor
+	 * @param MemberProbe|null $probe
 	 *
 	 * @return Member
 	 * @throws InitiatorNotFoundException

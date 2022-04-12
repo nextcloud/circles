@@ -388,6 +388,8 @@ class FederatedEvent implements JsonSerializable {
 	}
 
 	/**
+	 * params are kept between master and slave in GS setup
+	 *
 	 * @return SimpleDataStore
 	 */
 	public function getParams(): SimpleDataStore {
@@ -396,6 +398,8 @@ class FederatedEvent implements JsonSerializable {
 
 
 	/**
+	 * internal are only available to master in GS setup
+	 *
 	 * @param SimpleDataStore $internal
 	 *
 	 * @return self
@@ -424,6 +428,8 @@ class FederatedEvent implements JsonSerializable {
 
 
 	/**
+	 * data are generated within the FederatedEvent
+	 *
 	 * @param SimpleDataStore $data
 	 *
 	 * @return self

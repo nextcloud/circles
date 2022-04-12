@@ -55,6 +55,7 @@ use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
+use OCA\Circles\FederatedItems\MemberRemove;
 use OCA\Circles\FederatedItems\SingleMemberAdd;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
@@ -63,6 +64,7 @@ use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
 use OCP\IGroupManager;
 use OCP\IUserManager;
+use OCP\Share\IManager;
 
 /**
  * Class SyncService
@@ -89,6 +91,8 @@ class SyncService {
 	/** @var IGroupManager */
 	private $groupManager;
 
+	/** @var IManager */
+	private $shareManager;
 
 	/** @var CircleRequest */
 	private $circleRequest;
@@ -98,6 +102,9 @@ class SyncService {
 
 	/** @var FederatedUserService */
 	private $federatedUserService;
+
+	/** @var MemberService */
+	private $memberService;
 
 	/** @var federatedEventService */
 	private $federatedEventService;
@@ -120,6 +127,7 @@ class SyncService {
 	 *
 	 * @param IUserManager $userManager
 	 * @param IGroupManager $groupManager
+	 * @param IManager $shareManager
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
 	 * @param FederatedUserService $federatedUserService
@@ -132,8 +140,10 @@ class SyncService {
 	public function __construct(
 		IUserManager $userManager,
 		IGroupManager $groupManager,
+		IManager $shareManager,
 		CircleRequest $circleRequest,
 		MemberRequest $memberRequest,
+		MemberService $memberService,
 		FederatedUserService $federatedUserService,
 		federatedEventService $federatedEventService,
 		CircleService $circleService,
@@ -143,8 +153,10 @@ class SyncService {
 	) {
 		$this->userManager = $userManager;
 		$this->groupManager = $groupManager;
+		$this->shareManager = $shareManager;
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
+		$this->memberService = $memberService;
 		$this->federatedUserService = $federatedUserService;
 		$this->federatedEventService = $federatedEventService;
 		$this->circleService = $circleService;
@@ -299,6 +311,7 @@ class SyncService {
 			$event = new FederatedEvent(SingleMemberAdd::class);
 			$event->setCircle($circle);
 			$event->setMember($member);
+			$event->getParams()->sBool('force_group_member', true);
 
 			try {
 				$this->federatedEventService->newEvent($event);
@@ -451,6 +464,7 @@ class SyncService {
 		$event = new FederatedEvent(SingleMemberAdd::class);
 		$event->setCircle($circle);
 		$event->setMember($member);
+		$event->getParams()->sBool('force_group_member', true);
 		$this->federatedEventService->newEvent($event);
 
 //		$this->memberRequest->insertOrUpdate($member);
@@ -482,8 +496,41 @@ class SyncService {
 		$circle = $this->federatedUserService->getGroupCircle($groupId);
 		$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
 
-		$this->memberRequest->deleteFederatedUserFromCircle($federatedUser, $circle);
-		$this->membershipService->onUpdate($federatedUser->getSingleId());
+		$member = $this->memberRequest->getMember($circle->getSingleId(), $federatedUser->getSingleId());
+		$event = new FederatedEvent(MemberRemove::class);
+		$event->setCircle($member->getCircle());
+		$event->setMember($member);
+
+		$this->maintainGroupMemberOnly($federatedUser);
+	}
+
+
+	/**
+	 * in case of limitation shareGroupMembersOnly, clean membership on existing Circles related to
+	 * the removed group member.
+	 *
+	 * @param FederatedUser $federatedUser
+	 *
+	 * @throws RequestBuilderException
+	 */
+	private function maintainGroupMemberOnly(FederatedUser $federatedUser): void {
+		if (!$this->shareManager->shareWithGroupMembersOnly()) {
+			return;
+		}
+
+		foreach ($federatedUser->getMemberships() as $membership) {
+			try {
+				$circle = $this->circleRequest->getCircle($membership->getCircleId());
+			} catch (CircleNotFoundException $e) {
+				continue;
+			}
+
+			if (!$this->membershipService->limitToGroupMembersOnly($federatedUser, $circle)) {
+				continue;
+			}
+
+			echo 'NO NON ' . json_encode($circle) . "\n";
+		}
 	}
 
 
