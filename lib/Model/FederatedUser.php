@@ -385,6 +385,10 @@ class FederatedUser extends ManagedModel implements
 	 * @throws OwnerNotFoundException
 	 */
 	public function importFromCircle(Circle $circle): self {
+		if (!$circle->hasOwner()) {
+			throw new OwnerNotFoundException();
+		}
+
 		$this->setSingleId($circle->getSingleId());
 
 		if ($circle->isConfig(Circle::CFG_SINGLE)) {
