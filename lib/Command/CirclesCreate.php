@@ -36,9 +36,12 @@ use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\InitiatorNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
+use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
+use OCA\Circles\Tools\Traits\TDeserialize;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -50,7 +53,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class CirclesCreate extends Base {
-
+	use TDeserialize;
 
 	/** @var FederatedUserService */
 	private $federatedUserService;
@@ -100,6 +103,7 @@ class CirclesCreate extends Base {
 	 * @throws InitiatorNotFoundException
 	 * @throws SingleCircleNotFoundException
 	 * @throws RequestBuilderException
+	 * @throws InvalidItemException
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$ownerId = $input->getArgument('owner');
@@ -129,6 +133,12 @@ class CirclesCreate extends Base {
 
 		if (strtolower($input->getOption('output')) === 'json') {
 			$output->writeln(json_encode($outcome, JSON_PRETTY_PRINT));
+		} elseif (strtolower($input->getOption('output')) !== 'none') {
+			/** @var Circle $circle */
+			$circle = $this->deserialize($outcome, Circle::class);
+			$output->writeln('Id: <info>' . $circle->getSingleId() . '</info>');
+			$output->writeln('Name: <info>' . $circle->getDisplayName() . '</info>');
+			$output->writeln('Owner: <info>' . $circle->getOwner()->getDisplayName() . '</info>');
 		}
 
 		return 0;
