@@ -36,7 +36,7 @@ use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\BackgroundJob\IJob;
 use OCP\BackgroundJob\TimedJob;
 
-class Maintenance extends TimedJob {
+class MaintenanceHeavy extends TimedJob {
 	private MaintenanceService $maintenanceService;
 
 
@@ -47,8 +47,8 @@ class Maintenance extends TimedJob {
 	public function __construct(ITimeFactory $time, MaintenanceService $maintenanceService) {
 		parent::__construct($time);
 
-		$this->setInterval(10);
-		$this->setTimeSensitivity(IJob::TIME_SENSITIVE);
+		$this->setInterval(24 * 3600);
+		$this->setTimeSensitivity(IJob::TIME_INSENSITIVE);
 
 		$this->maintenanceService = $maintenanceService;
 	}
@@ -58,6 +58,6 @@ class Maintenance extends TimedJob {
 	 * @param $argument
 	 */
 	protected function run($argument) {
-		$this->maintenanceService->runMaintenances();
+		$this->maintenanceService->runMaintenances(true);
 	}
 }
