@@ -31,6 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
+use Exception;
 use OCA\Circles\Tools\Traits\TStringTools;
 use OCA\Circles\Db\ShareWrapperRequest;
 use OCA\Circles\Exceptions\RequestBuilderException;
@@ -105,8 +106,20 @@ class ShareWrapperService {
 	/**
 	 * @param string $circleId
 	 */
-	public function deleteSharesToCircle(string $circleId) {
-		$this->shareWrapperRequest->deleteFromCircle($circleId);
+	public function deleteUserSharesToCircle(string $circleId, string $initiator): void {
+		if ($initiator === '') {
+			throw new Exception('$initiator cannot be empty');
+		}
+
+		$this->shareWrapperRequest->deleteSharesToCircle($circleId, $initiator);
+	}
+
+
+	/**
+	 * @param string $circleId
+	 */
+	public function deleteAllSharesToCircle(string $circleId): void {
+		$this->shareWrapperRequest->deleteSharesToCircle($circleId, '');
 	}
 
 
