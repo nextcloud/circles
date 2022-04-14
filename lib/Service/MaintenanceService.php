@@ -277,6 +277,13 @@ class MaintenanceService {
 //			$this->refreshDisplayName();
 //		} catch (Exception $e) {
 //		}
+
+		try {
+			// Can be removed in NC27.
+			$this->output('Remove orphan shares');
+			$this->removeOrphanShares();
+		} catch (Exception $e) {
+		}
 	}
 
 
@@ -314,6 +321,14 @@ class MaintenanceService {
 	}
 
 
+	private function removeOrphanShares(): void {
+		$this->shareWrapperRequest->removeOrphanShares();
+	}
+
+
+	/**
+	 * @throws RequestBuilderException
+	 */
 	private function removeDeprecatedShares(): void {
 		$probe = new CircleProbe();
 		$probe->includePersonalCircles()
@@ -336,7 +351,7 @@ class MaintenanceService {
 
 		foreach ($shares as $share) {
 			if (!in_array($share, $circles)) {
-				$this->shareWrapperRequest->deleteFromCircle($share);
+				$this->shareWrapperService->deleteAllSharesToCircle($share);
 			}
 		}
 	}
