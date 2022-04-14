@@ -42,6 +42,7 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\ShareWrapper;
+use OCA\Circles\Tools\Model\SimpleDataStore;
 use OCA\Circles\Tools\Traits\TNCLogger;
 use OCP\IGroupManager;
 use OCP\IUserManager;
@@ -57,6 +58,15 @@ class MaintenanceService {
 
 
 	public const TIMEOUT = 18000;
+
+	public static $DELAY =
+		[
+			1 => 60,    // every minute
+			2 => 300,   // every 5 minutes
+			3 => 3600,  // every hour
+			4 => 75400, // every day
+			5 => 432000 // evey week
+		];
 
 
 	/** @var IUserManager */
@@ -432,6 +442,48 @@ class MaintenanceService {
 		foreach ($circles as $circle) {
 			$this->memberRequest->updateDisplayName($circle->getSingleId(), $circle->getDisplayName());
 		}
+	}
+
+
+	/**
+	 * should only be called from a BackgroundJob
+	 *
+	 * @param bool $heavy - set to true to run heavy maintenance process.
+	 */
+	public function runMaintenances(bool $heavy = false): void {
+		$last = new SimpleDataStore();
+		$last->json($this->configService->getAppValue(ConfigService::MAINTENANCE_UPDATE));
+
+		$maxLevel = ($heavy) ? 5 : 3;
+		for ($i = $maxLevel; $i > 0; $i--) {
+			if ($this->canRunLevel($i, $last)) {
+				try {
+					$this->runMaintenance($i);
+				} catch (MaintenanceException $e) {
+					continue;
+				}
+				$last->sInt((string)$i, time());
+			}
+		}
+
+		$this->configService->setAppValue(ConfigService::MAINTENANCE_UPDATE, json_encode($last));
+	}
+
+
+	/**
+	 * @param int $level
+	 * @param SimpleDataStore $last
+	 *
+	 * @return bool
+	 */
+	private function canRunLevel(int $level, SimpleDataStore $last): bool {
+		$now = time();
+		$timeLastRun = $last->gInt((string)$level);
+		if ($timeLastRun === 0) {
+			return true;
+		}
+
+		return ($timeLastRun + self::$DELAY[$level] < $now);
 	}
 
 
