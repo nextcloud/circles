@@ -77,6 +77,6 @@ class DestroyingCircle implements IEventListener {
 		}
 
 		$circle = $event->getCircle();
-		$this->shareWrapperService->deleteSharesToCircle($circle->getSingleId(), '', true);
+		$this->shareWrapperService->deleteAllSharesToCircle($circle->getSingleId());
 	}
 }
