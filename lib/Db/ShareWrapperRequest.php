@@ -445,9 +445,57 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 	/**
 	 * @param string $circleId
 	 */
-	public function deleteFromCircle(string $circleId): void {
+	public function deleteSharesToCircle(string $circleId, string $initiator = ''): void {
+		$qb = $this->getShareSelectSql();
+		$qb->limit('share_with', $circleId);
+		if ($initiator !== '') {
+			$qb->limit('uid_initiator', $initiator);
+		}
+
+		$ids = array_map(
+			function (ShareWrapper $share): string {
+				return $share->getId();
+			},
+			$this->getItemsFromRequest($qb)
+		);
+
+		$this->deleteSharesAndChild($ids);
+	}
+
+
+	public function removeOrphanShares(): void {
+		$qb = $this->getShareSelectSql();
+		$expr = $qb->expr();
+		$qb->leftJoin(
+			CoreQueryBuilder::SHARE, CoreRequestBuilder::TABLE_SHARE, 'p',
+			$expr->andX($expr->eq('p.id', CoreQueryBuilder::SHARE . '.parent'))
+		);
+
+		$qb->filterNull('parent');
+		$qb->limitNull('id', false, 'p');
+
+		$ids = [];
+		$cursor = $qb->execute();
+		while ($data = $cursor->fetch()) {
+			$ids[] = $data['id'];
+		}
+		$cursor->closeCursor();
+
+		$this->deleteSharesAndChild($ids);
+	}
+
+
+	/**
+	 * @param array $ids
+	 */
+	private function deleteSharesAndChild(array $ids): void {
 		$qb = $this->getShareDeleteSql();
-		$qb->andWhere($qb->exprLimit('share_with', $circleId));
+		$qb->andWhere(
+			$qb->expr()->orX(
+				$qb->exprLimitInArray('id', $ids),
+				$qb->exprLimitInArray('parent', $ids)
+			)
+		);
 
 		$qb->execute();
 	}
