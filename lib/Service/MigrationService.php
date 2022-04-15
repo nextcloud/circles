@@ -31,9 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use OCA\Circles\Tools\Model\SimpleDataStore;
-use OCA\Circles\Tools\Traits\TNCLogger;
-use OCA\Circles\Tools\Traits\TStringTools;
 use Exception;
 use OC;
 use OCA\Circles\AppInfo\Application;
@@ -64,6 +61,9 @@ use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\ShareToken;
+use OCA\Circles\Tools\Model\SimpleDataStore;
+use OCA\Circles\Tools\Traits\TNCLogger;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OCA\DAV\CardDAV\ContactsManager;
 use OCP\Contacts\IManager;
 use OCP\IDBConnection;
@@ -198,8 +198,6 @@ class MigrationService {
 		);
 
 		$this->migrationTo22();
-		$this->migrationTo22_1();
-		//	$this->migrationTo23();
 
 		$this->configService->setAppValue(ConfigService::MIGRATION_RUN, '0');
 	}
@@ -213,6 +211,12 @@ class MigrationService {
 			return;
 		}
 
+		if (!$this->migrationTo22Feasibility()) {
+			$this->configService->setAppValue(ConfigService::MIGRATION_22, '1');
+
+			return;
+		}
+
 		$this->outputService->output('Migrating to 22');
 
 		$this->migrationTo22_Circles();
@@ -221,10 +225,42 @@ class MigrationService {
 		$this->migrationTo22_Members_Memberships();
 
 		$this->migrationTo22_Tokens();
+		$this->migrationTo22_1_SubShares();
 
 		$this->configService->setAppValue(ConfigService::MIGRATION_22, '1');
 	}
 
+
+	/**
+	 * run migration if:
+	 *  - old tables exist.
+	 *  - new tables are (almost) empty.
+	 *
+	 * @return bool
+	 * @throws \OCP\DB\Exception
+	 */
+	public function migrationTo22Feasibility(): bool {
+		$qb = $this->dbConnection->getQueryBuilder();
+		$qb->select('*')->from('circle_circles');
+
+		try {
+			$cursor = $qb->executeQuery();
+			$cursor->closeCursor();
+		} catch (\OCP\DB\Exception $e) {
+			return false;
+		}
+
+		$qb = $this->dbConnection->getQueryBuilder();
+		$qb->select('*')->from('circles_circle');
+
+		$cursor = $qb->executeQuery();
+		if ($cursor->rowCount() > 1) {
+			return false;
+		}
+		$cursor->closeCursor();
+
+		return true;
+	}
 
 	/**
 	 * @throws RequestBuilderException
@@ -255,20 +291,6 @@ class MigrationService {
 		}
 
 		$this->outputService->finishMigrationProgress();
-	}
-
-
-	/**
-	 *
-	 */
-	private function migrationTo22_1(): void {
-		if ($this->configService->getAppValueBool(ConfigService::MIGRATION_22_1)) {
-			return;
-		}
-
-		$this->outputService->output('Migrating to 22.1.x');
-		$this->migrationTo22_1_SubShares();
-		$this->configService->setAppValue(ConfigService::MIGRATION_22_1, '1');
 	}
 
 
