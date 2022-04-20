@@ -204,7 +204,7 @@ class CirclesMemberships extends Base {
 		}
 
 		$type = Member::parseTypeString($input->getOption('type'));
-		$federatedUser = $this->federatedUserService->getFederatedUser($userId, (int)$type);
+		$federatedUser = $this->federatedUserService->getFederatedUser($userId, $type);
 
 //		if ($this->input->getOption('reset')) {
 //			$this->membershipsService->resetMemberships($federatedUser->getSingleId());

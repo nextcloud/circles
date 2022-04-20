@@ -37,6 +37,7 @@ use OCA\Circles\Tools\IDeserializable;
 use OCA\Circles\Tools\Traits\TDeserialize;
 use OCA\Circles\Tools\Traits\TArrayTools;
 use DateTime;
+use DateTimeInterface;
 use JsonSerializable;
 use OC;
 use OC\Files\Cache\Cache;
@@ -58,555 +59,285 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 	use TArrayTools;
 	use TDeserialize;
 
+	private string $id = '';
+	private int $permissions = 0;
+	private string $itemType = '';
+	private int $itemSource = 0;
+	private string $itemTarget = '';
+	private int $fileSource = 0;
+	private string $fileTarget = '';
+	private string $token = '';
+	private int $status = 0;
+	private string $providerId = '';
+	private DateTimeInterface $shareTime;
+	private string $sharedWith = '';
+	private string $sharedBy = '';
+	private string $shareOwner = '';
+	private int $shareType = 0;
+	private ?Circle $circle = null;
+	private int $childId = 0;
+	private string $childFileTarget = '';
+	private int $childPermissions = 0;
+	private ?FileCacheWrapper $fileCache = null;
+	private ?Member $initiator = null;
+	private ?Member $owner = null;
+	private ?ShareToken $shareToken = null;
 
-	/** @var string */
-	private $id = '';
+	public function __construct() {
+		$this->shareTime = new DateTime();
+	}
 
-	/** @var int */
-	private $permissions = 0;
-
-	/** @var string */
-	private $itemType = '';
-
-	/** @var int */
-	private $itemSource = 0;
-
-	/** @var string */
-	private $itemTarget = '';
-
-	/** @var int */
-	private $fileSource = 0;
-
-	/** @var string */
-	private $fileTarget = '';
-
-	/** @var string */
-	private $token = '';
-
-	/** @var int */
-	private $status = 0;
-
-	/** @var string */
-	private $providerId = '';
-
-	/** @var DateTime */
-	private $shareTime = '';
-
-	/** @var string */
-	private $sharedWith = '';
-
-	/** @var string */
-	private $sharedBy = '';
-
-	/** @var string */
-	private $shareOwner = '';
-
-	/** @var int */
-	private $shareType = 0;
-
-	/** @var Circle */
-	private $circle;
-
-	/** @var int */
-	private $childId = 0;
-
-	/** @var string */
-	private $childFileTarget = '';
-
-	/** @var int */
-	private $childPermissions = 0;
-
-	/** @var FileCacheWrapper */
-	private $fileCache;
-
-	/** @var Member */
-	private $initiator;
-
-	/** @var Member */
-	private $owner;
-
-	/** @var ShareToken */
-	private $shareToken;
-
-
-	/**
-	 * @param string $id
-	 *
-	 * @return ShareWrapper
-	 */
 	public function setId(string $id): self {
 		$this->id = $id;
 
 		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getId(): string {
 		return $this->id;
 	}
 
-
-	/**
-	 * @param int $permissions
-	 *
-	 * @return ShareWrapper
-	 */
 	public function setPermissions(int $permissions): self {
 		$this->permissions = $permissions;
 
 		return $this;
 	}
 
-	/**
-	 * @return int
-	 */
 	public function getPermissions(): int {
 		return $this->permissions;
 	}
 
-
-	/**
-	 * @param string $itemType
-	 *
-	 * @return ShareWrapper
-	 */
 	public function setItemType(string $itemType): self {
 		$this->itemType = $itemType;
 
 		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getItemType(): string {
 		return $this->itemType;
 	}
 
-
-	/**
-	 * @param int $itemSource
-	 *
-	 * @return ShareWrapper
-	 */
 	public function setItemSource(int $itemSource): self {
 		$this->itemSource = $itemSource;
 
 		return $this;
 	}
 
-	/**
-	 * @return int
-	 */
 	public function getItemSource(): int {
 		return $this->itemSource;
 	}
 
-
-	/**
-	 * @param string $itemTarget
-	 *
-	 * @return ShareWrapper
-	 */
 	public function setItemTarget(string $itemTarget): self {
 		$this->itemTarget = $itemTarget;
 
 		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getItemTarget(): string {
 		return $this->itemTarget;
 	}
 
-
-	/**
-	 * @param int $fileSource
-	 *
-	 * @return ShareWrapper
-	 */
 	public function setFileSource(int $fileSource): self {
 		$this->fileSource = $fileSource;
 
 		return $this;
 	}
 
-	/**
-	 * @return int
-	 */
 	public function getFileSource(): int {
 		return $this->fileSource;
 	}
 
-
-	/**
-	 * @param string $fileTarget
-	 *
-	 * @return ShareWrapper
-	 */
 	public function setFileTarget(string $fileTarget): self {
 		$this->fileTarget = $fileTarget;
 
 		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getFileTarget(): string {
 		return $this->fileTarget;
 	}
 
-
-	/**
-	 * @param string $token
-	 *
-	 * @return ShareWrapper
-	 */
 	public function setToken(string $token): self {
 		$this->token = $token;
 
 		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getToken(): string {
 		return $this->token;
 	}
 
-
-	/**
-	 * @param int $status
-	 *
-	 * @return ShareWrapper
-	 */
 	public function setStatus(int $status): self {
 		$this->status = $status;
 
 		return $this;
 	}
 
-	/**
-	 * @return int
-	 */
 	public function getStatus(): int {
 		return $this->status;
 	}
 
-
-	/**
-	 * @param string $providerId
-	 *
-	 * @return $this
-	 */
 	public function setProviderId(string $providerId): self {
 		$this->providerId = $providerId;
 
 		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getProviderId(): string {
 		return $this->providerId;
 	}
 
-
-	/**
-	 * @param DateTime $shareTime
-	 *
-	 * @return ShareWrapper
-	 */
-	public function setShareTime(DateTime $shareTime): self {
+	public function setShareTime(DateTimeInterface $shareTime): self {
 		$this->shareTime = $shareTime;
 
 		return $this;
 	}
 
-	/**
-	 * @return DateTime
-	 */
-	public function getShareTime(): DateTime {
+	public function getShareTime(): DateTimeInterface {
 		return $this->shareTime;
 	}
 
-
-	/**
-	 * @param string $sharedWith
-	 *
-	 * @return ShareWrapper
-	 */
 	public function setSharedWith(string $sharedWith): self {
 		$this->sharedWith = $sharedWith;
 
 		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getSharedWith(): string {
 		return $this->sharedWith;
 	}
 
-	/**
-	 * @param string $sharedBy
-	 *
-	 * @return ShareWrapper
-	 */
 	public function setSharedBy(string $sharedBy): self {
 		$this->sharedBy = $sharedBy;
 
 		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getSharedBy(): string {
 		return $this->sharedBy;
 	}
 
-
-	/**
-	 * @param string $shareOwner
-	 *
-	 * @return ShareWrapper
-	 */
 	public function setShareOwner(string $shareOwner): self {
 		$this->shareOwner = $shareOwner;
 
 		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getShareOwner(): string {
 		return $this->shareOwner;
 	}
 
-
-	/**
-	 * @param int $shareType
-	 *
-	 * @return ShareWrapper
-	 */
 	public function setShareType(int $shareType): self {
 		$this->shareType = $shareType;
 
 		return $this;
 	}
 
-	/**
-	 * @return int
-	 */
 	public function getShareType(): int {
 		return $this->shareType;
 	}
 
-
-	/**
-	 * @param Circle $circle
-	 *
-	 * @return ShareWrapper
-	 */
 	public function setCircle(Circle $circle): self {
 		$this->circle = $circle;
 
 		return $this;
 	}
 
-	/**
-	 * @return Circle
-	 */
 	public function getCircle(): Circle {
 		return $this->circle;
 	}
 
-	/**
-	 * @return bool
-	 */
 	public function hasCircle(): bool {
 		return (!is_null($this->circle));
 	}
 
-
-	/**
-	 * @param int $childId
-	 *
-	 * @return ShareWrapper
-	 */
 	public function setChildId(int $childId): self {
 		$this->childId = $childId;
 
 		return $this;
 	}
 
-	/**
-	 * @return int
-	 */
 	public function getChildId(): int {
 		return $this->childId;
 	}
 
-
-	/**
-	 * @param string $childFileTarget
-	 *
-	 * @return ShareWrapper
-	 */
 	public function setChildFileTarget(string $childFileTarget): self {
 		$this->childFileTarget = $childFileTarget;
 
 		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
 	public function getChildFileTarget(): string {
 		return $this->childFileTarget;
 	}
 
-
-	/**
-	 * @param int $childPermissions
-	 *
-	 * @return ShareWrapper
-	 */
 	public function setChildPermissions(int $childPermissions): self {
 		$this->childPermissions = $childPermissions;
 
 		return $this;
 	}
 
-	/**
-	 * @return int
-	 */
 	public function getChildPermissions(): int {
 		return $this->childPermissions;
 	}
 
-
-	/**
-	 * @param FileCacheWrapper $fileCache
-	 *
-	 * @return $this
-	 */
 	public function setFileCache(FileCacheWrapper $fileCache): self {
 		$this->fileCache = $fileCache;
 
 		return $this;
 	}
 
-	/**
-	 * @return FileCacheWrapper
-	 */
 	public function getFileCache(): FileCacheWrapper {
 		return $this->fileCache;
 	}
 
-	/**
-	 * @return bool
-	 */
 	public function hasFileCache(): bool {
 		return (!is_null($this->fileCache));
 	}
 
-
-	/**
-	 * @param Member $initiator
-	 *
-	 * @return ShareWrapper
-	 */
 	public function setInitiator(Member $initiator): self {
 		$this->initiator = $initiator;
 
 		return $this;
 	}
 
-	/**
-	 * @return Member
-	 */
 	public function getInitiator(): Member {
 		return $this->initiator;
 	}
 
-	/**
-	 * @return bool
-	 */
 	public function hasInitiator(): bool {
 		return (!is_null($this->initiator));
 	}
 
-
-	/**
-	 * @param Member $owner
-	 *
-	 * @return ShareWrapper
-	 */
 	public function setOwner(Member $owner): self {
 		$this->owner = $owner;
 
 		return $this;
 	}
 
-	/**
-	 * @return Member
-	 */
 	public function getOwner(): Member {
 		return $this->owner;
 	}
 
-	/**
-	 * @return bool
-	 */
 	public function hasOwner(): bool {
 		return (!is_null($this->owner));
 	}
 
-
-	/**
-	 * @param ShareToken $shareToken
-	 *
-	 * @return ShareWrapper
-	 */
 	public function setShareToken(ShareToken $shareToken): self {
 		$this->shareToken = $shareToken;
 
 		return $this;
 	}
 
-	/**
-	 * @return ShareToken
-	 */
 	public function getShareToken(): ShareToken {
 		return $this->shareToken;
 	}
 
-	/**
-	 * @return bool
-	 */
 	public function hasShareToken(): bool {
 		return !is_null($this->shareToken);
 	}
 
-
 	/**
-	 * @param IRootFolder $rootFolder
-	 * @param IUserManager $userManager
-	 * @param IURLGenerator $urlGenerator
-	 * @param bool $nullOnMissingFileCache
-	 *
-	 * @return IShare
 	 * @throws IllegalIDChangeException
 	 */
 	public function getShare(
@@ -656,12 +387,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		return $share;
 	}
 
-
-	/**
-	 * @param IShare $share
-	 * @param IURLGenerator $urlGenerator
-	 */
-	private function setShareDisplay(IShare $share, IURLGenerator $urlGenerator) {
+	private function setShareDisplay(IShare $share, IURLGenerator $urlGenerator): void {
 		if (!$this->hasCircle()) {
 			return;
 		}
@@ -711,8 +437,6 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 
 	/**
 	 * @param array $data
-	 *
-	 * @return IDeserializable
 	 * @throws InvalidItemException
 	 */
 	public function import(array $data): IDeserializable {
@@ -776,13 +500,6 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		return $this;
 	}
 
-
-	/**
-	 * @param array $data
-	 * @param string $prefix
-	 *
-	 * @return IQueryRow
-	 */
 	public function importFromDatabase(array $data, string $prefix = ''): IQueryRow {
 		$shareTime = new DateTime();
 		$shareTime->setTimestamp($this->getInt($prefix . 'stime', $data));
@@ -818,10 +535,6 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 		return $this;
 	}
 
-
-	/**
-	 * @return string[]
-	 */
 	public function jsonSerialize(): array {
 		$arr = [
 			'id' => $this->getId(),

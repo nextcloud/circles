@@ -130,7 +130,7 @@ class MemberRequestBuilder extends CoreRequestBuilder {
 	 * @param CoreQueryBuilder $qb
 	 * @param bool $asFederatedUser
 	 *
-	 * @return Member|FederatedUser[]
+	 * @return Member[]|FederatedUser[]
 	 */
 	public function getItemsFromRequest(CoreQueryBuilder $qb, bool $asFederatedUser = false): array {
 		$object = Member::class;
