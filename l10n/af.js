@@ -2,6 +2,10 @@ OC.L10N.register(
     "circles",
     {
     "Personal" : "Persoonlik",
+    "System" : "Stelsel",
+    "Visible" : "Sigbaar",
+    "Open" : "Open",
+    "Hidden" : "Versteek",
     "Contact" : "Kontak",
     "Admin" : "Admin",
     "Owner" : "Eienaar",
@@ -18,8 +22,10 @@ OC.L10N.register(
     "Mail Address" : "Posadres",
     "Settings" : "Instellings",
     "Username" : "Gebruikersnaam",
+    "Status" : "Status",
     "Link" : "Skakel",
     "Description" : "Beskrywing",
-    "Change password" : "Verander wagwoord"
+    "Change password" : "Verander wagwoord",
+    "Save settings" : "Bewaar instellings"
 },
 "nplurals=2; plural=(n != 1);");

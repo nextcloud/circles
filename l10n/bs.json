@@ -1,5 +1,7 @@
 { "translations": {
     "Personal" : "Osobno",
+    "Local" : "Lokalno",
+    "Federated" : "Federated",
     "Circle" : "Krug",
     "Member" : "Član",
     "Admin" : "Administrator",
