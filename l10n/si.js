@@ -2,10 +2,13 @@ OC.L10N.register(
     "circles",
     {
     "Personal" : "පුද්ගලික",
+    "System" : "පද්ධතිය",
+    "Open" : "විවෘත",
     "Member" : "සාමාජික",
     "Admin" : "පරිපාලක",
     "Owner" : "හිමිකරු",
     "Accept" : "පිළිගන්න",
+    "%s" : "%s",
     "Name" : "නම",
     "Size" : "ප්‍රමාණය",
     "Link Removed" : "සබැඳිය ඉවත් කළා",

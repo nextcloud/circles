@@ -2,6 +2,8 @@ OC.L10N.register(
     "circles",
     {
     "Personal" : "Osobno",
+    "Local" : "Lokalno",
+    "Federated" : "Federated",
     "Circle" : "Krug",
     "Member" : "Član",
     "Admin" : "Administrator",
