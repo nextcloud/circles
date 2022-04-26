@@ -43,7 +43,7 @@ class SimpleDataStore implements JsonSerializable {
 	use TArrayTools;
 
 
-	/** @var array|JsonSerializable */
+	/** @var array */
 	private $data;
 
 
@@ -60,11 +60,7 @@ class SimpleDataStore implements JsonSerializable {
 		$this->data = $data;
 	}
 
-
-	/**
-	 * @param array $default
-	 */
-	public function default(array $default = []) {
+	public function default(array $default = []): void {
 		$this->data = array_merge($default, $this->data);
 	}
 
@@ -474,7 +470,10 @@ class SimpleDataStore implements JsonSerializable {
 	 * @return $this
 	 */
 	public function obj(JsonSerializable $obj): self {
-		$this->data = $obj;
+		$data = $obj->jsonSerialize();
+		if (is_array($data)) {
+			$this->data = $data;
+		}
 
 		return $this;
 	}

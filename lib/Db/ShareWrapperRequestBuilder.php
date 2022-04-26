@@ -32,7 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Db;
 
 use OCA\Circles\Tools\Exceptions\RowNotFoundException;
-use OC\Share20\Share;
+use OCP\Share\IShare;
 use OCA\Circles\Exceptions\ShareWrapperNotFoundException;
 use OCA\Circles\Model\ShareWrapper;
 
@@ -74,7 +74,7 @@ class ShareWrapperRequestBuilder extends CoreRequestBuilder {
 	protected function getShareSelectSql(string $alias = CoreQueryBuilder::SHARE): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->generateSelect(self::TABLE_SHARE, self::$outsideTables[self::TABLE_SHARE], $alias)
-		   ->limitToShareType(Share::TYPE_CIRCLE);
+		   ->limitToShareType(IShare::TYPE_CIRCLE);
 
 		return $qb;
 	}
@@ -88,7 +88,7 @@ class ShareWrapperRequestBuilder extends CoreRequestBuilder {
 	protected function getShareDeleteSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
 		$qb->delete(self::TABLE_SHARE)
-		   ->limitToShareType(Share::TYPE_CIRCLE);
+		   ->limitToShareType(IShare::TYPE_CIRCLE);
 
 		return $qb;
 	}

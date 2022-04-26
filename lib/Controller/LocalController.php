@@ -62,7 +62,7 @@ use OCP\IUserSession;
  *
  * @package OCA\Circles\Controller
  */
-class LocalController extends OcsController {
+class LocalController extends OCSController {
 	use TDeserialize;
 	use TNCLogger;
 
@@ -152,7 +152,7 @@ class LocalController extends OcsController {
 			return new DataResponse($this->serializeArray($circle));
 		} catch (Exception $e) {
 			$this->e($e, ['name' => $name, 'members' => $personal, 'local' => $local]);
-			throw new OcsException($e->getMessage(), $e->getCode());
+			throw new OCSException($e->getMessage(), (int)$e->getCode());
 		}
 	}
 
@@ -174,7 +174,7 @@ class LocalController extends OcsController {
 			return new DataResponse($this->serializeArray($circle));
 		} catch (Exception $e) {
 			$this->e($e, ['circleId' => $circleId]);
-			throw new OcsException($e->getMessage(), $e->getCode());
+			throw new OCSException($e->getMessage(), (int)$e->getCode());
 		}
 	}
 
@@ -194,7 +194,7 @@ class LocalController extends OcsController {
 			return new DataResponse($this->serializeArray($this->searchService->search($term)));
 		} catch (Exception $e) {
 			$this->e($e, ['term' => $term]);
-			throw new OcsException($e->getMessage(), $e->getCode());
+			throw new OCSException($e->getMessage(), (int)$e->getCode());
 		}
 	}
 
@@ -217,7 +217,7 @@ class LocalController extends OcsController {
 			return new DataResponse($this->serialize($this->circleService->getCircle($circleId, $probe)));
 		} catch (Exception $e) {
 			$this->e($e, ['circleId' => $circleId]);
-			throw new OcsException($e->getMessage(), $e->getCode());
+			throw new OCSException($e->getMessage(), (int)$e->getCode());
 		}
 	}
 
@@ -252,7 +252,7 @@ class LocalController extends OcsController {
 			return new DataResponse($this->serializeArray($result));
 		} catch (Exception $e) {
 			$this->e($e, ['circleId' => $circleId, 'userId' => $userId, 'type' => $type]);
-			throw new OCSException($e->getMessage(), $e->getCode());
+			throw new OCSException($e->getMessage(), (int)$e->getCode());
 		}
 	}
 
@@ -284,7 +284,7 @@ class LocalController extends OcsController {
 			return new DataResponse($this->serializeArray($result));
 		} catch (Exception $e) {
 			$this->e($e, ['circleId' => $circleId, 'members' => $members]);
-			throw new OCSException($e->getMessage(), $e->getCode());
+			throw new OCSException($e->getMessage(), (int)$e->getCode());
 		}
 	}
 
@@ -306,7 +306,7 @@ class LocalController extends OcsController {
 			return new DataResponse($this->serializeArray($result));
 		} catch (Exception $e) {
 			$this->e($e, ['circleId' => $circleId]);
-			throw new OCSException($e->getMessage(), $e->getCode());
+			throw new OCSException($e->getMessage(), (int)$e->getCode());
 		}
 	}
 
@@ -328,7 +328,7 @@ class LocalController extends OcsController {
 			return new DataResponse($this->serializeArray($result));
 		} catch (Exception $e) {
 			$this->e($e, ['circleId' => $circleId]);
-			throw new OCSException($e->getMessage(), $e->getCode());
+			throw new OCSException($e->getMessage(), (int)$e->getCode());
 		}
 	}
 
@@ -359,7 +359,7 @@ class LocalController extends OcsController {
 			return new DataResponse($this->serializeArray($result));
 		} catch (Exception $e) {
 			$this->e($e, ['circleId' => $circleId, 'memberId' => $memberId, 'level' => $level]);
-			throw new OcsException($e->getMessage(), $e->getCode());
+			throw new OCSException($e->getMessage(), (int)$e->getCode());
 		}
 	}
 
@@ -386,7 +386,7 @@ class LocalController extends OcsController {
 			return new DataResponse($this->serializeArray($result));
 		} catch (Exception $e) {
 			$this->e($e, ['circleId' => $circleId, 'memberId' => $memberId]);
-			throw new OCSException($e->getMessage(), $e->getCode());
+			throw new OCSException($e->getMessage(), (int)$e->getCode());
 		}
 	}
 
@@ -410,7 +410,7 @@ class LocalController extends OcsController {
 			return new DataResponse($this->serializeArray($result));
 		} catch (Exception $e) {
 			$this->e($e, ['circleId' => $circleId, 'memberId' => $memberId]);
-			throw new OCSException($e->getMessage(), $e->getCode());
+			throw new OCSException($e->getMessage(), (int)$e->getCode());
 		}
 	}
 
@@ -438,7 +438,7 @@ class LocalController extends OcsController {
 			return new DataResponse($this->serializeArray($this->circleService->getCircles($probe)));
 		} catch (Exception $e) {
 			$this->e($e);
-			throw new OCSException($e->getMessage(), $e->getCode());
+			throw new OCSException($e->getMessage(), (int)$e->getCode());
 		}
 	}
 
@@ -458,7 +458,7 @@ class LocalController extends OcsController {
 			return new DataResponse($this->serializeArray($this->memberService->getMembers($circleId)));
 		} catch (Exception $e) {
 			$this->e($e, ['circleId' => $circleId]);
-			throw new OCSException($e->getMessage(), $e->getCode());
+			throw new OCSException($e->getMessage(), (int)$e->getCode());
 		}
 	}
 
@@ -481,7 +481,7 @@ class LocalController extends OcsController {
 			return new DataResponse($this->serializeArray($outcome));
 		} catch (Exception $e) {
 			$this->e($e, ['circleId' => $circleId, 'value' => $value]);
-			throw new OCSException($e->getMessage(), $e->getCode());
+			throw new OCSException($e->getMessage(), (int)$e->getCode());
 		}
 	}
 
@@ -504,7 +504,7 @@ class LocalController extends OcsController {
 			return new DataResponse($this->serializeArray($outcome));
 		} catch (Exception $e) {
 			$this->e($e, ['circleId' => $circleId, 'value' => $value]);
-			throw new OCSException($e->getMessage(), $e->getCode());
+			throw new OCSException($e->getMessage(), (int)$e->getCode());
 		}
 	}
 
@@ -528,7 +528,7 @@ class LocalController extends OcsController {
 			return new DataResponse($this->serializeArray($outcome));
 		} catch (Exception $e) {
 			$this->e($e, ['circleId' => $circleId, 'setting' => $setting, 'value' => $value]);
-			throw new OCSException($e->getMessage(), $e->getCode());
+			throw new OCSException($e->getMessage(), (int)$e->getCode());
 		}
 	}
 
@@ -551,7 +551,7 @@ class LocalController extends OcsController {
 			return new DataResponse($this->serializeArray($outcome));
 		} catch (Exception $e) {
 			$this->e($e, ['circleId' => $circleId, 'value' => $value]);
-			throw new OCSException($e->getMessage(), $e->getCode());
+			throw new OCSException($e->getMessage(), (int)$e->getCode());
 		}
 	}
 
@@ -573,7 +573,7 @@ class LocalController extends OcsController {
 			return new DataResponse($this->serialize($membership));
 		} catch (Exception $e) {
 			$this->e($e, ['circleId' => $circleId, 'singleId' => $singleId]);
-			throw new OCSException($e->getMessage(), $e->getCode());
+			throw new OCSException($e->getMessage(), (int)$e->getCode());
 		}
 	}
 

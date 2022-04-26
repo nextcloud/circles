@@ -118,7 +118,7 @@ class EventWrapperController extends Controller {
 	public function asyncBroadcast(string $token): DataResponse {
 		$wrappers = $this->remoteUpstreamService->getEventsByToken($token);
 		if (empty($wrappers) && $token !== 'test-dummy-token') {
-			return new DataResponse(null, Http::STATUS_OK);
+			return new DataResponse([], Http::STATUS_OK);
 		}
 
 		// closing socket, keep current process running.

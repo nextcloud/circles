@@ -1,0 +1,916 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="4.22.0@fc2c6ab4d5fa5d644d8617089f012f3bb84b8703">
+  <file src="lib/Activity/Provider.php">
+    <ParamNameMismatch occurrences="1">
+      <code>$lang</code>
+    </ParamNameMismatch>
+  </file>
+  <file src="lib/Activity/ProviderParser.php">
+    <InvalidNullableReturnType occurrences="1">
+      <code>array&lt;string,string|integer&gt;</code>
+    </InvalidNullableReturnType>
+    <NullableReturnStatement occurrences="1">
+      <code>null</code>
+    </NullableReturnStatement>
+    <UndefinedMethod occurrences="1">
+      <code>Circles::generateAbsoluteLink($circle-&gt;getUniqueId())</code>
+    </UndefinedMethod>
+  </file>
+  <file src="lib/Circles/FileSharingBroadcaster.php">
+    <InvalidScalarArgument occurrences="2">
+      <code>$share-&gt;getId()</code>
+      <code>$share-&gt;getId()</code>
+    </InvalidScalarArgument>
+    <TypeDoesNotContainType occurrences="2">
+      <code>!$sendPasswordByMail</code>
+      <code>$sendPasswordByMail</code>
+    </TypeDoesNotContainType>
+    <UndefinedClass occurrences="3">
+      <code>Notifications</code>
+      <code>Share</code>
+      <code>Share</code>
+    </UndefinedClass>
+    <UndefinedDocblockClass occurrences="2">
+      <code>$this-&gt;federationNotifications</code>
+      <code>Notifications</code>
+    </UndefinedDocblockClass>
+    <UndefinedFunction occurrences="1">
+      <code>setSubject($subject)</code>
+    </UndefinedFunction>
+    <UndefinedInterfaceMethod occurrences="4">
+      <code>getLazyRootFolder</code>
+      <code>setHtmlBody</code>
+      <code>setPlainBody</code>
+      <code>setSubject</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="lib/CirclesManager.php">
+    <InvalidNullableReturnType occurrences="1">
+      <code>IFederatedUser</code>
+    </InvalidNullableReturnType>
+    <NullableReturnStatement occurrences="1">
+      <code>$this-&gt;federatedUserService-&gt;getCurrentUser()</code>
+    </NullableReturnStatement>
+  </file>
+  <file src="lib/Collaboration/v2/CollaboratorSearchPlugin.php">
+    <UndefinedClass occurrences="1">
+      <code>Share</code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Command/CirclesCheck.php">
+    <UndefinedClass occurrences="1">
+      <code>AppConfig</code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Command/CirclesRemote.php">
+    <UndefinedMethod occurrences="1">
+      <code>setType</code>
+    </UndefinedMethod>
+  </file>
+  <file src="lib/Command/CirclesReport.php">
+    <UndefinedClass occurrences="1">
+      <code>IInteractiveShellClient</code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Command/CirclesTest.php">
+    <NullArgument occurrences="1">
+      <code>null</code>
+    </NullArgument>
+    <RedundantCondition occurrences="2">
+      <code>$compareToInitiator !== null</code>
+      <code>$compareToOwner !== null</code>
+    </RedundantCondition>
+    <TypeDoesNotContainNull occurrences="1">
+      <code>$owner === null</code>
+    </TypeDoesNotContainNull>
+  </file>
+  <file src="lib/Command/FixUniqueId.php">
+    <UndefinedClass occurrences="1">
+      <code>Share</code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Command/MembersAdd.php">
+    <UndefinedMethod occurrences="1">
+      <code>retrieveJson</code>
+    </UndefinedMethod>
+  </file>
+  <file src="lib/Command/MembersList.php">
+    <UndefinedInterfaceMethod occurrences="7">
+      <code>getInstance</code>
+      <code>getInstance</code>
+      <code>getInvitedBy</code>
+      <code>getOwner</code>
+      <code>getSingleId</code>
+      <code>getStatus</code>
+      <code>hasInvitedBy</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="lib/Command/SyncContact.php">
+    <InvalidReturnType occurrences="1">
+      <code>int|void|null</code>
+    </InvalidReturnType>
+    <UndefinedClass occurrences="1">
+      <code>CardDavBackend</code>
+    </UndefinedClass>
+    <UndefinedDocblockClass occurrences="3">
+      <code>$this-&gt;cardDavBackend</code>
+      <code>$this-&gt;cardDavBackend</code>
+      <code>CardDavBackend</code>
+    </UndefinedDocblockClass>
+  </file>
+  <file src="lib/Controller/RemoteController.php">
+    <InvalidScalarArgument occurrences="1">
+      <code>($e-&gt;getCode() &gt; 0) ? $e-&gt;getCode() : $httpErrorCode</code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Db/CoreRequestBuilder.php">
+    <UndefinedClass occurrences="1">
+      <code>Connection</code>
+    </UndefinedClass>
+    <UndefinedMethod occurrences="2">
+      <code>dropTable</code>
+      <code>hasTable</code>
+    </UndefinedMethod>
+  </file>
+  <file src="lib/Db/DeprecatedCirclesRequest.php">
+    <InvalidArgument occurrences="1">
+      <code>$circle-&gt;getType()</code>
+    </InvalidArgument>
+    <InvalidScalarArgument occurrences="5">
+      <code>$circle-&gt;getUniqueId(true)</code>
+      <code>$circleUniqueId</code>
+      <code>$circleUniqueId</code>
+      <code>(string)$uniqueId</code>
+      <code>-1</code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Db/DeprecatedCirclesRequestBuilder.php">
+    <InvalidNullableReturnType occurrences="3">
+      <code>ICompositeExpression</code>
+      <code>string</code>
+      <code>string</code>
+    </InvalidNullableReturnType>
+    <InvalidReturnStatement occurrences="1"/>
+    <InvalidReturnType occurrences="1">
+      <code>string</code>
+    </InvalidReturnType>
+    <NullableReturnStatement occurrences="4">
+      <code>null</code>
+      <code>null</code>
+      <code>null</code>
+      <code>null</code>
+    </NullableReturnStatement>
+  </file>
+  <file src="lib/Db/DeprecatedMembersRequest.php">
+    <UndefinedClass occurrences="1">
+      <code>UniqueConstraintViolationException</code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Db/FederatedLinksRequest.php">
+    <InvalidNullableReturnType occurrences="1">
+      <code>FederatedLink</code>
+    </InvalidNullableReturnType>
+    <InvalidScalarArgument occurrences="4">
+      <code>$linkUniqueId</code>
+      <code>$linkUniqueId</code>
+      <code>$status</code>
+      <code>(string)$uniqueId</code>
+    </InvalidScalarArgument>
+    <NullableReturnStatement occurrences="1">
+      <code>null</code>
+    </NullableReturnStatement>
+    <TypeDoesNotContainNull occurrences="1">
+      <code>$link === null</code>
+    </TypeDoesNotContainNull>
+  </file>
+  <file src="lib/Db/FileSharesRequest.php">
+    <InvalidScalarArgument occurrences="2">
+      <code>self::SHARE_TYPE</code>
+      <code>self::SHARE_TYPE</code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Db/MemberRequest.php">
+    <InvalidReturnStatement occurrences="5">
+      <code>$this-&gt;getItemsFromRequest($qb)</code>
+      <code>$this-&gt;getItemsFromRequest($qb)</code>
+      <code>$this-&gt;getItemsFromRequest($qb)</code>
+      <code>$this-&gt;getItemsFromRequest($qb)</code>
+      <code>$this-&gt;getItemsFromRequest($qb, true)</code>
+    </InvalidReturnStatement>
+    <InvalidReturnType occurrences="5">
+      <code>FederatedUser[]</code>
+      <code>Member[]</code>
+      <code>Member[]</code>
+      <code>Member[]</code>
+      <code>Member[]</code>
+    </InvalidReturnType>
+  </file>
+  <file src="lib/Db/ShareWrapperRequest.php">
+    <InvalidScalarArgument occurrences="1">
+      <code>$id</code>
+    </InvalidScalarArgument>
+    <RedundantCondition occurrences="1">
+      <code>$getData</code>
+    </RedundantCondition>
+  </file>
+  <file src="lib/Db/TokensRequest.php">
+    <InvalidScalarArgument occurrences="2">
+      <code>$shareId</code>
+      <code>$shareId</code>
+    </InvalidScalarArgument>
+    <UndefinedClass occurrences="1">
+      <code>UniqueConstraintViolationException</code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/FederatedItems/SharedItemsSync.php">
+    <UndefinedClass occurrences="1">
+      <code>CircleEventService</code>
+    </UndefinedClass>
+    <UndefinedDocblockClass occurrences="2">
+      <code>$this-&gt;circleEventService</code>
+      <code>CircleEventService</code>
+    </UndefinedDocblockClass>
+  </file>
+  <file src="lib/GlobalScale/CircleCreate.php">
+    <ParamNameMismatch occurrences="1">
+      <code>$mustBeChecked</code>
+    </ParamNameMismatch>
+  </file>
+  <file src="lib/GlobalScale/CircleDestroy.php">
+    <ParamNameMismatch occurrences="1">
+      <code>$mustBeChecked</code>
+    </ParamNameMismatch>
+  </file>
+  <file src="lib/GlobalScale/CircleStatus.php">
+    <ParamNameMismatch occurrences="1">
+      <code>$mustBeChecked</code>
+    </ParamNameMismatch>
+  </file>
+  <file src="lib/GlobalScale/CircleUpdate.php">
+    <ParamNameMismatch occurrences="1">
+      <code>$mustBeChecked</code>
+    </ParamNameMismatch>
+  </file>
+  <file src="lib/GlobalScale/FileShare.php">
+    <ParamNameMismatch occurrences="1">
+      <code>$mustBeChecked</code>
+    </ParamNameMismatch>
+    <TypeDoesNotContainType occurrences="2">
+      <code>!$sendPasswordByMail</code>
+      <code>$sendPasswordByMail</code>
+    </TypeDoesNotContainType>
+    <UndefinedClass occurrences="1">
+      <code>Share</code>
+    </UndefinedClass>
+    <UndefinedInterfaceMethod occurrences="3">
+      <code>setHtmlBody</code>
+      <code>setPlainBody</code>
+      <code>setSubject</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="lib/GlobalScale/FileUnshare.php">
+    <ParamNameMismatch occurrences="1">
+      <code>$mustBeChecked</code>
+    </ParamNameMismatch>
+  </file>
+  <file src="lib/GlobalScale/GSMount/Mount.php">
+    <UndefinedClass occurrences="1">
+      <code>MoveableMount</code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/GlobalScale/GSMount/MountProvider.php">
+    <MissingDependency occurrences="2">
+      <code>Mount</code>
+      <code>Mount</code>
+    </MissingDependency>
+    <TooManyArguments occurrences="1">
+      <code>getCertificateManager</code>
+    </TooManyArguments>
+    <UndefinedMethod occurrences="1">
+      <code>isLocalNonSSL</code>
+    </UndefinedMethod>
+  </file>
+  <file src="lib/GlobalScale/GlobalSync.php">
+    <ParamNameMismatch occurrences="1">
+      <code>$mustBeChecked</code>
+    </ParamNameMismatch>
+  </file>
+  <file src="lib/GlobalScale/MemberAdd.php">
+    <ParamNameMismatch occurrences="1">
+      <code>$mustBeChecked</code>
+    </ParamNameMismatch>
+    <UndefinedInterfaceMethod occurrences="3">
+      <code>setHtmlBody</code>
+      <code>setPlainBody</code>
+      <code>setSubject</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="lib/GlobalScale/MemberJoin.php">
+    <InvalidScalarArgument occurrences="1">
+      <code>$circle-&gt;getType()</code>
+    </InvalidScalarArgument>
+    <ParamNameMismatch occurrences="1">
+      <code>$mustBeChecked</code>
+    </ParamNameMismatch>
+  </file>
+  <file src="lib/GlobalScale/MemberLeave.php">
+    <ParamNameMismatch occurrences="1">
+      <code>$mustBeChecked</code>
+    </ParamNameMismatch>
+  </file>
+  <file src="lib/GlobalScale/MemberRemove.php">
+    <ParamNameMismatch occurrences="1">
+      <code>$mustBeChecked</code>
+    </ParamNameMismatch>
+  </file>
+  <file src="lib/GlobalScale/MemberUpdate.php">
+    <ParamNameMismatch occurrences="1">
+      <code>$mustBeChecked</code>
+    </ParamNameMismatch>
+  </file>
+  <file src="lib/GlobalScale/Test.php">
+    <ParamNameMismatch occurrences="1">
+      <code>$mustBeChecked</code>
+    </ParamNameMismatch>
+  </file>
+  <file src="lib/GlobalScale/UserDeleted.php">
+    <ParamNameMismatch occurrences="1">
+      <code>$mustBeChecked</code>
+    </ParamNameMismatch>
+  </file>
+  <file src="lib/Handlers/WebfingerHandler.php">
+    <InvalidPropertyAssignmentValue occurrences="1">
+      <code>$urlGenerator</code>
+    </InvalidPropertyAssignmentValue>
+    <InvalidScalarArgument occurrences="1">
+      <code>$info</code>
+    </InvalidScalarArgument>
+    <ParamNameMismatch occurrences="1">
+      <code>$response</code>
+    </ParamNameMismatch>
+    <UndefinedDocblockClass occurrences="1">
+      <code>URLGenerator</code>
+    </UndefinedDocblockClass>
+  </file>
+  <file src="lib/Migration/ImportOwncloudCustomGroups.php">
+    <MissingDependency occurrences="2">
+      <code>Share</code>
+      <code>Share</code>
+    </MissingDependency>
+    <UndefinedConstant occurrences="1">
+      <code>Share::SHARE_TYPE_CIRCLE</code>
+    </UndefinedConstant>
+  </file>
+  <file src="lib/Migration/Version0022Date20220526111723.php">
+    <UndefinedClass occurrences="1">
+      <code>Connection</code>
+    </UndefinedClass>
+    <UndefinedDocblockClass occurrences="2">
+      <code>$this-&gt;connection</code>
+      <code>Connection</code>
+    </UndefinedDocblockClass>
+  </file>
+  <file src="lib/Migration/Version0022Date20220526113601.php">
+    <UndefinedClass occurrences="1">
+      <code>Types</code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Model/BaseCircle.php">
+    <InvalidReturnStatement occurrences="1">
+      <code>$this-&gt;type</code>
+    </InvalidReturnStatement>
+    <InvalidReturnType occurrences="1">
+      <code>string</code>
+    </InvalidReturnType>
+    <InvalidScalarArgument occurrences="1">
+      <code>$this-&gt;getUniqueId()</code>
+    </InvalidScalarArgument>
+    <RedundantCast occurrences="1">
+      <code>(array)self::CIRCLES_SETTINGS_DEFAULT</code>
+    </RedundantCast>
+  </file>
+  <file src="lib/Model/BaseMember.php">
+    <InvalidNullableReturnType occurrences="1">
+      <code>DeprecatedMember</code>
+    </InvalidNullableReturnType>
+    <InvalidScalarArgument occurrences="1">
+      <code>$member-&gt;getType()</code>
+    </InvalidScalarArgument>
+    <NullableReturnStatement occurrences="1">
+      <code>self::fromArray(json_decode($json, true))</code>
+    </NullableReturnStatement>
+  </file>
+  <file src="lib/Model/Circle.php">
+    <LessSpecificImplementedReturnType occurrences="1">
+      <code>self</code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="lib/Model/DavCard.php">
+    <InvalidScalarArgument occurrences="1">
+      <code>$this-&gt;get('addressBookId', $data)</code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Model/Federated/RemoteInstance.php">
+    <LessSpecificImplementedReturnType occurrences="1">
+      <code>NCSignatory</code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="lib/Model/FederatedLink.php">
+    <InvalidPropertyAssignmentValue occurrences="1">
+      <code>$circleUniqueId</code>
+    </InvalidPropertyAssignmentValue>
+    <InvalidReturnStatement occurrences="1">
+      <code>$this-&gt;circleUniqueId</code>
+    </InvalidReturnStatement>
+    <InvalidReturnType occurrences="1">
+      <code>string</code>
+    </InvalidReturnType>
+    <InvalidScalarArgument occurrences="1">
+      <code>$this-&gt;circleUniqueId</code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Model/FederatedUser.php">
+    <InvalidReturnStatement occurrences="1">
+      <code>$arr</code>
+    </InvalidReturnStatement>
+    <InvalidReturnType occurrences="1">
+      <code>string[]</code>
+    </InvalidReturnType>
+    <LessSpecificImplementedReturnType occurrences="1">
+      <code>self</code>
+    </LessSpecificImplementedReturnType>
+    <MismatchingDocblockParamType occurrences="1">
+      <code>Circle|null</code>
+    </MismatchingDocblockParamType>
+  </file>
+  <file src="lib/Model/FileCacheWrapper.php">
+    <InvalidReturnStatement occurrences="1"/>
+    <InvalidReturnType occurrences="1">
+      <code>string[]</code>
+    </InvalidReturnType>
+  </file>
+  <file src="lib/Model/ManagedModel.php">
+    <UndefinedMethod occurrences="6">
+      <code>setBasedOn</code>
+      <code>setDisplayName</code>
+      <code>setInstance</code>
+      <code>setSingleId</code>
+      <code>setUserId</code>
+      <code>setUserType</code>
+    </UndefinedMethod>
+  </file>
+  <file src="lib/Model/Member.php">
+    <InvalidClass occurrences="1">
+      <code>$inheritedBy</code>
+    </InvalidClass>
+    <InvalidReturnStatement occurrences="1">
+      <code>$arr</code>
+    </InvalidReturnStatement>
+    <InvalidReturnType occurrences="1">
+      <code>string[]</code>
+    </InvalidReturnType>
+    <LessSpecificImplementedReturnType occurrences="1">
+      <code>self</code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="lib/Model/Probes/BasicProbe.php">
+    <InvalidReturnType occurrences="1">
+      <code>$this</code>
+    </InvalidReturnType>
+  </file>
+  <file src="lib/Model/ShareWrapper.php">
+    <InvalidNullableReturnType occurrences="5">
+      <code>Circle</code>
+      <code>FileCacheWrapper</code>
+      <code>Member</code>
+      <code>Member</code>
+      <code>ShareToken</code>
+    </InvalidNullableReturnType>
+    <NullableReturnStatement occurrences="5">
+      <code>$this-&gt;circle</code>
+      <code>$this-&gt;fileCache</code>
+      <code>$this-&gt;initiator</code>
+      <code>$this-&gt;owner</code>
+      <code>$this-&gt;shareToken</code>
+    </NullableReturnStatement>
+    <UndefinedClass occurrences="1">
+      <code>Share</code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Model/SharesToken.php">
+    <InvalidScalarArgument occurrences="1">
+      <code>$this-&gt;get('share_id', $data, '')</code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Model/SharingFrame.php">
+    <NullArgument occurrences="1">
+      <code>null</code>
+    </NullArgument>
+    <NullableReturnStatement occurrences="2">
+      <code>null</code>
+      <code>null</code>
+    </NullableReturnStatement>
+  </file>
+  <file src="lib/MountManager/CircleMount.php">
+    <UndefinedClass occurrences="1">
+      <code>MoveableMount</code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/MountManager/CircleMountProvider.php">
+    <MissingDependency occurrences="1">
+      <code>CircleMount</code>
+    </MissingDependency>
+    <UndefinedClass occurrences="1">
+      <code>ExternalStorage</code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Search/Contacts.php">
+    <InvalidArgument occurrences="1">
+      <code>false</code>
+    </InvalidArgument>
+    <InvalidReturnStatement occurrences="1">
+      <code>$result</code>
+    </InvalidReturnStatement>
+    <InvalidReturnType occurrences="1">
+      <code>search</code>
+    </InvalidReturnType>
+    <MethodSignatureMismatch occurrences="1">
+      <code>Contacts</code>
+    </MethodSignatureMismatch>
+    <ParamNameMismatch occurrences="1">
+      <code>$search</code>
+    </ParamNameMismatch>
+  </file>
+  <file src="lib/Search/FederatedUsers.php">
+    <LessSpecificImplementedReturnType occurrences="1">
+      <code>array</code>
+    </LessSpecificImplementedReturnType>
+  </file>
+  <file src="lib/Search/GlobalScaleUsers.php">
+    <InvalidReturnStatement occurrences="1">
+      <code>$result</code>
+    </InvalidReturnStatement>
+    <InvalidReturnType occurrences="1">
+      <code>array</code>
+    </InvalidReturnType>
+    <ParamNameMismatch occurrences="1">
+      <code>$search</code>
+    </ParamNameMismatch>
+  </file>
+  <file src="lib/Search/LocalGroups.php">
+    <InvalidReturnStatement occurrences="1">
+      <code>$result</code>
+    </InvalidReturnStatement>
+    <InvalidReturnType occurrences="1">
+      <code>search</code>
+    </InvalidReturnType>
+    <MethodSignatureMismatch occurrences="1">
+      <code>LocalGroups</code>
+    </MethodSignatureMismatch>
+    <ParamNameMismatch occurrences="1">
+      <code>$search</code>
+    </ParamNameMismatch>
+  </file>
+  <file src="lib/Search/LocalUsers.php">
+    <InvalidReturnStatement occurrences="1">
+      <code>$result</code>
+    </InvalidReturnStatement>
+    <MethodSignatureMismatch occurrences="1">
+      <code>LocalUsers</code>
+    </MethodSignatureMismatch>
+    <ParamNameMismatch occurrences="1">
+      <code>$search</code>
+    </ParamNameMismatch>
+  </file>
+  <file src="lib/Service/CircleService.php">
+    <MismatchingDocblockParamType occurrences="1">
+      <code>CircleProbe|null</code>
+    </MismatchingDocblockParamType>
+  </file>
+  <file src="lib/Service/CirclesService.php">
+    <InvalidScalarArgument occurrences="1">
+      <code>$type</code>
+    </InvalidScalarArgument>
+    <MismatchingDocblockParamType occurrences="1">
+      <code>DeprecatedCircle</code>
+    </MismatchingDocblockParamType>
+    <MismatchingDocblockReturnType occurrences="1">
+      <code>null|DeprecatedMember</code>
+    </MismatchingDocblockReturnType>
+    <TypeDoesNotContainType occurrences="2">
+      <code>$type === ''</code>
+      <code>$type === ''</code>
+    </TypeDoesNotContainType>
+    <UndefinedClass occurrences="3">
+      <code>DeprecatedCircle</code>
+      <code>Member</code>
+      <code>Member</code>
+    </UndefinedClass>
+    <UndefinedMethod occurrences="1">
+      <code>isFederatedCirclesAllowed</code>
+    </UndefinedMethod>
+  </file>
+  <file src="lib/Service/ConfigService.php">
+    <UndefinedPropertyFetch occurrences="1">
+      <code>OC::$WEBROOT</code>
+    </UndefinedPropertyFetch>
+  </file>
+  <file src="lib/Service/ContactService.php">
+    <TypeDoesNotContainNull occurrences="1">
+      <code>is_null($contactId)</code>
+    </TypeDoesNotContainNull>
+    <UndefinedClass occurrences="1">
+      <code>ContactsManager</code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Service/DavService.php">
+    <InvalidReturnStatement occurrences="1">
+      <code>$existing</code>
+    </InvalidReturnStatement>
+    <InvalidReturnType occurrences="1">
+      <code>DeprecatedCircle[]</code>
+    </InvalidReturnType>
+    <InvalidScalarArgument occurrences="3">
+      <code>$bookId</code>
+      <code>$bookId</code>
+      <code>$bookId</code>
+    </InvalidScalarArgument>
+    <UndefinedClass occurrences="1">
+      <code>CardDavBackend</code>
+    </UndefinedClass>
+    <UndefinedDocblockClass occurrences="6">
+      <code>$this-&gt;cardDavBackend</code>
+      <code>$this-&gt;cardDavBackend</code>
+      <code>$this-&gt;cardDavBackend</code>
+      <code>$this-&gt;cardDavBackend</code>
+      <code>$this-&gt;cardDavBackend</code>
+      <code>CardDavBackend</code>
+    </UndefinedDocblockClass>
+  </file>
+  <file src="lib/Service/EventsService.php">
+    <InvalidArgument occurrences="2">
+      <code>$context</code>
+      <code>new GenericEvent(null, $arguments)</code>
+    </InvalidArgument>
+  </file>
+  <file src="lib/Service/FederatedShareService.php">
+    <InvalidMethodCall occurrences="1">
+      <code>gObj</code>
+    </InvalidMethodCall>
+  </file>
+  <file src="lib/Service/FederatedUserService.php">
+    <InvalidReturnType occurrences="1">
+      <code>FederatedUser</code>
+    </InvalidReturnType>
+  </file>
+  <file src="lib/Service/GSDownstreamService.php">
+    <UndefinedMethod occurrences="7">
+      <code>asyncBroadcast</code>
+      <code>checkEvent</code>
+      <code>checkEvent</code>
+      <code>checkEvent</code>
+      <code>getGlobalScaleEvent</code>
+      <code>getGlobalScaleEvent</code>
+      <code>getGlobalScaleEvent</code>
+    </UndefinedMethod>
+  </file>
+  <file src="lib/Service/GSUpstreamService.php">
+    <InvalidArgument occurrences="1">
+      <code>$wrapper</code>
+    </InvalidArgument>
+    <InvalidReturnStatement occurrences="1">
+      <code>$this-&gt;eventWrapperRequest-&gt;getByToken($token)</code>
+    </InvalidReturnStatement>
+    <InvalidReturnType occurrences="1">
+      <code>GSWrapper[]</code>
+    </InvalidReturnType>
+    <TooManyArguments occurrences="1">
+      <code>configureRequest</code>
+    </TooManyArguments>
+    <UndefinedMethod occurrences="6">
+      <code>asyncBroadcast</code>
+      <code>getGlobalScaleEvent</code>
+      <code>getGlobalScaleEvent</code>
+      <code>getInstances</code>
+      <code>getInstances</code>
+      <code>getKey</code>
+    </UndefinedMethod>
+  </file>
+  <file src="lib/Service/GlobalScaleService.php">
+    <UndefinedClass occurrences="1">
+      <code>Signer</code>
+    </UndefinedClass>
+    <UndefinedDocblockClass occurrences="1">
+      <code>Signer</code>
+    </UndefinedDocblockClass>
+  </file>
+  <file src="lib/Service/MembersService.php">
+    <InvalidReturnStatement occurrences="1">
+      <code>$members</code>
+    </InvalidReturnStatement>
+    <InvalidReturnType occurrences="1">
+      <code>DeprecatedMember[]</code>
+    </InvalidReturnType>
+    <InvalidScalarArgument occurrences="1">
+      <code>$circle-&gt;getType()</code>
+    </InvalidScalarArgument>
+    <RedundantCast occurrences="1">
+      <code>(int)$level</code>
+    </RedundantCast>
+    <UndefinedMethod occurrences="1">
+      <code>isInvitationSkipped</code>
+    </UndefinedMethod>
+  </file>
+  <file src="lib/Service/MembershipService.php">
+    <ConflictingReferenceConstraint occurrences="1">
+      <code>if (!in_array($member-&gt;getCircleId(), $knownIds)) {</code>
+    </ConflictingReferenceConstraint>
+  </file>
+  <file src="lib/Service/MigrationService.php">
+    <UndefinedClass occurrences="1">
+      <code>ContactsManager</code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Service/MiscService.php">
+    <InvalidReturnType occurrences="1">
+      <code>string</code>
+    </InvalidReturnType>
+    <TypeDoesNotContainType occurrences="1">
+      <code>is_array($contact)</code>
+    </TypeDoesNotContainType>
+    <UndefinedDocblockClass occurrences="2">
+      <code>$cManager</code>
+      <code>$cManager</code>
+    </UndefinedDocblockClass>
+  </file>
+  <file src="lib/Service/RemoteStreamService.php">
+    <RedundantCondition occurrences="1">
+      <code>is_null($object)</code>
+    </RedundantCondition>
+    <TypeDoesNotContainNull occurrences="1">
+      <code>$signed === null</code>
+    </TypeDoesNotContainNull>
+  </file>
+  <file src="lib/Service/SendMailService.php">
+    <UndefinedInterfaceMethod occurrences="3">
+      <code>setHtmlBody</code>
+      <code>setPlainBody</code>
+      <code>setSubject</code>
+    </UndefinedInterfaceMethod>
+  </file>
+  <file src="lib/Service/SyncService.php">
+    <InvalidClass occurrences="2">
+      <code>federatedEventService</code>
+      <code>federatedEventService</code>
+    </InvalidClass>
+  </file>
+  <file src="lib/Service/TimezoneService.php">
+    <UndefinedClass occurrences="1">
+      <code>TimeFactory</code>
+    </UndefinedClass>
+    <UndefinedDocblockClass occurrences="2">
+      <code>$this-&gt;timeFactory</code>
+      <code>TimeFactory</code>
+    </UndefinedDocblockClass>
+  </file>
+  <file src="lib/ShareByCircleProvider.php">
+    <ImplementedParamTypeMismatch occurrences="1">
+      <code>$shareId</code>
+    </ImplementedParamTypeMismatch>
+    <InvalidNullableReturnType occurrences="5">
+      <code>IShare</code>
+      <code>IShare</code>
+      <code>IShare</code>
+      <code>IShare</code>
+      <code>IShare</code>
+    </InvalidNullableReturnType>
+    <InvalidReturnType occurrences="1">
+      <code>iterable</code>
+    </InvalidReturnType>
+    <LessSpecificImplementedReturnType occurrences="1">
+      <code>array</code>
+    </LessSpecificImplementedReturnType>
+    <NullableReturnStatement occurrences="5">
+      <code>$wrappedShare-&gt;getShare($this-&gt;rootFolder, $this-&gt;userManager, $this-&gt;urlGenerator)</code>
+      <code>$wrappedShare-&gt;getShare($this-&gt;rootFolder, $this-&gt;userManager, $this-&gt;urlGenerator)</code>
+      <code>$wrappedShare-&gt;getShare($this-&gt;rootFolder, $this-&gt;userManager, $this-&gt;urlGenerator)</code>
+      <code>$wrappedShare-&gt;getShare($this-&gt;rootFolder, $this-&gt;userManager, $this-&gt;urlGenerator)</code>
+      <code>$wrappedShare-&gt;getShare($this-&gt;rootFolder, $this-&gt;userManager, $this-&gt;urlGenerator)</code>
+    </NullableReturnStatement>
+    <ParamNameMismatch occurrences="1">
+      <code>$shareId</code>
+    </ParamNameMismatch>
+    <RedundantCondition occurrences="1">
+      <code>!is_null($node)</code>
+    </RedundantCondition>
+    <TypeDoesNotContainNull occurrences="1">
+      <code>0</code>
+    </TypeDoesNotContainNull>
+  </file>
+  <file src="lib/ShareByCircleProviderDeprecated.php">
+    <ImplementedReturnTypeMismatch occurrences="4">
+      <code>IShare[]|null</code>
+      <code>Share</code>
+      <code>Share[]</code>
+      <code>Share[]</code>
+    </ImplementedReturnTypeMismatch>
+    <InvalidReturnStatement occurrences="4">
+      <code>$shares</code>
+      <code>$this-&gt;createShareChild($userId, $share)</code>
+      <code>$this-&gt;createShareObject($data)</code>
+      <code>$this-&gt;getShareById($share-&gt;getId())</code>
+    </InvalidReturnStatement>
+    <InvalidReturnType occurrences="3">
+      <code>IShare</code>
+      <code>Share</code>
+      <code>Share[]</code>
+    </InvalidReturnType>
+    <InvalidScalarArgument occurrences="6">
+      <code>$id</code>
+      <code>$share-&gt;getId()</code>
+      <code>$share-&gt;getId()</code>
+      <code>$share-&gt;getId()</code>
+      <code>$share-&gt;getId()</code>
+      <code>$share-&gt;getSharedWith()</code>
+    </InvalidScalarArgument>
+    <MissingDependency occurrences="2">
+      <code>\OCP\Share</code>
+      <code>\OCP\Share</code>
+    </MissingDependency>
+    <ParamNameMismatch occurrences="4">
+      <code>$reShares</code>
+      <code>$shareId</code>
+      <code>$userId</code>
+      <code>$userId</code>
+    </ParamNameMismatch>
+    <RedundantCast occurrences="1">
+      <code>(int)$id</code>
+    </RedundantCast>
+    <RedundantCondition occurrences="1"/>
+    <TypeDoesNotContainNull occurrences="1">
+      <code>$arr === null</code>
+    </TypeDoesNotContainNull>
+    <UndefinedClass occurrences="2">
+      <code>InvalidShare</code>
+      <code>Share</code>
+    </UndefinedClass>
+    <UndefinedDocblockClass occurrences="3">
+      <code>Share</code>
+      <code>Share[]</code>
+      <code>Share[]</code>
+    </UndefinedDocblockClass>
+    <UndefinedMethod occurrences="1"/>
+  </file>
+  <file src="lib/Tools/ActivityPub/NCSignature.php">
+    <RedundantCondition occurrences="1">
+      <code>$varr[0] !== null</code>
+    </RedundantCondition>
+  </file>
+  <file src="lib/Tools/Model/NCRequestResult.php">
+    <UndefinedClass occurrences="3">
+      <code>BadResponseException</code>
+      <code>BadResponseException</code>
+      <code>BadResponseException|null</code>
+    </UndefinedClass>
+    <UndefinedDocblockClass occurrences="2">
+      <code>BadResponseException</code>
+      <code>private $exception = null;</code>
+    </UndefinedDocblockClass>
+  </file>
+  <file src="lib/Tools/Model/SimpleDataStore.php">
+    <InvalidReturnStatement occurrences="1">
+      <code>$item</code>
+    </InvalidReturnStatement>
+  </file>
+  <file src="lib/Tools/Traits/TArrayTools.php">
+    <TooManyArguments occurrences="1">
+      <code>getArray</code>
+    </TooManyArguments>
+  </file>
+  <file src="lib/Tools/Traits/TNCLogger.php">
+    <RedundantPropertyInitializationCheck occurrences="1">
+      <code>isset($this-&gt;logger)</code>
+    </RedundantPropertyInitializationCheck>
+    <UndefinedClass occurrences="1">
+      <code>HintException</code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Tools/Traits/TNCRequest.php">
+    <InvalidArgument occurrences="1">
+      <code>$e</code>
+    </InvalidArgument>
+    <UndefinedClass occurrences="1">
+      <code>ClientException</code>
+    </UndefinedClass>
+  </file>
+  <file src="lib/Tools/Traits/TNCSignatory.php">
+    <UndefinedMethod occurrences="1">
+      <code>getOpenSSLAlgo</code>
+    </UndefinedMethod>
+  </file>
+  <file src="lib/Tools/Traits/TStringTools.php">
+    <InvalidArrayOffset occurrences="1">
+      <code>$s[$e]</code>
+    </InvalidArrayOffset>
+  </file>
+</files>

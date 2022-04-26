@@ -453,9 +453,8 @@ class FileSharingBroadcaster implements IBroadcaster {
 		$senderName = $this->l10n->t('%s on %s', [$author, $instanceName]);
 
 		$message->setFrom([Util::getDefaultEmailAddress($instanceName) => $senderName]);
-		$message->setSubject($subject);
-		$message->setPlainBody($emailTemplate->renderText());
-		$message->setHtmlBody($emailTemplate->renderHtml());
+		$emailTemplate->setSubject($subject);
+		$message->useTemplate($emailTemplate);
 		$message->setTo([$email]);
 
 		$this->mailer->send($message);

@@ -410,7 +410,7 @@ class CircleProviderRequestBuilder extends DeprecatedRequestBuilder {
 		   ->setValue('password', $qb->createNamedParameter($password))
 		   ->setValue('permissions', $qb->createNamedParameter($share->getPermissions()))
 		   ->setValue('token', $qb->createNamedParameter($share->getToken()))
-		   ->setValue('stime', $qb->createFunction('UNIX_TIMESTAMP()'));
+		   ->setValue('stime', (string)$qb->createFunction('UNIX_TIMESTAMP()'));
 
 		return $qb;
 	}

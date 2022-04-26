@@ -109,7 +109,7 @@ class CirclesMaintenance extends Base {
 		$level = (int)$input->getOption('level');
 
 		if ($reset || $uninstall) {
-			$action = strtolower(($uninstall) ? 'uninstall' : 'reset');
+			$action = $uninstall ? 'uninstall' : 'reset';
 
 			$output->writeln('');
 			$output->writeln('');
