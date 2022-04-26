@@ -732,8 +732,8 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 			 ->setFileSource($this->getInt('fileSource', $data))
 			 ->setFileTarget($this->get('fileTarget', $data))
 			 ->setSharedWith($this->get('sharedWith', $data))
-			 ->setSharedBy($this->get('uidInitiator', $data))
-			 ->setShareOwner($this->get('uidOwner', $data))
+			 ->setSharedBy($this->get('sharedBy', $data))
+			 ->setShareOwner($this->get('shareOwner', $data))
 			 ->setToken($this->get('token', $data))
 			 ->setShareTime($shareTime);
 
