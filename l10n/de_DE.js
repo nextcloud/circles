@@ -100,7 +100,7 @@ OC.L10N.register(
     "Nextcloud App" : "Nextcloud-App",
     "Member" : "Mitglied",
     "Moderator" : "Moderator",
-    "Admin" : "Administrator",
+    "Admin" : "Administration",
     "Owner" : "Eigentümer",
     "%s shared »%s« with you." : "%s hat »%s« mit Ihnen geteilt.",
     "%s shared »%s« with \"%s\"." : "%s hat »%s« mit \"%s\" geteilt.",
