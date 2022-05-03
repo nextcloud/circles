@@ -13,11 +13,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Bu qovluqda heç bir verilən tapılmadı",
     "Name" : "Ad",
     "Size" : "Həcm",
-    "Modified" : "Dəyişdirildi",
-    "Settings" : "Quraşdırmalar",
-    "Username" : "İstifadəçi adı",
-    "Link" : "Link",
-    "Description" : "Açıqlanma",
-    "Change password" : "Şifrəni dəyiş"
+    "Modified" : "Dəyişdirildi"
 },
 "nplurals=2; plural=(n != 1);");
