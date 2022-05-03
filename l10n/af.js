@@ -2,6 +2,10 @@ OC.L10N.register(
     "circles",
     {
     "Personal" : "Persoonlik",
+    "System" : "Stelsel",
+    "Visible" : "Sigbaar",
+    "Open" : "Open",
+    "Hidden" : "Versteek",
     "Contact" : "Kontak",
     "Admin" : "Admin",
     "Owner" : "Eienaar",
@@ -12,14 +16,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Geen inskrwyings in hierdie gids gevind",
     "Name" : "Naam",
     "Size" : "Grootte",
-    "Modified" : "Gewysig",
-    "Secret" : "Geheim",
-    "Unknown" : "Onbekend",
-    "Mail Address" : "Posadres",
-    "Settings" : "Instellings",
-    "Username" : "Gebruikersnaam",
-    "Link" : "Skakel",
-    "Description" : "Beskrywing",
-    "Change password" : "Verander wagwoord"
+    "Modified" : "Gewysig"
 },
 "nplurals=2; plural=(n != 1);");
