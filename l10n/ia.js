@@ -16,13 +16,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Nulle entratas trovate in iste dossier",
     "Name" : "Nomine",
     "Size" : "Dimension",
-    "Modified" : "Modificate",
-    "Public" : "Public",
-    "Unknown" : "Incognite",
-    "Settings" : "Configurationes",
-    "Username" : "Nomine de usator",
-    "Link" : "Ligamine",
-    "Description" : "Description",
-    "Change password" : "Cambiar contrasigno"
+    "Modified" : "Modificate"
 },
 "nplurals=2; plural=(n != 1);");

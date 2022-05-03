@@ -22,21 +22,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Šajā mapē nekas nav atrasts",
     "Name" : "Vārds",
     "Size" : "Izmērs",
-    "Modified" : "Mainīts",
-    "This action is irreversible" : "Šo darbību nevar atdarīt",
-    "Personal circle" : "Personīgais loks",
-    "Secret circle" : "Slepenais loks",
-    "Closed circle" : "Aizvērtais loks",
-    "Public circle" : "Publiskais loks",
-    "Secret" : "Noslēpums",
-    "Public" : "Publiska",
-    "Unknown" : "Nezināms",
-    "Mail Address" : "E-pasta adrese",
-    "Settings" : "Iestatījumi",
-    "Username" : "Lietotājvārds",
-    "Status" : "Status",
-    "Link" : "Saite",
-    "Description" : "Apraksts",
-    "Change password" : "Mainīt paroli"
+    "Modified" : "Mainīts"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);");
