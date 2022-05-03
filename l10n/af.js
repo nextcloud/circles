@@ -16,16 +16,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Geen inskrwyings in hierdie gids gevind",
     "Name" : "Naam",
     "Size" : "Grootte",
-    "Modified" : "Gewysig",
-    "Secret" : "Geheim",
-    "Unknown" : "Onbekend",
-    "Mail Address" : "Posadres",
-    "Settings" : "Instellings",
-    "Username" : "Gebruikersnaam",
-    "Status" : "Status",
-    "Link" : "Skakel",
-    "Description" : "Beskrywing",
-    "Change password" : "Verander wagwoord",
-    "Save settings" : "Bewaar instellings"
+    "Modified" : "Gewysig"
 },
 "nplurals=2; plural=(n != 1);");

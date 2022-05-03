@@ -19,15 +19,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Tidak ada entri yang ditemukan dalam folder ini",
     "Name" : "Nama",
     "Size" : "Ukuran",
-    "Modified" : "Dimodifikasi",
-    "Secret" : "Rahasia",
-    "Public" : "Publik",
-    "Unknown" : "Tidak diketahui",
-    "Settings" : "Setelan",
-    "Username" : "Nama pengguna",
-    "Status" : "Status",
-    "Link" : "Tautan",
-    "Description" : "Deskrisi",
-    "Change password" : "Ubah kata sandi"
+    "Modified" : "Dimodifikasi"
 },
 "nplurals=1; plural=0;");

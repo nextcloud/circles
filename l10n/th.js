@@ -19,15 +19,6 @@ OC.L10N.register(
     "No entries found in this folder" : "ไม่พบรายการในโฟลเดอร์นี้",
     "Name" : "ชื่อ",
     "Size" : "ขนาด",
-    "Modified" : "แก้ไขเมื่อ",
-    "Public" : "สาธารณะ",
-    "Unknown" : "ไม่ทราบ",
-    "Settings" : "ตั้งค่า",
-    "Username" : "ชื่อผู้ใช้",
-    "Status" : "สถานะ",
-    "Link" : "ลิงค์",
-    "Description" : "รายละเอียด",
-    "Change password" : "เปลี่ยนรหัสผ่าน",
-    "Save settings" : "บันทึกการตั้งค่า"
+    "Modified" : "แก้ไขเมื่อ"
 },
 "nplurals=1; plural=0;");
