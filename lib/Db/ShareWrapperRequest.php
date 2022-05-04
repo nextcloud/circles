@@ -297,7 +297,15 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 			$qb->leftJoinCircle(CoreQueryBuilder::SHARE, null, 'share_with');
 		}
 
-		$qb->limitToInitiator(CoreQueryBuilder::SHARE, $federatedUser, 'share_with');
+		$qb->leftJoin(
+			'sh_cc',
+			'circles_membership',
+			'sh_ms',
+			$qb->expr()->eq('sh_cc.unique_id', 'sh_ms.circle_id')
+		);
+		$qb->andWhere(
+			$qb->expr()->eq('sh_ms.single_id', $qb->createNamedParameter($federatedUser->getSingleId()))
+		);
 
 		$qb->leftJoinFileCache(CoreQueryBuilder::SHARE);
 		$qb->limitNull('parent', false);
