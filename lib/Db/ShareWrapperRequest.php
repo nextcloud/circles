@@ -292,20 +292,10 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 			)
 		);
 
-		$getData = true;
-		if ($getData) {
-			$qb->leftJoinCircle(CoreQueryBuilder::SHARE, null, 'share_with');
-		}
+		$qb->leftJoinCircle(CoreQueryBuilder::SHARE, null, 'share_with');
 
-		$qb->leftJoin(
-			'sh_cc',
-			'circles_membership',
-			'sh_ms',
-			$qb->expr()->eq('sh_cc.unique_id', 'sh_ms.circle_id')
-		);
-		$qb->andWhere(
-			$qb->expr()->eq('sh_ms.single_id', $qb->createNamedParameter($federatedUser->getSingleId()))
-		);
+		$aliasCircle = $qb->generateAlias(CoreQueryBuilder::SHARE, CoreQueryBuilder::CIRCLE);
+		$qb->limitToFederatedUserMemberships(CoreQueryBuilder::SHARE, $aliasCircle, $federatedUser);
 
 		$qb->leftJoinFileCache(CoreQueryBuilder::SHARE);
 		$qb->limitNull('parent', false);

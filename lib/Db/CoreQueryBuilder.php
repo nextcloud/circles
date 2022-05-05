@@ -647,6 +647,36 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 
 	/**
+	 * @param string $alias
+	 * @param string $aliasCircle
+	 * @param FederatedUser $federatedUser
+	 *
+	 * @throws RequestBuilderException
+	 */
+	public function limitToFederatedUserMemberships(
+		string $alias,
+		string $aliasCircle,
+		FederatedUser $federatedUser
+	): void {
+		$aliasMembership = $this->generateAlias($alias, self::MEMBERSHIPS);
+
+		$this->leftJoin(
+			$aliasCircle,
+			'circles_membership',
+			$aliasMembership,
+			$this->expr()->eq($aliasCircle . '.unique_id', $aliasMembership . '.circle_id')
+		);
+
+		$this->andWhere(
+			$this->expr()->eq(
+				$aliasMembership . '.single_id',
+				$this->createNamedParameter($federatedUser->getSingleId())
+			)
+		);
+	}
+
+
+	/**
 	 * @param string $aliasMember
 	 * @param Member $member
 	 */
