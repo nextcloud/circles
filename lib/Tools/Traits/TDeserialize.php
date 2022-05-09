@@ -78,13 +78,41 @@ trait TDeserialize {
 
 
 	/**
+	 * @param array $data
+	 * @param string $class
+	 * @param bool $associative
+	 *
+	 * @return IDeserializable[]
+	 */
+	public function deserializeArray(array $data, string $class, bool $associative = false): array {
+		$arr = [];
+		foreach ($data as $key => $entry) {
+			if (!is_array($entry)) {
+				continue;
+			}
+
+			try {
+				if ($associative) {
+					$arr[$key] = $this->deserialize($entry, $class);
+				} else {
+					$arr[] = $this->deserialize($entry, $class);
+				}
+			} catch (InvalidItemException $e) {
+			}
+		}
+
+		return $arr;
+	}
+
+
+	/**
 	 * @param string $json
 	 * @param string $class
 	 *
 	 * @return IDeserializable[]
 	 * @throws InvalidItemException
 	 */
-	public function deserializeArray(string $json, string $class): array {
+	public function deserializeList(string $json, string $class): array {
 		$arr = [];
 		$data = json_decode($json, true);
 		if (!is_array($data)) {
@@ -97,6 +125,7 @@ trait TDeserialize {
 
 		return $arr;
 	}
+
 
 
 	/**
