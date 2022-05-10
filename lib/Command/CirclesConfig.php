@@ -137,7 +137,7 @@ class CirclesConfig extends Base {
 		$circleId = (string)$input->getArgument('circle_id');
 
 		try {
-			if ($input->getArgument('super-session')) {
+			if ($input->getOption('super-session')) {
 				$this->federatedUserService->bypassCurrentUserCondition(true);
 			} else {
 				$this->federatedUserService->commandLineInitiator(
