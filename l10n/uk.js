@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "Circles" : "Кола",
     "Personal" : "Особисте",
     "System" : "Система",
     "Visible" : "Видимий",
