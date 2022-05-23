@@ -40,6 +40,7 @@ use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\JsonNotRequestedException;
 use OCA\Circles\Exceptions\UnknownInterfaceException;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Debug;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\FederatedUser;
@@ -48,6 +49,7 @@ use OCA\Circles\Model\Probes\BasicProbe;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\DebugService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\InterfaceService;
 use OCA\Circles\Service\MemberService;
@@ -61,6 +63,7 @@ use OCA\Circles\Tools\Exceptions\MalformedArrayException;
 use OCA\Circles\Tools\Exceptions\SignatoryException;
 use OCA\Circles\Tools\Exceptions\SignatureException;
 use OCA\Circles\Tools\Exceptions\UnknownTypeException;
+use OCA\Circles\Tools\IDeserializable;
 use OCA\Circles\Tools\Model\NCSignedRequest;
 use OCA\Circles\Tools\Model\SimpleDataStore;
 use OCA\Circles\Tools\Traits\TDeserialize;
@@ -105,6 +108,8 @@ class RemoteController extends Controller {
 	/** @var InterfaceService */
 	private $interfaceService;
 
+	private DebugService $debugService;
+
 	/** @var ConfigService */
 	private $configService;
 
@@ -137,6 +142,7 @@ class RemoteController extends Controller {
 		MemberService $memberService,
 		MembershipService $membershipService,
 		InterfaceService $interfaceService,
+		DebugService $debugService,
 		ConfigService $configService,
 		IUserSession $userSession
 	) {
@@ -149,6 +155,7 @@ class RemoteController extends Controller {
 		$this->memberService = $memberService;
 		$this->membershipService = $membershipService;
 		$this->interfaceService = $interfaceService;
+		$this->debugService = $debugService;
 		$this->configService = $configService;
 		$this->userSession = $userSession;
 
@@ -195,12 +202,19 @@ class RemoteController extends Controller {
 			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
 		}
 
+		$this->debugService->info(
+			'new {`IFederatedEvent} {event.class} requested from {event.sender}',
+			($event->hasCircle()) ? $event->getCircle()->getSingleId() : '',
+			['event' => $event]
+		);
+
 		try {
 			$this->remoteDownstreamService->requestedEvent($event);
 
 			return new DataResponse($event->getOutcome());
 		} catch (Exception $e) {
 			$this->e($e, ['event' => $event]);
+			$this->debugService->exception($e, '', ['event' => $event]);
 
 			return $this->exceptionResponse($e);
 		}
@@ -419,6 +433,43 @@ class RemoteController extends Controller {
 		} catch (Exception $e) {
 			return $this->exceptionResponse($e);
 		}
+	}
+
+
+	/**
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 *
+	 * @return DataResponse
+	 */
+	public function debugDaemon(): DataResponse {
+		try {
+			if ($this->configService->getAppValue(ConfigService::DEBUG) !== DebugService::DEBUG_DAEMON) {
+				throw new Exception();
+			}
+
+			$signed = $this->remoteStreamService->incomingSignedRequest();
+			$this->confirmRemoteInstance($signed);
+
+			/** @var Debug $debug */
+			$debug = $this->deserialize(json_decode($signed->getBody(), true), Debug::class);
+			$debug->setInstance($signed->getOrigin());
+			$this->debugService->save($debug);
+
+			return new DataResponse([]);
+		} catch (Exception $e) {
+			return $this->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
+		}
+
+//		try {
+//			$this->remoteDownstreamService->requestedEvent($event);
+//
+//			return new DataResponse($event->getOutcome());
+//		} catch (Exception $e) {
+//			$this->e($e, ['event' => $event]);
+//
+//			return $this->exceptionResponse($e);
+//		}
 	}
 
 

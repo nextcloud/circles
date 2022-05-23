@@ -31,11 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use OCA\Circles\Tools\Exceptions\InvalidItemException;
-use OCA\Circles\Tools\Exceptions\RequestNetworkException;
-use OCA\Circles\Tools\Exceptions\SignatoryException;
-use OCA\Circles\Tools\Traits\TAsync;
-use OCA\Circles\Tools\Traits\TNCLogger;
 use Exception;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
@@ -54,6 +49,11 @@ use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Probes\CircleProbe;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
+use OCA\Circles\Tools\Exceptions\RequestNetworkException;
+use OCA\Circles\Tools\Exceptions\SignatoryException;
+use OCA\Circles\Tools\Traits\TAsync;
+use OCA\Circles\Tools\Traits\TNCLogger;
 
 /**
  * Class RemoteDownstreamService
@@ -80,6 +80,7 @@ class RemoteDownstreamService {
 	/** @var ConfigService */
 	private $configService;
 
+	private DebugService $debugService;
 
 	/**
 	 * RemoteDownstreamService constructor.
@@ -87,14 +88,17 @@ class RemoteDownstreamService {
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
 	 * @param FederatedEventService $federatedEventService
+	 * @param RemoteService $remoteService
 	 * @param ConfigService $configService
+	 * @param DebugService $debugService
 	 */
 	public function __construct(
 		CircleRequest $circleRequest,
 		MemberRequest $memberRequest,
 		FederatedEventService $federatedEventService,
 		RemoteService $remoteService,
-		ConfigService $configService
+		ConfigService $configService,
+		DebugService $debugService
 	) {
 		$this->setup('app', 'circles');
 
@@ -103,6 +107,7 @@ class RemoteDownstreamService {
 		$this->federatedEventService = $federatedEventService;
 		$this->remoteService = $remoteService;
 		$this->configService = $configService;
+		$this->debugService = $debugService;
 	}
 
 
@@ -157,6 +162,12 @@ class RemoteDownstreamService {
 		$this->federatedEventService->confirmInitiator($event, false);
 		$this->confirmContent($event, true);
 
+		$this->debugService->info(
+			'{`IFederatedEvent} looks good; calling {`verify()} on {event.class}', '',
+			['event' => $event]
+		);
+
+
 		$item->verify($event);
 		$event->resetResult();
 
@@ -165,6 +176,11 @@ class RemoteDownstreamService {
 		}
 
 		if (!$event->isAsync()) {
+			$this->debugService->info(
+				'FederatedEvent is not set as {Async}; calling {`manage()} on {event.class} on current process',
+				'',
+				['event' => $event]
+			);
 			$item->manage($event);
 		}
 

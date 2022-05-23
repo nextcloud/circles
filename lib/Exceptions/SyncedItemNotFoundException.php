@@ -30,7 +30,5 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Exceptions;
 
-use Exception;
-
-class FederatedShareAlreadyLockedException extends Exception {
+class SyncedItemNotFoundException extends FederatedItemNotFoundException {
 }

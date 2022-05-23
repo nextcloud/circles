@@ -31,19 +31,23 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model\Federated;
 
-use OCA\Circles\Tools\Exceptions\InvalidItemException;
-use OCA\Circles\Tools\Model\SimpleDataStore;
-use OCA\Circles\Tools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\SyncedItem;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
+use OCA\Circles\Tools\IReferencedObject;
+use OCA\Circles\Tools\Model\SimpleDataStore;
+use OCA\Circles\Tools\Traits\TArrayTools;
 
 /**
  * Class FederatedEvent
  *
  * @package OCA\Circles\Model\Federated
  */
-class FederatedEvent implements JsonSerializable {
+class FederatedEvent implements
+	IReferencedObject,
+	JsonSerializable {
 	public const SEVERITY_LOW = 1;
 	public const SEVERITY_HIGH = 3;
 
@@ -64,6 +68,8 @@ class FederatedEvent implements JsonSerializable {
 
 	/** @var Circle */
 	private $circle;
+
+	private ?SyncedItem $syncedItem = null;
 
 	/** @var string */
 	private $itemId = '';
@@ -137,11 +143,11 @@ class FederatedEvent implements JsonSerializable {
 	}
 
 	/**
-	 * @param mixed $class
+	 * @param string $class
 	 *
 	 * @return self
 	 */
-	public function setClass($class): self {
+	public function setClass(string $class): self {
 		$this->class = $class;
 
 		return $this;
@@ -292,6 +298,31 @@ class FederatedEvent implements JsonSerializable {
 		return $this->circle;
 	}
 
+
+	/**
+	 * @param SyncedItem $syncedItem
+	 *
+	 * @return FederatedEvent
+	 */
+	public function setSyncedItem(SyncedItem $syncedItem): self {
+		$this->syncedItem = $syncedItem;
+
+		return $this;
+	}
+
+	/**
+	 * @return SyncedItem
+	 */
+	public function getSyncedItem(): SyncedItem {
+		return $this->syncedItem;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasSyncedItem(): bool {
+		return !is_null($this->syncedItem);
+	}
 
 	/**
 	 * @param string $itemId
@@ -556,9 +587,7 @@ class FederatedEvent implements JsonSerializable {
 	 * @return FederatedEvent
 	 */
 	public function bypass(int $flag): self {
-		if (!$this->canBypass($flag)) {
-			$this->bypass += $flag;
-		}
+		$this->bypass |= $flag;
 
 		return $this;
 	}
@@ -602,6 +631,13 @@ class FederatedEvent implements JsonSerializable {
 			$this->setMember($member);
 		}
 
+		try {
+			$syncedItem = new SyncedItem();
+			$syncedItem->import($this->getArray('syncedItem', $data));
+			$this->setSyncedItem($syncedItem);
+		} catch (InvalidItemException $e) {
+		}
+
 		$members = [];
 		foreach ($this->getArray('members', $data) as $item) {
 			$member = new Member();
@@ -636,6 +672,9 @@ class FederatedEvent implements JsonSerializable {
 		}
 		if ($this->hasMember()) {
 			$arr['member'] = $this->getMember();
+		}
+		if ($this->hasSyncedItem()) {
+			$arr['syncedItem'] = $this->getSyncedItem();
 		}
 
 		return $arr;

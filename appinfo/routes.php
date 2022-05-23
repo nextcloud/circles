@@ -112,6 +112,12 @@ return [
 		['name' => 'Remote#members', 'url' => '/members/{circleId}/', 'verb' => 'GET'],
 		['name' => 'Remote#member', 'url' => '/member/{type}/{userId}/', 'verb' => 'GET'],
 		['name' => 'Remote#inherited', 'url' => '/inherited/{circleId}/', 'verb' => 'GET'],
-		['name' => 'Remote#memberships', 'url' => '/memberships/{circleId}/', 'verb' => 'GET']
+		['name' => 'Remote#memberships', 'url' => '/memberships/{circleId}/', 'verb' => 'GET'],
+
+		['name' => 'Sync#getSyncedItem', 'url' => '/sync/item', 'verb' => 'GET'],
+//		['name' => 'Remote#syncItem', 'url' => '/sync/item/{singleId}', 'verb' => 'GET'],
+		['name' => 'Sync#syncShare', 'url' => '/sync/share', 'verb' => 'POST'],
+		['name' => 'Debug#debugDaemon', 'url' => '/debug', 'verb' => 'POST']
+
 	]
 ];

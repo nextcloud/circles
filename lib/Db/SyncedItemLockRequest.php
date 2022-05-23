@@ -10,7 +10,7 @@ declare(strict_types=1);
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2021
+ * @copyright 2022
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,7 +28,34 @@ declare(strict_types=1);
  *
  */
 
-namespace OCA\Circles\Exceptions;
 
-class FederatedShareBelongingException extends FederatedItemException {
+namespace OCA\Circles\Db;
+
+use OCA\Circles\Exceptions\InvalidIdException;
+use OCA\Circles\Model\SyncedItemLock;
+
+/**
+ * Class SyncedItemLockRequest
+ *
+ * @package OCA\Circles\Db
+ */
+class SyncedItemLockRequest extends SyncedItemLockRequestBuilder {
+
+
+	/**
+	 * @param SyncedItemLock $lock
+	 *
+	 * @throws InvalidIdException
+	 */
+	public function save(SyncedItemLock $lock): void {
+		$this->confirmValidIds([$lock->getSingleId()]);
+
+		$qb = $this->getSyncedItemLockInsertSql();
+		$qb->setValue('single_id', $qb->createNamedParameter($lock->getSingleId()))
+		   ->setValue('update_type', $qb->createNamedParameter($lock->getUpdateType()))
+		   ->setValue('update_type_id', $qb->createNamedParameter($lock->getUpdateTypeId()))
+		   ->setValue('time', $qb->createNamedParameter($lock->getTime()));
+
+		$qb->execute();
+	}
 }

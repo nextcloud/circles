@@ -31,12 +31,12 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model\Federated;
 
-use OCA\Circles\Tools\Db\IQueryRow;
-use OCA\Circles\Tools\Model\NCSignatory;
-use OCA\Circles\Tools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteUidException;
+use OCA\Circles\Tools\Db\IQueryRow;
+use OCA\Circles\Tools\Model\NCSignatory;
+use OCA\Circles\Tools\Traits\TArrayTools;
 
 /**
  * Class AppService
@@ -73,6 +73,9 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 	public const INHERITED = 'inherited';
 	public const UID = 'uid';
 	public const AUTH_SIGNED = 'auth-signed';
+	public const DEBUG = 'debug';
+	public const SYNC_ITEM = 'syncItem';
+	public const SYNC_SHARE = 'syncShare';
 
 	/** @var int */
 	private $dbId = 0;
@@ -124,6 +127,10 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 
 	/** @var bool */
 	private $identityAuthed = false;
+
+	private string $syncItem = '';
+	private string $syncShare = '';
+	private string $debug = '';
 
 
 	/**
@@ -276,7 +283,6 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 	public function getTest(): string {
 		return $this->test;
 	}
-
 
 	/**
 	 * @return string
@@ -474,6 +480,59 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 
 
 	/**
+	 * @param string $syncItem
+	 */
+	public function setSyncItem(string $syncItem): self {
+		$this->syncItem = $syncItem;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSyncItem(): string {
+		return $this->syncItem;
+	}
+
+
+	/**
+	 * @param string $syncShare
+	 */
+	public function setSyncShare(string $syncShare): self {
+		$this->syncShare = $syncShare;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSyncShare(): string {
+		return $this->syncShare;
+	}
+
+
+	/**
+	 * @param string $debug
+	 *
+	 * @return RemoteInstance
+	 */
+	public function setDebug(string $debug): self {
+		$this->debug = $debug;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDebug(): string {
+		return $this->debug;
+	}
+
+
+	/**
 	 * @param array $data
 	 *
 	 * @return NCSignatory
@@ -492,6 +551,9 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 			 ->setMember($this->get(self::MEMBER, $data))
 			 ->setInherited($this->get(self::INHERITED, $data))
 			 ->setMemberships($this->get(self::MEMBERSHIPS, $data))
+			 ->setDebug($this->get(self::DEBUG, $data))
+			 ->setSyncItem($this->get(self::SYNC_ITEM, $data))
+			 ->setSyncShare($this->get(self::SYNC_SHARE, $data))
 			 ->setUid($this->get(self::UID, $data));
 
 		$algo = '';
@@ -522,7 +584,10 @@ class RemoteInstance extends NCSignatory implements IQueryRow, JsonSerializable 
 			self::MEMBERS => $this->getMembers(),
 			self::MEMBER => $this->getMember(),
 			self::INHERITED => $this->getInherited(),
-			self::MEMBERSHIPS => $this->getMemberships()
+			self::MEMBERSHIPS => $this->getMemberships(),
+			self::SYNC_ITEM => $this->getSyncItem(),
+			self::SYNC_SHARE => $this->getSyncShare(),
+			self::DEBUG => $this->getDebug(),
 		];
 
 		if ($this->getAuthSigned() !== '') {

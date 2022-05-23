@@ -118,6 +118,7 @@ class ConfigService {
 	public const MAINTENANCE_UPDATE = 'maintenance_update';
 	public const MAINTENANCE_RUN = 'maintenance_run';
 
+	public const DEBUG = 'debug';
 	public const GS_MODE = 'mode';
 	public const GS_KEY = 'key';
 
@@ -197,6 +198,8 @@ class ConfigService {
 		self::MIGRATION_RUN => '0',
 		self::MAINTENANCE_UPDATE => '[]',
 		self::MAINTENANCE_RUN => '0',
+
+		self::DEBUG => '',
 
 		self::FORCE_NC_BASE => '',
 		self::TEST_NC_BASE => '',

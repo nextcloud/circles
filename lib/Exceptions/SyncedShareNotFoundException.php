@@ -28,13 +28,7 @@ declare(strict_types=1);
  *
  */
 
+namespace OCA\Circles\Exceptions;
 
-namespace OCA\Circles;
-
-/**
- * Interface IFederatedItemInstanceMember
- *
- * @package OCA\Circles
- */
-interface IFederatedItemLimitedToInstanceWithMembership {
+class SyncedShareNotFoundException extends FederatedItemNotFoundException {
 }

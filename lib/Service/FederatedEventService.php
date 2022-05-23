@@ -34,11 +34,8 @@ use OC;
 use OCA\Circles\Db\EventWrapperRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\RemoteRequest;
-use OCA\Circles\Db\ShareLockRequest;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
-use OCA\Circles\Exceptions\FederatedShareBelongingException;
-use OCA\Circles\Exceptions\FederatedShareNotFoundException;
 use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
@@ -53,14 +50,14 @@ use OCA\Circles\IFederatedItemDataRequestOnly;
 use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\IFederatedItemInitiatorCheckNotRequired;
 use OCA\Circles\IFederatedItemInitiatorMembershipNotRequired;
-use OCA\Circles\IFederatedItemLimitedToInstanceWithMembership;
+use OCA\Circles\IFederatedItemLimitedToInstanceWithMember;
 use OCA\Circles\IFederatedItemLoopbackTest;
 use OCA\Circles\IFederatedItemMemberCheckNotRequired;
 use OCA\Circles\IFederatedItemMemberEmpty;
 use OCA\Circles\IFederatedItemMemberOptional;
 use OCA\Circles\IFederatedItemMemberRequired;
 use OCA\Circles\IFederatedItemMustBeInitializedLocally;
-use OCA\Circles\IFederatedItemSharedItem;
+use OCA\Circles\IFederatedItemSyncedItem;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\EventWrapper;
 use OCA\Circles\Model\Federated\FederatedEvent;
@@ -91,9 +88,6 @@ class FederatedEventService extends NCSignature {
 	/** @var RemoteRequest */
 	private $remoteRequest;
 
-	/** @var ShareLockRequest */
-	private $shareLockRequest;
-
 	/** @var MemberRequest */
 	private $memberRequest;
 
@@ -106,6 +100,8 @@ class FederatedEventService extends NCSignature {
 	/** @var ConfigService */
 	private $configService;
 
+	private DebugService $debugService;
+
 
 	/**
 	 * FederatedEventService constructor.
@@ -113,27 +109,27 @@ class FederatedEventService extends NCSignature {
 	 * @param EventWrapperRequest $eventWrapperRequest
 	 * @param RemoteRequest $remoteRequest
 	 * @param MemberRequest $memberRequest
-	 * @param ShareLockRequest $shareLockRequest
 	 * @param RemoteUpstreamService $remoteUpstreamService
 	 * @param InterfaceService $interfaceService
 	 * @param ConfigService $configService
+	 * @param DebugService $debugService
 	 */
 	public function __construct(
 		EventWrapperRequest $eventWrapperRequest,
 		RemoteRequest $remoteRequest,
 		MemberRequest $memberRequest,
-		ShareLockRequest $shareLockRequest,
 		RemoteUpstreamService $remoteUpstreamService,
 		InterfaceService $interfaceService,
-		ConfigService $configService
+		ConfigService $configService,
+		DebugService $debugService
 	) {
 		$this->eventWrapperRequest = $eventWrapperRequest;
 		$this->remoteRequest = $remoteRequest;
-		$this->shareLockRequest = $shareLockRequest;
 		$this->memberRequest = $memberRequest;
 		$this->remoteUpstreamService = $remoteUpstreamService;
 		$this->interfaceService = $interfaceService;
 		$this->configService = $configService;
+		$this->debugService = $debugService;
 	}
 
 
@@ -168,6 +164,17 @@ class FederatedEventService extends NCSignature {
 		}
 
 		if ($this->configService->isLocalInstance($instance)) {
+
+			$this->debugService->info(
+				'New local event ',
+				($event->hasCircle()) ? $event->getCircle()->getSingleId() : '',
+				[
+					'event' => $event,
+					'federatedItem' => $federatedItem,
+					'instance' => $instance
+				]
+			);
+
 			$event->setSender($instance);
 			$federatedItem->verify($event);
 
@@ -181,6 +188,23 @@ class FederatedEventService extends NCSignature {
 
 			$this->initBroadcast($event);
 		} else {
+//			$this->debugService->info(
+//				'Requesting {event.instance} to confirm IFederatedEvent {event.getClass}',
+//				$circle->getSingleId(),
+//				[
+//					'event' => $event
+//				]
+//			);
+
+			$this->debugService->info(
+				'sending {`IFederatedEvent} {event.class} to master {instance} for confirmation',
+				($event->hasCircle()) ? $event->getCircle()->getSingleId() : '',
+				[
+					'event' => $event,
+					'instance' => $instance
+				]
+			);
+
 			$this->remoteUpstreamService->confirmEvent($event);
 			if ($event->isDataRequestOnly()) {
 				return $event->getOutcome();
@@ -266,8 +290,6 @@ class FederatedEventService extends NCSignature {
 		$this->confirmRequiredCondition($event, $item, $checkLocalOnly);
 		$this->configureEvent($event, $item);
 
-//		$this->confirmSharedItem($event, $item);
-
 		return $item;
 	}
 
@@ -334,32 +356,9 @@ class FederatedEventService extends NCSignature {
 		if ($item instanceof IFederatedItemMustBeInitializedLocally && $checkLocalOnly) {
 			throw new FederatedEventException('FederatedItem must be executed locally');
 		}
-	}
 
-
-	/**
-	 * @param FederatedEvent $event
-	 * @param IFederatedItem $item
-	 *
-	 * @throws FederatedEventException
-	 * @throws FederatedShareBelongingException
-	 * @throws FederatedShareNotFoundException
-	 * @throws OwnerNotFoundException
-	 */
-	private function confirmSharedItem(FederatedEvent $event, IFederatedItem $item): void {
-		if (!$item instanceof IFederatedItemSharedItem) {
-			return;
-		}
-
-		if ($event->getItemId() === '') {
-			throw new FederatedEventException('FederatedItem must contains ItemId');
-		}
-
-		if ($this->configService->isLocalInstance($event->getCircle()->getInstance())) {
-			$shareLock = $this->shareLockRequest->getShare($event->getItemId());
-			if ($shareLock->getInstance() !== $event->getSender()) {
-				throw new FederatedShareBelongingException('ShareLock belongs to another instance');
-			}
+		if ($item instanceof IFederatedItemSyncedItem && !$event->hasSyncedItem()) {
+			throw new FederatedEventException('FederatedItem must contains a valid SyncedItem');
 		}
 	}
 
@@ -372,7 +371,7 @@ class FederatedEventService extends NCSignature {
 		if ($item instanceof IFederatedItemAsyncProcess) {
 			$event->setAsync(true);
 		}
-		if ($item instanceof IFederatedItemLimitedToInstanceWithMembership) {
+		if ($item instanceof IFederatedItemLimitedToInstanceWithMember) {
 			$event->setLimitedToInstanceWithMember(true);
 		}
 		if ($item instanceof IFederatedItemDataRequestOnly) {

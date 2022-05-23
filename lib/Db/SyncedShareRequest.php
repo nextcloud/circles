@@ -31,50 +31,63 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-use OCA\Circles\Exceptions\FederatedShareNotFoundException;
 use OCA\Circles\Exceptions\InvalidIdException;
-use OCA\Circles\Model\Federated\FederatedShare;
+use OCA\Circles\Exceptions\SyncedShareNotFoundException;
+use OCA\Circles\Model\SyncedShare;
+use OCP\DB\Exception;
 
 /**
  * Class ShareRequest
  *
  * @package OCA\Circles\Db
  */
-class ShareLockRequest extends ShareLockRequestBuilder {
+class SyncedShareRequest extends SyncedShareRequestBuilder {
 
 
 	/**
-	 * @param FederatedShare $share
+	 * @param SyncedShare $share
 	 *
 	 * @throws InvalidIdException
+	 * @throws Exception
 	 */
-	public function save(FederatedShare $share): void {
-		$this->confirmValidIds([$share->getItemId()]);
+	public function save(SyncedShare $share): void {
+		$this->confirmValidIds([$share->getSingleId(), $share->getCircleId()]);
 
-		$qb = $this->getShareLockInsertSql();
-		$qb->setValue('item_id', $qb->createNamedParameter($share->getItemId()))
-		   ->setValue('circle_id', $qb->createNamedParameter($share->getCircleId()))
-		   ->setValue('instance', $qb->createNamedParameter($qb->getInstance($share)));
+		$qb = $this->getSyncedShareInsertSql();
+		$qb->setValue('single_id', $qb->createNamedParameter($share->getSingleId()))
+		   ->setValue('circle_id', $qb->createNamedParameter($share->getCircleId()));
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 
 	/**
-	 * @param string $itemId
+	 * @param string $singleId
+	 *
+	 * @return SyncedShare[]
+	 */
+	public function getShares(string $singleId): array {
+		$qb = $this->getSyncedShareSelectSql();
+
+		$qb->limitToSingleId($singleId);
+
+		return $this->getItemsFromRequest($qb);
+	}
+
+	/**
+	 * @param string $itemSingleId
 	 * @param string $circleId
 	 *
-	 * @return FederatedShare
-	 * @throws FederatedShareNotFoundException
+	 * @return SyncedShare
+	 * @throws SyncedShareNotFoundException
 	 */
-	public function getShare(string $itemId, string $circleId = ''): FederatedShare {
-		$qb = $this->getShareLockSelectSql();
+	public function getShare(string $itemSingleId, string $circleId): SyncedShare {
+		$qb = $this->getSyncedShareSelectSql();
 
-		$qb->limitToItemId($itemId);
-		if ($circleId !== '') {
-			$qb->limitToCircleId($circleId);
-		}
+		$qb->limitToSingleId($itemSingleId);
+		$qb->limitToCircleId($circleId);
 
 		return $this->getItemFromRequest($qb);
 	}
+
 }

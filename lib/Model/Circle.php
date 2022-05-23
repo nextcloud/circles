@@ -50,6 +50,7 @@ use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Tools\Db\IQueryRow;
 use OCA\Circles\Tools\Exceptions\InvalidItemException;
 use OCA\Circles\Tools\IDeserializable;
+use OCA\Circles\Tools\IReferencedObject;
 use OCA\Circles\Tools\Traits\TArrayTools;
 use OCA\Circles\Tools\Traits\TDeserialize;
 use OCP\Security\IHasher;
@@ -82,7 +83,11 @@ use OCP\Security\IHasher;
  *
  * @package OCA\Circles\Model
  */
-class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow, JsonSerializable {
+class Circle extends ManagedModel implements IEntity,
+	IReferencedObject,
+	IQueryRow,
+	JsonSerializable {
+
 	use TArrayTools;
 	use TDeserialize;
 

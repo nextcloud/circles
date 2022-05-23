@@ -177,6 +177,10 @@ class RemoteStreamService extends NCSignature {
 			)
 		);
 
+		$app->setSyncItem($this->interfaceService->getCloudPath('circles.Remote.syncItem'));
+		$app->setSyncShare($this->interfaceService->getCloudPath('circles.Remote.syncShare'));
+		$app->setDebug($this->interfaceService->getCloudPath('circles.Remote.debugDaemon'));
+
 		if ($this->interfaceService->isCurrentInterfaceInternal()) {
 			$app->setAliases(array_values(array_filter($this->interfaceService->getInterfaces(false))));
 		}

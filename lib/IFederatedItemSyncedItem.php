@@ -10,7 +10,7 @@ declare(strict_types=1);
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2021
+ * @copyright 2022
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,9 +28,15 @@ declare(strict_types=1);
  *
  */
 
-namespace OCA\Circles\Exceptions;
 
-use Exception;
+namespace OCA\Circles;
 
-class FederatedShareNotFoundException extends Exception {
+/**
+ * SyncedItem from IFederatedItem will be check:
+ *
+ * - SyncedItem needs to be present
+ * - SyncedItem needs to come from the same instance that the request
+ */
+interface IFederatedItemSyncedItem {
+
 }

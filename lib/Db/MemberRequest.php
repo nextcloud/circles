@@ -428,4 +428,25 @@ class MemberRequest extends MemberRequestBuilder {
 
 		return $this->getItemsFromRequest($qb);
 	}
+
+
+	/**
+	 * used mainly to confirm visibility on a list of CircleIds from the point of view of a remote instance
+	 *
+	 * @param string $instance
+	 * @param array $circleIds
+	 *
+	 * @return Member[]
+	 * @throws RequestBuilderException
+	 */
+	public function getLinksWithInstance(string $instance, array $circleIds): array {
+		$qb = $this->getMemberSelectSql();
+
+		$qb->limitInArray('circle_id', $circleIds);
+		$qb->limitToInstance($instance);
+		$qb->gt('level', Member::LEVEL_MEMBER, true);
+		$qb->paginate(3);
+
+		return $this->getItemsFromRequest($qb);
+	}
 }
