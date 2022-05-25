@@ -40,6 +40,7 @@ use OCA\Circles\Service\DebugService;
 use OCA\Circles\Service\FederatedSyncItemService;
 use OCA\Circles\Service\FederatedSyncService;
 use OCA\Circles\Service\FederatedSyncShareService;
+use OCA\Circles\Service\FederatedUserService;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
@@ -52,6 +53,7 @@ class CircleSharesManager implements ICircleSharesManager {
 
 
 	private CircleService $circleService;
+	private FederatedUserService $federatedUserService;
 	private FederatedSyncService $federatedSyncService;
 	private FederatedSyncItemService $federatedSyncItemService;
 	private FederatedSyncShareService $federatedSyncShareService;
@@ -64,12 +66,16 @@ class CircleSharesManager implements ICircleSharesManager {
 
 	/**
 	 * @param CircleService $circleService
+	 * @param FederatedUserService $federatedUserService
+	 * @param FederatedSyncService $federatedSyncService
 	 * @param FederatedSyncItemService $federatedSyncItemService
 	 * @param FederatedSyncShareService $federatedSyncShareService
 	 * @param ConfigService $configService
+	 * @param DebugService $debugService
 	 */
 	public function __construct(
 		CircleService $circleService,
+		FederatedUserService $federatedUserService,
 		FederatedSyncService $federatedSyncService,
 		FederatedSyncItemService $federatedSyncItemService,
 		FederatedSyncShareService $federatedSyncShareService,
@@ -77,6 +83,7 @@ class CircleSharesManager implements ICircleSharesManager {
 		DebugService $debugService
 	) {
 		$this->circleService = $circleService;
+		$this->federatedUserService = $federatedUserService;
 		$this->federatedSyncService = $federatedSyncService;
 		$this->federatedSyncItemService = $federatedSyncItemService;
 		$this->federatedSyncShareService = $federatedSyncShareService;
@@ -125,12 +132,14 @@ class CircleSharesManager implements ICircleSharesManager {
 		array $extraData = []
 	): void {
 		$this->debugService->setDebugType('federated_sync');
-		$this->debugService->info('{~New request to create a SyncedShare} based on {appId}.{itemType}.{itemId}', $circleId, [
-			'appId' => $this->originAppId,
-			'itemType' => $this->originItemType,
-			'itemId' => $itemId,
-			'extraData' => $extraData
-		]);
+		$this->debugService->info(
+			'{~New request to create a SyncedShare} based on {appId}.{itemType}.{itemId}', $circleId, [
+																							 'appId' => $this->originAppId,
+																							 'itemType' => $this->originItemType,
+																							 'itemId' => $itemId,
+																							 'extraData' => $extraData
+																						 ]
+		);
 
 		try {
 			$this->mustHaveOrigin();
@@ -143,10 +152,11 @@ class CircleSharesManager implements ICircleSharesManager {
 			$circle = $this->circleService->getCircle($circleId, $probe);
 
 			// get valid SyncedItem based on appId, itemType, itemId
-			$syncedItem = $this->federatedSyncItemService->getSyncedItem(
+			$syncedItem = $this->federatedSyncItemService->initSyncedItem(
 				$this->originAppId,
 				$this->originItemType,
-				$itemId
+				$itemId,
+				true
 			);
 
 			$this->debugService->info(
@@ -170,7 +180,6 @@ class CircleSharesManager implements ICircleSharesManager {
 			$this->debugService->exception($e, $circleId);
 			throw $e;
 		}
-//		this->$this->federatedItemService->getSharedItem
 	}
 
 	/**
@@ -185,7 +194,6 @@ class CircleSharesManager implements ICircleSharesManager {
 		string $circleId,
 		array $extraData = []
 	): void {
-		$this->mustHaveOrigin();
 	}
 
 	/**
@@ -200,14 +208,66 @@ class CircleSharesManager implements ICircleSharesManager {
 
 	/**
 	 * @param string $itemId
-	 * @param array $serializedData
+	 * @param array $extraData
+	 *
+	 * @throws CircleSharesManagerException
 	 */
 	public function updateItem(
 		string $itemId,
-		array $serializedData
+		array $extraData = []
 	): void {
 		$this->mustHaveOrigin();
+
+		$this->debugService->setDebugType('federated_sync');
+		$this->debugService->info(
+			'{~New request to update a SyncedItem} based on {appId}.{itemType}.{itemId}',
+			'',
+			[
+				'appId' => $this->originAppId,
+				'itemType' => $this->originItemType,
+				'itemId' => $itemId,
+				'extraData' => $extraData
+			]
+		);
+
+		try {
+//			$this->mustHaveOrigin();
+
+//			// TODO: verify rules that apply when sharing to a circle
+//			$probe = new CircleProbe();
+//			$probe->includeSystemCircles()
+//				  ->mustBeMember();
+//
+//			$circle = $this->circleService->getCircle($circleId, $probe);
+//
+			// get valid SyncedItem based on appId, itemType, itemId
+			$syncedItem = $this->federatedSyncItemService->initSyncedItem(
+				$this->originAppId,
+				$this->originItemType,
+				$itemId
+			);
+
+			$this->debugService->info(
+				'initiating the process of updating {syncedItem.singleId}',
+				'', [
+					'itemId' => $itemId,
+					'syncedItem' => $syncedItem,
+					'extraData' => $extraData,
+					'isLocal' => $syncedItem->isLocal()
+				]
+			);
+
+			$this->federatedSyncItemService->requestSyncedItemUpdate(
+				$this->federatedUserService->getCurrentEntity(),
+				$syncedItem,
+				$extraData
+			);
+		} catch (Exception $e) {
+			$this->debugService->exception($e);
+			throw $e;
+		}
 	}
+
 
 	/**
 	 * @param string $itemId

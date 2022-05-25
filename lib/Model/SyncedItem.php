@@ -219,7 +219,7 @@ class SyncedItem extends ManagedModel implements IFederatedModel, IReferencedObj
 	 *
 	 * @return SyncedItem
 	 */
-	public function setSerialized(array $serialized): self {
+	public function setSerialized(array $serialized = []): self {
 		$this->serialized = $serialized;
 
 		return $this;

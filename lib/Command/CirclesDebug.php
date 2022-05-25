@@ -32,7 +32,6 @@ declare(strict_types=1);
 namespace OCA\Circles\Command;
 
 use Exception;
-use JetBrains\PhpStorm\Pure;
 use OC\Core\Command\Base;
 use OCA\Circles\Model\Debug;
 use OCA\Circles\Service\ConfigService;
@@ -63,6 +62,7 @@ class CirclesDebug extends Base {
 	private BottomRightPanel $bottomRightPanel;
 	private ProgressBar $display;
 
+	private string $localDisplayName;
 	/** @var Panel[] $panels */
 	private array $panels = [];
 	/** @var Debug[] $debugs */
@@ -72,6 +72,7 @@ class CirclesDebug extends Base {
 
 	/**
 	 * @param DebugService $debugService
+	 * @param ConfigService $configService
 	 */
 	public function __construct(DebugService $debugService, ConfigService $configService) {
 		parent::__construct();
@@ -88,6 +89,7 @@ class CirclesDebug extends Base {
 			 ->addOption('history', '', InputOption::VALUE_REQUIRED, 'last history', '50')
 			 ->addOption('size', '', InputOption::VALUE_REQUIRED, 'height', '0')
 			 ->addOption('ping', '', InputOption::VALUE_NONE, 'ping debug daemon')
+			 ->addOption('local', '', InputOption::VALUE_REQUIRED, 'set displayed address', 'local')
 			 ->addOption('instance', '', InputOption::VALUE_REQUIRED, 'filter instance', '');
 	}
 
@@ -104,6 +106,8 @@ class CirclesDebug extends Base {
 
 			return 0;
 		}
+
+		$this->localDisplayName = $input->getOption('local');
 
 		$this->init();
 		$this->initTerminal((int)$input->getOption('size'));
@@ -273,7 +277,7 @@ class CirclesDebug extends Base {
 				$debug = $item->getDebug();
 
 				$instance = ($this->configService->isLocalInstance($item->getInstance())) ?
-					'local' : $item->getInstance();
+					$this->localDisplayName : $item->getInstance();
 
 				$instanceColor = $this->configService->getAppValue('debug_instance.' . $instance);
 				if ($instanceColor === '') {
@@ -428,7 +432,6 @@ class CirclesDebug extends Base {
 	/**
 	 * @return bool
 	 */
-	#[Pure]
 	private function isRefreshNeeded(): bool {
 		if ($this->refresh) {
 			return true;
@@ -454,7 +457,6 @@ class CirclesDebug extends Base {
 	/**
 	 * @return Debug
 	 */
-	#[Pure]
 	private function getSelectedEntry(): Debug {
 		return $this->debugs[$this->topPanel->getCurrentPage() + $this->topPanel->getCurrentLine()];
 	}

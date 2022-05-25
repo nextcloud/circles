@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Tools\Model;
 
-use JetBrains\PhpStorm\Pure;
 use JsonSerializable;
 use OCA\Circles\Tools\Exceptions\InvalidItemException;
 use OCA\Circles\Tools\Exceptions\ItemNotFoundException;
@@ -326,7 +325,6 @@ class ReferencedDataStore implements IDeserializable, JsonSerializable {
 	 *
 	 * @return bool
 	 */
-	#[Pure]
 	public function hasKeys(array $keys): bool {
 		foreach ($keys as $key) {
 			if (!$this->hasKey($key)) {

@@ -126,17 +126,6 @@ class FederatedSyncShareService extends NCSignature {
 			);
 		}
 
-		try {
-			$this->syncedItemRequest->getSyncedItemFromSingleId($syncedItem->getSingleId());
-		} catch (SyncedItemNotFoundException $e) {
-			$this->debugService->info(
-				'storing SyncedItem {syncedItem.singleId} in database', '',
-				['syncedItem' => $syncedItem]
-			);
-
-			$this->syncedItemRequest->save($syncedItem);
-		}
-
 		$this->syncShareCreation($syncedItem, $circle, $extraData);
 		$this->broadcastShareCreation($syncedItem, $circle, $extraData);
 

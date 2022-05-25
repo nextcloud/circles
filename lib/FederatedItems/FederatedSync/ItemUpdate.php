@@ -37,6 +37,7 @@ use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemHighSeverity;
+use OCA\Circles\IFederatedItemInitiatorCheckNotRequired;
 use OCA\Circles\IFederatedItemLimitedToInstanceWithMember;
 use OCA\Circles\IFederatedItemSyncedItem;
 use OCA\Circles\Model\Federated\FederatedEvent;
@@ -47,11 +48,12 @@ use OCA\Circles\Service\FederatedSyncShareService;
 use OCA\Circles\Tools\Traits\TDeserialize;
 
 
-class ShareCreation implements
+class ItemUpdate implements
 	IFederatedItem,
 	IFederatedItemLimitedToInstanceWithMember,
-	IFederatedItemHighSeverity,
+	IFederatedItemHighSeverity, // needed !?
 	IFederatedItemAsyncProcess,
+	IFederatedItemInitiatorCheckNotRequired,
 	IFederatedItemSyncedItem {
 	use TDeserialize;
 
@@ -91,8 +93,8 @@ class ShareCreation implements
 	 */
 	public function verify(FederatedEvent $event): void {
 		$syncedItem = $event->getSyncedItem();
-
 		$syncedItem->setInstance($event->getOrigin());
+
 		$this->federatedSyncItemService->compareWithKnownItem($syncedItem, true);
 	}
 
@@ -112,15 +114,42 @@ class ShareCreation implements
 			return;
 		}
 
-		$circle = $event->getCircle();
 		$syncedItem = $event->getSyncedItem();
 
 		$this->federatedSyncItemService->compareWithKnownItem($syncedItem, true);
 
-		$extraData = $event->getParams()->gArray('extraData');
-
+//		$extraData = $event->getParams()->gArray('extraData');
 		$this->federatedSyncItemService->updateSyncedItem($syncedItem);
-		$this->federatedSyncShareService->syncShareCreation($syncedItem, $circle, $extraData);
+
+		//		if ($this->configService->isLocalInstance($event->getOrigin())) {
+//			$this->debugService->info(
+//				'{`FederatedEvent} has its origin set as current instance. leaving.', '',
+//				['event' => $event]
+//			);
+//
+//			return;
+//		}
+//
+//		$circle = $event->getCircle();
+//		$syncedItem = $event->getSyncedItem();
+//
+//		try {
+//			$this->compareWithKnownItemId($syncedItem);
+//			$this->compareWithKnownSingleId($syncedItem);
+//		} catch (FederatedSyncConflictException $e) {
+//			$this->debugService->exception(
+//				$e, '',
+//				['note' => 'WIP: this exception should start the process of fixing conflict']
+//			);
+//
+//			return;   // TODO: manage FederatedSyncConflictException - can be done 'live' at this point
+//		} catch (SyncedItemNotFoundException $e) {
+//		}
+//
+//		$extraData = $event->getParams()->gArray('extraData');
+//
+//		$this->federatedSyncItemService->updateSyncedItem($syncedItem);
+//		$this->federatedSyncShareService->syncShareCreation($syncedItem, $circle, $extraData);
 	}
 
 

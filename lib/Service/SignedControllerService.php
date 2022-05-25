@@ -90,20 +90,22 @@ class SignedControllerService {
 	protected InterfaceService $interfaceService;
 	protected FederatedUserService $federatedUserService;
 	protected ConfigService $configService;
-
+	protected DebugService $debugService;
 
 	public function __construct(
 		IUserSession $userSession,
 		FederatedUserService $federatedUserService,
 		InterfaceService $interfaceService,
 		RemoteStreamService $remoteStreamService,
-		ConfigService $configService
+		ConfigService $configService,
+		DebugService $debugService
 	) {
 
 		$this->remoteStreamService = $remoteStreamService;
 		$this->interfaceService = $interfaceService;
 		$this->federatedUserService = $federatedUserService;
 		$this->configService = $configService;
+		$this->debugService = $debugService;
 	}
 
 

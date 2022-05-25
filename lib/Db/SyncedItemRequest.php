@@ -34,7 +34,6 @@ namespace OCA\Circles\Db;
 use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\SyncedItemNotFoundException;
 use OCA\Circles\Model\SyncedItem;
-use OCA\Circles\Tools\Exceptions\InvalidItemException;
 
 /**
  * Class ShareRequest
@@ -62,6 +61,19 @@ class SyncedItemRequest extends SyncedItemRequestBuilder {
 		   ->setValue('deleted', $qb->createNamedParameter($item->isDeleted()));
 
 		$qb->execute();
+	}
+
+
+	/**
+	 * @param string $singleId
+	 * @param string $checksum
+	 */
+	public function updateChecksum(string $singleId, string $checksum): void {
+		$qb = $this->getSyncedItemUpdateSql();
+		$qb->set('checksum', $qb->createNamedParameter($checksum));
+		$qb->limitToSingleId($singleId);
+
+		$qb->executeStatement();
 	}
 
 
@@ -97,4 +109,5 @@ class SyncedItemRequest extends SyncedItemRequestBuilder {
 
 		return $this->getItemFromRequest($qb);
 	}
+
 }

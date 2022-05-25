@@ -115,6 +115,7 @@ return [
 		['name' => 'Remote#memberships', 'url' => '/memberships/{circleId}/', 'verb' => 'GET'],
 
 		['name' => 'Sync#getSyncedItem', 'url' => '/sync/item', 'verb' => 'GET'],
+		['name' => 'Sync#updateSyncedItem', 'url' => '/sync/item', 'verb' => 'PUT'],
 //		['name' => 'Remote#syncItem', 'url' => '/sync/item/{singleId}', 'verb' => 'GET'],
 		['name' => 'Sync#syncShare', 'url' => '/sync/share', 'verb' => 'POST'],
 		['name' => 'Debug#debugDaemon', 'url' => '/debug', 'verb' => 'POST']

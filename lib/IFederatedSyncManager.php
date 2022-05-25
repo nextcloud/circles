@@ -31,9 +31,9 @@ declare(strict_types=1);
 
 namespace OCA\Circles;
 
+use JsonSerializable;
 use OCA\Circles\Exceptions\SyncedItemNotFoundException;
 use OCA\Circles\Model\FederatedUser;
-use OCA\Circles\Model\Membership;
 
 /**
  * Interface IFederatedSyncManager
@@ -149,7 +149,7 @@ interface IFederatedSyncManager {
 		string $itemId,
 		string $circleId,
 		array $extraData,
-		FederatedUser $federatedUser
+		IFederatedUser $federatedUser
 	): bool;
 
 
@@ -177,7 +177,7 @@ interface IFederatedSyncManager {
 		string $itemId,
 		string $circleId,
 		array $extraData,
-		FederatedUser $federatedUser
+		IFederatedUser $federatedUser
 	): void;
 
 
@@ -188,7 +188,7 @@ interface IFederatedSyncManager {
 	 * @param string $itemId
 	 * @param string $circleId
 	 * @param array $extraData
-	 * @param Membership $membership
+	 * @param IFederatedUser $federatedUser
 	 *
 	 * @return bool
 	 */
@@ -196,7 +196,7 @@ interface IFederatedSyncManager {
 		string $itemId,
 		string $circleId,
 		array $extraData,
-		Membership $membership
+		IFederatedUser $federatedUser
 	): bool;
 
 
@@ -218,13 +218,13 @@ interface IFederatedSyncManager {
 	 * @param string $itemId
 	 * @param string $circleId
 	 * @param array $extraData
-	 * @param Membership $membership
+	 * @param IFederatedUser $federatedUser
 	 */
 	public function onShareModification(
 		string $itemId,
 		string $circleId,
 		array $extraData,
-		Membership $membership
+		IFederatedUser $federatedUser
 	): void;
 
 
@@ -234,14 +234,14 @@ interface IFederatedSyncManager {
 	 *
 	 * @param string $itemId
 	 * @param string $circleId
-	 * @param Membership $membership
+	 * @param IFederatedUser $federatedUser
 	 *
 	 * @return bool
 	 */
 	public function isShareDeletable(
 		string $itemId,
 		string $circleId,
-		Membership $membership
+		IFederatedUser $federatedUser
 	): bool;
 
 
@@ -259,23 +259,25 @@ interface IFederatedSyncManager {
 	 *
 	 * @param string $itemId
 	 * @param string $circleId
-	 * @param Membership $membership
+	 * @param IFederatedUser $federatedUser
 	 */
 	public function onShareDeletion(
 		string $itemId,
 		string $circleId,
-		Membership $membership
+		IFederatedUser $federatedUser
 	): void;
 
 
 	/**
-	 * Your app returns if the item can be updated by $federatedUser.
+	 * Confirm that partial update is doable, throw Exception if not.
+	 * Must returns the serialized data of the future version of the Item.
+	 *
+	 * Your app should not update anything in database at this point.
+	 *
+	 * The serialized data will be used on the next call of syncItem() and store during this next step.
 	 *
 	 * Membership of $federatedUser can go through multiple paths as the same item can be shared to different
 	 * circles $federatedUser is a member. Meaning multiple permissions needs to be checked.
-	 *
-	 * $serializedData can be modified/fixed within the method before being stored. Maybe some data cannot be
-	 * edited based on permissions
 	 *
 	 * Method is only called on the instance that owns the shared item
 	 *
@@ -283,11 +285,12 @@ interface IFederatedSyncManager {
 	 * @param array $extraData
 	 * @param FederatedUser $federatedUser
 	 *
-	 * @return bool
+	 * @return array
 	 */
 	public function isItemUpdatable(
 		string $itemId,
 		array $extraData,
-		FederatedUser $federatedUser
-	): bool;
+		IFederatedUser $federatedUser
+	): array;
+
 }

@@ -35,10 +35,8 @@ use OCA\Circles\Db\SyncedItemRequest;
 use OCA\Circles\Db\SyncedShareRequest;
 use OCA\Circles\Exceptions\FederatedSyncManagerNotFoundException;
 use OCA\Circles\IFederatedSyncManager;
-use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\SyncedItem;
 use OCA\Circles\Tools\ActivityPub\NCSignature;
-use OCA\Circles\Tools\Model\Request;
 use OCA\Circles\Tools\Traits\TStringTools;
 
 class FederatedSyncService extends NCSignature {
@@ -118,22 +116,9 @@ class FederatedSyncService extends NCSignature {
 	}
 
 
+	public function broadcastToItemRecipients() {
 
-	//
-	public function reachInstance(string $instance) {
-//		$remoteInstance = $this->remoteRequest->getFromInstance($instance);
-		$syncedItem = new SyncedItem();
-		$syncedItem->setSingleId('toto');
-
-//		$this->interfaceService->setCurrentInterface($remoteInstance->getInterface());
-		$data = $this->remoteStreamService->resultRequestRemoteInstance(
-			$instance,
-			RemoteInstance::SYNC_ITEM,
-			Request::TYPE_POST,
-			$syncedItem
-		);
-
-		echo 'reached !? ' . json_encode($data) . "\n";
 	}
+
 
 }

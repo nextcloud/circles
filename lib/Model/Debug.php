@@ -31,8 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
-use JetBrains\PhpStorm\ArrayShape;
-use JetBrains\PhpStorm\Pure;
 use JsonSerializable;
 use OCA\Circles\Tools\Db\IQueryRow;
 use OCA\Circles\Tools\Exceptions\InvalidItemException;

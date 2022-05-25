@@ -32,7 +32,9 @@ declare(strict_types=1);
 namespace OCA\Circles\Controller;
 
 use Exception;
+use OCA\Circles\Exceptions\FederatedItemBadRequestException;
 use OCA\Circles\Model\SyncedItem;
+use OCA\Circles\Model\SyncedWrapper;
 use OCA\Circles\Service\DebugService;
 use OCA\Circles\Service\FederatedSyncItemService;
 use OCA\Circles\Service\FederatedSyncShareService;
@@ -109,6 +111,64 @@ class SyncController extends Controller {
 
 //			$this->federatedSyncItemService->get
 			return new DataResponse($this->serialize($local));
+		} catch (Exception $e) {
+			$this->e($e);
+
+			return $this->signedControllerService->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
+		}
+	}
+
+
+	/**
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 *
+	 * @return DataResponse
+	 */
+	public function updateSyncedItem(): DataResponse {
+		try {
+			/** @var SyncedWrapper $wrapper */
+			$wrapper = $this->signedControllerService->extractObjectFromRequest(
+				SyncedWrapper::class,
+				$signed
+			);
+
+			$this->debugService->info(
+				'{instance} is requesting an update on SyncedItem {syncedItem.singleId}', '',
+				[
+					'instance' => $signed->getOrigin(),
+					'syncedWrapper' => $wrapper
+				]
+			);
+
+			if (!$wrapper->hasItem() || !$wrapper->hasFederatedUser()) {
+				throw new FederatedItemBadRequestException();
+			}
+
+			$item = $wrapper->getItem();
+			$local = $this->federatedSyncItemService->getLocalSyncedItem($item->getSingleId());
+
+			// confirm that remote is in a circle with a share on the item
+			$this->federatedSyncShareService->confirmRemoteInstanceAccess(
+				$local->getSingleId(),
+				$signed->getOrigin()
+			);
+
+			$this->debugService->info(
+				'SyncedItem exists, is local, and {instance} have access to the SyncedItem.', '',
+				[
+					'instance' => $signed->getOrigin(),
+					'local' => $local,
+				]
+			);
+
+			$updated = $this->federatedSyncItemService->requestSyncedItemUpdate(
+				$wrapper->getFederatedUser(),
+				$local,
+				$wrapper->getExtraData()
+			);
+
+			return new DataResponse($updated);
 		} catch (Exception $e) {
 			$this->e($e);
 
