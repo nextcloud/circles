@@ -45,18 +45,21 @@ class SyncedWrapper implements IReferencedObject, JsonSerializable {
 
 	private ?IFederatedUser $federatedUser;
 	private ?SyncedItem $item;
+	private ?SyncedItemLock $lock;
 	private ?SyncedShare $share;
 	private array $extraData;
 
 	public function __construct(
 		?IFederatedUser $federatedUser = null,
 		?SyncedItem $item = null,
+		?SyncedItemLock $lock = null,
 		?SyncedShare $share = null,
 		array $extraData = []
 	) {
 		$this->federatedUser = $federatedUser;
 		$this->item = $item;
 		$this->share = $share;
+		$this->lock = $lock;
 		$this->extraData = $extraData;
 	}
 
@@ -110,6 +113,32 @@ class SyncedWrapper implements IReferencedObject, JsonSerializable {
 	 */
 	public function getItem(): ?SyncedItem {
 		return $this->item;
+	}
+
+
+	/**
+	 * @param SyncedItem $lock
+	 *
+	 * @return SyncedWrapper
+	 */
+	public function setLock(SyncedItemLock $lock): self {
+		$this->lock = $lock;
+
+		return $this;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasLock(): bool {
+		return !is_null($this->lock);
+	}
+
+	/**
+	 * @return SyncedItemLock
+	 */
+	public function getLock(): ?SyncedItemLock {
+		return $this->lock;
 	}
 
 
@@ -180,6 +209,13 @@ class SyncedWrapper implements IReferencedObject, JsonSerializable {
 		}
 
 		try {
+			/** @var SyncedItemLock $lock */
+			$lock = $this->deserialize($this->getArray('lock', $data), SyncedItemLock::class);
+			$this->setLock($lock);
+		} catch (InvalidItemException $e) {
+		}
+
+		try {
 			/** @var SyncedShare $share */
 			$share = $this->deserialize($this->getArray('share', $data), SyncedShare::class);
 			$this->setShare($share);
@@ -200,6 +236,7 @@ class SyncedWrapper implements IReferencedObject, JsonSerializable {
 			'federatedUser' => $this->getFederatedUser(),
 			'item' => $this->getItem(),
 			'share' => $this->getShare(),
+			'lock' => $this->getLock(),
 			'extraData' => $this->getExtraData()
 		];
 	}

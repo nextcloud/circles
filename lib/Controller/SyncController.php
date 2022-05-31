@@ -35,6 +35,7 @@ use Exception;
 use OCA\Circles\Exceptions\FederatedItemBadRequestException;
 use OCA\Circles\Model\SyncedItem;
 use OCA\Circles\Model\SyncedWrapper;
+use OCA\Circles\Service\AsyncService;
 use OCA\Circles\Service\DebugService;
 use OCA\Circles\Service\FederatedSyncItemService;
 use OCA\Circles\Service\FederatedSyncShareService;
@@ -54,6 +55,7 @@ class SyncController extends Controller {
 	private FederatedSyncItemService $federatedSyncItemService;
 	private FederatedSyncShareService $federatedSyncShareService;
 	private DebugService $debugService;
+	private AsyncService $asyncService;
 
 	public function __construct(
 		string $appName,
@@ -61,6 +63,7 @@ class SyncController extends Controller {
 		SignedControllerService $signedControllerService,
 		FederatedSyncItemService $federatedSyncItemService,
 		FederatedSyncShareService $federatedSyncShareService,
+		AsyncService $asyncService,
 		DebugService $debugService
 	) {
 		parent::__construct($appName, $request);
@@ -68,6 +71,7 @@ class SyncController extends Controller {
 		$this->signedControllerService = $signedControllerService;
 		$this->federatedSyncItemService = $federatedSyncItemService;
 		$this->federatedSyncShareService = $federatedSyncShareService;
+		$this->asyncService = $asyncService;
 		$this->debugService = $debugService;
 	}
 
@@ -78,7 +82,7 @@ class SyncController extends Controller {
 	 *
 	 * @return DataResponse
 	 */
-	public function getSyncedItem(): DataResponse {
+	public function syncItem(): DataResponse {
 		try {
 			/** @var SyncedItem $item */
 			$item = $this->signedControllerService->extractObjectFromRequest(
@@ -145,8 +149,8 @@ class SyncController extends Controller {
 				throw new FederatedItemBadRequestException();
 			}
 
-			$item = $wrapper->getItem();
-			$local = $this->federatedSyncItemService->getLocalSyncedItem($item->getSingleId());
+			$syncedItem = $wrapper->getItem();
+			$local = $this->federatedSyncItemService->getLocalSyncedItem($syncedItem->getSingleId());
 
 			// confirm that remote is in a circle with a share on the item
 			$this->federatedSyncShareService->confirmRemoteInstanceAccess(
@@ -162,18 +166,25 @@ class SyncController extends Controller {
 				]
 			);
 
-			$updated = $this->federatedSyncItemService->requestSyncedItemUpdate(
+			$this->asyncService->setSplittable(true);
+			$this->federatedSyncItemService->requestSyncedItemUpdate(
 				$wrapper->getFederatedUser(),
 				$local,
-				$wrapper->getExtraData()
+				$wrapper->getLock(),
+				$wrapper->getExtraData(),
+				$syncedItem->getChecksum()
 			);
 
-			return new DataResponse($updated);
+			if (!$this->asyncService->isAsynced()) {
+				return new DataResponse(['success' => true]);
+			}
 		} catch (Exception $e) {
 			$this->e($e);
 
 			return $this->signedControllerService->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
 		}
+
+		exit();
 	}
 
 }

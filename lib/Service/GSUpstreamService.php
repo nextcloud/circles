@@ -287,7 +287,7 @@ class GSUpstreamService {
 	 * @throws ModelException
 	 */
 	public function getEventsByToken(string $token): array {
-		return $this->eventWrapperRequest->getByToken($token);
+		return $this->eventWrapperRequest->getBroadcastByToken($token);
 	}
 
 
@@ -298,7 +298,7 @@ class GSUpstreamService {
 	 */
 	public function manageResults(string $token): void {
 		try {
-			$wrappers = $this->eventWrapperRequest->getByToken($token);
+			$wrappers = $this->eventWrapperRequest->getBroadcastByToken($token);
 		} catch (JsonException | ModelException $e) {
 			return;
 		}

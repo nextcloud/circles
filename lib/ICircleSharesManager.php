@@ -90,7 +90,13 @@ interface ICircleSharesManager {
 	 * @param string $itemId
 	 * @param array $extraData
 	 */
-	public function updateItem(string $itemId, array $extraData): void;
+	public function updateItem(
+		string $itemId,
+		string $updateType,
+		string $updateTypeId,
+		array $extraData,
+		bool $sumCheck
+	): void;
 
 	/**
 	 * Initiate the deletion of an Item

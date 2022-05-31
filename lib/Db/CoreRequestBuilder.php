@@ -124,6 +124,8 @@ class CoreRequestBuilder {
 		self::TABLE_EVENT => [
 			'token',
 			'event',
+			'store',
+			'event_type',
 			'result',
 			'instance',
 			'interface',
@@ -160,7 +162,6 @@ class CoreRequestBuilder {
 		],
 		self::TABLE_SYNC_LOCK => [
 			'id',
-			'single_id',
 			'update_type',
 			'update_type_id',
 			'time'

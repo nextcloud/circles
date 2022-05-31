@@ -33,8 +33,8 @@ namespace OCA\Circles\Exceptions;
 use OCP\AppFramework\Http;
 use Throwable;
 
-class SyncedShareNotFoundException extends FederatedItemNotFoundException {
-	public const STATUS = Http::STATUS_NOT_FOUND;
+class FederatedSyncPermissionException extends FederatedSyncException {
+	public const STATUS = Http::STATUS_METHOD_NOT_ALLOWED;
 
 	public function __construct(
 		string $message = '',

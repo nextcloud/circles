@@ -101,7 +101,8 @@ return [
 	],
 
 	'routes' => [
-		['name' => 'EventWrapper#asyncBroadcast', 'url' => '/async/{token}/', 'verb' => 'POST'],
+		['name' => 'EventWrapper#asyncBroadcast', 'url' => '/async/broadcast/{token}', 'verb' => 'POST'],
+		['name' => 'EventWrapper#asyncInternal', 'url' => '/async/internal/{token}', 'verb' => 'POST'],
 
 		['name' => 'Remote#appService', 'url' => '/', 'verb' => 'GET'],
 		['name' => 'Remote#test', 'url' => '/test', 'verb' => 'GET'],
@@ -114,7 +115,7 @@ return [
 		['name' => 'Remote#inherited', 'url' => '/inherited/{circleId}/', 'verb' => 'GET'],
 		['name' => 'Remote#memberships', 'url' => '/memberships/{circleId}/', 'verb' => 'GET'],
 
-		['name' => 'Sync#getSyncedItem', 'url' => '/sync/item', 'verb' => 'GET'],
+		['name' => 'Sync#syncItem', 'url' => '/sync/item', 'verb' => 'GET'],
 		['name' => 'Sync#updateSyncedItem', 'url' => '/sync/item', 'verb' => 'PUT'],
 //		['name' => 'Remote#syncItem', 'url' => '/sync/item/{singleId}', 'verb' => 'GET'],
 		['name' => 'Sync#syncShare', 'url' => '/sync/share', 'verb' => 'POST'],

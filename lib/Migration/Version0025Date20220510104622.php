@@ -61,6 +61,28 @@ class Version0025Date20220510104622 extends SimpleMigrationStep {
 		/** @var ISchemaWrapper $schema */
 		$schema = $schemaClosure();
 
+		if ($schema->hasTable('circles_event')) {
+			$table = $schema->getTable('circles_event');
+			if (!$table->hasColumn('event_type')) {
+				$table->addColumn(
+					'event_type', Types::STRING, [
+									'notnull' => false,
+									'default' => 'broadcast',
+									'length' => 15
+								]
+				);
+				$table->addIndex(['event_type']);
+			}
+			if (!$table->hasColumn('store')) {
+				$table->addColumn(
+					'store', Types::TEXT, [
+							   'notnull' => false,
+							   'default' => ''
+						   ]
+				);
+			}
+		}
+
 		if (!$schema->hasTable('circles_item')) {
 			$table = $schema->createTable('circles_item');
 			$table->addColumn(
@@ -156,12 +178,12 @@ class Version0025Date20220510104622 extends SimpleMigrationStep {
 						'unsigned' => true,
 					]
 			);
-			$table->addColumn(
-				'single_id', Types::STRING, [
-							   'notnull' => false,
-							   'length' => 31,
-						   ]
-			);
+//			$table->addColumn(
+//				'single_id', Types::STRING, [
+//							   'notnull' => false,
+//							   'length' => 31,
+//						   ]
+//			);
 			$table->addColumn(
 				'update_type', Types::STRING, [
 								 'notnull' => false,
@@ -183,7 +205,7 @@ class Version0025Date20220510104622 extends SimpleMigrationStep {
 			);
 
 			$table->setPrimaryKey(['id']);
-			$table->addUniqueIndex(['single_id', 'update_type', 'update_type_id'], 'c_siututi');
+			$table->addUniqueIndex(['update_type', 'update_type_id'], 'c_ututi');
 		}
 
 		if (!$schema->hasTable('circles_debug')) {

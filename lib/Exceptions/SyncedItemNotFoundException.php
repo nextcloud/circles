@@ -30,5 +30,18 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Exceptions;
 
-class SyncedItemNotFoundException extends FederatedItemNotFoundException {
+use OCP\AppFramework\Http;
+use Throwable;
+
+class SyncedItemNotFoundException extends FederatedSyncException {
+	public const STATUS = Http::STATUS_NOT_FOUND;
+
+	public function __construct(
+		string $message = '',
+		int $code = 0,
+		?Throwable $previous = null
+	) {
+		parent::__construct($message, ($code > 0) ? $code : self::STATUS, $previous);
+		$this->setStatus(self::STATUS);
+	}
 }

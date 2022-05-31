@@ -36,16 +36,17 @@ use OCA\Circles\Exceptions\ShareTokenNotFoundException;
 use OCA\Circles\Tools\Db\IQueryRow;
 use OCA\Circles\Tools\Exceptions\InvalidItemException;
 use OCA\Circles\Tools\IDeserializable;
+use OCA\Circles\Tools\IReferencedObject;
 use OCA\Circles\Tools\Traits\TArrayTools;
 
-class SyncedItemLock implements IDeserializable, IQueryRow, JsonSerializable {
+class SyncedItemLock implements IReferencedObject, IQueryRow, JsonSerializable {
 	use TArrayTools;
 
 	private int $id;
-	private string $singleId;
+//	private string $singleId;
 	private string $updateType;
 	private string $updateTypeId;
-	private int $time;
+	private int $time = 0;
 	private bool $verifyChecksum;
 
 
@@ -79,23 +80,23 @@ class SyncedItemLock implements IDeserializable, IQueryRow, JsonSerializable {
 	}
 
 
-	/**
-	 * @param string $singleId
-	 *
-	 * @return SyncedItemLock
-	 */
-	public function setSingleId(string $singleId): self {
-		$this->singleId = $singleId;
-
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getSingleId(): string {
-		return $this->singleId;
-	}
+//	/**
+//	 * @param string $singleId
+//	 *
+//	 * @return SyncedItemLock
+//	 */
+//	public function setSingleId(string $singleId): self {
+//		$this->singleId = $singleId;
+//
+//		return $this;
+//	}
+//
+//	/**
+//	 * @return string
+//	 */
+//	public function getSingleId(): string {
+//		return $this->singleId;
+//	}
 
 	/**
 	 * @param string $updateType
@@ -180,11 +181,11 @@ class SyncedItemLock implements IDeserializable, IQueryRow, JsonSerializable {
 	 * @throws InvalidItemException
 	 */
 	public function import(array $data): IDeserializable {
-		if ($this->getInt('singleId', $data) === 0) {
-			throw new InvalidItemException();
-		}
+//		if ($this->getInt('singleId', $data) === 0) {
+//			throw new InvalidItemException();
+//		}
 
-		$this->setSingleId($this->get('singleId', $data));
+//		$this->setSingleId($this->get('singleId', $data));
 		$this->setUpdateType($this->get('updateType', $data));
 		$this->setUpdateTypeId($this->get('updateTypeId', $data));
 		$this->setTime($this->getInt('time', $data));
@@ -205,7 +206,6 @@ class SyncedItemLock implements IDeserializable, IQueryRow, JsonSerializable {
 			throw new ShareTokenNotFoundException();
 		}
 
-		$this->setSingleId($this->get($prefix . 'single_id', $data));
 		$this->setUpdateType($this->get($prefix . 'update_type', $data));
 		$this->setUpdateTypeId($this->get($prefix . 'update_type_id', $data));
 		$this->setTime($this->getInt($prefix . 'time', $data));
@@ -218,7 +218,6 @@ class SyncedItemLock implements IDeserializable, IQueryRow, JsonSerializable {
 	 */
 	public function jsonSerialize(): array {
 		return [
-			'singleId' => $this->getSingleId(),
 			'updateType' => $this->getUpdateType(),
 			'updateTypeId' => $this->getUpdateTypeId(),
 			'time' => $this->getTime(),

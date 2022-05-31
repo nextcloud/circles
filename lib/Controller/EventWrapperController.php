@@ -32,6 +32,8 @@ declare(strict_types=1);
 namespace OCA\Circles\Controller;
 
 use OCA\Circles\AppInfo\Application;
+use OCA\Circles\Exceptions\EventWrapperNotFoundException;
+use OCA\Circles\Service\AsyncService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\EventWrapperService;
 use OCA\Circles\Service\FederatedEventService;
@@ -66,6 +68,8 @@ class EventWrapperController extends Controller {
 	/** @var RemoteDownstreamService */
 	private $remoteDownstreamService;
 
+	private AsyncService $asyncService;
+
 	/** @var ConfigService */
 	private $configService;
 
@@ -79,6 +83,7 @@ class EventWrapperController extends Controller {
 	 * @param FederatedEventService $federatedEventService
 	 * @param RemoteUpstreamService $remoteUpstreamService
 	 * @param RemoteDownstreamService $remoteDownstreamService
+	 * @param AsyncService $asyncService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
@@ -88,6 +93,7 @@ class EventWrapperController extends Controller {
 		FederatedEventService $federatedEventService,
 		RemoteUpstreamService $remoteUpstreamService,
 		RemoteDownstreamService $remoteDownstreamService,
+		AsyncService $asyncService,
 		ConfigService $configService
 	) {
 		parent::__construct($appName, $request);
@@ -95,6 +101,7 @@ class EventWrapperController extends Controller {
 		$this->federatedEventService = $federatedEventService;
 		$this->remoteUpstreamService = $remoteUpstreamService;
 		$this->remoteDownstreamService = $remoteDownstreamService;
+		$this->asyncService = $asyncService;
 		$this->configService = $configService;
 
 		$this->setup('app', Application::APP_ID);
@@ -105,7 +112,7 @@ class EventWrapperController extends Controller {
 	/**
 	 * Called locally.
 	 *
-	 * Async process and broadcast the event to every instances of GS
+	 * Async process and broadcast the event to every instance of GS
 	 * This should be initiated by the instance that owns the Circles.
 	 *
 	 * @PublicPage
@@ -116,19 +123,15 @@ class EventWrapperController extends Controller {
 	 * @return DataResponse
 	 */
 	public function asyncBroadcast(string $token): DataResponse {
-		$wrappers = $this->remoteUpstreamService->getEventsByToken($token);
+		$wrappers = $this->eventWrapperService->getBroadcastByToken($token);
 		if (empty($wrappers) && $token !== 'test-dummy-token') {
 			return new DataResponse([], Http::STATUS_OK);
 		}
 
 		// closing socket, keep current process running.
-		$this->async();
-
-		foreach ($wrappers as $wrapper) {
-			$this->eventWrapperService->manageWrapper($wrapper);
-		}
-
-		$this->eventWrapperService->confirmStatus($token);
+		$this->asyncService->setSplittable(true);
+		$this->asyncService->split();
+		$this->eventWrapperService->performBroadcast($token, $wrappers);
 
 		// so circles:check can check async is fine
 		if ($token === 'test-dummy-token') {
@@ -138,6 +141,31 @@ class EventWrapperController extends Controller {
 		// exit() or useless log will be generated
 		exit();
 	}
+
+
+	/**
+	 * Called locally.
+	 *
+	 * Async process and continue using IInternalAsync
+	 *
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 *
+	 * @param string $token
+	 *
+	 * @return DataResponse
+	 * @throws EventWrapperNotFoundException
+	 */
+	public function asyncInternal(string $token): DataResponse {
+		$this->asyncService->setSplittable(true);
+		$this->asyncService->split();
+
+		$this->eventWrapperService->performInternal($token);
+
+		// exit() or useless log will be generated
+		exit();
+	}
+
 
 
 //	/**

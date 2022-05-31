@@ -62,8 +62,13 @@ class ReferencedDataStore implements IDeserializable, JsonSerializable {
 	private array $data = [];
 	private string $lock = IReferencedObject::class;
 
-	public function __construct(array $data = []) {
-		$this->data = $data;
+	public function __construct(array $mixed = []) {
+		foreach ($mixed as $k => $v) {
+			try {
+				$this->sMixed($k, $v);
+			} catch (InvalidItemException $e) {
+			}
+		}
 	}
 
 
@@ -101,6 +106,7 @@ class ReferencedDataStore implements IDeserializable, JsonSerializable {
 	public function u(string $key): self {
 		if ($this->hasKey($key)) {
 			unset($this->data[$key]);
+			unset($this->ref[$key]);
 		}
 
 		return $this;
@@ -272,7 +278,7 @@ class ReferencedDataStore implements IDeserializable, JsonSerializable {
 	 * @return ReferencedDataStore
 	 * @throws InvalidItemException
 	 */
-	public function sMixed(string $k, mixed $obj): self {
+	public function sMixed(string $k, $obj): self {
 		if ($obj instanceof JsonSerializable) {
 			return $this->sObj($k, $obj);
 		}

@@ -56,33 +56,33 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	use TArrayTools;
 
 
-	public const SINGLE = 'cs';
-	public const CIRCLE = 'cc';
-	public const MEMBER = 'mm';
-	public const OWNER = 'wn';
-	public const FEDERATED_EVENT = 'ev';
-	public const REMOTE = 'rm';
-	public const BASED_ON = 'on';
-	public const INITIATOR = 'in';
-	public const DIRECT_INITIATOR = 'di';
-	public const MEMBERSHIPS = 'ms';
-	public const CONFIG = 'cf';
-	public const UPSTREAM_MEMBERSHIPS = 'up';
-	public const INHERITANCE_FROM = 'ih';
-	public const INHERITED_BY = 'by';
-	public const INVITED_BY = 'nv';
-	public const MOUNT = 'mo';
-	public const MOUNTPOINT = 'mp';
-	public const SHARE = 'sh';
-	public const FILE_CACHE = 'fc';
-	public const STORAGES = 'st';
-	public const TOKEN = 'tk';
-	public const OPTIONS = 'pt';
-	public const HELPER = 'hp';
-	public const SYNC_ITEM = 'si';
-	public const SYNC_SHARE = 'ss';
-	public const SYNC_LOCK = 'sl';
-	public const DEBUG = 'bg';
+	public const SINGLE = 'ca';
+	public const CIRCLE = 'cb';
+	public const MEMBER = 'cc';
+	public const OWNER = 'cd';
+	public const FEDERATED_EVENT = 'ce';
+	public const REMOTE = 'cf';
+	public const BASED_ON = 'cg';
+	public const INITIATOR = 'ch';
+	public const DIRECT_INITIATOR = 'ci';
+	public const MEMBERSHIPS = 'cj';
+	public const CONFIG = 'ck';
+	public const UPSTREAM_MEMBERSHIPS = 'cl';
+	public const INHERITANCE_FROM = 'cm';
+	public const INHERITED_BY = 'cn';
+	public const INVITED_BY = 'co';
+	public const MOUNT = 'cp';
+	public const MOUNTPOINT = 'cq';
+	public const SHARE = 'cr';
+	public const FILE_CACHE = 'cs';
+	public const STORAGES = 'ct';
+	public const TOKEN = 'cu';
+	public const OPTIONS = 'cv';
+	public const HELPER = 'cw';
+	public const SYNC_ITEM = 'cx';
+	public const SYNC_SHARE = 'cy';
+	public const SYNC_LOCK = 'cz';
+	public const DEBUG = 'c0';
 
 
 	public static $SQL_PATH = [

@@ -10,7 +10,7 @@ declare(strict_types=1);
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2021
+ * @copyright 2022
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,9 +33,16 @@ namespace OCA\Circles\Exceptions;
 use OCP\AppFramework\Http;
 use Throwable;
 
-class SyncedShareNotFoundException extends FederatedItemNotFoundException {
+class FederatedSyncRequestException extends FederatedSyncException {
 	public const STATUS = Http::STATUS_NOT_FOUND;
 
+	/**
+	 * FederatedItemConflictException constructor.
+	 *
+	 * @param string $message
+	 * @param int $code
+	 * @param Throwable|null $previous
+	 */
 	public function __construct(
 		string $message = '',
 		int $code = 0,

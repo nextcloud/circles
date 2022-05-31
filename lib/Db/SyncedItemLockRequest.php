@@ -32,7 +32,9 @@ declare(strict_types=1);
 namespace OCA\Circles\Db;
 
 use OCA\Circles\Exceptions\InvalidIdException;
+use OCA\Circles\Exceptions\SyncedItemNotFoundException;
 use OCA\Circles\Model\SyncedItemLock;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
 
 /**
  * Class SyncedItemLockRequest
@@ -48,14 +50,52 @@ class SyncedItemLockRequest extends SyncedItemLockRequestBuilder {
 	 * @throws InvalidIdException
 	 */
 	public function save(SyncedItemLock $lock): void {
-		$this->confirmValidIds([$lock->getSingleId()]);
-
 		$qb = $this->getSyncedItemLockInsertSql();
-		$qb->setValue('single_id', $qb->createNamedParameter($lock->getSingleId()))
-		   ->setValue('update_type', $qb->createNamedParameter($lock->getUpdateType()))
+		$qb->setValue('update_type', $qb->createNamedParameter($lock->getUpdateType()))
 		   ->setValue('update_type_id', $qb->createNamedParameter($lock->getUpdateTypeId()))
-		   ->setValue('time', $qb->createNamedParameter($lock->getTime()));
+		   ->setValue('time', $qb->createNamedParameter(time()));
 
 		$qb->execute();
 	}
+
+
+	/**
+	 * @param SyncedItemLock $syncedLock
+	 */
+	public function remove(SyncedItemLock $syncedLock): void {
+		$qb = $this->getSyncedItemLockDeleteSql();
+
+		$qb->limit('update_type', $syncedLock->getUpdateType());
+		$qb->limit('update_type_id', $syncedLock->getUpdateTypeId());
+
+		$qb->executeStatement();
+	}
+
+	/**
+	 * @param SyncedItemLock $syncedLock
+	 *
+	 * @return SyncedItemLock
+	 * @throws SyncedItemNotFoundException
+	 * @throws InvalidItemException
+	 */
+	public function getSyncedItemLock(SyncedItemLock $syncedLock): SyncedItemLock {
+		$qb = $this->getSyncedItemLockSelectSql();
+
+		$qb->limit('update_type', $syncedLock->getUpdateType());
+		$qb->limit('update_type_id', $syncedLock->getUpdateTypeId());
+
+		return $this->getItemFromRequest($qb);
+	}
+
+
+	/**
+	 * @param int $time
+	 */
+	public function clean(int $time = 10): void {
+		$qb = $this->getSyncedItemLockDeleteSql();
+		$qb->lt('time', (time() - $time));
+
+		$qb->executeStatement();
+	}
+
 }

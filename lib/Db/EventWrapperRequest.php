@@ -31,6 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
+use OCA\Circles\Exceptions\EventWrapperNotFoundException;
 use OCA\Circles\Model\Federated\EventWrapper;
 
 /**
@@ -43,15 +44,16 @@ class EventWrapperRequest extends EventWrapperRequestBuilder {
 
 	/**
 	 * @param EventWrapper $wrapper
+	 *
+	 * @throws \OCP\DB\Exception
 	 */
 	public function save(EventWrapper $wrapper): void {
 		$qb = $this->getEventWrapperInsertSql();
 		$qb->setValue('token', $qb->createNamedParameter($wrapper->getToken()))
+		   ->setValue('event_type', $qb->createNamedParameter($wrapper->getEventType()))
 		   ->setValue(
-			   'event', $qb->createNamedParameter(json_encode($wrapper->getEvent(), JSON_UNESCAPED_SLASHES))
-		   )
-		   ->setValue(
-			   'result', $qb->createNamedParameter(json_encode($wrapper->getResult(), JSON_UNESCAPED_SLASHES))
+			   'result',
+			   $qb->createNamedParameter(json_encode($wrapper->getResult(), JSON_UNESCAPED_SLASHES))
 		   )
 		   ->setValue('instance', $qb->createNamedParameter($wrapper->getInstance()))
 		   ->setValue('interface', $qb->createNamedParameter($wrapper->getInterface()))
@@ -60,7 +62,13 @@ class EventWrapperRequest extends EventWrapperRequestBuilder {
 		   ->setValue('status', $qb->createNamedParameter($wrapper->getStatus()))
 		   ->setValue('creation', $qb->createNamedParameter($wrapper->getCreation()));
 
-		$qb->execute();
+		$event = ($wrapper->hasEvent()) ? json_encode($wrapper->getEvent(), JSON_UNESCAPED_SLASHES) : '';
+		$qb->setValue('event', $qb->createNamedParameter($event));
+
+		$store = ($wrapper->hasStore()) ? json_encode($wrapper->getStore(), JSON_UNESCAPED_SLASHES) : '';
+		$qb->setValue('store', $qb->createNamedParameter($store));
+
+		$qb->executeStatement();
 	}
 
 	/**
@@ -113,10 +121,26 @@ class EventWrapperRequest extends EventWrapperRequestBuilder {
 	 *
 	 * @return EventWrapper[]
 	 */
-	public function getByToken(string $token): array {
+	public function getBroadcastByToken(string $token): array {
 		$qb = $this->getEventWrapperSelectSql();
 		$qb->limitToToken($token);
+		$qb->limit('event_type', EventWrapper::TYPE_BROADCAST);
 
 		return $this->getItemsFromRequest($qb);
+	}
+
+
+	/**
+	 * @param string $token
+	 *
+	 * @return EventWrapper
+	 * @throws EventWrapperNotFoundException
+	 */
+	public function getInternalByToken(string $token): EventWrapper {
+		$qb = $this->getEventWrapperSelectSql();
+		$qb->limitToToken($token);
+		$qb->limit('event_type', EventWrapper::TYPE_INTERNAL);
+
+		return $this->getItemFromRequest($qb);
 	}
 }

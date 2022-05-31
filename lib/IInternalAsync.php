@@ -10,7 +10,7 @@ declare(strict_types=1);
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2021
+ * @copyright 2022
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,20 +28,15 @@ declare(strict_types=1);
  *
  */
 
-namespace OCA\Circles\Exceptions;
 
-use OCP\AppFramework\Http;
-use Throwable;
+namespace OCA\Circles;
 
-class SyncedShareNotFoundException extends FederatedItemNotFoundException {
-	public const STATUS = Http::STATUS_NOT_FOUND;
+use OCA\Circles\Tools\Model\ReferencedDataStore;
 
-	public function __construct(
-		string $message = '',
-		int $code = 0,
-		?Throwable $previous = null
-	) {
-		parent::__construct($message, ($code > 0) ? $code : self::STATUS, $previous);
-		$this->setStatus(self::STATUS);
-	}
+interface IInternalAsync {
+
+	public const STORE_INTERNAL_ASYNC = '_internalAsync';
+
+	public function runAsynced(ReferencedDataStore $store): void;
+
 }

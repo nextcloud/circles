@@ -1,5 +1,6 @@
 <?php
 
+
 declare(strict_types=1);
 
 
@@ -28,27 +29,68 @@ declare(strict_types=1);
  *
  */
 
+
 namespace OCA\Circles\Exceptions;
 
+use Exception;
+use JsonSerializable;
 use OCP\AppFramework\Http;
 use Throwable;
 
-class FederatedSyncConflictException extends FederatedSyncException {
-	public const STATUS = Http::STATUS_CONFLICT;
+/**
+ * Class FederatedItemException
+ *
+ * @package OCA\Circles\Exceptions
+ */
+class FederatedSyncException extends Exception implements JsonSerializable {
+	public static array $CHILDREN = [
+		SyncedItemNotFoundException::class,
+		SyncedItemLockException::class,
+		SyncedShareNotFoundException::class,
+		SyncedSharedAlreadyExistException::class
+	];
+
+
+	/** @var int */
+	private int $status = Http::STATUS_BAD_REQUEST;
+
 
 	/**
-	 * FederatedItemConflictException constructor.
+	 * FederatedItemException constructor.
 	 *
 	 * @param string $message
 	 * @param int $code
 	 * @param Throwable|null $previous
 	 */
-	public function __construct(
-		string $message = '',
-		int $code = 0,
-		?Throwable $previous = null
-	) {
-		parent::__construct($message, ($code > 0) ? $code : self::STATUS, $previous);
-		$this->setStatus(self::STATUS);
+	public function __construct(string $message = '', int $code = 0, ?Throwable $previous = null) {
+		parent::__construct($message, ($code > 0) ? $code : $this->status, $previous);
+	}
+
+
+	/**
+	 * @param int $status
+	 */
+	protected function setStatus(int $status): void {
+		$this->status = $status;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getStatus(): int {
+		return $this->status;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function jsonSerialize(): array {
+		return [
+			'class' => get_class($this),
+			'status' => $this->getStatus(),
+			'code' => $this->getCode(),
+			'message' => $this->getMessage()
+		];
 	}
 }

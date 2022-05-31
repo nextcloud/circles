@@ -31,9 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
-use OCA\Circles\Tools\Model\Request;
-use OCA\Circles\Tools\Model\SimpleDataStore;
-use OCA\Circles\Tools\Traits\TNCRequest;
 use OCA\Circles\Db\EventWrapperRequest;
 use OCA\Circles\Exceptions\FederatedItemException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
@@ -44,6 +41,9 @@ use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\Model\Federated\EventWrapper;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Federated\RemoteInstance;
+use OCA\Circles\Tools\Model\Request;
+use OCA\Circles\Tools\Model\SimpleDataStore;
+use OCA\Circles\Tools\Traits\TNCRequest;
 
 /**
  * Class RemoteUpstreamService
@@ -85,16 +85,6 @@ class RemoteUpstreamService {
 		$this->remoteStreamService = $remoteStreamService;
 		$this->interfaceService = $interfaceService;
 		$this->configService = $configService;
-	}
-
-
-	/**
-	 * @param string $token
-	 *
-	 * @return EventWrapper[]
-	 */
-	public function getEventsByToken(string $token): array {
-		return $this->eventWrapperRequest->getByToken($token);
 	}
 
 

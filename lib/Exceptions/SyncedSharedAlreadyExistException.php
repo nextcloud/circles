@@ -30,7 +30,18 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Exceptions;
 
-use Exception;
+use OCP\AppFramework\Http;
+use Throwable;
 
-class SyncedSharedAlreadyExistException extends Exception {
+class SyncedSharedAlreadyExistException extends FederatedSyncException {
+	public const STATUS = Http::STATUS_BAD_REQUEST;
+
+	public function __construct(
+		string $message = '',
+		int $code = 0,
+		?Throwable $previous = null
+	) {
+		parent::__construct($message, ($code > 0) ? $code : self::STATUS, $previous);
+		$this->setStatus(self::STATUS);
+	}
 }

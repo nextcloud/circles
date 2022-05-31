@@ -34,6 +34,7 @@ namespace OCA\Circles;
 use Exception;
 use OCA\Circles\Exceptions\CircleSharesManagerException;
 use OCA\Circles\Model\Probes\CircleProbe;
+use OCA\Circles\Model\SyncedItemLock;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\DebugService;
@@ -208,13 +209,30 @@ class CircleSharesManager implements ICircleSharesManager {
 
 	/**
 	 * @param string $itemId
+	 * @param string $updateType
+	 * @param string $updateTypeId
 	 * @param array $extraData
+	 * @param bool $sumCheck
 	 *
 	 * @throws CircleSharesManagerException
+	 * @throws Exceptions\FederatedEventException
+	 * @throws Exceptions\FederatedItemException
+	 * @throws Exceptions\FederatedSyncConflictException
+	 * @throws Exceptions\FederatedSyncManagerNotFoundException
+	 * @throws Exceptions\InitiatorNotConfirmedException
+	 * @throws Exceptions\OwnerNotFoundException
+	 * @throws Exceptions\RemoteInstanceException
+	 * @throws Exceptions\RemoteNotFoundException
+	 * @throws Exceptions\RemoteResourceNotFoundException
+	 * @throws Exceptions\RequestBuilderException
+	 * @throws Exceptions\UnknownRemoteException
 	 */
 	public function updateItem(
 		string $itemId,
-		array $extraData = []
+		string $updateType = '',
+		string $updateTypeId = '',
+		array $extraData = [],
+		bool $sumCheck = true
 	): void {
 		$this->mustHaveOrigin();
 
@@ -226,20 +244,13 @@ class CircleSharesManager implements ICircleSharesManager {
 				'appId' => $this->originAppId,
 				'itemType' => $this->originItemType,
 				'itemId' => $itemId,
+				'updateType' => $updateType,
+				'updateTypeId' => $updateTypeId,
 				'extraData' => $extraData
 			]
 		);
 
 		try {
-//			$this->mustHaveOrigin();
-
-//			// TODO: verify rules that apply when sharing to a circle
-//			$probe = new CircleProbe();
-//			$probe->includeSystemCircles()
-//				  ->mustBeMember();
-//
-//			$circle = $this->circleService->getCircle($circleId, $probe);
-//
 			// get valid SyncedItem based on appId, itemType, itemId
 			$syncedItem = $this->federatedSyncItemService->initSyncedItem(
 				$this->originAppId,
@@ -260,6 +271,7 @@ class CircleSharesManager implements ICircleSharesManager {
 			$this->federatedSyncItemService->requestSyncedItemUpdate(
 				$this->federatedUserService->getCurrentEntity(),
 				$syncedItem,
+				new SyncedItemLock($updateType, $updateTypeId, $sumCheck),
 				$extraData
 			);
 		} catch (Exception $e) {

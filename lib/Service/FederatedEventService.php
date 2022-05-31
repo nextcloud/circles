@@ -65,8 +65,6 @@ use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Tools\ActivityPub\NCSignature;
 use OCA\Circles\Tools\Exceptions\RequestNetworkException;
-use OCA\Circles\Tools\Model\NCRequest;
-use OCA\Circles\Tools\Model\Request;
 use OCA\Circles\Tools\Traits\TNCRequest;
 use OCA\Circles\Tools\Traits\TStringTools;
 use ReflectionClass;
@@ -97,6 +95,8 @@ class FederatedEventService extends NCSignature {
 	/** @var InterfaceService */
 	private $interfaceService;
 
+	private AsyncService $asyncService;
+
 	/** @var ConfigService */
 	private $configService;
 
@@ -111,6 +111,7 @@ class FederatedEventService extends NCSignature {
 	 * @param MemberRequest $memberRequest
 	 * @param RemoteUpstreamService $remoteUpstreamService
 	 * @param InterfaceService $interfaceService
+	 * @param AsyncService $asyncService
 	 * @param ConfigService $configService
 	 * @param DebugService $debugService
 	 */
@@ -120,6 +121,7 @@ class FederatedEventService extends NCSignature {
 		MemberRequest $memberRequest,
 		RemoteUpstreamService $remoteUpstreamService,
 		InterfaceService $interfaceService,
+		AsyncService $asyncService,
 		ConfigService $configService,
 		DebugService $debugService
 	) {
@@ -128,6 +130,7 @@ class FederatedEventService extends NCSignature {
 		$this->memberRequest = $memberRequest;
 		$this->remoteUpstreamService = $remoteUpstreamService;
 		$this->interfaceService = $interfaceService;
+		$this->asyncService = $asyncService;
 		$this->configService = $configService;
 		$this->debugService = $debugService;
 	}
@@ -388,46 +391,7 @@ class FederatedEventService extends NCSignature {
 	 * @throws RequestBuilderException
 	 */
 	public function initBroadcast(FederatedEvent $event): void {
-		$instances = $this->getInstances($event);
-		if (empty($instances) && !$event->isAsync()) {
-			return;
-		}
-
-		$wrapper = new EventWrapper();
-		$wrapper->setEvent($event);
-		$wrapper->setToken($this->uuid());
-		$wrapper->setCreation(time());
-		$wrapper->setSeverity($event->getSeverity());
-
-		if ($event->isAsync()) {
-			$wrapper->setInstance($this->configService->getLoopbackInstance());
-			$this->eventWrapperRequest->save($wrapper);
-		}
-
-		foreach ($instances as $instance) {
-			if ($event->getCircle()->isConfig(Circle::CFG_LOCAL)) {
-				break;
-			}
-
-			$wrapper->setInstance($instance->getInstance());
-			$wrapper->setInterface($instance->getInterface());
-			$this->eventWrapperRequest->save($wrapper);
-		}
-
-		$request = new NCRequest('', Request::TYPE_POST);
-		$this->configService->configureLoopbackRequest(
-			$request,
-			'circles.EventWrapper.asyncBroadcast',
-			['token' => $wrapper->getToken()]
-		);
-
-		$event->setWrapperToken($wrapper->getToken());
-
-		try {
-			$this->doRequest($request);
-		} catch (RequestNetworkException $e) {
-			$this->e($e, ['wrapper' => $wrapper]);
-		}
+		$this->asyncService->asyncBroadcast($event, $this->getInstances($event));
 	}
 
 
@@ -488,7 +452,7 @@ class FederatedEventService extends NCSignature {
 	 * @param string $token
 	 */
 	public function manageResults(string $token): void {
-		$wrappers = $this->eventWrapperRequest->getByToken($token);
+		$wrappers = $this->eventWrapperRequest->getBroadcastByToken($token);
 
 		$event = null;
 		$results = [];

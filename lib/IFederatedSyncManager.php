@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles;
 
-use JsonSerializable;
 use OCA\Circles\Exceptions\SyncedItemNotFoundException;
 use OCA\Circles\Model\FederatedUser;
 
@@ -282,15 +281,39 @@ interface IFederatedSyncManager {
 	 * Method is only called on the instance that owns the shared item
 	 *
 	 * @param string $itemId
+	 * @param string $updateType
+	 * @param string $updateTypeId
 	 * @param array $extraData
 	 * @param FederatedUser $federatedUser
 	 *
-	 * @return array
+	 * @return bool
+	 *            // TODO: define Exception that can be thrown by app:
+	 * // - itemnotfound
+	 * // - ItemUpdateException
 	 */
-	public function isItemUpdatable(
+	public function isItemModifiable(
 		string $itemId,
+		string $updateType,
+		string $updateTypeId,
 		array $extraData,
 		IFederatedUser $federatedUser
-	): array;
+	): bool;
+
+
+	/**
+	 * @param string $itemId
+	 * @param string $updateType
+	 * @param string $updateTypeId
+	 * @param array $extraData
+	 * @param FederatedUser $federatedUser
+	 */
+	public function onItemModification(
+		string $itemId,
+		string $updateType,
+		string $updateTypeId,
+		array $extraData,
+		IFederatedUser $federatedUser
+	): void;
+
 
 }
