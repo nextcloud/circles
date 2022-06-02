@@ -187,4 +187,68 @@ class SyncController extends Controller {
 		exit();
 	}
 
+
+	/**
+	 * @PublicPage
+	 * @NoCSRFRequired
+	 *
+	 * @return DataResponse
+	 */
+	public function createSyncedShare(): DataResponse {
+		try {
+			/** @var SyncedWrapper $wrapper */
+			$wrapper = $this->signedControllerService->extractObjectFromRequest(
+				SyncedWrapper::class,
+				$signed
+			);
+
+			$this->debugService->info(
+				'{instance} is requesting the creation of a new SyncedShare on SyncedItem {syncedWrapper.syncedShare.singleId}',
+				'',
+				[
+					'instance' => $signed->getOrigin(),
+					'syncedWrapper' => $wrapper
+				]
+			);
+
+			if (!$wrapper->hasShare() || !$wrapper->hasFederatedUser()) {
+				throw new FederatedItemBadRequestException();
+			}
+
+			$syncedShare = $wrapper->getshare();
+			$local = $this->federatedSyncItemService->getLocalSyncedItem($syncedShare->getSingleId());
+
+			// confirm that remote is in a circle with a share on the item
+			$this->federatedSyncShareService->confirmRemoteInstanceAccess(
+				$syncedShare->getSingleId(),
+				$signed->getOrigin()
+			);
+
+			$this->debugService->info(
+				'SyncedItem exists, is local, and {instance} have access to the SyncedItem.', '',
+				[
+					'instance' => $signed->getOrigin(),
+					'local' => $local,
+				]
+			);
+
+			$this->asyncService->setSplittable(true);
+			$this->federatedSyncShareService->requestSyncedShareCreation(
+				$wrapper->getFederatedUser(),
+				$local,
+				$wrapper->getShare()->getCircleId(),
+				$wrapper->getExtraData(),
+			);
+
+			if (!$this->asyncService->isAsynced()) {
+				return new DataResponse(['success' => true]);
+			}
+		} catch (Exception $e) {
+			$this->e($e);
+
+			return $this->signedControllerService->exceptionResponse($e, Http::STATUS_UNAUTHORIZED);
+		}
+
+		exit();
+	}
 }

@@ -32,7 +32,6 @@ declare(strict_types=1);
 namespace OCA\Circles\Model;
 
 use JsonSerializable;
-use OCA\Circles\Exceptions\ShareTokenNotFoundException;
 use OCA\Circles\Tools\Db\IQueryRow;
 use OCA\Circles\Tools\Exceptions\InvalidItemException;
 use OCA\Circles\Tools\IDeserializable;
@@ -199,11 +198,11 @@ class SyncedItemLock implements IReferencedObject, IQueryRow, JsonSerializable {
 	 * @param string $prefix
 	 *
 	 * @return IQueryRow
-	 * @throws ShareTokenNotFoundException
+	 * @throws InvalidItemException
 	 */
 	public function importFromDatabase(array $data, string $prefix = ''): IQueryRow {
-		if ($this->get($prefix . 'token', $data) === '') {
-			throw new ShareTokenNotFoundException();
+		if ($this->getInt($prefix . 'time', $data) < 1) {
+			throw new InvalidItemException();
 		}
 
 		$this->setUpdateType($this->get($prefix . 'update_type', $data));

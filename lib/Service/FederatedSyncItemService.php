@@ -30,6 +30,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\RemoteRequest;
@@ -260,9 +261,8 @@ class FederatedSyncItemService extends NCSignature {
 				'itemId' => $itemId
 			]
 		);
-		try {
-			$syncManager->serializeItem($itemId);
-		} catch (Exception $e) {
+
+		if (!$syncManager->itemExists($itemId)) {
 			throw new FederatedSyncConflictException(
 				'SyncedItem not found in database and does not appears to be local'
 			);
@@ -311,7 +311,7 @@ class FederatedSyncItemService extends NCSignature {
 			);
 
 			return;
-		} else if (is_null($remoteSum)) {
+		} else if (is_null($remoteSum)) { // this means that the request is not coming from remote location
 			$this->requestSyncedItemUpdateRemote($federatedUser, $syncedItem, $syncedLock, $extraData);
 
 			return;
@@ -360,6 +360,7 @@ class FederatedSyncItemService extends NCSignature {
 //			$syncedItem->getItemId(),
 //			$item
 //		);
+		$this->asyncService->splitArray(['success' => true]);
 
 		$syncManager->onItemModification(
 			$syncedItem->getItemId(),
@@ -370,7 +371,6 @@ class FederatedSyncItemService extends NCSignature {
 		);
 
 		// this should split the process and give back hand if request is coming from a remote instance
-		$this->asyncService->splitArray(['success' => true]);
 
 		$this->asyncService->asyncInternal(
 			AsyncItemUpdate::class,
@@ -389,7 +389,7 @@ class FederatedSyncItemService extends NCSignature {
 		SyncedItem $syncedItem,
 		SyncedItemLock $syncedLock,
 		array $extraData = []
-	): array {
+	): void {
 		$wrapper = new SyncedWrapper($federatedUser, $syncedItem, $syncedLock, null, $extraData);
 		$this->interfaceService->setCurrentInterfaceFromInstance($syncedItem->getInstance());
 		$data = $this->remoteStreamService->resultRequestRemoteInstance(
@@ -420,11 +420,9 @@ class FederatedSyncItemService extends NCSignature {
 		// update item based on current (old) checksum to confirm item was not already updated (race condition)
 		// do not update checksum
 //		$this->updateChecksum($syncedItem->getSingleId(), $data);
-
-		return $data;
 	}
-//
-//
+
+
 //	private function updateChecksum(string $syncedItemId, ?array $data = null): void {
 //		$currSum = '';
 //		if (is_null($data)) {
@@ -579,6 +577,7 @@ class FederatedSyncItemService extends NCSignature {
 		SyncedItemLock $syncedLock,
 		array $extraData = []
 	): bool {
+//		$federatedUser
 		$syncManager = $this->federatedSyncService->initSyncManager($syncedItem);
 		$this->debugService->info(
 			'sharing of SyncedItem {syncedItem.singleId} looks doable, calling {`isShareCreatable()} on {syncManager.class} for confirmation',
@@ -700,14 +699,16 @@ class FederatedSyncItemService extends NCSignature {
 	 *
 	 * @throws InvalidItemException
 	 * @throws SyncedItemLockException
+	 * @throws SyncedItemNotFoundException
 	 */
 	private function manageLock(
 		SyncedItem $syncedItem,
 		SyncedItemLock $syncedLock,
-		?string $remoteSum = null
+		?string $remoteSum = null,
+		bool $lastTry = false
 	): void {
 		$locked = true;
-		for ($i = 0; $i < self::LOCK_RETRY_LIMIT; $i++) {
+		for ($i = 0; $i < (($lastTry) ? 2 : self::LOCK_RETRY_LIMIT); $i++) {
 			try {
 				$this->syncedItemLockRequest->clean(self::LOCK_TIMEOUT);
 				$this->syncedItemLockRequest->getSyncedItemLock($syncedLock);
@@ -718,6 +719,10 @@ class FederatedSyncItemService extends NCSignature {
 			}
 		}
 
+		if ($locked) {
+			throw new SyncedItemLockException('item is currently lock, try again later');
+		}
+
 		if (!is_null($remoteSum) && $syncedLock->isVerifyChecksum()) {
 			$known = $this->syncedItemRequest->getSyncedItemFromSingleId($syncedItem->getSingleId());
 			if ($known->getChecksum() !== $remoteSum) {
@@ -725,11 +730,16 @@ class FederatedSyncItemService extends NCSignature {
 			}
 		}
 
-		if ($locked) {
-			throw new SyncedItemLockException('item is currently lock, try again later');
+		try {
+			$this->syncedItemLockRequest->save($syncedLock);
+		} catch (UniqueConstraintViolationException $e) {
+			// in case of race condition between the check of lock and the save of a new one.
+			if (!$lastTry) {
+				$this->manageLock($syncedItem, $syncedLock, $remoteSum, true);
+			} else {
+				throw new SyncedItemLockException('too many request at the same time, try again later');
+			}
 		}
-
-		$this->syncedItemLockRequest->save($syncedLock);
 	}
 
 }

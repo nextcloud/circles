@@ -30,37 +30,50 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Service;
 
+use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
+use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Db\RemoteRequest;
 use OCA\Circles\Db\SyncedItemRequest;
 use OCA\Circles\Db\SyncedShareRequest;
+use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
+use OCA\Circles\Exceptions\FederatedSyncConflictException;
 use OCA\Circles\Exceptions\FederatedSyncManagerNotFoundException;
+use OCA\Circles\Exceptions\FederatedSyncPermissionException;
+use OCA\Circles\Exceptions\FederatedSyncRequestException;
 use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
+use OCA\Circles\Exceptions\InvalidIdException;
+use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
 use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
-use OCA\Circles\Exceptions\SyncedItemNotFoundException;
 use OCA\Circles\Exceptions\SyncedSharedAlreadyExistException;
 use OCA\Circles\Exceptions\SyncedShareNotFoundException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\FederatedItems\FederatedSync\ShareCreation;
+use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\FederatedEvent;
-use OCA\Circles\Model\FederatedUser;
+use OCA\Circles\Model\Federated\RemoteInstance;
+use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\SyncedItem;
 use OCA\Circles\Model\SyncedShare;
+use OCA\Circles\Model\SyncedWrapper;
 use OCA\Circles\Tools\ActivityPub\NCSignature;
+use OCA\Circles\Tools\Model\Request;
 use OCA\Circles\Tools\Model\SimpleDataStore;
 use OCA\Circles\Tools\Traits\TStringTools;
 
 class FederatedSyncShareService extends NCSignature {
 	use TStringTools;
 
+	private CircleRequest $circleRequest;
 	private MemberRequest $memberRequest;
+	private MembershipRequest $membershipRequest;
 	private SyncedItemRequest $syncedItemRequest;
 	private SyncedShareRequest $syncedShareRequest;
 	private RemoteRequest $remoteRequest;
@@ -72,6 +85,8 @@ class FederatedSyncShareService extends NCSignature {
 
 
 	/**
+	 * @param CircleRequest $circleRequest
+	 * @param MemberRequest $memberRequest
 	 * @param SyncedItemRequest $syncedItemRequest
 	 * @param SyncedShareRequest $syncedShareRequest
 	 * @param RemoteRequest $remoteRequest
@@ -82,7 +97,9 @@ class FederatedSyncShareService extends NCSignature {
 	 * @param DebugService $debugService
 	 */
 	public function __construct(
+		CircleRequest $circleRequest,
 		MemberRequest $memberRequest,
+		MembershipRequest $membershipRequest,
 		SyncedItemRequest $syncedItemRequest,
 		SyncedShareRequest $syncedShareRequest,
 		RemoteRequest $remoteRequest,
@@ -92,7 +109,9 @@ class FederatedSyncShareService extends NCSignature {
 		InterfaceService $interfaceService,
 		DebugService $debugService
 	) {
+		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
+		$this->membershipRequest = $membershipRequest;
 		$this->syncedItemRequest = $syncedItemRequest;
 		$this->syncedShareRequest = $syncedShareRequest;
 		$this->remoteRequest = $remoteRequest;
@@ -106,27 +125,88 @@ class FederatedSyncShareService extends NCSignature {
 	/**
 	 * search for existing shares in circles_share based on itemSingleId, circleId.
 	 *
+	 * @param IFederatedUser $federatedUser
 	 * @param SyncedItem $syncedItem
-	 * @param Circle $circle
+	 * @param string $circleId
 	 * @param array $extraData
+	 * @param bool $fromRemote
 	 *
-	 * @throws SyncedSharedAlreadyExistException
+	 * @throws CircleNotFoundException
+	 * @throws FederatedEventException
+	 * @throws FederatedItemException
+	 * @throws FederatedSyncConflictException
 	 * @throws FederatedSyncManagerNotFoundException
+	 * @throws FederatedSyncRequestException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws OwnerNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RequestBuilderException
+	 * @throws SyncedSharedAlreadyExistException
+	 * @throws UnknownRemoteException
 	 */
-	public function createShare(SyncedItem $syncedItem, Circle $circle, array $extraData = []) {
-		if (!$this->isShareCreatable($syncedItem, $circle, $extraData)) {
+	public function requestSyncedShareCreation(
+		IFederatedUser $federatedUser,
+		SyncedItem $syncedItem,
+		string $circleId,
+		array $extraData = [],
+		bool $fromRemote = false
+	): void {
+		if ($syncedItem->isLocal()) {
+			$this->requestSyncedShareCreationLocal($federatedUser, $syncedItem, $circleId, $extraData);
+
+			return;
+		} else if (!$fromRemote) {
+			$this->requestSyncedShareCreationRemote($federatedUser, $syncedItem, $circleId, $extraData);
+
+			return;
+		}
+
+		throw new FederatedSyncConflictException();
+	}
+
+
+	/**
+	 * @throws FederatedSyncManagerNotFoundException
+	 * @throws SyncedSharedAlreadyExistException
+	 * @throws CircleNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws RemoteInstanceException
+	 * @throws OwnerNotFoundException
+	 * @throws InitiatorNotConfirmedException
+	 * @throws FederatedItemException
+	 * @throws RequestBuilderException
+	 * @throws FederatedEventException
+	 * @throws RemoteNotFoundException
+	 * @throws UnknownRemoteException
+	 */
+	public function requestSyncedShareCreationLocal(
+		IFederatedUser $federatedUser,
+		SyncedItem $syncedItem,
+		string $circleId,
+		array $extraData = []
+	): void {
+
+		// TODO: verify rules that apply when sharing to a circle
+		$probe = new CircleProbe();
+		$probe->includeSystemCircles()
+			  ->mustBeMember();
+		$circle = $this->circleRequest->getCircle($circleId, $federatedUser, $probe);
+
+		if (!$this->isShareCreatable($federatedUser, $syncedItem, $circleId, $extraData)) {
 			$this->debugService->info(
-				'share of SyncedItem {!syncedItem.singleId} to {!circle.id} is set as not creatable by {!syncedItem.appId}',
-				$circle->getSingleId(),
+				'share of SyncedItem {!syncedItem.singleId} to {!circleId} is set as not creatable by {!syncedItem.appId}',
+				$circleId,
 				[
 					'syncedItem' => $syncedItem,
-					'circle' => $circle,
+					'circleId' => $circleId,
 					'extraData' => $extraData
 				]
 			);
 		}
 
-		$this->syncShareCreation($syncedItem, $circle, $extraData);
+		$this->syncShareCreation($federatedUser, $syncedItem, $circleId, $extraData);
 		$this->broadcastShareCreation($syncedItem, $circle, $extraData);
 
 		$this->debugService->info(
@@ -135,22 +215,58 @@ class FederatedSyncShareService extends NCSignature {
 	}
 
 
+	private function requestSyncedShareCreationRemote(
+		IFederatedUser $federatedUser,
+		SyncedItem $syncedItem,
+		string $circleId,
+		array $extraData = []
+	): void {
+		$syncedShare = new SyncedShare();
+		$syncedShare->setSingleId($syncedItem->getSingleId())
+					->setCircleId($circleId);
+
+		$wrapper = new SyncedWrapper($federatedUser, null, null, $syncedShare, $extraData);
+		$this->interfaceService->setCurrentInterfaceFromInstance($syncedItem->getInstance());
+		$data = $this->remoteStreamService->resultRequestRemoteInstance(
+			$syncedItem->getInstance(),
+			RemoteInstance::SYNC_SHARE,
+			Request::TYPE_PUT,
+			$wrapper
+		);
+
+		if (!$this->getBool('success', $data)) {
+			throw new FederatedSyncRequestException();
+		}
+
+		$syncManager = $this->federatedSyncService->initSyncManager($syncedItem);
+		$syncManager->onShareCreation(
+			$syncedItem->getItemId(),
+			$syncedShare->getCircleId(),
+			$extraData,
+			$federatedUser
+		);
+	}
+
 	/**
+	 * @param IFederatedUser $federatedUser
 	 * @param SyncedItem $syncedItem
-	 * @param Circle $circle
+	 * @param string $circleId
 	 * @param array $extraData
 	 *
 	 * @throws FederatedSyncManagerNotFoundException
+	 * @throws InvalidIdException
 	 */
-	public function syncShareCreation(SyncedItem $syncedItem, Circle $circle, array $extraData = []): void {
+	public function syncShareCreation(
+		IFederatedUser $federatedUser,
+		SyncedItem $syncedItem,
+		string $circleId,
+		array $extraData = []
+	): void {
 		$syncedShare = new SyncedShare();
 		$syncedShare->setSingleId($syncedItem->getSingleId())
-					->setCircleId($circle->getSingleId());
+					->setCircleId($circleId);
 
 		$syncManager = $this->federatedSyncService->initSyncManager($syncedItem);
-
-		$federatedUser = new FederatedUser();
-		$federatedUser->importFromIFederatedUser($circle->getInitiator());
 
 		$this->debugService->info(
 			'calling {`onShareCreation()} on {syncManager}',
@@ -160,7 +276,6 @@ class FederatedSyncShareService extends NCSignature {
 				'syncedItem' => $syncedItem,
 				'syncedShare' => $syncedShare,
 				'extraData' => $extraData,
-				'initiator' => $circle->getInitiator(),
 				'federatedUser' => $federatedUser
 			]
 		);
@@ -175,10 +290,10 @@ class FederatedSyncShareService extends NCSignature {
 		$this->syncedShareRequest->save($syncedShare);
 		$this->debugService->info(
 			'storing SyncedShare of {syncedShare.singleId} to {syncedShare.circleId} in database',
-			$circle->getSingleId(),
+			$circleId,
 			[
 				'syncedItem' => $syncedItem,
-				'circle' => $circle,
+				'circleId' => $circleId,
 				'syncedShare' => $syncedShare
 			]
 		);
@@ -229,26 +344,39 @@ class FederatedSyncShareService extends NCSignature {
 	 * - SyncedShare is not already known
 	 * - app agree on creating this share
 	 *
+	 * @param IFederatedUser $federatedUser
 	 * @param SyncedItem $syncedItem
-	 * @param Circle $circle
+	 * @param string $circleId
 	 * @param array $extraData
 	 *
 	 * @return bool
 	 * @throws FederatedSyncManagerNotFoundException
+	 * @throws FederatedSyncPermissionException
 	 * @throws SyncedSharedAlreadyExistException
 	 */
-	private function isShareCreatable(SyncedItem $syncedItem, Circle $circle, array $extraData = []): bool {
+	private function isShareCreatable(
+		IFederatedUser $federatedUser,
+		SyncedItem $syncedItem,
+		string $circleId,
+		array $extraData = []
+	): bool {
 		try {
-			$this->syncedShareRequest->getShare($syncedItem->getSingleId(), $circle->getsingleId());
+			$this->syncedShareRequest->getShare($syncedItem->getSingleId(), $circleId);
 			throw new SyncedSharedAlreadyExistException('share already exists');
 		} catch (SyncedShareNotFoundException $e) {
 		}
 
-
 		$syncManager = $this->federatedSyncService->initSyncManager($syncedItem);
+		$ownerId = $syncManager->getOwner($syncedItem->getItemId());
+		try {
+			$member = $this->membershipRequest->getMembership($circleId, $ownerId);
+		} catch (MembershipNotFoundException $e) {
+			throw new FederatedSyncPermissionException('owner of Item is not member of Circle');
+		}
+
 		$this->debugService->info(
 			'sharing of SyncedItem {syncedItem.singleId} looks doable, calling {`isShareCreatable()} on {syncManager.class} for confirmation',
-			$circle->getSingleId(),
+			$circleId,
 			[
 				'syncedItem' => $syncedItem,
 				'syncManager' => ['class' => get_class($syncManager)]
@@ -257,9 +385,9 @@ class FederatedSyncShareService extends NCSignature {
 
 		return $syncManager->isShareCreatable(
 			$syncedItem->getItemId(),
-			$circle->getSingleId(),
+			$circleId,
 			$extraData,
-			$circle->getInitiator()->getInheritedBy()
+			$federatedUser
 		);
 	}
 

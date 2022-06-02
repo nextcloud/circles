@@ -59,6 +59,7 @@ use OCA\Circles\Model\Membership;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\DebugService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\MembershipService;
@@ -74,6 +75,7 @@ class CirclesManager {
 	private MembershipService $membershipService;
 	private ConfigService $configService;
 	private CirclesQueryHelper $circlesQueryHelper;
+	private DebugService $debugService;
 
 
 	/**
@@ -94,6 +96,7 @@ class CirclesManager {
 		MemberService $memberService,
 		MembershipService $membershipService,
 		ConfigService $configService,
+		DebugService $debugService,
 		CirclesQueryHelper $circlesQueryHelper
 	) {
 		$this->circleSharesManager = $circleSharesManager;
@@ -102,6 +105,7 @@ class CirclesManager {
 		$this->memberService = $memberService;
 		$this->membershipService = $membershipService;
 		$this->configService = $configService;
+		$this->debugService = $debugService;
 		$this->circlesQueryHelper = $circlesQueryHelper;
 	}
 
@@ -269,6 +273,12 @@ class CirclesManager {
 		return $this->circlesQueryHelper;
 	}
 
+	/**
+	 * @return DebugService
+	 */
+	public function getDebugService(): DebugService {
+		return $this->debugService;
+	}
 
 	/**
 	 * @param string $name

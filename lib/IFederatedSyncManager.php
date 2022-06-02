@@ -113,6 +113,25 @@ interface IFederatedSyncManager {
 
 
 	/**
+	 * This method is called when Circles needs to confirm itemId is linked to an existing item
+	 *
+	 * @param string $itemId
+	 *
+	 * @return bool
+	 */
+	public function itemExists(string $itemId): bool;
+
+	/**
+	 * Method is called when Circles needs to know the owner of an item. Must returns a singleId.
+	 *
+	 * @param string $itemId
+	 *
+	 * @return mixed
+	 */
+	public function getOwner(string $itemId): string;
+
+
+	/**
 	 * Your app returns details about a share.
 	 * Method will be called to re-sync a share on a remote instance
 	 *
@@ -314,6 +333,5 @@ interface IFederatedSyncManager {
 		array $extraData,
 		IFederatedUser $federatedUser
 	): void;
-
 
 }

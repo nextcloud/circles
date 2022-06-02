@@ -37,9 +37,11 @@ use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemHighSeverity;
+use OCA\Circles\IFederatedItemInitiatorCheckNotRequired;
 use OCA\Circles\IFederatedItemLimitedToInstanceWithMember;
 use OCA\Circles\IFederatedItemSyncedItem;
 use OCA\Circles\Model\Federated\FederatedEvent;
+use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\DebugService;
 use OCA\Circles\Service\FederatedSyncItemService;
@@ -52,6 +54,7 @@ class ShareCreation implements
 	IFederatedItemLimitedToInstanceWithMember,
 	IFederatedItemHighSeverity,
 	IFederatedItemAsyncProcess,
+	IFederatedItemInitiatorCheckNotRequired,
 	IFederatedItemSyncedItem {
 	use TDeserialize;
 
@@ -113,6 +116,21 @@ class ShareCreation implements
 		}
 
 		$circle = $event->getCircle();
+		if (!$circle->hasInitiator()) {
+			$this->debugService->info(
+				'{?Initiator not available}', '',
+				['circle' => $circle]
+			);
+
+			return;
+		}
+
+		// note that we have no confirmation about the origin and/or memberships of FederatedUser at
+		// this point as this class implements IFederatedItemInitiatorCheckNotRequired
+		// the only use of this IFederatedItem is to broadcast an eventual new share which needs
+		// to be confirmed with a direct request to the instance that owns the shared item
+		$federatedUser = new FederatedUser();
+		$federatedUser->importFromIFederatedUser($circle->getInitiator());
 		$syncedItem = $event->getSyncedItem();
 
 		$this->federatedSyncItemService->compareWithKnownItem($syncedItem, true);
@@ -120,7 +138,12 @@ class ShareCreation implements
 		$extraData = $event->getParams()->gArray('extraData');
 
 		$this->federatedSyncItemService->updateSyncedItem($syncedItem);
-		$this->federatedSyncShareService->syncShareCreation($syncedItem, $circle, $extraData);
+		$this->federatedSyncShareService->syncShareCreation(
+			$federatedUser,
+			$syncedItem,
+			$circle->getSingleId(),
+			$extraData
+		);
 	}
 
 

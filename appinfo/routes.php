@@ -118,7 +118,8 @@ return [
 		['name' => 'Sync#syncItem', 'url' => '/sync/item', 'verb' => 'GET'],
 		['name' => 'Sync#updateSyncedItem', 'url' => '/sync/item', 'verb' => 'PUT'],
 //		['name' => 'Remote#syncItem', 'url' => '/sync/item/{singleId}', 'verb' => 'GET'],
-		['name' => 'Sync#syncShare', 'url' => '/sync/share', 'verb' => 'POST'],
+		['name' => 'Sync#syncShare', 'url' => '/sync/share', 'verb' => 'GET'],
+		['name' => 'Sync#createSyncedShare', 'url' => '/sync/share', 'verb' => 'PUT'],
 		['name' => 'Debug#debugDaemon', 'url' => '/debug', 'verb' => 'POST']
 
 	]

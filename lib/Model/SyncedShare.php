@@ -113,7 +113,8 @@ class SyncedShare implements IReferencedObject, IQueryRow, JsonSerializable {
 	 * @throws InvalidItemException
 	 */
 	public function import(array $data): IDeserializable {
-		if ($this->getInt('singleId', $data) === 0) {
+		if ($this->get('singleId', $data) === ''
+			|| $this->get('circleId', $data) === '') {
 			throw new InvalidItemException();
 		}
 

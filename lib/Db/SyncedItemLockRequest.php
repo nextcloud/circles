@@ -46,8 +46,6 @@ class SyncedItemLockRequest extends SyncedItemLockRequestBuilder {
 
 	/**
 	 * @param SyncedItemLock $lock
-	 *
-	 * @throws InvalidIdException
 	 */
 	public function save(SyncedItemLock $lock): void {
 		$qb = $this->getSyncedItemLockInsertSql();
@@ -55,7 +53,7 @@ class SyncedItemLockRequest extends SyncedItemLockRequestBuilder {
 		   ->setValue('update_type_id', $qb->createNamedParameter($lock->getUpdateTypeId()))
 		   ->setValue('time', $qb->createNamedParameter(time()));
 
-		$qb->execute();
+		$qb->executeStatement();
 	}
 
 

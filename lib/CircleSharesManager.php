@@ -33,7 +33,6 @@ namespace OCA\Circles;
 
 use Exception;
 use OCA\Circles\Exceptions\CircleSharesManagerException;
-use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\SyncedItemLock;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
@@ -145,12 +144,12 @@ class CircleSharesManager implements ICircleSharesManager {
 		try {
 			$this->mustHaveOrigin();
 
-			// TODO: verify rules that apply when sharing to a circle
-			$probe = new CircleProbe();
-			$probe->includeSystemCircles()
-				  ->mustBeMember();
-
-			$circle = $this->circleService->getCircle($circleId, $probe);
+			// TODO: do we need this here as we are also checking federatedUser during isShareCreatable()
+//			$probe = new CircleProbe();
+//			$probe->includeSystemCircles()
+//				  ->mustBeMember();
+//
+//			$circle = $this->circleService->getCircle($circleId, $probe);
 
 			// get valid SyncedItem based on appId, itemType, itemId
 			$syncedItem = $this->federatedSyncItemService->initSyncedItem(
@@ -163,20 +162,19 @@ class CircleSharesManager implements ICircleSharesManager {
 			$this->debugService->info(
 				'initiating the process of sharing {syncedItem.singleId} to {circle.id}',
 				$circleId, [
-					'circle' => $circle,
+					'circleId' => $circleId,
 					'syncedItem' => $syncedItem,
 					'extraData' => $extraData,
 					'isLocal' => $syncedItem->isLocal()
 				]
 			);
 
-			// confirm item is local
-			if (!$syncedItem->isLocal()) {
-				// TODO: sharing a remote item
-				return;
-			}
-
-			$this->federatedSyncShareService->createShare($syncedItem, $circle, $extraData);
+			$this->federatedSyncShareService->requestSyncedShareCreation(
+				$this->federatedUserService->getCurrentEntity(),
+				$syncedItem,
+				$circleId,
+				$extraData
+			);
 		} catch (Exception $e) {
 			$this->debugService->exception($e, $circleId);
 			throw $e;
