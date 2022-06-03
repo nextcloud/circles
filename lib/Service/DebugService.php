@@ -115,7 +115,7 @@ class DebugService {
 	/**
 	 * @param string $action
 	 * @param string $circleId
-	 * @param array<JsonSerializable, IReferencedObject> $objects
+	 * @param array<string, int, bool, array, JsonSerializable, IReferencedObject> $objects
 	 */
 	public function info(string $action, string $circleId = '', array $objects = []): void {
 		if (!$this->isDebugEnabled()) {

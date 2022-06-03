@@ -244,9 +244,10 @@ class FederatedSyncItemService extends NCSignature {
 				throw new FederatedSyncConflictException("SyncedItem $appId.$itemType.$itemId is deprecated");
 			}
 
-			$this->debugService->info('Found SyncedItem {syncedItem.singleId} in database', '', [
-				'syncedItem' => $syncedItem
-			]);
+			$this->debugService->info(
+				'Found SyncedItem {syncedItem.singleId} in database', '',
+				['syncedItem' => $syncedItem]
+			);
 
 			return $syncedItem;
 		} catch (SyncedItemNotFoundException $e) {
@@ -254,7 +255,7 @@ class FederatedSyncItemService extends NCSignature {
 
 		$syncManager = $this->federatedSyncService->getSyncManager($appId, $itemType);
 		$this->debugService->info(
-			'SyncedItem is unknown, calling {`serializeItem()} on {syncManager.class} to confirm item {itemId} is local',
+			'SyncedItem is not known, calling {`itemExists()} on {syncManager.class} to confirm item {itemId} exists and is local',
 			'',
 			[
 				'syncManager' => get_class($syncManager),
@@ -263,9 +264,7 @@ class FederatedSyncItemService extends NCSignature {
 		);
 
 		if (!$syncManager->itemExists($itemId)) {
-			throw new FederatedSyncConflictException(
-				'SyncedItem not found in database and does not appears to be local'
-			);
+			throw new FederatedSyncConflictException('SyncedItem item does not exist');
 		}
 
 		// create entry
@@ -309,15 +308,21 @@ class FederatedSyncItemService extends NCSignature {
 				$extraData,
 				$remoteSum
 			);
-
-			return;
 		} else if (is_null($remoteSum)) { // this means that the request is not coming from remote location
 			$this->requestSyncedItemUpdateRemote($federatedUser, $syncedItem, $syncedLock, $extraData);
-
-			return;
+		} else {
+			throw new FederatedSyncConflictException('conflict in federatedSync');
 		}
 
-		throw new FederatedSyncConflictException();
+		$this->debugService->info(
+			'requested update on SyncedItem {syncedItem.singleId} is over. handing over the process', '',
+			[
+				'federatedUser' => $federatedUser,
+				'syncedItem' => $syncedItem,
+				'syncedLock' => $syncedLock,
+				'extraData' => $extraData
+			]
+		);
 	}
 
 
@@ -347,21 +352,32 @@ class FederatedSyncItemService extends NCSignature {
 		array $extraData = [],
 		?string $remoteSum = null
 	): void {
+		$this->debugService->info(
+			'SyncedItem is local, checking SyncedItemLock', '',
+			[
+				'syncedItem' => $syncedItem,
+				'syncedLock' => $syncedLock,
+				'remoteSum' => $remoteSum
+			]
+		);
+
+
+		// TODO: check $federatedUser is in one of the Circle the item is shared to.
+
 		// item will be lock during the process, only to be unlocked when new item checksum have
 		// been calculated (on async process)
 		$this->manageLock($syncedItem, $syncedLock, $remoteSum);
+
+		// TODO: manage exceptions to clear Lock on fail
 
 		if (!$this->isItemModifiable($federatedUser, $syncedItem, $syncedLock, $extraData)) {
 			throw new FederatedSyncPermissionException('item modification not allowed');
 		}
 
-		$syncManager = $this->federatedSyncService->initSyncManager($syncedItem);
-//		$syncManager->syncItem(
-//			$syncedItem->getItemId(),
-//			$item
-//		);
+		// try to async in case process is configured as splittable
 		$this->asyncService->splitArray(['success' => true]);
 
+		$syncManager = $this->federatedSyncService->initSyncManager($syncedItem);
 		$syncManager->onItemModification(
 			$syncedItem->getItemId(),
 			$syncedLock->getUpdateType(),
@@ -370,8 +386,7 @@ class FederatedSyncItemService extends NCSignature {
 			$federatedUser
 		);
 
-		// this should split the process and give back hand if request is coming from a remote instance
-
+		// initiate full async process if still on main thread
 		$this->asyncService->asyncInternal(
 			AsyncItemUpdate::class,
 			new ReferencedDataStore(
@@ -384,12 +399,36 @@ class FederatedSyncItemService extends NCSignature {
 	}
 
 
+	/**
+	 * @param IFederatedUser $federatedUser
+	 * @param SyncedItem $syncedItem
+	 * @param SyncedItemLock $syncedLock
+	 * @param array $extraData
+	 *
+	 * @throws FederatedItemException
+	 * @throws FederatedSyncManagerNotFoundException
+	 * @throws FederatedSyncRequestException
+	 * @throws RemoteInstanceException
+	 * @throws RemoteNotFoundException
+	 * @throws RemoteResourceNotFoundException
+	 * @throws UnknownRemoteException
+	 */
 	private function requestSyncedItemUpdateRemote(
 		IFederatedUser $federatedUser,
 		SyncedItem $syncedItem,
 		SyncedItemLock $syncedLock,
 		array $extraData = []
 	): void {
+		$this->debugService->info(
+			'SyncedItem is not local, requesting remote instance {syncedItem.instance}', '',
+			[
+				'federatedUser' => $federatedUser,
+				'syncedItem' => $syncedItem,
+				'syncedLock' => $syncedLock,
+				'extraData' => $extraData
+			]
+		);
+
 		$wrapper = new SyncedWrapper($federatedUser, $syncedItem, $syncedLock, null, $extraData);
 		$this->interfaceService->setCurrentInterfaceFromInstance($syncedItem->getInstance());
 		$data = $this->remoteStreamService->resultRequestRemoteInstance(
@@ -400,10 +439,21 @@ class FederatedSyncItemService extends NCSignature {
 		);
 
 		if (!$this->getBool('success', $data)) {
-			throw new FederatedSyncRequestException();
+			throw new FederatedSyncRequestException('status is ok, but action was not a success');
 		}
 
 		$syncManager = $this->federatedSyncService->initSyncManager($syncedItem);
+
+		$this->debugService->info(
+			'calling {`onItemModification()} on {syncManager.class} to update local entry', '',
+			[
+				'federatedUser' => $federatedUser,
+				'syncedItem' => $syncedItem,
+				'syncedLock' => $syncedLock,
+				'extraData' => $extraData
+			]
+		);
+
 		$syncManager->onItemModification(
 			$syncedItem->getItemId(),
 			$syncedLock->getUpdateType(),
@@ -411,15 +461,6 @@ class FederatedSyncItemService extends NCSignature {
 			$extraData,
 			$federatedUser
 		);
-
-//		$syncManager->syncItem(
-//			$syncedItem->getItemId(),
-//			$data
-//		);
-
-		// update item based on current (old) checksum to confirm item was not already updated (race condition)
-		// do not update checksum
-//		$this->updateChecksum($syncedItem->getSingleId(), $data);
 	}
 
 
@@ -462,18 +503,21 @@ class FederatedSyncItemService extends NCSignature {
 			['syncedItem' => $syncedItem]
 		);
 
-//		try {
-//			$this->syncedItemRequest->getSyncedItemFromSingleId($syncedItem->getSingleId());
-//		} catch (SyncedItemNotFoundException $e) {
 		$this->debugService->info(
 			'storing SyncedItem {syncedItem.singleId} in database', '',
 			['syncedItem' => $syncedItem]
 		);
 
-		$this->syncedItemRequest->save($syncedItem);
-
-//		}
-
+		try {
+			$this->syncedItemRequest->save($syncedItem);
+		} catch (UniqueConstraintViolationException $e) {
+			// in case of race condition
+			$syncedItem = $this->syncedItemRequest->getSyncedItem(
+				$syncedItem->getAppId(),
+				$syncedItem->getItemType(),
+				$syncedItem->getItemId()
+			);
+		}
 
 		return $syncedItem;
 	}
@@ -577,7 +621,6 @@ class FederatedSyncItemService extends NCSignature {
 		SyncedItemLock $syncedLock,
 		array $extraData = []
 	): bool {
-//		$federatedUser
 		$syncManager = $this->federatedSyncService->initSyncManager($syncedItem);
 		$this->debugService->info(
 			'sharing of SyncedItem {syncedItem.singleId} looks doable, calling {`isShareCreatable()} on {syncManager.class} for confirmation',
@@ -712,6 +755,17 @@ class FederatedSyncItemService extends NCSignature {
 			try {
 				$this->syncedItemLockRequest->clean(self::LOCK_TIMEOUT);
 				$this->syncedItemLockRequest->getSyncedItemLock($syncedLock);
+				$this->debugService->info(
+					'SyncedItem {syncedLock.singleId} is locked. waiting a second and try again', '',
+					[
+						'loop' => $i,
+						'syncedItem' => $syncedItem,
+						'syncedLock' => $syncedLock,
+						'remoteSum' => $remoteSum,
+						'lastTry' => $lastTry
+					]
+				);
+
 				sleep(1);
 			} catch (SyncedItemNotFoundException $e) {
 				$locked = false;
@@ -724,17 +778,40 @@ class FederatedSyncItemService extends NCSignature {
 		}
 
 		if (!is_null($remoteSum) && $syncedLock->isVerifyChecksum()) {
+			$this->debugService->info(
+				'Action require up-to-date checksum {remoteSum} from remote instance to update SyncedItem {syncedItem.singleId}',
+				'',
+				[
+					'remoteSum' => $remoteSum,
+					'syncedItem' => $syncedItem,
+					'syncedLock' => $syncedLock
+				]
+			);
 			$known = $this->syncedItemRequest->getSyncedItemFromSingleId($syncedItem->getSingleId());
 			if ($known->getChecksum() !== $remoteSum) {
 				throw new SyncedItemLockException('checksum is too old, sync required');
 			}
 		}
 
+		$this->debugService->info(
+			'SyncedItem {syncedLock.singleId} is not locked', '',
+			[
+				'syncedItem' => $syncedItem,
+				'syncedLock' => $syncedLock
+			]
+		);
+
 		try {
 			$this->syncedItemLockRequest->save($syncedLock);
 		} catch (UniqueConstraintViolationException $e) {
-			// in case of race condition between the check of lock and the save of a new one.
 			if (!$lastTry) {
+				$this->debugService->info(
+					'Race condition during the generation of the lock, going back to previous step', '',
+					[
+						'syncedItem' => $syncedItem,
+						'syncedLock' => $syncedLock
+					]
+				);
 				$this->manageLock($syncedItem, $syncedLock, $remoteSum, true);
 			} else {
 				throw new SyncedItemLockException('too many request at the same time, try again later');

@@ -33,6 +33,7 @@ namespace OCA\Circles;
 
 use Exception;
 use OCA\Circles\Exceptions\CircleSharesManagerException;
+use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Model\SyncedItemLock;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
@@ -133,30 +134,24 @@ class CircleSharesManager implements ICircleSharesManager {
 	): void {
 		$this->debugService->setDebugType('federated_sync');
 		$this->debugService->info(
-			'{~New request to create a SyncedShare} based on {appId}.{itemType}.{itemId}', $circleId, [
-																							 'appId' => $this->originAppId,
-																							 'itemType' => $this->originItemType,
-																							 'itemId' => $itemId,
-																							 'extraData' => $extraData
-																						 ]
+			'{~New request to create a SyncedShare} based on {appId}.{itemType}.{itemId}',
+			$circleId,
+			[
+				'appId' => $this->originAppId,
+				'itemType' => $this->originItemType,
+				'itemId' => $itemId,
+				'extraData' => $extraData
+			]
 		);
 
 		try {
 			$this->mustHaveOrigin();
 
-			// TODO: do we need this here as we are also checking federatedUser during isShareCreatable()
-//			$probe = new CircleProbe();
-//			$probe->includeSystemCircles()
-//				  ->mustBeMember();
-//
-//			$circle = $this->circleService->getCircle($circleId, $probe);
-
 			// get valid SyncedItem based on appId, itemType, itemId
 			$syncedItem = $this->federatedSyncItemService->initSyncedItem(
 				$this->originAppId,
 				$this->originItemType,
-				$itemId,
-				true
+				$itemId
 			);
 
 			$this->debugService->info(
@@ -169,8 +164,13 @@ class CircleSharesManager implements ICircleSharesManager {
 				]
 			);
 
+			$federatedUser = $this->federatedUserService->getCurrentEntity();
+			if (!$federatedUser->isLocal()) {
+				throw new FederatedUserNotFoundException('unknown local user');
+			}
+
 			$this->federatedSyncShareService->requestSyncedShareCreation(
-				$this->federatedUserService->getCurrentEntity(),
+				$federatedUser,
 				$syncedItem,
 				$circleId,
 				$extraData
@@ -257,7 +257,7 @@ class CircleSharesManager implements ICircleSharesManager {
 			);
 
 			$this->debugService->info(
-				'initiating the process of updating {syncedItem.singleId}',
+				'initiating the process of updating SyncedItem {syncedItem.singleId}',
 				'', [
 					'itemId' => $itemId,
 					'syncedItem' => $syncedItem,
@@ -266,8 +266,13 @@ class CircleSharesManager implements ICircleSharesManager {
 				]
 			);
 
+			$federatedUser = $this->federatedUserService->getCurrentEntity();
+			if (!$federatedUser->isLocal()) {
+				throw new FederatedUserNotFoundException('unknown local user');
+			}
+
 			$this->federatedSyncItemService->requestSyncedItemUpdate(
-				$this->federatedUserService->getCurrentEntity(),
+				$federatedUser,
 				$syncedItem,
 				new SyncedItemLock($updateType, $updateTypeId, $sumCheck),
 				$extraData
