@@ -33,7 +33,7 @@ namespace OCA\Circles\FederatedItems;
 
 use OCA\Circles\Tools\Model\SimpleDataStore;
 use OCA\Circles\IFederatedItem;
-use OCA\Circles\IFederatedItemLimitedToInstanceWithMembership;
+use OCA\Circles\IFederatedItemLimitedToInstanceWithMember;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Service\CircleEventService;
 
@@ -44,7 +44,7 @@ use OCA\Circles\Service\CircleEventService;
  */
 class SharedItemsSync implements
 	IFederatedItem,
-	IFederatedItemLimitedToInstanceWithMembership {
+	IFederatedItemLimitedToInstanceWithMember {
 
 
 	// TODO: testing that IFederatedItemLimitedToInstanceWithMembership is working (since multi-instance)

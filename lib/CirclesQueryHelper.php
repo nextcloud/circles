@@ -86,17 +86,15 @@ class CirclesQueryHelper {
 
 
 	/**
-	 * @param string $alias
-	 * @param string $field
+	 * @param array $fields
 	 * @param bool $fullDetails
 	 *
 	 * @return ICompositeExpression
-	 * @throws RequestBuilderException
 	 * @throws FederatedUserNotFoundException
+	 * @throws RequestBuilderException
 	 */
 	public function limitToSession(
-		string $alias,
-		string $field,
+		array $fields,
 		bool $fullDetails = false
 	): ICompositeExpression {
 		$session = $this->federatedUserService->getCurrentUser();
@@ -104,7 +102,7 @@ class CirclesQueryHelper {
 			throw new FederatedUserNotFoundException('session not initiated');
 		}
 
-		$this->queryBuilder->setDefaultSelectAlias($alias);
+//		$this->queryBuilder->setDefaultSelectAlias($alias);
 		$this->queryBuilder->setOptions(
 			[CoreQueryBuilder::HELPER],
 			[
@@ -116,8 +114,8 @@ class CirclesQueryHelper {
 		return $this->queryBuilder->limitToInitiator(
 			CoreQueryBuilder::HELPER,
 			$session,
-			$field,
-			$alias
+			'',
+			$fields
 		);
 	}
 
@@ -127,17 +125,18 @@ class CirclesQueryHelper {
 	 * @param string $field
 	 * @param IFederatedUser $federatedUser
 	 * @param bool $fullDetails
+	 * @param array $extraFields
 	 *
 	 * @return ICompositeExpression
 	 * @throws RequestBuilderException
 	 */
 	public function limitToInheritedMembers(
-		string $alias,
 		string $field,
+		string $alias,
 		IFederatedUser $federatedUser,
-		bool $fullDetails = false
+		bool $fullDetails = false,
+		array $extraFields = []
 	): ICompositeExpression {
-		$this->queryBuilder->setDefaultSelectAlias($alias);
 		$this->queryBuilder->setOptions(
 			[CoreQueryBuilder::HELPER],
 			[
@@ -150,7 +149,8 @@ class CirclesQueryHelper {
 			CoreQueryBuilder::HELPER,
 			$federatedUser,
 			$field,
-			$alias
+			$alias,
+			$extraFields
 		);
 	}
 

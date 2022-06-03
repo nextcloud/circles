@@ -10,7 +10,7 @@ declare(strict_types=1);
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2021
+ * @copyright 2022
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -31,24 +31,20 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
+use OCA\Circles\Exceptions\SyncedItemNotFoundException;
+use OCA\Circles\Model\SyncedItemLock;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
 use OCA\Circles\Tools\Exceptions\RowNotFoundException;
-use OCA\Circles\Exceptions\FederatedShareNotFoundException;
-use OCA\Circles\Model\Federated\FederatedShare;
 
-/**
- * Class ShareRequestBuilder
- *
- * @package OCA\Circles\Db
- */
-class ShareLockRequestBuilder extends CoreRequestBuilder {
+class SyncedItemLockRequestBuilder extends CoreRequestBuilder {
 
 
 	/**
 	 * @return CoreQueryBuilder
 	 */
-	protected function getShareLockInsertSql(): CoreQueryBuilder {
+	protected function getSyncedItemLockInsertSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->insert(self::TABLE_SHARE_LOCK);
+		$qb->insert(self::TABLE_SYNC_LOCK);
 
 		return $qb;
 	}
@@ -57,12 +53,13 @@ class ShareLockRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * @return CoreQueryBuilder
 	 */
-	protected function getShareLockSelectSql(): CoreQueryBuilder {
+	protected function getSyncedItemLockSelectSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
-
-		$qb->select('s.id', 's.item_id', 's.circle_id', 's.instance')
-		   ->from(self::TABLE_SHARE_LOCK, 's')
-		   ->setDefaultSelectAlias('s');
+		$qb->generateSelect(
+			self::TABLE_SYNC_LOCK,
+			self::$tables[self::TABLE_SYNC_LOCK],
+			CoreQueryBuilder::SYNC_LOCK
+		);
 
 		return $qb;
 	}
@@ -71,9 +68,9 @@ class ShareLockRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * @return CoreQueryBuilder
 	 */
-	protected function getShareLockUpdateSql(): CoreQueryBuilder {
+	protected function getSyncedItemLockUpdateSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->update(self::TABLE_SHARE_LOCK);
+		$qb->update(self::TABLE_SYNC_LOCK);
 
 		return $qb;
 	}
@@ -82,9 +79,9 @@ class ShareLockRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * @return CoreQueryBuilder
 	 */
-	protected function getShareDeleteSql(): CoreQueryBuilder {
+	protected function getSyncedItemLockDeleteSql(): CoreQueryBuilder {
 		$qb = $this->getQueryBuilder();
-		$qb->delete(self::TABLE_SHARE_LOCK);
+		$qb->delete(self::TABLE_SYNC_LOCK);
 
 		return $qb;
 	}
@@ -93,27 +90,28 @@ class ShareLockRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * @param CoreQueryBuilder $qb
 	 *
-	 * @return FederatedShare
-	 * @throws FederatedShareNotFoundException
+	 * @return SyncedItemLock
+	 * @throws InvalidItemException
+	 * @throws SyncedItemNotFoundException
 	 */
-	public function getItemFromRequest(CoreQueryBuilder $qb): FederatedShare {
-		/** @var FederatedShare $circle */
+	public function getItemFromRequest(CoreQueryBuilder $qb): SyncedItemLock {
+		/** @var SyncedItemLock $lock */
 		try {
-			$circle = $qb->asItem(FederatedShare::class);
+			$lock = $qb->asItem(SyncedItemLock::class);
 		} catch (RowNotFoundException $e) {
-			throw new FederatedShareNotFoundException();
+			throw new SyncedItemNotFoundException();
 		}
 
-		return $circle;
+		return $lock;
 	}
 
 	/**
 	 * @param CoreQueryBuilder $qb
 	 *
-	 * @return FederatedShare[]
+	 * @return SyncedItemLock[]
 	 */
 	public function getItemsFromRequest(CoreQueryBuilder $qb): array {
-		/** @var FederatedShare[] $result */
-		return $qb->asItems(FederatedShare::class);
+		/** @var SyncedItemLock[] $result */
+		return $qb->asItems(SyncedItemLock::class);
 	}
 }

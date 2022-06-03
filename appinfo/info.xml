@@ -66,7 +66,7 @@ Those groups of users (or "circles") can then be used by any other app for shari
 		<command>OCA\Circles\Command\MembersDetails</command>
 		<command>OCA\Circles\Command\MembersLevel</command>
 		<command>OCA\Circles\Command\MembersRemove</command>
-		<!--		<command>OCA\Circles\Command\SyncContact</command>-->
+		<command>OCA\Circles\Command\CirclesDebug</command>
 	</commands>
 
 	<!--	<activity>-->

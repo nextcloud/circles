@@ -59,41 +59,29 @@ use OCA\Circles\Model\Membership;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
+use OCA\Circles\Service\DebugService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Tools\Exceptions\InvalidItemException;
 
-/**
- * Class CirclesManager
- *
- * @package OCA\Circles
- */
+
 class CirclesManager {
 
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var CircleService */
-	private $circleService;
-
-	/** @var MemberService */
-	private $memberService;
-
-	/** @var MembershipService */
-	private $membershipService;
-
-	/** @var ConfigService */
-	private $configService;
-
-	/** @var CirclesQueryHelper */
-	private $circlesQueryHelper;
+	private CircleSharesManager $circleSharesManager;
+	private FederatedUserService $federatedUserService;
+	private CircleService $circleService;
+	private MemberService $memberService;
+	private MembershipService $membershipService;
+	private ConfigService $configService;
+	private CirclesQueryHelper $circlesQueryHelper;
+	private DebugService $debugService;
 
 
 	/**
 	 * CirclesManager constructor.
 	 *
+	 * @param CircleSharesManager $circleSharesManager
 	 * @param FederatedUserService $federatedUserService
 	 * @param CircleService $circleService
 	 * @param MemberService $memberService
@@ -102,19 +90,41 @@ class CirclesManager {
 	 * @param CirclesQueryHelper $circlesQueryHelper
 	 */
 	public function __construct(
+		CircleSharesManager $circleSharesManager,
 		FederatedUserService $federatedUserService,
 		CircleService $circleService,
 		MemberService $memberService,
 		MembershipService $membershipService,
 		ConfigService $configService,
+		DebugService $debugService,
 		CirclesQueryHelper $circlesQueryHelper
 	) {
+		$this->circleSharesManager = $circleSharesManager;
 		$this->federatedUserService = $federatedUserService;
 		$this->circleService = $circleService;
 		$this->memberService = $memberService;
 		$this->membershipService = $membershipService;
 		$this->configService = $configService;
+		$this->debugService = $debugService;
 		$this->circlesQueryHelper = $circlesQueryHelper;
+	}
+
+
+	/**
+	 * @param string $appId
+	 * @param string $itemType
+	 *
+	 * @return CircleSharesManager
+	 */
+	public function getShareManager(string $appId = '', string $itemType = ''): ICircleSharesManager {
+		if ($appId === '') {
+			return $this->circleSharesManager;
+		}
+
+		$clone = clone $this->circleSharesManager;
+		$clone->setOrigin($appId, $itemType);
+
+		return $clone;
 	}
 
 
@@ -263,6 +273,12 @@ class CirclesManager {
 		return $this->circlesQueryHelper;
 	}
 
+	/**
+	 * @return DebugService
+	 */
+	public function getDebugService(): DebugService {
+		return $this->debugService;
+	}
 
 	/**
 	 * @param string $name

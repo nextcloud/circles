@@ -36,9 +36,7 @@ use JsonSerializable;
 trait TAsync {
 	use TNCSetup;
 
-
-	/** @var string */
-	public static $SETUP_TIME_LIMIT = 'async_time_limit';
+	public static string $SETUP_TIME_LIMIT = 'async_time_limit';
 
 
 	/**

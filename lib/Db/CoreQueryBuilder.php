@@ -56,29 +56,33 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	use TArrayTools;
 
 
-	public const SINGLE = 'cs';
-	public const CIRCLE = 'cc';
-	public const MEMBER = 'mm';
-	public const OWNER = 'wn';
-	public const FEDERATED_EVENT = 'ev';
-	public const REMOTE = 'rm';
-	public const BASED_ON = 'on';
-	public const INITIATOR = 'in';
-	public const DIRECT_INITIATOR = 'di';
-	public const MEMBERSHIPS = 'ms';
-	public const CONFIG = 'cf';
-	public const UPSTREAM_MEMBERSHIPS = 'up';
-	public const INHERITANCE_FROM = 'ih';
-	public const INHERITED_BY = 'by';
-	public const INVITED_BY = 'nv';
-	public const MOUNT = 'mo';
-	public const MOUNTPOINT = 'mp';
-	public const SHARE = 'sh';
-	public const FILE_CACHE = 'fc';
-	public const STORAGES = 'st';
-	public const TOKEN = 'tk';
-	public const OPTIONS = 'pt';
-	public const HELPER = 'hp';
+	public const SINGLE = 'ca';
+	public const CIRCLE = 'cb';
+	public const MEMBER = 'cc';
+	public const OWNER = 'cd';
+	public const FEDERATED_EVENT = 'ce';
+	public const REMOTE = 'cf';
+	public const BASED_ON = 'cg';
+	public const INITIATOR = 'ch';
+	public const DIRECT_INITIATOR = 'ci';
+	public const MEMBERSHIPS = 'cj';
+	public const CONFIG = 'ck';
+	public const UPSTREAM_MEMBERSHIPS = 'cl';
+	public const INHERITANCE_FROM = 'cm';
+	public const INHERITED_BY = 'cn';
+	public const INVITED_BY = 'co';
+	public const MOUNT = 'cp';
+	public const MOUNTPOINT = 'cq';
+	public const SHARE = 'cr';
+	public const FILE_CACHE = 'cs';
+	public const STORAGES = 'ct';
+	public const TOKEN = 'cu';
+	public const OPTIONS = 'cv';
+	public const HELPER = 'cw';
+	public const SYNC_ITEM = 'cx';
+	public const SYNC_SHARE = 'cy';
+	public const SYNC_LOCK = 'cz';
+	public const DEBUG = 'c0';
 
 
 	public static $SQL_PATH = [
@@ -227,7 +231,11 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 					self::BASED_ON
 				]
 			]
-		]
+		],
+		self::SYNC_ITEM => [],
+		self::SYNC_SHARE => [],
+		self::SYNC_LOCK => [],
+		self::DEBUG => []
 	];
 
 
@@ -317,6 +325,22 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	 */
 	public function limitToSingleId(string $singleId): void {
 		$this->limit('single_id', $singleId, '', true);
+	}
+
+
+	/**
+	 * @param string $appId
+	 */
+	public function limitToAppId(string $appId): void {
+		$this->limit('app_id', $appId, '', true);
+	}
+
+
+	/**
+	 * @param string $itemType
+	 */
+	public function limitToItemType(string $itemType): void {
+		$this->limit('item_type', $itemType, '', true);
 	}
 
 
@@ -1079,7 +1103,8 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	 * @param string $alias
 	 * @param IFederatedUser $user
 	 * @param string $field
-	 * @param string $helperAlias
+	 * @param string $helperAlias - must only be filled when called from CirclesQueryHelper
+	 * @param array $helperMoreFields - must only be filled when called from CirclesQueryHelper
 	 *
 	 * @return ICompositeExpression
 	 * @throws RequestBuilderException
@@ -1088,9 +1113,10 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		string $alias,
 		IFederatedUser $user,
 		string $field = '',
-		string $helperAlias = ''
+		string $helperAlias = '',
+		array $helperMoreFields = []
 	): ICompositeExpression {
-		$this->leftJoinInitiator($alias, $user, $field, $helperAlias);
+		$this->leftJoinInitiator($alias, $user, $field, $helperAlias, $helperMoreFields);
 		$where = $this->limitInitiatorVisibility($alias);
 
 		$aliasInitiator = $this->generateAlias($alias, self::INITIATOR, $options);
@@ -1129,8 +1155,9 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	 *
 	 * @param string $alias
 	 * @param IFederatedUser $initiator
-	 * @param string $field
-	 * @param string $helperAlias
+	 * @param string $coreField
+	 * @param string $helperAlias - must only be filled when called from CirclesQueryHelper
+	 * @param array $helperMoreFields - must only be filled when called from CirclesQueryHelper
 	 *
 	 * @throws RequestBuilderException
 	 */
@@ -1138,16 +1165,27 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		string $alias,
 		IFederatedUser $initiator,
 		string $field = '',
-		string $helperAlias = ''
+		string $helperAlias = '',
+		array $helperMoreFields = []
 	): void {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
 
+		if (!empty($helperMoreFields)) {
+			$helperMoreFields[] = $helperAlias . '.' . $field;
+		}
+
 		$expr = $this->expr();
 		$field = ($field === '') ? 'unique_id' : $field;
 		$helperAlias = ($helperAlias !== '') ? $helperAlias : $alias;
+
 		$aliasMembership = $this->generateAlias($alias, self::MEMBERSHIPS, $options);
+
+		$orXMembershipFields = $expr->orX();
+		foreach ($helperMoreFields as $f) {
+			$orXMembershipFields->add($expr->eq($aliasMembership . '.circle_id', $f));
+		}
 
 		$this->leftJoin(
 			$helperAlias,
@@ -1155,7 +1193,9 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			$aliasMembership,
 			$expr->andX(
 				$this->exprLimit('single_id', $initiator->getSingleId(), $aliasMembership),
-				$expr->eq($aliasMembership . '.circle_id', $helperAlias . '.' . $field)
+				(empty($helperMoreFields)) ?
+					$expr->eq($aliasMembership . '.circle_id', $helperAlias . '.' . $field) :
+					$orXMembershipFields
 			)
 		);
 
@@ -1163,8 +1203,8 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$listMembershipCircleAlias = [$aliasMembership];
 		if ($this->getBool('initiatorDirectMember', $options, false)) {
 			try {
-				$aliasDirectInitiator = $this->generateAlias($alias, self::DIRECT_INITIATOR, $options);
-				$listMembershipCircleAlias[] = $aliasDirectInitiator;
+				$aliasDirect = $this->generateAlias($alias, self::DIRECT_INITIATOR, $options);
+				$listMembershipCircleAlias[] = $aliasDirect;
 			} catch (RequestBuilderException $e) {
 				// meaning that this path does not require DIRECT_INITIATOR; can be safely ignored
 			}
@@ -1202,15 +1242,23 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		// bypass memberships
 		if ($this->getBool('initiatorDirectMember', $options, false)) {
 			try {
-				$aliasDirectInitiator = $this->generateAlias($alias, self::DIRECT_INITIATOR, $options);
-				$this->generateMemberSelectAlias($aliasDirectInitiator)
+				$aliasDirect = $this->generateAlias($alias, self::DIRECT_INITIATOR, $options);
+
+				$orXDirectFields = $expr->orX();
+				foreach ($helperMoreFields as $f) {
+					$orXDirectFields->add($expr->eq($aliasMembership . '.circle_id', $f));
+				}
+
+				$this->generateMemberSelectAlias($aliasDirect)
 					 ->leftJoin(
 						 $helperAlias,
 						 CoreRequestBuilder::TABLE_MEMBER,
-						 $aliasDirectInitiator,
+						 $aliasDirect,
 						 $expr->andX(
-							 $this->exprLimit('single_id', $initiator->getSingleId(), $aliasDirectInitiator),
-							 $expr->eq($aliasDirectInitiator . '.circle_id', $helperAlias . '.' . $field)
+							 $this->exprLimit('single_id', $initiator->getSingleId(), $aliasDirect),
+							 (empty($helperMoreFields)) ?
+								 $expr->eq($aliasDirect . '.circle_id', $helperAlias . '.' . $field) :
+								 $orXDirectFields
 						 )
 					 );
 			} catch (RequestBuilderException $e) {

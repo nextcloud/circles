@@ -82,17 +82,29 @@ trait TDeserialize {
 	 * @param string $class
 	 *
 	 * @return IDeserializable[]
-	 * @throws InvalidItemException
 	 */
-	public function deserializeArray(string $json, string $class): array {
-		$arr = [];
+	public function deserializeArrayFromJson(string $json, string $class): array {
 		$data = json_decode($json, true);
 		if (!is_array($data)) {
-			return $arr;
+			return [];
 		}
 
+		return $this->deserializeArray($data, $class);
+	}
+
+	/**
+	 * @param array $data
+	 * @param string $class
+	 *
+	 * @return array
+	 */
+	public function deserializeArray(array $data, string $class): array {
+		$arr = [];
 		foreach ($data as $entry) {
-			$arr[] = $this->deserialize($entry, $class);
+			try {
+				$arr[] = $this->deserialize($entry, $class);
+			} catch (InvalidItemException $e) {
+			}
 		}
 
 		return $arr;

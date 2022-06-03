@@ -57,8 +57,12 @@ class CoreRequestBuilder {
 	public const TABLE_MOUNT = 'circles_mount';
 	public const TABLE_MOUNTPOINT = 'circles_mountpoint';
 
-	// wip
-	public const TABLE_SHARE_LOCK = 'circles_share_lock';
+	public const TABLE_SYNC_ITEM = 'circles_item';
+	public const TABLE_SYNC_SHARE = 'circles_share';
+	public const TABLE_SYNC_LOCK = 'circles_lock';
+
+	public const TABLE_DEBUG = 'circles_debug';
+
 	public const TABLE_TOKEN = 'circles_token';
 
 	public const TABLE_GSSHARES = 'circle_gsshares'; // rename ?
@@ -120,6 +124,8 @@ class CoreRequestBuilder {
 		self::TABLE_EVENT => [
 			'token',
 			'event',
+			'store',
+			'event_type',
 			'result',
 			'instance',
 			'interface',
@@ -139,7 +145,36 @@ class CoreRequestBuilder {
 			'mountpoint_hash'
 		],
 		self::TABLE_MOUNTPOINT => [],
-		self::TABLE_SHARE_LOCK => [],
+		self::TABLE_SYNC_ITEM => [
+			'id',
+			'single_id',
+			'instance',
+			'app_id',
+			'item_type',
+			'item_id',
+			'checksum',
+			'deleted'
+		],
+		self::TABLE_SYNC_SHARE => [
+			'id',
+			'single_id',
+			'circle_id'
+		],
+		self::TABLE_SYNC_LOCK => [
+			'id',
+			'update_type',
+			'update_type_id',
+			'time'
+		],
+		self::TABLE_DEBUG => [
+			'id',
+			'thread',
+			'type',
+			'circle_id',
+			'instance',
+			'debug',
+			'time'
+		],
 		self::TABLE_TOKEN => [
 			'id',
 			'share_id',

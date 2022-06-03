@@ -31,11 +31,12 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model\Federated;
 
+use JsonSerializable;
 use OCA\Circles\Tools\Db\IQueryRow;
 use OCA\Circles\Tools\Exceptions\InvalidItemException;
+use OCA\Circles\Tools\Model\ReferencedDataStore;
 use OCA\Circles\Tools\Model\SimpleDataStore;
 use OCA\Circles\Tools\Traits\TArrayTools;
-use JsonSerializable;
 
 /**
  * Class EventWrapper
@@ -51,12 +52,18 @@ class EventWrapper implements IQueryRow, JsonSerializable {
 	public const STATUS_DONE = 8;
 	public const STATUS_OVER = 9;
 
+	public const TYPE_BROADCAST = 'broadcast';
+	public const TYPE_INTERNAL = 'internal';
+
 
 	/** @var string */
 	private $token = '';
 
 	/** @var FederatedEvent */
 	private $event;
+
+	private string $eventType;
+	private ?ReferencedDataStore $store = null;
 
 	/** @var SimpleDataStore */
 	private $result;
@@ -80,7 +87,8 @@ class EventWrapper implements IQueryRow, JsonSerializable {
 	private $creation;
 
 
-	public function __construct() {
+	public function __construct(string $eventType = '') {
+		$this->eventType = $eventType;
 		$this->result = new SimpleDataStore();
 	}
 
@@ -127,6 +135,51 @@ class EventWrapper implements IQueryRow, JsonSerializable {
 	 */
 	public function hasEvent(): bool {
 		return ($this->event !== null);
+	}
+
+
+	/**
+	 * @return ReferencedDataStore
+	 */
+	public function getStore(): ReferencedDataStore {
+		return $this->store;
+	}
+
+	/**
+	 * @param ReferencedDataStore $store
+	 *
+	 * @return self
+	 */
+	public function setStore(ReferencedDataStore $store): self {
+		$this->store = $store;
+
+		return $this;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasStore(): bool {
+		return ($this->store !== null);
+	}
+
+
+	/**
+	 * @param string $eventType
+	 *
+	 * @return EventWrapper
+	 */
+	public function setEventType(string $eventType): self {
+		$this->eventType = $eventType;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getEventType(): string {
+		return $this->eventType;
 	}
 
 
@@ -265,19 +318,67 @@ class EventWrapper implements IQueryRow, JsonSerializable {
 	/**
 	 * @param array $data
 	 *
+	 * @return IQueryRow
+	 * @throws InvalidItemException
+	 */
+	public function importFromDatabase(array $data): IQueryRow {
+		$this->setToken($this->get('token', $data));
+		$this->setInstance($this->get('instance', $data));
+		$this->setEventType($this->get('event_type', $data));
+		$this->setInterface($this->getInt('interface', $data));
+		$this->setSeverity($this->getInt('severity', $data, FederatedEvent::SEVERITY_LOW));
+		$this->setStatus($this->getInt('status', $data, self::STATUS_INIT));
+
+		if ($this->getEventType() === self::TYPE_BROADCAST) {
+			$event = new FederatedEvent();
+			$event->import($this->getArray('event', $data));
+			$this->setEvent($event);
+		}
+
+		if ($this->getEventType() === self::TYPE_INTERNAL) {
+			$store = new ReferencedDataStore();
+			$store->import($this->getArray('store', $data));
+			$this->setStore($store);
+		}
+
+//		try {
+//			$store = new ReferencedDataStore();
+//			$store->import($this->getArray('store', $data));
+//			$this->setStore($store);
+//		} catch (InvalidItemException $e) {
+//		}
+
+		$this->setResult(new SimpleDataStore($this->getArray('result', $data)));
+
+		return $this;
+	}
+
+
+	/**
+	 * @param array $data
+	 *
 	 * @return self
 	 * @throws InvalidItemException
 	 */
 	public function import(array $data): self {
 		$this->setToken($this->get('token', $data));
 		$this->setInstance($this->get('instance', $data));
+		$this->setEventType($this->get('eventType', $data));
 		$this->setInterface($this->getInt('interface', $data));
 		$this->setSeverity($this->getInt('severity', $data, FederatedEvent::SEVERITY_LOW));
 		$this->setStatus($this->getInt('status', $data, self::STATUS_INIT));
 
-		$event = new FederatedEvent();
-		$event->import($this->getArray('event', $data));
-		$this->setEvent($event);
+		if ($this->getEventType() === self::TYPE_BROADCAST) {
+			$event = new FederatedEvent();
+			$event->import($this->getArray('event', $data));
+			$this->setEvent($event);
+		}
+
+		if ($this->getEventType() === self::TYPE_INTERNAL) {
+			$store = new ReferencedDataStore();
+			$store->import($this->getArray('store', $data));
+			$this->setStore($store);
+		}
 
 		$this->setResult(new SimpleDataStore($this->getArray('result', $data)));
 		$this->setCreation($this->getInt('creation', $data));
@@ -293,35 +394,14 @@ class EventWrapper implements IQueryRow, JsonSerializable {
 		return [
 			'token' => $this->getToken(),
 			'instance' => $this->getInstance(),
+			'eventType' => $this->getEventType(),
 			'interface' => $this->getInterface(),
-			'event' => $this->getEvent(),
+			'event' => ($this->hasEvent()) ? $this->getEvent() : null,
+			'store' => ($this->hasStore()) ? $this->getStore() : null,
 			'result' => $this->getResult(),
 			'severity' => $this->getSeverity(),
 			'status' => $this->getStatus()
 			//			'creation' => $this->getCreation()
 		];
-	}
-
-
-	/**
-	 * @param array $data
-	 *
-	 * @return IQueryRow
-	 * @throws InvalidItemException
-	 */
-	public function importFromDatabase(array $data): IQueryRow {
-		$this->setToken($this->get('token', $data));
-		$this->setInstance($this->get('instance', $data));
-		$this->setInterface($this->getInt('interface', $data));
-		$this->setSeverity($this->getInt('severity', $data, FederatedEvent::SEVERITY_LOW));
-		$this->setStatus($this->getInt('status', $data, self::STATUS_INIT));
-
-		$event = new FederatedEvent();
-		$event->import($this->getArray('event', $data));
-		$this->setEvent($event);
-
-		$this->setResult(new SimpleDataStore($this->getArray('result', $data)));
-
-		return $this;
 	}
 }

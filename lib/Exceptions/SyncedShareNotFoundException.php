@@ -28,27 +28,20 @@ declare(strict_types=1);
  *
  */
 
+namespace OCA\Circles\Exceptions;
 
-namespace OCA\Circles;
+use OCP\AppFramework\Http;
+use Throwable;
 
-use OCA\Circles\Tools\Model\SimpleDataStore;
+class SyncedShareNotFoundException extends FederatedItemNotFoundException {
+	public const STATUS = Http::STATUS_NOT_FOUND;
 
-/**
- * Interface IFederatedSync
- *
- * @package OCA\Circles
- */
-interface IFederatedSync {
-
-	/**
-	 * @param string $circleId
-	 *
-	 * @return SimpleDataStore
-	 */
-	public function export(string $circleId): SimpleDataStore;
-
-	/**
-	 * @param SimpleDataStore $data
-	 */
-	public function import(SimpleDataStore $data): void;
+	public function __construct(
+		string $message = '',
+		int $code = 0,
+		?Throwable $previous = null
+	) {
+		parent::__construct($message, ($code > 0) ? $code : self::STATUS, $previous);
+		$this->setStatus(self::STATUS);
+	}
 }

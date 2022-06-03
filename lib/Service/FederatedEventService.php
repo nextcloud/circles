@@ -34,11 +34,8 @@ use OC;
 use OCA\Circles\Db\EventWrapperRequest;
 use OCA\Circles\Db\MemberRequest;
 use OCA\Circles\Db\RemoteRequest;
-use OCA\Circles\Db\ShareLockRequest;
 use OCA\Circles\Exceptions\FederatedEventException;
 use OCA\Circles\Exceptions\FederatedItemException;
-use OCA\Circles\Exceptions\FederatedShareBelongingException;
-use OCA\Circles\Exceptions\FederatedShareNotFoundException;
 use OCA\Circles\Exceptions\InitiatorNotConfirmedException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RemoteInstanceException;
@@ -53,14 +50,14 @@ use OCA\Circles\IFederatedItemDataRequestOnly;
 use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\IFederatedItemInitiatorCheckNotRequired;
 use OCA\Circles\IFederatedItemInitiatorMembershipNotRequired;
-use OCA\Circles\IFederatedItemLimitedToInstanceWithMembership;
+use OCA\Circles\IFederatedItemLimitedToInstanceWithMember;
 use OCA\Circles\IFederatedItemLoopbackTest;
 use OCA\Circles\IFederatedItemMemberCheckNotRequired;
 use OCA\Circles\IFederatedItemMemberEmpty;
 use OCA\Circles\IFederatedItemMemberOptional;
 use OCA\Circles\IFederatedItemMemberRequired;
 use OCA\Circles\IFederatedItemMustBeInitializedLocally;
-use OCA\Circles\IFederatedItemSharedItem;
+use OCA\Circles\IFederatedItemSyncedItem;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Federated\EventWrapper;
 use OCA\Circles\Model\Federated\FederatedEvent;
@@ -68,8 +65,6 @@ use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Tools\ActivityPub\NCSignature;
 use OCA\Circles\Tools\Exceptions\RequestNetworkException;
-use OCA\Circles\Tools\Model\NCRequest;
-use OCA\Circles\Tools\Model\Request;
 use OCA\Circles\Tools\Traits\TNCRequest;
 use OCA\Circles\Tools\Traits\TStringTools;
 use ReflectionClass;
@@ -91,9 +86,6 @@ class FederatedEventService extends NCSignature {
 	/** @var RemoteRequest */
 	private $remoteRequest;
 
-	/** @var ShareLockRequest */
-	private $shareLockRequest;
-
 	/** @var MemberRequest */
 	private $memberRequest;
 
@@ -103,8 +95,12 @@ class FederatedEventService extends NCSignature {
 	/** @var InterfaceService */
 	private $interfaceService;
 
+	private AsyncService $asyncService;
+
 	/** @var ConfigService */
 	private $configService;
+
+	private DebugService $debugService;
 
 
 	/**
@@ -113,27 +109,30 @@ class FederatedEventService extends NCSignature {
 	 * @param EventWrapperRequest $eventWrapperRequest
 	 * @param RemoteRequest $remoteRequest
 	 * @param MemberRequest $memberRequest
-	 * @param ShareLockRequest $shareLockRequest
 	 * @param RemoteUpstreamService $remoteUpstreamService
 	 * @param InterfaceService $interfaceService
+	 * @param AsyncService $asyncService
 	 * @param ConfigService $configService
+	 * @param DebugService $debugService
 	 */
 	public function __construct(
 		EventWrapperRequest $eventWrapperRequest,
 		RemoteRequest $remoteRequest,
 		MemberRequest $memberRequest,
-		ShareLockRequest $shareLockRequest,
 		RemoteUpstreamService $remoteUpstreamService,
 		InterfaceService $interfaceService,
-		ConfigService $configService
+		AsyncService $asyncService,
+		ConfigService $configService,
+		DebugService $debugService
 	) {
 		$this->eventWrapperRequest = $eventWrapperRequest;
 		$this->remoteRequest = $remoteRequest;
-		$this->shareLockRequest = $shareLockRequest;
 		$this->memberRequest = $memberRequest;
 		$this->remoteUpstreamService = $remoteUpstreamService;
 		$this->interfaceService = $interfaceService;
+		$this->asyncService = $asyncService;
 		$this->configService = $configService;
+		$this->debugService = $debugService;
 	}
 
 
@@ -168,6 +167,17 @@ class FederatedEventService extends NCSignature {
 		}
 
 		if ($this->configService->isLocalInstance($instance)) {
+
+			$this->debugService->info(
+				'New local event ',
+				($event->hasCircle()) ? $event->getCircle()->getSingleId() : '',
+				[
+					'event' => $event,
+					'federatedItem' => $federatedItem,
+					'instance' => $instance
+				]
+			);
+
 			$event->setSender($instance);
 			$federatedItem->verify($event);
 
@@ -181,6 +191,23 @@ class FederatedEventService extends NCSignature {
 
 			$this->initBroadcast($event);
 		} else {
+//			$this->debugService->info(
+//				'Requesting {event.instance} to confirm IFederatedEvent {event.getClass}',
+//				$circle->getSingleId(),
+//				[
+//					'event' => $event
+//				]
+//			);
+
+			$this->debugService->info(
+				'sending {`IFederatedEvent} {event.class} to master {instance} for confirmation',
+				($event->hasCircle()) ? $event->getCircle()->getSingleId() : '',
+				[
+					'event' => $event,
+					'instance' => $instance
+				]
+			);
+
 			$this->remoteUpstreamService->confirmEvent($event);
 			if ($event->isDataRequestOnly()) {
 				return $event->getOutcome();
@@ -266,8 +293,6 @@ class FederatedEventService extends NCSignature {
 		$this->confirmRequiredCondition($event, $item, $checkLocalOnly);
 		$this->configureEvent($event, $item);
 
-//		$this->confirmSharedItem($event, $item);
-
 		return $item;
 	}
 
@@ -334,32 +359,9 @@ class FederatedEventService extends NCSignature {
 		if ($item instanceof IFederatedItemMustBeInitializedLocally && $checkLocalOnly) {
 			throw new FederatedEventException('FederatedItem must be executed locally');
 		}
-	}
 
-
-	/**
-	 * @param FederatedEvent $event
-	 * @param IFederatedItem $item
-	 *
-	 * @throws FederatedEventException
-	 * @throws FederatedShareBelongingException
-	 * @throws FederatedShareNotFoundException
-	 * @throws OwnerNotFoundException
-	 */
-	private function confirmSharedItem(FederatedEvent $event, IFederatedItem $item): void {
-		if (!$item instanceof IFederatedItemSharedItem) {
-			return;
-		}
-
-		if ($event->getItemId() === '') {
-			throw new FederatedEventException('FederatedItem must contains ItemId');
-		}
-
-		if ($this->configService->isLocalInstance($event->getCircle()->getInstance())) {
-			$shareLock = $this->shareLockRequest->getShare($event->getItemId());
-			if ($shareLock->getInstance() !== $event->getSender()) {
-				throw new FederatedShareBelongingException('ShareLock belongs to another instance');
-			}
+		if ($item instanceof IFederatedItemSyncedItem && !$event->hasSyncedItem()) {
+			throw new FederatedEventException('FederatedItem must contains a valid SyncedItem');
 		}
 	}
 
@@ -372,7 +374,7 @@ class FederatedEventService extends NCSignature {
 		if ($item instanceof IFederatedItemAsyncProcess) {
 			$event->setAsync(true);
 		}
-		if ($item instanceof IFederatedItemLimitedToInstanceWithMembership) {
+		if ($item instanceof IFederatedItemLimitedToInstanceWithMember) {
 			$event->setLimitedToInstanceWithMember(true);
 		}
 		if ($item instanceof IFederatedItemDataRequestOnly) {
@@ -389,46 +391,7 @@ class FederatedEventService extends NCSignature {
 	 * @throws RequestBuilderException
 	 */
 	public function initBroadcast(FederatedEvent $event): void {
-		$instances = $this->getInstances($event);
-		if (empty($instances) && !$event->isAsync()) {
-			return;
-		}
-
-		$wrapper = new EventWrapper();
-		$wrapper->setEvent($event);
-		$wrapper->setToken($this->uuid());
-		$wrapper->setCreation(time());
-		$wrapper->setSeverity($event->getSeverity());
-
-		if ($event->isAsync()) {
-			$wrapper->setInstance($this->configService->getLoopbackInstance());
-			$this->eventWrapperRequest->save($wrapper);
-		}
-
-		foreach ($instances as $instance) {
-			if ($event->getCircle()->isConfig(Circle::CFG_LOCAL)) {
-				break;
-			}
-
-			$wrapper->setInstance($instance->getInstance());
-			$wrapper->setInterface($instance->getInterface());
-			$this->eventWrapperRequest->save($wrapper);
-		}
-
-		$request = new NCRequest('', Request::TYPE_POST);
-		$this->configService->configureLoopbackRequest(
-			$request,
-			'circles.EventWrapper.asyncBroadcast',
-			['token' => $wrapper->getToken()]
-		);
-
-		$event->setWrapperToken($wrapper->getToken());
-
-		try {
-			$this->doRequest($request);
-		} catch (RequestNetworkException $e) {
-			$this->e($e, ['wrapper' => $wrapper]);
-		}
+		$this->asyncService->asyncBroadcast($event, $this->getInstances($event));
 	}
 
 
@@ -489,7 +452,7 @@ class FederatedEventService extends NCSignature {
 	 * @param string $token
 	 */
 	public function manageResults(string $token): void {
-		$wrappers = $this->eventWrapperRequest->getByToken($token);
+		$wrappers = $this->eventWrapperRequest->getBroadcastByToken($token);
 
 		$event = null;
 		$results = [];

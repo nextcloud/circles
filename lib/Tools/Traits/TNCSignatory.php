@@ -35,6 +35,7 @@ use OCA\Circles\Tools\Exceptions\InvalidOriginException;
 use OCA\Circles\Tools\Exceptions\RequestNetworkException;
 use OCA\Circles\Tools\Exceptions\SignatoryException;
 use OCA\Circles\Tools\Exceptions\SignatureException;
+use OCA\Circles\Tools\ISignedModel;
 use OCA\Circles\Tools\Model\NCRequest;
 use OCA\Circles\Tools\Model\NCSignatory;
 
@@ -190,6 +191,19 @@ trait TNCSignatory {
 
 
 	/**
+	 * @param ISignedModel $model
+	 * @param NCSignatory $signatory
+	 *
+	 * @throws SignatoryException
+	 */
+	public function signModel(ISignedModel $model, NCSignatory $signatory): void {
+		$string = json_encode($model->signedData());
+		$signature = $this->signString($string, $signatory);
+		$model->setSignature($signature);
+	}
+
+
+	/**
 	 * @param string $clear
 	 * @param string $signed
 	 * @param string $publicKey
@@ -203,5 +217,21 @@ trait TNCSignatory {
 		if (openssl_verify($clear, $signed, $publicKey, $algo) !== 1) {
 			throw new SignatureException('signature issue');
 		}
+	}
+
+	/**
+	 * @param ISignedModel $model
+	 * @param string $publicKey
+	 * @param string $algo
+	 *
+	 * @throws SignatureException
+	 */
+	public function verifyModel(
+		ISignedModel $model,
+		string $publicKey,
+		string $algo = NCSignatory::SHA256
+	): void {
+		$string = json_encode($model->signedData());
+		$this->verifyString($string, $model->getSignature(), $publicKey, $algo);
 	}
 }

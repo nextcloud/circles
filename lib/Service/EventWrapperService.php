@@ -32,6 +32,7 @@ namespace OCA\Circles\Service;
 
 use Exception;
 use OCA\Circles\Db\EventWrapperRequest;
+use OCA\Circles\Exceptions\EventWrapperNotFoundException;
 use OCA\Circles\Model\Federated\EventWrapper;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Tools\ActivityPub\NCSignature;
@@ -68,6 +69,8 @@ class EventWrapperService extends NCSignature {
 	/** @var RemoteUpstreamService */
 	private $remoteUpstreamService;
 
+	private AsyncService $asyncService;
+
 	/** @var ConfigService */
 	private $configService;
 
@@ -78,17 +81,20 @@ class EventWrapperService extends NCSignature {
 	 * @param EventWrapperRequest $eventWrapperRequest
 	 * @param FederatedEventService $federatedEventService
 	 * @param RemoteUpstreamService $remoteUpstreamService
+	 * @param AsyncService $asyncService
 	 * @param ConfigService $configService
 	 */
 	public function __construct(
 		EventWrapperRequest $eventWrapperRequest,
 		FederatedEventService $federatedEventService,
 		RemoteUpstreamService $remoteUpstreamService,
+		AsyncService $asyncService,
 		ConfigService $configService
 	) {
 		$this->eventWrapperRequest = $eventWrapperRequest;
 		$this->federatedEventService = $federatedEventService;
 		$this->remoteUpstreamService = $remoteUpstreamService;
+		$this->asyncService = $asyncService;
 		$this->configService = $configService;
 	}
 
@@ -98,7 +104,7 @@ class EventWrapperService extends NCSignature {
 	 * @param bool $refresh
 	 */
 	public function confirmStatus(string $token, bool $refresh = false): void {
-		$wrappers = $this->eventWrapperRequest->getByToken($token);
+		$wrappers = $this->eventWrapperRequest->getBroadcastByToken($token);
 
 		foreach ($wrappers as $wrapper) {
 			$status = $wrapper->getStatus();
@@ -181,4 +187,56 @@ class EventWrapperService extends NCSignature {
 
 		return array_values(array_unique($token));
 	}
+
+
+	/**
+	 * @param string $token
+	 *
+	 * @return EventWrapper[]
+	 */
+	public function getBroadcastByToken(string $token): array {
+		return $this->eventWrapperRequest->getBroadcastByToken($token);
+	}
+
+	/**
+	 * @param string $token
+	 *
+	 * @return EventWrapper
+	 * @throws EventWrapperNotFoundException
+	 */
+	public function getInternalEventByToken(string $token): EventWrapper {
+		return $this->eventWrapperRequest->getInternalByToken($token);
+	}
+
+
+	/**
+	 * @param string $token
+	 */
+	public function performInternal(string $token): void {
+		try {
+			$wrapper = $this->getInternalEventByToken($token);
+			$this->asyncService->runInternalAsync($wrapper);
+		} catch (EventWrapperNotFoundException $e) {
+		}
+
+		// TODO: delete token in table.
+	}
+
+
+	/**
+	 * @param string $token
+	 * @param array|null $wrappers
+	 */
+	public function performBroadcast(string $token, ?array $wrappers = null): void {
+		if (is_null($wrappers)) {
+			$wrappers = $this->getBroadcastByToken($token);
+		}
+
+		foreach ($wrappers as $wrapper) {
+			$this->manageWrapper($wrapper);
+		}
+
+		$this->confirmStatus($token);
+	}
+
 }

@@ -46,6 +46,7 @@ use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Tools\Db\IQueryRow;
 use OCA\Circles\Tools\Exceptions\InvalidItemException;
 use OCA\Circles\Tools\IDeserializable;
+use OCA\Circles\Tools\IReferencedObject;
 use OCA\Circles\Tools\Traits\TArrayTools;
 use OCA\Circles\Tools\Traits\TDeserialize;
 
@@ -57,7 +58,7 @@ use OCA\Circles\Tools\Traits\TDeserialize;
 class Member extends ManagedModel implements
 	IEntity,
 	IFederatedUser,
-	IDeserializable,
+	IReferencedObject,
 	IQueryRow,
 	JsonSerializable {
 	use TArrayTools;
@@ -741,7 +742,7 @@ class Member extends ManagedModel implements
 		if ($singleId !== '') {
 			$this->getManager()->getLink($this, $singleId, $detailed);
 		}
-		
+
 		throw new MembershipNotFoundException();
 	}
 

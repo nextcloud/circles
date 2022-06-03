@@ -10,7 +10,7 @@ declare(strict_types=1);
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2021
+ * @copyright 2022
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,9 +28,36 @@ declare(strict_types=1);
  *
  */
 
-namespace OCA\Circles\Exceptions;
 
-use Exception;
+namespace OCA\Circles\InternalAsync;
 
-class FederatedShareNotFoundException extends Exception {
+use OCA\Circles\IInternalAsync;
+use OCA\Circles\Service\AsyncService;
+use OCA\Circles\Tools\Model\ReferencedDataStore;
+
+
+class AsyncTest implements IInternalAsync {
+
+
+	private AsyncService $asyncService;
+
+	public function __construct(AsyncService $asyncService) {
+		$this->asyncService = $asyncService;
+	}
+
+
+	public function runAsynced(ReferencedDataStore $store): void {
+
+		\OC::$server->getLogger()->log(3, '-runAsynced ' . json_encode($store));
+		$this->asyncService->asyncInternal(
+			AsyncTest::class,
+			new ReferencedDataStore(
+				[
+					'action' => 'test',
+					'federatedUser' => $store->gObj('federatedUser')
+				]
+			)
+		);
+	}
+
 }
