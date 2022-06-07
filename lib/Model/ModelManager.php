@@ -31,7 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
-use OCA\Circles\Tools\Traits\TNCLogger;
+use Exception;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\CoreQueryBuilder;
@@ -56,6 +56,7 @@ use OCA\Circles\Model\Federated\RemoteInstance;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\InterfaceService;
 use OCA\Circles\Service\RemoteService;
+use OCA\Circles\Tools\Traits\TNCLogger;
 use OCP\IURLGenerator;
 
 /**
@@ -532,10 +533,16 @@ class ModelManager {
 	 * @return string
 	 */
 	public function generateLinkToCircle(string $singleId): string {
-		return $this->urlGenerator->linkToRoute(
-			$this->configService->getAppValue(ConfigService::ROUTE_TO_CIRCLE),
-			['singleId' => $singleId]
-		);
+		$path = $this->configService->getAppValue(ConfigService::ROUTE_TO_CIRCLE);
+
+		try {
+			if ($path !== '') {
+				return $this->urlGenerator->linkToRoute($path, ['singleId' => $singleId]);
+			}
+		} catch (Exception $e) {
+		}
+
+		return '';
 	}
 
 
