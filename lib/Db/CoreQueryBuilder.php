@@ -160,9 +160,19 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 				self::BASED_ON
 			]
 		],
+
+
 		self::MEMBERSHIPS => [
-			self::CONFIG
+			self::CONFIG,
+			self::INHERITED_BY,
+			self::CIRCLE => [
+				self::OWNER => [
+					self::BASED_ON
+				]
+			]
 		],
+
+
 		self::SHARE => [
 			self::SHARE,
 			self::TOKEN,
@@ -760,6 +770,32 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		}
 
 		$this->leftJoinOwner($aliasCircle);
+	}
+
+
+	/**
+	 * @param string $alias
+	 * @param string $circleId
+	 * @param string $singleId
+	 *
+	 * @throws RequestBuilderException
+	 */
+	public function leftJoinInheritedBy(
+		string $alias,
+		string $circleId = 'inheritance_last',
+		string $singleId = 'single_id'
+	): void {
+		$aliasInheritedBy = $this->generateAlias($alias, self::INHERITED_BY);
+		$expr = $this->expr();
+
+		$this->generateMemberSelectAlias($aliasInheritedBy)
+			 ->leftJoin(
+				 $alias, CoreRequestBuilder::TABLE_MEMBER, $aliasInheritedBy,
+				 $expr->andX(
+					 $expr->eq($alias . '.' . $circleId, $aliasInheritedBy . '.circle_id'),
+					 $expr->eq($alias . '.' . $singleId, $aliasInheritedBy . '.single_id')
+				 )
+			 );
 	}
 
 

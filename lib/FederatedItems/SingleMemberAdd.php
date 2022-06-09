@@ -346,6 +346,11 @@ class SingleMemberAdd implements
 			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[128], 128);
 		}
 
+		if (!$event->getParams()->gBool('force_group_member')
+			&& $this->membershipService->limitToGroupMembersOnly($federatedUser, $circle)) {
+			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[133], 133);
+		}
+
 		if (!$this->configService->isLocalInstance($member->getInstance())) {
 			if ($circle->isConfig(Circle::CFG_LOCAL)) {
 				throw new FederatedItemBadRequestException(StatusCode::$MEMBER_ADD[126], 126);

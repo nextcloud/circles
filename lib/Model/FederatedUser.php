@@ -31,19 +31,19 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
-use OCA\Circles\Tools\Db\IQueryRow;
-use OCA\Circles\Tools\Exceptions\InvalidItemException;
-use OCA\Circles\Tools\IDeserializable;
-use OCA\Circles\Tools\Traits\TDeserialize;
-use OCA\Circles\Tools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
 use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Exceptions\OwnerNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownInterfaceException;
-use OCA\Circles\IFederatedUser;
 use OCA\Circles\IEntity;
+use OCA\Circles\IFederatedUser;
+use OCA\Circles\Tools\Db\IQueryRow;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
+use OCA\Circles\Tools\IDeserializable;
+use OCA\Circles\Tools\Traits\TArrayTools;
+use OCA\Circles\Tools\Traits\TDeserialize;
 
 /**
  * Class FederatedUser
@@ -309,6 +309,7 @@ class FederatedUser extends ManagedModel implements
 	 * @param array $memberships
 	 *
 	 * @return self
+	 * @deprecated - can be removed.
 	 */
 	public function setMemberships(array $memberships): IEntity {
 		$this->memberships = $memberships;
@@ -319,15 +320,17 @@ class FederatedUser extends ManagedModel implements
 	/**
 	 * @return Membership[]
 	 */
-	public function getMemberships(): array {
-		if (!$this->hasMemberships()) {
-			$this->getManager()->getMemberships($this);
-		}
-
-		return $this->memberships;
+	public function getMemberships(bool $detailed = false, int $level = 0): array {
+		return $this->getManager()->getMemberships($this, $detailed, $level);
 	}
 
 
+	/**
+	 * @return Membership[]
+	 */
+	public function getAccountedMemberships(bool $detailed = false, int $level = 0): array {
+		return $this->getManager()->getAccountedMemberships($this, $detailed, $level);
+	}
 
 	/**
 	 * @param string $singleId

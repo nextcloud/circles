@@ -74,6 +74,12 @@ class Membership extends ManagedModel implements IDeserializable, IQueryRow, Jso
 	/** @var array */
 	private $inheritanceDetails = [];
 
+	/** @var Circle */
+	private $circle;
+
+	/** @var FederatedUser */
+	private $inheritedBy;
+
 
 	/**
 	 * Membership constructor.
@@ -272,6 +278,58 @@ class Membership extends ManagedModel implements IDeserializable, IQueryRow, Jso
 
 
 	/**
+	 * @return bool
+	 */
+	public function hasCircle(): bool {
+		return !is_null($this->circle);
+	}
+
+	/**
+	 * @param Circle $circle
+	 *
+	 * @return Membership
+	 */
+	public function setCircle(Circle $circle): self {
+		$this->circle = $circle;
+
+		return $this;
+	}
+
+	/**
+	 * @return Circle
+	 */
+	public function getCircle(): Circle {
+		return $this->circle;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function hasInheritedBy(): bool {
+		return !is_null($this->inheritedBy);
+	}
+
+	/**
+	 * @param FederatedUser $inheritedBy
+	 *
+	 * @return Membership
+	 */
+	public function setInheritedBy(FederatedUser $inheritedBy): self {
+		$this->inheritedBy = $inheritedBy;
+
+		return $this;
+	}
+
+	/**
+	 * @return FederatedUser
+	 */
+	public function getInheritedBy(): FederatedUser {
+		return $this->inheritedBy;
+	}
+
+
+	/**
 	 * @param array $data
 	 *
 	 * @return IDeserializable
@@ -315,6 +373,8 @@ class Membership extends ManagedModel implements IDeserializable, IQueryRow, Jso
 		$this->setInheritancePath($this->getArray($prefix . 'inheritance_path', $data));
 		$this->setInheritanceDepth($this->getInt($prefix . 'inheritance_depth', $data));
 
+		$this->getManager()->manageImportFromDatabase($this, $data, $prefix);
+
 		return $this;
 	}
 
@@ -336,6 +396,14 @@ class Membership extends ManagedModel implements IDeserializable, IQueryRow, Jso
 
 		if (!empty($this->getInheritanceDetails())) {
 			$result['inheritanceDetails'] = $this->getInheritanceDetails();
+		}
+
+		if ($this->hasCircle()) {
+			$result['circle'] = $this->getCircle();
+		}
+
+		if ($this->hasInheritedBy()) {
+			$result['inheritedBy'] = $this->getInheritedBy();
 		}
 
 		return $result;

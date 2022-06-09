@@ -107,10 +107,20 @@ class MembershipRequest extends MembershipRequestBuilder {
 	 *
 	 * @return Membership[]
 	 */
-	public function getMemberships(string $singleId): array {
+	public function getMemberships(string $singleId, bool $detailed = false, int $level = 0): array {
 		$qb = $this->getMembershipSelectSql();
 		$qb->limitToSingleId($singleId);
 		$qb->leftJoinCircleConfig(CoreQueryBuilder::MEMBERSHIPS);
+
+		if ($level > 1) {
+			$expr = $qb->expr();
+			$qb->andWhere($expr->gte('level', $qb->createNamedParameter($level, IQueryBuilder::PARAM_INT)));
+		}
+
+		if ($detailed) {
+			$qb->setOptions([CoreQueryBuilder::MEMBERSHIPS], ['getData' => true]);
+			$qb->leftJoinCircle(CoreQueryBuilder::MEMBERSHIPS);
+		}
 
 		return $this->getItemsFromRequest($qb);
 	}
@@ -118,11 +128,12 @@ class MembershipRequest extends MembershipRequestBuilder {
 
 	/**
 	 * @param string $singleId
+	 * @param bool $detailed
 	 * @param int $level
 	 *
 	 * @return Membership[]
 	 */
-	public function getInherited(string $singleId, int $level = 0): array {
+	public function getAccounted(string $singleId, bool $detailed = false, int $level = 0): array {
 		$qb = $this->getMembershipSelectSql();
 		$qb->limitToCircleId($singleId);
 		$qb->leftJoinCircleConfig(self::TABLE_MEMBERSHIP);
@@ -130,6 +141,12 @@ class MembershipRequest extends MembershipRequestBuilder {
 		if ($level > 1) {
 			$expr = $qb->expr();
 			$qb->andWhere($expr->gte('level', $qb->createNamedParameter($level, IQueryBuilder::PARAM_INT)));
+		}
+
+		if ($detailed) {
+			$qb->setOptions([CoreQueryBuilder::MEMBERSHIPS], ['getData' => true]);
+			$qb->leftJoinCircle(CoreQueryBuilder::MEMBERSHIPS);
+			$qb->leftJoinInheritedBy(CoreQueryBuilder::MEMBERSHIPS);
 		}
 
 		return $this->getItemsFromRequest($qb);

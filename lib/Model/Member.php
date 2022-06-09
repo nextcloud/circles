@@ -720,12 +720,16 @@ class Member extends ManagedModel implements
 	/**
 	 * @return Membership[]
 	 */
-	public function getMemberships(): array {
-		if (is_null($this->memberships)) {
-			$this->getManager()->getMemberships($this);
-		}
+	public function getMemberships(bool $detailed = false, int $level = 0): array {
+		return $this->getManager()->getMemberships($this, $detailed, $level);
+	}
 
-		return $this->memberships;
+
+	/**
+	 * @return Membership[]
+	 */
+	public function getAccountedMemberships(bool $detailed = false): array {
+		return $this->getManager()->getAccountedMemberships($this, $detailed);
 	}
 
 
@@ -741,7 +745,7 @@ class Member extends ManagedModel implements
 		if ($singleId !== '') {
 			$this->getManager()->getLink($this, $singleId, $detailed);
 		}
-		
+
 		throw new MembershipNotFoundException();
 	}
 
