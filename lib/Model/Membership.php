@@ -74,6 +74,9 @@ class Membership extends ManagedModel implements IDeserializable, IQueryRow, Jso
 	/** @var array */
 	private $inheritanceDetails = [];
 
+	/** @var Circle */
+	private $circle;
+
 
 	/**
 	 * Membership constructor.
@@ -271,6 +274,21 @@ class Membership extends ManagedModel implements IDeserializable, IQueryRow, Jso
 	}
 
 
+	public function hasCircle(): bool {
+		return (!is_null($this->circle));
+	}
+
+	public function setCircle(Circle $circle): self {
+		$this->circle = $circle;
+
+		return $this;
+	}
+
+	public function getCircle(): Circle {
+		return $this->circle;
+	}
+
+
 	/**
 	 * @param array $data
 	 *
@@ -315,6 +333,8 @@ class Membership extends ManagedModel implements IDeserializable, IQueryRow, Jso
 		$this->setInheritancePath($this->getArray($prefix . 'inheritance_path', $data));
 		$this->setInheritanceDepth($this->getInt($prefix . 'inheritance_depth', $data));
 
+		$this->getManager()->manageImportFromDatabase($this, $data, $prefix);
+
 		return $this;
 	}
 
@@ -338,6 +358,11 @@ class Membership extends ManagedModel implements IDeserializable, IQueryRow, Jso
 			$result['inheritanceDetails'] = $this->getInheritanceDetails();
 		}
 
+		if ($this->hasCircle()) {
+			$result['circle'] = $this->getCircle();
+		}
+
 		return $result;
 	}
+
 }

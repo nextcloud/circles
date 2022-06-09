@@ -42,6 +42,7 @@ use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\BasicProbe;
 use OCA\Circles\Model\Probes\CircleProbe;
+use OCA\Circles\Model\Probes\MemberProbe;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
@@ -336,6 +337,39 @@ class LocalController extends OCSController {
 	/**
 	 * @NoAdminRequired
 	 *
+	 * @param string $type
+	 * @param int $level
+	 * @param bool $details
+	 *
+	 * @return DataResponse
+	 * @throws OCSException
+	 */
+	public function memberships(
+		string $type = 'inherited',
+		int $level = Member::LEVEL_MEMBER,
+		string $details = 'false'
+	): DataResponse {
+		try {
+			$this->setCurrentFederatedUser();
+
+			$probe = new MemberProbe();
+			$probe->setMinimumLevel($level)
+				  ->initiatorAsDirectMember((strtolower($type) === 'direct'))
+				  ->detailedMembership(strtolower($details) === 'true');
+
+			$result = $this->memberService->getMemberships($probe);
+
+			return new DataResponse($this->serializeArray($result));
+		} catch (Exception $e) {
+			$this->e($e, ['type' => $type, 'level' => $level]);
+			throw new OCSException($e->getMessage(), $e->getCode());
+		}
+	}
+
+
+	/**
+	 * @NoAdminRequired
+	 *
 	 * @param string $circleId
 	 * @param string $memberId
 	 * @param string|int $level
@@ -519,7 +553,11 @@ class LocalController extends OCSController {
 	 * @return DataResponse
 	 * @throws OCSException
 	 */
-	public function editSetting(string $circleId, string $setting, ?string $value = null): DataResponse {
+	public function editSetting(
+		string $circleId,
+		string $setting,
+		?string $value = null
+	): DataResponse {
 		try {
 			$this->setCurrentFederatedUser();
 

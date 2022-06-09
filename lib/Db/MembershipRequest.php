@@ -32,8 +32,10 @@ declare(strict_types=1);
 namespace OCA\Circles\Db;
 
 use OCA\Circles\Exceptions\MembershipNotFoundException;
+use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Membership;
+use OCA\Circles\Model\Probes\MemberProbe;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 
 /**
@@ -103,11 +105,37 @@ class MembershipRequest extends MembershipRequestBuilder {
 
 
 	/**
+	 * @param MemberProbe|null $probe
+	 * @param FederatedUser|null $initiator
+	 *
+	 * @return Membership[]
+	 * @throws RequestBuilderException
+	 */
+	public function getMemberships(FederatedUser $initiator, MemberProbe $probe): array {
+		$qb = $this->getMembershipSelectSql();
+		$qb->limitToSingleId($initiator->getSingleId());
+		$qb->leftJoinCircleConfig(CoreQueryBuilder::MEMBERSHIPS);
+
+		$qb->minLevel($probe->getMinimumLevel());
+		if ($probe->directMemberInitiator()) {
+			$qb->limitInt('inheritance_depth', 1);
+		}
+
+		if ($probe->isDetailedMembership()) {
+			$qb->setOptions([CoreQueryBuilder::MEMBERSHIPS, CoreQueryBuilder::CIRCLE], ['getData' => true]);
+			$qb->leftJoinCircle(CoreQueryBuilder::MEMBERSHIPS, $initiator);
+		}
+
+		return $this->getItemsFromRequest($qb);
+	}
+
+
+	/**
 	 * @param string $singleId
 	 *
 	 * @return Membership[]
 	 */
-	public function getMemberships(string $singleId): array {
+	public function getMembershipsBySingleId(string $singleId): array {
 		$qb = $this->getMembershipSelectSql();
 		$qb->limitToSingleId($singleId);
 		$qb->leftJoinCircleConfig(CoreQueryBuilder::MEMBERSHIPS);

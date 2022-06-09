@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model;
 
-use OCA\Circles\Tools\Traits\TNCLogger;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\CoreQueryBuilder;
@@ -57,6 +56,7 @@ use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\InterfaceService;
 use OCA\Circles\Service\MembershipService;
 use OCA\Circles\Service\RemoteService;
+use OCA\Circles\Tools\Traits\TNCLogger;
 use OCP\IURLGenerator;
 
 /**
@@ -208,7 +208,7 @@ class ModelManager {
 	 * @param IEntity $member
 	 */
 	public function getMemberships(IEntity $member): void {
-		$memberships = $this->membershipRequest->getMemberships($member->getSingleId());
+		$memberships = $this->membershipRequest->getMembershipsBySingleId($member->getSingleId());
 		$member->setMemberships($memberships);
 	}
 
@@ -245,6 +245,12 @@ class ModelManager {
 			}
 		}
 
+		if ($model instanceof Membership) {
+			if ($base === '') {
+				$base = CoreQueryBuilder::MEMBERSHIPS;
+			}
+		}
+
 		if ($model instanceof ShareWrapper) {
 			if ($base === '') {
 				$base = CoreQueryBuilder::SHARE;
@@ -270,6 +276,10 @@ class ModelManager {
 
 		if ($model instanceof Member) {
 			$this->importIntoMember($model, $data, $path, $prefix);
+		}
+
+		if ($model instanceof Membership) {
+			$this->importIntoMembership($model, $data, $path, $prefix);
 		}
 
 		if ($model instanceof FederatedUser) {
@@ -385,6 +395,31 @@ class ModelManager {
 					$remoteInstance->importFromDatabase($data, $prefix);
 					$member->setRemoteInstance($remoteInstance);
 				} catch (RemoteNotFoundException $e) {
+				}
+				break;
+		}
+	}
+
+
+	/**
+	 * @param Membership $membership
+	 * @param array $data
+	 * @param string $path
+	 * @param string $prefix
+	 */
+	private function importIntoMembership(
+		Membership $membership,
+		array $data,
+		string $path,
+		string $prefix
+	): void {
+		switch ($path) {
+			case CoreQueryBuilder::CIRCLE:
+				try {
+					$circle = new Circle();
+					$circle->importFromDatabase($data, $prefix);
+					$membership->setCircle($circle);
+				} catch (CircleNotFoundException $e) {
 				}
 				break;
 		}

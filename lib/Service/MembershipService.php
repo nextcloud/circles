@@ -237,7 +237,7 @@ class MembershipService {
 	 * @return int
 	 */
 	private function updateMembershipsDatabase(string $singleId, array $memberships): int {
-		$known = $this->membershipRequest->getMemberships($singleId);
+		$known = $this->membershipRequest->getMembershipsBySingleId($singleId);
 
 		$deprecated = $this->removeDeprecatedMemberships($memberships, $known);
 		if (!empty($deprecated)) {

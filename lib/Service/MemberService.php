@@ -33,6 +33,7 @@ namespace OCA\Circles\Service;
 
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MemberRequest;
+use OCA\Circles\Db\MembershipRequest;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\ContactAddressBookNotFoundException;
 use OCA\Circles\Exceptions\ContactFormatException;
@@ -59,6 +60,7 @@ use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Membership;
 use OCA\Circles\Model\Probes\MemberProbe;
 use OCA\Circles\Tools\Model\SimpleDataStore;
 use OCA\Circles\Tools\Traits\TArrayTools;
@@ -82,6 +84,9 @@ class MemberService {
 	/** @var MemberRequest */
 	private $memberRequest;
 
+	/** @var MembershipRequest */
+	private $membershipRequest;
+
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
@@ -100,13 +105,16 @@ class MemberService {
 	 *
 	 * @param CircleRequest $circleRequest
 	 * @param MemberRequest $memberRequest
+	 * @param MembershipRequest $membershipRequest
 	 * @param FederatedUserService $federatedUserService
+	 * @param MembershipService $membershipService
 	 * @param FederatedEventService $federatedEventService
 	 * @param RemoteStreamService $remoteStreamService
 	 */
 	public function __construct(
 		CircleRequest $circleRequest,
 		MemberRequest $memberRequest,
+		MembershipRequest $membershipRequest,
 		FederatedUserService $federatedUserService,
 		MembershipService $membershipService,
 		FederatedEventService $federatedEventService,
@@ -114,6 +122,7 @@ class MemberService {
 	) {
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
+		$this->membershipRequest = $membershipRequest;
 		$this->federatedUserService = $federatedUserService;
 		$this->membershipService = $membershipService;
 		$this->federatedEventService = $federatedEventService;
@@ -367,4 +376,27 @@ class MemberService {
 
 		return true;
 	}
+
+
+	/**
+	 * @param MemberProbe|null $probe
+	 *
+	 * @return Membership[]
+	 * @throws InitiatorNotFoundException
+	 * @throws RequestBuilderException
+	 */
+	public function getMemberships(?MemberProbe $probe = null): array {
+		$this->federatedUserService->mustHaveCurrentUser();
+
+		if (is_null($probe)) {
+			$probe = new MemberProbe();
+			$probe->mustBeMember();
+		}
+
+		return $this->membershipRequest->getMemberships(
+			$this->federatedUserService->getCurrentUser(),
+			$probe
+		);
+	}
+
 }
