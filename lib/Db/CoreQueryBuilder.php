@@ -391,9 +391,36 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			return;
 		}
 
+		$expr = $this->expr();
+		$orX = $expr->orX();
 		if ($circle->getDisplayName() !== '') {
-			$this->searchInDBField('display_name', '%' . $circle->getDisplayName() . '%');
+			$andX = $expr->andX();
+			foreach (explode(' ', $circle->getDisplayName()) as $word) {
+				$andX->add(
+					$expr->iLike(
+						$this->getDefaultSelectAlias() . '.' . 'display_name',
+						$this->createNamedParameter('%' . $word . '%')
+					)
+				);
+			}
+			$orX->add($andX);
 		}
+		if ($circle->getDescription() !== '') {
+			$orDescription = $expr->orX();
+			foreach (explode(' ', $circle->getDescription()) as $word) {
+				$orDescription->add(
+					$expr->iLike(
+						$this->getDefaultSelectAlias() . '.' . 'description',
+						$this->createNamedParameter('%' . $word . '%')
+					)
+				);
+			}
+			$orX->add($orDescription);
+		}
+		if ($orX->count() > 0) {
+			$this->andWhere($orX);
+		}
+
 		if ($circle->getSource() > 0) {
 			$this->limitInt('source', $circle->getSource());
 		}
