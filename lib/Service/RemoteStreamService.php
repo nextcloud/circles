@@ -133,7 +133,7 @@ class RemoteStreamService extends NCSignature {
 		$this->fillSimpleSignatory($app, $generate);
 		$app->setUidFromKey();
 
-		if ($confirmKey !== '') {
+		if ($this->isUuid($confirmKey)) {
 			$app->setAuthSigned($this->signString($confirmKey, $app));
 		}
 
