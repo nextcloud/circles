@@ -1571,14 +1571,18 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	/**
 	 * @param array $path
 	 * @param array $options
+	 *
+	 * @return CoreQueryBuilder
 	 */
-	public function setOptions(array $path, array $options): void {
+	public function setOptions(array $path, array $options): self {
 		$options = [self::OPTIONS => $options];
 		foreach (array_reverse($path) as $item) {
 			$options = [$item => $options];
 		}
 
-		$this->options = $options;
+		$this->options = array_merge_recursive($this->options, $options);
+
+		return $this;
 	}
 
 
