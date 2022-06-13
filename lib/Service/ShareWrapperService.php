@@ -227,7 +227,7 @@ class ShareWrapperService {
 				throw new InvalidItemException();
 			}
 
-			return $this->deserializeArray($cachedData, ShareWrapper::class);
+			return $this->deserializeList($cachedData, ShareWrapper::class);
 		} catch (InvalidItemException $e) {
 		}
 
