@@ -72,7 +72,7 @@ use OCA\Circles\MountManager\CircleMountProvider;
 use OCA\Circles\Notification\Notifier;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\DavService;
-use OCA\Circles\UnifiedSearch\UnifiedSearchProvider;
+use OCA\Circles\Search\UnifiedSearchProvider;
 use OCP\App\ManagerEvent;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
@@ -89,8 +89,6 @@ use OCP\User\Events\UserCreatedEvent;
 use OCP\User\Events\UserDeletedEvent;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Throwable;
-
-//use OCA\Files\App as FilesApp;
 
 /**
  * Class Application
