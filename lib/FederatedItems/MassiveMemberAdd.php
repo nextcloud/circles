@@ -68,7 +68,7 @@ class MassiveMemberAdd extends SingleMemberAdd implements
 		if (!$circle->isConfig(Circle::CFG_FRIEND)) {
 			$initiatorHelper->mustBeModerator();
 		}
-		
+
 		$members = $event->getMembers();
 		$filtered = [];
 
@@ -76,6 +76,7 @@ class MassiveMemberAdd extends SingleMemberAdd implements
 			try {
 				$filtered[] = $this->generateMember($event, $circle, $member);
 			} catch (Exception $e) {
+				$this->e($e, ['event' => $event, 'circle' => $circle, 'member' => $member]);
 			}
 		}
 
