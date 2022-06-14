@@ -911,7 +911,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	 *
 	 * @return string
 	 */
-	public function exprFilterBitwise(string $field, int $flag, string $alias = ''): string {
+	public function exprFilterBitwise(string $field, int $flag, string $alias = ''): IQueryFunction {
 		if ($this->getType() === DBALQueryBuilder::SELECT) {
 			$field = (($alias === '') ? $this->getDefaultSelectAlias() : $alias) . '.' . $field;
 		}
