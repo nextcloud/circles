@@ -7,6 +7,7 @@ OC.L10N.register(
     "Admin" : "Gweinyddu",
     "Owner" : "Owner",
     "Open »%s«" : "Agor »%s«",
+    "Accept" : "Derbyn",
     "Name" : "Enw",
     "Size" : "Maint",
     "Modified" : "Addaswyd"
