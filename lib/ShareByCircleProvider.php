@@ -671,5 +671,6 @@ class ShareByCircleProvider implements IShareProvider {
 //			};
 //		}
 //		$cursor->closeCursor();
+		return [];
 	}
 }
