@@ -22,7 +22,29 @@ Those groups of users (or circles) can then be used by any other app for sharing
 
 # Installation
 
-(to be written)
+The app is distributed through the [app store](https://apps.nextcloud.com/apps/circles) and you can install it [right from your Nextcloud installation](https://docs.nextcloud.com/server/stable/admin_manual/apps_management.html).
+
+Release tarballs are hosted at https://github.com/nextcloud-releases/mail/releases.
+
+## Development setup
+
+Just clone this repo into your apps directory ([Nextcloud server](https://github.com/nextcloud/server#running-master-checkouts) installation needed). Additionally, [npm](https://www.npmjs.com/) to fetch [Node.js](https://nodejs.org/en/download/package-manager/) is needed for installing JavaScript dependencies
+and [composer](https://getcomposer.org/download/) is needed for dependency management in PHP.
+
+Once npm and Node.js are installed, PHP dependencies can be installed by running:
+
+```bash
+composer i
+occ app:enable circles
+```
+Make sure, that you are using a right path to ```occ```. This is located in _nextcloud/_ directory. See more [Using the occ command](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/occ_command.html#using-the-occ-command).
+
+JavaScript dependencies can be installed by running:
+
+```bash
+# build for dev and watch changes
+npm run watch
+```
 
 # Documentation
 
