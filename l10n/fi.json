@@ -95,7 +95,7 @@
     "Circle not found" : "Piiriä ei löytynyt",
     "Circle not found " : "Piiriä ei löytynyt",
     "A circle with that name exists" : "Piirin nimi on jo olemassa",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Et voi käyttää Piiri Sovellusta ennenkuin ylläpitäjä on lisännyt sinut vähintään yhteen piiriin",
+    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Et voi käyttää Piirit-sovellusta ennen kuin ylläpitäjä on sallinut vähintään yhden tyypin piirin",
     "This member does not exist" : "Tämä jäsen ei ole olemassa",
     "This user is already a member of the circle" : "Tämä käyttäjä on jo jäsenenä tässä piirissä",
     "Federated link not found" : "Federoitua linkkiä ei löytynyt",
