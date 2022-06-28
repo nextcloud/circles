@@ -22,14 +22,13 @@ Those groups of users (or circles) can then be used by any other app for sharing
 
 # Installation
 
-The app is distributed through the [app store](https://apps.nextcloud.com/apps/circles) and you can install it [right from your Nextcloud installation](https://docs.nextcloud.com/server/stable/admin_manual/apps_management.html).
-
-Release tarballs are hosted at https://github.com/nextcloud-releases/mail/releases.
+Starting with Nextcloud 22 the app is shipped with nextcloud server. It is only available via the app store [app store](https://apps.nextcloud.com/apps/circles) for Nextcloud 21 and older.
+Release tarballs are hosted at https://github.com/nextcloud-releases/circles/releases.
 
 ## Development setup
 
-Just clone this repo into your apps directory ([Nextcloud server](https://github.com/nextcloud/server#running-master-checkouts) installation needed). Additionally, [npm](https://www.npmjs.com/) to fetch [Node.js](https://nodejs.org/en/download/package-manager/) is needed for installing JavaScript dependencies
-and [composer](https://getcomposer.org/download/) is needed for dependency management in PHP.
+Just clone this repo into your apps directory ([Nextcloud server](https://github.com/nextcloud/server#running-master-checkouts) installation needed).
+Additionally, [composer](https://getcomposer.org/download/) is needed for dependency management in PHP.
 
 Once npm and Node.js are installed, PHP dependencies can be installed by running:
 
