@@ -47,6 +47,7 @@ use OCA\Circles\ShareByCircleProvider;
 use OCP\Files\IRootFolder;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
+use OCP\L10N\IFactory;
 use OCP\Share\Exceptions\IllegalIDChangeException;
 use OCP\Share\IShare;
 
@@ -403,7 +404,8 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 
 		$display = $circle->getDisplayName();
 		if ($circle->getSource() === Member::TYPE_CIRCLE) {
-			$display .= ' (Circle owned by ' . $circle->getOwner()->getDisplayName() . ')';
+			$l10n = \OCP\Server::get(IFactory::class)->get('circles');
+			$display = $l10n->t('%1 (Circle owned by %2)', [$display, $circle->getOwner()->getDisplayName()]);
 		} else {
 			$display .= ' (' . Circle::$DEF_SOURCE[$circle->getSource()] . ')';
 		}
