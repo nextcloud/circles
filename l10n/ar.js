@@ -4,6 +4,7 @@ OC.L10N.register(
     "Circles" : "جماعة",
     "Personal" : "شخصي",
     "System" : "النظام",
+    "Visible" : "مرئيّ",
     "Open" : "افتح",
     "Hidden" : "مخفي",
     "Local" : "المحلي",
