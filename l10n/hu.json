@@ -142,6 +142,7 @@
     "You have been blocked from this circle" : "Kizárták ebből a körből",
     "The user is already a member of this circle" : "A felhasználó már tagja a körnek",
     "The user has already been invited into this circle" : "A felhasználó már meg lett hívva a körbe",
+    "%1 (Circle owned by %2)" : "%1 (A kör tulajdonosa %2)",
     "You are now a member of the Circle \"%2$s\"" : "Ön most már a(z) „%2$s” kör tagja",
     "You have been invited by %1$s into the Circle \"%2$s\"" : "%1$s meghívta Önt a (z) „\"%2$s” körbe",
     "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s csatlakozási kérést küldött, hogy a(z) „%2$s\" kör tagja lehessen",
