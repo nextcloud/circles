@@ -678,7 +678,7 @@ class ShareWrapper extends ManagedModel implements IDeserializable, IQueryRow, J
 
 		$display = $circle->getDisplayName();
 		if ($circle->getSource() === Member::TYPE_CIRCLE) {
-			$l10n = \OCP\Server::get(IFactory::class)->get('circles');
+			$l10n = \OC::$server->get(IFactory::class)->get('circles');
 			$display = $l10n->t('%s (Circle owned by %s)', [$display, $circle->getOwner()->getDisplayName()]);
 		} else {
 			$display .= ' (' . Circle::$DEF_SOURCE[$circle->getSource()] . ')';
