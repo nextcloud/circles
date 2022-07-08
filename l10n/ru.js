@@ -144,6 +144,7 @@ OC.L10N.register(
     "You have been blocked from this circle" : "Вы заблокированы от участия в этом круге",
     "The user is already a member of this circle" : "Этот пользователь — уже участник круга",
     "The user has already been invited into this circle" : "Пользователь уже приглашён в этот круг",
+    "%1 (Circle owned by %2)" : "%1 (круг, принадлежащий %2)",
     "You are now a member of the Circle \"%2$s\"" : "Вы теперь участник Круга \"%2$s\"",
     "You have been invited by %1$s into the Circle \"%2$s\"" : "Вы были приглашены %1$s в круг \"%2$s\"",
     "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s отправил запрос на членство в круге \"%2$s\"",
@@ -165,6 +166,7 @@ OC.L10N.register(
     "This user does not exist" : "Этот пользователь не существует",
     "Email format is not valid" : "Неверный формат электронной почты",
     "This contact is not available" : "Контакт не доступен",
+    "You have no permission to create a new circle" : "У вас нет разрешения на создание нового круга",
     "%s shared a file with \"%s\"." : "%s поделился файлом с \"%s\".",
     "%s shared a file with you." : "%s поделился с вами файлом.",
     "%1$s shared some content with you.\nYou should have already received a separate email with a link to access it.\n" : "%1$s поделился с вами некоторыми материалами.\nВы уже должны были получить отдельное письмо со ссылкой для доступа к нему.\n",
@@ -179,6 +181,7 @@ OC.L10N.register(
     "No entries found in this folder" : "В этой папке ничего нет",
     "Name" : "Имя",
     "Size" : "Размер",
-    "Modified" : "Изменён"
+    "Modified" : "Изменён",
+    "%s (Circle owned by %s)" : "%s (круг, принадлежащий %s)"
 },
 "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);");
