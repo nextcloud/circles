@@ -181,6 +181,7 @@ OC.L10N.register(
     "No entries found in this folder" : "在此資料夾中沒有任何項目",
     "Name" : "名稱",
     "Size" : "大小",
-    "Modified" : "已修改"
+    "Modified" : "已修改",
+    "%s (Circle owned by %s)" : "%s（由 %s 擁有的小圈圈）"
 },
 "nplurals=1; plural=0;");
