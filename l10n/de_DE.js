@@ -181,6 +181,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Keine Einträge in diesem Ordner gefunden ",
     "Name" : "Name",
     "Size" : "Größe",
-    "Modified" : "Geändert"
+    "Modified" : "Geändert",
+    "%s (Circle owned by %s)" : "%s (Kreis im Besitz von%s)"
 },
 "nplurals=2; plural=(n != 1);");
