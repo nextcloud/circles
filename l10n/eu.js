@@ -181,6 +181,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Ez da sarrerarik aurkitu karpeta honetan ",
     "Name" : "Izena",
     "Size" : "Tamaina",
-    "Modified" : "Aldatua"
+    "Modified" : "Aldatua",
+    "%s (Circle owned by %s)" : "%s (%s-(r)en zirkulua)"
 },
 "nplurals=2; plural=(n != 1);");
