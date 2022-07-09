@@ -181,6 +181,7 @@ OC.L10N.register(
     "No entries found in this folder" : "此資料夾中無項目",
     "Name" : "名稱",
     "Size" : "大小",
-    "Modified" : "修改日期"
+    "Modified" : "修改日期",
+    "%s (Circle owned by %s)" : "%s（由 %s 擁有的社交圈子）"
 },
 "nplurals=1; plural=0;");
