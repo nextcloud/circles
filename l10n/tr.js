@@ -181,6 +181,7 @@ OC.L10N.register(
     "No entries found in this folder" : "Bu klasörde herhangi bir kayıt yok",
     "Name" : "Ad",
     "Size" : "Boyut",
-    "Modified" : "Değiştirilme"
+    "Modified" : "Değiştirilme",
+    "%s (Circle owned by %s)" : "%s (sahibi %s olan çevre)"
 },
 "nplurals=2; plural=(n > 1);");
