@@ -46,6 +46,7 @@ use OCA\Circles\Exceptions\RemoteNotFoundException;
 use OCA\Circles\Exceptions\RemoteResourceNotFoundException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\UnknownRemoteException;
+use OCA\Circles\FederatedItems\CircleCreate;
 use OCA\Circles\IFederatedItem;
 use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemCircleCheckNotRequired;
@@ -100,6 +101,9 @@ class FederatedEventService extends NCSignature {
 	/** @var RemoteUpstreamService */
 	private $remoteUpstreamService;
 
+	/** @var EventService */
+	private $eventService;
+
 	/** @var InterfaceService */
 	private $interfaceService;
 
@@ -124,6 +128,7 @@ class FederatedEventService extends NCSignature {
 		MemberRequest $memberRequest,
 		ShareLockRequest $shareLockRequest,
 		RemoteUpstreamService $remoteUpstreamService,
+		EventService $eventService,
 		InterfaceService $interfaceService,
 		ConfigService $configService
 	) {
@@ -132,6 +137,7 @@ class FederatedEventService extends NCSignature {
 		$this->shareLockRequest = $shareLockRequest;
 		$this->memberRequest = $memberRequest;
 		$this->remoteUpstreamService = $remoteUpstreamService;
+		$this->eventService = $eventService;
 		$this->interfaceService = $interfaceService;
 		$this->configService = $configService;
 	}
@@ -179,7 +185,16 @@ class FederatedEventService extends NCSignature {
 				$federatedItem->manage($event);
 			}
 
-			$this->initBroadcast($event);
+			if (!$this->initBroadcast($event)
+				&& $event->getClass() === CircleCreate::class) {
+				// Circle Creation is done in a different way as there is no Circle nor Members yet to
+				// base the broadcast to other instances, unless in GlobalScale. And the fact that we do
+				// not want to async the process.
+				// The result is that in a single instance setup, the CircleCreatedEvent is not trigger
+				// the usual (async) way.
+				// In case of no instances yet available for that circle, we call the event manually.
+				$this->eventService->circleCreated($event, [$event->getResult()]);
+			}
 		} else {
 			$this->remoteUpstreamService->confirmEvent($event);
 			if ($event->isDataRequestOnly()) {
@@ -388,10 +403,10 @@ class FederatedEventService extends NCSignature {
 	 *
 	 * @throws RequestBuilderException
 	 */
-	public function initBroadcast(FederatedEvent $event): void {
+	public function initBroadcast(FederatedEvent $event): bool {
 		$instances = $this->getInstances($event);
 		if (empty($instances) && !$event->isAsync()) {
-			return;
+			return false;
 		}
 
 		$wrapper = new EventWrapper();
@@ -429,6 +444,8 @@ class FederatedEventService extends NCSignature {
 		} catch (RequestNetworkException $e) {
 			$this->e($e, ['wrapper' => $wrapper]);
 		}
+
+		return true;
 	}
 
 
