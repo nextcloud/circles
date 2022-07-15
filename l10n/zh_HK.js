@@ -144,7 +144,7 @@ OC.L10N.register(
     "You have been blocked from this circle" : "您被限制加入此圈子",
     "The user is already a member of this circle" : "此用戶已經是此圈子的成員",
     "The user has already been invited into this circle" : "用戶已被邀請進入此圈子",
-    "%1 (Circle owned by %2)" : "%1（社交圈子由 %2 擁有）",
+    "%s (Circle owned by %s)" : "%s（由 %s 擁有的社交圈子）",
     "You are now a member of the Circle \"%2$s\"" : "您現在是\"%2$s\" 圈子的一員了",
     "You have been invited by %1$s into the Circle \"%2$s\"" : "%1$s 已邀請您加入圈子 \"%2$s\"",
     "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s發送了一條加入\"%2$s\" 圈子的請求",
@@ -181,7 +181,6 @@ OC.L10N.register(
     "No entries found in this folder" : "此資料夾中無項目",
     "Name" : "名稱",
     "Size" : "大小",
-    "Modified" : "修改日期",
-    "%s (Circle owned by %s)" : "%s（由 %s 擁有的社交圈子）"
+    "Modified" : "修改日期"
 },
 "nplurals=1; plural=0;");

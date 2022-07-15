@@ -142,7 +142,7 @@
     "You have been blocked from this circle" : "Has sido bloqueado de este círculo",
     "The user is already a member of this circle" : "El usuario ya es miembro de este círculo",
     "The user has already been invited into this circle" : "El usuario ya ha sido invitado a este círculo",
-    "%1 (Circle owned by %2)" : "%1 (Círculo que pertenece a %2)",
+    "%s (Circle owned by %s)" : "%s (Círculo que pertenece a %s)",
     "You are now a member of the Circle \"%2$s\"" : "Ahora ya eres miembro del Círculo  \"%2$s\"",
     "You have been invited by %1$s into the Circle \"%2$s\"" : "Has sido invitado por %1$s al Círculo \"%2$s\"",
     "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s te ha enviado una solicitud para ser miembro del Círculo \"%2$s\"",
@@ -179,7 +179,6 @@
     "No entries found in this folder" : "No se han encontrado entradas en esta carpeta",
     "Name" : "Nombre",
     "Size" : "Tamaño",
-    "Modified" : "Modificado",
-    "%s (Circle owned by %s)" : "%s (Círculo que pertenece a %s)"
+    "Modified" : "Modificado"
 },"pluralForm" :"nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

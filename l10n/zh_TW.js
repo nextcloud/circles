@@ -144,7 +144,7 @@ OC.L10N.register(
     "You have been blocked from this circle" : "您已被這個小圈圈封鎖",
     "The user is already a member of this circle" : "使用者已是這個小圈圈的成員",
     "The user has already been invited into this circle" : "使用者已被邀請至這個小圈圈",
-    "%1 (Circle owned by %2)" : "%1（由 %2 擁有的小圈圈）",
+    "%s (Circle owned by %s)" : "%s（由 %s 擁有的小圈圈）",
     "You are now a member of the Circle \"%2$s\"" : "您現在是小圈圈「%2$s」的成員了",
     "You have been invited by %1$s into the Circle \"%2$s\"" : "您已被 %1$s 邀請至小圈圈「%2$s」",
     "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s 傳送了成為小圈圈「%2$s」成員的請求",
@@ -181,7 +181,6 @@ OC.L10N.register(
     "No entries found in this folder" : "在此資料夾中沒有任何項目",
     "Name" : "名稱",
     "Size" : "大小",
-    "Modified" : "已修改",
-    "%s (Circle owned by %s)" : "%s（由 %s 擁有的小圈圈）"
+    "Modified" : "已修改"
 },
 "nplurals=1; plural=0;");
