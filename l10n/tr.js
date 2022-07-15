@@ -144,7 +144,7 @@ OC.L10N.register(
     "You have been blocked from this circle" : "Bu çevrede engellenmişsiniz",
     "The user is already a member of this circle" : "Kullanıcı zaten bu çevrenin üyesi",
     "The user has already been invited into this circle" : "Kullanıcı zaten bu çevreye girmesi için çağrılmış",
-    "%1 (Circle owned by %2)" : "%1 (sahibi %2 olan çevre)",
+    "%s (Circle owned by %s)" : "%s (sahibi %s olan çevre)",
     "You are now a member of the Circle \"%2$s\"" : "Artık \"%2$s\" çevresinin üyesisiniz",
     "You have been invited by %1$s into the Circle \"%2$s\"" : "%1$s tarafından \"%2$s\" çevresine çağrıldınız",
     "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s, \"%2$s\" çevresine üye olma isteğinde bulundu",
@@ -181,7 +181,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Bu klasörde herhangi bir kayıt yok",
     "Name" : "Ad",
     "Size" : "Boyut",
-    "Modified" : "Değiştirilme",
-    "%s (Circle owned by %s)" : "%s (sahibi %s olan çevre)"
+    "Modified" : "Değiştirilme"
 },
 "nplurals=2; plural=(n > 1);");
