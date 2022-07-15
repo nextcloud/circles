@@ -142,7 +142,7 @@
     "You have been blocked from this circle" : "Tento okruh vás zablokoval",
     "The user is already a member of this circle" : "Uživatel už je členem tohoto okruhu",
     "The user has already been invited into this circle" : "Uživatel už byl do tohoto okruhu pozván",
-    "%1 (Circle owned by %2)" : "%1 (Okruh vlastněn uživatelem %2)",
+    "%s (Circle owned by %s)" : "%s (Okruh vlastněn uživatelem %s)",
     "You are now a member of the Circle \"%2$s\"" : "Nyní jste členy okruhu „%2$s“",
     "You have been invited by %1$s into the Circle \"%2$s\"" : "%1$s vás pozval(a) do okruhu „%2$s“",
     "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s poslal(a) žádost o to, stát se členem okruhu „%2$s“",
@@ -179,7 +179,6 @@
     "No entries found in this folder" : "V této složce nebyly nalezeny žádné položky",
     "Name" : "Název",
     "Size" : "Velikost",
-    "Modified" : "Změněno",
-    "%s (Circle owned by %s)" : "%s (Okruh vlastněn uživatelem %s)"
+    "Modified" : "Změněno"
 },"pluralForm" :"nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;"
 }
