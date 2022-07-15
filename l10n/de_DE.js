@@ -144,7 +144,7 @@ OC.L10N.register(
     "You have been blocked from this circle" : "Sie wurden für diesen Kreis blockiert",
     "The user is already a member of this circle" : "Dieser Benutzer ist bereits Mitglied dieses Kreises ",
     "The user has already been invited into this circle" : "Dieser Benutzer wurde bereits zu diesem Kreis eingeladen",
-    "%1 (Circle owned by %2)" : "%1 (Kreis im Besitz von %2)",
+    "%s (Circle owned by %s)" : "%s (Kreis im Besitz von%s)",
     "You are now a member of the Circle \"%2$s\"" : "Sie sind jetzt ein Mitglied des Kreises \"%2$s\"",
     "You have been invited by %1$s into the Circle \"%2$s\"" : "Sie wurden von %1$s zum Kreis \"%2$s\" eingeladen",
     "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s hat eine Mitgliedschaftsanfrage für den Kreis \"%2$s\" gesendet",
@@ -181,7 +181,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Keine Einträge in diesem Ordner gefunden ",
     "Name" : "Name",
     "Size" : "Größe",
-    "Modified" : "Geändert",
-    "%s (Circle owned by %s)" : "%s (Kreis im Besitz von%s)"
+    "Modified" : "Geändert"
 },
 "nplurals=2; plural=(n != 1);");

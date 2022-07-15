@@ -144,7 +144,7 @@ OC.L10N.register(
     "You have been blocked from this circle" : "Zirkulu honetan blokeatu egin zaituzte",
     "The user is already a member of this circle" : "Erabiltzailea zirkulu honetako kide da dagoeneko",
     "The user has already been invited into this circle" : "Erabiltzailea zirkulu honetara gonbidatua izan da dagoeneko",
-    "%1 (Circle owned by %2)" : "% 1 (% 2ren zirkulua)",
+    "%s (Circle owned by %s)" : "%s (%s-(r)en zirkulua)",
     "You are now a member of the Circle \"%2$s\"" : "«%2$s» zirkuluaren kide zara orain",
     "You have been invited by %1$s into the Circle \"%2$s\"" : "%1$s(e)k «%2$s» zirkulura gonbidatu zaitu",
     "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s(e)k «%2$s» zirkuluaren kide izateko eskaera bidali du",
@@ -181,7 +181,6 @@ OC.L10N.register(
     "No entries found in this folder" : "Ez da sarrerarik aurkitu karpeta honetan ",
     "Name" : "Izena",
     "Size" : "Tamaina",
-    "Modified" : "Aldatua",
-    "%s (Circle owned by %s)" : "%s (%s-(r)en zirkulua)"
+    "Modified" : "Aldatua"
 },
 "nplurals=2; plural=(n != 1);");
