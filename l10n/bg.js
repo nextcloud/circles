@@ -144,6 +144,7 @@ OC.L10N.register(
     "You have been blocked from this circle" : "Бяхте блокиран от този кръг",
     "The user is already a member of this circle" : "Потребителят вече е член на този кръг",
     "The user has already been invited into this circle" : "Потребителят вече е поканен в този кръг",
+    "%s (Circle owned by %s)" : "%s (Кръг, притежаван от %s)",
     "You are now a member of the Circle \"%2$s\"" : " \nВече сте член на Кръга \"%2$s\"",
     "You have been invited by %1$s into the Circle \"%2$s\"" : "Вие сте поканени от %1$s в Кръга \"%2$s\"",
     "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s са изпратили заявка да бъдат членове на Кръга \"%2$s\"",
