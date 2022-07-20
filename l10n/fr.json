@@ -142,6 +142,7 @@
     "You have been blocked from this circle" : "Vous avez été bloqué de ce cercle",
     "The user is already a member of this circle" : "L'utilisateur est déjà membre de ce cercle",
     "The user has already been invited into this circle" : "L'utilisateur a déjà été invité dans ce cercle",
+    "%s (Circle owned by %s)" : "%s (Cercle appartenant à %s)",
     "You are now a member of the Circle \"%2$s\"" : "Vous êtes maintenant membre du cercle \"%2$s\"",
     "You have been invited by %1$s into the Circle \"%2$s\"" : "Vous avez été invité par %1$s dans le cercle \"%2$s\"",
     "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s a demandé à être membre du cercle \"%2$s\"",
