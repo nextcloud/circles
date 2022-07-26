@@ -30,7 +30,7 @@
 	 * @classdesc Circles file list.
 	 * Contains a list of files filtered by circles
 	 *
-	 * @param $el container element with existing markup for the #controls
+	 * @param $el container element with existing markup for the .files-controls
 	 * and a table
 	 * @param [options] map of options, see other parameters
 	 * @param {Array.<string>} [options.circlesIds] array of system tag ids to
@@ -72,7 +72,7 @@
 
 			OC.Plugins.attach('OCA.Circles.FileList', this);
 
-			var $controls = this.$el.find('#controls').empty();
+			var $controls = this.$el.find('.files-controls').empty();
 
 			this._initFilterField($controls);
 		},
@@ -222,15 +222,15 @@
 				// root has special permissions
 				if (!this._circlesIds.length) {
 					// no tags selected
-					this.$el.find('#emptycontent').html('<div class="icon-systemtags"></div>' +
+					this.$el.find('.emptyfilelist.emptycontent').html('<div class="icon-systemtags"></div>' +
 						'<h2>' + t('circles', 'Please select circles to filter by') + '</h2>');
 				} else {
 					// tags selected but no results
-					this.$el.find('#emptycontent').html('<div class="icon-systemtags"></div>' +
+					this.$el.find('.emptyfilelist.emptycontent').html('<div class="icon-systemtags"></div>' +
 						'<h2>' + t('circles', 'No files found for the selected circles') + '</h2>');
 				}
-				this.$el.find('#emptycontent').toggleClass('hidden', !this.isEmpty);
-				this.$el.find('#filestable thead th').toggleClass('hidden', this.isEmpty);
+				this.$el.find('.emptyfilelist.emptycontent').toggleClass('hidden', !this.isEmpty);
+				this.$el.find('.files-filestable thead th').toggleClass('hidden', this.isEmpty);
 			}
 			else {
 				OCA.Files.FileList.prototype.updateEmptyContent.apply(this, arguments);
