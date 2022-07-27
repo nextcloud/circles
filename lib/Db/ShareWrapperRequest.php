@@ -40,6 +40,7 @@ use OCA\Circles\Model\ShareWrapper;
 use OCP\Files\NotFoundException;
 use OCP\Share\Exceptions\IllegalIDChangeException;
 use OCP\Share\IShare;
+use OCP\Files\Folder;
 
 /**
  * Class ShareWrapperRequest
@@ -358,25 +359,30 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 
 	/**
 	 * @param FederatedUser $federatedUser
-	 * @param int $nodeId
+	 * @param Folder $node
 	 * @param bool $reshares
+	 * @param bool $shallow Whether the method should stop at the first level, or look into sub-folders.
 	 *
 	 * @return ShareWrapper[]
 	 * @throws RequestBuilderException
 	 */
 	public function getSharesInFolder(
 		FederatedUser $federatedUser,
-		int $nodeId,
-		bool $reshares
+		Folder $node,
+		bool $reshares,
+		bool $shallow = true
 	): array {
 		$qb = $this->getShareSelectSql();
 
 		$qb->leftJoinCircle(CoreQueryBuilder::SHARE, null, 'share_with');
 		$qb->limitToShareOwner(CoreQueryBuilder::SHARE, $federatedUser, $reshares);
 		$qb->leftJoinFileCache(CoreQueryBuilder::SHARE);
-		if ($nodeId > 0) {
-			$aliasFileCache = $qb->generateAlias(CoreQueryBuilder::SHARE, CoreQueryBuilder::FILE_CACHE);
-			$qb->limitInt('parent', $nodeId, $aliasFileCache);
+
+		$aliasFileCache = $qb->generateAlias(CoreQueryBuilder::SHARE, CoreQueryBuilder::FILE_CACHE);
+		if ($shallow) {
+			$qb->limitInt('parent', $node->getId(), $aliasFileCache);
+		} else {
+			$qb->like('path', $node->getInternalPath() . '/%', $aliasFileCache);
 		}
 		$qb->limitNull('parent', false);
 

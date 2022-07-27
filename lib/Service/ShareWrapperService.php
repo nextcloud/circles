@@ -45,6 +45,7 @@ use OCP\Files\NotFoundException;
 use OCP\ICache;
 use OCP\ICacheFactory;
 use OCP\Share\IShare;
+use OCP\Files\Folder;
 
 /**
  * Class ShareWrapperService
@@ -267,14 +268,15 @@ class ShareWrapperService {
 
 	/**
 	 * @param FederatedUser $federatedUser
-	 * @param int $nodeId
+	 * @param Folder $node
 	 * @param bool $reshares
+	 * @param bool $shallow Whether the method should stop at the first level, or look into sub-folders.
 	 *
 	 * @return ShareWrapper[]
 	 * @throws RequestBuilderException
 	 */
-	public function getSharesInFolder(FederatedUser $federatedUser, int $nodeId, bool $reshares): array {
-		return $this->shareWrapperRequest->getSharesInFolder($federatedUser, $nodeId, $reshares);
+	public function getSharesInFolder(FederatedUser $federatedUser, Folder $node, bool $reshares, bool $shallow = true): array {
+		return $this->shareWrapperRequest->getSharesInFolder($federatedUser, $node, $reshares, $shallow);
 	}
 
 

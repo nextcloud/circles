@@ -390,7 +390,7 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @param string $userId
 	 * @param Folder $node
 	 * @param bool $reshares
-	 *
+	 * @param bool $shallow Whether the method should stop at the first level, or look into sub-folders.
 	 * @return array
 	 * @throws ContactAddressBookNotFoundException
 	 * @throws ContactFormatException
@@ -404,12 +404,13 @@ class ShareByCircleProvider implements IShareProvider {
 	 * @throws RequestBuilderException
 	 * @throws SingleCircleNotFoundException
 	 */
-	public function getSharesInFolder($userId, Folder $node, $reshares): array {
+	public function getSharesInFolder($userId, Folder $node, $reshares, $shallow = true): array {
 		$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
 		$wrappedShares = $this->shareWrapperService->getSharesInFolder(
 			$federatedUser,
-			(!is_null($node)) ? $node->getId() : 0,
-			$reshares
+			$node,
+			$reshares,
+			$shallow
 		);
 
 		$result = [];
