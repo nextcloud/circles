@@ -378,10 +378,11 @@ class ShareByCircleProviderDeprecated extends CircleProviderRequest implements I
 	 * @param Folder $node
 	 * @param bool $reshares Also get the shares where $user is the owner instead of just the
 	 *     shares where $user is the initiator
+	 * @param bool $shallow Whether the method should stop at the first level, or look into sub-folders.
 	 *
 	 * @return Share[]
 	 */
-	public function getSharesInFolder($userId, Folder $node, $reshares) {
+	public function getSharesInFolder($userId, Folder $node, $reshares, $shallow = true) {
 		\OC::$server->getLogger()->log(3, 'deprecated>getSharesInFolder');
 		return [];
 //
