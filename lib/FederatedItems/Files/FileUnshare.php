@@ -56,71 +56,71 @@ class FileUnshare implements
 	IFederatedItemHighSeverity,
 	IFederatedItemAsyncProcess,
 	IFederatedItemMemberEmpty {
-	use TStringTools;
-	use TNCLogger;
+		use TStringTools;
+		use TNCLogger;
 
 
-	/** @var MountRequest */
-	private $mountRequest;
+		/** @var MountRequest */
+		private $mountRequest;
 
-	/** @var EventService */
-	private $eventService;
+		/** @var EventService */
+		private $eventService;
 
-	/** @var ConfigService */
-	private $configService;
-
-
-	/**
-	 * FileUnshare constructor.
-	 *
-	 * @param MountRequest $mountRequest
-	 * @param EventService $eventService
-	 * @param ConfigService $configService
-	 */
-	public function __construct(
-		MountRequest $mountRequest,
-		EventService $eventService,
-		ConfigService $configService
-	) {
-		$this->mountRequest = $mountRequest;
-		$this->eventService = $eventService;
-		$this->configService = $configService;
-	}
+		/** @var ConfigService */
+		private $configService;
 
 
-	/**
-	 * @param FederatedEvent $event
-	 */
-	public function verify(FederatedEvent $event): void {
-		// TODO: check and improve
-		// TODO: Could we use a share lock ?
-	}
-
-
-	/**
-	 * @param FederatedEvent $event
-	 *
-	 * @throws InvalidItemException
-	 * @throws UnknownTypeException
-	 * @throws ItemNotFoundException
-	 */
-	public function manage(FederatedEvent $event): void {
-		if ($this->configService->isLocalInstance($event->getOrigin())) {
-			return;
+		/**
+		 * FileUnshare constructor.
+		 *
+		 * @param MountRequest $mountRequest
+		 * @param EventService $eventService
+		 * @param ConfigService $configService
+		 */
+		public function __construct(
+			MountRequest $mountRequest,
+			EventService $eventService,
+			ConfigService $configService
+		) {
+			$this->mountRequest = $mountRequest;
+			$this->eventService = $eventService;
+			$this->configService = $configService;
 		}
 
-		/** @var ShareWrapper $wrappedShare */
-		$wrappedShare = $event->getParams()->gObj('wrappedShare', ShareWrapper::class);
 
-		$this->mountRequest->delete($wrappedShare->getToken());
-		$this->eventService->federatedShareDeleted($wrappedShare);
+		/**
+		 * @param FederatedEvent $event
+		 */
+		public function verify(FederatedEvent $event): void {
+			// TODO: check and improve
+			// TODO: Could we use a share lock ?
+		}
+
+
+		/**
+		 * @param FederatedEvent $event
+		 *
+		 * @throws InvalidItemException
+		 * @throws UnknownTypeException
+		 * @throws ItemNotFoundException
+		 */
+		public function manage(FederatedEvent $event): void {
+			if ($this->configService->isLocalInstance($event->getOrigin())) {
+				return;
+			}
+
+			/** @var ShareWrapper $wrappedShare */
+			$wrappedShare = $event->getParams()->gObj('wrappedShare', ShareWrapper::class);
+
+			$this->mountRequest->delete($wrappedShare->getToken());
+			$this->eventService->federatedShareDeleted($wrappedShare);
+		}
+
+
+		/**
+		 * @param FederatedEvent $event
+		 * @param array $results
+		 */
+		public function result(FederatedEvent $event, array $results): void {
+		}
 	}
-
-
-	/**
-	 * @param FederatedEvent $event
-	 * @param array $results
-	 */
-	public function result(FederatedEvent $event, array $results): void {
-	}
-}

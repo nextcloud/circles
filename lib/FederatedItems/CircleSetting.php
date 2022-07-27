@@ -41,78 +41,78 @@ use OCA\Circles\Tools\Traits\TDeserialize;
 class CircleSetting implements
 	IFederatedItem,
 	IFederatedItemAsyncProcess {
-	use TDeserialize;
+		use TDeserialize;
 
 
-	/** @var CircleRequest */
-	private $circleRequest;
+		/** @var CircleRequest */
+		private $circleRequest;
 
 
-	/**
-	 * CircleConfig constructor.
-	 *
-	 * @param CircleRequest $circleRequest
-	 */
-	public function __construct(CircleRequest $circleRequest) {
-		$this->circleRequest = $circleRequest;
-	}
-
-
-	/**
-	 * @param FederatedEvent $event
-	 */
-	public function verify(FederatedEvent $event): void {
-		$circle = $event->getCircle();
-
-		$initiatorHelper = new MemberHelper($circle->getInitiator());
-		$initiatorHelper->mustBeAdmin();
-
-		$params = $event->getParams();
-		$setting = $params->g('setting');
-		$value = $params->gBool('unset') ? null : $params->g('value');
-
-		$settings = $circle->getSettings();
-
-		if (!is_null($value)) {
-			$settings[$setting] = $value;
-		} elseif (array_key_exists($setting, $settings)) {
-			unset($settings[$setting]);
+		/**
+		 * CircleConfig constructor.
+		 *
+		 * @param CircleRequest $circleRequest
+		 */
+		public function __construct(CircleRequest $circleRequest) {
+			$this->circleRequest = $circleRequest;
 		}
 
-		$event->getData()->sArray('settings', $settings);
 
-		$new = clone $circle;
-		$new->setSettings($settings);
+		/**
+		 * @param FederatedEvent $event
+		 */
+		public function verify(FederatedEvent $event): void {
+			$circle = $event->getCircle();
 
-		$event->setOutcome($this->serialize($new));
+			$initiatorHelper = new MemberHelper($circle->getInitiator());
+			$initiatorHelper->mustBeAdmin();
+
+			$params = $event->getParams();
+			$setting = $params->g('setting');
+			$value = $params->gBool('unset') ? null : $params->g('value');
+
+			$settings = $circle->getSettings();
+
+			if (!is_null($value)) {
+				$settings[$setting] = $value;
+			} elseif (array_key_exists($setting, $settings)) {
+				unset($settings[$setting]);
+			}
+
+			$event->getData()->sArray('settings', $settings);
+
+			$new = clone $circle;
+			$new->setSettings($settings);
+
+			$event->setOutcome($this->serialize($new));
+		}
+
+
+		/**
+		 * @param FederatedEvent $event
+		 */
+		public function manage(FederatedEvent $event): void {
+			$circle = clone $event->getCircle();
+			$settings = $event->getData()->gArray('settings');
+
+			$circle->setSettings($settings);
+			// TODO list imported from FederatedItem/CircleConfig.php - need to check first there.
+
+			// TODO: Check locally that circle is not un-federated during the process
+			// TODO: if the circle is managed remotely, remove the circle locally
+			// TODO: if the circle is managed locally, remove non-local users
+
+			// TODO: Check locally that circle is not federated during the process
+			// TODO: sync if it is to broadcast to Trusted RemoteInstance
+
+			$this->circleRequest->updateSettings($circle);
+		}
+
+
+		/**
+		 * @param FederatedEvent $event
+		 * @param array $results
+		 */
+		public function result(FederatedEvent $event, array $results): void {
+		}
 	}
-
-
-	/**
-	 * @param FederatedEvent $event
-	 */
-	public function manage(FederatedEvent $event): void {
-		$circle = clone $event->getCircle();
-		$settings = $event->getData()->gArray('settings');
-
-		$circle->setSettings($settings);
-		// TODO list imported from FederatedItem/CircleConfig.php - need to check first there.
-
-		// TODO: Check locally that circle is not un-federated during the process
-		// TODO: if the circle is managed remotely, remove the circle locally
-		// TODO: if the circle is managed locally, remove non-local users
-
-		// TODO: Check locally that circle is not federated during the process
-		// TODO: sync if it is to broadcast to Trusted RemoteInstance
-
-		$this->circleRequest->updateSettings($circle);
-	}
-
-
-	/**
-	 * @param FederatedEvent $event
-	 * @param array $results
-	 */
-	public function result(FederatedEvent $event, array $results): void {
-	}
-}

@@ -53,6 +53,4 @@ interface ISignedModel {
 	 * @return array
 	 */
 	public function signedData(): array;
-
 }
-

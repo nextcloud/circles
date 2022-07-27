@@ -46,37 +46,37 @@ class LoopbackTest implements
 	IFederatedItem,
 	IFederatedItemAsyncProcess,
 	IFederatedItemLoopbackTest {
-	public const VERIFY = 17;
-	public const MANAGE = 42;
+		public const VERIFY = 17;
+		public const MANAGE = 42;
 
 
-	/**
-	 * LoopbackTest constructor.
-	 */
-	public function __construct() {
+		/**
+		 * LoopbackTest constructor.
+		 */
+		public function __construct() {
+		}
+
+
+		/**
+		 * @param FederatedEvent $event
+		 */
+		public function verify(FederatedEvent $event): void {
+			$event->setData(new SimpleDataStore(['verify' => self::VERIFY]));
+		}
+
+
+		/**
+		 * @param FederatedEvent $event
+		 */
+		public function manage(FederatedEvent $event): void {
+			$event->setResult(new SimpleDataStore(['manage' => self::MANAGE]));
+		}
+
+
+		/**
+		 * @param FederatedEvent $event
+		 * @param array $results
+		 */
+		public function result(FederatedEvent $event, array $results): void {
+		}
 	}
-
-
-	/**
-	 * @param FederatedEvent $event
-	 */
-	public function verify(FederatedEvent $event): void {
-		$event->setData(new SimpleDataStore(['verify' => self::VERIFY]));
-	}
-
-
-	/**
-	 * @param FederatedEvent $event
-	 */
-	public function manage(FederatedEvent $event): void {
-		$event->setResult(new SimpleDataStore(['manage' => self::MANAGE]));
-	}
-
-
-	/**
-	 * @param FederatedEvent $event
-	 * @param array $results
-	 */
-	public function result(FederatedEvent $event, array $results): void {
-	}
-}

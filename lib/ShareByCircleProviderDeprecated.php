@@ -592,15 +592,15 @@ class ShareByCircleProviderDeprecated extends CircleProviderRequest implements I
 		$cursor = $qb->select('*')
 					 ->from('share')
 					 ->where(
-						 $qb->expr()
-							->eq(
-								'share_type',
-								$qb->createNamedParameter(\OCP\Share::SHARE_TYPE_CIRCLE)
-							)
+					 	$qb->expr()
+					 		->eq(
+					 			'share_type',
+					 			$qb->createNamedParameter(\OCP\Share::SHARE_TYPE_CIRCLE)
+					 		)
 					 )
 					 ->andWhere(
-						 $qb->expr()
-							->eq('token', $qb->createNamedParameter($token))
+					 	$qb->expr()
+					 		->eq('token', $qb->createNamedParameter($token))
 					 )
 					 ->execute();
 
@@ -648,19 +648,19 @@ class ShareByCircleProviderDeprecated extends CircleProviderRequest implements I
 				 ->from('share', 's')
 				 ->from('circle_tokens', 'ct')
 				 ->where(
-					 $qb->expr()
-						->eq(
-							's.share_type',
-							$qb->createNamedParameter(\OCP\Share::SHARE_TYPE_CIRCLE)
-						)
+				 	$qb->expr()
+				 		->eq(
+				 			's.share_type',
+				 			$qb->createNamedParameter(\OCP\Share::SHARE_TYPE_CIRCLE)
+				 		)
 				 )
 				 ->andWhere(
-					 $qb->expr()
-						->eq('ct.token', $qb->createNamedParameter($token))
+				 	$qb->expr()
+				 		->eq('ct.token', $qb->createNamedParameter($token))
 				 )
 				 ->andWhere(
-					 $qb->expr()
-						->eq('ct.share_id', 's.id')
+				 	$qb->expr()
+				 		->eq('ct.share_id', 's.id')
 				 );
 		$cursor = $qb->execute();
 
@@ -809,11 +809,11 @@ class ShareByCircleProviderDeprecated extends CircleProviderRequest implements I
 
 			$share->setSharedWithAvatar(CirclesService::getCircleIcon($data['circle_type']))
 				  ->setSharedWithDisplayName(
-					  sprintf(
-						  '%s (%s, %s)', $name,
-						  $this->l10n->t(DeprecatedCircle::TypeLongString($data['circle_type'])),
-						  $this->miscService->getDisplayName($data['circle_owner'], true)
-					  )
+				  	sprintf(
+				  		'%s (%s, %s)', $name,
+				  		$this->l10n->t(DeprecatedCircle::TypeLongString($data['circle_type'])),
+				  		$this->miscService->getDisplayName($data['circle_owner'], true)
+				  	)
 				  );
 		}
 	}
@@ -982,11 +982,11 @@ class ShareByCircleProviderDeprecated extends CircleProviderRequest implements I
 		$qb->select('*')
 		   ->from('share')
 		   ->where(
-			   $qb->expr()
-				  ->orX(
-					  $qb->expr()
-						 ->eq('share_type', $qb->createNamedParameter(IShare::TYPE_CIRCLE))
-				  )
+		   	$qb->expr()
+		   		  ->orX(
+		   		  	$qb->expr()
+		   		  		 ->eq('share_type', $qb->createNamedParameter(IShare::TYPE_CIRCLE))
+		   		  )
 		   );
 
 		$cursor = $qb->execute();

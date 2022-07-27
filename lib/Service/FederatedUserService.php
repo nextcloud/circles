@@ -182,7 +182,6 @@ class FederatedUserService {
 		IUserSession $userSession,
 		IUserManager $userManager,
 		IGroupManager $groupManager,
-		ICacheFactory $cacheFactory,
 		FederatedEventService $federatedEventService,
 		MembershipService $membershipService,
 		CircleRequest $circleRequest,
@@ -640,7 +639,7 @@ class FederatedUserService {
 		$probe = new CircleProbe();
 		$probe->includeSystemCircles()
 			  ->includePersonalCircles();
-		
+
 		$localCircle = $this->circleRequest->getCircle($circleId, null, $probe);
 		if ($this->configService->isLocalInstance($localCircle->getInstance())) {
 			$this->setCurrentUser($localCircle->getOwner());
@@ -1289,7 +1288,7 @@ class FederatedUserService {
 
 	/**
 	 * @param FederatedUser $federatedUser
-	 *
+	 *i
 	 * @return string
 	 */
 	private function generateCacheKey(FederatedUser $federatedUser): string {

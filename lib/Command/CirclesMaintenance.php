@@ -85,14 +85,14 @@ class CirclesMaintenance extends Base {
 			 ->setDescription('Clean stuff, keeps the app running')
 			 ->addOption('level', '', InputOption::VALUE_REQUIRED, 'level of maintenance', '3')
 			 ->addOption(
-				 'reset', '', InputOption::VALUE_NONE, 'reset Circles; remove all data related to the App'
+			 	'reset', '', InputOption::VALUE_NONE, 'reset Circles; remove all data related to the App'
 			 )
 			 ->addOption(
-				 'clean-shares', '', InputOption::VALUE_NONE, 'remove Circles\' shares'
+			 	'clean-shares', '', InputOption::VALUE_NONE, 'remove Circles\' shares'
 			 )
 			 ->addOption(
-				 'uninstall', '', InputOption::VALUE_NONE,
-				 'Uninstall the apps and everything related to the app from the database'
+			 	'uninstall', '', InputOption::VALUE_NONE,
+			 	'Uninstall the apps and everything related to the app from the database'
 			 );
 	}
 

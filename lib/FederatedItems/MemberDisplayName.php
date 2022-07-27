@@ -54,90 +54,90 @@ class MemberDisplayName implements
 	IFederatedItem,
 	IFederatedItemHighSeverity,
 	IFederatedItemMemberEmpty {
-	use TDeserialize;
+		use TDeserialize;
 
 
-	/** @var MemberRequest */
-	private $memberRequest;
+		/** @var MemberRequest */
+		private $memberRequest;
 
-	/** @var MembershipService */
-	private $membershipService;
+		/** @var MembershipService */
+		private $membershipService;
 
-	/** @var EventService */
-	private $eventService;
+		/** @var EventService */
+		private $eventService;
 
-	/** @var ConfigService */
-	private $configService;
-
-
-	/**
-	 * MemberDisplayName constructor.
-	 *
-	 * @param MemberRequest $memberRequest
-	 * @param MembershipService $membershipService
-	 * @param EventService $eventService
-	 * @param ConfigService $configService
-	 */
-	public function __construct(
-		MemberRequest $memberRequest,
-		MembershipService $membershipService,
-		EventService $eventService,
-		ConfigService $configService
-	) {
-		$this->memberRequest = $memberRequest;
-		$this->membershipService = $membershipService;
-		$this->eventService = $eventService;
-		$this->configService = $configService;
-	}
+		/** @var ConfigService */
+		private $configService;
 
 
-	/**
-	 * @param FederatedEvent $event
-	 *
-	 * @throws FederatedItemException
-	 * @throws FederatedItemBadRequestException
-	 * @throws MemberLevelException
-	 */
-	public function verify(FederatedEvent $event): void {
-		$member = $event->getCircle()
-						->getInitiator();
-
-		$displayName = $event->getParams()->g('displayName');
-
-		if ($displayName === '') {
-			throw new FederatedItemBadRequestException(StatusCode::$MEMBER_DISPLAY_NAME[120], 120);
+		/**
+		 * MemberDisplayName constructor.
+		 *
+		 * @param MemberRequest $memberRequest
+		 * @param MembershipService $membershipService
+		 * @param EventService $eventService
+		 * @param ConfigService $configService
+		 */
+		public function __construct(
+			MemberRequest $memberRequest,
+			MembershipService $membershipService,
+			EventService $eventService,
+			ConfigService $configService
+		) {
+			$this->memberRequest = $memberRequest;
+			$this->membershipService = $membershipService;
+			$this->eventService = $eventService;
+			$this->configService = $configService;
 		}
 
-		$event->getData()->s('displayName', $displayName);
 
-		$outcomeMember = clone $member;
-		$outcomeMember->setDisplayName($displayName);
+		/**
+		 * @param FederatedEvent $event
+		 *
+		 * @throws FederatedItemException
+		 * @throws FederatedItemBadRequestException
+		 * @throws MemberLevelException
+		 */
+		public function verify(FederatedEvent $event): void {
+			$member = $event->getCircle()
+								->getInitiator();
 
-		$event->setOutcome($this->serialize($outcomeMember));
+			$displayName = $event->getParams()->g('displayName');
+
+			if ($displayName === '') {
+				throw new FederatedItemBadRequestException(StatusCode::$MEMBER_DISPLAY_NAME[120], 120);
+			}
+
+			$event->getData()->s('displayName', $displayName);
+
+			$outcomeMember = clone $member;
+			$outcomeMember->setDisplayName($displayName);
+
+			$event->setOutcome($this->serialize($outcomeMember));
+		}
+
+
+		/**
+		 * @param FederatedEvent $event
+		 */
+		public function manage(FederatedEvent $event): void {
+			$circle = $event->getCircle();
+			$member = $circle->getInitiator();
+			$displayName = $event->getData()->g('displayName');
+
+			$member->setDisplayName($displayName);
+			$this->memberRequest->updateDisplayName($member->getSingleId(), $displayName, $circle->getSingleId());
+
+			$event->setMember($member);
+			$this->eventService->memberNameEditing($event);
+		}
+
+
+		/**
+		 * @param FederatedEvent $event
+		 * @param array $results
+		 */
+		public function result(FederatedEvent $event, array $results): void {
+			$this->eventService->memberNameEdited($event, $results);
+		}
 	}
-
-
-	/**
-	 * @param FederatedEvent $event
-	 */
-	public function manage(FederatedEvent $event): void {
-		$circle = $event->getCircle();
-		$member = $circle->getInitiator();
-		$displayName = $event->getData()->g('displayName');
-
-		$member->setDisplayName($displayName);
-		$this->memberRequest->updateDisplayName($member->getSingleId(), $displayName, $circle->getSingleId());
-
-		$event->setMember($member);
-		$this->eventService->memberNameEditing($event);
-	}
-
-
-	/**
-	 * @param FederatedEvent $event
-	 * @param array $results
-	 */
-	public function result(FederatedEvent $event, array $results): void {
-		$this->eventService->memberNameEdited($event, $results);
-	}
-}

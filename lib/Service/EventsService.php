@@ -213,11 +213,11 @@ class EventsService {
 
 		$this->publishEvent(
 			$event, array_merge(
-					  [$member],
-					  $this->membersRequest->forceGetMembers(
-						  $circle->getUniqueId(), DeprecatedMember::LEVEL_MODERATOR, 0, true
-					  )
-				  )
+				[$member],
+				$this->membersRequest->forceGetMembers(
+					$circle->getUniqueId(), DeprecatedMember::LEVEL_MODERATOR, 0, true
+				)
+			)
 		);
 
 		$this->dispatch('\OCA\Circles::onMemberNew', ['circle' => $circle, 'member' => $member]);
@@ -271,11 +271,11 @@ class EventsService {
 
 		$this->publishEvent(
 			$event, array_merge(
-					  [$member],
-					  $this->membersRequest->forceGetMembers(
-						  $circle->getUniqueId(), DeprecatedMember::LEVEL_MODERATOR, 0, true
-					  )
-				  )
+				[$member],
+				$this->membersRequest->forceGetMembers(
+					$circle->getUniqueId(), DeprecatedMember::LEVEL_MODERATOR, 0, true
+				)
+			)
 		);
 		$this->dispatch('\OCA\Circles::onMemberInvited', ['circle' => $circle, 'member' => $member]);
 
@@ -305,11 +305,11 @@ class EventsService {
 
 		$this->publishEvent(
 			$event, array_merge(
-					  [$member],
-					  $this->membersRequest->forceGetMembers(
-						  $circle->getUniqueId(), DeprecatedMember::LEVEL_MODERATOR, 0, true
-					  )
-				  )
+				[$member],
+				$this->membersRequest->forceGetMembers(
+					$circle->getUniqueId(), DeprecatedMember::LEVEL_MODERATOR, 0, true
+				)
+			)
 		);
 		$this->dispatch('\OCA\Circles::onMemberRequesting', ['circle' => $circle, 'member' => $member]);
 
@@ -340,11 +340,11 @@ class EventsService {
 
 		$this->publishEvent(
 			$event, array_merge(
-					  [$member],
-					  $this->membersRequest->forceGetMembers(
-						  $circle->getUniqueId(), DeprecatedMember::LEVEL_MODERATOR, 0, true
-					  )
-				  )
+				[$member],
+				$this->membersRequest->forceGetMembers(
+					$circle->getUniqueId(), DeprecatedMember::LEVEL_MODERATOR, 0, true
+				)
+			)
 		);
 
 		$this->dispatch('\OCA\Circles::onMemberLeaving', ['circle' => $circle, 'member' => $member]);
@@ -931,7 +931,7 @@ class EventsService {
 					 ->setUser($userId)
 					 ->setObject($object, $objectId)
 					 ->setSubject(
-						 $subject, [$authorName, $circle->getName(), json_encode($circle)]
+					 	$subject, [$authorName, $circle->getName(), json_encode($circle)]
 					 );
 
 		return $notification;

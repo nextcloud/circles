@@ -127,11 +127,11 @@ class CirclesRemote extends Base {
 			 ->setDescription('remote features')
 			 ->addArgument('host', InputArgument::OPTIONAL, 'host of the remote instance of Nextcloud')
 			 ->addOption(
-				 'type', '', InputOption::VALUE_REQUIRED, 'set type of remote', RemoteInstance::TYPE_UNKNOWN
+			 	'type', '', InputOption::VALUE_REQUIRED, 'set type of remote', RemoteInstance::TYPE_UNKNOWN
 			 )
 			 ->addOption(
-				 'iface', '', InputOption::VALUE_REQUIRED, 'set interface to use to contact remote',
-				 InterfaceService::$LIST_IFACE[InterfaceService::IFACE_FRONTAL]
+			 	'iface', '', InputOption::VALUE_REQUIRED, 'set interface to use to contact remote',
+			 	InterfaceService::$LIST_IFACE[InterfaceService::IFACE_FRONTAL]
 			 )
 			 ->addOption('yes', '', InputOption::VALUE_NONE, 'silently add the remote instance')
 			 ->addOption('all', '', InputOption::VALUE_NONE, 'display all information');
