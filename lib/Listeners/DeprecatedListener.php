@@ -120,7 +120,8 @@ class DeprecatedListener {
 
 		foreach ($circles as $circle) {
 			// we are only interested in direct membership
-			if ($circle->getInitiator()->getSingleId() !== $federatedUser->getSingleId()) {
+			if (!$circle->hasInitiator()
+				|| $circle->getInitiator()->getSingleId() !== $federatedUser->getSingleId()) {
 				continue;
 			}
 
