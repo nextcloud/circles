@@ -34,5 +34,3 @@
 	<tfoot>
 	</tfoot>
 </table>
-<input type="hidden" name="dir" id="dir" value="" />
-
