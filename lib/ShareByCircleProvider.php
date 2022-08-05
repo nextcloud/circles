@@ -34,9 +34,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles;
 
-use OCA\Circles\Tools\Traits\TNCLogger;
-use OCA\Circles\Tools\Traits\TArrayTools;
-use OCA\Circles\Tools\Traits\TStringTools;
+use Exception;
 use OC;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\ContactAddressBookNotFoundException;
@@ -68,6 +66,9 @@ use OCA\Circles\Service\EventService;
 use OCA\Circles\Service\FederatedEventService;
 use OCA\Circles\Service\FederatedUserService;
 use OCA\Circles\Service\ShareWrapperService;
+use OCA\Circles\Tools\Traits\TArrayTools;
+use OCA\Circles\Tools\Traits\TNCLogger;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\Files\Folder;
 use OCP\Files\InvalidPathException;
 use OCP\Files\IRootFolder;
@@ -453,10 +454,19 @@ class ShareByCircleProvider implements IShareProvider {
 			return [];
 		}
 
-		$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId);
+		$nodeId = (!is_null($node)) ? $node->getId() : 0;
+
+		try {
+			$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId, false);
+		} catch (Exception $e) {
+			$this->e($e, ['userId' => $userId, 'shareType' => $shareType, 'nodeId' => $nodeId]);
+
+			return [];
+		}
+
 		$wrappedShares = $this->shareWrapperService->getSharesBy(
 			$federatedUser,
-			(!is_null($node)) ? $node->getId() : 0,
+			$nodeId,
 			$reshares,
 			$limit,
 			$offset,
