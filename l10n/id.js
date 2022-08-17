@@ -1,6 +1,7 @@
 OC.L10N.register(
     "circles",
     {
+    "{member} has been invited to join {circle} by {author}" : "{member} telah diundang untuk bergabung dengan {circle} oleh {author}",
     "Personal" : "Personal",
     "System" : "Sistem",
     "Visible" : "Tampak",
