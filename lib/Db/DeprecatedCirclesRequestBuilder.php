@@ -36,7 +36,6 @@ use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\TimezoneService;
 use OCP\DB\QueryBuilder\ICompositeExpression;
 use OCP\DB\QueryBuilder\IQueryBuilder;
-use OCP\DB\QueryBuilder\IQueryFunction;
 use OCP\IDBConnection;
 use OCP\IL10N;
 
@@ -195,7 +194,7 @@ class DeprecatedCirclesRequestBuilder extends DeprecatedRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param int $type
 	 *
-	 * @return IQueryFunction
+	 * @return null|string
 	 */
 	private function generateLimitClosed(IQueryBuilder $qb, $type) {
 		if (!(DeprecatedCircle::CIRCLES_CLOSED & (int)$type)) {
@@ -214,7 +213,7 @@ class DeprecatedCirclesRequestBuilder extends DeprecatedRequestBuilder {
 	 * @param IQueryBuilder $qb
 	 * @param int $type
 	 *
-	 * @return IQueryFunction
+	 * @return null|string
 	 */
 	private function generateLimitPublic(IQueryBuilder $qb, $type) {
 		if (!(DeprecatedCircle::CIRCLES_PUBLIC & (int)$type)) {
