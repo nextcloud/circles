@@ -44,7 +44,6 @@ use OCA\Circles\Tools\Exceptions\RowNotFoundException;
 use OCA\Circles\Tools\Traits\TArrayTools;
 use OCP\DB\QueryBuilder\ICompositeExpression;
 use OCP\DB\QueryBuilder\IQueryBuilder;
-use OCP\DB\QueryBuilder\IQueryFunction;
 use OCP\IDBConnection;
 use Psr\Log\LoggerInterface;
 
@@ -403,7 +402,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	 *
 	 * @return string
 	 */
-	public function exprLike(string $field, string $value, string $alias = '', bool $cs = true): IQueryFunction {
+	public function exprLike(string $field, string $value, string $alias = '', bool $cs = true): string {
 		if ($this->getType() === DBALQueryBuilder::SELECT) {
 			$field = (($alias === '') ? $this->getDefaultSelectAlias() : $alias) . '.' . $field;
 		}
@@ -416,7 +415,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 		}
 	}
 
-	public function exprLimit(string $field, string $value, string $alias = '', bool $cs = true): IQueryFunction {
+	public function exprLimit(string $field, string $value, string $alias = '', bool $cs = true): string {
 		if ($this->getType() === DBALQueryBuilder::SELECT) {
 			$field = (($alias === '') ? $this->getDefaultSelectAlias() : $alias) . '.' . $field;
 		}
@@ -434,7 +433,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 		}
 	}
 
-	public function exprLimitInt(string $field, int $value, string $alias = ''): IQueryFunction {
+	public function exprLimitInt(string $field, int $value, string $alias = ''): string {
 		if ($this->getType() === DBALQueryBuilder::SELECT) {
 			$field = (($alias === '') ? $this->getDefaultSelectAlias() : $alias) . '.' . $field;
 		}
@@ -452,7 +451,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	 *
 	 * @return string
 	 */
-	public function exprLimitBool(string $field, bool $value, string $alias = ''): IQueryFunction {
+	public function exprLimitBool(string $field, bool $value, string $alias = ''): string {
 		if ($this->getType() === DBALQueryBuilder::SELECT) {
 			$field = (($alias === '') ? $this->getDefaultSelectAlias() : $alias) . '.' . $field;
 		}
@@ -553,7 +552,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	 *
 	 * @return string
 	 */
-	public function exprLimitInArray(string $field, array $values, string $alias = ''): IQueryFunction {
+	public function exprLimitInArray(string $field, array $values, string $alias = ''): string {
 		if ($this->getType() === DBALQueryBuilder::SELECT) {
 			$field = (($alias === '') ? $this->getDefaultSelectAlias() : $alias) . '.' . $field;
 		}
@@ -571,7 +570,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	 *
 	 * @return string
 	 */
-	public function exprLimitBitwise(string $field, int $flag, string $alias = ''): IQueryFunction {
+	public function exprLimitBitwise(string $field, int $flag, string $alias = ''): string {
 		if ($this->getType() === DBALQueryBuilder::SELECT) {
 			$field = (($alias === '') ? $this->getDefaultSelectAlias() : $alias) . '.' . $field;
 		}
@@ -593,7 +592,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	 *
 	 * @return string
 	 */
-	public function exprLt(string $field, int $value, bool $lte = false, string $alias = ''): IQueryFunction {
+	public function exprLt(string $field, int $value, bool $lte = false, string $alias = ''): string {
 		if ($this->getType() === DBALQueryBuilder::SELECT) {
 			$field = (($alias === '') ? $this->getDefaultSelectAlias() : $alias) . '.' . $field;
 		}
@@ -615,7 +614,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	 *
 	 * @return string
 	 */
-	public function exprGt(string $field, int $value, bool $gte = false, string $alias = ''): IQueryFunction {
+	public function exprGt(string $field, int $value, bool $gte = false, string $alias = ''): string {
 		if ($this->getType() === DBALQueryBuilder::SELECT) {
 			$field = (($alias === '') ? $this->getDefaultSelectAlias() : $alias) . '.' . $field;
 		}
@@ -724,7 +723,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	 *
 	 * @return string
 	 */
-	public function exprUnlike(string $field, string $value, string $alias = '', bool $cs = true): IQueryFunction {
+	public function exprUnlike(string $field, string $value, string $alias = '', bool $cs = true): string {
 		if ($this->getType() === DBALQueryBuilder::SELECT) {
 			$field = (($alias === '') ? $this->getDefaultSelectAlias() : $alias) . '.' . $field;
 		}
@@ -748,7 +747,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	 *
 	 * @return string
 	 */
-	public function exprFilter(string $field, string $value, string $alias = '', bool $cs = true): IQueryFunction {
+	public function exprFilter(string $field, string $value, string $alias = '', bool $cs = true): string {
 		if ($this->getType() === DBALQueryBuilder::SELECT) {
 			$field = (($alias === '') ? $this->getDefaultSelectAlias() : $alias) . '.' . $field;
 		}
@@ -774,7 +773,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	 *
 	 * @return string
 	 */
-	public function exprFilterInt(string $field, int $value, string $alias = ''): IQueryFunction {
+	public function exprFilterInt(string $field, int $value, string $alias = ''): string {
 		if ($this->getType() === DBALQueryBuilder::SELECT) {
 			$field = (($alias === '') ? $this->getDefaultSelectAlias() : $alias) . '.' . $field;
 		}
@@ -792,7 +791,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	 *
 	 * @return string
 	 */
-	public function exprFilterBool(string $field, bool $value, string $alias = ''): IQueryFunction {
+	public function exprFilterBool(string $field, bool $value, string $alias = ''): string {
 		if ($this->getType() === DBALQueryBuilder::SELECT) {
 			$field = (($alias === '') ? $this->getDefaultSelectAlias() : $alias) . '.' . $field;
 		}
@@ -893,7 +892,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	 *
 	 * @return string
 	 */
-	public function exprFilterInArray(string $field, array $values, string $alias = ''): IQueryFunction {
+	public function exprFilterInArray(string $field, array $values, string $alias = ''): string {
 		if ($this->getType() === DBALQueryBuilder::SELECT) {
 			$field = (($alias === '') ? $this->getDefaultSelectAlias() : $alias) . '.' . $field;
 		}
@@ -911,7 +910,7 @@ class ExtendedQueryBuilder extends QueryBuilder {
 	 *
 	 * @return string
 	 */
-	public function exprFilterBitwise(string $field, int $flag, string $alias = ''): IQueryFunction {
+	public function exprFilterBitwise(string $field, int $flag, string $alias = ''): string {
 		if ($this->getType() === DBALQueryBuilder::SELECT) {
 			$field = (($alias === '') ? $this->getDefaultSelectAlias() : $alias) . '.' . $field;
 		}

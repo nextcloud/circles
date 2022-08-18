@@ -6,3 +6,4 @@ build/
 .settings/
 vendor/
 .php-cs-fixer.cache
+.php_cs.cache

@@ -34,9 +34,6 @@
       <code>$this-&gt;federationNotifications</code>
       <code>Notifications</code>
     </UndefinedDocblockClass>
-    <UndefinedFunction occurrences="1">
-      <code>setSubject($subject)</code>
-    </UndefinedFunction>
     <UndefinedInterfaceMethod occurrences="4">
       <code>getLazyRootFolder</code>
       <code>setHtmlBody</code>
@@ -145,16 +142,14 @@
     </InvalidScalarArgument>
   </file>
   <file src="lib/Db/DeprecatedCirclesRequestBuilder.php">
-    <InvalidNullableReturnType occurrences="3">
+    <InvalidNullableReturnType occurrences="1">
       <code>ICompositeExpression</code>
-      <code>string</code>
-      <code>string</code>
     </InvalidNullableReturnType>
     <InvalidReturnStatement occurrences="1"/>
     <InvalidReturnType occurrences="1">
       <code>string</code>
     </InvalidReturnType>
-    <NullableReturnStatement occurrences="4">
+    <NullableReturnStatement occurrences="2">
       <code>null</code>
       <code>null</code>
       <code>null</code>
@@ -209,9 +204,6 @@
     <InvalidScalarArgument occurrences="1">
       <code>$id</code>
     </InvalidScalarArgument>
-    <RedundantCondition occurrences="1">
-      <code>$getData</code>
-    </RedundantCondition>
   </file>
   <file src="lib/Db/TokensRequest.php">
     <InvalidScalarArgument occurrences="2">
@@ -784,9 +776,6 @@
       <code>IShare</code>
       <code>IShare</code>
     </InvalidNullableReturnType>
-    <InvalidReturnType occurrences="1">
-      <code>iterable</code>
-    </InvalidReturnType>
     <LessSpecificImplementedReturnType occurrences="1">
       <code>array</code>
     </LessSpecificImplementedReturnType>
@@ -800,12 +789,6 @@
     <ParamNameMismatch occurrences="1">
       <code>$shareId</code>
     </ParamNameMismatch>
-    <RedundantCondition occurrences="1">
-      <code>!is_null($node)</code>
-    </RedundantCondition>
-    <TypeDoesNotContainNull occurrences="1">
-      <code>0</code>
-    </TypeDoesNotContainNull>
   </file>
   <file src="lib/ShareByCircleProviderDeprecated.php">
     <ImplementedReturnTypeMismatch occurrences="4">
