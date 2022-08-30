@@ -328,8 +328,8 @@ class ShareWrapperRequest extends ShareWrapperRequestBuilder {
 		FederatedUser $federatedUser,
 		int $nodeId,
 		bool $reshares,
-		int $offset,
 		int $limit,
+		int $offset,
 		bool $getData = false,
 		bool $completeDetails = false
 	): array {
