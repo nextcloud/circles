@@ -238,6 +238,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	/** @var array */
 	private $options = [];
 
+	private array $alternateSqlPath = [];
 
 	/**
 	 * CoreQueryBuilder constructor.
@@ -315,8 +316,8 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	/**
 	 * @param string $singleId
 	 */
-	public function limitToSingleId(string $singleId): void {
-		$this->limit('single_id', $singleId, '', true);
+	public function limitToSingleId(string $singleId, string $alias = ''): void {
+		$this->limit('single_id', $singleId, $alias, true);
 	}
 
 
@@ -883,6 +884,43 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			 );
 
 		$this->leftJoinBasedOn($aliasMember);
+	}
+
+
+	/**
+	 * @param string $alias
+	 * @param string $field
+	 *
+	 * @throws RequestBuilderException
+	 */
+	public function innerJoinMembership(string $alias, string $field = 'unique_id'): void {
+		if ($this->getType() !== QueryBuilder::SELECT) {
+			return;
+		}
+
+		try {
+			$aliasMembership = $this->generateAlias($alias, self::MEMBERSHIPS);
+		} catch (RequestBuilderException $e) {
+			return;
+		}
+
+		$expr = $this->expr();
+		$this->generateMembershipSelectAlias($aliasMembership)
+			 ->innerJoin(
+				 $alias, CoreRequestBuilder::TABLE_MEMBERSHIP, $aliasMembership,
+				 $expr->andX(
+					 $expr->eq($aliasMembership . '.circle_id', $alias . '.' . $field),
+					 $expr->eq(
+						 $aliasMembership . '.level',
+						 $this->createNamedParameter(
+							 Member::LEVEL_MEMBER,
+							 self::PARAM_INT
+						 )
+					 )
+				 )
+			 );
+
+//		$this->leftJoinBasedOn($aliasMember);
 	}
 
 
@@ -1658,8 +1696,8 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	public function generateAlias(string $base, string $extension, ?array &$options = []): string {
 		$search = str_replace('_', '.', $base);
 		$path = $search . '.' . $extension;
-		if (!$this->validKey($path, self::$SQL_PATH)
-			&& !in_array($extension, $this->getArray($search, self::$SQL_PATH))) {
+		if (!$this->validKey($path, $this->getSqlPath())
+			&& !in_array($extension, $this->getArray($search, $this->getSqlPath()))) {
 			throw new RequestBuilderException($extension . ' not found in ' . $search);
 		}
 
@@ -1672,7 +1710,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			$optionPath = trim($optionPath . '.' . $p, '.');
 			$options = array_merge(
 				$options,
-				$this->getArray($optionPath . '.' . self::OPTIONS, self::$SQL_PATH),
+				$this->getArray($optionPath . '.' . self::OPTIONS, $this->getSqlPath()),
 				$this->getArray($optionPath . '.' . self::OPTIONS, $this->options)
 			);
 		}
@@ -1691,7 +1729,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$search = str_replace('_', '.', $prefix);
 
 		$path = [];
-		foreach ($this->getArray($search, self::$SQL_PATH) as $arr => $item) {
+		foreach ($this->getArray($search, $this->getSqlPath()) as $arr => $item) {
 			if (is_numeric($arr)) {
 				$k = $item;
 			} else {
@@ -1701,5 +1739,36 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		}
 
 		return $path;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getSqlPath(): array {
+		if (empty($this->alternateSqlPath)) {
+			return self::$SQL_PATH;
+		}
+
+		return $this->alternateSqlPath;
+	}
+
+
+	/**
+	 * DataProbe uses this to set which data need to be extracted, based on self::$SQL_PATH.
+	 *
+	 * @param string $key
+	 * @param array $path
+	 *
+	 * @return $this
+	 */
+	public function setAlternateSqlPath(string $key, array $path = []): self {
+		if (empty($this->alternateSqlPath)) {
+			$this->alternateSqlPath = self::$SQL_PATH;
+		}
+
+		$this->alternateSqlPath[$key] = $path;
+
+		return $this;
 	}
 }

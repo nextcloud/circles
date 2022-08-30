@@ -42,6 +42,7 @@ use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
+use OCA\Circles\Model\Probes\DataProbe;
 
 /**
  * Class CircleRequest
@@ -201,6 +202,48 @@ class CircleRequest extends CircleRequestBuilder {
 		return $this->getItemsFromRequest($qb);
 	}
 
+
+	/**
+	 * get data about multiple Circles.
+	 *
+	 * - CircleProbe is used to define the list of circles to be returned by the method,
+	 * - DataProbe is used to define the complexity of the data to be returned for each entry of the list
+	 *
+	 * @param IFederatedUser|null $initiator
+	 * @param CircleProbe $circleProbe
+	 * @param DataProbe $dataProbe
+	 *
+	 * @return array
+	 * @throws RequestBuilderException
+	 */
+	public function probeCircles(
+		?IFederatedUser $initiator,
+		CircleProbe $circleProbe,
+		DataProbe $dataProbe
+	): array {
+		$qb = $this->getCircleSelectSql();
+		if (!$dataProbe->has(CoreQueryBuilder::MEMBERSHIPS)) {
+			$dataProbe->add(CoreQueryBuilder::MEMBERSHIPS);
+		}
+
+		$qb->setAlternateSqlPath(CoreQueryBuilder::CIRCLE, $dataProbe->getPath())
+		   ->setOptions([CoreQueryBuilder::CIRCLE], $circleProbe->getAsOptions());
+
+		$qb->leftJoinOwner(CoreQueryBuilder::CIRCLE);
+
+		$qb->innerJoinMembership(CoreQueryBuilder::CIRCLE);
+
+		if (!is_null($initiator)) {
+			$qb->limitToSingleId(
+				$initiator->getSingleId(), $qb->generateAlias(
+				CoreQueryBuilder::CIRCLE,
+				CoreQueryBuilder::MEMBERSHIPS
+			)
+			);
+		}
+
+		return $this->getItemsFromRequest($qb);
+	}
 
 	/**
 	 * @param array $circleIds
