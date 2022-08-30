@@ -254,13 +254,13 @@ class ShareWrapperService {
 		FederatedUser $federatedUser,
 		int $nodeId,
 		bool $reshares,
-		int $offset,
 		int $limit,
+		int $offset,
 		bool $getData = false,
 		bool $completeDetails = false
 	): array {
 		return $this->shareWrapperRequest->getSharesBy(
-			$federatedUser, $nodeId, $reshares, $offset, $limit, $getData, $completeDetails
+			$federatedUser, $nodeId, $reshares, $limit, $offset, $getData, $completeDetails
 		);
 	}
 
