@@ -57,6 +57,7 @@ use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
 use OCA\Circles\Model\Probes\CircleProbe;
+use OCA\Circles\Model\Probes\DataProbe;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
@@ -316,7 +317,14 @@ class CirclesManager {
 
 
 	/**
-	 * returns Circles available, based on current session
+	 * WARNING: This method is not using Cached Memberships meaning that the request can be heavy and should
+	 * only be used if probeCircles() does not fit your need.
+	 *
+	 * Always prefer probeCircles();
+	 *
+	 * returns available Circles to the current session.
+	 *
+	 * @see probeCircles()
 	 *
 	 * @return Circle[]
 	 * @throws InitiatorNotFoundException
@@ -506,6 +514,31 @@ class CirclesManager {
 	 */
 	public function getDefinition(IEntity $circle): string {
 		return $this->circleService->getDefinition($circle);
+	}
+
+
+	/**
+	 * Returns data about Circles based on cached Memberships.
+	 * Meaning that only Circles the current user is a member will be returned.
+	 *
+	 * CircleProbe is used to filter Circles to be returned by the method.
+	 * DataProbe is used to add details to returned Circles.
+	 *
+	 * @param CircleProbe|null $circleProbe
+	 * @param DataProbe|null $dataProbe
+	 *
+	 * @return array
+	 * @throws InitiatorNotFoundException
+	 * @throws RequestBuilderException
+	 */
+	public function probeCircles(?CircleProbe $circleProbe = null, ?DataProbe $dataProbe = null): array {
+		if (is_null($circleProbe)) {
+			$circleProbe = new CircleProbe();
+			$circleProbe->filterHiddenCircles()
+						->filterBackendCircles();
+		}
+
+		return $this->circleService->probeCircles($circleProbe, $dataProbe);
 	}
 
 

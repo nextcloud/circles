@@ -62,6 +62,7 @@ use OCA\Circles\Model\FederatedUser;
 use OCA\Circles\Model\ManagedModel;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
+use OCA\Circles\Model\Probes\DataProbe;
 use OCA\Circles\Model\Probes\MemberProbe;
 use OCA\Circles\StatusCode;
 use OCA\Circles\Tools\Exceptions\InvalidItemException;
@@ -755,5 +756,28 @@ class CircleService {
 
 	private function generateGetCirclesCacheKey(FederatedUser $federatedUser, string $probeSum): string {
 		return $federatedUser->getSingleId() . '#' . $probeSum;
+	}
+
+
+	/**
+	 * @param CircleProbe $circleProbe
+	 * @param DataProbe|null $dataProbe
+	 *
+	 * @return array
+	 * @throws InitiatorNotFoundException
+	 * @throws RequestBuilderException
+	 */
+	public function probeCircles(CircleProbe $circleProbe, ?DataProbe $dataProbe = null): array {
+		$this->federatedUserService->mustHaveCurrentUser();
+
+		if (is_null($dataProbe)) {
+			$dataProbe = new DataProbe();
+		}
+
+		return $this->circleRequest->probeCircles(
+			$this->federatedUserService->getCurrentUser(),
+			$circleProbe,
+			$dataProbe
+		);
 	}
 }
