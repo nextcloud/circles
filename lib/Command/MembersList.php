@@ -245,24 +245,28 @@ class MembersList extends Base {
 			}
 
 			$table->appendRow(
-				[
-					$member->getCircleId(),
-					$member->getCircle()->getDisplayName(),
-					$member->getId(),
-					$member->getSingleId(),
-					Member::$TYPE[$member->getUserType()],
-					$member->hasBasedOn() ? Circle::$DEF_SOURCE[$member->getBasedOn()->getSource()] : '',
-					$this->configService->displayFederatedUser(
-						$member,
-						$this->input->getOption('display-name')
-					),
-					($level > 0) ? Member::$DEF_LEVEL[$level] :
-						'(' . strtolower($member->getStatus()) . ')',
-					($member->hasInvitedBy()) ? $this->configService->displayFederatedUser(
-						$member->getInvitedBy(),
-						$this->input->getOption('display-name')
-					) : 'Unknown'
-				]
+				$this->filterRow(
+					[
+						$member->getCircleId(),
+						$member->getCircle()->getDisplayName(),
+						$member->getId(),
+						$member->getSingleId(),
+						Member::$TYPE[$member->getUserType()],
+						$member->hasBasedOn() ? Circle::$DEF_SOURCE[$member->getBasedOn()->getSource()] : '',
+						$this->cut(
+							$this->configService->displayFederatedUser(
+								$member, $this->input->getOption('display-name')
+							), 40
+						),
+						$this->configService->displayInstance($member->getInstance()),
+						($level > 0) ? Member::$DEF_LEVEL[$level] :
+							'(' . strtolower($member->getStatus()) . ')',
+						($member->hasInvitedBy()) ? $this->configService->displayFederatedUser(
+							$member->getInvitedBy(), $this->input->getOption('display-name')
+						) : 'Unknown'
+					],
+					13
+				)
 			);
 		}
 
@@ -361,9 +365,9 @@ class MembersList extends Base {
 					$node = new TreeNode(
 						$tree, new SimpleDataStore(
 								 [
-								 	'circle' => $circle,
-								 	'member' => $member,
-								 	'cycling' => in_array($member->getSingleId(), $knownIds),
+									 'circle' => $circle,
+									 'member' => $member,
+									 'cycling' => in_array($member->getSingleId(), $knownIds),
 								 ]
 							 )
 					);
@@ -381,8 +385,8 @@ class MembersList extends Base {
 						new TreeNode(
 							$tree, new SimpleDataStore(
 									 [
-									 	'member' => $member,
-									 	'cycling' => in_array($member->getSingleId(), $knownIds)
+										 'member' => $member,
+										 'cycling' => in_array($member->getSingleId(), $knownIds)
 									 ]
 								 )
 						);
