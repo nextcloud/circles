@@ -1,15 +1,16 @@
 OC.L10N.register(
     "circles",
     {
-    "Personal" : "Shaxsiy",
-    "System" : "Tizim",
-    "Open" : "Ochish",
-    "Local" : "mahalliy",
-    "Member" : "Ro'yxatdan",
+    "Personal" : "Personal",
+    "System" : "System",
+    "Open" : "Open",
+    "Local" : "Local",
+    "Member" : "Member",
     "Admin" : "Admin",
-    "Owner" : "egasi",
-    "No files in here" : "Bu erda hech qanday fayl yo'q",
-    "Name" : "Ism...",
-    "Size" : "Hajmi"
+    "Owner" : "Owner",
+    "No files in here" : "No files in here",
+    "Name" : "Name",
+    "Size" : "Size",
+    "Modified" : "Modified"
 },
 "nplurals=1; plural=0;");
