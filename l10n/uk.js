@@ -24,6 +24,7 @@ OC.L10N.register(
     "%s" : "%s ",
     "Personal Circle" : "Особисте Коло",
     "now" : "зараз",
+    "Could not find share" : "Не вдалося знайти спільний доступ",
     "No files in here" : "Тут немає файлів",
     "No entries found in this folder" : "В цій теці нічого немає",
     "Name" : "Ім'я",
