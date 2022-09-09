@@ -64,10 +64,14 @@ use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\Probes\MemberProbe;
 use OCA\Circles\StatusCode;
+use OCA\Circles\Tools\Exceptions\InvalidItemException;
 use OCA\Circles\Tools\Model\SimpleDataStore;
 use OCA\Circles\Tools\Traits\TArrayTools;
+use OCA\Circles\Tools\Traits\TDeserialize;
 use OCA\Circles\Tools\Traits\TNCLogger;
 use OCA\Circles\Tools\Traits\TStringTools;
+use OCP\ICache;
+use OCP\ICacheFactory;
 use OCP\IL10N;
 use OCP\Security\IHasher;
 
@@ -75,6 +79,10 @@ class CircleService {
 	use TArrayTools;
 	use TStringTools;
 	use TNCLogger;
+	use TDeserialize;
+
+	public const CACHE_GET_CIRCLES = 'circles/getCircles';
+	public const CACHE_GET_CIRCLES_TTL = 300;
 
 
 	/** @var IL10N */
@@ -82,6 +90,9 @@ class CircleService {
 
 	/** @var IHasher */
 	private $hasher;
+
+	/** @var ICache $cache */
+	private $cache;
 
 	/** @var CircleRequest */
 	private $circleRequest;
@@ -123,6 +134,7 @@ class CircleService {
 	public function __construct(
 		IL10N $l10n,
 		IHasher $hasher,
+		ICacheFactory $cacheFactory,
 		CircleRequest $circleRequest,
 		MemberRequest $memberRequest,
 		RemoteStreamService $remoteStreamService,
@@ -134,6 +146,7 @@ class CircleService {
 	) {
 		$this->l10n = $l10n;
 		$this->hasher = $hasher;
+		$this->cache = $cacheFactory->createDistributed(self::CACHE_GET_CIRCLES);
 		$this->circleRequest = $circleRequest;
 		$this->memberRequest = $memberRequest;
 		$this->remoteStreamService = $remoteStreamService;
@@ -503,19 +516,41 @@ class CircleService {
 
 
 	/**
-	 * @param CircleProbe|null $probe
-	 *
 	 * @return Circle[]
 	 * @throws InitiatorNotFoundException
 	 * @throws RequestBuilderException
 	 */
-	public function getCircles(CircleProbe $probe): array {
+	public function getCircles(CircleProbe $probe, bool $caching = false): array {
 		$this->federatedUserService->mustHaveCurrentUser();
 
-		return $this->circleRequest->getCircles(
+		// This is a quick solution before implementation of DataProbe
+		if ($caching && !is_null($this->federatedUserService->getCurrentUser())) {
+			$key = $this->generateGetCirclesCacheKey(
+				$this->federatedUserService->getCurrentUser(),
+				$probe->getChecksum()
+			);
+
+			$cachedData = $this->cache->get($key);
+			try {
+				if (!is_string($cachedData)) {
+					throw new InvalidItemException();
+				}
+
+				return $this->deserializeList($cachedData, Circle::class);
+			} catch (InvalidItemException $e) {
+			}
+		}
+
+		$circles = $this->circleRequest->getCircles(
 			$this->federatedUserService->getCurrentUser(),
 			$probe
 		);
+
+		if ($caching && !is_null($this->federatedUserService->getCurrentUser())) {
+			$this->cache->set($key, json_encode($circles), self::CACHE_GET_CIRCLES_TTL);
+		}
+
+		return $circles;
 	}
 
 
@@ -715,5 +750,10 @@ class CircleService {
 	 */
 	public function getDefinitionUser(IFederatedUser $federatedUser): string {
 		return $this->l10n->t('%s', [Circle::$DEF_SOURCE[$federatedUser->getUserType()]]);
+	}
+
+
+	private function generateGetCirclesCacheKey(FederatedUser $federatedUser, string $probeSum): string {
+		return $federatedUser->getSingleId() . '#' . $probeSum;
 	}
 }
