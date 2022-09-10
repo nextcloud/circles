@@ -142,6 +142,7 @@
     "You have been blocked from this circle" : "あなたはこのサークルからブロックされています",
     "The user is already a member of this circle" : "ユーザーはすでにこのサークルのメンバーです",
     "The user has already been invited into this circle" : "ユーザーはすでにこのサークルに招待されています",
+    "%s (Circle owned by %s)" : "%s (%sが所有するサークル)",
     "You are now a member of the Circle \"%2$s\"" : "あなたはサークル「%2$s」のメンバーではありません",
     "You have been invited by %1$s into the Circle \"%2$s\"" : "あなたは%1$sからサークル「%2$s」に招待されています",
     "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$sがサークル「%2$s」のメンバー申請を送りました",
