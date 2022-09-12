@@ -58,86 +58,86 @@ class CircleDestroy implements
 	IFederatedItemHighSeverity,
 	IFederatedItemAsyncProcess,
 	IFederatedItemMemberEmpty {
-	use TStringTools;
-	use TDeserialize;
+		use TStringTools;
+		use TDeserialize;
 
 
-	/** @var CircleRequest */
-	private $circleRequest;
+		/** @var CircleRequest */
+		private $circleRequest;
 
-	/** @var MemberRequest */
-	private $memberRequest;
-
-
-	private $eventService;
-
-	/** @var MembershipService */
-	private $membershipService;
+		/** @var MemberRequest */
+		private $memberRequest;
 
 
-	/**
-	 * CircleDestroy constructor.
-	 *
-	 * @param CircleRequest $circleRequest
-	 * @param MemberRequest $memberRequest
-	 * @param EventService $eventService
-	 * @param MembershipService $membershipService
-	 */
-	public function __construct(
-		CircleRequest $circleRequest, MemberRequest $memberRequest, EventService $eventService,
-		MembershipService $membershipService
-	) {
-		$this->circleRequest = $circleRequest;
-		$this->memberRequest = $memberRequest;
-		$this->eventService = $eventService;
-		$this->membershipService = $membershipService;
-	}
+		private $eventService;
+
+		/** @var MembershipService */
+		private $membershipService;
 
 
-	/**
-	 * @param FederatedEvent $event
-	 *
-	 * @throws FederatedItemBadRequestException
-	 */
-	public function verify(FederatedEvent $event): void {
-		$circle = $event->getCircle();
-		if ($circle->isConfig(Circle::CFG_APP)) {
-			throw new FederatedItemBadRequestException(
-				StatusCode::$CIRCLE_DESTROY[120],
-				120
-			);
+		/**
+		 * CircleDestroy constructor.
+		 *
+		 * @param CircleRequest $circleRequest
+		 * @param MemberRequest $memberRequest
+		 * @param EventService $eventService
+		 * @param MembershipService $membershipService
+		 */
+		public function __construct(
+			CircleRequest $circleRequest, MemberRequest $memberRequest, EventService $eventService,
+			MembershipService $membershipService
+		) {
+			$this->circleRequest = $circleRequest;
+			$this->memberRequest = $memberRequest;
+			$this->eventService = $eventService;
+			$this->membershipService = $membershipService;
 		}
 
-		$initiator = $circle->getInitiator();
 
-		$initiatorHelper = new MemberHelper($initiator);
-		$initiatorHelper->mustBeOwner();
+		/**
+		 * @param FederatedEvent $event
+		 *
+		 * @throws FederatedItemBadRequestException
+		 */
+		public function verify(FederatedEvent $event): void {
+			$circle = $event->getCircle();
+			if ($circle->isConfig(Circle::CFG_APP)) {
+				throw new FederatedItemBadRequestException(
+					StatusCode::$CIRCLE_DESTROY[120],
+					120
+				);
+			}
 
-		$event->setOutcome($this->serialize($circle));
+			$initiator = $circle->getInitiator();
+
+			$initiatorHelper = new MemberHelper($initiator);
+			$initiatorHelper->mustBeOwner();
+
+			$event->setOutcome($this->serialize($circle));
+		}
+
+
+		/**
+		 * @param FederatedEvent $event
+		 *
+		 * @throws RequestBuilderException
+		 */
+		public function manage(FederatedEvent $event): void {
+			$circle = $event->getCircle();
+
+			$this->eventService->circleDestroying($event);
+
+			$this->circleRequest->delete($circle);
+			$this->memberRequest->deleteAllFromCircle($circle);
+			$this->membershipService->onUpdate($circle->getSingleId());
+		}
+
+
+		/**
+		 * @param FederatedEvent $event
+		 * @param array $results
+		 */
+		public function result(FederatedEvent $event, array $results): void {
+			$this->eventService->circleDestroyed($event, $results);
+		}
 	}
-
-
-	/**
-	 * @param FederatedEvent $event
-	 *
-	 * @throws RequestBuilderException
-	 */
-	public function manage(FederatedEvent $event): void {
-		$circle = $event->getCircle();
-
-		$this->eventService->circleDestroying($event);
-
-		$this->circleRequest->delete($circle);
-		$this->memberRequest->deleteAllFromCircle($circle);
-		$this->membershipService->onUpdate($circle->getSingleId());
-	}
-
-
-	/**
-	 * @param FederatedEvent $event
-	 * @param array $results
-	 */
-	public function result(FederatedEvent $event, array $results): void {
-		$this->eventService->circleDestroyed($event, $results);
-	}
-}

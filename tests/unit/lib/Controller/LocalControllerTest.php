@@ -92,15 +92,15 @@ class LocalControllerTest extends TestCase {
 		$this->configService = $this->createMock(ConfigService::class);
 		$this->configService->expects($this->any())->method('getAppValueBool')->with(ConfigService::FRONTEND_ENABLED)->willReturn(true);
 		$this->localController = new LocalController(Application::APP_ID,
-													 $this->request,
-													 $this->userSession,
-													 $this->federatedUserService,
-													 $this->circleService,
-													 $this->memberService,
-													 $this->membershipService,
-													 $this->permissionService,
-													 $this->searchService,
-													 $this->configService);
+			$this->request,
+			$this->userSession,
+			$this->federatedUserService,
+			$this->circleService,
+			$this->memberService,
+			$this->membershipService,
+			$this->permissionService,
+			$this->searchService,
+			$this->configService);
 	}
 
 	/**

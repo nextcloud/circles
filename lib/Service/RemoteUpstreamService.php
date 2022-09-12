@@ -310,7 +310,7 @@ class RemoteUpstreamService {
 //	 *
 //	 */
 //	private function removeDeprecatedEvents() {
-////		$this->deprecatedEvents();
+	////		$this->deprecatedEvents();
 //
 //	}
 }

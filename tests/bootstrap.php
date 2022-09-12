@@ -10,3 +10,4 @@ require_once __DIR__.'/../vendor/autoload.php';
 \OC_App::loadApp('circles');
 
 OC_Hook::clear();
+ion g

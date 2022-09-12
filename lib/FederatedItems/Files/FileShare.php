@@ -57,78 +57,78 @@ class FileShare implements
 	IFederatedItemHighSeverity,
 	IFederatedItemAsyncProcess,
 	IFederatedItemMemberEmpty {
-	use TStringTools;
-	use TNCLogger;
+		use TStringTools;
+		use TNCLogger;
 
 
-	/** @var MountRequest */
-	private $mountRequest;
+		/** @var MountRequest */
+		private $mountRequest;
 
-	/** @var EventService */
-	private $eventService;
+		/** @var EventService */
+		private $eventService;
 
-	/** @var ConfigService */
-	private $configService;
-
-
-	/**
-	 * FileShare constructor.
-	 *
-	 * @param MountRequest $mountRequest
-	 * @param EventService $eventService
-	 * @param ConfigService $configService
-	 */
-	public function __construct(
-		MountRequest $mountRequest,
-		EventService $eventService,
-		ConfigService $configService
-	) {
-		$this->mountRequest = $mountRequest;
-		$this->eventService = $eventService;
-		$this->configService = $configService;
-	}
+		/** @var ConfigService */
+		private $configService;
 
 
-	/**
-	 * @param FederatedEvent $event
-	 */
-	public function verify(FederatedEvent $event): void {
-		// TODO: check (origin of file ?) and improve
-		// TODO: Use a share lock
-
-		$this->eventService->fileSharePreparing($event);
-	}
-
-
-	/**
-	 * @param FederatedEvent $event
-	 *
-	 * @throws CircleNotFoundException
-	 * @throws InvalidItemException
-	 * @throws UnknownTypeException
-	 */
-	public function manage(FederatedEvent $event): void {
-		$mount = null;
-		if (!$this->configService->isLocalInstance($event->getOrigin())) {
-			/** @var ShareWrapper $wrappedShare */
-			$wrappedShare = $event->getParams()->gObj('wrappedShare', ShareWrapper::class);
-
-			$mount = new Mount();
-			$mount->fromShare($wrappedShare);
-			$mount->setMountId($this->token(15));
-
-			$this->mountRequest->save($mount);
+		/**
+		 * FileShare constructor.
+		 *
+		 * @param MountRequest $mountRequest
+		 * @param EventService $eventService
+		 * @param ConfigService $configService
+		 */
+		public function __construct(
+			MountRequest $mountRequest,
+			EventService $eventService,
+			ConfigService $configService
+		) {
+			$this->mountRequest = $mountRequest;
+			$this->eventService = $eventService;
+			$this->configService = $configService;
 		}
 
-		$this->eventService->fileShareCreating($event, $mount);
-	}
+
+		/**
+		 * @param FederatedEvent $event
+		 */
+		public function verify(FederatedEvent $event): void {
+			// TODO: check (origin of file ?) and improve
+			// TODO: Use a share lock
+
+			$this->eventService->fileSharePreparing($event);
+		}
 
 
-	/**
-	 * @param FederatedEvent $event
-	 * @param array $results
-	 */
-	public function result(FederatedEvent $event, array $results): void {
-		$this->eventService->fileShareCreated($event, $results);
+		/**
+		 * @param FederatedEvent $event
+		 *
+		 * @throws CircleNotFoundException
+		 * @throws InvalidItemException
+		 * @throws UnknownTypeException
+		 */
+		public function manage(FederatedEvent $event): void {
+			$mount = null;
+			if (!$this->configService->isLocalInstance($event->getOrigin())) {
+				/** @var ShareWrapper $wrappedShare */
+				$wrappedShare = $event->getParams()->gObj('wrappedShare', ShareWrapper::class);
+
+				$mount = new Mount();
+				$mount->fromShare($wrappedShare);
+				$mount->setMountId($this->token(15));
+
+				$this->mountRequest->save($mount);
+			}
+
+			$this->eventService->fileShareCreating($event, $mount);
+		}
+
+
+		/**
+		 * @param FederatedEvent $event
+		 * @param array $results
+		 */
+		public function result(FederatedEvent $event, array $results): void {
+			$this->eventService->fileShareCreated($event, $results);
+		}
 	}
-}

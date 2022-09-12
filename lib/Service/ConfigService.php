@@ -124,7 +124,7 @@ class ConfigService {
 	public const GS_LOOKUP_INSTANCES = '/instances';
 	public const GS_LOOKUP_USERS = '/users';
 
-
+c
 	// deprecated -- removing in NC25
 	public const CIRCLES_CONTACT_BACKEND = 'contact_backend';
 	public const CIRCLES_ACCOUNTS_ONLY = 'accounts_only'; // only UserType=1
@@ -366,10 +366,10 @@ class ConfigService {
 	 */
 	public function enforcePasswordOnSharedFile(Circle $circle): bool {
 		if ($this->config->getAppValue(
-				'core',
-				'shareapi_enforce_links_password',
-				'no'
-			) === 'yes') {
+			'core',
+			'shareapi_enforce_links_password',
+			'no'
+		) === 'yes') {
 			return true;
 		}
 
@@ -665,9 +665,9 @@ class ConfigService {
 		$name = ($displayName) ? $federatedUser->getDisplayName() : $federatedUser->getUserId();
 		if ($federatedUser->getUserType() === Member::TYPE_MAIL) {
 			return $name . ' ' . $this->displayInstance(
-					$federatedUser->getInstance(),
-					self::DISPLAY_PARENTHESIS
-				);
+				$federatedUser->getInstance(),
+				self::DISPLAY_PARENTHESIS
+			);
 		}
 
 		if (!$displayInstance) {

@@ -730,8 +730,8 @@ class MembersService {
 
 			return $this->get('name.value', $users);
 		} catch (
-		RequestNetworkException |
-		RequestResultNotJsonException $e
+			RequestNetworkException |
+			RequestResultNotJsonException $e
 		) {
 		}
 

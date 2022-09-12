@@ -252,10 +252,10 @@ class CircleProviderRequestBuilder extends DeprecatedRequestBuilder {
 		$qb->selectAlias('mo.user_id', 'circle_owner');
 		$qb->leftJoin(
 			'c', DeprecatedRequestBuilder::TABLE_MEMBERS, 'mo', $expr->andX(
-			$expr->eq('mo.circle_id', 'c.unique_id'),
-			$expr->eq('mo.user_type', $qb->createNamedParameter(DeprecatedMember::TYPE_USER)),
-			$expr->eq('mo.level', $qb->createNamedParameter(DeprecatedMember::LEVEL_OWNER))
-		)
+				$expr->eq('mo.circle_id', 'c.unique_id'),
+				$expr->eq('mo.user_type', $qb->createNamedParameter(DeprecatedMember::TYPE_USER)),
+				$expr->eq('mo.level', $qb->createNamedParameter(DeprecatedMember::LEVEL_OWNER))
+			)
 		);
 	}
 
@@ -352,10 +352,10 @@ class CircleProviderRequestBuilder extends DeprecatedRequestBuilder {
 		$qb->addSelect('m.user_id')
 		   ->from(DeprecatedRequestBuilder::TABLE_MEMBERS, 'm')
 		   ->andWhere(
-			   $expr->andX(
-				   $expr->eq('s.share_with', 'm.circle_id'),
-				   $expr->eq('m.user_type', $qb->createNamedParameter(DeprecatedMember::TYPE_USER))
-			   )
+		   	$expr->andX(
+		   		$expr->eq('s.share_with', 'm.circle_id'),
+		   		$expr->eq('m.user_type', $qb->createNamedParameter(DeprecatedMember::TYPE_USER))
+		   	)
 		   );
 	}
 
@@ -372,10 +372,10 @@ class CircleProviderRequestBuilder extends DeprecatedRequestBuilder {
 		$qb->leftJoin('s', 'filecache', 'f', $expr->eq('s.file_source', 'f.fileid'))
 		   ->leftJoin('f', 'storages', 'st', $expr->eq('f.storage', 'st.numeric_id'))
 		   ->leftJoin(
-			   's', 'share', 's2', $expr->andX(
-			   $expr->eq('s.id', 's2.parent'),
-			   $expr->eq('s2.share_with', $qb->createNamedParameter($userId))
-		   )
+		   	's', 'share', 's2', $expr->andX(
+		   		$expr->eq('s.id', 's2.parent'),
+		   		$expr->eq('s2.share_with', $qb->createNamedParameter($userId))
+		   	)
 		   );
 
 		$qb->selectAlias('s2.id', 'parent_id');
@@ -466,11 +466,11 @@ class CircleProviderRequestBuilder extends DeprecatedRequestBuilder {
 
 		$qb->selectDistinct('s.id')
 		   ->addSelect(
-			   's.*', 'f.fileid', 'f.path', 'f.permissions AS f_permissions', 'f.storage',
-			   'f.path_hash', 'f.parent AS f_parent', 'f.name', 'f.mimetype', 'f.mimepart',
-			   'f.size', 'f.mtime', 'f.storage_mtime', 'f.encrypted', 'f.unencrypted_size',
-			   'f.etag', 'f.checksum', 'c.type AS circle_type', 'c.name AS circle_name',
-			   'c.alt_name AS circle_alt_name'
+		   	's.*', 'f.fileid', 'f.path', 'f.permissions AS f_permissions', 'f.storage',
+		   	'f.path_hash', 'f.parent AS f_parent', 'f.name', 'f.mimetype', 'f.mimepart',
+		   	'f.size', 'f.mtime', 'f.storage_mtime', 'f.encrypted', 'f.unencrypted_size',
+		   	'f.etag', 'f.checksum', 'c.type AS circle_type', 'c.name AS circle_name',
+		   	'c.alt_name AS circle_alt_name'
 		   )
 		   ->selectAlias('st.id', 'storage_string_id');
 
@@ -492,10 +492,10 @@ class CircleProviderRequestBuilder extends DeprecatedRequestBuilder {
 		$qb->from('share', 's')
 		   ->andWhere($expr->eq('s.share_type', $qb->createNamedParameter(IShare::TYPE_CIRCLE)))
 		   ->andWhere(
-			   $expr->orX(
-				   $expr->eq('s.item_type', $qb->createNamedParameter('file')),
-				   $expr->eq('s.item_type', $qb->createNamedParameter('folder'))
-			   )
+		   	$expr->orX(
+		   		$expr->eq('s.item_type', $qb->createNamedParameter('file')),
+		   		$expr->eq('s.item_type', $qb->createNamedParameter('folder'))
+		   	)
 		   );
 	}
 

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 
+
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -10,7 +11,7 @@ declare(strict_types=1);
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2021
+ * @copyright 2022
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -29,57 +30,27 @@ declare(strict_types=1);
  */
 
 
-namespace OCA\Circles\FederatedItems;
+namespace OCA\Circles\Tools;
 
-use OCA\Circles\Tools\Traits\TDeserialize;
-use OCA\Circles\Db\CircleRequest;
-use OCA\Circles\IFederatedItem;
-use OCA\Circles\Model\Federated\FederatedEvent;
-
-/**
- * Class CircleSettings
- *
- * @package OCA\Circles\FederatedItems
- */
-class CircleSettings implements IFederatedItem {
-	use TDeserialize;
-
-
-	/** @var CircleRequest */
-	private $circleRequest;
-
+interface ISignedModel {
 
 	/**
-	 * CircleSettings constructor.
+	 * @param string $signature
 	 *
-	 * @param CircleRequest $circleRequest
+	 * @return $this
 	 */
-	public function __construct(CircleRequest $circleRequest) {
-		$this->circleRequest = $circleRequest;
-	}
+	public function setSignature(string $signature): self;
+
+	/**
+	 * @return string
+	 */
+	public function getSignature(): string;
 
 
 	/**
-	 * @param FederatedEvent $event
+	 * returns array/data to be signed to identify the model
+	 *
+	 * @return array
 	 */
-	public function verify(FederatedEvent $event): void {
-		$circle = $event->getCircle();
-		$new = clone $circle;
-		$event->setOutcome($this->serialize($new));
-	}
-
-
-	/**
-	 * @param FederatedEvent $event
-	 */
-	public function manage(FederatedEvent $event): void {
-	}
-
-
-	/**
-	 * @param FederatedEvent $event
-	 * @param array $results
-	 */
-	public function result(FederatedEvent $event, array $results): void {
-	}
+	public function signedData(): array;
 }

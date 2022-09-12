@@ -109,8 +109,8 @@ class FixUniqueId extends Base {
 		$qb = $this->connection->getQueryBuilder();
 		$qb->update($table)
 		   ->where(
-			   $qb->expr()
-				  ->eq('circle_id', $qb->createNamedParameter($circleId))
+		   	$qb->expr()
+		   		  ->eq('circle_id', $qb->createNamedParameter($circleId))
 		   );
 
 		$qb->set('circle_id', $qb->createNamedParameter($shortenUniqueId));
@@ -125,12 +125,12 @@ class FixUniqueId extends Base {
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->update('share')
 		   ->where(
-			   $expr->andX(
-				   $expr->eq(
-					   'share_type', $qb->createNamedParameter(Share::SHARE_TYPE_CIRCLE)
-				   ),
-				   $expr->eq('share_with', $qb->createNamedParameter($circleId))
-			   )
+		   	$expr->andX(
+		   		$expr->eq(
+		   			'share_type', $qb->createNamedParameter(Share::SHARE_TYPE_CIRCLE)
+		   		),
+		   		$expr->eq('share_with', $qb->createNamedParameter($circleId))
+		   	)
 		   );
 
 		$qb->set('share_with', $qb->createNamedParameter($shortenUniqueId));

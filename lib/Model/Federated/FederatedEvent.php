@@ -137,11 +137,11 @@ class FederatedEvent implements JsonSerializable {
 	}
 
 	/**
-	 * @param mixed $class
+	 * @param string $class
 	 *
 	 * @return self
 	 */
-	public function setClass($class): self {
+	public function setClass(string $class): self {
 		$this->class = $class;
 
 		return $this;
@@ -556,9 +556,7 @@ class FederatedEvent implements JsonSerializable {
 	 * @return FederatedEvent
 	 */
 	public function bypass(int $flag): self {
-		if (!$this->canBypass($flag)) {
-			$this->bypass += $flag;
-		}
+		$this->bypass |= $flag;
 
 		return $this;
 	}

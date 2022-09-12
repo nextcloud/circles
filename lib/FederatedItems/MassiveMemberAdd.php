@@ -53,75 +53,75 @@ class MassiveMemberAdd extends SingleMemberAdd implements
 	IFederatedItemAsyncProcess,
 	IFederatedItemHighSeverity,
 	IFederatedItemMemberEmpty {
-	use TStringTools;
-	use TNCLogger;
+		use TStringTools;
+		use TNCLogger;
 
 
-	/**
-	 * @param FederatedEvent $event
-	 */
-	public function verify(FederatedEvent $event): void {
-		$circle = $event->getCircle();
-		$initiator = $circle->getInitiator();
+		/**
+		 * @param FederatedEvent $event
+		 */
+		public function verify(FederatedEvent $event): void {
+			$circle = $event->getCircle();
+			$initiator = $circle->getInitiator();
 
-		$initiatorHelper = new MemberHelper($initiator);
-		if (!$circle->isConfig(Circle::CFG_FRIEND)) {
-			$initiatorHelper->mustBeModerator();
-		}
-
-		$members = $event->getMembers();
-		$filtered = [];
-
-		foreach ($members as $member) {
-			try {
-				$filtered[] = $this->generateMember($event, $circle, $member);
-			} catch (Exception $e) {
-				$this->e($e, ['event' => $event, 'circle' => $circle, 'member' => $member]);
+			$initiatorHelper = new MemberHelper($initiator);
+			if (!$circle->isConfig(Circle::CFG_FRIEND)) {
+				$initiatorHelper->mustBeModerator();
 			}
-		}
 
-		$event->setMembers($filtered);
-		$event->setOutcome($this->serializeArray($filtered));
+			$members = $event->getMembers();
+			$filtered = [];
 
-		foreach ($event->getMembers() as $member) {
-			$event->setMember($member);
-			$this->eventService->memberPreparing($event);
-		}
-	}
-
-
-	/**
-	 * @param FederatedEvent $event
-	 */
-	public function manage(FederatedEvent $event): void {
-		foreach ($event->getMembers() as $member) {
-			try {
-				if (!$this->memberService->insertOrUpdate($member)) {
-					continue;
+			foreach ($members as $member) {
+				try {
+					$filtered[] = $this->generateMember($event, $circle, $member);
+				} catch (Exception $e) {
+					$this->e($e, ['event' => $event, 'circle' => $circle, 'member' => $member]);
 				}
+			}
 
+			$event->setMembers($filtered);
+			$event->setOutcome($this->serializeArray($filtered));
+
+			foreach ($event->getMembers() as $member) {
 				$event->setMember($member);
-				if ($member->getStatus() === Member::STATUS_INVITED) {
-					$this->eventService->memberInviting($event);
-				} else {
-					$this->eventService->memberAdding($event);
-				}
-			} catch (Exception $e) {
+				$this->eventService->memberPreparing($event);
 			}
 		}
 
-		$this->membershipService->updatePopulation($event->getCircle());
-	}
+
+		/**
+		 * @param FederatedEvent $event
+		 */
+		public function manage(FederatedEvent $event): void {
+			foreach ($event->getMembers() as $member) {
+				try {
+					if (!$this->memberService->insertOrUpdate($member)) {
+						continue;
+					}
+
+					$event->setMember($member);
+					if ($member->getStatus() === Member::STATUS_INVITED) {
+						$this->eventService->memberInviting($event);
+					} else {
+						$this->eventService->memberAdding($event);
+					}
+				} catch (Exception $e) {
+				}
+			}
+
+			$this->membershipService->updatePopulation($event->getCircle());
+		}
 
 
-	/**
-	 * @param FederatedEvent $event
-	 * @param array $results
-	 */
-	public function result(FederatedEvent $event, array $results): void {
-		foreach ($event->getMembers() as $member) {
-			$event->setMember($member);
-			$this->eventService->memberAdded($event, $results);
+		/**
+		 * @param FederatedEvent $event
+		 * @param array $results
+		 */
+		public function result(FederatedEvent $event, array $results): void {
+			foreach ($event->getMembers() as $member) {
+				$event->setMember($member);
+				$this->eventService->memberAdded($event, $results);
+			}
 		}
 	}
-}
