@@ -83,6 +83,7 @@ OC.L10N.register(
     "Local" : "Vietinis",
     "Root" : "Šaknis",
     "Federated" : "Federacinis",
+    "Email Address" : "El. pašto adresas",
     "Contact" : "Adresatas",
     "Circle" : "Ratas",
     "Member" : "Narys",
