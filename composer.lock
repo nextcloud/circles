@@ -179,12 +179,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ChristophWurst/nextcloud_composer.git",
-                "reference": "b7bcba48272375f8b55e1a69769337902a95d952"
+                "reference": "f3abf96743e08aab987088d192c663765712cf6b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ChristophWurst/nextcloud_composer/zipball/b7bcba48272375f8b55e1a69769337902a95d952",
-                "reference": "b7bcba48272375f8b55e1a69769337902a95d952",
+                "url": "https://api.github.com/repos/ChristophWurst/nextcloud_composer/zipball/f3abf96743e08aab987088d192c663765712cf6b",
+                "reference": "f3abf96743e08aab987088d192c663765712cf6b",
                 "shasum": ""
             },
             "require": {
@@ -215,7 +215,7 @@
                 "issues": "https://github.com/ChristophWurst/nextcloud_composer/issues",
                 "source": "https://github.com/ChristophWurst/nextcloud_composer/tree/master"
             },
-            "time": "2022-08-25T02:31:45+00:00"
+            "time": "2022-09-17T02:33:38+00:00"
         },
         {
             "name": "composer/package-versions-deprecated",
