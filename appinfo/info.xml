@@ -4,8 +4,8 @@
 	<id>circles</id>
 	<name>Circles</name>
 	<summary>Bring cloud-users closer together.</summary>
-	<description><![CDATA[Circles allows your users to create their own groups of users/colleagues/friends.
-Those groups of users (or "circles") can then be used by any other app for sharing purpose.
+	<description><![CDATA[Circles allows people to create their own groups of people/colleagues/friends.
+Those groups of people (or "circles") can then be used by any other app for sharing purpose.
 		]]>
 	</description>
 	<version>25.0.0-alpha.0</version>

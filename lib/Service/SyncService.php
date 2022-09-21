@@ -217,7 +217,7 @@ class SyncService {
 	 * @return void
 	 */
 	public function syncNextcloudUsers(): void {
-		$this->outputService->output('Syncing Nextcloud Users');
+		$this->outputService->output('Syncing Nextcloud Accounts');
 
 		$users = $this->userManager->search('');
 		$this->outputService->startMigrationProgress(count($users));
@@ -246,7 +246,7 @@ class SyncService {
 	 * @throws SingleCircleNotFoundException
 	 */
 	public function syncNextcloudUser(string $userId): FederatedUser {
-		$this->outputService->output('Syncing Nextcloud User \'' . $userId . '\'', true);
+		$this->outputService->output('Syncing Nextcloud Account \'' . $userId . '\'', true);
 
 		return $this->federatedUserService->getLocalFederatedUser($userId);
 	}

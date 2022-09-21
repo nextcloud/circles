@@ -151,7 +151,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 	 * @var array
 	 */
 	public static $DEF_SOURCE = [
-		1 => 'Nextcloud User',
+		1 => 'Nextcloud Account',
 		2 => 'Nextcloud Group',
 		4 => 'Email Address',
 		8 => 'Contact',

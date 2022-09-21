@@ -241,13 +241,13 @@ class DeprecatedMember extends BaseMember {
 	public function hasToBeInviteAble() {
 		if ($this->getLevel() > 0) {
 			throw new MemberAlreadyExistsException(
-				$this->l10n->t("The user is already a member of this circle")
+				$this->l10n->t("The account is already a member of this circle")
 			);
 		}
 
 		if ($this->getStatus() === DeprecatedMember::STATUS_INVITED) {
 			throw new MemberAlreadyExistsException(
-				$this->l10n->t("The user has already been invited into this circle")
+				$this->l10n->t("The account has already been invited into this circle")
 			);
 		}
 	}
