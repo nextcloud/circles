@@ -353,7 +353,7 @@ class DeprecatedMembersRequest extends DeprecatedMembersRequestBuilder {
 
 //		if ($member->alreadyExistOrJoining()) {
 //			throw new MemberAlreadyExistsException(
-//				$this->l10n->t('This user is already a member of the circle')
+//				$this->l10n->t('This account is already a member of the circle')
 //			);
 //		}
 
@@ -493,7 +493,7 @@ class DeprecatedMembersRequest extends DeprecatedMembersRequestBuilder {
 			$qb->execute();
 		} catch (UniqueConstraintViolationException $e) {
 			throw new MemberAlreadyExistsException(
-				$this->l10n->t('This user is already a member of the circle')
+				$this->l10n->t('This account is already a member of the circle')
 			);
 		}
 	}

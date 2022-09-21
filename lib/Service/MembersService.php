@@ -362,7 +362,7 @@ class MembersService {
 			try {
 				$ident = $this->miscService->getRealUserId($ident);
 			} catch (NoUserException $e) {
-				throw new NoUserException($this->l10n->t("This user does not exist"));
+				throw new NoUserException($this->l10n->t("This account does not exist"));
 			}
 		}
 	}

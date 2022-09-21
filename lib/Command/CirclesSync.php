@@ -102,7 +102,7 @@ class CirclesSync extends Base {
 			 ->addOption('force', '', InputOption::VALUE_NONE, 'Force migration')
 			 ->addOption('force-run', '', InputOption::VALUE_NONE, 'Force migration run')
 			 ->addOption('apps', '', InputOption::VALUE_NONE, 'Sync Apps')
-			 ->addOption('users', '', InputOption::VALUE_NONE, 'Sync Nextcloud Users')
+			 ->addOption('users', '', InputOption::VALUE_NONE, 'Sync Nextcloud Account')
 			 ->addOption('groups', '', InputOption::VALUE_NONE, 'Sync Nextcloud Groups')
 			 ->addOption('contacts', '', InputOption::VALUE_NONE, 'Sync Contacts')
 			 ->addOption('remotes', '', InputOption::VALUE_NONE, 'Sync Remotes')

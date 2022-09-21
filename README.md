@@ -9,8 +9,8 @@
 
 ### Bring cloud-users closer together
 
-Circles allow your users to create their own groups of users/colleagues/friends. 
-Those groups of users (or circles) can then be used by any other app for sharing purpose 
+Circles allow people to create their own groups of people/colleagues/friends. 
+Those groups of people (or circles) can then be used by any other app for sharing purpose 
  through the Circles API
 
 
