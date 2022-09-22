@@ -45,14 +45,12 @@ OC.L10N.register(
     "A circle with that name exists" : "Yá esiste un círculu con esti nome",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Nun pue usar l'aplicación Círculos hasta que'l to alministrador permita polo menos una triba de círculu",
     "This member does not exist" : "Esti miembru nun esiste",
-    "This user is already a member of the circle" : "Esti usuariu yá ye miembru del círculu",
     "Federated link not found" : "Nun s'alcontró l'enllaz federáu",
     "This feature is not available for personal circles" : "Esta carauterística nun ta disponible pa círculos personales",
     "You cannot join this circle" : "Nun pues xunite a esti círculu",
     "This member is not a moderator" : "Esti miembru nun ye un llendador",
     "This member is the owner of the circle" : "Esti miembru ye'l dueñu'l círculu",
     "You are already a member of this circle" : "Yá yes miembru d'esti círculu",
-    "The user is already a member of this circle" : "L'usuariu yá ye miembru d'esti círculu",
     "Accept" : "Aceutar",
     "%s" : "%s",
     "Personal Circle" : "Círculu personal",
@@ -63,6 +61,8 @@ OC.L10N.register(
     "No entries found in this folder" : "Nun s'alcontraron entraes nesta carpeta",
     "Name" : "Nome",
     "Size" : "Tamañu",
-    "Modified" : "Modificóse'l"
+    "Modified" : "Modificóse'l",
+    "This user is already a member of the circle" : "Esti usuariu yá ye miembru del círculu",
+    "The user is already a member of this circle" : "L'usuariu yá ye miembru d'esti círculu"
 },
 "nplurals=2; plural=(n != 1);");

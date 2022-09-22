@@ -95,7 +95,6 @@ OC.L10N.register(
     "A circle with that name exists" : "წრე ამ სახელით უკვე არსებობს",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "წრეების აპლიკაციას ვერ გამოიყენებთ, სანამ ადმინისტრატორი ერთი ტიპის წრის უფლებას მაინც არ დართავს",
     "This member does not exist" : "ეს წევრი არ არსებობს",
-    "This user is already a member of the circle" : "მომხმარებელი უკვე არის წრის წევრი",
     "Federated link not found" : "ფედერალური ბმული ვერ იქნა ნაპოვნი",
     "This feature is not available for personal circles" : "ეს ფუნქცია პირადი წრეებისთვის არაა ძალაში მყოფი",
     "The circle is not federated" : "ეს წრე არაა ფედერალური",
@@ -106,8 +105,6 @@ OC.L10N.register(
     "Level cannot be changed for this type of member" : "დონე ამ ტიპის წევრზე ვერ შეიცვლება",
     "You are already a member of this circle" : "ამ წრის წევრი უკვე ხართ",
     "You have been blocked from this circle" : "ამ წრეში დაბლოკილი ხართ",
-    "The user is already a member of this circle" : "მომხმარებელი უკვე არის წრის წევრი",
-    "The user has already been invited into this circle" : "მოხმარებელი უკვე დაპატიჟებულია წრეში",
     "Accept" : "მიღება",
     "%s" : "%s",
     "Personal Circle" : "პირადი წრე",
@@ -118,7 +115,6 @@ OC.L10N.register(
     "This group is already linked to the circle" : "ჯგუფი უკვე დაკავშირებულია წრესთან",
     "You cannot edit level in a personal circle" : "პირად წრეში დონეს ვერ შეცვლით",
     "Group cannot be set as owner of a circle" : "ჯგუფი ვერ იქნება წრის მფლობელი",
-    "This user does not exist" : "მოხმარებელი არ არსებობს",
     "Email format is not valid" : "ელ-ფოსტის ფორმატი არაა სწორი",
     "This contact is not available" : "კონტაქტი არაა ხელმისაწვდომი",
     "Could not find share" : "გაზიარება ვერ იქნა ნაპოვნი",
@@ -126,6 +122,10 @@ OC.L10N.register(
     "No entries found in this folder" : "ამ დირექტორიაში შენატანები ვერ იქნა ნაპოვნი",
     "Name" : "სახელი",
     "Size" : "ზომა",
-    "Modified" : "შეიცვალა"
+    "Modified" : "შეიცვალა",
+    "This user is already a member of the circle" : "მომხმარებელი უკვე არის წრის წევრი",
+    "The user is already a member of this circle" : "მომხმარებელი უკვე არის წრის წევრი",
+    "The user has already been invited into this circle" : "მოხმარებელი უკვე დაპატიჟებულია წრეში",
+    "This user does not exist" : "მოხმარებელი არ არსებობს"
 },
 "nplurals=2; plural=(n!=1);");

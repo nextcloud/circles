@@ -96,7 +96,6 @@ OC.L10N.register(
     "A circle with that name exists" : "Rondo kun sama nomo jam ekzistas",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Vi ne povas uzi la aplikaĵon „Rondoj“, ĝis via administranto permesas almenaŭ unu tipon de rondoj.",
     "This member does not exist" : "Tiu ĉi membro ne ekzistas",
-    "This user is already a member of the circle" : "Tiu ĉi uzanto jam estas membro el tiu rondo",
     "Federated link not found" : "Federa ligilo ne trovita",
     "This feature is not available for personal circles" : "Tiu funkcio ne disponeblas por persona rondo",
     "The circle is not federated" : "La rondo ne estas federita",
@@ -107,8 +106,6 @@ OC.L10N.register(
     "Level cannot be changed for this type of member" : "Nivelo ne ŝanĝeblas por tiu tipo de membro",
     "You are already a member of this circle" : "Vi jam estas membro de tiu ĉi rondo",
     "You have been blocked from this circle" : "Vi estis barita el tiu ĉi rondo",
-    "The user is already a member of this circle" : "La uzanto jam estas membro de tiu ĉi rondo",
-    "The user has already been invited into this circle" : "La uzanto jam estis invitita al tiu ĉi rondo",
     "Accept" : "Akcepti",
     "%s" : "%s",
     "Personal Circle" : "Persona rondo",
@@ -120,7 +117,6 @@ OC.L10N.register(
     "You cannot edit level in a personal circle" : "Vi ne povas modifi nivelon en persona rondo",
     "Group cannot be set as owner of a circle" : "Grupo ne povas esti posedanto de rondo",
     "now" : "nun",
-    "This user does not exist" : "Tiu ĉi uzanto ne ekzistas",
     "Email format is not valid" : "Formo de retpoŝtadreso ne validas",
     "This contact is not available" : "Tiu kontakto ne disponeblas",
     "Could not find share" : "Ne eblis trovi kunhavon",
@@ -129,6 +125,10 @@ OC.L10N.register(
     "No entries found in this folder" : "Neniu elemento en tiu ĉi dosierujo",
     "Name" : "Nomo",
     "Size" : "Grando",
-    "Modified" : "Modifita"
+    "Modified" : "Modifita",
+    "This user is already a member of the circle" : "Tiu ĉi uzanto jam estas membro el tiu rondo",
+    "The user is already a member of this circle" : "La uzanto jam estas membro de tiu ĉi rondo",
+    "The user has already been invited into this circle" : "La uzanto jam estis invitita al tiu ĉi rondo",
+    "This user does not exist" : "Tiu ĉi uzanto ne ekzistas"
 },
 "nplurals=2; plural=(n != 1);");

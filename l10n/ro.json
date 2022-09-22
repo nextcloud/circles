@@ -97,7 +97,6 @@
     "A circle with that name exists" : "Un cerc cu acel nume există deja",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Nu poți folosi aplicația Cercuri până când administratorul tău permite cel puțin un tip de cercuri",
     "This member does not exist" : "Acest membru nu există",
-    "This user is already a member of the circle" : "Acest utilizator este deja membru în cerc",
     "Federated link not found" : "Legătura federată nu a fost găsită",
     "This feature is not available for personal circles" : "Această caracteristică nu este disponibilă pentru cercurile personale",
     "The circle is not federated" : "Cercul nu este federat",
@@ -108,8 +107,6 @@
     "Level cannot be changed for this type of member" : "Nivelul nu poate fi schimbat pentru acest tip de membru",
     "You are already a member of this circle" : "Ești deja membru în acest cerc",
     "You have been blocked from this circle" : "Ai fost blocat din acest cerc",
-    "The user is already a member of this circle" : "Utilizatorul este deja membru în acest cerc",
-    "The user has already been invited into this circle" : "Utilizatorul a fost invitat deja în acest cerc",
     "Accept" : "Accept",
     "%s" : "%s",
     "Personal Circle" : "Cerc Personal",
@@ -121,7 +118,6 @@
     "You cannot edit level in a personal circle" : "Nu poti modifica nivelul într-un cerc personal",
     "Group cannot be set as owner of a circle" : "Un grup nu poate fi desemnat proprietar al unui cerc",
     "now" : "acum",
-    "This user does not exist" : "Acest utilizator nu există",
     "Email format is not valid" : "Formatul de Email nu este valid",
     "This contact is not available" : "Acest contact nu este disponibil",
     "Could not find share" : "Nu am putut găsi distribuția",
@@ -130,6 +126,10 @@
     "No entries found in this folder" : "Nici o intrare găsită în acest folder",
     "Name" : "Nume",
     "Size" : "Mărime",
-    "Modified" : "Modificat"
+    "Modified" : "Modificat",
+    "This user is already a member of the circle" : "Acest utilizator este deja membru în cerc",
+    "The user is already a member of this circle" : "Utilizatorul este deja membru în acest cerc",
+    "The user has already been invited into this circle" : "Utilizatorul a fost invitat deja în acest cerc",
+    "This user does not exist" : "Acest utilizator nu există"
 },"pluralForm" :"nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));"
 }

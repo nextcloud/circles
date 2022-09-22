@@ -33,7 +33,6 @@
     "Click the button below to open it." : "Klik på knappen nedenunder for at åbne.",
     "Open »%s«" : "Åbn »%s«",
     "This member does not exist" : "Dette medlem eksisterer ikke",
-    "This user is already a member of the circle" : "Denne bruger er allerede medlem af cirklen",
     "You cannot join this circle" : "Du kan ikke forbinde med cirklen",
     "This member is not a moderator" : "Dette medlem er ikke en moderator",
     "This member is the owner of the circle" : "Dette medlem ejer cirklen",
@@ -44,7 +43,6 @@
     "This member is not the owner of the circle" : "Dette medlem ejer ikke cirklen",
     "This group does not exist" : "Denne gruppe eksisterer ikke",
     "now" : "nu",
-    "This user does not exist" : "Brugeren eksisterer ikke ",
     "Email format is not valid" : "Email format er ugyldigt",
     "This contact is not available" : "Denne kontakt er ikke tilgængelig ",
     "Could not find share" : "Kunne ikke finde deling",
@@ -52,6 +50,8 @@
     "No entries found in this folder" : "Intet fundet i denne mappe",
     "Name" : "Navn",
     "Size" : "Størrelse",
-    "Modified" : "Ændret"
+    "Modified" : "Ændret",
+    "This user is already a member of the circle" : "Denne bruger er allerede medlem af cirklen",
+    "This user does not exist" : "Brugeren eksisterer ikke "
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

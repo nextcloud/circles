@@ -17,7 +17,6 @@ OC.L10N.register(
     "Open »%s«" : "»%s« нээх",
     "Circle not found" : "тойрог олдоогүй",
     "This member does not exist" : "ийм гишүүн байхгүй байна",
-    "This user is already a member of the circle" : "Энэ хэрэглэгч аль хэдийн тойргийн гишүүн болсон ",
     "You cannot join this circle" : "Та энэ тойрогт нэгдэх боломжгүй",
     "This member is not a moderator" : "Энэ гишүүн нь зохицуулагч биш",
     "This member is the owner of the circle" : "энэ гишүүн бүлгийн эзэн",
@@ -28,12 +27,13 @@ OC.L10N.register(
     "You need a specify a type of circle" : "та тойргийн төрлийг тодорхойлах хэрэгтэй",
     "This member is not the owner of the circle" : "Энэ гишүүн нь бүлгийн эзэн биш",
     "You cannot edit level in a personal circle" : " та энэ хувийн тойргийн түвшинг засварлах боломжгүй",
-    "This user does not exist" : "ийм хэрэглэгч байхгүй байна",
     "Could not find share" : "Хуваалцсаныг холохгүй байна",
     "No files in here" : "Энд файл алга",
     "No entries found in this folder" : "Энэ хавтаст юм олдсонгүй",
     "Name" : "Нэр",
     "Size" : "Хэмжээ",
-    "Modified" : "Өөрчлөгдсөн"
+    "Modified" : "Өөрчлөгдсөн",
+    "This user is already a member of the circle" : "Энэ хэрэглэгч аль хэдийн тойргийн гишүүн болсон ",
+    "This user does not exist" : "ийм хэрэглэгч байхгүй байна"
 },
 "nplurals=2; plural=(n != 1);");
