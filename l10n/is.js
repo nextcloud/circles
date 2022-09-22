@@ -105,7 +105,6 @@ OC.L10N.register(
     "A circle with that name exists" : "Nú þegar er til hringur með þetta nafn",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Þú getur ekki notað Hringir-forritið fyrr en kerfisstjóri er búinn að leyfa a.m.k. eina gerð hringja",
     "This member does not exist" : "Þessi meðlimur er ekki til",
-    "This user is already a member of the circle" : "Þessi notandi er nú þegar meðlimur í þessum hring",
     "Federated link not found" : "Skyjasambandstengill fannst ekki",
     "This feature is not available for personal circles" : "Þessi eiginleiki er ekki tiltækur fyrir persónulega hringi",
     "The circle is not federated" : "Hringurinn er ekki í skýjasambandi",
@@ -116,8 +115,6 @@ OC.L10N.register(
     "Level cannot be changed for this type of member" : "Ekki er hægt að breyta stigi fyrir þessa gerð meðlims",
     "You are already a member of this circle" : "Þú ert nú þegar meðlimur í þessum hring",
     "You have been blocked from this circle" : "Þú hefur verið útilokaður frá þessum hring",
-    "The user is already a member of this circle" : "Notandi er nú þegar meðlimur í þessum hring",
-    "The user has already been invited into this circle" : "Notandanum er þegar boðið að taka þátt í þessum hring",
     "You are now a member of the Circle \"%2$s\"" : "Þú ert núna meðlimur í hringnum \"%2$s\"",
     "You have been invited by %1$s into the Circle \"%2$s\"" : "%1$s bauð þér að ganga í hringinn \"%2$s\"",
     "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s sendi beiðni um að taka þátt í hringnum \"%2$s\"",
@@ -135,7 +132,6 @@ OC.L10N.register(
     "You cannot edit level in a personal circle" : "Þú getur ekki breytt stigum í persónulegum hring",
     "Group cannot be set as owner of a circle" : "Hópur getur ekki verið eigandi á hring",
     "now" : "núna",
-    "This user does not exist" : "Þessi notandi er ekki til",
     "Email format is not valid" : "Snið póstfangsins er ekki gilt",
     "This contact is not available" : "Þessi tengiliður er ekki tiltækur",
     "Could not find share" : "Gat ekki fundið sameign",
@@ -144,6 +140,10 @@ OC.L10N.register(
     "No entries found in this folder" : "Engar færslur fundust í þessari möppu",
     "Name" : "Nafn",
     "Size" : "Stærð",
-    "Modified" : "Breytt"
+    "Modified" : "Breytt",
+    "This user is already a member of the circle" : "Þessi notandi er nú þegar meðlimur í þessum hring",
+    "The user is already a member of this circle" : "Notandi er nú þegar meðlimur í þessum hring",
+    "The user has already been invited into this circle" : "Notandanum er þegar boðið að taka þátt í þessum hring",
+    "This user does not exist" : "Þessi notandi er ekki til"
 },
 "nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);");

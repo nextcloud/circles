@@ -105,7 +105,6 @@ OC.L10N.register(
     "A circle with that name exists" : "Un cercle amb aquest nom ja existeix",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "No podeu utilitzar l'Aplicació de cercles fins que l'administrador hagi permès com a mínim un tipus de cercles",
     "This member does not exist" : "Aquest membre no existeix",
-    "This user is already a member of the circle" : "Aquest usuari ja és membre del cercle",
     "Federated link not found" : "No s'ha trobat l'enllaç federat",
     "This feature is not available for personal circles" : "Aquesta funció no està disponible per als cercles personals",
     "The circle is not federated" : "El cercle no és federat",
@@ -116,8 +115,6 @@ OC.L10N.register(
     "Level cannot be changed for this type of member" : "El nivell no pot ser canviat per aquest tipus de membre",
     "You are already a member of this circle" : "Ja sou membre d'aquest cercle",
     "You have been blocked from this circle" : "Heu estat blocats d'aquest cercle",
-    "The user is already a member of this circle" : "L'usuari ja és membre d'aquest cercle",
-    "The user has already been invited into this circle" : "L'usuari ja ha estat convidat a aquest cercle",
     "You are now a member of the Circle \"%2$s\"" : "Ara sou membre del Cercle \"%2$s\"",
     "You have been invited by %1$s into the Circle \"%2$s\"" : "Vostè ha estat convidat per %1$s en el Cercle \"%2$s\"",
     "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s ha enviat una sol·licitud per ser membre del Cercle \"%2$s\"",
@@ -135,7 +132,6 @@ OC.L10N.register(
     "You cannot edit level in a personal circle" : "No podeu editar el nivell en un cercle personal",
     "Group cannot be set as owner of a circle" : "El grup no es pot posar com a propietari del cercle",
     "now" : "ara",
-    "This user does not exist" : "Aquest usuari no existeix",
     "Email format is not valid" : "El format de correu no és vàlid",
     "This contact is not available" : "Aquest contacte no està disponible",
     "Could not find share" : "No es pot trobar el compartit",
@@ -144,6 +140,10 @@ OC.L10N.register(
     "No entries found in this folder" : "No hi ha cap entrada dins d'aquesta carpeta",
     "Name" : "Nom",
     "Size" : "Mida",
-    "Modified" : "Modificat"
+    "Modified" : "Modificat",
+    "This user is already a member of the circle" : "Aquest usuari ja és membre del cercle",
+    "The user is already a member of this circle" : "L'usuari ja és membre d'aquest cercle",
+    "The user has already been invited into this circle" : "L'usuari ja ha estat convidat a aquest cercle",
+    "This user does not exist" : "Aquest usuari no existeix"
 },
 "nplurals=2; plural=(n != 1);");

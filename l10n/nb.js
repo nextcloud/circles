@@ -98,7 +98,6 @@ OC.L10N.register(
     "A circle with that name exists" : "En sirkel med det navnet finnes",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Du kan ikke bruke sirkel-appen før administratoren din har tillat minst én type sirkler",
     "This member does not exist" : "Dette medlemmet finnes ikke",
-    "This user is already a member of the circle" : "Denne brukeren er allerede medlem av sirkelen",
     "Federated link not found" : "Fant ikke den sammenknyttede lenken",
     "This feature is not available for personal circles" : "Funksjonen er ikke tilgjengelig for personlige sirkler",
     "The circle is not federated" : "Sirkelen er ikke sammenknyttet",
@@ -109,8 +108,6 @@ OC.L10N.register(
     "Level cannot be changed for this type of member" : "Nivået kan ikke endres for den typen medlem",
     "You are already a member of this circle" : "Du er allerede medlem av denne sirkelen",
     "You have been blocked from this circle" : "Du har blitt blokkert fra denne sirkelen",
-    "The user is already a member of this circle" : "Brukeren er allerede medlem av denne sirkelen",
-    "The user has already been invited into this circle" : "Brukeren er allerede invitert inn i denne sirkelen",
     "Accept" : "Aksepter",
     "%s" : "%s",
     "Personal Circle" : "Personlig sirkel",
@@ -122,7 +119,6 @@ OC.L10N.register(
     "You cannot edit level in a personal circle" : "Du kan ikke endre nivå i en personlig sirkel",
     "Group cannot be set as owner of a circle" : "Gruppe kan ikke settes som eier av en sirkel",
     "now" : "nå",
-    "This user does not exist" : "Denne brukeren finnes ikke",
     "Email format is not valid" : "E-postadressen er ikke gyldig",
     "This contact is not available" : "Denne kontakten er ikke tilgjengelig",
     "Could not find share" : "Kunne ikke finne ressurs",
@@ -131,6 +127,10 @@ OC.L10N.register(
     "No entries found in this folder" : "Ingen oppføringer funnet i denne mappen",
     "Name" : "Navn",
     "Size" : "Størrelse",
-    "Modified" : "Endret"
+    "Modified" : "Endret",
+    "This user is already a member of the circle" : "Denne brukeren er allerede medlem av sirkelen",
+    "The user is already a member of this circle" : "Brukeren er allerede medlem av denne sirkelen",
+    "The user has already been invited into this circle" : "Brukeren er allerede invitert inn i denne sirkelen",
+    "This user does not exist" : "Denne brukeren finnes ikke"
 },
 "nplurals=2; plural=(n != 1);");

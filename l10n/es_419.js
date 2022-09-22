@@ -95,7 +95,6 @@ OC.L10N.register(
     "A circle with that name exists" : "Un círculo con ese nombre ya existe",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "No puedes usar la Aplicación de Círculos hasta que tu adminsitrador haya permitido al menos un tipo de círculo",
     "This member does not exist" : "Este miembro no existe",
-    "This user is already a member of the circle" : "El usuario ya es un miembro del círculo",
     "Federated link not found" : "No se encontró la liga",
     "This feature is not available for personal circles" : "Esta característica no está disponible para círculos personales",
     "The circle is not federated" : "El círculo no es federado",
@@ -106,8 +105,6 @@ OC.L10N.register(
     "Level cannot be changed for this type of member" : "El nivel no puede ser cambiado para este tipo de miembro",
     "You are already a member of this circle" : "Ya eres un miembro de este círculo",
     "You have been blocked from this circle" : "Has sido bloqueado de este círculo",
-    "The user is already a member of this circle" : "El usuario ya es un miembro de este círculo",
-    "The user has already been invited into this circle" : "El usuario ya ha sido invitado a este círculo",
     "Accept" : "Aceptar",
     "%s" : "%s",
     "Personal Circle" : "Círculo Personal",
@@ -118,7 +115,6 @@ OC.L10N.register(
     "This group is already linked to the circle" : "Este grupo ya ha sido ligado a este círculo",
     "You cannot edit level in a personal circle" : "No puedes editar el nivel en un círculo personal",
     "Group cannot be set as owner of a circle" : "Un Grupo no puede ser establecido como dueño de un círculo",
-    "This user does not exist" : "Este usuario no existe",
     "Email format is not valid" : "El formato de la dirección de correo electrónico no es válido",
     "This contact is not available" : "Este contacto no está disponible",
     "Could not find share" : "No se encontró el elemento compartido",
@@ -126,6 +122,10 @@ OC.L10N.register(
     "No entries found in this folder" : "No se encontraron elementos en esta carpeta",
     "Name" : "Nombre",
     "Size" : "Tamaño",
-    "Modified" : "Modificado"
+    "Modified" : "Modificado",
+    "This user is already a member of the circle" : "El usuario ya es un miembro del círculo",
+    "The user is already a member of this circle" : "El usuario ya es un miembro de este círculo",
+    "The user has already been invited into this circle" : "El usuario ya ha sido invitado a este círculo",
+    "This user does not exist" : "Este usuario no existe"
 },
 "nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");
