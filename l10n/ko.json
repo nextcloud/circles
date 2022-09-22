@@ -96,7 +96,6 @@
     "A circle with that name exists" : "같은 이름의 서클이 이미 존재함",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "시스템 관리자가 서클 형식을 허용하지 않는 한 서클 앱을 사용할 수 없습니다",
     "This member does not exist" : "이 회원이 존재하지 않음",
-    "This user is already a member of the circle" : "이 사용자가 이미 서클 회원임",
     "Federated link not found" : "연합 연결을 찾을 수 없음",
     "This feature is not available for personal circles" : "이 기능은 개인 서클에서 사용할 수 없음",
     "The circle is not federated" : "연합 서클이 아님",
@@ -107,8 +106,6 @@
     "Level cannot be changed for this type of member" : "이 회원의 단계를 변경할 수 없음",
     "You are already a member of this circle" : "이미 서클 회원임",
     "You have been blocked from this circle" : "이 서클에서 차단됨",
-    "The user is already a member of this circle" : "이 사용자가 이미 서클 회원임",
-    "The user has already been invited into this circle" : "이 사용자를 이미 서클에 초대함",
     "Accept" : "수락",
     "%s" : "%s",
     "Personal Circle" : "개인 서클",
@@ -120,7 +117,6 @@
     "You cannot edit level in a personal circle" : "개인 서클의 단계를 편집할 수 없음",
     "Group cannot be set as owner of a circle" : "그룹을 서클 소유자로 설정할 수 없음",
     "now" : "현재",
-    "This user does not exist" : "이 사용자가 존재하지 않음",
     "Email format is not valid" : "이메일 주소가 올바르지 않음",
     "This contact is not available" : "이 연락처를 사용할 수 없음",
     "Could not find share" : "공유를 찾을 수 없음",
@@ -129,6 +125,10 @@
     "No entries found in this folder" : "이 폴더에서 항목을 찾을 수 없음",
     "Name" : "이름",
     "Size" : "크기",
-    "Modified" : "수정한 날짜"
+    "Modified" : "수정한 날짜",
+    "This user is already a member of the circle" : "이 사용자가 이미 서클 회원임",
+    "The user is already a member of this circle" : "이 사용자가 이미 서클 회원임",
+    "The user has already been invited into this circle" : "이 사용자를 이미 서클에 초대함",
+    "This user does not exist" : "이 사용자가 존재하지 않음"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

@@ -105,7 +105,6 @@ OC.L10N.register(
     "A circle with that name exists" : "A circle with that name exists",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "You cannot use the Circles Application until your administrator has allowed at least one type of circles",
     "This member does not exist" : "This member does not exist",
-    "This user is already a member of the circle" : "This user is already a member of the circle",
     "Federated link not found" : "Federated link not found",
     "This feature is not available for personal circles" : "This feature is not available for personal circles",
     "The circle is not federated" : "The circle is not federated",
@@ -116,8 +115,6 @@ OC.L10N.register(
     "Level cannot be changed for this type of member" : "Level cannot be changed for this type of member",
     "You are already a member of this circle" : "You are already a member of this circle",
     "You have been blocked from this circle" : "You have been blocked from this circle",
-    "The user is already a member of this circle" : "The user is already a member of this circle",
-    "The user has already been invited into this circle" : "The user has already been invited into this circle",
     "You are now a member of the Circle \"%2$s\"" : "You are now a member of the Circle \"%2$s\"",
     "You have been invited by %1$s into the Circle \"%2$s\"" : "You have been invited by %1$s into the Circle \"%2$s\"",
     "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s sent a request to be a member of the Circle \"%2$s\"",
@@ -135,7 +132,6 @@ OC.L10N.register(
     "You cannot edit level in a personal circle" : "You cannot edit level in a personal circle",
     "Group cannot be set as owner of a circle" : "Group cannot be set as owner of a circle",
     "now" : "now",
-    "This user does not exist" : "This user does not exist",
     "Email format is not valid" : "Email format is not valid",
     "This contact is not available" : "This contact is not available",
     "Could not find share" : "Could not find share",
@@ -144,6 +140,10 @@ OC.L10N.register(
     "No entries found in this folder" : "No entries found in this folder",
     "Name" : "Name",
     "Size" : "Size",
-    "Modified" : "Modified"
+    "Modified" : "Modified",
+    "This user is already a member of the circle" : "This user is already a member of the circle",
+    "The user is already a member of this circle" : "The user is already a member of this circle",
+    "The user has already been invited into this circle" : "The user has already been invited into this circle",
+    "This user does not exist" : "This user does not exist"
 },
 "nplurals=2; plural=(n != 1);");

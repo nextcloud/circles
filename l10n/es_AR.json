@@ -22,7 +22,6 @@
     "A circle with that name exists" : "Un círculo con ese nombre ya existe",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Usted no puede usar la Aplicación de Círculos hasta que su adminsitrador haya permitido al menos un tipo de círculo",
     "This member does not exist" : "Este miembro no existe",
-    "This user is already a member of the circle" : "El usuario ya es un miembro del círculo",
     "You cannot join this circle" : "Usted no puede unirse a este cículo",
     "This member is not a moderator" : "Este miembro no es un moderador",
     "This member is the owner of the circle" : "Este miembro es el dueño del círculo",
@@ -34,12 +33,13 @@
     "You need a specify a type of circle" : "Usted necesita especificar un tipo de círculo",
     "This member is not the owner of the circle" : "Este miembro no es el dueño del círculo",
     "You cannot edit level in a personal circle" : "No puede editar el nivel en un círculo personal",
-    "This user does not exist" : "Este usuario no existe",
     "Could not find share" : "No fue posible encontrar el elemento compartido",
     "No files in here" : "No hay archivos aqui",
     "No entries found in this folder" : "No se encontraron elementos en esta carpeta",
     "Name" : "Nombre",
     "Size" : "Tamaño",
-    "Modified" : "Modificado"
+    "Modified" : "Modificado",
+    "This user is already a member of the circle" : "El usuario ya es un miembro del círculo",
+    "This user does not exist" : "Este usuario no existe"
 },"pluralForm" :"nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }
