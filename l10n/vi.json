@@ -99,7 +99,6 @@
     "A circle with that name exists" : "Đã tồn tại một vòng kết nối có tên đó",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Bạn không thể sử dụng Ứng dụng Vòng kết nối cho đến khi quản trị viên của bạn cho phép ít nhất một loại của vòng kết nối",
     "This member does not exist" : "Thành viên này không tồn tại",
-    "This user is already a member of the circle" : "Người dùng này đã là thành viên của vòng kết nối",
     "Federated link not found" : "Liên kết Liên Bang không thể được tìm thấy",
     "This feature is not available for personal circles" : "Tính năng này không khả dụng cho các vòng kết nối cá nhân",
     "The circle is not federated" : "Vòng kết nối không được chia sẻ liên bang",
@@ -110,8 +109,6 @@
     "Level cannot be changed for this type of member" : "Cấp độ không thể được thay đổi cho kiểu loại của thành viên này",
     "You are already a member of this circle" : "Bạn đã là thành viên của vòng kết nối này",
     "You have been blocked from this circle" : "Bạn đã bị chặn khỏi vòng kết nối này",
-    "The user is already a member of this circle" : "Người dùng này đã là thành viên của vòng kết nối này",
-    "The user has already been invited into this circle" : "Người dùng này đã được mời vào vòng kết nối này",
     "You are now a member of the Circle \"%2$s\"" : "Bây giờ bạn là thành viên của Vòng kết nối \"%2$s\"",
     "You have been invited by %1$s into the Circle \"%2$s\"" : "Bạn vừa mới được mời bởi %1$s vào Vòng kết nối \"%2$s\"",
     "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s đã gửi một yêu cầu để là một thành viên của Vòng kết nối \"%2$s\"",
@@ -128,7 +125,6 @@
     "You cannot edit level in a personal circle" : "Bạn không thể sửa đổi mức độ trong một vòng kết nối cá nhân",
     "Group cannot be set as owner of a circle" : "Nhóm không thể được đặt với tư cách là chủ nhận của một vòng kết nối",
     "now" : "bây giờ",
-    "This user does not exist" : "Người dùng này không tòn tại",
     "Email format is not valid" : "Định dạng thư điện tử không hợp lệ",
     "This contact is not available" : "Liên hệ này không khả dụng",
     "Could not find share" : "Không thể tìm thấy chia sẻ",
@@ -137,6 +133,10 @@
     "No entries found in this folder" : "Chưa có mục nào trong thư mục",
     "Name" : "Tên",
     "Size" : "Kích cỡ",
-    "Modified" : "Thay đổi"
+    "Modified" : "Thay đổi",
+    "This user is already a member of the circle" : "Người dùng này đã là thành viên của vòng kết nối",
+    "The user is already a member of this circle" : "Người dùng này đã là thành viên của vòng kết nối này",
+    "The user has already been invited into this circle" : "Người dùng này đã được mời vào vòng kết nối này",
+    "This user does not exist" : "Người dùng này không tòn tại"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

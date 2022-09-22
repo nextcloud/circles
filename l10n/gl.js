@@ -105,7 +105,6 @@ OC.L10N.register(
     "A circle with that name exists" : "Xa existe un círculo con ese nome.",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Vostede non pode usar a aplicación Circulos ata que o administrador teña permitido polo menos un tipo de círculo",
     "This member does not exist" : "Non existe este participante",
-    "This user is already a member of the circle" : "Este usuario xa é participante no círculo",
     "Federated link not found" : "Non se atopou a ligazón federada",
     "This feature is not available for personal circles" : "Esta característica non está dispoñíbel para círculos persoais",
     "The circle is not federated" : "Este círculo non está federado",
@@ -116,8 +115,6 @@ OC.L10N.register(
     "Level cannot be changed for this type of member" : "Non é posíbel cambiar o nivel para este tipo de participante",
     "You are already a member of this circle" : "Vostede xa é participante neste círculo",
     "You have been blocked from this circle" : "Vostede foi bloqueado neste círculo",
-    "The user is already a member of this circle" : "Este usuario xa é participante neste círculo",
-    "The user has already been invited into this circle" : "O usuario xa foi convidado a este círculo",
     "You are now a member of the Circle \"%2$s\"" : "Vostede agora é participante no círculo «%2$s»",
     "You have been invited by %1$s into the Circle \"%2$s\"" : "Vostede foi convidado por %1$s ao círculo «%2$s»",
     "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s enviou unha solicitude para ser participante no círculo «%2$s»",
@@ -135,7 +132,6 @@ OC.L10N.register(
     "You cannot edit level in a personal circle" : "Vostede no pode editar o nivel nun círculo persoal",
     "Group cannot be set as owner of a circle" : "O grupo non se pode estabelecer como propietario dun círculo",
     "now" : "agora",
-    "This user does not exist" : "Non existe este usuario",
     "Email format is not valid" : "O formato do correo non é válido",
     "This contact is not available" : "Este contacto non está dispoñíbel",
     "Could not find share" : "Non foi posíbel atopar o recurso compartido",
@@ -144,6 +140,10 @@ OC.L10N.register(
     "No entries found in this folder" : "Non se atoparon entradas neste cartafol",
     "Name" : "Nome",
     "Size" : "Tamaño",
-    "Modified" : "Modificado"
+    "Modified" : "Modificado",
+    "This user is already a member of the circle" : "Este usuario xa é participante no círculo",
+    "The user is already a member of this circle" : "Este usuario xa é participante neste círculo",
+    "The user has already been invited into this circle" : "O usuario xa foi convidado a este círculo",
+    "This user does not exist" : "Non existe este usuario"
 },
 "nplurals=2; plural=(n != 1);");

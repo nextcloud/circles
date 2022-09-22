@@ -103,7 +103,6 @@
     "A circle with that name exists" : "Круг са тим именом постоји",
     "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Не можете користити апликацију Кругови док администратор не дозволи бар један тип кругова",
     "This member does not exist" : "Члан не постоји",
-    "This user is already a member of the circle" : "Корисник је већ члан круга",
     "Federated link not found" : "Здружена веза није нађена",
     "This feature is not available for personal circles" : "Ова функционалност није доступна за личне кругове",
     "The circle is not federated" : "Круг није здружен",
@@ -114,8 +113,6 @@
     "Level cannot be changed for this type of member" : "Ниво не може да се промени за овај тип члана",
     "You are already a member of this circle" : "Већ сте члан овог круга",
     "You have been blocked from this circle" : "Блокирани сте у овом кругу",
-    "The user is already a member of this circle" : "Корисник је већ члан круга",
-    "The user has already been invited into this circle" : "Корисник је већ позван у овај круг",
     "You are now a member of the Circle \"%2$s\"" : "Сада сте члан круга „%2$s“",
     "You have been invited by %1$s into the Circle \"%2$s\"" : "%1$s Вас је позвао/ла у круг „%2$s“",
     "%1$s sent a request to be a member of the Circle \"%2$s\"" : "%1$s је послао захтев да буде члан круга „%2$s“",
@@ -133,7 +130,6 @@
     "You cannot edit level in a personal circle" : "Не можете мењати ниво у личним круговима",
     "Group cannot be set as owner of a circle" : "Не можете да поставите групу као власника круга",
     "now" : "сада",
-    "This user does not exist" : "Овај корисник не постоји",
     "Email format is not valid" : "Формат адресе е-поште није исправан",
     "This contact is not available" : "Овај контакт није доступан",
     "Could not find share" : "Не могу да нађем дељење",
@@ -142,6 +138,10 @@
     "No entries found in this folder" : "Нема резултата у овој фасцикли",
     "Name" : "Назив",
     "Size" : "Величина",
-    "Modified" : "Измењен"
+    "Modified" : "Измењен",
+    "This user is already a member of the circle" : "Корисник је већ члан круга",
+    "The user is already a member of this circle" : "Корисник је већ члан круга",
+    "The user has already been invited into this circle" : "Корисник је већ позван у овај круг",
+    "This user does not exist" : "Овај корисник не постоји"
 },"pluralForm" :"nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);"
 }
