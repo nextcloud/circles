@@ -31,12 +31,13 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Cron;
 
-use OC\BackgroundJob\TimedJob;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Service\CirclesService;
 use OCA\Circles\Service\GSUpstreamService;
 use OCA\Circles\Service\MembersService;
 use OCP\AppFramework\QueryException;
+use OCP\AppFramework\Utility\ITimeFactory;
+use OCP\BackgroundJob\TimedJob;
 
 /**
  * Class GlobalSync
@@ -49,7 +50,8 @@ class GlobalSync extends TimedJob {
 	/**
 	 * Cache constructor.
 	 */
-	public function __construct() {
+	public function __construct(ITimeFactory $timeFactory) {
+		parent::__construct($timeFactory);
 		$this->setInterval(10);
 	}
 

@@ -60,15 +60,15 @@ class LocalUsers implements ISearch {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function search($search) {
+	public function search($needle): array {
 		$result = [];
 		$userManager = \OC::$server->getUserManager();
 
 		if ($this->configService->getAppValue(ConfigService::CIRCLES_SEARCH_FROM_COLLABORATOR) === '1') {
-			return $this->searchFromCollaborator($search);
+			return $this->searchFromCollaborator($needle);
 		}
 
-		$users = $userManager->search($search);
+		$users = $userManager->search($needle);
 		foreach ($users as $user) {
 			$result[] =
 				new SearchResult(

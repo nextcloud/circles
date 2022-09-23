@@ -364,6 +364,7 @@ namespace {
 		static $CLI = false;
 		/** @var IServerContainer */
 		static $server;
+        static $WEBROOT;
 	}
 }
 
@@ -1020,4 +1021,66 @@ namespace OC\Files\Storage\Wrapper{
 
 namespace OC\AppFramework\Middleware\Security\Exceptions {
 	class NotLoggedInException extends \Exception {}
+}
+
+namespace OC\Share20 {
+	use OCP\Files\Node;
+
+	class Share implements \OCP\Share\IShare {
+		public function __construct(\OCP\Files\IRootFolder $rootFolder, \OCP\IUserManager $userManager) {}
+		public function setId($id) {}
+		public function getId() {}
+		public function getFullId() {}
+		public function setProviderId($id) {}
+		public function setNode(Node $node) {}
+		public function getNode() {}
+		public function setNodeId($fileId) {}
+		public function getNodeId() {}
+		public function setNodeType($type) {}
+		public function getNodeType() {}
+		public function setShareType($shareType) {}
+		public function getShareType() {}
+		public function setSharedWith($sharedWith) {}
+		public function getSharedWith() {}
+		public function setSharedWithDisplayName($displayName) {}
+		public function getSharedWithDisplayName() {}
+		public function setSharedWithAvatar($src) {}
+		public function getSharedWithAvatar() {}
+		public function setPermissions($permissions) {}
+		public function getPermissions() {}
+		public function newAttributes(): \OCP\Share\IAttributes {}
+		public function setAttributes(?\OCP\Share\IAttributes $attributes) {}
+		public function getAttributes(): ?\OCP\Share\IAttributes {}
+		public function setStatus(int $status): \OCP\Share\IShare {}
+		public function getStatus(): int {}
+		public function setNote($note) {}
+		public function getNote() {}
+		public function setExpirationDate($expireDate) {}
+		public function getExpirationDate() {}
+		public function isExpired() {}
+		public function setLabel($label) {}
+		public function getLabel() {}
+		public function setSharedBy($sharedBy) {}
+		public function getSharedBy() {}
+		public function setShareOwner($shareOwner) {}
+		public function getShareOwner() {}
+		public function setPassword($password) {}
+		public function getPassword() {}
+		public function setPasswordExpirationTime(?\DateTimeInterface $passwordExpirationTime = null): \OCP\Share\IShare {}
+		public function getPasswordExpirationTime(): ?\DateTimeInterface {}
+		public function setSendPasswordByTalk(bool $sendPasswordByTalk) {}
+		public function getSendPasswordByTalk(): bool {}
+		public function setToken($token) {}
+		public function getToken() {}
+		public function setTarget($target) {}
+		public function getTarget() {}
+		public function setShareTime(\DateTime $shareTime) {}
+		public function getShareTime() {}
+		public function setMailSend($mailSend) {}
+		public function getMailSend() {}
+		public function setNodeCacheEntry(OCP\Files\Cache\ICacheEntry $entry) {}
+		public function getNodeCacheEntry() {}
+		public function setHideDownload(bool $hide): \OCP\Share\IShare;
+		public function getHideDownload(): bool;
+	}
 }

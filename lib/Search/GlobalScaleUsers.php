@@ -70,7 +70,7 @@ class GlobalScaleUsers implements ISearch {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function search(string $search): array {
+	public function search(string $needle): array {
 
 		/** @var string $lookup */
 		try {
@@ -82,7 +82,7 @@ class GlobalScaleUsers implements ISearch {
 		$request = new NCRequest(ConfigService::GS_LOOKUP_USERS, Request::TYPE_GET);
 		$this->configService->configureRequest($request);
 		$request->basedOnUrl($lookup);
-		$request->addParam('search', $search);
+		$request->addParam('search', $needle);
 
 		try {
 			$users = $this->retrieveJson($request);
