@@ -92,6 +92,7 @@ OC.L10N.register(
     "Circle Invite" : "Zirkulu gonbidapena",
     "Federated" : "Federatua",
     "Mount point" : "Muntatze-puntua",
+    "Nextcloud Account" : "Nextcloud kontua",
     "Nextcloud Group" : "Nextcloud taldea",
     "Email Address" : "E-posta helbidea",
     "Contact" : "Kontaktua",
