@@ -160,6 +160,7 @@ OC.L10N.register(
     "You cannot edit level in a personal circle" : "Ezin duzu maila aldatu zirkulu pertsonaletan",
     "Group cannot be set as owner of a circle" : "Taldeak ezin dira zirkulu jabe bihurtu",
     "now" : "orain",
+    "This account does not exist" : "Kontu hau ez da existitzen",
     "Email format is not valid" : "Posta-helbidearen formatua ez da baliozkoa",
     "This contact is not available" : "Kontaktu hori ez dago erabilgarri",
     "You have no permission to create a new circle" : "Ez duzu zirkulu berri bat sortzeko baimenik",
