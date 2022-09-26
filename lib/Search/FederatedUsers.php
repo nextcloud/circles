@@ -40,11 +40,7 @@ use OCA\Circles\ISearch;
  * @package OCA\Circles\Search
  */
 class FederatedUsers implements ISearch {
-
-
-	/** @var MemberRequest */
-	private $memberRequest;
-
+	private MemberRequest $memberRequest;
 
 	/**
 	 * LocalUsers constructor.
@@ -55,11 +51,8 @@ class FederatedUsers implements ISearch {
 		$this->memberRequest = $memberRequest;
 	}
 
-
 	/**
-	 * @param string $needle
-	 *
-	 * @return array
+	 * {@inheritdoc}
 	 */
 	public function search(string $needle): array {
 		return $this->memberRequest->searchFederatedUsers($needle);

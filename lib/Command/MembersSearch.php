@@ -32,8 +32,9 @@ declare(strict_types=1);
 namespace OCA\Circles\Command;
 
 use OC\Core\Command\Base;
-use OCA\Circles\Model\FederatedUser;
+use OCA\Circles\IFederatedUser;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\SearchResult;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\SearchService;
 use Symfony\Component\Console\Helper\Table;
@@ -101,7 +102,7 @@ class MembersSearch extends Base {
 
 
 	/**
-	 * @param FederatedUser[] $result
+	 * @param list<IFederatedUser|SearchResult> $result
 	 */
 	private function displaySearchResult(array $result) {
 		$output = new ConsoleOutput();
@@ -111,6 +112,9 @@ class MembersSearch extends Base {
 		$table->render();
 
 		foreach ($result as $entry) {
+			if (!$result instanceof IFederatedUser) {
+				continue;
+			}
 			$table->appendRow(
 				[
 					$entry->getSingleId(),

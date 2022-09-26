@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.22.0@fc2c6ab4d5fa5d644d8617089f012f3bb84b8703">
+<files psalm-version="4.26.0@6998fabb2bf528b65777bf9941920888d23c03ac">
   <file src="lib/Activity/Provider.php">
     <ParamNameMismatch occurrences="1">
       <code>$lang</code>
@@ -25,10 +25,8 @@
       <code>!$sendPasswordByMail</code>
       <code>$sendPasswordByMail</code>
     </TypeDoesNotContainType>
-    <UndefinedClass occurrences="3">
+    <UndefinedClass occurrences="1">
       <code>Notifications</code>
-      <code>Share</code>
-      <code>Share</code>
     </UndefinedClass>
     <UndefinedDocblockClass occurrences="2">
       <code>$this-&gt;federationNotifications</code>
@@ -48,11 +46,6 @@
     <NullableReturnStatement occurrences="1">
       <code>$this-&gt;federatedUserService-&gt;getCurrentUser()</code>
     </NullableReturnStatement>
-  </file>
-  <file src="lib/Collaboration/v2/CollaboratorSearchPlugin.php">
-    <UndefinedClass occurrences="1">
-      <code>Share</code>
-    </UndefinedClass>
   </file>
   <file src="lib/Command/CirclesCheck.php">
     <UndefinedClass occurrences="1">
@@ -152,8 +145,6 @@
     <NullableReturnStatement occurrences="2">
       <code>null</code>
       <code>null</code>
-      <code>null</code>
-      <code>null</code>
     </NullableReturnStatement>
   </file>
   <file src="lib/Db/DeprecatedMembersRequest.php">
@@ -251,9 +242,6 @@
       <code>!$sendPasswordByMail</code>
       <code>$sendPasswordByMail</code>
     </TypeDoesNotContainType>
-    <UndefinedClass occurrences="1">
-      <code>Share</code>
-    </UndefinedClass>
     <UndefinedInterfaceMethod occurrences="3">
       <code>setHtmlBody</code>
       <code>setPlainBody</code>
@@ -471,6 +459,9 @@
     </InvalidReturnType>
   </file>
   <file src="lib/Model/ShareWrapper.php">
+    <InvalidArgument occurrences="1">
+      <code>Cache::cacheEntryFromData($this-&gt;getFileCache()-&gt;toCache(), OC::$server-&gt;getMimeTypeLoader())</code>
+    </InvalidArgument>
     <InvalidNullableReturnType occurrences="5">
       <code>Circle</code>
       <code>FileCacheWrapper</code>
@@ -485,9 +476,6 @@
       <code>$this-&gt;owner</code>
       <code>$this-&gt;shareToken</code>
     </NullableReturnStatement>
-    <UndefinedClass occurrences="1">
-      <code>Share</code>
-    </UndefinedClass>
   </file>
   <file src="lib/Model/SharesToken.php">
     <InvalidScalarArgument occurrences="1">
@@ -516,69 +504,6 @@
       <code>ExternalStorage</code>
     </UndefinedClass>
   </file>
-  <file src="lib/Search/Contacts.php">
-    <InvalidArgument occurrences="1">
-      <code>false</code>
-    </InvalidArgument>
-    <InvalidReturnStatement occurrences="1">
-      <code>$result</code>
-    </InvalidReturnStatement>
-    <InvalidReturnType occurrences="1">
-      <code>search</code>
-    </InvalidReturnType>
-    <MethodSignatureMismatch occurrences="1">
-      <code>Contacts</code>
-    </MethodSignatureMismatch>
-    <ParamNameMismatch occurrences="1">
-      <code>$search</code>
-    </ParamNameMismatch>
-  </file>
-  <file src="lib/Search/FederatedUsers.php">
-    <LessSpecificImplementedReturnType occurrences="1">
-      <code>array</code>
-    </LessSpecificImplementedReturnType>
-  </file>
-  <file src="lib/Search/GlobalScaleUsers.php">
-    <InvalidReturnStatement occurrences="1">
-      <code>$result</code>
-    </InvalidReturnStatement>
-    <InvalidReturnType occurrences="1">
-      <code>array</code>
-    </InvalidReturnType>
-    <ParamNameMismatch occurrences="1">
-      <code>$search</code>
-    </ParamNameMismatch>
-  </file>
-  <file src="lib/Search/LocalGroups.php">
-    <InvalidReturnStatement occurrences="1">
-      <code>$result</code>
-    </InvalidReturnStatement>
-    <InvalidReturnType occurrences="1">
-      <code>search</code>
-    </InvalidReturnType>
-    <MethodSignatureMismatch occurrences="1">
-      <code>LocalGroups</code>
-    </MethodSignatureMismatch>
-    <ParamNameMismatch occurrences="1">
-      <code>$search</code>
-    </ParamNameMismatch>
-  </file>
-  <file src="lib/Search/LocalUsers.php">
-    <InvalidReturnStatement occurrences="1">
-      <code>$result</code>
-    </InvalidReturnStatement>
-    <MethodSignatureMismatch occurrences="1">
-      <code>LocalUsers</code>
-    </MethodSignatureMismatch>
-    <ParamNameMismatch occurrences="1">
-      <code>$search</code>
-    </ParamNameMismatch>
-  </file>
-  <file src="lib/Service/CircleService.php">
-    <MismatchingDocblockParamType occurrences="1">
-      <code>CircleProbe|null</code>
-    </MismatchingDocblockParamType>
-  </file>
   <file src="lib/Service/CirclesService.php">
     <InvalidScalarArgument occurrences="1">
       <code>$type</code>
@@ -601,11 +526,6 @@
     <UndefinedMethod occurrences="1">
       <code>isFederatedCirclesAllowed</code>
     </UndefinedMethod>
-  </file>
-  <file src="lib/Service/ConfigService.php">
-    <UndefinedPropertyFetch occurrences="1">
-      <code>OC::$WEBROOT</code>
-    </UndefinedPropertyFetch>
   </file>
   <file src="lib/Service/ContactService.php">
     <TypeDoesNotContainNull occurrences="1">
@@ -791,23 +711,13 @@
     </ParamNameMismatch>
   </file>
   <file src="lib/ShareByCircleProviderDeprecated.php">
-    <ImplementedReturnTypeMismatch occurrences="4">
+    <ImplementedReturnTypeMismatch occurrences="2">
       <code>IShare[]|null</code>
-      <code>Share</code>
-      <code>Share[]</code>
       <code>Share[]</code>
     </ImplementedReturnTypeMismatch>
-    <InvalidReturnStatement occurrences="4">
-      <code>$shares</code>
+    <InvalidReturnStatement occurrences="1">
       <code>$this-&gt;createShareChild($userId, $share)</code>
-      <code>$this-&gt;createShareObject($data)</code>
-      <code>$this-&gt;getShareById($share-&gt;getId())</code>
     </InvalidReturnStatement>
-    <InvalidReturnType occurrences="3">
-      <code>IShare</code>
-      <code>Share</code>
-      <code>Share[]</code>
-    </InvalidReturnType>
     <InvalidScalarArgument occurrences="6">
       <code>$id</code>
       <code>$share-&gt;getId()</code>
@@ -833,15 +743,9 @@
     <TypeDoesNotContainNull occurrences="1">
       <code>$arr === null</code>
     </TypeDoesNotContainNull>
-    <UndefinedClass occurrences="2">
+    <UndefinedClass occurrences="1">
       <code>InvalidShare</code>
-      <code>Share</code>
     </UndefinedClass>
-    <UndefinedDocblockClass occurrences="3">
-      <code>Share</code>
-      <code>Share[]</code>
-      <code>Share[]</code>
-    </UndefinedDocblockClass>
     <UndefinedMethod occurrences="1"/>
   </file>
   <file src="lib/Tools/ActivityPub/NCSignature.php">

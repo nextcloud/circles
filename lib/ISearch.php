@@ -31,7 +31,7 @@ declare(strict_types=1);
 
 namespace OCA\Circles;
 
-use OCA\Circles\Model\FederatedUser;
+use OCA\Circles\Model\SearchResult;
 
 /**
  * Interface ISearch
@@ -43,7 +43,7 @@ interface ISearch {
 	/**
 	 * @param string $needle
 	 *
-	 * @return FederatedUser[]
+	 * @return list<SearchResult|IFederatedUser>
 	 */
 	public function search(string $needle): array;
 }

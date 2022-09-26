@@ -36,14 +36,14 @@ class Contacts implements ISearch {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function search($search) {
+	public function search($needle): array {
 		$result = [];
 		$contactManager = \OC::$server->getContactsManager();
 
 		// Add 'ADR' to search also in the address
-		$contacts = $contactManager->search($search, ['FN', 'ORG', 'EMAIL']);
+		$contacts = $contactManager->search($needle, ['FN', 'ORG', 'EMAIL']);
 		foreach ($contacts as $contact) {
-			if (MiscService::get($contact, 'isLocalSystemBook', false) === true) {
+			if (($contact['isLocalSystemBook'] ?? false) === true) {
 				continue;
 			}
 

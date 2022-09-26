@@ -32,9 +32,7 @@ declare(strict_types=1);
 namespace OCA\Circles\Cron;
 
 use OCA\Circles\Tools\Traits\TArrayTools;
-use OC\BackgroundJob\TimedJob;
 use OC\Share20\Share;
-use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Circles\FileSharingBroadcaster;
 use OCA\Circles\Db\DeprecatedCirclesRequest;
 use OCA\Circles\Db\DeprecatedMembersRequest;
@@ -49,6 +47,8 @@ use OCA\Circles\Model\SharesToken;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\DavService;
 use OCA\Circles\Service\MiscService;
+use OCP\AppFramework\Utility\ITimeFactory;
+use OCP\BackgroundJob\TimedJob;
 use OCP\Files\IRootFolder;
 use OCP\IUserManager;
 use OCP\Share\Exceptions\IllegalIDChangeException;
@@ -62,39 +62,42 @@ use OCP\Share\IShare;
 class ContactsExistingShares extends TimedJob {
 	use TArrayTools;
 
-
-	/** @var IRootFolder */
-	private $rootFolder;
-
-	/** @var IUserManager */
-	private $userManager;
-
-	/** @var DavService */
-	private $davService;
-
-	/** @var DeprecatedMembersRequest */
-	private $membersRequest;
-
-	/** @var DeprecatedCirclesRequest */
-	private $circlesRequest;
-
-	/** @var FileSharesRequest */
-	private $fileSharesRequest;
-
-	/** @var TokensRequest */
-	private $tokensRequest;
-
-	/** @var FileSharingBroadcaster */
-	private $fileSharingBroadcaster;
-
-	/** @var MiscService */
-	private $miscService;
-
+	private IRootFolder $rootFolder;
+	private IUserManager $userManager;
+	private DavService $davService;
+	private DeprecatedMembersRequest $membersRequest;
+	private DeprecatedCirclesRequest $circlesRequest;
+	private FileSharesRequest $fileSharesRequest;
+	private TokensRequest $tokensRequest;
+	private FileSharingBroadcaster $fileSharingBroadcaster;
+	private MiscService $miscService;
 
 	/**
 	 * Cache constructor.
 	 */
-	public function __construct() {
+	public function __construct(
+		IRootFolder $rootFolder,
+		IUserManager $userManager,
+		DavService $davService,
+		DeprecatedMembersRequest $membersRequest,
+		DeprecatedCirclesRequest $circlesRequest,
+		FileSharesRequest $fileSharesRequest,
+		TokensRequest $tokensRequest,
+		FileSharingBroadcaster $fileSharingBroadcaster,
+		MiscService $miscService,
+		ITimeFactory $timeFactory
+	) {
+		parent::__construct($timeFactory);
+		$this->davService = $davService;
+		$this->rootFolder = $rootFolder;
+		$this->userManager = $userManager;
+		$this->membersRequest = $membersRequest;
+		$this->circlesRequest = $circlesRequest;
+		$this->tokensRequest = $tokensRequest;
+		$this->fileSharesRequest = $fileSharesRequest;
+		$this->fileSharingBroadcaster = $fileSharingBroadcaster;
+		$this->miscService = $miscService;
+
 		$this->setInterval(1);
 	}
 
@@ -104,20 +107,8 @@ class ContactsExistingShares extends TimedJob {
 	 */
 	protected function run($argument) {
 		return;
-		$app = \OC::$server->query(Application::class);
-		$c = $app->getContainer();
 
-		$this->davService = $c->query(DavService::class);
-		$this->rootFolder = $c->query(IRootFolder::class);
-		$this->userManager = $c->query(IUserManager::class);
-		$this->membersRequest = $c->query(DeprecatedMembersRequest::class);
-		$this->circlesRequest = $c->query(DeprecatedCirclesRequest::class);
-		$this->tokensRequest = $c->query(TokensRequest::class);
-		$this->fileSharesRequest = $c->query(FileSharesRequest::class);
-		$this->fileSharingBroadcaster = $c->query(FileSharingBroadcaster::class);
-		$this->miscService = $c->query(MiscService::class);
-
-		$configService = $c->query(ConfigService::class);
+		$configService = \OCP\Server::get(ConfigService::class);
 		if (!$configService->isContactsBackend()) {
 			return;
 		}
