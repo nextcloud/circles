@@ -109,8 +109,38 @@ trait TStringTools {
 			return $line;
 		}
 
-		return substr($line, 0, $length - 5) . ' (..)';
+		return substr($line, 0, $length - 5) . ' [..]';
 	}
+
+
+	/**
+	 * @param array $row
+	 * @param int $flag
+	 * @param int $length
+	 *
+	 * @return array
+	 */
+	protected function filterRow(array $row, int $flag, int $length = 7): array {
+		if ($flag === 0) {
+			return $row;
+		}
+
+		$c = 1;
+		$length = $length + 5;
+
+		return array_map(
+			function ($value) use ($flag, $length, &$c) {
+				$n = $value;
+				if (($flag & $c) !== 0) {
+					$n = $this->cut($value, $length);
+				}
+				$c = $c * 2;
+
+				return $n;
+			}, $row
+		);
+	}
+
 
 	/**
 	 * @param string $str1
