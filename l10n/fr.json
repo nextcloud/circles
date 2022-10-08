@@ -162,7 +162,7 @@
     "Group cannot be set as owner of a circle" : "Le groupe ne peut pas être défini comme propriétaire d'un cercle",
     "now" : "A l'instant",
     "This account does not exist" : "Ce compte n'existe pas",
-    "Email format is not valid" : "Le format d'Email est invalide",
+    "Email format is not valid" : "Le format d'e-mail est invalide",
     "This contact is not available" : "Ce contact n'est pas disponible",
     "You have no permission to create a new circle" : "Vous n'avez pas l'autorisation de créer un nouveau cercle",
     "%s shared a file with \"%s\"." : "%s a partagé un fichier avec \"%s\".",
