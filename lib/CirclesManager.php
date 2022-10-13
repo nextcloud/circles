@@ -70,8 +70,6 @@ use OCA\Circles\Tools\Exceptions\InvalidItemException;
  * @package OCA\Circles
  */
 class CirclesManager {
-
-
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
@@ -331,7 +329,7 @@ class CirclesManager {
 				  ->filterBackendCircles();
 		}
 
-		return $this->circleService->getCircles($probe);
+		return $this->circleService->getCircles($probe, true);
 	}
 
 
