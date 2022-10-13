@@ -215,15 +215,21 @@ class FederatedUserService {
 
 
 	/**
+	 * specify $defaultUser in case a session is not opened but user needs to be emulated (ie. cron)
+	 *
 	 * @throws FederatedUserException
 	 * @throws FederatedUserNotFoundException
 	 * @throws InvalidIdException
 	 * @throws SingleCircleNotFoundException
 	 * @throws RequestBuilderException
 	 */
-	public function initCurrentUser() {
+	public function initCurrentUser(string $defaultUser = ''): void {
 		$user = $this->userSession->getUser();
 		if ($user === null) {
+			if ($defaultUser !== '') {
+				$this->setLocalCurrentUserId($defaultUser);
+			}
+
 			return;
 		}
 
