@@ -8,7 +8,7 @@
 Those groups of people (or "circles") can then be used by any other app for sharing purpose.
 		]]>
 	</description>
-	<version>25.0.0-alpha.0</version>
+	<version>25.0.0</version>
 	<licence>agpl</licence>
 	<author>Maxence Lange</author>
 	<types>
@@ -29,7 +29,6 @@ Those groups of people (or "circles") can then be used by any other app for shar
 	<dependencies>
 		<nextcloud min-version="25" max-version="25"/>
 	</dependencies>
-	<default_enable/>
 	<background-jobs>
 		<job>OCA\Circles\Cron\Maintenance</job>
 	</background-jobs>
