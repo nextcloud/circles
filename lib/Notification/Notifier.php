@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Notification;
 
-use OCA\Circles\Tools\Traits\TNCLogger;
 use Exception;
 use InvalidArgumentException;
 use OCA\Circles\AppInfo\Application;
@@ -60,8 +59,6 @@ use OCP\Notification\INotifier;
  * @package OCA\Circles\Notification
  */
 class Notifier implements INotifier {
-	use TNCLogger;
-
 
 	/** @var IL10N */
 	private $l10n;
@@ -111,8 +108,6 @@ class Notifier implements INotifier {
 		$this->federatedUserService = $federatedUserService;
 		$this->memberService = $memberService;
 		$this->configService = $configService;
-
-		$this->setup('app', Application::APP_ID);
 	}
 
 	/**
@@ -176,7 +171,7 @@ class Notifier implements INotifier {
 	 * @throws SingleCircleNotFoundException
 	 */
 	private function prepareMemberNotification(INotification $notification) {
-		$this->federatedUserService->initCurrentUser();
+		$this->federatedUserService->initCurrentUser($notification->getUser());
 
 		$probe = new CircleProbe();
 		$probe->initiatorAsDirectMember()
