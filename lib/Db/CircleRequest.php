@@ -226,7 +226,7 @@ class CircleRequest extends CircleRequestBuilder {
 			$dataProbe->add(CoreQueryBuilder::MEMBERSHIPS);
 		}
 
-		$qb->setAlternateSqlPath(CoreQueryBuilder::CIRCLE, $dataProbe->getPath())
+		$qb->setSqlPath(CoreQueryBuilder::CIRCLE, $dataProbe->getPath())
 		   ->setOptions([CoreQueryBuilder::CIRCLE], $circleProbe->getAsOptions());
 
 		$qb->leftJoinOwner(CoreQueryBuilder::CIRCLE);
