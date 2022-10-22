@@ -234,11 +234,8 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	/** @var ConfigService */
 	private $configService;
 
-
-	/** @var array */
-	private $options = [];
-
-	private array $alternateSqlPath = [];
+	private array $options = [];
+	private array $sqlPath = [];
 
 	/**
 	 * CoreQueryBuilder constructor.
@@ -1746,11 +1743,11 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	 * @return array
 	 */
 	public function getSqlPath(): array {
-		if (empty($this->alternateSqlPath)) {
+		if (empty($this->sqlPath)) {
 			return self::$SQL_PATH;
 		}
 
-		return $this->alternateSqlPath;
+		return $this->sqlPath;
 	}
 
 
@@ -1762,12 +1759,12 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 	 *
 	 * @return $this
 	 */
-	public function setAlternateSqlPath(string $key, array $path = []): self {
-		if (empty($this->alternateSqlPath)) {
-			$this->alternateSqlPath = self::$SQL_PATH;
+	public function setSqlPath(string $key, array $path = []): self {
+		if (empty($this->sqlPath)) {
+			$this->sqlPath = self::$SQL_PATH;
 		}
 
-		$this->alternateSqlPath[$key] = $path;
+		$this->sqlPath[$key] = $path;
 
 		return $this;
 	}
