@@ -49,6 +49,8 @@ class CircleProbe extends MemberProbe {
 
 	/** @var bool */
 	private $includeNonVisible = false;
+	/** @var bool */
+	private $visitSingleCircles = false;
 
 
 	/**
@@ -59,6 +61,8 @@ class CircleProbe extends MemberProbe {
 
 
 	/**
+	 * Configure whether personal circles are included in the probe
+	 *
 	 * @param bool $include
 	 *
 	 * @return $this
@@ -74,6 +78,8 @@ class CircleProbe extends MemberProbe {
 	}
 
 	/**
+	 * Configure whether single circles are included in the probe
+	 *
 	 * @param bool $include
 	 *
 	 * @return $this
@@ -89,6 +95,8 @@ class CircleProbe extends MemberProbe {
 	}
 
 	/**
+	 * Configure whether system circles are included in the probe
+	 *
 	 * @param bool $include
 	 *
 	 * @return $this
@@ -104,6 +112,8 @@ class CircleProbe extends MemberProbe {
 	}
 
 	/**
+	 * Configure whether hidden circles are included in the probe
+	 *
 	 * @param bool $include
 	 *
 	 * @return $this
@@ -119,6 +129,8 @@ class CircleProbe extends MemberProbe {
 	}
 
 	/**
+	 * Configure whether backend circles are included in the probe
+	 *
 	 * @param bool $include
 	 *
 	 * @return $this
@@ -134,6 +146,8 @@ class CircleProbe extends MemberProbe {
 	}
 
 	/**
+	 * Configure whether non-visible circles are included in the probe
+	 *
 	 * @param bool $include
 	 *
 	 * @return $this
@@ -145,6 +159,8 @@ class CircleProbe extends MemberProbe {
 	}
 
 	/**
+	 * Return whether non-visible circles are included in the probe
+	 *
 	 * @return bool
 	 */
 	public function nonVisibleCirclesIncluded(): bool {
@@ -153,6 +169,31 @@ class CircleProbe extends MemberProbe {
 
 
 	/**
+	 * Configure whether single circles are visited in the probe
+	 *
+	 * @param bool $visit
+	 *
+	 * @return $this
+	 */
+	public function visitSingleCircles(bool $visit = true): self {
+		$this->visitSingleCircles = $visit;
+
+		return $this;
+	}
+
+	/**
+	 * Return whether single circles are visited in the probe
+	 *
+	 * @return bool
+	 */
+	public function visitingSingleCircles(): bool {
+		return $this->visitSingleCircles;
+	}
+
+
+	/**
+	 * Return the include value
+	 *
 	 * @return int
 	 */
 	public function included(): int {
@@ -160,6 +201,8 @@ class CircleProbe extends MemberProbe {
 	}
 
 	/**
+	 * Return whether a config is included in the probe (bitwise comparison)
+	 *
 	 * @param int $config
 	 *
 	 * @return bool
@@ -170,6 +213,8 @@ class CircleProbe extends MemberProbe {
 
 
 	/**
+	 * Configure whether personal circles are filtered in the probe
+	 *
 	 * @param bool $filter
 	 *
 	 * @return $this
@@ -185,6 +230,8 @@ class CircleProbe extends MemberProbe {
 	}
 
 	/**
+	 * Configure whether single circles are filtered in the probe
+	 *
 	 * @param bool $filter
 	 *
 	 * @return $this
@@ -200,6 +247,8 @@ class CircleProbe extends MemberProbe {
 	}
 
 	/**
+	 * Configure whether system circles are filtered in the probe
+	 *
 	 * @param bool $filter
 	 *
 	 * @return $this
@@ -215,6 +264,8 @@ class CircleProbe extends MemberProbe {
 	}
 
 	/**
+	 * Configure whether hidden circles are filtered in the probe
+	 *
 	 * @param bool $filter
 	 *
 	 * @return $this
@@ -230,6 +281,8 @@ class CircleProbe extends MemberProbe {
 	}
 
 	/**
+	 * Configure whether backend circles are filtered in the probe
+	 *
 	 * @param bool $filter
 	 *
 	 * @return $this
@@ -246,6 +299,8 @@ class CircleProbe extends MemberProbe {
 
 
 	/**
+	 * Add a config to the probe filter
+	 *
 	 * @param int $config
 	 * @param bool $filter
 	 *
@@ -263,6 +318,8 @@ class CircleProbe extends MemberProbe {
 
 
 	/**
+	 * Return the filtered value
+	 *
 	 * @return int
 	 */
 	public function filtered(): int {
@@ -270,6 +327,8 @@ class CircleProbe extends MemberProbe {
 	}
 
 	/**
+	 * Return whether a config is filtered in the probe (bitwise comparison)
+	 *
 	 * @param int $config
 	 *
 	 * @return bool
@@ -280,6 +339,8 @@ class CircleProbe extends MemberProbe {
 
 
 	/**
+	 * Return an array with includes as options
+	 *
 	 * @return array
 	 */
 	public function getAsOptions(): array {
@@ -292,6 +353,7 @@ class CircleProbe extends MemberProbe {
 				'includeSystemCircles' => $this->isIncluded(Circle::CFG_SYSTEM),
 				'includePersonalCircles' => $this->isIncluded(Circle::CFG_PERSONAL),
 				'includeNonVisibleCircles' => $this->nonVisibleCirclesIncluded(),
+				'visitingSingleCircles' => $this->visitingSingleCircles(),
 				'filtered' => $this->included(),
 				'filterHiddenCircles' => $this->isIncluded(Circle::CFG_HIDDEN),
 				'filterSingleCircles' => $this->isIncluded(Circle::CFG_SINGLE),
@@ -305,6 +367,15 @@ class CircleProbe extends MemberProbe {
 
 
 	/**
+	 * @return string
+	 */
+	public function getChecksum(): string {
+		return md5(json_encode($this->getAsOptions()));
+	}
+
+	/**
+	 * Return a JSON object with includes as options
+	 *
 	 * @return array
 	 */
 	public function JsonSerialize(): array {
