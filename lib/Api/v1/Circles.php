@@ -29,6 +29,7 @@
 
 namespace OCA\Circles\Api\v1;
 
+use OCA\Circles\CirclesManager;
 use OCA\Circles\Exceptions\CircleNotFoundException;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
@@ -38,6 +39,7 @@ use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Member;
+use OCA\Circles\Model\Membership;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedUserService;
@@ -201,7 +203,7 @@ class Circles {
 	 * @param int $type
 	 * @param bool $forceAll
 	 *
-	 * @return Member
+	 * @return Membership
 	 *
 	 * @deprecated - used by apps/files_sharing/lib/Controller/ShareAPIController.php
 	 *
@@ -212,7 +214,11 @@ class Circles {
 	 *
 	 */
 	public static function getMember($circleUniqueId, $ident, $type, $forceAll = false) {
-		throw new \BadMethodCallException('Method is deprecated and not longer works');
+		/** @var CirclesManager $circlesManager */
+		$circlesManager = \OC::$server->get(CirclesManager::class);
+		$federatedUser = $circlesManager->getFederatedUser($ident, $type);
+
+		return $circlesManager->getLink($circleUniqueId, $federatedUser->getSingleId());
 	}
 
 
