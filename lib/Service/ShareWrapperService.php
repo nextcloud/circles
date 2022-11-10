@@ -121,18 +121,17 @@ class ShareWrapperService {
 
 	/**
 	 * @param string $circleId
-	 * @param string $initiator
-	 * @param bool $force
+	 * @param string $userId
 	 *
 	 * @throws Exception
 	 */
-	public function deleteUserSharesToCircle(string $circleId, string $initiator): void {
-		if ($initiator === '') {
+	public function deleteUserSharesToCircle(string $circleId, string $userId): void {
+		if ($userId === '') {
 			throw new Exception('$initiator cannot be empty');
 		}
 
 		$this->cache->clear('');
-		$this->shareWrapperRequest->deleteSharesToCircle($circleId, $initiator);
+		$this->shareWrapperRequest->deleteSharesToCircle($circleId, $userId);
 	}
 
 
