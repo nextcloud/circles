@@ -34,7 +34,7 @@ namespace OCA\Circles\Events\Files;
 
 use OCA\Circles\Events\CircleGenericEvent;
 use OCA\Circles\Model\Federated\FederatedEvent;
-use OCA\Circles\Model\Mount;
+use OCA\Circles\MountManager\Model\RemoteMount;
 
 /**
  * Class CreatingFileShareEvent
@@ -44,7 +44,7 @@ use OCA\Circles\Model\Mount;
 class CreatingFileShareEvent extends CircleGenericEvent {
 
 
-	/** @var Mount */
+	/** @var RemoteMount */
 	private $mount;
 
 
@@ -59,16 +59,16 @@ class CreatingFileShareEvent extends CircleGenericEvent {
 
 
 	/**
-	 * @param Mount $mount
+	 * @param RemoteMount $mount
 	 */
-	public function setMount(Mount $mount): void {
+	public function setMount(RemoteMount $mount): void {
 		$this->mount = $mount;
 	}
 
 	/**
-	 * @return Mount
+	 * @return RemoteMount
 	 */
-	public function getMount(): Mount {
+	public function getMount(): RemoteMount {
 		return $this->mount;
 	}
 

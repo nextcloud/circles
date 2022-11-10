@@ -37,7 +37,7 @@ use JsonSerializable;
 use OC\Files\Mount\MountPoint;
 use OC\Files\Mount\MoveableMount;
 use OCA\Circles\Exceptions\MountPointConstructionException;
-use OCA\Circles\Model\Mount;
+use OCA\Circles\MountManager\Model\Mount;
 use OCP\Files\Storage\IStorageFactory;
 
 /**
@@ -48,31 +48,21 @@ use OCP\Files\Storage\IStorageFactory;
 class CircleMount extends MountPoint implements MoveableMount, JsonSerializable {
 	use TArrayTools;
 
-
-	/** @var Mount */
-	private $mount;
-
-	/** @var string */
-	private $storageClass;
-
+	private Mount $mount;
+	private string $storageClass;
 
 	/**
 	 * CircleMount constructor.
 	 *
 	 * @param Mount $mount
-	 * @param string $storage
 	 * @param IStorageFactory|null $loader
 	 *
 	 * @throws MountPointConstructionException
 	 */
-	public function __construct(
-		Mount $mount,
-		string $storage,
-		?IStorageFactory $loader = null
-	) {
+	public function __construct(Mount $mount, ?IStorageFactory $loader = null) {
 		try {
 			parent::__construct(
-				$storage,
+				$mount->getStorage(),
 				$mount->getMountPoint(false),
 				$mount->toMount(),
 				$loader
@@ -82,7 +72,7 @@ class CircleMount extends MountPoint implements MoveableMount, JsonSerializable 
 		}
 
 		$this->mount = $mount;
-		$this->storageClass = $storage;
+		$this->storageClass = $mount->getStorage();
 	}
 
 

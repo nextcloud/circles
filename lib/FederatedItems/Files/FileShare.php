@@ -42,7 +42,7 @@ use OCA\Circles\IFederatedItemAsyncProcess;
 use OCA\Circles\IFederatedItemHighSeverity;
 use OCA\Circles\IFederatedItemMemberEmpty;
 use OCA\Circles\Model\Federated\FederatedEvent;
-use OCA\Circles\Model\Mount;
+use OCA\Circles\MountManager\Model\Mount;
 use OCA\Circles\Model\ShareWrapper;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\EventService;

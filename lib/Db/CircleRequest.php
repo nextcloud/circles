@@ -213,7 +213,7 @@ class CircleRequest extends CircleRequestBuilder {
 	 * @param CircleProbe $circleProbe
 	 * @param DataProbe $dataProbe
 	 *
-	 * @return array
+	 * @return Circle[]
 	 * @throws RequestBuilderException
 	 */
 	public function probeCircles(
@@ -230,7 +230,6 @@ class CircleRequest extends CircleRequestBuilder {
 		   ->setOptions([CoreQueryBuilder::CIRCLE], $circleProbe->getAsOptions());
 
 		$qb->leftJoinOwner(CoreQueryBuilder::CIRCLE);
-
 		$qb->innerJoinMembership(CoreQueryBuilder::CIRCLE);
 
 		if (!is_null($initiator)) {

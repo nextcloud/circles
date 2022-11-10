@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 /**
  * Circles - Bring cloud-users closer together.
  *
@@ -28,9 +27,11 @@ declare(strict_types=1);
  *
  */
 
+namespace OCA\Circles\MountManager\Model;
 
-namespace OCA\Circles\Model;
-
+use OCA\Circles\Model\ManagedModel;
+use OCA\Circles\Model\Member;
+use OCA\Circles\Model\ShareWrapper;
 use OCA\Circles\Tools\Db\IQueryRow;
 use OCA\Circles\Tools\IDeserializable;
 use OCA\Circles\Tools\Traits\TArrayTools;
@@ -40,64 +41,24 @@ use OCA\Circles\MountManager\CircleMountManager;
 use OCP\Federation\ICloudIdManager;
 use OCP\Http\Client\IClientService;
 
-/**
- * Class Mount
- *
- * @package OCA\Circles\Model
- */
 class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSerializable {
 	use TArrayTools;
 
+	private int $id = 0;
+	private string $mountId = '';
+	private string $circleId = '';
+	private Member $owner;
+	private ?Member $initiator = null;
+	private int $parent = -1;
+	private string $token = '';
+	private string $password = '';
+	private string $mountPoint = '';
+	private string $mountPointHash = '';
+	private string $storage = '';
+	private ICloudIdManager $cloudIdManager;
+	private IClientService $httpClientService;
+	private CircleMountManager $mountManager;
 
-	/** @var int */
-	private $id = 0;
-
-	/** @var string */
-	private $mountId = '';
-
-	/** @var string */
-	private $circleId = '';
-//
-//	/** @var string */
-//	private $singleId = '';
-
-	/** @var Member */
-	private $owner;
-
-	/** @var Member */
-	private $initiator;
-
-	/** @var int */
-	private $parent = -1;
-
-	/** @var string */
-	private $token = '';
-
-	/** @var string */
-	private $password = '';
-
-	/** @var string */
-	private $mountPoint = '';
-
-	/** @var string */
-	private $mountPointHash = '';
-
-	/** @var string */
-	private $storage;
-
-	/** @var ICloudIdManager */
-	private $cloudIdManager;
-
-	/** @var IClientService */
-	private $httpClientService;
-
-	/** @var CircleMountManager */
-	private $mountManager;
-
-
-	/**
-	 * Mount constructor.
-	 */
 	public function __construct() {
 	}
 
@@ -155,27 +116,6 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 		return $this;
 	}
 
-//
-//	/**
-//	 *
-//	 * @return string
-//	 */
-//	public function getSingleId(): string {
-//		return $this->singleId;
-//	}
-//
-//	/**
-//	 * @param string $singleId
-//	 *
-//	 * @return Mount
-//	 */
-//	public function setSingleId(string $singleId): self {
-//		$this->singleId = $singleId;
-//
-//		return $this;
-//	}
-
-
 	/**
 	 * @param bool $raw
 	 *
@@ -186,7 +126,8 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 			return $this->mountPoint;
 		}
 
-		return '/' . $this->getInitiator()->getUserId() . '/files/' . ltrim($this->mountPoint, '/');
+		return '/' . 'cult' . '/files/' . ltrim($this->mountPoint, '/');
+//		return '/' . $this->getInitiator()->getUserId() . '/files/' . ltrim($this->mountPoint, '/');
 	}
 
 	/**
@@ -217,6 +158,17 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 		$this->mountPointHash = $mountPointHash;
 
 		return $this;
+	}
+
+
+	public function setStorage(string $storage): self {
+		$this->storage = $storage;
+
+		return $this;
+	}
+
+	public function getStorage(): string {
+		return $this->storage;
 	}
 
 
@@ -378,47 +330,11 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 		return $this->mountManager;
 	}
 
-
-//
-//	/**
-//	 * @param string $storage
-//	 *
-//	 * @return Mount
-//	 */
-//	public function setStorage(string $storage): self {
-//		$this->storage = $storage;
-//
-//		return $this;
-//	}
-//
-//	/**
-//	 * @return string
-//	 */
-//	public function getStorage(): string {
-//		return $this->storage;
-//	}
-
-
 	/**
 	 * @return array
 	 */
 	public function toMount(): array {
-		$member = $this->getOwner();
-
-		return [
-			'owner' => $member->getUserId(),
-			'remote' => $member->getRemoteInstance()->getRoot(),
-			'token' => $this->getToken(),
-			'password' => $this->getPassword(),
-			'mountpoint' => $this->getMountPoint(false),
-			//			'manager'           => $this->getMountManager(),
-			'HttpClientService' => $this->getHttpClientService(),
-			'manager' => $this->getMountManager(),
-			'cloudId' => $this->getCloudIdManager()->getCloudId(
-				$member->getUserId(),
-				$member->getRemoteInstance()->getRoot()
-			)
-		];
+		return [];
 	}
 
 
@@ -465,8 +381,6 @@ class Mount extends ManagedModel implements IDeserializable, IQueryRow, JsonSeri
 		$this->setParent($this->getInt('parent', $data));
 		$this->setMountPoint($this->get('mountpoint', $data));
 		$this->setMountPointHash($this->get('mountpoint_hash', $data));
-
-//		$this->setDefaultMountPoint($this->get('mountpoint', $data));
 
 		$this->getManager()->manageImportFromDatabase($this, $data, $prefix);
 

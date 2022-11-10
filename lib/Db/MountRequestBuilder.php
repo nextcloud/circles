@@ -33,7 +33,7 @@ namespace OCA\Circles\Db;
 
 use OCA\Circles\Tools\Exceptions\RowNotFoundException;
 use OCA\Circles\Exceptions\MountNotFoundException;
-use OCA\Circles\Model\Mount;
+use OCA\Circles\MountManager\Model\RemoteMount;
 
 /**
  * Class MountRequestBuilder
@@ -92,13 +92,13 @@ class MountRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * @param CoreQueryBuilder $qb
 	 *
-	 * @return Mount
+	 * @return RemoteMount
 	 * @throws MountNotFoundException
 	 */
-	public function getItemFromRequest(CoreQueryBuilder $qb): Mount {
-		/** @var Mount $circle */
+	public function getItemFromRequest(CoreQueryBuilder $qb): RemoteMount {
+		/** @var RemoteMount $circle */
 		try {
-			$circle = $qb->asItem(Mount::class);
+			$circle = $qb->asItem(RemoteMount::class);
 		} catch (RowNotFoundException $e) {
 			throw new MountNotFoundException('Mount not found');
 		}
@@ -109,10 +109,10 @@ class MountRequestBuilder extends CoreRequestBuilder {
 	/**
 	 * @param CoreQueryBuilder $qb
 	 *
-	 * @return Mount[]
+	 * @return RemoteMount[]
 	 */
 	public function getItemsFromRequest(CoreQueryBuilder $qb): array {
-		/** @var Mount[] $result */
-		return $qb->asItems(Mount::class);
+		/** @var RemoteMount[] $result */
+		return $qb->asItems(RemoteMount::class);
 	}
 }

@@ -40,18 +40,11 @@ use OCA\Circles\Model\Circle;
  */
 class CircleProbe extends MemberProbe {
 
-
-	/** @var int */
-	private $include = 0;
-
-	/** @var int */
-	private $filter = Circle::CFG_SINGLE;
-
-	/** @var bool */
-	private $includeNonVisible = false;
-	/** @var bool */
-	private $visitSingleCircles = false;
-
+	private int $include = 0;
+	private int $filter = Circle::CFG_SINGLE;
+	private bool $includeNonVisible = false;
+	private bool $visitSingleCircles = false;
+	private int $limitConfig = 0;
 
 	/**
 	 * CircleProbe constructor.
@@ -209,6 +202,28 @@ class CircleProbe extends MemberProbe {
 	 */
 	public function isIncluded(int $config): bool {
 		return (($this->included() & $config) !== 0);
+	}
+
+
+	/**
+	 * limit to a specific config
+	 *
+	 * @param int $config
+	 *
+	 * @return $this
+	 */
+	public function limitConfig(int $config = 0): self {
+		$this->limitConfig = $config;
+
+		return $this;
+	}
+
+	public function hasLimitConfig(): bool {
+		return ($this->limitConfig > 0);
+	}
+
+	public function getLimitConfig(): int {
+		return $this->limitConfig;
 	}
 
 

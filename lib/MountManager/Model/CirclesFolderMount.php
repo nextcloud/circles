@@ -1,8 +1,6 @@
 <?php
 
-
 declare(strict_types=1);
-
 
 /**
  * Circles - Bring cloud-users closer together.
@@ -11,7 +9,7 @@ declare(strict_types=1);
  * later. See the COPYING file.
  *
  * @author Maxence Lange <maxence@artificial-owl.com>
- * @copyright 2021
+ * @copyright 2022
  * @license GNU AGPL version 3 or any later version
  *
  * This program is free software: you can redistribute it and/or modify
@@ -29,31 +27,24 @@ declare(strict_types=1);
  *
  */
 
+namespace OCA\Circles\MountManager\Model;
 
-namespace OCA\Circles\Events\Files;
+use OC\Files\Mount\MountPoint;
+use OCA\Circles\Tools\Traits\TArrayTools;
 
-use OCA\Circles\Events\CircleGenericEvent;
-use OCA\Circles\Model\Federated\FederatedEvent;
-use OCA\Circles\MountManager\Model\Mount;
+class CirclesFolderMount extends MountPoint {
+//class CirclesFolderMount extends Mount {
+	use TArrayTools;
 
-/**
- * Class PreparingFileShareEvent
- *
- * @package OCA\Circles\Events\Files
- */
-class PreparingFileShareEvent extends CircleGenericEvent {
+	public function __construct() {
+		parent::__construct();
+	}
 
-
-	/** @var Mount */
-	private $mount;
-
-
-	/**
-	 * PreparingFileShareEvent constructor.
-	 *
-	 * @param FederatedEvent $federatedEvent
-	 */
-	public function __construct(FederatedEvent $federatedEvent) {
-		parent::__construct($federatedEvent);
+	public function toMount(): array {
+		return [
+			'folder_id' => rand(1, 100),
+			'mountpoint' => $this->getMountPoint(false),
+			'manager' => $this->getMountManager()
+		];
 	}
 }

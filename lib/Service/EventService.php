@@ -60,7 +60,7 @@ use OCA\Circles\Events\RemovingCircleMemberEvent;
 use OCA\Circles\Events\RequestingCircleMemberEvent;
 use OCA\Circles\Model\Federated\FederatedEvent;
 use OCA\Circles\Model\Membership;
-use OCA\Circles\Model\Mount;
+use OCA\Circles\MountManager\Model\Mount;
 use OCA\Circles\Model\ShareWrapper;
 use OCP\EventDispatcher\IEventDispatcher;
 

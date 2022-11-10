@@ -31,8 +31,8 @@ declare(strict_types=1);
 
 namespace OCA\Circles\MountManager;
 
-use OCA\Circles\Tools\Traits\TArrayTools;
 use Exception;
+use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Db\MountRequest;
 use OCA\Circles\Exceptions\FederatedUserException;
 use OCA\Circles\Exceptions\FederatedUserNotFoundException;
@@ -41,10 +41,15 @@ use OCA\Circles\Exceptions\InvalidIdException;
 use OCA\Circles\Exceptions\MountPointConstructionException;
 use OCA\Circles\Exceptions\RequestBuilderException;
 use OCA\Circles\Exceptions\SingleCircleNotFoundException;
-use OCA\Circles\Model\Member;
-use OCA\Circles\Model\Mount;
+use OCA\Circles\IFederatedUser;
+use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Probes\CircleProbe;
+use OCA\Circles\Model\Probes\DataProbe;
+use OCA\Circles\MountManager\Model\CirclesFolderMount;
+use OCA\Circles\MountManager\Model\Mount;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Tools\Traits\TArrayTools;
 use OCA\Files_Sharing\External\Storage as ExternalStorage;
 use OCP\Federation\ICloudIdManager;
 use OCP\Files\Config\IMountProvider;
@@ -61,45 +66,24 @@ use OCP\IUser;
 class CircleMountProvider implements IMountProvider {
 	use TArrayTools;
 
-
-//	const LOCAL_STORAGE = ::class;
+	public const LOCAL_STORAGE = CirclesFolderStorage::class;
 	public const EXTERNAL_STORAGE = ExternalStorage::class;
 
+	private IClientService $clientService;
+	private CircleMountManager $circleMountManager;
+	private ICloudIdManager $cloudIdManager;
+	private MountRequest $mountRequest;
 
-	/** @var IClientService */
-	private $clientService;
+	private CircleRequest $circleRequest;
+	private FederatedUserService $federatedUserService;
+	private ConfigService $configService;
 
-	/** @var CircleMountManager */
-	private $circleMountManager;
-
-	/** @var ICloudIdManager */
-	private $cloudIdManager;
-
-	/** @var MountRequest */
-	private $mountRequest;
-
-	/** @var FederatedUserService */
-	private $federatedUserService;
-
-	/** @var ConfigService */
-	private $configService;
-
-
-	/**
-	 * MountProvider constructor.
-	 *
-	 * @param IClientService $clientService
-	 * @param CircleMountManager $circleMountManager
-	 * @param ICloudIdManager $cloudIdManager
-	 * @param MountRequest $mountRequest
-	 * @param FederatedUserService $federatedUserService
-	 * @param ConfigService $configService
-	 */
 	public function __construct(
 		IClientService $clientService,
 		CircleMountManager $circleMountManager,
 		ICloudIdManager $cloudIdManager,
 		MountRequest $mountRequest,
+		CircleRequest $circleRequest,
 		FederatedUserService $federatedUserService,
 		ConfigService $configService
 	) {
@@ -107,6 +91,7 @@ class CircleMountProvider implements IMountProvider {
 		$this->circleMountManager = $circleMountManager;
 		$this->cloudIdManager = $cloudIdManager;
 		$this->mountRequest = $mountRequest;
+		$this->circleRequest = $circleRequest;
 		$this->federatedUserService = $federatedUserService;
 		$this->configService = $configService;
 	}
@@ -125,20 +110,11 @@ class CircleMountProvider implements IMountProvider {
 	 */
 	public function getMountsForUser(IUser $user, IStorageFactory $loader): array {
 		$federatedUser = $this->federatedUserService->getLocalFederatedUser($user->getUID());
-		$items = $this->mountRequest->getForUser($federatedUser);
 
-		$mounts = [];
-		foreach ($items as $item) {
-			try {
-//				if ($share->getMountPoint() !== '-') {
-//					$this->fixDuplicateFile($user->getUID(), $gss.share);
-				$mounts[] = $this->generateCircleMount($item, $loader);
-//				}
-			} catch (Exception $e) {
-			}
-		}
-
-		return $mounts;
+		return array_merge(
+			$this->getRemoteMounts($loader, $federatedUser),
+			$this->getCirclesMounts($loader, $federatedUser)
+		);
 	}
 
 
@@ -150,23 +126,19 @@ class CircleMountProvider implements IMountProvider {
 	 * @throws InitiatorNotFoundException
 	 * @throws MountPointConstructionException
 	 */
-	public function generateCircleMount(Mount $mount, IStorageFactory $storageFactory): CircleMount {
-		$initiator = $mount->getInitiator();
+	private function generateCircleMount(Mount $mount, IStorageFactory $storageFactory): CircleMount {
+//		$initiator = $mount->getInitiator();
+//
+//		// TODO: right now, limited to Local Nextcloud User
+//		if ($initiator->getInheritedBy()->getUserType() !== Member::TYPE_USER
+//			|| !$this->configService->isLocalInstance($initiator->getInheritedBy()->getInstance())) {
+//			throw new InitiatorNotFoundException();
+//		}
 
-		// TODO: right now, limited to Local Nextcloud User
-		if ($initiator->getInheritedBy()->getUserType() !== Member::TYPE_USER
-			|| !$this->configService->isLocalInstance($initiator->getInheritedBy()->getInstance())) {
-			throw new InitiatorNotFoundException();
-		}
-
-		$mount->setCloudIdManager($this->cloudIdManager)
-			  ->setHttpClientService($this->clientService)
-//		->setStorage(self::EXTERNAL_STORAGE)
-			  ->setMountManager($this->circleMountManager);
+		$mount->setMountManager($this->circleMountManager);
 
 		return new CircleMount(
 			$mount,
-			self::EXTERNAL_STORAGE,
 			$storageFactory
 		);
 	}
@@ -238,4 +210,86 @@ class CircleMountProvider implements IMountProvider {
 //
 //		return rtrim(substr($path, strlen($prefix)), '/');
 	}
+
+
+	/**
+	 * @param IStorageFactory $factory
+	 * @param IFederatedUser $user
+	 *
+	 * @return CircleMount[]
+	 * @throws RequestBuilderException
+	 */
+	private function getRemoteMounts(IStorageFactory $factory, IFederatedUser $user): array {
+		if (!$this->configService->isGSAvailable()) {
+			return [];
+		}
+
+		$mounts = [];
+		$items = $this->mountRequest->getForUser($user);
+		foreach ($items as $mount) {
+			try {
+				$mount->setCloudIdManager($this->cloudIdManager)
+					  ->setHttpClientService($this->clientService)
+					  ->setStorage(self::EXTERNAL_STORAGE);
+
+				$mounts[] = $this->generateCircleMount($mount, $factory);
+			} catch (Exception $e) {
+			}
+		}
+
+		return $mounts;
+	}
+
+
+	/**
+	 * @param IStorageFactory $factory
+	 * @param IFederatedUser $user
+	 *
+	 * @return CirclesFolderMount[]
+	 * @throws RequestBuilderException
+	 */
+	private function getCirclesMounts(IStorageFactory $factory, IFederatedUser $user): array {
+		$mounts = [];
+
+		$circleProbe = new CircleProbe();
+		$circleProbe->limitConfig(Circle::CFG_MOUNTPOINT);
+		$dataProbe = new DataProbe();
+		$dataProbe->add(DataProbe::INITIATOR);
+
+		try {
+			$circles = $this->circleRequest->probeCircles($user, $circleProbe, $dataProbe);
+		} catch (Exception $e) {
+		}
+
+		foreach ($circles as $circle) {
+			$mount = new CirclesFolderMount();
+
+			$mount->setCircleId($circle->getSingleId());
+			$mount->setParent(-1);
+			$mount->setMountPoint('/' . $circle->getSingleId() . '/');
+			$mount->setMountPointHash(md5($mount->getMountPoint(true)));
+			$mount->setStorage(self::LOCAL_STORAGE);
+
+//			$mount->setInitiator($circle->getInitiator());
+
+			$mounts[] = $this->generateCircleMount($mount, $factory);
+		}
+
+		return $mounts;
+	}
+
+
+
+//		$items = $this->mountRequest->getForUser($user);
+//		foreach ($items as $mount) {
+//			try {
+//				$mount->setCloudIdManager($this->cloudIdManager)
+//					  ->setHttpClientService($this->clientService)
+//					  ->setMountManager($this->circleMountManager);
+//
+//				$mounts[] = $this->generateCircleMount($item, $factory);
+//			} catch (Exception $e) {
+//			}
+//		}
+
 }

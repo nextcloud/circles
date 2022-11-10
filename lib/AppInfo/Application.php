@@ -70,9 +70,9 @@ use OCA\Circles\Listeners\UserCreated;
 use OCA\Circles\Listeners\UserDeleted;
 use OCA\Circles\MountManager\CircleMountProvider;
 use OCA\Circles\Notification\Notifier;
+use OCA\Circles\Search\UnifiedSearchProvider;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\DavService;
-use OCA\Circles\Search\UnifiedSearchProvider;
 use OCP\App\ManagerEvent;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
@@ -127,6 +127,10 @@ class Application extends App implements IBootstrap {
 	public function register(IRegistrationContext $context): void {
 		$context->registerCapability(Capabilities::class);
 
+//		$context->registerService(CirclesMountProvider::class, function (ContainerInterface $c) {
+//			return new CirclesMountProvider($c->get(CircleService::class));
+//		});
+
 		// notification service
 		$context->registerNotifierService(Notifier::class);
 
@@ -176,12 +180,12 @@ class Application extends App implements IBootstrap {
 		$dispatcher = OC::$server->getEventDispatcher();
 		$dispatcher->addListener(
 			'OC\AccountManager::userUpdated', function (GenericEvent $event) {
-				/** @var IUser $user */
-				$user = $event->getSubject();
-				/** @var DeprecatedListener $deprecatedListener */
-				$deprecatedListener = OC::$server->get(DeprecatedListener::class);
-				$deprecatedListener->userAccountUpdated($user);
-			}
+			/** @var IUser $user */
+			$user = $event->getSubject();
+			/** @var DeprecatedListener $deprecatedListener */
+			$deprecatedListener = OC::$server->get(DeprecatedListener::class);
+			$deprecatedListener->userAccountUpdated($user);
+		}
 		);
 
 		$context->registerSearchProvider(UnifiedSearchProvider::class);
@@ -218,10 +222,6 @@ class Application extends App implements IBootstrap {
 	 * @param IServerContainer $container
 	 */
 	public function registerMountProvider(IServerContainer $container) {
-		if (!$this->configService->isGSAvailable()) {
-			return;
-		}
-
 		$mountProviderCollection = $container->get(IMountProviderCollection::class);
 		$mountProviderCollection->registerProvider($container->get(CircleMountProvider::class));
 	}
