@@ -31,17 +31,17 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Listeners\Files;
 
-use OCA\Circles\Tools\Traits\TNCLogger;
-use OCA\Circles\Tools\Traits\TStringTools;
-use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Events\RemovingCircleMemberEvent;
 use OCA\Circles\Exceptions\MembershipNotFoundException;
 use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Membership;
 use OCA\Circles\Service\MemberService;
 use OCA\Circles\Service\ShareTokenService;
+use OCA\Circles\Service\ShareWrapperService;
+use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class RemovingMember
@@ -50,30 +50,30 @@ use OCP\EventDispatcher\IEventListener;
  */
 class RemovingMember implements IEventListener {
 	use TStringTools;
-	use TNCLogger;
 
-
-	/** @var MemberService */
-	private $memberService;
-
-	/** @var ShareTokenService */
-	private $shareTokenService;
-
+	private LoggerInterface $logger;
+	private MemberService $memberService;
+	private ShareTokenService $shareTokenService;
+	private ShareWrapperService $shareWrapperService;
 
 	/**
 	 * RemovingMember constructor.
 	 *
+	 * @param LoggerInterface $logger
 	 * @param MemberService $memberService
 	 * @param ShareTokenService $shareTokenService
+	 * @param ShareWrapperService $shareWrapperService
 	 */
 	public function __construct(
+		LoggerInterface $logger,
 		MemberService $memberService,
-		ShareTokenService $shareTokenService
+		ShareTokenService $shareTokenService,
+		ShareWrapperService $shareWrapperService
 	) {
+		$this->logger = $logger;
 		$this->memberService = $memberService;
 		$this->shareTokenService = $shareTokenService;
-
-		$this->setup('app', Application::APP_ID);
+		$this->shareWrapperService = $shareWrapperService;
 	}
 
 
@@ -105,20 +105,53 @@ class RemovingMember implements IEventListener {
 
 		/** @var Member[] $members */
 		foreach ($members as $member) {
-			if ($member->getUserType() !== Member::TYPE_MAIL
-				&& $member->getUserType() !== Member::TYPE_CONTACT
+			if ($member->getUserType() === Member::TYPE_MAIL
+				|| $member->getUserType() === Member::TYPE_CONTACT
 			) {
+				$this->removingSharesExternalMember($member, $singleIds);
 				continue;
 			}
 
-			foreach ($singleIds as $singleId) {
-				try {
-					$member->getLink($singleId);
-					continue;
-				} catch (MembershipNotFoundException $e) {
-				}
+			if ($member->getUserType() === Member::TYPE_USER) {
+				$this->removingSharesInternalMember($member, $singleIds);
+			}
+		}
+	}
 
-				$this->shareTokenService->removeTokens($member->getSingleId(), $singleId);
+
+	/**
+	 * @param Member $member
+	 * @param string[] $singleIds
+	 */
+	private function removingSharesExternalMember(Member $member, array $singleIds) {
+		foreach ($singleIds as $singleId) {
+			try {
+				$member->getLink($singleId);
+				continue;
+			} catch (MembershipNotFoundException $e) {
+			}
+
+			$this->shareTokenService->removeTokens($member->getSingleId(), $singleId);
+		}
+	}
+
+
+	/**
+	 * @param Member $member
+	 * @param string[] $singleIds
+	 */
+	private function removingSharesInternalMember(Member $member, array $singleIds) {
+		foreach ($singleIds as $singleId) {
+			try {
+				$member->getLink($singleId);
+				continue;
+			} catch (MembershipNotFoundException $e) {
+			}
+
+			try {
+				$this->shareWrapperService->deleteUserSharesToCircle($singleId, $member->getUserId());
+			} catch (\Exception $e) {
+				$this->logger->notice('issue while deleting user shares: ' . $e->getMessage());
 			}
 		}
 	}
