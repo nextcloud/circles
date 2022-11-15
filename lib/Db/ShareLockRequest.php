@@ -41,8 +41,6 @@ use OCA\Circles\Model\Federated\FederatedShare;
  * @package OCA\Circles\Db
  */
 class ShareLockRequest extends ShareLockRequestBuilder {
-
-
 	/**
 	 * @param FederatedShare $share
 	 *

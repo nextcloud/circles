@@ -30,8 +30,6 @@ use DateTime;
 use OC\AppFramework\Utility\TimeFactory;
 
 class TimezoneService {
-
-
 	/** @var string */
 	private $userId;
 

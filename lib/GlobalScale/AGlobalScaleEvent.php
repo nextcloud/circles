@@ -61,8 +61,6 @@ use OCP\Mail\IMailer;
  * @package OCA\Circles\GlobalScale
  */
 abstract class AGlobalScaleEvent {
-
-
 	/** @var IRootFolder */
 	protected $rootFolder;
 

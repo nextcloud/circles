@@ -43,8 +43,6 @@ use OCA\Circles\Model\Federated\FederatedEvent;
  * @package OCA\Circles\Events
  */
 class PreparingCircleMemberEvent extends CircleMemberGenericEvent {
-
-
 	/**
 	 * PreparingCircleMemberEvent constructor.
 	 *

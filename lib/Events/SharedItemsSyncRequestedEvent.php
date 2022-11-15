@@ -42,8 +42,6 @@ use OCP\EventDispatcher\Event;
  * @package OCA\Circles\Events
  */
 class SharedItemsSyncRequestedEvent extends Event {
-
-
 	/** @var FederatedEvent */
 	private $federatedEvent;
 

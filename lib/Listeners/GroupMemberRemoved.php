@@ -43,8 +43,6 @@ use OCP\Group\Events\UserRemovedEvent;
  * @package OCA\Circles\Events
  */
 class GroupMemberRemoved implements IEventListener {
-
-
 	/** @var SyncService */
 	private $syncService;
 

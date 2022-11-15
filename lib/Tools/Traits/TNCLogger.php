@@ -72,12 +72,12 @@ trait TNCLogger {
 
 		$this->logger()
 			 ->log(
-				 $level,
-				 $message,
-				 [
-				 	'app' => $this->setup('app'),
-				 	'exception' => $t
-				 ]
+			 	$level,
+			 	$message,
+			 	[
+			 		'app' => $this->setup('app'),
+			 		'exception' => $t
+			 	]
 			 );
 	}
 
@@ -112,12 +112,12 @@ trait TNCLogger {
 
 		$this->logger()
 			 ->log(
-				 $level,
-				 $message,
-				 [
-				 	'app' => $this->setup('app'),
-				 	'exception' => $e
-				 ]
+			 	$level,
+			 	$message,
+			 	[
+			 		'app' => $this->setup('app'),
+			 		'exception' => $e
+			 	]
 			 );
 	}
 

@@ -326,37 +326,6 @@ class GSUpstreamService {
 
 
 	/**
-	 * @param array $sync
-	 */
-	public function synchronize(array $sync) {
-		if (!$this->configService->isGSAvailable()) {
-			return;
-		}
-
-		$this->synchronizeCircles($sync);
-		$this->removeDeprecatedCircles();
-		$this->removeDeprecatedEvents();
-	}
-
-
-	/**
-	 * @param array $circles
-	 */
-	public function synchronizeCircles(array $circles): void {
-		$event = new GSEvent(GSEvent::GLOBAL_SYNC, true);
-		$event->setSource($this->configService->getFrontalInstance());
-		$event->setData(new SimpleDataStore($circles));
-
-		foreach ($this->globalScaleService->getInstances() as $instance) {
-			try {
-				$this->broadcastEvent($event, $instance);
-			} catch (RequestContentException | RequestNetworkException | RequestResultSizeException | RequestServerException | RequestResultNotJsonException $e) {
-			}
-		}
-	}
-
-
-	/**
 	 *
 	 */
 	private function removeDeprecatedCircles() {

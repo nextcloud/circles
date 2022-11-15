@@ -40,8 +40,6 @@ use OCA\Circles\Model\ShareToken;
  * @package OCA\Circles\Db
  */
 class ShareTokenRequest extends ShareTokenRequestBuilder {
-
-
 	/**
 	 * @param ShareToken $token
 	 *

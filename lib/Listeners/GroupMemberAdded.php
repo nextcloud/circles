@@ -43,8 +43,6 @@ use OCP\Group\Events\UserAddedEvent;
  * @package OCA\Circles\Events
  */
 class GroupMemberAdded implements IEventListener {
-
-
 	/** @var SyncService */
 	private $syncService;
 

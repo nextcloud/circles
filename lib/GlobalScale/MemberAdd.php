@@ -59,8 +59,6 @@ use OCP\Util;
  * @package OCA\Circles\GlobalScale
  */
 class MemberAdd extends AGlobalScaleEvent {
-
-
 	/**
 	 * @param GSEvent $event
 	 * @param bool $localCheck

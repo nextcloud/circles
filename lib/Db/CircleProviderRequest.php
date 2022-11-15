@@ -36,8 +36,6 @@ use OCA\Circles\Exceptions\GSStatusException;
  * @package OCA\Circles\Db
  */
 class CircleProviderRequest extends CircleProviderRequestBuilder {
-
-
 	/**
 	 * @param $userId
 	 * @param $circleUniqueIds

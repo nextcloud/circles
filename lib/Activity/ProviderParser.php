@@ -38,8 +38,6 @@ use OCP\IL10N;
 use OCP\IURLGenerator;
 
 class ProviderParser {
-
-
 	/** @var MiscService */
 	protected $miscService;
 

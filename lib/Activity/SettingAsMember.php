@@ -6,7 +6,6 @@ use OCP\Activity\ISetting;
 use OCP\IL10N;
 
 class SettingAsMember implements ISetting {
-
 	/** @var IL10N */
 	protected $l10n;
 

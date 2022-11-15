@@ -44,8 +44,6 @@ use OCP\Migration\SimpleMigrationStep;
  * @package OCA\Circles\Migration
  */
 class Version0024Date20220203123901 extends SimpleMigrationStep {
-
-
 	/**
 	 * @param IDBConnection $connection
 	 */

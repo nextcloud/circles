@@ -40,8 +40,6 @@ use OCA\Circles\Model\GlobalScale\GSEvent;
  * @package OCA\Circles\GlobalScale
  */
 class CircleCreate extends AGlobalScaleEvent {
-
-
 	/**
 	 * Circles are created on the original instance, so do no check;
 	 *

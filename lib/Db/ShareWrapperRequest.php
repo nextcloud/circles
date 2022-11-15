@@ -48,8 +48,6 @@ use OCP\Files\Folder;
  * @package OCA\Circles\Db
  */
 class ShareWrapperRequest extends ShareWrapperRequestBuilder {
-
-
 	/**
 	 * @param IShare $share
 	 * @param int $parentId

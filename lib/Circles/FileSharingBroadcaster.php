@@ -64,8 +64,6 @@ use OCP\Util;
  * @package OCA\Circles\Circles
  */
 class FileSharingBroadcaster implements IBroadcaster {
-
-
 	/** @var bool */
 	private $initiated = false;
 

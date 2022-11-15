@@ -36,8 +36,6 @@ use OCA\Circles\Model\DeprecatedMember;
  * @package OCA\Circles\Db
  */
 class FileSharesRequest extends FileSharesRequestBuilder {
-
-
 	/**
 	 * remove shares from a member to a circle
 	 *

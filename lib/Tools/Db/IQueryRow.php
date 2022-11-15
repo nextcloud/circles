@@ -37,7 +37,6 @@ namespace OCA\Circles\Tools\Db;
  * @package OCA\Circles\Tools\Db
  */
 interface IQueryRow {
-
 	/**
 	 * import data to feed the model.
 	 *

@@ -33,7 +33,6 @@ use OCA\Circles\Model\DeprecatedMember;
 use OCP\Activity\IEvent;
 
 class ProviderSubjectMember extends ProviderParser {
-
 	/**
 	 * Parse on Subject 'member_join'.
 	 * If circle is closed, we say that user accepted his invitation.

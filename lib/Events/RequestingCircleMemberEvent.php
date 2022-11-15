@@ -49,8 +49,6 @@ use OCA\Circles\Model\Federated\FederatedEvent;
  * @package OCA\Circles\Events
  */
 class RequestingCircleMemberEvent extends CircleMemberGenericEvent {
-
-
 	/** @var int */
 	private $type = 0;
 

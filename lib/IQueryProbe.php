@@ -41,8 +41,6 @@ use OCA\Circles\Model\Member;
  * @package OCA\Circles
  */
 interface IQueryProbe {
-
-
 	/**
 	 * @return int
 	 */

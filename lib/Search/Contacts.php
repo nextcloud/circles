@@ -32,7 +32,6 @@ use OCA\Circles\Model\SearchResult;
 use OCA\Circles\Service\MiscService;
 
 class Contacts implements ISearch {
-
 	/**
 	 * {@inheritdoc}
 	 */

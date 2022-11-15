@@ -36,8 +36,6 @@ use OCA\Circles\Tools\Exceptions\InvalidItemException;
 use OCA\Circles\Tools\IDeserializable;
 
 trait TDeserialize {
-
-
 	/**
 	 * @param JsonSerializable $model
 	 *

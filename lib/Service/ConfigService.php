@@ -366,10 +366,10 @@ class ConfigService {
 	 */
 	public function enforcePasswordOnSharedFile(Circle $circle): bool {
 		if ($this->config->getAppValue(
-				'core',
-				'shareapi_enforce_links_password',
-				'no'
-			) === 'yes') {
+			'core',
+			'shareapi_enforce_links_password',
+			'no'
+		) === 'yes') {
 			return true;
 		}
 
@@ -665,9 +665,9 @@ class ConfigService {
 		$name = ($displayName) ? $federatedUser->getDisplayName() : $federatedUser->getUserId();
 		if ($federatedUser->getUserType() === Member::TYPE_MAIL) {
 			return $name . ' ' . $this->displayInstance(
-					$federatedUser->getInstance(),
-					self::DISPLAY_PARENTHESIS
-				);
+				$federatedUser->getInstance(),
+				self::DISPLAY_PARENTHESIS
+			);
 		}
 
 		if (!$displayInstance) {

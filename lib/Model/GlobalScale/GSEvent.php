@@ -31,14 +31,14 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Model\GlobalScale;
 
-use OCA\Circles\Tools\Model\SimpleDataStore;
-use OCA\Circles\Tools\Traits\TArrayTools;
 use JsonSerializable;
 use OCA\Circles\Exceptions\JsonException;
 use OCA\Circles\Exceptions\ModelException;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\DeprecatedMember;
+use OCA\Circles\Tools\Model\SimpleDataStore;
+use OCA\Circles\Tools\Traits\TArrayTools;
 
 /**
  * Class GSEvent
@@ -50,12 +50,9 @@ class GSEvent implements JsonSerializable {
 	public const SEVERITY_HIGH = 3;
 
 	public const TEST = '\OCA\Circles\GlobalScale\Test';
-	public const GLOBAL_SYNC = '\OCA\Circles\GlobalScale\GlobalSync';
 	public const CIRCLE_STATUS = '\OCA\Circles\GlobalScale\CircleStatus';
 
 	public const CIRCLE_CREATE = '\OCA\Circles\GlobalScale\CircleCreate';
-	public const CIRCLE_UPDATE = '\OCA\Circles\GlobalScale\CircleUpdate';
-	public const CIRCLE_DESTROY = '\OCA\Circles\GlobalScale\CircleDestroy';
 	public const MEMBER_ADD = '\OCA\Circles\GlobalScale\MemberAdd';
 	public const MEMBER_JOIN = '\OCA\Circles\GlobalScale\MemberJoin';
 	public const MEMBER_LEAVE = '\OCA\Circles\GlobalScale\MemberLeave';

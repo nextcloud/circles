@@ -40,8 +40,6 @@ use OCA\Circles\Model\GlobalScale\GSEvent;
  * @package OCA\Circles\GlobalScale
  */
 class Test extends AGlobalScaleEvent {
-
-
 	/**
 	 * @param GSEvent $event
 	 * @param bool $localCheck

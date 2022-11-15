@@ -41,8 +41,6 @@ use OCA\Circles\Model\ShareToken;
  * @package OCA\Circles\Db
  */
 class ShareTokenRequestBuilder extends CoreRequestBuilder {
-
-
 	/**
 	 * @return CoreQueryBuilder
 	 */

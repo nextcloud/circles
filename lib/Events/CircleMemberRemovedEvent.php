@@ -46,8 +46,6 @@ use OCA\Circles\Model\Federated\FederatedEvent;
  * @package OCA\Circles\Events
  */
 class CircleMemberRemovedEvent extends CircleResultGenericEvent {
-
-
 	/** @var int */
 	private $type = 0;
 

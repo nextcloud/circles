@@ -34,8 +34,6 @@ namespace OCA\Circles\Search;
 use OCP\Search\SearchResultEntry;
 
 class UnifiedSearchResult extends SearchResultEntry {
-
-
 	/**
 	 * UnifiedSearchResult constructor.
 	 *

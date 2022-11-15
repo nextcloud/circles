@@ -42,8 +42,6 @@ use OCA\Circles\Model\Mount;
  * @package OCA\Circles\Events\Files
  */
 class PreparingFileShareEvent extends CircleGenericEvent {
-
-
 	/** @var Mount */
 	private $mount;
 

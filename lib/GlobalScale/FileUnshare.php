@@ -39,8 +39,6 @@ use OCA\Circles\Model\GlobalScale\GSEvent;
  * @package OCA\Circles\GlobalScale
  */
 class FileUnshare extends AGlobalScaleEvent {
-
-
 	/**
 	 * @param GSEvent $event
 	 * @param bool $localCheck

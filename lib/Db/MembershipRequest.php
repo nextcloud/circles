@@ -42,8 +42,6 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
  * @package OCA\Circles\Db
  */
 class MembershipRequest extends MembershipRequestBuilder {
-
-
 	/**
 	 * @param Membership $membership
 	 */

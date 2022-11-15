@@ -45,7 +45,6 @@ use OCP\IUserManager;
  * @package OCA\Circles\Service
  */
 class GroupsService {
-
 	/** @var string */
 	private $userId;
 

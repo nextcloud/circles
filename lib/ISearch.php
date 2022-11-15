@@ -39,7 +39,6 @@ use OCA\Circles\Model\SearchResult;
  * @package OCA\Circles
  */
 interface ISearch {
-
 	/**
 	 * @param string $needle
 	 *

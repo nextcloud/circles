@@ -38,7 +38,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Groups extends Base {
-
 	/** @var IL10N */
 	private $l10n;
 

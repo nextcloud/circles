@@ -33,8 +33,6 @@ use OCA\Circles\Model\FederatedLink;
 use OCP\Activity\IEvent;
 
 class ProviderSubjectLink extends ProviderParser {
-
-
 	/**
 	 * @param IEvent $event
 	 * @param DeprecatedCircle $circle

@@ -47,8 +47,6 @@ use OCA\Circles\Model\Federated\FederatedEvent;
  * @package OCA\Circles\Events
  */
 class CircleEditedEvent extends CircleResultGenericEvent {
-
-
 	/**
 	 * CircleEditedEvent constructor.
 	 *

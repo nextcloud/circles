@@ -41,8 +41,6 @@ use OCA\Circles\Model\Circle;
  * @package OCA\Circles\Db
  */
 class CircleRequestBuilder extends CoreRequestBuilder {
-
-
 	/**
 	 * @return CoreQueryBuilder
 	 */

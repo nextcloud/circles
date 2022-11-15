@@ -50,8 +50,6 @@ use OCA\Circles\Model\Federated\FederatedEvent;
  * @package OCA\Circles\Events
  */
 class EditingCircleEvent extends CircleGenericEvent {
-
-
 	/**
 	 * EditingCircleEvent constructor.
 	 *

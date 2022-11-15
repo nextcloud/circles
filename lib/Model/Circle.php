@@ -984,7 +984,6 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 			if ($circle->isConfig($def)) {
 				[$short, $long] = explode('|', Circle::$DEF_CFG[$def]);
 				switch ($display) {
-
 					case self::FLAGS_SHORT:
 						$config[] = $short;
 						break;

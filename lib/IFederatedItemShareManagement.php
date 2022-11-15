@@ -39,8 +39,6 @@ use OCA\Circles\Model\Federated\FederatedEvent;
  * @package OCA\Circles
  */
 interface IFederatedItemShareManagement {
-
-
 	/**
 	 * /!\ un Item est sharable a un Federated Circle seulement depuis l'instance qui lock l'Item.
 	 *

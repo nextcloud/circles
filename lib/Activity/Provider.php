@@ -47,8 +47,6 @@ use OCP\Activity\IProvider;
  * @package OCA\Circles\Activity
  */
 class Provider implements IProvider {
-
-
 	/** @var ProviderSubjectCircle */
 	private $parserCircle;
 

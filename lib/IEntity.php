@@ -40,7 +40,6 @@ use OCA\Circles\Model\Membership;
  * @package OCA\Circles
  */
 interface IEntity {
-
 	/**
 	 * @return string
 	 */

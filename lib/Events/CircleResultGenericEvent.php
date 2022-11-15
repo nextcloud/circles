@@ -43,8 +43,6 @@ use OCP\EventDispatcher\Event;
  * @package OCA\Circles\Events
  */
 class CircleResultGenericEvent extends Event {
-
-
 	/** @var FederatedEvent */
 	private $federatedEvent;
 

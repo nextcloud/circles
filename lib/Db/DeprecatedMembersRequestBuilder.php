@@ -38,8 +38,6 @@ use OCP\IGroupManager;
 use OCP\IL10N;
 
 class DeprecatedMembersRequestBuilder extends DeprecatedRequestBuilder {
-
-
 	/** @var IGroupManager */
 	protected $groupManager;
 
@@ -109,12 +107,12 @@ class DeprecatedMembersRequestBuilder extends DeprecatedRequestBuilder {
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->update(self::TABLE_MEMBERS)
 		   ->where(
-			   $expr->andX(
-				   $expr->eq('circle_id', $qb->createNamedParameter($circleId)),
-				   $expr->eq('user_id', $qb->createNamedParameter($userId)),
-				   $expr->eq('instance', $qb->createNamedParameter($instance)),
-				   $expr->eq('user_type', $qb->createNamedParameter($type))
-			   )
+		   	$expr->andX(
+		   		$expr->eq('circle_id', $qb->createNamedParameter($circleId)),
+		   		$expr->eq('user_id', $qb->createNamedParameter($userId)),
+		   		$expr->eq('instance', $qb->createNamedParameter($instance)),
+		   		$expr->eq('user_type', $qb->createNamedParameter($type))
+		   	)
 		   );
 
 		return $qb;

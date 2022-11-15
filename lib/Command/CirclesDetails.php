@@ -66,8 +66,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class CirclesDetails extends Base {
-
-
 	/** @var FederatedUserService */
 	private $federatedUserService;
 

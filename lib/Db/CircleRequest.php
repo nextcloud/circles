@@ -50,8 +50,6 @@ use OCA\Circles\Model\Probes\DataProbe;
  * @package OCA\Circles\Db
  */
 class CircleRequest extends CircleRequestBuilder {
-
-
 	/**
 	 * @param Circle $circle
 	 *
@@ -236,9 +234,9 @@ class CircleRequest extends CircleRequestBuilder {
 		if (!is_null($initiator)) {
 			$qb->limitToSingleId(
 				$initiator->getSingleId(), $qb->generateAlias(
-				CoreQueryBuilder::CIRCLE,
-				CoreQueryBuilder::MEMBERSHIPS
-			)
+					CoreQueryBuilder::CIRCLE,
+					CoreQueryBuilder::MEMBERSHIPS
+				)
 			);
 		}
 

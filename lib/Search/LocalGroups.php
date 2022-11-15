@@ -31,7 +31,6 @@ use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SearchResult;
 
 class LocalGroups implements ISearch {
-
 	/**
 	 * {@inheritdoc}
 	 */

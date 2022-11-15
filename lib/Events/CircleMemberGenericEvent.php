@@ -40,8 +40,6 @@ use OCA\Circles\Model\Member;
  * @package OCA\Circles\Events
  */
 class CircleMemberGenericEvent extends CircleGenericEvent {
-
-
 	/** @var Member */
 	private $member;
 

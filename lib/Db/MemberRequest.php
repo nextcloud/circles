@@ -47,8 +47,6 @@ use OCA\Circles\Model\Probes\MemberProbe;
  * @package OCA\Circles\Db
  */
 class MemberRequest extends MemberRequestBuilder {
-
-
 	/**
 	 * @param Member $member
 	 *

@@ -59,7 +59,6 @@ use OCP\Notification\INotifier;
  * @package OCA\Circles\Notification
  */
 class Notifier implements INotifier {
-
 	/** @var IL10N */
 	private $l10n;
 

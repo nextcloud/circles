@@ -34,14 +34,11 @@ use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\MiscService;
 use OCA\Circles\Service\TimezoneService;
-use OCP\DB\QueryBuilder\ICompositeExpression;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 use OCP\IL10N;
 
 class DeprecatedCirclesRequestBuilder extends DeprecatedRequestBuilder {
-
-
 	/** @var DeprecatedMembersRequest */
 	protected $membersRequest;
 
@@ -82,28 +79,13 @@ class DeprecatedCirclesRequestBuilder extends DeprecatedRequestBuilder {
 	 * @param $name
 	 * @param bool $forceAll
 	 *
+	 * @deprecated
 	 * @throws ConfigNoCircleAvailableException
 	 */
 	protected function limitRegardingCircleType(
 		IQueryBuilder $qb, string $userId, $circleUniqueId, int $type,
 		string $name, bool $forceAll = false
 	) {
-		$orTypes = $this->generateLimit($qb, $circleUniqueId, $userId, $type, $name, $forceAll);
-		if (sizeof($orTypes) === 0) {
-			throw new ConfigNoCircleAvailableException(
-				$this->l10n->t(
-					'You cannot use the Circles Application until your administrator has allowed at least one type of circles'
-				)
-			);
-		}
-
-		$orXTypes = $qb->expr()
-					   ->orX();
-		foreach ($orTypes as $orType) {
-			$orXTypes->add($orType);
-		}
-
-		$qb->andWhere($orXTypes);
 	}
 
 
@@ -120,111 +102,7 @@ class DeprecatedCirclesRequestBuilder extends DeprecatedRequestBuilder {
 	private function generateLimit(
 		IQueryBuilder $qb, $circleUniqueId, $userId, $type, $name, $forceAll = false
 	) {
-		$orTypes = [];
-		array_push($orTypes, $this->generateLimitPersonal($qb, $userId, $type, $forceAll));
-		array_push($orTypes, $this->generateLimitSecret($qb, $circleUniqueId, $type, $name));
-		array_push($orTypes, $this->generateLimitClosed($qb, $type));
-		array_push($orTypes, $this->generateLimitPublic($qb, $type));
-
-		return array_filter($orTypes);
-	}
-
-
-	/**
-	 * @param IQueryBuilder $qb
-	 * @param int|string $userId
-	 * @param int $type
-	 * @param bool $forceAll
-	 *
-	 * @return ICompositeExpression
-	 */
-	private function generateLimitPersonal(IQueryBuilder $qb, $userId, $type, $forceAll = false) {
-		if (!(DeprecatedCircle::CIRCLES_PERSONAL & (int)$type)) {
-			return null;
-		}
-		$expr = $qb->expr();
-
-		$andX = $expr->andX();
-		$andX->add($expr->eq('c.type', $qb->createNamedParameter(DeprecatedCircle::CIRCLES_PERSONAL)));
-		$andX->add($expr->eq('o.instance', $qb->createNamedParameter('')));
-
-		if (!$forceAll) {
-			$andX->add($expr->eq('o.user_id', $qb->createNamedParameter((string)$userId)));
-		}
-
-		return $andX;
-	}
-
-
-	/**
-	 * @param IQueryBuilder $qb
-	 * @param string $circleUniqueId
-	 * @param int $type
-	 * @param string $name
-	 *
-	 * @return string
-	 */
-	private function generateLimitSecret(IQueryBuilder $qb, $circleUniqueId, $type, $name) {
-		if (!(DeprecatedCircle::CIRCLES_SECRET & (int)$type)) {
-			return null;
-		}
-		$expr = $qb->expr();
-
-		$orX = $expr->orX($expr->gte('u.level', $qb->createNamedParameter(DeprecatedMember::LEVEL_MEMBER)));
-		$orX->add($expr->eq('c.name', $qb->createNamedParameter($name)))
-			->add($expr->eq('c.unique_id', $qb->createNamedParameter($circleUniqueId)));
-
-		if ($name !== '') {
-			$orX->add($expr->eq('c.alt_name', $qb->createNamedParameter($name)));
-		}
-
-		if ($this->leftJoinedNCGroupAndUser) {
-			$orX->add($expr->gte('g.level', $qb->createNamedParameter(DeprecatedMember::LEVEL_MEMBER)));
-		}
-
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		return $expr->andX(
-			$expr->eq('c.type', $qb->createNamedParameter(DeprecatedCircle::CIRCLES_SECRET)),
-			$expr->orX($orX)
-		);
-	}
-
-
-	/**
-	 * @param IQueryBuilder $qb
-	 * @param int $type
-	 *
-	 * @return null|string
-	 */
-	private function generateLimitClosed(IQueryBuilder $qb, $type) {
-		if (!(DeprecatedCircle::CIRCLES_CLOSED & (int)$type)) {
-			return null;
-		}
-
-		return $qb->expr()
-				  ->eq(
-					  'c.type',
-					  $qb->createNamedParameter(DeprecatedCircle::CIRCLES_CLOSED)
-				  );
-	}
-
-
-	/**
-	 * @param IQueryBuilder $qb
-	 * @param int $type
-	 *
-	 * @return null|string
-	 */
-	private function generateLimitPublic(IQueryBuilder $qb, $type) {
-		if (!(DeprecatedCircle::CIRCLES_PUBLIC & (int)$type)) {
-			return null;
-		}
-
-		return $qb->expr()
-				  ->eq(
-					  'c.type',
-					  $qb->createNamedParameter(DeprecatedCircle::CIRCLES_PUBLIC)
-				  );
+		return [];
 	}
 
 
@@ -256,13 +134,13 @@ class DeprecatedCirclesRequestBuilder extends DeprecatedRequestBuilder {
 		   ->selectAlias('u.cached_update', 'viewer_cached_update')
 		   ->selectAlias('u.level', 'viewer_level')
 		   ->leftJoin(
-			   $this->default_select_alias, DeprecatedRequestBuilder::TABLE_MEMBERS, 'u',
-			   $expr->andX(
-				   $expr->eq('u.circle_id', $pf . 'unique_id'),
-				   $expr->eq('u.user_id', $qb->createNamedParameter($userId)),
-				   $expr->eq('u.instance', $qb->createNamedParameter($instanceId)),
-				   $expr->eq('u.user_type', $qb->createNamedParameter($type))
-			   )
+		   	$this->default_select_alias, DeprecatedRequestBuilder::TABLE_MEMBERS, 'u',
+		   	$expr->andX(
+		   		$expr->eq('u.circle_id', $pf . 'unique_id'),
+		   		$expr->eq('u.user_id', $qb->createNamedParameter($userId)),
+		   		$expr->eq('u.instance', $qb->createNamedParameter($instanceId)),
+		   		$expr->eq('u.user_type', $qb->createNamedParameter($type))
+		   	)
 		   );
 	}
 
@@ -290,12 +168,12 @@ class DeprecatedCirclesRequestBuilder extends DeprecatedRequestBuilder {
 		   ->selectAlias('o.status', 'owner_status')
 		   ->selectAlias('o.level', 'owner_level')
 		   ->leftJoin(
-			   $this->default_select_alias, DeprecatedRequestBuilder::TABLE_MEMBERS, 'o',
-			   $expr->andX(
-				   $expr->eq('o.circle_id', $pf . 'unique_id'),
-				   $expr->eq('o.level', $qb->createNamedParameter(DeprecatedMember::LEVEL_OWNER)),
-				   $expr->eq('o.user_type', $qb->createNamedParameter(DeprecatedMember::TYPE_USER))
-			   )
+		   	$this->default_select_alias, DeprecatedRequestBuilder::TABLE_MEMBERS, 'o',
+		   	$expr->andX(
+		   		$expr->eq('o.circle_id', $pf . 'unique_id'),
+		   		$expr->eq('o.level', $qb->createNamedParameter(DeprecatedMember::LEVEL_OWNER)),
+		   		$expr->eq('o.user_type', $qb->createNamedParameter(DeprecatedMember::TYPE_USER))
+		   	)
 		   );
 
 		if ($ownerId !== '') {
@@ -319,43 +197,6 @@ class DeprecatedCirclesRequestBuilder extends DeprecatedRequestBuilder {
 	}
 
 
-	/**
-	 * Base of the Sql Update request for Shares
-	 *
-	 * @param int $uniqueId
-	 *
-	 * @return IQueryBuilder
-	 */
-	protected function getCirclesUpdateSql($uniqueId) {
-		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->update(self::TABLE_CIRCLES)
-		   ->where(
-			   $qb->expr()
-				  ->eq('unique_id', $qb->createNamedParameter($uniqueId))
-		   );
-
-		return $qb;
-	}
-
-
-	/**
-	 * Base of the Sql Delete request
-	 *
-	 * @param string $circleUniqueId
-	 *
-	 * @return IQueryBuilder
-	 */
-	protected function getCirclesDeleteSql($circleUniqueId) {
-		$qb = $this->dbConnection->getQueryBuilder();
-		$qb->delete(self::TABLE_CIRCLES)
-		   ->where(
-			   $qb->expr()
-				  ->eq('unique_id', $qb->createNamedParameter($circleUniqueId))
-		   );
-
-		return $qb;
-	}
-
 
 	/**
 	 * @return IQueryBuilder
@@ -366,8 +207,8 @@ class DeprecatedCirclesRequestBuilder extends DeprecatedRequestBuilder {
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$qb->selectDistinct('c.unique_id')
 		   ->addSelect(
-			   'c.id', 'c.name', 'c.alt_name', 'c.description', 'c.settings', 'c.type', 'contact_addressbook',
-			   'contact_groupname', 'c.creation'
+		   	'c.id', 'c.name', 'c.alt_name', 'c.description', 'c.settings', 'c.type', 'contact_addressbook',
+		   	'contact_groupname', 'c.creation'
 		   )
 		   ->from(DeprecatedRequestBuilder::TABLE_CIRCLES, 'c');
 		$this->default_select_alias = 'c';
@@ -400,7 +241,9 @@ class DeprecatedCirclesRequestBuilder extends DeprecatedRequestBuilder {
 		$circle->setCreation($data['creation']);
 
 		if (key_exists('viewer_level', $data)) {
-			$user = new DeprecatedMember($data['viewer_userid'], DeprecatedMember::TYPE_USER, $circle->getUniqueId());
+			$user = new DeprecatedMember(
+				$data['viewer_userid'], DeprecatedMember::TYPE_USER, $circle->getUniqueId()
+			);
 			$user->setStatus($data['viewer_status']);
 			$user->setMemberId($data['viewer_member_id']);
 			$user->setCachedName($data['viewer_cached_name']);
@@ -411,7 +254,9 @@ class DeprecatedCirclesRequestBuilder extends DeprecatedRequestBuilder {
 		}
 
 		if (key_exists('owner_level', $data)) {
-			$owner = new DeprecatedMember($data['owner_userid'], DeprecatedMember::TYPE_USER, $circle->getUniqueId());
+			$owner = new DeprecatedMember(
+				$data['owner_userid'], DeprecatedMember::TYPE_USER, $circle->getUniqueId()
+			);
 			$owner->setCachedName($data['owner_cached_name']);
 			$owner->setMemberId($data['owner_member_id']);
 			$owner->setStatus($data['owner_status']);

@@ -48,8 +48,6 @@ use OCP\IURLGenerator;
  * @package OCA\Circles\Service
  */
 class GSDownstreamService {
-
-
 	/** @var string */
 	private $userId = '';
 

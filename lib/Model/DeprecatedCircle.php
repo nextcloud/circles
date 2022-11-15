@@ -182,7 +182,6 @@ class DeprecatedCircle extends BaseCircle implements JsonSerializable {
 	 * @return null|DeprecatedMember
 	 */
 	private static function getMemberFromArray($arr, $key, $type = DeprecatedMember::TYPE_USER) {
-
 		// TODO: 0.15.0 - remove condition is null
 		if (key_exists($key, $arr) && $arr[$key] !== null) {
 			$viewer = DeprecatedMember::fromArray($arr[$key]);
