@@ -124,7 +124,7 @@ class GlobalScaleService {
 			try {
 				return $this->retrieveJson($request);
 			} catch (RequestNetworkException $e) {
-				$this->e($e, ['request' => $request]);
+				$this->e($e);
 			}
 		} catch (GSStatusException $e) {
 		}
