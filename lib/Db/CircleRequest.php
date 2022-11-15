@@ -189,7 +189,7 @@ class CircleRequest extends CircleRequestBuilder {
 			$qb->limitToDirectMembership(CoreQueryBuilder::CIRCLE, $probe->getFilterMember());
 		}
 		if ($probe->hasFilterCircle()) {
-			$qb->filterCircle($probe->getFilterCircle());
+			$qb->filterCircleDetails($probe->getFilterCircle());
 		}
 		if ($probe->hasFilterRemoteInstance()) {
 			$qb->limitToRemoteInstance(CoreQueryBuilder::CIRCLE, $probe->getFilterRemoteInstance(), false);
@@ -202,6 +202,33 @@ class CircleRequest extends CircleRequestBuilder {
 
 
 	/**
+	 * get data about single Circle.
+	 *
+	 * - CircleProbe is used to confirm the visibility of the targeted circle,
+	 * - DataProbe is used to define the complexity of the data to be returned for each entry of the list
+	 *
+	 * @param string $singleId
+	 * @param IFederatedUser|null $initiator
+	 * @param CircleProbe $circleProbe
+	 * @param DataProbe $dataProbe
+	 *
+	 * @return Circle
+	 * @throws CircleNotFoundException
+	 * @throws RequestBuilderException
+	 */
+	public function probeCircle(
+		string $singleId,
+		?IFederatedUser $initiator,
+		CircleProbe $circleProbe,
+		DataProbe $dataProbe
+	): Circle {
+		$qb = $this->buildProbeCircle($initiator, $circleProbe, $dataProbe);
+		$qb->limit('unique_id', $singleId);
+
+		return $this->getItemFromRequest($qb);
+	}
+
+	/**
 	 * get data about multiple Circles.
 	 *
 	 * - CircleProbe is used to define the list of circles to be returned by the method,
@@ -211,7 +238,7 @@ class CircleRequest extends CircleRequestBuilder {
 	 * @param CircleProbe $circleProbe
 	 * @param DataProbe $dataProbe
 	 *
-	 * @return array
+	 * @return Circle[]
 	 * @throws RequestBuilderException
 	 */
 	public function probeCircles(
@@ -219,29 +246,64 @@ class CircleRequest extends CircleRequestBuilder {
 		CircleProbe $circleProbe,
 		DataProbe $dataProbe
 	): array {
-		$qb = $this->getCircleSelectSql();
-		if (!$dataProbe->has(CoreQueryBuilder::MEMBERSHIPS)) {
-			$dataProbe->add(CoreQueryBuilder::MEMBERSHIPS);
-		}
-
-		$qb->setSqlPath(CoreQueryBuilder::CIRCLE, $dataProbe->getPath())
-		   ->setOptions([CoreQueryBuilder::CIRCLE], $circleProbe->getAsOptions());
-
-		$qb->leftJoinOwner(CoreQueryBuilder::CIRCLE);
-
-		$qb->innerJoinMembership(CoreQueryBuilder::CIRCLE);
-
-		if (!is_null($initiator)) {
-			$qb->limitToSingleId(
-				$initiator->getSingleId(), $qb->generateAlias(
-					CoreQueryBuilder::CIRCLE,
-					CoreQueryBuilder::MEMBERSHIPS
-				)
-			);
-		}
+		$qb = $this->buildProbeCircle($initiator, $circleProbe, $dataProbe);
+		$qb->chunk($circleProbe->getItemsOffset(), $circleProbe->getItemsLimit());
 
 		return $this->getItemsFromRequest($qb);
 	}
+
+	/**
+	 * @param IFederatedUser|null $initiator
+	 * @param CircleProbe $circleProbe
+	 * @param DataProbe $dataProbe
+	 *
+	 * @return CoreQueryBuilder
+	 * @throws RequestBuilderException
+	 */
+	private function buildProbeCircle(
+		?IFederatedUser $initiator,
+		CircleProbe $circleProbe,
+		DataProbe $dataProbe
+	): CoreQueryBuilder {
+		$qb = $this->getCircleSelectSql();
+		if (!$dataProbe->has(DataProbe::MEMBERSHIPS)) {
+			$dataProbe->add(DataProbe::MEMBERSHIPS);
+		}
+
+		$qb->setSqlPath(CoreQueryBuilder::CIRCLE, $dataProbe->getPath())
+		   ->setOptions([CoreQueryBuilder::CIRCLE], $circleProbe->getAsOptions())
+		   ->filterCircles(CoreQueryBuilder::CIRCLE, $circleProbe);
+
+		if ($circleProbe->hasFilterCircle()) {
+			$qb->filterCircleDetails($circleProbe->getFilterCircle());
+		}
+
+		$qb->leftJoinOwner(CoreQueryBuilder::CIRCLE);
+		$qb->innerJoinMembership($circleProbe, CoreQueryBuilder::CIRCLE);
+
+		$aliasMembership = $qb->generateAlias(CoreQueryBuilder::CIRCLE, CoreQueryBuilder::MEMBERSHIPS);
+
+		$limit = $qb->expr()->orX();
+		if (is_null($initiator)) {
+			// to get unique result, enforce a limit on level=owner
+			$limit->add($qb->exprLimitInt('level', Member::LEVEL_OWNER, $aliasMembership));
+		} else {
+			$limit->add(
+				$qb->exprLimit(
+					'single_id',
+					$initiator->getSingleId(),
+					$aliasMembership
+				)
+			);
+			$qb->completeProbeWithInitiator(CoreQueryBuilder::CIRCLE, 'single_id', $aliasMembership);
+		}
+
+		$qb->andWhere($limit);
+		$qb->resetSqlPath();
+
+		return $qb;
+	}
+
 
 	/**
 	 * @param array $circleIds

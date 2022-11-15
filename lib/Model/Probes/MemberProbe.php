@@ -39,18 +39,10 @@ use OCA\Circles\Model\Member;
  * @package OCA\Circles\Model\Probes
  */
 class MemberProbe extends BasicProbe {
-	/** @var int */
-	private $minimumLevel = Member::LEVEL_NONE;
-
-	/** @var bool */
-	private $emulateVisitor = false;
-
-	/** @var bool */
-	private $requestingMembership = false;
-
-	/** @var bool */
-	private $initiatorDirectMember = false;
-
+	private int $minimumLevel = Member::LEVEL_NONE;
+	private bool $emulateVisitor = false;
+	private bool $requestingMembership = false;
+	private bool $initiatorDirectMember = false;
 
 	/**
 	 * allow the initiator as a requesting member
