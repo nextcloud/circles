@@ -63,8 +63,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class CirclesEdit extends Base {
-
-
 	/** @var FederatedUserService */
 	private $federatedUserService;
 

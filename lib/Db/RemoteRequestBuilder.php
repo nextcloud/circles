@@ -41,8 +41,6 @@ use OCA\Circles\Model\Federated\RemoteInstance;
  * @package OCA\Circles\Db
  */
 class RemoteRequestBuilder extends CoreRequestBuilder {
-
-
 	/**
 	 * @return CoreQueryBuilder
 	 */

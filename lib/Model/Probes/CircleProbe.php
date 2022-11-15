@@ -39,8 +39,6 @@ use OCA\Circles\Model\Circle;
  * @package OCA\Circles\Model\Probes
  */
 class CircleProbe extends MemberProbe {
-
-
 	/** @var int */
 	private $include = 0;
 

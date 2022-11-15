@@ -35,8 +35,6 @@ use OCA\Circles\Tools\Model\TreeNode;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 trait TConsoleTree {
-
-
 	/**
 	 * @param TreeNode $root
 	 * @param callable $method

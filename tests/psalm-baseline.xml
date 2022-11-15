@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.26.0@6998fabb2bf528b65777bf9941920888d23c03ac">
+<files psalm-version="4.29.0@7ec5ffbd5f68ae03782d7fd33fff0c45a69f95b3">
   <file src="lib/Activity/Provider.php">
     <ParamNameMismatch occurrences="1">
       <code>$lang</code>
@@ -74,11 +74,6 @@
       <code>$owner === null</code>
     </TypeDoesNotContainNull>
   </file>
-  <file src="lib/Command/FixUniqueId.php">
-    <UndefinedClass occurrences="1">
-      <code>Share</code>
-    </UndefinedClass>
-  </file>
   <file src="lib/Command/MembersAdd.php">
     <UndefinedMethod occurrences="1">
       <code>retrieveJson</code>
@@ -126,26 +121,12 @@
     <InvalidArgument occurrences="1">
       <code>$circle-&gt;getType()</code>
     </InvalidArgument>
-    <InvalidScalarArgument occurrences="5">
-      <code>$circle-&gt;getUniqueId(true)</code>
+    <InvalidScalarArgument occurrences="4">
       <code>$circleUniqueId</code>
       <code>$circleUniqueId</code>
       <code>(string)$uniqueId</code>
       <code>-1</code>
     </InvalidScalarArgument>
-  </file>
-  <file src="lib/Db/DeprecatedCirclesRequestBuilder.php">
-    <InvalidNullableReturnType occurrences="1">
-      <code>ICompositeExpression</code>
-    </InvalidNullableReturnType>
-    <InvalidReturnStatement occurrences="1"/>
-    <InvalidReturnType occurrences="1">
-      <code>string</code>
-    </InvalidReturnType>
-    <NullableReturnStatement occurrences="2">
-      <code>null</code>
-      <code>null</code>
-    </NullableReturnStatement>
   </file>
   <file src="lib/Db/DeprecatedMembersRequest.php">
     <UndefinedClass occurrences="1">
@@ -219,17 +200,7 @@
       <code>$mustBeChecked</code>
     </ParamNameMismatch>
   </file>
-  <file src="lib/GlobalScale/CircleDestroy.php">
-    <ParamNameMismatch occurrences="1">
-      <code>$mustBeChecked</code>
-    </ParamNameMismatch>
-  </file>
   <file src="lib/GlobalScale/CircleStatus.php">
-    <ParamNameMismatch occurrences="1">
-      <code>$mustBeChecked</code>
-    </ParamNameMismatch>
-  </file>
-  <file src="lib/GlobalScale/CircleUpdate.php">
     <ParamNameMismatch occurrences="1">
       <code>$mustBeChecked</code>
     </ParamNameMismatch>
@@ -269,11 +240,6 @@
     <UndefinedMethod occurrences="1">
       <code>isLocalNonSSL</code>
     </UndefinedMethod>
-  </file>
-  <file src="lib/GlobalScale/GlobalSync.php">
-    <ParamNameMismatch occurrences="1">
-      <code>$mustBeChecked</code>
-    </ParamNameMismatch>
   </file>
   <file src="lib/GlobalScale/MemberAdd.php">
     <ParamNameMismatch occurrences="1">
@@ -514,10 +480,6 @@
     <MismatchingDocblockReturnType occurrences="1">
       <code>null|DeprecatedMember</code>
     </MismatchingDocblockReturnType>
-    <TypeDoesNotContainType occurrences="2">
-      <code>$type === ''</code>
-      <code>$type === ''</code>
-    </TypeDoesNotContainType>
     <UndefinedClass occurrences="3">
       <code>DeprecatedCircle</code>
       <code>Member</code>
@@ -599,7 +561,7 @@
     <TooManyArguments occurrences="1">
       <code>configureRequest</code>
     </TooManyArguments>
-    <UndefinedMethod occurrences="6">
+    <UndefinedMethod occurrences="5">
       <code>asyncBroadcast</code>
       <code>getGlobalScaleEvent</code>
       <code>getGlobalScaleEvent</code>
@@ -709,44 +671,6 @@
     <ParamNameMismatch occurrences="1">
       <code>$shareId</code>
     </ParamNameMismatch>
-  </file>
-  <file src="lib/ShareByCircleProviderDeprecated.php">
-    <ImplementedReturnTypeMismatch occurrences="2">
-      <code>IShare[]|null</code>
-      <code>Share[]</code>
-    </ImplementedReturnTypeMismatch>
-    <InvalidReturnStatement occurrences="1">
-      <code>$this-&gt;createShareChild($userId, $share)</code>
-    </InvalidReturnStatement>
-    <InvalidScalarArgument occurrences="6">
-      <code>$id</code>
-      <code>$share-&gt;getId()</code>
-      <code>$share-&gt;getId()</code>
-      <code>$share-&gt;getId()</code>
-      <code>$share-&gt;getId()</code>
-      <code>$share-&gt;getSharedWith()</code>
-    </InvalidScalarArgument>
-    <MissingDependency occurrences="2">
-      <code>\OCP\Share</code>
-      <code>\OCP\Share</code>
-    </MissingDependency>
-    <ParamNameMismatch occurrences="4">
-      <code>$reShares</code>
-      <code>$shareId</code>
-      <code>$userId</code>
-      <code>$userId</code>
-    </ParamNameMismatch>
-    <RedundantCast occurrences="1">
-      <code>(int)$id</code>
-    </RedundantCast>
-    <RedundantCondition occurrences="1"/>
-    <TypeDoesNotContainNull occurrences="1">
-      <code>$arr === null</code>
-    </TypeDoesNotContainNull>
-    <UndefinedClass occurrences="1">
-      <code>InvalidShare</code>
-    </UndefinedClass>
-    <UndefinedMethod occurrences="1"/>
   </file>
   <file src="lib/Tools/ActivityPub/NCSignature.php">
     <RedundantCondition occurrences="1">

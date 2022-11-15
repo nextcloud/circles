@@ -62,8 +62,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class MembersDetails extends Base {
-
-
 	/** @var MemberRequest */
 	private $memberRequest;
 

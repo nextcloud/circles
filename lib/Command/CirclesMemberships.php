@@ -163,8 +163,8 @@ class CirclesMemberships extends Base {
 //			 ->addOption('reset', '', InputOption::VALUE_NONE, 'reset memberships')
 			 ->addOption('all', '', InputOption::VALUE_NONE, 'refresh memberships for all entities')
 			 ->addOption(
-				 'type', '', InputOption::VALUE_REQUIRED, 'type of the user',
-				 Member::$TYPE[Member::TYPE_SINGLE]
+			 	'type', '', InputOption::VALUE_REQUIRED, 'type of the user',
+			 	Member::$TYPE[Member::TYPE_SINGLE]
 			 );
 	}
 
@@ -273,11 +273,11 @@ class CirclesMemberships extends Base {
 
 			$item = new TreeNode(
 				$tree, new SimpleDataStore(
-						 [
-						 	'member' => $member,
-						 	'cycling' => in_array($member->getCircleId(), $knownIds)
-						 ]
-					 )
+					[
+						'member' => $member,
+						'cycling' => in_array($member->getCircleId(), $knownIds)
+					]
+				)
 			);
 			$this->generateTree($member->getCircleId(), $item, $knownIds);
 		}

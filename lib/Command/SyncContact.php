@@ -44,8 +44,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class SyncContact extends Base {
-
-
 	/** @var IUserManager */
 	private $userManager;
 

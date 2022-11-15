@@ -60,8 +60,6 @@ use OCA\Circles\Tools\Model\SimpleDataStore;
  * @package OCA\Circles\Service
  */
 class RemoteService extends NCSignature {
-
-
 	/** @var CircleRequest */
 	private $circleRequest;
 

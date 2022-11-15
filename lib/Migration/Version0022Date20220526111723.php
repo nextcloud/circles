@@ -43,8 +43,6 @@ use OCP\Migration\SimpleMigrationStep;
  * @package OCA\Circles\Migration
  */
 class Version0022Date20220526111723 extends SimpleMigrationStep {
-
-
 	/** @var Connection */
 	private $connection;
 

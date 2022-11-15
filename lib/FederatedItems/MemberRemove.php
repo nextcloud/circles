@@ -53,8 +53,6 @@ class MemberRemove implements
 	IFederatedItemAsyncProcess,
 	IFederatedItemHighSeverity,
 	IFederatedItemMemberRequired {
-
-
 	/** @var MemberRequest */
 	private $memberRequest;
 

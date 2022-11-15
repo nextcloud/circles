@@ -37,8 +37,6 @@ use OCA\Circles\Model\FederatedLink;
  * @package OCA\Circles\Db
  */
 class FederatedLinksRequest extends FederatedLinksRequestBuilder {
-
-
 	/**
 	 * @param FederatedLink $link
 	 *

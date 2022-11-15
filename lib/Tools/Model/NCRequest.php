@@ -34,8 +34,6 @@ namespace OCA\Circles\Tools\Model;
 use OCP\Http\Client\IClient;
 
 class NCRequest extends Request {
-
-
 	/** @var IClient */
 	private $client;
 

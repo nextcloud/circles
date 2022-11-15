@@ -41,8 +41,6 @@ use OCA\Circles\Model\Membership;
  * @package OCA\Circles\Db
  */
 class MembershipRequestBuilder extends CoreRequestBuilder {
-
-
 	/**
 	 * @return CoreQueryBuilder
 	 */

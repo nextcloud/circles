@@ -40,8 +40,6 @@ use OCP\EventDispatcher\Event;
  * @package OCA\Circles\Events
  */
 class MembershipsRemovedEvent extends Event {
-
-
 	/** @var Membership[] */
 	private $memberships;
 

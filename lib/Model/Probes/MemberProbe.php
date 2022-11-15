@@ -39,8 +39,6 @@ use OCA\Circles\Model\Member;
  * @package OCA\Circles\Model\Probes
  */
 class MemberProbe extends BasicProbe {
-
-
 	/** @var int */
 	private $minimumLevel = Member::LEVEL_NONE;
 

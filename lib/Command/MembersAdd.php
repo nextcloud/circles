@@ -57,8 +57,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class MembersAdd extends Base {
-
-
 	/** @var FederatedUserService */
 	private $federatedUserService;
 
@@ -170,11 +168,11 @@ class MembersAdd extends Base {
 		try {
 			$users = $this->retrieveJson($request);
 		} catch (
-		RequestContentException |
-		RequestNetworkException |
-		RequestResultSizeException |
-		RequestServerException |
-		RequestResultNotJsonException $e
+			RequestContentException |
+			RequestNetworkException |
+			RequestResultSizeException |
+			RequestServerException |
+			RequestResultNotJsonException $e
 		) {
 			return '';
 		}

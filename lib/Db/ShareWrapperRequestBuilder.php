@@ -42,8 +42,6 @@ use OCA\Circles\Model\ShareWrapper;
  * @package OCA\Circles\Db
  */
 class ShareWrapperRequestBuilder extends CoreRequestBuilder {
-
-
 	/**
 	 * @return CoreQueryBuilder
 	 */

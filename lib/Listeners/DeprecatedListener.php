@@ -58,8 +58,6 @@ use OCP\IUser;
  * @package OCA\Circles\Events
  */
 class DeprecatedListener {
-
-
 	/** @var CircleRequest */
 	private $circleRequest;
 

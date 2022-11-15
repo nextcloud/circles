@@ -51,8 +51,6 @@ use OCA\Circles\Model\Federated\FederatedEvent;
  * @package OCA\Circles\Events
  */
 class DestroyingCircleEvent extends CircleGenericEvent {
-
-
 	/**
 	 * DestroyingCircleEvent constructor.
 	 *

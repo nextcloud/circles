@@ -45,8 +45,6 @@ use OCP\BackgroundJob\TimedJob;
  * @package OCA\Cicles\Cron
  */
 class GlobalSync extends TimedJob {
-
-
 	/**
 	 * Cache constructor.
 	 */

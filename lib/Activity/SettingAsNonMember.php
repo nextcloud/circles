@@ -11,8 +11,6 @@ use OCP\IL10N;
  * @package OCA\Circles\Activity
  */
 class SettingAsNonMember implements ISetting {
-
-
 	/** @var IL10N */
 	protected $l10n;
 

@@ -39,7 +39,6 @@ use OCA\Circles\Tools\Model\SimpleDataStore;
  * @package OCA\Circles
  */
 interface IFederatedSync {
-
 	/**
 	 * @param string $circleId
 	 *

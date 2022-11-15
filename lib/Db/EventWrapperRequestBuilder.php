@@ -41,8 +41,6 @@ use OCA\Circles\Model\Federated\EventWrapper;
  * @package OCA\Circles\Db
  */
 class EventWrapperRequestBuilder extends CoreRequestBuilder {
-
-
 	/**
 	 * @return CoreQueryBuilder
 	 */

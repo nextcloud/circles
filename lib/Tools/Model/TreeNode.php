@@ -32,8 +32,6 @@ declare(strict_types=1);
 namespace OCA\Circles\Tools\Model;
 
 class TreeNode {
-
-
 	/** @var self[] */
 	private $children = [];
 

@@ -54,8 +54,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class CirclesSync extends Base {
-
-
 	/** @var SyncService */
 	private $syncService;
 

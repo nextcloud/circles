@@ -360,12 +360,12 @@ class MembersList extends Base {
 					}
 					$node = new TreeNode(
 						$tree, new SimpleDataStore(
-								 [
-								 	'circle' => $circle,
-								 	'member' => $member,
-								 	'cycling' => in_array($member->getSingleId(), $knownIds),
-								 ]
-							 )
+							[
+								'circle' => $circle,
+								'member' => $member,
+								'cycling' => in_array($member->getSingleId(), $knownIds),
+							]
+						)
 					);
 
 					$this->getMembers(
@@ -380,11 +380,11 @@ class MembersList extends Base {
 					if ($this->treeType !== 'circles-only') {
 						new TreeNode(
 							$tree, new SimpleDataStore(
-									 [
-									 	'member' => $member,
-									 	'cycling' => in_array($member->getSingleId(), $knownIds)
-									 ]
-								 )
+								[
+									'member' => $member,
+									'cycling' => in_array($member->getSingleId(), $knownIds)
+								]
+							)
 						);
 					}
 				}
@@ -431,9 +431,9 @@ class MembersList extends Base {
 
 					$line .= ' <info>MemberId</info>: ' . $member->getId();
 					$line .= ' <info>Name</info>: ' . $this->configService->displayFederatedUser(
-							$member,
-							$this->input->getOption('display-name')
-						);
+						$member,
+						$this->input->getOption('display-name')
+					);
 					if ($member->hasBasedOn()) {
 						$line .= ' <info>Source</info>: '
 								 . Circle::$DEF_SOURCE[$member->getBasedOn()->getSource()];

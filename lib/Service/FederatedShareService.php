@@ -56,8 +56,6 @@ use OCA\Circles\Tools\Exceptions\UnknownTypeException;
  * @package OCA\Circles\Service
  */
 class FederatedShareService extends NCSignature {
-
-
 	/** @var FederatedEventService */
 	private $federatedEventService;
 

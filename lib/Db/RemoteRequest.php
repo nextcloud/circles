@@ -45,8 +45,6 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
  * @package OCA\Circles\Db
  */
 class RemoteRequest extends RemoteRequestBuilder {
-
-
 	/**
 	 * @param RemoteInstance $remote
 	 *
@@ -189,7 +187,6 @@ class RemoteRequest extends RemoteRequestBuilder {
 		$orX->add($qb->exprLimit('type', RemoteInstance::TYPE_GLOBALSCALE, '', false));
 
 		if ($circle->isConfig(Circle::CFG_FEDERATED) || $broadcastAsFederated) {
-
 			// get all TRUSTED
 			$orX->add($qb->exprLimit('type', RemoteInstance::TYPE_TRUSTED, '', false));
 

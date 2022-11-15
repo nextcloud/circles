@@ -64,8 +64,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class MembersRemove extends Base {
-
-
 	/** @var MemberRequest */
 	private $memberRequest;
 

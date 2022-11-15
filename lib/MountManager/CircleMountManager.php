@@ -41,8 +41,6 @@ use OCP\Share\Exceptions\ShareNotFound;
  * @package OCA\Circles\MountManager
  */
 class CircleMountManager {
-
-
 	/** @var string */
 	private $userId;
 

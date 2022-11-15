@@ -39,8 +39,6 @@ use OCA\Circles\Model\Circle;
 use OCP\IL10N;
 
 class PermissionService {
-
-
 	/** @var IL10N */
 	private $l10n;
 

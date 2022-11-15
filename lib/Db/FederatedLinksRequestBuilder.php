@@ -42,8 +42,6 @@ use OCP\IL10N;
  * @package OCA\Circles\Db
  */
 class FederatedLinksRequestBuilder extends DeprecatedRequestBuilder {
-
-
 	/**
 	 * CirclesRequestBuilder constructor.
 	 *

@@ -470,8 +470,8 @@ class DeprecatedRequestBuilder {
 		   ->selectAlias('lc.alt_name', 'circle_alt_name')
 		   ->selectAlias('lc.settings', 'circle_settings')
 		   ->leftJoin(
-			   $this->default_select_alias, DeprecatedRequestBuilder::TABLE_CIRCLES, 'lc',
-			   $expr->eq($pf . 'circle_id', 'lc.unique_id')
+		   	$this->default_select_alias, DeprecatedRequestBuilder::TABLE_CIRCLES, 'lc',
+		   	$expr->eq($pf . 'circle_id', 'lc.unique_id')
 		   );
 	}
 

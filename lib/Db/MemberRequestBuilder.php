@@ -44,8 +44,6 @@ use OCA\Circles\Tools\Exceptions\RowNotFoundException;
  * @package OCA\Circles\Db
  */
 class MemberRequestBuilder extends CoreRequestBuilder {
-
-
 	/**
 	 * @return CoreQueryBuilder
 	 */

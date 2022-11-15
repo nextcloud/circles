@@ -33,8 +33,6 @@ use OCA\Circles\Model\DeprecatedMember;
 use OCP\Activity\IEvent;
 
 class ProviderSubjectGroup extends ProviderParser {
-
-
 	/**
 	 * @param IEvent $event
 	 * @param DeprecatedCircle $circle

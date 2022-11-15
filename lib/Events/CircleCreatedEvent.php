@@ -48,8 +48,6 @@ use OCA\Circles\Model\Federated\FederatedEvent;
  * @package OCA\Circles\Events
  */
 class CircleCreatedEvent extends CircleResultGenericEvent {
-
-
 	/**
 	 * CircleCreatedEvent constructor.
 	 *

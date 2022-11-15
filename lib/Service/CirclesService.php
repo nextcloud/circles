@@ -42,7 +42,6 @@ use OCA\Circles\Db\TokensRequest;
 use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\CircleTypeDisabledException;
-use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Exceptions\FederatedCircleNotAllowedException;
 use OCA\Circles\Exceptions\GSStatusException;
 use OCA\Circles\Exceptions\MemberIsNotOwnerException;
@@ -359,51 +358,6 @@ class CirclesService {
 
 
 	/**
-	 * save new settings if current user is admin.
-	 *
-	 * @param string $circleUniqueId
-	 * @param array $settings
-	 *
-	 * @return DeprecatedCircle
-	 * @throws Exception
-	 */
-	public function settingsCircle(string $circleUniqueId, array $settings) {
-		$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
-		$this->hasToBeOwner($circle->getHigherViewer());
-
-		if (!$this->viewerIsAdmin()) {
-			$settings['members_limit'] = $circle->getSetting('members_limit');
-		}
-
-		if ($this->get('password_single', $settings) === ''
-			&& $circle->getSetting('password_single_enabled') === 'false') {
-			$settings['password_single_enabled'] = false;
-		}
-
-		// can only be run from the instance of the circle's owner.
-		$event = new GSEvent(GSEvent::CIRCLE_UPDATE);
-		$event->setDeprecatedCircle($circle);
-		$event->getData()
-			  ->sBool('local_admin', $this->viewerIsAdmin())
-			  ->sArray('settings', $settings);
-
-		if ($this->getBool('password_enforcement', $settings) === true
-			&& $this->getBool('password_single_enabled', $settings) === true
-			&& $this->get('password_single', $settings) !== ''
-		) {
-			$event->getData()
-				  ->sBool('password_changed', true);
-		}
-
-		$this->gsUpstreamService->newEvent($event);
-
-		$circle->setSettings($settings);
-
-		return $circle;
-	}
-
-
-	/**
 	 * @param DeprecatedCircle $circle
 	 */
 	public function updatePasswordOnShares(DeprecatedCircle $circle) {
@@ -458,60 +412,6 @@ class CirclesService {
 		$this->gsUpstreamService->newEvent($event);
 
 		return $member;
-	}
-
-
-	/**
-	 * destroy a circle.
-	 *
-	 * @param string $circleUniqueId
-	 *
-	 * @param bool $force
-	 *
-	 * @throws CircleDoesNotExistException
-	 * @throws MemberIsNotOwnerException
-	 * @throws ConfigNoCircleAvailableException
-	 * @throws Exception
-	 */
-	public function removeCircle($circleUniqueId, bool $force = false) {
-		if ($force) {
-			$circle = $this->circlesRequest->forceGetCircle($circleUniqueId);
-		} else {
-			$circle = $this->circlesRequest->getCircle($circleUniqueId, $this->userId);
-			$this->hasToBeOwner($circle->getHigherViewer());
-		}
-
-		// removing a Circle is done only by owner, so can already be done by local user, or admin, or occ
-		// at this point, we already know that all condition are filled. we can force it.
-		$event = new GSEvent(GSEvent::CIRCLE_DESTROY, false, true);
-		$event->setDeprecatedCircle($circle);
-
-		$this->gsUpstreamService->newEvent($event);
-	}
-
-
-	/**
-	 * @return DeprecatedCircle[]
-	 */
-	public function getCirclesToSync(): array {
-		$circles = $this->circlesRequest->forceGetCircles();
-
-		$sync = [];
-		foreach ($circles as $circle) {
-			if ($circle->getOwner()
-					   ->getInstance() !== ''
-//				|| $circle->getType() === Circle::CIRCLES_PERSONAL
-			) {
-				continue;
-			}
-
-			$members = $this->membersRequest->forceGetMembers($circle->getUniqueId());
-			$circle->setMembers($members);
-
-			$sync[] = $circle;
-		}
-
-		return $sync;
 	}
 
 

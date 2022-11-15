@@ -51,8 +51,6 @@ use OCA\Circles\Model\Federated\FederatedEvent;
  * @package OCA\Circles\Events
  */
 class EditingCircleMemberEvent extends CircleMemberGenericEvent {
-
-
 	/** @var int */
 	private $type = 0;
 

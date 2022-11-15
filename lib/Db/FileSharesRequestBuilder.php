@@ -36,8 +36,6 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
  * @package OCA\Circles\Db
  */
 class FileSharesRequestBuilder extends DeprecatedRequestBuilder {
-
-
 	/**
 	 * Base of the Sql Delete request
 	 *

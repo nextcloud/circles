@@ -41,8 +41,6 @@ use OCA\Circles\Model\Federated\FederatedEvent;
  * @package OCA\Circles\Events\Files
  */
 class FileShareCreatedEvent extends CircleResultGenericEvent {
-
-
 	/**
 	 * FileShareCreatedEvent constructor.
 	 *

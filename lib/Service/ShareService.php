@@ -40,8 +40,6 @@ use OCA\Circles\Model\Federated\FederatedEvent;
  * @package OCA\Circles\Service
  */
 class ShareService {
-
-
 	/** @var FederatedEventService */
 	private $federatedEventService;
 

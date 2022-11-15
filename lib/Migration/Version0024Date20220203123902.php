@@ -39,8 +39,6 @@ use OCP\Migration\IOutput;
 use OCP\Migration\SimpleMigrationStep;
 
 class Version0024Date20220203123902 extends SimpleMigrationStep {
-
-
 	/**
 	 * @param IDBConnection $connection
 	 */

@@ -133,8 +133,8 @@ class CirclesTest extends Base {
 			 ->setDescription('testing some features')
 			 ->addArgument('deprecated', InputArgument::OPTIONAL, '')
 			 ->addOption(
-				 'are-you-aware-this-will-delete-all-my-data', '', InputOption::VALUE_REQUIRED,
-				 'Well, are you ?', ''
+			 	'are-you-aware-this-will-delete-all-my-data', '', InputOption::VALUE_REQUIRED,
+			 	'Well, are you ?', ''
 			 )
 			 ->addOption('skip-init', '', InputOption::VALUE_NONE, 'Bypass Initialisation')
 			 ->addOption('skip-setup', '', InputOption::VALUE_NONE, 'Bypass Circles Setup')

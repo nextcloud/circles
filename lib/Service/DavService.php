@@ -53,8 +53,6 @@ use Symfony\Component\EventDispatcher\GenericEvent;
  * @package OCA\Circles\Service
  */
 class DavService {
-
-
 	/** @var string */
 	private $userId;
 

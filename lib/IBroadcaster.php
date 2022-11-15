@@ -8,7 +8,6 @@ use OCA\Circles\Model\DeprecatedMember;
 use OCA\Circles\Model\SharingFrame;
 
 interface IBroadcaster {
-
 	/**
 	 * Init the broadcaster
 	 */

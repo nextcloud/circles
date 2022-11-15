@@ -46,8 +46,6 @@ use OCP\IL10N;
  * @package OCA\Circles\AppInfo
  */
 class Capabilities implements ICapability {
-
-
 	/** @var IL10N */
 	private $l10n;
 

@@ -32,7 +32,6 @@ declare(strict_types=1);
 namespace OCA\Circles\Tools;
 
 interface IDeserializable {
-
 	/**
 	 * @param array $data
 	 *

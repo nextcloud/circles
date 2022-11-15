@@ -41,8 +41,6 @@ use OCP\Share\Exceptions\ShareNotFound;
  * @package OCA\Circles\GlobalScale\GSMount
  */
 class MountManager {
-
-
 	/** @var string */
 	private $userId;
 

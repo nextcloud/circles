@@ -48,8 +48,6 @@ use OCA\Circles\Model\DeprecatedMember;
  * @package OCA\Circles\GlobalScale
  */
 class MemberJoin extends AGlobalScaleEvent {
-
-
 	/**
 	 * @param GSEvent $event
 	 * @param bool $localCheck

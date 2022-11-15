@@ -37,7 +37,6 @@ namespace OCA\Circles;
  * @package OCA\Circles
  */
 interface IFederatedModel {
-
 	/**
 	 * @return string
 	 */

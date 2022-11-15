@@ -48,8 +48,6 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
  * @package OCA\Circles
  */
 class CirclesQueryHelper {
-
-
 	/** @var CoreRequestBuilder */
 	private $coreRequestBuilder;
 

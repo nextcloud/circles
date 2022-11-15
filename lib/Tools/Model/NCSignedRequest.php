@@ -35,8 +35,6 @@ use JsonSerializable;
 use OCP\IRequest;
 
 class NCSignedRequest implements JsonSerializable {
-
-
 	/** @var string */
 	private $body = '';
 

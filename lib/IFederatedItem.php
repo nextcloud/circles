@@ -40,7 +40,6 @@ use OCA\Circles\Model\Federated\FederatedEvent;
  * @package OCA\Circles
  */
 interface IFederatedItem {
-
 	/**
 	 * @param FederatedEvent $event
 	 *

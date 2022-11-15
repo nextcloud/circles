@@ -46,8 +46,6 @@ use OCA\Circles\Model\DeprecatedMember;
  * @package OCA\Circles\GlobalScale
  */
 class UserDeleted extends AGlobalScaleEvent {
-
-
 	/**
 	 * @param GSEvent $event
 	 * @param bool $localCheck

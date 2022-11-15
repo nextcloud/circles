@@ -31,7 +31,6 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Db;
 
-use OCA\Circles\Exceptions\CircleAlreadyExistsException;
 use OCA\Circles\Exceptions\CircleDoesNotExistException;
 use OCA\Circles\Exceptions\ConfigNoCircleAvailableException;
 use OCA\Circles\Exceptions\GSStatusException;
@@ -39,8 +38,6 @@ use OCA\Circles\Model\DeprecatedCircle;
 use OCA\Circles\Model\DeprecatedMember;
 
 class DeprecatedCirclesRequest extends DeprecatedCirclesRequestBuilder {
-
-
 	/**
 	 * forceGetCircle();
 	 *
@@ -259,9 +256,6 @@ class DeprecatedCirclesRequest extends DeprecatedCirclesRequestBuilder {
 	 * @param string $circleUniqueId
 	 */
 	public function destroyCircle($circleUniqueId) {
-		$qb = $this->getCirclesDeleteSql($circleUniqueId);
-
-		$qb->execute();
 	}
 
 
@@ -322,29 +316,6 @@ class DeprecatedCirclesRequest extends DeprecatedCirclesRequestBuilder {
 		}
 
 		return true;
-	}
-
-
-	/**
-	 * @param DeprecatedCircle $circle
-	 * @param string $userId
-	 *
-	 * @throws CircleAlreadyExistsException
-	 * @throws ConfigNoCircleAvailableException
-	 */
-	public function updateCircle(DeprecatedCircle $circle, $userId = '') {
-		if (!$this->isCircleUnique($circle, $userId)) {
-			throw new CircleAlreadyExistsException(
-				$this->l10n->t('A circle with that name exists')
-			);
-		}
-
-		$qb = $this->getCirclesUpdateSql($circle->getUniqueId(true));
-		$qb->set('name', $qb->createNamedParameter($circle->getName()))
-		   ->set('description', $qb->createNamedParameter($circle->getDescription()))
-		   ->set('settings', $qb->createNamedParameter($circle->getSettings(true)));
-
-		$qb->execute();
 	}
 
 

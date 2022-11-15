@@ -27,7 +27,6 @@
 namespace OCA\Circles\Model;
 
 class SearchResult implements \JsonSerializable {
-
 	/** @var string */
 	private $ident;
 

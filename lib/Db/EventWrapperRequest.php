@@ -39,8 +39,6 @@ use OCA\Circles\Model\Federated\EventWrapper;
  * @package OCA\Circles\Db
  */
 class EventWrapperRequest extends EventWrapperRequestBuilder {
-
-
 	/**
 	 * @param EventWrapper $wrapper
 	 */
@@ -48,10 +46,10 @@ class EventWrapperRequest extends EventWrapperRequestBuilder {
 		$qb = $this->getEventWrapperInsertSql();
 		$qb->setValue('token', $qb->createNamedParameter($wrapper->getToken()))
 		   ->setValue(
-			   'event', $qb->createNamedParameter(json_encode($wrapper->getEvent(), JSON_UNESCAPED_SLASHES))
+		   	'event', $qb->createNamedParameter(json_encode($wrapper->getEvent(), JSON_UNESCAPED_SLASHES))
 		   )
 		   ->setValue(
-			   'result', $qb->createNamedParameter(json_encode($wrapper->getResult(), JSON_UNESCAPED_SLASHES))
+		   	'result', $qb->createNamedParameter(json_encode($wrapper->getResult(), JSON_UNESCAPED_SLASHES))
 		   )
 		   ->setValue('instance', $qb->createNamedParameter($wrapper->getInstance()))
 		   ->setValue('interface', $qb->createNamedParameter($wrapper->getInterface()))

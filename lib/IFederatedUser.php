@@ -39,7 +39,6 @@ use OCA\Circles\Model\Circle;
  * @package OCA\Circles
  */
 interface IFederatedUser extends IFederatedModel {
-
 	/**
 	 * @return string
 	 */

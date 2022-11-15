@@ -39,8 +39,6 @@ use OCA\Circles\Model\SharesToken;
  * @package OCA\Circles\Db
  */
 class TokensRequest extends TokensRequestBuilder {
-
-
 	/**
 	 * @param string $token
 	 *

@@ -50,8 +50,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package OCA\Circles\Command
  */
 class MembersSearch extends Base {
-
-
 	/** @var SearchService */
 	private $searchService;
 

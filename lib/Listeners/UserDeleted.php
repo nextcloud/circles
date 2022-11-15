@@ -43,8 +43,6 @@ use OCP\User\Events\UserDeletedEvent;
  * @package OCA\Circles\Events
  */
 class UserDeleted implements IEventListener {
-
-
 	/** @var SyncService */
 	private $syncService;
 

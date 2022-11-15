@@ -37,7 +37,6 @@ use OCP\Share;
  * @package OCA\Circles\Migration
  */
 class ImportOwncloudCustomGroups implements IRepairStep {
-
 	/** @var IDBConnection */
 	protected $connection;
 

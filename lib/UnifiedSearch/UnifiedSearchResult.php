@@ -39,7 +39,6 @@ use OCP\Search\SearchResultEntry;
  * @package OCA\Circles\UnifiedSearch
  */
 class UnifiedSearchResult extends SearchResultEntry {
-
 	/**
 	 * UnifiedSearchResult constructor.
 	 *

@@ -41,8 +41,6 @@ use OCA\Circles\Model\Mount;
  * @package OCA\Circles\Db
  */
 class MountRequestBuilder extends CoreRequestBuilder {
-
-
 	/**
 	 * @return CoreQueryBuilder
 	 */

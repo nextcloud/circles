@@ -48,8 +48,6 @@ use OCA\Circles\Model\GlobalScale\GSEvent;
  * @package OCA\Circles\GlobalScale
  */
 class MemberRemove extends AGlobalScaleEvent {
-
-
 	/**
 	 * @param GSEvent $event
 	 * @param bool $localCheck

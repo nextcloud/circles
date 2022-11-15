@@ -39,8 +39,6 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
  * @package OCA\Circles\Db
  */
 class GSSharesRequestBuilder extends DeprecatedRequestBuilder {
-
-
 	/**
 	 * Base of the Sql Insert request for Shares
 	 *

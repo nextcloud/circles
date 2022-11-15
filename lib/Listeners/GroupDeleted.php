@@ -43,8 +43,6 @@ use OCP\Group\Events\GroupDeletedEvent;
  * @package OCA\Circles\Events
  */
 class GroupDeleted implements IEventListener {
-
-
 	/** @var SyncService */
 	private $syncService;
 

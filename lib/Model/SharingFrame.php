@@ -37,7 +37,6 @@ use OCA\Circles\Service\MiscService;
  * @package OCA\Circles\Model
  */
 class SharingFrame implements \JsonSerializable {
-
 	/** @var string */
 	private $source;
 
