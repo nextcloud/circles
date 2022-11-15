@@ -39,17 +39,11 @@ use OCA\Circles\Model\Circle;
  * @package OCA\Circles\Model\Probes
  */
 class CircleProbe extends MemberProbe {
-	/** @var int */
-	private $include = 0;
-
-	/** @var int */
-	private $filter = Circle::CFG_SINGLE;
-
-	/** @var bool */
-	private $includeNonVisible = false;
-	/** @var bool */
-	private $visitSingleCircles = false;
-
+	private int $include = 0;
+	private int $filter = Circle::CFG_SINGLE;
+	private bool $includeNonVisible = false;
+	private bool $visitSingleCircles = false;
+	private int $limitConfig = 0;
 
 	/**
 	 * CircleProbe constructor.
@@ -211,6 +205,28 @@ class CircleProbe extends MemberProbe {
 
 
 	/**
+	 * limit to a specific config
+	 *
+	 * @param int $config
+	 *
+	 * @return $this
+	 */
+	public function limitConfig(int $config = 0): self {
+		$this->limitConfig = $config;
+
+		return $this;
+	}
+
+	public function hasLimitConfig(): bool {
+		return ($this->limitConfig > 0);
+	}
+
+	public function getLimitConfig(): int {
+		return $this->limitConfig;
+	}
+
+
+	/**
 	 * Configure whether personal circles are filtered in the probe
 	 *
 	 * @param bool $filter
@@ -352,6 +368,7 @@ class CircleProbe extends MemberProbe {
 				'includePersonalCircles' => $this->isIncluded(Circle::CFG_PERSONAL),
 				'includeNonVisibleCircles' => $this->nonVisibleCirclesIncluded(),
 				'visitingSingleCircles' => $this->visitingSingleCircles(),
+				'limitConfig' => $this->getLimitConfig(),
 				'filtered' => $this->included(),
 				'filterHiddenCircles' => $this->isIncluded(Circle::CFG_HIDDEN),
 				'filterSingleCircles' => $this->isIncluded(Circle::CFG_SINGLE),

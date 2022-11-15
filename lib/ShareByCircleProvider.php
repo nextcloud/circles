@@ -58,8 +58,8 @@ use OCA\Circles\Exceptions\UnknownRemoteException;
 use OCA\Circles\FederatedItems\Files\FileShare;
 use OCA\Circles\FederatedItems\Files\FileUnshare;
 use OCA\Circles\Model\Federated\FederatedEvent;
-use OCA\Circles\Model\Helpers\MemberHelper;
 use OCA\Circles\Model\Probes\CircleProbe;
+use OCA\Circles\Model\Probes\DataProbe;
 use OCA\Circles\Model\ShareWrapper;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\EventService;
@@ -217,21 +217,18 @@ class ShareByCircleProvider implements IShareProvider {
 		}
 
 		$this->federatedUserService->initCurrentUser();
-		$circle = $this->circleService->getCircle($share->getSharedWith());
-		$owner = $circle->getInitiator();
+		$circleProbe = new CircleProbe();
+		$dataProbe = new DataProbe();
+		$dataProbe->add(DataProbe::OWNER)
+				  ->add(DataProbe::INITIATOR, [DataProbe::BASED_ON]);
 
-		$initiatorHelper = new MemberHelper($owner);
-		$initiatorHelper->mustBeMember();
-
+		$circle = $this->circleService->probeCircle($share->getSharedWith(), $circleProbe, $dataProbe);
 		$share->setToken($this->token(15));
+		$owner = $circle->getInitiator();
 		$this->shareWrapperService->save($share);
 
 		try {
-			$wrappedShare = $this->shareWrapperService->getShareById(
-				(int)$share->getId(),
-				$this->federatedUserService->getCurrentUser()
-			);
-
+			$wrappedShare = $this->shareWrapperService->getShareById((int)$share->getId());
 			$wrappedShare->setOwner($owner);
 		} catch (ShareWrapperNotFoundException $e) {
 			throw new ShareNotFound();
@@ -291,10 +288,7 @@ class ShareByCircleProvider implements IShareProvider {
 
 		$this->federatedUserService->initCurrentUser();
 		try {
-			$wrappedShare = $this->shareWrapperService->getShareById(
-				(int)$share->getId(),
-				$this->federatedUserService->getCurrentUser()
-			);
+			$wrappedShare = $this->shareWrapperService->getShareById((int)$share->getId());
 		} catch (ShareWrapperNotFoundException $e) {
 			return;
 		}

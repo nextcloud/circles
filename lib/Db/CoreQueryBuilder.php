@@ -382,9 +382,11 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 
 	/**
+	 * filter result on details (ie. displayName, Description, ...)
+	 *
 	 * @param Circle $circle
 	 */
-	public function filterCircle(Circle $circle): void {
+	public function filterCircleDetails(Circle $circle): void {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
@@ -885,12 +887,15 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 
 	/**
+	 * @param CircleProbe $probe
 	 * @param string $alias
 	 * @param string $field
-	 *
-	 * @throws RequestBuilderException
 	 */
-	public function innerJoinMembership(string $alias, string $field = 'unique_id'): void {
+	public function innerJoinMembership(
+		CircleProbe $probe,
+		string $alias,
+		string $field = 'unique_id'
+	): void {
 		if ($this->getType() !== QueryBuilder::SELECT) {
 			return;
 		}
@@ -902,22 +907,17 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		}
 
 		$expr = $this->expr();
-		$this->generateMembershipSelectAlias($aliasMembership)
-			 ->innerJoin(
-			 	$alias, CoreRequestBuilder::TABLE_MEMBERSHIP, $aliasMembership,
-			 	$expr->andX(
-			 		$expr->eq($aliasMembership . '.circle_id', $alias . '.' . $field),
-			 		$expr->eq(
-			 			$aliasMembership . '.level',
-			 			$this->createNamedParameter(
-			 				Member::LEVEL_MEMBER,
-			 				self::PARAM_INT
-			 			)
-			 		)
-			 	)
-			 );
 
-//		$this->leftJoinBasedOn($aliasMember);
+		$on = $expr->andX($expr->eq($aliasMembership . '.circle_id', $alias . '.' . $field));
+
+		// limit on membership level if requested
+		$minLevel = $probe->getMinimumLevel();
+		if ($minLevel > Member::LEVEL_MEMBER) {
+			$on->add($this->exprGt('level', $minLevel, true, $aliasMembership));
+		}
+
+		$this->generateMembershipSelectAlias($aliasMembership)
+			 ->innerJoin($alias, CoreRequestBuilder::TABLE_MEMBERSHIP, $aliasMembership, $on);
 	}
 
 
@@ -951,10 +951,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			 	$expr->andX(
 			 		$expr->eq($aliasMember . '.circle_id', $alias . '.' . $fieldCircleId),
 			 		$expr->eq($aliasMember . '.single_id', $alias . '.' . $fieldSingleId),
-			 		$expr->gte(
-			 			$aliasMember . '.level',
-			 			$this->createNamedParameter(Member::LEVEL_MEMBER, self::PARAM_INT)
-			 		)
+			 		$this->exprGt('level', Member::LEVEL_MEMBER, true, $aliasMember)
 			 	)
 			 );
 
@@ -1318,6 +1315,36 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		}
 	}
 
+
+	public function completeProbeWithInitiator(
+		string $alias,
+		string $field = 'single_id',
+		string $helperAlias = ''
+	): void {
+		if ($this->getType() !== QueryBuilder::SELECT) {
+			return;
+		}
+
+		try {
+			$aliasInitiator = $this->generateAlias($alias, self::INITIATOR);
+		} catch (RequestBuilderException $e) {
+			return;
+		}
+
+		$helperAlias = ($helperAlias === '') ? $alias : $helperAlias;
+
+		$expr = $this->expr();
+		$this->generateMemberSelectAlias($aliasInitiator)
+			 ->leftJoin(
+			 	$alias, CoreRequestBuilder::TABLE_MEMBER, $aliasInitiator,
+			 	$expr->andX(
+			 		$expr->eq($aliasInitiator . '.circle_id', $helperAlias . '.' . $field),
+			 		$this->exprLimitInt('level', Member::LEVEL_OWNER, $aliasInitiator)
+			 	)
+			 );
+//
+//		$this->leftJoinBasedOn($aliasInitiator);
+	}
 
 	/**
 	 * @param string $alias
@@ -1765,6 +1792,12 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		}
 
 		$this->sqlPath[$key] = $path;
+
+		return $this;
+	}
+
+	public function resetSqlPath(): self {
+		$this->sqlPath = [];
 
 		return $this;
 	}

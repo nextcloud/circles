@@ -31,13 +31,14 @@ declare(strict_types=1);
 
 namespace OCA\Circles\Collaboration\v2;
 
-use OCA\Circles\Tools\Traits\TNCLogger;
 use Exception;
 use OCA\Circles\AppInfo\Application;
 use OCA\Circles\Model\Circle;
 use OCA\Circles\Model\Probes\CircleProbe;
+use OCA\Circles\Model\Probes\DataProbe;
 use OCA\Circles\Service\CircleService;
 use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Tools\Traits\TNCLogger;
 use OCP\Collaboration\Collaborators\ISearchPlugin;
 use OCP\Collaboration\Collaborators\ISearchResult;
 use OCP\Collaboration\Collaborators\SearchResultType;
@@ -114,11 +115,21 @@ class CollaboratorSearchPlugin implements ISearchPlugin {
 				  ->filterSystemCircles()
 				  ->setItemsLimit($limit)
 				  ->setItemsOffset($offset)
-				  ->setFilterCircle($filterCircle)
-				  ->mustBeMember(!$fromFrontEnd)
-				  ->filterConfig(Circle::CFG_ROOT, $fromFrontEnd);
+				  ->setFilterCircle($filterCircle);
 
-			$circles = $this->circleService->getCircles($probe);
+			// If from the OCS API, we use getCircles(), to get more complex result at the price of huge resource,
+			// if not (ie. share popup) we only need probeCircles()
+			if ($fromFrontEnd) {
+				$probe->mustBeMember(false)
+					  ->filterConfig(Circle::CFG_ROOT, true);
+
+				$circles = $this->circleService->getCircles($probe);
+			} else {
+				$dataProbe = new DataProbe();
+				$dataProbe->add(DataProbe::OWNER);
+
+				$circles = $this->circleService->probeCircles($probe, $dataProbe);
+			}
 		} catch (Exception $e) {
 			return false;
 		}
