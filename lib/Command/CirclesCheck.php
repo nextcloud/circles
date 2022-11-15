@@ -430,7 +430,7 @@ class CirclesCheck extends Base {
 	 */
 	private function checkInternal(InputInterface $input, OutputInterface $output, string $test): void {
 		$output->writeln(
-			'. The <info>internal</info> setting is mandatory only if you are willing to use Circles in a GlobalScale setup on a local network.'
+			'. The <info>internal</info> setting should only be enabled if you are willing to use Circles in a GlobalScale setup on a local network.'
 		);
 		$output->writeln(
 			'. The address you need to define here is the local address of your Nextcloud, reachable by all other instances of our GlobalScale.'
@@ -530,9 +530,9 @@ class CirclesCheck extends Base {
 				}
 
 				$output->writeln('');
-				$output->writeln('First step seems fine.');
+				$output->writeln('<info>First step seems fine.</info>');
 				$output->writeln(
-					'Now, please run this <info>curl</info> command from a terminal on your local network and paste its result: '
+					'Next step, please run this <info>curl</info> command from a terminal on your local network and paste its result: '
 				);
 				$output->writeln(
 					'     curl -L "' . $pastedHref . '?test=' . $testToken . '" -H "Accept: application/json"'
@@ -544,7 +544,7 @@ class CirclesCheck extends Base {
 				$pastedSignatory->json(trim($helper->ask($input, $output, $question)));
 
 				// small hack to refresh the cached config
-				OC::$server->get(AppConfig::class)->clearCachedConfig();
+//				OC::$server->get(AppConfig::class)->clearCachedConfig();
 				$this->interfaceService->setCurrentInterface(InterfaceService::IFACE_TEST);
 				$appSignatory = $this->remoteStreamService->getAppSignatory(false);
 
@@ -581,8 +581,7 @@ class CirclesCheck extends Base {
 
 		$output->writeln('');
 		$question = new ConfirmationQuestion(
-			'- Do you want to save <info>'
-			. $internal
+			'- Do you want to save <info>' . $internal
 			. '</info> as your <info>internal</info> address ? (y/N) ',
 			false, '/^(y|Y)/i'
 		);
@@ -598,9 +597,7 @@ class CirclesCheck extends Base {
 		$this->configService->setAppValue(ConfigService::INTERNAL_CLOUD_ID, $cloudId);
 		$this->configService->setAppValue(ConfigService::INTERNAL_CLOUD_PATH, $path);
 
-		$output->writeln(
-			'- Address <info>' . $internal . '</info> is now used as <info>internal</info>'
-		);
+		$output->writeln('- Address <info>' . $internal . '</info> is now used as <info>internal</info>');
 	}
 
 
@@ -618,7 +615,7 @@ class CirclesCheck extends Base {
 			'. The address you need to define here must be reachable from the Internet.'
 		);
 		$output->writeln(
-			'. By default, this feature is disabled (and is considered ALPHA in Nextcloud 22).'
+			'. By default, this feature is disabled.'
 		);
 
 		$question = new ConfirmationQuestion(
@@ -652,128 +649,139 @@ class CirclesCheck extends Base {
 				continue;
 			}
 
-			$frontal = rtrim($scheme . '://' . $cloudId . $path, '/');
-			break;
-		}
+			$frontal = rtrim($scheme . '://' . $cloudId, '/');
+			$fullFrontal = rtrim($scheme . '://' . $cloudId . $path, '/');
 
+			$question = new ConfirmationQuestion(
+				'<comment>Do you want to check the validity of this frontal address?</comment> (y/N) ', false,
+				'/^(y|Y)/i'
+			);
+
+			if ($helper->ask($input, $output, $question)) {
+				$testToken = $this->token();
+				$this->configService->setAppValue(ConfigService::IFACE_TEST_ID, $cloudId);
+				$this->configService->setAppValue(ConfigService::IFACE_TEST_SCHEME, $scheme);
+				$this->configService->setAppValue(ConfigService::IFACE_TEST_PATH, $path);
+				$this->configService->setAppValue(ConfigService::IFACE_TEST_TOKEN, $testToken);
+
+				$output->writeln('');
+				$output->writeln(
+					'You will need to run this <info>curl</info> command from a remote terminal and paste its result: '
+				);
+				$output->writeln(
+					'     curl -L "' . $frontal
+					. '/.well-known/webfinger?resource=http://nextcloud.com/&test='
+					. $testToken . '"'
+				);
+
+
+				$output->writeln('paste the result here: ');
+				$question = new Question('', '');
+				$pastedWebfinger = new SimpleDataStore();
+				$pastedWebfinger->json(trim($helper->ask($input, $output, $question)));
+
+				if ($pastedWebfinger->g('subject') !== Application::APP_SUBJECT) {
+					$output->writeln('<error>Cannot extract SUBJECT from the pasted data</error>');
+					continue;
+				}
+
+				$pastedHref = '';
+				foreach ($pastedWebfinger->gArray('links') as $link) {
+					$entry = new SimpleDataStore($link);
+					if ($entry->g('rel') === Application::APP_REL) {
+						$pastedHref = $entry->g('href');
+					}
+				}
+
+				if ($pastedHref === '') {
+					$output->writeln('<error>Cannot retrieve HREF from the pasted data</error>');
+					continue;
+				}
+
+				$href = $this->interfaceService->getCloudPath(
+					'circles.Remote.appService',
+					[],
+					InterfaceService::IFACE_TEST
+				);
+
+				if ($pastedHref !== $href) {
+					$output->writeln(
+						'<error>The returned data (' . $pastedHref . ') are not the one expected: </error>'
+						. $href
+					);
+					continue;
+				}
+
+				$output->writeln('');
+				$output->writeln('<info>First step seems fine.</info>');
+				$output->writeln(
+					'Next step, please run this <info>curl</info> command from a remote terminal and paste its result: '
+				);
+				$output->writeln(
+					'     curl -L "' . $pastedHref . '?test=' . $testToken . '" -H "Accept: application/json"'
+				);
+
+				$output->writeln('paste the result here: ');
+				$question = new Question('', '');
+				$pastedSignatory = new SimpleDataStore();
+				$pastedSignatory->json(trim($helper->ask($input, $output, $question)));
+
+				// small hack to refresh the cached config
+				OC::$server->get(AppConfig::class)->clearCachedConfig();
+
+				$this->interfaceService->setCurrentInterface(InterfaceService::IFACE_TEST);
+				$appSignatory = $this->remoteStreamService->getAppSignatory(false);
+
+				if ($appSignatory->getUid(true) !== $pastedSignatory->g('uid')
+					|| $appSignatory->getRoot() !== $pastedSignatory->g('root')) {
+					$output->writeln(
+						'<error>The returned data ('
+						. $pastedSignatory->g('uid') . '/' . $pastedSignatory->g('root')
+						. ') are not the one expected: </error>'
+						. $appSignatory->getUid(true) . '/' . $appSignatory->getRoot()
+					);
+					continue;
+				}
+
+				$output->writeln('* <info>Frontal</info> address looks good');
+			}
+
+			$this->saveFrontal($input, $output, $fullFrontal);
+
+			return;
+		}
+	}
+
+
+	/**
+	 * @param InputInterface $input
+	 * @param OutputInterface $output
+	 * @param string $frontal
+	 *
+	 * @throws Exception
+	 */
+	private function saveFrontal(InputInterface $input, OutputInterface $output, string $frontal): void {
+		[$scheme, $cloudId, $path] = $this->parseAddress($frontal);
+
+		$output->writeln('');
 		$question = new ConfirmationQuestion(
-			'<comment>Do you want to check the validity of this frontal address?</comment> (y/N) ', false,
-			'/^(y|Y)/i'
+			'- Do you want to save <info>' . $frontal
+			. '</info> as your <info>frontal</info> address ? (y/N) ',
+			false, '/^(y|Y)/i'
 		);
 
-		if ($helper->ask($input, $output, $question)) {
-			$output->writeln(
-				'You will need to run this <info>curl</info> command from a remote terminal and paste its result: '
-			);
-			$output->writeln(
-				'     curl ' . $frontal . '/.well-known/webfinger?resource=http://nextcloud.com/'
-			);
+		$helper = $this->getHelper('question');
+		if (!$helper->ask($input, $output, $question)) {
+			$output->writeln('skipping.');
 
-			$question = new Question('result: ', '');
-			$pasteWebfinger = $helper->ask($input, $output, $question);
-
-			echo '__ ' . $pasteWebfinger;
-
-			$output->writeln('TESTING !!');
-			$output->writeln('TESTING !!');
-			$output->writeln('TESTING !!');
+			return;
 		}
 
-		$output->writeln('saved');
+		$this->configService->setAppValue(ConfigService::FRONTAL_CLOUD_SCHEME, $scheme);
+		$this->configService->setAppValue(ConfigService::FRONTAL_CLOUD_ID, $cloudId);
+		$this->configService->setAppValue(ConfigService::FRONTAL_CLOUD_PATH, $path);
 
-
-//		$output->writeln('.  1) The automatic way, requiring a valid remote instance of Nextcloud.');
-//		$output->writeln(
-//			'.  2) The manual way, using the <comment>curl</comment> command from a remote terminal.'
-//		);
-//		$output->writeln(
-//			'. If you prefer the automatic way, you will need to enter the valid remote instance of Nextcloud you want to use.'
-//		);
-//		$output->writeln('. If you want the manual way, just enter an empty field.');
-//		$output->writeln('');
-//		$output->writeln(
-//			'. If you do not known a valid remote instance of Nextcloud, you can use <comment>\'https://circles.artificial-owl.com/\'</comment>'
-//		);
-//		$output->writeln(
-//			'. Please note that no critical information will be shared during the process, and any data (ie. public key and address)'
-//		);
-//		$output->writeln(
-//			'  generated during the process will be wiped of the remote instance after few minutes.'
-//		);
-//		$output->writeln('');
-
-//		$question = new Question(
-//			'- <comment>Which remote instance of Nextcloud do you want to use in order to test your setup:</comment> (empty to bypass this step): '
-//		);
-//		$helper = $this->getHelper('question');
-//		$remote = $helper->ask($input, $output, $question);
-//		if (is_null($frontal) || $frontal === '') {
-//			$output->writeln('skipping.');
-//
-//			return;
-//		}
-//
-//		$output->writeln('. The confirmation step is optional and can be done in 2 different ways:');
-//
-//
-//		$output->writeln('');
-//		$question = new Question(
-//			'- <comment>Enter the <info>frontal</info> address you want to be used to identify your instance of Nextcloud over the Internet</comment>: '
-//		);
-//		$helper = $this->getHelper('question');
-//		$frontal = $helper->ask($input, $output, $question);
-
-//		while (true) {
-//			$question = new Question(
-//				'<info>Please write down a new frontal address to test</info>: ', ''
-//			);
-//
-//			$frontal = $helper->ask($input, $output, $question);
-//			if (is_null($frontal) || $frontal === '') {
-//				$output->writeln('skipping.');
-//
-//				return;
-//			}
-//
-//			try {
-//				[$scheme, $cloudId] = $this->parseAddress($test);
-//			} catch (Exception $e) {
-//				$output->writeln('<error>format must be http[s]://domain.name[:post]</error>');
-//				continue;
-//			}
-//
-//			$frontal = $scheme . '://' . $cloudId;
-//
-//			$output->write('* testing address: ' . $frontal . ' ');
-//
-//			if ($remote === '') {
-//				$output->writeln('remote empty, please run this curl request and paste the result in here');
-//				$output->writeln(
-//					'  curl ' . $frontal . '/.well-known/webfinger?resource=http://nextcloud.com/'
-//				);
-//				$question = new Question('result: ', '');
-//
-//				$resultWebfinger = $helper->ask($input, $output, $question);
-//
-//			} else {
-//			}
-//		}
-
-
-//		if ($remote === '') {
-//			$output->writeln('');
-//		}
-
-//		$output->writeln('');
-//		$output->writeln(
-//			'. By default, this feature is disabled. You will need to setup a valid entry to enabled it.'
-//		);
-
-//		$output->writeln('');
-//		$output->write('* testing current address: ' . $this->configService->getLoopbackPath() . ' ');
-
-
-//		$this->configService->getAppValue(ConfigService::CHECK_FRONTAL_USING);
+		$output->writeln('- Address <info>' . $frontal . '</info> is now used as <info>frontal</info>');
 	}
 
 
