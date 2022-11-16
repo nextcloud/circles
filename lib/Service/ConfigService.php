@@ -43,6 +43,7 @@ use OCA\Circles\Tools\Traits\TNCLogger;
 use OCA\Circles\Tools\Traits\TStringTools;
 use OCP\IConfig;
 use OCP\IURLGenerator;
+use OCP\IUserSession;
 
 /**
  * Class ConfigService
@@ -95,6 +96,8 @@ class ConfigService {
 
 	public const HARD_MODERATION = 'hard_moderation';
 	public const FRONTEND_ENABLED = 'frontend_enabled';
+	public const MOUNTPOINT_ENABLED = 'mountpoint_enabled';
+	public const MOUNTPOINT_PATH = 'mountpoint_path';
 	public const KEYHOLE_CFG_REQUEST = 'keyhole_cfg_request';
 	public const ROUTE_TO_CIRCLE = 'route_to_circle';
 	public const EVENT_EXAMPLES = 'event_examples';
@@ -174,6 +177,8 @@ class ConfigService {
 		self::LOOPBACK_TMP_PATH => '',
 
 		self::FRONTEND_ENABLED => '1',
+		self::MOUNTPOINT_ENABLED => '0',
+		self::MOUNTPOINT_PATH => '/Circles',
 		self::HARD_MODERATION => '0',
 		self::KEYHOLE_CFG_REQUEST => '0',
 		self::ROUTE_TO_CIRCLE => 'contacts.contacts.directcircle',
@@ -210,23 +215,25 @@ class ConfigService {
 	public const DISPLAY_AT = 1;
 	public const DISPLAY_PARENTHESIS = 2;
 
-
-	/** @var IConfig */
-	private $config;
-
-	/** @var IURLGenerator */
-	private $urlGenerator;
-
+	private IConfig $config;
+	private IURLGenerator $urlGenerator;
+	private IUSerSession $userSession;
 
 	/**
 	 * ConfigService constructor.
 	 *
 	 * @param IConfig $config
 	 * @param IURLGenerator $urlGenerator
+	 * @param IUserSession $userSession
 	 */
-	public function __construct(IConfig $config, IURLGenerator $urlGenerator) {
+	public function __construct(
+		IConfig $config,
+		IURLGenerator $urlGenerator,
+		IUserSession $userSession
+	) {
 		$this->config = $config;
 		$this->urlGenerator = $urlGenerator;
+		$this->userSession = $userSession;
 
 		$this->setup('app', Application::APP_ID);
 	}
@@ -314,6 +321,47 @@ class ConfigService {
 	 */
 	public function getCoreValueForUser($userId, $key, $default = '') {
 		return $this->config->getUserValue($userId, 'core', $key, $default);
+	}
+
+
+	/**
+	 * @param string $key
+	 * @param string $default
+	 * @param string $userId
+	 *
+	 * @return string
+	 */
+	public function getUserValue(string $key, string $default = '', string $userId = ''): string {
+		if ($userId === '') {
+			$user = $this->userSession->getUser();
+			if ($user === null) {
+				return $default;
+			}
+
+			$userId = $user->getUID();
+		}
+
+		return $this->config->getUserValue($userId, Application::APP_ID, $key, $default);
+	}
+
+	/**
+	 * @param string $key
+	 * @param string $value
+	 * @param string $userId
+	 *
+	 * @return string
+	 */
+	public function setUserValue(string $key, string $value, string $userId = ''): void {
+		if ($userId === '') {
+			$user = $this->userSession->getUser();
+			if ($user === null) {
+				return;
+			}
+
+			$userId = $user->getUID();
+		}
+
+		$this->config->setUserValue($userId, Application::APP_ID, $key, $value);
 	}
 
 

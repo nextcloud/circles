@@ -139,7 +139,7 @@ class Circle extends ManagedModel implements IEntity, IDeserializable, IQueryRow
 		8192 => 'T|Root',
 		16384 => 'CI|Circle Invite',
 		32768 => 'F|Federated',
-		65536 => 'M|Nountpoint',
+		65536 => 'M|Mountpoint',
 		131072 => 'A|App'
 	];
 

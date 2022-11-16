@@ -36,6 +36,8 @@ namespace OCA\Circles\AppInfo;
 
 use Closure;
 use OC;
+use OC\AppFramework\DependencyInjection\DIContainer;
+use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Events\AddingCircleMemberEvent;
 use OCA\Circles\Events\CircleMemberAddedEvent;
 use OCA\Circles\Events\DestroyingCircleEvent;
@@ -68,17 +70,22 @@ use OCA\Circles\Listeners\GroupMemberRemoved;
 use OCA\Circles\Listeners\Notifications\RequestingMember as ListenerNotificationsRequestingMember;
 use OCA\Circles\Listeners\UserCreated;
 use OCA\Circles\Listeners\UserDeleted;
-use OCA\Circles\MountManager\CircleMountProvider;
+use OCA\Circles\Mount\CirclesFolderManager;
+use OCA\Circles\Mount\MountProvider;
+use OCA\Circles\Mount\UserFolderHelper;
 use OCA\Circles\Notification\Notifier;
+use OCA\Circles\Search\UnifiedSearchProvider;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\DavService;
-use OCA\Circles\Search\UnifiedSearchProvider;
+use OCA\Circles\Service\FederatedUserService;
+use OCP\App\IAppManager;
 use OCP\App\ManagerEvent;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Bootstrap\IBootContext;
 use OCP\AppFramework\Bootstrap\IBootstrap;
 use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\Files\Config\IMountProviderCollection;
+use OCP\Files\IRootFolder;
 use OCP\Group\Events\GroupCreatedEvent;
 use OCP\Group\Events\GroupDeletedEvent;
 use OCP\Group\Events\UserAddedEvent;
@@ -87,6 +94,7 @@ use OCP\IServerContainer;
 use OCP\IUser;
 use OCP\User\Events\UserCreatedEvent;
 use OCP\User\Events\UserDeletedEvent;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Throwable;
 
@@ -98,7 +106,8 @@ use Throwable;
 class Application extends App implements IBootstrap {
 	public const APP_ID = 'circles';
 	public const APP_NAME = 'Circles';
-	public const APP_TOKEN = 'dvG7laa0_UU';
+	public const APP_TOKEN = '7Z2KUtmNQHo';
+	public const APP_FOLDER = 'circles';
 
 	public const APP_SUBJECT = 'http://nextcloud.com/';
 	public const APP_REL = 'https://apps.nextcloud.com/apps/circles';
@@ -129,6 +138,17 @@ class Application extends App implements IBootstrap {
 
 		// notification service
 		$context->registerNotifierService(Notifier::class);
+
+		$context->registerService(MountProvider::class, function (DIContainer $c) {
+			return new MountProvider(
+				$c->get(IRootFolder::class),
+				$c->get(LoggerInterface::class),
+				$c->get(CircleRequest::class),
+				$c->get(FederatedUserService::class),
+				$c->get(ConfigService::class),
+				$c->get(CirclesFolderManager::class)
+			);
+		});
 
 		// User Events
 		$context->registerEventListener(UserCreatedEvent::class, UserCreated::class);
@@ -176,12 +196,12 @@ class Application extends App implements IBootstrap {
 		$dispatcher = OC::$server->getEventDispatcher();
 		$dispatcher->addListener(
 			'OC\AccountManager::userUpdated', function (GenericEvent $event) {
-				/** @var IUser $user */
-				$user = $event->getSubject();
-				/** @var DeprecatedListener $deprecatedListener */
-				$deprecatedListener = OC::$server->get(DeprecatedListener::class);
-				$deprecatedListener->userAccountUpdated($user);
-			}
+			/** @var IUser $user */
+			$user = $event->getSubject();
+			/** @var DeprecatedListener $deprecatedListener */
+			$deprecatedListener = OC::$server->get(DeprecatedListener::class);
+			$deprecatedListener->userAccountUpdated($user);
+		}
 		);
 
 		$context->registerSearchProvider(UnifiedSearchProvider::class);
@@ -211,20 +231,35 @@ class Application extends App implements IBootstrap {
 
 		$context->injectFn(Closure::fromCallable([$this, 'registerFilesNavigation']));
 		$context->injectFn(Closure::fromCallable([$this, 'registerFilesPlugin']));
+
+		$context->injectFn(Closure::fromCallable([$this, 'registerMountProvider']));
 	}
 
 
 	/**
-	 * @param IServerContainer $container
+	 * @param IMountProviderCollection $collection
+	 * @param MountProvider $provider
 	 */
-	public function registerMountProvider(IServerContainer $container) {
-		if (!$this->configService->isGSAvailable()) {
-			return;
-		}
-
-		$mountProviderCollection = $container->get(IMountProviderCollection::class);
-		$mountProviderCollection->registerProvider($container->get(CircleMountProvider::class));
+	private function registerMountProvider(
+		IMountProviderCollection $collection,
+		MountProvider $provider
+	): void {
+		$collection->registerProvider($provider);
 	}
+
+//
+//	/**
+//	 * @param IServerContainer $container
+//	 */
+//	public function registerMountProvider(IServerContainer $container) {
+//
+//		if (!$this->configService->isGSAvailable()) {
+//			return;
+//		}
+//
+//		$mountProviderCollection = $container->get(IMountProviderCollection::class);
+//		$mountProviderCollection->registerProvider($container->get(CircleMountProvider::class));
+//	}
 
 
 	/**

@@ -1463,6 +1463,10 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$include = $probe->included();
 		$config = ($filter | $include) - $include;
 		$this->filterBitwise('config', $config, $aliasCircle);
+
+		if ($probe->hasLimitConfig()) {
+			$this->limitBitwise('config', $probe->getLimitConfig(), $aliasCircle);
+		}
 	}
 
 
