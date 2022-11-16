@@ -91,8 +91,6 @@
     "Click the button below to open it." : "Alklaku la butonon ĉi-sube por malfermi ĝin.",
     "Open »%s«" : "Malfermi „%s“",
     "Circle not found" : "Rondo ne trovita",
-    "A circle with that name exists" : "Rondo kun sama nomo jam ekzistas",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Vi ne povas uzi la aplikaĵon „Rondoj“, ĝis via administranto permesas almenaŭ unu tipon de rondoj.",
     "This member does not exist" : "Tiu ĉi membro ne ekzistas",
     "Federated link not found" : "Federa ligilo ne trovita",
     "This feature is not available for personal circles" : "Tiu funkcio ne disponeblas por persona rondo",
@@ -108,6 +106,7 @@
     "%s" : "%s",
     "Personal Circle" : "Persona rondo",
     "You need a specify a type of circle" : "Vi bezonas indiki tipon de rondo",
+    "A circle with that name exists" : "Rondo kun sama nomo jam ekzistas",
     "This member is not the owner of the circle" : "Tiu ĉi membro ne estas la posedanto de la rondo",
     "This member is not an admin of the circle" : "Tiu ĉi membro ne estas administranto el la rondo",
     "This group does not exist" : "Tiu ci grupo ne ekzistas",
@@ -117,16 +116,17 @@
     "now" : "nun",
     "Email format is not valid" : "Formo de retpoŝtadreso ne validas",
     "This contact is not available" : "Tiu kontakto ne disponeblas",
-    "Could not find share" : "Ne eblis trovi kunhavon",
     "Bring cloud-users closer together." : "Pliproksimigi uzantojn kune.",
     "No files in here" : "Neniu dosiero ĉi tie",
     "No entries found in this folder" : "Neniu elemento en tiu ĉi dosierujo",
     "Name" : "Nomo",
     "Size" : "Grando",
     "Modified" : "Modifita",
+    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Vi ne povas uzi la aplikaĵon „Rondoj“, ĝis via administranto permesas almenaŭ unu tipon de rondoj.",
     "This user is already a member of the circle" : "Tiu ĉi uzanto jam estas membro el tiu rondo",
     "The user is already a member of this circle" : "La uzanto jam estas membro de tiu ĉi rondo",
     "The user has already been invited into this circle" : "La uzanto jam estis invitita al tiu ĉi rondo",
-    "This user does not exist" : "Tiu ĉi uzanto ne ekzistas"
+    "This user does not exist" : "Tiu ĉi uzanto ne ekzistas",
+    "Could not find share" : "Ne eblis trovi kunhavon"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

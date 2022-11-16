@@ -126,8 +126,6 @@
     "Adding local users and moderators" : "Pridávam lokálnych užívateľov a moderátorov",
     "Circle not found" : "Kruh sa nenašiel",
     "Circle not found " : "Okruh nebol nájdený ",
-    "A circle with that name exists" : "Kruh s týmto názvom existuje",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Nemôžete použiť aplikáciu Kruhy, pokiaľ administrátor nepovolí aspoň jeden typ kruhov",
     "This member does not exist" : "Tento používateľ neexistuje",
     "This account is already a member of the circle" : "Tento užívateľ už je členom kruhu",
     "Federated link not found" : "Združené prepojenie sa nenašlo",
@@ -153,6 +151,7 @@
     "Personal Circle" : "Osobný kruh",
     "%s owned by %s" : "%s vlastnené %s",
     "You need a specify a type of circle" : "Musíte špecifikovať typ kruhu",
+    "A circle with that name exists" : "Kruh s týmto názvom existuje",
     "This member is not the owner of the circle" : "Tento člen nie je vlastník kruhu",
     "This member is not an admin of the circle" : "Tento člen nie je správcom okruhu",
     "Group contains too many members" : "Skupina obsahuje priveľa členov",
@@ -172,7 +171,6 @@
     "Password to access content shared with you by %1$s" : "Heslo pre prístup k obsahu, ktorý s vami zdieľa %1$s",
     "Password to access content" : "Heslo pre prístup k obsahu",
     "This item is already shared with this circle" : "Táto položka je už zdieľaná s týmto kruhom",
-    "Could not find share" : "Nebolo možné nájsť sprístupnenie",
     "Bring cloud-users closer together." : "Zblížte užívateľov cloudu.",
     "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Kruhy umožňujú vašim užívateľom vytvárať ich vlastné skupiny užívateľov/kolegov/priateľov.\nTieto skupiny užívateľov (alebo \"kruhov\") môžu buť potom používané akoukoľvek inou aplikáciou pre potreby zdieľania.",
     "No files in here" : "Nie sú tu žiadne súbory",
@@ -181,10 +179,12 @@
     "Size" : "Veľkosť",
     "Modified" : "Upravené",
     "Nextcloud User" : "Užívateľ Nextcloud",
+    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Nemôžete použiť aplikáciu Kruhy, pokiaľ administrátor nepovolí aspoň jeden typ kruhov",
     "This user is already a member of the circle" : "Tento používateľ už je členom kruhu",
     "The user is already a member of this circle" : "Používateľ už je členom tohto kruhu",
     "The user has already been invited into this circle" : "Používateľ už bol pozvaný do tohto kruhu",
     "This user does not exist" : "Vybraný používateľ neexistuje",
+    "Could not find share" : "Nebolo možné nájsť sprístupnenie",
     "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or \"circles\") can then be used by any other app for sharing purpose." : "Kruhy umožňujú vašim užívateľom vytvárať ich vlastné skupiny užívateľov/kolegov/priateľov.\nTieto skupiny užívateľov (alebo \"kruhov\") môžu buť potom používané akoukoľvek inou aplikáciou pre potreby zdieľania."
 },"pluralForm" :"nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);"
 }

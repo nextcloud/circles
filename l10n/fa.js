@@ -38,11 +38,11 @@ OC.L10N.register(
     "%s" : " %s ",
     "Personal Circle" : "حلقه شخصی",
     "now" : "اکنون",
-    "Could not find share" : "اشتراک یافت نشد",
     "No files in here" : "هیچ فایلی اینجا وجود ندارد",
     "No entries found in this folder" : "هیچ ورودی‌ای در این پوشه وجود ندارد",
     "Name" : "نام",
     "Size" : "اندازه",
-    "Modified" : "تغییر یافته"
+    "Modified" : "تغییر یافته",
+    "Could not find share" : "اشتراک یافت نشد"
 },
 "nplurals=2; plural=(n > 1);");

@@ -101,8 +101,6 @@
     "%s shared multiple files with you." : "%s bendrino kelis failus su Jumis.",
     "Circle not found" : "Ratas nerastas",
     "Circle not found " : "Bendrinio ratas nerastas",
-    "A circle with that name exists" : "Ratas tokiu pavadinimu jau yra",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Jūs negalite naudoti „Bendrinimo ratų“ programos, kol administratorius neleido bent vieno bendrinimo ratų tipo.",
     "This member does not exist" : "Šio nario nėra",
     "Federated link not found" : "Federacinė nuoroda nerasta",
     "This feature is not available for personal circles" : "Ši ypatybė nėra prieinama asmeniniams ratams",
@@ -123,6 +121,7 @@
     "%s" : "%s",
     "Personal Circle" : "Asmeninis ratas",
     "You need a specify a type of circle" : "Jūs turite nurodyti rato tipą",
+    "A circle with that name exists" : "Ratas tokiu pavadinimu jau yra",
     "This member is not the owner of the circle" : "Šis narys nėra rato savininkas",
     "This member is not an admin of the circle" : "Šis narys nėra rato administratorius",
     "This group does not exist" : "Šios grupės nėra",
@@ -131,15 +130,16 @@
     "now" : "dabar",
     "Email format is not valid" : "Neteisingas el. pašto formatas",
     "This contact is not available" : "Šis adresatas yra neprieinamas",
-    "Could not find share" : "Nepavyko rasti viešinio",
     "No files in here" : "Čia failų nėra",
     "No entries found in this folder" : "Šiame aplanke nerasta jokių įrašų",
     "Name" : "Vardas",
     "Size" : "Dydis",
     "Modified" : "Pakeistas",
+    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Jūs negalite naudoti „Bendrinimo ratų“ programos, kol administratorius neleido bent vieno bendrinimo ratų tipo.",
     "This user is already a member of the circle" : "Šis naudotojas jau yra šio rato narys",
     "The user is already a member of this circle" : "Naudotojas jau yra šio rato narys",
     "The user has already been invited into this circle" : "Naudotojas jau buvo pakviestas į šį ratą",
-    "This user does not exist" : "Šio naudotojo nėra"
+    "This user does not exist" : "Šio naudotojo nėra",
+    "Could not find share" : "Nepavyko rasti viešinio"
 },"pluralForm" :"nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);"
 }

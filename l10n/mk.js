@@ -27,11 +27,11 @@ OC.L10N.register(
     "%s" : "%s",
     "Personal Circle" : "Сопствен круг",
     "now" : "сега",
-    "Could not find share" : "Неможе да се пронајде споделувањето",
     "No files in here" : "Тука нема датотеки",
     "No entries found in this folder" : "Нема ништо во оваа папка",
     "Name" : "Име",
     "Size" : "Големина",
-    "Modified" : "Изменето"
+    "Modified" : "Изменето",
+    "Could not find share" : "Неможе да се пронајде споделувањето"
 },
 "nplurals=2; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : 1;");
