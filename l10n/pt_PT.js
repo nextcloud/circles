@@ -44,7 +44,6 @@ OC.L10N.register(
     "Click the button below to open it." : "Clicar no botão abaixo para o abrir.",
     "Open »%s«" : "Abrir »%s«",
     "Circle not found" : "Círculo não encontrado",
-    "A circle with that name exists" : "Já existe um círculo com esse nome",
     "You cannot join this circle" : "Não pode juntar-se a este círculo",
     "This member is not a moderator" : "Este membro não é um moderador",
     "Insufficient privileges" : "Privilégios insuficientes",
@@ -54,10 +53,10 @@ OC.L10N.register(
     "Accept" : "Aceitar",
     "%s" : "%s",
     "Personal Circle" : "Círculo Pessoal",
+    "A circle with that name exists" : "Já existe um círculo com esse nome",
     "now" : "agora",
     "Email format is not valid" : "O formato de e-mail não é válido",
     "This contact is not available" : "Este contacto não está disponível",
-    "Could not find share" : "Não foi possível encontrar a partilha",
     "No files in here" : "Sem ficheiros aqui",
     "No entries found in this folder" : "Não foram encontradas entradas nesta pasta",
     "Name" : "Nome",
@@ -65,6 +64,7 @@ OC.L10N.register(
     "Modified" : "Modificado",
     "The user is already a member of this circle" : "O utilizador já é membro deste círculo",
     "The user has already been invited into this circle" : "O utilizador já foi convidado para este círculo",
-    "This user does not exist" : "Este utilizador não existe"
+    "This user does not exist" : "Este utilizador não existe",
+    "Could not find share" : "Não foi possível encontrar a partilha"
 },
 "nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");

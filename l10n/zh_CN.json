@@ -125,8 +125,6 @@
     "Adding local users and moderators" : "添加本地用户和管理员",
     "Circle not found" : "查找不到圈子",
     "Circle not found " : "找不到圈子",
-    "A circle with that name exists" : "存在具有该名称的圈子",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "您的管理员至少允许一种类型的圈子，否则您不能使用“圈子”应用程序",
     "This member does not exist" : "此成员不存在",
     "Federated link not found" : "未找到联合云链接",
     "This feature is not available for personal circles" : "此功能不适用于个人圈子",
@@ -148,6 +146,7 @@
     "Personal Circle" : "个人圈子",
     "%s owned by %s" : "%s 所有者为 %s",
     "You need a specify a type of circle" : "您需要指定一种类型的圈子",
+    "A circle with that name exists" : "存在具有该名称的圈子",
     "This member is not the owner of the circle" : "此成员不是圈子的所有者",
     "This member is not an admin of the circle" : "该成员不是此圈子的管理员",
     "Group contains too many members" : "群组包含太多成员",
@@ -164,7 +163,6 @@
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s 和你分享了一些内容。你应该已经收到了一封带访问链接的邮件",
     "Password to access content" : "内容访问密码",
     "This item is already shared with this circle" : "这个项目已经分享给这个圈子了",
-    "Could not find share" : "查找不到共享",
     "Bring cloud-users closer together." : "把云端用户连接到一起。",
     "No files in here" : "此处没有文件",
     "No entries found in this folder" : "此文件夹中无项目",
@@ -172,10 +170,12 @@
     "Size" : "大小",
     "Modified" : "修改日期",
     "Nextcloud User" : "NextCloud 用户",
+    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "您的管理员至少允许一种类型的圈子，否则您不能使用“圈子”应用程序",
     "This user is already a member of the circle" : "此用户已经是圈子的成员",
     "The user is already a member of this circle" : "此用户已经是此圈子的成员",
     "The user has already been invited into this circle" : "用户已被邀请进入此圈子",
     "This user does not exist" : "此用户不存在",
+    "Could not find share" : "查找不到共享",
     "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or \"circles\") can then be used by any other app for sharing purpose." : "Circles 允许你的用户创建自己的用户/同事/好友组。\n这些用户群(或“圈子”)可以被其他应用程序用于共享目的。"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

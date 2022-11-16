@@ -126,8 +126,6 @@
     "Adding local users and moderators" : "Afegint usuaris i moderadors locals",
     "Circle not found" : "No s'ha trobat el cercle",
     "Circle not found " : "No s'ha trobat el cercle ",
-    "A circle with that name exists" : "Un cercle amb aquest nom ja existeix",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "No podeu utilitzar l'Aplicació de cercles fins que l'administrador hagi permès com a mínim un tipus de cercles",
     "This member does not exist" : "Aquest membre no existeix",
     "This account is already a member of the circle" : "Aquest compte ja és membre del cercle",
     "Federated link not found" : "No s'ha trobat l'enllaç federat",
@@ -153,6 +151,7 @@
     "Personal Circle" : "Cercle personal",
     "%s owned by %s" : "%s propietat de %s",
     "You need a specify a type of circle" : "Heu d'especificar un tipus de cercle",
+    "A circle with that name exists" : "Un cercle amb aquest nom ja existeix",
     "This member is not the owner of the circle" : "Aquest membre no és el propietari del cercle",
     "This member is not an admin of the circle" : "Aquest membre no és un administrador d'aquest cercle",
     "Group contains too many members" : "El grup conté massa membres",
@@ -172,7 +171,6 @@
     "Password to access content shared with you by %1$s" : "Contrasenya per accedir al contingut compartit amb tu per %1$s",
     "Password to access content" : "Contrasenya per accedir al contingut",
     "This item is already shared with this circle" : "Aquest element ja està compartit amb aquest cercle",
-    "Could not find share" : "No es pot trobar el compartit",
     "Bring cloud-users closer together." : "Apropeu els usuaris del núvol.",
     "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Els cercles permeten a les persones crear els seus propis grups de persones/col·legues/amics.\nAquests grups de persones (o \"cercles\") poden ser utilitzats per qualsevol altra aplicació per compartir.",
     "No files in here" : "Aquí no hi ha fitxers",
@@ -181,10 +179,12 @@
     "Size" : "Mida",
     "Modified" : "Modificat",
     "Nextcloud User" : "Usuari Nextcloud",
+    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "No podeu utilitzar l'Aplicació de cercles fins que l'administrador hagi permès com a mínim un tipus de cercles",
     "This user is already a member of the circle" : "Aquest usuari ja és membre del cercle",
     "The user is already a member of this circle" : "L'usuari ja és membre d'aquest cercle",
     "The user has already been invited into this circle" : "L'usuari ja ha estat convidat a aquest cercle",
     "This user does not exist" : "Aquest usuari no existeix",
+    "Could not find share" : "No es pot trobar el compartit",
     "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or \"circles\") can then be used by any other app for sharing purpose." : "Els cercles permeten als vostres usuaris crear els seus propis grups d'usuaris/col·legues/amics.\nAquests grups d'usuaris (o \"cercles\") poden ser utilitzats per qualsevol altra aplicació per compartir."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

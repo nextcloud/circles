@@ -11,11 +11,11 @@ OC.L10N.register(
     "Owner" : "Owner",
     "Accept" : "Acceptar",
     "%s" : "%s",
-    "Could not find share" : "Impossibile trovar le compartite",
     "No files in here" : "Nulle files ci",
     "No entries found in this folder" : "Nulle entratas trovate in iste dossier",
     "Name" : "Nomine",
     "Size" : "Dimension",
-    "Modified" : "Modificate"
+    "Modified" : "Modificate",
+    "Could not find share" : "Impossibile trovar le compartite"
 },
 "nplurals=2; plural=(n != 1);");

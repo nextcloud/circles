@@ -125,8 +125,6 @@
     "Adding local users and moderators" : "Dodavanje lokalnih korisnika i moderatora",
     "Circle not found" : "Krug nije pronađen",
     "Circle not found " : "Krug nije pronađen ",
-    "A circle with that name exists" : "Postoji krug s tim nazivom",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Aplikaciju Krugovi ne možete upotrebljavati dok administrator ne dopusti barem jednu vrstu krugova",
     "This member does not exist" : "Ovaj član ne postoji",
     "Federated link not found" : "Udružena poveznica nije pronađena",
     "This feature is not available for personal circles" : "Ova značajka nije dostupna za osobne krugove",
@@ -148,6 +146,7 @@
     "Personal Circle" : "Osobni krug",
     "%s owned by %s" : "%s u vlasništvu %s",
     "You need a specify a type of circle" : "Trebate odrediti vrstu kruga",
+    "A circle with that name exists" : "Postoji krug s tim nazivom",
     "This member is not the owner of the circle" : "Ovaj član nije vlasnik kruga",
     "This member is not an admin of the circle" : "Ovaj član nije administrator kruga",
     "Group contains too many members" : "Grupa ima previše članova",
@@ -160,7 +159,6 @@
     "This contact is not available" : "Ovaj kontakt nije dostupan",
     "%s shared a file with you." : "%s dijeli datoteku s vama.",
     "This item is already shared with this circle" : "Ova se stavka već dijeli s ovim krugom",
-    "Could not find share" : "Nije moguće pronaći dijeljenje",
     "Bring cloud-users closer together." : "Približite korisnike oblaka.",
     "No files in here" : "Nema datoteka",
     "No entries found in this folder" : "U ovoj mapi nisu pronađeni nikakvi zapisi",
@@ -168,10 +166,12 @@
     "Size" : "Veličina",
     "Modified" : "Promijenjeno",
     "Nextcloud User" : "Nextcloud korisnik",
+    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Aplikaciju Krugovi ne možete upotrebljavati dok administrator ne dopusti barem jednu vrstu krugova",
     "This user is already a member of the circle" : "Ovaj korisnik već je član kruga",
     "The user is already a member of this circle" : "Korisnik je već član ovog kruga",
     "The user has already been invited into this circle" : "Korisnik je već pozvan u ovaj krug",
     "This user does not exist" : "Ovaj korisnik ne postoji",
+    "Could not find share" : "Nije moguće pronaći dijeljenje",
     "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or \"circles\") can then be used by any other app for sharing purpose." : "Krugovi omogućuju korisnicima da stvaraju vlastite grupe korisnika/kolega/prijatelja.\nTe grupe korisnika („krugove“) tada može upotrebljavati za dijeljenje bilo koja druga aplikacija."
 },"pluralForm" :"nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;"
 }

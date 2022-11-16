@@ -17,11 +17,11 @@ OC.L10N.register(
     "Accept" : "Akceptēt",
     "%s" : "%s",
     "now" : "šobrīd",
-    "Could not find share" : "Nevarēja atrast koplietojumu",
     "No files in here" : "Šeit nav datņu",
     "No entries found in this folder" : "Šajā mapē nekas nav atrasts",
     "Name" : "Vārds",
     "Size" : "Izmērs",
-    "Modified" : "Mainīts"
+    "Modified" : "Mainīts",
+    "Could not find share" : "Nevarēja atrast koplietojumu"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);");
