@@ -25,13 +25,13 @@
     "You need a specify a type of circle" : "та тойргийн төрлийг тодорхойлах хэрэгтэй",
     "This member is not the owner of the circle" : "Энэ гишүүн нь бүлгийн эзэн биш",
     "You cannot edit level in a personal circle" : " та энэ хувийн тойргийн түвшинг засварлах боломжгүй",
-    "Could not find share" : "Хуваалцсаныг холохгүй байна",
     "No files in here" : "Энд файл алга",
     "No entries found in this folder" : "Энэ хавтаст юм олдсонгүй",
     "Name" : "Нэр",
     "Size" : "Хэмжээ",
     "Modified" : "Өөрчлөгдсөн",
     "This user is already a member of the circle" : "Энэ хэрэглэгч аль хэдийн тойргийн гишүүн болсон ",
-    "This user does not exist" : "ийм хэрэглэгч байхгүй байна"
+    "This user does not exist" : "ийм хэрэглэгч байхгүй байна",
+    "Could not find share" : "Хуваалцсаныг холохгүй байна"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

@@ -100,8 +100,6 @@
     "%s shared multiple files with you." : "%s deildi mörgum skrám með þér.",
     "Circle not found" : "Hringur fannst ekki",
     "Circle not found " : "Hringur fannst ekki ",
-    "A circle with that name exists" : "Nú þegar er til hringur með þetta nafn",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Þú getur ekki notað Hringir-forritið fyrr en kerfisstjóri er búinn að leyfa a.m.k. eina gerð hringja",
     "This member does not exist" : "Þessi meðlimur er ekki til",
     "Federated link not found" : "Skyjasambandstengill fannst ekki",
     "This feature is not available for personal circles" : "Þessi eiginleiki er ekki tiltækur fyrir persónulega hringi",
@@ -122,6 +120,7 @@
     "%s" : "%s",
     "Personal Circle" : "Persónulegur hringur",
     "You need a specify a type of circle" : "Þú verður að tiltaka gerð hrings",
+    "A circle with that name exists" : "Nú þegar er til hringur með þetta nafn",
     "This member is not the owner of the circle" : "Þessi meðlimur er ekki eigandi hringsins",
     "This member is not an admin of the circle" : "Þessi meðlimur er ekki stjórnandi hringsins",
     "Group contains too many members" : "Hópur inniheldur of marga meðlimi",
@@ -132,16 +131,17 @@
     "now" : "núna",
     "Email format is not valid" : "Snið póstfangsins er ekki gilt",
     "This contact is not available" : "Þessi tengiliður er ekki tiltækur",
-    "Could not find share" : "Gat ekki fundið sameign",
     "Bring cloud-users closer together." : "Færir notendur tölvuskýja nær hver öðrum.",
     "No files in here" : "Engar skrár hér",
     "No entries found in this folder" : "Engar færslur fundust í þessari möppu",
     "Name" : "Nafn",
     "Size" : "Stærð",
     "Modified" : "Breytt",
+    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Þú getur ekki notað Hringir-forritið fyrr en kerfisstjóri er búinn að leyfa a.m.k. eina gerð hringja",
     "This user is already a member of the circle" : "Þessi notandi er nú þegar meðlimur í þessum hring",
     "The user is already a member of this circle" : "Notandi er nú þegar meðlimur í þessum hring",
     "The user has already been invited into this circle" : "Notandanum er þegar boðið að taka þátt í þessum hring",
-    "This user does not exist" : "Þessi notandi er ekki til"
+    "This user does not exist" : "Þessi notandi er ekki til",
+    "Could not find share" : "Gat ekki fundið sameign"
 },"pluralForm" :"nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);"
 }

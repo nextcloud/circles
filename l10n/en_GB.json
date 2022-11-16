@@ -100,8 +100,6 @@
     "%s shared multiple files with you." : "%s shared multiple files with you.",
     "Circle not found" : "Circle not found",
     "Circle not found " : "Circle not found ",
-    "A circle with that name exists" : "A circle with that name exists",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "You cannot use the Circles Application until your administrator has allowed at least one type of circles",
     "This member does not exist" : "This member does not exist",
     "Federated link not found" : "Federated link not found",
     "This feature is not available for personal circles" : "This feature is not available for personal circles",
@@ -122,6 +120,7 @@
     "%s" : "%s",
     "Personal Circle" : "Personal Circle",
     "You need a specify a type of circle" : "You need a specify a type of circle",
+    "A circle with that name exists" : "A circle with that name exists",
     "This member is not the owner of the circle" : "This member is not the owner of the circle",
     "This member is not an admin of the circle" : "This member is not an admin of the circle",
     "Group contains too many members" : "Group contains too many members",
@@ -132,16 +131,17 @@
     "now" : "now",
     "Email format is not valid" : "Email format is not valid",
     "This contact is not available" : "This contact is not available",
-    "Could not find share" : "Could not find share",
     "Bring cloud-users closer together." : "Bring cloud-users closer together.",
     "No files in here" : "No files in here",
     "No entries found in this folder" : "No entries found in this folder",
     "Name" : "Name",
     "Size" : "Size",
     "Modified" : "Modified",
+    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "You cannot use the Circles Application until your administrator has allowed at least one type of circles",
     "This user is already a member of the circle" : "This user is already a member of the circle",
     "The user is already a member of this circle" : "The user is already a member of this circle",
     "The user has already been invited into this circle" : "The user has already been invited into this circle",
-    "This user does not exist" : "This user does not exist"
+    "This user does not exist" : "This user does not exist",
+    "Could not find share" : "Could not find share"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

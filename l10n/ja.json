@@ -125,8 +125,6 @@
     "Adding local users and moderators" : "ローカルユーザーとモデレーターを追加する",
     "Circle not found" : "サークルが見つかりません",
     "Circle not found " : "サークルが見つかりません",
-    "A circle with that name exists" : "その名前のサークルが存在します",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "管理者が少なくとも1種類のサークルを許可するまで、サークルアプリケーションを使用することはできません",
     "This member does not exist" : "このメンバーは存在しません",
     "Federated link not found" : "フェデレーションリンクが見つかりません",
     "This feature is not available for personal circles" : "この機能は個人のサークルでは使用できません",
@@ -149,6 +147,7 @@
     "Personal Circle" : "パーソナルサークル",
     "%s owned by %s" : "%s%sが所有",
     "You need a specify a type of circle" : "あなたはサークルのタイプを指定する必要があります",
+    "A circle with that name exists" : "その名前のサークルが存在します",
     "This member is not the owner of the circle" : "このメンバーはサークルのオーナーではありません",
     "This member is not an admin of the circle" : "このメンバーはサークルの管理者ではありません",
     "Group contains too many members" : "グループに含まれるメンバー数が多すぎます",
@@ -167,7 +166,6 @@
     "Password to access content shared with you by %1$s" : "%1$sが共有するコンテンツにアクセスするためのパスワード。",
     "Password to access content" : "コンテンツにアクセスするためのパスワード",
     "This item is already shared with this circle" : "このアイテムは既にこのサークルで共有されています",
-    "Could not find share" : "シェアを見つけることができませんでした",
     "Bring cloud-users closer together." : "クラウドユーザー同士を近づける。",
     "No files in here" : "ファイルがありません",
     "No entries found in this folder" : "このフォルダーにはエントリーがありません",
@@ -175,10 +173,12 @@
     "Size" : "サイズ",
     "Modified" : "更新日時",
     "Nextcloud User" : "Nextcloudユーザー",
+    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "管理者が少なくとも1種類のサークルを許可するまで、サークルアプリケーションを使用することはできません",
     "This user is already a member of the circle" : "このユーザーはすでにサークルのメンバーです",
     "The user is already a member of this circle" : "ユーザーはすでにこのサークルのメンバーです",
     "The user has already been invited into this circle" : "ユーザーはすでにこのサークルに招待されています",
     "This user does not exist" : "このユーザーは存在しません",
+    "Could not find share" : "シェアを見つけることができませんでした",
     "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or \"circles\") can then be used by any other app for sharing purpose." : "Circlesではユーザーや同僚、友人のグループを自由に作ることができます。\nこのユーザーグループ (サークル) は、何かを共有する目的で、様々なアプリから使用されます。"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

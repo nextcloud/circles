@@ -125,8 +125,6 @@
     "Adding local users and moderators" : "Toevoegen lokale gebruikers en moderatoren",
     "Circle not found" : "Kring niet gevonden",
     "Circle not found " : "Kring niet gevonden",
-    "A circle with that name exists" : "Er bestaat al een kring met deze naam",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "De beheerder dient minimaal een kring te maken voordat je de kring-app kan gebruiken.",
     "This member does not exist" : "Dit lid bestaat niet",
     "Federated link not found" : "Gefedereerde link is niet gevonden",
     "This feature is not available for personal circles" : "Deze functie is niet beschikbaar voor persoonlijke kringen",
@@ -149,6 +147,7 @@
     "Personal Circle" : "Persoonlijke kring",
     "%s owned by %s" : "%s is eigendom van %s",
     "You need a specify a type of circle" : "Een specifieke kring type is benodigd",
+    "A circle with that name exists" : "Er bestaat al een kring met deze naam",
     "This member is not the owner of the circle" : "Dit lid is niet de eigenaar van de kring",
     "This member is not an admin of the circle" : "Dit lid is geen beheerder van de kring",
     "Group contains too many members" : "De groep bevat te veel leden",
@@ -166,7 +165,6 @@
     "%1$s shared some content with you. You should have already received a separate email with a link to access it." : "%1$s heeft enige informatie met je gedeeld.\nJe moet al een aparte e-mail hebben ontvangen met een link om er te komen.",
     "Password to access content" : "Wachtwoord voor toegang tot info",
     "This item is already shared with this circle" : "Dit object is al gedeeld met deze kring",
-    "Could not find share" : "De gedeelde folder kan niet worden gevonden",
     "Bring cloud-users closer together." : "Breng cloudgebruikers dichter bij elkaar.",
     "No files in here" : "Hier geen bestanden",
     "No entries found in this folder" : "Niets in deze map gevonden",
@@ -174,10 +172,12 @@
     "Size" : "Omvang",
     "Modified" : "Gewijzigd",
     "Nextcloud User" : "Nextcloud gebruiker",
+    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "De beheerder dient minimaal een kring te maken voordat je de kring-app kan gebruiken.",
     "This user is already a member of the circle" : "Deze gebruiker is al lid van de kring",
     "The user is already a member of this circle" : "De gebruiker is al lid van deze kring",
     "The user has already been invited into this circle" : "De gebruiker is al uitgenodigd voor deze kring",
     "This user does not exist" : "Deze gebruiker bestaat niet",
+    "Could not find share" : "De gedeelde folder kan niet worden gevonden",
     "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or \"circles\") can then be used by any other app for sharing purpose." : "Met kringen kunnen gebruikers hun eigen groepen gebruikers / collega's / vrienden maken.\nDie groepen gebruikers (of \"kringen\") kunnen vervolgens door elke andere app worden gebruikt om te delen."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

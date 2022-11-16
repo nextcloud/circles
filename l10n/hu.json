@@ -126,8 +126,6 @@
     "Adding local users and moderators" : "Helyi felhasználók és moderátorok hozzáadása",
     "Circle not found" : "A Kör nem található",
     "Circle not found " : "A Kör nem található ",
-    "A circle with that name exists" : "Már van ilyen nevű kör",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "A Körök alkalmazás nem használható, amíg a rendszergazda legalább egy körtípust nem engedélyez.",
     "This member does not exist" : "Ez a tag nem létezik",
     "This account is already a member of the circle" : "A fiók már tagja a körnek",
     "Federated link not found" : "A föderált kapcsolat nem található",
@@ -153,6 +151,7 @@
     "Personal Circle" : "Személyes kör",
     "%s owned by %s" : "a(z) %s tulajdonosa %s",
     "You need a specify a type of circle" : "Meg kell adnia egy körtípust",
+    "A circle with that name exists" : "Már van ilyen nevű kör",
     "This member is not the owner of the circle" : "Ez a tag nem a kör tulajdonosa",
     "This member is not an admin of the circle" : "Ez a tag nem a kör adminisztrátora",
     "Group contains too many members" : "A csoport túl sok tagot tartalmaz",
@@ -172,7 +171,6 @@
     "Password to access content shared with you by %1$s" : "Jelszó a(z) %1$s által megosztott tartalom eléréséhez",
     "Password to access content" : "Jelszó a tartalom eléréséhez",
     "This item is already shared with this circle" : "Ez az elem már megosztásra került ezzel a körrel",
-    "Could not find share" : "A megosztás nem található",
     "Bring cloud-users closer together." : "Közelebb hozza a felhőfelhasználókat.",
     "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "A Körök lehetővé teszi, hogy az emberek létrehozzák a saját köreiket a felhasználóinak/kollégáinak/barátaiknak.\nEzeket a csoportokat (vagy „köröket”) aztán bármely más alkalmazás használhatja megosztási célokra.",
     "No files in here" : "Itt nincsenek fájlok",
@@ -181,10 +179,12 @@
     "Size" : "Méret",
     "Modified" : "Módosítva",
     "Nextcloud User" : "Nextcloud felhasználó",
+    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "A Körök alkalmazás nem használható, amíg a rendszergazda legalább egy körtípust nem engedélyez.",
     "This user is already a member of the circle" : "Ez a felhasználó már tagja a körnek",
     "The user is already a member of this circle" : "A felhasználó már tagja a körnek",
     "The user has already been invited into this circle" : "A felhasználó már meg lett hívva a körbe",
     "This user does not exist" : "Ez a felhasználó nem létezik",
+    "Could not find share" : "A megosztás nem található",
     "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or \"circles\") can then be used by any other app for sharing purpose." : "A Körök lehetővé teszi, hogy a felhasználók létrehozzák a saját köreiket a felhasználóknak/kollégáknak/barátoknak.\nEzeket a felhasználói csoportokat (vagy „körök”) aztán bármely más alkalmazás használhatja megosztási célokra."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

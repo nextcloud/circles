@@ -125,8 +125,6 @@
     "Adding local users and moderators" : "Agiunta de utentes locales e persones chi moderent",
     "Circle not found" : "Giru no agatadu",
     "Circle not found " : "Giru no agatadu",
-    "A circle with that name exists" : "B'at giai unu giru cun cussu nùmene",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Non podes impreare s'aplicatzione de is giros finas a cando s'amministratzione at a permìtere a su mancu una genia de giru",
     "This member does not exist" : "Custa persone no esistit",
     "Federated link not found" : "Ligòngiu federadu no agatadu",
     "This feature is not available for personal circles" : "Sa funtzionalidade no est a disponimentu pro giros personales",
@@ -148,6 +146,7 @@
     "Personal Circle" : "Giru personale",
     "%s owned by %s" : "%s de propiedade de %s",
     "You need a specify a type of circle" : "Depes tènnere una genia de giru ispetzìfica",
+    "A circle with that name exists" : "B'at giai unu giru cun cussu nùmene",
     "This member is not the owner of the circle" : "Custa persone no est mere de su giru",
     "This member is not an admin of the circle" : "Custa persone no est de s'amministratzione de su giru",
     "Group contains too many members" : "Su grupu tenet tropu membros",
@@ -161,7 +160,6 @@
     "%s shared a file with \"%s\"." : "%s at cumpartzidu un'archìviu cun \"%s\".",
     "%s shared a file with you." : "%s at cumpartzidu un'archìviu cun tegus.",
     "This item is already shared with this circle" : "Custu elementu est giai istadu cumpartzidu cun custu giru",
-    "Could not find share" : "No at fatu a agatare sa cumpartzidura",
     "Bring cloud-users closer together." : "Acosta impare a is utentes de sa nue.",
     "No files in here" : "Perunu archìviu",
     "No entries found in this folder" : "Perunu elementu agatadu in custa cartella",
@@ -169,10 +167,12 @@
     "Size" : "Mannària",
     "Modified" : "Modificadu",
     "Nextcloud User" : "Utente de Nextcloud",
+    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Non podes impreare s'aplicatzione de is giros finas a cando s'amministratzione at a permìtere a su mancu una genia de giru",
     "This user is already a member of the circle" : "Custa utèntzia faghet giai parte de su giru",
     "The user is already a member of this circle" : "S'utente est giai cumponente de custu giru",
     "The user has already been invited into this circle" : "Ant giai invitadu a s'utente a custu giru",
     "This user does not exist" : "S'utente no esistit",
+    "Could not find share" : "No at fatu a agatare sa cumpartzidura",
     "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or \"circles\") can then be used by any other app for sharing purpose." : "Giros permitit a is utentes tuos de creare is grupos issoro de utentes/collegas/amistades.\nCustos grupos de utentes (o \"giros\") podent duncas èssere impreados dae calesisiat àtera aplicatzione pro is cumpartziduras."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
