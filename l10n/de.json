@@ -126,8 +126,6 @@
     "Adding local users and moderators" : "Lokale Benutzer und Moderatoren werden hinzugefügt",
     "Circle not found" : "Kreis nicht gefunden",
     "Circle not found " : "Kreis nicht gefunden",
-    "A circle with that name exists" : "Ein Kreis mit diesem Namen existiert bereits",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Du kannst die Kreise-App nicht verwenden, solange dein Administrator nicht wenigstens einen Kreis-Typ zulässt",
     "This member does not exist" : "Dieses Mitglied existiert nicht",
     "This account is already a member of the circle" : "Dieses Konto ist bereits Mitglied dieses Kreises",
     "Federated link not found" : "Federated-Verknüpfung nicht gefunden",
@@ -153,6 +151,7 @@
     "Personal Circle" : "Persönlicher Kreis",
     "%s owned by %s" : "%s gehört %s",
     "You need a specify a type of circle" : "Du benötigst einen bestimmten Kreis-Typ",
+    "A circle with that name exists" : "Ein Kreis mit diesem Namen existiert bereits",
     "This member is not the owner of the circle" : "Dieses Mitglied ist nicht der Besitzer des Kreises",
     "This member is not an admin of the circle" : "Dieses Mitglied ist nicht der Administrator des Kreises ",
     "Group contains too many members" : "Gruppe hat zu viele Mitglieder",
@@ -172,7 +171,6 @@
     "Password to access content shared with you by %1$s" : "Passwort für den Zugriff auf den Inhalt, der von %1$s mit dir geteilt wurde.",
     "Password to access content" : "Passwort für den Zugriff auf den Inhalt",
     "This item is already shared with this circle" : "Dieses Element wird bereits mit diesem Kreis geteilt",
-    "Could not find share" : "Freigabe konnte nicht gefunden werden",
     "Bring cloud-users closer together." : "Bringe Cloudnutzer näher zueinander.",
     "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Mit Kreisen können deine Benutzer ihre eigenen Gruppen von Benutzern/Kollegen/Freunden erstellen.\nDiese Benutzergruppen (oder \"Kreise\") können dann von jeder anderen App zum Zweck der gemeinsamen Nutzung verwendet werden.",
     "No files in here" : "Keine Dateien vorhanden",
@@ -181,10 +179,12 @@
     "Size" : "Größe",
     "Modified" : "Geändert",
     "Nextcloud User" : "Nextcloud-Benutzer",
+    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Du kannst die Kreise-App nicht verwenden, solange dein Administrator nicht wenigstens einen Kreis-Typ zulässt",
     "This user is already a member of the circle" : "Dieser Benutzer ist bereits Mitglied dieses Kreises",
     "The user is already a member of this circle" : "Dieser Benutzer ist bereits Mitglied dieses Kreises ",
     "The user has already been invited into this circle" : "Benutzer wurde bereits zu diesem Kreis eingeladen",
     "This user does not exist" : "Dieser Benutzer existiert nicht",
+    "Could not find share" : "Freigabe konnte nicht gefunden werden",
     "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or \"circles\") can then be used by any other app for sharing purpose." : "Mit Kreisen können deine Benutzer ihre eigenen Gruppen von Benutzern/Kollegen/Freunden erstellen.\nDiese Benutzergruppen (oder \"Kreise\") können dann von jeder anderen App zum Zweck der gemeinsamen Nutzung verwendet werden."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

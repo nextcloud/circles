@@ -90,8 +90,6 @@
     "Click the button below to open it." : "Haz click en el botón para abrirlo.",
     "Open »%s«" : "Abrir »%s«",
     "Circle not found" : "Círculo no encontrado",
-    "A circle with that name exists" : "Un círculo con ese nombre ya existe",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "No puedes usar la Aplicación de Círculos hasta que tu adminsitrador haya permitido al menos un tipo de círculo",
     "This member does not exist" : "Este miembro no existe",
     "Federated link not found" : "No se encontró la liga",
     "This feature is not available for personal circles" : "Esta característica no está disponible para círculos personales",
@@ -107,6 +105,7 @@
     "%s" : "%s",
     "Personal Circle" : "Círculo Personal",
     "You need a specify a type of circle" : "Necesitas especificar un tipo de círculo",
+    "A circle with that name exists" : "Un círculo con ese nombre ya existe",
     "This member is not the owner of the circle" : "Este miembro no es el dueño del círculo",
     "This member is not an admin of the circle" : "Este miembro no es un administador del círculo",
     "This group does not exist" : "Este grupo no existe",
@@ -115,15 +114,16 @@
     "Group cannot be set as owner of a circle" : "Un Grupo no puede ser establecido como dueño de un círculo",
     "Email format is not valid" : "El formato de la dirección de correo electrónico no es válido",
     "This contact is not available" : "Este contacto no está disponible",
-    "Could not find share" : "No se encontró el elemento compartido",
     "No files in here" : "No hay archivos aquí",
     "No entries found in this folder" : "No se encontraron elementos en esta carpeta",
     "Name" : "Nombre",
     "Size" : "Tamaño",
     "Modified" : "Modificado",
+    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "No puedes usar la Aplicación de Círculos hasta que tu adminsitrador haya permitido al menos un tipo de círculo",
     "This user is already a member of the circle" : "El usuario ya es un miembro del círculo",
     "The user is already a member of this circle" : "El usuario ya es un miembro de este círculo",
     "The user has already been invited into this circle" : "El usuario ya ha sido invitado a este círculo",
-    "This user does not exist" : "Este usuario no existe"
+    "This user does not exist" : "Este usuario no existe",
+    "Could not find share" : "No se encontró el elemento compartido"
 },"pluralForm" :"nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

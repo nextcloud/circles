@@ -126,8 +126,6 @@
     "Adding local users and moderators" : "Yerel kullanıcılar ve sorumlular ekleniyor",
     "Circle not found" : "Çevre bulunamadı",
     "Circle not found " : "Çevre bulunamadı ",
-    "A circle with that name exists" : "Aynı adlı bir çevre zaten var",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Yöneticiniz en az bir çevre türüne izin verene kadar Çevreler uygulamasını kullanamazsınız",
     "This member does not exist" : "Bu üye bulunamadı",
     "This account is already a member of the circle" : "Bu hesap zaten bu çevrenin üyesi",
     "Federated link not found" : "Birleşik bağlantı bulunamadı",
@@ -153,6 +151,7 @@
     "Personal Circle" : "Kişisel çevre",
     "%s owned by %s" : "%s sahibi %s",
     "You need a specify a type of circle" : "Bir çevre türü belirtmelisiniz",
+    "A circle with that name exists" : "Aynı adlı bir çevre zaten var",
     "This member is not the owner of the circle" : "Bu üye çevrenin sahibi değil",
     "This member is not an admin of the circle" : "Bu üye çevrenin yöneticisi değil",
     "Group contains too many members" : "Grupta çok fazla üye var",
@@ -172,7 +171,6 @@
     "Password to access content shared with you by %1$s" : "%1$s tarafından sizinle paylaşılan içeriğe erişme parolası",
     "Password to access content" : "İçeriğe erişme parolası",
     "This item is already shared with this circle" : "Bu öge zaten bu çevre ile paylaşılmış",
-    "Could not find share" : "Paylaşım bulunamadı",
     "Bring cloud-users closer together." : "Bulut kullanıcılarını bir araya getirir.",
     "Circles allows people to create their own groups of people/colleagues/friends.\nThose groups of people (or \"circles\") can then be used by any other app for sharing purpose." : "Çevreler, kişilerin kendi kişi/iş arkadaşı/arkadaş gruplarını oluşturmasını sağlar.\nBu kişi grupları (ya da \"çevreler\") başka uygulamalar tarafından paylaşım amacıyla kullanılabilir.",
     "No files in here" : "Burada herhangi bir dosya yok",
@@ -181,10 +179,12 @@
     "Size" : "Boyut",
     "Modified" : "Değiştirilme",
     "Nextcloud User" : "Nextcloud kullanıcısı",
+    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "Yöneticiniz en az bir çevre türüne izin verene kadar Çevreler uygulamasını kullanamazsınız",
     "This user is already a member of the circle" : "Bu kullanıcı zaten bu çevrenin üyesi",
     "The user is already a member of this circle" : "Kullanıcı zaten bu çevrenin üyesi",
     "The user has already been invited into this circle" : "Kullanıcı zaten bu çevreye girmesi için çağrılmış",
     "This user does not exist" : "Bu kullanıcı bulunamadı",
+    "Could not find share" : "Paylaşım bulunamadı",
     "Circles allows your users to create their own groups of users/colleagues/friends.\nThose groups of users (or \"circles\") can then be used by any other app for sharing purpose." : "Çevreler, kullanıcılarınızın kendi kullanıcı/iş arkadaşı/arkadaş gruplarını oluşturmasına sağlar.\nBu kullanıcı grupları (ya da \"çevreler\") başka uygulamalar tarafından paylaşım amacıyla kullanılabilir."
 },"pluralForm" :"nplurals=2; plural=(n > 1);"
 }

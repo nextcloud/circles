@@ -120,13 +120,13 @@ OC.L10N.register(
     "now" : "nu",
     "Email format is not valid" : "Email format er ugyldigt",
     "This contact is not available" : "Denne kontakt er ikke tilgængelig ",
-    "Could not find share" : "Kunne ikke finde deling",
     "No files in here" : "Ingen filer herinde",
     "No entries found in this folder" : "Intet fundet i denne mappe",
     "Name" : "Navn",
     "Size" : "Størrelse",
     "Modified" : "Ændret",
     "This user is already a member of the circle" : "Denne bruger er allerede medlem af cirklen",
-    "This user does not exist" : "Brugeren eksisterer ikke "
+    "This user does not exist" : "Brugeren eksisterer ikke ",
+    "Could not find share" : "Kunne ikke finde deling"
 },
 "nplurals=2; plural=(n != 1);");

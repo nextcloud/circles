@@ -90,7 +90,6 @@ OC.L10N.register(
     "Adding local users and moderators" : "הוספת משתמשים ומפקחים מקומיים",
     "Circle not found" : "המעגל לא נמצא",
     "Circle not found " : "המעגל לא נמצא",
-    "A circle with that name exists" : "כבר קיים מעגל בשם הזה",
     "This member does not exist" : "חבר זה אינו קיים",
     "This feature is not available for personal circles" : "תכונה זו אינה זמינה למעגלים אישיים",
     "You cannot join this circle" : "אין לך אפשרות להצטרף למעגל הזה",
@@ -106,6 +105,7 @@ OC.L10N.register(
     "%s" : "%s",
     "Personal Circle" : "מעגל אישי",
     "You need a specify a type of circle" : "עליך לציין את סוג המעגל",
+    "A circle with that name exists" : "כבר קיים מעגל בשם הזה",
     "This member is not the owner of the circle" : "חבר זה אינו הבעלים של המעגל",
     "This member is not an admin of the circle" : "חבר זה אינו מנהל של המעגל",
     "Group contains too many members" : "הקבוצה מכילה יותר מדי חברים",
@@ -115,7 +115,6 @@ OC.L10N.register(
     "Email format is not valid" : "תצורת הדוא״ל שגויה",
     "This contact is not available" : "איש קשר זה אינו זמין",
     "This item is already shared with this circle" : "פריט זה כבר שותף עם המעגל הזה",
-    "Could not find share" : "לא ניתן למצוא את השיתוף",
     "No files in here" : "אין כאן קבצים",
     "No entries found in this folder" : "לא נמצאו רשומות בתיקייה הזאת",
     "Name" : "שם",
@@ -125,6 +124,7 @@ OC.L10N.register(
     "This user is already a member of the circle" : "משתמש זה כבר חבר במעגל",
     "The user is already a member of this circle" : "המשתמש הוא כבר חבר במעגל הזה",
     "The user has already been invited into this circle" : "המשתמש הזה כבר הוזמן למעגל הזה",
-    "This user does not exist" : "המשתמש הזה לא קיים"
+    "This user does not exist" : "המשתמש הזה לא קיים",
+    "Could not find share" : "לא ניתן למצוא את השיתוף"
 },
 "nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: (n % 10 == 0 && n % 1 == 0 && n > 10) ? 2 : 3;");

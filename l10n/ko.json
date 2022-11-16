@@ -93,8 +93,6 @@
     "Click the button below to open it." : "아래 단추를 눌러서 열 수 있습니다.",
     "Open »%s«" : "%s 열기",
     "Circle not found" : "서클을 찾을 수 없음",
-    "A circle with that name exists" : "같은 이름의 서클이 이미 존재함",
-    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "시스템 관리자가 서클 형식을 허용하지 않는 한 서클 앱을 사용할 수 없습니다",
     "This member does not exist" : "이 회원이 존재하지 않음",
     "Federated link not found" : "연합 연결을 찾을 수 없음",
     "This feature is not available for personal circles" : "이 기능은 개인 서클에서 사용할 수 없음",
@@ -110,6 +108,7 @@
     "%s" : "%s",
     "Personal Circle" : "개인 서클",
     "You need a specify a type of circle" : "서클 형식을 지정해야 함",
+    "A circle with that name exists" : "같은 이름의 서클이 이미 존재함",
     "This member is not the owner of the circle" : "이 회원은 서클 소유자가 아님",
     "This member is not an admin of the circle" : "이 회원은 서클 관리자가 아님",
     "This group does not exist" : "이 그룹이 존재하지 않음",
@@ -119,16 +118,17 @@
     "now" : "현재",
     "Email format is not valid" : "이메일 주소가 올바르지 않음",
     "This contact is not available" : "이 연락처를 사용할 수 없음",
-    "Could not find share" : "공유를 찾을 수 없음",
     "Bring cloud-users closer together." : "클라우드 사용자를 더 가깝게 연결합니다.",
     "No files in here" : "여기에 파일 없음",
     "No entries found in this folder" : "이 폴더에서 항목을 찾을 수 없음",
     "Name" : "이름",
     "Size" : "크기",
     "Modified" : "수정한 날짜",
+    "You cannot use the Circles Application until your administrator has allowed at least one type of circles" : "시스템 관리자가 서클 형식을 허용하지 않는 한 서클 앱을 사용할 수 없습니다",
     "This user is already a member of the circle" : "이 사용자가 이미 서클 회원임",
     "The user is already a member of this circle" : "이 사용자가 이미 서클 회원임",
     "The user has already been invited into this circle" : "이 사용자를 이미 서클에 초대함",
-    "This user does not exist" : "이 사용자가 존재하지 않음"
+    "This user does not exist" : "이 사용자가 존재하지 않음",
+    "Could not find share" : "공유를 찾을 수 없음"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

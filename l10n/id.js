@@ -15,11 +15,11 @@ OC.L10N.register(
     "Open »%s«" : "Buka »%s«",
     "Accept" : "Terima",
     "%s" : "%s",
-    "Could not find share" : "Tidak menemukan berbagi",
     "No files in here" : "Tidak ada berkas disini",
     "No entries found in this folder" : "Tidak ada entri yang ditemukan dalam folder ini",
     "Name" : "Nama",
     "Size" : "Ukuran",
-    "Modified" : "Dimodifikasi"
+    "Modified" : "Dimodifikasi",
+    "Could not find share" : "Tidak menemukan berbagi"
 },
 "nplurals=1; plural=0;");
