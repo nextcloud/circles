@@ -322,14 +322,14 @@ class CirclesManager {
 	 * @throws InitiatorNotFoundException
 	 * @throws RequestBuilderException
 	 */
-	public function getCircles(?CircleProbe $probe = null): array {
+	public function getCircles(?CircleProbe $probe = null, bool $refreshCache = false): array {
 		if (is_null($probe)) {
 			$probe = new CircleProbe();
 			$probe->filterHiddenCircles()
 				  ->filterBackendCircles();
 		}
 
-		return $this->circleService->getCircles($probe, true);
+		return $this->circleService->getCircles($probe, !$refreshCache);
 	}
 
 
