@@ -71,35 +71,15 @@ use OCA\Circles\Tools\Exceptions\InvalidItemException;
  * @package OCA\Circles
  */
 class CirclesManager {
-	/** @var FederatedUserService */
-	private $federatedUserService;
+	private FederatedUserService $federatedUserService;
+	private CircleService $circleService;
+	private MemberService $memberService;
+	private MembershipService $membershipService;
+	private ConfigService $configService;
+	private CirclesQueryHelper $circlesQueryHelper;
 
-	/** @var CircleService */
-	private $circleService;
+	private bool $runAsAdmin = false;
 
-	/** @var MemberService */
-	private $memberService;
-
-	/** @var MembershipService */
-	private $membershipService;
-
-	/** @var ConfigService */
-	private $configService;
-
-	/** @var CirclesQueryHelper */
-	private $circlesQueryHelper;
-
-
-	/**
-	 * CirclesManager constructor.
-	 *
-	 * @param FederatedUserService $federatedUserService
-	 * @param CircleService $circleService
-	 * @param MemberService $memberService
-	 * @param MembershipService $membershipService
-	 * @param ConfigService $configService
-	 * @param CirclesQueryHelper $circlesQueryHelper
-	 */
 	public function __construct(
 		FederatedUserService $federatedUserService,
 		CircleService $circleService,
@@ -114,6 +94,54 @@ class CirclesManager {
 		$this->membershipService = $membershipService;
 		$this->configService = $configService;
 		$this->circlesQueryHelper = $circlesQueryHelper;
+	}
+
+
+	/**
+	 * Wrap most of the method of this class to apply runAsAdmin
+	 *
+	 * @param $method
+	 * @param $args
+	 *
+	 * @return false|mixed
+	 * @throws FederatedUserException
+	 */
+	public function __call($method, $args) {
+		$bypassed = false;
+		$federatedUser = null;
+
+		if ($this->runAsAdmin) {
+			$federatedUser = $this->federatedUserService->getCurrentEntity();
+			$bypassed = $this->federatedUserService->canBypassCurrentUserCondition();
+			$this->federatedUserService->unsetCurrentUser();
+			$this->federatedUserService->bypassCurrentUserCondition(true);
+		}
+
+		$result = call_user_func_array(array($this, $method), $args);
+
+		if ($federatedUser !== null) {
+			$this->federatedUserService->bypassCurrentUserCondition($bypassed);
+			$this->federatedUserService->setCurrentUser($federatedUser);
+		}
+
+		return $result;
+	}
+
+
+
+	public function setRunAsAdmin(bool $asAdmin = false): void {
+		$this->runAsAdmin = $asAdmin;
+	}
+
+	/**
+	 * returns a clone of CirclesManager with an opened super session:
+	 *     $circlesManager->runAsAdmin()->getCircle($circleId);
+	 */
+	public function runAsAdmin(): self {
+		$manager = clone $this;
+		$manager->setRunAsAdmin(true);
+
+		return $manager;
 	}
 
 
@@ -178,6 +206,24 @@ class CirclesManager {
 		} else {
 			$this->federatedUserService->setCurrentUser($federatedUser);
 		}
+	}
+
+
+	/**
+	 * @param string $userId
+	 *
+	 * @throws ContactAddressBookNotFoundException
+	 * @throws ContactFormatException
+	 * @throws ContactNotFoundException
+	 * @throws FederatedUserException
+	 * @throws FederatedUserNotFoundException
+	 * @throws InvalidIdException
+	 * @throws RequestBuilderException
+	 * @throws SingleCircleNotFoundException
+	 */
+	public function startUserSession(string $userId): void {
+		$federatedUser = $this->federatedUserService->getLocalFederatedUser($userId, true);
+		$this->startSession($federatedUser);
 	}
 
 	/**
@@ -250,7 +296,7 @@ class CirclesManager {
 	/**
 	 * @return IFederatedUser
 	 */
-	public function getCurrentFederatedUser(): IFederatedUser {
+	protected function getCurrentFederatedUser(): IFederatedUser {
 		return $this->federatedUserService->getCurrentUser();
 	}
 
@@ -282,7 +328,7 @@ class CirclesManager {
 	 * @throws RequestBuilderException
 	 * @throws UnknownRemoteException
 	 */
-	public function createCircle(
+	protected function createCircle(
 		string $name,
 		?FederatedUser $owner = null,
 		bool $personal = false,
@@ -311,7 +357,7 @@ class CirclesManager {
 	 * @throws RequestBuilderException
 	 * @throws UnknownRemoteException
 	 */
-	public function destroyCircle(string $singleId): void {
+	protected function destroyCircle(string $singleId): void {
 		$this->circleService->destroy($singleId);
 	}
 
@@ -324,13 +370,13 @@ class CirclesManager {
 	 *
 	 * returns available Circles to the current session.
 	 *
-	 * @see probeCircles()
-	 *
 	 * @return Circle[]
 	 * @throws InitiatorNotFoundException
 	 * @throws RequestBuilderException
+	 * @see probeCircles()
+	 *
 	 */
-	public function getCircles(?CircleProbe $probe = null, bool $refreshCache = false): array {
+	protected function getCircles(?CircleProbe $probe = null, bool $refreshCache = false): array {
 		if (is_null($probe)) {
 			$probe = new CircleProbe();
 			$probe->filterHiddenCircles()
@@ -350,7 +396,7 @@ class CirclesManager {
 	 * @throws InitiatorNotFoundException
 	 * @throws RequestBuilderException
 	 */
-	public function getCircle(string $singleId, ?CircleProbe $probe = null): Circle {
+	protected function getCircle(string $singleId, ?CircleProbe $probe = null): Circle {
 		return $this->circleService->getCircle($singleId, $probe);
 	}
 
@@ -370,7 +416,7 @@ class CirclesManager {
 	 * @throws RequestBuilderException
 	 * @throws UnknownRemoteException
 	 */
-	public function updateConfig(Circle $circle): void {
+	protected function updateConfig(Circle $circle): void {
 		$this->circleService->updateConfig($circle->getSingleId(), $circle->getConfig());
 	}
 
@@ -392,7 +438,7 @@ class CirclesManager {
 	 * @throws RequestBuilderException
 	 * @throws UnknownRemoteException
 	 */
-	public function flagAsAppManaged(string $circleId, bool $enabled = true): void {
+	protected function flagAsAppManaged(string $circleId, bool $enabled = true): void {
 		$this->federatedUserService->confirmSuperSession();
 		$this->federatedUserService->setOwnerAsCurrentUser($circleId);
 
@@ -439,7 +485,7 @@ class CirclesManager {
 	 * @throws SingleCircleNotFoundException
 	 * @throws UnknownRemoteException
 	 */
-	public function addMember(string $circleId, FederatedUser $federatedUser): Member {
+	protected function addMember(string $circleId, FederatedUser $federatedUser): Member {
 		$outcome = $this->memberService->addMember($circleId, $federatedUser);
 		$member = new Member();
 		$member->import($outcome);
@@ -465,7 +511,7 @@ class CirclesManager {
 	 * @throws RequestBuilderException
 	 * @throws UnknownRemoteException
 	 */
-	public function levelMember(string $memberId, int $level): Member {
+	protected function levelMember(string $memberId, int $level): Member {
 		$outcome = $this->memberService->memberLevel($memberId, $level);
 		$member = new Member();
 		$member->import($outcome);
@@ -488,7 +534,7 @@ class CirclesManager {
 	 * @throws RequestBuilderException
 	 * @throws UnknownRemoteException
 	 */
-	public function removeMember(string $memberId): void {
+	protected function removeMember(string $memberId): void {
 		$this->memberService->removeMember($memberId);
 	}
 
@@ -502,7 +548,7 @@ class CirclesManager {
 	 * @throws MembershipNotFoundException
 	 * @throws RequestBuilderException
 	 */
-	public function getLink(string $circleId, string $singleId, bool $detailed = false): Membership {
+	protected function getLink(string $circleId, string $singleId, bool $detailed = false): Membership {
 		return $this->membershipService->getMembership($circleId, $singleId, $detailed);
 	}
 
@@ -512,7 +558,7 @@ class CirclesManager {
 	 *
 	 * @return string
 	 */
-	public function getDefinition(IEntity $circle): string {
+	protected function getDefinition(IEntity $circle): string {
 		return $this->circleService->getDefinition($circle);
 	}
 
@@ -531,7 +577,7 @@ class CirclesManager {
 	 * @throws InitiatorNotFoundException
 	 * @throws RequestBuilderException
 	 */
-	public function probeCircles(?CircleProbe $circleProbe = null, ?DataProbe $dataProbe = null): array {
+	protected function probeCircles(?CircleProbe $circleProbe = null, ?DataProbe $dataProbe = null): array {
 		if (is_null($circleProbe)) {
 			$circleProbe = new CircleProbe();
 			$circleProbe->filterHiddenCircles()
