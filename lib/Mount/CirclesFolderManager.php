@@ -36,15 +36,6 @@ class CirclesFolderManager {
 	private IRequest $request;
 	private ?string $rootPath = null;
 
-	/**
-	 * CollectiveFolderManager constructor.
-	 *
-	 * @param IRootFolder $rootFolder
-	 * @param IDBConnection $connection
-	 * @param IConfig $config
-	 * @param IUserSession $userSession
-	 * @param IRequest $request
-	 */
 	public function __construct(
 		IRootFolder $rootFolder,
 		IDBConnection $connection,
@@ -151,8 +142,8 @@ class CirclesFolderManager {
 
 		$storage = new NoExcludePropagatorStorageWrapper(['storage' => $this->getRootFolder()->getStorage()]);
 
-		if ($user) {
-			$current = $this->userSession->getUser();
+		$current = $this->userSession->getUser();
+		if ($user !== null && $current !== null) {
 			$storage = new ACLStorageWrapper(
 				[
 					'storage' => $storage,
@@ -169,14 +160,13 @@ class CirclesFolderManager {
 				'root' => $this->getRootFolder()->getInternalPath() . '/' . $folderMount->getCircleId()
 			]
 		);
-		$collectiveStorage = new CirclesFolderStorage([
-														  'storage' => $baseStorage,
-														  'folder_id' => $folderMount->getCircleId(),
-														  'rootCacheEntry' => $cacheEntry,
-														  'mountOwner' => $user
-													  ]);
+		$circlesStorage = new CirclesFolderStorage([
+													   'storage' => $baseStorage,
+													   'rootCacheEntry' => $cacheEntry,
+													   'mountOwner' => $user
+												   ]);
 		$maskedStorage = new PermissionsMask([
-												 'storage' => $collectiveStorage,
+												 'storage' => $circlesStorage,
 												 'mask' => $folderMount->getPermissions()
 											 ]);
 

@@ -6,18 +6,20 @@ use Exception;
 use OC\User\NoUserException;
 use OCA\Circles\Db\CircleRequest;
 use OCA\Circles\Model\Circle;
+use OCA\Circles\Model\Member;
 use OCA\Circles\Model\Mount\FolderMount;
 use OCA\Circles\Model\Probes\CircleProbe;
 use OCA\Circles\Model\Probes\DataProbe;
 use OCA\Circles\Service\ConfigService;
 use OCA\Circles\Service\FederatedUserService;
+use OCA\Circles\Tools\Traits\TArrayTools;
+use OCP\Constants;
 use OCP\Files\Config\IMountProvider;
 use OCP\Files\Folder;
 use OCP\Files\InvalidPathException;
 use OCP\Files\IRootFolder;
 use OCP\Files\Mount\IMountPoint;
 use OCP\Files\NotFoundException;
-use OCP\Files\NotFoundException as FilesNotFoundException;
 use OCP\Files\NotPermittedException;
 use OCP\Files\Storage\IStorageFactory;
 use OCP\IUser;
@@ -26,6 +28,8 @@ use Psr\Log\LoggerInterface;
 use UnexpectedValueException;
 
 class MountProvider implements IMountProvider {
+	use TArrayTools;
+
 	private IRootFolder $rootFolder;
 	private LoggerInterface $logger;
 	private CircleRequest $circleRequest;
@@ -41,7 +45,7 @@ class MountProvider implements IMountProvider {
 	 * @param CircleRequest $circleRequest
 	 * @param FederatedUserService $federatedUserService
 	 * @param ConfigService $configService
-	 * @param CirclesFolderManager $collectiveFolderManager
+	 * @param CirclesFolderManager $circlesFolderManager
 	 */
 	public function __construct(
 		IRootFolder $rootFolder,
@@ -49,10 +53,10 @@ class MountProvider implements IMountProvider {
 		CircleRequest $circleRequest,
 		FederatedUserService $federatedUserService,
 		ConfigService $configService,
-		CirclesFolderManager $collectiveFolderManager
+		CirclesFolderManager $circlesFolderManager
 	) {
 		$this->rootFolder = $rootFolder;
-		$this->circlesFolderManager = $collectiveFolderManager;
+		$this->circlesFolderManager = $circlesFolderManager;
 		$this->logger = $logger;
 		$this->circleRequest = $circleRequest;
 		$this->federatedUserService = $federatedUserService;
@@ -68,7 +72,7 @@ class MountProvider implements IMountProvider {
 	 * @param IStorageFactory $loader
 	 *
 	 * @return IMountPoint[]
-	 * @throws FilesNotFoundException
+	 * @throws NotFoundException
 	 */
 	public function getMountsForUser(IUser $user, IStorageFactory $loader): array {
 		$folders = $this->getFolderMountsForUser($user);
@@ -101,7 +105,8 @@ class MountProvider implements IMountProvider {
 	 * @param IUser $user
 	 *
 	 * @return FolderMount[]
-	 * @throws FilesNotFoundException
+	 * @throws NotFoundException
+	 * @throws NotPermittedException
 	 */
 	private function getFolderMountsForUser(IUser $user): array {
 		$folderMounts = [];
@@ -123,8 +128,12 @@ class MountProvider implements IMountProvider {
 			return $folderMounts;
 		}
 
+		if (empty($circles)) {
+			return $folderMounts;
+		}
+
 		try {
-			$userFolder = $this->getUserFolder($user);
+			$userFolder = $this->getUserCirclesFolder($user);
 		} catch (NotPermittedException $e) {
 			return $folderMounts;
 		}
@@ -137,7 +146,7 @@ class MountProvider implements IMountProvider {
 			$folderMount = new FolderMount($circle->getSingleId());
 			$folderMount->setMountPoint2($mountPoint);
 			$folderMount->setAbsoluteMountPoint('/' . $user->getUID() . '/files/' . $mountPoint);
-			$folderMount->setPermissions(31);
+			$folderMount->setPermissions($this->extractPermission($circle));
 
 			try {
 				$cacheEntry = $this->circlesFolderManager->getCacheEntry($circle->getSingleId());
@@ -154,7 +163,16 @@ class MountProvider implements IMountProvider {
 	}
 
 
-	private function getUserFolder(IUser $user): Folder {
+	/**
+	 * returns Folder object of the CirclesFolder directory
+	 *
+	 * @param IUser $user
+	 *
+	 * @return Folder
+	 * @throws NotFoundException
+	 * @throws NotPermittedException
+	 */
+	private function getUserCirclesFolder(IUser $user): Folder {
 		try {
 			$userFolder = $this->rootFolder->getUserFolder($user->getUID());
 		} catch (NotPermittedException | NoUserException $e) {
@@ -162,28 +180,23 @@ class MountProvider implements IMountProvider {
 		}
 
 		$userFolderPath = $this->getCirclesFolderPath($user);
-		// If collectives path is empty (due to null quota), return userFolder
 		if ($userFolderPath === '/') {
 			return $userFolder;
 		}
 
 		try {
 			$circlesFolder = $userFolder->get($userFolderPath);
-			// Rename existing node if it's not a folder
+			// move existing node if it's a file and create the right folder
 			if (!$circlesFolder instanceof Folder) {
 				$new = $this->generateFolderName($userFolder, $userFolderPath);
 				$circlesFolder->move($userFolder->getPath() . '/' . $new);
 				$circlesFolder = $userFolder->newFolder($userFolderPath);
 			}
-		} catch (FilesNotFoundException $e) {
-			try {
-				$circlesFolder = $userFolder->newFolder($userFolderPath);
-			} catch (NotPermittedException $e) {
-				throw new NotPermittedException($e->getMessage(), 0, $e);
-			}
+		} catch (NotFoundException $e) {
+			$circlesFolder = $userFolder->newFolder($userFolderPath);
 		} catch (InvalidPathException $e) {
 			throw new NotFoundException($e->getMessage(), 0, $e);
-		} catch (NotPermittedException | LockedException $e) {
+		} catch (LockedException $e) {
 			throw new NotPermittedException($e->getMessage(), 0, $e);
 		}
 
@@ -203,7 +216,7 @@ class MountProvider implements IMountProvider {
 	 * @throws NotPermittedException
 	 */
 	public function getCirclesFolderPath(IUser $user): string {
-		$folderPath = $this->configService->getUserValue('user_folder', '', $user->getUID());
+		$folderPath = $this->configService->getUserValue('circles_folder', '', $user->getUID());
 		if ($folderPath === '') {
 			// Guest users and others with null quota are not allowed to create a subdirectory
 			if ($user->getQuota() === '0 B') {
@@ -213,7 +226,7 @@ class MountProvider implements IMountProvider {
 			$folderPath = $this->configService->getAppValue(ConfigService::MOUNTPOINT_PATH);
 
 			try {
-				$this->configService->setUserValue('user_folder', $folderPath, $user->getUID());
+				$this->configService->setUserValue('circles_folder', $folderPath, $user->getUID());
 			} catch (UnexpectedValueException $e) {
 				throw new NotPermittedException($e->getMessage(), 0, $e);
 			}
@@ -236,10 +249,41 @@ class MountProvider implements IMountProvider {
 		$path = $filename;
 		$path .= ($loop > 1) ? ' (' . $loop . ')' : '';
 
-		if (!$folder->nodeExists($filename) && !$folder->nodeExists($path)) {
+		if (!$folder->nodeExists($filename)) {
 			return $filename;
 		}
 
+		if (!$folder->nodeExists($path)) {
+			return $path;
+		}
+
 		return $this->generateFolderName($folder, $filename, ++$loop);
+	}
+
+
+	/**
+	 * compare permission from circle's settings with initiator level
+	 * we start at current level of initiator, we return first valid value going back to the lowest level
+	 *
+	 * @param Circle $circle
+	 *
+	 * @return int
+	 */
+	private function extractPermission(Circle $circle): int {
+		$initiator = $circle->getInitiator();
+		$permissions = $this->getArray('circles_folder.permissions', $circle->getSettings());
+
+		if ($initiator->getLevel() === Member::LEVEL_OWNER || empty($permissions)) {
+			return Constants::PERMISSION_ALL;
+		}
+
+		for ($i = $initiator->getLevel(); $i > 0; $i--) {
+			$v = $this->getInt((string)$i, $permissions, -1);
+			if ($v > -1) {
+				return $v;
+			}
+		}
+
+		return 0;
 	}
 }

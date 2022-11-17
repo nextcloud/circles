@@ -40,12 +40,12 @@ class CirclesFolderMountPoint extends MountPoint {
 
 	public function __construct(
 		FolderMount $folderMount,
-		CirclesFolderManager $collectiveFolderManager,
+		CirclesFolderManager $circlesFolderManager,
 		Storage $storage,
 		IStorageFactory $loader = null
 	) {
 		$this->folderMount = $folderMount;
-		$this->circlesFolderManager = $collectiveFolderManager;
+		$this->circlesFolderManager = $circlesFolderManager;
 		parent::__construct(
 			$storage,
 			$folderMount->getAbsoluteMountPoint(),

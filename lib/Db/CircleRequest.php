@@ -295,7 +295,8 @@ class CircleRequest extends CircleRequestBuilder {
 					$aliasMembership
 				)
 			);
-			$qb->completeProbeWithInitiator(CoreQueryBuilder::CIRCLE, 'single_id', $aliasMembership);
+
+			$qb->completeProbeWithInitiator(CoreQueryBuilder::CIRCLE, $initiator, 'circle_id', $aliasMembership);
 		}
 
 		$qb->andWhere($limit);

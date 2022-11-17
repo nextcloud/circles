@@ -11,29 +11,16 @@ use OCP\Files\Storage\IDisableEncryptionStorage;
 use OCP\IUser;
 
 class CirclesFolderStorage extends Wrapper implements IDisableEncryptionStorage {
-	private string $folderId;
+	private string $circleId;
 	private ICacheEntry $rootEntry;
 	private ?IUser $mountOwner;
 	/** @var RootEntryCache */
 	public $cache;
 
-	/**
-	 * CollectiveStorage constructor.
-	 *
-	 * @param $parameters
-	 */
 	public function __construct($parameters) {
 		parent::__construct($parameters);
-		$this->folderId = $parameters['folder_id'];
 		$this->rootEntry = $parameters['rootCacheEntry'];
 		$this->mountOwner = $parameters['mountOwner'];
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getFolderId(): string {
-		return $this->folderId;
 	}
 
 	/**

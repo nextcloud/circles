@@ -440,8 +440,8 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			$aliasRemoteInstance = $this->generateAlias($alias, self::REMOTE);
 			$this->generateRemoteInstanceSelectAlias($aliasRemoteInstance)
 				 ->leftJoin(
-				 	$alias, CoreRequestBuilder::TABLE_REMOTE, $aliasRemoteInstance,
-				 	$expr->eq($alias . '.instance', $aliasRemoteInstance . '.instance')
+					 $alias, CoreRequestBuilder::TABLE_REMOTE, $aliasRemoteInstance,
+					 $expr->eq($alias . '.instance', $aliasRemoteInstance . '.instance')
 				 );
 		} catch (RequestBuilderException $e) {
 		}
@@ -809,8 +809,8 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$expr = $this->expr();
 		$this->generateCircleSelectAlias($aliasInvitedBy)
 			 ->leftJoin(
-			 	$aliasMember, CoreRequestBuilder::TABLE_CIRCLE, $aliasInvitedBy,
-			 	$expr->eq($aliasMember . '.invited_by', $aliasInvitedBy . '.unique_id')
+				 $aliasMember, CoreRequestBuilder::TABLE_CIRCLE, $aliasInvitedBy,
+				 $expr->eq($aliasMember . '.invited_by', $aliasInvitedBy . '.unique_id')
 			 );
 
 		$this->leftJoinOwner($aliasInvitedBy);
@@ -840,8 +840,8 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$expr = $this->expr();
 		$this->generateCircleSelectAlias($aliasBasedOn)
 			 ->leftJoin(
-			 	$aliasMember, CoreRequestBuilder::TABLE_CIRCLE, $aliasBasedOn,
-			 	$expr->eq($aliasBasedOn . '.unique_id', $aliasMember . '.single_id')
+				 $aliasMember, CoreRequestBuilder::TABLE_CIRCLE, $aliasBasedOn,
+				 $expr->eq($aliasBasedOn . '.unique_id', $aliasMember . '.single_id')
 			 );
 
 		if (!is_null($initiator)) {
@@ -872,14 +872,14 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$expr = $this->expr();
 		$this->generateMemberSelectAlias($aliasMember)
 			 ->leftJoin(
-			 	$alias, CoreRequestBuilder::TABLE_MEMBER, $aliasMember,
-			 	$expr->andX(
-			 		$expr->eq($aliasMember . '.circle_id', $alias . '.' . $field),
-			 		$expr->eq(
-			 			$aliasMember . '.level',
-			 			$this->createNamedParameter(Member::LEVEL_OWNER, self::PARAM_INT)
-			 		)
-			 	)
+				 $alias, CoreRequestBuilder::TABLE_MEMBER, $aliasMember,
+				 $expr->andX(
+					 $expr->eq($aliasMember . '.circle_id', $alias . '.' . $field),
+					 $expr->eq(
+						 $aliasMember . '.level',
+						 $this->createNamedParameter(Member::LEVEL_OWNER, self::PARAM_INT)
+					 )
+				 )
 			 );
 
 		$this->leftJoinBasedOn($aliasMember);
@@ -947,12 +947,12 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$expr = $this->expr();
 		$this->generateMemberSelectAlias($aliasMember)
 			 ->leftJoin(
-			 	$alias, CoreRequestBuilder::TABLE_MEMBER, $aliasMember,
-			 	$expr->andX(
-			 		$expr->eq($aliasMember . '.circle_id', $alias . '.' . $fieldCircleId),
-			 		$expr->eq($aliasMember . '.single_id', $alias . '.' . $fieldSingleId),
-			 		$this->exprGt('level', Member::LEVEL_MEMBER, true, $aliasMember)
-			 	)
+				 $alias, CoreRequestBuilder::TABLE_MEMBER, $aliasMember,
+				 $expr->andX(
+					 $expr->eq($aliasMember . '.circle_id', $alias . '.' . $fieldCircleId),
+					 $expr->eq($aliasMember . '.single_id', $alias . '.' . $fieldSingleId),
+					 $this->exprGt('level', Member::LEVEL_MEMBER, true, $aliasMember)
+				 )
 			 );
 
 		$this->leftJoinRemoteInstance($aliasMember);
@@ -994,11 +994,11 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		}
 		$this->generateMemberSelectAlias($aliasInheritedBy)
 			 ->leftJoin(
-			 	$alias, CoreRequestBuilder::TABLE_MEMBER, $aliasInheritedBy,
-			 	$expr->andX(
-			 		$expr->eq($aliasMembership . '.inheritance_last', $aliasInheritedBy . '.circle_id'),
-			 		$expr->eq($aliasMembership . '.single_id', $aliasInheritedBy . '.single_id')
-			 	)
+				 $alias, CoreRequestBuilder::TABLE_MEMBER, $aliasInheritedBy,
+				 $expr->andX(
+					 $expr->eq($aliasMembership . '.inheritance_last', $aliasInheritedBy . '.circle_id'),
+					 $expr->eq($aliasMembership . '.single_id', $aliasInheritedBy . '.single_id')
+				 )
 			 );
 
 		$this->leftJoinBasedOn($aliasInheritedBy);
@@ -1084,11 +1084,11 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$aliasInheritanceFrom = $this->generateAlias($alias, self::INHERITANCE_FROM);
 		$this->generateMemberSelectAlias($aliasInheritanceFrom)
 			 ->leftJoin(
-			 	$aliasMembership, CoreRequestBuilder::TABLE_MEMBER, $aliasInheritanceFrom,
-			 	$expr->andX(
-			 		$expr->eq($aliasMembership . '.circle_id', $aliasInheritanceFrom . '.circle_id'),
-			 		$expr->eq($aliasMembership . '.inheritance_first', $aliasInheritanceFrom . '.single_id')
-			 	)
+				 $aliasMembership, CoreRequestBuilder::TABLE_MEMBER, $aliasInheritanceFrom,
+				 $expr->andX(
+					 $expr->eq($aliasMembership . '.circle_id', $aliasInheritanceFrom . '.circle_id'),
+					 $expr->eq($aliasMembership . '.inheritance_first', $aliasInheritanceFrom . '.single_id')
+				 )
 			 );
 	}
 
@@ -1264,13 +1264,13 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 				$aliasDirectInitiator = $this->generateAlias($alias, self::DIRECT_INITIATOR, $options);
 				$this->generateMemberSelectAlias($aliasDirectInitiator)
 					 ->leftJoin(
-					 	$helperAlias,
-					 	CoreRequestBuilder::TABLE_MEMBER,
-					 	$aliasDirectInitiator,
-					 	$expr->andX(
-					 		$this->exprLimit('single_id', $initiator->getSingleId(), $aliasDirectInitiator),
-					 		$expr->eq($aliasDirectInitiator . '.circle_id', $helperAlias . '.' . $field)
-					 	)
+						 $helperAlias,
+						 CoreRequestBuilder::TABLE_MEMBER,
+						 $aliasDirectInitiator,
+						 $expr->andX(
+							 $this->exprLimit('single_id', $initiator->getSingleId(), $aliasDirectInitiator),
+							 $expr->eq($aliasDirectInitiator . '.circle_id', $helperAlias . '.' . $field)
+						 )
 					 );
 			} catch (RequestBuilderException $e) {
 				// meaning that this path does not require DIRECT_INITIATOR; can be safely ignored
@@ -1318,6 +1318,7 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 
 	public function completeProbeWithInitiator(
 		string $alias,
+		IFederatedUser $initiator,
 		string $field = 'single_id',
 		string $helperAlias = ''
 	): void {
@@ -1336,11 +1337,11 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 		$expr = $this->expr();
 		$this->generateMemberSelectAlias($aliasInitiator)
 			 ->leftJoin(
-			 	$alias, CoreRequestBuilder::TABLE_MEMBER, $aliasInitiator,
-			 	$expr->andX(
-			 		$expr->eq($aliasInitiator . '.circle_id', $helperAlias . '.' . $field),
-			 		$this->exprLimitInt('level', Member::LEVEL_OWNER, $aliasInitiator)
-			 	)
+				 $alias, CoreRequestBuilder::TABLE_MEMBER, $aliasInitiator,
+				 $expr->andX(
+					 $expr->eq($aliasInitiator . '.circle_id', $helperAlias . '.' . $field),
+					 $this->exprLimit('single_id', $initiator->getSingleId(), $aliasInitiator)
+				 )
 			 );
 //
 //		$this->leftJoinBasedOn($aliasInitiator);
@@ -1525,18 +1526,18 @@ class CoreQueryBuilder extends ExtendedQueryBuilder {
 			[]
 		)
 			 ->generateSelectAlias(
-			 	CoreRequestBuilder::$outsideTables[CoreRequestBuilder::TABLE_STORAGES],
-			 	$aliasStorages,
-			 	$aliasStorages,
-			 	[]
+				 CoreRequestBuilder::$outsideTables[CoreRequestBuilder::TABLE_STORAGES],
+				 $aliasStorages,
+				 $aliasStorages,
+				 []
 			 )
 			 ->leftJoin(
-			 	$aliasShare, CoreRequestBuilder::TABLE_FILE_CACHE, $aliasFileCache,
-			 	$expr->eq($aliasShare . '.file_source', $aliasFileCache . '.fileid')
+				 $aliasShare, CoreRequestBuilder::TABLE_FILE_CACHE, $aliasFileCache,
+				 $expr->eq($aliasShare . '.file_source', $aliasFileCache . '.fileid')
 			 )
 			 ->leftJoin(
-			 	$aliasFileCache, CoreRequestBuilder::TABLE_STORAGES, $aliasStorages,
-			 	$expr->eq($aliasFileCache . '.storage', $aliasStorages . '.numeric_id')
+				 $aliasFileCache, CoreRequestBuilder::TABLE_STORAGES, $aliasStorages,
+				 $expr->eq($aliasFileCache . '.storage', $aliasStorages . '.numeric_id')
 			 );
 	}
 
